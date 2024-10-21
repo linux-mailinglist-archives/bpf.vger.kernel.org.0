@@ -1,139 +1,135 @@
-Return-Path: <bpf+bounces-42572-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42573-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D78E69A5998
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 06:44:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA68E9A59A6
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 07:07:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0AF5EB227E6
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 04:44:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 713C71F222BC
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 05:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257001CEEAF;
-	Mon, 21 Oct 2024 04:44:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FCF194085;
+	Mon, 21 Oct 2024 05:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ReO/d4C3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UyGVEeP/"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E8A1940B0
-	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 04:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389F52C95;
+	Mon, 21 Oct 2024 05:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729485884; cv=none; b=kX7mwlRlasyaLwSdWHB8f0o3ZwGVKxaogy4IKcsePrMBMY8c2w7bVK64KLxdYEON5PQ4Z5L9YYMRuAG+Qs6LVHSkCggin1b3JYE3E3uUtM63GE069e79OfDDdm69fSjdES97+7b5vcTIFEZqduYaTWE6Q6Zux8tNrbiSS6e26og=
+	t=1729487235; cv=none; b=ew/7pi8+LI0I2NsHkxp2z+oJpSyT1hXqSrqcIY4mc5dye8iU1etDzd6+kuNJksgTml3Us7j+9DrxP/2SBGDjlz8slIFN1XetGta6ckhQj9yMQzDebQ/xX2er0vNSGtSq1bV3cNxX8sb5fyJ70yVw9e3X7lk6C8v+Vcr7jBT8KWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729485884; c=relaxed/simple;
-	bh=4LIdq9nA0sKugyd8rtTv8xkXFrK1SAZG0uMegWMIC50=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QFcFs+iVDlYSWZn2s5lk+UFXhLKifq/Pb0ReRHAD+76eLkMPq47KIsddD5XxYSJmDj+mmZKboqsH9gCxF9lmBCBCq9LfCoMBKj/ZracXDmD+05wjdPOzLB5XyxXmSH1cpOy7z8Hh9zh5cef15fqVkTdvLU9l179N7tKO5t26W3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ReO/d4C3; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <19985cb7-9c32-471d-8e35-02fc7b7998c6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729485879;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e05oiLk2gfblA5mAErTL92rFlTFAiq6x69LcPdFyEwE=;
-	b=ReO/d4C3zJypr+vFk22sFu31dPI0NvQ55+z6/EPNqN9BI1STl5FhR647ddwUj6DoSq2ZIz
-	fSF7oFVX9Qc3e2dDKHfJRub1p0domg1IXo9iHqBu3R5MeDRgpL714qjycxPFbRDR0aYo/H
-	Ux8YcI+4WPn1h/C4+bUDb2swQ8IOHCY=
-Date: Sun, 20 Oct 2024 21:44:30 -0700
+	s=arc-20240116; t=1729487235; c=relaxed/simple;
+	bh=woaOYsN/8ZXG9JhFaJM6yAMQs5wl0uO6IyPDHccyzQo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=jbLqiu/e0Yeh51z0bK1SLzZEbO/v8ApGm4fv7tS63y/639p4UFOsELKb8rLtUbUJtCo8L5O/X9rWmS9bwlp827Wy32nv+K+GOFu63IOsZpwRBnBZj9ZGS1bYzIm65O67ZC6NzB5GsPlw42y7516qbVdBMP80hNppDHnANN5PYs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UyGVEeP/; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-20cceb8d8b4so22717285ad.1;
+        Sun, 20 Oct 2024 22:07:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729487233; x=1730092033; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GsP1R/Yrt+r8ODdOs3dcZNgXib6nhIN4eckNsin7BcM=;
+        b=UyGVEeP/p/2ZQfI//b3ljbJ51NSm0ZNuUPlB9hsDNtN7XW3R2U1qRgSrGfsCvUM8wD
+         EQBcogFRJ0hwL3yYNeGcJrO57I6jfVpIntzhyBV5Hr13QckQEMQ2+JLCgUT4+LtpYf1m
+         dv5PwjkFBA643MkwF7w2gLgFvjoTHMdiYmJ9U45Vn8WTDhYGXl7y/ExqylKxXlEo8cwe
+         Murw50tm6uGujCXLlZoEghvaTsbXs/P0WMSWhHs2aWGhwiJgyvLlCRrKo9aocXvPebUN
+         SklQbd/SrDf5oHanI6MATzyYkf08yhy+0wKmGD2H7sUR+6zxErEx5VnBpEv0sMeF0mp/
+         P5TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729487233; x=1730092033;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GsP1R/Yrt+r8ODdOs3dcZNgXib6nhIN4eckNsin7BcM=;
+        b=GNLkwDqrohVFTlyPn71+PppByGhBcHSw+SP4RgZ27Iz77a1sMZD4N0enR1eJ9Ucim6
+         NpBlhdnNX8auL/ZTjqqmSL+CBa3JWYUqFVFV8rkIOUBb5NJbdqfyj11x2NOeLV/qzdnv
+         +EKuqAfwLqjgGRZRrmQhryypVgwxku9/6376wus1/dh06hOrZ2VximphRSnk4UKGsE7p
+         tasj40UECiKtHUZYavKz6WzOxnD+g1NQ7ZNGqUamensahAl3/justd4k2g/PTMzYOG8F
+         sB3zl2N3lgQ7F3RcoXp9E4B3W045QGKTMlS1ATh9y+owdMd0ULPBIur4i6mV43NUBwhr
+         XN6w==
+X-Forwarded-Encrypted: i=1; AJvYcCXc5yEoNMahY2Qjm/XQ+PDmSYKEAVwxRM/YBIZtuvxYcxeMhaOiGPsXCo7AdRa2D3hmNIzloknF1CZRV98ALto=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwpBvAD7Uqugc48XLZrwDXoZOfpJZfYRHZYReOPVQgfN94/R0js
+	ZPysoYOeKUOVdDRpzJ93CMq7kjFtvbsOR4YEqzaxTvY3BlpEcQ6N
+X-Google-Smtp-Source: AGHT+IFcGEUucg5M3GUfi1Fqig/AMK3OEQkkhQYuQQUd6DCdD+Ozly5nqrQxwfAiMC2OLfQ4u5NJkA==
+X-Received: by 2002:a17:902:d2d2:b0:20c:68af:a4e3 with SMTP id d9443c01a7336-20e5c29b02emr127570975ad.22.1729487233374;
+        Sun, 20 Oct 2024 22:07:13 -0700 (PDT)
+Received: from KERNELXING-MB0.tencent.com ([43.132.141.20])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20e7eeef550sm17693565ad.57.2024.10.20.22.07.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Oct 2024 22:07:13 -0700 (PDT)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	mykolal@fb.com,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH bpf-next v2] bpf: handle MADV_PAGEOUT error in uprobe_multi.c
+Date: Mon, 21 Oct 2024 13:07:06 +0800
+Message-Id: <20241021050706.29403-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 7/9] bpf, x86: Add jit support for private
- stack
-Content-Language: en-GB
-To: kernel test robot <lkp@intel.com>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
- Tejun Heo <tj@kernel.org>
-References: <20241017223214.3177977-1-yonghong.song@linux.dev>
- <202410210358.dvPfsO1C-lkp@intel.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <202410210358.dvPfsO1C-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+From: Jason Xing <kernelxing@tencent.com>
 
-On 10/20/24 12:52 PM, kernel test robot wrote:
-> Hi Yonghong,
->
-> kernel test robot noticed the following build warnings:
->
-> [auto build test WARNING on bpf-next/master]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Yonghong-Song/bpf-Allow-each-subprog-having-stack-size-of-512-bytes/20241018-063530
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> patch link:    https://lore.kernel.org/r/20241017223214.3177977-1-yonghong.song%40linux.dev
-> patch subject: [PATCH bpf-next v5 7/9] bpf, x86: Add jit support for private stack
-> config: x86_64-randconfig-122-20241021 (https://download.01.org/0day-ci/archive/20241021/202410210358.dvPfsO1C-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241021/202410210358.dvPfsO1C-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202410210358.dvPfsO1C-lkp@intel.com/
->
-> sparse warnings: (new ones prefixed by >>)
->>> arch/x86/net/bpf_jit_comp.c:1487:44: sparse: sparse: cast removes address space '__percpu' of expression
->     arch/x86/net/bpf_jit_comp.c:1488:31: sparse: sparse: cast removes address space '__percpu' of expression
->     arch/x86/net/bpf_jit_comp.c:2073:54: sparse: sparse: cast truncates bits from constant value (800000a00000 becomes a00000)
->
-> vim +/__percpu +1487 arch/x86/net/bpf_jit_comp.c
->
->    1477	
->    1478	static void emit_root_priv_frame_ptr(u8 **pprog, struct bpf_prog *bpf_prog,
->    1479					     u32 orig_stack_depth)
->    1480	{
->    1481		void __percpu *priv_frame_ptr;
->    1482		u8 *prog = *pprog;
->    1483	
->    1484		priv_frame_ptr = bpf_prog->aux->priv_stack_ptr + orig_stack_depth;
->    1485	
->    1486		/* movabs r9, priv_frame_ptr */
->> 1487		emit_mov_imm64(&prog, X86_REG_R9, (long) priv_frame_ptr >> 32,
->    1488			       (u32) (long) priv_frame_ptr);
->    1489	#ifdef CONFIG_SMP
->    1490		/* add <r9>, gs:[<off>] */
->    1491		EMIT2(0x65, 0x4c);
->    1492		EMIT3(0x03, 0x0c, 0x25);
->    1493		EMIT((u32)(unsigned long)&this_cpu_off, 4);
->    1494	#endif
->    1495		*pprog = prog;
->    1496	}
->    1497	
+When I compiled the tools/testing/selftests/bpf, the following error
+pops out:
+uprobe_multi.c: In function ‘trigger_uprobe’:
+uprobe_multi.c:109:26: error: ‘MADV_PAGEOUT’ undeclared (first use in this function); did you mean ‘MADV_RANDOM’?
+   madvise(addr, page_sz, MADV_PAGEOUT);
+                          ^~~~~~~~~~~~
+                          MADV_RANDOM
 
-Looks like the following change will fix the problem:
+Including the <linux/linux/mman.h> header file solves this compilation error.
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 86ebca32befc..9a885cbefef4 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1484,8 +1484,8 @@ static void emit_root_priv_frame_ptr(u8 **pprog, struct bpf_prog *bpf_prog,
-         priv_frame_ptr = bpf_prog->aux->priv_stack_ptr + orig_stack_depth;
-  
-         /* movabs r9, priv_frame_ptr */
--       emit_mov_imm64(&prog, X86_REG_R9, (long) priv_frame_ptr >> 32,
--                      (u32) (long) priv_frame_ptr);
-+       emit_mov_imm64(&prog, X86_REG_R9, (__force long) priv_frame_ptr >> 32,
-+                      (u32) (__force long) priv_frame_ptr);
-  #ifdef CONFIG_SMP
-         /* add <r9>, gs:[<off>] */
-         EMIT2(0x65, 0x4c);
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+---
+v2
+Link: https://lore.kernel.org/all/20241020031422.46894-1-kerneljasonxing@gmail.com/
+1. handle it in a proper way
+---
+ tools/testing/selftests/bpf/uprobe_multi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I will fix the issue in the next revision.
+diff --git a/tools/testing/selftests/bpf/uprobe_multi.c b/tools/testing/selftests/bpf/uprobe_multi.c
+index c7828b13e5ff..40231f02b95d 100644
+--- a/tools/testing/selftests/bpf/uprobe_multi.c
++++ b/tools/testing/selftests/bpf/uprobe_multi.c
+@@ -4,6 +4,7 @@
+ #include <string.h>
+ #include <stdbool.h>
+ #include <stdint.h>
++#include <linux/mman.h>
+ #include <sys/mman.h>
+ #include <unistd.h>
+ #include <sdt.h>
+-- 
+2.37.3
 
 
