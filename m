@@ -1,180 +1,187 @@
-Return-Path: <bpf+bounces-42702-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42703-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54EE89A9390
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 00:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B62BB9A939E
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 01:02:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 964DFB21650
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 22:54:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F9A8B21E27
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 23:02:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D5261FEFBC;
-	Mon, 21 Oct 2024 22:54:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 237791FDF9C;
+	Mon, 21 Oct 2024 23:02:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bmb87qHL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VX1PWddo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D616137750
-	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 22:54:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECF9198A17
+	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 23:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729551283; cv=none; b=dIAkxMHKXG3ICUbCnErmWXm5MWNn2Aw0eOVFLo444xPeW7OjWdzn8k10G4RkXMVh+xtBSvVOlrGL/Slr19pS1/z3g+F/Bf9qnKmFqaamkfClccqLJVeyomYVrvKliGWxoqEvsNp6prNXAmvLklmGSuGe8nJTSkfOxxsO1kLAQR8=
+	t=1729551750; cv=none; b=Elu/ma6F+m6+kjWzPaH73NYPmeaMFjuhbHy0qrCnI5jHCA0FFJ99uMuYUPrz2cbaVWWo/WZ3mLvYR44lnwk97cJ1iW1TRKIIQp9vjlx6ywgDQKR5P/vfeD6RH0xMEF3xpN7CcaLZ73KgzVqIkqvV6NiFYf2wFxvweuzw59BuCuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729551283; c=relaxed/simple;
-	bh=Q/XIsVGE4Q/EJpJlLfeLROiJ8qy+ZKFe94yK4mxX9Wk=;
+	s=arc-20240116; t=1729551750; c=relaxed/simple;
+	bh=He4SdKSRNGj9OuToneZJVQtLlMfhNN93kmQ6XVdNxII=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OwBu1FYIGtxLqHxa4jqNWo1FBnTORQutAIY3TCeax4fiQoknSMaTdQhyhjUT6KopzaI8IslHccj+HUSxVEtmtWxYcG9n/kD0LbNje7MtK4YzApG1Vkk+DNz+q/DS9QhcDTQWstCu2heZa06f8eUBiJT9ThrFB4/Z4yHUfsV39lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bmb87qHL; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-20c8ac50b79so86275ad.0
-        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 15:54:42 -0700 (PDT)
+	 To:Cc:Content-Type; b=JkBYSofxtbi4mshT/+w+TnqFFVGSpdowcm/b/D5582FF2PqgCb4rjQFDGdRpnUtGpB1OSzXguoeVZM98oHeIUZdi7yGpegF2tdTquOcaFSQxDgQDXrCKadYYrDbHM8hzRZ8DmD71ter+3anLrMCvbwGjTKlBSoETmmS9OOVFuF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VX1PWddo; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-71ec12160f6so1260122b3a.3
+        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 16:02:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1729551281; x=1730156081; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729551747; x=1730156547; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OYWm8qPtDHK7Ptrp4+QU3serWZnnV9n3j6iMIME5OTo=;
-        b=bmb87qHL5bm6HRH+Z5zJoc4+bccfHrRR5aehCJx8vF74P0uxDhMQO+akgEQZXV8k2l
-         DwRm3G5xJGI9RBzGF4l7Ya5gHlkfxN0fN2ghbf3rZQM23yBWLi0TWq4/4Hz/3suwBF2y
-         dASTfi0aOYaEPu+inwie2z0UG4NikcLFp+dYw3JtN9n21KxecWXjpuLpvII6qkLP+s+c
-         7E0qPgwnhPupfTyEbCHVzcZKzwTaxfHvgK5DHW2qZfyG7NCUR+Knrh4tOLLlJsEZoBUr
-         6RKcjDyjH6KN6FOH5HcjtrRsYYrs7QnPFF/dC9qvUseML/+IKs6jJPRU6TPnlPs2hoWD
-         SWqw==
+        bh=Ki/lWo8mHZ3TrB2YhkH93BhiS7I6taUYy9jvTn8upmU=;
+        b=VX1PWddoOX6lvZvcYjScJX+KOTMM5F1aYYlPJ85kIDDR7D7lgje59dzKZmJoOKBPE7
+         VGW0DhD1QjERG5SSah5TDK+xAbHh/ksx8YgIiYZ1kZBf7q+zFgKS5QObagvkbfdpb6Xm
+         264PKTeV1xBBponQjx5uXrlXMrCl2oKSQIkqXK6YMI2qY80twZKFzfxsn7Dgwx6+cPnB
+         J2VF1bsNXG+EyBUbk53c5RxURp2dIoE1HzQrK/DnBPT+ykE4oxdjVQRUqT7AgA9X9pcL
+         ETIVXHeKlChlVAt78Xx2+Ra6kYXs49B8+jZyOuKV6rfKZHMpwtSFAvNQX/cr/qk1jFIl
+         gzTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729551281; x=1730156081;
+        d=1e100.net; s=20230601; t=1729551747; x=1730156547;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OYWm8qPtDHK7Ptrp4+QU3serWZnnV9n3j6iMIME5OTo=;
-        b=Y6T+eJmpZ1aIpR8TjfTS+iqhDhe9AfoLg/i88OWe6tYdETXzVUNYCxOUvc7U5xLajs
-         T5yBB4fWbDQzFMIAPMuyV/X4LZzd2W5WvsUb8Qwop08EwnvqEbYNAR0EXkZB+FiNK99N
-         Is1bT67su174Nnx4trZqRj0cX+V1kWuyBN/6gwJy6ZGGILlhOzcijofMp1zB0ssC7S+a
-         DhK1jXc7MLv6E22T9RX1UOs7dPPfaE9qEjDssjgaggILVgSD1YiDorva/v5t3zpuNf+C
-         7JZ469xFZstvydUMpLOEm9VbZN+Te9S3nRLjCayH6MPs6vE4MTlaNxlNHVzsx2ttKYjK
-         +zyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUvZtKBR7PC3C77ZsFuctwFEKjslmcY2a9T2C2kyuhM4LpcVVYlVjIGa0+pCM3GZ5uRU80=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTNCn6vCNd6UyNSO2RAPPSFpqWIn/+hMZhoxeu8gG+Ii8i4KZy
-	WuBB4YkiJHpoVBy4AKQYngoArjeB+oJgOedT3DS9pSkEbWEPQlslY8my/gbaD4ki5/8mWi1vIjO
-	y1U7iT4isLOkS4O/sqkyQnn5LAWChLzJ66Iw5gkkW9SyAilOyuyV0
-X-Google-Smtp-Source: AGHT+IF2QkQLH/jexBZQwaUOU9+BOJypjphzTBtnfLoXWmAxPffUJk9u40roRuw2Fw3F57A4PtclyRxhoo9XerM3FKQ=
-X-Received: by 2002:a17:903:18d:b0:206:ae0b:bfcb with SMTP id
- d9443c01a7336-20e9806cf6cmr1181895ad.28.1729551281280; Mon, 21 Oct 2024
- 15:54:41 -0700 (PDT)
+        bh=Ki/lWo8mHZ3TrB2YhkH93BhiS7I6taUYy9jvTn8upmU=;
+        b=hGzhYsU56r+7xQ4Zh3ggyRAAQ+EmWVay5OTPtMXkBiCAkd0oFBu75qH6r8GgESouBW
+         d7Mj78Q+WLtQXgJ7mG6ShNdytZCUviGS4meiFaMvaoJ8+/8xHeZrUwdx6CJ35USXKBJi
+         C61YRacOF6d7u7Cci/HzFdwJgnQK8kl+Y0m/J5xRU8Bt4zd9gtZUwv74jNAz8DduWJ61
+         iBc1xt2ROj5GrCAy91Nwq7oxa4DP7sgNE0em/i30V/3gsXwEclU+NTuJxH8Hc0YdrbL5
+         c+tVe1qayMrtzcqbmkMeUEAi1aAC1Qovjn7lYrskKyNWAh3xIabz3uSHA64ap4WEoB+e
+         mWKA==
+X-Forwarded-Encrypted: i=1; AJvYcCW9iWDdwAvAhIvAykV4mWjgVf5EjkVbx92ddHgrYO6hatcdFeeSN7bCIOQDVMgQf2qxZAo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwroL+aIL9/Rj4Pza8GfAA9kDBs5yZUz/65MD6TXKD93IwzB0gV
+	E68Ukj4PeZMhUULvbNXrfldASyR1iuiHbhI1Vz88zEQfVWteYTqpCMEEkAHikvzF3xfwPNU5AQc
+	Ye1nA/dlL1Nh09OqbZzzR+UxNdDI=
+X-Google-Smtp-Source: AGHT+IE7skyI75Q+LpDbfeW1djm/URPOZCW3YemT1DSvsuSmTqgCImzSk65QSaghN9ZxS3/qC/56L5nrgyQHsqHyI3s=
+X-Received: by 2002:a05:6a00:194a:b0:71e:786c:3fa9 with SMTP id
+ d2e1a72fcca58-71ea3085322mr19872183b3a.0.1729551747307; Mon, 21 Oct 2024
+ 16:02:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241017225031.2448426-1-jrife@google.com> <20241017225031.2448426-2-jrife@google.com>
- <fb910573-41d8-47b5-8ab9-ecbc8df7a56b@linux.dev>
-In-Reply-To: <fb910573-41d8-47b5-8ab9-ecbc8df7a56b@linux.dev>
-From: Jordan Rife <jrife@google.com>
-Date: Mon, 21 Oct 2024 15:54:28 -0700
-Message-ID: <CADKFtnSgnPMOM5Fz8t-HMSkHOp+8VwuB76GJa4JCrKUVL1aTzA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/4] selftests/bpf: Migrate *_POST_BIND test
- cases to prog_tests
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	"Daniel T. Lee" <danieltimlee@gmail.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20241021014004.1647816-1-houtao@huaweicloud.com>
+ <20241021014004.1647816-3-houtao@huaweicloud.com> <ZxYOX9_sIrSKGFB2@krava>
+In-Reply-To: <ZxYOX9_sIrSKGFB2@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 21 Oct 2024 16:02:14 -0700
+Message-ID: <CAEf4BzbFBbTDGSwTdgFJG5poFpCrjjpPO9OujYVZXPxTEUXqeQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 2/7] bpf: Add assertion for the size of bpf_link_type_strs[]
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, John Fastabend <john.fastabend@gmail.com>, 
+	Yafang Shao <laoar.shao@gmail.com>, houtao1@huawei.com, xukuohai@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-> How is verbose used and is it still needed?
-
-It probably isn't needed here, so I will remove it. sock_create.c,
-whose structure I emulated for sock_post_bind.c, has something
-similar, but it seems superfluous there as well.
-
-> nit. ASSERT_OK_FD().
-> Since the test binds to a specific ip/port, please run it in its own netn=
-s
-
-Sure, will do.
-
--Jordan
-
-On Mon, Oct 21, 2024 at 2:28=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
+On Mon, Oct 21, 2024 at 1:18=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
 >
-> On 10/17/24 3:49 PM, Jordan Rife wrote:
-> > Move all BPF_CGROUP_INET6_POST_BIND and BPF_CGROUP_INET4_POST_BIND test
-> > cases to a new prog_test, prog_tests/sock_post_bind.c, except for
-> > LOAD_REJECT test cases.
+> On Mon, Oct 21, 2024 at 09:39:59AM +0800, Hou Tao wrote:
+> > From: Hou Tao <houtao1@huawei.com>
 > >
-> > Signed-off-by: Jordan Rife <jrife@google.com>
+> > If a corresponding link type doesn't invoke BPF_LINK_TYPE(), accessing
+> > bpf_link_type_strs[link->type] may result in out-of-bound access.
+> >
+> > To prevent such missed invocations in the future, the following static
+> > assertion seems feasible:
+> >
+> >   BUILD_BUG_ON(ARRAY_SIZE(bpf_link_type_strs) !=3D __MAX_BPF_LINK_TYPE)
+> >
+> > However, this doesn't work well. The reason is that the invocation of
+> > BPF_LINK_TYPE() for one link type is optional due to its CONFIG_XXX
+> > dependency and the elements in bpf_link_type_strs[] will be sparse. For
+> > example, if CONFIG_NET is disabled, the size of bpf_link_type_strs will
+> > be BPF_LINK_TYPE_UPROBE_MULTI + 1.
+> >
+> > Therefore, in addition to the static assertion, remove all CONFIG_XXX
+> > conditions for the invocation of BPF_LINK_TYPE(). If these CONFIG_XXX
+> > conditions become necessary later, the fix may need to be revised (e.g.=
+,
+> > to check the validity of link_type in bpf_link_show_fdinfo()).
+> >
+> > Signed-off-by: Hou Tao <houtao1@huawei.com>
 > > ---
-> >   .../selftests/bpf/prog_tests/sock_post_bind.c | 417 +++++++++++++++++=
-+
-> >   tools/testing/selftests/bpf/test_sock.c       | 245 ----------
-> >   2 files changed, 417 insertions(+), 245 deletions(-)
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/sock_post_b=
-ind.c
+> >  include/linux/bpf_types.h | 6 ------
+> >  kernel/bpf/syscall.c      | 2 ++
+> >  2 files changed, 2 insertions(+), 6 deletions(-)
 > >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sock_post_bind.c b/=
-tools/testing/selftests/bpf/prog_tests/sock_post_bind.c
-> > new file mode 100644
-> > index 000000000000..c46537e3b9d4
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sock_post_bind.c
-> > @@ -0,0 +1,417 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <linux/bpf.h>
-> > +#include <test_progs.h>
-> > +#include "cgroup_helpers.h"
-> > +
-> > +static char bpf_log_buf[4096];
-> > +static bool verbose;
+> > diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> > index fa78f49d4a9a..6b7eabe9a115 100644
+> > --- a/include/linux/bpf_types.h
+> > +++ b/include/linux/bpf_types.h
+> > @@ -136,21 +136,15 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_ARENA, arena_map_ops)
+> >
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
+> > -#ifdef CONFIG_CGROUP_BPF
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_CGROUP, cgroup)
+> > -#endif
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
+> > -#ifdef CONFIG_NET
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_XDP, xdp)
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_NETFILTER, netfilter)
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_TCX, tcx)
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_NETKIT, netkit)
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_SOCKMAP, sockmap)
+> > -#endif
+> > -#ifdef CONFIG_PERF_EVENTS
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_PERF_EVENT, perf)
+> > -#endif
+
+I'm not sure what's the implication here, but I'd avoid doing that.
+But see below.
+
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_KPROBE_MULTI, kprobe_multi)
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_STRUCT_OPS, struct_ops)
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_UPROBE_MULTI, uprobe_multi)
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 8cfa7183d2ef..9f335c379b05 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -3071,6 +3071,8 @@ static void bpf_link_show_fdinfo(struct seq_file =
+*m, struct file *filp)
+> >       const struct bpf_prog *prog =3D link->prog;
+> >       char prog_tag[sizeof(prog->tag) * 2 + 1] =3D { };
+> >
+> > +     BUILD_BUG_ON(ARRAY_SIZE(bpf_link_type_strs) !=3D __MAX_BPF_LINK_T=
+YPE);
+
+If this is useless, why are you adding it?
+
+Let's instead do a NULL check inside bpf_link_show_fdinfo() to handle
+sparsity. And to avoid out-of-bounds, just add
+
+[__MAX_BPF_LINK_TYPE] =3D NULL,
+
+into the definition of bpf_link_type_strs
+
+pw-bot: cr
+
 >
-> How is verbose used and is it still needed?
+> I wonder it'd be simpler to just kill BPF_LINK_TYPE completely
+> and add link names directly to bpf_link_type_strs array..
+> it seems it's the only purpose of the BPF_LINK_TYPE macro
 >
-> [ ... ]
->
-> > +     if (bind(sockfd, (const struct sockaddr *)&addr, len) =3D=3D -1) =
-{
-> > +             /* sys_bind() may fail for different reasons, errno has t=
-o be
-> > +              * checked to confirm that BPF program rejected it.
-> > +              */
-> > +             if (errno !=3D EPERM)
-> > +                     goto err;
-> > +             if (port_retry)
-> > +                     goto retry;
-> > +             res =3D BIND_REJECT;
-> > +             goto out;
-> > +     }
->
-> [ ... ]
->
-> > +void test_sock_post_bind(void)
-> > +{
-> > +     int cgroup_fd, i;
-> > +
-> > +     cgroup_fd =3D test__join_cgroup("/post_bind");
-> > +     if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
->
-> nit. ASSERT_OK_FD().
->
-> Since the test binds to a specific ip/port, please run it in its own netn=
-s. It
-> is easy to do with netns_new and netns_free, a recent example:
->
-> https://lore.kernel.org/bpf/20241020-syncookie-v2-1-2db240225fed@bootlin.=
-com/
->
-> The same netns can be reused for different subtests of this "sock_post_bi=
-nd" test.
->
-> Others look good. Thanks for moving the test to test_progs.
->
-> pw-bot: cr
->
+
+This seems like a bit too short-sighted approach, let's not go there just y=
+et.
+
+> jirka
 
