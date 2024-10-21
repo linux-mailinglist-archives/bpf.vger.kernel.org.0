@@ -1,126 +1,125 @@
-Return-Path: <bpf+bounces-42598-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42599-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A0119A64D8
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 12:51:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16AB49A6516
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 12:54:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FAFE1C21F3F
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 10:51:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEAE11F225D2
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 10:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AE931E7C25;
-	Mon, 21 Oct 2024 10:45:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E96B1F5846;
+	Mon, 21 Oct 2024 10:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MwoAI8l5"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CBF01E47B2;
-	Mon, 21 Oct 2024 10:45:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2621EBA17;
+	Mon, 21 Oct 2024 10:48:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729507532; cv=none; b=SMH56dJEOOCsUnWlXvzZINL5UYcP2mt0oRspNrZLR5T5LGaeCY1YCftLhKzFPd51moWBPJ99+biTGjVwSyU3N8LEn2tGleiU3w/COJf9VOMkgb7DFIPUkvmeN5zT+GSJpw/6JfsZRsq/ROoi6/6hVMV6vxdcth8Vt5LW/UdNGto=
+	t=1729507701; cv=none; b=Z4UliePByGI4d2tWdVb4eEDiEVdSpZ4Gp4dUFIwsV4/fbAKaaqAI5YkaRmBYRh+mFE8eUDtMfhootwjCUGBz4wxe56hcl3ViXEfKY9LKCWSjlKUjCQ8eibgjPZuqCRwuzXA7Itwea7EJt6hug4lZk6XB3zRA7DSK9F108fRSc+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729507532; c=relaxed/simple;
-	bh=vvXe8Z0w0Le7DSs3zokVIHd04LLEwNqimymWGLhsaaA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=p1d1n/KfK3UfWBHQhNIt45gtU2wYM83pF2s27zcW4rtaLXhStEjY+6IGQUEYiB8ViPgPVlZ9rdQlK7tdqks7fc0tl35NKkFvxy0CEtkgGzbWQt+iXL8bUKsVGLKdZFpuESEuEYIIpLmfFXcq20rsGRfm+7rIIPzwDmYAEYsDhmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4XXBjk62slz1T8wt;
-	Mon, 21 Oct 2024 18:43:22 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id DA1F114022E;
-	Mon, 21 Oct 2024 18:45:21 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Mon, 21 Oct 2024 18:45:21 +0800
-Message-ID: <91d19848-f5f4-4e0e-b3c7-77ac2befae3e@huawei.com>
-Date: Mon, 21 Oct 2024 18:45:20 +0800
+	s=arc-20240116; t=1729507701; c=relaxed/simple;
+	bh=Po2snFgeTrzgadxSlfIpIeFgxFSFGjUIBP2VrnUvZI4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EzpJ4znbMGVDXY5DujlpIQfwRtrfTjEugC0hZgwb/E7AQvkL5h3fgD74v4VTNONQrEfmfR3CWj8398yzo/imtJKaeEMb31GyTHXOMoIG7cXZlGEAYmzKdc9kitsGGNT2K2ZrZxeeWl2HT7tJll/WLSsmxbz6X4W44x12MXH8SZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=MwoAI8l5; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=XJWSXDEmTz10iT7O0Zf08zwnUMKpBRU/Y+jJiekO3bk=; b=MwoAI8l5epAYqpSlT2cz4vWB4k
+	zdlEE+AwQcCYSnta1RjpMCw/ZHNlAbzUyb9FhZ2nkWcr21MrGummeFi7s17GEto6lm4JQmUhx1ahP
+	9RjKOghZzq00Z/ahNdIcQ35E4Pad6feHEcAw2j3nMQBofPwYRMoTyCcYnn58O4inXmZo3hPVhu54y
+	3rTtZ8il+AfjsRW4GzpHqxuoC9RqA+BW2SknPwiHfy8U4TltqD5Q3TcFrPOqdEvO4UYRBz4t4/9Lb
+	N+ZZvYlYxoEJm+PKlDuohbcjhJHPsKeFGVWgMFlZ1az+O9Kt2C+0t3VnIMsJ0tirPEQJ8VUKOLl48
+	2egPlGjw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1t2pxP-00000007tNc-2GyP;
+	Mon, 21 Oct 2024 10:48:15 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 3251730073F; Mon, 21 Oct 2024 12:48:15 +0200 (CEST)
+Date: Mon, 21 Oct 2024 12:48:15 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
+	oleg@redhat.com, rostedt@goodmis.org, mhiramat@kernel.org,
+	mingo@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	jolsa@kernel.org, paulmck@kernel.org
+Subject: Re: [PATCH v2 tip/perf/core 2/2] uprobes: SRCU-protect uretprobe
+ lifetime (with timeout)
+Message-ID: <20241021104815.GC6791@noisy.programming.kicks-ass.net>
+References: <20241008002556.2332835-1-andrii@kernel.org>
+ <20241008002556.2332835-3-andrii@kernel.org>
+ <20241018101647.GA36494@noisy.programming.kicks-ass.net>
+ <CAEf4BzZaZGE7Kb+AZkN0eTH+0ny-_0WUxKT7ydDzAfEwP8cKVg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64: insn: Simulate nop instruction for better
- uprobe performance
-To: Catalin Marinas <catalin.marinas@arm.com>, <will@kernel.org>,
-	<ast@kernel.org>, <puranjay@kernel.org>, <andrii@kernel.org>,
-	<mark.rutland@arm.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-References: <20240909071114.1150053-1-liaochang1@huawei.com>
- <172901867521.2735310.14333146229393737694.b4-ty@arm.com>
-From: "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <172901867521.2735310.14333146229393737694.b4-ty@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd200013.china.huawei.com (7.221.188.133)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZaZGE7Kb+AZkN0eTH+0ny-_0WUxKT7ydDzAfEwP8cKVg@mail.gmail.com>
 
+On Fri, Oct 18, 2024 at 11:22:09AM -0700, Andrii Nakryiko wrote:
 
-
-在 2024/10/16 2:58, Catalin Marinas 写道:
-> On Mon, 09 Sep 2024 07:11:14 +0000, Liao Chang wrote:
->> v2->v1:
->> 1. Remove the simuation of STP and the related bits.
->> 2. Use arm64_skip_faulting_instruction for single-stepping or FEAT_BTI
->>    scenario.
->>
->> As Andrii pointed out, the uprobe/uretprobe selftest bench run into a
->> counterintuitive result that nop and push variants are much slower than
->> ret variant [0]. The root cause lies in the arch_probe_analyse_insn(),
->> which excludes 'nop' and 'stp' from the emulatable instructions list.
->> This force the kernel returns to userspace and execute them out-of-line,
->> then trapping back to kernel for running uprobe callback functions. This
->> leads to a significant performance overhead compared to 'ret' variant,
->> which is already emulated.
->>
->> [...]
+> > So... after a few readings I think I'm mostly okay with this. But I got
+> > annoyed by the whole HPROBE_STABLE with uprobe=NULL weirdness. Also,
+> > that data_race() usage is weird, what is that about?
 > 
-> Applied to arm64 (for-next/probes), thanks! I fixed it up according to
-> Mark's comments.
+> People keep saying that evil KCSAN will come after me if I don't add
+> data_race() for values that can change under me, so I add it to make
+> it explicit that it's fine. But I can of course just drop data_race(),
+> as it has no bearing on correctness.
+
+AFAICT this was READ_ONCE() vs xchg(), and that should work. Otherwise I
+have to yell at KCSAN people again :-)
+
+> > And then there's the case where we end up doing:
+> >
+> >   try_get_uprobe()
+> >   put_uprobe()
+> >   try_get_uprobe()
+> >
+> > in the dup path. Yes, it's unlikely, but gah.
+> >
+> >
+> > So how about something like this?
 > 
-> [1/1] arm64: insn: Simulate nop instruction for better uprobe performance
->       https://git.kernel.org/arm64/c/ac4ad5c09b34
+> Yep, it makes sense to start with HPROBE_GONE if it's already NULL, no
+> problem. I'll roll those changes in.
 > 
+> I'm fine with the `bool get` flag as well. Will incorporate all that
+> into the next revision, thanks!
+> 
+> The only problem I can see is in the assumption that `srcu_idx < 0` is
+> never going to be returned by srcu_read_lock(). Paul says that it can
+> only be 0 or 1, but it's not codified as part of a contract.
 
-Mark, Catalin and Andrii,
+Yeah, [0,1] is the current range. Fundamentally that thing is an array
+index, so negative values are out and generally safe to use as 'error'
+codes. Paul can't we simply document that the SRCU cookie is always a
+positive integer (or zero) and the negative space shall not be used?
 
-I am just back from a long vacation, thanks for reviewing and involvement for
-this patch.
+> So until we change that, probably safer to pass an extra bool
+> specifying whether srcu_idx is valid or not, is that OK?
 
-I've sent a patch [1] that simulates STP at function entry, It maps user
-stack pages to kernel address space, allowing kernel to use STP directly
-to push fp/lr onto stack. Unfortunately, the profiling results below show
-reveals this approach increases the uprobe-push throughput by 29.3% (from
-0.868M/s/cpu to 1.1238M/s/cpu) and uretprobe-push by 15.9% (from 0.616M/s/cpu
-to 0.714M/s/cpu). As Andrii pointed out, this approach is a bit complex and
-overkill for STP simluation. So I look forward to more input about this patch,
-is it possible to reach a better result? Or should I pause this work for now
-and wait for Arm64 to add some instruction for storing pairs of registers to
-unprivileged memory in privileged exception level? Thanks.
+I think Changeing the SRCU documentation to provide us this guarantee
+should be an achievable goal.
 
-xol-stp
--------
-uprobe-push     ( 1 cpus):    0.868 ± 0.001M/s  (  0.868M/s/cpu)
-uretprobe-push  ( 1 cpus):    0.616 ± 0.001M/s  (  0.616M/s/cpu)
+> (and I assume you want me to drop verbose comments for various states, right?)
 
-simulated-stp
--------------
-uprobe-push     ( 1 cpus):    1.128 ± 0.002M/s  (  1.128M/s/cpu)
-uretprobe-push  ( 1 cpus):    0.714 ± 0.001M/s  (  0.714M/s/cpu)
-
-[1] https://lore.kernel.org/all/20240910060407.1427716-1-liaochang1@huawei.com/
-
--- 
-BR
-Liao, Chang
-
+I axed the comments because I made them invalid and didn't care enough
+to fix them up. If you like them feel free to amend them to reflect the
+new state of things.
 
