@@ -1,135 +1,192 @@
-Return-Path: <bpf+bounces-42573-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42574-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA68E9A59A6
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 07:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C1409A59D6
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 07:42:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 713C71F222BC
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 05:07:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D00DF1F21B51
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 05:42:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FCF194085;
-	Mon, 21 Oct 2024 05:07:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78DD619938D;
+	Mon, 21 Oct 2024 05:42:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UyGVEeP/"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Jbs5GuSg";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/penghOD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389F52C95;
-	Mon, 21 Oct 2024 05:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD7912209B;
+	Mon, 21 Oct 2024 05:42:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729487235; cv=none; b=ew/7pi8+LI0I2NsHkxp2z+oJpSyT1hXqSrqcIY4mc5dye8iU1etDzd6+kuNJksgTml3Us7j+9DrxP/2SBGDjlz8slIFN1XetGta6ckhQj9yMQzDebQ/xX2er0vNSGtSq1bV3cNxX8sb5fyJ70yVw9e3X7lk6C8v+Vcr7jBT8KWc=
+	t=1729489335; cv=none; b=sanElxSxAep278Y+3i5KeFoUldVxEG5Y9wb6J458T1fsSx4r27pDRK8E+wtjIFuC7zPOSDryGUuJtXLiHuVFzzvZUyU3Wh4d2pZpPqfKn5v67ledxYNxm3AL6DZViL8vIfkQZz2AeB8ok6RX5FIJlHBZfRe4uatYc4L4oDw+klc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729487235; c=relaxed/simple;
-	bh=woaOYsN/8ZXG9JhFaJM6yAMQs5wl0uO6IyPDHccyzQo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=jbLqiu/e0Yeh51z0bK1SLzZEbO/v8ApGm4fv7tS63y/639p4UFOsELKb8rLtUbUJtCo8L5O/X9rWmS9bwlp827Wy32nv+K+GOFu63IOsZpwRBnBZj9ZGS1bYzIm65O67ZC6NzB5GsPlw42y7516qbVdBMP80hNppDHnANN5PYs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UyGVEeP/; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-20cceb8d8b4so22717285ad.1;
-        Sun, 20 Oct 2024 22:07:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729487233; x=1730092033; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GsP1R/Yrt+r8ODdOs3dcZNgXib6nhIN4eckNsin7BcM=;
-        b=UyGVEeP/p/2ZQfI//b3ljbJ51NSm0ZNuUPlB9hsDNtN7XW3R2U1qRgSrGfsCvUM8wD
-         EQBcogFRJ0hwL3yYNeGcJrO57I6jfVpIntzhyBV5Hr13QckQEMQ2+JLCgUT4+LtpYf1m
-         dv5PwjkFBA643MkwF7w2gLgFvjoTHMdiYmJ9U45Vn8WTDhYGXl7y/ExqylKxXlEo8cwe
-         Murw50tm6uGujCXLlZoEghvaTsbXs/P0WMSWhHs2aWGhwiJgyvLlCRrKo9aocXvPebUN
-         SklQbd/SrDf5oHanI6MATzyYkf08yhy+0wKmGD2H7sUR+6zxErEx5VnBpEv0sMeF0mp/
-         P5TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729487233; x=1730092033;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GsP1R/Yrt+r8ODdOs3dcZNgXib6nhIN4eckNsin7BcM=;
-        b=GNLkwDqrohVFTlyPn71+PppByGhBcHSw+SP4RgZ27Iz77a1sMZD4N0enR1eJ9Ucim6
-         NpBlhdnNX8auL/ZTjqqmSL+CBa3JWYUqFVFV8rkIOUBb5NJbdqfyj11x2NOeLV/qzdnv
-         +EKuqAfwLqjgGRZRrmQhryypVgwxku9/6376wus1/dh06hOrZ2VximphRSnk4UKGsE7p
-         tasj40UECiKtHUZYavKz6WzOxnD+g1NQ7ZNGqUamensahAl3/justd4k2g/PTMzYOG8F
-         sB3zl2N3lgQ7F3RcoXp9E4B3W045QGKTMlS1ATh9y+owdMd0ULPBIur4i6mV43NUBwhr
-         XN6w==
-X-Forwarded-Encrypted: i=1; AJvYcCXc5yEoNMahY2Qjm/XQ+PDmSYKEAVwxRM/YBIZtuvxYcxeMhaOiGPsXCo7AdRa2D3hmNIzloknF1CZRV98ALto=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwpBvAD7Uqugc48XLZrwDXoZOfpJZfYRHZYReOPVQgfN94/R0js
-	ZPysoYOeKUOVdDRpzJ93CMq7kjFtvbsOR4YEqzaxTvY3BlpEcQ6N
-X-Google-Smtp-Source: AGHT+IFcGEUucg5M3GUfi1Fqig/AMK3OEQkkhQYuQQUd6DCdD+Ozly5nqrQxwfAiMC2OLfQ4u5NJkA==
-X-Received: by 2002:a17:902:d2d2:b0:20c:68af:a4e3 with SMTP id d9443c01a7336-20e5c29b02emr127570975ad.22.1729487233374;
-        Sun, 20 Oct 2024 22:07:13 -0700 (PDT)
-Received: from KERNELXING-MB0.tencent.com ([43.132.141.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20e7eeef550sm17693565ad.57.2024.10.20.22.07.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Oct 2024 22:07:13 -0700 (PDT)
-From: Jason Xing <kerneljasonxing@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	mykolal@fb.com,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH bpf-next v2] bpf: handle MADV_PAGEOUT error in uprobe_multi.c
-Date: Mon, 21 Oct 2024 13:07:06 +0800
-Message-Id: <20241021050706.29403-1-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.33.0
+	s=arc-20240116; t=1729489335; c=relaxed/simple;
+	bh=nqU2AdQPtpXBQBywDKE615SxVcwqLzweuXJzCTdK2Wc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=H6TTNkPLOp6hAPAtckKT9hsTiQDgm/VQtBHd3irsLNODF4ynrcHDNhMWG+yjbpgjhNU9RHb9KwD8bv5qHMpfXQpjwWsdvG+Rer7FeqKe2p3loCXdjvilrXng2hFItIBcsOdlODLZE+1pErU85txff6+cjWhrrxDbgcmNc2CSbRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Jbs5GuSg; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/penghOD; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1729489324;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IwN2APzuoMR+7fgmrER77l2eiOhN6doSytLMUFLsLt4=;
+	b=Jbs5GuSgoz06Yo6+KGN33AGlwU6bVgUJfxbq4ZyoTWGHQHxTJPHtRbfcDi31UU7CBUFGX5
+	AWhXWkF2ii5GnuIRehHb8djQEXETXZQEQez9hU3zVJIAi//Qi1nqqNjMoSWaD32/vDIly2
+	sMm4YmzsMNUPvHUzUxgXxTNCwgC5EEDpW2oIefWHHcDa0HwLaH7VQlxRUcHGthr0p4EGIH
+	DdDdpZkbwkFJ1OcNV6OLq8vdud/oiawaxlWvPSTImEudNlqZ6RmQYwqWHHJ8ZiMInKmUgr
+	Wppd4iKQ0wrpyKcCKAgw4ORLQ+pzC6kYy4jVaBb71VP/xAyd7UGazAan14tCTw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1729489324;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IwN2APzuoMR+7fgmrER77l2eiOhN6doSytLMUFLsLt4=;
+	b=/penghODChhNiRRbiTNwutaWjk3kpVXgV5wGXUvxA8y0WgJlfcblrQay4QSk/3pGM/X9il
+	piF30ZLsitnXklAw==
+To: Joe Damato <jdamato@fastly.com>
+Cc: netdev@vger.kernel.org, vinicius.gomes@intel.com, Tony Nguyen
+ <anthony.l.nguyen@intel.com>, Przemek Kitszel
+ <przemyslaw.kitszel@intel.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, "moderated
+ list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>, open list
+ <linux-kernel@vger.kernel.org>, "open list:XDP (eXpress Data Path)"
+ <bpf@vger.kernel.org>
+Subject: Re: [RFC net-next v2 2/2] igc: Link queues to NAPI instances
+In-Reply-To: <ZxKVI_DvFWBvRMaf@LQ3V64L9R2>
+References: <20241014213012.187976-1-jdamato@fastly.com>
+ <20241014213012.187976-3-jdamato@fastly.com>
+ <87h69d3bm2.fsf@kurt.kurt.home> <ZxKVI_DvFWBvRMaf@LQ3V64L9R2>
+Date: Mon, 21 Oct 2024 07:42:02 +0200
+Message-ID: <87o73e2es5.fsf@kurt.kurt.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-From: Jason Xing <kernelxing@tencent.com>
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-When I compiled the tools/testing/selftests/bpf, the following error
-pops out:
-uprobe_multi.c: In function ‘trigger_uprobe’:
-uprobe_multi.c:109:26: error: ‘MADV_PAGEOUT’ undeclared (first use in this function); did you mean ‘MADV_RANDOM’?
-   madvise(addr, page_sz, MADV_PAGEOUT);
-                          ^~~~~~~~~~~~
-                          MADV_RANDOM
+On Fri Oct 18 2024, Joe Damato wrote:
+> On Tue, Oct 15, 2024 at 12:27:01PM +0200, Kurt Kanzenbach wrote:
+>> On Mon Oct 14 2024, Joe Damato wrote:
+>
+> [...]
+>
+>> > diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/e=
+thernet/intel/igc/igc_main.c
+>> > index 7964bbedb16c..59c00acfa0ed 100644
+>> > --- a/drivers/net/ethernet/intel/igc/igc_main.c
+>> > +++ b/drivers/net/ethernet/intel/igc/igc_main.c
+>> > @@ -4948,6 +4948,47 @@ static int igc_sw_init(struct igc_adapter *adap=
+ter)
+>> >  	return 0;
+>> >  }
+>> >=20=20
+>> > +void igc_set_queue_napi(struct igc_adapter *adapter, int q_idx,
+>> > +			struct napi_struct *napi)
+>> > +{
+>> > +	if (adapter->flags & IGC_FLAG_QUEUE_PAIRS) {
+>> > +		netif_queue_set_napi(adapter->netdev, q_idx,
+>> > +				     NETDEV_QUEUE_TYPE_RX, napi);
+>> > +		netif_queue_set_napi(adapter->netdev, q_idx,
+>> > +				     NETDEV_QUEUE_TYPE_TX, napi);
+>> > +	} else {
+>> > +		if (q_idx < adapter->num_rx_queues) {
+>> > +			netif_queue_set_napi(adapter->netdev, q_idx,
+>> > +					     NETDEV_QUEUE_TYPE_RX, napi);
+>> > +		} else {
+>> > +			q_idx -=3D adapter->num_rx_queues;
+>> > +			netif_queue_set_napi(adapter->netdev, q_idx,
+>> > +					     NETDEV_QUEUE_TYPE_TX, napi);
+>> > +		}
+>> > +	}
+>> > +}
+>>=20
+>> In addition, to what Vinicius said. I think this can be done
+>> simpler. Something like this?
+>>=20
+>> void igc_set_queue_napi(struct igc_adapter *adapter, int vector,
+>> 			struct napi_struct *napi)
+>> {
+>> 	struct igc_q_vector *q_vector =3D adapter->q_vector[vector];
+>>=20
+>> 	if (q_vector->rx.ring)
+>> 		netif_queue_set_napi(adapter->netdev, vector, NETDEV_QUEUE_TYPE_RX, na=
+pi);
+>>=20
+>> 	if (q_vector->tx.ring)
+>> 		netif_queue_set_napi(adapter->netdev, vector, NETDEV_QUEUE_TYPE_TX, na=
+pi);
+>> }
+>
+> I tried this suggestion but this does not result in correct output
+> in the case where IGC_FLAG_QUEUE_PAIRS is disabled.
+>
+> The output from netlink:
+>
+> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+>                              --dump queue-get --json=3D'{"ifindex": 2}'
+>
+> [{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+>  {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
+>  {'id': 0, 'ifindex': 2, 'type': 'tx'},
+>  {'id': 1, 'ifindex': 2, 'type': 'tx'}]
+>
+> Note the lack of a napi-id for the TX queues. This typically happens
+> when the linking is not done correctly; netif_queue_set_napi should
+> take a queue id as the second parameter.
+>
+> I believe the suggested code above should be modified to be as
+> follows to use ring->queue_index:
+>
+>   if (q_vector->rx.ring)
+>     netif_queue_set_napi(adapter->netdev,
+>                          q_vector->rx.ring->queue_index,
+>                          NETDEV_QUEUE_TYPE_RX, napi);
+>=20=20=20
+>   if (q_vector->tx.ring)
+>     netif_queue_set_napi(adapter->netdev,
+>                          q_vector->tx.ring->queue_index,
+>                          NETDEV_QUEUE_TYPE_TX, napi);
 
-Including the <linux/linux/mman.h> header file solves this compilation error.
+LGTM. Thanks.
 
-Signed-off-by: Jason Xing <kernelxing@tencent.com>
----
-v2
-Link: https://lore.kernel.org/all/20241020031422.46894-1-kerneljasonxing@gmail.com/
-1. handle it in a proper way
----
- tools/testing/selftests/bpf/uprobe_multi.c | 1 +
- 1 file changed, 1 insertion(+)
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/tools/testing/selftests/bpf/uprobe_multi.c b/tools/testing/selftests/bpf/uprobe_multi.c
-index c7828b13e5ff..40231f02b95d 100644
---- a/tools/testing/selftests/bpf/uprobe_multi.c
-+++ b/tools/testing/selftests/bpf/uprobe_multi.c
-@@ -4,6 +4,7 @@
- #include <string.h>
- #include <stdbool.h>
- #include <stdint.h>
-+#include <linux/mman.h>
- #include <sys/mman.h>
- #include <unistd.h>
- #include <sdt.h>
--- 
-2.37.3
+-----BEGIN PGP SIGNATURE-----
 
+iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmcV6aoTHGt1cnRAbGlu
+dXRyb25peC5kZQAKCRDBk9HyqkZzgkotD/0X5UYHEhJgqmCt6kB/HHS4YFUODWTi
+XbRxhEARJl+qKt6TMqywibxifqVHp9hL08AWuXp5kBQWw9Sc2e6KfG6TfoIBtdM3
+7nR6+Wk/CrMZhZVKbNjEQrfmcZAdl3Sk44DPaXhfqU0jCbgj0sj3zpoZU5q8UXT0
+8E5kkrPY1a98ufweoCnYSmdvLmqUXXgHeBWyoFgOdxeN2jIY1azZrgQucmdYsgYt
+g9Lprnp3euz/7UrAJhTgxjq7/klCKC0x2Sg0xmeKoNJ0aZC5zppsBZXJrWTlZElh
+zgwiV0Vc3aEWCRIoOVudj1GjSEug6w/fJWBO6gP+5EZ1N6XfQG7MOzuW07G47ubm
+8qX7JRjVyaNZAwX1wy69KZv/NVNUuPxJrdVMxPoV7HAZtZfQl5TA6aE3aBOvkO2q
+gsSU0cR2fk4Ac2YLbKcZNwrxzg8gsnhPrdPJw0EWmCvaAIzxFnYW+lPdV0SDiHnc
+e4kXClZjVramUW4cP3B9ZJ4krrXMNYQxnVfFSR55H+LwL0vKxqNNiRd3rNTpl4CL
+HcfYg6wvKulCvJZ31QwpeovA4K5BdCDd1JH/PkHLVSdM1sUWtDE3pRRnFk+sUG+S
+T8GqcYGHs4f6Ee2bYhHTFN5hOGRmcD+gM/9vdjAGqE4teIS/RhZDe7IoN0A/4gwP
+2wWE6IMegLnsZQ==
+=LURd
+-----END PGP SIGNATURE-----
+--=-=-=--
 
