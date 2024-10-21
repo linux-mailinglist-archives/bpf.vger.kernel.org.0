@@ -1,168 +1,164 @@
-Return-Path: <bpf+bounces-42582-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42583-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58ECF9A5DAD
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 09:54:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D45F9A5DD2
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 10:00:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 877A81C216AA
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 07:54:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34E2E1F2163B
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 08:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ACFD199933;
-	Mon, 21 Oct 2024 07:53:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="oZQmse0O"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9E31E132D;
+	Mon, 21 Oct 2024 07:59:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6DF0192D6E
-	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 07:53:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFA71E1302;
+	Mon, 21 Oct 2024 07:59:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729497237; cv=none; b=t5YgCJGI9xcASnKqOnA/cqxcCBJZiiURGnZjuIejcrexdio1es3X5oYUJ35xoDMssyq3YEOucl0fKQ0i+5K6kDAi+sqgCm5ocNfbLXJHGUtctafaqvF9A7ZfVj9m3inu7XPLQOkLXTXUbMOUXWYjsO8VuSRsMj6I6ThK6Rrf2oY=
+	t=1729497592; cv=none; b=EmyeXLVd2oZZvQ4eibJgNg/aUSbmRowERCL1Ltpfyh7yMEAQQlOyGIMhwfJyxQEXi3Jyw+PUoBe/ic7AioI7Z+hOxvOzAqURWh53icTEDZlgGtVqR7ZIM/JP3h4uGkwdf+04+rwZXoNlGhIssczXIGggdUqy8eZaIMbCAI/xVwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729497237; c=relaxed/simple;
-	bh=8J9SzqqdvOiJHBcWZZCq9digDj5UDLL6ZKV6oVaSfVo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jeLQJFYwUfxAfUSPM3b7g0bBzeKMbyXIIZ2hmDdeHMxYSFgmBjuYgRzkRs2zyeuVNwQC3MlQ9a1HB9Mtu5w9R1eei03ekZQ19wh64tZ1O+Sz3HOkS7/DjBVM93itovi0aPHk1yDhp4SpLmSGKLU1V6SQqhP+YiOmuHFU5BO1BWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=oZQmse0O; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=Wn/GMnCuiZoYpLXsqmotK0VH1AphZ3oJ0A2TMA27di0=; b=oZQmse0OUYStyOhJYr2qo3xJA7
-	L1K8BRrZCiyNkUiP3OhtyoLb4qgiFB3f0i9oQCGzKtOdv7UL7PFOZJ/CQFV8i3ZX+i7pIiWUkmUUl
-	QKEgydWMHJsMhIOn+VqsXOqsvOHmeBolQ31z52lEPDK/wrOeMCduWHQjnJZZwUr88q6/D1GP+g6DG
-	RhLtKSqxA0f71KlLGG8Ae43mfBE1yz1NHZ/wg+4oUqMA9N1ekYeZ9chhpujD2wirJDMomUIrklsMj
-	TXZYeQg4ScQeLxM743r/baK4UEgq/EymbBKtOD/YCyvntuuUNMNjTtCoQyQrVLhF1m0zzXKx7MFGc
-	G7BPgLzQ==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1t2nEP-000Ff9-LX; Mon, 21 Oct 2024 09:53:37 +0200
-Received: from [178.197.248.43] (helo=[192.168.1.114])
-	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1t2nEP-0005VW-0W;
-	Mon, 21 Oct 2024 09:53:37 +0200
-Message-ID: <6c0b5c4d-e88a-4cec-8bb6-14fa5b76c56f@iogearbox.net>
-Date: Mon, 21 Oct 2024 09:53:36 +0200
+	s=arc-20240116; t=1729497592; c=relaxed/simple;
+	bh=lyQWXd8tZ+cJL5EJxSB+u2xZemaLQGSuAwwZhKQD8JQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=so0tKROT/2JP+sPNpLFBclwbPPOe47bIqvogi4OExYosWlpeADYaKWu1LTqcxfgjrq7IfO5TScYUOdAL4bTil5x9QofUJMJLA6UrBVKsYsNGfdkO7cOKHpeeKyiD/s7J9um7w6jsW7UcJN+uem3ljhpmyEOuR8eskd8VI2UZyx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4XX6dS3JbXz9v7NX;
+	Mon, 21 Oct 2024 15:39:24 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 3DEE8140134;
+	Mon, 21 Oct 2024 15:59:40 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwCXsYDdCRZnfdwkAA--.41168S2;
+	Mon, 21 Oct 2024 08:59:39 +0100 (CET)
+Message-ID: <c0e85aaa89283d5e4b742d23299f286a2e3eeaad.camel@huaweicloud.com>
+Subject: Re: [PATCH v2] mm: Split critical region in remap_file_pages() and
+ invoke LSMs in between
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Paul Moore <paul@paul-moore.com>, "Kirill A. Shutemov"
+	 <kirill.shutemov@linux.intel.com>, akpm@linux-foundation.org
+Cc: Liam.Howlett@oracle.com, lorenzo.stoakes@oracle.com, vbabka@suse.cz, 
+ jannh@google.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+ ebpqwerty472123@gmail.com, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, 
+ eric.snowberg@oracle.com, jmorris@namei.org, serge@hallyn.com, 
+ linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, stable@vger.kernel.org,
+  syzbot+1cd571a672400ef3a930@syzkaller.appspotmail.com, Roberto Sassu
+ <roberto.sassu@huawei.com>
+Date: Mon, 21 Oct 2024 09:59:22 +0200
+In-Reply-To: <CAHC9VhQP7gBa4AV-Hbh4Bq4fRU6toRmjccv52dGoU-s+MqsmfQ@mail.gmail.com>
+References: <20241018161415.3845146-1-roberto.sassu@huaweicloud.com>
+	 <CAHC9VhQP7gBa4AV-Hbh4Bq4fRU6toRmjccv52dGoU-s+MqsmfQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: force checkpoint when jmp history is
- too long
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev
-References: <20241018020307.1766906-1-eddyz87@gmail.com>
- <0fd927cd-7fd2-4b15-8a17-15b907771356@iogearbox.net>
- <c42181ab5af3f78818db2b77a59d4aa7f3b8338f.camel@gmail.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <c42181ab5af3f78818db2b77a59d4aa7f3b8338f.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27433/Sun Oct 20 10:46:57 2024)
+X-CM-TRANSID:GxC2BwCXsYDdCRZnfdwkAA--.41168S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF1rZr18XFyrCw1xCryrXrb_yoW5Cw1DpF
+	ZxK3Z0kr1vqryxur1aqFy7WFWrC3yfGrW7WrZ7Xr1ruasrXF1fKr1fGF45Wa4DWrZ7CFWF
+	vF1jkr93Ka1DArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIa
+	0PDUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQADBGcVvDAFpgADsY
 
-On 10/18/24 6:47 PM, Eduard Zingerman wrote:
-> On Fri, 2024-10-18 at 13:03 +0200, Daniel Borkmann wrote:
-> [...]
-> 
->> Impressive that syzbot was able to generate this, and awesome analysis
->> as well as fix.
-> 
-> Thank you for taking a look. I was a bit surprised by syzbot
-> generating such program as well, but I guess this is an instance of
-> infinite monkey theorem...
-> 
->> I guess we should also add :
->>
->> Reported-by: syzbot+7e46cdef14bf496a3ab4@syzkaller.appspotmail.com
-> 
-> Yes, we can do that. I was hesitant to add it because original report
-> was about a bug in mm/slub.c.
+On Sat, 2024-10-19 at 11:34 -0400, Paul Moore wrote:
+> On Fri, Oct 18, 2024 at 12:15=E2=80=AFPM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+> > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> >=20
+> > Commit ea7e2d5e49c0 ("mm: call the security_mmap_file() LSM hook in
+> > remap_file_pages()") fixed a security issue, it added an LSM check when
+> > trying to remap file pages, so that LSMs have the opportunity to evalua=
+te
+> > such action like for other memory operations such as mmap() and mprotec=
+t().
+> >=20
+> > However, that commit called security_mmap_file() inside the mmap_lock l=
+ock,
+> > while the other calls do it before taking the lock, after commit
+> > 8b3ec6814c83 ("take security_mmap_file() outside of ->mmap_sem").
+> >=20
+> > This caused lock inversion issue with IMA which was taking the mmap_loc=
+k
+> > and i_mutex lock in the opposite way when the remap_file_pages() system
+> > call was called.
+> >=20
+> > Solve the issue by splitting the critical region in remap_file_pages() =
+in
+> > two regions: the first takes a read lock of mmap_lock, retrieves the VM=
+A
+> > and the file descriptor associated, and calculates the 'prot' and 'flag=
+s'
+> > variables; the second takes a write lock on mmap_lock, checks that the =
+VMA
+> > flags and the VMA file descriptor are the same as the ones obtained in =
+the
+> > first critical region (otherwise the system call fails), and calls
+> > do_mmap().
+> >=20
+> > In between, after releasing the read lock and before taking the write l=
+ock,
+> > call security_mmap_file(), and solve the lock inversion issue.
+> >=20
+> > Cc: stable@vger.kernel.org # v6.12-rcx
+> > Fixes: ea7e2d5e49c0 ("mm: call the security_mmap_file() LSM hook in rem=
+ap_file_pages()")
+> > Reported-by: syzbot+1cd571a672400ef3a930@syzkaller.appspotmail.com
+> > Closes: https://lore.kernel.org/linux-security-module/66f7b10e.050a0220=
+.46d20.0036.GAE@google.com/
+> > Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > Reviewed-by: Jann Horn <jannh@google.com>
+> > Reviewed-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+> > Tested-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > Tested-by: syzbot+1cd571a672400ef3a930@syzkaller.appspotmail.com
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > ---
+> >  mm/mmap.c | 69 +++++++++++++++++++++++++++++++++++++++++--------------
+> >  1 file changed, 52 insertions(+), 17 deletions(-)
+>=20
+> Thanks for working on this Roberto, Kirill, and everyone else who had
+> a hand in reviewing and testing.
 
-Ok, but as you mentioned the program was derived from this syzbot report,
-so for reference, I think it's ok to mention it.
+Welcome!
 
->> Can we also add a Fixes tag so that this can eventually be picked up
->> by stable? bpf tree would be the appropriate target, no?
-> 
-> The fixes tag can be:
-> 
-> Fixes: 2589726d12a1 ("bpf: introduce bounded loops")
+> Reviewed-by: Paul Moore <paul@paul-moore.com>
+>=20
+> Andrew, I see you're pulling this into the MM/hotfixes-unstable
+> branch, do you also plan to send this up to Linus soon/next-week?  If
+> so, great, if not let me know and I can send it up via the LSM tree.
+>=20
+> We need to get clarity around Roberto's sign-off, but I think that is
+> more of an administrative mistake rather than an intentional omission
+> :)
 
-Thanks!
+Ops, I just thought that I would not need to add it, since I'm not the
+author of the patch. Please add my:
 
-> But I'm a bit hesitant if this really a bug, maybe just add:
-> 
-> Cc: stable@vger.kernel.org
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-If we have a proper Fixes tag, then stable will pick it up anyway, but ...
+Roberto
 
-> For an example of problematic program consider the code below,
-> w/o this patch the example is processed by verifier for ~15 minutes,
-> before failing to allocate big-enough chunk for jmp_history.
-
-... would qualify for bpf tree imho.
-
-Thanks,
-Daniel
 
