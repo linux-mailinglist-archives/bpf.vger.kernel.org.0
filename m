@@ -1,81 +1,67 @@
-Return-Path: <bpf+bounces-42660-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42661-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBFDE9A6FF6
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 18:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A84E49A6FF9
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 18:46:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B386284770
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 16:44:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D202284863
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 16:46:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BC791E3780;
-	Mon, 21 Oct 2024 16:44:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 125911E8823;
+	Mon, 21 Oct 2024 16:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aiOQwChR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SKNOhmDx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CFBD178395
-	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 16:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E59547A73;
+	Mon, 21 Oct 2024 16:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729529091; cv=none; b=gR1RX4dtBOqshOIzCfTyjwvTicciUJosWRbE+Ue1m6pPepLIK+DIr5ijpmIil/c0gXE1iCsfDUX3U7/RE5DI9b61hqVM1FbfXp9P4BI2m2jR9MdJ2hnADP0UgRAuknySXKEYCjjgviSrtqPKTTlR3Uqo2qJodGJNdCpqyvDXFr8=
+	t=1729529186; cv=none; b=d6e5bLSM7wJlZwdQNFgeJEIyRexNHtDeDRCzXmiKyfSJ0bZQTCRz5tb7BzGSiQ0Mu9OErQtRCeYjzq6SPGe7tZuSz/MQAK/dBANDikLUL3FjkvyDmnxePFkCZKUh3ZuTgeEyCS33JsHZ9kYiBaZkrYp+0gyxYx7TjLY8t4D4xD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729529091; c=relaxed/simple;
-	bh=IXz3mVmFmED7xr/PsH7bkKGX4FSKpDgnoJx8ER7JDCI=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NcTNUF3YmAyRKp9pBwkOfGzqq9YstPNqTjKR9yNIt+8pFVVkypl8qGPvwFBZyV8djFv/ATiQ8iH/3rS9T5EFiSWq555hPw5tJZdWCoe68gyKvHXNvZFgw2tHxmz4Cu6lkBMih//0PK800Uv8oNpkIejZbel5+t7WpT2Nc6tyKKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aiOQwChR; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a9aa8895facso37218666b.2
-        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 09:44:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729529087; x=1730133887; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2wiyrphxLwZzMYBeDfslwZ16bIeCeHHw1n08HoQAnSQ=;
-        b=aiOQwChR1EOMbkYU9Lwm16CROfN8Rnb3bYBRjVoQnrHsIzrTjluiYUW+OlWrpd7dZx
-         H6Yx9E1uzkpRb+O7mXGjZFWGj7TPiO5tpjuv4br0XN5lxZ7pKXrHTGltvfy45XMuboNf
-         nVt4zA8zfYtiYCBwekWjV+7JMqvt0lzFsFyvZ+FbE1d7bEnMftQ4VpJjHFREXlYw85o5
-         cU83F3n/z7xbGXUmAuIik813jvssXC72DitxKVK9OGTv27wOmOR/kCDz7tPIJ3/6iffe
-         5ls6PNUoJmyZFaSeUM6N5IgesYc089JRzVjKmqLqMX2cFvMxZt0B7BypLCDmPu4I9gOp
-         qfCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729529087; x=1730133887;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2wiyrphxLwZzMYBeDfslwZ16bIeCeHHw1n08HoQAnSQ=;
-        b=BklWR/+d2836kz7aR5I4ztEqPa1OxthvAMltoGH4/Sul+TYdYTp8A6pMk6MclELwXf
-         eOhtzfSRBktOnytwTNuAWcFTqtWNJ+VFd6ypoYWYyyKOaLQ4/yg6LHQoj9btvfwDileC
-         q0iO48IqJKpcAiDFxkummafKDXp9+suqpGGgsHbl+qgNexL3qXho2MTY8BXq9EvFkNYU
-         NY9HydkfN3x43Xj89sGnfFUUF1njiYF/DLIkKCa3b19GN3lEbQ10S/qenH52BnUYAPWr
-         5TejJI4U9ulPC+ijuq3z35ibJWXPWg/k7Jwt69fdAN79L/nUlJdbfgEEx1Zcy4MhWSNv
-         bZPw==
-X-Gm-Message-State: AOJu0YxnBNsNt1AegWw/3BV/7qTPjjN5lrG5yViipwBsPBLU9HG3Dt/r
-	8Fj4VuV6jIbyz4dbrHwYDol4VeV5ylY7ldODnYWHbJe97FAj077Z
-X-Google-Smtp-Source: AGHT+IF87Ts2XOcxnEYXFsMqAEY4Ww69pfSuwdJlawSMrP6drlOjRFWVqDT+DZX1njGYDdchgb0EGQ==
-X-Received: by 2002:a17:906:c116:b0:a99:5d03:4687 with SMTP id a640c23a62f3a-a9a69a766bamr1275072666b.21.1729529087033;
-        Mon, 21 Oct 2024 09:44:47 -0700 (PDT)
-Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9a915599dasm221392766b.118.2024.10.21.09.44.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Oct 2024 09:44:46 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 21 Oct 2024 18:44:44 +0200
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
-	Mykyta Yatsenko <yatsenko@meta.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: increase verifier log limit in
- veristat
-Message-ID: <ZxaE_C_Im9-I8OSa@krava>
-References: <20241021141616.95160-1-mykyta.yatsenko5@gmail.com>
+	s=arc-20240116; t=1729529186; c=relaxed/simple;
+	bh=1IvwFyJO5G6uPFyqk4eFCgXupz6ovtKZgtus88TpOUk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mn6iO/rIH33DgfhpRscTml01wq7GmaxtiFBeFBfYk7p0L3nmmsqBYRwbKAfps2954b3YnACiVsFMpdrN58wsGOIuFRG8eax7ePX36PkkIFJwiiFmd/lNd0Wg7VteOS+xQDymd5+V+wOIVu6E16A8Uwe2LAdIU6GbJoDyFs3cd9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SKNOhmDx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 330AFC4CEE8;
+	Mon, 21 Oct 2024 16:46:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729529186;
+	bh=1IvwFyJO5G6uPFyqk4eFCgXupz6ovtKZgtus88TpOUk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SKNOhmDxSGiQOSU4y0DFhd4/wlkafd5+oThw33psGOoR9EBLup1HK/73JoSjw+XoZ
+	 /9RgeDRS4ONoJDIsgpq9MK08IBM3pYl6Meoh8xfeMs/7yDNzRWbOZXRXStOrXPF3M8
+	 kKGhdH+f7wh4m4UQLFjgk6AuX0rd1QafsE/dJH6PNPP/QBSrr6mwXIz7G+SBDjV7X1
+	 ux85+XGQgOgc9HIlzBxfDPK7WO/l8UQD0b/jgo1/AG0QAdvizrxgeAuqBURLHlsVpw
+	 zxUNKYXN+MAL2de2/Xq+MrfYJvfVHcglKoka5jSS/HBRfSZSOnYwqdyg5xMxbFw/tF
+	 n3qdSZb4U/k7g==
+Date: Mon, 21 Oct 2024 17:46:19 +0100
+From: Will Deacon <will@kernel.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>,
+	linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v17 06/16] tracing: Add ftrace_partial_regs() for
+ converting ftrace_regs to pt_regs
+Message-ID: <20241021164619.GA26073@willie-the-truck>
+References: <172904026427.36809.516716204730117800.stgit@devnote2>
+ <172904034052.36809.10990962223606196850.stgit@devnote2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,107 +70,59 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241021141616.95160-1-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <172904034052.36809.10990962223606196850.stgit@devnote2>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Mon, Oct 21, 2024 at 03:16:16PM +0100, Mykyta Yatsenko wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
+On Wed, Oct 16, 2024 at 09:59:00AM +0900, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
-> The current default buffer size of 16MB allocated by veristat is no
-> longer sufficient to hold the verifier logs of some production BPF
-> programs. To address this issue, we need to increase the verifier log
-> limit.
-> Commit 7a9f5c65abcc ("bpf: increase verifier log limit") has already
-> increased the supported buffer size by the kernel, but veristat users
-> need to explicitly pass a log size argument to use the bigger log.
+> Add ftrace_partial_regs() which converts the ftrace_regs to pt_regs.
+> This is for the eBPF which needs this to keep the same pt_regs interface
+> to access registers.
+> Thus when replacing the pt_regs with ftrace_regs in fprobes (which is
+> used by kprobe_multi eBPF event), this will be used.
 > 
-> This patch adds a function to detect the maximum verifier log size
-> supported by the kernel and uses that by default in veristat.
-> This ensures that veristat can handle larger verifier logs without
-> requiring users to manually specify the log size.
+> If the architecture defines its own ftrace_regs, this copies partial
+> registers to pt_regs and returns it. If not, ftrace_regs is the same as
+> pt_regs and ftrace_partial_regs() will return ftrace_regs::regs.
 > 
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Acked-by: Florent Revest <revest@chromium.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> 
 > ---
->  tools/testing/selftests/bpf/veristat.c | 40 +++++++++++++++++++++++++-
->  1 file changed, 39 insertions(+), 1 deletion(-)
+>  Changes in v14:
+>   - Add riscv change.
+>  Changes in v8:
+>   - Add the reason why this required in changelog.
+>  Changes from previous series: NOTHING, just forward ported.
+> ---
+>  arch/arm64/include/asm/ftrace.h |   11 +++++++++++
+>  arch/riscv/include/asm/ftrace.h |   14 ++++++++++++++
+>  include/linux/ftrace.h          |   17 +++++++++++++++++
+>  3 files changed, 42 insertions(+)
 > 
-> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-> index c8efd44590d9..1d0708839f4b 100644
-> --- a/tools/testing/selftests/bpf/veristat.c
-> +++ b/tools/testing/selftests/bpf/veristat.c
-> @@ -16,10 +16,12 @@
->  #include <sys/stat.h>
->  #include <bpf/libbpf.h>
->  #include <bpf/btf.h>
-> +#include <bpf/bpf.h>
->  #include <libelf.h>
->  #include <gelf.h>
->  #include <float.h>
->  #include <math.h>
-> +#include <linux/filter.h>
->  
->  #ifndef ARRAY_SIZE
->  #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-> @@ -1109,6 +1111,42 @@ static void fixup_obj(struct bpf_object *obj, struct bpf_program *prog, const ch
->  	return;
+> diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
+> index b5fa57b61378..d344c69eb01e 100644
+> --- a/arch/arm64/include/asm/ftrace.h
+> +++ b/arch/arm64/include/asm/ftrace.h
+> @@ -135,6 +135,17 @@ ftrace_regs_get_frame_pointer(const struct ftrace_regs *fregs)
+>  	return arch_ftrace_regs(fregs)->fp;
 >  }
 >  
-> +static int max_verifier_log_size(void)
+> +static __always_inline struct pt_regs *
+> +ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs *regs)
 > +{
-> +	const int big_log_size = UINT_MAX >> 2;
-> +	const int small_log_size = UINT_MAX >> 8;
-> +	struct bpf_insn insns[] = {
-> +		BPF_MOV64_IMM(BPF_REG_0, 0),
-> +		BPF_EXIT_INSN(),
-> +	};
-> +	int ret, insn_cnt = ARRAY_SIZE(insns);
-> +	char *log_buf;
-> +	static int log_size;
-> +
-> +	if (log_size != 0)
-> +		return log_size;
-> +
-> +	log_size = small_log_size;
-> +	log_buf = malloc(big_log_size);
+> +	memcpy(regs->regs, arch_ftrace_regs(fregs)->regs, sizeof(u64) * 9);
 
-IIUC this would try to use 1GB by default? seems to agresive.. could we perhaps
-do that gradually and double the size on each failed load attempt?
+Since ftrace_regs::regs is an 'unsigned long regs[9]' can we just use
+sizeof() on that instead of hard-coding the length of the array here?
 
-jirka
-
-
-> +
-> +	if (!log_buf)
-> +		return log_size;
-> +
-> +	LIBBPF_OPTS(bpf_prog_load_opts, opts,
-> +		    .log_buf = log_buf,
-> +		    .log_size = big_log_size,
-> +		    .log_level = 2
-> +	);
-> +	ret = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, NULL, "GPL", insns, insn_cnt, &opts);
-> +	free(log_buf);
-> +
-> +	if (ret > 0) {
-> +		log_size = big_log_size;
-> +		close(ret);
-> +	}
-> +	return log_size;
-> +}
-> +
->  static int process_prog(const char *filename, struct bpf_object *obj, struct bpf_program *prog)
->  {
->  	const char *base_filename = basename(strdupa(filename));
-> @@ -1132,7 +1170,7 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
->  	memset(stats, 0, sizeof(*stats));
->  
->  	if (env.verbose || env.top_src_lines > 0) {
-> -		buf_sz = env.log_size ? env.log_size : 16 * 1024 * 1024;
-> +		buf_sz = env.log_size ? env.log_size : max_verifier_log_size();
->  		buf = malloc(buf_sz);
->  		if (!buf)
->  			return -ENOMEM;
-> -- 
-> 2.47.0
-> 
-> 
+Will
 
