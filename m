@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-42623-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42624-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9715D9A6AAA
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 15:42:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F94D9A6AB6
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 15:43:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4865E285C78
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 13:42:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A15C31F22071
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 13:43:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A7221F8F04;
-	Mon, 21 Oct 2024 13:41:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60FD91F9A94;
+	Mon, 21 Oct 2024 13:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="CWAvYykh"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="FxR+iWzc"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8691F4FBE;
-	Mon, 21 Oct 2024 13:41:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC97193427;
+	Mon, 21 Oct 2024 13:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729518112; cv=none; b=DGV+gqo2od5063IVbw+gGnBRiynaOiN8xVVv91Ad4hBnaRspGklhtpMDbhumLp0+3AXh7/IEqvapbfNnBUg/uAtcjBetlDCDxTqiI4cxbfbD29xTOd6AaEt14ieXxWCw/jmcoAMQXWb5jz/TP2bzag8pKMEMr28VYsx1ftN78GM=
+	t=1729518158; cv=none; b=Ic4QNp9z0KbQbXb+9vXMVTWOK8ynA1vvSI5lg4208pM1ioOZqSptzDfGN+Hxp3HY2UdmYLpVhMw10Y0ZlEeTgOdGBXD6vhkXwF2E4j10o4gJJ74p9XFl0JYyrUnIf+EfhxOxuElWypmxBxzJRszYENsTYyvF1MiBKuXl9JVGWuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729518112; c=relaxed/simple;
-	bh=ylRAIjJ367YBULxY5gOMU8zQfpicV/xSRdV9kZ1zCag=;
+	s=arc-20240116; t=1729518158; c=relaxed/simple;
+	bh=KhWrZzz+uJgvXQvYQV38BosXzm1litJim1SHJz1rUAk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=hhlzP1fJ3slBxoiM2efsGa6HRfINYehjq3AQy33mIvmxQ9A9/EVnmeLJSaVGbNCMRiHXBLpP1YUJLk6T0I63Qhi8tQUcUdgfY0VZ5o8PbrjTintOJnhlj1pf2QSDF35054YZbgZEQiXMBqUrbM+bv9weOAf+k2L5GTXgAHgHNdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=CWAvYykh; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=i4xkTi9SGlyQsdMXvoj0Cv+Vwp8tZrmCK+GxkATSt9M1L6ZZff5lIzoEzOYVFeSK5XS7G+bKIK7YP2u4gUQr5kywwFTEX+PPGcEP7zqRhPS6Gc92eHVxXDWudUKLg8Gha4CwaG9w72+NCqIAfWxgPK7MzW5fsfZBeZ4FTQ6YUB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=FxR+iWzc; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,25 +36,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
 	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=EB14kE+XbYntJMYIF/Jpxe88uRqc1TnATnNMz1K4OmE=; b=CWAvYykhhD5mCggfpPyrWXQV6L
-	ch05vX3TgO3BVgVCOnRTLrzel7hyqRuwnP4Y+ryUMTnt2Q9UnVHp8J0zjMdKp9v3GeO6EAYGldRT+
-	sQvqpZc50ZmBi3m1feC/LN9AZYeTrDQwsrBa34YAIwzPt2WOkkqyAQwZQJt9JndMVJ2SGhXS2y/k7
-	dw25ecvSUCmH/I7xbVw6gYc0lzXwLU+EKQ6k4q2hf6+yNPBJ4wPe83RLH0HtXJcCLtPpmTmeve/Pg
-	+otpXLzukl0PAx29O4h4zTJLvkbrI+gJLL61JXG78JYfUrSTJIh7wVt4K9WLZcfUTCYpxKJj9LTqn
-	1GLLo+kA==;
+	bh=OTW+gRV9XkUSSac2kAcw14CF8LgLZ6BAZc8WKMMXBsQ=; b=FxR+iWzchl+ZJgDSa++jVnhS7t
+	l9ctm7spgDp9ATYptfoZPtB7yfI08ccbPJ3JBu08veeVCm/FP28TDXgWvG/H2a68aoLS7vI/uuD9A
+	BRp/Lzxyeie1L8upq2msXdUd6jq0KlsPaauLakP8I9cVADs1ijv6sNeBS12fyOR/Oye94SXiFqPJN
+	jl2l5Chct6N3nzUcbHqZ/sbNdOyfmk6h5d7DrPojLjXNYmyDNr1mwp5QvoNx/IyRU9v+Ztvg4GjGQ
+	0nBJOn2r7XxImg4bNzSMKQhbW7irDk9joAPyHsFbZee78l1gBFsN9N0k57cP/IR1ql3gu44bc9EiJ
+	a9IUZDsg==;
 Received: from sslproxy06.your-server.de ([78.46.172.3])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1t2sfA-0008vG-A3; Mon, 21 Oct 2024 15:41:36 +0200
+	id 1t2sfx-00091Y-Qb; Mon, 21 Oct 2024 15:42:25 +0200
 Received: from [178.197.248.43] (helo=[192.168.1.114])
 	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1t2sf8-000Hts-1r;
-	Mon, 21 Oct 2024 15:41:34 +0200
-Message-ID: <9684019c-039d-441d-919f-da13060a200e@iogearbox.net>
-Date: Mon, 21 Oct 2024 15:41:32 +0200
+	id 1t2sfw-000O0W-0O;
+	Mon, 21 Oct 2024 15:42:24 +0200
+Message-ID: <b51c07f4-8987-429b-acf7-1509e649e8c0@iogearbox.net>
+Date: Mon, 21 Oct 2024 15:42:23 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,8 +62,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 1/5] net: checksum: move from32to16() to generic
- header
+Subject: Re: [PATCH bpf-next 2/5] bpf: bpf_csum_diff: optimize and homogenize
+ for all archs
 To: Puranjay Mohan <puranjay@kernel.org>, Albert Ou <aou@eecs.berkeley.edu>,
  Alexei Starovoitov <ast@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>,
@@ -83,7 +83,7 @@ To: Puranjay Mohan <puranjay@kernel.org>, Albert Ou <aou@eecs.berkeley.edu>,
  Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
  Yonghong Song <yonghong.song@linux.dev>
 References: <20241021122112.101513-1-puranjay@kernel.org>
- <20241021122112.101513-2-puranjay@kernel.org>
+ <20241021122112.101513-3-puranjay@kernel.org>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -129,21 +129,76 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20241021122112.101513-2-puranjay@kernel.org>
+In-Reply-To: <20241021122112.101513-3-puranjay@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27434/Mon Oct 21 10:49:31 2024)
 
 On 10/21/24 2:21 PM, Puranjay Mohan wrote:
-> from32to16() is used by lib/checksum.c and also by
-> arch/parisc/lib/checksum.c. The next patch will use it in the
-> bpf_csum_diff helper.
+> 1. Optimization
+>     ------------
 > 
-> Move from32to16() to the include/net/checksum.h as csum_from32to16() and
-> remove other implementations.
+> The current implementation copies the 'from' and 'to' buffers to a
+> scratchpad and it takes the bitwise NOT of 'from' buffer while copying.
+> In the next step csum_partial() is called with this scratchpad.
+> 
+> so, mathematically, the current implementation is doing:
+> 
+> 	result = csum(to - from)
+> 
+> Here, 'to'  and '~ from' are copied in to the scratchpad buffer, we need
+> it in the scratchpad buffer because csum_partial() takes a single
+> contiguous buffer and not two disjoint buffers like 'to' and 'from'.
+> 
+> We can re write this equation to:
+> 
+> 	result = csum(to) - csum(from)
+> 
+> using the distributive property of csum().
+> 
+> this allows 'to' and 'from' to be at different locations and therefore
+> this scratchpad and copying is not needed.
+> 
+> This in C code will look like:
+> 
+> result = csum_sub(csum_partial(to, to_size, seed),
+>                    csum_partial(from, from_size, 0));
+> 
+> 2. Homogenization
+>     --------------
+> 
+> The bpf_csum_diff() helper calls csum_partial() which is implemented by
+> some architectures like arm and x86 but other architectures rely on the
+> generic implementation in lib/checksum.c
+> 
+> The generic implementation in lib/checksum.c returns a 16 bit value but
+> the arch specific implementations can return more than 16 bits, this
+> works out in most places because before the result is used, it is passed
+> through csum_fold() that turns it into a 16-bit value.
+> 
+> bpf_csum_diff() directly returns the value from csum_partial() and
+> therefore the returned values could be different on different
+> architectures. see discussion in [1]:
+> 
+> for the int value 28 the calculated checksums are:
+> 
+> x86                    :    -29 : 0xffffffe3
+> generic (arm64, riscv) :  65507 : 0x0000ffe3
+> arm                    : 131042 : 0x0001ffe2
+> 
+> Pass the result of bpf_csum_diff() through from32to16() before returning
+> to homogenize this result for all architectures.
+> 
+> NOTE: from32to16() is used instead of csum_fold() because csum_fold()
+> does from32to16() + bitwise NOT of the result, which is not what we want
+> to do here.
+> 
+> [1] https://lore.kernel.org/bpf/CAJ+HfNiQbOcqCLxFUP2FMm5QrLXUUaj852Fxe3hn_2JNiucn6g@mail.gmail.com/
 > 
 > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+
+Thanks for looking into this!
 
 Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 
