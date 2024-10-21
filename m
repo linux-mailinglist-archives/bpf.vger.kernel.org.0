@@ -1,159 +1,138 @@
-Return-Path: <bpf+bounces-42666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A20D9A708C
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 19:05:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BF889A70C4
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 19:15:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AA7BB22043
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 17:05:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EEB91F21BF0
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 17:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730881EF941;
-	Mon, 21 Oct 2024 17:04:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDB811EBFF7;
+	Mon, 21 Oct 2024 17:14:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MmYY5Esa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AosBQXMP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD2C1E8838;
-	Mon, 21 Oct 2024 17:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C581C330C;
+	Mon, 21 Oct 2024 17:14:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729530297; cv=none; b=TdzX3r1zN9PiMDH1kuCVTUrgSProCWB7WgCSi5e1NuJGC/s4WoU0J/Gn1jQXzbiAAIBjKy/zZozQcanBbVF3gbNmCGcayiE4lciEMvgVGDG4oCAy4xfEKZWk2J+cmEWKJHzoVFAuVRvavtQ1ApUgcP77IuqiLIVSU9IwjCpBFq8=
+	t=1729530896; cv=none; b=dylFkmmmS8AFB/yQw1eTynw/4XRipTIsYuXWF+jGrQGMZIuSZqv5UpVAl/Y9y4fk0dB53rFv7NrSMwYCmRwuPTCsx+I7BszehZ+OtA3uliFbAvA0fYLJdRzAgxJATaesWHwDsN/yCroWvecveaa1zHCqIZvwwYv1JSiLq5eejlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729530297; c=relaxed/simple;
-	bh=CR5RjoyQjmJ04onc1gUas0ad+msgrElFQsuZL2VMhg8=;
+	s=arc-20240116; t=1729530896; c=relaxed/simple;
+	bh=B6n5AIigxmtSGMA2rqNWorBAT8emm7EL7dKIb9/88wU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bBIlojKivQvF5wjsT3cLAYNoh4AhzrvXUOTHDCx3uSZBMSklsCkjU9ERGLMROF3kIw0lkru8dg/wCrYykXF91gxUfWDb6apyLzilxCcdDxpjq/5dGQ+aHlYsIbiOXKALdHstc61Wf5k1D4XY/ppeY2hSkglT1mwzkWYUKbolHbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MmYY5Esa; arc=none smtp.client-ip=209.85.210.169
+	 To:Cc:Content-Type; b=cZYUQIWKrZXhAMVxTYZEGXzR0fIvjiZ4vr8A8A9oDwBE5y7stq3Zm6d8r0I9mSpAETmprMGbIm3WidkKp1k+YToivUTBAKWVnJWU7gUQVLRycz9fcukzJ/3P8jYVq1RA3V5FZ8ygClcVt/tiXnOOo8lUoRv5QedMFyN51U/rXrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AosBQXMP; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-71e4e481692so3921441b3a.1;
-        Mon, 21 Oct 2024 10:04:55 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-37d3e8d923fso3268414f8f.0;
+        Mon, 21 Oct 2024 10:14:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729530295; x=1730135095; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729530893; x=1730135693; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CQG6MR1AENI44ceUDAJNSQ0PP8riW7rnDgze7XGFkjc=;
-        b=MmYY5Esavq423IKt5JTW5b/WFtbH4MAvNZR3NNo3xWuWFAV4aBht278kBFKaplyG1X
-         wmX+ct32HQs4uBzCqVPE1VJLDJvH8TN0F5g3GDryiXZ+LCV6ht9zMcbrRC1cRv/CAk/q
-         OhLG/4A2L/XjEfGYs4filL3mWOewwRUbvKB4VzLv5uDGrxtLvrs42UVRZ7QDs18LmiSi
-         Yn6uDTOs8E1ifeX8/agysaGMtRc0zywk/r4yjiDgAQAzX4BDlnpCdZZAmX0Qb7MeDMdB
-         cbOuqM3esN9kVkrIMznQ/jH6A50Z5I/xFjam+4iTDS/0SQ4QhsMjTc/okl7gG83hOK7K
-         C6tw==
+        bh=B6n5AIigxmtSGMA2rqNWorBAT8emm7EL7dKIb9/88wU=;
+        b=AosBQXMPuu58VO4YcBuTH5DcWSLsC5v7y+Qmpar7o1G+/lVESNj+heKFga3Q1ojgJs
+         /BU1yizA37ROOSHwWbu299uQzQPjbXpg0j4eLwHlVapseSS1LzQ9WnhVQY2O4oqzYQpI
+         oFojfToydlLmr1OrRk05KqUTtkD1ACE1f7sHhbn+2WXfxHgNinE8+aLmUw/2Y63DHF7U
+         RK86vDzHS2qEN753JnKv3u6LE5sgnREJKdxDrCHjVTPwqup3DR2DNQLBvgJGIspQank8
+         q1a0lhqINz52RpA1JrJBXa6NIAiDaepvjh5nedoeHPfiZSbXkSgDjo0dHrzviM6X6T/O
+         lP+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729530295; x=1730135095;
+        d=1e100.net; s=20230601; t=1729530893; x=1730135693;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CQG6MR1AENI44ceUDAJNSQ0PP8riW7rnDgze7XGFkjc=;
-        b=c8U4In53Xh28X3D9wbZFNS/ED8YhkOmIgDsf2xAXa8JH8y43DzY4GnoGuO/cBlHfKI
-         ki2bBmQMZdBBQVLg/GtYwnnc55fedOE/3I+RpNSzlaAL3553uddsROjoZyC5FxmjseZm
-         H9zsI5TT+u3EnTK479Bl5D7K8pz5NXGP6CYllfss2V6tw8YGyCf8GQPLu/vO2malXOkm
-         Kc3iKQRuMLrqBB1w4xvmRQW13G8kf0s3ssKOYyFfqIgSXqAlyYGYa3ODFRbQIkTzzBBE
-         V/6xiHwNa3f5hyVf/Y8Cf7U/Teau0LCym9IATw0ho8if9+EQ8kXfsMqten1WSrsA6qEz
-         czgg==
-X-Forwarded-Encrypted: i=1; AJvYcCV98qJWkb8v00cF8EL+eEGywC+FvTsAZ/J13HNnkDofkJVOs55f2W+KTvPnwntzatMQBYw=@vger.kernel.org, AJvYcCWSkBbYCiPegsm6SMrZ649Gm29rYBLPUtb8w89TwZNbmheuK9jS2I29rSfth1M6jUmMkWRFDs8z5scKS9sc@vger.kernel.org, AJvYcCXovAmEBKy1C8GPUzGAh6xekzwLyLEXyP6bsMIS7V+KTSZGB7pF7NzNDuyrR4rvGiwdDtWAcVCMIHTTwFTTdaduq+jF@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3u/yGTBdtInPQjIKQs7Ucuz+3gJPU8YqMJtfnMeUFAp7FvIpG
-	GUEHic+AKLQP1dKaV7NZlD3VI20Ks87jHFrGlM554COOzwB4xadAsS0qpru0pufHvxhmLzp63tv
-	dDK7id9VV0WP/oKASGOU7JHGhdTY=
-X-Google-Smtp-Source: AGHT+IEay4FYcmWDyON/XJSoe4K5dh73uhcv1K355uE7k7CYuYjr+hj+dv937U/aUdp++6LOQ1wbUKe7+LSa3MzXpMc=
-X-Received: by 2002:a05:6a00:3e0f:b0:71e:4a1b:2204 with SMTP id
- d2e1a72fcca58-71ea331b398mr15912077b3a.25.1729530295151; Mon, 21 Oct 2024
- 10:04:55 -0700 (PDT)
+        bh=B6n5AIigxmtSGMA2rqNWorBAT8emm7EL7dKIb9/88wU=;
+        b=hXtgxsTE9Yr8UNu33xXUqaBXfUZxlW+ejHlU1JhNwrRvwIY7k49qrk1xYToDc2por1
+         8f6xdN27sa+0NncaBV8b/C1KcwpxVV+jPkxJ+eXeP6Ems4w4CqIrYhWeMQu0SoFlYTEJ
+         3FUDuriQstoSjum2ntnSFGZfHXCDq/9hFy4JsUX++e5B65s46d3ucRwKG/N9waF72JNO
+         LUFuZhHqYifwJpRE4TiLK4TMQ4dA0xSoxgKP5Y2IGVvmsE+oLwMNZu2CW470X/qNj1b4
+         yFqaIiAOnb2QUkCuXdOBpF7o3dazRLa2btvVekNeeV7/U+rOHlhaJRNqtlkh/tXjWqvj
+         jwTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUa+zhyjDNN1VxN5siKS8wyd+XMyLGanouuI+ixA+cmryIN+ZpN2bCFEzdJbBgvTESPjjs=@vger.kernel.org, AJvYcCV+JgdM5U0RVjdhBkGB+lpWXSBpu+Zdu54ND3Vuu0GVcsPMJgdCP6SQPGI8PUAvcrtwrhQFyNAtmA==@vger.kernel.org, AJvYcCWMCWcCaC+4iAXxk/mJDcenNWGfSZqLqH3uQ2054dDB8dmAkLKLvDmnfTq4zZMl/jrdX6a1g/DjvjVjNGbF@vger.kernel.org
+X-Gm-Message-State: AOJu0YzBgwWU6SycZBBmcxLtH7DKhkmseBTznVdWS1IEeAxzJoRLDmR8
+	lpfhbLQ7wNJq2LOS2v6+pg5oHydH75mo4iXABH7K/ISUR2y7K6ew9L/Jn2B7E6HzlKHZwEHOT/Q
+	Tk9QqA1aPCHCL9afqx5pLN7D2L/gAmrek
+X-Google-Smtp-Source: AGHT+IHgxzWLkB3jf49EyTw342Xk24EJmgZq7abf/IdFQITy0RMxkGbtzrqCX8t9ox7L090ek+sufwflfK41Egy5TU4=
+X-Received: by 2002:a5d:67cd:0:b0:37d:4318:d8e1 with SMTP id
+ ffacd0b85a97d-37eab6e3db3mr7317838f8f.23.1729530891030; Mon, 21 Oct 2024
+ 10:14:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241008002556.2332835-1-andrii@kernel.org> <20241008002556.2332835-2-andrii@kernel.org>
- <20241018082605.GD17263@noisy.programming.kicks-ass.net> <CAEf4Bzb3xjTH7Qh8c_j95jEr4fNxBgG11a0sCe4hoF9chwUtYg@mail.gmail.com>
- <20241021103151.GB6791@noisy.programming.kicks-ass.net>
-In-Reply-To: <20241021103151.GB6791@noisy.programming.kicks-ass.net>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 21 Oct 2024 10:04:43 -0700
-Message-ID: <CAEf4BzYc-YACW6XnHMVZLE+8_zJqkaJWBKE4iNeo3Jfj9RwaNQ@mail.gmail.com>
-Subject: Re: [PATCH v2 tip/perf/core 1/2] uprobes: allow put_uprobe() from
- non-sleepable softirq context
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, oleg@redhat.com, 
-	rostedt@goodmis.org, mhiramat@kernel.org, mingo@kernel.org, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org, 
-	paulmck@kernel.org
+References: <20241007152833.2282199-1-visitorckw@gmail.com>
+ <ZwQJ_hQENEE7uj0q@slm.duckdns.org> <aci6pn57bqjfcshbak7ekxb7zr5zz72u3rxyu4zbp5w3mvljx2@b4rn2e4rb4rl>
+ <af842df1791423386f3aef25f3f94c5b39b5e332.camel@gmail.com>
+In-Reply-To: <af842df1791423386f3aef25f3f94c5b39b5e332.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 21 Oct 2024 10:14:39 -0700
+Message-ID: <CAADnVQLSU5WDkjtFVLYqj8+AOUCz-Pi6v4VaexviQPy7DKtXDw@mail.gmail.com>
+Subject: Re: Using union-find in BPF verifier (was: Enhance union-find with
+ KUnit tests and optimization improvements)
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>, Kuan-Wei Chiu <visitorckw@gmail.com>, 
+	bpf <bpf@vger.kernel.org>, Tejun Heo <tj@kernel.org>, xavier_qy@163.com, 
+	Waiman Long <longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, jserv@ccns.ncku.edu.tw, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, Christoph Hellwig <hch@infradead.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 21, 2024 at 3:31=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
+On Thu, Oct 17, 2024 at 1:09=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> On Fri, Oct 18, 2024 at 11:22:00AM -0700, Andrii Nakryiko wrote:
-> > On Fri, Oct 18, 2024 at 1:26=E2=80=AFAM Peter Zijlstra <peterz@infradea=
-d.org> wrote:
+> On Thu, 2024-10-17 at 15:10 +0800, Shung-Hsi Yu wrote:
+> > Michal mentioned lib/union_find.c during a discussion. I think we may
+> > have a use for in BPF verifier (kernel/bpf/verifier.c) that could
+> > further simplify the code. Eduard (who wrote the code shown below)
+> > probably would have a better idea.
+> >
+> > On Mon, Oct 07, 2024 at 06:19:10AM GMT, Tejun Heo wrote:
+> > > On Mon, Oct 07, 2024 at 11:28:27PM +0800, Kuan-Wei Chiu wrote:
+> > > > This patch series adds KUnit tests for the union-find implementatio=
+n
+> > > > and optimizes the path compression in the uf_find() function to ach=
+ieve
+> > > > a lower tree height and improved efficiency. Additionally, it modif=
+ies
+> > > > uf_union() to return a boolean value indicating whether a merge
+> > > > occurred, enhancing the process of calculating the number of groups=
+ in
+> > > > the cgroup cpuset.
 > > >
-> > > On Mon, Oct 07, 2024 at 05:25:55PM -0700, Andrii Nakryiko wrote:
-> > > > Currently put_uprobe() might trigger mutex_lock()/mutex_unlock(), w=
-hich
-> > > > makes it unsuitable to be called from more restricted context like =
-softirq.
-> > >
-> > > This is delayed_uprobe_lock, right?
-> >
-> > Not just delated_uprobe_lock, there is also uprobes_treelock (I forgot
-> > to update the commit message to mention that). Oleg had concerns (see
-> > [0]) with that being taken from the timer thread, so I just moved all
-> > of the locking into deferred work callback.
-> >
-> >   [0] https://lore.kernel.org/linux-trace-kernel/20240915144910.GA27726=
-@redhat.com/
+> > > I'm not necessarily against the patchset but this probably is becomin=
+g too
+> > > much polishing for something which is only used by cpuset in a pretty=
+ cold
+> > > path. It probably would be a good idea to concentrate on finding more=
+ use
+> > > cases.
 >
-> Right, but at least that's not a sleeping lock. He's right about it
-> needing to become a softirq-safe lock though. And yeah, unfortunate
-> that.
+> Hi Shung-Hsi,
 >
-> > > So can't we do something like so instead?
-> >
-> > I'll need to look at this more thoroughly (and hopefully Oleg will get
-> > a chance as well), dropping lock from delayed_ref_ctr_inc() is a bit
-> > scary, but might be ok.
+> [...]
 >
-> So I figured that update_ref_ctr() is already doing the
-> __update_ref_ctr() thing without holding the lock, so that lock really
-> is only there to manage the list.
+> > Squinting a bit get_loop_entry() looks quite like uf_find() and
+> > update_loop_entry() looks quite link uf_union(). So perhaps we could ge=
+t
+> > a straight-forward conversion here.
 >
-> And that list is super offensive... That really wants to be a per-mm
-> rb-tree or somesuch.
+> I'll reply tomorrow, need to sleep on it.
 
-Probably hard to justify to add that to mm_struct, tbh, given that
-uprobe+refcnt case (which is USDT with semaphore) isn't all that
-frequent, and even then it will be active on a very small subset of
-processes in the system, most probably. But, even if (see below),
-probably should be a separate change.
-
->
-> AFAICT the only reason it is a mutex, is because doing unbouded list
-> iteration under a spinlock is a really bad idea.
->
-> > But generally speaking, what's your concern with doing deferred work
-> > in put_uprobe()? It's not a hot path by any means, worst case we'll
-> > have maybe thousands of uprobes attached/detached.
->
-> Mostly I got offended by the level of crap in that code, and working
-> around crap instead of fixing crap just ain't right.
->
-
-Ok, so where are we at? Do you insist on the delayed_ref_ctr_inc()
-rework, switching uprobe_treelock to be softirq-safe and leaving
-put_uprobe() mostly as is? Or is it ok, to do a quick deferred work
-change for put_uprobe()  to unblock uretprobe+SRCU and land it sooner?
-What if we split this work into two independent patch sets, go with
-deferred work for uretprobe + SRCU, and then work with Oleg and you on
-simplifying and improving delayed_uprobe_lock-related stuff?
-
-After all, neither deferred work nor delayed_ref_ctr_inc() change has
-much practical bearing on real-world performance. WDYT?
+I don't like the idea.
+Let's keep get_loop_entry/update_loop_entry as-is.
 
