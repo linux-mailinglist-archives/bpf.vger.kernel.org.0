@@ -1,125 +1,138 @@
-Return-Path: <bpf+bounces-42569-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42570-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0124D9A5977
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 06:23:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6533D9A597D
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 06:24:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD2EF1F223C4
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 04:23:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 872EDB2180A
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 04:24:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B9231D0949;
-	Mon, 21 Oct 2024 04:22:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43FD81CF7BA;
+	Mon, 21 Oct 2024 04:23:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nc/PwCKq"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XxTkm7qq"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCEDD1D0142;
-	Mon, 21 Oct 2024 04:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2F933CFC
+	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 04:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729484552; cv=none; b=cVdwQIN+0jsrSh3lrtR3EdZF6H5NRNt7s+hIOPXYSZereBG5sGVrKB+P+QYXNbumkXH3kbUsGbjvOgrHfU2WH908jC8p5RnSfjqZ85EK7oea57vdjyxk2q8d41c3g3LnkGfiJcVKF8PtBazUmfz+F2+lzZHAO3ALJi1zg5IM9Is=
+	t=1729484591; cv=none; b=clclow1q16AoePOMpsumyg4DPcDkvWxnt8BekY635BlOBrenG2EndiJgwl9Dv40TWz83zUZMM06C6JqJRd/aZ/UbeGc4s3+y+VImkHeStJY+Yu9ly4n+PO+uldMudLp79L+AGderG3uWIpiVYxg4bXFqPSTmO/+9cBAklUa7AGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729484552; c=relaxed/simple;
-	bh=LB2z4HMXwMmYKC+HwmBhthY2Mn1M9U06se3PysQOCJE=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=O/8bLRA52ugyNegADGoVxmeFszGRtDqf9iJtg87ePE9VJb4xNiHxuA9jXWueSUWs2NX3S4b0lyq3NJ3jnR9zXTl7sJi5FbkcPnCfKPLYFRU0ukFFVxHnz9dQuHAqJWJwaTatGJxAQ1R+9mNP1UGu3a4S1lm3m+pKy7uRgxTzlf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nc/PwCKq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A01AFC4CEE4;
-	Mon, 21 Oct 2024 04:22:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729484551;
-	bh=LB2z4HMXwMmYKC+HwmBhthY2Mn1M9U06se3PysQOCJE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=nc/PwCKqezna/K1PyI2O98zbl11kb7aY2a2lXE8AD/pSA+hvTBWUf+s3bogyLoopN
-	 0k/AOWo7c7qDqd8vCf85RcbpOyxLDA9JEh8JyTGO/K0SZTbLofPMbWcMYu9aM8jx6j
-	 XTNbZ446vzzH2o09b9fR4Iqmj/1XPNf9fBUNofOT2NImKrVmCgnjHWWIljgbRRp/W0
-	 FqglQuy4NaN+vNdWaOVxsfrOSaHTBV7E2jDODk+XLb26S0a2AdGyIGv+YdmvvZHfrv
-	 8HZE9cjWmVjfMMzRRqjYT2IMgDAFPTJqkbbVXK11afEC7h1yZ/CUOghwYNtACEXeUk
-	 g/q7yb2LcNeIg==
-Date: Mon, 21 Oct 2024 13:22:23 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Heiko Carstens <hca@linux.ibm.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Alan Maguire
- <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>,
- linux-arch@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Will
- Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
- <kernel@xen0n.name>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Vasily
- Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
- <svens@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH v16 04/18] function_graph: Replace fgraph_ret_regs with
- ftrace_regs
-Message-Id: <20241021132223.e3841b01cb8b449b66ebbb44@kernel.org>
-In-Reply-To: <20241016083323.16801-A-hca@linux.ibm.com>
-References: <172895571278.107311.14000164546881236558.stgit@devnote2>
-	<172895575716.107311.6784997045170009035.stgit@devnote2>
-	<20241015183906.19678-B-hca@linux.ibm.com>
-	<20241016084720.828fefb791af4bcf386aac91@kernel.org>
-	<20241016083323.16801-A-hca@linux.ibm.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1729484591; c=relaxed/simple;
+	bh=wRRr0J/td9vVrh7fpjBB8e+eIGCl+zbqKghsE7rIc/c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MZ2ly1YlDYD+km69GKNRyXZHVgBdRJPT6v17hZwxiWrpPJMO+1chpikB/dGUBKFg4GVJbh5gCcyQs3jDGPNVXZVKGfj09+jwUC8p2lgYAFK4rknFCfukrn2AWMhsT7h9jRYCmjbXPy9C1rVpdbQDZqRgeQgpX7QL4LxrdChUq/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XxTkm7qq; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <cc444b4e-e7f5-45fe-be9e-1f0c4398d966@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729484584;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WNyKVb+DwVu5KDJWI4WRYTlFXUkAe5SafOGjGJcQr0s=;
+	b=XxTkm7qqdOv+g7FJ1pD8isG0bvziGyddwOIldsQOtXzoLdbcOLz6VY7+sgQoLmm4AARcaH
+	5Hdjmm+F/PJ0Jno2gkjB6ad2X/VtvpKGcJZlveEZHQu3CT3wVtVjhDWM3uRuWg4KKLVvre
+	KRmBy99MYl+pLFppZiJYPKwiAJDdKms=
+Date: Sun, 20 Oct 2024 21:22:53 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v6 4/9] bpf: Mark each subprog with proper
+ private stack modes
+Content-Language: en-GB
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
+ Tejun Heo <tj@kernel.org>
+References: <20241020191341.2104841-1-yonghong.song@linux.dev>
+ <20241020191405.2106256-1-yonghong.song@linux.dev> <ZxV9oMixusfz2YtC@krava>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <ZxV9oMixusfz2YtC@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-
-On Wed, 16 Oct 2024 10:33:23 +0200
-Heiko Carstens <hca@linux.ibm.com> wrote:
-
-> On Wed, Oct 16, 2024 at 08:47:20AM +0900, Masami Hiramatsu wrote:
-> > On Tue, 15 Oct 2024 20:39:06 +0200
-> > Heiko Carstens <hca@linux.ibm.com> wrote:
-> > 
-> > > That would make things much simpler... e.g. your new patch is also
-> > > writing r3 to fregs, why? 
-> > 
-> > BTW, according to the document [1], r3 is for "return value 1", isn't it
-> > used usually?
-> > 
-> > [1] https://www.kernel.org/doc/Documentation/s390/Debugging390.txt
-> 
-> That is true for the 32 bit ABI, but not for the 64 bit ABI which we
-> care about. Besides other this is also the reason why I removed the
-> above file five years ago: f62f7dcbf023 ("Documentation/s390: remove
-> outdated debugging390 documentation").
-> 
-> If you really want to understand the 64 bit s390 ABI then you need to
-> look at https://github.com/IBM/s390x-abi .
-> 
-> A PDF file of the latest release is available at
-> https://github.com/IBM/s390x-abi/releases/download/v1.6.1/lzsabi_s390x.pdf
-> 
-> See section "1.2.5. Return Values" for return value handling.
-
-Ah, these are the info what I searched!
-
-> 
-> All of that said, I would appreciate if you would just merge the
-> provided patch, unless there is a reason for not doing that. Chances
-> are that I missed something with all the recent fregs vs ptregs
-> changes.
-
-OK
-
-Thanks!
+X-Migadu-Flow: FLOW_OUT
 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On 10/20/24 3:01 PM, Jiri Olsa wrote:
+> On Sun, Oct 20, 2024 at 12:14:05PM -0700, Yonghong Song wrote:
+>> Three private stack modes are used to direct jit action:
+>>    NO_PRIV_STACK:        do not use private stack
+>>    PRIV_STACK_SUB_PROG:  adjust frame pointer address (similar to normal stack)
+>>    PRIV_STACK_ROOT_PROG: set the frame pointer
+>>
+>> Note that for subtree root prog (main prog or callback fn), even if the
+>> bpf_prog stack size is 0, PRIV_STACK_ROOT_PROG mode is still used.
+>> This is for bpf exception handling. More details can be found in
+>> subsequent jit support and selftest patches.
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   include/linux/bpf.h   |  9 +++++++++
+>>   kernel/bpf/core.c     | 19 +++++++++++++++++++
+>>   kernel/bpf/verifier.c | 29 +++++++++++++++++++++++++++++
+>>   3 files changed, 57 insertions(+)
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 376e43fc72b9..27430e9dcfe3 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -1456,6 +1456,12 @@ struct btf_mod_pair {
+>>   
+>>   struct bpf_kfunc_desc_tab;
+>>   
+>> +enum bpf_priv_stack_mode {
+>> +	NO_PRIV_STACK,
+>> +	PRIV_STACK_SUB_PROG,
+>> +	PRIV_STACK_ROOT_PROG,
+>> +};
+>> +
+>>   struct bpf_prog_aux {
+>>   	atomic64_t refcnt;
+>>   	u32 used_map_cnt;
+>> @@ -1472,6 +1478,9 @@ struct bpf_prog_aux {
+>>   	u32 ctx_arg_info_size;
+>>   	u32 max_rdonly_access;
+>>   	u32 max_rdwr_access;
+>> +	enum bpf_priv_stack_mode priv_stack_mode;
+>> +	u16 subtree_stack_depth; /* Subtree stack depth if PRIV_STACK_ROOT_PROG, 0 otherwise */
+>> +	void __percpu *priv_stack_ptr;
+>>   	struct btf *attach_btf;
+>>   	const struct bpf_ctx_arg_aux *ctx_arg_info;
+>>   	struct mutex dst_mutex; /* protects dst_* pointers below, *after* prog becomes visible */
+>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> index 14d9288441f2..aee0055def4f 100644
+>> --- a/kernel/bpf/core.c
+>> +++ b/kernel/bpf/core.c
+>> @@ -1240,6 +1240,7 @@ void __weak bpf_jit_free(struct bpf_prog *fp)
+>>   		struct bpf_binary_header *hdr = bpf_jit_binary_hdr(fp);
+>>   
+>>   		bpf_jit_binary_free(hdr);
+>> +		free_percpu(fp->aux->priv_stack_ptr);
+> this should be also put to the x86 version of the bpf_jit_free ?
+
+Thanks for spotting this! Indeed, the x86 version of bpf_jit_free should
+be used. Will fix in the next revision.
+
+>
+> jirka
+>
+>>   		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(fp));
+>>   	}
+
+[...]
+
 
