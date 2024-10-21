@@ -1,185 +1,159 @@
-Return-Path: <bpf+bounces-42665-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42666-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CCCD9A7080
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 19:04:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A20D9A708C
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 19:05:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63F231C2200B
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 17:04:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AA7BB22043
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 17:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636681E9097;
-	Mon, 21 Oct 2024 17:03:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730881EF941;
+	Mon, 21 Oct 2024 17:04:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LC8uPiyS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MmYY5Esa"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDBC85FEE4;
-	Mon, 21 Oct 2024 17:03:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD2C1E8838;
+	Mon, 21 Oct 2024 17:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729530229; cv=none; b=F6HgPG4CyZ87unCDIwqH/c/HiAO/U2yKxtQ+GKEVxNtAE9pQSmlcYC741t6/bWROLCTurZJPvBQSFTul8Bgw4zq1H2PTR27NtK7DuZIrWF+my1QUIYtD6+QjaVe4RUEfj/QZEmUk2GZv7O3TxEDyQR4MrlXfOZIGs6riFJQ1niU=
+	t=1729530297; cv=none; b=TdzX3r1zN9PiMDH1kuCVTUrgSProCWB7WgCSi5e1NuJGC/s4WoU0J/Gn1jQXzbiAAIBjKy/zZozQcanBbVF3gbNmCGcayiE4lciEMvgVGDG4oCAy4xfEKZWk2J+cmEWKJHzoVFAuVRvavtQ1ApUgcP77IuqiLIVSU9IwjCpBFq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729530229; c=relaxed/simple;
-	bh=qdcSsG7Nspv31rTgsMv20FyoyQtpL2Xr9wmtuOxBRN4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A6SMytHjEMSNi8Bk/J29lkORR1Hl4m7JcHEycBINakxSbS19M4VNaqIOVRbSVb7+qagi5t2XNbf3Lmqtjbg1X+odR11734P8zhqwHorFd9dp6ws6+5wAW/tjGd6Yyj2PzCoVHBbEaiAri1O0CXyexBjEz0WRuRwCSVFnZSSt8cA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LC8uPiyS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A1C1C4CEC3;
-	Mon, 21 Oct 2024 17:03:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729530229;
-	bh=qdcSsG7Nspv31rTgsMv20FyoyQtpL2Xr9wmtuOxBRN4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LC8uPiySrQaRFZJIDB2IOKCB4vuVK2UJIJkz3gPsFl3Hib2WR31pyl2vr0ko1qsYk
-	 hq2fPYHmEl+U+1IG5STcsIjYdCZcPKybq10blz0FrKKjTb8fx6cimfH9wMe3g7peDs
-	 lIY6KL2koKuX+o68+PkETwZe2LqAgsWiYPVnY2ibZ4c7sAyRp5273WNKVXmCtQ5FzQ
-	 /ulnvd4++x273hj6xevQvr3GSEJLqHh9c17KZKkZRZEvtkdHMjhk+M4TolD1clkb/4
-	 o2gDcmMNFORTcG17MN6CqUPybpiQoCDqewOEJ4tpQK8DYsAbmParKZi+7yfs9Yx0/y
-	 IrA+1lDE0jGow==
-Date: Mon, 21 Oct 2024 18:03:40 +0100
-From: Will Deacon <will@kernel.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>,
-	linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH v17 01/16] function_graph: Pass ftrace_regs to entryfunc
-Message-ID: <20241021170340.GB26122@willie-the-truck>
-References: <172904026427.36809.516716204730117800.stgit@devnote2>
- <172904027515.36809.1961937054923520469.stgit@devnote2>
+	s=arc-20240116; t=1729530297; c=relaxed/simple;
+	bh=CR5RjoyQjmJ04onc1gUas0ad+msgrElFQsuZL2VMhg8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bBIlojKivQvF5wjsT3cLAYNoh4AhzrvXUOTHDCx3uSZBMSklsCkjU9ERGLMROF3kIw0lkru8dg/wCrYykXF91gxUfWDb6apyLzilxCcdDxpjq/5dGQ+aHlYsIbiOXKALdHstc61Wf5k1D4XY/ppeY2hSkglT1mwzkWYUKbolHbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MmYY5Esa; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-71e4e481692so3921441b3a.1;
+        Mon, 21 Oct 2024 10:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729530295; x=1730135095; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CQG6MR1AENI44ceUDAJNSQ0PP8riW7rnDgze7XGFkjc=;
+        b=MmYY5Esavq423IKt5JTW5b/WFtbH4MAvNZR3NNo3xWuWFAV4aBht278kBFKaplyG1X
+         wmX+ct32HQs4uBzCqVPE1VJLDJvH8TN0F5g3GDryiXZ+LCV6ht9zMcbrRC1cRv/CAk/q
+         OhLG/4A2L/XjEfGYs4filL3mWOewwRUbvKB4VzLv5uDGrxtLvrs42UVRZ7QDs18LmiSi
+         Yn6uDTOs8E1ifeX8/agysaGMtRc0zywk/r4yjiDgAQAzX4BDlnpCdZZAmX0Qb7MeDMdB
+         cbOuqM3esN9kVkrIMznQ/jH6A50Z5I/xFjam+4iTDS/0SQ4QhsMjTc/okl7gG83hOK7K
+         C6tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729530295; x=1730135095;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CQG6MR1AENI44ceUDAJNSQ0PP8riW7rnDgze7XGFkjc=;
+        b=c8U4In53Xh28X3D9wbZFNS/ED8YhkOmIgDsf2xAXa8JH8y43DzY4GnoGuO/cBlHfKI
+         ki2bBmQMZdBBQVLg/GtYwnnc55fedOE/3I+RpNSzlaAL3553uddsROjoZyC5FxmjseZm
+         H9zsI5TT+u3EnTK479Bl5D7K8pz5NXGP6CYllfss2V6tw8YGyCf8GQPLu/vO2malXOkm
+         Kc3iKQRuMLrqBB1w4xvmRQW13G8kf0s3ssKOYyFfqIgSXqAlyYGYa3ODFRbQIkTzzBBE
+         V/6xiHwNa3f5hyVf/Y8Cf7U/Teau0LCym9IATw0ho8if9+EQ8kXfsMqten1WSrsA6qEz
+         czgg==
+X-Forwarded-Encrypted: i=1; AJvYcCV98qJWkb8v00cF8EL+eEGywC+FvTsAZ/J13HNnkDofkJVOs55f2W+KTvPnwntzatMQBYw=@vger.kernel.org, AJvYcCWSkBbYCiPegsm6SMrZ649Gm29rYBLPUtb8w89TwZNbmheuK9jS2I29rSfth1M6jUmMkWRFDs8z5scKS9sc@vger.kernel.org, AJvYcCXovAmEBKy1C8GPUzGAh6xekzwLyLEXyP6bsMIS7V+KTSZGB7pF7NzNDuyrR4rvGiwdDtWAcVCMIHTTwFTTdaduq+jF@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz3u/yGTBdtInPQjIKQs7Ucuz+3gJPU8YqMJtfnMeUFAp7FvIpG
+	GUEHic+AKLQP1dKaV7NZlD3VI20Ks87jHFrGlM554COOzwB4xadAsS0qpru0pufHvxhmLzp63tv
+	dDK7id9VV0WP/oKASGOU7JHGhdTY=
+X-Google-Smtp-Source: AGHT+IEay4FYcmWDyON/XJSoe4K5dh73uhcv1K355uE7k7CYuYjr+hj+dv937U/aUdp++6LOQ1wbUKe7+LSa3MzXpMc=
+X-Received: by 2002:a05:6a00:3e0f:b0:71e:4a1b:2204 with SMTP id
+ d2e1a72fcca58-71ea331b398mr15912077b3a.25.1729530295151; Mon, 21 Oct 2024
+ 10:04:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <172904027515.36809.1961937054923520469.stgit@devnote2>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20241008002556.2332835-1-andrii@kernel.org> <20241008002556.2332835-2-andrii@kernel.org>
+ <20241018082605.GD17263@noisy.programming.kicks-ass.net> <CAEf4Bzb3xjTH7Qh8c_j95jEr4fNxBgG11a0sCe4hoF9chwUtYg@mail.gmail.com>
+ <20241021103151.GB6791@noisy.programming.kicks-ass.net>
+In-Reply-To: <20241021103151.GB6791@noisy.programming.kicks-ass.net>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 21 Oct 2024 10:04:43 -0700
+Message-ID: <CAEf4BzYc-YACW6XnHMVZLE+8_zJqkaJWBKE4iNeo3Jfj9RwaNQ@mail.gmail.com>
+Subject: Re: [PATCH v2 tip/perf/core 1/2] uprobes: allow put_uprobe() from
+ non-sleepable softirq context
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, oleg@redhat.com, 
+	rostedt@goodmis.org, mhiramat@kernel.org, mingo@kernel.org, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org, 
+	paulmck@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 16, 2024 at 09:57:55AM +0900, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> Pass ftrace_regs to the fgraph_ops::entryfunc(). If ftrace_regs is not
-> available, it passes a NULL instead. User callback function can access
-> some registers (including return address) via this ftrace_regs.
-> 
-> Note that the ftrace_regs can be NULL when the arch does NOT define:
-> HAVE_DYNAMIC_FTRACE_WITH_ARGS or HAVE_DYNAMIC_FTRACE_WITH_REGS.
-> More specifically, if HAVE_DYNAMIC_FTRACE_WITH_REGS is defined but
-> not the HAVE_DYNAMIC_FTRACE_WITH_ARGS, and the ftrace ops used to
-> register the function callback does not set FTRACE_OPS_FL_SAVE_REGS.
-> In this case, ftrace_regs can be NULL in user callback.
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Huacai Chen <chenhuacai@kernel.org>
-> Cc: WANG Xuerui <kernel@xen0n.name>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Naveen N Rao <naveen@kernel.org>
-> Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> 
-> ---
->  Changes in v16:
->   - Add a note when the ftrace_regs can be NULL.
->   - Update against for the latest kernel.
->  Changes in v11:
->   - Update for the latest for-next branch.
->  Changes in v8:
->   - Just pass ftrace_regs to the handler instead of adding a new
->     entryregfunc.
->   - Update riscv ftrace_graph_func().
->  Changes in v3:
->   - Update for new multiple fgraph.
-> ---
->  arch/arm64/kernel/ftrace.c               |   20 +++++++++++-
->  arch/loongarch/kernel/ftrace_dyn.c       |   10 +++++-
->  arch/powerpc/kernel/trace/ftrace.c       |    2 +
->  arch/powerpc/kernel/trace/ftrace_64_pg.c |   10 ++++--
->  arch/riscv/kernel/ftrace.c               |   17 ++++++++++
->  arch/x86/kernel/ftrace.c                 |   50 +++++++++++++++++++++---------
->  include/linux/ftrace.h                   |   17 ++++++++--
->  kernel/trace/fgraph.c                    |   25 +++++++++------
->  kernel/trace/ftrace.c                    |    3 +-
->  kernel/trace/trace.h                     |    3 +-
->  kernel/trace/trace_functions_graph.c     |    3 +-
->  kernel/trace/trace_irqsoff.c             |    3 +-
->  kernel/trace/trace_sched_wakeup.c        |    3 +-
->  kernel/trace/trace_selftest.c            |    8 +++--
->  14 files changed, 129 insertions(+), 45 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
-> index b2d947175cbe..a5a285f8a7ef 100644
-> --- a/arch/arm64/kernel/ftrace.c
-> +++ b/arch/arm64/kernel/ftrace.c
-> @@ -481,7 +481,25 @@ void prepare_ftrace_return(unsigned long self_addr, unsigned long *parent,
->  void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
->  		       struct ftrace_ops *op, struct ftrace_regs *fregs)
->  {
-> -	prepare_ftrace_return(ip, &arch_ftrace_regs(fregs)->lr, arch_ftrace_regs(fregs)->fp);
-> +	unsigned long return_hooker = (unsigned long)&return_to_handler;
-> +	unsigned long frame_pointer = arch_ftrace_regs(fregs)->fp;
-> +	unsigned long *parent = &arch_ftrace_regs(fregs)->lr;
-> +	unsigned long old;
-> +
-> +	if (unlikely(atomic_read(&current->tracing_graph_pause)))
-> +		return;
-> +
-> +	/*
-> +	 * Note:
-> +	 * No protection against faulting at *parent, which may be seen
-> +	 * on other archs. It's unlikely on AArch64.
-> +	 */
-> +	old = *parent;
+On Mon, Oct 21, 2024 at 3:31=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Fri, Oct 18, 2024 at 11:22:00AM -0700, Andrii Nakryiko wrote:
+> > On Fri, Oct 18, 2024 at 1:26=E2=80=AFAM Peter Zijlstra <peterz@infradea=
+d.org> wrote:
+> > >
+> > > On Mon, Oct 07, 2024 at 05:25:55PM -0700, Andrii Nakryiko wrote:
+> > > > Currently put_uprobe() might trigger mutex_lock()/mutex_unlock(), w=
+hich
+> > > > makes it unsuitable to be called from more restricted context like =
+softirq.
+> > >
+> > > This is delayed_uprobe_lock, right?
+> >
+> > Not just delated_uprobe_lock, there is also uprobes_treelock (I forgot
+> > to update the commit message to mention that). Oleg had concerns (see
+> > [0]) with that being taken from the timer thread, so I just moved all
+> > of the locking into deferred work callback.
+> >
+> >   [0] https://lore.kernel.org/linux-trace-kernel/20240915144910.GA27726=
+@redhat.com/
+>
+> Right, but at least that's not a sleeping lock. He's right about it
+> needing to become a softirq-safe lock though. And yeah, unfortunate
+> that.
+>
+> > > So can't we do something like so instead?
+> >
+> > I'll need to look at this more thoroughly (and hopefully Oleg will get
+> > a chance as well), dropping lock from delayed_ref_ctr_inc() is a bit
+> > scary, but might be ok.
+>
+> So I figured that update_ref_ctr() is already doing the
+> __update_ref_ctr() thing without holding the lock, so that lock really
+> is only there to manage the list.
+>
+> And that list is super offensive... That really wants to be a per-mm
+> rb-tree or somesuch.
 
-Sorry to pick on this line again, but the comment is very non-committal]
-and I think this is something on which we need to be definitive.
+Probably hard to justify to add that to mm_struct, tbh, given that
+uprobe+refcnt case (which is USDT with semaphore) isn't all that
+frequent, and even then it will be active on a very small subset of
+processes in the system, most probably. But, even if (see below),
+probably should be a separate change.
 
-Either the access can fault, and we should handle it, or it will never
-fault and we don't need to handle it. Saying it's unlikely means we
-need to handle it :)
+>
+> AFAICT the only reason it is a mutex, is because doing unbouded list
+> iteration under a spinlock is a really bad idea.
+>
+> > But generally speaking, what's your concern with doing deferred work
+> > in put_uprobe()? It's not a hot path by any means, worst case we'll
+> > have maybe thousands of uprobes attached/detached.
+>
+> Mostly I got offended by the level of crap in that code, and working
+> around crap instead of fixing crap just ain't right.
+>
 
-Will
+Ok, so where are we at? Do you insist on the delayed_ref_ctr_inc()
+rework, switching uprobe_treelock to be softirq-safe and leaving
+put_uprobe() mostly as is? Or is it ok, to do a quick deferred work
+change for put_uprobe()  to unblock uretprobe+SRCU and land it sooner?
+What if we split this work into two independent patch sets, go with
+deferred work for uretprobe + SRCU, and then work with Oleg and you on
+simplifying and improving delayed_uprobe_lock-related stuff?
+
+After all, neither deferred work nor delayed_ref_ctr_inc() change has
+much practical bearing on real-world performance. WDYT?
 
