@@ -1,239 +1,334 @@
-Return-Path: <bpf+bounces-42676-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42677-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCEA29A90CA
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 22:15:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4E539A910D
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 22:24:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42004B20ED9
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 20:15:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 000131C20E89
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 20:24:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA19E1FCC6F;
-	Mon, 21 Oct 2024 20:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2EB51FE114;
+	Mon, 21 Oct 2024 20:23:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aSXv19IW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LTBePEOk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00AE11FCF40
-	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 20:14:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE7AC1E9087
+	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 20:23:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729541667; cv=none; b=gq/sbQBGGQ0+zIDnn9eoxq339K/daIWwr26o25OErz983eFayDozxW8J1Y/o/9olaH4cBzF9k2sMyWHjfu8w9i88a0QYZ/3muJUS7BA501WUwd+soS2LRB2Newf7AibN+ywXCceFHOtLWq200Y0dIX6aZ+qz2+RgGdbr/6wsp7Y=
+	t=1729542214; cv=none; b=IFidsHlc5fUsewUMEwf5IrIo3fYov+sAMGcxjfG7xH9LtD+LuBz70V+tPolp28PaCRmaQegYnCQm1Luc850KLtDG9tYPi3zSSABLTrvzyCAkC9z0iuBDml8pt+bTm3EZVbz6gqFBlJS/wzrEs6x6n5JdZ5wUKUV+EHlgqzS/Rp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729541667; c=relaxed/simple;
-	bh=EkPhuzX+HjPlY13EutgPxK+WGoLprc1BWfFI6Ms6UQg=;
+	s=arc-20240116; t=1729542214; c=relaxed/simple;
+	bh=cRqWuwyzWaoVWFHB2Ex1omtK6TbZqfiNFhEua5yu2Hw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N5431DrnWsmfR/pfQK2XiznwqNwZLJdfLI1Envn0tfv2x61cIv+nL4s1tIG+nSA2Bzx5TQKSJGxdWXMlXepAwL4ENE+Tu1VSM8e39XOdaGJp0tbbhRrbkoJaGREexpXUTJNt53bfYK8M86VX6LDnW9GON2pCZbJkgwbT7893Ft4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aSXv19IW; arc=none smtp.client-ip=209.85.210.171
+	 To:Cc:Content-Type; b=cgOC4x4musNF7TP5ulLhv/ret7eLPEeEWCfFqwyo+t3KrGfqHiBOBUvNQs3ZnG7VuYTnmwFKsHwanEmKTkugFvBn6Jy2rA6bCbBCLyyWLk3Z5i6Drw9ZDXOytcsAhBWkcYhUJKlWSTALB7P5cL6EQV3UrtmnYZWtNYbb+6P7XEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LTBePEOk; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-71e6d988ecfso3643240b3a.0
-        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 13:14:25 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-71e579abb99so3489266b3a.2
+        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 13:23:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729541665; x=1730146465; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729542211; x=1730147011; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PcmHEPsRBCphHI6eKR363upaFfHA9bLOt1gAsSD6qVo=;
-        b=aSXv19IW+OdhmFQamlsRGTe5GLsfSWnQpBVL1YY1W8gmPvGgj01ZjMV7I5MfGb1FUf
-         Clj+xsU55J5yAfkMvkKYs3T75gDZ3UMwzM+eg8f5ScbzgIHtLGiW+23YSwN4GmacwHMC
-         wXQJ1z7ubrTHUEPHhqVvcdCIbXbTWvHzWI5m0npIX1k2Wo30hx11HZq4LbmTA/8KCU16
-         69TFbCuX8fW0wgDILcOVKpEqEeLKf9AeAQndOsoCDggO4VUVhs8+Sm9+q7o0w8IjoF52
-         WyrGmjNA6LBRxz+TUQrVtZ40p5EgnUlWtXe1jviqQECiTKsGxJPaCVsUfx1sEp+R/394
-         /8Uw==
+        bh=xqjKJy6jDHcp3Vz5v15LkTgBureCLjprVsYDanHBJIY=;
+        b=LTBePEOko6PmbUS2fNTnUAxi/ourgjXZBpPOMhXqYPGY0sGnkGePzCEruQn1LWu4mx
+         chkSZk5R9DCwFFVCZ35G9ALBK4/sPQHlXqW+J1m+VdKKPVJPYiw8EdtU4eNW+4JMqhuu
+         gU+UACN09kB4fF+oI4agnio+chPAZFF9EiHNiQBn5W/9G6Cshmz4dd59Q4mos/Mm0Oni
+         aBsGAR07FTkgKUFa9+KB1T06SgwAWXIQJl5NNrxA0WWqXbOfGscmLDHDNSb/AT5+BbC1
+         hHxLsUyd5tjTEdtDDoAP5jiAPOTAzaN6HWma3bA3wpeYDpw6BGRfUbjNVFJ4bnR1SaJ8
+         BRZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729541665; x=1730146465;
+        d=1e100.net; s=20230601; t=1729542211; x=1730147011;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PcmHEPsRBCphHI6eKR363upaFfHA9bLOt1gAsSD6qVo=;
-        b=uyWXWweObc8OFwkqj/zMUjc1LFrq569MdgkmplQc/qU9VdNzZOOPvhN0+4nbwwX8KB
-         thKCLIexFFq3U3weEd6NEiAOU8vesnKuiQlFR9B1ybHxGN/3LPjwqqjxhgclGD5Np2kL
-         /AVzdEfsWOsg0xojZNWFVAnL6sxThc2vcZhyEmO+qc9laVwmchRA/k+Tm6ULePBHb+ld
-         sze3/bFQtvl9ehxFeBPSa7kSrKkipe8fqtHeqoRqwWqeylM3Or+7U1RnITiAKvdeOqyI
-         tXZJo8Bt/x8jgYFh7jTJbpH0EedeLmIwHjFjesm8NvK/Q+HwNZk71q2sJKUbBqPQgQY1
-         htsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW69P+7ReQWesN1i75r9fxw6b58n1zOX7VGZXRPN88A+8tkDvLMPqyq/3IqYapiwHHTTq4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLGOlqw4gMQplWkerB715GO3YSmZ2EprbSnBuGou4KiDajihe2
-	uMlz+thO/mUAtlXjXQeeAkdNZCXCkFoGEFYzCutOiJnfBydrU4M1PJUqsREh2GGMyKKzMj6mbbC
-	f6EQVdTyEn4FQgG/eB2jCtAR8J6UFaX74
-X-Google-Smtp-Source: AGHT+IFT/pZotbAGwpy+JRMT+V3IJq1eOt43Nu30mKIEFiMZOODcbgmg8Q46FpDyIaz5DD6eaNrJQCZNUT4EPGg8Qbw=
-X-Received: by 2002:a05:6a00:180f:b0:71e:80b2:240 with SMTP id
- d2e1a72fcca58-71ee50541famr388128b3a.18.1729541665161; Mon, 21 Oct 2024
- 13:14:25 -0700 (PDT)
+        bh=xqjKJy6jDHcp3Vz5v15LkTgBureCLjprVsYDanHBJIY=;
+        b=Kc4UtJxiIgb4tG3C/VzQHszWYCq/SSNCuWsJ+FbWFsjCDRU1WWTxvF8CGMGwJNb39V
+         1i2WZMml3wq2kEEhGLYGrD/0/iYqAxrbB8AF/32LNvGSwsyzxR2SlyyFyFpo0/y+G9TN
+         THuVjftMceQg3DmKTm50FQHZI/sKR58+t8Fpq9i5rJr9ToK1d0aGoxCb0VZ15P2t3jGO
+         /SwyV15RLUegWp0eKYt/XzKK/ttXbunksO7GO/LG49HwRqZZn3ayVQcwkLC0V3goS9R/
+         95BzUZCaNjE79aRv0tlzZbLwSnrYgZCqZRJa/XNwHtXZmjqGQ/cnujh/7QvQs5FvVfBy
+         6biQ==
+X-Gm-Message-State: AOJu0YzzNIPoBWBJ1kTCX0nJazF7w4E2OFIp23rusncddHXi+PJ+9o4e
+	4kR7j/dOKgTjKteX8GahAvHW6i8PRtH/d7G07YEJmpxSt4Z0dTUlUxfXYfIQqOE/ynejrBsVvip
+	RxfVjBaQMWOnhBABZKxYsh/noFVg=
+X-Google-Smtp-Source: AGHT+IFlxdV5AekxFYcNVSeptI26AkQkHj1O9T1x6z4/CHbLwZVUTivWtwx8A1jZCTx4vZKeN8fO16utLpXs+sDmsSU=
+X-Received: by 2002:a05:6a00:17a9:b0:71d:eb7d:20d5 with SMTP id
+ d2e1a72fcca58-71ea31ae82dmr19114538b3a.8.1729542210968; Mon, 21 Oct 2024
+ 13:23:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241021141616.95160-1-mykyta.yatsenko5@gmail.com> <ZxaE_C_Im9-I8OSa@krava>
-In-Reply-To: <ZxaE_C_Im9-I8OSa@krava>
+References: <20241018020307.1766906-1-eddyz87@gmail.com>
+In-Reply-To: <20241018020307.1766906-1-eddyz87@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 21 Oct 2024 13:14:12 -0700
-Message-ID: <CAEf4BzZ6b7drmHJN=Sf8Mjq6VB1Drg5g0LyeyN4URCRS63qTzA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: increase verifier log limit in veristat
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
-	Mykyta Yatsenko <yatsenko@meta.com>
+Date: Mon, 21 Oct 2024 13:23:19 -0700
+Message-ID: <CAEf4BzavO=EX45+rGdL3PPHS+ba-SKp_VvE6c8zUYmcvjYXP3Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: force checkpoint when jmp history is
+ too long
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 21, 2024 at 9:44=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
+On Thu, Oct 17, 2024 at 7:03=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> On Mon, Oct 21, 2024 at 03:16:16PM +0100, Mykyta Yatsenko wrote:
-> > From: Mykyta Yatsenko <yatsenko@meta.com>
-> >
-> > The current default buffer size of 16MB allocated by veristat is no
-> > longer sufficient to hold the verifier logs of some production BPF
-> > programs. To address this issue, we need to increase the verifier log
-> > limit.
-> > Commit 7a9f5c65abcc ("bpf: increase verifier log limit") has already
-> > increased the supported buffer size by the kernel, but veristat users
-> > need to explicitly pass a log size argument to use the bigger log.
-> >
-> > This patch adds a function to detect the maximum verifier log size
-> > supported by the kernel and uses that by default in veristat.
-> > This ensures that veristat can handle larger verifier logs without
-> > requiring users to manually specify the log size.
-> >
-> > Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> > ---
-> >  tools/testing/selftests/bpf/veristat.c | 40 +++++++++++++++++++++++++-
-> >  1 file changed, 39 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/sel=
-ftests/bpf/veristat.c
-> > index c8efd44590d9..1d0708839f4b 100644
-> > --- a/tools/testing/selftests/bpf/veristat.c
-> > +++ b/tools/testing/selftests/bpf/veristat.c
-> > @@ -16,10 +16,12 @@
-> >  #include <sys/stat.h>
-> >  #include <bpf/libbpf.h>
-> >  #include <bpf/btf.h>
-> > +#include <bpf/bpf.h>
-> >  #include <libelf.h>
-> >  #include <gelf.h>
-> >  #include <float.h>
-> >  #include <math.h>
-> > +#include <linux/filter.h>
+> A specifically crafted program might trick verifier into growing very
+> long jump history within a single bpf_verifier_state instance.
+> Very long jump history makes mark_chain_precision() unreasonably slow,
+> especially in case if verifier processes a loop.
+>
+> Mitigate this by forcing new state in is_state_visited() in case if
+> current state's jump history is too long.
+>
+> Use same constant as in `skip_inf_loop_check`, but multiply it by
+> arbitrarily chosen value 2 to account for jump history containing not
+> only information about jumps, but also information about stack access.
+>
+> For an example of problematic program consider the code below,
+> w/o this patch the example is processed by verifier for ~15 minutes,
+> before failing to allocate big-enough chunk for jmp_history.
+>
+>     0: r7 =3D *(u16 *)(r1 +0);"
+>     1: r7 +=3D 0x1ab064b9;"
+>     2: if r7 & 0x702000 goto 1b;
+>     3: r7 &=3D 0x1ee60e;"
+>     4: r7 +=3D r1;"
+>     5: if r7 s> 0x37d2 goto +0;"
+>     6: r0 =3D 0;"
+>     7: exit;"
+>
+> Perf profiling shows that most of the time is spent in
+> mark_chain_precision() ~95%.
+>
+> The easiest way to explain why this program causes problems is to
+> apply the following patch:
+>
+>     diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>     index 0c216e71cec7..4b4823961abe 100644
+>     \--- a/include/linux/bpf.h
+>     \+++ b/include/linux/bpf.h
+>     \@@ -1926,7 +1926,7 @@ struct bpf_array {
+>             };
+>      };
+>
+>     -#define BPF_COMPLEXITY_LIMIT_INSNS      1000000 /* yes. 1M insns */
+>     +#define BPF_COMPLEXITY_LIMIT_INSNS      256 /* yes. 1M insns */
+>      #define MAX_TAIL_CALL_CNT 33
+>
+>      /* Maximum number of loops for bpf_loop and bpf_iter_num.
+>     diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>     index f514247ba8ba..75e88be3bb3e 100644
+>     \--- a/kernel/bpf/verifier.c
+>     \+++ b/kernel/bpf/verifier.c
+>     \@@ -18024,8 +18024,13 @@ static int is_state_visited(struct bpf_veri=
+fier_env *env, int insn_idx)
+>      skip_inf_loop_check:
+>                             if (!force_new_state &&
+>                                 env->jmps_processed - env->prev_jmps_proc=
+essed < 20 &&
+>     -                           env->insn_processed - env->prev_insn_proc=
+essed < 100)
+>     +                           env->insn_processed - env->prev_insn_proc=
+essed < 100) {
+>     +                               verbose(env, "is_state_visited: suppr=
+essing checkpoint at %d, %d jmps processed, cur->jmp_history_cnt is %d\n",
+>     +                                       env->insn_idx,
+>     +                                       env->jmps_processed - env->pr=
+ev_jmps_processed,
+>     +                                       cur->jmp_history_cnt);
+>                                     add_new_state =3D false;
+>     +                       }
+>                             goto miss;
+>                     }
+>                     /* If sl->state is a part of a loop and this loop's e=
+ntry is a part of
+>     \@@ -18142,6 +18147,9 @@ static int is_state_visited(struct bpf_verif=
+ier_env *env, int insn_idx)
+>             if (!add_new_state)
+>                     return 0;
+>
+>     +       verbose(env, "is_state_visited: new checkpoint at %d, resetti=
+ng env->jmps_processed\n",
+>     +               env->insn_idx);
+>     +
+>             /* There were no equivalent states, remember the current one.
+>              * Technically the current state is not proven to be safe yet=
+,
+>              * but it will either reach outer most bpf_exit (which means =
+it's safe)
+>
+> And observe verification log:
+>
+>     ...
+>     is_state_visited: new checkpoint at 5, resetting env->jmps_processed
+>     5: R1=3Dctx() R7=3Dctx(...)
+>     5: (65) if r7 s> 0x37d2 goto pc+0     ; R7=3Dctx(...)
+>     6: (b7) r0 =3D 0                        ; R0_w=3D0
+>     7: (95) exit
+>
+>     from 5 to 6: R1=3Dctx() R7=3Dctx(...) R10=3Dfp0
+>     6: R1=3Dctx() R7=3Dctx(...) R10=3Dfp0
+>     6: (b7) r0 =3D 0                        ; R0_w=3D0
+>     7: (95) exit
+>     is_state_visited: suppressing checkpoint at 1, 3 jmps processed, cur-=
+>jmp_history_cnt is 74
+>
+>     from 2 to 1: R1=3Dctx() R7_w=3Dscalar(...) R10=3Dfp0
+>     1: R1=3Dctx() R7_w=3Dscalar(...) R10=3Dfp0
+>     1: (07) r7 +=3D 447767737
+>     is_state_visited: suppressing checkpoint at 2, 3 jmps processed, cur-=
+>jmp_history_cnt is 75
+>     2: R7_w=3Dscalar(...)
+>     2: (45) if r7 & 0x702000 goto pc-2
+>     ... mark_precise 152 steps for r7 ...
+>     2: R7_w=3Dscalar(...)
+>     is_state_visited: suppressing checkpoint at 1, 4 jmps processed, cur-=
+>jmp_history_cnt is 75
+>     1: (07) r7 +=3D 447767737
+>     is_state_visited: suppressing checkpoint at 2, 4 jmps processed, cur-=
+>jmp_history_cnt is 76
+>     2: R7_w=3Dscalar(...)
+>     2: (45) if r7 & 0x702000 goto pc-2
+>     ...
+>     BPF program is too large. Processed 257 insn
+>
+> The log output shows that checkpoint at label (1) is never created,
+> because it is suppressed by `skip_inf_loop_check` logic:
+> a. When 'if' at (2) is processed it pushes a state with insn_idx (1)
+>    onto stack and proceeds to (3);
+> b. At (5) checkpoint is created, and this resets
+>    env->{jmps,insns}_processed.
+> c. Verification proceeds and reaches `exit`;
+> d. State saved at step (a) is popped from stack and is_state_visited()
+>    considers if checkpoint needs to be added, but because
+>    env->{jmps,insns}_processed had been just reset at step (b)
+>    the `skip_inf_loop_check` logic forces `add_new_state` to false.
+> e. Verifier proceeds with current state, which slowly accumulates
+>    more and more entries in the jump history.
+>
+> The accumulation of entries in the jump history is a problem because
+> of two factors:
+> - it eventually exhausts memory available for kmalloc() allocation;
+> - mark_chain_precision() traverses the jump history of a state,
+>   meaning that if `r7` is marked precise, verifier would iterate
+>   ever growing jump history until parent state boundary is reached.
+>
+> (note: the log also shows a REG INVARIANTS VIOLATION warning
+>        upon jset processing, but that's another bug to fix).
+>
+> With this patch applied, the example above is rejected by verifier
+> under 1s of time, reaching 1M instructions limit.
+>
+> The program is a simplified reproducer from syzbot report [1].
+> Previous discussion could be found at [2].
+> The patch does not cause any changes in verification performance,
+> when tested on selftests from veristat.cfg and cilium programs taken
+> from [3].
+>
+> [1] https://lore.kernel.org/bpf/670429f6.050a0220.49194.0517.GAE@google.c=
+om/
+> [2] https://lore.kernel.org/bpf/20241009021254.2805446-1-eddyz87@gmail.co=
+m/
+> [3] https://github.com/anakryiko/cilium
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index f514247ba8ba..f64c831a9278 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -17873,13 +17873,23 @@ static bool iter_active_depths_differ(struct bp=
+f_verifier_state *old, struct bpf
+>         return false;
+>  }
+>
+> +#define MAX_JMPS_PER_STATE 20
+> +
+>  static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+>  {
+>         struct bpf_verifier_state_list *new_sl;
+>         struct bpf_verifier_state_list *sl, **pprev;
+>         struct bpf_verifier_state *cur =3D env->cur_state, *new, *loop_en=
+try;
+>         int i, j, n, err, states_cnt =3D 0;
+> -       bool force_new_state =3D env->test_state_freq || is_force_checkpo=
+int(env, insn_idx);
+> +       bool force_new_state =3D env->test_state_freq || is_force_checkpo=
+int(env, insn_idx) ||
+> +                              /* - Long jmp history hinders mark_chain_p=
+recision performance,
+> +                               *   so force new state if jmp history of =
+current state exceeds
+> +                               *   a threshold.
+> +                               * - Jmp history records not only jumps, b=
+ut also stack access,
+> +                               *   so keep this constant 2x times the li=
+mit imposed on
+> +                               *   env->jmps_processed for loop cases (s=
+ee skip_inf_loop_check).
+> +                               */
+> +                              cur->jmp_history_cnt > MAX_JMPS_PER_STATE =
+* 2;
 
-this is kernel-internal header, which will be a problem for Github mirror, =
-so...
+this feels like a wrong place to add this heuristic. Just few lines
+below there is:
 
-> >
-> >  #ifndef ARRAY_SIZE
-> >  #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-> > @@ -1109,6 +1111,42 @@ static void fixup_obj(struct bpf_object *obj, st=
-ruct bpf_program *prog, const ch
-> >       return;
-> >  }
-> >
-> > +static int max_verifier_log_size(void)
-> > +{
-> > +     const int big_log_size =3D UINT_MAX >> 2;
-> > +     const int small_log_size =3D UINT_MAX >> 8;
 
-nit: MAKE_ALL_CAPS, given they are fixed constants
+if (env->jmps_processed - env->prev_jmps_processed >=3D 2 &&
+    env->insn_processed - env->prev_insn_processed >=3D 8)
+        add_new_state =3D true;
 
-> > +     struct bpf_insn insns[] =3D {
-> > +             BPF_MOV64_IMM(BPF_REG_0, 0),
-> > +             BPF_EXIT_INSN(),
-
-... let's instead either define these macro locally or just hard-code
-bpf_insn structs as is (thankfully we need just two)
-
-> > +     };
-> > +     int ret, insn_cnt =3D ARRAY_SIZE(insns);
-> > +     char *log_buf;
-> > +     static int log_size;
-> > +
-> > +     if (log_size !=3D 0)
-> > +             return log_size;
-> > +
-> > +     log_size =3D small_log_size;
-> > +     log_buf =3D malloc(big_log_size);
-
-we don't really need to allocate anything. We can pass (void*)-1 as
-log_buf (invalid pointer), set size to UINT_MAX >> 8, log_level =3D 4.
-If the kernel doesn't support big log_size, we'll get -EINVAL. If it
-does, we'll get -EFAULT when the verifier will try to write something
-to the buffer. No allocation.
+Please add jmp_history_cnt check here, as it conceptually fits with
+jmps_processed and insn_processed check. It also has a huge comment
+with justification already, so might as well just extend that for
+jmp_history_cnt.
 
 pw-bot: cr
 
+>         bool add_new_state =3D force_new_state;
+>         bool force_exact;
 >
-> IIUC this would try to use 1GB by default? seems to agresive.. could we p=
-erhaps
-> do that gradually and double the size on each failed load attempt?
+> @@ -18023,7 +18033,7 @@ static int is_state_visited(struct bpf_verifier_e=
+nv *env, int insn_idx)
+>                          */
+>  skip_inf_loop_check:
+>                         if (!force_new_state &&
+> -                           env->jmps_processed - env->prev_jmps_processe=
+d < 20 &&
+> +                           env->jmps_processed - env->prev_jmps_processe=
+d < MAX_JMPS_PER_STATE &&
+>                             env->insn_processed - env->prev_insn_processe=
+d < 100)
+>                                 add_new_state =3D false;
 
-The idea is that verifier will only page in as many pages as there is
-an actual log content (which normally would be much smaller than a
-full 1GB). Doing gradual size increase is actually pretty annoying in
-terms of how the code and logic is structured. So I think this
-approach is fine, overall.
+and then this one is logically matching add_new_state =3D true; case
+above that I mentioned.
 
+
+With these changes, I'd drop * 2 factor for one of the checks. If
+necessary, just bump it to 30 or so, if you are afraid of stack
+accesses. But let's keep it simple with one threshold, if possible?
+
+>                         goto miss;
+> --
+> 2.46.2
 >
-> jirka
->
->
-> > +
-> > +     if (!log_buf)
-> > +             return log_size;
-> > +
-> > +     LIBBPF_OPTS(bpf_prog_load_opts, opts,
-> > +                 .log_buf =3D log_buf,
-> > +                 .log_size =3D big_log_size,
-> > +                 .log_level =3D 2
-
-no need for log_level =3D 2, just use 4, we don't need to fill out the
-buffer, we need a verifier to check parameters.
-
-> > +     );
-
-LIBBPF_OPTS() macro define a variable, so please move it to the
-variable declaration block above.
-
-> > +     ret =3D bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, NULL, "GPL", i=
-nsns, insn_cnt, &opts);
-
-nit: let's use TRACEPOINT instead, we had some problems with
-SOCKET_FILTER on some old Red Hat distro due to how they did selective
-backport, so best to avoid it, if possible.
-
-> > +     free(log_buf);
-> > +
-> > +     if (ret > 0) {
-> > +             log_size =3D big_log_size;
-> > +             close(ret);
-> > +     }
-> > +     return log_size;
-> > +}
-> > +
-> >  static int process_prog(const char *filename, struct bpf_object *obj, =
-struct bpf_program *prog)
-> >  {
-> >       const char *base_filename =3D basename(strdupa(filename));
-> > @@ -1132,7 +1170,7 @@ static int process_prog(const char *filename, str=
-uct bpf_object *obj, struct bpf
-> >       memset(stats, 0, sizeof(*stats));
-> >
-> >       if (env.verbose || env.top_src_lines > 0) {
-> > -             buf_sz =3D env.log_size ? env.log_size : 16 * 1024 * 1024=
-;
-> > +             buf_sz =3D env.log_size ? env.log_size : max_verifier_log=
-_size();
-> >               buf =3D malloc(buf_sz);
-> >               if (!buf)
-> >                       return -ENOMEM;
-> > --
-> > 2.47.0
-> >
-> >
 
