@@ -1,46 +1,80 @@
-Return-Path: <bpf+bounces-42596-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E0569A64B4
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 12:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B9F1B9A64C4
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 12:50:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A9A028224F
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 10:49:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F703280E73
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 10:50:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1741E573C;
-	Mon, 21 Oct 2024 10:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359461F8915;
+	Mon, 21 Oct 2024 10:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WOD5v52F"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2496B1E32B1;
-	Mon, 21 Oct 2024 10:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E411F819A
+	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 10:44:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729507458; cv=none; b=kN1WwFfML2uLWfcOw7xjt+9LAsDehxe86sEFzjtnsCtLUoJgGBJ7NZD235EhI/cRo7EU6xHMRYd6OJFOEO9rmxrWNJenM9+Dq1R5l+kYlcomizmKpeNrBXfx0OiR0GaRAnojx+qica6mM5gFHSwulaSkNW2pzXajJc45CISnzxI=
+	t=1729507474; cv=none; b=ry0Z6AqAD9tLD9bJm8ct+SJCZl4ghFvBmLdBEApDCERdzE5fwvMASKxpzKWT1d6DKQv5jN7r+cdX3B3N+ruk3ouUsAKyZuEa8+KtBoOHiytZF1ZPGt0Hh99dRIDakItFA7xfd6Wnmtd1/4Pw4e07uFjmz5oosteQjZQJVvQHfMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729507458; c=relaxed/simple;
-	bh=aKibnnChL7ppBa28//JCFhonLN2ZBROjgZQWz9aMYoI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=MPHguTCEtr10ZWmFYY3EnxvHISnDaQBPFrS4he4zKtyW8U+We2agZ12jaOHE50xchkRTJ4WqQincjzgYi6Nh8FlA9ZsC/PGwO8sNoVoxP2sdnAN4qOT9khyJcrwMCFGq+jjAJsILk91Fx6+NoXkcKpGZQ1crRl8G1iPmSniKYCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XXBj86vrZz1jBG4;
-	Mon, 21 Oct 2024 18:42:52 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6020D1402D0;
-	Mon, 21 Oct 2024 18:44:13 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Mon, 21 Oct 2024 18:44:12 +0800
-Message-ID: <06a3d2cd-04d3-4d59-871c-4c6d7383ce11@huawei.com>
-Date: Mon, 21 Oct 2024 18:44:12 +0800
+	s=arc-20240116; t=1729507474; c=relaxed/simple;
+	bh=QszUSC+eDikLq/z2gASxiOYZierjrRupuXUewlv1aoA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DcvAEl4sAE7VezL4QVrzx3ztj3fcw95UBs59lLLIY+y+BqYMFNfpila2nvuYsvF2Uqedo7xOa1vKADmG5GOuXpUSIT3zx+qDM7nRYcIoI1w2SdULhI+IrJ8dgwxIXSUevyo4n9eHswGWl1Z7mOIrEuP5iBWS5euskvnVyqKutH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WOD5v52F; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1729507471;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ESVSTYYZIF0hJLrudzMovh5iFWIQNUs6HLNbYhgpPLs=;
+	b=WOD5v52FaTR+5/VQVjJ7ldayZ2sCfn+cIhbFLeZRjAut1WEzX9ghu0Y2VWdVY3PzrT1Gdv
+	1tsFdddnHe7Ml4tRpRBZiEy6RJkLB8X96cCN2DuUQQfZxY7cfBUYViXLiSTGBGcdIyQTtt
+	HvXTVC9XtxqZz6IhWEID7g6zwNXVdmI=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-147-4V8MvD7dM4e-se5ZMXSN3A-1; Mon, 21 Oct 2024 06:44:30 -0400
+X-MC-Unique: 4V8MvD7dM4e-se5ZMXSN3A-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-37d45de8bbfso3040884f8f.3
+        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 03:44:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729507469; x=1730112269;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ESVSTYYZIF0hJLrudzMovh5iFWIQNUs6HLNbYhgpPLs=;
+        b=uVAlO8fKp0ImiSLswOmiGbr4OulX2f5lk5sVVKqJJ2XzpmYwvEQcYCnEJ9S6a7pNi+
+         DF+Xzr5B8Otc9bucqFemO2zrcvt3zc007h7jNrit4RebYBHQ6hFzt+//wJLXbxl6dNYg
+         KEFQHQiPLw9FCgn9MPw+bY1e7ei8Fo+v6VajUJSywUwPlfBTzf4dhwm+p4hRA+sKLLQC
+         6ZUc+g0o7sB7J3txpII6JAqINrpk7m2RtudZSMpMhjhFS9thS4LFjCegGl2pFWs7Xqaa
+         TvTQOSeznXJq9/gkciYU5rZffpaZ+reXeWj7Dss2j+quwAKyhAtl15dFdxpseWZcKlRF
+         VYkg==
+X-Forwarded-Encrypted: i=1; AJvYcCVnvY/X6ryqgaUTLHHJZ6E1mgO6Tv8tGsmdXWdjtQLqUmd62OvTYsozERTLEOjrOvhiAss=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOnooMzQcZ3Zbv5bKE+Yzw+UmXet/JciTSavjRJ9Df8bb7vPto
+	YD/9RoF1e8Ld/IL40F8zYv+wCa6JeuQGpSNpvv22mc1GP3EP8oXvzw/KT79FMVSgDM91/fv5GDm
+	B62KTNk+6STJSATelzCUecX9JbJo+CIvTpzuFOlUsFSd159wVcQ==
+X-Received: by 2002:adf:e005:0:b0:37d:5042:c8de with SMTP id ffacd0b85a97d-37ea21d960cmr9407827f8f.22.1729507469422;
+        Mon, 21 Oct 2024 03:44:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGEjJ5g1Du8OWB8p2Bdce9qpXw/gQOJX9TgsNNH+Knj/WJjb8z0dN/BAeiBh4kBOoGsx2V9lw==
+X-Received: by 2002:adf:e005:0:b0:37d:5042:c8de with SMTP id ffacd0b85a97d-37ea21d960cmr9407810f8f.22.1729507469018;
+        Mon, 21 Oct 2024 03:44:29 -0700 (PDT)
+Received: from ?IPV6:2a0d:3344:1b73:a910::f71? ([2a0d:3344:1b73:a910::f71])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37ee0a37b07sm4049451f8f.1.2024.10.21.03.44.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Oct 2024 03:44:28 -0700 (PDT)
+Message-ID: <c6e8f053-32bb-4ebd-871b-af416d0b0531@redhat.com>
+Date: Mon, 21 Oct 2024 12:44:26 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -48,204 +82,40 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64: insn: Simulate nop instruction for better
- uprobe performance
-To: Mark Rutland <mark.rutland@arm.com>
-CC: <catalin.marinas@arm.com>, <will@kernel.org>, <ast@kernel.org>,
-	<puranjay@kernel.org>, <andrii@kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-References: <20240909071114.1150053-1-liaochang1@huawei.com>
- <ZweyA3tZc1BiBcb6@J2N7QTR9R3>
-From: "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <ZweyA3tZc1BiBcb6@J2N7QTR9R3>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemd200013.china.huawei.com (7.221.188.133)
+Subject: Re: [PATCH net-next v3 07/10] net: ip: make ip_route_input_noref()
+ return drop reasons
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ dsahern@kernel.org, pablo@netfilter.org, kadlec@netfilter.org,
+ roopa@nvidia.com, razor@blackwall.org, gnault@redhat.com,
+ bigeasy@linutronix.de, idosch@nvidia.com, ast@kernel.org,
+ dongml2@chinatelecom.cn, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ coreteam@netfilter.org, bridge@lists.linux.dev, bpf@vger.kernel.org
+References: <20241015140800.159466-1-dongml2@chinatelecom.cn>
+ <20241015140800.159466-8-dongml2@chinatelecom.cn>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20241015140800.159466-8-dongml2@chinatelecom.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 10/15/24 16:07, Menglong Dong wrote:
+> diff --git a/net/core/lwt_bpf.c b/net/core/lwt_bpf.c
+> index e0ca24a58810..a4652f2a103a 100644
+> --- a/net/core/lwt_bpf.c
+> +++ b/net/core/lwt_bpf.c
+> @@ -98,6 +98,7 @@ static int bpf_lwt_input_reroute(struct sk_buff *skb)
+>  		skb_dst_drop(skb);
+>  		err = ip_route_input_noref(skb, iph->daddr, iph->saddr,
+>  					   ip4h_dscp(iph), dev);
+> +		err = err ? -EINVAL : 0;
 
+Please introduce and use a drop_reason variable here instead of 'err',
+to make it clear the type conversion.
 
-在 2024/10/10 18:52, Mark Rutland 写道:
-> On Mon, Sep 09, 2024 at 07:11:14AM +0000, Liao Chang wrote:
->> v2->v1:
->> 1. Remove the simuation of STP and the related bits.
->> 2. Use arm64_skip_faulting_instruction for single-stepping or FEAT_BTI
->>    scenario.
->>
->> As Andrii pointed out, the uprobe/uretprobe selftest bench run into a
->> counterintuitive result that nop and push variants are much slower than
->> ret variant [0]. The root cause lies in the arch_probe_analyse_insn(),
->> which excludes 'nop' and 'stp' from the emulatable instructions list.
->> This force the kernel returns to userspace and execute them out-of-line,
->> then trapping back to kernel for running uprobe callback functions. This
->> leads to a significant performance overhead compared to 'ret' variant,
->> which is already emulated.
->>
->> Typicall uprobe is installed on 'nop' for USDT and on function entry
->> which starts with the instrucion 'stp x29, x30, [sp, #imm]!' to push lr
->> and fp into stack regardless kernel or userspace binary. In order to
->> improve the performance of handling uprobe for common usecases. This
->> patch supports the emulation of Arm64 equvialents instructions of 'nop'
->> and 'push'. The benchmark results below indicates the performance gain
->> of emulation is obvious.
->>
->> On Kunpeng916 (Hi1616), 4 NUMA nodes, 64 Arm64 cores@2.4GHz.
->>
->> xol (1 cpus)
->> ------------
->> uprobe-nop:  0.916 ± 0.001M/s (0.916M/prod)
->> uprobe-push: 0.908 ± 0.001M/s (0.908M/prod)
->> uprobe-ret:  1.855 ± 0.000M/s (1.855M/prod)
->> uretprobe-nop:  0.640 ± 0.000M/s (0.640M/prod)
->> uretprobe-push: 0.633 ± 0.001M/s (0.633M/prod)
->> uretprobe-ret:  0.978 ± 0.003M/s (0.978M/prod)
->>
->> emulation (1 cpus)
->> -------------------
->> uprobe-nop:  1.862 ± 0.002M/s  (1.862M/prod)
->> uprobe-push: 1.743 ± 0.006M/s  (1.743M/prod)
->> uprobe-ret:  1.840 ± 0.001M/s  (1.840M/prod)
->> uretprobe-nop:  0.964 ± 0.004M/s  (0.964M/prod)
->> uretprobe-push: 0.936 ± 0.004M/s  (0.936M/prod)
->> uretprobe-ret:  0.940 ± 0.001M/s  (0.940M/prod)
->>
->> As shown above, the performance gap between 'nop/push' and 'ret'
->> variants has been significantly reduced. Due to the emulation of 'push'
->> instruction needs to access userspace memory, it spent more cycles than
->> the other.
->>
->> As Mark suggested [1], it is painful to emulate the correct atomicity
->> and ordering properties of STP, especially when it interacts with MTE,
->> POE, etc. So this patch just focus on the simuation of 'nop'. The
->> simluation of STP and related changes will be addressed in a separate
->> patch.
->>
->> [0] https://lore.kernel.org/all/CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com/
->> [1] https://lore.kernel.org/all/Zr3RN4zxF5XPgjEB@J2N7QTR9R3/
->>
->> CC: Andrii Nakryiko <andrii.nakryiko@gmail.com>
->> CC: Mark Rutland <mark.rutland@arm.com>
->> Signed-off-by: Liao Chang <liaochang1@huawei.com>
->> ---
->>  arch/arm64/include/asm/insn.h            |  6 ++++++
->>  arch/arm64/kernel/probes/decode-insn.c   |  9 +++++++++
->>  arch/arm64/kernel/probes/simulate-insn.c | 11 +++++++++++
->>  arch/arm64/kernel/probes/simulate-insn.h |  1 +
->>  4 files changed, 27 insertions(+)
->>
->> diff --git a/arch/arm64/include/asm/insn.h b/arch/arm64/include/asm/insn.h
->> index 8c0a36f72d6f..dd530d5c3d67 100644
->> --- a/arch/arm64/include/asm/insn.h
->> +++ b/arch/arm64/include/asm/insn.h
->> @@ -549,6 +549,12 @@ static __always_inline bool aarch64_insn_uses_literal(u32 insn)
->>  	       aarch64_insn_is_prfm_lit(insn);
->>  }
->>  
->> +static __always_inline bool aarch64_insn_is_nop(u32 insn)
->> +{
->> +	return aarch64_insn_is_hint(insn) &&
->> +	       ((insn & 0xFE0) == AARCH64_INSN_HINT_NOP);
->> +}
-> 
-> Can we please make this:
-> 
-> static __always_inline bool aarch64_insn_is_nop(u32 insn)
-> {
-> 	return insn == aarch64_insn_gen_nop();
-> }
-> 
-> That way we don't need to duplicate the encoding details, and it's
-> "obviously correct".
+Thanks,
 
-Absolutely agree.
-
-> 
->> +
->>  enum aarch64_insn_encoding_class aarch64_get_insn_class(u32 insn);
->>  u64 aarch64_insn_decode_immediate(enum aarch64_insn_imm_type type, u32 insn);
->>  u32 aarch64_insn_encode_immediate(enum aarch64_insn_imm_type type,
->> diff --git a/arch/arm64/kernel/probes/decode-insn.c b/arch/arm64/kernel/probes/decode-insn.c
->> index 968d5fffe233..be54539e309e 100644
->> --- a/arch/arm64/kernel/probes/decode-insn.c
->> +++ b/arch/arm64/kernel/probes/decode-insn.c
->> @@ -75,6 +75,15 @@ static bool __kprobes aarch64_insn_is_steppable(u32 insn)
->>  enum probe_insn __kprobes
->>  arm_probe_decode_insn(probe_opcode_t insn, struct arch_probe_insn *api)
->>  {
->> +	/*
->> +	 * While 'nop' instruction can execute in the out-of-line slot,
->> +	 * simulating them in breakpoint handling offers better performance.
->> +	 */
->> +	if (aarch64_insn_is_nop(insn)) {
->> +		api->handler = simulate_nop;
->> +		return INSN_GOOD_NO_SLOT;
->> +	}
->> +
->>  	/*
->>  	 * Instructions reading or modifying the PC won't work from the XOL
->>  	 * slot.
->> diff --git a/arch/arm64/kernel/probes/simulate-insn.c b/arch/arm64/kernel/probes/simulate-insn.c
->> index 22d0b3252476..5e4f887a074c 100644
->> --- a/arch/arm64/kernel/probes/simulate-insn.c
->> +++ b/arch/arm64/kernel/probes/simulate-insn.c
->> @@ -200,3 +200,14 @@ simulate_ldrsw_literal(u32 opcode, long addr, struct pt_regs *regs)
->>  
->>  	instruction_pointer_set(regs, instruction_pointer(regs) + 4);
->>  }
->> +
->> +void __kprobes
->> +simulate_nop(u32 opcode, long addr, struct pt_regs *regs)
->> +{
->> +	/*
->> +	 * Compared to instruction_pointer_set(), it offers better
->> +	 * compatibility with single-stepping and execution in target
->> +	 * guarded memory.
->> +	 */
->> +	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
->> +}
-> 
-> Can we please delete the comment? i.e. make this:
-> 
-> 	void __kprobes
-> 	simulate_nop(u32 opcode, long addr, struct pt_regs *regs)
-> 	{
-> 		arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
-> 	}
-> 
-> With those two changes:
-
-I wrote this comment to ensure I don't misunderstand the usage of
-arm64_skip_faulting_instruction() here. This comment should be removed from
-the final patch.
-
-> 
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
-> 
-> ... and I can go chase up fixing the other issues in this file.
-> 
-> Mark.
-> 
-> 
->> diff --git a/arch/arm64/kernel/probes/simulate-insn.h b/arch/arm64/kernel/probes/simulate-insn.h
->> index e065dc92218e..efb2803ec943 100644
->> --- a/arch/arm64/kernel/probes/simulate-insn.h
->> +++ b/arch/arm64/kernel/probes/simulate-insn.h
->> @@ -16,5 +16,6 @@ void simulate_cbz_cbnz(u32 opcode, long addr, struct pt_regs *regs);
->>  void simulate_tbz_tbnz(u32 opcode, long addr, struct pt_regs *regs);
->>  void simulate_ldr_literal(u32 opcode, long addr, struct pt_regs *regs);
->>  void simulate_ldrsw_literal(u32 opcode, long addr, struct pt_regs *regs);
->> +void simulate_nop(u32 opcode, long addr, struct pt_regs *regs);
->>  
->>  #endif /* _ARM_KERNEL_KPROBES_SIMULATE_INSN_H */
->> -- 
->> 2.34.1
->>
->>
-> 
-
--- 
-BR
-Liao, Chang
+Paolo
 
 
