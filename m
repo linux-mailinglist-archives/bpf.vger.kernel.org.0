@@ -1,70 +1,72 @@
-Return-Path: <bpf+bounces-42565-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42566-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 286F09A5923
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 05:12:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D10949A5927
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 05:12:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C78C61F21DAF
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 03:12:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CABEC1C21154
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 03:12:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45901CF294;
-	Mon, 21 Oct 2024 03:12:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C1011CF2B3;
+	Mon, 21 Oct 2024 03:12:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kOgCYaeN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sle9d1sq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CEFB171CD;
-	Mon, 21 Oct 2024 03:12:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD0D208A9;
+	Mon, 21 Oct 2024 03:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729480352; cv=none; b=uOAOjXy/xrDrDOPHsihhxhpkkXxwGY3p5EHjosuiWhpKsezKIaGuGHnkDM3xDLi5sylHgKhgmEg3MH/s2Ss2hgvFt4A5VSFLb0nfnPfcQtaae0JFwnA1PhjJ0mUyI7PiIWFPMPXQo35eilvhrJfM1kdahpp7LsCjQWVHGIBZXg4=
+	t=1729480363; cv=none; b=VzZvOrGZEoq0nzOG6WT9IoNZFxqL+qLs5bR4eHtrFH5p14iEFD199VQHmHm5VL3gsyxDrvKOfe2/SgjIaqEz5RSRJxY/y6R5wHKBM7IDQzFaDi8kLObC7EM6zGNNuvHuzXpxtSsgd7PgV0lwOtDUsoOrMZ4WJRFaunPyUmTYbv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729480352; c=relaxed/simple;
-	bh=XPClw1EkUaCYvB49Dunbu6bS1sg4lNSa8+skiZQbTuc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=e7lDNTCM270gJJNaWPuBeYGuYRfR/1t1J5HE/p1y5cp3SZQbrYXzxaVMtDvkEVd8vaMFvuMMfTUsLickVMvhL7LqUjUNoCJ84TOKPfU1fMk1YNMDE1zAIGfTjBH2vFQFOvrUnZN2SFGnnkCFd4uFZDohZFNssUX9upm54HBpMCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kOgCYaeN; arc=none smtp.client-ip=209.85.216.44
+	s=arc-20240116; t=1729480363; c=relaxed/simple;
+	bh=tbFZzb3Ngplz3/wJWyh5VQWsoXKO6vWI78ThWMEmht4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PU4Hgch22i0/eCZINdFrzp2z1HcKZZzd8STtZ9MciLJueYZ4w3a+1cfdSDXr9+KszgC2pKTgfjSY8isxSXvbd+KeXo0KHxX7NG7ckTbLLQbJ/9sCvguwnUpg7AJzgjT3FOAgwGZR3Dr7RqCVnzFpFqgUpAbYIo0jOJxXJ0j2LEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sle9d1sq; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2e3d523a24dso2889325a91.0;
-        Sun, 20 Oct 2024 20:12:30 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-20ce5e3b116so29947075ad.1;
+        Sun, 20 Oct 2024 20:12:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729480348; x=1730085148; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=e5LuOh/rn5jw2USTpFPLEXHxUFS/M0lHLEDz3q66OdQ=;
-        b=kOgCYaeNGp8fOMS2HyyPMVbdMQG6HsKNcaVBR8e0z6EOlMQnYX8ggV61UEyoYSXL2l
-         C5zt8FvIRBMKgrqmxBAjJqmd1zXCj2RE1fI0Ke8BVC4RlN6PWO3XV2+Gbpb4JUxPULQK
-         7P6yGDbFSo1u7d7+WzUSwZuMgBpoGL/ADdzC93vShm/yyyGATJYC3i3WI4kteyyxct79
-         BG0WtsmYGYK6bEo6+hqQw7eNI/oKBkRWbkPO6OpIh9SXrZJlX+A371aRgdkHROA06i6c
-         WIDIBtW7dSxnHtlZnm4nBWic/7i8kbrer5i5cGSh1hsy4EQtvun5hYXcmPARjQqL/tci
-         Rzrg==
+        d=gmail.com; s=20230601; t=1729480359; x=1730085159; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W8sXCsn2gCaFNnfySACDJ6PxpYF0rU39snIB3R0VNhY=;
+        b=Sle9d1sqYM6rQPNHd9Zf5YwOzi1hjI7wAuYxs/1SUH8h7v2/6+YVydrC4zmEEKRt5P
+         0LU/jxnEb6qZJg8AXTVzGEM/NKgChQ0YruwTbUW9GZT2FfqVZImL04XD9rbOGLG4LQSw
+         E/Kif1oBVv8TFLnjbXXvcPMd4d/FajYcIy6JTRVjBBPmvu9ckhU+CycLCT0fFvhuIhCw
+         1DrVESXYFPAqAZ1o54iBw0O8HRljhJlBH+SPrBZWGF6HSPQZyXwYQPdd/z2PjG5RWKia
+         xgHjO8sxW4X5OgA44NX6AxDx/z1CVKn5Siv2vpQx3o/7YlA/RKLjXDhJiXfBWzn22EJK
+         qn9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729480348; x=1730085148;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e5LuOh/rn5jw2USTpFPLEXHxUFS/M0lHLEDz3q66OdQ=;
-        b=ac+pv8RzRDooBLZL8/hcKrKVKAXwXhjcAZnPAG5SRll5q4Sutgd3CrJISvsK81JETL
-         apET9dEyT7I6ruV/CV/0k++A2UybitOn/jwwag+Z4VLeD2tc5FUoOyKDK83n5Weos0/Q
-         aOLqRKR+CcIz/1HU38eKZW4Z/ulcFVGvuJsw43Pm4RQziT2zDNksrn6dXqLf6rZ8NT3E
-         sSsXk02tTnT+qDB6QY1m7G9cLttlgi3fBUsnKAfegslh4IfKKCpw9+ZLbNCSYe8pSUE+
-         sIar85rbwx4FfhbYGU4QJ5rs1IYvr3ftuahdNWJNqwAECjYeDnIdvDWluRAdmP392pma
-         FYdg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwkHy1gRqutUGTiQhr2w8f7OtXaHfUP1IzV60qkC8MPn5Dy7KvuQY6sxPuycxLLp4a/x8iKAOxzeC/@vger.kernel.org, AJvYcCVY3K3ChIW7qa3jUTuVSJuTtbmvcHIj00esK9NPguv3nyeIC62RJMs4YlSZwvyT+OX8wHsj9Ld3gmAOVfYl@vger.kernel.org, AJvYcCWcPLYJQYIMSMaoViVACDosA2nRHCs8KV+OBemOb+9Yig2A1LYt8pZYxis6qg/LrCAH7Hk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXfarNj2sYll9P32Mbb3BNyfhlzWJZ9Cw3a81+jiVe3nXDoDM/
-	hBpPIl2rXWRwZ18++iS1qbY9t018D1Mj23eITNKBUfY70hg/VV77MrMuoG1qUpw=
-X-Google-Smtp-Source: AGHT+IG8V+B74M/AcZzbX5wyQnZOR31Yw/bTJyVewRkfJvdQ0Eh1MGiz9Rk/P6YLntko9JuvWikwKw==
-X-Received: by 2002:a17:90b:f87:b0:2e2:d821:1b77 with SMTP id 98e67ed59e1d1-2e5616509b4mr12108170a91.24.1729480348375;
-        Sun, 20 Oct 2024 20:12:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729480359; x=1730085159;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W8sXCsn2gCaFNnfySACDJ6PxpYF0rU39snIB3R0VNhY=;
+        b=RoHN6R8c2996wMNu9Cl0cbelYFveFraglJJhqahm3Lr21pO8/FwzgWubcXbnQ4+pBS
+         fyjmtngnOBiVvNyF0IIP6ICvvlzntKmdl4Rf8JAAbDOuAb8yM/Mo2SuVZB7vcb2afOcI
+         DxNEb7wfHvyLpR+5/eEvOpmLvPcPDSlkWhryTrFuRUwaMFdAvazb1fl3Hkyp2qeRc+rB
+         diCrBhBV+kEoCYm1rFvwHNAG/BMGBVsTNwVqwkyN5WlHo191yJSYSPCKl9aqZJkBDfFw
+         qxczs6YVmrOH2YhFv/FN2ScbPpNAOSNvq4wx/7kGLWXTtl4Cw1f71vrcs+8L5aWJni8O
+         AwUg==
+X-Forwarded-Encrypted: i=1; AJvYcCUMpCuVZpux86Aril0diJdTwFFKHUWPZx1WikUdA9Nz+bjCjG6qQovU27aBGJH16M+A+JeQ+s6t6fzC@vger.kernel.org, AJvYcCWUYGJBi4IthXj1+wdBpQkFdbF3Q3qU67V8vF1S3UDJDmN0dQsAmOPIpTSo9jI1sKoWDBM=@vger.kernel.org, AJvYcCXzzMGQ+0hfSBY0rp1FlbDoTPhcAKh3vnizX4ZT5+0NOdg2+QZ2xZeBMjSkAIGLYkrHvkyCTFmzGnWWRwe4@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzqrjpgq/FUML4W20poJQobwJkryFLK6ojo5iahC3Hqm5d4V4U0
+	Se2urfo4u648YKdheF1ECOI2IPCFZbyFt4o28j4xScDb/m7cSaciLz3gx1dcHGY=
+X-Google-Smtp-Source: AGHT+IE8m/zRNXs5mHDN710q9UHS785xxIfQFJD4ErJjU9tsS2pz/tttnZRCX/E7nyvg0EKjIaoIJA==
+X-Received: by 2002:a17:903:1c2:b0:20c:e262:2560 with SMTP id d9443c01a7336-20e5a95825fmr139194195ad.50.1729480359464;
+        Sun, 20 Oct 2024 20:12:39 -0700 (PDT)
 Received: from fedora.dns.podman ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20e7eee658esm16377845ad.13.2024.10.20.20.12.16
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20e7eee658esm16377845ad.13.2024.10.20.20.12.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Oct 2024 20:12:26 -0700 (PDT)
+        Sun, 20 Oct 2024 20:12:38 -0700 (PDT)
 From: Hangbin Liu <liuhangbin@gmail.com>
 To: netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -91,10 +93,12 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCHv3 net-next 0/2] Bonding: returns detailed error about XDP failures
-Date: Mon, 21 Oct 2024 03:12:09 +0000
-Message-ID: <20241021031211.814-1-liuhangbin@gmail.com>
+Subject: [PATCHv3 net-next 1/2] bonding: return detailed error when loading native XDP fails
+Date: Mon, 21 Oct 2024 03:12:10 +0000
+Message-ID: <20241021031211.814-2-liuhangbin@gmail.com>
 X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20241021031211.814-1-liuhangbin@gmail.com>
+References: <20241021031211.814-1-liuhangbin@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -104,23 +108,36 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Based on discussion[1], this patch set returns detailed error about XDP
-failures. And update bonding document about XDP supports.
+Bonding only supports native XDP for specific modes, which can lead to
+confusion for users regarding why XDP loads successfully at times and
+fails at others. This patch enhances error handling by returning detailed
+error messages, providing users with clearer insights into the specific
+reasons for the failure when loading native XDP.
 
-v3: drop patch that modified the return value (Toke Høiland-Jørgensen)
-    drop the sentence that repeat title (Nikolay Aleksandrov)
-v2: update the title in the doc (Nikolay Aleksandrov)
+Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
+Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+ drivers/net/bonding/bond_main.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-[1]
-https://lore.kernel.org/netdev/8088f2a7-3ab1-4a1e-996d-c15703da13cc@blackwall.org/o
-Hangbin Liu (2):
-  bonding: return detailed error when loading native XDP fails
-  Documentation: bonding: add XDP support explanation
-
- Documentation/networking/bonding.rst | 11 +++++++++++
- drivers/net/bonding/bond_main.c      |  5 ++++-
- 2 files changed, 15 insertions(+), 1 deletion(-)
-
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index b1bffd8e9a95..f0f76b6ac8be 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -5676,8 +5676,11 @@ static int bond_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 
+ 	ASSERT_RTNL();
+ 
+-	if (!bond_xdp_check(bond))
++	if (!bond_xdp_check(bond)) {
++		BOND_NL_ERR(dev, extack,
++			    "No native XDP support for the current bonding mode");
+ 		return -EOPNOTSUPP;
++	}
+ 
+ 	old_prog = bond->xdp_prog;
+ 	bond->xdp_prog = prog;
 -- 
 2.46.0
 
