@@ -1,82 +1,83 @@
-Return-Path: <bpf+bounces-42709-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42710-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E067C9A9438
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 01:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B7FC9A943B
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 01:37:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 989D1282A85
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 23:32:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE0522838F5
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 23:37:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1004F1FF7AF;
-	Mon, 21 Oct 2024 23:32:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CACF1FF02E;
+	Mon, 21 Oct 2024 23:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A586tFlu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f8SvN1oR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D261E6325;
-	Mon, 21 Oct 2024 23:32:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 738821E1027;
+	Mon, 21 Oct 2024 23:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729553544; cv=none; b=CQF2v7zguRICOiRcyALf0+aY76+0oBtflV8Y1490ldfogvmzbyUEnbxKXfVgC5XDn5mfTTcsfUTEZAe7JxzJ4MYDModU4AKJ2ocPqkTIUzCVUpu5kbwdFITJHEsAmAlDk7Nq5sjuN4Vdo4yL0R8Egyt54yEiTJUUfULQCSwm3do=
+	t=1729553824; cv=none; b=uP55O3IdtB5dMNL5Px6q9r4lkMWewtK1BOL/h3fbDc82FrKkKbjWRcKO5DGPsZrKKFh8lFkpYfMdodH65un6udYClgsawiiWpGjRjV09ggTlZzWxHX0El4LgqO4YMzhjNwBfAZ1xUrN/4ImfCPayUsOsvnvjzOj2Fm74eieFMy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729553544; c=relaxed/simple;
-	bh=dQusqVS2m/sejoi0x8nt4cAjCs5p6H4uT0xFpndeWuI=;
+	s=arc-20240116; t=1729553824; c=relaxed/simple;
+	bh=XbeAmumm1Uc6TapNwNAPK1bkMMTYdmZP+q4xYRRqa1M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=heMEVBz6db58G/kKhgKbOUDkCF80lv0fbCYjbHJN2sXo4OFcr7tXnziHjjSoOmcI/ck0WON9icE8jCkXjQg+x3uqnAVakQaqYJCTWHWte1i02d18AF8TgX0uXzE9d/1PFu4iE+ZfiejzqeBPi3SySwyemWg+CXhFpHRZg0wK6ds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A586tFlu; arc=none smtp.client-ip=209.85.215.174
+	 To:Cc:Content-Type; b=tSRoiElZAJJh7KKkaAOdWkU3P3Nf/5ik14EjNZsCqsVEr6BmoNx+S1VzsrT0lE6BU/dpUha2QDFoAaJ0NXTRBiDU7ilocVCLTYX8kPjAJj1MrGdp1rtB6zelCd3308vBBY/+mXIWI0EMhbhdPa4iuksPK+88IM8y8u8S74czIM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f8SvN1oR; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-7ea76a12c32so4097210a12.1;
-        Mon, 21 Oct 2024 16:32:23 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-71e8235f0b6so3877365b3a.3;
+        Mon, 21 Oct 2024 16:37:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729553542; x=1730158342; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729553822; x=1730158622; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=apwv868bKjMTXfXoFh01HYLst30ORGniee4XhriVDbU=;
-        b=A586tFluXb5ma4Gd32P0bDAq5j8hnEcLzLBJQNOZw/x3JAXAaI2yf7ncdxNtcu3dMr
-         0+PXPCQQfHe+UJFPNNds+yjqw6ydazzugICrLk5LfKCIKjDJBEM7J30xFA031X+1uGRW
-         7gkN/YOWoKs729V0f0O7oMhzLu8FFtnwolL1AFXELmG8f5WoNsxvrcwVUGhq/xCr0juG
-         O8XrmOumudZdUVDM2Akame6cCCPUS1UlsaHrmyhxUvRwGNZAnHq67e9FioYvUgEQpVS6
-         dRmXtFVwQZfg8sd3HhIOogAwtDliZdzYA5QFdzPR3iSAY1tUDlGkefvZxd8tR145el9N
-         5Kmg==
+        bh=DiOuzXkFiktlFoeHEgqvfCbxiJVo+5LSZWaoo5OnMxc=;
+        b=f8SvN1oRPcvCYqiEpRakRCa5bIt0cqPt6V+X6cvDfH22vHAjirZMS/ovXXDI6H4mYw
+         5CPVeEjLn2gwbcWSnUjWIi26Tc9ESt/K/XYFBcAerElBryUZWljnNeLYYr07QVWC+DOE
+         7s/XnFolF5BbCFPCNloiU3SX2HxiOFEL1fK04UJUIAjnQCZmg2HiOUKWTY26TRejQn+k
+         rz7sSri5CIK6g91+nuWdoJmjr56ZoNSeNZ3UE1nrhtsRM6r+KMQXXp92JhKgiQO3/gv3
+         sncEsBwU1WBQHYQRMS3YswRaklKagUawW9oeAnArJ0+DCVzDKjwfKDt3XH/PUVLbOQs2
+         kbtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729553542; x=1730158342;
+        d=1e100.net; s=20230601; t=1729553822; x=1730158622;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=apwv868bKjMTXfXoFh01HYLst30ORGniee4XhriVDbU=;
-        b=QEsP+xc0qBv1hiDP1rXJeppZNDBA0pyudiC7It0UmIzuvHzs4Xpxo8pNqfBaeHpC3y
-         GYExMqM/rYnOB9DL+I4FT+53FRvox0NFlJdbyUJ6xR8u3bNnoOMtJmLyQwSjpPZrrTPO
-         4fJ2h7eEw43j+hCJS+qd6GR6lwvnILGRuAw7cZOpXF8uGSdD3paFEgWRDqn7TEtDDkd2
-         qUyg8AX/ktZv9mPbZomEvflTN8aZtQRT1AJK1dqYlwY6DzjPTDCsXV6MOw+N7lX3rnQR
-         D/ZTMKPhALvwezTKswG0lxlmEcwGw1QFCjhCPzmnFuatESAgLcZsxZKMwez7EagnKt+Z
-         BNZg==
-X-Forwarded-Encrypted: i=1; AJvYcCU89PIU4jALZ3/e5EyCCdT4iqNjFDueDh3Uv9jH8QVXIv66p5Ir+iSpwCwvGEq0oDs9+8gpgYzSWpk9k1AW@vger.kernel.org, AJvYcCXAEZuJlzrRJ15xtUyCz2c0ad8fFof0Jdc/8QTRajlkQvIvaaQHy0Cb+3jOSznJfojHqH4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyhwTKe2EM69gRYk2qH8uBO8H9JtdZPGta06pIFIVKjzWLxiKfH
-	hHkHaXIqT4+PyQHITqF8k3LuEmgnxgIje7Git8+sDPHN3a+U5uJ6FRAtmyyzqO3USzsPTLdSzw5
-	LRK0CiaOz097MnbaaUoANFsJgdaE=
-X-Google-Smtp-Source: AGHT+IFfnz8xbnOp/mN6RWshJDT63VoloV048Uvab1RUbpuCe5ielvPCqhJZUaqjtBUq/XkuQIZeRY4qQEqRxkientk=
-X-Received: by 2002:a05:6a20:c888:b0:1d9:2b36:3e3c with SMTP id
- adf61e73a8af0-1d96df14595mr745570637.33.1729553542387; Mon, 21 Oct 2024
- 16:32:22 -0700 (PDT)
+        bh=DiOuzXkFiktlFoeHEgqvfCbxiJVo+5LSZWaoo5OnMxc=;
+        b=kZr035wxBlpIK4NJfkJCqZ5pZypU/K+vI3OVYOKE1sxZgRwSQr6GrSwWxyVN/yzZk5
+         fj7fAa3BQqhgCGe3SI5veKMiLkh4H461GGhKkZTazDycN7b+lOFSwaWpbx1JLzYxUSAP
+         cKFT0zlrva+G67JJajRsnrGpdMFVys/2CGoEW2cfIG2mTvIaFGygdcVX9DVsHbl99LPu
+         ui9z2pAJBlwZCxgCj6iiX3yZCNOicQrxIgraHtHUyeOZW97K1fPTmf38MFGOHvi1rLWg
+         jEvXvqZj5S+/PRWDvDLgqQQq+cGD14k3UqKrt/gAKFe0pUR9uLUC/WvGy7nw3YKp1zY4
+         CTYA==
+X-Forwarded-Encrypted: i=1; AJvYcCVM/Pt0wwiFlO4ABxgdiUHzzm2WZxiDnCwXVw2tB9DBjZfSXHRrDZVd/xGuEbznZhHiwMIov3rbLxeehC6j@vger.kernel.org, AJvYcCW5Sq0W8ILA2gLfzmzuE7/DMXlN1aPRAX6n0eTXTx67LF8XxjSkmkdaIrYToG1UCBmh7EA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yza77xo/0QOzYhldsxEwcnvDIt15D0icpPQ0njVGYqCjsV7XUOv
+	dQd1qi8U8c+B3dTMSWfQDHtKNYL9ZRdk7dk4sQFOaTCY/QspvJwFnJq4GXZI7ivDw1EqyVkrqri
+	6EQGvOQSN/JjN7XksDO7eieoHRxM=
+X-Google-Smtp-Source: AGHT+IEtz0XEMk38cJDpNpWMEq5fgDFgJhTKmLnEjsUaLxZfm+96i43FnIAyYxNOpQoBhYf8U8Kjt7PD0o90frCtc28=
+X-Received: by 2002:a05:6a00:2d28:b0:71e:5a6a:94ca with SMTP id
+ d2e1a72fcca58-71ee5053fd0mr1287075b3a.19.1729553821544; Mon, 21 Oct 2024
+ 16:37:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241017080604.541872-1-namhyung@kernel.org>
-In-Reply-To: <20241017080604.541872-1-namhyung@kernel.org>
+References: <20241017080604.541872-1-namhyung@kernel.org> <20241017080604.541872-2-namhyung@kernel.org>
+In-Reply-To: <20241017080604.541872-2-namhyung@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 21 Oct 2024 16:32:10 -0700
-Message-ID: <CAEf4BzYB-KbDh+h3YXEGeWXcvaVchjf-2m2-nSQoWPE67zY68Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add open coded version of kmem_cache iterator
+Date: Mon, 21 Oct 2024 16:36:49 -0700
+Message-ID: <CAEf4BzaipQcGFWQu+o5d+aXVMN17LDnHOv9MwrZis1wpiCWwCw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add a test for open coded
+ kmem_cache iter
 To: Namhyung Kim <namhyung@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
@@ -95,58 +96,178 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, Oct 17, 2024 at 1:06=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
 wrote:
 >
-> Add a new open coded iterator for kmem_cache which can be called from a
-> BPF program like below.  It doesn't take any argument and traverses all
-> kmem_cache entries.
+> The new subtest is attached to sleepable fentry of syncfs() syscall.
+> It iterates the kmem_cache using bpf_for_each loop and count the number
+> of entries.  Finally it checks it with the number of entries from the
+> regular iterator.
 >
->   struct kmem_cache *pos;
+>   $ ./vmtest.sh -- ./test_progs -t kmem_cache_iter
+>   ...
+>   #130/1   kmem_cache_iter/check_task_struct:OK
+>   #130/2   kmem_cache_iter/check_slabinfo:OK
+>   #130/3   kmem_cache_iter/open_coded_iter:OK
+>   #130     kmem_cache_iter:OK
+>   Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
 >
->   bpf_for_each(kmem_cache, pos) {
->       ...
->   }
->
-> As it needs to grab slab_mutex, it should be called from sleepable BPF
-> programs only.
+> Also simplify the code by using attach routine of the skeleton.
 >
 > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > ---
->  kernel/bpf/helpers.c         |  3 ++
->  kernel/bpf/kmem_cache_iter.c | 87 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 90 insertions(+)
+>  .../testing/selftests/bpf/bpf_experimental.h  |  6 ++++
+>  .../bpf/prog_tests/kmem_cache_iter.c          | 28 +++++++++++--------
+>  .../selftests/bpf/progs/kmem_cache_iter.c     | 24 ++++++++++++++++
+>  3 files changed, 46 insertions(+), 12 deletions(-)
 >
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 073e6f04f4d765ff..d1dfa4f335577914 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3111,6 +3111,9 @@ BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT=
- | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
->  BTF_ID_FLAGS(func, bpf_get_kmem_cache)
-> +BTF_ID_FLAGS(func, bpf_iter_kmem_cache_new, KF_ITER_NEW | KF_SLEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_ITER_NEXT | KF_RET_NULL =
-| KF_SLEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | KF_SLE=
-EPABLE)
+> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
+ng/selftests/bpf/bpf_experimental.h
+> index b0668f29f7b394eb..cd8ecd39c3f3c68d 100644
+> --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> @@ -582,4 +582,10 @@ extern int bpf_wq_set_callback_impl(struct bpf_wq *w=
+q,
+>                 unsigned int flags__k, void *aux__ign) __ksym;
+>  #define bpf_wq_set_callback(timer, cb, flags) \
+>         bpf_wq_set_callback_impl(timer, cb, flags, NULL)
+> +
+> +struct bpf_iter_kmem_cache;
+> +extern int bpf_iter_kmem_cache_new(struct bpf_iter_kmem_cache *it) __wea=
+k __ksym;
+> +extern struct kmem_cache *bpf_iter_kmem_cache_next(struct bpf_iter_kmem_=
+cache *it) __weak __ksym;
+> +extern void bpf_iter_kmem_cache_destroy(struct bpf_iter_kmem_cache *it) =
+__weak __ksym;
+> +
 
-I'm curious. Having bpf_iter_kmem_cache_{new,next,destroy} functions,
-can we rewrite kmem_cache_iter_seq_next in terms of these ones, so
-that we have less duplication of iteration logic? Or there will be
-some locking concerns preventing this? (I haven't looked into the
-actual logic much, sorry, lazy question)
+we should be getting this from vmlinux.h nowadays, so this is probably
+unnecessary
 
->  BTF_KFUNCS_END(common_btf_ids)
+>  #endif
+> diff --git a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c b/t=
+ools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
+> index 848d8fc9171fae45..a1fd3bc57c0b21bb 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
+> @@ -68,12 +68,18 @@ static void subtest_kmem_cache_iter_check_slabinfo(st=
+ruct kmem_cache_iter *skel)
+>         fclose(fp);
+>  }
 >
->  static const struct btf_kfunc_id_set common_kfunc_set =3D {
-> diff --git a/kernel/bpf/kmem_cache_iter.c b/kernel/bpf/kmem_cache_iter.c
-> index ebc101d7da51b57c..31ddaf452b20a458 100644
-> --- a/kernel/bpf/kmem_cache_iter.c
-> +++ b/kernel/bpf/kmem_cache_iter.c
-> @@ -145,6 +145,93 @@ static const struct bpf_iter_seq_info kmem_cache_ite=
-r_seq_info =3D {
->         .seq_ops                =3D &kmem_cache_iter_seq_ops,
->  };
->
+> +static void subtest_kmem_cache_iter_open_coded(struct kmem_cache_iter *s=
+kel)
+> +{
+> +       /* To trigger the open coded iterator attached to the syscall */
+> +       syncfs(0);
 
-[...]
+what Martin said, you still need to filter by PID
+
+> +
+> +       /* It should be same as we've seen from the explicit iterator */
+> +       ASSERT_EQ(skel->bss->open_coded_seen, skel->bss->kmem_cache_seen,=
+ "open_code_seen_eq");
+> +}
+> +
+>  void test_kmem_cache_iter(void)
+>  {
+> -       DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+>         struct kmem_cache_iter *skel =3D NULL;
+> -       union bpf_iter_link_info linfo =3D {};
+> -       struct bpf_link *link;
+>         char buf[256];
+>         int iter_fd;
+>
+> @@ -81,16 +87,12 @@ void test_kmem_cache_iter(void)
+>         if (!ASSERT_OK_PTR(skel, "kmem_cache_iter__open_and_load"))
+>                 return;
+>
+> -       opts.link_info =3D &linfo;
+> -       opts.link_info_len =3D sizeof(linfo);
+> -
+> -       link =3D bpf_program__attach_iter(skel->progs.slab_info_collector=
+, &opts);
+> -       if (!ASSERT_OK_PTR(link, "attach_iter"))
+> +       if (!ASSERT_OK(kmem_cache_iter__attach(skel), "skel_attach"))
+>                 goto destroy;
+>
+> -       iter_fd =3D bpf_iter_create(bpf_link__fd(link));
+> +       iter_fd =3D bpf_iter_create(bpf_link__fd(skel->links.slab_info_co=
+llector));
+>         if (!ASSERT_GE(iter_fd, 0, "iter_create"))
+> -               goto free_link;
+> +               goto detach;
+>
+>         memset(buf, 0, sizeof(buf));
+>         while (read(iter_fd, buf, sizeof(buf) > 0)) {
+> @@ -105,11 +107,13 @@ void test_kmem_cache_iter(void)
+>                 subtest_kmem_cache_iter_check_task_struct(skel);
+>         if (test__start_subtest("check_slabinfo"))
+>                 subtest_kmem_cache_iter_check_slabinfo(skel);
+> +       if (test__start_subtest("open_coded_iter"))
+> +               subtest_kmem_cache_iter_open_coded(skel);
+>
+>         close(iter_fd);
+>
+> -free_link:
+> -       bpf_link__destroy(link);
+> +detach:
+> +       kmem_cache_iter__detach(skel);
+>  destroy:
+>         kmem_cache_iter__destroy(skel);
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c b/tools/=
+testing/selftests/bpf/progs/kmem_cache_iter.c
+> index 72c9dafecd98406b..4c44aa279a5328fe 100644
+> --- a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+> +++ b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+> @@ -2,6 +2,8 @@
+>  /* Copyright (c) 2024 Google */
+>
+>  #include "bpf_iter.h"
+> +#include "bpf_experimental.h"
+> +#include "bpf_misc.h"
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_tracing.h>
+>
+> @@ -33,6 +35,7 @@ extern struct kmem_cache *bpf_get_kmem_cache(u64 addr) =
+__ksym;
+>  /* Result, will be checked by userspace */
+>  int task_struct_found;
+>  int kmem_cache_seen;
+> +int open_coded_seen;
+>
+>  SEC("iter/kmem_cache")
+>  int slab_info_collector(struct bpf_iter__kmem_cache *ctx)
+> @@ -85,3 +88,24 @@ int BPF_PROG(check_task_struct)
+>                 task_struct_found =3D -2;
+>         return 0;
+>  }
+> +
+> +SEC("fentry.s/" SYS_PREFIX "sys_syncfs")
+> +int open_coded_iter(const void *ctx)
+> +{
+> +       struct kmem_cache *s;
+> +
+> +       bpf_for_each(kmem_cache, s) {
+> +               struct kmem_cache_result *r;
+> +               int idx =3D open_coded_seen;
+> +
+> +               r =3D bpf_map_lookup_elem(&slab_result, &idx);
+
+nit: you don't need idx, just `&open_coded_seen` should be fine, I think
+
+> +               if (r =3D=3D NULL)
+
+nit: !r
+
+> +                       break;
+> +
+> +               open_coded_seen++;
+> +
+> +               if (r->obj_size !=3D s->size)
+> +                       break;
+> +       }
+> +       return 0;
+> +}
+> --
+> 2.47.0.rc1.288.g06298d1525-goog
+>
 
