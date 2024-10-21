@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-42653-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42654-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEDE49A6E1D
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 17:28:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12B989A6E1E
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 17:28:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2063D1C21B1D
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 15:28:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83F4D1F242B8
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 15:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BA813664E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90FF313BAEE;
 	Mon, 21 Oct 2024 15:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="BcVjCfJc"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="rUB11hlm"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C776137923
-	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 15:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E23C13AA4C
+	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 15:28:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729524496; cv=none; b=b8xCvcnbpM0YZWj7DaRhJKMDcn5zC8EjgqNRRELtoFljfx+tAxEritrof+Q71NIki/S9Dweldn4yZpZX7NdZAQ/PDg0zwJid48OhRD+WZuDr18UzmEek/uAvAHspuycCW8C5eyzOQaE2Rgaqy0ogdg7jXUFjvzrOtudUp+TIqCM=
+	t=1729524497; cv=none; b=U5S7aXPrWwn2SUk4ySc8tcSaXmxnHWf6StkrQylLfbmUHVsLP9QLgJeZgwTMstoakVPdNDB97Sw7Gt/8cJQy8uq5G3yDCjHKxG+DUeDSoIJhjYiuvj2G9A6soSDiO4dBgpXGNgzFyTYJOj94CaFrIXz93lbv8bBSvy2b74xMUek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729524496; c=relaxed/simple;
-	bh=YXbZpWIZsRvQWIFXqppwHuHIgmy8iAtaNrTV9nNBkT8=;
+	s=arc-20240116; t=1729524497; c=relaxed/simple;
+	bh=uh7MQRZtcvFvNUzvLDVuM3QObqKhpbJluFMLDskapwU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=a2td4AEd4+RTbUVKTiLiibrDW3pOlECY7sZEFUAQKZeMhvNgHZzZGTDnStPJmlO07LP+yDzdIs0VfXq8MGB5mPtck5tI1+czN2MBzTrH3UZ0sh7mbB063BCvheIemUARFztPE13zncXCd1ccThJ4MYjzV67iyMVgodsHLK3vICw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=BcVjCfJc; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=uxNZLqqo4Ff2HTR988i9e+rlwN52rzgFS0ffc5CUBRhZGlCbAaIfxWr5l9z2udsBsNs40MRa8gKxgspfsQYjxibzaMZlbWHWMzRRGNkq9tqcGa6DkAQoPZ3ael+2cC02qR0H+l8nW701e5UABuji9KM3c7WKvdFmltrtY6Eoobk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=rUB11hlm; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=TWSySzEd3KEH6gscwZsD8ZI2exSJEfuGfK550fw5M8Y=; b=BcVjCfJcMLTneyEe/+H3I0Q3jC
-	WUzau9dJeE9mDgoxeeD3UcuB4Hb0EUrJMnSuI/BZluKs3xF3qnMBfoROIYdHJhhVrwtGQliF2qTHG
-	srholS3I9u7ahZ3rQThw1rUwGYjOKdMFsG4KWP0Sk/9LNOY118bO3itkuHKRE/ZDCyLO6RGxkyXAU
-	+vGIg83TQ1Z8/nIhKE00L1KmJQRjKjOqM5ce/mwJ1Fh6E0hlLnKzWv17TV8+0x/9oEqz5d5lJXlM9
-	NyNt7sYjnCpCzloQou8FmRmplx/7qIPx1v5x7Ey5SO+gdA9qaWwiVOlpLkD5akbr0JWyI0Ukf1iTK
-	q96eCZ5g==;
+	bh=Yptr5E3rFtVujK5OEPOuZTPsCXgRbOkbSs4BCSk+DWc=; b=rUB11hlmkbMgaB5SSLwlqlVoNH
+	60sHRxG0vXsIuezEH8zsK82Tvc4c5qhtsU7wIv7bi1T1yy6z6CZQqMJ1CE2PVnhNl/ma53NVqVSya
+	i9zJwSS2HKTWbUiHduSdelI13Hp6W01Vkc5d/wxQhy7ppchUpfOlZwqjgA1Gu2E9/Cy6eLztCvl+u
+	EyVp02hxVXwhiwHMf7ypqjs7qFuOy2ymk9YdR0CmeFpPSsevZd3xotdtsKtkfVNOfujsQdHkXB26a
+	ky27bxUR9N11/X9mpIkgpHAdyv/TcHWPmFVLBIjd1a6i7859FyJuw9mSm3cVF1hmUtoRZ6ClTgwzO
+	zjutXOMw==;
 Received: from 43.248.197.178.dynamic.cust.swisscom.net ([178.197.248.43] helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1t2uKJ-000MzQ-NC; Mon, 21 Oct 2024 17:28:11 +0200
+	id 1t2uKK-000Mzd-Fa; Mon, 21 Oct 2024 17:28:12 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: ast@kernel.org
 Cc: andrii@kernel.org,
 	kongln9170@gmail.com,
 	memxor@gmail.com,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf 4/5] selftests/bpf: Add test for writes to .rodata
-Date: Mon, 21 Oct 2024 17:28:08 +0200
-Message-Id: <20241021152809.33343-4-daniel@iogearbox.net>
+Subject: [PATCH bpf 5/5] selftests/bpf: Add test for passing in uninit mtu_len
+Date: Mon, 21 Oct 2024 17:28:09 +0200
+Message-Id: <20241021152809.33343-5-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241021152809.33343-1-daniel@iogearbox.net>
 References: <20241021152809.33343-1-daniel@iogearbox.net>
@@ -69,87 +69,89 @@ Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27434/Mon Oct 21 10:49:31 2024)
 
-Add a small test to write a (verification-time) fixed vs unknown but
-bounded-sized buffer into .rodata BPF map and assert that both get
-rejected.
+Add a small test to pass an uninitialized mtu_len to the bpf_check_mtu()
+helper to probe whether the verifier rejects it under !CAP_PERFMON.
 
-  # ./vmtest.sh -- ./test_progs -t verifier_const
+  # ./vmtest.sh -- ./test_progs -t verifier_mtu
   [...]
-  ./test_progs -t verifier_const
-  [    1.418717] tsc: Refined TSC clocksource calibration: 3407.994 MHz
-  [    1.419113] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x311fcde90a1, max_idle_ns: 440795222066 ns
-  [    1.419972] clocksource: Switched to clocksource tsc
-  [    1.449596] bpf_testmod: loading out-of-tree module taints kernel.
-  [    1.449958] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
-  #475/1   verifier_const/rodata/strtol: write rejected:OK
-  #475/2   verifier_const/bss/strtol: write accepted:OK
-  #475/3   verifier_const/data/strtol: write accepted:OK
-  #475/4   verifier_const/rodata/mtu: write rejected:OK
-  #475/5   verifier_const/bss/mtu: write accepted:OK
-  #475/6   verifier_const/data/mtu: write accepted:OK
-  #475/7   verifier_const/rodata/mark: write with unknown reg rejected:OK
-  #475/8   verifier_const/rodata/mark: write with unknown reg rejected:OK
-  #475     verifier_const:OK
-  #476/1   verifier_const_or/constant register |= constant should keep constant type:OK
-  #476/2   verifier_const_or/constant register |= constant should not bypass stack boundary checks:OK
-  #476/3   verifier_const_or/constant register |= constant register should keep constant type:OK
-  #476/4   verifier_const_or/constant register |= constant register should not bypass stack boundary checks:OK
-  #476     verifier_const_or:OK
-  Summary: 2/12 PASSED, 0 SKIPPED, 0 FAILED
+  ./test_progs -t verifier_mtu
+  [    1.414712] tsc: Refined TSC clocksource calibration: 3407.993 MHz
+  [    1.415327] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x311fcd52370, max_idle_ns: 440795242006 ns
+  [    1.416463] clocksource: Switched to clocksource tsc
+  [    1.429842] bpf_testmod: loading out-of-tree module taints kernel.
+  [    1.430283] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
+  #510/1   verifier_mtu/uninit/mtu: write rejected:OK
+  #510     verifier_mtu:OK
+  Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
 
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 ---
- .../selftests/bpf/progs/verifier_const.c      | 31 ++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/verifier.c       | 19 +++++++++++++++++++
+ .../selftests/bpf/progs/verifier_mtu.c        | 18 ++++++++++++++++++
+ 2 files changed, 37 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_mtu.c
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_const.c b/tools/testing/selftests/bpf/progs/verifier_const.c
-index 2e533d7eec2f..e118dbb768bf 100644
---- a/tools/testing/selftests/bpf/progs/verifier_const.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_const.c
-@@ -1,8 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2024 Isovalent */
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index e26b5150fc43..4a6ecdcfa6a0 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -53,6 +53,7 @@
+ #include "verifier_masking.skel.h"
+ #include "verifier_meta_access.skel.h"
+ #include "verifier_movsx.skel.h"
++#include "verifier_mtu.skel.h"
+ #include "verifier_netfilter_ctx.skel.h"
+ #include "verifier_netfilter_retcode.skel.h"
+ #include "verifier_bpf_fastcall.skel.h"
+@@ -221,6 +222,24 @@ void test_verifier_xdp_direct_packet_access(void) { RUN(verifier_xdp_direct_pack
+ void test_verifier_bits_iter(void) { RUN(verifier_bits_iter); }
+ void test_verifier_lsm(void)                  { RUN(verifier_lsm); }
  
--#include <linux/bpf.h>
-+#include "vmlinux.h"
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
- #include "bpf_misc.h"
- 
- const volatile long foo = 42;
-@@ -66,4 +67,32 @@ int tcx6(struct __sk_buff *skb)
- 	return TCX_PASS;
- }
- 
-+static inline void write_fixed(volatile void *p, __u32 val)
++void test_verifier_mtu(void)
 +{
-+	*(volatile __u32 *)p = val;
++	__u64 caps = 0;
++	int ret;
++
++	/* In case CAP_BPF and CAP_PERFMON is not set */
++	ret = cap_enable_effective(1ULL << CAP_BPF | 1ULL << CAP_NET_ADMIN, &caps);
++	if (!ASSERT_OK(ret, "set_cap_bpf_cap_net_admin"))
++		return;
++	ret = cap_disable_effective(1ULL << CAP_SYS_ADMIN | 1ULL << CAP_PERFMON, NULL);
++	if (!ASSERT_OK(ret, "disable_cap_sys_admin"))
++		goto restore_cap;
++	RUN(verifier_mtu);
++restore_cap:
++	if (caps)
++		cap_enable_effective(caps, NULL);
 +}
 +
-+static inline void write_dyn(void *p, void *val, int len)
-+{
-+	bpf_copy_from_user(p, len, val);
-+}
+ static int init_test_val_map(struct bpf_object *obj, char *map_name)
+ {
+ 	struct test_val value = {
+diff --git a/tools/testing/selftests/bpf/progs/verifier_mtu.c b/tools/testing/selftests/bpf/progs/verifier_mtu.c
+new file mode 100644
+index 000000000000..70c7600a26a0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_mtu.c
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
 +
 +SEC("tc/ingress")
-+__description("rodata/mark: write with unknown reg rejected")
-+__failure __msg("write into map forbidden")
-+int tcx7(struct __sk_buff *skb)
++__description("uninit/mtu: write rejected")
++__failure __msg("invalid indirect read from stack")
++int tc_uninit_mtu(struct __sk_buff *ctx)
 +{
-+	write_fixed((void *)&foo, skb->mark);
++	__u32 mtu;
++
++	bpf_check_mtu(ctx, 0, &mtu, 0, 0);
 +	return TCX_PASS;
 +}
 +
-+SEC("lsm.s/bprm_committed_creds")
-+__description("rodata/mark: write with unknown reg rejected")
-+__failure __msg("write into map forbidden")
-+int BPF_PROG(bprm, struct linux_binprm *bprm)
-+{
-+	write_dyn((void *)&foo, &bart, bpf_get_prandom_u32() & 3);
-+	return 0;
-+}
-+
- char LICENSE[] SEC("license") = "GPL";
++char LICENSE[] SEC("license") = "GPL";
 -- 
 2.43.0
 
