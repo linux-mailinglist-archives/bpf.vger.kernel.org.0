@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-42625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 336519A6AC1
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 15:44:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CB089A6AD3
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 15:44:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E1841C229E6
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 13:44:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E438287433
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 13:44:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CEED1FA25C;
-	Mon, 21 Oct 2024 13:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486031F9400;
+	Mon, 21 Oct 2024 13:44:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="UsEgYq0M"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="IfhBOrGg"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2E31F429E;
-	Mon, 21 Oct 2024 13:42:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10CD21EBA0C;
+	Mon, 21 Oct 2024 13:44:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729518172; cv=none; b=MD9lnWOAVaelI+KW8Qp6OZDG06pa7RYhsaJsz394FxX8XokluZBcS0hWGXlaAQx3f2DtkpXU+4qF+WRYntuHogYbwV4QrTwY/oncwCxKSaDtIkCJmkDAIEwXnWR5xnX6WqYK6RG4itvEY5YvgTrwgxUb7PRFBNy1P8b+3+udiYI=
+	t=1729518245; cv=none; b=OiPgLG6e9tH3GGP4nZ7fpk8A+vhe1t5JhGaeoOc7y1dvYj+edKUgMh5/RaWvNIlt6BeXCsf5ZZEaEBSWz7PNmJUVMCNNtk/sb0OzILWS0UT7jKM5Vogt6oEoEy4D4RzFQBWBpJXeoOsPzVX6ySkd/mxudmlAXfYKEa4ZfS4hn60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729518172; c=relaxed/simple;
-	bh=FtwNJAejo5UmvDEC218Tk36Yy1BiiByj95FbTx2Em48=;
+	s=arc-20240116; t=1729518245; c=relaxed/simple;
+	bh=8qX3oNql9GcA04l/a5xipEdc+gDYgiDT/atzL1R+yNQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=MXdIhRyWqP560oFu+7bALxsK2rwyGYTplMfQ2b+jpmhI7O+dJIqguhaUTsJZBzEC5ZgYT1oIyPARoT3CRjdTse6RF4DjvQsXGT2rIuiZZ5Z6qlD0UdP19LZ7NNhg4ZM2h6waTMBScEzHwgI7Gnp6yCTM45XcvC747MSmWdXa7rY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=UsEgYq0M; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=LgWdwHT9Rh7N05UIy7xi/GwWHcQOnPBraQLRp5kQoVRFXRvYrF1vFxmjDVp8bAu4BlLlrb2vL7For6pD1Sl6dWbGa229vjwH7ZPcBn9sJrmS0rJT3hXsj2pyztNV0fRlH6DuOHNge2FyG0dqO4DH8LaZXWasWJrcBBtsshCn0UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=IfhBOrGg; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,25 +36,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
 	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=V0Rz+s2UMQZZUbBwMOi0xc0EzjSiC5bazSEf6CTQyDc=; b=UsEgYq0M6rFkAoaTh2da3XfwYt
-	0gxE5aEIn/cM4W4X1Q7whLOv7Sn/qMjciUKyRCrIFnH5NxUrAxUUcw8a1x4H+898jrJ+ghWxaFptD
-	iEwb42nxpFXxFHUok9K49ETgqh3UdjSo8uKqsBWx3l85ihwHX9wopDU1MH2c25//AyC0L9NWxgm79
-	yfB49HmKfADVYMFVozGbAcrLr0+IMd3dKp4tnZWBwqZVGEvUQeKW14z2/ILA7yIoI/9SZ6L0XbsGK
-	yJKKAg92GY0WU21jC+IkgzO+CkCd9eG+A9Sa9VNHFhiINz1fyFOK0vsp2VSEDz5tsNxql6uvHbCBO
-	8Jz++kUg==;
+	bh=r0U5qY1RbHzQQEwUflnA4yMD8feh9Y4PyDFIDo7ToMM=; b=IfhBOrGgeLwKsvWLkZ2rA7cM33
+	NUnHuhnKjswRKgjXXZna3MSYRzqaAEzBkaHwoZmOCwSuEc5UbLSaX5iPn3SF+9w5Yafg9odI2pNmj
+	Hc+68KEX8ZF5m8tMiFDSUJ3Ae0daWMdj8Yzv2ByyXp7ULhvmsj7KNjMKNdSSR5ZtbcMcxfm+uT0f/
+	/SaHqzFHeo2culz1OiOz/QnJH+lHY1FNxoDjIMTA8SSmhoGIwX1nIc/RKfL2E98eC90+b0exlvUGY
+	XxYoR5fY1MLG00NzjNG1YgOvDcCkifoEml1l9IOAZyHsFmcO9Y30g4XrEInpbTaHrqq3xUQL2Z2xg
+	2b5M+W3A==;
 Received: from sslproxy06.your-server.de ([78.46.172.3])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1t2sgE-00093z-3T; Mon, 21 Oct 2024 15:42:42 +0200
+	id 1t2shN-0009CS-0t; Mon, 21 Oct 2024 15:43:53 +0200
 Received: from [178.197.248.43] (helo=[192.168.1.114])
 	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1t2sgC-000PVJ-1M;
-	Mon, 21 Oct 2024 15:42:40 +0200
-Message-ID: <528402c7-fec4-4a35-923a-f8375749296f@iogearbox.net>
-Date: Mon, 21 Oct 2024 15:42:39 +0200
+	id 1t2shL-0007GT-1B;
+	Mon, 21 Oct 2024 15:43:51 +0200
+Message-ID: <4ca8a746-263f-450d-af8d-64ba181a443f@iogearbox.net>
+Date: Mon, 21 Oct 2024 15:43:50 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,8 +62,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 3/5] selftests/bpf: don't mask result of
- bpf_csum_diff() in test_verifier
+Subject: Re: [PATCH bpf-next 4/5] selftests/bpf: Add benchmark for
+ bpf_csum_diff() helper
 To: Puranjay Mohan <puranjay@kernel.org>, Albert Ou <aou@eecs.berkeley.edu>,
  Alexei Starovoitov <ast@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>,
@@ -83,7 +83,7 @@ To: Puranjay Mohan <puranjay@kernel.org>, Albert Ou <aou@eecs.berkeley.edu>,
  Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
  Yonghong Song <yonghong.song@linux.dev>
 References: <20241021122112.101513-1-puranjay@kernel.org>
- <20241021122112.101513-4-puranjay@kernel.org>
+ <20241021122112.101513-5-puranjay@kernel.org>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -129,20 +129,30 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20241021122112.101513-4-puranjay@kernel.org>
+In-Reply-To: <20241021122112.101513-5-puranjay@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27434/Mon Oct 21 10:49:31 2024)
 
 On 10/21/24 2:21 PM, Puranjay Mohan wrote:
-> The bpf_csum_diff() helper has been fixed to return a 16-bit value for
-> all archs, so now we don't need to mask the result.
+> Add a microbenchmark for bpf_csum_diff() helper. This benchmark works by
+> filling a 4KB buffer with random data and calculating the internet
+> checksum on different parts of this buffer using bpf_csum_diff().
 > 
-> This commit is basically reverting the below:
+> Example run using ./benchs/run_bench_csum_diff.sh on x86_64:
 > 
-> commit 6185266c5a85 ("selftests/bpf: Mask bpf_csum_diff() return value
-> to 16 bits in test_verifier")
+> [bpf]$ ./benchs/run_bench_csum_diff.sh
+> 4                    2.296 ± 0.066M/s (drops 0.000 ± 0.000M/s)
+> 8                    2.320 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+> 16                   2.315 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+> 20                   2.318 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+> 32                   2.308 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+> 40                   2.300 ± 0.029M/s (drops 0.000 ± 0.000M/s)
+> 64                   2.286 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+> 128                  2.250 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+> 256                  2.173 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+> 512                  2.023 ± 0.055M/s (drops 0.000 ± 0.000M/s)
 > 
 > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 
