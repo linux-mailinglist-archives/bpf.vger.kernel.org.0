@@ -1,131 +1,92 @@
-Return-Path: <bpf+bounces-42618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB3139A69D1
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 15:14:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B6259A6A07
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 15:24:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CFDB1C21C3F
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 13:14:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B267BB2193C
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 13:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBA2C1F708D;
-	Mon, 21 Oct 2024 13:14:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4AF21F4FC1;
+	Mon, 21 Oct 2024 13:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mF5QUNjW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gWsxTbPG"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49DB81E906C;
-	Mon, 21 Oct 2024 13:14:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B01A194C62;
+	Mon, 21 Oct 2024 13:24:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729516465; cv=none; b=HgazJ/u07m5m09wmPnrV9duYqsBtCp7JXRDfGtKlBN4sMpu3mibx69Zlil1fxkSp+7+S7PzRyWG3Ogkd+V6PyRbBuqSL0s6pvJhbjwqkHfAzISSmaK6TvwQfHu1GXVOWgGPy4fvtwUezvsjk4fQI57r1Apw7osg++dXanrfdGAs=
+	t=1729517076; cv=none; b=El91wnxpULrpbqXUY6S6CSExt/k2I9jbDMA8pdVxKrdYpuIXUVYWZs2V7Jd2Y64NthKqdQmCR7QKgOGn4YJnK5H7BARq93eX+YHedpAJ39sHkw7nj41XPvenr9hVBxs/VbXDRUg7xV/rO9VwRd50sX22zX5PY/LhlsQ/nsVwMAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729516465; c=relaxed/simple;
-	bh=OPT5AbxfJYRmwQf7O59ti/U6BN1gWoe3PBxjcsD4Oy8=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=YX+qF1u9jGoOo7XR8yGiaM9Kq3g6u452q5H2fe3LbKkBdGOrDbcTRR5gAzJe6wbydM2TJhrgANlk18BEwR4NtbNGnA4OEV4OwZP3vPqo4t58mZG9zYiv1XKQz4OFubKws8b/WPDSLcfllviI0CZVs29fjYczs8usc9INJSC+C5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mF5QUNjW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79886C4CEC3;
-	Mon, 21 Oct 2024 13:14:24 +0000 (UTC)
+	s=arc-20240116; t=1729517076; c=relaxed/simple;
+	bh=r+zKiREXrZk5D3hxSgQ1MLCydswkdcdo/IqSPLFxAWc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nuIqulCbtFsa/+dX0hoK+pPDh5yg/Z+CVXtDzCV4/sSCpZ6+BpRmQuu+0iF7+gnO2nli9AiDYiZf7JCBejIIV18anB5B9opfaRRB49Ow8g9nIkGbYhI40nDATAcamp6r0xWGkkI0HWh61MjxIzYUH55rPkHg6zzivtuA/L5Azuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gWsxTbPG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AB81C4CEC3;
+	Mon, 21 Oct 2024 13:24:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729516464;
-	bh=OPT5AbxfJYRmwQf7O59ti/U6BN1gWoe3PBxjcsD4Oy8=;
-	h=From:To:Subject:In-Reply-To:References:Date:From;
-	b=mF5QUNjWAyemP13yIZEigUjZDcIaiI5NUuT9BJZruFdXivO7jvXVXWO7agFbF6RFJ
-	 rQQK7CtjCfUwj38GJUU+V900DEyszmzR1UgexjDtiaEOKWjTi2U2BjkBSd8PQ6mB23
-	 wrQzlhhV4c6+VcF2JDS0nrAEN6ZuLcHwTE3lKJRof57QqDUK4Z7AVvPfeTsNQBP723
-	 ZDFTSeF0uPpwYy1rU4HGJUkV8pimDA2THaRbHtKLZTEo9bNiv+7NM14s+gKA6o/vdQ
-	 p0qGd2jAO4y6Hbs7ST9aewCMth3kCSXlnH9ZDEsmcLFBh31VadoyqtvFdgI8XRRxLa
-	 0CZfZfoHFY5lQ==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Helge Deller <deller@gmx.de>, Albert Ou <aou@eecs.berkeley.edu>, Alexei
- Starovoitov <ast@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Daniel Borkmann
- <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Eduard
- Zingerman <eddyz87@gmail.com>, Eric Dumazet <edumazet@google.com>, Hao Luo
- <haoluo@google.com>, Jakub Kicinski <kuba@kernel.org>, "James E.J.
- Bottomley" <James.Bottomley@HansenPartnership.com>, Jiri Olsa
- <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, KP Singh
- <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, Martin
- KaFai Lau <martin.lau@linux.dev>, Mykola Lysenko <mykolal@fb.com>,
- netdev@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>, Paolo Abeni
- <pabeni@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, Shuah Khan
- <shuah@kernel.org>, Song Liu <song@kernel.org>, Stanislav Fomichev
- <sdf@fomichev.me>, Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH bpf-next 3/5] selftests/bpf: don't mask result of
- bpf_csum_diff() in test_verifier
-In-Reply-To: <31b8ea3b-f765-43c0-9cee-49bc13064f04@gmx.de>
-References: <20241021122112.101513-1-puranjay@kernel.org>
- <20241021122112.101513-4-puranjay@kernel.org>
- <31b8ea3b-f765-43c0-9cee-49bc13064f04@gmx.de>
-Date: Mon, 21 Oct 2024 13:14:04 +0000
-Message-ID: <mb61p1q09d2eb.fsf@kernel.org>
+	s=k20201202; t=1729517075;
+	bh=r+zKiREXrZk5D3hxSgQ1MLCydswkdcdo/IqSPLFxAWc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gWsxTbPGKx0cuJ9J/kh30dMOTlRZR+9/CWo5V2FcZTzrNBRYRKRm+ujHIVxqunvU4
+	 ZZlkSSHGQQIDNPanNODaIgSwNEDDliuHmbuPzci+SjsajdMSRAoj82GX0b9L/IJRL2
+	 G8bd8i13vlEEekzqaIg20o0xYgVC+TpUsPO0jstYxJFwv3OD38Vul1AMM7AjHVA8x9
+	 wuWeeAS/Zf3rp9kXhHLpWl2pWbsZSx+b1fiH8rERPJBOkcv7RxwMEKgKRdxzrYlsFr
+	 4XIgjymK3cmA8NGyGn1lJqRS80CvIQReuXwGQwfb1IQ3EuF1eA8B8lxodIAnWl52g/
+	 GqObBs9XY/2bQ==
+Date: Mon, 21 Oct 2024 15:24:30 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Jan Kara <jack@suse.cz>, Song Liu <songliubraving@meta.com>, 
+	Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Al Viro <viro@zeniv.linux.org.uk>, KP Singh <kpsingh@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Extend test fs_kfuncs to
+ cover security.bpf xattr names
+Message-ID: <20241021-ausgleichen-wesen-3d3ae116f742@brauner>
+References: <20241002214637.3625277-1-song@kernel.org>
+ <20241002214637.3625277-3-song@kernel.org>
+ <Zw34dAaqA5tR6mHN@infradead.org>
+ <0DB83868-0049-40E3-8E62-0D8D913CB9CB@fb.com>
+ <Zw384bed3yVgZpoc@infradead.org>
+ <BF0CD913-B067-4105-88C2-B068431EE9E5@fb.com>
+ <20241016135155.otibqwcyqczxt26f@quack3>
+ <20241016-luxus-winkt-4676cfdf25ff@brauner>
+ <ZxEnV353YshfkmXe@infradead.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZxEnV353YshfkmXe@infradead.org>
 
---=-=-=
-Content-Type: text/plain
+On Thu, Oct 17, 2024 at 08:03:51AM -0700, Christoph Hellwig wrote:
+> On Wed, Oct 16, 2024 at 04:51:37PM +0200, Christian Brauner wrote:
+> > > 
+> > > I think that getting user.* xattrs from bpf hooks can still be useful for
+> > > introspection and other tasks so I'm not convinced we should revert that
+> > > functionality but maybe it is too easy to misuse? I'm not really decided.
+> > 
+> > Reading user.* xattr is fine. If an LSM decides to built a security
+> > model around it then imho that's their business and since that happens
+> > in out-of-tree LSM programs: shrug.
+> 
+> By that argument user.kfuncs is even more useless as just being able
+> to read all xattrs should be just as fine.
 
-Helge Deller <deller@gmx.de> writes:
-
-> On 10/21/24 14:21, Puranjay Mohan wrote:
->> The bpf_csum_diff() helper has been fixed to return a 16-bit value for
->> all archs, so now we don't need to mask the result.
->>
->> ...
->> --- a/tools/testing/selftests/bpf/progs/verifier_array_access.c
->> +++ b/tools/testing/selftests/bpf/progs/verifier_array_access.c
->> @@ -368,8 +368,7 @@ __naked void a_read_only_array_2_1(void)
->>   	r4 = 0;						\
->>   	r5 = 0;						\
->>   	call %[bpf_csum_diff];				\
->> -l0_%=:	r0 &= 0xffff;					\
->> -	exit;						\
->> +l0_%=:	exit;						\
->
-> Instead of dropping the masking, would it make sense to
-> check here if (r0 >> 16) == 0 ?
-
-We define the expected value in R0 to be 65507(0xffe3) in the line at the top:
-__success __retval(65507)
-
-So, we should just not do anything to R0 and it should contain this value
-after returning from bpf_csum_diff()
-
-This masking hack was added in:
-
-6185266c5a853 ("selftests/bpf: Mask bpf_csum_diff() return value to 16 bits in test_verifier")
-
-because without the fix in patch 2 bpf_csum_diff() would return the
-following for this test:
-
-x86                    :    -29 : 0xffffffe3
-generic (arm64, riscv) :  65507 : 0x0000ffe3
-
-
-Thanks,
-Puranjay
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iIoEARYKADIWIQQ3wHGvVs/5bdl78BKwwPkjG3B2nQUCZxZTnRQccHVyYW5qYXlA
-a2VybmVsLm9yZwAKCRCwwPkjG3B2ndk3AP0XXZde0lRtwFVwJrCkF/VkxqH1qoIW
-YzgfJHIpSZzNAAEA0eN6ggg1/3zV3pUq6bqFbBaa+ah8TtqqUbVVefg8aAI=
-=vDn9
------END PGP SIGNATURE-----
---=-=-=--
+bpf shouldn't read security.* of another LSM or a host of other examples...
 
