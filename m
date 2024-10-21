@@ -1,92 +1,86 @@
-Return-Path: <bpf+bounces-42619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B6259A6A07
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 15:24:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6205C9A6A95
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 15:40:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B267BB2193C
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 13:24:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15E111F23DF4
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 13:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4AF21F4FC1;
-	Mon, 21 Oct 2024 13:24:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF7901F9421;
+	Mon, 21 Oct 2024 13:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gWsxTbPG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="W2P2ByC4"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B01A194C62;
-	Mon, 21 Oct 2024 13:24:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53BF1F819F
+	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 13:39:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729517076; cv=none; b=El91wnxpULrpbqXUY6S6CSExt/k2I9jbDMA8pdVxKrdYpuIXUVYWZs2V7Jd2Y64NthKqdQmCR7QKgOGn4YJnK5H7BARq93eX+YHedpAJ39sHkw7nj41XPvenr9hVBxs/VbXDRUg7xV/rO9VwRd50sX22zX5PY/LhlsQ/nsVwMAQ=
+	t=1729517984; cv=none; b=gGePW6fK8uyKJQCE2kADpibdDFjd2Lgl9mf6/ZWhpyDpg534vXnPXsoJZ6ojvqF1WNySXvI02LBj8abEhCuUx4SKQKR7yx8/l99OCeUmlA8IUKVZV7mirISiTuojcJOQgRvkaZLY8NhUdEaGglJVw0kA2c+CEsSf6O8C76MXhSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729517076; c=relaxed/simple;
-	bh=r+zKiREXrZk5D3hxSgQ1MLCydswkdcdo/IqSPLFxAWc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nuIqulCbtFsa/+dX0hoK+pPDh5yg/Z+CVXtDzCV4/sSCpZ6+BpRmQuu+0iF7+gnO2nli9AiDYiZf7JCBejIIV18anB5B9opfaRRB49Ow8g9nIkGbYhI40nDATAcamp6r0xWGkkI0HWh61MjxIzYUH55rPkHg6zzivtuA/L5Azuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gWsxTbPG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AB81C4CEC3;
-	Mon, 21 Oct 2024 13:24:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729517075;
-	bh=r+zKiREXrZk5D3hxSgQ1MLCydswkdcdo/IqSPLFxAWc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gWsxTbPGKx0cuJ9J/kh30dMOTlRZR+9/CWo5V2FcZTzrNBRYRKRm+ujHIVxqunvU4
-	 ZZlkSSHGQQIDNPanNODaIgSwNEDDliuHmbuPzci+SjsajdMSRAoj82GX0b9L/IJRL2
-	 G8bd8i13vlEEekzqaIg20o0xYgVC+TpUsPO0jstYxJFwv3OD38Vul1AMM7AjHVA8x9
-	 wuWeeAS/Zf3rp9kXhHLpWl2pWbsZSx+b1fiH8rERPJBOkcv7RxwMEKgKRdxzrYlsFr
-	 4XIgjymK3cmA8NGyGn1lJqRS80CvIQReuXwGQwfb1IQ3EuF1eA8B8lxodIAnWl52g/
-	 GqObBs9XY/2bQ==
-Date: Mon, 21 Oct 2024 15:24:30 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Jan Kara <jack@suse.cz>, Song Liu <songliubraving@meta.com>, 
-	Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Al Viro <viro@zeniv.linux.org.uk>, KP Singh <kpsingh@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Extend test fs_kfuncs to
- cover security.bpf xattr names
-Message-ID: <20241021-ausgleichen-wesen-3d3ae116f742@brauner>
-References: <20241002214637.3625277-1-song@kernel.org>
- <20241002214637.3625277-3-song@kernel.org>
- <Zw34dAaqA5tR6mHN@infradead.org>
- <0DB83868-0049-40E3-8E62-0D8D913CB9CB@fb.com>
- <Zw384bed3yVgZpoc@infradead.org>
- <BF0CD913-B067-4105-88C2-B068431EE9E5@fb.com>
- <20241016135155.otibqwcyqczxt26f@quack3>
- <20241016-luxus-winkt-4676cfdf25ff@brauner>
- <ZxEnV353YshfkmXe@infradead.org>
+	s=arc-20240116; t=1729517984; c=relaxed/simple;
+	bh=ZZzxq4s+zc0qfiOiBA6I+JJLwRPs3Fpk7f9iQsV/uL4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W1pKOGIcja/WlIeermW7eU7mDzc54bhvGeUmUWB10QeWOBRifszkcXcuczIQua2lUZJ7A+QU3kclpjy+1uOw2svDyjs39sBzYo9ehhHtFBzz5ap8GCR2AIqa+flcFrvgYoKYUC0v05z2kbRnRqTMo5bwZdrm9HmajTplAFTv5RU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=W2P2ByC4; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729517978;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=YnMU3SJ4rTdwk4npMFwBCF1qFejuDd4IXtYj2YsF7v8=;
+	b=W2P2ByC43NudN0eJMDKucUNQ7kKLCXjIDFGOnY2pmUFPoDkyMt7JwhDwGL6y0TXNFP2G6L
+	Jgxa4QWiHaBudP5Y18MJtCg4gBEb6tnK3J7iMh2+qO1GuwuitakDBOb7MXz/sgvFnDLpRo
+	MpEEdeZK9HTOdWxqSHO5NyRG9kCxmhs=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	jolsa@kernel.org,
+	eddyz87@gmail.com,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next 0/2] bpf, x64: Introduce two tailcall enhancements
+Date: Mon, 21 Oct 2024 21:39:27 +0800
+Message-ID: <20241021133929.67782-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZxEnV353YshfkmXe@infradead.org>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Oct 17, 2024 at 08:03:51AM -0700, Christoph Hellwig wrote:
-> On Wed, Oct 16, 2024 at 04:51:37PM +0200, Christian Brauner wrote:
-> > > 
-> > > I think that getting user.* xattrs from bpf hooks can still be useful for
-> > > introspection and other tasks so I'm not convinced we should revert that
-> > > functionality but maybe it is too easy to misuse? I'm not really decided.
-> > 
-> > Reading user.* xattr is fine. If an LSM decides to built a security
-> > model around it then imho that's their business and since that happens
-> > in out-of-tree LSM programs: shrug.
-> 
-> By that argument user.kfuncs is even more useless as just being able
-> to read all xattrs should be just as fine.
+This patch set introduces two enhancements aimed at improving tailcall
+handling in the x64 JIT:
 
-bpf shouldn't read security.* of another LSM or a host of other examples...
+1. Tailcall info is propagated to a subprog only if the subprog is
+   tail_call_reachable.
+2. Tailcall info is propagated through the trampoline only when the target
+   is a subprog and it is tail_call_reachable.
+
+Leon Hwang (2):
+  bpf, x64: Propagate tailcall info only for tail_call_reachable
+    subprogs
+  bpf, verifier: Check trampoline attach target is tail_call_reachable
+    subprog
+
+ arch/x86/net/bpf_jit_comp.c |  4 +++-
+ include/linux/bpf.h         |  1 +
+ kernel/bpf/verifier.c       | 10 +++++++++-
+ 3 files changed, 13 insertions(+), 2 deletions(-)
+
+-- 
+2.44.0
+
 
