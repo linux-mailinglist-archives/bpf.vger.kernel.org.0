@@ -1,192 +1,177 @@
-Return-Path: <bpf+bounces-42574-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42575-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C1409A59D6
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 07:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CDCB9A5A3B
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 08:21:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D00DF1F21B51
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 05:42:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9A731F217F3
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 06:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78DD619938D;
-	Mon, 21 Oct 2024 05:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06C9B194C6C;
+	Mon, 21 Oct 2024 06:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Jbs5GuSg";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/penghOD"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NHdDTBZY"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD7912209B;
-	Mon, 21 Oct 2024 05:42:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B99BA27
+	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 06:20:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729489335; cv=none; b=sanElxSxAep278Y+3i5KeFoUldVxEG5Y9wb6J458T1fsSx4r27pDRK8E+wtjIFuC7zPOSDryGUuJtXLiHuVFzzvZUyU3Wh4d2pZpPqfKn5v67ledxYNxm3AL6DZViL8vIfkQZz2AeB8ok6RX5FIJlHBZfRe4uatYc4L4oDw+klc=
+	t=1729491653; cv=none; b=UYrdUu2YR8Q/4OCI7CtugPJjfKc2fFhqYooKLOZNunzDZPDsujvAMsKe4WiePDmSWtJHP7jXg3rJU1Nhbd/2DwjId3ky2klZW/fq7X2K3jmDE/7rpWorBZp2raVRQBJNxzCnaVsSy15B7J/tzbAtku9ph/GXTVnKQc9JPiJZtK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729489335; c=relaxed/simple;
-	bh=nqU2AdQPtpXBQBywDKE615SxVcwqLzweuXJzCTdK2Wc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=H6TTNkPLOp6hAPAtckKT9hsTiQDgm/VQtBHd3irsLNODF4ynrcHDNhMWG+yjbpgjhNU9RHb9KwD8bv5qHMpfXQpjwWsdvG+Rer7FeqKe2p3loCXdjvilrXng2hFItIBcsOdlODLZE+1pErU85txff6+cjWhrrxDbgcmNc2CSbRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Jbs5GuSg; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/penghOD; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1729489324;
+	s=arc-20240116; t=1729491653; c=relaxed/simple;
+	bh=4TNHhsIEtAACYwTOOkht3KM/DAG/Xuo9kqLr/BnfvXw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Fp1wps9nobp3WU9Qx+zlKHBcA/xVolGCZPYGuK3kRsrAMyURgJTTQQ3zZlUAIE9N06ba+sISlSTBrRebvoQmPb0d5ywGMRbxJy3pMjiXQZ2EaNAZXtQGr1anOaWTKri/mBKnv6zgPLO4DBONqgueNqiZVveKhhX+O/rCEb4+kO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NHdDTBZY; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1729491650;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IwN2APzuoMR+7fgmrER77l2eiOhN6doSytLMUFLsLt4=;
-	b=Jbs5GuSgoz06Yo6+KGN33AGlwU6bVgUJfxbq4ZyoTWGHQHxTJPHtRbfcDi31UU7CBUFGX5
-	AWhXWkF2ii5GnuIRehHb8djQEXETXZQEQez9hU3zVJIAi//Qi1nqqNjMoSWaD32/vDIly2
-	sMm4YmzsMNUPvHUzUxgXxTNCwgC5EEDpW2oIefWHHcDa0HwLaH7VQlxRUcHGthr0p4EGIH
-	DdDdpZkbwkFJ1OcNV6OLq8vdud/oiawaxlWvPSTImEudNlqZ6RmQYwqWHHJ8ZiMInKmUgr
-	Wppd4iKQ0wrpyKcCKAgw4ORLQ+pzC6kYy4jVaBb71VP/xAyd7UGazAan14tCTw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1729489324;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IwN2APzuoMR+7fgmrER77l2eiOhN6doSytLMUFLsLt4=;
-	b=/penghODChhNiRRbiTNwutaWjk3kpVXgV5wGXUvxA8y0WgJlfcblrQay4QSk/3pGM/X9il
-	piF30ZLsitnXklAw==
-To: Joe Damato <jdamato@fastly.com>
-Cc: netdev@vger.kernel.org, vinicius.gomes@intel.com, Tony Nguyen
- <anthony.l.nguyen@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer
- <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, "moderated
- list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>, open list
- <linux-kernel@vger.kernel.org>, "open list:XDP (eXpress Data Path)"
- <bpf@vger.kernel.org>
-Subject: Re: [RFC net-next v2 2/2] igc: Link queues to NAPI instances
-In-Reply-To: <ZxKVI_DvFWBvRMaf@LQ3V64L9R2>
-References: <20241014213012.187976-1-jdamato@fastly.com>
- <20241014213012.187976-3-jdamato@fastly.com>
- <87h69d3bm2.fsf@kurt.kurt.home> <ZxKVI_DvFWBvRMaf@LQ3V64L9R2>
-Date: Mon, 21 Oct 2024 07:42:02 +0200
-Message-ID: <87o73e2es5.fsf@kurt.kurt.home>
+	bh=uHJRiKMI4dr3V6nqOEQrnHgqeQSUwGziYyV9iDC+6MI=;
+	b=NHdDTBZYoGXZZAZH5Qa572oo8paCdVqJXcNUrK8S0YFA7FfBOwDaa7hOqBM788EgfRlDF+
+	TCtNTGgQN+GHQhK2F052sYi45nCiRS9RzOUh+KDgm45ka+Tfr0uTzBZq88PwcK6CX9b6di
+	8UU2Sqvcc7VyqIBXDz2FCExSb+zRRsU=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-244--DHM5QwRPvCyYpcf6qMt6g-1; Mon, 21 Oct 2024 02:20:49 -0400
+X-MC-Unique: -DHM5QwRPvCyYpcf6qMt6g-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a9a273e4251so264738366b.1
+        for <bpf@vger.kernel.org>; Sun, 20 Oct 2024 23:20:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729491647; x=1730096447;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uHJRiKMI4dr3V6nqOEQrnHgqeQSUwGziYyV9iDC+6MI=;
+        b=LAmCoS46z1ZniU4/O9FvbxXQIhTcgxLqEURupZv2K0VbTcyfY85dt82LDlEJn0PQ9E
+         9jrullw5u3ZZylKQqZAS34UNa/InbwHuOsoq+1PS0vAZw0TbvRH8Erj3InX9PUNmA/Sl
+         cE75DH+zkU616cadrIPBl5uV4GFeM45mimOC8myRsZUIrmiSkVQ6iMxH0yOA+BMaigsQ
+         8yfVxvl8fnUbqks/QC7NAgB10UZava/G2BX3+QmuXwT0WZN97w7vJ6ooq7xAvpYtvSjN
+         C36cmwJHhouD2fuMD6GzfPO4UyDK4QE/DdfsS1AQ0rT120bXuqgn9RIeHubmvQpdCv/L
+         8IFA==
+X-Gm-Message-State: AOJu0YzJ1mc8x1PIzR67P7Lm71Zv5x9dRGQ0sh8uI9BOBK1nYgSsgYEr
+	DgMj4afSkRVieCLWk6VtnrQhUiBH9Y7pZYXX5in38A2e5kkQcbB7+dTqyp1/ShgMkfioXn1q5Kd
+	YJPxZzRgT0xr15+/6kZCqu/jR7l+/dbG1j5OI10/YTDd45357pIdHsImJ360=
+X-Received: by 2002:a17:907:705:b0:a9a:37fe:e7d0 with SMTP id a640c23a62f3a-a9a69de9833mr1007166666b.64.1729491647534;
+        Sun, 20 Oct 2024 23:20:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFXxzqJyPcj2K0U+Xhq849ojTgmJqWa+ACU0BrIj38ryXadMOQ1GlCyyaMVtLozAgwavWrLRQ==
+X-Received: by 2002:a17:907:705:b0:a9a:37fe:e7d0 with SMTP id a640c23a62f3a-a9a69de9833mr1007163366b.64.1729491647137;
+        Sun, 20 Oct 2024 23:20:47 -0700 (PDT)
+Received: from [192.168.0.113] (185-219-167-205-static.vivo.cz. [185.219.167.205])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9a91572abdsm165879166b.171.2024.10.20.23.20.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Oct 2024 23:20:46 -0700 (PDT)
+Message-ID: <a05967e6-851f-4db8-9ec4-b910acaaf70f@redhat.com>
+Date: Mon, 21 Oct 2024 08:20:39 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 3/3] selftests/bpf: Disable warnings on unused
+ flags for Clang builds
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Shuah Khan <shuah@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>
+References: <cover.1729233447.git.vmalik@redhat.com>
+ <370c84ee3a0e8627a09d89fff12f7a285565fb46.1729233447.git.vmalik@redhat.com>
+ <ZxU86eN6kMrgmuaV@krava>
+Content-Language: en-US
+From: Viktor Malik <vmalik@redhat.com>
+In-Reply-To: <ZxU86eN6kMrgmuaV@krava>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On 10/20/24 19:24, Jiri Olsa wrote:
+> On Fri, Oct 18, 2024 at 08:49:01AM +0200, Viktor Malik wrote:
+>> There exist compiler flags supported by GCC but not supported by Clang
+>> (e.g. -specs=...). Currently, these cannot be passed to BPF selftests
+>> builds, even when building with GCC, as some binaries (urandom_read and
+>> liburandom_read.so) are always built with Clang and the unsupported
+>> flags make the compilation fail (as -Werror is turned on).
+>>
+>> Add -Wno-unused-command-line-argument to these rules to suppress such
+>> errors.
+>>
+>> This allows to do things like:
+>>
+>>     $ CFLAGS="-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1" \
+>>       make -C tools/testing/selftests/bpf
+> 
+> hi,
+> might be my fedora setup, but this example gives me compile error below
+> even with the patch applied:
+> 
+>   EXT-OBJ  [test_progs] testing_helpers.o
+> In file included from testing_helpers.c:10:
+> disasm.h:11:10: fatal error: linux/stringify.h: No such file or directory
+>    11 | #include <linux/stringify.h>
+>       |          ^~~~~~~~~~~~~~~~~~~
 
-On Fri Oct 18 2024, Joe Damato wrote:
-> On Tue, Oct 15, 2024 at 12:27:01PM +0200, Kurt Kanzenbach wrote:
->> On Mon Oct 14 2024, Joe Damato wrote:
->
-> [...]
->
->> > diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/e=
-thernet/intel/igc/igc_main.c
->> > index 7964bbedb16c..59c00acfa0ed 100644
->> > --- a/drivers/net/ethernet/intel/igc/igc_main.c
->> > +++ b/drivers/net/ethernet/intel/igc/igc_main.c
->> > @@ -4948,6 +4948,47 @@ static int igc_sw_init(struct igc_adapter *adap=
-ter)
->> >  	return 0;
->> >  }
->> >=20=20
->> > +void igc_set_queue_napi(struct igc_adapter *adapter, int q_idx,
->> > +			struct napi_struct *napi)
->> > +{
->> > +	if (adapter->flags & IGC_FLAG_QUEUE_PAIRS) {
->> > +		netif_queue_set_napi(adapter->netdev, q_idx,
->> > +				     NETDEV_QUEUE_TYPE_RX, napi);
->> > +		netif_queue_set_napi(adapter->netdev, q_idx,
->> > +				     NETDEV_QUEUE_TYPE_TX, napi);
->> > +	} else {
->> > +		if (q_idx < adapter->num_rx_queues) {
->> > +			netif_queue_set_napi(adapter->netdev, q_idx,
->> > +					     NETDEV_QUEUE_TYPE_RX, napi);
->> > +		} else {
->> > +			q_idx -=3D adapter->num_rx_queues;
->> > +			netif_queue_set_napi(adapter->netdev, q_idx,
->> > +					     NETDEV_QUEUE_TYPE_TX, napi);
->> > +		}
->> > +	}
->> > +}
->>=20
->> In addition, to what Vinicius said. I think this can be done
->> simpler. Something like this?
->>=20
->> void igc_set_queue_napi(struct igc_adapter *adapter, int vector,
->> 			struct napi_struct *napi)
->> {
->> 	struct igc_q_vector *q_vector =3D adapter->q_vector[vector];
->>=20
->> 	if (q_vector->rx.ring)
->> 		netif_queue_set_napi(adapter->netdev, vector, NETDEV_QUEUE_TYPE_RX, na=
-pi);
->>=20
->> 	if (q_vector->tx.ring)
->> 		netif_queue_set_napi(adapter->netdev, vector, NETDEV_QUEUE_TYPE_TX, na=
-pi);
->> }
->
-> I tried this suggestion but this does not result in correct output
-> in the case where IGC_FLAG_QUEUE_PAIRS is disabled.
->
-> The output from netlink:
->
-> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
->                              --dump queue-get --json=3D'{"ifindex": 2}'
->
-> [{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
->  {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
->  {'id': 0, 'ifindex': 2, 'type': 'tx'},
->  {'id': 1, 'ifindex': 2, 'type': 'tx'}]
->
-> Note the lack of a napi-id for the TX queues. This typically happens
-> when the linking is not done correctly; netif_queue_set_napi should
-> take a queue id as the second parameter.
->
-> I believe the suggested code above should be modified to be as
-> follows to use ring->queue_index:
->
->   if (q_vector->rx.ring)
->     netif_queue_set_napi(adapter->netdev,
->                          q_vector->rx.ring->queue_index,
->                          NETDEV_QUEUE_TYPE_RX, napi);
->=20=20=20
->   if (q_vector->tx.ring)
->     netif_queue_set_napi(adapter->netdev,
->                          q_vector->tx.ring->queue_index,
->                          NETDEV_QUEUE_TYPE_TX, napi);
+Aren't you doing `make CFLAGS="..."` instead of `CFLAGS="..." make`? The
+difference is that the former overrides CFLAGS defined in selftests
+Makefile and therefore the include dirs are not correctly added.
 
-LGTM. Thanks.
+> 
+> jirka
+> 
+>>
+>> Without this patch, the compilation would fail with:
+>>
+>>     [...]
+>>     clang: error: argument unused during compilation: '-specs=/usr/lib/rpm/redhat/redhat-hardened-cc1' [-Werror,-Wunused-command-line-argument]
+>>     make: *** [Makefile:273: /bpf-next/tools/testing/selftests/bpf/liburandom_read.so] Error 1
+>>     [...]
+>>
+>> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+>> ---
+>>  tools/testing/selftests/bpf/Makefile | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+>> index 1fc7c38e56b5..3da1a61968b7 100644
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@ -273,6 +273,7 @@ $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c liburandom
+>>  	$(Q)$(CLANG) $(CLANG_TARGET_ARCH) \
+>>  		     $(filter-out -static,$(CFLAGS) $(LDFLAGS)) \
+>>  		     $(filter %.c,$^) $(filter-out -static,$(LDLIBS)) \
+>> +		     -Wno-unused-command-line-argument \
+>>  		     -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 \
+>>  		     -Wl,--version-script=liburandom_read.map \
+>>  		     -fPIC -shared -o $@
+>> @@ -281,6 +282,7 @@ $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_r
+>>  	$(call msg,BINARY,,$@)
+>>  	$(Q)$(CLANG) $(CLANG_TARGET_ARCH) \
+>>  		     $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^) \
+>> +		     -Wno-unused-command-line-argument \
+>>  		     -lurandom_read $(filter-out -static,$(LDLIBS)) -L$(OUTPUT) \
+>>  		     -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 \
+>>  		     -Wl,-rpath=. -o $@
+>> -- 
+>> 2.47.0
+>>
+> 
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmcV6aoTHGt1cnRAbGlu
-dXRyb25peC5kZQAKCRDBk9HyqkZzgkotD/0X5UYHEhJgqmCt6kB/HHS4YFUODWTi
-XbRxhEARJl+qKt6TMqywibxifqVHp9hL08AWuXp5kBQWw9Sc2e6KfG6TfoIBtdM3
-7nR6+Wk/CrMZhZVKbNjEQrfmcZAdl3Sk44DPaXhfqU0jCbgj0sj3zpoZU5q8UXT0
-8E5kkrPY1a98ufweoCnYSmdvLmqUXXgHeBWyoFgOdxeN2jIY1azZrgQucmdYsgYt
-g9Lprnp3euz/7UrAJhTgxjq7/klCKC0x2Sg0xmeKoNJ0aZC5zppsBZXJrWTlZElh
-zgwiV0Vc3aEWCRIoOVudj1GjSEug6w/fJWBO6gP+5EZ1N6XfQG7MOzuW07G47ubm
-8qX7JRjVyaNZAwX1wy69KZv/NVNUuPxJrdVMxPoV7HAZtZfQl5TA6aE3aBOvkO2q
-gsSU0cR2fk4Ac2YLbKcZNwrxzg8gsnhPrdPJw0EWmCvaAIzxFnYW+lPdV0SDiHnc
-e4kXClZjVramUW4cP3B9ZJ4krrXMNYQxnVfFSR55H+LwL0vKxqNNiRd3rNTpl4CL
-HcfYg6wvKulCvJZ31QwpeovA4K5BdCDd1JH/PkHLVSdM1sUWtDE3pRRnFk+sUG+S
-T8GqcYGHs4f6Ee2bYhHTFN5hOGRmcD+gM/9vdjAGqE4teIS/RhZDe7IoN0A/4gwP
-2wWE6IMegLnsZQ==
-=LURd
------END PGP SIGNATURE-----
---=-=-=--
 
