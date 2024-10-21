@@ -1,238 +1,173 @@
-Return-Path: <bpf+bounces-42656-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42657-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B96A9A6EFA
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 18:02:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7037D9A6F53
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 18:21:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D54B1F21F0C
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 16:02:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FE142837F7
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 16:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E29111DF754;
-	Mon, 21 Oct 2024 16:02:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 986F81F8936;
+	Mon, 21 Oct 2024 16:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y7e3feHW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jFtZ20pQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A7217C224;
-	Mon, 21 Oct 2024 16:01:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1287B1F4FC6
+	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 16:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729526520; cv=none; b=ouXg9piQhxokwl6gGpV8kG6RrfoNo6ZOE8D38XJmjAaB22rmzkDbzEKiLvrMfWOjSqnyNX8ycMeP1TlySOXByoeXkgRZAz36xZC4x3R7JGkGB37qrPgFoHDhb3W18gr21H/Jbz8AXSSDR0DM66NYB49dW/azTY2oNK6eadXLYfY=
+	t=1729527617; cv=none; b=lDKeRTCCpruXcq1mm2OCwShimi0gZFuNougKngw7qG6EN0xzMaZoeXAhfToWviQrfBZFmdE4UVDGRM3poOEwcNdU1ndEpuIvzQ/wjVbp2OLg2snwJJfDRuly6oEEdme8AFJyUSrkqbmfwoZvkQddxolqbeGBLvrBPMqkJXUqzDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729526520; c=relaxed/simple;
-	bh=KqOvlvWU4dwKQIYucRDgx5Bc6wlqDO5UU2lJZuu2g4g=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vBLLPjjGeywEWAE5CelvVbsQZtwsJAl1jm/FLLWS9ubiPFS5492DbgIzNTN4aE6gnnFa+1tPThvxq9weVErOjIt1c2L8XWt74iK9Tyau2qU9/t4XQ3DugrHAEls+s3n4CgfiWWlCHICQB+epRx8+nCXHo+K1aPOitubZtiaV0wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y7e3feHW; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-539e8586b53so4781465e87.1;
-        Mon, 21 Oct 2024 09:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729526516; x=1730131316; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=U3dxFTPmf1Xx55SxWH3mCtz6g7NbAdX1kAdoe9FSYX4=;
-        b=Y7e3feHWAdZu4baUmetvZbgMdzPErvu2LoFcLVvYsQ9csI89ZlmQlzOZgNwm3oG/WG
-         NLHSogxJY1k8bOWqkGqGnUorDtkmIbwFy/r0m1duhd72toGiWab+9eGM3qlRtJ0vdznL
-         iWPQ7sIKdC/xVWXJfePC0sHmbUpD3fiNHs9019xFUOe02+2NW716nhNNDaRI0BWFqfJP
-         wbfIVDal+3zcErC9KTWpG7IyCHpOYA+gN648VOSERPklOr+H5S+VezcZ4uzP2z06Te5O
-         ptjK9f7+XTCMdnBx8VIIZOkCYoyDCaL6s7kEU7z23kAAQcBbHn1651/2ih0Tt6ogxA2C
-         2htw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729526516; x=1730131316;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U3dxFTPmf1Xx55SxWH3mCtz6g7NbAdX1kAdoe9FSYX4=;
-        b=ppDpY4TmI7hN3XWgUPlET42BsI5qPZ+flIITXp74IJkhGFTApxlw2tfJok5iuv4mhU
-         TFB5on3ZJ92Yy7q9DTEzPHwG7iHHr5OrzB7gbxH016UEwGBkZMM3bSfkense8dAbgo/w
-         0d7N/M/XU6PCVj9b2lVm2kdGP59SHTWXaKJZV0kn4Z8s5/28VlFOXI+mgg+2ocp/3WW2
-         wCVbb9g2Dx8kpvmCrlRVd3BG3vqzFcfht2RYKlWtWIrKFQ8eREHgfPqxlkTzFWEQE2bc
-         x/9x74x9HC+0CWbWqQKL2wyz6juHPAnj4SD+NdiKxfFq3tbAnNC8cKqJlYWZMjWTkIis
-         gZZg==
-X-Forwarded-Encrypted: i=1; AJvYcCV3WIozy9H9wHxr/72RQchfKBkIbAIa39blCjM+JwjYIYqgEO8fyEtBOD/rcZ2DjHi9e17/8tt+2DzlzoMx@vger.kernel.org, AJvYcCVRkI1Evz/yus3DFAe56YuKtM80kI2Q0os4e7FnmpQaQWYc+lf4MCXf0p4Xv5DdNpFWCC3Q@vger.kernel.org, AJvYcCXJRVUZKyDwAgGZEF9JlpyfOVrCrbPTCa4+8ml25H+Ifb+r1l7VzdFsPxntcdIPhKWkSX0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz4hyDxjA249ou9Ohn4v3Ktnz+ULTRBvmvWdn8amu09pI4nw1XY
-	shku7BZkx4CEu77EsTFEfWM/R2EGmmJObQT1NOK9u4ytJZ+Q5Vq0
-X-Google-Smtp-Source: AGHT+IHeKm06YyrvKQ0tfAGHWdf+1GK274E7UqvzwaxdSk+6ZjECVQrZ5AXSQ8ROVmeI8Ec5+paYeA==
-X-Received: by 2002:a05:6512:3d92:b0:539:fe02:c1fe with SMTP id 2adb3069b0e04-53b13185208mr22440e87.16.1729526515916;
-        Mon, 21 Oct 2024 09:01:55 -0700 (PDT)
-Received: from pc636 (host-90-233-222-236.mobileonline.telia.com. [90.233.222.236])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53a224313b5sm521241e87.201.2024.10.21.09.01.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Oct 2024 09:01:55 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Mon, 21 Oct 2024 18:01:52 +0200
-To: paulmck@kernel.org
-Cc: paulmck@kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-	syzbot <syzbot+061d370693bdd99f9d34@syzkaller.appspotmail.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
-	Marco Elver <elver@google.com>, andrii@kernel.org, ast@kernel.org,
-	bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
-	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-	kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev, sdf@fomichev.me, song@kernel.org,
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] KCSAN: data-race in __mod_timer / kvfree_call_rcu
-Message-ID: <ZxZ68KmHDQYU0yfD@pc636>
-References: <670cb520.050a0220.4cbc0.0041.GAE@google.com>
- <CACT4Y+a1sWaWSVoYrafE+9secQgHYwywEWGCSTF6MZs0Rr7zUA@mail.gmail.com>
- <278957c8-a6d2-43e5-aed7-9ed44648ffb2@paulmck-laptop>
- <CA+KHdyX5n8K0guzyGiWFOt=p8UY6OvHrkH01-wgRHjzF8BZxDQ@mail.gmail.com>
+	s=arc-20240116; t=1729527617; c=relaxed/simple;
+	bh=0mKZ8vje+kGS/8jjskgA+aeIOAyP769yY5w6qJ95a8w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r8W3tj7snp6RAmS8awltdsJB6ucac0HV6w1mIu3tEK5MpWMsZ5ea5onQeYeEVEBXxr7DoDndE1BhjKWzcl3NbHuZnDCkFUeaTqiUt+NL8t61LweIg2lxo86vavRb6BIu+dLluv/9lGnL5Iknh7nVmTECC4adgdiSCeIIoP/7RJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jFtZ20pQ; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <72039787-a0a6-470c-8610-a813f12d2223@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729527612;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m7Sv5Ysy21jiCa6yv6D941X9HeEhprlo/fgvoMNFimE=;
+	b=jFtZ20pQxKcKdp1n/v3L0rkfx/3DqoKBwgDn7cFBfS5fUcKoTOGwJHu6zIZ+9EWt/1+DSA
+	MkeLYHzhV/kTjfyv7Dwx32+UK0M9M5QCPUUlfFJcC3I7vYFkRWoFYIQ2ZVaz3iHDN1rAlu
+	Z6bIq2dQTjN1r5xr89AXbjW7kQN5CNw=
+Date: Mon, 21 Oct 2024 09:19:57 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+KHdyX5n8K0guzyGiWFOt=p8UY6OvHrkH01-wgRHjzF8BZxDQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 8/9] selftests/bpf: Add tracing prog private
+ stack tests
+Content-Language: en-GB
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
+ Tejun Heo <tj@kernel.org>
+References: <20241020191341.2104841-1-yonghong.song@linux.dev>
+ <20241020191431.2108197-1-yonghong.song@linux.dev> <ZxV9KUHDcRPC5s9_@krava>
+ <2b304d79-80a7-4366-8267-7e3d724f6e86@linux.dev> <ZxYvkmP39zbCUGwd@krava>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <ZxYvkmP39zbCUGwd@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-> On Mon, Oct 14, 2024 at 7:00 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Mon, Oct 14, 2024 at 10:27:05AM +0200, Dmitry Vyukov wrote:
-> > > On Mon, 14 Oct 2024 at 08:07, syzbot
-> > > <syzbot+061d370693bdd99f9d34@syzkaller.appspotmail.com> wrote:
-> > > >
-> > > > Hello,
-> > > >
-> > > > syzbot found the following issue on:
-> > > >
-> > > > HEAD commit:    5b7c893ed5ed Merge tag 'ntfs3_for_6.12' of https://github...
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=148ae327980000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=a2f7ae2f221e9eae
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=061d370693bdd99f9d34
-> > > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > > >
-> > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > >
-> > > > Downloadable assets:
-> > > > disk image: https://storage.googleapis.com/syzbot-assets/79bb9e82835a/disk-5b7c893e.raw.xz
-> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/5931997fd31c/vmlinux-5b7c893e.xz
-> > > > kernel image: https://storage.googleapis.com/syzbot-assets/fc8cc3d97b18/bzImage-5b7c893e.xz
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+061d370693bdd99f9d34@syzkaller.appspotmail.com
-> > > >
-> > > > ==================================================================
-> > > > BUG: KCSAN: data-race in __mod_timer / kvfree_call_rcu
-> > > >
-> > > > read to 0xffff888237d1cce8 of 8 bytes by task 10149 on cpu 1:
-> > > >  schedule_delayed_monitor_work kernel/rcu/tree.c:3520 [inline]
-> >
-> > This is the access to krcp->monitor_work.timer.expires in the function
-> > schedule_delayed_monitor_work().
-> >
-> > Uladzislau, could you please take a look at this one?
-> >
-> >                                                         Thanx, Paul
-> >
-> > > +rcu maintainers, this looks more like rcu issue
-> > >
-> > > #syz set subsystems: rcu
-> > >
-> > > >  kvfree_call_rcu+0x3b8/0x510 kernel/rcu/tree.c:3839
-> > > >  trie_update_elem+0x47c/0x620 kernel/bpf/lpm_trie.c:441
-> > > >  bpf_map_update_value+0x324/0x350 kernel/bpf/syscall.c:203
-> > > >  generic_map_update_batch+0x401/0x520 kernel/bpf/syscall.c:1849
-> > > >  bpf_map_do_batch+0x28c/0x3f0 kernel/bpf/syscall.c:5143
-> > > >  __sys_bpf+0x2e5/0x7a0
-> > > >  __do_sys_bpf kernel/bpf/syscall.c:5741 [inline]
-> > > >  __se_sys_bpf kernel/bpf/syscall.c:5739 [inline]
-> > > >  __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5739
-> > > >  x64_sys_call+0x2625/0x2d60 arch/x86/include/generated/asm/syscalls_64.h:322
-> > > >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> > > >  do_syscall_64+0xc9/0x1c0 arch/x86/entry/common.c:83
-> > > >  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> > > >
-> > > > write to 0xffff888237d1cce8 of 8 bytes by task 56 on cpu 0:
-> > > >  __mod_timer+0x578/0x7f0 kernel/time/timer.c:1173
-> > > >  add_timer_global+0x51/0x70 kernel/time/timer.c:1330
-> > > >  __queue_delayed_work+0x127/0x1a0 kernel/workqueue.c:2523
-> > > >  queue_delayed_work_on+0xdf/0x190 kernel/workqueue.c:2552
-> > > >  queue_delayed_work include/linux/workqueue.h:677 [inline]
-> > > >  schedule_delayed_monitor_work kernel/rcu/tree.c:3525 [inline]
-> > > >  kfree_rcu_monitor+0x5e8/0x660 kernel/rcu/tree.c:3643
-> > > >  process_one_work kernel/workqueue.c:3229 [inline]
-> > > >  process_scheduled_works+0x483/0x9a0 kernel/workqueue.c:3310
-> > > >  worker_thread+0x51d/0x6f0 kernel/workqueue.c:3391
-> > > >  kthread+0x1d1/0x210 kernel/kthread.c:389
-> > > >  ret_from_fork+0x4b/0x60 arch/x86/kernel/process.c:147
-> > > >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-> > > >
-> > > > Reported by Kernel Concurrency Sanitizer on:
-> > > > CPU: 0 UID: 0 PID: 56 Comm: kworker/u8:4 Not tainted 6.12.0-rc2-syzkaller-00050-g5b7c893ed5ed #0
-> > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-> > > > Workqueue: events_unbound kfree_rcu_monitor
-> > > > ==================================================================
-> > > > bridge0: port 2(bridge_slave_1) entered blocking state
-> > > > bridge0: port 2(bridge_slave_1) entered forwarding state
-> > > >
+
+On 10/21/24 3:40 AM, Jiri Olsa wrote:
+> On Sun, Oct 20, 2024 at 09:32:38PM -0700, Yonghong Song wrote:
+>> On 10/20/24 2:59 PM, Jiri Olsa wrote:
+>>> On Sun, Oct 20, 2024 at 12:14:31PM -0700, Yonghong Song wrote:
+>>>
+>>> SNIP
+>>>
+>>>> +__naked __noinline __used
+>>>> +static unsigned long loop_callback(void)
+>>>> +{
+>>>> +	asm volatile (
+>>>> +	"call %[bpf_get_prandom_u32];"
+>>>> +	"r1 = 42;"
+>>>> +	"*(u64 *)(r10 - 512) = r1;"
+>>>> +	"call cumulative_stack_depth_subprog;"
+>>>> +	"r0 = 0;"
+>>>> +	"exit;"
+>>>> +	:
+>>>> +	: __imm(bpf_get_prandom_u32)
+>>>> +	: __clobber_common);
+>>>> +}
+>>>> +
+>>>> +SEC("raw_tp")
+>>>> +__description("Private stack, callback")
+>>>> +__success
+>>>> +__arch_x86_64
+>>>> +/* for func loop_callback */
+>>>> +__jited("func #1")
+>>>> +__jited("	endbr64")
+>>> this should fail if CONFIG_X86_KERNEL_IBT is not enabled, right?
+>>>
+>>> hm, but I can see that also in other tests, so I guess it's fine,
+>>> should we add it to config.x86_64 ?
+>> The CI has CONFIG_X86_KERNEL_IBT as well.
+>>
+>> I checked x86 kconfig, I see
+>>
+>> config CC_HAS_IBT
+>>          # GCC >= 9 and binutils >= 2.29
+>>          # Retpoline check to work around https://gcc.gnu.org/bugzilla/show_bug.cgi?id=93654
+>>          # Clang/LLVM >= 14
+>>          # https://github.com/llvm/llvm-project/commit/e0b89df2e0f0130881bf6c39bf31d7f6aac00e0f
+>>          # https://github.com/llvm/llvm-project/commit/dfcf69770bc522b9e411c66454934a37c1f35332
+>>          def_bool ((CC_IS_GCC && $(cc-option, -fcf-protection=branch -mindirect-branch-register)) || \
+>>                    (CC_IS_CLANG && CLANG_VERSION >= 140000)) && \
+>>                    $(as-instr,endbr64)
+>>
+>> config X86_KERNEL_IBT
+>>          prompt "Indirect Branch Tracking"
+>>          def_bool y
+>>          depends on X86_64 && CC_HAS_IBT && HAVE_OBJTOOL
+>>          # https://github.com/llvm/llvm-project/commit/9d7001eba9c4cb311e03cd8cdc231f9e579f2d0f
+>>          depends on !LD_IS_LLD || LLD_VERSION >= 140000
+>>          select OBJTOOL
+>>          select X86_CET
+>>          help
+>>            Build the kernel with support for Indirect Branch Tracking, a
+>>            hardware support course-grain forward-edge Control Flow Integrity
+>>            protection. It enforces that all indirect calls must land on
+>>            an ENDBR instruction, as such, the compiler will instrument the
+>>            code with them to make this happen.
+>>            In addition to building the kernel with IBT, seal all functions that
+>>            are not indirect call targets, avoiding them ever becoming one.
+>>            This requires LTO like objtool runs and will slow down the build. It
+>>            does significantly reduce the number of ENDBR instructions in the
+>>            kernel image.
+>>
+>> So CONFIG_X86_KERNEL_IBT will be enabled if clang >= version_14 or newer gcc.
+> IIUC it's just dependency, no? doesn't mean it'll get enabled automatically
 >
-I tried to reproduce it but i am not able to. For the other hand, it is
-obvious that a reading "krcp->monitor_work.timer.expires" and simultaneous
-writing is possible.
+>> In my system, the gcc version is 13.1. So there is no need to explicitly add
+>> CONFIG_X86_KERNEL_IBT to the selftests/bpf/config.x86_64 file.
+> I had to enable it manualy for gcc 13.3.1
 
-So, we can address it, i mean to prevent such parallel access by following patch:
+IIUC, the ci config is generated based on config + config.x86_64 + config.vm
+in tools/testing/selftests/bpf directory.
 
-<snip>
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index e641cc681901..d711870fde84 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3531,7 +3531,7 @@ static int krc_count(struct kfree_rcu_cpu *krcp)
- }
- 
- static void
--schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
-+__schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
- {
- 	long delay, delay_left;
- 
-@@ -3545,6 +3545,16 @@ schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
- 	queue_delayed_work(system_wq, &krcp->monitor_work, delay);
- }
- 
-+static void
-+schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
-+{
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&krcp->lock, flags);
-+	__schedule_delayed_monitor_work(krcp);
-+	raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+}
-+
- static void
- kvfree_rcu_drain_ready(struct kfree_rcu_cpu *krcp)
- {
-@@ -3841,7 +3851,7 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
- 
- 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
--		schedule_delayed_monitor_work(krcp);
-+		__schedule_delayed_monitor_work(krcp);
- 
- unlock_return:
- 	krc_this_cpu_unlock(krcp, flags);
-<snip>
+In my case .config is generated from config + config.x86_64 + config.vm
+With my local gcc 11.5, I did
+    make olddefconfig
+and I see CONFIG_X86_KERNEL_IBT=y is set.
 
-i will send out the patch after some testing!
+Maybe your base config is a little bit different from what ci used.
+My local config is based on ci config + some more e.g. enabling KASAN etc.
 
---
-Uladzislau Rezki
+Could you debug a little more on why CONFIG_X86_KERNEL_IBT not enabled
+by default in your case? For
+
+config X86_KERNEL_IBT
+         prompt "Indirect Branch Tracking"
+         def_bool y
+         depends on X86_64 && CC_HAS_IBT && HAVE_OBJTOOL
+         # https://github.com/llvm/llvm-project/commit/9d7001eba9c4cb311e03cd8cdc231f9e579f2d0f
+         depends on !LD_IS_LLD || LLD_VERSION >= 140000
+         select OBJTOOL
+         select X86_CET
+
+default is 'y' so if all dependencies are met, CONFIG_X86_KERNEL_IBT
+is supposed to be on by default.
+
+>
+> jirka
 
