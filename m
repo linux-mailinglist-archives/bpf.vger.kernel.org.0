@@ -1,56 +1,56 @@
-Return-Path: <bpf+bounces-42570-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42571-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6533D9A597D
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 06:24:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B4549A5990
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 06:33:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 872EDB2180A
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 04:24:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F046B2116F
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2024 04:33:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43FD81CF7BA;
-	Mon, 21 Oct 2024 04:23:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5A4E192D97;
+	Mon, 21 Oct 2024 04:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XxTkm7qq"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K2SeJLW5"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2F933CFC
-	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 04:23:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED27634
+	for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 04:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729484591; cv=none; b=clclow1q16AoePOMpsumyg4DPcDkvWxnt8BekY635BlOBrenG2EndiJgwl9Dv40TWz83zUZMM06C6JqJRd/aZ/UbeGc4s3+y+VImkHeStJY+Yu9ly4n+PO+uldMudLp79L+AGderG3uWIpiVYxg4bXFqPSTmO/+9cBAklUa7AGQ=
+	t=1729485187; cv=none; b=iADkV3itXIbUAeFmPOm76nH/Nzy3BTatcF67bpU8OlJ4iY6zX1qb2WC3B2gob5OHEggnyoAXl70jncRZT9bKd3V4oIGOq7z3P05rAcm3KaybgaW3OG0mp0UpFmFsB86ae2G1G0ojM//AqpHonzPPCcwl1YJylRs5ByB+4+J0W1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729484591; c=relaxed/simple;
-	bh=wRRr0J/td9vVrh7fpjBB8e+eIGCl+zbqKghsE7rIc/c=;
+	s=arc-20240116; t=1729485187; c=relaxed/simple;
+	bh=UmhGB7YiYlPlJ6mL/zOU/UU6wTii5WVUOSlomGfZwt4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MZ2ly1YlDYD+km69GKNRyXZHVgBdRJPT6v17hZwxiWrpPJMO+1chpikB/dGUBKFg4GVJbh5gCcyQs3jDGPNVXZVKGfj09+jwUC8p2lgYAFK4rknFCfukrn2AWMhsT7h9jRYCmjbXPy9C1rVpdbQDZqRgeQgpX7QL4LxrdChUq/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XxTkm7qq; arc=none smtp.client-ip=91.218.175.173
+	 In-Reply-To:Content-Type; b=EtneKcJF0jidGj3J+wzk6uSr0d8gWkqVl/YyVrPbdiGjf8M020T5Khc/As9c1SzZELaf4DT8F5jEQ/8Fne6cUQc2ATbjWyZEB1g7RPR+KZQDTlwz6OdiZyIHhr/Rb/12iN0eUMtxplhqgCYyjQoFdCukHRmbvHOLJ/spBzLTke8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K2SeJLW5; arc=none smtp.client-ip=95.215.58.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <cc444b4e-e7f5-45fe-be9e-1f0c4398d966@linux.dev>
+Message-ID: <2b304d79-80a7-4366-8267-7e3d724f6e86@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729484584;
+	t=1729485180;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WNyKVb+DwVu5KDJWI4WRYTlFXUkAe5SafOGjGJcQr0s=;
-	b=XxTkm7qqdOv+g7FJ1pD8isG0bvziGyddwOIldsQOtXzoLdbcOLz6VY7+sgQoLmm4AARcaH
-	5Hdjmm+F/PJ0Jno2gkjB6ad2X/VtvpKGcJZlveEZHQu3CT3wVtVjhDWM3uRuWg4KKLVvre
-	KRmBy99MYl+pLFppZiJYPKwiAJDdKms=
-Date: Sun, 20 Oct 2024 21:22:53 -0700
+	bh=7eHudUFdQ83TQnoHkgpvhNmNSQr4K9ZnTtESnPFnJz8=;
+	b=K2SeJLW5Ml7c3ecr6dVhmALuqVjLdMc0Ga8wB7izGJCWzZdvxOqZzd9f5hDSg/4BcJXArT
+	5mtwB6MfEVL24X029Sz+KiVF9/Ze26PXzG3JO54/t1jTTowtnK2lUsPk0cJ5T+LL6rzsqf
+	O24Ba8vbU/lcO47HkbYWWj9T+EVjvaw=
+Date: Sun, 20 Oct 2024 21:32:38 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 4/9] bpf: Mark each subprog with proper
- private stack modes
+Subject: Re: [PATCH bpf-next v6 8/9] selftests/bpf: Add tracing prog private
+ stack tests
 Content-Language: en-GB
 To: Jiri Olsa <olsajiri@gmail.com>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -58,81 +58,89 @@ Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
  kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
  Tejun Heo <tj@kernel.org>
 References: <20241020191341.2104841-1-yonghong.song@linux.dev>
- <20241020191405.2106256-1-yonghong.song@linux.dev> <ZxV9oMixusfz2YtC@krava>
+ <20241020191431.2108197-1-yonghong.song@linux.dev> <ZxV9KUHDcRPC5s9_@krava>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <ZxV9oMixusfz2YtC@krava>
+In-Reply-To: <ZxV9KUHDcRPC5s9_@krava>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 
-On 10/20/24 3:01 PM, Jiri Olsa wrote:
-> On Sun, Oct 20, 2024 at 12:14:05PM -0700, Yonghong Song wrote:
->> Three private stack modes are used to direct jit action:
->>    NO_PRIV_STACK:        do not use private stack
->>    PRIV_STACK_SUB_PROG:  adjust frame pointer address (similar to normal stack)
->>    PRIV_STACK_ROOT_PROG: set the frame pointer
->>
->> Note that for subtree root prog (main prog or callback fn), even if the
->> bpf_prog stack size is 0, PRIV_STACK_ROOT_PROG mode is still used.
->> This is for bpf exception handling. More details can be found in
->> subsequent jit support and selftest patches.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   include/linux/bpf.h   |  9 +++++++++
->>   kernel/bpf/core.c     | 19 +++++++++++++++++++
->>   kernel/bpf/verifier.c | 29 +++++++++++++++++++++++++++++
->>   3 files changed, 57 insertions(+)
->>
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index 376e43fc72b9..27430e9dcfe3 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -1456,6 +1456,12 @@ struct btf_mod_pair {
->>   
->>   struct bpf_kfunc_desc_tab;
->>   
->> +enum bpf_priv_stack_mode {
->> +	NO_PRIV_STACK,
->> +	PRIV_STACK_SUB_PROG,
->> +	PRIV_STACK_ROOT_PROG,
->> +};
+On 10/20/24 2:59 PM, Jiri Olsa wrote:
+> On Sun, Oct 20, 2024 at 12:14:31PM -0700, Yonghong Song wrote:
+>
+> SNIP
+>
+>> +__naked __noinline __used
+>> +static unsigned long loop_callback(void)
+>> +{
+>> +	asm volatile (
+>> +	"call %[bpf_get_prandom_u32];"
+>> +	"r1 = 42;"
+>> +	"*(u64 *)(r10 - 512) = r1;"
+>> +	"call cumulative_stack_depth_subprog;"
+>> +	"r0 = 0;"
+>> +	"exit;"
+>> +	:
+>> +	: __imm(bpf_get_prandom_u32)
+>> +	: __clobber_common);
+>> +}
 >> +
->>   struct bpf_prog_aux {
->>   	atomic64_t refcnt;
->>   	u32 used_map_cnt;
->> @@ -1472,6 +1478,9 @@ struct bpf_prog_aux {
->>   	u32 ctx_arg_info_size;
->>   	u32 max_rdonly_access;
->>   	u32 max_rdwr_access;
->> +	enum bpf_priv_stack_mode priv_stack_mode;
->> +	u16 subtree_stack_depth; /* Subtree stack depth if PRIV_STACK_ROOT_PROG, 0 otherwise */
->> +	void __percpu *priv_stack_ptr;
->>   	struct btf *attach_btf;
->>   	const struct bpf_ctx_arg_aux *ctx_arg_info;
->>   	struct mutex dst_mutex; /* protects dst_* pointers below, *after* prog becomes visible */
->> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->> index 14d9288441f2..aee0055def4f 100644
->> --- a/kernel/bpf/core.c
->> +++ b/kernel/bpf/core.c
->> @@ -1240,6 +1240,7 @@ void __weak bpf_jit_free(struct bpf_prog *fp)
->>   		struct bpf_binary_header *hdr = bpf_jit_binary_hdr(fp);
->>   
->>   		bpf_jit_binary_free(hdr);
->> +		free_percpu(fp->aux->priv_stack_ptr);
-> this should be also put to the x86 version of the bpf_jit_free ?
+>> +SEC("raw_tp")
+>> +__description("Private stack, callback")
+>> +__success
+>> +__arch_x86_64
+>> +/* for func loop_callback */
+>> +__jited("func #1")
+>> +__jited("	endbr64")
+> this should fail if CONFIG_X86_KERNEL_IBT is not enabled, right?
+>
+> hm, but I can see that also in other tests, so I guess it's fine,
+> should we add it to config.x86_64 ?
 
-Thanks for spotting this! Indeed, the x86 version of bpf_jit_free should
-be used. Will fix in the next revision.
+The CI has CONFIG_X86_KERNEL_IBT as well.
+
+I checked x86 kconfig, I see
+
+config CC_HAS_IBT
+         # GCC >= 9 and binutils >= 2.29
+         # Retpoline check to work around https://gcc.gnu.org/bugzilla/show_bug.cgi?id=93654
+         # Clang/LLVM >= 14
+         # https://github.com/llvm/llvm-project/commit/e0b89df2e0f0130881bf6c39bf31d7f6aac00e0f
+         # https://github.com/llvm/llvm-project/commit/dfcf69770bc522b9e411c66454934a37c1f35332
+         def_bool ((CC_IS_GCC && $(cc-option, -fcf-protection=branch -mindirect-branch-register)) || \
+                   (CC_IS_CLANG && CLANG_VERSION >= 140000)) && \
+                   $(as-instr,endbr64)
+
+config X86_KERNEL_IBT
+         prompt "Indirect Branch Tracking"
+         def_bool y
+         depends on X86_64 && CC_HAS_IBT && HAVE_OBJTOOL
+         # https://github.com/llvm/llvm-project/commit/9d7001eba9c4cb311e03cd8cdc231f9e579f2d0f
+         depends on !LD_IS_LLD || LLD_VERSION >= 140000
+         select OBJTOOL
+         select X86_CET
+         help
+           Build the kernel with support for Indirect Branch Tracking, a
+           hardware support course-grain forward-edge Control Flow Integrity
+           protection. It enforces that all indirect calls must land on
+           an ENDBR instruction, as such, the compiler will instrument the
+           code with them to make this happen.
+         
+           In addition to building the kernel with IBT, seal all functions that
+           are not indirect call targets, avoiding them ever becoming one.
+           
+           This requires LTO like objtool runs and will slow down the build. It
+           does significantly reduce the number of ENDBR instructions in the
+           kernel image.
+
+So CONFIG_X86_KERNEL_IBT will be enabled if clang >= version_14 or newer gcc.
+In my system, the gcc version is 13.1. So there is no need to explicitly add
+CONFIG_X86_KERNEL_IBT to the selftests/bpf/config.x86_64 file.
+
+
 
 >
 > jirka
->
->>   		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(fp));
->>   	}
-
-[...]
-
 
