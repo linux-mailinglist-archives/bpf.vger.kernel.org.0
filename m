@@ -1,121 +1,128 @@
-Return-Path: <bpf+bounces-42743-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42744-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF5209A9773
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 06:08:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 418DB9A97C5
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 06:22:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E450B224F1
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 04:08:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1DFC1F23D8C
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 04:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 001AA83CDB;
-	Tue, 22 Oct 2024 04:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZqVTbUOV"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5953084A31;
+	Tue, 22 Oct 2024 04:22:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F0F7E59A
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 04:08:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD5C7E59A
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 04:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729570121; cv=none; b=FWX3vT1g8XO5hPJMdPel5CMrfu3u1ngFMywk6rqUtvhXXToxHoc8IxYwEoY9onqsEK1VrfulBSaeT1iUBlS54x5T0E6i3wiVLT3GSD7FHUVASD6GQxY2HorFfaAKae3iYfI/cEXVcC7N0bNk0bbbadaFwcWRuq8vsIJvKM8jyEQ=
+	t=1729570957; cv=none; b=QgFOzJNN+9070rLrjTIpBubZ7nMVbWaCqjCRYL/yjDnD8n5QgPcl5BOeYqEOta+IthdvuvQNXrPN+UdHUqXehf7FzS+0tsSNYJ1gfZkImY6OhX/0U+KDDUhjFAp2hWQR7CctCiFU07KfwnK485ROc+H3y5kLVprBdeHR33t1Qvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729570121; c=relaxed/simple;
-	bh=FO6SFU4mWlNJ7byxBqoGkMrjaCsrOOLRBfvZGs5PCI8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HPgAYiU3HryuOlefUf5JepIWls8wEqdtnftrdiMzGkU3gfQcCd+vYssf5oGs2o14KBIhGTw8vgyduoboibMlxDSZkwVTwBQMLCTMI4hQfrSvrjWTEV8mAkuYJsIYqtH7Q8J6FimTXmAeMQC5Epje7F5X/li65g9uFC8M0GB/8A0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZqVTbUOV; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <91687126-f44e-46ae-baa5-0050d93fa56e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729570116;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iW9wd/+AhGbrvMzXzcbgDgc5p9eOAq3dOGfXkUaqNeo=;
-	b=ZqVTbUOVTmej8mMLi/K6FJjco5bWJvUmyMZyhIahTQ7Mpw20CLoay9jIfMX1ZokVkBK1Wd
-	vwkgntZdNUfPCA/eM6Rf+dj1neLdODbno2MbiuyYKT+C2SSRJW8MxoIu8FQROXxwb194sz
-	ahBJPto7LKeaNKGd9lNAb610k+Z8ysE=
-Date: Mon, 21 Oct 2024 21:08:27 -0700
+	s=arc-20240116; t=1729570957; c=relaxed/simple;
+	bh=Ixt//Q5B6obGlMy4UrHmvEzn0b5IIiu1flxmyyAGwMI=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ENMo6vupfdcb3n4kMy6ofcfnKiIJI9nhftaDUO3QmXONNkVIXHOOtjNIG3tM0FoHlH8lPmTJ2d+8s0PeSGy+iWMTs3e60lzoOJ8SvaWb45DGIPhCuQuhaM20oqEAwPdoitSwIbm7sWLQqI4+ZshKAGFI1lSKDjue2vBL6TUSOok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XXfCR5DHKz4f3kv7
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 12:22:11 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id E41511A0568
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 12:22:29 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP2 (Coremail) with SMTP id Syh0CgDXVlyBKBdn8n4LEw--.40821S2;
+	Tue, 22 Oct 2024 12:22:29 +0800 (CST)
+Subject: Re: [PATCH bpf-next 01/16] bpf: Introduce map flag
+ BPF_F_DYNPTR_IN_KEY
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>,
+ Xu Kuohai <xukuohai@huawei.com>
+References: <20241008091501.8302-1-houtao@huaweicloud.com>
+ <20241008091501.8302-2-houtao@huaweicloud.com>
+ <CAADnVQJ67TERc5Ag22f_O0BJJPmNpQYvxP08uBa0ur6FRdJoFw@mail.gmail.com>
+ <39cd6231-0d58-14fd-efd0-52dcf0c25a06@huaweicloud.com>
+ <CAADnVQJD_ViXZ4Rx9GkgtDs72wW2no_5fyqM-HJ4=uVisHGcHw@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <a0338215-d989-de62-6e0d-05d02b83e5b9@huaweicloud.com>
+Date: Tue, 22 Oct 2024 12:22:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 1/9] bpf: Allow each subprog having stack size
- of 512 bytes
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
- Tejun Heo <tj@kernel.org>
-References: <20241020191341.2104841-1-yonghong.song@linux.dev>
- <20241020191347.2105090-1-yonghong.song@linux.dev>
- <CAADnVQ+ZXMh_QKy0nd-n7my1SETroockPjpVVJOAWsE3tB_5sg@mail.gmail.com>
- <c6e5040b-9558-481f-b1fc-f77dc9ce90c1@linux.dev>
- <CAADnVQJCfiNEgrvf6GuaUadz6rDSNU6QB3grpOfk2-jQP6is4Q@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQJCfiNEgrvf6GuaUadz6rDSNU6QB3grpOfk2-jQP6is4Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <CAADnVQJD_ViXZ4Rx9GkgtDs72wW2no_5fyqM-HJ4=uVisHGcHw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgDXVlyBKBdn8n4LEw--.40821S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Aw48urWUXr1xXFW7WFyUWrg_yoW8Xw4rpF
+	n3GFW8Zr4DJr9xAw17ta18AF4Yya1agF10kw45Kry5Cw1Ygry5Wr18KF45CFn5trsYyF1U
+	trs8Was3Ca4vq37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
+Hi,
 
-On 10/21/24 8:43 PM, Alexei Starovoitov wrote:
-> On Mon, Oct 21, 2024 at 8:21 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>>>           for (int i = 0; i < env->subprog_cnt; i++) {
->>>> -               if (!i || si[i].is_async_cb) {
->>>> -                       ret = check_max_stack_depth_subprog(env, i);
->>>> +               check_subprog = !i || (check_priv_stack ? si[i].is_cb : si[i].is_async_cb);
->>> why?
->>> This looks very suspicious.
->> This is to simplify jit. For example,
->>      main_prog   <=== main_prog_priv_stack_ptr
->>        subprog1  <=== there is a helper which has a callback_fn
->>                  <=== for example bpf_for_each_map_elem
+On 10/22/2024 11:53 AM, Alexei Starovoitov wrote:
+> On Mon, Oct 21, 2024 at 6:46 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> Hi,
 >>
->>          callback_fn
->>            subprog2
->>
->> In callback_fn, we cannot simplify do
->>      r9 += stack_size_for_callback_fn
->> since r9 may have been clobbered between subprog1 and callback_fn.
->> That is why currently I allocate private_stack separately for callback_fn.
->>
->> Alternatively we could do
->>      callback_fn_priv_stack_ptr = main_prog_priv_stack_ptr + off
->> where off equals to (stack size tree main_prog+subprog1).
->> I can do this approach too with a little more information in prog->aux.
->> WDYT?
-> I see. I think we're overcomplicating the verifier just to
-> be able to do 'r9 += stack' in the subprog.
-> The cases of async vs sync and directly vs kfunc/helper
-> (and soon with inlining of kfuncs) are getting too hard
-> to reason about.
->
-> I think we need to go back to the earlier approach
-> where every subprog had its own private stack and was
-> setting up r9 = my_priv_stack in the prologue.
+>> On 10/10/2024 10:21 AM, Alexei Starovoitov wrote:
+>>> On Tue, Oct 8, 2024 at 2:02 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>>>> index c6cd7c7aeeee..07f7df308a01 100644
+>>>> --- a/include/uapi/linux/bpf.h
+>>>> +++ b/include/uapi/linux/bpf.h
+>>>> @@ -1409,6 +1409,9 @@ enum {
+>>>>
+>>>>  /* Do not translate kernel bpf_arena pointers to user pointers */
+>>>>         BPF_F_NO_USER_CONV      = (1U << 18),
+>>>> +
+>>>> +/* Create a map with bpf_dynptr in key */
+>>>> +       BPF_F_DYNPTR_IN_KEY     = (1U << 19),
+>>>>  };
+>>> If I'm reading the other patches correctly this uapi flag
+>>> is unnecessary.
+>>> BTF describes the fields and dynptr is either there or not.
+>>> Why require users to add an extra flag ?
+>> Sorry for the late reply. The reason for an extra flag is to make a bpf
+>> map which had already used bpf_dynptr in its key to work as before. I
+>> was not sure whether or not there is such case, so I added an extra
+>> flag. If the case is basically impossible, I can remove it in the next
+>> revision.
+> Hmm. bpf_dynptr is a kernel type and iirc (after paging in
+> the context after 12 days of silence) you were proposing to add
+> a new bpf_dynptr_user type which theoretically can be present
+> in the key, but it's fine to break such progs.
 
-Indeed, per private_stack per prog(subprog) will be much
-simpler.
-
->
-> I suspect it's possible to construct a convoluted subprog
-> that calls itself a limited amount of time and the verifier allows that.
-> I feel it will be easier to detect just that condition
-> in the verifier and fallback to the normal stack.
-
-Yes, I think check_max_stack_depth_subprog() should be able to detect 
-subprog recursion.
+Got it. Will remove the extra flag in the next revision. Sorry again for
+the long delay.  Will try to reply timely next time. bpf_dynptr_user is
+only for syscall, bpf_dynptr will be used in map key.
 
 
