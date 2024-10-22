@@ -1,134 +1,125 @@
-Return-Path: <bpf+bounces-42737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C12759A9737
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 05:43:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 060789A9756
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 05:53:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 128C128329A
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:43:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34A351C229AC
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:53:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B1F13B297;
-	Tue, 22 Oct 2024 03:43:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40FC014263;
+	Tue, 22 Oct 2024 03:53:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KFF786au"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OxXI30Gw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807CB256D
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 03:43:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DB3C133
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 03:53:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729568604; cv=none; b=aatBLNnSLnKiZu93wwcfxe+Vif6mcgUA/qXrmhKNK8sj4YYGreL8FF8tlUdJSY/sp1seZ/gV+XbOrPgt6IvQVgCZZJFrlVUnfpv2ntEfzo6YIxwfN0YiT4rT4/XURKdNxIWOpMY6CQBR8bnD5x7zOLvFqGabujukWGot00QjO5s=
+	t=1729569200; cv=none; b=r+ohDlwB90rqvnyH+Lifk8Y1AsNq9jYYJUIJxxbqubMZFPiGqDN3PnZpQ8YEBJiifETfgeYVaFikFFTvfZOwNQv5YTOL26vgT2BOU1kUCvjcCTj6yFGMG9wIbUufztcTOulbC8WU7bJ5WhRsTX8xBrQDDwYNDfwbjVdBjR84hj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729568604; c=relaxed/simple;
-	bh=AUWXLJID5z0sxUD/n2Th3/YtV09Cz1NyV2kH2eG6Drg=;
+	s=arc-20240116; t=1729569200; c=relaxed/simple;
+	bh=xSb4VM6A7Vgt7evryMTHTPmlcyz/jy2MwUvigY4wf2I=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hEc6edjp0iH9BQOrqhz+TJOIT23DH0PPXb4yAjx1R294xzBHvcy0m2Onh8cB6hl4ls+UHjDUWgBqYc2lE6MMBJz371Pf5WeptORsZ7cQrrNEAFCo+Pf9/D9olcg6iFY9tguHijHiTlOklYWGoKhztktqPp6EFUD8M2YsjhTGLIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KFF786au; arc=none smtp.client-ip=209.85.128.49
+	 To:Cc:Content-Type; b=DEatcNv9sVs7syk1i8uWnqxMiEg9waZaM4m76qy6gpDM3fUiayF/JVz3sLHweencq2k2wPvWOFVAqQq9wL/9ySq5SCWTNe5105WhDdkr0knBV73ZZMZAhM0zkteuqRyU1uGfE3fvukeuyaxvPk7Oz7DMkqI9c/ex2EGwKDdmBqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OxXI30Gw; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4315839a7c9so56751985e9.3
-        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 20:43:22 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-43169902057so27605805e9.0
+        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 20:53:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729568601; x=1730173401; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729569197; x=1730173997; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PGJuWA4JeXb4N9GLipe+6q6s/MxPTpGAOU5UTguQ20Y=;
-        b=KFF786auivpilERYEVsbddYtQRnjB5V//XsAgZ9Ug2YMnZwGolmhcnfSxnMWiKbWXE
-         K8GVQ1aDwMatUdxFdxQI8fgNozCnGz8fKANV0IP0/OVDIGfvjUoR9JX81xT6a4lg/qm9
-         3FGnrhT/ahbYJa5qsxcla85cEd37fF6dZGBrBT51oDnXHAatu7z+sLrKWLdQyBmsmvNE
-         yzgPGN3s1UhzvBK8Wx6J/d25fSfFSV+C+PJj1VYT+5OwDkBhoTa+Mg4AiJ5mM8BKa7wo
-         IuCptgcb8NMd+khHo2IMXxNvMFtPDuySbq+C4syElYAFqyHbG7+5Trbza+PwrTYhjmf9
-         ApyQ==
+        bh=TCQexl7XiYKpPnRoCz0IN3vBPxLAGTcsLAtMRywo+ig=;
+        b=OxXI30GwViu8ubKec/CgRln/EmsiNvKTKuk12z8JcPw7w4994me3ROcAz2mCUOidNc
+         MPkZ+Wj55ZfCRGwhz3S1OB939bke5YvdPUsBmct2mC0OliOhSakdvp93Yp1m5YSoC0qV
+         c9irfoB6V5B9a54dfNtza9ejxQli1MJErSZ6NLqbdKSpi2Mqf+95Mxwj6QrktacC3C7g
+         VNc5jJysDgQ4Gb4wupIY/ZnbiaGWv4Ks8nK19M0wpE2+gxFtvVvb1E8U764AS37llrP5
+         6VNyCEinqGRu9xkn8xiCON47o8i6GdaL71c2QrRKRIvGY0tP/cESPDZEtIKKqJ1tfzl7
+         hR7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729568601; x=1730173401;
+        d=1e100.net; s=20230601; t=1729569197; x=1730173997;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PGJuWA4JeXb4N9GLipe+6q6s/MxPTpGAOU5UTguQ20Y=;
-        b=KGa6xKsAfh5ffc29Oef9c/ChbZbnE+ruUsISBPDWZzrxTUtMPWU409opXrX88L7cce
-         xvG/TtP2BgVZWVbamOFN3Bul9PfQkXnahxcrHZbptZD/JLAffVQ4L92ExSkweR8+DT2y
-         Z+kQZic6TdOuqTcBjRo9V5lWoIo348ivrs9bUirodMT6/bCflaWu32xFFucNV1Gm2894
-         60DwxJh3IBOLHohuWLWPOZJhwkKIB0Tnrb5HIuMGiEsVIGmH/Y53UtnbPTNej5LN6LOK
-         2qsTIqJxrtRu20C2IGYLqVcQ1mPP9kAt+dYbmtsITLoYyVT3qfkz0FIllH9wpM3cW0N1
-         ug8A==
-X-Gm-Message-State: AOJu0YxKPGLGLZl9g32FeWNLuHVtG+72Wm+ra37queQzfYD5HctT1t1m
-	cwx+IW4P3xOYXlSlwQwjmr1Dp5UjaPrqSZ9MtiuX7hl44jEDyCs56W9ylkKCj5v6Dxh+7jnLlSh
-	B3D/yzF6o54Os/ArZvCHQWWk+Ngo=
-X-Google-Smtp-Source: AGHT+IFQY7vteDiNoC67l0ub3aT0Wpu1GvUMCZuPJ7/poYOpfn45WD7uXvuWLJ9+J6xGEj41IxgGno8liD5xAu5fJDg=
-X-Received: by 2002:adf:a34e:0:b0:37d:4b73:24c0 with SMTP id
- ffacd0b85a97d-37eb4896bcemr8169880f8f.35.1729568600452; Mon, 21 Oct 2024
- 20:43:20 -0700 (PDT)
+        bh=TCQexl7XiYKpPnRoCz0IN3vBPxLAGTcsLAtMRywo+ig=;
+        b=q0Ki6dprM4QvPb3SrhRCsc+3+DqSp/UjN8rzMMwLZd3SaT2FmE6FGW1c+D45yO1xBY
+         CZt9ddXrPVXy+kkMwvq3Bxd1TmKdQEX2hmAsYp4WYxyHfQ9p+LSNC6cCAU/TE5oDLuZ9
+         kPVEGigV8CC3+wInYw6BB+RX5zHk2IDIKUWStug0vVVMXsO3ENs81FfMkNMegJYBM4G8
+         XV2Rf4I9xfWieqpqqfwpegIkG41BcPV99g/H6kVrjUrpLkFCybguth2+rTe9PqA8VVos
+         YGL/k0IQdksPXCZsZC20ef4VRHVjq1Qq8TwDA54lJ6rRNgldKKne+XJz2h2mOZVjSj1Z
+         ddPQ==
+X-Gm-Message-State: AOJu0Yw0IkuKNz5dXVn8Hphcjvb2wFfuOebrSwLcU2nkAqCiym2OhAxC
+	2kx4/qOZKCbJiIDSGMUBw8k70iBTlrpnTLk03A16pi9ulhdSPWAkv/mG5PW2vZ+Q824EKXiSKlx
+	SpZasZb++yqWm9f7mtWx97pTpz9o=
+X-Google-Smtp-Source: AGHT+IFY4m0G7DjvMQ9DeNaVlmNvvfOx3r/ucWpujbiU4Vv5CoYWHU33/7t5cCbUu2u1gG6lpQWoHnCW9pGV59+mYEM=
+X-Received: by 2002:a05:600c:4e0b:b0:430:57f2:bae2 with SMTP id
+ 5b1f17b1804b1-4317b90e566mr16795295e9.23.1729569197076; Mon, 21 Oct 2024
+ 20:53:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241020191341.2104841-1-yonghong.song@linux.dev>
- <20241020191347.2105090-1-yonghong.song@linux.dev> <CAADnVQ+ZXMh_QKy0nd-n7my1SETroockPjpVVJOAWsE3tB_5sg@mail.gmail.com>
- <c6e5040b-9558-481f-b1fc-f77dc9ce90c1@linux.dev>
-In-Reply-To: <c6e5040b-9558-481f-b1fc-f77dc9ce90c1@linux.dev>
+References: <20241008091501.8302-1-houtao@huaweicloud.com> <20241008091501.8302-2-houtao@huaweicloud.com>
+ <CAADnVQJ67TERc5Ag22f_O0BJJPmNpQYvxP08uBa0ur6FRdJoFw@mail.gmail.com> <39cd6231-0d58-14fd-efd0-52dcf0c25a06@huaweicloud.com>
+In-Reply-To: <39cd6231-0d58-14fd-efd0-52dcf0c25a06@huaweicloud.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 21 Oct 2024 20:43:08 -0700
-Message-ID: <CAADnVQJCfiNEgrvf6GuaUadz6rDSNU6QB3grpOfk2-jQP6is4Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 1/9] bpf: Allow each subprog having stack size
- of 512 bytes
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>
+Date: Mon, 21 Oct 2024 20:53:05 -0700
+Message-ID: <CAADnVQJD_ViXZ4Rx9GkgtDs72wW2no_5fyqM-HJ4=uVisHGcHw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 01/16] bpf: Introduce map flag BPF_F_DYNPTR_IN_KEY
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>, 
+	Xu Kuohai <xukuohai@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 21, 2024 at 8:21=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
+On Mon, Oct 21, 2024 at 6:46=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
 >
-> >>          for (int i =3D 0; i < env->subprog_cnt; i++) {
-> >> -               if (!i || si[i].is_async_cb) {
-> >> -                       ret =3D check_max_stack_depth_subprog(env, i);
-> >> +               check_subprog =3D !i || (check_priv_stack ? si[i].is_c=
-b : si[i].is_async_cb);
-> > why?
-> > This looks very suspicious.
+> Hi,
 >
-> This is to simplify jit. For example,
->     main_prog   <=3D=3D=3D main_prog_priv_stack_ptr
->       subprog1  <=3D=3D=3D there is a helper which has a callback_fn
->                 <=3D=3D=3D for example bpf_for_each_map_elem
+> On 10/10/2024 10:21 AM, Alexei Starovoitov wrote:
+> > On Tue, Oct 8, 2024 at 2:02=E2=80=AFAM Hou Tao <houtao@huaweicloud.com>=
+ wrote:
+> >> index c6cd7c7aeeee..07f7df308a01 100644
+> >> --- a/include/uapi/linux/bpf.h
+> >> +++ b/include/uapi/linux/bpf.h
+> >> @@ -1409,6 +1409,9 @@ enum {
+> >>
+> >>  /* Do not translate kernel bpf_arena pointers to user pointers */
+> >>         BPF_F_NO_USER_CONV      =3D (1U << 18),
+> >> +
+> >> +/* Create a map with bpf_dynptr in key */
+> >> +       BPF_F_DYNPTR_IN_KEY     =3D (1U << 19),
+> >>  };
+> > If I'm reading the other patches correctly this uapi flag
+> > is unnecessary.
+> > BTF describes the fields and dynptr is either there or not.
+> > Why require users to add an extra flag ?
 >
->         callback_fn
->           subprog2
->
-> In callback_fn, we cannot simplify do
->     r9 +=3D stack_size_for_callback_fn
-> since r9 may have been clobbered between subprog1 and callback_fn.
-> That is why currently I allocate private_stack separately for callback_fn=
-.
->
-> Alternatively we could do
->     callback_fn_priv_stack_ptr =3D main_prog_priv_stack_ptr + off
-> where off equals to (stack size tree main_prog+subprog1).
-> I can do this approach too with a little more information in prog->aux.
-> WDYT?
+> Sorry for the late reply. The reason for an extra flag is to make a bpf
+> map which had already used bpf_dynptr in its key to work as before. I
+> was not sure whether or not there is such case, so I added an extra
+> flag. If the case is basically impossible, I can remove it in the next
+> revision.
 
-I see. I think we're overcomplicating the verifier just to
-be able to do 'r9 +=3D stack' in the subprog.
-The cases of async vs sync and directly vs kfunc/helper
-(and soon with inlining of kfuncs) are getting too hard
-to reason about.
-
-I think we need to go back to the earlier approach
-where every subprog had its own private stack and was
-setting up r9 =3D my_priv_stack in the prologue.
-
-I suspect it's possible to construct a convoluted subprog
-that calls itself a limited amount of time and the verifier allows that.
-I feel it will be easier to detect just that condition
-in the verifier and fallback to the normal stack.
+Hmm. bpf_dynptr is a kernel type and iirc (after paging in
+the context after 12 days of silence) you were proposing to add
+a new bpf_dynptr_user type which theoretically can be present
+in the key, but it's fine to break such progs.
 
