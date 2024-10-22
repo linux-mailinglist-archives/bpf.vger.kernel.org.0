@@ -1,118 +1,118 @@
-Return-Path: <bpf+bounces-42794-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42795-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F27919AB253
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 17:42:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA74E9AB2CE
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 17:55:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CAF51F224A3
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:42:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7DEE1C217B9
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:55:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 259BB1A4F01;
-	Tue, 22 Oct 2024 15:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C4E1BD50C;
+	Tue, 22 Oct 2024 15:52:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S52lKPhH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y6Nh4V1Z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B10ED1A3A8F;
-	Tue, 22 Oct 2024 15:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A36C1BD039;
+	Tue, 22 Oct 2024 15:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729611753; cv=fail; b=ESBamJgMzGLt9KhqFgaIa47fAguKdvTf38/5EUtuQag+NuI0qa6+fdL/C8tapJbRhSdU64tdlq8UKPEGWjAlvNFXOPWIwcLmB/iyUSvVE4Uj4b6GPvsaClMVKFG/vPwf86FnDvBFgvJqYcO2u11tcb9bMsUbyxsInEWrcXw8yfY=
+	t=1729612337; cv=fail; b=nYHme8nM9gJqZ259TYyDX+ZgXdbMkPwB8kNsrFQIzyCpFpY3AzHTiw0D3FpcxMlJs6gLCk+Yqepyezasco0+0PadIMuANBgvqZbnW2iRgIiF7bLnkkKNL8haU05LhywV27vRk1euOKpSUs3fTvTdux0KBvNo4g3iArEW+kGgkHM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729611753; c=relaxed/simple;
-	bh=p8znTkWCOTMsMEuq5NaDiVSXvx3tT+CA4lrCkFYdpio=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=MIWM8MbslpD5FH/bNS1KsO/XTl4tgLAyC8MOeE9RjR4b3Mg5maXJwqg0psNBXtyIhBzNVPM3LiC2kiEpBESEaOeAH/8UOEDR6v7ffdWfDxdamS1SMet4ljGsyT/5qnSf1UjOkaN6QAxHRHXMF3DHx6kQxefDw202djfmWlbYZjo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S52lKPhH; arc=fail smtp.client-ip=192.198.163.18
+	s=arc-20240116; t=1729612337; c=relaxed/simple;
+	bh=UumOPAxKyDjWj83HASaMOP3EQHFalal4IzLap2ntAps=;
+	h=Message-ID:Date:Subject:From:To:CC:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=mI1wftpSpAxWu8OplPYU/TbJZ1xXPxh7yQGlt1UeB7Z+TirNQhtC1xEjPX/DtvFHnPTPcBD+ofuoc4Iz9uGB1WBSyED26uKnSYbZv4ajBRH78+5s3YUYlkRsYSxZbkXY4o1oLZPCIcBhT45nMEQ+uPl60lIFEyQvLk6vMOF+iZg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y6Nh4V1Z; arc=fail smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729611751; x=1761147751;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=p8znTkWCOTMsMEuq5NaDiVSXvx3tT+CA4lrCkFYdpio=;
-  b=S52lKPhHrjRbl6W+F/+hfcYGT/re/nW49skK0yj0T6cM4zCjY62KgAak
-   CRyvvdG97E/z8V9JnpBC2w6ioeqIB2XQrBTXujozMh2Yt2kSJpP9gsi/G
-   aUquYGBIC0XtsVLS0KtiYGepJfclgDwPbI/XPbevosZMM/SeRbhqsGaQq
-   NXnCTN2FSe2XDagbqWTloyrCRth5gIM2PIqx6pNXzvaghOSx1XhWZ5LMs
-   jrYx9qtmb2h3Jy+Ht/2b8G48bm6AkeowEp0/LqgxJmKO5eYlQ51rZBJwf
-   lDVTnqSu0ePLOOPPWa2+rIRlUMwzeKMj65f0Pq5kvPSYrdob/fUJqV4j1
-   w==;
-X-CSE-ConnectionGUID: hx5+9RdGQZiH8PEV0MyIFg==
-X-CSE-MsgGUID: 3m9urmScTqGHV+BLvtfXOg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11233"; a="28592822"
-X-IronPort-AV: E=Sophos;i="6.11,223,1725346800"; 
-   d="scan'208";a="28592822"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 08:42:31 -0700
-X-CSE-ConnectionGUID: UmZS/91VS/23PubkN403tg==
-X-CSE-MsgGUID: rZDe9wGORaq+vXeMRHpZ0Q==
+  t=1729612336; x=1761148336;
+  h=message-id:date:subject:from:to:cc:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=UumOPAxKyDjWj83HASaMOP3EQHFalal4IzLap2ntAps=;
+  b=Y6Nh4V1Z5TWYln8S4YovI1+WpDcfverMbXbK1GpdzQ80ZqTChQZoWWwd
+   qhtjq5zi7VssM5l8wF+Vmag+0wkMWcbqiMfC8DUJ4n5EXk5Nf5GeWCx2Y
+   ItLM+1+LjTrCOruB3qBUyCnoC3FHM19uJD0oisZcdQvb/BTqmQRHfd07N
+   k9T2XCCLRPagflqM5C722olfpXw6eHpcCI9ej0LeLNkP7y1D3nPYnZQBT
+   E9N1GHZHJ3k7hSsQoHRQIU9NN2JNtS6jI00Tk9f71O2Bh2/u7BKIunXuz
+   CK3ZRjJw3YwQrB/8oz6V5LO7GusTfTvinSUqwUUxqclbXUi3cNPwzm917
+   A==;
+X-CSE-ConnectionGUID: CYeRfkgwRsSbmnNmtpuZXg==
+X-CSE-MsgGUID: A9E2ZNp8RAqJmCj3RO3HhQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="29035054"
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="29035054"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 08:52:14 -0700
+X-CSE-ConnectionGUID: gCJRYYXTSwqvGlENIVCQeQ==
+X-CSE-MsgGUID: Fg5yHJzXR/2bWddGZfRo1Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.11,223,1725346800"; 
-   d="scan'208";a="79831450"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Oct 2024 08:42:31 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+   d="scan'208";a="79485793"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Oct 2024 08:52:13 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 22 Oct 2024 08:42:30 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ 15.1.2507.39; Tue, 22 Oct 2024 08:52:12 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Tue, 22 Oct 2024 08:42:30 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ 15.1.2507.39 via Frontend Transport; Tue, 22 Oct 2024 08:52:12 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.40) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 22 Oct 2024 08:42:29 -0700
+ 15.1.2507.39; Tue, 22 Oct 2024 08:52:12 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=FlsjWmp+37vW8dQ5TYRc/75smWXmkTIw+e0RfvDsGzVjDP/O/5ad8f3ME6pzaZ6R8lbFJMiKahFzy3LcZNfz9cmxJl9oFyT9AKkyBGtJRofPJZ9DI9AG2StjEZBgkx1oxYlsyW9H/t8WgO1obElhbJSdGhoEmdKxPNM4kqG0M5pReoXyHETWV9M8bMsYpDdC8b7d4tQEYqBXc2+Vt2ckU86OkFzUpoddh1skqdQoxtJYq96zZO7WJL5ci6oFSvEWvm7prifefui+7qTMWiuwQDlSyRPeUKWJ5izoPN3c7sWovhfJch5YPGmiwW/NmzbRzY0jSJzgs95IoMZwSm7Wmw==
+ b=a1/jrCAaKoQPNzt5W4z0VpP2JW6XG5mvLMFG88SMgurc5Rsdzagwj/YkRDL9scoaVkrFMheDkiW20K83eipJ5EsVMM6vMpgltNasyWVpkww6ntOljVOdtE9nV4eXU6UhqmbC7fnjxnBr7iFE5YxA1zH9dOTc7Jo3SKzj/EEoeG10SRjvK6zgCMKymoYRFM57kKoQ5QlIQgo6iuBKjN3gyoaQuYipoIwaSuUmMuk6/0TXRxrLoFozRWouLCBAwuyc6mQB8iVfni+HAItbEJIVab44nzsSwBAB8txb9W94ZaXLfBPXqfld50OZcGLGqBbBUbtpkVAqovRgz0cmLCD23w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=65ilzUApj7HEXT8ZlLLW4eZ1tcySdfzas5MCd5DEr7k=;
- b=XgEkZ5/9A+fLbtIVD8b3RSlCI3A6lBxpxsrIYT2ou/gGEnFz7kFkjUDC7Q8fVAuwJAntSDkbt9GisY0XZ7VGqi4rOourAmWQOJFjSCI1pQPx945lQIPpAtMYWX1udmo8k3Znq5WxaU9CMBZ5FMNLdsBFRDrrYvEWR7jkpiPVZcOCk+IRlQyxs5PPWzDKpgZgPqNJPHTOoDcuJtmeh9q7hCA3d6BIBpv5OCmRg7mDw1GYy0T+9Hpwvt13nLattbMlEew9ELMZZceaWSPsam+ijUwjUfRM0xtQBEZEiklPtky8Av1rjqOvWjzoIt2KY/NtD+ZtImfd5IBxCYMgPz3IzQ==
+ bh=j104zYiQ6ix77elpKKhepwAHlSbNZRkn3ZdFAaFkBfw=;
+ b=IioORdGlNxKGDfODoZQ2v55PK0NUaOvY8G2LQ1xwms4bj3wV+U06Ld0mPGAzsRd//ix7i47v1nvMpZzpN9KESljayw/j7MT/0fr/+ELa/Cq2pOQndgX5u1MoKhZv4BqmDVc7Jad4sSsCO1XxDpgi+wRJaI2vR8wdvbW98bAvES1Ya80P7PZGo4WzmqAYVpkuCb4ui+k8B6MlUFSyNzi2hbtbq06W8i92hIQBUJ61fS4hCR6TTXxhTnRi0Fjj5UufzSb1vFMlSXEIgsYo98r4K9xqb5deKAkpf+sg+0Jj5fGIZxoJp/IFq5s5R4Pz1ZQOgmkGRpGwPDE9hqbqlBeC7A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- DM4PR11MB8092.namprd11.prod.outlook.com (2603:10b6:8:184::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8093.16; Tue, 22 Oct 2024 15:42:26 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::d19:56fe:5841:77ca%5]) with mapi id 15.20.8093.014; Tue, 22 Oct 2024
- 15:42:26 +0000
-Date: Tue, 22 Oct 2024 17:42:13 +0200
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-CC: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?=
-	<toke@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, "Andrii
- Nakryiko" <andrii@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, "Magnus
- Karlsson" <magnus.karlsson@intel.com>,
-	<nex.sw.ncis.osdt.itp.upstreaming@intel.com>, <bpf@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2 16/18] xsk: add helper to get &xdp_desc's DMA
- and meta pointer in one go
-Message-ID: <ZxfH1VmjcVdLeKUo@boxer>
-References: <20241015145350.4077765-1-aleksander.lobakin@intel.com>
- <20241015145350.4077765-17-aleksander.lobakin@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20241015145350.4077765-17-aleksander.lobakin@intel.com>
-X-ClientProxiedBy: VI1PR07CA0137.eurprd07.prod.outlook.com
- (2603:10a6:802:16::24) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by CH3PR11MB7866.namprd11.prod.outlook.com (2603:10b6:610:124::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.28; Tue, 22 Oct
+ 2024 15:52:05 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808%4]) with mapi id 15.20.8069.027; Tue, 22 Oct 2024
+ 15:52:04 +0000
+Message-ID: <c21dc62c-f03e-4b26-b097-562d45407618@intel.com>
+Date: Tue, 22 Oct 2024 17:51:43 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC/RFT v2 0/3] Introduce GRO support to cpumap codebase
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+CC: Daniel Xu <dxu@dxuuu.xyz>, <bpf@vger.kernel.org>, <kuba@kernel.org>,
+	<ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+	<john.fastabend@gmail.com>, <hawk@kernel.org>, <martin.lau@linux.dev>,
+	<davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+	<netdev@vger.kernel.org>, <lorenzo.bianconi@redhat.com>
+References: <cover.1726480607.git.lorenzo@kernel.org>
+ <amx5t3imrrh56m7vtsmlhdzlggtv2mlhywk6266syjmijpgs2o@s2z7dollcf7l>
+ <ZwZe6Bg5ZrXLkDGW@lore-desk> <55d2ac1c-0619-4b24-b8ab-6eb5f553c1dd@intel.com>
+ <ZwZ7fr_STZStsnln@lore-desk> <c3e20036-2bb3-4bca-932c-33fd3801f138@intel.com>
+Content-Language: en-US
+In-Reply-To: <c3e20036-2bb3-4bca-932c-33fd3801f138@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: ZRAP278CA0016.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:10::26) To DS0PR11MB8718.namprd11.prod.outlook.com
+ (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -120,238 +120,185 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|DM4PR11MB8092:EE_
-X-MS-Office365-Filtering-Correlation-Id: e34b68c2-9c2f-4141-a8f5-08dcf2b02142
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|CH3PR11MB7866:EE_
+X-MS-Office365-Filtering-Correlation-Id: 49a2d33c-eda9-4907-e13f-08dcf2b179b8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?+c7ct68Rvn2NiQ5+7ty2GxB2F5sVrxDhEo7zkIDOaKb6y7h4Z1ExzRdYTH2E?=
- =?us-ascii?Q?kHSX7ZxkAYIWwbxbA9aG/PLGHaVBMINPcJKk24JmtfqwgC9wI3lbH2vYAkzd?=
- =?us-ascii?Q?S4vjzKxoj9ngy7g0RPYzEgrhR0Svl932fIAHb5MmuE3zPc3elkrlgrFCoFyb?=
- =?us-ascii?Q?ownG/bjO22cN00K/x2Sc50tRb6X9bODA1n8UUkJ7hwog7BlLYJn+0b8eAhl3?=
- =?us-ascii?Q?UbPl+CtGGU2CL+DhmVdhJ98cudN7Qj9gplBcV5CjgOFtaUnagvfDGfwPqNPp?=
- =?us-ascii?Q?eBXYLu79QfPvS1LXpSRMmDVdudAExNNyJmgSFPB7DEuh/1zMy7VBDUXjD2xu?=
- =?us-ascii?Q?leENZvATbbXrz1owuZAxWjLmKhMeE27mMPehlRPKJmArKu4x6nLXXvXDgKJZ?=
- =?us-ascii?Q?lIjYfSxGr4cQTsuUipmu6FL10NfJY8L5ylPCehw4mjiWCS89FZp2Vjm9HwdJ?=
- =?us-ascii?Q?zcEmToCHp/SjzEAoJraqmq1YiTiaO5AChPREjRSLt2NwKelhXFBYqaQRu1fL?=
- =?us-ascii?Q?DGpiG+vNtlRGCEERVPRWUnGjT54Q3wGM+47pZmW5KN8r1NteYDw3PBPZ/8tg?=
- =?us-ascii?Q?jE0EbvVmVBX/iEKfOHRgESDuL+ia7OSFmXRNqlAA/qsmYeRQODbBJqj0mygz?=
- =?us-ascii?Q?Xjtf3WG9bbziv9+PV4Sa6YYkuvezUXjwjfRLjkz+LE0ObJ70qZ0FqSpfwHgv?=
- =?us-ascii?Q?ZkHhIJqGnQ0oX2EV4VKrjjOdCV/YhvZcVzp3EQO8HQGWQ9Otb8Ssea7zdC0m?=
- =?us-ascii?Q?7vuhjR5gUYAQzmFHKocnFs8yyRRdaFJbDZvbBxox4wwBXyDvGmEgmOg6KPVd?=
- =?us-ascii?Q?pABvF8bLU1Iiw70h6AC4bDy9aqKX2sffsCDWvibMW2eSceQWeihpA/Pm2vp9?=
- =?us-ascii?Q?nZ/zC0gJOQTM6d7OpCTpLhxcCE7GHfda0eFK4Bu7QLcLGdC5URSVO5WZkDqs?=
- =?us-ascii?Q?4cGLxcmPQ+My8CrMK01oEOT05sQHLrzKxRcz6UzkA4//ufCM75ipl53kKqDm?=
- =?us-ascii?Q?MSfwUiFwy691nQnNSfe+l6RQQxAeJYYwLSccQ06vX7x8xFgtBbQeDVHLbUNW?=
- =?us-ascii?Q?+Cvnyp0FxUQSS94ZbjGIuPldhkSOiQIAtrFEv9UClWwmPmbunVAFTEc/7CIq?=
- =?us-ascii?Q?Z8zIc3MopPC1ZJykfxrzsY4+Sv+DFF3bNWrhTAGPtlH6+2KbFYimKwk6uyNr?=
- =?us-ascii?Q?L0ZzDwCco2p4J1zULG2nTMXQyHPTZVaQwTdNsS019TQyPo8AeRpoxZuOyrFp?=
- =?us-ascii?Q?e67j17l+sjT7m8c6FwbUrB+WXm1lZPVz5YBIPtsRKmgX1ynLHn3iTbBVzfdu?=
- =?us-ascii?Q?b/U=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?MWN6SUlUM2RiVDk0bmpHVXhSRm9RZk5wOU1TM3JBZmRQMWdLems5aW9lalhL?=
+ =?utf-8?B?Q093SU1KbUJNVzhsYXZDem5ROFQ5ZXhSdWdvcGlHeU0xRlZsTldxbERNMnRE?=
+ =?utf-8?B?UFBDcnBRMDc1aWJQdG91WWY0NTRIK1JZSm1HS0pKNVdQSmE4RExNUzZ1b1lQ?=
+ =?utf-8?B?L0ZVU09hMzloaVBKcjN4RjVGVHJJZTgrVHF6NjU0ODR2WkVzY2RtUjBHZjFm?=
+ =?utf-8?B?WHJ5aENSbjBDU0oyMU9KS21MTmljWkNFSHY0dVVpNHoyZnl3R09pTjR1TC83?=
+ =?utf-8?B?U0txMSthbHFaRmM0bnU3OFlXdWV4YWhCWm5zVVJvdkxDNno4QlZvRG5JbHBW?=
+ =?utf-8?B?cXc2Nmljd3ZkL1QrWGdmQzFMSnRiZnlkNlZpU21YalN5a1cvbjdsSEF6WHk1?=
+ =?utf-8?B?aGVoc0pCaGFueU1vK0tHQUJYbG55YXhxNStTT1lQZGRYelF3RHUyUzd1VE05?=
+ =?utf-8?B?ZjU2c2g3TndPNHFVVnJ5UFY2VkJDc3ZwNTRpNXJWTGZueFZWaDF4WWJZU2VC?=
+ =?utf-8?B?a0xHOVBaMHVnSE9PNkVhckNhN09udkVYWTkxeFg5WFlGZisvTVRIQVdjeGRD?=
+ =?utf-8?B?ay80SXhNMm83dnJ5R3pGM0t1QjMvN2pENDBmUUpyWCs4Wll2cGUzTnJNZDBn?=
+ =?utf-8?B?V2V4MUhhNlIwMG5hb3B4T3QzMm5KNlJuaUROZ0hsNWljeE1DZWQrS0VQRFJl?=
+ =?utf-8?B?WUZ3akxEZEFqVXd0L2dURGFIbHVCeENGd203enE2QnFCcDlkelFTMzBTVm5q?=
+ =?utf-8?B?SmF4UUJtRmQxS2M1WUZnRWJKTGQ3RmJuaUVpM2xFbFRnVzVuQjYrWlVkNG9D?=
+ =?utf-8?B?bjhGeHVNNXlJSG96YzRQemdpLzlFQTNsSG1NR09QUy9OcUtBcVh1Q0gzK1FZ?=
+ =?utf-8?B?WnR1Vk9mWXZlWFpxalNmZ3hLQTV0MmZnYVRJVEI3VGUzZlNzdHBVRVRaQ0tU?=
+ =?utf-8?B?VmlhenppMjFGakpOaW40M1ZuZ2tQU0ZnVkxkTFArSXFKeWlEUldQSXQ4cHJ1?=
+ =?utf-8?B?WHVKOFNwSExIeEk1S1NROXo0ZXlRY2Rxb0M5U3Q1UVNUclR1ZCtzTkVqNlFl?=
+ =?utf-8?B?TUFaajM0eXhPV2NZNTh0MmxNRmVNbGJwbUROclJPcndYREFhbDk3OExrTDhu?=
+ =?utf-8?B?Qk9ubTJCRUNmOWd1cUR2Wjc1ZTBYa2N0aytUQ1RRMmxsQzJjU0swYlV1MVVP?=
+ =?utf-8?B?RXo1N2RxWllzNXhRODhwU3kxZTgxUEg1WEROOE80Qzl3WDRoUGpDNnJFNjdL?=
+ =?utf-8?B?NlJncmZFSVRLaklFNHA2MFZDT1F1WDNHRWcwZERDTjZ6aEkwY2t3OXZ1MUts?=
+ =?utf-8?B?VEtzQUZ5ek9BWGF0OURUM3g0QUJLTmt3c0JzVWpNcmNUN1ZEQlZUU1FMSjFW?=
+ =?utf-8?B?Y1JucGZGem45MnNkaTZ1R2I3RDZNT2tBZ01OZ3I2R0F4VCt0RTNLWmJhdS9n?=
+ =?utf-8?B?dnZ1bVk4UXlSQU8ycDJHREdLRGpJTlB5cnEyczRBeTRZbVFlQnFUSWsxVm5z?=
+ =?utf-8?B?RUx5YzlNaEc5M0N3bWNoYVY3b2JUTFdySzFHRWYwNzVNc2REeEhzMTdrcGhH?=
+ =?utf-8?B?WGRWcTM3ZnpOQlRpSW1FZG9OWkZPSmxpQkxlSEpFRnRVelBxZkQ3d0NRMUxH?=
+ =?utf-8?B?ZXIrYWw3aUlpSjBJdEJTTkZpS2xUN0p4aFNHa2FyQmNJclZhS1Y0OEN6QS9K?=
+ =?utf-8?B?aUdYa0lNRFRRbnI2Z3NvWFp5VTBReGhzS3IzSUZhRncvWUtacGJ3Ylh6cWJF?=
+ =?utf-8?Q?l0DwrVjd+qhV9h9zaSVyzPlgyBbTQVEyEw3RYkK?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VHIYy9p1MsGeMUBDd4dDXC7CkUfik36sOMXgrjD92l1ce6rz5Ffzg+V6JKri?=
- =?us-ascii?Q?4/heVP7kp0QtJeLOTXMXkImhifmycVQ1EFVYDpfAwxctdAilRJITqLWKym45?=
- =?us-ascii?Q?jG9/hl7UcBxtPIR2sGpR6WSqNfGTPcsF2eXHzfOE1t89PAALhcYubLy5/5pD?=
- =?us-ascii?Q?tIRgsiYVKi0VZoGl7Nq8kJnUnzQ5azni76Gr+yptogt4/Lniij7VzTb0S+4r?=
- =?us-ascii?Q?fIL9iaaedzPOJgsMfYOyu8ve+btYKWF4Pl1nRsf2rbLgNduOZnD51iAG3xRH?=
- =?us-ascii?Q?cpYii8MhXyAILhDd+NjpHbrcDIEIpd/JNezWm7+hpO5Ef4qHaQPnbRrGJ+Iy?=
- =?us-ascii?Q?D1CAtgfSOwuEIDFVcmIX+vfpcHts+6RSSN+XNig7iV3WtKGd52wgPTntgSMZ?=
- =?us-ascii?Q?1DnXrzTS/SKuUu6mALJ/QS5J0+MmA1tX5M3FBqc6WJL6ybVUoY84Pl+uy4Ga?=
- =?us-ascii?Q?DMItFU1cYVIg2pBjJHFADayt9IFPcOdk9Kjp2/f/yIyKLXE8CMKT+2/AUKip?=
- =?us-ascii?Q?iEsC3mz3jiVash9AXY+66tRNjvii2MKfqlUx9haR3Ku9i+S8P8RkWDDtBKk8?=
- =?us-ascii?Q?DWM1RGb4mEepCoQvJ1+TR1h9F+FwYoJnFge4hxhZb81hrYH1JsOZYrbM0RD9?=
- =?us-ascii?Q?VygoChJDcOU9JWPQkUiTrs1lD58tgpoPH9XKhBYVr0nD5zwxF3Ovc2qqSuH5?=
- =?us-ascii?Q?6+FopAM6yGDNMt0ztc8ebrAsQByO5bLXbD9X2M1ujyfqbl3M+bfw+q476Dzo?=
- =?us-ascii?Q?JBuqIU0BnaEBlSn/pRzFMjZl4+2YdizBqPC2nPrh2I6sUjhE6a1cOGC6wXNF?=
- =?us-ascii?Q?sRrGDi61fJ7Oo3x9ZatW1agQ6OWs3fs1oOQzHriQHJx6xvRLIkTDxHIM5IA0?=
- =?us-ascii?Q?0MQYssT3FLMAIKeoY+hVXwprydjqH+sZ1Mo+wSR81NQHEnMb7AUooVDkCCVA?=
- =?us-ascii?Q?cRFv0ly6LaAaD79j1R+TR0/q7EEy5sLJOxgBnsh11Ke859egObXcHAJMWuOs?=
- =?us-ascii?Q?DYqz7bGXGkxG96en2U/dOQi6y1wQpO2PMcNvkEV2pHC75HN2MysFSVmrX8N/?=
- =?us-ascii?Q?jZH0bmxd8urX72tIR5CWutkkI4GWcwgkIl2OI7s1kx/OIqgL3uZnQs+KBBy+?=
- =?us-ascii?Q?UFGV6xunBBNflhcatDX6ORRMk9vMy4iRMPI0uMuSWXUmYK55I8Fy7uk4Lqu6?=
- =?us-ascii?Q?SfV2dHeb8ziUGoRihgeIf0FQnGKg38eE0rBZ7HOM9VOK13/NsGtmZAcI/Kv7?=
- =?us-ascii?Q?PfT0FzceVeEenOmGGlYmizFDj9ORT0IjWFqllI4SIR5rNbVM9dyJsaacGmXR?=
- =?us-ascii?Q?84mx/xdk/Rru1Y8/Jddr7eAcZLVWnDLcpJTj9RD6Ub6SYjE5JRXicrqfVp1z?=
- =?us-ascii?Q?uRX2BWpIMhardlR8AS4zE4G/6thx0sF0RXvDaaJWMJgv9RPXzu+4zzO+pVGH?=
- =?us-ascii?Q?tjVwX4vGaKfpSVxDOuZ04sliBEC6NaFi13HyO23OAZ84EHJ5Wx5IrqM6kjyJ?=
- =?us-ascii?Q?fE+QnhFSx66pP2lDoQ9jy/wo7jieR455duJfB4Vk3GvnxMeuu3JeMeyhF0MX?=
- =?us-ascii?Q?8arOe/FHY9CS2hcbB8M4dn9P/2c79X29zFDcqooxhQTCCTejLbLO+FnYqblv?=
- =?us-ascii?Q?/A=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e34b68c2-9c2f-4141-a8f5-08dcf2b02142
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WkwwdWtaVWVBT3ZkYVYwdU41L0UyNnVVcHdCbFFybnRzVExqQlZUNEtUcytU?=
+ =?utf-8?B?TXV3eElvUHBrcW1hVjhWaitmTmpqcFdidU9pNjZDRStjVFFKV2JWQ0trZEtD?=
+ =?utf-8?B?K0RkNmFISEV1Rk1ucVZMMXFvUnAvYW9VaGxiNjJXUXdqTUhZc2JyNDNJOTdY?=
+ =?utf-8?B?MlRBc3h5Q1NoeTY0ZXROQWhaSTNIakpMZUEvK0hxN1RHOWZOQXA3dktsUHIx?=
+ =?utf-8?B?cXhUYzZFS3VqM3JKU2xXYzREaFIzNyszSnZaZEdpSUZwaXVJeS9McS9hVXVr?=
+ =?utf-8?B?WVpzTFc0clBhaXZDdnYrdHJLd1R5dVBUS0ZVd0pmd3BlRXNLcldQcm9PaVdi?=
+ =?utf-8?B?bjAwbUNobkNhY0gyMUxIY0tmeGdPMzgxSkZmZVJPQjhqUGtxOHU3cXBZcDZQ?=
+ =?utf-8?B?UmV1K2J6Y3hMOXhJMG9qQ0QxNTBLVzdsaCtsSjM5L1I2YXhxUkJwR2hCTEhk?=
+ =?utf-8?B?dzdheDdSZ1VudWZuSTQ4eUsvRkRieTJsV1JQRHFwYXQ4TTQ3emlFcWs2UnUv?=
+ =?utf-8?B?N2ZMbFFNeGpIODNkLzVZNk85SjBNYmNLRU1tVHQxQTVPRGRURHRxSlpGN1dR?=
+ =?utf-8?B?Y05lRFBHZG00Qk11cDQxeEF1dWovdXBBWHpna0JRM1hUUEF0WU9LVnNxbHF5?=
+ =?utf-8?B?eUVNZXpHMVY5MHRYM2o4aEc0UWFuSFZCVkVpKys1ajl1WUJyVStURXFiK3pp?=
+ =?utf-8?B?Mnh6cHlnMjhwUDM2eStEQ0xXdDk2WW9zTXBXSUtIa0JvVStJMHQzMTdFbTdt?=
+ =?utf-8?B?VFI3eGVpb1ZzbDFvRkFWUWZHVFYyQTZSNis1K0VjNFpnMndMbnQwWkQ0cTI4?=
+ =?utf-8?B?V0o0SVpoUW45Y3lFSzFCVnZtK0tZdmhldG5aa2N0NzNOeXp1TGV2QzNxTjlO?=
+ =?utf-8?B?TmRVV1RJSmFOMllQMGxPdWpiOU5BSk15d2YyNVAyVS8wYlNvOW8vZzZBWUpp?=
+ =?utf-8?B?bHdKb0tBREdPbEkyRDI5bXRpL3J2K0FhVUNCQmlTMTIycUdRR0RiakRoZjBP?=
+ =?utf-8?B?V1FibmZzTXhmM2dmNDJBclk3SnNWWWxON0xjN0xLTWEyT3RuQ011Rm5xOGJu?=
+ =?utf-8?B?QTgxWFd0TWRNc2ZPYmJvRjRKVXNTR1VYMnN1ZTJvSVd4am1LSjJTSk9MRlUz?=
+ =?utf-8?B?NzYraW9wTVZpVmhmYkRLOTdDL0VqbmQ0TXFsVVFMSVZMdndoSlNCNWNXS1o1?=
+ =?utf-8?B?VWdvQ0NuZFJRNDcySW01aXY3TGlzdHpBeFBDSlpxalU1UzJwVHlUOWRuay9V?=
+ =?utf-8?B?a0JGb0p2TGFYUWwyZ3JoZ0xrYjZtMzlid3diNXNlTndPY2t1WXhxQTd0U2t6?=
+ =?utf-8?B?Z0xXc3ZScVlVVlNzaU5NbDcwU3FianRRZjlrSElIVlM5aWs4N3NwWnA1T1Ur?=
+ =?utf-8?B?clNuc09wcGR3N3dTQjJLUko3aStNakdqaXM4ZGp4ZkVNb2dSS3d2bnRCQ01l?=
+ =?utf-8?B?QkR4SzRueHI3bmc0bCtBTWlMNkt0Ukx5aG8xWjVHd3ZHQXJjUW9tb3NFNGV2?=
+ =?utf-8?B?NXRVdll4UWhGSEREL20rVk9oUGg4S2o4b2sreHlCTCtKTjEyR0lnSVdrS2xo?=
+ =?utf-8?B?V20wdU11YXpaOFhrUHh4U1JEK0RWcWRBOUJVSmZybG1BbXc5YVo0UUlnK0ZU?=
+ =?utf-8?B?NzBONXhlQnVTVmFRR2tabnd2OGQ3NVBpOHhXeVZzVWhEbzZKQlF0WitLL3dk?=
+ =?utf-8?B?M09DelZtMElBYVdoT3o1QWNRQklzNmJCelZLTi9EWHNtLzhOVytCSVBWZU9x?=
+ =?utf-8?B?cG9OUDl6cDNnaW5ETHFxVW15SGhsaTQ1eWxwak1MYXpqTDU5eDZaczRlbkIy?=
+ =?utf-8?B?eWRKempVS1M5bm9SUmxrRVhMVkREZmxkdXY0a2R2R3FxME5SeVJnbUFOUFg5?=
+ =?utf-8?B?anlpc0FYWlRlQzFoYWVsOXZJVFg3dGtZaDdLZDNIQ2NoSUFtMWJuWlplbHlI?=
+ =?utf-8?B?UkVjcXlGS0Y2K2VUSk1jU014NDBUaldZdGMrbzJvZDAyZkY3NHVpdUpvSiti?=
+ =?utf-8?B?d1JlaUtRMXcwQmhwdnNBQlQrbkhIOGRiZWJsVU9nWVUwd2FQRmhDcCtvS003?=
+ =?utf-8?B?OEVOcjA2a1E0MWNjb3BORFRHQWtOQ3NsNFVNR2IyR3AxUVpJcmlIWmNtbHIy?=
+ =?utf-8?B?TG5FaXVMMEVwK3kxeXJQb29KTjhTZzJPVzI5WFk1MWw5VnRYdSs3K1FSamJs?=
+ =?utf-8?B?bWc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49a2d33c-eda9-4907-e13f-08dcf2b179b8
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2024 15:42:26.7612
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2024 15:52:04.6932
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bxfneScIiLCPV4b8ptmzvdldGLwBmTzZZ+flrIaew9V62f2EdJhH7eRJFPs2fR9N1s45jVeE7BFJOmeZCeNJx/mQ4IrBNsAl63DtdW/LjjQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB8092
+X-MS-Exchange-CrossTenant-UserPrincipalName: dpBFzUdz+dDu0o2/0iwW2DHLUynYkb0VGPUqTNaTRUgdReaUPMwKdmTKEF6AtSLnHdaC3pxAmwsvtYkmR8znrSdJA/El1NGjyeFig+Nbc7c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7866
 X-OriginatorOrg: intel.com
 
-On Tue, Oct 15, 2024 at 04:53:48PM +0200, Alexander Lobakin wrote:
-> Currently, when you send an XSk frame without metadata, you need to do
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+Date: Wed, 9 Oct 2024 14:50:42 +0200
 
-you meant *with* metadata?
+> From: Lorenzo Bianconi <lorenzo@kernel.org>
+> Date: Wed, 9 Oct 2024 14:47:58 +0200
+> 
+>>> From: Lorenzo Bianconi <lorenzo@kernel.org>
+>>> Date: Wed, 9 Oct 2024 12:46:00 +0200
+>>>
+>>>>> Hi Lorenzo,
+>>>>>
+>>>>> On Mon, Sep 16, 2024 at 12:13:42PM GMT, Lorenzo Bianconi wrote:
+>>>>>> Add GRO support to cpumap codebase moving the cpu_map_entry kthread to a
+>>>>>> NAPI-kthread pinned on the selected cpu.
+>>>>>>
+>>>>>> Changes in rfc v2:
+>>>>>> - get rid of dummy netdev dependency
+>>>>>>
+>>>>>> Lorenzo Bianconi (3):
+>>>>>>   net: Add napi_init_for_gro routine
+>>>>>>   net: add napi_threaded_poll to netdevice.h
+>>>>>>   bpf: cpumap: Add gro support
+>>>>>>
+>>>>>>  include/linux/netdevice.h |   3 +
+>>>>>>  kernel/bpf/cpumap.c       | 123 ++++++++++++++++----------------------
+>>>>>>  net/core/dev.c            |  27 ++++++---
+>>>>>>  3 files changed, 73 insertions(+), 80 deletions(-)
+>>>>>>
+>>>>>> -- 
+>>>>>> 2.46.0
+>>>>>>
+>>>>>
+>>>>> Sorry about the long delay - finally caught up to everything after
+>>>>> conferences.
+>>>>>
+>>>>> I re-ran my synthetic tests (including baseline). v2 is somehow showing
+>>>>> 2x bigger gains than v1 (~30% vs ~14%) for tcp_stream. Again, the only
+>>>>> variable I changed is kernel version - steering prog is active for both.
+>>>>>
+>>>>>
+>>>>> Baseline (again)							
+>>>>>
+>>>>> ./tcp_rr -c -H $TASK_IP -p 50,90,99 -T4 -F8 -l30			        ./tcp_stream -c -H $TASK_IP -T8 -F16 -l30
+>>>>> 							
+>>>>> 	Transactions	Latency P50 (s)	Latency P90 (s)	Latency P99 (s)			Throughput (Mbit/s)
+>>>>> Run 1	2560252	        0.00009087	0.00010495	0.00011647		Run 1	15479.31
+>>>>> Run 2	2665517	        0.00008575	0.00010239	0.00013311		Run 2	15162.48
+>>>>> Run 3	2755939	        0.00008191	0.00010367	0.00012287		Run 3	14709.04
+>>>>> Run 4	2595680	        0.00008575	0.00011263	0.00012671		Run 4	15373.06
+>>>>> Run 5	2841865	        0.00007999	0.00009471	0.00012799		Run 5	15234.91
+>>>>> Average	2683850.6	0.000084854	0.00010367	0.00012543		Average	15191.76
+>>>>> 							
+>>>>> cpumap NAPI patches v2							
+>>>>> 							
+>>>>> 	Transactions	Latency P50 (s)	Latency P90 (s)	Latency P99 (s)			Throughput (Mbit/s)
+>>>>> Run 1	2577838	        0.00008575	0.00012031	0.00013695		Run 1	19914.56
+>>>>> Run 2	2729237	        0.00007551	0.00013311	0.00017663		Run 2	20140.92
+>>>>> Run 3	2689442	        0.00008319	0.00010495	0.00013311		Run 3	19887.48
+>>>>> Run 4	2862366	        0.00008127	0.00009471	0.00010623		Run 4	19374.49
+>>>>> Run 5	2700538	        0.00008319	0.00010367	0.00012799		Run 5	19784.49
+>>>>> Average	2711884.2	0.000081782	0.00011135	0.000136182		Average	19820.388
+>>>>> Delta	1.04%	        -3.62%	        7.41%	        8.57%			        30.47%
+>>>>>
+>>>>> Thanks,
+>>>>> Daniel
+>>>>
+>>>> Hi Daniel,
+>>>>
+>>>> cool, thx for testing it.
+>>>>
+>>>> @Olek: how do we want to proceed on it? Are you still working on it or do you want me
+>>>> to send a regular patch for it?
+>>>
+>>> Hi,
+>>>
+>>> I had a small vacation, sorry. I'm starting working on it again today.
+>>
+>> ack, no worries. Are you going to rebase the other patches on top of it
+>> or are you going to try a different approach?
+> 
+> I'll try the approach without NAPI as Kuba asks and let Daniel test it,
+> then we'll see.
 
-> the following:
-> 
-> * call external xsk_buff_raw_get_dma();
-> * call inline xsk_buff_get_metadata(), which calls external
->   xsk_buff_raw_get_data() and then do some inline checks.
-> 
-> This effectively means that the following piece:
-> 
-> addr = pool->unaligned ? xp_unaligned_add_offset_to_addr(addr) : addr;
-> 
-> is done twice per frame, plus you have 2 external calls per frame, plus
-> this:
-> 
-> 	meta = pool->addrs + addr - pool->tx_metadata_len;
-> 	if (unlikely(!xsk_buff_valid_tx_metadata(meta)))
-> 
-> is always inlined, even if there's no meta or it's invalid.
+For now, I have the same results without NAPI as with your series, so
+I'll push it soon and let Daniel test.
 
-when there is no meta you bail out early in xsk_buff_get_metadata() as
-tx_metadata_len was not set, no?
+(I simply decoupled GRO and NAPI and used the former in cpumap, but the
+ kthread logic didn't change)
 
 > 
-> Add xsk_buff_raw_get_ctx() (xp_raw_get_ctx() to be precise) to do that
-> in one go. It returns a small structure with 2 fields: DMA address,
-> filled unconditionally, and metadata pointer, valid only if it's
-> present. The address correction is performed only once and you also
-> have only 1 external call per XSk frame, which does all the calculations
-> and checks outside of your hotpath. You only need to check
-> `if (ctx.meta)` for the metadata presence.
+> BTW I'm curious how he got this boost on v2, from what I see you didn't
+> change the implementation that much?
 
-IMHO adding this might confuse future users which approach should be
-preferred.
-
-Thinking out loud...couldn't we export address correction logic and pass
-the corrected addr to xsk_buff_get_metadata and then add it to
-pool->addrs. But that would require modifying existing callsites +
-addressing xp_raw_get_dma() as well :<
-
-Standard question - any perf improvement when micro benchmarking? :P
-
-> 
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> ---
->  include/net/xdp_sock_drv.h  | 23 +++++++++++++++++++++
->  include/net/xsk_buff_pool.h |  8 ++++++++
->  net/xdp/xsk_buff_pool.c     | 40 +++++++++++++++++++++++++++++++++++++
->  3 files changed, 71 insertions(+)
-> 
-> diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-> index 6aae95b83645..324a4bb04431 100644
-> --- a/include/net/xdp_sock_drv.h
-> +++ b/include/net/xdp_sock_drv.h
-> @@ -205,6 +205,23 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
->  	return xp_raw_get_data(pool, addr);
->  }
->  
-> +/**
-> + * xsk_buff_raw_get_ctx - get &xdp_desc context
-> + * @pool: XSk buff pool desc address belongs to
-> + * @addr: desc address (from userspace)
-> + *
-> + * Wrapper for xp_raw_get_ctx() to be used in drivers, see its kdoc for
-> + * details.
-> + *
-> + * Return: new &xdp_desc_ctx struct containing desc's DMA address and metadata
-> + * pointer, if it is present and valid (initialized to %NULL otherwise).
-> + */
-> +static inline struct xdp_desc_ctx
-> +xsk_buff_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr)
-> +{
-> +	return xp_raw_get_ctx(pool, addr);
-> +}
-> +
->  #define XDP_TXMD_FLAGS_VALID ( \
->  		XDP_TXMD_FLAGS_TIMESTAMP | \
->  		XDP_TXMD_FLAGS_CHECKSUM | \
-> @@ -402,6 +419,12 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
->  	return NULL;
->  }
->  
-> +static inline struct xdp_desc_ctx
-> +xsk_buff_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr)
-> +{
-> +	return (struct xdp_desc_ctx){ };
-> +}
-> +
->  static inline bool xsk_buff_valid_tx_metadata(struct xsk_tx_metadata *meta)
->  {
->  	return false;
-> diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-> index 3832997cc605..6c540696a299 100644
-> --- a/include/net/xsk_buff_pool.h
-> +++ b/include/net/xsk_buff_pool.h
-> @@ -141,6 +141,14 @@ u32 xp_alloc_batch(struct xsk_buff_pool *pool, struct xdp_buff **xdp, u32 max);
->  bool xp_can_alloc(struct xsk_buff_pool *pool, u32 count);
->  void *xp_raw_get_data(struct xsk_buff_pool *pool, u64 addr);
->  dma_addr_t xp_raw_get_dma(struct xsk_buff_pool *pool, u64 addr);
-> +
-> +struct xdp_desc_ctx {
-> +	dma_addr_t dma;
-> +	struct xsk_tx_metadata *meta;
-> +};
-> +
-> +struct xdp_desc_ctx xp_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr);
-> +
->  static inline dma_addr_t xp_get_dma(struct xdp_buff_xsk *xskb)
->  {
->  	return xskb->dma;
-> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-> index ae71da7d2cd6..02c42caec9f4 100644
-> --- a/net/xdp/xsk_buff_pool.c
-> +++ b/net/xdp/xsk_buff_pool.c
-> @@ -715,3 +715,43 @@ dma_addr_t xp_raw_get_dma(struct xsk_buff_pool *pool, u64 addr)
->  		(addr & ~PAGE_MASK);
->  }
->  EXPORT_SYMBOL(xp_raw_get_dma);
-> +
-> +/**
-> + * xp_raw_get_ctx - get &xdp_desc context
-> + * @pool: XSk buff pool desc address belongs to
-> + * @addr: desc address (from userspace)
-> + *
-> + * Helper for getting desc's DMA address and metadata pointer, if present.
-> + * Saves one call on hotpath, double calculation of the actual address,
-> + * and inline checks for metadata presence and sanity.
-> + * Please use xsk_buff_raw_get_ctx() in drivers instead.
-> + *
-> + * Return: new &xdp_desc_ctx struct containing desc's DMA address and metadata
-> + * pointer, if it is present and valid (initialized to %NULL otherwise).
-> + */
-> +struct xdp_desc_ctx xp_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr)
-> +{
-> +	struct xsk_tx_metadata *meta;
-> +	struct xdp_desc_ctx ret;
-> +
-> +	addr = pool->unaligned ? xp_unaligned_add_offset_to_addr(addr) : addr;
-> +	ret = (typeof(ret)){
-> +		/* Same logic as in xp_raw_get_dma() */
-> +		.dma	= (pool->dma_pages[addr >> PAGE_SHIFT] &
-> +			   ~XSK_NEXT_PG_CONTIG_MASK) + (addr & ~PAGE_MASK),
-> +	};
-> +
-> +	if (!pool->tx_metadata_len)
-> +		goto out;
-> +
-> +	/* Same logic as in xp_raw_get_data() + xsk_buff_get_metadata() */
-> +	meta = pool->addrs + addr - pool->tx_metadata_len;
-> +	if (unlikely(!xsk_buff_valid_tx_metadata(meta)))
-> +		goto out;
-> +
-> +	ret.meta = meta;
-> +
-> +out:
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(xp_raw_get_ctx);
-> -- 
-> 2.46.2
-> 
+Thanks,
+Olek
 
