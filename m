@@ -1,175 +1,449 @@
-Return-Path: <bpf+bounces-42718-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42719-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0BF59A953A
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:02:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B50779A955E
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:19:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 972481F23C6D
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 01:02:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E42B28316A
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 01:19:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A8D8063C;
-	Tue, 22 Oct 2024 01:02:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D0673451;
+	Tue, 22 Oct 2024 01:19:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="nxhCEaAB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E8BmZWYs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C22A927;
-	Tue, 22 Oct 2024 01:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA2F8836
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 01:19:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729558940; cv=none; b=RxY0oaF407713pJm2HrjflqihXDU2Yj6QuhB0lPefrrrK+dp7NZMTGsTRrV3Jzj/e3vyrWV77n9ANzwaOK2CUXFuTyPpR9xfMU505c0lLAio55of3nMUO+PJSkbmRZvhQ35RybgbkaCRVFfuBPt6q/G90M0SkNuMkl7vRRj7yxQ=
+	t=1729559944; cv=none; b=XtxdVBeoL0A5MaMwG+T2LIH7Guo4mxco+fbjOvQMn+NPvX0P3tkeMHvZAJZN96/BAt/iXBIeJg+i/KgJLrqlDQvvzH2dKFzYpICDyCw4n26x4j8gjlE/dCZSUrvdEtHfFiKRnaMhK8T8fOixswlzXgB1MQ/MSh9EEY9F0TJcOYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729558940; c=relaxed/simple;
-	bh=+uPsrAOcChIVguTREmIEfgaYRyyry6uMqgm7mCev93s=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=pSLdC8ids9PwiV+Ap3hSJKRxnkOIcKD19yqSQHR7/wU/YhgC/SBooRuj1oKFRTqYNOm6Ky6c0MJMq9k40PC2C0RII95Bu4h6yGJKl7uDf1yAcYjtODNJsUBsDVuB2lPPBx5+AdQAr0LTtGJxPDj54AQynjtuQN1GHNE26zw/B0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=nxhCEaAB; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1729558932;
-	bh=GZItvcYPlsFji1zxIwCTQdK4eNnugj/oYP/4HDVcadM=;
-	h=Date:From:To:Cc:Subject:From;
-	b=nxhCEaABmJP5emfqXYqoWu7OmBRiPfZkpLDd06HaxY6259rLV9RCouXYiaCMiuSL/
-	 USSbWULhzFwq60XQNENm7rtXOMoIWze8EQFy+3/uIRabbozoXiUEXkGJt71Lv97Ke3
-	 UMV1WsmamA4ysI1W3fhq3rr8hlrhX2GPcjp9XzSct6kUd8AN1MAuLgZVYwtIzJl8HS
-	 0hAAU7g1hsSkvYmL7Lu1U2vFal7cMtlJAJKKNZeHgPDFuDMlGnTI2qh+cVwBrMj153
-	 0gD7JShRwB8PqQCAgjILCrIEzl2Q1E+iaSS8q+SInCgYnsUao8UIqEaCChh0r3WTJb
-	 0ABr3lnQ2+b3w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4XXYmg2LSWz4wb7;
-	Tue, 22 Oct 2024 12:02:10 +1100 (AEDT)
-Date: Tue, 22 Oct 2024 12:02:11 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
- <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-Cc: "Alexis =?UTF-8?B?TG90aG9yw6k=?= (eBPF Foundation)"
- <alexis.lothore@bootlin.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>,
- Simon Sundberg <simon.sundberg@kau.se>, Toke =?UTF-8?B?SMO4aWxhbmQtSsO4?=
- =?UTF-8?B?cmdlbnNlbg==?= <toke@redhat.com>
-Subject: linux-next: manual merge of the bpf-next tree with Linus' tree
-Message-ID: <20241022120211.2a5d41ed@canb.auug.org.au>
+	s=arc-20240116; t=1729559944; c=relaxed/simple;
+	bh=f2frKxTbQv4mJUCXbegoAZ1/v7geZsCNLAepD0ZvIoU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d2l0XnS8+kHsLLGe3uhbZ0214Ua+k17x+IoW7GEW8Qdwue/agwaY/TRgd//NLaY3PZ9m4ywAdT+SztogwUBOQcBW3J9oO1OlWQ3QXIxy+OHODTkKeIie5M4Jh35Q2Dr36rTA+qJTU6Eb8QT8bFugKeDDtid0GUR8AxKDExDNRO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E8BmZWYs; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-431548bd1b4so49525725e9.3
+        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 18:19:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729559941; x=1730164741; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZzAdR//v3HTXqjAa7l12CKboEfW3MUNIpQx8//1Gh8o=;
+        b=E8BmZWYs4wxlVCoQv2H0sFoFJ2a3SzHdS5i7jtFQCupk0uyFcYLYDxoSGtm1/lIfAZ
+         xwLCVzTidTPJId51Kg1TUkoI0ihYbECjQKze7BGCtVi2u5mm67rNn07m75gfF9eWuQkD
+         2iHs0Aj0EZuMESR4FKp5dRo4VuvDLZJlWFQS8zfh4WD401oNKMupzKh1q1zo/mV+vItR
+         /rV/C6154wA0yt/0pYnkSChVtZM8+4xQeQyS03OL+EraUL2SM9IVYnWmpOWXhCg1tU4V
+         XSXfTcocm7wGMHXOTvuH/8G2e5I5PqWekqmEqYa7MTny+BvD01dz/2jbSrkN8n0Yhlt5
+         XNxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729559941; x=1730164741;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZzAdR//v3HTXqjAa7l12CKboEfW3MUNIpQx8//1Gh8o=;
+        b=lasVIlbf12XtX3M02IrVxqT6z8r93YZHN+r48Vd1v2Dee8ND00eKbS3RfQIY77yGUo
+         mT976wNMqCZJhcXaSYkl0GHYgu7UXMdafES65VP2gx2lVp4CmJMY9J9dt5JOBIiK1MCi
+         aG40LAssSawDSyfstT66whUFVAyxoTe7ux9RWfKn1+zyWLEOjdBcob/xO6245mxqWV8x
+         /ex7nhAyhEwBMHlHJgk446n4sXdcY1qDCGmK549RSVPKfXt2jYWwqtYq/38svc2aFXge
+         unpRuW9F7Sq/gND0dE9xuAzWVbPpA4X/9IePSrao7ugss6926HSein3bswVhCiiLxcHT
+         oJdQ==
+X-Gm-Message-State: AOJu0YyMtea068tApoY3KdCoSXjAmAK4iQHISQ2a198B/dVTiGYjbekm
+	/ro0USX+VYy04Y65GOQF+R6r37CeCvSfycetAk3bYOa/etQd8qQ28pMvrvfXlGzq1KO/oAoqB4b
+	NHnj+EhU42ZEXZAghZ0bkqu/a7BQ=
+X-Google-Smtp-Source: AGHT+IGrkEXtYVBYKdXQFHmbp6GCUqDElZKjUM/V+Skd4xBveQHHDRD9gy94JCl9ggQcMHwGDj8VT8QgZ/B8H8sz1ks=
+X-Received: by 2002:a5d:4e4d:0:b0:37d:542a:7872 with SMTP id
+ ffacd0b85a97d-37eab7281ecmr8543985f8f.49.1729559940684; Mon, 21 Oct 2024
+ 18:19:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zSLe_0kB=.oReJxYbu9mSw0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/zSLe_0kB=.oReJxYbu9mSw0
-Content-Type: text/plain; charset=US-ASCII
+References: <20241020191341.2104841-1-yonghong.song@linux.dev> <20241020191347.2105090-1-yonghong.song@linux.dev>
+In-Reply-To: <20241020191347.2105090-1-yonghong.song@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 21 Oct 2024 18:18:49 -0700
+Message-ID: <CAADnVQ+ZXMh_QKy0nd-n7my1SETroockPjpVVJOAWsE3tB_5sg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/9] bpf: Allow each subprog having stack size
+ of 512 bytes
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Sun, Oct 20, 2024 at 12:14=E2=80=AFPM Yonghong Song <yonghong.song@linux=
+.dev> wrote:
+>
+> With private stack support, each subprog can have stack with up to 512
+> bytes. The limit of 512 bytes per subprog is kept to avoid increasing
+> verifier complexity since greater than 512 bytes will cause big verifier
+> change and increase memory consumption and verification time.
+>
+> If private stack is supported, for a bpf prog, esp. when it has
+> subprogs, private stack will be allocated for the main prog
+> and for each callback subprog. For example,
+>   main_prog
+>     subprog1
+>       calling helper
+>         subprog10 (callback func)
+>           subprog11
+>     subprog2
+>       calling helper
+>         subprog10 (callback func)
+>           subprog11
+>
+> Separate private allocations for main_prog and callback_fn subprog10
+> will make things easier since the helper function uses the kernel stack.
+>
+> In this patch, some tracing programs are allowed to use private
+> stack since tracing prog may be triggered in the middle of some other
+> prog runs. Additional subprog info is also collected for later to
+> allocate private stack for main prog and each callback functions.
+>
+> Note that if any tail_call is called in the prog (including all subprogs)=
+,
+> then private stack is not used.
+>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  include/linux/bpf.h          |   1 +
+>  include/linux/bpf_verifier.h |   3 ++
+>  include/linux/filter.h       |   1 +
+>  kernel/bpf/core.c            |   5 ++
+>  kernel/bpf/verifier.c        | 100 ++++++++++++++++++++++++++++++-----
+>  5 files changed, 97 insertions(+), 13 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 0c216e71cec7..6ad8ace7075a 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1490,6 +1490,7 @@ struct bpf_prog_aux {
+>         bool exception_cb;
+>         bool exception_boundary;
+>         bool is_extended; /* true if extended by freplace program */
+> +       bool priv_stack_eligible;
+>         u64 prog_array_member_cnt; /* counts how many times as member of =
+prog_array */
+>         struct mutex ext_mutex; /* mutex for is_extended and prog_array_m=
+ember_cnt */
+>         struct bpf_arena *arena;
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 4513372c5bc8..bcfe868e3801 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -659,6 +659,8 @@ struct bpf_subprog_info {
+>          * are used for bpf_fastcall spills and fills.
+>          */
+>         s16 fastcall_stack_off;
+> +       u16 subtree_stack_depth;
+> +       u16 subtree_top_idx;
+>         bool has_tail_call: 1;
+>         bool tail_call_reachable: 1;
+>         bool has_ld_abs: 1;
+> @@ -668,6 +670,7 @@ struct bpf_subprog_info {
+>         bool args_cached: 1;
+>         /* true if bpf_fastcall stack region is used by functions that ca=
+n't be inlined */
+>         bool keep_fastcall_stack: 1;
+> +       bool priv_stack_eligible: 1;
+>
+>         u8 arg_cnt;
+>         struct bpf_subprog_arg_info args[MAX_BPF_FUNC_REG_ARGS];
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 7d7578a8eac1..3a21947f2fd4 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -1119,6 +1119,7 @@ bool bpf_jit_supports_exceptions(void);
+>  bool bpf_jit_supports_ptr_xchg(void);
+>  bool bpf_jit_supports_arena(void);
+>  bool bpf_jit_supports_insn(struct bpf_insn *insn, bool in_arena);
+> +bool bpf_jit_supports_private_stack(void);
+>  u64 bpf_arch_uaddress_limit(void);
+>  void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp=
+, u64 bp), void *cookie);
+>  bool bpf_helper_changes_pkt_data(void *func);
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 233ea78f8f1b..14d9288441f2 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -3045,6 +3045,11 @@ bool __weak bpf_jit_supports_exceptions(void)
+>         return false;
+>  }
+>
+> +bool __weak bpf_jit_supports_private_stack(void)
+> +{
+> +       return false;
+> +}
+> +
+>  void __weak arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip,=
+ u64 sp, u64 bp), void *cookie)
+>  {
+>  }
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index f514247ba8ba..45bea4066272 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -194,6 +194,8 @@ struct bpf_verifier_stack_elem {
+>
+>  #define BPF_GLOBAL_PERCPU_MA_MAX_SIZE  512
+>
+> +#define BPF_PRIV_STACK_MIN_SUBTREE_SIZE        128
+> +
+>  static int acquire_reference_state(struct bpf_verifier_env *env, int ins=
+n_idx);
+>  static int release_reference(struct bpf_verifier_env *env, int ref_obj_i=
+d);
+>  static void invalidate_non_owning_refs(struct bpf_verifier_env *env);
+> @@ -5982,6 +5984,41 @@ static int check_ptr_alignment(struct bpf_verifier=
+_env *env,
+>                                            strict);
+>  }
+>
+> +static bool bpf_enable_private_stack(struct bpf_verifier_env *env)
+> +{
+> +       if (!bpf_jit_supports_private_stack())
+> +               return false;
+> +
+> +       switch (env->prog->type) {
+> +       case BPF_PROG_TYPE_KPROBE:
+> +       case BPF_PROG_TYPE_TRACEPOINT:
+> +       case BPF_PROG_TYPE_PERF_EVENT:
+> +       case BPF_PROG_TYPE_RAW_TRACEPOINT:
+> +               return true;
+> +       case BPF_PROG_TYPE_TRACING:
+> +               if (env->prog->expected_attach_type !=3D BPF_TRACE_ITER)
+> +                       return true;
+> +               fallthrough;
+> +       default:
+> +               return false;
+> +       }
+> +}
+> +
+> +static bool is_priv_stack_supported(struct bpf_verifier_env *env)
+> +{
+> +       struct bpf_subprog_info *si =3D env->subprog_info;
+> +       bool has_tail_call =3D false;
+> +
+> +       for (int i =3D 0; i < env->subprog_cnt; i++) {
+> +               if (si[i].has_tail_call) {
+> +                       has_tail_call =3D true;
+> +                       break;
+> +               }
+> +       }
+> +
+> +       return !has_tail_call && bpf_enable_private_stack(env);
+> +}
+> +
+>  static int round_up_stack_depth(struct bpf_verifier_env *env, int stack_=
+depth)
+>  {
+>         if (env->prog->jit_requested)
+> @@ -5999,16 +6036,21 @@ static int round_up_stack_depth(struct bpf_verifi=
+er_env *env, int stack_depth)
+>   * Since recursion is prevented by check_cfg() this algorithm
+>   * only needs a local stack of MAX_CALL_FRAMES to remember callsites
+>   */
+> -static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, i=
+nt idx)
+> +static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, i=
+nt idx,
+> +                                        bool check_priv_stack, bool priv=
+_stack_supported)
+>  {
+>         struct bpf_subprog_info *subprog =3D env->subprog_info;
+>         struct bpf_insn *insn =3D env->prog->insnsi;
+>         int depth =3D 0, frame =3D 0, i, subprog_end;
+>         bool tail_call_reachable =3D false;
+> +       bool priv_stack_eligible =3D false;
+>         int ret_insn[MAX_CALL_FRAMES];
+>         int ret_prog[MAX_CALL_FRAMES];
+> -       int j;
+> +       int j, subprog_stack_depth;
+> +       int orig_idx =3D idx;
+>
+> +       if (check_priv_stack)
+> +               subprog[idx].subtree_top_idx =3D idx;
+>         i =3D subprog[idx].start;
+>  process_func:
+>         /* protect against potential stack overflow that might happen whe=
+n
+> @@ -6030,18 +6072,33 @@ static int check_max_stack_depth_subprog(struct b=
+pf_verifier_env *env, int idx)
+>          * tailcall will unwind the current stack frame but it will not g=
+et rid
+>          * of caller's stack as shown on the example above.
+>          */
+> -       if (idx && subprog[idx].has_tail_call && depth >=3D 256) {
+> +       if (!check_priv_stack && idx && subprog[idx].has_tail_call && dep=
+th >=3D 256) {
+>                 verbose(env,
+>                         "tail_calls are not allowed when call stack of pr=
+evious frames is %d bytes. Too large\n",
+>                         depth);
+>                 return -EACCES;
+>         }
+> -       depth +=3D round_up_stack_depth(env, subprog[idx].stack_depth);
+> -       if (depth > MAX_BPF_STACK) {
+> +       subprog_stack_depth =3D round_up_stack_depth(env, subprog[idx].st=
+ack_depth);
+> +       depth +=3D subprog_stack_depth;
+> +       if (!check_priv_stack && !priv_stack_supported && depth > MAX_BPF=
+_STACK) {
+>                 verbose(env, "combined stack size of %d calls is %d. Too =
+large\n",
+>                         frame + 1, depth);
+>                 return -EACCES;
+>         }
+> +       if (check_priv_stack) {
+> +               if (subprog_stack_depth > MAX_BPF_STACK) {
+> +                       verbose(env, "stack size of subprog %d is %d. Too=
+ large\n",
+> +                               idx, subprog_stack_depth);
+> +                       return -EACCES;
+> +               }
+> +
+> +               if (!priv_stack_eligible && depth >=3D BPF_PRIV_STACK_MIN=
+_SUBTREE_SIZE) {
+> +                       subprog[orig_idx].priv_stack_eligible =3D true;
+> +                       env->prog->aux->priv_stack_eligible =3D priv_stac=
+k_eligible =3D true;
+> +               }
+> +               subprog[orig_idx].subtree_stack_depth =3D
+> +                       max_t(u16, subprog[orig_idx].subtree_stack_depth,=
+ depth);
+> +       }
+>  continue_func:
+>         subprog_end =3D subprog[idx + 1].start;
+>         for (; i < subprog_end; i++) {
+> @@ -6078,6 +6135,12 @@ static int check_max_stack_depth_subprog(struct bp=
+f_verifier_env *env, int idx)
+>                 next_insn =3D i + insn[i].imm + 1;
+>                 sidx =3D find_subprog(env, next_insn);
+>                 if (sidx < 0) {
+> +                       /* It is possible that callback func has been rem=
+oved as dead code after
+> +                        * instruction rewrites, e.g. bpf_loop with cnt 0=
+.
+> +                        */
+> +                       if (check_priv_stack)
+> +                               continue;
+> +
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+and this extra hack only because check_max_stack_depth() will
+be called the 2nd time ?
+Why call it twice at all ?
+Record everything in the first pass.
 
-  tools/testing/selftests/bpf/Makefile
+>                         WARN_ONCE(1, "verifier bug. No program starts at =
+insn %d\n",
+>                                   next_insn);
+>                         return -EFAULT;
+> @@ -6097,8 +6160,10 @@ static int check_max_stack_depth_subprog(struct bp=
+f_verifier_env *env, int idx)
+>                 }
+>                 i =3D next_insn;
+>                 idx =3D sidx;
+> +               if (check_priv_stack)
+> +                       subprog[idx].subtree_top_idx =3D orig_idx;
+>
+> -               if (subprog[idx].has_tail_call)
+> +               if (!check_priv_stack && subprog[idx].has_tail_call)
+>                         tail_call_reachable =3D true;
+>
+>                 frame++;
+> @@ -6122,7 +6187,7 @@ static int check_max_stack_depth_subprog(struct bpf=
+_verifier_env *env, int idx)
+>                         }
+>                         subprog[ret_prog[j]].tail_call_reachable =3D true=
+;
+>                 }
+> -       if (subprog[0].tail_call_reachable)
+> +       if (!check_priv_stack && subprog[0].tail_call_reachable)
+>                 env->prog->aux->tail_call_reachable =3D true;
+>
+>         /* end of for() loop means the last insn of the 'subprog'
+> @@ -6137,14 +6202,18 @@ static int check_max_stack_depth_subprog(struct b=
+pf_verifier_env *env, int idx)
+>         goto continue_func;
+>  }
+>
+> -static int check_max_stack_depth(struct bpf_verifier_env *env)
+> +static int check_max_stack_depth(struct bpf_verifier_env *env, bool chec=
+k_priv_stack,
+> +                                bool priv_stack_supported)
+>  {
+>         struct bpf_subprog_info *si =3D env->subprog_info;
+> +       bool check_subprog;
+>         int ret;
+>
+>         for (int i =3D 0; i < env->subprog_cnt; i++) {
+> -               if (!i || si[i].is_async_cb) {
+> -                       ret =3D check_max_stack_depth_subprog(env, i);
+> +               check_subprog =3D !i || (check_priv_stack ? si[i].is_cb :=
+ si[i].is_async_cb);
 
-between commit:
+why?
+This looks very suspicious.
 
-  f91b256644ea ("selftests/bpf: Add test for kfunc module order")
-
-from Linus' tree and commit:
-
-  c3566ee6c66c ("selftests/bpf: remove test_tcp_check_syncookie")
-
-from the bpf-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc tools/testing/selftests/bpf/Makefile
-index 75016962f795,6d15355f1e62..000000000000
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@@ -154,11 -153,9 +153,10 @@@ TEST_PROGS_EXTENDED :=3D with_addr.sh=20
- =20
-  # Compile but not part of 'make run_tests'
-  TEST_GEN_PROGS_EXTENDED =3D \
-- 	flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
-- 	test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
-- 	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata \
-- 	xdp_features bpf_test_no_cfi.ko bpf_test_modorder_x.ko \
-- 	bpf_test_modorder_y.ko
-+ 	flow_dissector_load test_flow_dissector	test_lirc_mode2_user xdping \
-+ 	test_cpp runqslower bench bpf_testmod.ko xskxceiver xdp_redirect_multi \
- -	xdp_synproxy veristat xdp_hw_metadata xdp_features bpf_test_no_cfi.ko
-++	xdp_synproxy veristat xdp_hw_metadata xdp_features bpf_test_no_cfi.ko \
-++	bpf_test_modorder_x.ko bpf_test_modorder_y.ko
- =20
-  TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe_multi
- =20
-@@@ -301,22 -302,11 +303,24 @@@ $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF
-  $(OUTPUT)/bpf_test_no_cfi.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wildcard=
- bpf_test_no_cfi/Makefile bpf_test_no_cfi/*.[ch])
-  	$(call msg,MOD,,$@)
-  	$(Q)$(RM) bpf_test_no_cfi/bpf_test_no_cfi.ko # force re-compilation
-- 	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=3D$(RESOLVE_BTFIDS) -C bpf_=
-test_no_cfi
-+ 	$(Q)$(MAKE) $(submake_extras) -C bpf_test_no_cfi \
-+ 		RESOLVE_BTFIDS=3D$(RESOLVE_BTFIDS)	 \
-+ 		EXTRA_CFLAGS=3D'' EXTRA_LDFLAGS=3D''
-  	$(Q)cp bpf_test_no_cfi/bpf_test_no_cfi.ko $@
- =20
- +$(OUTPUT)/bpf_test_modorder_x.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wild=
-card bpf_test_modorder_x/Makefile bpf_test_modorder_x/*.[ch])
- +	$(call msg,MOD,,$@)
- +	$(Q)$(RM) bpf_test_modorder_x/bpf_test_modorder_x.ko # force re-compilat=
-ion
- +	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=3D$(RESOLVE_BTFIDS) -C bpf_=
-test_modorder_x
- +	$(Q)cp bpf_test_modorder_x/bpf_test_modorder_x.ko $@
- +
- +$(OUTPUT)/bpf_test_modorder_y.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wild=
-card bpf_test_modorder_y/Makefile bpf_test_modorder_y/*.[ch])
- +	$(call msg,MOD,,$@)
- +	$(Q)$(RM) bpf_test_modorder_y/bpf_test_modorder_y.ko # force re-compilat=
-ion
- +	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=3D$(RESOLVE_BTFIDS) -C bpf_=
-test_modorder_y
- +	$(Q)cp bpf_test_modorder_y/bpf_test_modorder_y.ko $@
- +
- +
-  DEFAULT_BPFTOOL :=3D $(HOST_SCRATCH_DIR)/sbin/bpftool
-  ifneq ($(CROSS_COMPILE),)
-  CROSS_BPFTOOL :=3D $(SCRATCH_DIR)/sbin/bpftool
-
---Sig_/zSLe_0kB=.oReJxYbu9mSw0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmcW+ZMACgkQAVBC80lX
-0GzFlQf+OxGNSa17pOr41tHcb3O5LScGrLIKKn0lkzNHEp8x6fOIgzPIgN9VvWoS
-JXe4xtAjJYD8hHco4Dsx4au7uEG+a0Q8GqjJ++IZu0fdWC9b8tcijGk0Ro63U/XA
-w84nY+l8CsNNHtqWvgOsmtpCRM2D0YS18zvREyYILndlsHDbUTw8ck5F8HCa/z9e
-4t3ba7U999V2RyDqYv3DOo0mLZ1fweU7kn1LgE67N6IIGIbaxoHNoUQA5U+3UqFZ
-DUUKtcHbqjtCh3VPrqCvvXUDQkpErgX3nED1NzWVQOESqOInqM4Cd9YnWpWfV0W5
-YQx3+kt5tzUlvgYd7C9csDeHC+wNfQ==
-=Apvx
------END PGP SIGNATURE-----
-
---Sig_/zSLe_0kB=.oReJxYbu9mSw0--
+> +               if (check_subprog) {
+> +                       ret =3D check_max_stack_depth_subprog(env, i, che=
+ck_priv_stack,
+> +                                                           priv_stack_su=
+pported);
+>                         if (ret < 0)
+>                                 return ret;
+>                 }
+> @@ -22303,7 +22372,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_a=
+ttr *attr, bpfptr_t uattr, __u3
+>         struct bpf_verifier_env *env;
+>         int i, len, ret =3D -EINVAL, err;
+>         u32 log_true_size;
+> -       bool is_priv;
+> +       bool is_priv, priv_stack_supported =3D false;
+>
+>         /* no program is valid */
+>         if (ARRAY_SIZE(bpf_verifier_ops) =3D=3D 0)
+> @@ -22430,8 +22499,10 @@ int bpf_check(struct bpf_prog **prog, union bpf_=
+attr *attr, bpfptr_t uattr, __u3
+>         if (ret =3D=3D 0)
+>                 ret =3D remove_fastcall_spills_fills(env);
+>
+> -       if (ret =3D=3D 0)
+> -               ret =3D check_max_stack_depth(env);
+> +       if (ret =3D=3D 0) {
+> +               priv_stack_supported =3D is_priv_stack_supported(env);
+> +               ret =3D check_max_stack_depth(env, false, priv_stack_supp=
+orted);
+> +       }
+>
+>         /* instruction rewrites happen after this point */
+>         if (ret =3D=3D 0)
+> @@ -22465,6 +22536,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_a=
+ttr *attr, bpfptr_t uattr, __u3
+>                                                                      : fa=
+lse;
+>         }
+>
+> +       if (ret =3D=3D 0 && priv_stack_supported)
+> +               ret =3D check_max_stack_depth(env, true, true);
+> +
+>         if (ret =3D=3D 0)
+>                 ret =3D fixup_call_args(env);
+>
+> --
+> 2.43.5
+>
 
