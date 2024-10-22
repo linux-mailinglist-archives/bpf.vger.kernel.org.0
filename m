@@ -1,150 +1,196 @@
-Return-Path: <bpf+bounces-42782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C7FF9AA73E
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:45:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 564F89AB012
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:51:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1AAF2841E8
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 13:45:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAE1E1F23A38
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 13:51:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E56719E7E0;
-	Tue, 22 Oct 2024 13:45:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3453D19F423;
+	Tue, 22 Oct 2024 13:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BWJCeoHG"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U4TYgQMN"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43BE2BAF5;
-	Tue, 22 Oct 2024 13:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA96919EED2;
+	Tue, 22 Oct 2024 13:50:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729604724; cv=none; b=j7huyOdGfTvXyvlAblaEGvZMC9vzjRuL09ReVpLtmRRMkn8WJ6547EV9dMKrs5NEu9HgUJHacxQ//PiIq1dRYjv1lya197WpID1jnNBshi8AJb3Sh0aerOz0mdkad2QT2RWxhIHmMdteRW0DWtbKNGwVSl8ugRWpwL0NGyq0+ho=
+	t=1729605050; cv=none; b=a6fOr+L+1d5yaBOlevW/d98wbGI2IOFN99VIPk/JNQi/GcB87a983MKVaf2V4zthkxS/iSzifA8pt7IdKdfvZNp33Q242rxnndXmuj/4iMGowFSx/Fp5nxQRXFzsF7IOh/6RfSH6JLmnYWxdDlWS8xDAxQ+aT/1OBb1DakaRXBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729604724; c=relaxed/simple;
-	bh=Y3of95RA9/HwSVZtOVvqqjWXqboGxrXcyJVBeg4xcTU=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=qBZQcCwVaB7XTwgtFkvnJUgr1ijjSk1C5BPfJf6dT8U+6H3PoOM3TID2K88tBZCP7Mp9RvNf1TnWslI3NPjCNneif19l3xI18dRSN18sRWYAJfLjsMtV9G7ZgpBRqcW6XmF+nAU+XW2MswP3/aTQsN+Z895dTFmGVfTrvZ4K3ZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BWJCeoHG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 987CDC4CEC7;
-	Tue, 22 Oct 2024 13:45:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729604724;
-	bh=Y3of95RA9/HwSVZtOVvqqjWXqboGxrXcyJVBeg4xcTU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=BWJCeoHGh0I9e3yHUThIVP2IL/fYYGYtuwHfEqmBey+lfIs6NyqHZ5RlC8xSBNhcL
-	 6UUQYLiWF4kdeYGmTfMkxy0billLB7gHTx0HCERsyjcUyXC2VlA2ELbifKn8g5ZCqa
-	 EvW8dwtq4442MIkAo2Rfj64gdnmhBgs3ZRiqmMkZnjkoJrBdR2Jzpuo6+C9TY2glhd
-	 nI0AF5sBlPpQLdHBwHtTc8JNiUDPvvs/iBSzqHskVHB5S06Dv9njNMMPX/ldcS7FnS
-	 G8dgoQYo0pHhGCJBusI2YBXD6bTDtDNdo06XdHqVcHfFBfVvcAG1uKUSgHhlR4Dzk2
-	 hECHPmcKOxSZg==
-Date: Tue, 22 Oct 2024 22:45:20 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Viktor Malik <vmalik@redhat.com>
-Cc: linux-trace-kernel@vger.kernel.org, Steven Rostedt
- <rostedt@goodmis.org>, Matt Wu <wuqiang.matt@bytedance.com>,
- bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v2] objpool: fix choosing allocation for percpu slots
-Message-Id: <20241022224520.33f753971ce61ce7d0f1fc93@kernel.org>
-In-Reply-To: <3d1ad598-531a-4e31-a0cc-b8fe05d37f64@redhat.com>
-References: <20240826060718.267261-1-vmalik@redhat.com>
-	<20241022141748.521cb2d6a4a86428c9bfc99e@kernel.org>
-	<3d1ad598-531a-4e31-a0cc-b8fe05d37f64@redhat.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1729605050; c=relaxed/simple;
+	bh=epoMaoM6MMwh/KBGwPkmJaakzhozvJct5sHt4yT4Z9s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gp65WTpa6TGGkQoyByK+Z2nr+Wf8x46d7sDgA5txXbPXYiL2R6qkzi9XZd9YhrQ7imBBdZCfGmfWjiSzBdfm+VcO7sCEOsNRa/IvzbayKf4a4xAAhelFQGFgrL9ntIad3NyBoYRTnaCyR4DDLTbuIhqwzZO02bxd0gl+tbwqAB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U4TYgQMN; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1729605049; x=1761141049;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=epoMaoM6MMwh/KBGwPkmJaakzhozvJct5sHt4yT4Z9s=;
+  b=U4TYgQMN7o+rXv0y0pJv7HQEgnjo/B38pkJ0c5I4QKjSGi4hYJRLOYB7
+   6gP4sevSyF5mBrcuN9ZzTiyBFvsB37xi7VFT9s/uUuj0Xp+LJgv9NYy6h
+   tO2wyABY+5DyuXTNxGysnelvNB4c40+RW9CV8+ltslpPy0U2mUGQImWV3
+   bXdMeXfZEpkySPOevdIAUmFEgZNhbxc6wMgdV54Gj7ZSE541popMQTs0j
+   bseCD/77V3vfNWI/Ocj+TTba26FMlK8v9h3xTUXvt6Pvur1BxtVcE/7ND
+   Xs1LJDAtUf3LeFOKWJe30ORr5HWo7JlytwCIoXLKKqMDTCRUGgggaBXSQ
+   A==;
+X-CSE-ConnectionGUID: 4P+BpasQRxWdd9E9CO+Sxg==
+X-CSE-MsgGUID: MKYeqabVSQiWkbyj+v4HhQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11233"; a="40531462"
+X-IronPort-AV: E=Sophos;i="6.11,223,1725346800"; 
+   d="scan'208";a="40531462"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 06:50:47 -0700
+X-CSE-ConnectionGUID: WQvPy/wOQryWrGcK4sqBHA==
+X-CSE-MsgGUID: cHeUKNTnTiqUvliz9qbK9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,223,1725346800"; 
+   d="scan'208";a="80694139"
+Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 22 Oct 2024 06:50:40 -0700
+Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1t3FHS-000Tdu-0u;
+	Tue, 22 Oct 2024 13:50:38 +0000
+Date: Tue, 22 Oct 2024 21:50:28 +0800
+From: kernel test robot <lkp@intel.com>
+To: Puranjay Mohan <puranjay@kernel.org>, Albert Ou <aou@eecs.berkeley.edu>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Eric Dumazet <edumazet@google.com>, Hao Luo <haoluo@google.com>,
+	Helge Deller <deller@gmx.de>, Jakub Kicinski <kuba@kernel.org>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Shuah Khan <skhan@linuxfoundation.org>, Song Liu <song@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/5] net: checksum: move from32to16() to generic
+ header
+Message-ID: <202410222149.3FVJFYYy-lkp@intel.com>
+References: <20241021122112.101513-2-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241021122112.101513-2-puranjay@kernel.org>
 
-On Tue, 22 Oct 2024 13:45:08 +0200
-Viktor Malik <vmalik@redhat.com> wrote:
+Hi Puranjay,
 
-> On 10/22/24 07:17, Masami Hiramatsu (Google) wrote:
-> > On Mon, 26 Aug 2024 08:07:18 +0200
-> > Viktor Malik <vmalik@redhat.com> wrote:
-> > 
-> >> objpool intends to use vmalloc for default (non-atomic) allocations of
-> >> percpu slots and objects. However, the condition checking if GFP flags
-> >> are equal to GFP_ATOMIC is wrong b/c GFP_ATOMIC is a combination of bits
-> > 
-> > You meant "whether GFP flags sets any bit of GFP_ATOMIC is wrong"?
-> 
-> Well, I meant that the condition is wrong w.r.t. what is supposedly its
-> original purpose. But feel free to rephrase as you seem fit or I can
-> send v3 if you prefer.
+kernel test robot noticed the following build warnings:
 
-No problem :) let me rephrase that part.
+[auto build test WARNING on bpf-next/master]
 
-Thank you!
+url:    https://github.com/intel-lab-lkp/linux/commits/Puranjay-Mohan/net-checksum-move-from32to16-to-generic-header/20241021-202707
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20241021122112.101513-2-puranjay%40kernel.org
+patch subject: [PATCH bpf-next 1/5] net: checksum: move from32to16() to generic header
+config: x86_64-randconfig-122-20241022 (https://download.01.org/0day-ci/archive/20241022/202410222149.3FVJFYYy-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241022/202410222149.3FVJFYYy-lkp@intel.com/reproduce)
 
-> 
-> Thanks.
-> Viktor
-> 
-> > 
-> >> (__GFP_HIGH|__GFP_KSWAPD_RECLAIM) and so `pool->gfp & GFP_ATOMIC` will
-> >> be true if either bit is set. Since GFP_ATOMIC and GFP_KERNEL share the
-> >> ___GFP_KSWAPD_RECLAIM bit, kmalloc will be used in cases when GFP_KERNEL
-> >> is specified, i.e. in all current usages of objpool.
-> >>
-> >> This may lead to unexpected OOM errors since kmalloc cannot allocate
-> >> large amounts of memory.
-> >>
-> >> For instance, objpool is used by fprobe rethook which in turn is used by
-> >> BPF kretprobe.multi and kprobe.session probe types. Trying to attach
-> >> these to all kernel functions with libbpf using
-> >>
-> >>     SEC("kprobe.session/*")
-> >>     int kprobe(struct pt_regs *ctx)
-> >>     {
-> >>         [...]
-> >>     }
-> >>
-> >> fails on objpool slot allocation with ENOMEM.
-> >>
-> >> Fix the condition to truly use vmalloc by default.
-> >>
-> > 
-> > Anyway, this looks good to me.
-> > 
-> > Thank you,
-> > 
-> >> Fixes: b4edb8d2d464 ("lib: objpool added: ring-array based lockless MPMC")
-> >> Signed-off-by: Viktor Malik <vmalik@redhat.com>
-> >> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> >> Reviewed-by: Matt Wu <wuqiang.matt@bytedance.com>
-> >> ---
-> >>  lib/objpool.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/lib/objpool.c b/lib/objpool.c
-> >> index 234f9d0bd081..fd108fe0d095 100644
-> >> --- a/lib/objpool.c
-> >> +++ b/lib/objpool.c
-> >> @@ -76,7 +76,7 @@ objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
-> >>  		 * mimimal size of vmalloc is one page since vmalloc would
-> >>  		 * always align the requested size to page size
-> >>  		 */
-> >> -		if (pool->gfp & GFP_ATOMIC)
-> >> +		if ((pool->gfp & GFP_ATOMIC) == GFP_ATOMIC)
-> >>  			slot = kmalloc_node(size, pool->gfp, cpu_to_node(i));
-> >>  		else
-> >>  			slot = __vmalloc_node(size, sizeof(void *), pool->gfp,
-> >> -- 
-> >> 2.46.0
-> >>
-> > 
-> > 
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202410222149.3FVJFYYy-lkp@intel.com/
 
+sparse warnings: (new ones prefixed by >>)
+>> lib/checksum.c:84:34: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __wsum [usertype] sum @@     got unsigned int [assigned] result @@
+   lib/checksum.c:84:34: sparse:     expected restricted __wsum [usertype] sum
+   lib/checksum.c:84:34: sparse:     got unsigned int [assigned] result
+>> lib/checksum.c:84:16: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [assigned] result @@     got restricted __sum16 @@
+   lib/checksum.c:84:16: sparse:     expected unsigned int [assigned] result
+   lib/checksum.c:84:16: sparse:     got restricted __sum16
+
+vim +84 lib/checksum.c
+
+    35	
+    36	#ifndef do_csum
+    37	static unsigned int do_csum(const unsigned char *buff, int len)
+    38	{
+    39		int odd;
+    40		unsigned int result = 0;
+    41	
+    42		if (len <= 0)
+    43			goto out;
+    44		odd = 1 & (unsigned long) buff;
+    45		if (odd) {
+    46	#ifdef __LITTLE_ENDIAN
+    47			result += (*buff << 8);
+    48	#else
+    49			result = *buff;
+    50	#endif
+    51			len--;
+    52			buff++;
+    53		}
+    54		if (len >= 2) {
+    55			if (2 & (unsigned long) buff) {
+    56				result += *(unsigned short *) buff;
+    57				len -= 2;
+    58				buff += 2;
+    59			}
+    60			if (len >= 4) {
+    61				const unsigned char *end = buff + ((unsigned)len & ~3);
+    62				unsigned int carry = 0;
+    63				do {
+    64					unsigned int w = *(unsigned int *) buff;
+    65					buff += 4;
+    66					result += carry;
+    67					result += w;
+    68					carry = (w > result);
+    69				} while (buff < end);
+    70				result += carry;
+    71				result = (result & 0xffff) + (result >> 16);
+    72			}
+    73			if (len & 2) {
+    74				result += *(unsigned short *) buff;
+    75				buff += 2;
+    76			}
+    77		}
+    78		if (len & 1)
+    79	#ifdef __LITTLE_ENDIAN
+    80			result += *buff;
+    81	#else
+    82			result += (*buff << 8);
+    83	#endif
+  > 84		result = csum_from32to16(result);
+    85		if (odd)
+    86			result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+    87	out:
+    88		return result;
+    89	}
+    90	#endif
+    91	
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
