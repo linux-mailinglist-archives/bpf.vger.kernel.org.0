@@ -1,147 +1,182 @@
-Return-Path: <bpf+bounces-42820-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42821-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7B899AB77C
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 22:12:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B82AB9AB784
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 22:13:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01BBB1C22C21
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 20:12:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E67FE1C235A8
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 20:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028D31CBE80;
-	Tue, 22 Oct 2024 20:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6DC1CBE94;
+	Tue, 22 Oct 2024 20:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gZoeSuum"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nUvtQNI1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D5D91A0BE0
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 20:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38CFF1A0BE0
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 20:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729627937; cv=none; b=GMlDZHgl+KR0UNNKvP+iQVQ2er20xVA9LcjnXJsMb39tRcg7Lu5Bk9kbwSkATfw/jpSOKLT28t4nkbjRCE8MULeI8qJ07hxgOB46rpn7iA9CH1CuREfNRepGaghAxoMdquOc3QfWSd6CJrx3olzgSU2gIFcI14qIXE4xOcnVwYI=
+	t=1729628029; cv=none; b=PQKJtchObdzArtZu0zeUmcc0e/d1qEA6VRQAFBeaDsM+en/vzbSJHYRCl5Zn16DuTzSiiTzp3QWEi5OKNA1tze5XeLAb44hJEVr7uvok08hFwPrh7lFB0dH+xKNCE/q7Rv4mkNiPQH0L0JhydtMzwhbWTo4xFZ9G8JjiZ1V7z+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729627937; c=relaxed/simple;
-	bh=5n1l/vsFQUGg/piLJVSs81SiGs1qWc+irM8X5M6Lw1w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=njfYraprqo/JjJtI6EgSkTU/cUQEafc8kUcjD7ptuScAsQaBLWnesqv9QZegmVvEQdLTkOge2xzasYcIFotvxPfcQkN6nY7wBDqhtSSPhXanEbin3NgYrrDA/zAyMtJW+C4YtUa0kPYwEka0ZZekPVoo/brargLUaaBd8CbLrYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gZoeSuum; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7ea16c7759cso3309756a12.1
-        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 13:12:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729627935; x=1730232735; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e78c6CVvAgJ1/WrnMZ6FQmLOrB4wGRJo8NfkwSfpyV0=;
-        b=gZoeSuum19Hjq0dVYUsZ4cq42tqV7FIiC5frhI/x04qleS8NModBiqd844PCkwTgAp
-         yBWLwDD0zDrXHCQTY8ITelI4HOswXnpo5PgvVg5m2X7FnbxoMiEgq/xt6zuFzdgUfYbE
-         6hgE1by32iEHdXUdBN3nEWWvew3ULDfKNmv3uO2Bu8I+Xvjc6tLsX9mSizIBqoPsIA0m
-         tCPV1GoQalZ2agPir5P6HwudcdQFAj9SfGwUdPZ6vvlZ83F7m7mxKgCmlm62fKdqtVvm
-         fMxXshxUjZnkcZpIllnV93Vd9kXVGcWCAwlLsOhQlBRPu0Noc1xIACjIrIL07jqZ8+Ym
-         1e6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729627935; x=1730232735;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e78c6CVvAgJ1/WrnMZ6FQmLOrB4wGRJo8NfkwSfpyV0=;
-        b=GmuQOCBdki75SUOkJBapEfYougFbRYNy5JsZIWqI6VPDRihxnwKu3w558emFEPPMZ3
-         9oWGSVoXjL7O8aqyd0p6yc143lr7AC6D+X9Epn9p7bOloB+fgUe3ces31kR7ygKfMzoY
-         JktLALc9JiViIPO3/jMxthZsVkNtMvxlPTxizzkei3+1yBCMtnkzU7v1zxDNErNTAnoK
-         zRZush0DlL2Y71U7bTVvoWzO4Ap/3+DpHthbDtIbS89kei79WBDSHKeO/JLelPdXisLc
-         8+dEnTtAOXIwRqv68vO+xRi+zvUUzfiTwtTTk5XXlNBrXBuKC4tByJXhCXMEvFOB2Hg9
-         bALg==
-X-Gm-Message-State: AOJu0YyvwA+JBcdn3Es4TJzzlSz3tBgh0BI8RGFWXtOhuC2c3iUVQQHG
-	0dUQvWNNC3tls+m/vxHRAe+OUr/64IZm8hnXPbnHNotK7h9EVDbS2qkwp7ZWQ5mYnqLQqH+7eog
-	++bHM6M7csQuLRMn6V5xTLQ992go=
-X-Google-Smtp-Source: AGHT+IHm/gD3U1t1WVzL9tQxgl1CslsZcvI10JqO8nL8uRO/b5DdReP5t3OMNFTlgvUxg872iV1bFggPp11HaA42Ihc=
-X-Received: by 2002:a05:6a21:1707:b0:1d9:b48:8b0b with SMTP id
- adf61e73a8af0-1d978aead8emr258443637.5.1729627935342; Tue, 22 Oct 2024
- 13:12:15 -0700 (PDT)
+	s=arc-20240116; t=1729628029; c=relaxed/simple;
+	bh=BTkbxbkGCG9YlmXlj8jYcp5RbAjWcH/5gqTJQ2Z0Ycw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qO4ZHaVYXK5WwOutYXKxwOuiSsXHDE0Y64lM7qeSuTbhdZtxpAy3gJhnGgYPuDpiKKX+5mo0MQzHvsjgAJdwd8BChmSkfqwMoE3RdGZusbl848Xfhq7L2Ag9V1L35r5fL18q1jcCoMIZ9i6OL8Lm+IHbXtwsD21+GmqRGzsEcx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nUvtQNI1; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <179d5f87-4c70-438b-9809-cc05dffc13de@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729628024;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vfOLrm4eXALruk4SKS+0Ol88/zfKz9dH45/eNI+2GgQ=;
+	b=nUvtQNI1O+nu5W52SHNXkTliSULC7q9QMKNWpJRDvjKiUiJS5DuWiQ1kxomZQophC/bifj
+	fhCaKMszIWdOdGiG6eyu5ZE5KO2YNdxSJdij/kvvxbEWOmvtus+IRz4BDnNOc4LCEwG/fW
+	3UVHc3i7P4/429e6o0MXWQebtxJeZe4=
+Date: Tue, 22 Oct 2024 13:13:38 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <SY4P282MB2313108B00C833317D0E5938C64C2@SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM>
-In-Reply-To: <SY4P282MB2313108B00C833317D0E5938C64C2@SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 22 Oct 2024 13:12:02 -0700
-Message-ID: <CAEf4BzZctXJsR+TwMhmXNWnR0_BV802-3KJw226ZZt8St4xNkw@mail.gmail.com>
-Subject: Re: How to combine bpf dynptr and bpf_probe_read_kernel
-To: Levi Zim <rsworktech@outlook.com>
-Cc: bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v6 1/9] bpf: Allow each subprog having stack size
+ of 512 bytes
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Tejun Heo <tj@kernel.org>
+References: <20241020191341.2104841-1-yonghong.song@linux.dev>
+ <20241020191347.2105090-1-yonghong.song@linux.dev>
+ <CAADnVQ+ZXMh_QKy0nd-n7my1SETroockPjpVVJOAWsE3tB_5sg@mail.gmail.com>
+ <c6e5040b-9558-481f-b1fc-f77dc9ce90c1@linux.dev>
+ <CAADnVQJCfiNEgrvf6GuaUadz6rDSNU6QB3grpOfk2-jQP6is4Q@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQJCfiNEgrvf6GuaUadz6rDSNU6QB3grpOfk2-jQP6is4Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Oct 22, 2024 at 7:14=E2=80=AFAM Levi Zim <rsworktech@outlook.com> w=
-rote:
->
-> Hi,
->
-> I have a question about how use bpf dynptr and bpf_probe_read_kernel
-> together.
->
-> Assuming we have an fexit program attached to pty_write(static ssize_t
-> pty_write(struct tty_struct *tty, const u8 *buf, size_t c))
->
-> I want to send some metadata and the written bytes to the pty to user
-> space via a BPF RingBuf.
-> While I could reserve a statistically known amount of memory on ringbuf,
-> it is a waste of the ringbuf's space if there are only one or two bytes
-> written to pty.
->
-> So instead I tried to use bpf_ringbuf_reserve_dynptr to dynamically
-> reserve the memory on the ringbuf and it works great,
-> until when I want to use bpf_dynptr_write to read the kernel memory at
-> buf into the memory managed by dynptr:
->
->        78: (85) call bpf_dynptr_write#202
->        R3 type=3Dscalar expected=3Dfp, pkt, pkt_meta, map_key, map_value,
-> mem, ringbuf_mem, buf, trusted_ptr_
->
-> The verifier appears to be rejecting using bpf_dynptr_write in a way
-> similar to bpf_probe_read_kernel.
->
-> Is there any way to achieve this without reading the data into an
-> intermediate buffer?
 
-Yes, you can bpf_probe_read_kernel() into dynptr's memory chunk by
-chunk. I recently wrote an example of doing chunk-by-chunk copying of
-XDP data into ringbuf dynptr, you can find it at [0].
-
-  [0] https://github.com/libbpf/libbpf-bootstrap/commit/046fad60df3e3954093=
-7b5ec6ee86054f33d3f28
-
-> Or could we remove this limitation in the verifier at least for tracing
-> programs that are already capable of
-> calling bpf_probe_read_kernel to read arbitrary kernel memory?
-
-This would have to be a new special API, basically a dynptr version of
-bpf_probe_read_kernel, something like:
-
-int bpf_probe_read_kernel_dynptr(struct bpf_dynptr *dst, u32 offset,
-u32 size, void *untrusted_ptr);
-
-We can probably add that, which seems like a straightforward addition
-to me. We'd probably want bpf_probe_read_user_dynptr() and
-bpf_copy_from_user_dynptr() to go in a single consistent batch.
-Implementation wise it's a super think wrapper around existing
-functionality (we are just avoiding fixed buffer size restrictions of
-existing probe/copy_from APIs)
-
-Thoughts?
-
+On 10/21/24 8:43 PM, Alexei Starovoitov wrote:
+> On Mon, Oct 21, 2024 at 8:21 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>>>           for (int i = 0; i < env->subprog_cnt; i++) {
+>>>> -               if (!i || si[i].is_async_cb) {
+>>>> -                       ret = check_max_stack_depth_subprog(env, i);
+>>>> +               check_subprog = !i || (check_priv_stack ? si[i].is_cb : si[i].is_async_cb);
+>>> why?
+>>> This looks very suspicious.
+>> This is to simplify jit. For example,
+>>      main_prog   <=== main_prog_priv_stack_ptr
+>>        subprog1  <=== there is a helper which has a callback_fn
+>>                  <=== for example bpf_for_each_map_elem
+>>
+>>          callback_fn
+>>            subprog2
+>>
+>> In callback_fn, we cannot simplify do
+>>      r9 += stack_size_for_callback_fn
+>> since r9 may have been clobbered between subprog1 and callback_fn.
+>> That is why currently I allocate private_stack separately for callback_fn.
+>>
+>> Alternatively we could do
+>>      callback_fn_priv_stack_ptr = main_prog_priv_stack_ptr + off
+>> where off equals to (stack size tree main_prog+subprog1).
+>> I can do this approach too with a little more information in prog->aux.
+>> WDYT?
+> I see. I think we're overcomplicating the verifier just to
+> be able to do 'r9 += stack' in the subprog.
+> The cases of async vs sync and directly vs kfunc/helper
+> (and soon with inlining of kfuncs) are getting too hard
+> to reason about.
 >
-> Best regards,
-> Levi
+> I think we need to go back to the earlier approach
+> where every subprog had its own private stack and was
+> setting up r9 = my_priv_stack in the prologue.
 >
->
+> I suspect it's possible to construct a convoluted subprog
+> that calls itself a limited amount of time and the verifier allows that.
+> I feel it will be easier to detect just that condition
+> in the verifier and fallback to the normal stack.
+
+I tried a simple bpf prog below.
+
+$ cat private_stack_subprog_recur.c
+// SPDX-License-Identifier: GPL-2.0
+
+#include <vmlinux.h>
+#include <bpf/bpf_helpers.h>
+#include <bpf/bpf_tracing.h>
+#include "../bpf_testmod/bpf_testmod.h"
+
+char _license[] SEC("license") = "GPL";
+
+#if defined(__TARGET_ARCH_x86)
+bool skip __attribute((__section__(".data"))) = false;
+#else
+bool skip = true;
+#endif
+
+int i;
+
+__noinline static void subprog1(int level)
+{
+         if (level > 0) {
+                 subprog1(level >> 1);
+                 i++;
+         }
+}
+
+SEC("kprobe")
+int prog1(void)
+{
+         subprog1(1);
+         return 0;
+}
+
+In the above prog, we have a recursion of subprog1. The
+callchain is:
+    prog -> subprog1 -> subprog1
+
+The insn-level verification is successful since argument
+of subprog1() has precise value.
+
+But eventually, verification failed with the following message:
+   the call stack of 8 frames is too deep !
+
+The error message is
+                 if (frame >= MAX_CALL_FRAMES) {
+                         verbose(env, "the call stack of %d frames is too deep !\n",
+                                 frame);
+                         return -E2BIG;
+                 }
+in function check_max_stack_depth_subprog().
+Basically in function check_max_stack_depth_subprog(), tracing subprog
+call is done only based on call insn. All conditionals are ignored.
+In the above example, check_max_stack_depth_subprog() will have the
+call graph like
+     prog -> subprog1 -> subprog1 -> subprog1 -> subprog1 -> ...
+and eventually hit the error.
+
+Basically with check_max_stack_depth_subprog() self recursion is not
+possible for a bpf prog.
+
+This limitation is back to year 2017.
+   commit 70a87ffea8ac  bpf: fix maximum stack depth tracking logic
+
+So I assume people really do not write progs with self recursion inside
+the main prog (including subprogs).
+
 
