@@ -1,145 +1,150 @@
-Return-Path: <bpf+bounces-42781-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42782-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 037009AA30E
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:24:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C7FF9AA73E
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:45:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A51EB212CD
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 13:24:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1AAF2841E8
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 13:45:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4156019EEC7;
-	Tue, 22 Oct 2024 13:23:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E56719E7E0;
+	Tue, 22 Oct 2024 13:45:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q+muq424"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BWJCeoHG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5455719DF5F;
-	Tue, 22 Oct 2024 13:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43BE2BAF5;
+	Tue, 22 Oct 2024 13:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729603414; cv=none; b=AQncQOhZGoiQOGhFad1JAe4bGkRKStu+al+S+NZJTeJh2LvmGBp4lPqdL7nEI3fPvIxyGwKGKbG85KEc5xqexiH+AU/y4QHTnp77HCOEz+uwpLUubZrLlOxm/wly8bcf2JRe0mO4elYjEal3Dog+1sEAoQh70WE8Fdt7J1NDK20=
+	t=1729604724; cv=none; b=j7huyOdGfTvXyvlAblaEGvZMC9vzjRuL09ReVpLtmRRMkn8WJ6547EV9dMKrs5NEu9HgUJHacxQ//PiIq1dRYjv1lya197WpID1jnNBshi8AJb3Sh0aerOz0mdkad2QT2RWxhIHmMdteRW0DWtbKNGwVSl8ugRWpwL0NGyq0+ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729603414; c=relaxed/simple;
-	bh=FFc4mFv1fqlfTWKLAoHgYyCwsD4zz6w4Q5RxsTKyZ7I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fy+3QxRZqmiU266jLJGMIlCarMgq1BthZ6zYAvWzIzTkrbkKW6LJiWcpz8KFO1SzncWdcNuzChJj8dMC3Hq+r19dvbWQm/k4zylKEEAR7aZ+B4223HEOMRKHCDAupRFToy3lRTayr7/wlRIf0pUO14i+2v8AUl+kDayaGi0hqHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q+muq424; arc=none smtp.client-ip=209.85.166.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3a3f8543f5eso10427805ab.0;
-        Tue, 22 Oct 2024 06:23:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729603412; x=1730208212; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LX5NLjhgO1IGsuIgFgvkURkum8vSAeJYDnKkIEmF8dY=;
-        b=Q+muq424/apuNDEvBuv1H1B/zt5zZQYFQJCvuE9PjKqBeYMwOh3sxtMfp/a/v5X5GJ
-         JFTp1nDXFdNq0mZq/xLVV5gdAgrrsbb40DkamgOXd5o4iyxMc6J9APPo7UEQ1Uv4X1Sq
-         VjwsRg2564VDR+AZkDy1MApXJxJZxSe7WDUzN3vPxWQr3QhYckkWtUgFT/HuIeX7x4sv
-         dqT2Y/sh/zxpXgSnkWNlC9pmeftVCg5wPug43Q3PWrVyjYpEhlbYySGKKPuXKsrXtF2S
-         fF9u1b5ONByB8vLwGa/6D2fbhO7hOZZJydEB9M3xmlL48Fv5nyVCzM311U59miqUU0l0
-         ilAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729603412; x=1730208212;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LX5NLjhgO1IGsuIgFgvkURkum8vSAeJYDnKkIEmF8dY=;
-        b=ry56bSXRib21iHxpLt1Ibo0VxoCFa+2SUxUrB425dtJjvoiNRokJMcL+ZlPUgNy0oe
-         R/dGtC+VKknpqrbYsLXw7wMQ8ymMl+r4NHvHWZfb1SKdIWMk5yQb8G0oggVcnnV3cVIr
-         iu6rwibWMARYkHBXiuTnIPUv4Rm0NeloL1Xete/KKOIyIAOPomGStiNBHRizTTiY+018
-         2VnfhHexx7NpYg5l8R5lyUuyDJ28bfDl/RYDGpfkKQRynpNAAhHoSYR8CLtIeEP+fZ8h
-         mX6pTHtYm4Sw/VUC7/1tqvdcPE4wSu1mlT0DixkSW3gC+E7RQp4kcZx8j3g5nGYPtGrF
-         p/7g==
-X-Forwarded-Encrypted: i=1; AJvYcCUui7WzHQs6gq/Ndoa0IX9HYxolvU4VM3MjE0HTEmGN8khTrgPZZBHc+PyOOpCHfRsLDniX2NTg@vger.kernel.org, AJvYcCWonsESDl7Tcv1n5QYNUm6QTJAd9VyfPrY1PMN+93QHWPuRoBY0+pdm+LUJVeoU49RgHLw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwasbRCiI+2ST+3uZipQ2E92hhyu9rVpcw2i4djoPSLwvZMbCIO
-	3FQ2MQDumrFuTzZtxqcvlgfP3vh93htnpTB3pVrsLafj3FKozNS3bUHV1TkbuFVDSPbWQwY9bJ5
-	+S8sybm5u7fJ2mca6RpqAbHsp4ds=
-X-Google-Smtp-Source: AGHT+IEiOLDj3dAptrZCl/wJUzbFGWsQhshhtvCO9ZjrOsCLkZ4XJFDyPXMJxsipdk+J2tpvlQ6S1jLSIZKXpgOD+bg=
-X-Received: by 2002:a05:6e02:b2a:b0:39f:507a:6170 with SMTP id
- e9e14a558f8ab-3a4cc143042mr22510715ab.8.1729603412328; Tue, 22 Oct 2024
- 06:23:32 -0700 (PDT)
+	s=arc-20240116; t=1729604724; c=relaxed/simple;
+	bh=Y3of95RA9/HwSVZtOVvqqjWXqboGxrXcyJVBeg4xcTU=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=qBZQcCwVaB7XTwgtFkvnJUgr1ijjSk1C5BPfJf6dT8U+6H3PoOM3TID2K88tBZCP7Mp9RvNf1TnWslI3NPjCNneif19l3xI18dRSN18sRWYAJfLjsMtV9G7ZgpBRqcW6XmF+nAU+XW2MswP3/aTQsN+Z895dTFmGVfTrvZ4K3ZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BWJCeoHG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 987CDC4CEC7;
+	Tue, 22 Oct 2024 13:45:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729604724;
+	bh=Y3of95RA9/HwSVZtOVvqqjWXqboGxrXcyJVBeg4xcTU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=BWJCeoHGh0I9e3yHUThIVP2IL/fYYGYtuwHfEqmBey+lfIs6NyqHZ5RlC8xSBNhcL
+	 6UUQYLiWF4kdeYGmTfMkxy0billLB7gHTx0HCERsyjcUyXC2VlA2ELbifKn8g5ZCqa
+	 EvW8dwtq4442MIkAo2Rfj64gdnmhBgs3ZRiqmMkZnjkoJrBdR2Jzpuo6+C9TY2glhd
+	 nI0AF5sBlPpQLdHBwHtTc8JNiUDPvvs/iBSzqHskVHB5S06Dv9njNMMPX/ldcS7FnS
+	 G8dgoQYo0pHhGCJBusI2YBXD6bTDtDNdo06XdHqVcHfFBfVvcAG1uKUSgHhlR4Dzk2
+	 hECHPmcKOxSZg==
+Date: Tue, 22 Oct 2024 22:45:20 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Viktor Malik <vmalik@redhat.com>
+Cc: linux-trace-kernel@vger.kernel.org, Steven Rostedt
+ <rostedt@goodmis.org>, Matt Wu <wuqiang.matt@bytedance.com>,
+ bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v2] objpool: fix choosing allocation for percpu slots
+Message-Id: <20241022224520.33f753971ce61ce7d0f1fc93@kernel.org>
+In-Reply-To: <3d1ad598-531a-4e31-a0cc-b8fe05d37f64@redhat.com>
+References: <20240826060718.267261-1-vmalik@redhat.com>
+	<20241022141748.521cb2d6a4a86428c9bfc99e@kernel.org>
+	<3d1ad598-531a-4e31-a0cc-b8fe05d37f64@redhat.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20241012040651.95616-1-kerneljasonxing@gmail.com>
- <20241012040651.95616-3-kerneljasonxing@gmail.com> <cb96b56a-0c00-4f57-b4b5-8a7e00065cdc@linux.dev>
- <670ee4efea023_322ac329445@willemb.c.googlers.com.notmuch>
-In-Reply-To: <670ee4efea023_322ac329445@willemb.c.googlers.com.notmuch>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 22 Oct 2024 21:22:56 +0800
-Message-ID: <CAL+tcoCBONnrP_YyE_0n_o4zQUNJfE8DY61f6XRQeeBdGNZMgQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 02/12] net-timestamp: open gate for bpf_setsockopt
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Oct 16, 2024 at 5:56=E2=80=AFAM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Martin KaFai Lau wrote:
-> > On 10/11/24 9:06 PM, Jason Xing wrote:
-> > >   static int sol_socket_sockopt(struct sock *sk, int optname,
-> > >                           char *optval, int *optlen,
-> > >                           bool getopt)
-> > >   {
-> > > +   struct so_timestamping ts;
-> > > +   int ret =3D 0;
-> > > +
-> > >     switch (optname) {
-> > >     case SO_REUSEADDR:
-> > >     case SO_SNDBUF:
-> > > @@ -5225,6 +5245,13 @@ static int sol_socket_sockopt(struct sock *sk,=
- int optname,
-> > >             break;
-> > >     case SO_BINDTODEVICE:
-> > >             break;
-> > > +   case SO_TIMESTAMPING_NEW:
-> > > +   case SO_TIMESTAMPING_OLD:
-> >
-> > How about remove the "_OLD" support ?
->
-> +1 I forgot to mention that yesterday.
+On Tue, 22 Oct 2024 13:45:08 +0200
+Viktor Malik <vmalik@redhat.com> wrote:
 
-Hello Willem, Martin,
+> On 10/22/24 07:17, Masami Hiramatsu (Google) wrote:
+> > On Mon, 26 Aug 2024 08:07:18 +0200
+> > Viktor Malik <vmalik@redhat.com> wrote:
+> > 
+> >> objpool intends to use vmalloc for default (non-atomic) allocations of
+> >> percpu slots and objects. However, the condition checking if GFP flags
+> >> are equal to GFP_ATOMIC is wrong b/c GFP_ATOMIC is a combination of bits
+> > 
+> > You meant "whether GFP flags sets any bit of GFP_ATOMIC is wrong"?
+> 
+> Well, I meant that the condition is wrong w.r.t. what is supposedly its
+> original purpose. But feel free to rephrase as you seem fit or I can
+> send v3 if you prefer.
 
-I did a test on this and found that if we only use
-SO_TIMESTAMPING_NEW, we will never enter the real set sk_tsflags_bpf
-logic, unless there is "case SO_TIMESTAMPING_OLD".
+No problem :) let me rephrase that part.
 
-And I checked SO_TIMESTAMPING in include/uapi/asm-generic/socket.h:
-#if __BITS_PER_LONG =3D=3D 64 || (defined(__x86_64__) && defined(__ILP32__)=
-)
-/* on 64-bit and x32, avoid the ?: operator */
-...
-#define SO_TIMESTAMPING         SO_TIMESTAMPING_OLD
-...
-#else
-...
-#define SO_TIMESTAMPING (sizeof(time_t) =3D=3D sizeof(__kernel_long_t) ?
-SO_TIMESTAMPING_OLD : SO_TIMESTAMPING_NEW)
-...
-#endif
+Thank you!
 
-The SO_TIMESTAMPING is defined as SO_TIMESTAMPING_OLD. I wonder if I
-missed something? Thanks in advance.
+> 
+> Thanks.
+> Viktor
+> 
+> > 
+> >> (__GFP_HIGH|__GFP_KSWAPD_RECLAIM) and so `pool->gfp & GFP_ATOMIC` will
+> >> be true if either bit is set. Since GFP_ATOMIC and GFP_KERNEL share the
+> >> ___GFP_KSWAPD_RECLAIM bit, kmalloc will be used in cases when GFP_KERNEL
+> >> is specified, i.e. in all current usages of objpool.
+> >>
+> >> This may lead to unexpected OOM errors since kmalloc cannot allocate
+> >> large amounts of memory.
+> >>
+> >> For instance, objpool is used by fprobe rethook which in turn is used by
+> >> BPF kretprobe.multi and kprobe.session probe types. Trying to attach
+> >> these to all kernel functions with libbpf using
+> >>
+> >>     SEC("kprobe.session/*")
+> >>     int kprobe(struct pt_regs *ctx)
+> >>     {
+> >>         [...]
+> >>     }
+> >>
+> >> fails on objpool slot allocation with ENOMEM.
+> >>
+> >> Fix the condition to truly use vmalloc by default.
+> >>
+> > 
+> > Anyway, this looks good to me.
+> > 
+> > Thank you,
+> > 
+> >> Fixes: b4edb8d2d464 ("lib: objpool added: ring-array based lockless MPMC")
+> >> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> >> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> >> Reviewed-by: Matt Wu <wuqiang.matt@bytedance.com>
+> >> ---
+> >>  lib/objpool.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/lib/objpool.c b/lib/objpool.c
+> >> index 234f9d0bd081..fd108fe0d095 100644
+> >> --- a/lib/objpool.c
+> >> +++ b/lib/objpool.c
+> >> @@ -76,7 +76,7 @@ objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
+> >>  		 * mimimal size of vmalloc is one page since vmalloc would
+> >>  		 * always align the requested size to page size
+> >>  		 */
+> >> -		if (pool->gfp & GFP_ATOMIC)
+> >> +		if ((pool->gfp & GFP_ATOMIC) == GFP_ATOMIC)
+> >>  			slot = kmalloc_node(size, pool->gfp, cpu_to_node(i));
+> >>  		else
+> >>  			slot = __vmalloc_node(size, sizeof(void *), pool->gfp,
+> >> -- 
+> >> 2.46.0
+> >>
+> > 
+> > 
+> 
 
-Thanks,
-Jason
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
