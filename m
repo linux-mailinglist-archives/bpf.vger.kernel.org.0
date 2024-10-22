@@ -1,216 +1,256 @@
-Return-Path: <bpf+bounces-42823-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42824-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B85F69AB794
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 22:27:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FDF29AB79D
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 22:28:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41F84283E89
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 20:27:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 980B61C22E7A
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 20:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CDC21CC142;
-	Tue, 22 Oct 2024 20:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B131CC88F;
+	Tue, 22 Oct 2024 20:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DRJIkhXc"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="Ocy/0BbV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498D913E41A
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 20:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B831CB30C
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 20:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729628833; cv=none; b=r1Uy5etm50nK4d+7XqQ6WlFb0XxncSOse30JZWyrK7cOzkpR2DrZ5Q7LETvFyGz+OkU04q7jAbduFyZLb4gcykE/zqYgAag8mCCVumTPf7yOlusJVyUFnPnSGqdOO61nZzj5d1yq68b1rFACqCuPFAK2inSZfgUVObM5uDQPI1U=
+	t=1729628909; cv=none; b=US2RDP+KA8H+/O95VFIcs5GkfqjTxC0gmuGzWLO1KEj5c4glwAJQc1l4GlIeIrTqP/R6BWxWhMCa1fkCB4aXjL5J0YZRWj9C5a8Yv+hBdPlCA1S171sEPc1JzG4NsokePOkbsU31kJg/cLkr9ptgUgrEDmS3w/1+9E2qYIF04kU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729628833; c=relaxed/simple;
-	bh=Z1uBKsrP6KMjIP8HXQEIgcjHk6Oh7n4fFJ8Nz6/OE1s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GLl16ILMw6Ji8FS5ZmKnJJz4b3eOwOMwsiG+8Ln9ZqVdwVD6PDM49qu+6J3QVw2YaCsUfjbMR4YuSkaUjlihnAeZY2DXWMlz0/EOQyLoOs2+rL/+/Q0GBnLYI6/Z/4lSqEkVwGifFOFFW3HET7gNhy4CoLuV3DHxVxaO04CXjZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DRJIkhXc; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-43168d9c6c9so40666375e9.3
-        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 13:27:11 -0700 (PDT)
+	s=arc-20240116; t=1729628909; c=relaxed/simple;
+	bh=bf/yd66V3kuF83bTxs0evHL8Paf59mxT72gHVvyI7IE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SdSQtr+SvJFIvE9PJvc1CclXSNCAjFU2DeTz8j06smm/YcpCsyVXVEEs+Y++dBAjTjxQGxYKm0XH+9nzq49JsUU0jf/e95QPWXhlqzVih5RkO7JOQFV0iFNshzF8LpfPYrR07rdhLr9ASAApLXV/nhpa3pCAhMWa/UzAn1VtzNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=Ocy/0BbV; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-20ce65c8e13so52055485ad.1
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 13:28:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729628829; x=1730233629; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7qdBhkmK7Is9LgBbSAzM14vCVKef/fVQAF0w0A2mM8E=;
-        b=DRJIkhXcN5vnPggP7FbziOIWgusEBDV33F5wTapyR4jjpnYn5DrLbhRB9JdGo4AaOu
-         PtHLjxe3+sYIk/AVeqW6Ea8mg/GntSkiJWaGUCHDy7QyO6g3ylo0sGG4LQ3/XvsftraC
-         aehFvQTbShylDoKg6Y9lkkbNnaSDwq4yqyjEiiEHj7tE/bsJiUQk/fThTNAjyTABsAmz
-         DomZ+mUmIjiGTh33hahW75OA5c7C0dnW4NcGc9OPzJBiSqVU5ahyL6qVM1vqK0vhLgO6
-         99QFMqCMmGQzCa99NPgHgbi/PjVZAV6VhD2GxoxCSnVnKN2JLU4WwukR5+zmvDEhxqCQ
-         /W/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729628829; x=1730233629;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=fastly.com; s=google; t=1729628906; x=1730233706; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7qdBhkmK7Is9LgBbSAzM14vCVKef/fVQAF0w0A2mM8E=;
-        b=w5n2cBrYF75PxP1VZL8XEKc4Be3OGFpd9oMesI/g3OjE4D81PLEDGk+8WhAaOzHb5c
-         QHtqX2HUo7B4BcYvPsqI8+g6MF8wlkqNY6jMMv3B866c6Q6I9HYq02O99kxyNKAzNWdP
-         S0CyqZomW9Qhhprv5Yr+XnfLyBt/qoKjXt6BKrER7nLTua3e9+ayc0l6nbLMVT4Hgddx
-         npWslCPk/v6WQCAaaPIS5OPwn/RK6RPbWrgjKarHvGPKRgEQ3bN6h5L5aRY6p89F5TMF
-         vvi4DSoesx8oSL4fFNy7umeB4lzbZDwsr7M3EOznJhkCq25lpXJ8/XhGiSzILSISXaZT
-         VItw==
-X-Forwarded-Encrypted: i=1; AJvYcCUEwFpf3DMzDluUA8ykni8KuaH82hJSOjoT2q+bVfRYOiXPRnopyiEyikQD5m3K6RgJF1k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzaqiWwYdaoPpIEbfrb4C7/oi0GBgAeiigvGnt01N6RV/xyupFQ
-	8xjijznTnpaTjfHJdAFbZeq1+1Bz0V/vgXNEcLXNL7I0D3tmpXVs9PJ4rngbd3q8uylpObdoiaZ
-	GWCMYbHadHDKCMqdJVXz6OVz7cO4=
-X-Google-Smtp-Source: AGHT+IG0N0Tcsx5+R0tKLyjPKnLwKILW5DmZ5VdMspebSAavjaqCLkgPev4lLwgfyfHqGx1KhfoaaFlYt7kJtxh5TD8=
-X-Received: by 2002:adf:f052:0:b0:37e:d92f:c14a with SMTP id
- ffacd0b85a97d-37efcf7e9fcmr93749f8f.42.1729628829435; Tue, 22 Oct 2024
- 13:27:09 -0700 (PDT)
+        bh=PJMWdLBxWmamd6hVKbJ1xLBNYdB6AKwK9i9T9Bn4rmA=;
+        b=Ocy/0BbVMmB40lTHv5RR0Kln1NTpZJpKeaCqOghSAC3dRywf0OWe/zcBjJFW+xYz7i
+         dxN9bvX9x2ZKm5a/1ufvEUAUnyekFR7IhWdWziFzHJeSS1zuz2XO9mFZK6f4a2OjlmiQ
+         zpawrfAESLtDnkniCA7p9wi6sedcafxgy+D0s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729628906; x=1730233706;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PJMWdLBxWmamd6hVKbJ1xLBNYdB6AKwK9i9T9Bn4rmA=;
+        b=hTZATh5xSPEvEsTJeGExmLs7s0aJUW0+nxZW80TlvPVdo9TfhiZv+DYEPOsZs+92bq
+         1hrPQs6Stx7YCFKDrcsQ8uM7vtgFK9Jm5eqJ+fYgp2IzTFeeEVrT/0cD5g3VolbDKxu1
+         x9m2QUzpUAePC6gPRjuBsNq3wUbjMOeCKsaV2TzCy7q7fyUrVAvVUBx4Fjvj5L1MyCMw
+         vXWDRJSBNnNzgJGZIfoh8QOuu+MZL20qxF4SXhh15gU2wLYHVGMxms4h5tFJ+evNDX4s
+         q6XFNrouK9/mUs8w89BgWwhKZdZ8Or+OMxTiB4y2P23SpyWFKy7pnBV75PSm1fbrTepg
+         kGmw==
+X-Forwarded-Encrypted: i=1; AJvYcCWKxEEp7edajIYx2O6V/EDeIrg80wXZqJTYEJVsj+97yZDElsXRIBJZkPp46edoee59U4U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwvKivktIjUWY0eWyuvD8esAciN6xocKT0mD4zxlb/rDHLhbWjf
+	6OtCnuZurqf7/9DA6v++gOt9VMxYZFq+c7GlxS2THXW1V62H3Z+Gx1aCFkXQDuI=
+X-Google-Smtp-Source: AGHT+IF/ce2cH6YsKQwrxSrc+EOHV6a0+Ka22Y3Dqi0AhC2mugNz9U3DkGtcDFiVTs9rUCoC04Hcuw==
+X-Received: by 2002:a17:903:2344:b0:20c:d469:ba95 with SMTP id d9443c01a7336-20fa9e09f1bmr5229205ad.16.1729628906327;
+        Tue, 22 Oct 2024 13:28:26 -0700 (PDT)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20e7f0c0bb7sm46730885ad.143.2024.10.22.13.28.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Oct 2024 13:28:25 -0700 (PDT)
+Date: Tue, 22 Oct 2024 13:28:22 -0700
+From: Joe Damato <jdamato@fastly.com>
+To: netdev@vger.kernel.org
+Cc: kurt@linutronix.de, vinicius.gomes@intel.com,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
+	jacob.e.keller@intel.com
+Subject: Re: [net-next v3 2/2] igc: Link queues to NAPI instances
+Message-ID: <ZxgK5jsCn5VmKKrH@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>, netdev@vger.kernel.org,
+	kurt@linutronix.de, vinicius.gomes@intel.com,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
+	jacob.e.keller@intel.com
+References: <20241018171343.314835-1-jdamato@fastly.com>
+ <20241018171343.314835-3-jdamato@fastly.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241021014004.1647816-1-houtao@huaweicloud.com>
- <20241021014004.1647816-3-houtao@huaweicloud.com> <ZxYOX9_sIrSKGFB2@krava>
- <CAEf4BzbFBbTDGSwTdgFJG5poFpCrjjpPO9OujYVZXPxTEUXqeQ@mail.gmail.com>
- <437ff5b4-4f38-cb3a-8491-d8c7e5cfb8c6@huaweicloud.com> <CAEf4BzYb--5BpVuiBYrNdtRh3U6HqD45jndb-f-0YCetTZ5hvw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYb--5BpVuiBYrNdtRh3U6HqD45jndb-f-0YCetTZ5hvw@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 22 Oct 2024 13:26:58 -0700
-Message-ID: <CAADnVQJ7U_amDRZGRGo8dR37R-EMidjuxHswBGm0LnwAWwgH=w@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 2/7] bpf: Add assertion for the size of bpf_link_type_strs[]
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Hou Tao <houtao@huaweicloud.com>, Jiri Olsa <olsajiri@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, John Fastabend <john.fastabend@gmail.com>, 
-	Yafang Shao <laoar.shao@gmail.com>, Hou Tao <houtao1@huawei.com>, 
-	Xu Kuohai <xukuohai@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241018171343.314835-3-jdamato@fastly.com>
 
-On Tue, Oct 22, 2024 at 10:40=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Oct 22, 2024 at 12:36=E2=80=AFAM Hou Tao <houtao@huaweicloud.com>=
- wrote:
-> >
-> > Hi,
-> >
-> > On 10/22/2024 7:02 AM, Andrii Nakryiko wrote:
-> > > On Mon, Oct 21, 2024 at 1:18=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com=
-> wrote:
-> > >> On Mon, Oct 21, 2024 at 09:39:59AM +0800, Hou Tao wrote:
-> > >>> From: Hou Tao <houtao1@huawei.com>
-> > >>>
-> > >>> If a corresponding link type doesn't invoke BPF_LINK_TYPE(), access=
-ing
-> > >>> bpf_link_type_strs[link->type] may result in out-of-bound access.
-> > >>>
-> > >>> To prevent such missed invocations in the future, the following sta=
-tic
-> > >>> assertion seems feasible:
-> > >>>
-> > >>>   BUILD_BUG_ON(ARRAY_SIZE(bpf_link_type_strs) !=3D __MAX_BPF_LINK_T=
-YPE)
-> > >>>
-> > >>> However, this doesn't work well. The reason is that the invocation =
-of
-> > >>> BPF_LINK_TYPE() for one link type is optional due to its CONFIG_XXX
-> > >>> dependency and the elements in bpf_link_type_strs[] will be sparse.=
- For
-> > >>> example, if CONFIG_NET is disabled, the size of bpf_link_type_strs =
-will
-> > >>> be BPF_LINK_TYPE_UPROBE_MULTI + 1.
-> > >>>
-> > >>> Therefore, in addition to the static assertion, remove all CONFIG_X=
-XX
-> > >>> conditions for the invocation of BPF_LINK_TYPE(). If these CONFIG_X=
-XX
-> > >>> conditions become necessary later, the fix may need to be revised (=
-e.g.,
-> > >>> to check the validity of link_type in bpf_link_show_fdinfo()).
-> > >>>
-> > >>> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> > >>> ---
-> > >>>  include/linux/bpf_types.h | 6 ------
-> > >>>  kernel/bpf/syscall.c      | 2 ++
-> > >>>  2 files changed, 2 insertions(+), 6 deletions(-)
-> > >>>
-> > >>> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-> > >>> index fa78f49d4a9a..6b7eabe9a115 100644
-> > >>> --- a/include/linux/bpf_types.h
-> > >>> +++ b/include/linux/bpf_types.h
-> > >>> @@ -136,21 +136,15 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_ARENA, arena_map_op=
-s)
-> > >>>
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
-> > >>> -#ifdef CONFIG_CGROUP_BPF
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_CGROUP, cgroup)
-> > >>> -#endif
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
-> > >>> -#ifdef CONFIG_NET
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_XDP, xdp)
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_NETFILTER, netfilter)
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_TCX, tcx)
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_NETKIT, netkit)
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_SOCKMAP, sockmap)
-> > >>> -#endif
-> > >>> -#ifdef CONFIG_PERF_EVENTS
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_PERF_EVENT, perf)
-> > >>> -#endif
-> > > I'm not sure what's the implication here, but I'd avoid doing that.
-> > > But see below.
-> >
-> > OK.
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_KPROBE_MULTI, kprobe_multi)
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_STRUCT_OPS, struct_ops)
-> > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_UPROBE_MULTI, uprobe_multi)
-> > >>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > >>> index 8cfa7183d2ef..9f335c379b05 100644
-> > >>> --- a/kernel/bpf/syscall.c
-> > >>> +++ b/kernel/bpf/syscall.c
-> > >>> @@ -3071,6 +3071,8 @@ static void bpf_link_show_fdinfo(struct seq_f=
-ile *m, struct file *filp)
-> > >>>       const struct bpf_prog *prog =3D link->prog;
-> > >>>       char prog_tag[sizeof(prog->tag) * 2 + 1] =3D { };
-> > >>>
-> > >>> +     BUILD_BUG_ON(ARRAY_SIZE(bpf_link_type_strs) !=3D __MAX_BPF_LI=
-NK_TYPE);
-> > > If this is useless, why are you adding it?
-> >
-> > It will work after removing these CONFIG_XXX dependencies for
-> > BPF_LINK_TYPE() invocations.
-> > >
-> > > Let's instead do a NULL check inside bpf_link_show_fdinfo() to handle
-> > > sparsity. And to avoid out-of-bounds, just add
-> > >
-> > > [__MAX_BPF_LINK_TYPE] =3D NULL,
-> > >
-> > > into the definition of bpf_link_type_strs
-> >
-> > Instead of outputting a null string for a link_type which didn't invoke
-> > BPF_LINK_TYPE, is outputting the numerical value of link->type more
-> > reasonable as shown below ?
->
-> In correctly configured kernel this should never happen. So we can
-> have WARN() there for the NULL case and just return an error or
-> something.
+On Fri, Oct 18, 2024 at 05:13:43PM +0000, Joe Damato wrote:
+> Link queues to NAPI instances via netdev-genl API so that users can
+> query this information with netlink. Handle a few cases in the driver:
+>   1. Link/unlink the NAPIs when XDP is enabled/disabled
+>   2. Handle IGC_FLAG_QUEUE_PAIRS enabled and disabled
+> 
+> Example output when IGC_FLAG_QUEUE_PAIRS is enabled:
+> 
+> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+>                          --dump queue-get --json='{"ifindex": 2}'
+> 
+> [{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+>  {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
+>  {'id': 2, 'ifindex': 2, 'napi-id': 8195, 'type': 'rx'},
+>  {'id': 3, 'ifindex': 2, 'napi-id': 8196, 'type': 'rx'},
+>  {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'tx'},
+>  {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'tx'},
+>  {'id': 2, 'ifindex': 2, 'napi-id': 8195, 'type': 'tx'},
+>  {'id': 3, 'ifindex': 2, 'napi-id': 8196, 'type': 'tx'}]
+> 
+> Since IGC_FLAG_QUEUE_PAIRS is enabled, you'll note that the same NAPI ID
+> is present for both rx and tx queues at the same index, for example
+> index 0:
+> 
+> {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+> {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'tx'},
+> 
+> To test IGC_FLAG_QUEUE_PAIRS disabled, a test system was booted using
+> the grub command line option "maxcpus=2" to force
+> igc_set_interrupt_capability to disable IGC_FLAG_QUEUE_PAIRS.
+> 
+> Example output when IGC_FLAG_QUEUE_PAIRS is disabled:
+> 
+> $ lscpu | grep "On-line CPU"
+> On-line CPU(s) list:      0,2
+> 
+> $ ethtool -l enp86s0  | tail -5
+> Current hardware settings:
+> RX:		n/a
+> TX:		n/a
+> Other:		1
+> Combined:	2
+> 
+> $ cat /proc/interrupts  | grep enp
+>  144: [...] enp86s0
+>  145: [...] enp86s0-rx-0
+>  146: [...] enp86s0-rx-1
+>  147: [...] enp86s0-tx-0
+>  148: [...] enp86s0-tx-1
+> 
+> 1 "other" IRQ, and 2 IRQs for each of RX and Tx, so we expect netlink to
+> report 4 IRQs with unique NAPI IDs:
+> 
+> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+>                          --dump napi-get --json='{"ifindex": 2}'
+> [{'id': 8196, 'ifindex': 2, 'irq': 148},
+>  {'id': 8195, 'ifindex': 2, 'irq': 147},
+>  {'id': 8194, 'ifindex': 2, 'irq': 146},
+>  {'id': 8193, 'ifindex': 2, 'irq': 145}]
+> 
+> Now we examine which queues these NAPIs are associated with, expecting
+> that since IGC_FLAG_QUEUE_PAIRS is disabled each RX and TX queue will
+> have its own NAPI instance:
+> 
+> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+>                          --dump queue-get --json='{"ifindex": 2}'
+> [{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+>  {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
+>  {'id': 0, 'ifindex': 2, 'napi-id': 8195, 'type': 'tx'},
+>  {'id': 1, 'ifindex': 2, 'napi-id': 8196, 'type': 'tx'}]
+> 
+> Signed-off-by: Joe Damato <jdamato@fastly.com>
+> ---
+>  v3:
+>    - Replace igc_unset_queue_napi with igc_set_queue_napi(adapater, i,
+>      NULL), as suggested by Vinicius Costa Gomes
+>    - Simplify implemention of igc_set_queue_napi as suggested by Kurt
+>      Kanzenbach, with a tweak to use ring->queue_index
+> 
+>  v2:
+>    - Update commit message to include tests for IGC_FLAG_QUEUE_PAIRS
+>      disabled
+>    - Refactored code to move napi queue mapping and unmapping to helper
+>      functions igc_set_queue_napi and igc_unset_queue_napi
+>    - Adjust the code to handle IGC_FLAG_QUEUE_PAIRS disabled
+>    - Call helpers to map/unmap queues to NAPIs in igc_up, __igc_open,
+>      igc_xdp_enable_pool, and igc_xdp_disable_pool
+> 
+>  drivers/net/ethernet/intel/igc/igc.h      |  2 ++
+>  drivers/net/ethernet/intel/igc/igc_main.c | 33 ++++++++++++++++++++---
+>  drivers/net/ethernet/intel/igc/igc_xdp.c  |  2 ++
+>  3 files changed, 33 insertions(+), 4 deletions(-)
 
-I don't understand why this patch is needed.
-Is it solving a theoretical problem ?
+I took another look at this to make sure that RTNL is held when
+igc_set_queue_napi is called after the e1000 bug report came in [1],
+and there may be two locations I've missed:
 
-Something like the kernel managed to create a link
-with link->type =3D=3D BPF_LINK_TYPE_CGROUP,
-but CONFIG_CGROUP_BPF was not defined somehow ?
+1. igc_resume, which calls __igc_open
+2. igc_io_error_detected, which calls igc_down
 
-There is no out-of-bounds or access to empty
-bpf_link_type_strs[link->type] as far as I can tell.
+In both cases, I think the code can be modified to hold rtnl around
+calls to __igc_open and igc_down.
 
-What am I missing?
+Let me know what you think ?
+
+If you agree that I should hold rtnl in both of those cases, what is
+the best way to proceed:
+  - send a v4, or
+  - wait for this to get merged (since I got the notification it was
+    pulled into intel-next) and send a fixes ?
+
+Here's the full analysis I came up with; I tried to be thorough, but
+it is certainly possible I missed a call site:
+
+For the up case:
+
+- igc_up:
+  - called from igc_reinit_locked, which is called via:
+    - igc_reset_task (rtnl is held)
+    - igc_set_features (ndo_set_features, which itself has an ASSERT_RTNL)
+    - various places in igc_ethtool (set_priv_flags, nway_reset,
+      ethtool_set_eee) all of which have RTNL held
+  - igc_change_mtu which also has RTNL held
+- __igc_open
+  - called from igc_resume, which may need an rtnl_lock ?
+  - igc_open
+    - called from igc_io_resume, rtnl is held
+    - called from igc_reinit_queues, only via ethool set_channels,
+      where rtnl is held
+    - ndo_open where rtnl is held
+
+For the down case:
+
+- igc_down:
+  - called from various ethtool locations (set_ringparam,
+    set_pauseparam, set_link_ksettings) all of which hold rtnl
+  - called from igc_io_error_detected, which may need an rtnl_lock
+  - igc_reinit_locked which is fine, as described above
+  - igc_change_mtu which is fine, as described above
+  - called from __igc_close
+    - called from __igc_shutdown which holds rtnl
+    - called from igc_reinit_queues which is fine as described above
+    - called from igc_close which is ndo_close
 
