@@ -1,196 +1,163 @@
-Return-Path: <bpf+bounces-42843-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42844-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69BF49AB9B6
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 00:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 583FF9AB9C3
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 00:59:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDA7E1F240FB
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 22:55:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB71F1F24263
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 22:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 136601CDFD3;
-	Tue, 22 Oct 2024 22:55:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2E01547E9;
+	Tue, 22 Oct 2024 22:59:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ASu6p/OD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JrfpexLR"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8428518DF6B;
-	Tue, 22 Oct 2024 22:55:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D12A14A08E
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 22:59:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729637717; cv=none; b=lcVUASxtu7d6lMO2h2Zk2xG1qlCdk5QnLsCzbRBvsPn3jmX6f8iBvZX8UsL+t2DHnLToCtwLNVbFsCj7Nw+n2QHpN4NqLj69myTPmZt4CiiMWXHRVIwi5XYdabRyG34TYZ/Ok+sFdnhWUm131eTkMfLEnzz7ar6F9Wip3cjJKec=
+	t=1729637956; cv=none; b=RmFDTKevFPY70ayg5YTMcWuFZP9tQZ2DBU+bCm4LXUVTMsIYK46ZOzLbVfiFd6xsiyeQxNH4suLzmkThBI+QzkfZIiTbHVxw3gp3wNDvvHt9gp4b0wEpqY5LFTQxfVuJ8E2gIPF9rZAI8nEXaK6KMC6XFXu/J8FdqbvYhlciTiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729637717; c=relaxed/simple;
-	bh=mmB0h7GP5OEtq5xYgYIchtjpiU0bUWfBh3QydfmbdMc=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=hF9w3dMAPahlhNWbIOMYpRLVPifsbLSXMz2uHsi/Di204S8cSqEhruZeOO4Z74Qu20sF8yMBhZ2zguC09X8we4N51m3euF5HTsxiMPUXdX3dj4bnss3mkIpaTY3+wKPUWAOWSjorJO9lSCFGau8ZW81j64S1b9EjqqTKggcEeBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ASu6p/OD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93C8CC4CEC3;
-	Tue, 22 Oct 2024 22:55:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729637717;
-	bh=mmB0h7GP5OEtq5xYgYIchtjpiU0bUWfBh3QydfmbdMc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ASu6p/OD42ChIQmHFxFr9v3Uut7yuCh45MCO2hw++Lkjld6Jr/OQx9lqwZ+ZPNM10
-	 oJq97rdJrwZ9XNlxjth4RPMSbnbpXgWWvWIRseRkBJEbPGoiLwYx6xyx2JAiKXZgZl
-	 GH8dMoAlfClEytaexMXLu2QkP+8gHyHWzhuWLOxtOtxjlZjaX6WRvv4N2yfkwAM9Ja
-	 Wfs0rJif2mmYcrLm+a3pHWwupTHdyiqFHPC+TiqNsWeyVwTGYJcO+bOjEHBlgaEh7b
-	 CQSFWKNhj8tkhBXOE8CkoX+57ZsDAs699JxntIAfOvvpKcWSzFaXM+g7YvGyvyLPtd
-	 8F3OmoK82QV+A==
-Date: Wed, 23 Oct 2024 07:55:07 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Will Deacon <will@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Alan Maguire
- <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>,
- linux-arch@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao
- <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH v17 01/16] function_graph: Pass ftrace_regs to entryfunc
-Message-Id: <20241023075507.ebeadc70579fc8a642213a55@kernel.org>
-In-Reply-To: <20241021170340.GB26122@willie-the-truck>
-References: <172904026427.36809.516716204730117800.stgit@devnote2>
-	<172904027515.36809.1961937054923520469.stgit@devnote2>
-	<20241021170340.GB26122@willie-the-truck>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1729637956; c=relaxed/simple;
+	bh=LtjQStD3W2cerL2wODY01qXlcmaj79v4iEjbmRHslZs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z7OFS9QnDNeKSoZ7IIygN9GCm3x39NBzUjZ75Kz0TZGtUHeYp+AXnZ5w/FKm9/JZ/k8hhI1fASmuRHa70mHvZI0d08GEqss7Qy0bxUAmjcpU0jou+VviZmkR0TTooNHZuO7dqy9dXeZHe/ilTspH+fV3oNpBEvpX/3IYCZXQX2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JrfpexLR; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-37ed7eb07a4so2668941f8f.2
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 15:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729637953; x=1730242753; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ejPyTkA5XeqEI0utAbsS8z7+TQaIYx9z7mjhL5egdCg=;
+        b=JrfpexLRLlXDSQfq/iMUU7LGZd9kIi1h6iruZLuwQyL15AlYiLlNLHZKeQ5Qiuy6MF
+         UJvY5XF0APXxdEhjnYNCal54duM20QlQ56awKNP+x4BpQ/ggIqsVLtmANW7/o/nOQ2Ev
+         3z1hEABHOH2hvxKiSi4CTB15TXBrC92nRaufWBrxRCAy/hi0gEVosrakjUjc6vl9Z0z2
+         rt43UmCp6G/o3ntAUKqsjDr5rnkzsvO0r5OI5Xq/p9u53rvrr7zuKJwCG7b9hqjnGtGf
+         HTkKkyrm6eHZY7oSO4TPdUQ5k/EP442VQUIu78+DOOUPUzEM7WPt3HSjgYRq5QGW3Nw1
+         CCBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729637953; x=1730242753;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ejPyTkA5XeqEI0utAbsS8z7+TQaIYx9z7mjhL5egdCg=;
+        b=ILcsVRoZov0npH4Cb2Q3ulF2TRWvFmHtEUtJzwBhf/cDKMU0e1CGQ/H0ebHrDoUA5A
+         Ny69Ytvwd/evuGistFxhlnm8Jf8kHpQm4Xe/IkszzMcTrXov5yewrdxX5PvgHOYuVn5u
+         G3HcfKIFSK25a/3LeRtMyKMrQDMY959v3fwgFjPPUW1lZIpfrGQLWa8hMbgTjeI04VZv
+         lN5u6F8TuK0oyCUisnq5dpd4uBUPqNjFHMfNQO4jMVNicqHLtnJAG7PpKPNNcUCgMKdd
+         KAr5WErlUCzJNw7CKPJ57Ol2wQHeJrNDsahvyzjBZFHQirqDgUWoXO2HQlX/TYwSVXSz
+         1YBA==
+X-Gm-Message-State: AOJu0YzNz0FL47ThdPI3Vb76YsZ3kwD8iWVxzMUlH6Q6CgjMY8s3nh7X
+	86LcG0R/q6mA3aY0/fBJ2slrvX7MoZpCDwLMDxgbeS8vRijfkv7YoMMqad1gVapr4WaY8vY4m93
+	zq0JAF82UGDkTcsJJpGLgh4ZPsIw=
+X-Google-Smtp-Source: AGHT+IFFLp5+JD3nhwvlmzz3FmNoJrd45SIW8hLEjZe61zH+EADVgnzFMyLtuPpjIK9PndyykqiT8T+tiL9DEI1+PqY=
+X-Received: by 2002:a5d:6a47:0:b0:37d:4afe:8c98 with SMTP id
+ ffacd0b85a97d-37efcf1a540mr295688f8f.26.1729637953306; Tue, 22 Oct 2024
+ 15:59:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20241020191341.2104841-1-yonghong.song@linux.dev>
+ <20241020191347.2105090-1-yonghong.song@linux.dev> <CAADnVQ+ZXMh_QKy0nd-n7my1SETroockPjpVVJOAWsE3tB_5sg@mail.gmail.com>
+ <c6e5040b-9558-481f-b1fc-f77dc9ce90c1@linux.dev> <CAADnVQJCfiNEgrvf6GuaUadz6rDSNU6QB3grpOfk2-jQP6is4Q@mail.gmail.com>
+ <179d5f87-4c70-438b-9809-cc05dffc13de@linux.dev> <CAADnVQL3+o7xV2LQcO-AArBmSEV=CQ7TQsuzBfTUnc_g+MhoMw@mail.gmail.com>
+ <489b0524-49bc-4df4-8744-1badd40824be@linux.dev> <CAADnVQJJxyoLvFY88OEGzy0MUnL5O8KCMdedDdAvqYcWDJsDXw@mail.gmail.com>
+ <8f572c9d-00c2-48b7-b57f-bd6445c5d514@linux.dev>
+In-Reply-To: <8f572c9d-00c2-48b7-b57f-bd6445c5d514@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 22 Oct 2024 15:59:02 -0700
+Message-ID: <CAADnVQ+hCW+BqFMuUQsiTNqd7jz=Lupo-h0N=f2tdeUS0vcB1g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/9] bpf: Allow each subprog having stack size
+ of 512 bytes
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 21 Oct 2024 18:03:40 +0100
-Will Deacon <will@kernel.org> wrote:
+On Tue, Oct 22, 2024 at 3:41=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
+>
+> On 10/22/24 2:57 PM, Alexei Starovoitov wrote:
+> > On Tue, Oct 22, 2024 at 2:43=E2=80=AFPM Yonghong Song <yonghong.song@li=
+nux.dev> wrote:
+> >> To handle a subprog may be used in more than one
+> >> subtree (subprog 0 tree or async tree), I need to
+> >> add a 'visited' field to bpf_subprog_info.
+> >> I think this should work.
+> > This is getting quite complicated.
+> >
+> > But looks like we have even bigger problem:
+> >
+> > SEC("lsm/...")
+> > int BPF_PROG(...)
+> > {
+> >    volatile char buf[..];
+> >    buf[..] =3D
+> > }
+>
+> If I understand correctly, lsm/... corresponds to BPF_PROG_TYPE_LSM prog =
+type.
+> The current implementation only supports the following plus struct_ops pr=
+ograms.
+>
+> +       switch (env->prog->type) {
+> +       case BPF_PROG_TYPE_KPROBE:
+> +       case BPF_PROG_TYPE_TRACEPOINT:
+> +       case BPF_PROG_TYPE_PERF_EVENT:
+> +       case BPF_PROG_TYPE_RAW_TRACEPOINT:
+> +               return true;
+> +       case BPF_PROG_TYPE_TRACING:
+> +               if (env->prog->expected_attach_type !=3D BPF_TRACE_ITER)
+> +                       return true;
+> +               fallthrough;
+> +       default:
+> +               return false;
+> +       }
+>
+> I do agree that lsm programs will have issues if using private stack
+> since preemptible is possible and we don't have recursion check for
+> them (which is right in order to provide correct functionality).
 
-> On Wed, Oct 16, 2024 at 09:57:55AM +0900, Masami Hiramatsu (Google) wrote:
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Pass ftrace_regs to the fgraph_ops::entryfunc(). If ftrace_regs is not
-> > available, it passes a NULL instead. User callback function can access
-> > some registers (including return address) via this ftrace_regs.
-> > 
-> > Note that the ftrace_regs can be NULL when the arch does NOT define:
-> > HAVE_DYNAMIC_FTRACE_WITH_ARGS or HAVE_DYNAMIC_FTRACE_WITH_REGS.
-> > More specifically, if HAVE_DYNAMIC_FTRACE_WITH_REGS is defined but
-> > not the HAVE_DYNAMIC_FTRACE_WITH_ARGS, and the ftrace ops used to
-> > register the function callback does not set FTRACE_OPS_FL_SAVE_REGS.
-> > In this case, ftrace_regs can be NULL in user callback.
-> > 
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Huacai Chen <chenhuacai@kernel.org>
-> > Cc: WANG Xuerui <kernel@xen0n.name>
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Nicholas Piggin <npiggin@gmail.com>
-> > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > Cc: Naveen N Rao <naveen@kernel.org>
-> > Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
-> > Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> > Cc: Albert Ou <aou@eecs.berkeley.edu>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Borislav Petkov <bp@alien8.de>
-> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: x86@kernel.org
-> > Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > 
-> > ---
-> >  Changes in v16:
-> >   - Add a note when the ftrace_regs can be NULL.
-> >   - Update against for the latest kernel.
-> >  Changes in v11:
-> >   - Update for the latest for-next branch.
-> >  Changes in v8:
-> >   - Just pass ftrace_regs to the handler instead of adding a new
-> >     entryregfunc.
-> >   - Update riscv ftrace_graph_func().
-> >  Changes in v3:
-> >   - Update for new multiple fgraph.
-> > ---
-> >  arch/arm64/kernel/ftrace.c               |   20 +++++++++++-
-> >  arch/loongarch/kernel/ftrace_dyn.c       |   10 +++++-
-> >  arch/powerpc/kernel/trace/ftrace.c       |    2 +
-> >  arch/powerpc/kernel/trace/ftrace_64_pg.c |   10 ++++--
-> >  arch/riscv/kernel/ftrace.c               |   17 ++++++++++
-> >  arch/x86/kernel/ftrace.c                 |   50 +++++++++++++++++++++---------
-> >  include/linux/ftrace.h                   |   17 ++++++++--
-> >  kernel/trace/fgraph.c                    |   25 +++++++++------
-> >  kernel/trace/ftrace.c                    |    3 +-
-> >  kernel/trace/trace.h                     |    3 +-
-> >  kernel/trace/trace_functions_graph.c     |    3 +-
-> >  kernel/trace/trace_irqsoff.c             |    3 +-
-> >  kernel/trace/trace_sched_wakeup.c        |    3 +-
-> >  kernel/trace/trace_selftest.c            |    8 +++--
-> >  14 files changed, 129 insertions(+), 45 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
-> > index b2d947175cbe..a5a285f8a7ef 100644
-> > --- a/arch/arm64/kernel/ftrace.c
-> > +++ b/arch/arm64/kernel/ftrace.c
-> > @@ -481,7 +481,25 @@ void prepare_ftrace_return(unsigned long self_addr, unsigned long *parent,
-> >  void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
-> >  		       struct ftrace_ops *op, struct ftrace_regs *fregs)
-> >  {
-> > -	prepare_ftrace_return(ip, &arch_ftrace_regs(fregs)->lr, arch_ftrace_regs(fregs)->fp);
-> > +	unsigned long return_hooker = (unsigned long)&return_to_handler;
-> > +	unsigned long frame_pointer = arch_ftrace_regs(fregs)->fp;
-> > +	unsigned long *parent = &arch_ftrace_regs(fregs)->lr;
-> > +	unsigned long old;
-> > +
-> > +	if (unlikely(atomic_read(&current->tracing_graph_pause)))
-> > +		return;
-> > +
-> > +	/*
-> > +	 * Note:
-> > +	 * No protection against faulting at *parent, which may be seen
-> > +	 * on other archs. It's unlikely on AArch64.
-> > +	 */
-> > +	old = *parent;
-> 
-> Sorry to pick on this line again, but the comment is very non-committal]
-> and I think this is something on which we need to be definitive.
+static inline bool bpf_prog_check_recur(const struct bpf_prog *prog)
+{
+        switch (resolve_prog_type(prog)) {
+        case BPF_PROG_TYPE_TRACING:
+                return prog->expected_attach_type !=3D BPF_TRACE_ITER;
+        case BPF_PROG_TYPE_STRUCT_OPS:
+        case BPF_PROG_TYPE_LSM:
+                return false;
+        default:
+                return true;
+        }
+}
 
-Agreed. I think this does not happen because it is a part of
-__arch_ftrace_regs, which is stored on kernel stack.
+LSM prog is an example. The same issue is with struct_ops progs.
+But struct_ops sched-ext progs is main motivation for adding
+priv stack.
 
-I copied it from prepare_ftrace_return(), so that also need to be
-changed too.
-
-Let me remove this comment.
-
-Thank you,
-
-> 
-> Either the access can fault, and we should handle it, or it will never
-> fault and we don't need to handle it. Saying it's unlikely means we
-> need to handle it :)
-> 
-> Will
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+sched-ext will signal to bpf that it needs priv stack and
+we would have to add "recursion no more than 1" check
+and there is a chance (like above LSM prog demonstrates)
+that struct_ops will be hitting this recursion check
+and the prog will not be run.
+The miss count will increment, of course, but the whole
+priv stack feature for struct_ops becomes unreliable.
+Hence the patches become questionable.
+Why add a feature when the main user will struggle to use it.
 
