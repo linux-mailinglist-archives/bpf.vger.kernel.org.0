@@ -1,134 +1,175 @@
-Return-Path: <bpf+bounces-42801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A73B9AB4FC
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 19:24:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42E179AB50A
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 19:27:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE9561F2469A
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 17:24:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F321F283539
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 17:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABE6E1BF7EA;
-	Tue, 22 Oct 2024 17:24:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A151BCA1B;
+	Tue, 22 Oct 2024 17:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZHyB8fjt"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kZ7+5KPE"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8E061BDA81
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 17:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131D91A4F01
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 17:27:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729617856; cv=none; b=I4W62MTkefRfgeGpu8bPUijXpR3tamnm9gUnyWbTuQAj2fvFyXjCEgPAvJfREcEu61jBRkzQ0AoOGVGhEysgIdW3HLMQuuNFf1yMLidL+iCe8IYLyZRk21ykoeBrJ4pi0hA04Hpcob0xYNUetdFLnKhHc+KmZlGZOElwjGdAf0c=
+	t=1729618028; cv=none; b=FZRryi9B0PRjXZ5C54pAh36Bt54uCFy2KxDwxrXZAdQAZJ5YFY9F00oibo0UlZJ0A9+VNiav/AO1jqoaRuPZZmUziL6SJgLaMp7CW+hZthIeLPL0NJ6AoUWoc8BF5x7kJ6dXqHdhhkC+Q06xuY56wzRopCsTlDMAYNnONgZx9PE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729617856; c=relaxed/simple;
-	bh=7A+wqXFqVEEFcs32UD2pyejQfKgGBcn0hHv+lq3Wn84=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rk09WMPHMRtmYYe0ZZaDPz8wmzvkQhZ4/ZaafUyYKoiFJeliujEFeHBNjWMBg2XeSexheyUiAv1XN4kxaft3SyPvoXIVGOwuiVDp6tF1+6j0tW0VpXy08Khttx9hf1sQyB2HBBk1XWsZhynGI35kkV+YxjvIp2xfK70eHRQyDFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZHyB8fjt; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1729617853;
+	s=arc-20240116; t=1729618028; c=relaxed/simple;
+	bh=UCDNVj0IgOxzDDP5JBH/y/0ztaZgnT/Y0qP3RD1NSiM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FSKDQsn1kQHuG+ywNKNIXxUVgjfGqVztEosuub09kT3Bx9eFDqgZo5w4ODcFiCxMwvL3JMVM3Y/k51i1ahokJWNXo2w3zc7+r+k8ZgwwDM5ZQH1pJCQ+m4QFfX3c8k4FNg0lGVCQLG7zSJ8fJI6ERLtn2XtsojJjnVHLPdxg18w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kZ7+5KPE; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b280e12b-b4e8-4019-ad29-23808d360aee@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729618023;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+Wj5eXI3hv/U03ptO++QyvhlUUq9Z9g1YTNX9l3We/8=;
-	b=ZHyB8fjtCouhG3rleoQW/Vezi7ztQ1kgqVPJ1GRz0wW9gXWVGQEwI02S/wiV7r9wR8VJDg
-	GPeaNsRmXspPjZJ20y4vvvUwH8Q7h5kx2VcsqMEHBjbEAjIP5hhxs2hDQimUDm0yrqH+wj
-	M9+gWX7zRJ7oDN5BySzbfOSury8EHrY=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-76-zaLiM4tDNzulnG4h4IHkoA-1; Tue,
- 22 Oct 2024 13:24:10 -0400
-X-MC-Unique: zaLiM4tDNzulnG4h4IHkoA-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B9E381955EAB;
-	Tue, 22 Oct 2024 17:24:07 +0000 (UTC)
-Received: from f39.redhat.com (unknown [10.39.192.92])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A53EE1955F30;
-	Tue, 22 Oct 2024 17:24:00 +0000 (UTC)
-From: Eder Zulian <ezulian@redhat.com>
-To: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	acme@redhat.com,
-	vmalik@redhat.com,
-	williams@redhat.com
-Subject: [PATCH v2 3/3] libsubcmd: Silence compiler warning
-Date: Tue, 22 Oct 2024 19:23:29 +0200
-Message-ID: <20241022172329.3871958-4-ezulian@redhat.com>
-In-Reply-To: <20241022172329.3871958-1-ezulian@redhat.com>
-References: <20241022172329.3871958-1-ezulian@redhat.com>
+	bh=JNvSEL2gVzrPwImr06HWyigAhvK59zdhXrvDupNFgK4=;
+	b=kZ7+5KPE+IuwNNMW4GUWgdXrPgzoEMVTSORWEcALqEW0MTPObHruKpQZkbUvT3wS7G5eO4
+	GIJofFqVPYWq/0PuiDyrRioSwZ90HjTNqnMVg8kzrqvXvLSq19ExF/Uc/t88S1/mYT/ZDP
+	vMjecGpLnN9JL333V/45DGYsIjV4cSY=
+Date: Tue, 22 Oct 2024 10:26:54 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH bpf-next v6 3/9] bpf: Support private stack for struct ops
+ programs
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Tejun Heo <tj@kernel.org>
+References: <20241020191341.2104841-1-yonghong.song@linux.dev>
+ <20241020191400.2105605-1-yonghong.song@linux.dev>
+ <CAADnVQ+o35Gf3nmNQLob9PHXj5ojQvKd64MaK+RBJUEOAW1akQ@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAADnVQ+o35Gf3nmNQLob9PHXj5ojQvKd64MaK+RBJUEOAW1akQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Migadu-Flow: FLOW_OUT
 
-Initialize the pointer 'o' in options__order to NULL to prevent a
-compiler warning/error which is observed when compiling with the '-Og'
-option, but is not emitted by the compiler with the current default
-compilation options.
+On 10/21/24 6:34 PM, Alexei Starovoitov wrote:
+> On Sun, Oct 20, 2024 at 12:16 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>> To identify whether a st_ops program requests private stack or not,
+>> the st_ops stub function is checked. If the stub function has the
+>> following name
+>>     <st_ops_name>__<member_name>__priv_stack
+>> then the corresponding st_ops member func requests to use private
+>> stack. The information that the private stack is requested or not
+>> is encoded in struct bpf_struct_ops_func_info which will later be
+>> used by verifier.
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   include/linux/bpf.h         |  2 ++
+>>   kernel/bpf/bpf_struct_ops.c | 35 +++++++++++++++++++++++++----------
+>>   kernel/bpf/verifier.c       |  8 +++++++-
+>>   3 files changed, 34 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index f3884ce2603d..376e43fc72b9 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -1491,6 +1491,7 @@ struct bpf_prog_aux {
+>>          bool exception_boundary;
+>>          bool is_extended; /* true if extended by freplace program */
+>>          bool priv_stack_eligible;
+>> +       bool priv_stack_always;
+>>          u64 prog_array_member_cnt; /* counts how many times as member of prog_array */
+>>          struct mutex ext_mutex; /* mutex for is_extended and prog_array_member_cnt */
+>>          struct bpf_arena *arena;
+>> @@ -1776,6 +1777,7 @@ struct bpf_struct_ops {
+>>   struct bpf_struct_ops_func_info {
+>>          struct bpf_ctx_arg_aux *info;
+>>          u32 cnt;
+>> +       bool priv_stack_always;
+>>   };
+>>
+>>   struct bpf_struct_ops_desc {
+>> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+>> index 8279b5a57798..2cd4bd086c7a 100644
+>> --- a/kernel/bpf/bpf_struct_ops.c
+>> +++ b/kernel/bpf/bpf_struct_ops.c
+>> @@ -145,33 +145,44 @@ void bpf_struct_ops_image_free(void *image)
+>>   }
+>>
+>>   #define MAYBE_NULL_SUFFIX "__nullable"
+>> -#define MAX_STUB_NAME 128
+>> +#define MAX_STUB_NAME 140
+>>
+>>   /* Return the type info of a stub function, if it exists.
+>>    *
+>> - * The name of a stub function is made up of the name of the struct_ops and
+>> - * the name of the function pointer member, separated by "__". For example,
+>> - * if the struct_ops type is named "foo_ops" and the function pointer
+>> - * member is named "bar", the stub function name would be "foo_ops__bar".
+>> + * The name of a stub function is made up of the name of the struct_ops,
+>> + * the name of the function pointer member and optionally "priv_stack"
+>> + * suffix, separated by "__". For example, if the struct_ops type is named
+>> + * "foo_ops" and the function pointer  member is named "bar", the stub
+>> + * function name would be "foo_ops__bar". If a suffix "priv_stack" exists,
+>> + * the stub function name would be "foo_ops__bar__priv_stack".
+>>    */
+>>   static const struct btf_type *
+>>   find_stub_func_proto(const struct btf *btf, const char *st_op_name,
+>> -                    const char *member_name)
+>> +                    const char *member_name, bool *priv_stack_always)
+>>   {
+>>          char stub_func_name[MAX_STUB_NAME];
+>>          const struct btf_type *func_type;
+>>          s32 btf_id;
+>>          int cp;
+>>
+>> -       cp = snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s",
+>> +       cp = snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s__priv_stack",
+>>                        st_op_name, member_name);
+> 
+> I don't think this approach fits.
+> pw-bot: cr
+> 
+> Also looking at original
+> commit 1611603537a4 ("bpf: Create argument information for nullable arguments.")
+> that added this %s__%s notation I'm not sure why we went
+> with that approach.
+> 
+> Just to avoid adding __nullable suffix in the actual callback
+> and using cfi stub callback names with such suffixes as
+> a "proxy" for the real callback?
+> 
+> Did we ever use this functionality for anything other than
+> bpf_testmod_ops__test_maybe_null selftest ?
+> 
+> Martin ?
 
-For example, when compiling libsubcmd with
+The __nullable is to tag an argument of an ops. The member in the struct (e.g. 
+tcp_congestion_ops) is a pointer to FUNC_PROTO and its argument does not have an 
+argument name to tag. Hence, we went with tagging the actual FUNC in the cfi object.
 
- $ make "EXTRA_CFLAGS=-Og" -C tools/lib/subcmd/ clean all
+The __nullable argument tagging request was originally from sched_ext but I also 
+don't see its usage in-tree for now.
 
-Clang version 17.0.6 and GCC 13.3.1 fail to compile parse-options.c due
-to following error:
-
-  parse-options.c: In function ‘options__order’:
-  parse-options.c:832:9: error: ‘o’ may be used uninitialized [-Werror=maybe-uninitialized]
-    832 |         memcpy(&ordered[nr_opts], o, sizeof(*o));
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  parse-options.c:810:30: note: ‘o’ was declared here
-    810 |         const struct option *o, *p = opts;
-        |                              ^
-  cc1: all warnings being treated as errors
-
-Signed-off-by: Eder Zulian <ezulian@redhat.com>
----
- tools/lib/subcmd/parse-options.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/lib/subcmd/parse-options.c b/tools/lib/subcmd/parse-options.c
-index eb896d30545b..555d617c1f50 100644
---- a/tools/lib/subcmd/parse-options.c
-+++ b/tools/lib/subcmd/parse-options.c
-@@ -807,7 +807,7 @@ static int option__cmp(const void *va, const void *vb)
- static struct option *options__order(const struct option *opts)
- {
- 	int nr_opts = 0, nr_group = 0, nr_parent = 0, len;
--	const struct option *o, *p = opts;
-+	const struct option *o = NULL, *p = opts;
- 	struct option *opt, *ordered = NULL, *group;
- 
- 	/* flatten the options that have parents */
--- 
-2.46.2
-
+For the priv_stack tagging, I also don't think it is a good way of doing it. It 
+is like adding __nullable to flag the ops may return NULL pointer which I also 
+tried to avoid in the bpf-qdisc patch set.
 
