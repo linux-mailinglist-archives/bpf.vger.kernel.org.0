@@ -1,196 +1,164 @@
-Return-Path: <bpf+bounces-42783-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42784-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 564F89AB012
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:51:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC2EE9AB093
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 16:14:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAE1E1F23A38
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 13:51:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76F6C28452C
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 14:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3453D19F423;
-	Tue, 22 Oct 2024 13:50:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B93C11A00F2;
+	Tue, 22 Oct 2024 14:14:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U4TYgQMN"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="s2afD0k2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from AUS01-ME3-obe.outbound.protection.outlook.com (mail-me3aus01olkn2108.outbound.protection.outlook.com [40.92.63.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA96919EED2;
-	Tue, 22 Oct 2024 13:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729605050; cv=none; b=a6fOr+L+1d5yaBOlevW/d98wbGI2IOFN99VIPk/JNQi/GcB87a983MKVaf2V4zthkxS/iSzifA8pt7IdKdfvZNp33Q242rxnndXmuj/4iMGowFSx/Fp5nxQRXFzsF7IOh/6RfSH6JLmnYWxdDlWS8xDAxQ+aT/1OBb1DakaRXBY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729605050; c=relaxed/simple;
-	bh=epoMaoM6MMwh/KBGwPkmJaakzhozvJct5sHt4yT4Z9s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gp65WTpa6TGGkQoyByK+Z2nr+Wf8x46d7sDgA5txXbPXYiL2R6qkzi9XZd9YhrQ7imBBdZCfGmfWjiSzBdfm+VcO7sCEOsNRa/IvzbayKf4a4xAAhelFQGFgrL9ntIad3NyBoYRTnaCyR4DDLTbuIhqwzZO02bxd0gl+tbwqAB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U4TYgQMN; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729605049; x=1761141049;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=epoMaoM6MMwh/KBGwPkmJaakzhozvJct5sHt4yT4Z9s=;
-  b=U4TYgQMN7o+rXv0y0pJv7HQEgnjo/B38pkJ0c5I4QKjSGi4hYJRLOYB7
-   6gP4sevSyF5mBrcuN9ZzTiyBFvsB37xi7VFT9s/uUuj0Xp+LJgv9NYy6h
-   tO2wyABY+5DyuXTNxGysnelvNB4c40+RW9CV8+ltslpPy0U2mUGQImWV3
-   bXdMeXfZEpkySPOevdIAUmFEgZNhbxc6wMgdV54Gj7ZSE541popMQTs0j
-   bseCD/77V3vfNWI/Ocj+TTba26FMlK8v9h3xTUXvt6Pvur1BxtVcE/7ND
-   Xs1LJDAtUf3LeFOKWJe30ORr5HWo7JlytwCIoXLKKqMDTCRUGgggaBXSQ
-   A==;
-X-CSE-ConnectionGUID: 4P+BpasQRxWdd9E9CO+Sxg==
-X-CSE-MsgGUID: MKYeqabVSQiWkbyj+v4HhQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11233"; a="40531462"
-X-IronPort-AV: E=Sophos;i="6.11,223,1725346800"; 
-   d="scan'208";a="40531462"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 06:50:47 -0700
-X-CSE-ConnectionGUID: WQvPy/wOQryWrGcK4sqBHA==
-X-CSE-MsgGUID: cHeUKNTnTiqUvliz9qbK9Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,223,1725346800"; 
-   d="scan'208";a="80694139"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by orviesa008.jf.intel.com with ESMTP; 22 Oct 2024 06:50:40 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t3FHS-000Tdu-0u;
-	Tue, 22 Oct 2024 13:50:38 +0000
-Date: Tue, 22 Oct 2024 21:50:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Puranjay Mohan <puranjay@kernel.org>, Albert Ou <aou@eecs.berkeley.edu>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Eric Dumazet <edumazet@google.com>, Hao Luo <haoluo@google.com>,
-	Helge Deller <deller@gmx.de>, Jakub Kicinski <kuba@kernel.org>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Shuah Khan <skhan@linuxfoundation.org>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/5] net: checksum: move from32to16() to generic
- header
-Message-ID: <202410222149.3FVJFYYy-lkp@intel.com>
-References: <20241021122112.101513-2-puranjay@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C9081E505
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 14:14:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.63.108
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729606487; cv=fail; b=peLIrShD5GCVZzwd6p9RPKiI7s72+LpDCqy1lnKm+WGij3XPhRGMQjZvQJH79YrPGbXVArJX+3wk+SabL5BnHVtTPHF/4nO/CF0wn57K52XyX75I+1B41HS29kz6D0ZQa2hMnH/RLWhhhVkx/DDlkPB6H8oUfrW3C80Xfxcex8U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729606487; c=relaxed/simple;
+	bh=EXkZ8gsdcVIhhxW7A0pzTdD7vQ1b/v9TJ0nijfeZfLA=;
+	h=Message-ID:Date:To:From:Subject:Content-Type:MIME-Version; b=XXQGLnznr1c5REFSvUyuyqkWLKTOh75PYIMop8AXMRhOg8QQPB8wZA4beOYWviC2Pa63bZVvLZeL2bXmKFc6ORi1RIQLFV9doJJ4vx+gYsTdxw2bi5ExJ0WWKha+ZhPnhtPAXlyR9dF1Uiw1GcElkDrX4Ytj5sNQ5pTRkrUlHE8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=s2afD0k2; arc=fail smtp.client-ip=40.92.63.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=D+PjJ/6Cceu7gN2Q+wLMiB5bBsNP+nN4a9/FwcoWAjSBCKg9h/vDaaA/H9805B4MyRHzhkOkngEhkkPjZmq+ZCg3GRstwNKggGeAPU8LKHCNX2rLR7PLCfLaHaIjEOdQEB5VHBrr3Mwrvm2oGFwLdTDWhBEcXyYey5O2dbtewuP86csETyaxZ+9LRTprYV8g9dEAVCx4xxnQSn8bLdl3abw80e/EQQmMMq7ji8Pw+EhLo0B+/4Q7GltkbaPcZY0ANJ/ggTmA3V5u87vereoemiaxe/Opu25iOBXOfN0HrTZ4TT+LKdMvgCXviMtkrhDAykqbY0vvpO79uA77xScuMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ypN7o8hBFGIegH5wBzg0H2jspRmbTXFujtq9F/OelPg=;
+ b=r1PQSQqOLSb4OPpCdFAdzH/fdKF8Qr1jj2eHUDVD1W0rtYR0WKn6Vvh2x+mJyzZoNrKRBTVl59SmDwv/5tYaZRBgBE8d2iW0w16b4+iClXPpUsAuVVe+Yxe3RMKR2kXjEj6m/wnHVLv4bt90JGXMrNywyFrv8UURoc+5uXEHnMfs72rHUcWIu8KaoGjBVmke1V5HR5UyVZV/tLpm2EttWR2bzEFXP2xlrcue73D9FpQsDbDjaaTYqHU5/tHo9v57gOC7S4j6eYfSISJzzmrJuRvrgtzpHxr9ufREYCDS+rc1vBJ5hqq0nZXezCuiQ5OF44CMQuoHyU51dIAOjTGNUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ypN7o8hBFGIegH5wBzg0H2jspRmbTXFujtq9F/OelPg=;
+ b=s2afD0k2nq+ePBn0NTd9klkSfJAUVeFoWexeTpP7YqqhmflVNd/KdE3uyR7QeLWFAlwshpwRHvN4r2yQtOW/QdOhRIZIjJnxfZBOgwROdGOmB9oZW7i5+ieKsZmq13bE4KtKtH31lPKdzPBMtsTuPQubbMonadCAzz/k9iM7Kq5F12GlwKv+TmVjTEz41OcUh3eW6Tw0lYQvVJ6Ky6PBsdJsWULjq2PPaU0K6WDAEHcjpIQ/NYYO4HUW1jJpjHiBF2BkgYO2kOvbPQWUO8NUpZnym/B8mr+4nzbwy6Z6izvgUA7Pf2SfgfstswcbA3VVRS0W5yBvviwECKEqL+Xijw==
+Received: from SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:10e::10)
+ by ME3P282MB1506.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:ab::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8093.17; Tue, 22 Oct
+ 2024 14:14:42 +0000
+Received: from SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::2644:2e31:fd3a:ce4d]) by SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::2644:2e31:fd3a:ce4d%7]) with mapi id 15.20.8093.014; Tue, 22 Oct 2024
+ 14:14:42 +0000
+Message-ID:
+ <SY4P282MB2313108B00C833317D0E5938C64C2@SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM>
+Date: Tue, 22 Oct 2024 22:14:30 +0800
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: bpf@vger.kernel.org
+From: Levi Zim <rsworktech@outlook.com>
+Subject: How to combine bpf dynptr and bpf_probe_read_kernel
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0PR13CA0028.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c0::33) To SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:10e::10)
+X-Microsoft-Original-Message-ID:
+ <aff445f5-4556-40d4-a66b-130e36c15110@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241021122112.101513-2-puranjay@kernel.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SY4P282MB2313:EE_|ME3P282MB1506:EE_
+X-MS-Office365-Filtering-Correlation-Id: a1d61922-dec5-4e67-24c9-08dcf2a3df16
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|19110799003|461199028|5072599009|6090799003|8060799006|15080799006|7092599003|440099028|3412199025;
+X-Microsoft-Antispam-Message-Info:
+	LmiI1YGrhVL18TOKcNIcpdT/npVQGvSMOIag3En1tk8Y/Vt9KobGDpwUk31Okk2nEPRZFmqlrkLuDFHEoy9KBSYq0hEyTmOPspB0WutNhUjldFfhrlSA1W55G91eKK3nKhkSmRgWVJ9Kb4S548soSFoSkeMWKGDfHTSRxdLjtpXqCgR4PUHEMNjRlQlFXpcFj17TUQknkrvm/SLUoB570PSetR5bRPKu0DfKzu9tZ7XeAkTqZ6pOcmKO4Dhp4NiClRet1Ur8wcdrXlBkMEOszwQxJ9YOI27g5f2kT72MO/vnB6WhTMacp/1d8NwlAKgSqmZTE+W+7xtGEeaZva6i3zZnFKUE5put7w/sRHAG/Mr2YjnzOU3NHbzqWjfJTCoEshFMMFa66MC0goqQgEGT150VwJNMqhPge9XNpoltf7yFbnhrtpgD14vLuRYysmrrofZM939OdhdHVE7xVCRC8xy/g6nC4HwcQlHg1GJ2SiW5t1/wzyvdPoI1h9SjQhY0HAfa0/NJeEMNKmgwC8lvsBvJozWmWoSpKXfrzz7NiQX2VXxfATh5MwjSQ2MqTYy3ciYmofLUYgnz1PXrhl1V1URjM4OtZFEgFOlfwkDDB7+pXnox01TnoT8Y9m+nJ/IOp93a8oE5G2JAELiZHk8zlVIiiULWBUXtECs6mXFA7mI+N5fmoDT4tbIx5muzjFF1ZDvmSIxw4eXtV3SBgDjlFgbF5PoZqYTtJEg1JeEoMurExkF7UhOTQJbg+j3XeN05
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?MjFwd3UvazFhODcybkZJbm9EamZMb1UySkU0Y0FRYkNYMWJ2NE5JRU42OHJE?=
+ =?utf-8?B?STFKRVFNSUY5RHVaWWVPTWpqVm5ESnY2UTZmREZZQXpkcjF3d0RFYjQzQTNk?=
+ =?utf-8?B?cE9VcW9jaWdod3R5ME9UdUtBaVBZcE5vZEpMRUU3VUMveWl1SkdKNUl5Q0lE?=
+ =?utf-8?B?M2FGR3Z2Q3d5YzJITmRwcVVRTlVmY0d6UFlGRU5ydm16MmUrRjJ2WGdVc2l0?=
+ =?utf-8?B?MVgzclNXRUQzSit5azZ6a0Z2ME5naEdvYjhYOGlPQmlycVZLUlF3RzVpaVVp?=
+ =?utf-8?B?SkthWnJsOFh4OGFnMWF3c1ZETDNrQjA5Ty9FaWRIVEpvclc2bEhib3QyQ1dK?=
+ =?utf-8?B?TUQzQmVnTmRhVXhOTkFadTJmdllMejlrRFVMV2g5aGV4KzUwTHlHdHBJOEZQ?=
+ =?utf-8?B?clZvTmg1bk1mQ0J3b2pFUDkyS0MyZVZ0R0tVaURIMGFiZmo2VWpBTmtiM2JC?=
+ =?utf-8?B?UWFhUDNTa2FBWWN1bGVQcnRDVWxydFhLWCt4T0R6NHZqOHNyTDg1R3lXZnpl?=
+ =?utf-8?B?a05PMlh1TU1TMGVEUE5JaG1SNklGd0lPTVpUL3lPanhsdU94cnczRjFKVjdr?=
+ =?utf-8?B?L0xLSDFoS1IvclFvbkFvOCtOU0xRTHoyM2FObWRIbFVxeDJ6UHJGTUNDVStn?=
+ =?utf-8?B?QURheGUxRFVreGx0aTh5VmxKMWE4YTRsTTdDWC90bXJhZG1YQk0xMDhEMVhz?=
+ =?utf-8?B?ZU12dDhNR200bzNuaERIUGlwaFQvL1ZMb0dkTGw3WWxTdG5BRmJsUlk2RFJG?=
+ =?utf-8?B?NlZZZmoxY2EyNmNIZWduQTlnMi93NTBLQzFETW1RRlQ0SjhEd1ZiazNXRTN0?=
+ =?utf-8?B?eGlka0hWb2RyUVdYUHJlOW9NeURlam9RUXViUytCOFZUWUYvZjhmV3hhZk1u?=
+ =?utf-8?B?Znpma0x2MHozUVIrSjFHeENRSU5KUjFSRkJPL1ZGaHQ2dHZFU1l0YUI1VWRE?=
+ =?utf-8?B?ZmpDQzdxeDI1dGNndWZEYWs2TDVNR0RwdzNsSm1wREc1UnA2UVNycER1N2Vt?=
+ =?utf-8?B?UlhpTG5vQjJ4ZnYrMVpWN0R0S1pOZy90ZCsrc0FBUlYzN2doS1JTQ2J1SWw3?=
+ =?utf-8?B?R3N2TUMyWlJxdFp6ZXhzaXlvQzRidWo3N3BiSGFmZkd6Vzc3STRyUE1EY1Vv?=
+ =?utf-8?B?K0ljRXY3VXV5czdkY0RaQlhwSkp1c0dHOW1ocXRuNEw5K3piZUpNcmtJM25Q?=
+ =?utf-8?B?Vytjem4wZUdMYkcrYUxQL1BONFhGaFJ5ZmxpRzJpZHQ4T1hrTlRCd3JVMkhB?=
+ =?utf-8?B?UEQ4U3pFd0hNRHNhazUrOWZsN3hHejN0K2xQaXFQK0NpQWhKbTNpNWo1NFMr?=
+ =?utf-8?B?czE0dmkvdU5KUzNDWUNMVGFSdHp1SWM1bW5NK2k5ZDg3VjhQMURBS0xPNEpO?=
+ =?utf-8?B?cXF6UnFYalprZkRtMlJHNTljWjh6dlR5dkVNbC8vY09CcUR2LzRMTk1PNkMz?=
+ =?utf-8?B?blZTVjJmT3FTM0NQRVlqMDJTOHdLMmhFSTAvcjhiRXFlYnhkL0ZybGo5VzIx?=
+ =?utf-8?B?aEkydkZFdytXUlBiQjJJd0JQbHhaRzZkcEJHVHY5VWdHTkJRbUJFSFM5VmNX?=
+ =?utf-8?B?UVlXVHc3L256Mm9MRE9LclU1K0s0NHZmZk9uY3I3eWJhWXV5alF3NkJsTGVz?=
+ =?utf-8?B?anU0eWYzSTcvSWFSNHZJRVluaWNFbFhPbVM2bDJpQ3BqU0VzRU1WOUxyTXBP?=
+ =?utf-8?B?T0xMQnkzdjA3RXJaR2x6OGswcXU2ZGdnbVN1Q3RrbS9vU1crWk9uUi9yZTR6?=
+ =?utf-8?Q?oDzEiw5/0CyyFnEVMT4SYzeadAC4qA/6uImfVZw?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1d61922-dec5-4e67-24c9-08dcf2a3df16
+X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2024 14:14:42.0918
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: ME3P282MB1506
 
-Hi Puranjay,
+Hi,
 
-kernel test robot noticed the following build warnings:
+I have a question about how use bpf dynptr and bpf_probe_read_kernel 
+together.
 
-[auto build test WARNING on bpf-next/master]
+Assuming we have an fexit program attached to pty_write(static ssize_t 
+pty_write(struct tty_struct *tty, const u8 *buf, size_t c))
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Puranjay-Mohan/net-checksum-move-from32to16-to-generic-header/20241021-202707
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20241021122112.101513-2-puranjay%40kernel.org
-patch subject: [PATCH bpf-next 1/5] net: checksum: move from32to16() to generic header
-config: x86_64-randconfig-122-20241022 (https://download.01.org/0day-ci/archive/20241022/202410222149.3FVJFYYy-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241022/202410222149.3FVJFYYy-lkp@intel.com/reproduce)
+I want to send some metadata and the written bytes to the pty to user 
+space via a BPF RingBuf.
+While I could reserve a statistically known amount of memory on ringbuf,
+it is a waste of the ringbuf's space if there are only one or two bytes 
+written to pty.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410222149.3FVJFYYy-lkp@intel.com/
+So instead I tried to use bpf_ringbuf_reserve_dynptr to dynamically 
+reserve the memory on the ringbuf and it works great,
+until when I want to use bpf_dynptr_write to read the kernel memory at 
+buf into the memory managed by dynptr:
 
-sparse warnings: (new ones prefixed by >>)
->> lib/checksum.c:84:34: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __wsum [usertype] sum @@     got unsigned int [assigned] result @@
-   lib/checksum.c:84:34: sparse:     expected restricted __wsum [usertype] sum
-   lib/checksum.c:84:34: sparse:     got unsigned int [assigned] result
->> lib/checksum.c:84:16: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [assigned] result @@     got restricted __sum16 @@
-   lib/checksum.c:84:16: sparse:     expected unsigned int [assigned] result
-   lib/checksum.c:84:16: sparse:     got restricted __sum16
+       78: (85) call bpf_dynptr_write#202
+       R3 type=scalar expected=fp, pkt, pkt_meta, map_key, map_value, 
+mem, ringbuf_mem, buf, trusted_ptr_
 
-vim +84 lib/checksum.c
+The verifier appears to be rejecting using bpf_dynptr_write in a way 
+similar to bpf_probe_read_kernel.
 
-    35	
-    36	#ifndef do_csum
-    37	static unsigned int do_csum(const unsigned char *buff, int len)
-    38	{
-    39		int odd;
-    40		unsigned int result = 0;
-    41	
-    42		if (len <= 0)
-    43			goto out;
-    44		odd = 1 & (unsigned long) buff;
-    45		if (odd) {
-    46	#ifdef __LITTLE_ENDIAN
-    47			result += (*buff << 8);
-    48	#else
-    49			result = *buff;
-    50	#endif
-    51			len--;
-    52			buff++;
-    53		}
-    54		if (len >= 2) {
-    55			if (2 & (unsigned long) buff) {
-    56				result += *(unsigned short *) buff;
-    57				len -= 2;
-    58				buff += 2;
-    59			}
-    60			if (len >= 4) {
-    61				const unsigned char *end = buff + ((unsigned)len & ~3);
-    62				unsigned int carry = 0;
-    63				do {
-    64					unsigned int w = *(unsigned int *) buff;
-    65					buff += 4;
-    66					result += carry;
-    67					result += w;
-    68					carry = (w > result);
-    69				} while (buff < end);
-    70				result += carry;
-    71				result = (result & 0xffff) + (result >> 16);
-    72			}
-    73			if (len & 2) {
-    74				result += *(unsigned short *) buff;
-    75				buff += 2;
-    76			}
-    77		}
-    78		if (len & 1)
-    79	#ifdef __LITTLE_ENDIAN
-    80			result += *buff;
-    81	#else
-    82			result += (*buff << 8);
-    83	#endif
-  > 84		result = csum_from32to16(result);
-    85		if (odd)
-    86			result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
-    87	out:
-    88		return result;
-    89	}
-    90	#endif
-    91	
+Is there any way to achieve this without reading the data into an 
+intermediate buffer?
+Or could we remove this limitation in the verifier at least for tracing 
+programs that are already capable of
+calling bpf_probe_read_kernel to read arbitrary kernel memory?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Best regards,
+Levi
+
 
