@@ -1,376 +1,416 @@
-Return-Path: <bpf+bounces-42733-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42734-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF0A99A96F6
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 05:24:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 300989A96F9
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 05:24:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 687EF1F27032
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:24:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C49DC285B6D
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:24:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB82815A84A;
-	Tue, 22 Oct 2024 03:19:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D294195F17;
+	Tue, 22 Oct 2024 03:21:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nCloffDC"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Of3C9/mM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA05F13B5B7
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 03:19:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8AD131BAF
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 03:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729567188; cv=none; b=Sn5ZXnq7hCd5FxdJqrPIglBTW0UZx/0n961Yb7/xa30iuyinpd+czLguH2cAqf4fjIW8CFeKOmAPWwC4uy64rtbaU5zme5R+5MxxhbGGc1QPBr0i39Vl+gnbtuCIcAz9WHaOnDsWs23IwQVcI4fRhV/aPBff7jp4lco9RNUG/34=
+	t=1729567282; cv=none; b=UeyTIjTsvHkNItdO8TGNljgxTHcUO9HwbmeyfOqiFyx9G7aOG8Ii3pyE6RQ7Z8yXDIaYbuPUjV5aOUSxWiLvE1da5g+JqOJyysNap+P7hZ/LS6LTnsCMO4EAVmtWGSV+lmKT7M9jPjHQqzLimtNlav+G1oxmszE1Ph7aJNqbnhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729567188; c=relaxed/simple;
-	bh=kyuv8mtQno4ueanNj2PWKbkz8vr2m3NgLjfA5CVjhHU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OcW0WtM/dx0GRSt7ZeheTq2nB7cVCnEN6Gn8DKLa5tJpYJ6WVrHWFEIFo1yp6/8g2qdMvARcEsEEYHvIgOc65peTRfyWRxTvq3ISgXMXQNL0POnWlf5TUz0sSbEd5f7lKYepf/AMW9CfN4bdC3ERLpJ4OnTYzaoXbZs872A9Tho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nCloffDC; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-7163489149eso3922271a12.1
-        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 20:19:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729567185; x=1730171985; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WVIri3wTzURkjdj60j/xh3E1ErhTgpRkJnqjt+RY1FM=;
-        b=nCloffDCnFXi8Heh/HZmvpoP/sKxR+ZY0Ma7DRu4ntI/YB5HRDJEbEVIeR5i56wBrH
-         /2el4+XFmdWH5qgu4uIEHjt+afP+TB6JGnq6UNl1X99eG33szA/0HlfzWHWZjYNQ8xs3
-         +HEttocqKoWU//rH/+UzDIR4PCDPgaULZHWnoP41L3bccx8mJKTTz6wcY0/9ak63bZOv
-         kEOhvYaiVqPIdaoT2zW9+oSiiHHkP443Tzxy4j55Tovy9hBHgMLBoN0Np3h3xsJmdw9j
-         ElFY3opJU2bqKDU737xZc//ufjnhGCWlKpHyAbpAW2o0b60cbdMQJ0R1rWxJUSslF8lt
-         WAxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729567185; x=1730171985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WVIri3wTzURkjdj60j/xh3E1ErhTgpRkJnqjt+RY1FM=;
-        b=HSPnh30XdEFh9cU9nySGlDSCWLynSICK54zfUULE85I71Ne0tUNlojQLbCmlBSzWzT
-         6faGQ0oYS2KhkinAz+TJVW99kHrRhUW55rp7s1dXgr3YP1rnscGTpmGEbhV9SJY+oU+R
-         LsHbkfKMGe9RYAFxypddzPUrFkvW1H+hrFdx7lSnv95j70vXozHsUr6gLwrIzD9OraUY
-         NIybjKvdp0+hklflhBJfgQ7zCbirjeTuU7CFQQZbaIRB+N78gbLQwEftsWb39Df4uhgP
-         y4Dfy/6eKy+deoIOhPtgqim2klYCxqSXua2nV++lgGG+vLsRCFPhQzmNEIvy7V9FsTyO
-         7Gqw==
-X-Forwarded-Encrypted: i=1; AJvYcCVNBPrGfpQA7Rd5jm1PDyAY+YwGwhbh6935ZdO0Rqeah66qsRk/5pugvDTlwEFMgV7Qwz0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxAHomvpdT9rOpChi9yGI+6VmyqcgSfBKILoeERuYcZne9cCjK/
-	JgntqUQSRrGNrUpmIZoxWLH/Nyqy9IppZvPWOE/LKqJIk1URiu/Jc/AUovurTehMSK0j3UurDXo
-	qTZenQpcS89Hp6wPkvaoRUyR0pe2+ChAd
-X-Google-Smtp-Source: AGHT+IFRbSVGNNbD6aWNQk4Sxp2vtsnY0tk3uPNkpWbF+Gd+jVq4DWcM9vdcesFpC/dgVzQVqKBOsHDTE5mQDtJtB98=
-X-Received: by 2002:a05:6a20:ac43:b0:1d8:b962:6087 with SMTP id
- adf61e73a8af0-1d92c4bad75mr20673287637.10.1729567184777; Mon, 21 Oct 2024
- 20:19:44 -0700 (PDT)
+	s=arc-20240116; t=1729567282; c=relaxed/simple;
+	bh=8n+zyQ45l55Of4HWXzR7WzdM5OH9QFCB98opwBzxNes=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E5/r+A5d1GrNZ/V/vumDrzw59vnFviTyx3tknj6DpQsNSaMlNq9kJ1XZ3xHu6UhEc1JuTLuvm3QBSvgHmMC4G93jYRjvmx0yHO3ODZNld4wZQagaO2TY6yHHPTTgzV7vNqXinLRDsbfeTEPnQlZDtKwqGVzuwZ249j1mJiwdEs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Of3C9/mM; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c6e5040b-9558-481f-b1fc-f77dc9ce90c1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729567273;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tZYMyrJF6a6f8holFnevJi16cd3nxZWvB8pkbarT3wo=;
+	b=Of3C9/mMFaSORaZkoRrvj6PsqEXp6MRx/PTcC4NCQszEOiXFNh9X5Tg+eU6YmdXQECcXNc
+	3AMJ59ZCw+XUaaP4D7ioae8TbJBDI4bj2d/6MaBFjIOL4EMds9DDxR4cA/TLrIoa3cF5vk
+	Admt3WyoYXD5BMAhT2OyDwOcgrzawWg=
+Date: Mon, 21 Oct 2024 20:21:01 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241018020307.1766906-1-eddyz87@gmail.com> <CAEf4BzavO=EX45+rGdL3PPHS+ba-SKp_VvE6c8zUYmcvjYXP3Q@mail.gmail.com>
- <CAADnVQKd3hgtK1zi3DgSYqDR_NFU1OKWxeXph+reKzXHO9hxGw@mail.gmail.com>
-In-Reply-To: <CAADnVQKd3hgtK1zi3DgSYqDR_NFU1OKWxeXph+reKzXHO9hxGw@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 21 Oct 2024 20:19:32 -0700
-Message-ID: <CAEf4BzbMbmhCATfe21LgGXsCPaYLFgR3sNqkGw-eVcGn1wjB2g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: force checkpoint when jmp history is
- too long
+Subject: Re: [PATCH bpf-next v6 1/9] bpf: Allow each subprog having stack size
+ of 512 bytes
+Content-Language: en-GB
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Kernel Team <kernel-team@fb.com>, Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Oct 21, 2024 at 7:03=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Oct 21, 2024 at 1:23=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Oct 17, 2024 at 7:03=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
-.com> wrote:
-> > >
-> > > A specifically crafted program might trick verifier into growing very
-> > > long jump history within a single bpf_verifier_state instance.
-> > > Very long jump history makes mark_chain_precision() unreasonably slow=
-,
-> > > especially in case if verifier processes a loop.
-> > >
-> > > Mitigate this by forcing new state in is_state_visited() in case if
-> > > current state's jump history is too long.
-> > >
-> > > Use same constant as in `skip_inf_loop_check`, but multiply it by
-> > > arbitrarily chosen value 2 to account for jump history containing not
-> > > only information about jumps, but also information about stack access=
-.
-> > >
-> > > For an example of problematic program consider the code below,
-> > > w/o this patch the example is processed by verifier for ~15 minutes,
-> > > before failing to allocate big-enough chunk for jmp_history.
-> > >
-> > >     0: r7 =3D *(u16 *)(r1 +0);"
-> > >     1: r7 +=3D 0x1ab064b9;"
-> > >     2: if r7 & 0x702000 goto 1b;
-> > >     3: r7 &=3D 0x1ee60e;"
-> > >     4: r7 +=3D r1;"
-> > >     5: if r7 s> 0x37d2 goto +0;"
-> > >     6: r0 =3D 0;"
-> > >     7: exit;"
-> > >
-> > > Perf profiling shows that most of the time is spent in
-> > > mark_chain_precision() ~95%.
-> > >
-> > > The easiest way to explain why this program causes problems is to
-> > > apply the following patch:
-> > >
-> > >     diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > >     index 0c216e71cec7..4b4823961abe 100644
-> > >     \--- a/include/linux/bpf.h
-> > >     \+++ b/include/linux/bpf.h
-> > >     \@@ -1926,7 +1926,7 @@ struct bpf_array {
-> > >             };
-> > >      };
-> > >
-> > >     -#define BPF_COMPLEXITY_LIMIT_INSNS      1000000 /* yes. 1M insns=
- */
-> > >     +#define BPF_COMPLEXITY_LIMIT_INSNS      256 /* yes. 1M insns */
-> > >      #define MAX_TAIL_CALL_CNT 33
-> > >
-> > >      /* Maximum number of loops for bpf_loop and bpf_iter_num.
-> > >     diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > >     index f514247ba8ba..75e88be3bb3e 100644
-> > >     \--- a/kernel/bpf/verifier.c
-> > >     \+++ b/kernel/bpf/verifier.c
-> > >     \@@ -18024,8 +18024,13 @@ static int is_state_visited(struct bpf_=
-verifier_env *env, int insn_idx)
-> > >      skip_inf_loop_check:
-> > >                             if (!force_new_state &&
-> > >                                 env->jmps_processed - env->prev_jmps_=
-processed < 20 &&
-> > >     -                           env->insn_processed - env->prev_insn_=
-processed < 100)
-> > >     +                           env->insn_processed - env->prev_insn_=
-processed < 100) {
-> > >     +                               verbose(env, "is_state_visited: s=
-uppressing checkpoint at %d, %d jmps processed, cur->jmp_history_cnt is %d\=
-n",
-> > >     +                                       env->insn_idx,
-> > >     +                                       env->jmps_processed - env=
-->prev_jmps_processed,
-> > >     +                                       cur->jmp_history_cnt);
-> > >                                     add_new_state =3D false;
-> > >     +                       }
-> > >                             goto miss;
-> > >                     }
-> > >                     /* If sl->state is a part of a loop and this loop=
-'s entry is a part of
-> > >     \@@ -18142,6 +18147,9 @@ static int is_state_visited(struct bpf_v=
-erifier_env *env, int insn_idx)
-> > >             if (!add_new_state)
-> > >                     return 0;
-> > >
-> > >     +       verbose(env, "is_state_visited: new checkpoint at %d, res=
-etting env->jmps_processed\n",
-> > >     +               env->insn_idx);
-> > >     +
-> > >             /* There were no equivalent states, remember the current =
-one.
-> > >              * Technically the current state is not proven to be safe=
- yet,
-> > >              * but it will either reach outer most bpf_exit (which me=
-ans it's safe)
-> > >
-> > > And observe verification log:
-> > >
-> > >     ...
-> > >     is_state_visited: new checkpoint at 5, resetting env->jmps_proces=
-sed
-> > >     5: R1=3Dctx() R7=3Dctx(...)
-> > >     5: (65) if r7 s> 0x37d2 goto pc+0     ; R7=3Dctx(...)
-> > >     6: (b7) r0 =3D 0                        ; R0_w=3D0
-> > >     7: (95) exit
-> > >
-> > >     from 5 to 6: R1=3Dctx() R7=3Dctx(...) R10=3Dfp0
-> > >     6: R1=3Dctx() R7=3Dctx(...) R10=3Dfp0
-> > >     6: (b7) r0 =3D 0                        ; R0_w=3D0
-> > >     7: (95) exit
-> > >     is_state_visited: suppressing checkpoint at 1, 3 jmps processed, =
-cur->jmp_history_cnt is 74
-> > >
-> > >     from 2 to 1: R1=3Dctx() R7_w=3Dscalar(...) R10=3Dfp0
-> > >     1: R1=3Dctx() R7_w=3Dscalar(...) R10=3Dfp0
-> > >     1: (07) r7 +=3D 447767737
-> > >     is_state_visited: suppressing checkpoint at 2, 3 jmps processed, =
-cur->jmp_history_cnt is 75
-> > >     2: R7_w=3Dscalar(...)
-> > >     2: (45) if r7 & 0x702000 goto pc-2
-> > >     ... mark_precise 152 steps for r7 ...
-> > >     2: R7_w=3Dscalar(...)
-> > >     is_state_visited: suppressing checkpoint at 1, 4 jmps processed, =
-cur->jmp_history_cnt is 75
-> > >     1: (07) r7 +=3D 447767737
-> > >     is_state_visited: suppressing checkpoint at 2, 4 jmps processed, =
-cur->jmp_history_cnt is 76
-> > >     2: R7_w=3Dscalar(...)
-> > >     2: (45) if r7 & 0x702000 goto pc-2
-> > >     ...
-> > >     BPF program is too large. Processed 257 insn
-> > >
-> > > The log output shows that checkpoint at label (1) is never created,
-> > > because it is suppressed by `skip_inf_loop_check` logic:
-> > > a. When 'if' at (2) is processed it pushes a state with insn_idx (1)
-> > >    onto stack and proceeds to (3);
-> > > b. At (5) checkpoint is created, and this resets
-> > >    env->{jmps,insns}_processed.
-> > > c. Verification proceeds and reaches `exit`;
-> > > d. State saved at step (a) is popped from stack and is_state_visited(=
-)
-> > >    considers if checkpoint needs to be added, but because
-> > >    env->{jmps,insns}_processed had been just reset at step (b)
-> > >    the `skip_inf_loop_check` logic forces `add_new_state` to false.
-> > > e. Verifier proceeds with current state, which slowly accumulates
-> > >    more and more entries in the jump history.
-> > >
-> > > The accumulation of entries in the jump history is a problem because
-> > > of two factors:
-> > > - it eventually exhausts memory available for kmalloc() allocation;
-> > > - mark_chain_precision() traverses the jump history of a state,
-> > >   meaning that if `r7` is marked precise, verifier would iterate
-> > >   ever growing jump history until parent state boundary is reached.
-> > >
-> > > (note: the log also shows a REG INVARIANTS VIOLATION warning
-> > >        upon jset processing, but that's another bug to fix).
-> > >
-> > > With this patch applied, the example above is rejected by verifier
-> > > under 1s of time, reaching 1M instructions limit.
-> > >
-> > > The program is a simplified reproducer from syzbot report [1].
-> > > Previous discussion could be found at [2].
-> > > The patch does not cause any changes in verification performance,
-> > > when tested on selftests from veristat.cfg and cilium programs taken
-> > > from [3].
-> > >
-> > > [1] https://lore.kernel.org/bpf/670429f6.050a0220.49194.0517.GAE@goog=
-le.com/
-> > > [2] https://lore.kernel.org/bpf/20241009021254.2805446-1-eddyz87@gmai=
-l.com/
-> > > [3] https://github.com/anakryiko/cilium
-> > >
-> > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > > ---
-> > >  kernel/bpf/verifier.c | 14 ++++++++++++--
-> > >  1 file changed, 12 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index f514247ba8ba..f64c831a9278 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -17873,13 +17873,23 @@ static bool iter_active_depths_differ(struc=
-t bpf_verifier_state *old, struct bpf
-> > >         return false;
-> > >  }
-> > >
-> > > +#define MAX_JMPS_PER_STATE 20
-> > > +
-> > >  static int is_state_visited(struct bpf_verifier_env *env, int insn_i=
-dx)
-> > >  {
-> > >         struct bpf_verifier_state_list *new_sl;
-> > >         struct bpf_verifier_state_list *sl, **pprev;
-> > >         struct bpf_verifier_state *cur =3D env->cur_state, *new, *loo=
-p_entry;
-> > >         int i, j, n, err, states_cnt =3D 0;
-> > > -       bool force_new_state =3D env->test_state_freq || is_force_che=
-ckpoint(env, insn_idx);
-> > > +       bool force_new_state =3D env->test_state_freq || is_force_che=
-ckpoint(env, insn_idx) ||
-> > > +                              /* - Long jmp history hinders mark_cha=
-in_precision performance,
-> > > +                               *   so force new state if jmp history=
- of current state exceeds
-> > > +                               *   a threshold.
-> > > +                               * - Jmp history records not only jump=
-s, but also stack access,
-> > > +                               *   so keep this constant 2x times th=
-e limit imposed on
-> > > +                               *   env->jmps_processed for loop case=
-s (see skip_inf_loop_check).
-> > > +                               */
-> > > +                              cur->jmp_history_cnt > MAX_JMPS_PER_ST=
-ATE * 2;
-> >
-> > this feels like a wrong place to add this heuristic. Just few lines
-> > below there is:
-> >
-> >
-> > if (env->jmps_processed - env->prev_jmps_processed >=3D 2 &&
-> >     env->insn_processed - env->prev_insn_processed >=3D 8)
-> >         add_new_state =3D true;
-> >
-> > Please add jmp_history_cnt check here, as it conceptually fits with
-> > jmps_processed and insn_processed check. It also has a huge comment
-> > with justification already, so might as well just extend that for
-> > jmp_history_cnt.
->
-> I think adding if (cur->jmp_history_cnt > 20) add_new_state =3D true;
-> won't help. It will get back to false.
-> But I agree that tweaking force_new_state also is not quite clean.
->
-> btw the "huge comment" may need to be revised :)
-> bpf progs today probably look different than they were in 2019.
->
-> >
-> > pw-bot: cr
-> >
-> > >         bool add_new_state =3D force_new_state;
-> > >         bool force_exact;
-> > >
-> > > @@ -18023,7 +18033,7 @@ static int is_state_visited(struct bpf_verifi=
-er_env *env, int insn_idx)
-> > >                          */
-> > >  skip_inf_loop_check:
-> > >                         if (!force_new_state &&
-> > > -                           env->jmps_processed - env->prev_jmps_proc=
-essed < 20 &&
-> > > +                           env->jmps_processed - env->prev_jmps_proc=
-essed < MAX_JMPS_PER_STATE &&
-> > >                             env->insn_processed - env->prev_insn_proc=
-essed < 100)
-> > >                                 add_new_state =3D false;
-> >
-> > and then this one is logically matching add_new_state =3D true; case
-> > above that I mentioned.
-> >
-> >
-> > With these changes, I'd drop * 2 factor for one of the checks. If
-> > necessary, just bump it to 30 or so, if you are afraid of stack
-> > accesses. But let's keep it simple with one threshold, if possible?
->
-> +1
->
-> 2/8 heuristic is working together with 20/100.
->
-> Instead of tweaking force_new_state earlier, it's better to do:
-> if (!force_new_state && cur->jmp_history_cnt < N &&
->     env->jmps_processed - env->prev_jmps_processed < 20 && ..)
->     add_new_state =3D false;
-
-Yep, I actually had *exactly* this in mind, ack.
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Tejun Heo <tj@kernel.org>
+References: <20241020191341.2104841-1-yonghong.song@linux.dev>
+ <20241020191347.2105090-1-yonghong.song@linux.dev>
+ <CAADnVQ+ZXMh_QKy0nd-n7my1SETroockPjpVVJOAWsE3tB_5sg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+ZXMh_QKy0nd-n7my1SETroockPjpVVJOAWsE3tB_5sg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
 
-Basically all these heuristics are expressing the idea of doing just
-the right amount of work between checkpoints, not too little, not too
-much. Jump history size (accumulated in the current state) will be a
-third  measure of "enough useful work", basically.
+On 10/21/24 6:18 PM, Alexei Starovoitov wrote:
+> On Sun, Oct 20, 2024 at 12:14 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> With private stack support, each subprog can have stack with up to 512
+>> bytes. The limit of 512 bytes per subprog is kept to avoid increasing
+>> verifier complexity since greater than 512 bytes will cause big verifier
+>> change and increase memory consumption and verification time.
+>>
+>> If private stack is supported, for a bpf prog, esp. when it has
+>> subprogs, private stack will be allocated for the main prog
+>> and for each callback subprog. For example,
+>>    main_prog
+>>      subprog1
+>>        calling helper
+>>          subprog10 (callback func)
+>>            subprog11
+>>      subprog2
+>>        calling helper
+>>          subprog10 (callback func)
+>>            subprog11
+>>
+>> Separate private allocations for main_prog and callback_fn subprog10
+>> will make things easier since the helper function uses the kernel stack.
+>>
+>> In this patch, some tracing programs are allowed to use private
+>> stack since tracing prog may be triggered in the middle of some other
+>> prog runs. Additional subprog info is also collected for later to
+>> allocate private stack for main prog and each callback functions.
+>>
+>> Note that if any tail_call is called in the prog (including all subprogs),
+>> then private stack is not used.
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   include/linux/bpf.h          |   1 +
+>>   include/linux/bpf_verifier.h |   3 ++
+>>   include/linux/filter.h       |   1 +
+>>   kernel/bpf/core.c            |   5 ++
+>>   kernel/bpf/verifier.c        | 100 ++++++++++++++++++++++++++++++-----
+>>   5 files changed, 97 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 0c216e71cec7..6ad8ace7075a 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -1490,6 +1490,7 @@ struct bpf_prog_aux {
+>>          bool exception_cb;
+>>          bool exception_boundary;
+>>          bool is_extended; /* true if extended by freplace program */
+>> +       bool priv_stack_eligible;
+>>          u64 prog_array_member_cnt; /* counts how many times as member of prog_array */
+>>          struct mutex ext_mutex; /* mutex for is_extended and prog_array_member_cnt */
+>>          struct bpf_arena *arena;
+>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+>> index 4513372c5bc8..bcfe868e3801 100644
+>> --- a/include/linux/bpf_verifier.h
+>> +++ b/include/linux/bpf_verifier.h
+>> @@ -659,6 +659,8 @@ struct bpf_subprog_info {
+>>           * are used for bpf_fastcall spills and fills.
+>>           */
+>>          s16 fastcall_stack_off;
+>> +       u16 subtree_stack_depth;
+>> +       u16 subtree_top_idx;
+>>          bool has_tail_call: 1;
+>>          bool tail_call_reachable: 1;
+>>          bool has_ld_abs: 1;
+>> @@ -668,6 +670,7 @@ struct bpf_subprog_info {
+>>          bool args_cached: 1;
+>>          /* true if bpf_fastcall stack region is used by functions that can't be inlined */
+>>          bool keep_fastcall_stack: 1;
+>> +       bool priv_stack_eligible: 1;
+>>
+>>          u8 arg_cnt;
+>>          struct bpf_subprog_arg_info args[MAX_BPF_FUNC_REG_ARGS];
+>> diff --git a/include/linux/filter.h b/include/linux/filter.h
+>> index 7d7578a8eac1..3a21947f2fd4 100644
+>> --- a/include/linux/filter.h
+>> +++ b/include/linux/filter.h
+>> @@ -1119,6 +1119,7 @@ bool bpf_jit_supports_exceptions(void);
+>>   bool bpf_jit_supports_ptr_xchg(void);
+>>   bool bpf_jit_supports_arena(void);
+>>   bool bpf_jit_supports_insn(struct bpf_insn *insn, bool in_arena);
+>> +bool bpf_jit_supports_private_stack(void);
+>>   u64 bpf_arch_uaddress_limit(void);
+>>   void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie);
+>>   bool bpf_helper_changes_pkt_data(void *func);
+>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> index 233ea78f8f1b..14d9288441f2 100644
+>> --- a/kernel/bpf/core.c
+>> +++ b/kernel/bpf/core.c
+>> @@ -3045,6 +3045,11 @@ bool __weak bpf_jit_supports_exceptions(void)
+>>          return false;
+>>   }
+>>
+>> +bool __weak bpf_jit_supports_private_stack(void)
+>> +{
+>> +       return false;
+>> +}
+>> +
+>>   void __weak arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
+>>   {
+>>   }
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index f514247ba8ba..45bea4066272 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -194,6 +194,8 @@ struct bpf_verifier_stack_elem {
+>>
+>>   #define BPF_GLOBAL_PERCPU_MA_MAX_SIZE  512
+>>
+>> +#define BPF_PRIV_STACK_MIN_SUBTREE_SIZE        128
+>> +
+>>   static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx);
+>>   static int release_reference(struct bpf_verifier_env *env, int ref_obj_id);
+>>   static void invalidate_non_owning_refs(struct bpf_verifier_env *env);
+>> @@ -5982,6 +5984,41 @@ static int check_ptr_alignment(struct bpf_verifier_env *env,
+>>                                             strict);
+>>   }
+>>
+>> +static bool bpf_enable_private_stack(struct bpf_verifier_env *env)
+>> +{
+>> +       if (!bpf_jit_supports_private_stack())
+>> +               return false;
+>> +
+>> +       switch (env->prog->type) {
+>> +       case BPF_PROG_TYPE_KPROBE:
+>> +       case BPF_PROG_TYPE_TRACEPOINT:
+>> +       case BPF_PROG_TYPE_PERF_EVENT:
+>> +       case BPF_PROG_TYPE_RAW_TRACEPOINT:
+>> +               return true;
+>> +       case BPF_PROG_TYPE_TRACING:
+>> +               if (env->prog->expected_attach_type != BPF_TRACE_ITER)
+>> +                       return true;
+>> +               fallthrough;
+>> +       default:
+>> +               return false;
+>> +       }
+>> +}
+>> +
+>> +static bool is_priv_stack_supported(struct bpf_verifier_env *env)
+>> +{
+>> +       struct bpf_subprog_info *si = env->subprog_info;
+>> +       bool has_tail_call = false;
+>> +
+>> +       for (int i = 0; i < env->subprog_cnt; i++) {
+>> +               if (si[i].has_tail_call) {
+>> +                       has_tail_call = true;
+>> +                       break;
+>> +               }
+>> +       }
+>> +
+>> +       return !has_tail_call && bpf_enable_private_stack(env);
+>> +}
+>> +
+>>   static int round_up_stack_depth(struct bpf_verifier_env *env, int stack_depth)
+>>   {
+>>          if (env->prog->jit_requested)
+>> @@ -5999,16 +6036,21 @@ static int round_up_stack_depth(struct bpf_verifier_env *env, int stack_depth)
+>>    * Since recursion is prevented by check_cfg() this algorithm
+>>    * only needs a local stack of MAX_CALL_FRAMES to remember callsites
+>>    */
+>> -static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx)
+>> +static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx,
+>> +                                        bool check_priv_stack, bool priv_stack_supported)
+>>   {
+>>          struct bpf_subprog_info *subprog = env->subprog_info;
+>>          struct bpf_insn *insn = env->prog->insnsi;
+>>          int depth = 0, frame = 0, i, subprog_end;
+>>          bool tail_call_reachable = false;
+>> +       bool priv_stack_eligible = false;
+>>          int ret_insn[MAX_CALL_FRAMES];
+>>          int ret_prog[MAX_CALL_FRAMES];
+>> -       int j;
+>> +       int j, subprog_stack_depth;
+>> +       int orig_idx = idx;
+>>
+>> +       if (check_priv_stack)
+>> +               subprog[idx].subtree_top_idx = idx;
+>>          i = subprog[idx].start;
+>>   process_func:
+>>          /* protect against potential stack overflow that might happen when
+>> @@ -6030,18 +6072,33 @@ static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx)
+>>           * tailcall will unwind the current stack frame but it will not get rid
+>>           * of caller's stack as shown on the example above.
+>>           */
+>> -       if (idx && subprog[idx].has_tail_call && depth >= 256) {
+>> +       if (!check_priv_stack && idx && subprog[idx].has_tail_call && depth >= 256) {
+>>                  verbose(env,
+>>                          "tail_calls are not allowed when call stack of previous frames is %d bytes. Too large\n",
+>>                          depth);
+>>                  return -EACCES;
+>>          }
+>> -       depth += round_up_stack_depth(env, subprog[idx].stack_depth);
+>> -       if (depth > MAX_BPF_STACK) {
+>> +       subprog_stack_depth = round_up_stack_depth(env, subprog[idx].stack_depth);
+>> +       depth += subprog_stack_depth;
+>> +       if (!check_priv_stack && !priv_stack_supported && depth > MAX_BPF_STACK) {
+>>                  verbose(env, "combined stack size of %d calls is %d. Too large\n",
+>>                          frame + 1, depth);
+>>                  return -EACCES;
+>>          }
+>> +       if (check_priv_stack) {
+>> +               if (subprog_stack_depth > MAX_BPF_STACK) {
+>> +                       verbose(env, "stack size of subprog %d is %d. Too large\n",
+>> +                               idx, subprog_stack_depth);
+>> +                       return -EACCES;
+>> +               }
+>> +
+>> +               if (!priv_stack_eligible && depth >= BPF_PRIV_STACK_MIN_SUBTREE_SIZE) {
+>> +                       subprog[orig_idx].priv_stack_eligible = true;
+>> +                       env->prog->aux->priv_stack_eligible = priv_stack_eligible = true;
+>> +               }
+>> +               subprog[orig_idx].subtree_stack_depth =
+>> +                       max_t(u16, subprog[orig_idx].subtree_stack_depth, depth);
+>> +       }
+>>   continue_func:
+>>          subprog_end = subprog[idx + 1].start;
+>>          for (; i < subprog_end; i++) {
+>> @@ -6078,6 +6135,12 @@ static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx)
+>>                  next_insn = i + insn[i].imm + 1;
+>>                  sidx = find_subprog(env, next_insn);
+>>                  if (sidx < 0) {
+>> +                       /* It is possible that callback func has been removed as dead code after
+>> +                        * instruction rewrites, e.g. bpf_loop with cnt 0.
+>> +                        */
+>> +                       if (check_priv_stack)
+>> +                               continue;
+>> +
+> and this extra hack only because check_max_stack_depth() will
+> be called the 2nd time ?
+> Why call it twice at all ?
+> Record everything in the first pass.
+
+The individual stack size may increase between check_max_stack_depth() and jit.
+So we have to go through second pass to compute precise subtree (prog + subprogs)
+stack size, which is needed to allocate percpu private stack.
+
+One thing we could do is to record the (sub)prog<->subprog relations in the first
+pass and right before the jit do another pass to calculate subtree stack size.
+I guess that is what you suggest?
 
 >
-> You're essentially proposing N =3D=3D 40.
-> Just add your existing comment next to the check.
-> # define MAX_JMPS_PER_STATE is imo overkill.
+>>                          WARN_ONCE(1, "verifier bug. No program starts at insn %d\n",
+>>                                    next_insn);
+>>                          return -EFAULT;
+>> @@ -6097,8 +6160,10 @@ static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx)
+>>                  }
+>>                  i = next_insn;
+>>                  idx = sidx;
+>> +               if (check_priv_stack)
+>> +                       subprog[idx].subtree_top_idx = orig_idx;
+>>
+>> -               if (subprog[idx].has_tail_call)
+>> +               if (!check_priv_stack && subprog[idx].has_tail_call)
+>>                          tail_call_reachable = true;
+>>
+>>                  frame++;
+>> @@ -6122,7 +6187,7 @@ static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx)
+>>                          }
+>>                          subprog[ret_prog[j]].tail_call_reachable = true;
+>>                  }
+>> -       if (subprog[0].tail_call_reachable)
+>> +       if (!check_priv_stack && subprog[0].tail_call_reachable)
+>>                  env->prog->aux->tail_call_reachable = true;
+>>
+>>          /* end of for() loop means the last insn of the 'subprog'
+>> @@ -6137,14 +6202,18 @@ static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx)
+>>          goto continue_func;
+>>   }
+>>
+>> -static int check_max_stack_depth(struct bpf_verifier_env *env)
+>> +static int check_max_stack_depth(struct bpf_verifier_env *env, bool check_priv_stack,
+>> +                                bool priv_stack_supported)
+>>   {
+>>          struct bpf_subprog_info *si = env->subprog_info;
+>> +       bool check_subprog;
+>>          int ret;
+>>
+>>          for (int i = 0; i < env->subprog_cnt; i++) {
+>> -               if (!i || si[i].is_async_cb) {
+>> -                       ret = check_max_stack_depth_subprog(env, i);
+>> +               check_subprog = !i || (check_priv_stack ? si[i].is_cb : si[i].is_async_cb);
+> why?
+> This looks very suspicious.
+
+This is to simplify jit. For example,
+    main_prog   <=== main_prog_priv_stack_ptr
+      subprog1  <=== there is a helper which has a callback_fn
+                <=== for example bpf_for_each_map_elem
+
+        callback_fn
+          subprog2
+
+In callback_fn, we cannot simplify do
+    r9 += stack_size_for_callback_fn
+since r9 may have been clobbered between subprog1 and callback_fn.
+That is why currently I allocate private_stack separately for callback_fn.
+
+Alternatively we could do
+    callback_fn_priv_stack_ptr = main_prog_priv_stack_ptr + off
+where off equals to (stack size tree main_prog+subprog1).
+I can do this approach too with a little more information in prog->aux.
+WDYT?
+
+>
+>> +               if (check_subprog) {
+>> +                       ret = check_max_stack_depth_subprog(env, i, check_priv_stack,
+>> +                                                           priv_stack_supported);
+>>                          if (ret < 0)
+>>                                  return ret;
+>>                  }
+>> @@ -22303,7 +22372,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+>>          struct bpf_verifier_env *env;
+>>          int i, len, ret = -EINVAL, err;
+>>          u32 log_true_size;
+>> -       bool is_priv;
+>> +       bool is_priv, priv_stack_supported = false;
+>>
+>>          /* no program is valid */
+>>          if (ARRAY_SIZE(bpf_verifier_ops) == 0)
+>> @@ -22430,8 +22499,10 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+>>          if (ret == 0)
+>>                  ret = remove_fastcall_spills_fills(env);
+>>
+>> -       if (ret == 0)
+>> -               ret = check_max_stack_depth(env);
+>> +       if (ret == 0) {
+>> +               priv_stack_supported = is_priv_stack_supported(env);
+>> +               ret = check_max_stack_depth(env, false, priv_stack_supported);
+>> +       }
+>>
+>>          /* instruction rewrites happen after this point */
+>>          if (ret == 0)
+>> @@ -22465,6 +22536,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+>>                                                                       : false;
+>>          }
+>>
+>> +       if (ret == 0 && priv_stack_supported)
+>> +               ret = check_max_stack_depth(env, true, true);
+>> +
+>>          if (ret == 0)
+>>                  ret = fixup_call_args(env);
+>>
+>> --
+>> 2.43.5
+>>
 
