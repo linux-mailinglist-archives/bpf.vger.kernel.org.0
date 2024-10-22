@@ -1,178 +1,119 @@
-Return-Path: <bpf+bounces-42786-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42788-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D74F19AB1E3
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 17:21:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E89819AB20D
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 17:29:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40E25B2486A
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:21:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94A371F253D2
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:29:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FBCF1A3BDE;
-	Tue, 22 Oct 2024 15:20:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2E31A3BC0;
+	Tue, 22 Oct 2024 15:29:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="H2AhGVLw"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b4Tv1609"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9535F1A3BC8;
-	Tue, 22 Oct 2024 15:20:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4D5139CE2
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 15:29:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729610449; cv=none; b=bCfj1IwgU1OthU0o8ZpjL5IndVnS+f5ZlvnJ5DjiUk8/9pvignboHVcCAKJesI/voZRZuZ3qeWZQqcZaCkl3YqSfopzLXfM/XiAnARc583z1dcLQymyakCsiXPdvDTtC/A2qUV+Bfy5/vAzDYfsUAzj5I2v7i+E+5IS4gkvZJUU=
+	t=1729610959; cv=none; b=o+ZfpWlBLqW2TW7fuaG0FzYT+42S1TeEv1Ze5zMeWhZhCVXzFjoBsNSTtjv5s+ChMTLhaADM5jwkqfCldo517uE2xIQDOL0lUV8eQSyDS6D66xuA6ML6TrDQCXuONeQlKLd/lyqpBiWsxK0gaulRwl2Qncmj40WTZKCwzpFBhqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729610449; c=relaxed/simple;
-	bh=CI8O5/CEGDNzrlkCIwc8zGa7x4u/7L0USxNN8JbWDqM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZTv1HlkH0L/qZiK0Fov41EOrT6tjuUgyqnq7dIR9acIjMHS1xguHA4Jdr9+WYrq6RzyoEuj3D2+fzqiEMFnun1AXXVrsQ/fAwDAGjV44DcVSXL7ws231coCUgFmrO49pg2A8/4rfhJlLcfIokVVcslMV1OJ0Ll8nmP1hz4XHAU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=H2AhGVLw; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1729610445;
-	bh=CI8O5/CEGDNzrlkCIwc8zGa7x4u/7L0USxNN8JbWDqM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=H2AhGVLwtzfh0cKNLNJ0gUkFZN9B9hxEg7u7bQtCzMKat/KCY46BsZ+w9g8zibYt8
-	 CG88VT1nk7Z591jzXN7TrdEDXtVxDrDohGYseGSTbyxwbSsVDu20pyedpYO+paBpVs
-	 73t1Lj/t0GUM8p10K9nXPxD9EPZGHipdw7ucG1DEIbp6VCqrbEVhPvG0fKsQpjAE3G
-	 O4PCp7HwHOPSIJE4B+vyK8Jp7qjgokb0wU7C3I7K+KpfOV8SrozfNr96vOlbswkU6a
-	 r1VUtvvTJOs4SEa1H20m8BWXJSLaM6HBqFzB6id0tmhjgC+usQdV3F/6RWEJc1e4kW
-	 xGEqY6zZ4bvsw==
-Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XXwqK1PGvzQmX;
-	Tue, 22 Oct 2024 11:20:45 -0400 (EDT)
-Message-ID: <29c58126-3146-4c61-8166-a894c0e84d08@efficios.com>
-Date: Tue, 22 Oct 2024 11:19:01 -0400
+	s=arc-20240116; t=1729610959; c=relaxed/simple;
+	bh=AVHQdyjmODZpdCOtuBHcLgFbP4dCsqQ3defZwhN46S8=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=m4I052y14siXQXKbZj45s3yYzOPdkJ62yy2xcR0pGQNMviaoqYRjFFoFtCo7NXcgmbrINU3YuyiTIqF0e180EjDmdDDutbMZKrlVB3+44gLAe9tFWQITyOjQzdHnGurjUcEs2Z90YZlgRTtehm8VWcQRQ86qri00lFCLwqSVZIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b4Tv1609; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2e2c6a5fc86so5416407a91.2
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 08:29:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1729610957; x=1730215757; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JzVIdkphVy6VCB+khzDa62+1PBT7rr/AZQaCe6/5n3s=;
+        b=b4Tv1609VoZZFWF/+MDnGRNI9bGuKO6zL9cdsTz5pAbk4O9Egdxa9rc9VNPcm6xkzk
+         ei8ibDafakyjQJjkVGtDIjlojQoNK+T4kolohR3SUFuoytfvFRQvZ8/oLA4P5UZnYuWd
+         ted1RS084uFy+2Tp5xBm/ikMSU60vmr7a271eyYtXJNlnerq+kdjBYp4WLrUGb4OAkB7
+         sFuQcGnsFYdkzlYxUKKPdI1yPESzdikd+QuumLBY6bc/wiBoJGdhynNcGrd4W37XaLZQ
+         xi4p4jjQIEeW8cDsgfwzu+sdow+4GR3yIFgN10DG+bG0/aObATwDNh745BFeDbb9x7SB
+         8K5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729610957; x=1730215757;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JzVIdkphVy6VCB+khzDa62+1PBT7rr/AZQaCe6/5n3s=;
+        b=OHTPfwkA94Wy7t7/EWTGj5E47X2J0onGos6Mw2LylieWa7aFA5q/x/0oHfdzxLv61N
+         yNmlTSwXWXW+YE9YAH+QoEzLQjsBMwCrG0R2WR57UoRrEphG/BLtpM4vEYQq2SaBz+hR
+         FJ4UalGtyGdVaTqelcCSbd67utFI+Re9AIOwxTX7mO92PE1mlxjIslZv/5UIAKOnp/cC
+         fWRnzZqqOuYlFTPP7maQG1JFJbqvwjbz+kkS+NiRg1KuW0r7BSkMye7FnkgJZzgx8wm5
+         IWPpRy42Q8jZmTZqtcSm44/PHmjwbUKy8AIz3vKXFTB7RRF+a6V/cff7hg3R5nTgypd/
+         y24w==
+X-Gm-Message-State: AOJu0YzIpbaxMrmTEsH2hIPOHmkcETVkLG74UGFEvdWwE0+e7kaJJhcA
+	LW/nBqXeCTXaZFs3p2qQSr6VmFeDKplKt1zDdHt8R6Xgx8C8O/XlL0LFSr9OD4UKlEQukimI67r
+	6r0ibfSqu7VkC8f8s4YghRfs66mWhePLD/kJigAO1T0ReGCKc64UiDxbfgs+ii423qitFTaUNJf
+	gt3uu8xSaiG0hY6ONqZMphSZw=
+X-Google-Smtp-Source: AGHT+IGwcz/pUSBYuldFca3TxUcJHChZIavks6kQTWuGxmKjTJGzCxMUOarWkF1lSgYb4PLig7p/EQIuqg==
+X-Received: from jrife-kvm.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:63c1])
+ (user=jrife job=sendgmr) by 2002:a17:90a:fb46:b0:2e2:af52:a7b4 with SMTP id
+ 98e67ed59e1d1-2e561a55cf1mr28674a91.8.1729610955483; Tue, 22 Oct 2024
+ 08:29:15 -0700 (PDT)
+Date: Tue, 22 Oct 2024 15:29:00 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [trace?] [bpf?] KASAN: slab-use-after-free Read in
- bpf_trace_run2 (2)
-To: Steven Rostedt <rostedt@goodmis.org>, Jordan Rife <jrife@google.com>
-Cc: syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com, andrii@kernel.org,
- ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
- eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, martin.lau@linux.dev,
- mattbobrowski@google.com, mhiramat@kernel.org, sdf@fomichev.me,
- song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-References: <67121037.050a0220.10f4f4.000f.GAE@google.com>
- <20241021182347.77750-1-jrife@google.com>
- <20241022042001.09055543@rorschach.local.home>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <20241022042001.09055543@rorschach.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.47.0.105.g07ac214952-goog
+Message-ID: <20241022152913.574836-1-jrife@google.com>
+Subject: [PATCH bpf-next v2 0/4] Retire test_sock.c
+From: Jordan Rife <jrife@google.com>
+To: bpf@vger.kernel.org
+Cc: Jordan Rife <jrife@google.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, "Daniel T. Lee" <danieltimlee@gmail.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024-10-22 04:20, Steven Rostedt wrote:
-> 
-> Mathieu, can you look at this?
+This patch series migrates test cases out of test_sock.c to
+prog_tests-style tests. It moves all BPF_CGROUP_INET4_POST_BIND and
+BPF_CGROUP_INET6_POST_BIND test cases into a new prog_test,
+sock_post_bind.c, while reimplementing all LOAD_REJECT test cases as
+verifier tests in progs/verifier_sock.c. Finally, it moves remaining
+BPF_CGROUP_INET_SOCK_CREATE test coverage into prog_tests/sock_create.c
+before retiring test_sock.c completely.
 
-Sure,
+Changes
+=======
+v1->v2:
+- Remove superfluous verbose bool from the top of sock_post_bind.c.
+- Use ASSERT_OK_FD instead of ASSERT_GE to test cgroup_fd validity.
+- Run sock_post_bind tests in their own namespace, "sock_post_bind".
 
-> 
-> [ more below ]
-> 
-> On Mon, 21 Oct 2024 18:23:47 +0000
-> Jordan Rife <jrife@google.com> wrote:
-> 
->> I performed a bisection and this issue starts with commit a363d27cdbc2
->> ("tracing: Allow system call tracepoints to handle page faults") which
->> introduces this change.
->>
->>> + *
->>> + * With @syscall=0, the tracepoint callback array dereference is
->>> + * protected by disabling preemption.
->>> + * With @syscall=1, the tracepoint callback array dereference is
->>> + * protected by Tasks Trace RCU, which allows probes to handle page
->>> + * faults.
->>>    */
->>>   #define __DO_TRACE(name, args, cond, syscall)				\
->>>   	do {								\
->>> @@ -204,11 +212,17 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->>>   		if (!(cond))						\
->>>   			return;						\
->>>   									\
->>> -		preempt_disable_notrace();				\
->>> +		if (syscall)						\
->>> +			rcu_read_lock_trace();				\
->>> +		else							\
->>> +			preempt_disable_notrace();			\
->>>   									\
->>>   		__DO_TRACE_CALL(name, TP_ARGS(args));			\
->>>   									\
->>> -		preempt_enable_notrace();				\
->>> +		if (syscall)						\
->>> +			rcu_read_unlock_trace();			\
->>> +		else							\
->>> +			preempt_enable_notrace();			\
->>>   	} while (0)
->>
->> Link: https://lore.kernel.org/bpf/20241009010718.2050182-6-mathieu.desnoyers@efficios.com/
->>
->> I reproduced the bug locally by running syz-execprog inside a QEMU VM.
->>
->>> ./syz-execprog -repeat=0 -procs=5 ./repro.syz.txt
->>
->> I /think/ what is happening is that with this change preemption may now
->> occur leading to a scenario where the RCU grace period is insufficient
->> in a few places where call_rcu() is used. In other words, there are a
->> few scenarios where call_rcu_tasks_trace() should be used instead to
->> prevent a use-after-free bug when a preempted tracepoint call tries to
->> access a program, link, etc. that was freed. It seems the syzkaller
->> program induces page faults while attaching raw tracepoints to
->> sys_enter making preemption more likely to occur.
->>
->> kernel/tracepoint.c
->> ===================
->>> ...
->>> static inline void release_probes(struct tracepoint_func *old)
->>> {
->>> 	...
->>> 	call_rcu(&tp_probes->rcu, rcu_free_old_probes); <-- Here
-> 
-> Have you tried just changing this one to call_rcu_tasks_trace()?
+Jordan Rife (4):
+  selftests/bpf: Migrate *_POST_BIND test cases to prog_tests
+  selftests/bpf: Migrate LOAD_REJECT test cases to prog_tests
+  selftests/bpf: Migrate BPF_CGROUP_INET_SOCK_CREATE test cases to
+    prog_tests
+  selftests/bpf: Retire test_sock.c
 
-Actually, I see two possible solutions there:
-
-1) If we want to keep unchanged register/unregister functions as a single
-    API for normal and syscall tracepoints, and we don't want to add additional
-    flags in the tracepoint struct, then we need to chain the call_rcu:
-
-    call_rcu() -> rcu_free_old_probes -> call_rcu_tasks_trace() -> rcu_tasks_trace_free_old_probes.
-
-    Just like we did when we used SRCU.
-
-    This is not perfect because we'd be adding extra delay for reclaim of
-    the old probes array for every tracepoint being updated, not just the
-    syscall tracepoints, but we probably don't care. This is a straightforward
-    initial solution.
-
-    We did something similar with SRCU before and it was OK.
-
-2) If we want something more elegant, we can add a flag to struct tracepoint
-    for syscall tracepoints, and use that flag to choose between call_rcu()
-    and call_rcu_tasks_trace(). But maybe this additional complexity is not
-    even useful.
-
-I'll prepare a patch implementing (1) and send it your way as RFC for further
-testing.
-
-Thanks,
-
-Mathieu
+ tools/testing/selftests/bpf/.gitignore        |   1 -
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../selftests/bpf/prog_tests/sock_create.c    |  35 ++-
+ .../sock_post_bind.c}                         | 256 +++++-------------
+ .../selftests/bpf/progs/verifier_sock.c       |  60 ++++
+ 5 files changed, 150 insertions(+), 205 deletions(-)
+ rename tools/testing/selftests/bpf/{test_sock.c => prog_tests/sock_post_bind.c} (64%)
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+2.47.0.105.g07ac214952-goog
 
 
