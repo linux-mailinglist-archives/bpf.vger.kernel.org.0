@@ -1,162 +1,204 @@
-Return-Path: <bpf+bounces-42739-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42740-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F0869A975B
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 05:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 508399A975E
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 06:01:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF6F9B21A25
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:59:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4EF0B22C97
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 04:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0A11E529;
-	Tue, 22 Oct 2024 03:59:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B87F7E59A;
+	Tue, 22 Oct 2024 04:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PAHSYNOc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jj+trqXi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBA4F256D
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 03:59:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4642819;
+	Tue, 22 Oct 2024 04:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729569562; cv=none; b=iRoeal3kC9ScbMYEs+Dv5dSKzlHhe1GllrmWiKrWFwzCxx5iaWTyfzCTsvIPvcSsSosNkN/pvAxOSQC1+f6Bs/cayU2KpQpd0h2F7uoHUlK4IxZR7VjP0EM89FUbfI5EJAbHBvbfgTYXuF3tl3mK7UaJ5GXrtHzgQViZ4pnD7nA=
+	t=1729569667; cv=none; b=bfP6JlrA/Rfg6+u+WHHG0VvhdWstlIcG5k6t9l0jaqIf/B0usQoBSgb5h1l0Kj+gR5DvYG4WIlQBIIYydjsJnvVDZPNtEwA0y1oSSCFgzu0KTocYfTfonz0Uws+S8M0z5vmBSkqn3awwQjdFJt+oH4p3g8PJnNlA/3BrPH44hX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729569562; c=relaxed/simple;
-	bh=57J+zdn5bdjoIdM1/wbWETqMn6uw+2ByhCN1u2Ff3l8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HP7Zl3dQ6xUdnpl7GGusSHBUTGvtteQqSBSQ1QQGouxtIDm1SyZKu1I+FDBl4iewtHsXLAJ0ACXqkBrl/V3iGvYwkO7U8iMOjcRGrArOvba/9Cx1nnCgL99YArvVry93flAJdJ0bIh6PpNMyf4G8Iy31alhtRDkKpuck+1RfqqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PAHSYNOc; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4316e9f4a40so25267735e9.2
-        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 20:59:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729569559; x=1730174359; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JsZUJELnxo36bc/web3Ys+G8lN/3urfx8L/UGdK97qI=;
-        b=PAHSYNOcEQaptElWVsTAYKGK1jyFdghJ8s6RxtOkyBXkyK/uJKPca4BhufTv/Fc+Sv
-         H3TIX6/U/zXVJ+ErtdQLfHfo9F3hbx8b6pGOwE4ZgbIaSoL/oovhNC7HKr+9y0ZpToJj
-         DB1cxWNCuooAEPjQ5Y746BNsIkmgyzKcm2qgv+Q/fwbtalO/9kJLFkDAc3zgeOyZJGgt
-         4fO2+hpbwkyd195MstcmlFuT5hJN5dDCYNvglxGGCOS8qUWpxHc0+CwzDa4E0ptfR5Qe
-         +h7i899Cgfwn3NcWy+J6yhVsl8UCvYg/xpbqR93jF+a/VfW9hE/SVZC/v9P0VmWXghkD
-         xDSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729569559; x=1730174359;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JsZUJELnxo36bc/web3Ys+G8lN/3urfx8L/UGdK97qI=;
-        b=h/OuNMhJDKYucKZbvVXNDRL6O3NoWynmRUOqqIkR/LNBWzaJUvlwOPOJnJWGn4WqhU
-         6CIzkrIyI0xYkaaDTCIHEdVPGni0fM9u2DEyCnpddO41cqK3C/4Xq22b1PSwQWSxVpDt
-         p5MKGXnnMJCgb0t+muTQDZ3ihXcQgHpjk4EuxkMQPx1Aai0ubd7kwcTildaQMRt70LmC
-         CbKo41ix4tZ3zsjL1Wlm0fNDWe3tgld/1E8ko+SSJ+WPUeuFyFXTkQyB7OtBDfBaxqDD
-         +4HmD962zC146j4ozEiUR2vpGee0ldN4jOyLujrZVr8gXMLi4EqBLsS8RsjizhZaPqQS
-         vULw==
-X-Gm-Message-State: AOJu0YyHDIY3a+2aZsOHFWkU/BZqHmYBe7Sr3Ta5lAYkVKFmBkL2sFxv
-	5Uo5C3hNjkz6wI4hSILVBjBGez1PheaVkZfDZsOPEszviRr9zMkOLY1ZaOzc7IXfm/XkckrAHza
-	NQDek//iSP9yzrIkaL3ZUgB8Z8SWA6w==
-X-Google-Smtp-Source: AGHT+IE/9OZVYqEcxUu7aSEfvE38S3AwnuBfdkl44RSjeekoCVctVL1x7CsTn0CZwOzUfaUym3lQ02By6EFApKoI1A8=
-X-Received: by 2002:a05:600c:21cb:b0:431:4fa0:2e0b with SMTP id
- 5b1f17b1804b1-43161688071mr106917865e9.28.1729569558932; Mon, 21 Oct 2024
- 20:59:18 -0700 (PDT)
+	s=arc-20240116; t=1729569667; c=relaxed/simple;
+	bh=cylGaKVJ5EYP32hqk0FO8aOWFqrcSmcvUWJ+G08AGm0=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=hPfYXy+GgVHNsfJwKRdU8AEUp2KpIBbW1fWablv79CW4bBCYBt2F5ji4i+CZ9XT1YI+8QFAcJyUcuszNBbidZizfx7tumyIKSlnl9lwAihX7L8xNdIYTSMZya7VT0NE6IgRNTjltLsmaye1JwqDi6C1MIY4Y6P4bMoFgl7woptI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jj+trqXi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C261C4CEC3;
+	Tue, 22 Oct 2024 04:01:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729569667;
+	bh=cylGaKVJ5EYP32hqk0FO8aOWFqrcSmcvUWJ+G08AGm0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Jj+trqXihJ1WZmMPZBUUxNdiSqHi6C1St3+gct7Xx7HR7aiAlhNmxIMNyV84l60vF
+	 W+PTagEGI6wKw2gL3mp3kPOZ24P1WvN/1Zanhp4HvsvqAaboas6mzQ5IihQcnl8Ydo
+	 jCIQG9ldv1BgNKHrzu/yDqM2Cse3UmS3QwNXA0AtZ96PpOajDiURKu9+BegchkMu9Q
+	 jBaHbuzYGApcxnbXa8iraloCylo6gmnDLjucPBOvlaeao31FfDa17RsFkBuEXShwzq
+	 nXHL0lY7hMGVXmiGHsUHnqLUExhF5EImsCSQ9iZVsxXYSsDjvXyB9oNCBq+xT9Uw9I
+	 L767bg/XxiDlw==
+Date: Tue, 22 Oct 2024 13:01:03 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Liao Chang <liaochang1@huawei.com>
+Cc: <oleg@redhat.com>, <peterz@infradead.org>, <mingo@redhat.com>,
+ <acme@kernel.org>, <namhyung@kernel.org>, <mark.rutland@arm.com>,
+ <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+ <irogers@google.com>, <adrian.hunter@intel.com>,
+ <kan.liang@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+ <linux-trace-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+ <bpf@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] uprobes: Remove the spinlock within
+ handle_singlestep()
+Message-Id: <20241022130103.3509201a2a26c4be5de1a852@kernel.org>
+In-Reply-To: <20240815014629.2685155-3-liaochang1@huawei.com>
+References: <20240815014629.2685155-1-liaochang1@huawei.com>
+	<20240815014629.2685155-3-liaochang1@huawei.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20241008091501.8302-1-houtao@huaweicloud.com> <20241008091501.8302-4-houtao@huaweicloud.com>
- <CAADnVQKmkaYJixBrJpWPDpHM9R9jq91meY9bERCVaC11CN4G_w@mail.gmail.com> <b2ceb4b4-e9bf-dc07-86ac-c7c3edbd4d04@huaweicloud.com>
-In-Reply-To: <b2ceb4b4-e9bf-dc07-86ac-c7c3edbd4d04@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 21 Oct 2024 20:59:07 -0700
-Message-ID: <CAADnVQL=GB7LoCQ=ceyxJDHRFudnHGsQXVMMMJa90H-70vwnpQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 03/16] bpf: Parse bpf_dynptr in map key
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>, 
-	Xu Kuohai <xukuohai@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Oct 21, 2024 at 7:02=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
->
-> Hi,
->
-> On 10/12/2024 12:29 AM, Alexei Starovoitov wrote:
-> > On Tue, Oct 8, 2024 at 2:02=E2=80=AFAM Hou Tao <houtao@huaweicloud.com>=
- wrote:
-> >> +#define MAX_DYNPTR_CNT_IN_MAP_KEY 4
-> >> +
-> >>  static int map_check_btf(struct bpf_map *map, struct bpf_token *token=
-,
-> >>                          const struct btf *btf, u32 btf_key_id, u32 bt=
-f_value_id)
-> >>  {
-> >> @@ -1103,6 +1113,40 @@ static int map_check_btf(struct bpf_map *map, s=
-truct bpf_token *token,
-> >>         if (!value_type || value_size !=3D map->value_size)
-> >>                 return -EINVAL;
-> >>
-> >> +       if (btf_type_is_dynptr(btf, key_type))
-> >> +               map->key_record =3D btf_new_bpf_dynptr_record();
-> >> +       else
-> >> +               map->key_record =3D btf_parse_fields(btf, key_type, BP=
-F_DYNPTR, map->key_size);
-> >> +       if (!IS_ERR_OR_NULL(map->key_record)) {
-> >> +               if (map->key_record->cnt > MAX_DYNPTR_CNT_IN_MAP_KEY) =
-{
-> >> +                       ret =3D -E2BIG;
-> >> +                       goto free_map_tab;
-> > Took me a while to grasp that map->key_record is only for dynptr fields
-> > and map->record is for the rest except dynptr fields.
-> >
-> > Maybe rename key_record to dynptr_fields ?
-> > Or at least add a comment to struct bpf_map to explain
-> > what each btf_record is for.
->
-> I was trying to rename map->record to map->value_record, however, I was
-> afraid that it may introduce too much churn, so I didn't do that. But I
-> think it is a good idea to add comments for both btf_record. And
-> considering that only bpf_dynptr is enabled for map key, renaming it to
-> dynptr_fields seems reasonable as well.
-> >
-> > It's kinda arbitrary decision to support multiple dynptr-s per key
-> > while other fields are not.
-> > Maybe worth looking at generalizing it a bit so single btf_record
-> > can have multiple of certain field kinds?
-> > In addition to btf_record->cnt you'd need btf_record->dynptr_cnt
-> > but that would be easier to extend in the future ?
->
-> Map value has already supported multiple kptrs or bpf_list_node.
+Hi Liao,
 
-fwiw I believe we reached the dead end there.
-The whole support for bpf_list and bpf_rb_tree may get deprecated
-and removed. The expected users didn't materialize.
+On Thu, 15 Aug 2024 01:46:29 +0000
+Liao Chang <liaochang1@huawei.com> wrote:
 
-> And in
-> the discussion [1], I thought multiple dynptr support in map key is
-> necessary, so I enabled it.
->
-> [1]:
-> https://lore.kernel.org/bpf/CAADnVQJWaBRB=3DP-ZNkppwm=3D0tZaT3qP8PKLLJ2S5=
-SSA2-S8mxg@mail.gmail.com/
+> This patch introduces a flag to track TIF_SIGPENDING is suppress
+> temporarily during the uprobe single-step. Upon uprobe singlestep is
+> handled and the flag is confirmed, it could resume the TIF_SIGPENDING
+> directly without acquiring the siglock in most case, then reducing
+> contention and improving overall performance.
+> 
+> I've use the script developed by Andrii in [1] to run benchmark. The CPU
+> used was Kunpeng916 (Hi1616), 4 NUMA nodes, 64 cores@2.4GHz running the
+> kernel on next tree + the optimization for get_xol_insn_slot() [2].
+> 
+> before-opt
+> ----------
+> uprobe-nop      ( 1 cpus):    0.907 ± 0.003M/s  (  0.907M/s/cpu)
+> uprobe-nop      ( 2 cpus):    1.676 ± 0.008M/s  (  0.838M/s/cpu)
+> uprobe-nop      ( 4 cpus):    3.210 ± 0.003M/s  (  0.802M/s/cpu)
+> uprobe-nop      ( 8 cpus):    4.457 ± 0.003M/s  (  0.557M/s/cpu)
+> uprobe-nop      (16 cpus):    3.724 ± 0.011M/s  (  0.233M/s/cpu)
+> uprobe-nop      (32 cpus):    2.761 ± 0.003M/s  (  0.086M/s/cpu)
+> uprobe-nop      (64 cpus):    1.293 ± 0.015M/s  (  0.020M/s/cpu)
+> 
+> uprobe-push     ( 1 cpus):    0.883 ± 0.001M/s  (  0.883M/s/cpu)
+> uprobe-push     ( 2 cpus):    1.642 ± 0.005M/s  (  0.821M/s/cpu)
+> uprobe-push     ( 4 cpus):    3.086 ± 0.002M/s  (  0.771M/s/cpu)
+> uprobe-push     ( 8 cpus):    3.390 ± 0.003M/s  (  0.424M/s/cpu)
+> uprobe-push     (16 cpus):    2.652 ± 0.005M/s  (  0.166M/s/cpu)
+> uprobe-push     (32 cpus):    2.713 ± 0.005M/s  (  0.085M/s/cpu)
+> uprobe-push     (64 cpus):    1.313 ± 0.009M/s  (  0.021M/s/cpu)
+> 
+> uprobe-ret      ( 1 cpus):    1.774 ± 0.000M/s  (  1.774M/s/cpu)
+> uprobe-ret      ( 2 cpus):    3.350 ± 0.001M/s  (  1.675M/s/cpu)
+> uprobe-ret      ( 4 cpus):    6.604 ± 0.000M/s  (  1.651M/s/cpu)
+> uprobe-ret      ( 8 cpus):    6.706 ± 0.005M/s  (  0.838M/s/cpu)
+> uprobe-ret      (16 cpus):    5.231 ± 0.001M/s  (  0.327M/s/cpu)
+> uprobe-ret      (32 cpus):    5.743 ± 0.003M/s  (  0.179M/s/cpu)
+> uprobe-ret      (64 cpus):    4.726 ± 0.016M/s  (  0.074M/s/cpu)
+> 
+> after-opt
+> ---------
+> uprobe-nop      ( 1 cpus):    0.985 ± 0.002M/s  (  0.985M/s/cpu)
+> uprobe-nop      ( 2 cpus):    1.773 ± 0.005M/s  (  0.887M/s/cpu)
+> uprobe-nop      ( 4 cpus):    3.304 ± 0.001M/s  (  0.826M/s/cpu)
+> uprobe-nop      ( 8 cpus):    5.328 ± 0.002M/s  (  0.666M/s/cpu)
+> uprobe-nop      (16 cpus):    6.475 ± 0.002M/s  (  0.405M/s/cpu)
+> uprobe-nop      (32 cpus):    4.831 ± 0.082M/s  (  0.151M/s/cpu)
+> uprobe-nop      (64 cpus):    2.564 ± 0.053M/s  (  0.040M/s/cpu)
+> 
+> uprobe-push     ( 1 cpus):    0.964 ± 0.001M/s  (  0.964M/s/cpu)
+> uprobe-push     ( 2 cpus):    1.766 ± 0.002M/s  (  0.883M/s/cpu)
+> uprobe-push     ( 4 cpus):    3.290 ± 0.009M/s  (  0.823M/s/cpu)
+> uprobe-push     ( 8 cpus):    4.670 ± 0.002M/s  (  0.584M/s/cpu)
+> uprobe-push     (16 cpus):    5.197 ± 0.004M/s  (  0.325M/s/cpu)
+> uprobe-push     (32 cpus):    5.068 ± 0.161M/s  (  0.158M/s/cpu)
+> uprobe-push     (64 cpus):    2.605 ± 0.026M/s  (  0.041M/s/cpu)
+> 
+> uprobe-ret      ( 1 cpus):    1.833 ± 0.001M/s  (  1.833M/s/cpu)
+> uprobe-ret      ( 2 cpus):    3.384 ± 0.003M/s  (  1.692M/s/cpu)
+> uprobe-ret      ( 4 cpus):    6.677 ± 0.004M/s  (  1.669M/s/cpu)
+> uprobe-ret      ( 8 cpus):    6.854 ± 0.005M/s  (  0.857M/s/cpu)
+> uprobe-ret      (16 cpus):    6.508 ± 0.006M/s  (  0.407M/s/cpu)
+> uprobe-ret      (32 cpus):    5.793 ± 0.009M/s  (  0.181M/s/cpu)
+> uprobe-ret      (64 cpus):    4.743 ± 0.016M/s  (  0.074M/s/cpu)
+> 
+> Above benchmark results demonstrates a obivious improvement in the
+> scalability of trig-uprobe-nop and trig-uprobe-push, the peak throughput
+> of which are from 4.5M/s to 6.4M/s and 3.3M/s to 5.1M/s individually.
+> 
+> [1] https://lore.kernel.org/all/20240731214256.3588718-1-andrii@kernel.org
+> [2] https://lore.kernel.org/all/20240727094405.1362496-1-liaochang1@huawei.com
+> 
 
-Sure. That's a different reasoning and use case.
-I'm proposing to use a single btf_record with different cnt-s.
-The current btf_record->cnt will stay as-is indicating total number of fiel=
-ds
-while btf_record->dynptr_cnt will be just for these dynptrs you're introduc=
-ing.
-Then you won't need two top level btf_record-s.
+This looks good to me.
+
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thanks,
+
+> Acked-by: Oleg Nesterov <oleg@redhat.com>
+> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+> ---
+>  include/linux/uprobes.h | 1 +
+>  kernel/events/uprobes.c | 8 +++++---
+>  2 files changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> index b503fafb7fb3..e4f57117d9c3 100644
+> --- a/include/linux/uprobes.h
+> +++ b/include/linux/uprobes.h
+> @@ -75,6 +75,7 @@ struct uprobe_task {
+>  
+>  	struct uprobe			*active_uprobe;
+>  	unsigned long			xol_vaddr;
+> +	bool				signal_denied;
+>  
+>  	struct return_instance		*return_instances;
+>  	unsigned int			depth;
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 76a51a1f51e2..589aa2af1a99 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -1979,6 +1979,7 @@ bool uprobe_deny_signal(void)
+>  	WARN_ON_ONCE(utask->state != UTASK_SSTEP);
+>  
+>  	if (task_sigpending(t)) {
+> +		utask->signal_denied = true;
+>  		clear_tsk_thread_flag(t, TIF_SIGPENDING);
+>  
+>  		if (__fatal_signal_pending(t) || arch_uprobe_xol_was_trapped(t)) {
+> @@ -2288,9 +2289,10 @@ static void handle_singlestep(struct uprobe_task *utask, struct pt_regs *regs)
+>  	utask->state = UTASK_RUNNING;
+>  	xol_free_insn_slot(current);
+>  
+> -	spin_lock_irq(&current->sighand->siglock);
+> -	recalc_sigpending(); /* see uprobe_deny_signal() */
+> -	spin_unlock_irq(&current->sighand->siglock);
+> +	if (utask->signal_denied) {
+> +		set_thread_flag(TIF_SIGPENDING);
+> +		utask->signal_denied = false;
+> +	}
+>  
+>  	if (unlikely(err)) {
+>  		uprobe_warn(current, "execute the probed insn, sending SIGILL.");
+> -- 
+> 2.34.1
+> 
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
