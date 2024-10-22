@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-42799-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42800-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C69BE9AB4F8
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 19:24:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5664B9AB4F9
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 19:24:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B8001F2468C
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 17:24:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14CE0284CAE
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 17:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F481BE87D;
-	Tue, 22 Oct 2024 17:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241631BE250;
+	Tue, 22 Oct 2024 17:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QP5y/+Bn"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E2qUSiQr"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 216151BD501
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 17:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B9B1BE87E
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 17:24:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729617846; cv=none; b=UNnfEoKWzbwWCrHqD553wNPsAOKKubYoCYFTAI6k5vqeYFeBYTIX3Go/gZ+JPe0ukCt9p0WI4DH6R1Z3CBFhmMDVY7kdwooPdPN3kZkIe7f/q2HldCk8Yvbx7Mr3hKJ6Zhfe5pyck9hxPvg/p4Dzu6x2bPNUudEsJ1W6V2YiRyM=
+	t=1729617848; cv=none; b=A3GrabtXPZLLKFa4kfy0Py1XG767TPTvq8/RmZ4I/Ja7w2GQQVDmIdtIuh52ksZ7g4AbI8DfTKlX/QuFmqiHIuT3xuD6/nu2isjtTjzxXEqzK956x1dRZ96mJ2sYSS+tXEirhU8yBYhwdd4+YzDDGADPmkCCQYnCtv0RuX4rxjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729617846; c=relaxed/simple;
-	bh=SaqctSPFGF6+q/43+UbfzYOhWmidNdBhOWKugsa7uNA=;
+	s=arc-20240116; t=1729617848; c=relaxed/simple;
+	bh=JmAPWXy5Vw82/y6UIjvkoXH3JKleNwrq4qEmYsUb6Tk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i53rADpjQ0sCQ2/VD6NZvM+BKHshuxyipQL2tFsei1S2Tm5/MtMJvTraHUxvrSOmCbSKsJGC+BQOE/EdoIyh64nNbtq+VfFMgfuNNLa13AUPepS2N8ZgWd3wwwDFoT3ytmXrzUThmWAYVqSVazATzCgLqfTft363uu8QfUVGmOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QP5y/+Bn; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=uid9WzNCruZyOlPl9a8WNwYMaTCtaD/Y1XHc2Skfc5c7QtSGr9C6FOlPgAbwJZ065tdwK3Ad+5tuzDAMM6CTNP0n/pR5Hd6LFfS2AsyNuNtmpCapcHcIdIfrMBj1Ivh8LW9vj8xzEUKmxuLLUGllVpdjcOI9DUlfPozIq0kz9TM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E2qUSiQr; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1729617844;
+	s=mimecast20190719; t=1729617846;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hrA6XcsZzgghH+9JDOcIvHjo0+Ys4rAGu6oSgw/o1H8=;
-	b=QP5y/+Bnb5s9d178gnG7FP/Om969nD9Osuk4YfJUhuECLnNhUOSAs367pz8nbhulEGe9fi
-	lyHIn5ShrtB6h4rktg60HPNCAbbrNqR34mOKMkJMFYhc4FiOMOgcY5HsrsW1uKpHAlenPs
-	adY8KIObw+aZAr6QPYR0iFK++DcDcTI=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+	bh=RYRR3poErCjI6KOljjS6hUlitC7Nqrgyj2rhxhner44=;
+	b=E2qUSiQrNdtZt6w3p1G6MMouGOoUp+wJJzB6Vz2f1dL7G73726h7QzZxNmWKXgPwvVKAue
+	MAJd5gaD1crWAR4QALOEjrkUOnqzSo2EhP8N++Ecy4+NI800ANo+3IsALdQBvAIFcm5TxG
+	gxcuH46qVJoQcGB3CJ38PHVF9mSmadM=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-214-JhPFMKQpO2q5Olk4kBzqng-1; Tue,
- 22 Oct 2024 13:23:57 -0400
-X-MC-Unique: JhPFMKQpO2q5Olk4kBzqng-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-654-33VY614oMV2Pruptxc8tHA-1; Tue,
+ 22 Oct 2024 13:24:02 -0400
+X-MC-Unique: 33VY614oMV2Pruptxc8tHA-1
 Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CEC851955D5E;
-	Tue, 22 Oct 2024 17:23:54 +0000 (UTC)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3FDFA1955F3C;
+	Tue, 22 Oct 2024 17:24:00 +0000 (UTC)
 Received: from f39.redhat.com (unknown [10.39.192.92])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 02F5D1955E8F;
-	Tue, 22 Oct 2024 17:23:47 +0000 (UTC)
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3F4BD19560B2;
+	Tue, 22 Oct 2024 17:23:55 +0000 (UTC)
 From: Eder Zulian <ezulian@redhat.com>
 To: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -74,9 +74,9 @@ Cc: ast@kernel.org,
 	acme@redhat.com,
 	vmalik@redhat.com,
 	williams@redhat.com
-Subject: [PATCH v2 1/3] resolve_btfids: Fix compiler warnings
-Date: Tue, 22 Oct 2024 19:23:27 +0200
-Message-ID: <20241022172329.3871958-2-ezulian@redhat.com>
+Subject: [PATCH v2 2/3] libbpf: Prevent compiler warnings/errors
+Date: Tue, 22 Oct 2024 19:23:28 +0200
+Message-ID: <20241022172329.3871958-3-ezulian@redhat.com>
 In-Reply-To: <20241022172329.3871958-1-ezulian@redhat.com>
 References: <20241022172329.3871958-1-ezulian@redhat.com>
 Precedence: bulk
@@ -89,65 +89,61 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-Initialize 'set' and 'set8' pointers to NULL in sets_patch to prevent
-possible compiler warnings which are issued for various optimization
-levels, but do not happen when compiling with current default
-compilation options.
+Initialize 'new_off' and 'pad_bits' to 0 and 'pad_type' to  NULL in
+btf_dump_emit_bit_padding to prevent compiler warnings/errors which are
+observed when compiling with 'EXTRA_CFLAGS=-g -Og' options, but do not
+happen when compiling with current default options.
 
-For example, when compiling resolve_btfids with
+For example, when compiling libbpf with
 
-  $ make "HOSTCFLAGS=-O2 -Wall" -C tools/bpf/resolve_btfids/ clean all
+  $ make "EXTRA_CFLAGS=-g -Og" -C tools/lib/bpf/ clean all
 
-Clang version 17.0.6 and GCC 13.3.1 issue following
--Wmaybe-uninitialized warnings for variables 'set8' and 'set':
+Clang version 17.0.6 and GCC 13.3.1 fail to compile btf_dump.c due to
+following errors:
 
-  In function ‘sets_patch’,
-      inlined from ‘symbols_patch’ at main.c:748:6,
-      inlined from ‘main’ at main.c:823:6:
-  main.c:163:9: warning: ‘set8’ may be used uninitialized [-Wmaybe-uninitialized]
-    163 |         eprintf(1, verbose, pr_fmt(fmt), ##__VA_ARGS__)
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  main.c:729:17: note: in expansion of macro ‘pr_debug’
-    729 |                 pr_debug("sorting  addr %5lu: cnt %6d [%s]\n",
-        |                 ^~~~~~~~
-  main.c: In function ‘main’:
-  main.c:682:37: note: ‘set8’ was declared here
-    682 |                 struct btf_id_set8 *set8;
-        |                                     ^~~~
-  In function ‘sets_patch’,
-      inlined from ‘symbols_patch’ at main.c:748:6,
-      inlined from ‘main’ at main.c:823:6:
-  main.c:163:9: warning: ‘set’ may be used uninitialized [-Wmaybe-uninitialized]
-    163 |         eprintf(1, verbose, pr_fmt(fmt), ##__VA_ARGS__)
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  main.c:729:17: note: in expansion of macro ‘pr_debug’
-    729 |                 pr_debug("sorting  addr %5lu: cnt %6d [%s]\n",
-        |                 ^~~~~~~~
-  main.c: In function ‘main’:
-  main.c:683:36: note: ‘set’ was declared here
-    683 |                 struct btf_id_set *set;
-        |                                    ^~~
+  btf_dump.c: In function ‘btf_dump_emit_bit_padding’:
+  btf_dump.c:903:42: error: ‘new_off’ may be used uninitialized [-Werror=maybe-uninitialized]
+    903 |         if (new_off > cur_off && new_off <= next_off) {
+        |                                  ~~~~~~~~^~~~~~~~~~~
+  btf_dump.c:870:13: note: ‘new_off’ was declared here
+    870 |         int new_off, pad_bits, bits, i;
+        |             ^~~~~~~
+  btf_dump.c:917:25: error: ‘pad_type’ may be used uninitialized [-Werror=maybe-uninitialized]
+    917 |                         btf_dump_printf(d, "\n%s%s: %d;", pfx(lvl), pad_type,
+        |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    918 |                                         in_bitfield ? new_off - cur_off : 0);
+        |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  btf_dump.c:871:21: note: ‘pad_type’ was declared here
+    871 |         const char *pad_type;
+        |                     ^~~~~~~~
+  btf_dump.c:930:20: error: ‘pad_bits’ may be used uninitialized [-Werror=maybe-uninitialized]
+    930 |                 if (bits == pad_bits) {
+        |                    ^
+  btf_dump.c:870:22: note: ‘pad_bits’ was declared here
+    870 |         int new_off, pad_bits, bits, i;
+        |                      ^~~~~~~~
+  cc1: all warnings being treated as errors
 
 Signed-off-by: Eder Zulian <ezulian@redhat.com>
 ---
- tools/bpf/resolve_btfids/main.c | 4 ++--
+ tools/lib/bpf/btf_dump.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-index d54aaa0619df..bd9f960bce3d 100644
---- a/tools/bpf/resolve_btfids/main.c
-+++ b/tools/bpf/resolve_btfids/main.c
-@@ -679,8 +679,8 @@ static int sets_patch(struct object *obj)
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index 8440c2c5ad3e..468392f9882d 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -867,8 +867,8 @@ static void btf_dump_emit_bit_padding(const struct btf_dump *d,
+ 	} pads[] = {
+ 		{"long", d->ptr_sz * 8}, {"int", 32}, {"short", 16}, {"char", 8}
+ 	};
+-	int new_off, pad_bits, bits, i;
+-	const char *pad_type;
++	int new_off = 0, pad_bits = 0, bits, i;
++	const char *pad_type = NULL;
  
- 	next = rb_first(&obj->sets);
- 	while (next) {
--		struct btf_id_set8 *set8;
--		struct btf_id_set *set;
-+		struct btf_id_set8 *set8 = NULL;
-+		struct btf_id_set *set = NULL;
- 		unsigned long addr, off;
- 		struct btf_id *id;
- 
+ 	if (cur_off >= next_off)
+ 		return; /* no gap */
 -- 
 2.46.2
 
