@@ -1,166 +1,88 @@
-Return-Path: <bpf+bounces-42730-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42731-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3137F9A9676
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 05:00:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AF7A9A9685
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 05:06:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4232C281B56
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:00:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD1B31F233E2
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2553E13B297;
-	Tue, 22 Oct 2024 03:00:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF9F13B79F;
+	Tue, 22 Oct 2024 03:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ciFO88R4"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NggfWXyY"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD1B13790B
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 03:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E894322A;
+	Tue, 22 Oct 2024 03:06:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729566004; cv=none; b=ISjRYYKAuMjqzHDwAGq9AkZTI3iY/gdyOSTJ/V+sGsDD4iM2aZoXGA912f4wfpOjVmgmBrL97ah/E870ZiAuW14i+oXDsbQeKHjgJlLX/UAciCFMjeWk+GjuNun7SfYwO1QMF/po5dUkLFA3brjchjACjQfjrjuIRQWlA24zvRM=
+	t=1729566398; cv=none; b=pnEAO/JtMTvCY235zK8oBFdWhqU1GxlUlRA2sEeknhWxmWGx493TwY8ValoCyXukaO0IUtgy2abkdqNXy5A6CKT/oi2yKiOD+fXbg96sMNsPjbhT7VMoUQKt/OPdFmRvapTHt9VIrdgg7JRj0bdMRGhfr5zpJg1zd/HczJ5wlTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729566004; c=relaxed/simple;
-	bh=u92ZrMzCBtXnJXNwFtYQHj6Z6fMqCqq77dkJPFf52Ic=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=COJ/nZUdisuqMCkpe1Srn5vhwz5Aqcqs1L4nO+9C0ZHKYlcOWuhiBZlLq8UnFsAzGpx9uRO6E7GZQNaYQWwuAblbzq4RW5SojFd9Jo62b6qlEupG8CyeQLwAzrJvcqE6MWrvk82mG4V61RlaKdNylfM5Ku0+qTW+zOwpm2mM+qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ciFO88R4; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <969d8053-bb47-4339-9fdc-eb71b3e51cc7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729566000;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C2lC2BXpAUgtQMYVVcRhKZL5Xe+vJklNqGWAnz2w4IA=;
-	b=ciFO88R40GkH7bQZXDdHQTrA/ZsYrsfLQoLs2NPWusr2ZCBvP8sbVmzDwdPtY6c09WfUCS
-	v9kFdA4o2dMqrAP/IpgtTyeRywrtQjdTLr+S6ocnjYe/80PwLW8mg2t/eNEXFupHRLxJ3s
-	sBV1tQGGIosvs1Wzr2eTCaQnTPIIJ84=
-Date: Mon, 21 Oct 2024 19:59:53 -0700
+	s=arc-20240116; t=1729566398; c=relaxed/simple;
+	bh=Pdj6kXiEu2uGZ0LuXnPEeFujTzUCsth+MkAeAwOml2M=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=dGVFxIfAO5+JghjPTTH2s/le+AW9NsepW3IGQWeGPxPXnwy1NXUw4/h8QRFMPZqrCh7yzUKKankhPydy5o9uQc5UaDoT5OfMgjo/fBsCFIiPtCLWIA6rKbwXPfsPuWoMzFmH9jy9JvdqdLEGeFUpnd+gOr870PouJzwjooYBa+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NggfWXyY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63BF2C4CEC3;
+	Tue, 22 Oct 2024 03:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1729566398;
+	bh=Pdj6kXiEu2uGZ0LuXnPEeFujTzUCsth+MkAeAwOml2M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NggfWXyYP0PLz8NPZXXLKvtCHBOCCUHJXIA791VBnfM5S43KFnylELeAOIU7G2AuL
+	 BEW8cUiNFq6PaoOmq/MK+SmL8Qu69m2puY1HIXO2lKmM5M5fYArC67wGmpVdUKHTie
+	 y13EZL8CT913+ZhvQL8OUOUJTE+rrtGvnIzZ+0Hc=
+Date: Mon, 21 Oct 2024 20:06:36 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Paul Moore <paul@paul-moore.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Roberto Sassu
+ <roberto.sassu@huaweicloud.com>, Liam.Howlett@oracle.com,
+ lorenzo.stoakes@oracle.com, vbabka@suse.cz, jannh@google.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ ebpqwerty472123@gmail.com, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+ eric.snowberg@oracle.com, jmorris@namei.org, serge@hallyn.com,
+ linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
+ bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, stable@vger.kernel.org,
+ syzbot+1cd571a672400ef3a930@syzkaller.appspotmail.com, Roberto Sassu
+ <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v2] mm: Split critical region in remap_file_pages() and
+ invoke LSMs in between
+Message-Id: <20241021200636.308f155a72f8a4d1e26f82b8@linux-foundation.org>
+In-Reply-To: <CAHC9VhQP7gBa4AV-Hbh4Bq4fRU6toRmjccv52dGoU-s+MqsmfQ@mail.gmail.com>
+References: <20241018161415.3845146-1-roberto.sassu@huaweicloud.com>
+	<CAHC9VhQP7gBa4AV-Hbh4Bq4fRU6toRmjccv52dGoU-s+MqsmfQ@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 3/9] bpf: Support private stack for struct ops
- programs
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
- Tejun Heo <tj@kernel.org>
-References: <20241020191341.2104841-1-yonghong.song@linux.dev>
- <20241020191400.2105605-1-yonghong.song@linux.dev>
- <CAADnVQ+o35Gf3nmNQLob9PHXj5ojQvKd64MaK+RBJUEOAW1akQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQ+o35Gf3nmNQLob9PHXj5ojQvKd64MaK+RBJUEOAW1akQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Sat, 19 Oct 2024 11:34:08 -0400 Paul Moore <paul@paul-moore.com> wrote:
 
-On 10/21/24 6:34 PM, Alexei Starovoitov wrote:
-> On Sun, Oct 20, 2024 at 12:16 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->> To identify whether a st_ops program requests private stack or not,
->> the st_ops stub function is checked. If the stub function has the
->> following name
->>     <st_ops_name>__<member_name>__priv_stack
->> then the corresponding st_ops member func requests to use private
->> stack. The information that the private stack is requested or not
->> is encoded in struct bpf_struct_ops_func_info which will later be
->> used by verifier.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   include/linux/bpf.h         |  2 ++
->>   kernel/bpf/bpf_struct_ops.c | 35 +++++++++++++++++++++++++----------
->>   kernel/bpf/verifier.c       |  8 +++++++-
->>   3 files changed, 34 insertions(+), 11 deletions(-)
->>
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index f3884ce2603d..376e43fc72b9 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -1491,6 +1491,7 @@ struct bpf_prog_aux {
->>          bool exception_boundary;
->>          bool is_extended; /* true if extended by freplace program */
->>          bool priv_stack_eligible;
->> +       bool priv_stack_always;
->>          u64 prog_array_member_cnt; /* counts how many times as member of prog_array */
->>          struct mutex ext_mutex; /* mutex for is_extended and prog_array_member_cnt */
->>          struct bpf_arena *arena;
->> @@ -1776,6 +1777,7 @@ struct bpf_struct_ops {
->>   struct bpf_struct_ops_func_info {
->>          struct bpf_ctx_arg_aux *info;
->>          u32 cnt;
->> +       bool priv_stack_always;
->>   };
->>
->>   struct bpf_struct_ops_desc {
->> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
->> index 8279b5a57798..2cd4bd086c7a 100644
->> --- a/kernel/bpf/bpf_struct_ops.c
->> +++ b/kernel/bpf/bpf_struct_ops.c
->> @@ -145,33 +145,44 @@ void bpf_struct_ops_image_free(void *image)
->>   }
->>
->>   #define MAYBE_NULL_SUFFIX "__nullable"
->> -#define MAX_STUB_NAME 128
->> +#define MAX_STUB_NAME 140
->>
->>   /* Return the type info of a stub function, if it exists.
->>    *
->> - * The name of a stub function is made up of the name of the struct_ops and
->> - * the name of the function pointer member, separated by "__". For example,
->> - * if the struct_ops type is named "foo_ops" and the function pointer
->> - * member is named "bar", the stub function name would be "foo_ops__bar".
->> + * The name of a stub function is made up of the name of the struct_ops,
->> + * the name of the function pointer member and optionally "priv_stack"
->> + * suffix, separated by "__". For example, if the struct_ops type is named
->> + * "foo_ops" and the function pointer  member is named "bar", the stub
->> + * function name would be "foo_ops__bar". If a suffix "priv_stack" exists,
->> + * the stub function name would be "foo_ops__bar__priv_stack".
->>    */
->>   static const struct btf_type *
->>   find_stub_func_proto(const struct btf *btf, const char *st_op_name,
->> -                    const char *member_name)
->> +                    const char *member_name, bool *priv_stack_always)
->>   {
->>          char stub_func_name[MAX_STUB_NAME];
->>          const struct btf_type *func_type;
->>          s32 btf_id;
->>          int cp;
->>
->> -       cp = snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s",
->> +       cp = snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s__priv_stack",
->>                        st_op_name, member_name);
-> I don't think this approach fits.
-> pw-bot: cr
+> >  mm/mmap.c | 69 +++++++++++++++++++++++++++++++++++++++++--------------
+> >  1 file changed, 52 insertions(+), 17 deletions(-)
+> 
+> Thanks for working on this Roberto, Kirill, and everyone else who had
+> a hand in reviewing and testing.
+> 
+> Reviewed-by: Paul Moore <paul@paul-moore.com>
+> 
+> Andrew, I see you're pulling this into the MM/hotfixes-unstable
+> branch, do you also plan to send this up to Linus soon/next-week?  If
+> so, great, if not let me know and I can send it up via the LSM tree.
 
-Okay, I will use check_member() callback function then. It should avoid
-this hack.
+In the normal course of things I'd send it upstream next week, but I
+can include it in this week's batch if we know that -next testing is
+hurting from it?
 
->
-> Also looking at original
-> commit 1611603537a4 ("bpf: Create argument information for nullable arguments.")
-> that added this %s__%s notation I'm not sure why we went
-> with that approach.
->
-> Just to avoid adding __nullable suffix in the actual callback
-> and using cfi stub callback names with such suffixes as
-> a "proxy" for the real callback?
->
-> Did we ever use this functionality for anything other than
-> bpf_testmod_ops__test_maybe_null selftest ?
->
-> Martin ?
 
