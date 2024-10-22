@@ -1,198 +1,166 @@
-Return-Path: <bpf+bounces-42729-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42730-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 268719A9670
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 04:53:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3137F9A9676
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 05:00:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2B101F2320D
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 02:53:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4232C281B56
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:00:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F3384A32;
-	Tue, 22 Oct 2024 02:53:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2553E13B297;
+	Tue, 22 Oct 2024 03:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DO1IEdQs"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ciFO88R4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4E0B12E1CA
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 02:53:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD1B13790B
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 03:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729565629; cv=none; b=DOK+v3tZuFDUsff4h0J1vjWbeteWSjVDe+c0Wwe0Cp7EkQYI6d6esH2HxmSbDcK9At45hh5KhLP027JElWgkBHUtIu5dKbDGbYmNsp+YIPhoRphBTjN6OIHCzfqzv90F7hoD5KAWovATnA0VDLl2YAmCCdMB8/T0FvVlUz8f6kg=
+	t=1729566004; cv=none; b=ISjRYYKAuMjqzHDwAGq9AkZTI3iY/gdyOSTJ/V+sGsDD4iM2aZoXGA912f4wfpOjVmgmBrL97ah/E870ZiAuW14i+oXDsbQeKHjgJlLX/UAciCFMjeWk+GjuNun7SfYwO1QMF/po5dUkLFA3brjchjACjQfjrjuIRQWlA24zvRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729565629; c=relaxed/simple;
-	bh=50wTD4ZBzlgVLwdWeVRCZuupOTH89Oo/SmrUaQ+A8GM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aXGVStQvPZ6/0hCC82Bq+oqyI8W6qsRu/pmbGaSTwacd3a3MMHNGkllucAnvxVm+rs7cnRxmx9BZaeamdLLgXee4hVhLOQ01cISNaVie6Brw1tU9JXWFc9l0wvVZs/Ti/VdzWGhdeEKoMQ62lT9MPIchB9/WKu27k4J+uSyg/44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DO1IEdQs; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-37d5689eea8so3414293f8f.1
-        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 19:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729565626; x=1730170426; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J+pKJ7banA9R+pJtpjDekFOOAC3E20pwJJ8UWVS1Xyk=;
-        b=DO1IEdQs+WeYtKRuhjX8abTmej+OnuA88HLPsIhyfdwhZpLyMTu7v4hy+MiZW2hQBp
-         GF09GdxnZzsXXolEF14xSSDzgLSakDCfR9ggaz8zWRXJFZJOVV14wNov2PdMahO6ofy/
-         5T0B8rowOB3ASdkiUy3Nk8yQjjfGrNxvtOwqe+M5RWr9KJYBFO7qblYwh530dFpJmNgl
-         pX0ptEYTLg2WPczyoKf4LYAcbKieHi6OfQTU9rP6sXm9hqUUUUF7qZvG29opskRKUJnT
-         qU7qRXfMU1RyNCgze7Si/IxfEEwqQiSU7qmlj101fk0+9I+E56nd4X/xz0DG7Dj8Qs+U
-         rvjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729565626; x=1730170426;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J+pKJ7banA9R+pJtpjDekFOOAC3E20pwJJ8UWVS1Xyk=;
-        b=xVKKM6lTqCWdOYujDNnCb4Gur3G2w2KfmLAJsSbYWENgFaXV5n0zrxRR1BjIrhDJDt
-         TmBWCQbn0B8Rgko0H0OasLnGDE0tjxm3fkJEgOyrNCvCc2wrY/pRXJXsNkRwCICaraBy
-         fp/BdPBW3G6nsFAcCnzGFVFhbLxr+wbwv2UjxsrQnA6o5z5ffIVMT7lIeRG49JrhdZ16
-         LAJHmfZjXDR2tr55XE5arD/WaWnZlaFz4xWHHp+BMk9dMQgpNfiJAJTVJrwJqXYxNq1c
-         jC4Mlz04wKSJIf0WV/4KgTYkzjcnZt6qf2armF0nkuk//gqBRDUzluXCMRxBPDDcYAJK
-         NkaQ==
-X-Gm-Message-State: AOJu0Yx0eFOBzLdYhkljwKolzbp4B5m5YvKgKAq4LdNrdn8PkWhjj0tH
-	onZ3LyurEaydScCrN2pbDTveF4nqyi0k1Kp8KjvncAcWNK7aa1F66Vo2M80Wpx8vaW7hyXt47ap
-	mQNGA0dcsiaQuJ+cvTzniWfGhZm4cML7F
-X-Google-Smtp-Source: AGHT+IFFjKR5r3V+KB6V/Cu98M5xM2qEE1H/onuxDGRtWOGVEQEZMBbxms2+fqJASzohjTDwR0AqyQZtOKwxX0ceA6I=
-X-Received: by 2002:a5d:694a:0:b0:378:e8cd:71fa with SMTP id
- ffacd0b85a97d-37eb488725fmr9257985f8f.39.1729565626094; Mon, 21 Oct 2024
- 19:53:46 -0700 (PDT)
+	s=arc-20240116; t=1729566004; c=relaxed/simple;
+	bh=u92ZrMzCBtXnJXNwFtYQHj6Z6fMqCqq77dkJPFf52Ic=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=COJ/nZUdisuqMCkpe1Srn5vhwz5Aqcqs1L4nO+9C0ZHKYlcOWuhiBZlLq8UnFsAzGpx9uRO6E7GZQNaYQWwuAblbzq4RW5SojFd9Jo62b6qlEupG8CyeQLwAzrJvcqE6MWrvk82mG4V61RlaKdNylfM5Ku0+qTW+zOwpm2mM+qw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ciFO88R4; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <969d8053-bb47-4339-9fdc-eb71b3e51cc7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729566000;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C2lC2BXpAUgtQMYVVcRhKZL5Xe+vJklNqGWAnz2w4IA=;
+	b=ciFO88R40GkH7bQZXDdHQTrA/ZsYrsfLQoLs2NPWusr2ZCBvP8sbVmzDwdPtY6c09WfUCS
+	v9kFdA4o2dMqrAP/IpgtTyeRywrtQjdTLr+S6ocnjYe/80PwLW8mg2t/eNEXFupHRLxJ3s
+	sBV1tQGGIosvs1Wzr2eTCaQnTPIIJ84=
+Date: Mon, 21 Oct 2024 19:59:53 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241018020307.1766906-1-eddyz87@gmail.com> <CAADnVQKtR96Dricc=JiOi3VR9OeHjgT6xLOto9k_QcpPQNsKJw@mail.gmail.com>
- <1564924604e5e17af10beac6bd3263481a1723f0.camel@gmail.com>
-In-Reply-To: <1564924604e5e17af10beac6bd3263481a1723f0.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 21 Oct 2024 19:53:34 -0700
-Message-ID: <CAADnVQJa8+tLnxpMWPVXO=moX+4tv3nTomang5=PAeLjVAe+ow@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: force checkpoint when jmp history is
- too long
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, 
-	Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v6 3/9] bpf: Support private stack for struct ops
+ programs
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Tejun Heo <tj@kernel.org>
+References: <20241020191341.2104841-1-yonghong.song@linux.dev>
+ <20241020191400.2105605-1-yonghong.song@linux.dev>
+ <CAADnVQ+o35Gf3nmNQLob9PHXj5ojQvKd64MaK+RBJUEOAW1akQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+o35Gf3nmNQLob9PHXj5ojQvKd64MaK+RBJUEOAW1akQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Oct 21, 2024 at 7:27=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Mon, 2024-10-21 at 19:18 -0700, Alexei Starovoitov wrote:
->
-> [...]
->
-> > >     0: r7 =3D *(u16 *)(r1 +0);"
-> > >     1: r7 +=3D 0x1ab064b9;"
-> > >     2: if r7 & 0x702000 goto 1b;
-> > >     3: r7 &=3D 0x1ee60e;"
-> > >     4: r7 +=3D r1;"
-> > >     5: if r7 s> 0x37d2 goto +0;"
-> > >     6: r0 =3D 0;"
-> > >     7: exit;"
->
-> [...]
->
-> > > And observe verification log:
-> > >
-> > >     ...
-> > >     is_state_visited: new checkpoint at 5, resetting env->jmps_proces=
-sed
-> > >     5: R1=3Dctx() R7=3Dctx(...)
-> > >     5: (65) if r7 s> 0x37d2 goto pc+0     ; R7=3Dctx(...)
-> > >     6: (b7) r0 =3D 0                        ; R0_w=3D0
-> > >     7: (95) exit
-> > >
-> > >     from 5 to 6: R1=3Dctx() R7=3Dctx(...) R10=3Dfp0
-> > >     6: R1=3Dctx() R7=3Dctx(...) R10=3Dfp0
-> > >     6: (b7) r0 =3D 0                        ; R0_w=3D0
-> > >     7: (95) exit
-> > >     is_state_visited: suppressing checkpoint at 1, 3 jmps processed, =
-cur->jmp_history_cnt is 74
-> > >
-> > >     from 2 to 1: R1=3Dctx() R7_w=3Dscalar(...) R10=3Dfp0
-> > >     1: R1=3Dctx() R7_w=3Dscalar(...) R10=3Dfp0
-> > >     1: (07) r7 +=3D 447767737
-> > >     is_state_visited: suppressing checkpoint at 2, 3 jmps processed, =
-cur->jmp_history_cnt is 75
-> > >     2: R7_w=3Dscalar(...)
-> > >     2: (45) if r7 & 0x702000 goto pc-2
-> > >     ... mark_precise 152 steps for r7 ...
-> > >     2: R7_w=3Dscalar(...)
-> > >     is_state_visited: suppressing checkpoint at 1, 4 jmps processed, =
-cur->jmp_history_cnt is 75
-> > >     1: (07) r7 +=3D 447767737
-> > >     is_state_visited: suppressing checkpoint at 2, 4 jmps processed, =
-cur->jmp_history_cnt is 76
-> > >     2: R7_w=3Dscalar(...)
-> > >     2: (45) if r7 & 0x702000 goto pc-2
-> > >     ...
-> > >     BPF program is too large. Processed 257 insn
-> > >
-> > > The log output shows that checkpoint at label (1) is never created,
-> > > because it is suppressed by `skip_inf_loop_check` logic:
-> > > a. When 'if' at (2) is processed it pushes a state with insn_idx (1)
-> > >    onto stack and proceeds to (3);
-> > > b. At (5) checkpoint is created, and this resets
-> > >    env->{jmps,insns}_processed.
-> > > c. Verification proceeds and reaches `exit`;
-> > > d. State saved at step (a) is popped from stack and is_state_visited(=
-)
-> > >    considers if checkpoint needs to be added, but because
-> > >    env->{jmps,insns}_processed had been just reset at step (b)
-> > >    the `skip_inf_loop_check` logic forces `add_new_state` to false.
-> > > e. Verifier proceeds with current state, which slowly accumulates
-> > >    more and more entries in the jump history.
-> >
-> > I'm still not sure why it grew to thousands of entries in jmp_history.
-> > Looking at the above trace jmps_processed grows 1 to 1 with jmp_history=
-_cnt.
-> > Also cur->jmp_history_cnt is reset to zero at the same time as
-> > jmps processed.
-> > So in the above test 75 vs 4 difference came from jmp_history
-> > entries that were there before the loop ?
->
->     0: r7 =3D *(u16 *)(r1 +0);"
->     1: r7 +=3D 0x1ab064b9;"
->     2: if r7 & 0x702000 goto 1b;
->     3: r7 &=3D 0x1ee60e;"
->     4: r7 +=3D r1;"
->     5: if r7 s> 0x37d2 goto +0;"
->     6: r0 =3D 0;"
->     7: exit;"
->
-> - When 'if' at (2) is processed current state is copied (let's call
->   this copy C), copy is put to the stack for later processing,
->   it's jump history is not cleared.
-> - Then current state proceeds verifying 3-5-6-7. At (5) checkpoint is
->   created and env->{jmps,insns}_processed are reset.
-> - Then state C is popped from the stack, it goes back to (1) and then (2)=
-,
->   at (2) a copy C1 is created but no checkpoint, as env->{jmps,insns}_pro=
-cessed
->   do not meet thresholds. C1's jmp_history is one entry longer then C's.
-> - Whole thing repeats until ENOMEM.
 
-I see. Thanks for explaining.
-So the bug is actually in reset logic of jmps/insns_processed
-coupled with push/pop stack.
-I think let's add cur->jmp_history_cnt < 40 check for now
-and target bpf tree (assuming no veristat regressions),
-but for bpf-next we probably need to follow up.
-We can probably remove jmps_processed counter
-and replace it with jmp_history_cnt.
+On 10/21/24 6:34 PM, Alexei Starovoitov wrote:
+> On Sun, Oct 20, 2024 at 12:16 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> To identify whether a st_ops program requests private stack or not,
+>> the st_ops stub function is checked. If the stub function has the
+>> following name
+>>     <st_ops_name>__<member_name>__priv_stack
+>> then the corresponding st_ops member func requests to use private
+>> stack. The information that the private stack is requested or not
+>> is encoded in struct bpf_struct_ops_func_info which will later be
+>> used by verifier.
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   include/linux/bpf.h         |  2 ++
+>>   kernel/bpf/bpf_struct_ops.c | 35 +++++++++++++++++++++++++----------
+>>   kernel/bpf/verifier.c       |  8 +++++++-
+>>   3 files changed, 34 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index f3884ce2603d..376e43fc72b9 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -1491,6 +1491,7 @@ struct bpf_prog_aux {
+>>          bool exception_boundary;
+>>          bool is_extended; /* true if extended by freplace program */
+>>          bool priv_stack_eligible;
+>> +       bool priv_stack_always;
+>>          u64 prog_array_member_cnt; /* counts how many times as member of prog_array */
+>>          struct mutex ext_mutex; /* mutex for is_extended and prog_array_member_cnt */
+>>          struct bpf_arena *arena;
+>> @@ -1776,6 +1777,7 @@ struct bpf_struct_ops {
+>>   struct bpf_struct_ops_func_info {
+>>          struct bpf_ctx_arg_aux *info;
+>>          u32 cnt;
+>> +       bool priv_stack_always;
+>>   };
+>>
+>>   struct bpf_struct_ops_desc {
+>> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+>> index 8279b5a57798..2cd4bd086c7a 100644
+>> --- a/kernel/bpf/bpf_struct_ops.c
+>> +++ b/kernel/bpf/bpf_struct_ops.c
+>> @@ -145,33 +145,44 @@ void bpf_struct_ops_image_free(void *image)
+>>   }
+>>
+>>   #define MAYBE_NULL_SUFFIX "__nullable"
+>> -#define MAX_STUB_NAME 128
+>> +#define MAX_STUB_NAME 140
+>>
+>>   /* Return the type info of a stub function, if it exists.
+>>    *
+>> - * The name of a stub function is made up of the name of the struct_ops and
+>> - * the name of the function pointer member, separated by "__". For example,
+>> - * if the struct_ops type is named "foo_ops" and the function pointer
+>> - * member is named "bar", the stub function name would be "foo_ops__bar".
+>> + * The name of a stub function is made up of the name of the struct_ops,
+>> + * the name of the function pointer member and optionally "priv_stack"
+>> + * suffix, separated by "__". For example, if the struct_ops type is named
+>> + * "foo_ops" and the function pointer  member is named "bar", the stub
+>> + * function name would be "foo_ops__bar". If a suffix "priv_stack" exists,
+>> + * the stub function name would be "foo_ops__bar__priv_stack".
+>>    */
+>>   static const struct btf_type *
+>>   find_stub_func_proto(const struct btf *btf, const char *st_op_name,
+>> -                    const char *member_name)
+>> +                    const char *member_name, bool *priv_stack_always)
+>>   {
+>>          char stub_func_name[MAX_STUB_NAME];
+>>          const struct btf_type *func_type;
+>>          s32 btf_id;
+>>          int cp;
+>>
+>> -       cp = snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s",
+>> +       cp = snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s__priv_stack",
+>>                        st_op_name, member_name);
+> I don't think this approach fits.
+> pw-bot: cr
 
-Based on the above explanation insns_processed counter is
-also bogus.
+Okay, I will use check_member() callback function then. It should avoid
+this hack.
+
+>
+> Also looking at original
+> commit 1611603537a4 ("bpf: Create argument information for nullable arguments.")
+> that added this %s__%s notation I'm not sure why we went
+> with that approach.
+>
+> Just to avoid adding __nullable suffix in the actual callback
+> and using cfi stub callback names with such suffixes as
+> a "proxy" for the real callback?
+>
+> Did we ever use this functionality for anything other than
+> bpf_testmod_ops__test_maybe_null selftest ?
+>
+> Martin ?
 
