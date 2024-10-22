@@ -1,182 +1,163 @@
-Return-Path: <bpf+bounces-42755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42759-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74C3B9A9AF3
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 09:26:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B66A9A9B58
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 09:42:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 053D81F21720
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 07:26:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D87622812CC
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 07:42:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB90A14D708;
-	Tue, 22 Oct 2024 07:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E7041547EB;
+	Tue, 22 Oct 2024 07:42:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2372D14A4F0
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 07:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF1F152160;
+	Tue, 22 Oct 2024 07:42:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729581952; cv=none; b=BLOsVSbWRhQYVKx3EqU1DvqPMquox6t2ku07UjoSmE8aWGwO2itdetZSe5jM8eB0UP9yvC7QaSjcKUXV/tLfwszlLSpk1bo5VTiWbBeXvFN4kPdAF2QeZKdzkmN39PDra1JH+1ATTyGc/trsPot9xzWVBEZ3EGYgdyxNU86vKVc=
+	t=1729582950; cv=none; b=kr2mapSr8H3SWQoQYanFEb8wRjLLDDlbnC4xTvylsZSBdAwRWNfhtdjRr+WNOu4y6ZJv2gNJ9+ekP8bS6mEdXj9s8HqiG0cZWO1iyQbvRY+wsrFy4qlrCoawMMH5Ljy3Mu2NCnDwkH87cvZK15CqFhjV9qR2BycdhFp8HEWZUIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729581952; c=relaxed/simple;
-	bh=RT9HLF50sd59TbkU4TdX0OO7sglzIiN0qscDxtpil7I=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=D/KU8lgWvNsQ0/bfZfyXNLVhCKEHLiZi1W8BtpWKBeqivkegvV/J9JmGiMHNfYQ18z4iOsv6PZj6LQ71DZLHpiJC881V36OR/SMZbTL1ywXuPjQFq359JTEVUGSM0x7f0c4aq+nQJKBmgMgGnG7dqVGRn7SNkEexADOyq6Ir6bk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XXkGt1nj4z4f3lfZ
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 15:25:26 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 6DC611A07B6
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 15:25:44 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgC3Nlx1UxdnaJkXEw--.64471S2;
-	Tue, 22 Oct 2024 15:25:44 +0800 (CST)
-Subject: Re: [PATCH bpf v2 4/7] bpf: Free dynamically allocated bits in
- bpf_iter_bits_destroy()
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Yafang Shao
- <laoar.shao@gmail.com>, xukuohai@huawei.com,
- "houtao1@huawei.com" <houtao1@huawei.com>
-References: <20241021014004.1647816-1-houtao@huaweicloud.com>
- <20241021014004.1647816-5-houtao@huaweicloud.com>
- <91affb00-82af-49ad-69bd-9c9ad57c9a9b@huaweicloud.com>
- <CAEf4BzY=q3tk3FPkcwwY5Ax7VQqEwphQ2RX64VXXAxLO=_D_Ag@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <ac2c24ea-ced7-d632-a268-e00810aa481d@huaweicloud.com>
-Date: Tue, 22 Oct 2024 15:25:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1729582950; c=relaxed/simple;
+	bh=Sns24Kn2/dehSLQImOAaNKLYhQYfH0psondXhJgNDFw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ny6f9V825piJJPKTsh9bGD+wwZpP2770zpyXrh2sSuZ8Ag/eo1cQT+/Q5wFwv0FYmgyBuLco37zGctJpFLO/CIEGFIcdzlBCc+f7b2JLyYDkgE2HpzpFB70FWjNvbc5LdPcX9j/n3L+5ClwR+8YxHbqMnapFo8zFDq8VeVzro9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XXkdS2Xz2z20qWg;
+	Tue, 22 Oct 2024 15:41:32 +0800 (CST)
+Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
+	by mail.maildlp.com (Postfix) with ESMTPS id D7580140361;
+	Tue, 22 Oct 2024 15:42:22 +0800 (CST)
+Received: from huawei.com (10.67.174.28) by kwepemd200013.china.huawei.com
+ (7.221.188.133) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Tue, 22 Oct
+ 2024 15:42:22 +0800
+From: Liao Chang <liaochang1@huawei.com>
+To: <andrii.nakryiko@gmail.com>, <mhiramat@kernel.org>, <oleg@redhat.com>,
+	<peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+	<namhyung@kernel.org>, <mark.rutland@arm.com>,
+	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+	<irogers@google.com>, <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: [PATCH v4 0/2] uprobes: Improve scalability by reducing the contention on siglock
+Date: Tue, 22 Oct 2024 07:31:39 +0000
+Message-ID: <20241022073141.3291245-1-liaochang1@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzY=q3tk3FPkcwwY5Ax7VQqEwphQ2RX64VXXAxLO=_D_Ag@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgC3Nlx1UxdnaJkXEw--.64471S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAryfuFWDCr45JF1xKr4rZrb_yoW5tF1rpr
-	4fJa1jkr4vqF9rAw17t3Wqga4Utr4jka4UWFs5tr15ZF1qgFyDWFyUGr43Was8Kr4FyF4S
-	vrnY934Sy3yUAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4I
-	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
-	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
-	IYCTnIWIevJa73UjIFyTuYvjxUxo7KDUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemd200013.china.huawei.com (7.221.188.133)
 
-Hi,
+The profiling result of BPF selftest on ARM64 platform reveals the
+significant contention on the current->sighand->siglock is the
+scalability bottleneck. The reason is also very straightforward that all
+producer threads of benchmark have to contend the spinlock mentioned to
+resume the TIF_SIGPENDING bit in thread_info that might be removed in
+uprobe_deny_signal().
 
-On 10/22/2024 7:07 AM, Andrii Nakryiko wrote:
-> On Sun, Oct 20, 2024 at 7:45 PM Hou Tao <houtao@huaweicloud.com> wrote:
->> Hi,
->>
->> On 10/21/2024 9:40 AM, Hou Tao wrote:
->>> From: Hou Tao <houtao1@huawei.com>
->>>
->>> bpf_iter_bits_destroy() uses "kit->nr_bits <= 64" to check whether the
->>> bits are dynamically allocated. However, the check is incorrect and may
->>> cause a kmemleak as shown below:
->>>
->>> unreferenced object 0xffff88812628c8c0 (size 32):
->>>   comm "swapper/0", pid 1, jiffies 4294727320
->>>   hex dump (first 32 bytes):
->>>       b0 c1 55 f5 81 88 ff ff f0 f0 f0 f0 f0 f0 f0 f0  ..U.............
->>>       f0 f0 f0 f0 f0 f0 f0 f0 00 00 00 00 00 00 00 00  ................
->>>   backtrace (crc 781e32cc):
->>>       [<00000000c452b4ab>] kmemleak_alloc+0x4b/0x80
->>>       [<0000000004e09f80>] __kmalloc_node_noprof+0x480/0x5c0
->>>       [<00000000597124d6>] __alloc.isra.0+0x89/0xb0
->>>       [<000000004ebfffcd>] alloc_bulk+0x2af/0x720
->>>       [<00000000d9c10145>] prefill_mem_cache+0x7f/0xb0
->>>       [<00000000ff9738ff>] bpf_mem_alloc_init+0x3e2/0x610
->>>       [<000000008b616eac>] bpf_global_ma_init+0x19/0x30
->>>       [<00000000fc473efc>] do_one_initcall+0xd3/0x3c0
->>>       [<00000000ec81498c>] kernel_init_freeable+0x66a/0x940
->>>       [<00000000b119f72f>] kernel_init+0x20/0x160
->>>       [<00000000f11ac9a7>] ret_from_fork+0x3c/0x70
->>>       [<0000000004671da4>] ret_from_fork_asm+0x1a/0x30
->>>
->>> That is because nr_bits will be set as zero in bpf_iter_bits_next()
->>> after all bits have been iterated.
->>>
->>> Fix the problem by not setting nr_bits to zero in bpf_iter_bits_next().
->>> Instead, use "bits >= nr_bits" to indicate when iteration is completed
->>> and still use "nr_bits > 64" to indicate when bits are dynamically
->>> allocated.
->>>
->>> Fixes: 4665415975b0 ("bpf: Add bits iterator")
->>> Signed-off-by: Hou Tao <houtao1@huawei.com>
->>> ---
->>>  kernel/bpf/helpers.c | 8 +++-----
->>>  1 file changed, 3 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->>> index 1a43d06eab28..62349e206a29 100644
->>> --- a/kernel/bpf/helpers.c
->>> +++ b/kernel/bpf/helpers.c
->>> @@ -2888,7 +2888,7 @@ bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_w
->>>
->>>       kit->nr_bits = 0;
->>>       kit->bits_copy = 0;
->>> -     kit->bit = -1;
->>> +     kit->bit = 0;
->> Sent the patch out in a hurry and didn't run the related test.
->>
->> The change above will break "fewer words" test in verifier_bits_iter,
->> because it will skip bit 0 in the bit. The correct fix should be as below:
->>
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index 1a43d06eab28..190b730e0f86 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -2934,15 +2934,13 @@ __bpf_kfunc int *bpf_iter_bits_next(struct
->> bpf_iter_bits *it)
->>         const unsigned long *bits;
->>         int bit;
->>
->> -       if (nr_bits == 0)
->> +       if (kit->bit >= 0 && kit->bit >= nr_bits)
-> this looks quite weird. Maybe instead of this seemingly unnecessary
-> `kit->bit >= 0` check, either add (int)nr_bits cast or just switch
-> nr_bits from u32 to int?
+The contention on current->sighand->siglock is unnecessary, this series
+remove them thoroughly. I've use the script developed by Andrii in [1]
+to run benchmark. The CPU used was Kunpeng916 (Hi1616), 4 NUMA nodes,
+64 cores@2.4GHz running the kernel on next tree + the optimization in
+[2] for get_xol_insn_slot().
 
-OK. Will change nr_bits to int in the next revision.
+before-opt
+----------
+uprobe-nop      ( 1 cpus):    0.907 ± 0.003M/s  (  0.907M/s/cpu)
+uprobe-nop      ( 2 cpus):    1.676 ± 0.008M/s  (  0.838M/s/cpu)
+uprobe-nop      ( 4 cpus):    3.210 ± 0.003M/s  (  0.802M/s/cpu)
+uprobe-nop      ( 8 cpus):    4.457 ± 0.003M/s  (  0.557M/s/cpu)
+uprobe-nop      (16 cpus):    3.724 ± 0.011M/s  (  0.233M/s/cpu)
+uprobe-nop      (32 cpus):    2.761 ± 0.003M/s  (  0.086M/s/cpu)
+uprobe-nop      (64 cpus):    1.293 ± 0.015M/s  (  0.020M/s/cpu)
 
+uprobe-push     ( 1 cpus):    0.883 ± 0.001M/s  (  0.883M/s/cpu)
+uprobe-push     ( 2 cpus):    1.642 ± 0.005M/s  (  0.821M/s/cpu)
+uprobe-push     ( 4 cpus):    3.086 ± 0.002M/s  (  0.771M/s/cpu)
+uprobe-push     ( 8 cpus):    3.390 ± 0.003M/s  (  0.424M/s/cpu)
+uprobe-push     (16 cpus):    2.652 ± 0.005M/s  (  0.166M/s/cpu)
+uprobe-push     (32 cpus):    2.713 ± 0.005M/s  (  0.085M/s/cpu)
+uprobe-push     (64 cpus):    1.313 ± 0.009M/s  (  0.021M/s/cpu)
 
->
->
-> BTW,
->
-> u32 nr_bytes = nr_words * sizeof(u64);
->
-> seems like a problem, no? nr_words is u32, so this can overflow,
-> please check and fix as well, while you are at it?
+uprobe-ret      ( 1 cpus):    1.774 ± 0.000M/s  (  1.774M/s/cpu)
+uprobe-ret      ( 2 cpus):    3.350 ± 0.001M/s  (  1.675M/s/cpu)
+uprobe-ret      ( 4 cpus):    6.604 ± 0.000M/s  (  1.651M/s/cpu)
+uprobe-ret      ( 8 cpus):    6.706 ± 0.005M/s  (  0.838M/s/cpu)
+uprobe-ret      (16 cpus):    5.231 ± 0.001M/s  (  0.327M/s/cpu)
+uprobe-ret      (32 cpus):    5.743 ± 0.003M/s  (  0.179M/s/cpu)
+uprobe-ret      (64 cpus):    4.726 ± 0.016M/s  (  0.074M/s/cpu)
 
-Will move it after the checking of nr_words in the following patch.
+after-opt
+---------
+uprobe-nop      ( 1 cpus):    0.985 ± 0.002M/s  (  0.985M/s/cpu)
+uprobe-nop      ( 2 cpus):    1.773 ± 0.005M/s  (  0.887M/s/cpu)
+uprobe-nop      ( 4 cpus):    3.304 ± 0.001M/s  (  0.826M/s/cpu)
+uprobe-nop      ( 8 cpus):    5.328 ± 0.002M/s  (  0.666M/s/cpu)
+uprobe-nop      (16 cpus):    6.475 ± 0.002M/s  (  0.405M/s/cpu)
+uprobe-nop      (32 cpus):    4.831 ± 0.082M/s  (  0.151M/s/cpu)
+uprobe-nop      (64 cpus):    2.564 ± 0.053M/s  (  0.040M/s/cpu)
+
+uprobe-push     ( 1 cpus):    0.964 ± 0.001M/s  (  0.964M/s/cpu)
+uprobe-push     ( 2 cpus):    1.766 ± 0.002M/s  (  0.883M/s/cpu)
+uprobe-push     ( 4 cpus):    3.290 ± 0.009M/s  (  0.823M/s/cpu)
+uprobe-push     ( 8 cpus):    4.670 ± 0.002M/s  (  0.584M/s/cpu)
+uprobe-push     (16 cpus):    5.197 ± 0.004M/s  (  0.325M/s/cpu)
+uprobe-push     (32 cpus):    5.068 ± 0.161M/s  (  0.158M/s/cpu)
+uprobe-push     (64 cpus):    2.605 ± 0.026M/s  (  0.041M/s/cpu)
+
+uprobe-ret      ( 1 cpus):    1.833 ± 0.001M/s  (  1.833M/s/cpu)
+uprobe-ret      ( 2 cpus):    3.384 ± 0.003M/s  (  1.692M/s/cpu)
+uprobe-ret      ( 4 cpus):    6.677 ± 0.004M/s  (  1.669M/s/cpu)
+uprobe-ret      ( 8 cpus):    6.854 ± 0.005M/s  (  0.857M/s/cpu)
+uprobe-ret      (16 cpus):    6.508 ± 0.006M/s  (  0.407M/s/cpu)
+uprobe-ret      (32 cpus):    5.793 ± 0.009M/s  (  0.181M/s/cpu)
+uprobe-ret      (64 cpus):    4.743 ± 0.016M/s  (  0.074M/s/cpu)
+
+Above benchmark results demonstrates a obivious improvement in the
+scalability of trig-uprobe-nop and trig-uprobe-push, the peak throughput
+of which are from 4.5M/s to 6.4M/s and 3.3M/s to 5.1M/s individually.
+
+v4->v3:
+1. Rebase v3 [3] to the lateset tip/perf/core.
+2. Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+3. Acked-by: Oleg Nesterov <oleg@redhat.com>
+
+v3->v2:
+Renaming the flag in [2/2], s/deny_signal/signal_denied/g.
+
+v2->v1:
+Oleg pointed out the _DENY_SIGNAL will be replaced by _ACK upon the
+completion of singlestep which leads to handle_singlestep() has no
+chance to restore the removed TIF_SIGPENDING [3] and some case in
+question. So this revision proposes to use a flag in uprobe_task to
+track the denied TIF_SIGPENDING instead of new UPROBE_SSTEP state.
+
+[1] https://lore.kernel.org/all/20240731214256.3588718-1-andrii@kernel.org
+[2] https://lore.kernel.org/all/20240727094405.1362496-1-liaochang1@huawei.com
+[3] https://lore.kernel.org/all/20240815014629.2685155-1-liaochang1@huawei.com/ 
+
+Liao Chang (2):
+  uprobes: Remove redundant spinlock in uprobe_deny_signal()
+  uprobes: Remove the spinlock within handle_singlestep()
+
+ include/linux/uprobes.h |  1 +
+ kernel/events/uprobes.c | 10 +++++-----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+-- 
+2.34.1
 
 
