@@ -1,139 +1,178 @@
-Return-Path: <bpf+bounces-42787-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42786-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 548149AB204
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 17:27:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D74F19AB1E3
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 17:21:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 138A228151B
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:27:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40E25B2486A
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC6E1A38E4;
-	Tue, 22 Oct 2024 15:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FBCF1A3BDE;
+	Tue, 22 Oct 2024 15:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="sD4EGUzp"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="H2AhGVLw"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20931A302E;
-	Tue, 22 Oct 2024 15:27:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9535F1A3BC8;
+	Tue, 22 Oct 2024 15:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729610869; cv=none; b=MOIz5Xn/C+8v9SJHbeAMEpL5XRooosBH/FOFcuPrvf/zFLgVWXKeAGL7SvkXyJ4yWkB7k/wcwSqVqRSTJp3timr7NpS1SRylPQNvuNrO5mQMPI1nHw+0+qWDX/8LQZTXPrykAfspaPEqCmfE8Mr4xPEpggdmDFV2hccHtkrEbG8=
+	t=1729610449; cv=none; b=bCfj1IwgU1OthU0o8ZpjL5IndVnS+f5ZlvnJ5DjiUk8/9pvignboHVcCAKJesI/voZRZuZ3qeWZQqcZaCkl3YqSfopzLXfM/XiAnARc583z1dcLQymyakCsiXPdvDTtC/A2qUV+Bfy5/vAzDYfsUAzj5I2v7i+E+5IS4gkvZJUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729610869; c=relaxed/simple;
-	bh=2Mc2SXCOUMQ4Ki2MnPZxCewU6q9Ys7A8xNvKGEr0b3s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OZVM5GkZtJydfVEhRluB5x3rznH2dDNA9YZQKGsJMRh3Z81lTNr55x3jou0ZzTMVIBgfNwl+7BGPEQC1I+U5mGT8I1v/dD++BhrFBlzMtXVCUYyjHi1F3gbyfwQQmVdkSRsPDB/VwyPAgd3mam8LOf1s8tu5ILeYt91Pn4kGLsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=sD4EGUzp; arc=none smtp.client-ip=167.114.26.122
+	s=arc-20240116; t=1729610449; c=relaxed/simple;
+	bh=CI8O5/CEGDNzrlkCIwc8zGa7x4u/7L0USxNN8JbWDqM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZTv1HlkH0L/qZiK0Fov41EOrT6tjuUgyqnq7dIR9acIjMHS1xguHA4Jdr9+WYrq6RzyoEuj3D2+fzqiEMFnun1AXXVrsQ/fAwDAGjV44DcVSXL7ws231coCUgFmrO49pg2A8/4rfhJlLcfIokVVcslMV1OJ0Ll8nmP1hz4XHAU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=H2AhGVLw; arc=none smtp.client-ip=167.114.26.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1729610396;
-	bh=2Mc2SXCOUMQ4Ki2MnPZxCewU6q9Ys7A8xNvKGEr0b3s=;
-	h=From:To:Cc:Subject:Date:From;
-	b=sD4EGUzp9bdumubR71lH2R2EessL9X6lGsbBllRzjpunBtHbxzUaq4jnTawn1fe0i
-	 wgZL+94vLo6Wa5zJDvv2DIu5tQcb6e/JiY+VuWV7Y3PhMRffwhtjItmExexYODlU7V
-	 4JYpER08hp9WC6mRDfS8VRKVLEh3vDf+SADVkq620M+rJuYVHLWHdUWeIEjfNTqT0B
-	 HLrGE1WDf9WhXjpuTcWkx+wh+2F8KcOANk9TApq4zm4U7XLJkfpXFG0k8LANOaNIYd
-	 F7A9dUXMiCWdqluulGE4vSIpe4Si359oIXbuofGQnEO73bov5uhMsxwY/6ddSAXh05
-	 h33msiKCUsFHw==
-Received: from thinkos.internal.efficios.com (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XXwpM6vC9zQmW;
-	Tue, 22 Oct 2024 11:19:55 -0400 (EDT)
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com,
-	Michael Jeanson <mjeanson@efficios.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	bpf@vger.kernel.org,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Jordan Rife <jrife@google.com>
-Subject: [RFC PATCH] tracing: Fix syscall tracepoint use-after-free
-Date: Tue, 22 Oct 2024 11:18:04 -0400
-Message-Id: <20241022151804.284424-1-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.5
+	s=smtpout1; t=1729610445;
+	bh=CI8O5/CEGDNzrlkCIwc8zGa7x4u/7L0USxNN8JbWDqM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=H2AhGVLwtzfh0cKNLNJ0gUkFZN9B9hxEg7u7bQtCzMKat/KCY46BsZ+w9g8zibYt8
+	 CG88VT1nk7Z591jzXN7TrdEDXtVxDrDohGYseGSTbyxwbSsVDu20pyedpYO+paBpVs
+	 73t1Lj/t0GUM8p10K9nXPxD9EPZGHipdw7ucG1DEIbp6VCqrbEVhPvG0fKsQpjAE3G
+	 O4PCp7HwHOPSIJE4B+vyK8Jp7qjgokb0wU7C3I7K+KpfOV8SrozfNr96vOlbswkU6a
+	 r1VUtvvTJOs4SEa1H20m8BWXJSLaM6HBqFzB6id0tmhjgC+usQdV3F/6RWEJc1e4kW
+	 xGEqY6zZ4bvsw==
+Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XXwqK1PGvzQmX;
+	Tue, 22 Oct 2024 11:20:45 -0400 (EDT)
+Message-ID: <29c58126-3146-4c61-8166-a894c0e84d08@efficios.com>
+Date: Tue, 22 Oct 2024 11:19:01 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [trace?] [bpf?] KASAN: slab-use-after-free Read in
+ bpf_trace_run2 (2)
+To: Steven Rostedt <rostedt@goodmis.org>, Jordan Rife <jrife@google.com>
+Cc: syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com, andrii@kernel.org,
+ ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+ eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, martin.lau@linux.dev,
+ mattbobrowski@google.com, mhiramat@kernel.org, sdf@fomichev.me,
+ song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+References: <67121037.050a0220.10f4f4.000f.GAE@google.com>
+ <20241021182347.77750-1-jrife@google.com>
+ <20241022042001.09055543@rorschach.local.home>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+In-Reply-To: <20241022042001.09055543@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The grace period used internally within tracepoint.c:release_probes()
-uses call_rcu() to batch waiting for quiescence of old probe arrays,
-rather than using the tracepoint_synchronize_unregister() which blocks
-while waiting for quiescence.
+On 2024-10-22 04:20, Steven Rostedt wrote:
+> 
+> Mathieu, can you look at this?
 
-This causes use-after-free issues reproduced with syzkaller.
+Sure,
 
-Fix this by introducing the following call_rcu chaining:
+> 
+> [ more below ]
+> 
+> On Mon, 21 Oct 2024 18:23:47 +0000
+> Jordan Rife <jrife@google.com> wrote:
+> 
+>> I performed a bisection and this issue starts with commit a363d27cdbc2
+>> ("tracing: Allow system call tracepoints to handle page faults") which
+>> introduces this change.
+>>
+>>> + *
+>>> + * With @syscall=0, the tracepoint callback array dereference is
+>>> + * protected by disabling preemption.
+>>> + * With @syscall=1, the tracepoint callback array dereference is
+>>> + * protected by Tasks Trace RCU, which allows probes to handle page
+>>> + * faults.
+>>>    */
+>>>   #define __DO_TRACE(name, args, cond, syscall)				\
+>>>   	do {								\
+>>> @@ -204,11 +212,17 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>>   		if (!(cond))						\
+>>>   			return;						\
+>>>   									\
+>>> -		preempt_disable_notrace();				\
+>>> +		if (syscall)						\
+>>> +			rcu_read_lock_trace();				\
+>>> +		else							\
+>>> +			preempt_disable_notrace();			\
+>>>   									\
+>>>   		__DO_TRACE_CALL(name, TP_ARGS(args));			\
+>>>   									\
+>>> -		preempt_enable_notrace();				\
+>>> +		if (syscall)						\
+>>> +			rcu_read_unlock_trace();			\
+>>> +		else							\
+>>> +			preempt_enable_notrace();			\
+>>>   	} while (0)
+>>
+>> Link: https://lore.kernel.org/bpf/20241009010718.2050182-6-mathieu.desnoyers@efficios.com/
+>>
+>> I reproduced the bug locally by running syz-execprog inside a QEMU VM.
+>>
+>>> ./syz-execprog -repeat=0 -procs=5 ./repro.syz.txt
+>>
+>> I /think/ what is happening is that with this change preemption may now
+>> occur leading to a scenario where the RCU grace period is insufficient
+>> in a few places where call_rcu() is used. In other words, there are a
+>> few scenarios where call_rcu_tasks_trace() should be used instead to
+>> prevent a use-after-free bug when a preempted tracepoint call tries to
+>> access a program, link, etc. that was freed. It seems the syzkaller
+>> program induces page faults while attaching raw tracepoints to
+>> sys_enter making preemption more likely to occur.
+>>
+>> kernel/tracepoint.c
+>> ===================
+>>> ...
+>>> static inline void release_probes(struct tracepoint_func *old)
+>>> {
+>>> 	...
+>>> 	call_rcu(&tp_probes->rcu, rcu_free_old_probes); <-- Here
+> 
+> Have you tried just changing this one to call_rcu_tasks_trace()?
 
-   call_rcu() -> rcu_free_old_probes -> call_rcu_tasks_trace() -> rcu_tasks_trace_free_old_probes.
+Actually, I see two possible solutions there:
 
-Just like it was done when SRCU was used.
+1) If we want to keep unchanged register/unregister functions as a single
+    API for normal and syscall tracepoints, and we don't want to add additional
+    flags in the tracepoint struct, then we need to chain the call_rcu:
 
-Reported-by: syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com
-Fixes: a363d27cdbc2 ("tracing: Allow system call tracepoints to handle page faults")
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Michael Jeanson <mjeanson@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Jordan Rife <jrife@google.com>
----
- kernel/tracepoint.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+    call_rcu() -> rcu_free_old_probes -> call_rcu_tasks_trace() -> rcu_tasks_trace_free_old_probes.
 
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 6474e2cf22c9..33f6fa94d383 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -101,11 +101,16 @@ static inline void *allocate_probes(int count)
- 	return p == NULL ? NULL : p->probes;
- }
- 
--static void rcu_free_old_probes(struct rcu_head *head)
-+static void rcu_tasks_trace_free_old_probes(struct rcu_head *head)
- {
- 	kfree(container_of(head, struct tp_probes, rcu));
- }
- 
-+static void rcu_free_old_probes(struct rcu_head *head)
-+{
-+	call_rcu_tasks_trace(head, rcu_tasks_trace_free_old_probes);
-+}
-+
- static inline void release_probes(struct tracepoint_func *old)
- {
- 	if (old) {
+    Just like we did when we used SRCU.
+
+    This is not perfect because we'd be adding extra delay for reclaim of
+    the old probes array for every tracepoint being updated, not just the
+    syscall tracepoints, but we probably don't care. This is a straightforward
+    initial solution.
+
+    We did something similar with SRCU before and it was OK.
+
+2) If we want something more elegant, we can add a flag to struct tracepoint
+    for syscall tracepoints, and use that flag to choose between call_rcu()
+    and call_rcu_tasks_trace(). But maybe this additional complexity is not
+    even useful.
+
+I'll prepare a patch implementing (1) and send it your way as RFC for further
+testing.
+
+Thanks,
+
+Mathieu
+
 -- 
-2.39.5
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
 
