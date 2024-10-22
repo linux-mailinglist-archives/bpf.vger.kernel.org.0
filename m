@@ -1,291 +1,170 @@
-Return-Path: <bpf+bounces-42775-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42776-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C968B9AA121
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 13:27:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 859139AA14F
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 13:45:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B4671F22787
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 11:27:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3F94B229EF
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 11:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 150FE19C547;
-	Tue, 22 Oct 2024 11:27:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137CC1474BC;
+	Tue, 22 Oct 2024 11:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iebYW6jN"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C4gSUn4i"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA036F066;
-	Tue, 22 Oct 2024 11:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729596450; cv=fail; b=jRHAg95soWnewsHUZIXHkj5lwVhCQXwYzX7Eu9381stp2sVQOfldFrscn6NzAgV9Mg9Lb6FwIGKVAIXSwOG2FIF5rchaEoFDXi5/EQm7dcauNU0sL0hGHVwxrCDJgiZG73j4whPwVtXd9cgeR5n62wiv+mmoFC0Gu2epjqPzqFc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729596450; c=relaxed/simple;
-	bh=hRvxUzocOWIM6IXVlMytvCnHlDafwCDjEpr0ZbzySiQ=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Uqq+az9umlCXBYfxws1mpd6yQhkMnJkqSax4QHkyi8qEQ0m10FfFMoT8WwKPRcDdTw6LDAfLhoXNOgi4/57iu0s45m+WFPSaL9GJg9DZsSrPciSh5Pr3pXLNTeVq+3AqM6WRnPdrHZU3sbZEWTjXDWNS1I26UleH5JlRjvir9MU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iebYW6jN; arc=fail smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729596449; x=1761132449;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=hRvxUzocOWIM6IXVlMytvCnHlDafwCDjEpr0ZbzySiQ=;
-  b=iebYW6jNkEZigqdKu0uoLjJ3B6KlQJxcShK8pPjFazFmQoCYbzA8Ktyv
-   P1VIRwbeqfSjiVYqbgkKUgLKWKI1tUWeVoyK3NPHIKHwflRld3rdkan5M
-   ij6H4mBH2962kXWZZiB2ygYPdALXl5K/lYMIIAVNUcwf3FmNWPTtXkkAK
-   dD438c6TtmqSm7KvY73kkmjIXADvFvfIFVak+l0Ad+W+AjE5VD8zie2wE
-   eFYBZHKIcttp1e0sygP6EnPofbPSVef/kaLClcHvbt6ZD9JvIc61+xZrw
-   bevEK8Qk5cJhd1SxNIyfwrIK0X0TjeX+yWeqkuWOCczr4R8i0QB2XJBqK
-   g==;
-X-CSE-ConnectionGUID: Vcogw2RdR+C3pm03m2DIdg==
-X-CSE-MsgGUID: SRLYpCsKRO+R/+SK1ng/qQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="32816928"
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="32816928"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2024 04:27:27 -0700
-X-CSE-ConnectionGUID: 56LcLbmvSeGjyaLyGEondQ==
-X-CSE-MsgGUID: mLl80k2jTxyRy2PQwY3qvQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,223,1725346800"; 
-   d="scan'208";a="117274847"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Oct 2024 04:27:26 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 22 Oct 2024 04:27:25 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Tue, 22 Oct 2024 04:27:25 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 22 Oct 2024 04:27:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=I+T3aiSYVnkk/LZUcBnH/ocNlTRmKEgEtut04aiGyAItbcHS8wzkeF2gWkHoPfsLyXy6YUxrqfSfyjOLjSq+G1sq5mNt13hlSFOyzb7d88w4rAHN0PxcP71N+0t07Yx73xBM+z45TWwNsUuJJY0Y6rZHpb2Nz/q/iT7A798qvn48J5LmFcnqlg3TOdj9JSk52ofCxvCV+Y5MnS+CS5AUrC56DlekwGtiwYvRomfbuK+05zucnfYWZHgAEggLL1Sq8B5IExizv0yzBwUgLZ2PLzYpqzmTzZtgmEqft2xyuCphlYCVQoNFvCNqn0QGSEeM612WMrqZDzuErATFI+VO7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=10RjmIzIVfWs27z29lDWgcDHj7YSIRTBj5Xu8YyJXTE=;
- b=xQo/WQPUPcbXorBDY5Fz0VTMsZkI8m3/65Qq0LaIw8KpY4//NHribQIbf8Dpq252h1zvATppNvU7rWd/jmgEr80v+HbaytKdkDVcQwNeCCVI9e3DC2gsWil3qi6ieSeGAMlzI8N+B9yY8k8NIiryaTXFpeiPoRcLRh8qFkbQDOh5/F6gMYEZokukACrzQ83HWf80BudWFHUO7VFTyK38KyDQxaemivVGSLxNqwZiXEtezs/FOIM2EDbtz5NfnsLJF12JuMw7bKcIocj3dB/qi86FHVFh4x1Kuz/EjX5AAdhCBK+NLWyqXhUCdK+niiQyZJiCdOxb9sDNoADSIFoXyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- BL1PR11MB5953.namprd11.prod.outlook.com (2603:10b6:208:384::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.29; Tue, 22 Oct
- 2024 11:27:23 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::d19:56fe:5841:77ca%5]) with mapi id 15.20.8093.014; Tue, 22 Oct 2024
- 11:27:23 +0000
-Date: Tue, 22 Oct 2024 13:27:15 +0200
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Yue Haibing <yuehaibing@huawei.com>
-CC: <anthony.l.nguyen@intel.com>, <przemyslaw.kitszel@intel.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<hawk@kernel.org>, <john.fastabend@gmail.com>, <vedang.patel@intel.com>,
-	<jithu.joseph@intel.com>, <andre.guedes@intel.com>, <horms@kernel.org>,
-	<jacob.e.keller@intel.com>, <sven.auhagen@voleatech.de>,
-	<alexander.h.duyck@intel.com>, <intel-wired-lan@lists.osuosl.org>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>
-Subject: Re: [PATCH v3 net 4/4] ixgbevf: Fix passing 0 to ERR_PTR in
- ixgbevf_run_xdp()
-Message-ID: <ZxeME2QozMGEM290@boxer>
-References: <20241022065623.1282224-1-yuehaibing@huawei.com>
- <20241022065623.1282224-5-yuehaibing@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20241022065623.1282224-5-yuehaibing@huawei.com>
-X-ClientProxiedBy: MI0P293CA0014.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:44::14) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCCDE13BAC3
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 11:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729597516; cv=none; b=ZrlJMpuBuhY8QBtLvDPbhCjGScngJuSWQXxyenVbTscR40iCZ/DVFbekZNFBN4aJFFEuNVAq643nmMMTZQ8LUAB7sCRPURYO57Zpt5+Y1JCHWODI8EOyuV2CStJTc9S0uDASSj8kCq33+J/eWw0ypHQd43hese3EuYm/qKP1apI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729597516; c=relaxed/simple;
+	bh=WZr6nhUUy78YTMOWnUJE5GttoIrEa/0NxsjsM9zKj14=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=U7M998wsthXgGL/KPbbfSozipLuEmUgbb1RugGWRB2cu6QotUHI0fDPL8zuJ1tqsHew7jzaF2W2ct4VH6uL07yIlPfL0V3hVjbmCb15bkdXjar/mZ6tQC3qE55PPOwGNnMloCazwG+ETUcvT9uabrXtdqz47KjwtwDSvDCnp3Vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=C4gSUn4i; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1729597513;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7enNsG1bpUFHlhr1DT8YO4p834Hmfug+sy6xBqiLvdU=;
+	b=C4gSUn4iDoH/B3l8/WwKrLEDIUgg09X5wgee7AYchD9i8cjJcnAxf9I6hKiL71e+pALSEn
+	0oHx+tNyQlIvwVs/0JO6ZbmjVDqiB28jT1zNhxm1tBVHn7YsnsoQQC8dhVu9AxgLV+tBAo
+	eS80uxDBAdFZhqPxrsXojOq3NyKjSkI=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-556-W1LtwbXaNfWYWzOPwz6vfA-1; Tue, 22 Oct 2024 07:45:11 -0400
+X-MC-Unique: W1LtwbXaNfWYWzOPwz6vfA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-37d47fdbbd6so3235583f8f.3
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 04:45:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729597510; x=1730202310;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7enNsG1bpUFHlhr1DT8YO4p834Hmfug+sy6xBqiLvdU=;
+        b=FY+ArrqPoCbov/NDKJPbBa5o7R3JVtl6mnJgFBx9c582vJeVRNMJKRAeveO91/XIlx
+         qxOvk9h4GXtzk7suGMhHK0Tl4ppgLnmmghr03i4lK9dHnBf8FBrjjSDqBdnz2gs1Aaky
+         esnGAjV0wzaoSFaTNaOCLrcmeGaJvz5xaUbHa48dff2KjtLwbI8eb5hhtZw0eyTM6XeJ
+         utR0vCMSMXYrYR3vE+TGQv8OAyCJiPIRljceqQl7ah7toSewdh4gwShWp9K3zZJw8T1P
+         2WyYItulg1NvCxRK5shr/+K0SDZccHUwGuetAT0Q9BrcRjPPJ/qv181h0RSuwInSiVfl
+         0xHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXeYTw9q2xBtXGhfVDNOZsUr+HF4x3pkhT9zOdnh7TAlwQw5uzfpcVmkRe/jz8fo/nAwWs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw35Kpq4BVLPTnXV2CJDWFgl4RXKdu8PYL6G9xZ8ilQhaPrUc1V
+	/NJbzYbDiR3880I/NNnX7Rhy9BUlPcv5QCXKwKjKjXy/G1peSM+idMdAt72QtqLh6AjquO+C2sI
+	YQCK/LPgUHeRi58BZK3g5Jt2YRKZRZnyZJmJGOFOonIptTLAB
+X-Received: by 2002:a5d:4ac5:0:b0:37d:5035:451 with SMTP id ffacd0b85a97d-37ef2132fc5mr1627615f8f.10.1729597510367;
+        Tue, 22 Oct 2024 04:45:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH9/lCtcCldWBfFoCPcs0bS+J8BhKQ+FTbLQ1w6APtRdz0iPaHCYLpmwsuxKuNHk9sPkkLKSg==
+X-Received: by 2002:a5d:4ac5:0:b0:37d:5035:451 with SMTP id ffacd0b85a97d-37ef2132fc5mr1627593f8f.10.1729597509995;
+        Tue, 22 Oct 2024 04:45:09 -0700 (PDT)
+Received: from [10.43.17.17] (nat-pool-brq-t.redhat.com. [213.175.37.10])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37ee0a3650esm6504274f8f.4.2024.10.22.04.45.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Oct 2024 04:45:09 -0700 (PDT)
+Message-ID: <3d1ad598-531a-4e31-a0cc-b8fe05d37f64@redhat.com>
+Date: Tue, 22 Oct 2024 13:45:08 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|BL1PR11MB5953:EE_
-X-MS-Office365-Filtering-Correlation-Id: bb369f83-6f6e-484b-e079-08dcf28c7faa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?dxJ0NOvcv8IWK1CkXEh+wj/Nzi9RME04Lx0oKhUxOqUF6RT+Dus9uOa8lqEb?=
- =?us-ascii?Q?EUQVJDTLkzCZN9I9MEi7HKXb8pijF7LIX10JF3euUwaI6Fw+jv91N3sPHnQj?=
- =?us-ascii?Q?fEuq2fdXNRQaRJR6EGodSaLW5gsaQHJ8LWioukX1sIYR9Aa0ijPFdIkYLTAa?=
- =?us-ascii?Q?FDLziQ+H0o6zzolXzGDXW2nX0rTFDU6J6S/yKOx/rwM9/RAn7DIyRBI0gAan?=
- =?us-ascii?Q?1XIV4ZMaN95XOidNzFREq18NYDxnRK2lWPiHUNNN486aoiyjglb37UR0MfLg?=
- =?us-ascii?Q?IhpZZ6Qnk2uqg/AESLG7wF4EmorJLkh/iufbsQHarLo3MZaFED90MTMShliz?=
- =?us-ascii?Q?JUN1NL5KM2snkParOAAOUZXYP7dAKbMessP2Mnb4EqQHVtzREyjEEaJMV3Bs?=
- =?us-ascii?Q?u0ARqwWCgi0ohsiq8f7HO5GTkojBWRChmToIvA4ou+Rf2OTgbHrUmwk2OnAL?=
- =?us-ascii?Q?onqE7lo5kCSFktlmZl4cC6RJmvYYoiHiWmhvVjZPwhZURP+IEFsc85726/P5?=
- =?us-ascii?Q?i+gdrZh9Vnn2O3On0DPZAdTY+46jTBU9wqACyC1FV9gA2uXzFW0E3jqgkLwQ?=
- =?us-ascii?Q?ib6HjIPXL9Gd6dEOfsT3V9uh++xYuya7q3fsgiKt1aw8DMvKS9shv39IjI8b?=
- =?us-ascii?Q?Kky0d4vdQY/gX6tN4lPx+0WTAhM2RV5DZtC3iRamzuAj0EWS3v7nRIequuzM?=
- =?us-ascii?Q?oS/T2/sto+2Xct2A+O1/Yd0sv7fX+332cREmvf88ebXXuyuY7p3uCjqRqYrx?=
- =?us-ascii?Q?AnA6BNVxE/bhPsa8nSxV759zoSveGiq0/1XBK8Cr+mFRrWf2pVxn/YS4FEx3?=
- =?us-ascii?Q?cb6zNf2swakezySRmmCPtJIl5C9wBsOBp+IS4N1Obqju3BueK7er7nkbUObQ?=
- =?us-ascii?Q?bLQrgeRzBh3Bi+lNgdXF46eMcCs/9B/wseJoKN8VQdgBXZrwfZg6TOeGAy3x?=
- =?us-ascii?Q?POizLuC9Nd03W83LOoSh2dRHPV4gqDXdNWMOsPOHtGDMnMQb0uE8Hk9GKgQT?=
- =?us-ascii?Q?EVzJfR/fja/tDBm05p/Za5h+O+Ma1SbBoMTmqxtE0PWR7Zdv4hKxyrIaNlKU?=
- =?us-ascii?Q?45B0ejcPaIwoJ4pW+2AkfLrI7/US2RzKDSqH0T3S1rI/6rM8za6l3igLkYpJ?=
- =?us-ascii?Q?RQwXpWbDSmSO6gNtVexi1Inyiw51XYLhCPzyhJRaWFjf3hCVQnu97x+rWLW5?=
- =?us-ascii?Q?0OIerPsvnxuiLB1X0FlbMfcqx05LuD/uQ6z/moYXdGcM1g0c7L1dd+GMXQ9h?=
- =?us-ascii?Q?KI+VhT4GIukLl/uHKsc+c0fWVXPzeY27BUOatmLFK7edk3sI1ZClpjzySt9D?=
- =?us-ascii?Q?OxavD5JK2/js9ei2LOmCDrJM?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MRbD0NHzD/9BNDcEFZHYrre6YlxtdSt/1cY3Avt3UDUzXQIIuzNHlAZ4fKQ2?=
- =?us-ascii?Q?g7blvTecPxPXIF8mHwRnrRnGZepqISiQ6+1S9zfJkrgEJ8gqfveMLRGDGew4?=
- =?us-ascii?Q?1iKQwoWjG8sBUNMNWzdi/8yg/sR0pZZrd6p6+v6jwxG8dDAo+qGS0rvdbzRj?=
- =?us-ascii?Q?7ydF6wbasgpiyz/nlhj8K0mN7HEifRnc6GLBE9vZf5FBwdT3hZOk1ETu/Mtq?=
- =?us-ascii?Q?mB9iphFkFEbGDodKo3iiUSCLgqxA2zrxjCueCYVf3n9mlOLBKAeCcD5DkldZ?=
- =?us-ascii?Q?nUQpTtEyLP7ma8k8BAaO1sR0XDVNuAOmfz9tqwCawYEb08Fej8XXpahHjCvy?=
- =?us-ascii?Q?/iYRZsmcN5aA8MFDQNMlhp0JpdD/pxQCbd2/NZVP4GmdJ34jvLWHu+QXVYMU?=
- =?us-ascii?Q?wNzTFxb7MFVVJd5FpOq5kPl8QG/Leiu0dsZxDOgnNvYlIl04Pfw9ulVJmjEh?=
- =?us-ascii?Q?xRxNe0sCD5/uOaUuMw4WSkI68hmI2v42cox49i2znm6NHS7JLVndLAW9K75+?=
- =?us-ascii?Q?N8wk4UbP9FZYaXIB/Qgi4asN4dnN9fWs5m6jRSdaSp8JNki+faFqtHn4Ul3u?=
- =?us-ascii?Q?Jkd19dUOwh35t0LPpr1QRCNm/yWrcPllk4UCm8Huk/g0Drq/9MVPtQ95st3U?=
- =?us-ascii?Q?mMXpuSMBMeMW7KIjG0+5rNXTV4PJhU2TySTG0yRoQ/UiIn2d7UqeEkdp7RPU?=
- =?us-ascii?Q?dGej+Ljb+sa1oXUKs6tbi8yAV7vYMCDvJDIq48fWzU+ltHWRdsNJgQs8bWBl?=
- =?us-ascii?Q?wIT71oUvn9eY1JNCWHH/DvMu1G+pMIXNiu2FVJCzGG1+sMHMOh0n81t3GPKw?=
- =?us-ascii?Q?9wNZMgYPjlN6qaKS7peAy3iulbKF+0nrDOfBsEBuZ8Z02HzaXnE5ypG0JAk7?=
- =?us-ascii?Q?C0QyoWkWHNKjpojRAZBFOigtXSFcUl8uUkEkZNYrNXRYRj5R9HX8K/h9HIGc?=
- =?us-ascii?Q?pIAlCjEkzf9R0X71OfaHxKCEjgZ2xoBKOvjyCW+h8HcIBlQmJfnYT6eMmdi6?=
- =?us-ascii?Q?pNl41wtr+Ed7bwnxpvH/ftM5oZR3MaMw4XXox/yTHnyCyh3oMW2GheSqezkq?=
- =?us-ascii?Q?T/l8jevVDwiKVHGksRNaaKYxi5i6Y9ZsDHO9wlxM+fVspUE4WVa9NGko1zpt?=
- =?us-ascii?Q?0ttCdEfPsBsdR7/bsxZvWmZ1K9vgxGo07kY/SkP9l4xPwJdv7NkjywqJSNjD?=
- =?us-ascii?Q?6alvOA4s5E2cJTFrEAyeJNvkK/6kDtFlgFVhbEfq14xGwCvBaSAEvQPCykdz?=
- =?us-ascii?Q?oGDf2Qb4US2xDMelZjLfGhcev/dncxV3XLIu0bp+UkP1yRjV+Z1vPdujJ3Bq?=
- =?us-ascii?Q?2vDiOIgevoOELVlMUN5X18sIK67Dk2MVW9eWmJDrkWyI/ij4dVVgfFZEmBR7?=
- =?us-ascii?Q?D93uoCCFcvf4aQzkLIL3j8Pa2IK3T+6YzAj0o5VYaXSuco0VwcJZh3RkFGWa?=
- =?us-ascii?Q?TOlSei0qtwgPNNb+K2PZqtyrJY08NlnWY1mb8vinG79xgnopvtLn6ZbyaYON?=
- =?us-ascii?Q?wThefDyE9Xr/59VxioD+8hcZrzui4DtWrtSi7MLY9n3VgIlckc9t2GZzB2fN?=
- =?us-ascii?Q?3ziIJDUc36H6yLdVyC/O8dyL7asdv9AsvySr5iJM7lEIySPh1bqtqILKIb0X?=
- =?us-ascii?Q?Yw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb369f83-6f6e-484b-e079-08dcf28c7faa
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2024 11:27:23.3399
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PhHf94WdSAvqGn70Hr/xXtU9/4/TnOeFdkWkmn4ZShb4mY2vohU3LTnC9cDh14OdbYoA3kkgnx5IOHtHGKjXyeLzqbeSL9ns9hgepFygHME=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5953
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] objpool: fix choosing allocation for percpu slots
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+ Matt Wu <wuqiang.matt@bytedance.com>, bpf@vger.kernel.org,
+ Andrii Nakryiko <andrii@kernel.org>
+References: <20240826060718.267261-1-vmalik@redhat.com>
+ <20241022141748.521cb2d6a4a86428c9bfc99e@kernel.org>
+From: Viktor Malik <vmalik@redhat.com>
+Content-Language: en-US
+In-Reply-To: <20241022141748.521cb2d6a4a86428c9bfc99e@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Oct 22, 2024 at 02:56:23PM +0800, Yue Haibing wrote:
-> ixgbevf_run_xdp() converts customed xdp action to a negative error code
-> with the sk_buff pointer type which be checked with IS_ERR in
-> ixgbevf_clean_rx_irq(). Remove this error pointer handing instead use
-> plain int return value.
+On 10/22/24 07:17, Masami Hiramatsu (Google) wrote:
+> On Mon, 26 Aug 2024 08:07:18 +0200
+> Viktor Malik <vmalik@redhat.com> wrote:
 > 
-> Fixes: c7aec59657b6 ("ixgbevf: Add XDP support for pass and drop actions")
-> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+>> objpool intends to use vmalloc for default (non-atomic) allocations of
+>> percpu slots and objects. However, the condition checking if GFP flags
+>> are equal to GFP_ATOMIC is wrong b/c GFP_ATOMIC is a combination of bits
+> 
+> You meant "whether GFP flags sets any bit of GFP_ATOMIC is wrong"?
 
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Well, I meant that the condition is wrong w.r.t. what is supposedly its
+original purpose. But feel free to rephrase as you seem fit or I can
+send v3 if you prefer.
 
-> ---
->  .../net/ethernet/intel/ixgbevf/ixgbevf_main.c | 23 ++++++++-----------
->  1 file changed, 10 insertions(+), 13 deletions(-)
+Thanks.
+Viktor
+
 > 
-> diff --git a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-> index 149911e3002a..183d2305d058 100644
-> --- a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-> +++ b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-> @@ -732,10 +732,6 @@ static bool ixgbevf_cleanup_headers(struct ixgbevf_ring *rx_ring,
->  				    union ixgbe_adv_rx_desc *rx_desc,
->  				    struct sk_buff *skb)
->  {
-> -	/* XDP packets use error pointer so abort at this point */
-> -	if (IS_ERR(skb))
-> -		return true;
-> -
->  	/* verify that the packet does not have any known errors */
->  	if (unlikely(ixgbevf_test_staterr(rx_desc,
->  					  IXGBE_RXDADV_ERR_FRAME_ERR_MASK))) {
-> @@ -1044,9 +1040,9 @@ static int ixgbevf_xmit_xdp_ring(struct ixgbevf_ring *ring,
->  	return IXGBEVF_XDP_TX;
->  }
->  
-> -static struct sk_buff *ixgbevf_run_xdp(struct ixgbevf_adapter *adapter,
-> -				       struct ixgbevf_ring  *rx_ring,
-> -				       struct xdp_buff *xdp)
-> +static int ixgbevf_run_xdp(struct ixgbevf_adapter *adapter,
-> +			   struct ixgbevf_ring *rx_ring,
-> +			   struct xdp_buff *xdp)
->  {
->  	int result = IXGBEVF_XDP_PASS;
->  	struct ixgbevf_ring *xdp_ring;
-> @@ -1080,7 +1076,7 @@ static struct sk_buff *ixgbevf_run_xdp(struct ixgbevf_adapter *adapter,
->  		break;
->  	}
->  xdp_out:
-> -	return ERR_PTR(-result);
-> +	return result;
->  }
->  
->  static unsigned int ixgbevf_rx_frame_truesize(struct ixgbevf_ring *rx_ring,
-> @@ -1122,6 +1118,7 @@ static int ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
->  	struct sk_buff *skb = rx_ring->skb;
->  	bool xdp_xmit = false;
->  	struct xdp_buff xdp;
-> +	int xdp_res = 0;
->  
->  	/* Frame size depend on rx_ring setup when PAGE_SIZE=4K */
->  #if (PAGE_SIZE < 8192)
-> @@ -1165,11 +1162,11 @@ static int ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
->  			/* At larger PAGE_SIZE, frame_sz depend on len size */
->  			xdp.frame_sz = ixgbevf_rx_frame_truesize(rx_ring, size);
->  #endif
-> -			skb = ixgbevf_run_xdp(adapter, rx_ring, &xdp);
-> +			xdp_res = ixgbevf_run_xdp(adapter, rx_ring, &xdp);
->  		}
->  
-> -		if (IS_ERR(skb)) {
-> -			if (PTR_ERR(skb) == -IXGBEVF_XDP_TX) {
-> +		if (xdp_res) {
-> +			if (xdp_res == IXGBEVF_XDP_TX) {
->  				xdp_xmit = true;
->  				ixgbevf_rx_buffer_flip(rx_ring, rx_buffer,
->  						       size);
-> @@ -1189,7 +1186,7 @@ static int ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
->  		}
->  
->  		/* exit if we failed to retrieve a buffer */
-> -		if (!skb) {
-> +		if (!xdp_res && !skb) {
->  			rx_ring->rx_stats.alloc_rx_buff_failed++;
->  			rx_buffer->pagecnt_bias++;
->  			break;
-> @@ -1203,7 +1200,7 @@ static int ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
->  			continue;
->  
->  		/* verify the packet layout is correct */
-> -		if (ixgbevf_cleanup_headers(rx_ring, rx_desc, skb)) {
-> +		if (xdp_res || ixgbevf_cleanup_headers(rx_ring, rx_desc, skb)) {
->  			skb = NULL;
->  			continue;
->  		}
-> -- 
-> 2.34.1
+>> (__GFP_HIGH|__GFP_KSWAPD_RECLAIM) and so `pool->gfp & GFP_ATOMIC` will
+>> be true if either bit is set. Since GFP_ATOMIC and GFP_KERNEL share the
+>> ___GFP_KSWAPD_RECLAIM bit, kmalloc will be used in cases when GFP_KERNEL
+>> is specified, i.e. in all current usages of objpool.
+>>
+>> This may lead to unexpected OOM errors since kmalloc cannot allocate
+>> large amounts of memory.
+>>
+>> For instance, objpool is used by fprobe rethook which in turn is used by
+>> BPF kretprobe.multi and kprobe.session probe types. Trying to attach
+>> these to all kernel functions with libbpf using
+>>
+>>     SEC("kprobe.session/*")
+>>     int kprobe(struct pt_regs *ctx)
+>>     {
+>>         [...]
+>>     }
+>>
+>> fails on objpool slot allocation with ENOMEM.
+>>
+>> Fix the condition to truly use vmalloc by default.
+>>
 > 
+> Anyway, this looks good to me.
+> 
+> Thank you,
+> 
+>> Fixes: b4edb8d2d464 ("lib: objpool added: ring-array based lockless MPMC")
+>> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+>> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>> Reviewed-by: Matt Wu <wuqiang.matt@bytedance.com>
+>> ---
+>>  lib/objpool.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/lib/objpool.c b/lib/objpool.c
+>> index 234f9d0bd081..fd108fe0d095 100644
+>> --- a/lib/objpool.c
+>> +++ b/lib/objpool.c
+>> @@ -76,7 +76,7 @@ objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
+>>  		 * mimimal size of vmalloc is one page since vmalloc would
+>>  		 * always align the requested size to page size
+>>  		 */
+>> -		if (pool->gfp & GFP_ATOMIC)
+>> +		if ((pool->gfp & GFP_ATOMIC) == GFP_ATOMIC)
+>>  			slot = kmalloc_node(size, pool->gfp, cpu_to_node(i));
+>>  		else
+>>  			slot = __vmalloc_node(size, sizeof(void *), pool->gfp,
+>> -- 
+>> 2.46.0
+>>
+> 
+> 
+
 
