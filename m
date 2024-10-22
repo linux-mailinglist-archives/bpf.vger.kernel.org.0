@@ -1,260 +1,175 @@
-Return-Path: <bpf+bounces-42717-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A87B39A9530
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 02:53:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0BF59A953A
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:02:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C74601F239B9
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 00:53:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 972481F23C6D
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 01:02:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC34A4964D;
-	Tue, 22 Oct 2024 00:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A8D8063C;
+	Tue, 22 Oct 2024 01:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wvUJIaTE"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="nxhCEaAB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469704A35
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 00:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C22A927;
+	Tue, 22 Oct 2024 01:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729558395; cv=none; b=UHs1IEGZd17l28+LutfSSntLjdQH9oqCXcYpS2dKoynr4fiM+q5rtcBrCWvjGU2w+Jb697BdIzI2oAzBhQBGjcJiCN6AxTa0fhIwQRKr+1V+7po1riea/jrzmdBgFeY6/mOuxPOP4A7uCC69fIpi1C6neCMLzn03LfxibL4YPYA=
+	t=1729558940; cv=none; b=RxY0oaF407713pJm2HrjflqihXDU2Yj6QuhB0lPefrrrK+dp7NZMTGsTRrV3Jzj/e3vyrWV77n9ANzwaOK2CUXFuTyPpR9xfMU505c0lLAio55of3nMUO+PJSkbmRZvhQ35RybgbkaCRVFfuBPt6q/G90M0SkNuMkl7vRRj7yxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729558395; c=relaxed/simple;
-	bh=tjIFHv/EMReXjvsE+7mWchxnJppWe44uHjwYfEO5/RY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ixSURaLHI7IVJ4NN6VtA0ymfeyMl1I9xApSSdZHLnt+oBYbob+sW+dsBWwgi4l12pjY0BPAnS4nE2YhNhWwwIPijJ5K09CROn2Vrano6w9z/3kF4sAw9NTbif+hY9gLvE+zwoJ5Z7TgODg94F9HVKZdM8HzVJXqfIGFd1YxBf44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wvUJIaTE; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <8a5f7f86-0784-4da3-a1b0-c2d88f3572d0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729558390;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+oHzFPLgOWgtkMsBteVC+zlpIqggyTXFkpQARkUQEnI=;
-	b=wvUJIaTEdtjUt3riVlG0mdM8tfNXZ0lJGa0hM3ixQiMg10OUXrtrG7GakqkkHU4oRPJSbc
-	tHBu92obJccgUFhbfG3Hd0ZIhKwSc7W4hLwK5Ka1ZLTsVxgl9adNOkyx3Xy3VZ4Nj98jyU
-	Ce1cAkd+X0kSvCdyP9ZHdCxtZHSVuJQ=
-Date: Mon, 21 Oct 2024 17:53:00 -0700
+	s=arc-20240116; t=1729558940; c=relaxed/simple;
+	bh=+uPsrAOcChIVguTREmIEfgaYRyyry6uMqgm7mCev93s=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=pSLdC8ids9PwiV+Ap3hSJKRxnkOIcKD19yqSQHR7/wU/YhgC/SBooRuj1oKFRTqYNOm6Ky6c0MJMq9k40PC2C0RII95Bu4h6yGJKl7uDf1yAcYjtODNJsUBsDVuB2lPPBx5+AdQAr0LTtGJxPDj54AQynjtuQN1GHNE26zw/B0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=nxhCEaAB; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1729558932;
+	bh=GZItvcYPlsFji1zxIwCTQdK4eNnugj/oYP/4HDVcadM=;
+	h=Date:From:To:Cc:Subject:From;
+	b=nxhCEaABmJP5emfqXYqoWu7OmBRiPfZkpLDd06HaxY6259rLV9RCouXYiaCMiuSL/
+	 USSbWULhzFwq60XQNENm7rtXOMoIWze8EQFy+3/uIRabbozoXiUEXkGJt71Lv97Ke3
+	 UMV1WsmamA4ysI1W3fhq3rr8hlrhX2GPcjp9XzSct6kUd8AN1MAuLgZVYwtIzJl8HS
+	 0hAAU7g1hsSkvYmL7Lu1U2vFal7cMtlJAJKKNZeHgPDFuDMlGnTI2qh+cVwBrMj153
+	 0gD7JShRwB8PqQCAgjILCrIEzl2Q1E+iaSS8q+SInCgYnsUao8UIqEaCChh0r3WTJb
+	 0ABr3lnQ2+b3w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4XXYmg2LSWz4wb7;
+	Tue, 22 Oct 2024 12:02:10 +1100 (AEDT)
+Date: Tue, 22 Oct 2024 12:02:11 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
+ <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+Cc: "Alexis =?UTF-8?B?TG90aG9yw6k=?= (eBPF Foundation)"
+ <alexis.lothore@bootlin.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Simon Sundberg <simon.sundberg@kau.se>, Toke =?UTF-8?B?SMO4aWxhbmQtSsO4?=
+ =?UTF-8?B?cmdlbnNlbg==?= <toke@redhat.com>
+Subject: linux-next: manual merge of the bpf-next tree with Linus' tree
+Message-ID: <20241022120211.2a5d41ed@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v2 04/12] net-timestamp: add static key to
- control the whole bpf extension
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-References: <20241012040651.95616-1-kerneljasonxing@gmail.com>
- <20241012040651.95616-5-kerneljasonxing@gmail.com>
- <67157b7ec615_14e1829490@willemb.c.googlers.com.notmuch>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <67157b7ec615_14e1829490@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; boundary="Sig_/zSLe_0kB=.oReJxYbu9mSw0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 10/20/24 2:51 PM, Willem de Bruijn wrote:
-> Jason Xing wrote:
->> From: Jason Xing <kernelxing@tencent.com>
->>
->> Willem suggested that we use a static key to control. The advantage
->> is that we will not affect the existing applications at all if we
->> don't load BPF program.
->>
->> In this patch, except the static key, I also add one logic that is
->> used to test if the socket has enabled its tsflags in order to
->> support bpf logic to allow both cases to happen at the same time.
->> Or else, the skb carring related timestamp flag doesn't know which
->> way of printing is desirable.
->>
->> One thing important is this patch allows print from both applications
->> and bpf program at the same time. Now we have three kinds of print:
->> 1) only BPF program prints
->> 2) only application program prints
->> 3) both can print without side effect
->>
->> Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> 
-> Getting back to this thread. It is long, instead of responding to
-> multiple messages, let me combine them in a single response.
-> 
-> 
-> * On future extensions:
-> 
-> +1 that the UDP case, and datagrams more broadly, must have a clear
-> development path, before we can merge TCP.
-> 
-> Similarly, hardware timestamps need not be supported from the start,
-> but must clearly be supportable.
-> 
-> 
-> * On queueing packets to userspace:
-> 
->>> the current behavior is to just queue to the sk_error_queue as long
->>> as there is "SOF_TIMESTAMPING_TX_*" set in the skb's tx_flags and it
->>> is regardless of the sk_tsflags. "
-> 
->> Totally correct. SOF_TIMESTAMPING_SOFTWARE is a report flag while
->> SOF_TIMESTAMPING_TX_* are generation flags. Without former, users can
->> read the skb from the errqueue but are not able to parse the
->> timestamps
-> 
-> Before queuing a packet to userspace on the error queue, the relevant
-> reporting flag is always tested. sock_recv_timestamp has:
-> 
->          /*
->           * generate control messages if
->           * - receive time stamping in software requested
->           * - software time stamp available and wanted
->           * - hardware time stamps available and wanted
->           */
->          if (sock_flag(sk, SOCK_RCVTSTAMP) ||
->              (tsflags & SOF_TIMESTAMPING_RX_SOFTWARE) ||
->              (kt && tsflags & SOF_TIMESTAMPING_SOFTWARE) ||
->              (hwtstamps->hwtstamp &&
->               (tsflags & SOF_TIMESTAMPING_RAW_HARDWARE)))
->                  __sock_recv_timestamp(msg, sk, skb);
-> 
-> Otherwise applications could get error messages queued, and
-> epoll/poll/select would unexpectedly behave differently.
+--Sig_/zSLe_0kB=.oReJxYbu9mSw0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I just tried the following diff to remove setsockopt from txtimestamp.c and run 
-"./txtimestamp -6 -c 1 -C -N -L ::1". It is getting the skb from the error queue 
-with only cmsg flag. I did a printk in __skb_tstamp_tx to ensure the
-sk->sk_tsflags is empty also.
+Hi all,
 
-diff --git i/tools/testing/selftests/net/txtimestamp.c 
-w/tools/testing/selftests/net/txtimestamp.c
-index dae91eb97d69..5d9d2773b076 100644
---- i/tools/testing/selftests/net/txtimestamp.c
-+++ w/tools/testing/selftests/net/txtimestamp.c
-@@ -319,6 +319,8 @@ static void __recv_errmsg_cmsg(struct msghdr *msg, int 
-payload_len)
-  	for (cm = CMSG_FIRSTHDR(msg);
-  	     cm && cm->cmsg_len;
-  	     cm = CMSG_NXTHDR(msg, cm)) {
-+		printf("cm->cmsg_level %d cm->cmsg_type %d\n",
-+		       cm->cmsg_level, cm->cmsg_type);
-  		if (cm->cmsg_level == SOL_SOCKET &&
-  		    cm->cmsg_type == SCM_TIMESTAMPING) {
-  			tss = (void *) CMSG_DATA(cm);
-@@ -362,7 +364,7 @@ static void __recv_errmsg_cmsg(struct msghdr *msg, int 
-payload_len)
-  	if (batch > 1) {
-  		fprintf(stderr, "batched %d timestamps\n", batch);
-  	} else if (!batch) {
--		fprintf(stderr, "Failed to report timestamps\n");
-+		fprintf(stderr, "Failed to report timestamps. payload_len %d\n", payload_len);
-  		test_failed = true;
-  	}
-  }
-@@ -578,9 +580,12 @@ static void do_test(int family, unsigned int report_opt)
-  	if (cfg_loop_nodata)
-  		sock_opt |= SOF_TIMESTAMPING_OPT_TSONLY;
+Today's linux-next merge of the bpf-next tree got a conflict in:
 
-+	(void)sock_opt;
-+/*
-  	if (setsockopt(fd, SOL_SOCKET, SO_TIMESTAMPING,
-  		       (char *) &sock_opt, sizeof(sock_opt)))
-  		error(1, 0, "setsockopt timestamping");
-+*/
+  tools/testing/selftests/bpf/Makefile
 
-  	for (i = 0; i < cfg_num_pkts; i++) {
-  		memset(&msg, 0, sizeof(msg));
-> 
->> SOF_TIMESTAMPING_SOFTWARE is only used in traditional SO_TIMESTAMPING
->> features including cmsg mode. But it will not be used in bpf mode.
-> 
-> For simplicity, the two uses of the API are best kept identical. If
-> there is a technical reason why BPF has to diverge from established
-> behavior, this needs to be explicitly called out in the commit
-> message.
+between commit:
 
-SOF_TIMESTAMPING_OPT_TSONLY will not be supported. The orig_skb can always be 
-passed directly to the bpf if needed without extra cost. The same probably goes 
-for SOF_TIMESTAMPING_OPT_PKTINFO. SOF_TIMESTAMPING_SOFTWARE does not seem to be 
-useful either. I think only a subset of SOF_* will be supported, probably only 
-the TX_* and RX_* ones.
+  f91b256644ea ("selftests/bpf: Add test for kfunc module order")
 
-> 
-> Also, if you want to extend the API for BPF in the future, good to
-> call this out now and ideally extensions will apply to both, to
-> maintain a uniform API.
-> 
-> 
-> * On extra measurement points, at sendmsg or tcp_write_xmit:
-> 
-> The first is interesting. For application timestamping, this was
-> never needed, as the application can just call clock_gettime before
-> sendmsg.
-> 
-> In general, additional measurement points are not only useful if the
-> interval between is not constant. So far, we have seen no need for
-> any additional points.
-> 
-> 
-> * On skb state:
-> 
->>> For now, is there thing we can explore to share in the skb_shared_info?
-> 
-> skb_shinfo space is at a premium. I don't think we can justify two
-> extra fields just for this use case.
-> 
->> My initial thought is just to reuse these fields in skb. It can work
->> without interfering one another.
-> 
-> I'm skeptical that two methods can work at the same time. If they are
-> started at different times, their sk_tskey will be different, for one.
+from Linus' tree and commit:
 
-For the skb's tx_flags, Jason seems to be able to figure out by only using the 
-new sk_tsflags_bpf. In the worst case, it seems there is still one bit left in 
-tx_flags.
+  c3566ee6c66c ("selftests/bpf: remove test_tcp_check_syncookie")
 
-I am also not very positive on the skb's tskey for now.
+from the bpf-next tree.
 
-Willem, I recalled I had tried to reuse the tx_flags and hwtstamp when keeping 
-the delivery time in skb->tstamp for a skb redirecting from egress to ingress. I 
-think that approach was stalled because the tx_flags could be changed by the 
-netdevice like "skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS". How about the 
-skb_shinfo(skb)->hwtstamps? At least for the TX path, it should not be changed 
-until the netdevice calling skb_tstamp_tx() to report the hwtstamp? or the clone 
-in the tcp stack will still break things if the hwtstamps is reused for other 
-purpose?
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-> 
-> There may be workarounds. Maybe BPF can store its state in some BPF
-> specific field, indeed. Or perhaps it can store per-sk shadow state
-> that resolves the conflict. For instance, the offset between sk_tskey
-> and bpf_tskey.
+--=20
+Cheers,
+Stephen Rothwell
 
-I have also been proposing to explore other way for the key since bpf has direct 
-access to the skb (also the sk, bpf prog can store data in the sk).
+diff --cc tools/testing/selftests/bpf/Makefile
+index 75016962f795,6d15355f1e62..000000000000
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@@ -154,11 -153,9 +153,10 @@@ TEST_PROGS_EXTENDED :=3D with_addr.sh=20
+ =20
+  # Compile but not part of 'make run_tests'
+  TEST_GEN_PROGS_EXTENDED =3D \
+- 	flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
+- 	test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
+- 	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata \
+- 	xdp_features bpf_test_no_cfi.ko bpf_test_modorder_x.ko \
+- 	bpf_test_modorder_y.ko
++ 	flow_dissector_load test_flow_dissector	test_lirc_mode2_user xdping \
++ 	test_cpp runqslower bench bpf_testmod.ko xskxceiver xdp_redirect_multi \
+ -	xdp_synproxy veristat xdp_hw_metadata xdp_features bpf_test_no_cfi.ko
+++	xdp_synproxy veristat xdp_hw_metadata xdp_features bpf_test_no_cfi.ko \
+++	bpf_test_modorder_x.ko bpf_test_modorder_y.ko
+ =20
+  TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe_multi
+ =20
+@@@ -301,22 -302,11 +303,24 @@@ $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF
+  $(OUTPUT)/bpf_test_no_cfi.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wildcard=
+ bpf_test_no_cfi/Makefile bpf_test_no_cfi/*.[ch])
+  	$(call msg,MOD,,$@)
+  	$(Q)$(RM) bpf_test_no_cfi/bpf_test_no_cfi.ko # force re-compilation
+- 	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=3D$(RESOLVE_BTFIDS) -C bpf_=
+test_no_cfi
++ 	$(Q)$(MAKE) $(submake_extras) -C bpf_test_no_cfi \
++ 		RESOLVE_BTFIDS=3D$(RESOLVE_BTFIDS)	 \
++ 		EXTRA_CFLAGS=3D'' EXTRA_LDFLAGS=3D''
+  	$(Q)cp bpf_test_no_cfi/bpf_test_no_cfi.ko $@
+ =20
+ +$(OUTPUT)/bpf_test_modorder_x.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wild=
+card bpf_test_modorder_x/Makefile bpf_test_modorder_x/*.[ch])
+ +	$(call msg,MOD,,$@)
+ +	$(Q)$(RM) bpf_test_modorder_x/bpf_test_modorder_x.ko # force re-compilat=
+ion
+ +	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=3D$(RESOLVE_BTFIDS) -C bpf_=
+test_modorder_x
+ +	$(Q)cp bpf_test_modorder_x/bpf_test_modorder_x.ko $@
+ +
+ +$(OUTPUT)/bpf_test_modorder_y.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wild=
+card bpf_test_modorder_y/Makefile bpf_test_modorder_y/*.[ch])
+ +	$(call msg,MOD,,$@)
+ +	$(Q)$(RM) bpf_test_modorder_y/bpf_test_modorder_y.ko # force re-compilat=
+ion
+ +	$(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=3D$(RESOLVE_BTFIDS) -C bpf_=
+test_modorder_y
+ +	$(Q)cp bpf_test_modorder_y/bpf_test_modorder_y.ko $@
+ +
+ +
+  DEFAULT_BPFTOOL :=3D $(HOST_SCRATCH_DIR)/sbin/bpftool
+  ifneq ($(CROSS_COMPILE),)
+  CROSS_BPFTOOL :=3D $(SCRATCH_DIR)/sbin/bpftool
 
-The bpf prog can learn what is the seq_no of the egress-ing skb. When the ack 
-comes back, it can also learn the ack seq no. Does it help? It will be harder to 
-use because it probably needs to store this info in the bpf map (or in the bpf 
-sk storage). However, if it needs to learn the timestamp at the 
-tcp_sendmsg/tcp_transmit_skb/tcp_write_xmit, this timestamp has to be stored 
-somewhere also. Either in a bpf map or in a bpf sk storage.
+--Sig_/zSLe_0kB=.oReJxYbu9mSw0
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-SEC("cgroup/setsockopt") prog can also enforce the user space setsockopt. e.g. 
-it can add SOF_TIMESTAMPING_OPT_ID_TCP when user space only use 
-SOF_TIMESTAMPING_OPT_ID.
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmcW+ZMACgkQAVBC80lX
+0GzFlQf+OxGNSa17pOr41tHcb3O5LScGrLIKKn0lkzNHEp8x6fOIgzPIgN9VvWoS
+JXe4xtAjJYD8hHco4Dsx4au7uEG+a0Q8GqjJ++IZu0fdWC9b8tcijGk0Ro63U/XA
+w84nY+l8CsNNHtqWvgOsmtpCRM2D0YS18zvREyYILndlsHDbUTw8ck5F8HCa/z9e
+4t3ba7U999V2RyDqYv3DOo0mLZ1fweU7kn1LgE67N6IIGIbaxoHNoUQA5U+3UqFZ
+DUUKtcHbqjtCh3VPrqCvvXUDQkpErgX3nED1NzWVQOESqOInqM4Cd9YnWpWfV0W5
+YQx3+kt5tzUlvgYd7C9csDeHC+wNfQ==
+=Apvx
+-----END PGP SIGNATURE-----
+
+--Sig_/zSLe_0kB=.oReJxYbu9mSw0--
 
