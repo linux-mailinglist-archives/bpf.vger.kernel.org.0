@@ -1,164 +1,201 @@
-Return-Path: <bpf+bounces-42784-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42785-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC2EE9AB093
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 16:14:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6318F9AB098
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 16:15:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76F6C28452C
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 14:14:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E66EE1F2405E
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 14:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B93C11A00F2;
-	Tue, 22 Oct 2024 14:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 220171A08B2;
+	Tue, 22 Oct 2024 14:15:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="s2afD0k2"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DW+eIAi0"
 X-Original-To: bpf@vger.kernel.org
-Received: from AUS01-ME3-obe.outbound.protection.outlook.com (mail-me3aus01olkn2108.outbound.protection.outlook.com [40.92.63.108])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C9081E505
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 14:14:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.63.108
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729606487; cv=fail; b=peLIrShD5GCVZzwd6p9RPKiI7s72+LpDCqy1lnKm+WGij3XPhRGMQjZvQJH79YrPGbXVArJX+3wk+SabL5BnHVtTPHF/4nO/CF0wn57K52XyX75I+1B41HS29kz6D0ZQa2hMnH/RLWhhhVkx/DDlkPB6H8oUfrW3C80Xfxcex8U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729606487; c=relaxed/simple;
-	bh=EXkZ8gsdcVIhhxW7A0pzTdD7vQ1b/v9TJ0nijfeZfLA=;
-	h=Message-ID:Date:To:From:Subject:Content-Type:MIME-Version; b=XXQGLnznr1c5REFSvUyuyqkWLKTOh75PYIMop8AXMRhOg8QQPB8wZA4beOYWviC2Pa63bZVvLZeL2bXmKFc6ORi1RIQLFV9doJJ4vx+gYsTdxw2bi5ExJ0WWKha+ZhPnhtPAXlyR9dF1Uiw1GcElkDrX4Ytj5sNQ5pTRkrUlHE8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=s2afD0k2; arc=fail smtp.client-ip=40.92.63.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=D+PjJ/6Cceu7gN2Q+wLMiB5bBsNP+nN4a9/FwcoWAjSBCKg9h/vDaaA/H9805B4MyRHzhkOkngEhkkPjZmq+ZCg3GRstwNKggGeAPU8LKHCNX2rLR7PLCfLaHaIjEOdQEB5VHBrr3Mwrvm2oGFwLdTDWhBEcXyYey5O2dbtewuP86csETyaxZ+9LRTprYV8g9dEAVCx4xxnQSn8bLdl3abw80e/EQQmMMq7ji8Pw+EhLo0B+/4Q7GltkbaPcZY0ANJ/ggTmA3V5u87vereoemiaxe/Opu25iOBXOfN0HrTZ4TT+LKdMvgCXviMtkrhDAykqbY0vvpO79uA77xScuMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ypN7o8hBFGIegH5wBzg0H2jspRmbTXFujtq9F/OelPg=;
- b=r1PQSQqOLSb4OPpCdFAdzH/fdKF8Qr1jj2eHUDVD1W0rtYR0WKn6Vvh2x+mJyzZoNrKRBTVl59SmDwv/5tYaZRBgBE8d2iW0w16b4+iClXPpUsAuVVe+Yxe3RMKR2kXjEj6m/wnHVLv4bt90JGXMrNywyFrv8UURoc+5uXEHnMfs72rHUcWIu8KaoGjBVmke1V5HR5UyVZV/tLpm2EttWR2bzEFXP2xlrcue73D9FpQsDbDjaaTYqHU5/tHo9v57gOC7S4j6eYfSISJzzmrJuRvrgtzpHxr9ufREYCDS+rc1vBJ5hqq0nZXezCuiQ5OF44CMQuoHyU51dIAOjTGNUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ypN7o8hBFGIegH5wBzg0H2jspRmbTXFujtq9F/OelPg=;
- b=s2afD0k2nq+ePBn0NTd9klkSfJAUVeFoWexeTpP7YqqhmflVNd/KdE3uyR7QeLWFAlwshpwRHvN4r2yQtOW/QdOhRIZIjJnxfZBOgwROdGOmB9oZW7i5+ieKsZmq13bE4KtKtH31lPKdzPBMtsTuPQubbMonadCAzz/k9iM7Kq5F12GlwKv+TmVjTEz41OcUh3eW6Tw0lYQvVJ6Ky6PBsdJsWULjq2PPaU0K6WDAEHcjpIQ/NYYO4HUW1jJpjHiBF2BkgYO2kOvbPQWUO8NUpZnym/B8mr+4nzbwy6Z6izvgUA7Pf2SfgfstswcbA3VVRS0W5yBvviwECKEqL+Xijw==
-Received: from SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:10e::10)
- by ME3P282MB1506.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:ab::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8093.17; Tue, 22 Oct
- 2024 14:14:42 +0000
-Received: from SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM
- ([fe80::2644:2e31:fd3a:ce4d]) by SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM
- ([fe80::2644:2e31:fd3a:ce4d%7]) with mapi id 15.20.8093.014; Tue, 22 Oct 2024
- 14:14:42 +0000
-Message-ID:
- <SY4P282MB2313108B00C833317D0E5938C64C2@SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM>
-Date: Tue, 22 Oct 2024 22:14:30 +0800
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: bpf@vger.kernel.org
-From: Levi Zim <rsworktech@outlook.com>
-Subject: How to combine bpf dynptr and bpf_probe_read_kernel
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR13CA0028.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::33) To SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:10:10e::10)
-X-Microsoft-Original-Message-ID:
- <aff445f5-4556-40d4-a66b-130e36c15110@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67FB778C76
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 14:15:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729606509; cv=none; b=P3tPEj9oHeZd7hHPVdx95VrPh6rwC5yiLL/+IgJFrP9F9Rohs8HK9918JAmgETqjNImgcvKysWsOjuI/1ACGOyHlug41eQc0Ed4dZnYq8alOwNr+0wPl5UrPsStiQPqFpzUfVxQTQq9DNudiqqXawRnqGdI3kE7MQu+P9s5LTzg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729606509; c=relaxed/simple;
+	bh=UvW/EIUqOGCNTRVCwMkVKOz5Lk7XXXMET8bipDLaGb8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kEQJbdUpFrBDbdnENiAUWr+S+TavjwdBk06sZlqGiBYPd4OWEWf6FmSrn/UBao7cQMSsa3EVMFEXIhBAMtEeGLWC9IUt3FgMFZTxSif2im27yJbJrWX+KCqPJexfSAzG+Ae8zpnLnrv9glSZJsYEnKUUXZs90Ebjt3IoICC2a7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DW+eIAi0; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1729606506;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/rUUXr6la27UtVoKr8Jzs1BKo8PBqHiu5Iz8aLcJu/o=;
+	b=DW+eIAi0tmAyPPu3xKt7MxDSANVLNMU4CBYVH6fEKygEJjqHh91/NcxbiOXm6kECmZG59Z
+	dKYtz8cxhYS5QkrcdMU1Bp+npHRlrsQz1MbfYi1MYffDLVihVHprbf4LlHGDQjk1ZK5xV+
+	th2TA7Z5qwjEEfKl6JYGS5QYkZPz1BE=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-99-oMzFUuuKNcORXuLuvTikMw-1; Tue, 22 Oct 2024 10:15:05 -0400
+X-MC-Unique: oMzFUuuKNcORXuLuvTikMw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-43157e3521dso41164155e9.1
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 07:15:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729606504; x=1730211304;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/rUUXr6la27UtVoKr8Jzs1BKo8PBqHiu5Iz8aLcJu/o=;
+        b=UzFNIqyrn89Ydb43JmA6wXKF5+SippNKPZl8xe4oJZldIcITrhjZmge88busDDMtKY
+         dOPYB03aM6pmj4hrLd2sMVw2sJGrGahTi3p9rRWeRpL/IOd2AvaVuM8XKFwm2Esv4U0j
+         JzUYbTvpK1INjgqOSDwujmig9LyZ31gLGObwGgbPxPpZ6SrOoMhV79mB59J6GxJtCEG4
+         SkKrqtHTR7XKFzaT3VoslWH7wBN/qEyI/8SV0WEZqGR86jXijqgOLpaMMq4rqGnZ0Dmd
+         thKu5j/tdKT7G+8kRovvj18No9IisFe7Wk66b2XdEbY/ogo0ndyMEsdp3T5cseIo5Ezq
+         VpDA==
+X-Forwarded-Encrypted: i=1; AJvYcCXTNxbsa1i7yqs/TpJ1fU+wGH7Kaq3+l2s91x5z9eG8WkwVxecCmxGa685vXMze2dGAS7s=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3vXlJmWkeRx8N2mIltJH0OADTfCk4/3TWpM0TAbs1PP1ylRxi
+	2AVRfu+Ux+KMIhK1HggSMt98LoV19H3QNPUNc6GEGMPkynGGLloGSaMxIG8aQZ6ocqVSt1j7WX+
+	uv37GRAKsjjG5rn2JnN/dhpEEaYghPZUEkbQ9zVjYpIBWkhe5
+X-Received: by 2002:a05:600c:3592:b0:431:586e:7e7 with SMTP id 5b1f17b1804b1-43161634f28mr126111035e9.1.1729606503922;
+        Tue, 22 Oct 2024 07:15:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHhExv0Aqskml1SfJxb1qUqYC5dGCntpwGGVJCs0D0hjswplvviaggVBRCP6Q+cv809Q/VhiA==
+X-Received: by 2002:a05:600c:3592:b0:431:586e:7e7 with SMTP id 5b1f17b1804b1-43161634f28mr126110785e9.1.1729606503576;
+        Tue, 22 Oct 2024 07:15:03 -0700 (PDT)
+Received: from [10.43.17.17] (nat-pool-brq-t.redhat.com. [213.175.37.10])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37ee0a37d4esm6783856f8f.3.2024.10.22.07.15.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Oct 2024 07:15:02 -0700 (PDT)
+Message-ID: <5f930d8b-42fa-4bde-813e-cf90d3b866be@redhat.com>
+Date: Tue, 22 Oct 2024 16:15:01 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SY4P282MB2313:EE_|ME3P282MB1506:EE_
-X-MS-Office365-Filtering-Correlation-Id: a1d61922-dec5-4e67-24c9-08dcf2a3df16
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|19110799003|461199028|5072599009|6090799003|8060799006|15080799006|7092599003|440099028|3412199025;
-X-Microsoft-Antispam-Message-Info:
-	LmiI1YGrhVL18TOKcNIcpdT/npVQGvSMOIag3En1tk8Y/Vt9KobGDpwUk31Okk2nEPRZFmqlrkLuDFHEoy9KBSYq0hEyTmOPspB0WutNhUjldFfhrlSA1W55G91eKK3nKhkSmRgWVJ9Kb4S548soSFoSkeMWKGDfHTSRxdLjtpXqCgR4PUHEMNjRlQlFXpcFj17TUQknkrvm/SLUoB570PSetR5bRPKu0DfKzu9tZ7XeAkTqZ6pOcmKO4Dhp4NiClRet1Ur8wcdrXlBkMEOszwQxJ9YOI27g5f2kT72MO/vnB6WhTMacp/1d8NwlAKgSqmZTE+W+7xtGEeaZva6i3zZnFKUE5put7w/sRHAG/Mr2YjnzOU3NHbzqWjfJTCoEshFMMFa66MC0goqQgEGT150VwJNMqhPge9XNpoltf7yFbnhrtpgD14vLuRYysmrrofZM939OdhdHVE7xVCRC8xy/g6nC4HwcQlHg1GJ2SiW5t1/wzyvdPoI1h9SjQhY0HAfa0/NJeEMNKmgwC8lvsBvJozWmWoSpKXfrzz7NiQX2VXxfATh5MwjSQ2MqTYy3ciYmofLUYgnz1PXrhl1V1URjM4OtZFEgFOlfwkDDB7+pXnox01TnoT8Y9m+nJ/IOp93a8oE5G2JAELiZHk8zlVIiiULWBUXtECs6mXFA7mI+N5fmoDT4tbIx5muzjFF1ZDvmSIxw4eXtV3SBgDjlFgbF5PoZqYTtJEg1JeEoMurExkF7UhOTQJbg+j3XeN05
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MjFwd3UvazFhODcybkZJbm9EamZMb1UySkU0Y0FRYkNYMWJ2NE5JRU42OHJE?=
- =?utf-8?B?STFKRVFNSUY5RHVaWWVPTWpqVm5ESnY2UTZmREZZQXpkcjF3d0RFYjQzQTNk?=
- =?utf-8?B?cE9VcW9jaWdod3R5ME9UdUtBaVBZcE5vZEpMRUU3VUMveWl1SkdKNUl5Q0lE?=
- =?utf-8?B?M2FGR3Z2Q3d5YzJITmRwcVVRTlVmY0d6UFlGRU5ydm16MmUrRjJ2WGdVc2l0?=
- =?utf-8?B?MVgzclNXRUQzSit5azZ6a0Z2ME5naEdvYjhYOGlPQmlycVZLUlF3RzVpaVVp?=
- =?utf-8?B?SkthWnJsOFh4OGFnMWF3c1ZETDNrQjA5Ty9FaWRIVEpvclc2bEhib3QyQ1dK?=
- =?utf-8?B?TUQzQmVnTmRhVXhOTkFadTJmdllMejlrRFVMV2g5aGV4KzUwTHlHdHBJOEZQ?=
- =?utf-8?B?clZvTmg1bk1mQ0J3b2pFUDkyS0MyZVZ0R0tVaURIMGFiZmo2VWpBTmtiM2JC?=
- =?utf-8?B?UWFhUDNTa2FBWWN1bGVQcnRDVWxydFhLWCt4T0R6NHZqOHNyTDg1R3lXZnpl?=
- =?utf-8?B?a05PMlh1TU1TMGVEUE5JaG1SNklGd0lPTVpUL3lPanhsdU94cnczRjFKVjdr?=
- =?utf-8?B?L0xLSDFoS1IvclFvbkFvOCtOU0xRTHoyM2FObWRIbFVxeDJ6UHJGTUNDVStn?=
- =?utf-8?B?QURheGUxRFVreGx0aTh5VmxKMWE4YTRsTTdDWC90bXJhZG1YQk0xMDhEMVhz?=
- =?utf-8?B?ZU12dDhNR200bzNuaERIUGlwaFQvL1ZMb0dkTGw3WWxTdG5BRmJsUlk2RFJG?=
- =?utf-8?B?NlZZZmoxY2EyNmNIZWduQTlnMi93NTBLQzFETW1RRlQ0SjhEd1ZiazNXRTN0?=
- =?utf-8?B?eGlka0hWb2RyUVdYUHJlOW9NeURlam9RUXViUytCOFZUWUYvZjhmV3hhZk1u?=
- =?utf-8?B?Znpma0x2MHozUVIrSjFHeENRSU5KUjFSRkJPL1ZGaHQ2dHZFU1l0YUI1VWRE?=
- =?utf-8?B?ZmpDQzdxeDI1dGNndWZEYWs2TDVNR0RwdzNsSm1wREc1UnA2UVNycER1N2Vt?=
- =?utf-8?B?UlhpTG5vQjJ4ZnYrMVpWN0R0S1pOZy90ZCsrc0FBUlYzN2doS1JTQ2J1SWw3?=
- =?utf-8?B?R3N2TUMyWlJxdFp6ZXhzaXlvQzRidWo3N3BiSGFmZkd6Vzc3STRyUE1EY1Vv?=
- =?utf-8?B?K0ljRXY3VXV5czdkY0RaQlhwSkp1c0dHOW1ocXRuNEw5K3piZUpNcmtJM25Q?=
- =?utf-8?B?Vytjem4wZUdMYkcrYUxQL1BONFhGaFJ5ZmxpRzJpZHQ4T1hrTlRCd3JVMkhB?=
- =?utf-8?B?UEQ4U3pFd0hNRHNhazUrOWZsN3hHejN0K2xQaXFQK0NpQWhKbTNpNWo1NFMr?=
- =?utf-8?B?czE0dmkvdU5KUzNDWUNMVGFSdHp1SWM1bW5NK2k5ZDg3VjhQMURBS0xPNEpO?=
- =?utf-8?B?cXF6UnFYalprZkRtMlJHNTljWjh6dlR5dkVNbC8vY09CcUR2LzRMTk1PNkMz?=
- =?utf-8?B?blZTVjJmT3FTM0NQRVlqMDJTOHdLMmhFSTAvcjhiRXFlYnhkL0ZybGo5VzIx?=
- =?utf-8?B?aEkydkZFdytXUlBiQjJJd0JQbHhaRzZkcEJHVHY5VWdHTkJRbUJFSFM5VmNX?=
- =?utf-8?B?UVlXVHc3L256Mm9MRE9LclU1K0s0NHZmZk9uY3I3eWJhWXV5alF3NkJsTGVz?=
- =?utf-8?B?anU0eWYzSTcvSWFSNHZJRVluaWNFbFhPbVM2bDJpQ3BqU0VzRU1WOUxyTXBP?=
- =?utf-8?B?T0xMQnkzdjA3RXJaR2x6OGswcXU2ZGdnbVN1Q3RrbS9vU1crWk9uUi9yZTR6?=
- =?utf-8?Q?oDzEiw5/0CyyFnEVMT4SYzeadAC4qA/6uImfVZw?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1d61922-dec5-4e67-24c9-08dcf2a3df16
-X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2024 14:14:42.0918
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ME3P282MB1506
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: manual merge of the bpf-next tree with Linus' tree
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+ =?UTF-8?Q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?=
+ <alexis.lothore@bootlin.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ Simon Sundberg <simon.sundberg@kau.se>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+References: <20241022120211.2a5d41ed@canb.auug.org.au>
+ <CAEf4BzamHrmdwRFKAr9MGSmaVtrJT3-ru=KPXEcO981XZsM+Ew@mail.gmail.com>
+From: Viktor Malik <vmalik@redhat.com>
+Content-Language: en-US
+In-Reply-To: <CAEf4BzamHrmdwRFKAr9MGSmaVtrJT3-ru=KPXEcO981XZsM+Ew@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi,
+On 10/22/24 05:07, Andrii Nakryiko wrote:
+> On Mon, Oct 21, 2024 at 6:02 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>
+>> Hi all,
+>>
+>> Today's linux-next merge of the bpf-next tree got a conflict in:
+>>
+>>   tools/testing/selftests/bpf/Makefile
+>>
+>> between commit:
+>>
+>>   f91b256644ea ("selftests/bpf: Add test for kfunc module order")
+>>
+>> from Linus' tree and commit:
+>>
+>>   c3566ee6c66c ("selftests/bpf: remove test_tcp_check_syncookie")
+>>
+>> from the bpf-next tree.
+>>
+>> I fixed it up (see below) and can carry the fix as necessary. This
+>> is now fixed as far as linux-next is concerned, but any non trivial
+>> conflicts should be mentioned to your upstream maintainer when your tree
+>> is submitted for merging.  You may also want to consider cooperating
+>> with the maintainer of the conflicting tree to minimise any particularly
+>> complex conflicts.
+>>
+>> --
+>> Cheers,
+>> Stephen Rothwell
+>>
+>> diff --cc tools/testing/selftests/bpf/Makefile
+>> index 75016962f795,6d15355f1e62..000000000000
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@@ -154,11 -153,9 +153,10 @@@ TEST_PROGS_EXTENDED := with_addr.sh
+>>
+>>   # Compile but not part of 'make run_tests'
+>>   TEST_GEN_PROGS_EXTENDED = \
+>> -       flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
+>> -       test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
+>> -       xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata \
+>> -       xdp_features bpf_test_no_cfi.ko bpf_test_modorder_x.ko \
+>> -       bpf_test_modorder_y.ko
+>> +       flow_dissector_load test_flow_dissector test_lirc_mode2_user xdping \
+>> +       test_cpp runqslower bench bpf_testmod.ko xskxceiver xdp_redirect_multi \
+>>  -      xdp_synproxy veristat xdp_hw_metadata xdp_features bpf_test_no_cfi.ko
+>> ++      xdp_synproxy veristat xdp_hw_metadata xdp_features bpf_test_no_cfi.ko \
+>> ++      bpf_test_modorder_x.ko bpf_test_modorder_y.ko
+>>
+>>   TEST_GEN_FILES += liburandom_read.so urandom_read sign-file uprobe_multi
+>>
+>> @@@ -301,22 -302,11 +303,24 @@@ $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF
+>>   $(OUTPUT)/bpf_test_no_cfi.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wildcard bpf_test_no_cfi/Makefile bpf_test_no_cfi/*.[ch])
+>>         $(call msg,MOD,,$@)
+>>         $(Q)$(RM) bpf_test_no_cfi/bpf_test_no_cfi.ko # force re-compilation
+>> -       $(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=$(RESOLVE_BTFIDS) -C bpf_test_no_cfi
+>> +       $(Q)$(MAKE) $(submake_extras) -C bpf_test_no_cfi \
+>> +               RESOLVE_BTFIDS=$(RESOLVE_BTFIDS)         \
+>> +               EXTRA_CFLAGS='' EXTRA_LDFLAGS=''
+>>         $(Q)cp bpf_test_no_cfi/bpf_test_no_cfi.ko $@
+>>
+>>  +$(OUTPUT)/bpf_test_modorder_x.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wildcard bpf_test_modorder_x/Makefile bpf_test_modorder_x/*.[ch])
+>>  +      $(call msg,MOD,,$@)
+>>  +      $(Q)$(RM) bpf_test_modorder_x/bpf_test_modorder_x.ko # force re-compilation
+>>  +      $(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=$(RESOLVE_BTFIDS) -C bpf_test_modorder_x
+>>  +      $(Q)cp bpf_test_modorder_x/bpf_test_modorder_x.ko $@
+>>  +
+>>  +$(OUTPUT)/bpf_test_modorder_y.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wildcard bpf_test_modorder_y/Makefile bpf_test_modorder_y/*.[ch])
+>>  +      $(call msg,MOD,,$@)
+>>  +      $(Q)$(RM) bpf_test_modorder_y/bpf_test_modorder_y.ko # force re-compilation
+>>  +      $(Q)$(MAKE) $(submake_extras) RESOLVE_BTFIDS=$(RESOLVE_BTFIDS) -C bpf_test_modorder_y
+> 
+> This and above will need the EXTRA_CFLAGS and EXTRA_LDFLAGS additions
+> that we have for bpf_test_no_cfi.ko. For now, I'll unland the patch
+> set to avoid this conflict and breakage. We'll reapply once bpf is
+> merged into bpf-next. Viktor, please rebase to take into account these
+> new modorder.ko additions.
 
-I have a question about how use bpf dynptr and bpf_probe_read_kernel 
-together.
+Thanks Andrii.
 
-Assuming we have an fexit program attached to pty_write(static ssize_t 
-pty_write(struct tty_struct *tty, const u8 *buf, size_t c))
+I rebased my patches on top of the bpf tree, please let me know when I
+can resend them for bpf-next.
 
-I want to send some metadata and the written bytes to the pty to user 
-space via a BPF RingBuf.
-While I could reserve a statistically known amount of memory on ringbuf,
-it is a waste of the ringbuf's space if there are only one or two bytes 
-written to pty.
+Viktor
 
-So instead I tried to use bpf_ringbuf_reserve_dynptr to dynamically 
-reserve the memory on the ringbuf and it works great,
-until when I want to use bpf_dynptr_write to read the kernel memory at 
-buf into the memory managed by dynptr:
-
-       78: (85) call bpf_dynptr_write#202
-       R3 type=scalar expected=fp, pkt, pkt_meta, map_key, map_value, 
-mem, ringbuf_mem, buf, trusted_ptr_
-
-The verifier appears to be rejecting using bpf_dynptr_write in a way 
-similar to bpf_probe_read_kernel.
-
-Is there any way to achieve this without reading the data into an 
-intermediate buffer?
-Or could we remove this limitation in the verifier at least for tracing 
-programs that are already capable of
-calling bpf_probe_read_kernel to read arbitrary kernel memory?
-
-Best regards,
-Levi
+> 
+> 
+>>  +      $(Q)cp bpf_test_modorder_y/bpf_test_modorder_y.ko $@
+>>  +
+>>  +
+>>   DEFAULT_BPFTOOL := $(HOST_SCRATCH_DIR)/sbin/bpftool
+>>   ifneq ($(CROSS_COMPILE),)
+>>   CROSS_BPFTOOL := $(SCRATCH_DIR)/sbin/bpftool
+> 
 
 
