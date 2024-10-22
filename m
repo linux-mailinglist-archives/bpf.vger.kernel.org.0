@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-42764-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42765-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D0399A9D64
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 10:49:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 218309A9D69
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 10:49:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D2CE2831ED
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 08:49:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1F722831D3
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 08:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCAF018BBA9;
-	Tue, 22 Oct 2024 08:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8051E14EC4E;
+	Tue, 22 Oct 2024 08:49:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="esX4O3Bt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KH+gtNEB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f196.google.com (mail-yb1-f196.google.com [209.85.219.196])
+Received: from mail-lj1-f193.google.com (mail-lj1-f193.google.com [209.85.208.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6CE1714BA;
-	Tue, 22 Oct 2024 08:48:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F9C227735;
+	Tue, 22 Oct 2024 08:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729586934; cv=none; b=m89aAzwdZgwRhZHm3AkMO05WHuCDjyGE6Qs7bwF60yxJ/aInkOJ34XlmDOoKsunLNzXAzA8vpZ9zalkSgVKtjytf/ZbBlDrP/LL83do7ryiy5QQAq5pF8GwU/8ZVk3Cy26pHjPVPkzbXoIXWugQ3TWrjgm3x67g7kOoZO5OIe80=
+	t=1729586988; cv=none; b=P/8STgMGl4wOgIDo+lalhVh1Nc5zv63UN+oModqqIhQHiHnTdoZyG2oWNAftJ65Spl4upWoV5yBIm3p1anSHB937/+8baW3UWn4O7cd71dTN+w2kp3MqmtA+upDDajiJXFBR9SvqPhshu11P/B0d7kekkx1bie6upmL+phz8SlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729586934; c=relaxed/simple;
-	bh=BrXgG3mZIvjp5VteprPhQXe2uhCHZoadbc1SbaYA3JE=;
+	s=arc-20240116; t=1729586988; c=relaxed/simple;
+	bh=VmBJLc5YwrovcjmjVJSAnkQ1H6CTGhFHDhc1H9J1qnU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=j5PxKQXMrBwvrEM2ppwNbsLsD0dUx4Sz/UxGpmPODIlaA3SOOmrDvXARORSIuoqshlyVmXO0gkltZg5YjnAy67f3YvpKOOMnGxjILipuN1LwOU84oa6pa6pcypT/dAmSxyv8IRKlvfVLPY62uNmD4qAuSYo7OC1bsP7W3JqWjXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=esX4O3Bt; arc=none smtp.client-ip=209.85.219.196
+	 To:Cc:Content-Type; b=WNse9aV1A0TexPZf/oz3iMiosbon8zuTPy1JWifAE1bGf6g8k/dwYrsHZccZtizKKwcgFAWkd1n2Li9ePgxR/6BdeeWPY9WZ/6xAP95a8tg6bYE2PtfMvcPfRLreMw/6/GG2BqO7fuO4yx9WGsy/g/SS9NsvHi1pRUcfIEJK1nk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KH+gtNEB; arc=none smtp.client-ip=209.85.208.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f196.google.com with SMTP id 3f1490d57ef6-e2915f00c12so4960197276.0;
-        Tue, 22 Oct 2024 01:48:52 -0700 (PDT)
+Received: by mail-lj1-f193.google.com with SMTP id 38308e7fff4ca-2fb6110c8faso54618921fa.1;
+        Tue, 22 Oct 2024 01:49:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729586932; x=1730191732; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729586985; x=1730191785; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Rdf6iyxgoydO05+DI1ZE9WtsllUDQOZhnJERRHa/4XU=;
-        b=esX4O3BtFQAAv2nMcR6wcg0WGcIi8IXQKmB7gvTtDY3PDSEO+bftDJIS+56IOJmq3V
-         38/07frhXenK1kIJKojNktsroe1hKP0eJceU97j4Qr3eAou/dJ8KqtmFjv+3ApO1uxSA
-         d5qIKQMeTHZChWX4iD95vyK75zqGO7dQv9aM6OppcaCF0B1kZfVSsVGn1B/PesHGBaeK
-         D0z3FiGhm6jmwsbTi1YFbX3roV/NIl9Ks0hJo1966rAspINE0/vP1n9+MSMfqD2oyiVN
-         9illVP+tSGNG9YuNMG7/IehlXkS0UeVvGtkpgyvuPUFgiBJrAYWtX8KSxI1f8f+fRD+L
-         +g5A==
+        bh=+pOfCiSieyO3TQ+yRCELl0+ufCyFVvkQ7MbO+0NA5No=;
+        b=KH+gtNEB9F/H4FQCBqEL6IqGlNuUtGHYFthtwOh36G3fe8X+kXPB+HkS8V81vEu2tH
+         EN6IGmkMcQgC55LnaOkaKV4Fx7Cnc0MzuUtHX8UI6baDB8zAnXbTTZH0ZT0b6pITcHC7
+         6zGE3lkQLVifL33X5T1y/iA4UuxVSN1/n6XITI/0q3p4uxFXn6vC5VFlzwGLrQO72PVd
+         wkSK2Y3VIi/9Ief1sJA+pIuOYE6Cz20tXDic7PObmXwldKfOqf1HRqJtqfMf8g1scMkj
+         nfANKpIlLLrZDbGFOxbxzubnU20iShjowSCFvpbjkunjfO5n1ei9bRu0QGOWihx0VWXD
+         NE2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729586932; x=1730191732;
+        d=1e100.net; s=20230601; t=1729586985; x=1730191785;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Rdf6iyxgoydO05+DI1ZE9WtsllUDQOZhnJERRHa/4XU=;
-        b=uNy+HW+dERcHu5dJo9w07xtnTIjyLWB06Ok0d7UyMvaXQ6xf9eI6Yyn84QoGt2/fb/
-         gdj/ZwZX3WYGO2SWSqjeTMjUnj9kCKTb6JFhQ4zxw6ulwqldFjiQ7MXm+yh94EQ4Q2T+
-         Cnaa/2RFhZA/68fC2lxyxrbL4S1SNH97oDfTrup0cIGth4KbsoE0YfeS0DV8ubxU0LYR
-         vMHcDRGIG1doAIMJXMVz7qCf3TAiQjMJA5X3nJ2KhhxRYR64t988gjc8jAzynQFysn+2
-         J3Z/GnuQcfly2UgTwxzwkkSWxsTwkl8OqOO/dnLmyFLF+P9kKW+limTsLYBpErqcwZuZ
-         3JBw==
-X-Forwarded-Encrypted: i=1; AJvYcCUd0xgSjIb6ih+E6+tA78Pi08YMzWuG6ioo3LYZAo7e6HOECWUlAeQD7E8mndBA/3MY8OeJwMVyuNwSgPIh4bMe@vger.kernel.org, AJvYcCVIuEOOAKdu1lENLJBO9/T72oq7g55UmP5hyzldPbeZ2fcNg6KNEDvYMaS/Fkwhy62vHsigQ9OS@vger.kernel.org, AJvYcCXlVijp6BZ/Q1YjLk3b6MwteFcbQtl3S7FHqg+Gy2Umgs1Qqpul/VH64lWxjQH7Tkrotx8=@vger.kernel.org, AJvYcCXtv7J+oPwnAjHdfbzPmtQfOl5ZlTgBlRgDH9rk9GRhQGlWfKhKoomg5q30a+UZKCIx0HGZd+eGiyTrLMa6@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMeW1VcRl4Nmm4sq6mlE2FHFqbD5ksYXQxPYBm0nhpuKjnmefo
-	Zh8B/6FZAacXTDPZ4BVnfst2DRRv6Ag5KpzxFRRnzdAYBSwPX1jhTPbiuddGaOMb3IO4UFA7aIy
-	xv3j4GP+Bk5x6QE0AUe5J6Bs7YYU=
-X-Google-Smtp-Source: AGHT+IHPESBrda0KhCPYYllg4/MfLv0BjYbIDe6VspItnYGPEClLzmjPWeiQXptBhW3wuVXNgYoCrmc2BBLEkUbKEUE=
-X-Received: by 2002:a05:690c:f91:b0:6de:c0e:20ef with SMTP id
- 00721157ae682-6e5bfbdbe14mr128141717b3.7.1729586931792; Tue, 22 Oct 2024
- 01:48:51 -0700 (PDT)
+        bh=+pOfCiSieyO3TQ+yRCELl0+ufCyFVvkQ7MbO+0NA5No=;
+        b=L10HK4Grj61ZAC9N9UpNI1jTIS/nUlZZuYTrf7wRE52atsb7B49FEGnLqdKNkMtznb
+         +ygZBvZaAr+wm33PJyOf+1i94iKiWfIHqUnZ1lkjHlEQZWITGHpEXw3mYDlMpbXicBJM
+         PGvXu+Gd4cNHXjuoIsLeSo3ybW6TELXhkz5pjaA165egM6Vgt8QdBdiwSWEWvVLrTp8C
+         OzKUTOtOSgftg/6cXCqJMGtUp4Gi3R0Xx2M5iW7XTeuk/9CV+odNqSnU2HBm3SFFtMrb
+         LDCPb2nn4Kb4GuanNacUTHE41mNebDf47kugjTvl+ciFYiDOChnjIT1RLSG2wrmwwLLM
+         +/9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUPR6Xxd54en/oOGZt3EwpJWtoYvmYrqQkCyM/o2zhWKEOHFvp8HyycTsNU71UjOlzz9E2+npoR@vger.kernel.org, AJvYcCUsFyYtIwudtD6eIuWctLziRVMGfWXGQC2sK8dwPUyAaioiiUrn3C8ZR2Om519Vbfi3Y0r/CwMgdT63rfQC15CA@vger.kernel.org, AJvYcCWD7l+gvpC7KtokH1wsBx5xICGMk7Z6g+5Um5/DlJxvfXrf6BQ9DpZW8i6ERImDUs0BuJg=@vger.kernel.org, AJvYcCXEq8CfcL4Uw7N8RvJ0NdnqH8yjkbsbhLifUecHRnBSnTsX9dAwfiEFw+3PX3jP4sDY3OF/6yyLeKXyoEY2@vger.kernel.org
+X-Gm-Message-State: AOJu0YzfIS+YJ3kVwBIi0RCQj229MBu0AJmtCAxyFdouF+TDmiE9pOqz
+	YGgnPyWwsdOk83fu6N0me/1i5pNb3n5KvWLD4xlJjUzcLNxDCnd7Nv9u5hh2khRKLxJ1TdyWpEX
+	SCldNJfw9wLFH2z9ncyfxpFXUeNE=
+X-Google-Smtp-Source: AGHT+IFKl3tfsMju7iYF30A7gBpjOZyrqMNthNqd+kPzl1ymRdMCkJ/IFXR1TES+Mv3Jjwg/Hwd37FmQx1Tu4AZ9ptg=
+X-Received: by 2002:a2e:be87:0:b0:2fb:55b2:b199 with SMTP id
+ 38308e7fff4ca-2fb83281b86mr72476071fa.37.1729586982785; Tue, 22 Oct 2024
+ 01:49:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,13 +72,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20241015140800.159466-1-dongml2@chinatelecom.cn>
- <20241015140800.159466-8-dongml2@chinatelecom.cn> <c6e8f053-32bb-4ebd-871b-af416d0b0531@redhat.com>
- <f792a828-8a61-4a14-bef8-ff318b5a4ac3@redhat.com>
-In-Reply-To: <f792a828-8a61-4a14-bef8-ff318b5a4ac3@redhat.com>
+ <20241015140800.159466-6-dongml2@chinatelecom.cn> <20d9ed5f-abde-43ee-854f-48a9f69e9c04@redhat.com>
+In-Reply-To: <20d9ed5f-abde-43ee-854f-48a9f69e9c04@redhat.com>
 From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Tue, 22 Oct 2024 16:49:47 +0800
-Message-ID: <CADxym3b7r-YJ5x==A0wLO1Yuz1dp4E7uMjEzB5EbqfN+eoR3+A@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 07/10] net: ip: make ip_route_input_noref()
+Date: Tue, 22 Oct 2024 16:50:36 +0800
+Message-ID: <CADxym3atdr5Rm1CU8_AU1XaczraYN7ihTJWQiqxaStmD4iETog@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 05/10] net: ip: make ip_route_input_slow()
  return drop reasons
 To: Paolo Abeni <pabeni@redhat.com>
 Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
@@ -91,39 +90,38 @@ Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 21, 2024 at 6:49=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
+On Mon, Oct 21, 2024 at 6:52=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
 te:
 >
->
->
-> On 10/21/24 12:44, Paolo Abeni wrote:
-> > On 10/15/24 16:07, Menglong Dong wrote:
-> >> diff --git a/net/core/lwt_bpf.c b/net/core/lwt_bpf.c
-> >> index e0ca24a58810..a4652f2a103a 100644
-> >> --- a/net/core/lwt_bpf.c
-> >> +++ b/net/core/lwt_bpf.c
-> >> @@ -98,6 +98,7 @@ static int bpf_lwt_input_reroute(struct sk_buff *skb=
-)
-> >>              skb_dst_drop(skb);
-> >>              err =3D ip_route_input_noref(skb, iph->daddr, iph->saddr,
-> >>                                         ip4h_dscp(iph), dev);
-> >> +            err =3D err ? -EINVAL : 0;
+> On 10/15/24 16:07, Menglong Dong wrote:
+> > @@ -2316,19 +2327,25 @@ static int ip_route_input_slow(struct sk_buff *=
+skb, __be32 daddr, __be32 saddr,
+> >               err =3D -EHOSTUNREACH;
+> >               goto no_route;
+> >       }
+> > -     if (res->type !=3D RTN_UNICAST)
+> > +     if (res->type !=3D RTN_UNICAST) {
+> > +             reason =3D SKB_DROP_REASON_IP_INVALID_DEST;
+> >               goto martian_destination;
+> > +     }
 > >
-> > Please introduce and use a drop_reason variable here instead of 'err',
-> > to make it clear the type conversion.
+> >  make_route:
+> >       err =3D ip_mkroute_input(skb, res, in_dev, daddr, saddr, dscp, fl=
+keys);
+> > -out: return err;
+> > +     if (!err)
+> > +             reason =3D SKB_NOT_DROPPED_YET;
+> > +
+> > +out: return reason;
 >
-> Or even better, collapse the 2 statements:
+> Since you are touching this line, please rewrite the code with a more
+> natural indentation:
 >
->                 err =3D ip_route_input_noref(skb, iph->daddr, iph->saddr,
->                                    ip4h_dscp(iph), dev) ? -EINVAL : 0;
->
-> There are other places which could use a similar changes.
+> out:
+>         return reason;
 >
 
-Yeah, it makes things much more clear.
-
-Thanks!
-Menglong Dong
+Okay!
 
 > Thanks,
 >
