@@ -1,245 +1,192 @@
-Return-Path: <bpf+bounces-42827-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42828-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 492349AB7D5
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 22:43:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EB4A9AB7F9
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 22:49:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04B24283C3A
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 20:43:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 474791C2310C
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 20:49:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D141CCEDD;
-	Tue, 22 Oct 2024 20:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FFC71CC8BB;
+	Tue, 22 Oct 2024 20:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d17qkWdq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DJEoon9Z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489A21CCED5
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 20:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B215E126C05;
+	Tue, 22 Oct 2024 20:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729629720; cv=none; b=UNOt+lAXpY76sxvHNZtkMvN1rz4+1fDt53aTT8fUZuzMcjXHC2oyrCOJ4mV7pBrX57KNTzHJgFdhcGEOdR1MhdnC3kaR7Qqc7SCQuGcEujxnuD09xl7IoWl/BQleHJ3w5k2uoLOppQKldItIt6FTd22q3uzwcj8Tj8AlVe4y2Ww=
+	t=1729630154; cv=none; b=mo2IeuAlQo6oNDhTHQEGUP+U/6sohTNlUkxHthP7vdYg/6oNCEDbkjNzVBMAAcGXKA9sI+cvLGoENpdANVcJgcFSfNiVGOvw6q/K4Cjin6GkZL3qLh8SdPf9Pxak2C6LSur7BKzIgsyeXrSo3Um4dn2n0+Fr44ozyrIxPbmmRjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729629720; c=relaxed/simple;
-	bh=wOsQ9jvreRec9M9i06Vh4iNIEpo/QJBLlV6ReTKX4to=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IHs1q4aWXrLCunYUJAGv5PWs8CoSuGP84rsOnkjd44mQYIz2Tsy635c/QwVAlqb1e14171Apar13vFQcW3X53q9sTYgmRfzxW1kDHPc/AYj+WpIM8Fs/Bepxq/XygRVtKQ2uXmMTwoYES/tpOq3WIuEzdoclzaqarCT8fu9xQbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d17qkWdq; arc=none smtp.client-ip=209.85.215.176
+	s=arc-20240116; t=1729630154; c=relaxed/simple;
+	bh=dittf4YLWlk6FyJunLkXtq1goowtssRJG7mp7ZtbN6c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W3eGnkmV88nYfefa1BSPtwMxVypF84pLFo7oLx29/sHk2xuETCRCHgkevL+842eCZLkwT5B6Ee34qzY4S4clDztyzHlni645lklIc5tVjvlnpLppwqg7OchVK/JI8wZAcXDPp37QlKL1zHaVL8S0hm3AWpqQbchgzBifRDVU08E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DJEoon9Z; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-7d916b6a73aso3853770a12.1
-        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 13:41:59 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-71e52582cf8so4294446b3a.2;
+        Tue, 22 Oct 2024 13:49:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729629718; x=1730234518; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4Ogy9dPbjGKOfd2gPInuhSn542wZ/y/q/Uu7+p5vqUA=;
-        b=d17qkWdq0QCIIZQ6Jh2A4oWbfEem9+koCI27yz+Ehrui35/+aptVklm8OQrrC7G/pk
-         9AvrsYuRDrGUiKHagC5PpEhdgtbtwwifNvrPA/xRZdQiWSpltZ1M4gp+VNezLdNMJPFO
-         LJ2sK+A0tKI4ZftxlmFi1W0SX1WHqyteAmTkLSMuppNg8wu4LJuQ3S5gxHbRwlSIAGJ2
-         DIeru/FBR8+WgyhDd0DLmCK2UPciij1NU1r5t7EOUHugNGVsWck7Iu0NTQgOXW/siJlB
-         DdVtxVv4IyueaFSQyUGqPq/foxiF9TF1tZIiSA3MgYIdvLLGFQZ/cAWkirsGbr6nV9uC
-         dw2g==
+        d=gmail.com; s=20230601; t=1729630152; x=1730234952; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1ffGPoSlqwPV+RaSbIJ/P8DdxGIkGwkezqZ29HBWiZ4=;
+        b=DJEoon9ZpSTp4i3ynI1Ye1Rj2pV98B4iNYXJIOP9/4xB4btedc5uNFLOTc/wkQ87Z9
+         GjxpJgf3OXMe0D0wdm03yJ+Yxov2GOHtKqL8dKUS32J/66TCtSo5+Xrs6TWFq2iV3vqq
+         UMwxawws0FSeD8ZY817YaZ23rI299GIZM4jth/yBltdjPits5VBz9CYNMPg7YPvHOlvl
+         kiFwc30xbUMFah7T2bumaUcfezhjQCX3bKVNo8dPtuIXdqZ5vLTLlkTHBywaVvStQYKw
+         ccyNvhzWWu4yIjEAyOqHTIyPI2OjcBHPS8SVK3XtosMaI/k25FqMWChWGpcZz9pFYxq+
+         g7xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729629718; x=1730234518;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4Ogy9dPbjGKOfd2gPInuhSn542wZ/y/q/Uu7+p5vqUA=;
-        b=P9T+ncdrjasveEFRWruU9Cs9r1fdO48gTpOjje6DhdLQH7EVceCImUCyOA8n3niK8/
-         U57wkyqeIDwbKZP4/3ceAdAq8JqSzLeogL8Gc/WuWsHrppO+pWLUYAJXGbOumDCVwmbt
-         Cu6M0KrH5vgu3hcr2m5ywORTarPxHusJ3zkDOoj5Mv7mv5Mb6qPxyEm6ryDAroM4C2g9
-         +700fYt0NBl/O5WYoTRM1cJL4OLWjFKkrwSdfGm85Tlj442lvJY5zfg0AK0ay7rF/0NS
-         V2idlBQd5URCMmyG7VHXnBZRQFWUh9IIX/uqpGx3WCKkKzeVZ8SiNUAAvwpVUNZfiyTd
-         1ISg==
-X-Forwarded-Encrypted: i=1; AJvYcCVdiLmILRWkwFL2QdFCo8MM8WkBVL0VT8Dadj5x6hvT6r3kjEdAOsPjKbF8lsUQURCqNc4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUlnnIRcVtViqARSfIz9No0Hypf9zM1L7IOvbltUfo8RDXdvqA
-	KXnyFQxWIDi4FInbsP1MOMjotlfCHDFVQVEUf4IrqCr+97nKDp3ukHlb965iki4cBcTvpDHozyM
-	xOLJC57EDH6xz9Fs8Y0Rd2CJ3u7w=
-X-Google-Smtp-Source: AGHT+IFcEIKq0xIK+QmDJFvC+/1zm1yVxiD/BiRZzhYvzFcDd9EymdzBYI+XkMsUeeNgaPPVQ0zC4tJXZZVEnj+G66U=
-X-Received: by 2002:a05:6a20:cf8c:b0:1d8:f1f4:f4ee with SMTP id
- adf61e73a8af0-1d978aebd78mr409140637.8.1729629718532; Tue, 22 Oct 2024
- 13:41:58 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729630152; x=1730234952;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1ffGPoSlqwPV+RaSbIJ/P8DdxGIkGwkezqZ29HBWiZ4=;
+        b=F9Bf5aodNsqxLv61Rz0+oxEBqFxEPqPsrcTqHo3VX7JDCA7crN6OUopWNbX2gCeYi2
+         NPJMbVSnolauWJqthpoZoYEL9yLJitVszH+5fUsf4kc7uTNTMc40zq5uFEPX+30eUxbY
+         wWZeGpDsr9bpPBEUsi5stHQnnE4k1wdMVjS+nysx5doOlm9OCqzC3SGdrsdAHxZnbSf9
+         6HvkM+g0omfK9ciLpY9QhS2TTkWvwN86feuwtLUnvTUrQtBLIZReMJOIwUIz1CtCYHk4
+         XyNyR7XH+e4uM0SoliwfnSdABovDlFveo4mweH3B0lqS8b9lSepA3ze58G5G7UHTdlZk
+         08Mw==
+X-Forwarded-Encrypted: i=1; AJvYcCUv5tkbOvDmbbo0dIcN0PzjSuWnvKLOOSFV4xPnjBEHpMXGtblCkzCnSUPJpYl0CBL3wo6BEymrTT2+kmJ9@vger.kernel.org, AJvYcCUzH8lXGJuaRgcVimUbyl/rQAhCM5o9s0zBuVaL5ppj1Ho4u8vo3o2YxtkdNgDKdjpVios=@vger.kernel.org, AJvYcCW9Ri2Pz2+NVOq2oO4R/yzGI9LmAFFlEtDcWO98mHq+DZv0Auvha35IKKqG/mdE+CFaHhiwKNm1nC7U47xA@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGsC3jBgaUpwo71X+8ifrOdX0dNs780P3Np58wxA2rnudZ4V73
+	o/QD5cerztv+OYMXyrljhQi7BVEuw5bWCscrLP+wXiHop8Rlu9mHydQHMqk2
+X-Google-Smtp-Source: AGHT+IEt6paVVR5iJbEJAuGo6CnfteGATce4ywHLHC1CFvA/2HmuoSJo5fx+ZhAfak0QRGBMpqNw9A==
+X-Received: by 2002:a05:6a00:4610:b0:71e:ed6:1cab with SMTP id d2e1a72fcca58-72030cf05d3mr654027b3a.26.1729630151673;
+        Tue, 22 Oct 2024 13:49:11 -0700 (PDT)
+Received: from ryzen.lan ([2601:644:8200:dab8::a86])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71ec1312e2bsm5133906b3a.42.2024.10.22.13.49.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Oct 2024 13:49:11 -0700 (PDT)
+From: Rosen Penev <rosenp@gmail.com>
+To: netdev@vger.kernel.org
+Cc: "K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Rosen Penev <rosenp@gmail.com>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Ahmed Zaki <ahmed.zaki@intel.com>,
+	linux-hyperv@vger.kernel.org (open list:Hyper-V/Azure CORE AND DRIVERS),
+	linux-kernel@vger.kernel.org (open list),
+	bpf@vger.kernel.org (open list:XDP (eXpress Data Path):Keyword:(?:\b|_)xdp(?:\b|_))
+Subject: [PATCH] net: mana: use ethtool string helpers
+Date: Tue, 22 Oct 2024 13:49:08 -0700
+Message-ID: <20241022204908.511021-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241021014004.1647816-1-houtao@huaweicloud.com>
- <20241021014004.1647816-3-houtao@huaweicloud.com> <ZxYOX9_sIrSKGFB2@krava>
- <CAEf4BzbFBbTDGSwTdgFJG5poFpCrjjpPO9OujYVZXPxTEUXqeQ@mail.gmail.com>
- <437ff5b4-4f38-cb3a-8491-d8c7e5cfb8c6@huaweicloud.com> <CAEf4BzYb--5BpVuiBYrNdtRh3U6HqD45jndb-f-0YCetTZ5hvw@mail.gmail.com>
- <CAADnVQJ7U_amDRZGRGo8dR37R-EMidjuxHswBGm0LnwAWwgH=w@mail.gmail.com>
-In-Reply-To: <CAADnVQJ7U_amDRZGRGo8dR37R-EMidjuxHswBGm0LnwAWwgH=w@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 22 Oct 2024 13:41:46 -0700
-Message-ID: <CAEf4Bzad3aL6EQyeM0Yir5CyxX3_ZojzJUxP4eQdQH3TcT48qw@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 2/7] bpf: Add assertion for the size of bpf_link_type_strs[]
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Hou Tao <houtao@huaweicloud.com>, Jiri Olsa <olsajiri@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, John Fastabend <john.fastabend@gmail.com>, 
-	Yafang Shao <laoar.shao@gmail.com>, Hou Tao <houtao1@huawei.com>, 
-	Xu Kuohai <xukuohai@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Oct 22, 2024 at 1:27=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Oct 22, 2024 at 10:40=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Oct 22, 2024 at 12:36=E2=80=AFAM Hou Tao <houtao@huaweicloud.co=
-m> wrote:
-> > >
-> > > Hi,
-> > >
-> > > On 10/22/2024 7:02 AM, Andrii Nakryiko wrote:
-> > > > On Mon, Oct 21, 2024 at 1:18=E2=80=AFAM Jiri Olsa <olsajiri@gmail.c=
-om> wrote:
-> > > >> On Mon, Oct 21, 2024 at 09:39:59AM +0800, Hou Tao wrote:
-> > > >>> From: Hou Tao <houtao1@huawei.com>
-> > > >>>
-> > > >>> If a corresponding link type doesn't invoke BPF_LINK_TYPE(), acce=
-ssing
-> > > >>> bpf_link_type_strs[link->type] may result in out-of-bound access.
-> > > >>>
-> > > >>> To prevent such missed invocations in the future, the following s=
-tatic
-> > > >>> assertion seems feasible:
-> > > >>>
-> > > >>>   BUILD_BUG_ON(ARRAY_SIZE(bpf_link_type_strs) !=3D __MAX_BPF_LINK=
-_TYPE)
-> > > >>>
-> > > >>> However, this doesn't work well. The reason is that the invocatio=
-n of
-> > > >>> BPF_LINK_TYPE() for one link type is optional due to its CONFIG_X=
-XX
-> > > >>> dependency and the elements in bpf_link_type_strs[] will be spars=
-e. For
-> > > >>> example, if CONFIG_NET is disabled, the size of bpf_link_type_str=
-s will
-> > > >>> be BPF_LINK_TYPE_UPROBE_MULTI + 1.
-> > > >>>
-> > > >>> Therefore, in addition to the static assertion, remove all CONFIG=
-_XXX
-> > > >>> conditions for the invocation of BPF_LINK_TYPE(). If these CONFIG=
-_XXX
-> > > >>> conditions become necessary later, the fix may need to be revised=
- (e.g.,
-> > > >>> to check the validity of link_type in bpf_link_show_fdinfo()).
-> > > >>>
-> > > >>> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> > > >>> ---
-> > > >>>  include/linux/bpf_types.h | 6 ------
-> > > >>>  kernel/bpf/syscall.c      | 2 ++
-> > > >>>  2 files changed, 2 insertions(+), 6 deletions(-)
-> > > >>>
-> > > >>> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.=
-h
-> > > >>> index fa78f49d4a9a..6b7eabe9a115 100644
-> > > >>> --- a/include/linux/bpf_types.h
-> > > >>> +++ b/include/linux/bpf_types.h
-> > > >>> @@ -136,21 +136,15 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_ARENA, arena_map_=
-ops)
-> > > >>>
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
-> > > >>> -#ifdef CONFIG_CGROUP_BPF
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_CGROUP, cgroup)
-> > > >>> -#endif
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
-> > > >>> -#ifdef CONFIG_NET
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_XDP, xdp)
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_NETFILTER, netfilter)
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_TCX, tcx)
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_NETKIT, netkit)
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_SOCKMAP, sockmap)
-> > > >>> -#endif
-> > > >>> -#ifdef CONFIG_PERF_EVENTS
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_PERF_EVENT, perf)
-> > > >>> -#endif
-> > > > I'm not sure what's the implication here, but I'd avoid doing that.
-> > > > But see below.
-> > >
+The latter is the preferred way to copy ethtool strings.
 
-I'll just elaborate a bit why I wouldn't remove #ifdef guards. This
-BPF_LINK_TYPE() macro magic can be used to define some extra data
-structures that are specific to link type. E.g., some sort of
-bpf_<type>_link_lops references or something along those lines. Having
-BPF_LINK_TYPE() definition when the kernel actually doesn't implement
-that link will be PITA in that case, generating references to
-non-existent data structures.
+Avoids manually incrementing the data pointer.
 
-> > > OK.
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_KPROBE_MULTI, kprobe_multi)
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_STRUCT_OPS, struct_ops)
-> > > >>>  BPF_LINK_TYPE(BPF_LINK_TYPE_UPROBE_MULTI, uprobe_multi)
-> > > >>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > > >>> index 8cfa7183d2ef..9f335c379b05 100644
-> > > >>> --- a/kernel/bpf/syscall.c
-> > > >>> +++ b/kernel/bpf/syscall.c
-> > > >>> @@ -3071,6 +3071,8 @@ static void bpf_link_show_fdinfo(struct seq=
-_file *m, struct file *filp)
-> > > >>>       const struct bpf_prog *prog =3D link->prog;
-> > > >>>       char prog_tag[sizeof(prog->tag) * 2 + 1] =3D { };
-> > > >>>
-> > > >>> +     BUILD_BUG_ON(ARRAY_SIZE(bpf_link_type_strs) !=3D __MAX_BPF_=
-LINK_TYPE);
-> > > > If this is useless, why are you adding it?
-> > >
-> > > It will work after removing these CONFIG_XXX dependencies for
-> > > BPF_LINK_TYPE() invocations.
-> > > >
-> > > > Let's instead do a NULL check inside bpf_link_show_fdinfo() to hand=
-le
-> > > > sparsity. And to avoid out-of-bounds, just add
-> > > >
-> > > > [__MAX_BPF_LINK_TYPE] =3D NULL,
-> > > >
-> > > > into the definition of bpf_link_type_strs
-> > >
-> > > Instead of outputting a null string for a link_type which didn't invo=
-ke
-> > > BPF_LINK_TYPE, is outputting the numerical value of link->type more
-> > > reasonable as shown below ?
-> >
-> > In correctly configured kernel this should never happen. So we can
-> > have WARN() there for the NULL case and just return an error or
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ .../ethernet/microsoft/mana/mana_ethtool.c    | 55 ++++++-------------
+ 1 file changed, 18 insertions(+), 37 deletions(-)
 
-Actually, it seems like this is a void-returning function, so yeah,
-instead of returning an error we can just emit an integer value. But
-we should definitely have a WARN_ONCE().
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+index 349f11bf8e64..c419626073f5 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+@@ -91,53 +91,34 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
+ {
+ 	struct mana_port_context *apc = netdev_priv(ndev);
+ 	unsigned int num_queues = apc->num_queues;
+-	u8 *p = data;
+ 	int i;
+ 
+ 	if (stringset != ETH_SS_STATS)
+ 		return;
+ 
+-	for (i = 0; i < ARRAY_SIZE(mana_eth_stats); i++) {
+-		memcpy(p, mana_eth_stats[i].name, ETH_GSTRING_LEN);
+-		p += ETH_GSTRING_LEN;
+-	}
++	for (i = 0; i < ARRAY_SIZE(mana_eth_stats); i++)
++		ethtool_puts(&data, mana_eth_stats[i].name);
+ 
+ 	for (i = 0; i < num_queues; i++) {
+-		sprintf(p, "rx_%d_packets", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "rx_%d_bytes", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "rx_%d_xdp_drop", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "rx_%d_xdp_tx", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "rx_%d_xdp_redirect", i);
+-		p += ETH_GSTRING_LEN;
++		ethtool_sprintf(&data, "rx_%d_packets", i);
++		ethtool_sprintf(&data, "rx_%d_bytes", i);
++		ethtool_sprintf(&data, "rx_%d_xdp_drop", i);
++		ethtool_sprintf(&data, "rx_%d_xdp_tx", i);
++		ethtool_sprintf(&data, "rx_%d_xdp_redirect", i);
+ 	}
+ 
+ 	for (i = 0; i < num_queues; i++) {
+-		sprintf(p, "tx_%d_packets", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "tx_%d_bytes", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "tx_%d_xdp_xmit", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "tx_%d_tso_packets", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "tx_%d_tso_bytes", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "tx_%d_tso_inner_packets", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "tx_%d_tso_inner_bytes", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "tx_%d_long_pkt_fmt", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "tx_%d_short_pkt_fmt", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "tx_%d_csum_partial", i);
+-		p += ETH_GSTRING_LEN;
+-		sprintf(p, "tx_%d_mana_map_err", i);
+-		p += ETH_GSTRING_LEN;
++		ethtool_sprintf(&data, "tx_%d_packets", i);
++		ethtool_sprintf(&data, "tx_%d_bytes", i);
++		ethtool_sprintf(&data, "tx_%d_xdp_xmit", i);
++		ethtool_sprintf(&data, "tx_%d_tso_packets", i);
++		ethtool_sprintf(&data, "tx_%d_tso_bytes", i);
++		ethtool_sprintf(&data, "tx_%d_tso_inner_packets", i);
++		ethtool_sprintf(&data, "tx_%d_tso_inner_bytes", i);
++		ethtool_sprintf(&data, "tx_%d_long_pkt_fmt", i);
++		ethtool_sprintf(&data, "tx_%d_short_pkt_fmt", i);
++		ethtool_sprintf(&data, "tx_%d_csum_partial", i);
++		ethtool_sprintf(&data, "tx_%d_mana_map_err", i);
+ 	}
+ }
+ 
+-- 
+2.47.0
 
-> > something.
->
-> I don't understand why this patch is needed.
-> Is it solving a theoretical problem ?
->
-> Something like the kernel managed to create a link
-> with link->type =3D=3D BPF_LINK_TYPE_CGROUP,
-> but CONFIG_CGROUP_BPF was not defined somehow ?
->
-
-It's just too easy to forget to add
-BPF_LINK_TYPE(BPF_LINK_TYPE_<newlinktype>, ...) into
-include/linux/bpf_types.h when adding a new type of BPF link. So Hou
-is following up with changes that will make it easier to spot these
-omissions in the future.
-
-> There is no out-of-bounds or access to empty
-> bpf_link_type_strs[link->type] as far as I can tell.
->
-> What am I missing?
 
