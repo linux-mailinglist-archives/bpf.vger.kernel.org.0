@@ -1,253 +1,175 @@
-Return-Path: <bpf+bounces-42836-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42837-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89D2D9AB8F4
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 23:43:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76FD09AB90A
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 23:53:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D76D1C217BA
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 21:43:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F0DC1C22CEC
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 21:53:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2BA31CCB31;
-	Tue, 22 Oct 2024 21:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA781CCEE9;
+	Tue, 22 Oct 2024 21:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wDG3b3Ty"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="gIAHV0kJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF631CBEA6
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 21:43:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C661CACDC
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 21:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729633414; cv=none; b=OVU+H9CMZddK2DPEFgL1DoI7Um5OXVFeHNYVKUpuG/fQNb3TtsmUtwolyNo6jvPwN0LZOCkIFnnatADaF6rE2dYT+DKW23N1kPv/BeRkUljQWkKaVgJ/Hb1W683R6aJ0fAcZ9mUCIh8If6mKx1GDxfQoUgRrJDCCl/6bBm08gFU=
+	t=1729633981; cv=none; b=Rgixnr8iIEvO4YNgDG/glKB+4qd3h8dpjg0XZfAb0kgajsTMp4+2iPhvcKhUjEJE19VFBdIM2UvSPQbmY4SbWOLdbak8k27mK1Ol1q1iuVZ0uq8EH9NeyKwmrflaf5HKNlO3gXIBA6UVt6t8nYpQ+0mycLyBvZl1cV0pHlX3/cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729633414; c=relaxed/simple;
-	bh=0B1nLmcqwrJnweARleNte2MNpNnLCQaenPDXoXElu5w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jRGBJwMuOwJZIyI2FoPF9sGqriFKKN4VXMRnZTXPRXOGL7FgGDkNI49lDd+k8BRJK6gpNTllfWWYawU0v3KErcJpX3XKdg1dBTi99x+1+v5YWTaGUSKt3WuToAeOAnHmbuvqhM5vLR6SC9Kz73SZ3qJDjZWVuqdBUSsKnOKDUug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wDG3b3Ty; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <489b0524-49bc-4df4-8744-1badd40824be@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729633409;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lghORRMzBnfH7MhliBhhi30n/6hJgGrpMRnsVnKIJfY=;
-	b=wDG3b3Ty6PrJqBK44mwoKdhHuPzgYqA1xdLIsj7x+Z/UwnbeP+ChsIt3Q+oxpAjQCQYx0g
-	qseVCIprJDy3bOMWyi34SEI4BclD88K+k17tv+4iwrnEpgi/GF30YpD40FJz++a2L+jySp
-	+fGMF8df0FoqXZ3H05wcFxre3UxNjKw=
-Date: Tue, 22 Oct 2024 14:43:22 -0700
+	s=arc-20240116; t=1729633981; c=relaxed/simple;
+	bh=mZHyRJsvYbJrA/bK0xUf3xOnp/PwB9vGkP9J9h6qzUI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ly9hVCU6hUAHziDQMtQNz9fI+mY5Zu681l5vO7J/yhf+RXGix9Rgtf4LiYFiPT9mLZC1FK+r+r825RSXdnJy/Ei8DP4adn7wPVZNeuG4YgxI4kesDxoe/t4FvXlF3hh86GO4LJ8KSvPb+3Z1o3YJuTnBP2TGs5NTSqP2mlZX7uU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=gIAHV0kJ; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-20c714cd9c8so61378225ad.0
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 14:52:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1729633979; x=1730238779; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=27PH9KJY9xP4iasns3riOle1zadFd8sn/XZWx1MVstg=;
+        b=gIAHV0kJx5I5RQv4FTOvL4HR3JG8MfVirQgpY8+/WGg1tV7uMFXdNIPJ46d/PNKya5
+         OVP1N5ZO14/xlZyg+IrN//+XvPjPnKoeN334Vwhgi3k5BhJWPlEJgo4gNmBM4IGIPrzg
+         HV1YGpyFqnV9omvUJYQa681WS/QsxNDRl04RQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729633979; x=1730238779;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=27PH9KJY9xP4iasns3riOle1zadFd8sn/XZWx1MVstg=;
+        b=Hr26v0oXpd/mNjJmsM72Vifiwo+iSoGs0I1Owpmi8WjLHxPGWAxjmKZBKHxA3MDPtH
+         vJPjb9AGDrOEB9CatS4CXQq5qXt2JlxzL2K4OAj2tq4E3EFTcxIkFG/75khv48kZrw5Y
+         scTAXqlRXG9t49yY2B+sBSf/bcXrQ3yLtQqXAxCM5UIwdLQPb1KNzWbsr16hsrF/pKVb
+         Q0Xn9TI05f3dX1f+lBN81WEQn7z8v84K4L/lnW4WP/6yxCg6WejFnNE+Iuq4p0ReY63n
+         4A9UoWM7t/2flRXIHEb3I6AH4aaVI86fxq+Kc1qdZPnkJsESEVBm4BgoD3HKydQPRPiy
+         PkWw==
+X-Forwarded-Encrypted: i=1; AJvYcCV20tXS0h9xQuZIfZUBAIXkjY0tAaOcdfIvLOTezEbVHuxq1titdhVNbpuaKtvsiG3AZ1s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzwTU5bC+S3v73/7x7Z6dTQlg9DZTC8JEDcsn7/QP8HQHv+gfWZ
+	8GCn6hvl0i2NfeVdxtPwD+3Nmt8Qr0+JexPsVKZPGmdDb+OTnShSnQLPdG0/Ofo=
+X-Google-Smtp-Source: AGHT+IF+g37BAJ/gs+9A6578kVnZDjD+Y9MC0VzOxCi8OhwVz1VkHyQIRvT2Mam28b3hFk4yJnnKLw==
+X-Received: by 2002:a05:6a21:4581:b0:1d8:fdf8:973c with SMTP id adf61e73a8af0-1d978b3dd71mr507279637.29.1729633979041;
+        Tue, 22 Oct 2024 14:52:59 -0700 (PDT)
+Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71ec13d75b9sm5194375b3a.131.2024.10.22.14.52.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Oct 2024 14:52:58 -0700 (PDT)
+From: Joe Damato <jdamato@fastly.com>
+To: netdev@vger.kernel.org
+Cc: jacob.e.keller@intel.com,
+	kurt@linutronix.de,
+	vinicius.gomes@intel.com,
+	Joe Damato <jdamato@fastly.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	bpf@vger.kernel.org (open list:XDP (eXpress Data Path)),
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-kernel@vger.kernel.org (open list),
+	Paolo Abeni <pabeni@redhat.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [iwl-next v4 0/2] igc: Link IRQs and queues to NAPIs
+Date: Tue, 22 Oct 2024 21:52:43 +0000
+Message-Id: <20241022215246.307821-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 1/9] bpf: Allow each subprog having stack size
- of 512 bytes
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
- Tejun Heo <tj@kernel.org>
-References: <20241020191341.2104841-1-yonghong.song@linux.dev>
- <20241020191347.2105090-1-yonghong.song@linux.dev>
- <CAADnVQ+ZXMh_QKy0nd-n7my1SETroockPjpVVJOAWsE3tB_5sg@mail.gmail.com>
- <c6e5040b-9558-481f-b1fc-f77dc9ce90c1@linux.dev>
- <CAADnVQJCfiNEgrvf6GuaUadz6rDSNU6QB3grpOfk2-jQP6is4Q@mail.gmail.com>
- <179d5f87-4c70-438b-9809-cc05dffc13de@linux.dev>
- <CAADnVQL3+o7xV2LQcO-AArBmSEV=CQ7TQsuzBfTUnc_g+MhoMw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQL3+o7xV2LQcO-AArBmSEV=CQ7TQsuzBfTUnc_g+MhoMw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+
+Greetings:
+
+Welcome to v4.
+
+See changelog below and in each patch for changes from v3 [1].
+
+This revision was inspired by a bug report for e1000 [2] and analysis of
+the call paths for igc on the mailing list [3] to ensure that RTNL is
+held in all appropriate paths.
+
+This series adds support for netdev-genl to igc so that userland apps
+can query IRQ, queue, and NAPI instance relationships. This is useful
+because developers who have igc NICs (for example, in their Intel NUCs)
+who are working on epoll-based busy polling apps and using
+SO_INCOMING_NAPI_ID, need access to this API to map NAPI IDs back to
+queues.
+
+See the commit messages of each patch for example output I got on my igc
+hardware.
+
+I've taken the feedback from both Kurt Kanzenbach and Vinicius Costa
+Gomes to simplify the code from the rfc v2.
+
+Thanks to reviewers and maintainers for their comments/feedback!
+
+Thanks,
+Joe
+
+[1]: https://lore.kernel.org/netdev/20241018171343.314835-1-jdamato@fastly.com/
+[2]: https://lore.kernel.org/netdev/8cf62307-1965-46a0-a411-ff0080090ff9@yandex.ru/
+[3]: https://lore.kernel.org/netdev/ZxgK5jsCn5VmKKrH@LQ3V64L9R2/
+
+v4:
+  - Fixed a typo in Patch 1's commit message for the "other" IRQ number
+  - Based on a bug report for e1000, closer scrutiny of the code
+    revealed two paths where rtnl_lock / rtnl_unlock should be added in
+    Patch 2: igc_resume and igc_io_error_detected. The code added to
+    igc_io_error_detected is inspired by ixgbe's
+    ixgbe_io_error_detected
+
+v3: https://lore.kernel.org/netdev/20241018171343.314835-1-jdamato@fastly.com/
+  - No longer an RFC
+  - Patch 1: no changes
+  - Patch 2:
+      - Replace igc_unset_queue_napi with igc_set_queue_napi(..., NULL),
+        as suggested by Vinicius Costa Gomes
+      - Simplify implementation of igc_set_queue_napi as suggested by Kurt
+        Kanzenbach, with a minor change to use the ring->queue_index
+
+rfcv2: https://lore.kernel.org/netdev/20241014213012.187976-1-jdamato@fastly.com/
+  - Patch 1: update line wrapping to 80 chars
+  - Patch 2:
+    - Update commit message to include output for IGC_FLAG_QUEUE_PAIRS
+      enabled and disabled
+    - Significant refactor to move queue mapping code to helpers to be
+      called from multiple locations
+    - Adjusted code to handle IGC_FLAG_QUEUE_PAIRS disabled as suggested
+      by Kurt Kanzenbach
+    - Map / unmap queues in igc_xdp_disable_pool and
+      igc_xdp_enable_pool, respectively, as suggested by Vinicius Costa
+      Gomes to handle the XDP case
+
+rfcv1: https://lore.kernel.org/lkml/20241003233850.199495-1-jdamato@fastly.com/
+
+Joe Damato (2):
+  igc: Link IRQs to NAPI instances
+  igc: Link queues to NAPI instances
+
+ drivers/net/ethernet/intel/igc/igc.h      |  2 ++
+ drivers/net/ethernet/intel/igc/igc_main.c | 44 ++++++++++++++++++++---
+ drivers/net/ethernet/intel/igc/igc_xdp.c  |  2 ++
+ 3 files changed, 43 insertions(+), 5 deletions(-)
 
 
-On 10/22/24 1:41 PM, Alexei Starovoitov wrote:
-> On Tue, Oct 22, 2024 at 1:13 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->> On 10/21/24 8:43 PM, Alexei Starovoitov wrote:
->>> On Mon, Oct 21, 2024 at 8:21 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>>>>>            for (int i = 0; i < env->subprog_cnt; i++) {
->>>>>> -               if (!i || si[i].is_async_cb) {
->>>>>> -                       ret = check_max_stack_depth_subprog(env, i);
->>>>>> +               check_subprog = !i || (check_priv_stack ? si[i].is_cb : si[i].is_async_cb);
->>>>> why?
->>>>> This looks very suspicious.
->>>> This is to simplify jit. For example,
->>>>       main_prog   <=== main_prog_priv_stack_ptr
->>>>         subprog1  <=== there is a helper which has a callback_fn
->>>>                   <=== for example bpf_for_each_map_elem
->>>>
->>>>           callback_fn
->>>>             subprog2
->>>>
->>>> In callback_fn, we cannot simplify do
->>>>       r9 += stack_size_for_callback_fn
->>>> since r9 may have been clobbered between subprog1 and callback_fn.
->>>> That is why currently I allocate private_stack separately for callback_fn.
->>>>
->>>> Alternatively we could do
->>>>       callback_fn_priv_stack_ptr = main_prog_priv_stack_ptr + off
->>>> where off equals to (stack size tree main_prog+subprog1).
->>>> I can do this approach too with a little more information in prog->aux.
->>>> WDYT?
->>> I see. I think we're overcomplicating the verifier just to
->>> be able to do 'r9 += stack' in the subprog.
->>> The cases of async vs sync and directly vs kfunc/helper
->>> (and soon with inlining of kfuncs) are getting too hard
->>> to reason about.
->>>
->>> I think we need to go back to the earlier approach
->>> where every subprog had its own private stack and was
->>> setting up r9 = my_priv_stack in the prologue.
->>>
->>> I suspect it's possible to construct a convoluted subprog
->>> that calls itself a limited amount of time and the verifier allows that.
->>> I feel it will be easier to detect just that condition
->>> in the verifier and fallback to the normal stack.
->> I tried a simple bpf prog below.
->>
->> $ cat private_stack_subprog_recur.c
->> // SPDX-License-Identifier: GPL-2.0
->>
->> #include <vmlinux.h>
->> #include <bpf/bpf_helpers.h>
->> #include <bpf/bpf_tracing.h>
->> #include "../bpf_testmod/bpf_testmod.h"
->>
->> char _license[] SEC("license") = "GPL";
->>
->> #if defined(__TARGET_ARCH_x86)
->> bool skip __attribute((__section__(".data"))) = false;
->> #else
->> bool skip = true;
->> #endif
->>
->> int i;
->>
->> __noinline static void subprog1(int level)
->> {
->>           if (level > 0) {
->>                   subprog1(level >> 1);
->>                   i++;
->>           }
->> }
->>
->> SEC("kprobe")
->> int prog1(void)
->> {
->>           subprog1(1);
->>           return 0;
->> }
->>
->> In the above prog, we have a recursion of subprog1. The
->> callchain is:
->>      prog -> subprog1 -> subprog1
->>
->> The insn-level verification is successful since argument
->> of subprog1() has precise value.
->>
->> But eventually, verification failed with the following message:
->>     the call stack of 8 frames is too deep !
->>
->> The error message is
->>                   if (frame >= MAX_CALL_FRAMES) {
->>                           verbose(env, "the call stack of %d frames is too deep !\n",
->>                                   frame);
->>                           return -E2BIG;
->>                   }
->> in function check_max_stack_depth_subprog().
->> Basically in function check_max_stack_depth_subprog(), tracing subprog
->> call is done only based on call insn. All conditionals are ignored.
->> In the above example, check_max_stack_depth_subprog() will have the
->> call graph like
->>       prog -> subprog1 -> subprog1 -> subprog1 -> subprog1 -> ...
->> and eventually hit the error.
->>
->> Basically with check_max_stack_depth_subprog() self recursion is not
->> possible for a bpf prog.
->>
->> This limitation is back to year 2017.
->>     commit 70a87ffea8ac  bpf: fix maximum stack depth tracking logic
->>
->> So I assume people really do not write progs with self recursion inside
->> the main prog (including subprogs).
-> Thanks for checking this part.
->
-> What about sync and async callbacks? Can they recurse?
-
-For sync, there will be no recurses between subprogs.
-This is due to the following func.
-
-static int check_max_stack_depth(struct bpf_verifier_env *env)
-{
-         struct bpf_subprog_info *si = env->subprog_info;
-         int ret;
-         
-         for (int i = 0; i < env->subprog_cnt; i++) {
-                 if (!i || si[i].is_async_cb) {
-                         ret = check_max_stack_depth_subprog(env, i);
-                         if (ret < 0)
-                                 return ret;
-                 }
-                 continue;
-         }
-         return 0;
-}
-
-subprog root only starts from the main prog or async_cb.
-So regular sync callback will is treated similar
-to other direct-call subprog.
-
->
-> Since progs are preemptible is the following possible:
->
-> __noinline static void subprog(void)
-> {
->    /* delay */
-> }
->
-> static int timer_cb(void *map, int *key, void *val)
-> {
->    subprog();
-> }
->
-> SEC("tc")
-> int prog1(void)
-> {
->      bpf_timer_set_callback(  &timer_cb);
->      subprog();
->      return 0;
-> }
->
-> timers use softirq.
-> I'm not sure whether it's the same stack or not.
-> So it may be borderline ok-ish for other reasons,
-> but the question remains. Will subprog recurse this way?
-
-But for async cb, as you mentioned it is possible that
-prog1->subprog could be called in process context
-and the callback timer_cb->subprog could be called in
-nested way on top of prog1->subprog.
-
-To handle such cases, I guess I can refactor the code
-to record maximum stack_tree_depth in subprog info and
-do the checking after the subprog 0 and all async
-progs are processed.
-
-To handle a subprog may be used in more than one
-subtree (subprog 0 tree or async tree), I need to
-add a 'visited' field to bpf_subprog_info.
-I think this should work.
+base-commit: d811ac148f0afd2f3f7e1cd7f54de8da973ec5e3
+-- 
+2.25.1
 
 
