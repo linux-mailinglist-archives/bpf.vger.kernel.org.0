@@ -1,127 +1,121 @@
-Return-Path: <bpf+bounces-42840-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42842-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7C3A9AB997
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 00:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D7859AB9AC
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 00:51:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1DDD28413F
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 22:41:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBF8C28478E
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 22:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4CE1CDA24;
-	Tue, 22 Oct 2024 22:41:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970E61CEAB9;
+	Tue, 22 Oct 2024 22:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VqcKm/th"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bIa6lGNu"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2717B1CCEFA
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 22:41:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F9E1CEAC9
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 22:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729636911; cv=none; b=mEVgjhJXkfRUABOpZKl3IFnok7QrcnRbfeXlYUh2YnJHNZKaVEbtk+n7EU1q6ZiXPVyOXShvZ3N9VUlRP7BxXeyx61KW/dbhCy+fOfCqecQX/pixCBTUHdEXXQ9pl/GLi75NDdFO9C76g/LV8kf9XI+vwCLR7EkWOk8iIak/uDY=
+	t=1729637430; cv=none; b=uveL07aeXGHP7J2BcrK9vyyXbuVlH07NYigV/z3NdeyokTkkx/pI2TemrIbUmaaC3DwJVHlKKiOmz9JAbrFygBUNIoT7XB2VZQTC30kETHJ23lK/ZMQTjrQ472tQB3gScfVKL4yKu2WWh1Aye5sAmha26Br7rtQaiwIuRHP9pN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729636911; c=relaxed/simple;
-	bh=WgNSbo/AImVhxf5W0qyt3YtRMTqVYFAooszjmMx4Iss=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oKqpKUF8wSks1ujKiijHeYApC+co6WZLEQUeZmkU3rFLXHsHPeojb4tpkpUsdLQF2IE1kn3/oF5nai607msuGWAejjAr7LjqvUNNKE6tCJPNUOGFfOjpTIiJALmTUebp3czrM7AVKQ7z9u0h8iikWJCdLm1TuhPU9H6bOdNw/jM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VqcKm/th; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <8f572c9d-00c2-48b7-b57f-bd6445c5d514@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729636907;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q9rEkTnLitVo+CR2r6cJsh/Zdkqkwgq+EGp91OH5fLI=;
-	b=VqcKm/th54uz0ugPPNjM10vmQvPQ3Zp8bVZSnjMKnXHY0gQKaODrvCgUm+JMPW/QoUEbBu
-	PsskcWFlONM8P9wHfSjzpebw6TXx/AXg6hRPkPBtGhoQ/Q6/7oFDTXX5dNHQLbkMEjZ7yb
-	eCmAYjOchRiQt0Ui41RqpimaK7ZNuWA=
-Date: Tue, 22 Oct 2024 15:41:38 -0700
+	s=arc-20240116; t=1729637430; c=relaxed/simple;
+	bh=cyatEPGCDJ31+cKRmXmFR2L696gELvtTkx1wdGSCYgI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D/HTJLpkuaEVa1Wt3kaECDSnK4NKqPaiPUScpeI4C2OM9AxQy96v5Wvc9GeSNdSNa+FKr+w815zrmVVd8bSkEoxHqFkuYyAv5xTvXRY1ddZHlhlCR8GBL6fhFzEU2e6ItAmUZUJNxf7d7jkf38h+hYRgLJg7MEo6v+aptI7t+aU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bIa6lGNu; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-37d3ecad390so183147f8f.1
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 15:50:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729637426; x=1730242226; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cyatEPGCDJ31+cKRmXmFR2L696gELvtTkx1wdGSCYgI=;
+        b=bIa6lGNuFVske+FofHsYIK3JTFPqVFbohRC466G8+pvrOMVhnGBA//+VHcYZXHNKNs
+         Oz+5p8KBJkRw2m0Zg03Vga4o/FyK0CX86n88w2qRsELuzlIusAn1vqjejk22ws5sD+ia
+         m8kGTMoZ76Zv1+b+Zx4BeZwb4v+Dg/uFKJtCAb83WOjktqsOvx16w3DQH9DRHbK7phEH
+         zJKPZIzvnEIgt6BmuMVzhxoi9ChcIXH6qlwxo7GAHHRYEsGmk4OxL2MOjF0KqmqhIDPc
+         OQwMkSgRifXK7Kka/5dkDrWAbvkId15WndXzlBM3DmpTCfAeIdlbMr/V+NHFuAQHW2S5
+         mbsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729637426; x=1730242226;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cyatEPGCDJ31+cKRmXmFR2L696gELvtTkx1wdGSCYgI=;
+        b=THG0SGQYuDtBOpe3QiOOqfNRha/5wBLnZS81lPmCxt3EuPckoCKMOBGGEYyFoyqqTZ
+         82mlcCxp8freJu7wKVS78CUI64uvN+w4o3BDPqkcZ0icrdlQCEGO/nBUEElwsheQruj+
+         wqtqiRcO5TL5Z4f8Ym+zsoR9Y1EDyaSjT4HIdsVeHLibuUCvbcMV3L61XYQz5woeGppF
+         9/0vvr1SzCcAAJKMelmDyOk2SW2vQkagH+XoY6M4bgEIWwd2ME5SbXAAm57w1+S8emwx
+         6+JL3h9OgWFG88FiBQpIF+HkqQUz8Iss3CL2Q0HL9Cd2v+TadgQ8K+8AHWEcuoZOkQv2
+         7/IQ==
+X-Gm-Message-State: AOJu0YzAGLRYK3Z3BxHdL4QeSb7G4h2y8nBKwXN6doepP7PAy63EDXAE
+	KAe+v9sD/LuYOC4T7kNfNn0dqU9Ahdqei5Tm7tYLWYUD9vtJQQS2ENrqNnvD80HIov0RZYnMr6m
+	o0P2stwbhjTorgym6jswgYNDZk3s=
+X-Google-Smtp-Source: AGHT+IFZrXb4OZ2jfTtDIyyoiwZyT//XdDozHA+u56Pz3+w+LFw2KU2+bZCUx0FI/iYkTmtGUHxGPuPbHVcT3P5PEFc=
+X-Received: by 2002:a5d:528e:0:b0:37e:d942:f4bf with SMTP id
+ ffacd0b85a97d-37efc5de906mr347571f8f.12.1729637425660; Tue, 22 Oct 2024
+ 15:50:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 1/9] bpf: Allow each subprog having stack size
- of 512 bytes
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
- Tejun Heo <tj@kernel.org>
-References: <20241020191341.2104841-1-yonghong.song@linux.dev>
- <20241020191347.2105090-1-yonghong.song@linux.dev>
- <CAADnVQ+ZXMh_QKy0nd-n7my1SETroockPjpVVJOAWsE3tB_5sg@mail.gmail.com>
- <c6e5040b-9558-481f-b1fc-f77dc9ce90c1@linux.dev>
- <CAADnVQJCfiNEgrvf6GuaUadz6rDSNU6QB3grpOfk2-jQP6is4Q@mail.gmail.com>
- <179d5f87-4c70-438b-9809-cc05dffc13de@linux.dev>
- <CAADnVQL3+o7xV2LQcO-AArBmSEV=CQ7TQsuzBfTUnc_g+MhoMw@mail.gmail.com>
- <489b0524-49bc-4df4-8744-1badd40824be@linux.dev>
- <CAADnVQJJxyoLvFY88OEGzy0MUnL5O8KCMdedDdAvqYcWDJsDXw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQJJxyoLvFY88OEGzy0MUnL5O8KCMdedDdAvqYcWDJsDXw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20241019092709.128359-1-xukuohai@huaweicloud.com>
+In-Reply-To: <20241019092709.128359-1-xukuohai@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 22 Oct 2024 15:50:14 -0700
+Message-ID: <CAADnVQLOY-eHby6CMNXr3FvwPm85W-tWDxiWnRaR_U_=71ADuA@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf, arm64: Fix stack frame construction for
+ struct_ops trampoline
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Puranjay Mohan <puranjay@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 10/22/24 2:57 PM, Alexei Starovoitov wrote:
-> On Tue, Oct 22, 2024 at 2:43 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->> To handle a subprog may be used in more than one
->> subtree (subprog 0 tree or async tree), I need to
->> add a 'visited' field to bpf_subprog_info.
->> I think this should work.
-> This is getting quite complicated.
+On Sat, Oct 19, 2024 at 2:15=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com=
+> wrote:
 >
-> But looks like we have even bigger problem:
+> From: Xu Kuohai <xukuohai@huawei.com>
 >
-> SEC("lsm/...")
-> int BPF_PROG(...)
-> {
->    volatile char buf[..];
->    buf[..] =
-> }
-
-If I understand correctly, lsm/... corresponds to BPF_PROG_TYPE_LSM prog type.
-The current implementation only supports the following plus struct_ops programs.
-
-+       switch (env->prog->type) {
-+       case BPF_PROG_TYPE_KPROBE:
-+       case BPF_PROG_TYPE_TRACEPOINT:
-+       case BPF_PROG_TYPE_PERF_EVENT:
-+       case BPF_PROG_TYPE_RAW_TRACEPOINT:
-+               return true;
-+       case BPF_PROG_TYPE_TRACING:
-+               if (env->prog->expected_attach_type != BPF_TRACE_ITER)
-+                       return true;
-+               fallthrough;
-+       default:
-+               return false;
-+       }
-
-I do agree that lsm programs will have issues if using private stack
-since preemptible is possible and we don't have recursion check for
-them (which is right in order to provide correct functionality).
-
+> The callsite layout for arm64 fentry is:
 >
-> The approach to have per-prog per-cpu priv stack
-> doesn't work for the above.
-> Sleepable and non-sleepable LSM progs are preemptible.
-> Multiple tasks can be running the same program on the same cpu
-> preempting each other.
-> The priv stack of this prog will be corrupted.
+> mov x9, lr
+> nop
 >
-> Maybe it won't be an issue for sched-ext prog
-> attached to a cgroup, but it feels fragile for bpf infra
-> to rely on implementation detail of another subsystem.
-> We probably need to go back to the drawing board.
+> When a bpf prog is attached, the nop instruction is patched to a call
+> to bpf trampoline:
+>
+> mov x9, lr
+> bl <bpf trampoline>
+>
+> This passes two return addresses to bpf trampoline: the return address
+> for the traced function/prog, stored in x9, and the return address for
+> the bpf trampoline, stored in lr. To ensure stacktrace works properly,
+> the bpf trampoline constructs two fake function stack frames using x9
+> and lr.
+>
+> However, struct_ops progs are used as function callbacks and are invoked
+> directly, without x9 being set as the fentry callsite does. Therefore,
+> only one stack frame should be constructed using lr for struct_ops.
+
+Are you saying that currently stack unwinder on arm64 is
+completely broken for struct_ops progs ?
+or it shows an extra frame that doesn't have to be shown ?
+
+If former then it's certainly a bpf tree material.
+If latter then bpf-next will do.
+Pls clarify.
 
