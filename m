@@ -1,130 +1,120 @@
-Return-Path: <bpf+bounces-42765-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42766-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 218309A9D69
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 10:49:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D18CE9A9DC4
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 11:01:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1F722831D3
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 08:49:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FF4CB234C2
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 09:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8051E14EC4E;
-	Tue, 22 Oct 2024 08:49:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68CB01940A1;
+	Tue, 22 Oct 2024 09:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KH+gtNEB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jmc7OXB6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f193.google.com (mail-lj1-f193.google.com [209.85.208.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F9C227735;
-	Tue, 22 Oct 2024 08:49:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D285D22083;
+	Tue, 22 Oct 2024 09:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729586988; cv=none; b=P/8STgMGl4wOgIDo+lalhVh1Nc5zv63UN+oModqqIhQHiHnTdoZyG2oWNAftJ65Spl4upWoV5yBIm3p1anSHB937/+8baW3UWn4O7cd71dTN+w2kp3MqmtA+upDDajiJXFBR9SvqPhshu11P/B0d7kekkx1bie6upmL+phz8SlE=
+	t=1729587655; cv=none; b=brpUUhUpShsfmn0xAkVpO72EHZNkgQ86OnBApUokXpqdyqNji9hXAhGz2aClwquI0Wy/hZIMGr1Os1ZGkEfT25KNp/6S7zBQLZSFvF+BAkwdzT8+vHNzacC2bQksqRPv33StpA8b3uALa+Ucu4HmU20GvJvA3dsD0/oZW9Q5d1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729586988; c=relaxed/simple;
-	bh=VmBJLc5YwrovcjmjVJSAnkQ1H6CTGhFHDhc1H9J1qnU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WNse9aV1A0TexPZf/oz3iMiosbon8zuTPy1JWifAE1bGf6g8k/dwYrsHZccZtizKKwcgFAWkd1n2Li9ePgxR/6BdeeWPY9WZ/6xAP95a8tg6bYE2PtfMvcPfRLreMw/6/GG2BqO7fuO4yx9WGsy/g/SS9NsvHi1pRUcfIEJK1nk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KH+gtNEB; arc=none smtp.client-ip=209.85.208.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f193.google.com with SMTP id 38308e7fff4ca-2fb6110c8faso54618921fa.1;
-        Tue, 22 Oct 2024 01:49:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729586985; x=1730191785; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+pOfCiSieyO3TQ+yRCELl0+ufCyFVvkQ7MbO+0NA5No=;
-        b=KH+gtNEB9F/H4FQCBqEL6IqGlNuUtGHYFthtwOh36G3fe8X+kXPB+HkS8V81vEu2tH
-         EN6IGmkMcQgC55LnaOkaKV4Fx7Cnc0MzuUtHX8UI6baDB8zAnXbTTZH0ZT0b6pITcHC7
-         6zGE3lkQLVifL33X5T1y/iA4UuxVSN1/n6XITI/0q3p4uxFXn6vC5VFlzwGLrQO72PVd
-         wkSK2Y3VIi/9Ief1sJA+pIuOYE6Cz20tXDic7PObmXwldKfOqf1HRqJtqfMf8g1scMkj
-         nfANKpIlLLrZDbGFOxbxzubnU20iShjowSCFvpbjkunjfO5n1ei9bRu0QGOWihx0VWXD
-         NE2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729586985; x=1730191785;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+pOfCiSieyO3TQ+yRCELl0+ufCyFVvkQ7MbO+0NA5No=;
-        b=L10HK4Grj61ZAC9N9UpNI1jTIS/nUlZZuYTrf7wRE52atsb7B49FEGnLqdKNkMtznb
-         +ygZBvZaAr+wm33PJyOf+1i94iKiWfIHqUnZ1lkjHlEQZWITGHpEXw3mYDlMpbXicBJM
-         PGvXu+Gd4cNHXjuoIsLeSo3ybW6TELXhkz5pjaA165egM6Vgt8QdBdiwSWEWvVLrTp8C
-         OzKUTOtOSgftg/6cXCqJMGtUp4Gi3R0Xx2M5iW7XTeuk/9CV+odNqSnU2HBm3SFFtMrb
-         LDCPb2nn4Kb4GuanNacUTHE41mNebDf47kugjTvl+ciFYiDOChnjIT1RLSG2wrmwwLLM
-         +/9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUPR6Xxd54en/oOGZt3EwpJWtoYvmYrqQkCyM/o2zhWKEOHFvp8HyycTsNU71UjOlzz9E2+npoR@vger.kernel.org, AJvYcCUsFyYtIwudtD6eIuWctLziRVMGfWXGQC2sK8dwPUyAaioiiUrn3C8ZR2Om519Vbfi3Y0r/CwMgdT63rfQC15CA@vger.kernel.org, AJvYcCWD7l+gvpC7KtokH1wsBx5xICGMk7Z6g+5Um5/DlJxvfXrf6BQ9DpZW8i6ERImDUs0BuJg=@vger.kernel.org, AJvYcCXEq8CfcL4Uw7N8RvJ0NdnqH8yjkbsbhLifUecHRnBSnTsX9dAwfiEFw+3PX3jP4sDY3OF/6yyLeKXyoEY2@vger.kernel.org
-X-Gm-Message-State: AOJu0YzfIS+YJ3kVwBIi0RCQj229MBu0AJmtCAxyFdouF+TDmiE9pOqz
-	YGgnPyWwsdOk83fu6N0me/1i5pNb3n5KvWLD4xlJjUzcLNxDCnd7Nv9u5hh2khRKLxJ1TdyWpEX
-	SCldNJfw9wLFH2z9ncyfxpFXUeNE=
-X-Google-Smtp-Source: AGHT+IFKl3tfsMju7iYF30A7gBpjOZyrqMNthNqd+kPzl1ymRdMCkJ/IFXR1TES+Mv3Jjwg/Hwd37FmQx1Tu4AZ9ptg=
-X-Received: by 2002:a2e:be87:0:b0:2fb:55b2:b199 with SMTP id
- 38308e7fff4ca-2fb83281b86mr72476071fa.37.1729586982785; Tue, 22 Oct 2024
- 01:49:42 -0700 (PDT)
+	s=arc-20240116; t=1729587655; c=relaxed/simple;
+	bh=o2gQumhbj6TkS5MexAl/H7osNUxHltKph93k317WY0E=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=LQaAZyJrkW6A3hTt6S7eg7T5zbbafF7rrPaejgaAoVNssEdQg2arwYQAe+MebfXJDWn/srbAKCZRjwfX1O8lwH4g+UwNNbzlTwUfuq83VUJda1O13/U6bzdaW6fmXcadSJx90avPwZduktLZe4ZuYGS6sq93fGl/ZjWoshxpELk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jmc7OXB6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D72ADC4CEC3;
+	Tue, 22 Oct 2024 09:00:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729587654;
+	bh=o2gQumhbj6TkS5MexAl/H7osNUxHltKph93k317WY0E=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jmc7OXB6Rjh0AoWjy/yY8nCzBsfAGKwJDKN44cc2mEv4XMleapb3V2vG0/x5UlgDH
+	 cACO0vjU5DoaVsQfHijEyV+AaCk6OOaDIIa6Lak5AMVzwscJgqxri7skeNMGbipgZK
+	 NfY/fn6OPlK7H7RUBCnlsGvhB0Ps+ps+dAY5LZizpjCq5jp9Mh6f9UTJ2/ggJKq4qS
+	 QHQzcIg/bQJinymcnO0uD8dOvZ6XM+X8l745BL9J0GzXtgWLerVIia2GfUFSdT86Zv
+	 VINSmPwqFA2dXifsqPdTGzp1EPbNhCQxpH1CI+eLRoDnriC0eTs382KxghonoZszGJ
+	 ehwpfosZG8/TA==
+Date: Tue, 22 Oct 2024 18:00:48 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Sven Schnelle
+ <svens@linux.ibm.com>, Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Florent Revest <revest@chromium.org>, linux-trace-kernel@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Alan Maguire
+ <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>,
+ linux-arch@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Will
+ Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
+ <kernel@xen0n.name>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
+ <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen
+ N Rao <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger
+ <borntraeger@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
+ Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew
+ Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v17 11/16] fprobe: Rewrite fprobe on function-graph
+ tracer
+Message-Id: <20241022180048.989a3470b23ed34d048b246a@kernel.org>
+In-Reply-To: <20241021163139.6950-F-hca@linux.ibm.com>
+References: <172904026427.36809.516716204730117800.stgit@devnote2>
+	<172904040206.36809.2263909331707439743.stgit@devnote2>
+	<yt9ded4gfdz0.fsf@linux.ibm.com>
+	<20241016101022.185f741b@gandalf.local.home>
+	<20241018124952.17670-E-hca@linux.ibm.com>
+	<20241022001534.96c0d1813d8f4a26563d4663@kernel.org>
+	<20241021163139.6950-F-hca@linux.ibm.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20241015140800.159466-1-dongml2@chinatelecom.cn>
- <20241015140800.159466-6-dongml2@chinatelecom.cn> <20d9ed5f-abde-43ee-854f-48a9f69e9c04@redhat.com>
-In-Reply-To: <20d9ed5f-abde-43ee-854f-48a9f69e9c04@redhat.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Tue, 22 Oct 2024 16:50:36 +0800
-Message-ID: <CADxym3atdr5Rm1CU8_AU1XaczraYN7ihTJWQiqxaStmD4iETog@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 05/10] net: ip: make ip_route_input_slow()
- return drop reasons
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	dsahern@kernel.org, pablo@netfilter.org, kadlec@netfilter.org, 
-	roopa@nvidia.com, razor@blackwall.org, gnault@redhat.com, 
-	bigeasy@linutronix.de, idosch@nvidia.com, ast@kernel.org, 
-	dongml2@chinatelecom.cn, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
-	bridge@lists.linux.dev, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Oct 21, 2024 at 6:52=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
-te:
->
-> On 10/15/24 16:07, Menglong Dong wrote:
-> > @@ -2316,19 +2327,25 @@ static int ip_route_input_slow(struct sk_buff *=
-skb, __be32 daddr, __be32 saddr,
-> >               err =3D -EHOSTUNREACH;
-> >               goto no_route;
-> >       }
-> > -     if (res->type !=3D RTN_UNICAST)
-> > +     if (res->type !=3D RTN_UNICAST) {
-> > +             reason =3D SKB_DROP_REASON_IP_INVALID_DEST;
-> >               goto martian_destination;
-> > +     }
-> >
-> >  make_route:
-> >       err =3D ip_mkroute_input(skb, res, in_dev, daddr, saddr, dscp, fl=
-keys);
-> > -out: return err;
-> > +     if (!err)
-> > +             reason =3D SKB_NOT_DROPPED_YET;
-> > +
-> > +out: return reason;
->
-> Since you are touching this line, please rewrite the code with a more
-> natural indentation:
->
-> out:
->         return reason;
->
+On Mon, 21 Oct 2024 18:31:39 +0200
+Heiko Carstens <hca@linux.ibm.com> wrote:
 
-Okay!
+> > > Please note that this only works for addresses in the kernel address
+> > > space. For user space the full 64 bit address range (minus the top
+> > > page) can be used for user space applications.
+> > 
+> > I wonder what is the unsigned long size (stack entry size) of the
+> > s390? is it 64bit?
+> 
+> The s390 kernel is 64 bit only. So unsigned long is 64 bit as well.
+> 
 
-> Thanks,
->
-> Paolo
->
+Ah, got it.
+
+> > > I'm just writing this
+> > > here, just in case something like this comes up for uprobes or
+> > > something similar as well.
+> > 
+> > I'm considering another solution if it doesn't work. Of course if
+> > above works, it is the best compression ratio.
+> 
+> I'm think we are not talking about uprobes here, and everything ftrace
+> related would just work (tm) with the first four MSBs assumed to be
+> zero.
+
+yeah, but we still have other 32bit architectures support (e.g. i386, arm).
+
+Thank you,
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
