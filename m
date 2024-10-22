@@ -1,188 +1,121 @@
-Return-Path: <bpf+bounces-42720-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42721-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A19C9A9579
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:34:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD8CB9A957E
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 03:38:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13A9428416E
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 01:34:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0882D1C21ACF
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 01:38:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069EF84A32;
-	Tue, 22 Oct 2024 01:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BDFC12C478;
+	Tue, 22 Oct 2024 01:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hnh5ko3x"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CnEb5BFn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF58FDDAB
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 01:34:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54EEB80025;
+	Tue, 22 Oct 2024 01:37:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729560865; cv=none; b=MFxihkvGB5Imss2lZ5F76+GQCQwul/BSVtI0H0NRgDjIR8okJRPR13nQ6nvLy/HBXmqyr5yd/e6PNLlDkiXUQcKQo36l52o5VIpCpwCklpysKWcZC3b8g7xlTN5Va2mCdFwqjpwxt1/Jq3UnMpwoPXrNGOF6So8Z+UFieDj1ZcA=
+	t=1729561076; cv=none; b=cvmUJzhhz25LWkA+c5Melp63YiNk56ZXbINEYRQXaOzl5F8IXIlrATsozabaWMK0koBDPQDUtemmbWf0atFfg65rysByURLdwjwyFWfdACO8JQf1ckcRF23f41I9SlYVc1YwEzlV89I/AiXPGQz/qgBRl+zhRGyF/6SyBCGRQ24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729560865; c=relaxed/simple;
-	bh=xIBCpCWubQ+S7u8gAhDIlziW62PS+dj2Of8IRTHBVnY=;
+	s=arc-20240116; t=1729561076; c=relaxed/simple;
+	bh=NDJLk7xkPiU48e/PSsaR3uNMu9+RXCrTo/wdzd/6Vts=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pFbY7xin8b5i9B94P+H1DAh2RHcW/dUqvPYVMdCpUJUXvwCc6njcNh5Cjjnvk8FIEA4nu5C9OnHNuYecmlklU5KkWrElTWS/SIIirKHDlPwIObkpMIOqpSHcZ1uBUWhlYw8D4ff0lSPx8GP/AFF2obn/rxQhtj55235r+mjp6T8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hnh5ko3x; arc=none smtp.client-ip=209.85.221.44
+	 To:Cc:Content-Type; b=OsmANnnWvI9NZyt4PqZkfGlP04IY37WD7ak+F6MnTTB1wY5LPNTB4vn264mEca3OWC2s9zAEya9aahPDQEj/I3fpnIGGUx3rk3rs07YucyJcacdwMc30YlV0dM01ZWN+ZSKqwE73Aqme/LDeZZ0jYLu4xjwJ0KXg7j1hZ2BVTEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CnEb5BFn; arc=none smtp.client-ip=209.85.128.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-37d50fad249so3925590f8f.1
-        for <bpf@vger.kernel.org>; Mon, 21 Oct 2024 18:34:23 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6e2f4c1f79bso41758207b3.1;
+        Mon, 21 Oct 2024 18:37:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729560862; x=1730165662; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jJ0wI2R4txhfyxnLqvlmyeu+fiVKECEQ4qO7p690sfY=;
-        b=hnh5ko3xLFU5m9XhJZYmQBA8vX5V2we1NRvAjr1nkYU92ygBEhlFqYFVhRFjwV4jv+
-         2OOppNr5YlvAXKlhCKbogHl3ts5sS/oJu53N5wl8NtwFP7/oXRrpKv1pcUQprxYSutmB
-         GEuWcr45L6BBzAfw5WJ9ZdjcGCGYgGxyrNnWf5eWO7H+/IRX3qjaGzzOAgayW4go0Zju
-         qprWtvjCbyBQbdjkYgsPz3o+Wax/s8Pmkr4FNgH6EtdMlBDBZbgf7gfG0WQQneJjzPnU
-         c9iY3JvYQYXggX9xzb6q+Wpq6PlxNHXW40UcKus1iUfbFJqg70J+UKca0RAn3Zc+HTMx
-         GXgw==
+        d=gmail.com; s=20230601; t=1729561074; x=1730165874; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NDJLk7xkPiU48e/PSsaR3uNMu9+RXCrTo/wdzd/6Vts=;
+        b=CnEb5BFnjhBQbcZghV0O8QO/n7o4aJfb4ZTElX0odhBZQbZfh0i0m9L6bxxtDQLto9
+         nKpDYGTvijC7a1Z9eHOhbEftcSaEZ9CqM9tup9cShd7m/PdMB3izG0c4xLr0ItgkXMm3
+         ZizjhdgPwEySlNen9IPZ6ZbwLmbULNMYuK4dQs1i0KO4vGxyK6dXVyWxJ7ZPTefMLk8c
+         dqxF8AoJ9fntE0UEfjd9YPnoIhCdcpXStOOJtbqjSElqlVN5ZnD8BiQ0vJYWOKBLWhL6
+         p42lCwC8rcEiB7PiBU4bA0POVPc8IE1QKpg58+9Ym+qNf+AEikOMuuhHQdUPMSVHhXVQ
+         mGvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729560862; x=1730165662;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jJ0wI2R4txhfyxnLqvlmyeu+fiVKECEQ4qO7p690sfY=;
-        b=LZhhEPdV0ofyRjXYEVjACbyD5mhoiMKDYJvgm8OB72BFs5V551iNZnUoM9o2nAxTqj
-         kyJ/tDk3HJn6+yJSQxAoUe0prXn6dyV+2FUlrTKnJdbOIA1im/4b6q3/tt3unscaKkFN
-         D2KVP3u53OWW55gXaiTXQy7tHUu1CN5MVOi/XlV9YfuPdsJaQybXGTSmFBfs93CXI6q+
-         VxxfU51cYdAGhWNqc88TMAtM1fL01taTCaFKGsSYIPW9buIRz/bhOcqfctri7FEFdIB4
-         xNIRqgdOWMoRWisvE/8Z3QafXiFa23+a1syHKAHtlhRcUXBCl+G3yIgY7w9AjCKXemGP
-         fjxA==
-X-Gm-Message-State: AOJu0YwpEc5XuqgiXKew94QGys6UbOBb6hYnvBqUZPkhmhT+qBX3hzDy
-	1ahVpVviMUJyJ/oWsTaJlFrei0K8Ldc0kWzSp9X/ksorxtqJinaeTGFeUWVKD+echJGX43vZYRO
-	xJhp5S+LHBiOB00aaPCrp5dn4F5k=
-X-Google-Smtp-Source: AGHT+IGorneamNQwUYLWc2OfpRKEzmzYSs/c+rplfyjp9ODAEkAadbEBSj/38l2dChXmw5kajkaVer/6dwn8cDHeMTw=
-X-Received: by 2002:adf:e7c8:0:b0:37d:4ab2:9cdc with SMTP id
- ffacd0b85a97d-37eab4d7a60mr7560247f8f.13.1729560861781; Mon, 21 Oct 2024
- 18:34:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729561074; x=1730165874;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NDJLk7xkPiU48e/PSsaR3uNMu9+RXCrTo/wdzd/6Vts=;
+        b=VUib7ReMfLIJZFRA0IpJeFFmLSB9kwgLDkE0GNnaPIrfpYS9YfjUKM1YtYmFI44EOi
+         77FFRuXLp/TZ1HGUOFV5ikKwnuNLXfyfOX2cMawugsUmD9CjSg2hAg1q+R308ulv3CoS
+         5JXuwoRq3MJ39E7cLugCCyiIU3DAqOkeNJtSY6xrC3nhBHd64cIxB6kRcz2yC2AaJTLE
+         IOWy2dnqFenhqP2C2+YLJN5J5LshL+SK6uYGXLgO9rk1zEfQh+s+3AJjvgfDeCHKFwHu
+         Vdxe8wMocfJ75FfEdsUMvDRYppEgZzL6yYTyz1LASXviVccdvXCisy/44vMxLuzLR3yc
+         EJfw==
+X-Forwarded-Encrypted: i=1; AJvYcCV9qKlieFNoBAbqrS/f0LWjuJCRwr4fOZ74yeNkzfNF0jOSmwnMhk/4rQzOwPFPfQslhZuqr5Z7@vger.kernel.org, AJvYcCW4RJS86EzbI51r2DG1vPXC/75GYLMCPWZiTc2uRhRGLu7GJATpqBpZt1wrKfOvHuwUDqA=@vger.kernel.org, AJvYcCXWh8aio4rjTD2avFOkJUiJisEJFHyslwo7zZ/5f3bQsEmu74IdK87n/GZwJYP+5CyUsjAZ31fi1LtBSj0j@vger.kernel.org
+X-Gm-Message-State: AOJu0YxOLgSCYoE2+gUwIZ0p3nTfKmL6sJAsTDNAtqDJcUN5niCXXKXU
+	mlDv0lRAfeUs89COsAfqIxe9eh2h7nOJk4wXh+qfY9VPoej1Uk5WGVUoK7MsDbxH9Tfzbb2rxzi
+	MWmLX3VHCdUOWvMW4tOwjPT1oibk=
+X-Google-Smtp-Source: AGHT+IH/tKqA6Ex8XzzdbDrWfvqDknkowK08soSRE5a9PRlkAj9ON17Z/foKz0LOaGN255PnB9CXz+3HOizL5IJ0yLo=
+X-Received: by 2002:a05:690c:39b:b0:6d3:4c37:d652 with SMTP id
+ 00721157ae682-6e7d8256f38mr10799427b3.24.1729561074147; Mon, 21 Oct 2024
+ 18:37:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241020191341.2104841-1-yonghong.song@linux.dev> <20241020191400.2105605-1-yonghong.song@linux.dev>
-In-Reply-To: <20241020191400.2105605-1-yonghong.song@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 21 Oct 2024 18:34:10 -0700
-Message-ID: <CAADnVQ+o35Gf3nmNQLob9PHXj5ojQvKd64MaK+RBJUEOAW1akQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 3/9] bpf: Support private stack for struct ops programs
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>
+References: <20241019071149.81696-1-danielyangkang@gmail.com> <c7d0503b-e20d-4a6d-aecf-2bd7e1c7a450@linux.dev>
+In-Reply-To: <c7d0503b-e20d-4a6d-aecf-2bd7e1c7a450@linux.dev>
+From: Daniel Yang <danielyangkang@gmail.com>
+Date: Mon, 21 Oct 2024 18:37:01 -0700
+Message-ID: <CAGiJo8R2PhpOitTjdqZ-jbng0Yg=Lxu6L+6FkYuUC1M_d10U2Q@mail.gmail.com>
+Subject: Re: [PATCH net] Drop packets with invalid headers to prevent KMSAN infoleak
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"open list:BPF [NETWORKING] (tcx & tc BPF, sock_addr)" <bpf@vger.kernel.org>, 
+	"open list:BPF [NETWORKING] (tcx & tc BPF, sock_addr)" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	syzbot+346474e3bf0b26bd3090@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 20, 2024 at 12:16=E2=80=AFPM Yonghong Song <yonghong.song@linux=
-.dev> wrote:
->
-> To identify whether a st_ops program requests private stack or not,
-> the st_ops stub function is checked. If the stub function has the
-> following name
->    <st_ops_name>__<member_name>__priv_stack
-> then the corresponding st_ops member func requests to use private
-> stack. The information that the private stack is requested or not
-> is encoded in struct bpf_struct_ops_func_info which will later be
-> used by verifier.
->
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  include/linux/bpf.h         |  2 ++
->  kernel/bpf/bpf_struct_ops.c | 35 +++++++++++++++++++++++++----------
->  kernel/bpf/verifier.c       |  8 +++++++-
->  3 files changed, 34 insertions(+), 11 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index f3884ce2603d..376e43fc72b9 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1491,6 +1491,7 @@ struct bpf_prog_aux {
->         bool exception_boundary;
->         bool is_extended; /* true if extended by freplace program */
->         bool priv_stack_eligible;
-> +       bool priv_stack_always;
->         u64 prog_array_member_cnt; /* counts how many times as member of =
-prog_array */
->         struct mutex ext_mutex; /* mutex for is_extended and prog_array_m=
-ember_cnt */
->         struct bpf_arena *arena;
-> @@ -1776,6 +1777,7 @@ struct bpf_struct_ops {
->  struct bpf_struct_ops_func_info {
->         struct bpf_ctx_arg_aux *info;
->         u32 cnt;
-> +       bool priv_stack_always;
->  };
->
->  struct bpf_struct_ops_desc {
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index 8279b5a57798..2cd4bd086c7a 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -145,33 +145,44 @@ void bpf_struct_ops_image_free(void *image)
->  }
->
->  #define MAYBE_NULL_SUFFIX "__nullable"
-> -#define MAX_STUB_NAME 128
-> +#define MAX_STUB_NAME 140
->
->  /* Return the type info of a stub function, if it exists.
->   *
-> - * The name of a stub function is made up of the name of the struct_ops =
-and
-> - * the name of the function pointer member, separated by "__". For examp=
-le,
-> - * if the struct_ops type is named "foo_ops" and the function pointer
-> - * member is named "bar", the stub function name would be "foo_ops__bar"=
-.
-> + * The name of a stub function is made up of the name of the struct_ops,
-> + * the name of the function pointer member and optionally "priv_stack"
-> + * suffix, separated by "__". For example, if the struct_ops type is nam=
-ed
-> + * "foo_ops" and the function pointer  member is named "bar", the stub
-> + * function name would be "foo_ops__bar". If a suffix "priv_stack" exist=
-s,
-> + * the stub function name would be "foo_ops__bar__priv_stack".
->   */
->  static const struct btf_type *
->  find_stub_func_proto(const struct btf *btf, const char *st_op_name,
-> -                    const char *member_name)
-> +                    const char *member_name, bool *priv_stack_always)
->  {
->         char stub_func_name[MAX_STUB_NAME];
->         const struct btf_type *func_type;
->         s32 btf_id;
->         int cp;
->
-> -       cp =3D snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s",
-> +       cp =3D snprintf(stub_func_name, MAX_STUB_NAME, "%s__%s__priv_stac=
-k",
->                       st_op_name, member_name);
+> A test in selftests/bpf is needed to reproduce and better understand this.
+I don't know much about self tests but I've just been using the syzbot
+repro and #syz test at the link in the patch:
+https://syzkaller.appspot.com/bug?extid=346474e3bf0b26bd3090. Testing
+the patch showed that the uninitialized memory was not getting written
+to memory.
 
-I don't think this approach fits.
-pw-bot: cr
+> Only bpf_clone_redirect() is needed to reproduce or other bpf_skb_*() helpers calls
+> are needed to reproduce?
 
-Also looking at original
-commit 1611603537a4 ("bpf: Create argument information for nullable argumen=
-ts.")
-that added this %s__%s notation I'm not sure why we went
-with that approach.
+From what I can see in the crash report here:
+https://syzkaller.appspot.com/text?tag=CrashReport&x=10ba3ca9980000,
+only bpf_clone_redirect() is needed to trigger this issue. The issue
+seems to be that bpf_try_make_head_writable clones the skb and creates
+uninitialized memory but __bpf_tx_skb() gets called and the ethernet
+header never got written, resulting in the skb having a data section
+without a proper mac header. Current check:
 
-Just to avoid adding __nullable suffix in the actual callback
-and using cfi stub callback names with such suffixes as
-a "proxy" for the real callback?
+if (unlikely(skb->mac_header >= skb->network_header || skb->len == 0))
+{
+**drop packet**
+}
 
-Did we ever use this functionality for anything other than
-bpf_testmod_ops__test_maybe_null selftest ?
+in __bpf_redirect_common() is insufficient since it only checks if the
+mac header is misordered or if the data length is 0. So, any packet
+with a malformed MAC header that is not 14 bytes but is not 0 doesn't
+get dropped. Adding bounds checks for mac header size should fix this.
+And from what I see in the syz test of this patch, it does.
 
-Martin ?
+Are there any possible unexpected issues that can be caused by this?
 
