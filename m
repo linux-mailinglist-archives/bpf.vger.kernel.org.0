@@ -1,168 +1,147 @@
-Return-Path: <bpf+bounces-42819-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42820-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0F699AB76A
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 22:06:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B899AB77C
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 22:12:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D04BB22959
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 20:06:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01BBB1C22C21
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 20:12:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73921CBE94;
-	Tue, 22 Oct 2024 20:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028D31CBE80;
+	Tue, 22 Oct 2024 20:12:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="Ndzwbot2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gZoeSuum"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F33AB1C9ED2;
-	Tue, 22 Oct 2024 20:06:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D5D91A0BE0
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 20:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729627598; cv=none; b=eZA5q+vNIMdqKQV/Lh0stccEu8bm9KtJwOTKtg+2shuPwNTEpyo0xX3hc6dBtC+v3TwgiVosKTJusDMpltUaGpBOGjgyiLzCy/2v6yBkov+SSMKGwSVt4L/HPL9dawUJ9GDE/PKnzKYS8xnPuscmN3rGYIjLQVwRE2oag5MP5H4=
+	t=1729627937; cv=none; b=GMlDZHgl+KR0UNNKvP+iQVQ2er20xVA9LcjnXJsMb39tRcg7Lu5Bk9kbwSkATfw/jpSOKLT28t4nkbjRCE8MULeI8qJ07hxgOB46rpn7iA9CH1CuREfNRepGaghAxoMdquOc3QfWSd6CJrx3olzgSU2gIFcI14qIXE4xOcnVwYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729627598; c=relaxed/simple;
-	bh=drK3eYYnJyoywUvF3r02TIDWaPZHQ8aA0CUG3R0HUiE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kG6ZhLlKlnzWz/svJ175lcpfJ+4KXBP6DvdEM7HySnD994j6oobVAaDhTNPg3kSuLkJTsmLV3BbzVBnV8Zjr21xSbxoG0qR7r/30qA3dm1duNn6BXd9PogqzunOT4MeuxRl2QUF7AUB8dGZHvJBfaF/OcTm5Pqg6QJPO2ZmS9NQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=Ndzwbot2; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1729627593;
-	bh=drK3eYYnJyoywUvF3r02TIDWaPZHQ8aA0CUG3R0HUiE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Ndzwbot2E0Pi1n7eCyEi4HOE/bJBXQcpmVezyCZbLmzpcuTwc7Bxp4bPOoTucS/V6
-	 0OqvJVWdHQfmqQWAZQOMbS8F9RqBlGpAn7ut3uCIG0i5aprX742NZ8htLcOtrmdwZf
-	 48Myj/g9O/Ip95bTB7GN6fmGN19H9xUWpM1wnWLlumxdr3icfA3b/BGp/K83oQDcU0
-	 bhbIxQ11L4QDdZTYv8/64l9XZfmJavxXDBqU5qNELXaUg1ylRtB6hQhAfvxZamqG3U
-	 w7L2D1LXaqEqhLF2eFaeXmh4imlPvEn/gEpMg9gIqYWsThhvXqB3+DU+XDYDD8DRcj
-	 Gxni1Nj1Y9Cag==
-Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XY3951TMQzSQX;
-	Tue, 22 Oct 2024 16:06:33 -0400 (EDT)
-Message-ID: <1ab8fe0d-de92-49be-b10b-ebb5c7f5573a@efficios.com>
-Date: Tue, 22 Oct 2024 16:04:49 -0400
+	s=arc-20240116; t=1729627937; c=relaxed/simple;
+	bh=5n1l/vsFQUGg/piLJVSs81SiGs1qWc+irM8X5M6Lw1w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=njfYraprqo/JjJtI6EgSkTU/cUQEafc8kUcjD7ptuScAsQaBLWnesqv9QZegmVvEQdLTkOge2xzasYcIFotvxPfcQkN6nY7wBDqhtSSPhXanEbin3NgYrrDA/zAyMtJW+C4YtUa0kPYwEka0ZZekPVoo/brargLUaaBd8CbLrYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gZoeSuum; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7ea16c7759cso3309756a12.1
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 13:12:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729627935; x=1730232735; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e78c6CVvAgJ1/WrnMZ6FQmLOrB4wGRJo8NfkwSfpyV0=;
+        b=gZoeSuum19Hjq0dVYUsZ4cq42tqV7FIiC5frhI/x04qleS8NModBiqd844PCkwTgAp
+         yBWLwDD0zDrXHCQTY8ITelI4HOswXnpo5PgvVg5m2X7FnbxoMiEgq/xt6zuFzdgUfYbE
+         6hgE1by32iEHdXUdBN3nEWWvew3ULDfKNmv3uO2Bu8I+Xvjc6tLsX9mSizIBqoPsIA0m
+         tCPV1GoQalZ2agPir5P6HwudcdQFAj9SfGwUdPZ6vvlZ83F7m7mxKgCmlm62fKdqtVvm
+         fMxXshxUjZnkcZpIllnV93Vd9kXVGcWCAwlLsOhQlBRPu0Noc1xIACjIrIL07jqZ8+Ym
+         1e6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729627935; x=1730232735;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e78c6CVvAgJ1/WrnMZ6FQmLOrB4wGRJo8NfkwSfpyV0=;
+        b=GmuQOCBdki75SUOkJBapEfYougFbRYNy5JsZIWqI6VPDRihxnwKu3w558emFEPPMZ3
+         9oWGSVoXjL7O8aqyd0p6yc143lr7AC6D+X9Epn9p7bOloB+fgUe3ces31kR7ygKfMzoY
+         JktLALc9JiViIPO3/jMxthZsVkNtMvxlPTxizzkei3+1yBCMtnkzU7v1zxDNErNTAnoK
+         zRZush0DlL2Y71U7bTVvoWzO4Ap/3+DpHthbDtIbS89kei79WBDSHKeO/JLelPdXisLc
+         8+dEnTtAOXIwRqv68vO+xRi+zvUUzfiTwtTTk5XXlNBrXBuKC4tByJXhCXMEvFOB2Hg9
+         bALg==
+X-Gm-Message-State: AOJu0YyvwA+JBcdn3Es4TJzzlSz3tBgh0BI8RGFWXtOhuC2c3iUVQQHG
+	0dUQvWNNC3tls+m/vxHRAe+OUr/64IZm8hnXPbnHNotK7h9EVDbS2qkwp7ZWQ5mYnqLQqH+7eog
+	++bHM6M7csQuLRMn6V5xTLQ992go=
+X-Google-Smtp-Source: AGHT+IHm/gD3U1t1WVzL9tQxgl1CslsZcvI10JqO8nL8uRO/b5DdReP5t3OMNFTlgvUxg872iV1bFggPp11HaA42Ihc=
+X-Received: by 2002:a05:6a21:1707:b0:1d9:b48:8b0b with SMTP id
+ adf61e73a8af0-1d978aead8emr258443637.5.1729627935342; Tue, 22 Oct 2024
+ 13:12:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] tracing: Fix syscall tracepoint use-after-free
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jordan Rife <jrife@google.com>, Steven Rostedt <rostedt@goodmis.org>,
- linux-kernel@vger.kernel.org,
- syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com,
- Michael Jeanson <mjeanson@efficios.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>,
- Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
- Joel Fernandes <joel@joelfernandes.org>
-References: <20241022151804.284424-1-mathieu.desnoyers@efficios.com>
- <CADKFtnSGoSXm-r0cykucj4RyO5U7-HHBPx7LFkC6QDHtyPbMfQ@mail.gmail.com>
- <3362d414-4d6f-43a7-80af-1c72c5e66d70@efficios.com>
- <CAEf4BzYBR95uBY58Wk2R-h__m5-gV0FmbrxtDgfgxbA1=+u0BQ@mail.gmail.com>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <CAEf4BzYBR95uBY58Wk2R-h__m5-gV0FmbrxtDgfgxbA1=+u0BQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <SY4P282MB2313108B00C833317D0E5938C64C2@SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM>
+In-Reply-To: <SY4P282MB2313108B00C833317D0E5938C64C2@SY4P282MB2313.AUSP282.PROD.OUTLOOK.COM>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 22 Oct 2024 13:12:02 -0700
+Message-ID: <CAEf4BzZctXJsR+TwMhmXNWnR0_BV802-3KJw226ZZt8St4xNkw@mail.gmail.com>
+Subject: Re: How to combine bpf dynptr and bpf_probe_read_kernel
+To: Levi Zim <rsworktech@outlook.com>
+Cc: bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-10-22 15:53, Andrii Nakryiko wrote:
-> On Tue, Oct 22, 2024 at 10:55 AM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->>
->> On 2024-10-22 12:14, Jordan Rife wrote:
->>> I assume this patch isn't meant to fix the related issues with freeing
->>> BPF programs/links with call_rcu?
->>
->> No, indeed. I notice that bpf_link_free() uses a prog->sleepable flag to
->> choose between:
->>
->>                   if (sleepable)
->>                           call_rcu_tasks_trace(&link->rcu, bpf_link_defer_dealloc_mult_rcu_gp);
->>                   else
->>                           call_rcu(&link->rcu, bpf_link_defer_dealloc_rcu_gp);
->>
->> But the faultable syscall tracepoint series does not require syscall programs
->> to be sleepable. So some changes may be needed on the ebpf side there.
-> 
-> Your fix now adds a chain of call_rcu -> call_rcu_tasks_trace ->
-> kfree, which should work regardless of sleepable/non-sleepable. For
-> the BPF-side, yes, we do different things depending on prog->sleepable
-> (adding extra call_rcu_tasks_trace for sleepable, while still keeping
-> call_rcu in the chain), so the BPF side should be good, I think.
-> 
->>
->>>
->>> On the BPF side I think there needs to be some smarter handling of
->>> when to use call_rcu or call_rcu_tasks_trace to free links/programs
->>> based on whether or not the program type can be executed in this
->>> context. Right now call_rcu_tasks_trace is used if the program is
->>> sleepable, but that isn't necessarily the case here. Off the top of my
->>> head this would be BPF_PROG_TYPE_RAW_TRACEPOINT and
->>> BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE, but may extend to
->>> BPF_PROG_TYPE_TRACEPOINT? I'll let some of the BPF folks chime in
->>> here, as I'm not entirely sure.
->>
-> 
->  From the BPF standpoint, as of right now, neither of RAW_TRACEPOINT or
-> TRACEPOINT programs are sleepable. So a single RCU grace period is
-> fine. But even if they were (and we'll allow that later on), we handle
-> sleepable programs with the same call_rcu_tasks_trace -> call_rcu
-> chain.
+On Tue, Oct 22, 2024 at 7:14=E2=80=AFAM Levi Zim <rsworktech@outlook.com> w=
+rote:
+>
+> Hi,
+>
+> I have a question about how use bpf dynptr and bpf_probe_read_kernel
+> together.
+>
+> Assuming we have an fexit program attached to pty_write(static ssize_t
+> pty_write(struct tty_struct *tty, const u8 *buf, size_t c))
+>
+> I want to send some metadata and the written bytes to the pty to user
+> space via a BPF RingBuf.
+> While I could reserve a statistically known amount of memory on ringbuf,
+> it is a waste of the ringbuf's space if there are only one or two bytes
+> written to pty.
+>
+> So instead I tried to use bpf_ringbuf_reserve_dynptr to dynamically
+> reserve the memory on the ringbuf and it works great,
+> until when I want to use bpf_dynptr_write to read the kernel memory at
+> buf into the memory managed by dynptr:
+>
+>        78: (85) call bpf_dynptr_write#202
+>        R3 type=3Dscalar expected=3Dfp, pkt, pkt_meta, map_key, map_value,
+> mem, ringbuf_mem, buf, trusted_ptr_
+>
+> The verifier appears to be rejecting using bpf_dynptr_write in a way
+> similar to bpf_probe_read_kernel.
+>
+> Is there any way to achieve this without reading the data into an
+> intermediate buffer?
 
-Good points, in this commit:
+Yes, you can bpf_probe_read_kernel() into dynptr's memory chunk by
+chunk. I recently wrote an example of doing chunk-by-chunk copying of
+XDP data into ringbuf dynptr, you can find it at [0].
 
-commit 4aadde89d8 ("tracing/bpf: disable preemption in syscall probe")
-I took care to disable preemption around use of the bpf program attached
-to a syscall tracepoint, which makes this change a no-op from the
-tracers' perspective.
+  [0] https://github.com/libbpf/libbpf-bootstrap/commit/046fad60df3e3954093=
+7b5ec6ee86054f33d3f28
 
-It's only when you'll decide to remove this preempt-off and allow
-syscall tracepoints to sleep in bpf that you'll need to tweak that.
+> Or could we remove this limitation in the verifier at least for tracing
+> programs that are already capable of
+> calling bpf_probe_read_kernel to read arbitrary kernel memory?
 
-> 
-> That's just to say that I don't think that we need any BPF-specific
-> fix beyond what Mathieu is doing in this patch, so:
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+This would have to be a new special API, basically a dynptr version of
+bpf_probe_read_kernel, something like:
 
-Thanks!
+int bpf_probe_read_kernel_dynptr(struct bpf_dynptr *dst, u32 offset,
+u32 size, void *untrusted_ptr);
 
-Mathieu
+We can probably add that, which seems like a straightforward addition
+to me. We'd probably want bpf_probe_read_user_dynptr() and
+bpf_copy_from_user_dynptr() to go in a single consistent batch.
+Implementation wise it's a super think wrapper around existing
+functionality (we are just avoiding fixed buffer size restrictions of
+existing probe/copy_from APIs)
 
-> 
-> 
->> A big hammer solution would be to make all grace periods waited for after
->> a bpf tracepoint probe unregister chain call_rcu and call_rcu_tasks_trace.
->>
->> Else, if we properly tag all programs attached to syscall tracepoints as
->> sleepable, then keeping the call_rcu_tasks_trace() only for those would
->> work.
->>
->> Thanks,
->>
->> Mathieu
->>
->> --
->> Mathieu Desnoyers
->> EfficiOS Inc.
->> https://www.efficios.com
->>
+Thoughts?
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+>
+> Best regards,
+> Levi
+>
+>
 
