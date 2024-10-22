@@ -1,78 +1,82 @@
-Return-Path: <bpf+bounces-42788-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42789-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E89819AB20D
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 17:29:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B7959AB20F
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 17:29:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94A371F253D2
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:29:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC7561C22548
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2E31A3BC0;
-	Tue, 22 Oct 2024 15:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D0D91A4F0A;
+	Tue, 22 Oct 2024 15:29:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b4Tv1609"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B/05Ab3h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4D5139CE2
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 15:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19CBD1A304A
+	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 15:29:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729610959; cv=none; b=o+ZfpWlBLqW2TW7fuaG0FzYT+42S1TeEv1Ze5zMeWhZhCVXzFjoBsNSTtjv5s+ChMTLhaADM5jwkqfCldo517uE2xIQDOL0lUV8eQSyDS6D66xuA6ML6TrDQCXuONeQlKLd/lyqpBiWsxK0gaulRwl2Qncmj40WTZKCwzpFBhqs=
+	t=1729610961; cv=none; b=Q+G6i8VMzrukY736lDpuan2Bq+FVpFX/1D6EDo6RxX5WF2qQYL2gGClioj2tdPUJk3xbPyGQE2nsW6KwWFsD1H6jM7f5ALTudvfCT+qLpuRm5jE5wUOL4g0EnLqvQGrH5YJRlJFsTt9CwLURVJk7Z0qQNsZpjdBkZ0UdN2bLRkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729610959; c=relaxed/simple;
-	bh=AVHQdyjmODZpdCOtuBHcLgFbP4dCsqQ3defZwhN46S8=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=m4I052y14siXQXKbZj45s3yYzOPdkJ62yy2xcR0pGQNMviaoqYRjFFoFtCo7NXcgmbrINU3YuyiTIqF0e180EjDmdDDutbMZKrlVB3+44gLAe9tFWQITyOjQzdHnGurjUcEs2Z90YZlgRTtehm8VWcQRQ86qri00lFCLwqSVZIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b4Tv1609; arc=none smtp.client-ip=209.85.216.73
+	s=arc-20240116; t=1729610961; c=relaxed/simple;
+	bh=GdvrfYPXKufBcCKtwhEWQaPblf67lc8LuA9PLBLMz9U=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=SX8ncuRS3yws1gCZLTCsKxv9TEgTOTPbgaXj3xr/29hM4NRHj/6XWtsdEQTz+oQLlkU3XZ/gXxCOSNm4iidV41yFqmWxrEHh4kgTCBqPbmi6uAZ2eE7IeB88vAwAVF2pDQyuRNfe1AOi2M60P6Yk3kKG+9EDSl0ppXS9GMzCpsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B/05Ab3h; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2e2c6a5fc86so5416407a91.2
-        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 08:29:17 -0700 (PDT)
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-7d4f9974c64so3860447a12.1
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 08:29:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1729610957; x=1730215757; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JzVIdkphVy6VCB+khzDa62+1PBT7rr/AZQaCe6/5n3s=;
-        b=b4Tv1609VoZZFWF/+MDnGRNI9bGuKO6zL9cdsTz5pAbk4O9Egdxa9rc9VNPcm6xkzk
-         ei8ibDafakyjQJjkVGtDIjlojQoNK+T4kolohR3SUFuoytfvFRQvZ8/oLA4P5UZnYuWd
-         ted1RS084uFy+2Tp5xBm/ikMSU60vmr7a271eyYtXJNlnerq+kdjBYp4WLrUGb4OAkB7
-         sFuQcGnsFYdkzlYxUKKPdI1yPESzdikd+QuumLBY6bc/wiBoJGdhynNcGrd4W37XaLZQ
-         xi4p4jjQIEeW8cDsgfwzu+sdow+4GR3yIFgN10DG+bG0/aObATwDNh745BFeDbb9x7SB
-         8K5w==
+        d=google.com; s=20230601; t=1729610958; x=1730215758; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NDNpe86iWZxRpORrtGdS8nlKHDmPBRzXt90mx6BTn+g=;
+        b=B/05Ab3h00UM8wn/E5C7d6XTuGopOLjZVpFTUfrQTWgir8+FjjkxsWgw9rB4Tk/nd5
+         QC0+bkl0K2lY0zZtiRpnJLQ85RJqSYsuuFq1p1oUh98N2qWdxWz2Vwsqp3w6WbYf0i+E
+         X+VIazA7GpizRvz67atRx+1gjdTKLTq5/TbOyJBKfHT4GJsSKD0KzkZX/0IbDN7Mkwbb
+         qd8F0SIoaduHLc6Dl3rejYTFVovQHfU61+WEUS4NNaTCoMtEXKnlS1LVdXtm0BcTOfWk
+         Zf96rmAC7Gkzi3TlioVV1f846/K7jTjTQIOXUQRdemMvR7AuY6gSaNpNS5SXV2cJcWcl
+         MolA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729610957; x=1730215757;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JzVIdkphVy6VCB+khzDa62+1PBT7rr/AZQaCe6/5n3s=;
-        b=OHTPfwkA94Wy7t7/EWTGj5E47X2J0onGos6Mw2LylieWa7aFA5q/x/0oHfdzxLv61N
-         yNmlTSwXWXW+YE9YAH+QoEzLQjsBMwCrG0R2WR57UoRrEphG/BLtpM4vEYQq2SaBz+hR
-         FJ4UalGtyGdVaTqelcCSbd67utFI+Re9AIOwxTX7mO92PE1mlxjIslZv/5UIAKOnp/cC
-         fWRnzZqqOuYlFTPP7maQG1JFJbqvwjbz+kkS+NiRg1KuW0r7BSkMye7FnkgJZzgx8wm5
-         IWPpRy42Q8jZmTZqtcSm44/PHmjwbUKy8AIz3vKXFTB7RRF+a6V/cff7hg3R5nTgypd/
-         y24w==
-X-Gm-Message-State: AOJu0YzIpbaxMrmTEsH2hIPOHmkcETVkLG74UGFEvdWwE0+e7kaJJhcA
-	LW/nBqXeCTXaZFs3p2qQSr6VmFeDKplKt1zDdHt8R6Xgx8C8O/XlL0LFSr9OD4UKlEQukimI67r
-	6r0ibfSqu7VkC8f8s4YghRfs66mWhePLD/kJigAO1T0ReGCKc64UiDxbfgs+ii423qitFTaUNJf
-	gt3uu8xSaiG0hY6ONqZMphSZw=
-X-Google-Smtp-Source: AGHT+IGwcz/pUSBYuldFca3TxUcJHChZIavks6kQTWuGxmKjTJGzCxMUOarWkF1lSgYb4PLig7p/EQIuqg==
+        d=1e100.net; s=20230601; t=1729610958; x=1730215758;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NDNpe86iWZxRpORrtGdS8nlKHDmPBRzXt90mx6BTn+g=;
+        b=vdcgsjcEICeRbXgHhXgK5q7sxnIB8JH6M43OWZp8lbc1Tj0xgjo5E91tsbRrcPPqKt
+         REB4cEqYCxIv9cSjlh5A/cGnuXo3f0KnjGCZhYh7cz5iwGKen4peuUsHDy1Xh45Kq5j7
+         aNgIhFYhSVoMcTuP13sjLOLJ+fFNepgWh7IIaCCGsJhdF2zp65mZZO7sWyj6KaPofmo6
+         aILpdlg/U4Ygp3PqHJ1cnPqoc2XHq2/yU7F9DjKff2tFjCnXXiH22r6bipniNQr5JeqP
+         rvB0EM8QR84jrVkzebr1swHDblOkc5I3LkM4zUDffaUCmw2Yb2t+wDIi0gh+EZDZbE5N
+         3Zjw==
+X-Gm-Message-State: AOJu0Yz5O0bBaLOP7PM3TkUkebYrygnK6UhsnXj16cGoPtGma0HU2XLQ
+	4leLJLGXg4rzke2gb3yM4PSYlz3nsmQVs3GEqPJwcH9adgQ3eKcVYI+YVdbyU1k0mQTaCzDEUr1
+	XxhtCJ8oU7Jc0Nztt83axsKHzSLuXqYHVGEFmGUpWXxI4vlLxxK4RNFgr74ZgUiTVcVpOjaDf29
+	B7oTpIfKXoOL1rsaQQ5L7NYe0=
+X-Google-Smtp-Source: AGHT+IGw+hmIZrdZZBB2RZyokYLyhRz1qPN3Jnk67bBTgSTEkHChO/2Cgc5lj7kKcyR954/XcnNbDqVEjg==
 X-Received: from jrife-kvm.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:63c1])
- (user=jrife job=sendgmr) by 2002:a17:90a:fb46:b0:2e2:af52:a7b4 with SMTP id
- 98e67ed59e1d1-2e561a55cf1mr28674a91.8.1729610955483; Tue, 22 Oct 2024
- 08:29:15 -0700 (PDT)
-Date: Tue, 22 Oct 2024 15:29:00 +0000
+ (user=jrife job=sendgmr) by 2002:a63:6402:0:b0:7ea:6a4f:274a with SMTP id
+ 41be03b00d2f7-7eacc880b2fmr16507a12.7.1729610957550; Tue, 22 Oct 2024
+ 08:29:17 -0700 (PDT)
+Date: Tue, 22 Oct 2024 15:29:01 +0000
+In-Reply-To: <20241022152913.574836-1-jrife@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20241022152913.574836-1-jrife@google.com>
 X-Mailer: git-send-email 2.47.0.105.g07ac214952-goog
-Message-ID: <20241022152913.574836-1-jrife@google.com>
-Subject: [PATCH bpf-next v2 0/4] Retire test_sock.c
+Message-ID: <20241022152913.574836-2-jrife@google.com>
+Subject: [PATCH bpf-next v2 1/4] selftests/bpf: Migrate *_POST_BIND test cases
+ to prog_tests
 From: Jordan Rife <jrife@google.com>
 To: bpf@vger.kernel.org
 Cc: Jordan Rife <jrife@google.com>, Andrii Nakryiko <andrii@kernel.org>, 
@@ -83,36 +87,707 @@ Cc: Jordan Rife <jrife@google.com>, Andrii Nakryiko <andrii@kernel.org>,
 	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-This patch series migrates test cases out of test_sock.c to
-prog_tests-style tests. It moves all BPF_CGROUP_INET4_POST_BIND and
-BPF_CGROUP_INET6_POST_BIND test cases into a new prog_test,
-sock_post_bind.c, while reimplementing all LOAD_REJECT test cases as
-verifier tests in progs/verifier_sock.c. Finally, it moves remaining
-BPF_CGROUP_INET_SOCK_CREATE test coverage into prog_tests/sock_create.c
-before retiring test_sock.c completely.
+Move all BPF_CGROUP_INET6_POST_BIND and BPF_CGROUP_INET4_POST_BIND test
+cases to a new prog_test, prog_tests/sock_post_bind.c, except for
+LOAD_REJECT test cases.
 
-Changes
-=======
-v1->v2:
-- Remove superfluous verbose bool from the top of sock_post_bind.c.
-- Use ASSERT_OK_FD instead of ASSERT_GE to test cgroup_fd validity.
-- Run sock_post_bind tests in their own namespace, "sock_post_bind".
+Signed-off-by: Jordan Rife <jrife@google.com>
+---
+ .../selftests/bpf/prog_tests/sock_post_bind.c | 428 ++++++++++++++++++
+ tools/testing/selftests/bpf/test_sock.c       | 245 ----------
+ 2 files changed, 428 insertions(+), 245 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sock_post_bind.c
 
-Jordan Rife (4):
-  selftests/bpf: Migrate *_POST_BIND test cases to prog_tests
-  selftests/bpf: Migrate LOAD_REJECT test cases to prog_tests
-  selftests/bpf: Migrate BPF_CGROUP_INET_SOCK_CREATE test cases to
-    prog_tests
-  selftests/bpf: Retire test_sock.c
-
- tools/testing/selftests/bpf/.gitignore        |   1 -
- tools/testing/selftests/bpf/Makefile          |   3 +-
- .../selftests/bpf/prog_tests/sock_create.c    |  35 ++-
- .../sock_post_bind.c}                         | 256 +++++-------------
- .../selftests/bpf/progs/verifier_sock.c       |  60 ++++
- 5 files changed, 150 insertions(+), 205 deletions(-)
- rename tools/testing/selftests/bpf/{test_sock.c => prog_tests/sock_post_bind.c} (64%)
-
+diff --git a/tools/testing/selftests/bpf/prog_tests/sock_post_bind.c b/tools/testing/selftests/bpf/prog_tests/sock_post_bind.c
+new file mode 100644
+index 000000000000..7edcd8caada0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/sock_post_bind.c
+@@ -0,0 +1,428 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <test_progs.h>
++#include "cgroup_helpers.h"
++
++#define TEST_NS "sock_post_bind"
++
++static char bpf_log_buf[4096];
++
++static struct sock_post_bind_test {
++	const char			*descr;
++	/* BPF prog properties */
++	const struct bpf_insn		insns[64];
++	enum bpf_attach_type		attach_type;
++	enum bpf_attach_type		expected_attach_type;
++	/* Socket properties */
++	int				domain;
++	int				type;
++	/* Endpoint to bind() to */
++	const char *ip;
++	unsigned short port;
++	unsigned short port_retry;
++
++	/* Expected test result */
++	enum {
++		ATTACH_REJECT,
++		BIND_REJECT,
++		SUCCESS,
++		RETRY_SUCCESS,
++		RETRY_REJECT
++	} result;
++} tests[] = {
++	{
++		.descr = "attach type mismatch bind4 vs bind6",
++		.insns = {
++			BPF_MOV64_IMM(BPF_REG_0, 1),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.attach_type = BPF_CGROUP_INET6_POST_BIND,
++		.result = ATTACH_REJECT,
++	},
++	{
++		.descr = "attach type mismatch bind6 vs bind4",
++		.insns = {
++			BPF_MOV64_IMM(BPF_REG_0, 1),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = BPF_CGROUP_INET6_POST_BIND,
++		.attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.result = ATTACH_REJECT,
++	},
++	{
++		.descr = "attach type mismatch default vs bind4",
++		.insns = {
++			BPF_MOV64_IMM(BPF_REG_0, 1),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = 0,
++		.attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.result = ATTACH_REJECT,
++	},
++	{
++		.descr = "attach type mismatch bind6 vs sock_create",
++		.insns = {
++			BPF_MOV64_IMM(BPF_REG_0, 1),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = BPF_CGROUP_INET6_POST_BIND,
++		.attach_type = BPF_CGROUP_INET_SOCK_CREATE,
++		.result = ATTACH_REJECT,
++	},
++	{
++		.descr = "bind4 reject all",
++		.insns = {
++			BPF_MOV64_IMM(BPF_REG_0, 0),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.domain = AF_INET,
++		.type = SOCK_STREAM,
++		.ip = "0.0.0.0",
++		.result = BIND_REJECT,
++	},
++	{
++		.descr = "bind6 reject all",
++		.insns = {
++			BPF_MOV64_IMM(BPF_REG_0, 0),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = BPF_CGROUP_INET6_POST_BIND,
++		.attach_type = BPF_CGROUP_INET6_POST_BIND,
++		.domain = AF_INET6,
++		.type = SOCK_STREAM,
++		.ip = "::",
++		.result = BIND_REJECT,
++	},
++	{
++		.descr = "bind6 deny specific IP & port",
++		.insns = {
++			BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
++
++			/* if (ip == expected && port == expected) */
++			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
++				    offsetof(struct bpf_sock, src_ip6[3])),
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
++				    __bpf_constant_ntohl(0x00000001), 4),
++			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
++				    offsetof(struct bpf_sock, src_port)),
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x2001, 2),
++
++			/* return DENY; */
++			BPF_MOV64_IMM(BPF_REG_0, 0),
++			BPF_JMP_A(1),
++
++			/* else return ALLOW; */
++			BPF_MOV64_IMM(BPF_REG_0, 1),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = BPF_CGROUP_INET6_POST_BIND,
++		.attach_type = BPF_CGROUP_INET6_POST_BIND,
++		.domain = AF_INET6,
++		.type = SOCK_STREAM,
++		.ip = "::1",
++		.port = 8193,
++		.result = BIND_REJECT,
++	},
++	{
++		.descr = "bind4 allow specific IP & port",
++		.insns = {
++			BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
++
++			/* if (ip == expected && port == expected) */
++			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
++				    offsetof(struct bpf_sock, src_ip4)),
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
++				    __bpf_constant_ntohl(0x7F000001), 4),
++			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
++				    offsetof(struct bpf_sock, src_port)),
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x1002, 2),
++
++			/* return ALLOW; */
++			BPF_MOV64_IMM(BPF_REG_0, 1),
++			BPF_JMP_A(1),
++
++			/* else return DENY; */
++			BPF_MOV64_IMM(BPF_REG_0, 0),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.domain = AF_INET,
++		.type = SOCK_STREAM,
++		.ip = "127.0.0.1",
++		.port = 4098,
++		.result = SUCCESS,
++	},
++	{
++		.descr = "bind4 deny specific IP & port of TCP, and retry",
++		.insns = {
++			BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
++
++			/* if (ip == expected && port == expected) */
++			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
++				    offsetof(struct bpf_sock, src_ip4)),
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
++				    __bpf_constant_ntohl(0x7F000001), 4),
++			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
++				    offsetof(struct bpf_sock, src_port)),
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x1002, 2),
++
++			/* return DENY; */
++			BPF_MOV64_IMM(BPF_REG_0, 0),
++			BPF_JMP_A(1),
++
++			/* else return ALLOW; */
++			BPF_MOV64_IMM(BPF_REG_0, 1),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.domain = AF_INET,
++		.type = SOCK_STREAM,
++		.ip = "127.0.0.1",
++		.port = 4098,
++		.port_retry = 5000,
++		.result = RETRY_SUCCESS,
++	},
++	{
++		.descr = "bind4 deny specific IP & port of UDP, and retry",
++		.insns = {
++			BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
++
++			/* if (ip == expected && port == expected) */
++			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
++				    offsetof(struct bpf_sock, src_ip4)),
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
++				    __bpf_constant_ntohl(0x7F000001), 4),
++			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
++				    offsetof(struct bpf_sock, src_port)),
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x1002, 2),
++
++			/* return DENY; */
++			BPF_MOV64_IMM(BPF_REG_0, 0),
++			BPF_JMP_A(1),
++
++			/* else return ALLOW; */
++			BPF_MOV64_IMM(BPF_REG_0, 1),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.domain = AF_INET,
++		.type = SOCK_DGRAM,
++		.ip = "127.0.0.1",
++		.port = 4098,
++		.port_retry = 5000,
++		.result = RETRY_SUCCESS,
++	},
++	{
++		.descr = "bind6 deny specific IP & port, and retry",
++		.insns = {
++			BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
++
++			/* if (ip == expected && port == expected) */
++			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
++				    offsetof(struct bpf_sock, src_ip6[3])),
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
++				    __bpf_constant_ntohl(0x00000001), 4),
++			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
++				    offsetof(struct bpf_sock, src_port)),
++			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x2001, 2),
++
++			/* return DENY; */
++			BPF_MOV64_IMM(BPF_REG_0, 0),
++			BPF_JMP_A(1),
++
++			/* else return ALLOW; */
++			BPF_MOV64_IMM(BPF_REG_0, 1),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = BPF_CGROUP_INET6_POST_BIND,
++		.attach_type = BPF_CGROUP_INET6_POST_BIND,
++		.domain = AF_INET6,
++		.type = SOCK_STREAM,
++		.ip = "::1",
++		.port = 8193,
++		.port_retry = 9000,
++		.result = RETRY_SUCCESS,
++	},
++	{
++		.descr = "bind4 allow all",
++		.insns = {
++			BPF_MOV64_IMM(BPF_REG_0, 1),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.attach_type = BPF_CGROUP_INET4_POST_BIND,
++		.domain = AF_INET,
++		.type = SOCK_STREAM,
++		.ip = "0.0.0.0",
++		.result = SUCCESS,
++	},
++	{
++		.descr = "bind6 allow all",
++		.insns = {
++			BPF_MOV64_IMM(BPF_REG_0, 1),
++			BPF_EXIT_INSN(),
++		},
++		.expected_attach_type = BPF_CGROUP_INET6_POST_BIND,
++		.attach_type = BPF_CGROUP_INET6_POST_BIND,
++		.domain = AF_INET6,
++		.type = SOCK_STREAM,
++		.ip = "::",
++		.result = SUCCESS,
++	},
++};
++
++static int load_prog(const struct bpf_insn *insns,
++		     enum bpf_attach_type expected_attach_type)
++{
++	LIBBPF_OPTS(bpf_prog_load_opts, opts,
++		    .expected_attach_type = expected_attach_type,
++		    .log_level = 2,
++		    .log_buf = bpf_log_buf,
++		    .log_size = sizeof(bpf_log_buf),
++	);
++	int fd, insns_cnt = 0;
++
++	for (;
++	     insns[insns_cnt].code != (BPF_JMP | BPF_EXIT);
++	     insns_cnt++) {
++	}
++	insns_cnt++;
++
++	fd = bpf_prog_load(BPF_PROG_TYPE_CGROUP_SOCK, NULL, "GPL", insns,
++			   insns_cnt, &opts);
++	if (fd < 0)
++		fprintf(stderr, "%s\n", bpf_log_buf);
++
++	return fd;
++}
++
++static int bind_sock(int domain, int type, const char *ip,
++		     unsigned short port, unsigned short port_retry)
++{
++	struct sockaddr_storage addr;
++	struct sockaddr_in6 *addr6;
++	struct sockaddr_in *addr4;
++	int sockfd = -1;
++	socklen_t len;
++	int res = SUCCESS;
++
++	sockfd = socket(domain, type, 0);
++	if (sockfd < 0)
++		goto err;
++
++	memset(&addr, 0, sizeof(addr));
++
++	if (domain == AF_INET) {
++		len = sizeof(struct sockaddr_in);
++		addr4 = (struct sockaddr_in *)&addr;
++		addr4->sin_family = domain;
++		addr4->sin_port = htons(port);
++		if (inet_pton(domain, ip, (void *)&addr4->sin_addr) != 1)
++			goto err;
++	} else if (domain == AF_INET6) {
++		len = sizeof(struct sockaddr_in6);
++		addr6 = (struct sockaddr_in6 *)&addr;
++		addr6->sin6_family = domain;
++		addr6->sin6_port = htons(port);
++		if (inet_pton(domain, ip, (void *)&addr6->sin6_addr) != 1)
++			goto err;
++	} else {
++		goto err;
++	}
++
++	if (bind(sockfd, (const struct sockaddr *)&addr, len) == -1) {
++		/* sys_bind() may fail for different reasons, errno has to be
++		 * checked to confirm that BPF program rejected it.
++		 */
++		if (errno != EPERM)
++			goto err;
++		if (port_retry)
++			goto retry;
++		res = BIND_REJECT;
++		goto out;
++	}
++
++	goto out;
++retry:
++	if (domain == AF_INET)
++		addr4->sin_port = htons(port_retry);
++	else
++		addr6->sin6_port = htons(port_retry);
++	if (bind(sockfd, (const struct sockaddr *)&addr, len) == -1) {
++		if (errno != EPERM)
++			goto err;
++		res = RETRY_REJECT;
++	} else {
++		res = RETRY_SUCCESS;
++	}
++	goto out;
++err:
++	res = -1;
++out:
++	close(sockfd);
++	return res;
++}
++
++static int run_test(int cgroup_fd, struct sock_post_bind_test *test)
++{
++	int err, prog_fd, res, ret = 0;
++
++	prog_fd = load_prog(test->insns, test->expected_attach_type);
++	if (prog_fd < 0)
++		goto err;
++
++	err = bpf_prog_attach(prog_fd, cgroup_fd, test->attach_type, 0);
++	if (err < 0) {
++		if (test->result == ATTACH_REJECT)
++			goto out;
++		else
++			goto err;
++	}
++
++	res = bind_sock(test->domain, test->type, test->ip, test->port,
++			test->port_retry);
++	if (res > 0 && test->result == res)
++		goto out;
++err:
++	ret = -1;
++out:
++	/* Detaching w/o checking return code: best effort attempt. */
++	if (prog_fd != -1)
++		bpf_prog_detach(cgroup_fd, test->attach_type);
++	close(prog_fd);
++	return ret;
++}
++
++void test_sock_post_bind(void)
++{
++	struct netns_obj *ns = NULL;
++	int cgroup_fd = 0;
++	int i;
++
++	ns = netns_new(TEST_NS, true);
++	if (!ASSERT_OK_PTR(ns, "netns_new"))
++		goto cleanup;
++
++	cgroup_fd = test__join_cgroup("/post_bind");
++	if (!ASSERT_OK_FD(cgroup_fd, "join_cgroup"))
++		goto cleanup;
++
++	for (i = 0; i < ARRAY_SIZE(tests); i++) {
++		if (!test__start_subtest(tests[i].descr))
++			continue;
++
++		ASSERT_OK(run_test(cgroup_fd, &tests[i]), tests[i].descr);
++	}
++
++cleanup:
++	if (ns)
++		netns_free(ns);
++	if (cgroup_fd)
++		close(cgroup_fd);
++}
+diff --git a/tools/testing/selftests/bpf/test_sock.c b/tools/testing/selftests/bpf/test_sock.c
+index 810c3740b2cc..9ed908163d98 100644
+--- a/tools/testing/selftests/bpf/test_sock.c
++++ b/tools/testing/selftests/bpf/test_sock.c
+@@ -127,251 +127,6 @@ static struct sock_test tests[] = {
+ 		.port = 8097,
+ 		.result = SUCCESS,
+ 	},
+-	{
+-		.descr = "attach type mismatch bind4 vs bind6",
+-		.insns = {
+-			BPF_MOV64_IMM(BPF_REG_0, 1),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.attach_type = BPF_CGROUP_INET6_POST_BIND,
+-		.result = ATTACH_REJECT,
+-	},
+-	{
+-		.descr = "attach type mismatch bind6 vs bind4",
+-		.insns = {
+-			BPF_MOV64_IMM(BPF_REG_0, 1),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = BPF_CGROUP_INET6_POST_BIND,
+-		.attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.result = ATTACH_REJECT,
+-	},
+-	{
+-		.descr = "attach type mismatch default vs bind4",
+-		.insns = {
+-			BPF_MOV64_IMM(BPF_REG_0, 1),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = 0,
+-		.attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.result = ATTACH_REJECT,
+-	},
+-	{
+-		.descr = "attach type mismatch bind6 vs sock_create",
+-		.insns = {
+-			BPF_MOV64_IMM(BPF_REG_0, 1),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = BPF_CGROUP_INET6_POST_BIND,
+-		.attach_type = BPF_CGROUP_INET_SOCK_CREATE,
+-		.result = ATTACH_REJECT,
+-	},
+-	{
+-		.descr = "bind4 reject all",
+-		.insns = {
+-			BPF_MOV64_IMM(BPF_REG_0, 0),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.domain = AF_INET,
+-		.type = SOCK_STREAM,
+-		.ip = "0.0.0.0",
+-		.result = BIND_REJECT,
+-	},
+-	{
+-		.descr = "bind6 reject all",
+-		.insns = {
+-			BPF_MOV64_IMM(BPF_REG_0, 0),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = BPF_CGROUP_INET6_POST_BIND,
+-		.attach_type = BPF_CGROUP_INET6_POST_BIND,
+-		.domain = AF_INET6,
+-		.type = SOCK_STREAM,
+-		.ip = "::",
+-		.result = BIND_REJECT,
+-	},
+-	{
+-		.descr = "bind6 deny specific IP & port",
+-		.insns = {
+-			BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
+-
+-			/* if (ip == expected && port == expected) */
+-			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-				    offsetof(struct bpf_sock, src_ip6[3])),
+-			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
+-				    __bpf_constant_ntohl(0x00000001), 4),
+-			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-				    offsetof(struct bpf_sock, src_port)),
+-			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x2001, 2),
+-
+-			/* return DENY; */
+-			BPF_MOV64_IMM(BPF_REG_0, 0),
+-			BPF_JMP_A(1),
+-
+-			/* else return ALLOW; */
+-			BPF_MOV64_IMM(BPF_REG_0, 1),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = BPF_CGROUP_INET6_POST_BIND,
+-		.attach_type = BPF_CGROUP_INET6_POST_BIND,
+-		.domain = AF_INET6,
+-		.type = SOCK_STREAM,
+-		.ip = "::1",
+-		.port = 8193,
+-		.result = BIND_REJECT,
+-	},
+-	{
+-		.descr = "bind4 allow specific IP & port",
+-		.insns = {
+-			BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
+-
+-			/* if (ip == expected && port == expected) */
+-			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-				    offsetof(struct bpf_sock, src_ip4)),
+-			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
+-				    __bpf_constant_ntohl(0x7F000001), 4),
+-			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-				    offsetof(struct bpf_sock, src_port)),
+-			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x1002, 2),
+-
+-			/* return ALLOW; */
+-			BPF_MOV64_IMM(BPF_REG_0, 1),
+-			BPF_JMP_A(1),
+-
+-			/* else return DENY; */
+-			BPF_MOV64_IMM(BPF_REG_0, 0),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.domain = AF_INET,
+-		.type = SOCK_STREAM,
+-		.ip = "127.0.0.1",
+-		.port = 4098,
+-		.result = SUCCESS,
+-	},
+-	{
+-		.descr = "bind4 deny specific IP & port of TCP, and retry",
+-		.insns = {
+-			BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
+-
+-			/* if (ip == expected && port == expected) */
+-			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-				    offsetof(struct bpf_sock, src_ip4)),
+-			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
+-				    __bpf_constant_ntohl(0x7F000001), 4),
+-			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-				    offsetof(struct bpf_sock, src_port)),
+-			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x1002, 2),
+-
+-			/* return DENY; */
+-			BPF_MOV64_IMM(BPF_REG_0, 0),
+-			BPF_JMP_A(1),
+-
+-			/* else return ALLOW; */
+-			BPF_MOV64_IMM(BPF_REG_0, 1),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.domain = AF_INET,
+-		.type = SOCK_STREAM,
+-		.ip = "127.0.0.1",
+-		.port = 4098,
+-		.port_retry = 5000,
+-		.result = RETRY_SUCCESS,
+-	},
+-	{
+-		.descr = "bind4 deny specific IP & port of UDP, and retry",
+-		.insns = {
+-			BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
+-
+-			/* if (ip == expected && port == expected) */
+-			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-				    offsetof(struct bpf_sock, src_ip4)),
+-			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
+-				    __bpf_constant_ntohl(0x7F000001), 4),
+-			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-				    offsetof(struct bpf_sock, src_port)),
+-			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x1002, 2),
+-
+-			/* return DENY; */
+-			BPF_MOV64_IMM(BPF_REG_0, 0),
+-			BPF_JMP_A(1),
+-
+-			/* else return ALLOW; */
+-			BPF_MOV64_IMM(BPF_REG_0, 1),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.domain = AF_INET,
+-		.type = SOCK_DGRAM,
+-		.ip = "127.0.0.1",
+-		.port = 4098,
+-		.port_retry = 5000,
+-		.result = RETRY_SUCCESS,
+-	},
+-	{
+-		.descr = "bind6 deny specific IP & port, and retry",
+-		.insns = {
+-			BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
+-
+-			/* if (ip == expected && port == expected) */
+-			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-				    offsetof(struct bpf_sock, src_ip6[3])),
+-			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
+-				    __bpf_constant_ntohl(0x00000001), 4),
+-			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-				    offsetof(struct bpf_sock, src_port)),
+-			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x2001, 2),
+-
+-			/* return DENY; */
+-			BPF_MOV64_IMM(BPF_REG_0, 0),
+-			BPF_JMP_A(1),
+-
+-			/* else return ALLOW; */
+-			BPF_MOV64_IMM(BPF_REG_0, 1),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = BPF_CGROUP_INET6_POST_BIND,
+-		.attach_type = BPF_CGROUP_INET6_POST_BIND,
+-		.domain = AF_INET6,
+-		.type = SOCK_STREAM,
+-		.ip = "::1",
+-		.port = 8193,
+-		.port_retry = 9000,
+-		.result = RETRY_SUCCESS,
+-	},
+-	{
+-		.descr = "bind4 allow all",
+-		.insns = {
+-			BPF_MOV64_IMM(BPF_REG_0, 1),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.attach_type = BPF_CGROUP_INET4_POST_BIND,
+-		.domain = AF_INET,
+-		.type = SOCK_STREAM,
+-		.ip = "0.0.0.0",
+-		.result = SUCCESS,
+-	},
+-	{
+-		.descr = "bind6 allow all",
+-		.insns = {
+-			BPF_MOV64_IMM(BPF_REG_0, 1),
+-			BPF_EXIT_INSN(),
+-		},
+-		.expected_attach_type = BPF_CGROUP_INET6_POST_BIND,
+-		.attach_type = BPF_CGROUP_INET6_POST_BIND,
+-		.domain = AF_INET6,
+-		.type = SOCK_STREAM,
+-		.ip = "::",
+-		.result = SUCCESS,
+-	},
+ };
+ 
+ static size_t probe_prog_length(const struct bpf_insn *fp)
 -- 
 2.47.0.105.g07ac214952-goog
 
