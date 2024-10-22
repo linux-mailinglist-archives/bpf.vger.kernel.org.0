@@ -1,142 +1,145 @@
-Return-Path: <bpf+bounces-42777-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42781-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2D3C9AA27A
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 14:49:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 037009AA30E
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 15:24:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67F98283AF1
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 12:49:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A51EB212CD
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2024 13:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE30819C579;
-	Tue, 22 Oct 2024 12:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4156019EEC7;
+	Tue, 22 Oct 2024 13:23:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q+muq424"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34DC212D1F1
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 12:49:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5455719DF5F;
+	Tue, 22 Oct 2024 13:23:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729601372; cv=none; b=gCjWoEdfJwK0rEl5JhVae3I5wVv7urh+e4McTDFEsIwz264Gz7mr0vZUYU1FxE5+g8Ay/sgh43O9mhQP5fYjUSS9SY5jOirf7F2WmlB9QMGc8/e/oiCShxJa337dOYCJLjJsC7PCMkGP5mCx2OLOVtyoFR2IuOxZY//zs6E8VeU=
+	t=1729603414; cv=none; b=AQncQOhZGoiQOGhFad1JAe4bGkRKStu+al+S+NZJTeJh2LvmGBp4lPqdL7nEI3fPvIxyGwKGKbG85KEc5xqexiH+AU/y4QHTnp77HCOEz+uwpLUubZrLlOxm/wly8bcf2JRe0mO4elYjEal3Dog+1sEAoQh70WE8Fdt7J1NDK20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729601372; c=relaxed/simple;
-	bh=qxW0SyRkmfxK6jsY/Agw+437swO/9hKsyHl4Gne155M=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iYAcVF9eRkNBlKWw7ImCZqw3x5GEUSGJjboNF8Y1Yvv92fXX7XirtxZob5hJiBy3gvAqazONp3oit4uu4VXitsK20PBttFhivNAX4196kH9SB8qg7uWLwoLuu5eMWg2KKLGonSt3So77mJhqeAmE9So56sK4sSQd0cbGzgDCfBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XXsSM2xPNz4f3jXm
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 20:49:07 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id C74441A0359
-	for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 20:49:24 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgCHusZQnxdnd_k7Ew--.1774S4;
-	Tue, 22 Oct 2024 20:49:22 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: [PATCH bpf v3] bpf: Preserve param->string when parsing mount options
-Date: Tue, 22 Oct 2024 21:01:33 +0800
-Message-Id: <20241022130133.3798232-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+	s=arc-20240116; t=1729603414; c=relaxed/simple;
+	bh=FFc4mFv1fqlfTWKLAoHgYyCwsD4zz6w4Q5RxsTKyZ7I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Fy+3QxRZqmiU266jLJGMIlCarMgq1BthZ6zYAvWzIzTkrbkKW6LJiWcpz8KFO1SzncWdcNuzChJj8dMC3Hq+r19dvbWQm/k4zylKEEAR7aZ+B4223HEOMRKHCDAupRFToy3lRTayr7/wlRIf0pUO14i+2v8AUl+kDayaGi0hqHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q+muq424; arc=none smtp.client-ip=209.85.166.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3a3f8543f5eso10427805ab.0;
+        Tue, 22 Oct 2024 06:23:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729603412; x=1730208212; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LX5NLjhgO1IGsuIgFgvkURkum8vSAeJYDnKkIEmF8dY=;
+        b=Q+muq424/apuNDEvBuv1H1B/zt5zZQYFQJCvuE9PjKqBeYMwOh3sxtMfp/a/v5X5GJ
+         JFTp1nDXFdNq0mZq/xLVV5gdAgrrsbb40DkamgOXd5o4iyxMc6J9APPo7UEQ1Uv4X1Sq
+         VjwsRg2564VDR+AZkDy1MApXJxJZxSe7WDUzN3vPxWQr3QhYckkWtUgFT/HuIeX7x4sv
+         dqT2Y/sh/zxpXgSnkWNlC9pmeftVCg5wPug43Q3PWrVyjYpEhlbYySGKKPuXKsrXtF2S
+         fF9u1b5ONByB8vLwGa/6D2fbhO7hOZZJydEB9M3xmlL48Fv5nyVCzM311U59miqUU0l0
+         ilAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729603412; x=1730208212;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LX5NLjhgO1IGsuIgFgvkURkum8vSAeJYDnKkIEmF8dY=;
+        b=ry56bSXRib21iHxpLt1Ibo0VxoCFa+2SUxUrB425dtJjvoiNRokJMcL+ZlPUgNy0oe
+         R/dGtC+VKknpqrbYsLXw7wMQ8ymMl+r4NHvHWZfb1SKdIWMk5yQb8G0oggVcnnV3cVIr
+         iu6rwibWMARYkHBXiuTnIPUv4Rm0NeloL1Xete/KKOIyIAOPomGStiNBHRizTTiY+018
+         2VnfhHexx7NpYg5l8R5lyUuyDJ28bfDl/RYDGpfkKQRynpNAAhHoSYR8CLtIeEP+fZ8h
+         mX6pTHtYm4Sw/VUC7/1tqvdcPE4wSu1mlT0DixkSW3gC+E7RQp4kcZx8j3g5nGYPtGrF
+         p/7g==
+X-Forwarded-Encrypted: i=1; AJvYcCUui7WzHQs6gq/Ndoa0IX9HYxolvU4VM3MjE0HTEmGN8khTrgPZZBHc+PyOOpCHfRsLDniX2NTg@vger.kernel.org, AJvYcCWonsESDl7Tcv1n5QYNUm6QTJAd9VyfPrY1PMN+93QHWPuRoBY0+pdm+LUJVeoU49RgHLw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwasbRCiI+2ST+3uZipQ2E92hhyu9rVpcw2i4djoPSLwvZMbCIO
+	3FQ2MQDumrFuTzZtxqcvlgfP3vh93htnpTB3pVrsLafj3FKozNS3bUHV1TkbuFVDSPbWQwY9bJ5
+	+S8sybm5u7fJ2mca6RpqAbHsp4ds=
+X-Google-Smtp-Source: AGHT+IEiOLDj3dAptrZCl/wJUzbFGWsQhshhtvCO9ZjrOsCLkZ4XJFDyPXMJxsipdk+J2tpvlQ6S1jLSIZKXpgOD+bg=
+X-Received: by 2002:a05:6e02:b2a:b0:39f:507a:6170 with SMTP id
+ e9e14a558f8ab-3a4cc143042mr22510715ab.8.1729603412328; Tue, 22 Oct 2024
+ 06:23:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHusZQnxdnd_k7Ew--.1774S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7uw1kXrW5uF4xuF1UWr1Utrb_yoW8Zw4kpF
-	WrG34Uuw48XF4UAw4vqF4kWrWYv3W0kFW8Ka1kAr1Syr13tr92gF9Fkw4a9r1ft3yrCrWY
-	vr4Yy34I9w1UA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
-	n4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
-	tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU1aFAJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20241012040651.95616-1-kerneljasonxing@gmail.com>
+ <20241012040651.95616-3-kerneljasonxing@gmail.com> <cb96b56a-0c00-4f57-b4b5-8a7e00065cdc@linux.dev>
+ <670ee4efea023_322ac329445@willemb.c.googlers.com.notmuch>
+In-Reply-To: <670ee4efea023_322ac329445@willemb.c.googlers.com.notmuch>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Tue, 22 Oct 2024 21:22:56 +0800
+Message-ID: <CAL+tcoCBONnrP_YyE_0n_o4zQUNJfE8DY61f6XRQeeBdGNZMgQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 02/12] net-timestamp: open gate for bpf_setsockopt
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, 
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
+	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
+	bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Hou Tao <houtao1@huawei.com>
+On Wed, Oct 16, 2024 at 5:56=E2=80=AFAM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> Martin KaFai Lau wrote:
+> > On 10/11/24 9:06 PM, Jason Xing wrote:
+> > >   static int sol_socket_sockopt(struct sock *sk, int optname,
+> > >                           char *optval, int *optlen,
+> > >                           bool getopt)
+> > >   {
+> > > +   struct so_timestamping ts;
+> > > +   int ret =3D 0;
+> > > +
+> > >     switch (optname) {
+> > >     case SO_REUSEADDR:
+> > >     case SO_SNDBUF:
+> > > @@ -5225,6 +5245,13 @@ static int sol_socket_sockopt(struct sock *sk,=
+ int optname,
+> > >             break;
+> > >     case SO_BINDTODEVICE:
+> > >             break;
+> > > +   case SO_TIMESTAMPING_NEW:
+> > > +   case SO_TIMESTAMPING_OLD:
+> >
+> > How about remove the "_OLD" support ?
+>
+> +1 I forgot to mention that yesterday.
 
-In bpf_parse_param(), keep the value of param->string intact so it can
-be freed later. Otherwise, the kmalloc area pointed to by param->string
-will be leaked as shown below:
+Hello Willem, Martin,
 
-unreferenced object 0xffff888118c46d20 (size 8):
-  comm "new_name", pid 12109, jiffies 4295580214
-  hex dump (first 8 bytes):
-    61 6e 79 00 38 c9 5c 7e                          any.8.\~
-  backtrace (crc e1b7f876):
-    [<00000000c6848ac7>] kmemleak_alloc+0x4b/0x80
-    [<00000000de9f7d00>] __kmalloc_node_track_caller_noprof+0x36e/0x4a0
-    [<000000003e29b886>] memdup_user+0x32/0xa0
-    [<0000000007248326>] strndup_user+0x46/0x60
-    [<0000000035b3dd29>] __x64_sys_fsconfig+0x368/0x3d0
-    [<0000000018657927>] x64_sys_call+0xff/0x9f0
-    [<00000000c0cabc95>] do_syscall_64+0x3b/0xc0
-    [<000000002f331597>] entry_SYSCALL_64_after_hwframe+0x4b/0x53
+I did a test on this and found that if we only use
+SO_TIMESTAMPING_NEW, we will never enter the real set sk_tsflags_bpf
+logic, unless there is "case SO_TIMESTAMPING_OLD".
 
-Fixes: 6c1752e0b6ca ("bpf: Support symbolic BPF FS delegation mount options")
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
-v3: split the patch from the "Misc fixes for bpf" patch set
-v2: https://lore.kernel.org/bpf/d49fa2f4-f743-c763-7579-c3cab4dd88cb@huaweicloud.com
+And I checked SO_TIMESTAMPING in include/uapi/asm-generic/socket.h:
+#if __BITS_PER_LONG =3D=3D 64 || (defined(__x86_64__) && defined(__ILP32__)=
+)
+/* on 64-bit and x32, avoid the ?: operator */
+...
+#define SO_TIMESTAMPING         SO_TIMESTAMPING_OLD
+...
+#else
+...
+#define SO_TIMESTAMPING (sizeof(time_t) =3D=3D sizeof(__kernel_long_t) ?
+SO_TIMESTAMPING_OLD : SO_TIMESTAMPING_NEW)
+...
+#endif
 
- kernel/bpf/inode.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+The SO_TIMESTAMPING is defined as SO_TIMESTAMPING_OLD. I wonder if I
+missed something? Thanks in advance.
 
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index d8fc5eba529d..9aaf5124648b 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -880,7 +880,7 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		const struct btf_type *enum_t;
- 		const char *enum_pfx;
- 		u64 *delegate_msk, msk = 0;
--		char *p;
-+		char *p, *str;
- 		int val;
- 
- 		/* ignore errors, fallback to hex */
-@@ -911,7 +911,8 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 			return -EINVAL;
- 		}
- 
--		while ((p = strsep(&param->string, ":"))) {
-+		str = param->string;
-+		while ((p = strsep(&str, ":"))) {
- 			if (strcmp(p, "any") == 0) {
- 				msk |= ~0ULL;
- 			} else if (find_btf_enum_const(info.btf, enum_t, enum_pfx, p, &val)) {
--- 
-2.29.2
-
+Thanks,
+Jason
 
