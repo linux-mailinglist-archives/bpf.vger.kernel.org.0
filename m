@@ -1,118 +1,155 @@
-Return-Path: <bpf+bounces-42937-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42938-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14FD79AD30C
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 19:44:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B8E69AD33D
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 19:48:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6F6F282D13
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 17:44:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE3271F21490
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 17:47:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC1071CEEAA;
-	Wed, 23 Oct 2024 17:44:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16301CFED4;
+	Wed, 23 Oct 2024 17:47:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gv0UpDwb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QAGGuZ4Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CFB14087C
-	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 17:44:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2821C9EAF;
+	Wed, 23 Oct 2024 17:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729705479; cv=none; b=uXuWMO6lOWTfiZ5j5SQdVsO31KumVGq/WBzhlNq6ehF6qTuD3z7408xu0IlshXK02sr/M717zO87d5QyVqZZ5Ap9eywcDyODZQ5jd26A3znznVbwl0EkbuM6I4vhJpufatbF41cY5ViczAnrfeFHCNgSuqPHyIW+3HOP2lWPoz8=
+	t=1729705672; cv=none; b=nSowSDRms5XJdKSqvpMbCvhDoYZ5c5+E4R6v4jtSer1qmK/DY3RaFCDfYK4nJ1QTgGLSEFZbUdTr8wB3N+griRPdCcDAm6T1zfms7KwiRY2n5mhuOQS4ZAo9G+c/DIqrrgWUvMue2E2ZQnjgSi/tdJ+Fbw8jCe5w1549isvU23k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729705479; c=relaxed/simple;
-	bh=SXiVYAA4bGqtfkCcvSKGzGe+xHJJkMGd01+BlkhPw6U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qPPqAr3BO3btvF3EOJz9XnjLpO4jqlebI7u6/0NI8orOSe2jHZFHL2pQY3co4rBgRcuJYGny2izbIIV74nXHHrJdy289VuP0WPYtKDDcp1P1bZLpSek/e6oZYMOTpmwXgY667F/wbhpMUfQIUDz5qJTarjMfpUAdNz6IaLbbNao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gv0UpDwb; arc=none smtp.client-ip=209.85.210.182
+	s=arc-20240116; t=1729705672; c=relaxed/simple;
+	bh=0JSR/C0aaUKQyCYLqYnEH9NlNoyVdX7cXoEVoQ7gOi0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Cd4w+3pQ8opM4PZoG3Of8kxhdDbVupY8jUUXAOO5fmjTB6ucL/E9D0N01Bmu5/tEIOOFxu+icuK5298SIFnpu9FvW7ZLYzspclzhD3HzhGEf8Vo3A8pc3ujghZvdmhM7LG2V2xZcHg44vpCcLWK61YhoOZsdoLMtMr4H/bzwo4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QAGGuZ4Y; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-71e4244fdc6so76712b3a.0
-        for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 10:44:37 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a9a0c40849cso1087793566b.3;
+        Wed, 23 Oct 2024 10:47:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729705477; x=1730310277; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SXiVYAA4bGqtfkCcvSKGzGe+xHJJkMGd01+BlkhPw6U=;
-        b=Gv0UpDwbMCoXbqtEf+fDQ1hxqdf4Ul+Y92JxP+k3wqmKFBkAyhMyA9+I1+4zBOxr2X
-         1bMuYOTZwr62ORgYsmMxqMmz91ye+wxAgubJGOxh5oEO+VpNtyyKR1CliFUMnroaf7hw
-         AyQhN2BCZaBcpplR/BnVFGxXKQqJsE5D2ybLHDE4AtBVFD8sD0JVBX6en5pvD8EYLW1e
-         6NlViEfnLGNn10Su/1qIlwYEg1GOhRtydqygdxexBH48uqjsidAxYBgYd+8Dq5BmoE+8
-         0gOsM0ZSktxsZ8G87Ho8yuqIDrx7PGP8XL2LuvEruUNBVaILEUxxC5HzFgoz1wEGzPII
-         OzwA==
+        d=gmail.com; s=20230601; t=1729705669; x=1730310469; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VZr1MAZgkbdeNI4DK+93o1V0wyV+u7PfGU/TxQhTQLU=;
+        b=QAGGuZ4YyJBalfd7Y75oOhHsbH+bHkDX1JdEgt8mdU+K3YsQzIEzEiH/AutE4ek7fh
+         ZUYPOPGCt+pjSaxJu8F3zIUyHYU7pJ55ePLl/sMADAgK3FzANuH77yhmedXN8SfTWR4M
+         pWnZ0bZkvfj6ClGPsRPQ+/j+hL5m6XT+Tl8nt4Zl6etrMypcmfWuUunRawKzXs2xvpnL
+         6NUoFsKdGF9rNAitHD8GIFAApshv6xb1dNw7wszYjVhe48ZKiC0TsJElOlIBFdNwHvPp
+         aQUIeo9SXWii9KeepqfaDnid4XA5DlLG6CngYH4c5CFRL+NxMQT8wImm+XJCDfd3URWR
+         KIng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729705477; x=1730310277;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SXiVYAA4bGqtfkCcvSKGzGe+xHJJkMGd01+BlkhPw6U=;
-        b=BcJLq/Wm7d6ZQRSXWFbMZqZLdCkxa7Bq+snHt1Yaga8TbdhTPKpimMjoECbkFZuHMM
-         y/wTkN4sKW0qESgsrnAJxvT+FpgX43jHS8ncdOE0p6wuL03jH/ds2OEGh3raGrMGrXPJ
-         0T47C+kpmh2ll7FHRV7NZcA+M/vZtvpsmpfPitNMX7filHxZNUH68diIlotGnrM/gYJi
-         Ru6H/ra9MYVuZLEyxKQOwdAYI9JEo3MIvAJq1IVFZ1Evte3tvR2TwH4LU3o8DyZWvqz6
-         e+Ls6YAFdPJagS8I3jvrhNHrMBpZuMOV6kf9KUGQb4bu4O9abXT/ar41hvi+o3aNkH68
-         ixug==
-X-Forwarded-Encrypted: i=1; AJvYcCXzQP0omW7/QcvV+uFwBniKhbH4eO+fRpcnX8wCHqsjEJRDvLip8T0Bk5mrT4xagSc1hvM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4EtfHwEF8U3h/t40NIa7qfWr01WtilMwWj2rAhIbBcyaY708g
-	k0N0c3NlFkfEO5MQ1v50aAPaKV5CAY2d6LFb6bdPo/c8Z6o/Ar0SBurNRCp390pxc2s2HPvPud3
-	LgajuZY/Tgj1q2Cc+fXN+DLOEaPM=
-X-Google-Smtp-Source: AGHT+IEbVp7yY2PoGcPbt6nj90/9HDTpvoHmKbT61FdLcaYBmwNS0CNNP8M2WDZJ76qJWWsb1iZcUpsd+MyBOYFURiY=
-X-Received: by 2002:a05:6a00:190e:b0:71e:4786:98ee with SMTP id
- d2e1a72fcca58-72030cafd23mr4975592b3a.21.1729705477400; Wed, 23 Oct 2024
- 10:44:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729705669; x=1730310469;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VZr1MAZgkbdeNI4DK+93o1V0wyV+u7PfGU/TxQhTQLU=;
+        b=WHUcx207XLDWKsvIK9ejd9+/jCUT8udxrPhIoqeFLY2nHoOGnGgryf+l6YOMpXiR1V
+         rfr9NB7yPmoHbVXzILD4luy9vBX9qlDd2BalWorEbkwCJijOxH+wBukSxUoevT/tKk2c
+         cxIH2ajr+7gGkP32KpHfUVDwkIlob0NQ5MHIAnBbpbZziZqHfx9LCo/v5/FlyxEuklsn
+         C8O8eOvlwUWMu5MZFNblwhaudGvklMyJV/BZ0fTMjWHzdOfvDHCgDFzD/6TnO9N2pnPs
+         3Snu6/wATRZJB8t+YQbDUm1Wk/rYtxdEwix620DD0h77ckiFbPPrBJxZDrGeVfkzSrUC
+         ZqOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWga4nXz9u0fFiwrxgWljqzjWRrhT1Ssy1yfkKOh1+oYGmfGs5+PZPCkZeGrv6Ge/WkzQZo22CpyKY8AvE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyHFUAR38i6J0YVvs9NlRYcfTlUA4MrmKBydBMNB7+jF0FdWibI
+	7fYClF0UDAt0S091EMGeDahkODcofpnLv4hgzwz5gjMkd1iQTrR7
+X-Google-Smtp-Source: AGHT+IGTJy7nZOVbGMX0rk+p4LbKdbZhs2O/9xbXpQGbE+31PN4fx6b6Rjj0ExWSH17bFS56yJzvPw==
+X-Received: by 2002:a17:907:9452:b0:a9a:76d:e86c with SMTP id a640c23a62f3a-a9abf92cce4mr321005166b.49.1729705668601;
+        Wed, 23 Oct 2024 10:47:48 -0700 (PDT)
+Received: from andrea ([2a01:5a8:300:22d3:88b4:6602:b225:25ea])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9a91573645sm499088866b.182.2024.10.23.10.47.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Oct 2024 10:47:48 -0700 (PDT)
+Date: Wed, 23 Oct 2024 20:47:44 +0300
+From: Andrea Parri <parri.andrea@gmail.com>
+To: puranjay@kernel.org, paulmck@kernel.org
+Cc: bpf@vger.kernel.org, lkmm@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Some observations (results) on BPF acquire and release
+Message-ID: <Zxk2wNs4sxEIg-4d@andrea>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241023022752.172005-1-houtao@huaweicloud.com>
- <CAEf4BzZpL7faQh61X_pqr+57qxzDD1LcxWgUqNZCCKh1z5hV9w@mail.gmail.com>
- <42a4ec6bccc867d18033583b1dfea0736ac1afb0.camel@gmail.com>
- <31d0895a217388dfe6bfa5b74c4b346705f894e4.camel@gmail.com>
- <CAEf4Bzbyz0+mKQZ+nM0X0RVb-z4F0e1idu1mg=EG31TMWwaiyw@mail.gmail.com> <103921223376b39aaed144d1238d77e8c729a66c.camel@gmail.com>
-In-Reply-To: <103921223376b39aaed144d1238d77e8c729a66c.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 23 Oct 2024 10:44:24 -0700
-Message-ID: <CAEf4BzY4qqxaEtqSkav9h9=M7b4+swH-x+g5aNFyyJdSUUHtNw@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Extend the size of scratched_stack_slots to 128 bits
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com, xukuohai@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, Oct 23, 2024 at 10:37=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
->
-> On Wed, 2024-10-23 at 10:33 -0700, Andrii Nakryiko wrote:
->
-> [...]
->
-> > Using two u64s to describe stack slot mask is really-really
-> > inconvenient.
->
-> Yes
->
-> > and increases memory usage by quite a lot. Given we intend to have
-> > insn_history for each instruction soon, I'd keep stack size at max
-> > of 512 bytes, even with bpf_fastcall.
->
-> By 8mb for 1M instructions program.
->
-> > Is it possible?
->
-> If we drop this +40 bytes slack space everything else should work as
-> expected.
+Hi Puranjay and Paul,
 
-I'd be OK with that.
+I'm running some experiment on the (experimental) formalization of BPF
+acquire and release available from [1] and wanted to report about some
+(initial) observations for discussion and possibly future developments;
+apologies in advance for the relatively long email and any repetition.
+
+
+A first and probably most important observation is that the (current)
+formalization of acquire and release appears to be "too strong": IIUC,
+the simplest example/illustration for this is given by the following
+
+BPF R+release+fence
+{
+ 0:r2=x; 0:r4=y;
+ 1:r2=y; 1:r4=x; 1:r6=l;
+}
+ P0                                 | P1                                         ;
+ r1 = 1                             | r1 = 2                                     ;
+ *(u32 *)(r2 + 0) = r1              | *(u32 *)(r2 + 0) = r1                      ;
+ r3 = 1                             | r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) ;
+ store_release((u32 *)(r4 + 0), r3) | r3 = *(u32 *)(r4 + 0)                      ;
+exists ([y]=2 /\ 1:r3=0)
+
+This "exists" condition is not satisfiable according to the BPF model;
+however, if we adopt the "natural"/intended(?) PowerPC implementations
+of the synchronization primitives above (aka, with store_release() -->
+LWSYNC and atomic_fetch_add() --> SYNC ; [...] ), then we see that the
+condition in question becomes (architecturally) satisfiable on PowerPC
+(although I'm not aware of actual observations on PowerPC hardware).
+
+
+At first, the previous observation (validated via simulations and later
+extended to similar but more complex scenarios ) made me believe that
+the BPF formalization of acquire and release could be strictly stronger
+than the corresponding LKMM formalization; but that is _not_ the case:
+
+The following "exists" condition is satisfiable according to the BPF
+model (and it remains satisfiable even if the load_acquire() in P2 is
+paired with an additional store_release() in P1).  In contrast, the
+corresponding LKMM condition (e.g load_acquire() --> smp_load_acquire()
+and atomic_fetch_add() --> smp_mb()) is not satisfiable (in fact, the
+same conclusion holds even if the putative smp_load_acquire() in P2 is
+"replaced" with an smp_rmb() or with an address dependency).
+
+BPF Z6.3+fence+fence+acquire
+{
+ 0:r2=x; 0:r4=y; 0:r6=l;
+ 1:r2=y; 1:r4=z; 1:r6=m;
+ 2:r2=z; 2:r4=x;
+}
+ P0                                         | P1                                         | P2                                 ;
+ r1 = 1                                     | r1 = 2                                     | r1 = load_acquire((u32 *)(r2 + 0)) ;
+ *(u32 *)(r2 + 0) = r1                      | *(u32 *)(r2 + 0) = r1                      | r3 = *(u32 *)(r4 + 0)              ;
+ r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) | r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) |                                    ;
+ r3 = 1                                     | r3 = 1                                     |                                    ;
+ *(u32 *)(r4 + 0) = r3                      | *(u32 *)(r4 + 0) = r3                      |                                    ;
+exists ([y]=2 /\ 2:r1=1 /\ 2:r3=0)
+
+
+These remarks show that the proposed BPF formalization of acquire and
+release somehow, but substantially, diverged from the corresponding
+LKMM formalization.  My guess is that the divergences mentioned above
+were not (fully) intentional, or I'm wondering -- why not follow the
+latter (the LKMM's) more closely? -  This is probably the first question
+I would need to clarify before trying/suggesting modifications to the
+present formalizations.  ;-)  Thoughts?
+
+  Andrea
+
+
+[1] https://github.com/puranjaymohan/herdtools7/commits/bpf_acquire_release/
 
