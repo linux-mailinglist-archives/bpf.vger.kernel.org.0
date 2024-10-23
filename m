@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-42908-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42909-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A7A49ACF04
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 17:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3F7B9ACF08
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 17:41:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5159E1F210CC
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 15:40:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99AF11F20172
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 15:41:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DECCA1CC158;
-	Wed, 23 Oct 2024 15:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D29FC1CCB5C;
+	Wed, 23 Oct 2024 15:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YunnH0yf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dh8ceyXz"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3D81CACDE;
-	Wed, 23 Oct 2024 15:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 467241C8781;
+	Wed, 23 Oct 2024 15:39:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729697978; cv=none; b=Gc1UgVMJIv+6Ff9CBzdnbKEH/c3FwXHynOKCfmYmRmrEQBBmBBPnFehBUGvV6/pDlVzFMj74hvgysjyzRDWM/rcb46gClsdBeX6xiM0OzvAx7sthQSRTSHRvjEKz0OSd3ptQ+lNhbeEovCEI5m20tP0ooPfcWf48ejqjzguCilA=
+	t=1729697987; cv=none; b=FdUnm/hQG98J2D2F3rpb0guUu8ZRDXLXtaYC/V2uH36JdRiVqfJEF9hPnnau1CWr8GVvZ7H2T5rcY8dotogBIEITPvzCNc10AhmpTOptoUXQBwtKZnsEuY23IGx8UrSSHXj4G/T+T9Zt1Y4fXMZiiZ4GUoLNiHQsd73NT0oH+X0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729697978; c=relaxed/simple;
-	bh=mdNPVEeAmRMvE8WVCh/WUhH2bcKZHSXxSo0wo2DESkA=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type; b=CokR5sMRky7EPrLq+OwQzACOsxvny0DOSBZGrabdsQKjBwmrkxrzgZAcMJrhz/yT5f6a6iAGuVO5tA6Ei3pXjv1WHgYEEYYtxX6mjSsuR3clLwIWJUQQnvR2Jmv9rPpAQalNgjf/a1hbApj9UdsktlO93hWdc/JReKFupZWvsFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YunnH0yf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D8F4C4CEC6;
-	Wed, 23 Oct 2024 15:39:37 +0000 (UTC)
+	s=arc-20240116; t=1729697987; c=relaxed/simple;
+	bh=ewTQi8vvMjY2tDN+rwCGUkIKwCDc2H1+fYWUrCoOJYU=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=k+y3SiEArS8tu+tYEmuluQa1MNvy20VIvDW7JcmgWU3xvxCZwREZUWEt3cqYXkLPP2O5eBhinhohzDx0On6wz3Mr45UEQccslYYzN6uG2S5aoDiyoMY/Cw9plj6cVuPZjA694RQyHF0vqcg9AsSqsxIcmPWJsGLld6UoTzfEK90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dh8ceyXz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66695C4CEC6;
+	Wed, 23 Oct 2024 15:39:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729697977;
-	bh=mdNPVEeAmRMvE8WVCh/WUhH2bcKZHSXxSo0wo2DESkA=;
-	h=From:To:Subject:Date:From;
-	b=YunnH0yffkCAihsC0tg0RcEVUBcTBtsB0ug2bVopVHAnVtK9gbyJtP8z7e9OjzKqv
-	 y3elm87l+rQJA5AmW0NpAiZuQcBfRWg8YfQG8CkHR7VTimoB1NdCzibk7s9tEAEksB
-	 vRqlbe4Hel0esh5klowxnJUEftF2dv4LHsnoiRawfeCXCIYyL7qYJueUYsfuD+nYlU
-	 NqVTt9VyT/Jotqx9W0IbRwE5beA+fkI0JW0txbSFwXwHS0323OL6V23bd9EKtZ0B2l
-	 nGWGGddDAMMPyGOauGcRr+b9qvA/2A1Y1hNAEzC9lRI3rKvh3nDlkLF2DTxFBjyRiI
-	 lLNtQiXQwXh2Q==
+	s=k20201202; t=1729697986;
+	bh=ewTQi8vvMjY2tDN+rwCGUkIKwCDc2H1+fYWUrCoOJYU=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=dh8ceyXz5u5QQMbCEoEHeP0xSKZ4uIoXgtgkuhEcUSkOpfAJulmJKqh8W2RKuXr2+
+	 Ov+Q7/pZkE0RHW0c7Dpi9oB606f339GA7ThVoZwFRwdb/sOC8OVslxR1M191apFcXR
+	 ojf/hrt4/LJsITLt6m+YAfEV0nixevr7h1CxjyHlNzqZF7toRZNmk3K0/pzcx3KA4Q
+	 lwRFG+sVi//FCVdqm9NHW/5CbbfX5jL+dbvMm7qtz7ocOp+TvhK3Me5dNoOxCboDou
+	 heffJRjCKzh04XNttacz9V7HVSiQZ0ZWcNmgMBqJ6B4Rr4cIgz90BZiEvfm2zkaPbX
+	 s1+SWPD7ICZmw==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Albert Ou <aou@eecs.berkeley.edu>,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -72,10 +73,12 @@ To: Albert Ou <aou@eecs.berkeley.edu>,
 	Song Liu <song@kernel.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Yonghong Song <yonghong.song@linux.dev>
-Subject: [PATCH bpf-next v2 0/4] Optimize bpf_csum_diff() and homogenize for all archs
-Date: Wed, 23 Oct 2024 15:39:18 +0000
-Message-Id: <20241023153922.86909-1-puranjay@kernel.org>
+Subject: [PATCH bpf-next v2 1/4] net: checksum: move from32to16() to generic header
+Date: Wed, 23 Oct 2024 15:39:19 +0000
+Message-Id: <20241023153922.86909-2-puranjay@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20241023153922.86909-1-puranjay@kernel.org>
+References: <20241023153922.86909-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,91 +88,106 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Changes in v2:
-v1: https://lore.kernel.org/all/20241021122112.101513-1-puranjay@kernel.org/
-- Remove the patch that adds the benchmark as it is not useful enough to be
-  added to the tree.
-- Fixed a sparse warning in patch 1.
-- Add reviewed-by and acked-by tags.
+from32to16() is used by lib/checksum.c and also by
+arch/parisc/lib/checksum.c. The next patch will use it in the
+bpf_csum_diff helper.
 
-NOTE: There are some sparse warning in net/core/filter.c but those are not
-worth fixing because bpf helpers take and return u64 values and using them
-in csum related functions that take and return __sum16 / __wsum would need
-a lot of casts everywhere.
+Move from32to16() to the include/net/checksum.h as csum_from32to16() and
+remove other implementations.
 
-The bpf_csum_diff() helper currently returns different values on different
-architectures because it calls csum_partial() that is either implemented by
-the architecture like x86_64, arm, etc or uses the generic implementation
-in lib/checksum.c like arm64, riscv, etc.
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ arch/parisc/lib/checksum.c | 13 ++-----------
+ include/net/checksum.h     |  6 ++++++
+ lib/checksum.c             | 11 +----------
+ 3 files changed, 9 insertions(+), 21 deletions(-)
 
-The implementation in lib/checksum.c returns the folded result that is
-16-bit long, but the architecture specific implementation can return an
-unfolded value that is larger than 16-bits.
-
-The helper uses a per-cpu scratchpad buffer for copying the data and then
-computing the csum on this buffer. This can be optimised by utilising some
-mathematical properties of csum.
-
-The patch 1 in this series does preparatory work for homogenizing the
-helper. patch 2 does the changes to the helper itself. The performance gain
-can be seen in the tables below that are generated using the benchmark
-built in patch 4 of v1 of this series:
-
-  x86-64:
-  +-------------+------------------+------------------+-------------+
-  | Buffer Size |      Before      |      After       | Improvement |
-  +-------------+------------------+------------------+-------------+
-  |      4      | 2.296 ± 0.066M/s | 3.415 ± 0.001M/s |   48.73  %  |
-  |      8      | 2.320 ± 0.003M/s | 3.409 ± 0.003M/s |   46.93  %  |
-  |      16     | 2.315 ± 0.001M/s | 3.414 ± 0.003M/s |   47.47  %  |
-  |      20     | 2.318 ± 0.001M/s | 3.416 ± 0.001M/s |   47.36  %  |
-  |      32     | 2.308 ± 0.003M/s | 3.413 ± 0.003M/s |   47.87  %  |
-  |      40     | 2.300 ± 0.029M/s | 3.413 ± 0.003M/s |   48.39  %  |
-  |      64     | 2.286 ± 0.001M/s | 3.410 ± 0.001M/s |   49.16  %  |
-  |      128    | 2.250 ± 0.001M/s | 3.404 ± 0.001M/s |   51.28  %  |
-  |      256    | 2.173 ± 0.001M/s | 3.383 ± 0.001M/s |   55.68  %  |
-  |      512    | 2.023 ± 0.055M/s | 3.340 ± 0.001M/s |   65.10  %  |
-  +-------------+------------------+------------------+-------------+
-
-  ARM64:
-  +-------------+------------------+------------------+-------------+
-  | Buffer Size |      Before      |      After       | Improvement |
-  +-------------+------------------+------------------+-------------+
-  |      4      | 1.397 ± 0.005M/s | 1.493 ± 0.005M/s |    6.87  %  |
-  |      8      | 1.402 ± 0.002M/s | 1.489 ± 0.002M/s |    6.20  %  |
-  |      16     | 1.391 ± 0.001M/s | 1.481 ± 0.001M/s |    6.47  %  |
-  |      20     | 1.379 ± 0.001M/s | 1.477 ± 0.001M/s |    7.10  %  |
-  |      32     | 1.358 ± 0.001M/s | 1.469 ± 0.002M/s |    8.17  %  |
-  |      40     | 1.339 ± 0.001M/s | 1.462 ± 0.002M/s |    9.18  %  |
-  |      64     | 1.302 ± 0.002M/s | 1.449 ± 0.003M/s |    11.29 %  |
-  |      128    | 1.214 ± 0.001M/s | 1.443 ± 0.003M/s |    18.86 %  |
-  |      256    | 1.080 ± 0.001M/s | 1.423 ± 0.001M/s |    31.75 %  |
-  |      512    | 0.887 ± 0.001M/s | 1.411 ± 0.002M/s |    59.07 %  |
-  +-------------+------------------+------------------+-------------+
-
-Patch 3 reverts a hack that was done to make the selftest pass on all
-architectures.
-
-Patch 4 adds a selftest for this helper to verify the results produced by
-this helper in multiple modes and edge cases.
-
-Puranjay Mohan (4):
-  net: checksum: move from32to16() to generic header
-  bpf: bpf_csum_diff: optimize and homogenize for all archs
-  selftests/bpf: don't mask result of bpf_csum_diff() in test_verifier
-  selftests/bpf: Add a selftest for bpf_csum_diff()
-
- arch/parisc/lib/checksum.c                    |  13 +-
- include/net/checksum.h                        |   6 +
- lib/checksum.c                                |  11 +-
- net/core/filter.c                             |  37 +-
- .../selftests/bpf/prog_tests/test_csum_diff.c | 408 ++++++++++++++++++
- .../selftests/bpf/progs/csum_diff_test.c      |  42 ++
- .../bpf/progs/verifier_array_access.c         |   3 +-
- 7 files changed, 469 insertions(+), 51 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_csum_diff.c
- create mode 100644 tools/testing/selftests/bpf/progs/csum_diff_test.c
-
+diff --git a/arch/parisc/lib/checksum.c b/arch/parisc/lib/checksum.c
+index 4818f3db84a5c..59d8c15d81bd0 100644
+--- a/arch/parisc/lib/checksum.c
++++ b/arch/parisc/lib/checksum.c
+@@ -25,15 +25,6 @@
+ 	: "=r"(_t)                      \
+ 	: "r"(_r), "0"(_t));
+ 
+-static inline unsigned short from32to16(unsigned int x)
+-{
+-	/* 32 bits --> 16 bits + carry */
+-	x = (x & 0xffff) + (x >> 16);
+-	/* 16 bits + carry --> 16 bits including carry */
+-	x = (x & 0xffff) + (x >> 16);
+-	return (unsigned short)x;
+-}
+-
+ static inline unsigned int do_csum(const unsigned char * buff, int len)
+ {
+ 	int odd, count;
+@@ -85,7 +76,7 @@ static inline unsigned int do_csum(const unsigned char * buff, int len)
+ 	}
+ 	if (len & 1)
+ 		result += le16_to_cpu(*buff);
+-	result = from32to16(result);
++	result = csum_from32to16(result);
+ 	if (odd)
+ 		result = swab16(result);
+ out:
+@@ -102,7 +93,7 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+ {
+ 	unsigned int result = do_csum(buff, len);
+ 	addc(result, sum);
+-	return (__force __wsum)from32to16(result);
++	return (__force __wsum)csum_from32to16(result);
+ }
+ 
+ EXPORT_SYMBOL(csum_partial);
+diff --git a/include/net/checksum.h b/include/net/checksum.h
+index 1338cb92c8e72..243f972267b8d 100644
+--- a/include/net/checksum.h
++++ b/include/net/checksum.h
+@@ -151,6 +151,12 @@ static inline void csum_replace(__wsum *csum, __wsum old, __wsum new)
+ 	*csum = csum_add(csum_sub(*csum, old), new);
+ }
+ 
++static inline unsigned short csum_from32to16(unsigned int sum)
++{
++	sum += (sum >> 16) | (sum << 16);
++	return (unsigned short)(sum >> 16);
++}
++
+ struct sk_buff;
+ void inet_proto_csum_replace4(__sum16 *sum, struct sk_buff *skb,
+ 			      __be32 from, __be32 to, bool pseudohdr);
+diff --git a/lib/checksum.c b/lib/checksum.c
+index 6860d6b05a171..025ba546e1ec6 100644
+--- a/lib/checksum.c
++++ b/lib/checksum.c
+@@ -34,15 +34,6 @@
+ #include <asm/byteorder.h>
+ 
+ #ifndef do_csum
+-static inline unsigned short from32to16(unsigned int x)
+-{
+-	/* add up 16-bit and 16-bit for 16+c bit */
+-	x = (x & 0xffff) + (x >> 16);
+-	/* add up carry.. */
+-	x = (x & 0xffff) + (x >> 16);
+-	return x;
+-}
+-
+ static unsigned int do_csum(const unsigned char *buff, int len)
+ {
+ 	int odd;
+@@ -90,7 +81,7 @@ static unsigned int do_csum(const unsigned char *buff, int len)
+ #else
+ 		result += (*buff << 8);
+ #endif
+-	result = from32to16(result);
++	result = csum_from32to16(result);
+ 	if (odd)
+ 		result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+ out:
 -- 
 2.40.1
 
