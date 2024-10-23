@@ -1,176 +1,100 @@
-Return-Path: <bpf+bounces-42849-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42850-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 391E79ABA5A
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 02:06:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 246869ABA62
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 02:09:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67BC31C22D84
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 00:06:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD573B231B6
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 00:09:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33FAC2914;
-	Wed, 23 Oct 2024 00:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04674C79;
+	Wed, 23 Oct 2024 00:09:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hWxC+8Aa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nIIyryBC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 455F2196;
-	Wed, 23 Oct 2024 00:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D6134A1C
+	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 00:09:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729641975; cv=none; b=cQHTQ3YFQWIOQYucQ6I1QmP6l7oYPpQk9KqGLceOH6mBaKIOvwf20uOTUcLLDEANCmTZQtUPfkNwP8ZjKwjWEXX7IRe6d95ycX5Iex9etwHST/78Kc2AK5JBt9t/Bc9Hna7/oXRMLmugFJV88FsZMyxfSn8tEikcRAmvKEHa5Fc=
+	t=1729642151; cv=none; b=kPuE1iwkWgsL5UHEfi5PXn3DhERklG49qELyJk2Maa4egRUy4yoxkhtxcB64+i3RXMMAnxbmbOGifXa9E+WYTScH0aUHw0gTnqwKZzGFASZtUC3Wx3H7AB1J8fs04idQ98iG6Mq/gBKR3bi7pvOQkt0uSwLCyQxEocLi7MtnOis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729641975; c=relaxed/simple;
-	bh=ZV86+OPN4zJI02u88jEs4H/PJ4cF9CFOZqdC6JlySjw=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=m7CGqdxAsDXpzYgi8s2vbw9DPROAWagE5hF9q/V/EypC4DSQn/xkuqr9YT8LPhB6JvqQ5C8rrfPCe3S0+ysywKXi+qeBbX0k2RPpgghidfYWRrFxXGgoYQxgc2NfeQAogYpq/GLdh4qS4Ql2F0Q3oLEvu/as6akkrRBgy69IlH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hWxC+8Aa; arc=none smtp.client-ip=209.85.222.170
+	s=arc-20240116; t=1729642151; c=relaxed/simple;
+	bh=Wc0i98wyI7scmghmPEBC/D7k6DASIr7S5uM83+PBpag=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=WMaN/cv4uSZta1BxuiK50GNS0YudADbdCojk69gE1I5NW3kNTK7Rw9ER5cNAcDfkBc5vWQc8K7/W0C9QXUH5Jh/afegvIOFEmjlfYsEAMVaTOEPa8Az09KJJAivwIDesIHiNqGuyAWw+btuzDBGO0TldnO1wvNdF79YwTJjkxps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nIIyryBC; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7b149ef910eso498395985a.3;
-        Tue, 22 Oct 2024 17:06:14 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-71e4244fdc6so4411384b3a.0
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 17:09:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729641973; x=1730246773; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2E1y0zXz0FAjgbstvMGXHQS2tqPf8pF30lCKWcGHyaw=;
-        b=hWxC+8AaDzCoke3xemoXZi5qIQ/SLyaiMeZA+awSIZLgUgW7AnIy3c4zpXf3GbKhLb
-         xzrRjK9FWKa524GnVRAj1KBtXKIq49oxd91BZNQpFKM0Yu31dWZt1BHIB5nddSrZCTAL
-         CLtN7ahjt7e0wD2m08B9qyD6kL0JMzUekqRpDUogNm3k6wHqqGDJO+xB88sulFX4f7dN
-         Y62kiWU6CkgTkqMQ5NGmOWZz0/J4BcfH2WEvyQCKJjYO8iO6m1yHAaX9ENf6EgH0pqlA
-         3+m0m5uyRCyxivAYF4GgDnERrsoRl+KIT0WwxbpWN7tZC3lYRk3y1rONPpwprAF0PrCZ
-         N/Ng==
+        d=gmail.com; s=20230601; t=1729642149; x=1730246949; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Wc0i98wyI7scmghmPEBC/D7k6DASIr7S5uM83+PBpag=;
+        b=nIIyryBC61SuVw6h3J/BvWnoycBdTkEyyxCsTJ5roazgC9yMxcriNHp/88YALwosml
+         7FxISE5oDQikXs9Pr1lbR0GAWGyVbzfko5MOu6/YNVyrzUFk1oLFWOUTFDuKAZqFnEHV
+         25qWynk5VAk1rX8kmqZ49hgHad9+fXYVZx+tgCU+83L2y4Ltjbq+Bdv6FaSlBGo2ecur
+         G7ty7vZaKXDW2b+lGnZrH2THOEUtPY80DDXYJ0hKn8kFX4HIoUHS9Sev3ybs115VYfkN
+         MEu/iQCS+licj3lWBtrWPyCG4IzFpIC1IheXGmfsB+nZ+vpb0s0uAEt/GXVvc/Xgwyk/
+         2fog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729641973; x=1730246773;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2E1y0zXz0FAjgbstvMGXHQS2tqPf8pF30lCKWcGHyaw=;
-        b=kxInik9uUzMNYtvmRjceaLidwIOECUOKr6WZ/E7pFjrZ6pNw9n9BKL9SqamOdiVvZA
-         ZZjKQLgFDaYjb1LCpcT33ljc0LntBxnLbmsXXAuxlmAeMb1nYhEZVtmLXBPgA/RViB+y
-         V1Od0G+TG4CkYcstBAxdQNN+qjSFQ5BtMDOvgdJbo6i0LieZO4oqQA4h0KwHhrOb/fD8
-         Ixj9A9tLRdT9YmY5ZRyrmGUytVlPRpxWVyoYgdiaOz/j6tk6ebyduP4HXKAeMFxpU4uk
-         GRZDgwmEmeIS2X6P8GKg+ZCF0EQ7GYJ7rw6hdEiceK+/9UqoNACsghJG9xBRfnYkRGzB
-         IaRw==
-X-Forwarded-Encrypted: i=1; AJvYcCVXy/MZYtSudtXJgZ1da5KJdSlMqFA6i+KiZFBR65o5VgLkK+CX+RJVmc8UOSKvkCYHFy4=@vger.kernel.org, AJvYcCXTkMx3Bzp3HKP0er+3SVH58u//DkfPqLk5WvcDV8+c0h93jvwZLhUuYlOVK2kQvDsR5rMhzSSM@vger.kernel.org
-X-Gm-Message-State: AOJu0YxGdndL/pKtBL485/TSn3VKWayZLW4Pp6bZhgHkkgKlAxB3n1lN
-	FvbYBlZdpgjUDhJe2296dh9HG19x9TFjVJP9c2gBVXaloD8nQppC
-X-Google-Smtp-Source: AGHT+IHfptJqp/QF/XIdias5Hsqh4fJZTPF+NRTGdR3IVT0BYEJk0V11bp4jlqsTUCSieYrnn4sQgA==
-X-Received: by 2002:a05:620a:24d3:b0:7b1:4f21:39de with SMTP id af79cd13be357-7b17e4afbcfmr115973785a.0.1729641973039;
-        Tue, 22 Oct 2024 17:06:13 -0700 (PDT)
-Received: from localhost (86.235.150.34.bc.googleusercontent.com. [34.150.235.86])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b165a89c96sm330948185a.131.2024.10.22.17.06.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Oct 2024 17:06:11 -0700 (PDT)
-Date: Tue, 22 Oct 2024 20:06:11 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- willemb@google.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org, 
- Jason Xing <kernelxing@tencent.com>
-Message-ID: <67183df34e8e3_1420e5294a2@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CAL+tcoCBONnrP_YyE_0n_o4zQUNJfE8DY61f6XRQeeBdGNZMgQ@mail.gmail.com>
-References: <20241012040651.95616-1-kerneljasonxing@gmail.com>
- <20241012040651.95616-3-kerneljasonxing@gmail.com>
- <cb96b56a-0c00-4f57-b4b5-8a7e00065cdc@linux.dev>
- <670ee4efea023_322ac329445@willemb.c.googlers.com.notmuch>
- <CAL+tcoCBONnrP_YyE_0n_o4zQUNJfE8DY61f6XRQeeBdGNZMgQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 02/12] net-timestamp: open gate for
- bpf_setsockopt
+        d=1e100.net; s=20230601; t=1729642149; x=1730246949;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Wc0i98wyI7scmghmPEBC/D7k6DASIr7S5uM83+PBpag=;
+        b=g5dxNQrBg7SMqAlNJzjlXdoH9fyHOguJON/8uBVck2/LzLG3YfWJxyfmyuL2W2edL6
+         jfmFs1hca6hA4eZsOJOYupxFFKpxGLLiRJUxXcHxRllhLdvQOIN2bDHubPL4iWLc+3Cl
+         hnb1O8xEc4lXscvaDJIwbuuNCOCjzerBOIPAW49xZaJYhtYclgJBeYAxNziv/SXZgDEz
+         578qF9e6AIZfhlUvY200sYAV/uZDOoiig/3CytorhtmHdneoE4UY8L+F2G6yuyf/YW2b
+         iCPFhFsqEpyocBrRF1OujDVdTDYFK5rWJi053IrHKx76kQpWxtWFbf4t/oXse1AlWCrq
+         M6BA==
+X-Gm-Message-State: AOJu0YxJTN0vB1EK1QmqQw3DTZbphYQN1XRBSnI80ptBWFBAOHla7fzs
+	0QcTC2HOrd6x9Lqyz+7iTTnzq1CdT1eTkX7gbbfR4lOzSPcKwQDBs1AGiAkoDlXXLPvWfimLdwF
+	OVk2jJs0zyWPiTFIwJcJme6qm93Iowg==
+X-Google-Smtp-Source: AGHT+IF0zjNn2lSzv0kPzVDV0DTJb/663VEFcFNp1zk5ZxXWAeI7SY2VXtmCLx/ESLVfF1BCjxRSl0NlgwtuWeXI238=
+X-Received: by 2002:a05:6a00:2da4:b0:71e:21:d2d8 with SMTP id
+ d2e1a72fcca58-72030b998famr1272235b3a.7.1729642149083; Tue, 22 Oct 2024
+ 17:09:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 22 Oct 2024 17:08:56 -0700
+Message-ID: <CAEf4BzYYZa3m5ttEgfPnZUBdYpgoq3JS0GCedXgeoWLgvr9YPQ@mail.gmail.com>
+Subject: Questions about the state of some BTF features
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Jason Xing wrote:
-> On Wed, Oct 16, 2024 at 5:56=E2=80=AFAM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > Martin KaFai Lau wrote:
-> > > On 10/11/24 9:06 PM, Jason Xing wrote:
-> > > >   static int sol_socket_sockopt(struct sock *sk, int optname,
-> > > >                           char *optval, int *optlen,
-> > > >                           bool getopt)
-> > > >   {
-> > > > +   struct so_timestamping ts;
-> > > > +   int ret =3D 0;
-> > > > +
-> > > >     switch (optname) {
-> > > >     case SO_REUSEADDR:
-> > > >     case SO_SNDBUF:
-> > > > @@ -5225,6 +5245,13 @@ static int sol_socket_sockopt(struct sock =
-*sk, int optname,
-> > > >             break;
-> > > >     case SO_BINDTODEVICE:
-> > > >             break;
-> > > > +   case SO_TIMESTAMPING_NEW:
-> > > > +   case SO_TIMESTAMPING_OLD:
-> > >
-> > > How about remove the "_OLD" support ?
-> >
-> > +1 I forgot to mention that yesterday.
-> =
+Hey Alan,
 
-> Hello Willem, Martin,
-> =
+There were a few BTF-related features you've been working on, and I
+realized recently that I don't remember exactly where we ended up with
+them and whether there is anything blocking those features. So instead
+of going on a mailing list archeology trip, I decided to lazily ask
+you directly :)
 
-> I did a test on this and found that if we only use
-> SO_TIMESTAMPING_NEW, we will never enter the real set sk_tsflags_bpf
-> logic, unless there is "case SO_TIMESTAMPING_OLD".
-> =
+Basically, at some point we were discussing and reviewing BTF
+extensions to have a minimal description of BTF types sizes (fixed and
+per-item length). What happened to it? Did we decide it's not
+necessary, or is it still in the works?
 
-> And I checked SO_TIMESTAMPING in include/uapi/asm-generic/socket.h:
-> #if __BITS_PER_LONG =3D=3D 64 || (defined(__x86_64__) && defined(__ILP3=
-2__))
-> /* on 64-bit and x32, avoid the ?: operator */
-> ...
-> #define SO_TIMESTAMPING         SO_TIMESTAMPING_OLD
-> ...
-> #else
-> ...
-> #define SO_TIMESTAMPING (sizeof(time_t) =3D=3D sizeof(__kernel_long_t) =
-?
-> SO_TIMESTAMPING_OLD : SO_TIMESTAMPING_NEW)
-> ...
-> #endif
-> =
+Also, distilled BTF stuff. We landed libbpf-side API (and I believe
+the kernel-side changes went in as well, right?), but I don't think we
+enabled this functionality for kernel builds, is that right? What's
+missing to have relocatable BTF inside kernel modules? Pahole changes?
+Has that landed?
 
-> The SO_TIMESTAMPING is defined as SO_TIMESTAMPING_OLD. I wonder if I
-> missed something? Thanks in advance.
+Thanks!
 
-The _NEW vs _OLD aim to deal with y2038 issues on 32-bit platforms.
-
-For new APIs, like BPF timestamping, we should always use the safe
-structs, such as timespec64.
-
-Then we can just use SO_TIMESTAMPING without the NEW or OLD suffix.=
+-- Andrii
 
