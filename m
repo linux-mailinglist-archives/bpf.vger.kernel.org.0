@@ -1,152 +1,131 @@
-Return-Path: <bpf+bounces-42872-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42873-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB49E9AC113
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 10:10:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27CE79AC165
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 10:19:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F26FB1C2110B
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 08:10:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D1CF1F21EA7
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 08:19:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A341A15746B;
-	Wed, 23 Oct 2024 08:09:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA61487BE;
+	Wed, 23 Oct 2024 08:19:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UCjsnGoV"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3ED1156F41
-	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 08:09:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F6C146018;
+	Wed, 23 Oct 2024 08:19:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729670976; cv=none; b=Nq+Z/JR3I37SqqBHrKi7xyJOaVhsxD7qkrUCor/yYoclbxujw0BgifgBc1ek9lVOKRpIx4g0qOI3qI+rgrX0xAdlH/cARQlBX937Eb0Tap5kID/gIkRu3hcIg0BoK89jVcxjHC/8RY7LziP6NoQY7PyBlRgT4aNPqW28KOAOgZA=
+	t=1729671584; cv=none; b=GnBsILpL//dQzwG6+pGZEu5ksESjAXesndPizKOAG1JLbE3IHILfac98zAN8RQenArjFgSp87hSTeFdvz9PKBPvcYTrZJ3cXBQkC2YDUzyIeALMA1h03TULrg08nO13zFd8HT0BASDfYYWkNwKCwglOQITsAFRjoxEzZGBrhgvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729670976; c=relaxed/simple;
-	bh=3AO+VQhkC9onNc1IZZqOe2ox2AcFz2Yp9jrlUmcT+uQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=ruvk6cBQunNbfVXhLA6QTI6oeDJPEzyeFvqRPvlNDQuSBBtI1kWbb/LNPOdwoR49x2YRHNqlsoeSGjxYAW10cORL25E7EMkeI7j2S4Ft/iyJ8ft4KZeCIUr5YZvHhIi+nOkmC/u+2D6E2IgnaT87IWAa0DL3GFMkyGA4+1fVVSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XYMBt4NSLz4f3nJq
-	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 16:09:10 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id D1A311A0568
-	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 16:09:28 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgA3t8M0rxhnDLyHEw--.15392S2;
-	Wed, 23 Oct 2024 16:09:28 +0800 (CST)
-Subject: Re: [PATCH bpf v2 6/7] bpf: Use __u64 to save the bits in bits
- iterator
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
- xukuohai@huawei.com
-References: <20241021014004.1647816-1-houtao@huaweicloud.com>
- <20241021014004.1647816-7-houtao@huaweicloud.com>
- <CALOAHbB-asooCmJSq7wFeXo2VV++WKeU2BMfgcAFRNoAy2OTGg@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <c25f7f73-a666-3eae-bbaa-824cbdd722d6@huaweicloud.com>
-Date: Wed, 23 Oct 2024 16:09:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1729671584; c=relaxed/simple;
+	bh=sKnGqfdi/X1bpd3CmPQy4hod8cSQLJ3eOZVZwk0+ZQE=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cshijN8SgpycHqqSrDygCj9osKJCoelmwKCjYqWjpPGsChCngJ23QCQ0loqe3/QGNOowFVVR1tCEI792AcqHUkrLIk7vVhZ87Rfu//yy9FV5H6y3wZ2UCRU18iC4H0INFsIfjZJyjgeZ9s8fw+yJ/PN7ygQfNzXMeWuCgssjoxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UCjsnGoV; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5c96936065dso6854055a12.3;
+        Wed, 23 Oct 2024 01:19:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729671581; x=1730276381; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=hHwWvR1xcXKAIgnKGQ+F36y6LrNpA+v1vplrWLR/SUA=;
+        b=UCjsnGoVWqP6R07yqU34M07GPJXhQmqW+wbSrAVQ+XUofcF6aeGnoLr5kFyxaGHLdN
+         TvybwRo5mahtfRAHCtpwiqweAzzBV7M6BFyGS+o/yjogPxB2XAkV/38YZh2I8oc7T3sB
+         /KQAifYGx3l2XTZLKhdLLA+jiG/959DqLLISdQRJZefXQ8yHe9JriVpjfPCILiu8E+r+
+         MxkssrMeMVjdW1i9F8a9c445rtcBxbabtNEp42wXDPAclRDe7zQqkJxwZxEy82/MgbAz
+         aNejaLjKNAU1hpUBL1I3oU/2ZLmeZiPI1fmn0y5NX5J7FizffZWGruf/eYcipQHHZMy/
+         Y6AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729671581; x=1730276381;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hHwWvR1xcXKAIgnKGQ+F36y6LrNpA+v1vplrWLR/SUA=;
+        b=T5t2JO8K8kyO9oHRumEgGak1zvQfUGluK8vNZptfNSlxkTmZqaBzn3lsS+YLgQBgSo
+         kdmUQcmR4Hl0+Btkjjxd004WXZD4HlTSjs9e940omThEEM1e+df2VWCpt3ByIeTzWU38
+         R4sKhFOeCYXVv5TedJp6A+au5Km3sjLf19RCTkvRTIKrZURph6fmQV8D6apFXtl/KsFb
+         sWjTyMc/W15QNbDUZFjyMPOmltxoEq3aoUIV9M2FX0/MD8H4/sc/LFBo5PynVtAqSnHA
+         9fW622JJtphwELRrNVcVPB9uv3BlOqorR/aqfslr1QxJBNTTkelA6FueVf41W5TEoda9
+         c6cA==
+X-Forwarded-Encrypted: i=1; AJvYcCW2gCqFojEYuPVO9uaHgXSMRYMk5rUmy96vcrbkzNTLpwJQPNZwcHQJMvtsTi4Drt3+3p8=@vger.kernel.org, AJvYcCWnQxpU/eU18ttwSTkzo/dK5v6SjoGuy3mWK0gVKMDzp9VAGP7+huMb3lRWxP+gkDup/1mdJx+1Tq61OFj0@vger.kernel.org
+X-Gm-Message-State: AOJu0YwAls5BeI80wYPpo2zoWpljI9GWy3L7EisCQv3DYhbP21VPNx6r
+	BaX5W7p4mmOSMIbKng5Q/GOmNEGKaoi8gCrTQXgIU/Rl3XMGVTMH
+X-Google-Smtp-Source: AGHT+IEcv6upnpzJoycpTtgD/ihtVGV/+R9UvjxE11dUmBktLECMtGIjIbNxSbIasJgWiVhCWcgjFg==
+X-Received: by 2002:a05:6402:51c8:b0:5c2:439d:90d4 with SMTP id 4fb4d7f45d1cf-5cb8b1a1084mr1357715a12.30.1729671581173;
+        Wed, 23 Oct 2024 01:19:41 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5cb66c7262bsm4054501a12.82.2024.10.23.01.19.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Oct 2024 01:19:40 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 23 Oct 2024 10:19:38 +0200
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+	andrii@kernel.org, yhs@fb.com, linux-kernel@vger.kernel.org,
+	daniel@iogearbox.net, sean@mess.org, bpf <bpf@vger.kernel.org>
+Subject: Re: perf_event_detach_bpf_prog() broken?
+Message-ID: <ZxixmhdyhGSt1_Jx@krava>
+References: <20241022111638.GC16066@noisy.programming.kicks-ass.net>
+ <ZxewvPQX7bq40PK3@krava>
+ <CAEf4Bzbp-LxpFR5Ue6YTfana5ST+sHMLi_zxS9Ax3uR7bXpuNA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALOAHbB-asooCmJSq7wFeXo2VV++WKeU2BMfgcAFRNoAy2OTGg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:gCh0CgA3t8M0rxhnDLyHEw--.15392S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGF15uF15Kw4kWrWxuF43trb_yoW5WF1UpF
-	WxCw1qkrWkKrW2kwnFyF48ZFy5Arn3Z34UGrWfGrWrA3W5WryrWrykKay5X3WUCFy8Z3ZF
-	vryY93srC3yDJa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
-	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
-	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
-	IYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+In-Reply-To: <CAEf4Bzbp-LxpFR5Ue6YTfana5ST+sHMLi_zxS9Ax3uR7bXpuNA@mail.gmail.com>
 
-Hi,
+On Tue, Oct 22, 2024 at 10:33:37AM -0700, Andrii Nakryiko wrote:
+> + bpf ML
+> 
+> On Tue, Oct 22, 2024 at 7:03 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Tue, Oct 22, 2024 at 01:16:38PM +0200, Peter Zijlstra wrote:
+> > > Hi guys,
+> > >
+> > > Per commit 170a7e3ea070 ("bpf: bpf_prog_array_copy() should return
+> > > -ENOENT if exclude_prog not found") perf_event_detach_bpf_prog() can now
+> > > return without doing bpf_prog_put() and leaving event->prog set.
+> > >
+> > > This is very 'unexpected' behaviour.
+> > >
+> > > I'm not sure what's sane from the BPF side of things here, but leaving
+> > > event->prog set is really rather unexpected.
+> > >
+> > > Help?
+> >
+> > IIUC the ENOENT should never happen in perf event context, so not
+> 
+> yep, if it does return an error it's a bug, right? So we can add
+> WARN_ONCE() or just drop the check, probably.
 
-On 10/23/2024 11:10 AM, Yafang Shao wrote:
-> On Mon, Oct 21, 2024 at 9:28 AM Hou Tao <houtao@huaweicloud.com> wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> On 32-bit hosts (e.g., arm32), when a bpf program passes a u64 to
->> bpf_iter_bits_new(), bpf_iter_bits_new() will use bits_copy to store the
->> content of the u64. However, bits_copy is only 4 bytes, leading to stack
->> corruption.
->>
->> The straightforward solution would be to replace u64 with unsigned long
->> in bpf_iter_bits_new(). However, this introduces confusion and problems
->> for 32-bit hosts because the size of ulong in bpf program is 8 bytes,
->> but it is treated as 4-bytes after passed to bpf_iter_bits_new().
->>
->> Fix it by changing the type of both bits and bit_count from unsigned
->> long to u64.
-> Thank you for the fix. This change is necessary.
->
->>  However, the change is not enough. The main reason is that
->> bpf_iter_bits_next() uses find_next_bit() to find the next bit and the
->> pointer passed to find_next_bit() is an unsigned long pointer instead
->> of a u64 pointer. For 32-bit little-endian host, it is fine but it is
->> not the case for 32-bit big-endian host. Because under 32-bit big-endian
->> host, the first iterated unsigned long will be the bits 32-63 of the u64
->> instead of the expected bits 0-31. Therefore, in addition to changing
->> the type, swap the two unsigned longs within the u64 for 32-bit
->> big-endian host.
-> The API uses a u64 data type, and the nr_words parameter represents
-> the number of 8-byte units. On a 32-bit system, if you want to call
-> this API, you would define an array like `u32 data[2]` and invoke the
-> function as `bpf_for_each(bits, bit, &data[0], 1)`. However, since the
-> API expects a u64, you'll need to merge the two u32 values into a
-> single u64 value.
+I'm now more inclined to have the WARN there, because it's possible
+return value of bpf_prog_array_copy .. I'll send the patch and let's
+discuss over the change
 
-It is a bit weird to pass a u32 pointer to bpf_for_each, because it
-expects a u64 pointer. I think the bpf program should pass a u64 pointer
-instead.
->
-> Given this, it might be more appropriate to ask users to handle the
-> u32 to u64 merge on their side when preparing the data, rather than
-> performing the swap within the kernel itself.
+jirka
 
-However, the swap implemented in the patch has nothing to do whether the
-user passes pointer to u32 array or not. It is necessary due to the
-mismatched between the pointer type used by find_next_bit and the
-pointer used by bpf_iter_bits_new(). The latter uses u64 pointer, but
-find_next_bit() uses unsigned long pointer and iterates a long each
-time. So just like the comment in the patch said:
-
-    under 32-bit big-endian host, the first iterated unsigned long will
-be the bits 32-63 of the u64 instead of the expected bits 0-31.
-
-The swap in the patch will swap the two long values in the u64 and make
-the first iterated unsigned long will be the bits 0-31 of the u64 value.
->
-> --
-> Regards
->
-> Yafang
-
+> 
+> > sure why we have that check.. also does not seem to be used from
+> > lirc code, Sean?
+> >
+> > perf_event_detach_bpf_prog is called when the event is being freed
+> > so I think we should always put and clear the event->prog
+> >
+> > jirka
 
