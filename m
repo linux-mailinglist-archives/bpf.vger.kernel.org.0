@@ -1,131 +1,113 @@
-Return-Path: <bpf+bounces-42873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27CE79AC165
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 10:19:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE5709AC197
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 10:29:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D1CF1F21EA7
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 08:19:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06BF01C21D8B
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 08:29:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA61487BE;
-	Wed, 23 Oct 2024 08:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90B7158875;
+	Wed, 23 Oct 2024 08:29:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UCjsnGoV"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="efYyz3yD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F6C146018;
-	Wed, 23 Oct 2024 08:19:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 279F7157E78
+	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 08:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729671584; cv=none; b=GnBsILpL//dQzwG6+pGZEu5ksESjAXesndPizKOAG1JLbE3IHILfac98zAN8RQenArjFgSp87hSTeFdvz9PKBPvcYTrZJ3cXBQkC2YDUzyIeALMA1h03TULrg08nO13zFd8HT0BASDfYYWkNwKCwglOQITsAFRjoxEzZGBrhgvA=
+	t=1729672143; cv=none; b=c+qMOaaV0/eP8oRpQgnCAg0lWVB8FIuMIdIv1dBgDU0R5JxUbCaGjvXBKf32E2T9OBO+Qn6fsnS9iKey4AE74j3NJoiXlo0YyQCLxtgE+uSG/vkpREvb1e3D8rbEu83PlnvaVjHqCPJBh8C/KINmlfiPrnr0fm8oR8AiYJIu8V4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729671584; c=relaxed/simple;
-	bh=sKnGqfdi/X1bpd3CmPQy4hod8cSQLJ3eOZVZwk0+ZQE=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cshijN8SgpycHqqSrDygCj9osKJCoelmwKCjYqWjpPGsChCngJ23QCQ0loqe3/QGNOowFVVR1tCEI792AcqHUkrLIk7vVhZ87Rfu//yy9FV5H6y3wZ2UCRU18iC4H0INFsIfjZJyjgeZ9s8fw+yJ/PN7ygQfNzXMeWuCgssjoxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UCjsnGoV; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5c96936065dso6854055a12.3;
-        Wed, 23 Oct 2024 01:19:42 -0700 (PDT)
+	s=arc-20240116; t=1729672143; c=relaxed/simple;
+	bh=yi3138v6iNfT13tBZD53GlTX0WLmWFCgf4bu7g5TzXc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WeAYMeUk3BatFNvp3N0oAtZacjlXAsHMO+4Cag24MqBRlCNZ2PgFeNlqjtXlS6CWrvy6IAE+3wiJiVHMZ6qk+W+pJx17SvoF1qmHThqFF2T7vC7fK6ZOzosD9mcxi/etADrXgF/RiS2BbofdrPlKsPXwT/KyUj8DGonnE1ogWc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=efYyz3yD; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2fb3c3d5513so70679851fa.1
+        for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 01:29:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729671581; x=1730276381; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hHwWvR1xcXKAIgnKGQ+F36y6LrNpA+v1vplrWLR/SUA=;
-        b=UCjsnGoVWqP6R07yqU34M07GPJXhQmqW+wbSrAVQ+XUofcF6aeGnoLr5kFyxaGHLdN
-         TvybwRo5mahtfRAHCtpwiqweAzzBV7M6BFyGS+o/yjogPxB2XAkV/38YZh2I8oc7T3sB
-         /KQAifYGx3l2XTZLKhdLLA+jiG/959DqLLISdQRJZefXQ8yHe9JriVpjfPCILiu8E+r+
-         MxkssrMeMVjdW1i9F8a9c445rtcBxbabtNEp42wXDPAclRDe7zQqkJxwZxEy82/MgbAz
-         aNejaLjKNAU1hpUBL1I3oU/2ZLmeZiPI1fmn0y5NX5J7FizffZWGruf/eYcipQHHZMy/
-         Y6AQ==
+        d=suse.com; s=google; t=1729672139; x=1730276939; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tr8VpB86M8Ay09+MenlAIZ65QKq/N/01Au2y4wkGOx4=;
+        b=efYyz3yDV7soodXkkoOPap6Vn+qgKGdPDiUsd8S2ZPIkC/1OMn5vgnQPpI+xRlpfxU
+         MRPBq6wYEJvuM6Lpyowm4L5TfP8tmzcHt1VvLQWNSGuA6yxfHH0DyGjVZxxMLaSMHzcP
+         AfdRbV9zVPFBpJ9w5EujDzw17tDYkfAx+B85AiOZwkJSPpm/hMu4r/J/5wKPO2EdgZxP
+         2iFuZA6r/ZTAfZ9vYDaNazqDQrtBN2m1KRoKHsa7D9wviOlc+9LjkVlN+YONtZQCA+KB
+         VsqduE+C5LYarOZC0j8etxC5TY2hhSyUnwXILwCRPn9apNObDHcdCa+hE3sbxpk6c3Hj
+         snXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729671581; x=1730276381;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hHwWvR1xcXKAIgnKGQ+F36y6LrNpA+v1vplrWLR/SUA=;
-        b=T5t2JO8K8kyO9oHRumEgGak1zvQfUGluK8vNZptfNSlxkTmZqaBzn3lsS+YLgQBgSo
-         kdmUQcmR4Hl0+Btkjjxd004WXZD4HlTSjs9e940omThEEM1e+df2VWCpt3ByIeTzWU38
-         R4sKhFOeCYXVv5TedJp6A+au5Km3sjLf19RCTkvRTIKrZURph6fmQV8D6apFXtl/KsFb
-         sWjTyMc/W15QNbDUZFjyMPOmltxoEq3aoUIV9M2FX0/MD8H4/sc/LFBo5PynVtAqSnHA
-         9fW622JJtphwELRrNVcVPB9uv3BlOqorR/aqfslr1QxJBNTTkelA6FueVf41W5TEoda9
-         c6cA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2gCqFojEYuPVO9uaHgXSMRYMk5rUmy96vcrbkzNTLpwJQPNZwcHQJMvtsTi4Drt3+3p8=@vger.kernel.org, AJvYcCWnQxpU/eU18ttwSTkzo/dK5v6SjoGuy3mWK0gVKMDzp9VAGP7+huMb3lRWxP+gkDup/1mdJx+1Tq61OFj0@vger.kernel.org
-X-Gm-Message-State: AOJu0YwAls5BeI80wYPpo2zoWpljI9GWy3L7EisCQv3DYhbP21VPNx6r
-	BaX5W7p4mmOSMIbKng5Q/GOmNEGKaoi8gCrTQXgIU/Rl3XMGVTMH
-X-Google-Smtp-Source: AGHT+IEcv6upnpzJoycpTtgD/ihtVGV/+R9UvjxE11dUmBktLECMtGIjIbNxSbIasJgWiVhCWcgjFg==
-X-Received: by 2002:a05:6402:51c8:b0:5c2:439d:90d4 with SMTP id 4fb4d7f45d1cf-5cb8b1a1084mr1357715a12.30.1729671581173;
-        Wed, 23 Oct 2024 01:19:41 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5cb66c7262bsm4054501a12.82.2024.10.23.01.19.40
+        d=1e100.net; s=20230601; t=1729672139; x=1730276939;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tr8VpB86M8Ay09+MenlAIZ65QKq/N/01Au2y4wkGOx4=;
+        b=iGElJcQ1KSezTQlKeeGg4g4vk0mbNEDw6ZmafvXyXYlGU8cRed4o6rzcqHpQ5VY3aQ
+         AIMLBk5IW3mez7JsHkVhCuP8d3el94IMargvMnrZeHAVHXiuDWbrOnEGPLUVTyymATcY
+         fyhyFrzKxly18VvQKhdgvTuewe3bYnT4KUTOlgVNjLLosUWDo/jByA7kNOpqnDPuUXho
+         UQPFS9EA2tqa7bHbnp4WXLYsgujh2yDhQ5tpsZE3cmgCh/fXoiUUPDodCGoRooQHi4ma
+         CpM4ZZ3+ScvV0c6WhQQjCoIxqhcEs0cwHGIR2xWbLeKYXL+ypicKAMzSr+l5sxdgiILK
+         Xnjg==
+X-Gm-Message-State: AOJu0YxltsKKYbZwPBNb+ZbCzje1Io7SONeFMRtyAfqidXmAwhcGMVa8
+	Rk8if7mMYZh7FbHhug5/SVhkRDqcFA2iBwbEbF2hTaJ7UwrVC34dTYj/eDqXtB/ZR6+pH1HQobe
+	cChqFhQ==
+X-Google-Smtp-Source: AGHT+IF/vFIf6oWmWDZDpKa2zQxr+SCTuvf6RsyhgilqVJ6xZE4BWo4UQO8qboeb+ybZFpE8MtnP4A==
+X-Received: by 2002:a2e:819:0:b0:2fa:dc24:a374 with SMTP id 38308e7fff4ca-2fc9d581de3mr6713451fa.37.1729672139312;
+        Wed, 23 Oct 2024 01:28:59 -0700 (PDT)
+Received: from u94a ([2401:e180:8861:2c7c:bbd0:9c6f:9a61:fab0])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7eaeabdd85fsm6275284a12.90.2024.10.23.01.28.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2024 01:19:40 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 23 Oct 2024 10:19:38 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
-	andrii@kernel.org, yhs@fb.com, linux-kernel@vger.kernel.org,
-	daniel@iogearbox.net, sean@mess.org, bpf <bpf@vger.kernel.org>
-Subject: Re: perf_event_detach_bpf_prog() broken?
-Message-ID: <ZxixmhdyhGSt1_Jx@krava>
-References: <20241022111638.GC16066@noisy.programming.kicks-ass.net>
- <ZxewvPQX7bq40PK3@krava>
- <CAEf4Bzbp-LxpFR5Ue6YTfana5ST+sHMLi_zxS9Ax3uR7bXpuNA@mail.gmail.com>
+        Wed, 23 Oct 2024 01:28:58 -0700 (PDT)
+Date: Wed, 23 Oct 2024 16:28:51 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@kernel.org, kernel-team@meta.com, John Fastabend <john.fastabend@gmail.com>, 
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH v3 bpf-next 2/2] bpf: inline bpf_get_branch_snapshot()
+ helper
+Message-ID: <jnasedlxo42dwibgynuwlccwql2ca7abdoz7ihnyccer3kdaj4@idpkucm7ohj5>
+References: <20240404002640.1774210-1-andrii@kernel.org>
+ <20240404002640.1774210-3-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bzbp-LxpFR5Ue6YTfana5ST+sHMLi_zxS9Ax3uR7bXpuNA@mail.gmail.com>
+In-Reply-To: <20240404002640.1774210-3-andrii@kernel.org>
 
-On Tue, Oct 22, 2024 at 10:33:37AM -0700, Andrii Nakryiko wrote:
-> + bpf ML
-> 
-> On Tue, Oct 22, 2024 at 7:03 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Tue, Oct 22, 2024 at 01:16:38PM +0200, Peter Zijlstra wrote:
-> > > Hi guys,
-> > >
-> > > Per commit 170a7e3ea070 ("bpf: bpf_prog_array_copy() should return
-> > > -ENOENT if exclude_prog not found") perf_event_detach_bpf_prog() can now
-> > > return without doing bpf_prog_put() and leaving event->prog set.
-> > >
-> > > This is very 'unexpected' behaviour.
-> > >
-> > > I'm not sure what's sane from the BPF side of things here, but leaving
-> > > event->prog set is really rather unexpected.
-> > >
-> > > Help?
-> >
-> > IIUC the ENOENT should never happen in perf event context, so not
-> 
-> yep, if it does return an error it's a bug, right? So we can add
-> WARN_ONCE() or just drop the check, probably.
+Hi Andrii,
 
-I'm now more inclined to have the WARN there, because it's possible
-return value of bpf_prog_array_copy .. I'll send the patch and let's
-discuss over the change
+I was looking around in do_misc_fixups() and came across this
 
-jirka
+...
+> +			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+> +			if (!new_prog)
+> +				return -ENOMEM;
+> +
+> +			delta    += cnt - 1;
+> +			env->prog = prog = new_prog;
+> +			insn      = new_prog->insnsi + i + delta;
+> +			continue;
 
-> 
-> > sure why we have that check.. also does not seem to be used from
-> > lirc code, Sean?
-> >
-> > perf_event_detach_bpf_prog is called when the event is being freed
-> > so I think we should always put and clear the event->prog
-> >
-> > jirka
+Should the above be turned into "goto next_insn" like the others that
+were touched by commit 011832b97b31 "bpf: Introduce may_goto
+instruction"?
+
+> +		}
+> +
+>  		/* Implement bpf_kptr_xchg inline */
+>  		if (prog->jit_requested && BITS_PER_LONG == 64 &&
+>  		    insn->imm == BPF_FUNC_kptr_xchg &&
 
