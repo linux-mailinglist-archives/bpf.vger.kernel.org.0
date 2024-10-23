@@ -1,151 +1,118 @@
-Return-Path: <bpf+bounces-42915-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42916-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 295C79ACF9D
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 18:01:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BB2F9ACFB5
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 18:04:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD254281C92
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 16:01:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 295321F22909
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 16:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045041CBE8F;
-	Wed, 23 Oct 2024 16:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4361CBE93;
+	Wed, 23 Oct 2024 16:04:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LZiTuAjp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eb1II1cZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7B21C9DF9;
-	Wed, 23 Oct 2024 16:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBCCB4436E
+	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 16:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729699278; cv=none; b=jATjD7hVa0ZvTqRrp4aXrehf2teqN7jd6fuvwxQ8FOscykfqRsP4tfc+W68yrR5KLPOXYGbGQOC/z6CSui1b+jbEDfTVugdKPeXqstHbKXvwY9NA3W95tq6scvNtw0HQI90q+Awb6L5O1sRg5Ru+z92RSwO13R85rLHAHNpVbi0=
+	t=1729699459; cv=none; b=IV9YqCvnaSEBrnXVFFtd+C2206Zxy6VSHKykP7i0R2D2WsDnY2Li8tUft2SNT3L9yYjQgqwFL5Y83RXvUh5NqymikB7jJ1rgmDD7Bfe5Qh2Pehrr/RVaTPhzAtRur3evGdyX/zK7snouVZ/eT8Jim8zlQ6h/NiBFs2hkmdMrXmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729699278; c=relaxed/simple;
-	bh=Zb6Qmp1s5rtU9R/OULwvpV3AW/tgzdwsQY9D/IhK5/g=;
+	s=arc-20240116; t=1729699459; c=relaxed/simple;
+	bh=YpzpLk6dZic2l3yhT0+ePugdDCoFGouR91rC501Hs6Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lEU2IRDfsrN2PrY/k6MV6PL2PoQMGoS6wPtTPUg3JfuPySk7XD5uLiwiHDE7N2FCOYFSUtQ5oxoPoIn6aoUGNskDQHoWQStgnpB33dQc08gXnn90iFoITr9MJVCp2vUA07WbEM8NE85yhmCQsE629Ad8w6jld0kUY3kRzmCp8bE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LZiTuAjp; arc=none smtp.client-ip=209.85.210.180
+	 To:Cc:Content-Type; b=SLFKykacori0EbsKpDxZEleWq2nxKC/95NW+WiTgytf+WCsvJE2cza/9gkFE2rWZ6r2PmoIDmOaPv9kgS+ct/dzdh4BJEubdo9Qqjccqr6uNW0Ojw4FhbuQWQjmOoMCPa1Uw29n18PV8TYl8QM6T0cjA84aYV+8/MndoG6RY8NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Eb1II1cZ; arc=none smtp.client-ip=209.85.215.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-71e6d988ecfso5245579b3a.0;
-        Wed, 23 Oct 2024 09:01:16 -0700 (PDT)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7ea8c4ce232so5872103a12.0
+        for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 09:04:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729699276; x=1730304076; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729699456; x=1730304256; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Thf9+FJVtqcrW/LzNPkTd9jnrUR7l8xiajzVExqKU5o=;
-        b=LZiTuAjpb5F24ssIayOAsrBywrHIePIt3RGwY9e09H5Cw4qjAT4DuxrySb0ru4hIfH
-         t22OOfkKBBAEkcuPK0zPmxuOK8U8gcaDw4skpd7LfQ/T3DVfMDzCpMcL9dctJSr6PgfR
-         94MQ17Zl6AcNljD0vo8UCTHl4o0Vn0S48g49YSFVUQ9BSVIEm0w2zzJ/ShfUp6uiOCZ0
-         PAho6+Jnu8Kp9fdwYYWiOwkFdlw3anEwuMKEOrL37yi+G1HrhKLG6U/rU69yRFDSKODy
-         VwjDE4A3BPUUubWHPtPfqfVWjNY6rAQnmXWUDvwIzfyFftB8a5gJRn1FuWnJG+dI5jAl
-         +zNg==
+        bh=gA1TjFiONnRSSmOs06QSuY2W5YZG7YXSWDFGFZ2S3Cc=;
+        b=Eb1II1cZclmnGMFa0twIo9+wv+TYg1qlcsXuUB52ejOL24LYf+M8ajxyUhB6VfQhDC
+         emv4EpYDyiQXhqIz/A7MSyGczVsYMQXblQkC9yf88pNdR/wte1Fzr+3aLuwIiLZ9JZkF
+         BH9B9Yb96Hmlt/G5x5oCJXatpRRX2HBGl5LiZzmmL/6HFt8Z8aR1VL5qJBKm+vnZz01L
+         EM6ESPjJDZlZrBgbn2093sjLYviXDwJ85tM10xudd6LmvPJ3HkiYgx8DBkzlksptZyBO
+         vezvHAcXUIfFTU5cKsyAXdVP4Z9/p3EYit73gY3kI2EQnHhCGe8UjcLe+dd7jp/VMem2
+         4xUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729699276; x=1730304076;
+        d=1e100.net; s=20230601; t=1729699456; x=1730304256;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Thf9+FJVtqcrW/LzNPkTd9jnrUR7l8xiajzVExqKU5o=;
-        b=RHmVZPhyZJtzKTfNAtygQIPzFTILxPSrFObSPNs9mk2oDcEHF/jt16imQBxKDDyN6h
-         pSagIPvDlulnvPgTatZx23qzrekZVx0eiXWvA5P/FPBwUC/GYTtn9iBCEUyxMfCQkQET
-         YQiCWP+uP1ksmxsd9XlKgsBbyZ5HL9smDrX1SveqjtZsX7BqiBjLqZaqcCfHRPcBSu43
-         xbwDcx2C7M8OVjszTAhUdVIhfgSOAll0R2r6ZOC0MiJ54JAvAqDlesIsl+MLQAxLR8XI
-         p5vUEKQt4A/Ti8vPi99KtRO/g16rMrWU2ki5l84A5pG5fycj4MT/9m0QHmMpl2DjD0fu
-         2LPg==
-X-Forwarded-Encrypted: i=1; AJvYcCUJnBLJVBSewaUubmO63ssU5cUcGkSUoZUEMuyVJkLhzIwukYSGuLBUUKffgzMiqfyQKdpCflhKEg4qyr64AijxEw==@vger.kernel.org, AJvYcCULgAiE03zv9feGrGO/CzMKPXEpt/PTVU0DSY7yUv20kdYxmJSN8epu58uB0yv+owbQZ1Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxS7jn0eyM5weBGtgx6Xk7ctwLTNNPSJL+16jxue/jNb4tzpMro
-	fgJwfDfxkGh/qRK/zzXmlKiIorllOepkPMH869NKrZnc6MgJXhQfRCktQczBjNHeMD7XteT22YT
-	tWJdAoGZOOglxK1lWeLhWnW03Ba4=
-X-Google-Smtp-Source: AGHT+IGj88yTf8u1so/Bm0JJL5mtSOckI73dfUg5YoUx6+5qgg4+x5D0ZTss6eeTExL8vLWGgg0NlLJ2xEXVul63sOY=
-X-Received: by 2002:a05:6a00:148a:b0:71e:5f2c:c019 with SMTP id
- d2e1a72fcca58-72030a8a261mr4373559b3a.9.1729699275995; Wed, 23 Oct 2024
- 09:01:15 -0700 (PDT)
+        bh=gA1TjFiONnRSSmOs06QSuY2W5YZG7YXSWDFGFZ2S3Cc=;
+        b=f7iDKTa1GjZiZxSfj1BbXPCtUEt5ex2DePLeK7h6CbCiETyZUDp0RlY94CfoLK4W+i
+         MRFSiEhlUCJWU0+aCJRXk2Gf77ysq5q4Cj3xCs6hDYeajgZJEkZY4QLj0o/0TFyIKeP5
+         O6JjIT9IUanD6vQqo8Hv1u//bGs1yzynMIDFLuKxoeeKtmVpr0AzZjvJ8DylFl5bAxG5
+         plVj+mHj7hxbjq5Uu5mQFbQf4iHnmwTM0v32xcg2UJUZV64xh/F1b8t8AORCDiZZZBO4
+         x4tvZv0SyGfhrBRKVF8x3cBFl3K9OcrTPiPNhgOjrOZUpQFMHcIRDKnzqSOTkID7PKex
+         7bAw==
+X-Forwarded-Encrypted: i=1; AJvYcCXduMrOrnhNH/ABbRASw63tTPp/fKvXNaOObdyzilFF6592yhH6R8qmDtI7F337y3LEJ/4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxsGmDYkPkbnfVsjswsLtabnaiPia6Ap3FF6b0GUKthapGVtjbJ
+	LcoM6Og3HuDGaHK+7udrlWjDuCXPom2JMlUJm20BQPB5K7w8wJZd+0jQiYhq4DERz3M/xft6KS9
+	X/RBvJMHOsje/bhKGzRnwsrbEGPs=
+X-Google-Smtp-Source: AGHT+IEDbHD/QAuSR2Q+0Oy7cmUaVAMQCmgUHr14j3yrhDRBljyF+0nPb54YLLidwqaYfC0pkf68lEd2RUCjcVYgHtM=
+X-Received: by 2002:a05:6a20:d806:b0:1d9:21fb:d31c with SMTP id
+ adf61e73a8af0-1d978b328c1mr3350405637.24.1729699454609; Wed, 23 Oct 2024
+ 09:04:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241023100131.3400274-1-jolsa@kernel.org>
-In-Reply-To: <20241023100131.3400274-1-jolsa@kernel.org>
+References: <20240404002640.1774210-1-andrii@kernel.org> <20240404002640.1774210-3-andrii@kernel.org>
+ <jnasedlxo42dwibgynuwlccwql2ca7abdoz7ihnyccer3kdaj4@idpkucm7ohj5>
+In-Reply-To: <jnasedlxo42dwibgynuwlccwql2ca7abdoz7ihnyccer3kdaj4@idpkucm7ohj5>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 23 Oct 2024 09:01:02 -0700
-Message-ID: <CAEf4BzbZdaPaspRAVP7=UcfpFzR4qhksJTRiEwiZ9RDQtdg0bQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf,perf: Fix perf_event_detach_bpf_prog error handling
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Sean Young <sean@mess.org>, Peter Zijlstra <peterz@infradead.org>, 
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>
+Date: Wed, 23 Oct 2024 09:04:02 -0700
+Message-ID: <CAEf4BzYJ+GZpoJ4aMCM09T8Zzrvq05kHrv=xS9NxL5smbqYPrg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/2] bpf: inline bpf_get_branch_snapshot() helper
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com, 
+	John Fastabend <john.fastabend@gmail.com>, Yonghong Song <yonghong.song@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 23, 2024 at 3:01=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Oct 23, 2024 at 1:29=E2=80=AFAM Shung-Hsi Yu <shung-hsi.yu@suse.com=
+> wrote:
 >
-> Peter reported that perf_event_detach_bpf_prog might skip to release
-> the bpf program for -ENOENT error from bpf_prog_array_copy.
+> Hi Andrii,
 >
-> This can't happen because bpf program is stored in perf event and is
-> detached and released only when perf event is freed.
+> I was looking around in do_misc_fixups() and came across this
 >
-> Let's make it obvious and add WARN_ON_ONCE on the -ENOENT check and
-> make sure the bpf program is released in any case.
+> ...
+> > +                     new_prog =3D bpf_patch_insn_data(env, i + delta, =
+insn_buf, cnt);
+> > +                     if (!new_prog)
+> > +                             return -ENOMEM;
+> > +
+> > +                     delta    +=3D cnt - 1;
+> > +                     env->prog =3D prog =3D new_prog;
+> > +                     insn      =3D new_prog->insnsi + i + delta;
+> > +                     continue;
 >
-> Cc: Sean Young <sean@mess.org>
-> Fixes: 170a7e3ea070 ("bpf: bpf_prog_array_copy() should return -ENOENT if=
- exclude_prog not found")
-> Closes: https://lore.kernel.org/lkml/20241022111638.GC16066@noisy.program=
-ming.kicks-ass.net/
-> Reported-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  kernel/trace/bpf_trace.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> Should the above be turned into "goto next_insn" like the others that
+> were touched by commit 011832b97b31 "bpf: Introduce may_goto
+> instruction"?
 >
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 95b6b3b16bac..2c064ba7b0bd 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -2216,8 +2216,8 @@ void perf_event_detach_bpf_prog(struct perf_event *=
-event)
->
->         old_array =3D bpf_event_rcu_dereference(event->tp_event->prog_arr=
-ay);
->         ret =3D bpf_prog_array_copy(old_array, event->prog, NULL, 0, &new=
-_array);
-> -       if (ret =3D=3D -ENOENT)
-> -               goto unlock;
-> +       if (WARN_ON_ONCE(ret =3D=3D -ENOENT))
-> +               goto put;
->         if (ret < 0) {
->                 bpf_prog_array_delete_safe(old_array, event->prog);
 
-seeing
+Yep, seems so, thanks for catching. I'll send a fix.
 
-if (ret < 0)
-    bpf_prog_array_delete_safe(old_array, event->prog);
-
-I think neither ret =3D=3D -ENOENT nor WARN_ON_ONCE is necessary,  tbh. So
-now I feel like just dropping WARN_ON_ONCE() is better.
-
->         } else {
-> @@ -2225,6 +2225,7 @@ void perf_event_detach_bpf_prog(struct perf_event *=
-event)
->                 bpf_prog_array_free_sleepable(old_array);
->         }
->
-> +put:
->         bpf_prog_put(event->prog);
->         event->prog =3D NULL;
->
-> --
-> 2.46.2
->
+> > +             }
+> > +
+> >               /* Implement bpf_kptr_xchg inline */
+> >               if (prog->jit_requested && BITS_PER_LONG =3D=3D 64 &&
+> >                   insn->imm =3D=3D BPF_FUNC_kptr_xchg &&
 
