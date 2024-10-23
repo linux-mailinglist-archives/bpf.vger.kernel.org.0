@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-42961-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E8909AD6D1
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 23:40:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F4169AD6F1
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 23:50:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B36521F236D2
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 21:40:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0952A285752
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 21:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D3A01F5848;
-	Wed, 23 Oct 2024 21:40:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE741E32D9;
+	Wed, 23 Oct 2024 21:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lvmneGLJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vb3M2qbo"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6EDCE56A;
-	Wed, 23 Oct 2024 21:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90A0F22615;
+	Wed, 23 Oct 2024 21:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729719621; cv=none; b=UjfkubgSli+OCjMVnlJ5dFZtJqoPLiQWRi7hMInqPoETC+TuMWoEYhMfw/w2t+xl8Q1aLhKFTI07966pw5DNCghmTq0lfKdDI591NEEsqEL9pTWxW4Lxy09xawTsgsn4h4+Qlf3hDeab/291lk9Q3BEBIUz2P74TIc6k5QIOiuc=
+	t=1729720224; cv=none; b=m7GBZxK85PMN+C6DZsFUGqINXkdq4/HBTthaLDWFV7Na5/RSLEIuhG5ZWoWqVkJtSrqpRXCDte2r4P+kjcn55Xo3Ip6D2rrhBSvVaExHXAt/ivdUkx2xg41RdSzjU+aASZYGQoY57pReU78tPG7UpHJvhuUJvvKutcRPsUFZmv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729719621; c=relaxed/simple;
-	bh=jKy5wynMTGLDO4QbtaNOIV9J+dPC4QzcKbiyxcc8OAQ=;
+	s=arc-20240116; t=1729720224; c=relaxed/simple;
+	bh=zoHXjjYUvGkMGGOjaB7+mV9MJeemvFfXronJM1vZNWU=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=iqvgcmYmwmE0VFS3+BdsU/q2tuoCNSyXCTqUEQyjzZuQFjueOdoR8pYGbQm/ZzdiCozT1tkNeJ05A2pvBlLzySqHoc4grpQvIUdsa1Jwe1uUpYwFU6rOyBmdTPWKeb3Ru/4LvFxuXOTBYe82JfUXAawhU0rtTGN6+KihrhE3j6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lvmneGLJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 489CEC4CEC6;
-	Wed, 23 Oct 2024 21:40:20 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=IsNZIYKyp50Aw1cJnCzhOpJ4nUUG7YtLV9i67/Z5VVmtr28K7fNkJ+v/noU2lUuKBEGgU6FiQpoltSdDJpTFDa1peUsMYQJYPkpUMLa1taW/PMXl7oz/d2ZhMjoTQ2zPCcX+UkOsiWzIDuFrBL9qANqEKk4O+I+w86Kbful0xlo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vb3M2qbo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B56FC4CEC6;
+	Wed, 23 Oct 2024 21:50:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729719620;
-	bh=jKy5wynMTGLDO4QbtaNOIV9J+dPC4QzcKbiyxcc8OAQ=;
+	s=k20201202; t=1729720224;
+	bh=zoHXjjYUvGkMGGOjaB7+mV9MJeemvFfXronJM1vZNWU=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=lvmneGLJaJAhIpfhm3WrgR7wSBK+DGY2fMzLotIqa8qUxvclbXNsue7Ij/RSiS6J2
-	 atOSF1wEnMRs4j4CdSJTAlikj5onoe5cSRWJ4tZsc+U+iY8FhkIuN+rFMygzh9c5vN
-	 zyozdl7jWwgfllWumgD//Fp80P0NGUlHnvfpAKWcWwiyG1otuiNk1vx22wkI+qg5cz
-	 YrcsHn9pJkdlroq3jdgGLeNx/1Lk0HFOTQYkpLhoO4zKuft3+LXhWrb23TvO1LOXFL
-	 /lfJ+FoFA/Cbf6acSeg/pMTl7EJOQkIy2fuTag5RqS09i+y84UrYVI6JyPGVX5l+Zy
-	 dU2DCLkHkqn5g==
+	b=Vb3M2qboODOUPM4iq7HYh2agb5iOYhyqdZaWQuCc57r+4FVzIkhnqM6qGwH85wqRJ
+	 F4VjPdgDLLxuaFeowwTmLQ7eIf6CRcrMwPj3obTCEut8uwYsnq3CsuZXTdX/pZxCC4
+	 n2Mr7KfeazJNenbf1hzQdz22fRNVEMRNZQ4nElPVrOtJszGYSQg4cOjuZhoJRTKtmJ
+	 LsnF4EHMjuYEEjFsNt+SI3dpCC62rbc446NIgT9c7ZPkyCzpCyks8gP/GESN0hN6aH
+	 /U68yyHlaphdLw2d48Ar62HCddolnwtSHHZH/VibC8a0ytLbNkx1ZA+QdSrk4ZtgKy
+	 T1U+QaIVYb2Eg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EBAE23809A8A;
-	Wed, 23 Oct 2024 21:40:27 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADD8C3809A8A;
+	Wed, 23 Oct 2024 21:50:31 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,39 +52,46 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCHv2 bpf] bpf,perf: Fix perf_event_detach_bpf_prog error handling
+Subject: Re: [PATCH v2 0/3] Fix -Wmaybe-uninitialized warnings/errors
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <172971962677.1732914.2511360924070038542.git-patchwork-notify@kernel.org>
-Date: Wed, 23 Oct 2024 21:40:26 +0000
-References: <20241023200352.3488610-1-jolsa@kernel.org>
-In-Reply-To: <20241023200352.3488610-1-jolsa@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, sean@mess.org,
- peterz@infradead.org, bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
- kafai@fb.com, songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
- kpsingh@chromium.org, sdf@fomichev.me, haoluo@google.com
+ <172972023053.1735140.3189800590749495169.git-patchwork-notify@kernel.org>
+Date: Wed, 23 Oct 2024 21:50:30 +0000
+References: <20241022172329.3871958-1-ezulian@redhat.com>
+In-Reply-To: <20241022172329.3871958-1-ezulian@redhat.com>
+To: Eder Zulian <ezulian@redhat.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, acme@redhat.com, vmalik@redhat.com,
+ williams@redhat.com
 
 Hello:
 
-This patch was applied to bpf/bpf.git (master)
+This series was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Wed, 23 Oct 2024 22:03:52 +0200 you wrote:
-> Peter reported that perf_event_detach_bpf_prog might skip to release
-> the bpf program for -ENOENT error from bpf_prog_array_copy.
+On Tue, 22 Oct 2024 19:23:26 +0200 you wrote:
+> Hello!
 > 
-> This can't happen because bpf program is stored in perf event and is
-> detached and released only when perf event is freed.
-> 
-> Let's drop the -ENOENT check and make sure the bpf program is released
-> in any case.
+> This v2 series initializes the variables 'set' and 'set8' in sets_patch to
+> NULL, along with the variables 'new_off' and 'pad_bits' and 'pad_type' in
+> btf_dump_emit_bit_padding to zero or NULL according to their types and the
+> variable 'o' in options__order to NULL to prevent compiler warnings/errors
+> which are observed when compiling with non-default compilation options, but
+> are not emitted by the compiler with the current default compilation
+> options.
 > 
 > [...]
 
 Here is the summary with links:
-  - [PATCHv2,bpf] bpf,perf: Fix perf_event_detach_bpf_prog error handling
-    https://git.kernel.org/bpf/bpf/c/0ee288e69d03
+  - [v2,1/3] resolve_btfids: Fix compiler warnings
+    https://git.kernel.org/bpf/bpf-next/c/2c3d022abe6c
+  - [v2,2/3] libbpf: Prevent compiler warnings/errors
+    https://git.kernel.org/bpf/bpf-next/c/7f4ec77f3fee
+  - [v2,3/3] libsubcmd: Silence compiler warning
+    https://git.kernel.org/bpf/bpf-next/c/7a4ffec9fd54
 
 You are awesome, thank you!
 -- 
