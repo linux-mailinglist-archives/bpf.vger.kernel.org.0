@@ -1,120 +1,175 @@
-Return-Path: <bpf+bounces-42965-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42966-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDA769AD852
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 01:08:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61AD79AD865
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 01:24:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 045841F2263B
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 23:08:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D776B228DF
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 23:24:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9C41FDFA1;
-	Wed, 23 Oct 2024 23:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C25C41FF7DC;
+	Wed, 23 Oct 2024 23:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UU6pxzv2"
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="3MzUIK6V"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED2E1990C4
-	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 23:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+Received: from submarine.notk.org (submarine.notk.org [62.210.214.84])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EAE21FF7AE;
+	Wed, 23 Oct 2024 23:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.210.214.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729724884; cv=none; b=nPE+dvZt1Awxq5JNwUr4piaP8b3dm1HrF2peYaKxFimWPyW3kVfoAOTs+4xFuYUron/Zn0S44ejbaDdKIt8kJd0DXVmWEXISHpzJ8lIvEjEwKq8JvjNP8kL3Gvt6QXMPi+Gxxvbe7tNOQ9Wt3+p5KSAX9tWV+pjWWY+69xCcBFs=
+	t=1729725862; cv=none; b=VyuuQvMLHCmZh/5Uj71ay71K70c7RFlzNg12kTKT58S3juQAuwy7rsgAIZoqmZxJwQKHcH4q4axPXGMS7fhJ0yXMRQ8sJlRLJvNcz77rdV+AtePvmYWqf48Z+GtCwNRXO5EyDRqSqydpltoYuoFDRwki3QwEqZbXL8uTQs5zc9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729724884; c=relaxed/simple;
-	bh=DzLE49ibICaABEhYDoi/xSKlJ5ilVQo4WJVvQV6PN40=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pRgz6zRGW4eKFT11qJ+XcfPfKi3EoJ0+B7UNq5jfXrkfakSYyn0kMreVASsVEPI8X+vRayBWL5ZY+ZAzpgWOEAFKrNX2JeSOA8E+bkjOP6mZfg5sO+4dYjTv1oXBFZpn+f8+Ks4/5kV1tye2bQnL5fRrGUYPakjnL/xcJEhXfuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UU6pxzv2; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-431481433bdso2624445e9.3
-        for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 16:08:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729724881; x=1730329681; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DzLE49ibICaABEhYDoi/xSKlJ5ilVQo4WJVvQV6PN40=;
-        b=UU6pxzv2uGTJ5tPXQlZ+02H+1z/btnRfawITrP0+EdioP+DMed0bfCysoZgq6id3Vj
-         E1rbtqU2VWQsS98Z07cgfR5CpjybWTQrXWE8Cd7gy5O/xum1IkPSxcYG2hjMLH59Ao98
-         8eLomiSE4io8+Q1tuoN1AHnUn15GqlavwNXVZeRuhrM1PJ21Zr38i9gpefjICF9E30Eo
-         DzvubCpyS7a7Ly0i7dZAI5KNQPXuO0UBMyP7ubbWOo4WZX0KWzGPOtoOcqdmsxomP9Xs
-         X72HXJzFtyUjqpIPWW6L1oDenCcGCwndNWskkhJTKkojCBIlB/5JZF+Y/s4r8DR8cmC0
-         WzPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729724881; x=1730329681;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DzLE49ibICaABEhYDoi/xSKlJ5ilVQo4WJVvQV6PN40=;
-        b=C8Dmzw4YQBabPu0K0B7ylcer7Q1Fc88BEBnVmtnp3Cw17zUxiufCenFwITVP8/4Xi6
-         XQDRY10NTqBLMHRaPnDC2A2K5L4yGKhOFdrW/Bz5/1AvCFod1kfMStW7oBkuQ7hiMbe8
-         oMw60B+lN6wYculpMJUoZZP1DtfbxnWr/6e+BthnvuxocPURWgD2QvrI9oj/RqpFXiOR
-         pH4UbX2aOsrCGF/q62iPDXlCu9bBFqtTY4d81ArY/cE2E1FllM3EtUJHq05yn+cZQO3V
-         b2fd02zCezsqj1CyKm+mKVX8hVuDACsqO7A8LMFxOuks22sdyCdKKLph1IZXdDqA3oJ5
-         VKug==
-X-Forwarded-Encrypted: i=1; AJvYcCX3rU2TrWLuaiezUhRa5C0Rv5Bg9ZQwnAYa+4O2UrZq2m4oUn9Bz6rPGCaERG0u7MqmfHc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwoC/JHjIv/eQMk20ENbd581g+YxLDHC8xDuFl/zsMHYIePnhKk
-	rFzN1RooUD+PU0VATwH+p3fTEsvu1TarwV0I4dMRzP5mRqDPonQv9pAqFTi1ZedErEZKZtq3bAw
-	m+7wwClN8hKEvQCmFAJvMmCOH8n0=
-X-Google-Smtp-Source: AGHT+IEqflbTjP6KCIgdVwN9KAx3/xfD/N6qYtIAfo+2AXhjFOg68lICkt/n+oXQKA92J1lJkSEXXhCIaDBQNbpbHaU=
-X-Received: by 2002:a05:600c:1d1c:b0:42c:b187:bde9 with SMTP id
- 5b1f17b1804b1-431841b2026mr33234965e9.30.1729724880571; Wed, 23 Oct 2024
- 16:08:00 -0700 (PDT)
+	s=arc-20240116; t=1729725862; c=relaxed/simple;
+	bh=n+FFpXv4PJFw+9a/Ezyh5AocFqAzwBRGyQcwXWz5jBU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oQm52+CUHWKSqq4yrisJWwMngYnPqvp8LfI1LHlI6rfBGNC0LwWG6bjMe9aN4mzBeugGUmOwIPHwL3FRadFW+QmM7tZjCk0J2KzMzM2uFOAc4AYcTswuILy1nQfprdui5ZyebsvMqaQUcN3y1kju1Xmemidx/qMPwbrih/a4+nE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=3MzUIK6V; arc=none smtp.client-ip=62.210.214.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: from gaia.codewreck.org (localhost [127.0.0.1])
+	by submarine.notk.org (Postfix) with ESMTPS id 1566E14C1E1;
+	Thu, 24 Oct 2024 01:24:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org;
+	s=2; t=1729725850;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uq4pgfK90LTAqbpoUp/Bzs/qyX4xLUiGN0J61hu/6cw=;
+	b=3MzUIK6VCbNBeTYCdYVdRvsWmdsRr1ZvZDNLTZyfXjoiIMgTVd7XXIbNa25DxcVmCrGIIw
+	7YWFC5Mbm6cm8MRoGvfnfDwraSvAWoePCkNNfJcmclcNjphRiAeCtAYALXWxAqDEt+zLHB
+	cvvSAv6JwOGVZvjhChlE4zaLHzNXISi/jc/nxMD/R+FioG+OGFHmAin+YQoTdZKDrJr0O+
+	p1MUbVMcIfDpLovxe92+8UAMyCPmz301B07kMQ2WWAemE1MMLCfMi/l7cZsMA6QSN5cHgk
+	+5rXylelAoZONZXT5/ENmOxvBQMQ6P3yTd0Kj3UebsU8IfYyzXCd2MPGpYR+Sw==
+Received: from localhost (gaia.codewreck.org [local])
+	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id 0e53634f;
+	Wed, 23 Oct 2024 23:24:05 +0000 (UTC)
+Date: Thu, 24 Oct 2024 08:23:50 +0900
+From: Dominique Martinet <asmadeus@codewreck.org>
+To: David Howells <dhowells@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: ericvh@kernel.org, linux-kernel@vger.kernel.org,
+	linux_oss@crudebyte.com, pedro.falcato@gmail.com,
+	regressions@leemhuis.info, torvalds@linux-foundation.org,
+	v9fs@lists.linux.dev, bpf@vger.kernel.org
+Subject: Re: [GIT PULL] 9p fixes for 6.12-rc4
+Message-ID: <ZxmFhiAL-ImjKe7Y@codewreck.org>
+References: <ZxL0kMXLDng3Kw_V@codewreck.org>
+ <20241023165606.3051029-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241020191341.2104841-1-yonghong.song@linux.dev>
- <20241020191400.2105605-1-yonghong.song@linux.dev> <CAADnVQ+o35Gf3nmNQLob9PHXj5ojQvKd64MaK+RBJUEOAW1akQ@mail.gmail.com>
- <b280e12b-b4e8-4019-ad29-23808d360aee@linux.dev> <CAADnVQLEy+VXVeP96DK=U8wTL7Yj_=bTuxz5FBcVgDT346-2qA@mail.gmail.com>
- <ZxlkA7AiHJkG8r9M@slm.duckdns.org>
-In-Reply-To: <ZxlkA7AiHJkG8r9M@slm.duckdns.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 23 Oct 2024 16:07:49 -0700
-Message-ID: <CAADnVQJLmBuzMJAp5h-QAcO1zvbuBUkprib3HZ7nUAfTeHGAug@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 3/9] bpf: Support private stack for struct ops programs
-To: Tejun Heo <tj@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yonghong.song@linux.dev>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241023165606.3051029-1-andrii@kernel.org>
 
-On Wed, Oct 23, 2024 at 2:00=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Tue, Oct 22, 2024 at 01:19:58PM -0700, Alexei Starovoitov wrote:
-> > > The __nullable argument tagging request was originally from sched_ext=
- but I also
-> > > don't see its usage in-tree for now.
+Adding David/Willy to recpients as I'm not 100% up to date on folios
+
+Andrii Nakryiko wrote on Wed, Oct 23, 2024 at 09:56:06AM -0700:
+> > The following changes since commit 98f7e32f20d28ec452afb208f9cffc08448a2652:
 > >
-> > ok. Let's sync up with Tejun whether they have plans to use it.
->
-> Yeah, in sched_ext_ops.dispatch(s32 cpu, struct task_struct *prev), @prev
-> can be NULL and right now if a BPF scheduler derefs without checking for
-> NULL, it can trigger kernel crash, I think, so it needs __nullable taggin=
-g.
+> >   Linux 6.11 (2024-09-15 16:57:56 +0200)
+> >
+> > are available in the Git repository at:
+> > 
+> >   https://github.com/martinetd/linux tags/9p-for-6.12-rc4
+> > 
+> > for you to fetch changes up to 79efebae4afc2221fa814c3cae001bede66ab259:
+> >
+> >   9p: Avoid creating multiple slab caches with the same name (2024-09-23 05:51:27 +0900)
+> >
+> > ----------------------------------------------------------------
+> > Mashed-up update that I sat on too long:
+> > 
+> > - fix for multiple slabs created with the same name
+> > - enable multipage folios
+> > - theorical fix to also look for opened fids by inode if none
+> > was found by dentry
+> > 
+> > ----------------------------------------------------------------
+> > David Howells (1):
+> >      9p: Enable multipage folios
+> 
+> Are there any known implications of this change on madvise()'s MADV_PAGEOUT
+> behavior? After most recent pull from Linus's tree, one of BPF selftests
+> started failing. Bisection points to:
+> 
+>   9197b73fd7bb ("Merge tag '9p-for-6.12-rc4' of https://github.com/martinetd/linux")
+> 
+> ... which is just an empty merge commit. So the "9p: Enable multipage folios"
+> by itself doesn't cause any regression, but when merged with the rest of the
+> code it does. I confirmed by reverting
+> 1325e4a91a40 ("9p: Enable multipage folios"), after which the test in question
+> is succeeding again.
 
-I see. The following should do it:
-diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 3cd7c50a51c5..82bef41d7eae 100644
---- a/kernel/sched/ext.c
-+++ b/kernel/sched/ext.c
-@@ -5492,7 +5492,7 @@ static int bpf_scx_validate(void *kdata)
- static s32 select_cpu_stub(struct task_struct *p, s32 prev_cpu, u64
-wake_flags) { return -EINVAL; }
- static void enqueue_stub(struct task_struct *p, u64 enq_flags) {}
- static void dequeue_stub(struct task_struct *p, u64 enq_flags) {}
--static void dispatch_stub(s32 prev_cpu, struct task_struct *p) {}
-+static void dispatch_stub(s32 prev_cpu, struct task_struct *p__nullable) {=
-}
+(looks like 3c217a182018 ("selftests/bpf: add build ID tests") wasn't in
+yet on the 9p multipage folios commit)
+
+> The test in question itself is a bit involved, but what it ultimately tries to
+> do is to ensure that part of ELF file containing build ID is paged out to cause
+> BPF helper to fail to retrieve said build ID (due to non-faulable context).
+> 
+> For that, we use the following sequence in target binary and process:
+> 
+> madvise(addr, page_sz, MADV_POPULATE_READ);
+> madvise(addr, page_sz, MADV_PAGEOUT);
+> 
+> First making sure page is paged in, then paged out. We make sure that build ID
+> is memory mapped in a separate segment with its own single-page memory mapping.
+> No changes or regressions there. No huge pages seem to be involved.
+
+That's probably obvious but I guess the selftest runs the binary
+directly from a 9p mount?
+
+> It used to work reliably, now it doesn't work. Any clue why or what should we
+> do differently to make sure that memory page with build ID information is not
+> paged in (reliably)?
+
+Unless David/Willy has a solution immediately I'd say let's take the time to
+sort this out and revert that commit for now -- I'll send a revert patch
+immediately and submit it to Linus on Saturday.
+
+Conceptually I guess something is broken with MADV_PAGEOUT on >1 page
+folio, perhaps it's only evicting folios if the whole folio is in range
+but it should evict any folio that touches the range or something?
+
+Sorry I don't have time to dig further here, hopefully that's not too
+difficult to handle and we can try again in rc1 proper of another cycle,
+I shouldn't have sent that this late.
+
+
+(leaving full text below for new recipients)
+> Thanks!
+> 
+> P.S. The target binary and madvise() manipulations are at:
+> 
+>   tools/testing/selftests/bpf/uprobe_multi.c, see trigger_uprobe()
+> The test itself in BPF selftest is at:
+> 
+>   tools/testing/selftests/bpf/prog_tests/build_id.c, see subtest_nofault(),
+>   build_id_resident is false in this case.
+> 
+> >
+> > Dominique Martinet (1):
+> >       9p: v9fs_fid_find: also lookup by inode if not found dentry
+> > 
+> > Pedro Falcato (1):
+> >       9p: Avoid creating multiple slab caches with the same name
+> > 
+> >  fs/9p/fid.c       |  5 ++---
+> >  fs/9p/vfs_inode.c |  1 +
+> >  net/9p/client.c   | 10 +++++++++-
+> >  3 files changed, 12 insertions(+), 4 deletions(-)
+> > 
+> 
+
+Thanks,
+-- 
+Dominique Martinet | Asmadeus
 
