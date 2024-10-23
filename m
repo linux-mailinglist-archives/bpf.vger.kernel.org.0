@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-42968-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42969-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1E0C9AD899
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 01:48:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C91A9AD89A
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 01:48:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 274AD2841C8
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 23:48:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 585631C21DF9
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 23:48:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2501A7265;
-	Wed, 23 Oct 2024 23:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB791E0087;
+	Wed, 23 Oct 2024 23:48:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UowA++Vs"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="g71PZvDv"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31EBA19F43B
-	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 23:48:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA5F16F8E5
+	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 23:48:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729727308; cv=none; b=e7IP8GEJ5/vmcHkxOr6ywz0Hf7H6p/nnaXzL+wZX9cVqkMDWCFQUe0qwxnmwIa0rYRZQWEOIhDTXtH0uLWLMcBTleFMzkN9a1ZVM55mcKq0s1GpDjC2mOW42mqFpsae4aZ6E6BcLPDppn3jFQYH1V9UnkjxRNz7XDYgzV2ss4XY=
+	t=1729727310; cv=none; b=ItS7Bkq40FkaPkk7F7zqFhg12xO2PcxhydN5cmTuG7cV3PcrVrc0JCDt0P4aJ7/kp1I+xQmYrq7i/VcbFHgp656qA4sdQe83uRHq2MR5raECOE1np+y7hmSvuRWpnnBYRKc5593mEySwFS87ZRiKFKbzT/aCb1wQOFeA8hjazN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729727308; c=relaxed/simple;
-	bh=43jGlvJEWYx4MNrKsSkFAljdsNf/e6Fh2yt+c+PoUow=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tk67dZvlOZzlw3UCjh29OSG3oPYk15kkFpVNvNc1KS6HqR4Mv0s+mDAue8Vl1VEL5SMgiwJ97CM7UFPs8vIKiF5kgTPKz6OprnRw9YNjac25z38c3lmm3DHlmBlqFGCKUxLjC9K/ZaXbNxi90vfiNplY/MwWUz1USDFL9X5bCNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UowA++Vs; arc=none smtp.client-ip=91.218.175.177
+	s=arc-20240116; t=1729727310; c=relaxed/simple;
+	bh=mE/FQsw7vymRTAgAEGdl5ITZUAsTIVb9ZQSSOEPdkqg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LfG5h5+SKAq+Fg/N4KKiYOfJCDUNTrqJHeRhdqPSc5CwwA/9C1JbhfmXF+SPAb4z9Pct1E2sAcdhVP4auRR+V+lPnYH5hn+6gc0jGBA9dFYFVcVbooLFVEQrveIWxtC/hWcJhadZZNG8IDU85vflQxPqfBCYBb6iEl9hTPi7VoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=g71PZvDv; arc=none smtp.client-ip=91.218.175.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729727302;
+	t=1729727305;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=F4XbLdez416VM0dNBGezeehupchvQbkTZdjkI4ccTo0=;
-	b=UowA++Vs+1Df+ouaaiOh08pgrI4OCH0ciFbMGn9HfAB0Or1Ugo9KKSMcCSyOAzNi2Eabh+
-	EumUKyWYrCWX70ftnpEwiqyw11B+x6Dhlpi0OwG4krigdA63rj5dVoVwnBpkM8kFLFZULA
-	K5fPNhmc4+xD3rIcCD9PUTpXLXgF3lc=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GFXm9WwpG4iTbvDlsltoBwLGwMTqlbzQj+A8937FPA0=;
+	b=g71PZvDvM9YKCb+22qsSGvNZwX9ovd3cXqsxGai5LLPdX58knse2DESLcK+M5odZ5otBQ4
+	/01PRL1YxdlKowYz7+0CGmI2GZHyjksUGdJRu1CLYyDOQVMMubgUxuBU3s5Q2QNLulqbed
+	C0jiCS9O8zGddQAfyh8YGBQHxB5IwgA=
 From: Martin KaFai Lau <martin.lau@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -47,9 +49,11 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Kui-Feng Lee <thinker.li@gmail.com>,
 	kernel-team@meta.com
-Subject: [PATCH v6 bpf-next 00/12] Share user memory to BPF program through task storage map
-Date: Wed, 23 Oct 2024 16:47:47 -0700
-Message-ID: <20241023234759.860539-1-martin.lau@linux.dev>
+Subject: [PATCH v6 bpf-next 01/12] bpf: Support __uptr type tag in BTF
+Date: Wed, 23 Oct 2024 16:47:48 -0700
+Message-ID: <20241023234759.860539-2-martin.lau@linux.dev>
+In-Reply-To: <20241023234759.860539-1-martin.lau@linux.dev>
+References: <20241023234759.860539-1-martin.lau@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,169 +64,200 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+From: Kui-Feng Lee <thinker.li@gmail.com>
 
-It is the v6 of this series. Starting from v5, it is a continuation work
-of the RFC v4.
+This patch introduces the "__uptr" type tag to BTF. It is to define
+a pointer pointing to the user space memory. This patch adds BTF
+logic to pass the "__uptr" type tag.
 
-Changes in v6:
-1. In patch 1, reject t->size == 0 in btf_check_and_fixup_fields.
-   Reject a uptr pointing to an empty struct.
+btf_find_kptr() is reused for the "__uptr" tag. The "__uptr" will only
+be supported in the map_value of the task storage map. However,
+btf_parse_struct_meta() also uses btf_find_kptr() but it is not
+interested in "__uptr". This patch adds a "field_mask" argument
+to btf_find_kptr() which will return BTF_FIELD_IGNORE if the
+caller is not interested in a “__uptr” field.
 
-   A test is added to patch 12 to test this case.
+btf_parse_kptr() is also reused to parse the uptr.
+The btf_check_and_fixup_fields() is changed to do extra
+checks on the uptr to ensure that its struct size is not larger
+than PAGE_SIZE. It is not clear how a uptr pointing to a CO-RE
+supported kernel struct will be used, so it is also not allowed now.
 
-2. In patch 6, when checking if the uptr struct spans across
-   pages, there was an off by one error in calculating the "end" such
-   that the uptr will be rejected by error if the object is located
-   exactly at the end of a page.
-
-   This is fixed by adding t->size "- 1" to "start".
-
-   A test is added to patch 9 to test this case.
-
-3. In patch 6, check for PageHighMem(page) and return -EOPNOTSUPP.
-   The 32 bit arch jit is missing other crucial bpf features (e.g. kfunc).
-   Patch 6 commit message has been updated to include this change.
-
-4. The selftests are cleaned up such that  "struct user_data *dummy_data"
-   global ptr is used instead of the whole "struct user_data  dummy_data"
-   object. Still a hack to avoid generating fwd btf type for the
-   uptr struct but somewhat lighter than a full blown global object.
-	      
-Changes in v5:
-1. The original patch 1 and patch 2 are combined.
-2. Patch 3, 4, and 5 are new. They get the bpf_local_storage
-   ready to handle the __uptr in the map_value.
-3. Patch 6 is mostly new, so I reset the sob.
-4. There are some changes in the carry over patch 1 and 2 also. They
-   are mentioned at the individual patch.
-5. More tests are added.
-
-The following is the original cover letter and the earlier change log.
-The bpf prog example has been removed. Please find a similar
-example in the selftests task_ls_uptr.c.
-
-~~~~~~~~
-
-Some of BPF schedulers (sched_ext) need hints from user programs to do
-a better job. For example, a scheduler can handle a task in a
-different way if it knows a task is doing GC. So, we need an efficient
-way to share the information between user programs and BPF
-programs. Sharing memory between user programs and BPF programs is
-what this patchset does.
-
-== REQUIREMENT ==
-
-This patchset enables every task in every process to share a small
-chunk of memory of it's own with a BPF scheduler. So, they can update
-the hints without expensive overhead of syscalls. It also wants every
-task sees only the data/memory belong to the task/or the task's
-process.
-
-== DESIGN ==
-
-This patchset enables BPF prorams to embed __uptr; uptr in the values
-of task storage maps. A uptr field can only be set by user programs by
-updating map element value through a syscall. A uptr points to a block
-of memory allocated by the user program updating the element
-value. The memory will be pinned to ensure it staying in the core
-memory and to avoid a page fault when the BPF program accesses it.
-
-Please see the selftests task_ls_uptr.c for an example.
-
-== MEMORY ==
-
-In order to use memory efficiently, we don't want to pin a large
-number of pages. To archieve that, user programs should collect the
-memory blocks pointed by uptrs together to share memory pages if
-possible. It avoid the situation that pin one page for each thread in
-a process.  Instead, we can have several threads pointing their uptrs
-to the same page but with different offsets.
-
-Although it is not necessary, avoiding the memory pointed by an uptr
-crossing the boundary of a page can prevent an additional mapping in
-the kernel address space.
-
-== RESTRICT ==
-
-The memory pointed by a uptr should reside in one memory
-page. Crossing multi-pages is not supported at the moment.
-
-Only task storage map have been supported at the moment.
-
-The values of uptrs can only be updated by user programs through
-syscalls.
-
-bpf_map_lookup_elem() from userspace returns zeroed values for uptrs
-to prevent leaking information of the kernel.
-
+Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
+Changes in v5:
+  - A field_mask arg is added to btf_find_kptr
+  - Some uptr enforcement is added to btf_check_and_fixup_fields()
+  - The "case MAP_UPTR:" addition to bpf_obj_init_field()
+    is moved to the later patch together with other bpf_obj_*()
+    changes when BPF_UPTR is finally enabled in task storage map.
 
-Changes from v3:
+ include/linux/bpf.h  |  5 +++++
+ kernel/bpf/btf.c     | 34 +++++++++++++++++++++++++++++-----
+ kernel/bpf/syscall.c |  2 ++
+ 3 files changed, 36 insertions(+), 5 deletions(-)
 
- - Merge part 4 and 5 as the new part 4 in order to cease the warning
-    of unused functions from CI.
-
-Changes from v1:
-
- - Rename BPF_KPTR_USER to BPF_UPTR.
-
- - Restrict uptr to one page.
-
- - Mark uptr with PTR_TO_MEM | PTR_MAY_BE_NULL and with the size of
-    the target type.
-
- - Move uptr away from bpf_obj_memcpy() by introducing
-    bpf_obj_uptrcpy() and copy_map_uptr_locked().
-
- - Remove the BPF_FROM_USER flag.
-
- - Align the meory pointed by an uptr in the test case. Remove the
-    uptr of mmapped memory.
-
-Kui-Feng Lee (4):
-  bpf: Support __uptr type tag in BTF
-  bpf: Handle BPF_UPTR in verifier
-  libbpf: define __uptr.
-  selftests/bpf: Some basic __uptr tests
-
-Martin KaFai Lau (8):
-  bpf: Add "bool swap_uptrs" arg to bpf_local_storage_update() and
-    bpf_selem_alloc()
-  bpf: Postpone bpf_selem_free() in bpf_selem_unlink_storage_nolock()
-  bpf: Postpone bpf_obj_free_fields to the rcu callback
-  bpf: Add uptr support in the map_value of the task local storage.
-  selftests/bpf: Test a uptr struct spanning across pages.
-  selftests/bpf: Add update_elem failure test for task storage uptr
-  selftests/bpf: Add uptr failure verifier tests
-  selftests/bpf: Create task_local_storage map with invalid uptr's
-    struct
-
- include/linux/bpf.h                           |  25 ++
- include/linux/bpf_local_storage.h             |  12 +-
- kernel/bpf/bpf_cgrp_storage.c                 |   4 +-
- kernel/bpf/bpf_inode_storage.c                |   4 +-
- kernel/bpf/bpf_local_storage.c                |  79 ++++-
- kernel/bpf/bpf_task_storage.c                 |   7 +-
- kernel/bpf/btf.c                              |  34 ++-
- kernel/bpf/syscall.c                          | 108 ++++++-
- kernel/bpf/verifier.c                         |  39 ++-
- net/core/bpf_sk_storage.c                     |   6 +-
- tools/lib/bpf/bpf_helpers.h                   |   1 +
- .../bpf/prog_tests/task_local_storage.c       | 278 ++++++++++++++++++
- .../selftests/bpf/progs/task_ls_uptr.c        |  63 ++++
- .../selftests/bpf/progs/uptr_failure.c        | 105 +++++++
- .../selftests/bpf/progs/uptr_map_failure.c    |  27 ++
- .../selftests/bpf/progs/uptr_update_failure.c |  42 +++
- tools/testing/selftests/bpf/test_progs.h      |   8 +
- .../testing/selftests/bpf/uptr_test_common.h  |  63 ++++
- 18 files changed, 862 insertions(+), 43 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/task_ls_uptr.c
- create mode 100644 tools/testing/selftests/bpf/progs/uptr_failure.c
- create mode 100644 tools/testing/selftests/bpf/progs/uptr_map_failure.c
- create mode 100644 tools/testing/selftests/bpf/progs/uptr_update_failure.c
- create mode 100644 tools/testing/selftests/bpf/uptr_test_common.h
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 0c216e71cec7..bb31bc6d0c4d 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -203,6 +203,7 @@ enum btf_field_type {
+ 	BPF_GRAPH_ROOT = BPF_RB_ROOT | BPF_LIST_HEAD,
+ 	BPF_REFCOUNT   = (1 << 9),
+ 	BPF_WORKQUEUE  = (1 << 10),
++	BPF_UPTR       = (1 << 11),
+ };
+ 
+ typedef void (*btf_dtor_kfunc_t)(void *);
+@@ -322,6 +323,8 @@ static inline const char *btf_field_type_name(enum btf_field_type type)
+ 		return "kptr";
+ 	case BPF_KPTR_PERCPU:
+ 		return "percpu_kptr";
++	case BPF_UPTR:
++		return "uptr";
+ 	case BPF_LIST_HEAD:
+ 		return "bpf_list_head";
+ 	case BPF_LIST_NODE:
+@@ -350,6 +353,7 @@ static inline u32 btf_field_type_size(enum btf_field_type type)
+ 	case BPF_KPTR_UNREF:
+ 	case BPF_KPTR_REF:
+ 	case BPF_KPTR_PERCPU:
++	case BPF_UPTR:
+ 		return sizeof(u64);
+ 	case BPF_LIST_HEAD:
+ 		return sizeof(struct bpf_list_head);
+@@ -379,6 +383,7 @@ static inline u32 btf_field_type_align(enum btf_field_type type)
+ 	case BPF_KPTR_UNREF:
+ 	case BPF_KPTR_REF:
+ 	case BPF_KPTR_PERCPU:
++	case BPF_UPTR:
+ 		return __alignof__(u64);
+ 	case BPF_LIST_HEAD:
+ 		return __alignof__(struct bpf_list_head);
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 13dd1fa1d1b9..76cafff2d99c 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3334,7 +3334,7 @@ static int btf_find_struct(const struct btf *btf, const struct btf_type *t,
+ }
+ 
+ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
+-			 u32 off, int sz, struct btf_field_info *info)
++			 u32 off, int sz, struct btf_field_info *info, u32 field_mask)
+ {
+ 	enum btf_field_type type;
+ 	u32 res_id;
+@@ -3358,9 +3358,14 @@ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
+ 		type = BPF_KPTR_REF;
+ 	else if (!strcmp("percpu_kptr", __btf_name_by_offset(btf, t->name_off)))
+ 		type = BPF_KPTR_PERCPU;
++	else if (!strcmp("uptr", __btf_name_by_offset(btf, t->name_off)))
++		type = BPF_UPTR;
+ 	else
+ 		return -EINVAL;
+ 
++	if (!(type & field_mask))
++		return BTF_FIELD_IGNORE;
++
+ 	/* Get the base type */
+ 	t = btf_type_skip_modifiers(btf, t->type, &res_id);
+ 	/* Only pointer to struct is allowed */
+@@ -3502,7 +3507,7 @@ static int btf_get_field_type(const struct btf *btf, const struct btf_type *var_
+ 	field_mask_test_name(BPF_REFCOUNT,  "bpf_refcount");
+ 
+ 	/* Only return BPF_KPTR when all other types with matchable names fail */
+-	if (field_mask & BPF_KPTR && !__btf_type_is_struct(var_type)) {
++	if (field_mask & (BPF_KPTR | BPF_UPTR) && !__btf_type_is_struct(var_type)) {
+ 		type = BPF_KPTR_REF;
+ 		goto end;
+ 	}
+@@ -3535,6 +3540,7 @@ static int btf_repeat_fields(struct btf_field_info *info,
+ 		case BPF_KPTR_UNREF:
+ 		case BPF_KPTR_REF:
+ 		case BPF_KPTR_PERCPU:
++		case BPF_UPTR:
+ 		case BPF_LIST_HEAD:
+ 		case BPF_RB_ROOT:
+ 			break;
+@@ -3661,8 +3667,9 @@ static int btf_find_field_one(const struct btf *btf,
+ 	case BPF_KPTR_UNREF:
+ 	case BPF_KPTR_REF:
+ 	case BPF_KPTR_PERCPU:
++	case BPF_UPTR:
+ 		ret = btf_find_kptr(btf, var_type, off, sz,
+-				    info_cnt ? &info[0] : &tmp);
++				    info_cnt ? &info[0] : &tmp, field_mask);
+ 		if (ret < 0)
+ 			return ret;
+ 		break;
+@@ -3985,6 +3992,7 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
+ 		case BPF_KPTR_UNREF:
+ 		case BPF_KPTR_REF:
+ 		case BPF_KPTR_PERCPU:
++		case BPF_UPTR:
+ 			ret = btf_parse_kptr(btf, &rec->fields[i], &info_arr[i]);
+ 			if (ret < 0)
+ 				goto end;
+@@ -4044,12 +4052,28 @@ int btf_check_and_fixup_fields(const struct btf *btf, struct btf_record *rec)
+ 	 * Hence we only need to ensure that bpf_{list_head,rb_root} ownership
+ 	 * does not form cycles.
+ 	 */
+-	if (IS_ERR_OR_NULL(rec) || !(rec->field_mask & BPF_GRAPH_ROOT))
++	if (IS_ERR_OR_NULL(rec) || !(rec->field_mask & (BPF_GRAPH_ROOT | BPF_UPTR)))
+ 		return 0;
+ 	for (i = 0; i < rec->cnt; i++) {
+ 		struct btf_struct_meta *meta;
++		const struct btf_type *t;
+ 		u32 btf_id;
+ 
++		if (rec->fields[i].type == BPF_UPTR) {
++			/* The uptr only supports pinning one page and cannot
++			 * point to a kernel struct
++			 */
++			if (btf_is_kernel(rec->fields[i].kptr.btf))
++				return -EINVAL;
++			t = btf_type_by_id(rec->fields[i].kptr.btf,
++					   rec->fields[i].kptr.btf_id);
++			if (!t->size)
++				return -EINVAL;
++			if (t->size > PAGE_SIZE)
++				return -E2BIG;
++			continue;
++		}
++
+ 		if (!(rec->fields[i].type & BPF_GRAPH_ROOT))
+ 			continue;
+ 		btf_id = rec->fields[i].graph_root.value_btf_id;
+@@ -5560,7 +5584,7 @@ btf_parse_struct_metas(struct bpf_verifier_log *log, struct btf *btf)
+ 			goto free_aof;
+ 		}
+ 
+-		ret = btf_find_kptr(btf, t, 0, 0, &tmp);
++		ret = btf_find_kptr(btf, t, 0, 0, &tmp, BPF_KPTR);
+ 		if (ret != BTF_FIELD_FOUND)
+ 			continue;
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 4d04d4d9c1f3..2d2935d9c096 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -548,6 +548,7 @@ void btf_record_free(struct btf_record *rec)
+ 		case BPF_KPTR_UNREF:
+ 		case BPF_KPTR_REF:
+ 		case BPF_KPTR_PERCPU:
++		case BPF_UPTR:
+ 			if (rec->fields[i].kptr.module)
+ 				module_put(rec->fields[i].kptr.module);
+ 			if (btf_is_kernel(rec->fields[i].kptr.btf))
+@@ -597,6 +598,7 @@ struct btf_record *btf_record_dup(const struct btf_record *rec)
+ 		case BPF_KPTR_UNREF:
+ 		case BPF_KPTR_REF:
+ 		case BPF_KPTR_PERCPU:
++		case BPF_UPTR:
+ 			if (btf_is_kernel(fields[i].kptr.btf))
+ 				btf_get(fields[i].kptr.btf);
+ 			if (fields[i].kptr.module && !try_module_get(fields[i].kptr.module)) {
 -- 
 2.43.5
 
