@@ -1,200 +1,198 @@
-Return-Path: <bpf+bounces-42860-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42861-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E7699ABB91
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 04:33:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 891839ABBE3
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 04:52:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39493B22C24
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 02:33:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8ECF1C22EF6
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 02:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914CC55C29;
-	Wed, 23 Oct 2024 02:31:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD27652F88;
+	Wed, 23 Oct 2024 02:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EVX/U84R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LoMxed1C"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841AA1C28E;
-	Wed, 23 Oct 2024 02:31:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA71417F7
+	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 02:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729650713; cv=none; b=PX4Nh03REWWHKEKPp4xa07HYBucZH+8adKOMAO6XPPS2pmXvDPBYBrCY80ZunyqtpGiSawxH6jRQz6asOsZv+M9tzosWGZ1/Q5mZdU+IMgDAIjNNIKM03UCdkxyHhnUi7KcDxdQ0VT1L+rEffNN8vkNTyIO0POyJ/oxvoy1Zdg8=
+	t=1729651963; cv=none; b=Co6/8dqzJs1ci94RRssMaCZYb4zReFs5lOp1Buf5HcRqYkefTaOhZ0Q/J5FuKVC90Se0qOQs9zHoYk0s2ykRyvJzCAoOfxWjXLDvNDk6PR8WlT0hQjVxl8r+88DYYduoPdFHTN7BSH3piI2QUVwyzQCM8twFVpuJyPliDPVTgXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729650713; c=relaxed/simple;
-	bh=+uWmf7l/5xKUeRvYWQFvXEiE6OCTPRne6VeNsLyv/wU=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=tDl1/kg+0Dq3Bdq7kXmgiH3i59NcBgecDiGmh/GhsCuih4B0/KJ56lFVqon7yUgUGNz68yS7Ihtk8AWn8ZQSRB37tw5mSvsk9xc8nyYkjvyWxPhTaapqA5fqE+F/zyUJAzvBTs82jQDCY9KvME90tf1QwP4HasDsbHQ3mwnwedw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EVX/U84R; arc=none smtp.client-ip=209.85.160.181
+	s=arc-20240116; t=1729651963; c=relaxed/simple;
+	bh=H7+2GH3wXViuMasJK1NqubZnzRVvQwavuVJ8NjYHukE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=A1vClfBC1qbYZ1HZwM32PDojcVOH99fYov8TEVCKA+CaBdv9t4o4orvwoIyImxI034zW5wwBZSHAfBHwcUyBCRICqGi+uZJIXB+BwIauch4V/LejiB+W1cYMaT3F8elJpYNRVYXgnMp1O1DF/sV/+jWRWeojDcyOhSRtdMTF/HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LoMxed1C; arc=none smtp.client-ip=209.85.160.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-460a415633fso36818781cf.2;
-        Tue, 22 Oct 2024 19:31:51 -0700 (PDT)
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-27b7a1480bdso2824328fac.2
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2024 19:52:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729650710; x=1730255510; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7+5pkazMR0lQTRePEVE/aggfzwATQGf4HDQ3Fx/SKKI=;
-        b=EVX/U84RQ/DfODkt3Hb8FHlluJk7T14l2b2zHCcqCt2iV07x7PoPJpaJNUWUIrQMc9
-         J7QezMA5wShvrHbbS7iYR3q5v0gxJv2f/kr5OTDjLejhL3yW6xW2kDNmYt1awUf/GXny
-         Smg50APAqbi15m9scuY8w54dUeyit4Vl1LIRjHj7EEeKgkgQFGLivAPVQw4IRnxmqDCm
-         u5SNI+cVYxIoxZ1M3hMoAaN5nWEbx2CERVkLNScihLInaudF/ow4/Gq3+LCj7KQofzv9
-         PejLHMkcAyv5L9w0q1LSSnxZi9iFAzJ+eNbGNy226PEvTzEC2skDKB/4PWKd08KZxoWh
-         auYA==
+        d=gmail.com; s=20230601; t=1729651961; x=1730256761; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=l3ryjbUZjFzVL7gM7OVWj+6bXBkFo2uBXwzp/AJWeAA=;
+        b=LoMxed1CZwVQWDMIzGks+wimKHzjp/VK3cGSmSk0RRUa9TW4lkODBcC5Ki0tqH90Lm
+         RwNtRoLI97l0DyXkF/PFZD09Ijg1IsqHBP1ojrbEFjUyC7j9vnYItKPAs8JvswC8H6Rx
+         49tePD+DDYITS9jmW/0mN9fLnzv3dIAoReqwu6a6h4wVUonpidEnaoKFGC2dD2BTNSog
+         k1eSVzKQeP+cAT9Q8cZzuEqDdLWyC9QdM37OzAiX5AgTDMdEdqHgBS5LzPNhHPwu7oVB
+         PJpoCcq2ALPBxdtcUbyYZzvgole6O9frAGyTlMxjrLyO2VDLzC4ael9cx3Mtw+vALVtz
+         TEOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729650710; x=1730255510;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7+5pkazMR0lQTRePEVE/aggfzwATQGf4HDQ3Fx/SKKI=;
-        b=WKuSBvIkZKkpfCbPdbEYBdGFOzwy9EIxgR5O2y+x05/lqs3xqtt5Smnh3idvtsf3pH
-         IvfBqJmSnHizPSR/YxRfCykVScKJmLMQK67MbKA1ZC1QEbT42wcaKO0gR0dSxYbyu3U9
-         RPA/nKstW7yTvMcSac7tPpL+V7q5umkpJcKn2lijycQuMarnahhBQh/ber5I5sjxmKGu
-         TmTY9czJRNEfPn0bUKo4uAPJ8k6784NQK94NCrTjp1UGJ9P63JZ9gS/kjQFPsFGxVqJh
-         nsuBdowylAGREPZBmbFEzzPJ+tZP9ziXxaMbhd3tAUU8Oge82p8KRtLLgrnNkF5OLJKm
-         cCGw==
-X-Forwarded-Encrypted: i=1; AJvYcCU/Yh6KEKIFxP4Z5osY624pjXyVEnhrBDgUAXl6+Lb9PM977fbx0BYrSeKfurzlmdpQ634g5rIs@vger.kernel.org, AJvYcCWRVCG9NbYEiTNauRVdFrTrq3vwxm+Iy7NE2fik0wfiYHqFyg5abgnGg4hkKG9+p3HZUCs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyu3T/nxTLAr8w/JPvV3RiqISznRuAVraPhaLWlFkh1n7bQz2qs
-	VM9cnFewkYhf5JnqoonJV3cSZeTsbBuRKSMXB5euJXAAFPuh+SiGUn5h0w==
-X-Google-Smtp-Source: AGHT+IFh35NWrOofzBUjEaLuvmJz8b+y9ol3/4ghe6+Ajlm+lJnjbVS0QbMJt7ZQvL7d/zm/GqfV5w==
-X-Received: by 2002:ac8:57d5:0:b0:45f:6ed:40c0 with SMTP id d75a77b69052e-4611471f4camr12777561cf.40.1729650710220;
-        Tue, 22 Oct 2024 19:31:50 -0700 (PDT)
-Received: from localhost (86.235.150.34.bc.googleusercontent.com. [34.150.235.86])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-460d3dc5facsm35752001cf.96.2024.10.22.19.31.49
+        d=1e100.net; s=20230601; t=1729651961; x=1730256761;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=l3ryjbUZjFzVL7gM7OVWj+6bXBkFo2uBXwzp/AJWeAA=;
+        b=RDU/TBLc9s1t2GfB1UzthiOwZ4wvnCbOfyz3tzVC83TmIqHbaLIeir7u5P6tOtYblk
+         xx8AeCp/rnpXZhIIBap+lwx/G9wqvTa7zGhzaF4yC1N9Ls1NU5yeRewQ5KFUOZcZQL0F
+         2/QDoFKH6Gvykrj168dBDYMY9gT5geI87pTlvPopgun6maT86Xmg8SnFqM4f4vgoRTzJ
+         UXK1OubN5paFGuMSDgwhBxFsayd4vBktSFskp2guS3jJ+hAY3BgsExurtjs8tp8qGn78
+         fBK4oRH/JVey+WRro4BYa2rh1qZxfJhsGl0zxpcjuBY88gEqsd0dsc177OAtFnTgOcVR
+         sNoQ==
+X-Gm-Message-State: AOJu0Yw8yw8CnuYkAJmEgOMIeFzZSLml6Np2wQfipLB9g0WadizqFjZp
+	bPwMzo7hYys+5ek1Oy8bqj02TNa9yIatETUfO67Z2KF7Zk9Z+6W1
+X-Google-Smtp-Source: AGHT+IFAQd50S/mOd1fKB3rItZwLE6n918kvK9i6Xn498/1MhxQnhrfX0rJ/JOFKwMhpiCrNyAyhHw==
+X-Received: by 2002:a05:6870:330e:b0:287:3cf8:4abe with SMTP id 586e51a60fabf-28ccb486d47mr1345125fac.18.1729651960796;
+        Tue, 22 Oct 2024 19:52:40 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71ec1312d3dsm5577416b3a.17.2024.10.22.19.52.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Oct 2024 19:31:49 -0700 (PDT)
-Date: Tue, 22 Oct 2024 22:31:49 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- willemb@google.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org, 
- Jason Xing <kernelxing@tencent.com>
-Message-ID: <6718601526686_15cbc9294ef@willemb.c.googlers.com.notmuch>
-In-Reply-To: <671840a23227e_1420e529466@willemb.c.googlers.com.notmuch>
-References: <20241012040651.95616-1-kerneljasonxing@gmail.com>
- <20241012040651.95616-5-kerneljasonxing@gmail.com>
- <67157b7ec615_14e1829490@willemb.c.googlers.com.notmuch>
- <8a5f7f86-0784-4da3-a1b0-c2d88f3572d0@linux.dev>
- <671840a23227e_1420e529466@willemb.c.googlers.com.notmuch>
-Subject: Re: [PATCH net-next v2 04/12] net-timestamp: add static key to
- control the whole bpf extension
+        Tue, 22 Oct 2024 19:52:40 -0700 (PDT)
+Message-ID: <a9bd25331dbfdd5a968f9c4320608d2949176fc1.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: force checkpoint when jmp history
+ is too long
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>,
+ Yonghong Song <yonghong.song@linux.dev>
+Date: Tue, 22 Oct 2024 19:52:35 -0700
+In-Reply-To: <658394292b21edb9b30a5add27a8cd7fa8a778ed.camel@gmail.com>
+References: <20241018020307.1766906-1-eddyz87@gmail.com>
+	 <CAADnVQKtR96Dricc=JiOi3VR9OeHjgT6xLOto9k_QcpPQNsKJw@mail.gmail.com>
+	 <1564924604e5e17af10beac6bd3263481a1723f0.camel@gmail.com>
+	 <CAADnVQJa8+tLnxpMWPVXO=moX+4tv3nTomang5=PAeLjVAe+ow@mail.gmail.com>
+	 <658394292b21edb9b30a5add27a8cd7fa8a778ed.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 
-Willem de Bruijn wrote:
-> Martin KaFai Lau wrote:
-> > On 10/20/24 2:51 PM, Willem de Bruijn wrote:
-> > > Jason Xing wrote:
-> > >> From: Jason Xing <kernelxing@tencent.com>
-> > >>
-> > >> Willem suggested that we use a static key to control. The advantage
-> > >> is that we will not affect the existing applications at all if we
-> > >> don't load BPF program.
-> > >>
-> > >> In this patch, except the static key, I also add one logic that is
-> > >> used to test if the socket has enabled its tsflags in order to
-> > >> support bpf logic to allow both cases to happen at the same time.
-> > >> Or else, the skb carring related timestamp flag doesn't know which
-> > >> way of printing is desirable.
-> > >>
-> > >> One thing important is this patch allows print from both applications
-> > >> and bpf program at the same time. Now we have three kinds of print:
-> > >> 1) only BPF program prints
-> > >> 2) only application program prints
-> > >> 3) both can print without side effect
-> > >>
-> > >> Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > > 
-> > > Getting back to this thread. It is long, instead of responding to
-> > > multiple messages, let me combine them in a single response.
-> > > 
-> > > 
-> > > * On future extensions:
-> > > 
-> > > +1 that the UDP case, and datagrams more broadly, must have a clear
-> > > development path, before we can merge TCP.
-> > > 
-> > > Similarly, hardware timestamps need not be supported from the start,
-> > > but must clearly be supportable.
-> > > 
-> > > 
-> > > * On queueing packets to userspace:
-> > > 
-> > >>> the current behavior is to just queue to the sk_error_queue as long
-> > >>> as there is "SOF_TIMESTAMPING_TX_*" set in the skb's tx_flags and it
-> > >>> is regardless of the sk_tsflags. "
-> > > 
-> > >> Totally correct. SOF_TIMESTAMPING_SOFTWARE is a report flag while
-> > >> SOF_TIMESTAMPING_TX_* are generation flags. Without former, users can
-> > >> read the skb from the errqueue but are not able to parse the
-> > >> timestamps
-> > > 
-> > > Before queuing a packet to userspace on the error queue, the relevant
-> > > reporting flag is always tested. sock_recv_timestamp has:
-> > > 
-> > >          /*
-> > >           * generate control messages if
-> > >           * - receive time stamping in software requested
-> > >           * - software time stamp available and wanted
-> > >           * - hardware time stamps available and wanted
-> > >           */
-> > >          if (sock_flag(sk, SOCK_RCVTSTAMP) ||
-> > >              (tsflags & SOF_TIMESTAMPING_RX_SOFTWARE) ||
-> > >              (kt && tsflags & SOF_TIMESTAMPING_SOFTWARE) ||
-> > >              (hwtstamps->hwtstamp &&
-> > >               (tsflags & SOF_TIMESTAMPING_RAW_HARDWARE)))
-> > >                  __sock_recv_timestamp(msg, sk, skb);
-> > > 
-> > > Otherwise applications could get error messages queued, and
-> > > epoll/poll/select would unexpectedly behave differently.
-> > 
-> > I just tried the following diff to remove setsockopt from txtimestamp.c and run 
-> > "./txtimestamp -6 -c 1 -C -N -L ::1". It is getting the skb from the error queue 
-> > with only cmsg flag.
-> 
-> That it surprising and against the API intent as I understand it.
-> Let me reproduce and take a closer look.
+On Mon, 2024-10-21 at 22:38 -0700, Eduard Zingerman wrote:
 
-Interesting. I guess my interpretation was wrong.
+[...]
 
-The reporting flags prevent reporting of the timestamp, but not
-queuing of the skb on the error queue. Even if the only purpose is to
-report a timestamp.
+> This takes ~10 minutes to verify on master.
+> Surprisingly current patch does not seem to help,
+> I'll investigate this tomorrow.
+> Full example is in the end of the email.
 
-It goes back until well before all the API extensions. At least v3.6.
+I messed up the example a little bit.
+The example shared previously takes so long to process because of "goto +0;=
+".
+opt_remove_nops() deletes such jumps and we know that bpf_remove_insns()
+is not efficient.
 
-It still does suppress the timestamp itself if the relevant reporting
-flag, SOF_TIMESTAMPING_SOFTWARE or SOF_TIMESTAMPING_RAW_HARDWARE, is
-not set. So BPF should really still match that, I guess.
+Corrected example uses conditional jump in place of "goto +0;" and
+slightly adjusted counters. Full program is here:
+https://gist.github.com/eddyz87/cb813387323b78bcd6a7e264fc44c817
+Here is it's verification log to get the idea:
+
+    0:  (79) r2 =3D *(u64 *)(r1 +0)
+    1:  (b7) r0 =3D 0
+    2:  (35) if r2 >=3D 0x1 goto pc+5
+    push_stack: at 2, jmp_history_cnt 0
+    3:  (35) if r0 >=3D 0x0 goto pc+0
+    4:  (35) if r0 >=3D 0x0 goto pc+0
+    5:  (35) if r0 >=3D 0x0 goto pc+0
+    6:  (35) if r0 >=3D 0x0 goto pc+0
+    is_state_visited: new checkpoint at 7, resetting env->jmps_processed
+    7:  (95) exit
+    8:  (35) if r2 >=3D 0x2 goto pc+7
+    push_stack: at 8, jmp_history_cnt 1
+    9:  (35) if r0 >=3D 0x0 goto pc+0
+    10: (35) if r0 >=3D 0x0 goto pc+0
+    11: (35) if r0 >=3D 0x0 goto pc+0
+    12: (35) if r0 >=3D 0x0 goto pc+0
+    13: (35) if r0 >=3D 0x0 goto pc+0
+    14: (35) if r0 >=3D 0x0 goto pc+0
+    is_state_visited: new checkpoint at 15, resetting env->jmps_processed
+    15: (95) exit
+    ...
+    320: (35) if r2 >=3D 0x29 goto pc+7
+    push_stack: at 320, jmp_history_cnt 40
+    320: R2_w=3D40
+    321: (35) if r0 >=3D 0x0 goto pc+0
+    322: (35) if r0 >=3D 0x0 goto pc+0
+    323: (35) if r0 >=3D 0x0 goto pc+0
+    324: (35) if r0 >=3D 0x0 goto pc+0
+    325: (35) if r0 >=3D 0x0 goto pc+0
+    326: (35) if r0 >=3D 0x0 goto pc+0
+    is_state_visited: new checkpoint at 327, resetting env->jmps_processed
+    327: (95) exit
+    ...
+
+A bpf program w/o loops, at each 'if r2 >=3D ...' push_stack() saves a
+state with ever increasing jump history.
+- right amount of 'if r0 >=3D ...' instructions is maintained before 'exit'
+  to force a new checkpoint;
+- exit is processed;
+- state is popped from the stack and first insn it processes is
+  'if r2 >=3D ...', thus a new state is saved by push_stack()
+  with jump history longer by 1.
+
+On master this fails with ENOMEM and the following error in the log:
+
+    [  418.083600] test_progs: page allocation failure: order:7, mode:0x140=
+cc0(GFP_USER|__GFP_COMP), \
+                     nodemask=3D(null),cpuset=3D/,mems_allowed=3D0
+                   ...
+    [  418.084158] Call Trace:
+                    ...
+    [  418.084649]  krealloc_noprof+0x53/0xd0
+    [  418.084688]  copy_verifier_state+0x78/0x390
+                    ...
+
+Same happens if jmp_history_cnt check is moved to 'skip_inf_loop_check':
+
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -18022,7 +18022,7 @@ static int is_state_visited(struct bpf_verifier_env=
+ *env, int insn_idx)
+                         * at the end of the loop are likely to be useful i=
+n pruning.
+                         */
+ skip_inf_loop_check:
+-                       if (!force_new_state &&
++                       if (!force_new_state && cur->jmp_history_cnt < 40 &=
+&
+                            env->jmps_processed - env->prev_jmps_processed =
+< 20 &&
+                            env->insn_processed - env->prev_insn_processed =
+< 100)
+
+
+Or if it is in the else branch. Simply because 'skip_inf_loop_check' is
+for instructions that have been already seen on the current verification pa=
+th.
+
+However, with change suggested in this patch-set such ENOMEM situation
+is not possible. Hence I insist that large enough jmp_history_cnt
+should force a new state, and point where I put the check covers more
+cases then alternatives.
+
 
