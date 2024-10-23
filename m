@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-42898-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42899-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 486E39ACD2E
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 16:48:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D379D9ACD45
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 16:49:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 690671C21BA3
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 14:48:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AD1E28091B
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 14:49:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D61F213EDE;
-	Wed, 23 Oct 2024 14:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECBE01CEEB2;
+	Wed, 23 Oct 2024 14:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ObBwUPT3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LrU8x291"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05D72213EC9;
-	Wed, 23 Oct 2024 14:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653B71CEEB1;
+	Wed, 23 Oct 2024 14:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729693965; cv=none; b=NWc+JasosgUD9P0BDNJcE+z9ZlGnYtQHLPdlgXnHeLzlmF1qjJ2+gZkjVIRIVr81hlkewG5Zw5UuswjSryMaswuXX+UG7JvijwmZbr6u2x/yyJx7jWtwd9v5jM5R8vi7HcweIXiasyd9/usHILxery0Vnu9iVM0T9uc/sA6HEFw=
+	t=1729693982; cv=none; b=HDpljUyi7CkrUBAXAV7u4UUn7I7i8KNCnQOs2fBvSO/JP5B32sHgn+RzTEfY0id4j51/ASpTdcgfVnjqcb+2Orfjz7Ay9vSXlczzucLP7gSi8B1ryvo2ocqryHT+d2+Dxp/lfka91PbgtvJB/J01Q/Ea6j/Tgyj/mTeczIOu3I4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729693965; c=relaxed/simple;
-	bh=lbufe4sfdzJUzIT2TlrqM6nUbqDUBi+ZlQQrZ3au26Y=;
+	s=arc-20240116; t=1729693982; c=relaxed/simple;
+	bh=dc7J3GuEf3qh7zhxfdImeqiif/n6HhVVUANclwj5c+U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uHFJ0YG32WtiywwdV8g1S9jXWm0G9Lsdjbx/d1y5LShxZEzYBEie6PCwfKarmw9/X4HX+oJAXvEtYrztFnsCE1J1Iel0DEKNxxRGO1dAdF1rnGWPSjiSsbDB04tNK1/1tU3HeBRYgqaXnXT9x4eFj2gcpWsxvNnvNQY/27A0U2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ObBwUPT3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4992C4CEEA;
-	Wed, 23 Oct 2024 14:32:43 +0000 (UTC)
+	 MIME-Version; b=FSzslO62axhrctv+4Tfn+kIImIqBUv3+v1W+jbv7dGWcbpNO2aX4z9irYQCSAy47y5RDqUu2A2MuZ8bTRo1INNYLkYAGobvRLfgPVlcpX0WwxLawjkrnSX8nqj1XONqBTrZ3lTL66qV1AH5E+R5wntp2U6xY5x+upYKVCfZtGoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LrU8x291; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35DECC4CEE4;
+	Wed, 23 Oct 2024 14:33:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729693964;
-	bh=lbufe4sfdzJUzIT2TlrqM6nUbqDUBi+ZlQQrZ3au26Y=;
+	s=k20201202; t=1729693982;
+	bh=dc7J3GuEf3qh7zhxfdImeqiif/n6HhVVUANclwj5c+U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ObBwUPT34vp4AJJsI/1Qp/tlDHN8hoe0USimORQrQa13iprnf88fEiOmvXsFDGvbk
-	 ZPzAzyKTtsE/jMTzOCD/GxoV2/9dX1H7Ksbq8xZZSARjtWQWbEcV+C8d4Tx4+X5slh
-	 co9Upoqkx4litJnJCkpJIhkKJFl+28Pj+QLmqxngLlg9QNwgxPXG8y1M0ITwAjv7jv
-	 rhjPdLyEVlnu5TgRacL95OaBgu1ejXsWSzZEth0gNLz1jXkVe1n0sWlC3ERx0Ripi1
-	 N9Qfv+CfLzI5MB2mPXf0gZ1e6GbKPQQ6TQSDu35fb9UIsMdD8xgHkg/BC8x6maKDDi
-	 zpZ048IGcA7mg==
+	b=LrU8x291OAo58kNJ0IVYvAq3BwK6O6wUnKSJLT+SANiNkvKwM3R+rmKGlp5SW/uv6
+	 XfK+G9HQS0FQcj/SdVGPAjG4jd1bDvtXcfN+8fc7BVJpWt+gtEUyRKhl4yCDLKevUQ
+	 OYC/HMZziKpQbAyZrXoeBgx+haHgzT65kys+vn7/OG2KwsLlpf/MN+t5eac5DbiC/m
+	 Aiob1VE0NGqusTWWGJHe5VcK4l6pqqrcNbJbjBh/gAA1pSJ+9EYNJMU3IJ/RYvd/GD
+	 zzoPbxPTl0ypF3YDG0ajiOLmqYtz9Iyirm+dOFYtiWdDta+Sih3vY1opdFawHOicgR
+	 6UCcPJlkb2v4w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,12 +51,12 @@ Cc: Rik van Riel <riel@surriel.com>,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 06/10] bpf: use kvzmalloc to allocate BPF verifier environment
-Date: Wed, 23 Oct 2024 10:32:27 -0400
-Message-ID: <20241023143235.2982363-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 3/6] bpf: use kvzmalloc to allocate BPF verifier environment
+Date: Wed, 23 Oct 2024 10:32:50 -0400
+Message-ID: <20241023143257.2982585-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241023143235.2982363-1-sashal@kernel.org>
-References: <20241023143235.2982363-1-sashal@kernel.org>
+In-Reply-To: <20241023143257.2982585-1-sashal@kernel.org>
+References: <20241023143257.2982585-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.169
+X-stable-base: Linux 5.10.228
 Content-Transfer-Encoding: 8bit
 
 From: Rik van Riel <riel@surriel.com>
@@ -92,10 +92,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 88b38db5f626d..e29c0581f93ad 100644
+index 60db311480d0a..931611d227369 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -14013,7 +14013,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
+@@ -12564,7 +12564,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
  	/* 'struct bpf_verifier_env' can be global, but since it's not small,
  	 * allocate/free it every time bpf_check() is called
  	 */
@@ -104,7 +104,7 @@ index 88b38db5f626d..e29c0581f93ad 100644
  	if (!env)
  		return -ENOMEM;
  	log = &env->log;
-@@ -14228,6 +14228,6 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
+@@ -12755,6 +12755,6 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
  		mutex_unlock(&bpf_verifier_lock);
  	vfree(env->insn_aux_data);
  err_free_env:
