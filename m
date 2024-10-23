@@ -1,103 +1,152 @@
-Return-Path: <bpf+bounces-42871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B312D9AC03B
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 09:30:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB49E9AC113
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 10:10:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74E84284AAE
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 07:30:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F26FB1C2110B
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 08:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59E11547D5;
-	Wed, 23 Oct 2024 07:30:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="icxfXzVK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A341A15746B;
+	Wed, 23 Oct 2024 08:09:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AC4C433B3;
-	Wed, 23 Oct 2024 07:30:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3ED1156F41
+	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 08:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729668614; cv=none; b=os54g4X2UBHrWbiikU3GIh5s2CtffejvVsRKe2iXJbdeWWtzNQl261tCKK1YwPpK17v1301djoGMagg2rMjwNWALVhFE9HwoXS2iQJ6L1P1XWsy3r17ZXQHcoSL+ws9K1vLSSPZHBcEt8C9wMrI5GFcIWkLQKX2JPQUVDpJTJ5I=
+	t=1729670976; cv=none; b=Nq+Z/JR3I37SqqBHrKi7xyJOaVhsxD7qkrUCor/yYoclbxujw0BgifgBc1ek9lVOKRpIx4g0qOI3qI+rgrX0xAdlH/cARQlBX937Eb0Tap5kID/gIkRu3hcIg0BoK89jVcxjHC/8RY7LziP6NoQY7PyBlRgT4aNPqW28KOAOgZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729668614; c=relaxed/simple;
-	bh=rT5H9hNVJdEwkAbli0uDb6oJBRqP5GzqNw3n+PHhtIQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ByKcX1lFfVGzJ5Xj90eBDrIxq+zqdLYPIycqtFOoapria4EMxg2ORKvJJziPzhaMcfVznIZbyLBmrGg/pfxme4Pnz1QqifI6BQZ+KSKRRquRZUcVv/p6u+ncUOOoFlxYFsXmlWTtSpKHKPKWKSFxCoBu5fhUEGuylxDCWJCT7Zc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=icxfXzVK; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-71ec12160f6so2342888b3a.3;
-        Wed, 23 Oct 2024 00:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729668612; x=1730273412; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fz/vGJDpJqbujH1vwB1YvoHpkj4IgO+fz2agzfaSRIA=;
-        b=icxfXzVKagMV06q2kjJY1stiZ7/fVfTttD1ivpyCVxiBf9+9NatsadHOdG/XIki9bh
-         ziPAJR+zvSuDgtH//FFMBfhyflN1mgMKSGzENVVjnXYTw2NXmnHG6I+rKBV9C4yxMiMh
-         rcRD+ZY/lb2BrWJFcFEXwTL79b3OoQS6Cwcbez3Bd3ZLZZvCwLC75VgNIGqOcQ1I8LJD
-         39zXcIHTXQF7kXKz/oBJd7UtlD1gMniNyL57TUErF95gyeeszpvzA2O70rvz0oEAbknn
-         yqr5A9D8eRoc8gUVI48j9duhlX4sGH+/z9hqeNn5m9bu1opkDUx5qInWRj73jtduFVMg
-         vDpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729668612; x=1730273412;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fz/vGJDpJqbujH1vwB1YvoHpkj4IgO+fz2agzfaSRIA=;
-        b=tQNqimzRiv64kWwogwWv9porsK+yaFU3jucU2/48nqg8Qjq4BmUvbZmp+1X8XOy8l0
-         D1SPwlxBHBjDJ8XyTV471vw+RN8HibmwsY0xhEsqJdH1azbqqhoOxJVCiiBmOMPi0RC/
-         BWWXRsBV85vdq4PKabqKHfhcdH0XC6EBWYP2SKj8CHvI6AlChLAPtRO72910pL6sziN+
-         1iNzGJ09l4LLTriwcdwEksHopXnv22Hn5/T9teaf2Qs/fDkQCSgbw1UjfP6mX+D3DotF
-         I5Bj6u62hDVTbBHiWN9m8RFobxZ2mJsUib8jb6VVXKWnvza76E/Dw868hXOgiM+2TYck
-         wyVg==
-X-Forwarded-Encrypted: i=1; AJvYcCUg0DbLn6Nh//wHJ0AxBda0GQWxiE4ANFiiiouOx60pFQfj1qKmSgc3a58nAiHZF+2StZ4Xk2becxyXyZGe@vger.kernel.org, AJvYcCW0w2o8kDTzniLIan8zHtB2ofr4Fgca8zZyvqKlek7jBmKaz/ol6N/Qzkpo7Ml2oohIHuA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzg5UkjiDcJt6zbpwv6vQ36JtkeYQydIdq23O7s1VOqAu2meXnQ
-	jvWF4pIRmnVazpmFTuFNKtLUpOx1sEzaJhuXbnUp7iplXpvnmzty
-X-Google-Smtp-Source: AGHT+IE28Ex4k6ZDhMbDF7OwnRPNLjnxktTVGmsAn93ay6ClDGOfipEuNNlCTTQ1dRklFyNYYdWsiw==
-X-Received: by 2002:a05:6a00:3d48:b0:71e:47a2:676 with SMTP id d2e1a72fcca58-72030a6ecabmr2535426b3a.6.1729668612064;
-        Wed, 23 Oct 2024 00:30:12 -0700 (PDT)
-Received: from localhost.localdomain ([210.205.14.5])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71ec1332f5fsm5760529b3a.49.2024.10.23.00.30.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2024 00:30:11 -0700 (PDT)
-Date: Wed, 23 Oct 2024 16:30:06 +0900
-From: Byeonguk Jeong <jungbu2855@gmail.com>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
-	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpf: Fix out-of-bounds write in trie_get_next_key()
-Message-ID: <Zxil/uyqq5qDHuRX@localhost.localdomain>
-References: <ZxcDzT/iv/f0Gyz0@localhost.localdomain>
- <26f04a6b-4248-6898-8612-793e02712017@huaweicloud.com>
+	s=arc-20240116; t=1729670976; c=relaxed/simple;
+	bh=3AO+VQhkC9onNc1IZZqOe2ox2AcFz2Yp9jrlUmcT+uQ=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ruvk6cBQunNbfVXhLA6QTI6oeDJPEzyeFvqRPvlNDQuSBBtI1kWbb/LNPOdwoR49x2YRHNqlsoeSGjxYAW10cORL25E7EMkeI7j2S4Ft/iyJ8ft4KZeCIUr5YZvHhIi+nOkmC/u+2D6E2IgnaT87IWAa0DL3GFMkyGA4+1fVVSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XYMBt4NSLz4f3nJq
+	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 16:09:10 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id D1A311A0568
+	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 16:09:28 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgA3t8M0rxhnDLyHEw--.15392S2;
+	Wed, 23 Oct 2024 16:09:28 +0800 (CST)
+Subject: Re: [PATCH bpf v2 6/7] bpf: Use __u64 to save the bits in bits
+ iterator
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
+ xukuohai@huawei.com
+References: <20241021014004.1647816-1-houtao@huaweicloud.com>
+ <20241021014004.1647816-7-houtao@huaweicloud.com>
+ <CALOAHbB-asooCmJSq7wFeXo2VV++WKeU2BMfgcAFRNoAy2OTGg@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <c25f7f73-a666-3eae-bbaa-824cbdd722d6@huaweicloud.com>
+Date: Wed, 23 Oct 2024 16:09:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <26f04a6b-4248-6898-8612-793e02712017@huaweicloud.com>
+In-Reply-To: <CALOAHbB-asooCmJSq7wFeXo2VV++WKeU2BMfgcAFRNoAy2OTGg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgA3t8M0rxhnDLyHEw--.15392S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGF15uF15Kw4kWrWxuF43trb_yoW5WF1UpF
+	WxCw1qkrWkKrW2kwnFyF48ZFy5Arn3Z34UGrWfGrWrA3W5WryrWrykKay5X3WUCFy8Z3ZF
+	vryY93srC3yDJa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Wed, Oct 23, 2024 at 10:03:44AM +0800, Hou Tao wrote:
+Hi,
+
+On 10/23/2024 11:10 AM, Yafang Shao wrote:
+> On Mon, Oct 21, 2024 at 9:28 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> On 32-bit hosts (e.g., arm32), when a bpf program passes a u64 to
+>> bpf_iter_bits_new(), bpf_iter_bits_new() will use bits_copy to store the
+>> content of the u64. However, bits_copy is only 4 bytes, leading to stack
+>> corruption.
+>>
+>> The straightforward solution would be to replace u64 with unsigned long
+>> in bpf_iter_bits_new(). However, this introduces confusion and problems
+>> for 32-bit hosts because the size of ulong in bpf program is 8 bytes,
+>> but it is treated as 4-bytes after passed to bpf_iter_bits_new().
+>>
+>> Fix it by changing the type of both bits and bit_count from unsigned
+>> long to u64.
+> Thank you for the fix. This change is necessary.
 >
-> Without the fix, there will be KASAN report as show below when dumping
-> all keys in the lpm-trie through bpf_map_get_next_key().
+>>  However, the change is not enough. The main reason is that
+>> bpf_iter_bits_next() uses find_next_bit() to find the next bit and the
+>> pointer passed to find_next_bit() is an unsigned long pointer instead
+>> of a u64 pointer. For 32-bit little-endian host, it is fine but it is
+>> not the case for 32-bit big-endian host. Because under 32-bit big-endian
+>> host, the first iterated unsigned long will be the bits 32-63 of the u64
+>> instead of the expected bits 0-31. Therefore, in addition to changing
+>> the type, swap the two unsigned longs within the u64 for 32-bit
+>> big-endian host.
+> The API uses a u64 data type, and the nr_words parameter represents
+> the number of 8-byte units. On a 32-bit system, if you want to call
+> this API, you would define an array like `u32 data[2]` and invoke the
+> function as `bpf_for_each(bits, bit, &data[0], 1)`. However, since the
+> API expects a u64, you'll need to merge the two u32 values into a
+> single u64 value.
 
-Thank you for testing.
+It is a bit weird to pass a u32 pointer to bpf_for_each, because it
+expects a u64 pointer. I think the bpf program should pass a u64 pointer
+instead.
+>
+> Given this, it might be more appropriate to ask users to handle the
+> u32 to u64 merge on their side when preparing the data, rather than
+> performing the swap within the kernel itself.
 
-> 
-> However, I have a dumb question: does it make sense to reject the
-> element with prefixlen = 0 ? Because I can't think of a use case where a
-> zero-length prefix will be useful.
+However, the swap implemented in the patch has nothing to do whether the
+user passes pointer to u32 array or not. It is necessary due to the
+mismatched between the pointer type used by find_next_bit and the
+pointer used by bpf_iter_bits_new(). The latter uses u64 pointer, but
+find_next_bit() uses unsigned long pointer and iterates a long each
+time. So just like the comment in the patch said:
 
-With prefixlen = 0, it would always return -ENOENT, I think. Maybe it is
-good to reject it earlier!
+    under 32-bit big-endian host, the first iterated unsigned long will
+be the bits 32-63 of the u64 instead of the expected bits 0-31.
+
+The swap in the patch will swap the two long values in the u64 and make
+the first iterated unsigned long will be the bits 0-31 of the u64 value.
+>
+> --
+> Regards
+>
+> Yafang
+
 
