@@ -1,122 +1,146 @@
-Return-Path: <bpf+bounces-42876-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42877-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A950A9AC1ED
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 10:40:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BD429AC206
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 10:45:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 405B8283666
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 08:40:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8EF21C261D6
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 08:45:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1681A15B546;
-	Wed, 23 Oct 2024 08:40:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79FC1607AC;
+	Wed, 23 Oct 2024 08:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zSjpektF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gCslu3JB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B6E315855E
-	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 08:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFDFE158A04;
+	Wed, 23 Oct 2024 08:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729672844; cv=none; b=mGt2zyq2mq4DVm9d7tHct0c4CHPO02H4FWeKQg78AElY6o2TjWhbC+3V50EPY5UTFrOEJrm/+3ZfvwEOwzXLRJK1s3IjvZ+DHcNPiWRKKmvL8yFQj2zKZIHOnr5pWxCXdbml1RAr84X5XRwKUyNiNShZ22mWnfcVPiVrWDGrln0=
+	t=1729673105; cv=none; b=HPCBGj6cxdAblqfI55xzYNL0HqDHA1ht+7jLQAdg/hdLyVpRFKav8fkFKc26YwWhot1wBmhATGX7gvJmCBF8023vCZmv6dU2IACGToJqZ/CrFZUtI65ahzqwCPAIxQ+qQa66cM2nsvP7RQzIeMiNBO132IHT8c1yWIbTpXaWYXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729672844; c=relaxed/simple;
-	bh=+NBZv7oArYvfP5akwMVnUHhHf/uifOLNs2ODyGtkYOY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=mwhailbDaJk7t6PDd1/gjDQUD8qg7QarV9KPXHWj7tqq8abqzlGVuH0UsWhIzLMQD/k3PRftK0m9Jgjal0PTuzCK7zz6rE4JJdNdr3kIk/LxITMMGsNozSiBmoqGCPIU+e9PlI5MzFlYACxNxX/iGK+RKTpqbdxa7dCVLgVjwWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zSjpektF; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-37ed3bd6114so3302886f8f.2
-        for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 01:40:42 -0700 (PDT)
+	s=arc-20240116; t=1729673105; c=relaxed/simple;
+	bh=yB98udhSqQkRW3pgk3lehOuNxdNm7oEPiWhTz/nBZhc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Nj5EVr04lJWJZ2BXwn35Psmrf9zxee98tBTlyJRcfvvxVnt/qlOmZFp2axL5kd+thy5+Tl+1sWAyE6wMvEuIdfPIAUkN4SOlOaW4q+KFDd4GxvIerTzYrrnsB8IYOXmA6un+k1sahEVVpHIvLPd9yiifkdxq9XFK59pGE5rsZyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gCslu3JB; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7ea7e2ff5ceso5050828a12.2;
+        Wed, 23 Oct 2024 01:45:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1729672841; x=1730277641; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UwBVnyfeiaaFwe1BwX5fHUUsKIgAZFOm4eIVuwMh+lk=;
-        b=zSjpektFbom8c6OqePsAY1ymRl7DL4MVvU66dMnwL7au4lZR1+kwJuu7o5idolduQh
-         HHlM7PQyGAfbDPshqdDZnhZBRjNlBqXbvVsQnDWphYL57uWajFRqnfZe1c5rcviXXe27
-         EfRq9pZwjdJOdaEPY0ZiF/8pyC+H/svieU4LPkAVre/aL0ZX6wTfaqJzqukEsgJESlW5
-         ftU0r5YxkIg1cCP3rHTaV1Zb+r/vy3sHp/Mz8oZ5LxeNk+y1MEmBmhc5dwk0Ws211wSE
-         S7ztqKdzjrPM0zTw6bBaEReBGEYuT6pdsSXDF5m5WQpRv857Vr2Cp4g452+2xPGZwejr
-         SaMw==
+        d=gmail.com; s=20230601; t=1729673103; x=1730277903; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0J035g5WNycm3AHVCynKcQXgMo5pV2ms4qqq5QBwxuo=;
+        b=gCslu3JB4S31p122blDQ8bAKanl4sxSoTddXpI5gaZGu2J0TO2dpJ0geSS8B8Awk7B
+         pl1pxx9+TvbYAQ4AQJ+bn0O53TMsvRVj6opy8wr6QTtVi8pEQ4cJhYfKbtMxg+l72hE2
+         zA2sc2399NnkqgpJbQ4FyykDTd3/jmTvG8NhBGAKUiXfS+yMEYnmiPgT9MAJHbvWEYBW
+         neGyE7V9YijsXb+Lf1iFLPJw4ana8gtKyrbDBi4s0Svec64RuoQur3wz7OCmcxXGF7Ni
+         Sik8osWUQ8HWw2fTZuvNBvK/qGNIHqJRG5K9w7pBVSRQeF54L6ldWgk/SHeFwlZmgm/w
+         iy5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729672841; x=1730277641;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UwBVnyfeiaaFwe1BwX5fHUUsKIgAZFOm4eIVuwMh+lk=;
-        b=vIwwiqEUPQ+2Biy3ip1h6NxNmPXsxcOHQvvU+lxrQnIlwfTIy+9Xxigex6yNwUwyLb
-         PYBNtjFCLWtWfbMybXuMIpW8zACt4S5YdDjKPWL2VvzV2LB4c7qpIVtHlkroqtYR7rPg
-         E1UgYAp9cuofLns1gErC76aVYcTgmnrweBExrFYyYztIQs2Iw1woYn03JtkPHLoWnyZg
-         CoCels8WgS8Z9bhjDY7sdbeEsDAq7M5/zpCOEaoxEncROR8ERu6xKzIRYU8+L4TmWDDR
-         vGYEuzfXJvRMMJyf7TlLGj3VdKy/R3MQge9mr/mIQVU3k8ITMJS5QbgQWza1tivCGqr3
-         Odxg==
-X-Gm-Message-State: AOJu0Yyot1UJPDeIvBMz7huXUcxzDZMjSyDk2Jtq0i67Wc9LhTbE48Bx
-	9R7xd2f7/3ZPTku/CC3AZ7UPRC0xyxzHVCuS3UKhfMLkFyeLn+5yiyMWtbxEXDrQkhHBj7h0KGi
-	XtlE=
-X-Google-Smtp-Source: AGHT+IG9zyOlYDl6aslBNmlZNofhKFfuhQeZOkzvtZncjPR5I+abQPRItI1NddONt9ss+apPtkyQFA==
-X-Received: by 2002:a5d:46d0:0:b0:37d:498a:a233 with SMTP id ffacd0b85a97d-37efcf76ae3mr1008481f8f.43.1729672841265;
-        Wed, 23 Oct 2024 01:40:41 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37ee0b94048sm8369399f8f.85.2024.10.23.01.40.40
+        d=1e100.net; s=20230601; t=1729673103; x=1730277903;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0J035g5WNycm3AHVCynKcQXgMo5pV2ms4qqq5QBwxuo=;
+        b=iwM+gJZ/BuV76ettPrzUznGV8t4JLepYofZ3sMTO4QEZUebUZVI79S/xrex3AqsQms
+         1/IhuKBNSz/1jy5MQOLEHml34/xq4va8n7KE1fchVQM+gh8ff9mi43R0nOpPLtUqaxUy
+         edqq6Mx3h8peC7lSexzLCyTcZv9Bk7jIkOsBz661SilrQk4EvVVu5MBn5JgF5hikFupU
+         csv+364J5+rH0KrkWh5yEBkVSStcKfPCi6M/D2nFnQuRCXMi3eU9JXuPZa7Bb9Suk3ls
+         59azH25Qs99z8XI/I6Sy3o0ZOOcbICt52PGp5ZwVj8883A5kDec4otLYzcqPnYkFfN7A
+         CoKg==
+X-Forwarded-Encrypted: i=1; AJvYcCWycYMFrsmSBeDJNu893ecE3rdZ4rVVoXljLHRxr00m2wp7O1Bk1eVV/F/lkHG+NB9iaek=@vger.kernel.org, AJvYcCXvdsit1iSqocJaSpZvVF+QrHz/EpNDIsiZz3R7EZlPNOJD7M5BBYFsulEKEQiYRsiRi+ZYV0TqNoMsBmP5@vger.kernel.org
+X-Gm-Message-State: AOJu0YzXqVqxabyMg64UhqCDDCFbc8pexVS60ZShsMpukwaSJpJxtrkJ
+	m9xf8zLP/mfuSkvFX+sIOkoM7LWBpGskv8V1CrTsw1WXmiN98oUy
+X-Google-Smtp-Source: AGHT+IGSy9GyXqs+fwplsa9WfpXjqSFkymFMc0mxy7evawyYnCi9lOwOWllSPF9D48sJgFfyR/sbVQ==
+X-Received: by 2002:a05:6a21:3a82:b0:1d9:16db:902e with SMTP id adf61e73a8af0-1d978aebccdmr1821366637.9.1729673103101;
+        Wed, 23 Oct 2024 01:45:03 -0700 (PDT)
+Received: from localhost.localdomain ([210.205.14.5])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e76dfe0cecsm899108a91.52.2024.10.23.01.45.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2024 01:40:40 -0700 (PDT)
-Date: Wed, 23 Oct 2024 11:40:37 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Alexei Starovoitov <ast@kernel.org>
-Cc: bpf@vger.kernel.org
-Subject: [bug report] samples/bpf: bpf_tail_call example for networking
-Message-ID: <b2a48b45-144a-428c-9ab3-79bedbbad9d9@stanley.mountain>
+        Wed, 23 Oct 2024 01:45:02 -0700 (PDT)
+Date: Wed, 23 Oct 2024 17:44:58 +0900
+From: Byeonguk Jeong <jungbu2855@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] bpf: Fix out-of-bounds write in trie_get_next_key()
+Message-ID: <Zxi3iroUTKnU0ssx@localhost.localdomain>
+References: <ZxcDzT/iv/f0Gyz0@localhost.localdomain>
+ <CAADnVQ+Ow2E8qghEZw6x63VS4gM5rDtbM9R-ob00Rha2yBvfgA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <CAADnVQ+Ow2E8qghEZw6x63VS4gM5rDtbM9R-ob00Rha2yBvfgA@mail.gmail.com>
 
-Hello Alexei Starovoitov,
+On Tue, Oct 22, 2024 at 12:51:05PM -0700, Alexei Starovoitov wrote:
+> On Mon, Oct 21, 2024 at 6:49 PM Byeonguk Jeong <jungbu2855@gmail.com> wrote:
+> >
+> > trie_get_next_key() allocates a node stack with size trie->max_prefixlen,
+> > while it writes (trie->max_prefixlen + 1) nodes to the stack when it has
+> > full paths from the root to leaves. For example, consider a trie with
+> > max_prefixlen is 8, and the nodes with key 0x00/0, 0x00/1, 0x00/2, ...
+> > 0x00/8 inserted. Subsequent calls to trie_get_next_key with _key with
+> > .prefixlen = 8 make 9 nodes be written on the node stack with size 8.
+> 
+> Hmm. It sounds possible, but pls demonstrate it with a selftest.
+> With the amount of fuzzing I'm surprised it was not discovered earlier.
+> 
+> pw-bot: cr
 
-Commit 530b2c8619f2 ("samples/bpf: bpf_tail_call example for
-networking") from May 19, 2015 (linux-next), leads to the following
-Smatch static checker warning:
+I sent this again because lkml did not understand previous one which is
+8B encoded.
 
-	samples/bpf/sockex3_kern.c:240 bpf_func_mpls()
-	warn: masked condition '(verlen & 240) == 4' is always false.
+With a simple test below, the kernel crashes in a minute or you can
+discover the bug on KFENCE-enabled kernels easily.
 
-./samples/bpf/sockex3_kern.c
-    227 SEC("socket")
-    228 int bpf_func_mpls(struct __sk_buff *skb)
-    229 {
-    230         __u32 nhoff, label;
-    231 
-    232         nhoff = skb->cb[0];
-    233 
-    234         label = load_word(skb, nhoff);
-    235         nhoff += sizeof(struct mpls_label);
-    236         skb->cb[0] = nhoff;
-    237 
-    238         if (label & MPLS_LS_S_MASK) {
-    239                 __u8 verlen = load_byte(skb, nhoff);
---> 240                 if ((verlen & 0xF0) == 4)
-                            ^^^^^^^^^^^^^^^^^^^^
-This can't be true.  Was it supposed to be 0x0F or 0x40?
+#!/bin/bash
+bpftool map create /sys/fs/bpf/lpm type lpm_trie key 5 value 1 \
+entries 16 flags 0x1name lpm
 
-    241                         parse_eth_proto(skb, ETH_P_IP);
-    242                 else
-    243                         parse_eth_proto(skb, ETH_P_IPV6);
-    244         } else {
-    245                 parse_eth_proto(skb, ETH_P_MPLS_UC);
-    246         }
-    247 
-    248         return 0;
-    249 }
+for i in {0..8}; do
+	bpftool map update pinned /sys/fs/bpf/lpm \
+	key hex 0$i 00 00 00 00 \
+	value hex 00 any
+done
 
-regards,
-dan carpenter
+while true; do
+	bpftool map dump pinned /sys/fs/bpf/lpm
+done
+
+In my environment (6.12-rc4, with CONFIG_KFENCE), dmesg gave me this
+message as expected.
+
+[  463.141394] BUG: KFENCE: out-of-bounds write in trie_get_next_key+0x2f2/0x670
+
+[  463.143422] Out-of-bounds write at 0x0000000095bc45ea (256B right of kfence-#156):
+[  463.144438]  trie_get_next_key+0x2f2/0x670
+[  463.145439]  map_get_next_key+0x261/0x410
+[  463.146444]  __sys_bpf+0xad4/0x1170
+[  463.147438]  __x64_sys_bpf+0x74/0xc0
+[  463.148431]  do_syscall_64+0x79/0x150
+[  463.149425]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+
+[  463.151436] kfence-#156: 0x00000000279749c1-0x0000000034dc4abb, size=256, cache=kmalloc-256
+
+[  463.153414] allocated by task 2021 on cpu 2 at 463.140440s (0.012974s ago):
+[  463.154413]  trie_get_next_key+0x252/0x670
+[  463.155411]  map_get_next_key+0x261/0x410
+[  463.156402]  __sys_bpf+0xad4/0x1170
+[  463.157390]  __x64_sys_bpf+0x74/0xc0
+[  463.158386]  do_syscall_64+0x79/0x150
+[  463.159372]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
 
