@@ -1,168 +1,105 @@
-Return-Path: <bpf+bounces-42869-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42870-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FA249ABCF5
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 06:39:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EECA9ABF1D
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 08:45:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 459571C227B8
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 04:39:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C347B21FF5
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 06:45:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0174139CEF;
-	Wed, 23 Oct 2024 04:39:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E69F414AD3D;
+	Wed, 23 Oct 2024 06:45:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MzPQUCRh"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="D8F828hs"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41E378249F
-	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 04:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A556EB7C;
+	Wed, 23 Oct 2024 06:45:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729658360; cv=none; b=Ctg3EtQJ8TNr7pBPy/65c5eSit318vIsKwoXYdtgct8v4eVR2JeNKC44Xr3WOP+Wd6hoinMZfsFu6K9niqkKL0Tgwn4bVOD9+LVCQ3PwlJkTmWQugsJOViHgCLEklgqPKBq55OW+POTHUvlLb6ETYiXHDxqvf4v3gL7/b/L47dE=
+	t=1729665914; cv=none; b=Y6MeTvrOlbdlh/n9R6r/L8E0vtQzp2Zu0hm8GjSxW60qfkQJF6B+mFqbzGgjWvNZLLus2on9XjTonX2PZSs6eFM/Uobjiq/yq3+4gQR7buNjHd4Fi3YsK/EbcxYZDKiiDhIadCww9Ism8zk3GPulm6gP6KyT2ROj6jA2ju71Byg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729658360; c=relaxed/simple;
-	bh=R4koJzpIjYR86FSm3H9Em2fkW2MiW86BajO5KxHB+8Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ewDyELLYPGkKVSiVoD0EMsymLIqiGLeJj86dygJ6r9lpZzI+6a7x4Jm34eOGiRT2rMSvF5lIUgG+YjvdRn0ttxwKK5AzwQHflfjzbjbuJ8PohEj2LAG7Un0wfZ4GCrrcOHYVTBmvdoj90Q9GfIL6QdOjfTekGArQrCnWlyZ93Iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MzPQUCRh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EF11C4CEC6;
-	Wed, 23 Oct 2024 04:39:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729658359;
-	bh=R4koJzpIjYR86FSm3H9Em2fkW2MiW86BajO5KxHB+8Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MzPQUCRhK3PySkrIrQbecac2Ix8mSHPtpvhxkBxVTZ3RFMcZeJNLmBqupBNLEO55e
-	 lIWqoC9YpsGjlKZUGgRiyZedaozxW0AlKGCq/Xe6MbJn/aaZqoMQtUVSNwAbj7/S45
-	 5sriQyv3DhILfuP8AfFVpKw0W0M+YNC30X2h9/t5WW8NDX5LF+KcyfUc+aE8xVkgl9
-	 yt9AEERuFF32nBCi3mtNR3bgAoextHSCkpw/IRZ0/qadpc5xjAQZnfuBHcx027w1/q
-	 ETqs+u0VyamhZ6f71EnMbZ78//aLyb0zEtr+O7pxArE8W+Zkf8OXwrf5Q8fjKMsLWO
-	 Xbfm9yM6dStbQ==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org
-Cc: andrii@kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next 3/3] selftests/bpf: validate generic bpf_object and subskel APIs work together
-Date: Tue, 22 Oct 2024 21:39:08 -0700
-Message-ID: <20241023043908.3834423-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241023043908.3834423-1-andrii@kernel.org>
-References: <20241023043908.3834423-1-andrii@kernel.org>
+	s=arc-20240116; t=1729665914; c=relaxed/simple;
+	bh=5QHNOKzSaP6+V6m2H0p2UwehChnWSxNkBlBVyejMPVE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ifpalqJQ3aqSySIAjeyvLq5a/mXa9nYKhizmfOgfarhySwuvCGyiVGk/2k/pryqK01HNswWn5Nmx8DomA4Tz20C/ZX42a2ardpHjOOsHUR9DsIBJ2E0Ia4NzbdOUev2yorEhGueAvJ0vP5+SCofckmp27MsPNzoif6kKudPwxAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=D8F828hs; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=RSQPrKwOEquJSUdRa82UBzxuqVq2bj42C8it3gsI3CQ=; b=D8F828hsvgs7JIEkxW2YE8E8K8
+	ZRIbGWqlTPyT4Kr4Y41UubrQrHSUGUlWClC1kVCgaegmr0RpziLXGd55B3fLxdGijOWy6qyXuzhEJ
+	M2cWbNmO5wAKXXeCDezszGBSPL6EvZiCQ3JDPsIo09uPqp8uFlAyQ7IBG7RU6PEEaIZoenr/aw0Ht
+	FiJ/BOqU3y/2n/jE0vT63+1mavSvBeN7YK9J6D7sk0Qmc1HmPu9b4wJeWcbYm92MqL1/LEDEbHZOm
+	JG+y+ioL/nBk4bYzRx2JLk0H0anIXiO5i9xz27LRDK6Al4s4wkGdj8ARfuoNYp0JG7/OceZ7awt0o
+	qgXl8pKw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1t3V7H-0000000DFF7-1TUN;
+	Wed, 23 Oct 2024 06:45:11 +0000
+Date: Tue, 22 Oct 2024 23:45:11 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+	Song Liu <songliubraving@meta.com>, Song Liu <song@kernel.org>,
+	bpf <bpf@vger.kernel.org>,
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Kernel Team <kernel-team@meta.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Al Viro <viro@zeniv.linux.org.uk>, KP Singh <kpsingh@kernel.org>,
+	Matt Bobrowski <mattbobrowski@google.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Extend test fs_kfuncs to
+ cover security.bpf xattr names
+Message-ID: <ZxibdxIjfaHOpGJn@infradead.org>
+References: <20241002214637.3625277-1-song@kernel.org>
+ <20241002214637.3625277-3-song@kernel.org>
+ <Zw34dAaqA5tR6mHN@infradead.org>
+ <0DB83868-0049-40E3-8E62-0D8D913CB9CB@fb.com>
+ <Zw384bed3yVgZpoc@infradead.org>
+ <BF0CD913-B067-4105-88C2-B068431EE9E5@fb.com>
+ <20241016135155.otibqwcyqczxt26f@quack3>
+ <20241016-luxus-winkt-4676cfdf25ff@brauner>
+ <ZxEnV353YshfkmXe@infradead.org>
+ <20241021-ausgleichen-wesen-3d3ae116f742@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241021-ausgleichen-wesen-3d3ae116f742@brauner>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Add a new subtest validating that bpf_object loaded and initialized
-through generic APIs is still interoperable with BPF subskeleton,
-including initialization and reading of global variables.
+On Mon, Oct 21, 2024 at 03:24:30PM +0200, Christian Brauner wrote:
+> On Thu, Oct 17, 2024 at 08:03:51AM -0700, Christoph Hellwig wrote:
+> > On Wed, Oct 16, 2024 at 04:51:37PM +0200, Christian Brauner wrote:
+> > > > 
+> > > > I think that getting user.* xattrs from bpf hooks can still be useful for
+> > > > introspection and other tasks so I'm not convinced we should revert that
+> > > > functionality but maybe it is too easy to misuse? I'm not really decided.
+> > > 
+> > > Reading user.* xattr is fine. If an LSM decides to built a security
+> > > model around it then imho that's their business and since that happens
+> > > in out-of-tree LSM programs: shrug.
+> > 
+> > By that argument user.kfuncs is even more useless as just being able
+> > to read all xattrs should be just as fine.
+> 
+> bpf shouldn't read security.* of another LSM or a host of other examples...
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/prog_tests/subskeleton.c    | 76 ++++++++++++++++++-
- 1 file changed, 75 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/subskeleton.c b/tools/testing/selftests/bpf/prog_tests/subskeleton.c
-index 9c31b7004f9c..fdf13ed0152a 100644
---- a/tools/testing/selftests/bpf/prog_tests/subskeleton.c
-+++ b/tools/testing/selftests/bpf/prog_tests/subskeleton.c
-@@ -46,7 +46,8 @@ static int subskeleton_lib_subresult(struct bpf_object *obj)
- 	return result;
- }
- 
--void test_subskeleton(void)
-+/* initialize and load through skeleton, then instantiate subskeleton out of it */
-+static void subtest_skel_subskeleton(void)
- {
- 	int err, result;
- 	struct test_subskeleton *skel;
-@@ -76,3 +77,76 @@ void test_subskeleton(void)
- cleanup:
- 	test_subskeleton__destroy(skel);
- }
-+
-+/* initialize and load through generic bpf_object API, then instantiate subskeleton out of it */
-+static void subtest_obj_subskeleton(void)
-+{
-+	int err, result;
-+	const void *elf_bytes;
-+	size_t elf_bytes_sz = 0, rodata_sz = 0, bss_sz = 0;
-+	struct bpf_object *obj;
-+	const struct bpf_map *map;
-+	const struct bpf_program *prog;
-+	struct bpf_link *link = NULL;
-+	struct test_subskeleton__rodata *rodata;
-+	struct test_subskeleton__bss *bss;
-+
-+	elf_bytes = test_subskeleton__elf_bytes(&elf_bytes_sz);
-+	if (!ASSERT_OK_PTR(elf_bytes, "elf_bytes"))
-+		return;
-+
-+	obj = bpf_object__open_mem(elf_bytes, elf_bytes_sz, NULL);
-+	if (!ASSERT_OK_PTR(obj, "obj_open_mem"))
-+		return;
-+
-+	map = bpf_object__find_map_by_name(obj, ".rodata");
-+	if (!ASSERT_OK_PTR(map, "rodata_map_by_name"))
-+		goto cleanup;
-+
-+	rodata = bpf_map__initial_value(map, &rodata_sz);
-+	if (!ASSERT_OK_PTR(rodata, "rodata_get"))
-+		goto cleanup;
-+
-+	rodata->rovar1 = 10;
-+	rodata->var1 = 1;
-+	subskeleton_lib_setup(obj);
-+
-+	err = bpf_object__load(obj);
-+	if (!ASSERT_OK(err, "obj_load"))
-+		goto cleanup;
-+
-+	prog = bpf_object__find_program_by_name(obj, "handler1");
-+	if (!ASSERT_OK_PTR(prog, "prog_by_name"))
-+		goto cleanup;
-+
-+	link = bpf_program__attach(prog);
-+	if (!ASSERT_OK_PTR(link, "prog_attach"))
-+		goto cleanup;
-+
-+	/* trigger tracepoint */
-+	usleep(1);
-+
-+	map = bpf_object__find_map_by_name(obj, ".bss");
-+	if (!ASSERT_OK_PTR(map, "bss_map_by_name"))
-+		goto cleanup;
-+
-+	bss = bpf_map__initial_value(map, &bss_sz);
-+	if (!ASSERT_OK_PTR(rodata, "rodata_get"))
-+		goto cleanup;
-+
-+	result = subskeleton_lib_subresult(obj) * 10;
-+	ASSERT_EQ(bss->out1, result, "out1");
-+
-+cleanup:
-+	bpf_link__destroy(link);
-+	bpf_object__close(obj);
-+}
-+
-+
-+void test_subskeleton(void)
-+{
-+	if (test__start_subtest("skel_subskel"))
-+		subtest_skel_subskeleton();
-+	if (test__start_subtest("obj_subskel"))
-+		subtest_obj_subskeleton();
-+}
--- 
-2.43.5
-
+Sorry if I was unclear, but this was all about user.*.
 
