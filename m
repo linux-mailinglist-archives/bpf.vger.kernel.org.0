@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-42978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-42979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F40D29AD8A3
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 01:49:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C96629AD8A4
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 01:49:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A32F1283CAF
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 23:49:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A7B51F22D78
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2024 23:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B17A61FF7B7;
-	Wed, 23 Oct 2024 23:48:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA57A1FF7B4;
+	Wed, 23 Oct 2024 23:48:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="I9CM/iN5"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ONHPPTPx"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E6D1FF7B4
-	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 23:48:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1731B1F9439
+	for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 23:48:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729727336; cv=none; b=i8JKdYNpWmRDySkO5VS84/ckd89rO1VEDo51OaHZffm/hn9wNSIq4BAr6LR+J//aN1ciJ7K4ArP1cHfU2L5IYWxIeBAmeXm5rv9z7dH8rrJNRk19e70nhGwRAg6nDPnUhI3oRxXR+ke0fobtZQLRRhog0TTRzEWYoUbOnq4NoN8=
+	t=1729727338; cv=none; b=lGzqQUtfZI8wNb2n22DrKI5lthQQ4yLy4I8b+Yktx8dEHe8CZydDYjy6GjM6A5T0Yu6uLRJWEFbpAEizodzpoT9gAQP4uZrk0zUNwvTANsNVwq7Lxi5I1dHxv3QceKzBPNVj0XxmGqZ/KaEdNpdDEGtTpIE9HuzZbAHIezgH5DM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729727336; c=relaxed/simple;
-	bh=zDCt6zGbRK6sOif1jHdELZzbngM3DdOFvbVRw227GpU=;
+	s=arc-20240116; t=1729727338; c=relaxed/simple;
+	bh=P2JrIXYOSvZoRxfQ2wo7qBuUzBD+vFVUQjSd156jrn8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=W0v+sRyBc89rst1smpGGBCt3JSjojJ8cq2N+7c97ISPJMyHphfdXsCkGNaE4hiKPE3P1JRtsDABkcmRcx0wNVAiiC9g8AKLcId6hd1bA/WGy4ZXZ/LAUEnoScxcREB+C8m8dgSeRMDVXS9Yi053KEjQXjnkPiVzHOp2K2QXXG2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=I9CM/iN5; arc=none smtp.client-ip=91.218.175.179
+	 MIME-Version; b=gUrlO1HqrZxod1Hby8w4gBf4WW67IhYpiyjnkGQhqBcmUvomR5v4W34MHwSkRD8g8q/htziLJ2cx3zuxRLIeMhlakQovrojBRx0vg7oTe7sTiT/AtX8SEqhuTxQpT0Y36BM+YwcxU5llN+aIcPCr+XXobN8Z7NXlBH49NDx7qy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ONHPPTPx; arc=none smtp.client-ip=91.218.175.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729727331;
+	t=1729727334;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OxLlnaw3vKVZjGzwfDSxBowjq0XZbTPInGG9b0y1VWg=;
-	b=I9CM/iN5POsjj/gH/xQQMjVf4EEY2jXJbfcoPkfU2iPpZeonX074JuMrWi1IOvyxZAnaud
-	7yCvIP48SjA/TfvmqInq/rlOOzN/ot4dNrugp1Pa1RyvtLl2CK5cMHYQbPWf7WKU8zjQTb
-	+QB7CZqvLNiaiozkd1RrvO9b6l9mJxE=
+	bh=LfxAgjrA41ndbo/LgICCVE6xN9lYa416CQWA2xtXlqE=;
+	b=ONHPPTPx+Wt5C5q4b6SIY9pQ/vcE1iDZCKuxSiTTDkJWZDvbGr0UQQgoJsk9tkvRpk9y8i
+	JR+2RrqRJcZH25WzLRRrJCHXNRLaSCR1zmt58ecNkqjHvONg+9qDChXpqEP3IN/ABg1DgM
+	K6MQL1+peODgViMlXON7lIl4Jfa1pL0=
 From: Martin KaFai Lau <martin.lau@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -49,9 +49,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Kui-Feng Lee <thinker.li@gmail.com>,
 	kernel-team@meta.com
-Subject: [PATCH v6 bpf-next 10/12] selftests/bpf: Add update_elem failure test for task storage uptr
-Date: Wed, 23 Oct 2024 16:47:57 -0700
-Message-ID: <20241023234759.860539-11-martin.lau@linux.dev>
+Subject: [PATCH v6 bpf-next 11/12] selftests/bpf: Add uptr failure verifier tests
+Date: Wed, 23 Oct 2024 16:47:58 -0700
+Message-ID: <20241023234759.860539-12-martin.lau@linux.dev>
 In-Reply-To: <20241023234759.860539-1-martin.lau@linux.dev>
 References: <20241023234759.860539-1-martin.lau@linux.dev>
 Precedence: bulk
@@ -65,152 +65,144 @@ X-Migadu-Flow: FLOW_OUT
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-This patch test the following failures in syscall update_elem
-1. The first update_elem(BPF_F_LOCK) should be EOPNOTSUPP. syscall.c takes
-   care of unpinning the uptr.
-2. The second update_elem(BPF_EXIST) fails. syscall.c takes care of
-   unpinning the uptr.
-3. The forth update_elem(BPF_NOEXIST) fails. bpf_local_storage_update
-   takes care of unpinning the uptr.
+Add verifier tests to ensure invalid uptr usages are rejected.
 
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
- .../bpf/prog_tests/task_local_storage.c       | 45 +++++++++++++++++++
- .../selftests/bpf/progs/uptr_update_failure.c | 42 +++++++++++++++++
- .../testing/selftests/bpf/uptr_test_common.h  |  5 +++
- 3 files changed, 92 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/uptr_update_failure.c
+ .../bpf/prog_tests/task_local_storage.c       |   2 +
+ .../selftests/bpf/progs/uptr_failure.c        | 105 ++++++++++++++++++
+ 2 files changed, 107 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/uptr_failure.c
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-index b7af0921b3da..e985665efe7a 100644
+index e985665efe7a..772ed7ce4feb 100644
 --- a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
 +++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-@@ -17,6 +17,7 @@
- #include "task_storage_nodeadlock.skel.h"
+@@ -18,6 +18,7 @@
  #include "uptr_test_common.h"
  #include "task_ls_uptr.skel.h"
-+#include "uptr_update_failure.skel.h"
+ #include "uptr_update_failure.skel.h"
++#include "uptr_failure.skel.h"
  
  static void test_sys_enter_exit(void)
  {
-@@ -408,6 +409,48 @@ static void test_uptr_across_pages(void)
- 	munmap(mem, page_size * 2);
- }
- 
-+static void test_uptr_update_failure(void)
-+{
-+	struct value_lock_type value = {};
-+	struct uptr_update_failure *skel;
-+	int err, task_fd, map_fd;
-+
-+	task_fd = sys_pidfd_open(getpid(), 0);
-+	if (!ASSERT_OK_FD(task_fd, "task_fd"))
-+		return;
-+
-+	skel = uptr_update_failure__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		goto out;
-+
-+	map_fd = bpf_map__fd(skel->maps.datamap);
-+
-+	value.udata = &udata;
-+	err = bpf_map_update_elem(map_fd, &task_fd, &value, BPF_F_LOCK);
-+	if (!ASSERT_ERR(err, "update_elem(udata, BPF_F_LOCK)"))
-+		goto out;
-+	ASSERT_EQ(errno, EOPNOTSUPP, "errno");
-+
-+	err = bpf_map_update_elem(map_fd, &task_fd, &value, BPF_EXIST);
-+	if (!ASSERT_ERR(err, "update_elem(udata, BPF_EXIST)"))
-+		goto out;
-+	ASSERT_EQ(errno, ENOENT, "errno");
-+
-+	err = bpf_map_update_elem(map_fd, &task_fd, &value, BPF_NOEXIST);
-+	if (!ASSERT_OK(err, "update_elem(udata, BPF_NOEXIST)"))
-+		goto out;
-+
-+	value.udata = &udata2;
-+	err = bpf_map_update_elem(map_fd, &task_fd, &value, BPF_NOEXIST);
-+	if (!ASSERT_ERR(err, "update_elem(udata2, BPF_NOEXIST)"))
-+		goto out;
-+	ASSERT_EQ(errno, EEXIST, "errno");
-+
-+out:
-+	uptr_update_failure__destroy(skel);
-+	close(task_fd);
-+}
-+
- void test_task_local_storage(void)
- {
- 	if (test__start_subtest("sys_enter_exit"))
-@@ -422,4 +465,6 @@ void test_task_local_storage(void)
- 		test_uptr_basic();
- 	if (test__start_subtest("uptr_across_pages"))
+@@ -467,4 +468,5 @@ void test_task_local_storage(void)
  		test_uptr_across_pages();
-+	if (test__start_subtest("uptr_update_failure"))
-+		test_uptr_update_failure();
+ 	if (test__start_subtest("uptr_update_failure"))
+ 		test_uptr_update_failure();
++	RUN_TESTS(uptr_failure);
  }
-diff --git a/tools/testing/selftests/bpf/progs/uptr_update_failure.c b/tools/testing/selftests/bpf/progs/uptr_update_failure.c
+diff --git a/tools/testing/selftests/bpf/progs/uptr_failure.c b/tools/testing/selftests/bpf/progs/uptr_failure.c
 new file mode 100644
-index 000000000000..86c3bb954abc
+index 000000000000..0cfa1fd61440
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/uptr_update_failure.c
-@@ -0,0 +1,42 @@
++++ b/tools/testing/selftests/bpf/progs/uptr_failure.c
+@@ -0,0 +1,105 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
 +
 +#include <vmlinux.h>
 +#include <bpf/bpf_helpers.h>
++#include "bpf_experimental.h"
++#include "bpf_misc.h"
 +#include "uptr_test_common.h"
 +
 +struct {
 +	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
 +	__uint(map_flags, BPF_F_NO_PREALLOC);
 +	__type(key, int);
-+	__type(value, struct value_lock_type);
++	__type(value, struct value_type);
 +} datamap SEC(".maps");
 +
-+/* load test only. not used */
-+SEC("syscall")
-+int not_used(void *ctx)
++SEC("?syscall")
++__failure __msg("store to uptr disallowed")
++int uptr_write(const void *ctx)
 +{
-+	struct value_lock_type *ptr;
 +	struct task_struct *task;
-+	struct user_data *udata;
++	struct value_type *v;
 +
 +	task = bpf_get_current_task_btf();
-+	ptr = bpf_task_storage_get(&datamap, task, 0, 0);
-+	if (!ptr)
++	v = bpf_task_storage_get(&datamap, task, 0,
++				 BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!v)
 +		return 0;
 +
-+	bpf_spin_lock(&ptr->lock);
++	v->udata = NULL;
++	return 0;
++}
 +
-+	udata = ptr->udata;
-+	if (!udata) {
-+		bpf_spin_unlock(&ptr->lock);
++SEC("?syscall")
++__failure __msg("store to uptr disallowed")
++int uptr_write_nested(const void *ctx)
++{
++	struct task_struct *task;
++	struct value_type *v;
++
++	task = bpf_get_current_task_btf();
++	v = bpf_task_storage_get(&datamap, task, 0,
++				 BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!v)
 +		return 0;
-+	}
-+	udata->result = MAGIC_VALUE + udata->a + udata->b;
 +
-+	bpf_spin_unlock(&ptr->lock);
++	v->nested.udata = NULL;
++	return 0;
++}
++
++SEC("?syscall")
++__failure __msg("R1 invalid mem access 'mem_or_null'")
++int uptr_no_null_check(const void *ctx)
++{
++	struct task_struct *task;
++	struct value_type *v;
++
++	task = bpf_get_current_task_btf();
++	v = bpf_task_storage_get(&datamap, task, 0,
++				 BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!v)
++		return 0;
++
++	v->udata->result = 0;
++
++	return 0;
++}
++
++SEC("?syscall")
++__failure __msg("doesn't point to kptr")
++int uptr_kptr_xchg(const void *ctx)
++{
++	struct task_struct *task;
++	struct value_type *v;
++
++	task = bpf_get_current_task_btf();
++	v = bpf_task_storage_get(&datamap, task, 0,
++				 BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!v)
++		return 0;
++
++	bpf_kptr_xchg(&v->udata, NULL);
++
++	return 0;
++}
++
++SEC("?syscall")
++__failure __msg("invalid mem access 'scalar'")
++int uptr_obj_new(const void *ctx)
++{
++	struct value_type *v;
++
++	v = bpf_obj_new(typeof(*v));
++	if (!v)
++		return 0;
++
++	if (v->udata)
++		v->udata->result = 0;
++
++	bpf_obj_drop(v);
 +
 +	return 0;
 +}
 +
 +char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/uptr_test_common.h b/tools/testing/selftests/bpf/uptr_test_common.h
-index feb41176888c..45c00c80d935 100644
---- a/tools/testing/selftests/bpf/uptr_test_common.h
-+++ b/tools/testing/selftests/bpf/uptr_test_common.h
-@@ -32,4 +32,9 @@ struct value_type {
- 	struct nested_udata nested;
- };
- 
-+struct value_lock_type {
-+	struct user_data __uptr *udata;
-+	struct bpf_spin_lock lock;
-+};
-+
- #endif
 -- 
 2.43.5
 
