@@ -1,126 +1,149 @@
-Return-Path: <bpf+bounces-43007-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43008-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 896AD9ADACC
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 06:06:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BA4E9ADADA
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 06:25:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 491D8284528
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 04:06:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C710F1C21AEB
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 04:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E1C1662E8;
-	Thu, 24 Oct 2024 04:06:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3FF16D9B8;
+	Thu, 24 Oct 2024 04:25:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m05TVQnl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BLJvND4l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52DB22C9A
-	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 04:06:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A983222EED;
+	Thu, 24 Oct 2024 04:25:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729742796; cv=none; b=e7LLq3tAZREU5f3rzkkjIh84UHOkTaGfYN4zz7KLL7xfDUU8z4B5+wua4AoMGZpUHqK0w1ijMW4kMaEZcuh1yJGHodi38RfnPv5nAQk2qaGicY7Uh+DM6+PNMaKhm22cTcWOtuJu0xouo/zvQrTQOa1zx9v9xkaPfQes7Qlpcw0=
+	t=1729743941; cv=none; b=KRe+mhyxk92Qw5JKu1y1m/03mBafPy7QRVH2C/jmpD700zttiDh7nhtRCJ9r1TgCRGl1ucYrvgXILCdvJbrnNkdF81U8Yr7qMWGhS/0I9PNZ2w0Plltr4HAWmx0iLVZzThETxo+25hnQHpuuygEOtcAJ+eheMWeYAjwzxO6Qxtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729742796; c=relaxed/simple;
-	bh=Ubn3ADj/RK2pVpTJ7zGxfP69KJGaf84WXGePW5ic5Uc=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=DOm+dbhyRB/JuYD3yFBqjsU0plGXRAkssr1+pXSvKPLfSar+Vv5+xAojuBUEU9AMPKHkODrHa1veaVBsIKgt6AYeNMQyjqh8A8gYuKcPzBzcI/3hFotgP7c0VbekCzz0Q9X3KuXPkt7K4S+93d4oN/kkwg4XxW1iPvTntcKx22s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m05TVQnl; arc=none smtp.client-ip=209.85.160.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-288a990b0abso303045fac.2
-        for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 21:06:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729742793; x=1730347593; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U5k6XpXebzSXjEaPioIYzJzLGe1jtN4sNETS862RRe8=;
-        b=m05TVQnlKiVbYkB/FPxUEF77xVTO1VmxxGc6lD9qZbx8Z3mV+iEz3k57Z1VaM5jEHb
-         +3VMC6L6imK7PXeZqDJhZeISnKAP7NY41NfTkM3qZAKh6OV6rCfiD3B1gPsip8yr3Esn
-         v0wYCLDvs9Q1lMSwSO/MDI6U5f2xp2R33YKqCBiif2rPPbyjxtSZipxwuy4JemGJFNtn
-         u2ZDURxAuvnESILIb53cSrkU3h4uygr2DbWv9aaE3Fzmh9YY3m7PC0YQtwTZ3yOag2ob
-         wfNrk+6X5NsR1yfHWp5JspxAnxNjd4sN5LKK9IlCJJBQ5ChRFkrl6Luqdvvb7rVKWzVu
-         2hGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729742793; x=1730347593;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=U5k6XpXebzSXjEaPioIYzJzLGe1jtN4sNETS862RRe8=;
-        b=X0+Z2VVwkGztZddT3DEPxHH6KLsDjfAaVgLpOsEVfL1Qn/ZVVXGZ42BeDW7uANqx/Z
-         5aTBaAFYGtVqEIuJ9HCCgTnwlLNMSkMl6POzg/LcH0kSN6wi7GEcKzdMPB/vA9bfYTrg
-         LlIFaHY68jcoUgYQkMsIfpr7+Iv67ddDav6V9RbDhiuCLyXm6WwF/SvOiWP/xsxBOTXW
-         lhx0O0gxJEG5E6C1Uxalxn1knpZDZOz0VgAys1CM3jzyX8FcH9k1jo9Yl3MHBQFBjDIP
-         zuglRlNNcSVbqoZHdDSQXlQvcgIBRWynPpXbIJXT8ZjgVhqRhAkNiakwT1oQQdj2TLCN
-         aXFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWhEiblXyuNiPfoy7joHzig0uWizlxLOb3ht/F4yheOnErhSRj2DkqGndR7QygGZP+axCM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YygOOFlv9hHS2TSKAgg58rk11eNupUBApbZKHS2NY/+RD7GJouh
-	slpq1mZRjqcdcauxumohffUdULgnUHJ4gVIH0akRZbxhz9N7o5Z7
-X-Google-Smtp-Source: AGHT+IHaed8yti+2EPrmOZh8ASFqxwZkuPKor8k4HqZTPaSiNC7XnZ/prBgP0g645CMrOL6ow3QKHg==
-X-Received: by 2002:a05:6870:a710:b0:287:b133:8aca with SMTP id 586e51a60fabf-28ced2df260mr515956fac.25.1729742793468;
-        Wed, 23 Oct 2024 21:06:33 -0700 (PDT)
-Received: from localhost ([98.97.32.58])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7eaeab5862dsm7674502a12.51.2024.10.23.21.06.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2024 21:06:32 -0700 (PDT)
-Date: Wed, 23 Oct 2024 21:06:32 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: zijianzhang@bytedance.com, 
- bpf@vger.kernel.org
-Cc: martin.lau@linux.dev, 
- daniel@iogearbox.net, 
- john.fastabend@gmail.com, 
- ast@kernel.org, 
- andrii@kernel.org, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- mykolal@fb.com, 
- shuah@kernel.org, 
- jakub@cloudflare.com, 
- liujian56@huawei.com, 
- zijianzhang@bytedance.com, 
- cong.wang@bytedance.com
-Message-ID: <6719c7c847ddc_1cb22086f@john.notmuch>
-In-Reply-To: <20241020110345.1468595-2-zijianzhang@bytedance.com>
-References: <20241020110345.1468595-1-zijianzhang@bytedance.com>
- <20241020110345.1468595-2-zijianzhang@bytedance.com>
-Subject: RE: [PATCH bpf 1/8] selftests/bpf: Add txmsg_pass to pull/push/pop in
- test_sockmap
+	s=arc-20240116; t=1729743941; c=relaxed/simple;
+	bh=0MM5LDYxFthhIc4WNzguyAyibX+ea7PYax8n2zwG03A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cy4gCdJZg+emIk8vcBEQPWx61fCFhbZ4T7k/5OPhbLl+2SK0bJiNmoXiLpyvNTAORivsjEUix2oNm56w30w+KRudi80Eqq5KrrOr3n3TX0tUhbfl1GHLkEuePh+W68iwtmZQ+T/FzW0pfFa6ASd/FMgOS5Jxy3llEZPt8o46Icw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BLJvND4l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C25FC4CEC7;
+	Thu, 24 Oct 2024 04:25:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729743941;
+	bh=0MM5LDYxFthhIc4WNzguyAyibX+ea7PYax8n2zwG03A=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=BLJvND4l4EDGi/kP16ESgcNC5YJM6uFvQ4ATrsrWM/EHzNcxNyQ0eUfpkNaWLAe4L
+	 vC1IyZR3yNOt7GDoOrdoNPfDxpNDqaI9gFvZ/B+zRPrmLMYrk4WWd0fWdXngrxs0Hy
+	 rYJ16PEED3qBna5C57LgqnLJXhI/0QgApK+XG3eXxfIChIlXjNDGCijA/5Yb3OifjP
+	 79sj3s1pZoBHlY7vsB7rtEofzFvrCOU5xxb1vWRmgONP2Q+9KT0rjqk5hQHDe6mK6M
+	 UrSUz7HvMQP0rsEDONyG07klOQkmevePOvppln6eNpVx2qDZf3B4lL/TkZEPUozRJ7
+	 rxkadJJZJfn9g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C8813CE0BB1; Wed, 23 Oct 2024 21:25:40 -0700 (PDT)
+Date: Wed, 23 Oct 2024 21:25:40 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Andrea Parri <parri.andrea@gmail.com>
+Cc: puranjay@kernel.org, bpf@vger.kernel.org, lkmm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: Some observations (results) on BPF acquire and release
+Message-ID: <13f60db0-b334-4638-a768-d828ecf7c8d0@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <Zxk2wNs4sxEIg-4d@andrea>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zxk2wNs4sxEIg-4d@andrea>
 
-zijianzhang@ wrote:
-> From: Zijian Zhang <zijianzhang@bytedance.com>
+On Wed, Oct 23, 2024 at 08:47:44PM +0300, Andrea Parri wrote:
+> Hi Puranjay and Paul,
 > 
-> Add txmsg_pass to test_txmsg_pull/push/pop. If txmsg_pass is missing,
-> tx_prog will be NULL, and no program will be attached to the sockmap.
-> As a result, pull/push/pop are never invoked.
+> I'm running some experiment on the (experimental) formalization of BPF
+> acquire and release available from [1] and wanted to report about some
+> (initial) observations for discussion and possibly future developments;
+> apologies in advance for the relatively long email and any repetition.
 > 
-> Fixes: 328aa08a081b ("bpf: Selftests, break down test_sockmap into subtests")
-> Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
-> ---
->  tools/testing/selftests/bpf/test_sockmap.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+> 
+> A first and probably most important observation is that the (current)
+> formalization of acquire and release appears to be "too strong": IIUC,
+> the simplest example/illustration for this is given by the following
+> 
+> BPF R+release+fence
+> {
+>  0:r2=x; 0:r4=y;
+>  1:r2=y; 1:r4=x; 1:r6=l;
+> }
+>  P0                                 | P1                                         ;
+>  r1 = 1                             | r1 = 2                                     ;
+>  *(u32 *)(r2 + 0) = r1              | *(u32 *)(r2 + 0) = r1                      ;
+>  r3 = 1                             | r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) ;
+>  store_release((u32 *)(r4 + 0), r3) | r3 = *(u32 *)(r4 + 0)                      ;
+> exists ([y]=2 /\ 1:r3=0)
+> 
+> This "exists" condition is not satisfiable according to the BPF model;
+> however, if we adopt the "natural"/intended(?) PowerPC implementations
+> of the synchronization primitives above (aka, with store_release() -->
+> LWSYNC and atomic_fetch_add() --> SYNC ; [...] ), then we see that the
+> condition in question becomes (architecturally) satisfiable on PowerPC
+> (although I'm not aware of actual observations on PowerPC hardware).
 
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Yes, you are quite right, for efficient use on PowerPC, we need the BPF
+memory model to allow the above cycle in the R litmus test.  My bad,
+as I put too much emphasis on ARM64.
+
+> At first, the previous observation (validated via simulations and later
+> extended to similar but more complex scenarios ) made me believe that
+> the BPF formalization of acquire and release could be strictly stronger
+> than the corresponding LKMM formalization; but that is _not_ the case:
+> 
+> The following "exists" condition is satisfiable according to the BPF
+> model (and it remains satisfiable even if the load_acquire() in P2 is
+> paired with an additional store_release() in P1).  In contrast, the
+> corresponding LKMM condition (e.g load_acquire() --> smp_load_acquire()
+> and atomic_fetch_add() --> smp_mb()) is not satisfiable (in fact, the
+> same conclusion holds even if the putative smp_load_acquire() in P2 is
+> "replaced" with an smp_rmb() or with an address dependency).
+> 
+> BPF Z6.3+fence+fence+acquire
+> {
+>  0:r2=x; 0:r4=y; 0:r6=l;
+>  1:r2=y; 1:r4=z; 1:r6=m;
+>  2:r2=z; 2:r4=x;
+> }
+>  P0                                         | P1                                         | P2                                 ;
+>  r1 = 1                                     | r1 = 2                                     | r1 = load_acquire((u32 *)(r2 + 0)) ;
+>  *(u32 *)(r2 + 0) = r1                      | *(u32 *)(r2 + 0) = r1                      | r3 = *(u32 *)(r4 + 0)              ;
+>  r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) | r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) |                                    ;
+>  r3 = 1                                     | r3 = 1                                     |                                    ;
+>  *(u32 *)(r4 + 0) = r3                      | *(u32 *)(r4 + 0) = r3                      |                                    ;
+> exists ([y]=2 /\ 2:r1=1 /\ 2:r3=0)
+
+And again agreed, we do want to forbid Z6.3.
+
+> These remarks show that the proposed BPF formalization of acquire and
+> release somehow, but substantially, diverged from the corresponding
+> LKMM formalization.  My guess is that the divergences mentioned above
+> were not (fully) intentional, or I'm wondering -- why not follow the
+> latter (the LKMM's) more closely? -  This is probably the first question
+> I would need to clarify before trying/suggesting modifications to the
+> present formalizations.  ;-)  Thoughts?
+
+Thank you for digging into this!
+
+I clearly need to get my validation work going again, but I very much
+welcome any further help you would be willing to provide.
+
+							Thanx, Paul
+
+>   Andrea
+> 
+> 
+> [1] https://github.com/puranjaymohan/herdtools7/commits/bpf_acquire_release/
 
