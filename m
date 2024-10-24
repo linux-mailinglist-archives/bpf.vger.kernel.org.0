@@ -1,219 +1,157 @@
-Return-Path: <bpf+bounces-43038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BD379AE113
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 11:39:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D9829AE13E
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 11:43:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8410C1F2409F
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 09:39:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC023283589
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 09:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC821D8A0A;
-	Thu, 24 Oct 2024 09:35:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76CE1B6CF7;
+	Thu, 24 Oct 2024 09:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PyS/PHj6"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="pQjVpp93"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1EE1D63DD;
-	Thu, 24 Oct 2024 09:35:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22D5818A6DE;
+	Thu, 24 Oct 2024 09:41:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729762533; cv=none; b=kRV4XARNDbxx4/vdKHkx6WyPnt8fFZX5OSktXLCIZZksAwkk1uYGOXZb4EL4BYzJPpjCXE1jeOdXPjg62ofcFSvAa71CHR+jgEqnp1YsQmxvwEyQnjoL6BHTeiwpaRj4REmWXlzvHJtdKoZsYRNiihW7KKRPB0XApvI7/5eGPhw=
+	t=1729762893; cv=none; b=rsRSgOXGXo2Sz9MD7ToQCZS4kjJENeXWsd+6L2nBWKBlUpPq0GqknmhEpSl7/7wbUp5PXBeAQlC9TE8l48lY9caZfhKftcTM0VhOuC7mNJiGSljp9SazcmP3NFdGXbY0GuxvZ0pcpPu36iqnLgV4QU+QjkmnmwzL38YIj4DLobc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729762533; c=relaxed/simple;
-	bh=JOjiHl0o7arpbaGI4fKyn60i1TcmeSt2tbS6VcLQj6I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=E5Qmn+HASnsWV89DM9GP1w3fvu/NQV9VYVXe6JpOPfxWb/md8fiB6l/L0yroDVH+WHZJwEBfvwcpsJwiTjGaVBwG4Gmab8wd3oSGRWDHKYTksld78g4NSuT3LodAyVFVHoGqVJncpd6dQrXHZ7HVrGFldBoILKURMnIvRAfoDl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PyS/PHj6; arc=none smtp.client-ip=209.85.210.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-71e7086c231so525888b3a.0;
-        Thu, 24 Oct 2024 02:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729762531; x=1730367331; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=stvt/ug7FcaGbWi1ypKLhLB7lISmAXSv7hL3d+pTSLw=;
-        b=PyS/PHj6aU80YmpFaEeiYhYFPXQHqHobn2F04+ixUP5a0gVUzTdR5VxGcIn6hq1Dsi
-         AQEOfF3Wx2D860sCDUIHL9o9ux4WNZAS5Fl4LzpFJqQ53gieTrwCMlVQ2XwMNcaepffR
-         dCEhXGduuEGECZhdnkFLc4Y8C2m9aJKIic07UjWBKQxNqsVuKeLme8DKt/xRL7+DW8mG
-         sGFsBwFOHsOycnHfNApeZuPLe9yBurdTcezIIji38Xm/bZ2elTU/jV5zm5CJ2xWQ1boR
-         hmk5djN75RuHJgQ+oaVK0E20ObyAl5C8vlQjDOE6mpJuRz0WU7EZMOa0daEXxinCb70h
-         Ph4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729762531; x=1730367331;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=stvt/ug7FcaGbWi1ypKLhLB7lISmAXSv7hL3d+pTSLw=;
-        b=YMMvoMEVNU6s/JyzJNpfYOAbGaxC+QD+8Qpl43i04Gp17EG23KZXNQpKzvoA7Nj6fu
-         KNmwwHmEZNGgVL/wtTYT1nRXpDX4qxvyRxCOurF4R76PfHd83Gwrb3wtRu6qPaqJj3+X
-         lQmGYytj6nDmWOM44wsLqC40228Ee2f8AFKFMewgyaG+3yKZJkQ/KcXWRCR0J8/JUlvB
-         s68Vxbi9lCUSXGLkq/yyAdU/0PKHdYHm5WaJC1C0AvbxZ/ufOS07CXInWEZar+EaYb7C
-         55BHyuvsMKFcU1vx2Sz6kkZ8iDP3MvQnl5mx+r940bq6190CADpxDKNGPM+n7nYrCRaZ
-         f2XQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVHTxk40fY0KKaUB+qf5DxWizuESpQxKw8exgOXr9XBsebkgTV+WTGwh1I7NcMlrPFc2zSGQ9Sk@vger.kernel.org, AJvYcCVyfNUaOYWmCM/E6cF+v+fJtnwbMQM1eyCOgqZgaO5Kg1uGdiHADbDfoyQrTzeaxAAAymcVZwa8nO0/6w0nm5LN@vger.kernel.org, AJvYcCXgH9Y4myhxmOq7iNl37TGA0VQGTb9Eqj1fuXdaFmOgAYB8UH3KPExwXhRG25e+0DhF74bV7dE1B9igReW7@vger.kernel.org, AJvYcCXqqLWcWPK9FWDK723IOr01dlV13/yknO/tzDx+sKMw5I4RHdXcsqo3V8KzBXvYBme5F70=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxB4zaLDJadHD3NiopthPiQACltqRp/NYrbhEs2F4CGEbq6FeyX
-	kxHHNXtA2pqnNryiyf1f5gJlQgw/Tx56PBgL/mTFLZxXvuG+HpJz
-X-Google-Smtp-Source: AGHT+IEI2KbIxBuhuDZXrMTT1Lpj9/l1Jy9coAQRCILORelpf8QIpMfgUp97aC8o2zTFfXjHv6SKWQ==
-X-Received: by 2002:a05:6a00:8d4:b0:71e:617:63c1 with SMTP id d2e1a72fcca58-72045fe2578mr1263741b3a.27.1729762530766;
-        Thu, 24 Oct 2024 02:35:30 -0700 (PDT)
-Received: from localhost.localdomain ([43.129.25.208])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71ec1415071sm7600287b3a.217.2024.10.24.02.35.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2024 02:35:30 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: pabeni@redhat.com
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	dsahern@kernel.org,
-	pablo@netfilter.org,
-	kadlec@netfilter.org,
-	roopa@nvidia.com,
-	razor@blackwall.org,
-	gnault@redhat.com,
-	bigeasy@linutronix.de,
-	idosch@nvidia.com,
-	ast@kernel.org,
-	dongml2@chinatelecom.cn,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	bridge@lists.linux.dev,
-	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v4 9/9] net: ip: make ip_route_use_hint() return drop reasons
-Date: Thu, 24 Oct 2024 17:33:48 +0800
-Message-Id: <20241024093348.353245-10-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241024093348.353245-1-dongml2@chinatelecom.cn>
-References: <20241024093348.353245-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1729762893; c=relaxed/simple;
+	bh=ma0g7GLcEQrQVNhgwck0mm7KyLelohOqXLM+hb3/50k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K6Tf95rUsMLJRxeKUX59PLnLPGI9Wfllt4vZ0877/hfg+peseIxsIMnzyurWJxvQdfht+NpOVH1oRSN869MF1OPOJ8H45Zrk7HIKh5iW9/edmWmRoyfPqND02AbjxmxoUOpu4N+fLoou8CqwNxJvYMUafnutbCrPqm/OgtXdoBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=pQjVpp93; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=S6iESo5yDpnwe/hVh55kcZtvpPHafaX5hOiXCOSvrW4=; b=pQjVpp934/QFAQnRY+HztQaC4w
+	ffCzA74WxstShifL5tyDcIwh/HF22hXMyDylPo9JKdA1mCAznJkxh5bXVqaihFJPkJYJ7AcOvQU5U
+	jr4h8hgotqr5j9jmo6+5cF+9PfzifB3JCOz2PFt/dEQw4d7fZyhb83BfGqBx+BmWlJITXRCKRgLo6
+	HJQEFxO+sj4l2WwLGeZNGlYAtax75wgRF/erxYcJwsYuPJBEQv6dPUAlprMtXc+BluOwchp6943T3
+	vzNzu3TexR5AG6WpV3zUaFQj6aCAyjzPTyuNeExW3NYqLsbPn5QmfmFjMuhh1Phn748GJWnb0e6kX
+	2tglp6Tg==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1t3uLI-00020g-K5; Thu, 24 Oct 2024 11:41:20 +0200
+Received: from [85.1.206.226] (helo=[192.168.1.114])
+	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1t3uLI-000635-0a;
+	Thu, 24 Oct 2024 11:41:20 +0200
+Message-ID: <d94bf8c7-b026-4608-83d7-6230f136ee3b@iogearbox.net>
+Date: Thu, 24 Oct 2024 11:41:19 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/bpf: Add test for trie_get_next_key()
+To: Byeonguk Jeong <jungbu2855@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <ZxoOdzdMwvLspZiq@localhost.localdomain>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <ZxoOdzdMwvLspZiq@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27437/Thu Oct 24 10:33:37 2024)
 
-In this commit, we make ip_route_use_hint() return drop reasons. The
-drop reasons that we return are similar to what we do in
-ip_route_input_slow(), and no drop reasons are added in this commit.
+Hi Byeonguk,
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- include/net/route.h |  7 ++++---
- net/ipv4/ip_input.c |  9 ++++-----
- net/ipv4/route.c    | 26 ++++++++++++++++----------
- 3 files changed, 24 insertions(+), 18 deletions(-)
+On 10/24/24 11:08 AM, Byeonguk Jeong wrote:
+> Add a test for out-of-bounds write in trie_get_next_key() when a full
+> path from root to leaf exists and bpf_map_get_next_key() is called
+> with the leaf node. It may crashes the kernel on failure, so please
+> run in a VM.
+> 
+> Signed-off-by: Byeonguk Jeong <jungbu2855@gmail.com>
 
-diff --git a/include/net/route.h b/include/net/route.h
-index f4ab5412c9c9..4debc335d276 100644
---- a/include/net/route.h
-+++ b/include/net/route.h
-@@ -206,9 +206,10 @@ ip_mc_validate_source(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- enum skb_drop_reason
- ip_route_input_noref(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 		     dscp_t dscp, struct net_device *dev);
--int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
--		      dscp_t dscp, struct net_device *dev,
--		      const struct sk_buff *hint);
-+enum skb_drop_reason
-+ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
-+		  dscp_t dscp, struct net_device *dev,
-+		  const struct sk_buff *hint);
- 
- static inline enum skb_drop_reason
- ip_route_input(struct sk_buff *skb, __be32 dst, __be32 src, dscp_t dscp,
-diff --git a/net/ipv4/ip_input.c b/net/ipv4/ip_input.c
-index 513eb0c6435a..f0a4dda246ab 100644
---- a/net/ipv4/ip_input.c
-+++ b/net/ipv4/ip_input.c
-@@ -322,15 +322,14 @@ static int ip_rcv_finish_core(struct net *net, struct sock *sk,
- 	int err, drop_reason;
- 	struct rtable *rt;
- 
--	drop_reason = SKB_DROP_REASON_NOT_SPECIFIED;
--
- 	if (ip_can_use_hint(skb, iph, hint)) {
--		err = ip_route_use_hint(skb, iph->daddr, iph->saddr,
--					ip4h_dscp(iph), dev, hint);
--		if (unlikely(err))
-+		drop_reason = ip_route_use_hint(skb, iph->daddr, iph->saddr,
-+						ip4h_dscp(iph), dev, hint);
-+		if (unlikely(drop_reason))
- 			goto drop_error;
- 	}
- 
-+	drop_reason = SKB_DROP_REASON_NOT_SPECIFIED;
- 	if (READ_ONCE(net->ipv4.sysctl_ip_early_demux) &&
- 	    !skb_dst(skb) &&
- 	    !skb->sk &&
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index d47d7ae9fc61..7a064e3a2d49 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -2142,28 +2142,34 @@ ip_mkroute_input(struct sk_buff *skb, struct fib_result *res,
-  * assuming daddr is valid and the destination is not a local broadcast one.
-  * Uses the provided hint instead of performing a route lookup.
-  */
--int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
--		      dscp_t dscp, struct net_device *dev,
--		      const struct sk_buff *hint)
-+enum skb_drop_reason
-+ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
-+		  dscp_t dscp, struct net_device *dev,
-+		  const struct sk_buff *hint)
- {
-+	enum skb_drop_reason reason = SKB_DROP_REASON_NOT_SPECIFIED;
- 	struct in_device *in_dev = __in_dev_get_rcu(dev);
- 	struct rtable *rt = skb_rtable(hint);
- 	struct net *net = dev_net(dev);
--	enum skb_drop_reason reason;
--	int err = -EINVAL;
- 	u32 tag = 0;
- 
- 	if (!in_dev)
--		return -EINVAL;
-+		return reason;
- 
--	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr))
-+	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr)) {
-+		reason = SKB_DROP_REASON_IP_INVALID_SOURCE;
- 		goto martian_source;
-+	}
- 
--	if (ipv4_is_zeronet(saddr))
-+	if (ipv4_is_zeronet(saddr)) {
-+		reason = SKB_DROP_REASON_IP_INVALID_SOURCE;
- 		goto martian_source;
-+	}
- 
--	if (ipv4_is_loopback(saddr) && !IN_DEV_NET_ROUTE_LOCALNET(in_dev, net))
-+	if (ipv4_is_loopback(saddr) && !IN_DEV_NET_ROUTE_LOCALNET(in_dev, net)) {
-+		reason = SKB_DROP_REASON_IP_LOCALNET;
- 		goto martian_source;
-+	}
- 
- 	if (rt->rt_type != RTN_LOCAL)
- 		goto skip_validate_source;
-@@ -2179,7 +2185,7 @@ int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 
- martian_source:
- 	ip_handle_martian_source(dev, in_dev, skb, daddr, saddr);
--	return err;
-+	return reason;
- }
- 
- /* get device for dst_alloc with local routes */
--- 
-2.39.5
+Could you submit the fix + this selftest as a 2-patch series, otherwise BPF CI
+cannot test both in combination (pls make sure subject has [PATCH bpf] so that
+our CI adds this on top of the bpf tree).
 
+Right now the CI selftest build threw an error:
+
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c: In function ‘test_lpm_trie_map_get_next_key’:
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c:84:9: error: format not a string literal and no format arguments [-Werror=format-security]
+      84 |         CHECK(map_fd == -1, "bpf_map_create(), error:%s\n",
+         |         ^~~~~
+     TEST-OBJ [test_maps] task_storage_map.test.o
+     TEST-OBJ [test_progs] access_variable_array.test.o
+   cc1: all warnings being treated as errors
+     TEST-OBJ [test_progs] align.test.o
+     TEST-OBJ [test_progs] arena_atomics.test.o
+   make: *** [Makefile:765: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/lpm_trie_map_get_next_key.test.o] Error 1
+   make: *** Waiting for unfinished jobs....
+     GEN-SKEL [test_progs-no_alu32] test_usdt.skel.h
+   make: Leaving directory '/tmp/work/bpf/bpf/tools/testing/selftests/bpf'
+
+Also on quick glance, please use ASSERT_*() macros instead of CHECK() as the
+latter is deprecated.
+
+Thanks,
+Daniel
 
