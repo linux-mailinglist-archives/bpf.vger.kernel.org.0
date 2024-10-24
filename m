@@ -1,148 +1,155 @@
-Return-Path: <bpf+bounces-43105-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43106-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 969C39AF4DC
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 23:57:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA17B9AF51C
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 00:10:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2389D281A9C
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 21:57:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 780701F22A54
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 22:10:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5F512178F1;
-	Thu, 24 Oct 2024 21:57:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C93021733C;
+	Thu, 24 Oct 2024 22:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="GQU/f1hd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qos2/UF3"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DD79156C74;
-	Thu, 24 Oct 2024 21:57:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715A91C4A32
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 22:10:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729807054; cv=none; b=lWSjEXBsoGwISrMpozZl/PxhUbapfqHkdRvKf/SxouwQ6ocOBbNDMBEZME/RXfWbn/QoE35PSUudaZmrw5glafvl2wJ7cMIezZd/hcaDkR+fWOYon6nBivHg2EpHgs0K7879agxp1c6Szfr1B+iDJfjhmHo5BPZwQC0OuKo+wuk=
+	t=1729807814; cv=none; b=XzKAftrVF5O2ZeKdEPqpQio/vQRujO36UZr57bY/CFp5lOH1ysWrlEVSiKdpRefjQ6xkRo0KwYdYjWSw0F++ZBbRCXwwAZUBpft6t37jVZ/eCkc/se7HGvnuG71yfV3HPS03kdecWSloZEed4ztGFvrOzj25KL7OOVU0Ju0fc5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729807054; c=relaxed/simple;
-	bh=k2Cu7LS2AcDU1X9fd4y0JNdfOT8WJdBfnzX3gY+gSis=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ty6dPjGC5lxFrm/Bhtx4MLIb13nYIfKb/M7WIw6/l8h0M9oZLad+pS9YmuR7EFBsq9QjQEDlQGOSV+xCCcl5M1Rw2ZYRai+dEcvfhATDWAVtrTeL2/USJH0qBKRbhBawPiL/cfFXSCj+ucLZFHzyWrXbo3HanICe9Tj0WASMSSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=GQU/f1hd; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=2gmx1gSLQpQKkoaF379JOep+mYJrpU3SlXt9w9fvpy4=; b=GQU/f1hdvzdt2k+F3qSU1ibYdL
-	XAiH1SSEaHfpx1yIHvldIYp8fkbL4J1U9ZlSFWZOLlKXStlhz7In3pmrxiXLBcXpy+NNAVPJuCA5x
-	fzIVyRTHKX8mqCpPhJzsPbBiMi1dJWHAnheDB84il+dRj8AKsSbL2AoEHwzmDXGaNk9+aMz8hOavs
-	Mh1+k6thLpuOfZCVroZiC+L2/3M8bYuj4BYRIQ58GtyGL4wFFEYXWjyp9D7ufGxyp2xzHTj0SmILj
-	Us+RtwySkzpRb48vwc/RDXfn84d3fJ3a5+iXzxJ2hSUsYGXHynUUmwnd78dM0oTRSOwd2WRjiG798
-	TkDT/fTw==;
-Received: from 226.206.1.85.dynamic.cust.swisscom.net ([85.1.206.226] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1t45pd-000LU5-B3; Thu, 24 Oct 2024 23:57:25 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: torvalds@linux-foundation.org
-Cc: bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	alexei.starovoitov@gmail.com,
-	andrii@kernel.org,
-	martin.lau@kernel.org
-Subject: [GIT PULL] bpf for v6.12-rc5
-Date: Thu, 24 Oct 2024 23:57:24 +0200
-Message-Id: <20241024215724.60017-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1729807814; c=relaxed/simple;
+	bh=mIqPd/qYvC2YX78Z1ecH4gTxSHaJqJ8AycpSaiJ3JfY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gDGDoHoFW33/6Hz7mzcA0Kwuf7LFtxDTDNyxdzSULbkxsPy9xkRwrvRf0LWWOaiNF46Bi9V69VMfAQDPUA44CJsF07U0eZjPxJaPY7QxwKZk2grDP4cYMVxniCzUfMwl72qXKWScrnkgpnc7lix/Cw7Jb9sZ/hhdlvkB8hnbfTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qos2/UF3; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4314b316495so13391525e9.2
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 15:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729807811; x=1730412611; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gYFaIuTa0H2qk6M2rZLl5kpyXu54inZIhHI5s6iup+I=;
+        b=Qos2/UF3j7h/PzBBtyRuyP/M8vBX1oNJmr15OwCFHArcUhgyj1F2Ff69ZiIKlij7FM
+         IB8HrlvC6VfIaAGm909AyrBLfzbUajMALlBEVR+s5gumssP7L98dyg+54Jk+M+CNaLeA
+         2mUjmCrW6dgcTyNOmwTEU9Zgt+kfXMqQgp493Wiwcr9+1zqkpoYe96uszeDclE8i/fuD
+         ioErYAH66spOXRa/2f6FZVaSLu5Amy9jaxYrF3TJFm9h85Kek8FFivxhMfABuXAkLzxR
+         RMx+ESJ8NZAVUnbEP0UDuf5d5wWkn2RuUYieUDCcboYzg9ulibImnTgkAKPIsxzcFUYv
+         Ut4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729807811; x=1730412611;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gYFaIuTa0H2qk6M2rZLl5kpyXu54inZIhHI5s6iup+I=;
+        b=WaoG6V7h4iYJkrWuR7uR+cp3DBgwOQntT3Dyys8AR1QxG89COnCqgKyHVdrIDBV7xk
+         +x7KZtt7SZXafGFYhV32crZPxeqLp7EOHhHxUPd+hH/Kz0q6W5PGiYLM4kILVC5ozOlY
+         QvUtjolLJCO34EFz9Wn/8tCToKLFgM1F1Y7mCVMjjyfrHPOK3ovlWamhvxv7T3V56iP/
+         b5b/T6xvRMSulTmK7n2QYs/dcqoVBtTRwLaI8ucmoPzZzLxJ4tZ/XWj62923EP/4PeE3
+         Kj4ID6dZNxooDb2UB6UjCMUO37+RkILWMxPT6tXESSJJTZsuMOPcrJZCoZVtA9l/Gi3m
+         Mqcg==
+X-Gm-Message-State: AOJu0YyD4z9Ivju+qCVLbcNRuRfW589wz9NtdtrFLIsOqpagNkDLZMOw
+	nOTr2idirXOhqSjoYZcSHY8IAG2nvE98EJJc2lMdc+eL79CyLqBg5R9nB7chC3ufuaZvgCW9oMQ
+	6YWcvSZsh5C/R0TDmoGDnDE6T+0o=
+X-Google-Smtp-Source: AGHT+IFbg07Kw16EOwmZmNsa2cfk0AjGLRMj33HBK6zka9qMQFMosAxb4w3Z5sk4onm/tizmMm0cJRLjKtnn4AsPoGw=
+X-Received: by 2002:a05:600c:19d4:b0:42c:c401:6d67 with SMTP id
+ 5b1f17b1804b1-431841306a9mr60512285e9.6.1729807810438; Thu, 24 Oct 2024
+ 15:10:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27437/Thu Oct 24 10:33:37 2024)
+References: <20241021133929.67782-1-leon.hwang@linux.dev> <20241021133929.67782-2-leon.hwang@linux.dev>
+In-Reply-To: <20241021133929.67782-2-leon.hwang@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 24 Oct 2024 15:09:59 -0700
+Message-ID: <CAADnVQKO3rdaVrNOcLbm=kmue4orurcRTuskgrdze_=ExS2A7g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf, x64: Propagate tailcall info only for
+ tail_call_reachable subprogs
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Eddy Z <eddyz87@gmail.com>, kernel-patches-bot@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Mon, Oct 21, 2024 at 6:39=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
+rote:
+>
+> In the x86_64 JIT, when calling a function, tailcall info is propagated i=
+f
+> the program is tail_call_reachable, regardless of whether the function is=
+ a
+> subprog, helper, or kfunc. However, this propagation is unnecessary for
+> not-tail_call_reachable subprogs, helpers, or kfuncs.
+>
+> The verifier can determine if a subprog is tail_call_reachable. Therefore=
+,
+> it can be optimized to only propagate tailcall info when the callee is
+> subprog and the subprog is actually tail_call_reachable.
+>
+> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+> ---
+>  arch/x86/net/bpf_jit_comp.c | 4 +++-
+>  kernel/bpf/verifier.c       | 6 ++++++
+>  2 files changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 06b080b61aa57..6ad6886ecfc88 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -2124,10 +2124,12 @@ st:                     if (is_imm8(insn->off))
+>
+>                         /* call */
+>                 case BPF_JMP | BPF_CALL: {
+> +                       bool pseudo_call =3D src_reg =3D=3D BPF_PSEUDO_CA=
+LL;
+> +                       bool subprog_tail_call_reachable =3D dst_reg;
+>                         u8 *ip =3D image + addrs[i - 1];
+>
+>                         func =3D (u8 *) __bpf_call_base + imm32;
+> -                       if (tail_call_reachable) {
+> +                       if (pseudo_call && subprog_tail_call_reachable) {
+>                                 LOAD_TAIL_CALL_CNT_PTR(bpf_prog->aux->sta=
+ck_depth);
+>                                 ip +=3D 7;
+>                         }
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index f514247ba8ba8..6e7e42c7bc7b1 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -19990,6 +19990,12 @@ static int jit_subprogs(struct bpf_verifier_env =
+*env)
+>                         insn[0].imm =3D (u32)addr;
+>                         insn[1].imm =3D addr >> 32;
+>                 }
+> +
+> +               if (bpf_pseudo_call(insn))
+> +                       /* In the x86_64 JIT, tailcall information can on=
+ly be
+> +                        * propagated if the subprog is tail_call_reachab=
+le.
+> +                        */
+> +                       insn->dst_reg =3D env->subprog_info[subprog].tail=
+_call_reachable;
 
-The following changes since commit 42f7652d3eb527d03665b09edac47f85fb600924:
+I really don't like hacking flags into dst_reg.
+We already abuse insn->off which is ugly too,
+but at least we clean insns later after JIT.
 
-  Linux 6.12-rc4 (2024-10-20 15:19:38 -0700)
+I'd rather live with this tail call inefficiency than abuse insns
+fields further.
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
-
-for you to fetch changes up to d5fb316e2af1d947f0f6c3666e373a54d9f27c6f:
-
-  Merge branch 'add-the-missing-bpf_link_type-invocation-for-sockmap' (2024-10-24 10:17:13 -0700)
-
-----------------------------------------------------------------
-BPF fixes:
-
-- Fix an out-of-bounds read in bpf_link_show_fdinfo for BPF
-  sockmap link file descriptors (Hou Tao)
-
-- Fix BPF arm64 JIT's address emission with tag-based KASAN
-  enabled reserving not enough size (Peter Collingbourne)
-
-- Fix BPF verifier do_misc_fixups patching for inlining of the
-  bpf_get_branch_snapshot BPF helper (Andrii Nakryiko)
-
-- Fix a BPF verifier bug and reject BPF program write attempts
-  into read-only marked BPF maps (Daniel Borkmann)
-
-- Fix perf_event_detach_bpf_prog error handling by removing an
-  invalid check which would skip BPF program release (Jiri Olsa)
-
-- Fix memory leak when parsing mount options for the BPF
-  filesystem (Hou Tao)
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-
-----------------------------------------------------------------
-Andrii Nakryiko (2):
-      bpf: fix do_misc_fixups() for bpf_get_branch_snapshot()
-      Merge branch 'add-the-missing-bpf_link_type-invocation-for-sockmap'
-
-Daniel Borkmann (5):
-      bpf: Add MEM_WRITE attribute
-      bpf: Fix overloading of MEM_UNINIT's meaning
-      bpf: Remove MEM_UNINIT from skb/xdp MTU helpers
-      selftests/bpf: Add test for writes to .rodata
-      selftests/bpf: Add test for passing in uninit mtu_len
-
-Hou Tao (3):
-      bpf: Preserve param->string when parsing mount options
-      bpf: Add the missing BPF_LINK_TYPE invocation for sockmap
-      bpf: Check validity of link->type in bpf_link_show_fdinfo()
-
-Jiri Olsa (1):
-      bpf,perf: Fix perf_event_detach_bpf_prog error handling
-
-Peter Collingbourne (1):
-      bpf, arm64: Fix address emission with tag-based KASAN enabled
-
- arch/arm64/net/bpf_jit_comp.c                      | 12 +++-
- include/linux/bpf.h                                | 14 +++-
- include/linux/bpf_types.h                          |  1 +
- include/uapi/linux/bpf.h                           |  3 +
- kernel/bpf/helpers.c                               | 10 +--
- kernel/bpf/inode.c                                 |  5 +-
- kernel/bpf/ringbuf.c                               |  2 +-
- kernel/bpf/syscall.c                               | 16 +++--
- kernel/bpf/verifier.c                              | 75 +++++++++++-----------
- kernel/trace/bpf_trace.c                           |  6 +-
- net/core/filter.c                                  | 42 +++++-------
- tools/include/uapi/linux/bpf.h                     |  3 +
- tools/testing/selftests/bpf/prog_tests/verifier.c  | 19 ++++++
- tools/testing/selftests/bpf/progs/verifier_const.c | 31 ++++++++-
- tools/testing/selftests/bpf/progs/verifier_mtu.c   | 18 ++++++
- 15 files changed, 167 insertions(+), 90 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_mtu.c
+pw-bot: cr
 
