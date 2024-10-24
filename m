@@ -1,149 +1,133 @@
-Return-Path: <bpf+bounces-43008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BA4E9ADADA
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 06:25:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38E409ADAFF
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 06:42:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C710F1C21AEB
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 04:25:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6831B1C2136E
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 04:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3FF16D9B8;
-	Thu, 24 Oct 2024 04:25:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B091E16DEDF;
+	Thu, 24 Oct 2024 04:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BLJvND4l"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mpuJ0Duw"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A983222EED;
-	Thu, 24 Oct 2024 04:25:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D14155308;
+	Thu, 24 Oct 2024 04:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729743941; cv=none; b=KRe+mhyxk92Qw5JKu1y1m/03mBafPy7QRVH2C/jmpD700zttiDh7nhtRCJ9r1TgCRGl1ucYrvgXILCdvJbrnNkdF81U8Yr7qMWGhS/0I9PNZ2w0Plltr4HAWmx0iLVZzThETxo+25hnQHpuuygEOtcAJ+eheMWeYAjwzxO6Qxtk=
+	t=1729744923; cv=none; b=CGyTi/IIW8ZKc+KqHjhAPtK4PShRo+U6daSPffNDfl/IphGNQ1aqUtcNmqer5MT+K4M4UyPUOAfZtGtg1e9TCyppVOzrmJIneCibfUEmK8451FdC37sfRDlYVUh47inMw2MFXG6OtdJNsySfWy1C9QyfZGisXj9DoFyRBZWNLzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729743941; c=relaxed/simple;
-	bh=0MM5LDYxFthhIc4WNzguyAyibX+ea7PYax8n2zwG03A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cy4gCdJZg+emIk8vcBEQPWx61fCFhbZ4T7k/5OPhbLl+2SK0bJiNmoXiLpyvNTAORivsjEUix2oNm56w30w+KRudi80Eqq5KrrOr3n3TX0tUhbfl1GHLkEuePh+W68iwtmZQ+T/FzW0pfFa6ASd/FMgOS5Jxy3llEZPt8o46Icw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BLJvND4l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C25FC4CEC7;
-	Thu, 24 Oct 2024 04:25:41 +0000 (UTC)
+	s=arc-20240116; t=1729744923; c=relaxed/simple;
+	bh=U8IRrTU/pt5P5yBPwVDyPSezRT9FW6UdCcA8/gGFhiM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=szYhN9uNqm5dr+kY88F8Gv9+rjk1cWRzZ1qtuY5wCGs8MhmyrBFnRA1I7G4sgrwBVtfnYR3xNv5zVpUuDi330wDoSj+CfJcq7eEfW/8IzFj82pK0OlFTOe5ChOGEJjZ1NDTyCYly5NXCVX5EsueOEJG6XIesgzE7QwqgAVncv1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mpuJ0Duw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3B85C4CEC7;
+	Thu, 24 Oct 2024 04:42:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729743941;
-	bh=0MM5LDYxFthhIc4WNzguyAyibX+ea7PYax8n2zwG03A=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=BLJvND4l4EDGi/kP16ESgcNC5YJM6uFvQ4ATrsrWM/EHzNcxNyQ0eUfpkNaWLAe4L
-	 vC1IyZR3yNOt7GDoOrdoNPfDxpNDqaI9gFvZ/B+zRPrmLMYrk4WWd0fWdXngrxs0Hy
-	 rYJ16PEED3qBna5C57LgqnLJXhI/0QgApK+XG3eXxfIChIlXjNDGCijA/5Yb3OifjP
-	 79sj3s1pZoBHlY7vsB7rtEofzFvrCOU5xxb1vWRmgONP2Q+9KT0rjqk5hQHDe6mK6M
-	 UrSUz7HvMQP0rsEDONyG07klOQkmevePOvppln6eNpVx2qDZf3B4lL/TkZEPUozRJ7
-	 rxkadJJZJfn9g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C8813CE0BB1; Wed, 23 Oct 2024 21:25:40 -0700 (PDT)
-Date: Wed, 23 Oct 2024 21:25:40 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Andrea Parri <parri.andrea@gmail.com>
-Cc: puranjay@kernel.org, bpf@vger.kernel.org, lkmm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: Some observations (results) on BPF acquire and release
-Message-ID: <13f60db0-b334-4638-a768-d828ecf7c8d0@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <Zxk2wNs4sxEIg-4d@andrea>
+	s=k20201202; t=1729744922;
+	bh=U8IRrTU/pt5P5yBPwVDyPSezRT9FW6UdCcA8/gGFhiM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=mpuJ0Duwrveb/DT/GO5KLEkU46IUfW2Vqk+w56Mb8orDODkxFVsF9dn2fDJXdQ7wJ
+	 d81HmV/9GN8INXFRVhNakM9TrnNzRhjtxF37+ch8KGEXWpDGyP9vRPqLBugFyKORD8
+	 Ib+MqvWL6WQQW3QL7yEjxPvLZnPkw3WcNlWHiOErGT1N00ov+NsweHYV8sIE9YT3yM
+	 y26CQaaF135YvL28ihqeG9b7QjR8dnidw2AEtb5LQos8xdp67JPqKolxaLFHG1RS88
+	 0vvfrleWZrCttq2UGY0ImxHCKwarLx5ys++KW2I36YXsXdvEDCwDK0JSSW7C8yFuRz
+	 EWzA3+Zr1wrxg==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: linux-trace-kernel@vger.kernel.org,
+	peterz@infradead.org,
+	oleg@redhat.com
+Cc: rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mingo@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jolsa@kernel.org,
+	paulmck@kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v3 tip/perf/core 0/2] SRCU-protected uretprobes hot path
+Date: Wed, 23 Oct 2024 21:41:57 -0700
+Message-ID: <20241024044159.3156646-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zxk2wNs4sxEIg-4d@andrea>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 23, 2024 at 08:47:44PM +0300, Andrea Parri wrote:
-> Hi Puranjay and Paul,
-> 
-> I'm running some experiment on the (experimental) formalization of BPF
-> acquire and release available from [1] and wanted to report about some
-> (initial) observations for discussion and possibly future developments;
-> apologies in advance for the relatively long email and any repetition.
-> 
-> 
-> A first and probably most important observation is that the (current)
-> formalization of acquire and release appears to be "too strong": IIUC,
-> the simplest example/illustration for this is given by the following
-> 
-> BPF R+release+fence
-> {
->  0:r2=x; 0:r4=y;
->  1:r2=y; 1:r4=x; 1:r6=l;
-> }
->  P0                                 | P1                                         ;
->  r1 = 1                             | r1 = 2                                     ;
->  *(u32 *)(r2 + 0) = r1              | *(u32 *)(r2 + 0) = r1                      ;
->  r3 = 1                             | r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) ;
->  store_release((u32 *)(r4 + 0), r3) | r3 = *(u32 *)(r4 + 0)                      ;
-> exists ([y]=2 /\ 1:r3=0)
-> 
-> This "exists" condition is not satisfiable according to the BPF model;
-> however, if we adopt the "natural"/intended(?) PowerPC implementations
-> of the synchronization primitives above (aka, with store_release() -->
-> LWSYNC and atomic_fetch_add() --> SYNC ; [...] ), then we see that the
-> condition in question becomes (architecturally) satisfiable on PowerPC
-> (although I'm not aware of actual observations on PowerPC hardware).
+Recently landed changes make uprobe entry hot code path makes use of RCU Tasks
+Trace to avoid touching uprobe refcount, which at high frequency of uprobe
+triggering leads to excessive cache line bouncing and limited scalability with
+increased number of CPUs that simultaneously execute uprobe handlers.
 
-Yes, you are quite right, for efficient use on PowerPC, we need the BPF
-memory model to allow the above cycle in the R litmus test.  My bad,
-as I put too much emphasis on ARM64.
+This patch set adds return uprobe (uretprobe) side of this, this time
+utilizing SRCU for the same reasons. Given the time between entry uprobe
+activation (at which point uretprobe code hijacks user-space stack to get
+activated on user function return) and uretprobe activation can be arbitrarily
+long and is completely under control of user code, we need to protect
+ourselves from too long or unbounded SRCU grace periods.
 
-> At first, the previous observation (validated via simulations and later
-> extended to similar but more complex scenarios ) made me believe that
-> the BPF formalization of acquire and release could be strictly stronger
-> than the corresponding LKMM formalization; but that is _not_ the case:
-> 
-> The following "exists" condition is satisfiable according to the BPF
-> model (and it remains satisfiable even if the load_acquire() in P2 is
-> paired with an additional store_release() in P1).  In contrast, the
-> corresponding LKMM condition (e.g load_acquire() --> smp_load_acquire()
-> and atomic_fetch_add() --> smp_mb()) is not satisfiable (in fact, the
-> same conclusion holds even if the putative smp_load_acquire() in P2 is
-> "replaced" with an smp_rmb() or with an address dependency).
-> 
-> BPF Z6.3+fence+fence+acquire
-> {
->  0:r2=x; 0:r4=y; 0:r6=l;
->  1:r2=y; 1:r4=z; 1:r6=m;
->  2:r2=z; 2:r4=x;
-> }
->  P0                                         | P1                                         | P2                                 ;
->  r1 = 1                                     | r1 = 2                                     | r1 = load_acquire((u32 *)(r2 + 0)) ;
->  *(u32 *)(r2 + 0) = r1                      | *(u32 *)(r2 + 0) = r1                      | r3 = *(u32 *)(r4 + 0)              ;
->  r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) | r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) |                                    ;
->  r3 = 1                                     | r3 = 1                                     |                                    ;
->  *(u32 *)(r4 + 0) = r3                      | *(u32 *)(r4 + 0) = r3                      |                                    ;
-> exists ([y]=2 /\ 2:r1=1 /\ 2:r3=0)
+To that end we keep SRCU protection only for a limited time, and if user space
+code takes longer to return, pending uretprobe instances are "downgraded" to
+refcounted ones. This gives us best scalability and performance for
+high-frequency uretprobes, and keeps upper bound on SRCU grace period duration
+for low frequency uretprobes.
 
-And again agreed, we do want to forbid Z6.3.
+There are a bunch of synchronization issues between timer callback running in
+IRQ handler and current thread executing uretprobe handlers, which is
+abstracted away behind "hybrid lifetime uprobe" (hprobe) wrapper around uprobe
+instance itself.
 
-> These remarks show that the proposed BPF formalization of acquire and
-> release somehow, but substantially, diverged from the corresponding
-> LKMM formalization.  My guess is that the divergences mentioned above
-> were not (fully) intentional, or I'm wondering -- why not follow the
-> latter (the LKMM's) more closely? -  This is probably the first question
-> I would need to clarify before trying/suggesting modifications to the
-> present formalizations.  ;-)  Thoughts?
+There is now a speculative try_get_uprobe() and, possibly, a compensating
+put_uprobe() being done from the timer thread (softirq), so we need to make
+sure that put_uprobe() is working well from any context. This is what patch #1
+does, employing deferred work callback, and shifting all the locking to it.
 
-Thank you for digging into this!
+v2->v3:
+  - rebased onto peterz/queue.git's perf/core on top of Jiri's changes;
+  - simplify hprobe states by utilizing HPROBE_GONE for NULL uprobe (Peter);
+  - hprobe_expire() can return uprobe with refcount, if requested (Peter);
+  - keep hprobe_init_leased() and hprobe_init_stable() to a) avoid srcu_idx
+    bikeshedding dependency and b) leased constructor shouldn't accept NULL
+    uprobe, so it's nice to be able to easily express and enforce that;
+  - patch #1 stays the same, we'll work on uprobe_delayed_lock separately;
+v1->v2:
+  - dropped single-stepped uprobes changes to make this change a bit more
+    palatable to Oleg and get some good will from him :)
+  - fixed the bug with not calling __srcu_read_unlock when "expiring" leased
+    uprobe, but failing to get refcount;
+  - switched hprobe implementation to an explicit state machine, which seems
+    to make logic more straightforward, evidenced by this allowing me to spot
+    the above subtle LEASED -> GONE transition bug;
+  - re-ran uprobe-stress many-many times, it was instrumental for getting
+    confidence in implementation and spotting subtle bugs (including the above
+    one, once I modified timer logic to ran at fixed interval to increase the
+    probability of races with the normal uretprobe consumer code);
+rfc->v1:
+  - made put_uprobe() work in any context, not just user context (Oleg);
+  - changed to unconditional mod_timer() usage to avoid races (Oleg).
+  - I kept single-stepped uprobe changes, as they have a simple use of all the
+    hprobe functionality developed in patch #1.
 
-I clearly need to get my validation work going again, but I very much
-welcome any further help you would be willing to provide.
+Andrii Nakryiko (2):
+  uprobes: allow put_uprobe() from non-sleepable softirq context
+  uprobes: SRCU-protect uretprobe lifetime (with timeout)
 
-							Thanx, Paul
+ include/linux/uprobes.h |  54 ++++++-
+ kernel/events/uprobes.c | 309 +++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 322 insertions(+), 41 deletions(-)
 
->   Andrea
-> 
-> 
-> [1] https://github.com/puranjaymohan/herdtools7/commits/bpf_acquire_release/
+-- 
+2.43.5
+
 
