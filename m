@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-43009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43010-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38E409ADAFF
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 06:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D54759ADB01
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 06:42:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6831B1C2136E
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 04:42:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 104E01C217AF
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 04:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B091E16DEDF;
-	Thu, 24 Oct 2024 04:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2355616D9AF;
+	Thu, 24 Oct 2024 04:42:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mpuJ0Duw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KUFJ5KJR"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D14155308;
-	Thu, 24 Oct 2024 04:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952A3155308;
+	Thu, 24 Oct 2024 04:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729744923; cv=none; b=CGyTi/IIW8ZKc+KqHjhAPtK4PShRo+U6daSPffNDfl/IphGNQ1aqUtcNmqer5MT+K4M4UyPUOAfZtGtg1e9TCyppVOzrmJIneCibfUEmK8451FdC37sfRDlYVUh47inMw2MFXG6OtdJNsySfWy1C9QyfZGisXj9DoFyRBZWNLzI=
+	t=1729744926; cv=none; b=LSe17if4S5u/mXzZdm3zvU9tgfrD0SRnNH5yZOzRWiMFFQlHSdchN9DJcaTkNL5V2UmkEbuNkg8gblAwlk9NK8CrB6EbIn1b6M8nS/bkI9btmc3WubwmcthQ3QmqYxd/DDcrERtLfzgPDqihb1nGoNEXIsMGBeLp7BnQgPC7AaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729744923; c=relaxed/simple;
-	bh=U8IRrTU/pt5P5yBPwVDyPSezRT9FW6UdCcA8/gGFhiM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=szYhN9uNqm5dr+kY88F8Gv9+rjk1cWRzZ1qtuY5wCGs8MhmyrBFnRA1I7G4sgrwBVtfnYR3xNv5zVpUuDi330wDoSj+CfJcq7eEfW/8IzFj82pK0OlFTOe5ChOGEJjZ1NDTyCYly5NXCVX5EsueOEJG6XIesgzE7QwqgAVncv1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mpuJ0Duw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3B85C4CEC7;
-	Thu, 24 Oct 2024 04:42:02 +0000 (UTC)
+	s=arc-20240116; t=1729744926; c=relaxed/simple;
+	bh=qxdeLmS88RTlcJ2/gkJB2e6Py7R8rZS7YIxGfYTXtUU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=XHGJySIIEZl99WmgZ7VBKKjEJQfHSUM+BFdJ6CAm2zgN7uophVe/AnXLE0QWsxPAbbxySMB7nghv0BbTMvuWHxyATHiWsRsKrCme7Lrcyrej97KoNdKFyUWTYDKRGbd84qq2ge9DKxtrLwnibKeYPOC0PEGZUQhSQ8oNpqGvs54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KUFJ5KJR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E048CC4CEC7;
+	Thu, 24 Oct 2024 04:42:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729744922;
-	bh=U8IRrTU/pt5P5yBPwVDyPSezRT9FW6UdCcA8/gGFhiM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=mpuJ0Duwrveb/DT/GO5KLEkU46IUfW2Vqk+w56Mb8orDODkxFVsF9dn2fDJXdQ7wJ
-	 d81HmV/9GN8INXFRVhNakM9TrnNzRhjtxF37+ch8KGEXWpDGyP9vRPqLBugFyKORD8
-	 Ib+MqvWL6WQQW3QL7yEjxPvLZnPkw3WcNlWHiOErGT1N00ov+NsweHYV8sIE9YT3yM
-	 y26CQaaF135YvL28ihqeG9b7QjR8dnidw2AEtb5LQos8xdp67JPqKolxaLFHG1RS88
-	 0vvfrleWZrCttq2UGY0ImxHCKwarLx5ys++KW2I36YXsXdvEDCwDK0JSSW7C8yFuRz
-	 EWzA3+Zr1wrxg==
+	s=k20201202; t=1729744926;
+	bh=qxdeLmS88RTlcJ2/gkJB2e6Py7R8rZS7YIxGfYTXtUU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=KUFJ5KJRLyqhjeIARG9R4XTt/gp6Qi9eLME3jYX30jUzd0DVMUOBDgKKe0Gi9HLTu
+	 cPDjwHTGxoxOnLu0Edr9qlPgA/VC7d7J6IzdDGErUUfsfO5hOq6dFk+QirNDOofPQZ
+	 dyeArngbb1v5L+TmhVCm+iCnraOSxB/ZwUIbbbLeHJAD0hGYvxBWFqN+Nx+29IoZ4I
+	 9aQUYX6BPJZ8KCGkl3rJbvPEfMf1MnRFfoBdv3KM41HcTHWSHv2LeODxdo/7j255j+
+	 5jWqyGGUYEkCFvi2Hfkuqn1CPB5zItRDGl5Fc5AOJGD7w0ZBmxGlAMjQ8O0Mx94nQb
+	 eu7Wx0ngh0QPw==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: linux-trace-kernel@vger.kernel.org,
 	peterz@infradead.org,
@@ -52,81 +53,93 @@ Cc: rostedt@goodmis.org,
 	jolsa@kernel.org,
 	paulmck@kernel.org,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v3 tip/perf/core 0/2] SRCU-protected uretprobes hot path
-Date: Wed, 23 Oct 2024 21:41:57 -0700
-Message-ID: <20241024044159.3156646-1-andrii@kernel.org>
+Subject: [PATCH v3 tip/perf/core 1/2] uprobes: allow put_uprobe() from non-sleepable softirq context
+Date: Wed, 23 Oct 2024 21:41:58 -0700
+Message-ID: <20241024044159.3156646-2-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.5
+In-Reply-To: <20241024044159.3156646-1-andrii@kernel.org>
+References: <20241024044159.3156646-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Recently landed changes make uprobe entry hot code path makes use of RCU Tasks
-Trace to avoid touching uprobe refcount, which at high frequency of uprobe
-triggering leads to excessive cache line bouncing and limited scalability with
-increased number of CPUs that simultaneously execute uprobe handlers.
+Currently put_uprobe() might trigger mutex_lock()/mutex_unlock(), which
+makes it unsuitable to be called from more restricted context like softirq.
 
-This patch set adds return uprobe (uretprobe) side of this, this time
-utilizing SRCU for the same reasons. Given the time between entry uprobe
-activation (at which point uretprobe code hijacks user-space stack to get
-activated on user function return) and uretprobe activation can be arbitrarily
-long and is completely under control of user code, we need to protect
-ourselves from too long or unbounded SRCU grace periods.
+Let's make put_uprobe() agnostic to the context in which it is called,
+and use work queue to defer the mutex-protected clean up steps.
 
-To that end we keep SRCU protection only for a limited time, and if user space
-code takes longer to return, pending uretprobe instances are "downgraded" to
-refcounted ones. This gives us best scalability and performance for
-high-frequency uretprobes, and keeps upper bound on SRCU grace period duration
-for low frequency uretprobes.
+RB tree removal step is also moved into work-deferred callback to avoid
+potential deadlock between softirq-based timer callback, added in the
+next patch, and the rest of uprobe code.
 
-There are a bunch of synchronization issues between timer callback running in
-IRQ handler and current thread executing uretprobe handlers, which is
-abstracted away behind "hybrid lifetime uprobe" (hprobe) wrapper around uprobe
-instance itself.
+We can rework locking altogher as a follow up, but that's significantly
+more tricky, so warrants its own patch set. For now, we need to make
+sure that changes in the next patch that add timer thread work correctly
+with existing approach, while concentrating on SRCU + timeout logic.
 
-There is now a speculative try_get_uprobe() and, possibly, a compensating
-put_uprobe() being done from the timer thread (softirq), so we need to make
-sure that put_uprobe() is working well from any context. This is what patch #1
-does, employing deferred work callback, and shifting all the locking to it.
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ kernel/events/uprobes.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-v2->v3:
-  - rebased onto peterz/queue.git's perf/core on top of Jiri's changes;
-  - simplify hprobe states by utilizing HPROBE_GONE for NULL uprobe (Peter);
-  - hprobe_expire() can return uprobe with refcount, if requested (Peter);
-  - keep hprobe_init_leased() and hprobe_init_stable() to a) avoid srcu_idx
-    bikeshedding dependency and b) leased constructor shouldn't accept NULL
-    uprobe, so it's nice to be able to easily express and enforce that;
-  - patch #1 stays the same, we'll work on uprobe_delayed_lock separately;
-v1->v2:
-  - dropped single-stepped uprobes changes to make this change a bit more
-    palatable to Oleg and get some good will from him :)
-  - fixed the bug with not calling __srcu_read_unlock when "expiring" leased
-    uprobe, but failing to get refcount;
-  - switched hprobe implementation to an explicit state machine, which seems
-    to make logic more straightforward, evidenced by this allowing me to spot
-    the above subtle LEASED -> GONE transition bug;
-  - re-ran uprobe-stress many-many times, it was instrumental for getting
-    confidence in implementation and spotting subtle bugs (including the above
-    one, once I modified timer logic to ran at fixed interval to increase the
-    probability of races with the normal uretprobe consumer code);
-rfc->v1:
-  - made put_uprobe() work in any context, not just user context (Oleg);
-  - changed to unconditional mod_timer() usage to avoid races (Oleg).
-  - I kept single-stepped uprobe changes, as they have a simple use of all the
-    hprobe functionality developed in patch #1.
-
-Andrii Nakryiko (2):
-  uprobes: allow put_uprobe() from non-sleepable softirq context
-  uprobes: SRCU-protect uretprobe lifetime (with timeout)
-
- include/linux/uprobes.h |  54 ++++++-
- kernel/events/uprobes.c | 309 +++++++++++++++++++++++++++++++++++-----
- 2 files changed, 322 insertions(+), 41 deletions(-)
-
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 4ef4b51776eb..d7e489246608 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -27,6 +27,7 @@
+ #include <linux/shmem_fs.h>
+ #include <linux/khugepaged.h>
+ #include <linux/rcupdate_trace.h>
++#include <linux/workqueue.h>
+ 
+ #include <linux/uprobes.h>
+ 
+@@ -61,7 +62,10 @@ struct uprobe {
+ 	struct list_head	pending_list;
+ 	struct list_head	consumers;
+ 	struct inode		*inode;		/* Also hold a ref to inode */
+-	struct rcu_head		rcu;
++	union {
++		struct rcu_head		rcu;
++		struct work_struct	work;
++	};
+ 	loff_t			offset;
+ 	loff_t			ref_ctr_offset;
+ 	unsigned long		flags;		/* "unsigned long" so bitops work */
+@@ -625,10 +629,9 @@ static void uprobe_free_rcu(struct rcu_head *rcu)
+ 	kfree(uprobe);
+ }
+ 
+-static void put_uprobe(struct uprobe *uprobe)
++static void uprobe_free_deferred(struct work_struct *work)
+ {
+-	if (!refcount_dec_and_test(&uprobe->ref))
+-		return;
++	struct uprobe *uprobe = container_of(work, struct uprobe, work);
+ 
+ 	write_lock(&uprobes_treelock);
+ 
+@@ -652,6 +655,15 @@ static void put_uprobe(struct uprobe *uprobe)
+ 	call_rcu_tasks_trace(&uprobe->rcu, uprobe_free_rcu);
+ }
+ 
++static void put_uprobe(struct uprobe *uprobe)
++{
++	if (!refcount_dec_and_test(&uprobe->ref))
++		return;
++
++	INIT_WORK(&uprobe->work, uprobe_free_deferred);
++	schedule_work(&uprobe->work);
++}
++
+ static __always_inline
+ int uprobe_cmp(const struct inode *l_inode, const loff_t l_offset,
+ 	       const struct uprobe *r)
 -- 
 2.43.5
 
