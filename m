@@ -1,179 +1,251 @@
-Return-Path: <bpf+bounces-43062-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43063-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98B2B9AECB5
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 18:54:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B057E9AECC4
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 18:56:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04620281C77
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 16:54:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3E161C23355
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 16:56:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE471F8196;
-	Thu, 24 Oct 2024 16:54:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187B41F81BC;
+	Thu, 24 Oct 2024 16:56:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C/btwhjw"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TIcrbN9U"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0212B1BD504
-	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 16:54:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E73C91F4FC2
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 16:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729788854; cv=none; b=dfaL2GjruMmXkmhZiJYflPtN3m+a3u1o9ajlMydQxOddiRXWBvsVjMPzf9CLIhlw0vG2ppJcitkC97L0lB0Ns6hfLsb7PEZfnSVtBm2wqqmRri3IshDxhAt/VP6gSRMqF1R7PpIa1NXY6sZF3KTVnJvN5Fs6Nhq5t9GVYjDas14=
+	t=1729789007; cv=none; b=DQ/JiejNFiOFm4hiKsulYfq/nD6N7yT/0IwBMzokP2eK4+/zIT0M5/1HjTaz+Wm/qAzTAQrdpP0BtUH+V+d2k89joLnez5wuO5rmbyefT2nuswsDycEzf45dskUGI19zWnho7L85xWz73FJTf2slkgP1dTJ1PHfeK0nPwRunxMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729788854; c=relaxed/simple;
-	bh=A8ipLqjy/GiKGpduWRGWB5yVsKVZ79G7vl9TEE+RErs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aDoD/OglrITjcIOYs2PACH49zRxz0GVe7S7h8QlT7T2N758rx9vxxPMulA+MqqHyNJ9qx/iFo1fwKbjNjzSqaQ0GGTBiJAqtCLXeYhaBE6paROoWM2EPRn4qcVd86k49pcD1lcTpKSdyjK44bOGvXATPgfFu6L5y+Ub77RN5D+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C/btwhjw; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-71ec12160f6so818049b3a.3
-        for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 09:54:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729788852; x=1730393652; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A8ipLqjy/GiKGpduWRGWB5yVsKVZ79G7vl9TEE+RErs=;
-        b=C/btwhjwGM5jPupo1pH4tXwPAbezSzE5BezP+LB7sjgB4SrHpUtwIwqupDZPU2m9Pv
-         MpolZH3yH5pmvNmzc/2G3OU+UuggUUzwUrcDDqOONCOlznmDyKIBE1Bs8WWbeNtoRJOU
-         qsQREeY9wtE3EUa7ZoeNrMHllU6VQEdxVhEMMcb9pj9qESdCCuJKkstL0MjFKkD+VcbE
-         bF5sg5KRTyedYV6Xhkd5IZhvndH2rV6qU8ajYDNLZVgwLq3hLM22gjioLpXPFA3dIDt6
-         n/pqv3huODWDsOrbZgYws23XCa+7ylS8UbH37C7De08hvBLFe7A0VWl4FgJNLcpT0Qfn
-         O9xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729788852; x=1730393652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A8ipLqjy/GiKGpduWRGWB5yVsKVZ79G7vl9TEE+RErs=;
-        b=unW8A8WzB3hlV7Uxax0RcR/YcG50oHTeafN09LR28f6eXT27xn/ZO2P0J/hH3nLl3i
-         SCrZMyONkbhqKzD//eHYyBFdXM3H5HYrQhElwFTqlcfwkyczMlXyRGbBqCY4jKLayI9U
-         j30Mqo2FXemAUZaacmpHTYYyamJ84fw2eYS485G/YxGvdfFo8pVHBjKbhx5cXmphPxVM
-         df5biBGy1T2/IQ5ZUQHupZyzXzWJNFmqjVX/BJI/rGD6F5BZzDvOLYKWhOvhks8jqen9
-         HPaXxrDfbo1+0V3u+J9YU4qxyV6Sjj9dOXvMvOnjzFnX2CDZUfz1X9+BqMkp0Q4zrCQL
-         GZ9g==
-X-Gm-Message-State: AOJu0YyRmPVSl3YkFhfyrzwsS//9ixwVz7aFMOfZLX9lrcoeEB2+d2cj
-	95K6ZNiyn6ZqwKad57xiPVZkx5FFKIlVNmEk8aiBQySILzaG0Pfz85cexwzGYHnP92vYxm5DupW
-	jtLWPwmxk67ORU/9M5EchKUCtbvfV7g==
-X-Google-Smtp-Source: AGHT+IFDPNp6x5zwdMhJE+r5sEWG7YsfuA43+3NMKk1DYBzSOeAIo2Hs3wGHvMlfE2f3QbNsJeYetTsXIRbSmaM8Cy4=
-X-Received: by 2002:a05:6a00:1394:b0:71e:722b:ae1d with SMTP id
- d2e1a72fcca58-72045fa47f1mr3152442b3a.25.1729788852042; Thu, 24 Oct 2024
- 09:54:12 -0700 (PDT)
+	s=arc-20240116; t=1729789007; c=relaxed/simple;
+	bh=/armHdgJSP+GLKMURrfk/W4zoFXMPKjhnVoHhxbfP74=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=LxINKN+tiyYivIX6mIP8Txk9Ax81WMCNJgBpmyfqL/6ydgMWV/QPrzTuOXwA4+sNpBOdBO8xcq/3j34nd6qYrDFnoPvf8/rUczVNVeBXSK0SwRfHjx5QVMxYumF1cTbNtHtfUMhXWiSxcqaXmrnEbOPqV17NM+gpM1A4xTnKQbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TIcrbN9U; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c92c4f52-d24b-45de-9d8a-c845acbb3269@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729789003;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xzwISSmDm0reuvlR0Z7/fr7h9fu+IbXI2kZFAnAMmxU=;
+	b=TIcrbN9UdDPhV91FIFiJPME9Z2SfQ1TMBvFOpqq5k4KP7FhFjvD9V90IL/HYkVDwv50gS/
+	I5yrNoM5KWXDeTb6d9nfFYRxG+g5uVj4cA79C+NiAIwxvN7KH9xi0/eoz5g/0pvhFPF1LR
+	90EnGgltZCWfWBnS+CepCMpaQgP9MRI=
+Date: Thu, 24 Oct 2024 09:56:34 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEf4BzYYZa3m5ttEgfPnZUBdYpgoq3JS0GCedXgeoWLgvr9YPQ@mail.gmail.com>
- <b58c8ae4-3a5c-44b3-bc85-2dd7dcea397b@oracle.com>
-In-Reply-To: <b58c8ae4-3a5c-44b3-bc85-2dd7dcea397b@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 24 Oct 2024 09:53:59 -0700
-Message-ID: <CAEf4Bzbv4SrQd=Yt7Z2PNQLT+1VkLKMaERFwfE8d=8s7QQ-_bQ@mail.gmail.com>
-Subject: Re: Questions about the state of some BTF features
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next 1/2] bpf, x64: Propagate tailcall info only for
+ tail_call_reachable subprogs
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ jolsa@kernel.org, eddyz87@gmail.com, kernel-patches-bot@fb.com
+References: <20241021133929.67782-1-leon.hwang@linux.dev>
+ <20241021133929.67782-2-leon.hwang@linux.dev>
+ <87faf17b-51aa-487f-8d49-bf297a64ffa6@linux.dev>
+ <0f61509c-3a00-422a-90f3-89bdfbd20037@linux.dev>
+ <c3e4f79c-8453-4e2d-b96f-a7ac718843cf@linux.dev>
+ <d3629f38-9579-468b-8fdb-6e3000590ef4@linux.dev>
+ <a2686faa-cdca-410f-b2c8-0521c08e758e@linux.dev>
+In-Reply-To: <a2686faa-cdca-410f-b2c8-0521c08e758e@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Oct 24, 2024 at 7:10=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
->
-> hey Andrii
->
-> On 23/10/2024 01:08, Andrii Nakryiko wrote:
-> > Hey Alan,
-> >
-> > There were a few BTF-related features you've been working on, and I
-> > realized recently that I don't remember exactly where we ended up with
-> > them and whether there is anything blocking those features. So instead
-> > of going on a mailing list archeology trip, I decided to lazily ask
-> > you directly :)
-> >
-> > Basically, at some point we were discussing and reviewing BTF
-> > extensions to have a minimal description of BTF types sizes (fixed and
-> > per-item length). What happened to it? Did we decide it's not
-> > necessary, or is it still in the works?
->
-> Yeah, it's still in the works; more on that below..
->
-> >
-> > Also, distilled BTF stuff. We landed libbpf-side API (and I believe
-> > the kernel-side changes went in as well, right?), but I don't think we
-> > enabled this functionality for kernel builds, is that right? What's
-> > missing to have relocatable BTF inside kernel modules? Pahole changes?
-> > Has that landed?
-> >
->
-> The pahole changes are in, and will be available in the imminent v1.28
-> release. Distilled BTF will however only be generated for out-of-tree
-> module builds, since it's not needed for kernels where vmlinux + module
-> are built at the same time.
 
-It's not, strictly speaking, needed, but it might be a good thing to
-do this anyways to avoid unnecessary rebuilding of kernel modules
-(always a good thing).
+On 10/24/24 9:38 AM, Yonghong Song wrote:
+>
+> On 10/23/24 8:33 PM, Leon Hwang wrote:
+>>
+>> On 24/10/24 10:29, Yonghong Song wrote:
+>>> On 10/21/24 6:46 PM, Leon Hwang wrote:
+>>>> On 22/10/24 01:49, Yonghong Song wrote:
+>>>>> On 10/21/24 6:39 AM, Leon Hwang wrote:
+>>>>>> In the x86_64 JIT, when calling a function, tailcall info is
+>>>>>> propagated if
+>>>>>> the program is tail_call_reachable, regardless of whether the 
+>>>>>> function
+>>>>>> is a
+>>>>>> subprog, helper, or kfunc. However, this propagation is 
+>>>>>> unnecessary for
+>>>>>> not-tail_call_reachable subprogs, helpers, or kfuncs.
+>>>>>>
+>>>>>> The verifier can determine if a subprog is tail_call_reachable.
+>>>>>> Therefore,
+>>>>>> it can be optimized to only propagate tailcall info when the 
+>>>>>> callee is
+>>>>>> subprog and the subprog is actually tail_call_reachable.
+>>>>>>
+>>>>>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+>>>>>> ---
+>>>>>>     arch/x86/net/bpf_jit_comp.c | 4 +++-
+>>>>>>     kernel/bpf/verifier.c       | 6 ++++++
+>>>>>>     2 files changed, 9 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/arch/x86/net/bpf_jit_comp.c 
+>>>>>> b/arch/x86/net/bpf_jit_comp.c
+>>>>>> index 06b080b61aa57..6ad6886ecfc88 100644
+>>>>>> --- a/arch/x86/net/bpf_jit_comp.c
+>>>>>> +++ b/arch/x86/net/bpf_jit_comp.c
+>>>>>> @@ -2124,10 +2124,12 @@ st:            if (is_imm8(insn->off))
+>>>>>>                   /* call */
+>>>>>>             case BPF_JMP | BPF_CALL: {
+>>>>>> +            bool pseudo_call = src_reg == BPF_PSEUDO_CALL;
+>>>>>> +            bool subprog_tail_call_reachable = dst_reg;
+>>>>>>                 u8 *ip = image + addrs[i - 1];
+>>>>>>                   func = (u8 *) __bpf_call_base + imm32;
+>>>>>> -            if (tail_call_reachable) {
+>>>>>> +            if (pseudo_call && subprog_tail_call_reachable) {
+>>>>> Why we need subprog_tail_call_reachable? Does
+>>>>>       tail_call_reachable && psueudo_call
+>>>>> work the same way?
+>>>>>
+>>>> 'tail_call_reachable && pseudo_call' works too. However, it will
+>>>> propagate tailcall info to subprog even if the subprog is not
+>>>> tail_call_reachable.
+>>>>
+>>>> subprog_tail_call_reachable indicates the subprog requires tailcall 
+>>>> info
+>>>> from its caller.
+>>>> So, 'pseudo_call && subprog_tail_call_reachable' is better.
+>>> In verifier.c, we have
+>>>    func[i]->aux->tail_call_reachable = env-
+>>>> subprog_info[i].tail_call_reachable;
+>>> that is subprog_info tail_call_reachable has been transferred to 
+>>> func[i]
+>>> tail_call_reachable.
+>>>
+>>> In x86 do_jit() func, we have
+>>>    bool tail_call_reachable = bpf_prog->aux->tail_call_reachable
+>>>
+>>> So looks like we do not need verifier.c change here.
+>>> Did I miss anything? Could you give a concrete example to show
+>>> subprog_tail_call_reachable approach is better than 
+>>> tail_call_reachable?
+>> Sure, here's an example:
+>>
+>> struct {
+>>     __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
+>>     __uint(key_size, sizeof(u32));
+>>     __uint(value_size, sizeof(u32));
+>>     __uint(max_entries, 1);
+>> } jmp_table SEC(".maps");
+>>
+>> static __noinline int
+>> subprog_tc1(struct __sk_buff *skb)
+>> {
+>>     volatile int retval = TC_ACT_OK;
+>>
+>>     bpf_tail_call_static(skb, jmp_table, 0);
+>>     return retval;
+>> }
+>>
+>> static __noinline int
+>> subprog_tc2(struct __sk_buff *skb)
+>> {
+>>     volatile int retval = TC_ACT_OK;
+>>
+>>     return retval;
+>> }
+>>
+>> SEC("tc")
+>> int entry_tc(struct __sk_buff *skb)
+>> {
+>>     u32 pid = bpf_get_smp_processor_id();
+>>     // do something with pid
+>>     subprog_tc2(skb);
+>>     return subprog_tc1(skb);
+>> }
+>>
+>>  From the verifier's perspective, both entry_tc and subprog_tc1 are
+>> tail_call_reachable.
+>>
+>> When handling 'BPF_JMP | BPF_CALL' in the x86 do_jit() for entry_tc,
+>> three cases arise:
+>>
+>> 1. bpf_get_smp_processor_id()
+>> 2. subprog_tc1()
+>> 3. subprog_tc2()
+>>
+>> At this point in x86 do_jit() for entry_tc, entry_tc is considered
+>> tail_call_reachable. The check 'bool pseudo_call = src_reg ==
+>> BPF_PSEUDO_CALL' is used to determine whether to call a subprogram.
+>>
+>> The question is: when should tailcall info be propagated? Should it be
+>> when entry_tc is tail_call_reachable, even if subprog_tc2 is called, or
+>> when subprog_tc1 is specifically tail_call_reachable?
+>>
+>> I believe it is better to propagate the tailcall info when subprog_tc1
+>> is tail_call_reachable.
+>
+> Okay, I see. Thanks for explanation.
+>
+> You use the insn->dst_reg to record whether callee is tail call
+> reachable or not. I think you can reuse insn->off which currently
+> represents subprog number but it is not used for jit. We can
+> use that to indicate callee is tail call reachable or not.
+>
+> Something like below:
+>
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 06b080b61aa5..b3c76bf59e65 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -2127,7 +2127,8 @@ st:                       if (is_imm8(insn->off))
+>                         u8 *ip = image + addrs[i - 1];
+>
+>                         func = (u8 *) __bpf_call_base + imm32;
+> -                       if (tail_call_reachable) {
+> +                       /* insn->off == 1 means the callee is tail 
+> call reachable */
+> +                       if (src_reg == BPF_PSEUDO_CALL && insn->off == 
+> 1) {
+> LOAD_TAIL_CALL_CNT_PTR(bpf_prog->aux->stack_depth);
+>                                 ip += 7;
+>                         }
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index f514247ba8ba..2ccadc1ac22e 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20096,6 +20096,8 @@ static int jit_subprogs(struct 
+> bpf_verifier_env *env)
+>                                 continue;
+>                         subprog = insn->off;
+>                         insn->imm = 
+> BPF_CALL_IMM(func[subprog]->bpf_func);
+> +                       /* Indicate whether callee is tail call 
+> reachable or not */
+> +                       insn->off = 
+> func[subprog]->aux->tail_call_reachable;
+>                 }
+>
+> WDYT?
 
-But at the very least we should enable it for bpf_testmod* in BPF
-selftests. Can we start with that?
+Sorry, the above seems not working since verifier do jit twice for the same prog
+and two jit'ed results need to be the same. The above change could make jit result
+different between two passes.
 
 >
-> Here's the set of BTF things I think we've discussed and folks have
-> talked about wanting. I've tried to order them based upon dependencies,
-> but in most cases a different ordering is possible.
->
-> 1. Build vmlinux BTF as a module (support CONFIG_DEBUG_INFO_BTF=3Dm). Thi=
-s
-> one helps the embedded folks as modules can be on a separate partition,
-> and a very large vmlinux is a problem in that environment apparently.
-> Plus we can do module compression, and I did some measurements and
-> vmlinux BTF shrinks from ~7Mb to ~1.5Mb when gzip-compressed. This is
-> sort of a dependency for
->
-> 2. all global variables in BTF. Stephen Brennan added support to pahole,
-> but we haven't switched the feature on yet in Makefile.btf. Needs more
-> testing and for some folks the growth in vmlinux BTF (~1.5Mb) may be an
-> issue, hence a soft dependency on 1.
->
-> 3. BTF header modifications to support kind layout. I've been waiting
-> for the need for a new BTF kind to add this, but that's not strictly
-> needed. But that brings us on to
->
-> 4. Augmenting BTF representations to support site-specific info
-> (including function addresses). We talked about this a bit with Yonghong
-> at plumbers. Will probably require new kind(s) so 3 should likely be
-> done first. May also need some special handling so as not to expose
-> function addresses to unprivileged users.
->
-> So I think 1 is possibly needed before 2, and I'm working on an RFC for
-> 1 which I hope to get sent out next week (been a bit delayed working on
-> the pahole release). 3 would need to be done before 4, or ideally any
-> other series that introduced new BTF kinds.
->
-> So that's the set of things I'm aware of - there may be other needs of
-> course - but the order 1-4 was roughly how I was thinking we could
-> attack it. 1 and 2 don't require core BTF changes, so are less
-> disruptive. We'd got pretty far down the road with an earlier version of
-> 3, so if anyone needed it sooner than I get to it, I'd be happy to help
-> of course.
-
-Thanks, Alan, for the list.
-
-I think we should prioritize 3 (and 1, of course), as you said, any
-BTF extension would be blocked on this (as far as I'm concerned at
-least). I wouldn't delay until we actually add a new BTF kind to land
-BTF header modifications, that would just delay future work
-unnecessarily.
-
->
-> Thanks!
->
-> Alan
+>>
+>> Thanks,
+>> Leon
+>>
 >
 
