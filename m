@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-43006-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FB7B9ADACB
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 06:06:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 896AD9ADACC
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 06:06:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20677284468
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 04:06:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 491D8284528
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 04:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E83165F16;
-	Thu, 24 Oct 2024 04:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E1C1662E8;
+	Thu, 24 Oct 2024 04:06:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OFGYFBh6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m05TVQnl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5CD2C9A
-	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 04:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52DB22C9A
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 04:06:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729742771; cv=none; b=pSZ9bFy8XbgUS7z5GFn881kIZdfYAXTQWhGytRnpkoI7Cj5fWkAzhpxrwGfVwCItxazMH3gMaXIi3yGoe9jB8OvPonEALunvtC7wLpiZzElnKuzY1+KCSh6B+5WYn9UXcGoqcRXtqlAWETj9p64tBkHsiuah8irjq6xx083dkpA=
+	t=1729742796; cv=none; b=e7LLq3tAZREU5f3rzkkjIh84UHOkTaGfYN4zz7KLL7xfDUU8z4B5+wua4AoMGZpUHqK0w1ijMW4kMaEZcuh1yJGHodi38RfnPv5nAQk2qaGicY7Uh+DM6+PNMaKhm22cTcWOtuJu0xouo/zvQrTQOa1zx9v9xkaPfQes7Qlpcw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729742771; c=relaxed/simple;
-	bh=0jZbWbzo2DFx8xLf51EvP3YGxwE/H8jYtHgW9F+z/aA=;
+	s=arc-20240116; t=1729742796; c=relaxed/simple;
+	bh=Ubn3ADj/RK2pVpTJ7zGxfP69KJGaf84WXGePW5ic5Uc=;
 	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=qdEL+yljXttFaDBjAdKIUQbwqceB/6Xcpr6RyG3FMrUrwbCFN96QZLmreqYQBsWeC5iFEhsw92DRz86ojG1wnlhf/2NxunBNo9jj0vZkwwetCkrd64bHrY/JEe1bgS3uvKWn39/1gXEUXH/PMP0oWq27HkI7xo+G92fXqwAyFL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OFGYFBh6; arc=none smtp.client-ip=209.85.210.49
+	 Mime-Version:Content-Type; b=DOm+dbhyRB/JuYD3yFBqjsU0plGXRAkssr1+pXSvKPLfSar+Vv5+xAojuBUEU9AMPKHkODrHa1veaVBsIKgt6AYeNMQyjqh8A8gYuKcPzBzcI/3hFotgP7c0VbekCzz0Q9X3KuXPkt7K4S+93d4oN/kkwg4XxW1iPvTntcKx22s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m05TVQnl; arc=none smtp.client-ip=209.85.160.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-71809fe188cso299515a34.0
-        for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 21:06:09 -0700 (PDT)
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-288a990b0abso303045fac.2
+        for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 21:06:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729742768; x=1730347568; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729742793; x=1730347593; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kzwfvUG3KkF++iGj1OqI6ymFOnvAiDIFVRLD/D+zPqU=;
-        b=OFGYFBh6Jg2hSYQ0oAPJBep/ZGFzTNNKiOD+h2Iviane/K8gENITQ/ioVq2gd16ssX
-         28wnZM8aL470Tm4hKG4e9zsz0xpF1KG8kKI3s9vdCtAHtSOytS/njhQTQO5WVdbrY+4q
-         smGKeIrIl3RI4kj3OSYf0y4EcihicY9s+LiHyKljvKZOOiAdIjVmJ2Gu1vnmZbg/UV+e
-         w+2evuaLCi0IwE4BKA9Go4Rdr/KVeo2i6dNbdoj97Irvhv2spZwt1mUKLanr30qg+eYB
-         IiC6ZOqCMVpeVQSQamm/drb6/LX0a8VfD1DAZkr2aB6bqW05KU4y7VIb4jaDPm83dKmO
-         yY0w==
+        bh=U5k6XpXebzSXjEaPioIYzJzLGe1jtN4sNETS862RRe8=;
+        b=m05TVQnlKiVbYkB/FPxUEF77xVTO1VmxxGc6lD9qZbx8Z3mV+iEz3k57Z1VaM5jEHb
+         +3VMC6L6imK7PXeZqDJhZeISnKAP7NY41NfTkM3qZAKh6OV6rCfiD3B1gPsip8yr3Esn
+         v0wYCLDvs9Q1lMSwSO/MDI6U5f2xp2R33YKqCBiif2rPPbyjxtSZipxwuy4JemGJFNtn
+         u2ZDURxAuvnESILIb53cSrkU3h4uygr2DbWv9aaE3Fzmh9YY3m7PC0YQtwTZ3yOag2ob
+         wfNrk+6X5NsR1yfHWp5JspxAnxNjd4sN5LKK9IlCJJBQ5ChRFkrl6Luqdvvb7rVKWzVu
+         2hGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729742768; x=1730347568;
+        d=1e100.net; s=20230601; t=1729742793; x=1730347593;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=kzwfvUG3KkF++iGj1OqI6ymFOnvAiDIFVRLD/D+zPqU=;
-        b=bxC5d7gzXJBN6uWqf5hdcIPXFlvX7ZHbVPrcsZtFMxvC/5qKksZuD2CD6Omtaww87j
-         zUCYpo4o3FC/dm9ggO6xp0oTOuijgeC0OSpWTzGYpTTtbt8TuMU8JHB2yzfFC9Ly4j5H
-         9IvZfy/qBh5mzK8Qaj6Gg0bPTd5GSpW5gz6k1jwBvg9TpCvrHzg1UetPQrrUMHrWxg4+
-         lQGfpkt2FvdEgvPospGVd6l0QSX+Tu93tEdQbLgYwy6VbdOGhbLXpi+4uXtOKwPuB7Bc
-         tawvWPt4YBD98jAlrlxT4/IcxDXA6H0Vaxy/isAW50EKPJLGXQ9KJFI+IXeLPxAzrb61
-         kuKg==
-X-Forwarded-Encrypted: i=1; AJvYcCV1KluDTHE1+AgGtUi6TIHfE30S1NbImVPhYYkgyrYhOnal6qSgWt1B9pn/wrdxQR48zew=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2AhAaGvDI9sHPWyRhmFsH80ZGiLiubr0CUlShI4UVY8sbtcCU
-	OEpwtA8YQFOxID1TvFPfJZRebC8rP8nnfnN/yHhR1L/tacxJcr+jW6TH/A==
-X-Google-Smtp-Source: AGHT+IHZg/M2tPeYVzS9WSTRAoUI3jd0RgCsWFGC3OsHGi9iTPBJo8G+i2dFVjhj4HAqbmr27bnIyg==
-X-Received: by 2002:a05:6830:3809:b0:718:1163:ef8f with SMTP id 46e09a7af769-7184b2980c4mr5963685a34.2.1729742768409;
-        Wed, 23 Oct 2024 21:06:08 -0700 (PDT)
+        bh=U5k6XpXebzSXjEaPioIYzJzLGe1jtN4sNETS862RRe8=;
+        b=X0+Z2VVwkGztZddT3DEPxHH6KLsDjfAaVgLpOsEVfL1Qn/ZVVXGZ42BeDW7uANqx/Z
+         5aTBaAFYGtVqEIuJ9HCCgTnwlLNMSkMl6POzg/LcH0kSN6wi7GEcKzdMPB/vA9bfYTrg
+         LlIFaHY68jcoUgYQkMsIfpr7+Iv67ddDav6V9RbDhiuCLyXm6WwF/SvOiWP/xsxBOTXW
+         lhx0O0gxJEG5E6C1Uxalxn1knpZDZOz0VgAys1CM3jzyX8FcH9k1jo9Yl3MHBQFBjDIP
+         zuglRlNNcSVbqoZHdDSQXlQvcgIBRWynPpXbIJXT8ZjgVhqRhAkNiakwT1oQQdj2TLCN
+         aXFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWhEiblXyuNiPfoy7joHzig0uWizlxLOb3ht/F4yheOnErhSRj2DkqGndR7QygGZP+axCM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YygOOFlv9hHS2TSKAgg58rk11eNupUBApbZKHS2NY/+RD7GJouh
+	slpq1mZRjqcdcauxumohffUdULgnUHJ4gVIH0akRZbxhz9N7o5Z7
+X-Google-Smtp-Source: AGHT+IHaed8yti+2EPrmOZh8ASFqxwZkuPKor8k4HqZTPaSiNC7XnZ/prBgP0g645CMrOL6ow3QKHg==
+X-Received: by 2002:a05:6870:a710:b0:287:b133:8aca with SMTP id 586e51a60fabf-28ced2df260mr515956fac.25.1729742793468;
+        Wed, 23 Oct 2024 21:06:33 -0700 (PDT)
 Received: from localhost ([98.97.32.58])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7eaeab48f7bsm7650136a12.39.2024.10.23.21.06.07
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7eaeab5862dsm7674502a12.51.2024.10.23.21.06.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2024 21:06:07 -0700 (PDT)
-Date: Wed, 23 Oct 2024 21:06:06 -0700
+        Wed, 23 Oct 2024 21:06:32 -0700 (PDT)
+Date: Wed, 23 Oct 2024 21:06:32 -0700
 From: John Fastabend <john.fastabend@gmail.com>
 To: zijianzhang@bytedance.com, 
  bpf@vger.kernel.org
@@ -93,10 +93,12 @@ Cc: martin.lau@linux.dev,
  liujian56@huawei.com, 
  zijianzhang@bytedance.com, 
  cong.wang@bytedance.com
-Message-ID: <6719c7aede141_1cb2208a6@john.notmuch>
-In-Reply-To: <20241020110345.1468595-1-zijianzhang@bytedance.com>
+Message-ID: <6719c7c847ddc_1cb22086f@john.notmuch>
+In-Reply-To: <20241020110345.1468595-2-zijianzhang@bytedance.com>
 References: <20241020110345.1468595-1-zijianzhang@bytedance.com>
-Subject: RE: [PATCH bpf 0/8] Fixes to bpf_msg_push/pop_data and test_sockmap
+ <20241020110345.1468595-2-zijianzhang@bytedance.com>
+Subject: RE: [PATCH bpf 1/8] selftests/bpf: Add txmsg_pass to pull/push/pop in
+ test_sockmap
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -110,41 +112,15 @@ Content-Transfer-Encoding: 7bit
 zijianzhang@ wrote:
 > From: Zijian Zhang <zijianzhang@bytedance.com>
 > 
-> Several fixes to test_sockmap and added push/pop logic for msg_verify_data
-> Before the fixes, some of the tests in test_sockmap are problematic,
-> resulting in pseudo-correct result.
+> Add txmsg_pass to test_txmsg_pull/push/pop. If txmsg_pass is missing,
+> tx_prog will be NULL, and no program will be attached to the sockmap.
+> As a result, pull/push/pop are never invoked.
 > 
-> 1. txmsg_pass is not set in some tests, as a result, no eBPF program is
-> attached to the sockmap.
-> 2. In SENDPAGE, a wrong iov_length in test_send_large may result in some
-> test skippings and failures.
-> 3. The calculation of total_bytes in msg_loop_rx is wrong, which may cause
-> msg_loop_rx end early and skip some data tests.
-> 
-> Besides, for msg_verify_data, I added push/pop checking logic to function
-> msg_verify_data and added more tests for different cases.
+> Fixes: 328aa08a081b ("bpf: Selftests, break down test_sockmap into subtests")
+> Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
+> ---
+>  tools/testing/selftests/bpf/test_sockmap.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 
-Thanks! Yep I think push/pop are not widely used anywhere unfortunately.
-There are some interesting uses for push/pop to add/edit headers, but
-I've not gotten there yet clearly.
-
-> 
-> After that, I found that there are some bugs in bpf_msg_push_data,
-> bpf_msg_pop_data and sk_msg_reset_curr, and fix them. I guess the reason
-> why they have not been exposed is that because of the above problems, they
-> will not be triggered.
-
-Good. I'll review these quickly tonight/tomorrow and run some testing.
-We don't currently have any longer running tests with push/pop.
-
-> 
-> With the fixes, we can pass the sockmap test with data integrity test now.
-> However, the fixes to test_sockmap expose more problems in sockhash test
-> with SENDPAGE and ktls with SENDPAGE.
-> 
-> The problem I observed,
-
-Thanks for digging into these.
-
-[...]
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
 
