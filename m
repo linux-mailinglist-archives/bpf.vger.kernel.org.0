@@ -1,199 +1,116 @@
-Return-Path: <bpf+bounces-43059-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43060-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51449AEBEC
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 18:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BFC79AEC0A
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 18:28:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74B8328477E
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 16:25:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FAEE283993
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 16:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F611FAEE1;
-	Thu, 24 Oct 2024 16:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 125541F8184;
+	Thu, 24 Oct 2024 16:28:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gVD2XSrs"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VqXhsCtn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 562171F9EC6
-	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 16:24:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91CF81EF925
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 16:28:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729787088; cv=none; b=OKmLffDcLQXaI8KcYCVaKkBr9rdW59aZwgGpBWSpefZ2SGf/vsVFC/+ECsSN3ZhENa2aPfckQbVagXMQXiNQpRZQtNqFjF1I6N4HUSq/aLXKtSAOKyGnXZDs8ecyTklCNfgaKUT8XDfdtw+0U1sw141VswHpVNDPnOxYQqk1NhE=
+	t=1729787299; cv=none; b=ckU2v7YUlA77GG2BcknNV5UYjGafoiIKhU9CkLdIoy47ZaGS0GzVGQ/eXdAx2nxFYkX+xgmi3VXjFanfmRSRt80ztBhw/XZ3iO0XZT5wxfYFgLQprN1dficUMrUzFxLfaKfppjKVsaU3pqB1HAwysvZnySOqDu78g+pJM0gw9Aw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729787088; c=relaxed/simple;
-	bh=EuY3pZXMJjDI8gOLyzucYLFjgfT/ItBbAUaMIZcAL1Y=;
+	s=arc-20240116; t=1729787299; c=relaxed/simple;
+	bh=BAMyVf69I0HQ8TnNfDk6Bau81x3CTlj07KBYZ5ws5Tc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BNO949+KHIen1mG/a0QYRXtOui/fpvLImLoN5DBoprX9SzuKBz76R8CfGWa3u80JTVkiRWFMu5oUDPjP8K1tVGBA+rb9HTRTOApvsNPsqlMJqM/32K+0UMWA813Gwmpi/y0v2TQ5XkT4rdmPD716Nx56RcjKR/vJJpJW7IHSUQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gVD2XSrs; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-37d8901cb98so1485559f8f.0
-        for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 09:24:45 -0700 (PDT)
+	 To:Cc:Content-Type; b=lFOLooCjTtiXe+12hvzzk0GWLy1gpISCejnjOOfKMzc+692LCTHB53Fv8dss0gTEBL5UgWxoLOVQxPIKTT5F2Dk4nN3+KGRgJelugiHY363wi+bHRKbhRn0fXUVH5zpBm/K47KDDoyoQriks6n7+W622U3tRkEeYjV9tOjp5gz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VqXhsCtn; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43153c6f70aso194865e9.1
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 09:28:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729787084; x=1730391884; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1729787296; x=1730392096; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+Ll4GC/Z+nsHOSL1Eq+RD0EPZsJaL6027ckST22ktgk=;
-        b=gVD2XSrsXK6EeELhAkwObHm8ne4Ju3x/yBFaPibEdnr3hhSx0cJZ/7O0jdwXs/p9CK
-         sCKFHmMcqhtCRpIKd/eB66kz4/l7AWwfLiB2WY5crf/YvUTlRTY8m9iuFUun+wJKCuAz
-         kLa1R0qCi8Eo7TtSDsuzvSVG1bbmJvZ9caJj6atdW7EGkO7iMdbG8NRo3g9e7uH3QITs
-         1vHyw5ghDsnun0aIkQL+vOCVfT/KpyosOCiMxyuCwyW1IDw4+7zGjVBz7Zj0J+l8GbWI
-         6MFmfASGhZjJhX0siV1iHviRZieGjyOOXDfsVeBn/Tm9TIi9SlgFLh9/lVh/d6yWdTZO
-         D0YA==
+        bh=BAMyVf69I0HQ8TnNfDk6Bau81x3CTlj07KBYZ5ws5Tc=;
+        b=VqXhsCtns+ufLmDPexYhJarMnrxej8oSEXMijBEdGNWB5jJnDjohC3Jb+4GoTg3Uxf
+         PsFFFznWc/x/B+FkXDKaCPGu7SZqFve/jC5gRe9vjFDDzSUdq+bXwyDp/9IAZKD5YtjW
+         nHR3Gz0/VwKGJK5ZdoeyepW/FPyfli4Epi973EQjURGDu9o7DpD7O99ggmy3LZuSVO8I
+         0bVxpRft3EaFw6T5U4CZPuB5qzM3xzhLgMiWM/O5KGV8u+s8In5kvMV2q9YQvnRKCGoX
+         musX8hLLTv4U7JgpJz0rcqkLzpywXOs9u6mmTnGXXqwfdiF+KGleUpuqyPgiqxtC4cXp
+         oooQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729787084; x=1730391884;
+        d=1e100.net; s=20230601; t=1729787296; x=1730392096;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+Ll4GC/Z+nsHOSL1Eq+RD0EPZsJaL6027ckST22ktgk=;
-        b=ghDqpS0CMdE2YA4W6hGOCNM1vkjAFgqCXgL5PqsgVTchdMlIpHYEAifw3DPj//wMoB
-         FgfUuNNKRhmH7fvjUGeW1samT7xaOn27zrr86pH/u8hMvR5flElzcnWN96IsZOcFHSoi
-         h4pY53KJvMzgGgG6kno6jA4NsToPLJkKo1jV771vB1NkWG8zP0yyrCuDBwViJZhUEOLN
-         15N3m0wSKbySv6wH2e1UvZTLfQ/bAnzK5vr85EXvE/eQmwiOiY9mG66GIX1CZIelEMdN
-         d63bT8eRjNVyAFhbrXO5hxnmAQdHXh9ayhdZuAmyGEZOp2oZwsxF8+QitePOyX4jg53o
-         kz/w==
-X-Forwarded-Encrypted: i=1; AJvYcCV7ScPqcMrYDU6o+s/rmNdZoy/b6ufCqpg0ZdkTv+VXoY1McEJ91mS+JShlGnQ/AWuJhWw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YybfFPV1Ps5WaXkhHRQNbaz4oEQ07nr+Bwc49F1E8/1xv119SJw
-	2eVe8rbZ7XSpF5FovzsIW8WUjEf1gpqF51UVCpuG8P8FCRWPY3Ky4VkeawlU6EZh9C5b61p5DbP
-	epdxVfX0rgZRv4iivpbUobLdAcUc=
-X-Google-Smtp-Source: AGHT+IE6yaGrr6D8biWQ/8kA/SbDNpPPefW5qxNaY83edHlmZV3ZNgLnpvIIARvcssk1h4h2GEo6irsBCBElsx8qu14=
-X-Received: by 2002:adf:f7d1:0:b0:37d:3baa:9f34 with SMTP id
- ffacd0b85a97d-3803ab67450mr2253587f8f.1.1729787084103; Thu, 24 Oct 2024
- 09:24:44 -0700 (PDT)
+        bh=BAMyVf69I0HQ8TnNfDk6Bau81x3CTlj07KBYZ5ws5Tc=;
+        b=vgCvUFMSb/Ft9jLUYup5TW2uYjm4Z7OnHwnBZH44XO6rgO0lYMQ4JgNBbA4EcPJBFC
+         fTvys4osyCHKPtlSkVjFwxzCEy2FhiGhRx6Tz+OWNGCRVIjiB/i28Io5dXmmQaAuwa+V
+         qm6ZnWAmXMZ7ilTcPzrYDmM7LaujCn16ydx2Myrzb4Ey1X/QvoTwkFQkvRQy3juLuQqi
+         CzfbNGKDvMJOLUxh5irC0UHWC+MWpeeXRJ3SauF1ocBDvSKr3KRgRWEnWr60ydG+v+Nz
+         atSKFL0Ynj9NWRFBxrTOoMZn9YVSwEgQr/i9d1+k9EFlcuIp1UXSQjv/yVT0LdnPnWsZ
+         89HQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWjxbs/gXkGbQrhWwqLWwlgXisb1vRvmtXK3WFom9r4SXcKBTb0Foi94SxNjShoV7Cl0Hw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWUdTqbzkMVxjtfweC+OOxYoBstQQb6SY24ZYZ400ydcHp5aed
+	TyWcDU02iZ3N6EiDQ1iZ4DFSaSwITYQ6hqLtFLPRXtAraF2vErbbu/WCXC90ZglKN1FbopCMPNw
+	lRNsT+H0UUqDV63fGvtQbshOH4gCQaj1SEXHx
+X-Google-Smtp-Source: AGHT+IH6GaCTFse8PHhR99yRvdJU42XjOZhxxrVWX7RUwgX5aK9xyEy94yBYp/VrB+JAVrmpWoM6bBGXa7q1ktnK+/A=
+X-Received: by 2002:a05:600c:b8d:b0:42b:a961:e51 with SMTP id
+ 5b1f17b1804b1-4318a4ace7bmr5573175e9.0.1729787295526; Thu, 24 Oct 2024
+ 09:28:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241019092709.128359-1-xukuohai@huaweicloud.com>
- <CAADnVQLOY-eHby6CMNXr3FvwPm85W-tWDxiWnRaR_U_=71ADuA@mail.gmail.com>
- <CANk7y0jiuiHSMTEZ_JCb4QpEPzhkK4ikicDGFa1F30DinZta8A@mail.gmail.com>
- <7226e7b8-ed73-4adb-9016-30031f1121ca@huaweicloud.com> <47082e78-e234-4487-95f2-0066e19f21dd@huaweicloud.com>
-In-Reply-To: <47082e78-e234-4487-95f2-0066e19f21dd@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 24 Oct 2024 09:24:32 -0700
-Message-ID: <CAADnVQKcwTstR5y3e1wNj-Agq7DuPNYOdQWkf33cLOBYiYGiug@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf, arm64: Fix stack frame construction for
- struct_ops trampoline
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: Puranjay Mohan <puranjay12@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Puranjay Mohan <puranjay@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+References: <20241010205644.3831427-1-andrii@kernel.org> <20241010205644.3831427-2-andrii@kernel.org>
+ <20241023201031.GF11151@noisy.programming.kicks-ass.net> <CAJuCfpFMhoCmqGJMU2uc4JHmk9zh88JzhZAeSz3DgvXEh+u+_g@mail.gmail.com>
+ <20241024095659.GD9767@noisy.programming.kicks-ass.net>
+In-Reply-To: <20241024095659.GD9767@noisy.programming.kicks-ass.net>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 24 Oct 2024 09:28:01 -0700
+Message-ID: <CAJuCfpGxu=z-2Wsf41-m4MQ6t7DjfiiWXD408BW8SjTfx0NGTg@mail.gmail.com>
+Subject: Re: [PATCH v3 tip/perf/core 1/4] mm: introduce mmap_lock_speculation_{start|end}
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, oleg@redhat.com, rostedt@goodmis.org, mhiramat@kernel.org, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org, 
+	paulmck@kernel.org, willy@infradead.org, akpm@linux-foundation.org, 
+	mjguzik@gmail.com, brauner@kernel.org, jannh@google.com, mhocko@kernel.org, 
+	vbabka@suse.cz, shakeel.butt@linux.dev, hannes@cmpxchg.org, 
+	Liam.Howlett@oracle.com, lorenzo.stoakes@oracle.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 24, 2024 at 6:48=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com=
-> wrote:
+On Thu, Oct 24, 2024 at 2:57=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
 >
-> On 10/23/2024 11:16 AM, Xu Kuohai wrote:
-> > On 10/23/2024 7:37 AM, Puranjay Mohan wrote:
-> >> On Wed, Oct 23, 2024 at 12:50=E2=80=AFAM Alexei Starovoitov
-> >> <alexei.starovoitov@gmail.com> wrote:
-> >>>
-> >>> On Sat, Oct 19, 2024 at 2:15=E2=80=AFAM Xu Kuohai <xukuohai@huaweiclo=
-ud.com> wrote:
-> >>>>
-> >>>> From: Xu Kuohai <xukuohai@huawei.com>
-> >>>>
-> >>>> The callsite layout for arm64 fentry is:
-> >>>>
-> >>>> mov x9, lr
-> >>>> nop
-> >>>>
-> >>>> When a bpf prog is attached, the nop instruction is patched to a cal=
-l
-> >>>> to bpf trampoline:
-> >>>>
-> >>>> mov x9, lr
-> >>>> bl <bpf trampoline>
-> >>>>
-> >>>> This passes two return addresses to bpf trampoline: the return addre=
-ss
-> >>>> for the traced function/prog, stored in x9, and the return address f=
-or
-> >>>> the bpf trampoline, stored in lr. To ensure stacktrace works properl=
-y,
-> >>>> the bpf trampoline constructs two fake function stack frames using x=
-9
-> >>>> and lr.
-> >>>>
-> >>>> However, struct_ops progs are used as function callbacks and are inv=
-oked
-> >>>> directly, without x9 being set as the fentry callsite does. Therefor=
-e,
-> >>>> only one stack frame should be constructed using lr for struct_ops.
-> >>>
-> >>> Are you saying that currently stack unwinder on arm64 is
-> >>> completely broken for struct_ops progs ?
-> >>> or it shows an extra frame that doesn't have to be shown ?
-> >>>
-> >>> If former then it's certainly a bpf tree material.
-> >>> If latter then bpf-next will do.
-> >>> Pls clarify.
-> >>
-> >> It is not completely broken, only an extra garbage frame is shown
-> >> between the caller of the trampoline and its caller.
-> >>
+> On Wed, Oct 23, 2024 at 03:17:01PM -0700, Suren Baghdasaryan wrote:
+>
+> > > Or better yet, just use seqcount...
 > >
-> > Yep, exactly. Here is a perf script sample, where tcp_ack+0x404
-> > is the garbage frame.
-> >
-> > ffffffc0801a04b4 bpf_prog_50992e55a0f655a9_bpf_cubic_cong_avoid+0x98 (b=
-pf_prog_50992e55a0f655a9_bpf_cubic_cong_avoid)
-> > ffffffc0801a228c [unknown] ([kernel.kallsyms]) // bpf trampoline
-> > ffffffd08d362590 tcp_ack+0x798 ([kernel.kallsyms]) // caller for bpf tr=
-ampoline
-> > ffffffd08d3621fc tcp_ack+0x404 ([kernel.kallsyms]) // garbage frame
-> > ffffffd08d36452c tcp_rcv_established+0x4ac ([kernel.kallsyms])
-> > ffffffd08d375c58 tcp_v4_do_rcv+0x1f0 ([kernel.kallsyms])
-> > ffffffd08d378630 tcp_v4_rcv+0xeb8 ([kernel.kallsyms])
-> > ...
-> >
-> > And this sample also shows that there is no symbol for the
-> > struct_ops bpf trampoline. Maybe we should add symbol for it?
-> >
+> > Yeah, with these changes it does look a lot like seqcount now...
+> > I can take another stab at rewriting this using seqcount_t but one
+> > issue that Jann was concerned about is the counter being int vs long.
+> > seqcount_t uses unsigned, so I'm not sure how to address that if I
+> > were to use seqcount_t. Any suggestions how to address that before I
+> > move forward with a rewrite?
 >
-> Emm, stack unwinder on x86 is completely broken for struct_ops
-> progs.
+> So if that issue is real, it is not specific to this case. Specifically
+> preemptible seqcount will be similarly affected. So we should probably
+> address that in the seqcount implementation.
+
+Sounds good. Let me try rewriting this patch using seqcount_t and I'll
+work with Jann on a separate patch to change seqcount_t.
+Thanks for the feedback!
+
 >
-> It's because the following function returns 0 for a struct_ops
-> bpf trampoline address as there is no corresponding kernel symbol,
-> which causes the address not to be recognized as kerneltext. As
-> a result, the winder stops on ip =3D=3D 0.
->
-> unsigned long unwind_get_return_address(struct unwind_state *state)
-> {
->          if (unwind_done(state))
->                  return 0;
->
->          return __kernel_text_address(state->ip) ? state->ip : 0;
-> }
->
-> Here is an example of broken stack trace from perf sampling, where
-> only one stack frame is captured:
->
-> ffffffffc000cfb4 bpf_prog_e60d93d3ec88d5ef_bpf_cubic_cong_avoid+0x78 (bpf=
-_prog_e60d93d3ec88d5ef_bpf_cubic_cong_avoid)
-> (no more frames)
-
-you mean arch_stack_walk() won't see anything after ip=3D0,
-but dump_stack() will still print the rest with "?" (as unreliable).
-
-That's bad indeed.
-
-> To fix it, I think kernel symbol should be added for struct_ops
-> trampoline.
-
-Makes sense. Pls send a patch.
-
-
-As far as this patch please add an earlier example of double tcp_ack trace
-to commit log and resubmit targeting bpf-next.
 
