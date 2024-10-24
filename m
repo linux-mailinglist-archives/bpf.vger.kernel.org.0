@@ -1,98 +1,97 @@
-Return-Path: <bpf+bounces-43014-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43015-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 440689ADB22
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 06:49:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41D5B9ADB2B
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 06:56:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 007D62836E2
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 04:49:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8082B224F9
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 04:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C74170A29;
-	Thu, 24 Oct 2024 04:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9F6170A0A;
+	Thu, 24 Oct 2024 04:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ka96vJ8A"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="azCizRd9"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22AFB9474;
-	Thu, 24 Oct 2024 04:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81ACD15B96E
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 04:56:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729745371; cv=none; b=KLEHW2scrBpX4dHTrJa/Uc4cojr3qjuYxzQg6/kFZJrZt9fGFpOxpu0otd32ropdHp8vgGsJHMV28H7zXRtto+idc1nV0RBlWtnCHOrLYG8cx7/huRi4Z8Vm0D2oLUzWQEGVJAMrT/oPFdRJzTSixBE2naB33xwiqK2MREXbo4g=
+	t=1729745780; cv=none; b=jJkalhP6ZutIP/ax/HOkJLqAmRLbVRM+GSYz4PnhzjCWUmtZrKEb3jk9O9rIjS0LM2T1wb3LbKNAV70nRKLIsr8PPwb0hWX8siU1hax0hwuCuyPPNCnAivEzr2LQYgYTIuyxXidB93QBiY35nr3U6QMBNI8vkA9ji7AL5jOWabc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729745371; c=relaxed/simple;
-	bh=A2PjJARB/fw8n8qTNn2259+mELoQ3NLH5OdpTAW5aek=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jWinroVmu7l598FiMHQWxeDM93J/nPbJKFPkyVs1Xy5pcC4PpOw2JcdGTMyUCpU9md9FcNojQMZNIJf+HR7ivi4PoiejfiYEXsh4V11yTZ8ToQ8fho6+SYrBpkMFJlmV4XcQmdqBslzWYPi4WhvR8ebQrq09SEnNRuK0pS5TyM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ka96vJ8A; arc=none smtp.client-ip=115.124.30.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1729745358; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=iwmxYZ0CXYfXJAMg2rSfDvfc82uItayVWx9BloNjOyo=;
-	b=ka96vJ8A6Zas8/5Zelf4ToH+lT+NeuK+3sVJEIs/4JYR4LsjnKeLLpS1Jc2DF2wdojFa+rQIUsqOly2Lo3LQxlhyxOcxLhnClxssIo6ZtotyZJ3J+De8WgMWiePW8G+jR8NIVU2omDKmAyDe91gzHtYJ2Ux2F61/sIsBcoqVC3E=
-Received: from 30.74.129.183(mailfrom:dtcccc@linux.alibaba.com fp:SMTPD_---0WHnso7r_1729745355 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 24 Oct 2024 12:49:16 +0800
-Message-ID: <284e3cb9-9f27-413c-9c05-f017171fa40e@linux.alibaba.com>
-Date: Thu, 24 Oct 2024 12:49:15 +0800
+	s=arc-20240116; t=1729745780; c=relaxed/simple;
+	bh=UbFQ1FMeLf2d6KXKPprNkQ0pXqSBu7pAbumD3YnjCEk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D93OqH1+F2zDYNToNzYEjQgYCeP3KZzhFNt5ZqqamtcbqM2a+cKQeRB29iSaaqWdxF4yomHdPR7RNmODjU7EYdA1XmgvvQX1JJ13XJ6PpQJMr7Mnite5ozFfoIlMcNZvlnDQMCrKcYS9Olpi5sPOpgypqNnOb9rk0Cy+zl83To4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=azCizRd9; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a99f629a7aaso78499066b.1
+        for <bpf@vger.kernel.org>; Wed, 23 Oct 2024 21:56:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1729745776; x=1730350576; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wAgh3V9d3ayY1SsO9aTbCGhW1qNy/fKNDncrDRcWQWw=;
+        b=azCizRd99AK9QK0jJq69X5Sfm+mXDWGhAF/ChwKvyD2pmMs1OjgLkWKz26PRWjL/0y
+         lK8RUR4iVyW4SZYc6x6lXxsH/omAjDcxpkjvOZU3WZq02cO+f7gWWn0TQWqDmmMpg6A7
+         22MSVVBeMYVOvGHd5JNPushlpk4DyeY+lLGTbaFDSkfJw2lAxiEYQtwNLQUHwA45WzgP
+         euctoRNob69cDaiKZbJXxY+cNyky3tn35RgWQG04Oo9a+SThpPinv+MqnbMmMRAV/N4h
+         lRNTiGJdouN0xe7rOHbhxGyDd8Hg7mr8O0t9IUCSCu8wMPstFUD5nc9Vejjcklv13rXv
+         teAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729745776; x=1730350576;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wAgh3V9d3ayY1SsO9aTbCGhW1qNy/fKNDncrDRcWQWw=;
+        b=W+3+h8NUsMOjjC4yMHygocFdSZGhHgkffjpvs1nnMD6rgrie0Z8cianfiTf31cnUuk
+         KP4d93VeeVlQDXMLfaAv4orURwyEt0NuEEIN3PU8kRqTlw98027PaaEnb04XWGYOuDC2
+         pi5vvBQiPiWgMXHFTwsnWQ0HUtMf0XhuFf27X7ASnZh4wKWD2Xde6c2Ue5wswyZ30s4M
+         zq0wadU81nDTVKnev2Xib58oAsRTplpU6UylxiV8X201XDKOC0JWrkV2M5VHPewJuF+B
+         qqTxwCS7SlqsZWpcHTWQfIgeprcTgeQr+cUSRzAXzkg+shMxR/z50aMHFq1IkT8QHQZr
+         Ff+g==
+X-Gm-Message-State: AOJu0Yze303q+/Y7ki7rBV8JBUzWtlD9FpDewYMGxkone9I9/1JmYSHs
+	N4TFfHNn7SjJwHaMFPdkkHQ1PcBlmZjkcXvU5bsz4vYfCjl0cCkrF0oNdn4WN90=
+X-Google-Smtp-Source: AGHT+IHDnH//9idMDdF2mUwqXz3cl8aeUrWN0JN/bu4YlzVqOSs3qJQUH6qVs/V53aKlRQAVFfGIvw==
+X-Received: by 2002:a17:907:3e9e:b0:a9a:c651:e7c7 with SMTP id a640c23a62f3a-a9ad19a8cd6mr71653166b.12.1729745775729;
+        Wed, 23 Oct 2024 21:56:15 -0700 (PDT)
+Received: from u94a (27-247-32-52.adsl.fetnet.net. [27.247.32.52])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9a9159a27bsm559234166b.211.2024.10.23.21.56.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Oct 2024 21:56:15 -0700 (PDT)
+Date: Thu, 24 Oct 2024 12:56:01 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf] bpf: fix do_misc_fixups() for
+ bpf_get_branch_snapshot()
+Message-ID: <sslegl4q6cax2y2zjkq66a7jwh7oxtndzbi4t4ly4fnvari4gx@oyfxv4yjtj7d>
+References: <20241023161916.2896274-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 4/4] bpf/selftests: add simple selftest for
- bpf_smc_ops
-Content-Language: en-US
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org, sdf@google.com,
- haoluo@google.com, yhs@fb.com, edumazet@google.com,
- john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
- guwen@linux.alibaba.com
-References: <1729737768-124596-1-git-send-email-alibuda@linux.alibaba.com>
- <1729737768-124596-5-git-send-email-alibuda@linux.alibaba.com>
- <2006b84c-e83a-431b-ac35-bb357459fa96@linux.alibaba.com>
-From: Tianchen Ding <dtcccc@linux.alibaba.com>
-In-Reply-To: <2006b84c-e83a-431b-ac35-bb357459fa96@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241023161916.2896274-1-andrii@kernel.org>
 
-On 2024/10/24 12:04, D. Wythe wrote:
+On Wed, Oct 23, 2024 at 09:19:16AM GMT, Andrii Nakryiko wrote:
+> We need `goto next_insn;` at the end of patching instead of `continue;`.
+> It currently works by accident by making verifier re-process patched
+> instructions.
 > 
-> 
-> On 10/24/24 10:42 AM, D. Wythe wrote:
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>
->> This PATCH adds a tiny selftest for bpf_smc_ops, to verify the ability
->> to attach and write access.
->>
->> Follow the steps below to run this test.
->>
->> make -C tools/testing/selftests/bpf
->> cd tools/testing/selftests/bpf
->> sudo ./test_progs -t smc
->>
->> Results shows:
->> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> 
-> Sorry for just found an issue with vary config. I will fix this issues
-> in the next version.
-> 
-> D. Wythe
+> Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> Fixes: 314a53623cd4 ("bpf: inline bpf_get_branch_snapshot() helper")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-This doesn't build with !CONFIG_SMC.
-
-Maybe you should create an individual dir. (like what sched_ext does)
+Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 
