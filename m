@@ -1,163 +1,168 @@
-Return-Path: <bpf+bounces-43052-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43053-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9312E9AE939
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 16:44:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 136A89AEA79
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 17:29:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22CA01F22570
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 14:44:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 944EBB2092B
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 15:29:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B041F1E1A1D;
-	Thu, 24 Oct 2024 14:44:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Wtt58esZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA1B1F5840;
+	Thu, 24 Oct 2024 15:28:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5411AF0D0
-	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 14:44:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A2741F4FBC;
+	Thu, 24 Oct 2024 15:28:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729781072; cv=none; b=Q9XmnYSPmJPcKXyaA8BDnyH1TRmvD3QToZADlOupgjeWApacvZrFY+ZNoI3mWrLUOXSC9sfewH6BNJhC+nsCYM49nOZGCGIZbWt3vWnWqXsT+aLdlyHcLOH47nez9txYCPbie2V6sF3pbTlvJlouh/lI7Lm6EV4Ht+EcNzmIl9U=
+	t=1729783735; cv=none; b=CqR8UJzKuk+FcZIY3z9gjcfAPzeKnNk2zYUsLVbJ5Wtw/P14R4X3J9Y6dWIDseezhruIUgN1zsV6ZXPGiJqlt4Bs0uySg62Sh5itTesyv2DYND1EhbpGcCSaAfhvD0oOO+6lhK0UqfazFBKotBOkri+r3EATS8W4oiDkQAx/BXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729781072; c=relaxed/simple;
-	bh=a2suMm+NAJ2+Ep/rHcBlbt/bcTn8cCdqpJUqPzJb4Bw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oSYcxeuiNRec3DqAwDjeqosZq5hPZXXJcdNLxFDKHMBy+Rya8cy1P5tILCNYwEOv7HJBXJ3MSuVFTVL7lHbzubxBmLrTHjY1IhOPO469MUi6O3KezEj+BtqGgW40EihPOaTdagDOgfVfK4VUD1NjisyPRjg+jBCalsvbDUmxSkg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Wtt58esZ; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=BeWLTQdWogzBKgnE2qsBQfvbj1mPkaRrkkvhoqo3Ak4=; b=Wtt58esZPofCTbePcUvtQy4tZE
-	aFUfK3RCwTQk5wimW+3rJ4CzmCf/20OoW/6ZWd+pQSsvUK8zhNqNvcUlaTi5DuE3fKFc6MjzUEXJU
-	jzn6QNP98+bffXZIQmx1ZjRy3QRrWaC82PY1pjD1aNWvfaV1Q2SiUtVPnV1XyFPwP9BRNnbsQLJ3o
-	VprCVH+bfW7EBPyJuZsCBo39ane7IBBcIAKOLLy+YJaZ1XPjgLEBAC+0Dz2LJk/5AY5Fm4lvAYSBO
-	y4szv8cq5qeDMSlPHo7ezxtc4b0WIj6HnsWririy9d0zySRjuP3s0hQ26q/stem4Hws5RDlOKNXuN
-	rqDKVyTA==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1t3z3d-000IQ5-Pf; Thu, 24 Oct 2024 16:43:25 +0200
-Received: from [85.1.206.226] (helo=[192.168.1.114])
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1t3z3c-000J66-2S;
-	Thu, 24 Oct 2024 16:43:24 +0200
-Message-ID: <fe0ac5b2-f662-4635-92db-081fadb5e375@iogearbox.net>
-Date: Thu, 24 Oct 2024 16:43:23 +0200
+	s=arc-20240116; t=1729783735; c=relaxed/simple;
+	bh=Wa/lBblz8zjg3K8a5GZVELp9ATHR0GpBk3nPK66gzHI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iBYMK6I60N1vUjKgLddnIotRaLBnWTAPLP81uD3NGTEOh15eYncNMSfdRIS8KAcCEKda/zjFXFsheivS6YrY/Rad4jI/wrbRuUe2w/TbAaJpHapuY8Swuw7azrPgfjfAgJ6/HalxwU+/ZaJS3D2oejBMxvVGM5pgiPFa9ypgIs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.166.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-83aff992087so44914739f.3;
+        Thu, 24 Oct 2024 08:28:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729783732; x=1730388532;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CHw3/FAGgd1iO3/H3N2rtqx/81x0A/R4/DsL+0VLYc0=;
+        b=MEHRILrUanCyVYccVSS3u1kVGKDueTgSf5sZufqhq/7Oo3ARCPPYH2Hyt9RPOblZm3
+         ptvQCUUr3Qgi7tX2k05+UbBmBVv++hDZ9F5lDvLwVuFZZnFwwVwAU5wfv2Ojqk+W2Uj5
+         IvxiusDq6/L0U1aapMil0Nv3ZD1ucTr7uSfGZ8mCW7rvqnlDiQ3jg8EeOZfqVELeeLWi
+         0YTl0O1ONyP6FdS2e9eonbc+Uyer6odYyJrvTzXd1aVPVKED39f9G1J666NGsv2WpHoi
+         LMIXfQDbOIB5JyEZQOgE8l4mFolW1uoDd2HJIhsJdbSrbDpgeLwRSbc6jGGsT+efvAyV
+         KQpA==
+X-Forwarded-Encrypted: i=1; AJvYcCVDqx/DX4W0HJKM6zYTfWR66UUFl87oUgTXjeOkRe5WY1QkBiinTGgWFqEoNkRcyfXiuWjzelpfOf3ym1E=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6V48ab99z4OwMZRSaDxj/W0ou7nLtVh64H0P4+xIUBqC1NJkV
+	zEPFZquCc0uJP0voeZTpMl6AYnGuyU5OmBkJuKnEaMJNUL4Tv1A9
+X-Google-Smtp-Source: AGHT+IGyyklvlcShkZHydXmk6sdPP0CT8P2KZkA9ch5qq8b8L0RNr9KgCxszEmSlNtN8EeBFMVpLig==
+X-Received: by 2002:a05:6602:3c4:b0:835:359b:8a07 with SMTP id ca18e2360f4ac-83b041bacf1mr283365339f.16.1729783732451;
+        Thu, 24 Oct 2024 08:28:52 -0700 (PDT)
+Received: from maniforge (c-76-141-129-107.hsd1.il.comcast.net. [76.141.129.107])
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4dc2a6301c4sm2688533173.153.2024.10.24.08.28.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Oct 2024 08:28:51 -0700 (PDT)
+Date: Thu, 24 Oct 2024 10:28:49 -0500
+From: David Vernet <void@manifault.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>, kernel-team@meta.com,
+	sched-ext@meta.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH sched_ext/for-6.13 1/2] sched_ext: Rename CFI stubs to
+ names that are recognized by BPF
+Message-ID: <20241024152849.GA140253@maniforge>
+References: <Zxma0Vt6kwWFe1hx@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf 0/8] Fixes to bpf_msg_push/pop_data and test_sockmap
-To: John Fastabend <john.fastabend@gmail.com>, zijianzhang@bytedance.com,
- bpf@vger.kernel.org
-Cc: martin.lau@linux.dev, ast@kernel.org, andrii@kernel.org,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, mykolal@fb.com, shuah@kernel.org, jakub@cloudflare.com,
- liujian56@huawei.com, cong.wang@bytedance.com
-References: <20241020110345.1468595-1-zijianzhang@bytedance.com>
- <6719c7aede141_1cb2208a6@john.notmuch>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <6719c7aede141_1cb2208a6@john.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27437/Thu Oct 24 10:33:37 2024)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="uWMMB4gSplatliRm"
+Content-Disposition: inline
+In-Reply-To: <Zxma0Vt6kwWFe1hx@slm.duckdns.org>
+User-Agent: Mutt/2.2.13 (00d56288) (2024-03-09)
 
-Hi Zijian,
 
-On 10/24/24 6:06 AM, John Fastabend wrote:
-> zijianzhang@ wrote:
->> From: Zijian Zhang <zijianzhang@bytedance.com>
->>
->> Several fixes to test_sockmap and added push/pop logic for msg_verify_data
->> Before the fixes, some of the tests in test_sockmap are problematic,
->> resulting in pseudo-correct result.
->>
->> 1. txmsg_pass is not set in some tests, as a result, no eBPF program is
->> attached to the sockmap.
->> 2. In SENDPAGE, a wrong iov_length in test_send_large may result in some
->> test skippings and failures.
->> 3. The calculation of total_bytes in msg_loop_rx is wrong, which may cause
->> msg_loop_rx end early and skip some data tests.
->>
->> Besides, for msg_verify_data, I added push/pop checking logic to function
->> msg_verify_data and added more tests for different cases.
-> 
-> Thanks! Yep I think push/pop are not widely used anywhere unfortunately.
-> There are some interesting uses for push/pop to add/edit headers, but
-> I've not gotten there yet clearly.
-> 
->> After that, I found that there are some bugs in bpf_msg_push_data,
->> bpf_msg_pop_data and sk_msg_reset_curr, and fix them. I guess the reason
->> why they have not been exposed is that because of the above problems, they
->> will not be triggered.
-> 
-> Good. I'll review these quickly tonight/tomorrow and run some testing.
-> We don't currently have any longer running tests with push/pop.
+--uWMMB4gSplatliRm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Looks like the series needs a rebase to latest bpf tree.
+On Wed, Oct 23, 2024 at 02:54:41PM -1000, Tejun Heo wrote:
+> CFI stubs can be used to tag arguments with __nullable (and possibly other
+> tags in the future) but for that to work the CFI stubs must have names th=
+at
+> are recognized by BPF. Rename them.
+>=20
+> Signed-off-by: Tejun Heo <tj@kernel.org>
 
-Thanks,
-Daniel
+For both patches:
+
+Acked-by: David Vernet <void@manifault.com>
+
+Here's the selftest output for posterity / FYI:
+
+[root@virtme-ng sched_ext]# ./runner -t maybe_null
+=3D=3D=3D=3D=3D START =3D=3D=3D=3D=3D
+TEST: maybe_null
+DESCRIPTION: Verify if PTR_MAYBE_NULL work for .dispatch
+OUTPUT:
+libbpf: prog 'maybe_null_fail_dispatch': BPF program load failed: Permissio=
+n denied
+libbpf: prog 'maybe_null_fail_dispatch': -- BEGIN PROG LOAD LOG --
+Global function maybe_null_fail_dispatch() doesn't return scalar. Only thos=
+e are supported.
+0: R1=3Dctx() R10=3Dfp0
+; void BPF_STRUCT_OPS(maybe_null_fail_dispatch, s32 cpu, struct task_struct=
+ *p) @ maybe_null_fail_dsp.bpf.c:15
+0: (79) r1 =3D *(u64 *)(r1 +8)          ; R1_w=3Dtrusted_ptr_or_null_task_s=
+truct(id=3D1)
+; vtime_test =3D p->scx.dsq_vtime; @ maybe_null_fail_dsp.bpf.c:17
+1: (79) r1 =3D *(u64 *)(r1 +848)
+R1 invalid mem access 'trusted_ptr_or_null_'
+processed 2 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak=
+_states 0 mark_read 0
+-- END PROG LOAD LOG --
+libbpf: prog 'maybe_null_fail_dispatch': failed to load: -13
+libbpf: failed to load object 'maybe_null_fail_dsp'
+libbpf: failed to load BPF skeleton 'maybe_null_fail_dsp': -13
+libbpf: prog 'maybe_null_fail_yield': BPF program load failed: Permission d=
+enied
+libbpf: prog 'maybe_null_fail_yield': -- BEGIN PROG LOAD LOG --
+0: R1=3Dctx() R10=3Dfp0
+; bool BPF_STRUCT_OPS(maybe_null_fail_yield, struct task_struct *from, @ ma=
+ybe_null_fail_yld.bpf.c:15
+0: (b7) r2 =3D 2328                     ; R2_w=3D2328
+1: (79) r1 =3D *(u64 *)(r1 +8)          ; R1_w=3Dtrusted_ptr_or_null_task_s=
+truct(id=3D1)
+2: (bf) r3 =3D r1                       ; R1_w=3Dtrusted_ptr_or_null_task_s=
+truct(id=3D1) R3_w=3Dtrusted_ptr_or_null_task_struct(id=3D1)
+3: (0f) r3 +=3D r2
+R3 pointer arithmetic on trusted_ptr_or_null_ prohibited, null-check it fir=
+st
+processed 4 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak=
+_states 0 mark_read 0
+-- END PROG LOAD LOG --
+libbpf: prog 'maybe_null_fail_yield': failed to load: -13
+libbpf: failed to load object 'maybe_null_fail_yld'
+libbpf: failed to load BPF skeleton 'maybe_null_fail_yld': -13
+ok 1 maybe_null #
+=3D=3D=3D=3D=3D  END  =3D=3D=3D=3D=3D
+
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+
+RESULTS:
+
+PASSED:  1
+SKIPPED: 0
+FAILED:  0
+
+
+--uWMMB4gSplatliRm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZxpnsQAKCRBZ5LhpZcTz
+ZN9OAP9ixANrOXLXbTeswGXzt0jLBTQz9H/2x707oHohQy76lQD9GbF33Li8J93X
+Ul16haFzaXzgO65ICnqV8Mrlgf9d9QI=
+=Uiak
+-----END PGP SIGNATURE-----
+
+--uWMMB4gSplatliRm--
 
