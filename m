@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-43097-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43098-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D616B9AF3A8
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 22:29:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF14F9AF3A9
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 22:29:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 658D41F21F2F
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 20:29:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F3E21C2187C
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 20:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C816D2170BA;
-	Thu, 24 Oct 2024 20:29:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 284572170C2;
+	Thu, 24 Oct 2024 20:29:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="LHVDrxn2"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="D+R+28L8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7643B1AF0BF
-	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 20:29:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE1B52170B9
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 20:29:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729801785; cv=none; b=KOOZ8pZIVLQ3em6fd7Y6LoUH/piHT47e619Kds+ydZhb209iXtARsRf1L1xdOkzi4IhKrS2NFGLP5DW96QM9PcS9awJuKVUurj5kg/CcVUdAksi89tztRWMANwzvPPH4v1o6zZvexkjIAZvsprIE2hwVNjdxSFtaCB2ONRkG5uc=
+	t=1729801787; cv=none; b=ZetoyrZfff19J2MNE058+y5zGeJgu0O4TPayBw5bVJdBOCeBFBaCAK4YpdkeTxs+MxIDenjXtjnza6FQF2xGcAr4sYroQK1KtoNdtOzrlnjwUL1WfMOyg2TBsjQRTe4n3LxgI2qc3uTyvreKgQo4NOiyGrBDUdB3zJ6EfFoA/q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729801785; c=relaxed/simple;
-	bh=DWOwti3vm2u8IiCa72HOjYzsSxbb+cx9lsbchIICfoE=;
+	s=arc-20240116; t=1729801787; c=relaxed/simple;
+	bh=j34bvrCVF0oaO1wKlQh8wGEACHFU/0w9veoKch8xoxk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kwzRmL2uOwNuQnrrxIPVzHJgiAe5Uh2mf49xbXHI1LPxRAE6Y/wBWQjt3W59/ESThjL8mloMwUH4oojahGCSyPCkLRA/KUc7m4bzQlrqK2EMvHa+W7eeVJNe4Ed9btFfGd4S/kft2FqxPVuwMUEoCV6AkvuKmC802x4hJI/yq6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=LHVDrxn2; arc=none smtp.client-ip=209.85.160.175
+	 MIME-Version; b=VpdBzGBIUNxhvzWcXMRvSJYyjAPUnSYGeq8dbkVr/SfVUX1Ey/3Gnn9NXUmL0uFhfN6RWP2ULcR/I6FNXUEX/unOjr9mu0OAsbLYB2P+t59ETsSugRIuTMDrnA+hmECeIRpQ4x0ZsAWLyQdOL3kBRwHZ7qvcVE0Wf9TCz+1X2pQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=D+R+28L8; arc=none smtp.client-ip=209.85.160.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-4609d75e2f8so21150821cf.1
-        for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 13:29:43 -0700 (PDT)
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-460a23ad00eso21701041cf.0
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 13:29:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1729801782; x=1730406582; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1729801784; x=1730406584; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TCg7gaVwcg2dVZWa8iWS8H1cWuO7lQC9V7PJRVhPL+k=;
-        b=LHVDrxn2/vtkbDEALu6OBbkDu8eq7/KSbBoeBS/7x18PbfVPrtibcmzd9F5IWEtBZJ
-         aKAcCg+OTRkinB5uljM3t5ZaDVVFneLhDzKty1lAPZavzujfai+t5wITYqcT3wcnz4Nj
-         t2uQK8ByJe4Ck7fc1+7ZtdgyPbG1hCL6hVBEchgYe5gFLnUUlAXCdWzK1+3tvpNb82t0
-         f/qUnuGML1IOK9w9Z2gOA/NKXORANcG5i4T+iZHwNd0VAqZ4YIsvNhvzy7YuqABR/lIL
-         Y2MixCikUtC9fiO8eaHgA1oQk4xO9i6vBTcGdHc/85rZP0aYp9+wFvE2z901M4Qf28jf
-         VGXw==
+        bh=8XhEsmOF8nZeJsm6eI/AhkOJHXVkV3Jbs6Tk1mX0i8M=;
+        b=D+R+28L8DYkB8n9uKnImUSzvP4mmpai2YqH2IrpSFWdMe57hV3a5r3nVnEA30xDCgW
+         v0mWevMvZEKY2VoQJUh2759TvdRsTMwDEOrwkvLHCQLa4b6DTqkFpTHbIyN6rd2g50O5
+         e/gx085rTdCeooTpapwKKgU6gYdJ7/3UzPYFHdJ746BQVjT0piETKNvjCWfXJZsx0RYC
+         OnWu7CjPuDnAciswPooFJeuz2woiBpgVCpWhORaO+KOWYKmGbUOuBOG//8a2MZEIt76k
+         SUnzWw3za+4171ZHFnuMiPzQUjkRp5yNB9ghzy/yCZ/gyaIaX/ie9bsWUDYu65AfAi0w
+         23+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729801782; x=1730406582;
+        d=1e100.net; s=20230601; t=1729801784; x=1730406584;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TCg7gaVwcg2dVZWa8iWS8H1cWuO7lQC9V7PJRVhPL+k=;
-        b=T81dPWTXBhMPBJRg6JDvDU2ATCEXx6T3fDnxg4DVcQXwuqCMRODAlVXD5q0zUuzH/n
-         qbeoqYJ+Wp7r/QrjRoafL3KygSSpmZVqt8lWdclnYN57xLJEYZMNCyHSkq05WLYvrQVl
-         HhXqdNLYK6tear0KQ8Jzxw6f+O5aZoO05YQDih/yxABDBTLQhMXgJOEG1dHbzoafeP3f
-         uxisMt07FAVMLD+raqhqd/zIesN6jHNvTuEo0Z4JyYEPEO0wInn+/yjRHUvtX54VyApA
-         iTyiP03G+1uZnJE9sxuHbWa59M7KjtIhdjaQ8JVMQlUoKsm9LxsGRcYFKuj6pt/IKpcC
-         d+uw==
-X-Gm-Message-State: AOJu0YwoCSo7IXkLd+NjuPa3OaxAwaiztCdp8r5/JHW92NawAcjqiqg7
-	dgO14Hk9FthH+GuLqkdFUdkB7VPJh5Tv2o3pTzX3K/c+P/nAX2vpnd55S8iM8oSgzBXRrlo7G3c
-	9
-X-Google-Smtp-Source: AGHT+IHm7q96jprVuce6iQHEO/Ikwa2YD01YgvCBtq/vg9Vl9St+zVIsTguouLzWY1OClbC5ABwwnA==
-X-Received: by 2002:ac8:5907:0:b0:451:b77e:a8c1 with SMTP id d75a77b69052e-4612525b39emr54201131cf.3.1729801781984;
-        Thu, 24 Oct 2024 13:29:41 -0700 (PDT)
+        bh=8XhEsmOF8nZeJsm6eI/AhkOJHXVkV3Jbs6Tk1mX0i8M=;
+        b=tQrASXm6/Y31B/7xsvWJb4rZvoKRWnLfaN0WPp1F/VtWfHZJ8+94wUueVuAur/j/s1
+         /K9KuK6t6WrRQ9UWsK2Kncfu1T2CsiNUqBNZitFEEYJudKuG8nFfeqXaloCo33/miwsV
+         MibyYngLmg2WXfyfFRkb1fOQNMlwi3xm33Iyx6ev4V3UaTKpUIEqMWdfnseOxx6+MjCV
+         MHBvkbU8wrSKgMh2PESLYFT+yt+8xw2586N7NGcZKbj8uBn9EYcVDzTBCfKK0XI+mE8R
+         VIqpqItfI+3lwx1jUMvhj3UXS/9uyznLIYK61O89mr7sj/gyfo6hIn/fh4cTfKko/AF7
+         1hdw==
+X-Gm-Message-State: AOJu0YxKGfdfc3lL/pzQ7Bc6QE8sLQ7DmWTDdhQf/oKUTX27HssgG36g
+	tweuCk90iSWkLyymgelLvJT+fxPtd+Kf03zGa2EgVdAE3UO5V6rgX9xWgGO6ypCswsJXl886cSn
+	w
+X-Google-Smtp-Source: AGHT+IHt6jNVAFAtxbYTk6vicLjIQ/twn/x5r4MiC2EooTqfxA9qqcS2BDfMXntfQLdRH8DO1UgT+w==
+X-Received: by 2002:ac8:7c4f:0:b0:45e:ff39:ea6c with SMTP id d75a77b69052e-461252d181cmr59089361cf.29.1729801784100;
+        Thu, 24 Oct 2024 13:29:44 -0700 (PDT)
 Received: from n191-036-066.byted.org ([130.44.215.80])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-460d3cbb3c3sm55486081cf.52.2024.10.24.13.29.41
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-460d3cbb3c3sm55486081cf.52.2024.10.24.13.29.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2024 13:29:41 -0700 (PDT)
+        Thu, 24 Oct 2024 13:29:43 -0700 (PDT)
 From: zijianzhang@bytedance.com
 To: bpf@vger.kernel.org
 Cc: martin.lau@linux.dev,
@@ -91,9 +91,9 @@ Cc: martin.lau@linux.dev,
 	liujian56@huawei.com,
 	zijianzhang@bytedance.com,
 	cong.wang@bytedance.com
-Subject: [PATCH v2 bpf-next 5/8] selftests/bpf: Add more tests for test_txmsg_push_pop in test_sockmap
-Date: Thu, 24 Oct 2024 20:29:14 +0000
-Message-Id: <20241024202917.3443231-6-zijianzhang@bytedance.com>
+Subject: [PATCH v2 bpf-next 6/8] bpf, sockmap: Several fixes to bpf_msg_push_data
+Date: Thu, 24 Oct 2024 20:29:15 +0000
+Message-Id: <20241024202917.3443231-7-zijianzhang@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20241024202917.3443231-1-zijianzhang@bytedance.com>
 References: <20241024202917.3443231-1-zijianzhang@bytedance.com>
@@ -107,67 +107,120 @@ Content-Transfer-Encoding: 8bit
 
 From: Zijian Zhang <zijianzhang@bytedance.com>
 
-Add more tests for test_txmsg_push_pop in test_sockmap for better coverage
+Several fixes to bpf_msg_push_data,
+1. test_sockmap has tests where bpf_msg_push_data is invoked to push some
+data at the end of a message, but -EINVAL is returned. In this case, in
+bpf_msg_push_data, after the first loop, i will be set to msg->sg.end, add
+the logic to handle it.
+2. Before "if (!copy)", the logic for some corner cases related to
+msg->sg.end is missing, thus add the logic to handle it.
 
+Fixes: 6fff607e2f14 ("bpf: sk_msg program helper bpf_msg_push_data")
 Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
 ---
- tools/testing/selftests/bpf/test_sockmap.c | 37 ++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ net/core/filter.c | 53 +++++++++++++++++++++++++++++------------------
+ 1 file changed, 33 insertions(+), 20 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-index 61a747afcd05..e5c7ecbe57e3 100644
---- a/tools/testing/selftests/bpf/test_sockmap.c
-+++ b/tools/testing/selftests/bpf/test_sockmap.c
-@@ -1795,12 +1795,49 @@ static void test_txmsg_push(int cgrp, struct sockmap_options *opt)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index a88e6924c4c0..4fae427aa5ca 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2793,7 +2793,7 @@ BPF_CALL_4(bpf_msg_push_data, struct sk_msg *, msg, u32, start,
+ 		sk_msg_iter_var_next(i);
+ 	} while (i != msg->sg.end);
  
- static void test_txmsg_push_pop(int cgrp, struct sockmap_options *opt)
- {
-+	/* Test push/pop range overlapping */
- 	txmsg_pass = 1;
- 	txmsg_start_push = 1;
- 	txmsg_end_push = 10;
- 	txmsg_start_pop = 5;
- 	txmsg_pop = 4;
- 	test_send_large(opt, cgrp);
-+
-+	txmsg_pass = 1;
-+	txmsg_start_push = 1;
-+	txmsg_end_push = 10;
-+	txmsg_start_pop = 5;
-+	txmsg_pop = 16;
-+	test_send_large(opt, cgrp);
-+
-+	txmsg_pass = 1;
-+	txmsg_start_push = 5;
-+	txmsg_end_push = 4;
-+	txmsg_start_pop = 1;
-+	txmsg_pop = 10;
-+	test_send_large(opt, cgrp);
-+
-+	txmsg_pass = 1;
-+	txmsg_start_push = 5;
-+	txmsg_end_push = 16;
-+	txmsg_start_pop = 1;
-+	txmsg_pop = 10;
-+	test_send_large(opt, cgrp);
-+
-+	/* Test push/pop range non-overlapping */
-+	txmsg_pass = 1;
-+	txmsg_start_push = 1;
-+	txmsg_end_push = 10;
-+	txmsg_start_pop = 16;
-+	txmsg_pop = 4;
-+	test_send_large(opt, cgrp);
-+
-+	txmsg_pass = 1;
-+	txmsg_start_push = 16;
-+	txmsg_end_push = 10;
-+	txmsg_start_pop = 5;
-+	txmsg_pop = 4;
-+	test_send_large(opt, cgrp);
- }
+-	if (start >= offset + l)
++	if (start > offset + l)
+ 		return -EINVAL;
  
- static void test_txmsg_apply(int cgrp, struct sockmap_options *opt)
+ 	space = MAX_MSG_FRAGS - sk_msg_elem_used(msg);
+@@ -2818,6 +2818,8 @@ BPF_CALL_4(bpf_msg_push_data, struct sk_msg *, msg, u32, start,
+ 
+ 		raw = page_address(page);
+ 
++		if (i == msg->sg.end)
++			sk_msg_iter_var_prev(i);
+ 		psge = sk_msg_elem(msg, i);
+ 		front = start - offset;
+ 		back = psge->length - front;
+@@ -2834,7 +2836,13 @@ BPF_CALL_4(bpf_msg_push_data, struct sk_msg *, msg, u32, start,
+ 		}
+ 
+ 		put_page(sg_page(psge));
+-	} else if (start - offset) {
++		new = i;
++		goto place_new;
++	}
++
++	if (start - offset) {
++		if (i == msg->sg.end)
++			sk_msg_iter_var_prev(i);
+ 		psge = sk_msg_elem(msg, i);
+ 		rsge = sk_msg_elem_cpy(msg, i);
+ 
+@@ -2845,39 +2853,44 @@ BPF_CALL_4(bpf_msg_push_data, struct sk_msg *, msg, u32, start,
+ 		sk_msg_iter_var_next(i);
+ 		sg_unmark_end(psge);
+ 		sg_unmark_end(&rsge);
+-		sk_msg_iter_next(msg, end);
+ 	}
+ 
+ 	/* Slot(s) to place newly allocated data */
++	sk_msg_iter_next(msg, end);
+ 	new = i;
++	sk_msg_iter_var_next(i);
++
++	if (i == msg->sg.end) {
++		if (!rsge.length)
++			goto place_new;
++		sk_msg_iter_next(msg, end);
++		goto place_new;
++	}
+ 
+ 	/* Shift one or two slots as needed */
+-	if (!copy) {
+-		sge = sk_msg_elem_cpy(msg, i);
++	sge = sk_msg_elem_cpy(msg, new);
++	sg_unmark_end(&sge);
+ 
++	nsge = sk_msg_elem_cpy(msg, i);
++	if (rsge.length) {
+ 		sk_msg_iter_var_next(i);
+-		sg_unmark_end(&sge);
++		nnsge = sk_msg_elem_cpy(msg, i);
+ 		sk_msg_iter_next(msg, end);
++	}
+ 
+-		nsge = sk_msg_elem_cpy(msg, i);
++	while (i != msg->sg.end) {
++		msg->sg.data[i] = sge;
++		sge = nsge;
++		sk_msg_iter_var_next(i);
+ 		if (rsge.length) {
+-			sk_msg_iter_var_next(i);
++			nsge = nnsge;
+ 			nnsge = sk_msg_elem_cpy(msg, i);
+-		}
+-
+-		while (i != msg->sg.end) {
+-			msg->sg.data[i] = sge;
+-			sge = nsge;
+-			sk_msg_iter_var_next(i);
+-			if (rsge.length) {
+-				nsge = nnsge;
+-				nnsge = sk_msg_elem_cpy(msg, i);
+-			} else {
+-				nsge = sk_msg_elem_cpy(msg, i);
+-			}
++		} else {
++			nsge = sk_msg_elem_cpy(msg, i);
+ 		}
+ 	}
+ 
++place_new:
+ 	/* Place newly allocated data buffer */
+ 	sk_mem_charge(msg->sk, len);
+ 	msg->sg.size += len;
 -- 
 2.20.1
 
