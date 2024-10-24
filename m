@@ -1,409 +1,279 @@
-Return-Path: <bpf+bounces-43049-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43050-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3951D9AE7B0
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 16:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F217B9AE840
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 16:21:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC345285EA6
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 14:10:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0C5628D285
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 14:21:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 125DC1F818A;
-	Thu, 24 Oct 2024 14:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 373F81E3DC1;
+	Thu, 24 Oct 2024 14:10:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="QxK5Vmpz";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="a0rdEplW"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB4CA1E1C33;
-	Thu, 24 Oct 2024 14:06:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729778807; cv=none; b=Fnyjl4FIpU/3+2rVhp+SAFUPIr8Xt+0nOP5XQw9aGBOnbaGVZUJ/RrHXMorSyNvd+rMEjwgp9nfbgm9cMThohE3GNTruFUZmGzxSxptIq0FaO0hV60qra+O+a+6udfDZFTGzaSr/BryBpVgT0FvHK8TWyswHzWOH/gwotTPFVrY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729778807; c=relaxed/simple;
-	bh=+5E7QEYKJg8yqo/JOa28FqSC59wCCbCFE0k0vCccr5A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jOS6thcGQeMH/O5JQZ4gG0epxqLD6sOxQsws6q34SfV2q1ciVmVegvSxqkTs6yqt61ONok/4XnuZ15Ryeh4WA1tcrhZbJET25U8iMfLHOyVE8yg3rht3ks58EHIjcsRLkF8HjTHXB49z3ViAeLtu/IuKF34OWuDihgEYSX249Ik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B277A339;
-	Thu, 24 Oct 2024 07:07:12 -0700 (PDT)
-Received: from J2N7QTR9R3.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3EDE93F528;
-	Thu, 24 Oct 2024 07:06:41 -0700 (PDT)
-Date: Thu, 24 Oct 2024 15:06:31 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Liao Chang <liaochang1@huawei.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, mhiramat@kernel.org,
-	oleg@redhat.com, peterz@infradead.org, ast@kernel.org,
-	puranjay@kernel.org, andrii@kernel.org, andrii.nakryiko@gmail.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] arm64: uprobes: Simulate STP for pushing fp/lr into user
- stack
-Message-ID: <ZxpUX1rbppLqS0bD@J2N7QTR9R3.cambridge.arm.com>
-References: <20240910060407.1427716-1-liaochang1@huawei.com>
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6297E1D9A72
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 14:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729779031; cv=fail; b=aThcK/5YPFRnIbmptLPh8MQDlFwA0VZbCoUA4NNw+PnahXNrTRZYgFWxlinWgCqABI7/y5eyMSsxhXgU9QLvWtE5LMjsDNPg+mN1h4mcV7CliOkDcUHb3kMxonj5jiAowBlqrTcTJ/lOC/YFcA+KDwf5nsuK4wQaGH4YCWXnjyI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729779031; c=relaxed/simple;
+	bh=nz/XImdad8YOWOTDglwaFBYZQuKfcWT34BrkCLrAccA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=guJ6409I487+4m4NZRj+aJ0KvbqIYBKQecIC7t8byfaGiNVYwaNRfWpBKRbYRh2PxZFvxMluK8j4E8vyIVTLdwHnTzODsjjJT/ENrBHvl3eLE0Pe7c8OCyziyg3vVk5G9OhzNQ2rjdOWhfxuk/8UfRaypxnKj6v4hTD2CpFAAL0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=QxK5Vmpz; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=a0rdEplW; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49OC1i4g019779;
+	Thu, 24 Oct 2024 14:10:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=Ki/KBnQAJ4nZ9vHfR0Vew+M1MgnXDX+mV+jBT8agx9U=; b=
+	QxK5VmpzmdQOj90VtA/Fk2Ru3xJHZNgvmn7HPgUgO8IlY83vwcL4FuD3NZfhifJp
+	HuLjyWIvGxEFtlnI1mfx+u2+3mt0eZiWKfUINmiWrrRdth7av5GvRwiRDYbiP2Aw
+	7U0mG1mvoYvZNIpT+xy6ec7Cn6wWp8qtmDrPLQUcEp3eD8Zqque3khObOCGKT2wP
+	YlNhXH7Mcu63ilBE2hzCzcRsnQw4ndUyIOSHYIo3Mdk5VO6EwjoWrXl9UjWRT0Uv
+	/cf89cDuHN66Pf98rgCLuYpqLqaUMAozvrMFhAYEs6uL5qeSn19qx7cJqu0X4Dfw
+	PBGHAclo3JpXVU8zfBT5gA==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42ckkr20y2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 24 Oct 2024 14:10:27 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 49OEA7wg030883;
+	Thu, 24 Oct 2024 14:10:26 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2047.outbound.protection.outlook.com [104.47.66.47])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 42emh30t24-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 24 Oct 2024 14:10:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=WXacB0QTOhsVwW1zYDVhfkLjaCz4Nk2XWcF9aOy4U+cnY/Yw6oQCy34Sa5nW+a7rd8oIlS92cfAGkRHO4lf7UjLJx4WgVPl2h4sx+7k8QCiC9UmqljmzVNB3bEZ/7vxn7Q/pkYxdxMQwTMq4miRvDSTcmahKmjVO0V+s3m//iCNNKqtRnj2oUShEvXSB4oz22fOzKPuKxM91/6UkdbcrGBSBOk0wuVdXBL2pCf4luC4XJxNQtmkKH45LD+7xU5q5f6R2QQSsY/Hec40mdXWt82AooSrkApvSYocFqQShpfclCBVOJ8l+ZHOEgP++7v8qFDDyzSBamrxAp5++RjjHXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ki/KBnQAJ4nZ9vHfR0Vew+M1MgnXDX+mV+jBT8agx9U=;
+ b=FAOYY7OpoMCYXm7QfR2DWiUpNDZEQknSQq8/6yM304E/CWxFf4q9gL1sTDAtSESAA5ULNidl5Zu/kfqARnmVwVFMqL2Xb5uXrgEO8dqBBP5y/xfP+kaT+MIcFBun+9vqrnzu4UMltXtDoA7xRydn/kHeRT8fAvm88KS6VcDvD06skKxrGOEDJBiYPh/Vjf3tiQBbwcU7Ku4E9qadQvfI1JagI1Dyxp3etZzfb/kj4L91aLrhLapepZ/8nLvkgkCWp8BLh665D3fph6FgdaFrbns32EwiOjJWBwR5BQGQ4BgYwjs4cmNPrAu2Km61xK0rWgbCJpWsUYoeYBoecYYQkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ki/KBnQAJ4nZ9vHfR0Vew+M1MgnXDX+mV+jBT8agx9U=;
+ b=a0rdEplWVyczZVvTN7lDkkF5dUeKMxw0+nGvq6UnR1sqXj7WUhPb2bddMBbHLQQhsbWPjIfZgA7QEZRc94WwFo2OtcCuvsD3c3fPa6x4Aevq+DRF5b0bwtuQT4k66oIdZR1dTal4tyQeY665Vbj9Slx6Y2+J0dkdmpQFWSMV6N4=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by LV3PR10MB8179.namprd10.prod.outlook.com (2603:10b6:408:28a::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8093.16; Thu, 24 Oct
+ 2024 14:10:23 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::682b:c879:9f97:a34f]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::682b:c879:9f97:a34f%7]) with mapi id 15.20.8093.018; Thu, 24 Oct 2024
+ 14:10:23 +0000
+Message-ID: <b58c8ae4-3a5c-44b3-bc85-2dd7dcea397b@oracle.com>
+Date: Thu, 24 Oct 2024 15:10:16 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: Questions about the state of some BTF features
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>
+References: <CAEf4BzYYZa3m5ttEgfPnZUBdYpgoq3JS0GCedXgeoWLgvr9YPQ@mail.gmail.com>
+Content-Language: en-GB
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <CAEf4BzYYZa3m5ttEgfPnZUBdYpgoq3JS0GCedXgeoWLgvr9YPQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0425.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18b::16) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240910060407.1427716-1-liaochang1@huawei.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|LV3PR10MB8179:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4ebd2876-fa23-4359-1bab-08dcf4359a0b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|10070799003|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?eHNJanZrdS9YOTVwamt1SG9EZzE4d3ArOEhueWY2dTZIaGplNWtYUTVCWUdM?=
+ =?utf-8?B?N2djeTlQNmhFaElxbHZCVDc0MlJkMXgvQjhtRHZ6Y01Eb2FwWU96dFd2bGZR?=
+ =?utf-8?B?Zk5UUHJobGxtMEw4NmFNNXMvYXRHOEd6YVBlZkZGWldLWDQrdVZNVzJhU3lx?=
+ =?utf-8?B?blBWYXR2NS9COUdLa2gvdkJNYnNNc0NpeXltWUhmbEZ1WHNudjh3UjJwb0tu?=
+ =?utf-8?B?M1BwUVh5cVNLUEZETVpPSnB6UFRpbER6ZmQxWFMrd3d6UDhSbHdibW9ObkdX?=
+ =?utf-8?B?enRNdzYwcHZVQkpoaGVHc3hkZEZQRC9BZnBSQmZ6Y09vaTRaTmtFamJkTktn?=
+ =?utf-8?B?SlNCUFM4SXFySEhUTy96NlRsMWRwUGQyMWtNbWdiblJnUExETkZJVzZlY3hu?=
+ =?utf-8?B?aDN0ZExoNjBGcmtPcjhiaHVDc1UrRTB4YjkyZzVZbnpxMjI0ODFmZGVZSzF6?=
+ =?utf-8?B?UEU5aEdQRyt3UU4ycVFMUlN1SncxVE1DQ0hUU0FhK1o0VWZUQ1BJMFpHanZy?=
+ =?utf-8?B?SkgzN3o0MWpGc1ZKVGtFeC91TUg3Y3pVZVBUTitnVnFMRThZZ21KZFMyeW9U?=
+ =?utf-8?B?T2EzcWxwN1Vwdkh2VlZmanFQa2dBSzgrV3JwOGVjQTRycDNwc0VacWpnM2tk?=
+ =?utf-8?B?M2dNL2UramtiVUhnT25XcTRSYWpYTUpUUnlaTDVVanQ5OVZMN2xMTHhseWU2?=
+ =?utf-8?B?cGlydHBlT0Z5VkZ2blFrNmNISUptUno3OTBBR3VaU2RzR2JLN3FDTW9TYmJz?=
+ =?utf-8?B?L1VacUNBUlc0UncxS1RoTmt4WWVzckpFRUJYcC9CbUswM0ZTdlhJK2JscURs?=
+ =?utf-8?B?WjZYN0VXU3dTNVFTYU1yTlE5SU1aTXJKY0M3YXlERlpNbmZHSFZZaUwxM2lZ?=
+ =?utf-8?B?WUsxRVd3bnliRDVmcWZrV2FiV2RVNUNwVGl5V0ZXc0tQQTZoSHhTd0FoWnBa?=
+ =?utf-8?B?QkRacE9tRnZLdUEzUjJNWVRVbzB5Ymd2bHFObXdWYmRRY1NXREY3T2xscUNY?=
+ =?utf-8?B?cjdLc3VUeklmVzAxWnRvYXgxeFhDeFhYbm1SWWpuQTNlUVJnNVp0L2dXKzgr?=
+ =?utf-8?B?NFc5WEVFM2FxdUFya2hETFJ1MXJzQTIwVm9IZVlzN2ZjTmF4d0ZyS2l6b1Fm?=
+ =?utf-8?B?WXhIbHVWL3FBVGgrN1Z4WjdUN1lrOWxlMEJ5dzViT2dMUTNtWmJtTnEvSzdn?=
+ =?utf-8?B?NTVUeEtxNGhzSDFRWWY3V2JCdzIxa2VFOHdSNVJra2JhYnlyOEFzY1B4MmQz?=
+ =?utf-8?B?Q2xENmtyZ2VsV0s3OFM3RWJhdXQ1bjliREphd1NRanU4VzA0R0gwdml1ZTlw?=
+ =?utf-8?B?bSsvNXNZc1JaMlh0NFBCQzdmeDBRalhaMDNFTXFIWGdpRk5zM21JQlVNVVc3?=
+ =?utf-8?B?bG56L3VJcnJqMm5LREtrRWhwd0dleXdWZjlERlQxOGNsUndCUGNZZlRySUFU?=
+ =?utf-8?B?OFN2ck9kUGhadStOckUzNGI2YlZVWitDY1IyYTNRZUt6clk3aTRPL0gzOGdj?=
+ =?utf-8?B?WU96aHcwR3RJU004Ujd2WW1jTjd4WlRFSWprOG5MLzFiM1owdmlab1p2WkxY?=
+ =?utf-8?B?KzdrM3FOV2lsaUU1cWlUNWxQTzJUMEZmdTNONHd6eVNCL1UvUlJwRG9rUFN4?=
+ =?utf-8?B?Si9tTmJVMHhTV3RLK0I2QVlDZkdPNDBaQ3lFNExFTmxPSkNrczhCeUhqeXRP?=
+ =?utf-8?B?amlDS0VLaDZoV2N5aGFyb0VrcCtBY054VWh4MnluNFpxN2g5bE9QMzFhcGxN?=
+ =?utf-8?Q?znN8ji6n2TsgmR/J1EDVsCJsoEsGwNjMvTAvKmK?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(10070799003)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?VXRrSWVGRWtEMjdOS0I4bEVlRmR1UmtyZTdQRmpXMFplQUJndzRBbTRTVUw5?=
+ =?utf-8?B?YVRXMVVLY2R2Q2dPeEh1WFFIbER2SHJsZGRhRDVXK1gvTDNnMGs2clkxTm9C?=
+ =?utf-8?B?TWJBaW15RTY1NlNOM3d3SHNneVBUZ2pSck9QQ0UrZ0pMTkNwcjVaZ0RocWFX?=
+ =?utf-8?B?aFlGL1Ztb3pVTDJ0Y2tmbEEwNTN1TDl0NEJXbHVHVXNHdHFtM21RK015cE9B?=
+ =?utf-8?B?Mm9xRGw4WWFQc0dBY2dOY2UyNzJ1RHpmYWV2Mjk5UVNLM2tYMUNhNjVTQmFx?=
+ =?utf-8?B?aEtEY2wyclBReWlrR2ZhdG9PMkpUY2ltK1Z4cW52RjNaZ2pDWkhLclo3K1pm?=
+ =?utf-8?B?cnJLM25uaWsyZnVuMjJNZTV0K1RHTG5iTmtsSHEwdFA4YnAzUlhpM3drMUZI?=
+ =?utf-8?B?c2gxNEtpbldsdUNNZkxHaHJMMW1LT0R1bEZicCtETzVueTRoMGtGUnRkSHAz?=
+ =?utf-8?B?emR5QlJscnk2Sk5heVZRUmxBZmFXak1tMU02bWorajZzZkl3dnBYem5XZjQy?=
+ =?utf-8?B?Zkx3cGRhUGZNampNaG1vU0Framk4Sityd3p5RklmZWtSMHZNV0M4NjBvZG9J?=
+ =?utf-8?B?b2YzTGVyV3JQS2dPemd1Sk93TjFTa2Vta0VkS0RoUW53cUFNMG1qZzZVdm1J?=
+ =?utf-8?B?TnBQNTMyb2prVHloWWpuU0VoYnk3Tk5kZDd3TGFzaFcrWk8zd1NtZnlReTZj?=
+ =?utf-8?B?Uzdqdlh1OE5FbHZvUUZTQk9WejlvNDRaS1gycWRwWFFyVVNJbmI4bmY1ZjA0?=
+ =?utf-8?B?UTZJN0F2WWhOdHFuTnd5bGg2QjNzY0grVk81azkwUHpKZktMWFpyeEJ0RUta?=
+ =?utf-8?B?TGkvbnVvQVlycFFMT1R2MXNmaGwyUDZaMU45T1pxZTNkdlh5UTVPZi96U21s?=
+ =?utf-8?B?VTVnaTJlZmExSmpRcUdnRURManRJdk5GUW9TYkZ6T2Y2ek0xanlaR3BnVk93?=
+ =?utf-8?B?Uzk5NnNhaWJuZ2tXc2RwVDFwMVJHcEpYY2xucnUzWkFZQng3TWoxOFRDeFN2?=
+ =?utf-8?B?ZFJvclJVRmdPREdOc0lmcGYrRExOU0t1eFRxZTROSjZmTjJqSUxZTmJ1bGU4?=
+ =?utf-8?B?eTNjbGpQOHBoNUFwS2g2V3JaZFhONE5DWlNKOEhaRkx1NXBBN1VmZDhaY3ZR?=
+ =?utf-8?B?SG5WeDZ1K2djbzVKSGtDcHpDOG5tQjQvUm9sQXYwVWJBKzhmbGVLTnZJMFdN?=
+ =?utf-8?B?bWp3RXBtdHNpT1JtQmhOL1RSNTJJQjRVQjBoNlhKNzJJcFNONlc5RmZ4VFZX?=
+ =?utf-8?B?MEE4OWx0VENoSS8wWFZabzhvNzVMdGczS0krcTlzakpGYVl2MEVUd2ZLTlFs?=
+ =?utf-8?B?c2FBdVFCb1NMQ3k0a1VPYUc3REVFTmhoSENsQTJnRm1KS1BaR0Y3WG9XY09o?=
+ =?utf-8?B?TVRsSWtnM0twd3U3dHZVQ09sYmNGRGN1ZTduTStXZ1FuZk15cnNNL3llOE92?=
+ =?utf-8?B?RHJuVi90VzJ6eVhjYkxOeTBnYnREb0dFZ203QmhiUXpiSmdieE9zMkhSMERm?=
+ =?utf-8?B?bkw4RE04VDdiSW1nYTR6ai9YZllNOHZmTm9rMnNFRHZJcFFOVGRFZkx6bWh6?=
+ =?utf-8?B?TFNjZURDcndyVWhQS1kwTm9OYmxXVUI5SWFBR2s3dU8xa1luM3FhNkNHY0dL?=
+ =?utf-8?B?UzlDanJNaGxYSm1yQUJhbzVBRGhGWUt2aFo5NWUrZHFSQVV0ZjZGUDgyOE9Z?=
+ =?utf-8?B?d1lzaWE5WHBNbGxFNXl5TkdWaTdsM0VYNlNtSlZ5bU1jYlFvUzYzeElKSmZ6?=
+ =?utf-8?B?ekZaaitpVWNzRmhvbTNQRXVqOFBUZXk2ZlAvQWdyR0ZoU3g0WEIzUmNiOWVn?=
+ =?utf-8?B?OU53NDdDUm9CaUtrWTBwQ3IyOTVDVnovM21TVzliYmk3WHpJdVNJbWR6ZmRG?=
+ =?utf-8?B?OWRBeFFWQ3BZVHpIbzhtYVBJdHk3dmZ3eGZJY1l1K0wydmFiZkNyMkE4ZVBp?=
+ =?utf-8?B?L25YNGVmMFVaSHFBR2JBMjRoTTRKbE8zZXd5SHNkWjRHbEJleG5mYW13dnNS?=
+ =?utf-8?B?UWQyUGRPRnVIbzR0bWFZMXkyNzFsbUU2Wk5FNkpnUHVoVnU0Q3d6SXBvZmdO?=
+ =?utf-8?B?RHAxaC96MmdwOUx5aVZoTndIOXBTVlNxOFFVYTc3Znd4OHJpS0FoK28vTm1D?=
+ =?utf-8?B?R2pTMnBEWldWMWlsWmhxV0htd1VLZmpIdHBlOGFIcklmVDdlRm5vb25NcVBr?=
+ =?utf-8?Q?fO3AiWX4Oc5hK0b2BAK68SM=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	O77R9PSyCJRJ8RJwHYyYpIdXPbeK8V6zTGFlRj5eot+SS65kJhqpbpUosS4ZdkYowz74eke/0pJZCALVAuVf5/YZ4m2iLdNtiljGGfW3T00f/smm9Fof770xI1m7Zaw0Cyl/IwOR/TTDi+tGVolLMZMbTyuTRbLVBjOfrvBqb4irjC7d8DAuYGrcwcnxG+nQjbh7IMtRzn5MYbMbZ+PFWzahyYHGPCfCCqpyMTVnAucX++89rZHRmnHGR9lG995NYvuoaVqfsG0xFxbDwKuypSZE+vitze4TknmtOlZQmb1TWjFa4Obbu/TnriZYPR5dqLoQDDhHpi4JwO01rpQmMnN1EV/5kbNisVesBiN7v7aJf6xDYOFvOfEy1C6KhtCLQ8YJwxjO+1U3pVi3hUj4xZnZNLcxCwoX/pCsS7GsxmtwaaWehUZKAkLg0+35IbCigMv6yRt33zSyVwvB3wAOskASLkeIb4EC0PyATOFuNc0Y05SYLmhDXW0u07gTneB5/nzENn7NtrrAyeNt5JUGiZEPGpysPWEQMMxTdWxIFF2zpM0NdtWtVIC9yWq7gTDiBbB6OOA1DitLKTcAoykwjTHUl1cj28uRzfHIyzd4mZY=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ebd2876-fa23-4359-1bab-08dcf4359a0b
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2024 14:10:23.6899
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GqL7yz1SA8bMXK8aw19cpGsXbbqlYtwKGHqP+b2qri6D6Wt//Yo2lkz5i25SuTGzBqRahG/drPKAP2J4ky+r6g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR10MB8179
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-24_15,2024-10-24_02,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ phishscore=0 suspectscore=0 mlxscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2409260000 definitions=main-2410240116
+X-Proofpoint-GUID: cNuVDecoTtUru9EZt8klQ9KK8PDZjMlo
+X-Proofpoint-ORIG-GUID: cNuVDecoTtUru9EZt8klQ9KK8PDZjMlo
 
-On Tue, Sep 10, 2024 at 06:04:07AM +0000, Liao Chang wrote:
-> This patch is the second part of a series to improve the selftest bench
-> of uprobe/uretprobe [0]. The lack of simulating 'stp fp, lr, [sp, #imm]'
-> significantly impact uprobe/uretprobe performance at function entry in
-> most user cases. Profiling results below reveals the STP that executes
-> in the xol slot and trap back to kernel, reduce redis RPS and increase
-> the time of string grep obviously.
+hey Andrii
+
+On 23/10/2024 01:08, Andrii Nakryiko wrote:
+> Hey Alan,
 > 
-> On Kunpeng916 (Hi1616), 4 NUMA nodes, 64 Arm64 cores@2.4GHz.
+> There were a few BTF-related features you've been working on, and I
+> realized recently that I don't remember exactly where we ended up with
+> them and whether there is anything blocking those features. So instead
+> of going on a mailing list archeology trip, I decided to lazily ask
+> you directly :)
 > 
-> Redis GET (higher is better)
-> ----------------------------
-> No uprobe: 49149.71 RPS
-> Single-stepped STP: 46750.82 RPS
-> Emulated STP: 48981.19 RPS
-> 
-> Redis SET (larger is better)
-> ----------------------------
-> No uprobe: 49761.14 RPS
-> Single-stepped STP: 45255.01 RPS
-> Emulated stp: 48619.21 RPS
-> 
-> Grep (lower is better)
-> ----------------------
-> No uprobe: 2.165s
-> Single-stepped STP: 15.314s
-> Emualted STP: 2.216s
+> Basically, at some point we were discussing and reviewing BTF
+> extensions to have a minimal description of BTF types sizes (fixed and
+> per-item length). What happened to it? Did we decide it's not
+> necessary, or is it still in the works?
 
-The results for grep are concerning.
-
-In theory, the overhead for stepping should be roughly double the
-overhead for emulating, assuming the exception-entry and
-exception-return are the dominant cost. The cost of stepping should be
-trivial.
-
-Those results show emulating adds 0.051s (for a ~2.4% overhead), while
-stepping adds 13.149s (for a ~607% overhead), meaning stepping is 250x
-more expensive.
-
-Was this tested bare-metal, or in a VM?
-
-AFAICT either:
-
-* Single-stepping is unexpectedly expensive.
- 
-  Historically we had performance issues with hypervisor trapping of
-  debug features, and there are things we might be able to improve in
-  the hypervisor and kernel, which would improve stepping *all*
-  instructions.
-  
-  If stepping is the big problem, we could move uprobes over to a BRK
-  rather than a single-step. That would require require updating and
-  fixing the logic to decide which instructions are steppable, but
-  that's necessary anyway given it has extant soundness issues.
-
-* XOL management is absurdly expensive.
- 
-  Does uprobes keep the XOL slot around (like krpobes does), or does it
-  create the slot afresh for each trap?
-
-  If that's trying to create a slot afresh for each trap, there are
-  several opportunities for improvement, e.g. keep the slot around for
-  as long as the uprobe exists, or pre-allocate shared slots for common
-  instructions and use those.
-
-Mark.
+Yeah, it's still in the works; more on that below..
 
 > 
-> Additionally, a profiling of the entry instruction for all leaf and
-> non-leaf function, the ratio of 'stp fp, lr, [sp, #imm]' is larger than
-> 50%. So simulting the STP on the function entry is a more viable option
-> for uprobe.
+> Also, distilled BTF stuff. We landed libbpf-side API (and I believe
+> the kernel-side changes went in as well, right?), but I don't think we
+> enabled this functionality for kernel builds, is that right? What's
+> missing to have relocatable BTF inside kernel modules? Pahole changes?
+> Has that landed?
 > 
-> In the first version [1], it used a uaccess routine to simulate the STP
-> that push fp/lr into stack, which use double STTR instructions for
-> memory store. But as Mark pointed out, this approach can't simulate the
-> correct single-atomicity and ordering properties of STP, especiallly
-> when it interacts with MTE, POE, etc. So this patch uses a more complex
-> and inefficient approach that acquires user stack pages, maps them to
-> kernel address space, and allows kernel to use STP directly push fp/lr
-> into the stack pages.
-> 
-> xol-stp
-> -------
-> uprobe-nop      ( 1 cpus):    1.566 ± 0.006M/s  (  1.566M/s/cpu)
-> uprobe-push     ( 1 cpus):    0.868 ± 0.001M/s  (  0.868M/s/cpu)
-> uprobe-ret      ( 1 cpus):    1.629 ± 0.001M/s  (  1.629M/s/cpu)
-> uretprobe-nop   ( 1 cpus):    0.871 ± 0.001M/s  (  0.871M/s/cpu)
-> uretprobe-push  ( 1 cpus):    0.616 ± 0.001M/s  (  0.616M/s/cpu)
-> uretprobe-ret   ( 1 cpus):    0.878 ± 0.002M/s  (  0.878M/s/cpu)
-> 
-> simulated-stp
-> -------------
-> uprobe-nop      ( 1 cpus):    1.544 ± 0.001M/s  (  1.544M/s/cpu)
-> uprobe-push     ( 1 cpus):    1.128 ± 0.002M/s  (  1.128M/s/cpu)
-> uprobe-ret      ( 1 cpus):    1.550 ± 0.005M/s  (  1.550M/s/cpu)
-> uretprobe-nop   ( 1 cpus):    0.872 ± 0.004M/s  (  0.872M/s/cpu)
-> uretprobe-push  ( 1 cpus):    0.714 ± 0.001M/s  (  0.714M/s/cpu)
-> uretprobe-ret   ( 1 cpus):    0.896 ± 0.001M/s  (  0.896M/s/cpu)
-> 
-> The profiling results based on the upstream kernel with spinlock
-> optimization patches [2] reveals the simulation of STP increase the
-> uprobe-push throughput by 29.3% (from 0.868M/s/cpu to 1.1238M/s/cpu) and
-> uretprobe-push by 15.9% (from 0.616M/s/cpu to 0.714M/s/cpu).
-> 
-> [0] https://lore.kernel.org/all/CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com/
-> [1] https://lore.kernel.org/all/Zr3RN4zxF5XPgjEB@J2N7QTR9R3/
-> [2] https://lore.kernel.org/all/20240815014629.2685155-1-liaochang1@huawei.com/
-> 
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> ---
->  arch/arm64/include/asm/insn.h            |  1 +
->  arch/arm64/kernel/probes/decode-insn.c   | 16 +++++
->  arch/arm64/kernel/probes/decode-insn.h   |  1 +
->  arch/arm64/kernel/probes/simulate-insn.c | 89 ++++++++++++++++++++++++
->  arch/arm64/kernel/probes/simulate-insn.h |  1 +
->  arch/arm64/kernel/probes/uprobes.c       | 21 ++++++
->  arch/arm64/lib/insn.c                    |  5 ++
->  7 files changed, 134 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/insn.h b/arch/arm64/include/asm/insn.h
-> index dd530d5c3d67..74e25debfa75 100644
-> --- a/arch/arm64/include/asm/insn.h
-> +++ b/arch/arm64/include/asm/insn.h
-> @@ -561,6 +561,7 @@ u32 aarch64_insn_encode_immediate(enum aarch64_insn_imm_type type,
->  				  u32 insn, u64 imm);
->  u32 aarch64_insn_decode_register(enum aarch64_insn_register_type type,
->  					 u32 insn);
-> +u32 aarch64_insn_decode_ldst_size(u32 insn);
->  u32 aarch64_insn_gen_branch_imm(unsigned long pc, unsigned long addr,
->  				enum aarch64_insn_branch_type type);
->  u32 aarch64_insn_gen_comp_branch_imm(unsigned long pc, unsigned long addr,
-> diff --git a/arch/arm64/kernel/probes/decode-insn.c b/arch/arm64/kernel/probes/decode-insn.c
-> index be54539e309e..847a7a61ff6d 100644
-> --- a/arch/arm64/kernel/probes/decode-insn.c
-> +++ b/arch/arm64/kernel/probes/decode-insn.c
-> @@ -67,6 +67,22 @@ static bool __kprobes aarch64_insn_is_steppable(u32 insn)
->  	return true;
->  }
->  
-> +bool aarch64_insn_is_stp_fp_lr_sp_64b(probe_opcode_t insn)
-> +{
-> +	/*
-> +	 * The 1st instruction on function entry often follows the
-> +	 * patten 'stp x29, x30, [sp, #imm]!' that pushing fp and lr
-> +	 * into stack.
-> +	 */
-> +	u32 opc = aarch64_insn_decode_ldst_size(insn);
-> +	u32 rt2 = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RT2, insn);
-> +	u32 rn = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RN, insn);
-> +	u32 rt = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RT, insn);
-> +
-> +	return aarch64_insn_is_stp_pre(insn) &&
-> +	       (opc == 2) && (rt2 == 30) && (rn == 31) && (rt == 29);
-> +}
-> +
->  /* Return:
->   *   INSN_REJECTED     If instruction is one not allowed to kprobe,
->   *   INSN_GOOD         If instruction is supported and uses instruction slot,
-> diff --git a/arch/arm64/kernel/probes/decode-insn.h b/arch/arm64/kernel/probes/decode-insn.h
-> index 8b758c5a2062..033ccab73da6 100644
-> --- a/arch/arm64/kernel/probes/decode-insn.h
-> +++ b/arch/arm64/kernel/probes/decode-insn.h
-> @@ -29,5 +29,6 @@ arm_kprobe_decode_insn(kprobe_opcode_t *addr, struct arch_specific_insn *asi);
->  #endif
->  enum probe_insn __kprobes
->  arm_probe_decode_insn(probe_opcode_t insn, struct arch_probe_insn *asi);
-> +bool aarch64_insn_is_stp_fp_lr_sp_64b(probe_opcode_t insn);
->  
->  #endif /* _ARM_KERNEL_KPROBES_ARM64_H */
-> diff --git a/arch/arm64/kernel/probes/simulate-insn.c b/arch/arm64/kernel/probes/simulate-insn.c
-> index 5e4f887a074c..3906851c07b2 100644
-> --- a/arch/arm64/kernel/probes/simulate-insn.c
-> +++ b/arch/arm64/kernel/probes/simulate-insn.c
-> @@ -8,6 +8,9 @@
->  #include <linux/bitops.h>
->  #include <linux/kernel.h>
->  #include <linux/kprobes.h>
-> +#include <linux/highmem.h>
-> +#include <linux/vmalloc.h>
-> +#include <linux/mm.h>
->  
->  #include <asm/ptrace.h>
->  #include <asm/traps.h>
-> @@ -211,3 +214,89 @@ simulate_nop(u32 opcode, long addr, struct pt_regs *regs)
->  	 */
->  	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
->  }
-> +
-> +static inline
-> +bool stack_align_check(unsigned long sp)
-> +{
-> +	return (IS_ALIGNED(sp, 16) ||
-> +		!(read_sysreg(sctlr_el1) & SCTLR_EL1_SA0_MASK));
-> +}
-> +
-> +static inline
-> +void put_user_stack_pages(struct page **pages, int nr_pages)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < nr_pages; i++)
-> +		put_page(pages[i]);
-> +}
-> +
-> +static inline
-> +int get_user_stack_pages(long start, long end, struct page **pages)
-> +{
-> +	int ret;
-> +	int nr_pages = (end >> PAGE_SHIFT) - (start >> PAGE_SHIFT) + 1;
-> +
-> +	ret = get_user_pages_fast(start, nr_pages,
-> +				  FOLL_WRITE | FOLL_FORCE, pages);
-> +	if (unlikely(ret != nr_pages)) {
-> +		if (ret > 0)
-> +			put_user_stack_pages(pages, ret);
-> +		return 0;
-> +	}
-> +
-> +	return nr_pages;
-> +}
-> +
-> +static inline
-> +void *map_user_stack_pages(struct page **pages, int nr_pages)
-> +{
-> +	if (likely(nr_pages == 1))
-> +		return kmap_local_page(pages[0]);
-> +	else
-> +		return vmap(pages, nr_pages, VM_MAP, PAGE_KERNEL);
-> +}
-> +
-> +static inline
-> +void unmap_user_stack_pages(void *kaddr, int nr_pages)
-> +{
-> +	if (likely(nr_pages == 1))
-> +		kunmap_local(kaddr);
-> +	else
-> +		vunmap(kaddr);
-> +}
-> +
-> +void __kprobes
-> +simulate_stp_fp_lr_sp_64b(u32 opcode, long addr, struct pt_regs *regs)
-> +{
-> +	long imm7;
-> +	long new_sp;
-> +	int nr_pages;
-> +	void *kaddr, *dst;
-> +	struct page *pages[2] = { NULL };
-> +
-> +	imm7 = aarch64_insn_decode_immediate(AARCH64_INSN_IMM_7, opcode);
-> +	new_sp = regs->sp + (sign_extend64(imm7, 6) << 3);
-> +	if (!stack_align_check(new_sp)) {
-> +		force_sig(SIGSEGV);
-> +		goto done;
-> +	}
-> +
-> +	nr_pages = get_user_stack_pages(new_sp, regs->sp, pages);
-> +	if (!nr_pages) {
-> +		force_sig(SIGSEGV);
-> +		goto done;
-> +	}
-> +
-> +	kaddr = map_user_stack_pages(pages, nr_pages);
-> +	dst = kaddr + (new_sp & ~PAGE_MASK);
-> +	asm volatile("stp %0, %1, [%2]"
-> +		     : : "r"(regs->regs[29]), "r"(regs->regs[30]), "r"(dst));
-> +
-> +	unmap_user_stack_pages(kaddr, nr_pages);
-> +	put_user_stack_pages(pages, nr_pages);
-> +
-> +done:
-> +	regs->sp = new_sp;
-> +	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
-> +}
-> diff --git a/arch/arm64/kernel/probes/simulate-insn.h b/arch/arm64/kernel/probes/simulate-insn.h
-> index efb2803ec943..733a47ffa2e5 100644
-> --- a/arch/arm64/kernel/probes/simulate-insn.h
-> +++ b/arch/arm64/kernel/probes/simulate-insn.h
-> @@ -17,5 +17,6 @@ void simulate_tbz_tbnz(u32 opcode, long addr, struct pt_regs *regs);
->  void simulate_ldr_literal(u32 opcode, long addr, struct pt_regs *regs);
->  void simulate_ldrsw_literal(u32 opcode, long addr, struct pt_regs *regs);
->  void simulate_nop(u32 opcode, long addr, struct pt_regs *regs);
-> +void simulate_stp_fp_lr_sp_64b(u32 opcode, long addr, struct pt_regs *regs);
->  
->  #endif /* _ARM_KERNEL_KPROBES_SIMULATE_INSN_H */
-> diff --git a/arch/arm64/kernel/probes/uprobes.c b/arch/arm64/kernel/probes/uprobes.c
-> index d49aef2657cd..c70862314fde 100644
-> --- a/arch/arm64/kernel/probes/uprobes.c
-> +++ b/arch/arm64/kernel/probes/uprobes.c
-> @@ -8,6 +8,7 @@
->  #include <asm/cacheflush.h>
->  
->  #include "decode-insn.h"
-> +#include "simulate-insn.h"
->  
->  #define UPROBE_INV_FAULT_CODE	UINT_MAX
->  
-> @@ -31,6 +32,21 @@ unsigned long uprobe_get_swbp_addr(struct pt_regs *regs)
->  	return instruction_pointer(regs);
->  }
->  
-> +static enum probe_insn
-> +arm_uprobe_decode_special_insn(probe_opcode_t insn, struct arch_probe_insn *api)
-> +{
-> +	/*
-> +	 * When uprobe interact with VMSA features, such as MTE, POE, etc, it
-> +	 * give up the simulation of memory access related instructions.
-> +	 */
-> +	if (!system_supports_mte() && aarch64_insn_is_stp_fp_lr_sp_64b(insn)) {
-> +		api->handler = simulate_stp_fp_lr_sp_64b;
-> +		return INSN_GOOD_NO_SLOT;
-> +	}
-> +
-> +	return INSN_REJECTED;
-> +}
-> +
->  int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
->  		unsigned long addr)
->  {
-> @@ -44,6 +60,11 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
->  
->  	insn = *(probe_opcode_t *)(&auprobe->insn[0]);
->  
-> +	if (arm_uprobe_decode_special_insn(insn, &auprobe->api)) {
-> +		auprobe->simulate = true;
-> +		return 0;
-> +	}
-> +
->  	switch (arm_probe_decode_insn(insn, &auprobe->api)) {
->  	case INSN_REJECTED:
->  		return -EINVAL;
-> diff --git a/arch/arm64/lib/insn.c b/arch/arm64/lib/insn.c
-> index b008a9b46a7f..0635219d2196 100644
-> --- a/arch/arm64/lib/insn.c
-> +++ b/arch/arm64/lib/insn.c
-> @@ -238,6 +238,11 @@ static u32 aarch64_insn_encode_ldst_size(enum aarch64_insn_size_type type,
->  	return insn;
->  }
->  
-> +u32 aarch64_insn_decode_ldst_size(u32 insn)
-> +{
-> +	return (insn & GENMASK(31, 30)) >> 30;
-> +}
-> +
->  static inline long label_imm_common(unsigned long pc, unsigned long addr,
->  				     long range)
->  {
-> -- 
-> 2.34.1
-> 
+
+The pahole changes are in, and will be available in the imminent v1.28
+release. Distilled BTF will however only be generated for out-of-tree
+module builds, since it's not needed for kernels where vmlinux + module
+are built at the same time.
+
+Here's the set of BTF things I think we've discussed and folks have
+talked about wanting. I've tried to order them based upon dependencies,
+but in most cases a different ordering is possible.
+
+1. Build vmlinux BTF as a module (support CONFIG_DEBUG_INFO_BTF=m). This
+one helps the embedded folks as modules can be on a separate partition,
+and a very large vmlinux is a problem in that environment apparently.
+Plus we can do module compression, and I did some measurements and
+vmlinux BTF shrinks from ~7Mb to ~1.5Mb when gzip-compressed. This is
+sort of a dependency for
+
+2. all global variables in BTF. Stephen Brennan added support to pahole,
+but we haven't switched the feature on yet in Makefile.btf. Needs more
+testing and for some folks the growth in vmlinux BTF (~1.5Mb) may be an
+issue, hence a soft dependency on 1.
+
+3. BTF header modifications to support kind layout. I've been waiting
+for the need for a new BTF kind to add this, but that's not strictly
+needed. But that brings us on to
+
+4. Augmenting BTF representations to support site-specific info
+(including function addresses). We talked about this a bit with Yonghong
+at plumbers. Will probably require new kind(s) so 3 should likely be
+done first. May also need some special handling so as not to expose
+function addresses to unprivileged users.
+
+So I think 1 is possibly needed before 2, and I'm working on an RFC for
+1 which I hope to get sent out next week (been a bit delayed working on
+the pahole release). 3 would need to be done before 4, or ideally any
+other series that introduced new BTF kinds.
+
+So that's the set of things I'm aware of - there may be other needs of
+course - but the order 1-4 was roughly how I was thinking we could
+attack it. 1 and 2 don't require core BTF changes, so are less
+disruptive. We'd got pretty far down the road with an earlier version of
+3, so if anyone needed it sooner than I get to it, I'd be happy to help
+of course.
+
+Thanks!
+
+Alan
+
 
