@@ -1,123 +1,149 @@
-Return-Path: <bpf+bounces-43076-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43077-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D92039AEEA6
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 19:51:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8FAC9AEEF4
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 19:59:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 170A01C21D71
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 17:51:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A71628183D
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 17:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC3A01FF049;
-	Thu, 24 Oct 2024 17:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2694520102B;
+	Thu, 24 Oct 2024 17:58:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mt8uySRP"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="ZB9H3L5C"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839DB1FF023
-	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 17:50:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DECD200109
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 17:58:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729792260; cv=none; b=ssaWQm9K2cV1eACZUXfv9ZDDD7Dj1n1eBYavCfcHGjiXLifkVPvXuzufMk4CbuoTuVwIFe8TbC+sf5jGSZ8/B0Klg8K3w1DGZqbuhi1gEQO/lGt6o6p1K1vJ4syoWNvdKX70GeB54p1drk4GGnTghCCMZpq3pJhDpaaizC6Dd+s=
+	t=1729792703; cv=none; b=DpS1mtDr/4lULPJRBmAVRHCdIkMmRpYE1FzN85GeTd3Vg5GxsrzUVSQoQCR91iD5E2iqnFir2fMMyI17k2nYYColTpmz0gZN0TXsHWdtolBI2NVYyOxKgk86N8ygYK+Itt3r+PkXz9JAX7TNv0lqJBGTOtZcZ2n0gFfvWIBlaPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729792260; c=relaxed/simple;
-	bh=/tM5oJkYSDIxAbnk01u6JH0cD+6nKWl90fud8hBuiyE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gsXz9xlt3g+0co9sYK/KjP4xMqCRRAa02A4/K/4Ye/oB4GAJO08njBZckJUajrF1S0YIOCV46Uz/uE5odDmcawvrzHoTdwj+B7a/kB2reBowTTgGDTegwTT0QDAd8Gp7gpiJf+oN9l1pepULogoU2FpHcLAHcE7OBa5I67c4K/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mt8uySRP; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20ca4877690so13225ad.1
-        for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 10:50:58 -0700 (PDT)
+	s=arc-20240116; t=1729792703; c=relaxed/simple;
+	bh=Tz+TYnkIIvvQFZxJXocJ/1Xjs+i7EyQ6ol3RLGTBNgE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gNa0oV8LHN94Oak7YPKRqS6JFDkr4Y0gOpsemg4tIt8TCssO7KNKglkH2hBrlP7OMCJGBvieRjiTGP17vuf73nQmEqyyDqVL6dx/Oc2NgTq3MgggaOd8rVRjbFiln0xGDGariGtCyDH6uQKCA7O6whpwjDPS2bSJwAzytt6t3rw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=ZB9H3L5C; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6cbe700dcc3so6693006d6.3
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 10:58:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1729792258; x=1730397058; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RkjXg6PY0r08PgmUd9ZxlQNovB2X2eRq3KqUjeeCP+w=;
-        b=mt8uySRPqzVxl2Hei3Bw304LqD1sijgYvHL9cEsZ7q//GlldAF8DNeKTMJ04hKPLnh
-         C5z/I7J82yel8t6QJsPMziQeB3jhasxXjxFOfT6e5s0LOtq6Nw1he6Eh2T+9oy/asNyZ
-         Nxmj7lVpISxeddiLgC1qg6foh/R7Nq9jdLokVSlnNs4Ox0UUEweXrjh3S4rnb4w3zbXY
-         1sKJ5NHQLR5YGdA4XUQfcA5W9BtZ78/eqbb05I9wRB16exVXIZwwM9j/XjEyQ2LsvVhH
-         cwPlL+LuyHPMgd+YGaQThGAqUOZL4RDAT7MPw+9xOyUEsK5A+oYc3wfeGR+1k5qhp3Cm
-         3OdQ==
+        d=bytedance.com; s=google; t=1729792700; x=1730397500; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5hdgcL1ucFFy+nzvoOayay0MMPz8QSN6E1pTWl4Cyxk=;
+        b=ZB9H3L5CGs4nYN3S4z+UTHcx/hnjkMePMaDc6EvAQOfnIG/h247HK/UTONHvg56ERN
+         Xv/DOblbu+HyU9WMQsL0ySAgwRPVHo1qOcBQil+OwAyud7WE3omyJJUg92vZ0NuPT5BW
+         sro7iuzrvyDXIcPEUuz1+n0sedtwJKVU4kt25kW0E6VhB7xYxhalupsJiKArcCQ6eo6x
+         Y6/VFmNTOBopcThqFrEkcF3s7bODgu10s229YnCXywItNc33hf0hwiSzEwDcUXyMP0Ig
+         Qm2DMPZeKJi1Jh7rf5oa8reI2vlb3uDqm+lDMZ15sabPQQ9OOxEPOElMEfcIm82QZrh3
+         xFTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729792258; x=1730397058;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RkjXg6PY0r08PgmUd9ZxlQNovB2X2eRq3KqUjeeCP+w=;
-        b=UeVfKb1rnXTOs1CfCl0cjrazxjdc0Q0PxJT2qh4+R1t6C3xWl/peu6GS0owrn4Pl1m
-         dVaaE16ts9j5jBceb1AmvVO4ZNoxcsua7M0WcJrx6uEEDLz4muwkcaERw9HUfi90fn+F
-         /GJSbNMLiRLMReLTf8I0tb7zkMsVKaoUWx1cUVf7rOJ6wR1dUvwGWmrUlv5HpghK9AMV
-         bS3WQtdILNGblX/8YMOOISGYTjXN9djPUbDGDBpqTgxq6xq7ao+LLnveoPpZz6u0nrEr
-         NuLj0bdecbI32bAg7HXVg+rj5BaPcKyJd+5L52hSKgPNQtY7IKOkw1V8BvFz5go46Oap
-         Jzpg==
-X-Forwarded-Encrypted: i=1; AJvYcCXgAnkxI9PA/mlAdmIK2ff7RAxu+iIZv/JmZH4OCK2RgpTSEOqOGiMpws4wM6o0/1wwnCs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyv+EMhh07NuczCrFsL358RNUqagzq6ErBrMz5gq6rC5mbKKsHo
-	ylRLHERoAif1F4VUsCTcioS43aGtTinpHzvSp7FQLwIMbw83aaYlOImwk2wiLCmEGBJ7QLGO4ii
-	aeGZpuh37vZiSd86JV/wcLskOnOkR7EA9Ye3r
-X-Google-Smtp-Source: AGHT+IGmMF6Oi1vLba4m0kqHuNX8J81qghfcDxfqm6mH4PqLXBdjonza61cFVolDXqPL3rLs7uZVHPnQpEkVmW5BoD4=
-X-Received: by 2002:a17:902:d488:b0:1ff:3b0f:d61d with SMTP id
- d9443c01a7336-20fc2219cd7mr74225ad.24.1729792257213; Thu, 24 Oct 2024
- 10:50:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729792700; x=1730397500;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5hdgcL1ucFFy+nzvoOayay0MMPz8QSN6E1pTWl4Cyxk=;
+        b=MotfSzAiH31aQqfILc1h0xg+x5NJ/u4cQ/8pWt8cE0fW5YJdMQOmf8HdfyE+/E1GVq
+         /3qpRwWnBqEI52yBUZ83ZdRAs7zgaG0CaiW2X5n3FVHawLAamupOkoEvcFtGEW/t1lw2
+         7AGJ6XpQFuRHi4foSLF1UkqfRV7YQnZSDh1JmwmponfqpNAweu55BPkapOlNWZfMWh2n
+         L4dhYkV8Ar21BF4sJmEblGykCtShK4EejMKtrKtq0xul9UbYgEfwRe71KOHgx2OfhGxR
+         9RDvvwKtJTjIYIKsPT82jEVLAUMdRv0pVTlBuIUQR0H6ILqt6dChM4akJQPrzd9hEiK1
+         +oSw==
+X-Forwarded-Encrypted: i=1; AJvYcCUfG8A6qgRibkYDJQFz6cf8TjOtcbAMU1crktnSwp1YNdECSRNNKrrCvWw/ldlmkS0GESk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwOc059494yjsnYyY/RAL4h9Egufg4W2qDLlXY9Qmi/7RTBvMZW
+	ys87FxEdehehIvVCR+RyXXgyh13BUI8fYcq++Cf5iDwPlZUzKv0rPvrMfp0aqVw=
+X-Google-Smtp-Source: AGHT+IHPcibdiY+9i1rDTxx4UD5RHEiS/II5BX0tKVkJ263toxJWAe4Sh7m1MSTRB5o6QUVwFE2Y4A==
+X-Received: by 2002:a05:6214:448f:b0:6cb:f7c7:803a with SMTP id 6a1803df08f44-6d0939b9dcemr26607106d6.46.1729792700285;
+        Thu, 24 Oct 2024 10:58:20 -0700 (PDT)
+Received: from [10.200.180.69] ([130.44.212.152])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6ce009e32f9sm52362576d6.112.2024.10.24.10.58.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Oct 2024 10:58:19 -0700 (PDT)
+Message-ID: <148ce32b-b17e-4612-a30b-baa2c249eeb2@bytedance.com>
+Date: Thu, 24 Oct 2024 10:56:57 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CADKFtnTdWX9prHYMe62oNraaNm=Q3WC9wTfdDD35a=CYxaX2Gw@mail.gmail.com>
- <20241023145640.1499722-1-jrife@google.com> <CAADnVQJupBceq2DAeChBvdjSG4zOpYsMP7_o7gREVmVCA0PUYQ@mail.gmail.com>
- <7bcea009-b58c-4a00-b7cd-f2fc06b90a02@efficios.com> <20241023220552.74ca0c3e@rorschach.local.home>
- <CAEf4Bzb4ywpMxchWcMfW9Lzh=re4x1zbMfz2aPRiUa29nUMB=g@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb4ywpMxchWcMfW9Lzh=re4x1zbMfz2aPRiUa29nUMB=g@mail.gmail.com>
-From: Jordan Rife <jrife@google.com>
-Date: Thu, 24 Oct 2024 10:50:45 -0700
-Message-ID: <CADKFtnSBkSHuR8XLhwsB1NZ5pPeUXNAPCzoCiEqJ5X5=NqqWEg@mail.gmail.com>
-Subject: Re: [RFC PATCH] tracing: Fix syscall tracepoint use-after-free
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Alexei Starovoitov <ast@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Michael Jeanson <mjeanson@efficios.com>, Namhyung Kim <namhyung@kernel.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com, 
-	Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf 0/8] Fixes to bpf_msg_push/pop_data and test_sockmap
+To: Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Cc: martin.lau@linux.dev, ast@kernel.org, andrii@kernel.org,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, mykolal@fb.com, shuah@kernel.org, jakub@cloudflare.com,
+ liujian56@huawei.com, cong.wang@bytedance.com
+References: <20241020110345.1468595-1-zijianzhang@bytedance.com>
+ <6719c7aede141_1cb2208a6@john.notmuch>
+ <fe0ac5b2-f662-4635-92db-081fadb5e375@iogearbox.net>
+Content-Language: en-US
+From: Zijian Zhang <zijianzhang@bytedance.com>
+In-Reply-To: <fe0ac5b2-f662-4635-92db-081fadb5e375@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> You guys said you have a reproducer, right? Can you please share
-> details (I know it's somewhere on another thread, but let's put all
-> this in this thread).
+On 10/24/24 7:43 AM, Daniel Borkmann wrote:
+> Hi Zijian,
+> 
+> On 10/24/24 6:06 AM, John Fastabend wrote:
+>> zijianzhang@ wrote:
+>>> From: Zijian Zhang <zijianzhang@bytedance.com>
+>>>
+>>> Several fixes to test_sockmap and added push/pop logic for 
+>>> msg_verify_data
+>>> Before the fixes, some of the tests in test_sockmap are problematic,
+>>> resulting in pseudo-correct result.
+>>>
+>>> 1. txmsg_pass is not set in some tests, as a result, no eBPF program is
+>>> attached to the sockmap.
+>>> 2. In SENDPAGE, a wrong iov_length in test_send_large may result in some
+>>> test skippings and failures.
+>>> 3. The calculation of total_bytes in msg_loop_rx is wrong, which may 
+>>> cause
+>>> msg_loop_rx end early and skip some data tests.
+>>>
+>>> Besides, for msg_verify_data, I added push/pop checking logic to 
+>>> function
+>>> msg_verify_data and added more tests for different cases.
+>>
+>> Thanks! Yep I think push/pop are not widely used anywhere unfortunately.
+>> There are some interesting uses for push/pop to add/edit headers, but
+>> I've not gotten there yet clearly.
+>>
 
-For reference, the original syzbot report is here along with links to artifacts.
-Link: https://lore.kernel.org/bpf/67121037.050a0220.10f4f4.000f.GAE@google.com/
+Thanks for the reviewing :)
 
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=153ef887980000
-disk image: https://storage.googleapis.com/syzbot-assets/cf2ad43c81cc/disk-15e7d45e.raw.xz
+>>> After that, I found that there are some bugs in bpf_msg_push_data,
+>>> bpf_msg_pop_data and sk_msg_reset_curr, and fix them. I guess the reason
+>>> why they have not been exposed is that because of the above problems, 
+>>> they
+>>> will not be triggered.
+>>
+>> Good. I'll review these quickly tonight/tomorrow and run some testing.
+>> We don't currently have any longer running tests with push/pop.
+> 
+> Looks like the series needs a rebase to latest bpf tree.
+> 
+> Thanks,
+> Daniel
 
-The steps I performed to reproduce locally are roughly as follows:
+This series depends on my previous fixes to test_sockmap("Two fixes for
+test_sockmap"), and they were merged to bpf/bpf-next.git (net branch) a
+week ago. Shall I wait for merging of them to the latest bpf, and then
+rebase?
 
-1. Copy the syz repro script to a file, repro.syz.txt
-2. Download the disk image, disk.img
-3. Build syzkaller (https://github.com/google/syzkaller)
-4. Start up QEMU using disk.img: qemu-system-x86_64 -m 2G -smp
-2,sockets=2,cores=1 -drive file=./disk.raw,format=raw -net
-nic,model=e1000 -net user,host=10.0.2.10,hostfwd:tcp::10022-:22
--enable-kvm -nographic
-5. SCP syzkaller/bin/linux_amd64/syz-execprog and
-syzkaller/bin/linux_amd64/syz-executor to root@127.0.0.1:/root/
-6. SCP repro.syz.txt to root@127.0.0.1:/root/
-7. Run './syz-execprog -repeat=0 -procs=5 ./repro.syz.txt' over SSH on
-root@127.0.0.1
-
-This typically crashes things within 20 seconds or so on my machine.
-
--Jordan
+Thanks,
+Zijian
 
