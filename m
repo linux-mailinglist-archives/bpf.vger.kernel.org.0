@@ -1,263 +1,177 @@
-Return-Path: <bpf+bounces-43047-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43048-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 728DB9AE5C5
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 15:12:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AA959AE6F9
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 15:48:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E21951F24E19
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 13:12:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44E5E1C21BCA
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 13:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0FC1D89E3;
-	Thu, 24 Oct 2024 13:11:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Nmfd9A5h"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBE91DD0E6;
+	Thu, 24 Oct 2024 13:48:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13A761D5AD3
-	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 13:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107511D31AA
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 13:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729775486; cv=none; b=GWYqKf9K3cjEWxte/sLnbhKb5vEJwJN1qx34NAygj2SXXSs2JVh17/u4R1gbN9vqS14pcgkJNRsyBzhppo25f7rRSS/JeFue6sio68VEplum20PzIaMHqroX5nxrsu/dV0R5K6kZ2AgbEvoxhNkNKZZ88uoPMrC4tZUUwvtccN0=
+	t=1729777706; cv=none; b=b4EDD3EJukVLUZpiH7O6Nq3296rZ+efeslfIp4P30Z/JiQvSkF6Eiw42jE7FNIi/Q9NaHEDl7U9yQfdd5R16wO9fBwYNRMOR+gJuJW7bmStxyFNbw/P/U+jHYewyNb40wiPoyo95ZABI9whK/1TsC6TfYpyXvrVnkAkJUJcNyu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729775486; c=relaxed/simple;
-	bh=5iLzVqfxwFKZBC92Uq0ScN+CKGobBXBJf+PUQzUDnks=;
+	s=arc-20240116; t=1729777706; c=relaxed/simple;
+	bh=8yJ6nToOkeni8o/zbjbiZcaZUIdY5m1Pn2m20iOKnA4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lahhgXCfDj1wu8EVLQVThcJ+VFgwa+jp2aFbr/VTA1dY4EoJOL5mwcTIX8Hl98/4O9cKovlFgGELz4VrgyUVsqXU/QsoWSgIarh9WpXHXEeF2UPaGUFwpKdR7BXlc2vzgmDqk4RVp2y040i8Eno8EyAxk95eFW71DslfFx3L2V4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Nmfd9A5h; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4d7f00e6-8fab-4274-8121-620820b99f02@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729775480;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XejbVp6LKjXm930WnGTtSXhdCmw2yuDagrpxGnRFwxE=;
-	b=Nmfd9A5hzL7/3jk3DolyPdp+D1RxIj8V2Xm3hPx5CuZJTnfT1XMcfMDWe6/PAogBL4jFs3
-	8fCBFSf532ILccuL9m/riSzS04kYhUMB/Mr6DFySMKkGjAGomK5Xn+PZ1EsMuaZzDhNVaA
-	z9xFJHDEcmHMogS7sFkZWeYMQugiYuA=
-Date: Thu, 24 Oct 2024 14:11:10 +0100
+	 In-Reply-To:Content-Type; b=GcMN6NzPAu/7J0sOpOGutPzZ5NcO8JtSmwBSJ03eNlEhEbXH+P3xGOUZt3zZGCSU7LBnwtCm3bb7PKlrpdFX+IWp4Sr0kFgW/nCxvwo5T2bOEdGoYSflkF/wB30yA5ZWn2pHgmugUR79GdjyvtgNeQnK+JKckKWwvgbOmLPGEgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XZ6gV5pQmz4f3m88
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 21:48:06 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 3282D1A0196
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 21:48:19 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP1 (Coremail) with SMTP id cCh0CgD3bSohUBpnHkdvEw--.45951S2;
+	Thu, 24 Oct 2024 21:48:19 +0800 (CST)
+Message-ID: <47082e78-e234-4487-95f2-0066e19f21dd@huaweicloud.com>
+Date: Thu, 24 Oct 2024 21:48:17 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: add bpf_get_hw_counter kfunc
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- X86 ML <x86@kernel.org>, bpf <bpf@vger.kernel.org>
-References: <20241023210437.2266063-1-vadfed@meta.com>
- <CAADnVQ+YRj2_wWYkT20yo+5+G5B11d3NCZ8TBuCKJz+SJo37iw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf] bpf, arm64: Fix stack frame construction for
+ struct_ops trampoline
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <CAADnVQ+YRj2_wWYkT20yo+5+G5B11d3NCZ8TBuCKJz+SJo37iw@mail.gmail.com>
+To: Puranjay Mohan <puranjay12@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Puranjay Mohan <puranjay@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+References: <20241019092709.128359-1-xukuohai@huaweicloud.com>
+ <CAADnVQLOY-eHby6CMNXr3FvwPm85W-tWDxiWnRaR_U_=71ADuA@mail.gmail.com>
+ <CANk7y0jiuiHSMTEZ_JCb4QpEPzhkK4ikicDGFa1F30DinZta8A@mail.gmail.com>
+ <7226e7b8-ed73-4adb-9016-30031f1121ca@huaweicloud.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <7226e7b8-ed73-4adb-9016-30031f1121ca@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:cCh0CgD3bSohUBpnHkdvEw--.45951S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw4kXF1DCw47Xw1UJFykGrg_yoW5Zw4Dpr
+	y5ZFZIkF40vryIkw1qg3y5ZFySyr4DZ345XrZ8tw4rC3Z0gr1fAr17tay7urn3Gr1vkr1I
+	qrWqqrsrJF4DAa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUymb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On 24/10/2024 02:39, Alexei Starovoitov wrote:
-> On Wed, Oct 23, 2024 at 2:05 PM Vadim Fedorenko <vadfed@meta.com> wrote:
+On 10/23/2024 11:16 AM, Xu Kuohai wrote:
+> On 10/23/2024 7:37 AM, Puranjay Mohan wrote:
+>> On Wed, Oct 23, 2024 at 12:50 AM Alexei Starovoitov
+>> <alexei.starovoitov@gmail.com> wrote:
+>>>
+>>> On Sat, Oct 19, 2024 at 2:15 AM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+>>>>
+>>>> From: Xu Kuohai <xukuohai@huawei.com>
+>>>>
+>>>> The callsite layout for arm64 fentry is:
+>>>>
+>>>> mov x9, lr
+>>>> nop
+>>>>
+>>>> When a bpf prog is attached, the nop instruction is patched to a call
+>>>> to bpf trampoline:
+>>>>
+>>>> mov x9, lr
+>>>> bl <bpf trampoline>
+>>>>
+>>>> This passes two return addresses to bpf trampoline: the return address
+>>>> for the traced function/prog, stored in x9, and the return address for
+>>>> the bpf trampoline, stored in lr. To ensure stacktrace works properly,
+>>>> the bpf trampoline constructs two fake function stack frames using x9
+>>>> and lr.
+>>>>
+>>>> However, struct_ops progs are used as function callbacks and are invoked
+>>>> directly, without x9 being set as the fentry callsite does. Therefore,
+>>>> only one stack frame should be constructed using lr for struct_ops.
+>>>
+>>> Are you saying that currently stack unwinder on arm64 is
+>>> completely broken for struct_ops progs ?
+>>> or it shows an extra frame that doesn't have to be shown ?
+>>>
+>>> If former then it's certainly a bpf tree material.
+>>> If latter then bpf-next will do.
+>>> Pls clarify.
 >>
->> New kfunc to return ARCH-specific timecounter. For x86 BPF JIT converts
->> it into rdtsc ordered call. Other architectures will get JIT
->> implementation too if supported. The fallback is to
->> __arch_get_hw_counter().
+>> It is not completely broken, only an extra garbage frame is shown
+>> between the caller of the trampoline and its caller.
+>>
 > 
-> arch_get_hw_counter is a great idea.
+> Yep, exactly. Here is a perf script sample, where tcp_ack+0x404
+> is the garbage frame.
 > 
->> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
->> ---
->>   arch/x86/net/bpf_jit_comp.c   | 23 +++++++++++++++++++++++
->>   arch/x86/net/bpf_jit_comp32.c | 11 +++++++++++
->>   kernel/bpf/helpers.c          |  7 +++++++
->>   kernel/bpf/verifier.c         | 11 +++++++++++
->>   4 files changed, 52 insertions(+)
->>
->> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
->> index 06b080b61aa5..55595a0fa55b 100644
->> --- a/arch/x86/net/bpf_jit_comp.c
->> +++ b/arch/x86/net/bpf_jit_comp.c
->> @@ -2126,6 +2126,29 @@ st:                      if (is_imm8(insn->off))
->>                  case BPF_JMP | BPF_CALL: {
->>                          u8 *ip = image + addrs[i - 1];
->>
->> +                       if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL && !imm32) {
->> +                               if (insn->dst_reg == 1) {
->> +                                       struct cpuinfo_x86 *c = &cpu_data(get_boot_cpu_id());
->> +
->> +                                       /* Save RDX because RDTSC will use EDX:EAX to return u64 */
->> +                                       emit_mov_reg(&prog, true, AUX_REG, BPF_REG_3);
->> +                                       if (cpu_has(c, X86_FEATURE_LFENCE_RDTSC))
->> +                                               EMIT_LFENCE();
->> +                                       EMIT2(0x0F, 0x31);
->> +
->> +                                       /* shl RDX, 32 */
->> +                                       maybe_emit_1mod(&prog, BPF_REG_3, true);
->> +                                       EMIT3(0xC1, add_1reg(0xE0, BPF_REG_3), 32);
->> +                                       /* or RAX, RDX */
->> +                                       maybe_emit_mod(&prog, BPF_REG_0, BPF_REG_3, true);
->> +                                       EMIT2(0x09, add_2reg(0xC0, BPF_REG_0, BPF_REG_3));
->> +                                       /* restore RDX from R11 */
->> +                                       emit_mov_reg(&prog, true, BPF_REG_3, AUX_REG);
+> ffffffc0801a04b4 bpf_prog_50992e55a0f655a9_bpf_cubic_cong_avoid+0x98 (bpf_prog_50992e55a0f655a9_bpf_cubic_cong_avoid)
+> ffffffc0801a228c [unknown] ([kernel.kallsyms]) // bpf trampoline
+> ffffffd08d362590 tcp_ack+0x798 ([kernel.kallsyms]) // caller for bpf trampoline
+> ffffffd08d3621fc tcp_ack+0x404 ([kernel.kallsyms]) // garbage frame
+> ffffffd08d36452c tcp_rcv_established+0x4ac ([kernel.kallsyms])
+> ffffffd08d375c58 tcp_v4_do_rcv+0x1f0 ([kernel.kallsyms])
+> ffffffd08d378630 tcp_v4_rcv+0xeb8 ([kernel.kallsyms])
+> ...
 > 
-> This doesn't match
-> static inline u64 __arch_get_hw_counter(s32 clock_mode,
->                                          const struct vdso_data *vd)
-> {
->          if (likely(clock_mode == VDSO_CLOCKMODE_TSC))
->                  return (u64)rdtsc_ordered() & S64_MAX;
+> And this sample also shows that there is no symbol for the
+> struct_ops bpf trampoline. Maybe we should add symbol for it?
+>
+
+Emm, stack unwinder on x86 is completely broken for struct_ops
+progs.
+
+It's because the following function returns 0 for a struct_ops
+bpf trampoline address as there is no corresponding kernel symbol,
+which causes the address not to be recognized as kerneltext. As
+a result, the winder stops on ip == 0.
+
+unsigned long unwind_get_return_address(struct unwind_state *state)
+{
+         if (unwind_done(state))
+                 return 0;
+
+         return __kernel_text_address(state->ip) ? state->ip : 0;
+}
+
+Here is an example of broken stack trace from perf sampling, where
+only one stack frame is captured:
+
+ffffffffc000cfb4 bpf_prog_e60d93d3ec88d5ef_bpf_cubic_cong_avoid+0x78 (bpf_prog_e60d93d3ec88d5ef_bpf_cubic_cong_avoid)
+(no more frames)
+
+To fix it, I think kernel symbol should be added for struct_ops
+trampoline.
+
+>> So, this can go from the bpf-next tree. But let's wait for Xu to
+>> provide more information.
+>>
+>> Thanks,
+>> Puranjay
+>>
 > 
-> - & is missing
-
-& S64_MAX is only needed to early detect possible wrap-around of
-timecounter in case of vDSO call for CLOCK_MONOTONIC_RAW/CLOCK_COARSE
-which adds namespace time offset. TSC is reset during CPU reset and will
-not overflow within 10 years according to "Intel 64 and IA-32
-Architecture Software Developer's Manual,Vol 3B", so it doesn't really
-matter if we mask the highest bit or not while accessing raw cycles
-counter.
-
-> - rdtsc vs rdtscp
-
-rdtscp provides additional 32 bit of "signature value" atomically with
-TSC value in ECX. This value is not really usable outside of domain
-which set it previously while initialization. The kernel stores encoded
-cpuid into IA32_TSC_AUX to provide it back to user-space application,
-but at the same time ignores its value during read. The combination of
-lfence and rdtsc will give us the same result (ordered read of TSC value
-independent on the core) without trashing ECX value.
-
-> but the later one is much slower (I was told).
-
-It is slower on AMD CPUs for now, easily visible in perf traces under load.
-
-> So maybe instead of arch_get_hw_counter() it should be modelled
-> as JIT of sched_clock() ?
-
-sched_clock() is much more complicated because it converts cycles
-counter into ns, we don't actually need this conversion, let's stick
-to arch_get_hw_counter().
-
-> 
->> +
->> +                                       break;
->> +                               }
->> +                       }
->> +
->>                          func = (u8 *) __bpf_call_base + imm32;
->>                          if (tail_call_reachable) {
->>                                  LOAD_TAIL_CALL_CNT_PTR(bpf_prog->aux->stack_depth);
->> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
->> index de0f9e5f9f73..c36ff18a044b 100644
->> --- a/arch/x86/net/bpf_jit_comp32.c
->> +++ b/arch/x86/net/bpf_jit_comp32.c
->> @@ -2091,6 +2091,17 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
->>                          if (insn->src_reg == BPF_PSEUDO_CALL)
->>                                  goto notyet;
->>
->> +                       if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL && !imm32) {
->> +                               if (insn->dst_reg == 1) {
->> +                                       struct cpuinfo_x86 *c = &cpu_data(get_boot_cpu_id());
->> +
->> +                                       if (cpu_has(c, X86_FEATURE_LFENCE_RDTSC))
->> +                                               EMIT3(0x0F, 0xAE, 0xE8);
->> +                                       EMIT2(0x0F, 0x31);
->> +                                       break;
->> +                               }
->> +                       }
->> +
->>                          if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
->>                                  int err;
->>
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index 5c3fdb29c1b1..6624b2465484 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -23,6 +23,7 @@
->>   #include <linux/btf_ids.h>
->>   #include <linux/bpf_mem_alloc.h>
->>   #include <linux/kasan.h>
->> +#include <asm/vdso/gettimeofday.h>
->>
->>   #include "../../lib/kstrtox.h"
->>
->> @@ -3023,6 +3024,11 @@ __bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__sz, const void __user
->>          return ret + 1;
->>   }
->>
->> +__bpf_kfunc int bpf_get_hw_counter(void)
->> +{
->> +       return __arch_get_hw_counter(1, NULL);
->> +}
->> +
->>   __bpf_kfunc_end_defs();
->>
->>   BTF_KFUNCS_START(generic_btf_ids)
->> @@ -3112,6 +3118,7 @@ BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
->>   BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
->>   BTF_ID_FLAGS(func, bpf_get_kmem_cache)
->> +BTF_ID_FLAGS(func, bpf_get_hw_counter, KF_FASTCALL)
->>   BTF_KFUNCS_END(common_btf_ids)
->>
->>   static const struct btf_kfunc_id_set common_kfunc_set = {
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index f514247ba8ba..5f0e4f91ce48 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -11260,6 +11260,7 @@ enum special_kfunc_type {
->>          KF_bpf_iter_css_task_new,
->>          KF_bpf_session_cookie,
->>          KF_bpf_get_kmem_cache,
->> +       KF_bpf_get_hw_counter,
->>   };
->>
->>   BTF_SET_START(special_kfunc_set)
->> @@ -11326,6 +11327,7 @@ BTF_ID(func, bpf_session_cookie)
->>   BTF_ID_UNUSED
->>   #endif
->>   BTF_ID(func, bpf_get_kmem_cache)
->> +BTF_ID(func, bpf_get_hw_counter)
->>
->>   static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
->>   {
->> @@ -20396,6 +20398,15 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>                     desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
->>                  insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
->>                  *cnt = 1;
->> +       } else if (IS_ENABLED(CONFIG_X86) &&
-> 
-> It's better to introduce bpf_jit_inlines_kfunc_call()
-> similar to bpf_jit_inlines_helper_call().
-
-Yep, I thought about introducing it while adding more architectures, but
-can do it from the beginning.
-
-> 
->> +                  desc->func_id == special_kfunc_list[KF_bpf_get_hw_counter]) {
->> +               insn->imm = 0;
->> +               insn->code = BPF_JMP | BPF_CALL;
->> +               insn->src_reg = BPF_PSEUDO_KFUNC_CALL;
->> +               insn->dst_reg = 1; /* Implement enum for inlined fast calls */
-> 
-> Yes. Pls do it cleanly from the start.
-> 
-> Why rewrite though?
-> Can JIT match the addr of bpf_get_hw_counter ?
-> And no need to rewrite call insn ?
-
-I was thinking about this way, just wasn't able to find easy examples of
-matching function addresses in jit. I'll try to make it but it may add
-some extra functions to the jit.
 
 
