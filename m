@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-43096-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43097-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B5559AF3A7
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 22:29:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D616B9AF3A8
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 22:29:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2CF81F22FF2
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 20:29:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 658D41F21F2F
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 20:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7902010E5;
-	Thu, 24 Oct 2024 20:29:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C816D2170BA;
+	Thu, 24 Oct 2024 20:29:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="MVcLDHu2"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="LHVDrxn2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B6251FAF08
-	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 20:29:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7643B1AF0BF
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 20:29:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729801784; cv=none; b=oPot/aksGkqAK9lhhfr5cp4ohUvLvCVSoQUUN62psxrEr3yjDEI7lj7bwHzhEJHLDAaF8ow5KQV/9/ypX4K26ytGEA5625iwuJKhujIJMEd6NH5EKLry4Z97aqB8kO+be367KRIFA/jCaEYiuJ4rqFTs3J3ZHN9TgUVjJvkCm34=
+	t=1729801785; cv=none; b=KOOZ8pZIVLQ3em6fd7Y6LoUH/piHT47e619Kds+ydZhb209iXtARsRf1L1xdOkzi4IhKrS2NFGLP5DW96QM9PcS9awJuKVUurj5kg/CcVUdAksi89tztRWMANwzvPPH4v1o6zZvexkjIAZvsprIE2hwVNjdxSFtaCB2ONRkG5uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729801784; c=relaxed/simple;
-	bh=eb8puX70Jevci/jH+kFlG74v8H4lVm245VUWlkHYLkc=;
+	s=arc-20240116; t=1729801785; c=relaxed/simple;
+	bh=DWOwti3vm2u8IiCa72HOjYzsSxbb+cx9lsbchIICfoE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mT8TNiX6kYN0MTfA8l0uP4+Z32wVtxL+t+fvyt6MQNe77BYQNDCGvqHWrb3E7NW/g7yDx7sn+oHvm5NDBFLyppe7JuoxbVkrlcRqMgSIJIk4E8Vmr7REt16oN5vyokq6kNPVGhjfCNCYxu3qRv4i0nYDh0u9CyKzJi/4Daguero=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=MVcLDHu2; arc=none smtp.client-ip=209.85.160.177
+	 MIME-Version; b=kwzRmL2uOwNuQnrrxIPVzHJgiAe5Uh2mf49xbXHI1LPxRAE6Y/wBWQjt3W59/ESThjL8mloMwUH4oojahGCSyPCkLRA/KUc7m4bzQlrqK2EMvHa+W7eeVJNe4Ed9btFfGd4S/kft2FqxPVuwMUEoCV6AkvuKmC802x4hJI/yq6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=LHVDrxn2; arc=none smtp.client-ip=209.85.160.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-460a23ad00eso21700441cf.0
-        for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 13:29:41 -0700 (PDT)
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-4609d75e2f8so21150821cf.1
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 13:29:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1729801780; x=1730406580; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1729801782; x=1730406582; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4K+TwNwMyKCU5VO2n/DGvMfeeWGd67kJlM6/di+nJ0A=;
-        b=MVcLDHu2jqELr1aPNMrBtSCDfPlz4a2ddedcvWl6diC1Hg0YXzVWiQ4NLri7LsAbKu
-         QrNcnieb65vLuvPfAozD6x6frjdKy2HM7qk/t/VAwQ+P2vA5a2SxRM9y+CCwOpRipNde
-         RY71/lR3LWyFK70oZJgmjrwZ0CcdvRXH1zDMETKncm9kMC4ePW5qkqdWAXsoXVJsEzAe
-         /CU6QVLf35CsSfwVlpuWqlO6wzRvk2MAX/HfKU/Hya6w6+UI7qVK1tCOt8CRrTp7Qhfc
-         N6Tbk0cUcSs723uTMfWS8pQ+Ag6dK9YEXEkdVdxXcW2LS/B2955xuygthlpKJC+dZ5g6
-         4blA==
+        bh=TCg7gaVwcg2dVZWa8iWS8H1cWuO7lQC9V7PJRVhPL+k=;
+        b=LHVDrxn2/vtkbDEALu6OBbkDu8eq7/KSbBoeBS/7x18PbfVPrtibcmzd9F5IWEtBZJ
+         aKAcCg+OTRkinB5uljM3t5ZaDVVFneLhDzKty1lAPZavzujfai+t5wITYqcT3wcnz4Nj
+         t2uQK8ByJe4Ck7fc1+7ZtdgyPbG1hCL6hVBEchgYe5gFLnUUlAXCdWzK1+3tvpNb82t0
+         f/qUnuGML1IOK9w9Z2gOA/NKXORANcG5i4T+iZHwNd0VAqZ4YIsvNhvzy7YuqABR/lIL
+         Y2MixCikUtC9fiO8eaHgA1oQk4xO9i6vBTcGdHc/85rZP0aYp9+wFvE2z901M4Qf28jf
+         VGXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729801780; x=1730406580;
+        d=1e100.net; s=20230601; t=1729801782; x=1730406582;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4K+TwNwMyKCU5VO2n/DGvMfeeWGd67kJlM6/di+nJ0A=;
-        b=kc1wFTcMIZIFQec+ByIgWa49fJbXFKqsrAlJmlYOyLOu1NM1e0dM8Gp/acqjTPdz+Y
-         JDTPyjje7HVgItmTlQWOmSakznxVD0JJbHPVqMvGJLBfil2xJv29Q3Pyt+Isz4vDPSsX
-         z19ehJpb39ca+jmMEkOono8UePbuXJ5m1SWUR4VHZqNyxqo4ycgGWXMHK+Y2gpx0+dSc
-         8khoMR54rFgPN18ZkxwQTjUcjMkXOQOCFCZI+gk6mYs0ov22UHHfSMaWhGXO1v4LHV/P
-         OYBCJAxEEmkzTA57q8kPyG0qVOKUz27hXZfI2AnNW787Yh4F1qWYWTMVrSOSyLh1bqpd
-         MKCw==
-X-Gm-Message-State: AOJu0YyzVhMMtthy3fZN9PnlhOSXikQDQb0upMu6XlHlJSYJU0a1Vg1d
-	LGMrap82FyAPzkOQH9CKVf/nAi90TFzc0jLYRNdhD3lSaH1LD2alTi1H8qyJiqb/4Yq6BNUptaH
-	d
-X-Google-Smtp-Source: AGHT+IGZG7ZZO05/orT0GzKUg+/9P6kA1RW6MDvA631CpjLO2NmplDdmA3uqovSW4Bk3vKnm4Mf7iQ==
-X-Received: by 2002:a05:622a:11c8:b0:460:854f:a1c with SMTP id d75a77b69052e-461252d167emr54644721cf.27.1729801780473;
-        Thu, 24 Oct 2024 13:29:40 -0700 (PDT)
+        bh=TCg7gaVwcg2dVZWa8iWS8H1cWuO7lQC9V7PJRVhPL+k=;
+        b=T81dPWTXBhMPBJRg6JDvDU2ATCEXx6T3fDnxg4DVcQXwuqCMRODAlVXD5q0zUuzH/n
+         qbeoqYJ+Wp7r/QrjRoafL3KygSSpmZVqt8lWdclnYN57xLJEYZMNCyHSkq05WLYvrQVl
+         HhXqdNLYK6tear0KQ8Jzxw6f+O5aZoO05YQDih/yxABDBTLQhMXgJOEG1dHbzoafeP3f
+         uxisMt07FAVMLD+raqhqd/zIesN6jHNvTuEo0Z4JyYEPEO0wInn+/yjRHUvtX54VyApA
+         iTyiP03G+1uZnJE9sxuHbWa59M7KjtIhdjaQ8JVMQlUoKsm9LxsGRcYFKuj6pt/IKpcC
+         d+uw==
+X-Gm-Message-State: AOJu0YwoCSo7IXkLd+NjuPa3OaxAwaiztCdp8r5/JHW92NawAcjqiqg7
+	dgO14Hk9FthH+GuLqkdFUdkB7VPJh5Tv2o3pTzX3K/c+P/nAX2vpnd55S8iM8oSgzBXRrlo7G3c
+	9
+X-Google-Smtp-Source: AGHT+IHm7q96jprVuce6iQHEO/Ikwa2YD01YgvCBtq/vg9Vl9St+zVIsTguouLzWY1OClbC5ABwwnA==
+X-Received: by 2002:ac8:5907:0:b0:451:b77e:a8c1 with SMTP id d75a77b69052e-4612525b39emr54201131cf.3.1729801781984;
+        Thu, 24 Oct 2024 13:29:41 -0700 (PDT)
 Received: from n191-036-066.byted.org ([130.44.215.80])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-460d3cbb3c3sm55486081cf.52.2024.10.24.13.29.39
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-460d3cbb3c3sm55486081cf.52.2024.10.24.13.29.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2024 13:29:40 -0700 (PDT)
+        Thu, 24 Oct 2024 13:29:41 -0700 (PDT)
 From: zijianzhang@bytedance.com
 To: bpf@vger.kernel.org
 Cc: martin.lau@linux.dev,
@@ -91,9 +91,9 @@ Cc: martin.lau@linux.dev,
 	liujian56@huawei.com,
 	zijianzhang@bytedance.com,
 	cong.wang@bytedance.com
-Subject: [PATCH v2 bpf-next 4/8] selftests/bpf: Add push/pop checking for msg_verify_data in test_sockmap
-Date: Thu, 24 Oct 2024 20:29:13 +0000
-Message-Id: <20241024202917.3443231-5-zijianzhang@bytedance.com>
+Subject: [PATCH v2 bpf-next 5/8] selftests/bpf: Add more tests for test_txmsg_push_pop in test_sockmap
+Date: Thu, 24 Oct 2024 20:29:14 +0000
+Message-Id: <20241024202917.3443231-6-zijianzhang@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20241024202917.3443231-1-zijianzhang@bytedance.com>
 References: <20241024202917.3443231-1-zijianzhang@bytedance.com>
@@ -107,235 +107,67 @@ Content-Transfer-Encoding: 8bit
 
 From: Zijian Zhang <zijianzhang@bytedance.com>
 
-Add push/pop checking for msg_verify_data in test_sockmap, except for
-pop/push with cork tests, in these tests the logic will be different.
-1. With corking, pop/push might not be invoked in each sendmsg, it makes
-the layout of the received data difficult
-2. It makes it hard to calculate the total_bytes in the recvmsg
-Temporarily skip the data integrity test for these cases now, added a TODO
+Add more tests for test_txmsg_push_pop in test_sockmap for better coverage
 
-Fixes: ee9b352ce465 ("selftests/bpf: Fix msg_verify_data in test_sockmap")
 Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
 ---
- tools/testing/selftests/bpf/test_sockmap.c | 106 ++++++++++++++++++++-
- 1 file changed, 101 insertions(+), 5 deletions(-)
+ tools/testing/selftests/bpf/test_sockmap.c | 37 ++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-index 5f4558f1f004..61a747afcd05 100644
+index 61a747afcd05..e5c7ecbe57e3 100644
 --- a/tools/testing/selftests/bpf/test_sockmap.c
 +++ b/tools/testing/selftests/bpf/test_sockmap.c
-@@ -88,6 +88,10 @@ int ktls;
- int peek_flag;
- int skb_use_parser;
- int txmsg_omit_skb_parser;
-+int verify_push_start;
-+int verify_push_len;
-+int verify_pop_start;
-+int verify_pop_len;
- 
- static const struct option long_options[] = {
- 	{"help",	no_argument,		NULL, 'h' },
-@@ -514,12 +518,41 @@ static int msg_alloc_iov(struct msghdr *msg,
- 	return -ENOMEM;
- }
- 
--/* TODO: Add verification logic for push, pull and pop data */
-+/* In push or pop test, we need to do some calculations for msg_verify_data */
-+static void msg_verify_date_prep(void)
-+{
-+	int push_range_end = txmsg_start_push + txmsg_end_push - 1;
-+	int pop_range_end = txmsg_start_pop + txmsg_pop - 1;
-+
-+	if (txmsg_end_push && txmsg_pop &&
-+	    txmsg_start_push <= pop_range_end && txmsg_start_pop <= push_range_end) {
-+		/* The push range and the pop range overlap */
-+		int overlap_len;
-+
-+		verify_push_start = txmsg_start_push;
-+		verify_pop_start = txmsg_start_pop;
-+		if (txmsg_start_push < txmsg_start_pop)
-+			overlap_len = min(push_range_end - txmsg_start_pop + 1, txmsg_pop);
-+		else
-+			overlap_len = min(pop_range_end - txmsg_start_push + 1, txmsg_end_push);
-+		verify_push_len = max(txmsg_end_push - overlap_len, 0);
-+		verify_pop_len = max(txmsg_pop - overlap_len, 0);
-+	} else {
-+		/* Otherwise */
-+		verify_push_start = txmsg_start_push;
-+		verify_pop_start = txmsg_start_pop;
-+		verify_push_len = txmsg_end_push;
-+		verify_pop_len = txmsg_pop;
-+	}
-+}
-+
- static int msg_verify_data(struct msghdr *msg, int size, int chunk_sz,
--				 unsigned char *k_p, int *bytes_cnt_p)
-+			   unsigned char *k_p, int *bytes_cnt_p,
-+			   int *check_cnt_p, int *push_p)
- {
--	int i, j, bytes_cnt = *bytes_cnt_p;
-+	int bytes_cnt = *bytes_cnt_p, check_cnt = *check_cnt_p, push = *push_p;
- 	unsigned char k = *k_p;
-+	int i, j;
- 
- 	for (i = 0, j = 0; i < msg->msg_iovlen && size; i++, j = 0) {
- 		unsigned char *d = msg->msg_iov[i].iov_base;
-@@ -538,6 +571,37 @@ static int msg_verify_data(struct msghdr *msg, int size, int chunk_sz,
- 		}
- 
- 		for (; j < msg->msg_iov[i].iov_len && size; j++) {
-+			if (push > 0 &&
-+			    check_cnt == verify_push_start + verify_push_len - push) {
-+				int skipped;
-+revisit_push:
-+				skipped = push;
-+				if (j + push >= msg->msg_iov[i].iov_len)
-+					skipped = msg->msg_iov[i].iov_len - j;
-+				push -= skipped;
-+				size -= skipped;
-+				j += skipped - 1;
-+				check_cnt += skipped;
-+				continue;
-+			}
-+
-+			if (verify_pop_len > 0 && check_cnt == verify_pop_start) {
-+				bytes_cnt += verify_pop_len;
-+				check_cnt += verify_pop_len;
-+				k += verify_pop_len;
-+
-+				if (bytes_cnt == chunk_sz) {
-+					k = 0;
-+					bytes_cnt = 0;
-+					check_cnt = 0;
-+					push = verify_push_len;
-+				}
-+
-+				if (push > 0 &&
-+				    check_cnt == verify_push_start + verify_push_len - push)
-+					goto revisit_push;
-+			}
-+
- 			if (d[j] != k++) {
- 				fprintf(stderr,
- 					"detected data corruption @iov[%i]:%i %02x != %02x, %02x ?= %02x\n",
-@@ -545,15 +609,20 @@ static int msg_verify_data(struct msghdr *msg, int size, int chunk_sz,
- 				return -EDATAINTEGRITY;
- 			}
- 			bytes_cnt++;
-+			check_cnt++;
- 			if (bytes_cnt == chunk_sz) {
- 				k = 0;
- 				bytes_cnt = 0;
-+				check_cnt = 0;
-+				push = verify_push_len;
- 			}
- 			size--;
- 		}
- 	}
- 	*k_p = k;
- 	*bytes_cnt_p = bytes_cnt;
-+	*check_cnt_p = check_cnt;
-+	*push_p = push;
- 	return 0;
- }
- 
-@@ -612,6 +681,8 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
- 		struct timeval timeout;
- 		unsigned char k = 0;
- 		int bytes_cnt = 0;
-+		int check_cnt = 0;
-+		int push = 0;
- 		fd_set w;
- 
- 		fcntl(fd, fd_flags);
-@@ -637,6 +708,10 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
- 		}
- 		total_bytes += txmsg_push_total;
- 		total_bytes -= txmsg_pop_total;
-+		if (data) {
-+			msg_verify_date_prep();
-+			push = verify_push_len;
-+		}
- 		err = clock_gettime(CLOCK_MONOTONIC, &s->start);
- 		if (err < 0)
- 			perror("recv start time");
-@@ -712,7 +787,8 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
- 						iov_length :
- 						iov_length * iov_count;
- 
--				errno = msg_verify_data(&msg, recv, chunk_sz, &k, &bytes_cnt);
-+				errno = msg_verify_data(&msg, recv, chunk_sz, &k, &bytes_cnt,
-+							&check_cnt, &push);
- 				if (errno) {
- 					perror("data verify msg failed");
- 					goto out_errno;
-@@ -722,7 +798,9 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
- 								recvp,
- 								chunk_sz,
- 								&k,
--								&bytes_cnt);
-+								&bytes_cnt,
-+								&check_cnt,
-+								&push);
- 					if (errno) {
- 						perror("data verify msg_peek failed");
- 						goto out_errno;
-@@ -1636,6 +1714,8 @@ static void test_txmsg_pull(int cgrp, struct sockmap_options *opt)
- 
- static void test_txmsg_pop(int cgrp, struct sockmap_options *opt)
- {
-+	bool data = opt->data_test;
-+
- 	/* Test basic pop */
- 	txmsg_pass = 1;
- 	txmsg_start_pop = 1;
-@@ -1654,6 +1734,12 @@ static void test_txmsg_pop(int cgrp, struct sockmap_options *opt)
- 	txmsg_pop = 2;
- 	test_send_many(opt, cgrp);
- 
-+	/* TODO: Test for pop + cork should be different,
-+	 * - It makes the layout of the received data difficult
-+	 * - It makes it hard to calculate the total_bytes in the recvmsg
-+	 * Temporarily skip the data integrity test for this case now.
-+	 */
-+	opt->data_test = false;
- 	/* Test pop + cork */
- 	txmsg_redir = 0;
- 	txmsg_cork = 512;
-@@ -1667,10 +1753,13 @@ static void test_txmsg_pop(int cgrp, struct sockmap_options *opt)
- 	txmsg_start_pop = 1;
- 	txmsg_pop = 2;
- 	test_send_many(opt, cgrp);
-+	opt->data_test = data;
- }
- 
- static void test_txmsg_push(int cgrp, struct sockmap_options *opt)
- {
-+	bool data = opt->data_test;
-+
- 	/* Test basic push */
- 	txmsg_pass = 1;
- 	txmsg_start_push = 1;
-@@ -1689,12 +1778,19 @@ static void test_txmsg_push(int cgrp, struct sockmap_options *opt)
- 	txmsg_end_push = 2;
- 	test_send_many(opt, cgrp);
- 
-+	/* TODO: Test for push + cork should be different,
-+	 * - It makes the layout of the received data difficult
-+	 * - It makes it hard to calculate the total_bytes in the recvmsg
-+	 * Temporarily skip the data integrity test for this case now.
-+	 */
-+	opt->data_test = false;
- 	/* Test push + cork */
- 	txmsg_redir = 0;
- 	txmsg_cork = 512;
- 	txmsg_start_push = 1;
- 	txmsg_end_push = 2;
- 	test_send_many(opt, cgrp);
-+	opt->data_test = data;
- }
+@@ -1795,12 +1795,49 @@ static void test_txmsg_push(int cgrp, struct sockmap_options *opt)
  
  static void test_txmsg_push_pop(int cgrp, struct sockmap_options *opt)
+ {
++	/* Test push/pop range overlapping */
+ 	txmsg_pass = 1;
+ 	txmsg_start_push = 1;
+ 	txmsg_end_push = 10;
+ 	txmsg_start_pop = 5;
+ 	txmsg_pop = 4;
+ 	test_send_large(opt, cgrp);
++
++	txmsg_pass = 1;
++	txmsg_start_push = 1;
++	txmsg_end_push = 10;
++	txmsg_start_pop = 5;
++	txmsg_pop = 16;
++	test_send_large(opt, cgrp);
++
++	txmsg_pass = 1;
++	txmsg_start_push = 5;
++	txmsg_end_push = 4;
++	txmsg_start_pop = 1;
++	txmsg_pop = 10;
++	test_send_large(opt, cgrp);
++
++	txmsg_pass = 1;
++	txmsg_start_push = 5;
++	txmsg_end_push = 16;
++	txmsg_start_pop = 1;
++	txmsg_pop = 10;
++	test_send_large(opt, cgrp);
++
++	/* Test push/pop range non-overlapping */
++	txmsg_pass = 1;
++	txmsg_start_push = 1;
++	txmsg_end_push = 10;
++	txmsg_start_pop = 16;
++	txmsg_pop = 4;
++	test_send_large(opt, cgrp);
++
++	txmsg_pass = 1;
++	txmsg_start_push = 16;
++	txmsg_end_push = 10;
++	txmsg_start_pop = 5;
++	txmsg_pop = 4;
++	test_send_large(opt, cgrp);
+ }
+ 
+ static void test_txmsg_apply(int cgrp, struct sockmap_options *opt)
 -- 
 2.20.1
 
