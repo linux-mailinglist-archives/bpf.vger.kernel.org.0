@@ -1,168 +1,127 @@
-Return-Path: <bpf+bounces-43053-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43054-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 136A89AEA79
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 17:29:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF64C9AEB5B
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 18:04:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 944EBB2092B
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 15:29:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D94381C226C2
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2024 16:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA1B1F5840;
-	Thu, 24 Oct 2024 15:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7041F6697;
+	Thu, 24 Oct 2024 16:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P8PVm1Pr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A2741F4FBC;
-	Thu, 24 Oct 2024 15:28:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E777019DFB4
+	for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 16:04:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729783735; cv=none; b=CqR8UJzKuk+FcZIY3z9gjcfAPzeKnNk2zYUsLVbJ5Wtw/P14R4X3J9Y6dWIDseezhruIUgN1zsV6ZXPGiJqlt4Bs0uySg62Sh5itTesyv2DYND1EhbpGcCSaAfhvD0oOO+6lhK0UqfazFBKotBOkri+r3EATS8W4oiDkQAx/BXY=
+	t=1729785848; cv=none; b=Fc1ggUYNCcNJ4ry5IoLjt/621I7+GkzdTGHVe9XEgJqXjvt2CjoH7qXMNt73z5W+KXZ+7CnnaFqt6jMkf8Jvs5V6Uyhq8QndxXVQ/uRA2ZtlXFX9u1m9cahopwx0QetU7MfMrDU5ASvdS2KZGauaWfA8nhIFzszq3d4CZ4yuhZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729783735; c=relaxed/simple;
-	bh=Wa/lBblz8zjg3K8a5GZVELp9ATHR0GpBk3nPK66gzHI=;
+	s=arc-20240116; t=1729785848; c=relaxed/simple;
+	bh=DshxdLui4UCMqNIfKtfQInF+osEboBLrgMhfmBDtSfo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iBYMK6I60N1vUjKgLddnIotRaLBnWTAPLP81uD3NGTEOh15eYncNMSfdRIS8KAcCEKda/zjFXFsheivS6YrY/Rad4jI/wrbRuUe2w/TbAaJpHapuY8Swuw7azrPgfjfAgJ6/HalxwU+/ZaJS3D2oejBMxvVGM5pgiPFa9ypgIs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-83aff992087so44914739f.3;
-        Thu, 24 Oct 2024 08:28:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729783732; x=1730388532;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CHw3/FAGgd1iO3/H3N2rtqx/81x0A/R4/DsL+0VLYc0=;
-        b=MEHRILrUanCyVYccVSS3u1kVGKDueTgSf5sZufqhq/7Oo3ARCPPYH2Hyt9RPOblZm3
-         ptvQCUUr3Qgi7tX2k05+UbBmBVv++hDZ9F5lDvLwVuFZZnFwwVwAU5wfv2Ojqk+W2Uj5
-         IvxiusDq6/L0U1aapMil0Nv3ZD1ucTr7uSfGZ8mCW7rvqnlDiQ3jg8EeOZfqVELeeLWi
-         0YTl0O1ONyP6FdS2e9eonbc+Uyer6odYyJrvTzXd1aVPVKED39f9G1J666NGsv2WpHoi
-         LMIXfQDbOIB5JyEZQOgE8l4mFolW1uoDd2HJIhsJdbSrbDpgeLwRSbc6jGGsT+efvAyV
-         KQpA==
-X-Forwarded-Encrypted: i=1; AJvYcCVDqx/DX4W0HJKM6zYTfWR66UUFl87oUgTXjeOkRe5WY1QkBiinTGgWFqEoNkRcyfXiuWjzelpfOf3ym1E=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6V48ab99z4OwMZRSaDxj/W0ou7nLtVh64H0P4+xIUBqC1NJkV
-	zEPFZquCc0uJP0voeZTpMl6AYnGuyU5OmBkJuKnEaMJNUL4Tv1A9
-X-Google-Smtp-Source: AGHT+IGyyklvlcShkZHydXmk6sdPP0CT8P2KZkA9ch5qq8b8L0RNr9KgCxszEmSlNtN8EeBFMVpLig==
-X-Received: by 2002:a05:6602:3c4:b0:835:359b:8a07 with SMTP id ca18e2360f4ac-83b041bacf1mr283365339f.16.1729783732451;
-        Thu, 24 Oct 2024 08:28:52 -0700 (PDT)
-Received: from maniforge (c-76-141-129-107.hsd1.il.comcast.net. [76.141.129.107])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4dc2a6301c4sm2688533173.153.2024.10.24.08.28.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2024 08:28:51 -0700 (PDT)
-Date: Thu, 24 Oct 2024 10:28:49 -0500
-From: David Vernet <void@manifault.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>, kernel-team@meta.com,
-	sched-ext@meta.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH sched_ext/for-6.13 1/2] sched_ext: Rename CFI stubs to
- names that are recognized by BPF
-Message-ID: <20241024152849.GA140253@maniforge>
-References: <Zxma0Vt6kwWFe1hx@slm.duckdns.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mv2ilSdaOB/Zjfi+Io71vn8H87RkR2iVLdW1jtulWwUyV16mnF4pnuaveflEN32D8h031laxWDlkR4QOdA197DdjEvmOLuoZd++uK1jtMHmdm8KFiz1T2vNcHEsjn3wTJ0+0xe9szKYnUCDhsJKejNoS8SWd2AAnuYQmwOQI8BU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P8PVm1Pr; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1729785846; x=1761321846;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DshxdLui4UCMqNIfKtfQInF+osEboBLrgMhfmBDtSfo=;
+  b=P8PVm1Pr6wUAQttemRnf7ODXHalwN5FPdxZ3Y28HFhhXS++P+UrHMD2n
+   kXX5OqcTb8mg6Isqo9tx3hHc/MpcH2sCO70pNPhlhaUb4M4oe9iJujx2F
+   bU1HYzwI65oS1JFRCuabNgQFLbuGTReEw6rN8+RtjJryCPIj0RsSNSmn9
+   qSoag5HsDvH0HiD8lVS8LTdaho5u7hA4gD4P3xtcH3maFkF1gP/H0ehLv
+   YShuyySCJ1q095MEK8pbasXgJKKXIwuuspwDnZFbu0++HGLLsJSFU0I4R
+   A3WZPQZMqpQUMH8xBKI8c3ofTDCOJiWM3DFl9KjbGPg69f2nUFgLCWScM
+   A==;
+X-CSE-ConnectionGUID: wSIyxR6SQ3OLm1qUQ8XRMA==
+X-CSE-MsgGUID: iNjmI5uiS7me99kRtAdviQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="40538833"
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="40538833"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2024 09:04:05 -0700
+X-CSE-ConnectionGUID: B0+VuX2iQoGxoHOiRqwLyw==
+X-CSE-MsgGUID: aCmnxg6HRUihFP5sZIm/9g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,229,1725346800"; 
+   d="scan'208";a="80285946"
+Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 24 Oct 2024 09:04:03 -0700
+Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1t40Jc-000Wdb-34;
+	Thu, 24 Oct 2024 16:04:00 +0000
+Date: Fri, 25 Oct 2024 00:03:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Vadim Fedorenko <vadfed@meta.com>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: oe-kbuild-all@lists.linux.dev, x86@kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/2] bpf: add bpf_get_hw_counter kfunc
+Message-ID: <202410242353.krjd8d6t-lkp@intel.com>
+References: <20241023210437.2266063-1-vadfed@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="uWMMB4gSplatliRm"
-Content-Disposition: inline
-In-Reply-To: <Zxma0Vt6kwWFe1hx@slm.duckdns.org>
-User-Agent: Mutt/2.2.13 (00d56288) (2024-03-09)
-
-
---uWMMB4gSplatliRm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20241023210437.2266063-1-vadfed@meta.com>
 
-On Wed, Oct 23, 2024 at 02:54:41PM -1000, Tejun Heo wrote:
-> CFI stubs can be used to tag arguments with __nullable (and possibly other
-> tags in the future) but for that to work the CFI stubs must have names th=
-at
-> are recognized by BPF. Rename them.
->=20
-> Signed-off-by: Tejun Heo <tj@kernel.org>
+Hi Vadim,
 
-For both patches:
+kernel test robot noticed the following build warnings:
 
-Acked-by: David Vernet <void@manifault.com>
+[auto build test WARNING on bpf-next/master]
 
-Here's the selftest output for posterity / FYI:
+url:    https://github.com/intel-lab-lkp/linux/commits/Vadim-Fedorenko/selftests-bpf-add-selftest-to-check-rdtsc-jit/20241024-050747
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20241023210437.2266063-1-vadfed%40meta.com
+patch subject: [PATCH bpf-next 1/2] bpf: add bpf_get_hw_counter kfunc
+config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20241024/202410242353.krjd8d6t-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 14.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241024/202410242353.krjd8d6t-lkp@intel.com/reproduce)
 
-[root@virtme-ng sched_ext]# ./runner -t maybe_null
-=3D=3D=3D=3D=3D START =3D=3D=3D=3D=3D
-TEST: maybe_null
-DESCRIPTION: Verify if PTR_MAYBE_NULL work for .dispatch
-OUTPUT:
-libbpf: prog 'maybe_null_fail_dispatch': BPF program load failed: Permissio=
-n denied
-libbpf: prog 'maybe_null_fail_dispatch': -- BEGIN PROG LOAD LOG --
-Global function maybe_null_fail_dispatch() doesn't return scalar. Only thos=
-e are supported.
-0: R1=3Dctx() R10=3Dfp0
-; void BPF_STRUCT_OPS(maybe_null_fail_dispatch, s32 cpu, struct task_struct=
- *p) @ maybe_null_fail_dsp.bpf.c:15
-0: (79) r1 =3D *(u64 *)(r1 +8)          ; R1_w=3Dtrusted_ptr_or_null_task_s=
-truct(id=3D1)
-; vtime_test =3D p->scx.dsq_vtime; @ maybe_null_fail_dsp.bpf.c:17
-1: (79) r1 =3D *(u64 *)(r1 +848)
-R1 invalid mem access 'trusted_ptr_or_null_'
-processed 2 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak=
-_states 0 mark_read 0
--- END PROG LOAD LOG --
-libbpf: prog 'maybe_null_fail_dispatch': failed to load: -13
-libbpf: failed to load object 'maybe_null_fail_dsp'
-libbpf: failed to load BPF skeleton 'maybe_null_fail_dsp': -13
-libbpf: prog 'maybe_null_fail_yield': BPF program load failed: Permission d=
-enied
-libbpf: prog 'maybe_null_fail_yield': -- BEGIN PROG LOAD LOG --
-0: R1=3Dctx() R10=3Dfp0
-; bool BPF_STRUCT_OPS(maybe_null_fail_yield, struct task_struct *from, @ ma=
-ybe_null_fail_yld.bpf.c:15
-0: (b7) r2 =3D 2328                     ; R2_w=3D2328
-1: (79) r1 =3D *(u64 *)(r1 +8)          ; R1_w=3Dtrusted_ptr_or_null_task_s=
-truct(id=3D1)
-2: (bf) r3 =3D r1                       ; R1_w=3Dtrusted_ptr_or_null_task_s=
-truct(id=3D1) R3_w=3Dtrusted_ptr_or_null_task_struct(id=3D1)
-3: (0f) r3 +=3D r2
-R3 pointer arithmetic on trusted_ptr_or_null_ prohibited, null-check it fir=
-st
-processed 4 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak=
-_states 0 mark_read 0
--- END PROG LOAD LOG --
-libbpf: prog 'maybe_null_fail_yield': failed to load: -13
-libbpf: failed to load object 'maybe_null_fail_yld'
-libbpf: failed to load BPF skeleton 'maybe_null_fail_yld': -13
-ok 1 maybe_null #
-=3D=3D=3D=3D=3D  END  =3D=3D=3D=3D=3D
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202410242353.krjd8d6t-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from kernel/bpf/helpers.c:26:
+>> arch/powerpc/include/asm/vdso/gettimeofday.h:97:63: warning: 'struct vdso_data' declared inside parameter list will not be visible outside of this definition or declaration
+      97 |                                                  const struct vdso_data *vd)
+         |                                                               ^~~~~~~~~
 
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
+vim +97 arch/powerpc/include/asm/vdso/gettimeofday.h
 
-RESULTS:
+ce7d8056e38b77 Christophe Leroy 2020-11-27   95  
+ce7d8056e38b77 Christophe Leroy 2020-11-27   96  static __always_inline u64 __arch_get_hw_counter(s32 clock_mode,
+ce7d8056e38b77 Christophe Leroy 2020-11-27  @97  						 const struct vdso_data *vd)
+ce7d8056e38b77 Christophe Leroy 2020-11-27   98  {
+ce7d8056e38b77 Christophe Leroy 2020-11-27   99  	return get_tb();
+ce7d8056e38b77 Christophe Leroy 2020-11-27  100  }
+ce7d8056e38b77 Christophe Leroy 2020-11-27  101  
 
-PASSED:  1
-SKIPPED: 0
-FAILED:  0
-
-
---uWMMB4gSplatliRm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZxpnsQAKCRBZ5LhpZcTz
-ZN9OAP9ixANrOXLXbTeswGXzt0jLBTQz9H/2x707oHohQy76lQD9GbF33Li8J93X
-Ul16haFzaXzgO65ICnqV8Mrlgf9d9QI=
-=Uiak
------END PGP SIGNATURE-----
-
---uWMMB4gSplatliRm--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
