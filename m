@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-43128-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43127-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D80A09AF698
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2017B9AF697
 	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 03:20:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63BE81F2234F
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 01:20:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8D042822B5
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 01:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B84E83FBA5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84843D3B3;
 	Fri, 25 Oct 2024 01:20:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477FA125DE
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451B0101F7
 	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 01:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729819232; cv=none; b=ewfaRZVHmKJjbLkG5/vR35jQnIE1RHrlL6fG8vC5sfW+0Y9aiVy5fLvO6Uz1kDtyUBXvzW4pL59oUXXhu7TT8K0pSjKGNPYcHm74yLUZqo2C+cMB+QGjYXyiNLLYlulUpf8nxHQdCnNljZ46UakWN1DZRgotWY/fnaqhbLiNOYA=
+	t=1729819232; cv=none; b=j3bMPnzk2vghBB6pHeHhJAjoCCvPgsSV2eJieeLPIFGVvcbU+UtWbK3kNl4qzUYtM3+BB7gz0wj4qOuLD0hawJDO1sv8GrnOizWisx2I6VHVnYGUMtlmA6Tb4A70TsTiOXF4CawfEes8qoBS5Lk7RRI6GURSh/lSMAsZOuH6M30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1729819232; c=relaxed/simple;
-	bh=CinLmLr0pORA5SAsmWoOfUlUqFht48LN68eRQf75zlY=;
+	bh=Sf3qTnf694uCUlQL9zmZybeEg0GNGrxj8RBiXVAqR7Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OrxjW5s04ZdlstugZvHGiRg9gcBHuzk/oktDxePqzt1rsl+N0MddcBV+NjOwWI6iJzsGXAIDnA92GHUbXH0Vw/Vf1el+woC779TrDblke+YKa/JP8JCofTIWDDvhJWwWbEjjhgdRQ6EGbPojfMuVby24LMswN3aZQ5+ohos+1u8=
+	 MIME-Version; b=kKRu1NEFwq0HDDo2+k4paw3jiC84dHlBacO5ornMU4KvyW6XjusYUs2zFvZ7V3l+mpQOweJuJSW2zakiqrT2M3OIL11bt081gNykY01Bu4nZqO8MMHVNrquN4WVu1QAAPs8GHeKxPddCgmofiwFS1MfshRqsVv6c4RTJAwGUmxs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XZQ261MdRz4f3jt6
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 09:20:14 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XZQ2065hXz4f3lfh
+	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 09:20:08 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 8FD961A0568
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 09:20:26 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 28B921A018C
+	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 09:20:27 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgCn28dU8hpnhzUqFA--.57458S8;
+	by APP4 (Coremail) with SMTP id gCh0CgCn28dU8hpnhzUqFA--.57458S9;
 	Fri, 25 Oct 2024 09:20:26 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
@@ -55,9 +55,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Yafang Shao <laoar.shao@gmail.com>,
 	houtao1@huawei.com,
 	xukuohai@huawei.com
-Subject: [PATCH bpf v3 4/5] bpf: Use __u64 to save the bits in bits iterator
-Date: Fri, 25 Oct 2024 09:32:32 +0800
-Message-Id: <20241025013233.804027-5-houtao@huaweicloud.com>
+Subject: [PATCH bpf v3 5/5] selftests/bpf: Add three test cases for bits_iter
+Date: Fri, 25 Oct 2024 09:32:33 +0800
+Message-Id: <20241025013233.804027-6-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20241025013233.804027-1-houtao@huaweicloud.com>
 References: <20241025013233.804027-1-houtao@huaweicloud.com>
@@ -68,10 +68,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCn28dU8hpnhzUqFA--.57458S8
-X-Coremail-Antispam: 1UD129KBjvJXoWxCw17Gry5Xr1DJw4UGFyrXrb_yoW5tw1fpF
-	4rCw1qyrW8tFW2yw1avrWUWa45Awn7Aay8GFZ3WrWrWF47Xr98uryUK345Xan8Cry8ZF42
-	vr9093sxCFWUJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgCn28dU8hpnhzUqFA--.57458S9
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw4rZw4fXF4fAr15AF4xJFb_yoW5WFyDpa
+	1kW3sxAr1rJr4akr4fCayjkFyrWr4vyayrCrZaqrW5CFn7Xr92gr1Skw45Xas5GrWjvwsY
+	vFWqy3yxJrW8WaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -82,7 +82,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxCw17Gry5Xr1DJw4UGFyrXrb_yoW5tw1fpF
 	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
 	AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
 	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
-	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
+	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF
 	7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
 	0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7I
 	U1aLvJUUUUU==
@@ -90,102 +90,115 @@ X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-On 32-bit hosts (e.g., arm32), when a bpf program passes a u64 to
-bpf_iter_bits_new(), bpf_iter_bits_new() will use bits_copy to store the
-content of the u64. However, bits_copy is only 4 bytes, leading to stack
-corruption.
+Add more test cases for bits iterator:
 
-The straightforward solution would be to replace u64 with unsigned long
-in bpf_iter_bits_new(). However, this introduces confusion and problems
-for 32-bit hosts because the size of ulong in bpf program is 8 bytes,
-but it is treated as 4-bytes after passed to bpf_iter_bits_new().
+(1) huge word test
+Verify the multiplication overflow of nr_bits in bits_iter. Without
+the overflow check, when nr_words is 67108865, nr_bits becomes 64,
+causing bpf_probe_read_kernel_common() to corrupt the stack.
+(2) max word test
+Verify correct handling of maximum nr_words value (511).
+(3) bad word test
+Verify early termination of bits iteration when bits iterator
+initialization fails.
 
-Fix it by changing the type of both bits and bit_count from unsigned
-long to u64. However, the change is not enough. The main reason is that
-bpf_iter_bits_next() uses find_next_bit() to find the next bit and the
-pointer passed to find_next_bit() is an unsigned long pointer instead
-of a u64 pointer. For 32-bit little-endian host, it is fine but it is
-not the case for 32-bit big-endian host. Because under 32-bit big-endian
-host, the first iterated unsigned long will be the bits 32-63 of the u64
-instead of the expected bits 0-31. Therefore, in addition to changing
-the type, swap the two unsigned longs within the u64 for 32-bit
-big-endian host.
+Also rename bits_nomem to bits_too_big to better reflect its purpose.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/helpers.c | 33 ++++++++++++++++++++++++++++++---
- 1 file changed, 30 insertions(+), 3 deletions(-)
+ .../selftests/bpf/progs/verifier_bits_iter.c  | 61 ++++++++++++++++++-
+ 1 file changed, 58 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index daec74820dbe..824718349958 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2855,13 +2855,36 @@ struct bpf_iter_bits {
+diff --git a/tools/testing/selftests/bpf/progs/verifier_bits_iter.c b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
+index f4da4d508ddb..156cc278e2fc 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
++++ b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
+@@ -15,6 +15,8 @@ int bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign,
+ int *bpf_iter_bits_next(struct bpf_iter_bits *it) __ksym __weak;
+ void bpf_iter_bits_destroy(struct bpf_iter_bits *it) __ksym __weak;
  
- struct bpf_iter_bits_kern {
- 	union {
--		unsigned long *bits;
--		unsigned long bits_copy;
-+		__u64 *bits;
-+		__u64 bits_copy;
- 	};
- 	int nr_bits;
- 	int bit;
- } __aligned(8);
- 
-+/* On 64-bit hosts, unsigned long and u64 have the same size, so passing
-+ * a u64 pointer and an unsigned long pointer to find_next_bit() will
-+ * return the same result, as both point to the same 8-byte area.
-+ *
-+ * For 32-bit little-endian hosts, using a u64 pointer or unsigned long
-+ * pointer also makes no difference. This is because the first iterated
-+ * unsigned long is composed of bits 0-31 of the u64 and the second unsigned
-+ * long is composed of bits 32-63 of the u64.
-+ *
-+ * However, for 32-bit big-endian hosts, this is not the case. The first
-+ * iterated unsigned long will be bits 32-63 of the u64, so swap these two
-+ * ulong values within the u64.
-+ */
-+static void swap_ulong_in_u64(u64 *bits, unsigned int nr)
-+{
-+#if !defined(CONFIG_64BIT) && defined(__BIG_ENDIAN)
-+	unsigned int i;
++u64 bits_array[511] = {};
 +
-+	for (i = 0; i < nr; i++)
-+		bits[i] = (bits[i] >> 32) | ((u64)(u32)bits[i] << 32);
-+#endif
+ SEC("iter.s/cgroup")
+ __description("bits iter without destroy")
+ __failure __msg("Unreleased reference")
+@@ -110,16 +112,16 @@ int bit_index(void)
+ }
+ 
+ SEC("syscall")
+-__description("bits nomem")
++__description("bits too big")
+ __success __retval(0)
+-int bits_nomem(void)
++int bits_too_big(void)
+ {
+ 	u64 data[4];
+ 	int nr = 0;
+ 	int *bit;
+ 
+ 	__builtin_memset(&data, 0xff, sizeof(data));
+-	bpf_for_each(bits, bit, &data[0], 513) /* Be greater than 512 */
++	bpf_for_each(bits, bit, &data[0], 512) /* Be greater than 511 */
+ 		nr++;
+ 	return nr;
+ }
+@@ -151,3 +153,56 @@ int zero_words(void)
+ 		nr++;
+ 	return nr;
+ }
++
++SEC("syscall")
++__description("huge words")
++__success __retval(0)
++int huge_words(void)
++{
++	u64 data[8] = {0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1};
++	int nr = 0;
++	int *bit;
++
++	bpf_for_each(bits, bit, &data[0], 67108865)
++		nr++;
++	return nr;
 +}
 +
- /**
-  * bpf_iter_bits_new() - Initialize a new bits iterator for a given memory area
-  * @it: The new bpf_iter_bits to be created
-@@ -2906,6 +2929,8 @@ bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_w
- 		if (err)
- 			return -EFAULT;
- 
-+		swap_ulong_in_u64(&kit->bits_copy, nr_words);
++SEC("syscall")
++__description("max words")
++__success __retval(4)
++int max_words(void)
++{
++	volatile int nr = 0;
++	int *bit;
 +
- 		kit->nr_bits = nr_bits;
- 		return 0;
- 	}
-@@ -2924,6 +2949,8 @@ bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_w
- 		return err;
- 	}
- 
-+	swap_ulong_in_u64(kit->bits, nr_words);
++	bits_array[0] = (1ULL << 63) | 1U;
++	bits_array[510] = (1ULL << 33) | (1ULL << 32);
 +
- 	kit->nr_bits = nr_bits;
- 	return 0;
- }
-@@ -2941,7 +2968,7 @@ __bpf_kfunc int *bpf_iter_bits_next(struct bpf_iter_bits *it)
- {
- 	struct bpf_iter_bits_kern *kit = (void *)it;
- 	int bit = kit->bit, nr_bits = kit->nr_bits;
--	const unsigned long *bits;
-+	const void *bits;
- 
- 	if (!nr_bits || bit >= nr_bits)
- 		return NULL;
++	bpf_for_each(bits, bit, bits_array, 511) {
++		if (nr == 0 && *bit != 0)
++			break;
++		if (nr == 2 && *bit != 32672)
++			break;
++		nr++;
++	}
++	return nr;
++}
++
++SEC("syscall")
++__description("bad words")
++__success __retval(0)
++int bad_words(void)
++{
++	void *bad_addr = (void *)(3UL << 30);
++	int nr = 0;
++	int *bit;
++
++	bpf_for_each(bits, bit, bad_addr, 1)
++		nr++;
++
++	bpf_for_each(bits, bit, bad_addr, 4)
++		nr++;
++
++	return nr;
++}
 -- 
 2.29.2
 
