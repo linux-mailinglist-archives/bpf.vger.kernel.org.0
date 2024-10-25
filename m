@@ -1,139 +1,122 @@
-Return-Path: <bpf+bounces-43130-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43131-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1C1E9AF78F
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 04:37:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACC749AF81A
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 05:20:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D30E61C21E38
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 02:37:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70BE9282E56
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 03:20:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FACB189F45;
-	Fri, 25 Oct 2024 02:37:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC3818A6CE;
+	Fri, 25 Oct 2024 03:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wPvXp6xq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bcGLqGYf"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50AAF225DA
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 02:37:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99FD542A81
+	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 03:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729823868; cv=none; b=Gp0PbcMF3PCqLH9oSya2rf86SWDkD+flW8RDtn6gVoXN8/Pu9ArhfN76l96XHAAq5lCbxeepz9zsVCGyMlpieRT0ZaLC91SG6Q+Q6hL7zB3EZdVzNUZ3JiEgvO98mLdKeguG5nHlAAjY4ExE2WQq2CI6GkxkOb38hv5OB0ITl0M=
+	t=1729826431; cv=none; b=X3wtpHJk+9dghiKi6+/mlj+Z1OuTRzuRnvDdDH4tAqwuKf74CEuN9NPAGHL9/2AmdECC7PYruzTIIKPJ+355+ZRQB4sdKb4FAfbT5yg6LviBZlOfZmIXSbeWtK+SNG8D8Kvi3YDi7kNageg9zbQ92xysWow8UXpomU6hLn6zik0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729823868; c=relaxed/simple;
-	bh=oCDqtzzq1WmrAd2KbGKue4dOh+1UHWTya7l1bGo/pAk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gl6n1dbVRdx9b/TIRL0W4kLo/VI0zCGiasT/q5j1Of+Rd7oz1wLs0GkekPrez6VxR5ThOMtiH9KQ23vvZtJRL9YxGwMQwbKVr97NzOUDzv38BLnwavHohNL+vOgKuSetefSYcVDeeOZ66FyMYzHenPmPjTWDo7yk9AG70Kh1RZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wPvXp6xq; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6f2c4bed-0b9c-48f7-886f-81e9df0155e7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729823862;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6YMGzBRFNqMsV1ec7cLGd4b9mG3UgxSE/vhPIc7vqCU=;
-	b=wPvXp6xqcFCHWLK/3pZRHvT4yFi5jcHZYsY6Z6H8hj1LKp28A0GQGEiRz6rhB7pM0KpwB0
-	TUyceckG5rHFTVt92MknjFVA+Bjd551BOa0hqWTSmhu1P6RNIy3VJ7qgEAfYexIRMb479S
-	H0xYumNvzZcpiWzheZdaQO9RqU1sysM=
-Date: Fri, 25 Oct 2024 10:37:35 +0800
+	s=arc-20240116; t=1729826431; c=relaxed/simple;
+	bh=IzyRmrZ4R2/uYPfMIJIbxtWH3q11EUpQBZUwGr5UhRA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rR54nzn07LYnffzfjiIE7CKU74hdfo7jlIGBY9q1DvYAReU43A5eU+62tq8tNMn1vrGVF67N4tW1PuseksY5OY9iMRRnUo1J3J1tCazjjw5vImb1yWP9/JwKB7TZWsDwMs+YZLx6T4yJMyj2Ie18GjKYhz92EXQBSHIoJtAAQg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bcGLqGYf; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-7c1324be8easo1861311a12.1
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 20:20:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729826428; x=1730431228; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1vlugpJTt6Ls2D7fL2S6D2Zykcy5m4I71v94Mm8dawQ=;
+        b=bcGLqGYfbvNn+tM8mdhol0bPCoF3+5xbriL1B30YGgVYUgsQHk/7cUYPpo8M6gE8iD
+         csUN8I6RpDkx07egJiJlDbjYA4solzvkZvRJzs41crUZC2cq9T9a7yG2qHD8T9gpW+3F
+         3BTBr/MhRF92SilClnE+PkWre2X5K2fCcO6y0Y6J5m68LcYEOe3jMbsZA4xOOvT9qw+n
+         fM0MOKeptHsSaW9GbndnaEJ5nAH79l8ooh0PVhznvglgJ1qmLZl5htCzIVNGz/x9N5vv
+         +mnCw3Aj9+VoV54zfKSi6HWEH2L/IyrILdtzFHSzJuJ0IXETaUICrk4CwhlFuozc+Eol
+         fF7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729826428; x=1730431228;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1vlugpJTt6Ls2D7fL2S6D2Zykcy5m4I71v94Mm8dawQ=;
+        b=HKAvSuurYhxZdz16oRZhwwNLnzGmImpqxuC4xSaZo1SE1Hl+lLfwDhGI5hinlHx/pR
+         +VZmQPdaV7qb/ZQ1hxbR4zFnRpXJlPH2TbEU0b+0yProElj0hMJ9igsiWytq1XLjXkdO
+         oT6wOIX4hW1q09cM601uKjgAqimAKyS24jLfICbUhPtUiQ4C+/CwWRDenKywppoP1QWN
+         nVkpImaS/4nNhfDp+WOGjXoSmiELr9qRBciS5lXdKPQLdh2y0VAdKxxLNcpOuDGDFy3r
+         ybAPB3ImpvLhxQHlFV/tVNpdHUk3yyqWgIjp8Qc4k679HY5NrhCdcazeLP+K8lwB/PUL
+         HTkw==
+X-Gm-Message-State: AOJu0YxGnZmai0+ZPqBzveMTatoSU7SAXUDNUMFSRZzj4RykFKMkGOz4
+	IpLNHMhaQdY03Z5NQlPUcgwRfXKbkfZ7uTLvLusZmX9/OG1DELSEBScMBw==
+X-Google-Smtp-Source: AGHT+IFswTXSp6aK1ydRNIMdKuy0nDyFiX4LaSbuLKAUYb0cglOfOX9d8A49xy7AgHYvnfFx3SdnFw==
+X-Received: by 2002:a17:903:244c:b0:20b:5ef8:10a6 with SMTP id d9443c01a7336-20fb88aa47bmr61820465ad.8.1729826428446;
+        Thu, 24 Oct 2024 20:20:28 -0700 (PDT)
+Received: from r210.hsd1.ca.comcast.net ([2601:648:4280:48f0::d8bf])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc017863sm1465915ad.165.2024.10.24.20.20.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Oct 2024 20:20:28 -0700 (PDT)
+From: Vincent Li <vincent.mc.li@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Vincent Li <vincent.mc.li@gmail.com>
+Subject: [PATCH] selftests/bpf: remove xdp_synproxy IP_DF check
+Date: Fri, 25 Oct 2024 03:19:52 +0000
+Message-Id: <20241025031952.1351150-1-vincent.mc.li@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf, x64: Propagate tailcall info only for
- tail_call_reachable subprogs
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>, Eddy Z <eddyz87@gmail.com>,
- kernel-patches-bot@fb.com
-References: <20241021133929.67782-1-leon.hwang@linux.dev>
- <20241021133929.67782-2-leon.hwang@linux.dev>
- <CAADnVQKO3rdaVrNOcLbm=kmue4orurcRTuskgrdze_=ExS2A7g@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAADnVQKO3rdaVrNOcLbm=kmue4orurcRTuskgrdze_=ExS2A7g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+In real world production websites, the IP_DF flag
+is not always set for each packet from these websites.
+the IP_DF flag check breaks Internet connection to
+these websites for home based firewall like BPFire
+when XDP synproxy program is attached to firewall
+Internet facing side interface. see [0]
 
+[0] https://github.com/vincentmli/BPFire/issues/59
 
-On 25/10/24 06:09, Alexei Starovoitov wrote:
-> On Mon, Oct 21, 2024 at 6:39 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>
->> In the x86_64 JIT, when calling a function, tailcall info is propagated if
->> the program is tail_call_reachable, regardless of whether the function is a
->> subprog, helper, or kfunc. However, this propagation is unnecessary for
->> not-tail_call_reachable subprogs, helpers, or kfuncs.
->>
->> The verifier can determine if a subprog is tail_call_reachable. Therefore,
->> it can be optimized to only propagate tailcall info when the callee is
->> subprog and the subprog is actually tail_call_reachable.
->>
->> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
->> ---
->>  arch/x86/net/bpf_jit_comp.c | 4 +++-
->>  kernel/bpf/verifier.c       | 6 ++++++
->>  2 files changed, 9 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
->> index 06b080b61aa57..6ad6886ecfc88 100644
->> --- a/arch/x86/net/bpf_jit_comp.c
->> +++ b/arch/x86/net/bpf_jit_comp.c
->> @@ -2124,10 +2124,12 @@ st:                     if (is_imm8(insn->off))
->>
->>                         /* call */
->>                 case BPF_JMP | BPF_CALL: {
->> +                       bool pseudo_call = src_reg == BPF_PSEUDO_CALL;
->> +                       bool subprog_tail_call_reachable = dst_reg;
->>                         u8 *ip = image + addrs[i - 1];
->>
->>                         func = (u8 *) __bpf_call_base + imm32;
->> -                       if (tail_call_reachable) {
->> +                       if (pseudo_call && subprog_tail_call_reachable) {
->>                                 LOAD_TAIL_CALL_CNT_PTR(bpf_prog->aux->stack_depth);
->>                                 ip += 7;
->>                         }
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index f514247ba8ba8..6e7e42c7bc7b1 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -19990,6 +19990,12 @@ static int jit_subprogs(struct bpf_verifier_env *env)
->>                         insn[0].imm = (u32)addr;
->>                         insn[1].imm = addr >> 32;
->>                 }
->> +
->> +               if (bpf_pseudo_call(insn))
->> +                       /* In the x86_64 JIT, tailcall information can only be
->> +                        * propagated if the subprog is tail_call_reachable.
->> +                        */
->> +                       insn->dst_reg = env->subprog_info[subprog].tail_call_reachable;
-> 
-> I really don't like hacking flags into dst_reg.
-> We already abuse insn->off which is ugly too,
-> but at least we clean insns later after JIT.
-> 
-> I'd rather live with this tail call inefficiency than abuse insns
-> fields further.
-> 
+Signed-off-by: Vincent Li <vincent.mc.li@gmail.com>
+---
+ tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-OK, let us use 'pseudo_call && tail_call_reachable' in x86 JIT to avoid
-touching 'insn->dst_reg'.
-
-Thanks,
-Leon
-
-> pw-bot: cr
+diff --git a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+index f8f5dc9f72b8..62b8e29ced9f 100644
+--- a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
++++ b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+@@ -21,7 +21,6 @@
+ 
+ #define tcp_flag_word(tp) (((union tcp_word_hdr *)(tp))->words[3])
+ 
+-#define IP_DF 0x4000
+ #define IP_MF 0x2000
+ #define IP_OFFSET 0x1fff
+ 
+@@ -442,7 +441,7 @@ static __always_inline int tcp_lookup(void *ctx, struct header_pointers *hdr, bo
+ 		/* TCP doesn't normally use fragments, and XDP can't reassemble
+ 		 * them.
+ 		 */
+-		if ((hdr->ipv4->frag_off & bpf_htons(IP_DF | IP_MF | IP_OFFSET)) != bpf_htons(IP_DF))
++		if ((hdr->ipv4->frag_off & bpf_htons(IP_MF | IP_OFFSET)) != 0)
+ 			return XDP_DROP;
+ 
+ 		tup.ipv4.saddr = hdr->ipv4->saddr;
+-- 
+2.34.1
 
 
