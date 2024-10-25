@@ -1,135 +1,139 @@
-Return-Path: <bpf+bounces-43154-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43155-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DBB59B01BB
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 13:54:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9050E9B01D7
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 14:03:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15808282D81
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 11:54:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AF00B2187B
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 12:03:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8190E1FF7B9;
-	Fri, 25 Oct 2024 11:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DDF02003DC;
+	Fri, 25 Oct 2024 12:03:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="eoBF6qBY"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E039A1F708E;
-	Fri, 25 Oct 2024 11:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 299CB1D4169;
+	Fri, 25 Oct 2024 12:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729857261; cv=none; b=s8y/F7046OhsvqMjF7GcCIuGYCASGmHy++KXhXMqa5QbS0nfjf/7KYcp4ANKgh+dcgGwu6yyvUSoiJVHSay5zlbAV01qi6fnSiqjXY01shUMbu/HgDB5ha89wNzIWtbx4NHFKNwSACdbhlclHqAtPrFZrfItbBRpat2znUPdoSE=
+	t=1729857786; cv=none; b=AEJ7rlnivWaW5xYv90DkpCHSNT49LtQq39LDYSLEgSEMvQgnqIQtE27w7AfOR8G9sGrG6GXBrCp1Bjuw0xWMq2KMQ7V6kvQScLJ1Rc4o4PtCZL2DwIbIDN7nBF83RzBxmztySut2fptLmpJg15hdU2Nns7t9igHhOSaf3KByL4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729857261; c=relaxed/simple;
-	bh=L18BjS4lHeGmvqIfZywwQh5LQfpUChnhxmKKCoOhayk=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=oC58Gpf6KUvnssOqUXGxq5q72RRrkdD+27y7LwopVF/IgQPjwTKqfbLxSMaXhQ5Jdx5UG/RAjjhm35SEtA3IsXcIWku+WmcJ4yIdfAl0N+aZjzD+cSQcBP3Lwu8N8JfrK1YyDm0dr34c2okkrjZxLRQpbsuTjkGdBYwl62wMrBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XZh5H6969z4f3lgR;
-	Fri, 25 Oct 2024 19:53:55 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 311DB1A018D;
-	Fri, 25 Oct 2024 19:54:14 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgDnXSrlhhtnp5_EEw--.54303S2;
-	Fri, 25 Oct 2024 19:54:14 +0800 (CST)
-Subject: Re: [PATCH] selftests/bpf: Add test for trie_get_next_key()
-To: Byeonguk Jeong <jungbu2855@gmail.com>,
- Daniel Borkmann <daniel@iogearbox.net>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <ZxoOdzdMwvLspZiq@localhost.localdomain>
- <d94bf8c7-b026-4608-83d7-6230f136ee3b@iogearbox.net>
- <ZxrJnZ4+hmZ90Mbj@localhost.localdomain>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <836aeb86-ea15-339a-7dbd-2d3157022e0c@huaweicloud.com>
-Date: Fri, 25 Oct 2024 19:54:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1729857786; c=relaxed/simple;
+	bh=ascR+iKBO3PoVJQVwwr/Z0b1RLW1SLNbnglHtGOvONA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZkkFNb6Kov58hOG3KI452HsDVtgW3tzVJtTPDEWfbvh7243D6gCvRCaWyfPfUEmWpsAf60Ka3SchjSNeS8nysMm6c+nB+iO1CcECZQQJ3DyF8XC56NAK/ONq4vMUPF6QHhZtg3rZHPZTrhBOP1UiJSwf82VmmFcCqZ1rsogkwBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=eoBF6qBY; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=I44dYU3FtNn1zjibJkczVdP7nM0bDduRZHgJ7lJxlbE=; b=eoBF6qBYlnTSK1Q3xdTIoCJULN
+	tTpXOmMWjY45LPi7i4sUB9EqlbN4p5XXhqsJ1g1mfmmAp+VugDxz4WrvLlt1YMiKWsNH613oIYVKO
+	FSNqlb2svv0NeZ3twCMuM47SmZmXu6SjfdVfqsrDTLlWb9YuWaIAIWjqF2aCmIMI0HfJNRq7nQh1/
+	yu7t9JAHO1mfWAAyPmjyegTGZimW8KqRZSPK4+81zvOIySPbJ+SyPOPt8vS/CVOrzY+1tMEIVHwDa
+	3O4ZI6ylpiz4Zp4aVqvwFetJjEJqtWEoH99FLp70+fUdaD0Y8wlbksN1dcDEfWPY6iG9xMJX0QO7l
+	aDR+ayFg==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1t4J1x-0004zC-VA; Fri, 25 Oct 2024 14:03:01 +0200
+Received: from [85.1.206.226] (helo=[192.168.1.114])
+	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1t4J1x-000AK7-1n;
+	Fri, 25 Oct 2024 14:03:01 +0200
+Message-ID: <cf3f3926-7684-4e0d-b8cc-5514ff71647b@iogearbox.net>
+Date: Fri, 25 Oct 2024 14:03:01 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZxrJnZ4+hmZ90Mbj@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/bpf: Add test for trie_get_next_key()
+To: Hou Tao <houtao@huaweicloud.com>, Byeonguk Jeong <jungbu2855@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <ZxoOdzdMwvLspZiq@localhost.localdomain>
+ <d94bf8c7-b026-4608-83d7-6230f136ee3b@iogearbox.net>
+ <ZxrJnZ4+hmZ90Mbj@localhost.localdomain>
+ <836aeb86-ea15-339a-7dbd-2d3157022e0c@huaweicloud.com>
 Content-Language: en-US
-X-CM-TRANSID:cCh0CgDnXSrlhhtnp5_EEw--.54303S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7CFyUXF43GF1rKFyDGFW3ZFb_yoW8uFyrpa
-	y8Ja1qkF4rXFyrXF18Z3y5Xw4Fkrs3Aa4jy3ZYqrWDuF15Gas2yr4xKF4YgF9xWrWFqan8
-	Cw4Sgas5W34xZFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v2
-	6r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCI
-	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-	AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_
-	Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UtR6
-	wUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <836aeb86-ea15-339a-7dbd-2d3157022e0c@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27438/Fri Oct 25 10:32:52 2024)
 
-Hi,
+On 10/25/24 1:54 PM, Hou Tao wrote:
+> On 10/25/2024 6:26 AM, Byeonguk Jeong wrote:
+>>
+>> Okay, I will submit them in a series of patches. Btw, ASSERT_* macros
+>> are not defined for map_tests. Should I add the definitions for them,
+>> or just go with CHECK?
+> 
+> For tests in map_tests, I think using CHECK() will be fine.
 
-On 10/25/2024 6:26 AM, Byeonguk Jeong wrote:
-> Hi Daniel,
->
-> Okay, I will submit them in a series of patches. Btw, ASSERT_* macros
-> are not defined for map_tests. Should I add the definitions for them,
-> or just go with CHECK?
+Given there is no alternative infra, agree. Would be nice to convert this
+over at some point.
 
-For tests in map_tests, I think using CHECK() will be fine.
->
-> Thanks,
-> Byeonguk
->
-> On Thu, Oct 24, 2024 at 11:41:19AM +0200, Daniel Borkmann wrote:
->> Hi Byeonguk,
->>
->> On 10/24/24 11:08 AM, Byeonguk Jeong wrote:
->>> Add a test for out-of-bounds write in trie_get_next_key() when a full
->>> path from root to leaf exists and bpf_map_get_next_key() is called
->>> with the leaf node. It may crashes the kernel on failure, so please
->>> run in a VM.
->>>
->>> Signed-off-by: Byeonguk Jeong <jungbu2855@gmail.com>
->> Could you submit the fix + this selftest as a 2-patch series, otherwise BPF CI
->> cannot test both in combination (pls make sure subject has [PATCH bpf] so that
->> our CI adds this on top of the bpf tree).
->>
->> Right now the CI selftest build threw an error:
->>
->>   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c: In function ‘test_lpm_trie_map_get_next_key’:
->>   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c:84:9: error: format not a string literal and no format arguments [-Werror=format-security]
->>      84 |         CHECK(map_fd == -1, "bpf_map_create(), error:%s\n",
->>         |         ^~~~~
->>     TEST-OBJ [test_maps] task_storage_map.test.o
->>     TEST-OBJ [test_progs] access_variable_array.test.o
->>   cc1: all warnings being treated as errors
->>     TEST-OBJ [test_progs] align.test.o
->>     TEST-OBJ [test_progs] arena_atomics.test.o
->>   make: *** [Makefile:765: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/lpm_trie_map_get_next_key.test.o] Error 1
->>   make: *** Waiting for unfinished jobs....
->>     GEN-SKEL [test_progs-no_alu32] test_usdt.skel.h
->>   make: Leaving directory '/tmp/work/bpf/bpf/tools/testing/selftests/bpf'
->>
->> Also on quick glance, please use ASSERT_*() macros instead of CHECK() as the
->> latter is deprecated.
->>
->> Thanks,
->> Daniel
-> .
-
+Best,
+Daniel
 
