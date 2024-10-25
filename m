@@ -1,214 +1,155 @@
-Return-Path: <bpf+bounces-43144-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43145-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B7789AFCCC
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 10:40:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CE9A9AFD66
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 10:59:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D09611F220E8
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 08:40:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E9451C212E4
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 08:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295C81D2215;
-	Fri, 25 Oct 2024 08:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1981D3629;
+	Fri, 25 Oct 2024 08:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="uKZ/SyOT"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB723192592
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 08:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7275A1B0F03;
+	Fri, 25 Oct 2024 08:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729845645; cv=none; b=dQEHKpexiabJYH9OOxDfCa6nK3QRg6QVSz3cKSsWd+1X+6kXD9Er4Kk57DcJRjxpYvhz0Yw+hkfMxsGDZMoDivE6aet88yjKBrk4sHheBkjSvfgDA3bN45KGVom+idcSkmmkf3ysuEmzw4qceyVRsj+99gmBBK9YPcBMGbxbbME=
+	t=1729846727; cv=none; b=h+9ESfTQCYpg6wYj/LN3XcXyYDgno3/bmfjoD1kYoaVh2FU4bbKd+uwk1v+nT/jYz9CwPkVvbUvwRmvdCOexeah7+Gk4ut+6KLxJuxiCZXixZ/H/dx33O8dP7F+oKOIct8qeXDVBpfCsc8q0fnPrCTswMzxlaG2s2OyXpdkzIfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729845645; c=relaxed/simple;
-	bh=E4/Tf2DSBA+Vb7oaMMiJ26NW3uLmy2ttOJzkcwBG75w=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jcgteZsus9GExUetakctMlvxJem64UoVUSfYKHD5Ut4F2pXtWZFr1moeeYKFrSZc659+tP/inM3mHFOXdyrpyOACxgi+S/mxZZVCYLSTbUHtlymfWdiPKa6/j200AoiU0ZFyb3FiS4v93ibkM5/lUHpHHfvPzlBNEes01ZUyx0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XZbnw6Db6z4f3m76
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 16:40:20 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 30D1C1A0196
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 16:40:39 +0800 (CST)
-Received: from k01.huawei.com (unknown [10.67.174.197])
-	by APP4 (Coremail) with SMTP id gCh0CgCnJ8SEWRtnOalHFA--.45621S2;
-	Fri, 25 Oct 2024 16:40:37 +0800 (CST)
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: [PATCH bpf-next v2] bpf, arm64: Remove garbage frame for struct_ops trampoline
-Date: Fri, 25 Oct 2024 16:52:20 +0800
-Message-Id: <20241025085220.533949-1-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.39.5
+	s=arc-20240116; t=1729846727; c=relaxed/simple;
+	bh=JzCBSBixEk8dWmW4Rw6HdWeEaPbU8Qxx4T8HzBbayjE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ubedzs4e8r+GzoCEHe9tvaGJ4MkhI9uhFLxv1dSBFnGzamUAbTQ5Jk86RS07/iIogyYhWJesDrVMSu3pRdBhGeM7Rj5amThZdmbTNJjGy3/0y1Vkf09httNsMXsyYuKhFXDJa1Qgk/UW/8Q/W7z0hruZgf3DIIRFp5ChclXGbZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=uKZ/SyOT; arc=none smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 5360d23292af11efbd192953cf12861f-20241025
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=2jONHGUQN65Wp/s13oZofhKzQ9O+ThI0+K9VkaZNt+A=;
+	b=uKZ/SyOT3Mm9rRM83JQ/Iw08q6PU9rhMrxEew2p+XiUtQqWkzv7kjE5TagpjzwiTuQBOBCdPTGIWGDCiODcIjjZ5egMadNpE3bDio0pOFLn4nsD+g58XQiuV+UJtBrVToHQU/DYNot9nRxn1wytfTkd0BpcrZhOpIIPTyw0ebJ8=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.42,REQID:c1f2afcb-eeb2-46bb-bcbb-6455a0acca7f,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:b0fcdc3,CLOUDID:f3c6dacc-110e-4f79-849e-58237df93e70,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:1,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 5360d23292af11efbd192953cf12861f-20241025
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
+	(envelope-from <qun-wei.lin@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1500008180; Fri, 25 Oct 2024 16:58:38 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 25 Oct 2024 16:58:37 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 25 Oct 2024 16:58:37 +0800
+From: Qun-Wei Lin <qun-wei.lin@mediatek.com>
+To: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, David
+ Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew
+ Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@suse.cz>, Roman
+ Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Danilo Krummrich <dakr@kernel.org>
+CC: <catalin.marinas@arm.com>, <surenb@google.com>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>, Casper Li
+	<casper.li@mediatek.com>, Chinwen Chang <chinwen.chang@mediatek.com>, Andrew
+ Yang <andrew.yang@mediatek.com>, John Hsu <john.hsu@mediatek.com>,
+	<wsd_upstream@mediatek.com>, Qun-Wei Lin <qun-wei.lin@mediatek.com>
+Subject: [PATCH] mm: krealloc: Fix MTE false alarm in __do_krealloc
+Date: Fri, 25 Oct 2024 16:58:11 +0800
+Message-ID: <20241025085811.31310-1-qun-wei.lin@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCnJ8SEWRtnOalHFA--.45621S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAr17XF48Jw4kZr1xWF45KFg_yoW7Gryxpr
-	1fCry5CF4xXr45XF4vgr4xAF1rtan7tw1UKFWUC3yrCa4FvryfKF1rtrWjyrZ3Wr9xCw1x
-	ZFyqyrn2kFWDArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1lc7CjxVAKzI0E
-	Y4vE52x082I5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8
-	mjg7UUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Type: text/plain
+X-MTK: N
 
-From: Xu Kuohai <xukuohai@huawei.com>
+This patch addresses an issue introduced by commit 1a83a716ec233 ("mm:
+krealloc: consider spare memory for __GFP_ZERO") which causes MTE
+(Memory Tagging Extension) to falsely report a slab-out-of-bounds error.
 
-The callsite layout for arm64 fentry is:
+The problem occurs when zeroing out spare memory in __do_krealloc. The
+original code only considered software-based KASAN and did not account
+for MTE. It does not reset the KASAN tag before calling memset, leading
+to a mismatch between the pointer tag and the memory tag, resulting
+in a false positive.
 
-mov x9, lr
-nop
+Example of the error:
+==================================================================
+swapper/0: BUG: KASAN: slab-out-of-bounds in __memset+0x84/0x188
+swapper/0: Write at addr f4ffff8005f0fdf0 by task swapper/0/1
+swapper/0: Pointer tag: [f4], memory tag: [fe]
+swapper/0:
+swapper/0: CPU: 4 UID: 0 PID: 1 Comm: swapper/0 Not tainted 6.12.
+swapper/0: Hardware name: MT6991(ENG) (DT)
+swapper/0: Call trace:
+swapper/0:  dump_backtrace+0xfc/0x17c
+swapper/0:  show_stack+0x18/0x28
+swapper/0:  dump_stack_lvl+0x40/0xa0
+swapper/0:  print_report+0x1b8/0x71c
+swapper/0:  kasan_report+0xec/0x14c
+swapper/0:  __do_kernel_fault+0x60/0x29c
+swapper/0:  do_bad_area+0x30/0xdc
+swapper/0:  do_tag_check_fault+0x20/0x34
+swapper/0:  do_mem_abort+0x58/0x104
+swapper/0:  el1_abort+0x3c/0x5c
+swapper/0:  el1h_64_sync_handler+0x80/0xcc
+swapper/0:  el1h_64_sync+0x68/0x6c
+swapper/0:  __memset+0x84/0x188
+swapper/0:  btf_populate_kfunc_set+0x280/0x3d8
+swapper/0:  __register_btf_kfunc_id_set+0x43c/0x468
+swapper/0:  register_btf_kfunc_id_set+0x48/0x60
+swapper/0:  register_nf_nat_bpf+0x1c/0x40
+swapper/0:  nf_nat_init+0xc0/0x128
+swapper/0:  do_one_initcall+0x184/0x464
+swapper/0:  do_initcall_level+0xdc/0x1b0
+swapper/0:  do_initcalls+0x70/0xc0
+swapper/0:  do_basic_setup+0x1c/0x28
+swapper/0:  kernel_init_freeable+0x144/0x1b8
+swapper/0:  kernel_init+0x20/0x1a8
+swapper/0:  ret_from_fork+0x10/0x20
+==================================================================
 
-When a bpf prog is attached, the nop instruction is patched to a call
-to bpf trampoline:
-
-mov x9, lr
-bl <bpf trampoline>
-
-So two return addresses are passed to bpf trampoline: the return address
-for the traced function/prog, stored in x9, and the return address for
-the bpf trampoline itself, stored in lr. To obtain a full and accurate
-call stack, the bpf trampoline constructs two fake function frames using
-x9 and lr.
-
-However, struct_ops progs are invoked directly as function callbacks,
-meaning that x9 is not set as it is in the fentry callsite. In this case,
-the frame constructed using x9 is garbage. The following stack trace for
-struct_ops, captured by perf sampling, illustrates this issue, where
-tcp_ack+0x404 is a garbage frame:
-
-ffffffc0801a04b4 bpf_prog_50992e55a0f655a9_bpf_cubic_cong_avoid+0x98 (bpf_prog_50992e55a0f655a9_bpf_cubic_cong_avoid)
-ffffffc0801a228c [unknown] ([kernel.kallsyms]) // bpf trampoline
-ffffffd08d362590 tcp_ack+0x798 ([kernel.kallsyms]) // caller for bpf trampoline
-ffffffd08d3621fc tcp_ack+0x404 ([kernel.kallsyms]) // garbage frame
-ffffffd08d36452c tcp_rcv_established+0x4ac ([kernel.kallsyms])
-ffffffd08d375c58 tcp_v4_do_rcv+0x1f0 ([kernel.kallsyms])
-ffffffd08d378630 tcp_v4_rcv+0xeb8 ([kernel.kallsyms])
-
-To fix it, construct only one frame using lr for struct_ops.
-
-The above stack trace also indicates that there is no kernel symbol for
-struct_ops bpf trampoline. This will be addressed in a follow-up patch.
-
-Fixes: efc9909fdce0 ("bpf, arm64: Add bpf trampoline for arm64")
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Acked-by: Puranjay Mohan <puranjay@kernel.org>
-Tested-by: Puranjay Mohan <puranjay@kernel.org>
+Fixes: 1a83a716ec233 ("mm: krealloc: consider spare memory for
+__GFP_ZERO")
+Signed-off-by: Qun-Wei Lin <qun-wei.lin@mediatek.com>
 ---
-v2:
-Refine the commit message for clarity
+ mm/slab_common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v1:
-https://lore.kernel.org/bpf/20241019092709.128359-1-xukuohai@huaweicloud.com/
----
- arch/arm64/net/bpf_jit_comp.c | 47 +++++++++++++++++++++++------------
- 1 file changed, 31 insertions(+), 16 deletions(-)
-
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 5db82bfc9dc1..27ef366363e4 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -2094,6 +2094,12 @@ static void restore_args(struct jit_ctx *ctx, int args_off, int nregs)
- 	}
- }
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 3d26c257ed8b..3445f4500b54 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1209,7 +1209,7 @@ __do_krealloc(const void *p, size_t new_size, gfp_t flags)
+ 		/* Zero out spare memory. */
+ 		if (want_init_on_alloc(flags)) {
+ 			kasan_disable_current();
+-			memset((void *)p + new_size, 0, ks - new_size);
++			memset(kasan_reset_tag((void *)p + new_size), 0, ks - new_size);
+ 			kasan_enable_current();
+ 		}
  
-+static bool is_struct_ops_tramp(const struct bpf_tramp_links *fentry_links)
-+{
-+	return fentry_links->nr_links == 1 &&
-+		fentry_links->links[0]->link.type == BPF_LINK_TYPE_STRUCT_OPS;
-+}
-+
- /* Based on the x86's implementation of arch_prepare_bpf_trampoline().
-  *
-  * bpf prog and function entry before bpf trampoline hooked:
-@@ -2123,6 +2129,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
- 	bool save_ret;
- 	__le32 **branches = NULL;
-+	bool is_struct_ops = is_struct_ops_tramp(fentry);
- 
- 	/* trampoline stack layout:
- 	 *                  [ parent ip         ]
-@@ -2191,11 +2198,14 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	 */
- 	emit_bti(A64_BTI_JC, ctx);
- 
--	/* frame for parent function */
--	emit(A64_PUSH(A64_FP, A64_R(9), A64_SP), ctx);
--	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
-+	/* x9 is not set for struct_ops */
-+	if (!is_struct_ops) {
-+		/* frame for parent function */
-+		emit(A64_PUSH(A64_FP, A64_R(9), A64_SP), ctx);
-+		emit(A64_MOV(1, A64_FP, A64_SP), ctx);
-+	}
- 
--	/* frame for patched function */
-+	/* frame for patched function for tracing, or caller for struct_ops */
- 	emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
- 	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
- 
-@@ -2289,19 +2299,24 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	/* reset SP  */
- 	emit(A64_MOV(1, A64_SP, A64_FP), ctx);
- 
--	/* pop frames  */
--	emit(A64_POP(A64_FP, A64_LR, A64_SP), ctx);
--	emit(A64_POP(A64_FP, A64_R(9), A64_SP), ctx);
--
--	if (flags & BPF_TRAMP_F_SKIP_FRAME) {
--		/* skip patched function, return to parent */
--		emit(A64_MOV(1, A64_LR, A64_R(9)), ctx);
--		emit(A64_RET(A64_R(9)), ctx);
-+	if (is_struct_ops) {
-+		emit(A64_POP(A64_FP, A64_LR, A64_SP), ctx);
-+		emit(A64_RET(A64_LR), ctx);
- 	} else {
--		/* return to patched function */
--		emit(A64_MOV(1, A64_R(10), A64_LR), ctx);
--		emit(A64_MOV(1, A64_LR, A64_R(9)), ctx);
--		emit(A64_RET(A64_R(10)), ctx);
-+		/* pop frames */
-+		emit(A64_POP(A64_FP, A64_LR, A64_SP), ctx);
-+		emit(A64_POP(A64_FP, A64_R(9), A64_SP), ctx);
-+
-+		if (flags & BPF_TRAMP_F_SKIP_FRAME) {
-+			/* skip patched function, return to parent */
-+			emit(A64_MOV(1, A64_LR, A64_R(9)), ctx);
-+			emit(A64_RET(A64_R(9)), ctx);
-+		} else {
-+			/* return to patched function */
-+			emit(A64_MOV(1, A64_R(10), A64_LR), ctx);
-+			emit(A64_MOV(1, A64_LR, A64_R(9)), ctx);
-+			emit(A64_RET(A64_R(10)), ctx);
-+		}
- 	}
- 
- 	kfree(branches);
 -- 
-2.39.5
+2.45.2
 
 
