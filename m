@@ -1,301 +1,172 @@
-Return-Path: <bpf+bounces-43121-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43122-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880CC9AF630
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 02:27:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B22229AF662
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 03:03:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A9511F22C0D
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 00:27:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D64121C214AD
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 01:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60BD46AAD;
-	Fri, 25 Oct 2024 00:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9668712B64;
+	Fri, 25 Oct 2024 01:03:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="POSimtOW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l6ND4Rfr"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388AFAD21
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 00:27:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6CF29A0;
+	Fri, 25 Oct 2024 01:03:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729816032; cv=none; b=jzfHaV3oV0oxG90kwJVCwwZUNnDpCidUGkvAmAT05atKq8Kh0ZAcPny08YbJJD7dXZdLYgZIJMryya7R3Zw6XKxHW9uWVDbsoreVYuv+ULrVj3ikX2+zSKjt2HMvcecwDaACimBgBjBDRIiSaAdW0NLvNFCOjvuhSX8Fklr/NyI=
+	t=1729818215; cv=none; b=RfqxNF0Mtv5UxrnN4Cn1onEfEXXx87DqSSz5rNtg0MT9M/NS0Ufg4g3ezbzIpZX2XIstj/MJambWeW4vk4xO6HKbza77UG4kxAl6Q+soA94tHO7g7H4+6iLu1AUIv9mddHidLDK1r/YeVKENGtsO65mfc9XpDhLHvoyjw481nD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729816032; c=relaxed/simple;
-	bh=sUlonnYzk09GLqAwS2WJKo0KBHCiiNG2So7rABxdhfI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qKVRYUkpNfcjUKALwQ7k2qBI4WrSqWvuv7O0cIqWwoK+ng5N82TR740YYXoPEeqdlgOMzonEdR00koM6FtPrHoolQzm4SsdV1FRX8rkBJ2rXW5E3XUo053STjjK8Nmg8ZHu1w2abwzNRfczjcQAUJFkcaEtNWP2wX7Qj7S4Itd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=POSimtOW; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <74c06b43-095f-414a-b4aa-2addbe610336@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729816021;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cO+P2/BVH76BUnj+FBfjAkcsAssXYM+8F1HEYhrXDuw=;
-	b=POSimtOWIPEl0SvDBCtD8jra2jpxRO7BUt2vYNMqbYd76zb+19gQUvWCz4MdfsZpcmMt2/
-	5c5pNRki6wj9VVbwf9zR5o0qSw3gEiU4nN2QjQMwzo2SwgEJokA5P/ax4c3u+SqtmS00rZ
-	867z4ejQUEU79LgL2qiVjW9JvRV2V9M=
-Date: Thu, 24 Oct 2024 17:26:49 -0700
+	s=arc-20240116; t=1729818215; c=relaxed/simple;
+	bh=ANao3SalIylcgaUhcEsnm2zI9WSTU3qx2wawj/Ele28=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZW39MS1qSccMR79hpoM04Cni9gi8oDMaTkg2ew/BeklIVmdXj4+KfqEKd6uFcmyQFN262le0+8k4dPcgr+ppcrO19BfGr8ygQHU9p34d/sdhGvsFJ8WDvasSvTtGQZC8msGXpODWPA+3+RwpGvLqgSajJ37/baBC2x4yp9YzKeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l6ND4Rfr; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-71e5ae69880so1064285b3a.2;
+        Thu, 24 Oct 2024 18:03:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729818212; x=1730423012; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SNGcvfWZU2TxEL7LKZ45PLQqJbpzUP1414tKc6KMVMo=;
+        b=l6ND4Rfr2hYUUnv6x9Ae3A1r10HkguThzVTc3SjsnklHXJRzOPlOek6DY+i/dJw2lq
+         oem469zJXvd7oiZEhs18OtttVr4D4SLLE/KfCjALp6+rroMzMZOcgB5Yfv2cF/RxKj4D
+         1p7hOaZWujU+tJmw5z92t52geY11OcVlyefFR6wqdbtJ68XjhMulMNuJNblZynrFKzdN
+         /v9e2bBFzz+HZe0uvkqOKZ58+M24dwmLWPexhHzla/E9Kx7WGu2embQ/zdu6jsHstGYL
+         304laotOTJd/a1UgiEbRQO9HYM+JAGQqgZlFptNPp7boP1L4Gu/ngmp2Xv3e5RDXtQDf
+         E7mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729818212; x=1730423012;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SNGcvfWZU2TxEL7LKZ45PLQqJbpzUP1414tKc6KMVMo=;
+        b=lEYQ9lPCwAmv/2D7r1j/VuNpk9e5jncM72KOgT47X9Fr7o92f2/sn0E0MCwBmIVlAO
+         +22Kkyng+eJ9ETivjFLwdgN1adVh46FI/cw08SbbdAHfNKF9VpW6sGoX6RiiBsF02l5D
+         lv3t/6QMHcwXlAdY3ROqKMlA3X8G3DAlpRgqXOv6EyJhf3BaDrz0uEnMYrRuTZwpLlYp
+         3PL491XO5rmZ4rYUvB219xnblNF5EhWJd+L103VpCzv2h4+bILxi+O09xqVaVI7SumYE
+         TWkfUCWH1NwuVYpKe4U+I41lpbPAlxcLzkj2pJ7XQqx2U0fJZ8n2BfTlkQRLHD5HuaIO
+         ry9g==
+X-Forwarded-Encrypted: i=1; AJvYcCUlbfAOivhxVXQTmXoVztmupHM87vHdwWRWtIdM+nUQpuhn9AXYMzWRQNAX/tRnbzIyxUCaBsl3@vger.kernel.org, AJvYcCVTUtOiHw+XLt7/PMc6vPtHcX/6hFSC0lkGwpb3C1Bo+IB6KdPgA1e9sMIMf4ZHG0u5a9NH8Fey8B+utTM+@vger.kernel.org, AJvYcCWaMsfjwFx52+xFwyl5zDkHt3fGygosVey34PS3RHz5B3/A5oV321hnIt7NCdfvsrad3KJwYoS8pu8q@vger.kernel.org, AJvYcCX7GfJosawwoyKYd9uEyuRijwyYSmDqTiGU/N/9yPiZPYnxJ3eoCEOBKB/fDDeMqU6Ona8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBgsVDKj39yIeG37KOkcCXIqVNlgeEZvDfM3/OUVOcoeyilquD
+	XaDggT3v6BcPF+rwLEui9VOHWkPXegmr+yZCZueU3PqZBM3yBhUiTZkVLQ==
+X-Google-Smtp-Source: AGHT+IF0cMHbWVTxjfafW97nsmkrbkE+9N3H1YT2wc59PBi6x6/wVg203OFjCMyt2TzZK3h5DDL3hg==
+X-Received: by 2002:a05:6a21:70cb:b0:1d9:181f:e6d8 with SMTP id adf61e73a8af0-1d978bacfeamr8947325637.31.1729818212239;
+        Thu, 24 Oct 2024 18:03:32 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057a20406sm47220b3a.166.2024.10.24.18.03.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Oct 2024 18:03:31 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 41D904352F21; Fri, 25 Oct 2024 08:03:28 +0700 (WIB)
+Date: Fri, 25 Oct 2024 08:03:28 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Joe Damato <jdamato@fastly.com>,
+	Linux Networking <netdev@vger.kernel.org>, namangulati@google.com,
+	edumazet@google.com, amritha.nambiar@intel.com,
+	sridhar.samudrala@intel.com, sdf@fomichev.me, peter@typeblog.net,
+	m2shafiei@uwaterloo.ca, bjorn@rivosinc.com, hch@infradead.org,
+	willy@infradead.org, willemdebruijn.kernel@gmail.com,
+	skhawaja@google.com, kuba@kernel.org,
+	Martin Karsten <mkarsten@uwaterloo.ca>,
+	"David S. Miller" <davem@davemloft.net>,
+	Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+	Linux Documentation <linux-doc@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux BPF <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 6/6] docs: networking: Describe irq suspension
+Message-ID: <ZxruYJizjXR8KUz0@archie.me>
+References: <20241021015311.95468-1-jdamato@fastly.com>
+ <20241021015311.95468-7-jdamato@fastly.com>
+ <ZxYxqhj7cesDO8-j@archie.me>
+ <ZxaCUZ5rNd86gDHG@LQ3V64L9R2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next 3/4] net/smc: Introduce smc_bpf_ops
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
- song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
- edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
- jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org,
- davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org, dtcccc@linux.alibaba.com
-References: <1729737768-124596-1-git-send-email-alibuda@linux.alibaba.com>
- <1729737768-124596-4-git-send-email-alibuda@linux.alibaba.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <1729737768-124596-4-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="nCoJbkgUJcwJ4Pal"
+Content-Disposition: inline
+In-Reply-To: <ZxaCUZ5rNd86gDHG@LQ3V64L9R2>
 
-On 10/23/24 7:42 PM, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> The introduction of IPPROTO_SMC enables eBPF programs to determine
-> whether to use SMC based on the context of socket creation, such as
-> network namespaces, PID and comm name, etc.
-> 
-> As a subsequent enhancement, this patch introduces a new hook for eBPF
-> programs that allows decisions on whether to use SMC or not at runtime,
-> including but not limited to local/remote IP address or ports. In
-> simpler words, this feature allows modifications to syn_smc through eBPF
-> programs before the TCP three-way handshake got established.
-> 
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
->   include/linux/tcp.h   |   2 +-
->   include/net/smc.h     |  47 +++++++++++
->   include/net/tcp.h     |   6 ++
->   net/ipv4/tcp_input.c  |   3 +-
->   net/ipv4/tcp_output.c |  14 +++-
->   net/smc/Kconfig       |  12 +++
->   net/smc/Makefile      |   1 +
->   net/smc/af_smc.c      |  38 ++++++---
->   net/smc/smc.h         |   4 +
->   net/smc/smc_bpf.c     | 212 ++++++++++++++++++++++++++++++++++++++++++++++++++
->   net/smc/smc_bpf.h     |  34 ++++++++
->   11 files changed, 357 insertions(+), 16 deletions(-)
->   create mode 100644 net/smc/smc_bpf.c
->   create mode 100644 net/smc/smc_bpf.h
-> 
-> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-> index 6a5e08b..4ef160a 100644
-> --- a/include/linux/tcp.h
-> +++ b/include/linux/tcp.h
-> @@ -478,7 +478,7 @@ struct tcp_sock {
->   #endif
->   #if IS_ENABLED(CONFIG_SMC)
->   	bool	syn_smc;	/* SYN includes SMC */
-> -	bool	(*smc_hs_congested)(const struct sock *sk);
-> +	struct tcpsmc_ctx *smc;
->   #endif
->   
->   #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
-> diff --git a/include/net/smc.h b/include/net/smc.h
-> index db84e4e..34ab2c6 100644
-> --- a/include/net/smc.h
-> +++ b/include/net/smc.h
-> @@ -18,6 +18,8 @@
->   #include "linux/ism.h"
->   
->   struct sock;
-> +struct tcp_sock;
-> +struct inet_request_sock;
->   
->   #define SMC_MAX_PNETID_LEN	16	/* Max. length of PNET id */
->   
-> @@ -97,4 +99,49 @@ struct smcd_dev {
->   	u8 going_away : 1;
->   };
->   
-> +/*
-> + * This structure is used to store the parameters passed to the member of struct_ops.
-> + * Due to the BPF verifier cannot restrict the writing of bit fields, such as limiting
-> + * it to only write ireq->smc_ok. Using kfunc can solve this issue, but we don't want
-> + * to introduce a kfunc with such a narrow function.
 
-imo, adding kfunc is fine.
+--nCoJbkgUJcwJ4Pal
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> + *
-> + * Moreover, using this structure for unified parameters also addresses another
-> + * potential issue. Currently, kfunc cannot recognize the calling context
-> + * through BPF's existing structure. In the future, we can solve this problem
-> + * by passing this ctx to kfunc.
+On Mon, Oct 21, 2024 at 09:33:21AM -0700, Joe Damato wrote:
+> On Mon, Oct 21, 2024 at 05:49:14PM +0700, Bagas Sanjaya wrote:
+> > On Mon, Oct 21, 2024 at 01:53:01AM +0000, Joe Damato wrote:
+> > > diff --git a/Documentation/networking/napi.rst b/Documentation/networ=
+king/napi.rst
+> > > index dfa5d549be9c..3b43477a52ce 100644
+> > > --- a/Documentation/networking/napi.rst
+> > > +++ b/Documentation/networking/napi.rst
+> > > @@ -192,6 +192,28 @@ is reused to control the delay of the timer, whi=
+le
+> > >  ``napi_defer_hard_irqs`` controls the number of consecutive empty po=
+lls
+> > >  before NAPI gives up and goes back to using hardware IRQs.
+> > > =20
+> > > +The above parameters can also be set on a per-NAPI basis using netli=
+nk via
+> > > +netdev-genl. This can be done programmatically in a user application=
+ or by
+> > > +using a script included in the kernel source tree: ``tools/net/ynl/c=
+li.py``.
+> > > +
+> > > +For example, using the script:
+> > > +
+> > > +.. code-block:: bash
+> > > +
+> > > +  $ kernel-source/tools/net/ynl/cli.py \
+> > > +            --spec Documentation/netlink/specs/netdev.yaml \
+> > > +            --do napi-set \
+> > > +            --json=3D'{"id": 345,
+> > > +                     "defer-hard-irqs": 111,
+> > > +                     "gro-flush-timeout": 11111}'
+> > > +
+> > > +Similarly, the parameter ``irq-suspend-timeout`` can be set using ne=
+tlink
+> > > +via netdev-genl. There is no global sysfs parameter for this value.
+> >=20
+> > In JSON, both gro-flush-timeout and irq-suspend-timeout parameter
+> > names are written in hyphens; but the rest of the docs uses underscores
+> > (that is, gro_flush_timeout and irq_suspend_timeout), right?
+>=20
+> That's right. The YAML specification uses hyphens throughout, so we
+> follow that convention there.
+>=20
+> In the rest of the docs we use the name of the field which appears
+> in the code itself, which uses underscores.
 
-This part I don't understand. How is it different from the "tcp_cubic_kfunc_set" 
-allowed in tcp_congestion_ops?
+OK, thanks!
 
-> + */
-> +struct smc_bpf_ops_ctx {
-> +	struct {
-> +		struct tcp_sock *tp;
-> +	} set_option;
-> +	struct {
-> +		const struct tcp_sock *tp;
-> +		struct inet_request_sock *ireq;
-> +		int smc_ok;
-> +	} set_option_cond;
-> +};
+--=20
+An old man doll... just what I always wanted! - Clara
 
-There is no need to create one single ctx for struct_ops prog. struct_ops prog 
-can take >1 args and different ops can take different args.
+--nCoJbkgUJcwJ4Pal
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +
-> +struct smc_bpf_ops {
-> +	/* priavte */
-> +
-> +	struct list_head	list;
-> +
-> +	/* public */
-> +
-> +	/* Invoked before computing SMC option for SYN packets.
-> +	 * We can control whether to set SMC options by modifying
-> +	 * ctx->set_option->tp->syn_smc.
-> +	 * This's also the only member that can be modified now.
-> +	 * Only member in ctx->set_option is valid for this callback.
-> +	 */
-> +	void (*set_option)(struct smc_bpf_ops_ctx *ctx);
-> +
-> +	/* Invoked before Set up SMC options for SYN-ACK packets
-> +	 * We can control whether to respond SMC options by modifying
-> +	 * ctx->set_option_cond.smc_ok.
-> +	 * Only member in ctx->set_option_cond is valid for this callback.
-> +	 */
-> +	void (*set_option_cond)(struct smc_bpf_ops_ctx *ctx);
+-----BEGIN PGP SIGNATURE-----
 
-The struct smc_bpf_ops already has set_option and set_option_cnd, but...
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZxruXAAKCRD2uYlJVVFO
+o+elAQDkoqcE6id9sBM4flYDeF4AKjCK6eoWx1sJOc1cWJZm+gD/Qhegiolned1A
+OLxCqHd6kJJi29DFvz4KZ9i0VkWPUAM=
+=6/03
+-----END PGP SIGNATURE-----
 
-> +};
-> +
->   #endif	/* _SMC_H */
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index 739a9fb..c322443 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -2730,6 +2730,12 @@ static inline void tcp_bpf_rtt(struct sock *sk, long mrtt, u32 srtt)
->   
->   #if IS_ENABLED(CONFIG_SMC)
->   extern struct static_key_false tcp_have_smc;
-> +struct tcpsmc_ctx {
-> +	/* Invoked before computing SMC option for SYN packets. */
-> +	void (*set_option)(struct tcp_sock *tp);
-> +	/* Invoked before Set up SMC options for SYN-ACK packets */
-> +	void (*set_option_cond)(const struct tcp_sock *tp, struct inet_request_sock *ireq);
-> +};
-
-another new struct tcpsmc_ctx has exactly the same functions (at least the same 
-name) but different arguments. I don't understand why this duplicate, is it 
-because the need to prepare the "struct smc_bpf_ops_ctx"?
-
-The "struct tcpsmc_ctx" should be the "struct smc_bpf_ops" itself.
-
-[ ... ]
-
-> +static int smc_bpf_ops_btf_struct_access(struct bpf_verifier_log *log,
-> +					 const struct bpf_reg_state *reg,
-> +					 const struct bpf_prog *prog,
-> +					 int off, int size)
-> +{
-> +	const struct btf_member *member;
-> +	const char *mname;
-> +	int member_idx;
-> +
-> +	member_idx = prog->expected_attach_type;
-> +	if (member_idx >= btf_type_vlen(smc_bpf_ops_type))
-> +		goto out_err;
-> +
-> +	member = &btf_type_member(smc_bpf_ops_type)[member_idx];
-> +	mname = btf_str_by_offset(saved_btf, member->name_off);
-> +
-> +	if (!strcmp(mname, "set_option")) {
-
-btf_member_bit_offset can be used instead of strcmp. Take a look at bpf_tcp_ca.c 
-and kernel/sched/ext.c
-
-> +		/* only support to modify tcp_sock->syn_smc */
-> +		if (reg->btf_id == tcp_sock_id &&
-> +		    off == offsetof(struct tcp_sock, syn_smc) &&
-> +		    off + size == offsetofend(struct tcp_sock, syn_smc))
-> +			return 0;
-> +	} else if (!strcmp(mname, "set_option_cond")) {
-> +		/* only support to modify smc_bpf_ops_ctx->smc_ok */
-> +		if (reg->btf_id == smc_bpf_ops_ctx_id &&
-> +		    off == offsetof(struct smc_bpf_ops_ctx, set_option_cond.smc_ok) &&
-> +		    off + size == offsetofend(struct smc_bpf_ops_ctx, set_option_cond.smc_ok))
-> +			return 0;
-> +	}
-> +
-> +out_err:
-> +	return -EACCES;
-> +}
-> +
-> +static const struct bpf_verifier_ops smc_bpf_verifier_ops = {
-> +	.get_func_proto = bpf_base_func_proto,
-> +	.is_valid_access = bpf_tracing_btf_ctx_access,
-> +	.btf_struct_access = smc_bpf_ops_btf_struct_access,
-> +};
-> +
-> +static struct bpf_struct_ops bpf_smc_bpf_ops = {
-> +	.init = smc_bpf_ops_init,
-> +	.name = "smc_bpf_ops",
-> +	.reg = smc_bpf_ops_reg,
-> +	.unreg = smc_bpf_ops_unreg,
-> +	.cfi_stubs = &__bpf_smc_bpf_ops,
-> +	.verifier_ops = &smc_bpf_verifier_ops,
-> +	.init_member = smc_bpf_ops_init_member,
-> +	.check_member = smc_bpf_ops_check_member,
-> +	.owner = THIS_MODULE,
-> +};
-> +
-> +int smc_bpf_struct_ops_init(void)
-> +{
-> +	return register_bpf_struct_ops(&bpf_smc_bpf_ops, smc_bpf_ops);
-> +}
-> +
-> +void bpf_smc_set_tcp_option(struct tcp_sock *tp)
-> +{
-> +	struct smc_bpf_ops_ctx ops_ctx = {};
-> +	struct smc_bpf_ops *ops;
-> +
-> +	ops_ctx.set_option.tp = tp;
-
-All this initialization should be unnecessary. Directly pass tp instead.
-
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(ops, &smc_bpf_ops_list, list) {
-
-Does it need to have a list (meaning >1) of smc_bpf_ops to act on a sock? The 
-ordering expectation is hard to manage.
-
-> +		ops->set_option(&ops_ctx);
-
-A dumb question. This will only affect AF_SMC (or AF_INET[6]/IPPROTO_SMC) 
-socket but not the AF_INET[6]/IPPROTO_{TCP,UDP} socket?
-
-pw-bot: cr
-
-> +	}
-> +	rcu_read_unlock();
-> +}
+--nCoJbkgUJcwJ4Pal--
 
