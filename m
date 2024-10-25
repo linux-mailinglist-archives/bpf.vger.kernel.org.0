@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-43129-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43128-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18F129AF699
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 03:20:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D80A09AF698
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 03:20:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7C471C211A4
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 01:20:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63BE81F2234F
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 01:20:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1457C433CE;
-	Fri, 25 Oct 2024 01:20:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B84E83FBA5;
+	Fri, 25 Oct 2024 01:20:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0130C8DF
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 01:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477FA125DE
+	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 01:20:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729819232; cv=none; b=PoZr256LGZUS/K3i+8jAFbWvhqelA2T/I7SOIwFnfY2sOzp4aeBSb6eRjdeo1HvhR6rttGQNMfd3mov/g8PCl4VjRPiFfBnnTnNoTRujP8Joryc1qlQz2TiOG3+bhWZUtPK9cbBmxdxO2oBGJzk4aMEPtOt+hKqqZ7v3fFMvJKE=
+	t=1729819232; cv=none; b=ewfaRZVHmKJjbLkG5/vR35jQnIE1RHrlL6fG8vC5sfW+0Y9aiVy5fLvO6Uz1kDtyUBXvzW4pL59oUXXhu7TT8K0pSjKGNPYcHm74yLUZqo2C+cMB+QGjYXyiNLLYlulUpf8nxHQdCnNljZ46UakWN1DZRgotWY/fnaqhbLiNOYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1729819232; c=relaxed/simple;
-	bh=LHCPDr51jp8tVzf7wGEQjFJio98kSF4ByHIAACfT4Ng=;
+	bh=CinLmLr0pORA5SAsmWoOfUlUqFht48LN68eRQf75zlY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OUtB+zrQ9kiG92E5nvNsIbdOCtbyqxrVt3pRKDzboLm+8eO9vuSAhGMxlRr1KPYcgJVxkPkFGcyd+MG3SRF6j052KhMxVt/7bY7NM54/i29QBYbC4zOAcMGacfYXjaEHcWeJbs2qwjO2J9BFvJcOTy/1uhnrrLtxZhdw6ZoMuFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=OrxjW5s04ZdlstugZvHGiRg9gcBHuzk/oktDxePqzt1rsl+N0MddcBV+NjOwWI6iJzsGXAIDnA92GHUbXH0Vw/Vf1el+woC779TrDblke+YKa/JP8JCofTIWDDvhJWwWbEjjhgdRQ6EGbPojfMuVby24LMswN3aZQ5+ohos+1u8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XZQ203T25z4f3jXl
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 09:20:08 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XZQ261MdRz4f3jt6
+	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 09:20:14 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id F2FAB1A0359
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 09:20:25 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 8FD961A0568
+	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 09:20:26 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgCn28dU8hpnhzUqFA--.57458S7;
-	Fri, 25 Oct 2024 09:20:25 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgCn28dU8hpnhzUqFA--.57458S8;
+	Fri, 25 Oct 2024 09:20:26 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -55,9 +55,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Yafang Shao <laoar.shao@gmail.com>,
 	houtao1@huawei.com,
 	xukuohai@huawei.com
-Subject: [PATCH bpf v3 3/5] bpf: Check the validity of nr_words in bpf_iter_bits_new()
-Date: Fri, 25 Oct 2024 09:32:31 +0800
-Message-Id: <20241025013233.804027-4-houtao@huaweicloud.com>
+Subject: [PATCH bpf v3 4/5] bpf: Use __u64 to save the bits in bits iterator
+Date: Fri, 25 Oct 2024 09:32:32 +0800
+Message-Id: <20241025013233.804027-5-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20241025013233.804027-1-houtao@huaweicloud.com>
 References: <20241025013233.804027-1-houtao@huaweicloud.com>
@@ -68,105 +68,124 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCn28dU8hpnhzUqFA--.57458S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxWF17JF45ZFyxKFWxKw45Wrg_yoW5CF1rpF
-	4fJ3ZxAr48JF42gw1Dta1UCa4rX34vqay7GFWxJr1S9Fs5WrnF9r12gr1Yqas3CrWjyF12
-	vryv9ryfZayDAaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI
-	0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG
-	67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MI
-	IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
-	14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
-	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU14x
-	RDUUUUU==
+X-CM-TRANSID:gCh0CgCn28dU8hpnhzUqFA--.57458S8
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw17Gry5Xr1DJw4UGFyrXrb_yoW5tw1fpF
+	4rCw1qyrW8tFW2yw1avrWUWa45Awn7Aay8GFZ3WrWrWF47Xr98uryUK345Xan8Cry8ZF42
+	vr9093sxCFWUJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
+	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
+	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
+	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
+	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
+	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
+	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
+	AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
+	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
+	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
+	7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
+	0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7I
+	U1aLvJUUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-Check the validity of nr_words in bpf_iter_bits_new(). Without this
-check, when multiplication overflow occurs for nr_bits (e.g., when
-nr_words = 0x0400-0001, nr_bits becomes 64), stack corruption may occur
-due to bpf_probe_read_kernel_common(..., nr_bytes = 0x2000-0008).
+On 32-bit hosts (e.g., arm32), when a bpf program passes a u64 to
+bpf_iter_bits_new(), bpf_iter_bits_new() will use bits_copy to store the
+content of the u64. However, bits_copy is only 4 bytes, leading to stack
+corruption.
 
-Fix it by limiting the maximum value of nr_words to 511. The value is
-derived from the current implementation of BPF memory allocator. To
-ensure compatibility if the BPF memory allocator's size limitation
-changes in the future, use the helper bpf_mem_alloc_check_size() to
-check whether nr_bytes is too larger. And return -E2BIG instead of
--ENOMEM for oversized nr_bytes.
+The straightforward solution would be to replace u64 with unsigned long
+in bpf_iter_bits_new(). However, this introduces confusion and problems
+for 32-bit hosts because the size of ulong in bpf program is 8 bytes,
+but it is treated as 4-bytes after passed to bpf_iter_bits_new().
 
-Fixes: 4665415975b0 ("bpf: Add bits iterator")
+Fix it by changing the type of both bits and bit_count from unsigned
+long to u64. However, the change is not enough. The main reason is that
+bpf_iter_bits_next() uses find_next_bit() to find the next bit and the
+pointer passed to find_next_bit() is an unsigned long pointer instead
+of a u64 pointer. For 32-bit little-endian host, it is fine but it is
+not the case for 32-bit big-endian host. Because under 32-bit big-endian
+host, the first iterated unsigned long will be the bits 32-63 of the u64
+instead of the expected bits 0-31. Therefore, in addition to changing
+the type, swap the two unsigned longs within the u64 for 32-bit
+big-endian host.
+
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/helpers.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ kernel/bpf/helpers.c | 33 ++++++++++++++++++++++++++++++---
+ 1 file changed, 30 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 40ef6a56619f..daec74820dbe 100644
+index daec74820dbe..824718349958 100644
 --- a/kernel/bpf/helpers.c
 +++ b/kernel/bpf/helpers.c
-@@ -2851,6 +2851,8 @@ struct bpf_iter_bits {
- 	__u64 __opaque[2];
- } __aligned(8);
+@@ -2855,13 +2855,36 @@ struct bpf_iter_bits {
  
-+#define BITS_ITER_NR_WORDS_MAX 511
-+
  struct bpf_iter_bits_kern {
  	union {
- 		unsigned long *bits;
-@@ -2865,7 +2867,8 @@ struct bpf_iter_bits_kern {
-  * @it: The new bpf_iter_bits to be created
-  * @unsafe_ptr__ign: A pointer pointing to a memory area to be iterated over
-  * @nr_words: The size of the specified memory area, measured in 8-byte units.
-- * Due to the limitation of memalloc, it can't be greater than 512.
-+ * The maximum value of @nr_words is @BITS_ITER_NR_WORDS_MAX. This limit may be
-+ * further reduced by the BPF memory allocator implementation.
-  *
-  * This function initializes a new bpf_iter_bits structure for iterating over
-  * a memory area which is specified by the @unsafe_ptr__ign and @nr_words. It
-@@ -2878,8 +2881,7 @@ __bpf_kfunc int
- bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_words)
- {
- 	struct bpf_iter_bits_kern *kit = (void *)it;
--	u32 nr_bytes = nr_words * sizeof(u64);
--	u32 nr_bits = BYTES_TO_BITS(nr_bytes);
-+	u32 nr_bytes, nr_bits;
- 	int err;
+-		unsigned long *bits;
+-		unsigned long bits_copy;
++		__u64 *bits;
++		__u64 bits_copy;
+ 	};
+ 	int nr_bits;
+ 	int bit;
+ } __aligned(8);
  
- 	BUILD_BUG_ON(sizeof(struct bpf_iter_bits_kern) != sizeof(struct bpf_iter_bits));
-@@ -2892,9 +2894,14 @@ bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_w
- 
- 	if (!unsafe_ptr__ign || !nr_words)
- 		return -EINVAL;
-+	if (nr_words > BITS_ITER_NR_WORDS_MAX)
-+		return -E2BIG;
++/* On 64-bit hosts, unsigned long and u64 have the same size, so passing
++ * a u64 pointer and an unsigned long pointer to find_next_bit() will
++ * return the same result, as both point to the same 8-byte area.
++ *
++ * For 32-bit little-endian hosts, using a u64 pointer or unsigned long
++ * pointer also makes no difference. This is because the first iterated
++ * unsigned long is composed of bits 0-31 of the u64 and the second unsigned
++ * long is composed of bits 32-63 of the u64.
++ *
++ * However, for 32-bit big-endian hosts, this is not the case. The first
++ * iterated unsigned long will be bits 32-63 of the u64, so swap these two
++ * ulong values within the u64.
++ */
++static void swap_ulong_in_u64(u64 *bits, unsigned int nr)
++{
++#if !defined(CONFIG_64BIT) && defined(__BIG_ENDIAN)
++	unsigned int i;
 +
-+	nr_bytes = nr_words * sizeof(u64);
-+	nr_bits = BYTES_TO_BITS(nr_bytes);
- 
- 	/* Optimization for u64 mask */
--	if (nr_bits == 64) {
-+	if (nr_words == 1) {
- 		err = bpf_probe_read_kernel_common(&kit->bits_copy, nr_bytes, unsafe_ptr__ign);
++	for (i = 0; i < nr; i++)
++		bits[i] = (bits[i] >> 32) | ((u64)(u32)bits[i] << 32);
++#endif
++}
++
+ /**
+  * bpf_iter_bits_new() - Initialize a new bits iterator for a given memory area
+  * @it: The new bpf_iter_bits to be created
+@@ -2906,6 +2929,8 @@ bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_w
  		if (err)
  			return -EFAULT;
-@@ -2903,6 +2910,9 @@ bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_w
+ 
++		swap_ulong_in_u64(&kit->bits_copy, nr_words);
++
+ 		kit->nr_bits = nr_bits;
  		return 0;
  	}
+@@ -2924,6 +2949,8 @@ bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_w
+ 		return err;
+ 	}
  
-+	if (bpf_mem_alloc_check_size(false, nr_bytes))
-+		return -E2BIG;
++	swap_ulong_in_u64(kit->bits, nr_words);
 +
- 	/* Fallback to memalloc */
- 	kit->bits = bpf_mem_alloc(&bpf_global_ma, nr_bytes);
- 	if (!kit->bits)
+ 	kit->nr_bits = nr_bits;
+ 	return 0;
+ }
+@@ -2941,7 +2968,7 @@ __bpf_kfunc int *bpf_iter_bits_next(struct bpf_iter_bits *it)
+ {
+ 	struct bpf_iter_bits_kern *kit = (void *)it;
+ 	int bit = kit->bit, nr_bits = kit->nr_bits;
+-	const unsigned long *bits;
++	const void *bits;
+ 
+ 	if (!nr_bits || bit >= nr_bits)
+ 		return NULL;
 -- 
 2.29.2
 
