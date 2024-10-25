@@ -1,205 +1,139 @@
-Return-Path: <bpf+bounces-43127-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43130-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2017B9AF697
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 03:20:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1C1E9AF78F
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 04:37:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8D042822B5
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 01:20:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D30E61C21E38
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 02:37:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84843D3B3;
-	Fri, 25 Oct 2024 01:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FACB189F45;
+	Fri, 25 Oct 2024 02:37:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wPvXp6xq"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451B0101F7
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 01:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50AAF225DA
+	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 02:37:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729819232; cv=none; b=j3bMPnzk2vghBB6pHeHhJAjoCCvPgsSV2eJieeLPIFGVvcbU+UtWbK3kNl4qzUYtM3+BB7gz0wj4qOuLD0hawJDO1sv8GrnOizWisx2I6VHVnYGUMtlmA6Tb4A70TsTiOXF4CawfEes8qoBS5Lk7RRI6GURSh/lSMAsZOuH6M30=
+	t=1729823868; cv=none; b=Gp0PbcMF3PCqLH9oSya2rf86SWDkD+flW8RDtn6gVoXN8/Pu9ArhfN76l96XHAAq5lCbxeepz9zsVCGyMlpieRT0ZaLC91SG6Q+Q6hL7zB3EZdVzNUZ3JiEgvO98mLdKeguG5nHlAAjY4ExE2WQq2CI6GkxkOb38hv5OB0ITl0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729819232; c=relaxed/simple;
-	bh=Sf3qTnf694uCUlQL9zmZybeEg0GNGrxj8RBiXVAqR7Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kKRu1NEFwq0HDDo2+k4paw3jiC84dHlBacO5ornMU4KvyW6XjusYUs2zFvZ7V3l+mpQOweJuJSW2zakiqrT2M3OIL11bt081gNykY01Bu4nZqO8MMHVNrquN4WVu1QAAPs8GHeKxPddCgmofiwFS1MfshRqsVv6c4RTJAwGUmxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XZQ2065hXz4f3lfh
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 09:20:08 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 28B921A018C
-	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 09:20:27 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgCn28dU8hpnhzUqFA--.57458S9;
-	Fri, 25 Oct 2024 09:20:26 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Yafang Shao <laoar.shao@gmail.com>,
-	houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: [PATCH bpf v3 5/5] selftests/bpf: Add three test cases for bits_iter
-Date: Fri, 25 Oct 2024 09:32:33 +0800
-Message-Id: <20241025013233.804027-6-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20241025013233.804027-1-houtao@huaweicloud.com>
-References: <20241025013233.804027-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1729823868; c=relaxed/simple;
+	bh=oCDqtzzq1WmrAd2KbGKue4dOh+1UHWTya7l1bGo/pAk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gl6n1dbVRdx9b/TIRL0W4kLo/VI0zCGiasT/q5j1Of+Rd7oz1wLs0GkekPrez6VxR5ThOMtiH9KQ23vvZtJRL9YxGwMQwbKVr97NzOUDzv38BLnwavHohNL+vOgKuSetefSYcVDeeOZ66FyMYzHenPmPjTWDo7yk9AG70Kh1RZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wPvXp6xq; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6f2c4bed-0b9c-48f7-886f-81e9df0155e7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729823862;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6YMGzBRFNqMsV1ec7cLGd4b9mG3UgxSE/vhPIc7vqCU=;
+	b=wPvXp6xqcFCHWLK/3pZRHvT4yFi5jcHZYsY6Z6H8hj1LKp28A0GQGEiRz6rhB7pM0KpwB0
+	TUyceckG5rHFTVt92MknjFVA+Bjd551BOa0hqWTSmhu1P6RNIy3VJ7qgEAfYexIRMb479S
+	H0xYumNvzZcpiWzheZdaQO9RqU1sysM=
+Date: Fri, 25 Oct 2024 10:37:35 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next 1/2] bpf, x64: Propagate tailcall info only for
+ tail_call_reachable subprogs
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>, Eddy Z <eddyz87@gmail.com>,
+ kernel-patches-bot@fb.com
+References: <20241021133929.67782-1-leon.hwang@linux.dev>
+ <20241021133929.67782-2-leon.hwang@linux.dev>
+ <CAADnVQKO3rdaVrNOcLbm=kmue4orurcRTuskgrdze_=ExS2A7g@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <CAADnVQKO3rdaVrNOcLbm=kmue4orurcRTuskgrdze_=ExS2A7g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCn28dU8hpnhzUqFA--.57458S9
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw4rZw4fXF4fAr15AF4xJFb_yoW5WFyDpa
-	1kW3sxAr1rJr4akr4fCayjkFyrWr4vyayrCrZaqrW5CFn7Xr92gr1Skw45Xas5GrWjvwsY
-	vFWqy3yxJrW8WaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
-	AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
-	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF
-	7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
-	0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7I
-	U1aLvJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-Migadu-Flow: FLOW_OUT
 
-From: Hou Tao <houtao1@huawei.com>
 
-Add more test cases for bits iterator:
 
-(1) huge word test
-Verify the multiplication overflow of nr_bits in bits_iter. Without
-the overflow check, when nr_words is 67108865, nr_bits becomes 64,
-causing bpf_probe_read_kernel_common() to corrupt the stack.
-(2) max word test
-Verify correct handling of maximum nr_words value (511).
-(3) bad word test
-Verify early termination of bits iteration when bits iterator
-initialization fails.
+On 25/10/24 06:09, Alexei Starovoitov wrote:
+> On Mon, Oct 21, 2024 at 6:39 AM Leon Hwang <leon.hwang@linux.dev> wrote:
+>>
+>> In the x86_64 JIT, when calling a function, tailcall info is propagated if
+>> the program is tail_call_reachable, regardless of whether the function is a
+>> subprog, helper, or kfunc. However, this propagation is unnecessary for
+>> not-tail_call_reachable subprogs, helpers, or kfuncs.
+>>
+>> The verifier can determine if a subprog is tail_call_reachable. Therefore,
+>> it can be optimized to only propagate tailcall info when the callee is
+>> subprog and the subprog is actually tail_call_reachable.
+>>
+>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+>> ---
+>>  arch/x86/net/bpf_jit_comp.c | 4 +++-
+>>  kernel/bpf/verifier.c       | 6 ++++++
+>>  2 files changed, 9 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index 06b080b61aa57..6ad6886ecfc88 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -2124,10 +2124,12 @@ st:                     if (is_imm8(insn->off))
+>>
+>>                         /* call */
+>>                 case BPF_JMP | BPF_CALL: {
+>> +                       bool pseudo_call = src_reg == BPF_PSEUDO_CALL;
+>> +                       bool subprog_tail_call_reachable = dst_reg;
+>>                         u8 *ip = image + addrs[i - 1];
+>>
+>>                         func = (u8 *) __bpf_call_base + imm32;
+>> -                       if (tail_call_reachable) {
+>> +                       if (pseudo_call && subprog_tail_call_reachable) {
+>>                                 LOAD_TAIL_CALL_CNT_PTR(bpf_prog->aux->stack_depth);
+>>                                 ip += 7;
+>>                         }
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index f514247ba8ba8..6e7e42c7bc7b1 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -19990,6 +19990,12 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+>>                         insn[0].imm = (u32)addr;
+>>                         insn[1].imm = addr >> 32;
+>>                 }
+>> +
+>> +               if (bpf_pseudo_call(insn))
+>> +                       /* In the x86_64 JIT, tailcall information can only be
+>> +                        * propagated if the subprog is tail_call_reachable.
+>> +                        */
+>> +                       insn->dst_reg = env->subprog_info[subprog].tail_call_reachable;
+> 
+> I really don't like hacking flags into dst_reg.
+> We already abuse insn->off which is ugly too,
+> but at least we clean insns later after JIT.
+> 
+> I'd rather live with this tail call inefficiency than abuse insns
+> fields further.
+> 
 
-Also rename bits_nomem to bits_too_big to better reflect its purpose.
+OK, let us use 'pseudo_call && tail_call_reachable' in x86 JIT to avoid
+touching 'insn->dst_reg'.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/progs/verifier_bits_iter.c  | 61 ++++++++++++++++++-
- 1 file changed, 58 insertions(+), 3 deletions(-)
+Thanks,
+Leon
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bits_iter.c b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-index f4da4d508ddb..156cc278e2fc 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-@@ -15,6 +15,8 @@ int bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign,
- int *bpf_iter_bits_next(struct bpf_iter_bits *it) __ksym __weak;
- void bpf_iter_bits_destroy(struct bpf_iter_bits *it) __ksym __weak;
- 
-+u64 bits_array[511] = {};
-+
- SEC("iter.s/cgroup")
- __description("bits iter without destroy")
- __failure __msg("Unreleased reference")
-@@ -110,16 +112,16 @@ int bit_index(void)
- }
- 
- SEC("syscall")
--__description("bits nomem")
-+__description("bits too big")
- __success __retval(0)
--int bits_nomem(void)
-+int bits_too_big(void)
- {
- 	u64 data[4];
- 	int nr = 0;
- 	int *bit;
- 
- 	__builtin_memset(&data, 0xff, sizeof(data));
--	bpf_for_each(bits, bit, &data[0], 513) /* Be greater than 512 */
-+	bpf_for_each(bits, bit, &data[0], 512) /* Be greater than 511 */
- 		nr++;
- 	return nr;
- }
-@@ -151,3 +153,56 @@ int zero_words(void)
- 		nr++;
- 	return nr;
- }
-+
-+SEC("syscall")
-+__description("huge words")
-+__success __retval(0)
-+int huge_words(void)
-+{
-+	u64 data[8] = {0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1};
-+	int nr = 0;
-+	int *bit;
-+
-+	bpf_for_each(bits, bit, &data[0], 67108865)
-+		nr++;
-+	return nr;
-+}
-+
-+SEC("syscall")
-+__description("max words")
-+__success __retval(4)
-+int max_words(void)
-+{
-+	volatile int nr = 0;
-+	int *bit;
-+
-+	bits_array[0] = (1ULL << 63) | 1U;
-+	bits_array[510] = (1ULL << 33) | (1ULL << 32);
-+
-+	bpf_for_each(bits, bit, bits_array, 511) {
-+		if (nr == 0 && *bit != 0)
-+			break;
-+		if (nr == 2 && *bit != 32672)
-+			break;
-+		nr++;
-+	}
-+	return nr;
-+}
-+
-+SEC("syscall")
-+__description("bad words")
-+__success __retval(0)
-+int bad_words(void)
-+{
-+	void *bad_addr = (void *)(3UL << 30);
-+	int nr = 0;
-+	int *bit;
-+
-+	bpf_for_each(bits, bit, bad_addr, 1)
-+		nr++;
-+
-+	bpf_for_each(bits, bit, bad_addr, 4)
-+		nr++;
-+
-+	return nr;
-+}
--- 
-2.29.2
+> pw-bot: cr
 
 
