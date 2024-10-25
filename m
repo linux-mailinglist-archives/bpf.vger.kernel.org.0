@@ -1,94 +1,157 @@
-Return-Path: <bpf+bounces-43147-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43148-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87CA49AFE36
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 11:32:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 302F19AFE38
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 11:32:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BC98287483
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 09:32:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B64F51F21F08
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 09:32:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 157E91D3633;
-	Fri, 25 Oct 2024 09:32:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IV8JwWBt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4AC31D4159;
+	Fri, 25 Oct 2024 09:32:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B56618D63C;
-	Fri, 25 Oct 2024 09:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DFDD1C0DF0;
+	Fri, 25 Oct 2024 09:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729848731; cv=none; b=J2IeXqAzEBxLWEVztYTx9Dg1xMFaRdo7Xajg6f/zSKyE3onakq7aJhcKq0ggFRai9487/ONKtJ4XJXUj+CSXxR6FauRwgcDcNdAk8vfJrTJOvdlfOoNC2HvvHU4mpDk3TlviFhpYOe01rY3nEBJCtov+SaE2AKIu8+QYBGM73KQ=
+	t=1729848763; cv=none; b=DUlr77T00sKobLpSsqBsvjV7auaA18A1JBapw//p0vwu83t149v32RZ6XOOUjhvdGUD1FKWsum+hsg1JYis/8OWcejQ5txdUoZTgf4Pmdu+UWX1krBZ4hAICDtB7PFTjqG4eRFJybT0cwCepip7sYsRUglzwJTLBd7NNLk6sLN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729848731; c=relaxed/simple;
-	bh=BIGkXe4S27RvYPC1fUaKy/aC3rYZBY42viXN9VJu3k8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bJ8ry9xRuOHlfpSRFiR5ENQkJ620SSf2yB0YYtVF+W5SOUftiXP+Q5LR0Iu3EIH88+B1e1xSwVLCOJx3HMrPN723z2EW2TExtj+05fG/G801byveqzws4NhBvMNvE1JPOMD0f3voNJgT2qJUDHi0i8qW41bUfi27fGnZtrqzf3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IV8JwWBt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DFA0C4CEC3;
-	Fri, 25 Oct 2024 09:32:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729848731;
-	bh=BIGkXe4S27RvYPC1fUaKy/aC3rYZBY42viXN9VJu3k8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IV8JwWBtVPrQwCA8t5ertdsX+W6JbbD2/zcPcnezJ3fyIvMY69cztoR3oMYwwnZIO
-	 ecVtIuqheHRA6OQrw0zuakqJikN+mNNRxHTmTE6v7hpexx8+CHyOEBRG9Zghqx0BMQ
-	 bpI+WUa+tfCmZPkG+IwAM//npOC371FQDZ65DV/G5yVtg5uNX4cBTjAkbWiSmZ1idX
-	 HYT1Y1G928bBMRLAGJBcCtSeWKBi0ity/efvXk76TZlN5ebz4UWPu/WfT4z58lNJEM
-	 gT7CweBSji2TG1WL6u4Wn3lpDarUQ7lomqyNRlYCP6buFDJcK4wHwPAFfj1F+m5OGv
-	 q4lQgJLzvUV0g==
-Date: Fri, 25 Oct 2024 10:32:03 +0100
-From: Simon Horman <horms@kernel.org>
-To: Rosen Penev <rosenp@gmail.com>
-Cc: netdev@vger.kernel.org, Marcin Wojtas <marcin.s.wojtas@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Veerasenareddy Burru <vburru@marvell.com>,
-	Sathesh Edara <sedara@marvell.com>,
-	Shinas Rasheed <srasheed@marvell.com>,
-	Satananda Burla <sburla@marvell.com>,
-	Sunil Goutham <sgoutham@marvell.com>,
-	Geetha sowjanya <gakula@marvell.com>,
-	Subbaraya Sundeep <sbhatta@marvell.com>,
-	hariprasad <hkelam@marvell.com>,
-	Mirko Lindner <mlindner@marvell.com>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	Sabrina Dubroca <sd@queasysnail.net>,
-	Mina Almasry <almasrymina@google.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: marvell: use ethtool string helpers
-Message-ID: <20241025093203.GL1202098@kernel.org>
-References: <20241024195833.176843-1-rosenp@gmail.com>
+	s=arc-20240116; t=1729848763; c=relaxed/simple;
+	bh=5yEZPxVzDT4JwSQbgOjUvY10CuQ/wntHADsWddzFNsA=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=RV1iznUsnoZrSvCbbCpZTWWQ8PGpbIekSwfOv4zeXfPxpIiNEKd+XYS9y373aZTMpGXTePihd/jgNc9mohLj0e61lv1oiYJa0Qe3IFWrLpmZoDyri5hkWIRy0RGjBXECvXOt8l06xEaHtCpPjdr/oNzm9jMftVh9lq71+YxKNUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4XZcVn0VNbz9v7NH;
+	Fri, 25 Oct 2024 17:12:17 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id CADF91404D9;
+	Fri, 25 Oct 2024 17:32:32 +0800 (CST)
+Received: from [10.221.99.159] (unknown [10.221.99.159])
+	by APP2 (Coremail) with SMTP id GxC2BwAHcH+qZRtnP95nAA--.54446S2;
+	Fri, 25 Oct 2024 10:32:32 +0100 (CET)
+Message-ID: <daa60273-d01a-8fc5-5e26-e8fc9364c1d8@huaweicloud.com>
+Date: Fri, 25 Oct 2024 11:32:20 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241024195833.176843-1-rosenp@gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From: Hernan Ponce de Leon <hernan.poncedeleon@huaweicloud.com>
+Subject: Re: Some observations (results) on BPF acquire and release
+To: Andrea Parri <parri.andrea@gmail.com>, puranjay@kernel.org,
+ paulmck@kernel.org
+Cc: bpf@vger.kernel.org, lkmm@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <Zxk2wNs4sxEIg-4d@andrea>
+Content-Language: en-US
+In-Reply-To: <Zxk2wNs4sxEIg-4d@andrea>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:GxC2BwAHcH+qZRtnP95nAA--.54446S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZry8AF1UWFy3ArWxGFW7Arb_yoW5ZryDpF
+	W8Ka98Kas7t3sxCwn7X3yUu3WkuF93Xr45Xr4kGr9xCrn8K3Wkta1xKF4YqrZrWrs2vr10
+	q34UK3srX3Z8Aa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvqb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AK
+	xVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
+	Ixkvb40E47kJMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+	IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
+	ZFpf9x07brzVbUUUUU=
+X-CM-SenderInfo: xkhu0tnqos00pfhgvzhhrqqx5xdzvxpfor3voofrz/
 
-On Thu, Oct 24, 2024 at 12:58:33PM -0700, Rosen Penev wrote:
-> The latter is the preferred way to copy ethtool strings.
+On 10/23/2024 7:47 PM, Andrea Parri wrote:
+> Hi Puranjay and Paul,
 > 
-> Avoids manually incrementing the pointer. Cleans up the code quite well.
+> I'm running some experiment on the (experimental) formalization of BPF
+> acquire and release available from [1] and wanted to report about some
+> (initial) observations for discussion and possibly future developments;
+> apologies in advance for the relatively long email and any repetition.
 > 
-> Signed-off-by: Rosen Penev <rosenp@gmail.com>
+> 
+> A first and probably most important observation is that the (current)
+> formalization of acquire and release appears to be "too strong": IIUC,
+> the simplest example/illustration for this is given by the following
+> 
+> BPF R+release+fence
+> {
+>   0:r2=x; 0:r4=y;
+>   1:r2=y; 1:r4=x; 1:r6=l;
+> }
+>   P0                                 | P1                                         ;
+>   r1 = 1                             | r1 = 2                                     ;
+>   *(u32 *)(r2 + 0) = r1              | *(u32 *)(r2 + 0) = r1                      ;
+>   r3 = 1                             | r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) ;
+>   store_release((u32 *)(r4 + 0), r3) | r3 = *(u32 *)(r4 + 0)                      ;
+> exists ([y]=2 /\ 1:r3=0)
+> 
+> This "exists" condition is not satisfiable according to the BPF model;
+> however, if we adopt the "natural"/intended(?) PowerPC implementations
+> of the synchronization primitives above (aka, with store_release() -->
+> LWSYNC and atomic_fetch_add() --> SYNC ; [...] ), then we see that the
+> condition in question becomes (architecturally) satisfiable on PowerPC
+> (although I'm not aware of actual observations on PowerPC hardware).
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Are the resulting PPC tests available somewhere?
+
+> 
+> 
+> At first, the previous observation (validated via simulations and later
+> extended to similar but more complex scenarios ) made me believe that
+> the BPF formalization of acquire and release could be strictly stronger
+> than the corresponding LKMM formalization; but that is _not_ the case:
+> 
+> The following "exists" condition is satisfiable according to the BPF
+> model (and it remains satisfiable even if the load_acquire() in P2 is
+> paired with an additional store_release() in P1).  In contrast, the
+> corresponding LKMM condition (e.g load_acquire() --> smp_load_acquire()
+> and atomic_fetch_add() --> smp_mb()) is not satisfiable (in fact, the
+> same conclusion holds even if the putative smp_load_acquire() in P2 is
+> "replaced" with an smp_rmb() or with an address dependency).
+> 
+> BPF Z6.3+fence+fence+acquire
+> {
+>   0:r2=x; 0:r4=y; 0:r6=l;
+>   1:r2=y; 1:r4=z; 1:r6=m;
+>   2:r2=z; 2:r4=x;
+> }
+>   P0                                         | P1                                         | P2                                 ;
+>   r1 = 1                                     | r1 = 2                                     | r1 = load_acquire((u32 *)(r2 + 0)) ;
+>   *(u32 *)(r2 + 0) = r1                      | *(u32 *)(r2 + 0) = r1                      | r3 = *(u32 *)(r4 + 0)              ;
+>   r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) | r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) |                                    ;
+>   r3 = 1                                     | r3 = 1                                     |                                    ;
+>   *(u32 *)(r4 + 0) = r3                      | *(u32 *)(r4 + 0) = r3                      |                                    ;
+> exists ([y]=2 /\ 2:r1=1 /\ 2:r3=0)
+> 
+> 
+> These remarks show that the proposed BPF formalization of acquire and
+> release somehow, but substantially, diverged from the corresponding
+> LKMM formalization.  My guess is that the divergences mentioned above
+> were not (fully) intentional, or I'm wondering -- why not follow the
+> latter (the LKMM's) more closely? -  This is probably the first question
+> I would need to clarify before trying/suggesting modifications to the
+> present formalizations.  ;-)  Thoughts?
+> 
+>    Andrea
+> 
+> 
+> [1] https://github.com/puranjaymohan/herdtools7/commits/bpf_acquire_release/
 
 
