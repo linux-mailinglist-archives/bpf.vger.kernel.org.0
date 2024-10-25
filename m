@@ -1,165 +1,141 @@
-Return-Path: <bpf+bounces-43193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43194-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 025C49B12A5
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 00:32:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC37C9B1329
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 01:26:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD6881F21651
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 22:32:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 637961F2271F
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 23:26:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2140A217F30;
-	Fri, 25 Oct 2024 22:32:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ACD6213134;
+	Fri, 25 Oct 2024 23:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FaaxKlwn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JqXBL4z2"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95D51217F5B;
-	Fri, 25 Oct 2024 22:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081B31CEE98;
+	Fri, 25 Oct 2024 23:26:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729895555; cv=none; b=vCp3aMP5+pdgH8bBzP9TYGc+USjPgtnW4qhV6Kkge228fjXNJzunhKi2DOD34ixvCe7hy5TKy105WwCWMVB+HVoxT/8A7MIUkzCv5pdIhrGpUPafKMM0NRQaCXqDdvfqnKAQ7Mt98muLH8j8CFtQnPzTFrNXFE8S6UCVVEkBfWc=
+	t=1729898811; cv=none; b=GR1lxRLMAIOu/mHX1gtgSmhTvyRIwspS+MuAvUj9I7lGkdfwSBCeLq3AtGYqJFgZe179k2bMhZDYKeR8Qv/0A/XnLoxmUHTqCgUlo6L/l8f/07xlfCo7zLnCOvpK7+nvE9VVvRtS3wbx/0VWQJBl15gIEA6WVlfCSoEPCp4ZNhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729895555; c=relaxed/simple;
-	bh=cBF+1dc1YuPA6i/wurtmA1xBN7bZ7fiqbS4p7GRgLco=;
-	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type; b=C5kwIn+VD8JLUk2BifiwbATRHTYPUtDQL3lp1L9OyAfI7FDd80DpdQ/gbjWfQMIiZJ1aZyFQ//CFY42Nl0sBHBgKuDz4a7GVG1nLaaJ9soVG8TURgj1VgVlVAwC9pqXWoq82cmz2iQGAdEupx+HEOFGv5JAqW1vdqzgWXDj9xVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FaaxKlwn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9129DC4CEC3;
-	Fri, 25 Oct 2024 22:32:34 +0000 (UTC)
+	s=arc-20240116; t=1729898811; c=relaxed/simple;
+	bh=ZmrVA8wb7NNzPZG85RE1GMlbP3IKNvdOBUIXaz8g1HI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bbLvhL+KtkbUKrremdcmwiAJlRrCULQ35jrolax3YH9g8baOnS3qg0BcQi1YKVXyor9gV4p6FaUR31IGNZS7O7WntCgKB1o89t1rvnvmBVaDU2uz+RJnOkaXcLdy3pN455BvAihpnz894X7IvQd4evV9hBJ5t+uMu48i0bHbjKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JqXBL4z2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F2BFC4CEC3;
+	Fri, 25 Oct 2024 23:26:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729895555;
-	bh=cBF+1dc1YuPA6i/wurtmA1xBN7bZ7fiqbS4p7GRgLco=;
-	h=Date:From:To:Subject:From;
-	b=FaaxKlwnV1rAudCAp++GEnCe0D5rJMbscsqyBHVk0ypgDifzCewCxDPuiuK6BSXFg
-	 zChMBbBqWERgxyiCnmlaOgHUgy0z1CjLt3/5djdp+s1rU/PAg5jrZ8V54lFVG/Qj//
-	 c/ofgobOIQgx+7wZLvNoAz5Z+/sszy9CLrNwZfyH1iOlmEeNtNGboHVDMGy/z2NQ5q
-	 To/YevDY0YHIL/55WaVh3QQ7IsYLUTLNYFGZX0qkIOptSUpfHrT4aL+/u795sq4YMH
-	 dRz6DlikpvFtkNcOy5/Foo38LkXA4imli4MNSboA82Gm3cj8HP1B2iHDVmcI9sBV8p
-	 3IuXeRFheqANw==
-Message-ID: <12b6a2f7-a677-449d-b4f3-e2c29046229a@kernel.org>
-Date: Fri, 25 Oct 2024 23:32:32 +0100
+	s=k20201202; t=1729898810;
+	bh=ZmrVA8wb7NNzPZG85RE1GMlbP3IKNvdOBUIXaz8g1HI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=JqXBL4z21li0sULGs3yYDYnWwEZ98djkKCnN6pdC9o+4A3DZyXPEr3crCWCNjWjyv
+	 50y0/lADjWEIXXOU6KTp9BKOIvIkQVti2huhiC0kkpwtIK6puJox8bAxJtsHUFfiHo
+	 dzXkk/RdqciQaU8HjtpkXFvKKifY8cJ+9hfbpPJ3gARIXAsk1ujAYph04IMcGsfVGL
+	 LENHC0LOF8iQithnXjwK8QZPXHZOWDd2QqxaOvGBOQ2R2jsPFvJ8/eUb8m97ZFUWRf
+	 87WlTEPBaRmvDFNVxweREI9u5HlY/v22IG9JVdy89b8cYquUk+Ercz4sEvfYjXwmMx
+	 Z28ee17neMk5A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 2C00FCE0D99; Fri, 25 Oct 2024 16:26:49 -0700 (PDT)
+Date: Fri, 25 Oct 2024 16:26:49 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Hernan Ponce de Leon <hernan.poncedeleon@huaweicloud.com>
+Cc: Andrea Parri <parri.andrea@gmail.com>, puranjay@kernel.org,
+	bpf@vger.kernel.org, lkmm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: Some observations (results) on BPF acquire and release
+Message-ID: <43ecbb1e-7710-45ab-891e-575b6f562794@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <Zxk2wNs4sxEIg-4d@andrea>
+ <daa60273-d01a-8fc5-5e26-e8fc9364c1d8@huaweicloud.com>
+ <ZxuZ-wGccb3yhBAD@andrea>
+ <d8aa61a8-e2fc-7668-9845-81664c9d181f@huaweicloud.com>
+ <ZxugzP0yB3zeqKSn@andrea>
+ <8360f999-0d64-3b4f-e4b8-8c84f7311af2@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-To: bpf <bpf@vger.kernel.org>, xdp-newbies <xdp-newbies@vger.kernel.org>
-Subject: FOSDEM 2025 eBPF Devroom Call for Participation
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8360f999-0d64-3b4f-e4b8-8c84f7311af2@huaweicloud.com>
 
-We are delighted to announce the Call for Participation (CFP) for the
-very first eBPF Devroom at FOSDEM!
+On Fri, Oct 25, 2024 at 03:57:29PM +0200, Hernan Ponce de Leon wrote:
+> On 10/25/2024 3:44 PM, Andrea Parri wrote:
+> > On Fri, Oct 25, 2024 at 03:28:17PM +0200, Hernan Ponce de Leon wrote:
+> > > On 10/25/2024 3:15 PM, Andrea Parri wrote:
+> > > > > > BPF R+release+fence
+> > > > > > {
+> > > > > >     0:r2=x; 0:r4=y;
+> > > > > >     1:r2=y; 1:r4=x; 1:r6=l;
+> > > > > > }
+> > > > > >     P0                                 | P1                                         ;
+> > > > > >     r1 = 1                             | r1 = 2                                     ;
+> > > > > >     *(u32 *)(r2 + 0) = r1              | *(u32 *)(r2 + 0) = r1                      ;
+> > > > > >     r3 = 1                             | r5 = atomic_fetch_add((u32 *)(r6 + 0), r5) ;
+> > > > > >     store_release((u32 *)(r4 + 0), r3) | r3 = *(u32 *)(r4 + 0)                      ;
+> > > > > > exists ([y]=2 /\ 1:r3=0)
+> > > > > > 
+> > > > > > This "exists" condition is not satisfiable according to the BPF model;
+> > > > > > however, if we adopt the "natural"/intended(?) PowerPC implementations
+> > > > > > of the synchronization primitives above (aka, with store_release() -->
+> > > > > > LWSYNC and atomic_fetch_add() --> SYNC ; [...] ), then we see that the
+> > > > > > condition in question becomes (architecturally) satisfiable on PowerPC
+> > > > > > (although I'm not aware of actual observations on PowerPC hardware).
+> > > > > 
+> > > > > Are the resulting PPC tests available somewhere?
+> > > > 
+> > > > My data go back to the LKMM paper, cf. e.g. the R+pooncerelease+fencembonceonce
+> > > > entry at https://diy.inria.fr/linux/hard.html#unseen .
+> > > > 
+> > > >     Andrea
+> > > 
+> > > I guess I understood you wrong. I thought you had manually "compiled" those
+> > > to PPC litmus format (i.e., doing exactly what the JIT compiler would do). I
+> > > can obviously write them manually myself, but I find this painful and error
+> > > prone (I am particularly bad at this task), so I wanted to avoid this if
+> > > someone else had already done it.
+> > 
+> > FWIW, a comprehensive collection of PPC litmus tests could be found at
+> > 
+> >    https://www.cl.cam.ac.uk/~pes20/ppc-supplemental/ppc002.html
+> > 
+> > (just follow the link on the test pattern/variants to see the sources);
+> > be aware the results of those tables date back to the PPC paper though.
+> > 
+> > Alternatively, remind that PPC is well supported by the herdtools7 diy7
+> > generator; I see no reason for having to (re)write such tests manually.
+> > 
+> >    Andrea
+> 
+> I am particularly interested in tests using lwarx and stwcx instructions
+> (this is what I understood would be used if one follows [1] to compile the
+> tests in this thread).
+> 
+> I have not yet check the cambridge website, but due to the timeline, I don't
+> expect to find tests with those instructions. The same is true with [2].
+> 
+> I have limited experience with diy7, but I remember that it had some
+> limitations to generate RMW instructions, at least for C [3].
+> 
+> Hernan
+> 
+> [1] https://github.com/torvalds/linux/blob/master/arch/powerpc/net/bpf_jit_comp32.c
+> [2] https://github.com/herd/herdtools7/tree/master/catalogue/herding-cats/ppc/tests/campaign
+> [3] https://github.com/herd/herdtools7/issues/905
 
-Mark the Dates
---------------
+Please see attached for a tarball of random PPC litmus tests.
 
-- December 1st, 2024: Submission deadline
-- December 15th, 2024: Announcement of accepted talks and schedule
-- February 1st, 2025 (Saturday afternoon): eBPF Devroom at FOSDEM
+You asked for this!  ;-)
 
-eBPF at FOSDEM
---------------
+							Thanx, Paul
 
-FOSDEM is a free, community-organized event focusing on open source, and
-aiming at gathering open source software developers and communities to
-meet, learn, and share. It takes place annually in Brussels, Belgium.
-After hosting a number of eBPF-related talks in various devrooms over
-the years, FOSDEM 2025 welcomes a devroom dedicated to eBPF for the
-first time! This devroom aims at gathering talks about various aspects
-of eBPF, ideally on multiple platforms.
-
-Topics of Interest
-------------------
-
-If you have something to present about eBPF, we would love for you to
-consider submitting a proposal to the Devroom.
-
-The projects or technologies discussed in the talks MUST be open-source.
-
-Topics of interest for the Devroom include (but are not limited to):
-
-- eBPF development: recent or proposed features (on Linux, on other
-  platforms, or even cross-platform), such as:
-    - eBPF program signing and supply chain security
-    - Profiling eBPF with eBPF
-    - eBPF-based process schedulers
-    - eBPF in storage devices
-    - eBPF verifier improvements or alternative implementations
-    - Memory management for eBPF
-- Deep-dives on existing eBPF features
-- Working with eBPF: best practices, common mistakes, debugging, etc.
-- eBPF toolchain, for compiling, managing, debugging, packaging, and
-  deploying eBPF programs and related objects
-- eBPF libraries, in C/C++, Go, Rust, or other languages
-- eBPF in the real world, production use cases and their impact
-- eBPF community efforts (documentation, standardization, cross-platform
-  initiatives)
-
-The list is not exhaustive, don't hesitate to submit your proposal!
-
-Format
-------
-
-FOSDEM 2025 will be an in-person event in Brussels, Belgium.
-We do not accept remote presentations.
-
-We're looking for presentations in one of the following sizes:
-
-- 10 minutes (for example, a short demo)
-- 20 minutes (for example, a project update)
-- 30 minutes (for example, an introduction to a new technology or a deep
-  dive on a complex feature)
-
-The durations above include time for questions: allow at least 5 to 10
-minutes, depending on the total length, to answer questions from the
-public.
-
-How to Submit
--------------
-
-Please submit your proposals on Pretalx, FOSDEM's submissions tool, at
-https://pretalx.fosdem.org/fosdem-2025/cfp
-
-Make sure to select "eBPF" as the track.
-
-The official communication channel for the Devroom is the dedicated
-FOSDEM mailing list, ebpf-devroom@lists.fosdem.org. If you submit a
-talk, please make sure to join the list:
-https://lists.fosdem.org/listinfo/ebpf-devroom
-
-Code of Conduct
----------------
-
-All participants at FOSDEM are expected to abide by the FOSDEM's Code of
-Conduct. If your proposal is accepted, you will be required to confirm
-that you accept this Code of Conduct. You can find this code at
-https://fosdem.org/2025/practical/conduct/
-
-Devroom Organisers
-------------------
-
-- Alan Jowett
-- Alexei Starovoitov
-- Andrii Nakryiko
-- Bill Mulligan
-- Daniel Borkmann
-- Dimitar Kanaliev
-- Quentin Monnet
-- Yusheng Zheng
-
-If you have questions about any aspects of this Call for Participation,
-please email us at ebpf-devroom-manager@fosdem.org, and we will do our
-best to assist you.
-
-We keep an up-to-date version of this Call for Participation at
-https://ebpf.io/fosdem-2025.html
 
