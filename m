@@ -1,187 +1,227 @@
-Return-Path: <bpf+bounces-43152-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43153-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1738E9B0163
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 13:33:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A968F9B01B8
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 13:53:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 631E3B220B6
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 11:33:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCC7C1C22130
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 11:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65AD0200B9E;
-	Fri, 25 Oct 2024 11:32:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="gEf/7YW1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28AC11FCC65;
+	Fri, 25 Oct 2024 11:53:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A161B6CF8;
-	Fri, 25 Oct 2024 11:32:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EC81B6D1E;
+	Fri, 25 Oct 2024 11:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729855975; cv=none; b=Hau5IKd4sPl3FEhGasU/nm8h9r2sFRk8cZQ2MDpSTZCp6P/uyrSYughLfD7Z3bZTf9DnoH/w6bcpzOjeHYJ4QFlyNqoCd5nO1N1h4BgmIDTKjDeknouSgNPI+4qF12BpXJ1+VR1vGloWMvUP2J/+g5KeDPsUjSu8IwnhrECirp4=
+	t=1729857227; cv=none; b=IPZXJvFRs0mwtOqBxKjn51pH9LA2HGEft2hSdW9ZXYrWR7WHUBzm7VGLA1Dn0WER5GmMHAHu/ROctOeJKx50dv65uve1vkJMrzQdb/Yrg4+V2QAfEoEH+qTCuT9HgchgfATbs9qNmGXd7lsWRMjrz5f0jRBuKr/T08UuiQvfzeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729855975; c=relaxed/simple;
-	bh=VtPLEbtgon+H4BAIG6FO0Ip2f0PyVl5P55NY3NhKkm8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eGyFgb36frvC1/ufJHgGkVSLn/FUdJlDsn0F+pOu//JhqRZa703XLmgIYzAhlqV6Oh90hoGMvzf/g637mQDtV1CWYLjt/lNqKDL0d8Fwuvz0kpjJw6z5Q5F+VlrkBUw1pCZgJ1mXFFLOkd726dxcotEL+scCJ87hck7SJHFJRrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=gEf/7YW1; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=Ou8Xa/I0YBpA5T56l1O7WY5r2Zh0QPkuOkUMaRnLN1o=; b=gEf/7YW1rhhxsG10DvPAbrRuty
-	FPjfpgB/vTcJHUncG8OQJRctjeiOkD4n5+j4I0t9RazVZgBt65/Wd7FI2+qzxePkbaamQd/AVOjL9
-	NYX6GZSip3akvpYROQGi0U62jFkLfh3WMqAmE0PtEaVvlFRyrHHkWkcqQqodpR8+BqAZpsIneDI52
-	L5WsluJnCpcz7MweTb5mWO6ybw2wIi44aheoPq9g4RnZUGY6QqQtKnW52iV+wUFjRAIXs4D0x+f30
-	9WveP7ZklrblRRMas3RGofwtonmxg7EUQsrYiuoxzsnwSQGsY67aSQQd2s/2yNfSa7rGfugh5FvBc
-	lK99fQZQ==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1t4IYW-0001FB-AX; Fri, 25 Oct 2024 13:32:36 +0200
-Received: from [85.1.206.226] (helo=[192.168.1.114])
-	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1t4IYU-000HsF-1h;
-	Fri, 25 Oct 2024 13:32:34 +0200
-Message-ID: <b9cdfee5-0df3-45c1-ac83-123c7b6c2955@iogearbox.net>
-Date: Fri, 25 Oct 2024 13:32:33 +0200
+	s=arc-20240116; t=1729857227; c=relaxed/simple;
+	bh=E8IZjkPATRam4qXEyFXpRCwV1QVIYJ+/Ps3Uv3lW6VU=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=qv/7eHHFZRq4+1wCx/QwC5VdlXGZ2X8Pk+xl8cyht4ddti4x65f7/c1bXrdUiHH8sZRuAAb6WNLs5XXJMvqeDXN5OgNrh5G4c6UoSpZSGBW3HhP37VlDmV6cQ5a5W1USoS5l9WO7yTUmx0cXp5GEDyRYuoh6oaKMDgDYLMg0T7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XZh4c6Ct9z4f3lgR;
+	Fri, 25 Oct 2024 19:53:20 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 313071A018D;
+	Fri, 25 Oct 2024 19:53:39 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgD3bSq_hhtne5XEEw--.21641S2;
+	Fri, 25 Oct 2024 19:53:39 +0800 (CST)
+Subject: Re: [PATCH] selftests/bpf: Add test for trie_get_next_key()
+To: Byeonguk Jeong <jungbu2855@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+ Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <ZxoOdzdMwvLspZiq@localhost.localdomain>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <7affe124-770d-a31b-c588-4492e45297cc@huaweicloud.com>
+Date: Fri, 25 Oct 2024 19:53:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 2/4] bpf: bpf_csum_diff: optimize and
- homogenize for all archs
-To: Puranjay Mohan <puranjay@kernel.org>, kernel test robot <lkp@intel.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Alexei Starovoitov <ast@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, Eduard Zingerman
- <eddyz87@gmail.com>, Eric Dumazet <edumazet@google.com>,
- Hao Luo <haoluo@google.com>, Helge Deller <deller@gmx.de>,
- Jakub Kicinski <kuba@kernel.org>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
- Martin KaFai Lau <martin.lau@linux.dev>, Mykola Lysenko <mykolal@fb.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Paolo Abeni <pabeni@redhat.com>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Shuah Khan <skhan@linuxfoundation.org>, Song Liu <song@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>
-Cc: oe-kbuild-all@lists.linux.dev,
- Linux Memory Management List <linux-mm@kvack.org>, netdev@vger.kernel.org
-References: <20241023153922.86909-3-puranjay@kernel.org>
- <202410251552.LR73LP4V-lkp@intel.com> <mb61po738bigw.fsf@kernel.org>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <mb61po738bigw.fsf@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <ZxoOdzdMwvLspZiq@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27438/Fri Oct 25 10:32:52 2024)
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgD3bSq_hhtne5XEEw--.21641S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGrWxGFWktF1rXr18GrW3ZFb_yoWrXryfpF
+	WrKa4DKrWfXF1UXa1rXa4xJFn0kr4xua1jvas5WryUG3sxtrnxAr4xKFWUCryfCrZ2qF43
+	ua12g3s5trZFqFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v2
+	6r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCI
+	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
+	AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_
+	Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07jjVb
+	kUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On 10/25/24 12:11 PM, Puranjay Mohan wrote:
-[...]
-> This file has a lot of such sparse warnings. Specifically, to fix the
-> warning introduced by me, I can apply the following diff:
-> 
-> --- >8 ---
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index e00bec7de9ed..b94037f29b2a 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -2019,16 +2019,18 @@ BPF_CALL_5(bpf_csum_diff, __be32 *, from, u32, from_size,
->           * Even for diffing, from_size and to_size don't need to be equal.
->           */
-> 
-> +       __wsum ret = seed;
+Hi,
+
+On 10/24/2024 5:08 PM, Byeonguk Jeong wrote:
+> Add a test for out-of-bounds write in trie_get_next_key() when a full
+> path from root to leaf exists and bpf_map_get_next_key() is called
+> with the leaf node. It may crashes the kernel on failure, so please
+> run in a VM.
+>
+> Signed-off-by: Byeonguk Jeong <jungbu2855@gmail.com>
+> ---
+>  .../bpf/map_tests/lpm_trie_map_get_next_key.c | 115 ++++++++++++++++++
+>  1 file changed, 115 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c
+>
+> diff --git a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c
+> new file mode 100644
+> index 000000000000..85b916b69411
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c
+> @@ -0,0 +1,115 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +
->          if (from_size && to_size)
-> -               return csum_from32to16(csum_sub(csum_partial(to, to_size, seed),
-> -                                               csum_partial(from, from_size, 0)));
-> +               ret = csum_sub(csum_partial(to, to_size, seed), csum_partial(from, from_size, 0));
-
-Lets also pass ret into csum_partial() instead of seed given the arg
-is of type __wsum there too, otherwise lgtm and yes lets fix these.
-
+> +/*
+> + * WARNING
+> + * -------
+> + *  This test suite may crash the kernel, thus should be run in a VM.
+> + */
 > +
->          if (to_size)
-> -               return csum_from32to16(csum_partial(to, to_size, seed));
-> +               ret =  csum_partial(to, to_size, seed);
-> 
->          if (from_size)
-> -               return csum_from32to16(~csum_partial(from, from_size, ~seed));
-> +               ret = ~csum_partial(from, from_size, ~seed);
-> 
-> -       return seed;
-> +       return csum_from32to16((__force unsigned int)ret);
->   }
-> 
-> --- 8< ---
-> 
-> If others feel that fixing these warnings is useful, I can send another
-> version with above diff. I will then also send a separate patch to fix
-> all other such warnings in this file.
 
-That would be great, as separate patch, agree.
+The comments above are unnecessary, please remove it.
+> +#define _GNU_SOURCE
+> +#include <linux/bpf.h>
+> +#include <stdio.h>
+> +#include <stdbool.h>
+> +#include <unistd.h>
+> +#include <errno.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <pthread.h>
+> +
+> +#include <bpf/bpf.h>
+> +#include <bpf/libbpf.h>
+> +
+> +#include <test_maps.h>
+> +
+> +struct test_lpm_key {
+> +	__u32 prefix;
+> +	__u32 data;
+> +};
+> +
+> +struct get_next_key_ctx {
+> +	struct test_lpm_key key;
+> +	bool start;
+> +	bool stop;
+> +	int map_fd;
+> +	int loop;
+> +};
+> +
+> +static void *get_next_key_fn(void *arg)
+> +{
+> +	struct get_next_key_ctx *ctx = arg;
+> +	struct test_lpm_key next_key;
+> +	int i;
 
-Thanks,
-Daniel
+int i = 0;
+> +
+> +	while (!ctx->start)
+> +		usleep(1);
+> +
+> +	while (!ctx->stop && i++ < ctx->loop)
+> +		bpf_map_get_next_key(ctx->map_fd, &ctx->key, &next_key);
+> +
+> +	return NULL;
+> +}
+> +
+> +static void abort_get_next_key(struct get_next_key_ctx *ctx, pthread_t *tids,
+> +			       unsigned int nr)
+> +{
+> +	unsigned int i;
+> +
+> +	ctx->stop = true;
+> +	ctx->start = true;
+> +	for (i = 0; i < nr; i++)
+> +		pthread_join(tids[i], NULL);
+> +}
+> +
+> +/* This test aims to prevent regression of future. As long as the kernel does
+> + * not panic, it is considered as success.
+> + */
+> +void test_lpm_trie_map_get_next_key(void)
+> +{
+> +#define MAX_NR_THREADS 256
+
+Are 8 threads sufficient to reproduce the problem ?
+> +	LIBBPF_OPTS(bpf_map_create_opts, create_opts,
+> +		    .map_flags = BPF_F_NO_PREALLOC);
+> +	struct test_lpm_key key = {};
+> +	__u32 val = 0;
+> +	int map_fd;
+> +	const __u32 max_prefixlen = 8 * (sizeof(key) - sizeof(key.prefix));
+> +	const __u32 max_entries = max_prefixlen + 1;
+> +	unsigned int i, nr = MAX_NR_THREADS, loop = 4096;
+> +	pthread_t tids[MAX_NR_THREADS];
+> +	struct get_next_key_ctx ctx;
+> +	int err;
+> +
+> +	map_fd = bpf_map_create(BPF_MAP_TYPE_LPM_TRIE, "lpm_trie_map",
+> +				sizeof(struct test_lpm_key), sizeof(__u32),
+> +				max_entries, &create_opts);
+> +	CHECK(map_fd == -1, "bpf_map_create(), error:%s\n",
+> +	      strerror(errno));
+
+CHECK(map_fd == -1, "bpf_map_create()", "error:%s\n", strerror(errno));
+It seems you didn't build test it.
+> +
+> +	for (i = 0; i <= max_prefixlen; i++) {
+> +		key.prefix = i;
+> +		err = bpf_map_update_elem(map_fd, &key, &val, BPF_ANY);
+> +		CHECK(err, "bpf_map_update_elem()", "error:%s\n",
+> +		      strerror(errno));
+> +	}
+> +
+> +	ctx.start = false;
+> +	ctx.stop = false;
+> +	ctx.map_fd = map_fd;
+> +	ctx.loop = loop;
+> +	memcpy(&ctx.key, &key, sizeof(key));
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		err = pthread_create(&tids[i], NULL, get_next_key_fn, &ctx);
+> +		if (err) {
+> +			abort_get_next_key(&ctx, tids, i);
+> +			CHECK(err, "pthread_create", "error %d\n", err);
+> +		}
+> +	}
+> +
+> +	ctx.start = true;
+> +	for (i = 0; i < nr; i++)
+> +		pthread_join(tids[i], NULL);
+> +
+> +	printf("%s:PASS\n", __func__);
+> +
+> +	close(map_fd);
+> +}
+
 
