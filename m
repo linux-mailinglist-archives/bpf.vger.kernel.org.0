@@ -1,296 +1,236 @@
-Return-Path: <bpf+bounces-43191-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43192-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AB2F9B1111
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 22:59:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 363DE9B111C
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 23:01:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E13D1F23BB2
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 20:59:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F32C8286AF8
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 21:01:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F1821747B;
-	Fri, 25 Oct 2024 20:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB3C821620A;
+	Fri, 25 Oct 2024 20:58:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k0lTDNKs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lDYAoAkL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11372215C49;
-	Fri, 25 Oct 2024 20:51:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0016B20C32F
+	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 20:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729889490; cv=none; b=fdZ14Y+E4n7BOmeEHMdmjVY5m2U6BtiNltOJamS5KQP0e6Zn8LzobaVLt9/OjVEhzj7KYZGxDJrZ1S8+1iSYPDJ1vf2NcGzCkG28cM7yTyfXYhlApR2qVYB07Cg4XRfYI3+uxlIlmqcd57ClEF5kC3jtjx7v+3wJxnQe0pr5OEc=
+	t=1729889922; cv=none; b=WDIGdxI6XmEACj/ezNjJih39c3f+j1NyxGNKlMO2BUOFTXnTkHy/LKjPOUkv+BEmCTrez5fhkNNj4f2zXmk/EUSFI22wcUCDzJk7WSPAK0eGvTon+PP0cAPs8ttQwcMb92gACBUdeTf9QZFXuP9OSkrMhZvTazkfjnSY8EzKdig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729889490; c=relaxed/simple;
-	bh=Qhvxqmz3iak3n+qoL1Q4dmntgUdRDCn4Da9U5R6G+94=;
+	s=arc-20240116; t=1729889922; c=relaxed/simple;
+	bh=rvLHlB8gHbXwjdToTsl8Fj8RUMFNxDWc7jWgFLfvvxw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F/ffb+JM+tIX9DcXbd9jj7bp9Lm51ScD3eBgiO4XQfK0u2NQPYR2MvusWOUxGPcu0iqTtj3uz7zgFQ4cSGENCl/yamfb+iEDtrN6DSnB7u9xtJXNmfTjd0jbnz4ec8WY7NtPBv778pL6qns40wSZcDhciSicZjsKIlYsQlKadTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k0lTDNKs; arc=none smtp.client-ip=209.85.210.170
+	 To:Cc:Content-Type; b=jDB514WZ4wh6rfBsfYkKXyWf0XAbD4DGe1qQJyRx/D3Lalmq8Av2wmibW1cXRNX8XgepDDNgZmOKCsaNTev0XiwU86xTzwcO3qYGAvx6fJM3bgFTqy6a/6Py8mq1psvd0ugudpu9IGqfnTkz0xg/jsbQ7gy+YqSL7eGVlygrvlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lDYAoAkL; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-71e4244fdc6so1817511b3a.0;
-        Fri, 25 Oct 2024 13:51:27 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a99e3b3a411so586658266b.0
+        for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 13:58:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729889487; x=1730494287; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729889918; x=1730494718; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+LVzn0+tS6rm732wItdJV79y1f4UkiEc3CInvIIV8B4=;
-        b=k0lTDNKsd7xn61mELjVHmFZad7WOWh1cHsWb0kMwE8jWECu+gQslBEQSihU8UhrgsD
-         gOn1mNMpN6ZrcQVWRJ+sHhOkP9gzrcHRc6d6XLQGLL6KSxZyyD1jZVX8vsoK6Za0Z0Ql
-         78EhVVcsIUpIJVQqCepG6SplBig0Uuv/IlFvKYvyEThTBOoKrXclro3hkV2Nv4SDsGre
-         eQjzN3GItV38NmxU43cH8dhS5kd1fTpTC/K3pToJ1V698jnG5LhhxgDK41noqCPI1Dj6
-         aLcyrS4L2IpWQSq30CbEg9ehski/R0lggvpyS42MU26F0NdPRFOkz0HHhJKX0d943aqq
-         IbNw==
+        bh=dBlR6dAVr3qp61guywM3To1J5+wBm9JfxYua5ZYdzeM=;
+        b=lDYAoAkLKhulfDaMmwZuUQDzhwtE0SHV27tSV+w21eKitT+iu3IieZof3GVWzeCuMJ
+         ort3jrAGhKG3R0z1AF7NnjOpslKbFb/sD4knMjYXI2QD0MRIdmodTNkfO7Ah1ImMf+c2
+         LAHLp51BP9ONskehqixN2CVR+q5B+fat2t0kMvn92NroG2AHLwM5/+AVP649c1UOawWt
+         jTPoJhfqtNce2OvTiG+yZi9ePhAXLlQF/aA40jLyE308eLFRnsB46O5jaQDhfQLNdKhg
+         Yv7GFB+jS+LJAsG3QZnsZMeZMHmdxRLzhYYfTN/2pI4CIIyR+i0bldGWOlP0UbNj9u1Y
+         xpUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729889487; x=1730494287;
+        d=1e100.net; s=20230601; t=1729889918; x=1730494718;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+LVzn0+tS6rm732wItdJV79y1f4UkiEc3CInvIIV8B4=;
-        b=STLgBJ7BZv9zzr9rpwWm6lrU06f9kXKN2BZVjKwVHD0pxY+aFn9QGnvttDF0Xp2JYZ
-         i2EQQUxT09YZE3anfTcJPdd1XxSFsPfAXITTn5iJWDVeKAFs8/RqOe8fkR8ghdLmOpso
-         sGdjZOdeXOpujzpT7NIEdgSFpHceEf0kwK/Ba7enULMU9lUwUnxXlaARFRSd5LH2jj0D
-         CKAzqvHhgYjQb/S2cCjQfewg0Ui0LPGeHJHZnmXnQFWSwzYvcYuc1ymRBzkvWO4A4tLX
-         HQn06d/btEpShyV/+BhoRQaxR23mkCI34r5BHm6f/PpckN2s8E6aRZbi89BZ183JMF3i
-         JJIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUKnj420AmfW59kqbw9jOVMytkTQ5vAuenCpSZLdVKfgO5N3DWDye2ZPnyHPzQH8LCuxmI=@vger.kernel.org, AJvYcCVQ6QVLSN0Rtx4LvqgoXa1fB2gMsoPfx7/N4gQYvCbsj09vFUmjwtRCzNrMfVKsrPPkYC6HBWLqYMeYxXn+fI69UeVJ@vger.kernel.org, AJvYcCXUfjPYf+/e4F5Ar9I1miut4N/DYkcfjR2lnw4/Vq38AtXp8dXKJTE6rzT7Oqbw2GsqFocFVoGBRmlRG18O@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQ8eFn2sXycH87hKOMCKvfJT1h7H1EwV3ojz9K4XOrc5aIpr55
-	EPZc16ml38cX2fvALwOM7Wazd7zuu8H3qoaUr8zRW5ELmnpPfDjYahKRNr46sWUH/mVlJwKvjuB
-	Vp0zyCC3fu3+z4FXiiJAk5HHNYwE=
-X-Google-Smtp-Source: AGHT+IHYqAo+l4UEvwdEHT3abjknHgC2mrzv8B/FvXkhltsyDH+M7lVKBI3TdSCqpeqJtD9UDN2zboB6ky44WDutAfc=
-X-Received: by 2002:a05:6a00:8ce:b0:71e:104d:62fe with SMTP id
- d2e1a72fcca58-7206306df3fmr1051763b3a.20.1729889487221; Fri, 25 Oct 2024
- 13:51:27 -0700 (PDT)
+        bh=dBlR6dAVr3qp61guywM3To1J5+wBm9JfxYua5ZYdzeM=;
+        b=Kte4FrDSw7Rk2gTfTj8y/p3yiKJ9MyE4PUTwGi98zDJ/2wEUoI9b9Em8c4+HnUnyja
+         YQNii5wwH76sSjkKlsEKyVTDqqcr4apDex0lMwmg8LjU4rnEwOqZg7+REoXKWkk1sc3N
+         fIh9W0r6siBWGNeTkTbXChuhfi3MSp7ZmhcCptZ4oE6bUPz53AosXsco0qKEDQVTmRv4
+         ugZzmy/xberuW54RWdBYW30AWjGEcoXcfs7xYaVfTHPrKPsLS2kB1BAD5x2t2qNkMcQp
+         eKmLS4wuXYNYWai4BksOJoNzxP9GBZMzZYIoF0+M/uJaF4S+ZYxmw88a16d++fDnuFvR
+         FKEw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2OUUhGxDy9r3I3dhzrtW8bt/0YjGrRZT0A6ZcqUpZVt5kIXEsoMsI8rJ7MMsX575KuYU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx64gtzqCEvkrkXlMxpN3k9L3fN14CLZFTWwWj3jv001sNGELB5
+	wQ9/92ZRUAmqM1oGj7Nb1cteDO8ATxCMaV6pfK70oycZqgA1C6hEgOekqOsmxaeRI2z4cGbq4JH
+	RFkdVZUaJPZLlCqrOJVNbOOZEcb/Pr3HH
+X-Google-Smtp-Source: AGHT+IE24dS8yHWODdjrqKmVFJy2JewNLoAz966f5iq08RWAPf5PJSQA5pUQF1En9F8nxMYFChl0U+lLRsBDRl+MhgU=
+X-Received: by 2002:a17:906:f5a5:b0:a99:4045:c88a with SMTP id
+ a640c23a62f3a-a9de321855cmr69993666b.0.1729889917756; Fri, 25 Oct 2024
+ 13:58:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240910060407.1427716-1-liaochang1@huawei.com> <ZxpUX1rbppLqS0bD@J2N7QTR9R3.cambridge.arm.com>
-In-Reply-To: <ZxpUX1rbppLqS0bD@J2N7QTR9R3.cambridge.arm.com>
+References: <20241025153850.1791761-1-alan.maguire@oracle.com>
+In-Reply-To: <20241025153850.1791761-1-alan.maguire@oracle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 25 Oct 2024 13:51:14 -0700
-Message-ID: <CAEf4Bzb9fM+hx8quHpCCeRh2p7UVk9Kk6yGj3XvyJLTQu9C-2w@mail.gmail.com>
-Subject: Re: [PATCH] arm64: uprobes: Simulate STP for pushing fp/lr into user stack
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Liao Chang <liaochang1@huawei.com>, catalin.marinas@arm.com, will@kernel.org, 
-	mhiramat@kernel.org, oleg@redhat.com, peterz@infradead.org, ast@kernel.org, 
-	puranjay@kernel.org, andrii@kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+Date: Fri, 25 Oct 2024 13:58:03 -0700
+Message-ID: <CAEf4Bza6nRG9S41NREVZRwxa=+nnnnkZOfKiyubi=rXoRBcD6A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] docs/bpf: Add description of .BTF.base section
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, corbet@lwn.net, 
 	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 24, 2024 at 7:06=E2=80=AFAM Mark Rutland <mark.rutland@arm.com>=
- wrote:
+On Fri, Oct 25, 2024 at 8:39=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
+om> wrote:
 >
-> On Tue, Sep 10, 2024 at 06:04:07AM +0000, Liao Chang wrote:
-> > This patch is the second part of a series to improve the selftest bench
-> > of uprobe/uretprobe [0]. The lack of simulating 'stp fp, lr, [sp, #imm]=
-'
-> > significantly impact uprobe/uretprobe performance at function entry in
-> > most user cases. Profiling results below reveals the STP that executes
-> > in the xol slot and trap back to kernel, reduce redis RPS and increase
-> > the time of string grep obviously.
-> >
-> > On Kunpeng916 (Hi1616), 4 NUMA nodes, 64 Arm64 cores@2.4GHz.
-> >
-> > Redis GET (higher is better)
-> > ----------------------------
-> > No uprobe: 49149.71 RPS
-> > Single-stepped STP: 46750.82 RPS
-> > Emulated STP: 48981.19 RPS
-> >
-> > Redis SET (larger is better)
-> > ----------------------------
-> > No uprobe: 49761.14 RPS
-> > Single-stepped STP: 45255.01 RPS
-> > Emulated stp: 48619.21 RPS
-> >
-> > Grep (lower is better)
-> > ----------------------
-> > No uprobe: 2.165s
-> > Single-stepped STP: 15.314s
-> > Emualted STP: 2.216s
+> Now that .BTF.base sections are generated for out-of-tree kernel
+> modules (provided pahole supports the "distilled_base" BTF feature),
+> document .BTF.base and its role in supporting resilient split BTF
+> and BTF relocation.
 >
-> The results for grep are concerning.
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  Documentation/bpf/btf.rst | 78 ++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 77 insertions(+), 1 deletion(-)
 >
-> In theory, the overhead for stepping should be roughly double the
-> overhead for emulating, assuming the exception-entry and
-> exception-return are the dominant cost. The cost of stepping should be
-> trivial.
+> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
+> index 93060283b6fd..57992a9aa4f6 100644
+> --- a/Documentation/bpf/btf.rst
+> +++ b/Documentation/bpf/btf.rst
+> @@ -835,7 +835,7 @@ section named by ``btf_ext_info_sec->sec_name_off``.
+>  See :ref:`Documentation/bpf/llvm_reloc.rst <btf-co-re-relocations>`
+>  for more information on CO-RE relocations.
 >
-> Those results show emulating adds 0.051s (for a ~2.4% overhead), while
-> stepping adds 13.149s (for a ~607% overhead), meaning stepping is 250x
-> more expensive.
+> -4.2 .BTF_ids section
+> +4.3 .BTF_ids section
+>  --------------------
 >
-> Was this tested bare-metal, or in a VM?
-
-Hey Mark, I hope Liao will have a chance to reply, I don't know the
-details of his benchmarking. But I can try to give you my numbers and
-maybe answer a few questions, hopefully that helps move the
-conversation forward.
-
-So, first of all, I did a quick benchmark on bare metal (without
-Liao's optimization, though), here are my results:
-
-uprobe-nop            ( 1 cpus):    2.334 =C2=B1 0.011M/s  (  2.334M/s/cpu)
-uprobe-push           ( 1 cpus):    2.321 =C2=B1 0.010M/s  (  2.321M/s/cpu)
-uprobe-ret            ( 1 cpus):    4.144 =C2=B1 0.041M/s  (  4.144M/s/cpu)
-
-uretprobe-nop         ( 1 cpus):    1.684 =C2=B1 0.004M/s  (  1.684M/s/cpu)
-uretprobe-push        ( 1 cpus):    1.736 =C2=B1 0.003M/s  (  1.736M/s/cpu)
-uretprobe-ret         ( 1 cpus):    2.502 =C2=B1 0.006M/s  (  2.502M/s/cpu)
-
-uretprobes are inherently slower, so I'll just compare uprobe, as the
-differences are very clear either way.
-
--nop is literally nop (Liao solved that issue, I just don't have his
-patch applied on my test machine). -push has `stp     x29, x30, [sp,
-#-0x10]!` instruction traced. -ret is literally just `ret`
-instruction.
-
-So you can see that -ret is almost twice as fast as the -push variant
-(it's a microbenchmark, yes, but still).
-
+>  The .BTF_ids section encodes BTF ID values that are used within the kern=
+el.
+> @@ -896,6 +896,82 @@ and is used as a filter when resolving the BTF ID va=
+lue.
+>  All the BTF ID lists and sets are compiled in the .BTF_ids section and
+>  resolved during the linking phase of kernel build by ``resolve_btfids`` =
+tool.
 >
-> AFAICT either:
->
-> * Single-stepping is unexpectedly expensive.
->
->   Historically we had performance issues with hypervisor trapping of
->   debug features, and there are things we might be able to improve in
->   the hypervisor and kernel, which would improve stepping *all*
->   instructions.
->
+> +4.4 .BTF.base section
+> +---------------------
+> +Split BTF - where the .BTF section only contains types not in the associ=
+ated
+> +base .BTF section - is an extremely efficient way to encode type informa=
+tion
+> +for kernel modules, since they generally consist of a few module-specifi=
+c
+> +types along with a large set of shared kernel types.  The former are enc=
+oded
+> +in split BTF, while the latter are encoded in base BTF, resulting in mor=
+e
+> +compact representations.  A type in split BTF that referes to a type in
 
-Single-stepping will always be more expensive, as it necessitates
-extra hop kernel->user space->kernel, so no matter the optimization
-for single-stepping, if we can avoid it, we should. It will be
-noticeable.
+typo: refers
 
->   If stepping is the big problem, we could move uprobes over to a BRK
->   rather than a single-step. That would require require updating and
->   fixing the logic to decide which instructions are steppable, but
->   that's necessary anyway given it has extant soundness issues.
+> +base BTF refers to it using its base type id, and split BTF type ids sta=
+rt
 
-I'm afraid I don't understand what BRK means and what are the
-consequences in terms of overheads. I'm not an ARM person either, so
-sorry if that's a stupid question. But either way, I can't address
-this. But see above, emulating an instruction feels like a much better
-approach, if possible.
+let's use consistent ID/IDs spelling in documentation everywhere
 
->
-> * XOL management is absurdly expensive.
->
->   Does uprobes keep the XOL slot around (like krpobes does), or does it
->   create the slot afresh for each trap?
-
-XOL *page* is created once per process, lazily, and then we just
-juggle a bunch of fixed slots there for each instance of
-single-stepped uprobe. And yes, there are some bottlenecks in XOL
-management, though it's mostly due to lock contention (as it is
-implemented right now). Liao and Oleg have been improving XOL
-management, but still, avoiding XOL in the first place is the much
-preferred way.
-
->
->   If that's trying to create a slot afresh for each trap, there are
->   several opportunities for improvement, e.g. keep the slot around for
->   as long as the uprobe exists, or pre-allocate shared slots for common
->   instructions and use those.
-
-As I mentioned, a XOL page is allocated and mapped once, but yes, it
-seems like we dynamically get a slot in it for each single-stepped
-execution (see xol_take_insn_slot() in kernel/events/uprobes.c). It's
-probably not a bad idea to just cache and hold a XOL slot for each
-specific uprobe, I don't see why we should limit ourselves to just one
-XOL page. We also don't need to pre-size each slot, we can probably
-allocate just the right amount of space for a given uprobe.
-
-All good ideas for sure, we should do them, IMO. But we'll still be
-paying an extra kernel->user->kernel switch, which almost certainly is
-slower than doing a simple stack push emulation just like we do in
-x86-64 case, no?
-
-
-BTW, I did a quick local profiling run. I don't think XOL management
-is the main source of overhead. I see 5% of CPU cycles spent in
-arch_uprobe_copy_ixol, but other than that XOL doesn't figure in stack
-traces. There are at least 22% CPU cycles spent in some
-local_daif_restore function, though, not sure what that is, but might
-be related to interrupt handling, right?
-
-
-The take away I'd like to communicate here is avoiding the
-single-stepping need is *the best way* to go, IMO. So if we can
-emulate those STP instructions for uprobe *cheaply*, that would be
-awesome.
-
->
-> Mark.
->
-> >
-> > Additionally, a profiling of the entry instruction for all leaf and
-> > non-leaf function, the ratio of 'stp fp, lr, [sp, #imm]' is larger than
-> > 50%. So simulting the STP on the function entry is a more viable option
-> > for uprobe.
-> >
-> > In the first version [1], it used a uaccess routine to simulate the STP
-> > that push fp/lr into stack, which use double STTR instructions for
-> > memory store. But as Mark pointed out, this approach can't simulate the
-> > correct single-atomicity and ordering properties of STP, especiallly
-> > when it interacts with MTE, POE, etc. So this patch uses a more complex
-> > and inefficient approach that acquires user stack pages, maps them to
-> > kernel address space, and allows kernel to use STP directly push fp/lr
-> > into the stack pages.
-> >
-> > xol-stp
-> > -------
-> > uprobe-nop      ( 1 cpus):    1.566 =C2=B1 0.006M/s  (  1.566M/s/cpu)
-> > uprobe-push     ( 1 cpus):    0.868 =C2=B1 0.001M/s  (  0.868M/s/cpu)
-> > uprobe-ret      ( 1 cpus):    1.629 =C2=B1 0.001M/s  (  1.629M/s/cpu)
-> > uretprobe-nop   ( 1 cpus):    0.871 =C2=B1 0.001M/s  (  0.871M/s/cpu)
-> > uretprobe-push  ( 1 cpus):    0.616 =C2=B1 0.001M/s  (  0.616M/s/cpu)
-> > uretprobe-ret   ( 1 cpus):    0.878 =C2=B1 0.002M/s  (  0.878M/s/cpu)
-> >
-> > simulated-stp
-> > -------------
-> > uprobe-nop      ( 1 cpus):    1.544 =C2=B1 0.001M/s  (  1.544M/s/cpu)
-> > uprobe-push     ( 1 cpus):    1.128 =C2=B1 0.002M/s  (  1.128M/s/cpu)
-> > uprobe-ret      ( 1 cpus):    1.550 =C2=B1 0.005M/s  (  1.550M/s/cpu)
-> > uretprobe-nop   ( 1 cpus):    0.872 =C2=B1 0.004M/s  (  0.872M/s/cpu)
-> > uretprobe-push  ( 1 cpus):    0.714 =C2=B1 0.001M/s  (  0.714M/s/cpu)
-> > uretprobe-ret   ( 1 cpus):    0.896 =C2=B1 0.001M/s  (  0.896M/s/cpu)
-> >
-> > The profiling results based on the upstream kernel with spinlock
-> > optimization patches [2] reveals the simulation of STP increase the
-> > uprobe-push throughput by 29.3% (from 0.868M/s/cpu to 1.1238M/s/cpu) an=
+> +at last_base_type + 1.
+> +
+> +The downside of this approach however is that this makes the split BTF
+> +somewhat brittle - when the base BTF changes, these base id references a=
+re
+> +no longer valid and the split BTF itself becomes useless.  The role of t=
+he
+> +.BTF.base section is to make split BTF more resilient for cases where
+> +the base BTF may change, as is the case for kernel modules not built eve=
+ry
+> +time the kernel is for example.  .BTF.base contains named base types; IN=
+Ts,
+> +FLOATs, STRUCTs, UNIONs, ENUM[64]s and FWDs.  INTs and FLOATs are fully
+> +described in .BTF.base sections, while composite types like structs
+> +and unions are not fully defined - the .BTF.base type simply serves as
+> +a description of the type the split BTF referred to, so struct/unions
+> +has 0 members in the .BTF.base section.  ENUM[64]s are similarly recorde=
 d
-> > uretprobe-push by 15.9% (from 0.616M/s/cpu to 0.714M/s/cpu).
-> >
-> > [0] https://lore.kernel.org/all/CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn0=
-2ezZ5YruVuQw@mail.gmail.com/
-> > [1] https://lore.kernel.org/all/Zr3RN4zxF5XPgjEB@J2N7QTR9R3/
-> > [2] https://lore.kernel.org/all/20240815014629.2685155-1-liaochang1@hua=
-wei.com/
-> >
-> > Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> > ---
-> >  arch/arm64/include/asm/insn.h            |  1 +
-> >  arch/arm64/kernel/probes/decode-insn.c   | 16 +++++
-> >  arch/arm64/kernel/probes/decode-insn.h   |  1 +
-> >  arch/arm64/kernel/probes/simulate-insn.c | 89 ++++++++++++++++++++++++
-> >  arch/arm64/kernel/probes/simulate-insn.h |  1 +
-> >  arch/arm64/kernel/probes/uprobes.c       | 21 ++++++
-> >  arch/arm64/lib/insn.c                    |  5 ++
-> >  7 files changed, 134 insertions(+)
-> >
+> +with 0 members.  Any other types are added to the split BTF.  This
+> +distillation process then leaves us with a .BTF.base section with
+> +such minimal descriptions of base types and .BTF split section which ref=
+ers
+> +to those base types.  Later, we can relocate the split BTF using both th=
+e
+> +information stored in the .BTF.base section and the new BTF base; the ty=
+pe
+> +information in the .BTF.base section allows us to update the split BTF
+> +references to point at the corresponding new base BTF types.
+> +
+> +BTF relocation happens on kernel module load when a kernel module has a
+> +.BTF.base section, and libbpf also provides a btf__relocate() API to
+> +accomplish this.
+> +
+> +As an example consider the following base BTF:
+> +
+> +[1] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
+> +[2] STRUCT 'foo' size=3D8 vlen=3D2
+> +        'f1' type_id=3D1 bits_offset=3D0
+> +        'f2' type_id=3D2 bits_offset=3D32
+> +
+> +...and associated split BTF:
+> +
+> +[3] PTR '(anon)' type_id=3D2
+> +
+> +i.e. split BTF describes a pointer to struct foo { int f1; int f2 };
+> +
+> +.BTF.base will consist of
+> +
+> +[1] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
+> +[2] STRUCT 'foo' size=3D8 vlen=3D0
+> +
+> +..so if we relocate the split BTF later using the following new base
+> +BTF:
+> +
+> +[1] INT 'long unsigned int' size=3D8 bits_offset=3D0 nr_bits=3D64 encodi=
+ng=3D(none)
+> +[2] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
+> +[3] STRUCT 'foo' size=3D8 vlen=3D2
+> +        'f1' type_id=3D2 bits_offset=3D0
+> +        'f2' type_id=3D2 bits_offset=3D32
+> +
+> +...we can use our .BTF.base description to know that the split BTF refer=
+ence
+> +is to struct foo, and relocation results in:
+> +
+> +[4] PTR '(anon)' type_id=3D3
+> +
+> +Note that we had to update type id and start BTF id for the split BTF.
+> +
+> +So we see how .BTF.base plays the role of facilitating later relocation,
+> +leading to more resilient split BTF.
+> +
+> +.BTF.base sections will be generated automatically for out-of-tree kerne=
+l module
+> +builds - i.e. where KBUILD_EXTMOD is set (as it would be for "make M=3Dp=
+ath/2/mod"
+> +cases).  .BTF.base generation requires pahole support for the "distilled=
+_base"
+> +BTF feature; this is available in pahole v1.28 and later.
+> +
 
-[...]
+I don't think we use double space after dot format, please don't
+introduce your own conventions. Single space ought to be enough, no?
+
+pw-bot: cr
+
+
+>  5. Using BTF
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> --
+> 2.43.5
+>
 
