@@ -1,172 +1,98 @@
-Return-Path: <bpf+bounces-43122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B22229AF662
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 03:03:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD05B9AF689
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 03:14:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D64121C214AD
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 01:03:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 825AC28334F
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2024 01:14:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9668712B64;
-	Fri, 25 Oct 2024 01:03:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l6ND4Rfr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C82E41DFD8;
+	Fri, 25 Oct 2024 01:14:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6CF29A0;
-	Fri, 25 Oct 2024 01:03:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3CBFE574
+	for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 01:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729818215; cv=none; b=RfqxNF0Mtv5UxrnN4Cn1onEfEXXx87DqSSz5rNtg0MT9M/NS0Ufg4g3ezbzIpZX2XIstj/MJambWeW4vk4xO6HKbza77UG4kxAl6Q+soA94tHO7g7H4+6iLu1AUIv9mddHidLDK1r/YeVKENGtsO65mfc9XpDhLHvoyjw481nD4=
+	t=1729818848; cv=none; b=pl8m4beNaSYfQfrAcbReak+OhoBreqzBDuHe8d3J3xtaQ5mlZ5zXPq9wZtQOnFSL5ZPw8hZwDWbfs++zhxYj0wY3U9RsCud9oTSCYsrXaffN2HxXYMx86OnJITt4KakdG8gUFo7M0z5LkSVJvw7f2imj7+J6cBvRfA3Cd3Pu07o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729818215; c=relaxed/simple;
-	bh=ANao3SalIylcgaUhcEsnm2zI9WSTU3qx2wawj/Ele28=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZW39MS1qSccMR79hpoM04Cni9gi8oDMaTkg2ew/BeklIVmdXj4+KfqEKd6uFcmyQFN262le0+8k4dPcgr+ppcrO19BfGr8ygQHU9p34d/sdhGvsFJ8WDvasSvTtGQZC8msGXpODWPA+3+RwpGvLqgSajJ37/baBC2x4yp9YzKeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l6ND4Rfr; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-71e5ae69880so1064285b3a.2;
-        Thu, 24 Oct 2024 18:03:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729818212; x=1730423012; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SNGcvfWZU2TxEL7LKZ45PLQqJbpzUP1414tKc6KMVMo=;
-        b=l6ND4Rfr2hYUUnv6x9Ae3A1r10HkguThzVTc3SjsnklHXJRzOPlOek6DY+i/dJw2lq
-         oem469zJXvd7oiZEhs18OtttVr4D4SLLE/KfCjALp6+rroMzMZOcgB5Yfv2cF/RxKj4D
-         1p7hOaZWujU+tJmw5z92t52geY11OcVlyefFR6wqdbtJ68XjhMulMNuJNblZynrFKzdN
-         /v9e2bBFzz+HZe0uvkqOKZ58+M24dwmLWPexhHzla/E9Kx7WGu2embQ/zdu6jsHstGYL
-         304laotOTJd/a1UgiEbRQO9HYM+JAGQqgZlFptNPp7boP1L4Gu/ngmp2Xv3e5RDXtQDf
-         E7mQ==
+	s=arc-20240116; t=1729818848; c=relaxed/simple;
+	bh=pDpDrDPgqn1rWuPf4vWJjM/QhwM5DXeysn5Qug/olq4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=dSsY5IytLgZUbc/MC87L+ykQrgoQzmEjQxSjvc0xRj1pTQgwtZXXopIdXI9R8fV8d/k2xBnHtt4duOETZ4f8jR/Ha6qE2L1rqfLTZMV0Lay0tQnUgke8YqVzwwVk31nQS5x0QtVim7P7Hw7tyVdZtpdaK3QmQcp5IHc2G8n90ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a3ae775193so15436575ab.1
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2024 18:14:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729818212; x=1730423012;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SNGcvfWZU2TxEL7LKZ45PLQqJbpzUP1414tKc6KMVMo=;
-        b=lEYQ9lPCwAmv/2D7r1j/VuNpk9e5jncM72KOgT47X9Fr7o92f2/sn0E0MCwBmIVlAO
-         +22Kkyng+eJ9ETivjFLwdgN1adVh46FI/cw08SbbdAHfNKF9VpW6sGoX6RiiBsF02l5D
-         lv3t/6QMHcwXlAdY3ROqKMlA3X8G3DAlpRgqXOv6EyJhf3BaDrz0uEnMYrRuTZwpLlYp
-         3PL491XO5rmZ4rYUvB219xnblNF5EhWJd+L103VpCzv2h4+bILxi+O09xqVaVI7SumYE
-         TWkfUCWH1NwuVYpKe4U+I41lpbPAlxcLzkj2pJ7XQqx2U0fJZ8n2BfTlkQRLHD5HuaIO
-         ry9g==
-X-Forwarded-Encrypted: i=1; AJvYcCUlbfAOivhxVXQTmXoVztmupHM87vHdwWRWtIdM+nUQpuhn9AXYMzWRQNAX/tRnbzIyxUCaBsl3@vger.kernel.org, AJvYcCVTUtOiHw+XLt7/PMc6vPtHcX/6hFSC0lkGwpb3C1Bo+IB6KdPgA1e9sMIMf4ZHG0u5a9NH8Fey8B+utTM+@vger.kernel.org, AJvYcCWaMsfjwFx52+xFwyl5zDkHt3fGygosVey34PS3RHz5B3/A5oV321hnIt7NCdfvsrad3KJwYoS8pu8q@vger.kernel.org, AJvYcCX7GfJosawwoyKYd9uEyuRijwyYSmDqTiGU/N/9yPiZPYnxJ3eoCEOBKB/fDDeMqU6Ona8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBgsVDKj39yIeG37KOkcCXIqVNlgeEZvDfM3/OUVOcoeyilquD
-	XaDggT3v6BcPF+rwLEui9VOHWkPXegmr+yZCZueU3PqZBM3yBhUiTZkVLQ==
-X-Google-Smtp-Source: AGHT+IF0cMHbWVTxjfafW97nsmkrbkE+9N3H1YT2wc59PBi6x6/wVg203OFjCMyt2TzZK3h5DDL3hg==
-X-Received: by 2002:a05:6a21:70cb:b0:1d9:181f:e6d8 with SMTP id adf61e73a8af0-1d978bacfeamr8947325637.31.1729818212239;
-        Thu, 24 Oct 2024 18:03:32 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057a20406sm47220b3a.166.2024.10.24.18.03.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2024 18:03:31 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 41D904352F21; Fri, 25 Oct 2024 08:03:28 +0700 (WIB)
-Date: Fri, 25 Oct 2024 08:03:28 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Joe Damato <jdamato@fastly.com>,
-	Linux Networking <netdev@vger.kernel.org>, namangulati@google.com,
-	edumazet@google.com, amritha.nambiar@intel.com,
-	sridhar.samudrala@intel.com, sdf@fomichev.me, peter@typeblog.net,
-	m2shafiei@uwaterloo.ca, bjorn@rivosinc.com, hch@infradead.org,
-	willy@infradead.org, willemdebruijn.kernel@gmail.com,
-	skhawaja@google.com, kuba@kernel.org,
-	Martin Karsten <mkarsten@uwaterloo.ca>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux BPF <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next v2 6/6] docs: networking: Describe irq suspension
-Message-ID: <ZxruYJizjXR8KUz0@archie.me>
-References: <20241021015311.95468-1-jdamato@fastly.com>
- <20241021015311.95468-7-jdamato@fastly.com>
- <ZxYxqhj7cesDO8-j@archie.me>
- <ZxaCUZ5rNd86gDHG@LQ3V64L9R2>
+        d=1e100.net; s=20230601; t=1729818846; x=1730423646;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cOZsZyIJmZeHEQPVNHkWmGsoWMx76fs5Fvyz/nsiQgY=;
+        b=EIUpck8eReAx1vQbHlbLX6pZd5NuYRpL9Kzv0Opv+bvqm8ULCkpwsOu9tYhSHb3U/N
+         dHxil55kQAzUyq+bPp2KFGK7/Z7P+e5k3y9EecbJyKEhasKg+7xxrm90OUL5rxa4pkuW
+         CARspWdgFk0HWjN3maMX+kmTN15dRY+jTGLW/l+H3L3cZgO8I2k6CNo3dpfgD9EY16K5
+         tn/UoWGcekN5eyWMVRGMicvwyvH95hbfIKv3lxtgdBbCezcEcAUbn6VfuVV83rYnysM7
+         JqdWcvfx63VrePnI9Vi7RpEuDLAW1oiRrUJROoQGP57XcPFErqP4/jesFHCq3CbywY1r
+         0knw==
+X-Forwarded-Encrypted: i=1; AJvYcCVDl5Fey/FxMfJB82d3uB178KUdETW+IuPs+ZFAYGejGBlKBwgRKWMKB32uEsTLWORagVg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwPG5OjvsP4A1aL2DPDHmfd+R6hRAuAbunHHu13eTru7xojWeVb
+	7d8RtlWGCSeolDiLH7AJh6DRS7PN1Llmh12XifkvH44x7aA8W8FkvCJegp0Y5oAqn2jwsTMz4f9
+	risc1qd/t6ydSgJK8abbq0nxwobykQ4D6GsXKU1R0R5iDxglrTT8ok0k=
+X-Google-Smtp-Source: AGHT+IGOjltPBrz6CEsrXS0y1SoDlaDKKPoKA5PSdGZVz6ycSLBxXb8Nnn0qnpjr6zRJ+fl8sGud8IaiQJe6+LFu8+phyUzjp/zo
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nCoJbkgUJcwJ4Pal"
-Content-Disposition: inline
-In-Reply-To: <ZxaCUZ5rNd86gDHG@LQ3V64L9R2>
+X-Received: by 2002:a05:6e02:1707:b0:3a0:915d:a4a7 with SMTP id
+ e9e14a558f8ab-3a4d592fb67mr91969855ab.2.1729818845820; Thu, 24 Oct 2024
+ 18:14:05 -0700 (PDT)
+Date: Thu, 24 Oct 2024 18:14:05 -0700
+In-Reply-To: <000000000000a519120616f973cb@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <671af0dd.050a0220.2eb763.00ce.GAE@google.com>
+Subject: Re: [syzbot] [fs] INFO: rcu detected stall in sys_mount (7)
+From: syzbot <syzbot+de026b20f56e1598e760@syzkaller.appspotmail.com>
+To: andrii@kernel.org, asmadeus@codewreck.org, ast@kernel.org, 
+	bpf@vger.kernel.org, bristot@kernel.org, daniel@iogearbox.net, 
+	eddyz87@gmail.com, ericvh@kernel.org, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, juri.lelli@redhat.com, 
+	kpsingh@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, lucho@ionkov.net, martin.lau@linux.dev, 
+	peterz@infradead.org, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev, 
+	vineeth@bitbyteword.org, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
+syzbot suspects this issue was fixed by commit:
 
---nCoJbkgUJcwJ4Pal
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+commit 5f6bd380c7bdbe10f7b4e8ddcceed60ce0714c6d
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Mon May 27 12:06:55 2024 +0000
 
-On Mon, Oct 21, 2024 at 09:33:21AM -0700, Joe Damato wrote:
-> On Mon, Oct 21, 2024 at 05:49:14PM +0700, Bagas Sanjaya wrote:
-> > On Mon, Oct 21, 2024 at 01:53:01AM +0000, Joe Damato wrote:
-> > > diff --git a/Documentation/networking/napi.rst b/Documentation/networ=
-king/napi.rst
-> > > index dfa5d549be9c..3b43477a52ce 100644
-> > > --- a/Documentation/networking/napi.rst
-> > > +++ b/Documentation/networking/napi.rst
-> > > @@ -192,6 +192,28 @@ is reused to control the delay of the timer, whi=
-le
-> > >  ``napi_defer_hard_irqs`` controls the number of consecutive empty po=
-lls
-> > >  before NAPI gives up and goes back to using hardware IRQs.
-> > > =20
-> > > +The above parameters can also be set on a per-NAPI basis using netli=
-nk via
-> > > +netdev-genl. This can be done programmatically in a user application=
- or by
-> > > +using a script included in the kernel source tree: ``tools/net/ynl/c=
-li.py``.
-> > > +
-> > > +For example, using the script:
-> > > +
-> > > +.. code-block:: bash
-> > > +
-> > > +  $ kernel-source/tools/net/ynl/cli.py \
-> > > +            --spec Documentation/netlink/specs/netdev.yaml \
-> > > +            --do napi-set \
-> > > +            --json=3D'{"id": 345,
-> > > +                     "defer-hard-irqs": 111,
-> > > +                     "gro-flush-timeout": 11111}'
-> > > +
-> > > +Similarly, the parameter ``irq-suspend-timeout`` can be set using ne=
-tlink
-> > > +via netdev-genl. There is no global sysfs parameter for this value.
-> >=20
-> > In JSON, both gro-flush-timeout and irq-suspend-timeout parameter
-> > names are written in hyphens; but the rest of the docs uses underscores
-> > (that is, gro_flush_timeout and irq_suspend_timeout), right?
->=20
-> That's right. The YAML specification uses hyphens throughout, so we
-> follow that convention there.
->=20
-> In the rest of the docs we use the name of the field which appears
-> in the code itself, which uses underscores.
+    sched/rt: Remove default bandwidth control
 
-OK, thanks!
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126a5e40580000
+start commit:   3b68086599f8 Merge tag 'sched_urgent_for_v6.9_rc5' of git:..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f47e5e015c177e57
+dashboard link: https://syzkaller.appspot.com/bug?extid=de026b20f56e1598e760
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1775971b180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1290b320980000
 
---=20
-An old man doll... just what I always wanted! - Clara
+If the result looks correct, please mark the issue as fixed by replying with:
 
---nCoJbkgUJcwJ4Pal
-Content-Type: application/pgp-signature; name="signature.asc"
+#syz fix: sched/rt: Remove default bandwidth control
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZxruXAAKCRD2uYlJVVFO
-o+elAQDkoqcE6id9sBM4flYDeF4AKjCK6eoWx1sJOc1cWJZm+gD/Qhegiolned1A
-OLxCqHd6kJJi29DFvz4KZ9i0VkWPUAM=
-=6/03
------END PGP SIGNATURE-----
-
---nCoJbkgUJcwJ4Pal--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
