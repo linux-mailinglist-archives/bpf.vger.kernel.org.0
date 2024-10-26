@@ -1,43 +1,44 @@
-Return-Path: <bpf+bounces-43198-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43201-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D61959B1466
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 05:57:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF5A09B1473
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 05:58:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99A15282932
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 03:57:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98305283478
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 03:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF13915575D;
-	Sat, 26 Oct 2024 03:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7F41898E8;
+	Sat, 26 Oct 2024 03:57:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 379F01DFD8;
-	Sat, 26 Oct 2024 03:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1454F178CF6;
+	Sat, 26 Oct 2024 03:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729915066; cv=none; b=l8GJykl5/FUwxAtWOmvDi5qf31GxTwF6eaaNZH4m3yphtqfnAFpSN0kvIy4oFJJm/EsbdByvpxSPjPr6AuSXLWBM7i/bGx/lqGuPcSumE9f/mBHCfA+hhL89PFOJFAK3r2iJ+SViTO5YzRbxwVwGTelg1cP7K9krdnooG3tL7GI=
+	t=1729915073; cv=none; b=gSoONY0uzIKgVz3wsqmWsyQv80AMjP91OF1esbzqsNad7CSn4IpAil9SBKo3hpa5BxeFNbWvx/V7oe1vjU+yC1iq/w3dVXwHEk6nEcemYpdA3RlPOy37a7IlFjWcHkxxVYJNtzc5h4i43jSj+I1C23cZEqFZwNOdq5+yTBsbDt8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729915066; c=relaxed/simple;
-	bh=MfjRLEEH73Bx7axO85yFCiYfX5F+trhTGwga2ALtTK4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=U2+kerVxGq20lzRdai9G3/i4IkwttCH8/0L/4ZKL1VPUSLPbFkgJZsVBxWESyR9Q9TSVGfnuuGEU7ny/wf0fgh3bwE9MyRbceg/0HsCx6uxdocw5H4nzZ2KUQ+wYHWuNSot6CqpKI2VQiZRNqc5MfpMHav207fpikuIEc8gZ+So=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+	s=arc-20240116; t=1729915073; c=relaxed/simple;
+	bh=HEdK7Cl/NMR0ubFOMazAruj8y/1j7/+ZqT5IBWle8NI=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MM8LwBohlOnjdJ7aWPLJhD1T67Td3+kt23BBdYMXobmUQloJhS1ZD9y1cd2l/jMkSuiqzcayO1T2kSfjLrNK0reqJg+5+tFanBSXkBk9M1yYl2qdEYD4tpQQqFFf/4kZ/zk8YFuK/+NZFyzZx3SzD6MFERNuOlqpiD8TZf1gu9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xb5SH2D2wz20qjm;
-	Sat, 26 Oct 2024 11:56:47 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Xb5RX3P6kzyTjN;
+	Sat, 26 Oct 2024 11:56:08 +0800 (CST)
 Received: from dggpemf500002.china.huawei.com (unknown [7.185.36.57])
-	by mail.maildlp.com (Postfix) with ESMTPS id 066D51A0188;
+	by mail.maildlp.com (Postfix) with ESMTPS id E7FF6140258;
 	Sat, 26 Oct 2024 11:57:42 +0800 (CST)
 Received: from huawei.com (10.175.101.6) by dggpemf500002.china.huawei.com
  (7.185.36.57) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Sat, 26 Oct
- 2024 11:57:40 +0800
+ 2024 11:57:41 +0800
 From: Yue Haibing <yuehaibing@huawei.com>
 To: <anthony.l.nguyen@intel.com>, <przemyslaw.kitszel@intel.com>,
 	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
@@ -50,10 +51,12 @@ To: <anthony.l.nguyen@intel.com>, <przemyslaw.kitszel@intel.com>,
 CC: <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
 	<yuehaibing@huawei.com>
-Subject: [PATCH v4 net-next 0/4] Fix passing 0 to ERR_PTR in intel ether drivers
-Date: Sat, 26 Oct 2024 12:12:45 +0800
-Message-ID: <20241026041249.1267664-1-yuehaibing@huawei.com>
+Subject: [PATCH v4 net-next 1/4] igc: Fix passing 0 to ERR_PTR in igc_xdp_run_prog()
+Date: Sat, 26 Oct 2024 12:12:46 +0800
+Message-ID: <20241026041249.1267664-2-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20241026041249.1267664-1-yuehaibing@huawei.com>
+References: <20241026041249.1267664-1-yuehaibing@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,29 +68,97 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  dggpemf500002.china.huawei.com (7.185.36.57)
 
-Fixing sparse error in xdp run code by introducing new variable xdp_res
-instead of overloading this into the skb pointer as i40e drivers done
-in commit 12738ac4754e ("i40e: Fix sparse errors in i40e_txrx.c") and
-commit ae4393dfd472 ("i40e: fix broken XDP support").
+igc_xdp_run_prog() converts customed xdp action to a negative error code
+with the sk_buff pointer type which be checked with IS_ERR in
+igc_clean_rx_irq(). Remove this error pointer handing instead use plain
+int return value to fix this smatch warnings:
 
-v4: Target to net-next
-v3: https://lore.kernel.org/bpf/20241022065623.1282224-3-yuehaibing@huawei.com/T/
-    Fix uninitialized 'xdp_res' in patch 3 and 4 which Reported-by
-    kernel test robot
-v2: Fix this as i40e drivers done instead of return NULL in xdp run code
+drivers/net/ethernet/intel/igc/igc_main.c:2533
+ igc_xdp_run_prog() warn: passing zero to 'ERR_PTR'
 
-Yue Haibing (4):
-  igc: Fix passing 0 to ERR_PTR in igc_xdp_run_prog()
-  igb: Fix passing 0 to ERR_PTR in igb_run_xdp()
-  ixgbe: Fix passing 0 to ERR_PTR in ixgbe_run_xdp()
-  ixgbevf: Fix passing 0 to ERR_PTR in ixgbevf_run_xdp()
+Fixes: 26575105d6ed ("igc: Add initial XDP support")
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ drivers/net/ethernet/intel/igc/igc_main.c | 20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
 
- drivers/net/ethernet/intel/igb/igb_main.c     | 22 +++++++-----------
- drivers/net/ethernet/intel/igc/igc_main.c     | 20 ++++++----------
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 23 ++++++++-----------
- .../net/ethernet/intel/ixgbevf/ixgbevf_main.c | 23 ++++++++-----------
- 4 files changed, 34 insertions(+), 54 deletions(-)
-
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index 6e70bca15db1..5e44c2546a12 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -2123,10 +2123,6 @@ static bool igc_cleanup_headers(struct igc_ring *rx_ring,
+ 				union igc_adv_rx_desc *rx_desc,
+ 				struct sk_buff *skb)
+ {
+-	/* XDP packets use error pointer so abort at this point */
+-	if (IS_ERR(skb))
+-		return true;
+-
+ 	if (unlikely(igc_test_staterr(rx_desc, IGC_RXDEXT_STATERR_RXE))) {
+ 		struct net_device *netdev = rx_ring->netdev;
+ 
+@@ -2515,8 +2511,7 @@ static int __igc_xdp_run_prog(struct igc_adapter *adapter,
+ 	}
+ }
+ 
+-static struct sk_buff *igc_xdp_run_prog(struct igc_adapter *adapter,
+-					struct xdp_buff *xdp)
++static int igc_xdp_run_prog(struct igc_adapter *adapter, struct xdp_buff *xdp)
+ {
+ 	struct bpf_prog *prog;
+ 	int res;
+@@ -2530,7 +2525,7 @@ static struct sk_buff *igc_xdp_run_prog(struct igc_adapter *adapter,
+ 	res = __igc_xdp_run_prog(adapter, prog, xdp);
+ 
+ out:
+-	return ERR_PTR(-res);
++	return res;
+ }
+ 
+ /* This function assumes __netif_tx_lock is held by the caller. */
+@@ -2585,6 +2580,7 @@ static int igc_clean_rx_irq(struct igc_q_vector *q_vector, const int budget)
+ 	struct sk_buff *skb = rx_ring->skb;
+ 	u16 cleaned_count = igc_desc_unused(rx_ring);
+ 	int xdp_status = 0, rx_buffer_pgcnt;
++	int xdp_res = 0;
+ 
+ 	while (likely(total_packets < budget)) {
+ 		struct igc_xdp_buff ctx = { .rx_ts = NULL };
+@@ -2630,12 +2626,10 @@ static int igc_clean_rx_irq(struct igc_q_vector *q_vector, const int budget)
+ 			xdp_buff_clear_frags_flag(&ctx.xdp);
+ 			ctx.rx_desc = rx_desc;
+ 
+-			skb = igc_xdp_run_prog(adapter, &ctx.xdp);
++			xdp_res = igc_xdp_run_prog(adapter, &ctx.xdp);
+ 		}
+ 
+-		if (IS_ERR(skb)) {
+-			unsigned int xdp_res = -PTR_ERR(skb);
+-
++		if (xdp_res) {
+ 			switch (xdp_res) {
+ 			case IGC_XDP_CONSUMED:
+ 				rx_buffer->pagecnt_bias++;
+@@ -2657,7 +2651,7 @@ static int igc_clean_rx_irq(struct igc_q_vector *q_vector, const int budget)
+ 			skb = igc_construct_skb(rx_ring, rx_buffer, &ctx);
+ 
+ 		/* exit if we failed to retrieve a buffer */
+-		if (!skb) {
++		if (!xdp_res && !skb) {
+ 			rx_ring->rx_stats.alloc_failed++;
+ 			rx_buffer->pagecnt_bias++;
+ 			set_bit(IGC_RING_FLAG_RX_ALLOC_FAILED, &rx_ring->flags);
+@@ -2672,7 +2666,7 @@ static int igc_clean_rx_irq(struct igc_q_vector *q_vector, const int budget)
+ 			continue;
+ 
+ 		/* verify the packet layout is correct */
+-		if (igc_cleanup_headers(rx_ring, rx_desc, skb)) {
++		if (xdp_res || igc_cleanup_headers(rx_ring, rx_desc, skb)) {
+ 			skb = NULL;
+ 			continue;
+ 		}
 -- 
 2.34.1
 
