@@ -1,223 +1,219 @@
-Return-Path: <bpf+bounces-43222-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43223-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 713989B14F3
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 07:05:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A66169B14F5
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 07:05:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92AAA1C210AE
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 05:05:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15DDF282856
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 05:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A671632F1;
-	Sat, 26 Oct 2024 05:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3C81632D9;
+	Sat, 26 Oct 2024 05:05:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UrBjgNnu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YgM6vLyG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A457F3398B;
-	Sat, 26 Oct 2024 05:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7072AE93
+	for <bpf@vger.kernel.org>; Sat, 26 Oct 2024 05:05:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729919106; cv=none; b=oe7qJ38DLUhKygO6T8fL+rhPcKAZnDmD2S/LYOPSq6NyrFD4A3FBB4qVVvib3IGTzgAVjMHalQKZGS3y69fnTNBYV3W682797f0bicsKOI/ZFQmojLL1a0C4aRsmVNEBxoW2UiHwMqmh/tRlIV07Em+7H3oKyeEzgFo0c1vAWCo=
+	t=1729919120; cv=none; b=rkR4ObByudIcWt9UNggHCV2WZp2pNlGXVkFu6B0rhJQR2EDTBFrKbbOSLELvZPLHgoBW7gDIUDOd5zqWYWf2YzIWotM7fLrrhd/H+m3N2EK9OqHU77mU05Lq+Ib/p7JQ8pDPwbH6j5vB2i+NxpYcIad5rwlee/rQkS4rqz0ywuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729919106; c=relaxed/simple;
-	bh=83BNDMZYHh7THxcOT6EMx1nYZHH4/+7P9EvKGPKbppA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=MRIO8/I73iML8oXV7as3z5tlcXzkHI2cvFfMY/3wOykAzPndAiGKgGcWIOu0Hrxj1RMYWjC0oXr0JGKeqtdJuyrNzlavfX1tAhmezd2XPNKTxZFQrG1dFHJjkRFWpsURbbaNrCGlYeXyndHDBYAwjgKuqAmPDCsAVlXA1jlzwhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UrBjgNnu; arc=none smtp.client-ip=209.85.215.171
+	s=arc-20240116; t=1729919120; c=relaxed/simple;
+	bh=moGSiS9lImhqu+ZZa0CNGaYfCBuqsKe8AgX88Es5Nis=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=BLXwPaoxncm93ucsNIXfTF+4Y85tkrJFFRHqmHCWPPpu38adPGJV4eg5X+YeaE5A9PrBUqY7WqqDZUJjdBIe836htvAizJ/iFgkr3Cp1DG1I7Ct+vesHx5xTmKKOzS9Xz8I1vfPD97V+MpVH9PflVQ8vqElebQzgsdMvsbpwkMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YgM6vLyG; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7e9e38dd5f1so2059182a12.0;
-        Fri, 25 Oct 2024 22:05:04 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-20c8c50fdd9so23444055ad.0
+        for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 22:05:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729919104; x=1730523904; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=k1gFZ09BPOfzHvjNYWOqC2145s1yc+PKpA6ny3/E+XQ=;
-        b=UrBjgNnupUF5Nr00nSph0OXvxbglevjI8G0PFhNvM6Sx0ElpLkg+E/SHAz4Tq5wjxE
-         Lz/ZCcc+RhgAfqvuPJ2T8/g1OJ2cPNtf8BncmY7qE142hJ4fZ2yMxr+ee04yFEXAWlxF
-         hrJhnDhr7mhC17mkufnZ54AMIVymne/ncCHGCkE3H+uHqELaCXDeOe/LqNn5HWJ3oEl1
-         9aNMdKH8PFkdWpW8DC+hD1ukgBfK4vi7Z+q/NZ54RWP/4NbzzgIn8nz42SVquOAqWkIY
-         gX/1XM6tStB8OEeHnDlidanQTkJyJIov39c8KVLQI7hAWB3G+Wioa3IP5IYimWRg/7OQ
-         tX7Q==
+        d=gmail.com; s=20230601; t=1729919117; x=1730523917; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fi0UhH/1mybD0rjQDMKUwajQMLQ99jOjxhSSGaIb1nw=;
+        b=YgM6vLyG8+y/jymzG3zFp8O2Ix77ExM6MjnY9fMiC0p8Px8CMJ+uqL0UlKenNRz8s9
+         5YNbS7cVi0HnhnC38mT1afxSnBbRMrebMF6C8YhdfQusgptTIQc9F17v1ua99fXJa/7z
+         BhgV0T++3tHMkYcU+bQl/cSXnfQ6EEIuGvEPNvkvQVgZTIY9AauwrxNtlcIanmcBVSA9
+         GZE29mH80VBPj7bIkUPo7Hx8IL9MxF6i4pyf7kjnXcLRBJ08qWiUji2j8BlPxZjPymZy
+         EORAvFZJoKlCAWoEJxBHFkBUPMQ7AfdIqK+zVdDZger+T1V7+AD79Y0jAatQbEIF+RPx
+         1DNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729919104; x=1730523904;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k1gFZ09BPOfzHvjNYWOqC2145s1yc+PKpA6ny3/E+XQ=;
-        b=q8S7QJzVblMYc+ZYU01YcudIRfDVsuwnIE9z0xiHJCacKrKmH3rNW5dIN38Poftg5+
-         v0/GTWcd9QoCrYU3e6LdsUIK99UWvtcXqNl0ONXQWp9Qp38NzTbWvdAoV+WhiLuzYwfO
-         ccS34Jew2PIUsUU3NNkfAarowEVIys0VQu9tHCpHPEBTLETx1RgW5XXxhw6UqsjrAcZd
-         fwJzAqcjQxw7N/EjMMh1i4jOlZ9yoAtDU+qWYaT2PaH94d2ORw7cXUGh5zRSR8YTKvco
-         eGCfvbnm0B2zHwj4rrePCj4Mel1JFAgI+S5+2P/+IEKXYWNVJGVSermnvMiS1jSHs33G
-         IwAA==
-X-Forwarded-Encrypted: i=1; AJvYcCU4w6eQUqUzqfh93L89BIXuUYHn8aQBLo51449Q+gL4BQTgCYyrsN/p4uc4Bu7xnR6ft9Q=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwukJi3KUX0wuHoWGrYEZtyunIEivmX8F6xwumOoVeaXYYzPbfK
-	wvdQOjpZVY+g75AguPV9GeSb6HO/1exlBQ8tvVUMpk5BK5p06Fa5
-X-Google-Smtp-Source: AGHT+IFOBqIZdLWrqdbJ8ern5k5129qAspVS4COwJfcywYv6snpMH/jgCI24HLI89bTyzo5kRfz2Kw==
-X-Received: by 2002:a05:6a21:4781:b0:1d8:f5e1:6b30 with SMTP id adf61e73a8af0-1d9a850ab78mr2139652637.48.1729919103894;
-        Fri, 25 Oct 2024 22:05:03 -0700 (PDT)
-Received: from localhost.localdomain ([210.205.14.5])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057a3c20fsm1974695b3a.200.2024.10.25.22.05.01
+        d=1e100.net; s=20230601; t=1729919117; x=1730523917;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fi0UhH/1mybD0rjQDMKUwajQMLQ99jOjxhSSGaIb1nw=;
+        b=OqIzZnsVcRSAhzn5i2Y/UdfMdDN63ofOGbPm9Ph1PU0okkbQr2nXMHGAjjivrfBM4K
+         K4j2pZ2lRNfwOi5JO4leVz+jl+ZQSLlizxXvomoCGl1l8nxOyHK9+cq3EVQ1gEDmJW+i
+         6A24NcrVZvWIl9g8EOn1A8flZumMohg/ys3e1xFTjJ7DUwEpXEHYT7JYT/IwtHYnhSOw
+         nt5luROfbupAsHvNwmIA9GInfdZXmam1h0eIbsamXpfYHcubg7LMVpyAcWSdRxIWRlhr
+         MZoMxE/dxCzjCLrNh0bbeUR7FFx7HasJusMXRqbHmtZjC6tf38BYkrNsQGflljQ9mRdL
+         hxig==
+X-Forwarded-Encrypted: i=1; AJvYcCWPTCC6kI+OWu25Px0ZiUB8Xs6Y2/sj/aP79ltBpJLiJ2yGv40/YOso8TLv1wRtv5Zfxs0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBMtzc0G/tBkZBIfqSYn/NMppVkTpMKYdO3InMTr9sEaxCylA4
+	Cks6QLx0QtDRzMELp5aeDQsyaT3D3cyqJRJP9mGF3/j24IjLJHVp
+X-Google-Smtp-Source: AGHT+IEdhRTeP5ed0S3Gtf55NVJL8EBM0TC0J7/G3yv+ZzkohBIzdo1JzxsSXQuw3r0CgFMAdnjPMg==
+X-Received: by 2002:a17:902:f68e:b0:20c:7661:dc9a with SMTP id d9443c01a7336-210c59379a0mr28337045ad.3.1729919117463;
+        Fri, 25 Oct 2024 22:05:17 -0700 (PDT)
+Received: from localhost ([98.97.36.166])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc044da4sm17605925ad.246.2024.10.25.22.05.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2024 22:05:03 -0700 (PDT)
-Date: Sat, 26 Oct 2024 14:04:58 +0900
-From: Byeonguk Jeong <jungbu2855@gmail.com>
-To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Hou Tao <houtao@huaweicloud.com>,
-	Yonghong Song <yonghong.song@linux.dev>
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH v2 bpf 2/2] selftests/bpf: Add test for trie_get_next_key()
-Message-ID: <Zxx4ep78tsbeWPVM@localhost.localdomain>
+        Fri, 25 Oct 2024 22:05:16 -0700 (PDT)
+Date: Fri, 25 Oct 2024 22:05:15 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: zijianzhang@bytedance.com, 
+ bpf@vger.kernel.org
+Cc: martin.lau@linux.dev, 
+ daniel@iogearbox.net, 
+ john.fastabend@gmail.com, 
+ ast@kernel.org, 
+ andrii@kernel.org, 
+ eddyz87@gmail.com, 
+ song@kernel.org, 
+ yonghong.song@linux.dev, 
+ kpsingh@kernel.org, 
+ sdf@fomichev.me, 
+ haoluo@google.com, 
+ jolsa@kernel.org, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ mykolal@fb.com, 
+ shuah@kernel.org, 
+ jakub@cloudflare.com, 
+ liujian56@huawei.com, 
+ zijianzhang@bytedance.com, 
+ cong.wang@bytedance.com
+Message-ID: <671c788b7322c_656c20869@john.notmuch>
+In-Reply-To: <20241020110345.1468595-9-zijianzhang@bytedance.com>
+References: <20241020110345.1468595-1-zijianzhang@bytedance.com>
+ <20241020110345.1468595-9-zijianzhang@bytedance.com>
+Subject: RE: [PATCH bpf 8/8] bpf, sockmap: Fix sk_msg_reset_curr
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zxx384ZfdlFYnz6J@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Add a test for out-of-bounds write in trie_get_next_key() when a full
-path from root to leaf exists and bpf_map_get_next_key() is called
-with the leaf node. It may crashes the kernel on failure, so please
-run in a VM.
+zijianzhang@ wrote:
+> From: Zijian Zhang <zijianzhang@bytedance.com>
+> 
+> Found in the test_txmsg_pull in test_sockmap,
+> ```
+> txmsg_cork = 512;
+> opt->iov_length = 3;
+> opt->iov_count = 1;
+> opt->rate = 512;
+> ```
+> The first sendmsg will send an sk_msg with size 3, and bpf_msg_pull_data
+> will be invoked the first time. sk_msg_reset_curr will reset the copybreak
+> from 3 to 0, then the second sendmsg will write into copybreak starting at
+> 0 which overwrites the first sendmsg. The same problem happens in push and
+> pop test. Thus, fix sk_msg_reset_curr to restore the correct copybreak.
+> 
+> Fixes: bb9aefde5bba ("bpf: sockmap, updating the sg structure should also update curr")
+> Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
 
-Signed-off-by: Byeonguk Jeong <jungbu2855@gmail.com>
----
-v1 -> v2:
-  - Fixed a build error.
-  - Removed unnecessary comments about crash-on-failure warning.
-  - Fix a variable to be initialized before using it.
----
- .../bpf/map_tests/lpm_trie_map_get_next_key.c | 109 ++++++++++++++++++
- 1 file changed, 109 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c
+Hi Zijian, question on below.
 
-diff --git a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c
-new file mode 100644
-index 000000000000..0ba015686492
---- /dev/null
-+++ b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c
-@@ -0,0 +1,109 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define _GNU_SOURCE
-+#include <linux/bpf.h>
-+#include <stdio.h>
-+#include <stdbool.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <pthread.h>
-+
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+
-+#include <test_maps.h>
-+
-+struct test_lpm_key {
-+	__u32 prefix;
-+	__u32 data;
-+};
-+
-+struct get_next_key_ctx {
-+	struct test_lpm_key key;
-+	bool start;
-+	bool stop;
-+	int map_fd;
-+	int loop;
-+};
-+
-+static void *get_next_key_fn(void *arg)
-+{
-+	struct get_next_key_ctx *ctx = arg;
-+	struct test_lpm_key next_key;
-+	int i = 0;
-+
-+	while (!ctx->start)
-+		usleep(1);
-+
-+	while (!ctx->stop && i++ < ctx->loop)
-+		bpf_map_get_next_key(ctx->map_fd, &ctx->key, &next_key);
-+
-+	return NULL;
-+}
-+
-+static void abort_get_next_key(struct get_next_key_ctx *ctx, pthread_t *tids,
-+			       unsigned int nr)
-+{
-+	unsigned int i;
-+
-+	ctx->stop = true;
-+	ctx->start = true;
-+	for (i = 0; i < nr; i++)
-+		pthread_join(tids[i], NULL);
-+}
-+
-+/* This test aims to prevent regression of future. As long as the kernel does
-+ * not panic, it is considered as success.
-+ */
-+void test_lpm_trie_map_get_next_key(void)
-+{
-+#define MAX_NR_THREADS 8
-+	LIBBPF_OPTS(bpf_map_create_opts, create_opts,
-+		    .map_flags = BPF_F_NO_PREALLOC);
-+	struct test_lpm_key key = {};
-+	__u32 val = 0;
-+	int map_fd;
-+	const __u32 max_prefixlen = 8 * (sizeof(key) - sizeof(key.prefix));
-+	const __u32 max_entries = max_prefixlen + 1;
-+	unsigned int i, nr = MAX_NR_THREADS, loop = 65536;
-+	pthread_t tids[MAX_NR_THREADS];
-+	struct get_next_key_ctx ctx;
-+	int err;
-+
-+	map_fd = bpf_map_create(BPF_MAP_TYPE_LPM_TRIE, "lpm_trie_map",
-+				sizeof(struct test_lpm_key), sizeof(__u32),
-+				max_entries, &create_opts);
-+	CHECK(map_fd == -1, "bpf_map_create()", "error:%s\n",
-+	      strerror(errno));
-+
-+	for (i = 0; i <= max_prefixlen; i++) {
-+		key.prefix = i;
-+		err = bpf_map_update_elem(map_fd, &key, &val, BPF_ANY);
-+		CHECK(err, "bpf_map_update_elem()", "error:%s\n",
-+		      strerror(errno));
-+	}
-+
-+	ctx.start = false;
-+	ctx.stop = false;
-+	ctx.map_fd = map_fd;
-+	ctx.loop = loop;
-+	memcpy(&ctx.key, &key, sizeof(key));
-+
-+	for (i = 0; i < nr; i++) {
-+		err = pthread_create(&tids[i], NULL, get_next_key_fn, &ctx);
-+		if (err) {
-+			abort_get_next_key(&ctx, tids, i);
-+			CHECK(err, "pthread_create", "error %d\n", err);
-+		}
-+	}
-+
-+	ctx.start = true;
-+	for (i = 0; i < nr; i++)
-+		pthread_join(tids[i], NULL);
-+
-+	printf("%s:PASS\n", __func__);
-+
-+	close(map_fd);
-+}
--- 
-2.43.5
+> ---
+>  net/core/filter.c | 20 +++++++++-----------
+>  1 file changed, 9 insertions(+), 11 deletions(-)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 8e1a8a8d8d55..b725d3a2fdb8 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -2619,18 +2619,16 @@ BPF_CALL_2(bpf_msg_cork_bytes, struct sk_msg *, msg, u32, bytes)
+>  
+
+I find push_data a bit easier to think through so allow me to walk
+through a push example.
+
+If we setup so that curr=0 and copybreak=3 then call
+
+ push_data(skmsg, 2, 2);
+
+When we get to the sk_msg_reset_curr we should have a layout,
+
+  msg->sg.data[0] = length(2) equal to original [0,2]
+  msg->sg.data[1] = length(2)
+  msg->sg.data[2] = legnth(1) equal to original [3] 
+
+The current before the reset curr will be,
+
+ curr = 1
+ copybreak = 3
+
+>  static void sk_msg_reset_curr(struct sk_msg *msg)
+>  {
+> -	u32 i = msg->sg.start;
+> -	u32 len = 0;
+> -
+
+with above context i = 0
+
+> -	do {
+> -		len += sk_msg_elem(msg, i)->length;
+> -		sk_msg_iter_var_next(i);
+> -		if (len >= msg->sg.size)
+> -			break;
+> -	} while (i != msg->sg.end);
+
+When we exit loop,
+
+  i = 3
+  len = 5
+  
+  msg->sg.curr = 3
+  msg->sg.copybreak = 0
+
+So we zero the copy break and set curr = 3. The next send
+should happen over sg.curr=3? What did I miss?
+
+> +	if (!msg->sg.size) {
+> +		msg->sg.curr = msg->sg.start;
+> +		msg->sg.copybreak = 0;
+> +	} else {
+> +		u32 i = msg->sg.end;
+>  
+> -	msg->sg.curr = i;
+> -	msg->sg.copybreak = 0;
+> +		sk_msg_iter_var_prev(i);
+
+With this curr will always point to the end-1 but I'm not sure this can
+handle the case where we have done sk_msg_alloc() so we have start/end
+setup. And then on a copy fault for example we might have curr pointing
+somewhere in the middle of that. I think I will need to construct the
+example, but I believe this is originally why the 'i' is discovered
+by sg walk vs simpler end.
+
+> +		msg->sg.curr = i;
+> +		msg->sg.copybreak = msg->sg.data[i].length;
+
+This does seem more accurate then simply zero'ing out the copybreak
+which is a good thing.
+
+> +	}
+>  }
+>  
+>  static const struct bpf_func_proto bpf_msg_cork_bytes_proto = {
+> -- 
+> 2.20.1
+> 
+
 
 
