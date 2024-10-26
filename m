@@ -1,133 +1,109 @@
-Return-Path: <bpf+bounces-43249-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43250-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AA849B1A71
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 20:55:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AF499B1AF0
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 22:37:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17716B21745
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 18:55:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36B431F21F2A
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 20:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097511D6DB5;
-	Sat, 26 Oct 2024 18:55:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FBD1D7986;
+	Sat, 26 Oct 2024 20:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kkteNcbH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SIXAMrj1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA5A2231C;
-	Sat, 26 Oct 2024 18:55:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8521534E9;
+	Sat, 26 Oct 2024 20:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729968930; cv=none; b=sHFnZ5KKl07PZ51O6tJj3RSvCX15eMCSz6zS7c1rfM94ZeiahC1Ec+Jsrkq97qj/+qKDinjolA+dW1MyJvRsnjYRbR5Nn4p8aYaPb94eHKxmMfw3++/RrlTDpUMr2o+Hp0Dr038n4TRkbSRx6bLo8ZYxEn/lX7aJ/FMXmvC7NMk=
+	t=1729975034; cv=none; b=QHXHrA5DC2VpgDZfPbZW4ib0xZ+cmS1lsOfjcT0knCXvfvwZ4fsuBw3r2OSYw2UsabmkrfMMXVh7PbDKxqnd+OdY1GXl+OoL5m2s/2hSYZHvenZbRdOykpq0WGAGTrHUKYMjmuh50osCriINlJmhDdtyc1jvQ6f6xaDsl4I0+qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729968930; c=relaxed/simple;
-	bh=HriS5NIsAdoA/0qgCCaEXAYOQke3Iu933uC/swXQiA0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Qm5TLlg+qoe15AENWlb2xVw6ZqDOl+4IbDryNwyc9JVdQRep3ect4bHjxf/1TfN1iteG2qjqZKmXB3AsT1xCTVKclKTh5yfk2DuzkW++TE2sGNK1RxnM3hujce2ji6iBvDJsfK6lZiArpsWx/ZTwB3uRpxpqNnGl3VPZReM3Xh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kkteNcbH; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1729975034; c=relaxed/simple;
+	bh=HI7ity/oa/ka9cv3V8FDOAD5p0QTO9Jgh7DeocJ5Glk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V4u3lpfUQoDX8ERe5Y863jZDKJpTI+M2o/pmdlcmcEoEwCH8imi6rK8rdVgM+LcOMlHQybRATvf/HMu2eNy/YVHDaZmTGTj5klW0VurPmCMJz8d+1cH00BZylnLKTf2vJIbEt2FPMpEUet4ElkwUHd0Gs59jrukoh6SCALZ7l/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SIXAMrj1; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-20cf3e36a76so30411355ad.0;
-        Sat, 26 Oct 2024 11:55:28 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7205b6f51f3so1164701b3a.1;
+        Sat, 26 Oct 2024 13:37:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729968927; x=1730573727; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OZFtwMKKLX4yesi/4S8wlLXA+EQMu5+QDLofJmqHNsk=;
-        b=kkteNcbH+/1Wh+rjSSq2x0ogAARjBz4vqmWjDe8RevipYXkHlg3BT+7mWydmCVPmsC
-         OxclbL9phDVejcm35xlqGb7UVIj26mdaRjbBqe+Y98wf4X4wKNUh6zQ9dWH57DWVxWwi
-         sJrhYFrQYXzBmudAflPOWjMsroJq/GFlF4vBW1TXKHpmD0lwlRdUhMkEFrvRyAIsI+EY
-         RsDyDrT1QnO/y2qjlzP7T2tHwi5ODwYG8DSLUmrwkp+zrc8dR2uCqlnZ+BkJfHyap3Rw
-         dIhIiZ3aChQDWNS1Tby+ugqGsfmUldAYdXHNKLGzBeSESV2QPyA1lrD5ECXZNJOBqBgA
-         qF/A==
+        d=gmail.com; s=20230601; t=1729975032; x=1730579832; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aR5yj1+V/MTixDnxfXpOMwrRd/ZzgiDUoeYFWdOL+aM=;
+        b=SIXAMrj1sQpCqkMGlDnswd4uF3JXatn+rR6IxO4uXFDQyjUhTeMWncJnfcwNeZ/lkT
+         RymxhSwUnFqbgZ3o1vqZDlUDbysdW4KXS0+kUM/1lfT6q0lQN+OIJ3d7kp2Emnf0lfzW
+         lnC/ZobFaLJmWSO6hp21xVQr7FRJ/aeMN4SDDc05bg/0+BD/HPZvvYiUTSWSQIO5pCnf
+         7ghX27bERknkjywCgT1KUlQCXbUQc2nLGU75MPWJsEN2CHz3PFZwuGu6y+OvJXN9VEPN
+         JfRPMN5M6P9xO8MNFbSfnY+Uu2fOo4FF/4719xVe5iOwD+zERRjacPf8fYdcNlaXgBWz
+         b3GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729968927; x=1730573727;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OZFtwMKKLX4yesi/4S8wlLXA+EQMu5+QDLofJmqHNsk=;
-        b=r8rO8VLktXSXuLegknv4WuBf6ikRjcgiDC6ElGXXcHGUE7eJ0W088K7JjoWPEFN/v6
-         uelzjR7asRRyJ+YDpSJZh0h6YRBgrA4HZQR4ODEBMlIe0/Z0Z7p7U/M+eEuUmeR845x0
-         khcR6Ldn2DhxtAo7CfaOjVeQVVw9oSs3KLjgWvor0ZQ8Nq7APWgTS3I/HxffO4armTX8
-         SeGuThoYqiiSxtabBo1hGnwn/4Jhm8/LwNl0Tuvv4k8e/2I/I24nGs1+EXJb38cBnxBc
-         /MNQDcmgDSexKUK7uBQFzxD+y2VTJzFUrT1sSU0F2BZdoS0JIEF/dEvnxUf9PvtocUG+
-         Wf8A==
-X-Gm-Message-State: AOJu0YwH+rSAYihHwci/YREcXegRPeU6nNwG3rxpEA/TXM/iOl3f9NG5
-	FEqPTdNp67G3EPZjxT5k1R9tdGHbZl+ICq5C6TkE08i8e9+5Alqcw7/s1Q==
-X-Google-Smtp-Source: AGHT+IHOmyeOeu1wf7pjchwvUTH6wdWSzYTr6xKDHX9wv/ycBQGH+Wh/4wIzNHxis7UlEP7oB0WkYw==
-X-Received: by 2002:a17:902:f60a:b0:20c:a055:9f07 with SMTP id d9443c01a7336-210c6c0210bmr45137055ad.26.1729968926025;
-        Sat, 26 Oct 2024 11:55:26 -0700 (PDT)
-Received: from pop-os.hsd1.ca.comcast.net ([2601:647:6881:9060:6a46:a288:5839:361d])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bbf4349asm26561625ad.46.2024.10.26.11.55.25
+        d=1e100.net; s=20230601; t=1729975032; x=1730579832;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aR5yj1+V/MTixDnxfXpOMwrRd/ZzgiDUoeYFWdOL+aM=;
+        b=Ur3AmjRFfdERdjSRTPgsp9eDxg4/pQA50IfksG4bk9il1I6qXMgL6janjUROtTFS2h
+         W6jj+3t5e+R7xKetAi8nTNMkYXnF5Sl4dOdiiK1RJGshSPAFvL8X5FdY6sn7H6JwCNQh
+         IOOFnwwfP9fWPi6jJozQ5oEWHpvg3ciGiLyaiaDSL7vac/aZTw6iGvwoT9sBXQhpELHr
+         ZbEFkBho0OKr45eIar3FeOlPKlSfp7z2C7K+Ex7/LuGsQPOaP051wJ/ekt1JmPgqNpvP
+         KMpBexsvyUHIUMB534AE5sDYCcfSwSypRKyXumqUigKEksavQwSIMOv9R63ymCNmy9Kv
+         0q+w==
+X-Forwarded-Encrypted: i=1; AJvYcCUZr04eTubZVTebMQjXQHxbGLql5EMZhyN7SQQcXUlU25Qcs6Idf3CBx+dd7IcNImBNI/AhFFnVZQi5dAA/@vger.kernel.org, AJvYcCWrxwZnoMLqwKqqo/g0lrSMR01LKYRMbMH6K84b9I9m6laYK0sol7PhOGvaNOaCUIq6b+2qF4lJ@vger.kernel.org, AJvYcCXedIN9tD4lDL2pBsdcC3/jtKShjOT14DMJcjY7JraS+ZrprZz04qk9My6Zk2N6q4Vin+s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZSc9St0xlQW6NIVQEMHQw5YfgweDql6IrklIfb9daXLBJY0yc
+	OXDZCdQaoldRrRqn868nlHVClnA6lgoF7jyN4oCRq3cmH/dvciYt
+X-Google-Smtp-Source: AGHT+IHPKiSQ1tUBn1Eiegpqfrg4lY2oC+XAepMwaiU3T/MqZRANFXm+bERVSZtum3QIvf/HkTf2RQ==
+X-Received: by 2002:a05:6a00:2350:b0:71e:4ba:f389 with SMTP id d2e1a72fcca58-72062f83c5amr6073389b3a.10.1729975032160;
+        Sat, 26 Oct 2024 13:37:12 -0700 (PDT)
+Received: from localhost ([2601:647:6881:9060:6bce:bc57:7561:fc9c])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057a1fb1esm3090123b3a.155.2024.10.26.13.37.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Oct 2024 11:55:25 -0700 (PDT)
+        Sat, 26 Oct 2024 13:37:11 -0700 (PDT)
+Date: Sat, 26 Oct 2024 13:37:10 -0700
 From: Cong Wang <xiyou.wangcong@gmail.com>
-To: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org,
-	Cong Wang <cong.wang@bytedance.com>,
-	Ruan Bonan <bonan.ruan@u.nus.edu>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jakub Sitnicki <jakub@cloudflare.com>
-Subject: [Patch bpf] sock_map: fix a NULL pointer dereference in sock_map_link_update_prog()
-Date: Sat, 26 Oct 2024 11:55:22 -0700
-Message-Id: <20241026185522.338562-1-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.34.1
+To: mrpre <mrpre@163.com>
+Cc: edumazet@google.com, jakub@cloudflare.com, davem@davemloft.net,
+	dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bpf: fix filed access without lock
+Message-ID: <Zx1S9vf2i7O+BNE+@pop-os.localdomain>
+References: <20241021013705.14105-1-mrpre@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241021013705.14105-1-mrpre@163.com>
 
-From: Cong Wang <cong.wang@bytedance.com>
+On Mon, Oct 21, 2024 at 09:37:05AM +0800, mrpre wrote:
+> The tcp_bpf_recvmsg_parser() function, running in user context,
+> retrieves seq_copied from tcp_sk without holding the socket lock, and
+> stores it in a local variable seq. However, the softirq context can
+> modify tcp_sk->seq_copied concurrently, for example, n tcp_read_sock().
+> 
+> As a result, the seq value is stale when it is assigned back to
+> tcp_sk->copied_seq at the end of tcp_bpf_recvmsg_parser(), leading to
+> incorrect behavior.
 
-The following race condition could trigger a NULL pointer dereference:
+Good catch! This makes sense to me. Mind to be more specific on the
+"incorrect behavior" here? What error or misbehavior did you see?
 
-sock_map_link_detach():		sock_map_link_update_prog():
-   mutex_lock(&sockmap_mutex);
-   ...
-   sockmap_link->map = NULL;
-   mutex_unlock(&sockmap_mutex);
-   				   mutex_lock(&sockmap_mutex);
-				   ...
-				   sock_map_prog_link_lookup(sockmap_link->map);
-				   mutex_unlock(&sockmap_mutex);
-   <continue>
+> 
+> Signed-off-by: mrpre <mrpre@163.com>
 
-Fix it by adding a NULL pointer check. In this specific case, it makes
-no sense to update a link which is being released.
 
-Reported-by: Ruan Bonan <bonan.ruan@u.nus.edu>
-Fixes: 699c23f02c65 ("bpf: Add bpf_link support for sk_msg and sk_skb progs")
-Cc: Yonghong Song <yonghong.song@linux.dev>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- net/core/sock_map.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Please use your real name for SoB, see https://docs.kernel.org/process/submitting-patches.html
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 07d6aa4e39ef..9fca4db52f57 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -1760,6 +1760,10 @@ static int sock_map_link_update_prog(struct bpf_link *link,
- 		ret = -EINVAL;
- 		goto out;
- 	}
-+	if (!sockmap_link->map) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
- 
- 	ret = sock_map_prog_link_lookup(sockmap_link->map, &pprog, &plink,
- 					sockmap_link->attach_type);
--- 
-2.34.1
-
+Thanks.
 
