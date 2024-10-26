@@ -1,151 +1,231 @@
-Return-Path: <bpf+bounces-43224-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43225-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B52B09B1535
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 07:46:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1DE59B154D
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 08:18:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D861A1C21134
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 05:46:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDDE41C20CD3
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 06:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7604016BE0D;
-	Sat, 26 Oct 2024 05:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3F031667DA;
+	Sat, 26 Oct 2024 06:18:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2cV0PeGM"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="dmjf7IyI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D3ECA5A
-	for <bpf@vger.kernel.org>; Sat, 26 Oct 2024 05:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41C633EA
+	for <bpf@vger.kernel.org>; Sat, 26 Oct 2024 06:17:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729921576; cv=none; b=ktA2+/C1TkXLL6MOjOh9MElokeIjjcwYIYBVnVuxaoB6elcXqV3HYi2kOwj6Wv5v8onEclyBhy5KgtuTCJZ6DrU7WdCIHfeHSKKXo9eqfw4kOzpCEwvA4tI4FTQ3g3eWu7jmbpnfHG5Vn1ZD8jLBg2dp2SDByqPMz/auWdY7LWA=
+	t=1729923480; cv=none; b=GP5x99m3B92w6Uy3buBGrDgWNS94Bq50xo5a7FjwM5WEoj26C8rXs7vtcw520G9MpYB9eUpveYi0tnbs5u5egogjJH7B2tALXtJH+8xi1G3zveZxVxwxC0Zcm22b0TBfdBekNggbDNUmF43JtgLMhSqrxBwWyBzxHwgT+E1u+gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729921576; c=relaxed/simple;
-	bh=SRjwgqCN32DqjDXP1zoKrUZDPYz/yulcotM5Ou+dbgQ=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=i5g8rYSYYWwzRtSvTTfPbcItWfaEop3OqYMj7/swT7+OY3zbhcZSiajTgj10IJBP2rmezk6LZB9kicbBOrXkiaHbgCtGeuBj2AD94IthSxpR6fcAIatw2doF3H9gyzYdGKrXBQnj0dbZYviqFKha1EcA630Y0KPPi+mUzae2hlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2cV0PeGM; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-20c87b0332cso53915ad.1
-        for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 22:46:13 -0700 (PDT)
+	s=arc-20240116; t=1729923480; c=relaxed/simple;
+	bh=EoK1f62gBtjBgjX4bwkFJdnLKp35Hw+Pmj7qBi2Fxhc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QNcLbyKRv/A++/gf30UsYTwaQ7crjnwXmHwDHk2ZgTGXrcsDaYxTwwHn0CUozxns5zH+wbYCllLqAJxU2vFo/VQLrDySteKmsBVHrnVIeJKUqxLb5DnlutC0KK3KnLo0/JmEliVKCI8dQvJEygLTgSrHBq6xNxXpv7DPWPxCwEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=dmjf7IyI; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-460ab1bc2aeso16992301cf.3
+        for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 23:17:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1729921573; x=1730526373; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eY8ZkEywyfjVgvKb0PE6wkcMqGE2Q4geJi7aoCgEDmQ=;
-        b=2cV0PeGM+50GMNWZNWeDtObecES1iiYyihgbLe1OuxASFlgvlkm90vD9peIKijnrwq
-         a2D1rChCTMyNdJLJkHyYQFkYpufjmMfVxLi6xQReJ07NrxI0pnr8pIFTJ+XEUkqGwoaP
-         PKbn5LkXkwdBjzUwW9C2PlKwpAUTumMotjd/tsiFwam0qaWiXEf6karjuZ4Aveo4caRL
-         46C1of0AsmQ2yq9bA4p6gvkKEwqheNvNluKc8zfFdS/VwZMCx/cpSQzSNMLHxUrP6f45
-         YFYaqO+XuLpIf0GSinNJ8eN0McKextoMytku0nBHkmctgwx/385T2kaecqqKYM1ZuKdT
-         V+aw==
+        d=bytedance.com; s=google; t=1729923476; x=1730528276; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Iyi6UBSi4zq3aYrNXVRS94xGiByYPLF4TL8b+3uBYtI=;
+        b=dmjf7IyIz4ypOx3fiKztQ2qivGOa9jRR3mVGjfIAO1WCjLBOZJDZaQDE5xzSGdqEKq
+         lKrWt++UdrhNKKQ5AVvhMvps8RT+JuD2+4m30jqP3s3qhrAGzYSDSxQGKdAsxydXc1qA
+         fJOhwq7JtOCwwbPDnH39ju+jdrXp+rVdkkQ0xaMxnuTX9Bw6sziUUxIJqTxrE0t6NEdG
+         QMxT5BGMOQOUDETL6czJv8+OCbLJVrn3ROuH4aUXWqIMuat/waWijL1bvqOMOd9nc3k3
+         8JE+DGIExNnbMp+cIloNo0Jvguk2s9KshQJRHXxkquHZX/Qz8ihHaNye17wVtggG8jh3
+         rQNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729921573; x=1730526373;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eY8ZkEywyfjVgvKb0PE6wkcMqGE2Q4geJi7aoCgEDmQ=;
-        b=rd/cjOP/RhH0NPFw/xeVGRbQLdxPrb24N8laVrK1fxjnXTIj1WiI9myujgjF1roKcF
-         sp3YpAM1yv0cCzHabUqo1DZdWxrAtaf1vO2bg5KktOeaJPlmFqxi8Z9Wezr+VPn0IB2l
-         cAPgWf+MOpLRTr+aqogPFukl/RNwXxrQeEdnmV5rShPBaGplE0+V0kP672T4ekVLiezK
-         lXi0Ogbn/sPVYGCV5IxyK0skcuJy4f7pFUwyo4OtVB1EHyk7YDRssd6uCtdZH1hGG4it
-         /X+uRxw4Dnp1AOiKdqf0NJS88tOO1WM6dYLQbOzOcipUxPR06o+Ii30+C8B5I6RyztN/
-         lpPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWjfIgy2tsP5u2Wy4sJsiKSrRcIop7Kiwg4G+QAvLAnc9GIUJJH6Iytx+K4DLbDHgRPhDw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxc6OUEmA40khABMk8zTfCXoLzldshE6oXoK8opglXLgg8Qp4uL
-	g9AYjJpmpvXZQtTKUCEjdSRUt4zPBm9S9bs5EV5B4keE6v89Kmz/7wZYYMybww==
-X-Google-Smtp-Source: AGHT+IHQJgLq26FeZB3qU743EYM2bPcmmi3fesK4osKTr3JrdwHB+K8I+X1vHhJIGYtKvNJXamqCdQ==
-X-Received: by 2002:a17:902:fb84:b0:200:97b5:dc2b with SMTP id d9443c01a7336-210c7b885b5mr803385ad.15.1729921573136;
-        Fri, 25 Oct 2024 22:46:13 -0700 (PDT)
-Received: from [2620:0:1008:15:a73a:2b46:3ef7:2150] ([2620:0:1008:15:a73a:2b46:3ef7:2150])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc02ea63sm18221395ad.220.2024.10.25.22.46.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2024 22:46:09 -0700 (PDT)
-Date: Fri, 25 Oct 2024 22:46:09 -0700 (PDT)
-From: David Rientjes <rientjes@google.com>
-To: Qun-Wei Lin <qun-wei.lin@mediatek.com>
-cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
-    Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
-    Andrew Morton <akpm@linux-foundation.org>, 
-    Vlastimil Babka <vbabka@suse.cz>, 
-    Roman Gushchin <roman.gushchin@linux.dev>, 
-    Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-    Matthias Brugger <matthias.bgg@gmail.com>, 
-    AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-    Danilo Krummrich <dakr@kernel.org>, catalin.marinas@arm.com, 
-    surenb@google.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-    linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-    bpf@vger.kernel.org, Casper Li <casper.li@mediatek.com>, 
-    Chinwen Chang <chinwen.chang@mediatek.com>, 
-    Andrew Yang <andrew.yang@mediatek.com>, John Hsu <john.hsu@mediatek.com>, 
-    wsd_upstream@mediatek.com
-Subject: Re: [PATCH] mm: krealloc: Fix MTE false alarm in __do_krealloc
-In-Reply-To: <20241025085811.31310-1-qun-wei.lin@mediatek.com>
-Message-ID: <3740cf07-594a-d484-29de-5d76e2e97be3@google.com>
-References: <20241025085811.31310-1-qun-wei.lin@mediatek.com>
+        d=1e100.net; s=20230601; t=1729923476; x=1730528276;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Iyi6UBSi4zq3aYrNXVRS94xGiByYPLF4TL8b+3uBYtI=;
+        b=AaIEYcVR4taKTXSsKMeXzPkOuJLywOTYm8iB9rItY4D9fML2WmP486Z9DNOiL8VnAX
+         HH1WvLL4UbULQtznRPdlglCM0qSLB+1YVvg7EgCu+5EF1S2IahC8+U+wnPw6GvBtNkxU
+         TS4Jt3tbDG9w+Wlrb7nzYjKC2zrGgHVG0p4cZPbPgUSXva5RK8IVP6rzhyDiryQpbX1C
+         KAnZm1fir/3+S2c5CkJiXoK4NGy7/dDofS4pMOVt/DqJJClzxkdIpSlRtsyQ4cgv9YU+
+         uOnbp6sfBuF4bdw3Nn+cXh/LNqe3FwVFuxU/fvv6rHX0UGku9uS/W6v4bx3hkekbJ7wS
+         +HWg==
+X-Forwarded-Encrypted: i=1; AJvYcCXMRYOoZJ7dsOuaZvnIiIt4ygTjQq5EXlM1h+OSniguIxPuyLGK2ofY2JEIJ1pcntzFJxg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxACvPcFZbiHmuqFW1F1JS/qeUkaaaHo4QQTsTx+zdcNgJZzhMn
+	wrJeroP2xNBHzrw7CULpIDuhoyOu4GlPeuhPuH5PDj/p/kdH2Fp9CXg1rm7+AmM=
+X-Google-Smtp-Source: AGHT+IEjdox85D7n602OCNoFptUocR8kOJwjA+/ZXgL3c2T/Cl9Lj7AOCxSn92Gn7C2OCvPUJ0pl2w==
+X-Received: by 2002:a05:622a:2c2:b0:460:961e:9994 with SMTP id d75a77b69052e-4613c197b23mr27472871cf.40.1729923476595;
+        Fri, 25 Oct 2024 23:17:56 -0700 (PDT)
+Received: from ?IPV6:2601:647:4200:9750:a9b4:6cd9:ab40:6522? ([2601:647:4200:9750:a9b4:6cd9:ab40:6522])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-461323a83a8sm13441551cf.87.2024.10.25.23.17.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Oct 2024 23:17:55 -0700 (PDT)
+Message-ID: <0053166c-6971-431c-9d09-f4893b2b69bf@bytedance.com>
+Date: Fri, 25 Oct 2024 23:17:50 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: RE: [PATCH bpf 8/8] bpf, sockmap: Fix sk_msg_reset_curr
+To: John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Cc: martin.lau@linux.dev, daniel@iogearbox.net, ast@kernel.org,
+ andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
+ shuah@kernel.org, jakub@cloudflare.com, liujian56@huawei.com,
+ cong.wang@bytedance.com
+References: <20241020110345.1468595-1-zijianzhang@bytedance.com>
+ <20241020110345.1468595-9-zijianzhang@bytedance.com>
+ <671c788b7322c_656c20869@john.notmuch>
+Content-Language: en-US
+From: Zijian Zhang <zijianzhang@bytedance.com>
+In-Reply-To: <671c788b7322c_656c20869@john.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 25 Oct 2024, Qun-Wei Lin wrote:
+On 10/25/24 10:05 PM, John Fastabend wrote:
+> zijianzhang@ wrote:
+>> From: Zijian Zhang <zijianzhang@bytedance.com>
+>>
+>> Found in the test_txmsg_pull in test_sockmap,
+>> ```
+>> txmsg_cork = 512;
+>> opt->iov_length = 3;
+>> opt->iov_count = 1;
+>> opt->rate = 512;
+>> ```
+>> The first sendmsg will send an sk_msg with size 3, and bpf_msg_pull_data
+>> will be invoked the first time. sk_msg_reset_curr will reset the copybreak
+>> from 3 to 0, then the second sendmsg will write into copybreak starting at
+>> 0 which overwrites the first sendmsg. The same problem happens in push and
+>> pop test. Thus, fix sk_msg_reset_curr to restore the correct copybreak.
+>>
+>> Fixes: bb9aefde5bba ("bpf: sockmap, updating the sg structure should also update curr")
+>> Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
+> 
+> Hi Zijian, question on below.
+>  
+> 
+> I find push_data a bit easier to think through so allow me to walk
+> through a push example.
+> 
+> If we setup so that curr=0 and copybreak=3 then call
+> 
+>   push_data(skmsg, 2, 2);
+> 
+> When we get to the sk_msg_reset_curr we should have a layout,
+> 
+>    msg->sg.data[0] = length(2) equal to original [0,2]
+>    msg->sg.data[1] = length(2)
+>    msg->sg.data[2] = legnth(1) equal to original [3]
+> 
+> The current before the reset curr will be,
+> 
+>   curr = 1
+>   copybreak = 3
+> 
+>>   static void sk_msg_reset_curr(struct sk_msg *msg)
+>>   {
+>> -	u32 i = msg->sg.start;
+>> -	u32 len = 0;
+>> -
+> 
+> with above context i = 0
+> 
+>> -	do {
+>> -		len += sk_msg_elem(msg, i)->length;
+>> -		sk_msg_iter_var_next(i);
+>> -		if (len >= msg->sg.size)
+>> -			break;
+>> -	} while (i != msg->sg.end);
+> 
+> When we exit loop,
+> 
+>    i = 3
+>    len = 5
+>    
+>    msg->sg.curr = 3
+>    msg->sg.copybreak = 0
+> 
+> So we zero the copy break and set curr = 3. The next send
+> should happen over sg.curr=3? What did I miss?
+> 
 
-> This patch addresses an issue introduced by commit 1a83a716ec233 ("mm:
-> krealloc: consider spare memory for __GFP_ZERO") which causes MTE
-> (Memory Tagging Extension) to falsely report a slab-out-of-bounds error.
-> 
-> The problem occurs when zeroing out spare memory in __do_krealloc. The
-> original code only considered software-based KASAN and did not account
-> for MTE. It does not reset the KASAN tag before calling memset, leading
-> to a mismatch between the pointer tag and the memory tag, resulting
-> in a false positive.
-> 
-> Example of the error:
-> ==================================================================
-> swapper/0: BUG: KASAN: slab-out-of-bounds in __memset+0x84/0x188
-> swapper/0: Write at addr f4ffff8005f0fdf0 by task swapper/0/1
-> swapper/0: Pointer tag: [f4], memory tag: [fe]
-> swapper/0:
-> swapper/0: CPU: 4 UID: 0 PID: 1 Comm: swapper/0 Not tainted 6.12.
-> swapper/0: Hardware name: MT6991(ENG) (DT)
-> swapper/0: Call trace:
-> swapper/0:  dump_backtrace+0xfc/0x17c
-> swapper/0:  show_stack+0x18/0x28
-> swapper/0:  dump_stack_lvl+0x40/0xa0
-> swapper/0:  print_report+0x1b8/0x71c
-> swapper/0:  kasan_report+0xec/0x14c
-> swapper/0:  __do_kernel_fault+0x60/0x29c
-> swapper/0:  do_bad_area+0x30/0xdc
-> swapper/0:  do_tag_check_fault+0x20/0x34
-> swapper/0:  do_mem_abort+0x58/0x104
-> swapper/0:  el1_abort+0x3c/0x5c
-> swapper/0:  el1h_64_sync_handler+0x80/0xcc
-> swapper/0:  el1h_64_sync+0x68/0x6c
-> swapper/0:  __memset+0x84/0x188
-> swapper/0:  btf_populate_kfunc_set+0x280/0x3d8
-> swapper/0:  __register_btf_kfunc_id_set+0x43c/0x468
-> swapper/0:  register_btf_kfunc_id_set+0x48/0x60
-> swapper/0:  register_nf_nat_bpf+0x1c/0x40
-> swapper/0:  nf_nat_init+0xc0/0x128
-> swapper/0:  do_one_initcall+0x184/0x464
-> swapper/0:  do_initcall_level+0xdc/0x1b0
-> swapper/0:  do_initcalls+0x70/0xc0
-> swapper/0:  do_basic_setup+0x1c/0x28
-> swapper/0:  kernel_init_freeable+0x144/0x1b8
-> swapper/0:  kernel_init+0x20/0x1a8
-> swapper/0:  ret_from_fork+0x10/0x20
-> ==================================================================
-> 
-> Fixes: 1a83a716ec233 ("mm: krealloc: consider spare memory for
-> __GFP_ZERO")
-> Signed-off-by: Qun-Wei Lin <qun-wei.lin@mediatek.com>
+That's true, for common cases without corking, it should work well.
+For this fix, we have to consider cork at the same time.
 
-Acked-by: David Rientjes <rientjes@google.com>
+I still use pull here for simplicity, for example,
+```
+// user program
+txmsg_cork = 8;
+opt->iov_length = 3;
+opt->iov_count = 1;
+opt->rate = 3;
+
+// eBPF program
+pull_data(sk_msg, 0, 1);
+```
+In the first sendmsg,
+pull_data will be invoked and reset msg->sg.copybreak from 3 to 0,
+msg->sg.curr to 0, which is the same. However, because of the corking,
+the data will not be sent out, and it is stored in the psock->cork.
+
+In the second sendmsg,
+since we are in the stage of corking, psock->cork will be reused in func
+sk_msg_alloc. msg->sg.copybreak is 0 now, the second msg will overwrite
+the first msg. As a result, we could not pass the data integrity test.
+
+push + cork and pop + cork may have the same problem, with the same
+reason that corking may have different sendmsgs reuse the same skmsg.
+
+>> +	if (!msg->sg.size) {
+>> +		msg->sg.curr = msg->sg.start;
+>> +		msg->sg.copybreak = 0;
+>> +	} else {
+>> +		u32 i = msg->sg.end;
+>>   
+>> -	msg->sg.curr = i;
+>> -	msg->sg.copybreak = 0;
+>> +		sk_msg_iter_var_prev(i);
+> 
+> With this curr will always point to the end-1 but I'm not sure this can
+> handle the case where we have done sk_msg_alloc() so we have start/end
+> setup. And then on a copy fault for example we might have curr pointing
+> somewhere in the middle of that. I think I will need to construct the
+> example, but I believe this is originally why the 'i' is discovered
+> by sg walk vs simpler end.
+> 
+
+Good point! I am not sure if corking + pull/push/pop are common cases.
+I guess they are not? If we take these into account, then instead of
+resetting, we may need to carefully maintain the curr and copybreak when
+we shift the sgs?
+
+>> +		msg->sg.curr = i;
+>> +		msg->sg.copybreak = msg->sg.data[i].length;
+> 
+> This does seem more accurate then simply zero'ing out the copybreak
+> which is a good thing.
+> 
+>> +	}
+>>   }
+>>   
+>>   static const struct bpf_func_proto bpf_msg_cork_bytes_proto = {
+>> -- 
+>> 2.20.1
+>>
+> 
+> 
+
 
