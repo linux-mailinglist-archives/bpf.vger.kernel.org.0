@@ -1,187 +1,164 @@
-Return-Path: <bpf+bounces-43234-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43235-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E0679B1909
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 17:19:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C969B1925
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 17:33:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D720B282A1D
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 15:19:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AED8B218E6
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 15:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6848422612;
-	Sat, 26 Oct 2024 15:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5538270822;
+	Sat, 26 Oct 2024 15:33:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="f1KuznAZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L8iGzpVJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE5320326;
-	Sat, 26 Oct 2024 15:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5A325762;
+	Sat, 26 Oct 2024 15:33:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729955962; cv=none; b=StJNuNpkmrk6zLFgr4GJwgnI2b4g3STKyMqoxlJywgvxtJb3XPH8UhaxCGpqenh7nTI8FVCu7k4unSGmzRPZB+iPolZQgiunEu/DTtMyBAqnMWdTYc9KBNxy3+PUcFxoL/QZ5Tae6W1UPcaqCMYPzgezRbhJW+sg2N8w0nwCowA=
+	t=1729956816; cv=none; b=M5dcmpCrCCf5RBEC4hCKayE0QDk7/e/UCV7zMYpwAvUsZjUrm3RNX2HiVjVxESb1DTUfk/xQah88vVeiSYxNJoioX1HmCFbfRoJk++tK+QJBYxhIIw8mVmeItcXyq34sEMpzGgepOzEdWkW+583l9yEfbLp+nVyqWKLlbf9bOPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729955962; c=relaxed/simple;
-	bh=RzzZTH5YgogTIQk8E3+Ny2PunCEi4PzHedHeeWu6nGQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=FFrfgmorvvV8O3uB0/d+AOlHCPzw33UGUFI3CD1KW2fUW51X9zrnUMSg/frFfQSckrlgA+UljMw0VwvWPYo3RHIFfh/9mW55P0a+UDpqnj36D5q2iNRZFIBGHo46Edd7U392mrgOtfcqYafQHdMK7d1/u+4j+21GswdHglxFIGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=f1KuznAZ; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1729955958;
-	bh=RzzZTH5YgogTIQk8E3+Ny2PunCEi4PzHedHeeWu6nGQ=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=f1KuznAZVKWhOSz1t+vd26Eo7lJ+E4+cDjIccOd2hOnUxAzoSAP21mYDZRcW+uE4+
-	 WchvXThptekaUmM+02h3gKUdSSKAffdhCualmhqwzGBTfx6XYBKhhf+CruJKYqa7LC
-	 SRpFRW7ymYJUtnuwB1xnR/hWohVQ8LxrF820/tJSWNdziNkan5pAyHbS0r+FVhPG18
-	 nx5I4pbtVQllIvL2UmyRiRdUYu+d3TxIxv7irDCYifzyp1R2NQTgi8Z2mlIS091ysB
-	 63euw+Uiw+4e7SvAQfYcCKDsIVDJGi+osOFGmhO5bYyZ/XI6TNQTyH+6oUgXxUOd7Y
-	 CTO+xCAT/D3Kg==
-Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XbNbp5TnQzNCL;
-	Sat, 26 Oct 2024 11:19:18 -0400 (EDT)
-Message-ID: <da4beb18-7bed-41bd-aeba-94497eff0b58@efficios.com>
-Date: Sat, 26 Oct 2024 11:17:38 -0400
+	s=arc-20240116; t=1729956816; c=relaxed/simple;
+	bh=FSLsp2sahx8qchsENuYWxME34+U+ngpL3LY6oAgQK4s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JkY0v/etGGJSvwyf4pY7MPwXSuzPRAd8P21ltDL32qVAAU03fNKu6SIaRgytS3zU6RJGEQ0HNG8pjCufn9/Fm7vNPEPL6aVGWVVqIEDwyzWRsUGLkKgvoUuK26OceERqRwAfvoS/TnAUy+oAdqzcf6itSvd0LFvySGg3MzaXdXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L8iGzpVJ; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20cf6eea3c0so24354575ad.0;
+        Sat, 26 Oct 2024 08:33:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729956813; x=1730561613; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TYN2F/a1w4I8r5R0a7C5YTvUd+uTQUcH+unfZ/kP0o8=;
+        b=L8iGzpVJFAqa4uG5gCL6tA2zCtV4kNXDyCFuBvHAQM66eZupK+cR/Fwv6NAfvwwoZ7
+         Ma+VTmR5jEytj5+ioScAXkjTj9ewmC9S7mYQgPTxX/g25BuIkr6O3nt5Avf6Tgyv+WJQ
+         HYEshURz5MmBpx0HCG2SYrnwpXCcaHH4OmE0/okFtTFYugNAii0I+bjVu1KZH7wtc2/1
+         wNY4czUNxQYh0O/Bqs+UsXJ9eC2tRjYdJqLVXfwR0iWwvlo8J+vrzZS7OUDavcyyahDx
+         KFkdS0f4WdDHh+UIBSFCq1BI+OJqA+ztRnQqGxlXX46eo8M9T84URYP90N7xT+rhLATh
+         6nvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729956813; x=1730561613;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TYN2F/a1w4I8r5R0a7C5YTvUd+uTQUcH+unfZ/kP0o8=;
+        b=w60llEMWTBUA+Cdh6gvEln5UwmL6zDkRKP+ExHSLTprLua2PD98iaYzID0Qh0kZsUZ
+         BQ+uNnOWfgVhB+dhECE8P/flRaRizA9hK6BPoVnkKVLiYCf/0YbO2y/hoGDtB5Ulhho/
+         6+5ieja3EP66zwqXkV56nrzzqx7SIdF4utH8wwDF/EDY3lA9tPPeKnWsBrPipzm+mMI6
+         NrIyXZnR9pyWDooBesKjjpfdrH7Yb6UvbPrZhNXQtK5UOw08Ap3rQYRReAbkuVt4ahFk
+         PjRN6TEbmoq1POrkL8/GyO0Gju6kO9QXz4ZTalddbWrNAqbzTtuVqsS3WKGWqS/MYYat
+         +V3g==
+X-Forwarded-Encrypted: i=1; AJvYcCVTzOdOH54akBEhjxndy29tp8FubOHUUEQkkpzTujMH2siQc9pdOV6L04Sa7+kpJS72I8M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZANtcYw3fa3+PrfWCyvH9DXEGsJ1XxAm8SQHRbZkHcwxF+E/z
+	9CSwrT88oYVuunT6NP+aphHv7bgPKo8CG0Wv5IguaDk1wZg3GKQu
+X-Google-Smtp-Source: AGHT+IEs4+UY+gR5MmyNlRUM45535Mzth7SzrVKuHFqHOstxU1fqKPHB7JCpyrOc0epukJqcLvgnWQ==
+X-Received: by 2002:a17:903:40c8:b0:20d:cb6:11e with SMTP id d9443c01a7336-210c68dd576mr37573765ad.26.1729956813020;
+        Sat, 26 Oct 2024 08:33:33 -0700 (PDT)
+Received: from localhost ([2601:647:6881:9060:6a46:a288:5839:361d])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bbf434bcsm25541015ad.20.2024.10.26.08.33.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Oct 2024 08:33:32 -0700 (PDT)
+Date: Sat, 26 Oct 2024 08:33:31 -0700
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com,
+	Cong Wang <cong.wang@bytedance.com>, zijianzhang@bytedance.com
+Subject: Re: [Patch bpf] bpf: check negative offsets in __bpf_skb_min_len()
+Message-ID: <Zx0LyxWQThUCIwnq@pop-os.localdomain>
+References: <20241008053350.123205-1-xiyou.wangcong@gmail.com>
+ <de2e0d8e-e7eb-4cbd-9397-29ddc79f1961@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1] tracing: Fix syscall tracepoint use-after-free
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jordan Rife <jrife@google.com>, acme@kernel.org,
- alexander.shishkin@linux.intel.com, andrii.nakryiko@gmail.com,
- ast@kernel.org, bpf@vger.kernel.org, joel@joelfernandes.org,
- linux-kernel@vger.kernel.org, mark.rutland@arm.com, mhiramat@kernel.org,
- mingo@redhat.com, mjeanson@efficios.com, namhyung@kernel.org,
- paulmck@kernel.org, peterz@infradead.org,
- syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com, yhs@fb.com
-References: <20241025182149.500274-1-mathieu.desnoyers@efficios.com>
- <20241025190854.3030636-1-jrife@google.com>
- <f31710d3-e4d8-43ad-9ccb-6d13201756a3@efficios.com>
- <20241026031314.0f53e7fa@rorschach.local.home>
- <b961bc6b-331c-4315-b424-60d514cc112e@efficios.com>
-Content-Language: en-US
-In-Reply-To: <b961bc6b-331c-4315-b424-60d514cc112e@efficios.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <de2e0d8e-e7eb-4cbd-9397-29ddc79f1961@iogearbox.net>
 
-On 2024-10-26 10:25, Mathieu Desnoyers wrote:
-> On 2024-10-26 03:13, Steven Rostedt wrote:
->> On Fri, 25 Oct 2024 15:38:48 -0400
->> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
->>
->>>> I'm curious if it might be better to add some field to struct
->>>> tracepoint like "sleepable" rather than adding a special case here
->>>> based on the name? Of course, if it's only ever going to be these
->>>> two cases then maybe adding a new field doesn't make sense.
->>>
->>> I know Steven is reluctant to bloat the tracepoint struct because there
->>> are lots of tracepoint instances (thousands). So for now I thought that
->>> just comparing the name would be a good start.
->>
->> You are correct. I really trying to keep the footprint of
->> tracepoints/events down.
->>
->>>
->>> We can eventually go a different route as well: introduce a section just
->>> to put the syscall tracepoints, and compare the struct tracepoint
->>> pointers to the section begin/end range. But it's rather complex
->>> for what should remain a simple fix.
->>
->> A separate section could work.
+On Tue, Oct 22, 2024 at 10:52:31PM +0200, Daniel Borkmann wrote:
+> On 10/8/24 7:33 AM, Cong Wang wrote:
+> > From: Cong Wang <cong.wang@bytedance.com>
+> > 
+> > skb_transport_offset() and skb_transport_offset() can be negative when
 > 
-> I have another approach to suggest: it shrinks the
-> size of struct tracepoint from 80 bytes down to 72 bytes
-> on x86-64, we don't have to do any section/linker
-> script trickery, and it's extensible for future flags:
+> nit: I presume the 2nd one is skb_network_offset?
 > 
-> struct static_key {
->          int enabled;
->          void *p;
-> };
+> > they are called after we pull the transport header, for example, when
+> > we use eBPF sockmap (aka at the point of ->sk_data_ready()).
+> > 
+> > __bpf_skb_min_len() uses an unsigned int to get these offsets, this
+> > leads to a very large number which causes bpf_skb_change_tail() failed
+> > unexpectedly.
+> > 
+> > Fix this by using a signed int to get these offsets and test them
+> > against zero.
+> > 
+> > Fixes: 5293efe62df8 ("bpf: add bpf_skb_change_tail helper")
+> > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 > 
-> struct static_key_false {
->          struct static_key key;
-> };
-> 
-> struct static_call_key {
->          void *func;
->          void *p;
-> };
-> 
-> struct tracepoint {
->          const char *name;               /* Tracepoint name */
->          struct static_key_false key;
->          struct static_call_key *static_call_key;
->          void *static_call_tramp;
->          void *iterator;
->          void *probestub;
->          void *funcs;
->          /* Flags. */
->          unsigned int regfunc:1,
->                       syscall:1;
-> };
-> 
-> struct tracepoint_regfunc {
->          struct tracepoint tp;
->          int (*regfunc)(void);
->          void (*unregfunc)(void);
-> };
-> 
-> Basically, a tracepoint with regfunc would define a
-> struct tracepoint_regfunc rather than a struct tracepoint.
-> So we remove both regfunc and unregfunc NULL pointers in
-> the common case, which gives us plenty of room for flags.
-> 
-> When we want to access the regfunc/unregfunc from
-> a struct tracepoint, we check the regfunc flag, and
-> if set, we can use container_of() to get the struct
-> tracepoint_regfunc.
+> Is there any chance you could also extend the sockmap BPF selftest with
+> this case you're hitting so that BPF CI can run this regularly?
 
-Actually I can achieve the same space saving with fewer
-changes like this:
+Yes, my colleague Zijian (Cc'ed) is working on a selftest to cover this case.
 
-struct tracepoint_ext {
-     void *regfunc;
-     void *unregfunc;
-     /* Flags. */
-     unsigned int syscall:1;
-}
-
-struct tracepoint {
-         const char *name;               /* Tracepoint name */
-         struct static_key_false key;
-         struct static_call_key *static_call_key;
-         void *static_call_tramp;
-         void *iterator;
-         void *probestub;
-         void *funcs;
-         struct tracepoint_ext *ext;
-};
-
-Thanks,
-
-Mathieu
+Please let me know if you prefer to send it together with the selftest,
+technically it would make backporting this fix harder, but I am open to
+any suggestion here.
 
 > 
-> Thoughts ?
+> > ---
+> >   net/core/filter.c | 21 +++++++++++++++------
+> >   1 file changed, 15 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 4e3f42cc6611..10ef27639a5d 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -3737,13 +3737,22 @@ static const struct bpf_func_proto bpf_skb_adjust_room_proto = {
+> >   static u32 __bpf_skb_min_len(const struct sk_buff *skb)
+> >   {
+> > -	u32 min_len = skb_network_offset(skb);
+> > +	int offset = skb_network_offset(skb);
+> > +	u32 min_len = 0;
+> > -	if (skb_transport_header_was_set(skb))
+> > -		min_len = skb_transport_offset(skb);
+> > -	if (skb->ip_summed == CHECKSUM_PARTIAL)
+> > -		min_len = skb_checksum_start_offset(skb) +
+> > -			  skb->csum_offset + sizeof(__sum16);
+> > +	if (offset > 0)
+> > +		min_len = offset;
+> > +	if (skb_transport_header_was_set(skb)) {
+> > +		offset = skb_transport_offset(skb);
+> > +		if (offset > 0)
+> > +			min_len = offset;
+> > +	}
+> > +	if (skb->ip_summed == CHECKSUM_PARTIAL) {
+> > +		offset = skb_checksum_start_offset(skb) +
+> > +			 skb->csum_offset + sizeof(__sum16);
+> > +		if (offset > 0)
+> > +			min_len = offset;
+> > +	}
+> >   	return min_len;
 > 
-> Thanks,
-> 
-> Mathieu
-> 
+> I'll let John chime in, but does this mean in case of sockmap min_len always ends
+> up at 0? I just wonder whether we should pass a custom __bpf_skb_min_len to
+> __bpf_skb_change_tail for bpf_skb_change_tail vs sk_skb_change_tail assuming the
+> compiler is able to inlining all this (instead of indirect call).
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Yes, in case of sockmap skb->data is already past TCP header, so all the
+offsets here are negative. And since the 'new_len' of bpf_skb_change_tail()
+is unsigned (too late to change), min_len should be zero.
 
+Thanks.
 
