@@ -1,161 +1,124 @@
-Return-Path: <bpf+bounces-43220-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43221-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2E999B14DC
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 06:39:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DE559B14F1
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 07:03:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91B46B224C0
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 04:39:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE6C7282D51
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 05:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17176189910;
-	Sat, 26 Oct 2024 04:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563A31632D9;
+	Sat, 26 Oct 2024 05:02:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q6iVwB08"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BNOAQoqA"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8581D1531EA;
-	Sat, 26 Oct 2024 04:39:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223CF17C;
+	Sat, 26 Oct 2024 05:02:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729917542; cv=none; b=s4svM8vtuEv03b20G2LUnceqJvjVMJdJuaV+5TswZL2GbVJ4atISw5dFYHarB9un5qT1PgASKVJesERYMDTjStryXpzTi/kOmVK4fqR2bnb/7BlDAercSnbduWa5+Zd47j5mP21AH4sUIlVCUFStGzm3C242ewRsf/fP0WZA4RM=
+	t=1729918971; cv=none; b=Qaufp7fIgWXvjb9FR8v6MX/cwyztY2nPlloDRrKIBzpCecW0j5nn7g0DBfWc86Z0RA2BH4aMGvEVG2O4iHUf5saaogubI6sMXkBO8ZlVMo6Q93JaODAJcak0h21Ejd+JOnC9Q8ehA2B9iRvz6Gmqu74Pw/4q1T9LRAtYlK/RfeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729917542; c=relaxed/simple;
-	bh=n9VtmKQ14GrIslX3iLijN1LRbOtcuO6u1tHZUvreuy4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jFcW93bafhL2vjxvnd+aDxriqhSIXeJ6JnlYt24M5FO2HsxpF1R27lGEz3ur2ePj23x3Dk9XZGnChlfBQbFToRs8PiDGusOhmURMqqHQSuZoeEgeNea42aFZ5OX78w4HqS0i/HwA09G9OFvwBrIm+xtwTyocGyiSDQ99Ck4ofTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q6iVwB08; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9208AC4CEC6;
-	Sat, 26 Oct 2024 04:38:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729917542;
-	bh=n9VtmKQ14GrIslX3iLijN1LRbOtcuO6u1tHZUvreuy4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=q6iVwB08XSYCZPjHdIykxIwdG9DjDk+I9Q5iMpupdNGRpuZLHNUXo2Rj2UcGrlCj8
-	 yqWhUm3p3ycTNwN/eOOgnbu/sqO9rR3WTKeMcfK1BHeJ1xVcyn/1lxS7UO2ydVHDX2
-	 a8xkPHg3rfHeKFtoHxFFnCgh25aGPeXZFr7pB4h79dANN4vBvYt+jPyz/S2/yYlCzl
-	 Fg+L1TAHShr/vgFJ7GZvmUMWK6W+ExRoc8Z83vsIGg3srl6JKxiHBEZgAPTY8biTzd
-	 xk9DFq2AloJLb4sTJilGVEPd4W/BZGllOeNg+0GJyTqg5Fybd8O/kHgOziF0nwOr+F
-	 EShDSQ3Q4ppHQ==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
+	s=arc-20240116; t=1729918971; c=relaxed/simple;
+	bh=/jegesIMV5h/Wgu6ILE9MpSosDfZ2/idssK/zKj3zU8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=OMR2Wp/MarBDib0B57llcBN598MMC/jKWXD6upJlGeqc4WDIK9KMMMFXfjT8taV4W5jN3i+Mt84kOiuJNBwaFc9kd2wjDJb/mShokmjYlOGOWYfzyqwm9p4ke/52C9BwntToPLVfFkEeCPdRThZH3eKTV2YRopatb332yzj6auQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BNOAQoqA; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-7ae3d7222d4so1943770a12.3;
+        Fri, 25 Oct 2024 22:02:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729918969; x=1730523769; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Yn36Vj1gCAJWmg81v9vfsiQ9AEJyqVLMwrFUP9rTOXs=;
+        b=BNOAQoqAbE/KQF4KZL4Ihg912ELyIvzbrZ7Hdl6IINOE5z5j2M9StfdjpHukeG4npx
+         i4TjAE2ZFYcdVd9347RCiS636u0jgx9OM2v897BfTyagqKM0wkT5TP3AJqHALyJmVbRp
+         0C/ZAqQhSQiT4to/jLOat+7Ba2pruLLISFGq9BPOP4CQXkctYruIfyjIzQNjX/IXIl39
+         6btwDIrCUuZMDqv+ESGC71JK6Q5J+u2NaSrF1N7KYAbSu3DYKhdFjm50ajTV8XEHmfKO
+         q+qGndAiozEYPHB1ysZLjM45MJT7l1Xd5jg7l6BnYvlYp6ne1FvsqveFjgzOOou9gfLJ
+         lNZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729918969; x=1730523769;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Yn36Vj1gCAJWmg81v9vfsiQ9AEJyqVLMwrFUP9rTOXs=;
+        b=sxs8CNtr3Un1+84YP8gVLhf7KtpwUG9PRCvlgJlLm3pMT34usuRiSjXESGr4AAbl6X
+         ielJcNFowqHewr5mzovAz2I543BWLB8yfmmoWLvTBJ548xsB8H211nGf7C2pw6YRub8D
+         Yekj1x/q6Eucmvr5WeJjS57zjQLVKGApD2gF1DPAnGc4aJUs2eO909/d8ut4ODLMazho
+         A9XjqkUsKloDWr/nlRO8m3JN/29JVDX7zOmsF3xMqJHn4ydieuAnjL1zvZ6llAoLjbZ3
+         HA5a9musb3vU+LtkbblMrs1lLtdE8bCKwWeUmEF8zovvnt0bD7rLUmuFdwMtmrD8sEpZ
+         C/Hw==
+X-Forwarded-Encrypted: i=1; AJvYcCVZvAmLtLy6I9hpijDxkLkerC8EoTNaL0XIO3XKMsEFcIY0I/492MiukAntBS2N3m6A/lo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYq1ZU8R9guvty7Or/mtPOFuRZIOKhBiOrOg80P0eMcbeWQA56
+	99w1XjyKkDHQ97t+1zIkUVhRdvjioLN64Gysk8RRmMfxVaPL5FWXMi2Lfzkv
+X-Google-Smtp-Source: AGHT+IETFU2OxryR2LbIKq3GfwseFTs6P+JWYNpmv7ydBKxDSc4fxASQfvOu0gxC+n3M3qWH5CxTog==
+X-Received: by 2002:a05:6a21:e85:b0:1d6:fb1b:d08c with SMTP id adf61e73a8af0-1d9a84bcd86mr1854072637.39.1729918969324;
+        Fri, 25 Oct 2024 22:02:49 -0700 (PDT)
+Received: from localhost.localdomain ([210.205.14.5])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057a4341asm1941855b3a.218.2024.10.25.22.02.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Oct 2024 22:02:48 -0700 (PDT)
+Date: Sat, 26 Oct 2024 14:02:43 +0900
+From: Byeonguk Jeong <jungbu2855@gmail.com>
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-arch@vger.kernel.org
-Subject: [PATCH v18 17/17] bpf: Add get_entry_ip() for arm64
-Date: Sat, 26 Oct 2024 13:38:57 +0900
-Message-ID: <172991753721.443985.6962319676929775642.stgit@devnote2>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <172991731968.443985.4558065903004844780.stgit@devnote2>
-References: <172991731968.443985.4558065903004844780.stgit@devnote2>
-User-Agent: StGit/0.19
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Hou Tao <houtao@huaweicloud.com>,
+	Yonghong Song <yonghong.song@linux.dev>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH v2 bpf 1/2] bpf: Fix out-of-bounds write in
+ trie_get_next_key()
+Message-ID: <Zxx384ZfdlFYnz6J@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+trie_get_next_key() allocates a node stack with size trie->max_prefixlen,
+while it writes (trie->max_prefixlen + 1) nodes to the stack when it has
+full paths from the root to leaves. For example, consider a trie with
+max_prefixlen is 8, and the nodes with key 0x00/0, 0x00/1, 0x00/2, ...
+0x00/8 inserted. Subsequent calls to trie_get_next_key with _key with
+.prefixlen = 8 make 9 nodes be written on the node stack with size 8.
 
-Add get_entry_ip() implementation for arm64. This is based on the
-information in ftrace_call_adjust() on arm64. Basically function entry
-address = ftrace call entry_ip - 4, but when there is a BTI at the first
-instruction, we need one more instruction back (entry_ip - 8.)
-
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Fixes: b471f2f1de8b ("bpf: implement MAP_GET_NEXT_KEY command for LPM_TRIE map")
+Signed-off-by: Byeonguk Jeong <jungbu2855@gmail.com>
+Reviewed-by: Toke Høiland-Jørgensen <toke@kernel.org>
+Tested-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/trace/bpf_trace.c |   64 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
+v1 -> v2: nothing changed
+---
+ kernel/bpf/lpm_trie.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 1532e9172bf9..d58d1417cbaa 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1042,6 +1042,70 @@ static unsigned long get_entry_ip(unsigned long fentry_ip)
- 		fentry_ip -= ENDBR_INSN_SIZE;
- 	return fentry_ip;
- }
-+#elif defined(CONFIG_ARM64)
-+#include <asm/insn.h>
-+
-+static unsigned long get_entry_ip(unsigned long fentry_ip)
-+{
-+	u32 insn;
-+
-+	/*
-+	 * When using patchable-function-entry without pre-function NOPS, ftrace
-+	 * entry is the address of the first NOP after the function entry point.
-+	 *
-+	 * The compiler has either generated:
-+	 *
-+	 * func+00:	func:	NOP		// To be patched to MOV X9, LR
-+	 * func+04:		NOP		// To be patched to BL <caller>
-+	 *
-+	 * Or:
-+	 *
-+	 * func-04:		BTI	C
-+	 * func+00:	func:	NOP		// To be patched to MOV X9, LR
-+	 * func+04:		NOP		// To be patched to BL <caller>
-+	 *
-+	 * The fentry_ip is the address of `BL <caller>` which is at `func + 4`
-+	 * bytes in either case.
-+	 */
-+	if (!IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_CALL_OPS))
-+		return fentry_ip - AARCH64_INSN_SIZE;
-+
-+	/*
-+	 * When using patchable-function-entry with pre-function NOPs, BTI is
-+	 * a bit different.
-+	 *
-+	 * func+00:	func:	NOP		// To be patched to MOV X9, LR
-+	 * func+04:		NOP		// To be patched to BL <caller>
-+	 *
-+	 * Or:
-+	 *
-+	 * func+00:	func:	BTI	C
-+	 * func+04:		NOP		// To be patched to MOV X9, LR
-+	 * func+08:		NOP		// To be patched to BL <caller>
-+	 *
-+	 * The fentry_ip is the address of `BL <caller>` which is at either
-+	 * `func + 4` or `func + 8` depends on whether there is a BTI.
-+	 */
-+
-+	/* If there is no BTI, the func address should be one instruction before. */
-+	if (!IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
-+		return fentry_ip - AARCH64_INSN_SIZE;
-+
-+	/* We want to be extra safe in case entry ip is on the page edge,
-+	 * but otherwise we need to avoid get_kernel_nofault()'s overhead.
-+	 */
-+	if ((fentry_ip & ~PAGE_MASK) < AARCH64_INSN_SIZE * 2) {
-+		if (get_kernel_nofault(insn, (u32 *)(fentry_ip - AARCH64_INSN_SIZE * 2)))
-+			return fentry_ip - AARCH64_INSN_SIZE;
-+	} else {
-+		insn = *(u32 *)(fentry_ip - AARCH64_INSN_SIZE * 2);
-+	}
-+
-+	if (aarch64_insn_is_bti(le32_to_cpu((__le32)insn)))
-+		return fentry_ip - AARCH64_INSN_SIZE * 2;
-+
-+	return fentry_ip - AARCH64_INSN_SIZE;
-+}
- #else
- #define get_entry_ip(fentry_ip) fentry_ip
- #endif
+diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
+index 0218a5132ab5..9b60eda0f727 100644
+--- a/kernel/bpf/lpm_trie.c
++++ b/kernel/bpf/lpm_trie.c
+@@ -655,7 +655,7 @@ static int trie_get_next_key(struct bpf_map *map, void *_key, void *_next_key)
+ 	if (!key || key->prefixlen > trie->max_prefixlen)
+ 		goto find_leftmost;
+ 
+-	node_stack = kmalloc_array(trie->max_prefixlen,
++	node_stack = kmalloc_array(trie->max_prefixlen + 1,
+ 				   sizeof(struct lpm_trie_node *),
+ 				   GFP_ATOMIC | __GFP_NOWARN);
+ 	if (!node_stack)
+-- 
+2.43.5
 
 
