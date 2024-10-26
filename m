@@ -1,165 +1,256 @@
-Return-Path: <bpf+bounces-43200-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 429E09B1470
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 05:58:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51FD09B14A4
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 06:35:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDE161F228F5
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 03:58:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA3002831A7
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 04:35:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F309217ADF8;
-	Sat, 26 Oct 2024 03:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B651632C2;
+	Sat, 26 Oct 2024 04:35:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YHERhIMN"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294341DFD8;
-	Sat, 26 Oct 2024 03:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D20D120ED;
+	Sat, 26 Oct 2024 04:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729915071; cv=none; b=QRE/Qt1oMTKgBGh7l/Vwt2Ec2g/VuOB/jqevnxg6+rgZ4VhnkCildoM5e5DjBQ3IY1XU0vOFbDrx5oy4DrzGKirBX5H8vNkgw28o7Ujx1hPkebj3ar/Y6ooQbODoI/iB/rD3Ob8CSnAOiLHXe94ARaf4LA676p88jvOyIYVkgpM=
+	t=1729917326; cv=none; b=HbIwg97OgGY8dAVu0LC7CLZWdHmPWBpKy2KEH0cmpSoVjLIaUVmXeAuYI/3b5HQu7/SXsLcbG+yYskuQkFmKjx4+Cww1xIChbaKRCHEA+LTFt3TozzXBh+J3IDizYr7Gn3glklBJbNyD3bEm67B+P3rz0h7Hisk+xN0r35R5tKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729915071; c=relaxed/simple;
-	bh=hUSRMfyu9RY2XLrAWKOMXbLeFv+ti9pDxOGiJ/kd2CI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hk0czgEnpnQfldhaMEMHwAC+HpEGkFsSbGb77StaYyUQ7KISmFq2+0NhZEa1N+enMazttBTNwNXupu1pa83g1NzBSQziW9ZFZPkJytur4sD4D5FkyZCCro6AHvbh5trzlqGpALlfJKCwtblSxf4TAsZ73PPLXw0P7ZnzMmJaFyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Xb5R92507zlXH0;
-	Sat, 26 Oct 2024 11:55:49 +0800 (CST)
-Received: from dggpemf500002.china.huawei.com (unknown [7.185.36.57])
-	by mail.maildlp.com (Postfix) with ESMTPS id B3FD01401F4;
-	Sat, 26 Oct 2024 11:57:45 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggpemf500002.china.huawei.com
- (7.185.36.57) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Sat, 26 Oct
- 2024 11:57:44 +0800
-From: Yue Haibing <yuehaibing@huawei.com>
-To: <anthony.l.nguyen@intel.com>, <przemyslaw.kitszel@intel.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<hawk@kernel.org>, <john.fastabend@gmail.com>,
-	<maciej.fijalkowski@intel.com>, <vedang.patel@intel.com>,
-	<jithu.joseph@intel.com>, <andre.guedes@intel.com>, <horms@kernel.org>,
-	<jacob.e.keller@intel.com>, <sven.auhagen@voleatech.de>,
-	<alexander.h.duyck@intel.com>
-CC: <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<yuehaibing@huawei.com>
-Subject: [PATCH v4 net-next 4/4] ixgbevf: Fix passing 0 to ERR_PTR in ixgbevf_run_xdp()
-Date: Sat, 26 Oct 2024 12:12:49 +0800
-Message-ID: <20241026041249.1267664-5-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241026041249.1267664-1-yuehaibing@huawei.com>
-References: <20241026041249.1267664-1-yuehaibing@huawei.com>
+	s=arc-20240116; t=1729917326; c=relaxed/simple;
+	bh=FdR+efSK1WayyrPJqwensIqKZVrCbCCmgWGnOB9KAjc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AaYVBZWwMNKh+YPt+gWX1ZnMk+wwhdreWJpvjwQibLnn541f0Ie3J8x/wSwopTNY7SDzRhh5NY5/c3u5Gb23NbBbnHBoBTJIF0DDqUCayFOipyRiyw8/JufvYp9+l9tsGgAdDer3+6bbNELT8ukGMNNFSEtnZB6jedxAMZJbSUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YHERhIMN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80142C4CEC6;
+	Sat, 26 Oct 2024 04:35:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729917325;
+	bh=FdR+efSK1WayyrPJqwensIqKZVrCbCCmgWGnOB9KAjc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=YHERhIMNGQIqzM3I4PC2QqPVzQb4o/ZzaJkWQQKmgcjekv/8hr+Be7P36ITvx2FQ1
+	 NQAYIIgqr+WqFxv93YV1rZyuFV9MPwXbIQxgMeXCgPrkg5M6ZoDOfM3AOvazm5rKZA
+	 K0TKB//J2zCLgkW70a8eqvoTy+QE4zsL5O1O1dfiWd2/KbiXGek/5bGmETmiHFA9/D
+	 FdkOnPp6fRv3icbCCQ/lL3QE4kk3MrSAV6XkUv1OZCQQiEn/mc1KtZdMLF+4nO5yl9
+	 /fckpLYcJu/XUL3C7erFVvlXdIC8qWRXmb3z5XiJ6fKyHMonbV+/hTRu7di7wBFD/d
+	 JYFYT4hShbXDQ==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	linux-arch@vger.kernel.org
+Subject: [PATCH v18 00/17] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
+Date: Sat, 26 Oct 2024 13:35:19 +0900
+Message-ID: <172991731968.443985.4558065903004844780.stgit@devnote2>
+X-Mailer: git-send-email 2.43.0
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemf500002.china.huawei.com (7.185.36.57)
 
-ixgbevf_run_xdp() converts customed xdp action to a negative error code
-with the sk_buff pointer type which be checked with IS_ERR in
-ixgbevf_clean_rx_irq(). Remove this error pointer handing instead use
-plain int return value.
+Hi,
 
-Fixes: c7aec59657b6 ("ixgbevf: Add XDP support for pass and drop actions")
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+Here is the 18th version of the series to re-implement the fprobe on
+function-graph tracer. The previous version is;
+
+https://lore.kernel.org/all/172904026427.36809.516716204730117800.stgit@devnote2/
+
+This version fixes the fprobe_header encoding problem[11/17] and
+and add asm/fprobe.h for arch dependent encoding/decoding[12/17].
+Another minor fixes are;
+ - [1/17] Remove unclear comment on arm64
+ - [2/17] Use PTREGS_SIZE on i386
+ - [6/17] Fix to use sizeof() for array
+ - [11/17] Fix Kconfig for FPROBE to depend on DYNAMIC_FTRACE_WITH_ARGS
+
+Overview
+--------
+This series rewrites the fprobe on this function-graph.
+The purposes of this change are;
+
+ 1) Remove dependency of the rethook from fprobe so that we can reduce
+   the return hook code and shadow stack.
+
+ 2) Make 'ftrace_regs' the common trace interface for the function
+   boundary.
+
+1) Currently we have 2(or 3) different function return hook codes,
+ the function-graph tracer and rethook (and legacy kretprobe).
+ But since this  is redundant and needs double maintenance cost,
+ I would like to unify those. From the user's viewpoint, function-
+ graph tracer is very useful to grasp the execution path. For this
+ purpose, it is hard to use the rethook in the function-graph
+ tracer, but the opposite is possible. (Strictly speaking, kretprobe
+ can not use it because it requires 'pt_regs' for historical reasons.)
+
+2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+ wrong for the function entry and exit. Moreover, depending on the
+ architecture, there is no way to accurately reproduce 'pt_regs'
+ outside of interrupt or exception handlers. This means fprobe should
+ not use 'pt_regs' because it does not use such exceptions.
+ (Conversely, kprobe should use 'pt_regs' because it is an abstract
+  interface of the software breakpoint exception.)
+
+This series changes fprobe to use function-graph tracer for tracing
+function entry and exit, instead of mixture of ftrace and rethook.
+Unlike the rethook which is a per-task list of system-wide allocated
+nodes, the function graph's ret_stack is a per-task shadow stack.
+Thus it does not need to set 'nr_maxactive' (which is the number of
+pre-allocated nodes).
+Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+their register interface, this changes it to convert 'ftrace_regs' to
+'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+so users must access only registers for function parameters or
+return value. 
+
+Design
+------
+Instead of using ftrace's function entry hook directly, the new fprobe
+is built on top of the function-graph's entry and return callbacks
+with 'ftrace_regs'.
+
+Since the fprobe requires access to 'ftrace_regs', the architecture
+must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS and
+CONFIG_HAVE_FTRACE_GRAPH_FUNC, which enables to call function-graph
+entry callback with 'ftrace_regs', and also
+CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+return_to_handler.
+
+All fprobes share a single function-graph ops (means shares a common
+ftrace filter) similar to the kprobe-on-ftrace. This needs another
+layer to find corresponding fprobe in the common function-graph
+callbacks, but has much better scalability, since the number of
+registered function-graph ops is limited.
+
+In the entry callback, the fprobe runs its entry_handler and saves the
+address of 'fprobe' on the function-graph's shadow stack as data. The
+return callback decodes the data to get the 'fprobe' address, and runs
+the exit_handler.
+
+The fprobe introduces two hash-tables, one is for entry callback which
+searches fprobes related to the given function address passed by entry
+callback. The other is for a return callback which checks if the given
+'fprobe' data structure pointer is still valid. Note that it is
+possible to unregister fprobe before the return callback runs. Thus
+the address validation must be done before using it in the return
+callback.
+
+Download
+--------
+This series can be applied against the ftrace/for-next branch in
+linux-trace tree.
+
+This series can also be found below branch.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
+
+Thank you,
+
 ---
- .../net/ethernet/intel/ixgbevf/ixgbevf_main.c | 23 ++++++++-----------
- 1 file changed, 10 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-index 149911e3002a..183d2305d058 100644
---- a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-+++ b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-@@ -732,10 +732,6 @@ static bool ixgbevf_cleanup_headers(struct ixgbevf_ring *rx_ring,
- 				    union ixgbe_adv_rx_desc *rx_desc,
- 				    struct sk_buff *skb)
- {
--	/* XDP packets use error pointer so abort at this point */
--	if (IS_ERR(skb))
--		return true;
--
- 	/* verify that the packet does not have any known errors */
- 	if (unlikely(ixgbevf_test_staterr(rx_desc,
- 					  IXGBE_RXDADV_ERR_FRAME_ERR_MASK))) {
-@@ -1044,9 +1040,9 @@ static int ixgbevf_xmit_xdp_ring(struct ixgbevf_ring *ring,
- 	return IXGBEVF_XDP_TX;
- }
- 
--static struct sk_buff *ixgbevf_run_xdp(struct ixgbevf_adapter *adapter,
--				       struct ixgbevf_ring  *rx_ring,
--				       struct xdp_buff *xdp)
-+static int ixgbevf_run_xdp(struct ixgbevf_adapter *adapter,
-+			   struct ixgbevf_ring *rx_ring,
-+			   struct xdp_buff *xdp)
- {
- 	int result = IXGBEVF_XDP_PASS;
- 	struct ixgbevf_ring *xdp_ring;
-@@ -1080,7 +1076,7 @@ static struct sk_buff *ixgbevf_run_xdp(struct ixgbevf_adapter *adapter,
- 		break;
- 	}
- xdp_out:
--	return ERR_PTR(-result);
-+	return result;
- }
- 
- static unsigned int ixgbevf_rx_frame_truesize(struct ixgbevf_ring *rx_ring,
-@@ -1122,6 +1118,7 @@ static int ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
- 	struct sk_buff *skb = rx_ring->skb;
- 	bool xdp_xmit = false;
- 	struct xdp_buff xdp;
-+	int xdp_res = 0;
- 
- 	/* Frame size depend on rx_ring setup when PAGE_SIZE=4K */
- #if (PAGE_SIZE < 8192)
-@@ -1165,11 +1162,11 @@ static int ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
- 			/* At larger PAGE_SIZE, frame_sz depend on len size */
- 			xdp.frame_sz = ixgbevf_rx_frame_truesize(rx_ring, size);
- #endif
--			skb = ixgbevf_run_xdp(adapter, rx_ring, &xdp);
-+			xdp_res = ixgbevf_run_xdp(adapter, rx_ring, &xdp);
- 		}
- 
--		if (IS_ERR(skb)) {
--			if (PTR_ERR(skb) == -IXGBEVF_XDP_TX) {
-+		if (xdp_res) {
-+			if (xdp_res == IXGBEVF_XDP_TX) {
- 				xdp_xmit = true;
- 				ixgbevf_rx_buffer_flip(rx_ring, rx_buffer,
- 						       size);
-@@ -1189,7 +1186,7 @@ static int ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
- 		}
- 
- 		/* exit if we failed to retrieve a buffer */
--		if (!skb) {
-+		if (!xdp_res && !skb) {
- 			rx_ring->rx_stats.alloc_rx_buff_failed++;
- 			rx_buffer->pagecnt_bias++;
- 			break;
-@@ -1203,7 +1200,7 @@ static int ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
- 			continue;
- 
- 		/* verify the packet layout is correct */
--		if (ixgbevf_cleanup_headers(rx_ring, rx_desc, skb)) {
-+		if (xdp_res || ixgbevf_cleanup_headers(rx_ring, rx_desc, skb)) {
- 			skb = NULL;
- 			continue;
- 		}
--- 
-2.34.1
+Masami Hiramatsu (Google) (17):
+      fgraph: Pass ftrace_regs to entryfunc
+      fgraph: Replace fgraph_ret_regs with ftrace_regs
+      fgraph: Pass ftrace_regs to retfunc
+      fprobe: Use ftrace_regs in fprobe entry handler
+      fprobe: Use ftrace_regs in fprobe exit handler
+      tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+      tracing: Add ftrace_fill_perf_regs() for perf event
+      tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+      bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+      ftrace: Add CONFIG_HAVE_FTRACE_GRAPH_FUNC
+      fprobe: Rewrite fprobe on function-graph tracer
+      fprobe: Add fprobe_header encoding feature
+      tracing/fprobe: Remove nr_maxactive from fprobe
+      selftests: ftrace: Remove obsolate maxactive syntax check
+      selftests/ftrace: Add a test case for repeating register/unregister fprobe
+      Documentation: probes: Update fprobe on function-graph tracer
+      bpf: Add get_entry_ip() for arm64
 
+
+ Documentation/trace/fprobe.rst                     |   42 +
+ arch/arm64/Kconfig                                 |    2 
+ arch/arm64/include/asm/fprobe.h                    |    7 
+ arch/arm64/include/asm/ftrace.h                    |   49 +
+ arch/arm64/kernel/asm-offsets.c                    |   12 
+ arch/arm64/kernel/entry-ftrace.S                   |   32 +
+ arch/arm64/kernel/ftrace.c                         |   15 
+ arch/loongarch/Kconfig                             |    4 
+ arch/loongarch/include/asm/fprobe.h                |    5 
+ arch/loongarch/include/asm/ftrace.h                |   32 -
+ arch/loongarch/kernel/asm-offsets.c                |   12 
+ arch/loongarch/kernel/ftrace_dyn.c                 |   10 
+ arch/loongarch/kernel/mcount.S                     |   17 -
+ arch/loongarch/kernel/mcount_dyn.S                 |   14 
+ arch/powerpc/Kconfig                               |    1 
+ arch/powerpc/include/asm/ftrace.h                  |   13 
+ arch/powerpc/kernel/trace/ftrace.c                 |    2 
+ arch/powerpc/kernel/trace/ftrace_64_pg.c           |   10 
+ arch/riscv/Kconfig                                 |    3 
+ arch/riscv/include/asm/fprobe.h                    |    9 
+ arch/riscv/include/asm/ftrace.h                    |   45 +
+ arch/riscv/kernel/ftrace.c                         |   17 -
+ arch/riscv/kernel/mcount.S                         |   24 -
+ arch/s390/Kconfig                                  |    3 
+ arch/s390/include/asm/fprobe.h                     |   10 
+ arch/s390/include/asm/ftrace.h                     |   32 +
+ arch/s390/kernel/asm-offsets.c                     |    6 
+ arch/s390/kernel/mcount.S                          |   12 
+ arch/x86/Kconfig                                   |    4 
+ arch/x86/include/asm/fprobe.h                      |    9 
+ arch/x86/include/asm/ftrace.h                      |   33 -
+ arch/x86/kernel/ftrace.c                           |   50 +-
+ arch/x86/kernel/ftrace_32.S                        |   13 
+ arch/x86/kernel/ftrace_64.S                        |   17 -
+ include/asm-generic/fprobe.h                       |   33 +
+ include/linux/fprobe.h                             |   62 +-
+ include/linux/ftrace.h                             |  103 +++
+ include/linux/ftrace_regs.h                        |    2 
+ kernel/trace/Kconfig                               |   24 +
+ kernel/trace/bpf_trace.c                           |   83 ++-
+ kernel/trace/fgraph.c                              |   62 +-
+ kernel/trace/fprobe.c                              |  664 +++++++++++++++-----
+ kernel/trace/ftrace.c                              |    6 
+ kernel/trace/trace.h                               |    6 
+ kernel/trace/trace_fprobe.c                        |  146 ++--
+ kernel/trace/trace_functions_graph.c               |   10 
+ kernel/trace/trace_irqsoff.c                       |    6 
+ kernel/trace/trace_probe_tmpl.h                    |    2 
+ kernel/trace/trace_sched_wakeup.c                  |    6 
+ kernel/trace/trace_selftest.c                      |   11 
+ lib/test_fprobe.c                                  |   51 --
+ samples/fprobe/fprobe_example.c                    |    4 
+ .../test.d/dynevent/add_remove_fprobe_repeat.tc    |   19 +
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+ 54 files changed, 1261 insertions(+), 609 deletions(-)
+ create mode 100644 arch/arm64/include/asm/fprobe.h
+ create mode 100644 arch/loongarch/include/asm/fprobe.h
+ create mode 100644 arch/riscv/include/asm/fprobe.h
+ create mode 100644 arch/s390/include/asm/fprobe.h
+ create mode 100644 arch/x86/include/asm/fprobe.h
+ create mode 100644 include/asm-generic/fprobe.h
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
