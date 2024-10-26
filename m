@@ -1,99 +1,158 @@
-Return-Path: <bpf+bounces-43232-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43233-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B03CF9B1864
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 15:03:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2080B9B1897
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 16:27:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B7111F23919
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 13:03:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CB791F22089
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 14:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86BE41D5CF2;
-	Sat, 26 Oct 2024 13:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067DB1863E;
+	Sat, 26 Oct 2024 14:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HE4/y/9x"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="ZPJhX+Ac"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2CDCB641;
-	Sat, 26 Oct 2024 13:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1101134A8;
+	Sat, 26 Oct 2024 14:27:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729947819; cv=none; b=p5NrxNRBgQ1AUVsdEPVQiRajYvdsXZ5xNYvu8H9mAeBryyN/2adykiK8kXRzQifAUsIUloZA37z5aYAcdXkhOhPnlBm8kiTo+/ItS4s0hy8/wEeb7wOR0MQg/JF4QYLiI0gn5rvdaI261wEygFC7mYauOq09ZkzK6qqSuu0AXfA=
+	t=1729952838; cv=none; b=inx6Go84fK21nJ9KblwhyMLWl35uT+Wp2QMtsOdfg9ZZHkE/k93230+IQB05fZqag00zJQnEzGz0jEr7heszumn//hkjFMDAkBC16v09yE8ug24O3tBU8/UOXVS4u/O2Aa1rJmRwUb8UfpfhT/MbVM7ZCjSmR515d23CLJGExHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729947819; c=relaxed/simple;
-	bh=XPuYmo0zgd43DSQ6TT9jekdqtTwIJ6eJ4YPPUSxLX6A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nnVHKhIIaXD4meeYhzUMULIgG0XTbRLlfASFMXv8oM3Ty1gq7emytYVFWLM+h46+7kHBEK4+SkQLrgn0+myMNryWUWSigTfeqdeA6UNHWTAig1Vfzsj/qaFm5UvfXgSUL417cRCWikI3a1QTDZSPlPssCecm3tES0Y6Fo9sBIYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HE4/y/9x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13768C4CEC6;
-	Sat, 26 Oct 2024 13:03:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729947817;
-	bh=XPuYmo0zgd43DSQ6TT9jekdqtTwIJ6eJ4YPPUSxLX6A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HE4/y/9xJo3SY0e3w9bf+orKhAGA+RAP3UZKJNacRfemypcPRwie0VXLQ+F5xDu0k
-	 FTfXM09UDdfDRpmHfVGiHU+iX1ccEAZ1mpHYC6AFYq349wQ0uVP0/5MPtDet3n+nut
-	 t+Wwbreh80ijzupPC3KP0CU9bPg7AJUvUQ2Tcs8SVIcuodSIgRuRAiNKbow85sN9QJ
-	 6G/H+2oTcROwsvPK9Pl+x6gfjuaYGnVVcN2+7tT6JJzINO9uXM2D04QJZWK9WN51wq
-	 4Bw6DQFX2xohwDZ+eR18gNbZIebM+b/YIORJait7Ja8H7pwrv8IiWAZCwI/U2QUEtt
-	 4CAHKdsjA0cWA==
-Date: Sat, 26 Oct 2024 14:03:31 +0100
-From: Simon Horman <horms@kernel.org>
-To: Gerd Bayer <gbayer@linux.ibm.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Sabrina Dubroca <sd@queasysnail.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Coco Li <lixiaoyan@google.com>, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, Donald Hunter <donald.hunter@gmail.com>
-Subject: Re: [PATCH net] Documentation: networking: net_cachelines: Fix
- formatting
-Message-ID: <20241026130331.GE1507976@kernel.org>
-References: <20241025-fix_netdev_doc-v1-1-e76e3bc227fc@linux.ibm.com>
+	s=arc-20240116; t=1729952838; c=relaxed/simple;
+	bh=NLMj2ql9El1zMEdwP3hmb38W/b9GUansJFnQZhwcuwY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=R4XZzCyGNMD7TB6Zxre5OEoxXkfsUf9cGUsefnC8LAYUrTZa0jSUmnbcPFzF1D/jindYFdHlUBUQSDCKOfGlYharIrTN7eaYQTVETWlAyS4S0MURThbI5gkEeQ5iHdkBeb+fPJQtETumfkte2I2aQuq8TLW7C2+1KC2x37pg+c4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=ZPJhX+Ac; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1729952834;
+	bh=NLMj2ql9El1zMEdwP3hmb38W/b9GUansJFnQZhwcuwY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ZPJhX+AceO0hKomerRFndhtcV6ciWnjMeGTGzYfYFQUQG0afSFnLff5Urz1PKMay3
+	 1x/YvgEgSE0uPmGN9pNTyVaXfjjQB29svoZik7HFKpP0KHrlEbqcl1v+hOYGu2HnES
+	 us7G2WbVrqgusmpDyy3/frLcrsjjTdDzcA8DPtkED2gd5/A4G6QTNvyHfHMNoOXjvT
+	 IiJDKVWYDg7pny0XvlMvR9Q6dPOtD9afo00hF9aHLQHQH6IPCsEsQU6sefNZvOYqoU
+	 dQP031p9HUpCaJURvWwE/8uBAmES/9bwalfM4LeRJi2L5q3Ty8HVxIPnjPlPj1E86E
+	 6q2EKDtfF4GAw==
+Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XbMRk0SXMzN2j;
+	Sat, 26 Oct 2024 10:27:14 -0400 (EDT)
+Message-ID: <b961bc6b-331c-4315-b424-60d514cc112e@efficios.com>
+Date: Sat, 26 Oct 2024 10:25:31 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241025-fix_netdev_doc-v1-1-e76e3bc227fc@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1] tracing: Fix syscall tracepoint use-after-free
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Jordan Rife <jrife@google.com>, acme@kernel.org,
+ alexander.shishkin@linux.intel.com, andrii.nakryiko@gmail.com,
+ ast@kernel.org, bpf@vger.kernel.org, joel@joelfernandes.org,
+ linux-kernel@vger.kernel.org, mark.rutland@arm.com, mhiramat@kernel.org,
+ mingo@redhat.com, mjeanson@efficios.com, namhyung@kernel.org,
+ paulmck@kernel.org, peterz@infradead.org,
+ syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com, yhs@fb.com
+References: <20241025182149.500274-1-mathieu.desnoyers@efficios.com>
+ <20241025190854.3030636-1-jrife@google.com>
+ <f31710d3-e4d8-43ad-9ccb-6d13201756a3@efficios.com>
+ <20241026031314.0f53e7fa@rorschach.local.home>
+Content-Language: en-US
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20241026031314.0f53e7fa@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-+ Donald
-
-On Fri, Oct 25, 2024 at 05:38:35PM +0200, Gerd Bayer wrote:
-> I stumbled over [0] being completely garbled.
+On 2024-10-26 03:13, Steven Rostedt wrote:
+> On Fri, 25 Oct 2024 15:38:48 -0400
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 > 
-> Fix formatting by adding the required rst annotation for a Simple Table
-> and remove unnecessary trailing whitespace. While at it, do the same for
-> all the documents in the net_cachelines directory.
+>>> I'm curious if it might be better to add some field to struct
+>>> tracepoint like "sleepable" rather than adding a special case here
+>>> based on the name? Of course, if it's only ever going to be these
+>>> two cases then maybe adding a new field doesn't make sense.
+>>
+>> I know Steven is reluctant to bloat the tracepoint struct because there
+>> are lots of tracepoint instances (thousands). So for now I thought that
+>> just comparing the name would be a good start.
 > 
-> I have not checked the contents for correctness or completeness.
+> You are correct. I really trying to keep the footprint of
+> tracepoints/events down.
 > 
-> Links: [0] https://www.kernel.org/doc/html/latest/networking/net_cachelines/net_device.html
-> Fixes: 14006f1d8fa2 ("Documentations: Analyze heavily used Networking related structs")
-> Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
+>>
+>> We can eventually go a different route as well: introduce a section just
+>> to put the syscall tracepoints, and compare the struct tracepoint
+>> pointers to the section begin/end range. But it's rather complex
+>> for what should remain a simple fix.
+> 
+> A separate section could work.
 
-Thanks Gerd,
+I have another approach to suggest: it shrinks the
+size of struct tracepoint from 80 bytes down to 72 bytes
+on x86-64, we don't have to do any section/linker
+script trickery, and it's extensible for future flags:
 
-I believe that there is already a patch in net-next that addresses this.
+struct static_key {
+         int enabled;
+         void *p;
+};
 
-- 54b771e6c675 ("doc: net: Fix .rst rendering of net_cachelines pages")
-  https://git.kernel.org/netdev/net-next/c/54b771e6c675
+struct static_key_false {
+         struct static_key key;
+};
+
+struct static_call_key {
+         void *func;
+         void *p;
+};
+
+struct tracepoint {
+         const char *name;               /* Tracepoint name */
+         struct static_key_false key;
+         struct static_call_key *static_call_key;
+         void *static_call_tramp;
+         void *iterator;
+         void *probestub;
+         void *funcs;
+         /* Flags. */
+         unsigned int regfunc:1,
+                      syscall:1;
+};
+
+struct tracepoint_regfunc {
+         struct tracepoint tp;
+         int (*regfunc)(void);
+         void (*unregfunc)(void);
+};
+
+Basically, a tracepoint with regfunc would define a
+struct tracepoint_regfunc rather than a struct tracepoint.
+So we remove both regfunc and unregfunc NULL pointers in
+the common case, which gives us plenty of room for flags.
+
+When we want to access the regfunc/unregfunc from
+a struct tracepoint, we check the regfunc flag, and
+if set, we can use container_of() to get the struct
+tracepoint_regfunc.
+
+Thoughts ?
+
+Thanks,
+
+Mathieu
 
 -- 
-pw-bot: not-applicable
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
