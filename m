@@ -1,219 +1,151 @@
-Return-Path: <bpf+bounces-43223-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43224-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A66169B14F5
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 07:05:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B52B09B1535
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 07:46:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15DDF282856
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 05:05:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D861A1C21134
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 05:46:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3C81632D9;
-	Sat, 26 Oct 2024 05:05:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7604016BE0D;
+	Sat, 26 Oct 2024 05:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YgM6vLyG"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2cV0PeGM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7072AE93
-	for <bpf@vger.kernel.org>; Sat, 26 Oct 2024 05:05:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D3ECA5A
+	for <bpf@vger.kernel.org>; Sat, 26 Oct 2024 05:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729919120; cv=none; b=rkR4ObByudIcWt9UNggHCV2WZp2pNlGXVkFu6B0rhJQR2EDTBFrKbbOSLELvZPLHgoBW7gDIUDOd5zqWYWf2YzIWotM7fLrrhd/H+m3N2EK9OqHU77mU05Lq+Ib/p7JQ8pDPwbH6j5vB2i+NxpYcIad5rwlee/rQkS4rqz0ywuQ=
+	t=1729921576; cv=none; b=ktA2+/C1TkXLL6MOjOh9MElokeIjjcwYIYBVnVuxaoB6elcXqV3HYi2kOwj6Wv5v8onEclyBhy5KgtuTCJZ6DrU7WdCIHfeHSKKXo9eqfw4kOzpCEwvA4tI4FTQ3g3eWu7jmbpnfHG5Vn1ZD8jLBg2dp2SDByqPMz/auWdY7LWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729919120; c=relaxed/simple;
-	bh=moGSiS9lImhqu+ZZa0CNGaYfCBuqsKe8AgX88Es5Nis=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=BLXwPaoxncm93ucsNIXfTF+4Y85tkrJFFRHqmHCWPPpu38adPGJV4eg5X+YeaE5A9PrBUqY7WqqDZUJjdBIe836htvAizJ/iFgkr3Cp1DG1I7Ct+vesHx5xTmKKOzS9Xz8I1vfPD97V+MpVH9PflVQ8vqElebQzgsdMvsbpwkMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YgM6vLyG; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-20c8c50fdd9so23444055ad.0
-        for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 22:05:18 -0700 (PDT)
+	s=arc-20240116; t=1729921576; c=relaxed/simple;
+	bh=SRjwgqCN32DqjDXP1zoKrUZDPYz/yulcotM5Ou+dbgQ=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=i5g8rYSYYWwzRtSvTTfPbcItWfaEop3OqYMj7/swT7+OY3zbhcZSiajTgj10IJBP2rmezk6LZB9kicbBOrXkiaHbgCtGeuBj2AD94IthSxpR6fcAIatw2doF3H9gyzYdGKrXBQnj0dbZYviqFKha1EcA630Y0KPPi+mUzae2hlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2cV0PeGM; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-20c87b0332cso53915ad.1
+        for <bpf@vger.kernel.org>; Fri, 25 Oct 2024 22:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729919117; x=1730523917; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fi0UhH/1mybD0rjQDMKUwajQMLQ99jOjxhSSGaIb1nw=;
-        b=YgM6vLyG8+y/jymzG3zFp8O2Ix77ExM6MjnY9fMiC0p8Px8CMJ+uqL0UlKenNRz8s9
-         5YNbS7cVi0HnhnC38mT1afxSnBbRMrebMF6C8YhdfQusgptTIQc9F17v1ua99fXJa/7z
-         BhgV0T++3tHMkYcU+bQl/cSXnfQ6EEIuGvEPNvkvQVgZTIY9AauwrxNtlcIanmcBVSA9
-         GZE29mH80VBPj7bIkUPo7Hx8IL9MxF6i4pyf7kjnXcLRBJ08qWiUji2j8BlPxZjPymZy
-         EORAvFZJoKlCAWoEJxBHFkBUPMQ7AfdIqK+zVdDZger+T1V7+AD79Y0jAatQbEIF+RPx
-         1DNA==
+        d=google.com; s=20230601; t=1729921573; x=1730526373; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eY8ZkEywyfjVgvKb0PE6wkcMqGE2Q4geJi7aoCgEDmQ=;
+        b=2cV0PeGM+50GMNWZNWeDtObecES1iiYyihgbLe1OuxASFlgvlkm90vD9peIKijnrwq
+         a2D1rChCTMyNdJLJkHyYQFkYpufjmMfVxLi6xQReJ07NrxI0pnr8pIFTJ+XEUkqGwoaP
+         PKbn5LkXkwdBjzUwW9C2PlKwpAUTumMotjd/tsiFwam0qaWiXEf6karjuZ4Aveo4caRL
+         46C1of0AsmQ2yq9bA4p6gvkKEwqheNvNluKc8zfFdS/VwZMCx/cpSQzSNMLHxUrP6f45
+         YFYaqO+XuLpIf0GSinNJ8eN0McKextoMytku0nBHkmctgwx/385T2kaecqqKYM1ZuKdT
+         V+aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729919117; x=1730523917;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fi0UhH/1mybD0rjQDMKUwajQMLQ99jOjxhSSGaIb1nw=;
-        b=OqIzZnsVcRSAhzn5i2Y/UdfMdDN63ofOGbPm9Ph1PU0okkbQr2nXMHGAjjivrfBM4K
-         K4j2pZ2lRNfwOi5JO4leVz+jl+ZQSLlizxXvomoCGl1l8nxOyHK9+cq3EVQ1gEDmJW+i
-         6A24NcrVZvWIl9g8EOn1A8flZumMohg/ys3e1xFTjJ7DUwEpXEHYT7JYT/IwtHYnhSOw
-         nt5luROfbupAsHvNwmIA9GInfdZXmam1h0eIbsamXpfYHcubg7LMVpyAcWSdRxIWRlhr
-         MZoMxE/dxCzjCLrNh0bbeUR7FFx7HasJusMXRqbHmtZjC6tf38BYkrNsQGflljQ9mRdL
-         hxig==
-X-Forwarded-Encrypted: i=1; AJvYcCWPTCC6kI+OWu25Px0ZiUB8Xs6Y2/sj/aP79ltBpJLiJ2yGv40/YOso8TLv1wRtv5Zfxs0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyBMtzc0G/tBkZBIfqSYn/NMppVkTpMKYdO3InMTr9sEaxCylA4
-	Cks6QLx0QtDRzMELp5aeDQsyaT3D3cyqJRJP9mGF3/j24IjLJHVp
-X-Google-Smtp-Source: AGHT+IEdhRTeP5ed0S3Gtf55NVJL8EBM0TC0J7/G3yv+ZzkohBIzdo1JzxsSXQuw3r0CgFMAdnjPMg==
-X-Received: by 2002:a17:902:f68e:b0:20c:7661:dc9a with SMTP id d9443c01a7336-210c59379a0mr28337045ad.3.1729919117463;
-        Fri, 25 Oct 2024 22:05:17 -0700 (PDT)
-Received: from localhost ([98.97.36.166])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc044da4sm17605925ad.246.2024.10.25.22.05.16
+        d=1e100.net; s=20230601; t=1729921573; x=1730526373;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eY8ZkEywyfjVgvKb0PE6wkcMqGE2Q4geJi7aoCgEDmQ=;
+        b=rd/cjOP/RhH0NPFw/xeVGRbQLdxPrb24N8laVrK1fxjnXTIj1WiI9myujgjF1roKcF
+         sp3YpAM1yv0cCzHabUqo1DZdWxrAtaf1vO2bg5KktOeaJPlmFqxi8Z9Wezr+VPn0IB2l
+         cAPgWf+MOpLRTr+aqogPFukl/RNwXxrQeEdnmV5rShPBaGplE0+V0kP672T4ekVLiezK
+         lXi0Ogbn/sPVYGCV5IxyK0skcuJy4f7pFUwyo4OtVB1EHyk7YDRssd6uCtdZH1hGG4it
+         /X+uRxw4Dnp1AOiKdqf0NJS88tOO1WM6dYLQbOzOcipUxPR06o+Ii30+C8B5I6RyztN/
+         lpPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWjfIgy2tsP5u2Wy4sJsiKSrRcIop7Kiwg4G+QAvLAnc9GIUJJH6Iytx+K4DLbDHgRPhDw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxc6OUEmA40khABMk8zTfCXoLzldshE6oXoK8opglXLgg8Qp4uL
+	g9AYjJpmpvXZQtTKUCEjdSRUt4zPBm9S9bs5EV5B4keE6v89Kmz/7wZYYMybww==
+X-Google-Smtp-Source: AGHT+IHQJgLq26FeZB3qU743EYM2bPcmmi3fesK4osKTr3JrdwHB+K8I+X1vHhJIGYtKvNJXamqCdQ==
+X-Received: by 2002:a17:902:fb84:b0:200:97b5:dc2b with SMTP id d9443c01a7336-210c7b885b5mr803385ad.15.1729921573136;
+        Fri, 25 Oct 2024 22:46:13 -0700 (PDT)
+Received: from [2620:0:1008:15:a73a:2b46:3ef7:2150] ([2620:0:1008:15:a73a:2b46:3ef7:2150])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc02ea63sm18221395ad.220.2024.10.25.22.46.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2024 22:05:16 -0700 (PDT)
-Date: Fri, 25 Oct 2024 22:05:15 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: zijianzhang@bytedance.com, 
- bpf@vger.kernel.org
-Cc: martin.lau@linux.dev, 
- daniel@iogearbox.net, 
- john.fastabend@gmail.com, 
- ast@kernel.org, 
- andrii@kernel.org, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- mykolal@fb.com, 
- shuah@kernel.org, 
- jakub@cloudflare.com, 
- liujian56@huawei.com, 
- zijianzhang@bytedance.com, 
- cong.wang@bytedance.com
-Message-ID: <671c788b7322c_656c20869@john.notmuch>
-In-Reply-To: <20241020110345.1468595-9-zijianzhang@bytedance.com>
-References: <20241020110345.1468595-1-zijianzhang@bytedance.com>
- <20241020110345.1468595-9-zijianzhang@bytedance.com>
-Subject: RE: [PATCH bpf 8/8] bpf, sockmap: Fix sk_msg_reset_curr
+        Fri, 25 Oct 2024 22:46:09 -0700 (PDT)
+Date: Fri, 25 Oct 2024 22:46:09 -0700 (PDT)
+From: David Rientjes <rientjes@google.com>
+To: Qun-Wei Lin <qun-wei.lin@mediatek.com>
+cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
+    Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    Vlastimil Babka <vbabka@suse.cz>, 
+    Roman Gushchin <roman.gushchin@linux.dev>, 
+    Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+    Matthias Brugger <matthias.bgg@gmail.com>, 
+    AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+    Danilo Krummrich <dakr@kernel.org>, catalin.marinas@arm.com, 
+    surenb@google.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+    linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+    bpf@vger.kernel.org, Casper Li <casper.li@mediatek.com>, 
+    Chinwen Chang <chinwen.chang@mediatek.com>, 
+    Andrew Yang <andrew.yang@mediatek.com>, John Hsu <john.hsu@mediatek.com>, 
+    wsd_upstream@mediatek.com
+Subject: Re: [PATCH] mm: krealloc: Fix MTE false alarm in __do_krealloc
+In-Reply-To: <20241025085811.31310-1-qun-wei.lin@mediatek.com>
+Message-ID: <3740cf07-594a-d484-29de-5d76e2e97be3@google.com>
+References: <20241025085811.31310-1-qun-wei.lin@mediatek.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 
-zijianzhang@ wrote:
-> From: Zijian Zhang <zijianzhang@bytedance.com>
+On Fri, 25 Oct 2024, Qun-Wei Lin wrote:
+
+> This patch addresses an issue introduced by commit 1a83a716ec233 ("mm:
+> krealloc: consider spare memory for __GFP_ZERO") which causes MTE
+> (Memory Tagging Extension) to falsely report a slab-out-of-bounds error.
 > 
-> Found in the test_txmsg_pull in test_sockmap,
-> ```
-> txmsg_cork = 512;
-> opt->iov_length = 3;
-> opt->iov_count = 1;
-> opt->rate = 512;
-> ```
-> The first sendmsg will send an sk_msg with size 3, and bpf_msg_pull_data
-> will be invoked the first time. sk_msg_reset_curr will reset the copybreak
-> from 3 to 0, then the second sendmsg will write into copybreak starting at
-> 0 which overwrites the first sendmsg. The same problem happens in push and
-> pop test. Thus, fix sk_msg_reset_curr to restore the correct copybreak.
+> The problem occurs when zeroing out spare memory in __do_krealloc. The
+> original code only considered software-based KASAN and did not account
+> for MTE. It does not reset the KASAN tag before calling memset, leading
+> to a mismatch between the pointer tag and the memory tag, resulting
+> in a false positive.
 > 
-> Fixes: bb9aefde5bba ("bpf: sockmap, updating the sg structure should also update curr")
-> Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
-
-Hi Zijian, question on below.
-
-> ---
->  net/core/filter.c | 20 +++++++++-----------
->  1 file changed, 9 insertions(+), 11 deletions(-)
+> Example of the error:
+> ==================================================================
+> swapper/0: BUG: KASAN: slab-out-of-bounds in __memset+0x84/0x188
+> swapper/0: Write at addr f4ffff8005f0fdf0 by task swapper/0/1
+> swapper/0: Pointer tag: [f4], memory tag: [fe]
+> swapper/0:
+> swapper/0: CPU: 4 UID: 0 PID: 1 Comm: swapper/0 Not tainted 6.12.
+> swapper/0: Hardware name: MT6991(ENG) (DT)
+> swapper/0: Call trace:
+> swapper/0:  dump_backtrace+0xfc/0x17c
+> swapper/0:  show_stack+0x18/0x28
+> swapper/0:  dump_stack_lvl+0x40/0xa0
+> swapper/0:  print_report+0x1b8/0x71c
+> swapper/0:  kasan_report+0xec/0x14c
+> swapper/0:  __do_kernel_fault+0x60/0x29c
+> swapper/0:  do_bad_area+0x30/0xdc
+> swapper/0:  do_tag_check_fault+0x20/0x34
+> swapper/0:  do_mem_abort+0x58/0x104
+> swapper/0:  el1_abort+0x3c/0x5c
+> swapper/0:  el1h_64_sync_handler+0x80/0xcc
+> swapper/0:  el1h_64_sync+0x68/0x6c
+> swapper/0:  __memset+0x84/0x188
+> swapper/0:  btf_populate_kfunc_set+0x280/0x3d8
+> swapper/0:  __register_btf_kfunc_id_set+0x43c/0x468
+> swapper/0:  register_btf_kfunc_id_set+0x48/0x60
+> swapper/0:  register_nf_nat_bpf+0x1c/0x40
+> swapper/0:  nf_nat_init+0xc0/0x128
+> swapper/0:  do_one_initcall+0x184/0x464
+> swapper/0:  do_initcall_level+0xdc/0x1b0
+> swapper/0:  do_initcalls+0x70/0xc0
+> swapper/0:  do_basic_setup+0x1c/0x28
+> swapper/0:  kernel_init_freeable+0x144/0x1b8
+> swapper/0:  kernel_init+0x20/0x1a8
+> swapper/0:  ret_from_fork+0x10/0x20
+> ==================================================================
 > 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 8e1a8a8d8d55..b725d3a2fdb8 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -2619,18 +2619,16 @@ BPF_CALL_2(bpf_msg_cork_bytes, struct sk_msg *, msg, u32, bytes)
->  
+> Fixes: 1a83a716ec233 ("mm: krealloc: consider spare memory for
+> __GFP_ZERO")
+> Signed-off-by: Qun-Wei Lin <qun-wei.lin@mediatek.com>
 
-I find push_data a bit easier to think through so allow me to walk
-through a push example.
-
-If we setup so that curr=0 and copybreak=3 then call
-
- push_data(skmsg, 2, 2);
-
-When we get to the sk_msg_reset_curr we should have a layout,
-
-  msg->sg.data[0] = length(2) equal to original [0,2]
-  msg->sg.data[1] = length(2)
-  msg->sg.data[2] = legnth(1) equal to original [3] 
-
-The current before the reset curr will be,
-
- curr = 1
- copybreak = 3
-
->  static void sk_msg_reset_curr(struct sk_msg *msg)
->  {
-> -	u32 i = msg->sg.start;
-> -	u32 len = 0;
-> -
-
-with above context i = 0
-
-> -	do {
-> -		len += sk_msg_elem(msg, i)->length;
-> -		sk_msg_iter_var_next(i);
-> -		if (len >= msg->sg.size)
-> -			break;
-> -	} while (i != msg->sg.end);
-
-When we exit loop,
-
-  i = 3
-  len = 5
-  
-  msg->sg.curr = 3
-  msg->sg.copybreak = 0
-
-So we zero the copy break and set curr = 3. The next send
-should happen over sg.curr=3? What did I miss?
-
-> +	if (!msg->sg.size) {
-> +		msg->sg.curr = msg->sg.start;
-> +		msg->sg.copybreak = 0;
-> +	} else {
-> +		u32 i = msg->sg.end;
->  
-> -	msg->sg.curr = i;
-> -	msg->sg.copybreak = 0;
-> +		sk_msg_iter_var_prev(i);
-
-With this curr will always point to the end-1 but I'm not sure this can
-handle the case where we have done sk_msg_alloc() so we have start/end
-setup. And then on a copy fault for example we might have curr pointing
-somewhere in the middle of that. I think I will need to construct the
-example, but I believe this is originally why the 'i' is discovered
-by sg walk vs simpler end.
-
-> +		msg->sg.curr = i;
-> +		msg->sg.copybreak = msg->sg.data[i].length;
-
-This does seem more accurate then simply zero'ing out the copybreak
-which is a good thing.
-
-> +	}
->  }
->  
->  static const struct bpf_func_proto bpf_msg_cork_bytes_proto = {
-> -- 
-> 2.20.1
-> 
-
-
+Acked-by: David Rientjes <rientjes@google.com>
 
