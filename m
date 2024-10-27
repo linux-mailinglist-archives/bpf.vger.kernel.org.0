@@ -1,246 +1,476 @@
-Return-Path: <bpf+bounces-43255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E33B9B1CBE
-	for <lists+bpf@lfdr.de>; Sun, 27 Oct 2024 10:22:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 253D89B1CF4
+	for <lists+bpf@lfdr.de>; Sun, 27 Oct 2024 10:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E62C1F21834
-	for <lists+bpf@lfdr.de>; Sun, 27 Oct 2024 09:22:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA0D5281E9F
+	for <lists+bpf@lfdr.de>; Sun, 27 Oct 2024 09:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CCB6126C13;
-	Sun, 27 Oct 2024 09:21:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1ED136658;
+	Sun, 27 Oct 2024 09:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n5DDEy4+"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ba/Wzdbo"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A997DA6D;
-	Sun, 27 Oct 2024 09:21:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730020912; cv=none; b=BbTu8iVbRcAJeioNAH5iKNaJxl6pMx8Z59Buus2f9mKuVkQECkkmDAlK2qkonVIXsPZq5qE96CcrGtIdTyl5wkXLqW1+mbknASWkzu1M5/p/di/Z5cf4MklIKHy2ujhbkn/gCPvS8MJhK2ODJT8svSMwY4sKo7HfGy4YBbkVfR4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730020912; c=relaxed/simple;
-	bh=Hhva42WPCShAFFkXmCOYCeH5zalvUU7wEkwSbU5sfHA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nfwrIGKl6M/K9SN8mFdaIvIC2C4/uit7iaaHTqNDv8/DvHSPLoTL2eSdM7DGVpqjh2w9YpzX1lcIvJXYs+s+HC19DVaEL7EFeSVtzIZGwwUFBj/X4oEKB/aSB84OdadRMVm1E3E3ZH12TvGR6aHR7Sv5yRBKwqWB83gwgXUVyVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n5DDEy4+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E381C4CEE7;
-	Sun, 27 Oct 2024 09:21:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730020912;
-	bh=Hhva42WPCShAFFkXmCOYCeH5zalvUU7wEkwSbU5sfHA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=n5DDEy4+ez5iIRNSlZLIh0/6u/o9dBtmMQ3Qnrw5YX0TjsNcqb//7mbzdZa3iFYyA
-	 vgOphpGVRof5tqvAwK9GeiLDHr5aKa3EGzTJo3UYGTkV0tr123xcNnWCKlEO9mWRlp
-	 8jFhmzIfYo587Y8MHTISZ1Ge/XW654DS3fJIfsoPLBumyYowonPPTWd9O1dM+zjGS0
-	 cKA2nsWz69tHXiEaTiTvXjap+ul1scYk7wUs09+8v2qp4Q7qwo4DwdeU//aBwHCNoF
-	 w5/cE7ii8desYpS4j3L4IdC5OEQeh0oG1r59NuXzdAcjYGg7VfQyM0AEKAddyvwQK9
-	 yqg/w4iMcLqLA==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-539e8607c2aso3495112e87.3;
-        Sun, 27 Oct 2024 02:21:52 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU8dpsi8wPmloj24TN3aXE6ru3eX776l2xetVsWWLgO81ho/ZMS2fIMt7SKT3h8RM/TdWb18sW0r7jSUfnV@vger.kernel.org, AJvYcCUIHY8q/Gr3YVkRQ5agaevnNndOqhUFHw9uUcG2cXOM9uSx2dDdVBR/aLivQvYU2RyuUag=@vger.kernel.org, AJvYcCVKPFOT2Ciz2pHwmUAUnayN+byMDXtoEnwgzV5toFpNAe1DPwBt5DmF/f5+j/ciVM2sgB6N5qJLjY0c7NwprAYNMY5p@vger.kernel.org, AJvYcCVM3zmBOreOQ0VdKbUvJyK/fJdr/CpKuL7NOh2W48IsFJBBPDMjcbBwzm/iEY3nSJ3UbEYHk6RhFvLTRThR@vger.kernel.org
-X-Gm-Message-State: AOJu0YxGobNFQdMFgQJe4/RoBC5F6ozdKTViUn2HqOfhDgEgMTDJ9neD
-	e0QsCISJprRgMH4fUpfle/iVUDqB7fmjtucS78v0rFGdFCOmElYGhElZla1dOxTXHBQn6A7PXtv
-	772ATXob5N8CAFIA0mHy/By/kAag=
-X-Google-Smtp-Source: AGHT+IHWDEbdS6dDes0FXasZhcczxuG/y8V5MfEi19kb1OsAxqisZ47o0GkY5XeGVwsrBNUXk3HWpjxvqknLG0iETfA=
-X-Received: by 2002:a05:6512:230b:b0:539:d05c:f553 with SMTP id
- 2adb3069b0e04-53b348cc551mr1681456e87.21.1730020910946; Sun, 27 Oct 2024
- 02:21:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC48A45948;
+	Sun, 27 Oct 2024 09:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730022590; cv=fail; b=Zrit5dDYbP4CZIDXBsOLjDOk3lYwDWaatRBUJdKc0+jQgFqK5OTOsJWGYLHnZ1+lLbO5YqUdv9FuOmkgr8uW/tZSDpVtEnGa3Gf/3a0jfc/r5N7l/OKLtW38r9C1ZIQmH62XtezSQqm1U+c/sH/TAxSmGJTtnmfd7GC+h5vJF7k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730022590; c=relaxed/simple;
+	bh=nffs2oNGSJEoaU6UdGnC7ax6B8XaR/2vPlc0yJOQkrM=;
+	h=Subject:To:CC:References:From:Message-ID:Date:In-Reply-To:
+	 Content-Type:MIME-Version; b=gZtMqV1t8iyHITxWMwaMYab/JCIi1ZxGkLz52wJUUMtcp17KZysUkKfa03meXccn45h7B5amEOW0DoYxgMtVRM+LLx8hzj3zKSCzFzEv7pbMjUOiD1MDYu/Ri4aNlgUGCEo8xEQH0YvmwbD+uxK0m1QWP7pkB5NKMAJ7sJSWPXQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ba/Wzdbo; arc=fail smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1730022588; x=1761558588;
+  h=subject:to:cc:references:from:message-id:date:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=nffs2oNGSJEoaU6UdGnC7ax6B8XaR/2vPlc0yJOQkrM=;
+  b=Ba/WzdboH7xPwDfE/y/1QHLSJM/Jacbij1bbUv4Uy0BVObCTXzVSmEK9
+   8guXZm4b6hCmj7zJHdgjhGLu6E06h8vlX87x39ITBuK8uxFNWAWrpimpX
+   Ru4IYAskUXcYZ2HEL3sYnJ6UtHlfk3izufBSmrvyLCW7at1KbYmRqzura
+   uBL4zZhVggIwwwWAx72THrwf/HEIh5D95vkDKDLg6RAvn3jrpDXSt5RGG
+   7FoFG4XGajX5gSnFNt2uRnSMHdOfg9RdAxaQDNhmDBDi1WEtQa9sxIsyI
+   qSE/eA5tOccmMRS13AYienZr90Re8s62qSVoN0VaQUSWAIyWTimyOgmmn
+   g==;
+X-CSE-ConnectionGUID: g5tjm2PPQeC9jevU44qRIQ==
+X-CSE-MsgGUID: OF1WXyUSSf29C6RX/h8RRw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11237"; a="33438486"
+X-IronPort-AV: E=Sophos;i="6.11,236,1725346800"; 
+   d="scan'208";a="33438486"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2024 02:49:48 -0700
+X-CSE-ConnectionGUID: x/hAhiAcSmqvRd+uQ+8ISA==
+X-CSE-MsgGUID: P7BLRlIDSW+50FkJ5sG7Tg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,236,1725346800"; 
+   d="scan'208";a="104662517"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Oct 2024 02:49:47 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Sun, 27 Oct 2024 02:49:46 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Sun, 27 Oct 2024 02:49:46 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.41) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Sun, 27 Oct 2024 02:49:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=QL4Xn9geVofZjZVgB2+lQzyP1OUcFMIDtoKuNegMK3uidgv6LNfmuVgjXF744Cq80xvEW1q1qO06Ks/wyMHDaA6r6wnC7/Q/yerV3Fn5jG4naswsPwMYRykZY+DxBH5hzD4Q5gTJNkmzgCN0BiMz2YEekwuq04L9hGBfShm4ux2rAiYX66lsdNrg1zJY84PRM2qophqSU2HEk5cQ2+iAeNwjgtEZugvVXgvBcD+Z9EZpZMQZkFRFfcN6db58CnjEtGqCyhb4xqqqphoohQJcP1WAw3NVmUNgax/veqmP6RMZ4rygTtL9wNjR4C4fvkc4Nlo2odl7ubCDmL1yMpWZlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aRp8Q9j5BngJ4BR7LbiI4WzH6SqwF8S2yDtA+UDwYMg=;
+ b=yhKn0CyxXjtqsIe7Iyi7sd7zZv46v5e5/a/3qWTt+Z5aIShAyk4avwnWvgAVfC4xYJRXygya0hmLoqRreIGgeEywdzlJbP/peL/GsSOI7IbPp/qPy4Ro7XdaBVUE2pe2WNlaI8KX95jv8xo6t/3ytjRWvD1H++B3YEMABYbnhQbr5HWzbMVaNmIVqJ60WKOomPjfh5WkLMZRtW16T9jrqwE81BoDGsZs7bvjQUg3zuVXqgLRkzoEDIFjr33WikFS35x/4Nh87kgMuwpYxyhlBT6epy+dep5g1eIhuL01X04fuXdET0Su3o6UXoFP1/HK6Vdm2zHrRjCH2u66g4hKnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB5949.namprd11.prod.outlook.com (2603:10b6:510:144::6)
+ by SA2PR11MB4873.namprd11.prod.outlook.com (2603:10b6:806:113::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8093.23; Sun, 27 Oct
+ 2024 09:49:41 +0000
+Received: from PH0PR11MB5949.namprd11.prod.outlook.com
+ ([fe80::1c5d:e556:f779:e861]) by PH0PR11MB5949.namprd11.prod.outlook.com
+ ([fe80::1c5d:e556:f779:e861%5]) with mapi id 15.20.8093.018; Sun, 27 Oct 2024
+ 09:49:41 +0000
+Subject: Re: [Intel-wired-lan] [iwl-next v4 2/2] igc: Link queues to NAPI
+ instances
+To: Joe Damato <jdamato@fastly.com>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>
+CC: "Keller, Jacob E" <jacob.e.keller@intel.com>, "kurt@linutronix.de"
+	<kurt@linutronix.de>, "Gomes, Vinicius" <vinicius.gomes@intel.com>, "Nguyen,
+ Anthony L" <anthony.l.nguyen@intel.com>, "Kitszel, Przemyslaw"
+	<przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
+ Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Alexei
+ Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	"Jesper Dangaard Brouer" <hawk@kernel.org>, John Fastabend
+	<john.fastabend@gmail.com>, "moderated list:INTEL ETHERNET DRIVERS"
+	<intel-wired-lan@lists.osuosl.org>, open list <linux-kernel@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
+References: <20241022215246.307821-1-jdamato@fastly.com>
+ <20241022215246.307821-3-jdamato@fastly.com>
+From: "Lifshits, Vitaly" <vitaly.lifshits@intel.com>
+Message-ID: <d7799132-7e4a-0ac2-cbda-c919ce434fe2@intel.com>
+Date: Sun, 27 Oct 2024 11:49:33 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20241022215246.307821-3-jdamato@fastly.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TL0P290CA0002.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:5::10) To PH0PR11MB5949.namprd11.prod.outlook.com
+ (2603:10b6:510:144::6)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241018173632.277333-1-hbathini@linux.ibm.com> <20241018173632.277333-13-hbathini@linux.ibm.com>
-In-Reply-To: <20241018173632.277333-13-hbathini@linux.ibm.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sun, 27 Oct 2024 18:21:14 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASyfxY9RJU+pvEdyd6yuB=r4C9xcvBBTLokXe_xkhM8RA@mail.gmail.com>
-Message-ID: <CAK7LNASyfxY9RJU+pvEdyd6yuB=r4C9xcvBBTLokXe_xkhM8RA@mail.gmail.com>
-Subject: Re: [PATCH v6 12/17] powerpc64/ftrace: Move ftrace sequence out of line
-To: Hari Bathini <hbathini@linux.ibm.com>
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, 
-	"Naveen N. Rao" <naveen@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Nicholas Piggin <npiggin@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Vishal Chourasia <vishalc@linux.ibm.com>, 
-	Mahesh J Salgaonkar <mahesh@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5949:EE_|SA2PR11MB4873:EE_
+X-MS-Office365-Filtering-Correlation-Id: cb34f557-9ef8-4931-0550-08dcf66cad8e
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?R3YyZ3R3dlUvekNMdVRGcnZLS1h3VzlNN0xCZWdPMGRNWEZ5NzRRbFBwSERI?=
+ =?utf-8?B?NkxTWWV5OS91enkvT1doeFRUbWNRQTdpUUtzMGtySmNoRjNOQ1ovYkErWFV5?=
+ =?utf-8?B?aVRPS0xidnlHR2NsdmdVUDAwVTRxaVNNNlYxRXVtZnpvMFcrWTI0OWpGbjRp?=
+ =?utf-8?B?NHdBRHcyU0g3MnNzNkVSc1YxSTlwZ25pR2VoTWp1dGFkeHhaU1BudzVyd0dJ?=
+ =?utf-8?B?S0taU2tPYTZkYmxFK3pCUEVVWS9mZ1pBRGJZazJsbFV2dVNnbHI2ZVZSMnBo?=
+ =?utf-8?B?OXNWcjlTb1gyRjBNVlFQTStnYjVCa1FHSWtSVGtSQktzWUszN3M1VGkxMzkz?=
+ =?utf-8?B?cHF5dDMwNTJXdXN0dmhOMVk3K3ZSU0FZZzJwWjAzbHFBNk5NQzBQZDVMMEYr?=
+ =?utf-8?B?dmpkMllidi9aaFBZVnZWbG9sMFdpR1JsV3FBSWsyWkwrRlBIckZNSVV5ZzdO?=
+ =?utf-8?B?T2lSNU0wZEl3bXZoOWt6V3FRNDFwbWhNbHRZZVE4aktHNmdGZkRLa0hxYWZJ?=
+ =?utf-8?B?NFl1akpsaU9ya1lDanlnVXphWCtYNE94cCtDQnpDTG1oeStFcDNSM2NkUXlM?=
+ =?utf-8?B?Uk9LWDN4em50bEdKODh1MmxYZlJYNGlGU09aNExVYk1OZGlqL1ZqS1paQXlQ?=
+ =?utf-8?B?L3BxY2RWTXdQSkljQVJaOXluUjFybFNJWDg3ZHhNblRITjdWMG5hYTFnMnQ2?=
+ =?utf-8?B?NW1kU0FDSzhtejhFMTgyeFZpMW1CSDR3WXprWjRWZGwyUEtSK0dUZ0ZWWWRj?=
+ =?utf-8?B?VXlEK0hOTHNZT1RESGlteEhXSVJFdlJyZGo5bUtMQytGejFMcGFKSjc1NllZ?=
+ =?utf-8?B?M09ZRHZmelNscE5aeVQvWXNhT05UdWpUM2lYVWRjMU5hVkRNOWhRSTExakp2?=
+ =?utf-8?B?TnUzOVM4S29aTmtzeTNFTHFDa21VeSt5RGtjQTF6dmRuNEgxK1JnSmVNcWhq?=
+ =?utf-8?B?MVhqMGdKd24ySnlNQ0svSDNITlZ6Qk96c1VTY3FycEJwUEgzS3dyM2E1OVRW?=
+ =?utf-8?B?a3BITnR4eXVodkxqOHBTMGFCa0pmTDQwUEYrVjJvRlBMNVlQK1hJaytRVzd2?=
+ =?utf-8?B?TzBGbHhkdmVOcVc0cmoxWlhsdGtDSkRiRWpxWDFzMzFOYzFrMWFBeXpZSlkr?=
+ =?utf-8?B?VG5iZmNmWiszL1RwYnhjV0tPaEwyMWpONm1qOHJGanRhWFZsQzY5SmV5eE5P?=
+ =?utf-8?B?UTRDbXBPSXFnMkliS01maFptL3MyN0xHOGdBajl3Y0VmTjRKMENxY0lLNnFo?=
+ =?utf-8?B?a0tsK2w4enAraEFVV254b0srMzhZMXpsSEFrN0VObDd2NTlEUWFicEJqeGIx?=
+ =?utf-8?B?YmRMQ0pPYnJWcHhnUlZVb2VPNGJRdGxlbzFmTTdhbFVvRU5nWmFXaTl2OWFa?=
+ =?utf-8?B?dHB6TlhuYkViOGpqZGJhaktrTkYyaHliRUxPY2tBbyswNDUwNnBMTm4xMWU0?=
+ =?utf-8?B?QkJIcFVrZ3czWFNyTzVIMzh1QzlOVG9JaE14cUlyaWRqc3JpQnI3TVZxVTU5?=
+ =?utf-8?B?T2FOZS80YjdORldvVVdDbmFBd2VFclVmdmduL1NWb2xhWTZCN1hVZkFncG1u?=
+ =?utf-8?B?VXhZTmYyOEpFM2d1Ty93YlVTekRCMy83ZEROUmxBY0RoUGdBbGRzNjEwTHV3?=
+ =?utf-8?B?dDJYUExPeFY4WEpHK0FseHRmVFhRVUxmNXlzQk9Wd1Q4OE1CbWZaaFphNWdD?=
+ =?utf-8?Q?qJiHLqI0BXOeluXHXmYm?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5949.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dTNuakduU3VZaUMzbEdJTVZrNmRmNXZDc2VtcUQrQmJlNWZqY01YZ1BJd3Z3?=
+ =?utf-8?B?Skd0U25zejF5ZXRXOGVtc1RxSEVzaWlxUEk2SGV3ZGNrSSt2bitNTkZVL0FD?=
+ =?utf-8?B?cmN0MWdMb25Bd2ZmVUU3NUU2RmxUMkliY0cwc3JGckVWa3BraGlQcy9ueXdq?=
+ =?utf-8?B?UmxWT0ZmMXlTTjJWWlBxS1lIUi9zTEM4ckpacVNmT28zbm1zRFExb3FLMFo2?=
+ =?utf-8?B?ZEtOVEdKUGM2OHhZRWF5VTJ4MERqU3hCRC9nRytOUEM5QVBlZFl4Wi9OWkFZ?=
+ =?utf-8?B?SFpGZGl6YjY0TksvUmNWV0gyZk5aY3djaWU3TGpFZG1tNEppWjliaCs3TFdB?=
+ =?utf-8?B?WjAxbitjZms4dE95U3RqbnQwRUp3VlhXTEx5VEVoOVZtMTFZeGZqcXhWOUxB?=
+ =?utf-8?B?V3FzOUdvU1Y2a2l4WmNGWlRCQTBLd0RWdDNmRjBSWUsybEo1eC9UbVZEZDFx?=
+ =?utf-8?B?ZytsbXJIa2ZEVnk2STVuUkdoR09IbmFmc1dDSFpTMmJGazJ1QmhLTVZzR0hz?=
+ =?utf-8?B?cVV4YUJ3VlB0UWk3SnVSWE4wUndISlBVU2NFdm41Sm45U1hOVS9oOWJEWUlt?=
+ =?utf-8?B?NmJuYWNtb1JVUHdEL1hMY1hVMUJlbjBUbm9kQk15SU91OFYva20rVlY2VGVU?=
+ =?utf-8?B?UU5RTzBCZko5MUpCbmxvTEJaK256eGdQMGtScTZEejQzZTZ5d3hkNHJEbkhT?=
+ =?utf-8?B?NGdMTmo4czZEbGs5SWVUSUtFbG1haU1PWWpocTl1ZzgrWjhLN28xS1IyeHhO?=
+ =?utf-8?B?YW9MUGNCNW1pUnREMTdGclM0eUsvWlhlTjUvTmxjOHp5YVZWcGkxMFJNQ1cz?=
+ =?utf-8?B?eVNyZUNNZ3JKMmRxZUZRQU1sK0ltV0xyeFBOWlNtSG1ldnRGZnBHK1QzU1Zo?=
+ =?utf-8?B?TDhiOXU3eEhSUnlvNm0yZ2tqQ0o2cElWTVZiN3puenZOdGhDQTNhc3orcGx3?=
+ =?utf-8?B?bXp6ZndGaCtDQVpZeE5OOE9vNE10REVKTFl6RHU1cmUzTnRnMkVhK3IwYzJ3?=
+ =?utf-8?B?M0hCSXVVY1lBMWRnTWxjWWV0RXBtKzFndEhuMzNVajZxSzREcG1ia2dlN2dF?=
+ =?utf-8?B?NGxUMHk1alp5RlZyTkdpbURzRFI2TFc5Vmt3NXVEaUdBUUc5NGxXeWlOSDJL?=
+ =?utf-8?B?RDRER0M3T1hueW5rWlJHall0bnFrYjlpbW9XMUR5UzQrYWFWVXk3RklnK3I0?=
+ =?utf-8?B?Ni9jNVpWQjVNcnZ6cVZaNTBBaUZ3TkllbDJlcmxxRkdRWkRDSS95WnNJanFN?=
+ =?utf-8?B?QTgrZmRxbTN1SWozTkxCRXZqc1pSYVVUMGdmUHNQS3UzaGNWUGJjOTFXMlJq?=
+ =?utf-8?B?TEtYZys2K1JXbGNUYXFxRjlqK3BuNmNXeTBJQklPNjZEMHFld3pxUGV5aU0z?=
+ =?utf-8?B?TXg1SUdLZTRMMjA2blRKa1ZveUVZdUo5Q0dobDF1ZjAwUTlFVmF4eEtqSlFL?=
+ =?utf-8?B?WWxObGNtbUF2dGNPL1lGN1BKOWpFaEVGc3lkUk5ET0Z1UEEvcTZEd3VrZWZn?=
+ =?utf-8?B?S3lOdDBQT2Y3ZDRZQXV6cEV4dmxqM2tHNVJISStZUkRjVmtuYlIrenpNdzd0?=
+ =?utf-8?B?ajRmUTRoZEJ3M1FTZEFXNUwvR3lBQ0RKVFFJUkNQcnFnMEtmemhoMlFhM3Ar?=
+ =?utf-8?B?RlBTZWxMeHNnQVhTRFFLclJjL29uYkF2WEhpN3Ewc1lSdDVhdFBKZ0pLdEdJ?=
+ =?utf-8?B?MU5oOGYzcDNFZHF6T3AyL1RzTFgyZWxOM2lDaGtZNUhrTG9rcTNLUitiYWVZ?=
+ =?utf-8?B?TDNEaWUvLzNYQ1FOcHNZT09uam9sTXc4dk5aYnFRMTkyNnM2TlNSblpGcjdn?=
+ =?utf-8?B?MFdYRnRjVVpTTDZOdCs3WU1lL3BIWTEvSjFpbmtZUFhyN3ozU1ZoRXpjdmdP?=
+ =?utf-8?B?RzJlMjJPSWlJODc4S29IdG53Qk4wNGpaenBLTEtENTQ5S0RuaHU3eVlhbjNQ?=
+ =?utf-8?B?QTc2S3JjbWZEaytpZkk5dmw1cnl2RVA3a045dWhtM2E3WDVBQWpNVEdrTVNp?=
+ =?utf-8?B?UlJUUzF4bmZpRXZGNGp5QkVjRlV0N2w3ZXpyZC8wUERWUk4rK3prOVRkZGEz?=
+ =?utf-8?B?WC9kMFdzVnlobnZVL2RpbGZBd2dLSFF6elNVNkk1NUhzL2I5b0tuYzBpRHlt?=
+ =?utf-8?B?MjY2cVZEZnZvbTFiRi96dTFsTXVacDlFSnBTOTJLa1VzV2NCTG91Wlo4TWJt?=
+ =?utf-8?B?N2c9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb34f557-9ef8-4931-0550-08dcf66cad8e
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5949.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2024 09:49:41.1494
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lLL7kYNACSm+LLF8Mbl7bBFL2Fg+hbqfCf92tgm1PdqDqEFtNgljn7Ku669HpmExwZxVHojaHQvSDu5QcNL7Nf9G5tsdum1FaPdeCRXnbRs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4873
+X-OriginatorOrg: intel.com
 
-On Sat, Oct 19, 2024 at 2:38=E2=80=AFAM Hari Bathini <hbathini@linux.ibm.co=
-m> wrote:
->
-> From: Naveen N Rao <naveen@kernel.org>
->
-> Function profile sequence on powerpc includes two instructions at the
-> beginning of each function:
->         mflr    r0
->         bl      ftrace_caller
->
-> The call to ftrace_caller() gets nop'ed out during kernel boot and is
-> patched in when ftrace is enabled.
->
-> Given the sequence, we cannot return from ftrace_caller with 'blr' as we
-> need to keep LR and r0 intact. This results in link stack (return
-> address predictor) imbalance when ftrace is enabled. To address that, we
-> would like to use a three instruction sequence:
->         mflr    r0
->         bl      ftrace_caller
->         mtlr    r0
->
-> Further more, to support DYNAMIC_FTRACE_WITH_CALL_OPS, we need to
-> reserve two instruction slots before the function. This results in a
-> total of five instruction slots to be reserved for ftrace use on each
-> function that is traced.
->
-> Move the function profile sequence out-of-line to minimize its impact.
-> To do this, we reserve a single nop at function entry using
-> -fpatchable-function-entry=3D1 and add a pass on vmlinux.o to determine
-> the total number of functions that can be traced. This is then used to
-> generate a .S file reserving the appropriate amount of space for use as
-> ftrace stubs, which is built and linked into vmlinux.
->
-> On bootup, the stub space is split into separate stubs per function and
-> populated with the proper instruction sequence. A pointer to the
-> associated stub is maintained in dyn_arch_ftrace.
->
-> For modules, space for ftrace stubs is reserved from the generic module
-> stub space.
->
-> This is restricted to and enabled by default only on 64-bit powerpc,
-> though there are some changes to accommodate 32-bit powerpc. This is
-> done so that 32-bit powerpc could choose to opt into this based on
-> further tests and benchmarks.
->
-> As an example, after this patch, kernel functions will have a single nop
-> at function entry:
-> <kernel_clone>:
->         addis   r2,r12,467
->         addi    r2,r2,-16028
->         nop
->         mfocrf  r11,8
->         ...
->
-> When ftrace is enabled, the nop is converted to an unconditional branch
-> to the stub associated with that function:
-> <kernel_clone>:
->         addis   r2,r12,467
->         addi    r2,r2,-16028
->         b       ftrace_ool_stub_text_end+0x11b28
->         mfocrf  r11,8
->         ...
->
-> The associated stub:
-> <ftrace_ool_stub_text_end+0x11b28>:
->         mflr    r0
->         bl      ftrace_caller
->         mtlr    r0
->         b       kernel_clone+0xc
->         ...
->
-> This change showed an improvement of ~10% in null_syscall benchmark on a
-> Power 10 system with ftrace enabled.
->
-> Signed-off-by: Naveen N Rao <naveen@kernel.org>
-> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+
+On 10/23/2024 12:52 AM, Joe Damato wrote:
+> Link queues to NAPI instances via netdev-genl API so that users can
+> query this information with netlink. Handle a few cases in the driver:
+>    1. Link/unlink the NAPIs when XDP is enabled/disabled
+>    2. Handle IGC_FLAG_QUEUE_PAIRS enabled and disabled
+> 
+> Example output when IGC_FLAG_QUEUE_PAIRS is enabled:
+> 
+> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+>                           --dump queue-get --json='{"ifindex": 2}'
+> 
+> [{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+>   {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
+>   {'id': 2, 'ifindex': 2, 'napi-id': 8195, 'type': 'rx'},
+>   {'id': 3, 'ifindex': 2, 'napi-id': 8196, 'type': 'rx'},
+>   {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'tx'},
+>   {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'tx'},
+>   {'id': 2, 'ifindex': 2, 'napi-id': 8195, 'type': 'tx'},
+>   {'id': 3, 'ifindex': 2, 'napi-id': 8196, 'type': 'tx'}]
+> 
+> Since IGC_FLAG_QUEUE_PAIRS is enabled, you'll note that the same NAPI ID
+> is present for both rx and tx queues at the same index, for example
+> index 0:
+> 
+> {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+> {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'tx'},
+> 
+> To test IGC_FLAG_QUEUE_PAIRS disabled, a test system was booted using
+> the grub command line option "maxcpus=2" to force
+> igc_set_interrupt_capability to disable IGC_FLAG_QUEUE_PAIRS.
+> 
+> Example output when IGC_FLAG_QUEUE_PAIRS is disabled:
+> 
+> $ lscpu | grep "On-line CPU"
+> On-line CPU(s) list:      0,2
+> 
+> $ ethtool -l enp86s0  | tail -5
+> Current hardware settings:
+> RX:		n/a
+> TX:		n/a
+> Other:		1
+> Combined:	2
+> 
+> $ cat /proc/interrupts  | grep enp
+>   144: [...] enp86s0
+>   145: [...] enp86s0-rx-0
+>   146: [...] enp86s0-rx-1
+>   147: [...] enp86s0-tx-0
+>   148: [...] enp86s0-tx-1
+> 
+> 1 "other" IRQ, and 2 IRQs for each of RX and Tx, so we expect netlink to
+> report 4 IRQs with unique NAPI IDs:
+> 
+> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+>                           --dump napi-get --json='{"ifindex": 2}'
+> [{'id': 8196, 'ifindex': 2, 'irq': 148},
+>   {'id': 8195, 'ifindex': 2, 'irq': 147},
+>   {'id': 8194, 'ifindex': 2, 'irq': 146},
+>   {'id': 8193, 'ifindex': 2, 'irq': 145}]
+> 
+> Now we examine which queues these NAPIs are associated with, expecting
+> that since IGC_FLAG_QUEUE_PAIRS is disabled each RX and TX queue will
+> have its own NAPI instance:
+> 
+> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+>                           --dump queue-get --json='{"ifindex": 2}'
+> [{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+>   {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
+>   {'id': 0, 'ifindex': 2, 'napi-id': 8195, 'type': 'tx'},
+>   {'id': 1, 'ifindex': 2, 'napi-id': 8196, 'type': 'tx'}]
+> 
+> Signed-off-by: Joe Damato <jdamato@fastly.com>
+> Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 > ---
-
-> diff --git a/arch/powerpc/tools/Makefile b/arch/powerpc/tools/Makefile
-> new file mode 100644
-> index 000000000000..d2e7ecd5f46f
-> --- /dev/null
-> +++ b/arch/powerpc/tools/Makefile
-> @@ -0,0 +1,9 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
+>   v4:
+>     - Add rtnl_lock/rtnl_unlock in two paths: igc_resume and
+>       igc_io_error_detected. The code added to the latter is inspired by
+>       a similar implementation in ixgbe's ixgbe_io_error_detected.
+> 
+>   v3:
+>     - Replace igc_unset_queue_napi with igc_set_queue_napi(adapater, i,
+>       NULL), as suggested by Vinicius Costa Gomes
+>     - Simplify implemention of igc_set_queue_napi as suggested by Kurt
+>       Kanzenbach, with a tweak to use ring->queue_index
+> 
+>   v2:
+>     - Update commit message to include tests for IGC_FLAG_QUEUE_PAIRS
+>       disabled
+>     - Refactored code to move napi queue mapping and unmapping to helper
+>       functions igc_set_queue_napi and igc_unset_queue_napi
+>     - Adjust the code to handle IGC_FLAG_QUEUE_PAIRS disabled
+>     - Call helpers to map/unmap queues to NAPIs in igc_up, __igc_open,
+>       igc_xdp_enable_pool, and igc_xdp_disable_pool
+> 
+>   drivers/net/ethernet/intel/igc/igc.h      |  2 ++
+>   drivers/net/ethernet/intel/igc/igc_main.c | 41 ++++++++++++++++++++---
+>   drivers/net/ethernet/intel/igc/igc_xdp.c  |  2 ++
+>   3 files changed, 40 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
+> index eac0f966e0e4..b8111ad9a9a8 100644
+> --- a/drivers/net/ethernet/intel/igc/igc.h
+> +++ b/drivers/net/ethernet/intel/igc/igc.h
+> @@ -337,6 +337,8 @@ struct igc_adapter {
+>   	struct igc_led_classdev *leds;
+>   };
+>   
+> +void igc_set_queue_napi(struct igc_adapter *adapter, int q_idx,
+> +			struct napi_struct *napi);
+>   void igc_up(struct igc_adapter *adapter);
+>   void igc_down(struct igc_adapter *adapter);
+>   int igc_open(struct net_device *netdev);
+> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+> index 7964bbedb16c..04aa216ef612 100644
+> --- a/drivers/net/ethernet/intel/igc/igc_main.c
+> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
+> @@ -4948,6 +4948,22 @@ static int igc_sw_init(struct igc_adapter *adapter)
+>   	return 0;
+>   }
+>   
+> +void igc_set_queue_napi(struct igc_adapter *adapter, int vector,
+> +			struct napi_struct *napi)
+> +{
+> +	struct igc_q_vector *q_vector = adapter->q_vector[vector];
 > +
-> +quiet_cmd_gen_ftrace_ool_stubs =3D GEN     $@
-> +      cmd_gen_ftrace_ool_stubs =3D $< "$(CONFIG_64BIT)" "$(OBJDUMP)" vml=
-inux.o $@
+> +	if (q_vector->rx.ring)
+> +		netif_queue_set_napi(adapter->netdev,
+> +				     q_vector->rx.ring->queue_index,
+> +				     NETDEV_QUEUE_TYPE_RX, napi);
 > +
-> +$(obj)/vmlinux.arch.S: $(src)/ftrace-gen-ool-stubs.sh vmlinux.o FORCE
-> +       $(call if_changed,gen_ftrace_ool_stubs)
+> +	if (q_vector->tx.ring)
+> +		netif_queue_set_napi(adapter->netdev,
+> +				     q_vector->tx.ring->queue_index,
+> +				     NETDEV_QUEUE_TYPE_TX, napi);
+> +}
 > +
-> +targets +=3D vmlinux.arch.S
+>   /**
+>    * igc_up - Open the interface and prepare it to handle traffic
+>    * @adapter: board private structure
+> @@ -4955,6 +4971,7 @@ static int igc_sw_init(struct igc_adapter *adapter)
+>   void igc_up(struct igc_adapter *adapter)
+>   {
+>   	struct igc_hw *hw = &adapter->hw;
+> +	struct napi_struct *napi;
+>   	int i = 0;
+>   
+>   	/* hardware has been reset, we need to reload some things */
+> @@ -4962,8 +4979,11 @@ void igc_up(struct igc_adapter *adapter)
+>   
+>   	clear_bit(__IGC_DOWN, &adapter->state);
+>   
+> -	for (i = 0; i < adapter->num_q_vectors; i++)
+> -		napi_enable(&adapter->q_vector[i]->napi);
+> +	for (i = 0; i < adapter->num_q_vectors; i++) {
+> +		napi = &adapter->q_vector[i]->napi;
+> +		napi_enable(napi);
+> +		igc_set_queue_napi(adapter, i, napi);
+> +	}
+>   
+>   	if (adapter->msix_entries)
+>   		igc_configure_msix(adapter);
+> @@ -5192,6 +5212,7 @@ void igc_down(struct igc_adapter *adapter)
+>   	for (i = 0; i < adapter->num_q_vectors; i++) {
+>   		if (adapter->q_vector[i]) {
+>   			napi_synchronize(&adapter->q_vector[i]->napi);
+> +			igc_set_queue_napi(adapter, i, NULL);
+>   			napi_disable(&adapter->q_vector[i]->napi);
+>   		}
+>   	}
+> @@ -6021,6 +6042,7 @@ static int __igc_open(struct net_device *netdev, bool resuming)
+>   	struct igc_adapter *adapter = netdev_priv(netdev);
+>   	struct pci_dev *pdev = adapter->pdev;
+>   	struct igc_hw *hw = &adapter->hw;
+> +	struct napi_struct *napi;
+>   	int err = 0;
+>   	int i = 0;
+>   
+> @@ -6056,8 +6078,11 @@ static int __igc_open(struct net_device *netdev, bool resuming)
+>   
+>   	clear_bit(__IGC_DOWN, &adapter->state);
+>   
+> -	for (i = 0; i < adapter->num_q_vectors; i++)
+> -		napi_enable(&adapter->q_vector[i]->napi);
+> +	for (i = 0; i < adapter->num_q_vectors; i++) {
+> +		napi = &adapter->q_vector[i]->napi;
+> +		napi_enable(napi);
+> +		igc_set_queue_napi(adapter, i, napi);
+> +	}
+>   
+>   	/* Clear any pending interrupts. */
+>   	rd32(IGC_ICR);
+> @@ -7385,7 +7410,9 @@ static int igc_resume(struct device *dev)
+>   	wr32(IGC_WUS, ~0);
+>   
+>   	if (netif_running(netdev)) {
+> +		rtnl_lock();
+
+This change will bring back the deadlock issue that was fixed in commit:
+6f31d6b: "igc: Refactor runtime power management flow".
+
+>   		err = __igc_open(netdev, true);
+> +		rtnl_unlock();
+>   		if (!err)
+>   			netif_device_attach(netdev);
+>   	}
+> @@ -7440,14 +7467,18 @@ static pci_ers_result_t igc_io_error_detected(struct pci_dev *pdev,
+>   	struct net_device *netdev = pci_get_drvdata(pdev);
+>   	struct igc_adapter *adapter = netdev_priv(netdev);
+>   
+> +	rtnl_lock();
+>   	netif_device_detach(netdev);
+>   
+> -	if (state == pci_channel_io_perm_failure)
+> +	if (state == pci_channel_io_perm_failure) {
+> +		rtnl_unlock();
+>   		return PCI_ERS_RESULT_DISCONNECT;
+> +	}
+>   
+>   	if (netif_running(netdev))
+>   		igc_down(adapter);
+>   	pci_disable_device(pdev);
+> +	rtnl_unlock();
+>   
+>   	/* Request a slot reset. */
+>   	return PCI_ERS_RESULT_NEED_RESET;
+> diff --git a/drivers/net/ethernet/intel/igc/igc_xdp.c b/drivers/net/ethernet/intel/igc/igc_xdp.c
+> index e27af72aada8..4da633430b80 100644
+> --- a/drivers/net/ethernet/intel/igc/igc_xdp.c
+> +++ b/drivers/net/ethernet/intel/igc/igc_xdp.c
+> @@ -84,6 +84,7 @@ static int igc_xdp_enable_pool(struct igc_adapter *adapter,
+>   		napi_disable(napi);
+>   	}
+>   
+> +	igc_set_queue_napi(adapter, queue_id, NULL);
+>   	set_bit(IGC_RING_FLAG_AF_XDP_ZC, &rx_ring->flags);
+>   	set_bit(IGC_RING_FLAG_AF_XDP_ZC, &tx_ring->flags);
+>   
+> @@ -133,6 +134,7 @@ static int igc_xdp_disable_pool(struct igc_adapter *adapter, u16 queue_id)
+>   	xsk_pool_dma_unmap(pool, IGC_RX_DMA_ATTR);
+>   	clear_bit(IGC_RING_FLAG_AF_XDP_ZC, &rx_ring->flags);
+>   	clear_bit(IGC_RING_FLAG_AF_XDP_ZC, &tx_ring->flags);
+> +	igc_set_queue_napi(adapter, queue_id, napi);
+>   
+>   	if (needs_reset) {
+>   		napi_enable(napi);
+> 
 
 
-Makefile looks good to me.
+
+Hi Joe,
 
 
-> diff --git a/arch/powerpc/tools/ftrace-gen-ool-stubs.sh b/arch/powerpc/to=
-ols/ftrace-gen-ool-stubs.sh
-> new file mode 100755
-> index 000000000000..96e1ca5803e4
-> --- /dev/null
-> +++ b/arch/powerpc/tools/ftrace-gen-ool-stubs.sh
-> @@ -0,0 +1,41 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +# Error out on error
-> +set -e
-> +
-> +is_64bit=3D"$1"
-> +objdump=3D"$2"
-> +vmlinux_o=3D"$3"
-> +arch_vmlinux_S=3D"$4"
-> +
-> +RELOCATION=3DR_PPC64_ADDR64
-> +if [ -z "$is_64bit" ]; then
-> +       RELOCATION=3DR_PPC_ADDR32
-> +fi
-> +
-> +num_ool_stubs_text=3D$($objdump -r -j __patchable_function_entries "$vml=
-inux_o" |
-> +                    grep -v ".init.text" | grep -c "$RELOCATION")
-> +num_ool_stubs_inittext=3D$($objdump -r -j __patchable_function_entries "=
-$vmlinux_o" |
-> +                        grep ".init.text" | grep -c "$RELOCATION")
-> +
-> +cat > "$arch_vmlinux_S" <<EOF
-> +#include <asm/asm-offsets.h>
-> +#include <linux/linkage.h>
-> +
-> +.pushsection .tramp.ftrace.text,"aw"
-> +SYM_DATA(ftrace_ool_stub_text_end_count, .long $num_ool_stubs_text)
-> +
-> +SYM_CODE_START(ftrace_ool_stub_text_end)
-> +       .space $num_ool_stubs_text * FTRACE_OOL_STUB_SIZE
-> +SYM_CODE_END(ftrace_ool_stub_text_end)
-> +.popsection
-> +
-> +.pushsection .tramp.ftrace.init,"aw"
-> +SYM_DATA(ftrace_ool_stub_inittext_count, .long $num_ool_stubs_inittext)
-> +
-> +SYM_CODE_START(ftrace_ool_stub_inittext)
-> +       .space $num_ool_stubs_inittext * FTRACE_OOL_STUB_SIZE
+The current version will cause a regression, a possible deadlock, due to 
+the addition of the rtnl_lock in igc_resume that was fixed previously.
 
+You can refer to the following link:
 
-To avoid the warning mention in another thread,
-it is better to avoid zero .space.
+https://github.com/torvalds/linux/commit/6f31d6b643a32cc126cf86093fca1ea575948bf0#diff-d5b32b873e9902b496280a5f42c246043c8f0691d8b3a6bbd56df99ce8ceb394L7190
 
-
-
-
-
-> +SYM_CODE_END(ftrace_ool_stub_inittext)
-> +.popsection
-> +EOF
-> --
-> 2.47.0
->
-
-
---=20
-Best Regards
-Masahiro Yamada
 
