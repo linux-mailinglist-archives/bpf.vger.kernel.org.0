@@ -1,109 +1,187 @@
-Return-Path: <bpf+bounces-43250-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43251-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AF499B1AF0
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 22:37:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78F229B1B76
+	for <lists+bpf@lfdr.de>; Sun, 27 Oct 2024 02:08:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36B431F21F2A
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2024 20:37:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7E431C20CB2
+	for <lists+bpf@lfdr.de>; Sun, 27 Oct 2024 00:08:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FBD1D7986;
-	Sat, 26 Oct 2024 20:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SIXAMrj1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07FC72905;
+	Sun, 27 Oct 2024 00:08:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8521534E9;
-	Sat, 26 Oct 2024 20:37:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABAEB1362;
+	Sun, 27 Oct 2024 00:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729975034; cv=none; b=QHXHrA5DC2VpgDZfPbZW4ib0xZ+cmS1lsOfjcT0knCXvfvwZ4fsuBw3r2OSYw2UsabmkrfMMXVh7PbDKxqnd+OdY1GXl+OoL5m2s/2hSYZHvenZbRdOykpq0WGAGTrHUKYMjmuh50osCriINlJmhDdtyc1jvQ6f6xaDsl4I0+qg=
+	t=1729987727; cv=none; b=nHP5meIA3FL+qAr1NUvvQRX1GPcALsHkRQmzHZgU4Yqe/3CYTiWs8wAdS1tWsnQf/6rSn6GLcJGJocvMg3PC0AocDty+ieEAHdJ0GzGGWx3XCRKSeSKSWDj9QQhMRPDB+CfMPjShXgINvdBcWrtwHfoOr8SWi39WJY5vzHsLE7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729975034; c=relaxed/simple;
-	bh=HI7ity/oa/ka9cv3V8FDOAD5p0QTO9Jgh7DeocJ5Glk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V4u3lpfUQoDX8ERe5Y863jZDKJpTI+M2o/pmdlcmcEoEwCH8imi6rK8rdVgM+LcOMlHQybRATvf/HMu2eNy/YVHDaZmTGTj5klW0VurPmCMJz8d+1cH00BZylnLKTf2vJIbEt2FPMpEUet4ElkwUHd0Gs59jrukoh6SCALZ7l/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SIXAMrj1; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7205b6f51f3so1164701b3a.1;
-        Sat, 26 Oct 2024 13:37:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729975032; x=1730579832; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aR5yj1+V/MTixDnxfXpOMwrRd/ZzgiDUoeYFWdOL+aM=;
-        b=SIXAMrj1sQpCqkMGlDnswd4uF3JXatn+rR6IxO4uXFDQyjUhTeMWncJnfcwNeZ/lkT
-         RymxhSwUnFqbgZ3o1vqZDlUDbysdW4KXS0+kUM/1lfT6q0lQN+OIJ3d7kp2Emnf0lfzW
-         lnC/ZobFaLJmWSO6hp21xVQr7FRJ/aeMN4SDDc05bg/0+BD/HPZvvYiUTSWSQIO5pCnf
-         7ghX27bERknkjywCgT1KUlQCXbUQc2nLGU75MPWJsEN2CHz3PFZwuGu6y+OvJXN9VEPN
-         JfRPMN5M6P9xO8MNFbSfnY+Uu2fOo4FF/4719xVe5iOwD+zERRjacPf8fYdcNlaXgBWz
-         b3GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729975032; x=1730579832;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aR5yj1+V/MTixDnxfXpOMwrRd/ZzgiDUoeYFWdOL+aM=;
-        b=Ur3AmjRFfdERdjSRTPgsp9eDxg4/pQA50IfksG4bk9il1I6qXMgL6janjUROtTFS2h
-         W6jj+3t5e+R7xKetAi8nTNMkYXnF5Sl4dOdiiK1RJGshSPAFvL8X5FdY6sn7H6JwCNQh
-         IOOFnwwfP9fWPi6jJozQ5oEWHpvg3ciGiLyaiaDSL7vac/aZTw6iGvwoT9sBXQhpELHr
-         ZbEFkBho0OKr45eIar3FeOlPKlSfp7z2C7K+Ex7/LuGsQPOaP051wJ/ekt1JmPgqNpvP
-         KMpBexsvyUHIUMB534AE5sDYCcfSwSypRKyXumqUigKEksavQwSIMOv9R63ymCNmy9Kv
-         0q+w==
-X-Forwarded-Encrypted: i=1; AJvYcCUZr04eTubZVTebMQjXQHxbGLql5EMZhyN7SQQcXUlU25Qcs6Idf3CBx+dd7IcNImBNI/AhFFnVZQi5dAA/@vger.kernel.org, AJvYcCWrxwZnoMLqwKqqo/g0lrSMR01LKYRMbMH6K84b9I9m6laYK0sol7PhOGvaNOaCUIq6b+2qF4lJ@vger.kernel.org, AJvYcCXedIN9tD4lDL2pBsdcC3/jtKShjOT14DMJcjY7JraS+ZrprZz04qk9My6Zk2N6q4Vin+s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZSc9St0xlQW6NIVQEMHQw5YfgweDql6IrklIfb9daXLBJY0yc
-	OXDZCdQaoldRrRqn868nlHVClnA6lgoF7jyN4oCRq3cmH/dvciYt
-X-Google-Smtp-Source: AGHT+IHPKiSQ1tUBn1Eiegpqfrg4lY2oC+XAepMwaiU3T/MqZRANFXm+bERVSZtum3QIvf/HkTf2RQ==
-X-Received: by 2002:a05:6a00:2350:b0:71e:4ba:f389 with SMTP id d2e1a72fcca58-72062f83c5amr6073389b3a.10.1729975032160;
-        Sat, 26 Oct 2024 13:37:12 -0700 (PDT)
-Received: from localhost ([2601:647:6881:9060:6bce:bc57:7561:fc9c])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057a1fb1esm3090123b3a.155.2024.10.26.13.37.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Oct 2024 13:37:11 -0700 (PDT)
-Date: Sat, 26 Oct 2024 13:37:10 -0700
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: mrpre <mrpre@163.com>
-Cc: edumazet@google.com, jakub@cloudflare.com, davem@davemloft.net,
-	dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpf: fix filed access without lock
-Message-ID: <Zx1S9vf2i7O+BNE+@pop-os.localdomain>
-References: <20241021013705.14105-1-mrpre@163.com>
+	s=arc-20240116; t=1729987727; c=relaxed/simple;
+	bh=n9VVzgV173OwhZ3rIcQyVRxgCSPlJWezIFmjI+NJO3o=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=j9bVWO5QUi3mu6R8BH+guSICov46GHTBPjrd7o/Sv9MAjKEa98MQLG521NuThKudCXPtbeyMuWoE5IvL63xjLrchfXyYaz/m9/CsxcAOkYsBGuA07k9EB9DKwY6+0D+MBQQejWLR8WiuA90DXD2kO7TAnl7TKl+IPaZySH/v49A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AF4EC4CEC6;
+	Sun, 27 Oct 2024 00:08:44 +0000 (UTC)
+Date: Sat, 26 Oct 2024 20:08:40 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: linux-kernel@vger.kernel.org, Michael Jeanson <mjeanson@efficios.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>, Yonghong Song
+ <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>, Ingo Molnar
+ <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org, Joel
+ Fernandes <joel@joelfernandes.org>, Jordan Rife <jrife@google.com>
+Subject: Re: [RFC PATCH v3 2/3] tracing: Introduce tracepoint_is_syscall()
+Message-ID: <20241026200840.17171eb2@rorschach.local.home>
+In-Reply-To: <20241026154629.593041-2-mathieu.desnoyers@efficios.com>
+References: <20241026154629.593041-1-mathieu.desnoyers@efficios.com>
+	<20241026154629.593041-2-mathieu.desnoyers@efficios.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241021013705.14105-1-mrpre@163.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Oct 21, 2024 at 09:37:05AM +0800, mrpre wrote:
-> The tcp_bpf_recvmsg_parser() function, running in user context,
-> retrieves seq_copied from tcp_sk without holding the socket lock, and
-> stores it in a local variable seq. However, the softirq context can
-> modify tcp_sk->seq_copied concurrently, for example, n tcp_read_sock().
+On Sat, 26 Oct 2024 11:46:28 -0400
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+
+> Introduce a "syscall" flag within the extended structure to know whether
+> a tracepoint needs rcu tasks trace grace period before reclaim.
+> This can be queried using tracepoint_is_syscall().
 > 
-> As a result, the seq value is stale when it is assigned back to
-> tcp_sk->copied_seq at the end of tcp_bpf_recvmsg_parser(), leading to
-> incorrect behavior.
-
-Good catch! This makes sense to me. Mind to be more specific on the
-"incorrect behavior" here? What error or misbehavior did you see?
-
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Michael Jeanson <mjeanson@efficios.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: bpf@vger.kernel.org
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Jordan Rife <jrife@google.com>
+> ---
+>  include/linux/tracepoint-defs.h |  2 ++
+>  include/linux/tracepoint.h      | 24 ++++++++++++++++++++++++
+>  include/trace/define_trace.h    |  2 +-
+>  3 files changed, 27 insertions(+), 1 deletion(-)
 > 
-> Signed-off-by: mrpre <mrpre@163.com>
+> diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
+> index 967c08d9da84..53119e074c87 100644
+> --- a/include/linux/tracepoint-defs.h
+> +++ b/include/linux/tracepoint-defs.h
+> @@ -32,6 +32,8 @@ struct tracepoint_func {
+>  struct tracepoint_ext {
+>  	int (*regfunc)(void);
+>  	void (*unregfunc)(void);
+> +	/* Flags. */
+> +	unsigned int syscall:1;
+
+I wonder if we should call it "sleepable" instead? For this patch set
+do we really care if it's a system call or not? It's really if the
+tracepoint is sleepable or not that's the issue. System calls are just
+one user of it, there may be more in the future, and the changes to BPF
+will still be needed.
+
+Other than that, I think this could work.
+
+-- Steve
 
 
-Please use your real name for SoB, see https://docs.kernel.org/process/submitting-patches.html
+>  };
+>  
+>  struct tracepoint {
+> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+> index 83dc24ee8b13..93e70bc64533 100644
+> --- a/include/linux/tracepoint.h
+> +++ b/include/linux/tracepoint.h
+> @@ -104,6 +104,12 @@ void for_each_tracepoint_in_module(struct module *mod,
+>   * tracepoint_synchronize_unregister must be called between the last tracepoint
+>   * probe unregistration and the end of module exit to make sure there is no
+>   * caller executing a probe when it is freed.
+> + *
+> + * An alternative is to use the following for batch reclaim associated
+> + * with a given tracepoint:
+> + *
+> + * - tracepoint_is_syscall() == false: call_rcu()
+> + * - tracepoint_is_syscall() == true:  call_rcu_tasks_trace()
+>   */
+>  #ifdef CONFIG_TRACEPOINTS
+>  static inline void tracepoint_synchronize_unregister(void)
+> @@ -111,9 +117,17 @@ static inline void tracepoint_synchronize_unregister(void)
+>  	synchronize_rcu_tasks_trace();
+>  	synchronize_rcu();
+>  }
+> +static inline bool tracepoint_is_syscall(struct tracepoint *tp)
+> +{
+> +	return tp->ext && tp->ext->syscall;
+> +}
+>  #else
+>  static inline void tracepoint_synchronize_unregister(void)
+>  { }
+> +static inline bool tracepoint_is_syscall(struct tracepoint *tp)
+> +{
+> +	return false;
+> +}
+>  #endif
+>  
+>  #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
+> @@ -345,6 +359,15 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  	struct tracepoint_ext __tracepoint_ext_##_name = {		\
+>  		.regfunc = _reg,					\
+>  		.unregfunc = _unreg,					\
+> +		.syscall = false,					\
+> +	};								\
+> +	__DEFINE_TRACE_EXT(_name, &__tracepoint_ext_##_name, PARAMS(_proto), PARAMS(_args));
+> +
+> +#define DEFINE_TRACE_SYSCALL(_name, _reg, _unreg, _proto, _args)	\
+> +	struct tracepoint_ext __tracepoint_ext_##_name = {		\
+> +		.regfunc = _reg,					\
+> +		.unregfunc = _unreg,					\
+> +		.syscall = true,					\
+>  	};								\
+>  	__DEFINE_TRACE_EXT(_name, &__tracepoint_ext_##_name, PARAMS(_proto), PARAMS(_args));
+>  
+> @@ -389,6 +412,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  #define __DECLARE_TRACE_SYSCALL	__DECLARE_TRACE
+>  
+>  #define DEFINE_TRACE_FN(name, reg, unreg, proto, args)
+> +#define DEFINE_TRACE_SYSCALL(name, reg, unreg, proto, args)
+>  #define DEFINE_TRACE(name, proto, args)
+>  #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)
+>  #define EXPORT_TRACEPOINT_SYMBOL(name)
+> diff --git a/include/trace/define_trace.h b/include/trace/define_trace.h
+> index ff5fa17a6259..63fea2218afa 100644
+> --- a/include/trace/define_trace.h
+> +++ b/include/trace/define_trace.h
+> @@ -48,7 +48,7 @@
+>  
+>  #undef TRACE_EVENT_SYSCALL
+>  #define TRACE_EVENT_SYSCALL(name, proto, args, struct, assign, print, reg, unreg) \
+> -	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
+> +	DEFINE_TRACE_SYSCALL(name, reg, unreg, PARAMS(proto), PARAMS(args))
+>  
+>  #undef TRACE_EVENT_NOP
+>  #define TRACE_EVENT_NOP(name, proto, args, struct, assign, print)
 
-Thanks.
 
