@@ -1,158 +1,132 @@
-Return-Path: <bpf+bounces-43269-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43270-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46C989B22AC
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 03:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADCD99B2395
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 04:42:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9E801F21C63
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 02:23:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E4A91F21DE9
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 03:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94661155C97;
-	Mon, 28 Oct 2024 02:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2493618593B;
+	Mon, 28 Oct 2024 03:41:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="OZIawUAV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fEaL4eT3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF7C14A088;
-	Mon, 28 Oct 2024 02:23:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F070E161;
+	Mon, 28 Oct 2024 03:41:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730082212; cv=none; b=golnDRuYpIR52SqMwQwxbz8Pxqar1HnMS4Yyu21EQm9hlqZs46dPkyzHfnSQYv8GcuXkda9a9MMURSjmdcEw8rludFyIvVEq06Md4BkMzDqB3VRWXTt3m+4dasVDKo695w2cKWscIwPmf1VpIXUCiH7K0b75n34Z+BSQO6PE0vY=
+	t=1730086912; cv=none; b=PpiSH1AA2sM51MuBEyK+22N0wD3EvSzmqadfA8xYerbDglhO7huZQwy6dDSP26+uxenA8nQedP9kOBewRxXbmASyuR9PlF4yWQBTn3pLOx+1Mww8uhDE/H4tygDHuWGXfnRWA+Bi2APmm7EFFjh+DqEmJSbxrCVLOcEPu/MIQUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730082212; c=relaxed/simple;
-	bh=u/xTtnizdqRxZA7D0F1Ev2yUBsm0p/OFai4PrZAtDDg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Rxf7gLGvF7LrYNuxlV/bcyeA+11Zmtv7WgcOYFj3ueztQe/nc49zAQq4MqUMdiIcCltaKvIDg/7Q0hOOOwmBoQWkcK0e3HKdt2YJXuRJ1scyVZZzeE5MGYxU5ShlM9UPtmCoK2rl/cRC9Wbq+3JizAK2FFxBWgf1g1KGjWiCZEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=OZIawUAV; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1730082202;
-	bh=wVzoc2YabnIij5HP3bkYWkQB3e64c7slt7BMmOIG3vk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=OZIawUAVvihaiXSwIbUZzcTz/tSg3C1U5LEaVYgOz4QoVISgtL6WviXd3+smevP7j
-	 R/hVpxpqQA2czH0OgbOsdZ/XN9oOlY7sbOzvWwnvGYYyYJsAuLhD8D2cGXk3zQ3Qcf
-	 Xlmo8LCM81g3VdyYneWeZi52VsFp2ozQKki9ZSVwqAf7xk8cYqaSwqlX4Mipqjed6a
-	 eYbw3SKM3H8Y7R3CxIjshRL1I3sLTmewm9KYFwOuMGXWKXrkByPLjplT3Ne2Vy4WLv
-	 oS3+EntGWYqofeVy/dSgM+jb9ZxRrfbS0RYyedkF7axBWtyZppZ+q42fJGbmWcXti8
-	 0jDbtveRkr5HQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4XcHHX4W29z4x89;
-	Mon, 28 Oct 2024 13:23:20 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Hari Bathini <hbathini@linux.ibm.com>, linuxppc-dev
- <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: "Naveen N. Rao" <naveen@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Daniel Borkmann <daniel@iogearbox.net>, Masahiro
- Yamada <masahiroy@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Alexei
- Starovoitov <ast@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, Vishal Chourasia
- <vishalc@linux.ibm.com>, Mahesh J Salgaonkar <mahesh@linux.ibm.com>
-Subject: Re: [PATCH v6 17/17] powerpc64/bpf: Add support for bpf trampolines
-In-Reply-To: <20241018173632.277333-18-hbathini@linux.ibm.com>
-References: <20241018173632.277333-1-hbathini@linux.ibm.com>
- <20241018173632.277333-18-hbathini@linux.ibm.com>
-Date: Mon, 28 Oct 2024 13:23:13 +1100
-Message-ID: <87wmhtrmni.fsf@mpe.ellerman.id.au>
+	s=arc-20240116; t=1730086912; c=relaxed/simple;
+	bh=0KdL3h9TPkM2JlRYHJJCIpQjO/bIMhVOh2E4rmOp6vI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=WIHbG0mxP1xdLJ7HRVp3GxxoaJkPCBAxHzCvAyP7v/EV6cHhXkgP+HoUAX7tgTLqdzTkF/mmyiUVL+wT/ITGFodYHMXhdouqbZl1TSG+lCu8rW/zzyMuiyE8yn+4X0fhYFpxqul15P3hHvHU8eL/EgH7iaRlnh+fla94QWPLJZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fEaL4eT3; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-20cd76c513cso33550595ad.3;
+        Sun, 27 Oct 2024 20:41:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730086910; x=1730691710; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JDbethT0XQq/2eRWjXORusHC8QdieIAX64J/ApXJme0=;
+        b=fEaL4eT3QbGTiOcfxd35c8C9sQmc2skPqenGCh8mt89xRbvW+wkwcz+ixKz90FqL+N
+         EE2nB3bUY0HpPlZZVbYrsX+ZMqH9Frqae5OfBzeTKqKHwqjwA2HoTbJRMz3N+CneB3zg
+         2vdLl3ryN99CB1tCZYd/iPa0uGDMieG2WPe03ntWcd2TM71zuI9wi+QlBYYliTIHkHUA
+         SZuzpgwVytUbUNjB14cCzPou4lg6FKg7iMF0nHkGNqnkjsbwAsX3bXunOmXk6kfOuV7P
+         eIR1tBfGHxeM7/1OGKcK56/15T7f6f1oYpgj7mXHPBCQ+bcjaLM1Cqg81rIlAHd7HslA
+         8Ymg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730086910; x=1730691710;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JDbethT0XQq/2eRWjXORusHC8QdieIAX64J/ApXJme0=;
+        b=pxsktc99+WlSE3rUVtPKCS3aOl+vNQt2eGyoUZO3KGdnTYYU/ia0pq4mORONaCQ0d0
+         OI96SZ8mVpejdK6/B74WemB6gn19GT7OgM9Z5tzt/kgdrPDcx0VopK8w5/eWkg1fIFXw
+         tpfwhi3mU9uOw7EC3qYoQlJP3KZeElaKnCMh0s7Am1AoIGPn5JxV4LhRG4Lz7W3cMXr4
+         8xuNmahkwBPzxC4re5M4pkjJuELNyN+QpqR73BxrqA03qjbHW65ksR7p/Xq3VDXuo+IT
+         D+O0gO5o/WvkCLBQmVX5J4e+5aa9HrU/BqA9zJ9Jmy62lS+e4NjgHVFVT85Qj2pwGIpm
+         FZdw==
+X-Forwarded-Encrypted: i=1; AJvYcCW7N9YIlUnIVzQtnBdaSqCREqO19Dx79UwVvGuJ+Pr5eXi2PYuSEb0M4iQXpOqWP1pVAdtSJhDpKNnUZ6tmFSY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzN+NTS/Xh+NdNdVFRNajvnFe25nIHCSOkYMeoBwUrLJU3JK9sz
+	gpPOt0vh3caCPSzirpbfFhqMpWtnatg38faRskkUWSfXr6d1SfcQ
+X-Google-Smtp-Source: AGHT+IHgnETDz6Ld44mVjoLBQnQ1UPHQH3pfCPUFnb93Gvf6//TB8LHf78LERRpQHXPuH8A4ZLYCkw==
+X-Received: by 2002:a17:902:db0b:b0:20f:c225:f288 with SMTP id d9443c01a7336-210c69eabb6mr108284285ad.23.1730086910220;
+        Sun, 27 Oct 2024 20:41:50 -0700 (PDT)
+Received: from KERNELXING-MB0.tencent.com ([43.132.141.20])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc030a05sm41958925ad.229.2024.10.27.20.41.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Oct 2024 20:41:49 -0700 (PDT)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	mykolal@fb.com,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH bpf-next] bpf: handle implicit declaration of function gettid in bpf_iter.c
+Date: Mon, 28 Oct 2024 11:41:43 +0800
+Message-Id: <20241028034143.14675-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hari Bathini <hbathini@linux.ibm.com> writes:
-> From: Naveen N Rao <naveen@kernel.org>
->
-> Add support for bpf_arch_text_poke() and arch_prepare_bpf_trampoline()
-> for 64-bit powerpc. While the code is generic, BPF trampolines are only
-> enabled on 64-bit powerpc. 32-bit powerpc will need testing and some
-> updates.
+From: Jason Xing <kernelxing@tencent.com>
 
-Hi Hari,
+As we can see from the title, when I compiled the selftests/bpf, I
+saw the error:
+implicit declaration of function ‘gettid’ ; did you mean ‘getgid’? [-Werror=implicit-function-declaration]
+  skel->bss->tid = gettid();
+                   ^~~~~~
+                   getgid
 
-This is breaking the PCREL build for me:
+Adding a define to fix it (referring to
+tools/perf/tests/shell/coresight/thread_loop/thread_loop.c file.
 
-  ERROR: 11:49:18: Failed building ppc64le_defconfig+pcrel@fedora
-  INFO: 11:49:18: (skipped 41 lines) ...
-  INFO: 11:49:18: /linux/arch/powerpc/net/bpf_jit.h:90:9: note: in expansion of macro 'EMIT'
-     90 |         EMIT(PPC_RAW_LD(_R2, _R13, offsetof(struct paca_struct, kernel_toc)))
-        |         ^~~~
-  /linux/arch/powerpc/include/asm/ppc-opcode.h:473:88: note: in expansion of macro 'IMM_DS'
-    473 | #define PPC_RAW_LD(r, base, i)          (0xe8000000 | ___PPC_RT(r) | ___PPC_RA(base) | IMM_DS(i))
-        |                                                                                        ^~~~~~
-  /linux/arch/powerpc/net/bpf_jit.h:90:14: note: in expansion of macro 'PPC_RAW_LD'
-     90 |         EMIT(PPC_RAW_LD(_R2, _R13, offsetof(struct paca_struct, kernel_toc)))
-        |              ^~~~~~~~~~
-  /linux/arch/powerpc/net/bpf_jit.h:90:36: note: in expansion of macro 'offsetof'
-     90 |         EMIT(PPC_RAW_LD(_R2, _R13, offsetof(struct paca_struct, kernel_toc)))
-        |                                    ^~~~~~~~
-  /linux/arch/powerpc/net/bpf_jit_comp.c:791:17: note: in expansion of macro 'PPC64_LOAD_PACA'
-    791 |                 PPC64_LOAD_PACA();
-        |                 ^~~~~~~~~~~~~~~
-  /linux/arch/powerpc/net/bpf_jit.h:90:65: error: 'struct paca_struct' has no member named 'kernel_toc'; did you mean 'kernel_msr'?
-     90 |         EMIT(PPC_RAW_LD(_R2, _R13, offsetof(struct paca_struct, kernel_toc)))
-        |                                                                 ^~~~~~~~~~
-  /linux/arch/powerpc/net/bpf_jit.h:29:34: note: in definition of macro 'PLANT_INSTR'
-     29 |         do { if (d) { (d)[idx] = instr; } idx++; } while (0)
-        |                                  ^~~~~
-  /linux/arch/powerpc/net/bpf_jit.h:90:9: note: in expansion of macro 'EMIT'
-     90 |         EMIT(PPC_RAW_LD(_R2, _R13, offsetof(struct paca_struct, kernel_toc)))
-        |         ^~~~
-  /linux/arch/powerpc/include/asm/ppc-opcode.h:473:88: note: in expansion of macro 'IMM_DS'
-    473 | #define PPC_RAW_LD(r, base, i)          (0xe8000000 | ___PPC_RT(r) | ___PPC_RA(base) | IMM_DS(i))
-        |                                                                                        ^~~~~~
-  /linux/arch/powerpc/net/bpf_jit.h:90:14: note: in expansion of macro 'PPC_RAW_LD'
-     90 |         EMIT(PPC_RAW_LD(_R2, _R13, offsetof(struct paca_struct, kernel_toc)))
-        |              ^~~~~~~~~~
-  /linux/arch/powerpc/net/bpf_jit.h:90:36: note: in expansion of macro 'offsetof'
-     90 |         EMIT(PPC_RAW_LD(_R2, _R13, offsetof(struct paca_struct, kernel_toc)))
-        |                                    ^~~~~~~~
-  /linux/arch/powerpc/net/bpf_jit_comp.c:882:25: note: in expansion of macro 'PPC64_LOAD_PACA'
-    882 |                         PPC64_LOAD_PACA();
-        |                         ^~~~~~~~~~~~~~~
-  make[5]: *** [/linux/scripts/Makefile.build:229: arch/powerpc/net/bpf_jit_comp.o] Error 1
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+---
+ tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
-To test it you need to enable CONFIG_POWER10_CPU, eg:
-
-  CONFIG_POWERPC64_CPU=n
-  CONFIG_POWER10_CPU=y
-  CONFIG_PPC_KERNEL_PCREL=y
-
-This diff gets it building, but I haven't tested it actually works:
-
-diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
-index 2d04ce5a23da..af6ff3eb621a 100644
---- a/arch/powerpc/net/bpf_jit.h
-+++ b/arch/powerpc/net/bpf_jit.h
-@@ -86,9 +86,14 @@
-                                                        0xffff));             \
-                } } while (0)
- #define PPC_LI_ADDR    PPC_LI64
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+index f0a3a9c18e9e..a105759f3dcf 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+@@ -34,6 +34,8 @@
+ #include "bpf_iter_ksym.skel.h"
+ #include "bpf_iter_sockmap.skel.h"
+ 
++#define gettid() syscall(SYS_gettid)
 +
-+#ifndef CONFIG_PPC_KERNEL_PCREL
- #define PPC64_LOAD_PACA()                                                    \
-        EMIT(PPC_RAW_LD(_R2, _R13, offsetof(struct paca_struct, kernel_toc)))
- #else
-+#define PPC64_LOAD_PACA() do {} while (0)
-+#endif
-+#else
- #define PPC_LI64(d, i) BUILD_BUG()
- #define PPC_LI_ADDR    PPC_LI32
- #define PPC64_LOAD_PACA() BUILD_BUG()
+ static void test_btf_id_or_null(void)
+ {
+ 	struct bpf_iter_test_kern3 *skel;
+-- 
+2.37.3
 
-cheers
 
