@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-43262-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68E1F9B21D4
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 02:09:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D275C9B21D6
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 02:09:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 677691C20E61
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 01:09:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C4AA28144C
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 01:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798FD1547CA;
-	Mon, 28 Oct 2024 01:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86F418593B;
+	Mon, 28 Oct 2024 01:09:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R3D7Ov04"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hHZTZEzL"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E89FB13774D;
-	Mon, 28 Oct 2024 01:09:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A96813774D;
+	Mon, 28 Oct 2024 01:09:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730077753; cv=none; b=bvucaNJmB2DFwThLuZCbHeF9IsFDiGN9QCNR5wdyd0AvQblTWGN908XS+/sQ+gHDR4gSSvbe6XtpndMuC/dJmSb1AWv9Eer6wzXlSUtRWHIQiAPfw1yXJJVqY348Wab3KqSstGbEINxnHMVNv9ycl8UkwvXJal38aUp2f3akOCU=
+	t=1730077756; cv=none; b=j6enUoQK9H9/JtfjkXqrYkdOmKmmBsaijjRWkyYVsA+6RNQsGuIlYNmyMCoi+jgbTegILSUuoNxeVDw/fZxdNGbR+BUfMmrFxDG/e2ikBxnEr3hSn71clk6ZHCMEFAzc1QnTTd3nj+XqtBcEKw7yoPl4J/xG+YncriQOcd9+XFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730077753; c=relaxed/simple;
-	bh=hDtDfS8JqT/fLQMiv3m8WVup/RU6yhW70oJ6haQb60E=;
+	s=arc-20240116; t=1730077756; c=relaxed/simple;
+	bh=d0t2KdzFB54YqijRSkN8zgCUkKArImLR1/o5M57T+Y4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dfR8wtMidNFkCXcS1vvuUYd/FzfTR2JZ6IwjEmy2CV0/j36PE/lSMBQMzsrvFPQwW8ncsH/Fp0yrLtLijchYZBaqdwBGi9krAApU+x33lHlKukdK1TJphBhDKqqaTiyPZtS2BE/26KnbHzCuZfPRE5Lc1WpU4gKQup16NGNy8B4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R3D7Ov04; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E76EC4CEE5;
-	Mon, 28 Oct 2024 01:09:12 +0000 (UTC)
+	 MIME-Version; b=H+wS2PZC5m2f6aebL9t0Le2ItNtN47Lm19IMVYA/Ee+M7YY1G02TagxQmNiZYz3NawcG9LT3uucNrpI0E1pMt2Nqe2b4D6PQ8l3tLCyfuI6JXq/96ibuOjxlrEVPM0uVaC9KBeRW7ZqY6SqBi006ymUPKEdoCy/QG129HgEZDHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hHZTZEzL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B52B2C4CEC3;
+	Mon, 28 Oct 2024 01:09:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730077752;
-	bh=hDtDfS8JqT/fLQMiv3m8WVup/RU6yhW70oJ6haQb60E=;
+	s=k20201202; t=1730077755;
+	bh=d0t2KdzFB54YqijRSkN8zgCUkKArImLR1/o5M57T+Y4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=R3D7Ov04DpaTyYJl+4SfPWoXLMI5EldjfTRT6VKHmSxekQRYCT+7e+vroidwAIM/y
-	 c9UyoWB0yeHAQH9wTW7L78nHqBKgCt8ub4xAaiUUNjh1wTF2ra5CO9zN6Y1+ZM9WXu
-	 XyH8q6zDh3Q2i8O3Z0GTJGneeTd+hwvD+2koWe7Tt+V5W6IjIOahBvgr/w8QyRKLZX
-	 zh3XZeFvlXwBaoY/ZbL/16DKFuEy1Pqn1S42YcpEXwRg9wU7Db45SReuz3aoSXoDcX
-	 pYqPLyrc4kC79COC4fnmbguofXh/ZDGrmKdLWt0rsIyDhYk4VXtGueWWod/9Y+SFIn
-	 07MKzAQ58jXyA==
+	b=hHZTZEzLr1iL3FHbaDuT4QMbEbbJCKfdJHak1Cphw3Io7OVy4N+9xviZFpn66aI1f
+	 PlJOkge1nFNeUdTsUnrOMPN1hqSeV1o0gMm9Lg/U2BhrunABIRUiRijxF0F2+CkU8d
+	 v58avLtFpLU/wQJTBPSWS4XGJpq96/WS8igjo7MUUUodF4yAQ3kroN4bJHsKngkHlT
+	 l8xJpHr70NPY6NK78bXQv05YYUiquo6oYCTtSTdJKylBEBOTHst9WNjrRy8s45NIDO
+	 bgUj7V6k42jCxv/1X9EWh7uooH0Cih40WwIP7W2TzNwQMR6cvih5Yu9jll42E3zSyv
+	 TwSiGKYcMRJ4g==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: linux-trace-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -72,9 +72,9 @@ Cc: oleg@redhat.com,
 	viro@zeniv.linux.org.uk,
 	hca@linux.ibm.com,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v4 tip/perf/core 2/4] mm: Introduce mmap_lock_speculation_{begin|end}
-Date: Sun, 27 Oct 2024 18:08:16 -0700
-Message-ID: <20241028010818.2487581-3-andrii@kernel.org>
+Subject: [PATCH v4 tip/perf/core 3/4] uprobes: simplify find_active_uprobe_rcu() VMA checks
+Date: Sun, 27 Oct 2024 18:08:17 -0700
+Message-ID: <20241028010818.2487581-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20241028010818.2487581-1-andrii@kernel.org>
 References: <20241028010818.2487581-1-andrii@kernel.org>
@@ -86,69 +86,30 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Suren Baghdasaryan <surenb@google.com>
+At the point where find_active_uprobe_rcu() is used we know that VMA in
+question has triggered software breakpoint, so we don't need to validate
+vma->vm_flags. Keep only vma->vm_file NULL check.
 
-Add helper functions to speculatively perform operations without
-read-locking mmap_lock, expecting that mmap_lock will not be
-write-locked and mm is not modified from under us.
-
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Acked-by: Oleg Nesterov <oleg@redhat.com>
+Suggested-by: Oleg Nesterov <oleg@redhat.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- include/linux/mmap_lock.h | 29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+ kernel/events/uprobes.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-index 6b3272686860..58dde2e35f7e 100644
---- a/include/linux/mmap_lock.h
-+++ b/include/linux/mmap_lock.h
-@@ -71,6 +71,7 @@ static inline void mmap_assert_write_locked(const struct mm_struct *mm)
- }
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 4ef4b51776eb..290c445768fa 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -2084,7 +2084,7 @@ static struct uprobe *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_swb
+ 	mmap_read_lock(mm);
+ 	vma = vma_lookup(mm, bp_vaddr);
+ 	if (vma) {
+-		if (valid_vma(vma, false)) {
++		if (vma->vm_file) {
+ 			struct inode *inode = file_inode(vma->vm_file);
+ 			loff_t offset = vaddr_to_offset(vma, bp_vaddr);
  
- #ifdef CONFIG_PER_VMA_LOCK
-+
- static inline void mm_lock_seqcount_init(struct mm_struct *mm)
- {
- 	seqcount_init(&mm->mm_lock_seq);
-@@ -86,11 +87,35 @@ static inline void mm_lock_seqcount_end(struct mm_struct *mm)
- 	do_raw_write_seqcount_end(&mm->mm_lock_seq);
- }
- 
--#else
-+static inline bool mmap_lock_speculation_begin(struct mm_struct *mm, unsigned int *seq)
-+{
-+	*seq = raw_read_seqcount(&mm->mm_lock_seq);
-+	/* Allow speculation if mmap_lock is not write-locked */
-+	return (*seq & 1) == 0;
-+}
-+
-+static inline bool mmap_lock_speculation_end(struct mm_struct *mm, unsigned int seq)
-+{
-+	return !do_read_seqcount_retry(&mm->mm_lock_seq, seq);
-+}
-+
-+#else /* CONFIG_PER_VMA_LOCK */
-+
- static inline void mm_lock_seqcount_init(struct mm_struct *mm) {}
- static inline void mm_lock_seqcount_begin(struct mm_struct *mm) {}
- static inline void mm_lock_seqcount_end(struct mm_struct *mm) {}
--#endif
-+
-+static inline bool mmap_lock_speculation_begin(struct mm_struct *mm, unsigned int *seq)
-+{
-+	return false;
-+}
-+
-+static inline bool mmap_lock_speculation_end(struct mm_struct *mm, unsigned int seq)
-+{
-+	return false;
-+}
-+
-+#endif /* CONFIG_PER_VMA_LOCK */
- 
- static inline void mmap_init_lock(struct mm_struct *mm)
- {
 -- 
 2.43.5
 
