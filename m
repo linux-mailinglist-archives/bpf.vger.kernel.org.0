@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-43295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 303889B2E84
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 12:18:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 192819B2E86
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 12:19:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 616351C21996
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 11:18:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB2A9281438
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 11:18:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FDE71DFE38;
-	Mon, 28 Oct 2024 11:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4B21E009E;
+	Mon, 28 Oct 2024 11:07:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y+cxGWcR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IxLZRzFB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8661DFE2C;
-	Mon, 28 Oct 2024 11:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1031DB34C;
+	Mon, 28 Oct 2024 11:07:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730113636; cv=none; b=Y4Qp7BSMBbHVxcEOonVdGELHDDvZSyMqmT0VP5E3L1/HG75DIfwr67zD7JdmFIRy8IIYBvCMnTMYI6Dup+53qMoA7y2wGIvqFdYlUyTQlMB29NcO2CgLjed0/klMF9TF04STwwjNxPU90XfX8k4KE3/w7EA0+NBjSjK/QXf4Fis=
+	t=1730113643; cv=none; b=XzrENGb1MV91mASA4qcj9wg/oLePwJJVzmJY6pR6iVpJvee5VioClX2f51+BB8JYQYgL9hac1+W8EStnvbuw5K5kXqjH+kSWFClH90pT9Obd502ZNQGyUJx/cGcqRU9oDuthxvlMTJF6fu/vejWPJOJllRFUnftlB/zYkkUiRqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730113636; c=relaxed/simple;
-	bh=QC4G63ZJPFcAP98wAsnrPRmB23FMfRqCIbeY5agxrv8=;
+	s=arc-20240116; t=1730113643; c=relaxed/simple;
+	bh=gc7sMEz8w/SdDhyc4WhS0XzsJ2M2y6Jr99bjT9PW+ic=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=D1u3u9sy25v42sucotlUFUVI7CYQtZaMmnzd+NA/+bc9Wpmp55v6KYkBpj82yZ4xXUoYPSxuDNxQ0rAXsZ+SVwbxZQ6KXchXX7zVrTF6rePYbbKjmAxE5Cog/HcCYDuaYIn4FiPBRaSNDEAyPpmPJFXmLH2Wq4UtAVwfob9ZAU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y+cxGWcR; arc=none smtp.client-ip=209.85.214.170
+	 MIME-Version; b=sbO5Sw25ZQk3UjahPtXHNfAfEKP5eBy+zBKdOPXM6ObZbVKfx4MmXTM8kopKAxjtPW4jZepcpojT5knM7R4uQPyYjpgqlIPY4nkluGSJer0FZbafClnM3BQvS4f8L6H+qr9rhfruUcrjRegidZSRWKaOFix5x7ALgtDvO2PHomM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IxLZRzFB; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-20c7ee8fe6bso34189815ad.2;
-        Mon, 28 Oct 2024 04:07:14 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-20cceb8d8b4so22915025ad.1;
+        Mon, 28 Oct 2024 04:07:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730113634; x=1730718434; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730113639; x=1730718439; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jXbOExaDu/uQUw8FjeUjOu713YfQRhW5kS8sH0/9U3A=;
-        b=Y+cxGWcR3K12hp2Zq5BRsYOp8urEdJTJmqYBDMsYLnVQx0SFH2iV7hsYZFgtDsH0mA
-         3KoZ0IxFaTkoYw55o2F/mhmMCKsvGcFiZ5rxlHBcSP7ubBJLXuGdej9IXQdZZJOuJo5l
-         dq0wXdtc+HW8jv+KZ+q0htttx7MqN7A3Xhh34wv/MK/fh/Kwdpo99M6CHij1MEEboVQg
-         lSjUe1mRgAazcfiGjEGyORY7aN0SAQwO1BYnmb4X7a9KIJeWTnV2+EbLY8/qXrCtqbrs
-         OUKGQOHzaZLg5cXmdDwhvXvSMFCKpEvfIi59sFY/UK4jxD7SPSarSJRQTWwcqVmK/mzi
-         kgXA==
+        bh=9N78hzla9PU2zrMdQqV/v5ebIzT/i06+c8vQHZBaPa0=;
+        b=IxLZRzFBSffgGJXG+BBarnjeEZWzTjCOZjpnxPY0R3nJPPLYgXgUSeF/ghYfuaJy2N
+         JzgxVudgmoeZszQrbU9kw9GbuJdXMmCNs7mbCKOGZ9NDUWF1fq7/NZigAPgtdMgl8i2H
+         sg7l1NiJWlFaUMS4cE1zYDFAPFGqci9A74M0a34QTJ3omAGKxlExzFaf9DcK+mJv9jl4
+         GtohWDdujhS0031ILkHVWx5ClQ9wKeHN0v7M4Y/vNhVNamimoSviWNAAP3lNQMWBxwk4
+         8tZtiA0chNmpeoXb/q59B8DlWCqlGBQSx7gbBEbZAFVDqhz4+eEsoBXN9NucgqAy1PP4
+         V9Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730113634; x=1730718434;
+        d=1e100.net; s=20230601; t=1730113639; x=1730718439;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jXbOExaDu/uQUw8FjeUjOu713YfQRhW5kS8sH0/9U3A=;
-        b=UoDdUy5CxqEyLnbjrDrdksdAZn/sW3D4swzlJghKHm3Ca5PTctoMAxZzz9A9oi5n+X
-         CTUhOJ41uWGFZWEgHfrFHoiCHhzvm4F9VnFpBsKTPcCVrBpUGf5svTu33MFGNrij3zEP
-         LQTLA2iVc2TyKUQobwn3zVLe2aDaD8cZ2mdSNjUaF7JczNLVju2rQzlhxdh1Qa8MJtAk
-         VrkWil/QkDiuQeYtrnGRHormQbYtyNhy5+kwkd8jy3Oje177DEP3opGnkSDOz2WcEOd+
-         vbac8OYeA/wMWMWBF6Dkxc5HhkwsrjbB9pze0wwFkeRG6I2um4M6NcLAeZDIxf8TOpwA
-         fyWA==
-X-Forwarded-Encrypted: i=1; AJvYcCX2LYBFhGEm/ReqOlIK0uGvssLrivS4e+YCIUNx2wIJH68K4jBW8W4khTHs4Fji595fh/ivlC0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzklLOw0xm74kUCOh6xdnBa4CpFfGGNmDVTIRlVKOwjY09Ppzuu
-	Kgwd3LBTQeRw9ajf22epZprnqv0J2FI6XMibj1/+efa3F2IrTr05
-X-Google-Smtp-Source: AGHT+IEzjIQnm8EWERYCUyT2PumNk8MQlsb8zqcZOIOZiJBGPDqo0VE/PsAuBpYThzrSsiI1ldwtvQ==
-X-Received: by 2002:a17:902:c945:b0:20c:cd23:449d with SMTP id d9443c01a7336-210c6c43228mr98899525ad.46.1730113633959;
-        Mon, 28 Oct 2024 04:07:13 -0700 (PDT)
+        bh=9N78hzla9PU2zrMdQqV/v5ebIzT/i06+c8vQHZBaPa0=;
+        b=NP5m72Iwq/0ux5ksKiA8GTb8qJoJR7YgGuj/kuBbKnr8+UwiMUvx0gbyhGbNlkTKR5
+         MLFtt7Fri4MP6sTSHvXw+ca6qaRNvi3ZgjOZgc3DYpo/3itLei61ZA0fTu229I0UzcSO
+         SHz2P+S9ONxYp0Bw0HrBDG0XMVsdOmwTRDOyHvfxcvke1A4zB/dCDqJWS1ytdPRooG0p
+         0uS44+hy23hdkWYuZSqsMXRYzbLaHbREjLdKZ0tGTYREOcz3H0iscHAXrN1EgyxvZ8Dp
+         jJq/6ExFUIXDjf7AjI8M00Q0x9Z7o1vnD1FweWPwkMIAFC9YrAP+EbAQBmIT6VZd1Z2c
+         D25A==
+X-Forwarded-Encrypted: i=1; AJvYcCUrjZ5a7DNq+x1IjFAwfNqiwj5VzW2ocWpuy0gxwNZaj3N7feQyLVOvm8ZUtVFbeSoa7ko6rOE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTj+MBM6MPv2qiwFocTMM793JJ/qbbOMhoy25tGA9OrPcyed0t
+	f5iXYq1JVdYVqdvIgdGIZhDeQTQ0tniM9AAdi1lXKbiBA8W339pU
+X-Google-Smtp-Source: AGHT+IEi0jG3733tXMr2ugBFpzIwkxw5XaKqvZSLsUv2FMo5X/asabPguZMw8sVyHWIf0UjjoSfWVA==
+X-Received: by 2002:a17:902:ec88:b0:20c:6bff:fcb1 with SMTP id d9443c01a7336-210c5937885mr118446405ad.1.1730113639404;
+        Mon, 28 Oct 2024 04:07:19 -0700 (PDT)
 Received: from KERNELXING-MB0.tencent.com ([43.132.141.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc04bdb6sm48130905ad.255.2024.10.28.04.07.09
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc04bdb6sm48130905ad.255.2024.10.28.04.07.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Oct 2024 04:07:13 -0700 (PDT)
+        Mon, 28 Oct 2024 04:07:19 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -92,9 +92,9 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next v3 12/14] net-timestamp: add OPT_ID for UDP proto
-Date: Mon, 28 Oct 2024 19:05:33 +0800
-Message-Id: <20241028110535.82999-13-kerneljasonxing@gmail.com>
+Subject: [PATCH net-next v3 13/14] net-timestamp: use static key to control bpf extension
+Date: Mon, 28 Oct 2024 19:05:34 +0800
+Message-Id: <20241028110535.82999-14-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20241028110535.82999-1-kerneljasonxing@gmail.com>
 References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
@@ -108,68 +108,129 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-Let it work for UDP proto.
+Using the existing cgroup static key to control every possible
+call in bpf extension.
 
 Signed-off-by: Jason Xing <kernelxing@tencent.com>
 ---
- net/ipv4/ip_output.c  | 16 +++++++++++-----
- net/ipv6/ip6_output.c | 16 +++++++++++-----
- 2 files changed, 22 insertions(+), 10 deletions(-)
+ net/core/skbuff.c     | 3 ++-
+ net/core/sock.c       | 4 ++--
+ net/ipv4/ip_output.c  | 5 +++--
+ net/ipv4/tcp.c        | 3 ++-
+ net/ipv4/udp.c        | 3 ++-
+ net/ipv6/ip6_output.c | 5 +++--
+ 6 files changed, 14 insertions(+), 9 deletions(-)
 
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index d1739317b97d..2e5af24802ee 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -5692,7 +5692,8 @@ void __skb_tstamp_tx(struct sk_buff *orig_skb,
+ 	if (!sk)
+ 		return;
+ 
+-	skb_tstamp_tx_output_bpf(sk, tstype, orig_skb, hwtstamps);
++	if (cgroup_bpf_enabled(CGROUP_SOCK_OPS))
++		skb_tstamp_tx_output_bpf(sk, tstype, orig_skb, hwtstamps);
+ 	skb_tstamp_tx_output(orig_skb, ack_skb, hwtstamps, sk, tstype);
+ }
+ EXPORT_SYMBOL_GPL(__skb_tstamp_tx);
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 914ec8046f86..3a6f7c9b6459 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -1479,7 +1479,7 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
+ 		}
+ 		if (!bpf_timetamping)
+ 			ret = sock_set_timestamping(sk, optname, timestamping);
+-		else
++		else if (cgroup_bpf_enabled(CGROUP_SOCK_OPS))
+ 			ret = sock_set_timestamping_bpf(sk, timestamping);
+ 		break;
+ 
+@@ -1869,7 +1869,7 @@ int sk_getsockopt(struct sock *sk, int level, int optname,
+ 				v.timestamping.flags = READ_ONCE(sk->sk_tsflags);
+ 				v.timestamping.bind_phc = READ_ONCE(sk->sk_bind_phc);
+ 			}
+-		} else {
++		} else if (cgroup_bpf_enabled(CGROUP_SOCK_OPS)) {
+ 			v.timestamping.flags = READ_ONCE(sk->sk_tsflags_bpf);
+ 		}
+ 		break;
 diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 9d94a209057b..45033105b34c 100644
+index 45033105b34c..9678a88714e5 100644
 --- a/net/ipv4/ip_output.c
 +++ b/net/ipv4/ip_output.c
-@@ -1049,11 +1049,17 @@ static int __ip_append_data(struct sock *sk,
- 
- 	cork->length += length;
- 
--	if (cork->tx_flags & SKBTX_ANY_TSTAMP &&
--	    READ_ONCE(sk->sk_tsflags) & SOF_TIMESTAMPING_OPT_ID) {
--		if (cork->flags & IPCORK_TS_OPT_ID) {
--			tskey = cork->ts_opt_id;
--		} else {
-+	if (cork->tx_flags & SKBTX_ANY_TSTAMP) {
-+		if (READ_ONCE(sk->sk_tsflags) & SOF_TIMESTAMPING_OPT_ID) {
-+			if (cork->flags & IPCORK_TS_OPT_ID) {
-+				tskey = cork->ts_opt_id;
-+			} else {
-+				tskey = atomic_inc_return(&sk->sk_tskey) - 1;
-+				hold_tskey = true;
-+			}
-+		}
-+		if (!hold_tskey &&
-+		    READ_ONCE(sk->sk_tsflags_bpf) & SOF_TIMESTAMPING_OPT_ID) {
+@@ -1058,7 +1058,7 @@ static int __ip_append_data(struct sock *sk,
+ 				hold_tskey = true;
+ 			}
+ 		}
+-		if (!hold_tskey &&
++		if (cgroup_bpf_enabled(CGROUP_SOCK_OPS) && !hold_tskey &&
+ 		    READ_ONCE(sk->sk_tsflags_bpf) & SOF_TIMESTAMPING_OPT_ID) {
  			tskey = atomic_inc_return(&sk->sk_tskey) - 1;
  			hold_tskey = true;
- 		}
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 230e8d5a792c..ec956ada7179 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -1547,11 +1547,17 @@ static int __ip6_append_data(struct sock *sk,
- 			flags &= ~MSG_SPLICE_PAGES;
+@@ -1338,7 +1338,8 @@ static int ip_setup_cork(struct sock *sk, struct inet_cork *cork,
+ 	cork->transmit_time = ipc->sockc.transmit_time;
+ 	cork->tx_flags = 0;
+ 	sock_tx_timestamp(sk, &ipc->sockc, &cork->tx_flags);
+-	sock_tx_timestamp_bpf(READ_ONCE(sk->sk_tsflags_bpf), &cork->tx_flags);
++	if (cgroup_bpf_enabled(CGROUP_SOCK_OPS))
++		sock_tx_timestamp_bpf(READ_ONCE(sk->sk_tsflags_bpf), &cork->tx_flags);
+ 	if (ipc->sockc.tsflags & SOCKCM_FLAG_TS_OPT_ID) {
+ 		cork->flags |= IPCORK_TS_OPT_ID;
+ 		cork->ts_opt_id = ipc->sockc.ts_opt_id;
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index f77dc7a4a98e..8f42c254bc7e 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -509,7 +509,8 @@ static void tcp_tx_timestamp(struct sock *sk, struct sockcm_cookie *sockc)
+ 			shinfo->tskey = TCP_SKB_CB(skb)->seq + skb->len - 1;
  	}
  
--	if (cork->tx_flags & SKBTX_ANY_TSTAMP &&
--	    READ_ONCE(sk->sk_tsflags) & SOF_TIMESTAMPING_OPT_ID) {
--		if (cork->flags & IPCORK_TS_OPT_ID) {
--			tskey = cork->ts_opt_id;
--		} else {
-+	if (cork->tx_flags & SKBTX_ANY_TSTAMP) {
-+		if (READ_ONCE(sk->sk_tsflags) & SOF_TIMESTAMPING_OPT_ID) {
-+			if (cork->flags & IPCORK_TS_OPT_ID) {
-+				tskey = cork->ts_opt_id;
-+			} else {
-+				tskey = atomic_inc_return(&sk->sk_tskey) - 1;
-+				hold_tskey = true;
-+			}
-+		}
-+		if (!hold_tskey &&
-+		    READ_ONCE(sk->sk_tsflags_bpf) & SOF_TIMESTAMPING_OPT_ID) {
+-	tcp_tx_timestamp_bpf(sk, skb);
++	if (cgroup_bpf_enabled(CGROUP_SOCK_OPS))
++		tcp_tx_timestamp_bpf(sk, skb);
+ }
+ 
+ static bool tcp_stream_is_readable(struct sock *sk, int target)
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index e768421abc37..27cf2f8a9409 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -1264,7 +1264,8 @@ int udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ 	if (!corkreq) {
+ 		struct inet_cork cork;
+ 
+-		timestamp_call_bpf(sk, BPF_SOCK_OPS_TS_UDP_SND_CB, 0, NULL);
++		if (cgroup_bpf_enabled(CGROUP_SOCK_OPS))
++			timestamp_call_bpf(sk, BPF_SOCK_OPS_TS_UDP_SND_CB, 0, NULL);
+ 		skb = ip_make_skb(sk, fl4, getfrag, msg, ulen,
+ 				  sizeof(struct udphdr), &ipc, &rt,
+ 				  &cork, msg->msg_flags);
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index ec956ada7179..3a96fb09f068 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -1402,7 +1402,8 @@ static int ip6_setup_cork(struct sock *sk, struct inet_cork_full *cork,
+ 	cork->base.tx_flags = 0;
+ 	cork->base.mark = ipc6->sockc.mark;
+ 	sock_tx_timestamp(sk, &ipc6->sockc, &cork->base.tx_flags);
+-	sock_tx_timestamp_bpf(READ_ONCE(sk->sk_tsflags_bpf), &cork->base.tx_flags);
++	if (cgroup_bpf_enabled(CGROUP_SOCK_OPS))
++		sock_tx_timestamp_bpf(READ_ONCE(sk->sk_tsflags_bpf), &cork->base.tx_flags);
+ 	if (ipc6->sockc.tsflags & SOCKCM_FLAG_TS_OPT_ID) {
+ 		cork->base.flags |= IPCORK_TS_OPT_ID;
+ 		cork->base.ts_opt_id = ipc6->sockc.ts_opt_id;
+@@ -1556,7 +1557,7 @@ static int __ip6_append_data(struct sock *sk,
+ 				hold_tskey = true;
+ 			}
+ 		}
+-		if (!hold_tskey &&
++		if (cgroup_bpf_enabled(CGROUP_SOCK_OPS) && !hold_tskey &&
+ 		    READ_ONCE(sk->sk_tsflags_bpf) & SOF_TIMESTAMPING_OPT_ID) {
  			tskey = atomic_inc_return(&sk->sk_tskey) - 1;
  			hold_tskey = true;
- 		}
 -- 
 2.37.3
 
