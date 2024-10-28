@@ -1,199 +1,181 @@
-Return-Path: <bpf+bounces-43328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 701E69B3A57
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 20:21:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D0BE9B3AD2
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 20:53:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7D9F1F22B01
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 19:21:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8CB52830FB
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 19:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5621DE3B7;
-	Mon, 28 Oct 2024 19:21:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD2B91DF75C;
+	Mon, 28 Oct 2024 19:52:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="NxHaSRSm"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="J8SUB4wI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49EC8155A52;
-	Mon, 28 Oct 2024 19:21:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B03F18FC90
+	for <bpf@vger.kernel.org>; Mon, 28 Oct 2024 19:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730143301; cv=none; b=RT2Z7uHnEePCiUGYOWQ6S5cST2KuxLKVNSs5E9YLLeD7edlojoEQBCVRImp+Y6RBDclA/t9BlbzuAgbj9+l74HZxrPl5U/V2VcbM5K5KihFPjwCzmJqpHk3ZNmpqjKRNim/RxQct/lEZueSpL9DL+COel4YQySxN2s1PtgxByDw=
+	t=1730145179; cv=none; b=Uav4G89FcPFrgZUFbd0gpBv3fZzt/ozp/5bgSFCXwQX+Qv0r6Iua38XxSQ2hhwQlfrTpwdKgEqSfogRj5vrCycFMNEhaQa93uLjHa4b9u7If1fU58vQif2lGxub/njU/OFlmdYLIMVLYWg7vaDZRUsIsUOjdBxU0EJe3vems4QU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730143301; c=relaxed/simple;
-	bh=kXzY6L3SAN9Fk+i9GMyzI23iyi05GrzWiz5zFLNj0O4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AdFA8qOe8ouecg5KzORVLuvOxUTDvU40sWt0bMIyBIqT0ukY0qLfi5yK3ZIUmaOj0J44f7LQi6y1nKfLVxtSv39lfg8VdTb370sBvjAq6N4LYRyLpDgT2vt65UPa8sIBY1sAPRBhd6YSR/+xdDbzFnG/YiCAXY8U+Yv6PoUHThw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=NxHaSRSm; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1730143298;
-	bh=kXzY6L3SAN9Fk+i9GMyzI23iyi05GrzWiz5zFLNj0O4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=NxHaSRSm9qxVb2mB90AtfmzPy5GjhRJHDJvmELP2qE09OOV1HWbLVnFx6/LpXbVeg
-	 k0VxfnRCgYdIevCqn6YjLLR8pbvqZaNbKudJGWyqmwm9czRfldFUZ+8Vrh7JSmpi8v
-	 5VRFDV9UCpi5Tz7tAe7wZ9LG6GHPUoMsaCh5SPgGjmsQIP1q5Ml8TI2NtRXQs/odbS
-	 VzCU/U0U1yBXPGp52EH8QXd+qb2r+0P9Yl2PxMlkRXXksgv87bOoQkHh4PKoTGLAXU
-	 bnxzCQTH+UzC7Lv6iGnTflTFhn2oEqLmWD43U3u1tPfVWagywBpVkvac87w8gchL5Q
-	 9qnlMuCnJjrEA==
-Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XcjtT6McyzscJ;
-	Mon, 28 Oct 2024 15:21:37 -0400 (EDT)
-Message-ID: <7ef1d403-e6ca-4dee-85c6-e32446e52aa7@efficios.com>
-Date: Mon, 28 Oct 2024 15:19:58 -0400
+	s=arc-20240116; t=1730145179; c=relaxed/simple;
+	bh=dehkDJB9WQDCgvah8osMPwjYFl7T5sv+Vt2PLRrgMZE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gdI+Ko70MZLqxjjQIj2IwCgIz2wCatHxGFekpv72ahbpMq+qRIm1+9LKfdDLYKryFoJ0MBFIyV/Fqz6Pr+rKkOX1MIuNgDAzsMkZOhQfgqKBuCOb1V/GHpjqnIzPLt/Wza4Bz4mOK8BTpyE+eS/yfWsAgmPfJnIFPRfdNOiuFkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=J8SUB4wI; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2e91403950dso789224a91.3
+        for <bpf@vger.kernel.org>; Mon, 28 Oct 2024 12:52:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1730145176; x=1730749976; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dOgHVETNvwv0GrKYIJJt6UQ/Zkj1FG5o1aowTjEXfjQ=;
+        b=J8SUB4wIyDU1yMchKcAO4ZX1KzyWLHCh5fFmIqQBy/IcuWmYaTOXH9HuiuzPzmNfk7
+         JD2zw3wtRQUIpmnFlVXnIgcdQU2zB66X2qCSuXtn2rJ3mE5ZuRIoiJ/1Ewrjd8YtPa+t
+         stirQaB7nofG9MlMvdSQQIBE8y5HhaAoOJ7t0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730145176; x=1730749976;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dOgHVETNvwv0GrKYIJJt6UQ/Zkj1FG5o1aowTjEXfjQ=;
+        b=VE1m0JdZu6aq3UljbzzV3j9OdbuK++iii7UqTM+nr7upIs6ta0YPOv9LR4QRit7kBE
+         8M8VmonQUZvfA7EBWWBgDhAPsB+h0ZprQd7mkCog53Srq2nmKTZ05BYDdi5zxoNezZVV
+         xa9kwEh9Qq3mX1HA/GSdPzaGmvOoTswYzCadzHx0K7RDd9lxUMF+UxgvDiF5lU4yLJ0s
+         RK+fr8ly0iGGruv7DeplaU8X+SYpJsdbb0PLYh24igjWuoGcylw5uAIOnNSp5NFmHzTo
+         oyuUsvWn5Yx8XYrBnOfJDJFy9qPRNH5ySlnIkT9pLyzaSSyWqymF6HDlaWe72vG4TulF
+         Rs8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWV1H6JUjmGNNKoF5ivfgC2GE0cnLg34gvyKFh+Xh3IY4cVC87ta2PsxWs44QhFzGJMq8I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzfWg9nrESAf1q4rKSLG1lHpG2bML5jt2wPw3amCQ61PRc3pYW3
+	ARrrXTVBN5oMzje1u9be2eIupxF2k32wfj6fLIKWGSqebHpaR7BBIyIKaEZtqYQ=
+X-Google-Smtp-Source: AGHT+IExbYvofPHEquOHcWrySfi2hLqRWDZWOOEDh1nkJ7OI4InzrhdBk3weEUkkN59f4LvmjpwrkA==
+X-Received: by 2002:a17:90b:2d8c:b0:2e2:ca67:dade with SMTP id 98e67ed59e1d1-2e8f11b8b96mr11239428a91.32.1730145176542;
+        Mon, 28 Oct 2024 12:52:56 -0700 (PDT)
+Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e8e3771e64sm7695247a91.50.2024.10.28.12.52.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Oct 2024 12:52:55 -0700 (PDT)
+From: Joe Damato <jdamato@fastly.com>
+To: netdev@vger.kernel.org
+Cc: vitaly.lifshits@intel.com,
+	jacob.e.keller@intel.com,
+	kurt@linutronix.de,
+	vinicius.gomes@intel.com,
+	Joe Damato <jdamato@fastly.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	bpf@vger.kernel.org (open list:XDP (eXpress Data Path)),
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-kernel@vger.kernel.org (open list),
+	Paolo Abeni <pabeni@redhat.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [PATCH iwl-next v5 0/2] igc: Link IRQs and queues to NAPIs
+Date: Mon, 28 Oct 2024 19:52:40 +0000
+Message-Id: <20241028195243.52488-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 3/3] tracing: Fix syscall tracepoint use-after-free
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
- Michael Jeanson <mjeanson@efficios.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>,
- Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
- Joel Fernandes <joel@joelfernandes.org>, Jordan Rife <jrife@google.com>,
- syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com
-References: <20241026154629.593041-1-mathieu.desnoyers@efficios.com>
- <20241026154629.593041-3-mathieu.desnoyers@efficios.com>
- <CAEf4BzaD24V=Z6T3wNh27pv9OV_WaLNQeAPbUANQJYN0h5zHKw@mail.gmail.com>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <CAEf4BzaD24V=Z6T3wNh27pv9OV_WaLNQeAPbUANQJYN0h5zHKw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 2024-10-27 21:22, Andrii Nakryiko wrote:
-> On Sat, Oct 26, 2024 at 8:48 AM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->>
->> The grace period used internally within tracepoint.c:release_probes()
->> uses call_rcu() to batch waiting for quiescence of old probe arrays,
->> rather than using the tracepoint_synchronize_unregister() which blocks
->> while waiting for quiescence.
->>
->> With the introduction of faultable syscall tracepoints, this causes
->> use-after-free issues reproduced with syzkaller.
->>
->> Fix this by using the appropriate call_rcu() or call_rcu_tasks_trace()
->> before invoking the rcu_free_old_probes callback. This can be chosen
->> using the tracepoint_is_syscall() API.
->>
->> A similar issue exists in bpf use of call_rcu(). Fixing this is left to
->> a separate change.
->>
->> Reported-by: syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com
->> Fixes: a363d27cdbc2 ("tracing: Allow system call tracepoints to handle page faults")
->> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> Cc: Michael Jeanson <mjeanson@efficios.com>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Masami Hiramatsu <mhiramat@kernel.org>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Alexei Starovoitov <ast@kernel.org>
->> Cc: Yonghong Song <yhs@fb.com>
->> Cc: Paul E. McKenney <paulmck@kernel.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->> Cc: Namhyung Kim <namhyung@kernel.org>
->> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
->> Cc: bpf@vger.kernel.org
->> Cc: Joel Fernandes <joel@joelfernandes.org>
->> Cc: Jordan Rife <jrife@google.com>
->> ---
->> Changes since v0:
->> - Introduce tracepoint_call_rcu(),
->> - Fix bpf_link_free() use of call_rcu as well.
->>
->> Changes since v1:
->> - Use tracepoint_call_rcu() for bpf_prog_put as well.
->>
->> Changes since v2:
->> - Do not cover bpf changes in the same commit, let bpf developers
->>    implement it.
->> ---
->>   kernel/tracepoint.c | 11 +++++++----
->>   1 file changed, 7 insertions(+), 4 deletions(-)
->>
->> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
->> index 5658dc92f5b5..47569fb06596 100644
->> --- a/kernel/tracepoint.c
->> +++ b/kernel/tracepoint.c
->> @@ -106,13 +106,16 @@ static void rcu_free_old_probes(struct rcu_head *head)
->>          kfree(container_of(head, struct tp_probes, rcu));
->>   }
->>
->> -static inline void release_probes(struct tracepoint_func *old)
->> +static inline void release_probes(struct tracepoint *tp, struct tracepoint_func *old)
->>   {
->>          if (old) {
->>                  struct tp_probes *tp_probes = container_of(old,
->>                          struct tp_probes, probes[0]);
->>
->> -               call_rcu(&tp_probes->rcu, rcu_free_old_probes);
->> +               if (tracepoint_is_syscall(tp))
->> +                       call_rcu_tasks_trace(&tp_probes->rcu, rcu_free_old_probes);
-> 
-> should this be call_rcu_tasks_trace() -> call_rcu() chain instead of
-> just call_rcu_tasks_trace()? While currently call_rcu_tasks_trace()
-> implies RCU GP (as evidenced by rcu_trace_implies_rcu_gp() being
-> hardcoded right now to returning true), this might not always be the
-> case in the future, so it's best to have a guarantee that regardless
-> of sleepable or not, we'll always have have RCU GP, and for sleepable
-> tracepoint *also* RCU Tasks Trace GP.
+Greetings:
 
-Given that faultable tracepoints only use RCU tasks trace for the
-read-side and do not rely on preempt disable, I don't see why we would
-need to chain both grace periods there ?
+Welcome to v5.
+
+See changelog below and in each patch for changes from v4 [1].
+
+This revision was created due to a report from Vitaly [2], that my v4
+was re-introducing a potential deadlock in runtime_resume which was
+fixed in commit: 6f31d6b: "igc: Refactor runtime power management flow."
+
+As you'll see, I've modified patch 2 to include a small wrapper to
+either hold rtnl (or not) depending on whether runtime_resume or resume
+are being called.
+
+Overall, this series adds support for netdev-genl to igc so that
+userland apps can query IRQ, queue, and NAPI instance relationships.
+This is useful because developers who have igc NICs (for example, in
+their Intel NUCs) who are working on epoll-based busy polling apps and
+using SO_INCOMING_NAPI_ID, need access to this API to map NAPI IDs back
+to queues.
+
+See the commit messages of each patch for example output I got on my igc
+hardware.
+
+Thanks to reviewers and maintainers for their comments/feedback!
 
 Thanks,
+Joe
 
-Mathieu
+[1]: https://lore.kernel.org/netdev/20241022215246.307821-1-jdamato@fastly.com/
+[2]: https://lore.kernel.org/netdev/d7799132-7e4a-0ac2-cbda-c919ce434fe2@intel.com/
 
-> 
->> +               else
->> +                       call_rcu(&tp_probes->rcu, rcu_free_old_probes);
->>          }
->>   }
->>
->> @@ -334,7 +337,7 @@ static int tracepoint_add_func(struct tracepoint *tp,
->>                  break;
->>          }
->>
->> -       release_probes(old);
->> +       release_probes(tp, old);
->>          return 0;
->>   }
->>
->> @@ -405,7 +408,7 @@ static int tracepoint_remove_func(struct tracepoint *tp,
->>                  WARN_ON_ONCE(1);
->>                  break;
->>          }
->> -       release_probes(old);
->> +       release_probes(tp, old);
->>          return 0;
->>   }
->>
->> --
->> 2.39.5
->>
+v5:
+  - Add a small wrapper to patch 2 to only hold rtnl when resume is
+    called, but avoid rtnl when runtime_resume is called which would
+    trigger a deadlock.
 
+v4: https://lore.kernel.org/netdev/20241022215246.307821-1-jdamato@fastly.com/
+  - Fixed a typo in Patch 1's commit message for the "other" IRQ number
+  - Based on a bug report for e1000, closer scrutiny of the code
+    revealed two paths where rtnl_lock / rtnl_unlock should be added in
+    Patch 2: igc_resume and igc_io_error_detected. The code added to
+    igc_io_error_detected is inspired by ixgbe's
+    ixgbe_io_error_detected
+
+v3: https://lore.kernel.org/netdev/20241018171343.314835-1-jdamato@fastly.com/
+  - No longer an RFC
+  - Patch 1: no changes
+  - Patch 2:
+      - Replace igc_unset_queue_napi with igc_set_queue_napi(..., NULL),
+        as suggested by Vinicius Costa Gomes
+      - Simplify implementation of igc_set_queue_napi as suggested by Kurt
+        Kanzenbach, with a minor change to use the ring->queue_index
+
+rfcv2: https://lore.kernel.org/netdev/20241014213012.187976-1-jdamato@fastly.com/
+  - Patch 1: update line wrapping to 80 chars
+  - Patch 2:
+    - Update commit message to include output for IGC_FLAG_QUEUE_PAIRS
+      enabled and disabled
+    - Significant refactor to move queue mapping code to helpers to be
+      called from multiple locations
+    - Adjusted code to handle IGC_FLAG_QUEUE_PAIRS disabled as suggested
+      by Kurt Kanzenbach
+    - Map / unmap queues in igc_xdp_disable_pool and
+      igc_xdp_enable_pool, respectively, as suggested by Vinicius Costa
+      Gomes to handle the XDP case
+
+rfcv1: https://lore.kernel.org/lkml/20241003233850.199495-1-jdamato@fastly.com/
+
+Joe Damato (2):
+  igc: Link IRQs to NAPI instances
+  igc: Link queues to NAPI instances
+
+ drivers/net/ethernet/intel/igc/igc.h      |  2 +
+ drivers/net/ethernet/intel/igc/igc_main.c | 55 ++++++++++++++++++++---
+ drivers/net/ethernet/intel/igc/igc_xdp.c  |  2 +
+ 3 files changed, 52 insertions(+), 7 deletions(-)
+
+
+base-commit: b8ee7a11c75436b85fa1641aa5f970de0f8a575c
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+2.25.1
 
 
