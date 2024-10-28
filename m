@@ -1,136 +1,178 @@
-Return-Path: <bpf+bounces-43272-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43273-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E6669B2486
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 06:43:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 699E39B2490
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 06:47:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F13C71C20F21
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 05:43:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3E211F212C3
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 05:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 133E218E34F;
-	Mon, 28 Oct 2024 05:42:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73D3118D650;
+	Mon, 28 Oct 2024 05:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wwaYkLlz"
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="hu8ku3x0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B50418CBEC
-	for <bpf@vger.kernel.org>; Mon, 28 Oct 2024 05:42:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF75188012;
+	Mon, 28 Oct 2024 05:46:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730094145; cv=none; b=UQaEN9SNl3aFo0ePlJ+lLnVyjzOFIvpf3X+0yNQSO08sJY5AeHR3KnN5dvOHsxvBy77Dd9U/IxDm6GKdELEaBEy5rhTCqnKS1V9brPVVlbyVW89npRKGlSuJEsFpKouJnaUMj2sHbYMT7MvXktNLcXw5vspd12YqtnrtMPAouow=
+	t=1730094419; cv=none; b=COxE/COPS10geHOSypV8gB5IYhGElGQSW8rJpB8zHdsk+B2Ec2pH3eHUMKXNHfidtivPYeaXHWg+juOB7IKILxJmtW2c6jJx6yvLTGTYtgeQFTLOVtCjzapy116p/cjRqfZBg2fq9Wy7cJEFHSyUHFgB10/4HdIjks4fSHz5Tp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730094145; c=relaxed/simple;
-	bh=iZJDBmewrqSqINIiyukj1T9906bliPxi/ce+MGLFIN8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XVXf+P3AaX0+OqiLy1mvNGYzDIRPqbpSPE3HiZe8XUI7VsrgzN+BGUoKWPsmLvo2yk3AKSLDeULAcg88mBCt1d7q4GGHdYjzZ42Xi+KCh29UwWC53X/kI6d033Ke0V8vPnWiYUPwr27tBQJMmV3Luw9yJ50MRXbDwk3wCx3bbt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wwaYkLlz; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c0e98969-a75e-45a0-803c-1d69bf02623b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730094140;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T69UsbBUL523sfFP32uSh2+sUnNKiKJ6dIRsDgjuqrg=;
-	b=wwaYkLlza+vQIXMqdX9AdzWvv0ci4ah34dpnpFgKG/gvinM0w7UWqmOIeuxU5HDX4y5hQ6
-	TzpMPnjDnZBhoymR5n/GWzjn0p8lO72kZGIf/KL6XaUrS0RqVknNUsV7KkYbV2jFwWywOj
-	V04hHDKQkJRmY2WqVs+E8cemAdcswh4=
-Date: Sun, 27 Oct 2024 22:42:08 -0700
+	s=arc-20240116; t=1730094419; c=relaxed/simple;
+	bh=OMDUt1JiIM60tJUhcbGeIusKB8rIA6ft0n0PF1UfVyE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Ei9PKDD1JLIMK47uZ6h99f6FjF0QmVe+OMKWG3gKuy05JEgE1vb8lNBGka3ZGk0Gs4EUctxIq7P/S1e8QBnXSBZaqmFXbN5jM5YNC+JQD/w907VAVptUAEX2ADuhTzuqatpCMe4+SIidpubKa+vtzDyd7OJ+RcOX7DHwTuBsU9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=hu8ku3x0; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1730094411;
+	bh=OMDUt1JiIM60tJUhcbGeIusKB8rIA6ft0n0PF1UfVyE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=hu8ku3x09JE6p7y7v7trn5lIhE4uz+agLI0UYSa1bU/zp+ThOALYVhMxPwrnpLjDa
+	 VxnyNnMyeobW4bT6UPlNhR49HcUcXRCjahiOVVAFfrVZkQDF9GTpr0VF44VJfUXpue
+	 H0h4nwwHMh9m2CqFwdu9zoQ0EsQ+oBQNTzP15qgIoEMh18Ckm0ely29JAZrK/9fyZh
+	 lS5CGxQtQJOgDFGkZwdOsHyT8BPjXIVMaMpovWqwnWLrzpfVIQaCMVDucRqL/eGsL/
+	 11olKF/2J3u0KwtipWgl2mVLRvKW1x5nJNLC2ti8gELad/8gziU37xEtdnNEtUqowl
+	 F1wvCaFKCzarA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4XcMpL4SL7z4x6k;
+	Mon, 28 Oct 2024 16:46:50 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Hari Bathini <hbathini@linux.ibm.com>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>
+Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf <bpf@vger.kernel.org>,
+ linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, Linux Kbuild
+ mailing list <linux-kbuild@vger.kernel.org>, LKML
+ <linux-kernel@vger.kernel.org>, "Naveen N. Rao" <naveen@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, Daniel Borkmann <daniel@iogearbox.net>,
+ Masahiro Yamada <masahiroy@kernel.org>, Nicholas Piggin
+ <npiggin@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Steven Rostedt
+ <rostedt@goodmis.org>, Andrii Nakryiko <andrii@kernel.org>, Christophe
+ Leroy <christophe.leroy@csgroup.eu>, Vishal Chourasia
+ <vishalc@linux.ibm.com>, Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH v5 17/17] powerpc64/bpf: Add support for bpf trampolines
+In-Reply-To: <a00df08a-605f-41c9-ba0d-2060e0d1e8b4@linux.ibm.com>
+References: <20240915205648.830121-1-hbathini@linux.ibm.com>
+ <20240915205648.830121-18-hbathini@linux.ibm.com>
+ <CAADnVQL60XXW95tgwKn3kVgSQAN7gr1STy=APuO1xQD7mz-aXA@mail.gmail.com>
+ <32249e74-633d-4757-8931-742b682a63d3@linux.ibm.com>
+ <CAADnVQKfSH_zkP0-TwOB_BLxCBH9efot9mk03uRuooCTMmWnWA@mail.gmail.com>
+ <7afc9cc7-95cd-45c7-b748-28040206d9a0@linux.ibm.com>
+ <CAADnVQJjqnSVqq2n70-uqfrYRHH3n=5s9=t3D2AMooxxAHYfJQ@mail.gmail.com>
+ <875xq07qv6.fsf@mail.lhotse>
+ <28d39117-c512-4165-b082-4ca54da7ba6c@linux.ibm.com>
+ <a00df08a-605f-41c9-ba0d-2060e0d1e8b4@linux.ibm.com>
+Date: Mon, 28 Oct 2024 16:46:40 +1100
+Message-ID: <87r080srsv.fsf@mpe.ellerman.id.au>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net] Drop packets with invalid headers to prevent KMSAN
- infoleak
-Content-Language: en-GB
-To: Daniel Yang <danielyangkang@gmail.com>,
- Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- "open list:BPF [NETWORKING] (tcx & tc BPF, sock_addr)"
- <bpf@vger.kernel.org>,
- "open list:BPF [NETWORKING] (tcx & tc BPF, sock_addr)"
- <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- syzbot+346474e3bf0b26bd3090@syzkaller.appspotmail.com
-References: <20241019071149.81696-1-danielyangkang@gmail.com>
- <c7d0503b-e20d-4a6d-aecf-2bd7e1c7a450@linux.dev>
- <CAGiJo8R2PhpOitTjdqZ-jbng0Yg=Lxu6L+6FkYuUC1M_d10U2Q@mail.gmail.com>
- <5c8fb835-b0cb-428b-ab07-e20f905eb19f@linux.dev>
- <CAGiJo8RJ+0K-JYtCq4ZLg_4eq7HDkib9iwE-UTnimgEQE8rgtg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAGiJo8RJ+0K-JYtCq4ZLg_4eq7HDkib9iwE-UTnimgEQE8rgtg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 
-
-On 10/27/24 1:49 AM, Daniel Yang wrote:
-> On Tue, Oct 22, 2024 at 11:14 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->> On 10/21/24 6:37 PM, Daniel Yang wrote:
->>>> A test in selftests/bpf is needed to reproduce and better understand this.
->>> I don't know much about self tests but I've just been using the syzbot
->>> repro and #syz test at the link in the patch:
->>> https://syzkaller.appspot.com/bug?extid=346474e3bf0b26bd3090. Testing
->>> the patch showed that the uninitialized memory was not getting written
->>> to memory.
->>>
->>>> Only bpf_clone_redirect() is needed to reproduce or other bpf_skb_*() helpers calls
->>>> are needed to reproduce?
->> If only bpf_clone_redirect() is needed, it should be simple to write a selftest
->> to reproduce it. It also helps to catch future regression.
->>
->> Please tag the next respin as "bpf" also.
-> I have a problem. I can't seem to build the bpf kselftests for some
-> reason. There is always a struct definition error:
-> In file included from progs/profiler1.c:5:
-> progs/profiler.inc.h:599:49: error: declaration of 'struct
-> syscall_trace_enter' will not be visible outside of t]
->    599 | int tracepoint__syscalls__sys_enter_kill(struct
-> syscall_trace_enter* ctx)
->        |                                                 ^
-> progs/profiler.inc.h:604:15: error: incomplete definition of type
-> 'struct syscall_trace_enter'
->    604 |         int pid = ctx->args[0];
->        |                   ~~~^
-> progs/profiler.inc.h:599:49: note: forward declaration of 'struct
-> syscall_trace_enter'
->    599 | int tracepoint__syscalls__sys_enter_kill(struct
-> syscall_trace_enter* ctx)
->        |                                                 ^
-> progs/profiler.inc.h:605:15: error: incomplete definition of type
-> 'struct syscall_trace_enter'
->    605 |         int sig = ctx->args[1];
->        |                   ~~~^
-> progs/profiler.inc.h:599:49: note: forward declaration of 'struct
-> syscall_trace_enter'
->    599 | int tracepoint__syscalls__sys_enter_kill(struct
-> syscall_trace_enter* ctx)
->
-> I just run the following to build:
-> $ cd tools/testing/selftests/bpf/
-> $ make
-
-It might be due to your .config file.
-The 'struct syscall_trace_enter' is defined in kernel/trace/trace.h,
-which is used in kernel/trace/trace_syscalls.c. Maybe your config
-does not have CONFIG_FTRACE_SYSCALLS?
-
->
-> I can't find anyone else encountering the same error.
+SGFyaSBCYXRoaW5pIDxoYmF0aGluaUBsaW51eC5pYm0uY29tPiB3cml0ZXM6DQo+IE9uIDEwLzEw
+LzI0IDM6MDkgcG0sIEhhcmkgQmF0aGluaSB3cm90ZToNCj4+IE9uIDEwLzEwLzI0IDU6NDggYW0s
+IE1pY2hhZWwgRWxsZXJtYW4gd3JvdGU6DQo+Pj4gQWxleGVpIFN0YXJvdm9pdG92IDxhbGV4ZWku
+c3Rhcm92b2l0b3ZAZ21haWwuY29tPiB3cml0ZXM6DQo+Pj4+IE9uIFR1ZSwgT2N0IDEsIDIwMjQg
+YXQgMTI6MTjigK9BTSBIYXJpIEJhdGhpbmkgPGhiYXRoaW5pQGxpbnV4LmlibS5jb20+IA0KPj4+
+PiB3cm90ZToNCj4+Pj4+IE9uIDMwLzA5LzI0IDY6MjUgcG0sIEFsZXhlaSBTdGFyb3ZvaXRvdiB3
+cm90ZToNCj4+Pj4+PiBPbiBTdW4sIFNlcCAyOSwgMjAyNCBhdCAxMDozM+KAr1BNIEhhcmkgQmF0
+aGluaSANCj4+Pj4+PiA8aGJhdGhpbmlAbGludXguaWJtLmNvbT4gd3JvdGU6DQo+Pj4+Pj4+IE9u
+IDE3LzA5LzI0IDE6MjAgcG0sIEFsZXhlaSBTdGFyb3ZvaXRvdiB3cm90ZToNCj4+Pj4+Pj4+IE9u
+IFN1biwgU2VwIDE1LCAyMDI0IGF0IDEwOjU44oCvUE0gSGFyaSBCYXRoaW5pIA0KPj4+Pj4+Pj4g
+PGhiYXRoaW5pQGxpbnV4LmlibS5jb20+IHdyb3RlOg0KPj4+Pj4+Pj4+DQo+Pj4+Pj4+Pj4gKw0K
+Pj4+Pj4+Pj4+ICvCoMKgwqDCoMKgwqAgLyoNCj4+Pj4+Pj4+PiArwqDCoMKgwqDCoMKgwqAgKiBH
+ZW5lcmF0ZWQgc3RhY2sgbGF5b3V0Og0KPj4+Pj4+Pj4+ICvCoMKgwqDCoMKgwqDCoCAqDQo+Pj4+
+Pj4+Pj4gK8KgwqDCoMKgwqDCoMKgICogZnVuYyBwcmV2IGJhY2sgY2hhaW7CoMKgwqDCoMKgwqDC
+oMKgIFsgYmFjayBjaGFpbsKgwqDCoMKgwqDCoMKgIF0NCj4+Pj4+Pj4+PiArwqDCoMKgwqDCoMKg
+wqAgKsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgW8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBdDQo+Pj4+Pj4+Pj4g
+K8KgwqDCoMKgwqDCoMKgICogYnBmIHByb2cgcmVkem9uZS90YWlsY2FsbGNudCBbIC4uLsKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXSA2NCANCj4+Pj4+Pj4+PiBieXRlcyAoNjQtYml0IHBv
+d2VycGMpDQo+Pj4+Pj4+Pj4gK8KgwqDCoMKgwqDCoMKgICrCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgXSAtLQ0KPj4+Pj4+Pj4gLi4uDQo+Pj4+Pj4+Pj4gKw0KPj4+Pj4+
+Pj4+ICvCoMKgwqDCoMKgwqAgLyogRHVtbXkgZnJhbWUgc2l6ZSBmb3IgcHJvcGVyIHVud2luZCAt
+IGluY2x1ZGVzIDY0LSANCj4+Pj4+Pj4+PiBieXRlcyByZWQgem9uZSBmb3IgNjQtYml0IHBvd2Vy
+cGMgKi8NCj4+Pj4+Pj4+PiArwqDCoMKgwqDCoMKgIGJwZl9kdW1teV9mcmFtZV9zaXplID0gU1RB
+Q0tfRlJBTUVfTUlOX1NJWkUgKyA2NDsNCj4+Pj4+Pj4+DQo+Pj4+Pj4+PiBXaGF0IGlzIHRoZSBn
+b2FsIG9mIHN1Y2ggYSBsYXJnZSAicmVkIHpvbmUiID8NCj4+Pj4+Pj4+IFRoZSBrZXJuZWwgc3Rh
+Y2sgaXMgYSBsaW1pdGVkIHJlc291cmNlLg0KPj4+Pj4+Pj4gV2h5IHJlc2VydmUgNjQgYnl0ZXMg
+Pw0KPj4+Pj4+Pj4gdGFpbCBjYWxsIGNudCBjYW4gcHJvYmFibHkgYmUgb3B0aW9uYWwgYXMgd2Vs
+bC4NCj4+Pj4+Pj4NCj4+Pj4+Pj4gSGkgQWxleGVpLCB0aGFua3MgZm9yIHJldmlld2luZy4NCj4+
+Pj4+Pj4gRldJVywgdGhlIHJlZHpvbmUgb24gcHBjNjQgaXMgMjg4IGJ5dGVzLiBCUEYgSklUIGZv
+ciBwcGM2NCB3YXMgdXNpbmcNCj4+Pj4+Pj4gYSByZWR6b25lIG9mIDgwIGJ5dGVzIHNpbmNlIHRh
+aWxjYWxsIHN1cHBvcnQgd2FzIGludHJvZHVjZWQgWzFdLg0KPj4+Pj4+PiBJdCBjYW1lIGRvd24g
+dG8gNjQgYnl0ZXMgdGhhbmtzIHRvIFsyXS4gVGhlIHJlZCB6b25lIGlzIGJlaW5nIHVzZWQNCj4+
+Pj4+Pj4gdG8gc2F2ZSBOVlJzIGFuZCB0YWlsIGNhbGwgY291bnQgd2hlbiBhIHN0YWNrIGlzIG5v
+dCBzZXR1cC4gSSBkbw0KPj4+Pj4+PiBhZ3JlZSB0aGF0IHdlIHNob3VsZCBsb29rIGF0IG9wdGlt
+aXppbmcgaXQgZnVydGhlci4gRG8geW91IHRoaW5rDQo+Pj4+Pj4+IHRoZSBvcHRpbWl6YXRpb24g
+c2hvdWxkIGdvIGFzIHBhcnQgb2YgUFBDNjQgdHJhbXBvbGluZSBlbmFibGVtZW50DQo+Pj4+Pj4+
+IGJlaW5nIGRvbmUgaGVyZSBvciBzaG91bGQgdGhhdCBiZSB0YWtlbiB1cCBhcyBhIHNlcGFyYXRl
+IGl0ZW0sIG1heWJlPw0KPj4+Pj4+DQo+Pj4+Pj4gVGhlIGZvbGxvdyB1cCBpcyBmaW5lLg0KPj4+
+Pj4+IEl0IGp1c3Qgb2RkIHRvIG1lIHRoYXQgd2UgY3VycmVudGx5IGhhdmU6DQo+Pj4+Pj4NCj4+
+Pj4+PiBbwqDCoCB1bnVzZWQgcmVkIHpvbmUgXSAyMDggYnl0ZXMgcHJvdGVjdGVkDQo+Pj4+Pj4N
+Cj4+Pj4+PiBJIHNpbXBseSBkb24ndCB1bmRlcnN0YW5kIHdoeSB3ZSBuZWVkIHRvIHdhc3RlIHRo
+aXMgbXVjaCBzdGFjayBzcGFjZS4NCj4+Pj4+PiBXaHkgY2FuJ3QgaXQgYmUgemVybyB0b2RheSA/
+DQo+Pj4+Pg0KPj4+Pj4gVGhlIEFCSSBmb3IgcHBjNjQgaGFzIGEgcmVkem9uZSBvZiAyODggYnl0
+ZXMgYmVsb3cgdGhlIGN1cnJlbnQNCj4+Pj4+IHN0YWNrIHBvaW50ZXIgdGhhdCBjYW4gYmUgdXNl
+ZCBhcyBhIHNjcmF0Y2ggYXJlYSB1bnRpbCBhIG5ldw0KPj4+Pj4gc3RhY2sgZnJhbWUgaXMgY3Jl
+YXRlZC4gU28sIG5vIHdhc3RhZ2Ugb2Ygc3RhY2sgc3BhY2UgYXMgc3VjaC4NCj4+Pj4+IEl0IGlz
+IGp1c3QgcmVkIHpvbmUgdGhhdCBjYW4gYmUgdXNlZCBiZWZvcmUgYSBuZXcgc3RhY2sgZnJhbWUN
+Cj4+Pj4+IGlzIGNyZWF0ZWQuIFRoZSBjb21tZW50IHRoZXJlIGlzIG9ubHkgdG8gc2hvdyBob3cg
+cmVkem9uZSBpcw0KPj4+Pj4gYmVpbmcgdXNlZCBpbiBwcGM2NCBCUEYgSklULiBJIHRoaW5rIHRo
+ZSBjb25mdXNpb24gaXMgd2l0aCB0aGUNCj4+Pj4+IG1lbnRpb24gb2YgIjIwOCBieXRlcyIgYXMg
+cHJvdGVjdGVkLiBBcyBub3QgYWxsIG9mIHRoYXQgc2NyYXRjaA0KPj4+Pj4gYXJlYSBpcyB1c2Vk
+LCBpdCBtZW50aW9ucyB0aGUgcmVtYWluaW5nIGFzIHVudXNlZC4gRXNzZW50aWFsbHkNCj4+Pj4+
+IDI4OCBieXRlcyBiZWxvdyBjdXJyZW50IHN0YWNrIHBvaW50ZXIgaXMgcHJvdGVjdGVkIGZyb20g
+ZGVidWdnZXJzDQo+Pj4+PiBhbmQgaW50ZXJydXB0IGNvZGUgKHJlZCB6b25lKS4gTm90ZSB0aGF0
+IGl0IHNob3VsZCBiZSAyMjQgYnl0ZXMNCj4+Pj4+IG9mIHVudXNlZCByZWQgem9uZSBpbnN0ZWFk
+IG9mIDIwOCBieXRlcyBhcyByZWQgem9uZSB1c2FnZSBpbg0KPj4+Pj4gcHBjNjQgQlBGIEpJVCBj
+b21lIGRvd24gZnJvbSA4MCBieXRlcyB0byA2NCBieXRlcyBzaW5jZSBbMl0uDQo+Pj4+PiBIb3Bl
+IHRoYXQgY2xlYXJzIHRoZSBtaXN1bmRlcnN0YW5kaW5nLi4NCj4+Pj4NCj4+Pj4gSSBzZWUuIFRo
+YXQgbWFrZXMgc2Vuc2UuIFNvIGl0J3Mgc2ltaWxhciB0byBhbWQ2NCByZWQgem9uZSwNCj4+Pj4g
+YnV0IHRoZXJlIHdlIGhhdmUgYW4gaXNzdWUgd2l0aCBpcnFzLCBoZW5jZSB0aGUga2VybmVsIGlz
+DQo+Pj4+IGNvbXBpbGVkIHdpdGggLW1uby1yZWQtem9uZS4NCj4+Pg0KPj4+IEkgYXNzdW1lIHRo
+YXQgaXNzdWUgaXMgdGhhdCB0aGUgaW50ZXJydXB0IGVudHJ5IHVuY29uZGl0aW9uYWxseSB3cml0
+ZXMNCj4+PiBzb21lIGRhdGEgYmVsb3cgdGhlIHN0YWNrIHBvaW50ZXIsIGRpc3JlZ2FyZGluZyB0
+aGUgcmVkIHpvbmU/DQo+Pj4NCj4+Pj4gSSBndWVzcyBwcGMgYWx3YXlzIGhhcyBhIGRpZmZlcmVu
+dCBpbnRlcnJ1cHQgc3RhY2sgYW5kDQo+Pj4+IGl0J3Mgbm90IGFuIGlzc3VlPw0KPj4+DQo+Pj4g
+Tm8sIHRoZSBpbnRlcnJ1cHQgZW50cnkgYWxsb2NhdGVzIGEgZnJhbWUgdGhhdCBpcyBiaWcgZW5v
+dWdoIHRvIGNvdmVyDQo+Pj4gdGhlIHJlZCB6b25lIGFzIHdlbGwgYXMgdGhlIHNwYWNlIGl0IG5l
+ZWRzIHRvIHNhdmUgcmVnaXN0ZXJzLg0KPj4+DQo+Pj4gU2VlIFNUQUNLX0lOVF9GUkFNRV9TSVpF
+IHdoaWNoIGluY2x1ZGVzIEtFUk5FTF9SRURaT05FX1NJWkU6DQo+Pj4NCj4+PiDCoMKgIGh0dHBz
+Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4
+LmdpdC8gDQo+Pj4gdHJlZS9hcmNoL3Bvd2VycGMvaW5jbHVkZS9hc20vcHRyYWNlLmg/IA0KPj4+
+IGNvbW1pdD04Y2YwYjkzOTE5ZTEzZDFlOGQ0NDY2ZWI0MDgwYTRjNGQ5ZDY2ZDdiI24xNjUNCj4+
+Pg0KPj4+IFdoaWNoIGlzIHJlbmFtZWQgdG8gSU5UX0ZSQU1FX1NJWkUgaW4gYXNtLW9mZnNldHMu
+YyBhbmQgdGhlbiBpcyB1c2VkIGluDQo+Pj4gdGhlIGludGVycnVwdCBlbnRyeSBoZXJlOg0KPj4+
+DQo+Pj4gwqDCoCBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dp
+dC90b3J2YWxkcy9saW51eC5naXQvIA0KPj4+IHRyZWUvYXJjaC9wb3dlcnBjL2tlcm5lbC9leGNl
+cHRpb25zLTY0cy5TPyANCj4+PiBjb21taXQ9OGNmMGI5MzkxOWUxM2QxZThkNDQ2NmViNDA4MGE0
+YzRkOWQ2NmQ3YiNuNDk3DQo+PiANCj4+IFRoYW5rcyBmb3IgY2xhcmlmeWluZyB0aGF0LCBNaWNo
+YWVsLg0KPj4gT25seSBhc3luYyBpbnRlcnJ1cHQgaGFuZGxlcnMgdXNlIGRpZmZlcmVudCBpbnRl
+cnJ1cHQgc3RhY2tzLCByaWdodD8NCj4NCj4gLi4uIGFuZCBzZXBhcmF0ZSBlbWVyZ2VuY3kgc3Rh
+Y2sgZm9yIHNvbWUgc3BlY2lhbCBjYXNlcy4uLg0KDQpUaGVyZSBpc24ndCBhIG5lYXQgcnVsZSBs
+aWtlIHN5bmMvYXN5bmMuDQoNCk1vc3QgaW50ZXJydXB0cyB1c2UgdGhlIG5vcm1hbCBrZXJuZWwg
+c3RhY2ssIHdoZXRoZXIgc3luYyBvciBhc3luYy4NCg0KRXh0ZXJuYWwgaW50ZXJydXB0cyBzd2l0
+Y2ggdG8gYSBzZXBhcmF0ZSBoYXJkIGludGVycnVwdCBzdGFjaw0KKGhhcmRpcnFfY3R4KSBpbiBj
+YWxsX2RvX2lycSgpLCBidXQgb25seSBhZnRlciBjb21pbmcgaW4gb24gdGhlIGtlcm5lbA0Kc3Rh
+Y2sgZmlyc3QuDQoNClNvbWUgaW50ZXJydXB0cyB1c2UgdGhlIGVtZXJnZW5jeSBzdGFjayAoaW4g
+c29tZSBjYXNlcyksIGVnLiBITUksIHNvZnQNCk5NSSAoZmFrZSksIFRNIGJhZCB0aGluZyAocHJv
+Z3JhbSBjaGVjayksIG9yIHRoZWlyIG93biBzdGFjaywgc3lzdGVtDQpyZXNldCAobm1pX2VtZXJn
+ZW5jeV9zcCksIG1hY2hpbmUgY2hlY2sgKG1jX2VtZXJnZW5jeV9zcCkuDQoNCmNoZWVycw0K
 
