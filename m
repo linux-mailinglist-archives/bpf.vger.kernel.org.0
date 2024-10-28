@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-43305-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43306-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4659B3217
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 14:47:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 091B79B3218
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 14:47:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39DD0B2318C
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 13:47:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A94F21F22A78
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 13:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49DC11DBB13;
-	Mon, 28 Oct 2024 13:46:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49E441DC18F;
+	Mon, 28 Oct 2024 13:46:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wv+dgxsu"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VUrF6ZDX"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4351D5CDB
-	for <bpf@vger.kernel.org>; Mon, 28 Oct 2024 13:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA3A1D5CDB
+	for <bpf@vger.kernel.org>; Mon, 28 Oct 2024 13:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730123179; cv=none; b=jC4FIm2eaFijcYtPEp4asNLhxwKNi9GUEgp23C7koQIG5nxRkMws+2VQqIqkNYXNfeKU8E8VvCN2Y0V7hGWYUr71EUyKNQZc8xP3baQ2fQxCE0YRA4nvyJ/G5qNU+bCy0gZ3ZEcIyCVBOxqD2Q0o5rT7rIhr9X1/Awlgkz34afI=
+	t=1730123184; cv=none; b=e4+2iqtBNNrBPKnUtYgLPZemSPQNP8vSh1T4qepMNecJRmilfREeW6BhjYfQvFohWV5a8HS/fvq3+rZIOs2hYKqQPWnJd6Yg30IaClYWL9mYx7T/NzruFViXcNxsXCItgb0wBPuFGi0ADmBFfMy7SaE9uYbuk0IiTg4ha+R2oSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730123179; c=relaxed/simple;
-	bh=eSKkRuSkf4MgEO/Y4YTP+VC0Z+LIg3WzV5oRRyxLoDI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fGowaTRtEpFrcUXmnUFkpAykK4j6GhU0DgpcMrCE5e75Fi3qanyKriteOX6gMRyje2mfRoDmrzg06ZzYf6IdDwXsE6BX1OEi4SMDrwM5vtIVJDRAJswzR1u2eASXWhm28e960A9aCLkpiVZUsRsSVaocEvs2G2yEoN3HMp2oTp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wv+dgxsu; arc=none smtp.client-ip=91.218.175.188
+	s=arc-20240116; t=1730123184; c=relaxed/simple;
+	bh=nG4czWWM1v4K9sX5y1DM6zg7yaLlGQvj3r8D9MhjkPU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=LSEKuScatzhBvXyP8FKBy2zw8pF5O0D1chCYuvwvjCpURGTOUdQXmEKo4/rwZz+pX2+60S6GgmL6BTn3OqWr6Cz3q5xIIwW/hoKmc/klEHKnPgTF1fkqjR75ksWkkF+LUzkwZ6kff2R5EIplU3AViP3/AgK6M8Vtb+uyLWWjQaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VUrF6ZDX; arc=none smtp.client-ip=91.218.175.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730123175;
+	t=1730123178;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=4kL8dv33kcyGZUTeDLpXgKA3B9BW/7RAqCkyN+Fu0bE=;
-	b=wv+dgxsujA0kWY2eSvsIeXomBYUc/NgRq8nyVYdntq+YCITJDWJ+R57gH7GRmUvta+Iko0
-	ybHLhkFK40BbeIBX9MH8nsbyTp9KhhmRK8R4ud/9ijMjXBBrcO48DWVJbM1XV3++LO1/mN
-	QEFxSt+mNIZ3r0jLd+KBKQAnUn+21j4=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0OvRQz0mxYIFFyhd7wDrB8+fsS89iDjr0TgX/mpua0s=;
+	b=VUrF6ZDXEnuQ+KS0mxUFoz81qQOpg6Q+eG28Qxq/QW0IJjOwtRe8Sc9Lm7uOS/4JT4sjb2
+	BZv6B8ekDRcB47xfjZSPrBkzqGL4LfvODzriGBijT90oR9739QALNL0NXnPsbplNdoWcXs
+	BD/lCJ1bSqXf1keNyTqnYxGxzxx9XO0=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -50,9 +52,11 @@ Cc: ast@kernel.org,
 	eddyz87@gmail.com,
 	leon.hwang@linux.dev,
 	kernel-patches-bot@fb.com
-Subject: [RESEND PATCH bpf-next v2 0/2] bpf, x64: Introduce two tailcall enhancements
-Date: Mon, 28 Oct 2024 21:45:58 +0800
-Message-ID: <20241028134601.95448-1-leon.hwang@linux.dev>
+Subject: [RESEND PATCH bpf-next v2 1/2] bpf, x64: Propagate tailcall info only for subprogs
+Date: Mon, 28 Oct 2024 21:45:59 +0800
+Message-ID: <20241028134601.95448-2-leon.hwang@linux.dev>
+In-Reply-To: <20241028134601.95448-1-leon.hwang@linux.dev>
+References: <20241028134601.95448-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,27 +66,31 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-This patch set introduces two enhancements aimed at improving tailcall
-handling in the x64 JIT:
+In x64 JIT, propagate tailcall info only for subprogs, not for helpers
+or kfuncs.
 
-1. Tailcall info is propagated only for subprogs.
-2. Tailcall info is propagated through the trampoline only when the target
-   is a subprog and it is tail_call_reachable.
-
-v1 -> v2:
-  * Address comment from Alexei:
-    * Rather live with tail call inefficiency than abuse insns fields
-      further.
-
-Leon Hwang (2):
-  bpf, x64: Propagate tailcall info only for subprogs
-  bpf, verifier: Check trampoline target is tail_call_reachable subprog
-
+Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+---
  arch/x86/net/bpf_jit_comp.c | 3 ++-
- include/linux/bpf.h         | 1 +
- kernel/bpf/verifier.c       | 4 +++-
- 3 files changed, 6 insertions(+), 2 deletions(-)
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 06b080b61aa57..eb08cc6d66401 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -2124,10 +2124,11 @@ st:			if (is_imm8(insn->off))
+ 
+ 			/* call */
+ 		case BPF_JMP | BPF_CALL: {
++			bool pseudo_call = src_reg == BPF_PSEUDO_CALL;
+ 			u8 *ip = image + addrs[i - 1];
+ 
+ 			func = (u8 *) __bpf_call_base + imm32;
+-			if (tail_call_reachable) {
++			if (pseudo_call && tail_call_reachable) {
+ 				LOAD_TAIL_CALL_CNT_PTR(bpf_prog->aux->stack_depth);
+ 				ip += 7;
+ 			}
 -- 
 2.44.0
 
