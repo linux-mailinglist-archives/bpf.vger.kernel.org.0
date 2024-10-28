@@ -1,51 +1,51 @@
-Return-Path: <bpf+bounces-43337-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43338-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8BD79B3BA8
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 21:32:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13E269B3BCD
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 21:34:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94EE61F22DBD
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 20:32:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 338BD1C22319
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 20:34:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295E61E0DE4;
-	Mon, 28 Oct 2024 20:26:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D97411F4293;
+	Mon, 28 Oct 2024 20:27:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="J/z9iVP/"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="gCA0o8iF"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27DEE1E0080;
-	Mon, 28 Oct 2024 20:26:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 285F81EE00C;
+	Mon, 28 Oct 2024 20:27:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730147175; cv=none; b=ItyMhe+EWWJV5izLRv29H3JGgXeKJDb/7NahXYYdNFidJ3TXWQJUVrVRcMoXNuf2Fjmlw8+4pU2X9TsnJrLfw4ntmHifIXH+ThL3ZKWw9T2/XqiNiuVIn6L6mQNQ9p8hD4CtXmH6ZX9M+1nbum/aEIuUlYa6BoddesegzNDTmck=
+	t=1730147256; cv=none; b=p7ats6x+qoXJI61rUd0I/TwZ7g1U/sUwkgDtvrO2BJ4D/GuAdXuaB8E9+Sa6TBsXwPv/UMnme79bQb6pI397uMG6Ln9KgeEM9cthXmoBm/YCcsYnET+XLivKmEkQy8c36wovdXJlxjBA1eAbUBpo8Y9XRf9b9qOlilsrP05dLfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730147175; c=relaxed/simple;
-	bh=J2DcfBdWy45uJItdWiguW3idrp9CeNy/8d4dmAE9PTs=;
+	s=arc-20240116; t=1730147256; c=relaxed/simple;
+	bh=XDAZhSYAaVkmM4dFq8nal7tVXdbanH7syiZOM+auQxs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gINK2YSRW4HdOQwKfSNnqcEC9nKqaHn7O8YQewVgSCsiWXC6y0l97HiUq5oHX0qDRfbtJhha44eaJ0cGQhiSAWfsJjbL28bcDO5XXjA+/m1pqSMN5eiYF+FcCE1gDI4cR/Neh99SuCJNbg80nk31DMsQRhZtjId5fG79j+k6m88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=J/z9iVP/; arc=none smtp.client-ip=167.114.26.122
+	 In-Reply-To:Content-Type; b=dPpsXwDT7BFF3Lq9g+VFeM2UahhxR6VODvdMCHfmc95iJkihuCLjwNxnplG/dWHo87em5LwqGjOjygTtTG2IwgOwcHkHK9OHG8CIfynUhLFqUcKR5+NWIa1yd+qvsUxh0dHv/6faSOzo+DU4T7RPDE2HapMgez1VMBZRX2gkb2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=gCA0o8iF; arc=none smtp.client-ip=167.114.26.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1730147171;
-	bh=J2DcfBdWy45uJItdWiguW3idrp9CeNy/8d4dmAE9PTs=;
+	s=smtpout1; t=1730147253;
+	bh=XDAZhSYAaVkmM4dFq8nal7tVXdbanH7syiZOM+auQxs=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=J/z9iVP/Y6RPeDMdI5MNRoGDml6fNQxfZR+pU6ZwxpeXMjd6TZQpBUqwwAaXsPmko
-	 prHP+ObPRwOIpi2rz2MHqsnQLzrpjIIE8NvoY4YKpasH1nrORDrjr92rqAIIlPJr4s
-	 xzFpsDLefLueJ39WLOBzexPANTmY7n2Rj2IeravhgB/yG8uihwRknnnpuoH4zY5TRp
-	 dgqMV6VRzAKT/mrcyEi1XP/rAGECrJ5LPIPRxeja6LFkhIWOQ86X/z1BxdQHlAcL3R
-	 pJ1y1MJCHqNq1y0TRltZsymOJ97MJMchwsWLJhaM77ZirS3EWDZ+VE+jHAAvaaQd9G
-	 8dhYZTqHtXWWA==
+	b=gCA0o8iFNotPHu8YJdQ0zgNyNddjKrHOyPHkS6d9zzTRQz5Q1SCYa0bMXEkcKbeIi
+	 OZhocwgEgC0ajHj8oGg7IUU3x97Std4QUSTxP0zzqIIcGwrKoVZBpt5Tiqzapxxwud
+	 mH7eD2HAtr+VeC/6U2fNQbyeUnoR2MEqcIiY1O1O2baVSHUmA//dQMwNBAE3gz37Wj
+	 PQfzXlfdLD5BgMNs11HMkz3NUVd1bc9/zJPgHXpjq/Fog6NUidwJahkD87XPcm+p2W
+	 Lerc1xiM2ekLyfsQ/8G0zvIxL7YzysPx5eCujNwA7qlnJQ4nfpL2tybvvmuI9wGBAo
+	 e/jd3fgcxHT5g==
 Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XclJz40dTzsZx;
-	Mon, 28 Oct 2024 16:26:11 -0400 (EDT)
-Message-ID: <89947c86-a8fa-425f-8e86-d80bb5220280@efficios.com>
-Date: Mon, 28 Oct 2024 16:24:32 -0400
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XclLX62mRzsb2;
+	Mon, 28 Oct 2024 16:27:32 -0400 (EDT)
+Message-ID: <588eb8e1-5035-499f-b19b-8b40a9877433@efficios.com>
+Date: Mon, 28 Oct 2024 16:25:53 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -53,8 +53,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v4 2/4] tracing: Introduce tracepoint_is_faultable()
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [RFC PATCH v4 4/4] tracing: Add might_fault() check in
+ __DO_TRACE() for syscall
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Jordan Rife <jrife@google.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
  Thomas Gleixner <tglx@linutronix.de>, Michael Jeanson
  <mjeanson@efficios.com>, Masami Hiramatsu <mhiramat@kernel.org>,
@@ -64,68 +66,108 @@ Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
  Mark Rutland <mark.rutland@arm.com>,
  Alexander Shishkin <alexander.shishkin@linux.intel.com>,
  Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
- Joel Fernandes <joel@joelfernandes.org>, Jordan Rife <jrife@google.com>
+ Joel Fernandes <joel@joelfernandes.org>
 References: <20241028190927.648953-1-mathieu.desnoyers@efficios.com>
- <20241028190927.648953-3-mathieu.desnoyers@efficios.com>
- <CAEf4BzZA30dEOxqtwWcMsGLLU0na77rmRANMMYQaNJ8D8o5-bQ@mail.gmail.com>
+ <20241028190927.648953-5-mathieu.desnoyers@efficios.com>
+ <e18e953b-9030-487c-bb8a-125521568e9e@efficios.com>
+ <CAEf4BzZgSPXyvtBZuB+W3fp=C8QYSHsd0TduxWE3Le+9e80-UA@mail.gmail.com>
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Content-Language: en-US
-In-Reply-To: <CAEf4BzZA30dEOxqtwWcMsGLLU0na77rmRANMMYQaNJ8D8o5-bQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZgSPXyvtBZuB+W3fp=C8QYSHsd0TduxWE3Le+9e80-UA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 2024-10-28 16:19, Andrii Nakryiko wrote:
-> On Mon, Oct 28, 2024 at 12:11 PM Mathieu Desnoyers
+On 2024-10-28 16:20, Andrii Nakryiko wrote:
+> On Mon, Oct 28, 2024 at 12:59 PM Mathieu Desnoyers
 > <mathieu.desnoyers@efficios.com> wrote:
 >>
->> Introduce a "faultable" flag within the extended structure to know
->> whether a tracepoint needs rcu tasks trace grace period before reclaim.
->> This can be queried using tracepoint_is_faultable().
+>> On 2024-10-28 15:09, Mathieu Desnoyers wrote:
+>>> Catch incorrect use of syscall tracepoints even if no probes are
+>>> registered by adding a might_fault() check in __DO_TRACE() when
+>>> syscall=1.
+>>>
+>>> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+>>> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>>> Cc: Michael Jeanson <mjeanson@efficios.com>
+>>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>>> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+>>> Cc: Peter Zijlstra <peterz@infradead.org>
+>>> Cc: Alexei Starovoitov <ast@kernel.org>
+>>> Cc: Yonghong Song <yhs@fb.com>
+>>> Cc: Paul E. McKenney <paulmck@kernel.org>
+>>> Cc: Ingo Molnar <mingo@redhat.com>
+>>> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+>>> Cc: Namhyung Kim <namhyung@kernel.org>
+>>> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+>>> Cc: bpf@vger.kernel.org
+>>> Cc: Joel Fernandes <joel@joelfernandes.org>
+>>> Cc: Jordan Rife <jrife@google.com>
+>>> ---
+>>>    include/linux/tracepoint.h | 6 ++++--
+>>>    1 file changed, 4 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+>>> index 259f0ab4ece6..7bed499b7055 100644
+>>> --- a/include/linux/tracepoint.h
+>>> +++ b/include/linux/tracepoint.h
+>>> @@ -226,10 +226,12 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>>                if (!(cond))                                            \
+>>>                        return;                                         \
+>>>                                                                        \
+>>> -             if (syscall)                                            \
+>>> +             if (syscall) {                                          \
+>>>                        rcu_read_lock_trace();                          \
+>>> -             else                                                    \
+>>> +                     might_fault();                                  \
 >>
->> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> Cc: Michael Jeanson <mjeanson@efficios.com>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Masami Hiramatsu <mhiramat@kernel.org>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Alexei Starovoitov <ast@kernel.org>
->> Cc: Yonghong Song <yhs@fb.com>
->> Cc: Paul E. McKenney <paulmck@kernel.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->> Cc: Namhyung Kim <namhyung@kernel.org>
->> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
->> Cc: bpf@vger.kernel.org
->> Cc: Joel Fernandes <joel@joelfernandes.org>
->> Cc: Jordan Rife <jrife@google.com>
->> ---
->>   include/linux/tracepoint-defs.h |  2 ++
->>   include/linux/tracepoint.h      | 24 ++++++++++++++++++++++++
->>   include/trace/define_trace.h    |  2 +-
->>   3 files changed, 27 insertions(+), 1 deletion(-)
+>> Actually, __DO_TRACE() is not the best place to put this, because it's
+>> only executed when the tracepoint is enabled.
 >>
+>> I'll move this to __DECLARE_TRACE_SYSCALL()
+>>
+>> #define __DECLARE_TRACE_SYSCALL(name, proto, args, cond, data_proto)    \
+>>           __DECLARE_TRACE_COMMON(name, PARAMS(proto), PARAMS(args), cond, PARAMS(data_proto)) \
+>>           static inline void trace_##name(proto)                          \
+>>           {                                                               \
+>>                   might_fault();                                          \
+>>                   if (static_branch_unlikely(&__tracepoint_##name.key))   \
+>>                           __DO_TRACE(name,                                \
+>>                                   TP_ARGS(args),                          \
+>>                                   TP_CONDITION(cond), 1);                 \
+>> [...]
+>>
+>> instead in v5.
 > 
-> LGTM
+> please drop the RFC tag while at it
 
-FYI I'm still missing the "static" here:
-
-
->> +#define DEFINE_TRACE_SYSCALL(_name, _reg, _unreg, _proto, _args)       \
->> +       struct tracepoint_ext __tracepoint_ext_##_name = {              \
->> +               .regfunc = _reg,                                        \
->> +               .unregfunc = _unreg,                                    \
->> +               .faultable = true,                                      \
->>          };      
-
-Will fix in v5.
-
-Acked-by noted, thanks!
+I'm still awaiting for Jordan (or someone else) to come back with
+testing results before I feel confident dropping the RFC tag.
 
 Thanks,
 
 Mathieu
 
+> 
+>>
+>> Thanks,
+>>
+>> Mathieu
+>>
+>>> +             } else {                                                \
+>>>                        preempt_disable_notrace();                      \
+>>> +             }                                                       \
+>>>                                                                        \
+>>>                __DO_TRACE_CALL(name, TP_ARGS(args));                   \
+>>>                                                                        \
+>>
+>> --
+>> Mathieu Desnoyers
+>> EfficiOS Inc.
+>> https://www.efficios.com
+>>
 
 -- 
 Mathieu Desnoyers
