@@ -1,166 +1,128 @@
-Return-Path: <bpf+bounces-43320-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43321-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E8949B39D5
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 19:59:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B41D99B39EB
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 20:04:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 274021F221AE
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 18:59:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B5EC1F22B5A
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 19:04:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574451DFE17;
-	Mon, 28 Oct 2024 18:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC4F1DFD9E;
+	Mon, 28 Oct 2024 19:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="YDxXyY6v"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="D5FXZdoQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E896F1D7994
-	for <bpf@vger.kernel.org>; Mon, 28 Oct 2024 18:59:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB2618B03;
+	Mon, 28 Oct 2024 19:04:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730141973; cv=none; b=Kpp2PYm275Ev7LcfGnSJ6pZmwiH3oWBYt4WZmzBOF4cjiwr2tJkuf0fOZCgaXqBuW8aPxNww6j1Y882f0NjEAg2VP8bcO8JLAsIyKD7GE8wN8+Bf1rTYXAaL7PFvFYGyAoEHOShV57oF94YLs2+7P/AuQAl6QH1dbP87lFJfBYk=
+	t=1730142250; cv=none; b=vCjamLZPNu4wS0jO0Nr/Bi+vPFQfmroyl3Txznaaw54bdQ8aUhwI+XOFFgJxcNoFBX0VzoHar4qhUEPx65Oe4lWcSjRp+pBz0FfqSRdqmXBcLdoMK8Uy8FlBxoH0Z+DXngDjVfZo0etQ2iXJ2HzC1uTogiLRl9AwygMfJCLG+0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730141973; c=relaxed/simple;
-	bh=f7jCv518i3r2DmaD2jR4yg1phCBC6+krsahdbsKRe+o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NwG7FfzjdjYrheAoPKz+RwQ+CVh9NX3F2LMv70V4je/Y51TnSbhEOyQOp8VGQyQn1Li7cUlxTgZ6dSAR8iiwDSdaph4fEi6XCsmiQEgvIpn6hgBAxGpe0LpLyuIw+2owgPbv3bAbACOBlRgUc5nY/G9bJmrwS+6Bqi98x/CqHS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=YDxXyY6v; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-20ca388d242so41438785ad.2
-        for <bpf@vger.kernel.org>; Mon, 28 Oct 2024 11:59:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1730141971; x=1730746771; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qeCldZNN0uQOZMpedqS7Oua78AnyCHE6/huQVyFkvbY=;
-        b=YDxXyY6vXCC9BbgYD5Jr8qrdQe9mPTWj90+kgVZ1KVfX0fVSEl95U7goCVw1wjSzUu
-         VWjMUQnnlPAs5uIPIV4FD3/miDd7lXPpOirJbl6X6Lj0qRS3AP26VWTIh4ig592R40cC
-         K0qIhI87pReApToH/HKCVgLvz+AqFB1TrckQA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730141971; x=1730746771;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qeCldZNN0uQOZMpedqS7Oua78AnyCHE6/huQVyFkvbY=;
-        b=qwM/SWEcwtkAI5j4NGOZxgUH41I3Tyh7XWBrPulKV8z7FbnWaYGIqNol9wOfS0Z3TZ
-         pyxOlvr1Kh8vGd2eR4+J8L/0GYnFZ7q91k0xoXORa6kc9MMERrW+y8I6vVwdQ4+xEjMG
-         sakybTT2XfxGj8+6ynkznQWFwGJ4KnuagEpel3+DkrkZieCsorVKo9oge83Bc3X1/nkV
-         T+Qke/5s7ky1PMsUlHATWqkdQRWElQjsfNnVXrpmpk/boKcmay+mtYipLOSlQI/SMSqU
-         N3d947BmL6Qmo6tczvvLsT13F6djQ+sChMNjM4Mk1XypsdruBPaAowIYXNN6RLzGeBz3
-         J5cg==
-X-Forwarded-Encrypted: i=1; AJvYcCXB8myzWF1blfBmifF9Xl9eSiULfjwQ9VYt7jsx7/hAGMfh/zAlUzLeNQ2vCCARIypoHts=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy0H06M1eZIl4SpH7cUvD7o/2GojH+BoLZCV1K/eUBKDxt2vopN
-	xP99d4fzMYQ4+/pbtB4L5A2+8ZK1fBoyxAk3rRKaj2qXizGYk6HVb5Lih5gfurU=
-X-Google-Smtp-Source: AGHT+IHUdnN8IaS4uaqWrdTjg4xrewbchje8khIGQ1Drr+enMS0lfIciArKhVhl88XNPN1+fZdpMbg==
-X-Received: by 2002:a17:902:ce12:b0:20c:7898:a8f4 with SMTP id d9443c01a7336-210c6ccfc15mr125345945ad.60.1730141971225;
-        Mon, 28 Oct 2024 11:59:31 -0700 (PDT)
-Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bbf434adsm53854335ad.10.2024.10.28.11.59.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Oct 2024 11:59:30 -0700 (PDT)
-Date: Mon, 28 Oct 2024 11:59:27 -0700
-From: Joe Damato <jdamato@fastly.com>
-To: Jacob Keller <jacob.e.keller@intel.com>
-Cc: "Lifshits, Vitaly" <vitaly.lifshits@intel.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"kurt@linutronix.de" <kurt@linutronix.de>,
-	"Gomes, Vinicius" <vinicius.gomes@intel.com>,
-	"Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-	"Kitszel, Przemyslaw" <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
-	stanislaw.gruszka@linux.intel.com
-Subject: Re: [Intel-wired-lan] [iwl-next v4 2/2] igc: Link queues to NAPI
- instances
-Message-ID: <Zx_fD72US_Jhq1oL@LQ3V64L9R2>
-Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	"Lifshits, Vitaly" <vitaly.lifshits@intel.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"kurt@linutronix.de" <kurt@linutronix.de>,
-	"Gomes, Vinicius" <vinicius.gomes@intel.com>,
-	"Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-	"Kitszel, Przemyslaw" <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
-	stanislaw.gruszka@linux.intel.com
-References: <20241022215246.307821-1-jdamato@fastly.com>
- <20241022215246.307821-3-jdamato@fastly.com>
- <d7799132-7e4a-0ac2-cbda-c919ce434fe2@intel.com>
- <Zx-yzhq4unv0gsVX@LQ3V64L9R2>
- <Zx-1BhZlXRQCImex@LQ3V64L9R2>
- <529d08d7-94ee-43da-904e-cf89823a59fb@intel.com>
+	s=arc-20240116; t=1730142250; c=relaxed/simple;
+	bh=q5Q8IBgjedCRqgzwvX4hN/KkdoiKiEG3yT0aFX2BRBA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RDh2RZgl4MWcb2KAFQUQL1B7pUuJIA0w9Z1KRAkpZET0BKN87qI7JcjfbsKUvQAKdiDUTTqj6f/KOp8fnbJz1FH+28PUFjz0YFCtZKdoqkyNfmG0WnI0c7Ei8wltp+HRjJLkxs92yHnEkM34ECud5qvwsIqAL078taslTY1FYyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=D5FXZdoQ; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1730142246;
+	bh=q5Q8IBgjedCRqgzwvX4hN/KkdoiKiEG3yT0aFX2BRBA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=D5FXZdoQPL0GLbRlSBPe9CplLr1NiUjEay9oOZjdKwilIPXIJm00d3SAmBhIy4BB+
+	 J0/6++mk0r7mUZ2XI92aau7QCxGbPjbazBaVLB4qB13HYTtbzUYaHtCIkEcqqMzWr9
+	 AIVpnknOtLBq5flTl2IvNhCLVs/mbuOSVeO+sNj6y1TQGjmwQzQk3YcnpEb7KEyOUZ
+	 A4I5MfA6qqflxtLGo3wRw7T3TmHg7AZZgnrkyj8GrDhBfKM+lUXXg6xcJsYEJG6dn1
+	 HwFPeYvWwQcyKUmBAmCftGhLv1rc0Pme/v5TBCBsyKifQRJI7qparCgSJ5JakECtSF
+	 O9MsXgAU1HG7A==
+Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XcjVG0k1XzrvQ;
+	Mon, 28 Oct 2024 15:04:06 -0400 (EDT)
+Message-ID: <f6caee5c-9d4d-449c-b697-a0a27993bd33@efficios.com>
+Date: Mon, 28 Oct 2024 15:02:26 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <529d08d7-94ee-43da-904e-cf89823a59fb@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH resend 6/8] tracing/ftrace: Add might_fault check to
+ syscall probes
+To: Thomas Gleixner <tglx@linutronix.de>, Steven Rostedt
+ <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+ Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
+ Joel Fernandes <joel@joelfernandes.org>, linux-trace-kernel@vger.kernel.org,
+ Michael Jeanson <mjeanson@efficios.com>
+References: <20240930192357.1154417-1-mathieu.desnoyers@efficios.com>
+ <20240930192357.1154417-7-mathieu.desnoyers@efficios.com>
+ <87cyjk2kgg.ffs@tglx>
+Content-Language: en-US
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <87cyjk2kgg.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Oct 28, 2024 at 11:53:55AM -0700, Jacob Keller wrote:
+On 2024-10-28 13:42, Thomas Gleixner wrote:
+> On Mon, Sep 30 2024 at 15:23, Mathieu Desnoyers wrote:
+>> diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
+>> index a3d8ac00793e..0430890cbb42 100644
+>> --- a/kernel/trace/trace_syscalls.c
+>> +++ b/kernel/trace/trace_syscalls.c
+>> @@ -303,6 +303,7 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
+>>   	 * Syscall probe called with preemption enabled, but the ring
+>>   	 * buffer and per-cpu data require preemption to be disabled.
+>>   	 */
+>> +	might_fault();
+>>   	guard(preempt_notrace)();
 > 
+> I find it odd that the might_fault() check is in all the implementations
+> and not in the tracepoint itself:
 > 
-> On 10/28/2024 9:00 AM, Joe Damato wrote:
-> > 
-> > I see, so it looks like there is:
-> >    - resume
-> >    - runtime_resume
-> > 
-> > The bug I am reintroducing is runtime_resume already holding RTNL
-> > before my added call to rtnl_lock.
-> > 
-> > OK.
-> > 
-> > Does resume also hold rtnl before the driver's igc_resume is called?
-> > I am asking because I don't know much about how PM works.
-> > 
-> > If resume does not hold RTNL (but runtime resume does, as the bug
-> > you pointed out shows), it seems like a wrapper can be added to tell
-> > the code whether rtnl should be held or not based on which resume is
-> > happening.
-> > 
-> > Does anyone know if: resume (not runtime_resume) already holds RTNL?
-> > I'll try to take a look and see, but I am not very familiar with PM.
+>      if (syscall) {
+>          might_fault();
+>   	rcu_read_unlock_trace();
+>     } else ...
 > 
-> I believe the resume doesn't hold RTNL, as its part of the core device
-> code, which is not networking specific. It shouldn't be acquiring RTNL
-> since that is a network specific lock.
-> 
-> I believe the code you posted as v5 should resolve this, and makes sense
-> to me.
-> 
-> Thanks for digging into this :)
+> That's where I would have expected it to be.
 
-No problem; sorry for all the back and forth on this one and I
-really appreciate your patience and reviews.
+You raise a good point: we should also add a might_fault() check in
+__DO_TRACE() in the syscall case, so we can catch incorrect use of the
+syscall tracepoint even if no probes are registered to it.
+
+I've added the might_fault() in each tracer syscall probe to make sure
+a tracer don't end up registering a faultable probe on a tracepoint
+protected with preempt_disable by mistake. It validates that the tracers
+are using the tracepoint registration as expected.
+
+I'll prepare separate a patch adding this and will add it to this
+series.
 
 Thanks,
-Joe
+
+Mathieu
+
+> 
+> Thanks,
+> 
+>          tglx
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
