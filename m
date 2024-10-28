@@ -1,122 +1,146 @@
-Return-Path: <bpf+bounces-43307-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43308-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ABA39B3219
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 14:47:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 451F39B34BC
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 16:25:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CFF81C21517
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 13:47:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 096ED281E49
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 15:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB7BE1DD0D4;
-	Mon, 28 Oct 2024 13:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381841DE3D6;
+	Mon, 28 Oct 2024 15:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GLGz1qXO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OnCDUrlv"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B534194080
-	for <bpf@vger.kernel.org>; Mon, 28 Oct 2024 13:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A51FE1D9324;
+	Mon, 28 Oct 2024 15:25:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730123190; cv=none; b=qOzI+4GO/mUuK9OFKGuIEkpkrqRIcGGeMBxPhGtWCNdGBXqu9ZPXzTfHZOE9Y1lQUoQYsQQzk/mtOocIiyuITCgrOxUOAPIzXr2WdLu4RXxDsbylZOEJgMd//l3RmiS3T2St/a5jpA4qQfpYeFsJFYGp6emP6lizjIfMFa5f63c=
+	t=1730129122; cv=none; b=E+xGvwCaSirv1ZIA2dF6a1FUmFdpgrRxYldD6Tq5hPaXbY5KD+nJCZ4WQ5GPaAipg4iV4FvaGVHWRoBxVkIJZQGJqEWglOoP9T0nBddHF7HqsWu1vwlP3tUOWTvoCoT+MuCTVV45Aoq8TSW6YpeckjOKx0QeR8ZXf99I9H8V0Jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730123190; c=relaxed/simple;
-	bh=V6zHtq9mop+qm1qA0wIlrInjPq6pOZUIXph54OQEDT4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VCaT109ZoR+na76h38vm2dk/20qXxHfXUp06uGHtE5DNrVvaD7pWoGlUU34aN++8u5y7H0WUtbYHxuL1F6ScqxYfxqggVoBuTRxH+9dbojEJbzYtE2tllJ6eZt3uVEiXMHXKRIqU2B4oX2GYZT2Qcd7mNfsEYcH5qzNRM8BiYVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GLGz1qXO; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730123183;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JxZsp+juY5eKmUQaTTp4fwAs/SdSr/IsGBvHa5tNrkQ=;
-	b=GLGz1qXOfdeFBr8VuPSXBHghlXdF36YWCncupQZf2PbHYUV5TfjI/0b3P7onPRnDJe5gVj
-	hgXhSdIY1tsrB6i6dqANkUAXavUGdwjH8gqUjGoDZWAt5x/xs7gEz4YStiQ4hKT1PznY8h
-	3w9WSEDvgH4tI7u1YTsCc2rorTR+M3E=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	yonghong.song@linux.dev,
-	jolsa@kernel.org,
-	eddyz87@gmail.com,
-	leon.hwang@linux.dev,
-	kernel-patches-bot@fb.com
-Subject: [RESEND PATCH bpf-next v2 2/2] bpf, verifier: Check trampoline target is tail_call_reachable subprog
-Date: Mon, 28 Oct 2024 21:46:00 +0800
-Message-ID: <20241028134601.95448-3-leon.hwang@linux.dev>
-In-Reply-To: <20241028134601.95448-1-leon.hwang@linux.dev>
-References: <20241028134601.95448-1-leon.hwang@linux.dev>
+	s=arc-20240116; t=1730129122; c=relaxed/simple;
+	bh=JoX429j4Zj7g7EFQnQUQiXELq1ar7frfVq2eJPtKDUk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ie5Xl90rMDkdbsUmk1Eb8m8V8DQq6HgUqpkZN1GAQPwlllpfF20oO873LzVZz7/afO4456Asp4Nvn+fRzkMWT3H6UQFSU89cG/5HWm4qQVfSmzzp+X/0Nvq3A4dvFDyyE0EW5QEucd/iJeyDT0u38oC4ufOH7TL+48YNiXQXA1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OnCDUrlv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11844C4CEC3;
+	Mon, 28 Oct 2024 15:25:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730129122;
+	bh=JoX429j4Zj7g7EFQnQUQiXELq1ar7frfVq2eJPtKDUk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OnCDUrlvKWOl4ui5qkrNelEEk6CP5hbi5EReMeY/fQBWS7hxQY6sjMmRtdyjeMXSG
+	 7o3ZV2QyQ0dRQ4AO6h+zs2QOXnNtsMdMnbI1pGiZDNZgcv4MN9/BMflRiAa7QdgWaj
+	 qzKxzGWGFv/KXOnjMKrO4KN+Q06FOQOjHZTiyHtfCQDNq+86O2RdRaQifs+BrE9Pti
+	 MnBBrjav/s1BKmwXFqmjq9tVcfYwxoemSoKyYKQFhdZ87gXvD5yoBJyefQZFPDB4wb
+	 +GUN8q16XfVYH2gpv+8cpeEhlk40VUeNiSS92NH3zfaon9ZyO/SQBWWErWRt/qNRz9
+	 oAhmNGbC4uMJA==
+Date: Mon, 28 Oct 2024 15:25:13 +0000
+From: Will Deacon <will@kernel.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>,
+	linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH v18 01/17] fgraph: Pass ftrace_regs to entryfunc
+Message-ID: <20241028152512.GB2484@willie-the-truck>
+References: <172991731968.443985.4558065903004844780.stgit@devnote2>
+ <172991733069.443985.15154246733356205391.stgit@devnote2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <172991733069.443985.15154246733356205391.stgit@devnote2>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-In the x86_64 JIT, tailcall info is propagated through the trampoline when
-the target program is tail_call_reachable. However, this propagation is
-unnecessary if the target is a main prog, or a subprog that is not
-tail_call_reachable.
+On Sat, Oct 26, 2024 at 01:35:30PM +0900, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Pass ftrace_regs to the fgraph_ops::entryfunc(). If ftrace_regs is not
+> available, it passes a NULL instead. User callback function can access
+> some registers (including return address) via this ftrace_regs.
+> 
+> Note that the ftrace_regs can be NULL when the arch does NOT define:
+> HAVE_DYNAMIC_FTRACE_WITH_ARGS or HAVE_DYNAMIC_FTRACE_WITH_REGS.
+> More specifically, if HAVE_DYNAMIC_FTRACE_WITH_REGS is defined but
+> not the HAVE_DYNAMIC_FTRACE_WITH_ARGS, and the ftrace ops used to
+> register the function callback does not set FTRACE_OPS_FL_SAVE_REGS.
+> In this case, ftrace_regs can be NULL in user callback.
+> 
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Huacai Chen <chenhuacai@kernel.org>
+> Cc: WANG Xuerui <kernel@xen0n.name>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: Naveen N Rao <naveen@kernel.org>
+> Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> 
+> ---
+>  Changes in v18:
+>   - Remove unclear comment about `regs->fp` access on arm64.
+>  Changes in v16:
+>   - Add a note when the ftrace_regs can be NULL.
+>   - Update against for the latest kernel.
+>  Changes in v11:
+>   - Update for the latest for-next branch.
+>  Changes in v8:
+>   - Just pass ftrace_regs to the handler instead of adding a new
+>     entryregfunc.
+>   - Update riscv ftrace_graph_func().
+>  Changes in v3:
+>   - Update for new multiple fgraph.
+> ---
+>  arch/arm64/kernel/ftrace.c               |   15 ++++++++-
 
-Since the verifier can determine if a subprog is tail_call_reachable, it
-should only propagate tailcall info when the target is subprog and the
-subprog is actually tail_call_reachable.
+For the arm64 bits:
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
----
- include/linux/bpf.h   | 1 +
- kernel/bpf/verifier.c | 4 +++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+Acked-by: Will Deacon <will@kernel.org>
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index c3ba4d4751747..0c3b147c84af9 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1253,6 +1253,7 @@ struct bpf_attach_target_info {
- 	struct module *tgt_mod;
- 	const char *tgt_name;
- 	const struct btf_type *tgt_type;
-+	bool tgt_tail_call_reachable;
- };
- 
- #define BPF_DISPATCHER_MAX 48 /* Fits in 2048B */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 797cf3ed32e0f..2e2f027b86375 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -21946,6 +21946,8 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
- 			bpf_log(log, "Subprog %s doesn't exist\n", tname);
- 			return -EINVAL;
- 		}
-+		tgt_info->tgt_tail_call_reachable = subprog &&
-+						    aux->func[subprog]->aux->tail_call_reachable;
- 		if (aux->func && aux->func[subprog]->aux->exception_cb) {
- 			bpf_log(log,
- 				"%s programs cannot attach to exception callback\n",
-@@ -22315,7 +22317,7 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 	if (!tr)
- 		return -ENOMEM;
- 
--	if (tgt_prog && tgt_prog->aux->tail_call_reachable)
-+	if (tgt_prog && tgt_info.tgt_tail_call_reachable)
- 		tr->flags = BPF_TRAMP_F_TAIL_CALL_CTX;
- 
- 	prog->aux->dst_trampoline = tr;
--- 
-2.44.0
-
+Will
 
