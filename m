@@ -1,222 +1,149 @@
-Return-Path: <bpf+bounces-43259-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43260-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1607F9B1E13
-	for <lists+bpf@lfdr.de>; Sun, 27 Oct 2024 15:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 655BB9B21D1
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 02:09:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 388B51C20986
-	for <lists+bpf@lfdr.de>; Sun, 27 Oct 2024 14:19:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0D8B1C20E7D
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2024 01:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCFEF1684A5;
-	Sun, 27 Oct 2024 14:19:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7245513B286;
+	Mon, 28 Oct 2024 01:09:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u996V+um"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gErwT3Bo"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A27CA5B;
-	Sun, 27 Oct 2024 14:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD4A8BEC;
+	Mon, 28 Oct 2024 01:09:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730038777; cv=none; b=Jfm0kMNiJvAeMMHVDH1aimOk62WgNIl3VH8zMVL4so1bW4KSFPJGHdcJ6Yp0jnL9HPRAWbguc6dmOLlS2ZRnEjAT4+IcVlwxmHIVi5ptkWYG4/RbXiNlmTj5SoumwfpgX4J2vda7HLfsVhpoz8iRIwsflQjuKxk+t6M87of7OZ0=
+	t=1730077747; cv=none; b=KhrgK31D2h6YgbCPXolp3TSE9H1AHncEPLnD1rxEa820pWqMp3UiYbzifauN78t0Oj9OjU+qX8pUR+ZJHdBUN7bk2/EdnPZgVU+ogkWFg16RTN2Yn9L6w4C02vRwMitDtBRHjW9CNI1wR3XdMz4xfF1M1aM5NcfnysRFQ69T3BM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730038777; c=relaxed/simple;
-	bh=dI104uvNNvmaRukXodYs325rFb0wx9MA1dx4I0upuqg=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=JS69UXIOF0WvulGS5l/H+jCyiRWbifB/9ujGyzq9rkBzRWVD0YjjGjZ4IOx2kHMVN5ulDhUPERKqLaXj0+7ygFmS5CTRa4A+G16vtOuzDrKIVZx3oY9gE5KMH4+LCUk/xaH19RtDM8Q+2I9ACFBsq1//9YsCrTZ3ERW6kXtjx3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u996V+um; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27DAAC4CEC3;
-	Sun, 27 Oct 2024 14:19:32 +0000 (UTC)
+	s=arc-20240116; t=1730077747; c=relaxed/simple;
+	bh=cLHlFgsTefJ/63cMxsPXUMnfpmoCzVWJwou//7LsYNw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WAKIAP6wsHuXWcBM67eHpyMIqL/XCr5TOVeXiarlyYjVN6ZRqL36ZSL+IoEXjPo1uoWPC13s4p+riZ/PgMdNcGxX+mEsiPfLdTaxeUKOiI+Z0Z7M9fEJu3Ph6NE3KlIjaTR1D1vdcswi9U/aYYPiXb07GuccmTGFonwcufIgOBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gErwT3Bo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5625EC4CEC3;
+	Mon, 28 Oct 2024 01:09:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730038776;
-	bh=dI104uvNNvmaRukXodYs325rFb0wx9MA1dx4I0upuqg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=u996V+umxZY9asluDqk92Nt6A6lGaI1JpN+AKfhq7lJrXIr/iHVxU7tsnUSp77bvm
-	 Sgb6YH2tXquNZg0eIdnG6ocOGVwmUL1oeneLhzWPPh0yRt4lWT9YSeKuXOAyWfPlCw
-	 8m/O+YAFtI/xA7BaHu+SIAwRgE+HLAHndMpWdejEV+a1hv65UONYJYz3kwbk5F6/es
-	 47SNqYY6ejb90eTMKK73kvESVKTOxs1BZQ1PdjwGC21ZGLsKi4TQYu3myxOYSbppqb
-	 e5r1WTMVoS+rJPMMXtxCs2MGBrteoNxE/dgdkxf2/yEyq/xYBTiNszNrBYAbrkxJcq
-	 3F+75vZpy68sw==
-Date: Sun, 27 Oct 2024 23:19:30 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- linux-kernel@vger.kernel.org, Michael Jeanson <mjeanson@efficios.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>, Yonghong Song
- <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>, Ingo Molnar
- <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, Alexander Shishkin
- <alexander.shishkin@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org, Joel
- Fernandes <joel@joelfernandes.org>, Jordan Rife <jrife@google.com>
-Subject: Re: [RFC PATCH v3 2/3] tracing: Introduce tracepoint_is_syscall()
-Message-Id: <20241027231930.941d6c1f21e2b4668af44df8@kernel.org>
-In-Reply-To: <20241026200840.17171eb2@rorschach.local.home>
-References: <20241026154629.593041-1-mathieu.desnoyers@efficios.com>
-	<20241026154629.593041-2-mathieu.desnoyers@efficios.com>
-	<20241026200840.17171eb2@rorschach.local.home>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20201202; t=1730077746;
+	bh=cLHlFgsTefJ/63cMxsPXUMnfpmoCzVWJwou//7LsYNw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gErwT3Bohbwn/Qs4nZQrC6/plN8hPUAEzZyFdUnMgUIUqTUPjxWcD7YB9PKdeAWeF
+	 /aFgyBgP+3e+NJOOCxJsRO31EIHGiT3QtU7SY6/n3vwkWJsViVAW6tBUXvD3teHE4g
+	 QSvSYRP0xW1MkYuxGpJ/SJSQzvh5+U7IoVNmIhTPNwbvH9nMjaDpD852M5smDN+8XT
+	 z4higS6hVwHgvS8dIpOtc5Gn7gx0X2xHLVA0q72y5WY7wtsvlo9cfRrsUd+fbKdrNg
+	 gI6Ifdd54lkGARG2BRQ1cCrPQyEcQXaUSm7OWgBLItuJcymqg4vPaXa0mwX4d03DfR
+	 YKvLOq6xH89rA==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: linux-trace-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	peterz@infradead.org
+Cc: oleg@redhat.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jolsa@kernel.org,
+	paulmck@kernel.org,
+	willy@infradead.org,
+	surenb@google.com,
+	mjguzik@gmail.com,
+	brauner@kernel.org,
+	jannh@google.com,
+	mhocko@kernel.org,
+	vbabka@suse.cz,
+	shakeel.butt@linux.dev,
+	hannes@cmpxchg.org,
+	Liam.Howlett@oracle.com,
+	lorenzo.stoakes@oracle.com,
+	david@redhat.com,
+	arnd@arndb.de,
+	richard.weiyang@gmail.com,
+	zhangpeng.00@bytedance.com,
+	linmiaohe@huawei.com,
+	viro@zeniv.linux.org.uk,
+	hca@linux.ibm.com,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v4 tip/perf/core 0/4] uprobes,mm: speculative lockless VMA-to-uprobe lookup
+Date: Sun, 27 Oct 2024 18:08:14 -0700
+Message-ID: <20241028010818.2487581-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sat, 26 Oct 2024 20:08:40 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Implement speculative (lockless) resolution of VMA to inode to uprobe,
+bypassing the need to take mmap_lock for reads, if possible. First two patches
+by Suren adds mm_struct helpers that help detect whether mm_struct was
+changed, which is used by uprobe logic to validate that speculative results
+can be trusted after all the lookup logic results in a valid uprobe instance.
 
-> On Sat, 26 Oct 2024 11:46:28 -0400
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
-> > Introduce a "syscall" flag within the extended structure to know whether
-> > a tracepoint needs rcu tasks trace grace period before reclaim.
-> > This can be queried using tracepoint_is_syscall().
-> > 
-> > Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: Michael Jeanson <mjeanson@efficios.com>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Yonghong Song <yhs@fb.com>
-> > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Cc: bpf@vger.kernel.org
-> > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > Cc: Jordan Rife <jrife@google.com>
-> > ---
-> >  include/linux/tracepoint-defs.h |  2 ++
-> >  include/linux/tracepoint.h      | 24 ++++++++++++++++++++++++
-> >  include/trace/define_trace.h    |  2 +-
-> >  3 files changed, 27 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
-> > index 967c08d9da84..53119e074c87 100644
-> > --- a/include/linux/tracepoint-defs.h
-> > +++ b/include/linux/tracepoint-defs.h
-> > @@ -32,6 +32,8 @@ struct tracepoint_func {
-> >  struct tracepoint_ext {
-> >  	int (*regfunc)(void);
-> >  	void (*unregfunc)(void);
-> > +	/* Flags. */
-> > +	unsigned int syscall:1;
-> 
-> I wonder if we should call it "sleepable" instead? For this patch set
-> do we really care if it's a system call or not? It's really if the
-> tracepoint is sleepable or not that's the issue. System calls are just
-> one user of it, there may be more in the future, and the changes to BPF
-> will still be needed.
+Patch #3 is a simplification to uprobe VMA flag checking, suggested by Oleg.
 
-I agree with this. Even if currently we restrict only syscall events
-can be sleep, "tracepoint_is_syscall()" requires to add comment to 
-explain why on all call sites e.g.
+And, finally, patch #4 is the speculative VMA-to-uprobe resolution logic
+itself, and is the focal point of this patch set. It makes entry uprobes in
+common case scale very well with number of CPUs, as we avoid any locking or
+cache line bouncing between CPUs. See corresponding patch for details and
+benchmarking results.
 
- /*
-  * The syscall event is only sleepable event, so we ensure it is
-  * syscall event for checking sleepable or not.
-  */
+Note, this patch set assumes that FMODE_BACKING files were switched to have
+SLAB_TYPE_SAFE_BY_RCU semantics, which was recently done by Christian Brauner
+in [0]. This change can be pulled into perf/core through stable
+tags/vfs-6.13.for-bpf.file tag from [1].
 
-If it called tracepoint_is_sleepable(), we don't need such comment.
+  [0] https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=vfs-6.13.for-bpf.file&id=8b1bc2590af61129b82a189e9dc7c2804c34400e
+  [1] git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
 
-Thank you,
+v3->v4:
+- rebased and dropped data_race(), given mm_struct uses real seqcount (Peter);
+v2->v3:
+- dropped kfree_rcu() patch (Christian);
+- added data_race() annotations for fields of vma and vma->vm_file which could
+  be modified during speculative lookup (Oleg);
+- fixed int->long problem in stubs for mmap_lock_speculation_{start,end}(),
+  caught by Kernel test robot;
+v1->v2:
+- adjusted vma_end_write_all() comment to point out it should never be called
+  manually now, but I wasn't sure how ACQUIRE/RELEASE comments should be
+  reworded (previously requested by Jann), so I'd appreciate some help there
+  (Jann);
+- int -> long change for mm_lock_seq, as agreed at LPC2024 (Jann, Suren, Liam);
+- kfree_rcu_mightsleep() for FMODE_BACKING (Suren, Christian);
+- vm_flags simplification in find_active_uprobe_rcu() and
+  find_active_uprobe_speculative() (Oleg);
+- guard(rcu)() simplified find_active_uprobe_speculative() implementation.
 
-> 
-> Other than that, I think this could work.
-> 
-> -- Steve
-> 
-> 
-> >  };
-> >  
-> >  struct tracepoint {
-> > diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-> > index 83dc24ee8b13..93e70bc64533 100644
-> > --- a/include/linux/tracepoint.h
-> > +++ b/include/linux/tracepoint.h
-> > @@ -104,6 +104,12 @@ void for_each_tracepoint_in_module(struct module *mod,
-> >   * tracepoint_synchronize_unregister must be called between the last tracepoint
-> >   * probe unregistration and the end of module exit to make sure there is no
-> >   * caller executing a probe when it is freed.
-> > + *
-> > + * An alternative is to use the following for batch reclaim associated
-> > + * with a given tracepoint:
-> > + *
-> > + * - tracepoint_is_syscall() == false: call_rcu()
-> > + * - tracepoint_is_syscall() == true:  call_rcu_tasks_trace()
-> >   */
-> >  #ifdef CONFIG_TRACEPOINTS
-> >  static inline void tracepoint_synchronize_unregister(void)
-> > @@ -111,9 +117,17 @@ static inline void tracepoint_synchronize_unregister(void)
-> >  	synchronize_rcu_tasks_trace();
-> >  	synchronize_rcu();
-> >  }
-> > +static inline bool tracepoint_is_syscall(struct tracepoint *tp)
-> > +{
-> > +	return tp->ext && tp->ext->syscall;
-> > +}
-> >  #else
-> >  static inline void tracepoint_synchronize_unregister(void)
-> >  { }
-> > +static inline bool tracepoint_is_syscall(struct tracepoint *tp)
-> > +{
-> > +	return false;
-> > +}
-> >  #endif
-> >  
-> >  #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
-> > @@ -345,6 +359,15 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
-> >  	struct tracepoint_ext __tracepoint_ext_##_name = {		\
-> >  		.regfunc = _reg,					\
-> >  		.unregfunc = _unreg,					\
-> > +		.syscall = false,					\
-> > +	};								\
-> > +	__DEFINE_TRACE_EXT(_name, &__tracepoint_ext_##_name, PARAMS(_proto), PARAMS(_args));
-> > +
-> > +#define DEFINE_TRACE_SYSCALL(_name, _reg, _unreg, _proto, _args)	\
-> > +	struct tracepoint_ext __tracepoint_ext_##_name = {		\
-> > +		.regfunc = _reg,					\
-> > +		.unregfunc = _unreg,					\
-> > +		.syscall = true,					\
-> >  	};								\
-> >  	__DEFINE_TRACE_EXT(_name, &__tracepoint_ext_##_name, PARAMS(_proto), PARAMS(_args));
-> >  
-> > @@ -389,6 +412,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
-> >  #define __DECLARE_TRACE_SYSCALL	__DECLARE_TRACE
-> >  
-> >  #define DEFINE_TRACE_FN(name, reg, unreg, proto, args)
-> > +#define DEFINE_TRACE_SYSCALL(name, reg, unreg, proto, args)
-> >  #define DEFINE_TRACE(name, proto, args)
-> >  #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)
-> >  #define EXPORT_TRACEPOINT_SYMBOL(name)
-> > diff --git a/include/trace/define_trace.h b/include/trace/define_trace.h
-> > index ff5fa17a6259..63fea2218afa 100644
-> > --- a/include/trace/define_trace.h
-> > +++ b/include/trace/define_trace.h
-> > @@ -48,7 +48,7 @@
-> >  
-> >  #undef TRACE_EVENT_SYSCALL
-> >  #define TRACE_EVENT_SYSCALL(name, proto, args, struct, assign, print, reg, unreg) \
-> > -	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
-> > +	DEFINE_TRACE_SYSCALL(name, reg, unreg, PARAMS(proto), PARAMS(args))
-> >  
-> >  #undef TRACE_EVENT_NOP
-> >  #define TRACE_EVENT_NOP(name, proto, args, struct, assign, print)
-> 
+Andrii Nakryiko (2):
+  uprobes: simplify find_active_uprobe_rcu() VMA checks
+  uprobes: add speculative lockless VMA-to-inode-to-uprobe resolution
 
+Suren Baghdasaryan (2):
+  mm: Convert mm_lock_seq to a proper seqcount
+  mm: Introduce mmap_lock_speculation_{begin|end}
+
+ include/linux/mm.h               | 12 ++---
+ include/linux/mm_types.h         |  7 ++-
+ include/linux/mmap_lock.h        | 87 ++++++++++++++++++++++++--------
+ kernel/events/uprobes.c          | 47 ++++++++++++++++-
+ kernel/fork.c                    |  5 +-
+ mm/init-mm.c                     |  2 +-
+ tools/testing/vma/vma.c          |  4 +-
+ tools/testing/vma/vma_internal.h |  4 +-
+ 8 files changed, 129 insertions(+), 39 deletions(-)
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.43.5
+
 
