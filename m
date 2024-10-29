@@ -1,272 +1,266 @@
-Return-Path: <bpf+bounces-43393-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43394-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CF959B4E8B
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 16:51:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8D7D9B4F6F
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 17:36:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E2501C2272C
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 15:51:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17F951C22A63
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 16:36:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1EFC195FE3;
-	Tue, 29 Oct 2024 15:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D2819AA68;
+	Tue, 29 Oct 2024 16:36:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U33bWqkz"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Ls0DyfU5";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="ihCPClQh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 357B0802;
-	Tue, 29 Oct 2024 15:51:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730217091; cv=none; b=pzZR9USRyvqw/pkZ9AVveaWqM5VKUBKWH4Wa+LdcZS2Ozqx6mYU4ab4F5nVCnEjGy/BdgkDr5Ecy59Lm5gV0tQbdkk4par/c651fT1CvRFmPTYG8NGpCV9CEMyI88/rUPCAmP/Ede4PKmApc0cY/ZBIkyxVO/vYzjcrIrFLv7B8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730217091; c=relaxed/simple;
-	bh=4Ef1Je1uizyMOUEPXOAIEtr/cV8nbgakg7WgivBjah4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=asM9p91Q6Ime6X31huHeDs6E6u72h+c0Fd3p7QWJYzr2bjR9jgtRHmrxjMVfz9BHs8APx8UIQtMKLXA8eWeBU4jJYlrgKHhdQ0e0UhD3TgTmZ2bSQkeeLoytmRoj2MSlvUm/32Bfraf5k1oPEp7A1fwh67zQYXXHxiYcRetJzys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U33bWqkz; arc=none smtp.client-ip=209.85.166.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-83aae6aba1aso189541639f.2;
-        Tue, 29 Oct 2024 08:51:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E21F19341F;
+	Tue, 29 Oct 2024 16:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730219771; cv=fail; b=fhPPE9wAkfTS3NE39KiLKd7mK8gGGaWUrNnReBX+p3tlSYIfHRpLqVc52t4zSzJE5nklWfLHKCpxH1PozDdpXTf+41dSSQO02pA/7gP4BGM+YT7voRWLeGRdjUtdSIZhynzy+eN6QQu34vARXgT7hX75+IWe2428bMG94a/EY4c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730219771; c=relaxed/simple;
+	bh=lvHpVRDW4cwiNX/sKfDU9yDzp+wE0KSE21rU8a16c6Y=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Qy8hh1xb3Rr6CtaP+lh8I5jHbNt10QawFtFuSnvgOXJNKA6kNzelmjj9lTgbHj1nKLI8VnrR8e4mRKL538BrBnYGXME9U/p5aUdNLyyDrfdzY/SYfIvWYY03u9iPyPbT9wo2S4uhJm9KGcHH+nuB+O5zfAaeGnt2vzGmDgxXzSg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Ls0DyfU5; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=ihCPClQh; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49TEtivl008726;
+	Tue, 29 Oct 2024 16:35:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=KEpc3ClF9QzcbrSNw3jRoaeCFVn/UJ6A+wfw0S1QTnk=; b=
+	Ls0DyfU5ASUpHlxuTa11m5BCP1r3fBaH933/smDwJljSqiE+8hN/WZD8LzOqYp4D
+	85+09MdYGWNCq7caYZvPzxGagUKvL80jm2fsx99ikUR+cNxDHRTd3dMi3QBbexpt
+	N5GwEaw2+sR6n00jfnWjvWahvxnX8HJV49aWWkCXqcGEHHJxKoILIgEIga4pbKch
+	3k2M5YHYycSZTn8ZZSszEbzwqx8iZc2jT5xn5Yjygj+eglCLQKGC6FDZoVhuzgzs
+	7YbWkVhjJclk1ETSjh0FQFGJlIZXoBPJ7WBwHBSClS7iTQsr2dM1+USqeHpV1E8L
+	jwEPR8NvUCJnpKCExYqHMw==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42grgwdydw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 29 Oct 2024 16:35:33 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 49TGU6JE004792;
+	Tue, 29 Oct 2024 16:35:33 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2048.outbound.protection.outlook.com [104.47.70.48])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 42jb2uhcwt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 29 Oct 2024 16:35:33 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=a4vNRQKceV2qM/TxbER66wM4rKsbw+oZHNVQJDCkxUelxNjLdNrWW5F/Z5x4wfdlajWL3Tc/VNrTx8cWx05xpuuAcPExf/Z6UfqApDJyevjx4OauMajY9x3cYEoAEm8CuHF2czydE9mN2isBN02b/ZWQ73/EHXcCrXSjMzxoI0ASPVcVEIq8ceAGMVTxGCbOWpFow83YHLtXh74spily0x4rLj/lpcrgQLldmoARkR1QXkqZLl1NixjuzdhMY0N8sg3okF2HVKn+aLK1UjdyJVh5HCf384zpmEKXWtv39BEGagDDy9AZMosAtns4X7YpS4S6JRWq9pEh5UgeKTJKDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KEpc3ClF9QzcbrSNw3jRoaeCFVn/UJ6A+wfw0S1QTnk=;
+ b=vbTWNmBk/uJV5xHJSR9vp/Cvbmc58YFwrDs4jW2+5SCncpsxn07VGgrf2whMHdAlWw/ZyMHa8+0QO5kobUhQIvJRpInRxQ7D/RtBKQo12e1INh8I/ecF09SRRJ4iFoAm95RfaUZvT9GD7lX0gp+D8tC5XAOJBc/wxAUrDLIHpw2qMMZqk5J+ax0s+9U7HhhFGrpPfRqYH/SDCWidGPW1fhpxzFP2138BdpM6pw1/ke1mnJTr8jSa+exjnHjlvupbvmcIGnDY3PJnMdVLrSI/BgzJlxnEezOc3TSYIH6EZ2Mu1gqdRgVc5nfqqP+779Ko8LZ/GDNBQ5lz3qqKpJC90w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730217088; x=1730821888; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=siw+zOXQennOM+dBt0Vhe84s5MTugPfQlRewQPm0dVQ=;
-        b=U33bWqkzaip1+Z7tEV8areIZNc5pUw5jpItyFQyxKXkMbO/SaTStj4vrjSF7Xm+v0R
-         ZC9QflxAdObHxQFpU5RywCEhDXQMz9iYE1K7Eire0fcXeLv/p/4beRGvsX1Sn5gc7naJ
-         MEZWMWA2IfVY+xV3qmqHTNwUOvexbZP4SD5bMvpDFumOMzCkf5gpGTSsUb3xx44uBh/3
-         OCrak+IEl4qhZ3yizIkSn28Z0cuFS0Ea+CnA8WSUm0LSVhRGlk+DYympls6X5hNLun88
-         1m5If8sR6xCYc3GvfLB2hcJxgPhxvrFFapnVNDnlMYuI29uMgOOUEpwADmGmR+VGx+gF
-         7MSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730217088; x=1730821888;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=siw+zOXQennOM+dBt0Vhe84s5MTugPfQlRewQPm0dVQ=;
-        b=BipZ/stM3/M5VBBsKuN84J5p85nhfZn6b3X/AYRJmLW+3Ik3LHlzfABtuWm6RVGf/L
-         vBCo7TKFNaUBAaTvEyPk6gVSKSvlgC7gbwwhMbi06S9lobOuGdMQat6jnTlCINvbD2ZD
-         FB8UkuYkHjzKlUWbZhMm3pi6YNzHC8MJbCMgj8OgN9YobD8kSahieyhZVxgeOMIpFWti
-         90JqvQt7xsa37Uo7IqY5UBv5paESoOwrjPWxIFIHfN0QE8FLT/njD/bT77+lm7pBeKDr
-         eQKUIh0miRIcHgF4XUG+2L96UAKWZq2G6T1NWdsXILCcdyfxs2BzJEIYN3GEgQv+Adbr
-         +41A==
-X-Forwarded-Encrypted: i=1; AJvYcCUbp0nfp28BuXTFs52m79VW5j+8P1EF9NrnpsmIYv4qqT/XCTafg3rmDIcdCyxXCKDIWh8=@vger.kernel.org, AJvYcCVemwsTtYHVYP4nNpv19o+tE+YqyomZhdEjI1S4jL6t40cmAL9aB9g8odYktnvnguVekgmc3sJw@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMcHhGcnuaSCsi+lJW/t4c1i7w3o0YYXYNXHE2dWPvN240gszw
-	3XC/oEOuv2M03ZUHE+Lv8BGiSHDtyTsSdSFlYtK0u/dNTELZ+gEOO2pvtDEA1ik0HnTdQZ0c/T7
-	6UjDaG3xrQxBJRR4eQrfK6gWmLs4=
-X-Google-Smtp-Source: AGHT+IExU9QukJp47ivw7BlcSxTD5zJM3yPwcs+RE9A2F0vx4qoHhl2g57MuOpuQQdp+zYOEPtANbZU5IFa5oGX4jVM=
-X-Received: by 2002:a05:6e02:1c21:b0:3a3:94c5:e178 with SMTP id
- e9e14a558f8ab-3a4ed3180bemr101168075ab.26.1730217088192; Tue, 29 Oct 2024
- 08:51:28 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KEpc3ClF9QzcbrSNw3jRoaeCFVn/UJ6A+wfw0S1QTnk=;
+ b=ihCPClQhDVFTHEGLoJVGriLmZRmnpMiZV/JBbU3qhQFpMRMogCkgCPjBKMGZxgpzRaAJuQYvWLYHlW93/mn4CKCZlkrilpBleotyVtY9HjwTH7Ep/WQ2w+tV2jbnx6LzB/sMyuue8pBhFQxwILxG0p6dwOsH9K1pixg52HOfdj4=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by CH0PR10MB7409.namprd10.prod.outlook.com (2603:10b6:610:183::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8093.27; Tue, 29 Oct
+ 2024 16:35:25 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::682b:c879:9f97:a34f]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::682b:c879:9f97:a34f%7]) with mapi id 15.20.8093.025; Tue, 29 Oct 2024
+ 16:35:25 +0000
+Message-ID: <18b278a3-3bae-434c-924d-b539fab1726e@oracle.com>
+Date: Tue, 29 Oct 2024 16:35:12 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2] bpf: handle implicit declaration of function
+ gettid in bpf_iter.c
+To: Jason Xing <kerneljasonxing@gmail.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com,
+        mykolal@fb.com, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Jason Xing <kernelxing@tencent.com>
+References: <20241029074627.80289-1-kerneljasonxing@gmail.com>
+Content-Language: en-GB
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <20241029074627.80289-1-kerneljasonxing@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM0PR02CA0003.eurprd02.prod.outlook.com
+ (2603:10a6:208:3e::16) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
- <20241028110535.82999-11-kerneljasonxing@gmail.com> <6720394714070_24dce62944a@willemb.c.googlers.com.notmuch>
- <CAL+tcoBgbA1Q_7UaC0vp-mGHqDHxQ+eMybep0kw=E-T0oJAHfw@mail.gmail.com> <6720f9359d2ef_2bcd7f29458@willemb.c.googlers.com.notmuch>
-In-Reply-To: <6720f9359d2ef_2bcd7f29458@willemb.c.googlers.com.notmuch>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 29 Oct 2024 23:50:52 +0800
-Message-ID: <CAL+tcoCDN+YSwXDocv9DcvPGW-sLhEfPHHbzcO2+1PBZFRkB0Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 10/14] net-timestamp: add basic support with
- tskey offset
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|CH0PR10MB7409:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5a9663dd-b401-4e99-2e35-08dcf837b083
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|7416014|376014|366016|10070799003|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?cXJyb2E3dHZGQVMrZ1ZlTHQ3N051SGZXZm92b3JDVll5bnF6dkRoT1lJOTUz?=
+ =?utf-8?B?VHl4aDNHUmtvU0NvU2EwTys0T21meG91dWFrNW13YXdqUjhST0owL1l3aWkx?=
+ =?utf-8?B?YldhRHR3eWJVNHQ4RmtBN2lHYmpHam5FREtFQUE4V1VNdHZ3T0F2Y2J4SWlP?=
+ =?utf-8?B?V2MySzN5TE1WM0huWEI0Z1lwTjduclY0QzNtRCtZd2E5RThhSVlieGh2MUow?=
+ =?utf-8?B?dk5BWmZzUGk4S0pCWFRxRCt1NXhIU1FUek9veEd1UXdKTFp6N0M0ejQ3L3cy?=
+ =?utf-8?B?MVRnam1ONTlMdVdxejJtTmlhY2kxRTR4a2tqM3FCbEt4eTNVREVQNm9HcGw1?=
+ =?utf-8?B?M0xaVXk5bkFhaDdDK2lCa1hNZWFMYmY1QUVtOHM5QVVHQklPbGhzU256WWpR?=
+ =?utf-8?B?cnl4Zlc4YXI1U0l5eG1QeWp1Z2VWNFZ5eTFNakc3Mm50cUJMalJOWjY5dHBq?=
+ =?utf-8?B?bXhLTE0xdHlOYVAxRGZ3V01lSkl1WVJKeDhtTU5rQzk4V3NjL05VWmVHYWZF?=
+ =?utf-8?B?STZFYmJwZG5ONmxBdVJITUw0ZFhDSWVndS9EbitRWlFvczdleXdSbGZEV1R1?=
+ =?utf-8?B?SXMwK1RNQjNMaUJubHdhOVFtRldDUmNjNmF4eXA3WU4waTNxRHc3ZHRKNkd1?=
+ =?utf-8?B?NlNZSWJucHJtanVibDRNd1ZhdFBTWEV3Wkw2YWRDQWdDUkQwSmlDQXZRanBz?=
+ =?utf-8?B?b3V1UDY1YXZ2dS9tYWdRZ2VMYzgyRGdzdU5jZ1ZxV3NuWnhHTWRmVXlQTXQy?=
+ =?utf-8?B?VHZFUG9pd01UUGd6OEk5cEVCM25oeEsyYS9OMEdCWUE1anNUd1BFeEFxUDFu?=
+ =?utf-8?B?cnIrV0trRGhqbVlJZXFxRGI4TFVJTnI5QmV6R2hIelhiYk5WYmZxaGJhS1Ro?=
+ =?utf-8?B?cGVrUG5QdTF6Y2NUamhucm9YS01TVXdPMWhsdUlKT296MEp6UUZDanFBMW9h?=
+ =?utf-8?B?dVdmSC9OT1RESlVRZlo3YUVzTXZsTmNKb1o4eTZPbVh0N2taZyt6NllnMjdy?=
+ =?utf-8?B?V1BXeFZWYlNpdEl1R090M1oxUnNEYXZBWHZkZ0tNS3ZnSWpXU0JPaDNpdmZr?=
+ =?utf-8?B?K0ZPWEhuSTZEdmZLMzZUTit3M3JJZXZhajc4YkdvUHZua0dTOHpNa2JQSE1v?=
+ =?utf-8?B?Uis1N1NQcGo3UjhoaWJKYXA5L2hhQkxVTHplUjFXMVNqVWVoV1lCcDNVVnBM?=
+ =?utf-8?B?dmFnSTN3a2ZUN2JFd1hQTnU1aFowRmo3NXJ3QWhQb1JXV0dWYVZlYS9SaTNj?=
+ =?utf-8?B?Mk43Y2xBUUJuRGRFS05SWS9POWpnQWVsNTVHSkFQMW5yaTVMeE1HbEhBUGJN?=
+ =?utf-8?B?aEFBS3dnQ29hR2EyeXREQVhydm5VMTNQQ3A4elhxLzBUT0dMNUpBbXh3UnVM?=
+ =?utf-8?B?am1FN0ZNT2paL0Y2V00yblE2dG1xYWkwMUk0bUhHa055bjNrREtWQ3BYWE15?=
+ =?utf-8?B?WXhqWkxRZHI3U0ZleTBKb2JGZEFSV0NXK2JEMlNIQWlRWEVoSzZhVXAzZUd0?=
+ =?utf-8?B?SFVxRCtLM3BSR0hZVlp3Q1Y1U2ZCWHBhUzFiZWNhNmdoeE8wTVFiSjlOV0JH?=
+ =?utf-8?B?NU8wSWptdnJFYmEvMVB6eW5yeU1wYjk5OXBLMHIvL0FRTm5TczhGdFM2Zi9L?=
+ =?utf-8?B?dXllYWh3cmtqUlQzN09VNENXaUNaK2pKUFpKaXlvSUJmMGNzeDFOMlA5V0RP?=
+ =?utf-8?B?ejlidlhYQXRFMzVTM3FLQ2lqenFidGpucXlYVlJWRm1ZTGRMSEViM3ovbXMr?=
+ =?utf-8?B?VGFaVXpvQmNFaTZONG55bjVabEJ3K2V2Z3F6bXE3NngzSkdTM01jRjU5Mk13?=
+ =?utf-8?Q?brKYPCtRCqH1OByMgxHXrhd0avoLt8CMjrxaA=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(10070799003)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZW1kSnFUTG5sRWdvcjdNVGZuaGQvU1dGQkRvRXFuTnBTbjc4Nkl6QlJ6Sko4?=
+ =?utf-8?B?a3hOQ1U1UGpObHFQeDFqcnVCU3kzaitVdHcrTWZaN2svVmRJckYwZlRjay9y?=
+ =?utf-8?B?RElBRHREVXpjc090MDZhbFdqejIzTGFvTVBsL1BrMEE1RHRNZ3BtSFV4YWNO?=
+ =?utf-8?B?RXVJdzRYbW5zaytzb09NRm56QWFrd2hHb2M1eUhqNkZ5dEpzVG4xajJXMExi?=
+ =?utf-8?B?QXBzVm1jZTRobHFjNjRPc3MwZkJjSWlYem9xcjVrci9IeXNiUDMzTlRndDFy?=
+ =?utf-8?B?NTVlVW5wRWpJeE5LbkhscFIvcUpHSWwxbmNMSkNTbVBhM00yK2ZkeFFlTWJ0?=
+ =?utf-8?B?YVg4NGUzZG5Qc0Q2Q2FmZ2syUmV0R1pZYXpNdk4yR2xFNG5jSjluNVM2V05Z?=
+ =?utf-8?B?T2t2STNKZERpY0ZCNktxYTZQNWpuSGVrWUZhdmNJUHVpeGl0ekZzeS9oMzNr?=
+ =?utf-8?B?NFRXbmhWTmZqQzZXcHNicXhpeHhpSnlzdHFUMkt3d3FBNHVWNytTQTl6MWw4?=
+ =?utf-8?B?YmNiRkVMU28xc0F1OWNXeTJ4T2VPV05EQkFtUWpUMWt3cWVHNWdoWnpuc2t0?=
+ =?utf-8?B?MVlRU3QwUElaSFc5US95d3h3VkV6eElidWFWMzlVT1JBUm00dm90anArRyti?=
+ =?utf-8?B?M2MzYXVyU0NKRll5ZCtwSm96UW10aHp1OEVIRFdVUXkvK0RCRXFheWNrMTlk?=
+ =?utf-8?B?Y25ERk0vekN2TU9BM0VZTmRzdklJeFExQUpyUlB2elNaUWx3eEM5TmcxUnlu?=
+ =?utf-8?B?OHh2YkdlK3dzWWhIVStQS0NCZDVqemlUNnhXN0FjM1FPOEtORzhYV3FnbWtF?=
+ =?utf-8?B?dzYzYzdDbnViVW5NT1UvWkkwcFJtRlFIMk03dUNFRk5KaTF3ejNjK3dNY2c3?=
+ =?utf-8?B?bTNNTnNDcmZDQ3RCR0wzeUt2Wi8yL2g1MnJ1Q1pSWmlBRCtMUXV2K2lNeGNv?=
+ =?utf-8?B?WGhXZXNUcndZOGwwbkJiRFhleFI5TkFqRldDaTdEbUVNb1hYMHhjWFBGRmhQ?=
+ =?utf-8?B?ZFdVME50YTRlSUw3a251Z0labmVIR2RtMzF3ODhYZCtoTmxkb1FSa0VvTnBB?=
+ =?utf-8?B?cjRldXpaNlNLQzVkMXM0M3F1UEpoZjdjd2NyWkhZQjBjbGM2ZWJadk9QWjZU?=
+ =?utf-8?B?c0wyOWI5Y0hQOGxwZ2lNNm9ySW1XM3R5RUR3aWcrbXlpODE1SVM0SThIUldT?=
+ =?utf-8?B?QzBVQXdxN0VYQUNOTzRsWmxQVnRIQnVoVy9CTEVyL1JXRC9xdkVxNjZOME1s?=
+ =?utf-8?B?MHB5OHRZMjJFeHc2ZTN5RFJUMUszc2pscVBrak9hMzI5MzdvejFDK041ZWhL?=
+ =?utf-8?B?NjJuWFF6Y2tEU2ZwMVAxaFROQ2RTbUdDSyt3dlhJYTREU1Z1Q1lkU3FrTVM5?=
+ =?utf-8?B?aU90dmdEelkrbnRZNU1MVzJUdTRHby9WMzNzRlU5R21sYW11OEdwSUI0cXhM?=
+ =?utf-8?B?RlFFMUdzL04xeEJrOGFFc25OUXZlV3FuUXJjVDg2dzZDWTBlUllxSE5KK3My?=
+ =?utf-8?B?bUlFakN1Y1hFeHd0VkhsRDduNFp0Y3U0YVRhRFlzQ2lRNkNtOEtXNlZweTl5?=
+ =?utf-8?B?UDhkbHpJTWUzWXF5Q3NmZTVrdG1IcThvNC9EWTZIYSs4dmhvL0srSStUb2NT?=
+ =?utf-8?B?NnBFdXRiL2lQY0l4dnpPdjhXVWdNN2FRM2YzRzd4VVZsUEZzQUNkOExNald1?=
+ =?utf-8?B?Q0FsNUFCMlY3SzI3SkJURUM4RmVtZ2NpUlVwWFJEdU80cUxDMWk2UUxyZ1ZG?=
+ =?utf-8?B?SU5BOVpDQW5qclpJMDh5RFpKK0JrQnBrOTZsSWRoZXJ5b0hSUGRBaUwwSWZs?=
+ =?utf-8?B?Y28xVFMxQ1NoeFlWWDFEb0pHdHhSYkd0a01DcFk2enY4UENuUWxzUFRoNXda?=
+ =?utf-8?B?dmxqWW1mTWdqc1c1eUtIQkJ4K2JDbm9ic2gwZmhuTEdtRktXclFiUDRxRXNQ?=
+ =?utf-8?B?bUY1UjhjVHRXWmo1OHpISWljM2cyQkxKNi9Zd0ZxTkUxbnVucEcrbHgxY0t1?=
+ =?utf-8?B?ODRSb25rOVd5RHQxckpXUVZDZ0h2YlRxc21oLzRiRHFwZmFxd2JmSlJiVmdn?=
+ =?utf-8?B?MU8xWVE4R1RHSDlpNmFGUnpJU21xcVFaQkY0aERmQ2J6N1ZKcG9nUGlOakVB?=
+ =?utf-8?B?eTd3d09jYXV2RnU2NDNOSE9Mb0IySE4xNmI5b2EyL3ZURzNnRTdSR2dFczJM?=
+ =?utf-8?Q?PeVt3jo0y8BLGV7LrLI1kZQ=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	IDEQvEQv7cEr5XLPts8nlAtJm+dYS9z03w+sAte6tM7zX8SUs5FpDBvZbFnWZhJb9RqXqhIQxP5ciOEZvpMGCgDXWUgyVNwbaM82hYN5odXegjcCIWEI0ov3ttLz8dEIXihhVceNzTm47M+LXdItdqXf+PQNlOxAom4uugMS26+pKHwIaJPB4qqk2H4kjr4qAlaTRobQy1ElRjvC20D4eiSl4oVgIjTYq7xjLwcGuv4GFqCJkBCvX71yhTKvn4V+1JpZRWKWuBnk49xGMe968EF2lSNr0YYRfGo5IiHdnpZcJNLUAs4uUMnqFnGiqmmZK3nXst7qr2uf7aT0AdTyf0g4sy3sjuizfS6jrCAcKIXH00K8g0J7G58vYdzQRxSpIwPqeAv/e2XSCf33u7lEP6fxXMpYeCBNfLQYtEfXBr9ldm5Oi9Tg6/HlLDw0HUkez4RUA4ofQKgbH6YFDS0VmFj1z1PB7SsRiTKCwaWcYkcK2VS9aUrLxzCi/D0v4zotjVwMQUblYGkofiw4cEHBfIPjDGWkJHSSblSdsdPpZoFhW68O1uDcavqF3haO1wHhQCODcXlj18OgDJoqgU6uw6X0pV0z5Sspffzleuq32Bs=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a9663dd-b401-4e99-2e35-08dcf837b083
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2024 16:35:25.0873
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wlvugFrPk5YnHJZqQ2XviR0hkzUYcmNrRgDmcBymwqM5OA9cppuqA7LB7bHh/+qgnJzPeXBvMK6au5ilgwmSrg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB7409
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-29_12,2024-10-29_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 bulkscore=0
+ adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
+ definitions=main-2410290127
+X-Proofpoint-ORIG-GUID: FHYav5os0Rjfh64l6rOqDRwHBUGZ9nQB
+X-Proofpoint-GUID: FHYav5os0Rjfh64l6rOqDRwHBUGZ9nQB
 
-On Tue, Oct 29, 2024 at 11:03=E2=80=AFPM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Jason Xing wrote:
-> > On Tue, Oct 29, 2024 at 9:24=E2=80=AFAM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
-> > >
-> > > Jason Xing wrote:
-> > > > From: Jason Xing <kernelxing@tencent.com>
-> > > >
-> > > > Use the offset to record the delta value between current socket key
-> > > > and bpf socket key.
-> > > >
-> > > > 1. If there is only bpf feature running, the socket key is bpf sock=
-et
-> > > > key and the offset is zero;
-> > > > 2. If there is only traditional feature running, and then bpf featu=
-re
-> > > > is turned on, the socket key is still used by the former while the =
-offset
-> > > > is the delta between them;
-> > > > 3. if there is only bpf feature running, and then application uses =
-it,
-> > > > the socket key would be re-init for application and the offset is t=
-he
-> > > > delta.
-> > >
-> > > We need to also figure out the rare conflict when one user sets
-> > > OPT_ID | OPT_ID_TCP while the other only uses OPT_ID.
-> >
-> > I think the current patch handles the case because:
-> > 1. sock_calculate_tskey_offset() gets the final key first whether the
-> > OPT_ID_TCP is set or not.
-> > 2. we will use that tskey to calculate the delta.
->
-> Oh yes of course. Great, then this is resolved.
->
-> > > > +static long int sock_calculate_tskey_offset(struct sock *sk, int v=
-al, int bpf_type)
-> > > > +{
-> > > > +     u32 tskey;
-> > > > +
-> > > > +     if (sk_is_tcp(sk)) {
-> > > > +             if ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_LISTEN))
-> > > > +                     return -EINVAL;
-> > > > +
-> > > > +             if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
-> > > > +                     tskey =3D tcp_sk(sk)->write_seq;
-> > > > +             else
-> > > > +                     tskey =3D tcp_sk(sk)->snd_una;
-> > > > +     } else {
-> > > > +             tskey =3D 0;
-> > > > +     }
-> > > > +
-> > > > +     if (bpf_type && (sk->sk_tsflags & SOF_TIMESTAMPING_OPT_ID)) {
-> > > > +             sk->sk_tskey_bpf_offset =3D tskey - atomic_read(&sk->=
-sk_tskey);
-> > > > +             return 0;
-> > > > +     } else if (!bpf_type && (sk->sk_tsflags_bpf & SOF_TIMESTAMPIN=
-G_OPT_ID)) {
-> > > > +             sk->sk_tskey_bpf_offset =3D atomic_read(&sk->sk_tskey=
-) - tskey;
-> > > > +     } else {
-> > > > +             sk->sk_tskey_bpf_offset =3D 0;
-> > > > +     }
-> > > > +
-> > > > +     return tskey;
-> > > > +}
-> > > > +
-> > > >  int sock_set_tskey(struct sock *sk, int val, int bpf_type)
-> > > >  {
-> > > >       u32 tsflags =3D bpf_type ? sk->sk_tsflags_bpf : sk->sk_tsflag=
-s;
-> > > > @@ -901,17 +944,13 @@ int sock_set_tskey(struct sock *sk, int val, =
-int bpf_type)
-> > > >
-> > > >       if (val & SOF_TIMESTAMPING_OPT_ID &&
-> > > >           !(tsflags & SOF_TIMESTAMPING_OPT_ID)) {
-> > > > -             if (sk_is_tcp(sk)) {
-> > > > -                     if ((1 << sk->sk_state) &
-> > > > -                         (TCPF_CLOSE | TCPF_LISTEN))
-> > > > -                             return -EINVAL;
-> > > > -                     if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
-> > > > -                             atomic_set(&sk->sk_tskey, tcp_sk(sk)-=
->write_seq);
-> > > > -                     else
-> > > > -                             atomic_set(&sk->sk_tskey, tcp_sk(sk)-=
->snd_una);
-> > > > -             } else {
-> > > > -                     atomic_set(&sk->sk_tskey, 0);
-> > > > -             }
-> > > > +             long int ret;
-> > > > +
-> > > > +             ret =3D sock_calculate_tskey_offset(sk, val, bpf_type=
-);
-> > > > +             if (ret <=3D 0)
-> > > > +                     return ret;
-> > > > +
-> > > > +             atomic_set(&sk->sk_tskey, ret);
-> > > >       }
-> > > >
-> > > >       return 0;
-> > > > @@ -956,10 +995,15 @@ static int sock_set_timestamping_bpf(struct s=
-ock *sk,
-> > > >                                    struct so_timestamping timestamp=
-ing)
-> > > >  {
-> > > >       u32 flags =3D timestamping.flags;
-> > > > +     int ret;
-> > > >
-> > > >       if (flags & ~SOF_TIMESTAMPING_BPF_SUPPPORTED_MASK)
-> > > >               return -EINVAL;
-> > > >
-> > > > +     ret =3D sock_set_tskey(sk, flags, 1);
-> > > > +     if (ret)
-> > > > +             return ret;
-> > > > +
-> > > >       WRITE_ONCE(sk->sk_tsflags_bpf, flags);
-> > > >
-> > > >       return 0;
-> > >
-> > > I'm a bit hazy on when this can be called. We can assume that this ne=
-w
-> > > BPF operation cannot race with the existing setsockopt nor with the
-> > > datapath that might touch the atomic fields, right?
-> >
-> > It surely can race with the existing setsockopt.
-> >
-> > 1)
-> > if (only existing setsockopt works) {
-> >         then sk->sk_tskey is set through setsockopt, sk_tskey_bpf_offse=
-t is 0.
-> > }
-> >
-> > 2)
-> > if (only bpf setsockopt works) {
-> >         then sk->sk_tskey is set through bpf_setsockopt,
-> > sk_tskey_bpf_offset is 0.
-> > }
-> >
-> > 3)
-> > if (existing setsockopt already started, here we enable the bpf feature=
-) {
-> >         then sk->sk_tskey will not change, but the sk_tskey_bpf_offset
-> > will be calculated.
-> > }
-> >
-> > 4)
-> > if (bpf setsockopt already started, here we enable the application feat=
-ure) {
-> >         then sk->sk_tskey will re-initialized/overridden by
-> > setsockopt, and the sk_tskey_bpf_offset will be calculated.
-> > }
+On 29/10/2024 07:46, Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
+> 
+> As we can see from the title, when I compiled the selftests/bpf, I
+> saw the error:
+> implicit declaration of function ‘gettid’ ; did you mean ‘getgid’? [-Werror=implicit-function-declaration]
+>   skel->bss->tid = gettid();
+>                    ^~~~~~
+>                    getgid
+> 
+> Directly call the syscall solves this issue.
+> 
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
 
-I will copy the above to the commit message next time in order to
-provide a clear design to future readers.
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+Tested-by: Alan Maguire <alan.maguire@oracle.com>
 
-> >
-> > Then the skb tskey will use the sk->sk_tskey like before.
->
-> I mean race as in the setsockopt and bpf setsockopt and datapath
-> running concurrently.
->
-> As long as both variants of setsockopt hold the socket lock, that
-> won't happen.
->
-> The datapath is lockless for UDP, so atomic_inc sk_tskey can race
-> with calculating the difference. But this is a known issue. A process
-> that cares should not run setsockopt and send concurrently. So this is
-> fine too.
+> ---
+> v2
+> Link: https://lore.kernel.org/all/20241028034143.14675-1-kerneljasonxing@gmail.com/
+> 1. directly call the syscall (Andrii)
+> ---
+>  tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> index f0a3a9c18e9e..9006549a1294 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> @@ -226,7 +226,7 @@ static void test_task_common_nocheck(struct bpf_iter_attach_opts *opts,
+>  	ASSERT_OK(pthread_create(&thread_id, NULL, &do_nothing_wait, NULL),
+>  		  "pthread_create");
+>  
+> -	skel->bss->tid = gettid();
+> +	skel->bss->tid = syscall(SYS_gettid);
+>  
+>  	do_dummy_read_opts(skel->progs.dump_task, opts);
+>  
+> @@ -255,10 +255,10 @@ static void *run_test_task_tid(void *arg)
+>  	union bpf_iter_link_info linfo;
+>  	int num_unknown_tid, num_known_tid;
+>  
+> -	ASSERT_NEQ(getpid(), gettid(), "check_new_thread_id");
+> +	ASSERT_NEQ(getpid(), syscall(SYS_gettid), "check_new_thread_id");
+>  
+>  	memset(&linfo, 0, sizeof(linfo));
+> -	linfo.task.tid = gettid();
+> +	linfo.task.tid = syscall(SYS_gettid);
+>  	opts.link_info = &linfo;
+>  	opts.link_info_len = sizeof(linfo);
+>  	test_task_common(&opts, 0, 1);
 
-Oh, now I see. Thanks for the detailed explanation! So Do you feel if
-we need to take care of this in the future, I mean, after this series
-gets merged...?
-
-Thanks,
-Jason
 
