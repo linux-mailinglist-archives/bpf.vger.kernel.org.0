@@ -1,168 +1,101 @@
-Return-Path: <bpf+bounces-43359-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43360-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE2A69B3FBD
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 02:30:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 45D0F9B3FCA
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 02:32:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 087AA1C21F74
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 01:30:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 781691C21FA8
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 01:32:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F28B069D31;
-	Tue, 29 Oct 2024 01:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JVrOQjgT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 439E35589B;
+	Tue, 29 Oct 2024 01:32:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D472D268;
-	Tue, 29 Oct 2024 01:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8067D168B1;
+	Tue, 29 Oct 2024 01:32:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730165439; cv=none; b=bwHq1yaUEuidT5U903wU3fSndPiJ3Efh/XVD/0dwf7Hu34SVQaPDdOb9MA4EhWpkNOeHqkzNeENGU0ulPPhT9ZdWYaLdyBdMFnbhY1HAjVpMN99aeHLDhWk/wjavSRCVIx6f4Dsyc1PGJQ6AApbmMOLI7lpGCoiccbEkzFGB/ko=
+	t=1730165565; cv=none; b=UQgMXW9rTu+EzmX4tGyB3JeUnSuhcHJxy3RoJMfyM6IcMj+oe+NBGF06WiqQGv1Vp3wT5s+xcfoqgpX01wDjTl7Ant2kBo5SC+T/4Vh/0MWL6tl8TYx3oXuf8IBKyrLsaHgp3YmL0QXULmXFHS9PQcBaw47HjauDVYE1MX7pIEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730165439; c=relaxed/simple;
-	bh=zx/lLIimrjADakyt5z4cjr6YX/VRcrUQTqU0XNBJ8W4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ekg/bd/qqKRxWgeafxdRShelB2r1O4VVEij8fZuGcuV7DTYSmmE7hTsz/C8LL1CTkg6vI1gGKk0Tn9BqYOPqN64xRZLxb7eMYf7/OZbk3jHBBv6/q19mEung/yY0/Qio1YyOZA1Dj5XIVhMhgk7dJM7Of2V28RWXaoJhR4qqJOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JVrOQjgT; arc=none smtp.client-ip=209.85.166.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-3a3c00f2c75so18678595ab.2;
-        Mon, 28 Oct 2024 18:30:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730165436; x=1730770236; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NuorJQOgYHb6wOtLSgpuOH01iDW0mm5P6mp4e7T09yk=;
-        b=JVrOQjgTlB4JE7SuhkNzUAqrr7AGn86pohlvMK1/Fywz/bSk9Ato9j4Einx/lzYmZi
-         WxbV3wFWT2+k8ir62aVbz+g4VVVX0LpjkqmgQIYggyYZe/l5IouL66OhImDYzzjMEspb
-         3BNy+HvrTIeBuuuDy3Qw8sg5su8PGbbhj9rNANrANxqjhN+aemEIubRV1CJoqVMKxV7Y
-         93YiqO2KGbgovg7ur6w/APE1tenPH43CKhB416OncKIJRSQkvK6G/l9jo32E0i+JfNxY
-         e8PHbTAJ3UhqssDFVw7ET6sB7zoWq2C+WoxIq7BXiiBDbf/N7B1A/pjqD/2Aquj6lD0b
-         BfCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730165436; x=1730770236;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NuorJQOgYHb6wOtLSgpuOH01iDW0mm5P6mp4e7T09yk=;
-        b=t7KIPa80Nmed42fma36n1tMIy0QWdAAAGQwEL25TILD6jTCQHOe+wJaWcab0EZXBSk
-         0tFNcyXVEqqJw80Fy5/Z7iAbd+Oe25bE57kFzjyLieDM8tpN4auEY8yy29rbWX4lNHUQ
-         kmyZbLWWjr1P524yT9zObBn3djhIsFN3QKqT6yQJMeFHba3tFGnfUWo99UnYLwVWlgc1
-         u3RyVs1DiFe3jYpzEsZOesGBodEou+27+VVl1CraNxabwENlWKgseZxp0JKcFLQVlbkL
-         ACYNxYAYKOjnmE+sfSchlzATon/S8/Tr11cgCbeBAJHSXwSoUhGKeWJv/gAtPSCQVSpP
-         qODA==
-X-Forwarded-Encrypted: i=1; AJvYcCWnxGB6wjnyc2dvgOhyAZ9yQEq9XWFdq18flA5+YHQPFn42CO2MRE8+p/nDmMiwzzk1+IA=@vger.kernel.org, AJvYcCWumtwd+dCK7uJb619H/MbPUswpSVmC47vwd78MoIDPOWPEax7VA7bl8u0AYixvmxwnMFS+NmTv@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmfGGy5SPnd37qTosvkz0ONCvrduLrEjV1qwgNX53Vu/Y53pzD
-	FnDw2lQlyh+y9i3FrXkVd3uh1eD5uEqqjfOVX1b9+29aI11ivG3kTzpOo6oMqGHiC7Ox33+al8U
-	Z4V9VPTM2zx7nMUSblhyMfbnpgLU=
-X-Google-Smtp-Source: AGHT+IHrNciNr8wSOoQ9+7QV8tSmgWDc2es7IRxHkLNxv6s6eDa+PTW8cjutfSM0Hlh7RvVyGg9AOhsvraKaVxelfew=
-X-Received: by 2002:a05:6e02:1523:b0:3a0:bc39:2d8c with SMTP id
- e9e14a558f8ab-3a4ed307092mr97724065ab.25.1730165436597; Mon, 28 Oct 2024
- 18:30:36 -0700 (PDT)
+	s=arc-20240116; t=1730165565; c=relaxed/simple;
+	bh=jy2ZWRukvY64J3l5n3bcnNWbTtLwKOFBWV+nQy/pSgY=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ey3pxblHDojIBVIjtTPVs32WcYrSOQzRwQU+mkMx04cMmB7IeFftvCogFEJsT0Zxbi+l1xCmGcaN54swhTp6s41WgA/l40ZH1R4t1t/T8qDpZVbJUT3Vw/cz6kKea8UJ364YTYnITkc61izMTu81E88hkarunrQkeAqTdSxVTTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Xct6B1KRkz4f3lVp;
+	Tue, 29 Oct 2024 09:32:18 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id A0F2F1A0197;
+	Tue, 29 Oct 2024 09:32:36 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgBH8LEwOyBneQDrAA--.24551S2;
+	Tue, 29 Oct 2024 09:32:36 +0800 (CST)
+Subject: Re: [PATCH v2 bpf 1/2] bpf: Fix out-of-bounds write in
+ trie_get_next_key()
+To: Byeonguk Jeong <jungbu2855@gmail.com>,
+ =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Yonghong Song <yonghong.song@linux.dev>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <Zxx384ZfdlFYnz6J@localhost.localdomain>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <a90fcf65-05be-1cd9-8b42-9367474c1a49@huaweicloud.com>
+Date: Tue, 29 Oct 2024 09:32:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
- <20241028110535.82999-5-kerneljasonxing@gmail.com> <67203418aa886_24dce62949@willemb.c.googlers.com.notmuch>
-In-Reply-To: <67203418aa886_24dce62949@willemb.c.googlers.com.notmuch>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 29 Oct 2024 09:30:00 +0800
-Message-ID: <CAL+tcoCtg7Yu3dAWMM4EY4ARE-Lg33CKEoVned6G9MnA0QuVUg@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 04/14] net-timestamp: introduce
- TS_SCHED_OPT_CB to generate dev xmit timestamp
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <Zxx384ZfdlFYnz6J@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgBH8LEwOyBneQDrAA--.24551S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xw45CryDuw18Gw4ruw4kZwb_yoW3CFcE9F
+	98CwnIkw48Arn7t397Ar1fXFW3CF18WF1DXws8WFn3ZF1kWws5Ars8AFn5Zr48WF4kCa45
+	uw1aqF4qqF98WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb4AYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AK
+	xVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHD
+	UUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Tue, Oct 29, 2024 at 9:02=E2=80=AFAM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
+
+
+On 10/26/2024 1:02 PM, Byeonguk Jeong wrote:
+> trie_get_next_key() allocates a node stack with size trie->max_prefixlen,
+> while it writes (trie->max_prefixlen + 1) nodes to the stack when it has
+> full paths from the root to leaves. For example, consider a trie with
+> max_prefixlen is 8, and the nodes with key 0x00/0, 0x00/1, 0x00/2, ...
+> 0x00/8 inserted. Subsequent calls to trie_get_next_key with _key with
+> .prefixlen = 8 make 9 nodes be written on the node stack with size 8.
 >
-> Jason Xing wrote:
-> > From: Jason Xing <kernelxing@tencent.com>
-> >
-> > Introduce BPF_SOCK_OPS_TS_SCHED_OPT_CB flag so that we can decide to
-> > print timestamps when the skb just passes the dev layer.
-> >
-> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > ---
-> >  include/uapi/linux/bpf.h       |  5 +++++
-> >  net/core/skbuff.c              | 31 ++++++++++++++++++++++++++++++-
-> >  tools/include/uapi/linux/bpf.h |  5 +++++
-> >  3 files changed, 40 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index e8241b320c6d..324e9e40969c 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -7013,6 +7013,11 @@ enum {
-> >                                        * by the kernel or the
-> >                                        * earlier bpf-progs.
-> >                                        */
-> > +     BPF_SOCK_OPS_TS_SCHED_OPT_CB,   /* Called when skb is passing thr=
-ough
-> > +                                      * dev layer when SO_TIMESTAMPING
-> > +                                      * feature is on. It indicates th=
-e
-> > +                                      * recorded timestamp.
-> > +                                      */
-> >  };
-> >
-> >  /* List of TCP states. There is a build check in net/ipv4/tcp.c to det=
-ect
-> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > index 39309f75e105..e6a5c883bdc6 100644
-> > --- a/net/core/skbuff.c
-> > +++ b/net/core/skbuff.c
-> > @@ -64,6 +64,7 @@
-> >  #include <linux/mpls.h>
-> >  #include <linux/kcov.h>
-> >  #include <linux/iov_iter.h>
-> > +#include <linux/bpf-cgroup.h>
-> >
-> >  #include <net/protocol.h>
-> >  #include <net/dst.h>
-> > @@ -5621,13 +5622,41 @@ static void skb_tstamp_tx_output(struct sk_buff=
- *orig_skb,
-> >       __skb_complete_tx_timestamp(skb, sk, tstype, opt_stats);
-> >  }
-> >
-> > +static void timestamp_call_bpf(struct sock *sk, int op, u32 nargs, u32=
- *args)
-> > +{
-> > +     struct bpf_sock_ops_kern sock_ops;
-> > +
-> > +     memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
-> > +     if (sk_fullsock(sk)) {
-> > +             sock_ops.is_fullsock =3D 1;
-> > +             sock_owned_by_me(sk);
->
-> Why this check?
+> Fixes: b471f2f1de8b ("bpf: implement MAP_GET_NEXT_KEY command for LPM_TRIE map")
+> Signed-off-by: Byeonguk Jeong <jungbu2855@gmail.com>
+> Reviewed-by: Toke Høiland-Jørgensen <toke@kernel.org>
+> Tested-by: Hou Tao <houtao1@huawei.com>
+> ---
 
-I imitated the use of BPF_CGROUP_RUN_PROG_SOCK_OPS.
+Acked-by: Hou Tao <houtao1@huawei.com>
 
->
-> This will usually be false, as timestamps are taken outside the
-> protocol layers.
-
-I will remove this if branch.
-
-Thanks,
-Jason
 
