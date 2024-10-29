@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-43382-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43383-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AF099B4983
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 13:19:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C9AF9B499D
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 13:27:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CB0F1C222C1
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 12:19:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 140431F23638
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 12:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C80A1206050;
-	Tue, 29 Oct 2024 12:19:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D267520515A;
+	Tue, 29 Oct 2024 12:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YuyTlG44"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Vt7t35wH"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 895CC205E09
-	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 12:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C42205ACA
+	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 12:26:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730204345; cv=none; b=Zm/5OGM9Bw7pwuGatxRYbjaHhjCHkU4ynEplmztEI1kyj0Q65bivwR+iwWT5/XpGTFHdr8kAoOs7n26s2MSCuNqv1yT5Jn0CjcEQfTyuPsyXfq1wKuBE8QqeZmIntAiPs78UGLTYqp7obn4e2fDighcJpMGIvALKnTua6nHpkZ8=
+	t=1730204813; cv=none; b=CMBGGwtDQcHWmZ/XdqNNF8DtyAncK4o76EdsFWxZy1rj27R6ZP18Swa9uka/jHUs/rkERxDFZEOEyf6eNU73Ct9xBadfGOzWb+ZHxCwW29YE+vZ6dLNw0RMz2lVJ9sk3LESqRh0OGUwRLzdQXdEfXkb0Lac3Fb0+UWTarkhU4W0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730204345; c=relaxed/simple;
-	bh=0I7kvJtFLDqQM0siDKT0j8ymg14gRFLwbFQ5gaEXjw8=;
+	s=arc-20240116; t=1730204813; c=relaxed/simple;
+	bh=OIiNsApqwgm71NjUFM1ADgAthsV5yL2jS8pl3Uc8ZmQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=U/ZV1iMX/pdVx+m+LC7TDMKFMN2DtjVwgSRAtrqNp2T8l8D6rLnhnr0xnDL1kDX0mYVjPKCn22R58KeZ2yiVpvEN0AvLQeBvJa8orpP7n13/q/gPZUn2VRfl+T77CFZ23a4K6KW9a9hiQ5L2holjQns/d6eyJ4QCPxcAlNjQoO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YuyTlG44; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=OMIf22hMpnD5zq042Q2yYcmG0QHyJRa+NRuYk7EHksBU1vGJ+lyNjr94iokPLxw1zFSjTvMEo+W0UpC8hKRCmstzEp17R4s0Tc27FeMuDVUkPQnELPfqDWhal7dRvxZdKtVWCamapJJZxG8GSMZ+iQjFdoubeE36GRn0oJCrOW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Vt7t35wH; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1730204342;
+	s=mimecast20190719; t=1730204810;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vfuf4xyKDvT9u1kPEhld7930e8myJyX3Zvs5SawIvSg=;
-	b=YuyTlG44rGdGOTGNMYOmP7O4m4uLkLMn+8UHTndNLpN/lAHsUpJAMWwvuBJM5IsouhxHX/
-	x0LwU71GKh9sUK63OKZbfVXUcQgqRMLlnSsLs9CLRyjzrJvPMoSoF2GBUgerm2BTaKLAjW
-	+4J9jA1btXqasr+JoAiG+dLbbmcOEBw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=GOZTaD4SZpZxUnHx9eqNQXCMnDT5MQfWDHUrJEYUGAI=;
+	b=Vt7t35wHnLgvy7vBnA8aqxcVgERbWrFMxWnwQgrGj4imxl/s9ozfpv9tsw9y0+NxYUx7Lq
+	fIJtCFZK7jZeclL4HvRjU2aS02r+f4PCTY82b7zuaK3aI51tt0kZYy/QDpZBcbXA4dy8M+
+	KDwyM7GSgcpB7a+g6Z6wKekYfBbDTMo=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-672-t_DeL_PnPGyvAnQbrEG-MQ-1; Tue, 29 Oct 2024 08:19:01 -0400
-X-MC-Unique: t_DeL_PnPGyvAnQbrEG-MQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4315e8e9b1cso30784065e9.1
-        for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 05:19:00 -0700 (PDT)
+ us-mta-401-4iM2-uMKMDWEPXYONvstSA-1; Tue, 29 Oct 2024 08:26:48 -0400
+X-MC-Unique: 4iM2-uMKMDWEPXYONvstSA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-37d4cf04be1so2545659f8f.2
+        for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 05:26:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730204340; x=1730809140;
+        d=1e100.net; s=20230601; t=1730204807; x=1730809607;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vfuf4xyKDvT9u1kPEhld7930e8myJyX3Zvs5SawIvSg=;
-        b=ZxpuKjqNwsSydf0YmKgXAaXGnL36dWKq6nWQeD3bNpyKIfPO8NlQZqwpKZJuxPYu15
-         rtl7x99VmF6Jvb8ZmYUyoy80RqO59PCwz/69vTMJvqy+QnSHxRci6doSy5e/fowFWMGp
-         97/tScxV64C56cGORTAhJc0dzkv6e5srNJGNWC4JfFk84m15/w1zUeP3yfERAgfKohvs
-         DXvmxNiZ0bw69eOQ08J3QSnPMPN1ITT8h9WROeHBffdyB4UrnlKCbuuduYAdMIImotIC
-         t7835LHpJWzUiScPcn8hy6FQrYJBs/Z/XRPBg/0GRfa6Ko6B48qakc8e6+Gz7NV/CT20
-         fZwg==
-X-Forwarded-Encrypted: i=1; AJvYcCXiUAIO4KsJYXbgdlOtGBepPmSOvLzrLIy1jZpx066xrPXioCuBoEACgkWYHTVvdT3RL5Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwtI0wOC3el148ImgckmCdgmYcJl2BdnFZnMzh5kml0gTYAC5D0
-	QybFILPu4+wYUV8tktqiJHs0O9Qxp1cnIVWihPaU/N96ke6JDs+YWYmIMbQlOc2+BdEF3fmrO1I
-	PaZexqew6FhKRFLzGjAwcYE6DcI3KdSDZaFkLlENSq6LCumP06A==
-X-Received: by 2002:a05:600c:3555:b0:42c:b166:913 with SMTP id 5b1f17b1804b1-431b5727f7fmr14851975e9.11.1730204339717;
-        Tue, 29 Oct 2024 05:18:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFmrOsa0Gr67Yj5/cS+/SQl29FfUNpizydNLzGmFEG+bAVc4wyWPLsRt8+pgyP6z3kTKadvOg==
-X-Received: by 2002:a05:600c:3555:b0:42c:b166:913 with SMTP id 5b1f17b1804b1-431b5727f7fmr14851665e9.11.1730204339372;
-        Tue, 29 Oct 2024 05:18:59 -0700 (PDT)
+        bh=GOZTaD4SZpZxUnHx9eqNQXCMnDT5MQfWDHUrJEYUGAI=;
+        b=d/4bPJ8270xLJgoNgrrPPPxIIdoRCXssJ12dG2XZcogmO32EOZXevFoZeFbTFHKjTe
+         f2NXjAT0P9cgSuiTxUuimsWMyIpaf/Xc4Wd9B7OIut8shmfv39a3n9/pdmJ5FmZT1V0G
+         jbto6Pe4wiQdhlotnbiV/TdlvZefBtj/qzeKsxyFXhYf8hGA1XwyCKcxrMweYCLVX7DM
+         koDQtc5z2Bnug1LvCSt9GVXuX7LfHHamw1xGM1nOdNDp+7lEvhKwBub6d4lZYRrZ4AnH
+         edyJc3TdkXEgZp5Saixa2MGleShygDt/aICWqOs3V+qaRsqn49X64yEY0s+TOl3oQShM
+         NdUg==
+X-Forwarded-Encrypted: i=1; AJvYcCUcz2/jUZbWr4Rxtu6874cuRPjkYcUbm1fLr5tWfNkhvvO5KszI526SFol3yAPYPkxfu5I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdO4VtnoGhJKxGec1NQgi2jI8TWRSuPEby/8UTvf69ztSKz0rt
+	zLIpfTpj2Kdt7w2MLmBwq8nFw3TPAD2qSS65unzgt8r5QSqtOztkkUgpqIhHkvoVNLqD/SZsApB
+	ziQP3zpsqr3jooMUoRb4KbDPFqsfkbfGSTwBZnCAF8JcuKrFjJQ==
+X-Received: by 2002:a5d:4849:0:b0:37d:4e03:635c with SMTP id ffacd0b85a97d-380611441bbmr8953985f8f.21.1730204807538;
+        Tue, 29 Oct 2024 05:26:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE7KLM8OM21izjqXfNP/B0QCUjjPNIlLTzWnqUD6a68rC1KUBMbMRh54JsB8kR9ClHY4mPX5A==
+X-Received: by 2002:a5d:4849:0:b0:37d:4e03:635c with SMTP id ffacd0b85a97d-380611441bbmr8953961f8f.21.1730204807135;
+        Tue, 29 Oct 2024 05:26:47 -0700 (PDT)
 Received: from [192.168.88.248] (146-241-44-112.dyn.eolo.it. [146.241.44.112])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4318b5430edsm173654585e9.2.2024.10.29.05.18.57
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b46bffsm12311553f8f.46.2024.10.29.05.26.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Oct 2024 05:18:59 -0700 (PDT)
-Message-ID: <c0a4d1ad-cb3a-4d61-93b5-471c1033d67d@redhat.com>
-Date: Tue, 29 Oct 2024 13:18:56 +0100
+        Tue, 29 Oct 2024 05:26:46 -0700 (PDT)
+Message-ID: <dee9769f-d86b-471f-bbe2-f0165489618c@redhat.com>
+Date: Tue, 29 Oct 2024 13:26:44 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,8 +82,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 net-next 11/14] tcp: allow ECN bits in TOS/traffic
- class
+Subject: Re: [PATCH v4 net-next 14/14] net: sysctl: introduce sysctl
+ SYSCTL_FIVE
 To: chia-yu.chang@nokia-bell-labs.com, netdev@vger.kernel.org,
  davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
  dsahern@kernel.org, netfilter-devel@vger.kernel.org, kadlec@netfilter.org,
@@ -95,28 +95,29 @@ To: chia-yu.chang@nokia-bell-labs.com, netdev@vger.kernel.org,
  cheshire@apple.com, rs.ietf@gmx.at, Jason_Livingood@comcast.com,
  vidhi_goel@apple.com
 References: <20241021215910.59767-1-chia-yu.chang@nokia-bell-labs.com>
- <20241021215910.59767-12-chia-yu.chang@nokia-bell-labs.com>
+ <20241021215910.59767-15-chia-yu.chang@nokia-bell-labs.com>
 Content-Language: en-US
 From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20241021215910.59767-12-chia-yu.chang@nokia-bell-labs.com>
+In-Reply-To: <20241021215910.59767-15-chia-yu.chang@nokia-bell-labs.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 10/21/24 23:59, chia-yu.chang@nokia-bell-labs.com wrote:
-> @@ -2178,6 +2185,7 @@ static void tcp_v4_fill_cb(struct sk_buff *skb, const struct iphdr *iph,
->  int tcp_v4_rcv(struct sk_buff *skb)
->  {
->  	struct net *net = dev_net(skb->dev);
-> +	enum tcp_tw_status tw_status;
->  	enum skb_drop_reason drop_reason;
->  	int sdif = inet_sdif(skb);
->  	int dif = inet_iif(skb);
+> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> 
+> Add SYSCTL_FIVE for new AccECN feedback modes of net.ipv4.tcp_ecn.
 
-Minor nit: please respect the reverse x-mas tree order.
+How many sysctl entries will use such value? If just one you are better
+off not introducing the new sysctl value and instead using a static
+constant in the tcp code.
 
-More instances below.
+Also this patch makes the commit message in the previous one incorrect.
+Please adjust that.
 
-Cheers,
+Side note: on new version, you should include the changelog in the
+affected patches, after a '---' separator, to help the reviewers.
+
+Thanks,
 
 Paolo
 
