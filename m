@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-43436-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43433-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F03D9B55B1
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 23:20:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 218C29B55A8
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 23:17:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CECD11F22AD1
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 22:20:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 516DF1C20D08
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 22:17:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6245C20B1E1;
-	Tue, 29 Oct 2024 22:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B459A20ADD6;
+	Tue, 29 Oct 2024 22:17:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D67B20A5FF
-	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 22:20:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52CBB20ADD1
+	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 22:17:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730240428; cv=none; b=Kgt8zvqrxpqnky9r91FgHBcleeLSTAx53R4cidP2PSu1waPODa2RP6lQF0sAftSC6otL/lCN8zaeJ3LY0mNQzClIg++m1JGTIBLj0zkkFL/HUkn1VNJUSm5/1Ii9IwPTJIyJVCNIdKQbZTfTpqxZLzLliseYifbvSbTc6do3prE=
+	t=1730240252; cv=none; b=NXDAvDLUahZyrZjafNKEje9zlfY4B2HtpSeaQR/KUNImDuQd7YMwIIPIVIUD0nQryEYHGXEsa99nS3wsZNm8ABo+qdMEIXq8y9zVFJFb09Uf1yYT/9ONTKeyghRgRCRpini1gvV6hxg3MLIGuPMiR8ZdM1j4D+D9q6AvZtvSXd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730240428; c=relaxed/simple;
-	bh=0i0qoMsPI/gwZFvf/9Gf4WnAAY/a8mpe4tYYz/MW2xY=;
+	s=arc-20240116; t=1730240252; c=relaxed/simple;
+	bh=T7VjmW9eWKcPSF67RXcxVsF3qkSgBgKekZa4EfYgCQY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jl/q3WKCsm2JrVmkCnsgvRkcpuYbbZyhi5BFpbTaZi8I+ABRkdPa3YwWrq6Aa5w58tU92cBXcdG7p5E5UpJfte359u7MufATjLUP8sqaWVHAUAWCSwKvEto27DVzDB1XZJCoPvufKipMF+GS0DKX8bsGNlZ7CPz//6m1Ip133NU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.178
+	 MIME-Version; b=YRNyNZLJCltyNizfPoGU3zCJXBtbzH3/tOuoKMMKup97Fx1YjH2Y5dRleujf2P8Rpe5Ptz6jmwxPRpyyVLgR5HbfrGObl+Eglsmc8H1Jd/jbZWr+7CTsOLFcy/JA5sGSC68sv4kAj+08B5AwwhvuK9JsiBUKQ7mcas68OzE3bVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 6F370A91CFD7; Tue, 29 Oct 2024 15:17:13 -0700 (PDT)
+	id 8A6DCA91CFFE; Tue, 29 Oct 2024 15:17:18 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -39,9 +39,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v7 7/9] selftests/bpf: Add tracing prog private stack tests
-Date: Tue, 29 Oct 2024 15:17:13 -0700
-Message-ID: <20241029221713.267692-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v7 8/9] bpf: Support private stack for struct_ops progs
+Date: Tue, 29 Oct 2024 15:17:18 -0700
+Message-ID: <20241029221718.268017-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20241029221637.264348-1-yonghong.song@linux.dev>
 References: <20241029221637.264348-1-yonghong.song@linux.dev>
@@ -53,334 +53,123 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Some private stack tests are added including:
-  - main prog only with stack size greater than BPF_PSTACK_MIN_SIZE.
-  - main prog only with stack size smaller than BPF_PSTACK_MIN_SIZE.
-  - prog with one subprog having MAX_BPF_STACK stack size and another
-    subprog having non-zero small stack size.
-  - prog with callback function.
-  - prog with exception in main prog or subprog.
-  - prog with async callback without nesting
-  - prog with async callback with possible nesting
+For struct_ops progs, whether a particular prog will use private stack
+or not (prog->aux->use_priv_stack) will be set before actual insn-level
+verification for that prog. One particular implementation is to
+piggyback on struct_ops->check_member(). The next patch will have an
+example for this. The struct_ops->check_member() will set
+prog->aux->use_priv_stack to be true which enables private stack
+usage with ignoring BPF_PRIV_STACK_MIN_SIZE limit.
+
+If use_priv_stack is true for a particular struct_ops prog, bpf
+trampoline will need to do recursion checks (one level at this point)
+to avoid stack overwrite.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../bpf/progs/verifier_private_stack.c        | 272 ++++++++++++++++++
- 2 files changed, 274 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_private_st=
-ack.c
+ include/linux/bpf_verifier.h |  1 +
+ kernel/bpf/verifier.c        | 36 ++++++++++++++++++++++++++++++++----
+ 2 files changed, 33 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
-sting/selftests/bpf/prog_tests/verifier.c
-index 75f7a2ce334b..d9f65adb456b 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -61,6 +61,7 @@
- #include "verifier_or_jmp32_k.skel.h"
- #include "verifier_precision.skel.h"
- #include "verifier_prevent_map_lookup.skel.h"
-+#include "verifier_private_stack.skel.h"
- #include "verifier_raw_stack.skel.h"
- #include "verifier_raw_tp_writable.skel.h"
- #include "verifier_reg_equal.skel.h"
-@@ -188,6 +189,7 @@ void test_verifier_bpf_fastcall(void)         { RUN(v=
-erifier_bpf_fastcall); }
- void test_verifier_or_jmp32_k(void)           { RUN(verifier_or_jmp32_k)=
-; }
- void test_verifier_precision(void)            { RUN(verifier_precision);=
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index bc28ce7996ac..ff0fba935f89 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -889,6 +889,7 @@ static inline bool bpf_prog_check_recur(const struct =
+bpf_prog *prog)
+ 	case BPF_PROG_TYPE_TRACING:
+ 		return prog->expected_attach_type !=3D BPF_TRACE_ITER;
+ 	case BPF_PROG_TYPE_STRUCT_OPS:
++		return prog->aux->use_priv_stack;
+ 	case BPF_PROG_TYPE_LSM:
+ 		return false;
+ 	default:
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 30e74db6a85f..865191c5d21b 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6023,17 +6023,31 @@ static int check_ptr_alignment(struct bpf_verifie=
+r_env *env,
+=20
+ static int bpf_enable_priv_stack(struct bpf_verifier_env *env)
+ {
++	bool force_priv_stack =3D env->prog->aux->use_priv_stack;
+ 	struct bpf_subprog_info *si;
++	int ret;
++
++	if (!bpf_jit_supports_private_stack()) {
++		if (force_priv_stack) {
++			verbose(env, "Private stack not supported by jit\n");
++			return -EACCES;
++		}
+=20
+-	if (!bpf_jit_supports_private_stack())
+ 		return NO_PRIV_STACK;
++	}
+=20
++	ret =3D PRIV_STACK_ADAPTIVE;
+ 	switch (env->prog->type) {
+ 	case BPF_PROG_TYPE_KPROBE:
+ 	case BPF_PROG_TYPE_TRACEPOINT:
+ 	case BPF_PROG_TYPE_PERF_EVENT:
+ 	case BPF_PROG_TYPE_RAW_TRACEPOINT:
+ 		break;
++	case BPF_PROG_TYPE_STRUCT_OPS:
++		if (!force_priv_stack)
++			return NO_PRIV_STACK;
++		ret =3D PRIV_STACK_ALWAYS;
++		break;
+ 	case BPF_PROG_TYPE_TRACING:
+ 		if (env->prog->expected_attach_type !=3D BPF_TRACE_ITER)
+ 			break;
+@@ -6044,11 +6058,18 @@ static int bpf_enable_priv_stack(struct bpf_verif=
+ier_env *env)
+=20
+ 	si =3D env->subprog_info;
+ 	for (int i =3D 0; i < env->subprog_cnt; i++) {
+-		if (si[i].has_tail_call)
++		if (si[i].has_tail_call) {
++			if (ret =3D=3D PRIV_STACK_ALWAYS) {
++				verbose(env,
++					"Private stack not supported due to tail call presence\n");
++				return -EACCES;
++			}
++
+ 			return NO_PRIV_STACK;
++		}
+ 	}
+=20
+-	return PRIV_STACK_ADAPTIVE;
++	return ret;
  }
- void test_verifier_prevent_map_lookup(void)   { RUN(verifier_prevent_map=
-_lookup); }
-+void test_verifier_private_stack(void)        { RUN(verifier_private_sta=
-ck); }
- void test_verifier_raw_stack(void)            { RUN(verifier_raw_stack);=
- }
- void test_verifier_raw_tp_writable(void)      { RUN(verifier_raw_tp_writ=
-able); }
- void test_verifier_reg_equal(void)            { RUN(verifier_reg_equal);=
- }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_private_stack.c b=
-/tools/testing/selftests/bpf/progs/verifier_private_stack.c
-new file mode 100644
-index 000000000000..b1fbdf119553
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_private_stack.c
-@@ -0,0 +1,272 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+#include "bpf_experimental.h"
-+
-+/* From include/linux/filter.h */
-+#define MAX_BPF_STACK    512
-+
-+#if defined(__TARGET_ARCH_x86)
-+
-+struct elem {
-+	struct bpf_timer t;
-+	char pad[256];
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, struct elem);
-+} array SEC(".maps");
-+
-+SEC("kprobe")
-+__description("Private stack, single prog")
-+__success
-+__arch_x86_64
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+__jited("	addq	%gs:0x{{.*}}, %r9")
-+__jited("	movl	$0x2a, %edi")
-+__jited("	movq	%rdi, -0x100(%r9)")
-+__naked void private_stack_single_prog(void)
-+{
-+	asm volatile ("			\
-+	r1 =3D 42;			\
-+	*(u64 *)(r10 - 256) =3D r1;	\
-+	r0 =3D 0;				\
-+	exit;				\
-+"	::: __clobber_all);
-+}
-+
-+SEC("raw_tp")
-+__description("No private stack")
-+__success
-+__arch_x86_64
-+__jited("	subq	$0x8, %rsp")
-+__naked void no_private_stack_nested(void)
-+{
-+	asm volatile ("			\
-+	r1 =3D 42;			\
-+	*(u64 *)(r10 - 8) =3D r1;		\
-+	r0 =3D 0;				\
-+	exit;				\
-+"	::: __clobber_all);
-+}
-+
-+__used
-+__naked static void cumulative_stack_depth_subprog(void)
-+{
-+	asm volatile ("				\
-+	r1 =3D 41;				\
-+	*(u64 *)(r10 - 32) =3D r1;		\
-+	call %[bpf_get_smp_processor_id];	\
-+	exit;					\
-+"	:
-+	: __imm(bpf_get_smp_processor_id)
-+	: __clobber_all);
-+}
-+
-+SEC("kprobe")
-+__description("Private stack, subtree > MAX_BPF_STACK")
-+__success
-+__arch_x86_64
-+/* private stack fp for the main prog */
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+__jited("	addq	%gs:0x{{.*}}, %r9")
-+__jited("	movl	$0x2a, %edi")
-+__jited("	movq	%rdi, -0x200(%r9)")
-+__jited("	pushq	%r9")
-+__jited("	callq	0x{{.*}}")
-+__jited("	popq	%r9")
-+__jited("	xorl	%eax, %eax")
-+__naked void private_stack_nested_1(void)
-+{
-+	asm volatile ("				\
-+	r1 =3D 42;				\
-+	*(u64 *)(r10 - %[max_bpf_stack]) =3D r1;	\
-+	call cumulative_stack_depth_subprog;	\
-+	r0 =3D 0;					\
-+	exit;					\
-+"	:
-+	: __imm_const(max_bpf_stack, MAX_BPF_STACK)
-+	: __clobber_all);
-+}
-+
-+__naked __noinline __used
-+static unsigned long loop_callback(void)
-+{
-+	asm volatile ("				\
-+	call %[bpf_get_prandom_u32];		\
-+	r1 =3D 42;				\
-+	*(u64 *)(r10 - 512) =3D r1;		\
-+	call cumulative_stack_depth_subprog;	\
-+	r0 =3D 0;					\
-+	exit;					\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_common);
-+}
-+
-+SEC("raw_tp")
-+__description("Private stack, callback")
-+__success
-+__arch_x86_64
-+/* for func loop_callback */
-+__jited("func #1")
-+__jited("	endbr64")
-+__jited("	nopl	(%rax,%rax)")
-+__jited("	nopl	(%rax)")
-+__jited("	pushq	%rbp")
-+__jited("	movq	%rsp, %rbp")
-+__jited("	endbr64")
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+__jited("	addq	%gs:0x{{.*}}, %r9")
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+__jited("	movl	$0x2a, %edi")
-+__jited("	movq	%rdi, -0x200(%r9)")
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+__naked void private_stack_callback(void)
-+{
-+	asm volatile ("			\
-+	r1 =3D 1;				\
-+	r2 =3D %[loop_callback];		\
-+	r3 =3D 0;				\
-+	r4 =3D 0;				\
-+	call %[bpf_loop];		\
-+	r0 =3D 0;				\
-+	exit;				\
-+"	:
-+	: __imm_ptr(loop_callback),
-+	  __imm(bpf_loop)
-+	: __clobber_common);
-+}
-+
-+SEC("fentry/bpf_fentry_test9")
-+__description("Private stack, exception in main prog")
-+__success __retval(0)
-+__arch_x86_64
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+int private_stack_exception_main_prog(void)
-+{
-+	asm volatile ("			\
-+	r1 =3D 42;			\
-+	*(u64 *)(r10 - 512) =3D r1;	\
-+"	::: __clobber_common);
-+
-+	bpf_throw(0);
-+	return 0;
-+}
-+
-+__used static int subprog_exception(void)
-+{
-+	bpf_throw(0);
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test9")
-+__description("Private stack, exception in subprog")
-+__success __retval(0)
-+__arch_x86_64
-+__jited("	movq	%rdi, -0x200(%r9)")
-+__jited("	pushq	%r9")
-+__jited("	callq")
-+__jited("	popq	%r9")
-+int private_stack_exception_sub_prog(void)
-+{
-+	asm volatile ("			\
-+	r1 =3D 42;			\
-+	*(u64 *)(r10 - 512) =3D r1;	\
-+	call subprog_exception;		\
-+"	::: __clobber_common);
-+
-+	return 0;
-+}
-+
-+int glob;
-+__noinline static void subprog2(int *val)
-+{
-+	glob +=3D val[0] * 2;
-+}
-+
-+__noinline static void subprog1(int *val)
-+{
-+	int tmp[64] =3D {};
-+
-+	tmp[0] =3D *val;
-+	subprog2(tmp);
-+}
-+
-+__noinline static int timer_cb1(void *map, int *key, struct bpf_timer *t=
-imer)
-+{
-+	subprog1(key);
-+	return 0;
-+}
-+
-+__noinline static int timer_cb2(void *map, int *key, struct bpf_timer *t=
-imer)
-+{
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test9")
-+__description("Private stack, async callback, not nested")
-+__success __retval(0)
-+__arch_x86_64
-+__jited("	movabsq	$0x{{.*}}, %r9")
-+int private_stack_async_callback_1(void)
-+{
-+	struct bpf_timer *arr_timer;
-+	int array_key =3D 0;
-+
-+	arr_timer =3D bpf_map_lookup_elem(&array, &array_key);
-+	if (!arr_timer)
-+		return 0;
-+
-+	bpf_timer_init(arr_timer, &array, 1);
-+	bpf_timer_set_callback(arr_timer, timer_cb2);
-+	bpf_timer_start(arr_timer, 0, 0);
-+	subprog1(&array_key);
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test9")
-+__description("Private stack, async callback, potential nesting")
-+__success __retval(0)
-+__arch_x86_64
-+__jited("	subq	$0x100, %rsp")
-+int private_stack_async_callback_2(void)
-+{
-+	struct bpf_timer *arr_timer;
-+	int array_key =3D 0;
-+
-+	arr_timer =3D bpf_map_lookup_elem(&array, &array_key);
-+	if (!arr_timer)
-+		return 0;
-+
-+	bpf_timer_init(arr_timer, &array, 1);
-+	bpf_timer_set_callback(arr_timer, timer_cb1);
-+	bpf_timer_start(arr_timer, 0, 0);
-+	subprog1(&array_key);
-+	return 0;
-+}
-+
-+#else
-+
-+SEC("kprobe")
-+__description("private stack is not supported, use a dummy test")
-+__success
-+int dummy_test(void)
-+{
-+	return 0;
-+}
-+
-+#endif
-+
-+char _license[] SEC("license") =3D "GPL";
+=20
+ static int round_up_stack_depth(struct bpf_verifier_env *env, int stack_=
+depth)
+@@ -6121,7 +6142,8 @@ static int check_max_stack_depth_subprog(struct bpf=
+_verifier_env *env, int idx,
+ 					idx, subprog_depth);
+ 				return -EACCES;
+ 			}
+-			if (subprog_depth >=3D BPF_PRIV_STACK_MIN_SIZE) {
++			if (priv_stack_supported =3D=3D PRIV_STACK_ALWAYS ||
++			    subprog_depth >=3D BPF_PRIV_STACK_MIN_SIZE) {
+ 				subprog[idx].use_priv_stack =3D true;
+ 				subprog_visited[idx] =3D 1;
+ 			}
+@@ -6271,6 +6293,12 @@ static int check_max_stack_depth(struct bpf_verifi=
+er_env *env)
+ 				depth_frame, subtree_depth);
+ 			return -EACCES;
+ 		}
++		if (orig_priv_stack_supported =3D=3D PRIV_STACK_ALWAYS) {
++			verbose(env,
++				"Private stack not supported due to possible nested subprog run\n");
++			ret =3D -EACCES;
++			goto out;
++		}
+ 		if (orig_priv_stack_supported =3D=3D PRIV_STACK_ADAPTIVE) {
+ 			for (int i =3D 0; i < env->subprog_cnt; i++)
+ 				si[i].use_priv_stack =3D false;
 --=20
 2.43.5
 
