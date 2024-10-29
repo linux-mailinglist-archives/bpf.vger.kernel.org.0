@@ -1,167 +1,134 @@
-Return-Path: <bpf+bounces-43400-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43401-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A28A39B5164
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 18:54:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6185E9B517D
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 19:00:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 624BD2825D0
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 17:54:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E836F283E39
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 18:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D23E1DCB31;
-	Tue, 29 Oct 2024 17:53:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A42D1DC068;
+	Tue, 29 Oct 2024 18:00:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="fTJU99wk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hePpxqTf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF361DCB3F
-	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 17:53:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D55738BEA
+	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 18:00:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730224428; cv=none; b=qNX1VtOsy6yMP5/QQA0Kc2aQ4FCslC45Ohz5aY46mt1zip1Gfvf7RIacZ97Kc9YC9J/r0lDkMB3Y0sU4vqnYTfli6R9DIDpe/02OI0vz51BKCwW6DU4xFQqoZyzcesMYJ+j6UAavXkp+L+9Se4ArtMUydmpE4h3/Fnda/aEZm/s=
+	t=1730224820; cv=none; b=HqR40/VtzSGsJnm9Oh7rzXHAgoxT5u3SFV9A8ZteKQKpYKxMO79joRhJ7aVqUGMX8AYDOc8J/SSxBq9bn1WAb0DihcVdQbmQ8gueSTOdqibwEa/P9bO1Fk0BD0Tfj+0ZO1thxW9GlcK7agpyKaUGrR53dMYwgIGXJk+Yig/cgUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730224428; c=relaxed/simple;
-	bh=WziafT2eTMjBjW229ktOTyL8rO7sTGDiAd1/ejN4CL4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y+UbwPjLo5nZmd7JgMUKdnFUZGPi4c8K5m8PUKB2w3G7cWJOtmOQWSOfOt/yXkDlw0ugD7DacN9qNPlD+8we48KxhC3dZI9ce8vwbvChLfaZ9vBAR5A8HtBDhm1T/FvYQGT5Hvc7mCvBRX/WX/xpvzN5Xx0Bqcyux0zkyiUfIUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=fTJU99wk; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20cf3e36a76so57889215ad.0
-        for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 10:53:46 -0700 (PDT)
+	s=arc-20240116; t=1730224820; c=relaxed/simple;
+	bh=JJ2QzGK2SmX1Xay+klYrJbWqtLdf/7rgCWX1MIBjODk=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=Lrx1En1DFezApToq9oULIy2Ea2vhxCgZsvJFpkFwrPh8II/VIEcsp+7VgQjfyX4D22HNo/cJEZnkRwh0bLrlKoxY2+DSFg5DHmbYNt+LA1ZjSWKkfEBRgInv+csZy/r2Q7wb9SqHMzmd+Z1k8rVgWGgtkG0uujAbwPWcJBy9eW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hePpxqTf; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-7ea8c4ce232so4853634a12.0
+        for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 11:00:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1730224426; x=1730829226; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EtH9ZoQPDiHEkDhWLDrz6/hg7ImzZ8y8bzq5j1Y7ZXc=;
-        b=fTJU99wkY+RRoB7XpBbCXXjI/OIxRM6ZKggywcCD1AQ5CkuWr7kIA2cI0s5AbC7PCx
-         xuhVIq/nP7lfy+NqbmQhkHeZVkH+q66Nl1ERPbhAc4SKqzixwiq8/QQHNMS25PoFD7q7
-         nXEsapYO/X7NwwAU+j3NSg6e9zQxmhcjVOy5M=
+        d=gmail.com; s=20230601; t=1730224817; x=1730829617; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tx2LwBUUzV68X4R8AjvQ+LNS4UkzmEZA1sJtxLQ4Iuw=;
+        b=hePpxqTf+2S7fztZHUcWXgxvav3tZ3U2wlBIH/42yLOJtNiW3ywqK+gRKRiaRKWF31
+         mEkh7TvBqDExTI53JbwxnkBKLecoi4TkqK6qxhZqhEi7sEJiRMc1maBg6g/Ip0G5Te2L
+         LsHjVrsKW/kXtzRxe6kCHbqiAZNArjYXqHvhFFbpgiX04L6HaxVGevjoLezMe7lHZeH6
+         pvCLLTOdaiEuOAZ/vBpO20XKN1cEuDInM5JiOKRTkJSoZBGDFzYWiEej0R0qMp+BfY8R
+         lERRHVxYVq0K9ovREyA1iTldh4z1RfsDce8uHhhYIkfzl5+ejakcsN+zciyX5Eizf4Je
+         hxtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730224426; x=1730829226;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EtH9ZoQPDiHEkDhWLDrz6/hg7ImzZ8y8bzq5j1Y7ZXc=;
-        b=eJV6DQ3CsYM4CXyPCAjcy73VGfBK+sfYguefkIX/yyalOR5iBTT+Kk4U77heickh70
-         /rnvj9IrQsin7Xj6FvWBLll9yfYy4ZH6b2n93FkBD8qbVDxa4jyrbN8eATvJefw05ZRt
-         BMAujiME0btO27q/t7nOohreYJTAQjZAOQAY6D/45q1MMzgzW1wog2w9pYuERcAKpc40
-         B80GyDdRsrO9gzbpJ9TYx//P9AE8EfCdShUOeJQks36LPmMHvO4La7H+s7y+TFS0ZTbo
-         7KkK+9j0dzJBW8r2Ob+RUa6gZc5ZOYIkGJU0yAQCeqvtpZTp30Nc1vIKJ6IJz/S0xz3Q
-         aL8w==
-X-Forwarded-Encrypted: i=1; AJvYcCW2LD4B07nfuNJSnbgS1ZGGgRqYb5rd2dsmplHGUFrs3uDlzGho5E3bZDWWGmFIJwo1cBc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyWFYIw/XV9q546tEjjglUfc0SPffWfy7OoGaLp5/98WfaueDdU
-	lIKd0RZddhfIrsRMcj9VysYxU/rTYTbvfSfQtailVv76pMfVBSOJE5kBB+kux/I=
-X-Google-Smtp-Source: AGHT+IFl0sEy36nL06f5S7GHxaLAmGOVL3UnW1+PfSkmqSMmqC2WV99zVZZGGp1yXDhj/okALP3/GQ==
-X-Received: by 2002:a17:902:d507:b0:20e:986a:6e72 with SMTP id d9443c01a7336-210c6c0906bmr183390355ad.30.1730224426104;
-        Tue, 29 Oct 2024 10:53:46 -0700 (PDT)
-Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bbf88490sm68819745ad.114.2024.10.29.10.53.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Oct 2024 10:53:45 -0700 (PDT)
-Date: Tue, 29 Oct 2024 10:53:41 -0700
-From: Joe Damato <jdamato@fastly.com>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org, namangulati@google.com, edumazet@google.com,
-	amritha.nambiar@intel.com, sridhar.samudrala@intel.com,
-	sdf@fomichev.me, peter@typeblog.net, m2shafiei@uwaterloo.ca,
-	bjorn@rivosinc.com, hch@infradead.org, willy@infradead.org,
-	willemdebruijn.kernel@gmail.com, skhawaja@google.com,
-	kuba@kernel.org, Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	"open list:BPF [MISC] :Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Donald Hunter <donald.hunter@gmail.com>, Jan Kara <jack@suse.cz>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Martin Karsten <mkarsten@uwaterloo.ca>,
-	Mina Almasry <almasrymina@google.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next v2 0/6] Suspend IRQs during application busy
- periods
-Message-ID: <ZyEhJXCrZgBLMJgB@LQ3V64L9R2>
-Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
-	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-	namangulati@google.com, edumazet@google.com,
-	amritha.nambiar@intel.com, sridhar.samudrala@intel.com,
-	sdf@fomichev.me, peter@typeblog.net, m2shafiei@uwaterloo.ca,
-	bjorn@rivosinc.com, hch@infradead.org, willy@infradead.org,
-	willemdebruijn.kernel@gmail.com, skhawaja@google.com,
-	kuba@kernel.org, Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	"open list:BPF [MISC] :Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Donald Hunter <donald.hunter@gmail.com>, Jan Kara <jack@suse.cz>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Martin Karsten <mkarsten@uwaterloo.ca>,
-	Mina Almasry <almasrymina@google.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-References: <20241021015311.95468-1-jdamato@fastly.com>
- <57a0e1e7-1079-4055-8072-d9105b70103f@redhat.com>
+        d=1e100.net; s=20230601; t=1730224817; x=1730829617;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tx2LwBUUzV68X4R8AjvQ+LNS4UkzmEZA1sJtxLQ4Iuw=;
+        b=dY8EVJ1TCbZRWNcgBxTQw+IpPOX/9Z9lsc1rRDcsCKK3T0HAhyClnSvW73adSaJlgZ
+         mWw4K1NUeJJlKFdEAEfhzoVd3+xRF7kogXvzqFYpl1Be1pc92PizJ+S0mdUKMotixT8M
+         Nfn6JKjlgxRDHdc9EW6SQydaPPvl7LATax1lhP5AGM6KHBBEYB2LmQqr44XJHiiFUC7x
+         uOst4NPXswdhtRT55th20YDzLwV7HXB0wc7E/IKxbwd/lUY6YfjWisJBQM7DFmrlzDGJ
+         J/X4VajxqwP5XjteEwhV6f+BGrcLJzFVEg5O/D9yfKD66A53emgaSc095/In8CKnNCSu
+         lvfQ==
+X-Gm-Message-State: AOJu0Yw61qX+tPQyICphFQVzAR9XTc0cNDrZ2OowjlBcFGopvMN0mnZ3
+	nWal3cGOv44+LwZh/hvFzRWI7cLK2HzHdhcyI9KI0kxZepqYCZm9xRH3drmxwWFCadatIkosdK+
+	IuJmdK1DGtfKf1omw6LYdGR+b+Qbd4vds
+X-Google-Smtp-Source: AGHT+IHVlo/vSavWQkYyz05GLF9BkN/GpCROTFAWeD/Sho/nFHyxwUVeXBPh+vwgWphVGA2m/P14EONWZ27a5biPKic=
+X-Received: by 2002:a05:6a20:e605:b0:1d9:2994:ca2b with SMTP id
+ adf61e73a8af0-1d9a83d627fmr17831850637.19.1730224817072; Tue, 29 Oct 2024
+ 11:00:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57a0e1e7-1079-4055-8072-d9105b70103f@redhat.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 29 Oct 2024 11:00:04 -0700
+Message-ID: <CAEf4BzbNMDKpnv_Zdg6+OfnW8VAP_af8MyuOWPJPSb7jOzaa9Q@mail.gmail.com>
+Subject: [ANNOUNCEMENT] libbpf v1.5.0 release
+To: bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Oct 29, 2024 at 11:25:18AM +0100, Paolo Abeni wrote:
-> On 10/21/24 03:52, Joe Damato wrote:
+Libbpf v1.5.0 has been released ([0]).
 
-[...]
+It's been almost 7 months (!) since the last release, so we can say
+that v1.5 is a nicely aged release by now. As you can see below from
+the release notes, there aren't all that many new features and APIs in
+libbpf, which I take as a good sign of libbpf's maturity. A big part
+of v1.5 is actually addressing various bugs and usability
+shortcomings, and generally rounding up the overall user experience.
+All of this is important and these improvements are driven by various
+real-world production use cases. See the detailed changelog for
+yourself, below.
 
-> 
-> The changes makes sense to me, and I could not find any obvious issue in
-> the patches.
-> 
-> I think this deserve some - even basic - self-tests coverage. Note that
-> you can enable GRO on veth devices to make NAPI instances avail there.
-> 
-> Possibly you could opt for a drivers/net defaulting to veth usage and
-> allowing the user to select real H/W via env variables.
+Thanks to everyone contributing fixes, features, code reviews, as well
+as feature requests and bug reports!
 
-Sorry, Paolo, but I took a cursory look at veth and I need to object
-more strongly to your feedback here.
+## User space-side features and APIs
+- libbpf can now open (but not load!) BPF objects of non-native
+endianness, enabling cross-architecture support for BPF skeleton
+generation and BPF object introspection;
+- BPF skeleton will now auto-attach `SEC(".struct_ops")` maps as part
+of `<skeleton>__attach()` call;
+- BPF kprobe session programs support (`SEC("kprobe.session")`);
+- allow specifying kernel module name for fentry/fexit BPF programs
+(`SEC(fentry/module:function`);
+- libbpf recognizes `LIBBPF_LOG_LEVEL` environment variable, which can
+be used to set default log verboseness;
+- BPF ringbuf APIs that limit maximum number of consumed records at a
+time (`ring_buffer__consume_n()`, `ring__consume_n()`);
+- distilled BTF support (`btf__distill_base()`, `btf__relocate()`);
+- BPF link-based attachment of `BPF_PROG_TYPE_SOCKMAP` programs
+(`bpf_program__attach_sockmap()`);
+- `bpf_object__token_fd()` API to fetch BPF token FD of a BPF object, if any;
 
-My understanding (which could be incorrect) is that neither veth nor
-netdevsim use IRQs.
+## BPF-side features and APIs
+- fixes for fetching syscall arguments on arm64, s390x, risc-v architectures;
+- better GCC-BPF source code compatibility;
+- `__bpf_fastcall` support for a few BPF helpers;
+- `__uptr` annotation definition added to `bpf/bpf_helpers.h` API header;
 
-The whole purpose of this series is to block IRQs while data is
-being busy polled to increase efficiency. That's in the cover
-letter.
+## Bug fixes
+- fixes and improvements around handling missing and nulled out
+`struct_ops` programs;
+- fixed `mmap()`-ing logic for global data, fixing interop between
+generic `bpf_object__open()` APIs and BPF subskeletons;
+- BPF skeleton backwards compatibility handling fixes;
+- handle LTO-produced `*.llvm.<hash>` symbols better;
+- feature detection fixes in the presence of BPF token inside user namespace;
+- older kernels have broken PID filtering logic for multi-uprobes,
+libbpf now detects this and avoids the use of multi-uprobes for USDTs;
+- fix accidental drop of `FD_CLOEXEC` flag during BPF map reuse;
+- few BTF dumper formatting fixes;
+- a few more small fixes all around.
 
-If neither of the drivers we'd use to simulate this in selftest use
-IRQs, how could we build a selftest which ensures IRQs are correctly
-suspended during busy periods without first making considerable
-changes to either (or both?) drivers?
+  [0] https://github.com/libbpf/libbpf/releases/tag/v1.5.0
+  [1] Full Changelog: https://github.com/libbpf/libbpf/compare/v1.4.0...v1.5.0
 
-Respectfully: I don't think it's appropriate to block this series on
-that much additional work.
-
-Please reconsider and let me know how to proceed.
+-- Andrii
 
