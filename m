@@ -1,83 +1,62 @@
-Return-Path: <bpf+bounces-43345-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43346-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E7989B3F1A
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 01:23:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 440709B3F27
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 01:25:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D19F1283AFD
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 00:23:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09068283E66
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 00:25:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F3BA937;
-	Tue, 29 Oct 2024 00:23:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0A45DF78;
+	Tue, 29 Oct 2024 00:25:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="buhlFMtU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JaWpKPPu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A5E17BA9;
-	Tue, 29 Oct 2024 00:23:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18448B664;
+	Tue, 29 Oct 2024 00:25:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730161426; cv=none; b=Ro3XpI9F3fJDyc9gma6OqeT20r2k3al0irpZp/EOEObYtTBInZLVcFSrUKCeRN+lo+x6RL1xVlheeP/rpBFj0U8vVoYngZBlvUwSfzm+uY1OMYA39nLNH6v5q2SBEsQiXdaXtdWYfwF2M6BerTm+Ycks1KlzsXwu+6mDnKUkRNo=
+	t=1730161513; cv=none; b=KkFbYlFQJ6q703zLP4F/+1BeH3oulTlBclk266jeG1n9EqmO6/KsaRqC3KDKN0ncxDcCdPJtwCpOF9Jge+zpxftzOzvqT1/XYtQYOQ9fsonwaEhlIdZBvm061pF2n1cgRBy9Lg8wM80kV188gW81cPKpUurrecV3hdQW5vyhmps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730161426; c=relaxed/simple;
-	bh=neSRulGg21VOz6IX1JMC+NsXnEMdJGtny2SHtH3jLko=;
+	s=arc-20240116; t=1730161513; c=relaxed/simple;
+	bh=/Tjxq/NKVAGeYhr8hhPzIgNsqR+DMX+UpHS/JeUS2Fw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mPZRYcG2newY6ssiyH8u5/2XclHgeV+cwfMID17AHsZJ0K7UVoAVypctq01PTCv5a7eVFFgmdMkggtzSZD1GQuxt9CosmXarKADQV21SP57ycOOo2QQwweKn0vdJC5BwHj/ODnApZikexrMiRh4C1Wd2MVtYFbKXo4HTbZU/fbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=buhlFMtU; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730161424; x=1761697424;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=neSRulGg21VOz6IX1JMC+NsXnEMdJGtny2SHtH3jLko=;
-  b=buhlFMtUWvGS6xX8I89Z+Oh6ZXj0AVEnd1dIIXkz56IGnGGNDuJ9ng0Q
-   iImM3Q+S/uRMBPW0rC5o6iiRWM1JL68vzUu5BvQrQ57WfC3StvoV0+3El
-   JCSz5Kug5KmVL/hVkX1ff/8frvQ+geSMvt6ttFCjC382hnQT6ATTiEmU0
-   BlNLDLHC3hnV+lsOgwfpvRnJVjW/lOiaRxBkIwTzw53urDYyXee3qRPLU
-   bp06Ghnkd6MSIW2aVsEgNY2hoVhmAl6Cvujja8NYwMow5erwJhhP+nuZ4
-   u/3Ba1SkMtSegsQb9vDs1koR3pYTdsqmat1x1K7CiUqdXZVfApfvTAXzy
-   A==;
-X-CSE-ConnectionGUID: RXSMix+QQOi1rTgplGTlZA==
-X-CSE-MsgGUID: hSvRSwQYRQuhslMwjKKpiw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11239"; a="29684363"
-X-IronPort-AV: E=Sophos;i="6.11,240,1725346800"; 
-   d="scan'208";a="29684363"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2024 17:23:38 -0700
-X-CSE-ConnectionGUID: 3ZaieECdSAG/34BnJsoN6w==
-X-CSE-MsgGUID: 7PbfxnPeTIuS8TDtxy2//A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,240,1725346800"; 
-   d="scan'208";a="81880925"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 28 Oct 2024 17:23:33 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t5a1C-000d3Y-2Y;
-	Tue, 29 Oct 2024 00:23:30 +0000
-Date: Tue, 29 Oct 2024 08:23:03 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
-	willemb@google.com, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com
-Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH net-next v3 04/14] net-timestamp: introduce
- TS_SCHED_OPT_CB to generate dev xmit timestamp
-Message-ID: <202410290828.ZqgMO8Xc-lkp@intel.com>
-References: <20241028110535.82999-5-kerneljasonxing@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bNd0ufZ8PLo6Wv/u5m+dXMedZSIqIYi/YIIfxYO2K2WRKEYnoNcdf45yiaJ0Ob22SynVTk/BZWNovFAYspo8fnehZn53Jk+GhcxAVYE0XZzSR42AXrpEFoeYBs+aTts3fUJcfunERzacI19iA+6xUGz94IDnuE30IHMfa/alh5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JaWpKPPu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B08DCC4CEC3;
+	Tue, 29 Oct 2024 00:25:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730161512;
+	bh=/Tjxq/NKVAGeYhr8hhPzIgNsqR+DMX+UpHS/JeUS2Fw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=JaWpKPPuPIQGsiJB71o48pTADOP1XkYsaIScS8GYsYY5UUISs2CEFjJYHrUQ22OpH
+	 b67gxCNvAgJXeoe9jBVek8lZCgs8sZmCSZRxTmB1kGrEtyw6nSkiIb1cVl6r/MRtfg
+	 KNqmPYKAIw+0/yIsYXBtJLIDFm17qhBALKGgZxFZDqd23VDa9dYzUlMoFLktzN1V6R
+	 4nIVznY7PpAnUbLLEpYHkBxynofNZImTVrIeKZWR8ovZtIbwFsuCbRwJDh1ov+Udan
+	 pnBx8JHrsRn+YZzae0tPB52vDqQ/YaaJIcrWam0b1gTcaFmbDyfZ726XDx+DtIaaEx
+	 saF7inQalAFag==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 50A46CE0864; Mon, 28 Oct 2024 17:25:12 -0700 (PDT)
+Date: Mon, 28 Oct 2024 17:25:12 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
+Subject: [PATCH rcu v4 14/15] refscale: Add srcu_read_lock_lite() support
+ using "srcu-lite"
+Message-ID: <6a9cf878-e08a-498d-857a-a9fd4bfd6c12@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
+ <20241015161112.442758-14-paulmck@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,59 +65,75 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241028110535.82999-5-kerneljasonxing@gmail.com>
+In-Reply-To: <20241015161112.442758-14-paulmck@kernel.org>
 
-Hi Jason,
+This commit creates a new srcu-lite option for the refscale.scale_type
+module parameter that selects srcu_read_lock_lite() and
+srcu_read_unlock_lite().
 
-kernel test robot noticed the following build errors:
+[ paulmck: Apply Dan Carpenter feedback. ]
 
-[auto build test ERROR on net-next/main]
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: <bpf@vger.kernel.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jason-Xing/net-timestamp-reorganize-in-skb_tstamp_tx_output/20241028-192036
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20241028110535.82999-5-kerneljasonxing%40gmail.com
-patch subject: [PATCH net-next v3 04/14] net-timestamp: introduce TS_SCHED_OPT_CB to generate dev xmit timestamp
-config: arm-randconfig-001-20241029 (https://download.01.org/0day-ci/archive/20241029/202410290828.ZqgMO8Xc-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 14.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241029/202410290828.ZqgMO8Xc-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410290828.ZqgMO8Xc-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   net/core/skbuff.c: In function 'timestamp_call_bpf':
->> net/core/skbuff.c:5640:9: error: implicit declaration of function 'BPF_CGROUP_RUN_PROG_SOCK_OPS_SK'; did you mean 'BPF_CGROUP_RUN_PROG_SOCK_OPS'? [-Wimplicit-function-declaration]
-    5640 |         BPF_CGROUP_RUN_PROG_SOCK_OPS_SK(&sock_ops, sk);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |         BPF_CGROUP_RUN_PROG_SOCK_OPS
-
-
-vim +5640 net/core/skbuff.c
-
-  5624	
-  5625	static void timestamp_call_bpf(struct sock *sk, int op, u32 nargs, u32 *args)
-  5626	{
-  5627		struct bpf_sock_ops_kern sock_ops;
-  5628	
-  5629		memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
-  5630		if (sk_fullsock(sk)) {
-  5631			sock_ops.is_fullsock = 1;
-  5632			sock_owned_by_me(sk);
-  5633		}
-  5634	
-  5635		sock_ops.sk = sk;
-  5636		sock_ops.op = op;
-  5637		if (nargs > 0)
-  5638			memcpy(sock_ops.args, args, nargs * sizeof(*args));
-  5639	
-> 5640		BPF_CGROUP_RUN_PROG_SOCK_OPS_SK(&sock_ops, sk);
-  5641	}
-  5642	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 0db9db73f57f2..338e7c5ac44a1 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -212,6 +212,36 @@ static const struct ref_scale_ops srcu_ops = {
+ 	.name		= "srcu"
+ };
+ 
++static void srcu_lite_ref_scale_read_section(const int nloops)
++{
++	int i;
++	int idx;
++
++	for (i = nloops; i >= 0; i--) {
++		idx = srcu_read_lock_lite(srcu_ctlp);
++		srcu_read_unlock_lite(srcu_ctlp, idx);
++	}
++}
++
++static void srcu_lite_ref_scale_delay_section(const int nloops, const int udl, const int ndl)
++{
++	int i;
++	int idx;
++
++	for (i = nloops; i >= 0; i--) {
++		idx = srcu_read_lock_lite(srcu_ctlp);
++		un_delay(udl, ndl);
++		srcu_read_unlock_lite(srcu_ctlp, idx);
++	}
++}
++
++static const struct ref_scale_ops srcu_lite_ops = {
++	.init		= rcu_sync_scale_init,
++	.readsection	= srcu_lite_ref_scale_read_section,
++	.delaysection	= srcu_lite_ref_scale_delay_section,
++	.name		= "srcu-lite"
++};
++
+ #ifdef CONFIG_TASKS_RCU
+ 
+ // Definitions for RCU Tasks ref scale testing: Empty read markers.
+@@ -1082,9 +1112,10 @@ ref_scale_init(void)
+ 	long i;
+ 	int firsterr = 0;
+ 	static const struct ref_scale_ops *scale_ops[] = {
+-		&rcu_ops, &srcu_ops, RCU_TRACE_OPS RCU_TASKS_OPS &refcnt_ops, &rwlock_ops,
+-		&rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops, &clock_ops, &jiffies_ops,
+-		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
++		&rcu_ops, &srcu_ops, &srcu_lite_ops, RCU_TRACE_OPS RCU_TASKS_OPS
++		&refcnt_ops, &rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops,
++		&clock_ops, &jiffies_ops, &typesafe_ref_ops, &typesafe_lock_ops,
++		&typesafe_seqlock_ops,
+ 	};
+ 
+ 	if (!torture_init_begin(scale_type, verbose))
 
