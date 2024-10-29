@@ -1,90 +1,131 @@
-Return-Path: <bpf+bounces-43407-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43408-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19EA99B52BD
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 20:30:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 001509B52D5
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 20:36:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67F051F2426A
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 19:30:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8742282DAF
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 19:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1216D197A93;
-	Tue, 29 Oct 2024 19:30:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 739692076D0;
+	Tue, 29 Oct 2024 19:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pPf3m0m0"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="chyg9Pjg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4DF17DE36
-	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 19:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64A42076AB;
+	Tue, 29 Oct 2024 19:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730230223; cv=none; b=dqQskj1Syl7zEFh0E8vfYT0JTgJd39iT5+jTt0eMUJpIrITswBNGTm158gqVFqCGangkBUeWopBdVeC8w/msTvCQXqBFwCBZX0zLTXGYhS4/N0MaB1fqJd5NYYfjIrmtHJzBU4RVbOl8gUU5nWkVQqjfGm7pTjOI0ZojGDJTT2I=
+	t=1730230583; cv=none; b=WE5AVy8dlAaZW87NrAENB1TQMakrVPMXsYCmc2mnEvi45x1I1rwRZYY7zPljy25XKfiYVy/W9eZiQcXcqYboyR4WWzOGr+uUGZfywYM5F+cH40ghjpwxkQsDxr5R1a6ilUWHGLUgC8wYYL34hs8fcssugFKo5zvtPyqnSSiVF1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730230223; c=relaxed/simple;
-	bh=7s32WaC6kpY9pg/rSDmDC4Cmb9HC3DVd53SSWKySiJU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Tf62Gv39BEco3Pc9V6o+32J1pP8JhoZZjBQl6fREA5mHzi7Jqx7bDVF1TbahDF5u3mM16cCvEb2cW2prKC6o7rM2qAlS2+Y+ULwuPcPiQWI5wB5BgAjft0jKEt+xXi/R1xPDIDJN/tIt5BdurN6rYg3ggXYU8FIaDsrpwJdOhMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pPf3m0m0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29354C4CECD;
-	Tue, 29 Oct 2024 19:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730230223;
-	bh=7s32WaC6kpY9pg/rSDmDC4Cmb9HC3DVd53SSWKySiJU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=pPf3m0m0NfJORakuX0W+jOcuOH0WwAuwuzMVYA38GXsQGSscCeN1HyErSMbdfzJIU
-	 6ojoEkJNrDlu8zy4zrEmM9/Y2Ktq/T55jcFPnYtQwV4iXaoHR32HDPocZRR0cMr++k
-	 0518IeGoGd1dhOqs5PANhBnP8i8hsUOCPdlOjuxEAB8G/8EfwLWL+rVOYeJpMe0fJN
-	 /cqTDvFBbmQQRMz1VZ0xz6V6Q8zBauRyo/OcqUsapT7cVRhtihbpM9Db+2O0SVaWu7
-	 BhIxTTWint/fgj+LMEtsCvm+yHM1tqQFtXj4T93ln8aztp9nyIWpx44cFP3Qa7NeCN
-	 iKW4HPhLa/dZA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB48B380AC08;
-	Tue, 29 Oct 2024 19:30:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1730230583; c=relaxed/simple;
+	bh=RwWoWVgaDpPPX60vTGGSi501SyjRryOxD96ACvk1Ufc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GzubABpf0e/bVloN9SQVwHsvPhpFxPYQJesRuxiJB09/CaaQ0KBf/11eKge1HiDRB+TJmB+HwcLGVywb39NtSseUYiHBX66Fft6apn7evPofsXVEt18nr9GFSCVkpruCaiLk6ZiLnNp7zvbKebCCsZ3X0HrVGnIufm+bGLWtWvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=chyg9Pjg; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <1d6b9d1d-6ce4-488b-9884-3025f06c5e3f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1730230577;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0fdfkYeCo2M3OehFrjF+LyPfFmwW+N0QFnqT8DPIsjw=;
+	b=chyg9Pjgq1SJVlFlHn5zNxEjGIt/xyKo85vJXNJKxgpZlGt4kJT/aSMnJRwZDtILOA/oap
+	rP2TohvqW4s+Rma9KgqxLB2BahZWk8I7GZD6DB3n6drJck7syb2dmYycqGTw28D9l36bGd
+	5CW9QHgqS7DrZy7DIyxMemBxfwAh25g=
+Date: Tue, 29 Oct 2024 12:36:07 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] selftests/bpf: remove xdp_synproxy IP_DF check
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <173023023079.798497.18305131050147360052.git-patchwork-notify@kernel.org>
-Date: Tue, 29 Oct 2024 19:30:30 +0000
-References: <20241025031952.1351150-1-vincent.mc.li@gmail.com>
-In-Reply-To: <20241025031952.1351150-1-vincent.mc.li@gmail.com>
-To: Vincent Li <vincent.mc.li@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@kernel.org
+Subject: Re: [PATCH bpf-next] selftests/bpf: Use make/remove netns helpers in
+ mptcp
+To: Geliang Tang <geliang@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Geliang Tang <tanggeliang@kylinos.cn>, netdev@vger.kernel.org,
+ mptcp@lists.linux.dev, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Matthieu Baerts <matttbe@kernel.org>
+References: <99e57c7470ac338da18f02ef3af5936c8b21f5a7.1729757268.git.tanggeliang@kylinos.cn>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <99e57c7470ac338da18f02ef3af5936c8b21f5a7.1729757268.git.tanggeliang@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (net)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Fri, 25 Oct 2024 03:19:52 +0000 you wrote:
-> In real world production websites, the IP_DF flag
-> is not always set for each packet from these websites.
-> the IP_DF flag check breaks Internet connection to
-> these websites for home based firewall like BPFire
-> when XDP synproxy program is attached to firewall
-> Internet facing side interface. see [0]
+On 10/24/24 1:11 AM, Geliang Tang wrote:
+> From: Geliang Tang <tanggeliang@kylinos.cn>
 > 
-> [...]
+> New netns selftest helpers make_netns() and remove_netns() has been added
+> in network_helpers.c, let's use them in mptcp selftests too.
+> 
+> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+> ---
+>   tools/testing/selftests/bpf/prog_tests/mptcp.c | 18 ++++++++++++------
+>   1 file changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> index d2ca32fa3b21..8276398f7d6a 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> @@ -66,12 +66,18 @@ struct mptcp_storage {
+>   
+>   static struct nstoken *create_netns(void)
+>   {
+> -	SYS(fail, "ip netns add %s", NS_TEST);
+> -	SYS(fail, "ip -net %s link set dev lo up", NS_TEST);
+> +	struct nstoken *nstoken;
+>   
+> -	return open_netns(NS_TEST);
+> -fail:
+> -	return NULL;
+> +	if (make_netns(NS_TEST) < 0)
+> +		return NULL;
+> +
+> +	nstoken = open_netns(NS_TEST);
+> +	if (!nstoken) {
+> +		log_err("open netns %s failed", NS_TEST);
+> +		remove_netns(NS_TEST);
+> +	}
+> +
+> +	return nstoken;
+>   }
 
-Here is the summary with links:
-  - selftests/bpf: remove xdp_synproxy IP_DF check
-    https://git.kernel.org/bpf/bpf-next/c/0ab7cd1f1864
+This can be further simplified by using the netns_new() and netns_free(). Then 
+create_netns() and remove_netns() can be removed from mptcp.c. Take a look at a 
+recent usage in prog_tests/btf_skc_cls_ingress.c.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+pw-bot: cr
 
+>   
+>   static void cleanup_netns(struct nstoken *nstoken)
+> @@ -79,7 +85,7 @@ static void cleanup_netns(struct nstoken *nstoken)
+>   	if (nstoken)
+>   		close_netns(nstoken);
+>   
+> -	SYS_NOFAIL("ip netns del %s", NS_TEST);
+> +	remove_netns(NS_TEST);
+>   }
+>   
+>   static int start_mptcp_server(int family, const char *addr_str, __u16 port,
 
 
