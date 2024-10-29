@@ -1,109 +1,151 @@
-Return-Path: <bpf+bounces-43420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A57459B54FE
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 22:24:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA6C59B5509
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 22:30:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15110B216BD
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 21:24:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71E9E1F23BA0
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 21:30:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83159209F4D;
-	Tue, 29 Oct 2024 21:24:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5132720A5E0;
+	Tue, 29 Oct 2024 21:30:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fCwtmL7y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vGCm08jv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ECB11422AB;
-	Tue, 29 Oct 2024 21:24:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99F8206E61;
+	Tue, 29 Oct 2024 21:30:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730237046; cv=none; b=O0kWAfwWGSfv0aXo1b/7/P8vz6gPLBYuascddJbx5tC82kMqz2ajVNhLNPerTVY6nny02HN5FJvCnSMwAg1BwXoxVJHS4sY6I1xkETHQIntMj+1nUO0VkeEGbNW6Ky3S7xho3kuiBMBxHMC+g5NTYa6H04FFe2+KHk2JXptsv+g=
+	t=1730237404; cv=none; b=ox4P9iFYKRupq0h92Yv5bRRadZyj0wn5trxM8wgTyaGJRZsIhQ07HXF737/UKRHar9uQG6D0MITA2MANsfcP6l8ScqeBOuKFU7XJszZOGNfpcrc8htuekpPglyxyAv5adnwRvzrITtDcViH+KYkV//KufD9bnhcx0Lz6D3OPc0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730237046; c=relaxed/simple;
-	bh=AlDqv16DLyqJX0LYL4Yc+pwGFq9PSpoMiRq+vxU8mXM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nxyKUEk7wbcbItOIRHQ0uvoy/JkKHHIgKnbea4VuPmiv2k1zXFaCh2MZIteFyJUuN1o31RT8fUQ+U0Tbktk+QFX3hMjY4SPU52mjsREWYwBL70DXy0M8DW3FXiWGCFFEbD1pPWslTE9JUi2IHryKJ54RTdfvmQ/J8qHxmVOAbgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fCwtmL7y; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6e2e3e4f65dso63396417b3.3;
-        Tue, 29 Oct 2024 14:24:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730237043; x=1730841843; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AlDqv16DLyqJX0LYL4Yc+pwGFq9PSpoMiRq+vxU8mXM=;
-        b=fCwtmL7yHeC8b7EZdNAyQ8O7+yUSaCPILZtSsQFkdUBkXpZDStuMazvXTLpj1AFhbk
-         abrm97vdtddFM9gtTm91tfXbozWIJyjTOGoWoPB61C960Racmxi7/SmyCJf7i4RE/S0A
-         RF90uOkjjbBf29HqSMOYB2O4SLIVjqJ7AL+DoyEhYmSb5Hld1OZkx00QV9YCtTEjooYr
-         kBn0XKCb7yiXt16GhWRLJEmFLjG1Y9acv1qbwR+7jm+bu3jZDjusFh804u/BJPCJw1iW
-         UzXzhfEeFCCCbztbomHVfmBwIkBPf9X+lz0TGhwJ1FfuP9gCjIlAY4krz5/x5bzWAQUw
-         yPdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730237043; x=1730841843;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AlDqv16DLyqJX0LYL4Yc+pwGFq9PSpoMiRq+vxU8mXM=;
-        b=KlDNNhUQPgOzatbuaS7pCmJ+yEBYCZKHL7yoNYBjKPjNElrwUbTbnRIRBdcqy5r4G9
-         OfxLH1yndWXhHT1UytyEHVHTMb13n95fYFrWrbqalNsmPYZWKzqQ+NIdEWWb1nDTcMEl
-         tNXg5DgKRFCX/TILfbbV9f/JNqsOmyjGhofG9v0vNnc1gcXwLuP/fsmQrMCflnLMMIMH
-         kQK7ZdZVovNQkAje2s+KzmCkqFOb42zonmcidymLC2uHk/nL055f2ta9/xLa92R+1300
-         SIFnalkO+TGuRk9pCks4XeS1i9Lk7xoQlktm0PF3LvauECsCmMDjfjExwNGOEbEPtYrJ
-         uEeA==
-X-Forwarded-Encrypted: i=1; AJvYcCUXsi1kVRo/i8NAAR3+W3tbxUYDKe9k+9Um1NuiVkbDQkN/9DYyqQApv1rswZAKatCRNK29lgq9d3fU+Bhh@vger.kernel.org, AJvYcCVdYk7IBBGpLBmzmFJHwXpqnHGUFzfWrzYFeBekwKfAJiJLNkBxXH7CBdWlXWYK8T5z2ehhqUQR@vger.kernel.org, AJvYcCWwF1NLk86fh7vqoo+jsEzvOEQrumt0TzEsx+3+FsckReLVYLXDuPMQyN/j3aD6S5xIUlE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPHzSoendm6cD/XiqASbFpJa0Bo/sWoCXl1g+d6i6U1iNzcwEb
-	6AIZU/BKkY/Xxta30FtzUnT1vF6ZfPGoh2UYDbKbaqIoT3N8oM2Dc1loVCn7DV0M6uEl/qDAoeH
-	B/UsaKGA7kSO0OYHgHbww1B0tD8Y=
-X-Google-Smtp-Source: AGHT+IHWVqyl2ahMFQfMzr5lYHfv4WPYfQSq7O3ZPsrjne23k4ROGsNq13egSmoVGtGYbVJK1jbALw5kP6hguOivOjQ=
-X-Received: by 2002:a05:690c:4989:b0:6e3:41d4:1016 with SMTP id
- 00721157ae682-6e9d8a7620dmr149368057b3.25.1730237043143; Tue, 29 Oct 2024
- 14:24:03 -0700 (PDT)
+	s=arc-20240116; t=1730237404; c=relaxed/simple;
+	bh=Mqn9O4xvpTW1HHOcatck9tYVt4w30aybpr+CRQaaIGg=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=KhKHplyqLakPvd2tBKjuUTKyOUFDnU0f95EQaH+Pk/5RJ+4iKeF68J7MJU1OUXLV60x7JAnyM83vo2djp+0heFC7o4MkDusc3XmUyKd18evnIhEI8SoKr1wbEflGzT24vKyVa8Tf28s5ODJljRNSz6udCvlF6VsMSTZd49ar7V4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vGCm08jv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBC6DC4CEE5;
+	Tue, 29 Oct 2024 21:30:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730237404;
+	bh=Mqn9O4xvpTW1HHOcatck9tYVt4w30aybpr+CRQaaIGg=;
+	h=From:Date:To:cc:Subject:In-Reply-To:References:From;
+	b=vGCm08jvIxbC+ljeFbZVwupK47pzGmsybO74lkH1pbhtD76zKwBHiO0hRY5IIVf7J
+	 PWfhYbVwe3kDGWtcxEuo09H39uapWG6PFaif1df2oqOukC/xrzRfsK3HBloyytA8BZ
+	 oUx6P9aevpw4IzozKERnAmqRXwNst7EFj0Rx3Qym2FTj62l/g1bYeuQj1iM36IqTRW
+	 150O0AKpUD79IlHSIr9ls1/KDfKMAZzLi2M1TfTCQ4MsKPSi65b8xhC6BXb1X31akP
+	 K4lDYysqdZXVwEHo0D2iNuwEJ2+pK5dc/yviZ7BacOXFuIpTJ20Drg98DN0rK+WxSY
+	 3EjzNmtqim2XA==
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ij@kernel.org>
+Date: Tue, 29 Oct 2024 23:29:58 +0200 (EET)
+To: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
+    kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, 
+    netfilter-devel@vger.kernel.org, kadlec@netfilter.org, 
+    coreteam@netfilter.org, pablo@netfilter.org, bpf@vger.kernel.org, 
+    joel.granados@kernel.org, linux-fsdevel@vger.kernel.org, kees@kernel.org, 
+    mcgrof@kernel.org, ncardwell@google.com, 
+    koen.de_schepper@nokia-bell-labs.com, g.white@CableLabs.com, 
+    ingemar.s.johansson@ericsson.com, mirja.kuehlewind@ericsson.com, 
+    cheshire@apple.com, rs.ietf@gmx.at, Jason_Livingood@comcast.com, 
+    vidhi_goel@apple.com
+Subject: Re: [PATCH v4 net-next 14/14] net: sysctl: introduce sysctl
+ SYSCTL_FIVE
+In-Reply-To: <20241021215910.59767-15-chia-yu.chang@nokia-bell-labs.com>
+Message-ID: <06fe294a-8c7c-36a7-7244-dcdab26adcf3@kernel.org>
+References: <20241021215910.59767-1-chia-yu.chang@nokia-bell-labs.com> <20241021215910.59767-15-chia-yu.chang@nokia-bell-labs.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241019071149.81696-1-danielyangkang@gmail.com>
- <c7d0503b-e20d-4a6d-aecf-2bd7e1c7a450@linux.dev> <CAGiJo8R2PhpOitTjdqZ-jbng0Yg=Lxu6L+6FkYuUC1M_d10U2Q@mail.gmail.com>
- <5c8fb835-b0cb-428b-ab07-e20f905eb19f@linux.dev> <CAGiJo8RJ+0K-JYtCq4ZLg_4eq7HDkib9iwE-UTnimgEQE8rgtg@mail.gmail.com>
- <c0e98969-a75e-45a0-803c-1d69bf02623b@linux.dev>
-In-Reply-To: <c0e98969-a75e-45a0-803c-1d69bf02623b@linux.dev>
-From: Daniel Yang <danielyangkang@gmail.com>
-Date: Tue, 29 Oct 2024 14:23:08 -0700
-Message-ID: <CAGiJo8TmtUq3ogd+4gfSXM4MpFV48EhOTAGwFVAuGhwNaYFzCw@mail.gmail.com>
-Subject: Re: [PATCH net] Drop packets with invalid headers to prevent KMSAN infoleak
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"open list:BPF [NETWORKING] (tcx & tc BPF, sock_addr)" <bpf@vger.kernel.org>, 
-	"open list:BPF [NETWORKING] (tcx & tc BPF, sock_addr)" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	syzbot+346474e3bf0b26bd3090@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 
-On Sun, Oct 27, 2024 at 10:42=E2=80=AFPM Yonghong Song <yonghong.song@linux=
-.dev> wrote:
-> It might be due to your .config file.
-> The 'struct syscall_trace_enter' is defined in kernel/trace/trace.h,
-> which is used in kernel/trace/trace_syscalls.c. Maybe your config
-> does not have CONFIG_FTRACE_SYSCALLS?
-I did add it to my config but another error popped up after I tried to
-rerun the tests. I just ended up using the vmtest.sh script and got
-the tests working. Seems like there should be a template config file
-or something to make building locally more convenient. Anyways, thanks
-for the help.
+On Mon, 21 Oct 2024, chia-yu.chang@nokia-bell-labs.com wrote:
 
-- Daniel
+> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> 
+> Add SYSCTL_FIVE for new AccECN feedback modes of net.ipv4.tcp_ecn.
+> 
+> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> ---
+>  include/linux/sysctl.h | 17 +++++++++--------
+>  kernel/sysctl.c        |  3 ++-
+>  2 files changed, 11 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+> index aa4c6d44aaa0..37c95a70c10e 100644
+> --- a/include/linux/sysctl.h
+> +++ b/include/linux/sysctl.h
+> @@ -37,21 +37,22 @@ struct ctl_table_root;
+>  struct ctl_table_header;
+>  struct ctl_dir;
+>  
+> -/* Keep the same order as in fs/proc/proc_sysctl.c */
+> +/* Keep the same order as in kernel/sysctl.c */
+>  #define SYSCTL_ZERO			((void *)&sysctl_vals[0])
+>  #define SYSCTL_ONE			((void *)&sysctl_vals[1])
+>  #define SYSCTL_TWO			((void *)&sysctl_vals[2])
+>  #define SYSCTL_THREE			((void *)&sysctl_vals[3])
+>  #define SYSCTL_FOUR			((void *)&sysctl_vals[4])
+> -#define SYSCTL_ONE_HUNDRED		((void *)&sysctl_vals[5])
+> -#define SYSCTL_TWO_HUNDRED		((void *)&sysctl_vals[6])
+> -#define SYSCTL_ONE_THOUSAND		((void *)&sysctl_vals[7])
+> -#define SYSCTL_THREE_THOUSAND		((void *)&sysctl_vals[8])
+> -#define SYSCTL_INT_MAX			((void *)&sysctl_vals[9])
+> +#define SYSCTL_FIVE			((void *)&sysctl_vals[5])
+> +#define SYSCTL_ONE_HUNDRED		((void *)&sysctl_vals[6])
+> +#define SYSCTL_TWO_HUNDRED		((void *)&sysctl_vals[7])
+> +#define SYSCTL_ONE_THOUSAND		((void *)&sysctl_vals[8])
+> +#define SYSCTL_THREE_THOUSAND		((void *)&sysctl_vals[9])
+> +#define SYSCTL_INT_MAX			((void *)&sysctl_vals[10])
+>  
+>  /* this is needed for the proc_dointvec_minmax for [fs_]overflow UID and GID */
+> -#define SYSCTL_MAXOLDUID		((void *)&sysctl_vals[10])
+> -#define SYSCTL_NEG_ONE			((void *)&sysctl_vals[11])
+> +#define SYSCTL_MAXOLDUID		((void *)&sysctl_vals[11])
+> +#define SYSCTL_NEG_ONE			((void *)&sysctl_vals[12])
+>  
+>  extern const int sysctl_vals[];
+>  
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 79e6cb1d5c48..68b6ca67a0c6 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -82,7 +82,8 @@
+>  #endif
+>  
+>  /* shared constants to be used in various sysctls */
+> -const int sysctl_vals[] = { 0, 1, 2, 3, 4, 100, 200, 1000, 3000, INT_MAX, 65535, -1 };
+> +const int sysctl_vals[] = { 0, 1, 2, 3, 4, 5, 100, 200, 1000, 3000, INT_MAX,
+> +			   65535, -1 };
+>  EXPORT_SYMBOL(sysctl_vals);
+>  
+>  const unsigned long sysctl_long_vals[] = { 0, 1, LONG_MAX };
+
+Hi,
+
+I know I suggested you to put this change into this first batch of 
+AccECN patches but I've since come to other thoughts.
+
+I think this should be moved to very tail of AccECN changes in the series
+and joined together with the part of change which allows setting 
+net.ipv4.tcp_ecn to those higher values. Currently the latter is done in 
+the AccECN negotion patch (IIRC) but that part should be moved into a 
+separate patch with this change only after all AccECN patches have been 
+included to prevent enabling AccECN in incomplete form.
+
+(This comment is orthogonal to Paolo's suggestion to use static constant.
+So whichever form is chosen, it should be with the net.ipv4.tcp_ecn 
+change at the end of AccECN changes.)
+
+-- 
+ i.
+
 
