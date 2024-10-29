@@ -1,95 +1,167 @@
-Return-Path: <bpf+bounces-43399-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43400-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 029D99B514F
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 18:50:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A28A39B5164
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 18:54:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C3BD1F24A32
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 17:50:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 624BD2825D0
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 17:54:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BFE61DC068;
-	Tue, 29 Oct 2024 17:50:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D23E1DCB31;
+	Tue, 29 Oct 2024 17:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rwh2zoV3"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="fTJU99wk"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D92F6196D9D;
-	Tue, 29 Oct 2024 17:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF361DCB3F
+	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 17:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730224221; cv=none; b=GFwIxNvz0xQ9OsifQIGwq2F9MjxfhhojcM7LcPgN1uXExA/krWJhG54VLRbHx6sBz9hST1ZXpEzQDYMENTQblKcyvv6UaFD2unCB/Q1ajiA80ZkQhY2UVyfrgXCZYq10kS7M3UAQY3DCE6kXYHCs6nsTq8/uArN4MFQtcUUbqLE=
+	t=1730224428; cv=none; b=qNX1VtOsy6yMP5/QQA0Kc2aQ4FCslC45Ohz5aY46mt1zip1Gfvf7RIacZ97Kc9YC9J/r0lDkMB3Y0sU4vqnYTfli6R9DIDpe/02OI0vz51BKCwW6DU4xFQqoZyzcesMYJ+j6UAavXkp+L+9Se4ArtMUydmpE4h3/Fnda/aEZm/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730224221; c=relaxed/simple;
-	bh=8Fau3lPqblwysCShZlOT2FMXP/dIssBCVTNO20d02fg=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=QBhz9Cz1WrXwU/fFQDW8mkL+xgX/jc+j5PJeWjZeeCon26XJs7VpWG1cU8FmHv1I5eWp5DM6xaZzWUnAlr7PezNWh7YTq0Eo9yAOpA42/rcdmqR0vMszENhwLY/41ku/T9EYO3hNTHBIAnnts2smOupVB6L6hSqXyrQMy2C1oRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rwh2zoV3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65DD2C4CECD;
-	Tue, 29 Oct 2024 17:50:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730224220;
-	bh=8Fau3lPqblwysCShZlOT2FMXP/dIssBCVTNO20d02fg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Rwh2zoV3PCWXuTMPix9zeYWS2+n+I1pCxOwQ1SFlMQijSkN+TawobxLtwnTaxSJbN
-	 fue5UIHnlJYc6rjWeURruTioOt9B0KsXM2lktyxivjvL4+y6yAxW6H/kDIhHpEM7Y4
-	 UqsCK3YQ+XjHCaOeP61C1SBvUFl3WXpFLavWFwnGeiMrQntk2jSPi9/WvVprcav2ga
-	 lxkblRfV2bRQWZpcytq7v1TPjh4IDBJ4cXsDnhNKnvJ8Vk4gBhnxxHnQeqvRccmIyB
-	 Jb7lquNd8JCZWiC9hz0cWUEDODVMUMhYaVKsnexD9aeZF7a7DE6xjnfZY6SMOvpbat
-	 ERQ0nFtCHZqww==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33E19380AC08;
-	Tue, 29 Oct 2024 17:50:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1730224428; c=relaxed/simple;
+	bh=WziafT2eTMjBjW229ktOTyL8rO7sTGDiAd1/ejN4CL4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y+UbwPjLo5nZmd7JgMUKdnFUZGPi4c8K5m8PUKB2w3G7cWJOtmOQWSOfOt/yXkDlw0ugD7DacN9qNPlD+8we48KxhC3dZI9ce8vwbvChLfaZ9vBAR5A8HtBDhm1T/FvYQGT5Hvc7mCvBRX/WX/xpvzN5Xx0Bqcyux0zkyiUfIUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=fTJU99wk; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20cf3e36a76so57889215ad.0
+        for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 10:53:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1730224426; x=1730829226; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EtH9ZoQPDiHEkDhWLDrz6/hg7ImzZ8y8bzq5j1Y7ZXc=;
+        b=fTJU99wkY+RRoB7XpBbCXXjI/OIxRM6ZKggywcCD1AQ5CkuWr7kIA2cI0s5AbC7PCx
+         xuhVIq/nP7lfy+NqbmQhkHeZVkH+q66Nl1ERPbhAc4SKqzixwiq8/QQHNMS25PoFD7q7
+         nXEsapYO/X7NwwAU+j3NSg6e9zQxmhcjVOy5M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730224426; x=1730829226;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EtH9ZoQPDiHEkDhWLDrz6/hg7ImzZ8y8bzq5j1Y7ZXc=;
+        b=eJV6DQ3CsYM4CXyPCAjcy73VGfBK+sfYguefkIX/yyalOR5iBTT+Kk4U77heickh70
+         /rnvj9IrQsin7Xj6FvWBLll9yfYy4ZH6b2n93FkBD8qbVDxa4jyrbN8eATvJefw05ZRt
+         BMAujiME0btO27q/t7nOohreYJTAQjZAOQAY6D/45q1MMzgzW1wog2w9pYuERcAKpc40
+         B80GyDdRsrO9gzbpJ9TYx//P9AE8EfCdShUOeJQks36LPmMHvO4La7H+s7y+TFS0ZTbo
+         7KkK+9j0dzJBW8r2Ob+RUa6gZc5ZOYIkGJU0yAQCeqvtpZTp30Nc1vIKJ6IJz/S0xz3Q
+         aL8w==
+X-Forwarded-Encrypted: i=1; AJvYcCW2LD4B07nfuNJSnbgS1ZGGgRqYb5rd2dsmplHGUFrs3uDlzGho5E3bZDWWGmFIJwo1cBc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWFYIw/XV9q546tEjjglUfc0SPffWfy7OoGaLp5/98WfaueDdU
+	lIKd0RZddhfIrsRMcj9VysYxU/rTYTbvfSfQtailVv76pMfVBSOJE5kBB+kux/I=
+X-Google-Smtp-Source: AGHT+IFl0sEy36nL06f5S7GHxaLAmGOVL3UnW1+PfSkmqSMmqC2WV99zVZZGGp1yXDhj/okALP3/GQ==
+X-Received: by 2002:a17:902:d507:b0:20e:986a:6e72 with SMTP id d9443c01a7336-210c6c0906bmr183390355ad.30.1730224426104;
+        Tue, 29 Oct 2024 10:53:46 -0700 (PDT)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bbf88490sm68819745ad.114.2024.10.29.10.53.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Oct 2024 10:53:45 -0700 (PDT)
+Date: Tue, 29 Oct 2024 10:53:41 -0700
+From: Joe Damato <jdamato@fastly.com>
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, namangulati@google.com, edumazet@google.com,
+	amritha.nambiar@intel.com, sridhar.samudrala@intel.com,
+	sdf@fomichev.me, peter@typeblog.net, m2shafiei@uwaterloo.ca,
+	bjorn@rivosinc.com, hch@infradead.org, willy@infradead.org,
+	willemdebruijn.kernel@gmail.com, skhawaja@google.com,
+	kuba@kernel.org, Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	"open list:BPF [MISC] :Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Donald Hunter <donald.hunter@gmail.com>, Jan Kara <jack@suse.cz>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Martin Karsten <mkarsten@uwaterloo.ca>,
+	Mina Almasry <almasrymina@google.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v2 0/6] Suspend IRQs during application busy
+ periods
+Message-ID: <ZyEhJXCrZgBLMJgB@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+	namangulati@google.com, edumazet@google.com,
+	amritha.nambiar@intel.com, sridhar.samudrala@intel.com,
+	sdf@fomichev.me, peter@typeblog.net, m2shafiei@uwaterloo.ca,
+	bjorn@rivosinc.com, hch@infradead.org, willy@infradead.org,
+	willemdebruijn.kernel@gmail.com, skhawaja@google.com,
+	kuba@kernel.org, Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	"open list:BPF [MISC] :Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Donald Hunter <donald.hunter@gmail.com>, Jan Kara <jack@suse.cz>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Martin Karsten <mkarsten@uwaterloo.ca>,
+	Mina Almasry <almasrymina@google.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20241021015311.95468-1-jdamato@fastly.com>
+ <57a0e1e7-1079-4055-8072-d9105b70103f@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] bpf: fix filed access without lock
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <173022422800.772061.4721556452097618907.git-patchwork-notify@kernel.org>
-Date: Tue, 29 Oct 2024 17:50:28 +0000
-References: <20241028065226.35568-1-mrpre@163.com>
-In-Reply-To: <20241028065226.35568-1-mrpre@163.com>
-To: mrpre <mrpre@163.com>
-Cc: xiyou.wangcong@gmail.com, yonghong.song@linux.dev,
- john.fastabend@gmail.com, edumazet@google.com, jakub@cloudflare.com,
- davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57a0e1e7-1079-4055-8072-d9105b70103f@redhat.com>
 
-Hello:
+On Tue, Oct 29, 2024 at 11:25:18AM +0100, Paolo Abeni wrote:
+> On 10/21/24 03:52, Joe Damato wrote:
 
-This patch was applied to bpf/bpf.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+[...]
 
-On Mon, 28 Oct 2024 14:52:26 +0800 you wrote:
-> The tcp_bpf_recvmsg_parser() function, running in user context,
-> retrieves seq_copied from tcp_sk without holding the socket lock, and
-> stores it in a local variable seq. However, the softirq context can
-> modify tcp_sk->seq_copied concurrently, for example, n tcp_read_sock().
 > 
-> As a result, the seq value is stale when it is assigned back to
-> tcp_sk->copied_seq at the end of tcp_bpf_recvmsg_parser(), leading to
-> incorrect behavior.
+> The changes makes sense to me, and I could not find any obvious issue in
+> the patches.
 > 
-> [...]
+> I think this deserve some - even basic - self-tests coverage. Note that
+> you can enable GRO on veth devices to make NAPI instances avail there.
+> 
+> Possibly you could opt for a drivers/net defaulting to veth usage and
+> allowing the user to select real H/W via env variables.
 
-Here is the summary with links:
-  - [v2] bpf: fix filed access without lock
-    https://git.kernel.org/bpf/bpf/c/2ce9abd6e1e1
+Sorry, Paolo, but I took a cursory look at veth and I need to object
+more strongly to your feedback here.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+My understanding (which could be incorrect) is that neither veth nor
+netdevsim use IRQs.
 
+The whole purpose of this series is to block IRQs while data is
+being busy polled to increase efficiency. That's in the cover
+letter.
 
+If neither of the drivers we'd use to simulate this in selftest use
+IRQs, how could we build a selftest which ensures IRQs are correctly
+suspended during busy periods without first making considerable
+changes to either (or both?) drivers?
+
+Respectfully: I don't think it's appropriate to block this series on
+that much additional work.
+
+Please reconsider and let me know how to proceed.
 
