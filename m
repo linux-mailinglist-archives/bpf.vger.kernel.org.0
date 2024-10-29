@@ -1,247 +1,190 @@
-Return-Path: <bpf+bounces-43410-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43411-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8828E9B52EB
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 20:45:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14F4E9B531F
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 21:12:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A03E1F23D16
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 19:45:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7390C284687
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 20:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5B4E20606D;
-	Tue, 29 Oct 2024 19:45:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7022076C4;
+	Tue, 29 Oct 2024 20:12:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XHPopEG3"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="FAkMzm2w"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A1D19A2A2;
-	Tue, 29 Oct 2024 19:45:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA9E1DBB36
+	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 20:12:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730231143; cv=none; b=tLBV4Ej9bmuPEX3MvwRolSobz5Cy1fA3kE+HPM3AIcxOYm0WayersxI3tDJZOWPt/J0Fjq8mk0VDtAbE3bxQIQ/oMWfDUQbhErnEMdyFkpGXOKMUCl/rGNyPVfZs3yjXM8lhCZ0PHXCcox4FvXB0I2ZkZ/s/MI5Ue3Fs1tAS9cs=
+	t=1730232755; cv=none; b=b+INWg6+/m2GDxg6vNfN/EADZ0pNHF+ceLBcIdpyuN5Dfj9XFRCaGUYUsdarOLc6tTEq9uhW6HgGGwlcbwFbyNtgQoPAJbv6ddx35qv1s1JAomilVLnxcn7uxrq4TuGms3jZSabNxocNEOJmV5VMJHMG7XgtfkDGyv10g+Q9ly8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730231143; c=relaxed/simple;
-	bh=4hwtZFDfg+dx9ftK8Ab16rSuGce3VQPmw54/oonESl4=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=KiyquWifnF9BXdTx4nu8Y9TWoOcjZQ/GIh/IFKASVP7NTupZk+HqcEuJwPqM1D85QCC/BvCgHDw7xlbQqfFcNHfc51jIerCgqjsKxuOdOL6YW7B/p7YsKUME0S4vIf5rRJsX3q6y9Gmp5DrRo1k9PTpeJEFAQnWYUuXXQBu6ZN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XHPopEG3; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6e38ebcc0abso69358257b3.2;
-        Tue, 29 Oct 2024 12:45:40 -0700 (PDT)
+	s=arc-20240116; t=1730232755; c=relaxed/simple;
+	bh=99qlM1Z6o7kvkwtJNO/OME0FfbYc8zC8YDsnU3piAVQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=e0Kp89B03pqFuIqdWUTA3MjTfbXo/xlJuvjbgDGeqe5ij6eAwRdvkDr44JN5Oj877HF0WGo4NysOIu2yMFjZ+wfIw+k25k/upT4TNLAcsUlKqqV5EEvSp8mUV2WQAxmnLCJyUR51bLlywsPlui7mmOKrD1FFKbobWX6hZfcxkWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=FAkMzm2w; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-20ce5e3b116so42109865ad.1
+        for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 13:12:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730231140; x=1730835940; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oz++kog8R11S3FQCFfJ3vXqUAJV3rP07MP62qfhNccM=;
-        b=XHPopEG3pvI3dgjjURAVjd2bDK3bWm1fBM5U7RFQZy2hd+yI9U4g8MOzOFmQws8bn4
-         bCF4E5puGkbiO1n2MlocJtoIsQDLR+cVMEV/wq7YJGj/rvCPvNPPX2uGuheIU8tM3gxi
-         gIRyC9P2sm9BHEsaaDkGKRj9cKJ/bar3YggLWSrWPF2r80umQ/tNfr/nPc3V7c2W9HjH
-         W611Sui3f0nKMHpk20X4cnWQl+dvrjTABmSefZOzjag3uScOsDB71nwwoumflJmRYxa6
-         7ZA58+TcWmeotgsB76u0Rr+7XAt8120avmYaj3Svh+88h/FdJwJDkkKikVNgXa7xmyNv
-         gd1A==
+        d=fastly.com; s=google; t=1730232753; x=1730837553; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aYeDjnJ9XjjabwCbCHH6fW3AjTnql2GKv5MU7+hVLE0=;
+        b=FAkMzm2wKJtF/pUPUGup7Ik6OIkt/iCYZqfTqw+3tgH9hYV+bTPcPEocNvhE4X2aDS
+         RHCu4ht54wOg4eVGxn7wkNfYcOrN36hjtb4eVp3fGsJTDP7g2ZNEuYFCFAlviMNnFk0C
+         2/bynVMo0R7tz/FMq6pHolPs4LJBt9MsfGOqA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730231140; x=1730835940;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=oz++kog8R11S3FQCFfJ3vXqUAJV3rP07MP62qfhNccM=;
-        b=vCbZBh8MfMP4WXwa6DgbKCm8qUO+ZlqDT7uBaigunUiomPn/vDyaYRjFv4oA+RNt42
-         FAJnd7LnClgLs9CbU2PKcvO9nqLoYBX2Tq+kZlChmootZDxwmk+61yg4vlwvRVL/g8/I
-         lQ8/fMQTgILnOZZcC0o8jiZNeORX8In8z5Y3c7jKuwkhs4AotmyYuz9hqmlR4RNMv0Fu
-         y9c7c0W8fnwqwNjehMs0hUA2GAJkcFFNUhiLHOt7YJrJaCJEiS4zDlAlXz1cwi6l/lbD
-         3S3v69EqS1Ok53Y1ASCjE7xfi6isRK5nVS9gqaGgp3UJJ8sIkf/vyXY8yojZ127KRj8x
-         eVAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWtpOAhXiV08YqACcKvE7kTVqZ0OCPL1sQoHbXKOM5lb27oWBV52VU24K44ahYUNHV6QnUMPB3L@vger.kernel.org, AJvYcCX6jdvhpQpsY1lPDVBH4UwgzGsQs9xhwVis7HM6CrrqSvtemi5zR5F52mT3E8DDmtv2d0o=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzb+0c4bdgDSAuGLqCBh/vNsaCAL3DTVpsZHWvB3IpZGnUkCIn+
-	6JCqzcngWJegrC07UJMFdkIS7MafwWKOiQOk3176un5qAQHFQnDF
-X-Google-Smtp-Source: AGHT+IGefUc29igJ+8c98f9qeJDl8r1WcdXQSM3Jul9t145O9JP4e+N+g/lecyY1/o+l6jcIXRFPbQ==
-X-Received: by 2002:a05:690c:10c:b0:6e7:de90:315f with SMTP id 00721157ae682-6e9d8aa57d6mr103857007b3.28.1730231139998;
-        Tue, 29 Oct 2024 12:45:39 -0700 (PDT)
-Received: from localhost (250.4.48.34.bc.googleusercontent.com. [34.48.4.250])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d179a2b073sm45095946d6.110.2024.10.29.12.45.39
+        d=1e100.net; s=20230601; t=1730232753; x=1730837553;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aYeDjnJ9XjjabwCbCHH6fW3AjTnql2GKv5MU7+hVLE0=;
+        b=r7USyTs+WHVhe+fwbNcDxNBBlqQGJAXqhNSWntC/VcKj67NpcboiXya+54zRbqfSdk
+         IWPazp2Qy2gg1fV8kbw5g3TQ8JVuefMU+iY1Vgu+QU0J8xeNdNP5n6AwBe4Ov+ZfCwyh
+         cIMWXlcuVvjZda7/n7doyMnacF+jEHKu5xta6uFTrf4BcDDOojFeS5ZKD7dOAuYmRNRV
+         hGl7hCv2jBayYDqMrCo1kqE5lyip3JuSJr/HeGGsKdqTPiByA8amE61aPf/OU3XLzmcq
+         KRDLfh3zzuk44OAcXGXZiQd+1Aq94pfMElSQZS7MJIy/CghdbZDEz0HD344zFfU5tSgv
+         9gRg==
+X-Forwarded-Encrypted: i=1; AJvYcCW4u9YS13cWgPVmW6ofryheZCnRY+HPhgVWd5L9pm3D7chs/2bhjgILHO05mKOLqUsphYU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzjK4OWvfhOO4Om4S4evbv8SCSULmlwN9oqp7CjefD11Bf3iVQZ
+	v2FP4CSSahL0V7zT/OiIi/GuAiAQN9y9y5tGN4WmqYztuGcWfITIMOcZ8ZYroL0=
+X-Google-Smtp-Source: AGHT+IGUOvUKsYl+v6XsSJnfSFz7opvXhNHNYeTGLJ2ZfxGHrI8y/ZFsuIcwco2C5yyMyOskSAYVrQ==
+X-Received: by 2002:a17:902:d4c9:b0:20b:7e1e:7337 with SMTP id d9443c01a7336-210c689ab32mr200616595ad.13.1730232753076;
+        Tue, 29 Oct 2024 13:12:33 -0700 (PDT)
+Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc0864d7sm70113735ad.303.2024.10.29.13.12.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Oct 2024 12:45:39 -0700 (PDT)
-Date: Tue, 29 Oct 2024 15:45:39 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- willemb@google.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- martin.lau@linux.dev, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- shuah@kernel.org, 
- ykolal@fb.com, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org, 
- Jason Xing <kernelxing@tencent.com>
-Message-ID: <67213b62f4100_2f188c294b7@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CAL+tcoCDN+YSwXDocv9DcvPGW-sLhEfPHHbzcO2+1PBZFRkB0Q@mail.gmail.com>
-References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
- <20241028110535.82999-11-kerneljasonxing@gmail.com>
- <6720394714070_24dce62944a@willemb.c.googlers.com.notmuch>
- <CAL+tcoBgbA1Q_7UaC0vp-mGHqDHxQ+eMybep0kw=E-T0oJAHfw@mail.gmail.com>
- <6720f9359d2ef_2bcd7f29458@willemb.c.googlers.com.notmuch>
- <CAL+tcoCDN+YSwXDocv9DcvPGW-sLhEfPHHbzcO2+1PBZFRkB0Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 10/14] net-timestamp: add basic support with
- tskey offset
+        Tue, 29 Oct 2024 13:12:32 -0700 (PDT)
+From: Joe Damato <jdamato@fastly.com>
+To: netdev@vger.kernel.org
+Cc: vitaly.lifshits@intel.com,
+	jacob.e.keller@intel.com,
+	kurt@linutronix.de,
+	vinicius.gomes@intel.com,
+	Joe Damato <jdamato@fastly.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	bpf@vger.kernel.org (open list:XDP (eXpress Data Path)),
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-kernel@vger.kernel.org (open list),
+	Paolo Abeni <pabeni@redhat.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [PATCH iwl-next v6 0/2] igc: Link IRQs and queues to NAPIs
+Date: Tue, 29 Oct 2024 20:12:15 +0000
+Message-Id: <20241029201218.355714-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-> > > > > +static long int sock_calculate_tskey_offset(struct sock *sk, int val, int bpf_type)
-> > > > > +{
-> > > > > +     u32 tskey;
-> > > > > +
-> > > > > +     if (sk_is_tcp(sk)) {
-> > > > > +             if ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_LISTEN))
-> > > > > +                     return -EINVAL;
-> > > > > +
-> > > > > +             if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
-> > > > > +                     tskey = tcp_sk(sk)->write_seq;
-> > > > > +             else
-> > > > > +                     tskey = tcp_sk(sk)->snd_una;
-> > > > > +     } else {
-> > > > > +             tskey = 0;
-> > > > > +     }
-> > > > > +
-> > > > > +     if (bpf_type && (sk->sk_tsflags & SOF_TIMESTAMPING_OPT_ID)) {
-> > > > > +             sk->sk_tskey_bpf_offset = tskey - atomic_read(&sk->sk_tskey);
-> > > > > +             return 0;
-> > > > > +     } else if (!bpf_type && (sk->sk_tsflags_bpf & SOF_TIMESTAMPING_OPT_ID)) {
-> > > > > +             sk->sk_tskey_bpf_offset = atomic_read(&sk->sk_tskey) - tskey;
-> > > > > +     } else {
-> > > > > +             sk->sk_tskey_bpf_offset = 0;
-> > > > > +     }
-> > > > > +
-> > > > > +     return tskey;
-> > > > > +}
-> > > > > +
-> > > > >  int sock_set_tskey(struct sock *sk, int val, int bpf_type)
-> > > > >  {
-> > > > >       u32 tsflags = bpf_type ? sk->sk_tsflags_bpf : sk->sk_tsflags;
-> > > > > @@ -901,17 +944,13 @@ int sock_set_tskey(struct sock *sk, int val, int bpf_type)
-> > > > >
-> > > > >       if (val & SOF_TIMESTAMPING_OPT_ID &&
-> > > > >           !(tsflags & SOF_TIMESTAMPING_OPT_ID)) {
-> > > > > -             if (sk_is_tcp(sk)) {
-> > > > > -                     if ((1 << sk->sk_state) &
-> > > > > -                         (TCPF_CLOSE | TCPF_LISTEN))
-> > > > > -                             return -EINVAL;
-> > > > > -                     if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
-> > > > > -                             atomic_set(&sk->sk_tskey, tcp_sk(sk)->write_seq);
-> > > > > -                     else
-> > > > > -                             atomic_set(&sk->sk_tskey, tcp_sk(sk)->snd_una);
-> > > > > -             } else {
-> > > > > -                     atomic_set(&sk->sk_tskey, 0);
-> > > > > -             }
-> > > > > +             long int ret;
-> > > > > +
-> > > > > +             ret = sock_calculate_tskey_offset(sk, val, bpf_type);
-> > > > > +             if (ret <= 0)
-> > > > > +                     return ret;
-> > > > > +
-> > > > > +             atomic_set(&sk->sk_tskey, ret);
-> > > > >       }
-> > > > >
-> > > > >       return 0;
-> > > > > @@ -956,10 +995,15 @@ static int sock_set_timestamping_bpf(struct sock *sk,
-> > > > >                                    struct so_timestamping timestamping)
-> > > > >  {
-> > > > >       u32 flags = timestamping.flags;
-> > > > > +     int ret;
-> > > > >
-> > > > >       if (flags & ~SOF_TIMESTAMPING_BPF_SUPPPORTED_MASK)
-> > > > >               return -EINVAL;
-> > > > >
-> > > > > +     ret = sock_set_tskey(sk, flags, 1);
-> > > > > +     if (ret)
-> > > > > +             return ret;
-> > > > > +
-> > > > >       WRITE_ONCE(sk->sk_tsflags_bpf, flags);
-> > > > >
-> > > > >       return 0;
-> > > >
-> > > > I'm a bit hazy on when this can be called. We can assume that this new
-> > > > BPF operation cannot race with the existing setsockopt nor with the
-> > > > datapath that might touch the atomic fields, right?
-> > >
-> > > It surely can race with the existing setsockopt.
-> > >
-> > > 1)
-> > > if (only existing setsockopt works) {
-> > >         then sk->sk_tskey is set through setsockopt, sk_tskey_bpf_offset is 0.
-> > > }
-> > >
-> > > 2)
-> > > if (only bpf setsockopt works) {
-> > >         then sk->sk_tskey is set through bpf_setsockopt,
-> > > sk_tskey_bpf_offset is 0.
-> > > }
-> > >
-> > > 3)
-> > > if (existing setsockopt already started, here we enable the bpf feature) {
-> > >         then sk->sk_tskey will not change, but the sk_tskey_bpf_offset
-> > > will be calculated.
-> > > }
-> > >
-> > > 4)
-> > > if (bpf setsockopt already started, here we enable the application feature) {
-> > >         then sk->sk_tskey will re-initialized/overridden by
-> > > setsockopt, and the sk_tskey_bpf_offset will be calculated.
-> > > }
-> 
-> I will copy the above to the commit message next time in order to
-> provide a clear design to future readers.
-> 
-> > >
-> > > Then the skb tskey will use the sk->sk_tskey like before.
-> >
-> > I mean race as in the setsockopt and bpf setsockopt and datapath
-> > running concurrently.
-> >
-> > As long as both variants of setsockopt hold the socket lock, that
-> > won't happen.
-> >
-> > The datapath is lockless for UDP, so atomic_inc sk_tskey can race
-> > with calculating the difference. But this is a known issue. A process
-> > that cares should not run setsockopt and send concurrently. So this is
-> > fine too.
-> 
-> Oh, now I see. Thanks for the detailed explanation! So Do you feel if
-> we need to take care of this in the future, I mean, after this series
-> gets merged...?
+Greetings:
 
-If there is a race condition, then that cannot be fixed up later.
+Welcome to v6.
 
-But from my admittedly brief analysis, it seems that there is nothing
-here that needs to be fixed: control plane operations (setsockopt)
-hold the socket lock. A setsockopt that conflicts with a lockless
-datapath update will have a slightly ambiguous offset. It is under
-controlof and up to the user to avoid that if they care.
+See changelog below and in each patch for changes from v5 [1].
+
+This revision was created due to a report from Vitaly [2], that my v5
+should use different function and variable names, like igb.
+
+As you'll see, I've modified patch 2 to use __igc_resume instead of
+__igc_do_resume and bool rpm instead of bool need_rtnl.
+
+I retest the patches on each revision using my igc hardware as
+documented in the commit messages. I have no idea how to test
+suspend/resume (or if my NUC even supports that), so the power
+management bits are untested.
+
+Overall, this series adds support for netdev-genl to igc so that
+userland apps can query IRQ, queue, and NAPI instance relationships.
+This is useful because developers who have igc NICs (for example, in
+their Intel NUCs) who are working on epoll-based busy polling apps and
+using SO_INCOMING_NAPI_ID, need access to this API to map NAPI IDs back
+to queues.
+
+See the commit messages of each patch for example output I got on my igc
+hardware.
+
+Thanks to reviewers and maintainers for their comments/feedback!
+
+Thanks,
+Joe
+
+[1]: https://lore.kernel.org/netdev/20241028195243.52488-1-jdamato@fastly.com/
+[2]: https://lore.kernel.org/netdev/f02044c0-1d90-49f8-8a2d-00ec84fba27a@intel.com/
+
+v6:
+  - Adjusts patch 2 to use different names: __igc_resume instead of
+    __igc_do_resume and bool rpm instead of bool need_rtnl. No other
+    functional changes were introduced.
+
+v5: https://lore.kernel.org/netdev/20241028195243.52488-1-jdamato@fastly.com/
+  - Add a small wrapper to patch 2 to only hold rtnl when resume is
+    called, but avoid rtnl when runtime_resume is called which would
+    trigger a deadlock.
+
+v4: https://lore.kernel.org/netdev/20241022215246.307821-1-jdamato@fastly.com/
+  - Fixed a typo in Patch 1's commit message for the "other" IRQ number
+  - Based on a bug report for e1000, closer scrutiny of the code
+    revealed two paths where rtnl_lock / rtnl_unlock should be added in
+    Patch 2: igc_resume and igc_io_error_detected. The code added to
+    igc_io_error_detected is inspired by ixgbe's
+    ixgbe_io_error_detected
+
+v3: https://lore.kernel.org/netdev/20241018171343.314835-1-jdamato@fastly.com/
+  - No longer an RFC
+  - Patch 1: no changes
+  - Patch 2:
+      - Replace igc_unset_queue_napi with igc_set_queue_napi(..., NULL),
+        as suggested by Vinicius Costa Gomes
+      - Simplify implementation of igc_set_queue_napi as suggested by Kurt
+        Kanzenbach, with a minor change to use the ring->queue_index
+
+rfcv2: https://lore.kernel.org/netdev/20241014213012.187976-1-jdamato@fastly.com/
+  - Patch 1: update line wrapping to 80 chars
+  - Patch 2:
+    - Update commit message to include output for IGC_FLAG_QUEUE_PAIRS
+      enabled and disabled
+    - Significant refactor to move queue mapping code to helpers to be
+      called from multiple locations
+    - Adjusted code to handle IGC_FLAG_QUEUE_PAIRS disabled as suggested
+      by Kurt Kanzenbach
+    - Map / unmap queues in igc_xdp_disable_pool and
+      igc_xdp_enable_pool, respectively, as suggested by Vinicius Costa
+      Gomes to handle the XDP case
+
+rfcv1: https://lore.kernel.org/lkml/20241003233850.199495-1-jdamato@fastly.com/
+
+
+Joe Damato (2):
+  igc: Link IRQs to NAPI instances
+  igc: Link queues to NAPI instances
+
+ drivers/net/ethernet/intel/igc/igc.h      |  2 +
+ drivers/net/ethernet/intel/igc/igc_main.c | 59 +++++++++++++++++++----
+ drivers/net/ethernet/intel/igc/igc_xdp.c  |  2 +
+ 3 files changed, 54 insertions(+), 9 deletions(-)
+
+
+base-commit: c093e2b9768b3a5cd7a37ea654cd47094519f843
+-- 
+2.25.1
+
 
