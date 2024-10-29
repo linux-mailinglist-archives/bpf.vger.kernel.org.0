@@ -1,349 +1,456 @@
-Return-Path: <bpf+bounces-43367-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43368-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FC509B4090
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 03:42:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C88CB9B4094
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 03:42:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA5801F231E7
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 02:42:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E84071C21D5D
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 02:42:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14CFA1F429A;
-	Tue, 29 Oct 2024 02:41:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iVTUrfei"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBAEAFBF0;
+	Tue, 29 Oct 2024 02:42:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281651F4265;
-	Tue, 29 Oct 2024 02:41:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB3D1F429A;
+	Tue, 29 Oct 2024 02:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730169710; cv=none; b=Gk9kPwWoQb2B9jJ8DsKGE+g4BPoRo2J7IxzO1c947TSjJKyCMR0S4H50aX5/uAqOuL0+B/hIv2uykX1eLYZBckRL+x8uJCnYRJqS4LmKal9Ij8J0n0lqC9XaMYyfzO/LmsIyliC/gwHdd7mLJN2lsbICMULBpUYS0RLuEAkUT1U=
+	t=1730169750; cv=none; b=If5oC+ys2sNjMwb17R7YypBsl/unfM52N8Co0tjiIGeNwlHKECogF0xjVeVv7U8Y4qf18m0XwAfXwKEtg4HGt+/xIT3yCnEFul8+tbyq2eGxFHaEp4Ea2JcmzYKdKtKyyA/Kgb/A7C3wdLLVzQxlXladCHEuVV4mKVwOkBPSpgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730169710; c=relaxed/simple;
-	bh=bWI0EYgRIpMHAQc9qhO5asqU+abRbM6HV5MtYp3zauo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IqY9Bdhji7E7auIX8/4xFc+H9zonwsZbOfu76TElaSpZPuF8YJxrh5rG+XgvYLACnRq5Vb2xsVIRvzDCRbaN9lGEDVENgFMIoSanPpGe2+y9DczyqTvqo16vD6qUNiLuFDWCTuAOvklIN9Il7VCrZ797sx/glpVjD4ieaPePIHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iVTUrfei; arc=none smtp.client-ip=209.85.166.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3a4d1633df9so17455285ab.2;
-        Mon, 28 Oct 2024 19:41:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730169707; x=1730774507; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yrX1x1NFKvKNx+uSJZbGmjNLKvbR52L99hom0eDRGsU=;
-        b=iVTUrfeiNyQOraQkXNydtTox8yT2iELBIhHoODdBD+qSDrNMr9MgQS/cSGziU6zjs3
-         eIXzjmg4/wgyuLzrcmQzLMKOp4ZdTLv69O9APRZ/WfxGSojWI04K7eUEQnrT6E9fkYYn
-         RDcIGzzmVrCbZjbaIQ4AttHyu08j6S2rhPOMxfxYtteY4g7T4imvFZYXYlk+cA5J8Msx
-         c4wK+dGf1LqOeTBamsrDk/4ZdxuwpAl/14Y+aNpSAIeINFAqpUzX0mRVlR7ley8BOMYN
-         8BHkiFSNfpNV5lIXcu44vfS72unsPM+XweACqFRHeyS032kqJ83GfOMYiaVol7qFAYVX
-         Ufqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730169707; x=1730774507;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yrX1x1NFKvKNx+uSJZbGmjNLKvbR52L99hom0eDRGsU=;
-        b=JYEBz8GY3+SoUQZqk/nqklvpqjUhe23QsdvzPMXx+9NcppCOHEHXHVfuls2gHxQD+I
-         mIP9Z6WZ4H7ffivdG6iDFksS2t3YFK+c5uizYigPx+i8d4jgcInLhh7oqcKAX2LRurrq
-         5iRD1FGggLTBJh4sR6mi4XjlXWaznswoRdVr+/yBNINHBIcOuEiuue4hoYCpOwmb6aQv
-         AKXKvMI1jfyKDruA536Ve9YikTrcYRCacA+5BI5xt5bsnfkEgXT8s1KUnympTexYLiuu
-         jVKxLuuSWp1uD4sddM5nnwRsEiXaHG1yGkyu9TSDWPIkoAo2WDRF3tt8LGOpXvY8DmEW
-         n+Ug==
-X-Forwarded-Encrypted: i=1; AJvYcCUoqYJpSCa4BvQZVw+xmfXDbsbO/HTx1TB7ZSbUXuR8Lp4MYdN8UtB0qn3ueeNkxyEFl8g=@vger.kernel.org, AJvYcCWGXZVqJrwq4u/gnnvZjXqD1AiKyU6RbLZ/zjvF4g6qwkxE9xX6etTCpm2MNRM1nJHrWCYlJLft@vger.kernel.org
-X-Gm-Message-State: AOJu0YyremPrngMhxlAx51H6mevaMosmf37dwrBIqcCYv74OGINMH2nG
-	4Sc1h+1NPB4/Rv/32Jp/Joef4iOqOg5OjMTeKpoUhu7snWd1l0V7WaCaImO6jTATRZT2roHBTYb
-	J/HmfJHFjsU9alba3tj8xzEiwiAo=
-X-Google-Smtp-Source: AGHT+IFsp7JCA3NEtFpW74WWqZyte33lxsAs2ULNhpUBNHY1jBO96fE9rUqAccqdR2a1xTGYUSt+r3Sg9L0tQEcgMp0=
-X-Received: by 2002:a92:cdac:0:b0:3a0:933a:2a0a with SMTP id
- e9e14a558f8ab-3a4ed29bf3bmr82683545ab.7.1730169707041; Mon, 28 Oct 2024
- 19:41:47 -0700 (PDT)
+	s=arc-20240116; t=1730169750; c=relaxed/simple;
+	bh=rxSy+dtRe0whMlBniCqvVJo2o6tvcBMMNm2yAj7jIIE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Eo6dn5h2hHVAhC8HPOF61XZtyqZYH7KUp3qLofyarMXAswnvhU6wHlQD2HEkJjdjs5WunV6EGwmndV3lERelz/hw154p/BUR0m2JWMhDIWcmEZiQjt2mFx3q5fMly2HJpW7Ota4xgwaCWt4/IJuGvLtCkvemToBVPE/eKxZZm14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4XcvcZ4Y88z1T8fp;
+	Tue, 29 Oct 2024 10:40:14 +0800 (CST)
+Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
+	by mail.maildlp.com (Postfix) with ESMTPS id AD9201402CC;
+	Tue, 29 Oct 2024 10:42:23 +0800 (CST)
+Received: from [10.67.110.108] (10.67.110.108) by
+ kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Tue, 29 Oct 2024 10:42:22 +0800
+Message-ID: <908316ff-75b3-498a-86f8-1cdf1419800c@huawei.com>
+Date: Tue, 29 Oct 2024 10:42:22 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
- <20241028110535.82999-11-kerneljasonxing@gmail.com> <6720394714070_24dce62944a@willemb.c.googlers.com.notmuch>
-In-Reply-To: <6720394714070_24dce62944a@willemb.c.googlers.com.notmuch>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 29 Oct 2024 10:41:10 +0800
-Message-ID: <CAL+tcoBgbA1Q_7UaC0vp-mGHqDHxQ+eMybep0kw=E-T0oJAHfw@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 10/14] net-timestamp: add basic support with
- tskey offset
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: uprobes: Simulate STP for pushing fp/lr into user
+ stack
+To: Mark Rutland <mark.rutland@arm.com>
+CC: <catalin.marinas@arm.com>, <will@kernel.org>, <mhiramat@kernel.org>,
+	<oleg@redhat.com>, <peterz@infradead.org>, <ast@kernel.org>,
+	<puranjay@kernel.org>, <andrii@kernel.org>, <andrii.nakryiko@gmail.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <20240910060407.1427716-1-liaochang1@huawei.com>
+ <ZxpUX1rbppLqS0bD@J2N7QTR9R3.cambridge.arm.com>
+From: "Liao, Chang" <liaochang1@huawei.com>
+In-Reply-To: <ZxpUX1rbppLqS0bD@J2N7QTR9R3.cambridge.arm.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemd200013.china.huawei.com (7.221.188.133)
 
-On Tue, Oct 29, 2024 at 9:24=E2=80=AFAM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Jason Xing wrote:
-> > From: Jason Xing <kernelxing@tencent.com>
-> >
-> > Use the offset to record the delta value between current socket key
-> > and bpf socket key.
-> >
-> > 1. If there is only bpf feature running, the socket key is bpf socket
-> > key and the offset is zero;
-> > 2. If there is only traditional feature running, and then bpf feature
-> > is turned on, the socket key is still used by the former while the offs=
-et
-> > is the delta between them;
-> > 3. if there is only bpf feature running, and then application uses it,
-> > the socket key would be re-init for application and the offset is the
-> > delta.
->
-> We need to also figure out the rare conflict when one user sets
-> OPT_ID | OPT_ID_TCP while the other only uses OPT_ID.
 
-I think the current patch handles the case because:
-1. sock_calculate_tskey_offset() gets the final key first whether the
-OPT_ID_TCP is set or not.
-2. we will use that tskey to calculate the delta.
 
->
-> It is so obscure, that perhaps we can punt and say that the BPF
-> program just has to follow the application preference and be aware of
-> the subtle difference.
+在 2024/10/24 22:06, Mark Rutland 写道:
+> On Tue, Sep 10, 2024 at 06:04:07AM +0000, Liao Chang wrote:
+>> This patch is the second part of a series to improve the selftest bench
+>> of uprobe/uretprobe [0]. The lack of simulating 'stp fp, lr, [sp, #imm]'
+>> significantly impact uprobe/uretprobe performance at function entry in
+>> most user cases. Profiling results below reveals the STP that executes
+>> in the xol slot and trap back to kernel, reduce redis RPS and increase
+>> the time of string grep obviously.
+>>
+>> On Kunpeng916 (Hi1616), 4 NUMA nodes, 64 Arm64 cores@2.4GHz.
+>>
+>> Redis GET (higher is better)
+>> ----------------------------
+>> No uprobe: 49149.71 RPS
+>> Single-stepped STP: 46750.82 RPS
+>> Emulated STP: 48981.19 RPS
+>>
+>> Redis SET (larger is better)
+>> ----------------------------
+>> No uprobe: 49761.14 RPS
+>> Single-stepped STP: 45255.01 RPS
+>> Emulated stp: 48619.21 RPS
+>>
+>> Grep (lower is better)
+>> ----------------------
+>> No uprobe: 2.165s
+>> Single-stepped STP: 15.314s
+>> Emualted STP: 2.216s
+> 
+> The results for grep are concerning.
+> 
+> In theory, the overhead for stepping should be roughly double the
+> overhead for emulating, assuming the exception-entry and
+> exception-return are the dominant cost. The cost of stepping should be
+> trivial.
+> 
+> Those results show emulating adds 0.051s (for a ~2.4% overhead), while
+> stepping adds 13.149s (for a ~607% overhead), meaning stepping is 250x
+> more expensive.
 
-Right.
+To provide more context, I set an uprobe at the grep_file() function from
+the grep source code [1], which is likely on very hot path. I suspect that
+the high frequency of uprobe traps contribute to the signficant overhead.
+I'm not entirely certain about this, and I'll need to investigate further
+to pinpoint the source of 13.149s.
 
->
-> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > ---
-> >  include/net/sock.h |  1 +
-> >  net/core/skbuff.c  | 15 ++++++++---
-> >  net/core/sock.c    | 66 ++++++++++++++++++++++++++++++++++++++--------
-> >  3 files changed, 68 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/include/net/sock.h b/include/net/sock.h
-> > index 91398b20a4a3..41c6c6f78e55 100644
-> > --- a/include/net/sock.h
-> > +++ b/include/net/sock.h
-> > @@ -469,6 +469,7 @@ struct sock {
-> >       unsigned long           sk_pacing_rate; /* bytes per second */
-> >       atomic_t                sk_zckey;
-> >       atomic_t                sk_tskey;
-> > +     u32                     sk_tskey_bpf_offset;
-> >       __cacheline_group_end(sock_write_tx);
-> >
-> >       __cacheline_group_begin(sock_read_tx);
-> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > index 0b571306f7ea..d1739317b97d 100644
-> > --- a/net/core/skbuff.c
-> > +++ b/net/core/skbuff.c
-> > @@ -5641,9 +5641,10 @@ void timestamp_call_bpf(struct sock *sk, int op,=
- u32 nargs, u32 *args)
-> >  }
-> >
-> >  static void skb_tstamp_tx_output_bpf(struct sock *sk, int tstype,
-> > +                                  struct sk_buff *skb,
-> >                                    struct skb_shared_hwtstamps *hwtstam=
-ps)
-> >  {
-> > -     u32 args[2] =3D {0, 0};
-> > +     u32 args[3] =3D {0, 0, 0};
-> >       u32 tsflags, cb_flag;
-> >
-> >       tsflags =3D READ_ONCE(sk->sk_tsflags_bpf);
-> > @@ -5672,7 +5673,15 @@ static void skb_tstamp_tx_output_bpf(struct sock=
- *sk, int tstype,
-> >               args[1] =3D ts.tv_nsec;
-> >       }
-> >
-> > -     timestamp_call_bpf(sk, cb_flag, 2, args);
-> > +     if (tsflags & SOF_TIMESTAMPING_OPT_ID) {
-> > +             args[2] =3D skb_shinfo(skb)->tskey;
-> > +             if (sk_is_tcp(sk))
-> > +                     args[2] -=3D atomic_read(&sk->sk_tskey);
-> > +             if (sk->sk_tskey_bpf_offset)
-> > +                     args[2] +=3D sk->sk_tskey_bpf_offset;
-> > +     }
-> > +
-> > +     timestamp_call_bpf(sk, cb_flag, 3, args);
->
->
-> So the BPF interface is effectively OPT_TSONLY: the packet data is
-> never shared.
->
-> Then OPT_ID should be mandatory, because it without it the data is
-> not actionable: which byte in the bytestream or packet in the case
-> of datagram sockets does a callback refer to.
+https://github.com/brgl/busybox/blob/master/findutils/grep.c#L302
 
-It does make sense, I think I will implement it when bpf_setsockopt() is ca=
-lled.
+> 
+> Was this tested bare-metal, or in a VM?
 
->
-> > +/* Used to track the tskey for bpf extension
-> > + *
-> > + * @sk_tskey: bpf extension can use it only when no application uses.
-> > + *            Application can use it directly regardless of bpf extens=
-ion.
-> > + *
-> > + * There are three strategies:
-> > + * 1) If we've already set through setsockopt() and here we're going t=
-o set
-> > + *    OPT_ID for bpf use, we will not re-initialize the @sk_tskey and =
-will
-> > + *    keep the record of delta between the current "key" and previous =
-key.
-> > + * 2) If we've already set through bpf_setsockopt() and here we're goi=
-ng to
-> > + *    set for application use, we will record the delta first and then
-> > + *    override/initialize the @sk_tskey.
-> > + * 3) other cases, which means only either of them takes effect, so in=
-itialize
-> > + *    everything simplely.
-> > + */
->
-> Please explain in the commit message that these gymnastics are needed
-> because there can only be one tskey in skb_shared_info.
+bare-metal.
 
-No problem.
+> 
+> AFAICT either:
+> 
+> * Single-stepping is unexpectedly expensive.
+>  
+>   Historically we had performance issues with hypervisor trapping of
+>   debug features, and there are things we might be able to improve in
+>   the hypervisor and kernel, which would improve stepping *all*
+>   instructions.
+>   
+>   If stepping is the big problem, we could move uprobes over to a BRK
+>   rather than a single-step. That would require require updating and
+>   fixing the logic to decide which instructions are steppable, but
+>   that's necessary anyway given it has extant soundness issues.
 
->
-> > +static long int sock_calculate_tskey_offset(struct sock *sk, int val, =
-int bpf_type)
-> > +{
-> > +     u32 tskey;
-> > +
-> > +     if (sk_is_tcp(sk)) {
-> > +             if ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_LISTEN))
-> > +                     return -EINVAL;
-> > +
-> > +             if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
-> > +                     tskey =3D tcp_sk(sk)->write_seq;
-> > +             else
-> > +                     tskey =3D tcp_sk(sk)->snd_una;
-> > +     } else {
-> > +             tskey =3D 0;
-> > +     }
-> > +
-> > +     if (bpf_type && (sk->sk_tsflags & SOF_TIMESTAMPING_OPT_ID)) {
-> > +             sk->sk_tskey_bpf_offset =3D tskey - atomic_read(&sk->sk_t=
-skey);
-> > +             return 0;
-> > +     } else if (!bpf_type && (sk->sk_tsflags_bpf & SOF_TIMESTAMPING_OP=
-T_ID)) {
-> > +             sk->sk_tskey_bpf_offset =3D atomic_read(&sk->sk_tskey) - =
-tskey;
-> > +     } else {
-> > +             sk->sk_tskey_bpf_offset =3D 0;
-> > +     }
-> > +
-> > +     return tskey;
-> > +}
-> > +
-> >  int sock_set_tskey(struct sock *sk, int val, int bpf_type)
-> >  {
-> >       u32 tsflags =3D bpf_type ? sk->sk_tsflags_bpf : sk->sk_tsflags;
-> > @@ -901,17 +944,13 @@ int sock_set_tskey(struct sock *sk, int val, int =
-bpf_type)
-> >
-> >       if (val & SOF_TIMESTAMPING_OPT_ID &&
-> >           !(tsflags & SOF_TIMESTAMPING_OPT_ID)) {
-> > -             if (sk_is_tcp(sk)) {
-> > -                     if ((1 << sk->sk_state) &
-> > -                         (TCPF_CLOSE | TCPF_LISTEN))
-> > -                             return -EINVAL;
-> > -                     if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
-> > -                             atomic_set(&sk->sk_tskey, tcp_sk(sk)->wri=
-te_seq);
-> > -                     else
-> > -                             atomic_set(&sk->sk_tskey, tcp_sk(sk)->snd=
-_una);
-> > -             } else {
-> > -                     atomic_set(&sk->sk_tskey, 0);
-> > -             }
-> > +             long int ret;
-> > +
-> > +             ret =3D sock_calculate_tskey_offset(sk, val, bpf_type);
-> > +             if (ret <=3D 0)
-> > +                     return ret;
-> > +
-> > +             atomic_set(&sk->sk_tskey, ret);
-> >       }
-> >
-> >       return 0;
-> > @@ -956,10 +995,15 @@ static int sock_set_timestamping_bpf(struct sock =
-*sk,
-> >                                    struct so_timestamping timestamping)
-> >  {
-> >       u32 flags =3D timestamping.flags;
-> > +     int ret;
-> >
-> >       if (flags & ~SOF_TIMESTAMPING_BPF_SUPPPORTED_MASK)
-> >               return -EINVAL;
-> >
-> > +     ret =3D sock_set_tskey(sk, flags, 1);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> >       WRITE_ONCE(sk->sk_tsflags_bpf, flags);
-> >
-> >       return 0;
->
-> I'm a bit hazy on when this can be called. We can assume that this new
-> BPF operation cannot race with the existing setsockopt nor with the
-> datapath that might touch the atomic fields, right?
+That's a very helpful input. I'll rerun the profiling in a VM.
 
-It surely can race with the existing setsockopt.
+> 
+> * XOL management is absurdly expensive.
+>  
+>   Does uprobes keep the XOL slot around (like krpobes does), or does it
+>   create the slot afresh for each trap?
 
-1)
-if (only existing setsockopt works) {
-        then sk->sk_tskey is set through setsockopt, sk_tskey_bpf_offset is=
- 0.
-}
+As I know, it doesn't create a new slot for each trap. Instead, it grabs
+an slot from a pre-allocated pool. I believe the cost of acquring a slot
+from this pool is relatively low compared to creating a new one.
 
-2)
-if (only bpf setsockopt works) {
-        then sk->sk_tskey is set through bpf_setsockopt,
-sk_tskey_bpf_offset is 0.
-}
+> 
+>   If that's trying to create a slot afresh for each trap, there are
+>   several opportunities for improvement, e.g. keep the slot around for
+>   as long as the uprobe exists, or pre-allocate shared slots for common
+>   instructions and use those.
 
-3)
-if (existing setsockopt already started, here we enable the bpf feature) {
-        then sk->sk_tskey will not change, but the sk_tskey_bpf_offset
-will be calculated.
-}
+I have sent a patch [2] that aimed to improve scalability of uprobe handling.
+While that patch focuses on reduing the cacheline bouncing caused by atomic
+operations when grabbing and releasing slot from a pool, I wouldn't say
+this has a impact on grep, as it typically use a single thread for pattern
+matching on my sytem.
 
-4)
-if (bpf setsockopt already started, here we enable the application feature)=
- {
-        then sk->sk_tskey will re-initialized/overridden by
-setsockopt, and the sk_tskey_bpf_offset will be calculated.
-}
+[2] https://lore.kernel.org/all/20240927094549.3382916-1-liaochang1@huawei.com/
 
-Then the skb tskey will use the sk->sk_tskey like before.
+> 
+> Mark.
+> 
+>>
+>> Additionally, a profiling of the entry instruction for all leaf and
+>> non-leaf function, the ratio of 'stp fp, lr, [sp, #imm]' is larger than
+>> 50%. So simulting the STP on the function entry is a more viable option
+>> for uprobe.
+>>
+>> In the first version [1], it used a uaccess routine to simulate the STP
+>> that push fp/lr into stack, which use double STTR instructions for
+>> memory store. But as Mark pointed out, this approach can't simulate the
+>> correct single-atomicity and ordering properties of STP, especiallly
+>> when it interacts with MTE, POE, etc. So this patch uses a more complex
+>> and inefficient approach that acquires user stack pages, maps them to
+>> kernel address space, and allows kernel to use STP directly push fp/lr
+>> into the stack pages.
+>>
+>> xol-stp
+>> -------
+>> uprobe-nop      ( 1 cpus):    1.566 ± 0.006M/s  (  1.566M/s/cpu)
+>> uprobe-push     ( 1 cpus):    0.868 ± 0.001M/s  (  0.868M/s/cpu)
+>> uprobe-ret      ( 1 cpus):    1.629 ± 0.001M/s  (  1.629M/s/cpu)
+>> uretprobe-nop   ( 1 cpus):    0.871 ± 0.001M/s  (  0.871M/s/cpu)
+>> uretprobe-push  ( 1 cpus):    0.616 ± 0.001M/s  (  0.616M/s/cpu)
+>> uretprobe-ret   ( 1 cpus):    0.878 ± 0.002M/s  (  0.878M/s/cpu)
+>>
+>> simulated-stp
+>> -------------
+>> uprobe-nop      ( 1 cpus):    1.544 ± 0.001M/s  (  1.544M/s/cpu)
+>> uprobe-push     ( 1 cpus):    1.128 ± 0.002M/s  (  1.128M/s/cpu)
+>> uprobe-ret      ( 1 cpus):    1.550 ± 0.005M/s  (  1.550M/s/cpu)
+>> uretprobe-nop   ( 1 cpus):    0.872 ± 0.004M/s  (  0.872M/s/cpu)
+>> uretprobe-push  ( 1 cpus):    0.714 ± 0.001M/s  (  0.714M/s/cpu)
+>> uretprobe-ret   ( 1 cpus):    0.896 ± 0.001M/s  (  0.896M/s/cpu)
+>>
+>> The profiling results based on the upstream kernel with spinlock
+>> optimization patches [2] reveals the simulation of STP increase the
+>> uprobe-push throughput by 29.3% (from 0.868M/s/cpu to 1.1238M/s/cpu) and
+>> uretprobe-push by 15.9% (from 0.616M/s/cpu to 0.714M/s/cpu).
+>>
+>> [0] https://lore.kernel.org/all/CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com/
+>> [1] https://lore.kernel.org/all/Zr3RN4zxF5XPgjEB@J2N7QTR9R3/
+>> [2] https://lore.kernel.org/all/20240815014629.2685155-1-liaochang1@huawei.com/
+>>
+>> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+>> ---
+>>  arch/arm64/include/asm/insn.h            |  1 +
+>>  arch/arm64/kernel/probes/decode-insn.c   | 16 +++++
+>>  arch/arm64/kernel/probes/decode-insn.h   |  1 +
+>>  arch/arm64/kernel/probes/simulate-insn.c | 89 ++++++++++++++++++++++++
+>>  arch/arm64/kernel/probes/simulate-insn.h |  1 +
+>>  arch/arm64/kernel/probes/uprobes.c       | 21 ++++++
+>>  arch/arm64/lib/insn.c                    |  5 ++
+>>  7 files changed, 134 insertions(+)
+>>
+>> diff --git a/arch/arm64/include/asm/insn.h b/arch/arm64/include/asm/insn.h
+>> index dd530d5c3d67..74e25debfa75 100644
+>> --- a/arch/arm64/include/asm/insn.h
+>> +++ b/arch/arm64/include/asm/insn.h
+>> @@ -561,6 +561,7 @@ u32 aarch64_insn_encode_immediate(enum aarch64_insn_imm_type type,
+>>  				  u32 insn, u64 imm);
+>>  u32 aarch64_insn_decode_register(enum aarch64_insn_register_type type,
+>>  					 u32 insn);
+>> +u32 aarch64_insn_decode_ldst_size(u32 insn);
+>>  u32 aarch64_insn_gen_branch_imm(unsigned long pc, unsigned long addr,
+>>  				enum aarch64_insn_branch_type type);
+>>  u32 aarch64_insn_gen_comp_branch_imm(unsigned long pc, unsigned long addr,
+>> diff --git a/arch/arm64/kernel/probes/decode-insn.c b/arch/arm64/kernel/probes/decode-insn.c
+>> index be54539e309e..847a7a61ff6d 100644
+>> --- a/arch/arm64/kernel/probes/decode-insn.c
+>> +++ b/arch/arm64/kernel/probes/decode-insn.c
+>> @@ -67,6 +67,22 @@ static bool __kprobes aarch64_insn_is_steppable(u32 insn)
+>>  	return true;
+>>  }
+>>  
+>> +bool aarch64_insn_is_stp_fp_lr_sp_64b(probe_opcode_t insn)
+>> +{
+>> +	/*
+>> +	 * The 1st instruction on function entry often follows the
+>> +	 * patten 'stp x29, x30, [sp, #imm]!' that pushing fp and lr
+>> +	 * into stack.
+>> +	 */
+>> +	u32 opc = aarch64_insn_decode_ldst_size(insn);
+>> +	u32 rt2 = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RT2, insn);
+>> +	u32 rn = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RN, insn);
+>> +	u32 rt = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RT, insn);
+>> +
+>> +	return aarch64_insn_is_stp_pre(insn) &&
+>> +	       (opc == 2) && (rt2 == 30) && (rn == 31) && (rt == 29);
+>> +}
+>> +
+>>  /* Return:
+>>   *   INSN_REJECTED     If instruction is one not allowed to kprobe,
+>>   *   INSN_GOOD         If instruction is supported and uses instruction slot,
+>> diff --git a/arch/arm64/kernel/probes/decode-insn.h b/arch/arm64/kernel/probes/decode-insn.h
+>> index 8b758c5a2062..033ccab73da6 100644
+>> --- a/arch/arm64/kernel/probes/decode-insn.h
+>> +++ b/arch/arm64/kernel/probes/decode-insn.h
+>> @@ -29,5 +29,6 @@ arm_kprobe_decode_insn(kprobe_opcode_t *addr, struct arch_specific_insn *asi);
+>>  #endif
+>>  enum probe_insn __kprobes
+>>  arm_probe_decode_insn(probe_opcode_t insn, struct arch_probe_insn *asi);
+>> +bool aarch64_insn_is_stp_fp_lr_sp_64b(probe_opcode_t insn);
+>>  
+>>  #endif /* _ARM_KERNEL_KPROBES_ARM64_H */
+>> diff --git a/arch/arm64/kernel/probes/simulate-insn.c b/arch/arm64/kernel/probes/simulate-insn.c
+>> index 5e4f887a074c..3906851c07b2 100644
+>> --- a/arch/arm64/kernel/probes/simulate-insn.c
+>> +++ b/arch/arm64/kernel/probes/simulate-insn.c
+>> @@ -8,6 +8,9 @@
+>>  #include <linux/bitops.h>
+>>  #include <linux/kernel.h>
+>>  #include <linux/kprobes.h>
+>> +#include <linux/highmem.h>
+>> +#include <linux/vmalloc.h>
+>> +#include <linux/mm.h>
+>>  
+>>  #include <asm/ptrace.h>
+>>  #include <asm/traps.h>
+>> @@ -211,3 +214,89 @@ simulate_nop(u32 opcode, long addr, struct pt_regs *regs)
+>>  	 */
+>>  	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
+>>  }
+>> +
+>> +static inline
+>> +bool stack_align_check(unsigned long sp)
+>> +{
+>> +	return (IS_ALIGNED(sp, 16) ||
+>> +		!(read_sysreg(sctlr_el1) & SCTLR_EL1_SA0_MASK));
+>> +}
+>> +
+>> +static inline
+>> +void put_user_stack_pages(struct page **pages, int nr_pages)
+>> +{
+>> +	int i;
+>> +
+>> +	for (i = 0; i < nr_pages; i++)
+>> +		put_page(pages[i]);
+>> +}
+>> +
+>> +static inline
+>> +int get_user_stack_pages(long start, long end, struct page **pages)
+>> +{
+>> +	int ret;
+>> +	int nr_pages = (end >> PAGE_SHIFT) - (start >> PAGE_SHIFT) + 1;
+>> +
+>> +	ret = get_user_pages_fast(start, nr_pages,
+>> +				  FOLL_WRITE | FOLL_FORCE, pages);
+>> +	if (unlikely(ret != nr_pages)) {
+>> +		if (ret > 0)
+>> +			put_user_stack_pages(pages, ret);
+>> +		return 0;
+>> +	}
+>> +
+>> +	return nr_pages;
+>> +}
+>> +
+>> +static inline
+>> +void *map_user_stack_pages(struct page **pages, int nr_pages)
+>> +{
+>> +	if (likely(nr_pages == 1))
+>> +		return kmap_local_page(pages[0]);
+>> +	else
+>> +		return vmap(pages, nr_pages, VM_MAP, PAGE_KERNEL);
+>> +}
+>> +
+>> +static inline
+>> +void unmap_user_stack_pages(void *kaddr, int nr_pages)
+>> +{
+>> +	if (likely(nr_pages == 1))
+>> +		kunmap_local(kaddr);
+>> +	else
+>> +		vunmap(kaddr);
+>> +}
+>> +
+>> +void __kprobes
+>> +simulate_stp_fp_lr_sp_64b(u32 opcode, long addr, struct pt_regs *regs)
+>> +{
+>> +	long imm7;
+>> +	long new_sp;
+>> +	int nr_pages;
+>> +	void *kaddr, *dst;
+>> +	struct page *pages[2] = { NULL };
+>> +
+>> +	imm7 = aarch64_insn_decode_immediate(AARCH64_INSN_IMM_7, opcode);
+>> +	new_sp = regs->sp + (sign_extend64(imm7, 6) << 3);
+>> +	if (!stack_align_check(new_sp)) {
+>> +		force_sig(SIGSEGV);
+>> +		goto done;
+>> +	}
+>> +
+>> +	nr_pages = get_user_stack_pages(new_sp, regs->sp, pages);
+>> +	if (!nr_pages) {
+>> +		force_sig(SIGSEGV);
+>> +		goto done;
+>> +	}
+>> +
+>> +	kaddr = map_user_stack_pages(pages, nr_pages);
+>> +	dst = kaddr + (new_sp & ~PAGE_MASK);
+>> +	asm volatile("stp %0, %1, [%2]"
+>> +		     : : "r"(regs->regs[29]), "r"(regs->regs[30]), "r"(dst));
+>> +
+>> +	unmap_user_stack_pages(kaddr, nr_pages);
+>> +	put_user_stack_pages(pages, nr_pages);
+>> +
+>> +done:
+>> +	regs->sp = new_sp;
+>> +	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
+>> +}
+>> diff --git a/arch/arm64/kernel/probes/simulate-insn.h b/arch/arm64/kernel/probes/simulate-insn.h
+>> index efb2803ec943..733a47ffa2e5 100644
+>> --- a/arch/arm64/kernel/probes/simulate-insn.h
+>> +++ b/arch/arm64/kernel/probes/simulate-insn.h
+>> @@ -17,5 +17,6 @@ void simulate_tbz_tbnz(u32 opcode, long addr, struct pt_regs *regs);
+>>  void simulate_ldr_literal(u32 opcode, long addr, struct pt_regs *regs);
+>>  void simulate_ldrsw_literal(u32 opcode, long addr, struct pt_regs *regs);
+>>  void simulate_nop(u32 opcode, long addr, struct pt_regs *regs);
+>> +void simulate_stp_fp_lr_sp_64b(u32 opcode, long addr, struct pt_regs *regs);
+>>  
+>>  #endif /* _ARM_KERNEL_KPROBES_SIMULATE_INSN_H */
+>> diff --git a/arch/arm64/kernel/probes/uprobes.c b/arch/arm64/kernel/probes/uprobes.c
+>> index d49aef2657cd..c70862314fde 100644
+>> --- a/arch/arm64/kernel/probes/uprobes.c
+>> +++ b/arch/arm64/kernel/probes/uprobes.c
+>> @@ -8,6 +8,7 @@
+>>  #include <asm/cacheflush.h>
+>>  
+>>  #include "decode-insn.h"
+>> +#include "simulate-insn.h"
+>>  
+>>  #define UPROBE_INV_FAULT_CODE	UINT_MAX
+>>  
+>> @@ -31,6 +32,21 @@ unsigned long uprobe_get_swbp_addr(struct pt_regs *regs)
+>>  	return instruction_pointer(regs);
+>>  }
+>>  
+>> +static enum probe_insn
+>> +arm_uprobe_decode_special_insn(probe_opcode_t insn, struct arch_probe_insn *api)
+>> +{
+>> +	/*
+>> +	 * When uprobe interact with VMSA features, such as MTE, POE, etc, it
+>> +	 * give up the simulation of memory access related instructions.
+>> +	 */
+>> +	if (!system_supports_mte() && aarch64_insn_is_stp_fp_lr_sp_64b(insn)) {
+>> +		api->handler = simulate_stp_fp_lr_sp_64b;
+>> +		return INSN_GOOD_NO_SLOT;
+>> +	}
+>> +
+>> +	return INSN_REJECTED;
+>> +}
+>> +
+>>  int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
+>>  		unsigned long addr)
+>>  {
+>> @@ -44,6 +60,11 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
+>>  
+>>  	insn = *(probe_opcode_t *)(&auprobe->insn[0]);
+>>  
+>> +	if (arm_uprobe_decode_special_insn(insn, &auprobe->api)) {
+>> +		auprobe->simulate = true;
+>> +		return 0;
+>> +	}
+>> +
+>>  	switch (arm_probe_decode_insn(insn, &auprobe->api)) {
+>>  	case INSN_REJECTED:
+>>  		return -EINVAL;
+>> diff --git a/arch/arm64/lib/insn.c b/arch/arm64/lib/insn.c
+>> index b008a9b46a7f..0635219d2196 100644
+>> --- a/arch/arm64/lib/insn.c
+>> +++ b/arch/arm64/lib/insn.c
+>> @@ -238,6 +238,11 @@ static u32 aarch64_insn_encode_ldst_size(enum aarch64_insn_size_type type,
+>>  	return insn;
+>>  }
+>>  
+>> +u32 aarch64_insn_decode_ldst_size(u32 insn)
+>> +{
+>> +	return (insn & GENMASK(31, 30)) >> 30;
+>> +}
+>> +
+>>  static inline long label_imm_common(unsigned long pc, unsigned long addr,
+>>  				     long range)
+>>  {
+>> -- 
+>> 2.34.1
+>>
+> 
 
-At last, when we are about to print in bpf extension if we're allowed
-(by testing the sk_tsflags_bpf), we only need to check if
-sk_tskey_bpf_offset is zero or not. If the value is zero, it means
-only the bpf program runs; if not, it means the sk->sk_tskey servers
-for application feature, we need to compute the real bpf tskey. Please
-see skb_tstamp_tx_output_bpf().
+-- 
+BR
+Liao, Chang
 
-Above makes sure that two features can work parallelly. It's honestly
-a little bit complicated. Before writing this part, I drew a few
-pictures to help me understand how it works.
-
-Thanks,
-Jason
 
