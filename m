@@ -1,388 +1,392 @@
-Return-Path: <bpf+bounces-43389-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43390-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED1299B4CEC
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 16:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCDC59B4D38
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 16:12:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A6231F24713
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 15:05:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D66E1F2403B
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 15:12:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00EBC192B90;
-	Tue, 29 Oct 2024 15:05:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CDC0193074;
+	Tue, 29 Oct 2024 15:12:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uNJacqaX"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="yS/QcW6k"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF4D191F98;
-	Tue, 29 Oct 2024 15:05:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E14B192D73
+	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 15:12:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730214342; cv=none; b=q74bjALQEOjL/vE8w6XdzxSk3HWBRtYlbRWMx8a2NRs+ZoxiMQkWBpUE25c5tHJoul3Bgl1zzga2d9RdMIxDKvwiq2ulxgaFuIrNA8uhL1rL1A1RLLKLzqkpj/UKDtzSyuVjGIsMPCp89+AyBhEZUG3kk8aleITl+noLzRyl+bk=
+	t=1730214768; cv=none; b=VHRTDoJvN443a0xLSIMCYfjA+qwz5gkyteps6Vdn3leB4dJS37N6Pvvn1lZ7llqOFgsY24sv1sBEAJ2vViU35abP6Tw4RMKOH8biAUBA9EsXSjIEQQk4Aoub/zXQRxbSq54T0ryjdrkJ9P1wk3e8MCBL4pXdw9ejX7sQTRSGg9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730214342; c=relaxed/simple;
-	bh=JMfPmRSJ24sW8RtpCOVTfks3gqkTlZ3rN5ZS3NtVCbc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=g+Nyxq1qV43SsRgdxj1GvflUcbqz/gJw+h4jkvVSZKmoYQt6ozTeSZ+S6swA00AtbdCNVLbWIEVHKD7NUZdnhs6K7hbZnJHfr7Ew3UT9wO8Mx/sSwHw3rGUQhbzlUrERlMN9u5Kx5t+FOM9MO2Q7+PrpQ13nGY1SvR5PYAlEuFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uNJacqaX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F7B5C4CECD;
-	Tue, 29 Oct 2024 15:05:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730214339;
-	bh=JMfPmRSJ24sW8RtpCOVTfks3gqkTlZ3rN5ZS3NtVCbc=;
-	h=From:Date:Subject:To:Cc:From;
-	b=uNJacqaXXEAxrcQMF7VJtmKRLi/wvzyKPJxCUmKqQyfCTW4dYgf1JYYihjcZF7OMH
-	 yqq+/Cv6ZUBm0EkQJJQR6kE7YuSCjwIbzRmQ2jAkVii9cmZqDY0NRrCgjuFR1I8tXv
-	 3mjY8Ty+I7qNRHhCX/SQQbuPH9EES9vQGerQ0Zp07LuakYG93ZxqacKEJF/ifub4VH
-	 +sixq3H6ttL3BvhYEZrWxnRdI1yiehl0pQHIu8kAYiU+4DK/iTuO8m5qvLSIjl6+V2
-	 ftTBGOj3JuPiXR3IhSbqXzfdel/lYsOcDnjGl0OmqxGEkIANtwRchl53IeMcB+wdhU
-	 /8I9QBJ5Zb1zQ==
-From: Roger Quadros <rogerq@kernel.org>
-Date: Tue, 29 Oct 2024 17:05:29 +0200
-Subject: [PATCH net] net: ethernet: ti: am65-cpsw: Fix multi queue Rx on J7
+	s=arc-20240116; t=1730214768; c=relaxed/simple;
+	bh=b7ww1gj0uzL4LUTrV0ZaY8llXCvd4KuaTu6Ll55TaOY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PZj2GO6zSuTYzaWjgmX8huf4KvQFbPfgxOmMJpYQ8jEfr4HtnBBsmSxzoRA+BZFaiXu279qnp01mfKHgQR/pq8US+udbBOD40GC7sUbyGVR8L1OjO/ueIDrFEg+JJyqDGx4IyYFgcn7o9Ym5dBWg1HKqT34AJvwjiYyPB0Tis6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=yS/QcW6k; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7205646f9ebso3374263b3a.0
+        for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 08:12:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1730214765; x=1730819565; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ex1rmyZkmwqDNLUJxxrioL4AYIw4oAzp5IE6ZWCPO/w=;
+        b=yS/QcW6khvyZLjcbxyCg7u3WaC7ylpymsnEUvQzK6QT83wH1qrjjW2zq8kckThx0Ov
+         4SXmdlUo/EPS+f/vQLFr1T6w7nyFAGhsi5NjBE2RB9GOf/IXfHQmJFj5gaYXaJhmK0w3
+         xLzza/w94WfeKY1/bSW9gYvSZhdiZ45ZMoX8I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730214765; x=1730819565;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ex1rmyZkmwqDNLUJxxrioL4AYIw4oAzp5IE6ZWCPO/w=;
+        b=rFly2tZIyi3HJgwrMok5LCG/UciAIIZTl8WIYBzZ8sPheUjkT/A4xniwcXcScY6tjO
+         cP96BK6tjooNAOq03n5+Oi2GOKBnLWH1Io09xF8OW/Br1H5cuTotM2qw53Rv0kGyGVJH
+         nTYYQ5MGgfJGH5wKF6HxsC3S7ic2kiaFgzd6fNo/cNombfwdcPl2cvv0nLplh3uZzLE+
+         c1E1xVqb7Bl9vrH4MGI7iLqgT808Uz+FlmDCocaxqtvzRK2qAip/s+rWaSepyIHp471X
+         EugytCs3Ww7h6nXpou2gN/HQqaTfz71yQqu5yPRJv+mu+lx37aHplfXVRmDGuleoEDrs
+         n+cQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW+K9jd1UCc/CyuR7mvnwwd324ll5v6EJAfkl48W9nThhpI5qDCmHonBH1WKLD5lk6hqs4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyOrugw5p55jOoWTsonTCh3goec0v9fBCY05X4jijhZWrSByxmp
+	CeNKyk3H6RDfV9luj1WfTDoMtkPc9jwviioS/BvRPx058EZSEfGwUZGNYZm+UJ0=
+X-Google-Smtp-Source: AGHT+IHNpotb0sKenFY/cbENmq1YwjDTtTxVrPeETvhJySYF2srKlpjG2wklHdoFEJG0WDDUCmKrYQ==
+X-Received: by 2002:a05:6a00:39a8:b0:71e:744a:3fbc with SMTP id d2e1a72fcca58-7206306efbemr16239558b3a.21.1730214764577;
+        Tue, 29 Oct 2024 08:12:44 -0700 (PDT)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7205793272bsm7626695b3a.69.2024.10.29.08.12.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Oct 2024 08:12:44 -0700 (PDT)
+Date: Tue, 29 Oct 2024 08:12:41 -0700
+From: Joe Damato <jdamato@fastly.com>
+To: "Lifshits, Vitaly" <vitaly.lifshits@intel.com>
+Cc: netdev@vger.kernel.org, jacob.e.keller@intel.com, kurt@linutronix.de,
+	vinicius.gomes@intel.com, Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
+Subject: Re: [PATCH iwl-next v5 2/2] igc: Link queues to NAPI instances
+Message-ID: <ZyD7aUc-tt_v3yda@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	"Lifshits, Vitaly" <vitaly.lifshits@intel.com>,
+	netdev@vger.kernel.org, jacob.e.keller@intel.com,
+	kurt@linutronix.de, vinicius.gomes@intel.com,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
+References: <20241028195243.52488-1-jdamato@fastly.com>
+ <20241028195243.52488-3-jdamato@fastly.com>
+ <f02044c0-1d90-49f8-8a2d-00ec84fba27a@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241029-am65-cpsw-multi-rx-j7-fix-v1-1-426ca805918c@kernel.org>
-X-B4-Tracking: v=1; b=H4sIALj5IGcC/x2MWw5AMBAAryL7bROtV7iK+ChdrFDS1iMRd9f4n
- ElmHnBkmRzU0QOWTna8mQAijqCflBkJWQcGmchMJDJFtRY59ru7cD0Wz2hvnEsc+MahUlJkVUe
- F1hD63VLQ/7sBQx7a9/0AvZ+FbXAAAAA=
-To: Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, Simon Horman <horms@kernel.org>, 
- Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Siddharth Vadapalli <s-vadapalli@ti.com>, 
- Govindarajan Sriramakrishnan <srk@ti.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- Roger Quadros <rogerq@kernel.org>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=11058; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=JMfPmRSJ24sW8RtpCOVTfks3gqkTlZ3rN5ZS3NtVCbc=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBnIPm8ugTRHW57eTVp39CdfAeZEvvPwQ1sv2Gho
- GX1afq4VbKJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZyD5vAAKCRDSWmvTvnYw
- k8hREACUmXMarqcGkiHe9l5vAryK9zCrOHRxfUNR/umzK9usmvh8scSVcvtWFC/Wl9KoyVq3l+E
- CGTcW8ZqGYCDUnigrulLHQfN8fpau9kw4g7IQJn4Tn3KI4JoC+mLD01W8rrtFuV/6vAT39BrCfu
- eEaipJ0rBf+qQOz/sfpF+Wnuy50jgmIhu/H645TZU4LNUyUPzeaS1I7U62bft+0ShDza4djFLxj
- 4S7EMVqsI+DVDXty4kA+n6BzxY36rLXjhC+hNzRf2OXq/4gSI151l9huvWV1dCYM4lTXYlEBYUn
- 3Gw+HTr/pIRNjdNr/pj0kohnWalFyGNjAMjif1QPxF4RPm79vFyKnXQyj4rYP6oPDgqKIoexaq8
- Yo3g8T3K2KCvXDTSBoa2LhaFRjG8OxPcD0X7Wx90ZINtAtY/OfIs6/NLbDn9OSvcoHV0RAYcNS2
- smm/CNOU2sj1WOqlmKqhWoXUAoCGKpScaKCFWNaYJirY0nH40F8gFz0UKdLjcPEBlSvhBmPVtiL
- eVJC56+rqRIG3Qcw8CnvurHXR0IpDF4VcLRj8TQlBnIsUAUnW3jwYq1zVBVe39GM1pymkRzoA94
- BW6j9hfTTL0fmC36uyrHut0dgqipFEG5oyuWuCIRS3OBbhdPKrhAwL8AmFHue+i44y6Xorx81uk
- hU4+wpGLib8FJGw==
-X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
- fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f02044c0-1d90-49f8-8a2d-00ec84fba27a@intel.com>
 
-On J7 platforms, setting up multiple RX flows was failing
-as the RX free descriptor ring 0 is shared among all flows
-and we did not allocate enough elements in the RX free descriptor
-ring 0 to accommodate for all RX flows.
+On Tue, Oct 29, 2024 at 11:49:03AM +0200, Lifshits, Vitaly wrote:
+> 
+> 
+> On 10/28/2024 9:52 PM, Joe Damato wrote:
+> > Link queues to NAPI instances via netdev-genl API so that users can
+> > query this information with netlink. Handle a few cases in the driver:
+> >    1. Link/unlink the NAPIs when XDP is enabled/disabled
+> >    2. Handle IGC_FLAG_QUEUE_PAIRS enabled and disabled
+> > 
+> > Example output when IGC_FLAG_QUEUE_PAIRS is enabled:
+> > 
+> > $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+> >                           --dump queue-get --json='{"ifindex": 2}'
+> > 
+> > [{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+> >   {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
+> >   {'id': 2, 'ifindex': 2, 'napi-id': 8195, 'type': 'rx'},
+> >   {'id': 3, 'ifindex': 2, 'napi-id': 8196, 'type': 'rx'},
+> >   {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'tx'},
+> >   {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'tx'},
+> >   {'id': 2, 'ifindex': 2, 'napi-id': 8195, 'type': 'tx'},
+> >   {'id': 3, 'ifindex': 2, 'napi-id': 8196, 'type': 'tx'}]
+> > 
+> > Since IGC_FLAG_QUEUE_PAIRS is enabled, you'll note that the same NAPI ID
+> > is present for both rx and tx queues at the same index, for example
+> > index 0:
+> > 
+> > {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+> > {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'tx'},
+> > 
+> > To test IGC_FLAG_QUEUE_PAIRS disabled, a test system was booted using
+> > the grub command line option "maxcpus=2" to force
+> > igc_set_interrupt_capability to disable IGC_FLAG_QUEUE_PAIRS.
+> > 
+> > Example output when IGC_FLAG_QUEUE_PAIRS is disabled:
+> > 
+> > $ lscpu | grep "On-line CPU"
+> > On-line CPU(s) list:      0,2
+> > 
+> > $ ethtool -l enp86s0  | tail -5
+> > Current hardware settings:
+> > RX:		n/a
+> > TX:		n/a
+> > Other:		1
+> > Combined:	2
+> > 
+> > $ cat /proc/interrupts  | grep enp
+> >   144: [...] enp86s0
+> >   145: [...] enp86s0-rx-0
+> >   146: [...] enp86s0-rx-1
+> >   147: [...] enp86s0-tx-0
+> >   148: [...] enp86s0-tx-1
+> > 
+> > 1 "other" IRQ, and 2 IRQs for each of RX and Tx, so we expect netlink to
+> > report 4 IRQs with unique NAPI IDs:
+> > 
+> > $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+> >                           --dump napi-get --json='{"ifindex": 2}'
+> > [{'id': 8196, 'ifindex': 2, 'irq': 148},
+> >   {'id': 8195, 'ifindex': 2, 'irq': 147},
+> >   {'id': 8194, 'ifindex': 2, 'irq': 146},
+> >   {'id': 8193, 'ifindex': 2, 'irq': 145}]
+> > 
+> > Now we examine which queues these NAPIs are associated with, expecting
+> > that since IGC_FLAG_QUEUE_PAIRS is disabled each RX and TX queue will
+> > have its own NAPI instance:
+> > 
+> > $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+> >                           --dump queue-get --json='{"ifindex": 2}'
+> > [{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+> >   {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
+> >   {'id': 0, 'ifindex': 2, 'napi-id': 8195, 'type': 'tx'},
+> >   {'id': 1, 'ifindex': 2, 'napi-id': 8196, 'type': 'tx'}]
+> > 
+> > Signed-off-by: Joe Damato <jdamato@fastly.com>
+> > ---
+> >   v5:
+> >     - Rename igc_resume to __igc_do_resume and pass in a boolean
+> >       "need_rtnl" to signal whether or not rtnl should be held before
+> >       caling __igc_open. Call this new function from igc_runtime_resume
+> >       and igc_resume passing in false (for igc_runtime_resume) and true
+> >       (igc_resume), respectively. This is done to avoid reintroducing a
+> >       bug fixed in commit: 6f31d6b: "igc: Refactor runtime power
+> >       management flow" where rtnl is held in runtime_resume causing a
+> >       deadlock.
+> > 
+> >   v4:
+> >     - Add rtnl_lock/rtnl_unlock in two paths: igc_resume and
+> >       igc_io_error_detected. The code added to the latter is inspired by
+> >       a similar implementation in ixgbe's ixgbe_io_error_detected.
+> > 
+> >   v3:
+> >     - Replace igc_unset_queue_napi with igc_set_queue_napi(adapater, i,
+> >       NULL), as suggested by Vinicius Costa Gomes
+> >     - Simplify implemention of igc_set_queue_napi as suggested by Kurt
+> >       Kanzenbach, with a tweak to use ring->queue_index
+> > 
+> >   v2:
+> >     - Update commit message to include tests for IGC_FLAG_QUEUE_PAIRS
+> >       disabled
+> >     - Refactored code to move napi queue mapping and unmapping to helper
+> >       functions igc_set_queue_napi and igc_unset_queue_napi
+> >     - Adjust the code to handle IGC_FLAG_QUEUE_PAIRS disabled
+> >     - Call helpers to map/unmap queues to NAPIs in igc_up, __igc_open,
+> >       igc_xdp_enable_pool, and igc_xdp_disable_pool
+> > 
+> >   drivers/net/ethernet/intel/igc/igc.h      |  2 +
+> >   drivers/net/ethernet/intel/igc/igc_main.c | 52 ++++++++++++++++++++---
+> >   drivers/net/ethernet/intel/igc/igc_xdp.c  |  2 +
+> >   3 files changed, 49 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
+> > index eac0f966e0e4..b8111ad9a9a8 100644
+> > --- a/drivers/net/ethernet/intel/igc/igc.h
+> > +++ b/drivers/net/ethernet/intel/igc/igc.h
+> > @@ -337,6 +337,8 @@ struct igc_adapter {
+> >   	struct igc_led_classdev *leds;
+> >   };
+> > +void igc_set_queue_napi(struct igc_adapter *adapter, int q_idx,
+> > +			struct napi_struct *napi);
+> >   void igc_up(struct igc_adapter *adapter);
+> >   void igc_down(struct igc_adapter *adapter);
+> >   int igc_open(struct net_device *netdev);
+> > diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+> > index 7964bbedb16c..051a0cdb1143 100644
+> > --- a/drivers/net/ethernet/intel/igc/igc_main.c
+> > +++ b/drivers/net/ethernet/intel/igc/igc_main.c
+> > @@ -4948,6 +4948,22 @@ static int igc_sw_init(struct igc_adapter *adapter)
+> >   	return 0;
+> >   }
+> > +void igc_set_queue_napi(struct igc_adapter *adapter, int vector,
+> > +			struct napi_struct *napi)
+> > +{
+> > +	struct igc_q_vector *q_vector = adapter->q_vector[vector];
+> > +
+> > +	if (q_vector->rx.ring)
+> > +		netif_queue_set_napi(adapter->netdev,
+> > +				     q_vector->rx.ring->queue_index,
+> > +				     NETDEV_QUEUE_TYPE_RX, napi);
+> > +
+> > +	if (q_vector->tx.ring)
+> > +		netif_queue_set_napi(adapter->netdev,
+> > +				     q_vector->tx.ring->queue_index,
+> > +				     NETDEV_QUEUE_TYPE_TX, napi);
+> > +}
+> > +
+> >   /**
+> >    * igc_up - Open the interface and prepare it to handle traffic
+> >    * @adapter: board private structure
+> > @@ -4955,6 +4971,7 @@ static int igc_sw_init(struct igc_adapter *adapter)
+> >   void igc_up(struct igc_adapter *adapter)
+> >   {
+> >   	struct igc_hw *hw = &adapter->hw;
+> > +	struct napi_struct *napi;
+> >   	int i = 0;
+> >   	/* hardware has been reset, we need to reload some things */
+> > @@ -4962,8 +4979,11 @@ void igc_up(struct igc_adapter *adapter)
+> >   	clear_bit(__IGC_DOWN, &adapter->state);
+> > -	for (i = 0; i < adapter->num_q_vectors; i++)
+> > -		napi_enable(&adapter->q_vector[i]->napi);
+> > +	for (i = 0; i < adapter->num_q_vectors; i++) {
+> > +		napi = &adapter->q_vector[i]->napi;
+> > +		napi_enable(napi);
+> > +		igc_set_queue_napi(adapter, i, napi);
+> > +	}
+> >   	if (adapter->msix_entries)
+> >   		igc_configure_msix(adapter);
+> > @@ -5192,6 +5212,7 @@ void igc_down(struct igc_adapter *adapter)
+> >   	for (i = 0; i < adapter->num_q_vectors; i++) {
+> >   		if (adapter->q_vector[i]) {
+> >   			napi_synchronize(&adapter->q_vector[i]->napi);
+> > +			igc_set_queue_napi(adapter, i, NULL);
+> >   			napi_disable(&adapter->q_vector[i]->napi);
+> >   		}
+> >   	}
+> > @@ -6021,6 +6042,7 @@ static int __igc_open(struct net_device *netdev, bool resuming)
+> >   	struct igc_adapter *adapter = netdev_priv(netdev);
+> >   	struct pci_dev *pdev = adapter->pdev;
+> >   	struct igc_hw *hw = &adapter->hw;
+> > +	struct napi_struct *napi;
+> >   	int err = 0;
+> >   	int i = 0;
+> > @@ -6056,8 +6078,11 @@ static int __igc_open(struct net_device *netdev, bool resuming)
+> >   	clear_bit(__IGC_DOWN, &adapter->state);
+> > -	for (i = 0; i < adapter->num_q_vectors; i++)
+> > -		napi_enable(&adapter->q_vector[i]->napi);
+> > +	for (i = 0; i < adapter->num_q_vectors; i++) {
+> > +		napi = &adapter->q_vector[i]->napi;
+> > +		napi_enable(napi);
+> > +		igc_set_queue_napi(adapter, i, napi);
+> > +	}
+> >   	/* Clear any pending interrupts. */
+> >   	rd32(IGC_ICR);
+> > @@ -7342,7 +7367,7 @@ static void igc_deliver_wake_packet(struct net_device *netdev)
+> >   	netif_rx(skb);
+> >   }
+> > -static int igc_resume(struct device *dev)
+> > +static int __igc_do_resume(struct device *dev, bool need_rtnl)
+> >   {
+> >   	struct pci_dev *pdev = to_pci_dev(dev);
+> >   	struct net_device *netdev = pci_get_drvdata(pdev);
+> > @@ -7385,7 +7410,11 @@ static int igc_resume(struct device *dev)
+> >   	wr32(IGC_WUS, ~0);
+> >   	if (netif_running(netdev)) {
+> > +		if (need_rtnl)
+> > +			rtnl_lock();
+> >   		err = __igc_open(netdev, true);
+> > +		if (need_rtnl)
+> > +			rtnl_unlock();
+> >   		if (!err)
+> >   			netif_device_attach(netdev);
+> >   	}
+> > @@ -7393,9 +7422,14 @@ static int igc_resume(struct device *dev)
+> >   	return err;
+> >   }
+> > +static int igc_resume(struct device *dev)
+> > +{
+> > +	return __igc_do_resume(dev, true);
+> > +}
+> > +
+> >   static int igc_runtime_resume(struct device *dev)
+> >   {
+> > -	return igc_resume(dev);
+> > +	return __igc_do_resume(dev, false);
+> >   }
+> >   static int igc_suspend(struct device *dev)
+> > @@ -7440,14 +7474,18 @@ static pci_ers_result_t igc_io_error_detected(struct pci_dev *pdev,
+> >   	struct net_device *netdev = pci_get_drvdata(pdev);
+> >   	struct igc_adapter *adapter = netdev_priv(netdev);
+> > +	rtnl_lock();
+> >   	netif_device_detach(netdev);
+> > -	if (state == pci_channel_io_perm_failure)
+> > +	if (state == pci_channel_io_perm_failure) {
+> > +		rtnl_unlock();
+> >   		return PCI_ERS_RESULT_DISCONNECT;
+> > +	}
+> >   	if (netif_running(netdev))
+> >   		igc_down(adapter);
+> >   	pci_disable_device(pdev);
+> > +	rtnl_unlock();
+> >   	/* Request a slot reset. */
+> >   	return PCI_ERS_RESULT_NEED_RESET;
+> > diff --git a/drivers/net/ethernet/intel/igc/igc_xdp.c b/drivers/net/ethernet/intel/igc/igc_xdp.c
+> > index e27af72aada8..4da633430b80 100644
+> > --- a/drivers/net/ethernet/intel/igc/igc_xdp.c
+> > +++ b/drivers/net/ethernet/intel/igc/igc_xdp.c
+> > @@ -84,6 +84,7 @@ static int igc_xdp_enable_pool(struct igc_adapter *adapter,
+> >   		napi_disable(napi);
+> >   	}
+> > +	igc_set_queue_napi(adapter, queue_id, NULL);
+> >   	set_bit(IGC_RING_FLAG_AF_XDP_ZC, &rx_ring->flags);
+> >   	set_bit(IGC_RING_FLAG_AF_XDP_ZC, &tx_ring->flags);
+> > @@ -133,6 +134,7 @@ static int igc_xdp_disable_pool(struct igc_adapter *adapter, u16 queue_id)
+> >   	xsk_pool_dma_unmap(pool, IGC_RX_DMA_ATTR);
+> >   	clear_bit(IGC_RING_FLAG_AF_XDP_ZC, &rx_ring->flags);
+> >   	clear_bit(IGC_RING_FLAG_AF_XDP_ZC, &tx_ring->flags);
+> > +	igc_set_queue_napi(adapter, queue_id, napi);
+> >   	if (needs_reset) {
+> >   		napi_enable(napi);
+> 
+> I believe that this fix should work on most cases. I have some concerns that
+> this solution might not be 100% robust as sometimes runtime resume may be
+> triggered without the rtnl being held. For example, if it is initiated by a
+> network wake event. But, for the moment I think that this appoach is good
+> enough.
+>
+> My main comment here is the naming conventions, I prefer using the original
+> parameters/function names for consistency, similarly to what was done in the
+> igb driver:
+> https://github.com/torvalds/linux/commit/ac8c58f5b535d6272324e2b8b4a0454781c9147e
 
-This issue is not present on AM62 as separate pair of
-rings are used for free and completion rings for each flow.
+Sorry, can you be more specific on what the naming issue is?
 
-Fix this by allocating enough elements for RX free descriptor
-ring 0.
-
-However, we can no longer rely on desc_idx (descriptor based
-offsets) to identify the pages in the respective flows as
-free descriptor ring includes elements for all flows.
-To solve this, introduce a new swdata data structure to store
-flow_id and page. This can be used to identify which flow (page_pool)
-and page the descriptor belonged to when popped out of the
-RX rings.
-
-Fixes: da70d184a8c3 ("net: ethernet: ti: am65-cpsw: Introduce multi queue Rx")
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 73 +++++++++++++++-----------------
- drivers/net/ethernet/ti/am65-cpsw-nuss.h |  6 ++-
- 2 files changed, 38 insertions(+), 41 deletions(-)
-
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 0520e9f4bea7..4c46574e111c 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -339,7 +339,7 @@ static int am65_cpsw_nuss_rx_push(struct am65_cpsw_common *common,
- 	struct device *dev = common->dev;
- 	dma_addr_t desc_dma;
- 	dma_addr_t buf_dma;
--	void *swdata;
-+	struct am65_cpsw_swdata *swdata;
- 
- 	desc_rx = k3_cppi_desc_pool_alloc(rx_chn->desc_pool);
- 	if (!desc_rx) {
-@@ -363,7 +363,8 @@ static int am65_cpsw_nuss_rx_push(struct am65_cpsw_common *common,
- 	cppi5_hdesc_attach_buf(desc_rx, buf_dma, AM65_CPSW_MAX_PACKET_SIZE,
- 			       buf_dma, AM65_CPSW_MAX_PACKET_SIZE);
- 	swdata = cppi5_hdesc_get_swdata(desc_rx);
--	*((void **)swdata) = page_address(page);
-+	swdata->page = page;
-+	swdata->flow_id = flow_idx;
- 
- 	return k3_udma_glue_push_rx_chn(rx_chn->rx_chn, flow_idx,
- 					desc_rx, desc_dma);
-@@ -519,36 +520,31 @@ static enum am65_cpsw_tx_buf_type am65_cpsw_nuss_buf_type(struct am65_cpsw_tx_ch
- 
- static inline void am65_cpsw_put_page(struct am65_cpsw_rx_flow *flow,
- 				      struct page *page,
--				      bool allow_direct,
--				      int desc_idx)
-+				      bool allow_direct)
- {
- 	page_pool_put_full_page(flow->page_pool, page, allow_direct);
--	flow->pages[desc_idx] = NULL;
- }
- 
- static void am65_cpsw_nuss_rx_cleanup(void *data, dma_addr_t desc_dma)
- {
--	struct am65_cpsw_rx_flow *flow = data;
-+	struct am65_cpsw_rx_chn *rx_chn = data;
- 	struct cppi5_host_desc_t *desc_rx;
--	struct am65_cpsw_rx_chn *rx_chn;
-+	struct am65_cpsw_swdata *swdata;
- 	dma_addr_t buf_dma;
- 	u32 buf_dma_len;
--	void *page_addr;
--	void **swdata;
--	int desc_idx;
-+	struct page *page;
-+	u32 flow_id;
- 
--	rx_chn = &flow->common->rx_chns;
- 	desc_rx = k3_cppi_desc_pool_dma2virt(rx_chn->desc_pool, desc_dma);
- 	swdata = cppi5_hdesc_get_swdata(desc_rx);
--	page_addr = *swdata;
-+	page = swdata->page;
-+	flow_id = swdata->flow_id;
- 	cppi5_hdesc_get_obuf(desc_rx, &buf_dma, &buf_dma_len);
- 	k3_udma_glue_rx_cppi5_to_dma_addr(rx_chn->rx_chn, &buf_dma);
- 	dma_unmap_single(rx_chn->dma_dev, buf_dma, buf_dma_len, DMA_FROM_DEVICE);
- 	k3_cppi_desc_pool_free(rx_chn->desc_pool, desc_rx);
- 
--	desc_idx = am65_cpsw_nuss_desc_idx(rx_chn->desc_pool, desc_rx,
--					   rx_chn->dsize_log2);
--	am65_cpsw_put_page(flow, virt_to_page(page_addr), false, desc_idx);
-+	am65_cpsw_put_page(&rx_chn->flows[flow_id], page, false);
- }
- 
- static void am65_cpsw_nuss_xmit_free(struct am65_cpsw_tx_chn *tx_chn,
-@@ -703,14 +699,13 @@ static int am65_cpsw_nuss_common_open(struct am65_cpsw_common *common)
- 				ret = -ENOMEM;
- 				goto fail_rx;
- 			}
--			flow->pages[i] = page;
- 
- 			ret = am65_cpsw_nuss_rx_push(common, page, flow_idx);
- 			if (ret < 0) {
- 				dev_err(common->dev,
- 					"cannot submit page to rx channel flow %d, error %d\n",
- 					flow_idx, ret);
--				am65_cpsw_put_page(flow, page, false, i);
-+				am65_cpsw_put_page(flow, page, false);
- 				goto fail_rx;
- 			}
- 		}
-@@ -764,8 +759,8 @@ static int am65_cpsw_nuss_common_open(struct am65_cpsw_common *common)
- 
- fail_rx:
- 	for (i = 0; i < common->rx_ch_num_flows; i++)
--		k3_udma_glue_reset_rx_chn(rx_chn->rx_chn, i, &rx_chn->flows[i],
--					  am65_cpsw_nuss_rx_cleanup, 0);
-+		k3_udma_glue_reset_rx_chn(rx_chn->rx_chn, i, rx_chn,
-+					  am65_cpsw_nuss_rx_cleanup, !!i);
- 
- 	am65_cpsw_destroy_xdp_rxqs(common);
- 
-@@ -777,6 +772,7 @@ static int am65_cpsw_nuss_common_stop(struct am65_cpsw_common *common)
- 	struct am65_cpsw_rx_chn *rx_chn = &common->rx_chns;
- 	struct am65_cpsw_tx_chn *tx_chn = common->tx_chns;
- 	int i;
-+	struct am65_cpsw_rx_flow *flow;
- 
- 	if (common->usage_count != 1)
- 		return 0;
-@@ -817,11 +813,12 @@ static int am65_cpsw_nuss_common_stop(struct am65_cpsw_common *common)
- 			dev_err(common->dev, "rx teardown timeout\n");
- 	}
- 
--	for (i = 0; i < common->rx_ch_num_flows; i++) {
-+	for (i = common->rx_ch_num_flows - 1; i >= 0; i--) {
-+		flow = &rx_chn->flows[i];
- 		napi_disable(&rx_chn->flows[i].napi_rx);
- 		hrtimer_cancel(&rx_chn->flows[i].rx_hrtimer);
--		k3_udma_glue_reset_rx_chn(rx_chn->rx_chn, i, &rx_chn->flows[i],
--					  am65_cpsw_nuss_rx_cleanup, 0);
-+		k3_udma_glue_reset_rx_chn(rx_chn->rx_chn, i, rx_chn,
-+					  am65_cpsw_nuss_rx_cleanup, !!i);
- 	}
- 
- 	k3_udma_glue_disable_rx_chn(rx_chn->rx_chn);
-@@ -1028,7 +1025,7 @@ static int am65_cpsw_xdp_tx_frame(struct net_device *ndev,
- static int am65_cpsw_run_xdp(struct am65_cpsw_rx_flow *flow,
- 			     struct am65_cpsw_port *port,
- 			     struct xdp_buff *xdp,
--			     int desc_idx, int cpu, int *len)
-+			     int cpu, int *len)
- {
- 	struct am65_cpsw_common *common = flow->common;
- 	struct am65_cpsw_ndev_priv *ndev_priv;
-@@ -1101,7 +1098,7 @@ static int am65_cpsw_run_xdp(struct am65_cpsw_rx_flow *flow,
- 	}
- 
- 	page = virt_to_head_page(xdp->data);
--	am65_cpsw_put_page(flow, page, true, desc_idx);
-+	am65_cpsw_put_page(flow, page, true);
- 
- out:
- 	return ret;
-@@ -1150,6 +1147,7 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
- 	struct am65_cpsw_ndev_stats *stats;
- 	struct cppi5_host_desc_t *desc_rx;
- 	struct device *dev = common->dev;
-+	struct am65_cpsw_swdata *swdata;
- 	struct page *page, *new_page;
- 	dma_addr_t desc_dma, buf_dma;
- 	struct am65_cpsw_port *port;
-@@ -1159,7 +1157,6 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
- 	struct sk_buff *skb;
- 	struct xdp_buff	xdp;
- 	void *page_addr;
--	void **swdata;
- 	u32 *psdata;
- 
- 	*xdp_state = AM65_CPSW_XDP_PASS;
-@@ -1182,8 +1179,8 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
- 		__func__, flow_idx, &desc_dma);
- 
- 	swdata = cppi5_hdesc_get_swdata(desc_rx);
--	page_addr = *swdata;
--	page = virt_to_page(page_addr);
-+	page = swdata->page;
-+	page_addr = page_address(page);
- 	cppi5_hdesc_get_obuf(desc_rx, &buf_dma, &buf_dma_len);
- 	k3_udma_glue_rx_cppi5_to_dma_addr(rx_chn->rx_chn, &buf_dma);
- 	pkt_len = cppi5_hdesc_get_pktlen(desc_rx);
-@@ -1201,7 +1198,6 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
- 
- 	desc_idx = am65_cpsw_nuss_desc_idx(rx_chn->desc_pool, desc_rx,
- 					   rx_chn->dsize_log2);
--
- 	skb = am65_cpsw_build_skb(page_addr, ndev,
- 				  AM65_CPSW_MAX_PACKET_SIZE);
- 	if (unlikely(!skb)) {
-@@ -1213,7 +1209,7 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
- 		xdp_init_buff(&xdp, PAGE_SIZE, &port->xdp_rxq[flow->id]);
- 		xdp_prepare_buff(&xdp, page_addr, AM65_CPSW_HEADROOM,
- 				 pkt_len, false);
--		*xdp_state = am65_cpsw_run_xdp(flow, port, &xdp, desc_idx,
-+		*xdp_state = am65_cpsw_run_xdp(flow, port, &xdp,
- 					       cpu, &pkt_len);
- 		if (*xdp_state != AM65_CPSW_XDP_PASS)
- 			goto allocate;
-@@ -1247,10 +1243,8 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
- 		return -ENOMEM;
- 	}
- 
--	flow->pages[desc_idx] = new_page;
--
- 	if (netif_dormant(ndev)) {
--		am65_cpsw_put_page(flow, new_page, true, desc_idx);
-+		am65_cpsw_put_page(flow, new_page, true);
- 		ndev->stats.rx_dropped++;
- 		return 0;
- 	}
-@@ -1258,7 +1252,7 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
- requeue:
- 	ret = am65_cpsw_nuss_rx_push(common, new_page, flow_idx);
- 	if (WARN_ON(ret < 0)) {
--		am65_cpsw_put_page(flow, new_page, true, desc_idx);
-+		am65_cpsw_put_page(flow, new_page, true);
- 		ndev->stats.rx_errors++;
- 		ndev->stats.rx_dropped++;
- 	}
-@@ -2402,10 +2396,6 @@ static int am65_cpsw_nuss_init_rx_chns(struct am65_cpsw_common *common)
- 	for (i = 0; i < common->rx_ch_num_flows; i++) {
- 		flow = &rx_chn->flows[i];
- 		flow->page_pool = NULL;
--		flow->pages = devm_kcalloc(dev, AM65_CPSW_MAX_RX_DESC,
--					   sizeof(*flow->pages), GFP_KERNEL);
--		if (!flow->pages)
--			return -ENOMEM;
- 	}
- 
- 	rx_chn->rx_chn = k3_udma_glue_request_rx_chn(dev, "rx", &rx_cfg);
-@@ -2455,10 +2445,12 @@ static int am65_cpsw_nuss_init_rx_chns(struct am65_cpsw_common *common)
- 		flow = &rx_chn->flows[i];
- 		flow->id = i;
- 		flow->common = common;
-+		flow->irq = -EINVAL;
- 
- 		rx_flow_cfg.ring_rxfdq0_id = fdqring_id;
- 		rx_flow_cfg.rx_cfg.size = max_desc_num;
--		rx_flow_cfg.rxfdq_cfg.size = max_desc_num;
-+		/* share same FDQ for all flows */
-+		rx_flow_cfg.rxfdq_cfg.size = max_desc_num * rx_cfg.flow_id_num;
- 		rx_flow_cfg.rxfdq_cfg.mode = common->pdata.fdqring_mode;
- 
- 		ret = k3_udma_glue_rx_flow_init(rx_chn->rx_chn,
-@@ -2496,6 +2488,7 @@ static int am65_cpsw_nuss_init_rx_chns(struct am65_cpsw_common *common)
- 		if (ret) {
- 			dev_err(dev, "failure requesting rx %d irq %u, %d\n",
- 				i, flow->irq, ret);
-+			flow->irq = -EINVAL;
- 			goto err;
- 		}
- 	}
-@@ -3349,8 +3342,8 @@ static int am65_cpsw_nuss_register_ndevs(struct am65_cpsw_common *common)
- 
- 	for (i = 0; i < common->rx_ch_num_flows; i++)
- 		k3_udma_glue_reset_rx_chn(rx_chan->rx_chn, i,
--					  &rx_chan->flows[i],
--					  am65_cpsw_nuss_rx_cleanup, 0);
-+					  rx_chan,
-+					  am65_cpsw_nuss_rx_cleanup, !!i);
- 
- 	k3_udma_glue_disable_rx_chn(rx_chan->rx_chn);
- 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.h b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-index dc8d544230dc..92a27ba4c601 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-@@ -101,10 +101,14 @@ struct am65_cpsw_rx_flow {
- 	struct hrtimer rx_hrtimer;
- 	unsigned long rx_pace_timeout;
- 	struct page_pool *page_pool;
--	struct page **pages;
- 	char name[32];
- };
- 
-+struct am65_cpsw_swdata {
-+	u32 flow_id;
-+	struct page *page;
-+};
-+
- struct am65_cpsw_rx_chn {
- 	struct device *dev;
- 	struct device *dma_dev;
-
----
-base-commit: 42f7652d3eb527d03665b09edac47f85fb600924
-change-id: 20241023-am65-cpsw-multi-rx-j7-fix-f9a2149be6dd
-
-Best regards,
--- 
-Roger Quadros <rogerq@kernel.org>
-
+Do you want me to resubmit this with "__igc_do_resume" renamed to
+"__igc_resume" and "bool need_rtnl" renamed to "bool rpm" or
+something else?
 
