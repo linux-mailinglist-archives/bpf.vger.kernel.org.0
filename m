@@ -1,159 +1,163 @@
-Return-Path: <bpf+bounces-43444-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43445-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 813809B5684
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 00:08:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78D179B5688
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 00:13:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 471652846CD
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 23:08:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A99851C2098D
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 23:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20D2520B213;
-	Tue, 29 Oct 2024 23:07:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1A620B1FB;
+	Tue, 29 Oct 2024 23:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="afVOPXaK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j3yo2Wf1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC98620ADFC
-	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 23:07:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2D420ADD4;
+	Tue, 29 Oct 2024 23:12:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730243262; cv=none; b=H/K8kKvh59Xbz13MgcWBV6F2DOpcchDPI8Hn/9j9Hrpth/2UvHvHlTNdRKMoQd7J5JM10pGtC/RIV/dj7955fpfWtObyUDL+NUUMqcKgGPjkJ8uyltikxDr1vuKJoC1KSGc94vwKwyKA7ibvAyaJhqW1xi0UMN1oWBU5B/i+aYU=
+	t=1730243575; cv=none; b=AoXNcusJDOMbJ3fwjQeWVLuvEVuNh3T2QCkFuVULmY910Po/V+bXQSufZe51aXLmCNex8kKkBJyqa0ahqNNDofk978FAKHiyF5PNTISELUlhTMEiW4vF64hh+1oX//8awQ89XGgmFLl2F20DUVpETj/O5BPWtmKxHDA2fSqeUuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730243262; c=relaxed/simple;
-	bh=8DRQbAATaD43CYbFD+EyUGDtTq0lh56u/bukIF9DEns=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ncrztqR4E23dyTyYLQI57dZ3ZHg8BiUgtck2Iy8CzMTSWeO0Fzo4QsIWtfcW6fsSRr1VeRFbJ/p4nKPMSiSRzehHqZTk0ov3JWkx0694aZ2NuTehVckD8zj4UxR1Qlbq2Aj3a/Sksjhsdq2Pyj3e53tn2QGAgLMAGVKDpVnMWTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=afVOPXaK; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-7ea8ecacf16so3905202a12.1
-        for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 16:07:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730243260; x=1730848060; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NsWj21e8mfAM9++CGcS8J209f7a65bCkQEFsIZppUDE=;
-        b=afVOPXaKhB2GEyRiuXXr9RuFIVFU3RD9Wv+4slfd1Ydo94azfP9iUikbnT6xien5tN
-         bvd8fN39uJwFVKCZqeTDw7zxruBZM7+PgrdSmq3vCsgh9QiZ+r02yDdsR3Q7M3A1XEyL
-         VrZvKK6suxvYMIPT5d5az0ekDh+4JGMjm3Cd9BOLzA+8e/+YgwsCBJTIbRzMnOgz9Aee
-         IDes48pEWjQqxlD16Zgj7QMWSvIkmk1NdXbwfLHNMM1Q9Wz1k74U3U59VYSdLWlFlfmm
-         bPS1ciw5hZtE9xUphdcTTqYSNxuQqJE/sTfqI0Kd3pMogpwCC+HrJOc1E3zg1juHerWc
-         JvqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730243260; x=1730848060;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NsWj21e8mfAM9++CGcS8J209f7a65bCkQEFsIZppUDE=;
-        b=I7UPmiGID5QzeI4mh5WidWX9/Zs3nR9KbWSZyoIDQ/ZO6vxI4dqZTFOMdhrcSkSbfa
-         h7+PZFR2yD2sZ0z1X4/ml4r19HSxNsgHXj8/p5roShjt9I7Dr9S3qI7UOXD0VN9MQIGS
-         00AU1XHS0By8w6nMuJdwpt4qDsgKwdb75lez3aG2JN45jFf3PN0zNGFVQfkeOjtJk1ei
-         wZcB4YxUdNqB+udfVbvcv+/Ve6cjiD8UW3Dy08U0vsu0HAc+dRwW9wOhW7T8L29naBmY
-         U1nWiVhLoP0xuvnoIoohT1cdrjV7OQqAqIlCzIzcVa6xejGt0KEG6NSTZS+bhCvot5TN
-         bKZQ==
-X-Gm-Message-State: AOJu0YyY5c3/buNBKKsRkxqHLVq9VzMCUOVMp9Ds37grFBx0K9K4L3xv
-	sPlSmMdlkwXHMqDSXYArkV5aFx1bpMg+3rIVeXrvq44mfIqUAd4=
-X-Google-Smtp-Source: AGHT+IGSj/KfvrqnnfzNwJ9dNAPGGyeVzCW2uovWwM4K8WFqNbB7T9GvgGwWFdiDLtM6me5lQ5uz5A==
-X-Received: by 2002:a05:6a20:43a4:b0:1d9:83cc:ef90 with SMTP id adf61e73a8af0-1d9a83a3dd4mr17392861637.8.1730243259903;
-        Tue, 29 Oct 2024 16:07:39 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7edc8a72e92sm6819867a12.92.2024.10.29.16.07.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Oct 2024 16:07:39 -0700 (PDT)
-Date: Tue, 29 Oct 2024 16:07:38 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: zijianzhang@bytedance.com
-Cc: bpf@vger.kernel.org, borisp@nvidia.com, john.fastabend@gmail.com,
-	kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
-	pabeni@redhat.com, horms@kernel.org, daniel@iogearbox.net,
-	ast@kernel.org, cong.wang@bytedance.com
-Subject: Re: [PATCH bpf] bpf: Add sk_is_inet check in tls_sw_has_ctx_tx/rx
-Message-ID: <ZyFquswggZxKCYGH@mini-arch>
-References: <20241029202830.3121552-1-zijianzhang@bytedance.com>
+	s=arc-20240116; t=1730243575; c=relaxed/simple;
+	bh=LjcugxeRFbGxnwLPmH2IHhrjSAtZ2rEER7t/y7d2bMs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nWqpTh98qCMVuc1zJt+X6Pn2sRz0h4pgvghcUxAKlUNPhOj9zH3aVIVU+6zJ/5ZjCW58In2erP6MiasCc8aktTXAh/3FavUM+NR6sY/d0MaAcrlciT0t4nNi1GGlzQWc933LPzIWmq8O0kgemVTRfXpHcku+XkcIZN+6bNWJDWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j3yo2Wf1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A5E3C4CEE3;
+	Tue, 29 Oct 2024 23:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730243575;
+	bh=LjcugxeRFbGxnwLPmH2IHhrjSAtZ2rEER7t/y7d2bMs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=j3yo2Wf1KLjmO/WmIqJeCDal4Z6naw/DuztLhMTbuh/MsKmd71oWTXLyqDwF9Aj+E
+	 FIkkJ+tHg/j1K0buShRvT3+TaGqpgFBn0xSzMRAEQpAmsm/cJkf625KlSYTiSLp0zg
+	 tmIgBhmLs7b/3mlCXyx1JVutvKoddnbFpiY7dVd5zps6zOwmvSOcLWZUP0TFkIWg+d
+	 hzNhKpZue9cYAvBZomKbjWXIQORkxO46mvCB+HjzXl8QTEvV2dVFBOz/Q0TVwUi1nx
+	 +uEdYR4W9FiObUQX/qL++mMnxwU+HgRD8vO2T2kdvrdMXQAC9r/JZoHVUFTJKEWf+1
+	 u0tEwnPEMqZTA==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: kernel-team@meta.com,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	kpsingh@kernel.org,
+	mattbobrowski@google.com,
+	amir73il@gmail.com,
+	repnop@google.com,
+	jlayton@kernel.org,
+	josef@toxicpanda.com,
+	Song Liu <song@kernel.org>
+Subject: [RFC bpf-next fanotify 0/5] Fanotify fastpath handler
+Date: Tue, 29 Oct 2024 16:12:39 -0700
+Message-ID: <20241029231244.2834368-1-song@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20241029202830.3121552-1-zijianzhang@bytedance.com>
+Content-Transfer-Encoding: 8bit
 
-On 10/29, zijianzhang@bytedance.com wrote:
-> From: Zijian Zhang <zijianzhang@bytedance.com>
-> 
-> As the introduction of the support for vsock and unix sockets in sockmap,
-> tls_sw_has_ctx_tx/rx cannot presume the socket passed in must be inet.
-> Otherwise, tls_get_ctx may return an invalid pointer and result in page
-> fault in function tls_sw_ctx_rx.
-> 
-> BUG: unable to handle page fault for address: 0000000000040030
-> Workqueue: vsock-loopback vsock_loopback_work
-> RIP: 0010:sk_psock_strp_data_ready+0x23/0x60
-> Call Trace:
->  ? __die+0x81/0xc3
->  ? no_context+0x194/0x350
->  ? do_page_fault+0x30/0x110
->  ? async_page_fault+0x3e/0x50
->  ? sk_psock_strp_data_ready+0x23/0x60
->  virtio_transport_recv_pkt+0x750/0x800
->  ? update_load_avg+0x7e/0x620
->  vsock_loopback_work+0xd0/0x100
->  process_one_work+0x1a7/0x360
->  worker_thread+0x30/0x390
->  ? create_worker+0x1a0/0x1a0
->  kthread+0x112/0x130
->  ? __kthread_cancel_work+0x40/0x40
->  ret_from_fork+0x1f/0x40
-> 
-> Fixes: 0608c69c9a80 ("bpf: sk_msg, sock{map|hash} redirect through ULP")
-> Fixes: e91de6afa81c ("bpf: Fix running sk_skb program types with ktls")
-> 
-> Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
-> ---
->  include/net/tls.h | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/net/tls.h b/include/net/tls.h
-> index 3a33924db2bc..a65939c7ad61 100644
-> --- a/include/net/tls.h
-> +++ b/include/net/tls.h
-> @@ -390,8 +390,12 @@ tls_offload_ctx_tx(const struct tls_context *tls_ctx)
->  
->  static inline bool tls_sw_has_ctx_tx(const struct sock *sk)
->  {
-> -	struct tls_context *ctx = tls_get_ctx(sk);
-> +	struct tls_context *ctx;
-> +
-> +	if (!sk_is_inet(sk))
-> +		return false;
->  
-> +	ctx = tls_get_ctx(sk);
->  	if (!ctx)
->  		return false;
->  	return !!tls_sw_ctx_tx(ctx);
-> @@ -399,8 +403,12 @@ static inline bool tls_sw_has_ctx_tx(const struct sock *sk)
->  
->  static inline bool tls_sw_has_ctx_rx(const struct sock *sk)
->  {
-> -	struct tls_context *ctx = tls_get_ctx(sk);
-> +	struct tls_context *ctx;
-> +
-> +	if (!sk_is_inet(sk))
-> +		return false;
->  
-> +	ctx = tls_get_ctx(sk);
->  	if (!ctx)
->  		return false;
->  	return !!tls_sw_ctx_rx(ctx);
+This RFC set introduces in-kernel fastpath handler for fanotify. The
+fastpath handler can be used to handle/filter some events without going
+through userspace.
 
-This seems like a strange place to fix it. Why does tls_get_ctx return
-invalid pointer for non-tls/ulp sockets? Shouldn't it be NULL?
-Is sockmap even supposed to work with vsock?
+In LPC 2024, multiple talks covered use cases of monitoring a subtree in
+the VFS (fanotify: [1], bpf/lsm: [2]). This work is inspired by these
+discussions. Reliably monitoring of a subtree with low overhead is a hard
+problem. We do not claim this set fully solves problem. But we think this
+work can be a very useful building block of the solution to this problem.
+
+The fastpath handler can be implemented with built-in logic, in a kernel
+module, or a bpf program. The fastpath handler is attached to a fsnotify
+group. With current implementation, the multiple fastpath handlers are
+maintained in a global list. Only users with CAP_SYS_ADMIN can add
+fastpath handlers to the list by loading a kernel module. User without
+CAP_SYS_ADMIN can attach a loaded fastpath handler to fanotify instances.
+During the attach operation, the fastpath handler can take an argument.
+This enables non-CAP_SYSADMIN users to customize/configure the fastpath
+handler, for example, with a specific allowlist/denylist.
+
+As the patchset grows to 1000+ lines (including samples and tests), I
+would like some feedback before pushing it further.
+
+Overview:
+
+Patch 1/5 adds logic to write fastpath handlers in kernel modules.
+Patch 2/5 adds a sample of a fastpath handler in a kernel module.
+Patch 3/5 is some preparation work on BPF side.
+Patch 4/5 adds logic to write fastpath handlers in bpf programs.
+Patch 5/5 is a selftest and example of bpf based fastpath handler.
+
+TODO:
+1. Add some mechanism to help users discover available fastpath
+   handlers. For example, we can add a sysctl which is similar to
+   net.ipv4.tcp_available_congestion_control, or we can add some sysfs
+   entries.
+2. Enable prviate (not added to global list) bpf based fastpath handlers.
+3. More testing for inode local storage.
+4. Man pages.
+
+[1] https://lpc.events/event/18/contributions/1717/
+[2] https://lpc.events/event/18/contributions/1940/
+
+Song Liu (5):
+  fanotify: Introduce fanotify fastpath handler
+  samples/fanotify: Add a sample fanotify fastpath handler
+  bpf: Make bpf inode storage available to tracing programs
+  fanotify: Enable bpf based fanotify fastpath handler
+  selftests/bpf: Add test for BPF based fanotify fastpath handler
+
+ MAINTAINERS                                   |   1 +
+ fs/Makefile                                   |   2 +-
+ fs/bpf_fs_kfuncs.c                            |  23 +-
+ fs/notify/fanotify/Makefile                   |   2 +-
+ fs/notify/fanotify/fanotify.c                 |  25 ++
+ fs/notify/fanotify/fanotify_fastpath.c        | 318 ++++++++++++++++++
+ fs/notify/fanotify/fanotify_user.c            |   7 +
+ include/linux/bpf.h                           |   9 +
+ include/linux/bpf_lsm.h                       |  29 --
+ include/linux/fanotify.h                      |  45 +++
+ include/linux/fs.h                            |   4 +
+ include/linux/fsnotify_backend.h              |   3 +
+ include/uapi/linux/fanotify.h                 |  26 ++
+ kernel/bpf/Makefile                           |   3 +-
+ kernel/bpf/bpf_inode_storage.c                | 174 +++++++---
+ kernel/bpf/bpf_lsm.c                          |   4 -
+ kernel/bpf/verifier.c                         |   5 +
+ kernel/trace/bpf_trace.c                      |   8 +
+ samples/Kconfig                               |  20 +-
+ samples/Makefile                              |   2 +-
+ samples/fanotify/.gitignore                   |   1 +
+ samples/fanotify/Makefile                     |   5 +-
+ samples/fanotify/fastpath-mod.c               | 138 ++++++++
+ samples/fanotify/fastpath-user.c              |  90 +++++
+ security/bpf/hooks.c                          |   5 -
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |   4 +
+ tools/testing/selftests/bpf/config            |   1 +
+ .../testing/selftests/bpf/prog_tests/fan_fp.c | 245 ++++++++++++++
+ tools/testing/selftests/bpf/progs/fan_fp.c    |  77 +++++
+ 29 files changed, 1189 insertions(+), 87 deletions(-)
+ create mode 100644 fs/notify/fanotify/fanotify_fastpath.c
+ create mode 100644 samples/fanotify/fastpath-mod.c
+ create mode 100644 samples/fanotify/fastpath-user.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fan_fp.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fan_fp.c
+
+--
+2.43.5
 
