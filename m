@@ -1,256 +1,240 @@
-Return-Path: <bpf+bounces-43434-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43437-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F93A9B55AA
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 23:18:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE36D9B55D2
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 23:36:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C16421C20B93
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 22:17:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E84D91C212DD
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 22:36:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 135BA20ADC5;
-	Tue, 29 Oct 2024 22:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F23520ADDE;
+	Tue, 29 Oct 2024 22:36:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bMsVeM5Z"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Ekh8PAzO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2022.outbound.protection.outlook.com [40.92.89.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81B58206E61
-	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 22:17:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730240273; cv=none; b=ahfIk7m2LjTM9QsNwyXnlD3B/tA9g+nKDpEhppDN+RE95H1wKvT+JRirhIHD3CCFMbHSgm7r0LQaskq/7triwXdrKH1+wEf06inSDtCOBvjy+xLmcWkIgfRYBLyC2MaRAgMq4mCtVCAgmaXAY8D+eLucPpWhhZXZraaLpVJPgd8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730240273; c=relaxed/simple;
-	bh=0C5TalIrfBjgMojPb6Y3zU21zF8/Fakv/XG1ZlxG4yA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g5p5jGHv61hJZrufCcfamRxeuCnmJmZiTJ2i5ee4v1BkfGEefobhilecpHVXKLsj3IROJvFRlU+yQWI1UiE0L6MjTIzRtkUqK2rJtMgYEw0p6GMUpo5F16N/N1wESDHEClAt5bQC6bThnP6H0wgCqOuAUG7uE0y2SlDnzQsDL5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bMsVeM5Z; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-720aa3dbda5so388370b3a.1
-        for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 15:17:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730240271; x=1730845071; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SfXoY+PsOCrThveVcjwMP/5VExdUfxAxPNa/avTzze0=;
-        b=bMsVeM5ZXmiWkAq4XnaV4uONxtoItm4I9X+GQlMrfBp3Tq9zdHrKT8L/jZJtJpW1Fs
-         1HFuKrAXHpNY/fPqrjoFC9ro/nWmuVhq3vO29iRUthbL8ziWlbfHkZfB75qNnN+/QphO
-         iAUjZ0iX2R5UoFFKnUtsJttt2yxaKMmeb19Y7y3wuj9f6j7Gux4JnyiTtPYy1A1BdhM4
-         SrObguNgG+GEpusGTPeFdtFZKi1VExH8pwRCWumGgB/JxCBTA/GR1lxuCArSPinVYPRk
-         c7VAqn4BPy9fycffs1N27884UFFR7rr9CQauk6nngGoYaDUab9FqeBYcr/5sOPyhlwOv
-         Bofw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730240271; x=1730845071;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SfXoY+PsOCrThveVcjwMP/5VExdUfxAxPNa/avTzze0=;
-        b=rQS24SaYsNmso7ljUhsUV9mh3iUBEOeQ7vx+1mZLKr8l0H5T0zhp4PPhcQCHuga9kq
-         2mWuC0JR2jHXF7KLk5kjqMklEgi2LMCxCRf7jltblelfu9vNV/svB5urAPirRGSoExB5
-         cLkykxRZtP/hcf5YJVGBZVMDREIkmyoAgHSYuMpTOyJHlYgUdlcJyTUor1dD/GrF4W5/
-         2Iv8i6VDiZATclmmyPOvq96Jd4FIW9zvEIRr54l2UqXDNwd4LTDR47BpbAkq5MJRvtEb
-         HhPCrurtG4tyE50MnOf+uh9REMDDBh9BsAphrASNAMbDJvxb4DgrRe2Qz3mVLhaiTvYx
-         Ipiw==
-X-Gm-Message-State: AOJu0Ywj0HC8dxrd7EUAPIvuYbwzp29TbY86OxpMhTCizpTyPuQa4p7f
-	x1BGWIOC/KZcpI1Rzyy9Ov84CZeQjyj63wFaR7qR0MAFqeiLaG72H01sHQHCkAWeAyUpvaktcbd
-	nJZDXoTdkad3SGIlzTTGhW1PGH4w=
-X-Google-Smtp-Source: AGHT+IEbioHmXOL6opwJR+oCiUXGhzZNvxKVOArBmqbbcX5/HfcNem8sncvJ7QjsQj0X6iHb5WvbAB+oFfLppx+lG+Q=
-X-Received: by 2002:a05:6a00:2191:b0:71e:44f6:6900 with SMTP id
- d2e1a72fcca58-720ab3f39d8mr1365606b3a.16.1730240270687; Tue, 29 Oct 2024
- 15:17:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B07620A5F7;
+	Tue, 29 Oct 2024 22:35:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.89.22
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730241361; cv=fail; b=X5LFio1FiPX5ZNAcI3qUb5xOx6gvEL9wL4rfwgU9NCUlbKqPTckaoytHgN9lnqobLMYQHZkccG0odAJg0wkHqUjUnKnKpy6C+8hXAGe4wE8qpCeBNWLS504LkA/V1DBUUgIo3f9xuwkD48bD9PRCDUjL8QOK9NlFO8GbO21Ef/c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730241361; c=relaxed/simple;
+	bh=bOvc9wURmNRZuzgXsR0a3c2yBYW0Rsiuu0hBryH8UVw=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=WZCr/dXJht8sCoUop9JKo+sMatp5QePgASl4gb8puKWVO6xVYxU+yXCAW37vLa04Y/c2KIJp2pXC3L2IthMXSNFyOM23T1IvxJEd0jTtoRJ3DxF5BjoKnTqe67FoEfXpPgwjVSTaXAKs211RN4C+Q+AkjOWpXMApDn55nDxKouk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Ekh8PAzO; arc=fail smtp.client-ip=40.92.89.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=aPY1L75w5WKQm6ldf6oX/uV5WPDV5VY1vHI8wUpYusJJ1DTrOMibGo50JjNA1/m5h9edwwn0IM1jYq3Iaox0QU0riYIIw83zYpiMisDKBryhHm6hTn3GDTfUXPEs2MKsasy0aXXXIT9SMNMr0hD0H5nXUXvm65C9aHVki7Utma3sYjUqy+jS0Tl97TrbhR6qnBnK5cYw+vNKCVg2gzFCgX2yVhoKACoJcvNsjDBXtFvmKoe+/sxe/XknWICRpEHcTsXzwUz8TipWFWbEhmysQ83KcfQ2P0mpgtTCj3ATCVk0A442gs65IvEDXCRmAnCZMPOsXIsxloUr1ashxF2ERQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8b37iq4//P00rbv2Cyg/UUXLAcz9hnoWQExD6n0h8m4=;
+ b=pR4IAlBPl7M6ebp6WVxnvA3ZtyHjR6UV2fJnl+3vhwkHpGo9HSNWj+HUSlqimnP2ViCiJ2XJ7Cr2gEfpVBiDBBbsGThkKA2XjX/cxd51QQWr1Fc9UAassYGNy/HPL2qC+nf7I/TsIXcO3//DAuQt6KDJtqhw4rHMYOHzdrRdfDcv8IMb93tbsn3xJnVwrAskIuIW2OsvqZAfNXThMVUJZBDXg2YTo81Wxtjz8JXtgqnZg1jvuAMJ0wbAAY4SQFHFBKBQXbHzS0U6W62MROrK3TOBlofp387bff01iAFr08CPlrTlVrSIEXp/Mp0kAcQbIB59SjTIl1HjW8LRq4vZ+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8b37iq4//P00rbv2Cyg/UUXLAcz9hnoWQExD6n0h8m4=;
+ b=Ekh8PAzOdhp4t/y/VWOGwYchKCNoaBHWnVnXD6mhTwKGKJ3xdhpqzxKMfzo/Z8wSc9GPn0p3zJ1y5EnNU4BfJJr6Uj2tpq4H3BaTQODiRNU5D5EzCcd3mvbYdrVEQW6PyB167JJT6N3o7dfFn4XfreUtvUa9W+rpnchJBPBh12e3m2cHvDRCNNO5KPWNwtH6icTzvcB6886+4uA3LfAPnJ7tHR62FeFtIoh0UGvxyFf1RsvnLGTRkcEeT/KhzTjbuHeKoijPXmaZVZQQc2cbvs6r3Regfk8m9HBqOZ12mvwqUuxszGEzM3WIEDeq6AVFDIHzfLz6RsfuJPk28YdBUQ==
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
+ by PA4PR03MB7520.eurprd03.prod.outlook.com (2603:10a6:102:bd::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8093.32; Tue, 29 Oct
+ 2024 22:35:56 +0000
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::4b97:bbdb:e0ac:6f7%4]) with mapi id 15.20.8093.027; Tue, 29 Oct 2024
+ 22:35:56 +0000
+From: Juntong Deng <juntong.deng@outlook.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	memxor@gmail.com,
+	snorcht@gmail.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 0/4] bpf/crib: Add open-coded style process file iterator and file related CRIB kfuncs
+Date: Tue, 29 Oct 2024 22:34:49 +0000
+Message-ID:
+ <AM6PR03MB584801332A1D31C21D23CC19994B2@AM6PR03MB5848.eurprd03.prod.outlook.com>
+X-Mailer: git-send-email 2.39.5
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: LO4P123CA0621.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:294::21) To AM6PR03MB5848.eurprd03.prod.outlook.com
+ (2603:10a6:20b:e4::10)
+X-Microsoft-Original-Message-ID:
+ <20241029223449.119411-1-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241029193911.1575719-1-eddyz87@gmail.com>
-In-Reply-To: <20241029193911.1575719-1-eddyz87@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 29 Oct 2024 15:17:38 -0700
-Message-ID: <CAEf4Bzac+bFC77190DT38BTVnfC=oJP648KWW_+SmQWZEmfMmA@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: disallow 40-bytes extra stack for bpf_fastcall patterns
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev, Hou Tao <houtao@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|PA4PR03MB7520:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6f81072f-a373-4e89-b6a2-08dcf86a0d5f
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|5072599009|15080799006|5062599005|19110799003|8060799006|461199028|1602099012|10035399004|440099028|3412199025|4302099013;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?QXhLizNmnTJHqNeDCDuoeC+0E668+Q6f7mlChlo2VrSIfS1j3EMKFqJUFROF?=
+ =?us-ascii?Q?vvesMzYJvMuyXZMiGKiEemDwbzM5WN4GXRHNIhCmZPK4F2Kc6ElrX80oQ8Wd?=
+ =?us-ascii?Q?0ldyxCAt1psS/1DlXK0e24UxR0ucNN4llNmDztMOp2vsgJygGRuP6n+su89t?=
+ =?us-ascii?Q?r6VNjvZcbe1R6KdjHSzen797y4S0yQJEpHKf/ErevYdCRhZwzUOgtSqqT9MA?=
+ =?us-ascii?Q?BIR5lwnMcdhIND7VUzmifgvytDh+je5uc5ZxFfM3/ytvnzPJRrmf7FUPqiW1?=
+ =?us-ascii?Q?2bmQehe0UE8LWO2c5WL5pxgVdKDoiZsHukxNCjJma1FVUOYC8+I0wjWR+xpu?=
+ =?us-ascii?Q?D+yzzGvAfgYD12aKoq/LGByOpzP2aJzML5Lkm5YJP/ZNfznOFm0Nianw5vb7?=
+ =?us-ascii?Q?c/Iwspdq8V44otsQNCcOJIQpq3rXRWwGAEen6XaGRrSVUlEJBpg3gZkIrvot?=
+ =?us-ascii?Q?6n1JZnxOwx90xglxknltLf6lquEdWMBOXQDaT21YHRYUWS4bLgT6bADOGGAO?=
+ =?us-ascii?Q?v5m2sy4HeXOrINsRYtfC7haD00rpEtzrB/jufyQ7Qf3yVORuvZb7WS6Tez2b?=
+ =?us-ascii?Q?YGB4wHgs1J902aLYU965Y8zI7E/90xmAgxPc7kAWbtaR8jkQC7DWCaC27MG5?=
+ =?us-ascii?Q?2et6wnq/kB9rfEfy/1P9JFW9J5OSYgrqGwhcWaXgsMkXx4UbcBee0FBeLknw?=
+ =?us-ascii?Q?s/xheHvaMwegJ1bu8HzpKvNKS2sqf2gPzTCkqOAj/U5CMdjPc3pzsfbZKJWR?=
+ =?us-ascii?Q?ocHM/0BhvwvwW8eWJOKZ2fnW6eUyzqJKj6VM0rVAMpUxYu85ObhdwOGgGVQU?=
+ =?us-ascii?Q?+adTIbmthOhOqd6n9VMipxuDXJBSXlY1XvHwtvAAk56s4EhQjzJGvK8lYUKA?=
+ =?us-ascii?Q?0Q6An28ZsL4QYi2indYeWl2xf5xom/lzRh05zJELAjD+BI91pVkUIgDNDsr8?=
+ =?us-ascii?Q?cearINPsJ2e00QIpa+FQsXQcm0iF2Pqn62JyNAgPKuCG1aniqksX5nIA6szH?=
+ =?us-ascii?Q?x7UWeolLfFNo+MXbQ76ywRPQpt3IQXtat7O0+oYSoonHy4Zw23FMNUlbu5N9?=
+ =?us-ascii?Q?Wt+AxaDl6ntCnBYnrQL/PeX80GFiXIXS0rp5iizvEwcXqkGxsAUK1mTF3N1W?=
+ =?us-ascii?Q?cbKv/fBfe09fXjkrFVAWagDmeKXVgcHM/efjLPYKL4CiDl97ZDkHLDodvbK0?=
+ =?us-ascii?Q?U6SWPwcSibKUqWH4iEVObFhR8o1AKZNVqbbNqA=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?HfXjwi0b0v9hrBsupwriK3U2PrNCPIX3ymYvS2lP2NP9KqpXfICsWr8fPPAz?=
+ =?us-ascii?Q?ybl+oEN76VdZjUIv4Hr1doBIcB2b4BM+W7u9MsFMnx+IsDf5OqrZWEkRnA4u?=
+ =?us-ascii?Q?1sYOiZw3NUzsgwz3j4KnsRPfKzicksSrkYvncSnG4qraHQZwbEiTweqQOOFq?=
+ =?us-ascii?Q?UqVcCLKHiLm33mzmv7PLgfxOD/h6tiFr579y6zovguRTVbQVS9HPgwsT9ym3?=
+ =?us-ascii?Q?8XQG9cBFMWV5VJFlP/8W2GhPWEcAG4Lu73xk4cAmJReYjGd8Avm3ggglVJ90?=
+ =?us-ascii?Q?W96cDENywvKD+tOb8b5KXgOBQlcEoqidb1u2SCJewTUOp+tX58N+vvySa+Jp?=
+ =?us-ascii?Q?ZrUnE4gWa9tB/y0GArTjZ2A4R7Nkc83sOt1JHQRwFnYV1R9TCa96MgNjXxS6?=
+ =?us-ascii?Q?h0ppek932ZJe4h20NuCLdihGSe0DoiXuN2ExUyD23Gd79vImWyD6Ee9nDT1W?=
+ =?us-ascii?Q?FUzxZwjfGtgE5t19FVHgHN37GwHkjnuC0i9aPHzFj1ZBrDtdq8vCNeRLZHCG?=
+ =?us-ascii?Q?YhYG+fpgEfaGWcc1F6cZogV0ptjMj++VgmgK5NgMa888xeNA+QRmN839n3QB?=
+ =?us-ascii?Q?vmYaYKYNpA0q2IokHJafHL7KjXFDN5L47p/2KPFNyq3Y3R0ji26zKygAG52h?=
+ =?us-ascii?Q?RqHR+xwVovBRMcgMYAFVZWcfqZGPgc+1fcWzq/7g3wWbQdcFfOwK0xUACSyp?=
+ =?us-ascii?Q?hvl9Vo4e+G97WIloMD4sGpI40CXFB9IsDYuEJwOL9IU0X7/SYOegr3uPYOnz?=
+ =?us-ascii?Q?8r8lDHkQOQpp/HGe8veqXfyIo/pS/4XGf96lSlt4tvoCntxLctP08yBTVLnd?=
+ =?us-ascii?Q?2zcXoh82MJDMjrVoa0coTRvGSAyx/ovuiWA/VIh+riKOVexLoFmmbNCdFmPP?=
+ =?us-ascii?Q?N+LZBwni5FGyhhaj8/0g9oroz2YoWbEJIuBIkbD4yo+yI8ZCg5iL3aVJpJnb?=
+ =?us-ascii?Q?Pw49JXn8RFsZPHM66G7g5vQS+skZwH9Tp6873fA2cKH0KwMbmKdbKuIn0heY?=
+ =?us-ascii?Q?86NDmjEDkoHrF1wPY4AD9wCEFRxcuCgh1YtRZQxC7rhw73ai9DdWsDrEVamo?=
+ =?us-ascii?Q?Z5f3Zxz7ozEeopcyIFQHwDk8444KStc4JSOXT+agJk9d//QW/PKH0Vnp2WKf?=
+ =?us-ascii?Q?ev3wf7CphQ+KM9ArynHIBPaPz+YW+spAnKQ1IjFEhAJMnK2Z/nJk6U43IM6B?=
+ =?us-ascii?Q?/memVxVRpVWTvyiKqsZs8TVXpHnABMn6H608MqB8ep4H3GR5H/MVpONDYjiQ?=
+ =?us-ascii?Q?9E9Ydv6jDLtrtlSQa2fx?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6f81072f-a373-4e89-b6a2-08dcf86a0d5f
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2024 22:35:56.0339
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR03MB7520
 
-On Tue, Oct 29, 2024 at 12:39=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
->
-> Hou Tao reported an issue with bpf_fastcall patterns allowing extra
-> stack space above MAX_BPF_STACK limit. This extra stack allowance is
-> not integrated properly with the following verifier parts:
-> - backtracking logic still assumes that stack can't exceed
->   MAX_BPF_STACK;
-> - bpf_verifier_env->scratched_stack_slots assumes only 64 slots are
->   available.
->
-> Here is an example of an issue with precision tracking
-> (note stack slot -8 tracked as precise instead of -520):
->
->     0: (b7) r1 =3D 42                       ; R1_w=3D42
->     1: (b7) r2 =3D 42                       ; R2_w=3D42
->     2: (7b) *(u64 *)(r10 -512) =3D r1       ; R1_w=3D42 R10=3Dfp0 fp-512_=
-w=3D42
->     3: (7b) *(u64 *)(r10 -520) =3D r2       ; R2_w=3D42 R10=3Dfp0 fp-520_=
-w=3D42
->     4: (85) call bpf_get_smp_processor_id#8       ; R0_w=3Dscalar(...)
->     5: (79) r2 =3D *(u64 *)(r10 -520)       ; R2_w=3D42 R10=3Dfp0 fp-520_=
-w=3D42
->     6: (79) r1 =3D *(u64 *)(r10 -512)       ; R1_w=3D42 R10=3Dfp0 fp-512_=
-w=3D42
->     7: (bf) r3 =3D r10                      ; R3_w=3Dfp0 R10=3Dfp0
->     8: (0f) r3 +=3D r2
->     mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
->     mark_precise: frame0: regs=3Dr2 stack=3D before 7: (bf) r3 =3D r10
->     mark_precise: frame0: regs=3Dr2 stack=3D before 6: (79) r1 =3D *(u64 =
-*)(r10 -512)
->     mark_precise: frame0: regs=3Dr2 stack=3D before 5: (79) r2 =3D *(u64 =
-*)(r10 -520)
->     mark_precise: frame0: regs=3D stack=3D-8 before 4: (85) call bpf_get_=
-smp_processor_id#8
->     mark_precise: frame0: regs=3D stack=3D-8 before 3: (7b) *(u64 *)(r10 =
--520) =3D r2
->     mark_precise: frame0: regs=3Dr2 stack=3D before 2: (7b) *(u64 *)(r10 =
--512) =3D r1
->     mark_precise: frame0: regs=3Dr2 stack=3D before 1: (b7) r2 =3D 42
->     9: R2_w=3D42 R3_w=3Dfp42
->     9: (95) exit
->
-> This patch disables the additional allowance for the moment.
-> Also, two test cases are removed:
-> - bpf_fastcall_max_stack_ok:
->   it fails w/o additional stack allowance;
-> - bpf_fastcall_max_stack_fail:
->   this test is no longer necessary, stack size follows
->   regular rules, pattern invalidation is checked by other
->   test cases.
->
-> Reported-by: Hou Tao <houtao@huaweicloud.com>
-> Closes: https://lore.kernel.org/bpf/20241023022752.172005-1-houtao@huawei=
-cloud.com/
-> Fixes: 5b5f51bff1b6 ("bpf: no_caller_saved_registers attribute for helper=
- calls")
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  kernel/bpf/verifier.c                         | 14 +----
->  .../bpf/progs/verifier_bpf_fastcall.c         | 55 -------------------
->  2 files changed, 2 insertions(+), 67 deletions(-)
->
+This patch series adds open-coded style process file iterator
+bpf_iter_task_file and file related kfuncs bpf_fget_task(),
+bpf_get_file_ops_type(), and corresponding selftests test cases.
 
-LGTM
+Known future merge conflict: In linux-next task_lookup_next_fdget_rcu()
+has been removed and replaced with fget_task_next() [0], but that has
+not happened yet in bpf-next, so I still
+use task_lookup_next_fdget_rcu() in bpf_iter_task_file_next().
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+[0]: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=8fd3395ec9051a52828fcca2328cb50a69dea8ef
 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 587a6c76e564..a494396bef2a 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -6804,20 +6804,10 @@ static int check_stack_slot_within_bounds(struct =
-bpf_verifier_env *env,
->                                            struct bpf_func_state *state,
->                                            enum bpf_access_type t)
->  {
-> -       struct bpf_insn_aux_data *aux =3D &env->insn_aux_data[env->insn_i=
-dx];
-> -       int min_valid_off, max_bpf_stack;
-> -
-> -       /* If accessing instruction is a spill/fill from bpf_fastcall pat=
-tern,
-> -        * add room for all caller saved registers below MAX_BPF_STACK.
-> -        * In case if bpf_fastcall rewrite won't happen maximal stack dep=
-th
-> -        * would be checked by check_max_stack_depth_subprog().
-> -        */
-> -       max_bpf_stack =3D MAX_BPF_STACK;
-> -       if (aux->fastcall_pattern)
-> -               max_bpf_stack +=3D CALLER_SAVED_REGS * BPF_REG_SIZE;
-> +       int min_valid_off;
->
->         if (t =3D=3D BPF_WRITE || env->allow_uninit_stack)
-> -               min_valid_off =3D -max_bpf_stack;
-> +               min_valid_off =3D -MAX_BPF_STACK;
->         else
->                 min_valid_off =3D -state->allocated_stack;
->
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c b/=
-tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
-> index 9da97d2efcd9..5094c288cfd7 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
-> @@ -790,61 +790,6 @@ __naked static void cumulative_stack_depth_subprog(v=
-oid)
->         :: __imm(bpf_get_smp_processor_id) : __clobber_all);
->  }
->
-> -SEC("raw_tp")
-> -__arch_x86_64
-> -__log_level(4)
-> -__msg("stack depth 512")
-> -__xlated("0: r1 =3D 42")
-> -__xlated("1: *(u64 *)(r10 -512) =3D r1")
-> -__xlated("2: w0 =3D ")
-> -__xlated("3: r0 =3D &(void __percpu *)(r0)")
-> -__xlated("4: r0 =3D *(u32 *)(r0 +0)")
-> -__xlated("5: exit")
-> -__success
-> -__naked int bpf_fastcall_max_stack_ok(void)
-> -{
-> -       asm volatile(
-> -       "r1 =3D 42;"
-> -       "*(u64 *)(r10 - %[max_bpf_stack]) =3D r1;"
-> -       "*(u64 *)(r10 - %[max_bpf_stack_8]) =3D r1;"
-> -       "call %[bpf_get_smp_processor_id];"
-> -       "r1 =3D *(u64 *)(r10 - %[max_bpf_stack_8]);"
-> -       "exit;"
-> -       :
-> -       : __imm_const(max_bpf_stack, MAX_BPF_STACK),
-> -         __imm_const(max_bpf_stack_8, MAX_BPF_STACK + 8),
-> -         __imm(bpf_get_smp_processor_id)
-> -       : __clobber_all
-> -       );
-> -}
-> -
-> -SEC("raw_tp")
-> -__arch_x86_64
-> -__log_level(4)
-> -__msg("stack depth 520")
-> -__failure
-> -__naked int bpf_fastcall_max_stack_fail(void)
-> -{
-> -       asm volatile(
-> -       "r1 =3D 42;"
-> -       "*(u64 *)(r10 - %[max_bpf_stack]) =3D r1;"
-> -       "*(u64 *)(r10 - %[max_bpf_stack_8]) =3D r1;"
-> -       "call %[bpf_get_smp_processor_id];"
-> -       "r1 =3D *(u64 *)(r10 - %[max_bpf_stack_8]);"
-> -       /* call to prandom blocks bpf_fastcall rewrite */
-> -       "*(u64 *)(r10 - %[max_bpf_stack_8]) =3D r1;"
-> -       "call %[bpf_get_prandom_u32];"
-> -       "r1 =3D *(u64 *)(r10 - %[max_bpf_stack_8]);"
-> -       "exit;"
-> -       :
-> -       : __imm_const(max_bpf_stack, MAX_BPF_STACK),
-> -         __imm_const(max_bpf_stack_8, MAX_BPF_STACK + 8),
-> -         __imm(bpf_get_smp_processor_id),
-> -         __imm(bpf_get_prandom_u32)
-> -       : __clobber_all
-> -       );
-> -}
-> -
->  SEC("cgroup/getsockname_unix")
->  __xlated("0: r2 =3D 1")
->  /* bpf_cast_to_kern_ctx is replaced by a single assignment */
-> --
-> 2.47.0
->
+Although iter/task_file already exists, for CRIB we still need the
+open-coded iterator style process file iterator, and the same is true
+for other bpf iterators such as iter/tcp, iter/udp, etc.
+
+The traditional bpf iterator is more like a bpf version of procfs, but
+similar to procfs, it is not suitable for CRIB scenarios that need to
+obtain large amounts of complex, multi-level in-kernel information.
+
+The following is from previous discussions [1]: 
+
+[1]: https://lore.kernel.org/bpf/AM6PR03MB5848CA34B5B68C90F210285E99B12@AM6PR03MB5848.eurprd03.prod.outlook.com/
+
+This is because the context of bpf iterators is fixed and bpf iterators
+cannot be nested. This means that a bpf iterator program can only
+complete a specific small iterative dump task, and cannot dump
+multi-level data.
+
+An example, when we need to dump all the sockets of a process, we need
+to iterate over all the files (sockets) of the process, and iterate over
+the all packets in the queue of each socket, and iterate over all data
+in each packet.
+
+If we use bpf iterator, since the iterator can not be nested, we need to
+use socket iterator program to get all the basic information of all
+sockets (pass pid as filter), and then use packet iterator program to
+get the basic information of all packets of a specific socket (pass pid,
+fd as filter), and then use packet data iterator program to get all the
+data of a specific packet (pass pid, fd, packet index as filter).
+
+This would be complicated and require a lot of (each iteration)
+bpf program startup and exit (leading to poor performance).
+
+By comparison, open coded iterator is much more flexible, we can iterate
+in any context, at any time, and iteration can be nested, so we can
+achieve more flexible and more elegant dumping through open coded
+iterators.
+
+With open coded iterators, all of the above can be done in a single
+bpf program, and with nested iterators, everything becomes compact
+and simple.
+
+Also, bpf iterators transmit data to user space through seq_file,
+which involves a lot of open (bpf_iter_create), read, close syscalls,
+context switching, memory copying, and cannot achieve the performance
+of using ringbuf.
+
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+
+Juntong Deng (4):
+  bpf/crib: Introduce task_file open-coded iterator kfuncs
+  selftests/bpf: Add tests for open-coded style process file iterator
+  bpf/crib: Add struct file related CRIB kfuncs
+  selftests/bpf: Add tests for struct file related CRIB kfuncs.
+
+ kernel/bpf/Makefile                           |   1 +
+ kernel/bpf/crib/Makefile                      |   3 +
+ kernel/bpf/crib/crib.c                        |  33 ++++
+ kernel/bpf/crib/files.c                       | 149 ++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/crib.c | 126 +++++++++++++++
+ .../testing/selftests/bpf/progs/crib_common.h |  25 +++
+ .../selftests/bpf/progs/crib_files_failure.c  | 108 +++++++++++++
+ .../selftests/bpf/progs/crib_files_success.c  | 119 ++++++++++++++
+ 8 files changed, 564 insertions(+)
+ create mode 100644 kernel/bpf/crib/Makefile
+ create mode 100644 kernel/bpf/crib/crib.c
+ create mode 100644 kernel/bpf/crib/files.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/crib.c
+ create mode 100644 tools/testing/selftests/bpf/progs/crib_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/crib_files_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/crib_files_success.c
+
+-- 
+2.39.5
+
 
