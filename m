@@ -1,290 +1,190 @@
-Return-Path: <bpf+bounces-43386-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EE089B4CD0
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 16:03:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C41E79B4CD4
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 16:03:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A826B224BF
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 15:03:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4865F1F24540
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2024 15:03:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA7A18E379;
-	Tue, 29 Oct 2024 15:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3217192D62;
+	Tue, 29 Oct 2024 15:03:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ny8RV8NH"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="MEL6gOA5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D490EEC5;
-	Tue, 29 Oct 2024 15:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D741191F6D
+	for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 15:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730214203; cv=none; b=nl8+sKr9o8iSEptoNtiqKw+0JjWFRX/jm8mVgn7LePVlPm7/W1hGiirQne7F2ECYs4axituddk34VYmFnrWnjbmN83kQBkBywBdtVoOBZogq0DU56f5La1wI3ZK4bkLtOVtELeEn0gx12xpr6qCMBWiZTECdLY/dly0j38fqil4=
+	t=1730214206; cv=none; b=GHC1/lCgG6UuX7wasFCX7FXOc1UfCYkk7dgE1MGClCZezJe8siNVLndyJb9TLz4VV7lZG6bmV++2zcb5L/gO4Jmyb3rD7Zya40XMmSdnvWGmfnNbQovdr/sEwrSbYbNEbcfnbM0Mhk4U9xEmjYo4iJIkPUj6+Az8LXkgy1xfbQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730214203; c=relaxed/simple;
-	bh=/fnWBxxMh8TqwF6qDwewVMeXVmprHJpToDVtlDI5FbI=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=XyRyjXu5b31jbx1E+MTnLlIOqHZlFF48AJ8rotqsv264oTou2PSfKhI3p4CXddJqbmD/fl3bNo3mu4EKmX/fvlP0PTCmjDd3anVcPChS12/YOsQNK/BjsB0FfRat84ZjYnGRj93lieN6bkwwWcpKcMqbUbGLpg9SyEaiO6bLO/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ny8RV8NH; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6cc2ea27a50so58019116d6.0;
-        Tue, 29 Oct 2024 08:03:20 -0700 (PDT)
+	s=arc-20240116; t=1730214206; c=relaxed/simple;
+	bh=NBSC41srgKPt9bg/2Qz/7PgkEc3c+cfTUpjZyDXQUXI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CCMJU7Omv76kyYXWthRhHFmBvcTIyQdJoxPsIsx8SQH54RTpJZADf3NiMtyO2i4NI5oVsTeOsYSLEFfH8Ad/ySFeua9PpNPtGYCLSkHmq0zwDAi5zV4EkyCGXj9WzJsqPnUH8EDcToaqp+4rKNygPgI9z8CvY+9Mwj7wOVB/C3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=MEL6gOA5; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-20c9978a221so60338575ad.1
+        for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 08:03:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730214200; x=1730819000; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=py7eMLB6U4279XKeeWsMCCp2gymkkBx3RUkba6nxEOA=;
-        b=Ny8RV8NH2hwVs4otnf57odNbOZFQr2zZHx2WDOtVwk54EWeTNB1x2XqU9eqavn0Ffd
-         60AvxtrUgebR2hov2XPqPNlegesguJWFcDSMjRQyWx5WENOgcNl/uU1RxRap42xlEU0b
-         zAyHkCgYUtUlIBIGpoHKPclJVsLkA50pFreqIfIf59uEvxZfFFfeXrBnh56Zf9gSnxov
-         rd4x/2i16Wh9voE5mVEDSHoQzFAxRbBSqLPkvvhCKOfPHeIvZqCqXBdWzV2fBHaNP6K7
-         9zG9u42w8ATtLBc7GmBP8AGx2JfPupNK/jU1As0Vhm7xxlhWXDBHXB8pRcjU/8fOGMzW
-         TcJw==
+        d=fastly.com; s=google; t=1730214204; x=1730819004; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=agAKt0IT7G723lrXGrtqJgZBhbv7SHC0IN5lHsfmwYg=;
+        b=MEL6gOA51kVLII2DrX5XlCZ45ift+ozAjPNP1QUrIAfg+Cscpr79lUtPOwcfK8UHZY
+         bcFKwJf9zAK++TP9/IgY1eu1aBWMDsdxjChIfoIpGAJQXRcejE3eshWYuNORz/CfiWVo
+         xdwLQiyGHL2X6Sa2uatbuFBEc7LE3UhOWf7+o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730214200; x=1730819000;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=py7eMLB6U4279XKeeWsMCCp2gymkkBx3RUkba6nxEOA=;
-        b=ZV75Vi8Pg+/vSqq4D8BIsC+N1IlIJbWOLkb/ZnJ0epRsJs8eZwcedmBS/q+MgUknkv
-         vixeTsHJ8CcEHYv+x8DpK3pJrBk5oH9Tv1TTlC6G/6rVWxxJk2ORZwVlWbdT1aunnZk7
-         nPuoybUWtKZF1jevs1Aq7ejd6dFLgzkgHgaH4tXSofKhkoJ2tKQxnbYUJue9LUTtXjDZ
-         OAHKakLqK85JqBg12ewxOfCTjww4yWdGwc1bMu9zHno97D0b0XQgRkePPhpAgBn9+Oup
-         buh66f7oPw9RZo0UvwLNQqdLQugKkkp3oIScPR32/JVbN6SEi+rJ24yKfZzLoBeV3GaZ
-         IB/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUJh8zfQNVDOwdR0JVxjtzO80agFnMgQD5pbQwBDh+JEudw9AiVwchvxAdCzeS952S4lOzRPOwF@vger.kernel.org, AJvYcCX/uFDdppmERCnWqRmft+ESqNiskX8QFrfE7vEdISWTC8hFK3nPHNZiFdP8XOCISMq+rqo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz7r5AwgiKYU+9To/F7ycXUNlcuXfBTnbhnMEgcrMWHrr/QVsib
-	CvDzoE4unAU5Hm2dDH5xlmHPD8XW1Np6lS2G9jctR9U9oGjG05GJ
-X-Google-Smtp-Source: AGHT+IEOEkz3z5ZwiGQqZRDqE8MLLm+jADlpdiPbgivl3Pqmzgr5NaXHe9AiHr3ADMSKDpLEJ86/RQ==
-X-Received: by 2002:a05:6214:3d9d:b0:6ce:23c0:b5d3 with SMTP id 6a1803df08f44-6d2e72505d4mr42773776d6.19.1730214199502;
-        Tue, 29 Oct 2024 08:03:19 -0700 (PDT)
-Received: from localhost (250.4.48.34.bc.googleusercontent.com. [34.48.4.250])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d179a56620sm42673186d6.135.2024.10.29.08.03.18
+        d=1e100.net; s=20230601; t=1730214204; x=1730819004;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=agAKt0IT7G723lrXGrtqJgZBhbv7SHC0IN5lHsfmwYg=;
+        b=fJAMAZgPbkOhvtNd3KClwNHZpyVX++42ior/8bfG/0z/Sl8cYF+En83S2WbdbYH/Qg
+         fudu1FpGIxyh2Yh9kCz8fintMxuEZ02d8N7K2MtahT0kgGPzTXQkTjdnIIxRNWiYg4GF
+         kbndFnqLs7hYXwx04lmWUVaEUNoaXg2Sonhxqhql2DvhupUZ+tUqBb1wqEwAKCXq0odn
+         MPEt3QVpXo8jH3Gbj+nW4JAEHZVvOfv6Q2+gGVtWi9vg1+YPqlZ8zGQKSYsDhYwQWZxC
+         67Gw+Px8y2d74zUHlLuAiJktE48jAfNNWKvi8yi+busJ9/NaxRT8IeKqIeLEqXVosDO4
+         K5qw==
+X-Forwarded-Encrypted: i=1; AJvYcCVqvn43H37XtnGNyypFrEnreOOND/2fxV6yNpA7BqKtcPq9dS8yIj9JMUUFYfQnGYyD4CQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLlGeN1FWWjwwruuT3imXeYVG8CAb8mBvNlGhAEO/ayfJUWsQ8
+	iZ0MGEPKTlNl9viqTQKDJuSg4CTJXhv7Z/J62oOSOiNyjCwXDb/zBtggZtYWAYU=
+X-Google-Smtp-Source: AGHT+IFCKnHDgGtsA90IcNnhxnGU7fXTHsLH84y6r6k1evSEfeb5nttjlUCgjLc1TGCn9mq7Trci/w==
+X-Received: by 2002:a17:902:7790:b0:20c:fb47:5c05 with SMTP id d9443c01a7336-210c6c6d996mr123687415ad.46.1730214202479;
+        Tue, 29 Oct 2024 08:03:22 -0700 (PDT)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc02e941sm66967365ad.204.2024.10.29.08.03.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Oct 2024 08:03:18 -0700 (PDT)
-Date: Tue, 29 Oct 2024 11:03:17 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- willemb@google.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- martin.lau@linux.dev, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- shuah@kernel.org, 
- ykolal@fb.com, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org, 
- Jason Xing <kernelxing@tencent.com>
-Message-ID: <6720f9359d2ef_2bcd7f29458@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CAL+tcoBgbA1Q_7UaC0vp-mGHqDHxQ+eMybep0kw=E-T0oJAHfw@mail.gmail.com>
-References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
- <20241028110535.82999-11-kerneljasonxing@gmail.com>
- <6720394714070_24dce62944a@willemb.c.googlers.com.notmuch>
- <CAL+tcoBgbA1Q_7UaC0vp-mGHqDHxQ+eMybep0kw=E-T0oJAHfw@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 10/14] net-timestamp: add basic support with
- tskey offset
+        Tue, 29 Oct 2024 08:03:22 -0700 (PDT)
+Date: Tue, 29 Oct 2024 08:03:18 -0700
+From: Joe Damato <jdamato@fastly.com>
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, namangulati@google.com, edumazet@google.com,
+	amritha.nambiar@intel.com, sridhar.samudrala@intel.com,
+	sdf@fomichev.me, peter@typeblog.net, m2shafiei@uwaterloo.ca,
+	bjorn@rivosinc.com, hch@infradead.org, willy@infradead.org,
+	willemdebruijn.kernel@gmail.com, skhawaja@google.com,
+	kuba@kernel.org, Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	"open list:BPF [MISC] :Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Donald Hunter <donald.hunter@gmail.com>, Jan Kara <jack@suse.cz>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Martin Karsten <mkarsten@uwaterloo.ca>,
+	Mina Almasry <almasrymina@google.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v2 0/6] Suspend IRQs during application busy
+ periods
+Message-ID: <ZyD5Ntx_DwnQj47e@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+	namangulati@google.com, edumazet@google.com,
+	amritha.nambiar@intel.com, sridhar.samudrala@intel.com,
+	sdf@fomichev.me, peter@typeblog.net, m2shafiei@uwaterloo.ca,
+	bjorn@rivosinc.com, hch@infradead.org, willy@infradead.org,
+	willemdebruijn.kernel@gmail.com, skhawaja@google.com,
+	kuba@kernel.org, Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	"open list:BPF [MISC] :Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Donald Hunter <donald.hunter@gmail.com>, Jan Kara <jack@suse.cz>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Martin Karsten <mkarsten@uwaterloo.ca>,
+	Mina Almasry <almasrymina@google.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20241021015311.95468-1-jdamato@fastly.com>
+ <57a0e1e7-1079-4055-8072-d9105b70103f@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57a0e1e7-1079-4055-8072-d9105b70103f@redhat.com>
 
-Jason Xing wrote:
-> On Tue, Oct 29, 2024 at 9:24=E2=80=AFAM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > Jason Xing wrote:
-> > > From: Jason Xing <kernelxing@tencent.com>
-> > >
-> > > Use the offset to record the delta value between current socket key=
+On Tue, Oct 29, 2024 at 11:25:18AM +0100, Paolo Abeni wrote:
+> On 10/21/24 03:52, Joe Damato wrote:
+> > Greetings:
+> > 
+> > Welcome to v2, see changelog below.
 
-> > > and bpf socket key.
-> > >
-> > > 1. If there is only bpf feature running, the socket key is bpf sock=
-et
-> > > key and the offset is zero;
-> > > 2. If there is only traditional feature running, and then bpf featu=
-re
-> > > is turned on, the socket key is still used by the former while the =
-offset
-> > > is the delta between them;
-> > > 3. if there is only bpf feature running, and then application uses =
-it,
-> > > the socket key would be re-init for application and the offset is t=
-he
-> > > delta.
-> >
-> > We need to also figure out the rare conflict when one user sets
-> > OPT_ID | OPT_ID_TCP while the other only uses OPT_ID.
-> =
+[...]
 
-> I think the current patch handles the case because:
-> 1. sock_calculate_tskey_offset() gets the final key first whether the
-> OPT_ID_TCP is set or not.
-> 2. we will use that tskey to calculate the delta.
+> 
+> The changes makes sense to me, and I could not find any obvious issue in
+> the patches.
 
-Oh yes of course. Great, then this is resolved.
+Thanks for taking a look.
+ 
+> I think this deserve some - even basic - self-tests coverage. Note that
+> you can enable GRO on veth devices to make NAPI instances avail there.
+>
+> Possibly you could opt for a drivers/net defaulting to veth usage and
+> allowing the user to select real H/W via env variables.
 
-> > > +static long int sock_calculate_tskey_offset(struct sock *sk, int v=
-al, int bpf_type)
-> > > +{
-> > > +     u32 tskey;
-> > > +
-> > > +     if (sk_is_tcp(sk)) {
-> > > +             if ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_LISTEN))=
+Could we send a selftest in a follow up?
 
-> > > +                     return -EINVAL;
-> > > +
-> > > +             if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
-> > > +                     tskey =3D tcp_sk(sk)->write_seq;
-> > > +             else
-> > > +                     tskey =3D tcp_sk(sk)->snd_una;
-> > > +     } else {
-> > > +             tskey =3D 0;
-> > > +     }
-> > > +
-> > > +     if (bpf_type && (sk->sk_tsflags & SOF_TIMESTAMPING_OPT_ID)) {=
+I am asking because we've jumped through a number of hoops to get to
+this point:
+  1. Added support for per-NAPI config settings [1] to address Eric's
+     concern in the v1, which took several revisions and was stalled
+     due to a merge window.
+  2. Added support for netdev-genl to numerous drivers so that this
+     would be usable in many different environments (gve, ena, tg3,
+     e1000, e1000e, igc...) [2] [3] [4] [5] [6]
+  3. We didn't get any feedback about adding a selftest in the RFC
+     or v1 [7].
 
-> > > +             sk->sk_tskey_bpf_offset =3D tskey - atomic_read(&sk->=
-sk_tskey);
-> > > +             return 0;
-> > > +     } else if (!bpf_type && (sk->sk_tsflags_bpf & SOF_TIMESTAMPIN=
-G_OPT_ID)) {
-> > > +             sk->sk_tskey_bpf_offset =3D atomic_read(&sk->sk_tskey=
-) - tskey;
-> > > +     } else {
-> > > +             sk->sk_tskey_bpf_offset =3D 0;
-> > > +     }
-> > > +
-> > > +     return tskey;
-> > > +}
-> > > +
-> > >  int sock_set_tskey(struct sock *sk, int val, int bpf_type)
-> > >  {
-> > >       u32 tsflags =3D bpf_type ? sk->sk_tsflags_bpf : sk->sk_tsflag=
-s;
-> > > @@ -901,17 +944,13 @@ int sock_set_tskey(struct sock *sk, int val, =
-int bpf_type)
-> > >
-> > >       if (val & SOF_TIMESTAMPING_OPT_ID &&
-> > >           !(tsflags & SOF_TIMESTAMPING_OPT_ID)) {
-> > > -             if (sk_is_tcp(sk)) {
-> > > -                     if ((1 << sk->sk_state) &
-> > > -                         (TCPF_CLOSE | TCPF_LISTEN))
-> > > -                             return -EINVAL;
-> > > -                     if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
-> > > -                             atomic_set(&sk->sk_tskey, tcp_sk(sk)-=
->write_seq);
-> > > -                     else
-> > > -                             atomic_set(&sk->sk_tskey, tcp_sk(sk)-=
->snd_una);
-> > > -             } else {
-> > > -                     atomic_set(&sk->sk_tskey, 0);
-> > > -             }
-> > > +             long int ret;
-> > > +
-> > > +             ret =3D sock_calculate_tskey_offset(sk, val, bpf_type=
-);
-> > > +             if (ret <=3D 0)
-> > > +                     return ret;
-> > > +
-> > > +             atomic_set(&sk->sk_tskey, ret);
-> > >       }
-> > >
-> > >       return 0;
-> > > @@ -956,10 +995,15 @@ static int sock_set_timestamping_bpf(struct s=
-ock *sk,
-> > >                                    struct so_timestamping timestamp=
-ing)
-> > >  {
-> > >       u32 flags =3D timestamping.flags;
-> > > +     int ret;
-> > >
-> > >       if (flags & ~SOF_TIMESTAMPING_BPF_SUPPPORTED_MASK)
-> > >               return -EINVAL;
-> > >
-> > > +     ret =3D sock_set_tskey(sk, flags, 1);
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-> > >       WRITE_ONCE(sk->sk_tsflags_bpf, flags);
-> > >
-> > >       return 0;
-> >
-> > I'm a bit hazy on when this can be called. We can assume that this ne=
-w
-> > BPF operation cannot race with the existing setsockopt nor with the
-> > datapath that might touch the atomic fields, right?
-> =
+I think all busy poll methods currently in the kernel need selftests
+(including the existing busy poll method) and its not clear to me
+currently how much work it'll be to get veth or netdevsim working to
+a point where we could re-submit this with a selftest that would be
+considered reasonable enough.
 
-> It surely can race with the existing setsockopt.
-> =
+FWIW, neither my previous series on the epoll ioctl nor the per NAPI
+settings were rejected due to lack of selftests, but I did add a
+simple selftest for the epoll ioctl later [8].
 
-> 1)
-> if (only existing setsockopt works) {
->         then sk->sk_tskey is set through setsockopt, sk_tskey_bpf_offse=
-t is 0.
-> }
-> =
+What do you think?
 
-> 2)
-> if (only bpf setsockopt works) {
->         then sk->sk_tskey is set through bpf_setsockopt,
-> sk_tskey_bpf_offset is 0.
-> }
-> =
+Could we get this merged without having to get selftests working and
+come back with a selftest as separate change (like I did for the
+epoll ioctl) ?
 
-> 3)
-> if (existing setsockopt already started, here we enable the bpf feature=
-) {
->         then sk->sk_tskey will not change, but the sk_tskey_bpf_offset
-> will be calculated.
-> }
-> =
-
-> 4)
-> if (bpf setsockopt already started, here we enable the application feat=
-ure) {
->         then sk->sk_tskey will re-initialized/overridden by
-> setsockopt, and the sk_tskey_bpf_offset will be calculated.
-> }
-> =
-
-> Then the skb tskey will use the sk->sk_tskey like before.
-
-I mean race as in the setsockopt and bpf setsockopt and datapath
-running concurrently.
-
-As long as both variants of setsockopt hold the socket lock, that
-won't happen.
-
-The datapath is lockless for UDP, so atomic_inc sk_tskey can race
-with calculating the difference. But this is a known issue. A process
-that cares should not run setsockopt and send concurrently. So this is
-fine too.
-
-
+[1]: https://lore.kernel.org/lkml/20241011184527.16393-1-jdamato@fastly.com/
+[2]: https://lore.kernel.org/lkml/20240930210731.1629-1-jdamato@fastly.com/
+[3]: https://lore.kernel.org/lkml/20241002001331.65444-1-jdamato@fastly.com/
+[4]: https://lore.kernel.org/netdev/20241009175509.31753-1-jdamato@fastly.com/
+[5]: https://lore.kernel.org/netdev/20240930171232.1668-1-jdamato@fastly.com/
+[6]: https://lore.kernel.org/lkml/20241028195243.52488-1-jdamato@fastly.com/
+[7]: https://lore.kernel.org/all/20240823173103.94978-1-jdamato@fastly.com/
+[8]: https://lore.kernel.org/netdev/171528362770.20134.14528995105510778643.git-patchwork-notify@kernel.org/T/
 
