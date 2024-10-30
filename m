@@ -1,191 +1,148 @@
-Return-Path: <bpf+bounces-43603-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43604-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC7BB9B6E4A
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 22:01:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 829FB9B6F54
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 22:42:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48403B22302
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 21:01:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4723828061B
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 21:42:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0BB2141B7;
-	Wed, 30 Oct 2024 21:00:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97B2C22A4B9;
+	Wed, 30 Oct 2024 21:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qFfJy+OM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rNRCyCUY"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39E51D0E0D;
-	Wed, 30 Oct 2024 21:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDABE22A4A6;
+	Wed, 30 Oct 2024 21:35:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730322045; cv=none; b=WOEX7XmSV5/1aH8rVajBI6/swHHKNKPAULAoovyPRHtEdkVz5TKI6WLyODe2mqpu5l1FaCpGdakLJw3vY2HGL/Og/ZQszMkXgqozW+vUOsVQgxKG3iCrc9vmHmiunjeP4CytcPTCHVpm1jUiMU3SKWGpzCazG0HN1kh16G/tRb8=
+	t=1730324141; cv=none; b=omBkPciPBGoMvXR7vQbuoM0NA9ShpT8SJqat56LgAIaZk7Qcs0wwz7aH8YYNWyXtMCnxSt+HzzRHJ9Mq5MU2HbWwkANvqZgGjehRYSyV1UoSWEmLWjCbZuDE5Xt7kCJF5K/1vajZQ8UWoaWH2GaMrs69a944lcN0wv7vA38dMxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730322045; c=relaxed/simple;
-	bh=FHc9+KsxE68/8fdivXFFQsEHjN13LEf/vY7D0utn2FA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Q2V3IvHGf3HUrGgqSwSwVCgXZTfOlMzEnnqBgpQMXzkIvKF52rVzmlrJTtYvxkdBpGxcGwiyfYKVyS6wfcCZcTewP84oxidL3CSV0eDDOBGDoaRDwkWfgxsQmBRQrBKKUyEcJaTjL9GEudGNG15gj/HsFPXILrKcEWa2SLD7Ntg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qFfJy+OM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F75BC4CECE;
-	Wed, 30 Oct 2024 21:00:44 +0000 (UTC)
+	s=arc-20240116; t=1730324141; c=relaxed/simple;
+	bh=v5pLVI2ucbwhcoIURapql+oZOGKKOhgXmdQ2dbMOADQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ned4OVF8hFm6solPBOqFuEURE47V4ImQdzwp0snCYZAxOG9lsC9LrSRdB4yGDnbAiNG06rVKQgWxkMyzFimTsbTqWii5dsPyp9MUBp52WeVrUqeLDWJSguJiZUPa9lRYjXQ+Hc4s/9LBimu4M8QFLNp7e39aUOYsTHYa31RYMSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rNRCyCUY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C7B1C4CECE;
+	Wed, 30 Oct 2024 21:35:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730322045;
-	bh=FHc9+KsxE68/8fdivXFFQsEHjN13LEf/vY7D0utn2FA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=qFfJy+OMGQrOb+k6n1c1u5MbGgkiFxUSjKubuKO6WLqUbu2qO7nLbKTyGoAL/i7Qt
-	 mwUhPYhfw292eCbD1ittEJQpHQiV/zAQplZ442uK0Lyk9y7t2zrytbRz8Gycvezm5B
-	 70X0FkVCsGYSF+wF4S1bkpqi2Ta81VNWDcz5DAxFhkHMforHIoKPFhsu3zejZNACgO
-	 OQUdcVvBTyEZnMt4nbclw/nUH+iZ8eD4FAJrvh7xaGhjy4SGjPV7OyrEVTivyy7CuA
-	 SYncyaOl28ufAKn78+j2q/cAitYQk3BbgswI+OcOKJdC5xKwHPKwj90J/YAhUg0Tvy
-	 TqE372wKyueFg==
-Date: Wed, 30 Oct 2024 16:00:43 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
-	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
-	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
-	robin.murphy@arm.com, will@kernel.org
-Subject: Re: [PATCH v3 1/2] PCI: Add enable_device() and disable_device()
- callbacks for bridges
-Message-ID: <20241030210043.GA1219525@bhelgaas>
+	s=k20201202; t=1730324140;
+	bh=v5pLVI2ucbwhcoIURapql+oZOGKKOhgXmdQ2dbMOADQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rNRCyCUYFtBOaRu6gW4krYeC+MqSKedWai4cW33aGntkqKOYMOoZnunEQ9Rwcj6c5
+	 eDcq8piHO84drnpqV7u6z+VT37qs8BMx2wv7SIuwFOH8/FexO3aRxYh4U0oILNshap
+	 eKknqGpB9pU8hWbhk9rvZD9dcL0q6DmmY3f2pm5WrgNK/XAMqyHHVYKcmgIvJHd783
+	 8/KYgZ0YUa0UtSQT4aBQR7/62WRuSIC6FzFzG/TECTayft6Sy2sHaO8RPpk81WwuX5
+	 jzXbYTzHvnDCRWd/pVLPHTqgoS39pLNBgeuBNPKBZcn2UQyksmRfLJu+BLjsruzoQu
+	 8cFOqfo5w1krw==
+Date: Wed, 30 Oct 2024 14:35:38 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm <linux-mm@kvack.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Kees Cook <kees@kernel.org>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add a test for open coded
+ kmem_cache iter
+Message-ID: <ZyKmquDn3SNFzzgl@google.com>
+References: <20241024074815.1255066-1-namhyung@kernel.org>
+ <20241024074815.1255066-2-namhyung@kernel.org>
+ <CAADnVQLA=QE9HwH+9tA+G8uppXK0-yk-hbiBHaOmjkjVENYCsA@mail.gmail.com>
+ <ZyGOng76IBUs8PtY@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241024-imx95_lut-v3-1-7509c9bbab86@nxp.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZyGOng76IBUs8PtY@google.com>
 
-On Thu, Oct 24, 2024 at 06:34:44PM -0400, Frank Li wrote:
-> Some PCIe host bridges require special handling when enabling or disabling
-> PCIe Endpoints. For example, the i.MX95 platform has a lookup table to map
-> Requester IDs to StreamIDs, which are used by the SMMU and MSI controller
-> to identify the source of DMA accesses.
+On Tue, Oct 29, 2024 at 06:40:46PM -0700, Namhyung Kim wrote:
+> Hello,
 > 
-> Without this mapping, DMA accesses may target unintended memory, which
-> would corrupt memory or read the wrong data.
+> On Thu, Oct 24, 2024 at 11:08:00AM -0700, Alexei Starovoitov wrote:
+> > On Thu, Oct 24, 2024 at 12:48 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> > >
+> > > The new subtest is attached to sleepable fentry of syncfs() syscall.
+> > > It iterates the kmem_cache using bpf_for_each loop and count the number
+> > > of entries.  Finally it checks it with the number of entries from the
+> > > regular iterator.
+> > >
+> > >   $ ./vmtest.sh -- ./test_progs -t kmem_cache_iter
+> > >   ...
+> > >   #130/1   kmem_cache_iter/check_task_struct:OK
+> > >   #130/2   kmem_cache_iter/check_slabinfo:OK
+> > >   #130/3   kmem_cache_iter/open_coded_iter:OK
+> > >   #130     kmem_cache_iter:OK
+> > >   Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
+> > >
+> > > Also simplify the code by using attach routine of the skeleton.
+> > >
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+[SNIP]
+> > > +SEC("fentry.s/" SYS_PREFIX "sys_syncfs")
+> > > +int open_coded_iter(const void *ctx)
+> > > +{
+> > > +       struct kmem_cache *s;
+> > > +
+> > > +       if (tgid != bpf_get_current_pid_tgid() >> 32)
+> > > +               return 0;
+> > 
+> > Pls use syscall prog type and prog_run() it.
+> > No need to attach to exotic syscalls and filter by pid.
 > 
-> Add a host bridge .enable_device() hook the imx6 driver can use to
-> configure the Requester ID to StreamID mapping. The hardware table isn't
-> big enough to map all possible Requester IDs, so this hook may fail if no
-> table space is available. In that case, return failure from
-> pci_enable_device().
+> Sure, will update in v3.
 > 
-> It might make more sense to make pci_set_master() decline to enable bus
-> mastering and return failure, but it currently doesn't have a way to return
-> failure.
+> > 
+> > > +
+> > > +       bpf_for_each(kmem_cache, s) {
+> > > +               struct kmem_cache_result *r;
+> > > +
+> > > +               r = bpf_map_lookup_elem(&slab_result, &open_coded_seen);
+> > > +               if (!r)
+> > > +                       break;
+> > > +
+> > > +               open_coded_seen++;
+> > > +
+> > > +               if (r->obj_size != s->size)
+> > > +                       break;
+> > 
+> > The order of 'if' and ++ should probably be changed ?
+> > Otherwise the last object isn't sufficiently checked.
 > 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> I don't think so.  The last element should be an actual slab cache and
+> then the iterator will return NULL to break the loop.  I don't expect it
+> will hit the if statement.
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Oh, it seems you meant checking the obj_size.  Ok then, I can move the
+increment after the check.
 
-Merge along with the imx6 change.
+Thanks,
+Namhyung
 
-> ---
-> Change from v2 to v3
-> - use Bjorn suggest's commit message.
-> - call disable_device() when error happen.
-> 
-> Change from v1 to v2
-> - move enable(disable)device ops to pci_host_bridge
-> ---
->  drivers/pci/pci.c   | 23 ++++++++++++++++++++++-
->  include/linux/pci.h |  2 ++
->  2 files changed, 24 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 7d85c04fbba2a..5e0cb9b6f4d4f 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -2056,6 +2056,7 @@ int __weak pcibios_enable_device(struct pci_dev *dev, int bars)
->  static int do_pci_enable_device(struct pci_dev *dev, int bars)
->  {
->  	int err;
-> +	struct pci_host_bridge *host_bridge;
->  	struct pci_dev *bridge;
->  	u16 cmd;
->  	u8 pin;
-> @@ -2068,9 +2069,16 @@ static int do_pci_enable_device(struct pci_dev *dev, int bars)
->  	if (bridge)
->  		pcie_aspm_powersave_config_link(bridge);
->  
-> +	host_bridge = pci_find_host_bridge(dev->bus);
-> +	if (host_bridge && host_bridge->enable_device) {
-> +		err = host_bridge->enable_device(host_bridge, dev);
-> +		if (err)
-> +			return err;
-> +	}
-> +
->  	err = pcibios_enable_device(dev, bars);
->  	if (err < 0)
-> -		return err;
-> +		goto err_enable;
->  	pci_fixup_device(pci_fixup_enable, dev);
->  
->  	if (dev->msi_enabled || dev->msix_enabled)
-> @@ -2085,6 +2093,13 @@ static int do_pci_enable_device(struct pci_dev *dev, int bars)
->  	}
->  
->  	return 0;
-> +
-> +err_enable:
-> +	if (host_bridge && host_bridge->disable_device)
-> +		 host_bridge->disable_device(host_bridge, dev);
-> +
-> +	return err;
-> +
->  }
->  
->  /**
-> @@ -2262,12 +2277,18 @@ void pci_disable_enabled_device(struct pci_dev *dev)
->   */
->  void pci_disable_device(struct pci_dev *dev)
->  {
-> +	struct pci_host_bridge *host_bridge;
-> +
->  	dev_WARN_ONCE(&dev->dev, atomic_read(&dev->enable_cnt) <= 0,
->  		      "disabling already-disabled device");
->  
->  	if (atomic_dec_return(&dev->enable_cnt) != 0)
->  		return;
->  
-> +	host_bridge = pci_find_host_bridge(dev->bus);
-> +	if (host_bridge && host_bridge->disable_device)
-> +		host_bridge->disable_device(host_bridge, dev);
-> +
->  	do_pci_disable_device(dev);
->  
->  	dev->is_busmaster = 0;
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 573b4c4c2be61..ac15b02e14ddd 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -578,6 +578,8 @@ struct pci_host_bridge {
->  	u8 (*swizzle_irq)(struct pci_dev *, u8 *); /* Platform IRQ swizzler */
->  	int (*map_irq)(const struct pci_dev *, u8, u8);
->  	void (*release_fn)(struct pci_host_bridge *);
-> +	int (*enable_device)(struct pci_host_bridge *bridge, struct pci_dev *dev);
-> +	void (*disable_device)(struct pci_host_bridge *bridge, struct pci_dev *dev);
->  	void		*release_data;
->  	unsigned int	ignore_reset_delay:1;	/* For entire hierarchy */
->  	unsigned int	no_ext_tags:1;		/* No Extended Tags */
-> 
-> -- 
-> 2.34.1
-> 
 
