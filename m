@@ -1,205 +1,118 @@
-Return-Path: <bpf+bounces-43538-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43543-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6503C9B5F48
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 10:53:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D5809B5FC0
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 11:11:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2837B21DE5
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 09:53:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E614284457
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 10:11:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F6D1E2834;
-	Wed, 30 Oct 2024 09:53:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B55DD1E2312;
+	Wed, 30 Oct 2024 10:11:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gnbgPfcW"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6B91E22F0
-	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 09:53:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D8E194151
+	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 10:11:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730281996; cv=none; b=iy3Ox/ZYK+fhr31u4785v36zgk6CNw00GwH9BN8smDFTC6bSWWvkXfiU0APvnbg2PdnKcvLPwN/ALOk1uAhC1NHbdIwdO52034sFibK/v4yhmIxZqjvIwQVxTEsT+5NeDrQP6BwjLpRNGRiKAOAmY6R9Oe8oUUX/4AEOLuf+Cc0=
+	t=1730283072; cv=none; b=BP+cnEqHfSj/yP0NBJZTonalvgmpTWqRae/LaBjSeZrmcKxs9HPQXut0mF0Rg2lnbU7yhvS0rSBsHDA0zNzo4RKGQZr4jUodp6xBb4Om0iEoO3VqLB+LQVDjtdbqMi4M1YATI0ALyYa317wF/JBr+A+6buBtDEtkUw4PBDG9Lms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730281996; c=relaxed/simple;
-	bh=Sf3qTnf694uCUlQL9zmZybeEg0GNGrxj8RBiXVAqR7Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XSPieq9nkcCfroTld+rCIj8gu/YFDdJsq0ufq5VIRq03fnvq6LdXvzJJrdu92pGsuHOJF/Kf+e9nJlE5iQDsfXUs1Yd/eEgLNZmXfSth6stxag8OUtAK0ybROtcwXy0m0WkLewykaP53lPkX4oE7DVUYDfenfAvzS7CfOfIYUQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Xdj9J45lnz4f3nbD
-	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 17:52:52 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 1DFC31A018D
-	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 17:53:11 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgCXc4cAAiJn97dvAQ--.24244S9;
-	Wed, 30 Oct 2024 17:53:10 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Yafang Shao <laoar.shao@gmail.com>,
-	houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: [PATCH bpf v4 5/5] selftests/bpf: Add three test cases for bits_iter
-Date: Wed, 30 Oct 2024 18:05:16 +0800
-Message-Id: <20241030100516.3633640-6-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20241030100516.3633640-1-houtao@huaweicloud.com>
-References: <20241030100516.3633640-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1730283072; c=relaxed/simple;
+	bh=R6HIuQ0AStRaw0mMRrOSDAWNTnhK97B84nmMpeRtYi4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Fm7q+KhdGchiswCnFl9yqVfPXl9mexolyb84L8ljQHhHOdSsANGzqZB6Gqs+tM7EcBDtdd7l1RhBSQA7SJYakIdT8PnjHWBhNv8jsOVs4OC6tMZbcIoYzaCcz8feYrutKCtyCtNr2XfzptIRB+Ed6caC4sY8nqsgKKRDmGxMwUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gnbgPfcW; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e404d1cd-cf40-48dd-8a49-82c03c3b641e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1730283065;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a+IPZ0Ax3CP4X9v6mKBzWRxh8Uj31G4xSneYUwIi27Y=;
+	b=gnbgPfcWE5KbjzlHrQ8e6XPH2Ak3d6ha7ejm0DBwr7vWqwJ4Kn0uhL192YloqGh66XM/Nk
+	uCePKvx2+WcDWUtjsHzlj+LA4CaNrkhO2cxrjKx18H3OQvPOU+J4c8J/lFM28cmDVeBht0
+	KQUX5zS4HShkZl1qUhqhBRu3TO5gUQ8=
+Date: Wed, 30 Oct 2024 18:10:56 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCXc4cAAiJn97dvAQ--.24244S9
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw4rZw4fXF4fAr15AF4xJFb_yoW5WFyDpa
-	1kW3sxAr1rJr4akr4fCayjkFyrWr4vyayrCrZaqrW5CFn7Xr92gr1Skw45Xas5GrWjvwsY
-	vFWqy3yxJrW8WaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPqb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
-	AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
-	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF
-	7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
-	0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x
-	07UZTmfUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Subject: Re: [PATCH bpf] bpf, bpftool: Fix incorrect disasm pc
+To: Leon Hwang <hffilwlqm@gmail.com>, bpf@vger.kernel.org
+Cc: qmo@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ kernel-patches-bot@fb.com
+References: <20241030094741.22929-1-hffilwlqm@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <20241030094741.22929-1-hffilwlqm@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Hou Tao <houtao1@huawei.com>
 
-Add more test cases for bits iterator:
 
-(1) huge word test
-Verify the multiplication overflow of nr_bits in bits_iter. Without
-the overflow check, when nr_words is 67108865, nr_bits becomes 64,
-causing bpf_probe_read_kernel_common() to corrupt the stack.
-(2) max word test
-Verify correct handling of maximum nr_words value (511).
-(3) bad word test
-Verify early termination of bits iteration when bits iterator
-initialization fails.
+On 2024/10/30 17:47, Leon Hwang wrote:
+> From: Leon Hwang <leon.hwang@linux.dev>
+> 
+> This patch addresses the bpftool issue "Wrong callq address displayed"[0].
+> 
+> The issue stemmed from an incorrect program counter (PC) value used during
+> disassembly with LLVM or libbfd. To calculate the correct address for
+> relative calls, the PC argument must reflect the actual address in the
+> kernel.
+> 
+> [0] https://github.com/libbpf/bpftool/issues/109
+> 
+> Fixes: e1947c750ffe ("bpftool: Refactor disassembler for JIT-ed programs")
+> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+> ---
+>  tools/bpf/bpftool/jit_disasm.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
+> index 7b8d9ec89ebd3..fe8fabba4b05f 100644
+> --- a/tools/bpf/bpftool/jit_disasm.c
+> +++ b/tools/bpf/bpftool/jit_disasm.c
+> @@ -114,8 +114,7 @@ disassemble_insn(disasm_ctx_t *ctx, unsigned char *image, ssize_t len, int pc)
 
-Also rename bits_nomem to bits_too_big to better reflect its purpose.
+It seems we should update the type of pc from int to __u64, as the type
+of func_ksym is __u64 and the type of pc argument in disassemble
+function of LLVM and libbfd is __u64 for 64 bit arch.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/progs/verifier_bits_iter.c  | 61 ++++++++++++++++++-
- 1 file changed, 58 insertions(+), 3 deletions(-)
+Thanks,
+Leon
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bits_iter.c b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-index f4da4d508ddb..156cc278e2fc 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-@@ -15,6 +15,8 @@ int bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign,
- int *bpf_iter_bits_next(struct bpf_iter_bits *it) __ksym __weak;
- void bpf_iter_bits_destroy(struct bpf_iter_bits *it) __ksym __weak;
- 
-+u64 bits_array[511] = {};
-+
- SEC("iter.s/cgroup")
- __description("bits iter without destroy")
- __failure __msg("Unreleased reference")
-@@ -110,16 +112,16 @@ int bit_index(void)
- }
- 
- SEC("syscall")
--__description("bits nomem")
-+__description("bits too big")
- __success __retval(0)
--int bits_nomem(void)
-+int bits_too_big(void)
- {
- 	u64 data[4];
- 	int nr = 0;
- 	int *bit;
- 
- 	__builtin_memset(&data, 0xff, sizeof(data));
--	bpf_for_each(bits, bit, &data[0], 513) /* Be greater than 512 */
-+	bpf_for_each(bits, bit, &data[0], 512) /* Be greater than 511 */
- 		nr++;
- 	return nr;
- }
-@@ -151,3 +153,56 @@ int zero_words(void)
- 		nr++;
- 	return nr;
- }
-+
-+SEC("syscall")
-+__description("huge words")
-+__success __retval(0)
-+int huge_words(void)
-+{
-+	u64 data[8] = {0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1};
-+	int nr = 0;
-+	int *bit;
-+
-+	bpf_for_each(bits, bit, &data[0], 67108865)
-+		nr++;
-+	return nr;
-+}
-+
-+SEC("syscall")
-+__description("max words")
-+__success __retval(4)
-+int max_words(void)
-+{
-+	volatile int nr = 0;
-+	int *bit;
-+
-+	bits_array[0] = (1ULL << 63) | 1U;
-+	bits_array[510] = (1ULL << 33) | (1ULL << 32);
-+
-+	bpf_for_each(bits, bit, bits_array, 511) {
-+		if (nr == 0 && *bit != 0)
-+			break;
-+		if (nr == 2 && *bit != 32672)
-+			break;
-+		nr++;
-+	}
-+	return nr;
-+}
-+
-+SEC("syscall")
-+__description("bad words")
-+__success __retval(0)
-+int bad_words(void)
-+{
-+	void *bad_addr = (void *)(3UL << 30);
-+	int nr = 0;
-+	int *bit;
-+
-+	bpf_for_each(bits, bit, bad_addr, 1)
-+		nr++;
-+
-+	bpf_for_each(bits, bit, bad_addr, 4)
-+		nr++;
-+
-+	return nr;
-+}
--- 
-2.29.2
+>  	char buf[256];
+>  	int count;
+>  
+> -	count = LLVMDisasmInstruction(*ctx, image + pc, len - pc, pc,
+> -				      buf, sizeof(buf));
+> +	count = LLVMDisasmInstruction(*ctx, image, len, pc, buf, sizeof(buf));
+>  	if (json_output)
+>  		printf_json(buf);
+>  	else
+> @@ -360,7 +359,8 @@ int disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
+>  			printf("%4x:" DISASM_SPACER, pc);
+>  		}
+>  
+> -		count = disassemble_insn(&ctx, image, len, pc);
+> +		count = disassemble_insn(&ctx, image + pc, len - pc,
+> +					 func_ksym + pc);
+>  
+>  		if (json_output) {
+>  			/* Operand array, was started in fprintf_json. Before
 
 
