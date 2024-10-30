@@ -1,150 +1,191 @@
-Return-Path: <bpf+bounces-43602-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43603-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 001539B6E16
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 21:50:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC7BB9B6E4A
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 22:01:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36986280936
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 20:50:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48403B22302
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 21:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDCDA218311;
-	Wed, 30 Oct 2024 20:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0BB2141B7;
+	Wed, 30 Oct 2024 21:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f8SEV7M/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qFfJy+OM"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8B3521502B
-	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 20:48:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39E51D0E0D;
+	Wed, 30 Oct 2024 21:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730321332; cv=none; b=Oms5qrG45jchpsIL6W9aw4/DUFLf0oQPC9UBcvSU4nJ5zaDv+iP++GeQa7bLqPCw3qiRr0qPrLe9B5lh+mhL+SfyHh+5HS2/Lol04zn8LgNmDOeXFsIa6xcG/yG2JnwSHCzOVA61ztiwqfmlcJCh8inr6MvWzm7Myzi02TayVA4=
+	t=1730322045; cv=none; b=WOEX7XmSV5/1aH8rVajBI6/swHHKNKPAULAoovyPRHtEdkVz5TKI6WLyODe2mqpu5l1FaCpGdakLJw3vY2HGL/Og/ZQszMkXgqozW+vUOsVQgxKG3iCrc9vmHmiunjeP4CytcPTCHVpm1jUiMU3SKWGpzCazG0HN1kh16G/tRb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730321332; c=relaxed/simple;
-	bh=r7Szs2POrVC2wv7OjarWafvN6De9kKjAB8U9+PxACq8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ffUTrpuQjP+OsDP+v+iMH6vrrpqr7adKhlahqM2JdSCYA9C7wkusyOAgKPaL4HU7cQsCAaVAqvzpugmSjUG93RD0jI/w9Gky4SRLAGenOeDNIe+HQAbhatLrFHMWKn+MsMljy+ZXoxhuR6j9yPz5YA9HSZ2aCuDVGjBefSB+D58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f8SEV7M/; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <82dff21b-0ba0-4823-bd78-d8d2105941f4@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730321327;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sUu3R5NznYIAyWQ0FfKhRx6rfEqKBnePWslIEbBLNsY=;
-	b=f8SEV7M/wGL9Wa/RFdfrDQLa9WkLgkBKgTq5xQBfVLMld16cK5Ywk0XEu9ByyYJx4T7ljw
-	k8pxaqMDbReQUfp+pRE9duT6qKhAjJHDC7gHfzPIfDdZLrJnc6owGXeQA9/Fo5XoaF30tl
-	I7gIJM+4b2UWNRWZETrpebVDQY3tFMw=
-Date: Wed, 30 Oct 2024 13:48:41 -0700
+	s=arc-20240116; t=1730322045; c=relaxed/simple;
+	bh=FHc9+KsxE68/8fdivXFFQsEHjN13LEf/vY7D0utn2FA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Q2V3IvHGf3HUrGgqSwSwVCgXZTfOlMzEnnqBgpQMXzkIvKF52rVzmlrJTtYvxkdBpGxcGwiyfYKVyS6wfcCZcTewP84oxidL3CSV0eDDOBGDoaRDwkWfgxsQmBRQrBKKUyEcJaTjL9GEudGNG15gj/HsFPXILrKcEWa2SLD7Ntg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qFfJy+OM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F75BC4CECE;
+	Wed, 30 Oct 2024 21:00:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730322045;
+	bh=FHc9+KsxE68/8fdivXFFQsEHjN13LEf/vY7D0utn2FA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=qFfJy+OMGQrOb+k6n1c1u5MbGgkiFxUSjKubuKO6WLqUbu2qO7nLbKTyGoAL/i7Qt
+	 mwUhPYhfw292eCbD1ittEJQpHQiV/zAQplZ442uK0Lyk9y7t2zrytbRz8Gycvezm5B
+	 70X0FkVCsGYSF+wF4S1bkpqi2Ta81VNWDcz5DAxFhkHMforHIoKPFhsu3zejZNACgO
+	 OQUdcVvBTyEZnMt4nbclw/nUH+iZ8eD4FAJrvh7xaGhjy4SGjPV7OyrEVTivyy7CuA
+	 SYncyaOl28ufAKn78+j2q/cAitYQk3BbgswI+OcOKJdC5xKwHPKwj90J/YAhUg0Tvy
+	 TqE372wKyueFg==
+Date: Wed, 30 Oct 2024 16:00:43 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
+	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
+	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
+	robin.murphy@arm.com, will@kernel.org
+Subject: Re: [PATCH v3 1/2] PCI: Add enable_device() and disable_device()
+ callbacks for bridges
+Message-ID: <20241030210043.GA1219525@bhelgaas>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix compile error when MPTCP not
- support
-To: Matthieu Baerts <matttbe@kernel.org>, Tao Chen <chen.dylane@gmail.com>
-Cc: Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Yonghong Song <yonghong.song@linux.dev>, Jiri Olsa <jolsa@kernel.org>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, mptcp@lists.linux.dev
-References: <20241030100108.2443371-1-chen.dylane@gmail.com>
- <abb72d1b-3347-4493-9a18-43c1655b7449@kernel.org>
- <3bc02b33-421e-4c95-8f69-33ec89782621@gmail.com>
- <9b2b3c98-503b-45ae-bcdd-ac2fcc62e14c@kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <9b2b3c98-503b-45ae-bcdd-ac2fcc62e14c@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241024-imx95_lut-v3-1-7509c9bbab86@nxp.com>
 
-On 10/30/24 9:31 AM, Matthieu Baerts wrote:
-> Hi Tao, BPF maintainers,
+On Thu, Oct 24, 2024 at 06:34:44PM -0400, Frank Li wrote:
+> Some PCIe host bridges require special handling when enabling or disabling
+> PCIe Endpoints. For example, the i.MX95 platform has a lookup table to map
+> Requester IDs to StreamIDs, which are used by the SMMU and MSI controller
+> to identify the source of DMA accesses.
 > 
-> On 30/10/2024 12:12, Tao Chen wrote:
->> 在 2024/10/30 18:49, Matthieu Baerts 写道:
->>> Hi Tao Chen,
->>>
->>> Thank you for having shared this patch.
->>>
->>> On 30/10/2024 11:01, Tao Chen wrote:
->>>> Fix compile error when MPTCP feature not support, though eBPF core check
->>>> already done which seems invalid in this situation, the error info like:
->>>> progs/mptcp_sock.c:49:40: error: no member named 'is_mptcp' in 'struct
->>>> tcp_sock'
->>>>      49 |         is_mptcp = bpf_core_field_exists(tsk->is_mptcp) ?
->>>>
->>>> The filed created in new definitions with eBPF core feature to solve
->>>> this build problem, and test case result still ok in MPTCP kernel.
->>>>
->>>> 176/1   mptcp/base:OK
->>>> 176/2   mptcp/mptcpify:OK
->>>> 176     mptcp:OK
->>>> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
->>>>
->>>> Fixes: 8039d353217c ("selftests/bpf: Add MPTCP test base")
->>>
->>> The commit you mentioned here is more than 2 years old, and as far as I
->>> can see, nobody else reported this compilation issue. I guess that's
->>> because people used tools/testing/selftests/bpf/config file as expected
->>> to populate the kernel config, and I suppose you didn't, right?
->>>
->>
->> Hi Matt, thank you for your reply, as you said, i did not use tools/
->> testing/selftests/bpf/config to compile kernel, i will use this helpful
->> feature.
->>
->>> I don't think other BPF selftests check for missing kernel config if
->>> they are specified in the 'config' file, but even if it is the case, I
->>> think it would be better to skip all the MPTCP tests, and not try to
->>> have them checking something that doesn't exist: no need to validate
->>> these tests if the expected kernel config has not been enabled.
->>>
->>
->> If i use the kernel not support MPTCP, the compile error still exists,
->> and i can not build the bpf test successfully. Maybe skill the test case
->> seems better when kernel not support. Now that bpf_core_field_exists
->> check already used in the code, i think it is better to use new
->> definition mode.
+> Without this mapping, DMA accesses may target unintended memory, which
+> would corrupt memory or read the wrong data.
 > 
-> I understand it would be better, but it means more code to maintain to
-> handle that (and remembering that in future test cases). If that's not
-> necessary, then no need to do the effort.
+> Add a host bridge .enable_device() hook the imx6 driver can use to
+> configure the Requester ID to StreamID mapping. The hardware table isn't
+> big enough to map all possible Requester IDs, so this hook may fail if no
+> table space is available. In that case, return failure from
+> pci_enable_device().
 > 
-> @BPF maintainers: do we need to support kernels not respecting the
-> tools/testing/selftests/bpf/config file? Should we detect when a
-> required kernel config is not set and skip some tests?
-
-I guess it depends on the CONFIG_. Otherwise, it takes out the goodies of using 
-<vmlinux.h> when writing bpf selftests.
-
-If fixing the config is an option and sounds like it is for Tao, then it is 
-always good to run everything in test_progs.
-
-There are some "___local" definitions in the selftests. If mptcp test wants to 
-go this path, then Matt's request to at least test__skip() makes sense to me.
-
-pw-bot: cr
-
+> It might make more sense to make pci_set_master() decline to enable bus
+> mastering and return failure, but it currently doesn't have a way to return
+> failure.
 > 
->>> But again, please correct me if I'm wrong, but I don't think there is
->>> anything to change here to fix your compilation issue: simply make sure
->>> to use this tools/testing/selftests/bpf/config file to generate your
->>> kernel config, no?
-> 
-> Cheers,
-> Matt
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+Merge along with the imx6 change.
+
+> ---
+> Change from v2 to v3
+> - use Bjorn suggest's commit message.
+> - call disable_device() when error happen.
+> 
+> Change from v1 to v2
+> - move enable(disable)device ops to pci_host_bridge
+> ---
+>  drivers/pci/pci.c   | 23 ++++++++++++++++++++++-
+>  include/linux/pci.h |  2 ++
+>  2 files changed, 24 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 7d85c04fbba2a..5e0cb9b6f4d4f 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -2056,6 +2056,7 @@ int __weak pcibios_enable_device(struct pci_dev *dev, int bars)
+>  static int do_pci_enable_device(struct pci_dev *dev, int bars)
+>  {
+>  	int err;
+> +	struct pci_host_bridge *host_bridge;
+>  	struct pci_dev *bridge;
+>  	u16 cmd;
+>  	u8 pin;
+> @@ -2068,9 +2069,16 @@ static int do_pci_enable_device(struct pci_dev *dev, int bars)
+>  	if (bridge)
+>  		pcie_aspm_powersave_config_link(bridge);
+>  
+> +	host_bridge = pci_find_host_bridge(dev->bus);
+> +	if (host_bridge && host_bridge->enable_device) {
+> +		err = host_bridge->enable_device(host_bridge, dev);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+>  	err = pcibios_enable_device(dev, bars);
+>  	if (err < 0)
+> -		return err;
+> +		goto err_enable;
+>  	pci_fixup_device(pci_fixup_enable, dev);
+>  
+>  	if (dev->msi_enabled || dev->msix_enabled)
+> @@ -2085,6 +2093,13 @@ static int do_pci_enable_device(struct pci_dev *dev, int bars)
+>  	}
+>  
+>  	return 0;
+> +
+> +err_enable:
+> +	if (host_bridge && host_bridge->disable_device)
+> +		 host_bridge->disable_device(host_bridge, dev);
+> +
+> +	return err;
+> +
+>  }
+>  
+>  /**
+> @@ -2262,12 +2277,18 @@ void pci_disable_enabled_device(struct pci_dev *dev)
+>   */
+>  void pci_disable_device(struct pci_dev *dev)
+>  {
+> +	struct pci_host_bridge *host_bridge;
+> +
+>  	dev_WARN_ONCE(&dev->dev, atomic_read(&dev->enable_cnt) <= 0,
+>  		      "disabling already-disabled device");
+>  
+>  	if (atomic_dec_return(&dev->enable_cnt) != 0)
+>  		return;
+>  
+> +	host_bridge = pci_find_host_bridge(dev->bus);
+> +	if (host_bridge && host_bridge->disable_device)
+> +		host_bridge->disable_device(host_bridge, dev);
+> +
+>  	do_pci_disable_device(dev);
+>  
+>  	dev->is_busmaster = 0;
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 573b4c4c2be61..ac15b02e14ddd 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -578,6 +578,8 @@ struct pci_host_bridge {
+>  	u8 (*swizzle_irq)(struct pci_dev *, u8 *); /* Platform IRQ swizzler */
+>  	int (*map_irq)(const struct pci_dev *, u8, u8);
+>  	void (*release_fn)(struct pci_host_bridge *);
+> +	int (*enable_device)(struct pci_host_bridge *bridge, struct pci_dev *dev);
+> +	void (*disable_device)(struct pci_host_bridge *bridge, struct pci_dev *dev);
+>  	void		*release_data;
+>  	unsigned int	ignore_reset_delay:1;	/* For entire hierarchy */
+>  	unsigned int	no_ext_tags:1;		/* No Extended Tags */
+> 
+> -- 
+> 2.34.1
+> 
 
