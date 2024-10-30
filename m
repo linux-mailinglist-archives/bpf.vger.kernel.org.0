@@ -1,185 +1,300 @@
-Return-Path: <bpf+bounces-43460-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43461-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBFC69B5882
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 01:22:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F2BC9B58A6
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 01:33:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB7032836DA
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 00:22:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 627421C22C17
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 00:33:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A24FE11187;
-	Wed, 30 Oct 2024 00:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A4AF14286;
+	Wed, 30 Oct 2024 00:32:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lErBZuTw"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fnP3VB84"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C9F52C9D
-	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 00:22:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10433D528
+	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 00:32:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730247728; cv=none; b=UWt6kaWuRwpkapb/Dj8m415cQmE8ilSE9k7W8Kkb1YTmSMM8zB2pDGm85lAev2RhZ0UCBiDU/hnx3Rxt07J4hWqFbBuzyOjXWZmNgslcFi1G6Q81EuZGrBFdzMjJaZxcicmqnLrgn0yDd2biaXXp+2T77y+1exN04wcq0zu2jDw=
+	t=1730248376; cv=none; b=T4Xci7QxQlC9WHclYjrnfvhD/rZnm+9AQ5E4yRWwaUPHYmmYinvMXHDd2gHkrYMv9Fnl/Fwba4Mcu6kr6Uk62mtx5qek2z14+TTMShG8CT03zw3Co9Do5oOvHglFi76Gyigg+R0HbhwsH0AWnwPnkCCRet/J8Ygl0YNJdKOyC/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730247728; c=relaxed/simple;
-	bh=5KK5BwOVk4nZXPqG2HyNlEwTFySftAghQQLTw5Bcehk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UJKfIyCN3QYELu0DaGD7s1bhs61pyeVByDeyeIyxLuYkuGzlp10NiA1Ee6lDsf0sFI0tabNgSy6GBVPCUAomH0TB1nYBTvUnM3x7ManCZx32rWzV++RU5LxuioqCB8FVJZ+XjkDB1flpgPm5cwWZqru90nDhLbNHfWzo2Qzc5zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lErBZuTw; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2e30116efc9so4945347a91.2
-        for <bpf@vger.kernel.org>; Tue, 29 Oct 2024 17:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730247725; x=1730852525; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8qd+q//U18ZbqoaQ87tVKQvEEV2BeNCWaPA9LlfEaR0=;
-        b=lErBZuTwJx9HYs3HFyqyG4BD/rkUJq8CzwPKE9j2tu1lk6GLG4YhgLt7xSKub6GzJr
-         KFa1ukUut6fDqE1i1QhPdA9PSeOHBcwZHszJNf02PfZ3c/eUUz4q0VKS9c5ghw+hUqVH
-         cwSSjPsfN+iOamheTsS7bBPDpYWb5ORXkek3Ptk9kDxamOFHMNWw7ZWb+iZMjskBnZ5z
-         9zlDZ83Uw/BwdG1ekGVls9Nc2+xl49PCzYiMsA0esGtxy2Fm11J/aqos3sCdJ5ahSi6x
-         2Gkm2mIcZHKaLsWJIOOooGaJnXw5GpCj72qI4SVUilaXQREzuEDG7P/EjwKPb/XVP7z+
-         Mmfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730247725; x=1730852525;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8qd+q//U18ZbqoaQ87tVKQvEEV2BeNCWaPA9LlfEaR0=;
-        b=dKymk00WqxLNnGYGbUQ9dM7MNgHmM3ue8sFkm8G5yYSL7QbENFY4E3CfRoJEnlkkOU
-         I7YLlqJhr3A/jS0CqD6X+4gzterhtkEVSSWhp5IrXXhSVyy0MbfWE4o9eyeKtQPO9WHL
-         RxdcWCIQ7TnPMKfgCr4O1xkZP3acs90seesrq5+psE3cDHANhcZkPUsABN+Bllo5c/kW
-         3CuFhAppDm8V+8thJWwIczdhG/8xD9Cb4AMWPVnCqVtez/t/BqN3rpcvud1/CESPojpV
-         9Aocqx4SJ9XYjOTN2jYJ9X1TRYG+h7uwg91QXtHq2apMtEptjy8QW6sD3a+a0qYA4Qxw
-         9DHA==
-X-Gm-Message-State: AOJu0Yxce/TxWdby435MK1EZDJzuMzErIR/9cvlsGlhn0M6Gky9fHcHc
-	u2ssl/r9gCDRHag4qhPg2s60VUVbVAV7p6hVAoqrx/zBmpVY8rM=
-X-Google-Smtp-Source: AGHT+IGglVOwvfQ4eEVlFvnpZ24E2e4d+Wdq/XnuuZN3JJsMSyOG2DUpTWzBylSlEYIjrcgzmjKcEg==
-X-Received: by 2002:a05:6a21:38a:b0:1d8:a9c0:8853 with SMTP id adf61e73a8af0-1d9a8402d9dmr17862033637.23.1730247725382;
-        Tue, 29 Oct 2024 17:22:05 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057931cd4sm8211378b3a.70.2024.10.29.17.22.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Oct 2024 17:22:04 -0700 (PDT)
-Date: Tue, 29 Oct 2024 17:22:04 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Zijian Zhang <zijianzhang@bytedance.com>
-Cc: bpf@vger.kernel.org, borisp@nvidia.com, john.fastabend@gmail.com,
-	kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
-	pabeni@redhat.com, horms@kernel.org, daniel@iogearbox.net,
-	ast@kernel.org, cong.wang@bytedance.com
-Subject: Re: [PATCH bpf] bpf: Add sk_is_inet check in tls_sw_has_ctx_tx/rx
-Message-ID: <ZyF8LA6v9iAuxNXi@mini-arch>
-References: <20241029202830.3121552-1-zijianzhang@bytedance.com>
- <ZyFquswggZxKCYGH@mini-arch>
- <abc69614-869d-42d8-be8e-b4573029611b@bytedance.com>
+	s=arc-20240116; t=1730248376; c=relaxed/simple;
+	bh=l6eQS+Vahmy7V6Nq3VsU+55gtEB1m12pWsK/tCnHOoI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=irXTIdII8wz8oNEsKrUN/6UB/QkTKvfoP19Whdp/N7FAxHsg0LzV3eeA5DbEII+ux0uZudX5R2xX+zZl+hARKpNLyh83a0HLwHD7m/VnvAmwQ3AFrTMFKkUoHbkFx1q377RWhT80Kq5pJ8xCtM6cYBXsMU+hmuQkl4avoD/HGlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fnP3VB84; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <9a821495-cac7-48d8-a2bc-1bd7ebeef23c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1730248370;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z0Y0lFZ0qQSnv3we6RWgnOtGin4q6102uB7b96bEsEw=;
+	b=fnP3VB84a5+87QICZGLPIGPHl1IGHUszFsgDTmT/npi+y65kFvpdK+qy7UNRfXepUjPt0S
+	FsSghnOBDMPMgPEH9jm3JsEg8VAF8fZONEhh9vqIaW7eeK2CRLC+Qgf3wdDRGRTcykgFBo
+	QmXexY4q+Le60qgI6WKnp8rWj0R79/A=
+Date: Tue, 29 Oct 2024 17:32:41 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <abc69614-869d-42d8-be8e-b4573029611b@bytedance.com>
+Subject: Re: [PATCH net-next v3 03/14] net-timestamp: open gate for
+ bpf_setsockopt/_getsockopt
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
+ willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org,
+ Jason Xing <kernelxing@tencent.com>
+References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
+ <20241028110535.82999-4-kerneljasonxing@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20241028110535.82999-4-kerneljasonxing@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 10/29, Zijian Zhang wrote:
+On 10/28/24 4:05 AM, Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
 > 
+> For now, we support bpf_setsockopt to set or clear timestamps flags.
 > 
-> On 10/29/24 4:07 PM, Stanislav Fomichev wrote:
-> > On 10/29, zijianzhang@bytedance.com wrote:
-> > > From: Zijian Zhang <zijianzhang@bytedance.com>
-> > > 
-> > > As the introduction of the support for vsock and unix sockets in sockmap,
-> > > tls_sw_has_ctx_tx/rx cannot presume the socket passed in must be inet.
-> > > Otherwise, tls_get_ctx may return an invalid pointer and result in page
-> > > fault in function tls_sw_ctx_rx.
-> > > 
-> > > BUG: unable to handle page fault for address: 0000000000040030
-> > > Workqueue: vsock-loopback vsock_loopback_work
-> > > RIP: 0010:sk_psock_strp_data_ready+0x23/0x60
-> > > Call Trace:
-> > >   ? __die+0x81/0xc3
-> > >   ? no_context+0x194/0x350
-> > >   ? do_page_fault+0x30/0x110
-> > >   ? async_page_fault+0x3e/0x50
-> > >   ? sk_psock_strp_data_ready+0x23/0x60
-> > >   virtio_transport_recv_pkt+0x750/0x800
-> > >   ? update_load_avg+0x7e/0x620
-> > >   vsock_loopback_work+0xd0/0x100
-> > >   process_one_work+0x1a7/0x360
-> > >   worker_thread+0x30/0x390
-> > >   ? create_worker+0x1a0/0x1a0
-> > >   kthread+0x112/0x130
-> > >   ? __kthread_cancel_work+0x40/0x40
-> > >   ret_from_fork+0x1f/0x40
-> > > 
-> > > Fixes: 0608c69c9a80 ("bpf: sk_msg, sock{map|hash} redirect through ULP")
-> > > Fixes: e91de6afa81c ("bpf: Fix running sk_skb program types with ktls")
-> > > 
-> > > Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
-> > > ---
-> > >   include/net/tls.h | 12 ++++++++++--
-> > >   1 file changed, 10 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/include/net/tls.h b/include/net/tls.h
-> > > index 3a33924db2bc..a65939c7ad61 100644
-> > > --- a/include/net/tls.h
-> > > +++ b/include/net/tls.h
-> > > @@ -390,8 +390,12 @@ tls_offload_ctx_tx(const struct tls_context *tls_ctx)
-> > >   static inline bool tls_sw_has_ctx_tx(const struct sock *sk)
-> > >   {
-> > > -	struct tls_context *ctx = tls_get_ctx(sk);
-> > > +	struct tls_context *ctx;
-> > > +
-> > > +	if (!sk_is_inet(sk))
-> > > +		return false;
-> > > +	ctx = tls_get_ctx(sk);
-> > >   	if (!ctx)
-> > >   		return false;
-> > >   	return !!tls_sw_ctx_tx(ctx);
-> > > @@ -399,8 +403,12 @@ static inline bool tls_sw_has_ctx_tx(const struct sock *sk)
-> > >   static inline bool tls_sw_has_ctx_rx(const struct sock *sk)
-> > >   {
-> > > -	struct tls_context *ctx = tls_get_ctx(sk);
-> > > +	struct tls_context *ctx;
-> > > +
-> > > +	if (!sk_is_inet(sk))
-> > > +		return false;
-> > > +	ctx = tls_get_ctx(sk);
-> > >   	if (!ctx)
-> > >   		return false;
-> > >   	return !!tls_sw_ctx_rx(ctx);
-> > 
-> > This seems like a strange place to fix it. Why does tls_get_ctx return
-> > invalid pointer for non-tls/ulp sockets? Shouldn't it be NULL?
-> > Is sockmap even supposed to work with vsock?
+> Users can use something like this in bpf program to turn on the feature:
+> flags = SOF_TIMESTAMPING_TX_SCHED;
+> bpf_setsockopt(skops, SOL_SOCKET, SO_TIMESTAMPING, &flags, sizeof(flags));
+> The specific use cases can be seen in the bpf selftest in this series.
 > 
-> Here is my understanding, please correct me if I am wrong :)
-> ```
-> static inline struct tls_context *tls_get_ctx(const struct sock *sk)
-> {
-> 	const struct inet_connection_sock *icsk = inet_csk(sk);
-> 	return (__force void *)icsk->icsk_ulp_data;
-> }
-> ```
-> tls_get_ctx assumes the socket passed is icsk_socket. However, unix
-> and vsock do not have inet_connection_sock, they have unix_sock and
-> vsock_sock. The offset of icsk_ulp_data are meaningless for them, and
-> they might point to some other values which might not be NULL.
+> Later, I will support each flags one by one based on this.
 > 
-> Afaik, sockmap started to support vsock in 634f1a7110b4 ("vsock: support
-> sockmap"), and support unix in 94531cfcbe79 ("af_unix: Add
-> unix_stream_proto for sockmap").
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> ---
+>   include/net/sock.h              |  4 ++--
+>   include/uapi/linux/net_tstamp.h |  7 +++++++
+>   net/core/filter.c               |  7 +++++--
+>   net/core/sock.c                 | 34 ++++++++++++++++++++++++++-------
+>   net/ipv4/udp.c                  |  2 +-
+>   net/mptcp/sockopt.c             |  2 +-
+>   net/socket.c                    |  2 +-
+>   7 files changed, 44 insertions(+), 14 deletions(-)
 > 
-> If the above is correct, I find that using inet_test_bit(IS_ICSK, sk)
-> instead of sk_is_inet will be more accurate.
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index 5384f1e49f5c..062f405c744e 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -1775,7 +1775,7 @@ static inline void skb_set_owner_edemux(struct sk_buff *skb, struct sock *sk)
+>   #endif
+>   
+>   int sk_setsockopt(struct sock *sk, int level, int optname,
+> -		  sockptr_t optval, unsigned int optlen);
+> +		  sockptr_t optval, unsigned int optlen, bool bpf_timetamping);
+>   int sock_setsockopt(struct socket *sock, int level, int op,
+>   		    sockptr_t optval, unsigned int optlen);
+>   int do_sock_setsockopt(struct socket *sock, bool compat, int level,
+> @@ -1784,7 +1784,7 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
+>   		       int optname, sockptr_t optval, sockptr_t optlen);
+>   
+>   int sk_getsockopt(struct sock *sk, int level, int optname,
+> -		  sockptr_t optval, sockptr_t optlen);
+> +		  sockptr_t optval, sockptr_t optlen, bool bpf_timetamping);
+>   int sock_gettstamp(struct socket *sock, void __user *userstamp,
+>   		   bool timeval, bool time32);
+>   struct sk_buff *sock_alloc_send_pskb(struct sock *sk, unsigned long header_len,
+> diff --git a/include/uapi/linux/net_tstamp.h b/include/uapi/linux/net_tstamp.h
+> index 858339d1c1c4..0696699cf964 100644
+> --- a/include/uapi/linux/net_tstamp.h
+> +++ b/include/uapi/linux/net_tstamp.h
+> @@ -49,6 +49,13 @@ enum {
+>   					 SOF_TIMESTAMPING_TX_SCHED | \
+>   					 SOF_TIMESTAMPING_TX_ACK)
+>   
+> +#define SOF_TIMESTAMPING_BPF_SUPPPORTED_MASK (SOF_TIMESTAMPING_SOFTWARE | \
 
-Thanks for the context, makes sense. And consolidating this sk_is_inet
-check inside tls_get_ctx is worse because it gets called outside of
-sockmap?
+hmm... so we are allowing it but SOF_TIMESTAMPING_SOFTWARE won't do anything 
+(meaning set and not-set are both no-op) ?
+
+> +					      SOF_TIMESTAMPING_TX_SCHED | \
+> +					      SOF_TIMESTAMPING_TX_SOFTWARE | \
+> +					      SOF_TIMESTAMPING_TX_ACK | \
+> +					      SOF_TIMESTAMPING_OPT_ID | \
+> +					      SOF_TIMESTAMPING_OPT_ID_TCP)
+> +
+>   /**
+>    * struct so_timestamping - SO_TIMESTAMPING parameter
+>    *
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 58761263176c..dc8ecf899ced 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -5238,6 +5238,9 @@ static int sol_socket_sockopt(struct sock *sk, int optname,
+>   		break;
+>   	case SO_BINDTODEVICE:
+>   		break;
+> +	case SO_TIMESTAMPING_NEW:
+
+How about only allow bpf_setsockopt(SO_TIMESTAMPING_NEW) instead of 
+bpf_setsockopt(SO_TIMESTAMPING). Does it solve the issue reported in v2?
+
+> +	case SO_TIMESTAMPING_OLD:
+> +		break;
+>   	default:
+>   		return -EINVAL;
+>   	}
+> @@ -5247,11 +5250,11 @@ static int sol_socket_sockopt(struct sock *sk, int optname,
+>   			return -EINVAL;
+>   		return sk_getsockopt(sk, SOL_SOCKET, optname,
+>   				     KERNEL_SOCKPTR(optval),
+> -				     KERNEL_SOCKPTR(optlen));
+> +				     KERNEL_SOCKPTR(optlen), true);
+>   	}
+>   
+>   	return sk_setsockopt(sk, SOL_SOCKET, optname,
+> -			     KERNEL_SOCKPTR(optval), *optlen);
+> +			     KERNEL_SOCKPTR(optval), *optlen, true);
+>   }
+>   
+>   static int bpf_sol_tcp_setsockopt(struct sock *sk, int optname,
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index 7f398bd07fb7..7e05748b1a06 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -941,6 +941,19 @@ int sock_set_timestamping(struct sock *sk, int optname,
+>   	return 0;
+>   }
+>   
+> +static int sock_set_timestamping_bpf(struct sock *sk,
+> +				     struct so_timestamping timestamping)
+> +{
+> +	u32 flags = timestamping.flags;
+> +
+> +	if (flags & ~SOF_TIMESTAMPING_BPF_SUPPPORTED_MASK)
+> +		return -EINVAL;
+> +
+> +	WRITE_ONCE(sk->sk_tsflags_bpf, flags);
+
+I think it is cleaner to directly "WRITE_ONCE(sk->sk_tsflags_bpf, flags);" in 
+sol_socket_sockopt() instead of adding "bool bpf_timestamping" to sk_setsockopt. 
+sk_tsflags_bpf is a separate u32 anyway, so not a lot of code to share. The same 
+for getsockopt.
+
+[ will continue the remaining patches a little later ]
+
+> +
+> +	return 0;
+> +}
+> +
+>   void sock_set_keepalive(struct sock *sk)
+>   {
+>   	lock_sock(sk);
+> @@ -1159,7 +1172,7 @@ static int sockopt_validate_clockid(__kernel_clockid_t value)
+>    */
+>   
+>   int sk_setsockopt(struct sock *sk, int level, int optname,
+> -		  sockptr_t optval, unsigned int optlen)
+> +		  sockptr_t optval, unsigned int optlen, bool bpf_timetamping)
+>   {
+>   	struct so_timestamping timestamping;
+>   	struct socket *sock = sk->sk_socket;
+> @@ -1409,7 +1422,10 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
+>   			memset(&timestamping, 0, sizeof(timestamping));
+>   			timestamping.flags = val;
+>   		}
+> -		ret = sock_set_timestamping(sk, optname, timestamping);
+> +		if (!bpf_timetamping)
+> +			ret = sock_set_timestamping(sk, optname, timestamping);
+> +		else
+> +			ret = sock_set_timestamping_bpf(sk, timestamping);
+>   		break;
+>   
+>   	case SO_RCVLOWAT:
+> @@ -1626,7 +1642,7 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+>   		    sockptr_t optval, unsigned int optlen)
+>   {
+>   	return sk_setsockopt(sock->sk, level, optname,
+> -			     optval, optlen);
+> +			     optval, optlen, false);
+>   }
+>   EXPORT_SYMBOL(sock_setsockopt);
+>   
+> @@ -1670,7 +1686,7 @@ static int groups_to_user(sockptr_t dst, const struct group_info *src)
+>   }
+>   
+>   int sk_getsockopt(struct sock *sk, int level, int optname,
+> -		  sockptr_t optval, sockptr_t optlen)
+> +		  sockptr_t optval, sockptr_t optlen, bool bpf_timetamping)
+>   {
+>   	struct socket *sock = sk->sk_socket;
+>   
+> @@ -1793,9 +1809,13 @@ int sk_getsockopt(struct sock *sk, int level, int optname,
+>   		 * returning the flags when they were set through the same option.
+>   		 * Don't change the beviour for the old case SO_TIMESTAMPING_OLD.
+>   		 */
+> -		if (optname == SO_TIMESTAMPING_OLD || sock_flag(sk, SOCK_TSTAMP_NEW)) {
+> -			v.timestamping.flags = READ_ONCE(sk->sk_tsflags);
+> -			v.timestamping.bind_phc = READ_ONCE(sk->sk_bind_phc);
+> +		if (!bpf_timetamping) {
+> +			if (optname == SO_TIMESTAMPING_OLD || sock_flag(sk, SOCK_TSTAMP_NEW)) {
+> +				v.timestamping.flags = READ_ONCE(sk->sk_tsflags);
+> +				v.timestamping.bind_phc = READ_ONCE(sk->sk_bind_phc);
+> +			}
+> +		} else {
+> +			v.timestamping.flags = READ_ONCE(sk->sk_tsflags_bpf);
+>   		}
+>   		break;
+>   
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index 0e24916b39d4..9a20af41e272 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -2679,7 +2679,7 @@ int udp_lib_setsockopt(struct sock *sk, int level, int optname,
+>   	int is_udplite = IS_UDPLITE(sk);
+>   
+>   	if (level == SOL_SOCKET) {
+> -		err = sk_setsockopt(sk, level, optname, optval, optlen);
+> +		err = sk_setsockopt(sk, level, optname, optval, optlen, false);
+>   
+>   		if (optname == SO_RCVBUF || optname == SO_RCVBUFFORCE) {
+>   			sockopt_lock_sock(sk);
+> diff --git a/net/mptcp/sockopt.c b/net/mptcp/sockopt.c
+> index 505445a9598f..7b12cc2db136 100644
+> --- a/net/mptcp/sockopt.c
+> +++ b/net/mptcp/sockopt.c
+> @@ -306,7 +306,7 @@ static int mptcp_setsockopt_sol_socket(struct mptcp_sock *msk, int optname,
+>   			return PTR_ERR(ssk);
+>   		}
+>   
+> -		ret = sk_setsockopt(ssk, SOL_SOCKET, optname, optval, optlen);
+> +		ret = sk_setsockopt(ssk, SOL_SOCKET, optname, optval, optlen, false);
+>   		if (ret == 0) {
+>   			if (optname == SO_REUSEPORT)
+>   				sk->sk_reuseport = ssk->sk_reuseport;
+> diff --git a/net/socket.c b/net/socket.c
+> index 9a8e4452b9b2..4bdca39685a6 100644
+> --- a/net/socket.c
+> +++ b/net/socket.c
+> @@ -2385,7 +2385,7 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
+>   
+>   	ops = READ_ONCE(sock->ops);
+>   	if (level == SOL_SOCKET) {
+> -		err = sk_getsockopt(sock->sk, level, optname, optval, optlen);
+> +		err = sk_getsockopt(sock->sk, level, optname, optval, optlen, false);
+>   	} else if (unlikely(!ops->getsockopt)) {
+>   		err = -EOPNOTSUPP;
+>   	} else {
+
 
