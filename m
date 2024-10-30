@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-43577-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43578-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6901B9B69B3
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 17:55:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F95E9B69B6
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 17:56:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C17D1C20BE8
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 16:55:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC0131F21908
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 16:56:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7189D2185A3;
-	Wed, 30 Oct 2024 16:53:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345C2218D64;
+	Wed, 30 Oct 2024 16:53:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mRCtA8Sd"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="feTYX0Yi"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C54621859E;
-	Wed, 30 Oct 2024 16:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897E1218946;
+	Wed, 30 Oct 2024 16:53:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730307233; cv=none; b=BWvtGbRSgztx4srQkEag2aKmwz+XghPT+pq3IgeqMdL2MHVhepLKAW2ZCNcsA6Op6HZccAev25ZfvEb19eqnonX6+40+K6Pyw1ngxJX6CVbNKpBJzCMjkwpcANvIPpr6rg8o2Pj85lJTLfX/sl974OYlKBrj7sBV2IGlW7z0RQ4=
+	t=1730307236; cv=none; b=U4HgNM/7zRLQztde8JHkVYXL7mY4Ztc7SpMcgfO21Dg0QlBJxOX4qCZ9pgwmEr8k5Iu2/zcS+EI6kqMhazmrETloTRZcZEdB6Rff1oFquFkttg2W3UON+hbPMu2FTrHd8T/mLzggf9jDPe3jbulZoa2qNLSmBLe4weLf3Vt6Ayc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730307233; c=relaxed/simple;
-	bh=GOMtbJbKY3crjKKnTTBLUaByNPYde/SqH7cYq8ceHng=;
+	s=arc-20240116; t=1730307236; c=relaxed/simple;
+	bh=8askIUmsQgl1HXCaVlVXTKLdGD1JlCwkqLub/Cb6krs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RtOh1y67zcUQLIdlpAoadxQAw09RqDfkN4xlvA8heH24/O0sLLMLDtysunug5SnLOm8qgsrkpYbrf5GvvXdGTA1SWp6EwrWA1t3iFHZQ1dd63MYJ0rDGA0aROgqcLLjqnwEO64QV4n0n1RgVCbfkj6DmIMm5cniE08kkGTzZxZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mRCtA8Sd; arc=none smtp.client-ip=192.198.163.10
+	 MIME-Version; b=l6Tr9t4NKn6YsPC8gWlCDGlua1OEjVQwF3/7DVb1/6uDQi+7GWbZZePP7qlFK1Y94bX6GzMxH7bt8zJYE7+got6G8vySJvDd//KI6pwcFZQt3ZvL9RSoB1u1nwWY4vv16O0GJ2seiboR1vFESc6cAY/wom3/pOkGJCwd3QwPX4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=feTYX0Yi; arc=none smtp.client-ip=192.198.163.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730307231; x=1761843231;
+  t=1730307235; x=1761843235;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=GOMtbJbKY3crjKKnTTBLUaByNPYde/SqH7cYq8ceHng=;
-  b=mRCtA8Sd3F4rXrSeUl08+vvmnpsXWso4QNRxPGUfGaJ8OuUhRn8jaReZ
-   1UB20PrHtNNYHTjXOYb71hNCt9RilUlFGP8H8L7As/GOxaR/QwDZaXill
-   9IIRQadW5zs67bPsh1i8p39pUijS8cDamWbUsQEArZLv4vN8Fc/ZULbRV
-   yJwd/GURgyvh9zV7gXiTVH7O8NdYqEsvuz0a+nikjQ/tdNI4sJYaHazAz
-   OFq7hQYiTw6XbBOPVh769ohqN6Y8PzVyrnL4zKlRvpHkkC34BrVBYRxVR
-   HNvsizJVDPIjalis5zqZzVx8Ft8s4NgB+VmL/BbZ8KQ55+LqbIaotMWl8
-   Q==;
-X-CSE-ConnectionGUID: oiQrJ3f6TKOQ9LFPlrMnTw==
-X-CSE-MsgGUID: lCwJNrd+Tz6zpjwsdua5EA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11241"; a="41389652"
+  bh=8askIUmsQgl1HXCaVlVXTKLdGD1JlCwkqLub/Cb6krs=;
+  b=feTYX0YiJI8TBX5jxrBoSPvgRgo2nx4MuTHtnHr2Rn+SA/iFlV191sFB
+   wpZcIbPZ71jqI2p9ue0QeHxS3EEi5OMIzLp9eNMnInW+INX0VdNpQovJw
+   uFyr8cmwVuifrLCC2d/nugz3w6nIQA722nuYwpbsU53p+3lMvBzUL/LF6
+   utbRDlQNE8fmiRcLIXSzSCm59rNixXVTI8r0hSG0p65aykNQFApFcu1Hk
+   O0tvucbXbkRFesBdgxV8mUy+Qtx9DyyKw9StWO+N8PDR5pCZiOPECgz8V
+   4hdP9Nt5poL97bZAU1Z4WbLD4OJ+8efef8eTC2Z5iUAkzEgvtAA7VmQEe
+   g==;
+X-CSE-ConnectionGUID: e7vD74ljQWqHFQ2i/IYg8A==
+X-CSE-MsgGUID: n3/wixFDSomXEkeUZh8+NQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11241"; a="41389677"
 X-IronPort-AV: E=Sophos;i="6.11,245,1725346800"; 
-   d="scan'208";a="41389652"
+   d="scan'208";a="41389677"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2024 09:53:50 -0700
-X-CSE-ConnectionGUID: LsdZrpLMSEyieHK5eTvNVA==
-X-CSE-MsgGUID: 5f7OGNGjQMmIQ5m/VJxvbw==
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2024 09:53:54 -0700
+X-CSE-ConnectionGUID: JVhSkv3ARieLetJ/O9hNXg==
+X-CSE-MsgGUID: chToUT6VTRWHllf5sxiIDQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.11,245,1725346800"; 
-   d="scan'208";a="87524494"
+   d="scan'208";a="87524500"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa004.jf.intel.com with ESMTP; 30 Oct 2024 09:53:46 -0700
+  by orviesa004.jf.intel.com with ESMTP; 30 Oct 2024 09:53:51 -0700
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -76,9 +76,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 05/18] xdp, xsk: constify read-only arguments of some static inline helpers
-Date: Wed, 30 Oct 2024 17:51:48 +0100
-Message-ID: <20241030165201.442301-6-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v3 06/18] xdp: allow attaching already registered memory model to xdp_rxq_info
+Date: Wed, 30 Oct 2024 17:51:49 +0100
+Message-ID: <20241030165201.442301-7-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241030165201.442301-1-aleksander.lobakin@intel.com>
 References: <20241030165201.442301-1-aleksander.lobakin@intel.com>
@@ -90,181 +90,131 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Lots of read-only helpers for &xdp_buff and &xdp_frame, such as getting
-the frame length, skb_shared_info etc., don't have their arguments
-marked with `const` for no reason. Add the missing annotations to leave
-less place for mistakes and more for optimization.
+One may need to register memory model separately from xdp_rxq_info. One
+simple example may be XDP test run code, but in general, it might be
+useful when memory model registering is managed by one layer and then
+XDP RxQ info by a different one.
+Allow such scenarios by adding a simple helper which "attaches" an
+already registered memory model to the desired xdp_rxq_info. As this
+is mostly needed for Page Pool, add a special function to do that for
+a &page_pool pointer.
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/net/xdp.h           | 29 +++++++++++++++++------------
- include/net/xdp_sock_drv.h  | 11 ++++++-----
- include/net/xsk_buff_pool.h |  2 +-
- 3 files changed, 24 insertions(+), 18 deletions(-)
+ include/net/xdp.h | 32 +++++++++++++++++++++++++++
+ net/core/xdp.c    | 56 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 88 insertions(+)
 
 diff --git a/include/net/xdp.h b/include/net/xdp.h
-index e6770dd40c91..197808df1ee1 100644
+index 197808df1ee1..3e748bb916d3 100644
 --- a/include/net/xdp.h
 +++ b/include/net/xdp.h
-@@ -88,7 +88,7 @@ struct xdp_buff {
- 	u32 flags; /* supported values defined in xdp_buff_flags */
- };
+@@ -356,6 +356,38 @@ void xdp_rxq_info_unreg_mem_model(struct xdp_rxq_info *xdp_rxq);
+ int xdp_reg_mem_model(struct xdp_mem_info *mem,
+ 		      enum xdp_mem_type type, void *allocator);
+ void xdp_unreg_mem_model(struct xdp_mem_info *mem);
++int xdp_reg_page_pool(struct page_pool *pool);
++void xdp_unreg_page_pool(const struct page_pool *pool);
++void xdp_rxq_info_attach_page_pool(struct xdp_rxq_info *xdp_rxq,
++				   const struct page_pool *pool);
++
++/**
++ * xdp_rxq_info_attach_mem_model - attach a registered mem info to an RxQ info
++ * @xdp_rxq: XDP RxQ info to attach the memory info to
++ * @mem: already registered memory info
++ *
++ * If a driver registers its memory providers manually, it must use this
++ * function instead of xdp_rxq_info_reg_mem_model().
++ */
++static inline void
++xdp_rxq_info_attach_mem_model(struct xdp_rxq_info *xdp_rxq,
++			      const struct xdp_mem_info *mem)
++{
++	xdp_rxq->mem = *mem;
++}
++
++/**
++ * xdp_rxq_info_detach_mem_model - detach a registered mem info from RxQ info
++ * @xdp_rxq: XDP RxQ info to detach the memory info from
++ *
++ * If a driver registers its memory providers manually and then attaches it
++ * via xdp_rxq_info_attach_mem_model(), it must call this function before
++ * xdp_rxq_info_unreg().
++ */
++static inline void xdp_rxq_info_detach_mem_model(struct xdp_rxq_info *xdp_rxq)
++{
++	xdp_rxq->mem = (struct xdp_mem_info){ };
++}
  
--static __always_inline bool xdp_buff_has_frags(struct xdp_buff *xdp)
-+static __always_inline bool xdp_buff_has_frags(const struct xdp_buff *xdp)
- {
- 	return !!(xdp->flags & XDP_FLAGS_HAS_FRAGS);
- }
-@@ -103,7 +103,8 @@ static __always_inline void xdp_buff_clear_frags_flag(struct xdp_buff *xdp)
- 	xdp->flags &= ~XDP_FLAGS_HAS_FRAGS;
- }
+ /* Drivers not supporting XDP metadata can use this helper, which
+  * rejects any room expansion for metadata as a result.
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index bcc5551c6424..bd2aa340baad 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -365,6 +365,62 @@ int xdp_rxq_info_reg_mem_model(struct xdp_rxq_info *xdp_rxq,
  
--static __always_inline bool xdp_buff_is_frag_pfmemalloc(struct xdp_buff *xdp)
-+static __always_inline bool
-+xdp_buff_is_frag_pfmemalloc(const struct xdp_buff *xdp)
- {
- 	return !!(xdp->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
- }
-@@ -144,15 +145,16 @@ xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
- 	 SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
+ EXPORT_SYMBOL_GPL(xdp_rxq_info_reg_mem_model);
  
- static inline struct skb_shared_info *
--xdp_get_shared_info_from_buff(struct xdp_buff *xdp)
-+xdp_get_shared_info_from_buff(const struct xdp_buff *xdp)
- {
- 	return (struct skb_shared_info *)xdp_data_hard_end(xdp);
- }
- 
--static __always_inline unsigned int xdp_get_buff_len(struct xdp_buff *xdp)
-+static __always_inline unsigned int
-+xdp_get_buff_len(const struct xdp_buff *xdp)
- {
- 	unsigned int len = xdp->data_end - xdp->data;
--	struct skb_shared_info *sinfo;
-+	const struct skb_shared_info *sinfo;
- 
- 	if (likely(!xdp_buff_has_frags(xdp)))
- 		goto out;
-@@ -177,12 +179,13 @@ struct xdp_frame {
- 	u32 flags; /* supported values defined in xdp_buff_flags */
- };
- 
--static __always_inline bool xdp_frame_has_frags(struct xdp_frame *frame)
-+static __always_inline bool xdp_frame_has_frags(const struct xdp_frame *frame)
- {
- 	return !!(frame->flags & XDP_FLAGS_HAS_FRAGS);
- }
- 
--static __always_inline bool xdp_frame_is_frag_pfmemalloc(struct xdp_frame *frame)
-+static __always_inline bool
-+xdp_frame_is_frag_pfmemalloc(const struct xdp_frame *frame)
- {
- 	return !!(frame->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
- }
-@@ -201,7 +204,7 @@ static __always_inline void xdp_frame_bulk_init(struct xdp_frame_bulk *bq)
- }
- 
- static inline struct skb_shared_info *
--xdp_get_shared_info_from_frame(struct xdp_frame *frame)
-+xdp_get_shared_info_from_frame(const struct xdp_frame *frame)
- {
- 	void *data_hard_start = frame->data - frame->headroom - sizeof(*frame);
- 
-@@ -249,7 +252,8 @@ int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp);
- struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf);
- 
- static inline
--void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
-+void xdp_convert_frame_to_buff(const struct xdp_frame *frame,
-+			       struct xdp_buff *xdp)
- {
- 	xdp->data_hard_start = frame->data - frame->headroom - sizeof(*frame);
- 	xdp->data = frame->data;
-@@ -260,7 +264,7 @@ void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
- }
- 
- static inline
--int xdp_update_frame_from_buff(struct xdp_buff *xdp,
-+int xdp_update_frame_from_buff(const struct xdp_buff *xdp,
- 			       struct xdp_frame *xdp_frame)
- {
- 	int metasize, headroom;
-@@ -317,9 +321,10 @@ void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq);
- void xdp_return_frame_bulk(struct xdp_frame *xdpf,
- 			   struct xdp_frame_bulk *bq);
- 
--static __always_inline unsigned int xdp_get_frame_len(struct xdp_frame *xdpf)
-+static __always_inline unsigned int
-+xdp_get_frame_len(const struct xdp_frame *xdpf)
- {
--	struct skb_shared_info *sinfo;
-+	const struct skb_shared_info *sinfo;
- 	unsigned int len = xdpf->len;
- 
- 	if (likely(!xdp_frame_has_frags(xdpf)))
-diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-index 40085afd9160..f3175a5d28f7 100644
---- a/include/net/xdp_sock_drv.h
-+++ b/include/net/xdp_sock_drv.h
-@@ -101,7 +101,7 @@ static inline struct xdp_buff *xsk_buff_alloc(struct xsk_buff_pool *pool)
- 	return xp_alloc(pool);
- }
- 
--static inline bool xsk_is_eop_desc(struct xdp_desc *desc)
-+static inline bool xsk_is_eop_desc(const struct xdp_desc *desc)
- {
- 	return !xp_mb_desc(desc);
- }
-@@ -143,7 +143,7 @@ static inline void xsk_buff_add_frag(struct xdp_buff *xdp)
- 	list_add_tail(&frag->list_node, &frag->pool->xskb_list);
- }
- 
--static inline struct xdp_buff *xsk_buff_get_frag(struct xdp_buff *first)
-+static inline struct xdp_buff *xsk_buff_get_frag(const struct xdp_buff *first)
- {
- 	struct xdp_buff_xsk *xskb = container_of(first, struct xdp_buff_xsk, xdp);
- 	struct xdp_buff *ret = NULL;
-@@ -200,7 +200,8 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
- 		XDP_TXMD_FLAGS_CHECKSUM | \
- 	0)
- 
--static inline bool xsk_buff_valid_tx_metadata(struct xsk_tx_metadata *meta)
-+static inline bool
-+xsk_buff_valid_tx_metadata(const struct xsk_tx_metadata *meta)
- {
- 	return !(meta->flags & ~XDP_TXMD_FLAGS_VALID);
- }
-@@ -337,7 +338,7 @@ static inline struct xdp_buff *xsk_buff_alloc(struct xsk_buff_pool *pool)
- 	return NULL;
- }
- 
--static inline bool xsk_is_eop_desc(struct xdp_desc *desc)
-+static inline bool xsk_is_eop_desc(const struct xdp_desc *desc)
- {
- 	return false;
- }
-@@ -360,7 +361,7 @@ static inline void xsk_buff_add_frag(struct xdp_buff *xdp)
- {
- }
- 
--static inline struct xdp_buff *xsk_buff_get_frag(struct xdp_buff *first)
-+static inline struct xdp_buff *xsk_buff_get_frag(const struct xdp_buff *first)
- {
- 	return NULL;
- }
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index bb03cee716b3..3832997cc605 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -183,7 +183,7 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
- 	       !(pool->dma_pages[addr >> PAGE_SHIFT] & XSK_NEXT_PG_CONTIG_MASK);
- }
- 
--static inline bool xp_mb_desc(struct xdp_desc *desc)
-+static inline bool xp_mb_desc(const struct xdp_desc *desc)
- {
- 	return desc->options & XDP_PKT_CONTD;
- }
++/**
++ * xdp_reg_page_pool - register a &page_pool as a memory provider for XDP
++ * @pool: &page_pool to register
++ *
++ * Can be used to register pools manually without connecting to any XDP RxQ
++ * info, so that the XDP layer will be aware of them. Then, they can be
++ * attached to an RxQ info manually via xdp_rxq_info_attach_page_pool().
++ *
++ * Return: %0 on success, -errno on error.
++ */
++int xdp_reg_page_pool(struct page_pool *pool)
++{
++	struct xdp_mem_info mem;
++
++	return xdp_reg_mem_model(&mem, MEM_TYPE_PAGE_POOL, pool);
++}
++EXPORT_SYMBOL_GPL(xdp_reg_page_pool);
++
++/**
++ * xdp_unreg_page_pool - unregister a &page_pool from the memory providers list
++ * @pool: &page_pool to unregister
++ *
++ * A shorthand for manual unregistering page pools. If the pool was previously
++ * attached to an RxQ info, it must be detached first.
++ */
++void xdp_unreg_page_pool(const struct page_pool *pool)
++{
++	struct xdp_mem_info mem = {
++		.type	= MEM_TYPE_PAGE_POOL,
++		.id	= pool->xdp_mem_id,
++	};
++
++	xdp_unreg_mem_model(&mem);
++}
++EXPORT_SYMBOL_GPL(xdp_unreg_page_pool);
++
++/**
++ * xdp_rxq_info_attach_page_pool - attach a registered pool to an RxQ info
++ * @xdp_rxq: XDP RxQ info to attach the pool to
++ * @pool: pool to attach
++ *
++ * If the pool was registered manually, this function must be called instead
++ * of xdp_rxq_info_reg_mem_model() to connect it to an RxQ info.
++ */
++void xdp_rxq_info_attach_page_pool(struct xdp_rxq_info *xdp_rxq,
++				   const struct page_pool *pool)
++{
++	struct xdp_mem_info mem = {
++		.type	= MEM_TYPE_PAGE_POOL,
++		.id	= pool->xdp_mem_id,
++	};
++
++	xdp_rxq_info_attach_mem_model(xdp_rxq, &mem);
++}
++EXPORT_SYMBOL_GPL(xdp_rxq_info_attach_page_pool);
++
+ /* XDP RX runs under NAPI protection, and in different delivery error
+  * scenarios (e.g. queue full), it is possible to return the xdp_frame
+  * while still leveraging this protection.  The @napi_direct boolean
 -- 
 2.47.0
 
