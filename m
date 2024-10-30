@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-43489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A527D9B5A2E
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 04:05:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B21399B5A56
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 04:28:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 639C92843F2
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 03:05:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D127E1C22304
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 03:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55605194A54;
-	Wed, 30 Oct 2024 03:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BD71991AE;
+	Wed, 30 Oct 2024 03:28:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iaFZGDGw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kZe6sVGj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D98F4204F;
-	Wed, 30 Oct 2024 03:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF20315E96;
+	Wed, 30 Oct 2024 03:28:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730257537; cv=none; b=TEUAy3LxNrZDff2SXD2mvkbuzm2FQ/Weq/efuy8kmsmOLU1cbzxvyXjK7Y6/wZL+EtyIX8DOu+EcM6gAGGSPJZG4uHva/JMc6ggS61IYk+VJcxQj8kQnZPC927us2Z89BwtzBohJZJSG8tdDD2A/1W2+T/5N0+Sp+wyZqAUG/aM=
+	t=1730258916; cv=none; b=XDUgu7Z+xsCD61RqqAogu8jTZ2yW+dXpzc5EUvuoujmgvuRUVwBjTSvSy1xpZhaY6QiL//FV5Oqt684pIkGsxssXrhbVlvx1bK/H1wvmDU2yK4Cx+AMfk2hVvoRxSkdgkQueFVBMUMvbuCME8/SXh9EVMnf6PI5PXIEgkZShMmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730257537; c=relaxed/simple;
-	bh=AxSHQnlDxqpds3xROLlFAxqu8yRYYqwT1xPoxHxsMO8=;
+	s=arc-20240116; t=1730258916; c=relaxed/simple;
+	bh=cXJbaxeXWonrYgxgh+fgAZzdTbkoxoeVYW42plVwIEI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WmID64E1jtbBgmKlj3h1aNaxdM0Qd6Squ1CPOPhYumcnYvBfnLooNkTRWrWRWNhAH890+E/2zda/AmZre07hrWukFqGCdp48YmqNHHlbhh4slQz+lib63kCThr7H7B8fMF1IEILsrDEzdMIcgH8539YAzu7e4rGsFdKH7av4oFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iaFZGDGw; arc=none smtp.client-ip=209.85.166.173
+	 To:Cc:Content-Type; b=flGDWhJBEzhRZMRFC3xG5u0W3CMyQ8lKJtJtVl1KGoORjLvEEigFAZtU3aKCeg4MLcP92pTvRsRoAuKIixQQCnQZZ1mEK23eZB1IuclEQB8GApEnsYdbrEGkutF8FInW4BYBuZIOfycflJQgRWJWRueeAA3ktoLdK9eAr/sTvAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kZe6sVGj; arc=none smtp.client-ip=209.85.166.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3a3bd42955bso23486015ab.1;
-        Tue, 29 Oct 2024 20:05:35 -0700 (PDT)
+Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3a3b4663e40so22668515ab.2;
+        Tue, 29 Oct 2024 20:28:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730257534; x=1730862334; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730258913; x=1730863713; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S1ewx3ezz+908dFuD6Q4XFZB9ARbQAa6IO3+OdAnq9E=;
-        b=iaFZGDGwMgPrRNKyo12Tw2SeYaRJ/dd4V4ck626Zk502URiOOovgqvZvHtfy7A++lF
-         o/yR4/bvd1lmdRwtAUoxzXBjzMlDDAiJjmv/kmeIVMIdGDxnpMZ9UC/82SS4fscGHDS8
-         +ewLcIA2BuLkb4JTQR2yEeC+g47yYcmF4c4twrzHoVOFD1aiDUtE33nJoKN5X49smovv
-         JUnBgZJurTfPIR2dXp8vAFAkrBCg7C97+xHXzhkVdZ2fegI0Lj55XNJNg3vdiCGGHVsP
-         U2pJC8oqK90WgREtRmFbJi8NVSnlkzQCbPUR9BCVhJiaHQlh/u0U0eRAGHgjg/AIywWx
-         fyiQ==
+        bh=A4/B7jYJxsmXi0zwcYVhFehp+FhAEaVOMktEuU/AI3M=;
+        b=kZe6sVGjJ5vX66PKpUpomR0NruFw7TN883ZYSrWFEAm6uRewDJ5emmGa7wJi6SC5BV
+         y9vKYwR0tcufMwXiV88I2X4m4rbg6I7eUA0qk5PPIwKbuVLtbK8g5Co/tbzPICoU8dJE
+         uTP6+mTeq1mwJqSZOz9VuysjozQbqKet7OzIhuPqvx6+j5xdmsAe0j2kTpWzzf0hvFO3
+         IHVR4iCgisDb1b+GzNOoVcdKQrJmb2AqxvbvuKiEKVi8T4kTL8/CDTpb1uyvGBEqMqon
+         Zk/c33YLCaCcCddW/u/ugZFxv7Py2dWW6cybveIZppP7W8SWF3NHcrJL9TbHfO2YRJJB
+         kAmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730257534; x=1730862334;
+        d=1e100.net; s=20230601; t=1730258913; x=1730863713;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S1ewx3ezz+908dFuD6Q4XFZB9ARbQAa6IO3+OdAnq9E=;
-        b=qVF/zfYDxVgAQ18k8RNvCqhkDglcNZXqg7xhXYJLFX5rf2wmmQ99uPIs1cxcCJm12u
-         Vo91Tszrn3EIRWuGciQsd/QClCB1bmRkn6DBkcU6ad7sQy0lJ0yRGmdjXsA5e4rLQ7Uq
-         ZLyL8lY/tDG4cZORXAO+xWJkZpglA5ZdhJ78YB9HF/cB0lLPXS9pA0MaB/48gO0c4M7V
-         NCVbbyiVnd6F6TpjA8Di240F2du4jNA0KGfKccLa7YshdaNHZzkoNdJdaULoyexq2Wpz
-         y315goW/75YX7Z/9WLUpm5YDE7Fm+UuHwmXyUNzgsXV1gPsAKFx2W3iUBQlhHVuaPE8V
-         Y+HQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXFB54AHYfmZr6ogaURqdiiVbzY9QscvblZNATVtMhYJYA9uab1WH6C8v6ifq4N5sA1vgkx1VTe@vger.kernel.org, AJvYcCXvLVvcJ4ndUjz0x+RLqC+fygsT8fcQIzhpNcQUUJUkJ86JmR1wBVDSdu97w59VfarcjTY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwaeeUW4D2TQb6n007Ce6MSDhvd3gGJjS8FvetxJJcKMCshXi/X
-	i/oqKPabhCIfnNPE6Ow5NPxTfUtwks9IQ8KYuryb5a1wasAoXDg2jaSS5duWa0q1VF1xidVMEN4
-	GcbU+6Qy+Q25gnCbL7DOSJCNtzOs=
-X-Google-Smtp-Source: AGHT+IGnHLvVygaMxXFiRKA4j/jQwbwMzDCU5sdnQdN49S6XzfF8Tb+Xr9yncuAh/IXHuXxu70P6L2jLfc6kZxjhL8Q=
-X-Received: by 2002:a05:6e02:20c2:b0:3a0:8f20:36e7 with SMTP id
- e9e14a558f8ab-3a5e2513c38mr18892135ab.19.1730257534525; Tue, 29 Oct 2024
- 20:05:34 -0700 (PDT)
+        bh=A4/B7jYJxsmXi0zwcYVhFehp+FhAEaVOMktEuU/AI3M=;
+        b=Panp6Dl2LTykkiUX0V5K/XPfa57N8wzpFQauLH1AMb2kZGQnwWJHhkVcudGg0BXz/A
+         Vtyr+mgaUd43nnCRuVGchhVjYCMBVj7SnNno9Ja8+Fy54tftBvDb3YOxaeDcmyj4NLbt
+         DaVvy09RbbU7x4Fcw3ATO6SayCLgaP+fUfHGbF6tkq7b/vUoEc8nSh1ceJb3PIs2Pp8D
+         TmjztWF4ULXqR6jqjKEM0tkzk0qwACO8pJ23/Yo39UdZYY49qK/u7d+wXDOQ0ecTb9Xy
+         6CFHQCHRfpf4bTXvLaRuFd82emPgl7RG9vn9G8hB3asxer8Feo3lnMfcrz4CkCgpsuFf
+         IBLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW6wIbCIZtPln+ro9bm0o4NRPlWj+cXEqLHy8eGjUeii+H6OdmOnitXhzIKeM0fPXt2hYGkZySx@vger.kernel.org, AJvYcCWR9hJgLn1Wv222A+Ty5n+JFnNKxYCfYW1qYx2ghQN6mvg6e43tfapAuX1k7J2YiqgTFOU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYrUoJlw8HLAinl3pAgXsHk3xHmqwgCbgQQ0lr1+sCTbrq6L4K
+	Cuuwe0MR7bT54sNyjHdFb8eeOfovK7W1WgmpKwM61n7g1kkazAIuVWdJe776VvTmbftfrRTL85L
+	I/fDVGY/rdoNzUnSrQK7VPuxnM+A=
+X-Google-Smtp-Source: AGHT+IE9sJRBrHeOTryT6wi93gvj6ZEmCNsXW2HCxRToVtZqzozCKGSSna1yy6oJHQ62nwz5mrFTjl33ddfSg3D2Nb0=
+X-Received: by 2002:a05:6e02:188a:b0:3a1:a20f:c09c with SMTP id
+ e9e14a558f8ab-3a4ed34b940mr158792475ab.22.1730258912920; Tue, 29 Oct 2024
+ 20:28:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,197 +72,181 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
- <20241028110535.82999-3-kerneljasonxing@gmail.com> <61e8c5cf-247f-484e-b3cc-27ab86e372de@linux.dev>
- <CAL+tcoDB8UvNMfTwmvTJb1JvCGDb3ESaJMszh4-Qa=ey0Yn3Vg@mail.gmail.com>
- <67218fb61dbb5_31d4d029455@willemb.c.googlers.com.notmuch>
- <CAL+tcoBhfZ4XB5QgCKKbNyq+dfm26fPsvXfbWbV=jAEKYeLDEg@mail.gmail.com> <67219e5562f8c_37251929465@willemb.c.googlers.com.notmuch>
-In-Reply-To: <67219e5562f8c_37251929465@willemb.c.googlers.com.notmuch>
+ <20241028110535.82999-11-kerneljasonxing@gmail.com> <6720394714070_24dce62944a@willemb.c.googlers.com.notmuch>
+ <CAL+tcoBgbA1Q_7UaC0vp-mGHqDHxQ+eMybep0kw=E-T0oJAHfw@mail.gmail.com>
+ <6720f9359d2ef_2bcd7f29458@willemb.c.googlers.com.notmuch>
+ <CAL+tcoCDN+YSwXDocv9DcvPGW-sLhEfPHHbzcO2+1PBZFRkB0Q@mail.gmail.com> <67213b62f4100_2f188c294b7@willemb.c.googlers.com.notmuch>
+In-Reply-To: <67213b62f4100_2f188c294b7@willemb.c.googlers.com.notmuch>
 From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Wed, 30 Oct 2024 11:04:58 +0800
-Message-ID: <CAL+tcoDonudsr800HmhDir7f0B6cx0RPwmnrsRmQF=yDUJUszg@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 02/14] net-timestamp: allow two features to
- work parallelly
+Date: Wed, 30 Oct 2024 11:27:56 +0800
+Message-ID: <CAL+tcoAqvQPw6PXYa-4hz6B=krgOYxw8jdFNCzQRcZnOVT_i+w@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 10/14] net-timestamp: add basic support with
+ tskey offset
 To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, willemb@google.com, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	shuah@kernel.org, ykolal@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, dsahern@kernel.org, willemb@google.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com, 
+	bpf@vger.kernel.org, netdev@vger.kernel.org, 
 	Jason Xing <kernelxing@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 30, 2024 at 10:47=E2=80=AFAM Willem de Bruijn
+On Wed, Oct 30, 2024 at 3:45=E2=80=AFAM Willem de Bruijn
 <willemdebruijn.kernel@gmail.com> wrote:
 >
-> Jason Xing wrote:
-> > On Wed, Oct 30, 2024 at 9:45=E2=80=AFAM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
-> > >
-> > > Jason Xing wrote:
-> > > > On Wed, Oct 30, 2024 at 7:00=E2=80=AFAM Martin KaFai Lau <martin.la=
-u@linux.dev> wrote:
-> > > > >
-> > > > > On 10/28/24 4:05 AM, Jason Xing wrote:
-> > > > > > From: Jason Xing <kernelxing@tencent.com>
-> > > > > >
-> > > > > > This patch has introduced a separate sk_tsflags_bpf for bpf
-> > > > > > extension, which helps us let two feature work nearly at the
-> > > > > > same time.
-> > > > > >
-> > > > > > Each feature will finally take effect on skb_shinfo(skb)->tx_fl=
-ags,
-> > > > > > say, tcp_tx_timestamp() for TCP or skb_setup_tx_timestamp() for
-> > > > > > other types, so in __skb_tstamp_tx() we are unable to know whic=
-h
-> > > > > > feature is turned on, unless we check each feature's own socket
-> > > > > > flag field.
-> > > > > >
-> > > > > > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > > > > > ---
-> > > > > >   include/net/sock.h |  1 +
-> > > > > >   net/core/skbuff.c  | 39 +++++++++++++++++++++++++++++++++++++=
-++
-> > > > > >   2 files changed, 40 insertions(+)
-> > > > > >
-> > > > > > diff --git a/include/net/sock.h b/include/net/sock.h
-> > > > > > index 7464e9f9f47c..5384f1e49f5c 100644
-> > > > > > --- a/include/net/sock.h
-> > > > > > +++ b/include/net/sock.h
-> > > > > > @@ -445,6 +445,7 @@ struct sock {
-> > > > > >       u32                     sk_reserved_mem;
-> > > > > >       int                     sk_forward_alloc;
-> > > > > >       u32                     sk_tsflags;
-> > > > > > +     u32                     sk_tsflags_bpf;
-> > > > > >       __cacheline_group_end(sock_write_rxtx);
-> > > > > >
-> > > > > >       __cacheline_group_begin(sock_write_tx);
-> > > > > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > > > > > index 1cf8416f4123..39309f75e105 100644
-> > > > > > --- a/net/core/skbuff.c
-> > > > > > +++ b/net/core/skbuff.c
-> > > > > > @@ -5539,6 +5539,32 @@ void skb_complete_tx_timestamp(struct sk=
-_buff *skb,
-> > > > > >   }
-> > > > > >   EXPORT_SYMBOL_GPL(skb_complete_tx_timestamp);
-> > > > > >
-> > > > > > +/* This function is used to test if application SO_TIMESTAMPIN=
-G feature
-> > > > > > + * or bpf SO_TIMESTAMPING feature is loaded by checking its ow=
-n socket flags.
-> > > > > > + */
-> > > > > > +static bool sk_tstamp_tx_flags(struct sock *sk, u32 tsflags, i=
-nt tstype)
+> > > > > > +static long int sock_calculate_tskey_offset(struct sock *sk, i=
+nt val, int bpf_type)
 > > > > > > +{
-> > > > > > +     u32 testflag;
+> > > > > > +     u32 tskey;
 > > > > > > +
-> > > > > > +     switch (tstype) {
-> > > > > > +     case SCM_TSTAMP_SCHED:
-> > > > > > +             testflag =3D SOF_TIMESTAMPING_TX_SCHED;
-> > > > > > +             break;
-> > > > > > +     case SCM_TSTAMP_SND:
-> > > > > > +             testflag =3D SOF_TIMESTAMPING_TX_SOFTWARE;
-> > > > > > +             break;
-> > > > > > +     case SCM_TSTAMP_ACK:
-> > > > > > +             testflag =3D SOF_TIMESTAMPING_TX_ACK;
-> > > > > > +             break;
-> > > > > > +     default:
-> > > > > > +             return false;
+> > > > > > +     if (sk_is_tcp(sk)) {
+> > > > > > +             if ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_LIST=
+EN))
+> > > > > > +                     return -EINVAL;
+> > > > > > +
+> > > > > > +             if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
+> > > > > > +                     tskey =3D tcp_sk(sk)->write_seq;
+> > > > > > +             else
+> > > > > > +                     tskey =3D tcp_sk(sk)->snd_una;
+> > > > > > +     } else {
+> > > > > > +             tskey =3D 0;
 > > > > > > +     }
-> > > > > > +     if (tsflags & testflag)
-> > > > > > +             return true;
 > > > > > > +
-> > > > > > +     return false;
+> > > > > > +     if (bpf_type && (sk->sk_tsflags & SOF_TIMESTAMPING_OPT_ID=
+)) {
+> > > > > > +             sk->sk_tskey_bpf_offset =3D tskey - atomic_read(&=
+sk->sk_tskey);
+> > > > > > +             return 0;
+> > > > > > +     } else if (!bpf_type && (sk->sk_tsflags_bpf & SOF_TIMESTA=
+MPING_OPT_ID)) {
+> > > > > > +             sk->sk_tskey_bpf_offset =3D atomic_read(&sk->sk_t=
+skey) - tskey;
+> > > > > > +     } else {
+> > > > > > +             sk->sk_tskey_bpf_offset =3D 0;
+> > > > > > +     }
+> > > > > > +
+> > > > > > +     return tskey;
 > > > > > > +}
 > > > > > > +
-> > > > > >   static void skb_tstamp_tx_output(struct sk_buff *orig_skb,
-> > > > > >                                const struct sk_buff *ack_skb,
-> > > > > >                                struct skb_shared_hwtstamps *hwt=
-stamps,
-> > > > > > @@ -5549,6 +5575,9 @@ static void skb_tstamp_tx_output(struct s=
-k_buff *orig_skb,
-> > > > > >       u32 tsflags;
+> > > > > >  int sock_set_tskey(struct sock *sk, int val, int bpf_type)
+> > > > > >  {
+> > > > > >       u32 tsflags =3D bpf_type ? sk->sk_tsflags_bpf : sk->sk_ts=
+flags;
+> > > > > > @@ -901,17 +944,13 @@ int sock_set_tskey(struct sock *sk, int v=
+al, int bpf_type)
 > > > > > >
-> > > > > >       tsflags =3D READ_ONCE(sk->sk_tsflags);
-> > > > > > +     if (!sk_tstamp_tx_flags(sk, tsflags, tstype))
+> > > > > >       if (val & SOF_TIMESTAMPING_OPT_ID &&
+> > > > > >           !(tsflags & SOF_TIMESTAMPING_OPT_ID)) {
+> > > > > > -             if (sk_is_tcp(sk)) {
+> > > > > > -                     if ((1 << sk->sk_state) &
+> > > > > > -                         (TCPF_CLOSE | TCPF_LISTEN))
+> > > > > > -                             return -EINVAL;
+> > > > > > -                     if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
+> > > > > > -                             atomic_set(&sk->sk_tskey, tcp_sk(=
+sk)->write_seq);
+> > > > > > -                     else
+> > > > > > -                             atomic_set(&sk->sk_tskey, tcp_sk(=
+sk)->snd_una);
+> > > > > > -             } else {
+> > > > > > -                     atomic_set(&sk->sk_tskey, 0);
+> > > > > > -             }
+> > > > > > +             long int ret;
+> > > > > > +
+> > > > > > +             ret =3D sock_calculate_tskey_offset(sk, val, bpf_=
+type);
+> > > > > > +             if (ret <=3D 0)
+> > > > > > +                     return ret;
+> > > > > > +
+> > > > > > +             atomic_set(&sk->sk_tskey, ret);
+> > > > > >       }
+> > > > > >
+> > > > > >       return 0;
+> > > > > > @@ -956,10 +995,15 @@ static int sock_set_timestamping_bpf(stru=
+ct sock *sk,
+> > > > > >                                    struct so_timestamping times=
+tamping)
+> > > > > >  {
+> > > > > >       u32 flags =3D timestamping.flags;
+> > > > > > +     int ret;
+> > > > > >
+> > > > > >       if (flags & ~SOF_TIMESTAMPING_BPF_SUPPPORTED_MASK)
+> > > > > >               return -EINVAL;
+> > > > > >
+> > > > > > +     ret =3D sock_set_tskey(sk, flags, 1);
+> > > > > > +     if (ret)
+> > > > > > +             return ret;
+> > > > > > +
+> > > > > >       WRITE_ONCE(sk->sk_tsflags_bpf, flags);
+> > > > > >
+> > > > > >       return 0;
 > > > > >
-> > > > > I still don't get this part since v2. How does it work with cmsg =
-only
-> > > > > SOF_TIMESTAMPING_TX_*?
-> > > > >
-> > > > > I tried with "./txtimestamp -6 -c 1 -C -N -L ::1" and it does not=
- return any tx
-> > > > > time stamp after this patch.
-> > > > >
-> > > > > I am likely missing something
-> > > > > or v2 concluded that this behavior change is acceptable?
+> > > > > I'm a bit hazy on when this can be called. We can assume that thi=
+s new
+> > > > > BPF operation cannot race with the existing setsockopt nor with t=
+he
+> > > > > datapath that might touch the atomic fields, right?
 > > > >
-> > > > Sorry, I submitted this series accidentally removing one important
-> > > > thing which is similar to what Vadim Fedorenko mentioned in the v1
-> > > > [1]:
-> > > > adding another member like sk_flags_bpf to handle the cmsg case.
+> > > > It surely can race with the existing setsockopt.
 > > > >
-> > > > Willem, would it be acceptable to add another field in struct sock =
-to
-> > > > help us recognise the case where BPF and cmsg works parallelly?
+> > > > 1)
+> > > > if (only existing setsockopt works) {
+> > > >         then sk->sk_tskey is set through setsockopt, sk_tskey_bpf_o=
+ffset is 0.
+> > > > }
 > > > >
-> > > > [1]: https://lore.kernel.org/all/662873cb-a897-464e-bdb3-edf01363c3=
-b2@linux.dev/
+> > > > 2)
+> > > > if (only bpf setsockopt works) {
+> > > >         then sk->sk_tskey is set through bpf_setsockopt,
+> > > > sk_tskey_bpf_offset is 0.
+> > > > }
+> > > >
+> > > > 3)
+> > > > if (existing setsockopt already started, here we enable the bpf fea=
+ture) {
+> > > >         then sk->sk_tskey will not change, but the sk_tskey_bpf_off=
+set
+> > > > will be calculated.
+> > > > }
+> > > >
+> > > > 4)
+> > > > if (bpf setsockopt already started, here we enable the application =
+feature) {
+> > > >         then sk->sk_tskey will re-initialized/overridden by
+> > > > setsockopt, and the sk_tskey_bpf_offset will be calculated.
+> > > > }
+> >
+> > I will copy the above to the commit message next time in order to
+> > provide a clear design to future readers.
+> >
+> > > >
+> > > > Then the skb tskey will use the sk->sk_tskey like before.
 > > >
-> > > The current timestamp flags don't need a u32. Maybe just reserve a bi=
-t
-> > > for this purpose?
+> > > I mean race as in the setsockopt and bpf setsockopt and datapath
+> > > running concurrently.
+> > >
+> > > As long as both variants of setsockopt hold the socket lock, that
+> > > won't happen.
+> > >
+> > > The datapath is lockless for UDP, so atomic_inc sk_tskey can race
+> > > with calculating the difference. But this is a known issue. A process
+> > > that cares should not run setsockopt and send concurrently. So this i=
+s
+> > > fine too.
 > >
-> > Sure. Good suggestion.
-> >
-> > But I think only using one bit to reflect whether the sk->sk_tsflags
-> > is used by normal or cmsg features is not enough. The existing
-> > implementation in tcp_sendmsg_locked() doesn't override the
-> > sk->sk_tsflags even the normal and cmsg features enabled parallelly.
-> > It only overrides sockc.tsflags in tcp_sendmsg_locked(). Based on
-> > that, even if at some point users suddenly remove the cmsg use and
-> > then the prior normal SO_TIMESTAMPING continues to work.
-> >
-> > How about this, please see below:
-> > For now, sk->sk_tsflags only uses 17 bits (see the last one
-> > SOF_TIMESTAMPING_OPT_RX_FILTER). The cmsg feature only uses 4 flags
-> > (see SOF_TIMESTAMPING_TX_RECORD_MASK in __sock_cmsg_send()). With that
-> > said, we could reserve the highest four bits for cmsg use for the
-> > moment. Four bits represents four points where we can record the
-> > timestamp in the tx case.
-> >
-> > Do you agree on this point?
+> > Oh, now I see. Thanks for the detailed explanation! So Do you feel if
+> > we need to take care of this in the future, I mean, after this series
+> > gets merged...?
 >
-> I don't follow.
+> If there is a race condition, then that cannot be fixed up later.
 >
-> I probably miss the entire point.
->
-> The goal for sockcm fields is to start with the sk field and
-> optionally override based on cmsg. This is what sockcm_init does for
-> tsflags.
->
-> This information is for the skb, so these are recording flags.
->
-> Why does the new datapath need to know whether features are enabled
-> through setsockopt or on a per-call basis with a cmsg?
->
-> The goal was always to keep the reporting flags per socket, but make
-> the recording flag per packet, mainly for sampling.
+> But from my admittedly brief analysis, it seems that there is nothing
+> here that needs to be fixed: control plane operations (setsockopt)
+> hold the socket lock. A setsockopt that conflicts with a lockless
+> datapath update will have a slightly ambiguous offset. It is under
+> controlof and up to the user to avoid that if they care.
 
-If a user uses 1) cmsg feature, 2) bpf feature at the same time, we
-allow each feature to work independently.
-
-How could it work? It relies on sk_tstamp_tx_flags() function in the
-current patch: when we are in __skb_tstamp_tx(), we cannot know which
-flags in each feature are set without fetching sk->sk_tsflags and
-sk->sk_tsflags_bpf. Then we are able to know what timestamp we want to
-record. To put it in a simple way, we're not sure if the user wants to
-see a SCHED timestamp by using the cmsg feature in __skb_tstamp_tx()
-if we hit this test statement "skb_shinfo(skb)->tx_flags &
-SKBTX_SCHED_TSTAMP)". So we need those two socket tsflag fields to
-help us.
-
-Thanks,
-Jason
+I got it. Thanks.
 
