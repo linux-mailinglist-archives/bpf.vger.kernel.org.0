@@ -1,157 +1,183 @@
-Return-Path: <bpf+bounces-43595-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43596-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8F979B6B20
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 18:36:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4FBF9B6B2B
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 18:39:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E37BB22B93
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 17:36:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 148FE1C2176C
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 17:39:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF1217E46E;
-	Wed, 30 Oct 2024 17:35:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94931212F1D;
+	Wed, 30 Oct 2024 17:39:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QZlFrTJ4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OsM/urZO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC96C1EF95A;
-	Wed, 30 Oct 2024 17:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4C51BD9C0;
+	Wed, 30 Oct 2024 17:39:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730309731; cv=none; b=MgnJZ+M6/sI6xti9XuKOlMut4tYd4uN5eUcmRK0czb2X/tswKJHbd0LHjwaVoi6zBhJwqSmYozES9kDGzxspD5v6R2CkepG47d91MR9mCOwhbEmg3u4BAUtXvD+4BuygJoQF9QhMN9QJRrZUzLVOm6oyfcdFs+obnIEVKSuDBTA=
+	t=1730309971; cv=none; b=C5w8T3pAlCb4ZJqCdjIQ89LQTypT8DHwHPmK3Ao33EdFIte6w48yZBY7dmXjAGi0+iAVVKR15LGeB2yuGapI/0/3jhFlU2GEaIHXGPRBlwO5Ze89q4TGEkWCQaP8shz1uP2m/2fofZ6TC4mfh/zugOARioICq5BpVRWc8I/gQUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730309731; c=relaxed/simple;
-	bh=hN96yDzjFZnW0iLyGa0XM7KqV9VA85GMqGjCMXwqqhc=;
+	s=arc-20240116; t=1730309971; c=relaxed/simple;
+	bh=tAF2qP4LNMaTA5Al21nxn6HftTk7TKjha2xG9IqFUSs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mqMQ9ETDH0JwN/4aOBS+kULL8gThiv3+vehnhOjdWFsD4mu3BI32lgk+puxzMmg6UkdE3yj7+qeVVml8+Op9S2HrxTpZ9vHnvCGvIGBDMnX2lmcx50AH085ExxhhgEN0rxcORm5mrunmZA6Z14u/nVaUfhFxPlOwuyQ3dqlNT7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QZlFrTJ4; arc=none smtp.client-ip=209.85.216.46
+	 To:Cc:Content-Type; b=bvUkvvHa9etIywkNAiYLdTavRMfh8bNhzHUjmHdtlfNx/FGdJUfx8M3uZgIy2bsKwvnCjDVYMS2szU9nseP+uPyrEA4Fj/inBspo5OMtKuPwX3pVtw1SJ2geKH6DCISsN3wrcaXEzwur5YV8mCCOv/X4OzjFdPGTUiFVxqL11Ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OsM/urZO; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2e5a0177531so34146a91.2;
-        Wed, 30 Oct 2024 10:35:29 -0700 (PDT)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-71e3fce4a60so64745b3a.0;
+        Wed, 30 Oct 2024 10:39:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730309729; x=1730914529; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730309968; x=1730914768; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BiP+OVHkwJ2WwEc50c1zL6X+ty2T+Id/9XryhgE+LVs=;
-        b=QZlFrTJ4/x1XoNI2NR7+s7HYkA5wjEMaRyYGzb7hz7kET0F5VeO+OUZB6lnMw1e4tp
-         VrtesHdWjnCVzXCM4YK7OIAnuXdhnjQ4uUiFPevSmDslLeKDK8O3Qtq1UXHKAn6rhZ7L
-         vgbeYHpeAQDHGDo9UYUBuvSY82WC4BP+C8O3dkovdxYpKp7EJEW3dU9WjMmjxIk8zFio
-         j9nc5sS7McavPRawn09qkkdU7HvFjgXcH+qupc896ER0JQ4FyjgiSDr+dN2CVuHR+8YJ
-         +o57FINxJb8nNAfzg9TIiGGgegp4orAJCFhm8DnQjB2+EjxxfsHHOSaQ79ooiL4QFEo/
-         XKjw==
+        bh=NYJ1Q/lWqkK3Cg7z3hIgRYLOhSjE/i7vB7XiHiOeAZ0=;
+        b=OsM/urZOXBr2xR3vIMNSF2X8OybEBi4hbYiCtUV+zkuONPu95eZdFXEmFh7H314PNi
+         KEbJCcQ8d73uTSw74MM/jjNbpMghOgyBQ3nCcxbbBy9vGCW9ZUMP04nfXosK/LuH4qK7
+         yahYJ3AoJW7A6xXgCn6qvoBnAH1iTMGdajn035F6BGpu1DWe+OyRuZAVpanqG6Bv8moy
+         zUI2ddPlWBmV4mhnHw90aR7kw0MkRXWREGDvS+M1/FRIehDXkZaU6JaMi9Y6K8epZX9t
+         86P5nJx+KALP2/Q3wCg2I20nekLTel3pQ5JJRyiZWPZqkX43KRwXKcuiwouoxAfD6xRY
+         RgQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730309729; x=1730914529;
+        d=1e100.net; s=20230601; t=1730309968; x=1730914768;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BiP+OVHkwJ2WwEc50c1zL6X+ty2T+Id/9XryhgE+LVs=;
-        b=YyDSWd51mMp5/arTJWtVzNB9q7lctBpjoqKsioD5FDstJg7jergk2pJuXqU+fo20N8
-         aes5eXl0G2qhYSbrCMrb6Eekg2ch8xbSN+uWb/AcsClDn6TokA1TCwoo9yjeQI82jSeV
-         8zkf8oewHV+xAkfQfPr8JOfEkl3vp8DO3F0//T+2O5ezGl4dmbbDKLnoCn3EqaWU/L46
-         toQUWhMan6IDLoqK9Pxq8mTKe4RXnbupFxUwqk7lRi9mVxKzNHhBVJIV0ailq0ADGZNk
-         srb+Oy0wrA0US7kb4U7oRQKJ09nkDKwckBydk70vuiA0jwF2hqDBN2cmNcWcaIkVR0Th
-         UXXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUbL1xgIg/MtCl70MRVd6wl4px1Ume5ZwCSxIzOf8FvATjX03NKXd/2hV/pE60fwkeiL9HJiZfDiE/prNxlMAoB@vger.kernel.org, AJvYcCWRXJku8WWp/jY3oVMiSeGJqJVxtHfZ9bfEJG2IKuxzhvHN0sPCbtEteJpszuEzWuvHE9ItTSuAaDRLmIw1@vger.kernel.org, AJvYcCWhYrW54rx6Bxdpi6h1ZS1xti7x8x+S3HWmpCkBgaB9VjlfxBftUTo3WqyGCxfP0WchOMoMfyVNqRTjJKttZUl2/Ps8@vger.kernel.org, AJvYcCXRVD8Jg12diRlMGd6MgMwEVmIFplOczG1WHIfZpgfmVK8AvsKCxPK0uVMbfJVLNJY8hSQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzyXeueLd/8tvXc16vmjJbDy5WULzlGhz9DtV0FrUlWveLPXNUU
-	nWGUSbhPz4uEdP/J1P3WuDHxC/QGXcp+LSCf5u33s5FRhrWSxnH4M2kspp5Dxrb5mt4Hbdnsl0B
-	rGYZZmBEwNCwv7wKyIOhGe8DDk2ZHwA==
-X-Google-Smtp-Source: AGHT+IH95yXMclFnAHy8QB+eHNc4rmInj2I+LJ/8aDsx3EJqpaOzdT6/yEgEZy6tveL6Lgr1C9KElhWkO7Mhr4OuAnE=
-X-Received: by 2002:a17:90b:1d0c:b0:2e2:d7db:41fc with SMTP id
- 98e67ed59e1d1-2e8f10683a4mr18135770a91.10.1730309729183; Wed, 30 Oct 2024
- 10:35:29 -0700 (PDT)
+        bh=NYJ1Q/lWqkK3Cg7z3hIgRYLOhSjE/i7vB7XiHiOeAZ0=;
+        b=WXsT4f2U/F5B8qhVAygRXk5hBBuSyPXamlnojYXcXHttlu1t5zHsKVOyhlH35R1CNf
+         b6B0X7uYFRF2DK0+WmhSmAMvgJogrngY6ti4Bl4VUB05eetG7SJBABKlM+dy6WFfA2z2
+         WzWHo5EDy9hxUlMhFbXJ/sCWD9kndw44TWiQiv2IBCChnvYOp6WSuGGpvNMW/tt9CmBT
+         GwDq39+dnaQdb/e0NEfY3KNZJApo2nCafQFN86UsvYHNx8fFgljzElLxtyPVkzFgsJJK
+         H+emhvBuGyOBD2PdygOQ4mnqv+l3fZ2lWUjA8mjuFovAZ2pHFOSEnwSI0gVFnCpjQR9z
+         gVpw==
+X-Forwarded-Encrypted: i=1; AJvYcCVuW92EbE3xaz5kTJUypwX6eiUZ+B+9bY2FtoE2UzS+mioMyfcPO8mWzmoVdLIq74s0AYWp20FFWX3e/jqW@vger.kernel.org, AJvYcCXkxC7JTXigD5AFlvIFPmelRXfXhvVeNgnBgP/QUZcyEPElZ9r9jKjfIt53gEklPeIaW1w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyMSCKqU4WJyE3CV+5KnmRvU5l9AFdzUR8sYPZFYfJHr4/27R35
+	8JL2pkXSl+U94NKG+uPfBkYJaiKpBh8n6645tyMwnoY0hVqnHd5WOEwz+pBPv94fG4G2yViUh2i
+	mbj102xaLoUdxZHKLzoC048s9wO0=
+X-Google-Smtp-Source: AGHT+IFaMPK9Sdz1U5LgrWNoHuzUscjFnKXDgOvap9NtC+XfxHjP1Qx/vOvXvvbJcIAxkllNS5OO3doVBzZkBJeGPQ0=
+X-Received: by 2002:a05:6a00:1742:b0:71e:722b:ae1d with SMTP id
+ d2e1a72fcca58-72063059df3mr21500836b3a.25.1730309968461; Wed, 30 Oct 2024
+ 10:39:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241029002208.1947947-1-dolinux.peng@gmail.com>
- <20241029002208.1947947-2-dolinux.peng@gmail.com> <CAEf4BzbVjkhtQPcsDOLX_aR_vvB1nCQj357EQ5xwey8486=Niw@mail.gmail.com>
- <CAErzpmuHJ-qZqzS11GPK5_=UsuxtPk1gbexbhJ7nj59M-NzSHA@mail.gmail.com>
-In-Reply-To: <CAErzpmuHJ-qZqzS11GPK5_=UsuxtPk1gbexbhJ7nj59M-NzSHA@mail.gmail.com>
+References: <CADKFtnT59wzKxob03OOOfvVh67MQkpWvzvfmzv3D-_bGeM=rJA@mail.gmail.com>
+ <20241029002814.505389-1-jrife@google.com> <CAADnVQJeWj2t9XSRxK5NU99GJsOBnropoOOohDNPj7N2xZFGEQ@mail.gmail.com>
+ <CADKFtnTUmRe1T92BQ_NB=V7DW13hAKpA40rm+m6DkpTNf5RyFw@mail.gmail.com>
+In-Reply-To: <CADKFtnTUmRe1T92BQ_NB=V7DW13hAKpA40rm+m6DkpTNf5RyFw@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 30 Oct 2024 10:35:17 -0700
-Message-ID: <CAEf4BzaXHrjoEWmEcvK62bqKuT3de__+juvGctR3=e8avRWpMQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] libbpf: Sort btf_types in ascending order by name
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, rostedt@goodmis.org, 
-	mhiramat@kernel.org, bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Wed, 30 Oct 2024 10:39:16 -0700
+Message-ID: <CAEf4BzZkDjCqDu56M=aAn2exnmaV=SZ6rWdFbAO4wkkzZHS2Zg@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 4/4] tracing: Add might_fault() check in
+ __DO_TRACE() for syscall
+To: Jordan Rife <jrife@google.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Joel Fernandes <joel@joelfernandes.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+	Michael Jeanson <mjeanson@efficios.com>, Namhyung Kim <namhyung@kernel.org>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>, Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 30, 2024 at 8:13=E2=80=AFAM Donglin Peng <dolinux.peng@gmail.co=
-m> wrote:
+On Wed, Oct 30, 2024 at 10:34=E2=80=AFAM Jordan Rife <jrife@google.com> wro=
+te:
 >
-> On Wed, Oct 30, 2024 at 5:58=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> > > [  687.334265][T16276] allocated by task 16281 on cpu 1 at 683.953385=
+s (3.380878s ago):
+> > > [  687.335615][T16276]  tracepoint_add_func+0x28a/0xd90
+> > > [  687.336424][T16276]  tracepoint_probe_register_prio_may_exist+0xa2=
+/0xf0
+> > > [  687.337416][T16276]  bpf_probe_register+0x186/0x200
+> > > [  687.338174][T16276]  bpf_raw_tp_link_attach+0x21f/0x540
+> > > [  687.339233][T16276]  __sys_bpf+0x393/0x4fa0
+> > > [  687.340042][T16276]  __x64_sys_bpf+0x78/0xc0
+> > > [  687.340801][T16276]  do_syscall_64+0xcb/0x250
+> > > [  687.341623][T16276]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
 > >
-> > On Mon, Oct 28, 2024 at 5:22=E2=80=AFPM Donglin Peng <dolinux.peng@gmai=
-l.com> wrote:
-> > >
-> > > To enhance the searching performance of btf_find_by_name_kind, we
-> > > can sort the btf_types in ascending order based on their names.
-> > > This allows us to implement a binary search method.
-> > >
-> > > Co-developed-by: Eduard Zingerman <eddyz87@gmail.com>
-> > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > > Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
-> > > ---
-> > > v4:
-> > >  - Divide the patch into two parts: kernel and libbpf
-> > >  - Use Eduard's code to sort btf_types in the btf__dedup function
-> > >  - Correct some btf testcases due to modifications of the order of bt=
-f_types.
-> > > ---
-> > >  tools/lib/bpf/btf.c                           | 115 +++++--
-> > >  tools/testing/selftests/bpf/prog_tests/btf.c  | 296 +++++++++-------=
---
-> > >  .../bpf/prog_tests/btf_dedup_split.c          |  64 ++--
-> > >  3 files changed, 268 insertions(+), 207 deletions(-)
-> > >
-> >
-> > I don't think we should do any extra sorting by default. Maybe we need
-> > some extra API to explicitly re-sort underlying types. But then again,
+> > I think the stack trace points out that the patch [1] isn't really fixi=
+ng it.
+> > UAF is on access to bpf_link in __traceiter_sys_enter
 >
-> How do you feel about adding a new feature to the '--btf_features' option=
-,
-> which could be used to control sorting?
-
-This is pahole question, and yes, having a --btf_features makes sense to me=
-.
-
+> The stack trace points to the memory in question being allocated by
+> tracepoint_add_func where allocation and assignment to
+> __tracepoint_sys_enter->funcs happens. Mathieu's patch addresses
+> use-after-free on this structure by using call_rcu_tasks_trace inside
+> release_probes. In contrast, here is what the "allocated by" trace
+> looks like for UAF on access to bpf_link (copied from the original
+> KASAN crash report [4]).
 >
-> > why just by type name? What if type names are equal, what do we use to
-> > disambiguate. None of this is considered in this patch.
+> > Allocated by task 5681:
+> >  kasan_save_stack mm/kasan/common.c:47 [inline]
+> >  kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+> >  poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
+> >  __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:394
+> >  kasan_kmalloc include/linux/kasan.h:260 [inline]
+> >  __kmalloc_cache_noprof+0x243/0x390 mm/slub.c:4304
+> >  kmalloc_noprof include/linux/slab.h:901 [inline]
+> >  kzalloc_noprof include/linux/slab.h:1037 [inline]
+> >  bpf_raw_tp_link_attach+0x2a0/0x6e0 kernel/bpf/syscall.c:3829
+> >  bpf_raw_tracepoint_open+0x177/0x1f0 kernel/bpf/syscall.c:3876
+> >  __sys_bpf+0x3c0/0x810 kernel/bpf/syscall.c:5691
+> >  __do_sys_bpf kernel/bpf/syscall.c:5756 [inline]
+> >  __se_sys_bpf kernel/bpf/syscall.c:5754 [inline]
+> >  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5754
+> >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> >  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+> >  entry_SYSCALL_64_after_hwframe+0x77/0x7f
 >
-> If there are multiple btf_types with identical names in a btf file,
-> they will have different kinds. These btf_types will be grouped
-
-Not necessarily, you can easily have types of the same kind with the
-same name. But this changes nothing, I'd still define fuller search
-criteria.
-
-> together after being sorted according to their names. We can
-> determine the range of the group and verify the btf_types within
-> that range by their kind to obtain the appropriate btf_type.
+> This clearly points to where memory for a bpf_link is allocated.
 >
-> >
-> > pw-bot: cr
-> >
-> > > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > > index 3c131039c523..5290e9d59997 100644
-> > > --- a/tools/lib/bpf/btf.c
-> > > +++ b/tools/lib/bpf/btf.c
-> > > @@ -1,6 +1,9 @@
-> > >  // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-> > >  /* Copyright (c) 2018 Facebook */
-> > >
+> > link =3D kzalloc(sizeof(*link), GFP_USER);
+> > if (!link) {
+> >     err =3D -ENOMEM;
+> >     goto out_put_btp;
+> > }
+>
+> To add some context, if I apply Mathieu's patch alone then I get no
+> meaningful test signal when running the reproducer, because the UAF
+> crash almost always occurs first on accesses to bpf_link or bpf_prog
+> showing a trace like the second one above. My intent in applying patch
+> [1] is to mask out these sources of UAF-related crashes on the BPF
+> side to just focus on what this series addresses. This series should
+> eventually be tested end-to-end with Andrii's fix for the BPF stuff
+> that he mentioned last week, but that would rely on this patch series,
+> tracepoint_is_faultable() in particular, so it's kind of chicken and
 
-[...]
+Yep, agreed. I'll need this patch set landed before landing my fixes.
+Mathieu's patch set fixes one set of issues, so I'd say we should land
+it and unblock BPF link-specific fixes.
+
+> egg in terms of testing. In the meantime, [1] provides a bandaid to
+> allow some degree of test coverage on this patch.
+>
+> > while your patch [1] and all attempts to "fix" were delaying bpf_prog.
+> > The issue is not reproducing anymore due to luck.
+>
+> [1] chains call_rcu_tasks_trace and call_rcu to free both bpf_prog and
+> bpf_link after unregistering the trace point. This grace period should
+> be sufficient to prevent UAF on these structures from the syscall TP
+> handlers which are protected with rcu_read_lock_trace. I've run the
+> reproducer many times. Without /some/ fix on the BPF side it crashes
+> reliably within seconds here. Using call_rcu_tasks_trace or chaining
+> it with call_rcu eliminates UAF on the BPF stuff which eliminates a
+> couple of variables for local testing.
+>
+> If you are not convinced, I'm happy to run through other test
+> scenarios or run the reproducer for much longer.
+>
+> -Jordan
 
