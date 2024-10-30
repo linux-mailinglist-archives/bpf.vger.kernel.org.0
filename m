@@ -1,260 +1,168 @@
-Return-Path: <bpf+bounces-43467-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43468-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24BC59B593B
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 02:40:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 171A69B594A
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 02:43:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D82B7283256
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 01:40:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C94E1F23FE5
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 01:43:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6DB41714B7;
-	Wed, 30 Oct 2024 01:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5CA1917F4;
+	Wed, 30 Oct 2024 01:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m1wDC+e0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P95P2GHB"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com [209.85.167.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274D94437;
-	Wed, 30 Oct 2024 01:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C86BE46;
+	Wed, 30 Oct 2024 01:42:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730252450; cv=none; b=o7Gfd4TwTCZovxzN3TF/9YO3aVLvnkTpGK9jmY+GGRDnMZIoC2nZN9PaK50h96cy0gN2P6JRKoOOO1toF9eFfGnHEthvvHwJvlfECULkKrlz1kuTYUgOIszPPulULuwufiNfqRc0vtPSxqAfQvyBcg8bWVmpHpZjHFRdGxKh0v8=
+	t=1730252577; cv=none; b=aUYzmwBKlVZOYY0SgkVU2oZZ5OMAQLyO6ldwvSdm3J1cQZaQI9cmK3SM+8cbqj7E91xtIv6x3OehFFgRULKKdl+Hn2gTRGgHIMRa9/+4dK8P3gVfk8ELYkJh7OUXDMfG9abZxVejVG6mchNYcP+DDJMrKNgm9KXMBunMt5/QPas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730252450; c=relaxed/simple;
-	bh=enJIsrboZbV/jiq1NYxRCBEDiaUeijBIjXWIGNL4D6A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TDXLrL9b99lCucXRx4D0fPpzQVXfQZcG6A6dnSKW823hClvzEz3Zg5uuA/SiG1aynHif1lctN8UZ4wkshPK/w200hgFZi4N5Q/zuG9gamCP6KjOPShjDuIDx9zOn1d37xzJnSu0FqcYYNn4JY3J2vCKX/lQouE3OJYKy0bwRsPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m1wDC+e0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9545C4CECD;
-	Wed, 30 Oct 2024 01:40:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730252449;
-	bh=enJIsrboZbV/jiq1NYxRCBEDiaUeijBIjXWIGNL4D6A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m1wDC+e0paXoDcn9gnQzyMX/g5ei9EqANcNC3ksKuzs/b9pcE8o0kVO11JEc5BHwT
-	 CP8DS4fiRAWmpYKu41iHn7poD5sQFsWiD3uYMbO4zWgHxbuWsDnHl1Fj7TL/Sjattu
-	 oUeJLYvD0u+0YC1+NSy/Nxi3XylvlCC6WmKSmgTvRIOcob781komIbXj877DJ/OA2A
-	 +7415a0w7wnuESKNDHFLFoT4DCroDnkFHuXhlhTGYIqKNntJW3r23CGZAaJUD3g/jW
-	 pg02EW8IbpaREcu/JdqKuXNckYDkdnfRo/oOneWJz4IhcxoKDyIkCNkbp2ljZReKq2
-	 hm/49Qc2MlhgQ==
-Date: Tue, 29 Oct 2024 18:40:46 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm <linux-mm@kvack.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Kees Cook <kees@kernel.org>
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add a test for open coded
- kmem_cache iter
-Message-ID: <ZyGOng76IBUs8PtY@google.com>
-References: <20241024074815.1255066-1-namhyung@kernel.org>
- <20241024074815.1255066-2-namhyung@kernel.org>
- <CAADnVQLA=QE9HwH+9tA+G8uppXK0-yk-hbiBHaOmjkjVENYCsA@mail.gmail.com>
+	s=arc-20240116; t=1730252577; c=relaxed/simple;
+	bh=N8rGFDTUThVhTEHIJIIJx0HReyP83ZUzy0Cx8KDZfW4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sA1gTeMlKbUZroDoGkKH5bLJCwi9jWbHDvvTlIfw8jztVd13u+iH8yw9WW5J4SFziMC5seZ0BhSLHmsMFfluB7vGZBvDO7Hzt+hozJYEOArbqDMqaJfJvYGFuiI0vqV204Pe4SKODGrUqDcWRbi5lYpgYCguyc+q6DIgHuUQvjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P95P2GHB; arc=none smtp.client-ip=209.85.167.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f194.google.com with SMTP id 5614622812f47-3e60fca5350so3772244b6e.2;
+        Tue, 29 Oct 2024 18:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730252575; x=1730857375; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gq6+xdJlSauKVvYdMuUpgAyl8qNz5z/Asf+huhDS4l8=;
+        b=P95P2GHBZm0ywCNtLGCrwuwxGL3uyvPt7Mi1D47KslU/PyHMlslJ+eM4WmVtDdIXI5
+         +4T0wBtj+HIQ1kr0AANQDGQFTjyArE8eWBLxfyVNkJu16oKab9RFVsss3kzzrsZqHb0P
+         ix+RyP0IRVqIkMKqY7CAMkER/1loVocKSB85yb/SNrcxmEtWAmTz4bs8bNqR3gtXKO/T
+         QDx/OA1T/bUf8pZX0UQZrweiY4A02IG9KoTCocDF8OVLYTn0TyfAYrtSJDGQY+QsT+yC
+         WfDTxJNdHHYbYu2s7TuTFK2lo1cRZ5Qgv8FXOVJqeVESb0M53COhkBOVGrD2k/oADgMe
+         Ygxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730252575; x=1730857375;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Gq6+xdJlSauKVvYdMuUpgAyl8qNz5z/Asf+huhDS4l8=;
+        b=UZVUXnTiz5MLqCm8dPoCcukk8bNH/6bWQBRZdZdJ5CXOioI86jYX7fxsDY64shzxLS
+         2fGYRIJw+jTuNCvyJF6KpmXvmgBH2Q9vkcbGDVFwOhHw2q6bzEySztmgSJ13Y1PqARxH
+         IvDwfyqjvYSCnrDV0WR0ScnpsHIXnbZL1/G/yNEY06vmFABpDDsWwt6O6pTqEs1CzOYR
+         hXSGo0MgOLlayH2PQ9bn4FirgLyDPYfMFwTABNgbcRcM05s2XVpbcmygI2AjPwiN2ITa
+         CbDZg/21ma1XzGU+myzhMaWyAqWhNiuK1pDPCjEidvSBDQOXLbw23eT4ATZ/Hj1b4c7E
+         S4WQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUH0XuBmXqlXV1GSGrr0XBf1o2Hp4W/+H3tIv55r/Z76M0Oli+hw1n3HbH57V6OaoJoK4IU1ECxKppMfTpM@vger.kernel.org, AJvYcCUZx0V/0Q42/17DoP9uVY2qAUWuiE3e55h+c/zwlOcgIfS8kbuQBuLg0Zv7h/m7RK0wzxc=@vger.kernel.org, AJvYcCWjzZE3xPVxPykuEKxA3yanfSSnZMbOV7nO9PeXu7AhsQXKnaw8HZXISDeg6Og4C+w2UEJKnbqr@vger.kernel.org, AJvYcCWtDONqknRM1RurtM3VtHTFFmdiEt6/zQzle/ZY9MWl87A6BHyzWVghNRULYvRrE3iVn3v8ez/VVELpvZao5YgC@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2keV03C+BK/imC451zCybcMOcrl1WhtfbeahLwlCxDkV05BoQ
+	UIIgLlH2Dyytd/xNvDbL4W9p5eeLm55FKS7KDONbfi2g0/jxxftc
+X-Google-Smtp-Source: AGHT+IGLH/hZZ7hWGWLxPfmagO461IIMSWoSWP+WCb8WxZ7ERpymRfaGRQY/xzyfibXkMEpby78vsA==
+X-Received: by 2002:a05:6870:e0ca:b0:278:c6bf:fd34 with SMTP id 586e51a60fabf-29051bdaef8mr12039957fac.27.1730252574765;
+        Tue, 29 Oct 2024 18:42:54 -0700 (PDT)
+Received: from localhost.localdomain ([43.129.25.208])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7edc866906dsm8138407a12.10.2024.10.29.18.42.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Oct 2024 18:42:54 -0700 (PDT)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: pabeni@redhat.com
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	horms@kernel.org,
+	dsahern@kernel.org,
+	pablo@netfilter.org,
+	kadlec@netfilter.org,
+	roopa@nvidia.com,
+	razor@blackwall.org,
+	gnault@redhat.com,
+	bigeasy@linutronix.de,
+	hawk@kernel.org,
+	idosch@nvidia.com,
+	dongml2@chinatelecom.cn,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	bridge@lists.linux.dev,
+	bpf@vger.kernel.org
+Subject: [PATCH RESEND net-next v4 0/9] net: ip: add drop reasons to input route
+Date: Wed, 30 Oct 2024 09:41:36 +0800
+Message-Id: <20241030014145.1409628-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLA=QE9HwH+9tA+G8uppXK0-yk-hbiBHaOmjkjVENYCsA@mail.gmail.com>
 
-Hello,
+In this series, we mainly add some skb drop reasons to the input path of
+ip routing, and we make the following functions return drop reasons:
 
-On Thu, Oct 24, 2024 at 11:08:00AM -0700, Alexei Starovoitov wrote:
-> On Thu, Oct 24, 2024 at 12:48 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > The new subtest is attached to sleepable fentry of syncfs() syscall.
-> > It iterates the kmem_cache using bpf_for_each loop and count the number
-> > of entries.  Finally it checks it with the number of entries from the
-> > regular iterator.
-> >
-> >   $ ./vmtest.sh -- ./test_progs -t kmem_cache_iter
-> >   ...
-> >   #130/1   kmem_cache_iter/check_task_struct:OK
-> >   #130/2   kmem_cache_iter/check_slabinfo:OK
-> >   #130/3   kmem_cache_iter/open_coded_iter:OK
-> >   #130     kmem_cache_iter:OK
-> >   Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
-> >
-> > Also simplify the code by using attach routine of the skeleton.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> > v2)
-> >  * remove unnecessary detach  (Martin)
-> >  * check pid in syncfs to prevent surprise  (Martin)
-> >  * remove unnecessary local variable  (Andrii)
-> >
-> >  .../testing/selftests/bpf/bpf_experimental.h  |  6 ++++
-> >  .../bpf/prog_tests/kmem_cache_iter.c          | 28 +++++++++++--------
-> >  .../selftests/bpf/progs/kmem_cache_iter.c     | 28 +++++++++++++++++++
-> >  3 files changed, 50 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-> > index b0668f29f7b394eb..cd8ecd39c3f3c68d 100644
-> > --- a/tools/testing/selftests/bpf/bpf_experimental.h
-> > +++ b/tools/testing/selftests/bpf/bpf_experimental.h
-> > @@ -582,4 +582,10 @@ extern int bpf_wq_set_callback_impl(struct bpf_wq *wq,
-> >                 unsigned int flags__k, void *aux__ign) __ksym;
-> >  #define bpf_wq_set_callback(timer, cb, flags) \
-> >         bpf_wq_set_callback_impl(timer, cb, flags, NULL)
-> > +
-> > +struct bpf_iter_kmem_cache;
-> > +extern int bpf_iter_kmem_cache_new(struct bpf_iter_kmem_cache *it) __weak __ksym;
-> > +extern struct kmem_cache *bpf_iter_kmem_cache_next(struct bpf_iter_kmem_cache *it) __weak __ksym;
-> > +extern void bpf_iter_kmem_cache_destroy(struct bpf_iter_kmem_cache *it) __weak __ksym;
-> > +
-> >  #endif
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-> > index 848d8fc9171fae45..778b55bc1f912b98 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-> > @@ -68,12 +68,20 @@ static void subtest_kmem_cache_iter_check_slabinfo(struct kmem_cache_iter *skel)
-> >         fclose(fp);
-> >  }
-> >
-> > +static void subtest_kmem_cache_iter_open_coded(struct kmem_cache_iter *skel)
-> > +{
-> > +       skel->bss->tgid = getpid();
-> > +
-> > +       /* To trigger the open coded iterator attached to the syscall */
-> > +       syncfs(0);
-> > +
-> > +       /* It should be same as we've seen from the explicit iterator */
-> > +       ASSERT_EQ(skel->bss->open_coded_seen, skel->bss->kmem_cache_seen, "open_code_seen_eq");
-> > +}
-> > +
-> >  void test_kmem_cache_iter(void)
-> >  {
-> > -       DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-> >         struct kmem_cache_iter *skel = NULL;
-> > -       union bpf_iter_link_info linfo = {};
-> > -       struct bpf_link *link;
-> >         char buf[256];
-> >         int iter_fd;
-> >
-> > @@ -81,16 +89,12 @@ void test_kmem_cache_iter(void)
-> >         if (!ASSERT_OK_PTR(skel, "kmem_cache_iter__open_and_load"))
-> >                 return;
-> >
-> > -       opts.link_info = &linfo;
-> > -       opts.link_info_len = sizeof(linfo);
-> > -
-> > -       link = bpf_program__attach_iter(skel->progs.slab_info_collector, &opts);
-> > -       if (!ASSERT_OK_PTR(link, "attach_iter"))
-> > +       if (!ASSERT_OK(kmem_cache_iter__attach(skel), "skel_attach"))
-> >                 goto destroy;
-> >
-> > -       iter_fd = bpf_iter_create(bpf_link__fd(link));
-> > +       iter_fd = bpf_iter_create(bpf_link__fd(skel->links.slab_info_collector));
-> >         if (!ASSERT_GE(iter_fd, 0, "iter_create"))
-> > -               goto free_link;
-> > +               goto destroy;
-> >
-> >         memset(buf, 0, sizeof(buf));
-> >         while (read(iter_fd, buf, sizeof(buf) > 0)) {
-> > @@ -105,11 +109,11 @@ void test_kmem_cache_iter(void)
-> >                 subtest_kmem_cache_iter_check_task_struct(skel);
-> >         if (test__start_subtest("check_slabinfo"))
-> >                 subtest_kmem_cache_iter_check_slabinfo(skel);
-> > +       if (test__start_subtest("open_coded_iter"))
-> > +               subtest_kmem_cache_iter_open_coded(skel);
-> >
-> >         close(iter_fd);
-> >
-> > -free_link:
-> > -       bpf_link__destroy(link);
-> >  destroy:
-> >         kmem_cache_iter__destroy(skel);
-> >  }
-> > diff --git a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
-> > index 72c9dafecd98406b..e62807caa7593604 100644
-> > --- a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
-> > +++ b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
-> > @@ -2,6 +2,8 @@
-> >  /* Copyright (c) 2024 Google */
-> >
-> >  #include "bpf_iter.h"
-> > +#include "bpf_experimental.h"
-> > +#include "bpf_misc.h"
-> >  #include <bpf/bpf_helpers.h>
-> >  #include <bpf/bpf_tracing.h>
-> >
-> > @@ -30,9 +32,12 @@ struct {
-> >
-> >  extern struct kmem_cache *bpf_get_kmem_cache(u64 addr) __ksym;
-> >
-> > +unsigned int tgid;
-> > +
-> >  /* Result, will be checked by userspace */
-> >  int task_struct_found;
-> >  int kmem_cache_seen;
-> > +int open_coded_seen;
-> >
-> >  SEC("iter/kmem_cache")
-> >  int slab_info_collector(struct bpf_iter__kmem_cache *ctx)
-> > @@ -85,3 +90,26 @@ int BPF_PROG(check_task_struct)
-> >                 task_struct_found = -2;
-> >         return 0;
-> >  }
-> > +
-> > +SEC("fentry.s/" SYS_PREFIX "sys_syncfs")
-> > +int open_coded_iter(const void *ctx)
-> > +{
-> > +       struct kmem_cache *s;
-> > +
-> > +       if (tgid != bpf_get_current_pid_tgid() >> 32)
-> > +               return 0;
-> 
-> Pls use syscall prog type and prog_run() it.
-> No need to attach to exotic syscalls and filter by pid.
+  fib_validate_source()
+  ip_route_input_mc()
+  ip_mc_validate_source()
+  ip_route_input_slow()
+  ip_route_input_rcu()
+  ip_route_input_noref()
+  ip_route_input()
+  ip_mkroute_input()
+  __mkroute_input()
+  ip_route_use_hint()
 
-Sure, will update in v3.
+And following new skb drop reasons are added:
 
-> 
-> > +
-> > +       bpf_for_each(kmem_cache, s) {
-> > +               struct kmem_cache_result *r;
-> > +
-> > +               r = bpf_map_lookup_elem(&slab_result, &open_coded_seen);
-> > +               if (!r)
-> > +                       break;
-> > +
-> > +               open_coded_seen++;
-> > +
-> > +               if (r->obj_size != s->size)
-> > +                       break;
-> 
-> The order of 'if' and ++ should probably be changed ?
-> Otherwise the last object isn't sufficiently checked.
+  SKB_DROP_REASON_IP_LOCAL_SOURCE
+  SKB_DROP_REASON_IP_INVALID_SOURCE
+  SKB_DROP_REASON_IP_LOCALNET
+  SKB_DROP_REASON_IP_INVALID_DEST
 
-I don't think so.  The last element should be an actual slab cache and
-then the iterator will return NULL to break the loop.  I don't expect it
-will hit the if statement.
+Changes since v3:
+- don't refactor fib_validate_source/__fib_validate_source, and introduce
+  a wrapper for fib_validate_source() instead in the 1st patch.
+- some small adjustment in the 4-7 patches
 
-Thanks,
-Namhyung
+Changes since v2:
+- refactor fib_validate_source and __fib_validate_source to make
+  fib_validate_source return drop reasons
+- add the 9th and 10th patches to make this series cover the input route
+  code path
+
+Changes since v1:
+- make ip_route_input_noref/ip_route_input_rcu/ip_route_input_slow return
+  drop reasons, instead of passing a local variable to their function
+  arguments.
+
+Menglong Dong (9):
+  net: ip: make fib_validate_source() support drop reasons
+  net: ip: make ip_route_input_mc() return drop reason
+  net: ip: make ip_mc_validate_source() return drop reason
+  net: ip: make ip_route_input_slow() return drop reasons
+  net: ip: make ip_route_input_rcu() return drop reasons
+  net: ip: make ip_route_input_noref() return drop reasons
+  net: ip: make ip_route_input() return drop reasons
+  net: ip: make ip_mkroute_input/__mkroute_input return drop reasons
+  net: ip: make ip_route_use_hint() return drop reasons
+
+ include/net/dropreason-core.h   |  26 ++++
+ include/net/ip_fib.h            |  12 ++
+ include/net/route.h             |  34 +++---
+ net/bridge/br_netfilter_hooks.c |  11 +-
+ net/core/lwt_bpf.c              |   6 +-
+ net/ipv4/fib_frontend.c         |  17 ++-
+ net/ipv4/icmp.c                 |   2 +-
+ net/ipv4/ip_fragment.c          |  12 +-
+ net/ipv4/ip_input.c             |  20 ++-
+ net/ipv4/ip_options.c           |   2 +-
+ net/ipv4/route.c                | 210 +++++++++++++++++++-------------
+ net/ipv6/seg6_local.c           |  14 +--
+ 12 files changed, 226 insertions(+), 140 deletions(-)
+
+-- 
+2.39.5
 
 
