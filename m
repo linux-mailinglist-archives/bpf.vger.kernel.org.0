@@ -1,145 +1,332 @@
-Return-Path: <bpf+bounces-43605-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43606-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3607D9B6FAB
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 23:07:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBFE69B6FD7
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 23:28:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECDCE284BCF
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 22:07:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 075761C20D92
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 22:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F8F21730A;
-	Wed, 30 Oct 2024 22:07:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617E41E8859;
+	Wed, 30 Oct 2024 22:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rq5koNej"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RyfocfDc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6431D172C;
-	Wed, 30 Oct 2024 22:07:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47CB1946A0;
+	Wed, 30 Oct 2024 22:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730326062; cv=none; b=FOEq98UaVhQtX+XymqhK96ZbhLOlyewoRUaUoNWpeiNjWpDidJrFviK+xBMtCwutcNgLMSzwPZFC02/5kj8x87RQ6+TjJCqBXSMpFVS6rTCmANcAhvCYKXQkCLq8IJM4P1xUTdcKQNVjR76531tomv3QPyd09Ty5hbUuNz+my1M=
+	t=1730327301; cv=none; b=MYNqLZsfZ1KvTBeyIesbySCgiXNqbOVaSzTReqFWXioq56DWBfWmZREpXzsBx6SS7pQAdo8/BjvbQjb3EJa+Rn6UArLwo7+HjNEATtbqJrklGRRI36Omq3AIbuL6Qt8maI5tCjJO38l9xg1jlhyTNWx3abXcermCZNeWLBSLiYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730326062; c=relaxed/simple;
-	bh=H4ffWR0CSb3nEgwT13IaFtyC9EUaVL1JNHYQs8glEbs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qFMqmcdxZyo2sOiVbhH+TaS1/xAZpUA5TwAmUOoZfLUkNldEdBS/VaWVE2RbfeBMPSwDzj28mMwpygpnOayIEHkG373ob/qV/si2qjVlJD7R5pViF5NVAY9SeU4GT5VGEBlFmRWnSACaegx/64IL2beDMNh3WA1t/fWc0Gex2FI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Rq5koNej; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730326060; x=1761862060;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=H4ffWR0CSb3nEgwT13IaFtyC9EUaVL1JNHYQs8glEbs=;
-  b=Rq5koNejstznFvpGtE4ftD8dIQLX5ZXy5oD8J9vov3lJ8JntsAakTT4R
-   J0D71gFtS76hAzaeTmPUIPo1gmCPRJW33tAmcNcv3wcKchFcox85QqCJp
-   Db1uhgo2OfoUvIRXeG6P1IeSZo61OvyEuKL88iWsJR9Mkh92euVpCsqEy
-   sAK8xmgLllirNgGJnFGak2A/cRxWYjYfQvFMGUF6K9Ghcv2HmR9bCDqmJ
-   ymu0umRvSJLqynwjd/NP07jwgZRvOlI+N18kOQ7ifYWIVd2cM6itHwNHI
-   Bj0YCyBggeEBhQyQ8HY4LEUsFHKNEkTYsA/5+RUDxlWlVJdmPSYBtwSC0
-   w==;
-X-CSE-ConnectionGUID: yklDU8jJT9+TvARFDFxIOg==
-X-CSE-MsgGUID: Rf3VFMifQRiJkgZIx6bQGA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11241"; a="29948153"
-X-IronPort-AV: E=Sophos;i="6.11,246,1725346800"; 
-   d="scan'208";a="29948153"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2024 15:07:40 -0700
-X-CSE-ConnectionGUID: yd3xnpfcT724hfzFZ+z5Hg==
-X-CSE-MsgGUID: gwk6556VT/28ChCtkm8LHA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,246,1725346800"; 
-   d="scan'208";a="87049121"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 30 Oct 2024 15:07:37 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t6Gql-000fMf-09;
-	Wed, 30 Oct 2024 22:07:35 +0000
-Date: Thu, 31 Oct 2024 06:07:07 +0800
-From: kernel test robot <lkp@intel.com>
-To: Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1730327301; c=relaxed/simple;
+	bh=lujB1h+8Q2UbsPZY5HJXumwMpKUUWxBvKX76ZsUvwa4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ljFTu4LekIMA8Ul7inhlO8UK533OK2H6yxlvk28iSctd3QCXqXEkmAr8v/wM+eOr3Bv+VqnRxbPp7JaWraJ7eB4kdqUDgqJE7PS+zh6obK5Mpp3PCVK4UKl62SHv2UlPpWEWySXTqakehqP3rSeLGeviOf9ICJz4vT3XVwiuc4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RyfocfDc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3359C4CECE;
+	Wed, 30 Oct 2024 22:28:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730327301;
+	bh=lujB1h+8Q2UbsPZY5HJXumwMpKUUWxBvKX76ZsUvwa4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=RyfocfDcM2+5h+GN0sm4cO95gXRNyNSNK98fZbB2zliafXRl6+Kdz1COifoyeFxbf
+	 8EFeVwJDA+rsKP31hgLnto6BEoc8ChENNs8KvtbkVPiidumZdT7lkT7wnXj7x0NLcK
+	 dUYEAI4ek+AYj5I2YKlZsfVemJ5Ko0tNER6+AHMzPuO2RNBTfYGknGEkHn6y1UWjjH
+	 97kjHQMSXqwAljIj+TIqXqCYdlv/GMM9bNdV7YdtunTIVO84gbgFf76fVEpl3SL1AP
+	 An3XwWYSYr3DkUQDCrFLY6tIJEmqVj0ZMsbTYBFLWkYM3PGcRovSh82wlquaKfYNKm
+	 iYTmetHs5W2jQ==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Add kernel symbol for struct_ops trampoline
-Message-ID: <202410310549.6S1px0jq-lkp@intel.com>
-References: <20241030111533.907289-1-xukuohai@huaweicloud.com>
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	bpf@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	linux-mm@kvack.org,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Kees Cook <kees@kernel.org>
+Subject: [PATCH bpf-next v3 1/2] bpf: Add open coded version of kmem_cache iterator
+Date: Wed, 30 Oct 2024 15:28:18 -0700
+Message-ID: <20241030222819.1800667-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.47.0.163.g1226f6d8fa-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241030111533.907289-1-xukuohai@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Xu,
+Add a new open coded iterator for kmem_cache which can be called from a
+BPF program like below.  It doesn't take any argument and traverses all
+kmem_cache entries.
 
-kernel test robot noticed the following build warnings:
+  struct kmem_cache *pos;
 
-[auto build test WARNING on bpf-next/master]
+  bpf_for_each(kmem_cache, pos) {
+      ...
+  }
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Xu-Kuohai/bpf-Add-kernel-symbol-for-struct_ops-trampoline/20241030-190704
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20241030111533.907289-1-xukuohai%40huaweicloud.com
-patch subject: [PATCH bpf-next] bpf: Add kernel symbol for struct_ops trampoline
-config: arm-randconfig-004-20241031 (https://download.01.org/0day-ci/archive/20241031/202410310549.6S1px0jq-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 14.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241031/202410310549.6S1px0jq-lkp@intel.com/reproduce)
+As it needs to grab slab_mutex, it should be called from sleepable BPF
+programs only.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410310549.6S1px0jq-lkp@intel.com/
+Also update the existing iterator code to use the open coded version
+internally as suggested by Andrii.
 
-All warnings (new ones prefixed by >>):
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+v2)
+ * prevent restart after the last element  (Martin)
+ * update existing code to use the open coded version (Andrii)
 
-   kernel/bpf/bpf_struct_ops.c: In function 'bpf_struct_ops_map_update_elem':
->> kernel/bpf/bpf_struct_ops.c:596:61: warning: '%s' directive output may be truncated writing up to 511 bytes into a region of size 497 [-Wformat-truncation=]
-     596 |         snprintf(ksym->name, KSYM_NAME_LEN, "bpf_trampoline_%s",
-         |                                                             ^~
-   In function 'bpf_struct_ops_ksym_init',
-       inlined from 'bpf_struct_ops_map_update_elem' at kernel/bpf/bpf_struct_ops.c:772:3:
-   kernel/bpf/bpf_struct_ops.c:596:9: note: 'snprintf' output between 16 and 527 bytes into a destination of size 512
-     596 |         snprintf(ksym->name, KSYM_NAME_LEN, "bpf_trampoline_%s",
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     597 |                  prog->aux->ksym.name);
-         |                  ~~~~~~~~~~~~~~~~~~~~~
+ kernel/bpf/helpers.c         |   3 +
+ kernel/bpf/kmem_cache_iter.c | 151 +++++++++++++++++++++++++----------
+ 2 files changed, 110 insertions(+), 44 deletions(-)
 
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for GET_FREE_REGION
-   Depends on [n]: SPARSEMEM [=n]
-   Selected by [m]:
-   - RESOURCE_KUNIT_TEST [=m] && RUNTIME_TESTING_MENU [=y] && KUNIT [=y]
-
-
-vim +596 kernel/bpf/bpf_struct_ops.c
-
-   591	
-   592	static void bpf_struct_ops_ksym_init(struct bpf_prog *prog, void *image,
-   593					     unsigned int size, struct bpf_ksym *ksym)
-   594	{
-   595		INIT_LIST_HEAD_RCU(&ksym->lnode);
- > 596		snprintf(ksym->name, KSYM_NAME_LEN, "bpf_trampoline_%s",
-   597			 prog->aux->ksym.name);
-   598		bpf_image_ksym_init(image, size, ksym);
-   599	}
-   600	
-
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 2e82f8d3a76fb9ca..395221e53832e10e 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -3112,6 +3112,9 @@ BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
+ BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
+ BTF_ID_FLAGS(func, bpf_get_kmem_cache)
++BTF_ID_FLAGS(func, bpf_iter_kmem_cache_new, KF_ITER_NEW | KF_SLEEPABLE)
++BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_ITER_NEXT | KF_RET_NULL | KF_SLEEPABLE)
++BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
+ BTF_KFUNCS_END(common_btf_ids)
+ 
+ static const struct btf_kfunc_id_set common_kfunc_set = {
+diff --git a/kernel/bpf/kmem_cache_iter.c b/kernel/bpf/kmem_cache_iter.c
+index ebc101d7da51b57c..3ae2158d767f4526 100644
+--- a/kernel/bpf/kmem_cache_iter.c
++++ b/kernel/bpf/kmem_cache_iter.c
+@@ -8,16 +8,116 @@
+ 
+ #include "../../mm/slab.h" /* kmem_cache, slab_caches and slab_mutex */
+ 
++/* open-coded version */
++struct bpf_iter_kmem_cache {
++	__u64 __opaque[1];
++} __attribute__((aligned(8)));
++
++struct bpf_iter_kmem_cache_kern {
++	struct kmem_cache *pos;
++} __attribute__((aligned(8)));
++
++#define KMEM_CACHE_POS_START  ((void *)1L)
++
++__bpf_kfunc_start_defs();
++
++__bpf_kfunc int bpf_iter_kmem_cache_new(struct bpf_iter_kmem_cache *it)
++{
++	struct bpf_iter_kmem_cache_kern *kit = (void *)it;
++
++	BUILD_BUG_ON(sizeof(*kit) > sizeof(*it));
++	BUILD_BUG_ON(__alignof__(*kit) != __alignof__(*it));
++
++	kit->pos = KMEM_CACHE_POS_START;
++	return 0;
++}
++
++__bpf_kfunc struct kmem_cache *bpf_iter_kmem_cache_next(struct bpf_iter_kmem_cache *it)
++{
++	struct bpf_iter_kmem_cache_kern *kit = (void *)it;
++	struct kmem_cache *prev = kit->pos;
++	struct kmem_cache *next;
++	bool destroy = false;
++
++	if (!prev)
++		return NULL;
++
++	mutex_lock(&slab_mutex);
++
++	if (list_empty(&slab_caches)) {
++		mutex_unlock(&slab_mutex);
++		return NULL;
++	}
++
++	if (prev == KMEM_CACHE_POS_START)
++		next = list_first_entry(&slab_caches, struct kmem_cache, list);
++	else if (list_last_entry(&slab_caches, struct kmem_cache, list) == prev)
++		next = NULL;
++	else
++		next = list_next_entry(prev, list);
++
++	/* boot_caches have negative refcount, don't touch them */
++	if (next && next->refcount > 0)
++		next->refcount++;
++
++	/* Skip kmem_cache_destroy() for active entries */
++	if (prev && prev != KMEM_CACHE_POS_START) {
++		if (prev->refcount > 1)
++			prev->refcount--;
++		else if (prev->refcount == 1)
++			destroy = true;
++	}
++
++	mutex_unlock(&slab_mutex);
++
++	if (destroy)
++		kmem_cache_destroy(prev);
++
++	kit->pos = next;
++	return next;
++}
++
++__bpf_kfunc void bpf_iter_kmem_cache_destroy(struct bpf_iter_kmem_cache *it)
++{
++	struct bpf_iter_kmem_cache_kern *kit = (void *)it;
++	struct kmem_cache *s = kit->pos;
++	bool destroy = false;
++
++	if (s == NULL || s == KMEM_CACHE_POS_START)
++		return;
++
++	mutex_lock(&slab_mutex);
++
++	/* Skip kmem_cache_destroy() for active entries */
++	if (s->refcount > 1)
++		s->refcount--;
++	else if (s->refcount == 1)
++		destroy = true;
++
++	mutex_unlock(&slab_mutex);
++
++	if (destroy)
++		kmem_cache_destroy(s);
++}
++
++__bpf_kfunc_end_defs();
++
+ struct bpf_iter__kmem_cache {
+ 	__bpf_md_ptr(struct bpf_iter_meta *, meta);
+ 	__bpf_md_ptr(struct kmem_cache *, s);
+ };
+ 
++union kmem_cache_iter_priv {
++	struct bpf_iter_kmem_cache it;
++	struct bpf_iter_kmem_cache_kern kit;
++};
++
+ static void *kmem_cache_iter_seq_start(struct seq_file *seq, loff_t *pos)
+ {
+ 	loff_t cnt = 0;
+ 	bool found = false;
+ 	struct kmem_cache *s;
++	union kmem_cache_iter_priv *p = seq->private;
+ 
+ 	mutex_lock(&slab_mutex);
+ 
+@@ -43,8 +143,9 @@ static void *kmem_cache_iter_seq_start(struct seq_file *seq, loff_t *pos)
+ 	mutex_unlock(&slab_mutex);
+ 
+ 	if (!found)
+-		return NULL;
++		s = NULL;
+ 
++	p->kit.pos = s;
+ 	return s;
+ }
+ 
+@@ -55,63 +156,24 @@ static void kmem_cache_iter_seq_stop(struct seq_file *seq, void *v)
+ 		.meta = &meta,
+ 		.s = v,
+ 	};
++	union kmem_cache_iter_priv *p = seq->private;
+ 	struct bpf_prog *prog;
+-	bool destroy = false;
+ 
+ 	meta.seq = seq;
+ 	prog = bpf_iter_get_info(&meta, true);
+ 	if (prog && !ctx.s)
+ 		bpf_iter_run_prog(prog, &ctx);
+ 
+-	if (ctx.s == NULL)
+-		return;
+-
+-	mutex_lock(&slab_mutex);
+-
+-	/* Skip kmem_cache_destroy() for active entries */
+-	if (ctx.s->refcount > 1)
+-		ctx.s->refcount--;
+-	else if (ctx.s->refcount == 1)
+-		destroy = true;
+-
+-	mutex_unlock(&slab_mutex);
+-
+-	if (destroy)
+-		kmem_cache_destroy(ctx.s);
++	bpf_iter_kmem_cache_destroy(&p->it);
+ }
+ 
+ static void *kmem_cache_iter_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+ {
+-	struct kmem_cache *s = v;
+-	struct kmem_cache *next = NULL;
+-	bool destroy = false;
++	union kmem_cache_iter_priv *p = seq->private;
+ 
+ 	++*pos;
+ 
+-	mutex_lock(&slab_mutex);
+-
+-	if (list_last_entry(&slab_caches, struct kmem_cache, list) != s) {
+-		next = list_next_entry(s, list);
+-
+-		WARN_ON_ONCE(next->refcount == 0);
+-
+-		/* boot_caches have negative refcount, don't touch them */
+-		if (next->refcount > 0)
+-			next->refcount++;
+-	}
+-
+-	/* Skip kmem_cache_destroy() for active entries */
+-	if (s->refcount > 1)
+-		s->refcount--;
+-	else if (s->refcount == 1)
+-		destroy = true;
+-
+-	mutex_unlock(&slab_mutex);
+-
+-	if (destroy)
+-		kmem_cache_destroy(s);
+-
+-	return next;
++	return bpf_iter_kmem_cache_next(&p->it);
+ }
+ 
+ static int kmem_cache_iter_seq_show(struct seq_file *seq, void *v)
+@@ -143,6 +205,7 @@ BTF_ID_LIST_GLOBAL_SINGLE(bpf_kmem_cache_btf_id, struct, kmem_cache)
+ 
+ static const struct bpf_iter_seq_info kmem_cache_iter_seq_info = {
+ 	.seq_ops		= &kmem_cache_iter_seq_ops,
++	.seq_priv_size		= sizeof(union kmem_cache_iter_priv),
+ };
+ 
+ static void bpf_iter_kmem_cache_show_fdinfo(const struct bpf_iter_aux_info *aux,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.47.0.163.g1226f6d8fa-goog
+
 
