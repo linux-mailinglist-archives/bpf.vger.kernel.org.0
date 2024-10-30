@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-43561-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43562-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 960689B66C0
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 16:00:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 209E09B6712
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 16:13:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B92FD1C2160A
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 15:00:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF95E281984
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 15:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B2E01F4FA5;
-	Wed, 30 Oct 2024 15:00:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0BFD2139B1;
+	Wed, 30 Oct 2024 15:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZfpRA9zD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fKj/TqcA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5E439FD6;
-	Wed, 30 Oct 2024 15:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5CED1F4737;
+	Wed, 30 Oct 2024 15:13:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730300424; cv=none; b=s7Vve80t5y8qCwDZYKxCzr5sYc8tkjLP9nMqoTuCWAKPkHBcGUK0tcNX18odWxocXNChVrkowTJV4+5DJXLZQUuLCFzVb/ldVGIWXJEJFwtb8ADmipkJMR7pezU3DTNkAzFk4o0sXsP0t7ra4RYjJFKRvopDRgfnPI6NVDg/cMQ=
+	t=1730301194; cv=none; b=aHE7bib3imqG0pZl5JAzaUrAyRYz6HXQQOKdi8GO1w2/MGUI3jBArEujs9acVVt6Xzshjci38XchM1ghhN7Vvs6Jw8h5X34cLQMveaoxSG9AFMct2zo/URGppWti1DwnNR5g4pb6P1yqAXGhhThrz4QDKquIBof979mnCgiQQw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730300424; c=relaxed/simple;
-	bh=+rRcm/+lwSj8hWVg0dE37lMtT1/fgx5HJ7K0cdIA8OU=;
+	s=arc-20240116; t=1730301194; c=relaxed/simple;
+	bh=/EXAojOsMFDxFHGVCb9V9dr13qlVFq842UaVIepIFgE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DekM8KHAwa4M2Nl3w+NvU8I5cuySkyNesdZgurFtolcWy5g3ntDnAFMu2NOO7N6ZDnhR/BTbDDhjwEDxWRmHXvnHh9N6EuxKlIto/56rZDJsY1wzBtX/WW7/DD/DefUij2haQt8X95g5SA0lwvhKn/ULAidrU9CuwEGW5p06yII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZfpRA9zD; arc=none smtp.client-ip=209.85.218.41
+	 To:Cc:Content-Type; b=H5dvE8bTHChc33QSm894fTwqZSkuVcdVSeotKRMB8NMiZG60sinbtcmry+jqn2HpKogzYon2P+Vk5NgJ4DnpuZzZJGL9rr0inaSz5Azd2ssiy0GySd8E+jlI45E/L4vBJQnHYa24xoY+KqPZrfhjVTllLCOHxm3rAGQl3XVbjUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fKj/TqcA; arc=none smtp.client-ip=209.85.218.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a99f646ff1bso849163666b.2;
-        Wed, 30 Oct 2024 08:00:21 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a9a0472306cso936641666b.3;
+        Wed, 30 Oct 2024 08:13:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730300420; x=1730905220; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730301188; x=1730905988; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Pq4Crpai+j8EarT4yJAmPFOWuTkKpFLe4uskxwo42T4=;
-        b=ZfpRA9zDavl3J/LaQDT8j7vw59x0dBLtMo+ukPw7E7fncdFW35R8cI/rlvN6KwYfVK
-         c+cYaqOVw61AGgXCfEu/xgPk/myX5M/1+LJPzksflmH8VmBhVDTVT41/W4FTMeKdJx1a
-         BrW7z+1L/OeoCgZzfLofGa0ZXDtipDnOvAo15sgexuvjapbK/SFyT6yzMd/VlCjfdW9R
-         GSEW7x1dARuglp/JmH7E9YenrTxxTqel5qNx56UoR9rTG1TDWna8VzjBSiCkZL6Y5zmS
-         zh0o9+gGtZ15cHWAIBhyyMyoohmq2hrKHU6YByqVMyxuHHQB8/JAz9kR1E9EGJ16oLMd
-         37Yg==
+        bh=7wZ/3rIgc0PMl9M8+kiyq2kg47wkj2TCg61zPukoFaE=;
+        b=fKj/TqcA9dIZBgSJW8/NpHbko4AGXUQKEl5COEyO17UW6HQH7DVc1DCSKuOljdWSNS
+         B/oqrcSYbHq7FG6J/cBgqB7DAS/vVCWpG3TzdVSu0m/iJtc755mwTW75VVYhU4XO0NYs
+         yEoQc3dWALGIyrPZ1TZtF8ImV06Jo4b2AW58iktvYEgJx7kGa6RNiLotuUmAyPzNVqiy
+         ELsyS3IwwKT5SbuDuHrZ6kRGXfsJ8brJ8QD57ppXKzM0859VNNTPr4DWT02M5yA+K9Yc
+         45XGxJn1ozVZiC/8n0C0oUJ+w5S5SBluxjZX0vvdTca7Wm5ScFUO/MBZA7byieRLuXg1
+         wU4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730300420; x=1730905220;
+        d=1e100.net; s=20230601; t=1730301188; x=1730905988;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Pq4Crpai+j8EarT4yJAmPFOWuTkKpFLe4uskxwo42T4=;
-        b=peA/W6f0QtHBpjmQdcIZgv5fX9ijAQQBCb5SNPbXJzCVpsiDsJKdXgZhfVa20dMn7T
-         v9PVR5tS4H/1jqRjlc5JgNQuvBfoyKaFxzkyVxnmZ5YAnwtrX+TKnRWWmTrACN3rnl60
-         IBkCSsscA1gn1OXJJ69zD1XsMQ6urvQw+exRnrLF1ioAcO9UyCgA6fmYJNm5yP4TaohP
-         dKIZAMBy9R8wmd5MriSrd/0N11uPHvQ1Dj6C36m0qaanmYOcYJfhoQDT0e+XRuPqtqtq
-         JZTmNlPdZA5fSOmLL18PYuMHfjIsJYta5jCi8A1sabCHHCgYVyN+ZPsjFIHCqdlD5JsH
-         2R1A==
-X-Forwarded-Encrypted: i=1; AJvYcCVyBYdP1aJsE2dUobaw/hom5cP6jPMnzCDE9w9Ms5qYrSWqpjVG9GlxtXCBDLXtE+WBxow=@vger.kernel.org, AJvYcCWyfhR33kIVgbnXn30gRRBE4EB9s2rCptAQsj1Bf4oVN1DM60a6DBQ/5hTpDnPwEsXrA/s5nAGpEvHM5BwO@vger.kernel.org, AJvYcCX8O/bg4UQsCks2Mnh7JIooQeRykN3ZDwF/SHI1Bwjaf2uTujjxbEWJHEY31yw3viTnR/jLS6z36Z3Jrv9SRIzZ4Cm1@vger.kernel.org, AJvYcCXb85vtmKjuF8anqY0AfirovBJDY3DZhL2JmrsQiwAMmpfBdi6aE7oHshoNEgp5ZNRxAKP4YeZRmLr1FpcWmY5A@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsI8p4DNUCawYcaWPEYID3v/ubEFiMChTkBU2jyKndG7Rees0K
-	+DZ/2nLwoUvmr5NdvJg+0Jg3eOp2OnZEXlbQzgtnQHqrlVCMR0+5n+FNqudzYXFQC8t+BVfWXR8
-	rMtNsO5Y9WecsDvw2Zo042QzadEQ=
-X-Google-Smtp-Source: AGHT+IGdDp7OKx8EOkzr8ntq+WhIBI9ptYcflNyLOYd8E1VLYMxkIsNJogF+SSt30ez+eTw1pHxkwBLFGvonAH39H0E=
-X-Received: by 2002:a17:907:3202:b0:a9a:1a6a:b5f5 with SMTP id
- a640c23a62f3a-a9e3a7f0abamr367067766b.56.1730300419761; Wed, 30 Oct 2024
- 08:00:19 -0700 (PDT)
+        bh=7wZ/3rIgc0PMl9M8+kiyq2kg47wkj2TCg61zPukoFaE=;
+        b=wmmXHOJ69If6aAbvY1S2SLD13fpn2WfU1SgK05KT/kktAGN3WQNwJjj97h4d4JlzQO
+         eCDgGs1TF1um08XmL/k6Fk1FqbB+0mmHzftSZBk+FZFYmzvsBL792lZOCghndGFqsQ3n
+         b4ZhrHsI4ESanZhlccqW/euFNeB63IImVhB8Estl/qBVCbTJOwNZt42OLNKQ8K3wLZGT
+         KJyPKsyIAJB7k44uZn996g9vnFVec9NsYioyHEXg8fPLD1P+DQ2o4kDqer9ctq5ZMAFi
+         oNjniHoQ6cvh5MC1Iw8EPjsYQChuwLdbSV+DxF1exVsi9YL8F1n9X6j1OJmKq0NGGMae
+         2ziQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUus340N0OSCXBZ6jaTNRU/qWYreVh+gRZ9oXSh49XLdGeDG+Pyiwx7FY2Pd/EUt8PaITRBeWzx70wtXKEulvx3TQUC@vger.kernel.org, AJvYcCV0D8zP59US5bC8ToI+SPxBOZbrce+5/mtTTRRRKBoSSfKVtRQDSi4pmE8IR9RJdWMYG3uNBi2Jd9HOCn+tVCz5@vger.kernel.org, AJvYcCVL3Davkaj8IBM+LXp88gz48nYpuIlmIeep15YluxyhpJp59ZY6at+1uIhzcf/UZQwObn4P2RPd1WZGhgHw@vger.kernel.org, AJvYcCXfhMtDWTYA1hUeiGyPG3TFx2wQBoOMr91houD4NvzbXJ1T+dl/vnrW6IaiUBiV3VxIsis=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxw6WAq9Jjkh1XUHta3G5RZlEHSgoeDoyG9dHxfPrT9LVyB8kYc
+	XpOdngGd9mRV0m1VSCNJ/aAefKqOxRK8x6PNLI5zFu9XElymCjYCt9StTXLhCKVkwyFXk87lgpk
+	pguaMtyyHaDeifpR6JQN+J1IY6JBOMMxGO/4=
+X-Google-Smtp-Source: AGHT+IExSwvzpH3UJEGvMMF0eVClqGUl9tjdHwJYj/Q6xYoipsn3UsNXXAm9m4Rvk63/xxxzi3p8yz1TbfpstcQHOKc=
+X-Received: by 2002:a17:907:9608:b0:a9a:835:b4eb with SMTP id
+ a640c23a62f3a-a9de5fa6071mr1427036066b.38.1730301187484; Wed, 30 Oct 2024
+ 08:13:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,13 +72,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20241029002208.1947947-1-dolinux.peng@gmail.com>
- <20241029002208.1947947-3-dolinux.peng@gmail.com> <CAEf4BzYBffp+47SLaV5sMWVAVSbxyDX3DnNoOju1y9wr+wupeQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYBffp+47SLaV5sMWVAVSbxyDX3DnNoOju1y9wr+wupeQ@mail.gmail.com>
+ <20241029002208.1947947-2-dolinux.peng@gmail.com> <CAEf4BzbVjkhtQPcsDOLX_aR_vvB1nCQj357EQ5xwey8486=Niw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbVjkhtQPcsDOLX_aR_vvB1nCQj357EQ5xwey8486=Niw@mail.gmail.com>
 From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Wed, 30 Oct 2024 23:00:07 +0800
-Message-ID: <CAErzpmsyV46Pexj3CUCSaX+MzckoKSAe9D3eeEcTGK8m5BKJUg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] bpf: Using binary search to improve the
- performance of btf_find_by_name_kind
+Date: Wed, 30 Oct 2024 23:12:55 +0800
+Message-ID: <CAErzpmuHJ-qZqzS11GPK5_=UsuxtPk1gbexbhJ7nj59M-NzSHA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] libbpf: Sort btf_types in ascending order by name
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, rostedt@goodmis.org, 
 	mhiramat@kernel.org, bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
@@ -86,323 +85,1051 @@ Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, rostedt@goodmis.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 30, 2024 at 6:13=E2=80=AFAM Andrii Nakryiko
+On Wed, Oct 30, 2024 at 5:58=E2=80=AFAM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
 > On Mon, Oct 28, 2024 at 5:22=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.=
 com> wrote:
 > >
-> > Currently, we are only using the linear search method to find the type =
-id
-> > by the name, which has a time complexity of O(n). This change involves
-> > sorting the names of btf types in ascending order and using binary sear=
-ch,
-> > which has a time complexity of O(log(n)). This idea was inspired by the
-> > following patch:
+> > To enhance the searching performance of btf_find_by_name_kind, we
+> > can sort the btf_types in ascending order based on their names.
+> > This allows us to implement a binary search method.
 > >
-> > 60443c88f3a8 ("kallsyms: Improve the performance of kallsyms_lookup_nam=
-e()").
-> >
-> > At present, this improvement is only for searching in vmlinux's and
-> > module's BTFs.
-> >
-> > Another change is the search direction, where we search the BTF first a=
-nd
-> > then its base, the type id of the first matched btf_type will be return=
-ed.
-> >
-> > Here is a time-consuming result that finding 87590 type ids by their na=
-mes in
-> > vmlinux's BTF.
-> >
-> > Before: 158426 ms
-> > After:     114 ms
-> >
-> > The average lookup performance has improved more than 1000x in the abov=
-e scenario.
-> >
-> > Tested-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > Co-developed-by: Eduard Zingerman <eddyz87@gmail.com>
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > > Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
 > > ---
 > > v4:
-> >  - move the modification of libbpf to another patch
-> >
-> > v3:
-> >  - Link: https://lore.kernel.org/all/20240608140835.965949-1-dolinux.pe=
-ng@gmail.com/
-> >  - Sort btf_types during build process other than during boot, to reduc=
-e the
-> >    overhead of memory and boot time.
-> >
-> > v2:
-> >  - Link: https://lore.kernel.org/all/20230909091646.420163-1-pengdongli=
-n@sangfor.com.cn
+> >  - Divide the patch into two parts: kernel and libbpf
+> >  - Use Eduard's code to sort btf_types in the btf__dedup function
+> >  - Correct some btf testcases due to modifications of the order of btf_=
+types.
 > > ---
-> >  include/linux/btf.h |   1 +
-> >  kernel/bpf/btf.c    | 157 ++++++++++++++++++++++++++++++++++++++++----
-> >  2 files changed, 147 insertions(+), 11 deletions(-)
+> >  tools/lib/bpf/btf.c                           | 115 +++++--
+> >  tools/testing/selftests/bpf/prog_tests/btf.c  | 296 +++++++++---------
+> >  .../bpf/prog_tests/btf_dedup_split.c          |  64 ++--
+> >  3 files changed, 268 insertions(+), 207 deletions(-)
 > >
-> > diff --git a/include/linux/btf.h b/include/linux/btf.h
-> > index b8a583194c4a..64c35aaa22fa 100644
-> > --- a/include/linux/btf.h
-> > +++ b/include/linux/btf.h
-> > @@ -216,6 +216,7 @@ bool btf_is_module(const struct btf *btf);
-> >  bool btf_is_vmlinux(const struct btf *btf);
-> >  struct module *btf_try_get_module(const struct btf *btf);
-> >  u32 btf_nr_types(const struct btf *btf);
-> > +u32 btf_type_cnt(const struct btf *btf);
-> >  struct btf *btf_base_btf(const struct btf *btf);
-> >  bool btf_member_is_reg_int(const struct btf *btf, const struct btf_typ=
-e *s,
-> >                            const struct btf_member *m,
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 5cd1c7a23848..6d0d58989640 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -262,6 +262,7 @@ struct btf {
-> >         u32 data_size;
-> >         refcount_t refcnt;
-> >         u32 id;
-> > +       u32 nr_types_sorted;
-> >         struct rcu_head rcu;
-> >         struct btf_kfunc_set_tab *kfunc_set_tab;
-> >         struct btf_id_dtor_kfunc_tab *dtor_kfunc_tab;
-> > @@ -548,23 +549,102 @@ u32 btf_nr_types(const struct btf *btf)
-> >         return total;
+>
+> I don't think we should do any extra sorting by default. Maybe we need
+> some extra API to explicitly re-sort underlying types. But then again,
+
+How do you feel about adding a new feature to the '--btf_features' option,
+which could be used to control sorting?
+
+> why just by type name? What if type names are equal, what do we use to
+> disambiguate. None of this is considered in this patch.
+
+If there are multiple btf_types with identical names in a btf file,
+they will have different kinds. These btf_types will be grouped
+together after being sorted according to their names. We can
+determine the range of the group and verify the btf_types within
+that range by their kind to obtain the appropriate btf_type.
+
+>
+> pw-bot: cr
+>
+> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > index 3c131039c523..5290e9d59997 100644
+> > --- a/tools/lib/bpf/btf.c
+> > +++ b/tools/lib/bpf/btf.c
+> > @@ -1,6 +1,9 @@
+> >  // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> >  /* Copyright (c) 2018 Facebook */
+> >
+> > +#ifndef _GNU_SOURCE
+> > +#define _GNU_SOURCE
+> > +#endif
+> >  #include <byteswap.h>
+> >  #include <endian.h>
+> >  #include <stdio.h>
+> > @@ -4902,6 +4905,49 @@ static int btf_dedup_resolve_fwds(struct btf_ded=
+up *d)
+> >         return err;
 > >  }
 > >
-> > -s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 =
-kind)
-> > +u32 btf_type_cnt(const struct btf *btf)
+> > +/* compare btf types by name, consider named < anonymous */
+> > +static int btf_compare_type_names(const void *a, const void *b, void *=
+priv)
 > > +{
-> > +       return btf->start_id + btf->nr_types;
+> > +       struct btf *btf =3D (struct btf *)priv;
+> > +       struct btf_type *ta =3D btf_type_by_id(btf, *(__u32 *)a);
+> > +       struct btf_type *tb =3D btf_type_by_id(btf, *(__u32 *)b);
+> > +       const char *na, *nb;
+> > +
+> > +       /* ta w/o name is greater than tb */
+> > +       if (!ta->name_off && tb->name_off)
+> > +               return 1;
+> > +       /* tb w/o name is smaller than ta */
+> > +       if (ta->name_off && !tb->name_off)
+> > +               return -1;
+> > +
+> > +       na =3D btf__str_by_offset(btf, ta->name_off);
+> > +       nb =3D btf__str_by_offset(btf, tb->name_off);
+> > +       return strcmp(na, nb);
 > > +}
 > > +
-> > +static s32 btf_find_by_name_bsearch(const struct btf *btf, const char =
-*name,
-> > +                                   int *start, int *end)
+> > +static __u32 *get_sorted_canon_types(struct btf_dedup *d, __u32 *cnt)
+> > +{
+> > +       int i, j, id, types_cnt =3D 0;
+> > +       __u32 *sorted_ids;
+> > +
+> > +       for (i =3D 0, id =3D d->btf->start_id; i < d->btf->nr_types; i+=
++, id++)
+> > +               if (d->map[id] =3D=3D id)
+> > +                       ++types_cnt;
+> > +
+> > +       sorted_ids =3D calloc(types_cnt, sizeof(*sorted_ids));
+> > +       if (!sorted_ids)
+> > +               return NULL;
+> > +
+> > +       for (j =3D 0, i =3D 0, id =3D d->btf->start_id; i < d->btf->nr_=
+types; i++, id++)
+> > +               if (d->map[id] =3D=3D id)
+> > +                       sorted_ids[j++] =3D id;
+> > +       qsort_r(sorted_ids, types_cnt, sizeof(*sorted_ids),
+> > +               btf_compare_type_names, d->btf);
+> > +       *cnt =3D types_cnt;
+> > +
+> > +       return sorted_ids;
+> > +}
+> > +
+> >  /*
+> >   * Compact types.
+> >   *
+> > @@ -4915,11 +4961,11 @@ static int btf_dedup_resolve_fwds(struct btf_de=
+dup *d)
+> >   */
+> >  static int btf_dedup_compact_types(struct btf_dedup *d)
 > >  {
+> > -       __u32 *new_offs;
+> > -       __u32 next_type_id =3D d->btf->start_id;
+> > +       __u32 canon_types_cnt =3D 0, canon_types_len =3D 0;
+> > +       __u32 *new_offs =3D NULL, *canon_types =3D NULL;
 > >         const struct btf_type *t;
-> > -       const char *tname;
-> > -       u32 i, total;
-> > +       const char *name_buf;
-> > +       int low, low_start, mid, high, high_end;
-> > +       int ret, start_id;
-> > +
-> > +       start_id =3D btf->base_btf ? btf->start_id : 1;
-> > +       low_start =3D low =3D start_id;
-> > +       high_end =3D high =3D start_id + btf->nr_types_sorted - 1;
-> > +
-> > +       while (low <=3D high) {
-> > +               mid =3D low + (high - low) / 2;
-> > +               t =3D btf_type_by_id(btf, mid);
-> > +               name_buf =3D btf_name_by_offset(btf, t->name_off);
-> > +               ret =3D strcmp(name, name_buf);
-> > +               if (ret > 0)
-> > +                       low =3D mid + 1;
-> > +               else if (ret < 0)
-> > +                       high =3D mid - 1;
-> > +               else
-> > +                       break;
-> > +       }
+> > -       void *p;
+> > -       int i, id, len;
+> > +       void *p, *new_types =3D NULL;
+> > +       int i, id, len, err;
 > >
-> > -       total =3D btf_nr_types(btf);
-> > -       for (i =3D 1; i < total; i++) {
-> > -               t =3D btf_type_by_id(btf, i);
-> > -               if (BTF_INFO_KIND(t->info) !=3D kind)
+> >         /* we are going to reuse hypot_map to store compaction remappin=
+g */
+> >         d->hypot_map[0] =3D 0;
+> > @@ -4929,36 +4975,61 @@ static int btf_dedup_compact_types(struct btf_d=
+edup *d)
+> >         for (i =3D 0, id =3D d->btf->start_id; i < d->btf->nr_types; i+=
++, id++)
+> >                 d->hypot_map[id] =3D BTF_UNPROCESSED_ID;
+> >
+> > -       p =3D d->btf->types_data;
+> > -
+> > -       for (i =3D 0, id =3D d->btf->start_id; i < d->btf->nr_types; i+=
++, id++) {
+> > -               if (d->map[id] !=3D id)
 > > -                       continue;
-> > +       if (low > high)
-> > +               return -ESRCH;
+> > +       canon_types =3D get_sorted_canon_types(d, &canon_types_cnt);
+> > +       if (!canon_types) {
+> > +               err =3D -ENOMEM;
+> > +               goto out_err;
+> > +       }
 > >
-> > -               tname =3D btf_name_by_offset(btf, t->name_off);
-> > -               if (!strcmp(tname, name))
-> > -                       return i;
-> > +       if (start) {
-> > +               low =3D mid;
-> > +               while (low > low_start) {
-> > +                       t =3D btf_type_by_id(btf, low-1);
-> > +                       name_buf =3D btf_name_by_offset(btf, t->name_of=
-f);
-> > +                       if (strcmp(name, name_buf))
-> > +                               break;
-> > +                       low--;
+> > +       for (i =3D 0; i < canon_types_cnt; i++) {
+> > +               id =3D canon_types[i];
+> >                 t =3D btf__type_by_id(d->btf, id);
+> >                 len =3D btf_type_size(t);
+> > -               if (len < 0)
+> > -                       return len;
+> > +               if (len < 0) {
+> > +                       err =3D len;
+> > +                       goto out_err;
 > > +               }
-> > +               *start =3D low;
+> > +               canon_types_len +=3D len;
 > > +       }
 > > +
-> > +       if (end) {
-> > +               high =3D mid;
-> > +               while (high < high_end) {
-> > +                       t =3D btf_type_by_id(btf, high+1);
-> > +                       name_buf =3D btf_name_by_offset(btf, t->name_of=
-f);
-> > +                       if (strcmp(name, name_buf))
-> > +                               break;
-> > +                       high++;
-> > +               }
-> > +               *end =3D high;
+> > +       new_offs =3D calloc(canon_types_cnt, sizeof(*new_offs));
+> > +       new_types =3D calloc(canon_types_len, 1);
+> > +       if (!new_types || !new_offs) {
+> > +               err =3D -ENOMEM;
+> > +               goto out_err;
+> > +       }
+> >
+> > -               memmove(p, t, len);
+> > -               d->hypot_map[id] =3D next_type_id;
+> > -               d->btf->type_offs[next_type_id - d->btf->start_id] =3D =
+p - d->btf->types_data;
+> > +       p =3D new_types;
+> > +
+> > +       for (i =3D 0; i < canon_types_cnt; i++) {
+> > +               id =3D canon_types[i];
+> > +               t =3D btf__type_by_id(d->btf, id);
+> > +               len =3D btf_type_size(t);
+> > +               memcpy(p, t, len);
+> > +               d->hypot_map[id] =3D d->btf->start_id + i;
+> > +               new_offs[i] =3D p - new_types;
+> >                 p +=3D len;
+> > -               next_type_id++;
 > >         }
 > >
->
-> this is an overcomplicated implementation, you need something like
-> find_linfo() implementation in kernel/bpf/log.c. Note how much shorter
-> and leaner it is.
->
-> I also don't think you need to return `end`. Given you always start
-> from start and linearly scan forward, you just need to make sure that
-> you never go beyond the BTF type array, for which you can use
-> btf_type_cnt(). So no need for doing this linear scan twice.
-
-Thank you, but the situation here is different. When
-the btf file is sorted, the btf_types with a name are
-placed at the beginning of the file, while those without
-a name are placed at the end. Additionally, if there
-are multiple btf_types with the same name in a btf file,
-they will have different kinds, and these btf_types with
-the same name will be grouped together. For example, in
-the following case:
-
-...
-[13561] FUNC 'bp_constraints_unlock' type_id=3D105264 linkage=3Dstatic
-[13562] STRUCT 'bp_cpuinfo' size=3D20 vlen=3D2
-        'cpu_pinned' type_id=3D66670 bits_offset=3D0
-        'tsk_pinned' type_id=3D13568 bits_offset=3D32
-[13563] VAR 'bp_cpuinfo' type_id=3D103076, linkage=3Dstatic
-[13564] FUNC 'bp_init_aperfmperf' type_id=3D70013 linkage=3Dstatic
-[13565] STRUCT 'bp_patching_desc' size=3D16 vlen=3D3
-...
-
-Both 13562 and 13563 have the name 'bp_cpuinfo', but their
-kinds are different. Therefore, when using the btf_find_by_name_bsearch
-function to find the btf_type named 'bp_cpuinfo', the start
-parameter will be set to 11562 and the end parameter will
-be set to 11563. We can then check their kind to obtain the
-correct btf_type.
-
->
-> > +       return mid;
-> > +}
+> >         /* shrink struct btf's internal types index and update btf_head=
+er */
+> > -       d->btf->nr_types =3D next_type_id - d->btf->start_id;
+> > -       d->btf->type_offs_cap =3D d->btf->nr_types;
+> > -       d->btf->hdr->type_len =3D p - d->btf->types_data;
+> > -       new_offs =3D libbpf_reallocarray(d->btf->type_offs, d->btf->typ=
+e_offs_cap,
+> > -                                      sizeof(*new_offs));
+> > -       if (d->btf->type_offs_cap && !new_offs)
+> > -               return -ENOMEM;
+> > +       free(d->btf->types_data);
+> > +       free(d->btf->type_offs);
+> > +       d->btf->types_data =3D new_types;
+> >         d->btf->type_offs =3D new_offs;
+> > +       d->btf->types_data_cap =3D canon_types_len;
+> > +       d->btf->type_offs_cap =3D canon_types_cnt;
+> > +       d->btf->nr_types =3D canon_types_cnt;
+> > +       d->btf->hdr->type_len =3D canon_types_len;
+> >         d->btf->hdr->str_off =3D d->btf->hdr->type_len;
+> >         d->btf->raw_size =3D d->btf->hdr->hdr_len + d->btf->hdr->type_l=
+en + d->btf->hdr->str_len;
+> > +       free(canon_types);
+> >         return 0;
 > > +
-> > +s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 =
-kind)
-> > +{
-> > +       const struct btf_type *t;
-> > +       const char *tname;
-> > +       int start, end;
-> > +       s32 id, total;
-> > +
-> > +       do {
-> > +               if (btf->nr_types_sorted) {
-> > +                       /* binary search */
-> > +                       id =3D btf_find_by_name_bsearch(btf, name, &sta=
-rt, &end);
-> > +                       if (id > 0) {
-> > +                               while (start <=3D end) {
-> > +                                       t =3D btf_type_by_id(btf, start=
-);
-> > +                                       if (BTF_INFO_KIND(t->info) =3D=
-=3D kind)
-> > +                                               return start;
-> > +                                       start++;
-> > +                               }
-> > +                       }
-> > +               } else {
-> > +                       /* linear search */
-> > +                       total =3D btf_type_cnt(btf);
-> > +                       for (id =3D btf->base_btf ? btf->start_id : 1;
-> > +                               id < total; id++) {
-> > +                               t =3D btf_type_by_id(btf, id);
-> > +                               if (BTF_INFO_KIND(t->info) !=3D kind)
-> > +                                       continue;
-> > +
-> > +                               tname =3D btf_name_by_offset(btf, t->na=
-me_off);
-> > +                               if (!strcmp(tname, name))
-> > +                                       return id;
-> > +                       }
-> > +               }
-> > +               btf =3D btf->base_btf;
-> > +       } while (btf);
-> > +
-> >         return -ENOENT;
+> > +out_err:
+> > +       free(canon_types);
+> > +       free(new_types);
+> > +       free(new_offs);
+> > +       return err;
 > >  }
 > >
-> > @@ -6141,6 +6221,53 @@ int get_kern_ctx_btf_id(struct bpf_verifier_log =
-*log, enum bpf_prog_type prog_ty
-> >         return kctx_type_id;
-> >  }
+> >  /*
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testi=
+ng/selftests/bpf/prog_tests/btf.c
+> > index e63d74ce046f..4dc1e2bfacbb 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/btf.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/btf.c
+> > @@ -7025,26 +7025,26 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > +                       BTF_TYPE_FLOAT_ENC(NAME_NTH(7), 4),            =
+                 /* [1] */
+> >                         /* int */
+> > -                       BTF_TYPE_INT_ENC(NAME_NTH(5), BTF_INT_SIGNED, 0=
+, 32, 4),        /* [1] */
+> > -                       /* int[16] */
+> > -                       BTF_TYPE_ARRAY_ENC(1, 1, 16),                  =
+                 /* [2] */
+> > +                       BTF_TYPE_INT_ENC(NAME_NTH(5), BTF_INT_SIGNED, 0=
+, 32, 4),        /* [2] */
+> >                         /* struct s { */
+> >                         BTF_STRUCT_ENC(NAME_NTH(8), 5, 88),            =
+                 /* [3] */
+> > -                               BTF_MEMBER_ENC(NAME_NTH(7), 4, 0),     =
+ /* struct s *next;      */
+> > -                               BTF_MEMBER_ENC(NAME_NTH(1), 5, 64),    =
+ /* const int *a;        */
+> > -                               BTF_MEMBER_ENC(NAME_NTH(2), 2, 128),   =
+ /* int b[16];           */
+> > -                               BTF_MEMBER_ENC(NAME_NTH(3), 1, 640),   =
+ /* int c;               */
+> > -                               BTF_MEMBER_ENC(NAME_NTH(4), 9, 672),   =
+ /* float d;             */
+> > +                               BTF_MEMBER_ENC(NAME_NTH(7), 7, 0),     =
+ /* struct s *next;      */
+> > +                               BTF_MEMBER_ENC(NAME_NTH(1), 8, 64),    =
+ /* const int *a;        */
+> > +                               BTF_MEMBER_ENC(NAME_NTH(2), 6, 128),   =
+ /* int b[16];           */
+> > +                               BTF_MEMBER_ENC(NAME_NTH(3), 2, 640),   =
+ /* int c;               */
+> > +                               BTF_MEMBER_ENC(NAME_NTH(4), 1, 672),   =
+ /* float d;             */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(2), 3, -1),          =
+                 /* [4] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(2), 3, 1),           =
+                 /* [5] */
+> > +                       /* int[16] */
+> > +                       BTF_TYPE_ARRAY_ENC(1, 2, 16),                  =
+                 /* [6] */
+> >                         /* ptr -> [3] struct s */
+> > -                       BTF_PTR_ENC(3),                                =
+                 /* [4] */
+> > +                       BTF_PTR_ENC(3),                                =
+                 /* [7] */
+> >                         /* ptr -> [6] const int */
+> > -                       BTF_PTR_ENC(6),                                =
+                 /* [5] */
+> > +                       BTF_PTR_ENC(9),                                =
+                 /* [8] */
+> >                         /* const -> [1] int */
+> > -                       BTF_CONST_ENC(1),                              =
+                 /* [6] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(2), 3, -1),          =
+                 /* [7] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(2), 3, 1),           =
+                 /* [8] */
+> > -                       BTF_TYPE_FLOAT_ENC(NAME_NTH(7), 4),            =
+                 /* [9] */
+> > +                       BTF_CONST_ENC(2),                              =
+                 /* [9] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0a\0b\0c\0d\0int\0float\0next\0s"),
+> > @@ -7082,10 +7082,10 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > -                       BTF_PTR_ENC(3),                                =
+ /* [1] ptr -> [3] */
+> > -                       BTF_STRUCT_ENC(NAME_TBD, 1, 8),                =
+ /* [2] struct s   */
+> > -                               BTF_MEMBER_ENC(NAME_TBD, 1, 0),
+> > -                       BTF_STRUCT_ENC(NAME_NTH(2), 0, 0),             =
+ /* [3] struct x   */
+> > +                       BTF_STRUCT_ENC(NAME_TBD, 1, 8),                =
+ /* [1] struct s   */
+> > +                               BTF_MEMBER_ENC(NAME_TBD, 3, 0),
+> > +                       BTF_STRUCT_ENC(NAME_NTH(2), 0, 0),             =
+ /* [2] struct x   */
+> > +                       BTF_PTR_ENC(2),                                =
+ /* [3] ptr -> [3] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0s\0x"),
+> > @@ -7123,15 +7123,13 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > -                       /* CU 1 */
+> > -                       BTF_STRUCT_ENC(0, 0, 1),                       =
+         /* [1] struct {}  */
+> > -                       BTF_PTR_ENC(1),                                =
+         /* [2] ptr -> [1] */
+> > -                       BTF_STRUCT_ENC(NAME_NTH(1), 1, 8),             =
+         /* [3] struct s   */
+> > -                               BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
+> > -                       /* CU 2 */
+> > -                       BTF_PTR_ENC(0),                                =
+         /* [4] ptr -> void */
+> > -                       BTF_STRUCT_ENC(NAME_NTH(1), 1, 8),             =
+         /* [5] struct s   */
+> > +                       BTF_STRUCT_ENC(NAME_NTH(1), 1, 8),             =
+         /* [1] struct s   */
+> >                                 BTF_MEMBER_ENC(NAME_NTH(2), 4, 0),
+> > +                       BTF_STRUCT_ENC(NAME_NTH(1), 1, 8),             =
+         /* [2] struct s   */
+> > +                               BTF_MEMBER_ENC(NAME_NTH(2), 5, 0),
+> > +                       BTF_STRUCT_ENC(0, 0, 1),                       =
+         /* [3] struct {}  */
+> > +                       BTF_PTR_ENC(3),                                =
+         /* [5] ptr -> [1] */
+> > +                       BTF_PTR_ENC(0),                                =
+         /* [4] ptr -> void */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0s\0x"),
+> > @@ -7182,28 +7180,28 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >                                 BTF_ENUM_ENC(NAME_TBD, 0),
+> >                                 BTF_ENUM_ENC(NAME_TBD, 1),
+> >                         BTF_FWD_ENC(NAME_TBD, 1 /* union kind_flag */),=
+                 /* [3] fwd */
+> > -                       BTF_TYPE_ARRAY_ENC(2, 1, 7),                   =
+                 /* [4] array */
+> > -                       BTF_STRUCT_ENC(NAME_TBD, 1, 4),                =
+                 /* [5] struct */
+> > +                       BTF_STRUCT_ENC(NAME_TBD, 1, 4),                =
+                 /* [4] struct */
+> >                                 BTF_MEMBER_ENC(NAME_TBD, 1, 0),
+> > -                       BTF_UNION_ENC(NAME_TBD, 1, 4),                 =
+                 /* [6] union */
+> > +                       BTF_UNION_ENC(NAME_TBD, 1, 4),                 =
+                 /* [5] union */
+> >                                 BTF_MEMBER_ENC(NAME_TBD, 1, 0),
+> > -                       BTF_TYPEDEF_ENC(NAME_TBD, 1),                  =
+                 /* [7] typedef */
+> > -                       BTF_PTR_ENC(0),                                =
+                 /* [8] ptr */
+> > -                       BTF_CONST_ENC(8),                              =
+                 /* [9] const */
+> > -                       BTF_VOLATILE_ENC(8),                           =
+                 /* [10] volatile */
+> > -                       BTF_RESTRICT_ENC(8),                           =
+                 /* [11] restrict */
+> > -                       BTF_FUNC_PROTO_ENC(1, 2),                      =
+                 /* [12] func_proto */
+> > -                               BTF_FUNC_PROTO_ARG_ENC(NAME_TBD, 1),
+> > -                               BTF_FUNC_PROTO_ARG_ENC(NAME_TBD, 18),
+> > -                       BTF_FUNC_ENC(NAME_TBD, 12),                    =
+                 /* [13] func */
+> > -                       BTF_TYPE_FLOAT_ENC(NAME_TBD, 2),               =
+                 /* [14] float */
+> > -                       BTF_DECL_TAG_ENC(NAME_TBD, 13, -1),            =
+                 /* [15] decl_tag */
+> > -                       BTF_DECL_TAG_ENC(NAME_TBD, 13, 1),             =
+                 /* [16] decl_tag */
+> > -                       BTF_DECL_TAG_ENC(NAME_TBD, 7, -1),             =
+                 /* [17] decl_tag */
+> > -                       BTF_TYPE_TAG_ENC(NAME_TBD, 8),                 =
+                 /* [18] type_tag */
+> > -                       BTF_TYPE_ENC(NAME_TBD, BTF_INFO_ENC(BTF_KIND_EN=
+UM64, 0, 2), 8), /* [19] enum64 */
+> > +                       BTF_TYPEDEF_ENC(NAME_TBD, 1),                  =
+                 /* [6] typedef */
+> > +                       BTF_FUNC_ENC(NAME_TBD, 19),                    =
+                 /* [7] func */
+> > +                       BTF_TYPE_FLOAT_ENC(NAME_TBD, 2),               =
+                 /* [8] float */
+> > +                       BTF_DECL_TAG_ENC(NAME_TBD, 7, -1),             =
+                 /* [9] decl_tag */
+> > +                       BTF_DECL_TAG_ENC(NAME_TBD, 7, 1),              =
+                 /* [10] decl_tag */
+> > +                       BTF_DECL_TAG_ENC(NAME_TBD, 6, -1),             =
+                 /* [11] decl_tag */
+> > +                       BTF_TYPE_TAG_ENC(NAME_TBD, 15),                =
+                 /* [12] type_tag */
+> > +                       BTF_TYPE_ENC(NAME_TBD, BTF_INFO_ENC(BTF_KIND_EN=
+UM64, 0, 2), 8), /* [13] enum64 */
+> >                                 BTF_ENUM64_ENC(NAME_TBD, 0, 0),
+> >                                 BTF_ENUM64_ENC(NAME_TBD, 1, 1),
+> > +                       BTF_TYPE_ARRAY_ENC(2, 2, 7),                   =
+                 /* [14] array */
+> > +                       BTF_PTR_ENC(0),                                =
+                 /* [15] ptr */
+> > +                       BTF_CONST_ENC(15),                             =
+                 /* [16] const */
+> > +                       BTF_VOLATILE_ENC(15),                          =
+                 /* [17] volatile */
+> > +                       BTF_RESTRICT_ENC(15),                          =
+                 /* [18] restrict */
+> > +                       BTF_FUNC_PROTO_ENC(1, 2),                      =
+                 /* [19] func_proto */
+> > +                               BTF_FUNC_PROTO_ARG_ENC(NAME_TBD, 1),
+> > +                               BTF_FUNC_PROTO_ARG_ENC(NAME_TBD, 12),
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0A\0B\0C\0D\0E\0F\0G\0H\0I\0J\0K\0L\0M\0N=
+\0O\0P\0Q\0R\0S\0T\0U"),
+> > @@ -7237,9 +7235,14 @@ static struct btf_dedup_test dedup_tests[] =3D {
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > +                       /* all allowed sizes */
+> > +                       BTF_TYPE_FLOAT_ENC(NAME_NTH(3), 2),
+> > +                       BTF_TYPE_FLOAT_ENC(NAME_NTH(3), 4),
+> > +                       BTF_TYPE_FLOAT_ENC(NAME_NTH(3), 8),
+> > +                       BTF_TYPE_FLOAT_ENC(NAME_NTH(3), 12),
+> > +                       BTF_TYPE_FLOAT_ENC(NAME_NTH(3), 16),
+> > +
+> >                         BTF_TYPE_INT_ENC(NAME_NTH(1), BTF_INT_SIGNED, 0=
+, 32, 8),
+> > -                       /* different name */
+> > -                       BTF_TYPE_INT_ENC(NAME_NTH(2), BTF_INT_SIGNED, 0=
+, 32, 8),
+> >                         /* different encoding */
+> >                         BTF_TYPE_INT_ENC(NAME_NTH(1), BTF_INT_CHAR, 0, =
+32, 8),
+> >                         BTF_TYPE_INT_ENC(NAME_NTH(1), BTF_INT_BOOL, 0, =
+32, 8),
+> > @@ -7249,12 +7252,8 @@ static struct btf_dedup_test dedup_tests[] =3D {
+> >                         BTF_TYPE_INT_ENC(NAME_NTH(1), BTF_INT_SIGNED, 0=
+, 27, 8),
+> >                         /* different byte size */
+> >                         BTF_TYPE_INT_ENC(NAME_NTH(1), BTF_INT_SIGNED, 0=
+, 32, 4),
+> > -                       /* all allowed sizes */
+> > -                       BTF_TYPE_FLOAT_ENC(NAME_NTH(3), 2),
+> > -                       BTF_TYPE_FLOAT_ENC(NAME_NTH(3), 4),
+> > -                       BTF_TYPE_FLOAT_ENC(NAME_NTH(3), 8),
+> > -                       BTF_TYPE_FLOAT_ENC(NAME_NTH(3), 12),
+> > -                       BTF_TYPE_FLOAT_ENC(NAME_NTH(3), 16),
+> > +                       /* different name */
+> > +                       BTF_TYPE_INT_ENC(NAME_NTH(2), BTF_INT_SIGNED, 0=
+, 32, 8),
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0int\0some other int\0float"),
+> > @@ -7323,18 +7322,18 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > -                       /* int */
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [1] */
+> > -                       /* static int t */
+> > -                       BTF_VAR_ENC(NAME_NTH(2), 1, 0),                =
+ /* [2] */
+> > -                       /* .bss section */                             =
+ /* [3] */
+> > +                       /* .bss section */                             =
+ /* [1] */
+> >                         BTF_TYPE_ENC(NAME_NTH(1), BTF_INFO_ENC(BTF_KIND=
+_DATASEC, 0, 1), 4),
+> > -                       BTF_VAR_SECINFO_ENC(2, 0, 4),
+> > -                       /* another static int t */
+> > -                       BTF_VAR_ENC(NAME_NTH(2), 1, 0),                =
+ /* [4] */
+> > -                       /* another .bss section */                     =
+ /* [5] */
+> > +                       BTF_VAR_SECINFO_ENC(3, 0, 4),
+> > +                       /* another .bss section */                     =
+ /* [2] */
+> >                         BTF_TYPE_ENC(NAME_NTH(1), BTF_INFO_ENC(BTF_KIND=
+_DATASEC, 0, 1), 4),
+> >                         BTF_VAR_SECINFO_ENC(4, 0, 4),
+> > +                       /* static int t */
+> > +                       BTF_VAR_ENC(NAME_NTH(2), 5, 0),                =
+ /* [3] */
+> > +                       /* another static int t */
+> > +                       BTF_VAR_ENC(NAME_NTH(2), 5, 0),                =
+ /* [4] */
+> > +                       /* int */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [5] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0.bss\0t"),
+> > @@ -7371,15 +7370,15 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [1] */
+> > -                       BTF_VAR_ENC(NAME_NTH(1), 1, 0),                =
+ /* [2] */
+> > -                       BTF_FUNC_PROTO_ENC(0, 2),                      =
+ /* [3] */
+> > -                               BTF_FUNC_PROTO_ARG_ENC(NAME_NTH(2), 1),
+> > -                               BTF_FUNC_PROTO_ARG_ENC(NAME_NTH(3), 1),
+> > -                       BTF_FUNC_ENC(NAME_NTH(4), 3),                  =
+ /* [4] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(5), 2, -1),          =
+ /* [5] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(5), 4, -1),          =
+ /* [6] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(5), 4, 1),           =
+ /* [7] */
+> > +                       BTF_FUNC_ENC(NAME_NTH(4), 7),                  =
+ /* [1] */
+> > +                       BTF_VAR_ENC(NAME_NTH(1), 6, 0),                =
+ /* [2] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(5), 2, -1),          =
+ /* [3] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(5), 1, -1),          =
+ /* [4] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(5), 1, 1),           =
+ /* [5] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [6] */
+> > +                       BTF_FUNC_PROTO_ENC(0, 2),                      =
+ /* [7] */
+> > +                               BTF_FUNC_PROTO_ARG_ENC(NAME_NTH(2), 6),
+> > +                               BTF_FUNC_PROTO_ARG_ENC(NAME_NTH(3), 6),
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0t\0a1\0a2\0f\0tag"),
+> > @@ -7419,17 +7418,17 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [1] */
+> > -                       BTF_FUNC_PROTO_ENC(0, 2),                      =
+ /* [2] */
+> > -                               BTF_FUNC_PROTO_ARG_ENC(NAME_NTH(1), 1),
+> > -                               BTF_FUNC_PROTO_ARG_ENC(NAME_NTH(2), 1),
+> > -                       BTF_FUNC_ENC(NAME_NTH(3), 2),                  =
+ /* [3] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(4), 3, -1),          =
+ /* [4] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(5), 3, -1),          =
+ /* [5] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(6), 3, -1),          =
+ /* [6] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(4), 3, 1),           =
+ /* [7] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(5), 3, 1),           =
+ /* [8] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(6), 3, 1),           =
+ /* [9] */
+> > +                       BTF_FUNC_ENC(NAME_NTH(3), 9),                  =
+ /* [1] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(4), 1, -1),          =
+ /* [2] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(4), 1, 1),           =
+ /* [3] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(5), 1, -1),          =
+ /* [4] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(5), 1, 1),           =
+ /* [5] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(6), 1, -1),          =
+ /* [6] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(6), 1, 1),           =
+ /* [7] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [8] */
+> > +                       BTF_FUNC_PROTO_ENC(0, 2),                      =
+ /* [9] */
+> > +                               BTF_FUNC_PROTO_ARG_ENC(NAME_NTH(1), 8),
+> > +                               BTF_FUNC_PROTO_ARG_ENC(NAME_NTH(2), 8),
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0a1\0a2\0f\0tag1\0tag2\0tag3"),
+> > @@ -7465,16 +7464,16 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [1] */
+> > -                       BTF_STRUCT_ENC(NAME_NTH(1), 2, 8),             =
+ /* [2] */
+> > -                               BTF_MEMBER_ENC(NAME_NTH(2), 1, 0),
+> > -                               BTF_MEMBER_ENC(NAME_NTH(3), 1, 32),
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(4), 2, -1),          =
+ /* [3] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(5), 2, -1),          =
+ /* [4] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(6), 2, -1),          =
+ /* [5] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(4), 2, 1),           =
+ /* [6] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(5), 2, 1),           =
+ /* [7] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(6), 2, 1),           =
+ /* [8] */
+> > +                       BTF_STRUCT_ENC(NAME_NTH(1), 2, 8),             =
+ /* [1] */
+> > +                               BTF_MEMBER_ENC(NAME_NTH(2), 8, 0),
+> > +                               BTF_MEMBER_ENC(NAME_NTH(3), 8, 32),
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(4), 1, -1),          =
+ /* [2] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(4), 1, 1),           =
+ /* [3] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(5), 1, -1),          =
+ /* [4] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(5), 1, 1),           =
+ /* [5] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(6), 1, -1),          =
+ /* [6] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(6), 1, 1),           =
+ /* [7] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [8] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0t\0m1\0m2\0tag1\0tag2\0tag3"),
+> > @@ -7500,11 +7499,11 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [1] */
+> > -                       BTF_TYPEDEF_ENC(NAME_NTH(1), 1),               =
+ /* [2] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(2), 2, -1),          =
+ /* [3] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(3), 2, -1),          =
+ /* [4] */
+> > -                       BTF_DECL_TAG_ENC(NAME_NTH(4), 2, -1),          =
+ /* [5] */
+> > +                       BTF_TYPEDEF_ENC(NAME_NTH(1), 5),               =
+ /* [1] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(2), 1, -1),          =
+ /* [2] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(3), 1, -1),          =
+ /* [3] */
+> > +                       BTF_DECL_TAG_ENC(NAME_NTH(4), 1, -1),          =
+ /* [4] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [5] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0t\0tag1\0tag2\0tag3"),
+> > @@ -7533,12 +7532,12 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> >                         /* ptr -> tag2 -> tag1 -> int */
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [1] */
+> > -                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 1),              =
+ /* [2] */
+> > -                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 2),              =
+ /* [3] */
+> > -                       BTF_PTR_ENC(3),                                =
+ /* [4] */
+> > +                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 3),              =
+ /* [1] */
+> > +                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 1),              =
+ /* [2] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [3] */
+> > +                       BTF_PTR_ENC(2),                                =
+ /* [4] */
+> >                         /* ptr -> tag1 -> int */
+> > -                       BTF_PTR_ENC(2),                                =
+ /* [5] */
+> > +                       BTF_PTR_ENC(1),                                =
+ /* [5] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0tag1\0tag2"),
+> > @@ -7563,13 +7562,13 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> >                         /* ptr -> tag2 -> tag1 -> int */
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [1] */
+> > -                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 1),              =
+ /* [2] */
+> > -                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 2),              =
+ /* [3] */
+> > -                       BTF_PTR_ENC(3),                                =
+ /* [4] */
+> > +                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 4),              =
+ /* [1] */
+> > +                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 1),              =
+ /* [2] */
+> >                         /* ptr -> tag2 -> int */
+> > -                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 1),              =
+ /* [5] */
+> > -                       BTF_PTR_ENC(5),                                =
+ /* [6] */
+> > +                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 4),              =
+ /* [3] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [4] */
+> > +                       BTF_PTR_ENC(2),                                =
+ /* [5] */
+> > +                       BTF_PTR_ENC(3),                                =
+ /* [6] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0tag1\0tag2"),
+> > @@ -7594,15 +7593,13 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > -                       /* ptr -> tag2 -> tag1 -> int */
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [1] */
+> > -                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 1),              =
+ /* [2] */
+> > -                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 2),              =
+ /* [3] */
+> > -                       BTF_PTR_ENC(3),                                =
+ /* [4] */
+> > -                       /* ptr -> tag1 -> tag2 -> int */
+> > -                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 1),              =
+ /* [5] */
+> > -                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 5),              =
+ /* [6] */
+> > -                       BTF_PTR_ENC(6),                                =
+ /* [7] */
+> > +                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 5),              =
+ /* [1] */
+> > +                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 4),              =
+ /* [2] */
+> > +                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 1),              =
+ /* [3] */
+> > +                       BTF_TYPE_TAG_ENC(NAME_NTH(2), 5),              =
+ /* [4] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [5] */
+> > +                       BTF_PTR_ENC(3),                                =
+ /* [6] */
+> > +                       BTF_PTR_ENC(2),                                =
+ /* [7] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0tag1\0tag2"),
+> > @@ -7626,14 +7623,12 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > -                       /* ptr -> tag1 -> int */
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [1] */
+> > -                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 1),              =
+ /* [2] */
+> > -                       BTF_PTR_ENC(2),                                =
+ /* [3] */
+> > -                       /* ptr -> tag1 -> long */
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 64, 8), =
+ /* [4] */
+> > -                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 4),              =
+ /* [5] */
+> > -                       BTF_PTR_ENC(5),                                =
+ /* [6] */
+> > +                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 3),              =
+ /* [1] */
+> > +                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 5),              =
+ /* [2] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+ /* [3] */
+> > +                       BTF_PTR_ENC(1),                                =
+ /* [4] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 64, 8), =
+ /* [5] */
+> > +                       BTF_PTR_ENC(2),                                =
+ /* [6] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0tag1"),
+> > @@ -7656,10 +7651,10 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+                         /* [1] */
+> > -                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 1),              =
+                         /* [2] */
+> > -                       BTF_TYPE_ENC(NAME_NTH(2), BTF_INFO_ENC(BTF_KIND=
+_STRUCT, 1, 1), 4),      /* [3] */
+> > +                       BTF_TYPE_ENC(NAME_NTH(2), BTF_INFO_ENC(BTF_KIND=
+_STRUCT, 1, 1), 4),      /* [1] */
+> >                         BTF_MEMBER_ENC(NAME_NTH(3), 2, BTF_MEMBER_OFFSE=
+T(0, 0)),
+> > +                       BTF_TYPE_TAG_ENC(NAME_NTH(1), 3),              =
+                         /* [2] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+                         /* [3] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0tag1\0t\0m"),
+> > @@ -7861,10 +7856,10 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> >                         BTF_STRUCT_ENC(NAME_NTH(1), 1, 4),             =
+/* [1] */
+> > -                       BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+/* [2] */
+> > -                       BTF_PTR_ENC(1),                                =
+/* [3] */
+> > -                       BTF_TYPEDEF_ENC(NAME_NTH(3), 3),               =
+/* [4] */
+> > +                       BTF_MEMBER_ENC(NAME_NTH(2), 3, 0),
+> > +                       BTF_TYPEDEF_ENC(NAME_NTH(3), 4),               =
+/* [2] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+/* [3] */
+> > +                       BTF_PTR_ENC(1),                                =
+/* [4] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0foo\0x\0foo_ptr"),
+> > @@ -7901,10 +7896,10 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> >                         BTF_UNION_ENC(NAME_NTH(1), 1, 4),              =
+/* [1] */
+> > -                       BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+/* [2] */
+> > -                       BTF_PTR_ENC(1),                                =
+/* [3] */
+> > -                       BTF_TYPEDEF_ENC(NAME_NTH(3), 3),               =
+/* [4] */
+> > +                       BTF_MEMBER_ENC(NAME_NTH(2), 3, 0),
+> > +                       BTF_TYPEDEF_ENC(NAME_NTH(3), 4),               =
+/* [2] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+/* [3] */
+> > +                       BTF_PTR_ENC(1),                                =
+/* [4] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0foo\0x\0foo_ptr"),
+> > @@ -7940,14 +7935,12 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > -                       /* CU 1 */
+> >                         BTF_STRUCT_ENC(NAME_NTH(1), 1, 4),             =
+/* [1] */
+> > -                       BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+/* [2] */
+> > -                       /* CU 2 */
+> > -                       BTF_FWD_ENC(NAME_NTH(3), 1),                   =
+/* [3] */
+> > -                       BTF_PTR_ENC(3),                                =
+/* [4] */
+> > -                       BTF_TYPEDEF_ENC(NAME_NTH(3), 4),               =
+/* [5] */
+> > +                       BTF_MEMBER_ENC(NAME_NTH(2), 4, 0),
+> > +                       BTF_FWD_ENC(NAME_NTH(3), 1),                   =
+/* [2] */
+> > +                       BTF_TYPEDEF_ENC(NAME_NTH(3), 5),               =
+/* [3] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+/* [4] */
+> > +                       BTF_PTR_ENC(2),                                =
+/* [5] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0foo\0x\0foo_ptr"),
+> > @@ -7990,18 +7983,15 @@ static struct btf_dedup_test dedup_tests[] =3D =
+{
+> >         },
+> >         .expect =3D {
+> >                 .raw_types =3D {
+> > -                       /* CU 1 */
+> >                         BTF_STRUCT_ENC(NAME_NTH(1), 1, 4),             =
+/* [1] */
+> > -                       BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
+> > -                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+/* [2] */
+> > -                       /* CU 2 */
+> > -                       BTF_FWD_ENC(NAME_NTH(1), 0),                   =
+/* [3] */
+> > -                       BTF_PTR_ENC(3),                                =
+/* [4] */
+> > -                       BTF_TYPEDEF_ENC(NAME_NTH(4), 4),               =
+/* [5] */
+> > -                       /* CU 3 */
+> > -                       BTF_STRUCT_ENC(NAME_NTH(1), 2, 8),             =
+/* [6] */
+> > -                       BTF_MEMBER_ENC(NAME_NTH(2), 2, 0),
+> > -                       BTF_MEMBER_ENC(NAME_NTH(3), 2, 0),
+> > +                       BTF_MEMBER_ENC(NAME_NTH(2), 5, 0),
+> > +                       BTF_FWD_ENC(NAME_NTH(1), 0),                   =
+/* [2] */
+> > +                       BTF_STRUCT_ENC(NAME_NTH(1), 2, 8),             =
+/* [3] */
+> > +                       BTF_MEMBER_ENC(NAME_NTH(2), 5, 0),
+> > +                       BTF_MEMBER_ENC(NAME_NTH(3), 5, 0),
+> > +                       BTF_TYPEDEF_ENC(NAME_NTH(4), 6),               =
+/* [4] */
+> > +                       BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4), =
+/* [5] */
+> > +                       BTF_PTR_ENC(2),                                =
+/* [6] */
+> >                         BTF_END_RAW,
+> >                 },
+> >                 BTF_STR_SEC("\0foo\0x\0y\0foo_ptr"),
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c b=
+/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
+> > index d9024c7a892a..e50c290b2d8c 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
+> > @@ -311,18 +311,18 @@ static void test_split_struct_duped() {
+> >                 "[5] STRUCT 's1' size=3D16 vlen=3D2\n"
+> >                 "\t'f1' type_id=3D2 bits_offset=3D0\n"
+> >                 "\t'f2' type_id=3D4 bits_offset=3D64",
+> > -               "[6] PTR '(anon)' type_id=3D8",
+> > -               "[7] PTR '(anon)' type_id=3D9",
+> > -               "[8] STRUCT 's1' size=3D16 vlen=3D2\n"
+> > -               "\t'f1' type_id=3D6 bits_offset=3D0\n"
+> > -               "\t'f2' type_id=3D7 bits_offset=3D64",
+> > -               "[9] STRUCT 's2' size=3D40 vlen=3D4\n"
+> > -               "\t'f1' type_id=3D6 bits_offset=3D0\n"
+> > -               "\t'f2' type_id=3D7 bits_offset=3D64\n"
+> > +               "[6] STRUCT 's1' size=3D16 vlen=3D2\n"
+> > +               "\t'f1' type_id=3D9 bits_offset=3D0\n"
+> > +               "\t'f2' type_id=3D10 bits_offset=3D64",
+> > +               "[7] STRUCT 's2' size=3D40 vlen=3D4\n"
+> > +               "\t'f1' type_id=3D9 bits_offset=3D0\n"
+> > +               "\t'f2' type_id=3D10 bits_offset=3D64\n"
+> >                 "\t'f3' type_id=3D1 bits_offset=3D128\n"
+> > -               "\t'f4' type_id=3D8 bits_offset=3D192",
+> > -               "[10] STRUCT 's3' size=3D8 vlen=3D1\n"
+> > -               "\t'f1' type_id=3D7 bits_offset=3D0");
+> > +               "\t'f4' type_id=3D6 bits_offset=3D192",
+> > +               "[8] STRUCT 's3' size=3D8 vlen=3D1\n"
+> > +               "\t'f1' type_id=3D10 bits_offset=3D0",
+> > +               "[9] PTR '(anon)' type_id=3D6",
+> > +               "[10] PTR '(anon)' type_id=3D7");
 > >
-> > +static int btf_check_sort(struct btf *btf, int start_id)
-> > +{
-> > +       int i, n, nr_names =3D 0;
-> > +
-> > +       n =3D btf_nr_types(btf);
-> > +       for (i =3D start_id; i < n; i++) {
-> > +               const struct btf_type *t;
-> > +               const char *name;
-> > +
-> > +               t =3D btf_type_by_id(btf, i);
-> > +               if (!t)
-> > +                       return -EINVAL;
-> > +
-> > +               name =3D btf_str_by_offset(btf, t->name_off);
-> > +               if (!str_is_empty(name))
-> > +                       nr_names++;
-> > +       }
-> > +
->
-> this loop makes zero sense to me, what are you trying to achieve with
-> it and why?
-
-As previously mentioned, if the btf file is sorted, the
-btf_type with a name will be placed at the beginning of
-the file in ascending order, while those without a name
-will be placed at the end. Therefore, we can verify if
-the btf file is sorted by following these steps:
-
-Step 1: Count the number of btf_types with a name and
-             store it as nr_names.
-
-Step 2: Inspect the first nr_names btf_types. If any of
-            the following cases occur, it indicates that the
-            btf file is not sorted:
-           1. A btf_type without a name is encountered.
-           2. The name of the current btf_type is greater  than
-               the name of the next btf_type.
-
->
-> > +       for (i =3D 0; i < nr_names - 1; i++) {
->
-> just start from start_id + 1, all the way to n, and check that sorting
-> invariant holds for all items
->
-> > +               const struct btf_type *t1, *t2;
-> > +               const char *s1, *s2;
-> > +
-> > +               t1 =3D btf_type_by_id(btf, start_id + i);
-> > +               if (!t1)
-> > +                       return -EINVAL;
-> > +
-> > +               s1 =3D btf_str_by_offset(btf, t1->name_off);
-> > +               if (str_is_empty(s1))
-> > +                       goto out;
-> > +
-> > +               t2 =3D btf_type_by_id(btf, start_id + i + 1);
-> > +               if (!t2)
-> > +                       return -EINVAL;
-> > +
-> > +               s2 =3D btf_str_by_offset(btf, t2->name_off);
-> > +               if (str_is_empty(s2))
-> > +                       goto out;
-> > +
-> > +               if (strcmp(s1, s2) > 0)
-> > +                       goto out;
-> > +       }
-> > +
-> > +       btf->nr_types_sorted =3D nr_names;
-> > +out:
-> > +       return 0;
-> > +}
->
-> [...]
+> >  cleanup:
+> >         btf__free(btf2);
+> > @@ -385,13 +385,13 @@ static void test_split_dup_struct_in_cu()
+> >
+> >         VALIDATE_RAW_BTF(
+> >                         btf1,
+> > -                       "[1] INT 'int' size=3D4 bits_offset=3D0 nr_bits=
+=3D32 encoding=3DSIGNED",
+> > -                       "[2] STRUCT 's' size=3D8 vlen=3D2\n"
+> > -                       "\t'a' type_id=3D3 bits_offset=3D0\n"
+> > -                       "\t'b' type_id=3D3 bits_offset=3D0",
+> > -                       "[3] STRUCT '(anon)' size=3D8 vlen=3D2\n"
+> > -                       "\t'f1' type_id=3D1 bits_offset=3D0\n"
+> > -                       "\t'f2' type_id=3D1 bits_offset=3D32");
+> > +                       "[1] STRUCT '(anon)' size=3D8 vlen=3D2\n"
+> > +                       "\t'f1' type_id=3D2 bits_offset=3D0\n"
+> > +                       "\t'f2' type_id=3D2 bits_offset=3D32",
+> > +                       "[2] INT 'int' size=3D4 bits_offset=3D0 nr_bits=
+=3D32 encoding=3DSIGNED",
+> > +                       "[3] STRUCT 's' size=3D8 vlen=3D2\n"
+> > +                       "\t'a' type_id=3D1 bits_offset=3D0\n"
+> > +                       "\t'b' type_id=3D1 bits_offset=3D0");
+> >
+> >         /* and add the same data on top of it */
+> >         btf2 =3D btf__new_empty_split(btf1);
+> > @@ -402,13 +402,13 @@ static void test_split_dup_struct_in_cu()
+> >
+> >         VALIDATE_RAW_BTF(
+> >                         btf2,
+> > -                       "[1] INT 'int' size=3D4 bits_offset=3D0 nr_bits=
+=3D32 encoding=3DSIGNED",
+> > -                       "[2] STRUCT 's' size=3D8 vlen=3D2\n"
+> > -                       "\t'a' type_id=3D3 bits_offset=3D0\n"
+> > -                       "\t'b' type_id=3D3 bits_offset=3D0",
+> > -                       "[3] STRUCT '(anon)' size=3D8 vlen=3D2\n"
+> > -                       "\t'f1' type_id=3D1 bits_offset=3D0\n"
+> > -                       "\t'f2' type_id=3D1 bits_offset=3D32",
+> > +                       "[1] STRUCT '(anon)' size=3D8 vlen=3D2\n"
+> > +                       "\t'f1' type_id=3D2 bits_offset=3D0\n"
+> > +                       "\t'f2' type_id=3D2 bits_offset=3D32",
+> > +                       "[2] INT 'int' size=3D4 bits_offset=3D0 nr_bits=
+=3D32 encoding=3DSIGNED",
+> > +                       "[3] STRUCT 's' size=3D8 vlen=3D2\n"
+> > +                       "\t'a' type_id=3D1 bits_offset=3D0\n"
+> > +                       "\t'b' type_id=3D1 bits_offset=3D0",
+> >                         "[4] INT 'int' size=3D4 bits_offset=3D0 nr_bits=
+=3D32 encoding=3DSIGNED",
+> >                         "[5] STRUCT 's' size=3D8 vlen=3D2\n"
+> >                         "\t'a' type_id=3D6 bits_offset=3D0\n"
+> > @@ -427,13 +427,13 @@ static void test_split_dup_struct_in_cu()
+> >         /* after dedup it should match the original data */
+> >         VALIDATE_RAW_BTF(
+> >                         btf2,
+> > -                       "[1] INT 'int' size=3D4 bits_offset=3D0 nr_bits=
+=3D32 encoding=3DSIGNED",
+> > -                       "[2] STRUCT 's' size=3D8 vlen=3D2\n"
+> > -                       "\t'a' type_id=3D3 bits_offset=3D0\n"
+> > -                       "\t'b' type_id=3D3 bits_offset=3D0",
+> > -                       "[3] STRUCT '(anon)' size=3D8 vlen=3D2\n"
+> > -                       "\t'f1' type_id=3D1 bits_offset=3D0\n"
+> > -                       "\t'f2' type_id=3D1 bits_offset=3D32");
+> > +                       "[1] STRUCT '(anon)' size=3D8 vlen=3D2\n"
+> > +                       "\t'f1' type_id=3D2 bits_offset=3D0\n"
+> > +                       "\t'f2' type_id=3D2 bits_offset=3D32",
+> > +                       "[2] INT 'int' size=3D4 bits_offset=3D0 nr_bits=
+=3D32 encoding=3DSIGNED",
+> > +                       "[3] STRUCT 's' size=3D8 vlen=3D2\n"
+> > +                       "\t'a' type_id=3D1 bits_offset=3D0\n"
+> > +                       "\t'b' type_id=3D1 bits_offset=3D0");
+> >
+> >  cleanup:
+> >         btf__free(btf2);
+> > --
+> > 2.34.1
+> >
 
