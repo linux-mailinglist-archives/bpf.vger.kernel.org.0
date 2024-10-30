@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-43606-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBFE69B6FD7
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 23:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 704D29B6FD9
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 23:28:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 075761C20D92
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 22:28:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 934F11C20E23
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 22:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617E41E8859;
-	Wed, 30 Oct 2024 22:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B55E21745A;
+	Wed, 30 Oct 2024 22:28:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RyfocfDc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hcl9FquJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47CB1946A0;
-	Wed, 30 Oct 2024 22:28:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0620E2144D3;
+	Wed, 30 Oct 2024 22:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730327301; cv=none; b=MYNqLZsfZ1KvTBeyIesbySCgiXNqbOVaSzTReqFWXioq56DWBfWmZREpXzsBx6SS7pQAdo8/BjvbQjb3EJa+Rn6UArLwo7+HjNEATtbqJrklGRRI36Omq3AIbuL6Qt8maI5tCjJO38l9xg1jlhyTNWx3abXcermCZNeWLBSLiYs=
+	t=1730327303; cv=none; b=oMiYZl06GiOJgoZd5T+wW23axAYDWGMuttbeuNBpZEoanrnOGXCgNHKhrlpuZDNgK//4TwBBC/tFZf4o7XRLS1+Xq6GI3COv4vina3hyb/hq0Pn4sVkbYavntvBmNcXb8/7fZAd4wBCVq2/0/83Pg81OV8VDSKafp9Uz97RWcUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730327301; c=relaxed/simple;
-	bh=lujB1h+8Q2UbsPZY5HJXumwMpKUUWxBvKX76ZsUvwa4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ljFTu4LekIMA8Ul7inhlO8UK533OK2H6yxlvk28iSctd3QCXqXEkmAr8v/wM+eOr3Bv+VqnRxbPp7JaWraJ7eB4kdqUDgqJE7PS+zh6obK5Mpp3PCVK4UKl62SHv2UlPpWEWySXTqakehqP3rSeLGeviOf9ICJz4vT3XVwiuc4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RyfocfDc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3359C4CECE;
-	Wed, 30 Oct 2024 22:28:20 +0000 (UTC)
+	s=arc-20240116; t=1730327303; c=relaxed/simple;
+	bh=A/2av0Pr/WuyCSRAw3QjLR+gEsZ3d3mzZRpBnlCCgnI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=gfEcf6ReXfifv095X2dwPZHaqEEoAlpJYCi1oVaxPEvTfRD2yiZafv+j9R/DCZuQAUEdJ4v5I2HLGh4cKrbXAezkHMYBsx8ujDWgtfaqPP1lYdteCwza41r96iRoYcfu8nYcCiCsm6/gvrKwVPWxgbBnhkQmqTDBxIdgVDB/9Bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hcl9FquJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC595C4CED3;
+	Wed, 30 Oct 2024 22:28:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730327301;
-	bh=lujB1h+8Q2UbsPZY5HJXumwMpKUUWxBvKX76ZsUvwa4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=RyfocfDcM2+5h+GN0sm4cO95gXRNyNSNK98fZbB2zliafXRl6+Kdz1COifoyeFxbf
-	 8EFeVwJDA+rsKP31hgLnto6BEoc8ChENNs8KvtbkVPiidumZdT7lkT7wnXj7x0NLcK
-	 dUYEAI4ek+AYj5I2YKlZsfVemJ5Ko0tNER6+AHMzPuO2RNBTfYGknGEkHn6y1UWjjH
-	 97kjHQMSXqwAljIj+TIqXqCYdlv/GMM9bNdV7YdtunTIVO84gbgFf76fVEpl3SL1AP
-	 An3XwWYSYr3DkUQDCrFLY6tIJEmqVj0ZMsbTYBFLWkYM3PGcRovSh82wlquaKfYNKm
-	 iYTmetHs5W2jQ==
+	s=k20201202; t=1730327302;
+	bh=A/2av0Pr/WuyCSRAw3QjLR+gEsZ3d3mzZRpBnlCCgnI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=hcl9FquJW+B+A0O6lhbUfkrFUnBcfaGcZsOa+a3qThQP6avACEPtVFwAKyuoEX2lL
+	 fgRzX9u8TK8WufNXi2dIHksZS+vRKEqsH0YV21T+MKqCU9eFtAqWg1o/qCGkJspBzP
+	 8MGl0UMdvAHjtbiKUPH7Amm9QGHWJ30bcYyROBiI218afaJyT/FmTkF7rbjUrNqTeZ
+	 tjnxK9qa/Q4/JKihMiB+kSAZLHCbRA99Xw5ZJOQ7FWttFquXkuvojcf9RBxCYLf6E0
+	 Epy+H3Vvhri6PdstdTSIMkkVqPTnI4gcasjzDmTwflammKEu3ApQBZO3KU3yYNC1qj
+	 kgKG6kf4H58yA==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -66,10 +67,12 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	linux-mm@kvack.org,
 	Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Kees Cook <kees@kernel.org>
-Subject: [PATCH bpf-next v3 1/2] bpf: Add open coded version of kmem_cache iterator
-Date: Wed, 30 Oct 2024 15:28:18 -0700
-Message-ID: <20241030222819.1800667-1-namhyung@kernel.org>
+Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Add a test for open coded kmem_cache iter
+Date: Wed, 30 Oct 2024 15:28:19 -0700
+Message-ID: <20241030222819.1800667-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.47.0.163.g1226f6d8fa-goog
+In-Reply-To: <20241030222819.1800667-1-namhyung@kernel.org>
+References: <20241030222819.1800667-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,254 +81,165 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a new open coded iterator for kmem_cache which can be called from a
-BPF program like below.  It doesn't take any argument and traverses all
-kmem_cache entries.
+The new subtest runs with bpf_prog_test_run_opts() as a syscall prog.
+It iterates the kmem_cache using bpf_for_each loop and count the number
+of entries.  Finally it checks it with the number of entries from the
+regular iterator.
 
-  struct kmem_cache *pos;
+  $ ./vmtest.sh -- ./test_progs -t kmem_cache_iter
+  ...
+  #130/1   kmem_cache_iter/check_task_struct:OK
+  #130/2   kmem_cache_iter/check_slabinfo:OK
+  #130/3   kmem_cache_iter/open_coded_iter:OK
+  #130     kmem_cache_iter:OK
+  Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
 
-  bpf_for_each(kmem_cache, pos) {
-      ...
-  }
-
-As it needs to grab slab_mutex, it should be called from sleepable BPF
-programs only.
-
-Also update the existing iterator code to use the open coded version
-internally as suggested by Andrii.
+Also simplify the code by using attach routine of the skeleton.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
+v3)
+ * use syscall prog type and bpf_prog_test_run_opts()  (Alexei)
+ * increase open_coded_seen count after checking size  (Alexei)
+
 v2)
- * prevent restart after the last element  (Martin)
- * update existing code to use the open coded version (Andrii)
+ * remove unnecessary detach  (Martin)
+ * check pid in syncfs to prevent surprise  (Martin)
+ * remove unnecessary local variable  (Andrii)
 
- kernel/bpf/helpers.c         |   3 +
- kernel/bpf/kmem_cache_iter.c | 151 +++++++++++++++++++++++++----------
- 2 files changed, 110 insertions(+), 44 deletions(-)
+ .../testing/selftests/bpf/bpf_experimental.h  |  6 ++++
+ .../bpf/prog_tests/kmem_cache_iter.c          | 35 ++++++++++++-------
+ .../selftests/bpf/progs/kmem_cache_iter.c     | 22 ++++++++++++
+ 3 files changed, 51 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 2e82f8d3a76fb9ca..395221e53832e10e 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -3112,6 +3112,9 @@ BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
- BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
- BTF_ID_FLAGS(func, bpf_get_kmem_cache)
-+BTF_ID_FLAGS(func, bpf_iter_kmem_cache_new, KF_ITER_NEW | KF_SLEEPABLE)
-+BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_ITER_NEXT | KF_RET_NULL | KF_SLEEPABLE)
-+BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
- BTF_KFUNCS_END(common_btf_ids)
+diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+index b0668f29f7b394eb..cd8ecd39c3f3c68d 100644
+--- a/tools/testing/selftests/bpf/bpf_experimental.h
++++ b/tools/testing/selftests/bpf/bpf_experimental.h
+@@ -582,4 +582,10 @@ extern int bpf_wq_set_callback_impl(struct bpf_wq *wq,
+ 		unsigned int flags__k, void *aux__ign) __ksym;
+ #define bpf_wq_set_callback(timer, cb, flags) \
+ 	bpf_wq_set_callback_impl(timer, cb, flags, NULL)
++
++struct bpf_iter_kmem_cache;
++extern int bpf_iter_kmem_cache_new(struct bpf_iter_kmem_cache *it) __weak __ksym;
++extern struct kmem_cache *bpf_iter_kmem_cache_next(struct bpf_iter_kmem_cache *it) __weak __ksym;
++extern void bpf_iter_kmem_cache_destroy(struct bpf_iter_kmem_cache *it) __weak __ksym;
++
+ #endif
+diff --git a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
+index 848d8fc9171fae45..8e13a3416a21d2e9 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
++++ b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
+@@ -68,12 +68,27 @@ static void subtest_kmem_cache_iter_check_slabinfo(struct kmem_cache_iter *skel)
+ 	fclose(fp);
+ }
  
- static const struct btf_kfunc_id_set common_kfunc_set = {
-diff --git a/kernel/bpf/kmem_cache_iter.c b/kernel/bpf/kmem_cache_iter.c
-index ebc101d7da51b57c..3ae2158d767f4526 100644
---- a/kernel/bpf/kmem_cache_iter.c
-+++ b/kernel/bpf/kmem_cache_iter.c
-@@ -8,16 +8,116 @@
- 
- #include "../../mm/slab.h" /* kmem_cache, slab_caches and slab_mutex */
- 
-+/* open-coded version */
-+struct bpf_iter_kmem_cache {
-+	__u64 __opaque[1];
-+} __attribute__((aligned(8)));
-+
-+struct bpf_iter_kmem_cache_kern {
-+	struct kmem_cache *pos;
-+} __attribute__((aligned(8)));
-+
-+#define KMEM_CACHE_POS_START  ((void *)1L)
-+
-+__bpf_kfunc_start_defs();
-+
-+__bpf_kfunc int bpf_iter_kmem_cache_new(struct bpf_iter_kmem_cache *it)
++static void subtest_kmem_cache_iter_open_coded(struct kmem_cache_iter *skel)
 +{
-+	struct bpf_iter_kmem_cache_kern *kit = (void *)it;
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++	int err, fd;
 +
-+	BUILD_BUG_ON(sizeof(*kit) > sizeof(*it));
-+	BUILD_BUG_ON(__alignof__(*kit) != __alignof__(*it));
++	/* No need to attach it, just run it directly */
++	fd = bpf_program__fd(skel->progs.open_coded_iter);
 +
-+	kit->pos = KMEM_CACHE_POS_START;
-+	return 0;
-+}
-+
-+__bpf_kfunc struct kmem_cache *bpf_iter_kmem_cache_next(struct bpf_iter_kmem_cache *it)
-+{
-+	struct bpf_iter_kmem_cache_kern *kit = (void *)it;
-+	struct kmem_cache *prev = kit->pos;
-+	struct kmem_cache *next;
-+	bool destroy = false;
-+
-+	if (!prev)
-+		return NULL;
-+
-+	mutex_lock(&slab_mutex);
-+
-+	if (list_empty(&slab_caches)) {
-+		mutex_unlock(&slab_mutex);
-+		return NULL;
-+	}
-+
-+	if (prev == KMEM_CACHE_POS_START)
-+		next = list_first_entry(&slab_caches, struct kmem_cache, list);
-+	else if (list_last_entry(&slab_caches, struct kmem_cache, list) == prev)
-+		next = NULL;
-+	else
-+		next = list_next_entry(prev, list);
-+
-+	/* boot_caches have negative refcount, don't touch them */
-+	if (next && next->refcount > 0)
-+		next->refcount++;
-+
-+	/* Skip kmem_cache_destroy() for active entries */
-+	if (prev && prev != KMEM_CACHE_POS_START) {
-+		if (prev->refcount > 1)
-+			prev->refcount--;
-+		else if (prev->refcount == 1)
-+			destroy = true;
-+	}
-+
-+	mutex_unlock(&slab_mutex);
-+
-+	if (destroy)
-+		kmem_cache_destroy(prev);
-+
-+	kit->pos = next;
-+	return next;
-+}
-+
-+__bpf_kfunc void bpf_iter_kmem_cache_destroy(struct bpf_iter_kmem_cache *it)
-+{
-+	struct bpf_iter_kmem_cache_kern *kit = (void *)it;
-+	struct kmem_cache *s = kit->pos;
-+	bool destroy = false;
-+
-+	if (s == NULL || s == KMEM_CACHE_POS_START)
++	err = bpf_prog_test_run_opts(fd, &topts);
++	if (!ASSERT_OK(err, "test_run_opts err"))
++		return;
++	if (!ASSERT_OK(topts.retval, "test_run_opts retval"))
 +		return;
 +
-+	mutex_lock(&slab_mutex);
-+
-+	/* Skip kmem_cache_destroy() for active entries */
-+	if (s->refcount > 1)
-+		s->refcount--;
-+	else if (s->refcount == 1)
-+		destroy = true;
-+
-+	mutex_unlock(&slab_mutex);
-+
-+	if (destroy)
-+		kmem_cache_destroy(s);
++	/* It should be same as we've seen from the explicit iterator */
++	ASSERT_EQ(skel->bss->open_coded_seen, skel->bss->kmem_cache_seen, "open_code_seen_eq");
 +}
 +
-+__bpf_kfunc_end_defs();
-+
- struct bpf_iter__kmem_cache {
- 	__bpf_md_ptr(struct bpf_iter_meta *, meta);
- 	__bpf_md_ptr(struct kmem_cache *, s);
- };
- 
-+union kmem_cache_iter_priv {
-+	struct bpf_iter_kmem_cache it;
-+	struct bpf_iter_kmem_cache_kern kit;
-+};
-+
- static void *kmem_cache_iter_seq_start(struct seq_file *seq, loff_t *pos)
+ void test_kmem_cache_iter(void)
  {
- 	loff_t cnt = 0;
- 	bool found = false;
- 	struct kmem_cache *s;
-+	union kmem_cache_iter_priv *p = seq->private;
+-	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+ 	struct kmem_cache_iter *skel = NULL;
+-	union bpf_iter_link_info linfo = {};
+-	struct bpf_link *link;
+ 	char buf[256];
+ 	int iter_fd;
  
- 	mutex_lock(&slab_mutex);
+@@ -81,16 +96,12 @@ void test_kmem_cache_iter(void)
+ 	if (!ASSERT_OK_PTR(skel, "kmem_cache_iter__open_and_load"))
+ 		return;
  
-@@ -43,8 +143,9 @@ static void *kmem_cache_iter_seq_start(struct seq_file *seq, loff_t *pos)
- 	mutex_unlock(&slab_mutex);
+-	opts.link_info = &linfo;
+-	opts.link_info_len = sizeof(linfo);
+-
+-	link = bpf_program__attach_iter(skel->progs.slab_info_collector, &opts);
+-	if (!ASSERT_OK_PTR(link, "attach_iter"))
++	if (!ASSERT_OK(kmem_cache_iter__attach(skel), "skel_attach"))
+ 		goto destroy;
  
- 	if (!found)
--		return NULL;
-+		s = NULL;
+-	iter_fd = bpf_iter_create(bpf_link__fd(link));
++	iter_fd = bpf_iter_create(bpf_link__fd(skel->links.slab_info_collector));
+ 	if (!ASSERT_GE(iter_fd, 0, "iter_create"))
+-		goto free_link;
++		goto destroy;
  
-+	p->kit.pos = s;
- 	return s;
+ 	memset(buf, 0, sizeof(buf));
+ 	while (read(iter_fd, buf, sizeof(buf) > 0)) {
+@@ -105,11 +116,11 @@ void test_kmem_cache_iter(void)
+ 		subtest_kmem_cache_iter_check_task_struct(skel);
+ 	if (test__start_subtest("check_slabinfo"))
+ 		subtest_kmem_cache_iter_check_slabinfo(skel);
++	if (test__start_subtest("open_coded_iter"))
++		subtest_kmem_cache_iter_open_coded(skel);
+ 
+ 	close(iter_fd);
+ 
+-free_link:
+-	bpf_link__destroy(link);
+ destroy:
+ 	kmem_cache_iter__destroy(skel);
  }
+diff --git a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+index e775d5cd99fca579..b9c8f94574922099 100644
+--- a/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
++++ b/tools/testing/selftests/bpf/progs/kmem_cache_iter.c
+@@ -3,6 +3,7 @@
+ #include <vmlinux.h>
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
++#include "bpf_experimental.h"
  
-@@ -55,63 +156,24 @@ static void kmem_cache_iter_seq_stop(struct seq_file *seq, void *v)
- 		.meta = &meta,
- 		.s = v,
- 	};
-+	union kmem_cache_iter_priv *p = seq->private;
- 	struct bpf_prog *prog;
--	bool destroy = false;
+ char _license[] SEC("license") = "GPL";
  
- 	meta.seq = seq;
- 	prog = bpf_iter_get_info(&meta, true);
- 	if (prog && !ctx.s)
- 		bpf_iter_run_prog(prog, &ctx);
+@@ -32,6 +33,7 @@ extern struct kmem_cache *bpf_get_kmem_cache(u64 addr) __ksym;
+ /* Result, will be checked by userspace */
+ int task_struct_found;
+ int kmem_cache_seen;
++int open_coded_seen;
  
--	if (ctx.s == NULL)
--		return;
--
--	mutex_lock(&slab_mutex);
--
--	/* Skip kmem_cache_destroy() for active entries */
--	if (ctx.s->refcount > 1)
--		ctx.s->refcount--;
--	else if (ctx.s->refcount == 1)
--		destroy = true;
--
--	mutex_unlock(&slab_mutex);
--
--	if (destroy)
--		kmem_cache_destroy(ctx.s);
-+	bpf_iter_kmem_cache_destroy(&p->it);
+ SEC("iter/kmem_cache")
+ int slab_info_collector(struct bpf_iter__kmem_cache *ctx)
+@@ -84,3 +86,23 @@ int BPF_PROG(check_task_struct)
+ 		task_struct_found = -2;
+ 	return 0;
  }
- 
- static void *kmem_cache_iter_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- {
--	struct kmem_cache *s = v;
--	struct kmem_cache *next = NULL;
--	bool destroy = false;
-+	union kmem_cache_iter_priv *p = seq->private;
- 
- 	++*pos;
- 
--	mutex_lock(&slab_mutex);
--
--	if (list_last_entry(&slab_caches, struct kmem_cache, list) != s) {
--		next = list_next_entry(s, list);
--
--		WARN_ON_ONCE(next->refcount == 0);
--
--		/* boot_caches have negative refcount, don't touch them */
--		if (next->refcount > 0)
--			next->refcount++;
--	}
--
--	/* Skip kmem_cache_destroy() for active entries */
--	if (s->refcount > 1)
--		s->refcount--;
--	else if (s->refcount == 1)
--		destroy = true;
--
--	mutex_unlock(&slab_mutex);
--
--	if (destroy)
--		kmem_cache_destroy(s);
--
--	return next;
-+	return bpf_iter_kmem_cache_next(&p->it);
- }
- 
- static int kmem_cache_iter_seq_show(struct seq_file *seq, void *v)
-@@ -143,6 +205,7 @@ BTF_ID_LIST_GLOBAL_SINGLE(bpf_kmem_cache_btf_id, struct, kmem_cache)
- 
- static const struct bpf_iter_seq_info kmem_cache_iter_seq_info = {
- 	.seq_ops		= &kmem_cache_iter_seq_ops,
-+	.seq_priv_size		= sizeof(union kmem_cache_iter_priv),
- };
- 
- static void bpf_iter_kmem_cache_show_fdinfo(const struct bpf_iter_aux_info *aux,
++
++SEC("syscall")
++int open_coded_iter(const void *ctx)
++{
++	struct kmem_cache *s;
++
++	bpf_for_each(kmem_cache, s) {
++		struct kmem_cache_result *r;
++
++		r = bpf_map_lookup_elem(&slab_result, &open_coded_seen);
++		if (!r)
++			break;
++
++		if (r->obj_size != s->size)
++			break;
++
++		open_coded_seen++;
++	}
++	return 0;
++}
 -- 
 2.47.0.163.g1226f6d8fa-goog
 
