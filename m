@@ -1,199 +1,133 @@
-Return-Path: <bpf+bounces-43465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D12E9B5911
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 02:24:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE8499B5930
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 02:34:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F38F92846C5
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 01:24:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A18B91F23D57
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 01:34:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36CD91494DB;
-	Wed, 30 Oct 2024 01:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9684D17C200;
+	Wed, 30 Oct 2024 01:34:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NQRxC2Dz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lG+7G+C2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+Received: from mail-yw1-f194.google.com (mail-yw1-f194.google.com [209.85.128.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC3A4450FE;
-	Wed, 30 Oct 2024 01:23:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540FE42A8B;
+	Wed, 30 Oct 2024 01:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730251439; cv=none; b=dazHashMdMyK3sLXf6GFmOHuwnhnKgWwWZoXr6W0irc7yQwyD3r+2hblopH5/SSe+G24KzfyjBWYUsU5AvniftrUeqpQRNsb1Db7DEWpPepwIoaDBiLfaL3kOVC8Fls+xpm5jxx9EYxsMIvwe8B/+PdrODDKACWTAArxHLISvms=
+	t=1730252064; cv=none; b=lnsnTcyzlcXS125vqHSQd5kvWb+NdJsCWbhDS07O3SdM6esZ6IGKIDu2Zqr4D+1ee/UZtW6lWJ4ys++czKa6VWdiKbVJQR8lRs2eIblgbE2bVl9QJCFxFxjMAwo228g6h5jZrfYTu2KEuK1HrGQZnPdBpFOOFYqBjFYkCJEE8zI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730251439; c=relaxed/simple;
-	bh=enLYmWeNZrKJvYr/sIMBVDFod5Dv9dd9O9OapZkj0JI=;
+	s=arc-20240116; t=1730252064; c=relaxed/simple;
+	bh=Yp66zOjBTkqdw1eyRFLXESGFpMB8EYkX1+UgnwBfc1A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sQAYkA1uNpog/QtiwB1sPWvHYY3ITev0Ub+NOJEWXmUGXRJmLRjjRcTTOKFv7eMIANjE5ZL7kUqT1OazhlWkoSv8Hle5YTNiEJyoVKF2Evt5LU3lpROTBUUzJHyJ7bOUAorwxNoa2OK8U+dpJp1lnquOQUnexrd7nF94pZpi1Bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NQRxC2Dz; arc=none smtp.client-ip=209.85.166.181
+	 To:Cc:Content-Type; b=RWjex5CQ4inD5C1APjoXWlZPTTQw2OW1qQQTlehfzP1WhcdW3ayisrQ8P6Bh9wEVKxPg61zjUuL4+O1+myaIzFSRF+WNR+TsfAxIICnS316t90Ar1IbSZ0xs+KUACWwPxQvd/eB5vTDS/axKKx79K6dn5OWd21QkkvwCsV4vKTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lG+7G+C2; arc=none smtp.client-ip=209.85.128.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3a3a5cd2a3bso25271505ab.3;
-        Tue, 29 Oct 2024 18:23:57 -0700 (PDT)
+Received: by mail-yw1-f194.google.com with SMTP id 00721157ae682-6ea051d04caso24839427b3.0;
+        Tue, 29 Oct 2024 18:34:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730251437; x=1730856237; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730252061; x=1730856861; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DBPt5dUGPyCr944qr1Db7HUAEB1EjFLqAaybQAiUx0g=;
-        b=NQRxC2DzCklDAx4aK99e5uG76XT2d4HWGo+9C0JKllO3V2UvhOKxdLCTjoxDZZp1So
-         PNI6hi/j0DD3ZQir9hwDD6r9WTzhdDQVlQZRL11YjDBWANvpB3DXyNJdMUQa19YoRVUL
-         hGWl9JiwLbARx01md0uGeAMhTjA2zmxEfPQJ6b75HYBU5l7daxfFtxDOJdKHcYEIjOzN
-         FsUdFiLXRPDHtcHQyO9obVx167fLZDaUZhz9GBIrbNdd3IZ8FKQkkVAXtjIpagmBTvBJ
-         SRK2fQQmCZKUSbxWJ+xE9HIeMG7wLEkkVzCwD5oZdZ9FFZgH8pC5mcpGtmsjaad/7hir
-         l1uw==
+        bh=h//5h0dIiAWAEjEnhgHy2Bo5TCA+6MH9QdtoE5g4NIQ=;
+        b=lG+7G+C2yV24Le/crfyiM4sgb0LBOWehHWgCXCKyATzxs1eYgEJy5sQKBb8b/4sj/r
+         s8AfmaufxXzA2f8zOt6kwW0DBISoscL8Z5+Rgpog6z75uczxuQUsmY94qi3CcZ4L+3Aw
+         SnrFqNCNW5ijJ37Jwysj2TGYyDNR9F/apleHygsY1fMwUZAd/kA4+f/0UKcCZjfWEkpD
+         4pNGoOYpn26NY4WCdj1BOwBcnmoztsmB0BgU5wrA3jVSfDFAF+Ia8NvRREXuQhHAkb5u
+         KqOkdTcjOtfD1oHzFwM03KON1U4Z7/6cHMrYLUh5TTjfwHga24VPrFL6KR7/CIGN2RRZ
+         953w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730251437; x=1730856237;
+        d=1e100.net; s=20230601; t=1730252061; x=1730856861;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DBPt5dUGPyCr944qr1Db7HUAEB1EjFLqAaybQAiUx0g=;
-        b=pf0orPwKS5jKjodXqfhAQ5t1Rhyr6E9wrpuQR0lBZBhRVATRX6xz7YNe1d+gmCUPVg
-         mjfhYlAol3UewF7/+nbPYi+HjoP+CI5rgC7n/bGa3p/guMuCWbUsvYJpy0+q8HESP7vA
-         UnuFzGAqyeiCPFDGNiFUMu/cl1AUk7GN/a1JVCYhG/NaXv98qYxMBzy4+xbtq29bXKcc
-         WuIIqqbAbgv9L0zBleKfZAavdnp5x6DN5zmeF5Edcg2ZlvTgEVf7b1ZjK/b7fQXIl48Q
-         B3IogBCswjO45LrwTRDe1ctdcjjOrCt6S0ag2T62/cY1I4fg4hDp5mZNUqMYNlO52bBd
-         nfQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXDAttSqs5QGFbcI7cPSqKUJOLBfTvDzzy3L/KybLqnZC7Rru7NMMr5/6qIB8zQHNd+XFc=@vger.kernel.org, AJvYcCXENnrLD0DgUuJtJQjW1QC9qtHsxh/aMipCDBFFMvOTL6GEfrnL6wX36CdLyaAURouFLz7eqPQa@vger.kernel.org
-X-Gm-Message-State: AOJu0YyX+BBYKD8BqTLenSt8MjIS66Ydlg3fc1rzJfanYdT10Bsmdtgh
-	lUA51FS0FXgAn2DBUyL74Prd4DHpKPoGAn/712peSpMrdLjvHd5vRJhVZf5K2GxjOTO6C6yyLiO
-	gPwPjAFzZ/lnUAjhSULDxVv/nEsw=
-X-Google-Smtp-Source: AGHT+IHNvJ4nPuYGnoDl4ltZ2bH1DiwOcMujDmROQvMLEEliOOHPL/GwTJk8QUWn7NSHa+ZvlRyL2NMkHLyRAtNBLLY=
-X-Received: by 2002:a05:6e02:2142:b0:3a4:e452:c42c with SMTP id
- e9e14a558f8ab-3a4ed27c5f0mr152102575ab.6.1730251436758; Tue, 29 Oct 2024
- 18:23:56 -0700 (PDT)
+        bh=h//5h0dIiAWAEjEnhgHy2Bo5TCA+6MH9QdtoE5g4NIQ=;
+        b=corDT3OWX8BPABPGPO6WCEh4xL0vfWpNanjQjXMCbr+eBC/xfYS0wEah8MmGqqKX3X
+         +oSYXYScdqytzL94rzDc7kxqScpCI8/BWGMdtuARMRHD22Yb0ggBL5a6O8XMVrtTqFAC
+         /3Pabg1MZYUMxnAt0c77zFbkvLfCI5TEw+ApcCT8L1EKNRiNm78F3IFAKw5X6z+CZ+tX
+         gkeU0FFMZtFQBnAyCYEQAHH7ilImPw7xK4wQ7ttNr0Idr0wJ4eTgP7vqpmMV4zNkWim+
+         AL8iBs5c7DjrTxQ++KkvRShxgn6pfJf0UNZWgJMCEuvowhpMejjzx0JqwNnvpL3/bq3+
+         vgsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU7/Xxra4SRAlYjSPGI6azK68mDd0KuVdQ6wPrQVmpL2qznWRcIjjrueFNkKxN8hnqFtUs=@vger.kernel.org, AJvYcCUVkLvIraTxPWNz2MgnoP0LWEFaA/4JjFheJ46sHEVYqECQneh5NNLVIwekNEy6lQhbk+Md7/dvaOMLx39ucnEf@vger.kernel.org, AJvYcCXZGtWtGe4Btz1NgIVRykP1IxGTUK0pvt/LKUKFpVH8U9EKI1TpcKDwAObN2Uj+z1whq72JGG21@vger.kernel.org, AJvYcCXmEscEkzOTjEUjllDalZefBc20B3t0HzX0qqzby+tm9zpmjwZ3rKLSYVRlMExGAk/9+bifD1Tr8da0gF9/@vger.kernel.org
+X-Gm-Message-State: AOJu0YxivOhuzmp7if9VRq0fDzSQ9ikpl6eX0DsnF6LVkScCrmM7sA69
+	Bj0rdwcUTlaobfC1Y4jXW5eGtU7LRTeIdxC4Nk5LY5FW413hmVG85XjkCad8aAMzQUtSNQELCOv
+	S2XMuhF1sHn4losttLsgTfVVMeYA=
+X-Google-Smtp-Source: AGHT+IGmt0v/jSWrgx/76rpboLxL9IobAr7TI03JuBHGd40YJIScAQ5UnmQr1bHYch2Zxftv5X/RAJg5pl62ieHQRyE=
+X-Received: by 2002:a05:690c:39d:b0:6ea:3313:fa1b with SMTP id
+ 00721157ae682-6ea3313fc65mr28460797b3.46.1730252061300; Tue, 29 Oct 2024
+ 18:34:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
- <20241028110535.82999-3-kerneljasonxing@gmail.com> <61e8c5cf-247f-484e-b3cc-27ab86e372de@linux.dev>
-In-Reply-To: <61e8c5cf-247f-484e-b3cc-27ab86e372de@linux.dev>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Wed, 30 Oct 2024 09:23:20 +0800
-Message-ID: <CAL+tcoDB8UvNMfTwmvTJb1JvCGDb3ESaJMszh4-Qa=ey0Yn3Vg@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 02/14] net-timestamp: allow two features to
- work parallelly
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: willemb@google.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, 
-	willemdebruijn.kernel@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, 
-	ykolal@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
+References: <20241024093348.353245-1-dongml2@chinatelecom.cn> <20241029170341.1b351225@kernel.org>
+In-Reply-To: <20241029170341.1b351225@kernel.org>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Wed, 30 Oct 2024 09:35:24 +0800
+Message-ID: <CADxym3bUKBuMkaG3NiQHavkgScLxRAgkSSmk-KbuYpMepSYDzw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/9] net: ip: add drop reasons to input route
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: pabeni@redhat.com, davem@davemloft.net, edumazet@google.com, 
+	dsahern@kernel.org, pablo@netfilter.org, kadlec@netfilter.org, 
+	roopa@nvidia.com, razor@blackwall.org, gnault@redhat.com, 
+	bigeasy@linutronix.de, idosch@nvidia.com, ast@kernel.org, 
+	dongml2@chinatelecom.cn, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
+	bridge@lists.linux.dev, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 30, 2024 at 7:00=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
+On Wed, Oct 30, 2024 at 8:03=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
 >
-> On 10/28/24 4:05 AM, Jason Xing wrote:
-> > From: Jason Xing <kernelxing@tencent.com>
+> On Thu, 24 Oct 2024 17:33:39 +0800 Menglong Dong wrote:
+> > In this series, we mainly add some skb drop reasons to the input path o=
+f
+> > ip routing, and we make the following functions return drop reasons:
 > >
-> > This patch has introduced a separate sk_tsflags_bpf for bpf
-> > extension, which helps us let two feature work nearly at the
-> > same time.
+> >   fib_validate_source()
+> >   ip_route_input_mc()
+> >   ip_mc_validate_source()
+> >   ip_route_input_slow()
+> >   ip_route_input_rcu()
+> >   ip_route_input_noref()
+> >   ip_route_input()
+> >   ip_mkroute_input()
+> >   __mkroute_input()
+> >   ip_route_use_hint()
 > >
-> > Each feature will finally take effect on skb_shinfo(skb)->tx_flags,
-> > say, tcp_tx_timestamp() for TCP or skb_setup_tx_timestamp() for
-> > other types, so in __skb_tstamp_tx() we are unable to know which
-> > feature is turned on, unless we check each feature's own socket
-> > flag field.
+> > And following new skb drop reasons are added:
 > >
-> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > ---
-> >   include/net/sock.h |  1 +
-> >   net/core/skbuff.c  | 39 +++++++++++++++++++++++++++++++++++++++
-> >   2 files changed, 40 insertions(+)
-> >
-> > diff --git a/include/net/sock.h b/include/net/sock.h
-> > index 7464e9f9f47c..5384f1e49f5c 100644
-> > --- a/include/net/sock.h
-> > +++ b/include/net/sock.h
-> > @@ -445,6 +445,7 @@ struct sock {
-> >       u32                     sk_reserved_mem;
-> >       int                     sk_forward_alloc;
-> >       u32                     sk_tsflags;
-> > +     u32                     sk_tsflags_bpf;
-> >       __cacheline_group_end(sock_write_rxtx);
-> >
-> >       __cacheline_group_begin(sock_write_tx);
-> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > index 1cf8416f4123..39309f75e105 100644
-> > --- a/net/core/skbuff.c
-> > +++ b/net/core/skbuff.c
-> > @@ -5539,6 +5539,32 @@ void skb_complete_tx_timestamp(struct sk_buff *s=
-kb,
-> >   }
-> >   EXPORT_SYMBOL_GPL(skb_complete_tx_timestamp);
-> >
-> > +/* This function is used to test if application SO_TIMESTAMPING featur=
-e
-> > + * or bpf SO_TIMESTAMPING feature is loaded by checking its own socket=
- flags.
-> > + */
-> > +static bool sk_tstamp_tx_flags(struct sock *sk, u32 tsflags, int tstyp=
-e)
-> > +{
-> > +     u32 testflag;
-> > +
-> > +     switch (tstype) {
-> > +     case SCM_TSTAMP_SCHED:
-> > +             testflag =3D SOF_TIMESTAMPING_TX_SCHED;
-> > +             break;
-> > +     case SCM_TSTAMP_SND:
-> > +             testflag =3D SOF_TIMESTAMPING_TX_SOFTWARE;
-> > +             break;
-> > +     case SCM_TSTAMP_ACK:
-> > +             testflag =3D SOF_TIMESTAMPING_TX_ACK;
-> > +             break;
-> > +     default:
-> > +             return false;
-> > +     }
-> > +     if (tsflags & testflag)
-> > +             return true;
-> > +
-> > +     return false;
-> > +}
-> > +
-> >   static void skb_tstamp_tx_output(struct sk_buff *orig_skb,
-> >                                const struct sk_buff *ack_skb,
-> >                                struct skb_shared_hwtstamps *hwtstamps,
-> > @@ -5549,6 +5575,9 @@ static void skb_tstamp_tx_output(struct sk_buff *=
-orig_skb,
-> >       u32 tsflags;
-> >
-> >       tsflags =3D READ_ONCE(sk->sk_tsflags);
-> > +     if (!sk_tstamp_tx_flags(sk, tsflags, tstype))
+> >   SKB_DROP_REASON_IP_LOCAL_SOURCE
+> >   SKB_DROP_REASON_IP_INVALID_SOURCE
+> >   SKB_DROP_REASON_IP_LOCALNET
+> >   SKB_DROP_REASON_IP_INVALID_DEST
 >
-> I still don't get this part since v2. How does it work with cmsg only
-> SOF_TIMESTAMPING_TX_*?
->
-> I tried with "./txtimestamp -6 -c 1 -C -N -L ::1" and it does not return =
-any tx
-> time stamp after this patch.
->
-> I am likely missing something
-> or v2 concluded that this behavior change is acceptable?
+> We're "a bit" behind on patches after my vacation, so no real review
+> here, but please repost with net-next in the subject. The test
+> automation trusts the tree designation and bpf-next is no longer
+> based on net-next. So this doesn't apply.
 
-Sorry, I submitted this series accidentally removing one important
-thing which is similar to what Vadim Fedorenko mentioned in the v1
-[1]:
-adding another member like sk_flags_bpf to handle the cmsg case.
+I was wondering how the conflict, which was checked by bpf-ci,
+happened, as there was no conflict between this series and
+net-next. And now I see, I just tagged a wrong branch for this
+series. Sorry about that, and I'll resend it to the right branch.
 
-Willem, would it be acceptable to add another field in struct sock to
-help us recognise the case where BPF and cmsg works parallelly?
+Thanks!
+Menglong Dong
 
-[1]: https://lore.kernel.org/all/662873cb-a897-464e-bdb3-edf01363c3b2@linux=
-.dev/
 
-Thanks,
-Jason
+> --
+> pw-bot: cr
 
