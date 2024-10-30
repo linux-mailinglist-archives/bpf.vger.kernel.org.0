@@ -1,181 +1,177 @@
-Return-Path: <bpf+bounces-43570-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43571-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95D4D9B6934
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 17:31:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E9999B6955
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 17:37:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 265711F22109
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 16:31:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B4171C215EA
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 16:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A102144CB;
-	Wed, 30 Oct 2024 16:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF712144D8;
+	Wed, 30 Oct 2024 16:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ciSt+G/C"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="BIShLQNQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EADF68C1F;
-	Wed, 30 Oct 2024 16:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043CC26296
+	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 16:37:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730305882; cv=none; b=R24CKVCdtwZkdxNbpdckRjupd3s1G46RP/f1y+ZpvOfpoiiHnUOk3tjXG5dP105I+5k5OiyMgXzXp9v/wHa5s1miRpoG1tBLS+VeI5UuEAHGzyttpAcoc5AC3yema22sdqkduoAHrkGplbaYwRgy+NxSprxEFPLByTt1JO/66Ow=
+	t=1730306263; cv=none; b=gFuvlyzed4GNWKUuLFupzSiDhDhEjEcg/ccOwjquwHR9TkG71knPZ7VhkcdOQaPiP4bt9ogWZ3a+lked5KrP/gotTSyfsokfc03B85nCma7kHgyG/C6BDV8yYiTTiJw4ivwwQkxC9hKy0UoVgUhYHQi0gyoGhhTVjAmTOgxUEhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730305882; c=relaxed/simple;
-	bh=oO8e/qytpViysImJ2eTakDtB0b0Ol/dLIvB1fQFw8Ww=;
+	s=arc-20240116; t=1730306263; c=relaxed/simple;
+	bh=Iy3O8zI89edg/FlGB6TdI2ef8zDQn2yfpjG27LDRRRQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QbGJUAlLpeWeqgvxPjJJ8nNSM0AFNyyEcw60/gxRE/lAtVrPyLb8ltPg2cW2L3XLUkaz0jMrpDhOzg2eGNsoAIh9teevjkYkyqTw04iQwCVP0lfgRUHUtHKkQQrvyvD+EKaYTL+8mthg9ruHZRblI5v8S2OaTyEcOFgAazc+hgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ciSt+G/C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B22D6C4CECE;
-	Wed, 30 Oct 2024 16:31:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730305881;
-	bh=oO8e/qytpViysImJ2eTakDtB0b0Ol/dLIvB1fQFw8Ww=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ciSt+G/CDYMj9JF989JWCb0qe/e8mg9VVp7vv0YPzDMdGPEnYGnb3vRdjoYbJ3qsK
-	 mX7HMq6efm2oi5vL5WeKkSgnCnO0BLJ5YhhisDEo/qEGWaNI0EBYrmc3f9Tq18e7UZ
-	 xFmIwkD2eYaMil6laBElh9xu7WR2RY67PjK87fVKhWDf7WpiAbyKIBTle3j6p1Fz0B
-	 BPSflJ+JP7dvSuxOykFLss1FlY0uCWq0pH2SRvwCOL0DYDyoo4caQfWvzmcOx/deKm
-	 GQBx7u/OMRetmRvYmzU3aTjfS4sPuRD8V1XuLo52T0B4+wNo/7y/L4tVzLXQ4n0N7D
-	 3aFoUz4CrWJgg==
-Message-ID: <9b2b3c98-503b-45ae-bcdd-ac2fcc62e14c@kernel.org>
-Date: Wed, 30 Oct 2024 17:31:15 +0100
+	 In-Reply-To:Content-Type; b=aEDkltUqxjzGQsijnDH+1Rg189HWzKX7IdjQjM/7DnMGOvFq5MvfkfqoxGPVj1IWjWNP2nJR/YfmfV19faqs6S1e6v/dFqtgjql7pY7KasHP9qZoph/Z9uVjM3ine76R9PFHRhVppPy+2sdyd9FYB7dmAVZl6ZtfTVVKmnQWv38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=BIShLQNQ; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4609967ab7eso502721cf.3
+        for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 09:37:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1730306260; x=1730911060; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WM+wCVZBPmwEyCec9sRjFyCm37cax5DL25QKp6p07YE=;
+        b=BIShLQNQI346jN2VDVXqOrz3lEKJxCuBFo2ae25KcuAmgDWcwit5iobYdTJ8jQQFd4
+         1u94zLryIXcwIl3SURF3VhXh0W6Y9S7vtHlmsFn+M6ALbOdZEJNuEY1iQj/WLrQ41KyV
+         Hh81L7NpYGHxm3tgLwJsk5i2NzE730GK5o14VU7s75l0FR8VjZoP0op3ZLh7mb1Ce3Zr
+         Ngw5B4k2TJP7NPy45Jice/0LBP/wYnqCxwV/BYzOaH3sSRRXtMSrM3BQiNrH5n8y+e+2
+         7KVswlwdCh6gIc0zid9pM2wWSHdJVtE3to7WFjSCAYduKZbS2HZVU4Tn9D1EvnvnJVsc
+         Yg+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730306260; x=1730911060;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WM+wCVZBPmwEyCec9sRjFyCm37cax5DL25QKp6p07YE=;
+        b=vXiP8q+zeOl19GVT8orApJ37E0MVLjc6YYq9qgbn3owWlYZzNTCX2xmX9kzD0BMpkp
+         3k0RPRQuKBJP03PfjdwFYl7pI48N/L5YmoAqP5RAA8BAfVz0laPTqEobKtLs30ongN25
+         usqcFNub/Txd9R2iIWV0otzTBXHDMXZTD4zu9kCg/By4CgBoNDN6lI3O61QE/FOqd39k
+         Yt1wOoYndUUf1HKvmUXNF1f2G9g0Gu0NHvm8dKWK4/731y7rCT8+ID9P7bdyT3cZsbKC
+         8Wl45W7CSYYrF0HzdBpJ67pIPcvqu1f9MR52bMkOdB7emMXMGwkeOzwGkdsLWEgeXlN5
+         MdZg==
+X-Gm-Message-State: AOJu0YxKcUeEt5ksz+as/MWoc4HDgJ9y5OlZRyYH9ltD0HfXNIEu4TQR
+	2IG/QrSOC6kOdXPDNtk5JVRSepyZk3tle49S+5YisEwHw4wGzqyXCxGnsbJrzjc=
+X-Google-Smtp-Source: AGHT+IH1RB+SK/9AJGyEhf7dAfg35RKuCWgyeKOL8ctaX1xtXpb/EFvO4SdmxH3bPVPzs/RuZkSLkg==
+X-Received: by 2002:ac8:5716:0:b0:460:8faf:c3a1 with SMTP id d75a77b69052e-4613c1a7bdamr275614651cf.37.1730306259814;
+        Wed, 30 Oct 2024 09:37:39 -0700 (PDT)
+Received: from ?IPV6:2601:647:4200:9750:d096:b1fe:ffde:1a3d? ([2601:647:4200:9750:d096:b1fe:ffde:1a3d])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4613213a204sm55207901cf.28.2024.10.30.09.37.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Oct 2024 09:37:39 -0700 (PDT)
+Message-ID: <0e609f5d-ebee-46f8-b3c6-69672495b4a4@bytedance.com>
+Date: Wed, 30 Oct 2024 09:37:36 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix compile error when MPTCP not
- support
-Content-Language: en-GB
-To: Tao Chen <chen.dylane@gmail.com>, Mat Martineau <martineau@kernel.org>,
- Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Yonghong Song <yonghong.song@linux.dev>, Jiri Olsa <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, mptcp@lists.linux.dev
-References: <20241030100108.2443371-1-chen.dylane@gmail.com>
- <abb72d1b-3347-4493-9a18-43c1655b7449@kernel.org>
- <3bc02b33-421e-4c95-8f69-33ec89782621@gmail.com>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- xsFNBFXj+ekBEADxVr99p2guPcqHFeI/JcFxls6KibzyZD5TQTyfuYlzEp7C7A9swoK5iCvf
- YBNdx5Xl74NLSgx6y/1NiMQGuKeu+2BmtnkiGxBNanfXcnl4L4Lzz+iXBvvbtCbynnnqDDqU
- c7SPFMpMesgpcu1xFt0F6bcxE+0ojRtSCZ5HDElKlHJNYtD1uwY4UYVGWUGCF/+cY1YLmtfb
- WdNb/SFo+Mp0HItfBC12qtDIXYvbfNUGVnA5jXeWMEyYhSNktLnpDL2gBUCsdbkov5VjiOX7
- CRTkX0UgNWRjyFZwThaZADEvAOo12M5uSBk7h07yJ97gqvBtcx45IsJwfUJE4hy8qZqsA62A
- nTRflBvp647IXAiCcwWsEgE5AXKwA3aL6dcpVR17JXJ6nwHHnslVi8WesiqzUI9sbO/hXeXw
- TDSB+YhErbNOxvHqCzZEnGAAFf6ges26fRVyuU119AzO40sjdLV0l6LE7GshddyazWZf0iac
- nEhX9NKxGnuhMu5SXmo2poIQttJuYAvTVUNwQVEx/0yY5xmiuyqvXa+XT7NKJkOZSiAPlNt6
- VffjgOP62S7M9wDShUghN3F7CPOrrRsOHWO/l6I/qJdUMW+MHSFYPfYiFXoLUZyPvNVCYSgs
- 3oQaFhHapq1f345XBtfG3fOYp1K2wTXd4ThFraTLl8PHxCn4ywARAQABzSRNYXR0aGlldSBC
- YWVydHMgPG1hdHR0YmVAa2VybmVsLm9yZz7CwZEEEwEIADsCGwMFCwkIBwIGFQoJCAsCBBYC
- AwECHgECF4AWIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZUDpDAIZAQAKCRD2t4JPQmmgcz33
- EACjROM3nj9FGclR5AlyPUbAq/txEX7E0EFQCDtdLPrjBcLAoaYJIQUV8IDCcPjZMJy2ADp7
- /zSwYba2rE2C9vRgjXZJNt21mySvKnnkPbNQGkNRl3TZAinO1Ddq3fp2c/GmYaW1NWFSfOmw
- MvB5CJaN0UK5l0/drnaA6Hxsu62V5UnpvxWgexqDuo0wfpEeP1PEqMNzyiVPvJ8bJxgM8qoC
- cpXLp1Rq/jq7pbUycY8GeYw2j+FVZJHlhL0w0Zm9CFHThHxRAm1tsIPc+oTorx7haXP+nN0J
- iqBXVAxLK2KxrHtMygim50xk2QpUotWYfZpRRv8dMygEPIB3f1Vi5JMwP4M47NZNdpqVkHrm
- jvcNuLfDgf/vqUvuXs2eA2/BkIHcOuAAbsvreX1WX1rTHmx5ud3OhsWQQRVL2rt+0p1DpROI
- 3Ob8F78W5rKr4HYvjX2Inpy3WahAm7FzUY184OyfPO/2zadKCqg8n01mWA9PXxs84bFEV2mP
- VzC5j6K8U3RNA6cb9bpE5bzXut6T2gxj6j+7TsgMQFhbyH/tZgpDjWvAiPZHb3sV29t8XaOF
- BwzqiI2AEkiWMySiHwCCMsIH9WUH7r7vpwROko89Tk+InpEbiphPjd7qAkyJ+tNIEWd1+MlX
- ZPtOaFLVHhLQ3PLFLkrU3+Yi3tXqpvLE3gO3LM7BTQRV4/npARAA5+u/Sx1n9anIqcgHpA7l
- 5SUCP1e/qF7n5DK8LiM10gYglgY0XHOBi0S7vHppH8hrtpizx+7t5DBdPJgVtR6SilyK0/mp
- 9nWHDhc9rwU3KmHYgFFsnX58eEmZxz2qsIY8juFor5r7kpcM5dRR9aB+HjlOOJJgyDxcJTwM
- 1ey4L/79P72wuXRhMibN14SX6TZzf+/XIOrM6TsULVJEIv1+NdczQbs6pBTpEK/G2apME7vf
- mjTsZU26Ezn+LDMX16lHTmIJi7Hlh7eifCGGM+g/AlDV6aWKFS+sBbwy+YoS0Zc3Yz8zrdbi
- Kzn3kbKd+99//mysSVsHaekQYyVvO0KD2KPKBs1S/ImrBb6XecqxGy/y/3HWHdngGEY2v2IP
- Qox7mAPznyKyXEfG+0rrVseZSEssKmY01IsgwwbmN9ZcqUKYNhjv67WMX7tNwiVbSrGLZoqf
- Xlgw4aAdnIMQyTW8nE6hH/Iwqay4S2str4HZtWwyWLitk7N+e+vxuK5qto4AxtB7VdimvKUs
- x6kQO5F3YWcC3vCXCgPwyV8133+fIR2L81R1L1q3swaEuh95vWj6iskxeNWSTyFAVKYYVskG
- V+OTtB71P1XCnb6AJCW9cKpC25+zxQqD2Zy0dK3u2RuKErajKBa/YWzuSaKAOkneFxG3LJIv
- Hl7iqPF+JDCjB5sAEQEAAcLBXwQYAQIACQUCVeP56QIbDAAKCRD2t4JPQmmgc5VnD/9YgbCr
- HR1FbMbm7td54UrYvZV/i7m3dIQNXK2e+Cbv5PXf19ce3XluaE+wA8D+vnIW5mbAAiojt3Mb
- 6p0WJS3QzbObzHNgAp3zy/L4lXwc6WW5vnpWAzqXFHP8D9PTpqvBALbXqL06smP47JqbyQxj
- Xf7D2rrPeIqbYmVY9da1KzMOVf3gReazYa89zZSdVkMojfWsbq05zwYU+SCWS3NiyF6QghbW
- voxbFwX1i/0xRwJiX9NNbRj1huVKQuS4W7rbWA87TrVQPXUAdkyd7FRYICNW+0gddysIwPoa
- KrLfx3Ba6Rpx0JznbrVOtXlihjl4KV8mtOPjYDY9u+8x412xXnlGl6AC4HLu2F3ECkamY4G6
- UxejX+E6vW6Xe4n7H+rEX5UFgPRdYkS1TA/X3nMen9bouxNsvIJv7C6adZmMHqu/2azX7S7I
- vrxxySzOw9GxjoVTuzWMKWpDGP8n71IFeOot8JuPZtJ8omz+DZel+WCNZMVdVNLPOd5frqOv
- mpz0VhFAlNTjU1Vy0CnuxX3AM51J8dpdNyG0S8rADh6C8AKCDOfUstpq28/6oTaQv7QZdge0
- JY6dglzGKnCi/zsmp2+1w559frz4+IC7j/igvJGX4KDDKUs0mlld8J2u2sBXv7CGxdzQoHaz
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <3bc02b33-421e-4c95-8f69-33ec89782621@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf] bpf: Add sk_is_inet check in tls_sw_has_ctx_tx/rx
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: bpf@vger.kernel.org, borisp@nvidia.com, john.fastabend@gmail.com,
+ kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, horms@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+ cong.wang@bytedance.com
+References: <20241029202830.3121552-1-zijianzhang@bytedance.com>
+ <ZyFquswggZxKCYGH@mini-arch>
+ <abc69614-869d-42d8-be8e-b4573029611b@bytedance.com>
+ <ZyF8LA6v9iAuxNXi@mini-arch>
+ <08853817-921b-4595-a7d5-67007bf21500@bytedance.com>
+ <ZyJS5UCJu1YlsrJr@mini-arch>
+Content-Language: en-US
+From: Zijian Zhang <zijianzhang@bytedance.com>
+In-Reply-To: <ZyJS5UCJu1YlsrJr@mini-arch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Tao, BPF maintainers,
-
-On 30/10/2024 12:12, Tao Chen wrote:
-> 在 2024/10/30 18:49, Matthieu Baerts 写道:
->> Hi Tao Chen,
+On 10/30/24 8:38 AM, Stanislav Fomichev wrote:
+> On 10/29, Zijian Zhang wrote:
 >>
->> Thank you for having shared this patch.
->>
->> On 30/10/2024 11:01, Tao Chen wrote:
->>> Fix compile error when MPTCP feature not support, though eBPF core check
->>> already done which seems invalid in this situation, the error info like:
->>> progs/mptcp_sock.c:49:40: error: no member named 'is_mptcp' in 'struct
->>> tcp_sock'
->>>     49 |         is_mptcp = bpf_core_field_exists(tsk->is_mptcp) ?
+>> On 10/29/24 5:22 PM, Stanislav Fomichev wrote:
+>>> On 10/29, Zijian Zhang wrote:
+>>>>
+>>>>
+>>>> On 10/29/24 4:07 PM, Stanislav Fomichev wrote:
+>>>>> On 10/29, zijianzhang@bytedance.com wrote:
+>> ...
+>>>>>> diff --git a/include/net/tls.h b/include/net/tls.h
+>>>>>> index 3a33924db2bc..a65939c7ad61 100644
+>>>>>> --- a/include/net/tls.h
+>>>>>> +++ b/include/net/tls.h
+>>>>>> @@ -390,8 +390,12 @@ tls_offload_ctx_tx(const struct tls_context *tls_ctx)
+>>>>>>     static inline bool tls_sw_has_ctx_tx(const struct sock *sk)
+>>>>>>     {
+>>>>>> -	struct tls_context *ctx = tls_get_ctx(sk);
+>>>>>> +	struct tls_context *ctx;
+>>>>>> +
+>>>>>> +	if (!sk_is_inet(sk))
+>>>>>> +		return false;
+>>>>>> +	ctx = tls_get_ctx(sk);
+>>>>>>     	if (!ctx)
+>>>>>>     		return false;
+>>>>>>     	return !!tls_sw_ctx_tx(ctx);
+>>>>>> @@ -399,8 +403,12 @@ static inline bool tls_sw_has_ctx_tx(const struct sock *sk)
+>>>>>>     static inline bool tls_sw_has_ctx_rx(const struct sock *sk)
+>>>>>>     {
+>>>>>> -	struct tls_context *ctx = tls_get_ctx(sk);
+>>>>>> +	struct tls_context *ctx;
+>>>>>> +
+>>>>>> +	if (!sk_is_inet(sk))
+>>>>>> +		return false;
+>>>>>> +	ctx = tls_get_ctx(sk);
+>>>>>>     	if (!ctx)
+>>>>>>     		return false;
+>>>>>>     	return !!tls_sw_ctx_rx(ctx);
+>>>>>
+>>>>> This seems like a strange place to fix it. Why does tls_get_ctx return
+>>>>> invalid pointer for non-tls/ulp sockets? Shouldn't it be NULL?
+>>>>> Is sockmap even supposed to work with vsock?
+>>>>
+>>>> Here is my understanding, please correct me if I am wrong :)
+>>>> ```
+>>>> static inline struct tls_context *tls_get_ctx(const struct sock *sk)
+>>>> {
+>>>> 	const struct inet_connection_sock *icsk = inet_csk(sk);
+>>>> 	return (__force void *)icsk->icsk_ulp_data;
+>>>> }
+>>>> ```
+>>>> tls_get_ctx assumes the socket passed is icsk_socket. However, unix
+>>>> and vsock do not have inet_connection_sock, they have unix_sock and
+>>>> vsock_sock. The offset of icsk_ulp_data are meaningless for them, and
+>>>> they might point to some other values which might not be NULL.
+>>>>
+>>>> Afaik, sockmap started to support vsock in 634f1a7110b4 ("vsock: support
+>>>> sockmap"), and support unix in 94531cfcbe79 ("af_unix: Add
+>>>> unix_stream_proto for sockmap").
+>>>>
+>>>> If the above is correct, I find that using inet_test_bit(IS_ICSK, sk)
+>>>> instead of sk_is_inet will be more accurate.
 >>>
->>> The filed created in new definitions with eBPF core feature to solve
->>> this build problem, and test case result still ok in MPTCP kernel.
->>>
->>> 176/1   mptcp/base:OK
->>> 176/2   mptcp/mptcpify:OK
->>> 176     mptcp:OK
->>> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
->>>
->>> Fixes: 8039d353217c ("selftests/bpf: Add MPTCP test base")
+>>> Thanks for the context, makes sense. And consolidating this sk_is_inet
+>>> check inside tls_get_ctx is worse because it gets called outside of
+>>> sockmap?
 >>
->> The commit you mentioned here is more than 2 years old, and as far as I
->> can see, nobody else reported this compilation issue. I guess that's
->> because people used tools/testing/selftests/bpf/config file as expected
->> to populate the kernel config, and I suppose you didn't, right?
->>
+>> Yes, tls_get_ctx is invoked in multiple locations, and I want to only
+>> fix sockmap related calls.
 > 
-> Hi Matt, thank you for your reply, as you said, i did not use tools/
-> testing/selftests/bpf/config to compile kernel, i will use this helpful
-> feature.
+> Sounds convincing. Unless John/Jakub have better suggestions:
 > 
->> I don't think other BPF selftests check for missing kernel config if
->> they are specified in the 'config' file, but even if it is the case, I
->> think it would be better to skip all the MPTCP tests, and not try to
->> have them checking something that doesn't exist: no need to validate
->> these tests if the expected kernel config has not been enabled.
->>
-> 
-> If i use the kernel not support MPTCP, the compile error still exists,
-> and i can not build the bpf test successfully. Maybe skill the test case
-> seems better when kernel not support. Now that bpf_core_field_exists
-> check already used in the code, i think it is better to use new
-> definition mode.
+> Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
-I understand it would be better, but it means more code to maintain to
-handle that (and remembering that in future test cases). If that's not
-necessary, then no need to do the effort.
+Thanks for the Ack and reviewing!
 
-@BPF maintainers: do we need to support kernels not respecting the
-tools/testing/selftests/bpf/config file? Should we detect when a
-required kernel config is not set and skip some tests?
+In order to make it more accurate, I added inet_test_bit(IS_ICSK, sk)
+check in version2. I just found that sk_is_inet only cannot assure
+inet_csk is valid. For example, udp_sock does not have inet_connection_sock.
 
->> But again, please correct me if I'm wrong, but I don't think there is
->> anything to change here to fix your compilation issue: simply make sure
->> to use this tools/testing/selftests/bpf/config file to generate your
->> kernel config, no?
-
-Cheers,
-Matt
--- 
-Sponsored by the NGI0 Core fund.
 
 
