@@ -1,220 +1,175 @@
-Return-Path: <bpf+bounces-43477-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43478-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92D7F9B5976
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 02:46:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 093409B597D
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 02:47:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8C981F21828
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 01:46:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C4301C209FE
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 01:47:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFA1BE46;
-	Wed, 30 Oct 2024 01:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mPq6wEsC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAAA0194094;
+	Wed, 30 Oct 2024 01:45:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com [209.85.215.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44F971D0146;
-	Wed, 30 Oct 2024 01:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C1A42AA2
+	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 01:45:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730252629; cv=none; b=W3m1QJBzY32xpswcHNQylQUCvjiy3E1KyZ8KdQvstb0wayxW1QcUW+K4z/ZaJLX7l5gYM09FneLQa9Vlm0pcnalWvB9FV3jrcBI7YLhiRdEX1fhQJqjd3l41HvMRc8/7PNedc7EfRhNA51KHG0byHYiHLy/AtRNElGBIdNFfk7A=
+	t=1730252715; cv=none; b=rtkYFGL7EZXEOJPZcIKJ24C4ksZqnHTUh6vG3LdVX+Jg5tFs3JzKHkIwW+Jb00Dy+efC4O9Evl70Ss0NlyUL+kI1etd2WX4l33PMUu54F5VavA7cJsYjab2pbS/6cZUH+8FTcccsGYFQaz7F9QVXXBvqmlPNJFrnZ1n5kIo4O80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730252629; c=relaxed/simple;
-	bh=EMREDF0iOw1a8AUc1cBDT7vV5AQ/kyb1iJVNxRQBLoE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TBjEOgXAoqrhJtT/xtgnxXvzsOjcW9xf5wU4pSwMZ5kfZ5Le2+lzFmUhpUA+zj3/khEBOUWjADml+UX7KScIrwTMQiuGhH2Mpnk9c3Vl+s8AfoavhLXg08fVKdXgB2V3MxPuLqfPHABAsVlyzLgJrOqQBVw1n+MxXt4s5Qge4B4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mPq6wEsC; arc=none smtp.client-ip=209.85.215.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f195.google.com with SMTP id 41be03b00d2f7-7ea16c7759cso3110612a12.1;
-        Tue, 29 Oct 2024 18:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730252626; x=1730857426; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BKE65jm2ZhKpehsNXTCP/V6ZnTRszfwNpxwi3OTB6Pg=;
-        b=mPq6wEsC3VaF0cNMqS8E2O4qb+s7YUK2QOWSXb417v1w+rAVU6U3s0Uobkwpd+q8HK
-         YSL60w7RPv9EU2HKksqh+MdC7QSBc5gNg6Jw1vDjer46c9gV4TEn9BEHgXm44mednJ/s
-         yyYtmLLrveaXEOi/TcKLVKwi9aWExTkWLmYKgCxgpO85UkJPU74MBDRozOT7ySRv541d
-         7PKsgd1JADJ77/Udokjypm1JWrGGTkzyN/aMziSsqr1r1sBf6s1AtgbAuyGb6/D5NuOe
-         N2ZYjGEuirZfJXztF6XClJYq8y3WUc/tfPsPhRGAPTXA8lHZykZbn72KpiDqp5NLSPqd
-         mXEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730252626; x=1730857426;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BKE65jm2ZhKpehsNXTCP/V6ZnTRszfwNpxwi3OTB6Pg=;
-        b=BQ4/vqmYRCuhRAgCMI0wEAlW6lEwKEbcqKXU7wAe/yvF8GTrHso/XbYssGH5ee3iPm
-         m4gxzWmBjSX1mAbdkm3KLrJbEjKnzU8EapatBVJjuxvn+AO3hNO2M3WEq2AZv0dwzcDo
-         thcR7vtkai505UlIr6t9HP4oPIvGFm2SkN6eFlkX3djGiodWeB+Gt9NoxFfFS13KikFJ
-         UoNFaxmeg1A4ZGrQfFxQ6qJSRmu2H1FM9cG3HI+2FpwTeIiNEgMJeFRFB7p2eVzR8uv/
-         dMHxHSfgTcoqfpSMPftLshCBTCHKmiCHOyjKMAFVEGP161Ebpz1p6q79dPXcz9Ax5ZJp
-         MwiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUw3dmxa5WD+NRmjCE5D4OCDPl8D+Dzawg5oePI0+bpaesf88sHCfF0ywK/xg/4lHGA8Dg=@vger.kernel.org, AJvYcCVR3FrwqQCkuozHwubDksLppwqkD5hLhn5j7tCefHDNOX65pYZxyYpd19lVNFNHldddlI2AvfEUJ6megXuW0eur@vger.kernel.org, AJvYcCX6fla8hl8sSVR0Q45arLfT2h+cFcJjiEKT7VJ78RFmjQhSPYbObyZRDAuCbP8SQLK+Ghgjd/d5y7P2lDeU@vger.kernel.org, AJvYcCXPcWJK37ptqQcDreNET4GZEeh/sxvOlz5F7F58qTe9rv1mtT7WM+z75rDqLtzmu1YHqA2QXVvD@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6RjpmOQ++ZI1ylhESwx4reCw2oL66DSRJn8VF/MX0Wd6jUDHX
-	CgLKEon6on1PTolPU8BjIzcqcLfg5eNEK/pheGTDTuF0Onu5/sin
-X-Google-Smtp-Source: AGHT+IEvIzgXUf05JXSQhRN/QPYHDdkNnuHWw6LIIFNVmixhsH0arx2gxEoTUbpvghWxKbrNn90HSw==
-X-Received: by 2002:a05:6a21:2d85:b0:1c4:9f31:ac9e with SMTP id adf61e73a8af0-1d9a8514483mr17967010637.42.1730252626407;
-        Tue, 29 Oct 2024 18:43:46 -0700 (PDT)
-Received: from localhost.localdomain ([43.129.25.208])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7edc866906dsm8138407a12.10.2024.10.29.18.43.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Oct 2024 18:43:46 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: pabeni@redhat.com
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	horms@kernel.org,
-	dsahern@kernel.org,
-	pablo@netfilter.org,
-	kadlec@netfilter.org,
-	roopa@nvidia.com,
-	razor@blackwall.org,
-	gnault@redhat.com,
-	bigeasy@linutronix.de,
-	hawk@kernel.org,
-	idosch@nvidia.com,
-	dongml2@chinatelecom.cn,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	bridge@lists.linux.dev,
-	bpf@vger.kernel.org
-Subject: [PATCH RESEND net-next v4 9/9] net: ip: make ip_route_use_hint() return drop reasons
-Date: Wed, 30 Oct 2024 09:41:45 +0800
-Message-Id: <20241030014145.1409628-10-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241030014145.1409628-1-dongml2@chinatelecom.cn>
-References: <20241030014145.1409628-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1730252715; c=relaxed/simple;
+	bh=R3l+o2edOS40obI+6wH+rbM+LAgzZoEfV5NS/95qEjM=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ifiYywu1Y23jwWN8RTeFCnWVAK19sbbMRhQmt58wUS8NuYFP7a+gTxTHMXV43jsmpU/AFIBjzTjax7wxv3bmyNyHuMSuM7jgULnhjXCxOBl9MZkb59+o7GxpzAmtiE4PQ3/YRpMCaVmZLDkvE60El39abJrMU4ar6cwI+QHZ0Sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XdVLH29hBz4f3jqK
+	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 09:44:55 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id CE6731A0197
+	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 09:45:07 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP2 (Coremail) with SMTP id Syh0CgC3GOWcjyFn4dxMAQ--.3248S2;
+	Wed, 30 Oct 2024 09:45:03 +0800 (CST)
+Subject: Re: [PATCH bpf v3 3/5] bpf: Check the validity of nr_words in
+ bpf_iter_bits_new()
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Yafang Shao
+ <laoar.shao@gmail.com>, Hou Tao <houtao1@huawei.com>,
+ Xu Kuohai <xukuohai@huawei.com>
+References: <20241025013233.804027-1-houtao@huaweicloud.com>
+ <20241025013233.804027-4-houtao@huaweicloud.com>
+ <CAADnVQKvHXEv_-MZpZBMPdDtptQuTjHhMUd0j+3j2DqhMV=w_g@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <4c37f26d-8c45-56a8-e5f1-624c51c8e392@huaweicloud.com>
+Date: Wed, 30 Oct 2024 09:45:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CAADnVQKvHXEv_-MZpZBMPdDtptQuTjHhMUd0j+3j2DqhMV=w_g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgC3GOWcjyFn4dxMAQ--.3248S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGF15urWkWr4kArWkJry7ZFb_yoW5ZF1fpF
+	WfJ3Z8Ar1xJr47tw1Dt3ZF9a4rJa92qa9rWrWUtFs3uFZ3WrnrWr1UKw15tas5CryjkF1I
+	vryvkFyfZaykJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-In this commit, we make ip_route_use_hint() return drop reasons. The
-drop reasons that we return are similar to what we do in
-ip_route_input_slow(), and no drop reasons are added in this commit.
+Hi,
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- include/net/route.h |  7 ++++---
- net/ipv4/ip_input.c |  9 ++++-----
- net/ipv4/route.c    | 26 ++++++++++++++++----------
- 3 files changed, 24 insertions(+), 18 deletions(-)
+On 10/30/2024 4:53 AM, Alexei Starovoitov wrote:
+> On Thu, Oct 24, 2024 at 6:20 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> Check the validity of nr_words in bpf_iter_bits_new(). Without this
+>> check, when multiplication overflow occurs for nr_bits (e.g., when
+>> nr_words = 0x0400-0001, nr_bits becomes 64), stack corruption may occur
+>> due to bpf_probe_read_kernel_common(..., nr_bytes = 0x2000-0008).
+>>
+>> Fix it by limiting the maximum value of nr_words to 511. The value is
+>> derived from the current implementation of BPF memory allocator. To
+>> ensure compatibility if the BPF memory allocator's size limitation
+>> changes in the future, use the helper bpf_mem_alloc_check_size() to
+>> check whether nr_bytes is too larger. And return -E2BIG instead of
+>> -ENOMEM for oversized nr_bytes.
+>>
 
-diff --git a/include/net/route.h b/include/net/route.h
-index f4ab5412c9c9..4debc335d276 100644
---- a/include/net/route.h
-+++ b/include/net/route.h
-@@ -206,9 +206,10 @@ ip_mc_validate_source(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- enum skb_drop_reason
- ip_route_input_noref(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 		     dscp_t dscp, struct net_device *dev);
--int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
--		      dscp_t dscp, struct net_device *dev,
--		      const struct sk_buff *hint);
-+enum skb_drop_reason
-+ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
-+		  dscp_t dscp, struct net_device *dev,
-+		  const struct sk_buff *hint);
- 
- static inline enum skb_drop_reason
- ip_route_input(struct sk_buff *skb, __be32 dst, __be32 src, dscp_t dscp,
-diff --git a/net/ipv4/ip_input.c b/net/ipv4/ip_input.c
-index 513eb0c6435a..f0a4dda246ab 100644
---- a/net/ipv4/ip_input.c
-+++ b/net/ipv4/ip_input.c
-@@ -322,15 +322,14 @@ static int ip_rcv_finish_core(struct net *net, struct sock *sk,
- 	int err, drop_reason;
- 	struct rtable *rt;
- 
--	drop_reason = SKB_DROP_REASON_NOT_SPECIFIED;
--
- 	if (ip_can_use_hint(skb, iph, hint)) {
--		err = ip_route_use_hint(skb, iph->daddr, iph->saddr,
--					ip4h_dscp(iph), dev, hint);
--		if (unlikely(err))
-+		drop_reason = ip_route_use_hint(skb, iph->daddr, iph->saddr,
-+						ip4h_dscp(iph), dev, hint);
-+		if (unlikely(drop_reason))
- 			goto drop_error;
- 	}
- 
-+	drop_reason = SKB_DROP_REASON_NOT_SPECIFIED;
- 	if (READ_ONCE(net->ipv4.sysctl_ip_early_demux) &&
- 	    !skb_dst(skb) &&
- 	    !skb->sk &&
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index e248e5577d0e..7f969c865c81 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -2142,28 +2142,34 @@ ip_mkroute_input(struct sk_buff *skb, struct fib_result *res,
-  * assuming daddr is valid and the destination is not a local broadcast one.
-  * Uses the provided hint instead of performing a route lookup.
-  */
--int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
--		      dscp_t dscp, struct net_device *dev,
--		      const struct sk_buff *hint)
-+enum skb_drop_reason
-+ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
-+		  dscp_t dscp, struct net_device *dev,
-+		  const struct sk_buff *hint)
- {
-+	enum skb_drop_reason reason = SKB_DROP_REASON_NOT_SPECIFIED;
- 	struct in_device *in_dev = __in_dev_get_rcu(dev);
- 	struct rtable *rt = skb_rtable(hint);
- 	struct net *net = dev_net(dev);
--	enum skb_drop_reason reason;
--	int err = -EINVAL;
- 	u32 tag = 0;
- 
- 	if (!in_dev)
--		return -EINVAL;
-+		return reason;
- 
--	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr))
-+	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr)) {
-+		reason = SKB_DROP_REASON_IP_INVALID_SOURCE;
- 		goto martian_source;
-+	}
- 
--	if (ipv4_is_zeronet(saddr))
-+	if (ipv4_is_zeronet(saddr)) {
-+		reason = SKB_DROP_REASON_IP_INVALID_SOURCE;
- 		goto martian_source;
-+	}
- 
--	if (ipv4_is_loopback(saddr) && !IN_DEV_NET_ROUTE_LOCALNET(in_dev, net))
-+	if (ipv4_is_loopback(saddr) && !IN_DEV_NET_ROUTE_LOCALNET(in_dev, net)) {
-+		reason = SKB_DROP_REASON_IP_LOCALNET;
- 		goto martian_source;
-+	}
- 
- 	if (rt->rt_type != RTN_LOCAL)
- 		goto skip_validate_source;
-@@ -2179,7 +2185,7 @@ int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 
- martian_source:
- 	ip_handle_martian_source(dev, in_dev, skb, daddr, saddr);
--	return err;
-+	return reason;
- }
- 
- /* get device for dst_alloc with local routes */
--- 
-2.39.5
+SNIP
+>>  bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_words)
+>>  {
+>>         struct bpf_iter_bits_kern *kit = (void *)it;
+>> -       u32 nr_bytes = nr_words * sizeof(u64);
+>> -       u32 nr_bits = BYTES_TO_BITS(nr_bytes);
+>> +       u32 nr_bytes, nr_bits;
+>>         int err;
+>>
+>>         BUILD_BUG_ON(sizeof(struct bpf_iter_bits_kern) != sizeof(struct bpf_iter_bits));
+>> @@ -2892,9 +2894,14 @@ bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_w
+>>
+>>         if (!unsafe_ptr__ign || !nr_words)
+>>                 return -EINVAL;
+>> +       if (nr_words > BITS_ITER_NR_WORDS_MAX)
+>> +               return -E2BIG;
+>> +
+>> +       nr_bytes = nr_words * sizeof(u64);
+>> +       nr_bits = BYTES_TO_BITS(nr_bytes);
+> The check for nr_words is good, but moving computation after 'if'
+> feels like code churn and nothing else.
+> Even if nr_words is large, it's fine to do the math.
+
+No intention for code churn. I thought the overflow during
+multiplication may lead to UBSAN warning, but it seems the overflow
+warning is only for signed integer. Andrii also suggested me to move the
+assignment after the check [1].
+
+[1]:
+https://lore.kernel.org/bpf/CAEf4BzahtDCZDEdejm6cNMzDNTc0gXPzhc5xcWg9c8S_i6yWNA@mail.gmail.com/
+>
+>>         /* Optimization for u64 mask */
+>> -       if (nr_bits == 64) {
+>> +       if (nr_words == 1) {
+> This is also unnecessary churn.
+>
+> Also it seems it's causing a warn on 32-bit:
+> https://netdev.bots.linux.dev/static/nipa/902902/13849894/build_32bit/
+
+It is weird that using "nr_bits = 64" doesn't reproduce the warning.
+Because the warning is due to the size of bits_copy is 4 bytes under
+32-bit host and the error path of bpf_probe_read_kernel_common() invokes
+memset(&bits_copy, 0, 8). The warning will be fixed by the following
+patch "bpf: Use __u64 to save the bits in bits iterator". Anyway, will
+change it back to "nr_bits = 64".
+
+>
+> pw-bot: cr
+>
+>>                 err = bpf_probe_read_kernel_common(&kit->bits_copy, nr_bytes, unsafe_ptr__ign);
+>>                 if (err)
+>>                         return -EFAULT;
+>> @@ -2903,6 +2910,9 @@ bpf_iter_bits_new(struct bpf_iter_bits *it, const u64 *unsafe_ptr__ign, u32 nr_w
+>>                 return 0;
+>>         }
+>>
+>> +       if (bpf_mem_alloc_check_size(false, nr_bytes))
+>> +               return -E2BIG;
+>> +
+>>         /* Fallback to memalloc */
+>>         kit->bits = bpf_mem_alloc(&bpf_global_ma, nr_bytes);
+>>         if (!kit->bits)
+>> --
+>> 2.29.2
+>>
 
 
