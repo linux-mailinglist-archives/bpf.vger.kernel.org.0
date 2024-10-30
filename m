@@ -1,207 +1,214 @@
-Return-Path: <bpf+bounces-43541-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43542-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ACC79B5FA4
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 11:03:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D80E9B5FA7
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 11:03:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EF8B1C2185F
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 10:02:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16D8D284A1D
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 10:03:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1383F1E3DE7;
-	Wed, 30 Oct 2024 10:01:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U2F9aeuq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F34C81E32C1;
+	Wed, 30 Oct 2024 10:02:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8FFE1E25E0;
-	Wed, 30 Oct 2024 10:01:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16F951E1C2F
+	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 10:02:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730282492; cv=none; b=M0aVZt7hHkXPKSgbc1U01rjJKS+Sc5FQVI834O73BSX3A34+swjcyAAB+dFswL4UrnAvaCbKKqoLE1S2h2AEC6q3g07n0pvEWLXdYVqcoQO6+xcIvSvROrWF5cwYCd30p1A/z9A601sM6ZPI3TYY3LA8H9sp/1jMPO14VnIk9Yw=
+	t=1730282572; cv=none; b=JEV5QhHA9OUs7xZ4B20gsQJFJa8i3YIyoGHzFiLqww5p0KprSboQ9h48aRrQSQ0wyb9mu+BufT+r4O9HxBiLiNPEXReeBp8EJwpHSIt4R0gFnzEvCTfYZCnxlXkF1GXX2EnfkiU5dgcUT12RStQ4krApDDN78m8ss7hoEyRWiAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730282492; c=relaxed/simple;
-	bh=7Lb9jgXBsueULSwXmVHO9S0yQGKVhSQ+fOmcIjWvodw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lOwyHHgx5UZ/O/LsD2j2RbWqurKH5qhzLuCK0ZNIkdgFA506tSOfy9aG1Ybt4eIqpIAVQ6e2+i6qHaOhjuJl1ZnpJ+7fiX6GhI8glxilMN1XA/pRmk0WOrI3fpa23/igcXkIizlst1CT6TcDcdIL9e0uMfcIJd0+JOkA4bWs4ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U2F9aeuq; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2e2a999b287so5216254a91.0;
-        Wed, 30 Oct 2024 03:01:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730282490; x=1730887290; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4AzW1atrg/A1gulnP13fPkOgabCdL8saqqVxwhxHSn4=;
-        b=U2F9aeuqsZk0lyjsr4T3OSGDggYV0+fiXcDjdCRjJ0xZrDAqsCmsEOGiDb5kseGy53
-         zxmMwd8YQL8RBAw7e7V3LvBWSjQn3wSs5pOmC+PLXuL2ggxd8PAJzf098Bh8s1m9CaBb
-         KG3QcIPWup4ZxVEIUWrjWuGkrt45iuOkoQpV3jN/3aomR8Tq/GbfcLVNeENsifAtDH1U
-         a7YUAmMipve0THjVFw+JzdtitsqNvxVaxMUlYne5Seoe2HxpB55TpCdgrVRnW/Uy+zNn
-         8yBGr7ChYWCaHnpWZYDV8IUYC0hZGQ5WIK9q+90OtIwfwbQzX0KzNzmSWloZyKPDR1aY
-         S2WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730282490; x=1730887290;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4AzW1atrg/A1gulnP13fPkOgabCdL8saqqVxwhxHSn4=;
-        b=tSBoVMhUCQTs8nLz73arHPMdzcNIGe1C54l0vcDpY14LasdqZL3fwXVQAPPCThTg/s
-         zxrOFqsTFAxVtGCuhhGiS5P5W16NlTU+G3dt5FUAoPBLiBwKFdxAW5FoSWTGT2wr5j56
-         Y2DuEWC7YjNrZId3UsykKo0nI9l2my5ltVlyFt0/0ys1MC/Tp37jDijEhPyaBlAXOBbM
-         9XocBPexgWxNR9xUB+juVEZA5TTb9gFlG6vrC0sErpnYRQmU1EUplk32rsXhdyPD7Sdf
-         R3kBl8+R7M6DStlRJrztCca8ftSXtoHlB7N+MDrIHk9KMXXSpP+wG9IVvW/k83mmeTcr
-         vOWg==
-X-Forwarded-Encrypted: i=1; AJvYcCV93U7ONck6J7nE6hk9RmIIJDXkr6CQ/j8+QZBKSQfublcj0YDeKsVmEcGWZ7bBkLgzr0sken+RirtY2ax3Fzp4@vger.kernel.org, AJvYcCVDtSLxxuLObo4rCuRtbAqz+d9z2b1jIKrWbVMojAMNymgCg3s3bJFb482EnBXlA/Dv5CBCXhAtu6tCQAU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzKPvQ/zwqxkTLtuN38/dXiJJv5Ev764GCz4PWccGqtqxDeg7FQ
-	Hd0+rsQtnonaF+Y0VwkMSiB4+L+T354rjVVqjcjJ0XpupKYaekIx+aGDuQ==
-X-Google-Smtp-Source: AGHT+IEEymCR2vDG/9y53R5Zf9cd1nP744F8u68gMP4feSlmPSZtEdAZ4OCPtMvXE5+WpvBw4aF6Kg==
-X-Received: by 2002:a17:90a:b305:b0:2e2:9038:4a48 with SMTP id 98e67ed59e1d1-2e8f10a6e39mr16216607a91.32.1730282489470;
-        Wed, 30 Oct 2024 03:01:29 -0700 (PDT)
-Received: from localhost ([116.198.225.81])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e92fa3dbd2sm1294830a91.20.2024.10.30.03.01.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Oct 2024 03:01:29 -0700 (PDT)
-From: Tao Chen <chen.dylane@gmail.com>
-To: Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	mptcp@lists.linux.dev,
-	Tao Chen <chen.dylane@gmail.com>
-Subject: [PATCH bpf-next] selftests/bpf: Fix compile error when MPTCP not support
-Date: Wed, 30 Oct 2024 18:01:08 +0800
-Message-Id: <20241030100108.2443371-1-chen.dylane@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1730282572; c=relaxed/simple;
+	bh=dxVAwY/8HQOBw4q7k1uoaEbZPMDSsLX2K1FHryji8BU=;
+	h=From:Subject:To:Cc:References:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=qtD9QYVe2qR4/V4Su6LT4Oa/iZDMbabSYmb8PQXjUp8YcGTn+jLl9gD561SVy8Lg1Bm249zqMOwaH/8tBn8IpiHj14kP/UiBZYXOLvASQBYE6SGp/O4a6ZnEYRfPaOBkaof2u0lAyiB1q+WSaI9FOF/G5p1nMC9utxcKVUqYYco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XdjNV0M9Mz4f3kKT
+	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 18:02:34 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id A1C671A018D
+	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 18:02:46 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP2 (Coremail) with SMTP id Syh0CgBXBOFCBCJngGVtAQ--.58801S2;
+	Wed, 30 Oct 2024 18:02:46 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+Subject: Re: [PATCH bpf-next 12/16] bpf: Support basic operations for dynptr
+ key in hash map
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>,
+ Xu Kuohai <xukuohai@huawei.com>
+References: <20241008091501.8302-1-houtao@huaweicloud.com>
+ <20241008091501.8302-13-houtao@huaweicloud.com>
+ <CAADnVQKSYzEVA2fPLOhZs6Bdz492wmVU9DAp4q0qLdTHYAhEEQ@mail.gmail.com>
+Message-ID: <c6d60075-ee0e-f875-c098-ffe9ff7e8d6b@huaweicloud.com>
+Date: Wed, 30 Oct 2024 18:02:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CAADnVQKSYzEVA2fPLOhZs6Bdz492wmVU9DAp4q0qLdTHYAhEEQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgBXBOFCBCJngGVtAQ--.58801S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gw1DCw45KrW8uF18tF47urg_yoW7Gw15pF
+	WrGa4FqrWkCFn2vwn3JF4FkFWYy3WkWr1UG3s8K34Ykas8CFyfGr4xWayF9Fy5CrykCrnY
+	qw4Ut3W5Gw15urJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9qb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JF
+	I_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG
+	6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F
+	4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Fix compile error when MPTCP feature not support, though eBPF core check
-already done which seems invalid in this situation, the error info like:
-progs/mptcp_sock.c:49:40: error: no member named 'is_mptcp' in 'struct
-tcp_sock'
-   49 |         is_mptcp = bpf_core_field_exists(tsk->is_mptcp) ?
+Hi,
 
-The filed created in new definitions with eBPF core feature to solve
-this build problem, and test case result still ok in MPTCP kernel.
+On 10/12/2024 12:47 AM, Alexei Starovoitov wrote:
+> On Tue, Oct 8, 2024 at 2:02 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> The patch supports lookup, update, delete and lookup_delete operations
+>> for hash map with dynptr map. There are two major differences between
+>> the implementation of normal hash map and dynptr-keyed hash map:
+>>
+>> 1) dynptr-keyed hash map doesn't support pre-allocation.
+>> The reason is that the dynptr in map key is allocated dynamically
+>> through bpf mem allocator. The length limitation for these dynptrs is
+>> 4088 bytes now. Because there dynptrs are allocated dynamically, the
+>> consumption of memory will be smaller compared with normal hash map when
+>> there are big differences between the length of these dynptrs.
+>>
+>> 2) the freed element in dynptr-key map will not be reused immediately
+>> For normal hash map, the freed element may be reused immediately by the
+>> newly-added element, so the lookup may return an incorrect result due to
+>> element deletion and element reuse. However dynptr-key map could not do
+>> that, there are pointers (dynptrs) in the map key and the updates of
+>> these dynptrs are not atomic: both the address and the length of the
+>> dynptr will be updated. If the element is reused immediately, the access
+>> of the dynptr in the freed element may incur invalid memory access due
+>> to the mismatch between the address and the size of dynptr, so reuse the
+>> freed element after one RCU grace period.
+>>
+>> Beside the differences above, dynptr-keyed hash map also needs to handle
+>> the maybe-nullified dynptr in the map key.
+>>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>  kernel/bpf/hashtab.c | 283 +++++++++++++++++++++++++++++++++++++++----
+>>  1 file changed, 257 insertions(+), 26 deletions(-)
+>>
+>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+>> index b14b87463ee0..edf19d36a413 100644
+>> --- a/kernel/bpf/hashtab.c
+>> +++ b/kernel/bpf/hashtab.c
+>> @@ -88,6 +88,7 @@ struct bpf_htab {
+>>         struct bpf_map map;
+>>         struct bpf_mem_alloc ma;
+>>         struct bpf_mem_alloc pcpu_ma;
+>> +      
 
-176/1   mptcp/base:OK
-176/2   mptcp/mptcpify:OK
-176     mptcp:OK
-Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+SNIP
+>> +
+>> +static inline bool htab_is_same_key(const void *key, const void *tgt, unsigned int key_size,
+>> +                                   const struct btf_record *rec)
+>> +{
+>> +       if (!rec)
+>> +               return !memcmp(key, tgt, key_size);
+>> +       return is_same_dynptr_key(key, tgt, key_size, rec);
+>> +}
+>> +
+>>  /* this lookup function can only be called with bucket lock taken */
+>>  static struct htab_elem *lookup_elem_raw(struct hlist_nulls_head *head, u32 hash,
+>> -                                        void *key, u32 key_size)
+>> +                                        void *key, u32 key_size,
+>> +                                        const struct btf_record *record)
+>>  {
+>>         struct hlist_nulls_node *n;
+>>         struct htab_elem *l;
+>>
+>>         hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
+>> -               if (l->hash == hash && !memcmp(&l->key, key, key_size))
+>> +               if (l->hash == hash && htab_is_same_key(l->key, key, key_size, record))
+>>                         return l;
+>>
+>>         return NULL;
+>> @@ -657,14 +769,15 @@ static struct htab_elem *lookup_elem_raw(struct hlist_nulls_head *head, u32 hash
+>>   */
+>>  static struct htab_elem *lookup_nulls_elem_raw(struct hlist_nulls_head *head,
+>>                                                u32 hash, void *key,
+>> -                                              u32 key_size, u32 n_buckets)
+>> +                                              u32 key_size, u32 n_buckets,
+>> +                                              const struct btf_record *record)
+>>  {
+>>         struct hlist_nulls_node *n;
+>>         struct htab_elem *l;
+>>
+>>  again:
+>>         hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
+>> -               if (l->hash == hash && !memcmp(&l->key, key, key_size))
+>> +               if (l->hash == hash && htab_is_same_key(l->key, key, key_size, record))
+>>                         return l;
+> If I'm reading this correctly the support for dynptr in map keys
+> adds two map->key_record != NULL checks in the fast path,
+> hence what you said in cover letter:
+>
+>> It seems adding dynptr key support in hash map degrades the lookup
+>> performance about 12% and degrades the update performance about 7%. Will
+>> investigate these degradation first.
+>>
+>> a) lookup
+>> max_entries = 8K
+>>
+>> before:
+>> 0:hash_lookup 72347325 lookups per sec
+>>
+>> after:
+>> 0:hash_lookup 64758890 lookups per sec
+> is surprising.
+>
+> Two conditional branches contribute to 12% performance loss?
+> Something fishy.
+> Try unlikely() to hopefully recover most of it.
+> After analyzing 'perf report/annotate', of course.
 
-Fixes: 8039d353217c ("selftests/bpf: Add MPTCP test base")
-Signed-off-by: Tao Chen <chen.dylane@gmail.com>
----
- .../testing/selftests/bpf/progs/mptcp_sock.c  | 42 ++++++++++++++-----
- 1 file changed, 32 insertions(+), 10 deletions(-)
+Using unlikely/likely doesn't help much. It seems the big performance
+gap is due to the inline of lookup_nulls_elem_raw() in
+__htab_map_lookup_elem(). Still don't know the reason why
+lookup_nulls_elem_raw() is not inlined after the change. After marking
+the lookup_nulls_elem_raw() function as inline, the performance gap is
+within ~2% for htab map lookup.  For htab_map_update/delete_elem(),  the
+reason and the result is similar. Should I mark these two functions
+(lookup_nulls_elem_raw and lookup_elem_raw) as inline in the next
+revision, or should I leave it as is and try to fix the degradation in
+another patch set ?
 
-diff --git a/tools/testing/selftests/bpf/progs/mptcp_sock.c b/tools/testing/selftests/bpf/progs/mptcp_sock.c
-index f3acb90588c7..2f80d042686a 100644
---- a/tools/testing/selftests/bpf/progs/mptcp_sock.c
-+++ b/tools/testing/selftests/bpf/progs/mptcp_sock.c
-@@ -25,13 +25,23 @@ struct {
- 	__type(value, struct mptcp_storage);
- } socket_storage_map SEC(".maps");
- 
-+struct tcp_sock___new {
-+	bool is_mptcp;
-+} __attribute__((preserve_access_index));
-+
-+struct mptcp_sock___new {
-+	__u32 token;
-+	struct sock *first;
-+	char ca_name[TCP_CA_NAME_MAX];
-+} __attribute__((preserve_access_index));
-+
- SEC("sockops")
- int _sockops(struct bpf_sock_ops *ctx)
- {
- 	struct mptcp_storage *storage;
--	struct mptcp_sock *msk;
-+	struct mptcp_sock___new *msk;
- 	int op = (int)ctx->op;
--	struct tcp_sock *tsk;
-+	struct tcp_sock___new *tsk;
- 	struct bpf_sock *sk;
- 	bool is_mptcp;
- 
-@@ -42,11 +52,16 @@ int _sockops(struct bpf_sock_ops *ctx)
- 	if (!sk)
- 		return 1;
- 
--	tsk = bpf_skc_to_tcp_sock(sk);
-+	/* recast pointer to capture new type for compiler */
-+	tsk = (void *)bpf_skc_to_tcp_sock(sk);
- 	if (!tsk)
- 		return 1;
- 
--	is_mptcp = bpf_core_field_exists(tsk->is_mptcp) ? tsk->is_mptcp : 0;
-+	if (bpf_core_field_exists(tsk->is_mptcp))
-+		is_mptcp = BPF_CORE_READ(tsk, is_mptcp);
-+	else
-+		is_mptcp = 0;
-+
- 	if (!is_mptcp) {
- 		storage = bpf_sk_storage_get(&socket_storage_map, sk, 0,
- 					     BPF_SK_STORAGE_GET_F_CREATE);
-@@ -57,7 +72,7 @@ int _sockops(struct bpf_sock_ops *ctx)
- 		__builtin_memset(storage->ca_name, 0, TCP_CA_NAME_MAX);
- 		storage->first = NULL;
- 	} else {
--		msk = bpf_skc_to_mptcp_sock(sk);
-+		msk = (void *)bpf_skc_to_mptcp_sock(sk);
- 		if (!msk)
- 			return 1;
- 
-@@ -66,9 +81,9 @@ int _sockops(struct bpf_sock_ops *ctx)
- 		if (!storage)
- 			return 1;
- 
--		storage->token = msk->token;
--		__builtin_memcpy(storage->ca_name, msk->ca_name, TCP_CA_NAME_MAX);
--		storage->first = msk->first;
-+		storage->token = BPF_CORE_READ(msk, token);
-+		BPF_CORE_READ_STR_INTO(&storage->ca_name, msk, ca_name);
-+		storage->first = BPF_CORE_READ(msk, first);
- 	}
- 	storage->invoked++;
- 	storage->is_mptcp = is_mptcp;
-@@ -81,8 +96,15 @@ SEC("fentry/mptcp_pm_new_connection")
- int BPF_PROG(trace_mptcp_pm_new_connection, struct mptcp_sock *msk,
- 	     const struct sock *ssk, int server_side)
- {
--	if (!server_side)
--		token = msk->token;
-+	struct mptcp_sock___new *mskw;
-+
-+	if (!server_side) {
-+		mskw = (void *)msk;
-+		if (bpf_core_field_exists(mskw->token))
-+			token = BPF_CORE_READ(mskw, token);
-+		else
-+			token = 0;
-+	}
- 
- 	return 0;
- }
--- 
-2.43.0
+> Worst case we can specialize htab_map_gen_lookup() to
+> call into different helpers.
+> .
 
 
