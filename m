@@ -1,149 +1,156 @@
-Return-Path: <bpf+bounces-43564-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43565-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C1539B67C1
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 16:27:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F7BE9B67F4
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 16:36:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D7531C209BC
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 15:27:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30EDA1F2286D
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2024 15:36:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF44A2144CC;
-	Wed, 30 Oct 2024 15:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574DD213141;
+	Wed, 30 Oct 2024 15:36:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UCY+f7Hz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J/LrNC94"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7982144A6;
-	Wed, 30 Oct 2024 15:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE971E1312
+	for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 15:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730301869; cv=none; b=iARNJkxEVbTfN4f2+rZq5iPfGTmUr48e08Lcnmo4lbgHNJCLpvi2TFYJQx9MdVcdHxHgWflJl2EMzkbwyC8PUlJFcWdv7Nu5JKB6QCfNPgeNYbJP2NRouHOiusgkp7FB+ZDGv3+LlLbwUd21HClhqc7KajI2n5/AvcLrszVW52Y=
+	t=1730302561; cv=none; b=q8uVLJQZp8FNX+PqL8nvr3O/3jN1VshxbvC++OCzotK71RDszqrFd9YzuXgqZFRi4jJOJVaJPYQf3nxyZl5Sur4N6gjTRdIDO3SwQPu1QBvSiv7rEkXlbHYdGTtg5yXg1qnse+aBsvxl4oFuMlCXeaP1z08phlR2mX305kMzAO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730301869; c=relaxed/simple;
-	bh=n999IZOA4rDYc27Hp0H+miRj5tRQoBGIlyVHQmeFAb0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bYGOWeH8rdOb2gz/VB15/Lkvb0PDv/VKR1RACqf/8fNaOBAzGkBR1p9iJOAnolSMh6FO54ipVmhA+foTMLAGwfsgJnliwZTID0KUfgKguv8HcUmz0ieoJVrvc9K0sXuQpmqioL79FgNkYd33F+mHlEfqfRAjSPm8Ca8pKCW/OVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UCY+f7Hz; arc=none smtp.client-ip=209.85.218.53
+	s=arc-20240116; t=1730302561; c=relaxed/simple;
+	bh=x0eBrOxcT0goZ5ZQfV6Np7WjPUOkMxRi3jamIGrf9YE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uQ2CWNZRnjpUUTpe2MvjJMxzZP1NkCInlQlnDD69rvHkUAc9/+bJUV71qo+5gdZujoDmt1OaDRCYMvyTaks9i3CgT0dTw0iDvRMTYT/0ZAz0Jkj5c802EfQng/rJhC8Z3Yc7s5L+932/ohgmuCYf9qmzaAB48Xgolx5eJdeGNKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J/LrNC94; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a9a1b71d7ffso992316566b.1;
-        Wed, 30 Oct 2024 08:24:26 -0700 (PDT)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7db238d07b3so11616a12.2
+        for <bpf@vger.kernel.org>; Wed, 30 Oct 2024 08:35:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730301865; x=1730906665; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lH03TetyHfAgyaa2uTodt4n0nCoJG2QadBNpvOTrh70=;
-        b=UCY+f7HziinpdOPcW2+WnKgKq0s6+ba5YaGcivNsd0NT/YBJQAvOt05Hg1i1SpelAR
-         ZmiIHAYM+x4f55wIFsbo/YQrPsnYHgYgvBtpixW2ukTDPti5f93U2ryM3/Sp96KOftF8
-         IZ5zNtNWF4cpw5lue2ZBkxaFTsuRmWNWSTryhJFcODfamFIVpIgDMgqUQieRisEG1f+l
-         XftghNUJm0znNrphrdNEUJp4OBdT3pFcHLTPgoj3uzsqFuttkdXCI3kGSJLXQiMMDoi0
-         G6nKv4207U+Mk5ENVfqdgZz8dRxHmo4YyLaqUTTE55MGc0tkgq8GmpMKqJvcGcUH8lr5
-         PP9g==
+        d=gmail.com; s=20230601; t=1730302559; x=1730907359; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ehcM+/OA0cXZoKXhA+oFI8F4DqdBTmR8eq6TZ96pns8=;
+        b=J/LrNC94i635bKR30poqL6YTdl50NO7CUz0tIEhCbO+D2XQd/sGYZbxZ+HFhhF1grJ
+         ur0wWKi/ZAke7j/jpmPZICE18mIOmzqJ97iUWvMpkV6LM3AWqi/7fIWuIusNsiBmqZXV
+         tbCEGvXWveEmlm4ZwZWgMRrmgkRdKhKn1iLfiQMVto4TEJ4DbBqtdy8aqP5ppKtw852m
+         cnzjMrHXiKV/KY4RSMBM4rG9cOXIRCS91bw7a/0kyL9YipW5pmVQIjGdGTE/07N0OIYc
+         TpGHB8kOC/EUNMyLrk6KkXczs77uHZ+rRNxEkrtPAThio7k3NQA6DhXZZ5j2TWA5Adky
+         NX2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730301865; x=1730906665;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lH03TetyHfAgyaa2uTodt4n0nCoJG2QadBNpvOTrh70=;
-        b=U0yHcE8X1DYp18hpIHHzSWLniOu6hyeLyLoucv9zUO1gfcXZ6JYSukUTsHjKNXRI/4
-         8/tS7CSjau6teCeygWgNHgU+9nSncJKpwk3KzeHVg6BNu2/SQz+DvL2QehTNBCaGevCU
-         TfrK1ITJjNh6D6JF4ERfps45zKXrlp80M/ox5TkoSJnfgK+khH06r6vJgHeXPKHcQnHQ
-         c38qrVSG0BpzMw5Ct3S744xTGLBwG1ic0rU6bMetpFPJqk3hXMOHK2YzYqfAvsZPtHrG
-         SF8xN201C2GfjqiGPLeDADb82sQU++janJdNpx3wZP3QTSWiBnZ0zKkUCp3J6iE6AeGl
-         QzmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUdOzvY/u3vm6TRNkjULjx/L3aFQPWcLAK6fk7VTtmFRwhUGdkYvshc4NGYTQ9SuVC4WhY=@vger.kernel.org, AJvYcCUzgMGQrke3fnF3ek926oG/DLptGT9bfmH10hWC+7WoXjgpmE1Kih/Ceus0oB5+OprPY2hIT4knypmUgLE+@vger.kernel.org, AJvYcCWVwuMB7Xl7DEV8qV7t11FfWEaImSo0TNX5dHS5CoGaWyTxgecwraG8fNbp+qQZzzzCjWsR0d5qLqH3l9LDBmna@vger.kernel.org, AJvYcCXNyNJxAOxD3yiRcFHUe8o4x3uzLPXb4kK9dmeU9LHzquyvK7lfxj3GrfryDPQHoczB2h2DrE2qSrDGxztuNtzts4eg@vger.kernel.org
-X-Gm-Message-State: AOJu0YzFXYTotpkPcftODwaFVuiUj6yC0j0GWlJeqAzUTxiu6AzJk/Pa
-	xQfIdl/n9TjVsDuyzB7yt8Djuej2dYZKQo7462gSq9AbYNdtn1rE95vCQUmTSjDiF0HtQ9FwaHb
-	nX1Od1GnvqtVhZmnfjpK3GI5OCNU=
-X-Google-Smtp-Source: AGHT+IEOif/f/Zl1LrJt+2Gcyo6SzzYJtNymmKKu1iahMKcKCBKKgoSUjNWuEBzxjc1lnPieK9zMO7mK1eUPJ+v9MGg=
-X-Received: by 2002:a17:907:9722:b0:a99:403e:2578 with SMTP id
- a640c23a62f3a-a9e3a57531amr379536766b.5.1730301865101; Wed, 30 Oct 2024
- 08:24:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1730302559; x=1730907359;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ehcM+/OA0cXZoKXhA+oFI8F4DqdBTmR8eq6TZ96pns8=;
+        b=egq6EAqgPW60gfvhbPHTsMJNV++RWnX2Bxpe4+/O4DtWqIpwqor8CoJmHHGhN9+XwJ
+         7fXkk4VJpD1VEZatRV1hAKkrpNZvlMfVH39wTaPjlp5KX4yDQ/J3kbcFyBiD0UylJjkb
+         y0MKhWN8Rbvq+D7s93Vol0T0g5OkK6UQfA47wrVhQoGeYwT1PlojiHrwDbChWRlZJfA9
+         eVl+z7M97JW+3rtN04VTh5g5dJdqv51V8i3e0CKx5RsMiKqvTzw02/oL7xNWJ5YMqy0i
+         ePvYBrNvE6W1LBHwOjSlP7jxV4NLBv80vODWpgA0OqDSAQeJAplL69UusPbM/XeZTdNs
+         2u/g==
+X-Forwarded-Encrypted: i=1; AJvYcCVB2g+Hk2xEVbW4uDVDulePh8GtGS96mGAz0CP0lLYSo1IGyn001zwcS79iO1zlQuWuaVM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/a1GJUhQWXgJEnuXhunK5Z8YVWVtZoQLdrkue/mX8fb2T2iCV
+	xrua6m3ngv8Vh0EvH+jKs6RM+9s83fbN3VV4NHklq8ODtk/Xik8=
+X-Google-Smtp-Source: AGHT+IGpyGUXH2o05lDMz2l0CrvoF6atdf4hPjiM48ggDm2qIujS2Kakq60uZdE6QIn2QdtyzqJc2w==
+X-Received: by 2002:a05:6a20:d8b:b0:1cf:3d14:6921 with SMTP id adf61e73a8af0-1d9a84d168emr22180392637.35.1730302559238;
+        Wed, 30 Oct 2024 08:35:59 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7205793194dsm9387407b3a.53.2024.10.30.08.35.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Oct 2024 08:35:58 -0700 (PDT)
+Date: Wed, 30 Oct 2024 08:35:58 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: Leon Hwang <hffilwlqm@gmail.com>, bpf@vger.kernel.org, qmo@kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	kernel-patches-bot@fb.com
+Subject: Re: [PATCH bpf] bpf, bpftool: Fix incorrect disasm pc
+Message-ID: <ZyJSXkHf6qFzkMnX@mini-arch>
+References: <20241030094741.22929-1-hffilwlqm@gmail.com>
+ <e404d1cd-cf40-48dd-8a49-82c03c3b641e@linux.dev>
+ <ZyJJJlt1gvsi2Wu0@mini-arch>
+ <4b3b1af1-3546-4916-9084-3f10b276998b@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241029002208.1947947-1-dolinux.peng@gmail.com>
- <20241029002208.1947947-4-dolinux.peng@gmail.com> <CAEf4BzYZgAPZSQTTk20s8vUwDMipe+0HRyKNnQchM+C10-1qOQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYZgAPZSQTTk20s8vUwDMipe+0HRyKNnQchM+C10-1qOQ@mail.gmail.com>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Wed, 30 Oct 2024 23:24:13 +0800
-Message-ID: <CAErzpmsuf0e9O4p1srdadoCwn7zNN6rEb8wt5yEOT0FByx5RJw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] libbpf: Using binary search to improve the
- performance of btf__find_by_name_kind
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, rostedt@goodmis.org, 
-	mhiramat@kernel.org, bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4b3b1af1-3546-4916-9084-3f10b276998b@linux.dev>
 
-On Wed, Oct 30, 2024 at 6:15=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Oct 28, 2024 at 5:22=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.=
-com> wrote:
-> >
-> > Currently, we are only using the linear search method to find the type =
-id
-> > by the name, which has a time complexity of O(n). This change involves
-> > sorting the names of btf types in ascending order and using binary sear=
-ch,
-> > which has a time complexity of O(log(n)).
-> >
-> > Another change is the search direction, where we search the BTF first a=
-nd
-> > then its base.
-> >
-> > Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
-> > ---
-> >  tools/lib/bpf/btf.c | 159 ++++++++++++++++++++++++++++++++++++++------
-> >  1 file changed, 140 insertions(+), 19 deletions(-)
-> >
->
-> same complaints as with kernel-side implementation
->
-> I'm not sure if this is the right approach, overall. I can see how
-> pre-sorting might be useful if done by pahole. But then I'd say we
-> should record some bit somewhere in btf_header claiming that this is
-> sorted BTF, and then if that bit is set and we confirmed (on the
-> kernel side) that sorting is indeed correct (and if not, reject, don't
-> silently ignore), then we can use that sorting to our advantage.
+On 10/30, Leon Hwang wrote:
+> 
+> 
+> On 2024/10/30 22:56, Stanislav Fomichev wrote:
+> > On 10/30, Leon Hwang wrote:
+> >>
+> >>
+> >> On 2024/10/30 17:47, Leon Hwang wrote:
+> >>> From: Leon Hwang <leon.hwang@linux.dev>
+> >>>
+> >>> This patch addresses the bpftool issue "Wrong callq address displayed"[0].
+> >>>
+> >>> The issue stemmed from an incorrect program counter (PC) value used during
+> >>> disassembly with LLVM or libbfd. To calculate the correct address for
+> >>> relative calls, the PC argument must reflect the actual address in the
+> >>> kernel.
+> >>>
+> >>> [0] https://github.com/libbpf/bpftool/issues/109
+> >>>
+> >>> Fixes: e1947c750ffe ("bpftool: Refactor disassembler for JIT-ed programs")
+> >>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+> >>> ---
+> >>>  tools/bpf/bpftool/jit_disasm.c | 6 +++---
+> >>>  1 file changed, 3 insertions(+), 3 deletions(-)
+> >>>
+> >>> diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
+> >>> index 7b8d9ec89ebd3..fe8fabba4b05f 100644
+> >>> --- a/tools/bpf/bpftool/jit_disasm.c
+> >>> +++ b/tools/bpf/bpftool/jit_disasm.c
+> >>> @@ -114,8 +114,7 @@ disassemble_insn(disasm_ctx_t *ctx, unsigned char *image, ssize_t len, int pc)
+> >>
+> >> It seems we should update the type of pc from int to __u64, as the type
+> >> of func_ksym is __u64 and the type of pc argument in disassemble
+> >> function of LLVM and libbfd is __u64 for 64 bit arch.
+> > 
+> > I'm assuming u32 is fine as long as the prog size is under 4G?
+> > 
+> 
+> It works well with int. So it's unnecessary to update its type.
+> 
+> >>>  	char buf[256];
+> >>>  	int count;
+> >>>  
+> > 
+> > [..]
+> > 
+> >>> -	count = LLVMDisasmInstruction(*ctx, image + pc, len - pc, pc,
+> >>> -				      buf, sizeof(buf));
+> >>> +	count = LLVMDisasmInstruction(*ctx, image, len, pc, buf, sizeof(buf));
+> > 
+> > For my understanding, another way to fix it would be:
+> > 	count = LLVMDisasmInstruction(*ctx, image + pc, len - pc, 0,
+> > 				      buf, sizeof(buf));
+> > 
+> > IOW, in the original code, using 0 instead of pc should fix it as well?
+> > Or am I missing something?
+> 
+> No. It does not work when using 0. I just tried it.
+> 
+> I think it's because LLVM is unable to infer the actual address of the
+> disassembling insn when we do not provide func_ksym to LLVM.
 
-Thank you, I also agree. we could utilize a bit of the flags within the
-btf_header structure to indicate if the btf file has been sorted.
-
->
-> I don't think libbpf should unconditionally sort or check sorting in
-> the way that you implemented.
-
->
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index 5290e9d59997..cbf88a6b92e5 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -94,6 +94,10 @@ struct btf {
-> >          *   - for split BTF counts number of types added on top of bas=
-e BTF.
-> >          */
-> >         __u32 nr_types;
-> > +       /* number of types in this BTF instance which are sorted by nam=
-e:
-> > +        *   - doesn't include special [0] void type;
-> > +        */
-> > +       __u32 nr_types_sorted;
-> >         /* if not NULL, points to the base BTF on top of which the curr=
-ent
-> >          * split BTF is based
-> >          */
->
-> [...]
+Hmm, thanks for checking! I'll leave it up to Quentin to run and confirm
+because I clearly don't understand how that LLVMDisasmInstruction works
+:-D (and you two have been chatting on GH).
 
