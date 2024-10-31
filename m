@@ -1,213 +1,112 @@
-Return-Path: <bpf+bounces-43666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A6D09B838E
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 20:38:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 561949B83AE
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 20:52:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A59828241C
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 19:38:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E5031F22721
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 19:52:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5901CC142;
-	Thu, 31 Oct 2024 19:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D1QXhBo5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5597C1CBE96;
+	Thu, 31 Oct 2024 19:52:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0A11CBE80
-	for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 19:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E782B1C1ACB;
+	Thu, 31 Oct 2024 19:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730403480; cv=none; b=W9AKBRaVxmcjCxZeBjNpHn8onEyeHtgKKSAbq+Ogczbawdt82Bzgb/LiGsXacM3MbaFd/Ys4JKDSAbXxmm5wAcHLXFcOgSdLOYmy9iw4jq2+JBrOBwhKjYJhD2xfIGCsQPl9AnXHzdVasNmuhqVB7+KLuxT7FN+CEUPWqhylhUM=
+	t=1730404352; cv=none; b=ucqC1u9QKlfNsF6EHt7UmdGI95m2D7BYFM+YlPR3wR/hFqxLd2btW7+ulG21kheQEKQoxoln2YWOq+KS2HXOqSaM5doB8tdJ4um6CB+bOzOoG5hpue/qnF8v8sMVxEtEDykkLPinobz+/BieTeuT1dPb1kcOXz1COWbJSPQubJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730403480; c=relaxed/simple;
-	bh=x3h1fyJ1pPUqVVooqLk6efGUiBoxUPNsWMyaTYfAU3w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mN2J/ptMmUGydHdttHHmx7wtZ1l1+nlgHKfeYZBnAVpjzFzfREaLRnObkP1MmtOpq7bLC3caPvY9Alw+Lm0NdphJvavMc889nBDcu8peysCG8dPT0QP6ejkyFODtV1B8MYgL2NH46EBU6snS57g50kk6pV3xJzQ8Es8bN4qMNNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D1QXhBo5; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f138388c-8622-4bac-a5cc-32a753873ddd@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730403475;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l3Vqd+6ytwKqJBpySLmemH518mQd2fj60NRRUY0Z3vE=;
-	b=D1QXhBo5nQU23RhztBFl+SSGqglICWx/mH5VNv/6fCjwvLaVgssT4j+0MPMd/svq8C37xW
-	ao0eE2/smQewM3pS2l7n2wjT4ZVA2mPwi4CDCQuhsk6pT+xNOlGGtfVfo8pHMWZLsaF6iR
-	jolRukZVWN8bS/+0GCuaamNqbIcynmg=
-Date: Thu, 31 Oct 2024 12:37:48 -0700
+	s=arc-20240116; t=1730404352; c=relaxed/simple;
+	bh=cG9Og3G+txKUTnhb5mRAu1HCEYEecJi4IJLdo7xz4Qo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cF9i7nDzSzH9HJH/FBx0pw8nLPpZPnmWAaMPWXKXPlFgKN1Udz6mCETlWPgoJh5RpIbM5qQlrazUKSbQ/50zf1zXHRw2pGAQP32/BlS8emvD4oV+tw6MqrRteczl/j6wbZyBcorLjQuDupzKLY9D+LZG2vT/CJu2i25MnSHR8q8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D1C2C4CEC3;
+	Thu, 31 Oct 2024 19:52:27 +0000 (UTC)
+Date: Thu, 31 Oct 2024 15:53:24 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, linux-arch@vger.kernel.org, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Huacai Chen
+ <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Michael Ellerman
+ <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, Madhavan
+ Srinivasan <maddy@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH v18 01/17] fgraph: Pass ftrace_regs to entryfunc
+Message-ID: <20241031155324.108ed8ef@gandalf.local.home>
+In-Reply-To: <172991733069.443985.15154246733356205391.stgit@devnote2>
+References: <172991731968.443985.4558065903004844780.stgit@devnote2>
+	<172991733069.443985.15154246733356205391.stgit@devnote2>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v7 9/9] selftests/bpf: Add struct_ops prog
- private stack tests
-To: Tejun Heo <tj@kernel.org>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20241029221637.264348-1-yonghong.song@linux.dev>
- <20241029221723.268595-1-yonghong.song@linux.dev>
- <ZyLBR8cM_UhrFOBO@slm.duckdns.org>
-Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <ZyLBR8cM_UhrFOBO@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+
+On Sat, 26 Oct 2024 13:35:30 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Pass ftrace_regs to the fgraph_ops::entryfunc(). If ftrace_regs is not
+> available, it passes a NULL instead. User callback function can access
+> some registers (including return address) via this ftrace_regs.
+> 
+> Note that the ftrace_regs can be NULL when the arch does NOT define:
+> HAVE_DYNAMIC_FTRACE_WITH_ARGS or HAVE_DYNAMIC_FTRACE_WITH_REGS.
+> More specifically, if HAVE_DYNAMIC_FTRACE_WITH_REGS is defined but
+> not the HAVE_DYNAMIC_FTRACE_WITH_ARGS, and the ftrace ops used to
+> register the function callback does not set FTRACE_OPS_FL_SAVE_REGS.
+> In this case, ftrace_regs can be NULL in user callback.
+
+If HAVE_DYNAMIC_FTRACE_WITH_REGS is defined but not
+HAVE_DYNAMIC_FTRACE_WITH_ARGS is not, then the callback will have regs defined.
+
+> @@ -977,7 +980,7 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+>  
+>  static struct ftrace_ops graph_ops = {
+>  	.func			= ftrace_graph_func,
+> -	.flags			= FTRACE_OPS_GRAPH_STUB,
+> +	.flags			= FTRACE_OPS_GRAPH_STUB | FTRACE_OPS_FL_SAVE_ARGS,
+
+Enabling FTRACE_OPS_FL_SAVE_ARGS will pass full regs in that case. Are you
+just saying in the change log that this is what you did? As it currently
+reads, it sounds like a fgraph user needs to add FTRACE_OPS_FL_SAVE_REGS??
+
+-- Steve
 
 
-On 10/30/24 4:29 PM, Tejun Heo wrote:
-> Hello,
->
-> On Tue, Oct 29, 2024 at 03:17:23PM -0700, Yonghong Song wrote:
->> The third test is the same callback function recursing itself. At run time,
->> the jit trampoline recursion check kicks in to prevent the recursion.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  94 ++++++++++++++++
->>   .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   5 +
->>   .../bpf/prog_tests/struct_ops_private_stack.c | 106 ++++++++++++++++++
->>   .../bpf/progs/struct_ops_private_stack.c      |  62 ++++++++++
->>   .../bpf/progs/struct_ops_private_stack_fail.c |  62 ++++++++++
->>   .../progs/struct_ops_private_stack_recur.c    |  50 +++++++++
->>   6 files changed, 379 insertions(+)
->>   create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_private_stack.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_stack.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur.c
->>
->> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->> index 8835761d9a12..eb761645551a 100644
->> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> ...
->> +__bpf_kfunc void bpf_testmod_ops3_call_test_1(void)
->> +{
->> +	st_ops3->test_1();
->> +}
-> ...
->> diff --git a/tools/testing/selftests/bpf/prog_tests/struct_ops_private_stack.c b/tools/testing/selftests/bpf/prog_tests/struct_ops_private_stack.c
->> new file mode 100644
->> index 000000000000..4006879ca3fe
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/prog_tests/struct_ops_private_stack.c
-> ...
->> +static void test_private_stack_recur(void)
->> +{
->> +	struct struct_ops_private_stack_recur *skel;
->> +	struct bpf_link *link;
->> +	int err;
->> +
->> +	skel = struct_ops_private_stack_recur__open();
->> +	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack_recur__open"))
->> +		return;
->> +
->> +	if (skel->data->skip) {
->> +		test__skip();
->> +		goto cleanup;
->> +	}
->> +
->> +	err = struct_ops_private_stack_recur__load(skel);
->> +	if (!ASSERT_OK(err, "struct_ops_private_stack_recur__load"))
->> +		goto cleanup;
->> +
->> +	link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
->> +	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
->> +		goto cleanup;
->> +
->> +	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
->> +
->> +	ASSERT_EQ(skel->bss->val_j, 3, "val_j");
->> +
->> +	bpf_link__destroy(link);
->> +
->> +cleanup:
->> +	struct_ops_private_stack_recur__destroy(skel);
->> +}
-> ...
->> diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur.c b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur.c
->> new file mode 100644
->> index 000000000000..15d4e914dc92
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur.c
->> @@ -0,0 +1,50 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +
->> +#include <vmlinux.h>
->> +#include <bpf/bpf_helpers.h>
->> +#include <bpf/bpf_tracing.h>
->> +#include "../bpf_testmod/bpf_testmod.h"
->> +
->> +char _license[] SEC("license") = "GPL";
->> +
->> +#if defined(__TARGET_ARCH_x86)
->> +bool skip __attribute((__section__(".data"))) = false;
->> +#else
->> +bool skip = true;
->> +#endif
->> +
->> +void bpf_testmod_ops3_call_test_1(void) __ksym;
->> +
->> +int val_i, val_j;
->> +
->> +__noinline static int subprog2(int *a, int *b)
->> +{
->> +	return val_i + a[10] + b[20];
->> +}
->> +
->> +__noinline static int subprog1(int *a)
->> +{
->> +	/* stack size 400 bytes */
->> +	int b[100] = {};
->> +
->> +	b[20] = 2;
->> +	return subprog2(a, b);
->> +}
->> +
->> +
->> +SEC("struct_ops")
->> +int BPF_PROG(test_1)
->> +{
->> +	/* stack size 400 bytes */
->> +	int a[100] = {};
->> +
->> +	a[10] = 1;
->> +	val_j += subprog1(a);
->> +	bpf_testmod_ops3_call_test_1();
->> +	return 0;
->> +}
->> +
->> +SEC(".struct_ops")
->> +struct bpf_testmod_ops3 testmod_1 = {
->> +	.test_1 = (void *)test_1,
->> +};
-> This is delta, and, while this shouldn't happen for SCX, it'd be great if
-> SCX can tell BPF to call a function when recursion check triggers and
-> ignores a call, so that SCX can trigger error, report it and eject the
-> scheduler.
-
-I had an offline discussion with Tejun. A callback function like
-   prog->aux->recursion_skipped(prog)
-will be provided and if not null the function will be called whenever
-a recursion skip happens.
-
-The subsystem requires to define recursion_skipped
-callback function and assign it to prog->aux->recursion_skipped if necessary,
-if it want to get some error information back.
-
->
-> Thanks.
->
+>  #ifdef FTRACE_GRAPH_TRAMP_ADDR
+>  	.trampoline		= FTRACE_GRAPH_TRAMP_ADDR,
+>  	/* trampoline_size is only needed for dynamically allocated tramps */
+> @@ -987,7 +990,8 @@ static struct ftrace_ops graph_ops = {
+>  void fgraph_init_ops(struct ftrace_ops *dst_ops,
+>  		     struct ftrace_ops *src_ops)
+>  {
+> -	dst_ops->flags = FTRACE_OPS_FL_PID | FTRACE_OPS_GRAPH_STUB;
+> +	dst_ops->flags = FTRACE_OPS_FL_PID | FTRACE_OPS_GRAPH_STUB |
+> +			 FTRACE_OPS_FL_SAVE_ARGS;
+>  
+>  #ifdef CONFIG_DYNAMIC_FTRACE
+>  	if (src_ops) {
 
