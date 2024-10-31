@@ -1,131 +1,170 @@
-Return-Path: <bpf+bounces-43617-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43618-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 281C89B712D
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 01:27:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC3CF9B718C
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 02:18:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6118285199
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 00:27:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13F7BB20EDB
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 01:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B0CAC2FD;
-	Thu, 31 Oct 2024 00:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A942347C7;
+	Thu, 31 Oct 2024 01:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eplL3jBB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hawWaENe"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D53F04A35
-	for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 00:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E11022083
+	for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 01:17:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730334451; cv=none; b=jPoja92j5jCcr859ohHWDtzcHMewJ7LIqipF7Eb/TIkOPCMsSOHS2QfYkA3sQQHGw9IrORN44p78SHnwl1n+htVMMBykvtU3ApeLEEpsUjDdMz75nmR2C+PSrZG1bG2d1Qi23KY+d7TZmSH2a+V8xD7UBtPC6cR4qPNkgSv+zWM=
+	t=1730337472; cv=none; b=UiDvWBx/ROZGDAnRgkBgTgs61kbtJHSv3OVyRiXxlaCuOdJz8InoSKCLMWTPI4NiTbI56pQ1gDrgjfiVdOC7QFalWlgwIY/GbQnhGX+6Ea86y2QgGvgdDdUlkijteXbuEijOFehmmJSOzsErZyuzVxCPOvw4eP4rqnLdJVycfN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730334451; c=relaxed/simple;
-	bh=uyv2yFl2pZ69wjW5YGErcZoroHl3Q5Sryt+UajVlzyE=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=FCt4EuQ4wUm0wujFaPwETQSa5cPaGS2gYh7s0JLteTsoZxMkfcO/1vutpHKhXb7teE996z1c+dwsYoxavP3iOYplNyclitdk4otefIxEMN4HUDhKpNtd2Tet9aAm0nMhCX/map61QctkPRk1N1dLevOtRuIRlB5UESRIbjChPVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eplL3jBB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21F2BC4CECE;
-	Thu, 31 Oct 2024 00:27:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730334451;
-	bh=uyv2yFl2pZ69wjW5YGErcZoroHl3Q5Sryt+UajVlzyE=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-	b=eplL3jBB9QNzcw/RNbeMo5maLQf89MHb5XLrq7SCfHbEdCbGrQTc5P3XcnC9977kI
-	 J33DJINjrP3dBJLKf0hJ7FIM8wbn6OG5YSZTlooX5wjf0SmvWqoHqrejQOUKprFxTV
-	 /F77B7sv9mjeijOCYSXSWld1xWYFVRESBrFqFz7ojtc3XUp4tpqvUdoOo3e4v/kGmi
-	 HSGXtVeyUWkn/fxThl3WAYtaUiatR+n+8f6tK7eLTx7eguMnea3h6uXS0jzFOiRiwg
-	 YNN9c1KWUA1KOgovDVLQYGkruuRepMicSnRXwyc3vY0s9UT4vBh4AbtzQtlVbeYzBi
-	 1TS72YpYtyYvg==
-Message-ID: <1b492a6f-c7e8-4dba-84dd-35aafb6c2ede@kernel.org>
-Date: Thu, 31 Oct 2024 00:27:26 +0000
+	s=arc-20240116; t=1730337472; c=relaxed/simple;
+	bh=xaaDaF/m7vHxyN8IGGUdxhbDxH9D+uwHM+N6bJ61w0Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QKcKOrbgk0h2iU5L4auROk12sf9FCoPuqEuT+JO4az8IZpOl08ngrPhV35yJY4lZh6AsKrybl7Wnuxo2WQthh4FmcEWTa/YmtR2fBs1s81vQ6Ul1XI4Np39BkoymBOIS88XUOb5v5ZFT3kS8+UrRn5+Fz9aHiCV5SmIhpTpu5QI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hawWaENe; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e56f78a9-cbda-4b80-8b55-c16b36e4efb1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1730337467;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZBy8Ng1n+ziBeL2KTfh1+oSsW7siKHO3HDf2bItEBNc=;
+	b=hawWaENe36fC7kbQTHjlL71Xtc20RWK0S25WZPgnWWVxEgp0CgrX5hNPgkaZwvtG9lc9YP
+	PaeAOxGvmItJCgQaSn/Tgfz3WjM3qOs1VD9sC7OpGKxoovgiwfC947vlLMbdik+ZtpFVY1
+	8KWxphGh5ILGpvg43rdsAJeoW/yPGTo=
+Date: Wed, 30 Oct 2024 18:17:39 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Quentin Monnet <qmo@kernel.org>
-Subject: Re: [PATCH bpf] bpf, bpftool: Fix incorrect disasm pc
-To: Leon Hwang <hffilwlqm@gmail.com>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- leon.hwang@linux.dev, kernel-patches-bot@fb.com,
- Stanislav Fomichev <stfomichev@gmail.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- Gray Liang <gray.liang@isovalent.com>
-References: <20241030094741.22929-1-hffilwlqm@gmail.com>
-Content-Language: en-GB
-In-Reply-To: <20241030094741.22929-1-hffilwlqm@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH net-next v3 10/14] net-timestamp: add basic support with
+ tskey offset
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
+ willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org,
+ Jason Xing <kernelxing@tencent.com>
+References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
+ <20241028110535.82999-11-kerneljasonxing@gmail.com>
+ <8fd16b77-b8e8-492c-ab69-8192cafa9fc7@linux.dev>
+ <CAL+tcoBNiZQr=yk_fb9eoKX1_Nr4LuDaa1kkLGbdnc=8JNKnNg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <CAL+tcoBNiZQr=yk_fb9eoKX1_Nr4LuDaa1kkLGbdnc=8JNKnNg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-2024-10-30 17:47 UTC+0800 ~ Leon Hwang <hffilwlqm@gmail.com>
-> From: Leon Hwang <leon.hwang@linux.dev>
+On 10/29/24 11:50 PM, Jason Xing wrote:
+> On Wed, Oct 30, 2024 at 1:42 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> On 10/28/24 4:05 AM, Jason Xing wrote:
+>>> +/* Used to track the tskey for bpf extension
+>>> + *
+>>> + * @sk_tskey: bpf extension can use it only when no application uses.
+>>> + *            Application can use it directly regardless of bpf extension.
+>>> + *
+>>> + * There are three strategies:
+>>> + * 1) If we've already set through setsockopt() and here we're going to set
+>>> + *    OPT_ID for bpf use, we will not re-initialize the @sk_tskey and will
+>>> + *    keep the record of delta between the current "key" and previous key.
+>>> + * 2) If we've already set through bpf_setsockopt() and here we're going to
+>>> + *    set for application use, we will record the delta first and then
+>>> + *    override/initialize the @sk_tskey.
+>>> + * 3) other cases, which means only either of them takes effect, so initialize
+>>> + *    everything simplely.
+>>> + */
+>>> +static long int sock_calculate_tskey_offset(struct sock *sk, int val, int bpf_type)
+>>> +{
+>>> +     u32 tskey;
+>>> +
+>>> +     if (sk_is_tcp(sk)) {
+>>> +             if ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_LISTEN))
+>>> +                     return -EINVAL;
+>>> +
+>>> +             if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
+>>> +                     tskey = tcp_sk(sk)->write_seq;
+>>> +             else
+>>> +                     tskey = tcp_sk(sk)->snd_una;
+>>> +     } else {
+>>> +             tskey = 0;
+>>> +     }
+>>> +
+>>> +     if (bpf_type && (sk->sk_tsflags & SOF_TIMESTAMPING_OPT_ID)) {
+>>> +             sk->sk_tskey_bpf_offset = tskey - atomic_read(&sk->sk_tskey);
+>>> +             return 0;
+>>> +     } else if (!bpf_type && (sk->sk_tsflags_bpf & SOF_TIMESTAMPING_OPT_ID)) {
+>>> +             sk->sk_tskey_bpf_offset = atomic_read(&sk->sk_tskey) - tskey;
+>>> +     } else {
+>>> +             sk->sk_tskey_bpf_offset = 0;
+>>> +     }
+>>> +
+>>> +     return tskey;
+>>> +}
+>>
+>> Before diving into this route, the bpf prog can peek into the tcp seq no in the
+>> skb. It can also look at the sk->sk_tskey for UDP socket. Can you explain why
+>> those are not enough information for the bpf prog?
 > 
-> This patch addresses the bpftool issue "Wrong callq address displayed"[0].
+> Well, it does make sense. It seems we don't need to implement tskey
+> for this bpf feature...
 > 
-> The issue stemmed from an incorrect program counter (PC) value used during
-> disassembly with LLVM or libbfd. To calculate the correct address for
-> relative calls, the PC argument must reflect the actual address in the
-> kernel.
-> 
-> [0] https://github.com/libbpf/bpftool/issues/109
-> 
-> Fixes: e1947c750ffe ("bpftool: Refactor disassembler for JIT-ed programs")
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> ---
->  tools/bpf/bpftool/jit_disasm.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
-> index 7b8d9ec89ebd3..fe8fabba4b05f 100644
-> --- a/tools/bpf/bpftool/jit_disasm.c
-> +++ b/tools/bpf/bpftool/jit_disasm.c
-> @@ -114,8 +114,7 @@ disassemble_insn(disasm_ctx_t *ctx, unsigned char *image, ssize_t len, int pc)
->  	char buf[256];
->  	int count;
->  
-> -	count = LLVMDisasmInstruction(*ctx, image + pc, len - pc, pc,
-> -				      buf, sizeof(buf));
-> +	count = LLVMDisasmInstruction(*ctx, image, len, pc, buf, sizeof(buf));
->  	if (json_output)
->  		printf_json(buf);
->  	else
-> @@ -360,7 +359,8 @@ int disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
->  			printf("%4x:" DISASM_SPACER, pc);
->  		}
->  
-> -		count = disassemble_insn(&ctx, image, len, pc);
-> +		count = disassemble_insn(&ctx, image + pc, len - pc,
-> +					 func_ksym + pc);
+> Due to lack of enough knowledge of bpf, could you provide more hints
+> that I can follow to write a bpf program to print more information
+> from the skb? Like in the last patch of this series, in
+> tools/testing/selftests/bpf/prog_tests/so_timestamping.c, do we have a
+> feasible way to do that?
 
-Thanks a lot for looking into this! Your patch does solve the issue for
-the LLVM disassembler (nice!), but it breaks the libbfd one:
+The bpf-prog@sendmsg() will be run to capture a timestamp for sendmsg().
+When running the bpf-prog@sendmsg(), the skb can be set to the "struct 
+bpf_sock_ops_kern sock_ops;" which is passed to the sockops prog. Take a look at 
+bpf_skops_write_hdr_opt().
 
+bpf prog cannot directly access the skops->skb now. It is because the sockops 
+prog sees the uapi "struct bpf_sock_ops" instead of "struct 
+bpf_sock_ops(_kern)". The conversion is done in sock_ops_convert_ctx_access. It 
+is an old way before BTF. I don't want to extend the uapi "struct bpf_sock_ops".
 
-	$ ./bpftool version | grep features
-	features: libbfd
-	# ./bpftool prog dump j id 111 op
-	int xdp_redirect_map_0(struct xdp_md * xdp):
-	bpf_prog_a8f6f9c4be77b94c_xdp_redirect_map_0:
-	; return bpf_redirect_map(&tx_port, 0, 0);
-	   0:   Address 0xffffffffc01ae950 is out of bounds.
+Instead, use bpf_cast_to_kern_ctx((struct bpf_sock_ops *)skops_ctx) to get a 
+trusted "struct bpf_sock_ops(_kern) *skops" pointer. Then it can access the 
+skops->skb. afaik, the tcb->seq should be available already during sendmsg. it 
+should be able to get it from TCP_SKB_CB(skb)->seq with the bpf_core_cast. Take 
+a look at the existing examples of bpf_core_cast.
 
-I don't think we can change the PC in the case of libbfd, as far as I
-can tell it needs to point to the first instruction to disassemble. Two
-of the arguments we pass to disassemble_insn(), image and len, are
-ignored by the libbfd disassembler; so it leaves only the ctx argument
-that we can maybe update to pass the func_ksym, but I haven't found how
-to do that yet (if possible at all).
+The same goes for the skb->data. It can use the bpf_dynptr_from_skb(). It is not 
+available to skops program now but should be easy to expose.
 
-Thanks,
-Quentin
+The bpf prog wants to calculate the delay between [sendmsg, SCHED], [SCHED, 
+SND], [SND, ACK]. It is why (at least in my mental model) a key is needed to 
+co-relate the sendmsg, SCHED, SND, and ACK timestamp. The tcp seqno could be 
+served as that key.
 
+All that said, while looking at tcp_tx_timestamp() again, there is always 
+"shinfo->tskey = TCP_SKB_CB(skb)->seq + skb->len - 1;". shinfo->tskey can be 
+used directly as-is by the bpf prog. I think now I am missing why the bpf prog 
+needs the sk_tskey in the sk?
 
-pw-bot: cr
+In the bpf prog, when the SCHED/SND/ACK timestamp comes back, it has to find the 
+earlier sendmsg timestamp. One option is to store the earlier sendmsg timestamp 
+at the bpf map key-ed by seqno or the shinfo's tskey. Storing in a bpf map 
+key-ed by seqno/tskey is probably what the selftest should do. In the future, we 
+can consider allowing the rbtree in the bpf sk local storage for searching 
+seqno. There is shinfo's hwtstamp that can be used also if there is a need.
 
