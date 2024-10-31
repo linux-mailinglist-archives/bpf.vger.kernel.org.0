@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-43651-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43649-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 288A19B7E48
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 16:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90B6C9B7E44
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 16:23:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E1CCB22BA8
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 15:23:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BA8CB22B06
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 15:23:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B5FE1B5328;
-	Thu, 31 Oct 2024 15:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C2631A705B;
+	Thu, 31 Oct 2024 15:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="IBH7L0QS"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="DEtrtf9+"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9600F19E99C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D72A219EEB4;
 	Thu, 31 Oct 2024 15:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730388161; cv=none; b=QQkQ57hr71f/tCadpNJxNt5UyaISXluclQ9AMTyOxhFHJgl6A2GgOm2tKWrJkl8/RfyEksVtBhXCEuxUsF3+F8N6OY80iE5lRQ8J1FxeiTZH+FM2ZNVrcjPNwDnc2QmDI05uEaoalkQ1MRpHL5kg6iuX/8+mbvcc57+5gB3jx14=
+	t=1730388161; cv=none; b=nLss5lFAyZjT1hY8lg0cH9i+kZpKSiQkYU70fTkgcXREib8keE3v6D4wGOQf4RkAdiPVA1jS4f4WPWbNgMGQCGLDmAQqj0r8eA3u+coY4eu/YSkNNiT6HExU0H5dHPOk6urwHi5JVVNIpwhGSsrAEH0oDXWnTr4LkCtaTxXdmVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1730388161; c=relaxed/simple;
-	bh=ZqpK2Tzlh2NaO9S+TPcvuIa3DNo8WQ0Kp8dlvt/m/dM=;
+	bh=uEN1AqlrH2AWDEp9Cb8CU/xKYKWeooS7jJG9/x9li3U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SDsEDUWeif/Ngsbk5l5gRZeyeeXWvCKHomYymj1L9EwrrVbSdLlpsa5aLgbjIzcZSMlBi04SkmUEl/Wvg5oFGcS7+dns8cLI4+bd6krhP2Uj36wgnTi4ei7lHzyEgWZsuROj+4GtxOjCm2PKzEN5qNU4m9SM+sQdYABCIbcIXCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=IBH7L0QS; arc=none smtp.client-ip=167.114.26.122
+	 MIME-Version; b=rJRRQLdoxCEmnzHGELD5LPYlvkLrzQxgtRlNnDfZJCRP/OGtHyVCkteY9O/QGF8p20UiEBtStMCcUVRofN32KNvBenIwqOVYk1dX9Tub0BvT4iZIWL8+rETwoy6KGS87KH67969pdxUgPyhLj556KPWjDwYNEFi0ZkZWDWJ23V0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=DEtrtf9+; arc=none smtp.client-ip=167.114.26.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
 	s=smtpout1; t=1730388157;
-	bh=ZqpK2Tzlh2NaO9S+TPcvuIa3DNo8WQ0Kp8dlvt/m/dM=;
+	bh=uEN1AqlrH2AWDEp9Cb8CU/xKYKWeooS7jJG9/x9li3U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IBH7L0QSqdcbSyQWoYgEmlDWEPdg1dDtCIR+iRKeGkj8m3ydPWgAWAmP04uUzARTn
-	 Zd7k6lMoFXP3QkmZbNsrZOuD1k7XHFZ0tAuVwlyI1r9cyqr0a3yhK58fP+IX7WXEau
-	 2rB5X+G8Jjn2hLkzGpmZ0uGGpjkH1it79xJzYm5EI64QnOA5QPyGbPpr6bKqq+IibE
-	 ydljVJp3e5Il/POnZjhrXKsufKzkPLAmnkoxZDy535bCE8bLvLgGKe2cLpk2qgeSF9
-	 ThqsrjcctIJGnCL8nGlmeSnTl5PAFdQeH6TkgX8dpwP8FHn0wa66y0lRqvc5tTtu+Q
-	 0mD09lDz8LedQ==
+	b=DEtrtf9+GE+0DmEuMyebNd1qutvYd8f3Q+GtpFtEZNzdG031NcrDmVnwQrWBrf0Dg
+	 V4UpaHjzUe1mJEbEL3hHvXfhkQgb9XoAPxEi7EZzly2eqAPBUx54Q3lPGP5Xnaafci
+	 NnMqx786t/ifHWPJLqJF0nFeM9E2E4UrXaAtA3n1eCW6xyXwL9Hwu82/8yc+MBpHFB
+	 bzxo0FahcmMI24aaDtxeNhci1pzk6uA7Tc7Yvj8aTxmuXXcwwhf2mUXFGs8WYUCYuc
+	 2gfnG44dtbZXn8b9qcDBtwuWoqm0KQ5PMQhmIzV+3oZfQ6NS77ZFJc8NLyAhDeFpSF
+	 Joqjoq6V+IWpg==
 Received: from thinkos.internal.efficios.com (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XfSRK188CzYqT;
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XfSRK491WzZ6R;
 	Thu, 31 Oct 2024 11:22:37 -0400 (EDT)
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To: Steven Rostedt <rostedt@goodmis.org>
@@ -65,10 +65,10 @@ Cc: linux-kernel@vger.kernel.org,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Jordan Rife <jrife@google.com>,
 	linux-trace-kernel@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v5 resend 2/4] tracing: Introduce tracepoint_is_faultable()
-Date: Thu, 31 Oct 2024 11:20:54 -0400
-Message-Id: <20241031152056.744137-3-mathieu.desnoyers@efficios.com>
+	syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com
+Subject: [PATCH v5 resend 3/4] tracing: Fix syscall tracepoint use-after-free
+Date: Thu, 31 Oct 2024 11:20:55 -0400
+Message-Id: <20241031152056.744137-4-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20241031152056.744137-1-mathieu.desnoyers@efficios.com>
 References: <20241031152056.744137-1-mathieu.desnoyers@efficios.com>
@@ -80,11 +80,23 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce a "faultable" flag within the extended structure to know
-whether a tracepoint needs rcu tasks trace grace period before reclaim.
-This can be queried using tracepoint_is_faultable().
+The grace period used internally within tracepoint.c:release_probes()
+uses call_rcu() to batch waiting for quiescence of old probe arrays,
+rather than using the tracepoint_synchronize_unregister() which blocks
+while waiting for quiescence.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+With the introduction of faultable syscall tracepoints, this causes
+use-after-free issues reproduced with syzkaller.
+
+Fix this by using the appropriate call_rcu() or call_rcu_tasks_trace()
+before invoking the rcu_free_old_probes callback. This can be chosen
+using the tracepoint_is_faultable() API.
+
+A similar issue exists in bpf use of call_rcu(). Fixing this is left to
+a separate change.
+
+Reported-by: syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com
+Fixes: a363d27cdbc2 ("tracing: Allow system call tracepoints to handle page faults")
 Tested-by: Jordan Rife <jrife@google.com>
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Michael Jeanson <mjeanson@efficios.com>
@@ -105,99 +117,64 @@ Cc: Joel Fernandes <joel@joelfernandes.org>
 Cc: Jordan Rife <jrife@google.com>
 Cc: linux-trace-kernel@vger.kernel.org
 ---
-Changes since v4:
-- Add static to DEFINE_TRACE_SYSCALL.
----
- include/linux/tracepoint-defs.h |  2 ++
- include/linux/tracepoint.h      | 24 ++++++++++++++++++++++++
- include/trace/define_trace.h    |  2 +-
- 3 files changed, 27 insertions(+), 1 deletion(-)
+Changes since v0:
+- Introduce tracepoint_call_rcu(),
+- Fix bpf_link_free() use of call_rcu as well.
 
-diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
-index 967c08d9da84..aebf0571c736 100644
---- a/include/linux/tracepoint-defs.h
-+++ b/include/linux/tracepoint-defs.h
-@@ -32,6 +32,8 @@ struct tracepoint_func {
- struct tracepoint_ext {
- 	int (*regfunc)(void);
- 	void (*unregfunc)(void);
-+	/* Flags. */
-+	unsigned int faultable:1;
- };
- 
- struct tracepoint {
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index 862ab49177a4..906f3091d23d 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -104,6 +104,12 @@ void for_each_tracepoint_in_module(struct module *mod,
-  * tracepoint_synchronize_unregister must be called between the last tracepoint
-  * probe unregistration and the end of module exit to make sure there is no
-  * caller executing a probe when it is freed.
-+ *
-+ * An alternative is to use the following for batch reclaim associated
-+ * with a given tracepoint:
-+ *
-+ * - tracepoint_is_faultable() == false: call_rcu()
-+ * - tracepoint_is_faultable() == true:  call_rcu_tasks_trace()
-  */
- #ifdef CONFIG_TRACEPOINTS
- static inline void tracepoint_synchronize_unregister(void)
-@@ -111,9 +117,17 @@ static inline void tracepoint_synchronize_unregister(void)
- 	synchronize_rcu_tasks_trace();
- 	synchronize_rcu();
+Changes since v1:
+- Use tracepoint_call_rcu() for bpf_prog_put as well.
+
+Changes since v2:
+- Do not cover bpf changes in the same commit, let bpf developers
+  implement it.
+
+Changes since v3:
+- Use tracepoint_is_faultable().
+---
+ kernel/tracepoint.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+index 5658dc92f5b5..1848ce7e2976 100644
+--- a/kernel/tracepoint.c
++++ b/kernel/tracepoint.c
+@@ -106,13 +106,16 @@ static void rcu_free_old_probes(struct rcu_head *head)
+ 	kfree(container_of(head, struct tp_probes, rcu));
  }
-+static inline bool tracepoint_is_faultable(struct tracepoint *tp)
-+{
-+	return tp->ext && tp->ext->faultable;
-+}
- #else
- static inline void tracepoint_synchronize_unregister(void)
- { }
-+static inline bool tracepoint_is_faultable(struct tracepoint *tp)
-+{
-+	return false;
-+}
- #endif
  
- #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
-@@ -345,6 +359,15 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 	static struct tracepoint_ext __tracepoint_ext_##_name = {	\
- 		.regfunc = _reg,					\
- 		.unregfunc = _unreg,					\
-+		.faultable = false,					\
-+	};								\
-+	__DEFINE_TRACE_EXT(_name, &__tracepoint_ext_##_name, PARAMS(_proto), PARAMS(_args));
-+
-+#define DEFINE_TRACE_SYSCALL(_name, _reg, _unreg, _proto, _args)	\
-+	static struct tracepoint_ext __tracepoint_ext_##_name = {	\
-+		.regfunc = _reg,					\
-+		.unregfunc = _unreg,					\
-+		.faultable = true,					\
- 	};								\
- 	__DEFINE_TRACE_EXT(_name, &__tracepoint_ext_##_name, PARAMS(_proto), PARAMS(_args));
+-static inline void release_probes(struct tracepoint_func *old)
++static inline void release_probes(struct tracepoint *tp, struct tracepoint_func *old)
+ {
+ 	if (old) {
+ 		struct tp_probes *tp_probes = container_of(old,
+ 			struct tp_probes, probes[0]);
  
-@@ -389,6 +412,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- #define __DECLARE_TRACE_SYSCALL	__DECLARE_TRACE
+-		call_rcu(&tp_probes->rcu, rcu_free_old_probes);
++		if (tracepoint_is_faultable(tp))
++			call_rcu_tasks_trace(&tp_probes->rcu, rcu_free_old_probes);
++		else
++			call_rcu(&tp_probes->rcu, rcu_free_old_probes);
+ 	}
+ }
  
- #define DEFINE_TRACE_FN(name, reg, unreg, proto, args)
-+#define DEFINE_TRACE_SYSCALL(name, reg, unreg, proto, args)
- #define DEFINE_TRACE(name, proto, args)
- #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)
- #define EXPORT_TRACEPOINT_SYMBOL(name)
-diff --git a/include/trace/define_trace.h b/include/trace/define_trace.h
-index ff5fa17a6259..63fea2218afa 100644
---- a/include/trace/define_trace.h
-+++ b/include/trace/define_trace.h
-@@ -48,7 +48,7 @@
+@@ -334,7 +337,7 @@ static int tracepoint_add_func(struct tracepoint *tp,
+ 		break;
+ 	}
  
- #undef TRACE_EVENT_SYSCALL
- #define TRACE_EVENT_SYSCALL(name, proto, args, struct, assign, print, reg, unreg) \
--	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
-+	DEFINE_TRACE_SYSCALL(name, reg, unreg, PARAMS(proto), PARAMS(args))
+-	release_probes(old);
++	release_probes(tp, old);
+ 	return 0;
+ }
  
- #undef TRACE_EVENT_NOP
- #define TRACE_EVENT_NOP(name, proto, args, struct, assign, print)
+@@ -405,7 +408,7 @@ static int tracepoint_remove_func(struct tracepoint *tp,
+ 		WARN_ON_ONCE(1);
+ 		break;
+ 	}
+-	release_probes(old);
++	release_probes(tp, old);
+ 	return 0;
+ }
+ 
 -- 
 2.39.5
 
