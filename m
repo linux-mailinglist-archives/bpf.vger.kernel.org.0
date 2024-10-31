@@ -1,59 +1,50 @@
-Return-Path: <bpf+bounces-43653-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43652-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C7A89B7E86
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 16:31:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EEA79B7E85
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 16:31:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BFAE283A1B
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 15:31:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C00081C23883
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 15:31:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49EED1BC07B;
-	Thu, 31 Oct 2024 15:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3C51A254F;
+	Thu, 31 Oct 2024 15:30:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K6KcBeA7"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nQzU+5mX"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3171BC9ED
-	for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 15:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8150019E7EB;
+	Thu, 31 Oct 2024 15:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730388633; cv=none; b=SsJ0xk5ThZfJ/6DNMryJ7zRYza0Dov/RJCs6RwIViSSU7rmYgnFaYWtg+OCgGAztYKqiIHfE1zLtnBB0NM/Z2v7b017Hl6oYKLv4ekG6pkmT0izLkD9zXEk5ybjhZj0Xbqc27PvEGsiF+snTk4uMUFN5cY5T3VJemY0dQnDfaAg=
+	t=1730388623; cv=none; b=emlUc5D57zHg9YkZx7L3TlwWqSiLJSmDdAa4XE9xvzB/VSjHy2h6ClSI1IPPGuwe5rLn6nRuk9ywvttUjr+hkrT30Q8Hw09382gleYNBLVQy92RzXb2HHNjFeVqGnj1zPcMbXOBrWAJnlbCb6SBfN5bgcYVYY46L77sJFIp+pBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730388633; c=relaxed/simple;
-	bh=5zV2I1qRueWnpKMMW5GwmIIJlIp480xJHgrPEpi+fpo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KndBiEkT0BlrHDvYcq3ip0LQZ9X2wtjQ+Bi9tbfJCTEk2r0ZcYPgJdrFOBeX4fSE4UlpwRHpLraAkICpzk7wtdNHqG5mVB44jJ/zhmAJ8l9o8G7EjE0xSPlX2NLAlCPXBiM81OBG7Hv5V/1bkz7sWmfCyIBVRVa5Ce5txOUhIcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K6KcBeA7; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730388628;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=J5subX4YaWX/lsgLirC6S9tT02i+bceOMTMUn/I3QnA=;
-	b=K6KcBeA7sDJ7dEGt92F6sF1U8V7oCC1kNrwVh7N1XSAh9PS4hSW+cjlfjrL54yfiJBZ8TZ
-	uiL58y0soDenWWjo8rld+6SZFtCL7fqkQs/tSmqGEU+yHmOzMN60sdw1+p60HP5VT753Ua
-	J81cKgWkmDBTw55Y8gkMAnLtbIwQ0iQ=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: qmo@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	yonghong.song@linux.dev,
-	gray.liang@isovalent.com,
-	stfomichev@gmail.com,
-	leon.hwang@linux.dev,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf v3] bpf, bpftool: Fix incorrect disasm pc
-Date: Thu, 31 Oct 2024 23:28:44 +0800
-Message-ID: <20241031152844.68817-1-leon.hwang@linux.dev>
+	s=arc-20240116; t=1730388623; c=relaxed/simple;
+	bh=OvzSifmX4gwDA00DM+e60niTQxZ4iyWIF7c+fO+Tc60=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=PZcsko+s/8LIFpNgAHblEfMmNhCXBmTC9eBymmHN/UPW0kYS26GicAs94/+tPjpyFglzeawcAwiMCdfBsbHnjgHnkv14GNgcsr/0x6UoD80viqp9I4wNlM/XL13pwoLuQtc0o7mL/XrcXr/nohcwAtJMxp/xjqGpDkN1bpdlLj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nQzU+5mX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A74DC4DE03;
+	Thu, 31 Oct 2024 15:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730388623;
+	bh=OvzSifmX4gwDA00DM+e60niTQxZ4iyWIF7c+fO+Tc60=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=nQzU+5mXm0F0SZGc7/g6+7JJdaxLLP4Wbt7FmYSZQNTYIxHyIdpsLQK9MG3XdbCop
+	 YckXd5jpixxbNhoU4FgJfIrgFS3CA3DBr6tjUfs3gCg6fcEdALXXa0MjsfIluZWz8x
+	 wL1xvgB8OdN7XxrhLYWY0mLj6THS5Q8t49GdOq5lS2JobgiWClE6gZO/Bg5ZASr2oV
+	 Lglip5WgThmA/lXyvEJz6M8rud1mhrMD4ezVy4k0kslngj2oo0BouPCsa6dxOducZt
+	 G7HT/ISorhuMS7Az5Kd7dkCgCjr4/LXuldqWSBazrNhdH3IoW58Vd/AloHpEq2FbaQ
+	 aNlNrg3udzlGA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D44380AC0A;
+	Thu, 31 Oct 2024 15:30:32 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,155 +52,46 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH bpf] bpf, test_run: Fix LIVE_FRAME frame update after a
+ page has been recycled
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173038863101.1997785.11856320294725217143.git-patchwork-notify@kernel.org>
+Date: Thu, 31 Oct 2024 15:30:31 +0000
+References: <20241030-test-run-mem-fix-v1-1-41e88e8cae43@redhat.com>
+In-Reply-To: <20241030-test-run-mem-fix-v1-1-41e88e8cae43@redhat.com>
+To: =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@codeaurora.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+ hawk@kernel.org, aleksander.lobakin@intel.com, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, syzbot+d121e098da06af416d23@syzkaller.appspotmail.com
 
-This patch addresses the bpftool issue "Wrong callq address displayed"[0].
+Hello:
 
-The issue stemmed from an incorrect program counter (PC) value used during
-disassembly with LLVM or libbfd.
+This patch was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-For LLVM: The PC argument must represent the actual address in the kernel
-to compute the correct relative address.
+On Wed, 30 Oct 2024 11:48:26 +0100 you wrote:
+> The test_run code detects whether a page has been modified and
+> re-initialises the xdp_frame structure if it has, using
+> xdp_update_frame_from_buff(). However, xdp_update_frame_from_buff()
+> doesn't touch frame->mem, so that wasn't correctly re-initialised, which
+> led to the pages from page_pool not being returned correctly. Syzbot
+> noticed this as a memory leak.
+> 
+> [...]
 
-For libbfd: The relative address can be adjusted by adding func_ksym within
-the custom info->print_address_func to yield the correct address.
+Here is the summary with links:
+  - [bpf] bpf, test_run: Fix LIVE_FRAME frame update after a page has been recycled
+    https://git.kernel.org/bpf/bpf/c/c40dd8c47325
 
-Links:
-[0] https://github.com/libbpf/bpftool/issues/109
-
-Changes:
-v2 -> v3:
-  * Address comment from Quentin:
-    * Remove the typedef.
-
-v1 -> v2:
-  * Fix the broken libbfd disassembler.
-
-Fixes: e1947c750ffe ("bpftool: Refactor disassembler for JIT-ed programs")
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
----
- tools/bpf/bpftool/jit_disasm.c | 40 ++++++++++++++++++++++++----------
- 1 file changed, 29 insertions(+), 11 deletions(-)
-
-diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
-index 7b8d9ec89..c032d2c6a 100644
---- a/tools/bpf/bpftool/jit_disasm.c
-+++ b/tools/bpf/bpftool/jit_disasm.c
-@@ -80,7 +80,8 @@ symbol_lookup_callback(__maybe_unused void *disasm_info,
- static int
- init_context(disasm_ctx_t *ctx, const char *arch,
- 	     __maybe_unused const char *disassembler_options,
--	     __maybe_unused unsigned char *image, __maybe_unused ssize_t len)
-+	     __maybe_unused unsigned char *image, __maybe_unused ssize_t len,
-+	     __maybe_unused __u64 func_ksym)
- {
- 	char *triple;
- 
-@@ -109,12 +110,13 @@ static void destroy_context(disasm_ctx_t *ctx)
- }
- 
- static int
--disassemble_insn(disasm_ctx_t *ctx, unsigned char *image, ssize_t len, int pc)
-+disassemble_insn(disasm_ctx_t *ctx, unsigned char *image, ssize_t len, int pc,
-+		 __u64 func_ksym)
- {
- 	char buf[256];
- 	int count;
- 
--	count = LLVMDisasmInstruction(*ctx, image + pc, len - pc, pc,
-+	count = LLVMDisasmInstruction(*ctx, image + pc, len - pc, func_ksym + pc,
- 				      buf, sizeof(buf));
- 	if (json_output)
- 		printf_json(buf);
-@@ -136,8 +138,21 @@ int disasm_init(void)
- #ifdef HAVE_LIBBFD_SUPPORT
- #define DISASM_SPACER "\t"
- 
-+struct disasm_info {
-+	struct disassemble_info info;
-+	__u64 func_ksym;
-+};
-+
-+static void disasm_print_addr(bfd_vma addr, struct disassemble_info *info)
-+{
-+	struct disasm_info *dinfo = container_of(info, struct disasm_info, info);
-+
-+	addr += dinfo->func_ksym;
-+	generic_print_address(addr, info);
-+}
-+
- typedef struct {
--	struct disassemble_info *info;
-+	struct disasm_info *info;
- 	disassembler_ftype disassemble;
- 	bfd *bfdf;
- } disasm_ctx_t;
-@@ -215,7 +230,7 @@ static int fprintf_json_styled(void *out,
- 
- static int init_context(disasm_ctx_t *ctx, const char *arch,
- 			const char *disassembler_options,
--			unsigned char *image, ssize_t len)
-+			unsigned char *image, ssize_t len, __u64 func_ksym)
- {
- 	struct disassemble_info *info;
- 	char tpath[PATH_MAX];
-@@ -238,12 +253,13 @@ static int init_context(disasm_ctx_t *ctx, const char *arch,
- 	}
- 	bfdf = ctx->bfdf;
- 
--	ctx->info = malloc(sizeof(struct disassemble_info));
-+	ctx->info = malloc(sizeof(struct disasm_info));
- 	if (!ctx->info) {
- 		p_err("mem alloc failed");
- 		goto err_close;
- 	}
--	info = ctx->info;
-+	ctx->info->func_ksym = func_ksym;
-+	info = &ctx->info->info;
- 
- 	if (json_output)
- 		init_disassemble_info_compat(info, stdout,
-@@ -272,6 +288,7 @@ static int init_context(disasm_ctx_t *ctx, const char *arch,
- 		info->disassembler_options = disassembler_options;
- 	info->buffer = image;
- 	info->buffer_length = len;
-+	info->print_address_func = disasm_print_addr;
- 
- 	disassemble_init_for_target(info);
- 
-@@ -304,9 +321,10 @@ static void destroy_context(disasm_ctx_t *ctx)
- 
- static int
- disassemble_insn(disasm_ctx_t *ctx, __maybe_unused unsigned char *image,
--		 __maybe_unused ssize_t len, int pc)
-+		 __maybe_unused ssize_t len, int pc,
-+		 __maybe_unused __u64 func_ksym)
- {
--	return ctx->disassemble(pc, ctx->info);
-+	return ctx->disassemble(pc, &ctx->info->info);
- }
- 
- int disasm_init(void)
-@@ -331,7 +349,7 @@ int disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
- 	if (!len)
- 		return -1;
- 
--	if (init_context(&ctx, arch, disassembler_options, image, len))
-+	if (init_context(&ctx, arch, disassembler_options, image, len, func_ksym))
- 		return -1;
- 
- 	if (json_output)
-@@ -360,7 +378,7 @@ int disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
- 			printf("%4x:" DISASM_SPACER, pc);
- 		}
- 
--		count = disassemble_insn(&ctx, image, len, pc);
-+		count = disassemble_insn(&ctx, image, len, pc, func_ksym);
- 
- 		if (json_output) {
- 			/* Operand array, was started in fprintf_json. Before
+You are awesome, thank you!
 -- 
-2.44.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
