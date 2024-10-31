@@ -1,250 +1,273 @@
-Return-Path: <bpf+bounces-43623-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43624-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC0009B7290
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 03:40:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DECD9B7296
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 03:42:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2241E1F21B04
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 02:40:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D25B1F218E9
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 02:42:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8054712BF25;
-	Thu, 31 Oct 2024 02:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E1912CDBF;
+	Thu, 31 Oct 2024 02:42:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kNuUYz1g"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 321807581F
-	for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 02:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC2432C8B;
+	Thu, 31 Oct 2024 02:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730342399; cv=none; b=ZqWB5EDVe8cG3enNhIU77Wy1zmMEO+aMbew96cjlhDomCPWX1KpdWGOLWJCMWTP8lTuGptTZOkdU9vKP/DoHr3CXEG0j6yMr5tKpict1qrgbMX5eIjbTMsifBQoR+0Ose2DDJ+oW32opIaZu366jNjlcBK6/vGs2iqQOulTYHOA=
+	t=1730342545; cv=none; b=OzN/qHPhl+0ENnhjsHA/RnVMlyXA+wq3gfYKy3+hYpVVDJkFg8WUBqx5M/5f8510/o2vcLh0MN72UYlFreJvq3eu4uzU6LleHnf56Aht/fYwoH7LgY0JSsqiIUO11zGWOrp4esENAT+JkBuVfADWLhSUaqORJHzrNR/j1dNs5BA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730342399; c=relaxed/simple;
-	bh=/IM7YJggCvGyJKlyRYQlqWi8WevqwhKu92JtSP+tNgQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=mC9GlH8KY3s/fsXkA8abF5x8NBSGPdjYmUh4GfGVK/JviXmjOPVQX/U9BnQJUcb0ErmqWNT6Zgc0bK4cR0Adm6rcTSstjc8eFb3qnsMBjbFIONL1M1p0b5H532QU6WerI4nXQsNJeCQVJrfOYQMMTBwJ04LPWT30D93CNiuA+xQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Xf7Vt5W1Tz4f3jJ1
-	for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 10:39:34 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 7E79C1A018D
-	for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 10:39:52 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgCHLrDx7SJnb2qmAQ--.39769S2;
-	Thu, 31 Oct 2024 10:39:49 +0800 (CST)
-Subject: Re: [PATCH bpf-next 05/16] bpf: Support map key with dynptr in
- verifier
-To: Dan Carpenter <dan.carpenter@linaro.org>, oe-kbuild@lists.linux.dev,
- bpf@vger.kernel.org
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
- Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, xukuohai@huawei.com
-References: <d204f9ff-81a3-4b07-874f-fe3256a65735@stanley.mountain>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <9e194526-f667-e462-7778-2b8b4f6f8d5a@huaweicloud.com>
-Date: Thu, 31 Oct 2024 10:39:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1730342545; c=relaxed/simple;
+	bh=5cj0vXpsRZDbVNFvN+abraMS+1dbKP+gquDCbJr+joM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=p2weGsrFYhiK+85HCxiRdVJWOIePpjz3Dc1kRoe4mT37D7Qb6EECs5g+8Z1AfeiC2b5BUUMno+2+0u3g5YAW5yHDzqpkNZK6ftmOasEPtg7x6V4+GbYIZpbei8LZ5H70hU+Lgs5vodzcU9+APypkf9HaR2Y6WHt4ShSBulau3qA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kNuUYz1g; arc=none smtp.client-ip=209.85.166.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-3a3f8543f5eso4560015ab.0;
+        Wed, 30 Oct 2024 19:42:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730342542; x=1730947342; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oUhLa0WlRk4ZQqGc0jp8jnQ/5kR2w1KXzasvguaPdjs=;
+        b=kNuUYz1gxSpu94x5YFZlXW1o+nELgQRS4N7/RNDCC3M7jwKATQ0er7Q/WgecpKNp1a
+         yQr4+W9lXuXUDCeiSOxQykozAByzRLn8xUsXHaD1QUokO1kQk3E/B8Qc7FAf4+2NrHWr
+         gpjV0WYPWWlMtJ3mqxx2mlWKBTOxI8dHDnHjzdpohgZOaA/7vC473n/fPmS/LkMoCMas
+         vdsoq1RvFchz6nQMAvuedkJFz51GVWKwKCiETUyh6DmiZ4jnUgkFn0eYbVyZC9F73Msz
+         aqia9JgnTChF3VkHpspkCEbY7MEaCx4kWMNtfawhDtKZ3PVX82C7B2arqNyRaTGWjJye
+         2uBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730342542; x=1730947342;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oUhLa0WlRk4ZQqGc0jp8jnQ/5kR2w1KXzasvguaPdjs=;
+        b=dfPO2Yo078afxAsaMtUuvVTBc+XUh1o0Itv9gYfFpjUNftlSeCiEd+IBCyzD0XHoj+
+         ejzK05kxtoqNQqYhJTULcixw8dGSn9TMeIQlcDxNFAN5C6kMWwyrQIYCiihtUkzQ9eWq
+         dESnNsNQLkXyRQ9S+dhEUKNLUUE2Afm+KzUIY3h/nbvR1lc4vPG4QVLP6GC6VfHeetlm
+         4+8ZeaP7eeONkxlYlXEkQGmeKddO5PvVXktzrS+UNWoSsT0gPXFgzCzyBkrQhXg21Tde
+         FGbynf+6dwhlf8tHa4+3DOXvk1klnTq93gveLAYvvjYMjs9Ww+eVPjjZ7YM6BkBIPR6i
+         RleA==
+X-Forwarded-Encrypted: i=1; AJvYcCVXZeR6dDvKFrtjqxmMH1esxtt6iTvUvLHqjECJavzD/V1u5Rn5lcLKarU1143YHFl1F2M=@vger.kernel.org, AJvYcCXeN6wlUisxwEChDYSSHGXIh/pYmRl9Tl35g1uqAvbi70zT5zTFsuquxeo9FRag7IqV5Y3Jn0/x@vger.kernel.org
+X-Gm-Message-State: AOJu0YzFq1LrXSFG18u6jpfXXXRLlZB1CF9pxyvqp2ULYkdBW23sGe05
+	tAEJRd2WcEX1KCA7DYhcJbgV1mR6MJAOjfBGBJa0dK8f2QZz08P0SQYO4DGntk0/gii/xt1RbSV
+	9yySIXcHhXkLdwv2ccDSdMmaUb5k=
+X-Google-Smtp-Source: AGHT+IFEaJiOXvau+SPSuXswXQQhn7Wy4IINTxvObunO6KPWDHK44rjfVGSAD8ct9IOBKsAbz2FDTk/LGhS/AxWq078=
+X-Received: by 2002:a05:6e02:3886:b0:3a3:a639:a594 with SMTP id
+ e9e14a558f8ab-3a6a94a162dmr6164855ab.4.1730342541663; Wed, 30 Oct 2024
+ 19:42:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <d204f9ff-81a3-4b07-874f-fe3256a65735@stanley.mountain>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgCHLrDx7SJnb2qmAQ--.39769S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3tFWUCryUKF1rAr1DXrW5KFg_yoWkCr4kpF
-	y8WryDWF4jkw1Fva4qv397WFnYyF95A3W5Gw1Ut340vr1jkr9I9ryrWry5WF4fKr18u3WS
-	yw18Kr98XrWjvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU92b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCY1x0262kKe7AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
-	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
-	MI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
-	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
-	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
-	BIdaVFxhVjvjDU0xZFpf9x07jIksgUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
+ <20241028110535.82999-11-kerneljasonxing@gmail.com> <8fd16b77-b8e8-492c-ab69-8192cafa9fc7@linux.dev>
+ <CAL+tcoBNiZQr=yk_fb9eoKX1_Nr4LuDaa1kkLGbdnc=8JNKnNg@mail.gmail.com> <e56f78a9-cbda-4b80-8b55-c16b36e4efb1@linux.dev>
+In-Reply-To: <e56f78a9-cbda-4b80-8b55-c16b36e4efb1@linux.dev>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Thu, 31 Oct 2024 10:41:45 +0800
+Message-ID: <CAL+tcoDi86GkJRd8fShGNH8CgdFu3kbfMubWxCLVdo+3O-wnfg@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 10/14] net-timestamp: add basic support with
+ tskey offset
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
+	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com, 
+	bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Thu, Oct 31, 2024 at 9:17=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
+>
+> On 10/29/24 11:50 PM, Jason Xing wrote:
+> > On Wed, Oct 30, 2024 at 1:42=E2=80=AFPM Martin KaFai Lau <martin.lau@li=
+nux.dev> wrote:
+> >>
+> >> On 10/28/24 4:05 AM, Jason Xing wrote:
+> >>> +/* Used to track the tskey for bpf extension
+> >>> + *
+> >>> + * @sk_tskey: bpf extension can use it only when no application uses=
+.
+> >>> + *            Application can use it directly regardless of bpf exte=
+nsion.
+> >>> + *
+> >>> + * There are three strategies:
+> >>> + * 1) If we've already set through setsockopt() and here we're going=
+ to set
+> >>> + *    OPT_ID for bpf use, we will not re-initialize the @sk_tskey an=
+d will
+> >>> + *    keep the record of delta between the current "key" and previou=
+s key.
+> >>> + * 2) If we've already set through bpf_setsockopt() and here we're g=
+oing to
+> >>> + *    set for application use, we will record the delta first and th=
+en
+> >>> + *    override/initialize the @sk_tskey.
+> >>> + * 3) other cases, which means only either of them takes effect, so =
+initialize
+> >>> + *    everything simplely.
+> >>> + */
+> >>> +static long int sock_calculate_tskey_offset(struct sock *sk, int val=
+, int bpf_type)
+> >>> +{
+> >>> +     u32 tskey;
+> >>> +
+> >>> +     if (sk_is_tcp(sk)) {
+> >>> +             if ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_LISTEN))
+> >>> +                     return -EINVAL;
+> >>> +
+> >>> +             if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
+> >>> +                     tskey =3D tcp_sk(sk)->write_seq;
+> >>> +             else
+> >>> +                     tskey =3D tcp_sk(sk)->snd_una;
+> >>> +     } else {
+> >>> +             tskey =3D 0;
+> >>> +     }
+> >>> +
+> >>> +     if (bpf_type && (sk->sk_tsflags & SOF_TIMESTAMPING_OPT_ID)) {
+> >>> +             sk->sk_tskey_bpf_offset =3D tskey - atomic_read(&sk->sk=
+_tskey);
+> >>> +             return 0;
+> >>> +     } else if (!bpf_type && (sk->sk_tsflags_bpf & SOF_TIMESTAMPING_=
+OPT_ID)) {
+> >>> +             sk->sk_tskey_bpf_offset =3D atomic_read(&sk->sk_tskey) =
+- tskey;
+> >>> +     } else {
+> >>> +             sk->sk_tskey_bpf_offset =3D 0;
+> >>> +     }
+> >>> +
+> >>> +     return tskey;
+> >>> +}
+> >>
+> >> Before diving into this route, the bpf prog can peek into the tcp seq =
+no in the
+> >> skb. It can also look at the sk->sk_tskey for UDP socket. Can you expl=
+ain why
+> >> those are not enough information for the bpf prog?
+> >
+> > Well, it does make sense. It seems we don't need to implement tskey
+> > for this bpf feature...
+> >
+> > Due to lack of enough knowledge of bpf, could you provide more hints
+> > that I can follow to write a bpf program to print more information
+> > from the skb? Like in the last patch of this series, in
+> > tools/testing/selftests/bpf/prog_tests/so_timestamping.c, do we have a
+> > feasible way to do that?
+>
+> The bpf-prog@sendmsg() will be run to capture a timestamp for sendmsg().
+> When running the bpf-prog@sendmsg(), the skb can be set to the "struct
+> bpf_sock_ops_kern sock_ops;" which is passed to the sockops prog. Take a =
+look at
+> bpf_skops_write_hdr_opt().
 
-On 10/13/2024 9:07 PM, Dan Carpenter wrote:
-> Hi Hou,
->
-> kernel test robot noticed the following build warnings:
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Hou-Tao/bpf-Introduce-map-flag-BPF_F_DYNPTR_IN_KEY/20241008-171136
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> patch link:    https://lore.kernel.org/r/20241008091501.8302-6-houtao%40huaweicloud.com
-> patch subject: [PATCH bpf-next 05/16] bpf: Support map key with dynptr in verifier
-> config: x86_64-randconfig-161-20241011 (https://download.01.org/0day-ci/archive/20241012/202410120302.bUO1BoP7-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> | Closes: https://lore.kernel.org/r/202410120302.bUO1BoP7-lkp@intel.com/
->
-> smatch warnings:
-> kernel/bpf/verifier.c:7471 check_stack_range_initialized() error: we previously assumed 'meta' could be null (see line 7439)
->
-> vim +/meta +7471 kernel/bpf/verifier.c
+Thanks. I see the skb field in struct bpf_sock_ops_kern.
 
-Thanks for the report. Sorry for the late reply. The mail is lost in my
-email client. It is a false positive. Because when
-ACCESS_F_DYNPTR_READ_ALLOWED is enabled, meta must be no NULL. But I
-think it incurs no harm to make dynptr_read_allowed depends on a no-NULL
-meta pointer.
 >
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7361  static int check_stack_range_initialized(
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7362  		struct bpf_verifier_env *env, int regno, int off,
-> 81b030a7eaa2ee Hou Tao                 2024-10-08  7363  		int access_size, unsigned int access_flags,
-> 61df10c7799e27 Kumar Kartikeya Dwivedi 2022-04-25  7364  		enum bpf_access_src type, struct bpf_call_arg_meta *meta)
-> 17a5267067f3c3 Alexei Starovoitov      2014-09-26  7365  {
-> 2a159c6f82381a Daniel Borkmann         2018-10-21  7366  	struct bpf_reg_state *reg = reg_state(env, regno);
-> f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  7367  	struct bpf_func_state *state = func(env, reg);
-> f7cf25b2026dc8 Alexei Starovoitov      2019-06-15  7368  	int err, min_off, max_off, i, j, slot, spi;
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7369  	char *err_extra = type == ACCESS_HELPER ? " indirect" : "";
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7370  	enum bpf_access_type bounds_check_type;
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7371  	struct dynptr_key_state dynptr_key;
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7372  	bool dynptr_read_allowed;
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7373  	/* Some accesses can write anything into the stack, others are
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7374  	 * read-only.
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7375  	 */
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7376  	bool clobber = false;
-> 17a5267067f3c3 Alexei Starovoitov      2014-09-26  7377  
-> 81b030a7eaa2ee Hou Tao                 2024-10-08  7378  	if (access_size == 0 && !(access_flags & ACCESS_F_ZERO_SIZE_ALLOWED)) {
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7379  		verbose(env, "invalid zero-sized read\n");
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7380  		return -EACCES;
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7381  	}
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7382  
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7383  	if (type == ACCESS_HELPER) {
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7384  		/* The bounds checks for writes are more permissive than for
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7385  		 * reads. However, if raw_mode is not set, we'll do extra
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7386  		 * checks below.
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7387  		 */
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7388  		bounds_check_type = BPF_WRITE;
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7389  		clobber = true;
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7390  	} else {
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7391  		bounds_check_type = BPF_READ;
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7392  	}
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7393  	err = check_stack_access_within_bounds(env, regno, off, access_size,
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7394  					       type, bounds_check_type);
-> 2011fccfb61bbd Andrey Ignatov          2019-03-28  7395  	if (err)
-> 2011fccfb61bbd Andrey Ignatov          2019-03-28  7396  		return err;
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7397  
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7398  	dynptr_read_allowed = access_flags & ACCESS_F_DYNPTR_READ_ALLOWED;
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7399  	if (tnum_is_const(reg->var_off)) {
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7400  		min_off = max_off = reg->var_off.value + off;
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7401  
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7402  		if (dynptr_read_allowed && (min_off % BPF_REG_SIZE)) {
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7403  			verbose(env, "R%d misaligned offset %d for dynptr-key\n", regno, min_off);
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7404  			return -EACCES;
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7405  		}
->
-> can meta be NULL on this path?  If not then this is a false positive.
->
-> 2011fccfb61bbd Andrey Ignatov          2019-03-28  7406  	} else {
-> 088ec26d9c2da9 Andrey Ignatov          2019-04-03  7407  		/* Variable offset is prohibited for unprivileged mode for
-> 088ec26d9c2da9 Andrey Ignatov          2019-04-03  7408  		 * simplicity since it requires corresponding support in
-> 088ec26d9c2da9 Andrey Ignatov          2019-04-03  7409  		 * Spectre masking for stack ALU.
-> 088ec26d9c2da9 Andrey Ignatov          2019-04-03  7410  		 * See also retrieve_ptr_limit().
-> 088ec26d9c2da9 Andrey Ignatov          2019-04-03  7411  		 */
-> 2c78ee898d8f10 Alexei Starovoitov      2020-05-13  7412  		if (!env->bypass_spec_v1) {
-> f1174f77b50c94 Edward Cree             2017-08-07  7413  			char tn_buf[48];
-> f1174f77b50c94 Edward Cree             2017-08-07  7414  
-> 914cb781ee1a35 Alexei Starovoitov      2017-11-30  7415  			tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7416  			verbose(env, "R%d%s variable offset stack access prohibited for !root, var_off=%s\n",
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7417  				regno, err_extra, tn_buf);
-> ea25f914dc164c Jann Horn               2017-12-18  7418  			return -EACCES;
-> f1174f77b50c94 Edward Cree             2017-08-07  7419  		}
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7420  
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7421  		if (dynptr_read_allowed) {
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7422  			verbose(env, "R%d variable offset prohibited for dynptr-key\n", regno);
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7423  			return -EACCES;
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7424  		}
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7425  
-> f2bcd05ec7b839 Andrey Ignatov          2019-04-03  7426  		/* Only initialized buffer on stack is allowed to be accessed
-> f2bcd05ec7b839 Andrey Ignatov          2019-04-03  7427  		 * with variable offset. With uninitialized buffer it's hard to
-> f2bcd05ec7b839 Andrey Ignatov          2019-04-03  7428  		 * guarantee that whole memory is marked as initialized on
-> f2bcd05ec7b839 Andrey Ignatov          2019-04-03  7429  		 * helper return since specific bounds are unknown what may
-> f2bcd05ec7b839 Andrey Ignatov          2019-04-03  7430  		 * cause uninitialized stack leaking.
-> f2bcd05ec7b839 Andrey Ignatov          2019-04-03  7431  		 */
-> f2bcd05ec7b839 Andrey Ignatov          2019-04-03  7432  		if (meta && meta->raw_mode)
-> f2bcd05ec7b839 Andrey Ignatov          2019-04-03  7433  			meta = NULL;
-> f2bcd05ec7b839 Andrey Ignatov          2019-04-03  7434  
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7435  		min_off = reg->smin_value + off;
-> 01f810ace9ed37 Andrei Matei            2021-02-06  7436  		max_off = reg->smax_value + off;
-> 107c26a70ca81b Andrey Ignatov          2019-04-03  7437  	}
-> 17a5267067f3c3 Alexei Starovoitov      2014-09-26  7438  
-> 435faee1aae9c1 Daniel Borkmann         2016-04-13 @7439  	if (meta && meta->raw_mode) {
->
-> Check for NULL
->
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7440  		/* Ensure we won't be overwriting dynptrs when simulating byte
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7441  		 * by byte access in check_helper_call using meta.access_size.
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7442  		 * This would be a problem if we have a helper in the future
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7443  		 * which takes:
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7444  		 *
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7445  		 *	helper(uninit_mem, len, dynptr)
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7446  		 *
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7447  		 * Now, uninint_mem may overlap with dynptr pointer. Hence, it
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7448  		 * may end up writing to dynptr itself when touching memory from
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7449  		 * arg 1. This can be relaxed on a case by case basis for known
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7450  		 * safe cases, but reject due to the possibilitiy of aliasing by
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7451  		 * default.
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7452  		 */
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7453  		for (i = min_off; i < max_off + access_size; i++) {
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7454  			int stack_off = -i - 1;
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7455  
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7456  			spi = __get_spi(i);
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7457  			/* raw_mode may write past allocated_stack */
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7458  			if (state->allocated_stack <= stack_off)
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7459  				continue;
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7460  			if (state->stack[spi].slot_type[stack_off % BPF_REG_SIZE] == STACK_DYNPTR) {
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7461  				verbose(env, "potential write to dynptr at off=%d disallowed\n", i);
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7462  				return -EACCES;
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7463  			}
-> ef8fc7a07c0e16 Kumar Kartikeya Dwivedi 2023-01-21  7464  		}
-> 435faee1aae9c1 Daniel Borkmann         2016-04-13  7465  		meta->access_size = access_size;
-> 435faee1aae9c1 Daniel Borkmann         2016-04-13  7466  		meta->regno = regno;
-> 435faee1aae9c1 Daniel Borkmann         2016-04-13  7467  		return 0;
-> 435faee1aae9c1 Daniel Borkmann         2016-04-13  7468  	}
-> 435faee1aae9c1 Daniel Borkmann         2016-04-13  7469  
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7470  	if (dynptr_read_allowed) {
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08 @7471  		err = init_dynptr_key_state(env, meta->map_ptr->key_record, &dynptr_key);
->                                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^
-> Unchecked dereference
->
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7472  		if (err)
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7473  			return err;
-> cf5a0c90a8bc5f Hou Tao                 2024-10-08  7474  	}
-> 2011fccfb61bbd Andrey Ignatov          2019-03-28  7475  	for (i = min_off; i < max_off + access_size; i++) {
-> cc2b14d51053eb Alexei Starovoitov      2017-12-14  7476  		u8 *stype;
-> cc2b14d51053eb Alexei Starovoitov      2017-12-14  7477  
-> 2011fccfb61bbd Andrey Ignatov          2019-03-28  7478  		slot = -i - 1;
-> 638f5b90d46016 Alexei Starovoitov      2017-10-31  7479  		spi = slot / BPF_REG_SIZE;
-> 6b4a64bafd107e Andrei Matei            2023-12-07  7480  		if (state->allocated_stack <= slot) {
->
+> bpf prog cannot directly access the skops->skb now. It is because the soc=
+kops
+> prog sees the uapi "struct bpf_sock_ops" instead of "struct
+> bpf_sock_ops(_kern)". The conversion is done in sock_ops_convert_ctx_acce=
+ss. It
+> is an old way before BTF. I don't want to extend the uapi "struct bpf_soc=
+k_ops".
 
+Oh, so it seems we cannot use this way, right?
+
+I also noticed a use case that allow users to get the information from one =
+skb:
+"int BPF_PROG(trace_netif_receive_skb, struct sk_buff *skb)" in
+tools/testing/selftests/bpf/progs/netif_receive_skb.c
+But it requires us to add the tracepoint in __skb_tstamp_tx() first.
+Two months ago, I was planning to use a tracepoint for some people who
+find it difficult to deploy bpf.
+
+>
+> Instead, use bpf_cast_to_kern_ctx((struct bpf_sock_ops *)skops_ctx) to ge=
+t a
+> trusted "struct bpf_sock_ops(_kern) *skops" pointer. Then it can access t=
+he
+> skops->skb.
+
+Let me spend some time on it. Thanks.
+
+> afaik, the tcb->seq should be available already during sendmsg. it
+> should be able to get it from TCP_SKB_CB(skb)->seq with the bpf_core_cast=
+. Take
+> a look at the existing examples of bpf_core_cast.
+>
+> The same goes for the skb->data. It can use the bpf_dynptr_from_skb(). It=
+ is not
+> available to skops program now but should be easy to expose.
+
+I wonder what the use of skb->data is here.
+
+>
+> The bpf prog wants to calculate the delay between [sendmsg, SCHED], [SCHE=
+D,
+> SND], [SND, ACK]. It is why (at least in my mental model) a key is needed=
+ to
+> co-relate the sendmsg, SCHED, SND, and ACK timestamp. The tcp seqno could=
+ be
+> served as that key.
+>
+> All that said, while looking at tcp_tx_timestamp() again, there is always
+> "shinfo->tskey =3D TCP_SKB_CB(skb)->seq + skb->len - 1;". shinfo->tskey c=
+an be
+> used directly as-is by the bpf prog. I think now I am missing why the bpf=
+ prog
+> needs the sk_tskey in the sk?
+
+As you said, tcp seqno could be treated as the key, but it leaks the
+information in TCP layer to users. Please see the commit:
+commit 4ed2d765dfaccff5ebdac68e2064b59125033a3b
+Author: Willem de Bruijn <willemb@google.com>
+Date:   Mon Aug 4 22:11:49 2014 -0400
+
+    net-timestamp: TCP timestamping
+...
+    - To avoid leaking the absolute seqno to userspace, the offset
+    returned in ee_data must always be relative. It is an offset between
+    an skb and sk field.
+
+It has to be computed in the kernel before reporting to the user space, I t=
+hink.
+
+>
+> In the bpf prog, when the SCHED/SND/ACK timestamp comes back, it has to f=
+ind the
+> earlier sendmsg timestamp. One option is to store the earlier sendmsg tim=
+estamp
+> at the bpf map key-ed by seqno or the shinfo's tskey. Storing in a bpf ma=
+p
+> key-ed by seqno/tskey is probably what the selftest should do. In the fut=
+ure, we
+> can consider allowing the rbtree in the bpf sk local storage for searchin=
+g
+> seqno. There is shinfo's hwtstamp that can be used also if there is a nee=
+d.
+
+Thanks for the information! Let me investigate how the bpf map works...
+
+I wonder that for the selftests could it be much simpler if we just
+record each timestamp stored in three variables and calculate them at
+last since we only send the small packet once instead of using bpf
+map. I mean, bpf map is really good as far as I know, but I'm a bit
+worried that implementing such a function could cause more extra work
+(implementation and review).
 
