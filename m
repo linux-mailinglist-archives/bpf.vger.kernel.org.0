@@ -1,148 +1,216 @@
-Return-Path: <bpf+bounces-43619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD93C9B718E
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 02:19:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FD829B720F
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 02:41:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE03F1C20FD1
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 01:19:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8DFB1F24EFF
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 01:41:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E464642D;
-	Thu, 31 Oct 2024 01:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 215D078289;
+	Thu, 31 Oct 2024 01:41:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mDg4PJzd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tBxghj98"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB3C4C80;
-	Thu, 31 Oct 2024 01:19:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C75145025;
+	Thu, 31 Oct 2024 01:41:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730337542; cv=none; b=iT3QYgsAXdZXTen++41X50ID5RyavWYmhyzZXPKoiYWovLetck4fzAmKFhWHKX7Dm6BUJOwLWixy6QxyUYMxhW8CI49qzbRSNzIqwjHAz/ZupIVMKBY97Fzrd3VLtrYSFq6wmbNqCG2OoVElUopNly6UWTEnYuApKuZkxWZAF6E=
+	t=1730338863; cv=none; b=inDNPA6RDo95Bod3IwI/7PnnpUhpirRkJM+dxYfTqEqBGzFa/S9MBvKh8/dVjJeMXMMaKx2PMPb6FsxhqYCNp02ZlmQPWJ/bLYeDGbfY+Tk6qtbaHRg2Z9JK0/gFUv0rNqWOXD2KL/m6vXFQeQhThS/grvrWreJRS7D+CwZcAvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730337542; c=relaxed/simple;
-	bh=k6H+CiBEJWddN02hdN0mo06Ec/Er8fguVn5cPFWrTyE=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=fr5mLTcXvMgxTaDl4VuhtRW0t7ifCmyZdRY3S3LTBqIkdjoP8w2Ew5525eF9rJu8/J6nan8FeIde6cyLEM/IO8RZzFKAO0KL+jBqcjPILN2gz/fO2IiaFR3yEavXO6+aWxecCCDDdqOqPVE46V3c1W26sCuRct6wCWsLyvv9FpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mDg4PJzd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E3FEC4CECE;
-	Thu, 31 Oct 2024 01:18:55 +0000 (UTC)
+	s=arc-20240116; t=1730338863; c=relaxed/simple;
+	bh=PruUELLs5uKbkikgD7DNfTVa6rqlhMSedYgBFpijzEA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=a4B39vIazAyot8CpcqX32KIIPe6D9I/Ou02cMG1blrT/vZmE9UOMtXuNPvP1oMZ/sDMbVlX72n/Hp8wO2k7hEOTqQBgu5gu1eqEHaAwrNdBTdqGuA15xxaAmMdGW6vPI9nHk/KJb7idKURGHZ9nX0kFjU95dwW3CqR54ddAFHGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tBxghj98; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0583C4CECE;
+	Thu, 31 Oct 2024 01:40:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730337541;
-	bh=k6H+CiBEJWddN02hdN0mo06Ec/Er8fguVn5cPFWrTyE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=mDg4PJzdtOtjUR3WsftvwH4KB5eO0CKN6FDp6lq4Tj+Z0uwKUIlQ+WW3yy2drijwS
-	 zTcebee4TmLSLhvTDeh1g0+O/xGWUtWMnI30LnwTuhbF6I+h3iA30h5ac2IjMPHNmp
-	 425sD+fPKmTI04Kw2TKo9oolPguB6Wq2dzxNtupzXOxmZEOSyPc7qYIDYqaC0y0IwA
-	 xX9EV8ShzI47iEOzNVw5nxt79FLrsCxxd8TVgbpaHnP7bkEgelxWNOQfdwM9oFz9JH
-	 jI73jIUbbrMK9LpQhvrsAPKlPeROh7aBP8fdm9uwghY0q7MD/QWKGuQ6Ui0vMkaMD0
-	 Dv1cC48tFrABQ==
-Date: Thu, 31 Oct 2024 10:18:53 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Will Deacon <will@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Alan Maguire
- <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>,
- linux-arch@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao
- <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH v18 01/17] fgraph: Pass ftrace_regs to entryfunc
-Message-Id: <20241031101853.898b866a21732350b5f02614@kernel.org>
-In-Reply-To: <20241028152512.GB2484@willie-the-truck>
-References: <172991731968.443985.4558065903004844780.stgit@devnote2>
-	<172991733069.443985.15154246733356205391.stgit@devnote2>
-	<20241028152512.GB2484@willie-the-truck>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20201202; t=1730338863;
+	bh=PruUELLs5uKbkikgD7DNfTVa6rqlhMSedYgBFpijzEA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=tBxghj98kyqm1zlyAqSMRpfTJeXOiqUe8TOP3xp6jVLVDbpvHy6M0O6BcyF5snRPZ
+	 hyIbnj/M6A3V2oGOOM7KwxU6JgEjwNKOAEOc69Or4hWXbMNFouyOQ51TT1F3bniYF/
+	 8wOPIxWDo5ghAlJeP24x2k3lo/FwOVQ+PGrUpvxhg1OGqOyzjBRrFmn+3+beiyP1xv
+	 Gq38w+40sZYQtJH+zWi5XaFTbn/GuS3qG/14tlGX9PxQnLPxb+/71tG9hy7Kfd+ZdY
+	 ExzMPpTrHEUT1wuWpWYOmShrn7mVR9hzOt8UeEL/NkAG85XSKYJSjYAeak+zqLDY5B
+	 iKquI++45LLhg==
+From: Geliang Tang <geliang@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>,
+	netdev@vger.kernel.org,
+	mptcp@lists.linux.dev,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Matthieu Baerts <matttbe@kernel.org>
+Subject: [PATCH bpf-next/net v3] selftests/bpf: Drop netns helpers in mptcp
+Date: Thu, 31 Oct 2024 09:40:46 +0800
+Message-ID: <c02fda3177b34f9e74a044833fda9761627f4d07.1730338692.git.tanggeliang@kylinos.cn>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon, 28 Oct 2024 15:25:13 +0000
-Will Deacon <will@kernel.org> wrote:
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-> On Sat, Oct 26, 2024 at 01:35:30PM +0900, Masami Hiramatsu (Google) wrote:
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Pass ftrace_regs to the fgraph_ops::entryfunc(). If ftrace_regs is not
-> > available, it passes a NULL instead. User callback function can access
-> > some registers (including return address) via this ftrace_regs.
-> > 
-> > Note that the ftrace_regs can be NULL when the arch does NOT define:
-> > HAVE_DYNAMIC_FTRACE_WITH_ARGS or HAVE_DYNAMIC_FTRACE_WITH_REGS.
-> > More specifically, if HAVE_DYNAMIC_FTRACE_WITH_REGS is defined but
-> > not the HAVE_DYNAMIC_FTRACE_WITH_ARGS, and the ftrace ops used to
-> > register the function callback does not set FTRACE_OPS_FL_SAVE_REGS.
-> > In this case, ftrace_regs can be NULL in user callback.
-> > 
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Huacai Chen <chenhuacai@kernel.org>
-> > Cc: WANG Xuerui <kernel@xen0n.name>
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Nicholas Piggin <npiggin@gmail.com>
-> > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > Cc: Naveen N Rao <naveen@kernel.org>
-> > Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
-> > Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> > Cc: Albert Ou <aou@eecs.berkeley.edu>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Borislav Petkov <bp@alien8.de>
-> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: x86@kernel.org
-> > Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > 
-> > ---
-> >  Changes in v18:
-> >   - Remove unclear comment about `regs->fp` access on arm64.
-> >  Changes in v16:
-> >   - Add a note when the ftrace_regs can be NULL.
-> >   - Update against for the latest kernel.
-> >  Changes in v11:
-> >   - Update for the latest for-next branch.
-> >  Changes in v8:
-> >   - Just pass ftrace_regs to the handler instead of adding a new
-> >     entryregfunc.
-> >   - Update riscv ftrace_graph_func().
-> >  Changes in v3:
-> >   - Update for new multiple fgraph.
-> > ---
-> >  arch/arm64/kernel/ftrace.c               |   15 ++++++++-
-> 
-> For the arm64 bits:
-> 
-> Acked-by: Will Deacon <will@kernel.org>
-> 
+New netns selftest helpers netns_new() and netns_free() has been added
+in network_helpers.c, let's use them in mptcp selftests too instead of
+using MPTCP's own helpers create_netns() and cleanup_netns().
 
-Thank you for ack for arm64!
+Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+---
+v3:
+ - No code has changed.
+ - Change subject prefix as "bpf-next/net" since CI complains that this
+patch cannot be merged.
+ - Add Matt's Reviewed-by tag.
 
-> Will
+v2:
+ - Use netns_new/netns_free instead of create_netns/cleanup_netns as
+Martin suggested.
 
+v1:
+  selftests/bpf: Use make/remove netns helpers in mptcp
+---
+ .../testing/selftests/bpf/prog_tests/mptcp.c  | 42 ++++++-------------
+ 1 file changed, 12 insertions(+), 30 deletions(-)
 
+diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+index be3cad2aff77..f8eb7f9d4fd2 100644
+--- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
++++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+@@ -69,24 +69,6 @@ struct mptcp_storage {
+ 	char ca_name[TCP_CA_NAME_MAX];
+ };
+ 
+-static struct nstoken *create_netns(void)
+-{
+-	SYS(fail, "ip netns add %s", NS_TEST);
+-	SYS(fail, "ip -net %s link set dev lo up", NS_TEST);
+-
+-	return open_netns(NS_TEST);
+-fail:
+-	return NULL;
+-}
+-
+-static void cleanup_netns(struct nstoken *nstoken)
+-{
+-	if (nstoken)
+-		close_netns(nstoken);
+-
+-	SYS_NOFAIL("ip netns del %s", NS_TEST);
+-}
+-
+ static int start_mptcp_server(int family, const char *addr_str, __u16 port,
+ 			      int timeout_ms)
+ {
+@@ -206,15 +188,15 @@ static int run_test(int cgroup_fd, int server_fd, bool is_mptcp)
+ 
+ static void test_base(void)
+ {
+-	struct nstoken *nstoken = NULL;
++	struct netns_obj *netns = NULL;
+ 	int server_fd, cgroup_fd;
+ 
+ 	cgroup_fd = test__join_cgroup("/mptcp");
+ 	if (!ASSERT_GE(cgroup_fd, 0, "test__join_cgroup"))
+ 		return;
+ 
+-	nstoken = create_netns();
+-	if (!ASSERT_OK_PTR(nstoken, "create_netns"))
++	netns = netns_new(NS_TEST, true);
++	if (!ASSERT_OK_PTR(netns, "netns_new"))
+ 		goto fail;
+ 
+ 	/* without MPTCP */
+@@ -237,7 +219,7 @@ static void test_base(void)
+ 	close(server_fd);
+ 
+ fail:
+-	cleanup_netns(nstoken);
++	netns_free(netns);
+ 	close(cgroup_fd);
+ }
+ 
+@@ -322,21 +304,21 @@ static int run_mptcpify(int cgroup_fd)
+ 
+ static void test_mptcpify(void)
+ {
+-	struct nstoken *nstoken = NULL;
++	struct netns_obj *netns = NULL;
+ 	int cgroup_fd;
+ 
+ 	cgroup_fd = test__join_cgroup("/mptcpify");
+ 	if (!ASSERT_GE(cgroup_fd, 0, "test__join_cgroup"))
+ 		return;
+ 
+-	nstoken = create_netns();
+-	if (!ASSERT_OK_PTR(nstoken, "create_netns"))
++	netns = netns_new(NS_TEST, true);
++	if (!ASSERT_OK_PTR(netns, "netns_new"))
+ 		goto fail;
+ 
+ 	ASSERT_OK(run_mptcpify(cgroup_fd), "run_mptcpify");
+ 
+ fail:
+-	cleanup_netns(nstoken);
++	netns_free(netns);
+ 	close(cgroup_fd);
+ }
+ 
+@@ -414,7 +396,7 @@ static void run_subflow(void)
+ static void test_subflow(void)
+ {
+ 	struct mptcp_subflow *skel;
+-	struct nstoken *nstoken;
++	struct netns_obj *netns;
+ 	int cgroup_fd;
+ 
+ 	cgroup_fd = test__join_cgroup("/mptcp_subflow");
+@@ -437,8 +419,8 @@ static void test_subflow(void)
+ 	if (!ASSERT_OK_PTR(skel->links._getsockopt_subflow, "attach _getsockopt_subflow"))
+ 		goto skel_destroy;
+ 
+-	nstoken = create_netns();
+-	if (!ASSERT_OK_PTR(nstoken, "create_netns: mptcp_subflow"))
++	netns = netns_new(NS_TEST, true);
++	if (!ASSERT_OK_PTR(netns, "netns_new: mptcp_subflow"))
+ 		goto skel_destroy;
+ 
+ 	if (endpoint_init("subflow") < 0)
+@@ -447,7 +429,7 @@ static void test_subflow(void)
+ 	run_subflow();
+ 
+ close_netns:
+-	cleanup_netns(nstoken);
++	netns_free(netns);
+ skel_destroy:
+ 	mptcp_subflow__destroy(skel);
+ close_cgroup:
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.45.2
+
 
