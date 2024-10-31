@@ -1,112 +1,104 @@
-Return-Path: <bpf+bounces-43667-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43668-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 561949B83AE
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 20:52:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61D599B847B
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 21:39:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E5031F22721
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 19:52:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D30DB1F22F72
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 20:39:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5597C1CBE96;
-	Thu, 31 Oct 2024 19:52:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F421CC156;
+	Thu, 31 Oct 2024 20:39:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="drkgFHgi"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E782B1C1ACB;
-	Thu, 31 Oct 2024 19:52:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2E6197A6C
+	for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 20:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730404352; cv=none; b=ucqC1u9QKlfNsF6EHt7UmdGI95m2D7BYFM+YlPR3wR/hFqxLd2btW7+ulG21kheQEKQoxoln2YWOq+KS2HXOqSaM5doB8tdJ4um6CB+bOzOoG5hpue/qnF8v8sMVxEtEDykkLPinobz+/BieTeuT1dPb1kcOXz1COWbJSPQubJY=
+	t=1730407187; cv=none; b=rXnGreGbJdqqhbu8eWcymhovE2KIqJG6n6yW3mPv9UhOFyleFYwHP5wmP0fx/BXMtSUPUPemmim1XrTGyOl2ca2Iv3+F/u1rA+X045OTWE3n27BqJ2meW4vRI/D/o235hiBzRfy0MEwj3XaTYqn4JS4sCRFT6QlO6xXJCe06HS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730404352; c=relaxed/simple;
-	bh=cG9Og3G+txKUTnhb5mRAu1HCEYEecJi4IJLdo7xz4Qo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cF9i7nDzSzH9HJH/FBx0pw8nLPpZPnmWAaMPWXKXPlFgKN1Udz6mCETlWPgoJh5RpIbM5qQlrazUKSbQ/50zf1zXHRw2pGAQP32/BlS8emvD4oV+tw6MqrRteczl/j6wbZyBcorLjQuDupzKLY9D+LZG2vT/CJu2i25MnSHR8q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D1C2C4CEC3;
-	Thu, 31 Oct 2024 19:52:27 +0000 (UTC)
-Date: Thu, 31 Oct 2024 15:53:24 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
- <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, linux-arch@vger.kernel.org, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Huacai Chen
- <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Michael Ellerman
- <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, Madhavan
- Srinivasan <maddy@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH v18 01/17] fgraph: Pass ftrace_regs to entryfunc
-Message-ID: <20241031155324.108ed8ef@gandalf.local.home>
-In-Reply-To: <172991733069.443985.15154246733356205391.stgit@devnote2>
-References: <172991731968.443985.4558065903004844780.stgit@devnote2>
-	<172991733069.443985.15154246733356205391.stgit@devnote2>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1730407187; c=relaxed/simple;
+	bh=pwQJMig8pqTMJYRWafVSMjffQIxCG7FoU2oK/45uC+k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=L8eAQSGFZNSEsXQz4JTGP5dDyNP80qsNCFNXXaaem0rrjvT4lSeSUJIpZh///VlDEFaLc3csuo4pXGEMYLc7ws11PDN5lWhZy+eHiBRt55/rb/oW45mxXr2N2t7xEMraw7IkGNTHVox8gtRFzSs7DPl5A/0GZ7Fr/Umw248VyQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=drkgFHgi; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e03cfadc-8720-4351-a83b-cc8d4566f53f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1730407182;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pwQJMig8pqTMJYRWafVSMjffQIxCG7FoU2oK/45uC+k=;
+	b=drkgFHgi7h2weZ1Ltf7O1cbmKY7B/NIqjeXyGM1EzLZBbu4VPEX9XspbTNml+m4a521W5u
+	+yb+pKpIVCPk/BAEb8pSbDWJQ1t9HXiayucaWATdMbYvB5Ev7RLc8vFG/cSzncGbbx4fof
+	Ti3ByPDsHVHwTsIfoNkjR7K4/qumdgg=
+Date: Thu, 31 Oct 2024 13:39:36 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [PATCH bpf-next] bpf: Add kernel symbol for struct_ops trampoline
+Content-Language: en-GB
+To: Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>
+References: <20241030111533.907289-1-xukuohai@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20241030111533.907289-1-xukuohai@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-
-On Sat, 26 Oct 2024 13:35:30 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> Pass ftrace_regs to the fgraph_ops::entryfunc(). If ftrace_regs is not
-> available, it passes a NULL instead. User callback function can access
-> some registers (including return address) via this ftrace_regs.
-> 
-> Note that the ftrace_regs can be NULL when the arch does NOT define:
-> HAVE_DYNAMIC_FTRACE_WITH_ARGS or HAVE_DYNAMIC_FTRACE_WITH_REGS.
-> More specifically, if HAVE_DYNAMIC_FTRACE_WITH_REGS is defined but
-> not the HAVE_DYNAMIC_FTRACE_WITH_ARGS, and the ftrace ops used to
-> register the function callback does not set FTRACE_OPS_FL_SAVE_REGS.
-> In this case, ftrace_regs can be NULL in user callback.
-
-If HAVE_DYNAMIC_FTRACE_WITH_REGS is defined but not
-HAVE_DYNAMIC_FTRACE_WITH_ARGS is not, then the callback will have regs defined.
-
-> @@ -977,7 +980,7 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
->  
->  static struct ftrace_ops graph_ops = {
->  	.func			= ftrace_graph_func,
-> -	.flags			= FTRACE_OPS_GRAPH_STUB,
-> +	.flags			= FTRACE_OPS_GRAPH_STUB | FTRACE_OPS_FL_SAVE_ARGS,
-
-Enabling FTRACE_OPS_FL_SAVE_ARGS will pass full regs in that case. Are you
-just saying in the change log that this is what you did? As it currently
-reads, it sounds like a fgraph user needs to add FTRACE_OPS_FL_SAVE_REGS??
-
--- Steve
+X-Migadu-Flow: FLOW_OUT
 
 
->  #ifdef FTRACE_GRAPH_TRAMP_ADDR
->  	.trampoline		= FTRACE_GRAPH_TRAMP_ADDR,
->  	/* trampoline_size is only needed for dynamically allocated tramps */
-> @@ -987,7 +990,8 @@ static struct ftrace_ops graph_ops = {
->  void fgraph_init_ops(struct ftrace_ops *dst_ops,
->  		     struct ftrace_ops *src_ops)
->  {
-> -	dst_ops->flags = FTRACE_OPS_FL_PID | FTRACE_OPS_GRAPH_STUB;
-> +	dst_ops->flags = FTRACE_OPS_FL_PID | FTRACE_OPS_GRAPH_STUB |
-> +			 FTRACE_OPS_FL_SAVE_ARGS;
->  
->  #ifdef CONFIG_DYNAMIC_FTRACE
->  	if (src_ops) {
+On 10/30/24 4:15 AM, Xu Kuohai wrote:
+> From: Xu Kuohai <xukuohai@huawei.com>
+>
+> Without kernel symbols for struct_ops trampoline, the unwinder may
+> produce unexpected stacktraces.
+>
+> For example, the x86 ORC and FP unwinders check if an IP is in kernel
+> text by verifying the presence of the IP's kernel symbol. When a
+> struct_ops trampoline address is encountered, the unwinder stops due
+> to the absence of symbol, resulting in an incomplete stacktrace that
+> consists only of direct and indirect child functions called from the
+> trampoline.
+
+Please give some concrete examples here, e.g. stack trace before and
+after this patch, so it will be clear what is fixed.
+
+>
+> The arm64 unwinder is another example. While the arm64 unwinder can
+> proceed across a struct_ops trampoline address, the corresponding
+> symbol name is displayed as "unknown", which is confusing.
+>
+> Thus, add kernel symbol for struct_ops trampoline. The name is
+> bpf_trampoline_<PROG_NAME>, where PROG_NAME is the name of the
+> struct_ops prog linked to the trampoline.
+>
+> Fixes: 85d33df357b6 ("bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS")
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+
+There is a warning in kernel test bot, please fix it. Otherwise,
+the patch LGTM. I also tried with one struct_ops example and it
+does show full *good* stack with this patch, and without
+this patch, the backtrace stops right before trampoline symbols.
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
 
