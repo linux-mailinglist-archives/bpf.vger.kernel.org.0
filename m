@@ -1,444 +1,207 @@
-Return-Path: <bpf+bounces-43641-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43642-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 072BB9B7A16
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 12:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B5F439B7A88
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 13:30:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B94D1C219C7
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 11:57:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA44A1C21DBB
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 12:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D8F719C547;
-	Thu, 31 Oct 2024 11:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB8EF19ADA2;
+	Thu, 31 Oct 2024 12:30:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IJX3MAv9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GmnGX2RY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3460F153BC7;
-	Thu, 31 Oct 2024 11:57:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3861DFFC;
+	Thu, 31 Oct 2024 12:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730375842; cv=none; b=MQeTElwoV4nwChZFKTHpTY8XBbiAONnVW0dnjVtHIw05asesOp7V3xI01WPYO77q44i/rIYiZLCM3KblYgLIh6stMjdVqZFyz3NkAGcSv94qGlfD8QwGDo8MXo91W4Vz17dIPhwx0FcAOjSQ1bntIWa3ftRrlutehGMU2EMjWkY=
+	t=1730377852; cv=none; b=qijtmhrZYHMyaC+yvDa0r86C/U7L2GL9+IScchaAx0MsvvRaBnymGBG08M9xmhuDrnnokCyMGCY1NcAFHZaEWgpN1fKrmgcErtcuNVTaQyKLW3embGcr91i3Kwi603mCJytmKq5GaYkCV8H/4nfo8HFyumeZUS7T3aA+AxIFONk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730375842; c=relaxed/simple;
-	bh=BTN38ve7ZHiN9RoGPVE/D2FFgtrmU/y8viJLtxkciaI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ID1KdfxuwcHlYIKF+B3aZU3O6kWVV/+Qd7tcNk8fJ0CnyhsaR+bJsjfRSGTQXb58SlTwqQvfSK45ghQ/R1Qtx4ZYZzJSsv3jN4XzEgX/A7zadzIrCYJQtnidwcVI+GcHQZSCnYRR6YlDJeHu7w/nAN+aVIBpr8HaAQK4vwjfzMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IJX3MAv9; arc=none smtp.client-ip=209.85.218.54
+	s=arc-20240116; t=1730377852; c=relaxed/simple;
+	bh=P55LwGvoDxnXs011gHgWu2FTdb/03vVy6pYDQctqJ4E=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=O+bsfhdfottuEi3zLXsI8In/sQMCKcavQUEPb4MJT6573yiIZZpbamR0KQT3E+dMNQY0TVw4oq2pHh+rS94MRNbp0l99gaceQ2lJbm45EyXlietWcUrbljLl3rt+IBMDSwzpCJx7jAV0v7stw4wC6JHdkzaMInMz4NV3gw7anU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GmnGX2RY; arc=none smtp.client-ip=209.85.222.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a9a0f198d38so127434866b.1;
-        Thu, 31 Oct 2024 04:57:18 -0700 (PDT)
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-7b15d7b7a32so64134285a.1;
+        Thu, 31 Oct 2024 05:30:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730375837; x=1730980637; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1730377849; x=1730982649; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lKIyLE2zQdyO5Hcqyq1E5hXSPBVJ2YpMPKsp9FVyOPU=;
-        b=IJX3MAv9505Q/Z/COVY8OhdlwJMiTZ+8XNZR6iQBqToItYgXmHxYRac+6ktXVrdsqw
-         rESVQZmKU+ljbIsx32WEt3SFkY7tylxPAtZnFMt3CL9sQG8ftrl9NkEn9ldhUSxO848V
-         JNWRg5ieaIcLTEBkMuCPwPJb88SziHfbr9HjLdEFu/6RR3LMH5eR34pkj+fehK0yuA7d
-         R+cm4fu/1+VhvwZ2j9XtH396T5akQYM5oTlvw7ZEFXevlYYGY27CjuEMNf6Ektwam/we
-         YtdE9kXGe5CklL3fgZPzDZbFd0aibWrBqZaqmpHkQ3mBSrNKnZ7jt0DERRrTDfL2wCK8
-         YWZw==
+        bh=Np32xWGh4nOX40mzC7RrQhve/lLTHk3smooxRQ3lL8g=;
+        b=GmnGX2RY8UOkFeVBetr8q9y7wWsEZenWGucg2nBl+jiJIpTqiI+35y4EXk1K+ex+dy
+         aetLwNsEonSNdvnCQEaKDGB/5FMCpY6RdBs8bveeq008fVmLutcDU8w7iYG2+nNh8jCs
+         kVkZeSbCEj1Epq8OjHzKJIwHO2VGHUubi9cCtnYNBhUqDr/f7AsLIJzDc9BEMOODr4MZ
+         q0V0LE/BrUR4CjhDYls66pQJU/1VK9pfeDgnLSPLBiFgc2ecW/31cNTbuArBOBxIxtau
+         ub/q5nCgMoCyb5nSjq5VeCVpn0iXMx8YAu/XeFx0tbSRwibUByPowny88/z9V8givWN1
+         srnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730375837; x=1730980637;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lKIyLE2zQdyO5Hcqyq1E5hXSPBVJ2YpMPKsp9FVyOPU=;
-        b=RuC64TyDPm9gR2Z153Sf0qaSZyiF1DN1ZkouV9v04daoB//Qj+84RHsW+Dmu8Qva2z
-         CmRV8AgH8KavznzFpkO1xRhdNKLKcqoSxdp+rvZGCpEKV/9kiAS3AOu3FKIMY4iaR4/6
-         jXz7Ffu8sef75LNOugPbno0kZU5kf5cYFq0/CST5xl7gbSxbQ/LSe7WR1aQNyZNnPWTg
-         5gxWHGXbmzQvI1id7MZaDk2yjL5mQ5MNoPR9Rgf+2rvN9NdQIQSmviJ2HQsM0EjNk094
-         w+fOtHNZZcYtjKdLjo9yyHzcwI9ySuycCFQcHLNfmRaRAmkgPq/qbl9k/H81PY6zKHPW
-         CLgA==
-X-Forwarded-Encrypted: i=1; AJvYcCUABKuuKdogrvcnYhKnchCTfAs711RIknU6/7ImIffYxq/nKZOlJkYsWK3IZRsKc6LSWmefQC9GlW0N6YRSVvQR@vger.kernel.org, AJvYcCUttNSRv2L0Ts0amAe14eKeso5VjbBpomALwr3TVCMGxJuvNQ+ufuLms25QHhS3x59yWTpDyHLo92vcu/U1@vger.kernel.org, AJvYcCW/8PUgWmjqYeQrc9BV/IGRZxg0j758bGvus0Dh0KXTBpuEbbkfzwwKvSohTiqxo58nhdM=@vger.kernel.org, AJvYcCX0/xahe4ed9MW9+4U5AV7tMZlQsfJhhMY+2dqGepsQiXBjACCepgKngzlk9Q7FL0JHMDzuTSe02qYHJjOsq4wvTiLo@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywoc2eJg1RohJ5kzlW/vX1Hh26Q8txAqdgTPt5rhsZppXEabJD+
-	FgeX9XF3nKUxzvLW3+zlV4fbnFmkuKgHTsJBzDNWwK2LXaoma1Ys2Mn7SLHX62PlfEb140hwk5J
-	D76mOrGqTiC09Q1PpRwBz2Uz/iok=
-X-Google-Smtp-Source: AGHT+IFVyWMCJp4ypcB1SCqphOPxg+DYfnGVczoC6vL3foJeAnIkQEYAte0Ok85oC+uL77BHORxI763WhPk+Tyctfk8=
-X-Received: by 2002:a17:906:6a09:b0:a99:8edf:a367 with SMTP id
- a640c23a62f3a-a9de61eb5a1mr2034895966b.57.1730375837082; Thu, 31 Oct 2024
- 04:57:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1730377849; x=1730982649;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Np32xWGh4nOX40mzC7RrQhve/lLTHk3smooxRQ3lL8g=;
+        b=FruhmncNY91+uyIJ2xwIB8iIJgVLAqHtEJa4TbI3d9aA6qmJEXY66pY6p0kaOkpMej
+         Smw6UtMRK0WSJfxLeHXuDBNX+/r5qPUSfZ+09lUalcrQq1MbbwuSd45StEsBpoWt91oI
+         Op2qJk0+u2KoZ/uM79QNJoZo7TPOtyKlVzBMEUdfHYXpLq7RBXNRQkPSJ8UPvzkG0xgX
+         4PcxMh1ZwGt9NA+woofFL9bmGXPlGrCA/ThzBWbU/LnZPnfLEzbecjHxjX2uJhEIO6No
+         sp4JCkdiG+ysy9txPyR2hx9C0pH7L8e64n5F+LH/KUV3w+vWTAvfB66Pu7kRFfMCKdwI
+         oigQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVucpRvj1HA5ID393g2BT+h0G5nCkVUPyiHvPMckGYdOsib+rOrxBfro7nk8/U9SiHyG2IdmgIW@vger.kernel.org, AJvYcCXdGVDge1HAi6KdJloKMBuMAx/yBCHsJYOrSK61TTKcwfE6I+MEDcSpHW8RU4efByC2Mrg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwW5fxbldcuXyXpHbaAUuUU6YUYp3Tc9+SOCwdR1x7apS+ebIvX
+	NZgzKeu5uGBN8cXgcm/Xd+aZ5ofmJkST/CvR1Mwx9jZs4Wh4PIe2
+X-Google-Smtp-Source: AGHT+IGQYi+pE1TBlsl6XOMQIW5C8tGZCw60fdI6fmH2VlNRs3UfOoT4ZSSn7gCTVZ4cPFCwQ8xq8w==
+X-Received: by 2002:a05:620a:2445:b0:7b1:5680:164b with SMTP id af79cd13be357-7b193efa878mr2985041585a.26.1730377849090;
+        Thu, 31 Oct 2024 05:30:49 -0700 (PDT)
+Received: from localhost (250.4.48.34.bc.googleusercontent.com. [34.48.4.250])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b2f39f8fffsm64074385a.29.2024.10.31.05.30.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Oct 2024 05:30:48 -0700 (PDT)
+Date: Thu, 31 Oct 2024 08:30:47 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Jason Xing <kerneljasonxing@gmail.com>, 
+ Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ willemb@google.com, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ andrii@kernel.org, 
+ eddyz87@gmail.com, 
+ song@kernel.org, 
+ yonghong.song@linux.dev, 
+ john.fastabend@gmail.com, 
+ kpsingh@kernel.org, 
+ sdf@fomichev.me, 
+ haoluo@google.com, 
+ jolsa@kernel.org, 
+ shuah@kernel.org, 
+ ykolal@fb.com, 
+ bpf@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ Jason Xing <kernelxing@tencent.com>
+Message-ID: <67237877cd08d_b246b2942b@willemb.c.googlers.com.notmuch>
+In-Reply-To: <CAL+tcoBfuFL7-EOBY4RLMdDZJcUSyq20pJW13OqzNazUP7=gaw@mail.gmail.com>
+References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
+ <20241028110535.82999-3-kerneljasonxing@gmail.com>
+ <61e8c5cf-247f-484e-b3cc-27ab86e372de@linux.dev>
+ <CAL+tcoDB8UvNMfTwmvTJb1JvCGDb3ESaJMszh4-Qa=ey0Yn3Vg@mail.gmail.com>
+ <67218fb61dbb5_31d4d029455@willemb.c.googlers.com.notmuch>
+ <CAL+tcoBhfZ4XB5QgCKKbNyq+dfm26fPsvXfbWbV=jAEKYeLDEg@mail.gmail.com>
+ <67219e5562f8c_37251929465@willemb.c.googlers.com.notmuch>
+ <CAL+tcoDonudsr800HmhDir7f0B6cx0RPwmnrsRmQF=yDUJUszg@mail.gmail.com>
+ <3c7c5f25-593f-4b48-9274-a18a9ea61e8f@linux.dev>
+ <CAL+tcoAy2ryOpLi2am=T68GaFG1ACCtYmcJzDoEOan-0u3aaWw@mail.gmail.com>
+ <672269c08bcd5_3c834029423@willemb.c.googlers.com.notmuch>
+ <CAL+tcoA7Uddjx3OJzTB3+kqmKRt6KQN4G1VDCbE+xwEhATQpQQ@mail.gmail.com>
+ <CAL+tcoDL0by6epqExL0VVMqfveA_awZ3PE9mfwYi3OmovZf3JQ@mail.gmail.com>
+ <d138a81d-f9f5-4d51-bedd-3916d377699d@linux.dev>
+ <CAL+tcoBfuFL7-EOBY4RLMdDZJcUSyq20pJW13OqzNazUP7=gaw@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 02/14] net-timestamp: allow two features to
+ work parallelly
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20241029002208.1947947-1-dolinux.peng@gmail.com>
- <20241029002208.1947947-3-dolinux.peng@gmail.com> <CAEf4BzYBffp+47SLaV5sMWVAVSbxyDX3DnNoOju1y9wr+wupeQ@mail.gmail.com>
- <CAErzpmsyV46Pexj3CUCSaX+MzckoKSAe9D3eeEcTGK8m5BKJUg@mail.gmail.com> <CAEf4BzY=vfFBPFUNPy3LfrCTM0qpU=L0dgY+aK4GkGhkjPGw3A@mail.gmail.com>
-In-Reply-To: <CAEf4BzY=vfFBPFUNPy3LfrCTM0qpU=L0dgY+aK4GkGhkjPGw3A@mail.gmail.com>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Thu, 31 Oct 2024 19:57:01 +0800
-Message-ID: <CAErzpms+do7vuFtDcxAEJx-ZxyrEZjRT+KAAkt9wfqfPfqrydg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] bpf: Using binary search to improve the
- performance of btf_find_by_name_kind
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, rostedt@goodmis.org, 
-	mhiramat@kernel.org, bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 31, 2024 at 1:33=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Oct 30, 2024 at 8:00=E2=80=AFAM Donglin Peng <dolinux.peng@gmail.=
-com> wrote:
+Jason Xing wrote:
+> On Thu, Oct 31, 2024 at 2:27=E2=80=AFPM Martin KaFai Lau <martin.lau@li=
+nux.dev> wrote:
 > >
-> > On Wed, Oct 30, 2024 at 6:13=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
+> > On 10/30/24 5:13 PM, Jason Xing wrote:
+> > > I realized that we will have some new sock_opt flags like
+> > > TS_SCHED_OPT_CB in patch 4, so we can control whether to print or
+> > > not... For each sock_opt point, they will be called without caring =
+if
+> > > related flags in skb are set. Well, it's meaningless to add more
+> > > control of skb tsflags at each TS_xx_OPT_CB point.
 > > >
-> > > On Mon, Oct 28, 2024 at 5:22=E2=80=AFPM Donglin Peng <dolinux.peng@gm=
-ail.com> wrote:
-> > > >
-> > > > Currently, we are only using the linear search method to find the t=
-ype id
-> > > > by the name, which has a time complexity of O(n). This change invol=
-ves
-> > > > sorting the names of btf types in ascending order and using binary =
-search,
-> > > > which has a time complexity of O(log(n)). This idea was inspired by=
- the
-> > > > following patch:
-> > > >
-> > > > 60443c88f3a8 ("kallsyms: Improve the performance of kallsyms_lookup=
-_name()").
-> > > >
-> > > > At present, this improvement is only for searching in vmlinux's and
-> > > > module's BTFs.
-> > > >
-> > > > Another change is the search direction, where we search the BTF fir=
-st and
-> > > > then its base, the type id of the first matched btf_type will be re=
-turned.
-> > > >
-> > > > Here is a time-consuming result that finding 87590 type ids by thei=
-r names in
-> > > > vmlinux's BTF.
-> > > >
-> > > > Before: 158426 ms
-> > > > After:     114 ms
-> > > >
-> > > > The average lookup performance has improved more than 1000x in the =
-above scenario.
-> > > >
-> > > > Tested-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
-> > > > ---
-> > > > v4:
-> > > >  - move the modification of libbpf to another patch
-> > > >
-> > > > v3:
-> > > >  - Link: https://lore.kernel.org/all/20240608140835.965949-1-dolinu=
-x.peng@gmail.com/
-> > > >  - Sort btf_types during build process other than during boot, to r=
-educe the
-> > > >    overhead of memory and boot time.
-> > > >
-> > > > v2:
-> > > >  - Link: https://lore.kernel.org/all/20230909091646.420163-1-pengdo=
-nglin@sangfor.com.cn
-> > > > ---
-> > > >  include/linux/btf.h |   1 +
-> > > >  kernel/bpf/btf.c    | 157 ++++++++++++++++++++++++++++++++++++++++=
-----
-> > > >  2 files changed, 147 insertions(+), 11 deletions(-)
-> > > >
-> > > > diff --git a/include/linux/btf.h b/include/linux/btf.h
-> > > > index b8a583194c4a..64c35aaa22fa 100644
-> > > > --- a/include/linux/btf.h
-> > > > +++ b/include/linux/btf.h
-> > > > @@ -216,6 +216,7 @@ bool btf_is_module(const struct btf *btf);
-> > > >  bool btf_is_vmlinux(const struct btf *btf);
-> > > >  struct module *btf_try_get_module(const struct btf *btf);
-> > > >  u32 btf_nr_types(const struct btf *btf);
-> > > > +u32 btf_type_cnt(const struct btf *btf);
-> > > >  struct btf *btf_base_btf(const struct btf *btf);
-> > > >  bool btf_member_is_reg_int(const struct btf *btf, const struct btf=
-_type *s,
-> > > >                            const struct btf_member *m,
-> > > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > > index 5cd1c7a23848..6d0d58989640 100644
-> > > > --- a/kernel/bpf/btf.c
-> > > > +++ b/kernel/bpf/btf.c
-> > > > @@ -262,6 +262,7 @@ struct btf {
-> > > >         u32 data_size;
-> > > >         refcount_t refcnt;
-> > > >         u32 id;
-> > > > +       u32 nr_types_sorted;
-> > > >         struct rcu_head rcu;
-> > > >         struct btf_kfunc_set_tab *kfunc_set_tab;
-> > > >         struct btf_id_dtor_kfunc_tab *dtor_kfunc_tab;
-> > > > @@ -548,23 +549,102 @@ u32 btf_nr_types(const struct btf *btf)
-> > > >         return total;
-> > > >  }
-> > > >
-> > > > -s32 btf_find_by_name_kind(const struct btf *btf, const char *name,=
- u8 kind)
-> > > > +u32 btf_type_cnt(const struct btf *btf)
-> > > > +{
-> > > > +       return btf->start_id + btf->nr_types;
-> > > > +}
-> > > > +
-> > > > +static s32 btf_find_by_name_bsearch(const struct btf *btf, const c=
-har *name,
-> > > > +                                   int *start, int *end)
-> > > >  {
-> > > >         const struct btf_type *t;
-> > > > -       const char *tname;
-> > > > -       u32 i, total;
-> > > > +       const char *name_buf;
-> > > > +       int low, low_start, mid, high, high_end;
-> > > > +       int ret, start_id;
-> > > > +
-> > > > +       start_id =3D btf->base_btf ? btf->start_id : 1;
-> > > > +       low_start =3D low =3D start_id;
-> > > > +       high_end =3D high =3D start_id + btf->nr_types_sorted - 1;
-> > > > +
-> > > > +       while (low <=3D high) {
-> > > > +               mid =3D low + (high - low) / 2;
-> > > > +               t =3D btf_type_by_id(btf, mid);
-> > > > +               name_buf =3D btf_name_by_offset(btf, t->name_off);
-> > > > +               ret =3D strcmp(name, name_buf);
-> > > > +               if (ret > 0)
-> > > > +                       low =3D mid + 1;
-> > > > +               else if (ret < 0)
-> > > > +                       high =3D mid - 1;
-> > > > +               else
-> > > > +                       break;
-> > > > +       }
-> > > >
-> > > > -       total =3D btf_nr_types(btf);
-> > > > -       for (i =3D 1; i < total; i++) {
-> > > > -               t =3D btf_type_by_id(btf, i);
-> > > > -               if (BTF_INFO_KIND(t->info) !=3D kind)
-> > > > -                       continue;
-> > > > +       if (low > high)
-> > > > +               return -ESRCH;
-> > > >
-> > > > -               tname =3D btf_name_by_offset(btf, t->name_off);
-> > > > -               if (!strcmp(tname, name))
-> > > > -                       return i;
-> > > > +       if (start) {
-> > > > +               low =3D mid;
-> > > > +               while (low > low_start) {
-> > > > +                       t =3D btf_type_by_id(btf, low-1);
-> > > > +                       name_buf =3D btf_name_by_offset(btf, t->nam=
-e_off);
-> > > > +                       if (strcmp(name, name_buf))
-> > > > +                               break;
-> > > > +                       low--;
-> > > > +               }
-> > > > +               *start =3D low;
-> > > > +       }
-> > > > +
-> > > > +       if (end) {
-> > > > +               high =3D mid;
-> > > > +               while (high < high_end) {
-> > > > +                       t =3D btf_type_by_id(btf, high+1);
-> > > > +                       name_buf =3D btf_name_by_offset(btf, t->nam=
-e_off);
-> > > > +                       if (strcmp(name, name_buf))
-> > > > +                               break;
-> > > > +                       high++;
-> > > > +               }
-> > > > +               *end =3D high;
-> > > >         }
-> > > >
-> > >
-> > > this is an overcomplicated implementation, you need something like
-> > > find_linfo() implementation in kernel/bpf/log.c. Note how much shorte=
-r
-> > > and leaner it is.
-> > >
-> > > I also don't think you need to return `end`. Given you always start
-> > > from start and linearly scan forward, you just need to make sure that
-> > > you never go beyond the BTF type array, for which you can use
-> > > btf_type_cnt(). So no need for doing this linear scan twice.
+> > > Am I understanding in a correct way? Now, I'm totally fine with thi=
+s great idea!
+> > Yes, I think so.
 > >
-> > Thank you, but the situation here is different. When
-> > the btf file is sorted, the btf_types with a name are
-> > placed at the beginning of the file, while those without
-> > a name are placed at the end. Additionally, if there
-> > are multiple btf_types with the same name in a btf file,
-> > they will have different kinds, and these btf_types with
-> > the same name will be grouped together. For example, in
-> > the following case:
-> >
-> > ...
-> > [13561] FUNC 'bp_constraints_unlock' type_id=3D105264 linkage=3Dstatic
-> > [13562] STRUCT 'bp_cpuinfo' size=3D20 vlen=3D2
-> >         'cpu_pinned' type_id=3D66670 bits_offset=3D0
-> >         'tsk_pinned' type_id=3D13568 bits_offset=3D32
-> > [13563] VAR 'bp_cpuinfo' type_id=3D103076, linkage=3Dstatic
-> > [13564] FUNC 'bp_init_aperfmperf' type_id=3D70013 linkage=3Dstatic
-> > [13565] STRUCT 'bp_patching_desc' size=3D16 vlen=3D3
-> > ...
-> >
-> > Both 13562 and 13563 have the name 'bp_cpuinfo', but their
-> > kinds are different. Therefore, when using the btf_find_by_name_bsearch
-> > function to find the btf_type named 'bp_cpuinfo', the start
-> > parameter will be set to 11562 and the end parameter will
-> > be set to 11563. We can then check their kind to obtain the
-> > correct btf_type.
->
-> I understand that, thank you. find_linfo() shows an example of binary
-> search to find the rightmost item that's <=3D than requested search key.
-> You have a similar problem here. You need to find the leftmost item
-> that's equal to the search key.
+> > The sockops prog can choose to ignore any BPF_SOCK_OPS_TS_*_CB. The a=
+re only 3:
+> > SCHED, SND, and ACK. If the hwtstamp is available from a NIC, I think=
+ it would
+> > be quite wasteful to throw it away. ACK can be controlled by the
+> > TCP_SKB_CB(skb)->bpf_txstamp_ack.
+> =
 
-Thank you, I will modify it.
+> Right, let me try this:)
+> =
 
->
-> Both of these problems are solved by binary search without any extra
-> post-processing and linear scans.
+> > Going back to my earlier bpf_setsockopt(SOL_SOCKET, BPF_TX_TIMESTAMPI=
+NG)
+> > comment. I think it may as well go back to use the "u8
+> > bpf_sock_ops_cb_flags;" and use the bpf_sock_ops_cb_flags_set() helpe=
+r to
+> > enable/disable the timestamp related callback hook. May be add one
+> > BPF_SOCK_OPS_TX_TIMESTAMPING_CB_FLAG.
+> =
 
-Thank you, I get it.
+> bpf_sock_ops_cb_flags this flag is only used in TCP condition, right?
+> If that is so, it cannot be suitable for UDP.
+> =
 
->
-> >
-> > >
-> > > > +       return mid;
-> > > > +}
-> > > > +
-> > > > +s32 btf_find_by_name_kind(const struct btf *btf, const char *name,=
- u8 kind)
-> > > > +{
-> > > > +       const struct btf_type *t;
-> > > > +       const char *tname;
-> > > > +       int start, end;
-> > > > +       s32 id, total;
-> > > > +
-> > > > +       do {
-> > > > +               if (btf->nr_types_sorted) {
-> > > > +                       /* binary search */
-> > > > +                       id =3D btf_find_by_name_bsearch(btf, name, =
-&start, &end);
-> > > > +                       if (id > 0) {
-> > > > +                               while (start <=3D end) {
-> > > > +                                       t =3D btf_type_by_id(btf, s=
-tart);
-> > > > +                                       if (BTF_INFO_KIND(t->info) =
-=3D=3D kind)
-> > > > +                                               return start;
-> > > > +                                       start++;
-> > > > +                               }
-> > > > +                       }
-> > > > +               } else {
-> > > > +                       /* linear search */
-> > > > +                       total =3D btf_type_cnt(btf);
-> > > > +                       for (id =3D btf->base_btf ? btf->start_id :=
- 1;
-> > > > +                               id < total; id++) {
-> > > > +                               t =3D btf_type_by_id(btf, id);
-> > > > +                               if (BTF_INFO_KIND(t->info) !=3D kin=
-d)
-> > > > +                                       continue;
-> > > > +
-> > > > +                               tname =3D btf_name_by_offset(btf, t=
-->name_off);
-> > > > +                               if (!strcmp(tname, name))
-> > > > +                                       return id;
-> > > > +                       }
-> > > > +               }
-> > > > +               btf =3D btf->base_btf;
-> > > > +       } while (btf);
-> > > > +
-> > > >         return -ENOENT;
-> > > >  }
-> > > >
-> > > > @@ -6141,6 +6221,53 @@ int get_kern_ctx_btf_id(struct bpf_verifier_=
-log *log, enum bpf_prog_type prog_ty
-> > > >         return kctx_type_id;
-> > > >  }
-> > > >
-> > > > +static int btf_check_sort(struct btf *btf, int start_id)
-> > > > +{
-> > > > +       int i, n, nr_names =3D 0;
-> > > > +
-> > > > +       n =3D btf_nr_types(btf);
-> > > > +       for (i =3D start_id; i < n; i++) {
-> > > > +               const struct btf_type *t;
-> > > > +               const char *name;
-> > > > +
-> > > > +               t =3D btf_type_by_id(btf, i);
-> > > > +               if (!t)
-> > > > +                       return -EINVAL;
-> > > > +
-> > > > +               name =3D btf_str_by_offset(btf, t->name_off);
-> > > > +               if (!str_is_empty(name))
-> > > > +                       nr_names++;
-> > > > +       }
-> > > > +
-> > >
-> > > this loop makes zero sense to me, what are you trying to achieve with
-> > > it and why?
-> >
-> > As previously mentioned, if the btf file is sorted, the
-> > btf_type with a name will be placed at the beginning of
-> > the file in ascending order, while those without a name
-> > will be placed at the end. Therefore, we can verify if
-> > the btf file is sorted by following these steps:
-> >
-> > Step 1: Count the number of btf_types with a name and
-> >              store it as nr_names.
-> >
-> > Step 2: Inspect the first nr_names btf_types. If any of
-> >             the following cases occur, it indicates that the
-> >             btf file is not sorted:
-> >            1. A btf_type without a name is encountered.
-> >            2. The name of the current btf_type is greater  than
-> >                the name of the next btf_type.
->
-> This is convoluted and unnecessary. Just go over all items and
-> validate that each pair maintains the sorting criteria.
+> I'm thinking of this solution:
+> 1) adding a new flag in SOF_TIMESTAMPING_OPT_BPF flag (in
+> include/uapi/linux/net_tstamp.h) which can be used by sk->sk_tsflags
+> 2) flags =3D   SOF_TIMESTAMPING_OPT_BPF;    bpf_setsockopt(skops,
+> SOL_SOCKET, SO_TIMESTAMPING, &flags, sizeof(flags));
+> 3) test if sk->sk_tsflags has this new flag in tcp_tx_timestamp() or
+> in udp_sendmsg()
+> ...
+> =
 
-Thank you, I will modify it.
-
->
 > >
-> > >
-> > > > +       for (i =3D 0; i < nr_names - 1; i++) {
-> > >
-> > > just start from start_id + 1, all the way to n, and check that sortin=
-g
-> > > invariant holds for all items
-> > >
-> > > > +               const struct btf_type *t1, *t2;
-> > > > +               const char *s1, *s2;
-> > > > +
-> > > > +               t1 =3D btf_type_by_id(btf, start_id + i);
-> > > > +               if (!t1)
-> > > > +                       return -EINVAL;
-> > > > +
-> > > > +               s1 =3D btf_str_by_offset(btf, t1->name_off);
-> > > > +               if (str_is_empty(s1))
-> > > > +                       goto out;
-> > > > +
-> > > > +               t2 =3D btf_type_by_id(btf, start_id + i + 1);
-> > > > +               if (!t2)
-> > > > +                       return -EINVAL;
-> > > > +
-> > > > +               s2 =3D btf_str_by_offset(btf, t2->name_off);
-> > > > +               if (str_is_empty(s2))
-> > > > +                       goto out;
-> > > > +
-> > > > +               if (strcmp(s1, s2) > 0)
-> > > > +                       goto out;
-> > > > +       }
-> > > > +
-> > > > +       btf->nr_types_sorted =3D nr_names;
-> > > > +out:
-> > > > +       return 0;
-> > > > +}
-> > >
-> > > [...]
+> > For tx, one new hook should be at the sendmsg and should be around
+> > tcp_tx_timestamp (?) for tcp. Another hook is __skb_tstamp_tx() which=
+ should be
+> =
+
+> I think there are two points we're supposed to record:
+> 1) the moment tcp/udp_sendmsg() is triggered. It represents the syscall=
+ time.
+> 2) another point in tcp_tx_timestamp(). It represents the timestamp of
+> the last skb in this sendmsg() call.
+> Users may happen to send a big packet.
+
+Err on the side of fewer measurement points. It's always possible to
+add more later, but not possible to remove them (depending on whether
+BPF infra is ABI).
+
+Overall great suggestion. Thanks a lot for sharing your BPF expertise
+on this, Martin.
+
+On using the raw seqno: this data is accessible to anyone root in
+namespace (ns_capable) using packet sockets, so as long as it does not
+open to more than that, it is logically equivalent to the current
+setting.
+
+With seqno the BPF program has to be careful that the same seqno can
+be retransmitted, so for instance seeing an ACK before a (second) SND
+must be anticipated. That is true for SO_TIMESTAMPING today too.
+
+For datagrams (UDP as well as RAW and many non IP protocols), an
+alternative still needs to be found.
 
