@@ -1,170 +1,148 @@
-Return-Path: <bpf+bounces-43618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC3CF9B718C
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 02:18:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD93C9B718E
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 02:19:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13F7BB20EDB
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 01:17:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE03F1C20FD1
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 01:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A942347C7;
-	Thu, 31 Oct 2024 01:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E464642D;
+	Thu, 31 Oct 2024 01:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hawWaENe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mDg4PJzd"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E11022083
-	for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 01:17:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB3C4C80;
+	Thu, 31 Oct 2024 01:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730337472; cv=none; b=UiDvWBx/ROZGDAnRgkBgTgs61kbtJHSv3OVyRiXxlaCuOdJz8InoSKCLMWTPI4NiTbI56pQ1gDrgjfiVdOC7QFalWlgwIY/GbQnhGX+6Ea86y2QgGvgdDdUlkijteXbuEijOFehmmJSOzsErZyuzVxCPOvw4eP4rqnLdJVycfN4=
+	t=1730337542; cv=none; b=iT3QYgsAXdZXTen++41X50ID5RyavWYmhyzZXPKoiYWovLetck4fzAmKFhWHKX7Dm6BUJOwLWixy6QxyUYMxhW8CI49qzbRSNzIqwjHAz/ZupIVMKBY97Fzrd3VLtrYSFq6wmbNqCG2OoVElUopNly6UWTEnYuApKuZkxWZAF6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730337472; c=relaxed/simple;
-	bh=xaaDaF/m7vHxyN8IGGUdxhbDxH9D+uwHM+N6bJ61w0Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QKcKOrbgk0h2iU5L4auROk12sf9FCoPuqEuT+JO4az8IZpOl08ngrPhV35yJY4lZh6AsKrybl7Wnuxo2WQthh4FmcEWTa/YmtR2fBs1s81vQ6Ul1XI4Np39BkoymBOIS88XUOb5v5ZFT3kS8+UrRn5+Fz9aHiCV5SmIhpTpu5QI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hawWaENe; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e56f78a9-cbda-4b80-8b55-c16b36e4efb1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730337467;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZBy8Ng1n+ziBeL2KTfh1+oSsW7siKHO3HDf2bItEBNc=;
-	b=hawWaENe36fC7kbQTHjlL71Xtc20RWK0S25WZPgnWWVxEgp0CgrX5hNPgkaZwvtG9lc9YP
-	PaeAOxGvmItJCgQaSn/Tgfz3WjM3qOs1VD9sC7OpGKxoovgiwfC947vlLMbdik+ZtpFVY1
-	8KWxphGh5ILGpvg43rdsAJeoW/yPGTo=
-Date: Wed, 30 Oct 2024 18:17:39 -0700
+	s=arc-20240116; t=1730337542; c=relaxed/simple;
+	bh=k6H+CiBEJWddN02hdN0mo06Ec/Er8fguVn5cPFWrTyE=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=fr5mLTcXvMgxTaDl4VuhtRW0t7ifCmyZdRY3S3LTBqIkdjoP8w2Ew5525eF9rJu8/J6nan8FeIde6cyLEM/IO8RZzFKAO0KL+jBqcjPILN2gz/fO2IiaFR3yEavXO6+aWxecCCDDdqOqPVE46V3c1W26sCuRct6wCWsLyvv9FpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mDg4PJzd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E3FEC4CECE;
+	Thu, 31 Oct 2024 01:18:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730337541;
+	bh=k6H+CiBEJWddN02hdN0mo06Ec/Er8fguVn5cPFWrTyE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=mDg4PJzdtOtjUR3WsftvwH4KB5eO0CKN6FDp6lq4Tj+Z0uwKUIlQ+WW3yy2drijwS
+	 zTcebee4TmLSLhvTDeh1g0+O/xGWUtWMnI30LnwTuhbF6I+h3iA30h5ac2IjMPHNmp
+	 425sD+fPKmTI04Kw2TKo9oolPguB6Wq2dzxNtupzXOxmZEOSyPc7qYIDYqaC0y0IwA
+	 xX9EV8ShzI47iEOzNVw5nxt79FLrsCxxd8TVgbpaHnP7bkEgelxWNOQfdwM9oFz9JH
+	 jI73jIUbbrMK9LpQhvrsAPKlPeROh7aBP8fdm9uwghY0q7MD/QWKGuQ6Ui0vMkaMD0
+	 Dv1cC48tFrABQ==
+Date: Thu, 31 Oct 2024 10:18:53 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Will Deacon <will@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Alan Maguire
+ <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>,
+ linux-arch@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao
+ <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH v18 01/17] fgraph: Pass ftrace_regs to entryfunc
+Message-Id: <20241031101853.898b866a21732350b5f02614@kernel.org>
+In-Reply-To: <20241028152512.GB2484@willie-the-truck>
+References: <172991731968.443985.4558065903004844780.stgit@devnote2>
+	<172991733069.443985.15154246733356205391.stgit@devnote2>
+	<20241028152512.GB2484@willie-the-truck>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH net-next v3 10/14] net-timestamp: add basic support with
- tskey offset
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
- willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com,
- bpf@vger.kernel.org, netdev@vger.kernel.org,
- Jason Xing <kernelxing@tencent.com>
-References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
- <20241028110535.82999-11-kerneljasonxing@gmail.com>
- <8fd16b77-b8e8-492c-ab69-8192cafa9fc7@linux.dev>
- <CAL+tcoBNiZQr=yk_fb9eoKX1_Nr4LuDaa1kkLGbdnc=8JNKnNg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <CAL+tcoBNiZQr=yk_fb9eoKX1_Nr4LuDaa1kkLGbdnc=8JNKnNg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 10/29/24 11:50 PM, Jason Xing wrote:
-> On Wed, Oct 30, 2024 at 1:42 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 10/28/24 4:05 AM, Jason Xing wrote:
->>> +/* Used to track the tskey for bpf extension
->>> + *
->>> + * @sk_tskey: bpf extension can use it only when no application uses.
->>> + *            Application can use it directly regardless of bpf extension.
->>> + *
->>> + * There are three strategies:
->>> + * 1) If we've already set through setsockopt() and here we're going to set
->>> + *    OPT_ID for bpf use, we will not re-initialize the @sk_tskey and will
->>> + *    keep the record of delta between the current "key" and previous key.
->>> + * 2) If we've already set through bpf_setsockopt() and here we're going to
->>> + *    set for application use, we will record the delta first and then
->>> + *    override/initialize the @sk_tskey.
->>> + * 3) other cases, which means only either of them takes effect, so initialize
->>> + *    everything simplely.
->>> + */
->>> +static long int sock_calculate_tskey_offset(struct sock *sk, int val, int bpf_type)
->>> +{
->>> +     u32 tskey;
->>> +
->>> +     if (sk_is_tcp(sk)) {
->>> +             if ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_LISTEN))
->>> +                     return -EINVAL;
->>> +
->>> +             if (val & SOF_TIMESTAMPING_OPT_ID_TCP)
->>> +                     tskey = tcp_sk(sk)->write_seq;
->>> +             else
->>> +                     tskey = tcp_sk(sk)->snd_una;
->>> +     } else {
->>> +             tskey = 0;
->>> +     }
->>> +
->>> +     if (bpf_type && (sk->sk_tsflags & SOF_TIMESTAMPING_OPT_ID)) {
->>> +             sk->sk_tskey_bpf_offset = tskey - atomic_read(&sk->sk_tskey);
->>> +             return 0;
->>> +     } else if (!bpf_type && (sk->sk_tsflags_bpf & SOF_TIMESTAMPING_OPT_ID)) {
->>> +             sk->sk_tskey_bpf_offset = atomic_read(&sk->sk_tskey) - tskey;
->>> +     } else {
->>> +             sk->sk_tskey_bpf_offset = 0;
->>> +     }
->>> +
->>> +     return tskey;
->>> +}
->>
->> Before diving into this route, the bpf prog can peek into the tcp seq no in the
->> skb. It can also look at the sk->sk_tskey for UDP socket. Can you explain why
->> those are not enough information for the bpf prog?
+On Mon, 28 Oct 2024 15:25:13 +0000
+Will Deacon <will@kernel.org> wrote:
+
+> On Sat, Oct 26, 2024 at 01:35:30PM +0900, Masami Hiramatsu (Google) wrote:
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Pass ftrace_regs to the fgraph_ops::entryfunc(). If ftrace_regs is not
+> > available, it passes a NULL instead. User callback function can access
+> > some registers (including return address) via this ftrace_regs.
+> > 
+> > Note that the ftrace_regs can be NULL when the arch does NOT define:
+> > HAVE_DYNAMIC_FTRACE_WITH_ARGS or HAVE_DYNAMIC_FTRACE_WITH_REGS.
+> > More specifically, if HAVE_DYNAMIC_FTRACE_WITH_REGS is defined but
+> > not the HAVE_DYNAMIC_FTRACE_WITH_ARGS, and the ftrace ops used to
+> > register the function callback does not set FTRACE_OPS_FL_SAVE_REGS.
+> > In this case, ftrace_regs can be NULL in user callback.
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Huacai Chen <chenhuacai@kernel.org>
+> > Cc: WANG Xuerui <kernel@xen0n.name>
+> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > Cc: Nicholas Piggin <npiggin@gmail.com>
+> > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> > Cc: Naveen N Rao <naveen@kernel.org>
+> > Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
+> > Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> > Cc: Albert Ou <aou@eecs.berkeley.edu>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: x86@kernel.org
+> > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > 
+> > ---
+> >  Changes in v18:
+> >   - Remove unclear comment about `regs->fp` access on arm64.
+> >  Changes in v16:
+> >   - Add a note when the ftrace_regs can be NULL.
+> >   - Update against for the latest kernel.
+> >  Changes in v11:
+> >   - Update for the latest for-next branch.
+> >  Changes in v8:
+> >   - Just pass ftrace_regs to the handler instead of adding a new
+> >     entryregfunc.
+> >   - Update riscv ftrace_graph_func().
+> >  Changes in v3:
+> >   - Update for new multiple fgraph.
+> > ---
+> >  arch/arm64/kernel/ftrace.c               |   15 ++++++++-
 > 
-> Well, it does make sense. It seems we don't need to implement tskey
-> for this bpf feature...
+> For the arm64 bits:
 > 
-> Due to lack of enough knowledge of bpf, could you provide more hints
-> that I can follow to write a bpf program to print more information
-> from the skb? Like in the last patch of this series, in
-> tools/testing/selftests/bpf/prog_tests/so_timestamping.c, do we have a
-> feasible way to do that?
+> Acked-by: Will Deacon <will@kernel.org>
+> 
 
-The bpf-prog@sendmsg() will be run to capture a timestamp for sendmsg().
-When running the bpf-prog@sendmsg(), the skb can be set to the "struct 
-bpf_sock_ops_kern sock_ops;" which is passed to the sockops prog. Take a look at 
-bpf_skops_write_hdr_opt().
+Thank you for ack for arm64!
 
-bpf prog cannot directly access the skops->skb now. It is because the sockops 
-prog sees the uapi "struct bpf_sock_ops" instead of "struct 
-bpf_sock_ops(_kern)". The conversion is done in sock_ops_convert_ctx_access. It 
-is an old way before BTF. I don't want to extend the uapi "struct bpf_sock_ops".
+> Will
 
-Instead, use bpf_cast_to_kern_ctx((struct bpf_sock_ops *)skops_ctx) to get a 
-trusted "struct bpf_sock_ops(_kern) *skops" pointer. Then it can access the 
-skops->skb. afaik, the tcb->seq should be available already during sendmsg. it 
-should be able to get it from TCP_SKB_CB(skb)->seq with the bpf_core_cast. Take 
-a look at the existing examples of bpf_core_cast.
 
-The same goes for the skb->data. It can use the bpf_dynptr_from_skb(). It is not 
-available to skops program now but should be easy to expose.
-
-The bpf prog wants to calculate the delay between [sendmsg, SCHED], [SCHED, 
-SND], [SND, ACK]. It is why (at least in my mental model) a key is needed to 
-co-relate the sendmsg, SCHED, SND, and ACK timestamp. The tcp seqno could be 
-served as that key.
-
-All that said, while looking at tcp_tx_timestamp() again, there is always 
-"shinfo->tskey = TCP_SKB_CB(skb)->seq + skb->len - 1;". shinfo->tskey can be 
-used directly as-is by the bpf prog. I think now I am missing why the bpf prog 
-needs the sk_tskey in the sk?
-
-In the bpf prog, when the SCHED/SND/ACK timestamp comes back, it has to find the 
-earlier sendmsg timestamp. One option is to store the earlier sendmsg timestamp 
-at the bpf map key-ed by seqno or the shinfo's tskey. Storing in a bpf map 
-key-ed by seqno/tskey is probably what the selftest should do. In the future, we 
-can consider allowing the rbtree in the bpf sk local storage for searching 
-seqno. There is shinfo's hwtstamp that can be used also if there is a need.
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
