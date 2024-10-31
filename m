@@ -1,280 +1,176 @@
-Return-Path: <bpf+bounces-43662-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43663-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AF659B8036
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 17:35:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E67E9B805D
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 17:40:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FCA7B21B4E
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 16:35:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51DAA1C21C65
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 16:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8611BC092;
-	Thu, 31 Oct 2024 16:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF201BDA87;
+	Thu, 31 Oct 2024 16:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ETAoXiwu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dNwZNBA8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6001A76D1;
-	Thu, 31 Oct 2024 16:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AFAC1BBBE5
+	for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 16:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730392527; cv=none; b=TipWJ0nxaFwri2GELdQIIxHX02FH0g7na/RkxSU566BFHFYjzJawzjSnKKot4BwTfVGDn860cMX8p4O5ihszS85kUOFFq8HtQ/YtNBsf7/iCUM3yfj0ObQC+wN+bJydlUMxOruGG7YmoTBD6eKVFgcy1vh9YYn5qyjmTE/GgAA4=
+	t=1730392795; cv=none; b=s/ufbOhD27B0vPxLjrak9Hiii5TKBJ7qsnCWuwR4NiENEWmy2fe94Z2SVP/VMfnaz3hbwV7hRD4xqU+fUMifw+CTgZjSbg9u17vaCw8UAA3JnlBC90oFXJk7fWL7ko6K0MbHoJOgtrsHkaIKpIoSJ8ItSsdE/B3JqnZ5pfWjnLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730392527; c=relaxed/simple;
-	bh=y7UPaCjN2pG5bT2k2hZl8m/wpg+0Sw6xm37P4p3ePe8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XfXAyREkMBVcTND5GyXJso6ErKeP5dZMxYcFBg1t4htKp8EFxo30uOBeSY8oa4oX0Qf51tuJO9wR7sQFX0Rt60gvJs+DZ1vIuYIiGzdqFU5ICdU3IkLgA0VYcs2IdNXvYKnRLZFp8GEgv9U+RaaIACdv5DM9AS8Wta11SxlkjRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ETAoXiwu; arc=none smtp.client-ip=209.85.216.50
+	s=arc-20240116; t=1730392795; c=relaxed/simple;
+	bh=oPKcVovIwyv911ES8QytJ8gejHHhjfxglIweyvnQvY8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EtysmqsKab+oAwAEL6OvbDbz/l4aXbu74L89uRwwkoxOyU+Rb3zUvU25R1+PG8wkWZ5TmMdNJd1emrkGHCyBBAo0OhqOg3Qz2zvcL7iVH+ZWKTPpZnfM2BcYzuVTHVBbHMH4A14JMoTaz6+pkZfUqa9EXEVc1YNqTWNxo6XFc+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dNwZNBA8; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2e2bb1efe78so834938a91.1;
-        Thu, 31 Oct 2024 09:35:25 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-7ea8c4ce232so1035874a12.0
+        for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 09:39:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730392524; x=1730997324; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kQZjHPdQc1Js4W5rgZSXXL43yAZqAF4/KkLoJSshr48=;
-        b=ETAoXiwuTWEm9G/S/yfxg8POH+AKyOop1ytRlWyG00AIUcHx814P6RDcToRpdNhC+r
-         DkL9OWHq40f8ZQgwv5lmRw/e0HOxoog0DgipGGK2Tlf7UEAU6FROX0fTym32G4lwzNuh
-         zOr/UXp3hl4hie4Twko9qtwgyxsrZnLUlStcgK+5SnanWuR3UrfLxmBIXJwjr5yL/laL
-         gV1VpTPIMKj0oUJPlz6spxxajt98QAS2dPXBUvtCsy/x+LfuRQnKspA1YkLcjqk2gWE+
-         2MyJ0s0Zs6NJegyElHfelqImBIT0zHRHztIrRdE4V351UV0j61J7TwQ+qquA44K5RCyF
-         mn2g==
+        d=gmail.com; s=20230601; t=1730392792; x=1730997592; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BbLPPJs0YwbZw5OmrEL6Edm1Apus+AFx9oKF0QsVJ24=;
+        b=dNwZNBA8WUa689Hfeci4BGYlwIG08yi0A/gn1JQgsMR51K7at1EsHhXMw/ECx4XGcm
+         RJdeYA78oTpZcqlnycqYvDLpPxVnhIATtbhvym+/3MabsacvIH50TWfn0Lds+7RCaOGw
+         LC5PeZiMMJnG6Bdcpvy51SzhbW+7UCthqh/xc7wBwX6DqNT01cusdcBgc9GSXjmZFmcx
+         XyZTvEWMfpmXJHiWd7iiC95YWB9aWmW/sRjquFQGCT+6GKfhKKXyEcKVASkhm279Vek3
+         GZ+Nvo/iv9wwFsZjuhP9l/qLLOToYALREwvla6fVVejg5c3BWNISqHEAAxtcPKwjIP/4
+         pPeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730392524; x=1730997324;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kQZjHPdQc1Js4W5rgZSXXL43yAZqAF4/KkLoJSshr48=;
-        b=rVbS+vaRXtrwYU5HIRrFVfplkVhZBXvpQnha5BL4dLA8K5WhN36i1nbkpZlRW+vSsG
-         sRA1ojknR5tuJLfNiFJ6n/KlrHWU1AnLanx8t/MZ/vr9JgyjCITGVYtMf0gThItTQxt3
-         orfcMyy2qcZLl084FcUO1Ij4zTWZX98q+FrdMxFeS9SLbswRECEILojG+RWlZE6Hw+5E
-         XW7NAv64BXjumA5O3FHyb0zjuwDIyU/JfQGEisgDTYqxNbKRUcaUqw0Q0C6Nlqt1tH5e
-         CNF+cpcqGl609gLSE7EUC8nfa6PDgWFiZYH0HN9S0VjlLZ2QDj7s2KEk3a51oCTqEV9S
-         xIIg==
-X-Forwarded-Encrypted: i=1; AJvYcCUATeNTBhm7G1kreaaHrn1W7V7Uj8M8RwSsCcwTupmuYywnaiKX64v9WWhXT7MzDqZswlk=@vger.kernel.org, AJvYcCVRneylxd7CXo5DXedgdysWjoUlXN1YyzGDGxHGxq+joeDDdKetDHViujPDxRwVhLgw51u27tFXu0TL5OLb@vger.kernel.org
-X-Gm-Message-State: AOJu0YwnKNmWXKjropaSn1HrMJQsj2JgKTGa60XwVPc/90I6TAYhRCBs
-	gT7QBf2y25xAbX+q0C060m6ljrr9Yrc9OEgraylzkvHN7rijVIknbcJCKtzUn44UjqZD2z85Snt
-	tskkWyWqkrfPoPCAwklVoQoe8Vmk=
-X-Google-Smtp-Source: AGHT+IGct5Z81LnXrpCq5iaq/LuLEXgtvp+LltQofm6TuFzJDBxpvxfF/+6rACkNAg6nnWucRfqkWm2J/39zXua2elY=
-X-Received: by 2002:a17:90b:4f44:b0:2e2:c2b0:d03e with SMTP id
- 98e67ed59e1d1-2e93e0768damr4782503a91.5.1730392524531; Thu, 31 Oct 2024
- 09:35:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1730392792; x=1730997592;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BbLPPJs0YwbZw5OmrEL6Edm1Apus+AFx9oKF0QsVJ24=;
+        b=lCD2CVe61dlMz9byfbZyII8jgUP5CAVTCmq95xGJo5uxs6MaVdhY+clBGDh3E91gR0
+         ve4cL+s0UxkpnuXQvM9Vd9F2Xs0jz0zBMLy1vBhK6+YCHAYZy4A3JlyxB1vVrRMoqfvs
+         mUCPDBmxEhai10dY8g+dXybuyfdYUnIojxCyj/z/vLZ7aGYO5Pg4rBIDQ1zIBhdfuSdv
+         36sAGPFG9GeY94ZUQ0GRYxunX/99MWotY0nKRQ9RkuRptKAkQ6YrlW/qtfcA1uH6N0XS
+         jQPXdzeO07AaYV5pYJ/c5+Tpqa9wsfDwlLDJrjzSOsL4fJjy2naalnxP4gXWwLClSJWI
+         vZ/A==
+X-Gm-Message-State: AOJu0Yxd5/e/h+0vUW+54klo7/06obyAoLXrOmgvIc802EbY3BvDjTqJ
+	TWW3bHvWKkLZZN4iqiC3WXYRN/cy7rVcFl6TSjCjPZQF3BQ39sE=
+X-Google-Smtp-Source: AGHT+IH0NlM7UcnAmTOEAkDBTFYJX8xnUc75SH/wTrqvQ0LZT+0MiTbqezA5A3/kMs4+XQZ4r9jzLQ==
+X-Received: by 2002:a17:90b:4d06:b0:2e2:a2f0:e199 with SMTP id 98e67ed59e1d1-2e94c29ec6fmr726615a91.8.1730392792163;
+        Thu, 31 Oct 2024 09:39:52 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e93db18717sm1351559a91.35.2024.10.31.09.39.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Oct 2024 09:39:51 -0700 (PDT)
+Date: Thu, 31 Oct 2024 09:39:50 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Zijian Zhang <zijianzhang@bytedance.com>
+Cc: bpf@vger.kernel.org, borisp@nvidia.com, john.fastabend@gmail.com,
+	kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
+	pabeni@redhat.com, horms@kernel.org, daniel@iogearbox.net,
+	ast@kernel.org, cong.wang@bytedance.com
+Subject: Re: [PATCH bpf] bpf: Add sk_is_inet check in tls_sw_has_ctx_tx/rx
+Message-ID: <ZyOy1lbttxzP87KQ@mini-arch>
+References: <20241029202830.3121552-1-zijianzhang@bytedance.com>
+ <ZyFquswggZxKCYGH@mini-arch>
+ <abc69614-869d-42d8-be8e-b4573029611b@bytedance.com>
+ <ZyF8LA6v9iAuxNXi@mini-arch>
+ <08853817-921b-4595-a7d5-67007bf21500@bytedance.com>
+ <ZyJS5UCJu1YlsrJr@mini-arch>
+ <0e609f5d-ebee-46f8-b3c6-69672495b4a4@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241026154629.593041-1-mathieu.desnoyers@efficios.com>
- <20241026154629.593041-3-mathieu.desnoyers@efficios.com> <CAEf4BzaD24V=Z6T3wNh27pv9OV_WaLNQeAPbUANQJYN0h5zHKw@mail.gmail.com>
- <7ef1d403-e6ca-4dee-85c6-e32446e52aa7@efficios.com> <b8e01a00-0405-41af-8316-9cfa28e698db@efficios.com>
-In-Reply-To: <b8e01a00-0405-41af-8316-9cfa28e698db@efficios.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 31 Oct 2024 09:35:12 -0700
-Message-ID: <CAEf4BzYrZZH7uTuBG=feL+AORgxqtAKhG3hJ=vUJvQd1xSOe0Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 3/3] tracing: Fix syscall tracepoint use-after-free
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org, 
-	Michael Jeanson <mjeanson@efficios.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	"Paul E . McKenney" <paulmck@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
-	bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>, 
-	Jordan Rife <jrife@google.com>, syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0e609f5d-ebee-46f8-b3c6-69672495b4a4@bytedance.com>
 
-On Thu, Oct 31, 2024 at 8:44=E2=80=AFAM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> On 2024-10-28 15:19, Mathieu Desnoyers wrote:
-> > On 2024-10-27 21:22, Andrii Nakryiko wrote:
-> >> On Sat, Oct 26, 2024 at 8:48=E2=80=AFAM Mathieu Desnoyers
-> >> <mathieu.desnoyers@efficios.com> wrote:
-> >>>
-> >>> The grace period used internally within tracepoint.c:release_probes()
-> >>> uses call_rcu() to batch waiting for quiescence of old probe arrays,
-> >>> rather than using the tracepoint_synchronize_unregister() which block=
-s
-> >>> while waiting for quiescence.
-> >>>
-> >>> With the introduction of faultable syscall tracepoints, this causes
-> >>> use-after-free issues reproduced with syzkaller.
-> >>>
-> >>> Fix this by using the appropriate call_rcu() or call_rcu_tasks_trace(=
-)
-> >>> before invoking the rcu_free_old_probes callback. This can be chosen
-> >>> using the tracepoint_is_syscall() API.
-> >>>
-> >>> A similar issue exists in bpf use of call_rcu(). Fixing this is left =
-to
-> >>> a separate change.
-> >>>
-> >>> Reported-by: syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com
-> >>> Fixes: a363d27cdbc2 ("tracing: Allow system call tracepoints to
-> >>> handle page faults")
-> >>> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> >>> Cc: Michael Jeanson <mjeanson@efficios.com>
-> >>> Cc: Steven Rostedt <rostedt@goodmis.org>
-> >>> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> >>> Cc: Peter Zijlstra <peterz@infradead.org>
-> >>> Cc: Alexei Starovoitov <ast@kernel.org>
-> >>> Cc: Yonghong Song <yhs@fb.com>
-> >>> Cc: Paul E. McKenney <paulmck@kernel.org>
-> >>> Cc: Ingo Molnar <mingo@redhat.com>
-> >>> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> >>> Cc: Mark Rutland <mark.rutland@arm.com>
-> >>> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> >>> Cc: Namhyung Kim <namhyung@kernel.org>
-> >>> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> >>> Cc: bpf@vger.kernel.org
-> >>> Cc: Joel Fernandes <joel@joelfernandes.org>
-> >>> Cc: Jordan Rife <jrife@google.com>
-> >>> ---
-> >>> Changes since v0:
-> >>> - Introduce tracepoint_call_rcu(),
-> >>> - Fix bpf_link_free() use of call_rcu as well.
-> >>>
-> >>> Changes since v1:
-> >>> - Use tracepoint_call_rcu() for bpf_prog_put as well.
-> >>>
-> >>> Changes since v2:
-> >>> - Do not cover bpf changes in the same commit, let bpf developers
-> >>>    implement it.
-> >>> ---
-> >>>   kernel/tracepoint.c | 11 +++++++----
-> >>>   1 file changed, 7 insertions(+), 4 deletions(-)
-> >>>
-> >>> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-> >>> index 5658dc92f5b5..47569fb06596 100644
-> >>> --- a/kernel/tracepoint.c
-> >>> +++ b/kernel/tracepoint.c
-> >>> @@ -106,13 +106,16 @@ static void rcu_free_old_probes(struct rcu_head
-> >>> *head)
-> >>>          kfree(container_of(head, struct tp_probes, rcu));
-> >>>   }
-> >>>
-> >>> -static inline void release_probes(struct tracepoint_func *old)
-> >>> +static inline void release_probes(struct tracepoint *tp, struct
-> >>> tracepoint_func *old)
-> >>>   {
-> >>>          if (old) {
-> >>>                  struct tp_probes *tp_probes =3D container_of(old,
-> >>>                          struct tp_probes, probes[0]);
-> >>>
-> >>> -               call_rcu(&tp_probes->rcu, rcu_free_old_probes);
-> >>> +               if (tracepoint_is_syscall(tp))
-> >>> +                       call_rcu_tasks_trace(&tp_probes->rcu,
-> >>> rcu_free_old_probes);
-> >>
-> >> should this be call_rcu_tasks_trace() -> call_rcu() chain instead of
-> >> just call_rcu_tasks_trace()? While currently call_rcu_tasks_trace()
-> >> implies RCU GP (as evidenced by rcu_trace_implies_rcu_gp() being
-> >> hardcoded right now to returning true), this might not always be the
-> >> case in the future, so it's best to have a guarantee that regardless
-> >> of sleepable or not, we'll always have have RCU GP, and for sleepable
-> >> tracepoint *also* RCU Tasks Trace GP.
-> >
-> > Given that faultable tracepoints only use RCU tasks trace for the
-> > read-side and do not rely on preempt disable, I don't see why we would
-> > need to chain both grace periods there ?
->
-> Hi Andrii,
->
-> AFAIU, your question above is rooted in the way bpf does its sleepable
-> program grace periods (chaining RCU tasks trace + RCU GP), e.g.:
->
-> bpf_map_free_mult_rcu_gp
-> bpf_link_defer_dealloc_mult_rcu_gp
->
-> and
->
-> bpf_link_free:
->                  /* schedule BPF link deallocation; if underlying BPF pro=
-gram
->                   * is sleepable, we need to first wait for RCU tasks tra=
-ce
->                   * sync, then go through "classic" RCU grace period
->                   */
->
-> This is introduced in commit 1a80dbcb2db ("bpf: support deferring bpf_lin=
-k dealloc to after RCU grace period")
-> which has a bit more information in the commit message, but what I'm not =
-seeing
-> is an explanation of *why* chaining RCU tasks trace and RCU grace periods=
- is
-> needed for sleepable bpf programs. What am I missing ?
+On 10/30, Zijian Zhang wrote:
+> On 10/30/24 8:38 AM, Stanislav Fomichev wrote:
+> > On 10/29, Zijian Zhang wrote:
+> > > 
+> > > On 10/29/24 5:22 PM, Stanislav Fomichev wrote:
+> > > > On 10/29, Zijian Zhang wrote:
+> > > > > 
+> > > > > 
+> > > > > On 10/29/24 4:07 PM, Stanislav Fomichev wrote:
+> > > > > > On 10/29, zijianzhang@bytedance.com wrote:
+> > > ...
+> > > > > > > diff --git a/include/net/tls.h b/include/net/tls.h
+> > > > > > > index 3a33924db2bc..a65939c7ad61 100644
+> > > > > > > --- a/include/net/tls.h
+> > > > > > > +++ b/include/net/tls.h
+> > > > > > > @@ -390,8 +390,12 @@ tls_offload_ctx_tx(const struct tls_context *tls_ctx)
+> > > > > > >     static inline bool tls_sw_has_ctx_tx(const struct sock *sk)
+> > > > > > >     {
+> > > > > > > -	struct tls_context *ctx = tls_get_ctx(sk);
+> > > > > > > +	struct tls_context *ctx;
+> > > > > > > +
+> > > > > > > +	if (!sk_is_inet(sk))
+> > > > > > > +		return false;
+> > > > > > > +	ctx = tls_get_ctx(sk);
+> > > > > > >     	if (!ctx)
+> > > > > > >     		return false;
+> > > > > > >     	return !!tls_sw_ctx_tx(ctx);
+> > > > > > > @@ -399,8 +403,12 @@ static inline bool tls_sw_has_ctx_tx(const struct sock *sk)
+> > > > > > >     static inline bool tls_sw_has_ctx_rx(const struct sock *sk)
+> > > > > > >     {
+> > > > > > > -	struct tls_context *ctx = tls_get_ctx(sk);
+> > > > > > > +	struct tls_context *ctx;
+> > > > > > > +
+> > > > > > > +	if (!sk_is_inet(sk))
+> > > > > > > +		return false;
+> > > > > > > +	ctx = tls_get_ctx(sk);
+> > > > > > >     	if (!ctx)
+> > > > > > >     		return false;
+> > > > > > >     	return !!tls_sw_ctx_rx(ctx);
+> > > > > > 
+> > > > > > This seems like a strange place to fix it. Why does tls_get_ctx return
+> > > > > > invalid pointer for non-tls/ulp sockets? Shouldn't it be NULL?
+> > > > > > Is sockmap even supposed to work with vsock?
+> > > > > 
+> > > > > Here is my understanding, please correct me if I am wrong :)
+> > > > > ```
+> > > > > static inline struct tls_context *tls_get_ctx(const struct sock *sk)
+> > > > > {
+> > > > > 	const struct inet_connection_sock *icsk = inet_csk(sk);
+> > > > > 	return (__force void *)icsk->icsk_ulp_data;
+> > > > > }
+> > > > > ```
+> > > > > tls_get_ctx assumes the socket passed is icsk_socket. However, unix
+> > > > > and vsock do not have inet_connection_sock, they have unix_sock and
+> > > > > vsock_sock. The offset of icsk_ulp_data are meaningless for them, and
+> > > > > they might point to some other values which might not be NULL.
+> > > > > 
+> > > > > Afaik, sockmap started to support vsock in 634f1a7110b4 ("vsock: support
+> > > > > sockmap"), and support unix in 94531cfcbe79 ("af_unix: Add
+> > > > > unix_stream_proto for sockmap").
+> > > > > 
+> > > > > If the above is correct, I find that using inet_test_bit(IS_ICSK, sk)
+> > > > > instead of sk_is_inet will be more accurate.
+> > > > 
+> > > > Thanks for the context, makes sense. And consolidating this sk_is_inet
+> > > > check inside tls_get_ctx is worse because it gets called outside of
+> > > > sockmap?
+> > > 
+> > > Yes, tls_get_ctx is invoked in multiple locations, and I want to only
+> > > fix sockmap related calls.
+> > 
+> > Sounds convincing. Unless John/Jakub have better suggestions:
+> > 
+> > Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+> 
+> Thanks for the Ack and reviewing!
+> 
+> In order to make it more accurate, I added inet_test_bit(IS_ICSK, sk)
+> check in version2. I just found that sk_is_inet only cannot assure
+> inet_csk is valid. For example, udp_sock does not have inet_connection_sock.
 
-At least one of the reasons are BPF maps that can be used from both
-sleepable and non-sleepable BPF programs *at the same time*. So in BPF
-everything is *at least* protected with rcu_read_lock(), and then
-sleepable-capable things are *additionally* supported by
-rcu_read_tasks_trace(). So on destruction, we chain both RCU GP kinds
-to make sure that all users can't see BPF map/prog/(and soon links).
-
-It might not be strictly necessary in general, but you are right that
-I asked because of how we do this in BPF. Also, in practice, tasks
-trace RCU GP implies RCU GP, so there is no overhead for how we do
-this for BPF maps (and progs? didn't check).
-
-Anyways, this might be fine as is.
-
->
-> As far as tracepoint.c release_probes() is concerned, just waiting for
-> RCU tasks trace before freeing memory of faultable tracepoints is
-> sufficient.
->
-> Thanks,
->
-> Mathieu
->
-> >
-> > Thanks,
-> >
-> > Mathieu
-> >
-> >>
-> >>> +               else
-> >>> +                       call_rcu(&tp_probes->rcu, rcu_free_old_probes=
-);
-> >>>          }
-> >>>   }
-> >>>
-> >>> @@ -334,7 +337,7 @@ static int tracepoint_add_func(struct tracepoint
-> >>> *tp,
-> >>>                  break;
-> >>>          }
-> >>>
-> >>> -       release_probes(old);
-> >>> +       release_probes(tp, old);
-> >>>          return 0;
-> >>>   }
-> >>>
-> >>> @@ -405,7 +408,7 @@ static int tracepoint_remove_func(struct
-> >>> tracepoint *tp,
-> >>>                  WARN_ON_ONCE(1);
-> >>>                  break;
-> >>>          }
-> >>> -       release_probes(old);
-> >>> +       release_probes(tp, old);
-> >>>          return 0;
-> >>>   }
-> >>>
-> >>> --
-> >>> 2.39.5
-> >>>
-> >
->
-> --
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
->
+Instead of testing IS_ICSK bit, will inet_csk_has_ulp helper work?
 
