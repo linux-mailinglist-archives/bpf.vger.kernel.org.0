@@ -1,33 +1,33 @@
-Return-Path: <bpf+bounces-43675-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43676-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 055919B8606
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 23:16:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1EB69B86FB
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 00:19:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 808851F225E5
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 22:16:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B64FE282404
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 23:19:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFA481CEE91;
-	Thu, 31 Oct 2024 22:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07A51E2829;
+	Thu, 31 Oct 2024 23:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="TrjGckgW"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="VK+zG2Aq"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA4722097;
-	Thu, 31 Oct 2024 22:15:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC001CC8B7;
+	Thu, 31 Oct 2024 23:19:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730412961; cv=none; b=pdnCA4FIAJA+9tiIN7vGNNgiG2ZdsP+YQCDcWVnNip/dIZn+Ob3z2obR+jDXNk4o542rjdmLla9AEH+KLlgeE1JwG84YOKR2mNrAY0pXEg7ar3ncOh/TaBCtixwOd4wgTeO7GHjuMoj1smXuvEzq+ATQPjLA64lvz0PvlgFtyg8=
+	t=1730416763; cv=none; b=FvhySmAh0IdLzdvohVwUsnEnS2u9OwhalGW/5btrXLYJnXKb0niUoobNLvohJ+RdDH3ygT++6QqX6K3SKXIhVpIXAtakNlWV0B3AezPC+wJIzI8Th2JKanTNKjEKnn2/dfUoEfEL+KdDzPErerTIgIcH8+fECQrnZysy3vACOX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730412961; c=relaxed/simple;
-	bh=Qsugghxcfd8X2KBuPsAhSzxIY/wk3Ga7LrSxOt/JNBk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=FCJWbMnvEi8jc6+dkRQf20tdcP9yNLWQHhMO1aVXbV6LK0nnkM/Wjziheqd/XsaSlOumyU0ytyOw8KRk80tewqFZmb8o1NH6EleaeJjAU/Ev4lnauSIYqwCzf5I8l6I8Exa3u0OYPmGc4nw7722xGjGN38m7c2ipJkN1l/6C+fs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=TrjGckgW; arc=none smtp.client-ip=213.133.104.62
+	s=arc-20240116; t=1730416763; c=relaxed/simple;
+	bh=6KIDZb+5oaGX4mUbgwRnthLHO4MVo1NCOHZJmN8ZyNE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=mtDc1njCVQ2fFYDGGd9i8vBETKfuiasK8NUBy4GYnRE9ccWXsE6AD0GazJfQ3e/LPDtekZA+VSPiVxfbLkKQ7suDczrz0iQxR4b201ie7oUc1wC0s81vpTZrg1dX2ErG+nT+TtWpXXN4dMrNzeYbbLDj6HS3lj3ysc/qNFEQjBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=VK+zG2Aq; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -35,31 +35,28 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:In-Reply-To:References;
-	bh=9qZb3+0O13WmQ34m1zz0npxtZPmtp6Tr6e9o5B8LN80=; b=TrjGckgWzBIc8YIyMf7caxXQmp
-	BWNkxWneMsAp6HloUrF54I1m5uEaUgLXsGzbc9A4UuvxSxiBu1c00EhYZJorzdFn+t5kN7ROlOuSh
-	pmmfQtFDN78Su/bSuWbuPwazO8oDnlzNBO0RrIQueRfRp1m25TdEljwrYPnB5aBsHPe/qNEp3xRps
-	Kc/zLUIZOGfm/463Xl9dAwpBneETQuep2wRBZBQv4qMZ0YaywWmK7j2BeD3DzE7ZAKb/M+biqVrQf
-	Xspa6g+ttYT52rb1W0PYTv5+MXTVrHhtzRCnS13Cp906JhbNLcvhMO8p6cpnwR+jymwAjfPRCUj+G
-	3C3MGoiQ==;
+	bh=nnUspxdcJ+wye5pTkOAdTuW2AnGlQJx5dahyJ4Afb80=; b=VK+zG2Aqtt6pWna22UOV7lmdbK
+	dekcUmZ6Rp+UHH0JBucV9Y6sc9QP1UgSyMmEvFpHx/QGfJKilrlWqDbo5lZ5aPp4blfxVc9qeQrIv
+	MhtmFtN8YPC5JTsqLNDNTxu7lsi/ZTD1gjtY56p9HH9dfm410tQcaAXyFKkX+Myho+JyJrcgrZLA4
+	l/0jWw4sL2bv0MxfGjmfQ8shaD5a1E27RupkkRxesUPV1cs80wApbjHHznX/dxqOicOwsRAKaIw3O
+	yDkz4L1UPgm/v0Rq4tJZokY9RuYvXPU3/DTSbeIg8pZ82QdpgnMFZuvu//zOPR5n3zdcQTSDClcd8
+	HGNwUcdw==;
 Received: from 47.248.197.178.dynamic.cust.swisscom.net ([178.197.248.47] helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1t6dSC-000965-Oq; Thu, 31 Oct 2024 23:15:44 +0100
+	id 1t6eRd-000ISO-Iw; Fri, 01 Nov 2024 00:19:13 +0100
 From: Daniel Borkmann <daniel@iogearbox.net>
-To: davem@davemloft.net
-Cc: kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
+To: torvalds@linux-foundation.org
+Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: pull-request: bpf-next 2024-10-31
-Date: Thu, 31 Oct 2024 23:15:43 +0100
-Message-Id: <20241031221543.108853-1-daniel@iogearbox.net>
+	linux-kernel@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	andrii@kernel.org,
+	martin.lau@kernel.org
+Subject: [GIT PULL] bpf for v6.12-rc6
+Date: Fri,  1 Nov 2024 00:19:12 +0100
+Message-Id: <20241031231912.109589-1-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -72,126 +69,87 @@ Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27444/Thu Oct 31 09:34:36 2024)
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+Hi Linus,
 
-The following pull-request contains BPF updates for your *net-next* tree.
+The following changes since commit ae90f6a6170d7a7a1aa4fddf664fbd093e3023bc:
 
-We've added 13 non-merge commits during the last 16 day(s) which contain
-a total of 16 files changed, 710 insertions(+), 668 deletions(-).
-
-There's a small merge conflict between f91b256644ea ("selftests/bpf: Add
-test for kfunc module order") in net-next tree and c3566ee6c66c
-("selftests/bpf: remove test_tcp_check_syncookie") from bpf-next/net.
-
-Resolve as follows in tools/testing/selftests/bpf/Makefile so that end
-result looks like:
-
- # Compile but not part of 'make run_tests'
- TEST_GEN_PROGS_EXTENDED = \
-	bench \
-	bpf_testmod.ko \
-	bpf_test_modorder_x.ko \
-	bpf_test_modorder_y.ko \
-	bpf_test_no_cfi.ko \
-	flow_dissector_load \
-	runqslower \
-	test_cpp \
-	test_flow_dissector \
-	test_lirc_mode2_user \
-	veristat \
-	xdp_features \
-	xdp_hw_metadata \
-	xdp_redirect_multi \
-	xdp_synproxy \
-	xdping \
-	xskxceiver
-
-The main changes are:
-
-1) Optimize and homogenize bpf_csum_diff helper for all archs and also
-   add a batch of new BPF selftests for it, from Puranjay Mohan.
-
-2) Rewrite and migrate the test_tcp_check_syncookie.sh BPF selftest
-   into test_progs so that it can be run in BPF CI, from Alexis Lothoré.
-
-3) Two BPF sockmap selftest fixes, from Zijian Zhang.
-
-4) Small XDP synproxy BPF selftest cleanup to remove IP_DF check,
-   from Vincent Li.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Daniel Borkmann, John Fastabend, Toke Høiland-Jørgensen
-
-----------------------------------------------------------------
-
-The following changes since commit 4a6f05d9fe8adb25dff35ca6cbd707efeda4d527:
-
-  Merge tag 'batadv-next-pullrequest-20241015' of git://git.open-mesh.org/linux-merge (2024-10-15 15:28:17 +0200)
+  Merge tag 'bpf-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf (2024-10-24 16:53:20 -0700)
 
 are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
 
-for you to fetch changes up to 00c1f3dc66a38cf65c3cfd0cb4fe7acfc7f60e37:
+for you to fetch changes up to c40dd8c4732551605712985bc5b7045094c6458d:
 
-  selftests/bpf: Add a selftest for bpf_csum_diff() (2024-10-30 15:29:59 +0100)
-
-----------------------------------------------------------------
-bpf-next-for-netdev
+  bpf, test_run: Fix LIVE_FRAME frame update after a page has been recycled (2024-10-31 16:15:21 +0100)
 
 ----------------------------------------------------------------
-Alexis Lothoré (eBPF Foundation) (6):
-      selftests/bpf: factorize conn and syncookies tests in a single runner
-      selftests/bpf: add missing ns cleanups in btf_skc_cls_ingress
-      selftests/bpf: get rid of global vars in btf_skc_cls_ingress
-      selftests/bpf: add ipv4 and dual ipv4/ipv6 support in btf_skc_cls_ingress
-      selftests/bpf: test MSS value returned with bpf_tcp_gen_syncookie
-      selftests/bpf: remove test_tcp_check_syncookie
+BPF fixes:
 
-Martin KaFai Lau (2):
-      Merge branch 'Two fixes for test_sockmap'
-      Merge branch 'selftests/bpf: integrate test_tcp_check_syncookie.sh into test_progs'
+- Fix BPF verifier to force a checkpoint when the program's jump
+  history becomes too long (Eduard Zingerman)
 
-Puranjay Mohan (4):
-      net: checksum: Move from32to16() to generic header
-      bpf: bpf_csum_diff: Optimize and homogenize for all archs
-      selftests/bpf: Don't mask result of bpf_csum_diff() in test_verifier
-      selftests/bpf: Add a selftest for bpf_csum_diff()
+- Add several fixes to the BPF bits iterator addressing issues
+  like memory leaks and overflow problems (Hou Tao)
 
-Vincent Li (1):
-      selftests/bpf: remove xdp_synproxy IP_DF check
+- Fix an out-of-bounds write in trie_get_next_key (Byeonguk Jeong)
 
-Zijian Zhang (2):
-      selftests/bpf: Fix msg_verify_data in test_sockmap
-      selftests/bpf: Fix txmsg_redir of test_txmsg_pull in test_sockmap
+- Fix BPF test infra's LIVE_FRAME frame update after a page has
+  been recycled (Toke Høiland-Jørgensen)
 
- arch/parisc/lib/checksum.c                         |  13 +-
- include/net/checksum.h                             |   6 +
- lib/checksum.c                                     |  11 +-
- net/core/filter.c                                  |  39 +-
- tools/testing/selftests/bpf/.gitignore             |   1 -
- tools/testing/selftests/bpf/Makefile               |   9 +-
- .../selftests/bpf/prog_tests/btf_skc_cls_ingress.c | 264 +++++++------
- .../selftests/bpf/prog_tests/test_csum_diff.c      | 408 +++++++++++++++++++++
- tools/testing/selftests/bpf/progs/csum_diff_test.c |  42 +++
- .../selftests/bpf/progs/test_btf_skc_cls_ingress.c |  82 +++--
- .../bpf/progs/test_tcp_check_syncookie_kern.c      | 167 ---------
- .../selftests/bpf/progs/verifier_array_access.c    |   3 +-
- .../selftests/bpf/progs/xdp_synproxy_kern.c        |   3 +-
- tools/testing/selftests/bpf/test_sockmap.c         |  32 +-
- .../selftests/bpf/test_tcp_check_syncookie.sh      |  85 -----
- .../selftests/bpf/test_tcp_check_syncookie_user.c  | 213 -----------
- 16 files changed, 710 insertions(+), 668 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_csum_diff.c
- create mode 100644 tools/testing/selftests/bpf/progs/csum_diff_test.c
- delete mode 100644 tools/testing/selftests/bpf/progs/test_tcp_check_syncookie_kern.c
- delete mode 100755 tools/testing/selftests/bpf/test_tcp_check_syncookie.sh
- delete mode 100644 tools/testing/selftests/bpf/test_tcp_check_syncookie_user.c
+- Fix BPF verifier and undo the 40-bytes extra stack space for
+  bpf_fastcall patterns due to various bugs (Eduard Zingerman)
+
+- Fix a BPF sockmap race condition which could trigger a NULL
+  pointer dereference in sock_map_link_update_prog (Cong Wang)
+
+- Fix tcp_bpf_recvmsg_parser to retrieve seq_copied from tcp_sk
+  under the socket lock (Jiayuan Chen)
+
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+
+----------------------------------------------------------------
+Alexei Starovoitov (1):
+      Merge branch 'fixes-for-bits-iterator'
+
+Byeonguk Jeong (2):
+      bpf: Fix out-of-bounds write in trie_get_next_key()
+      selftests/bpf: Add test for trie_get_next_key()
+
+Cong Wang (1):
+      sock_map: fix a NULL pointer dereference in sock_map_link_update_prog()
+
+Eduard Zingerman (3):
+      bpf: Force checkpoint when jmp history is too long
+      selftests/bpf: Test with a very short loop
+      bpf: disallow 40-bytes extra stack for bpf_fastcall patterns
+
+Hou Tao (5):
+      bpf: Free dynamically allocated bits in bpf_iter_bits_destroy()
+      bpf: Add bpf_mem_alloc_check_size() helper
+      bpf: Check the validity of nr_words in bpf_iter_bits_new()
+      bpf: Use __u64 to save the bits in bits iterator
+      selftests/bpf: Add three test cases for bits_iter
+
+Jiayuan Chen (1):
+      bpf: fix filed access without lock
+
+Toke Høiland-Jørgensen (1):
+      bpf, test_run: Fix LIVE_FRAME frame update after a page has been recycled
+
+ include/linux/bpf_mem_alloc.h                      |   3 +
+ kernel/bpf/helpers.c                               |  54 ++++++++--
+ kernel/bpf/lpm_trie.c                              |   2 +-
+ kernel/bpf/memalloc.c                              |  14 ++-
+ kernel/bpf/verifier.c                              |  23 ++---
+ net/bpf/test_run.c                                 |   1 +
+ net/core/sock_map.c                                |   4 +
+ net/ipv4/tcp_bpf.c                                 |   7 +-
+ .../bpf/map_tests/lpm_trie_map_get_next_key.c      | 109 +++++++++++++++++++++
+ .../selftests/bpf/progs/verifier_bits_iter.c       |  61 +++++++++++-
+ .../selftests/bpf/progs/verifier_bpf_fastcall.c    |  55 -----------
+ .../selftests/bpf/progs/verifier_search_pruning.c  |  23 +++++
+ tools/testing/selftests/bpf/veristat.cfg           |   1 +
+ 13 files changed, 269 insertions(+), 88 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/map_tests/lpm_trie_map_get_next_key.c
 
