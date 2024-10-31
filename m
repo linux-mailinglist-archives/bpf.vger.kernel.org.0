@@ -1,290 +1,203 @@
-Return-Path: <bpf+bounces-43614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43615-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321949B70F1
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 01:14:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2283A9B70F2
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 01:14:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 559481C2114C
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 00:14:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 469241C20FD9
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 00:14:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7971F946C;
-	Thu, 31 Oct 2024 00:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254BED2FB;
+	Thu, 31 Oct 2024 00:14:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YO2KMRWy"
+	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="e+uxxr2I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932CC8F49;
-	Thu, 31 Oct 2024 00:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AECE8F5C
+	for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 00:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730333663; cv=none; b=ZTGfxAG697IDqFOFRW7KBjs58IBI/Bs9recxe1EMBcYwVZM+wXC132HEGNDzmm8uy//TCtEAW9FCFky9B89duz8vEKnaWRgAJuSQ1sUQgLlgCWeDHmz9WLtGjWuP32KBJLgGyq8ZLvdgBUtGjMDBgV157N48VRYf6TQzoNwqkzI=
+	t=1730333663; cv=none; b=Wq/0vPrqk4TjwSuu8LBDXTtz17HT79cM/Q4Py9eqAd9lz67pu9E3uRYBPoQmDqxcPYNAv8Nhk2cvrhzJnW3JY5NgI2amUBERSFvbYXYHF0Pu5mS4pVZRHgvhmcD4liy46sixbTYryYRB2eFol+UibN6mD4sIm+LlMyAs/zbjeGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1730333663; c=relaxed/simple;
-	bh=hHWyEwZvtqmiYaus4+N1OibokJx9R3zrvvC9ey/3rAg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O8KVV6r/Fs8cAaNO9AUnV444jmP+U0gJIGEp2oAlKP6772XDgBCbBJMks9lEEQjQcmmheL6XmY70h4M93YgrHLj6O+FZTtm97UiXkxyzOEBFnL6YaklVob7MX/P8qg9ZTXlUi9hW8Vl5qk3C+CxW4nygUQqMEn2uOsVpxZukKjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YO2KMRWy; arc=none smtp.client-ip=209.85.166.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-8323b555a6aso16840939f.3;
-        Wed, 30 Oct 2024 17:14:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730333659; x=1730938459; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Be86WG/I23PGsLUV2qAQXgvNj2xQrfHoRUgDD4D88yo=;
-        b=YO2KMRWyWqk6YWwVgrVIBBEZI6YTG5DXuxXZF0Cz5EwDooD2nkBU/0Jl3eFqtrmqf3
-         a6Y1Jq17io/naeUvC7HLL4sRrOhEnrBD/O5IQnntnzl8N/evcZxbJbn1p3W0/FvcUcXF
-         MuaqXiRjNdZwnwK7Y37JMJgbrpVjSJApgCJXYE8uNVxWV7wIVMyeyKp/WAt60rl9xRPp
-         x/e9xhcWKMQkQJrKEhwScM+5rU8ZC8iD6Lj8zcBzUrXWMTN8CJLQWSDbuNxLCWyyRAwP
-         y+rT88r9t2tLEl5Qi4H3IofOlJ54479BowVGFnusMVyGPvLnxgQsJ1LXbep2pAW88kk1
-         XhSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730333659; x=1730938459;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Be86WG/I23PGsLUV2qAQXgvNj2xQrfHoRUgDD4D88yo=;
-        b=wKj/CRc+pS7p80RzCO8XG7LalrJFij1UlV9/LmbrLfyne1l7GqbdSmMYdNzK84epEI
-         dJ7A/i2eL/mCRMjR3yl3uh7b/DvI0nO84ZryfLlJSoxd+3aOQ4F42S2K88C7jrBsLAZd
-         LTA64DiTDkUpxthPo0iZhFn0X+7WZrdEalNvHQXc9gvMJkqC/EMSPueZvCyrmdEqrStJ
-         +WQjoEgI4rCcvyvst0SonF/bMwmsGcfAnikgmdNLJHMlYIc7AoPGa6VyUXm84ylvFg8m
-         ifjEQh+jLlKeYDoQQFMNbXpDfOvf0lQ4Td3xKnt0SBCf6+cfK62Gr+QWmNdU0mevShfP
-         /lMw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+LpgJHBh0WgoPOxzAuxRqdXE3cCZcSWF01WungHYvcK5nMzfPcX3adK1OjB4/xwsWHFQ=@vger.kernel.org, AJvYcCUD7mcSksXoKFebIo4WGOBq5ueqr8NRYV9TO5+zGfi/7+XzIBk26ExJAUEQ6SHVLq8fEwsTu8fN@vger.kernel.org
-X-Gm-Message-State: AOJu0YwwdZFWts0ULHcq+sWwXb9obHBzxATkiD8gTWL4P8oE6sSUMBAK
-	ZYNFKrMp5gpVW2pELY8usJA87DlVw9MCyUcGmWSzZelFsWMJ8x8+Wr/EfpDU7pzUKuo4A+XHteF
-	KoSyspJaDOvHBYIYlEY+o7eTcLOA=
-X-Google-Smtp-Source: AGHT+IHLVWxcE6bUJPGtC7ouVbAfr2HO5RHhBz8PmfvrBmuRAfoOJeqrcp3k91f8xJrcsXDioVvTWKq9F36DBWkEPig=
-X-Received: by 2002:a05:6e02:174e:b0:3a3:40f0:cb8c with SMTP id
- e9e14a558f8ab-3a61752b08cmr19288625ab.17.1730333658493; Wed, 30 Oct 2024
- 17:14:18 -0700 (PDT)
+	bh=2G+/PxOqRUJhkzRglx+7lZUrBiGIfLkla1m59yTm5B0=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Nm2W1NHcL7ImhTXKLxfTa+cKLRbz4DvMgupS0I/ow6tm/hOnkljqRNA3yMJlOEFmX5ZCr5LSxBiQuToFJ6jQrU66bfc3Z8fjkJe3vGVQGqAMmpwMf/4XgvVk+2vrFSwYxoV0cZOG+1PX67vX1Cmxd8sv2xbZV8r6/q5xrjHXWL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=e+uxxr2I; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1730333652; x=1730592852;
+	bh=32ouCa2ux9150oTEUUeG8ZNMNSnhmi7Jg3GQZLYpgqs=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=e+uxxr2IqyhXESbCMlrHrd3soLmP2jpYNY7LHJskn772jiT+hZF4mlMQLmalWOVWM
+	 UFH0VzA5mkfSNZtXbMphWbkFo8fLvK6VJyiBURSPFwXLZtH1hQopAsWIgRAj5MAK1M
+	 SjPT5M+VzBNKp4NI4O/BBYe6pIgoR1mA5h1xBWM/OD+MHqZRi7Hjdyk7P9sRNBpoBU
+	 9SgExR+S6nc3S5dCbGSqfqoUY3Oe+iV9ZoikeYzT9tr/J07bTDmWWVmBsw4Pd9Avfp
+	 iXLC7kmNaDzoFlcseyNkI5cSaI0h14W6oX4ZW9BEOeZUYIhXgJ25M+zbhAo9H6bA5C
+	 vajER+ffK5UbQ==
+Date: Thu, 31 Oct 2024 00:14:09 +0000
+To: Alan Maguire <alan.maguire@oracle.com>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>, acme@kernel.org, andrii@kernel.org, eddyz87@gmail.com
+Subject: Re: [PATCH v3 dwarves 4/5] btf_encoder: store a list of elf_function per function name
+Message-ID: <qZHen28Acr_pzq0oImrTEVB6xsUgeVkqBmQ43dpfluDRfqWYRfCQp9jTj1KCLtXqwXSQmSFObW4HNqKkWaPCsz2HeUKzzkfMtZ8MQJUkfgo=@pm.me>
+In-Reply-To: <8678ce40-3ce2-4ece-985b-a40427386d57@oracle.com>
+References: <20241016001025.857970-1-ihor.solodrai@pm.me> <20241016001025.857970-5-ihor.solodrai@pm.me> <8678ce40-3ce2-4ece-985b-a40427386d57@oracle.com>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 25fef072b000f043ef805adcc60754767713e252
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
- <20241028110535.82999-3-kerneljasonxing@gmail.com> <61e8c5cf-247f-484e-b3cc-27ab86e372de@linux.dev>
- <CAL+tcoDB8UvNMfTwmvTJb1JvCGDb3ESaJMszh4-Qa=ey0Yn3Vg@mail.gmail.com>
- <67218fb61dbb5_31d4d029455@willemb.c.googlers.com.notmuch>
- <CAL+tcoBhfZ4XB5QgCKKbNyq+dfm26fPsvXfbWbV=jAEKYeLDEg@mail.gmail.com>
- <67219e5562f8c_37251929465@willemb.c.googlers.com.notmuch>
- <CAL+tcoDonudsr800HmhDir7f0B6cx0RPwmnrsRmQF=yDUJUszg@mail.gmail.com>
- <3c7c5f25-593f-4b48-9274-a18a9ea61e8f@linux.dev> <CAL+tcoAy2ryOpLi2am=T68GaFG1ACCtYmcJzDoEOan-0u3aaWw@mail.gmail.com>
- <672269c08bcd5_3c834029423@willemb.c.googlers.com.notmuch> <CAL+tcoA7Uddjx3OJzTB3+kqmKRt6KQN4G1VDCbE+xwEhATQpQQ@mail.gmail.com>
-In-Reply-To: <CAL+tcoA7Uddjx3OJzTB3+kqmKRt6KQN4G1VDCbE+xwEhATQpQQ@mail.gmail.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 31 Oct 2024 08:13:42 +0800
-Message-ID: <CAL+tcoDL0by6epqExL0VVMqfveA_awZ3PE9mfwYi3OmovZf3JQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 02/14] net-timestamp: allow two features to
- work parallelly
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, willemb@google.com, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	shuah@kernel.org, ykolal@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 31, 2024 at 7:54=E2=80=AFAM Jason Xing <kerneljasonxing@gmail.c=
-om> wrote:
->
-> On Thu, Oct 31, 2024 at 1:15=E2=80=AFAM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > Jason Xing wrote:
-> > > On Wed, Oct 30, 2024 at 1:37=E2=80=AFPM Martin KaFai Lau <martin.lau@=
-linux.dev> wrote:
-> > > >
-> > > > On 10/29/24 8:04 PM, Jason Xing wrote:
-> > > > >>>>>>>    static void skb_tstamp_tx_output(struct sk_buff *orig_sk=
-b,
-> > > > >>>>>>>                                 const struct sk_buff *ack_s=
-kb,
-> > > > >>>>>>>                                 struct skb_shared_hwtstamps=
- *hwtstamps,
-> > > > >>>>>>> @@ -5549,6 +5575,9 @@ static void skb_tstamp_tx_output(stru=
-ct sk_buff *orig_skb,
-> > > > >>>>>>>        u32 tsflags;
-> > > > >>>>>>>
-> > > > >>>>>>>        tsflags =3D READ_ONCE(sk->sk_tsflags);
-> > > > >>>>>>> +     if (!sk_tstamp_tx_flags(sk, tsflags, tstype))
-> > > > >>>>>>
-> > > > >>>>>> I still don't get this part since v2. How does it work with =
-cmsg only
-> > > > >>>>>> SOF_TIMESTAMPING_TX_*?
-> > > > >>>>>>
-> > > > >>>>>> I tried with "./txtimestamp -6 -c 1 -C -N -L ::1" and it doe=
-s not return any tx
-> > > > >>>>>> time stamp after this patch.
-> > > > >>>>>>
-> > > > >>>>>> I am likely missing something
-> > > > >>>>>> or v2 concluded that this behavior change is acceptable?
-> > > > >>>>>
-> > > > >>>>> Sorry, I submitted this series accidentally removing one impo=
-rtant
-> > > > >>>>> thing which is similar to what Vadim Fedorenko mentioned in t=
-he v1
-> > > > >>>>> [1]:
-> > > > >>>>> adding another member like sk_flags_bpf to handle the cmsg ca=
-se.
-> > > > >>>>>
-> > > > >>>>> Willem, would it be acceptable to add another field in struct=
- sock to
-> > > > >>>>> help us recognise the case where BPF and cmsg works parallell=
-y?
-> > > > >>>>>
-> > > > >>>>> [1]: https://lore.kernel.org/all/662873cb-a897-464e-bdb3-edf0=
-1363c3b2@linux.dev/
-> > > > >>>>
-> > > > >>>> The current timestamp flags don't need a u32. Maybe just reser=
-ve a bit
-> > > > >>>> for this purpose?
-> > > > >>>
-> > > > >>> Sure. Good suggestion.
-> > > > >>>
-> > > > >>> But I think only using one bit to reflect whether the sk->sk_ts=
-flags
-> > > > >>> is used by normal or cmsg features is not enough. The existing
-> > > > >>> implementation in tcp_sendmsg_locked() doesn't override the
-> > > > >>> sk->sk_tsflags even the normal and cmsg features enabled parall=
-elly.
-> > > > >>> It only overrides sockc.tsflags in tcp_sendmsg_locked(). Based =
-on
-> > > > >>> that, even if at some point users suddenly remove the cmsg use =
-and
-> > > > >>> then the prior normal SO_TIMESTAMPING continues to work.
-> > > > >>>
-> > > > >>> How about this, please see below:
-> > > > >>> For now, sk->sk_tsflags only uses 17 bits (see the last one
-> > > > >>> SOF_TIMESTAMPING_OPT_RX_FILTER). The cmsg feature only uses 4 f=
-lags
-> > > > >>> (see SOF_TIMESTAMPING_TX_RECORD_MASK in __sock_cmsg_send()). Wi=
-th that
-> > > > >>> said, we could reserve the highest four bits for cmsg use for t=
-he
-> > > > >>> moment. Four bits represents four points where we can record th=
-e
-> > > > >>> timestamp in the tx case.
-> > > > >>>
-> > > > >>> Do you agree on this point?
-> > > > >>
-> > > > >> I don't follow.
-> > > > >>
-> > > > >> I probably miss the entire point.
-> > > > >>
-> > > > >> The goal for sockcm fields is to start with the sk field and
-> > > > >> optionally override based on cmsg. This is what sockcm_init does=
- for
-> > > > >> tsflags.
-> > > > >>
-> > > > >> This information is for the skb, so these are recording flags.
-> > > > >>
-> > > > >> Why does the new datapath need to know whether features are enab=
-led
-> > > > >> through setsockopt or on a per-call basis with a cmsg?
-> > > > >>
-> > > > >> The goal was always to keep the reporting flags per socket, but =
-make
-> > > > >> the recording flag per packet, mainly for sampling.
-> > > > >
-> > > > > If a user uses 1) cmsg feature, 2) bpf feature at the same time, =
-we
-> > > > > allow each feature to work independently.
-> > > > >
-> > > > > How could it work? It relies on sk_tstamp_tx_flags() function in =
-the
-> > > > > current patch: when we are in __skb_tstamp_tx(), we cannot know w=
-hich
-> > > > > flags in each feature are set without fetching sk->sk_tsflags and
-> > > > > sk->sk_tsflags_bpf. Then we are able to know what timestamp we wa=
-nt to
-> > > > > record. To put it in a simple way, we're not sure if the user wan=
-ts to
-> > > > > see a SCHED timestamp by using the cmsg feature in __skb_tstamp_t=
-x()
-> > > > > if we hit this test statement "skb_shinfo(skb)->tx_flags &
-> > > > > SKBTX_SCHED_TSTAMP)". So we need those two socket tsflag fields t=
-o
-> > > > > help us.
-> > > >
-> > > > I also don't see how a new bit/integer in a sk can help to tell the=
- per cmsg
-> > > > on/off. This cmsg may have tx timestamp on while the next cmsg can =
-have it off.
-> > >
-> > > It's not hard to use it because we can clear every socket cmsg tsflag=
-s
-> > > when we're done the check in tcp_sendmsg_locked() if the cmsg feature
-> > > is not enabled. Then we can accurately know which timestamp should we
-> > > print in the tx path.
-> > >
-> > > >
-> > > > There is still one bit in skb_shinfo(skb)->tx_flags. How about defi=
-ne a
-> > > > SKBTX_BPF for everything. imo, the fine control on
-> > > > SOF_TIMESTAMPING_TX_{SCHED,SOFTWARE} is not useful for bpf. Almost =
-all of the
-> > > > time the bpf program wants all available time stamps (sched, softwa=
-re, and
-> > > > hwtstamp if the NIC has it).
-> >
-> > I like the approach of just calling BPF on every hook. Assuming that
-> > the call is very cheap, which AFAIK is true.
-> >
-> > In that case we don't need complex branching in C to optionally skip
-> > this step, as we do for reporting to userspace.
-> >
-> > All the logic and complexity is in the BPF program itself.
-> >
-> > We obviously then let go of the goal to model the BPF API close to the
-> > existing SO_TIMESTAMPING API. Though I advocated for keeping them
-> > aligned, I also think we should just tailor it to what makes most
-> > sense in the BPF space.
-> >
-> > > Sorry, I really doubt that we can lose the fine control.
-> >
-> > Since BPF is called at each reporting point, no control is lost,
-> > actually.
->
-> Sorry, I still don't get it :( If there is something wrong with my
-> understanding, please correct me.
->
-> BPF is only called on every sock_opt point in this case, like
-> BPF_SOCK_OPS_TCP_CONNECT_CB, not every report point of
-> SO_TIMESTAMPING. If we add check to test if skb is set SKBTX_BPF in
-> __skb_tstamp_tx(), then at every point bpf will be called. But it's
-> different from SO_TIMESTAMPING drived by each bit (SCHED/TX_SOFTWARE)
-> to control each point. My question is if we would use SKBTX_BPF for
-> everything, how could we control and know when we hit
-> SCHED/TX_SOFTWARE/ACK time from the bpf programs' perspective? Only
-> one bit... It will print everything without the ability to control.
->
-> Then if we try the SKBTX_BPF approach, it seems we don't actually
-> insist on adding a test statement in __skb_tstamp_tx(). Instead, we
-> could add into more places (by only checking the SKBTX_BPF flag), say,
-> tcp_write_xmit(), right?
+On Monday, October 21st, 2024 at 10:51 AM, Alan Maguire <alan.maguire@oracl=
+e.com> wrote:
 
-I realized that we will have some new sock_opt flags like
-TS_SCHED_OPT_CB in patch 4, so we can control whether to print or
-not... For each sock_opt point, they will be called without caring if
-related flags in skb are set. Well, it's meaningless to add more
-control of skb tsflags at each TS_xx_OPT_CB point.
+> hi Ihor
+>=20
+> On 16/10/2024 01:10, Ihor Solodrai wrote:
+>=20
+> > btf_encoder__save_func() accumulates observations of DWARF functions,
+> > maintaining an elf_function per function name.
+>=20
+>=20
+> I've been struggling with the latter few patches in this series, and I
+> think that's in part due to the fact that you have to deal with some
+> (what I think are) unnecessary complications in the existing code.
+>=20
+> It should be easier to share ELF representations, but the situation
+> you've inherited is we mix immutable (ELF representation) and mutable
+> (function state information saved) representations, leading to
+> complications that require synchronization across threads.
+>=20
+> Stepping back, I think with a few simplifications, we can lay a better
+> foundation for your work, and BTF encoding in general. Specifically if we
+>=20
+> - always save and later add functions; currently we only save if we want
+> to avoid inconsistencies, but this means having to maintain two
+> codepaths for function addition which is messy. It is simpler to
+> always save and later see if we want to add functions.
+> - fully separate ELF representation (immutable) from saved function
+> represention (mutable). this will enable ELF sharing, and saved
+> functions state can simply point back at the appropriate ELF function
+> - For each encoder, we just save all function state representations in a
+> simple list; no merging is done at this point
+> - when adding saved functions, we combine lists from all encoders, merge
+> findings on inconsistent representations where required, and add all
+> functions without inconsistent representations.
+>=20
+> This will mean no concurrency issues, and we end up with a simpler
+> representation which I think should make ELF sharing much easier. I've
+> got a rough prototype of 3 prerequisite patches doing the above at
+> https://github.com/acmel/dwarves/compare/master...alan-maguire:dwarves:el=
+f-prep
+>=20
+> The changes are contained in the last 3 patches there if you want to
+> take a look.
 
-Am I understanding in a correct way? Now, I'm totally fine with this great =
-idea!
+Hi Alan.
 
-Thanks,
-Jason
+Finally got time to try your changes.  Apologies for delay, was busy
+with other things.
+
+TL;DR Here is my patchset rebased on top of your commits:
+* https://github.com/theihor/dwarves/pull/7
+
+Please take a look, and let's sync on how do we plan to merge it
+in. Your commits seem to have debug code in them, so maybe you'd want
+to submit a clean version first.
+
+
+I must say earlier Eduard pointed out (off-list) the problems that
+you've described, but at the time I thought it would be too many
+changes if I tried to address them.
+
+It is indeed easier to move to a shared ELF functions table if all
+function states are collected before merging them, mostly because the
+need for thread synchronization disappears. I was able to effectively
+delete patch 4/5 of the series.
+
+One thing that bothered me is that now btf_encoder__add_saved_funcs()
+does more work (compared to v3 of the patchset). This is of course due
+to the fact that it is required to collect all function states from
+all encoders and group them by name, while it was done "automatically"
+when states were stored in elf_functions table. It's not good, because
+this step is single-threaded.
+
+However, I did some superficial measurements, and it appears
+btf_encoder__add_saved_funcs() step takes ~2% of the time when
+encoding vmlinux. So it's probably not worth complicating.
+
+Regarding "global variables" fork of our discussion [1], I didn't get
+any feedback from you or Arnaldo in response to suggested diff.
+I included a more thought out version in the branch [2], please take=20
+a look.
+
+
+See below some perf stats: marginal speedup and slower RSS growth
+with increasing number of threads.
+
+WIP v4 branch [2]:
+
+     Performance counter stats for '/home/theihor/dev/dwarves/build/pahole =
+-J -j23 --btf_features=3Dencode_force,var,float,enum64,decl_tag,type_tag,op=
+timized_func,consistent_func,decl_tag_kfuncs --btf_encode_detached=3D/dev/n=
+ull --lang_exclude=3Drust /home/theihor/git/kernel.org/bpf-next/kbuild-outp=
+ut/.tmp_vmlinux1' (13 runs):
+
+        83,054,827,477      cycles:u                                       =
+                         ( +-  0.29% )
+
+                3.9829 +- 0.0374 seconds time elapsed  ( +-  0.94% )
+
+    -j2: =09Maximum resident set size (kbytes): 783296
+    -j4: =09Maximum resident set size (kbytes): 866976
+    -j8: =09Maximum resident set size (kbytes): 992740
+    -j16: =09Maximum resident set size (kbytes): 1038788
+    -j32: =09Maximum resident set size (kbytes): 1169284
+    -j64: =09Maximum resident set size (kbytes): 1347232
+
+dwarves/next [3]
+
+     Performance counter stats for '/home/theihor/dev/dwarves/build/pahole =
+-J -j23 --btf_features=3Dencode_force,var,float,enum64,decl_tag,type_tag,op=
+timized_func,consistent_func,decl_tag_kfuncs --btf_encode_detached=3D/dev/n=
+ull --lang_exclude=3Drust /home/theihor/git/kernel.org/bpf-next/kbuild-outp=
+ut/.tmp_vmlinux1' (13 runs):
+
+        87,748,403,977      cycles:u                                       =
+                         ( +-  0.23% )
+
+                4.0570 +- 0.0240 seconds time elapsed  ( +-  0.59% )
+
+    checking max rss
+    -j2: =09Maximum resident set size (kbytes): 787256
+    -j4: =09Maximum resident set size (kbytes): 884360
+    -j8: =09Maximum resident set size (kbytes): 1018996
+    -j16: =09Maximum resident set size (kbytes): 1083528
+    -j32: =09Maximum resident set size (kbytes): 1279880
+    -j64: =09Maximum resident set size (kbytes): 1634656
+
+
+[1]: https://lore.kernel.org/dwarves/4G5AFfVer_N_eJCZYc22pQM9rXbHOV2CZ4uOmq=
+h4gFd1K2mgnbIDIZUpynMNCdJ-CEyvsBr0-cPdUzgNnM05NPkPjRdqdAnCAp8DrvUc-Iw=3D@pm=
+.me/
+[2]: https://github.com/theihor/dwarves/pull/7
+[3]: https://github.com/theihor/dwarves/commit/729fd9963df576a04f2ba371b033=
+c5300ebf0a91
+
+> [...]
+
 
