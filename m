@@ -1,238 +1,287 @@
-Return-Path: <bpf+bounces-43655-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43654-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 344F79B7ED2
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 16:44:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C986B9B7ECE
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 16:44:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E874628294E
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 15:44:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBF4F1C21725
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2024 15:44:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF811A3BD8;
-	Thu, 31 Oct 2024 15:44:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45F091A76B6;
+	Thu, 31 Oct 2024 15:44:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="KeLHJaz0"
+	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="mTvh0cvt"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2073.outbound.protection.outlook.com [40.107.20.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D6B21A2872;
-	Thu, 31 Oct 2024 15:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730389487; cv=none; b=WRcpr5EdFAbhe6OFLE1FLEyLSTGnm/1HK0zJAiNGnpDRxWjKRV381NSBjAzGRZHNDCgT3M+J5dfEQZ1/bjwBexUlskNeD4J+K5n4tgt2XEmqyWzK1C2W0mXc4FAUe9Oo3GJSikQ4qJ/LPv+EyUd/bW/aBBqfCKiPHI/DHZSDb7o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730389487; c=relaxed/simple;
-	bh=xUvoEm3kIjTyucH25w+0XkAce5Kv8YDiDuMz0Af7/O8=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=pd5Ugvx88BZ4VuTJZKPZdyVzNwmkuMeDhndNq0r9OnvLb9SyzfPW7v5QPC58Gm0zKQ1zrajfyVNE1XS54ZbixSt4TqlMaaWyGIuSWT8cZeYsgX6tAd+3jCWFJVlHASaR51m2OycjXYfsM0I2BwqQKASrQJRaNqUx6jHGnVPlcug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=KeLHJaz0; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1730389484;
-	bh=xUvoEm3kIjTyucH25w+0XkAce5Kv8YDiDuMz0Af7/O8=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=KeLHJaz0HXeOrDW94fqR2mfCIAFbRkFoITUBpj46/tWtdw9jYNe/ubhq3IL3RoAIZ
-	 R15415gS+T+A+icM3hz4p3WVrkL9KDEX+anRCshS6TbJ3JCHrScI8LBRQQ2HHHi5qg
-	 lli9SEs5VmpsNcOCaGpw8n9HYTy3vzWjn6XQMswc0Mj6ha/GJv0dA2vCJdkgwYPNHC
-	 b164kPFD0aAKhfcABhEBWW0IvXXQ1EKvsHREmcaeAoavoD1pGnXWUDbF9/Na+suDZU
-	 fJL1NgIlazJfFafq0p0aVdRvxXe93dEgHH4f0sBTvh1ApoJnrb7CU20CPiB24DnkRF
-	 vEdNbBJPEoBSw==
-Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XfSwq6VSHzZ4J;
-	Thu, 31 Oct 2024 11:44:43 -0400 (EDT)
-Message-ID: <b8e01a00-0405-41af-8316-9cfa28e698db@efficios.com>
-Date: Thu, 31 Oct 2024 11:43:07 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3D8A1A2872;
+	Thu, 31 Oct 2024 15:44:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.73
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730389453; cv=fail; b=j98veyo11DI3kKb0V+j/JoZryl6KWEC0rd1g2N8E3Lz53cv/G4DhYLSXXaJb5HLt6ih218eANAzVslIlNJ+53KuXoNUR9hcjH8hiTCmUXYvT3q+wAM9esKAFAYWExcahqtrZ4+f43+bAtRbmMy8g4g2s0gtK9AtJCuU74dP9RvU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730389453; c=relaxed/simple;
+	bh=XSkXE2PVLUXmfkjPTX7DXJ1SMnRlydGTAgUxngGbcXQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=huyV39aAvzgxvM4XXiKEpjbc/Sx+wIHplcmCG6p8H4y2Fxgc+MV6+CkKtp9HM/dPSGmMyxWMkJEzZMCJkXjCAqosRfCoTvRBPS/I+p9CXWoCNA7pp6j4HV77EwDHo5k1znayV9FWjgJOcOtlvjbNh8jmfRtcDSRkYlBKTiOrGiE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=mTvh0cvt; arc=fail smtp.client-ip=40.107.20.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=sFpKdA2ajXU7MrHp3XyeFGhvL7x6GsQxOYaXwQFBw55N0DW1kossRsvZw9B3fqutXFseXuw4GORApZm030Wt4i0cDgzWWoSQ3t2jQ/g181hKI7w4MFJOwVBLbiLwbhRKAagMpN3518k0koznMoFeWtRfCRU+kgb3SM69yocqlhDgC9P1wNVkxFrMKSFP/LMNgvOhK9K457QgvcihTOfwf5BWTxL8AplCAzjR5v1MtQldWCLkt5/ZGlfHVP9L8WIiN+r9rTC9pgdivpn44CLaQHkM4L49AQ3YiRQlmxzRrwvGI/KmuE5eDmsmYLGasP1wgrlUd2+hCy1p2C7O206XKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j+40//l1ZFFQiYjwD89l7TBWBEZ3FLu91Cmh76Xllwc=;
+ b=WrjbAcnzClYGhLTbx0NAEx9dJeyqkthdWQoG8Mec0jmexpYc+wWT3Os1N9EanU2t0JBqUBsviBtei7ynz73pQIYHj1XBraawx15G4hG4ok8jqICdTFU7JwEE2L31Y2aLcxIfOyUjHxbnPvPDQwyJGAuoTPDiwNuOI01K2JkylgBIwKFYu5pH/aq/5EEFpwmu1aG0lohLkqNtrXchOR9dLvIXeVa9Q/+fE9+DqG6AR65oJun7/PIWrEfdALGaSdxKN5NEIOTDEg2QNPsAXKQlRv7u7dmJVQS84f7bJtXrKkbeJvohIvmYMOkBkRhQNQFmW2Z8UQLge/8Bl5O6CvLLVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia-bell-labs.com; dmarc=pass action=none
+ header.from=nokia-bell-labs.com; dkim=pass header.d=nokia-bell-labs.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j+40//l1ZFFQiYjwD89l7TBWBEZ3FLu91Cmh76Xllwc=;
+ b=mTvh0cvtlyW9jrFIL45DO5s+nZSHmX0FPzzKCFN0XePr0zOYYQ3w7giQyc7o5hUT0QZxg0gXDRq3/eJy/XsunpIWVuUrRZNbfkmsa3lq8Y3obJy0NMaVrCBwXGYbAtzqCeQp4CnLURm4TEvbN/zTCG0fYeJkgaJ0M/2rasm2QQ+PEaxcBBjH77nJdoVjpxpceiyuIGo4f62nio/sFhMdOsJtG/eq93xyCozM+W11RzAzBuufNaya1ROukzvxongmzCo2f3VUURp6sO79kdryN/DA4yCco8OUBasLFmy5CpXKElYQSI3ZDmmSdao3KOVcyE8g8+htpAL1rq/sFkzJrw==
+Received: from PAXPR07MB7984.eurprd07.prod.outlook.com (2603:10a6:102:133::12)
+ by AM7PR07MB6962.eurprd07.prod.outlook.com (2603:10a6:20b:1bb::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8093.32; Thu, 31 Oct
+ 2024 15:44:08 +0000
+Received: from PAXPR07MB7984.eurprd07.prod.outlook.com
+ ([fe80::b7f8:dc0a:7e8d:56]) by PAXPR07MB7984.eurprd07.prod.outlook.com
+ ([fe80::b7f8:dc0a:7e8d:56%6]) with mapi id 15.20.8093.027; Thu, 31 Oct 2024
+ 15:44:07 +0000
+From: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>
+To: Joel Granados <joel.granados@kernel.org>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "davem@davemloft.net"
+	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"dsahern@kernel.org" <dsahern@kernel.org>, "netfilter-devel@vger.kernel.org"
+	<netfilter-devel@vger.kernel.org>, "kadlec@netfilter.org"
+	<kadlec@netfilter.org>, "coreteam@netfilter.org" <coreteam@netfilter.org>,
+	"pablo@netfilter.org" <pablo@netfilter.org>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "linux-fsdevel@vger.kernel.org"
+	<linux-fsdevel@vger.kernel.org>, "kees@kernel.org" <kees@kernel.org>,
+	"mcgrof@kernel.org" <mcgrof@kernel.org>, "ij@kernel.org" <ij@kernel.org>,
+	"ncardwell@google.com" <ncardwell@google.com>, "Koen De Schepper (Nokia)"
+	<koen.de_schepper@nokia-bell-labs.com>, "g.white@cablelabs.com"
+	<g.white@cablelabs.com>, "ingemar.s.johansson@ericsson.com"
+	<ingemar.s.johansson@ericsson.com>, "mirja.kuehlewind@ericsson.com"
+	<mirja.kuehlewind@ericsson.com>, "cheshire@apple.com" <cheshire@apple.com>,
+	"rs.ietf@gmx.at" <rs.ietf@gmx.at>, "Jason_Livingood@comcast.com"
+	<Jason_Livingood@comcast.com>, "vidhi_goel@apple.com" <vidhi_goel@apple.com>
+Subject: RE: [PATCH v4 net-next 14/14] net: sysctl: introduce sysctl
+ SYSCTL_FIVE
+Thread-Topic: [PATCH v4 net-next 14/14] net: sysctl: introduce sysctl
+ SYSCTL_FIVE
+Thread-Index: AQHbJASIFUksbv4MTU2TzyQWLbR4BbKg9M8AgAAaUcA=
+Date: Thu, 31 Oct 2024 15:44:07 +0000
+Message-ID:
+ <PAXPR07MB7984B50A4A61AB10F95C96A2A3552@PAXPR07MB7984.eurprd07.prod.outlook.com>
+References: <20241021215910.59767-1-chia-yu.chang@nokia-bell-labs.com>
+ <20241021215910.59767-15-chia-yu.chang@nokia-bell-labs.com>
+ <qnrzl4tjlgw5rzlvxavr3pt7fhkslnm4dd62q7uqzb3mfoa2jg@fuayx77rfcs6>
+In-Reply-To: <qnrzl4tjlgw5rzlvxavr3pt7fhkslnm4dd62q7uqzb3mfoa2jg@fuayx77rfcs6>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nokia-bell-labs.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR07MB7984:EE_|AM7PR07MB6962:EE_
+x-ms-office365-filtering-correlation-id: ac7747d0-a6b3-4120-70ac-08dcf9c2db16
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|376014|7416014|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?pUJfsW1EIC4aqFpBneDZAfwZ9JFOZB+YJ2m9pgLtu/60iMiSAZtbud8DQx4P?=
+ =?us-ascii?Q?FGFh35hnGp4my2U6E6YEXLqntu18euyEMv3wJ8ch6QTlfKgDuiC/oV3P8p2U?=
+ =?us-ascii?Q?M9+GvsQZOAtPWLmIvaUSh1neuIkXtRX8XZAEd2FVKcNGlL4O+Bio8HBQr10X?=
+ =?us-ascii?Q?UHwDeCOZWURfnNpupeiDA8G3sbOV82M+4dn+xyLMoWYW9rlt+0YuT7PEYpjB?=
+ =?us-ascii?Q?VaF6htqL1fGQctLuhF/kukk/643WWpTQre8sYPxF0KMiL+h2l5rT1fy6urBw?=
+ =?us-ascii?Q?ueQnaT/hOL8HFfJ9reIsHfZR0Kgup17dlNkHbNObMi1FrpSJsYXPbJdtVY61?=
+ =?us-ascii?Q?5fB7fyZJd63+PVKhoDECE9z+ScPrZXycehWiu+sXI0ZbOAkT14Zo3+i2SLEn?=
+ =?us-ascii?Q?C5cBxLaAtNovWtZ8HzspUSlgTAUDsw0y0it7uS4KkkoIzavULuRAFEZ36nCi?=
+ =?us-ascii?Q?+y5LLUi7ogc/4pRyjg4g7rTc8OqyvxUV0NeOBrhDqkXf8wLbF5x7YMxHDcRA?=
+ =?us-ascii?Q?l/hYPEE3L8HhhXuCLas7psEpsD+d7k/Lc2IDVHHUE3RmS2IT3Wqaj8nu8C9f?=
+ =?us-ascii?Q?A6Wh/B9i1f9tYgygQzY3CcV1Pm2j18csi1TQ0615AZO71ftvta2GlAX+7fH7?=
+ =?us-ascii?Q?ubcxOPLb/XQauUhxBcQa1T3iYHLpK0jz2oJ2dFCWSVFYmtNA3QVoVYT/Fq9E?=
+ =?us-ascii?Q?V1BuczvO9krw7o4pP99WHQIJiVClF7y5a2mSBu8oMCG3dEmbFvwAx0FxlvEO?=
+ =?us-ascii?Q?6D4aNiDILyTTKVePhftOeb/83VJJFGaIF/IqH8Q2u2AvuKUUdVXKDfapjvx2?=
+ =?us-ascii?Q?mStL0o/l/IWAuAacZtM6G7UQ1lJiOKK7ort/Ub1W+mCHjjASySV2xhBQLk+a?=
+ =?us-ascii?Q?3rUTpwj2VJMS3sVZc+7fN5A7rYSaJo8XnH61xqtqumBgWdl2eTxwmz+JFQgE?=
+ =?us-ascii?Q?S0yb+USHJCay28L3GMzaFVSbK/OaM3m+pwb1Uns+PfPpLiffjhPe8rPGoF5G?=
+ =?us-ascii?Q?UBDIR8i8t0xL3fHMWigd7RfKvwn4aBYRNZ4GLZ5MRALgHS8O03KWk3xCQBkq?=
+ =?us-ascii?Q?uErwBwFsUqapIXKdW63/JDgp1OSjXHeAlvFnv4VgVogjaSCq8tHP0fJFHSHe?=
+ =?us-ascii?Q?hvf7b6OgIYAraOMtSzgmrzON3JoyqNOtv2q3r7t71eZ0L+XLq8R6jkHbaZY3?=
+ =?us-ascii?Q?RjrePvw5Xuga8zA/IsBpU7iR/2Ox2NzCDn6jM+v+KHcPeTNbVWD36pc7Y6/0?=
+ =?us-ascii?Q?lqoLRMGXhpFMBCuF2ewqkVWixHeujtdaNj1qewSIrdedhKsw3Tn65rULH68E?=
+ =?us-ascii?Q?85KQa5PsCMEmUMKcG/6vIqbH?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR07MB7984.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?BB8ZpdnDlveGjyAcWbTvQMoGjtO/FweexP8/lQtOGgsmP4tEvZpq/n0nBaXZ?=
+ =?us-ascii?Q?w0dMF62iv5Irpca/MIiuYZ7uz/A7zBnvJ8+6rYJl1f0BPLhXtlPJaQ+OpBtR?=
+ =?us-ascii?Q?Hr7GWoA0Q1ubWy6lEsZ6gx6Xu7NRx2RQq+xul7AaH7BqE2abCdGY+okFX0X8?=
+ =?us-ascii?Q?G++K8NDx20PthAWiCwKn9tEk5Yhn6e03uSG480yFIJMyUr/1VErpFtmfDmHM?=
+ =?us-ascii?Q?1DSZ87QW0CbGivwYdW/lQlpdawP7CAypCF9Nie9kWoA/ceA5D5uQcdXZ/5+V?=
+ =?us-ascii?Q?ih4P48hOoiq4rFl2EN58B+IJnPXne8XplH7FM6s4eIaMa1xoOxHjk7k4Wgid?=
+ =?us-ascii?Q?pDtXgEA2jy+lCk1Ha8kAFGxQ4sPSFvrr6OhLrhOw5YcxOIdQxRWKegouyV+Y?=
+ =?us-ascii?Q?X9JQQjFXmsKCLBRY+Fc7yTPpZnEaBr0EgwDHt/oV0NW6X3zVB8bflImtLfBa?=
+ =?us-ascii?Q?srC7zLzYIhl3jvl6lFD2jEJavZ0Qc/I48HugYmPOJBW3Fwfuytqn3b9OjNVx?=
+ =?us-ascii?Q?bHs0Id4nhBFNkDmXMaofrGwtwYga0xaXWcAmRDiYCn7/BK1i4ezxX9tAQPUR?=
+ =?us-ascii?Q?shfH0w6nmJzm+m44pqf5VpUskyYNvnIY/qNAN7URZcD9o0LEUnBPxmrtkQYj?=
+ =?us-ascii?Q?wfsPdI2kYOkotHarxzNMgWHKAbJha3Vxyqf4UuvHuGTp6zh6FeTWWTsUIA3o?=
+ =?us-ascii?Q?XlBHw12P6oqbucSlWrGtChuL69SaE4vFDWa7Bf3LkT65OyGSyemXrKgAGA5u?=
+ =?us-ascii?Q?oZRx99J3aHgurzHzF+kvnZmF6uqB/IpfmTXB/bqgS9EgTu+eFDBHlHKtUKUG?=
+ =?us-ascii?Q?IKBgEp7CsbvHXUmB2TN3WP7BKkY64pLor7Ico3k4G8FXCaERZu6wtfaHdFLB?=
+ =?us-ascii?Q?dddhcICA5O2R0PPlrlCLJMI1gyShxOcbYr0WeCxd74J7XmclXLmO639SIjnU?=
+ =?us-ascii?Q?sdavfGNHFixQS4r5l03QzdF0pHTcr8aQ7J7TVeIM8iItkygQuDXo+/TVRh6B?=
+ =?us-ascii?Q?O4W4F1wV5LYBSlmzc3KN3B63wW+N0hI1zSj4n+ZYaB7gnOaYaUMP5NpZzsbC?=
+ =?us-ascii?Q?3lQBBehBh+yyLhRHpYJ/qRfnhLkYimTcJT4VGqGb1/Yv2dR/ePwqJwkU0/fF?=
+ =?us-ascii?Q?++g7g2a5it9AhfZxnNHpzMh1isNGPbVluV/fRMbo5OVqjxyHPXzu3Jx9r0io?=
+ =?us-ascii?Q?iqTwdOGy6wxik655EF6rELWzrglTSE+jYiFyP+m4FF6fPCo9pAXX/OCGq5MF?=
+ =?us-ascii?Q?GlHdHFIkRRhhyvPZRTwGezRvrGrrZ3fTg4nK3S0pjFVNirYOGJupyVFDGMYW?=
+ =?us-ascii?Q?TWzFBosak/+esUZUqgyfP+p7UlMZTcXyeFhxuTYdUUYUltkf26RJ0PMDu1Aa?=
+ =?us-ascii?Q?9GxyonZIFKau13RKfsuqF572zrfMCMxqcq40/UfmLvh7ov4bmWXORJERnhLR?=
+ =?us-ascii?Q?Ur+BWPxLPGZEJqaFOVZXUCf5L+4MdzN9Hc7rp7TUacQcJz7W/L9BslN0YsaZ?=
+ =?us-ascii?Q?++g7oraXbtFuXfTbQqrJwZmM9EZrNaMiqXcun+Z66wbaDGhqSTlAqHbCjaJq?=
+ =?us-ascii?Q?QmetXG3VOqu7nQt9GpEQCZIBF2tJCzPLOeHGs9mnNeA3fd4iXW51kcWoLE1r?=
+ =?us-ascii?Q?dw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 3/3] tracing: Fix syscall tracepoint use-after-free
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
- Michael Jeanson <mjeanson@efficios.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>,
- Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
- Joel Fernandes <joel@joelfernandes.org>, Jordan Rife <jrife@google.com>,
- syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com
-References: <20241026154629.593041-1-mathieu.desnoyers@efficios.com>
- <20241026154629.593041-3-mathieu.desnoyers@efficios.com>
- <CAEf4BzaD24V=Z6T3wNh27pv9OV_WaLNQeAPbUANQJYN0h5zHKw@mail.gmail.com>
- <7ef1d403-e6ca-4dee-85c6-e32446e52aa7@efficios.com>
-Content-Language: en-US
-In-Reply-To: <7ef1d403-e6ca-4dee-85c6-e32446e52aa7@efficios.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nokia-bell-labs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR07MB7984.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac7747d0-a6b3-4120-70ac-08dcf9c2db16
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Oct 2024 15:44:07.4367
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wMPd9eZkArmUOzzFk9YSujlvM3VI9TMjioTW8DY+69QFv6ebNazQVCtzeVHhxGAKi/ZsA3QmfsVqfQ+i5wSZYuhFBVRRHNSE4uvFrqTbqdlotmqydC5rE0IbXlrqxL3o
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR07MB6962
 
-On 2024-10-28 15:19, Mathieu Desnoyers wrote:
-> On 2024-10-27 21:22, Andrii Nakryiko wrote:
->> On Sat, Oct 26, 2024 at 8:48 AM Mathieu Desnoyers
->> <mathieu.desnoyers@efficios.com> wrote:
->>>
->>> The grace period used internally within tracepoint.c:release_probes()
->>> uses call_rcu() to batch waiting for quiescence of old probe arrays,
->>> rather than using the tracepoint_synchronize_unregister() which blocks
->>> while waiting for quiescence.
->>>
->>> With the introduction of faultable syscall tracepoints, this causes
->>> use-after-free issues reproduced with syzkaller.
->>>
->>> Fix this by using the appropriate call_rcu() or call_rcu_tasks_trace()
->>> before invoking the rcu_free_old_probes callback. This can be chosen
->>> using the tracepoint_is_syscall() API.
->>>
->>> A similar issue exists in bpf use of call_rcu(). Fixing this is left to
->>> a separate change.
->>>
->>> Reported-by: syzbot+b390c8062d8387b6272a@syzkaller.appspotmail.com
->>> Fixes: a363d27cdbc2 ("tracing: Allow system call tracepoints to 
->>> handle page faults")
->>> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->>> Cc: Michael Jeanson <mjeanson@efficios.com>
->>> Cc: Steven Rostedt <rostedt@goodmis.org>
->>> Cc: Masami Hiramatsu <mhiramat@kernel.org>
->>> Cc: Peter Zijlstra <peterz@infradead.org>
->>> Cc: Alexei Starovoitov <ast@kernel.org>
->>> Cc: Yonghong Song <yhs@fb.com>
->>> Cc: Paul E. McKenney <paulmck@kernel.org>
->>> Cc: Ingo Molnar <mingo@redhat.com>
->>> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
->>> Cc: Mark Rutland <mark.rutland@arm.com>
->>> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->>> Cc: Namhyung Kim <namhyung@kernel.org>
->>> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
->>> Cc: bpf@vger.kernel.org
->>> Cc: Joel Fernandes <joel@joelfernandes.org>
->>> Cc: Jordan Rife <jrife@google.com>
->>> ---
->>> Changes since v0:
->>> - Introduce tracepoint_call_rcu(),
->>> - Fix bpf_link_free() use of call_rcu as well.
->>>
->>> Changes since v1:
->>> - Use tracepoint_call_rcu() for bpf_prog_put as well.
->>>
->>> Changes since v2:
->>> - Do not cover bpf changes in the same commit, let bpf developers
->>>    implement it.
->>> ---
->>>   kernel/tracepoint.c | 11 +++++++----
->>>   1 file changed, 7 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
->>> index 5658dc92f5b5..47569fb06596 100644
->>> --- a/kernel/tracepoint.c
->>> +++ b/kernel/tracepoint.c
->>> @@ -106,13 +106,16 @@ static void rcu_free_old_probes(struct rcu_head 
->>> *head)
->>>          kfree(container_of(head, struct tp_probes, rcu));
->>>   }
->>>
->>> -static inline void release_probes(struct tracepoint_func *old)
->>> +static inline void release_probes(struct tracepoint *tp, struct 
->>> tracepoint_func *old)
->>>   {
->>>          if (old) {
->>>                  struct tp_probes *tp_probes = container_of(old,
->>>                          struct tp_probes, probes[0]);
->>>
->>> -               call_rcu(&tp_probes->rcu, rcu_free_old_probes);
->>> +               if (tracepoint_is_syscall(tp))
->>> +                       call_rcu_tasks_trace(&tp_probes->rcu, 
->>> rcu_free_old_probes);
->>
->> should this be call_rcu_tasks_trace() -> call_rcu() chain instead of
->> just call_rcu_tasks_trace()? While currently call_rcu_tasks_trace()
->> implies RCU GP (as evidenced by rcu_trace_implies_rcu_gp() being
->> hardcoded right now to returning true), this might not always be the
->> case in the future, so it's best to have a guarantee that regardless
->> of sleepable or not, we'll always have have RCU GP, and for sleepable
->> tracepoint *also* RCU Tasks Trace GP.
-> 
-> Given that faultable tracepoints only use RCU tasks trace for the
-> read-side and do not rely on preempt disable, I don't see why we would
-> need to chain both grace periods there ?
+Hi Paolo and Joel,
 
-Hi Andrii,
+	We will remove this patch as we check this will be only used by tcp_ecn in=
+ the upcoming patch.
 
-AFAIU, your question above is rooted in the way bpf does its sleepable
-program grace periods (chaining RCU tasks trace + RCU GP), e.g.:
+Brs,
+Chia-Yu
 
-bpf_map_free_mult_rcu_gp
-bpf_link_defer_dealloc_mult_rcu_gp
+-----Original Message-----
+From: Joel Granados <joel.granados@kernel.org>=20
+Sent: Thursday, October 31, 2024 3:09 PM
+To: Chia-Yu Chang (Nokia) <chia-yu.chang@nokia-bell-labs.com>
+Cc: netdev@vger.kernel.org; davem@davemloft.net; edumazet@google.com; kuba@=
+kernel.org; pabeni@redhat.com; dsahern@kernel.org; netfilter-devel@vger.ker=
+nel.org; kadlec@netfilter.org; coreteam@netfilter.org; pablo@netfilter.org;=
+ bpf@vger.kernel.org; linux-fsdevel@vger.kernel.org; kees@kernel.org; mcgro=
+f@kernel.org; ij@kernel.org; ncardwell@google.com; Koen De Schepper (Nokia)=
+ <koen.de_schepper@nokia-bell-labs.com>; g.white@cablelabs.com; ingemar.s.j=
+ohansson@ericsson.com; mirja.kuehlewind@ericsson.com; cheshire@apple.com; r=
+s.ietf@gmx.at; Jason_Livingood@comcast.com; vidhi_goel@apple.com
+Subject: Re: [PATCH v4 net-next 14/14] net: sysctl: introduce sysctl SYSCTL=
+_FIVE
 
-and
+[Some people who received this message don't often get email from joel.gran=
+ados@kernel.org. Learn why this is important at https://aka.ms/LearnAboutSe=
+nderIdentification ]
 
-bpf_link_free:
-                 /* schedule BPF link deallocation; if underlying BPF program
-                  * is sleepable, we need to first wait for RCU tasks trace
-                  * sync, then go through "classic" RCU grace period
-                  */
+CAUTION: This is an external email. Please be very careful when clicking li=
+nks or opening attachments. See the URL nok.it/ext for additional informati=
+on.
 
-This is introduced in commit 1a80dbcb2db ("bpf: support deferring bpf_link dealloc to after RCU grace period")
-which has a bit more information in the commit message, but what I'm not seeing
-is an explanation of *why* chaining RCU tasks trace and RCU grace periods is
-needed for sleepable bpf programs. What am I missing ?
 
-As far as tracepoint.c release_probes() is concerned, just waiting for
-RCU tasks trace before freeing memory of faultable tracepoints is
-sufficient.
 
-Thanks,
+On Mon, Oct 21, 2024 at 11:59:10PM +0200, chia-yu.chang@nokia-bell-labs.com=
+ wrote:
+> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+>
+> Add SYSCTL_FIVE for new AccECN feedback modes of net.ipv4.tcp_ecn.
+>
+> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> ---
+>  include/linux/sysctl.h | 17 +++++++++--------
+>  kernel/sysctl.c        |  3 ++-
+>  2 files changed, 11 insertions(+), 9 deletions(-)
+>
+> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h index=20
+> aa4c6d44aaa0..37c95a70c10e 100644
+> --- a/include/linux/sysctl.h
+> +++ b/include/linux/sysctl.h
+> @@ -37,21 +37,22 @@ struct ctl_table_root;  struct ctl_table_header; =20
+> struct ctl_dir;
+>
+> -/* Keep the same order as in fs/proc/proc_sysctl.c */
+> +/* Keep the same order as in kernel/sysctl.c */
+>  #define SYSCTL_ZERO                  ((void *)&sysctl_vals[0])
+>  #define SYSCTL_ONE                   ((void *)&sysctl_vals[1])
+>  #define SYSCTL_TWO                   ((void *)&sysctl_vals[2])
+>  #define SYSCTL_THREE                 ((void *)&sysctl_vals[3])
+>  #define SYSCTL_FOUR                  ((void *)&sysctl_vals[4])
+> -#define SYSCTL_ONE_HUNDRED           ((void *)&sysctl_vals[5])
+> -#define SYSCTL_TWO_HUNDRED           ((void *)&sysctl_vals[6])
+> -#define SYSCTL_ONE_THOUSAND          ((void *)&sysctl_vals[7])
+> -#define SYSCTL_THREE_THOUSAND                ((void *)&sysctl_vals[8])
+> -#define SYSCTL_INT_MAX                       ((void *)&sysctl_vals[9])
+> +#define SYSCTL_FIVE                  ((void *)&sysctl_vals[5])
+Is it necessary to insert the value instead of appending it to the end of s=
+ysctl_vals? I would actually consider Paolo Abeni's suggestion to just use =
+a constant if you are using it only in one place.
 
-Mathieu
+> +#define SYSCTL_ONE_HUNDRED           ((void *)&sysctl_vals[6])
+> +#define SYSCTL_TWO_HUNDRED           ((void *)&sysctl_vals[7])
+> +#define SYSCTL_ONE_THOUSAND          ((void *)&sysctl_vals[8])
+> +#define SYSCTL_THREE_THOUSAND                ((void *)&sysctl_vals[9])
+> +#define SYSCTL_INT_MAX                       ((void *)&sysctl_vals[10])
+>
+>  /* this is needed for the proc_dointvec_minmax for [fs_]overflow UID and=
+ GID */
+> -#define SYSCTL_MAXOLDUID             ((void *)&sysctl_vals[10])
+> -#define SYSCTL_NEG_ONE                       ((void *)&sysctl_vals[11])
+> +#define SYSCTL_MAXOLDUID             ((void *)&sysctl_vals[11])
+> +#define SYSCTL_NEG_ONE                       ((void *)&sysctl_vals[12])
+>
+>  extern const int sysctl_vals[];
+>
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c index=20
+> 79e6cb1d5c48..68b6ca67a0c6 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -82,7 +82,8 @@
+>  #endif
+>
+>  /* shared constants to be used in various sysctls */ -const int=20
+> sysctl_vals[] =3D { 0, 1, 2, 3, 4, 100, 200, 1000, 3000, INT_MAX, 65535,=
+=20
+> -1 };
+> +const int sysctl_vals[] =3D { 0, 1, 2, 3, 4, 5, 100, 200, 1000, 3000, IN=
+T_MAX,
+> +                        65535, -1 };
+>  EXPORT_SYMBOL(sysctl_vals);
+>
+>  const unsigned long sysctl_long_vals[] =3D { 0, 1, LONG_MAX };
+> --
+> 2.34.1
+>
 
-> 
-> Thanks,
-> 
-> Mathieu
-> 
->>
->>> +               else
->>> +                       call_rcu(&tp_probes->rcu, rcu_free_old_probes);
->>>          }
->>>   }
->>>
->>> @@ -334,7 +337,7 @@ static int tracepoint_add_func(struct tracepoint 
->>> *tp,
->>>                  break;
->>>          }
->>>
->>> -       release_probes(old);
->>> +       release_probes(tp, old);
->>>          return 0;
->>>   }
->>>
->>> @@ -405,7 +408,7 @@ static int tracepoint_remove_func(struct 
->>> tracepoint *tp,
->>>                  WARN_ON_ONCE(1);
->>>                  break;
->>>          }
->>> -       release_probes(old);
->>> +       release_probes(tp, old);
->>>          return 0;
->>>   }
->>>
->>> -- 
->>> 2.39.5
->>>
-> 
+--
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+Joel Granados
 
