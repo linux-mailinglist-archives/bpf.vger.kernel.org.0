@@ -1,190 +1,141 @@
-Return-Path: <bpf+bounces-43775-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43776-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD0639B98DE
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 20:46:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AA099B98E1
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 20:47:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E108F1C21DE5
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 19:46:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98C20B222AE
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 19:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BCF21D151F;
-	Fri,  1 Nov 2024 19:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCFE11D0F50;
+	Fri,  1 Nov 2024 19:46:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ljEmHJVM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aJj8tdKU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F4E1CACF2;
-	Fri,  1 Nov 2024 19:46:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F11251CEAB5
+	for <bpf@vger.kernel.org>; Fri,  1 Nov 2024 19:46:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730490383; cv=none; b=AvZ/qczvAzXZOwox3be3d+3OlOILo4c/q2Y6iKbHd4SddFjjmPWhqGvL5qJu+hoCAwmkOgdWQF89kIh53ngAtXGydbxxgz9/mMoIWjy1UgBgIvkUVv5vBF9qIqxdnJrBgE0KgcI3BcPLA2rLBGGK0QPYclEV3so8y4xglf8e/3U=
+	t=1730490416; cv=none; b=unEcrPvTCRoUvdkXKOb6+ONezr9cVXtN2zJKkGkH8fwPvXjgDLCE0LFU0MSnhGIeSuAKtYV6LYwah2leGJum8+mneUv1jDSD0DVO0CLSsWtbhPgsar0bs1tQTThAyLEY8lbnmLH+3ghHWPRW5ZOlSEZSqrM8GoxD4xf+PZ8H7MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730490383; c=relaxed/simple;
-	bh=Q1XJmMNbRTmr+G0p/GjqtphlmLT6K7uAVsxG7/Hx7MU=;
+	s=arc-20240116; t=1730490416; c=relaxed/simple;
+	bh=TxbT9eNnZTYLQsyQJIopoKv803llp4mbfh2k1X/QDNs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ImxvNrPUsrw3x7yVXex2goclBr56Tf7tC7RVBVQvWmviXUg41wosIQcHlXngak22ApZOtajAeJOqHQ7R3t2B0U19pvYLTeRWFfcGJc2aJNYoRx5hlPfbWvrWvcqxLDtk35vAR3dJLH+DonBcJDFcDHXyhGfNZ12gnuQZt/bOeMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ljEmHJVM; arc=none smtp.client-ip=209.85.214.170
+	 To:Cc:Content-Type; b=ca9k/6VV78FlH+fD44g3gIAHSDuQ0tfOIgagbSsmLFwE/8h+MjErLAZzyRr5Lpy6vejr2Hxi/TjSu8u7L4bFvqhYLdDwnyCSP7s7I7x++otOl0UvCkXECXj5fUChtvB9KXLRW746XpeA3AJ2RrMIlzEYARE257/QCe1NSRd7VS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aJj8tdKU; arc=none smtp.client-ip=209.85.215.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-20e6981ca77so26413785ad.2;
-        Fri, 01 Nov 2024 12:46:21 -0700 (PDT)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7ea68af2f62so1797370a12.3
+        for <bpf@vger.kernel.org>; Fri, 01 Nov 2024 12:46:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730490381; x=1731095181; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730490414; x=1731095214; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mo+Yasuw/oRyXv0Io4gB8Pw1IePUj74kOgbZY0y0LoE=;
-        b=ljEmHJVMoz/KWyb96BdCCGr5qjJV2JIG0E9HJ6LxGajyz9KCwhztTLc7HNH9WNOCfG
-         sTGD5uYLEEn1+0m1MN2kPLTgS/XDYm13UOMgXCvRDF4iNmE9sRQCrZmHH5/HhTvs1tML
-         rdn+FRK3EpE+L+XQ/KpD+3Q8f4OgsIZver2Nf2AGOoKqF+pviot2LQ/P454rQGlvfT8o
-         1ACB8kXSIfbN6vB9gLuGmdSRGTK+sq6CzxMdfRthPSi+EiNbEAZ28akIeThQLuNZLRaU
-         9uogtI1Jua+38RiyuaJ+Gf7CGc85V79YMU7dZRzIJzTUo3BWWTg5XHgpQEbdBtSWbIfI
-         TMbw==
+        bh=bL82FBjmxnjlpjrlRs7TO6Nc1TczWuc4HNGfpdtb3gs=;
+        b=aJj8tdKUD/+xA7QJqxjCIIYnRqMK+s1JIz7lfB08oS1DezVayXZVvaJ4zibM2L1wy6
+         zxuNGfAqIDcBdJd3qLX70jrwigaMcBUJl2TlBk8two3CyYdGR+CdMvcU5iMArf40ZQ/K
+         T0jutJLmHeMUyLrYEEtYNyaQKuiNdMQbFlb2Rwsdy/0i4GaUsL/KllQYxr1B4yjrCH0B
+         a9vaPgTsAxTarRm/LTvicbZBcp0jarsAzzAgwDelLwnnaJThI3h/BP5kkOHo4tEevjGV
+         D/jnd6sev6hEKoo4bKZapKY8+DByMnjVDVcFykHBu5CE2Ic1pRVjJkh6DEz1lydv/e3K
+         JjjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730490381; x=1731095181;
+        d=1e100.net; s=20230601; t=1730490414; x=1731095214;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mo+Yasuw/oRyXv0Io4gB8Pw1IePUj74kOgbZY0y0LoE=;
-        b=rlf9RL+7ELnqOrbGn5mX2SQBS/q+Fw5+piNZqewcJCbm1bQ6icoNXeoPM1TT94QKQE
-         L/ildxXpQrB88NhfvIXDPBG1/umwjTQkmwXuLrI2x8MxItLJSKc7Z3nmP5FqC3o5DfgF
-         AGyZX2xCC7YCQHooLeMDKm7XooGwAomrS5pidteNm7DSbSUHgISFy19n/AgZoHPO8rQC
-         dhYKkMzMK+KUFeiElamjpJ//dG1thDUaEjwFH0q/Ph9ggwO6fO3icA1gQLLDNIQWW7at
-         7zWaYxpF089JG3uqT+DQ+1V1TdlcfnXR5HFN1BEf049t620m8iuYxT4D97V/4lZdUvwE
-         T+9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUj59ixNRWDtpz4yZ107DvjpFQVblGXjApfIIfZ+vJhTUD8Nx3wqmc+2/DMoAdlxP9Pw9feB1n/wUlCYk92@vger.kernel.org, AJvYcCVQrP1Rsxf/dSXTnFsv5DU0+eT5Z5wEcwDt8nFHJrJ7G4xx1v2lTboT808pCwUNW1cxGHw=@vger.kernel.org, AJvYcCVu53Wqxv7GY4uH0ZO6rZevrYdi/5vp9JGa9uKVdaK4QmYapUrr3NLQXsSw2iLZgu46jvxD0ARl/rZQyQOY8ns26w==@vger.kernel.org, AJvYcCX8GcJO9Qb+UamyPYt+Vg5GL8tYZtTRQD/DvUhPPAWTWF7LT2t9k0AuK/SS/ZlgvKqF6Q4936/TlVFwDzHX3sedUA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLEvFEvX2UPXoD3Q5CVRnVzNAiaPIjPhtVlyiZIFgWdvV6Rnaf
-	2JA6L16oqf4KBm2T1ZnjtvVIXQLnRdT59j0ID12yhf5CKXXWUY0bTnXYikJFp1o8D4KpgZYqcyl
-	idHfZ4XyZryCX1GI8aHbgt0oJdfk=
-X-Google-Smtp-Source: AGHT+IG9LKkkHXi5pRokPFdZN6EHwavi1lSDB7YCcE3CLHey6at+eRKQjhdoFNA6jBPtBVtAlIqT+Pg0mMPcCAZkKo0=
-X-Received: by 2002:a17:902:c40c:b0:20c:7d4c:64db with SMTP id
- d9443c01a7336-21103c7bfafmr98648865ad.49.1730490381440; Fri, 01 Nov 2024
- 12:46:21 -0700 (PDT)
+        bh=bL82FBjmxnjlpjrlRs7TO6Nc1TczWuc4HNGfpdtb3gs=;
+        b=AdcbhncD2Mt9IEGYekhwHT6jMYVm6v23/VmHL03ZhFs7mWfEHV77FT12slW33DWcTB
+         4R+14z9MdUK1po0el2t26cgKVOC5qEDznMpusrsteDeJqft3rgtK62d0niOcPrP2MAP1
+         bUGClsOo/dImso1WqyMFOWN+8jsdjfNAi6cxzMHuGp7mJ1i2nxHcx6lhHtQmiwVHttS/
+         vWM8Nmsny7HjeCKen0TsQ3YCXJ+SDVlAZh3/hCtYvgtyf8PRQYVEfS8Sbx2NBVvR15FN
+         p0CUeKNHGbnX5b0yRVSymGCiGutROSj2Sk8brnA5ob5G6BdMOpYsRFEECiGteYozD83i
+         hSMQ==
+X-Gm-Message-State: AOJu0YxK1yt1iOTXceH1zN4dKt2JR5yxBMFN1vaZ6FQq+uUVgwNe9kbq
+	AnmQspMqflu7cLw8bDQhvASyLgR7QLNEX097Z1urqovM01jP+yJAier4y8yuEZjBjHa1pkg1oOx
+	iS8qhNu/TrVbJHM7/rB+d4/evymk=
+X-Google-Smtp-Source: AGHT+IHVy1MtvpTpsPQ3fWpVCO5Jxlx08iRgoeZhw6R9LEiZ/AcWNwdq++9rbnKvq10lU5lxQIZO7YpaoeujOtY1/TU=
+X-Received: by 2002:a17:90b:3886:b0:2e2:ebbb:760c with SMTP id
+ 98e67ed59e1d1-2e94c2bd744mr6486608a91.11.1730490414349; Fri, 01 Nov 2024
+ 12:46:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1730150953.git.jpoimboe@kernel.org> <42c0a99236af65c09c8182e260af7bcf5aa1e158.1730150953.git.jpoimboe@kernel.org>
- <CAEf4BzY_rGszo9O9i3xhB2VFC-BOcqoZ3KGpKT+Hf4o-0W2BAQ@mail.gmail.com>
- <20241030055314.2vg55ychg5osleja@treble.attlocal.net> <CAEf4BzYzDRHBpTX=ED3peeXyRB4QgOUDvYSA4p__gti6mVQVcw@mail.gmail.com>
- <20241031230313.ubybve4r7mlbcbuu@jpoimboe> <CAEf4BzaQYqPfe2Qb5n71JVAAD3-1Q7q2+_cnQMQEa43DvV5PCQ@mail.gmail.com>
- <20241101192937.opf4cbsfaxwixgbm@jpoimboe> <CAEf4Bza6QZt=N8=O7NU3saHpJ_XrXRdGn48gVJMN+kawurNP3g@mail.gmail.com>
-In-Reply-To: <CAEf4Bza6QZt=N8=O7NU3saHpJ_XrXRdGn48gVJMN+kawurNP3g@mail.gmail.com>
+References: <cover.1730449390.git.vmalik@redhat.com>
+In-Reply-To: <cover.1730449390.git.vmalik@redhat.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 1 Nov 2024 12:46:09 -0700
-Message-ID: <CAEf4BzZvhuUeGYbo1Nesfdx3=-WAkAT2OjSdtE4tfRV7H7PZoQ@mail.gmail.com>
-Subject: Re: [PATCH v3 09/19] unwind: Introduce sframe user space unwinding
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: x86@kernel.org, Peter Zijlstra <peterz@infradead.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, linux-kernel@vger.kernel.org, 
-	Indu Bhagat <indu.bhagat@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	Mark Brown <broonie@kernel.org>, linux-toolchains@vger.kernel.org, 
-	Jordan Rome <jordalgo@meta.com>, Sam James <sam@gentoo.org>, linux-trace-kernel@vger.kerne.org, 
-	Jens Remus <jremus@linux.ibm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Florian Weimer <fweimer@redhat.com>, Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>
+Date: Fri, 1 Nov 2024 12:46:42 -0700
+Message-ID: <CAEf4Bzaf4SpcL6cV+VNxfiqifhM=7e_sY5YyBCZKVJqdvxqqQA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/3] selftests/bpf: Improve building with extra
+To: Viktor Malik <vmalik@redhat.com>
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 1, 2024 at 12:44=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Nov 1, 2024 at 1:38=E2=80=AFAM Viktor Malik <vmalik@redhat.com> wro=
+te:
 >
-> On Fri, Nov 1, 2024 at 12:29=E2=80=AFPM Josh Poimboeuf <jpoimboe@kernel.o=
-rg> wrote:
-> >
-> > On Fri, Nov 01, 2024 at 11:34:48AM -0700, Andrii Nakryiko wrote:
-> > > 00200000-170ad000 r--p 00000000 07:01 5
-> > > 172ac000-498e7000 r-xp 16eac000 07:01 5
-> > > 49ae7000-49b8b000 r--p 494e7000 07:01 5
-> > > 49d8b000-4a228000 rw-p 4958b000 07:01 5
-> > > 4a228000-4c677000 rw-p 00000000 00:00 0
-> > > 4c800000-4ca00000 r-xp 49c00000 07:01 5
-> > > 4ca00000-4f600000 r-xp 49e00000 07:01 5
-> > > 4f600000-5b270000 r-xp 4ca00000 07:01 5
-> > >
-
-I should have maybe posted this in this form:
-
-00200000-170ad000 r--p 00000000 07:01 5  /packages/obfuscated_file
-172ac000-498e7000 r-xp 16eac000 07:01 5  /packages/obfuscated_file
-49ae7000-49b8b000 r--p 494e7000 07:01 5  /packages/obfuscated_file
-49d8b000-4a228000 rw-p 4958b000 07:01 5  /packages/obfuscated_file
-4a228000-4c677000 rw-p 00000000 00:00 0
-4c800000-4ca00000 r-xp 49c00000 07:01 5  /packages/obfuscated_file
-4ca00000-4f600000 r-xp 49e00000 07:01 5  /packages/obfuscated_file
-4f600000-5b270000 r-xp 4ca00000 07:01 5  /packages/obfuscated_file
-
-Those paths are pointing to the same binary.
-
-
-> > > Sorry, I'm probably dense and missing something. But from the example
-> > > process above, isn't this check violated already? Or it's two
-> > > different things? Not sure, honestly.
-> >
-> > It's hard to tell exactly what's going on, did you strip the file names=
-?
+> When trying to build BPF selftests with additional compiler and linker
+> flags, we're running into multiple problems. This series addresses all
+> of them:
 >
-> Yes, I did, of course. But as I said, they all belong to the same main
-> binary of the process.
+> - CFLAGS are not passed to sub-makes of bpftool and libbpf. This is a
+>   problem when compiling with PIE as libbpf.a ends up being non-PIE and
+>   cannot be linked with other binaries (patch #1).
 >
-> >
-> > The sframe limitation is per file, not per address space.  I assume
-> > these are one file:
-> >
-> > > 172ac000-498e7000 r-xp 16eac000 07:01 5
-> >
-> > and these are another:
-> >
-> > > 4c800000-4ca00000 r-xp 49c00000 07:01 5
-> > > 4ca00000-4f600000 r-xp 49e00000 07:01 5
-> > > 4f600000-5b270000 r-xp 4ca00000 07:01 5
-> >
-> > Multiple mappings for a single file is fine, as long as they're
-> > contiguous.
+> - bpftool Makefile runs `llvm-config --cflags` and appends the result to
+>   CFLAGS. The result typically contains `-D_GNU_SOURCE` which may be
+>   already set in CFLAGS. That causes a compilation error (patch #2).
 >
-> No all of what I posted above belongs to the same file (except
-> "4a228000-4c677000 rw-p 00000000 00:00 0" which doesn't have
-> associated file, but I suspect it originally was part of this file, we
-> do some tricks with re-mmap()'ing stuff due to huge pages usage).
+> - Some GCC flags are not supported by Clang but there are binaries which
+>   are always built with Clang but reuse user-defined CFLAGS. When CFLAGS
+>   contain such flags, compilation fails (patch #3).
 >
-> >
-> > > > Actually I just double checked and even the kernel's ELF loader ass=
-umes
-> > > > that each executable has only a single text start+end address pair.
-> > >
-> > > See above, very confused by such assumptions, but I'm hoping we are
-> > > talking about two different things here.
-> >
-> > The "contiguous text" thing seems enforced by the kernel for
-> > executables.  However it doesn't manage shared libraries, those are
-> > mapped by the loader, e.g. /lib64/ld-linux-x86-64.so.2.
-> >
-> > At a quick glance I can't tell if /lib64/ld-linux-x86-64.so.2 enforces
-> > that.
-> >
-> > > > There's no point in adding complexity to support some hypothetical.=
-  I
-> > > > can remove the printk though.
-> > >
-> > > We are talking about fundamental things like format for supporting
-> > > frame pointer-less stack trace capture. It will take years to adopt
-> > > SFrame everywhere, so I think it's prudent to think a bit ahead beyon=
-d
-> > > just saying "no real application should need more than 4GB text", IMO=
-.
-> >
-> > I don't think anybody is saying that...
-> >
-> > --
-> > Josh
+> Changelog:
+> ----------
+> v2 -> v3:
+> - resolve conflicts between patch #1 and 4192bb294f80 ("selftests/bpf:
+>   Provide a generic [un]load_module helper")
+> - add Quentin's and Jiri's acks for patches #2 and #3
+>
+> v1 -> v2:
+> - cover forgotten case in patch#1 (noted by Eduard)
+> - remove -D_GNU_SOURCE unconditionally in patch#2 (suggested by Andrii)
+> - rewrite patch#3 to just add -Wno-unused-command-line-argument
+>   (suggested by Andrii)
+>
+> Viktor Malik (3):
+>   selftests/bpf: Allow building with extra flags
+>   bpftool: Prevent setting duplicate _GNU_SOURCE in Makefile
+>   selftests/bpf: Disable warnings on unused flags for Clang builds
+>
+
+I've applied the last two patches, they seem to be independent from
+the first, right?
+
+
+>  tools/bpf/bpftool/Makefile           |  6 ++++-
+>  tools/testing/selftests/bpf/Makefile | 36 +++++++++++++++++++---------
+>  2 files changed, 30 insertions(+), 12 deletions(-)
+>
+> --
+> 2.47.0
+>
+>
 
