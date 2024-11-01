@@ -1,118 +1,99 @@
-Return-Path: <bpf+bounces-43720-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43721-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDC1D9B8F63
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 11:39:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B44269B8FB3
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 11:49:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78B30B23426
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 10:39:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78954281AC1
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 10:49:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441C21AAE18;
-	Fri,  1 Nov 2024 10:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A52E170A3D;
+	Fri,  1 Nov 2024 10:49:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD911AA782;
-	Fri,  1 Nov 2024 10:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C03D9839F4;
+	Fri,  1 Nov 2024 10:49:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730457370; cv=none; b=N4FFp5xIfpXMWn5GbmNN4IkVMo4Ok4WCXV5BLRqNuqY6QrFaJn4A/r5sqKFomrSStQMtbC6bRzpcJDNxfqPgsaJuYcbBU/fjDLC7qWxSEqOtLJwlgx2TbURxQK8UIYv3scFb3ryXiBZOpQ3doYuDfV/TtfGuGp8RN4mpaRsSdio=
+	t=1730458170; cv=none; b=tOdtguStt605VYlZn+hv0Gc+auL8mqUgyffGDqmE0jUo8CZIGc3maa9UONh5sVUXAcPAe0aErf3pzysF+x0rIN4R7pzb453xf/2k0Le5uLNFALgpfKARfvakLuThFIXLL+DC8H8m5ubUEGwpGwUcNpC8jxFCgq4aRyGRcftq74o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730457370; c=relaxed/simple;
-	bh=E5aIvIh/79Y8klDUzv69R95Ek4HDw81gwTgCQmUzMWU=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=rhL+055zV6Vrbq2OHUx7KZpC9pfuaf6Acg5YvqC/cAr9bpKN70kLE+vYV8NmIeRJ/elwkZ2nwehAaDkMnHKNATFEH8lu9F95avE1GD4+vt/VvBPDEt0AjzSnalBIySBup2IvY2hSiSIOnH4ab9pl9lVaAOIL1T/Q5WSvJ6/7ndA=
+	s=arc-20240116; t=1730458170; c=relaxed/simple;
+	bh=xJs8HTHdkHjCwS4Ii21qZMY4KqXpGLVAUr9L4bmLR6U=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TmIYkRZcrv6VpqWmsGVgfl5mDjC4U4g9LxWpXebYuM+zbiI0S/Zrr0JXK65ae/5/UkX53lBR0XjwdDfWEFHPBVO8Q0k/Gm3iqYcIYkO/rOcCpp5JRhxxdLEbu9O7OWixTUpQOX4s0X4VimqHMHSWcXo/D0dIT44LQ9W6YSUeYgU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4689CC4CED2;
-	Fri,  1 Nov 2024 10:36:10 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.98)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1t6p1g-00000005S92-2L6K;
-	Fri, 01 Nov 2024 06:37:08 -0400
-Message-ID: <20241101103708.417405830@goodmis.org>
-User-Agent: quilt/0.68
-Date: Fri, 01 Nov 2024 06:36:57 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AEE0C4CECD;
+	Fri,  1 Nov 2024 10:49:26 +0000 (UTC)
+Date: Fri, 1 Nov 2024 06:50:23 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Jordan Rife <jrife@google.com>,
- Michael Jeanson <mjeanson@efficios.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Alexei Starovoitov <ast@kernel.org>,
- Yonghong Song <yhs@fb.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Namhyung Kim <namhyung@kernel.org>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- bpf@vger.kernel.org,
- Joel Fernandes <joel@joelfernandes.org>,
- linux-trace-kernel@vger.kernel.org
-Subject: [for-next][PATCH 10/11] tracing: Add might_fault() check in __DECLARE_TRACE_SYSCALL
-References: <20241101103647.011707614@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, linux-arch@vger.kernel.org, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Huacai Chen
+ <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Michael Ellerman
+ <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, Madhavan
+ Srinivasan <maddy@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH v18 01/17] fgraph: Pass ftrace_regs to entryfunc
+Message-ID: <20241101065023.72933d1b@gandalf.local.home>
+In-Reply-To: <20241101105102.eb308ab85b2b13d03444d4bf@kernel.org>
+References: <172991731968.443985.4558065903004844780.stgit@devnote2>
+	<172991733069.443985.15154246733356205391.stgit@devnote2>
+	<20241031155324.108ed8ef@gandalf.local.home>
+	<20241101105102.eb308ab85b2b13d03444d4bf@kernel.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+On Fri, 1 Nov 2024 10:51:02 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-Catch incorrect use of syscall tracepoints even if no probes are
-registered by adding a might_fault() check in trace_##name()
-emitted by __DECLARE_TRACE_SYSCALL.
+> Ah, good catch! It should put the flag only when HAVE_DYNAMIC_FTRACE_WITH_ARGS
+> is enabled.
+> 
+> static struct ftrace_ops graph_ops = {
+> 	.func			= ftrace_graph_func,
+> #ifdef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+> 	.flags			= FTRACE_OPS_GRAPH_STUB | FTRACE_OPS_FL_SAVE_ARGS,
+> #elif defined(CONFIG_DYNAMIC_FTRACE_WITH_ARGS)
+> 	.flags			= FTRACE_OPS_GRAPH_STUB | FTRACE_OPS_FL_SAVE_REGS,
+> #else
+> 	.flags			= FTRACE_OPS_GRAPH_STUB,
+> #endif
+> 
+> This will save fregs or regs or NULL according to the configuration.
+> 
 
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Jordan Rife <jrife@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Michael Jeanson <mjeanson@efficios.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Jordan Rife <jrife@google.com>
-Cc: linux-trace-kernel@vger.kernel.org
-Link: https://lore.kernel.org/20241031152056.744137-5-mathieu.desnoyers@efficios.com
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/linux/tracepoint.h | 1 +
- 1 file changed, 1 insertion(+)
+Please do not add that to the C code. It's really ugly. Just correct the
+comment. Note, FTRACE_OPS_FL_SAVE_ARGS is already dynamic by configuration:
 
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index 906f3091d23d..425123e921ac 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -301,6 +301,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 	__DECLARE_TRACE_COMMON(name, PARAMS(proto), PARAMS(args), cond, PARAMS(data_proto)) \
- 	static inline void trace_##name(proto)				\
- 	{								\
-+		might_fault();						\
- 		if (static_branch_unlikely(&__tracepoint_##name.key))	\
- 			__DO_TRACE(name,				\
- 				TP_ARGS(args),				\
--- 
-2.45.2
+#ifndef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+#define FTRACE_OPS_FL_SAVE_ARGS                        FTRACE_OPS_FL_SAVE_REGS
+#else
+#define FTRACE_OPS_FL_SAVE_ARGS                        0
+#endif
 
+I'm a bit confused at what you are trying to achieve here.
 
+-- Steve
 
