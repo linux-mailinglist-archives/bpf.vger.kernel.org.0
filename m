@@ -1,103 +1,80 @@
-Return-Path: <bpf+bounces-43702-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43704-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81F009B8A43
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 05:39:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A01949B8A54
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 06:08:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B4441F22901
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 04:39:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F9C12825CE
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 05:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A09149DFA;
-	Fri,  1 Nov 2024 04:39:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5521014AD3F;
+	Fri,  1 Nov 2024 05:08:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="QoaI2uOx"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UN5ribLw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2030E1494B5
-	for <bpf@vger.kernel.org>; Fri,  1 Nov 2024 04:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA4F149DF7;
+	Fri,  1 Nov 2024 05:08:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730435949; cv=none; b=bOmz3FxJIwSLy+cT+D1RAQs2MIh8/fio2BEuWF8XW6jzgMHBuR1xu+QBooQUX6MUXNT1OpEW/hmAWS92B8q6o45q5lCkIHqWbO50l/wkZSL+q9aPYFGpJdOmPToAibpZAAOzQG3kPCMUP4Xi7r2fupFEpUGlJIg3B4DibC/27jE=
+	t=1730437697; cv=none; b=L7BsioyXFADbPA3/MMDaO41AnOCVeIZUnsRYE04GyDEKrT9ufjCtUw/yj0nli42fBKzlvg3i+qoBoPszKmN7fMBCrjQNbZAvoEhB+nb0Tyj23jQmIOmPT6jox+zxATjBg7AEqxWfiZ9Kv61ruWqaUHz95QQWf0PMytQUWvFSoYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730435949; c=relaxed/simple;
-	bh=ZekkZF+UkdHn0Q91alOKmAiQsy9GAM3MuhejYi4hJYs=;
+	s=arc-20240116; t=1730437697; c=relaxed/simple;
+	bh=H7vjDWGQG26wOoS585XzWgyDF2JFLlayqip2raZHkC8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EpJ8sMZeFxGHflBfcdOOCm33fIgrUukWVf8QyCopTZlZqFQ1rAwAuh1CW8fBXJXbj5pAJIjOhxwDGn9WGm/YjtKDvWAw4KMBNlExrkJgV4Any2/LtGHFJAEdHlhR2Ntj9RUVs9VRweSTZkgOB1yfKe0dqygIfI9B2SRCqfEaat4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=QoaI2uOx; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-20c714cd9c8so17428665ad.0
-        for <bpf@vger.kernel.org>; Thu, 31 Oct 2024 21:39:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1730435946; x=1731040746; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IjTMm7UeOMlkBJOsYxfUqt1WhI+YrUl78uiV5XzaxbI=;
-        b=QoaI2uOxgBIC9UnQxUy+RgUg5F/39CGqMiEu018qxqfBHVNOeoXazCJ+BNQr0XVb8K
-         RAmh1MGUOdCjLDRLZ5j38uJo7Zq4IZD9rDyEv3upVFy+wom+oeZvBH1GykQm34qHCd3g
-         S30Nn0YynwzgYHue8L4c2Q8IyxONot2DcUn6A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730435946; x=1731040746;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IjTMm7UeOMlkBJOsYxfUqt1WhI+YrUl78uiV5XzaxbI=;
-        b=k0jJ24MBK5u6eX6gOaJxJNmlHK5PAxhUy8FhVgFlEuu6fq0NkpOUWfXVPDW3ymYiYb
-         s0FGinbuBq0Pj9CBuan3hp+xEbsOrQ9JoC76nYNekumQ8JhRrp5qqaztMB8PmpkLlMWe
-         EZ30fJWOsgKdIAHEkWKdQqXqpMOcqbwpCiheZ3juYaMswGeAiAv67cD4/CS9Ic95sKLF
-         Sp08d0+523JqaYTZLPJe5Zr9QZiV9FTNrQjb189YPNaRb/iHc+lJXGNQj/KJF69uqAKM
-         AJr5bLwmOzNVeQCVtqXWXcADGxZ0wIPgse0ksqon+9oJ/aI6RvQwhEKKx1KqfI2XwyYW
-         lE+A==
-X-Forwarded-Encrypted: i=1; AJvYcCUYb5QKs65i7XSZTLMgwsdq7FGg3hW511kyW4Fak+ohuQ1jVCpqexwhkyPsrNpbRgdnw7w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwyeW/wr/gsg16YZKkjfhEhPETrM6AZQnQq5Z4nDn27CYDKiWPg
-	mR+7JPCPaSXw9OnA4z4RhX59OxKoItbya+IN9ne7x2qlq9Smx++cwUpsd2BfOW4=
-X-Google-Smtp-Source: AGHT+IHFzA8goxLg/i7aPIPHLWpnxlZs+6kU062+Winb+Bwot9ysYkafB2xRqmetM9tiBbmc4yIqqA==
-X-Received: by 2002:a17:903:1c7:b0:206:a87c:2864 with SMTP id d9443c01a7336-2111afd6ca6mr22884905ad.42.1730435946221;
-        Thu, 31 Oct 2024 21:39:06 -0700 (PDT)
-Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211056edc7csm15778075ad.36.2024.10.31.21.39.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Oct 2024 21:39:05 -0700 (PDT)
-Date: Thu, 31 Oct 2024 21:39:02 -0700
-From: Joe Damato <jdamato@fastly.com>
-To: "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
-Cc: netdev@vger.kernel.org, pabeni@redhat.com, namangulati@google.com,
-	edumazet@google.com, amritha.nambiar@intel.com, sdf@fomichev.me,
-	peter@typeblog.net, m2shafiei@uwaterloo.ca, bjorn@rivosinc.com,
-	hch@infradead.org, willy@infradead.org,
-	willemdebruijn.kernel@gmail.com, skhawaja@google.com,
-	kuba@kernel.org, Martin Karsten <mkarsten@uwaterloo.ca>,
-	Bagas Sanjaya <bagasdotme@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:BPF [MISC] :Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 7/7] docs: networking: Describe irq suspension
-Message-ID: <ZyRbZpCiANaxNNlv@LQ3V64L9R2>
-Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
-	"Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
-	netdev@vger.kernel.org, pabeni@redhat.com, namangulati@google.com,
-	edumazet@google.com, amritha.nambiar@intel.com, sdf@fomichev.me,
-	peter@typeblog.net, m2shafiei@uwaterloo.ca, bjorn@rivosinc.com,
-	hch@infradead.org, willy@infradead.org,
-	willemdebruijn.kernel@gmail.com, skhawaja@google.com,
-	kuba@kernel.org, Martin Karsten <mkarsten@uwaterloo.ca>,
-	Bagas Sanjaya <bagasdotme@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:BPF [MISC] :Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>
-References: <20241101004846.32532-1-jdamato@fastly.com>
- <20241101004846.32532-8-jdamato@fastly.com>
- <cd033a99-014c-4b41-bfca-7b893604fe5a@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WTxRW5TSmxLJaYfTRZJSM70CP4H8zh9SAz2CXIghqRdm5tYXfXjTuYh/lvF5/WcywVZHWx2pfJrJx3h+kvOg1Gdw5Sb3vb3loDbDm+4P37mK8fINtPA7uu8ywx+mJSD7bVWh9GktKmDdCnbUeEr5Ska3/UdSJhkfuwzGAmcKbbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UN5ribLw; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1730437696; x=1761973696;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=H7vjDWGQG26wOoS585XzWgyDF2JFLlayqip2raZHkC8=;
+  b=UN5ribLw3cZF1WdxQ5+lmc/pYOr8mw1RlvlFe0N/FnLhK2KQDrHI/044
+   SeCykq5Ic+pGFmX7y51j2wvdhu2OOWPmw9Uc1M7ukdt3lrtMxetXMavUp
+   5s2adPxIMRKd7cT2md+U6wGWWENDjSZWUXo1knB8DW90opMEqAlQd6+4t
+   bG1bzy0fDw1hWrIopBdeKD9t3f6BnvimLjQ/wOSCWZrMFKaUq5iiE4G8Z
+   C54Pn4hUWMeUo1YxZo9b1WCsUW9AZj0lloPKoWinj5yrSY/pIzSdMg7lx
+   iQeIpjT2MYfMadYaoPpBSMprebZvIlwR9OmFK4jsqZW76i89Xl1rgMd7U
+   A==;
+X-CSE-ConnectionGUID: aFDhHUPUTkaY1D2XSLUYLQ==
+X-CSE-MsgGUID: RSvx8SzER5O/s8yE8ijyYA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11242"; a="30091586"
+X-IronPort-AV: E=Sophos;i="6.11,248,1725346800"; 
+   d="scan'208";a="30091586"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2024 22:08:12 -0700
+X-CSE-ConnectionGUID: gyuYbdDbS8CwziV/0jEL0g==
+X-CSE-MsgGUID: GyW6NjXMRZOc6wgrERN0Jg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,248,1725346800"; 
+   d="scan'208";a="120315135"
+Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 31 Oct 2024 22:08:08 -0700
+Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1t6jtF-000h9r-2s;
+	Fri, 01 Nov 2024 05:08:05 +0000
+Date: Fri, 1 Nov 2024 13:07:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, rostedt@goodmis.org, ast@kernel.org,
+	daniel@iogearbox.net, martin.lau@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, mathieu.desnoyers@efficios.com,
+	linux-kernel@vger.kernel.org, mhiramat@kernel.org,
+	peterz@infradead.org, paulmck@kernel.org, jrife@google.com,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH trace/for-next 2/3] bpf: decouple BPF link/attach hook
+ and BPF program sleepable semantics
+Message-ID: <202411011244.LrXOUj8p-lkp@intel.com>
+References: <20241031210938.1696639-2-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -106,78 +83,104 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cd033a99-014c-4b41-bfca-7b893604fe5a@intel.com>
+In-Reply-To: <20241031210938.1696639-2-andrii@kernel.org>
 
-On Thu, Oct 31, 2024 at 10:47:05PM -0500, Samudrala, Sridhar wrote:
-> 
-> 
-> On 10/31/2024 7:48 PM, Joe Damato wrote:
-> > Describe irq suspension, the epoll ioctls, and the tradeoffs of using
-> > different gro_flush_timeout values.
-> > 
-> > Signed-off-by: Joe Damato <jdamato@fastly.com>
-> > Co-developed-by: Martin Karsten <mkarsten@uwaterloo.ca>
-> > Signed-off-by: Martin Karsten <mkarsten@uwaterloo.ca>
-> > Acked-by: Stanislav Fomichev <sdf@fomichev.me>
-> > Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-> > ---
-> <snip>
-> 
-> 
-> > +
-> > +IRQ suspension
-> > +--------------
-> > +
-> > +IRQ suspension is a mechanism wherein device IRQs are masked while epoll
-> > +triggers NAPI packet processing.
-> > +
-> > +While application calls to epoll_wait successfully retrieve events, the kernel will
-> > +defer the IRQ suspension timer. If the kernel does not retrieve any events
-> > +while busy polling (for example, because network traffic levels subsided), IRQ
-> > +suspension is disabled and the IRQ mitigation strategies described above are
-> > +engaged.
-> > +
-> > +This allows users to balance CPU consumption with network processing
-> > +efficiency.
-> > +
-> > +To use this mechanism:
-> > +
-> > +  1. The per-NAPI config parameter ``irq_suspend_timeout`` should be set to the
-> > +     maximum time (in nanoseconds) the application can have its IRQs
-> > +     suspended. This is done using netlink, as described above. This timeout
-> > +     serves as a safety mechanism to restart IRQ driver interrupt processing if
-> > +     the application has stalled. This value should be chosen so that it covers
-> > +     the amount of time the user application needs to process data from its
-> > +     call to epoll_wait, noting that applications can control how much data
-> > +     they retrieve by setting ``max_events`` when calling epoll_wait.
-> > +
-> > +  2. The sysfs parameter or per-NAPI config parameters ``gro_flush_timeout``
-> > +     and ``napi_defer_hard_irqs`` can be set to low values. They will be used
-> > +     to defer IRQs after busy poll has found no data.
-> 
-> Is it required to set gro_flush_timeout and napi_defer_hard_irqs when
-> irq_suspend_timeout is set? Doesn't it override any smaller
-> gro_flush_timeout value?
+Hi Andrii,
 
-It is not required to use gro_flush_timeout or napi_defer_hard_irqs,
-but if they are set they will take over when epoll finds no events.
-Their usage is recommended. See the Usage section of the cover
-letter for details.
+kernel test robot noticed the following build errors:
 
-While gro_flush_timeout and napi_defer_hard_irqs are not strictly
-required, it is difficult for the polling-based packet delivery loop
-to gain control over packet delivery.
+[auto build test ERROR on trace/for-next]
 
-Please see a previous email about this from the RFC for more
-details:
+url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/bpf-decouple-BPF-link-attach-hook-and-BPF-program-sleepable-semantics/20241101-051131
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace for-next
+patch link:    https://lore.kernel.org/r/20241031210938.1696639-2-andrii%40kernel.org
+patch subject: [PATCH trace/for-next 2/3] bpf: decouple BPF link/attach hook and BPF program sleepable semantics
+config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20241101/202411011244.LrXOUj8p-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241101/202411011244.LrXOUj8p-lkp@intel.com/reproduce)
 
-https://lore.kernel.org/netdev/2bb121dd-3dcd-4142-ab87-02ccf4afd469@uwaterloo.ca/
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202411011244.LrXOUj8p-lkp@intel.com/
 
-In the cover letter, you can note the difference in performance when
-gro_flush_timeout is set to different values. Note the explanation
-of suspendX; each suspend case is testing a different
-gro_flush_timeout.
+All errors (new ones prefixed by >>):
 
-Let us know if you have any other questions; both Martin and I are
-happy to help or further explain anything that is not clear.
+   net/core/dev.c: In function 'bpf_xdp_link_attach':
+>> net/core/dev.c:9767:9: error: too few arguments to function 'bpf_link_init'
+    9767 |         bpf_link_init(&link->link, BPF_LINK_TYPE_XDP, &bpf_xdp_link_lops, prog);
+         |         ^~~~~~~~~~~~~
+   In file included from include/linux/security.h:35,
+                    from include/net/scm.h:9,
+                    from include/linux/netlink.h:9,
+                    from include/uapi/linux/neighbour.h:6,
+                    from include/linux/netdevice.h:44,
+                    from net/core/dev.c:92:
+   include/linux/bpf.h:2724:20: note: declared here
+    2724 | static inline void bpf_link_init(struct bpf_link *link, enum bpf_link_type type,
+         |                    ^~~~~~~~~~~~~
+
+
+vim +/bpf_link_init +9767 net/core/dev.c
+
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9744  
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9745  int bpf_xdp_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9746  {
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9747  	struct net *net = current->nsproxy->net_ns;
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9748  	struct bpf_link_primer link_primer;
+bf4ea1d0b2cb22 Leon Hwang      2023-08-01  9749  	struct netlink_ext_ack extack = {};
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9750  	struct bpf_xdp_link *link;
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9751  	struct net_device *dev;
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9752  	int err, fd;
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9753  
+5acc7d3e8d3428 Xuan Zhuo       2021-07-10  9754  	rtnl_lock();
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9755  	dev = dev_get_by_index(net, attr->link_create.target_ifindex);
+5acc7d3e8d3428 Xuan Zhuo       2021-07-10  9756  	if (!dev) {
+5acc7d3e8d3428 Xuan Zhuo       2021-07-10  9757  		rtnl_unlock();
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9758  		return -EINVAL;
+5acc7d3e8d3428 Xuan Zhuo       2021-07-10  9759  	}
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9760  
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9761  	link = kzalloc(sizeof(*link), GFP_USER);
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9762  	if (!link) {
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9763  		err = -ENOMEM;
+5acc7d3e8d3428 Xuan Zhuo       2021-07-10  9764  		goto unlock;
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9765  	}
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9766  
+aa8d3a716b59db Andrii Nakryiko 2020-07-21 @9767  	bpf_link_init(&link->link, BPF_LINK_TYPE_XDP, &bpf_xdp_link_lops, prog);
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9768  	link->dev = dev;
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9769  	link->flags = attr->link_create.flags;
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9770  
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9771  	err = bpf_link_prime(&link->link, &link_primer);
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9772  	if (err) {
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9773  		kfree(link);
+5acc7d3e8d3428 Xuan Zhuo       2021-07-10  9774  		goto unlock;
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9775  	}
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9776  
+bf4ea1d0b2cb22 Leon Hwang      2023-08-01  9777  	err = dev_xdp_attach_link(dev, &extack, link);
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9778  	rtnl_unlock();
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9779  
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9780  	if (err) {
+5acc7d3e8d3428 Xuan Zhuo       2021-07-10  9781  		link->dev = NULL;
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9782  		bpf_link_cleanup(&link_primer);
+bf4ea1d0b2cb22 Leon Hwang      2023-08-01  9783  		trace_bpf_xdp_link_attach_failed(extack._msg);
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9784  		goto out_put_dev;
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9785  	}
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9786  
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9787  	fd = bpf_link_settle(&link_primer);
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9788  	/* link itself doesn't hold dev's refcnt to not complicate shutdown */
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9789  	dev_put(dev);
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9790  	return fd;
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9791  
+5acc7d3e8d3428 Xuan Zhuo       2021-07-10  9792  unlock:
+5acc7d3e8d3428 Xuan Zhuo       2021-07-10  9793  	rtnl_unlock();
+5acc7d3e8d3428 Xuan Zhuo       2021-07-10  9794  
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9795  out_put_dev:
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9796  	dev_put(dev);
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9797  	return err;
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9798  }
+aa8d3a716b59db Andrii Nakryiko 2020-07-21  9799  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
