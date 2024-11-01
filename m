@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-43762-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43763-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8FFF9B9813
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 20:06:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 072579B9818
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 20:09:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 484ABB21336
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 19:06:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8709282891
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 19:09:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC5C1CF2B7;
-	Fri,  1 Nov 2024 19:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213C21CEEB3;
+	Fri,  1 Nov 2024 19:09:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QTKhgjmk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mha3ZbcX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 357831CF299;
-	Fri,  1 Nov 2024 19:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 366511CEAA0;
+	Fri,  1 Nov 2024 19:09:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730487980; cv=none; b=kdaoBk/Fqqdn9C9R6XMLO18zr5FBCPaY5Ma0jVHKBBlkVaBpNHk3RyEvbZ4ByQ9cVC/EnUMYFp0Gn5anMaxphRIr3tFbRZV7dhtwBtvzq4Nm5Ikcmwwx6XtirLuMbPH7E7GQ87al9zl0vmJcl2o7rX0+7czr9/5E4WR/5zuRGxM=
+	t=1730488147; cv=none; b=dWw9Qm+nb5FYCVDmLJiQd+4aOG9/IS/q+sr4gpRv4bdLDmgBAWmN2nM1a72vDTJDZbcbt+ZewNUVqFbuYrEkTbnpXNroeMIUKhU1ZQuLrIf4J05RpJ+UU3yXkGN0/RBK7msre8Cw/FcoiOp4GPIA54U22SxW/i5YwEaVQe+9j6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730487980; c=relaxed/simple;
-	bh=qHsxnBbVATV78WkKf1EckOzOYdJxuzEj0oXCWURA2js=;
+	s=arc-20240116; t=1730488147; c=relaxed/simple;
+	bh=dOhNJ4bqsltqosWvK48KtLLJ8Qr3/+aIrxC5qXMR0c0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g3JHPbUaIDFACEEbDsYqigZGHEGMZ+ICIjvCdAp5o3pa26HuTzNzunpkJABx6xRddpnlZi8HFyFq5ody+1Sgh7ZEMuhnXoD+OXsLMIxjt981RnVXWOKT4qe8nkH+7aDKWv3e+vizY27MfqC4BIV30Kdffzz3ropst7GF1ZGT5sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QTKhgjmk; arc=none smtp.client-ip=209.85.210.179
+	 To:Cc:Content-Type; b=Z0lwnWIj4DiABLKKnXzYMSIhrbAP9ly/z2fBb6BIuBfS706B+MNnf2kJ4HnXUzccOwt1DxqmLz2FYqSSMEdddnV1Lwrp5zITk8AhsNQGM0uKci5YVv9eQjJ5p8zcNQeY0XOkC7ynsb5oesXp63YeBCrTW/BG1kq2Kn/IDJzhVAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mha3ZbcX; arc=none smtp.client-ip=209.85.215.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-71ec997ad06so1934910b3a.3;
-        Fri, 01 Nov 2024 12:06:18 -0700 (PDT)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7ea9739647bso1728649a12.0;
+        Fri, 01 Nov 2024 12:09:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730487978; x=1731092778; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730488145; x=1731092945; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I2B0t4RxDSvxS/yYokuFKLRf3lQgb/vvZP3JUxPQEZc=;
-        b=QTKhgjmk3vnt840kn0HAEqFMFY1y43tLY2Zrx7aM4wbzToo7GsF/sunTgx+U5pRvl3
-         caeuz61cDoc98tPPARInHQLg3q0ZwunWjv/vig9v2ljq8/97PS4FW+c8quAH3GlB42PN
-         9gJZxU5/pg2N+oQHx4AHcLhYYNjAl64jgxpdpbcG3itZHtWHuxmR5UnG2JmkGrsjkVcb
-         O1ZWstx01x1/r/GcVYPAE8mNpAMtjabo1GZfYl3QTzbFAptao5IRKbcGiCmilnMiA7dz
-         Htdd57KQg4o1+cGFewE3ZBvBj0qHp3G+pPTt55BnrR5XruR1XuR5C/IJKeqxFWwNH0le
-         3aDQ==
+        bh=k3Qb1j+K9O3bLKE8Y4bg9cUjItGlHhRFoYyNHvp2j38=;
+        b=Mha3ZbcX4POVTZ1BLshQByFshhUw3tVTb2ULwVxsHm6rp8mxQHlzjzXMFUlF5+6ENg
+         bDj67ZA8v5Sm+rE65E88xPYhKT9AylgRtquWjeVwEecytqdbAA8PptvzUN2gMd+V3ebm
+         FESMlRhf4Dt8RBIZzu7TMrjffSxAYDcnk1GRmBWG5PBFZS40n88lEFC03n52QuwXd1UH
+         RtEoGzZ1bvboPSaEc+4ISz/xzAZECm/04ELISoggjkJMfAADAniYvXCUbeN7vQY5cQl+
+         ZzqlQKQkvCE8NesnY1NKR+daJt0tdBDmKNvemthXJXu8IJjMLc2DSt4CzeIb4H1NUlgX
+         IlKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730487978; x=1731092778;
+        d=1e100.net; s=20230601; t=1730488145; x=1731092945;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I2B0t4RxDSvxS/yYokuFKLRf3lQgb/vvZP3JUxPQEZc=;
-        b=NHb7ND89+jK7VfWsnfOmJimgiERY46fEWGD99oQa5jjC2Nu+jt5rZb9xmEJ7nBQ3rz
-         1qEjxSa5imF7FY96/Z9+Oldf8+tkA3rN6VQPzyZX3wsbLoTRKIVAINE3cyTstKljzDuB
-         xWKW19t1gALq63cLpsbN397ZvCGHeN0yP8tRff88Fi2wooc7mO9JKE97pgZEeEzRfk5d
-         nFBeOEcYnLjPlxlhgJRQQn+cYDrGAuBcruAVIuP12JyyxaIQpFPL083fVPepoHynTki9
-         KFurjjSqDkJGY+CkUsMIwlnhLGVC6z9gcbZxWOPPlQ2PNkgUrXDuOs7RKOreHCCY7FWX
-         clUw==
-X-Forwarded-Encrypted: i=1; AJvYcCVHeqnb2d+TCSzg2okpZvjjD4IIKBJ7LDNSXEe1hCiWdgPZLiP8/KzxUMi9tH971DLeW9g=@vger.kernel.org, AJvYcCX9WZ8akFm1UnBNTq+vKWF5nK66dBEKY7pMVsMbkYVH+9evG1Ss6DYptZcahJhe/5mWiDujdS9rASf9Vbor@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/yv1c7bc88LTDqEZqABBicpRlla6Hvldmi0pOngSTkb/oZSYH
-	gGKfqHpIjlh96G9WjZLWhQeLZEJ30xaaaRlONfusGgWqEpNsCMDYLppBw+N/P1pd+ZJoRVJnVJR
-	70ex4+eTxaQVU/cJE9h1AqaU2prk=
-X-Google-Smtp-Source: AGHT+IGeFIjU0Fs6Lk0krg20KNxZrAC2Uyb/WxyBatKdOZE32SzqsXpvy+IxsydaYXTjCoKi9VW0L5RVAZAMAEZtJWY=
-X-Received: by 2002:a17:90a:a58f:b0:2e3:171e:3b8c with SMTP id
- 98e67ed59e1d1-2e92cf2d074mr12150620a91.25.1730487978284; Fri, 01 Nov 2024
- 12:06:18 -0700 (PDT)
+        bh=k3Qb1j+K9O3bLKE8Y4bg9cUjItGlHhRFoYyNHvp2j38=;
+        b=Q9YQlL7GhIb1M8QboPtCD+Um8Gc1vS2A1aRIacxXiXbytVLYAwlIaQeMibv++W9quc
+         VF2UMg73/ME3EekHwUFtBx8aQaHUZANC7uoM8QzL3yCdlY0ebN65EmQvdM5l57rk0A8X
+         XVWM5cFmhHxDdAiJScuP4k6pTFhXSwxMIX9ysLBeyCV8HWCVw80yMImepTf+WmEagm/5
+         vQfe6n+v+voNWBTD1i0OPvqcXJ73XSuyDg+RW0CHFXEH2DR9PKJbw4fImkoO45QbOaZt
+         /EWiSh8jwbiVgUdEPpfDvbDeI5KCkhSlnCWX+Ma4/NArnsH9hm1lMLG5Nc6y7HzUDIHf
+         fy1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUuKmevb2P5VTDHJkuq3pq7e659lLwawUhKguA/KeoyXV1Thxpo22tdbZ7HbXs27aXCP0Kx7GsOffOEmK4A@vger.kernel.org, AJvYcCVGxptkNGkg5pMwRd4lE6Jlkg4dLr2k3x93oytBUp9rzXYO6Qx8nCLp0bT8SrEMWSfpQ54=@vger.kernel.org, AJvYcCVR5UtAmIGsKaJVFIl/G18DPll46T3ELN1dDsS7EnlqiJ9jTIYinx/fCu5TqslWvdvQx8oxPck1nGsw8SrAAg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzSg3SFQPjGGcnlECoR1UQ5VHhhsH9xBFUYLp+WL+YeYJunEH98
+	F32rETray089AzCKBTtxzXCTX6EFWWtUtY+dZYTXjU1Nl0CUaksr0NTTSGjM5G9MSiW7D3Tj7JL
+	p62pNl018sqiyKfD9m6UJ9Cz1TeY=
+X-Google-Smtp-Source: AGHT+IEn2Do/6jRnMA3++ufyOBL20xnaTCPgPAZSoe26DmRbJ5T5EPARCBca+GckzX2dVOaQf3148vho6PwQQBOGO0c=
+X-Received: by 2002:a17:90b:3b89:b0:2e0:a926:19b1 with SMTP id
+ 98e67ed59e1d1-2e8f11dce3amr26813641a91.38.1730488145468; Fri, 01 Nov 2024
+ 12:09:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,261 +72,134 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <AM6PR03MB5848098C1DF99C6C417B405D99542@AM6PR03MB5848.eurprd03.prod.outlook.com>
- <AM6PR03MB584846B635B10C59EFAF596099542@AM6PR03MB5848.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB584846B635B10C59EFAF596099542@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <AM6PR03MB584858690D5A02162502A02099542@AM6PR03MB5848.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB584858690D5A02162502A02099542@AM6PR03MB5848.eurprd03.prod.outlook.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 1 Nov 2024 12:06:06 -0700
-Message-ID: <CAEf4Bzbt0kh53xYZL57Nc9AWcYUKga_NQ6uUrTeU4bj8qyTLng@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/4] bpf/crib: Introduce task_file open-coded
- iterator kfuncs
+Date: Fri, 1 Nov 2024 12:08:53 -0700
+Message-ID: <CAEf4BzadfF8iSAnhWFDNmXE80ayJXDkucbeg0jv-+=FtoDg5Zg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] bpf/crib: Add struct file related CRIB kfuncs
 To: Juntong Deng <juntong.deng@outlook.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
 	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
 	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, 
 	haoluo@google.com, jolsa@kernel.org, memxor@gmail.com, snorcht@gmail.com, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 29, 2024 at 5:15=E2=80=AFPM Juntong Deng <juntong.deng@outlook.=
+On Tue, Oct 29, 2024 at 5:17=E2=80=AFPM Juntong Deng <juntong.deng@outlook.=
 com> wrote:
 >
-> This patch adds the open-coded iterator style process file iterator
-> kfuncs bpf_iter_task_file_{new,next,destroy} that iterates over all
-> files opened by the specified process.
+> This patch adds struct file related CRIB kfuncs.
 >
-> In addition, this patch adds bpf_iter_task_file_get_fd() getter to get
-> the file descriptor corresponding to the file in the current iteration.
+> bpf_fget_task() is used to get a pointer to the struct file
+> corresponding to the task file descriptor. Note that this function
+> acquires a reference to struct file.
 >
-> The reference to struct file acquired by the previous
-> bpf_iter_task_file_next() is released in the next
-> bpf_iter_task_file_next(), and the last reference is released in the
-> last bpf_iter_task_file_next() that returns NULL.
->
-> In the bpf_iter_task_file_destroy(), if the iterator does not iterate to
-> the end, then the last struct file reference is released at this time.
+> bpf_get_file_ops_type() is used to determine what exactly this file
+> is based on the file operations, such as socket, eventfd, timerfd,
+> pipe, etc, in order to perform different checkpoint/restore processing
+> for different file types. This function currently has only one return
+> value, FILE_OPS_UNKNOWN, but will increase with the file types that
+> CRIB supports for checkpoint/restore.
 >
 > Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 > ---
->  kernel/bpf/Makefile      |   1 +
->  kernel/bpf/crib/Makefile |   3 ++
->  kernel/bpf/crib/crib.c   |  29 +++++++++++
->  kernel/bpf/crib/files.c  | 105 +++++++++++++++++++++++++++++++++++++++
->  4 files changed, 138 insertions(+)
->  create mode 100644 kernel/bpf/crib/Makefile
->  create mode 100644 kernel/bpf/crib/crib.c
->  create mode 100644 kernel/bpf/crib/files.c
+>  kernel/bpf/crib/crib.c  |  4 ++++
+>  kernel/bpf/crib/files.c | 44 +++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 48 insertions(+)
 >
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index 105328f0b9c0..933d36264e5e 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -53,3 +53,4 @@ obj-$(CONFIG_BPF_SYSCALL) +=3D relo_core.o
->  obj-$(CONFIG_BPF_SYSCALL) +=3D btf_iter.o
->  obj-$(CONFIG_BPF_SYSCALL) +=3D btf_relocate.o
->  obj-$(CONFIG_BPF_SYSCALL) +=3D kmem_cache_iter.o
-> +obj-$(CONFIG_BPF_SYSCALL) +=3D crib/
-> diff --git a/kernel/bpf/crib/Makefile b/kernel/bpf/crib/Makefile
-> new file mode 100644
-> index 000000000000..4e1bae1972dd
-> --- /dev/null
-> +++ b/kernel/bpf/crib/Makefile
-> @@ -0,0 +1,3 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +obj-$(CONFIG_BPF_SYSCALL) +=3D crib.o files.o
+
+Please CC Christian Brauner and fs mailing list
+(linux-fsdevel@vger.kernel.org, both cc'ed) on changes like this (this
+entire patch set)
+
 > diff --git a/kernel/bpf/crib/crib.c b/kernel/bpf/crib/crib.c
-> new file mode 100644
-> index 000000000000..e6536ee9a845
-> --- /dev/null
+> index e6536ee9a845..78ddd19d5693 100644
+> --- a/kernel/bpf/crib/crib.c
 > +++ b/kernel/bpf/crib/crib.c
-> @@ -0,0 +1,29 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Checkpoint/Restore In eBPF (CRIB)
+> @@ -14,6 +14,10 @@ BTF_ID_FLAGS(func, bpf_iter_task_file_next, KF_ITER_NE=
+XT | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_iter_task_file_get_fd)
+>  BTF_ID_FLAGS(func, bpf_iter_task_file_destroy, KF_ITER_DESTROY)
+>
+> +BTF_ID_FLAGS(func, bpf_fget_task, KF_ACQUIRE | KF_TRUSTED_ARGS | KF_RET_=
+NULL)
+> +BTF_ID_FLAGS(func, bpf_get_file_ops_type, KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_put_file, KF_RELEASE)
+> +
+>  BTF_KFUNCS_END(bpf_crib_kfuncs)
+>
+>  static const struct btf_kfunc_id_set bpf_crib_kfunc_set =3D {
+> diff --git a/kernel/bpf/crib/files.c b/kernel/bpf/crib/files.c
+> index ececf150303f..8e0e29877359 100644
+> --- a/kernel/bpf/crib/files.c
+> +++ b/kernel/bpf/crib/files.c
+> @@ -5,6 +5,14 @@
+>  #include <linux/fdtable.h>
+>  #include <linux/net.h>
+>
+> +/**
+> + * This enum will grow with the file types that CRIB supports for
+> + * checkpoint/restore.
 > + */
-> +
-> +#include <linux/bpf.h>
-> +#include <linux/btf.h>
-> +#include <linux/btf_ids.h>
-> +
-> +BTF_KFUNCS_START(bpf_crib_kfuncs)
-> +
-> +BTF_ID_FLAGS(func, bpf_iter_task_file_new, KF_ITER_NEW | KF_TRUSTED_ARGS=
-)
-> +BTF_ID_FLAGS(func, bpf_iter_task_file_next, KF_ITER_NEXT | KF_RET_NULL)
-> +BTF_ID_FLAGS(func, bpf_iter_task_file_get_fd)
-> +BTF_ID_FLAGS(func, bpf_iter_task_file_destroy, KF_ITER_DESTROY)
-
-This is in no way CRIB-specific, right? So I'd drop the CRIB reference
-and move code next to task_file BPF iterator program type
-implementation, this is a generic functionality.
-
-Even more so, given Namhyung's recent work on adding kmem_cache
-iterator (both program type and open-coded iterator), it seems like it
-should be possible to cut down on code duplication by using open-coded
-iterator logic inside the BPF iterator program. Now that you are
-adding task_file open-coded iterator, can you please check if it can
-be reused. See kernel/bpf/task_iter.c (and I think that's where your
-code should live as well, btw).
-
-pw-bot: cr
-
-> +
-> +BTF_KFUNCS_END(bpf_crib_kfuncs)
-> +
-> +static const struct btf_kfunc_id_set bpf_crib_kfunc_set =3D {
-> +       .owner =3D THIS_MODULE,
-> +       .set   =3D &bpf_crib_kfuncs,
+> +enum {
+> +       FILE_OPS_UNKNOWN =3D 0
 > +};
 > +
-> +static int __init bpf_crib_init(void)
+>  struct bpf_iter_task_file {
+>         __u64 __opaque[3];
+>  } __aligned(8);
+> @@ -102,4 +110,40 @@ __bpf_kfunc void bpf_iter_task_file_destroy(struct b=
+pf_iter_task_file *it)
+>                 fput(kit->file);
+>  }
+>
+> +/**
+> + * bpf_fget_task() - Get a pointer to the struct file corresponding to
+> + * the task file descriptor
+> + *
+> + * Note that this function acquires a reference to struct file.
+> + *
+> + * @task: the specified struct task_struct
+> + * @fd: the file descriptor
+> + *
+> + * @returns the corresponding struct file pointer if found,
+> + * otherwise returns NULL
+> + */
+> +__bpf_kfunc struct file *bpf_fget_task(struct task_struct *task, unsigne=
+d int fd)
 > +{
-> +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &bpf_crib=
-_kfunc_set);
-> +}
-> +
-> +late_initcall(bpf_crib_init);
-> diff --git a/kernel/bpf/crib/files.c b/kernel/bpf/crib/files.c
-> new file mode 100644
-> index 000000000000..ececf150303f
-> --- /dev/null
-> +++ b/kernel/bpf/crib/files.c
-> @@ -0,0 +1,105 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/btf.h>
-> +#include <linux/file.h>
-> +#include <linux/fdtable.h>
-> +#include <linux/net.h>
-> +
-> +struct bpf_iter_task_file {
-> +       __u64 __opaque[3];
-> +} __aligned(8);
-> +
-> +struct bpf_iter_task_file_kern {
-> +       struct task_struct *task;
 > +       struct file *file;
-> +       int fd;
-> +} __aligned(8);
 > +
-> +__bpf_kfunc_start_defs();
-> +
-> +/**
-> + * bpf_iter_task_file_new() - Initialize a new task file iterator for a =
-task,
-> + * used to iterate over all files opened by a specified task
-> + *
-> + * @it: the new bpf_iter_task_file to be created
-> + * @task: a pointer pointing to a task to be iterated over
-> + */
-> +__bpf_kfunc int bpf_iter_task_file_new(struct bpf_iter_task_file *it,
-> +               struct task_struct *task)
-> +{
-> +       struct bpf_iter_task_file_kern *kit =3D (void *)it;
-> +
-> +       BUILD_BUG_ON(sizeof(struct bpf_iter_task_file_kern) > sizeof(stru=
-ct bpf_iter_task_file));
-> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_task_file_kern) !=3D
-> +                    __alignof__(struct bpf_iter_task_file));
-> +
-> +       kit->task =3D task;
-> +       kit->fd =3D -1;
-> +       kit->file =3D NULL;
-> +
-> +       return 0;
+> +       file =3D fget_task(task, fd);
+> +       return file;
 > +}
 > +
 > +/**
-> + * bpf_iter_task_file_next() - Get the next file in bpf_iter_task_file
+> + * bpf_get_file_ops_type() - Determine what exactly this file is based o=
+n
+> + * the file operations, such as socket, eventfd, timerfd, pipe, etc
 > + *
-> + * bpf_iter_task_file_next acquires a reference to the returned struct f=
-ile.
+> + * This function will grow with the file types that CRIB supports for
+> + * checkpoint/restore.
 > + *
-> + * The reference to struct file acquired by the previous
-> + * bpf_iter_task_file_next() is released in the next bpf_iter_task_file_=
-next(),
-> + * and the last reference is released in the last bpf_iter_task_file_nex=
-t()
-> + * that returns NULL.
+> + * @file: a pointer to the struct file
 > + *
-> + * @it: the bpf_iter_task_file to be checked
-> + *
-> + * @returns a pointer to the struct file of the next file if further fil=
-es
-> + * are available, otherwise returns NULL
+> + * @returns the file operations type
 > + */
-> +__bpf_kfunc struct file *bpf_iter_task_file_next(struct bpf_iter_task_fi=
-le *it)
+> +__bpf_kfunc unsigned int bpf_get_file_ops_type(struct file *file)
 > +{
-> +       struct bpf_iter_task_file_kern *kit =3D (void *)it;
-> +
-> +       if (kit->file)
-> +               fput(kit->file);
-> +
-> +       kit->fd++;
-> +
-> +       rcu_read_lock();
-> +       kit->file =3D task_lookup_next_fdget_rcu(kit->task, &kit->fd);
-> +       rcu_read_unlock();
-> +
-> +       return kit->file;
-> +}
-> +
-> +/**
-> + * bpf_iter_task_file_get_fd() - Get the file descriptor corresponding t=
-o
-> + * the file in the current iteration
-> + *
-> + * @it: the bpf_iter_task_file to be checked
-> + *
-> + * @returns the file descriptor
-> + */
-> +__bpf_kfunc int bpf_iter_task_file_get_fd(struct bpf_iter_task_file *it_=
-_iter)
-> +{
-> +       struct bpf_iter_task_file_kern *kit =3D (void *)it__iter;
-> +
-> +       return kit->fd;
+> +       return FILE_OPS_UNKNOWN;
 > +}
 > +
 
-I don't think we need this. It's probably better to return a pointer
-to a small struct representing "item" returned from this iterator.
-Something like
+this is not very supportable, users can do the same by accessing
+file->f_op and comparing it to a set of known struct file_operations
+references.
 
-struct bpf_iter_task_file_item {
-    struct task_struct *task;
-    struct file *file;
-    int fd;
-};
-
-You can then embed this struct into struct bpf_iter_task_file and
-return a pointer to it on each next() call (avoiding memory
-allocation)
-
-
-(naming just for illustrative purposes, I spent 0 seconds thinking about it=
-)
-
-> +/**
-> + * bpf_iter_task_file_destroy() - Destroy a bpf_iter_task_file
-> + *
-> + * If the iterator does not iterate to the end, then the last
-> + * struct file reference is released at this time.
-> + *
-> + * @it: the bpf_iter_task_file to be destroyed
-> + */
-> +__bpf_kfunc void bpf_iter_task_file_destroy(struct bpf_iter_task_file *i=
-t)
-> +{
-> +       struct bpf_iter_task_file_kern *kit =3D (void *)it;
-> +
-> +       if (kit->file)
-> +               fput(kit->file);
-> +}
-> +
-> +__bpf_kfunc_end_defs();
+>  __bpf_kfunc_end_defs();
 > --
 > 2.39.5
 >
