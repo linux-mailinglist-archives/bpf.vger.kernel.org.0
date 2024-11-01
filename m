@@ -1,175 +1,199 @@
-Return-Path: <bpf+bounces-43764-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43765-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B9009B9831
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 20:13:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 657DA9B9844
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 20:17:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EF801C2184E
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 19:13:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88C241C21AF3
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 19:17:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463CC1CEEBA;
-	Fri,  1 Nov 2024 19:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B05F51CEAA0;
+	Fri,  1 Nov 2024 19:16:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SSVDu2U1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lvd+EEKa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA061CEEA8
-	for <bpf@vger.kernel.org>; Fri,  1 Nov 2024 19:13:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C984F37B
+	for <bpf@vger.kernel.org>; Fri,  1 Nov 2024 19:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730488392; cv=none; b=ioAK3mErsLrlh0nq/nZzNrjmNkz1nnqrm/ZF4SPJ4SrgpafRBH3fkUrE+PgL+HmJHVEPlkguFPHqqUcAtv1dZGzZPOrVfM6oXZ2uI+fbQ0bURpDQcRlETnioaMdNtgrZmAv1W8QXw+tkEMRj7YjJLrFCzNLnI0NGq8vtdWATHJ0=
+	t=1730488618; cv=none; b=C24Nblk32E+wDLMNI6obpy61lgpBDGSzn4z/0yCUrfqgp1n+NRA2XXp8zL5dj9TAMUdhu88kztgnLREj1jiQkBPk96h6OpxdgFpm9AeifhlDRNwJ/IuyPlKcuh4btdPl0VmnWAC2jieAlzejXb9xqr40kWgZiA1EWKz7ul8976A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730488392; c=relaxed/simple;
-	bh=4wvMWurYikD6KdTQa6gHNCFoDIv/bBiMx3JZ6v9IdNU=;
+	s=arc-20240116; t=1730488618; c=relaxed/simple;
+	bh=/ejz6dhntvu5d/LgrI0Y9Bx5HKCJ8QdebT0Mafewd0U=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pCSyIE4PXIoV2fpcIMWJQS1hWhVItM9N64GmINEadTQ9B2M4WavywWSI6NBSTlwZbHOb0QbRZPAEPk6QV2Y2SVkIdDZuDLkC80/JHHl1HZOahbU6z603YxmcR3xvjLdnSKwXmuq81+QDRjNw/r9GSUxeGfnj65ulQZ5NpPfUxk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SSVDu2U1; arc=none smtp.client-ip=209.85.215.178
+	 To:Cc:Content-Type; b=kLDgdlUFkDHccqcRC/InQF0rKsTfkQ3TwSnOF2w5qlFZBwDL9bFasfOD6vrYx84/Z8GBJFdMwNEhMGDkBpfBSH9zA1pcjwCbQgkKY3xnjdD1IMi5Z947MGMN1zv+e18wngmg8z/DqFiDyTXO9RemGSbBlNrDTuqScmv3lCQutTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lvd+EEKa; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-7ede6803585so2497912a12.0
-        for <bpf@vger.kernel.org>; Fri, 01 Nov 2024 12:13:11 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21116b187c4so13103105ad.3
+        for <bpf@vger.kernel.org>; Fri, 01 Nov 2024 12:16:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730488390; x=1731093190; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730488616; x=1731093416; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zDg+3VKfoCtzwXs/NB9BmeutnAcL2v2mtlhap8Dr2sY=;
-        b=SSVDu2U1EfPKL/KSf9ljFH491aa7hlxGZ6KhHCXzeOVYgvH8anGNrTfeinHshJnRvP
-         NDIyC0FNgR+QAzjEdMwoopYSvA1TM8go7blix/kHbBcMHwtZAUxqxGSarkDUqGczWlRi
-         U9g5C5aULCTiF/cccQiXrHOmAYs1P2orDpIC1YJf/+3WHn+brTAembcMyxY95LkID985
-         N7j6m5+wwIgtCGDe29gkfdpcHi/0m/+tQLQwvX/5gumvxArkypbCV0Nr2WFa2sXNJMeB
-         GpvzeTr3TB/WyOjRSvJOO56LE8/mH/CipgyuBipBcNjBq8ZJbdMHRZShEuyzd7lDWCNl
-         GiJg==
+        bh=PrfeQyjGPESQF3M5uHaDCKMJtRpp3W77bgj+7MXQqhc=;
+        b=Lvd+EEKaNDDCAFwkfwlHmHdprGFBTTwCgcayK9N3A5dUj+v3oOzS3a9mECpQVfgdhU
+         gnKBqmTTKWgGoU23zyhvlcx6w1KBjN5rKIwUZhfelW1rPetF7JZzyA1RBcCdTMLGu3gT
+         AaHrHTneG1d/5XpyF5USrLiOKqRGO7VY7Lauj+0VuKodJr7QOH9T1ZJxbZLj8k04TOIC
+         J12oN76i004y2C7L16MafiQdLFK8axy2dQDB/zNB9IlknD+F8WfHABu+ThzS8Tm9/u4m
+         AaoJtvTpbR68qkW/a0sjmtbBL9BcQd2kUYk9zjLjEapr41wKWEP4rW5gTwlmPCkpUBp4
+         +O1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730488390; x=1731093190;
+        d=1e100.net; s=20230601; t=1730488616; x=1731093416;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zDg+3VKfoCtzwXs/NB9BmeutnAcL2v2mtlhap8Dr2sY=;
-        b=R8Db/3ZAnYJdwsdOkH6prHBHpo/fe+OrDbV7xuzvxpA789iu0ZH9JfD/WKa9JtBg0K
-         JIFYMxk+dT9BOsnPT8JK42x9xdz8y04b5/ASS455Dhm/Wf2ld/qzQT+9s5Ef4vnSV2j6
-         WSaLgx5OEXGtMLuQURDS/0eOBIQcllqy6GT7oSNWyA8LoLrc/up8RConttFkZTWJT58b
-         IkOAn6psrvwhEFK2CfQSLYP0btm17AlM0OuuVOEc7gKsyanJYjmOh4W5vXig8K+usV+F
-         JXzCz3o5S1ll+4YKGV5y086Zb2i8lN84TYHzSpT+VhJMeSpSoFSLNsY8yf8nBjl4HteO
-         F/wg==
-X-Forwarded-Encrypted: i=1; AJvYcCWBoZquRXO5/Ru4f6OyDv1kpJehTfuuSahM76NkIvt50xnqe3HkzideHJNHA0fevE4oVRs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw+KbcWwZU2Wvoq4NdjyZnSwhECQZPD/DZkphB1SS+qIZDWR9eg
-	VRQFYAy7CE8cPf9PTqRayGvE8rzvbAhLZJlit661AWNpJ9sdPZW/06TLY0jCGHNgeFlYWgyygiI
-	lGuyp6pX67aMvlKtfo3eNvdeCW40=
-X-Google-Smtp-Source: AGHT+IGNzQeTGGBaTg012Y0MmIzW43OQLI6k0+6ItSYmV0rMGlNpS5UG7Mf0nhueQJ3Mx/MIc1tZGDxa+7FHIxqFhrg=
-X-Received: by 2002:a17:90b:4ac7:b0:2e9:20d8:414c with SMTP id
- 98e67ed59e1d1-2e94bcdcb02mr7740988a91.5.1730488390476; Fri, 01 Nov 2024
- 12:13:10 -0700 (PDT)
+        bh=PrfeQyjGPESQF3M5uHaDCKMJtRpp3W77bgj+7MXQqhc=;
+        b=n8nrzGnMZ4/Q3cnOyjIUzCadqSww3ofgcIgX+c8xe+TH1ExYEKVqVsb6Fzh5qMu0tN
+         gVXcuzREQC1VuARI1UYddFBWxrMaarJYIo6lWuyrWY096HEjqDcUsiUDAi2skOEGpu1P
+         YdnxYnYs/rBTfII0FpY5T54FvVjQnS7iX7f5S/IMfHPNXdDUlTTmJw5mZGo0BbSEihfm
+         Qvx0BeNcJUJNhRgRrzccd3tkASz412Ok/SFg13xgkJg1t3Da8Jh6H650nLZ1nSoR5t7P
+         ptBhCUFpiXfgoz82EjyiEDC7CJInSe/OuieHeuAHk+ihQR2HtftQJl15utC2xLJZm/DY
+         j73g==
+X-Gm-Message-State: AOJu0YwY33OtuRV8HbkSW6ZFdRbkhL+Pj/+07piJPn0zz+alcwoPhQgt
+	jvV29C2zDCLwXX1UjHzAwWyge+n0pGNEADEE9qZCfLBvxSyxfmqC6EQs5HW6h3mGqhZfCJ1v79O
+	xeKBpN2bKqxBjkZg92UG7NbR7bYo=
+X-Google-Smtp-Source: AGHT+IFXOwcmWdrXpICJC+YfFwR35QyHYsseT91vDTLGi6RmYjqG9yx0HhagE5ksZfGFVPt0qM9xaJHcb2DnKRuslBE=
+X-Received: by 2002:a17:902:e84f:b0:20b:6d82:acb with SMTP id
+ d9443c01a7336-2111af5afd1mr58435785ad.23.1730488615995; Fri, 01 Nov 2024
+ 12:16:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <12bc3982-5738-5cf5-7dba-f3512a6dfac5@huaweicloud.com> <20241031161911.11260-1-zhongjinji@honor.com>
-In-Reply-To: <20241031161911.11260-1-zhongjinji@honor.com>
+References: <20241101000017.3424165-1-memxor@gmail.com> <20241101000017.3424165-2-memxor@gmail.com>
+In-Reply-To: <20241101000017.3424165-2-memxor@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 1 Nov 2024 12:12:58 -0700
-Message-ID: <CAEf4BzZVhXXvGvtccH8w2yHdKihGbMVrGR9AL-fLFBMNr4bR2w@mail.gmail.com>
-Subject: Re: [PATCH] bpf: smp_wmb before bpf_ringbuf really commit
-To: zhongjinji <zhongjinji@honor.com>
-Cc: houtao@huaweicloud.com, andrii@kernel.org, ast@kernel.org, 
-	billy@starlabs.sg, bpf@vger.kernel.org, feng.han@honor.com, 
-	liulu.liu@honor.com, ramdhan@starlabs.sg, yipengxiang@honor.com, 
-	"Paul E . McKenney" <paulmck@kernel.org>
+Date: Fri, 1 Nov 2024 12:16:44 -0700
+Message-ID: <CAEf4BzaS9+Zs7cRKXPxD1zxNu4DLQw1VmPbJ4_cUMrSfc0R7sg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: Mark raw_tp arguments with PTR_MAYBE_NULL
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, kkd@meta.com, Juri Lelli <juri.lelli@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Steven Rostedt <rostedt@goodmis.org>, 
+	Jiri Olsa <olsajiri@gmail.com>, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 31, 2024 at 9:19=E2=80=AFAM zhongjinji <zhongjinji@honor.com> w=
-rote:
+On Thu, Oct 31, 2024 at 5:00=E2=80=AFPM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> >It seems you didn't use the ringbuf related APIs (e.g.,
-> >ring_buffer__consume()) in libbpf to access the ring buffer. In my
-> >understanding, the "xchg(&hdr->len, new_len)" in bpf_ringbuf_commit()
-> >works as the barrier to ensure the order of committed data and hdr->len,
-> >and accordingly the "smp_load_acquire(len_ptr)" in
-> >ringbuf_process_ring() in libbpf works as the paired barrier to ensure
-> >the order of hdr->len and the committed data. So I think the extra
-> >smp_wmb() in the kernel is not necessary here. Instead, you should fix
-> >your code in the userspace.
-> >>
-> >> Signed-off-by: zhongjinji <zhongjinji@honor.com>
-> >> ---
-> >>  kernel/bpf/ringbuf.c | 4 ++++
-> >>  1 file changed, 4 insertions(+)
-> >>
-> >> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> >> index e1cfe890e0be..a66059e2b0d6 100644
-> >> --- a/kernel/bpf/ringbuf.c
-> >> +++ b/kernel/bpf/ringbuf.c
-> >> @@ -508,6 +508,10 @@ static void bpf_ringbuf_commit(void *sample, u64 =
-flags, bool discard)
-> >>      rec_pos =3D (void *)hdr - (void *)rb->data;
-> >>      cons_pos =3D smp_load_acquire(&rb->consumer_pos) & rb->mask;
-> >>
-> >> +    /* Make sure the modification of data is visible on other CPU's
-> >> +     * before consume the event
-> >> +     */
-> >> +    smp_wmb();
-> >>      if (flags & BPF_RB_FORCE_WAKEUP)
-> >>              irq_work_queue(&rb->work);
-> >>      else if (cons_pos =3D=3D rec_pos && !(flags & BPF_RB_NO_WAKEUP))
+> Arguments to a raw tracepoint are tagged as trusted, which carries the
+> semantics that the pointer will be non-NULL.  However, in certain cases,
+> a raw tracepoint argument may end up being NULL More context about this
+> issue is available in [0].
 >
-> well, I missed the implementation of __smp_store_release in the x86 archi=
-tecture,
-> it is not necessary because __smp_store_release has a memory barrier in x=
-86,
+> Thus, there is a discrepancy between the reality, that raw_tp arguments
+> can actually be NULL, and the verifier's knowledge, that they are never
+> NULL, causing explicit NULL checks to be deleted, and accesses to such
+> pointers potentially crashing the kernel.
+>
+> To fix this, mark raw_tp arguments as PTR_MAYBE_NULL, and then special
+> case the dereference and pointer arithmetic to permit it, and allow
+> passing them into helpers/kfuncs; these exceptions are made for raw_tp
+> programs only. Ensure that we don't do this when ref_obj_id > 0, as in
+> that case this is an acquired object and doesn't need such adjustment.
+>
+> The reason we do mask_raw_tp_trusted_reg logic is because other will
+> recheck in places whether the register is a trusted_reg, and then
+> consider our register as untrusted when detecting the presence of the
+> PTR_MAYBE_NULL flag.
+>
+> To allow safe dereference, we enable PROBE_MEM marking when we see loads
+> into trusted pointers with PTR_MAYBE_NULL.
+>
+> While trusted raw_tp arguments can also be passed into helpers or kfuncs
+> where such broken assumption may cause issues, a future patch set will
+> tackle their case separately, as PTR_TO_BTF_ID (without PTR_TRUSTED) can
+> already be passed into helpers and causes similar problems. Thus, they
+> are left alone for now.
+>
+> It is possible that these checks also permit passing non-raw_tp args
+> that are trusted PTR_TO_BTF_ID with null marking. In such a case,
+> allowing dereference when pointer is NULL expands allowed behavior, so
+> won't regress existing programs, and the case of passing these into
+> helpers is the same as above and will be dealt with later.
+>
+> Also update the failure case in tp_btf_nullable selftest to capture the
+> new behavior, as the verifier will no longer cause an error when
+> directly dereference a raw tracepoint argument marked as __nullable.
+>
+>   [0]: https://lore.kernel.org/bpf/ZrCZS6nisraEqehw@jlelli-thinkpadt14gen=
+4.remote.csb
+>
+> Reported-by: Juri Lelli <juri.lelli@redhat.com>
+> Fixes: 3f00c5239344 ("bpf: Allow trusted pointers to be passed to KF_TRUS=
+TED_ARGS kfuncs")
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf.h                           |  6 ++
+>  kernel/bpf/btf.c                              |  5 +-
+>  kernel/bpf/verifier.c                         | 75 +++++++++++++++++--
+>  .../bpf/progs/test_tp_btf_nullable.c          |  6 +-
+>  4 files changed, 83 insertions(+), 9 deletions(-)
+>
 
-yep, we do rely on xchg() and smp_load_acquire() pairing. I'm not
-familiar with arm64 specifics, I didn't know that this assumption is
-x86-64-specific. Cc'ed Paul who I believe suggested xchg() as a more
-performant way of achieving this. That happened years ago so all of
-us, I'm sure, lost a lot of context by now, but still, let's see.
+[...]
 
-> but it can't guarantee the order of committed data in arm64 because
-> __smp_store_release does not include a memory barrier, and it just ensure
-> the variable is visible. The implementation of ARM64 is as follows,
-> in common/arch/arm64/include/asm/barrier.h
+> @@ -6693,7 +6709,21 @@ static int check_ptr_to_btf_access(struct bpf_veri=
+fier_env *env,
 >
-> #define __smp_load_acquire(p)                                           \
-> ({                                                                      \
->         union { __unqual_scalar_typeof(*p) __val; char __c[1]; } __u;   \
->         typeof(p) __p =3D (p);                                           =
- \
->         compiletime_assert_atomic_type(*p);                             \
->         kasan_check_read(__p, sizeof(*p));                              \
->         switch (sizeof(*p)) {                                           \
->         case 1:                                                         \
->                 asm volatile ("ldarb %w0, %1"                           \
->                         : "=3Dr" (*(__u8 *)__u.__c)                      =
- \
->                         : "Q" (*__p) : "memory");                       \
->                 break;                                                  \
->         case 2:                                                         \
->                 asm volatile ("ldarh %w0, %1"                           \
->                         : "=3Dr" (*(__u16 *)__u.__c)                     =
- \
->                         : "Q" (*__p) : "memory");                       \
->                 break;                                                  \
->         case 4:                                                         \
->                 asm volatile ("ldar %w0, %1"                            \
->                         : "=3Dr" (*(__u32 *)__u.__c)                     =
- \
->                         : "Q" (*__p) : "memory");                       \
->                 break;                                                  \
->         case 8:                                                         \
->                 asm volatile ("ldar %0, %1"                             \
->                         : "=3Dr" (*(__u64 *)__u.__c)                     =
- \
->                         : "Q" (*__p) : "memory");                       \
->                 break;                                                  \
->         }                                                               \
->         (typeof(*p))__u.__val;                                          \
-> })
+>         if (ret < 0)
+>                 return ret;
+> -
+> +       /* For raw_tp progs, we allow dereference of PTR_MAYBE_NULL
+> +        * trusted PTR_TO_BTF_ID, these are the ones that are possibly
+> +        * arguments to the raw_tp. Since internal checks in for trusted
+> +        * reg in check_ptr_to_btf_access would consider PTR_MAYBE_NULL
+> +        * modifier as problematic, mask it out temporarily for the
+> +        * check. Don't apply this to pointers with ref_obj_id > 0, as
+> +        * those won't be raw_tp args.
+> +        *
+> +        * We may end up applying this relaxation to other trusted
+> +        * PTR_TO_BTF_ID with maybe null flag, since we cannot
+> +        * distinguish PTR_MAYBE_NULL tagged for arguments vs normal
+> +        * tagging, but that should expand allowed behavior, and not
+> +        * cause regression for existing behavior.
+> +        */
+
+Yeah, I'm not sure why this has to be raw tp-specific?.. What's wrong
+with the same behavior for BPF iterator programs, for example?
+
+It seems nicer if we can avoid this temporary masking and instead
+support this as a generic functionality? Or are there complications?
+
+> +       mask =3D mask_raw_tp_reg(env, reg);
+>         if (ret !=3D PTR_TO_BTF_ID) {
+>                 /* just mark; */
 >
+> @@ -6754,8 +6784,13 @@ static int check_ptr_to_btf_access(struct bpf_veri=
+fier_env *env,
+>                 clear_trusted_flags(&flag);
+>         }
+>
+> -       if (atype =3D=3D BPF_READ && value_regno >=3D 0)
+> +       if (atype =3D=3D BPF_READ && value_regno >=3D 0) {
+>                 mark_btf_ld_reg(env, regs, value_regno, ret, reg->btf, bt=
+f_id, flag);
+> +               /* We've assigned a new type to regno, so don't undo mask=
+ing. */
+> +               if (regno =3D=3D value_regno)
+> +                       mask =3D false;
+> +       }
+> +       unmask_raw_tp_reg(reg, mask);
+>
+>         return 0;
+>  }
+
+[...]
 
