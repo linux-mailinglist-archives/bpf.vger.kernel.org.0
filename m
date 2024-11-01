@@ -1,235 +1,146 @@
-Return-Path: <bpf+bounces-43780-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43781-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB6189B9912
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 20:55:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CAA69B991E
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 21:04:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15ADCB20F1E
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 19:55:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EA891C20971
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 20:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 796A21D433C;
-	Fri,  1 Nov 2024 19:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACF2C1D2707;
+	Fri,  1 Nov 2024 20:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bCc0eynP"
+	dkim=pass (1024-bit key) header.d=epfl.ch header.i=@epfl.ch header.b="wUHQjeZp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp4.epfl.ch (smtp4.epfl.ch [128.178.224.219])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 426BE1D1753
-	for <bpf@vger.kernel.org>; Fri,  1 Nov 2024 19:55:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661981C7287
+	for <bpf@vger.kernel.org>; Fri,  1 Nov 2024 20:03:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.178.224.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730490945; cv=none; b=eOfhDXaSSsSMyi0N5zg7QNygcz8OknKN+PWFpTHtIUqBi92NpoN2QwiYsH94Q2nH3wuz7yLp8w0uOsJmVJ4LilFK5Zg/9Czntrk4H1Ik6OkpO7pOlAkZ6Rgz+oWL6vR8NaNP74g0LKc7Kx2rUh6wet8dOhbN3joybRAs+wpPY+A=
+	t=1730491443; cv=none; b=HrJIkkWPc6FeAuc2DDus6jQZ8yv7tZ8bUnUQ0PA5E7BsDxMe8VNq17VbAWKeYAp4UNRwrcaYTEbssHy/qPjHSqpWBf+iyKY2sQWxDPWwNY40vVBRUhyexIclSSXubYez4xP9i8ILthWNm7S/uOP1PLK1/VVEA6fKxJGWcdpfvCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730490945; c=relaxed/simple;
-	bh=hgpaFRY/E1MMh/pW8+/xqpn3fXz+hzAE+IMwJtxBcs8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ci2TiLlDRja+64rMkpleXOLZn5krR8SP53gTk4w+NHRg8KbYuPQpv5eqrA6ojTq8Dgfm0QelAOvsHhK3grOn1PmzvIpQd+qjxWnGgO324J5ibDdDRgC446bxMkf7/jERh2RfRoTdnX6OCECt0pdW7xZUL3adEnOghunvMUtpJW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bCc0eynP; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43169902057so18071975e9.0
-        for <bpf@vger.kernel.org>; Fri, 01 Nov 2024 12:55:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730490941; x=1731095741; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QryGB3pmxvABA696HiXMHOkPY3pe+9Z1UHWfIdxQHro=;
-        b=bCc0eynPjHHQDDuQXoYiz61NjKvmXsM+1453IaLcTV9KRNlwWh7NQtOFGMxUFca5kI
-         ui2MzKM50u3dr2jP7vEY/EbJoPI55jMN4mj0h5gDSW7JU7TphysqdT/pN/OLThD33qDW
-         sE76p+IQcI1gIUYdpfGlVmFDNQ5HiHbHhu+HzW1fqce12siQIv6FNGbvPC+ol24HnhCE
-         IDaI4wgBq/OQ7e/hEvju2K59AHC1PfHz0R/DIMBaYzDdrwInUeerGF8QZMGVrR3xmktP
-         TtfUGQshH98OCcEA+Fpy93clgu3snM9ry0MJS3ob3nbnE79N7ULtpUL+jwggtblli2N7
-         ZxDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730490941; x=1731095741;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QryGB3pmxvABA696HiXMHOkPY3pe+9Z1UHWfIdxQHro=;
-        b=pEBsSTg/LBwnJjNhgJEHYHO/+QBOMNWDfxCUH50P0jrKTLp3RlWVWqGkAMj/GlQ/j9
-         vr2YUesd7LxuWt6n0FTzsd3WdDOuiNUr5KAtB98SLZcaJkvb6fUAK2AtlQ0c3Y1xyq7H
-         a0oBNUPgN884wNF6J0vFB+SUmODFHmibQ7l+Wtphb13Tvc+yWmUt0RJtxObKyjBIt2RW
-         +cktAbaPlzltBuwqXbOCLDC2eUOeqpGepc6NF+2DS3Z8Ca4GVtfLtwH6/1PEO8EHPa9k
-         b2h2slGSnn0Zfe32vWObqxHD3zXx9tXAssgsmhq+C7RaQlMgQ7nhDlaU7LVoauzHyi8b
-         691g==
-X-Gm-Message-State: AOJu0Yw3u+afl/hT6KR75RZqx5TQQIB5Xc0//feB0N5JUZysmk5GEUID
-	bTFkZ715dtaR1BZforcTtqylqZS+pS7FPcIWJbBUm22Es7KTtTkRHQC7+9A6R2A47FhIGq0G619
-	HPKLwhr50zQX6w+nMyqW1aCcdd84=
-X-Google-Smtp-Source: AGHT+IEEsWhDeHRjlgpv1v4/EBkuMqu1rlh8W4uv24n8c6TULjPj3JePVCwAYbIaPbyprbfIDkXAA4VMzhZDsgVMOhU=
-X-Received: by 2002:a05:6000:1b08:b0:378:89be:1825 with SMTP id
- ffacd0b85a97d-381b710fbb0mr7868597f8f.49.1730490941212; Fri, 01 Nov 2024
- 12:55:41 -0700 (PDT)
+	s=arc-20240116; t=1730491443; c=relaxed/simple;
+	bh=35lTSm2rOuZfqaj3EKow6eDjfZHr3x/H5eTLnuYzCuM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=b0YSzV9umX1/FVbN3BjOrRJOnhYKTcCjh4yVtwwaowHwAKYZjd2jId7RrouDb/o4eNp/ojSUIneWoSAeSPDPawcLf8URRBvMRp1h/DwzlkaYuZagoZFLTytLktoTbC1l4W5vv+3B4iOr1ckq20IPcONeQcgUdrOQo/RtC6GrtLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=epfl.ch; spf=pass smtp.mailfrom=epfl.ch; dkim=pass (1024-bit key) header.d=epfl.ch header.i=@epfl.ch header.b=wUHQjeZp; arc=none smtp.client-ip=128.178.224.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=epfl.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=epfl.ch
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=epfl.ch;
+      s=epfl; t=1730491036;
+      h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Content-Type;
+      bh=35lTSm2rOuZfqaj3EKow6eDjfZHr3x/H5eTLnuYzCuM=;
+      b=wUHQjeZp5c70Uyv+HVd6L05TJqH0zFTxlFCyHqcqILKF70iiV6JzAu3REQa9I/PbX
+        KZPCgMFtU/pA7FuW9Mkyvn+YiByY2vmghGb5Ng+gkZEA/WWIAsSkwQPKS7E98GCye
+        lwYx8GOqzcG4kL68SHMMogvpM6umTygDostTdA9PA=
+Received: (qmail 25133 invoked by uid 107); 1 Nov 2024 19:57:16 -0000
+Received: from ax-snat-224-178.epfl.ch (HELO ewa07.intranet.epfl.ch) (192.168.224.178) (TLS, ECDHE-RSA-AES256-GCM-SHA384 (P-256 curve) cipher)
+  by mail.epfl.ch (AngelmatoPhylax SMTP proxy) with ESMTPS; Fri, 01 Nov 2024 20:57:16 +0100
+X-EPFL-Auth: 3CDc8tiVExnOsdTxrtRcClV4YkcoWE37nIiC8wlJATqvhd3BH0k=
+Received: from rs3labsrv2.iccluster.epfl.ch (10.90.46.62) by
+ ewa07.intranet.epfl.ch (128.178.224.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Fri, 1 Nov 2024 20:57:15 +0100
+From: Tao Lyu <tao.lyu@epfl.ch>
+To: <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<song@kernel.org>, <yonghong.song@linux.dev>, <haoluo@google.com>,
+	<martin.lau@linux.dev>
+CC: <bpf@vger.kernel.org>, Tao Lyu <tao.lyu@epfl.ch>
+Subject: [PATCH] bpf: Fix incorrect precision backtracking
+Date: Fri, 1 Nov 2024 20:57:02 +0100
+Message-ID: <20241101195702.2926731-1-tao.lyu@epfl.ch>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241101030950.2677215-1-yonghong.song@linux.dev> <20241101031006.2678685-1-yonghong.song@linux.dev>
-In-Reply-To: <20241101031006.2678685-1-yonghong.song@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 1 Nov 2024 12:55:29 -0700
-Message-ID: <CAADnVQ+r2zxVmXOwQHPZjTjRS1FhUycnMufKf1KvrhxH40REtg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 3/9] bpf: Check potential private stack
- recursion for progs with async callback
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ewa05.intranet.epfl.ch (128.178.224.174) To
+ ewa07.intranet.epfl.ch (128.178.224.178)
 
-On Thu, Oct 31, 2024 at 8:12=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
-> In previous patch, tracing progs are enabled for private stack since
-> recursion checking ensures there exists no nested same bpf prog run on
-> the same cpu.
->
-> But it is still possible for nested bpf subprog run on the same cpu
-> if the same subprog is called in both main prog and async callback,
-> or in different async callbacks. For example,
->   main_prog
->    bpf_timer_set_callback(timer, timer_cb);
->    call sub1
->   sub1
->    ...
->   time_cb
->    call sub1
->
-> In the above case, nested subprog run for sub1 is possible with one in
-> process context and the other in softirq context. If this is the case,
-> the verifier will disable private stack for this bpf prog.
->
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  kernel/bpf/verifier.c | 46 ++++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 41 insertions(+), 5 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index d3f4cbab97bc..596afd29f088 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -6070,7 +6070,8 @@ static int round_up_stack_depth(struct bpf_verifier=
-_env *env, int stack_depth)
->   */
->  static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, i=
-nt idx,
->                                          int *subtree_depth, int *depth_f=
-rame,
-> -                                        int priv_stack_supported)
-> +                                        int priv_stack_supported,
-> +                                        char *subprog_visited)
->  {
->         struct bpf_subprog_info *subprog =3D env->subprog_info;
->         struct bpf_insn *insn =3D env->prog->insnsi;
-> @@ -6120,8 +6121,12 @@ static int check_max_stack_depth_subprog(struct bp=
-f_verifier_env *env, int idx,
->                                         idx, subprog_depth);
->                                 return -EACCES;
->                         }
-> -                       if (subprog_depth >=3D BPF_PRIV_STACK_MIN_SIZE)
-> +                       if (subprog_depth >=3D BPF_PRIV_STACK_MIN_SIZE) {
->                                 subprog[idx].use_priv_stack =3D true;
-> +                               subprog_visited[idx] =3D 1;
-> +                       }
-> +               } else {
-> +                       subprog_visited[idx] =3D 1;
->                 }
->         }
->  continue_func:
-> @@ -6222,19 +6227,42 @@ static int check_max_stack_depth_subprog(struct b=
-pf_verifier_env *env, int idx,
->  static int check_max_stack_depth(struct bpf_verifier_env *env)
->  {
->         struct bpf_subprog_info *si =3D env->subprog_info;
-> +       char *subprogs1 =3D NULL, *subprogs2 =3D NULL;
->         int ret, subtree_depth =3D 0, depth_frame;
-> +       int orig_priv_stack_supported;
->         int priv_stack_supported;
->
->         priv_stack_supported =3D bpf_enable_priv_stack(env);
->         if (priv_stack_supported < 0)
->                 return priv_stack_supported;
->
-> +       orig_priv_stack_supported =3D priv_stack_supported;
-> +       if (orig_priv_stack_supported !=3D NO_PRIV_STACK) {
-> +               subprogs1 =3D kvmalloc(env->subprog_cnt * 2, __GFP_ZERO);
+Hi,
 
-Just __GFP_ZERO ?!
+The process_iter_arg check function misses the type check on the iter
+args, which leads to any pointer types can be passed as iter args.
 
-Overall the algo is messy. Pls think of a cleaner way of checking.
-Add two bool flags to bpf_subprog_info:
-visited_with_priv_stack
-visited_without_priv_stack
-and after walking all subrpogs add another loop over subprogs
-that checks for exclusivity of these flags?
+As the attached testcase shows, when I pass a ptr_to_map_value whose
+offset is 0, process_iter_arg still regards it as a stack pointer and
+use its offset to check the stack slot types.
 
-Probably other algos are possible.
+In this case, as long as the stack slot types matched with the
+ptr_to_map_value offset is correct, then checks can be bypassed.
 
-> +               if (!subprogs1)
-> +                       priv_stack_supported =3D NO_PRIV_STACK;
-> +               else
-> +                       subprogs2 =3D subprogs1 + env->subprog_cnt;
-> +       }
-> +
->         for (int i =3D 0; i < env->subprog_cnt; i++) {
->                 if (!i || si[i].is_async_cb) {
->                         ret =3D check_max_stack_depth_subprog(env, i, &su=
-btree_depth, &depth_frame,
-> -                                                           priv_stack_su=
-pported);
-> +                                                           priv_stack_su=
-pported, subprogs2);
->                         if (ret < 0)
-> -                               return ret;
-> +                               goto out;
-> +
-> +                       if (priv_stack_supported !=3D NO_PRIV_STACK) {
-> +                               for (int j =3D 0; j < env->subprog_cnt; j=
-++) {
-> +                                       if (subprogs1[j] && subprogs2[j])=
- {
-> +                                               priv_stack_supported =3D =
-NO_PRIV_STACK;
-> +                                               break;
-> +                                       }
-> +                                       subprogs1[j] |=3D subprogs2[j];
-> +                               }
-> +                       }
-> +                       if (priv_stack_supported !=3D NO_PRIV_STACK)
-> +                               memset(subprogs2, 0, env->subprog_cnt);
->                 }
->         }
->         if (priv_stack_supported =3D=3D NO_PRIV_STACK) {
-> @@ -6243,10 +6271,18 @@ static int check_max_stack_depth(struct bpf_verif=
-ier_env *env)
->                                 depth_frame, subtree_depth);
->                         return -EACCES;
->                 }
-> +               if (orig_priv_stack_supported =3D=3D PRIV_STACK_ADAPTIVE)=
- {
-> +                       for (int i =3D 0; i < env->subprog_cnt; i++)
-> +                               si[i].use_priv_stack =3D false;
-> +               }
->         }
->         if (si[0].use_priv_stack)
->                 env->prog->aux->use_priv_stack =3D true;
-> -       return 0;
-> +       ret =3D 0;
-> +
-> +out:
-> +       kvfree(subprogs1);
-> +       return ret;
->  }
->
->  #ifndef CONFIG_BPF_JIT_ALWAYS_ON
-> --
-> 2.43.5
->
+I attached the fix, which checks if the argument type is stack pointer.
+
+Please let me know if this fix might be incomplete.
+I'm happy to revise it.
+
+Best,
+Tao
+
+Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
+---
+ kernel/bpf/verifier.c                     |  6 ++++++
+ tools/testing/selftests/bpf/progs/iters.c | 23 +++++++++++++++++++++++
+ 2 files changed, 29 insertions(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 797cf3ed32e0..bc968d2b76d9 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -8031,6 +8031,12 @@ static int process_iter_arg(struct bpf_verifier_env *env, int regno, int insn_id
+ 		return -EINVAL;
+ 	}
+ 	t = btf_type_by_id(meta->btf, btf_id);
++
++	// Ensure the iter arg is a stack pointer
++	if (reg->type != PTR_TO_STACK) {
++		verbose(env, "iter pointer should be the PTR_TO_STACK type\n");
++		return -EINVAL;
++	}
+ 	nr_slots = t->size / BPF_REG_SIZE;
+ 
+ 	if (is_iter_new_kfunc(meta)) {
+diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
+index ef70b88bccb2..52078fc395fd 100644
+--- a/tools/testing/selftests/bpf/progs/iters.c
++++ b/tools/testing/selftests/bpf/progs/iters.c
+@@ -1486,4 +1486,27 @@ int iter_subprog_check_stacksafe(const void *ctx)
+ 	return 0;
+ }
+ 
++SEC("raw_tp")
++__failure __msg("iter pointer should be the PTR_TO_STACK type")
++int iter_check_arg_type(const void *ctx)
++{
++        struct bpf_iter_num it;
++        int *v;
++
++        int *map_val = NULL;
++        int key = 0;
++
++        map_val = bpf_map_lookup_elem(&arr_map, &key);
++        if (!map_val)
++                return 0;
++
++        bpf_iter_num_new(&it, 0, 3);
++        while ((v = bpf_iter_num_next((struct bpf_iter_num*)map_val))) {
++                bpf_printk("ITER_BASIC: E1 VAL: v=%d", *v);
++        }
++        bpf_iter_num_destroy(&it);
++
++        return 0;
++}
++
+ char _license[] SEC("license") = "GPL";
+-- 
+2.34.1
+
 
