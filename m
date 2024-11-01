@@ -1,79 +1,103 @@
-Return-Path: <bpf+bounces-43686-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB3939B8830
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 02:05:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D7DE9B88B6
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 02:40:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F4A12821AF
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 01:05:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 318171F211E4
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 01:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55CEF1AAC4;
-	Fri,  1 Nov 2024 01:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CBA84A2F;
+	Fri,  1 Nov 2024 01:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GdnT+Ket"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oo13IK6r"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B9B3B796;
-	Fri,  1 Nov 2024 01:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20C9C3F9CC;
+	Fri,  1 Nov 2024 01:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730423107; cv=none; b=VB247umm+siWgae63Av1QIJ7WHIE5Kq1b32l519ptQMyouuFwBPRPGxINmHnLQd1R7CTd3g0h8saELgFck7EdwmZ8UOAtLFfIOrM9Yx+8SipWHQXPSlonGqc0e6BTFSaPJgsbO4kzG5tDSbA8Ni1YWkIvvmdpeoSyG4hc9JolLw=
+	t=1730425228; cv=none; b=SBKAaLvLGmkU+w7a1tU84rTtuVKM4GU7+C/TdmuuY6CNgPGYRz1bTB35+9XkyDjBl4KawDGIo4rUda9KA1vbz02EV6ksIYwDfU4XZzT6YbVojd+JDEbbINqnx+UJ1xxBRS6QxYoniR1muNu1VOIcJRjlxW/HwmgfxcEUMwwDOI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730423107; c=relaxed/simple;
-	bh=UwVBt+LyGjzco8FOPwDKBvI3b9d+zhXOv47l4FMHwH0=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=W4mY6PEqbChI/iflLv7AJHA7uax9e08iOnsrZdI3qu6sO2n+f1p3uFu+jY2Ar2yCOtMGAA0BhpkYFmt4j+R0HuHLj3mnxbhqUKwwBR7MH9uf+T35NOm98nn/9Hlm12DEFu3qTR3GcMVEK9WaNINs2Zw5ch4IkeP38iETsvS8+XI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GdnT+Ket; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ADDBC4CEC3;
-	Fri,  1 Nov 2024 01:05:07 +0000 (UTC)
+	s=arc-20240116; t=1730425228; c=relaxed/simple;
+	bh=GRJEKlHR8b5LRnU1kiPmGCbmnJ+WuP/4OUML9P8ReSQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=mz5ZfEEkc7ROzVta6j6QDpd5poAbXZ5++s6VEX/GeNZZsWVC2G0psQqBQe8+Itim2XI/uXZqNpTvNSPADIBMxIVYIj+5ETc9mSoEfcDU68GQkJjVRzU+fDgDkp51AlzC1KT+h0GbJHr0U7/yspGHo+TCK6UvcDzrTa5VKk6R/Go=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oo13IK6r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8436CC4CEC3;
+	Fri,  1 Nov 2024 01:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730423107;
-	bh=UwVBt+LyGjzco8FOPwDKBvI3b9d+zhXOv47l4FMHwH0=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=GdnT+KetMM1G+4KCpwlX+7sSWCDaHsUv8ybKQfz2GtXP3MZ1xvqVmnKhvN6LO60uV
-	 QYJu2kX16iywoHeUecUvUnNigAsWLf0/t3+2CHDlRsKnATsYwDJy0+P8XSdxsb+Oos
-	 M3wyjYqmHxlQzKYaazjLHph7KLjwzqGb/9nygUW37eKiynqvlBwFd7RaPb49TKVa6r
-	 ssnCIQea/3AoK2aDlv90cKcQGbq30QM0jUp3PTMuV2BxZiW4J/cBgfjzplYxHaYDdi
-	 MwMzWHeQgqs+sqLLyfOxCdG0L92GIDqk+2lzx7nVvgkHgUL8TSTpsc6naKv5ZyBHhk
-	 e4J3yBGYZxvZw==
+	s=k20201202; t=1730425225;
+	bh=GRJEKlHR8b5LRnU1kiPmGCbmnJ+WuP/4OUML9P8ReSQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=oo13IK6r88xnNUO39oWyLkPf+uNIZKckf/WYWg06gzci3wkMnwAfc2N4hx4QvaXzi
+	 fRDrwpjrAm/yXBgXBZYIRGoL3V5bhCqyYcs4z4sAZEpON5ASNYfzgta3yhhSeypvL9
+	 +TKJ34gK907pDjTR9t+wA8fEueJzdaJSL8YAYcqQ80WP4HG2jik86bj48GnjgIde3E
+	 NVWxn4hVl0xbpkIuGskXgsYKsJuFeBGyJccEUdN7bdi31diQtdgG+rJf3FJDyVorTs
+	 cxeWLTrZ5GQkdRonTkAilng2rlKIbaKXXMXT4WigoO92Qa58Vw6GAuRTLBbffh3PZj
+	 LW3uYa2WJujXA==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 718F9380AC02;
-	Fri,  1 Nov 2024 01:05:16 +0000 (UTC)
-Subject: Re: [GIT PULL] bpf for v6.12-rc6
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20241031231912.109589-1-daniel@iogearbox.net>
-References: <20241031231912.109589-1-daniel@iogearbox.net>
-X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20241031231912.109589-1-daniel@iogearbox.net>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
-X-PR-Tracked-Commit-Id: c40dd8c4732551605712985bc5b7045094c6458d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5635f189425e328097714c38341944fc40731f3d
-Message-Id: <173042311499.2139780.16238189518094679353.pr-tracker-bot@kernel.org>
-Date: Fri, 01 Nov 2024 01:05:14 +0000
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: torvalds@linux-foundation.org, bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org, martin.lau@kernel.org
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE04F380AC02;
+	Fri,  1 Nov 2024 01:40:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCHv2 net-next] net: freescale: use ethtool string helpers
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173042523324.2147711.14478562238628999014.git-patchwork-notify@kernel.org>
+Date: Fri, 01 Nov 2024 01:40:33 +0000
+References: <20241025203757.288367-1-rosenp@gmail.com>
+In-Reply-To: <20241025203757.288367-1-rosenp@gmail.com>
+To: Rosen Penev <rosenp@gmail.com>
+Cc: netdev@vger.kernel.org, anthony.l.nguyen@intel.com,
+ przemyslaw.kitszel@intel.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
 
-The pull request you sent on Fri,  1 Nov 2024 00:19:12 +0100:
+Hello:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5635f189425e328097714c38341944fc40731f3d
+On Fri, 25 Oct 2024 13:37:57 -0700 you wrote:
+> The latter is the preferred way to copy ethtool strings.
+> 
+> Avoids manually incrementing the pointer. Cleans up the code quite well.
+> 
+> Signed-off-by: Rosen Penev <rosenp@gmail.com>
+> ---
+>  v2: fix wrong variable in for loop
+>  .../ethernet/freescale/dpaa/dpaa_ethtool.c    | 40 ++++++-------------
+>  .../ethernet/freescale/dpaa2/dpaa2-ethtool.c  | 15 +++----
+>  .../net/ethernet/freescale/dpaa2/dpaa2-mac.c  |  9 ++---
+>  .../net/ethernet/freescale/dpaa2/dpaa2-mac.h  |  2 +-
+>  .../freescale/dpaa2/dpaa2-switch-ethtool.c    |  9 ++---
+>  .../ethernet/freescale/enetc/enetc_ethtool.c  | 35 +++++-----------
+>  .../net/ethernet/freescale/gianfar_ethtool.c  |  8 ++--
+>  .../net/ethernet/freescale/ucc_geth_ethtool.c | 21 +++++-----
+>  8 files changed, 51 insertions(+), 88 deletions(-)
 
-Thank you!
+Here is the summary with links:
+  - [PATCHv2,net-next] net: freescale: use ethtool string helpers
+    https://git.kernel.org/netdev/net-next/c/f611cc38925b
 
+You are awesome, thank you!
 -- 
 Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
