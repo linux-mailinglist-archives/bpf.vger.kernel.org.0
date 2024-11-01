@@ -1,158 +1,125 @@
-Return-Path: <bpf+bounces-43715-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43716-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65D6E9B8EFF
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 11:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 73B929B8F2A
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 11:28:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 948D71C23E42
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 10:19:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5EA41C21068
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 10:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD60199939;
-	Fri,  1 Nov 2024 10:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83261166F16;
+	Fri,  1 Nov 2024 10:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJzswM9g"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JnpEfCya"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B8231991A3;
-	Fri,  1 Nov 2024 10:19:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD9B158558
+	for <bpf@vger.kernel.org>; Fri,  1 Nov 2024 10:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730456347; cv=none; b=U7YPutm276mxFrGKaFmjLrGsqCEsBmhyrdQ4aHxfjMFTQZ00LaASNIb9R8tPjMOWF87jsNBAIXKSL6hh8DO2xSAi26ZG1NyVt3YztZUyBjzFBm1/WkcB5TE5JD1SWpgrTrObWGv9cIPnV6XBwuIdx57eSTKNT6PQtZL6Qzy4t/c=
+	t=1730456909; cv=none; b=W/9XzKfB51HQZHm+mPcy8Lau4L6kKS8mKhcXi5g35Wt3ONepM46DsvupFHTaQ+/DdlHkibN4pjIVJPJztiFtuA5hW/9TughF2ZOMlrXsWrEdo04b5miV1r7AMIfp7smGmw/U0XwiORxYc14a4M3MG/XXlznwRiuJRWtU+gHzFg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730456347; c=relaxed/simple;
-	bh=U6tpuulTeOgvwtvb5sojTOh2aLlWGBBVysX1bDTyIMw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=JtUOzVb5lmUoj5TXwLyYeBGAZhNhHYDIXTPFd2w0VImoDn2RLW2LVHSAxXJPzgc5dWewKoqByQOL5FXatw5BVfSQeRF38gUb12YdPURtKsul7VbI/eBOzLsN3y/gaVAlGABm70QZuWC65rWvw5L++WAGH0/HbeznXYr2Lw4Gygc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rJzswM9g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D55B8C4CECF;
-	Fri,  1 Nov 2024 10:19:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730456346;
-	bh=U6tpuulTeOgvwtvb5sojTOh2aLlWGBBVysX1bDTyIMw=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=rJzswM9gvxJZm0FSQR178z4DVdY+PcV4io9MbtUNkSH/EQi0ZEC8GNNgRr3DX83fS
-	 sT1HikFL11HulC69np/p9PL02XrFXzSB7oU6Po9dqjTE37vYWcGfOTO9A+o08I0/56
-	 iCagb0/In7uauEJpAAanIbtct3jHjz2n5ENWthlwmURQHqhawE0kMj6JwY2FvXjWtW
-	 1YEoyanhuCiPOansiJwTaHE42tdEMNq7PYdiA4eVK4pyq93HdW2hNa5LlJX+c2y0H0
-	 6RZuFrGFz/6ZD2Syi/Dvnl7KmMuRfyiNVApkTWd5A3sH6F1Av5vKsljVipbMdN9AZh
-	 i0hDvtYdq2Ahw==
-From: Roger Quadros <rogerq@kernel.org>
-Date: Fri, 01 Nov 2024 12:18:51 +0200
-Subject: [PATCH net v3 2/2] net: ethernet: ti: am65-cpsw: fix warning in
- am65_cpsw_nuss_remove_rx_chns()
+	s=arc-20240116; t=1730456909; c=relaxed/simple;
+	bh=A1X12V2liHng3a0bbBlpfNrA5XGY4s5u3oZ/EYt736k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=agkqWPAd/SkUD/By9M5Sse151XrOGrPLcYI94p1zlHs96OIQ5xNSv5nQQ8+F5s1DqsftbNNyNBP/g74y6BxcxT1DNGFrqHFVq2lWnHiEJtCsOTUbkt2mkl4w+wD9YnMS4A9RPX+1dFanViua0UzYMt31HNHjD8OHMLjxqC350HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JnpEfCya; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1730456905;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=c3CVAGPZaOmAJ9yE4G4knuMYwAw/VX1+cSI4HMGCRtM=;
+	b=JnpEfCyaL78ztbAZtubtQtvKNh41VZr5Q2TgxC9M6LmPzMdvDURd2hEaDBLeO42w7CilRs
+	CCwK9OonHnP26E9oCxVRu2VoWK6y5h51QSydWTaIsPqsHkABkCHSqhnhBBpb/Zh/V0STFe
+	fK1e83huyZ7yhmg5fZfgMZhIzhVcblM=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-172-jiaLstsGNP6_PyNZBaOlkA-1; Fri,
+ 01 Nov 2024 06:28:20 -0400
+X-MC-Unique: jiaLstsGNP6_PyNZBaOlkA-1
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C525F19560BD;
+	Fri,  1 Nov 2024 10:28:18 +0000 (UTC)
+Received: from Carbon.redhat.com (unknown [10.39.208.11])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 69A521956052;
+	Fri,  1 Nov 2024 10:28:14 +0000 (UTC)
+From: Michael Petlan <mpetlan@redhat.com>
+To: namhyung@kernel.org,
+	acme@kernel.org,
+	linux-perf-users@vger.kernel.org
+Cc: adrian.hunter@intel.com,
+	irogers@google.com,
+	jolsa@kernel.org,
+	mingo@kernel.org,
+	peterz@infradead.org,
+	bpf@vger.kernel.org,
+	vmolnaro@redhat.com
+Subject: [PATCH] perf test stat_bpf_counters_cgrp: Remove cpu-list BPF counter test
+Date: Fri,  1 Nov 2024 11:28:12 +0100
+Message-ID: <20241101102812.576425-1-mpetlan@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241101-am65-cpsw-multi-rx-j7-fix-v3-2-338fdd6a55da@kernel.org>
-References: <20241101-am65-cpsw-multi-rx-j7-fix-v3-0-338fdd6a55da@kernel.org>
-In-Reply-To: <20241101-am65-cpsw-multi-rx-j7-fix-v3-0-338fdd6a55da@kernel.org>
-To: Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, Simon Horman <horms@kernel.org>, 
- Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>, 
- Siddharth Vadapalli <s-vadapalli@ti.com>, 
- Md Danish Anwar <danishanwar@ti.com>, 
- Govindarajan Sriramakrishnan <srk@ti.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- Roger Quadros <rogerq@kernel.org>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2883; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=U6tpuulTeOgvwtvb5sojTOh2aLlWGBBVysX1bDTyIMw=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBnJKsNcaiR4BPsDDyrSNOWdM/Xg4jhrTrgJBlEP
- 0WEh4DKpv2JAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZySrDQAKCRDSWmvTvnYw
- kwqFD/wNRFWCGfFUZ642Jr12qkcRUBFhVTWTXrm7p2CLvKdQwPFoVreRP7qbIARHEPnjAv8y7RC
- mYKy+fpf0XR+R6L1qp9jbBETjRDFgj2uKPKridBaTLdoIKTVqNioJKn7ZWrntfSLWgdlFJFdeDa
- wz05MJBCkCAaDBN/7JRAnwwxYe6ugGpOox0n3Rw3PreQagaw28Hk0a8SLrToYXFNdyWVy/KwXJc
- Ih0v0Uf+GEuCX+a+pQzV9jpxTn0gxntM9HSLQ/aRjeJNVjqCdfLLQkpl/bu6jvhhov75RfB6Wj0
- Ojgfs8jBCnbBUksMHppcdPUGmeYZP0mXmDXEEHqQmIysMkkCAyLg6YscFLStOyUhXr2uiWnnGL+
- wuRdDLRfMsBhJFoR4lh4XOF8t6QvvktDvZoBNBgN/23/wGZ2LNE6UfmUaUzV37bkwzAxgC2UwH2
- TmOz6r6igzKSMFUpjAbVOlUmPHDrlVS7zW+J2uGn76/rS/WrVWgRl+r/jicnofybaRYejIoM4Qp
- BAeIeLtSovZJeRIkeV2DRRP/Us1APNxsLrT5oxcHVDeb/1MeBXmqiB0fy00YS+qFLM/mP2y5kok
- IuOQXF7wjWBLmygBWtSVq5nc6m3zWNCaIPhpWDL2kA5bRbRSsKzSI/Stexy96liT3zzSLp34Npp
- QWV2AepsIHkxHQQ==
-X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
- fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-flow->irq is initialized to 0 which is a valid IRQ. Set it to -EINVAL
-in error path of am65_cpsw_nuss_init_rx_chns() so we do not try
-to free an unallocated IRQ in am65_cpsw_nuss_remove_rx_chns().
+The cpu-list part of this testcase has proven itself to be unreliable.
+Sometimes, we get "<not counted>" for system.slice when pinned to CPUs
+0 and 1. In such case, the test fails.
 
-If user tried to change number of RX queues and am65_cpsw_nuss_init_rx_chns()
-failed due to any reason, the warning will happen if user tries to change
-the number of RX queues after the error condition.
+Since we cannot simply guarantee that any system.slice load will run
+on any arbitrary list of CPUs, except the whole set of all CPUs, let's
+rather remove the cpu-list subtest.
 
-root@am62xx-evm:~# ethtool -L eth0 rx 3
-[   40.385293] am65-cpsw-nuss 8000000.ethernet: set new flow-id-base 19
-[   40.393211] am65-cpsw-nuss 8000000.ethernet: Failed to init rx flow2
-netlink error: Invalid argument
-root@am62xx-evm:~# ethtool -L eth0 rx 2
-[   82.306427] ------------[ cut here ]------------
-[   82.311075] WARNING: CPU: 0 PID: 378 at kernel/irq/devres.c:144 devm_free_irq+0x84/0x90
-[   82.469770] Call trace:
-[   82.472208]  devm_free_irq+0x84/0x90
-[   82.475777]  am65_cpsw_nuss_remove_rx_chns+0x6c/0xac [ti_am65_cpsw_nuss]
-[   82.482487]  am65_cpsw_nuss_update_tx_rx_chns+0x2c/0x9c [ti_am65_cpsw_nuss]
-[   82.489442]  am65_cpsw_set_channels+0x30/0x4c [ti_am65_cpsw_nuss]
-[   82.495531]  ethnl_set_channels+0x224/0x2dc
-[   82.499713]  ethnl_default_set_doit+0xb8/0x1b8
-[   82.504149]  genl_family_rcv_msg_doit+0xc0/0x124
-[   82.508757]  genl_rcv_msg+0x1f0/0x284
-[   82.512409]  netlink_rcv_skb+0x58/0x130
-[   82.516239]  genl_rcv+0x38/0x50
-[   82.519374]  netlink_unicast+0x1d0/0x2b0
-[   82.523289]  netlink_sendmsg+0x180/0x3c4
-[   82.527205]  __sys_sendto+0xe4/0x158
-[   82.530779]  __arm64_sys_sendto+0x28/0x38
-[   82.534782]  invoke_syscall+0x44/0x100
-[   82.538526]  el0_svc_common.constprop.0+0xc0/0xe0
-[   82.543221]  do_el0_svc+0x1c/0x28
-[   82.546528]  el0_svc+0x28/0x98
-[   82.549578]  el0t_64_sync_handler+0xc0/0xc4
-[   82.553752]  el0t_64_sync+0x190/0x194
-[   82.557407] ---[ end trace 0000000000000000 ]---
+Fixes: a84260e314029e6dc9904fd ("perf test stat_bpf_counters_cgrp: Enhance perf stat cgroup BPF counter test")
 
-Fixes: da70d184a8c3 ("net: ethernet: ti: am65-cpsw: Introduce multi queue Rx")
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
+Signed-off-by: Michael Petlan <mpetlan@redhat.com>
 ---
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/perf/tests/shell/stat_bpf_counters_cgrp.sh | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 70aea654c79f..ba6db61dd227 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -2441,6 +2441,7 @@ static int am65_cpsw_nuss_init_rx_chns(struct am65_cpsw_common *common)
- 		flow = &rx_chn->flows[i];
- 		flow->id = i;
- 		flow->common = common;
-+		flow->irq = -EINVAL;
+diff --git a/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh b/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
+index e75d0780dc78..2ec69060c42f 100755
+--- a/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
++++ b/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
+@@ -58,22 +58,9 @@ check_system_wide_counted()
+ 	fi
+ }
  
- 		rx_flow_cfg.ring_rxfdq0_id = fdqring_id;
- 		rx_flow_cfg.rx_cfg.size = max_desc_num;
-@@ -2483,6 +2484,7 @@ static int am65_cpsw_nuss_init_rx_chns(struct am65_cpsw_common *common)
- 		if (ret) {
- 			dev_err(dev, "failure requesting rx %d irq %u, %d\n",
- 				i, flow->irq, ret);
-+			flow->irq = -EINVAL;
- 			goto err;
- 		}
- 	}
-
+-check_cpu_list_counted()
+-{
+-	check_cpu_list_counted_output=$(perf stat -C 0,1 --bpf-counters --for-each-cgroup ${test_cgroups} -e cpu-clock -x, taskset -c 1 sleep 1  2>&1)
+-	if echo ${check_cpu_list_counted_output} | grep -q -F "<not "; then
+-		echo "Some CPU events are not counted"
+-		if [ "${verbose}" = "1" ]; then
+-			echo ${check_cpu_list_counted_output}
+-		fi
+-		exit 1
+-	fi
+-}
+-
+ check_bpf_counter
+ find_cgroups
+ 
+ check_system_wide_counted
+-check_cpu_list_counted
+ 
+ exit 0
 -- 
-2.34.1
+2.43.5
 
 
