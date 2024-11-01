@@ -1,210 +1,143 @@
-Return-Path: <bpf+bounces-43783-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43784-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 622CA9B994D
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 21:18:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F6999B9959
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 21:22:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85EDB1C21543
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 20:18:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 031E3282054
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 20:22:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879B81D0E15;
-	Fri,  1 Nov 2024 20:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061881D7E52;
+	Fri,  1 Nov 2024 20:22:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FwIWy1Tb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MEIi7L/X"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53AE814D2A3
-	for <bpf@vger.kernel.org>; Fri,  1 Nov 2024 20:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1782155C9E
+	for <bpf@vger.kernel.org>; Fri,  1 Nov 2024 20:22:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730492298; cv=none; b=m7DoIuhp6tTCsf9GSQLlqyyy6j3lCCvdptzccfxocBFkopD2uRPagtNeXq49JQaaKhuW0LJu6+nXh2zh2hZlG7xumHvhEDbqRGJXT0LCU1bXMGhlwnKCipinAaJb8elkB9+OJF4JncATB/JJvNT7jkxIVCzcQbG6OD1+I50c0bU=
+	t=1730492538; cv=none; b=Cuove3RjQdH0EyCOPj+OlItRDWB/Sg7jCep7CmBv3YVwrD9E7wdmQSRP7DkwAeXSuyjA3lpGjH3PrVwbliErBqetjDoRsoVZG4b+EVYcOeJvspWCd+MNy+d2GM49RSC9S1yh7kmehmbPQcl7GPxxF+F2qo8xxKbSsuYnOvsWbS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730492298; c=relaxed/simple;
-	bh=/wxjfjT2RcIU/4fkGCK8GA5jEZPo732lHH8nuP9yRHA=;
+	s=arc-20240116; t=1730492538; c=relaxed/simple;
+	bh=/L8O35yhLt9KzX2WY98IdPzARqafUdXABrwa/S9H0wI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LY0BF+EQl2PBGi7SgHYPVKDYGt0le+TKRQyHcmfsIs7AmJSHPfGCjC2hMyh5YdxVDxJrslkAZnYgRS5RXZc787av4JNvJRQ5BexuqjShdfWPC9knSBkPFdZtxV3NXRmL1TRmWc2wEWpKHkIXljIZvPRTf0sh8w99lHG2+2T+DBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FwIWy1Tb; arc=none smtp.client-ip=209.85.167.51
+	 To:Cc:Content-Type; b=L3En/B8lsVus3oS92KsdUdIof83gGqUfJJAKh+64WtZ2lP5RNaFa0x8dNfPIa2CBesxCxv4c8ZUFWOpQAaYN+fXyZqSaIB/Ydeaxd3ezsgT+zDwkn81lioVQB3HWi+7qe26cn9kpWZIddiP3sCTCOc0hNdoUNET2FiFlX0eWUzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MEIi7L/X; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-539f72c913aso3924003e87.1
-        for <bpf@vger.kernel.org>; Fri, 01 Nov 2024 13:18:15 -0700 (PDT)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-37d538fe5f2so1572071f8f.2
+        for <bpf@vger.kernel.org>; Fri, 01 Nov 2024 13:22:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730492294; x=1731097094; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730492535; x=1731097335; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PMeso5GguPbZetI8lu/6aggkHG7VjsGsfRzK6pYVvc4=;
-        b=FwIWy1TbwVT3ti+GG0W/YSiXhON01zvD3rJWkq4/jIS4tqBJzz0y/RyJZhWXDakI6F
-         c5tWTNSvnQAk/J5aXq1UccCmHvs6ScBIww/wZ1DDUldDJvSWsRw7OL+uXZFXnqUUeMUF
-         M5aO/x4OJxjCtEEAW45NS03AW4sE1FULBkOo9q3nCx8+HhXY/0Ayd/HuzMuHirZGoEjv
-         aBjvtQRDsfh/Y5ACPpKgrhFjLVYuj/c9+7gSydNPkcfXLHX3oaAv04JPIV/WxSktjf8O
-         8TcXV/uWmMRyv2X29+YlNhh4j4m0rxOqgdZnBjE1Fqa1YMTDez69C8vYw4XmD30FYK7B
-         ASjw==
+        bh=jHQukP9SCtpVW6zB+0cFt300Ls+v8Et2kuaW99rbhBQ=;
+        b=MEIi7L/XyDvgUmimJ0lQkdseRYQDh9t/TBLhjhQ+2mHcQwYbyxF1v7Zl88T+mp6ALH
+         aB05AYt5pC9jnGSu9kPWgMfHGS2rrANPjVyyCqDRPEcuEDk4JcCS1ml6QulaeMwhNRS4
+         41/+MwAC+lrzR7hRIq7CM0CB4bGKE6VdjFlgXQXY1wFNv8usS56SNyqT11sPzTC2w0I4
+         XPWdZvxTjNlfG+7KHFJumRzY+bUO+rK0hhUdvNPZ4ZqWx8+ezK6WlJQfr4M7F2ox4lgq
+         lkGdXiQDKxEqLXct0LXQoPSzEMV+pPnOVuDnwkXl+B2xjUsQ8QN0eKDQhCTywntV+6Ls
+         bX8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730492294; x=1731097094;
+        d=1e100.net; s=20230601; t=1730492535; x=1731097335;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PMeso5GguPbZetI8lu/6aggkHG7VjsGsfRzK6pYVvc4=;
-        b=KBhCwAnsanfyF0Fkx/TQ19Bz3QX6AatMoDdQ+KJgKum9d9r7/hqbSQ9s2E68R4i0du
-         n2lWWfRiOqjSzQCg0dQ6FJlCpVBFGBp0lAn7jMInXgI5uOSRAYve3L/n9wLBKpD+rnyy
-         3D1MT87BiMIBXBYZEkLaIyehxTQD+4DJC39q/b4WlVBcgG6WZUlvkNd/nFBeRJ5cbyUH
-         CkeQsOkavISRbh+gbwBPzZkkunSGQdr78mUTSloluNl2gqsM7dz283e2cBu8nL8sVxuJ
-         JtKV+owHrlFmBbbDZqkQdAoxl8DBE4JNkkho4f3G4n1MPxzUCRJ8zEwQmnyP/oaBCo4+
-         t7+w==
-X-Gm-Message-State: AOJu0Ywa/H6mhhbagZptbE7C8r1ns78Q8qXTZkXe7VVuZ6kjXvLRNmIR
-	WjxHRGlMMvjmhalTdatnwPAQcnTqIb+vVz5rCyPx6GeFAkhkCMQgZ5dYm2bFzuJFn/Su1NjXAtr
-	dZMwsXuc9hhTInKOHPOILT4yXl45vt3yC
-X-Google-Smtp-Source: AGHT+IG9wzWBwgKvumT34+RKMdWVU+QVgQSuFqg31gPeIz/s9jSDXyiHnCEgyZKvixev8q8B3v6lhgmrw5VoL3eJpRc=
-X-Received: by 2002:a05:6512:12c8:b0:52c:d819:517e with SMTP id
- 2adb3069b0e04-53b348e2efbmr12703835e87.30.1730492293992; Fri, 01 Nov 2024
- 13:18:13 -0700 (PDT)
+        bh=jHQukP9SCtpVW6zB+0cFt300Ls+v8Et2kuaW99rbhBQ=;
+        b=myG/clZ9764MT8Vz59VxujR8DKEohu3gKJ4vmtElrQwP7qfWWDAT1cjcjl9SDg5QR0
+         x93Bjr/V/a+455ri2rmoniK1ukCJoEXVB/PXSFAfYHGM+yyJFobqD151MqUq/rAtWkUS
+         hFxCNZZ2b15clX3HMSdC2fSuNWEKxlXOxXVyucbxodEajlWo+JJvbFuzQh+KubR26+AU
+         SFTm7sPtWFKWKYn4jNzwfJD7YmNXmCoy9JaiLvId9EOAgS+gflwAGp16ZMoDWU1vjIP0
+         hhb/VDVad52P13qCbYW3gIVNGhC+dgREfd1Ae7Wc7+BEZRTVQmFY3lOp8DVJHOFY5Wue
+         L7nA==
+X-Forwarded-Encrypted: i=1; AJvYcCU4U0D0AoGLyVhb0R3psqixxidSNF7PabJldmKG2YE4s9+JhsfPJ2SYVQDkJVsI+E3NuKA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwVlGrJFovBoFrqSjtZYof23xfg2rJjKZI0fiHOf8HR45CbH0bA
+	F0wUyZhffK724hHElhO/iqm7jOgrW6flaJO+8coQn45ZqOOBq4FZST9ByPC+34sKdFr7dRhgcdS
+	Ysa7z1asjccsAoXl39XYBIYOEIOY=
+X-Google-Smtp-Source: AGHT+IFH+j6mjBKQDhmMgrTPHMhPwy+PD6zcaF61HxIu8aEbnvAT+bQwN4ot6riWhdem2RgPh1Wc3yeCsY7e+9z1O7o=
+X-Received: by 2002:a5d:5f89:0:b0:37c:c4d3:b9ba with SMTP id
+ ffacd0b85a97d-381be7ad23fmr7788476f8f.12.1730492535090; Fri, 01 Nov 2024
+ 13:22:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241101030950.2677215-1-yonghong.song@linux.dev> <20241101031011.2679361-1-yonghong.song@linux.dev>
-In-Reply-To: <20241101031011.2679361-1-yonghong.song@linux.dev>
+References: <20241101195702.2926731-1-tao.lyu@epfl.ch>
+In-Reply-To: <20241101195702.2926731-1-tao.lyu@epfl.ch>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 1 Nov 2024 13:18:03 -0700
-Message-ID: <CAADnVQ+3XKiR4YNjZUbZd-UA8pcc697m0-D9x_oNTjo2iCd6QQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 4/9] bpf: Allocate private stack for eligible
- main prog or subprogs
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>
+Date: Fri, 1 Nov 2024 13:22:03 -0700
+Message-ID: <CAADnVQKV=4Dc7e_rFJEYYX1-1HWO9Yzgwb5d2kPnCCzcwUX+_g@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix incorrect precision backtracking
+To: Tao Lyu <tao.lyu@epfl.ch>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Hao Luo <haoluo@google.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 31, 2024 at 8:10=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
+On Fri, Nov 1, 2024 at 1:04=E2=80=AFPM Tao Lyu <tao.lyu@epfl.ch> wrote:
 >
-> For any main prog or subprogs, allocate private stack space if requested
-> by subprog info or main prog. The alignment for private stack is 16
-> since maximum stack alignment is 16 for bpf-enabled archs.
+> Hi,
 >
-> For x86_64 arch, the allocated private stack is freed in arch specific
-> implementation of bpf_jit_free().
+> The process_iter_arg check function misses the type check on the iter
+> args, which leads to any pointer types can be passed as iter args.
 >
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> As the attached testcase shows, when I pass a ptr_to_map_value whose
+> offset is 0, process_iter_arg still regards it as a stack pointer and
+> use its offset to check the stack slot types.
+>
+> In this case, as long as the stack slot types matched with the
+> ptr_to_map_value offset is correct, then checks can be bypassed.
+>
+> I attached the fix, which checks if the argument type is stack pointer.
+>
+> Please let me know if this fix might be incomplete.
+> I'm happy to revise it.
+>
+> Best,
+> Tao
+>
+> Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
 > ---
->  arch/x86/net/bpf_jit_comp.c |  1 +
->  include/linux/bpf.h         |  1 +
->  kernel/bpf/core.c           | 10 ++++++++++
->  kernel/bpf/verifier.c       | 12 ++++++++++++
->  4 files changed, 24 insertions(+)
+>  kernel/bpf/verifier.c                     |  6 ++++++
+>  tools/testing/selftests/bpf/progs/iters.c | 23 +++++++++++++++++++++++
+>  2 files changed, 29 insertions(+)
 >
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 06b080b61aa5..59d294b8dd67 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -3544,6 +3544,7 @@ void bpf_jit_free(struct bpf_prog *prog)
->                 prog->bpf_func =3D (void *)prog->bpf_func - cfi_get_offse=
-t();
->                 hdr =3D bpf_jit_binary_pack_hdr(prog);
->                 bpf_jit_binary_pack_free(hdr, NULL);
-> +               free_percpu(prog->aux->priv_stack_ptr);
->                 WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
-
-I'm 99% certain there are memory leaks when free and alloc
-are imbalanced like this:
-arch code doing free while generic code doing alloc.
-
->         }
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 8db3c5d7404b..8a3ea7440a4a 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1507,6 +1507,7 @@ struct bpf_prog_aux {
->         u32 max_rdwr_access;
->         struct btf *attach_btf;
->         const struct bpf_ctx_arg_aux *ctx_arg_info;
-> +       void __percpu *priv_stack_ptr;
->         struct mutex dst_mutex; /* protects dst_* pointers below, *after*=
- prog becomes visible */
->         struct bpf_prog *dst_prog;
->         struct bpf_trampoline *dst_trampoline;
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 14d9288441f2..6905f250738b 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2396,6 +2396,7 @@ static void bpf_prog_select_func(struct bpf_prog *f=
-p)
->   */
->  struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
->  {
-> +       void __percpu *priv_stack_ptr;
->         /* In case of BPF to BPF calls, verifier did all the prep
->          * work with regards to JITing, etc.
->          */
-> @@ -2421,6 +2422,15 @@ struct bpf_prog *bpf_prog_select_runtime(struct bp=
-f_prog *fp, int *err)
->                 if (*err)
->                         return fp;
->
-> +               if (fp->aux->use_priv_stack && fp->aux->stack_depth) {
-> +                       priv_stack_ptr =3D __alloc_percpu_gfp(fp->aux->st=
-ack_depth, 16, GFP_KERNEL);
-> +                       if (!priv_stack_ptr) {
-> +                               *err =3D -ENOMEM;
-> +                               return fp;
-> +                       }
-> +                       fp->aux->priv_stack_ptr =3D priv_stack_ptr;
-> +               }
-> +
->                 fp =3D bpf_int_jit_compile(fp);
-
-what happens if this jit_compile fails?
-Which part will free priv_stack_ptr?
-I suspect it's a memory leak.
-
->                 bpf_prog_jit_attempt_done(fp);
->                 if (!fp->jited && jit_needed) {
 > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 596afd29f088..30e74db6a85f 100644
+> index 797cf3ed32e0..bc968d2b76d9 100644
 > --- a/kernel/bpf/verifier.c
 > +++ b/kernel/bpf/verifier.c
-> @@ -20080,6 +20080,7 @@ static int jit_subprogs(struct bpf_verifier_env *=
-env)
->  {
->         struct bpf_prog *prog =3D env->prog, **func, *tmp;
->         int i, j, subprog_start, subprog_end =3D 0, len, subprog;
-> +       void __percpu *priv_stack_ptr;
->         struct bpf_map *map_ptr;
->         struct bpf_insn *insn;
->         void *old_bpf_func;
-> @@ -20176,6 +20177,17 @@ static int jit_subprogs(struct bpf_verifier_env =
-*env)
->
->                 func[i]->aux->name[0] =3D 'F';
->                 func[i]->aux->stack_depth =3D env->subprog_info[i].stack_=
-depth;
+> @@ -8031,6 +8031,12 @@ static int process_iter_arg(struct bpf_verifier_en=
+v *env, int regno, int insn_id
+>                 return -EINVAL;
+>         }
+>         t =3D btf_type_by_id(meta->btf, btf_id);
 > +
-> +               if (env->subprog_info[i].use_priv_stack && func[i]->aux->=
-stack_depth) {
-> +                       priv_stack_ptr =3D __alloc_percpu_gfp(func[i]->au=
-x->stack_depth, 16,
-> +                                                           GFP_KERNEL);
-> +                       if (!priv_stack_ptr) {
-> +                               err =3D -ENOMEM;
-> +                               goto out_free;
-> +                       }
-> +                       func[i]->aux->priv_stack_ptr =3D priv_stack_ptr;
-> +               }
-> +
->                 func[i]->jit_requested =3D 1;
->                 func[i]->blinding_requested =3D prog->blinding_requested;
->                 func[i]->aux->kfunc_tab =3D prog->aux->kfunc_tab;
-> --
-> 2.43.5
->
+> +       // Ensure the iter arg is a stack pointer
+
+no c++ comments pls.
+
+Also I believe Kumar sent a fix for this already.
+It fell through the cracks.
+
+Kumar,
+please resend.
+
+pw-bot: cr
+
+> +       if (reg->type !=3D PTR_TO_STACK) {
+> +               verbose(env, "iter pointer should be the PTR_TO_STACK typ=
+e\n");
+> +               return -EINVAL;
+> +       }
 
