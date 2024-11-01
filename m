@@ -1,217 +1,97 @@
-Return-Path: <bpf+bounces-43738-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43739-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 903229B9302
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 15:21:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F0649B93EB
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 16:04:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77A07B216EB
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 14:21:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F7061C20D0D
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2024 15:04:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2557D1A76C4;
-	Fri,  1 Nov 2024 14:21:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0215D1A7AE3;
+	Fri,  1 Nov 2024 15:03:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gykLoDI2"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70A11A7060;
-	Fri,  1 Nov 2024 14:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E172513B7A1
+	for <bpf@vger.kernel.org>; Fri,  1 Nov 2024 15:03:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730470878; cv=none; b=q6ozqGPyIL/yESx5nEVNwQmp9GtHqVzUAbcp7Yyx6BqSKoVhwI323TtW2h/TIwafd2to1GvU7GgLuGx7KEbLyl1BcT70DREOQJthECQLPxj6lUzaFTJQcAr9dqnSwoUPMn5MDbjmFfhlAHaFwZJRVRvtUokBj0CxdkaaY3NtlD8=
+	t=1730473432; cv=none; b=pb9fUU20JKtXsHxIAWxldTwMUS/NQ0Kt+6HJaotq7192ZeeBO0AgfLUz6O7CEg6cSwyMKm4Z2b63RIxzMNyFpUH3cUsju0RO7gAqf/E4Sa+Vn0cot32OiquR1/BT/gN9Oos9MXsksUajZPePSk6BA/7ANzuOv8Rcn/+mZiWkfBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730470878; c=relaxed/simple;
-	bh=S7KBA8xEO6BpAvteapa4TKEuJiHMXUfN+fW77Vcz0uU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i9ymUTkRzeSTYhUkPdLoxtO8b2wpibf2IyTN3mcBIxauyAhHc3PVgEqC6PNgB3a80LGgDcB3imxSILf8d5aS0ylDAGInZ+Bn0MLBL+Zq8hbOlKdRlVGB2nNFYEa5irzUZX6dwY+LxMf1pBS+1gnZHKRgGegVEr1qTGe8VUQyVTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CDAFC4CECD;
-	Fri,  1 Nov 2024 14:21:14 +0000 (UTC)
-Date: Fri, 1 Nov 2024 10:22:12 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
- <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, linux-arch@vger.kernel.org, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Huacai Chen
- <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian
- Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
- <svens@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH v18 12/17] fprobe: Add fprobe_header encoding feature
-Message-ID: <20241101102212.5e9d74d9@gandalf.local.home>
-In-Reply-To: <172991747946.443985.11014834036464028393.stgit@devnote2>
-References: <172991731968.443985.4558065903004844780.stgit@devnote2>
-	<172991747946.443985.11014834036464028393.stgit@devnote2>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1730473432; c=relaxed/simple;
+	bh=YX5sq6ZheiFtKApdJRRA0qJIqMgD+DQBat0h/g373yk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Jg+ZxtArpOPepJTmGH1QtQ5X/K/vAiKuaHdPLkG5ccwV16cEz4lVfQOTHEKEr4HN82z37qCzglsfKFCMTvneEyNanLEsheX1pfLDB1OSwm53xOcj2QKLIn4y88OtC6UmFv78z7ir87J7WFNpSuVrpb/Fay9XpPmfBhViwaLNVsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gykLoDI2; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20c87b0332cso114895ad.1
+        for <bpf@vger.kernel.org>; Fri, 01 Nov 2024 08:03:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1730473430; x=1731078230; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YX5sq6ZheiFtKApdJRRA0qJIqMgD+DQBat0h/g373yk=;
+        b=gykLoDI2DuEq5oSSJLE5frs0TT1DzrL9IFrqPAniiyuSw+ZykdIBnw/UHL4dx/GbrE
+         hRE2UznsEjvBJ6SIEOyPdmy5xo+1hLNbMHmwLDmWxRjzIiKFhzy8IAeS79c2OoO05oC2
+         fYm0ASM1GRpefBFIQHh0pQ0GWq8pLI6XHI26/1AQ44vT/auSOyz3Sz/DZwKgRGqB3Y5l
+         08Ux/kwLyrE0DOcMHM3uf5yAi8SLl191LCURJs5Ndz4Y/yDKL+s6XSFjYi+9LePztRxL
+         PA1zDeez8146vRU8UJBZ2B7C0U8HpZsF+BzIvnF3bHNdo0Ko2hadbXvpsZPoQXybjuZX
+         8d4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730473430; x=1731078230;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YX5sq6ZheiFtKApdJRRA0qJIqMgD+DQBat0h/g373yk=;
+        b=cWpuEB6n0EBRzNpFztQQsW1tKOuoUW6KppPJ17IDAYO7gKayb+H7bsmEWDiHjg+FHA
+         Duk0Nvh7cS3vI4aOlCJllCXDMrNNbINjUalN360kT5fyDi7Rb0FreV1XsG6qyKJSdJuq
+         mnCwj3pqlQUcmHDS0XenZWTH1Kt9RcRfnZ0fqledJ5Kyp17WgbBP46m/YxJp55/kWihw
+         yUxvirONXTh5j/E9rtyoad0Y1MyKoUEP5R15WViizguWgJgjogX5ItTmeE/J1ljWHSNR
+         XbVNPp6ArMTwrsy3LMuOQLFFJ8IgMMpo8GItkR1EsQE9gMzo6adShZmjdDC9qav9dZ3f
+         qSLg==
+X-Forwarded-Encrypted: i=1; AJvYcCUJetS8OUIrjTk1DmdogqLnN/snV+NzbgQukXpKb78mbIo5f4WUvCj4xnwfCbs3S2qQXZ8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwaSHEKzWrVMpY+B3c8wW00T6/gmKyckrwUWsuy96+dqwSPWULl
+	/lnk689xojv0PZrntH9A5jXhsZm2fTWIcwZJhi8BQeligIkXHtcO9tQCJV3rqbq3SHpSSKbJq9C
+	H11ROepKf1XrjlbpsZMZEf/haU1i/6FmE7tic
+X-Gm-Gg: ASbGncs31uriKpDNH1J43/7u14bxCKmHjHicW4NwoW78E80EA2kl++1+14PHF6tfHAf
+	hvQoOK7kNuCTOQVIW1Be5gLnQBWpLsZw=
+X-Google-Smtp-Source: AGHT+IHO6aa1H4NDIW0E9d+zicp8WZuquwRCLAb+vHiEevpZxqwYPVoVFHQYByqn3yh/phUy4h+4QI3F3VXJog6wc7c=
+X-Received: by 2002:a17:902:f684:b0:1f7:34e4:ebc1 with SMTP id
+ d9443c01a7336-21105425eddmr4269565ad.5.1730473429797; Fri, 01 Nov 2024
+ 08:03:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20241031210938.1696639-1-andrii@kernel.org> <20241031210938.1696639-3-andrii@kernel.org>
+In-Reply-To: <20241031210938.1696639-3-andrii@kernel.org>
+From: Jordan Rife <jrife@google.com>
+Date: Fri, 1 Nov 2024 08:03:38 -0700
+Message-ID: <CADKFtnSvogoT0ArYUqUFaBVUoQN4tfX6i_OdHNc4h2kaYvpZcQ@mail.gmail.com>
+Subject: Re: [PATCH trace/for-next 3/3] bpf: ensure RCU Tasks Trace GP for
+ sleepable raw tracepoint BPF links
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	rostedt@goodmis.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@kernel.org, mathieu.desnoyers@efficios.com, 
+	linux-kernel@vger.kernel.org, mhiramat@kernel.org, peterz@infradead.org, 
+	paulmck@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, 26 Oct 2024 13:37:59 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+Just to confirm, I ran the reproducer from [1] after combining this
+series with Mathieu's from [2] and it ran for 20m with no issues.
 
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> Fprobe store its data structure address and size on the fgraph return stack
-> by __fprobe_header. But most 64bit architecture can combine those to
-> one unsigned long value because 4 MSB in the kernel address are the same.
-> With this encoding, fprobe can consume less space on ret_stack.
-> 
-> This introduces asm/fprobe.h to define arch dependent encode/decode
-> macros. Note that since fprobe depends on CONFIG_HAVE_FUNCTION_GRAPH_FREGS,
-> currently only arm64, loongarch, riscv, s390 and x86 are supported.
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Huacai Chen <chenhuacai@kernel.org>
-> Cc: WANG Xuerui <kernel@xen0n.name>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
-> Cc: Sven Schnelle <svens@linux.ibm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> ---
->  arch/arm64/include/asm/fprobe.h     |    7 +++++++
->  arch/loongarch/include/asm/fprobe.h |    5 +++++
->  arch/riscv/include/asm/fprobe.h     |    9 +++++++++
->  arch/s390/include/asm/fprobe.h      |   10 ++++++++++
->  arch/x86/include/asm/fprobe.h       |    9 +++++++++
->  include/asm-generic/fprobe.h        |   33 +++++++++++++++++++++++++++++++++
->  kernel/trace/fprobe.c               |   29 +++++++++++++++++++++++++++++
->  7 files changed, 102 insertions(+)
->  create mode 100644 arch/arm64/include/asm/fprobe.h
->  create mode 100644 arch/loongarch/include/asm/fprobe.h
->  create mode 100644 arch/riscv/include/asm/fprobe.h
->  create mode 100644 arch/s390/include/asm/fprobe.h
->  create mode 100644 arch/x86/include/asm/fprobe.h
->  create mode 100644 include/asm-generic/fprobe.h
-> 
-> diff --git a/arch/arm64/include/asm/fprobe.h b/arch/arm64/include/asm/fprobe.h
-> new file mode 100644
-> index 000000000000..bbf254db878d
-> --- /dev/null
-> +++ b/arch/arm64/include/asm/fprobe.h
-> @@ -0,0 +1,7 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_ARM64_FPROBE_H
-> +#define _ASM_ARM64_FPROBE_H
-> +
-> +#include <asm-generic/fprobe.h>
-> +
-> +#endif /* _ASM_ARM64_FPROBE_H */
-> \ No newline at end of file
+[1]: https://lore.kernel.org/bpf/67121037.050a0220.10f4f4.000f.GAE@google.com/
+[2]: https://lore.kernel.org/bpf/20241031152056.744137-1-mathieu.desnoyers@efficios.com/T/#u
 
-This isn't the way to add asm-generic code to architectures. It needs to be
-in the Kbuild file. Like this:
-
-diff --git a/arch/arm64/include/asm/Kbuild b/arch/arm64/include/asm/Kbuild
-index 4e350df9a02d..0d0a638d41a8 100644
---- a/arch/arm64/include/asm/Kbuild
-+++ b/arch/arm64/include/asm/Kbuild
-@@ -14,6 +14,7 @@ generic-y += qrwlock.h
- generic-y += qspinlock.h
- generic-y += parport.h
- generic-y += user.h
-+generic-y += fprobe.h
- 
- generated-y += cpucap-defs.h
- generated-y += sysreg-defs.h
-
-
-> diff --git a/arch/loongarch/include/asm/fprobe.h b/arch/loongarch/include/asm/fprobe.h
-> new file mode 100644
-> index 000000000000..68156a66873c
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/fprobe.h
-> @@ -0,0 +1,5 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_LOONGARCH_FPROBE_H
-> +#define _ASM_LOONGARCH_FPROBE_H
-> +
-> +#endif /* _ASM_LOONGARCH_FPROBE_H */
-> \ No newline at end of file
-> diff --git a/arch/riscv/include/asm/fprobe.h b/arch/riscv/include/asm/fprobe.h
-> new file mode 100644
-> index 000000000000..51fc2ef3eda1
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/fprobe.h
-> @@ -0,0 +1,9 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_RISCV_FPROBE_H
-> +#define _ASM_RISCV_FPROBE_H
-> +
-> +#ifdef CONFIG_64BIT
-> +#include <asm-generic/fprobe.h>
-> +#endif
-> +
-> +#endif /* _ASM_RISCV_FPROBE_H */
-> \ No newline at end of file
-> diff --git a/arch/s390/include/asm/fprobe.h b/arch/s390/include/asm/fprobe.h
-> new file mode 100644
-> index 000000000000..84b94ba6e3a4
-> --- /dev/null
-> +++ b/arch/s390/include/asm/fprobe.h
-> @@ -0,0 +1,10 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_S390_FPROBE_H
-> +#define _ASM_S390_FPROBE_H
-> +
-> +#include <asm-generic/fprobe.h>
-> +
-> +#undef FPROBE_HEADER_MSB_PATTERN
-> +#define FPROBE_HEADER_MSB_PATTERN 0
-> +
-> +#endif /* _ASM_S390_FPROBE_H */
-> \ No newline at end of file
-> diff --git a/arch/x86/include/asm/fprobe.h b/arch/x86/include/asm/fprobe.h
-> new file mode 100644
-> index 000000000000..c863518bef90
-> --- /dev/null
-> +++ b/arch/x86/include/asm/fprobe.h
-> @@ -0,0 +1,9 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_X86_FPROBE_H
-> +#define _ASM_X86_FPROBE_H
-> +
-> +#ifdef CONFIG_64BIT
-> +#include <asm-generic/fprobe.h>
-> +#endif
-> +
-> +#endif /* _ASM_X86_FPROBE_H */
-> \ No newline at end of file
-
-Same for the above.
-
--- Steve
+Tested-by: Jordan Rife <jrife@google.com>
 
