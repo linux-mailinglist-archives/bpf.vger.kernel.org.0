@@ -1,98 +1,178 @@
-Return-Path: <bpf+bounces-43813-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43814-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE8219B9FEB
-	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2024 13:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48A3C9BA000
+	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2024 13:24:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E93A1C20F33
-	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2024 12:14:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 701201C213BF
+	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2024 12:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81EAA189909;
-	Sat,  2 Nov 2024 12:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F05189F5A;
+	Sat,  2 Nov 2024 12:24:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ptr1337.dev header.i=@ptr1337.dev header.b="TMMtt3p/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mGTDfj4i"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ptr1337.dev (mail.ptr1337.dev [202.61.224.105])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21E556AB8;
-	Sat,  2 Nov 2024 12:13:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.61.224.105
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D760A189F2B;
+	Sat,  2 Nov 2024 12:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730549636; cv=none; b=HAWITIe9hyyz5C+0tSBLxxY2FXUIf56eaVe8Td+DLPrJBcPasEZkcPuhJ+C5ZOUpHZ0AUozE3Ea6Qfy1VlN5ZRPVRcJGygf88N9zhxekk2qrUrCQ7AfmkLk49s5dDbWjkF99HVG770Tgz2352fBSVWLkIUdONaPvh1WhchCNPTE=
+	t=1730550286; cv=none; b=WPKH6oOCfwpZ/hrlDgb8tpzXRQLMhhnqH/PpLxyFlObZva1UMTa9YbrIUZLcxPi2JKTyku2oFT7HWXBrJA2TnP1O3Lo5IABTMO8ROCjiZM3v/0YQPeTEdYLQSx8Htdk7GQGIpNs2BudgmZ46RpdSRKeHpYykmbBDIsxT3NI0Mkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730549636; c=relaxed/simple;
-	bh=PQXUO/NpyyY6AE1OCBuJxE2fWo8+FydBP+Vw5SssCN0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WLvtPn6auIOPOj9UrzhG1qxcayz7Y5go9XuWlksdZCRFM0h2AWE1C8k/kB9kEeUCoGz6pa6547I488/2o/WNLHKnr1EovVEJLt0MP8Cu1MKUaxKa/zDJ6Li/GRzKYHaGk1tVeLgS9Y1WaolM83AxkZS+hXCINS5Zoo8OmYMzkeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ptr1337.dev; spf=pass smtp.mailfrom=ptr1337.dev; dkim=pass (2048-bit key) header.d=ptr1337.dev header.i=@ptr1337.dev header.b=TMMtt3p/; arc=none smtp.client-ip=202.61.224.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ptr1337.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ptr1337.dev
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4AF772805A2;
-	Sat,  2 Nov 2024 13:06:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ptr1337.dev; s=dkim;
-	t=1730549169; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=MOnX4Fhcv18gWqefNAbz/hAajKVv81QC+1X9br1/mV8=;
-	b=TMMtt3p/z3+Eu5Um4KkXN4uM4jKuUMnipkVpe21xkvk03fa0bZs0w/ExyXVqnM3v+hv+4C
-	mNarLtG3Z7V3ru7dpVgMLC/IPKIkJZIaj9wJg9I/XQnHpHx8QXeHwCCLo6VIQsikiOSe2I
-	HPzeNyIrf4qDeeurcaJpUdkcku6rA1xUezrVTtFLoCzJVBRZOJ6+nI4HW8g7TDvLQt80MK
-	un+kElAKlcXt5z3DX/dr5ZX2YfkUhxKmd8g0PqYQqLmk06lp3MKBotxHUXyMhAlAAZDMmb
-	XKgbFcnPkN5Cnq8hJnTjGa1rR9KQjIlSaAytpGaPOrvo4AR3F+IVhl8HOlpGNw==
-From: Peter Jung <admin@ptr1337.dev>
-To: 
-Cc: jose.fernandez@linux.dev,
-	Peter Jung <admin@ptr1337.dev>,
-	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	Christian Heusel <christian@heusel.eu>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH] kbuild: add resolve_btfids to pacman PKGBUILD
-Date: Sat,  2 Nov 2024 13:05:26 +0100
-Message-ID: <20241102120533.1592277-1-admin@ptr1337.dev>
-X-Mailer: git-send-email 2.47.0
+	s=arc-20240116; t=1730550286; c=relaxed/simple;
+	bh=lFxlMfCCfbEYFC0V+aROouND/5okVB9WvHg6q+rZHF4=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QI3iEJsBonw5ADpnQl8LK+Ka7tG/oheC3b+CJyL9BhniVYWz/pNw46L/vCkB/g1HQ8zp1lHbSCN4a/tc26A5fEpqLNB82XABuzCK25EkaUtFlQb5Cd77ElYnt2LQYg+Xvl4ojz6l2YeGtQ9e/f2SkeLsL63hf8a+zZg3coZd8oU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mGTDfj4i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E5BEC4CEC3;
+	Sat,  2 Nov 2024 12:24:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730550285;
+	bh=lFxlMfCCfbEYFC0V+aROouND/5okVB9WvHg6q+rZHF4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=mGTDfj4iNlTIaOrnos5WbcOSLa3/dQ/q+NRiQggyBjNwVaN67twdnQJ1pN4v9Oj8K
+	 HffClJSbfyDHxPTN2G4bW4ANurMzhYTf7C9IReQtZ+Qs8iLyuslNEd8LJTjSBL6iGP
+	 +ZhHHK/2XqnYPziPNvEzbMPKlab6NIJhBQrWHMbgbNdrW/G9Wz9c++A71cdt8axis2
+	 YsX9T0LaLXHWgs6zBoyqk5GaUKxyTwaV1+5zqVgjpR63hS2JJ/lAPJszueGGkcudyh
+	 OCRdaiC7jaGk5uPg1CAOD1HmGBxYSymmEftDbD8s3m/dvNL001fJtKITlfem9V0Fnv
+	 qGfEKmUU2y0gg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1t7DBK-0096Wz-Su;
+	Sat, 02 Nov 2024 12:24:42 +0000
+Date: Sat, 02 Nov 2024 12:24:42 +0000
+Message-ID: <86ikt52585.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Frank Li <Frank.Li@nxp.com>,	Bjorn Helgaas <bhelgaas@google.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,	Krzysztof =?UTF-8?B?V2lsY3p5?=
+ =?UTF-8?B?xYRza2k=?= <kw@linux.com>,	Rob Herring <robh@kernel.org>,	Shawn
+ Guo <shawnguo@kernel.org>,	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,	Fabio Estevam
+ <festevam@gmail.com>,	linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,	linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev,	alyssa@rosenzweig.io,	bpf@vger.kernel.org,
+	broonie@kernel.org,	jgg@ziepe.ca,	joro@8bytes.org,	lgirdwood@gmail.com,
+	p.zabel@pengutronix.de,	robin.murphy@arm.com,	will@kernel.org
+Subject: Re: [PATCH v3 1/2] PCI: Add enable_device() and disable_device() callbacks for bridges
+In-Reply-To: <20241102115435.s7oycrh2pjkfhpsu@thinkpad>
+References: <20241024-imx95_lut-v3-0-7509c9bbab86@nxp.com>
+	<20241024-imx95_lut-v3-1-7509c9bbab86@nxp.com>
+	<20241102111012.23zwz4et2qkafyca@thinkpad>
+	<86jzdl27my.wl-maz@kernel.org>
+	<20241102115435.s7oycrh2pjkfhpsu@thinkpad>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.4
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: manivannan.sadhasivam@linaro.org, Frank.Li@nxp.com, bhelgaas@google.com, hongxing.zhu@nxp.com, l.stach@pengutronix.de, lpieralisi@kernel.org, kw@linux.com, robh@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org, broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org, lgirdwood@gmail.com, p.zabel@pengutronix.de, robin.murphy@arm.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-If the config is using DEBUG_INFO_BTF, it is required to,
-package resolve_btfids with.
-Compiling dkms modules will fail otherwise.
+On Sat, 02 Nov 2024 11:54:35 +0000,
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+> 
+> On Sat, Nov 02, 2024 at 11:32:37AM +0000, Marc Zyngier wrote:
+> > On Sat, 02 Nov 2024 11:10:12 +0000,
+> > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+> > > 
+> > > On Thu, Oct 24, 2024 at 06:34:44PM -0400, Frank Li wrote:
+> > > > Some PCIe host bridges require special handling when enabling or disabling
+> > > > PCIe Endpoints. For example, the i.MX95 platform has a lookup table to map
+> > > > Requester IDs to StreamIDs, which are used by the SMMU and MSI controller
+> > > > to identify the source of DMA accesses.
+> > > > 
+> > > > Without this mapping, DMA accesses may target unintended memory, which
+> > > > would corrupt memory or read the wrong data.
+> > > > 
+> > > > Add a host bridge .enable_device() hook the imx6 driver can use to
+> > > > configure the Requester ID to StreamID mapping. The hardware table isn't
+> > > > big enough to map all possible Requester IDs, so this hook may fail if no
+> > > > table space is available. In that case, return failure from
+> > > > pci_enable_device().
+> > > > 
+> > > > It might make more sense to make pci_set_master() decline to enable bus
+> > > > mastering and return failure, but it currently doesn't have a way to return
+> > > > failure.
+> > > > 
+> > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > ---
+> > > > Change from v2 to v3
+> > > > - use Bjorn suggest's commit message.
+> > > > - call disable_device() when error happen.
+> > > > 
+> > > > Change from v1 to v2
+> > > > - move enable(disable)device ops to pci_host_bridge
+> > > > ---
+> > > >  drivers/pci/pci.c   | 23 ++++++++++++++++++++++-
+> > > >  include/linux/pci.h |  2 ++
+> > > >  2 files changed, 24 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > > index 7d85c04fbba2a..5e0cb9b6f4d4f 100644
+> > > > --- a/drivers/pci/pci.c
+> > > > +++ b/drivers/pci/pci.c
+> > > > @@ -2056,6 +2056,7 @@ int __weak pcibios_enable_device(struct pci_dev *dev, int bars)
+> > > >  static int do_pci_enable_device(struct pci_dev *dev, int bars)
+> > > >  {
+> > > >  	int err;
+> > > > +	struct pci_host_bridge *host_bridge;
+> > > >  	struct pci_dev *bridge;
+> > > >  	u16 cmd;
+> > > >  	u8 pin;
+> > > > @@ -2068,9 +2069,16 @@ static int do_pci_enable_device(struct pci_dev *dev, int bars)
+> > > >  	if (bridge)
+> > > >  		pcie_aspm_powersave_config_link(bridge);
+> > > >  
+> > > > +	host_bridge = pci_find_host_bridge(dev->bus);
+> > > > +	if (host_bridge && host_bridge->enable_device) {
+> > > > +		err = host_bridge->enable_device(host_bridge, dev);
+> > > > +		if (err)
+> > > > +			return err;
+> > > > +	}
+> > > 
+> > > How about wrapping the enable/disable part in a helper?
+> > > 
+> > > 	int pci_host_bridge_enable_device(dev);
+> > > 	void pci_host_bridge_disable_device(dev);
+> > > 
+> > > The definition could be placed in drivers/pci/pci.h as an inline
+> > > function.
+> > 
+> > What does it bring? I would see the point if there was another user.
+> > But this is very much core infrastructure which doesn't lend itself to
+> > duplication.
+> > 
+> > Unless you have something in mind?
+> > 
+> 
+> IMO, it adds a nice encapsulation to help readers understand what this piece of
+> code is all about and also keeps the callers short. Plus the disable helper is
+> reused in both error and pci_disable_device() (if that matters).
 
-Add a check, if resolve_btfids is present and then package it, if required.
+Having an *internal* helper for disable definitely has its use.
 
-Signed-off-by: Peter Jung <admin@ptr1337.dev>
----
- scripts/package/PKGBUILD | 5 +++++
- 1 file changed, 5 insertions(+)
+But moving these helpers outside of pci.c opens the door to all sort
+of abuse by making it look like an internal API drivers can use, which
+is absolutely isn't.
 
-diff --git a/scripts/package/PKGBUILD b/scripts/package/PKGBUILD
-index f83493838cf9..4010899652b8 100644
---- a/scripts/package/PKGBUILD
-+++ b/scripts/package/PKGBUILD
-@@ -91,6 +91,11 @@ _package-headers() {
- 		"${srctree}/scripts/package/install-extmod-build" "${builddir}"
- 	fi
- 
-+	# required when DEBUG_INFO_BTF_MODULES is enabled
-+	if [ -f tools/bpf/resolve_btfids/resolve_btfids ]; then
-+		install -Dt "$builddir/tools/bpf/resolve_btfids" tools/bpf/resolve_btfids/resolve_btfids
-+	fi
-+
- 	echo "Installing System.map and config..."
- 	mkdir -p "${builddir}"
- 	cp System.map "${builddir}/System.map"
+	M.
+
 -- 
-2.47.0
-
+Without deviation from the norm, progress is not possible.
 
