@@ -1,111 +1,117 @@
-Return-Path: <bpf+bounces-43806-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43807-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E6429B9C1D
-	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2024 03:05:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69E829B9ECA
+	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2024 11:16:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0A4F1C20FB8
-	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2024 02:05:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FE22282380
+	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2024 10:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D55783A14;
-	Sat,  2 Nov 2024 02:05:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30E3716E89B;
+	Sat,  2 Nov 2024 10:16:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zulu.geekplace.eu (zulu.geekplace.eu [5.45.100.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8EFC45BEC;
-	Sat,  2 Nov 2024 02:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02F3E16FF3B;
+	Sat,  2 Nov 2024 10:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.45.100.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730513127; cv=none; b=k51A4JgNKCbEJqeHyt8tuZwND3wkD9q5rgt94B0w2PXanyrEbu7RL64nrDybPHmmNBGwGyWGLH8rZifBSP4yY8NnXet/T5fqHu1Pvx8ruVdWvOhiLY1SuUMswK5C+5BlMF9E7j8tyB/kVpYQiI+U+1K7MGX04rJocQyGgqYRAmw=
+	t=1730542582; cv=none; b=ekfh0ITP56+/tGLe68KTytLv6zMtONPuruBZDUSz99JnVs14uducRMdX6YPGG1e3de7YSyVRKzgM5h9ZnIogTEYEBstzrv+AMmcaw5s0RdV5N4vxQWSKGRzQirsPTt4ySn8Jf1a1ws/Lh/C2xxhY0JRhSu657NeqssOZAV+Yr1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730513127; c=relaxed/simple;
-	bh=ltd541s0kV2rAtuImuK1PKdLtFcYMQ5/FrhyIksohA8=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=W6kTMyTmegf6UIvHpn8doy4aiEQHfl/BzRB+E/m7OxTpvTznYBACkIMnZvDbRHT2swbSmiuK2dZDseU6peYKXA7mJjMzR6WwJqgi6OV9eyYDEqUMi+OCIYZsC1y3vxEiqfZKPshchtCqR64kNUxrRYZ2gA10CCHociP40OOm5o4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8126C4CED6;
-	Sat,  2 Nov 2024 02:05:26 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.98)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1t73X0-00000005ZfS-2DV4;
-	Fri, 01 Nov 2024 22:06:26 -0400
-Message-ID: <20241102020626.391428728@goodmis.org>
-User-Agent: quilt/0.68
-Date: Fri, 01 Nov 2024 22:05:56 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- bpf <bpf@vger.kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>,
- Jordan Rife <jrife@google.com>
-Subject: [for-next][PATCH 3/3] bpf: ensure RCU Tasks Trace GP for sleepable raw tracepoint BPF links
-References: <20241102020553.444477901@goodmis.org>
+	s=arc-20240116; t=1730542582; c=relaxed/simple;
+	bh=lq3SCdtwAoRG1X0Xf16GvmV78s1YX00UVljTHU9wKtY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WR4CSboCbU4fab3N0o4p8RXH01tSYLKmaPavZR3lo9Kb15oBLxwlXQGytnHTzrq7mtZ/xOcqimfSACeZXzhFmfxFliVo7Own2iujcdOGYHOqE+2o8wm9QJCiBhecZFFnvz9cuWELMBruEY5mc9NcW5DAzsRfP53W8hQU3AfF368=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=geekplace.eu; spf=pass smtp.mailfrom=geekplace.eu; arc=none smtp.client-ip=5.45.100.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=geekplace.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geekplace.eu
+Received: from neo-pc.sch (unknown [IPv6:2001:4091:a241:81f5:34fb:50ff:feac:591b])
+	by zulu.geekplace.eu (Postfix) with ESMTPA id BD9604A0017;
+	Sat,  2 Nov 2024 11:04:56 +0100 (CET)
+From: Florian Schmaus <flo@geekplace.eu>
+To: Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: Florian Schmaus <flo@geekplace.eu>,
+	bpf@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild,bpf: pass make jobs' value to pahole
+Date: Sat,  2 Nov 2024 11:04:51 +0100
+Message-ID: <20241102100452.793970-1-flo@geekplace.eu>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-From: Andrii Nakryiko <andrii@kernel.org>
+Pass the value of make's -j/--jobs argument to pahole, to avoid out of
+memory errors and make pahole respect the "jobs" value of make.
 
-Now that kernel supports sleepable tracepoints, the fact that
-bpf_probe_unregister() is asynchronous, i.e., that it doesn't wait for
-any in-flight tracepoints to conclude before returning, we now need to
-delay BPF raw tp link's deallocation and bpf_prog_put() of its
-underlying BPF program (regardless of program's own sleepable semantics)
-until after full RCU Tasks Trace GP. With that GP over, we'll have
-a guarantee that no tracepoint can reach BPF link and thus its BPF program.
+On systems with little memory but many cores, invoking pahole using -j
+without argument potentially creates too many pahole instances,
+causing an out-of-memory situation. Instead, we should pass make's
+"jobs" value as an argument to pahole's -j, which is likely configured
+to be (much) lower than the actual core count on such systems.
 
-We use newly added tracepoint_is_faultable() check to know when this RCU
-Tasks Trace GP is necessary and utilize BPF link's own sleepable flag
-passed through bpf_link_init_sleepable() initializer.
+If make was invoked without -j, either via cmdline or MAKEFLAGS, then
+JOBS will be simply empty, resulting in the existing behavior, as
+expected.
 
-Link: https://lore.kernel.org/20241101181754.782341-3-andrii@kernel.org
-Tested-by: Jordan Rife <jrife@google.com>
-Reported-by: Jordan Rife <jrife@google.com>
-Fixes: a363d27cdbc2 ("tracing: Allow system call tracepoints to handle page faults")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Florian Schmaus <flo@geekplace.eu>
 ---
- kernel/bpf/syscall.c | 6 ++++--
+ scripts/Makefile.btf | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 0f5540627911..db2a987504b2 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -35,6 +35,7 @@
- #include <linux/rcupdate_trace.h>
- #include <linux/memcontrol.h>
- #include <linux/trace_events.h>
-+#include <linux/tracepoint.h>
+diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
+index b75f09f3f424..c3cbeb13de50 100644
+--- a/scripts/Makefile.btf
++++ b/scripts/Makefile.btf
+@@ -3,6 +3,8 @@
+ pahole-ver := $(CONFIG_PAHOLE_VERSION)
+ pahole-flags-y :=
  
- #include <net/netfilter/nf_bpf_link.h>
- #include <net/netkit.h>
-@@ -3845,8 +3846,9 @@ static int bpf_raw_tp_link_attach(struct bpf_prog *prog,
- 		err = -ENOMEM;
- 		goto out_put_btp;
- 	}
--	bpf_link_init(&link->link, BPF_LINK_TYPE_RAW_TRACEPOINT,
--		      &bpf_raw_tp_link_lops, prog);
-+	bpf_link_init_sleepable(&link->link, BPF_LINK_TYPE_RAW_TRACEPOINT,
-+				&bpf_raw_tp_link_lops, prog,
-+				tracepoint_is_faultable(btp->tp));
- 	link->btp = btp;
- 	link->cookie = cookie;
++JOBS := $(patsubst -j%,%,$(filter -j%,$(MAKEFLAGS)))
++
+ ifeq ($(call test-le, $(pahole-ver), 125),y)
  
+ # pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
+@@ -12,14 +14,14 @@ endif
+ 
+ pahole-flags-$(call test-ge, $(pahole-ver), 121)	+= --btf_gen_floats
+ 
+-pahole-flags-$(call test-ge, $(pahole-ver), 122)	+= -j
++pahole-flags-$(call test-ge, $(pahole-ver), 122)	+= -j$(JOBS)
+ 
+ pahole-flags-$(call test-ge, $(pahole-ver), 125)	+= --skip_encoding_btf_inconsistent_proto --btf_gen_optimized
+ 
+ else
+ 
+ # Switch to using --btf_features for v1.26 and later.
+-pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs
++pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j$(JOBS) --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs
+ 
+ ifneq ($(KBUILD_EXTMOD),)
+ module-pahole-flags-$(call test-ge, $(pahole-ver), 126) += --btf_features=distilled_base
 -- 
 2.45.2
-
 
 
