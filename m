@@ -1,69 +1,69 @@
-Return-Path: <bpf+bounces-43850-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43851-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E132F9BA81A
-	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 21:59:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4EB59BA848
+	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 22:23:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5E5A1C20A61
-	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 20:59:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BA58281B63
+	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 21:23:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45AC218BC1D;
-	Sun,  3 Nov 2024 20:59:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407FB18BC1C;
+	Sun,  3 Nov 2024 21:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M72+2aZa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jsZujYs5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B275B83CD3
-	for <bpf@vger.kernel.org>; Sun,  3 Nov 2024 20:58:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F2E14F9FD
+	for <bpf@vger.kernel.org>; Sun,  3 Nov 2024 21:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730667541; cv=none; b=AZVqbk24PZqlD1j6VUwQObYcWU6Sou9LRowATc42U627hw9tkYhBC0MaaMth03pkO7lWUF84rVaf07MR41cAJ2dvu04OOJQnAk02yxd656BnS2S6fkQE2f8PZG1ga5Yl91viPa1b062o3jhbm55tpMUgw1Y6eCx5ptGpi0MsvE8=
+	t=1730668977; cv=none; b=lM5QelGUay6XkWdUciiW9lQeDY6q0LDe2kyBqJeKRHmMCmdYcmwXb6WThHxaZDMz0Lzkkyu87XKi8IReZiClZBZktSmvToZWp+8KZIHpRD9pjZCaky/VqOVEzUZcRjXHmhfAdQ6UJUI5w9M28s4sJIE4v0p12rlrgCt6Tu+ZMMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730667541; c=relaxed/simple;
-	bh=7F+gzA3AeRiu/ukay9k1zSJc8KQaXfQd6oCj0bomz1Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uYHnhiW/0ecFD0jcHPVwaaR7Y4/qceMZyDTojeRr/E3RhM272OpKqFYw+nOkDgSwvzoELcjR44+8G/b73xe6LXABZH4bRKMidmmyInt2vZS95kKdJTTuoKmOE+WRU+DKNJqCZ3rDuoKMg2z4xyQAEytFB+JEp4N/Bh8hZRG9T9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M72+2aZa; arc=none smtp.client-ip=209.85.221.67
+	s=arc-20240116; t=1730668977; c=relaxed/simple;
+	bh=a2Axe3uJ1ZkJylCLR2ow3mS22dUA1tigCM8ORuili7g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DkIloE3k8sZheezfqyELiDGZyyKBBbT+qHt6hDUc/jFxUVeWvOBHOhRwvxXgHP0cY6J4EOKIaICunc6hGgLKjuHUpEeL+WBIu82+XVcqS5J9gjm8PE9/A4ge/+5kztovkz6DLovKBKOTQRGfLLRPGrf+zsfgJ1BgcAmKb0FrsOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jsZujYs5; arc=none smtp.client-ip=209.85.128.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-37d6a2aa748so1973101f8f.1
-        for <bpf@vger.kernel.org>; Sun, 03 Nov 2024 12:58:59 -0800 (PST)
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-431616c23b5so20681055e9.0
+        for <bpf@vger.kernel.org>; Sun, 03 Nov 2024 13:22:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730667538; x=1731272338; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730668974; x=1731273774; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qOwMJ7lN7WjabzIzycf2bTxUJaBdVj2T6iArZaxOK0s=;
-        b=M72+2aZaAOZ2LIx8cXoni3aaujKdfXn4he8S6j8DVk8KgsjAMBCiwAPxFeI2tBfLe1
-         eDGK2VBm1L/fm0CJlqWCyQDSbduLnNepuDB6SkN8RW1EFmFkadLzzTkbQrJibwI3FiP4
-         dv7kr2zazGbd+9eZoWMi88BthZxXi5Ltu8Vx3UAra/k2rRerFexmp7ynP9zWIH2ht30f
-         DIA6LA9IsnuVnBEl68vT+XrB8SncAELOMBU+rra5PufjN79iNjjdkppLx27+tp69+qiZ
-         k/v6hJsQMd5A4I7WjGiQCMIz7sEsHrS00YGgwKiYdcEIT67z1jChaOrQpIN2qBbC8g3J
-         hJyA==
+        bh=HxR8va5S2/O/Jthct/s30BczYSSX39G0MIeHJDWGbFI=;
+        b=jsZujYs5hlzS4geELzK47VkOBcXJLOP6nD5+FeZ5tUkn1nCpmqZLjvVSaXx7CvhdIC
+         eUXQuCv6xEKm3Bbgn9MN0U+24dxgjUasn6g4bN46Okq1AGHv5OPLFOzsOJiK4/y/r1Zs
+         6+STXTgUYOxe9as4TG2JrY0R566dHB5U8DKuAwEHqY72cNzXVT/0FWl31u0rjzGsxqev
+         DWb7RYMAVGFwrkdgdzq1WRUGCDNeJ6KKaKPvpwGYYUD7K11HdBMnWVDXHBLj9Zph7GYO
+         Bvf8y5oKDWS8wyk77Ff5b5o3+mA/g7Xm5ktRGTny7maN2zB4lZt5X2RYnHHmiCzFfq9+
+         A/tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730667538; x=1731272338;
+        d=1e100.net; s=20230601; t=1730668974; x=1731273774;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=qOwMJ7lN7WjabzIzycf2bTxUJaBdVj2T6iArZaxOK0s=;
-        b=O5VJpQcFOIzsM3Wlx2Su8NyfJLrl99gOArIis6ZFFfVdp7N1EQo8Jh1pyFKPR5d4eY
-         7Vgm69unQUJrkvjZFMN6zEw6MP/xR7gTAmuSR8z3aL5viXi6IeT6BCn+7TNPKZdJs/2w
-         GMnq+fuLrj42M/du33PsSQ9hZhOeGP4QcRBVJSK28RrXmpBIAu3iv6mWnucAhpK778nr
-         68PEOLrY8aaXXlgDLW8vmMkyRo9H3RmxDj/IV1+J1Icc/wKk4Fk2MMfUmepdsk/hWkq8
-         vBAqJgzOBJaZQh3OCmRalToCGbO08XG0BhRWARrMyhhGQWixDgoUmxAD+vP8+m+5ReUy
-         Pepw==
-X-Gm-Message-State: AOJu0YxAKQK6QlDHhneCpQM2gbHXzd5gfe1fvaGdVpJZRuA5recMs/o/
-	c7M58jwWDB+zwai7o0ECek45FnVT5nZrBOTcI254jx/FYwkZr+ig7NjdxepMV/Yl7w==
-X-Google-Smtp-Source: AGHT+IHPh68GS02QhtobD5IZE1sX5wI9DgQThc0ayozQSPEPJ0oVd9rcULrMOTgCoseOC/lR9+PERA==
-X-Received: by 2002:a5d:64ad:0:b0:37d:38a1:6470 with SMTP id ffacd0b85a97d-381c7aa47d6mr7271619f8f.46.1730667537422;
-        Sun, 03 Nov 2024 12:58:57 -0800 (PST)
-Received: from localhost (fwdproxy-cln-015.fbsv.net. [2a03:2880:31ff:f::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-431bd8e8549sm166323415e9.10.2024.11.03.12.58.56
+        bh=HxR8va5S2/O/Jthct/s30BczYSSX39G0MIeHJDWGbFI=;
+        b=SXIbPrQivPkE51SEnZlhRnPngyMTkbhR48WcU7rTDIeXMuVRsc4n9nWUMnhWXH3MzR
+         9dj7ejLwi+oHwDjMwvFs11MnwI8zoaAjLCW/sIMi6y58cJ3SmbaeQQ2zr37cmmTkRfIh
+         y5pl81sL8Cq6g++mtzNQFVTAXfJiQkbPRVsb02yeOC3j/tsRGUSgfwyDJi2DJMOpe4Ps
+         GhEBYVHkwn4ZSDzPTfEXvbbo69ZYjLUHm1EAOp4iDU7dRDcILMb1tyaydmZRO83iyPVE
+         Ro+DFQ1mgmXhCwfMkaF3tNWOHOjGk7VU27l81l9Ep9cBCuS2nh+hCGswqx/+8ZwCQdGz
+         hDfw==
+X-Gm-Message-State: AOJu0YxSlxRtNDwCUFrvfVn54c85b4xgJ74TicFNqjGBrhwwe51MBYFN
+	OKENt5XEIINVB4muCJLYDbm2Aa1b4IHkLUg0kUAlXAE20IgvrAEB74QfpegjFnuh8Q==
+X-Google-Smtp-Source: AGHT+IEUWU7zit3nN7N6n/pp0O2LrLsN+BUiTB0fZYfC2nmdANrKbJO+Tpec9Ls9lgUoYVmLBrFz3A==
+X-Received: by 2002:a05:600c:3b93:b0:42f:84ec:3e0 with SMTP id 5b1f17b1804b1-43282ffedf3mr86071645e9.9.1730668973512;
+        Sun, 03 Nov 2024 13:22:53 -0800 (PST)
+Received: from localhost (fwdproxy-cln-006.fbsv.net. [2a03:2880:31ff:6::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4327d5ac37csm134052235e9.10.2024.11.03.13.22.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Nov 2024 12:58:56 -0800 (PST)
+        Sun, 03 Nov 2024 13:22:52 -0800 (PST)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: kkd@meta.com,
@@ -73,9 +73,9 @@ Cc: kkd@meta.com,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next v1] bpf: Refactor active lock management
-Date: Sun,  3 Nov 2024 12:58:56 -0800
-Message-ID: <20241103205856.345580-1-memxor@gmail.com>
+Subject: [PATCH bpf-next v2] bpf: Refactor active lock management
+Date: Sun,  3 Nov 2024 13:22:52 -0800
+Message-ID: <20241103212252.547071-1-memxor@gmail.com>
 X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -83,7 +83,7 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=13439; h=from:subject; bh=g6A4bF8TO/boW2wndc0JCTB7erKwxXvtvmRd6htK7zo=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnJ+OgSEIL/0v8dhLq34HuvHbnfgJI+3h9heoTkwZo 8lNqXm+JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZyfjoAAKCRBM4MiGSL8RyuuMD/ 9/EMfqr3Fh+FqnA4xowQqYMiUW3h8jWyYyJteuR0DXgflr3rlspDl7VOLnfLPTADeHwk5v5OyoGEdQ yb8WiIoY3/D4Zr3WzME4llDScoRnDRR+n3mkW7YDJzSO7UK3IEW6pTtwKl50bbcariehP0/qbz2ZgT 6NRI9yHtmVjs2H+3qy4XasYaDM0gEgQ7psDDZa8M6tIcxNrY9e3mp+Ga4rXNzGpokOdWw7zAyEFAm5 P6JGZEpkvynEJbiXSxhRQyq4Pe16U2/i3AznLMvmSOGE/prTeQ8Sa7djoyU8gtD77/a2Ggu1y0GWEb N35qKKJKSYJVryi8PZXaC4qhbNnPbcVqqkYcaock8tr1lrBSsaM2bAdT91+M72Rpm4actA0t1qKIyw 3kJaP1LeZbcFfgQLOkZySUf4ANOT2/ikcZemmQTKF9zxOIj5JcPYyc7H3XFJ40q7H45fNAVG+eKg3U n7hdvLvIqaqHeEQ7gFGBj+IZcTIqfGOWOcRmlA2/NVjaiim8cl5jnQbc7vE+QFzEAAUyITqk6RR9Bh tmDwf3bq2RQgcpk9Hive+q1+dlYdYDwFcH07RJO0PNBJnN1KFAC81+GXXmj+Y2R4/T7+L3iV7M00aO h449UfYKqzHBv/A+6irdFmSgDrbBu/93Y0wN8hUfs6aOOtj0e9wAloipcVqw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=13658; h=from:subject; bh=d4YbJfmihebQ8ayL3oWo3gYK4BTMJVW++tQI0oqM/Ks=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnJ+ajbC7uyYzrqVQAL7ECGKWNyeDegexj3dDRm6jV hktC+72JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZyfmowAKCRBM4MiGSL8RylI/EA CpdYipYwQcliWGPdqZuGW8Pp4q5oVY3oSp1wtjtmm78now18cARK89TzdvCRnSEksyK5Bkiz4GO4yZ pTnnim6NbznjL0QhBvF8+3DAJN7YD5NdBiMq4vZc5ZzQE33Y//ZgJf9mSfBIkHKxOfV5CcR6ViT76E wu0f7+sdevT1+/DBjkrKD+sTb7omnbWroPORFYnSFR0Q4G8NHYxKA7UaU4+u2VfWlbKbxs+VsXMdXa kz+uSSNjmVeQ8eJ18yO0i4LFyrThwupLS6HfuXa8pNjN3rVUD/OWvTYbcC9LuZuA1721kLJYXphA4z XqrzXHSWSrH5x/As4nZ+GA/Yap0jOcsm6JACCB+8C7SVdlYJeC1XPNVBcC69Kkzg4C5myAxB0/ti6U G3B5mqnAe+F7zzn3yqXCYjpyEtdg6ywNrPCHUWxQcYUPnhV+CoCxwpGVmyJ7Q7YAtLnqgeIgfXRCyk T/CvAMwTBPyKkrU/wiXHJ0JJZHuhGdPWV2m7T88JTWVunNkLyMZedNGaqgqlNyV8y0IuNlBGFe+l+F wpyflS/kYJiDwTFGE6BQZMLCyMIoeFU16ks8GYX8rPqqzc+Vb/inkWRelss0Wxry0ntevxjmqgRLUF Se9KcI305jUHrsP6VtwtEJMIxxhlI7XNkGrLEQOCETwJ4+UsySFXLRlRgpkg==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
@@ -107,9 +107,15 @@ of detecting lock presence.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf_verifier.h |  34 ++++++---
- kernel/bpf/verifier.c        | 139 +++++++++++++++++++++++++----------
- 2 files changed, 122 insertions(+), 51 deletions(-)
+Changelog:
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20241103205856.345580-1-memxor@gmail.com
+
+ * Fix refsafe state comparison to check callback_ref and ptr separately.
+---
+ include/linux/bpf_verifier.h |  34 +++++---
+ kernel/bpf/verifier.c        | 148 ++++++++++++++++++++++++++---------
+ 2 files changed, 131 insertions(+), 51 deletions(-)
 
 diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
 index 4513372c5bc8..1e7e1803d78b 100644
@@ -171,7 +177,7 @@ index 4513372c5bc8..1e7e1803d78b 100644
  	bool active_rcu_lock;
  	u32 active_preempt_lock;
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 797cf3ed32e0..0e3f2f124983 100644
+index 797cf3ed32e0..fb4171941971 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
 @@ -1335,6 +1335,7 @@ static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx)
@@ -421,18 +427,28 @@ index 797cf3ed32e0..0e3f2f124983 100644
  	if (env->cur_state->active_rcu_lock) {
  		verbose(env, "BPF_LD_[ABS|IND] cannot be used inside bpf_rcu_read_lock-ed region\n");
  		return -EINVAL;
-@@ -17552,7 +17621,9 @@ static bool refsafe(struct bpf_func_state *old, struct bpf_func_state *cur,
+@@ -17552,8 +17621,19 @@ static bool refsafe(struct bpf_func_state *old, struct bpf_func_state *cur,
  		return false;
 
  	for (i = 0; i < old->acquired_refs; i++) {
 -		if (!check_ids(old->refs[i].id, cur->refs[i].id, idmap))
 +		if (!check_ids(old->refs[i].id, cur->refs[i].id, idmap) ||
-+		    old->refs[i].type != cur->refs[i].type ||
-+		    old->refs[i].ptr != cur->refs[i].ptr)
++		    old->refs[i].type != cur->refs[i].type)
  			return false;
++		switch (old->refs[i].type) {
++		case REF_TYPE_PTR:
++			if (old->refs[i].callback_ref != cur->refs[i].callback_ref)
++				return false;
++			break;
++		default:
++			if (old->refs[i].ptr != cur->refs[i].ptr)
++				return false;
++			break;
++		}
  	}
 
-@@ -17631,17 +17702,7 @@ static bool states_equal(struct bpf_verifier_env *env,
+ 	return true;
+@@ -17631,17 +17711,7 @@ static bool states_equal(struct bpf_verifier_env *env,
  	if (old->speculative && !cur->speculative)
  		return false;
 
@@ -451,7 +467,7 @@ index 797cf3ed32e0..0e3f2f124983 100644
  		return false;
 
  	if (old->active_rcu_lock != cur->active_rcu_lock)
-@@ -18542,7 +18603,7 @@ static int do_check(struct bpf_verifier_env *env)
+@@ -18542,7 +18612,7 @@ static int do_check(struct bpf_verifier_env *env)
  					return -EINVAL;
  				}
 
@@ -460,7 +476,7 @@ index 797cf3ed32e0..0e3f2f124983 100644
  					if ((insn->src_reg == BPF_REG_0 && insn->imm != BPF_FUNC_spin_unlock) ||
  					    (insn->src_reg == BPF_PSEUDO_KFUNC_CALL &&
  					     (insn->off != 0 || !is_bpf_graph_api_kfunc(insn->imm)))) {
-@@ -18591,7 +18652,7 @@ static int do_check(struct bpf_verifier_env *env)
+@@ -18591,7 +18661,7 @@ static int do_check(struct bpf_verifier_env *env)
  					return -EINVAL;
  				}
  process_bpf_exit_full:
