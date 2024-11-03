@@ -1,89 +1,187 @@
-Return-Path: <bpf+bounces-43830-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43831-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD6F89BA564
-	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 13:14:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D5289BA582
+	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 14:02:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C24B01C20967
-	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 12:14:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD21DB211C6
+	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 13:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9852B17107F;
-	Sun,  3 Nov 2024 12:14:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCFA175D39;
+	Sun,  3 Nov 2024 13:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="B57W/QIl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.itouring.de (mail.itouring.de [85.10.202.141])
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A1B015C13E;
-	Sun,  3 Nov 2024 12:14:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.202.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0CE23774
+	for <bpf@vger.kernel.org>; Sun,  3 Nov 2024 13:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730636076; cv=none; b=pLvO9oTs6St24X1Y8mVDYU7P+p7C/IkSvFOzwvAhfD70+0KCsipGUierhpnVuIfUYCgqLmGVcuPJ/bxUUXd39YgXJF73r+znUcB4NZXGbZ1Bpu1UKi9JQt2sC0yHCLjJMGI79e1CjfFNuRHj4kHNuKJfj12Bu8SKgNi+4yL6N5E=
+	t=1730638912; cv=none; b=u4W0nHRn+nG00QBZsQlbaOTREzyCCGF2BQVwPpZkbZ+0RNfXSr2FQuoz2jiitkufkTFs2vbX/meHPzTTsfNCix2YGGNQvm2dK4vZi2OgB8QGy4DTNXV+wj6b44Mt4cWAjG530MwnyWkVO49SJJrCvpaHH35VaXCfK/Uf/xbOLck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730636076; c=relaxed/simple;
-	bh=UA7zSDxtVIfDvpTFsZ/8xJLe88GTW4vWB1ZVQYG6XyU=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=drZP75XS0190Gc+5s/XEZGm3CDgsBxliXKsloqm9lXaWnc7VnsERuF3O0zruOaTcy9XcDjH4tiTGMQpAo5NTgmSxsb7o2fVg7W+D8DDXM5Bn1G0P74FSXi2pqjB0fTVLbFfzQKf+u7mZ5dvYsKIbq/EI2eku/cBhNoPk7AzmOhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com; spf=pass smtp.mailfrom=applied-asynchrony.com; arc=none smtp.client-ip=85.10.202.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=applied-asynchrony.com
-Received: from tux.applied-asynchrony.com (p5ddd7b29.dip0.t-ipconnect.de [93.221.123.41])
-	by mail.itouring.de (Postfix) with ESMTPSA id 03E34C5B1;
-	Sun, 03 Nov 2024 13:04:36 +0100 (CET)
-Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
-	by tux.applied-asynchrony.com (Postfix) with ESMTP id 5AC226018938E;
-	Sun, 03 Nov 2024 13:04:35 +0100 (CET)
-Subject: Re: [PATCH] kbuild,bpf: pass make jobs' value to pahole
-To: Florian Schmaus <flo@geekplace.eu>, Masahiro Yamada
- <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
- Nicolas Schier <nicolas@fjasle.eu>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20241102100452.793970-1-flo@geekplace.eu>
-From: =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <73398de9-620c-9fb9-8414-d0f5c85ac53a@applied-asynchrony.com>
-Date: Sun, 3 Nov 2024 13:04:35 +0100
+	s=arc-20240116; t=1730638912; c=relaxed/simple;
+	bh=VwMBJ2K2+XANpk9Usn57k6DX/DB71GOxMHVlly/+dw8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pj8m+vLIcHkGMlGxbRlSIPWn2ipYY2mi9U/5UD6CIYLNwF/kJs3nGCteoB5ofN3ohUk0A95J2TJSBEmII+pkCNZD/eveObutWSoBmTM1JmpflDx7w/Hb9h0d7/+ecyInA9cZZiv2GMmC/jbP8fQiJJ9Xe7BRngEU+jl9ZN8+fnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=B57W/QIl; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8c06240b-540b-472f-974f-d2db80d90c22@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1730638904;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ReGYHVYD8E6M3nWSfKDR+gV/Sseh9igwmx9QD3ig80M=;
+	b=B57W/QIlF/4PlN1s8QLuCxcq2PE+PlbFrDtUs23zr2HmlDSeUnB1AuQDe85dfBPMDq0xhk
+	AqnvByMS9EFlNGHhXyCoA7t25eqPAnLqGosyIoLhAkFba4DfxshUO3i+h/32XssbjQGKYM
+	/YUtEjua1h7Ensvjk4rZeCGygSXbXoE=
+Date: Sun, 3 Nov 2024 14:01:35 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20241102100452.793970-1-flo@geekplace.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Subject: Re: [PATCH bpf-next 4/4] bpf/selftests: add simple selftest for
+ bpf_smc_ops
+To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+ wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ pabeni@redhat.com, song@kernel.org, sdf@google.com, haoluo@google.com,
+ yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com,
+ kpsingh@kernel.org, jolsa@kernel.org, guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+ dtcccc@linux.alibaba.com
+References: <1729737768-124596-1-git-send-email-alibuda@linux.alibaba.com>
+ <1729737768-124596-5-git-send-email-alibuda@linux.alibaba.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <1729737768-124596-5-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2024-11-02 11:04, Florian Schmaus wrote:
-> Pass the value of make's -j/--jobs argument to pahole, to avoid out of
-> memory errors and make pahole respect the "jobs" value of make.
+在 2024/10/24 4:42, D. Wythe 写道:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
 > 
-> On systems with little memory but many cores, invoking pahole using -j
-> without argument potentially creates too many pahole instances,
-> causing an out-of-memory situation. Instead, we should pass make's
-> "jobs" value as an argument to pahole's -j, which is likely configured
-> to be (much) lower than the actual core count on such systems.
+> This PATCH adds a tiny selftest for bpf_smc_ops, to verify the ability
+> to attach and write access.
 > 
-> If make was invoked without -j, either via cmdline or MAKEFLAGS, then
-> JOBS will be simply empty, resulting in the existing behavior, as
-> expected.
+> Follow the steps below to run this test.
 > 
-> Signed-off-by: Florian Schmaus <flo@geekplace.eu>
+> make -C tools/testing/selftests/bpf
+> cd tools/testing/selftests/bpf
+> sudo ./test_progs -t smc
 
-As discussed on IRC:
+Thanks a lot.
 
-Tested-by: Holger Hoffstätte <holger@applied-asynchrony.com>
+# ./test_progs -t smc
+#27/1    bpf_smc/load:OK
+#27      bpf_smc:OK
+Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
 
-Thanks!
-Holger
+The above command is based on several kernel modules. After these 
+dependent kernel modules are loaded, then can run the above command 
+successfully.
+
+Zhu Yanjun
+
+> 
+> Results shows:
+> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> ---
+>   .../selftests/bpf/prog_tests/test_bpf_smc.c        | 21 +++++++++++
+>   tools/testing/selftests/bpf/progs/bpf_smc.c        | 44 ++++++++++++++++++++++
+>   2 files changed, 65 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c b/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
+> new file mode 100644
+> index 00000000..2299853
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
+> @@ -0,0 +1,21 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +
+> +#include "bpf_smc.skel.h"
+> +
+> +static void load(void)
+> +{
+> +	struct bpf_smc *skel;
+> +
+> +	skel = bpf_smc__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "bpf_smc__open_and_load"))
+> +		return;
+> +
+> +	bpf_smc__destroy(skel);
+> +}
+> +
+> +void test_bpf_smc(void)
+> +{
+> +	if (test__start_subtest("load"))
+> +		load();
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c b/tools/testing/selftests/bpf/progs/bpf_smc.c
+> new file mode 100644
+> index 00000000..ebff477
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
+> @@ -0,0 +1,44 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include "vmlinux.h"
+> +
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +struct smc_bpf_ops_ctx {
+> +	struct {
+> +		struct tcp_sock *tp;
+> +	} set_option;
+> +	struct {
+> +		const struct tcp_sock *tp;
+> +		struct inet_request_sock *ireq;
+> +		int smc_ok;
+> +	} set_option_cond;
+> +};
+> +
+> +struct smc_bpf_ops {
+> +	void (*set_option)(struct smc_bpf_ops_ctx *ctx);
+> +	void (*set_option_cond)(struct smc_bpf_ops_ctx *ctx);
+> +};
+> +
+> +SEC("struct_ops/bpf_smc_set_tcp_option_cond")
+> +void BPF_PROG(bpf_smc_set_tcp_option_cond, struct smc_bpf_ops_ctx *arg)
+> +{
+> +	arg->set_option_cond.smc_ok = 1;
+> +}
+> +
+> +SEC("struct_ops/bpf_smc_set_tcp_option")
+> +void BPF_PROG(bpf_smc_set_tcp_option, struct smc_bpf_ops_ctx *arg)
+> +{
+> +	struct tcp_sock *tp = arg->set_option.tp;
+> +
+> +	tp->syn_smc = 1;
+> +}
+> +
+> +SEC(".struct_ops.link")
+> +struct smc_bpf_ops sample_smc_bpf_ops = {
+> +	.set_option         = (void *) bpf_smc_set_tcp_option,
+> +	.set_option_cond    = (void *) bpf_smc_set_tcp_option_cond,
+> +};
+
 
