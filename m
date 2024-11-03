@@ -1,75 +1,74 @@
-Return-Path: <bpf+bounces-43841-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43842-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2EB39BA776
-	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 19:41:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 509129BA777
+	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 19:42:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAB9E2814B9
-	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 18:41:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 757551C20A44
+	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 18:41:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12AAC1865FC;
-	Sun,  3 Nov 2024 18:41:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D377188580;
+	Sun,  3 Nov 2024 18:41:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YB89i56W"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OncvpCpb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
+Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A8D13E898
-	for <bpf@vger.kernel.org>; Sun,  3 Nov 2024 18:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E13A813635E
+	for <bpf@vger.kernel.org>; Sun,  3 Nov 2024 18:41:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730659311; cv=none; b=I5TxxPWlyBwYhr7mVdyLMIcrvaMjOXLKpMH18TQEMXzLlv9oK5LlbsRYabpobDvrbRlfCw1k//e8mojQ3l100k6vInvOqP6PW6OxnqvujDLc4nkphoSwPwuVSTd7v0yBsI6C3BQ3RxY2Xp6OLUjV4EWfczgtizXlO1PpX+NTBYk=
+	t=1730659312; cv=none; b=AbdMvtQDNFrE02Dz/9DRVyFQDJjuG2yQ/j6wBt0OhcBx6OpttxIj0nLUfHx86hOt+d4Gvnm52Uu/TALcnVpo6EjQSwDQpY9qby70yDZiWdUGnDOYknTgQTym/jCtobeMc78T1xUevY4XcM7Lji3WVnQZ/7AARLAqstOCEoaBlDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730659311; c=relaxed/simple;
-	bh=2cusvXO53t5aPAP6ziEHvgtisbDPwx20jGYpIBcebrI=;
+	s=arc-20240116; t=1730659312; c=relaxed/simple;
+	bh=4TC1yU3e4RGM8kF2syon9apKtBSaDYZsSpnbvTnzZe4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FkK/WMr7uFHwOm6XN4JVFxbjWMpR2M9CRVrx7fJYZ/5pUSlhizmLXzkcOqAGPGerhbFBg0hIyENikeTV11O4x4g1GrebOqz6SUTvQKMs0GWv5SFO4kNIfILqO0u3l1QhBuP4sK4bheRPsACB9Ra3PzLaj33Hfo+4AtJIUP5JBAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YB89i56W; arc=none smtp.client-ip=209.85.128.66
+	 MIME-Version; b=GXxplYXVSz3CliTOMrnU4n3xL0hNGBHWf1qY0I6BAkS0Ad2+EhIiOhFNiW2+Rle2EwIo7pGSp9Jeh5ynNlHyazcosDEIwMkxUBg5F1sePxxuIsMJTSwFO9E3gjSSJtQT+5yfh9f2nCwsaYjw2mYnhKTSChqlLlizu+AD9FrhzB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OncvpCpb; arc=none smtp.client-ip=209.85.128.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-43193678216so30886565e9.0
-        for <bpf@vger.kernel.org>; Sun, 03 Nov 2024 10:41:49 -0800 (PST)
+Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-431616c23b5so20304985e9.0
+        for <bpf@vger.kernel.org>; Sun, 03 Nov 2024 10:41:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730659307; x=1731264107; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730659309; x=1731264109; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8mndxA/LZb0zEB4w/XetOP6uyq6ldOBu0icXoNnPUEc=;
-        b=YB89i56WrhXr6K59Plo53TtjRZAXUYsTg6SGWuOIu6K1G7KVGmfXS+mnMZhcrpj5wW
-         aVnOROmQIiI6cB2alaeMVXK/yIqny0tWn7umX5bZdii9tADM7HcFz9NSf9MbexSBX6we
-         Z46OyF+vzcEAHli4Y/ccPCtV9KD3xG9CeJPJuwIc2HorEyvE+My19gC1ZIoVOM01/NNI
-         fVWq8zpETNLYmDFl0c9AJfqBngUdMZkkTJ42Q92g06UkxgWG1qLIIRgGOezRSPgha0cE
-         uX0lcL/v3D1cey9VtH+UsKYqdU2sK0hB3k9FUPQaMr/M7ojCVq6tTEwcmuY6wCot5yzA
-         uiqw==
+        bh=cdDCA9pAsJOtB4LaqR7u/qy6gL7EX715yP6s02c/72o=;
+        b=OncvpCpbo7spfzRYM1FiiSqVc9UmgYR7HJ54UpyGZCuFuAuTnAou1ydmtHeCPRSZ4q
+         2C8NAaqYjpmbY+Mn+isl1ZnmwbaUvT/uRx1acL1RQWE1ZHHSM8GJD9S9Oo1AYlvC64lA
+         Lq1HlN44uAwJ83R35LjsfKSHb4ZZKNIw87sYttRIzhBl9+KS+9qjvqdcMntOKJ/6PED3
+         TpAG/eklcDIngsUNnPntMkp7o08aIiubC2ocBiULyOmH8aK2lZm7bhfXHNFz9KLb9VM/
+         ucwQFdrIy9riOsdJznc+KKGw3cSbj71/2gCBZW1nwvjFj9/o/JwXGLQXzS2xt/j5ftX1
+         RMpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730659307; x=1731264107;
+        d=1e100.net; s=20230601; t=1730659309; x=1731264109;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8mndxA/LZb0zEB4w/XetOP6uyq6ldOBu0icXoNnPUEc=;
-        b=S0BdM6f2jXtu7MfjBxNiAZ18Zp2w9Frub+O1tpTlnpi+v1UkMi0dwFBW0uOaLR4biF
-         wNeNvIwPlKYhEIY4I5ZmtkRvsbr2FU2fZEGVSeKPk/1H0+BJVy5Hj/YfenBsevabERUP
-         rhoyuwP0tUCQgjczAL9aPhA98Nx0LiTyQQxAkCR+LdsXtbLMI5GrNrrafDXXjkhSIfiF
-         WPMOOQmElUbH9NyaN4VGQnhcygZW3PS72vWaFFRHeh7JLNfDO4evz19u4FZqF1W/tWqq
-         hEsEdkbQ1v1Qf3fgnWt6FE2b8pF63rSaV3Woj4faOrqrYD0l12E4XY8pSPQ7pdl79k1S
-         4vBg==
-X-Gm-Message-State: AOJu0YzObw2lvcamU86fgFIEYBEGNgaYc3fwR0CMxtfXHBBVaspOrYb/
-	HWFQKaBg9KEiSeWcP6MXXUc+ub+IkpHAEuwnjVaCqZeku0PEoehBxPtErixqbeIeFw==
-X-Google-Smtp-Source: AGHT+IE+CDlCvRZFGQiimwdbIHa1rLEJ+yT2eDZ/8tBu7XKOYoNc1F1xLeWjEeQEUg+D0FcGZAIjcA==
-X-Received: by 2002:a05:600c:511b:b0:42c:b1ee:4b04 with SMTP id 5b1f17b1804b1-4319ad2a786mr238735445e9.28.1730659307249;
-        Sun, 03 Nov 2024 10:41:47 -0800 (PST)
-Received: from localhost (fwdproxy-cln-028.fbsv.net. [2a03:2880:31ff:1c::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-431bd9ca6f8sm160380955e9.39.2024.11.03.10.41.46
+        bh=cdDCA9pAsJOtB4LaqR7u/qy6gL7EX715yP6s02c/72o=;
+        b=bQ8vggIvwrbvOeLSaOmJ9b1+q23teQZ/mPFvTXMhmuK6P/khOEnu0PTY2RTVyoRdJa
+         J27f7svQtKjmWB2TKDVTN8vTiAFgC4fZrWRpopVst1YAVNoBVXWBgvKEutUBsQDzC1+m
+         PsotNOKHGSvv6ZuV1SaCNx6ChMFNXeprMfkZxTIfDJihqCJqUJFYkpvn6LypYVeAZ0o0
+         t5jNbdgxH5Y57yYONO6v2q9GX9ekwMtfoG8+GW0gFrHWVr0hCSJEsnKHZSoeQHbnc/rN
+         DwOi0bW4OW/rPyCF0ciKL5st94YIcxgRzvQDFlZFiWFT0DcKCDMyE9UKYvr+PXAisn29
+         Ra8g==
+X-Gm-Message-State: AOJu0YzWlfsrF97femad//ndbHw/gIRCWtgRdWzygUIG3Q16YeKRmMKN
+	H6i1d9roAcJrvoW5Mym0TOjnJNMz0MDOQnt+4VKKinlrhHZZ/Jkv31h3Lgs/Cke4pQ==
+X-Google-Smtp-Source: AGHT+IGeL3z5tG9fikR1BTqJmOLQRs2dx+vBooiILu2v2TJvgfi/0Y/+sC5m/Xz7WUoD4IcIUiaqFQ==
+X-Received: by 2002:a05:600c:1c26:b0:42c:b603:422 with SMTP id 5b1f17b1804b1-4327daa3649mr97578305e9.8.1730659308613;
+        Sun, 03 Nov 2024 10:41:48 -0800 (PST)
+Received: from localhost (fwdproxy-cln-002.fbsv.net. [2a03:2880:31ff:2::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4327bb7a1e0sm121966735e9.0.2024.11.03.10.41.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Nov 2024 10:41:46 -0800 (PST)
+        Sun, 03 Nov 2024 10:41:48 -0800 (PST)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: kkd@meta.com,
-	Juri Lelli <juri.lelli@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
@@ -78,10 +77,11 @@ Cc: kkd@meta.com,
 	Yonghong Song <yonghong.song@linux.dev>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Jiri Olsa <olsajiri@gmail.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next v2 1/3] bpf: Mark raw_tp arguments with PTR_MAYBE_NULL
-Date: Sun,  3 Nov 2024 10:41:42 -0800
-Message-ID: <20241103184144.3765700-2-memxor@gmail.com>
+Subject: [PATCH bpf-next v2 2/3] selftests/bpf: Clean up open-coded gettid syscall invocations
+Date: Sun,  3 Nov 2024 10:41:43 -0800
+Message-ID: <20241103184144.3765700-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20241103184144.3765700-1-memxor@gmail.com>
 References: <20241103184144.3765700-1-memxor@gmail.com>
@@ -91,351 +91,290 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=13631; h=from:subject; bh=2cusvXO53t5aPAP6ziEHvgtisbDPwx20jGYpIBcebrI=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnJ8POzxEnlIKflNrJ+XIfcY4WUqyp6Ku6roKi5vNs LiqTW/KJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZyfDzgAKCRBM4MiGSL8RyqWTD/ wOVGKK6eMpuz8boAr4BicgejBVNCjdC420nTT0HOK5onPGvg9+SVUgwIObHeHdXKh1ZdbqEhO9fzYX UOzoO/M7VzWs11QuO3rQ/n2djvbZx3A2IH3Gk+1YDJX1Th9cv5dkAaiaeGcUQC3AQaUI1Zz+Fqb1ll ZPc09EHXzd6vufAwuDsF7ihkBRtEYeGqerJeS+rK/A0maIlMtHYfH0cwBvBGBjLJbD1eDLhP2CAo4Y bW9UeDfB85erBAN9HAAb593ZTSAo8FoGR93uFOTeCTj0613zhsIxdS6AP0nuUj28EwLMRUoxvlIPDd xiyvwqgD5FGe/qGRRODSogQz+bjr149c95vKVnwGvEZqsjYan3KRNLi19z+lYrUvqkHs6WFddrOpyc JDcwy4vzFtI3TrSoHIqUwWZDrMW46nWO744pa25zXCnFm2ujIFIR5PsFnhITxxSzww36I3H0Ehd9lw TrQHvIVSPvwem8YRboXdIZ2FItyp4Uh80WAbgllJG355ft/ZypMPqkdmkp5edIH6GIYhMyUWBkCIXq rYHHVuxVeSA6PwIvJzoQqTmwz7bumOpM4kqz8OByMJpkBXCKop0fd/v1Qk206MEFyngZXV3miACY1E kbIRDDlfnD6xi07BOoiK3eB5sxl3mNCvlqoIrWbYD/oLJ7MiyHuo1YojYy0A==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=11056; h=from:subject; bh=4TC1yU3e4RGM8kF2syon9apKtBSaDYZsSpnbvTnzZe4=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnJ8PP2T4I/UA+33WRmB3afdg2m3HG/LOh0yO2GiXD FqXhnAOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZyfDzwAKCRBM4MiGSL8Ryqs1EA Cg2CxT7w5gtNQA1UNMXf0hAsIdWbzzWnQYOzovpiLECkd7xS6hLUIH431AMSKFOpZEXQvBmYOcYHVd cvK/kg1CsMcE9cWb7/reYOIm3xRQTQl3CNvT/l46LY1HAHKRctfeF+Fmk0mpEETDIxzBfXW4NE7EpE Y+svkHTlKSQ7c22PP+djM22OR5NaYZP5K59n9pMeG18gs/O3xwO1PWQ8U1LkBcX9MQm1Ku7GUTNaRz RMuCv4trAObKClv6A3JvPJLWyiueG5FfwQakx8ZboR2AStc6y0FBdWn35wrSDyYcapje66VFOZpxo8 GbXxeaKPZITjpf9/O0HG95XKMu6P4worfT5YC2JqEntou5FAC41N9I6Ou0yq7yIhvJ6tcAEw1etw4x DwLHDYyBYl4NiAz06KioB0XNYBtjBPZ2fJeMNnW4sHQRY3bID98fRFOv78QHEb97wZgXOuYodSCXPQ vydRtPojaMsg/y1Kyg4TfOmE8c1xazABOi2y8pKgd2JualOI8i8E2rVDYIuu/HqzFA875sV51hP7Mv inVAazHlKiAUzrYAct8ZZgzn01vLlGMpIaXDCt37RHT0IZ1J7JXRkwiCMBhlL2zmE3j5k2ns1KrQ1Z Ai43rgWvBXZNUeW1gXUup/FnZkn9fT492x7nQv8Yyd9gp9ETe69CX2caRC3A==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Arguments to a raw tracepoint are tagged as trusted, which carries the
-semantics that the pointer will be non-NULL.  However, in certain cases,
-a raw tracepoint argument may end up being NULL. More context about this
-issue is available in [0].
+Availability of the gettid definition across glibc versions supported by
+BPF selftests is not certain. Currently, all users in the tree open-code
+syscall to gettid. Convert them to a common macro definition.
 
-Thus, there is a discrepancy between the reality, that raw_tp arguments
-can actually be NULL, and the verifier's knowledge, that they are never
-NULL, causing explicit NULL checks to be deleted, and accesses to such
-pointers potentially crashing the kernel.
-
-To fix this, mark raw_tp arguments as PTR_MAYBE_NULL, and then special
-case the dereference and pointer arithmetic to permit it, and allow
-passing them into helpers/kfuncs; these exceptions are made for raw_tp
-programs only. Ensure that we don't do this when ref_obj_id > 0, as in
-that case this is an acquired object and doesn't need such adjustment.
-
-The reason we do mask_raw_tp_trusted_reg logic is because other will
-recheck in places whether the register is a trusted_reg, and then
-consider our register as untrusted when detecting the presence of the
-PTR_MAYBE_NULL flag.
-
-To allow safe dereference, we enable PROBE_MEM marking when we see loads
-into trusted pointers with PTR_MAYBE_NULL.
-
-While trusted raw_tp arguments can also be passed into helpers or kfuncs
-where such broken assumption may cause issues, a future patch set will
-tackle their case separately, as PTR_TO_BTF_ID (without PTR_TRUSTED) can
-already be passed into helpers and causes similar problems. Thus, they
-are left alone for now.
-
-It is possible that these checks also permit passing non-raw_tp args
-that are trusted PTR_TO_BTF_ID with null marking. In such a case,
-allowing dereference when pointer is NULL expands allowed behavior, so
-won't regress existing programs, and the case of passing these into
-helpers is the same as above and will be dealt with later.
-
-Also update the failure case in tp_btf_nullable selftest to capture the
-new behavior, as the verifier will no longer cause an error when
-directly dereference a raw tracepoint argument marked as __nullable.
-
-  [0]: https://lore.kernel.org/bpf/ZrCZS6nisraEqehw@jlelli-thinkpadt14gen4.remote.csb
-
-Reported-by: Juri Lelli <juri.lelli@redhat.com>
-Fixes: 3f00c5239344 ("bpf: Allow trusted pointers to be passed to KF_TRUSTED_ARGS kfuncs")
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf.h                           |  6 ++
- kernel/bpf/btf.c                              |  5 +-
- kernel/bpf/verifier.c                         | 75 +++++++++++++++++--
- .../bpf/progs/test_tp_btf_nullable.c          |  6 +-
- 4 files changed, 83 insertions(+), 9 deletions(-)
+ tools/testing/selftests/bpf/benchs/bench_trigger.c     |  3 ++-
+ tools/testing/selftests/bpf/bpf_util.h                 |  9 +++++++++
+ .../testing/selftests/bpf/map_tests/task_storage_map.c |  3 ++-
+ tools/testing/selftests/bpf/prog_tests/bpf_cookie.c    |  2 +-
+ tools/testing/selftests/bpf/prog_tests/bpf_iter.c      |  6 +++---
+ .../selftests/bpf/prog_tests/cgrp_local_storage.c      | 10 +++++-----
+ tools/testing/selftests/bpf/prog_tests/core_reloc.c    |  2 +-
+ tools/testing/selftests/bpf/prog_tests/linked_funcs.c  |  2 +-
+ .../selftests/bpf/prog_tests/ns_current_pid_tgid.c     |  2 +-
+ tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c |  4 ++--
+ .../selftests/bpf/prog_tests/task_local_storage.c      | 10 +++++-----
+ .../selftests/bpf/prog_tests/uprobe_multi_test.c       |  2 +-
+ 12 files changed, 33 insertions(+), 22 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index c3ba4d475174..1b84613b10ac 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -3495,4 +3495,10 @@ static inline bool bpf_is_subprog(const struct bpf_prog *prog)
- 	return prog->aux->func_idx != 0;
- }
+diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/testing/selftests/bpf/benchs/bench_trigger.c
+index 2ed0ef6f21ee..32e9f194d449 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
++++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
+@@ -4,6 +4,7 @@
+ #include <argp.h>
+ #include <unistd.h>
+ #include <stdint.h>
++#include "bpf_util.h"
+ #include "bench.h"
+ #include "trigger_bench.skel.h"
+ #include "trace_helpers.h"
+@@ -72,7 +73,7 @@ static __always_inline void inc_counter(struct counter *counters)
+ 	unsigned slot;
  
-+static inline bool bpf_prog_is_raw_tp(const struct bpf_prog *prog)
-+{
-+	return prog->type == BPF_PROG_TYPE_TRACING &&
-+	       prog->expected_attach_type == BPF_TRACE_RAW_TP;
-+}
-+
- #endif /* _LINUX_BPF_H */
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index ed3219da7181..e7a59e6462a9 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6588,7 +6588,10 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 	if (prog_args_trusted(prog))
- 		info->reg_type |= PTR_TRUSTED;
+ 	if (unlikely(tid == 0))
+-		tid = syscall(SYS_gettid);
++		tid = sys_gettid();
  
--	if (btf_param_match_suffix(btf, &args[arg], "__nullable"))
-+	/* Raw tracepoint arguments always get marked as maybe NULL */
-+	if (bpf_prog_is_raw_tp(prog))
-+		info->reg_type |= PTR_MAYBE_NULL;
-+	else if (btf_param_match_suffix(btf, &args[arg], "__nullable"))
- 		info->reg_type |= PTR_MAYBE_NULL;
+ 	/* multiplicative hashing, it's fast */
+ 	slot = 2654435769U * tid;
+diff --git a/tools/testing/selftests/bpf/bpf_util.h b/tools/testing/selftests/bpf/bpf_util.h
+index 10587a29b967..feff92219e21 100644
+--- a/tools/testing/selftests/bpf/bpf_util.h
++++ b/tools/testing/selftests/bpf/bpf_util.h
+@@ -6,6 +6,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <errno.h>
++#include <syscall.h>
+ #include <bpf/libbpf.h> /* libbpf_num_possible_cpus */
  
- 	if (tgt_prog) {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 797cf3ed32e0..36776624710f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -418,6 +418,21 @@ static struct btf_record *reg_btf_record(const struct bpf_reg_state *reg)
- 	return rec;
- }
+ static inline unsigned int bpf_num_possible_cpus(void)
+@@ -59,4 +60,12 @@ static inline void bpf_strlcpy(char *dst, const char *src, size_t sz)
+ 	(offsetof(TYPE, MEMBER)	+ sizeof_field(TYPE, MEMBER))
+ #endif
  
-+static bool mask_raw_tp_reg(const struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-+{
-+	if (reg->type != (PTR_TO_BTF_ID | PTR_TRUSTED | PTR_MAYBE_NULL) ||
-+	    !bpf_prog_is_raw_tp(env->prog) || reg->ref_obj_id)
-+		return false;
-+	reg->type &= ~PTR_MAYBE_NULL;
-+	return true;
-+}
-+
-+static void unmask_raw_tp_reg(struct bpf_reg_state *reg, bool result)
-+{
-+	if (result)
-+		reg->type |= PTR_MAYBE_NULL;
-+}
-+
- static bool subprog_is_global(const struct bpf_verifier_env *env, int subprog)
- {
- 	struct bpf_func_info_aux *aux = env->prog->aux->func_info_aux;
-@@ -6622,6 +6637,7 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
- 	const char *field_name = NULL;
- 	enum bpf_type_flag flag = 0;
- 	u32 btf_id = 0;
-+	bool mask;
- 	int ret;
- 
- 	if (!env->allow_ptr_leaks) {
-@@ -6693,7 +6709,21 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
- 
- 	if (ret < 0)
- 		return ret;
--
-+	/* For raw_tp progs, we allow dereference of PTR_MAYBE_NULL
-+	 * trusted PTR_TO_BTF_ID, these are the ones that are possibly
-+	 * arguments to the raw_tp. Since internal checks in for trusted
-+	 * reg in check_ptr_to_btf_access would consider PTR_MAYBE_NULL
-+	 * modifier as problematic, mask it out temporarily for the
-+	 * check. Don't apply this to pointers with ref_obj_id > 0, as
-+	 * those won't be raw_tp args.
-+	 *
-+	 * We may end up applying this relaxation to other trusted
-+	 * PTR_TO_BTF_ID with maybe null flag, since we cannot
-+	 * distinguish PTR_MAYBE_NULL tagged for arguments vs normal
-+	 * tagging, but that should expand allowed behavior, and not
-+	 * cause regression for existing behavior.
-+	 */
-+	mask = mask_raw_tp_reg(env, reg);
- 	if (ret != PTR_TO_BTF_ID) {
- 		/* just mark; */
- 
-@@ -6754,8 +6784,13 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
- 		clear_trusted_flags(&flag);
- 	}
- 
--	if (atype == BPF_READ && value_regno >= 0)
-+	if (atype == BPF_READ && value_regno >= 0) {
- 		mark_btf_ld_reg(env, regs, value_regno, ret, reg->btf, btf_id, flag);
-+		/* We've assigned a new type to regno, so don't undo masking. */
-+		if (regno == value_regno)
-+			mask = false;
-+	}
-+	unmask_raw_tp_reg(reg, mask);
- 
- 	return 0;
- }
-@@ -7140,7 +7175,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 		if (!err && t == BPF_READ && value_regno >= 0)
- 			mark_reg_unknown(env, regs, value_regno);
- 	} else if (base_type(reg->type) == PTR_TO_BTF_ID &&
--		   !type_may_be_null(reg->type)) {
-+		   (bpf_prog_is_raw_tp(env->prog) || !type_may_be_null(reg->type))) {
- 		err = check_ptr_to_btf_access(env, regs, regno, off, size, t,
- 					      value_regno);
- 	} else if (reg->type == CONST_PTR_TO_MAP) {
-@@ -8833,6 +8868,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 	enum bpf_reg_type type = reg->type;
- 	u32 *arg_btf_id = NULL;
- 	int err = 0;
-+	bool mask;
- 
- 	if (arg_type == ARG_DONTCARE)
- 		return 0;
-@@ -8873,11 +8909,11 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 	    base_type(arg_type) == ARG_PTR_TO_SPIN_LOCK)
- 		arg_btf_id = fn->arg_btf_id[arg];
- 
-+	mask = mask_raw_tp_reg(env, reg);
- 	err = check_reg_type(env, regno, arg_type, arg_btf_id, meta);
--	if (err)
--		return err;
- 
--	err = check_func_arg_reg_off(env, reg, regno, arg_type);
-+	err = err ?: check_func_arg_reg_off(env, reg, regno, arg_type);
-+	unmask_raw_tp_reg(reg, mask);
- 	if (err)
- 		return err;
- 
-@@ -9672,14 +9708,17 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
- 				return ret;
- 		} else if (base_type(arg->arg_type) == ARG_PTR_TO_BTF_ID) {
- 			struct bpf_call_arg_meta meta;
-+			bool mask;
- 			int err;
- 
- 			if (register_is_null(reg) && type_may_be_null(arg->arg_type))
- 				continue;
- 
- 			memset(&meta, 0, sizeof(meta)); /* leave func_id as zero */
-+			mask = mask_raw_tp_reg(env, reg);
- 			err = check_reg_type(env, regno, arg->arg_type, &arg->btf_id, &meta);
- 			err = err ?: check_func_arg_reg_off(env, reg, regno, arg->arg_type);
-+			unmask_raw_tp_reg(reg, mask);
- 			if (err)
- 				return err;
- 		} else {
-@@ -11981,6 +12020,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 		enum bpf_arg_type arg_type = ARG_DONTCARE;
- 		u32 regno = i + 1, ref_id, type_size;
- 		bool is_ret_buf_sz = false;
-+		bool mask = false;
- 		int kf_arg_type;
- 
- 		t = btf_type_skip_modifiers(btf, args[i].type, NULL);
-@@ -12039,12 +12079,15 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 			return -EINVAL;
- 		}
- 
-+		mask = mask_raw_tp_reg(env, reg);
- 		if ((is_kfunc_trusted_args(meta) || is_kfunc_rcu(meta)) &&
- 		    (register_is_null(reg) || type_may_be_null(reg->type)) &&
- 			!is_kfunc_arg_nullable(meta->btf, &args[i])) {
- 			verbose(env, "Possibly NULL pointer passed to trusted arg%d\n", i);
-+			unmask_raw_tp_reg(reg, mask);
- 			return -EACCES;
- 		}
-+		unmask_raw_tp_reg(reg, mask);
- 
- 		if (reg->ref_obj_id) {
- 			if (is_kfunc_release(meta) && meta->ref_obj_id) {
-@@ -12102,16 +12145,24 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 			if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
- 				break;
- 
-+			/* Allow passing maybe NULL raw_tp arguments to
-+			 * kfuncs for compatibility. Don't apply this to
-+			 * arguments with ref_obj_id > 0.
-+			 */
-+			mask = mask_raw_tp_reg(env, reg);
- 			if (!is_trusted_reg(reg)) {
- 				if (!is_kfunc_rcu(meta)) {
- 					verbose(env, "R%d must be referenced or trusted\n", regno);
-+					unmask_raw_tp_reg(reg, mask);
- 					return -EINVAL;
- 				}
- 				if (!is_rcu_reg(reg)) {
- 					verbose(env, "R%d must be a rcu pointer\n", regno);
-+					unmask_raw_tp_reg(reg, mask);
- 					return -EINVAL;
- 				}
- 			}
-+			unmask_raw_tp_reg(reg, mask);
- 			fallthrough;
- 		case KF_ARG_PTR_TO_CTX:
- 		case KF_ARG_PTR_TO_DYNPTR:
-@@ -12134,7 +12185,9 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 
- 		if (is_kfunc_release(meta) && reg->ref_obj_id)
- 			arg_type |= OBJ_RELEASE;
-+		mask = mask_raw_tp_reg(env, reg);
- 		ret = check_func_arg_reg_off(env, reg, regno, arg_type);
-+		unmask_raw_tp_reg(reg, mask);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -12311,6 +12364,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 			ref_tname = btf_name_by_offset(btf, ref_t->name_off);
- 			fallthrough;
- 		case KF_ARG_PTR_TO_BTF_ID:
-+			mask = mask_raw_tp_reg(env, reg);
- 			/* Only base_type is checked, further checks are done here */
- 			if ((base_type(reg->type) != PTR_TO_BTF_ID ||
- 			     (bpf_type_has_unsafe_modifiers(reg->type) && !is_rcu_reg(reg))) &&
-@@ -12319,9 +12373,11 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 				verbose(env, "expected %s or socket\n",
- 					reg_type_str(env, base_type(reg->type) |
- 							  (type_flag(reg->type) & BPF_REG_TRUSTED_MODIFIERS)));
-+				unmask_raw_tp_reg(reg, mask);
- 				return -EINVAL;
- 			}
- 			ret = process_kf_arg_ptr_to_btf_id(env, reg, ref_t, ref_tname, ref_id, meta, i);
-+			unmask_raw_tp_reg(reg, mask);
- 			if (ret < 0)
- 				return ret;
- 			break;
-@@ -13294,7 +13350,7 @@ static int sanitize_check_bounds(struct bpf_verifier_env *env,
-  */
- static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 				   struct bpf_insn *insn,
--				   const struct bpf_reg_state *ptr_reg,
-+				   struct bpf_reg_state *ptr_reg,
- 				   const struct bpf_reg_state *off_reg)
- {
- 	struct bpf_verifier_state *vstate = env->cur_state;
-@@ -13308,6 +13364,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 	struct bpf_sanitize_info info = {};
- 	u8 opcode = BPF_OP(insn->code);
- 	u32 dst = insn->dst_reg;
-+	bool mask;
- 	int ret;
- 
- 	dst_reg = &regs[dst];
-@@ -13334,11 +13391,14 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 		return -EACCES;
- 	}
- 
-+	mask = mask_raw_tp_reg(env, ptr_reg);
- 	if (ptr_reg->type & PTR_MAYBE_NULL) {
- 		verbose(env, "R%d pointer arithmetic on %s prohibited, null-check it first\n",
- 			dst, reg_type_str(env, ptr_reg->type));
-+		unmask_raw_tp_reg(ptr_reg, mask);
- 		return -EACCES;
- 	}
-+	unmask_raw_tp_reg(ptr_reg, mask);
- 
- 	switch (base_type(ptr_reg->type)) {
- 	case PTR_TO_CTX:
-@@ -19873,6 +19933,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 		 * for this case.
- 		 */
- 		case PTR_TO_BTF_ID | MEM_ALLOC | PTR_UNTRUSTED:
-+		case PTR_TO_BTF_ID | PTR_TRUSTED | PTR_MAYBE_NULL:
- 			if (type == BPF_READ) {
- 				if (BPF_MODE(insn->code) == BPF_MEM)
- 					insn->code = BPF_LDX | BPF_PROBE_MEM |
-diff --git a/tools/testing/selftests/bpf/progs/test_tp_btf_nullable.c b/tools/testing/selftests/bpf/progs/test_tp_btf_nullable.c
-index bba3e37f749b..5aaf2b065f86 100644
---- a/tools/testing/selftests/bpf/progs/test_tp_btf_nullable.c
-+++ b/tools/testing/selftests/bpf/progs/test_tp_btf_nullable.c
-@@ -7,7 +7,11 @@
- #include "bpf_misc.h"
- 
- SEC("tp_btf/bpf_testmod_test_nullable_bare")
--__failure __msg("R1 invalid mem access 'trusted_ptr_or_null_'")
-+/* This used to be a failure test, but raw_tp nullable arguments can now
-+ * directly be dereferenced, whether they have nullable annotation or not,
-+ * and don't need to be explicitly checked.
++/* Availability of gettid across glibc versions is hit-and-miss, therefore
++ * fallback to syscall in this macro and use it everywhere.
 + */
-+__success
- int BPF_PROG(handle_tp_btf_nullable_bare1, struct bpf_testmod_test_read_ctx *nullable_ctx)
- {
- 	return nullable_ctx->len;
++#ifndef sys_gettid
++#define sys_gettid() syscall(SYS_gettid)
++#endif
++
++
+ #endif /* __BPF_UTIL__ */
+diff --git a/tools/testing/selftests/bpf/map_tests/task_storage_map.c b/tools/testing/selftests/bpf/map_tests/task_storage_map.c
+index 7d050364efca..62971dbf2996 100644
+--- a/tools/testing/selftests/bpf/map_tests/task_storage_map.c
++++ b/tools/testing/selftests/bpf/map_tests/task_storage_map.c
+@@ -12,6 +12,7 @@
+ #include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
+ 
++#include "bpf_util.h"
+ #include "test_maps.h"
+ #include "task_local_storage_helpers.h"
+ #include "read_bpf_task_storage_busy.skel.h"
+@@ -115,7 +116,7 @@ void test_task_storage_map_stress_lookup(void)
+ 	CHECK(err, "attach", "error %d\n", err);
+ 
+ 	/* Trigger program */
+-	syscall(SYS_gettid);
++	sys_gettid();
+ 	skel->bss->pid = 0;
+ 
+ 	CHECK(skel->bss->busy != 0, "bad bpf_task_storage_busy", "got %d\n", skel->bss->busy);
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+index 070c52c312e5..6befa870434b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+@@ -690,7 +690,7 @@ void test_bpf_cookie(void)
+ 	if (!ASSERT_OK_PTR(skel, "skel_open"))
+ 		return;
+ 
+-	skel->bss->my_tid = syscall(SYS_gettid);
++	skel->bss->my_tid = sys_gettid();
+ 
+ 	if (test__start_subtest("kprobe"))
+ 		kprobe_subtest(skel);
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+index 9006549a1294..b8e1224cfd19 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+@@ -226,7 +226,7 @@ static void test_task_common_nocheck(struct bpf_iter_attach_opts *opts,
+ 	ASSERT_OK(pthread_create(&thread_id, NULL, &do_nothing_wait, NULL),
+ 		  "pthread_create");
+ 
+-	skel->bss->tid = syscall(SYS_gettid);
++	skel->bss->tid = sys_gettid();
+ 
+ 	do_dummy_read_opts(skel->progs.dump_task, opts);
+ 
+@@ -255,10 +255,10 @@ static void *run_test_task_tid(void *arg)
+ 	union bpf_iter_link_info linfo;
+ 	int num_unknown_tid, num_known_tid;
+ 
+-	ASSERT_NEQ(getpid(), syscall(SYS_gettid), "check_new_thread_id");
++	ASSERT_NEQ(getpid(), sys_gettid(), "check_new_thread_id");
+ 
+ 	memset(&linfo, 0, sizeof(linfo));
+-	linfo.task.tid = syscall(SYS_gettid);
++	linfo.task.tid = sys_gettid();
+ 	opts.link_info = &linfo;
+ 	opts.link_info_len = sizeof(linfo);
+ 	test_task_common(&opts, 0, 1);
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c b/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c
+index 747761572098..9015e2c2ab12 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c
++++ b/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c
+@@ -63,14 +63,14 @@ static void test_tp_btf(int cgroup_fd)
+ 	if (!ASSERT_OK(err, "map_delete_elem"))
+ 		goto out;
+ 
+-	skel->bss->target_pid = syscall(SYS_gettid);
++	skel->bss->target_pid = sys_gettid();
+ 
+ 	err = cgrp_ls_tp_btf__attach(skel);
+ 	if (!ASSERT_OK(err, "skel_attach"))
+ 		goto out;
+ 
+-	syscall(SYS_gettid);
+-	syscall(SYS_gettid);
++	sys_gettid();
++	sys_gettid();
+ 
+ 	skel->bss->target_pid = 0;
+ 
+@@ -154,7 +154,7 @@ static void test_recursion(int cgroup_fd)
+ 		goto out;
+ 
+ 	/* trigger sys_enter, make sure it does not cause deadlock */
+-	syscall(SYS_gettid);
++	sys_gettid();
+ 
+ out:
+ 	cgrp_ls_recursion__destroy(skel);
+@@ -224,7 +224,7 @@ static void test_yes_rcu_lock(__u64 cgroup_id)
+ 		return;
+ 
+ 	CGROUP_MODE_SET(skel);
+-	skel->bss->target_pid = syscall(SYS_gettid);
++	skel->bss->target_pid = sys_gettid();
+ 
+ 	bpf_program__set_autoload(skel->progs.yes_rcu_lock, true);
+ 	err = cgrp_ls_sleepable__load(skel);
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+index 26019313e1fc..1c682550e0e7 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+@@ -1010,7 +1010,7 @@ static void run_core_reloc_tests(bool use_btfgen)
+ 	struct data *data;
+ 	void *mmap_data = NULL;
+ 
+-	my_pid_tgid = getpid() | ((uint64_t)syscall(SYS_gettid) << 32);
++	my_pid_tgid = getpid() | ((uint64_t)sys_gettid() << 32);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
+ 		char btf_file[] = "/tmp/core_reloc.btf.XXXXXX";
+diff --git a/tools/testing/selftests/bpf/prog_tests/linked_funcs.c b/tools/testing/selftests/bpf/prog_tests/linked_funcs.c
+index cad664546912..fa639b021f7e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/linked_funcs.c
++++ b/tools/testing/selftests/bpf/prog_tests/linked_funcs.c
+@@ -20,7 +20,7 @@ void test_linked_funcs(void)
+ 	bpf_program__set_autoload(skel->progs.handler1, true);
+ 	bpf_program__set_autoload(skel->progs.handler2, true);
+ 
+-	skel->rodata->my_tid = syscall(SYS_gettid);
++	skel->rodata->my_tid = sys_gettid();
+ 	skel->bss->syscall_id = SYS_getpgid;
+ 
+ 	err = linked_funcs__load(skel);
+diff --git a/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c b/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
+index c29787e092d6..761ce24bce38 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
++++ b/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
+@@ -23,7 +23,7 @@ static int get_pid_tgid(pid_t *pid, pid_t *tgid,
+ 	struct stat st;
+ 	int err;
+ 
+-	*pid = syscall(SYS_gettid);
++	*pid = sys_gettid();
+ 	*tgid = getpid();
+ 
+ 	err = stat("/proc/self/ns/pid", &st);
+diff --git a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c b/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
+index a1f7e7378a64..ebe0c12b5536 100644
+--- a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
++++ b/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
+@@ -21,7 +21,7 @@ static void test_success(void)
+ 	if (!ASSERT_OK_PTR(skel, "skel_open"))
+ 		return;
+ 
+-	skel->bss->target_pid = syscall(SYS_gettid);
++	skel->bss->target_pid = sys_gettid();
+ 
+ 	bpf_program__set_autoload(skel->progs.get_cgroup_id, true);
+ 	bpf_program__set_autoload(skel->progs.task_succ, true);
+@@ -58,7 +58,7 @@ static void test_rcuptr_acquire(void)
+ 	if (!ASSERT_OK_PTR(skel, "skel_open"))
+ 		return;
+ 
+-	skel->bss->target_pid = syscall(SYS_gettid);
++	skel->bss->target_pid = sys_gettid();
+ 
+ 	bpf_program__set_autoload(skel->progs.task_acquire, true);
+ 	err = rcu_read_lock__load(skel);
+diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+index 00cc9d0aee5d..60f474d965a9 100644
+--- a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
++++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+@@ -31,14 +31,14 @@ static void test_sys_enter_exit(void)
+ 	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+ 		return;
+ 
+-	skel->bss->target_pid = syscall(SYS_gettid);
++	skel->bss->target_pid = sys_gettid();
+ 
+ 	err = task_local_storage__attach(skel);
+ 	if (!ASSERT_OK(err, "skel_attach"))
+ 		goto out;
+ 
+-	syscall(SYS_gettid);
+-	syscall(SYS_gettid);
++	sys_gettid();
++	sys_gettid();
+ 
+ 	/* 3x syscalls: 1x attach and 2x gettid */
+ 	ASSERT_EQ(skel->bss->enter_cnt, 3, "enter_cnt");
+@@ -107,7 +107,7 @@ static void test_recursion(void)
+ 
+ 	/* trigger sys_enter, make sure it does not cause deadlock */
+ 	skel->bss->test_pid = getpid();
+-	syscall(SYS_gettid);
++	sys_gettid();
+ 	skel->bss->test_pid = 0;
+ 	task_ls_recursion__detach(skel);
+ 
+@@ -262,7 +262,7 @@ static void test_uptr_basic(void)
+ 	__u64 ev_dummy_data = 1;
+ 	int err;
+ 
+-	my_tid = syscall(SYS_gettid);
++	my_tid = sys_gettid();
+ 	parent_task_fd = sys_pidfd_open(my_tid, 0);
+ 	if (!ASSERT_OK_FD(parent_task_fd, "parent_task_fd"))
+ 		return;
+diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+index 2c39902b8a09..619b31cd24a1 100644
+--- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+@@ -125,7 +125,7 @@ static void *child_thread(void *ctx)
+ 	struct child *child = ctx;
+ 	int c = 0, err;
+ 
+-	child->tid = syscall(SYS_gettid);
++	child->tid = sys_gettid();
+ 
+ 	/* let parent know we are ready */
+ 	err = write(child->c2p[1], &c, 1);
 -- 
 2.43.5
 
