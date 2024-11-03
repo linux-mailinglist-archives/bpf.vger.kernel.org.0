@@ -1,172 +1,133 @@
-Return-Path: <bpf+bounces-43828-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43829-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 592C39BA443
-	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 07:23:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03B5B9BA4FB
+	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 10:48:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C9B61C20E48
-	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 06:23:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB1F9281BD2
+	for <lists+bpf@lfdr.de>; Sun,  3 Nov 2024 09:47:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8041015443B;
-	Sun,  3 Nov 2024 06:23:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F28451632D4;
+	Sun,  3 Nov 2024 09:47:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xuJG6UZ8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YLR5e8xO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A327138490
-	for <bpf@vger.kernel.org>; Sun,  3 Nov 2024 06:23:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D35015444E;
+	Sun,  3 Nov 2024 09:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730614998; cv=none; b=a5I0KyjJajnRY13YQXUuU8MQj4wFIrFnF6Q6PjVQ24+DaEc6j7yHEnA/rt9s2HVdeAs2eJ+5R6CUSxWXF/pwqya2Wj2RX+dlnK5e/DQfm+zKgBg2VYiDiKIuUqtrgI8rTpotta3XiMzV3X/pbls+9vtBxDivNGlyMcqq8UjS65k=
+	t=1730627272; cv=none; b=bqLa15AzUpaosGfuw/gtcpkZu6/SYh/Y2tWfEzODLRgGzhpcngR8Eh/2rBBKc9vnFFCFeLqChpR8RGseY7b84z1dD1XoZjUw/FIZ+xjMPpXwL4/kgCG35i4OIF61vHAFuxoa11BYLs5E+tzGlJh/g5x4nLIPPNCpULD8xZlTBSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730614998; c=relaxed/simple;
-	bh=Q56+5QNfRtOM8EEn8fU4O4IQMvKqEAw92GjD4833tHY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cWVEGLREr/QZ8k0f/aOhdH8pSEo0Y8rTiJQxOMBG0AOmtXG9gQ0ltoN3vhLtXlfsATEWK93NPo3j/MFburTVF19MRb3Qe02KjF9ZsK81Ojva6fn8p64/4c2RaW7KrRlou2JTizFZWm4Puq/t/EtjGpitQVu2CeJbHtDBuFDdZA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xuJG6UZ8; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-71e592d7f6eso2542374b3a.3
-        for <bpf@vger.kernel.org>; Sat, 02 Nov 2024 23:23:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1730614996; x=1731219796; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5Qhm+LitePBXQsySKsmg7fuQgH8MGcEsYsJ0eyWGhL0=;
-        b=xuJG6UZ8VtzxTVgERfs7qZZeGhHiw/U4eMd3IMpjkh7OLc7Qxtrwjg4Q7BfvvJHUAU
-         a4CLGpqnpq6OEcpQzlmNWF/6mgWTRyo4S9bx9lqvD7CehhjeA5s6yeK6SWeFQEx65FIx
-         aGlxTlHS2Q2wYuaafoHKjs5ksU99HnWjHg5jMKhamxqqKDRMDz4a5zHq2k3z6QNQHbWI
-         YgMiWKaAlZc3/jny2wmom32eAeEQK9q11ZyByGZpm1mvWIdTFd0uTBkGuHguhTsZ2Zif
-         zhBzAfYA6nMC3QJK11OgNS6O0Fe5U0M6hmHmKbzGvwSdBoMAjCynFQVE6ytTC+d5lIlS
-         Wjmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730614996; x=1731219796;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Qhm+LitePBXQsySKsmg7fuQgH8MGcEsYsJ0eyWGhL0=;
-        b=ohDmRwZ3z71D82Kk4fJi8PLYqSNHGY7ywnyiGvgbMU5QzzpqkoBGKecGKrfliN5jf7
-         rkcKqFSSE6pmP0klohhp/rc564xdOt5y0i6WgORPK5m86bfCa1HfnM/5U32fqlrONsnw
-         ABJ+SWACwEDqmYBj3Z/t4SymT8NFSFqzQezrhK4cPztrSh2dNfFCMTa/f1OzHLOxw2Nk
-         CkUfeQgTE/CI66qUQZQNMqrEUaK5nqjek0z9u9pcJzUWIgkuflfd/mS0LldHazscsZqd
-         pwOK76rYn27BJhmH6Ytadp2diB3flnHn3siekdEeVGeDCJ2sQbaKjJ+xNAzOLWLE+e9K
-         qWcg==
-X-Forwarded-Encrypted: i=1; AJvYcCXfs+AmhBEBC35O9cXQANZXbgJSivgbDxCFqNlEl04VX5wGKlFLq5t/wElPjTghdzEHWtU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxmXIQkeG4F2b2ZID658p/hjno38zxH4Zi6lhnfP0FlCnIHassl
-	0RUoBFgd1Ivu7/XWDCH9uXVtLNp0yGw1iULVW1FsFDa8T858hS/YIO4hJ5BVxw==
-X-Google-Smtp-Source: AGHT+IG4AFUZuM3edwnngjVKBU1jcTHodIw4RW2EypyrkFK7ELfPVwTprbngwCPD9smyqFMmdBqcAQ==
-X-Received: by 2002:a05:6a20:d70b:b0:1d9:77c0:61c6 with SMTP id adf61e73a8af0-1dba50bad20mr13962806637.0.1730614995661;
-        Sat, 02 Nov 2024 23:23:15 -0700 (PDT)
-Received: from thinkpad ([220.158.156.209])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7ee455a4994sm4819369a12.43.2024.11.02.23.23.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Nov 2024 23:23:15 -0700 (PDT)
-Date: Sun, 3 Nov 2024 11:53:05 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
-	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
-	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
-	robin.murphy@arm.com, will@kernel.org
-Subject: Re: [PATCH v3 2/2] PCI: imx6: Add IOMMU and ITS MSI support for
- i.MX95
-Message-ID: <20241103062305.6cqftpv4bwneg2mo@thinkpad>
-References: <20241024-imx95_lut-v3-0-7509c9bbab86@nxp.com>
- <20241024-imx95_lut-v3-2-7509c9bbab86@nxp.com>
- <20241102114937.w7jt7n7zr3ext5jo@thinkpad>
- <ZyZg1nlSPf5rvm8q@lizhi-Precision-Tower-5810>
+	s=arc-20240116; t=1730627272; c=relaxed/simple;
+	bh=5wMdD4MvA4Aq14GVFIycl91to3NVJjqw3DBsbYcAvok=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=h4BxWsF8d6TatO89Zv1Q2ZcKwsYgZjJEmttq9sgWtctOWc1+wgvTU3hfY7Ix2HqKKnY3vhxAFHaG3YRKcSILZAcZkaPBrsjiiJVXekQbqj6QJotdTIEAXetF4PLvPZB4LvAX4VB0ajgDKJA9a6/QCBeztcMYD+QzTagTj9Q3o9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YLR5e8xO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0035DC4AF09;
+	Sun,  3 Nov 2024 09:47:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730627272;
+	bh=5wMdD4MvA4Aq14GVFIycl91to3NVJjqw3DBsbYcAvok=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=YLR5e8xOFdlTJzc5jsdwXJGyxjusE6yDsgjUQibFhM9k6uIQB/rG7ZVWfmUDUWL5C
+	 SlYZqaQ0crjlF2mjsg/s+Ag1HU+gr6EzXhI8OkFtKelek7Hpit/5OS7KfEQOLpNjtO
+	 HmUzz0e3nnwXng+C+u18aoOzaf5BvmWUxlNz4MtvhUP5FcJhzq0kBqO0/Mau8xfO9Z
+	 w4jBQp4zR3qAjr2KCJnsUyHa676Eai0s7R46nhIIE4hp9XOGPt91iRsoDFCh45O73h
+	 L2mJA5hy6S9WzqINdycUML5pUY/YzbEhy/2Tt5evGWhBKQyQTu9v/2gK7Rvt9Y7u76
+	 i3Q3AV7Hs3axw==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2fb3110b964so27448581fa.1;
+        Sun, 03 Nov 2024 01:47:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVUWm9pT9Qv+kn2zcMVPz9OqahDT3CqljwzjZvwqqUZT/W1AKmbXnLGGtgdS2ZAZMIBiusUjXy20po1jUXE@vger.kernel.org, AJvYcCXXVZ3Eigez6F16YIP5pbhFC/WLcWs7erN5oN3eSlsL5Pcpd7pJTDCzDG7d73zBLE5J99OdIUwawDcsDDQf@vger.kernel.org, AJvYcCXha6GkRtU9HMZgTQCCoQDXCuD29SrZs2ft1bgyywToimP+BiOBCnb/vAU7yQUgBTAFSP8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzM9dzRdvMDuYzm0fcfqC/5cO0JPWFWAOVhH7ms21uXxz9PAaPC
+	dFXw3A+ygYorL8Hirsq1DtrMzv5MkFQhzVp17ooUYCZViFJa1z1mueSEo5ZmnpcPQX3SnEaSt+a
+	XEtsTTjhHivRm+uotzt3sro+O1F0=
+X-Google-Smtp-Source: AGHT+IG9uZmCTLrhDsEkTY+lW8Pzm7vZdbBNuA+2oPqAkB4FQHNEz9xsU5oB49958S710kwniTVIrwqVamRNmiOCp8I=
+X-Received: by 2002:a2e:a586:0:b0:2fb:5ebe:ed40 with SMTP id
+ 38308e7fff4ca-2fedb781c43mr40604211fa.15.1730627270574; Sun, 03 Nov 2024
+ 01:47:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZyZg1nlSPf5rvm8q@lizhi-Precision-Tower-5810>
+References: <20241102120533.1592277-1-admin@ptr1337.dev>
+In-Reply-To: <20241102120533.1592277-1-admin@ptr1337.dev>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sun, 3 Nov 2024 18:47:14 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ=sCsTXB_O58W=AH=k8Vqzoi+hh6-BKhEjZYh-+xCvBQ@mail.gmail.com>
+Message-ID: <CAK7LNAQ=sCsTXB_O58W=AH=k8Vqzoi+hh6-BKhEjZYh-+xCvBQ@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: add resolve_btfids to pacman PKGBUILD
+To: Peter Jung <admin@ptr1337.dev>
+Cc: jose.fernandez@linux.dev, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
+	Christian Heusel <christian@heusel.eu>, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Nov 02, 2024 at 01:26:46PM -0400, Frank Li wrote:
-
-[...]
-
-> > > +
-> > > +	target = NULL;
-> > > +	err_i = of_map_id(dev->of_node, rid, "iommu-map", "iommu-map-mask", &target, &sid_i);
-> > > +	target = NULL;
-> >
-> > What is the point in passing 'target' here?
-> 
-> See https://lore.kernel.org/imx/b479cad6-e0c5-48fb-bb8f-a70f7582cfd5@arm.com/
-> Marc Zyngier's comments:
-> 
-> "Perhaps it is reasonable to assume that i.MX95 will never have SMMU/ITS
-> mappings for low-numbered devices on bus 0, but in general this isn't
-> very robust, and either way it's certainly not all that clear at first
-> glance what assmuption is actually being made here. If it's significant
-> whether a mapping actually exists or not for the given ID then you
-> should really use the "target" argument of of_map_id() to determine that."
-> 
-> See v4 https://lore.kernel.org/imx/20241101-imx95_lut-v4-2-0fdf9a2fe754@nxp.com/
-> 
-
-Okay, thanks! I was confused by the fact that you never used 'target' in this
-version. But v4 clears it up.
-
-- Mani
-
-> +	target = NULL;
-> +	err_m = of_map_id(dev->of_node, rid, "msi-map", "msi-map-mask", &target, &sid_m);
+On Sat, Nov 2, 2024 at 9:06=E2=80=AFPM Peter Jung <admin@ptr1337.dev> wrote=
+:
+>
+> If the config is using DEBUG_INFO_BTF, it is required to,
+> package resolve_btfids with.
+> Compiling dkms modules will fail otherwise.
+>
+> Add a check, if resolve_btfids is present and then package it, if require=
+d.
+>
+> Signed-off-by: Peter Jung <admin@ptr1337.dev>
+> ---
+>  scripts/package/PKGBUILD | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/scripts/package/PKGBUILD b/scripts/package/PKGBUILD
+> index f83493838cf9..4010899652b8 100644
+> --- a/scripts/package/PKGBUILD
+> +++ b/scripts/package/PKGBUILD
+> @@ -91,6 +91,11 @@ _package-headers() {
+>                 "${srctree}/scripts/package/install-extmod-build" "${buil=
+ddir}"
+>         fi
+>
+> +       # required when DEBUG_INFO_BTF_MODULES is enabled
+> +       if [ -f tools/bpf/resolve_btfids/resolve_btfids ]; then
+> +               install -Dt "$builddir/tools/bpf/resolve_btfids" tools/bp=
+f/resolve_btfids/resolve_btfids
+> +       fi
 > +
-> +	/*
-> +	 * Return failure if msi-map exist and no entry for rid because dwc common
-> +	 * driver will skip setting up built-in MSI controller if msi-map existed.
-> +	 *
-> +	 *   err_m      target
-> +	 *	0	NULL		Return failure, function not work.
-> +	 *      !0      NULL		msi-map not exist, use built-in MSI.
-> +	 *	0	!NULL		Find one entry.
-> +	 *	!0	!NULL		Invalidate case.
-> +	 */
-> 
-> 
-> >
-> > > +	err_m = of_map_id(dev->of_node, rid, "msi-map", "msi-map-mask", &target, &sid_m);
-> > > +
-> > > +
-> > > +	/*
-> > > +	 * msi-map        iommu-map
-> > > +	 *   Y                Y            ITS + SMMU, require the same sid
-> > > +	 *   Y                N            ITS
-> > > +	 *   N                Y            DWC MSI Ctrl + SMMU
-> > > +	 *   N                N            DWC MSI Ctrl
-> > > +	 */
-> > > +	if (!err_i && !err_m)
-> > > +		if ((sid_i & IMX95_SID_MASK) != (sid_m & IMX95_SID_MASK)) {
-> > > +			dev_err(dev, "its and iommu stream id miss match, please check dts file\n");
-> >
-> > "iommu-map and msi-map entries mismatch!"
-> >
-> > - Mani
-> >
-> > --
-> > மணிவண்ணன் சதாசிவம்
 
--- 
-மணிவண்ணன் சதாசிவம்
+
+This is not the right place.
+
+scripts/package/install-extmod-build is a script to set up
+the build environment to build external modules.
+It is shared by rpm-pkg, deb-pkg, and pacman-pkg.
+
+
+https://github.com/torvalds/linux/blob/v6.12-rc5/scripts/package/install-ex=
+tmod-build#L34
+
+You will see how objtool is copied.
+
+
+
+
+(Anyway, it depends on your urgency.
+My hope is to support objtool and resolve_btfids in more generic ways.)
+
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
