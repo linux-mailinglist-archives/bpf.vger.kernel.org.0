@@ -1,211 +1,214 @@
-Return-Path: <bpf+bounces-43920-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43921-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EC5B9BBD3B
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 19:23:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 958709BBD3F
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 19:25:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 176BA284748
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 18:23:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE85EB215E9
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 18:25:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9395B1C9EDB;
-	Mon,  4 Nov 2024 18:23:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09B001CB533;
+	Mon,  4 Nov 2024 18:24:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WgQK3Eso"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="FWt+i2d6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE531C9B81
-	for <bpf@vger.kernel.org>; Mon,  4 Nov 2024 18:23:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060E01CACE9
+	for <bpf@vger.kernel.org>; Mon,  4 Nov 2024 18:24:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730744599; cv=none; b=QZ47RTXSWv99lU/LTGoC0HjTYMNh8MPYnGH3oKxLoXwxAfubgiAm8nJZpOealoFuzTSXPMS2dJK2fl/gO2W4LxM5BNv1MUJLuEPkLOJJ3cX2j+tZbwpAyd5QedKz4n2O+BX4BkWEpeLr0Wx+8oholx1sgUCEvurIkD1Gd0s+RlM=
+	t=1730744698; cv=none; b=kS7zea3SDN80dzyD7jp5etmPw2ccL4539AY9MUrnzI7kYlycxhJkYVXy8Io8qu7eG7VSNr8aCumIhE2eehOkByAMnpsOdF7mlcAFs6ATeBdVxsQEIYky1cmb/e1VmShYc+33zq60JyeUrUjCcScin0/OJornwIuAcF9Pu8T4IVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730744599; c=relaxed/simple;
-	bh=79I1UhRN+jTllDdhOqzAA5u9ZLJNbGLn+uvmzI6GyFI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DufgEkLfhE0d6lRHIWxs9CwgcWzNo2rIQIjepuI15jI7J5NjP+dpJAnkUNwCvxLUe5pQQEnEYHZN68ZaXyi/Iggf3QpbBewdeDt2fBqiC6L+BOz7M7/rNjvl67gG8TVDx4VYvb2yoDDQY0mS0kIMzTbUr0inBKW6mD/Dx3FNX54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WgQK3Eso; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-37d4d1b48f3so2651048f8f.1
-        for <bpf@vger.kernel.org>; Mon, 04 Nov 2024 10:23:17 -0800 (PST)
+	s=arc-20240116; t=1730744698; c=relaxed/simple;
+	bh=hjmtCr4RvpNtlz3b/lLgBNa8CcjPWCV2aUlUR2nChXc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=REM7VpoOSnBsbzhNEgNe2dhKHvHstDNt6b3ojdTgYHffAA1UF5bo+5SUrEHXqAp0mXvx5de05gjpxisXyvGZQGnbWcodENc+ANzNHmufTvUIw1Ttn03XArD3JCKXZRoZQrkXqI7zP9tpbsLvnz2vdq3nW/n5XERci7DL31X6t/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=FWt+i2d6; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-7ee6edc47abso1651748a12.3
+        for <bpf@vger.kernel.org>; Mon, 04 Nov 2024 10:24:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730744595; x=1731349395; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZOsar1JVkKQ1IT72kRe7QjsGdKYGp0vaFNV9/YQdXhk=;
-        b=WgQK3EsooVMaoFiKf8KJ/asb4S50M5WEHLL/6zVtYOnxbD5FmGEH/VoLqm/i0VlDBX
-         KFqKS36PQc6BU3TWvd4/thsyj4eX9I1e8R3WLZFlfdShYt5gbP3x0D0PRsp7O7Ga4njd
-         f5z9yv8En/hMi2HN9gyTnW9HLot0fZv97l4/dDkbgoKIgVequ7sYeURzEVvoiBKIo+ct
-         Nufy1UyXu8TLP4A6NlN8RT2cVgrOlK8oo0fzpdlLuITEcp4Qwgqvz0SleQts7q63nFx/
-         02b1v2YqWpxNeDDH5V3IgVgceqo10SZV1BLO68zqS6mnmVkO6q+xlzimpFADniqsih5a
-         Cnaw==
+        d=fastly.com; s=google; t=1730744696; x=1731349496; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vEXIZqC5VcLDorkVVv0u5LjNvfAzKSFSY+HZszN2aqU=;
+        b=FWt+i2d6Qq4r30sCRa9UXIYQnT/ioFsy6muWqvINzn59bEPPy8OViTJH/WFHcOMLIR
+         4v0zswpv5FrE+UP0Rr1Cje+5lr0SL4polON3d6lAK+rJjKTC5k0HuDeUaB0TB7Q4dUOG
+         8WcwzrM7usUS9w+cKHUcMqnaJug8s6il+K2Z0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730744595; x=1731349395;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZOsar1JVkKQ1IT72kRe7QjsGdKYGp0vaFNV9/YQdXhk=;
-        b=EK1OyFaa7dvBDxM5ZfxOAMLOZba+cJQH/C1BnHy2B6DEZZP55T2Um5pJzvxz/eeSHN
-         ZR7c7ivVpuqiwwU8LWhXUxl+fYxeZIvnQVar56qazKxVtTjdSnCdK9c3UBVHG5WdCL+2
-         hv4IVEVxIuxNiv5F0CFL93XkFTZ4iQVwP9TzVoNaK0sgmuImAqzEYdZyS7QopZwro2rQ
-         e4ZwmFKSdGoJOYBTFB5bwO5dtCkD97VemagjUpwbIwgak20gYZSFDnQjmyPttKZfJv1l
-         K5SVkprVbKMLWTQj844P8OhdyKkCvDtT4l+eNNHDYKjs90jovBaa7uSlYgA4TBEXypkr
-         0Few==
-X-Gm-Message-State: AOJu0YznEOF9inkN4U6PJuFiJ+SINCz8BlVnnPI1trpg8A5gtm4Fiy9T
-	c57p6H/eBQt5JEBFZ8LVKzOP+5n2LfVPQbj0raRvDHbyDSN8caysEYCnJB8EoX7/8b4h6Bvt0IM
-	aUgdFjD2KG4Lz+iRJvRclQX8Zji01QNgz
-X-Google-Smtp-Source: AGHT+IE+X5l150ux6swjOsvV344MxdVlchxYgxUXIuiX8F1XNg1ZZthH+9Q+zp/td4gt8cClKTUKqwTdl9/d8RQSA0k=
-X-Received: by 2002:a5d:6388:0:b0:374:c059:f2c5 with SMTP id
- ffacd0b85a97d-381b7076de7mr13506916f8f.22.1730744595492; Mon, 04 Nov 2024
- 10:23:15 -0800 (PST)
+        d=1e100.net; s=20230601; t=1730744696; x=1731349496;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vEXIZqC5VcLDorkVVv0u5LjNvfAzKSFSY+HZszN2aqU=;
+        b=MNp7YwAgxTOt96GjIIJyKVi88Xlj+7lGGHtvN+oPxzMIK9COb+kOhIJjVp0T++THSw
+         iykO39gb9k9lVfut+KBNA2gBb0FiLXcIiqAtGxu3h1vlwGqpq3f+teKf5vEXf85UTKJx
+         tzXRFOqOE7GBT7ICvZZc4skZiQcktxlTOuNhc0Jj5JV6EWvjmNBHFVYyrx+9MOE9/rEd
+         DNHXKizzojt0kmpiQSV9OOPWDfhwbmDj2SX709VKRJWUANoCludEi0K+jJqS7TKaypNo
+         IsoBzElldCASI52ft4J/VVSCG0fXXLUturFNTZk1kB4vJooXtAKUgdOkJE0e/YVPaXeL
+         Fu7A==
+X-Forwarded-Encrypted: i=1; AJvYcCWBlsEKSMHc6L2F68jb2jDq1XCeQp/0PNAPgPSvKoCBU/dSuXO7+Kkqqzo6kEpfMZD4YQg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzBvDnll0PVx1ZGZgNkOh6atOLkFzC8aSEtfqrjw2xES4CwQYH+
+	0y73Ia7d7VexPC8wVfckeZ9YZXNa87EfROha34BqICDM+vutvZmgtmLEu4+ieeA=
+X-Google-Smtp-Source: AGHT+IFpdfhbfkjgEQWpS6fEh5XcbhUvqgvXbQ8YCcQUXqN2GLQVkvXuNax1ALfDwZxYSpCLmjOVCg==
+X-Received: by 2002:a17:90b:2703:b0:2d3:c9bb:9cd7 with SMTP id 98e67ed59e1d1-2e94c52aa1amr19422073a91.36.1730744696125;
+        Mon, 04 Nov 2024 10:24:56 -0800 (PST)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e92fa123e0sm10392385a91.7.2024.11.04.10.24.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Nov 2024 10:24:55 -0800 (PST)
+Date: Mon, 4 Nov 2024 10:24:52 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: netdev@vger.kernel.org, hdanton@sina.com, pabeni@redhat.com,
+	namangulati@google.com, edumazet@google.com,
+	amritha.nambiar@intel.com, sridhar.samudrala@intel.com,
+	sdf@fomichev.me, peter@typeblog.net, m2shafiei@uwaterloo.ca,
+	bjorn@rivosinc.com, hch@infradead.org, willy@infradead.org,
+	willemdebruijn.kernel@gmail.com, skhawaja@google.com,
+	kuba@kernel.org, Martin Karsten <mkarsten@uwaterloo.ca>,
+	"David S. Miller" <davem@davemloft.net>,
+	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	Linux Documentation <linux-doc@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux BPF <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next v5 7/7] docs: networking: Describe irq suspension
+Message-ID: <ZykRdK6WgfR_4p5X@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Bagas Sanjaya <bagasdotme@gmail.com>, netdev@vger.kernel.org,
+	hdanton@sina.com, pabeni@redhat.com, namangulati@google.com,
+	edumazet@google.com, amritha.nambiar@intel.com,
+	sridhar.samudrala@intel.com, sdf@fomichev.me, peter@typeblog.net,
+	m2shafiei@uwaterloo.ca, bjorn@rivosinc.com, hch@infradead.org,
+	willy@infradead.org, willemdebruijn.kernel@gmail.com,
+	skhawaja@google.com, kuba@kernel.org,
+	Martin Karsten <mkarsten@uwaterloo.ca>,
+	"David S. Miller" <davem@davemloft.net>,
+	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	Linux Documentation <linux-doc@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux BPF <bpf@vger.kernel.org>
+References: <20241103052421.518856-1-jdamato@fastly.com>
+ <20241103052421.518856-8-jdamato@fastly.com>
+ <ZyinhIlMIrK58ABF@archie.me>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZykIaV1yyTUOI8yF@himmelriiki>
-In-Reply-To: <ZykIaV1yyTUOI8yF@himmelriiki>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 4 Nov 2024 10:23:03 -0800
-Message-ID: <CAADnVQK6ThUP34gz2mVpHeN0TvBjD3xtYFNO1SLSkJw6zSZz_g@mail.gmail.com>
-Subject: Re: program of this type cannot use helper xyz with bpf_struct_ops
-To: Mikko Ylinen <mikko.ylinen@linux.intel.com>
-Cc: bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZyinhIlMIrK58ABF@archie.me>
 
-On Mon, Nov 4, 2024 at 9:46=E2=80=AFAM Mikko Ylinen
-<mikko.ylinen@linux.intel.com> wrote:
->
-> Hi,
->
-> I was experimenting with struct_ops for my use-case but the programs
-> would not load because of "program of this type cannot use helper
-> xyz" error. However, [1] suggests that the ones I tried *are* supported.
-> Is the doc outdated or my steps are simply wrong here?
->
-> Andrii suggested to report the case here with reproduce steps so here
-> it goes.
->
-> with:
->
-> diff --git a/tools/testing/selftests/bpf/progs/dummy_st_ops_success.c b/t=
-ools/testing/selftests/bpf/progs/dummy_st_ops_success.c
-> index ec0c595d47af..c3ca873957f0 100644
-> --- a/tools/testing/selftests/bpf/progs/dummy_st_ops_success.c
-> +++ b/tools/testing/selftests/bpf/progs/dummy_st_ops_success.c
-> @@ -39,6 +39,7 @@ int BPF_PROG(test_2, struct bpf_dummy_ops_state *state,=
- int a1, unsigned short a
->         test_2_args[2] =3D a2;
->         test_2_args[3] =3D a3;
->         test_2_args[4] =3D a4;
-> +       bpf_printk("struct_ops/test_2");
->         return 0;
->  }
->
-> and:
-> tools/testing/selftests/bpf/vmtest.sh -- ./test_progs -t dummy_st_ops/dum=
-my_st_ops_attach
->
-> I get:
->
-> [build + VM boot cut out]
-> ./test_progs -t dummy_st_ops/dummy_st_ops_attach
-> [    1.068102] bpf_testmod: loading out-of-tree module taints kernel.
-> [    1.068733] bpf_testmod: module verification failed: signature and/or =
-required key missing - tainting kernel
-> tester_init:PASS:tester_log_buf 0 nsec
-> process_subtest:PASS:obj_open_mem 0 nsec
-> process_subtest:PASS:specs_alloc 0 nsec
-> libbpf: prog 'test_2': BPF program load failed: Invalid argument
-> libbpf: prog 'test_2': -- BEGIN PROG LOAD LOG --
-> 0: R1=3Dctx() R10=3Dfp0
-> ; int BPF_PROG(test_2, struct bpf_dummy_ops_state *state, int a1, unsigne=
-d short a2, @ dummy_st_ops_success.c:40
-> 0: (79) r2 =3D *(u64 *)(r1 +0)
-> func 'test_2' arg0 has btf_id 83075 type STRUCT 'bpf_dummy_ops_state'
-> 1: R1=3Dctx() R2_w=3Dtrusted_ptr_bpf_dummy_ops_state()
-> ; test_2_args[0] =3D state->val; @ dummy_st_ops_success.c:43
-> 1: (61) r2 =3D *(u32 *)(r2 +0)          ; R2_w=3Dscalar(smin=3D0,smax=3Du=
-max=3D0xffffffff,var_off=3D(0x0; 0xffffffff))
-> ; int BPF_PROG(test_2, struct bpf_dummy_ops_state *state, int a1, unsigne=
-d short a2, @ dummy_st_ops_success.c:40
-> 2: (79) r3 =3D *(u64 *)(r1 +8)          ; R1=3Dctx() R3_w=3Dscalar()
-> 3: (79) r4 =3D *(u64 *)(r1 +16)         ; R1=3Dctx() R4_w=3Dscalar()
-> 4: (79) r5 =3D *(u64 *)(r1 +24)         ; R1=3Dctx() R5_w=3Dscalar()
-> 5: (79) r1 =3D *(u64 *)(r1 +32)         ; R1_w=3Dscalar()
-> ; test_2_args[0] =3D state->val; @ dummy_st_ops_success.c:43
-> 6: (18) r0 =3D 0xffffb456400f6000       ; R0_w=3Dmap_value(map=3Ddummy_st=
-.bss,ks=3D4,vs=3D40)
-> ; test_2_args[4] =3D a4; @ dummy_st_ops_success.c:47
-> 8: (7b) *(u64 *)(r0 +32) =3D r1         ; R0_w=3Dmap_value(map=3Ddummy_st=
-.bss,ks=3D4,vs=3D40) R1_w=3Dscalar()
-> ; test_2_args[3] =3D a3; @ dummy_st_ops_success.c:46
-> 9: (67) r5 <<=3D 56                     ; R5_w=3Dscalar(smax=3D0x7f000000=
-00000000,umax=3D0xff00000000000000,smin32=3D0,smax32=3Dumax32=3D0,var_off=
-=3D(0x0; 0xff00000000000000))
-> 10: (c7) r5 s>>=3D 56                   ; R5_w=3Dscalar(smin=3Dsmin32=3D-=
-128,smax=3Dsmax32=3D127)
-> 11: (7b) *(u64 *)(r0 +24) =3D r5        ; R0_w=3Dmap_value(map=3Ddummy_st=
-.bss,ks=3D4,vs=3D40) R5_w=3Dscalar(smin=3Dsmin32=3D-128,smax=3Dsmax32=3D127=
-)
-> ; int BPF_PROG(test_2, struct bpf_dummy_ops_state *state, int a1, unsigne=
-d short a2, @ dummy_st_ops_success.c:40
-> 12: (57) r4 &=3D 65535                  ; R4_w=3Dscalar(smin=3Dsmin32=3D0=
-,smax=3Dumax=3Dsmax32=3Dumax32=3D0xffff,var_off=3D(0x0; 0xffff))
-> ; test_2_args[2] =3D a2; @ dummy_st_ops_success.c:45
-> 13: (7b) *(u64 *)(r0 +16) =3D r4        ; R0_w=3Dmap_value(map=3Ddummy_st=
-.bss,ks=3D4,vs=3D40) R4_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=
-=3Dumax32=3D0xffff,var_off=3D(0x0; 0xffff))
-> ; test_2_args[1] =3D a1; @ dummy_st_ops_success.c:44
-> 14: (67) r3 <<=3D 32                    ; R3_w=3Dscalar(smax=3D0x7fffffff=
-00000000,umax=3D0xffffffff00000000,smin32=3D0,smax32=3Dumax32=3D0,var_off=
-=3D(0x0; 0xffffffff00000000))
-> 15: (c7) r3 s>>=3D 32                   ; R3_w=3Dscalar(smin=3D0xffffffff=
-80000000,smax=3D0x7fffffff)
-> 16: (7b) *(u64 *)(r0 +8) =3D r3         ; R0_w=3Dmap_value(map=3Ddummy_st=
-.bss,ks=3D4,vs=3D40) R3_w=3Dscalar(smin=3D0xffffffff80000000,smax=3D0x7ffff=
-fff)
-> ; test_2_args[0] =3D state->val; @ dummy_st_ops_success.c:43
-> 17: (67) r2 <<=3D 32                    ; R2_w=3Dscalar(smax=3D0x7fffffff=
-00000000,umax=3D0xffffffff00000000,smin32=3D0,smax32=3Dumax32=3D0,var_off=
-=3D(0x0; 0xffffffff00000000))
-> 18: (c7) r2 s>>=3D 32                   ; R2_w=3Dscalar(smin=3D0xffffffff=
-80000000,smax=3D0x7fffffff)
-> 19: (7b) *(u64 *)(r0 +0) =3D r2         ; R0_w=3Dmap_value(map=3Ddummy_st=
-.bss,ks=3D4,vs=3D40) R2_w=3Dscalar(smin=3D0xffffffff80000000,smax=3D0x7ffff=
-fff)
-> ; bpf_printk("struct_ops/test_2"); @ dummy_st_ops_success.c:48
-> 20: (18) r1 =3D 0xffff9481c114e5d8      ; R1_w=3Dmap_value(map=3Ddummy_st=
-.rodata,ks=3D4,vs=3D18)
-> 22: (b4) w2 =3D 18                      ; R2_w=3D18
-> 23: (85) call bpf_trace_printk#6
-> program of this type cannot use helper bpf_trace_printk#6
-> processed 22 insns (limit 1000000) max_states_per_insn 0 total_states 0 p=
-eak_states 0 mark_read 0
-> -- END PROG LOAD LOG --
-> libbpf: prog 'test_2': failed to load: -22
-> libbpf: failed to load object 'dummy_st_ops_success'
-> libbpf: failed to load BPF skeleton 'dummy_st_ops_success': -22
-> test_dummy_st_ops_attach:FAIL:dummy_st_ops_load unexpected error: -22
-> #84/1    dummy_st_ops/dummy_st_ops_attach:FAIL
-> #84      dummy_st_ops:FAIL
->
+On Mon, Nov 04, 2024 at 05:52:52PM +0700, Bagas Sanjaya wrote:
+> On Sun, Nov 03, 2024 at 05:24:09AM +0000, Joe Damato wrote:
+> > +It is important to note that choosing a large value for ``gro_flush_timeout``
+> > +will defer IRQs to allow for better batch processing, but will induce latency
+> > +when the system is not fully loaded. Choosing a small value for
+> > +``gro_flush_timeout`` can cause interference of the user application which is
+> > +attempting to busy poll by device IRQs and softirq processing. This value
+> > +should be chosen carefully with these tradeoffs in mind. epoll-based busy
+> > +polling applications may be able to mitigate how much user processing happens
+> > +by choosing an appropriate value for ``maxevents``.
+> > +
+> > +Users may want to consider an alternate approach, IRQ suspension, to help deal
+>                                                                      to help dealing
+> > +with these tradeoffs.
+> > +
 
-This is expected.
-Each struct_ops has its own .get_func_proto callback.
-This is a dummy struct_ops for testing. It doesn't allow
-calling any helpers. get_func_proto is not set:
+Thanks for the careful review. I read this sentence a few times and
+perhaps my English grammar isn't great, but I think it should be
+one of:
 
-static const struct bpf_verifier_ops bpf_dummy_verifier_ops =3D {
-        .is_valid_access =3D bpf_dummy_ops_is_valid_access,
-        .btf_struct_access =3D bpf_dummy_ops_btf_struct_access,
-};
+Users may want to consider an alternate approach, IRQ suspension, to
+help deal with these tradeoffs.  (the original)
+
+or
+
+Users may want to consider an alternate approach, IRQ suspension,
+which can help to deal with these tradeoffs.
+
+or
+
+Users may want to consider an alternate approach, IRQ suspension,
+which can help when dealing with these tradeoffs.
+
+I am thinking of leaving the original unless you have a strong
+preference? My apologies if I've gotten the grammar wrong here :)
+
+Please let me know.
+
+> > <snipped>...
+> > +There are essentially three possible loops for network processing and
+> > +packet delivery:
+> > +
+> > +1) hardirq -> softirq   -> napi poll; basic interrupt delivery
+> > +
+> > +2)   timer -> softirq   -> napi poll; deferred irq processing
+> > +
+> > +3)   epoll -> busy-poll -> napi poll; busy looping
+> 
+> The loops list are parsed inconsistently due to tabs between the
+> enumerators and list items. I have to expand them into single space
+> (along with number reference fix to follow the output):
+
+Thank you for doing that. I'll take the suggested patch below and
+apply it for our v6.
+
+> ---- >8 ----
+> diff --git a/Documentation/networking/napi.rst b/Documentation/networking/napi.rst
+> index bbd58bcc430fab..848cb19f0becc1 100644
+> --- a/Documentation/networking/napi.rst
+> +++ b/Documentation/networking/napi.rst
+> @@ -375,23 +375,21 @@ epoll finds no events, the setting of ``gro_flush_timeout`` and
+>  There are essentially three possible loops for network processing and
+>  packet delivery:
+>  
+> -1) hardirq -> softirq   -> napi poll; basic interrupt delivery
+> +1) hardirq -> softirq -> napi poll; basic interrupt delivery
+> +2) timer -> softirq -> napi poll; deferred irq processing
+> +3) epoll -> busy-poll -> napi poll; busy looping
+>  
+> -2)   timer -> softirq   -> napi poll; deferred irq processing
+> -
+> -3)   epoll -> busy-poll -> napi poll; busy looping
+> -
+> -Loop 2) can take control from Loop 1), if ``gro_flush_timeout`` and
+> +Loop 2 can take control from Loop 1, if ``gro_flush_timeout`` and
+>  ``napi_defer_hard_irqs`` are set.
+>  
+> -If ``gro_flush_timeout`` and ``napi_defer_hard_irqs`` are set, Loops 2)
+> -and 3) "wrestle" with each other for control.
+> +If ``gro_flush_timeout`` and ``napi_defer_hard_irqs`` are set, Loops 2
+> +and 3 "wrestle" with each other for control.
+>  
+> -During busy periods, ``irq-suspend-timeout`` is used as timer in Loop 2),
+> -which essentially tilts network processing in favour of Loop 3).
+> +During busy periods, ``irq-suspend-timeout`` is used as timer in Loop 2,
+> +which essentially tilts network processing in favour of Loop 3.
+>  
+> -If ``gro_flush_timeout`` and ``napi_defer_hard_irqs`` are not set, Loop 3)
+> -cannot take control from Loop 1).
+> +If ``gro_flush_timeout`` and ``napi_defer_hard_irqs`` are not set, Loop 3
+> +cannot take control from Loop 1.
+>  
+>  Therefore, setting ``gro_flush_timeout`` and ``napi_defer_hard_irqs`` is
+>  the recommended usage, because otherwise setting ``irq-suspend-timeout``
+> 
+> Thanks.
+> 
+> -- 
+> An old man doll... just what I always wanted! - Clara
+
+
 
