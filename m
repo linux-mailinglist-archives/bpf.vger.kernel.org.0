@@ -1,135 +1,163 @@
-Return-Path: <bpf+bounces-43882-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43883-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43FDB9BB230
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 12:04:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C02F9BB389
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 12:36:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE7C5B22B87
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 11:04:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEBE51C2242F
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 11:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB691C07D9;
-	Mon,  4 Nov 2024 10:53:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09F41B9835;
+	Mon,  4 Nov 2024 11:34:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DVJKSEYY"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JPBH2LBX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F8831D88D0;
-	Mon,  4 Nov 2024 10:53:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9691AF0B9
+	for <bpf@vger.kernel.org>; Mon,  4 Nov 2024 11:34:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730717637; cv=none; b=ebfuI1R3ClLpFNa1+xJO+X5LvzE6tUhsOaqVIMq39n5wr3/kowf0xdRNSj9z53SBqNdJaaRT4gq/lrFPyjK0wyh6nFAqLA8vJpb0Y7YTMcTh2mddjgaGwcKU0Y3DJcL5ZrLH2nBsA9VQLHkDksV/aUnJ/A+UtRC12iYMIJkEJGw=
+	t=1730720069; cv=none; b=RTXC0oILx7r8ZtWtWboyoMa2J/UBRFXh5LhrkexZltx5mTA39PkA6Azmwq0xIel3/b92bOt0WwPtKbesgsuqL6JLN5Q3szqz4i0zK+Q7uSDy2iVWPEjRMHhqvpWMKl3WhgqMFfC9nkIx2qBb+NF7dm4O9p40EnTdlFCwjDmV+t4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730717637; c=relaxed/simple;
-	bh=M17UFKuQXLwyH4RUZSo9NLj/fpjaDLtaPCNoxViMqt8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hjqORzZLC/8jyVpT5Zj9knsaMBJSRiuW4w9DJGLgLWwZpzSBR+1Qmj8+KEapHNWxXC/C/uBt7kgwhcilcKmtI+6+wIWlnKzuZr7mO8ckIyc01qQZV8OuV0OmA3QLcZ38qIlkU2GNE4fFJEZdTss4oKsRQifaQ2XtggfxQIHFUBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DVJKSEYY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D870C4CED1;
-	Mon,  4 Nov 2024 10:53:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730717637;
-	bh=M17UFKuQXLwyH4RUZSo9NLj/fpjaDLtaPCNoxViMqt8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DVJKSEYYHg2I1QPNNUyqjrTuthWJil75WScS3jxhuHCdAP9k7NoJ666+5XNtyFP/X
-	 B3bR6CSgmdCZWnL3RnFHGGchdZGhNkeQaNnBrfVI+d93FkRwdUYvUCLSD3MN28zsud
-	 jepKK09AP96aLL6yVFbsL1r3uDilgyIkCbzHBbS/ZpdPKK1f9kEsDBV6BrxIym8p99
-	 Q4sqqQEhQD7cXp0IpVeApN2UjIXI0+fCPpXFRAavedBPlw8H6uTR4uCEQeHfe2G52u
-	 Xv/XU7CLyIW4rtFfdhdCf6Ioedt2UspLml972ybRqf+rzjGIRBUnyyvWrRhoLvIiXU
-	 P+gXYBI3zJspQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Jiayuan Chen <mrpre@163.com>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	john.fastabend@gmail.com,
-	jakub@cloudflare.com,
-	edumazet@google.com,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 10/11] bpf: fix filed access without lock
-Date: Mon,  4 Nov 2024 05:53:08 -0500
-Message-ID: <20241104105324.97393-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241104105324.97393-1-sashal@kernel.org>
-References: <20241104105324.97393-1-sashal@kernel.org>
+	s=arc-20240116; t=1730720069; c=relaxed/simple;
+	bh=HYfG3w1W3gzUTyL7UpDxCxizcAhDkK1pC9Cx+5BpmeE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KpRnr5TAPxMOyC2Y1fyjBgTpfHUjisJQpsXoMRUgqUPKAqNyWEDGirOMqOsrY5nDdcmnpIm7f4FHR6Rs4Axk6QzZYP1on2W4nFN6cDKrECAkzvs8C0gkyS/zU3j/yCd4azWyAfWButJDytuAReVoIX8KjkdthNM2CLxnUJx09JY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JPBH2LBX; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1730720066;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Hema03gqpGW69d3LEXg12k/mI6h64oVZNm0JvmKY30g=;
+	b=JPBH2LBXdg5qPCHnEs73rIu8/cd8gspFudfgJV44scEqrnmq3FU7Pj4iaYcG8bOn+9ImIu
+	hbxUZKlEgiG08BaoH1g5anJQio2szrd8IHi+RQHThqEIo/1TaMA2NeQ4b4zddpzz4eUZAt
+	iqr4DeAa56cns7I7cuQT3RapvV5Obwo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-512-PtImxvmyPuuxXW-szgjFiw-1; Mon, 04 Nov 2024 06:34:25 -0500
+X-MC-Unique: PtImxvmyPuuxXW-szgjFiw-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-37d49887a2cso2100501f8f.0
+        for <bpf@vger.kernel.org>; Mon, 04 Nov 2024 03:34:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730720064; x=1731324864;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hema03gqpGW69d3LEXg12k/mI6h64oVZNm0JvmKY30g=;
+        b=ekFv9yUqGtebWgmi9SItzUOSouj95BY6mgV6/rEAvzeoANdooQQqpNuYazWVELFr14
+         M0mBSJ47UCmungFhfwonY52XSxu+7Evtyq5bmXDLDIKjK+d2K8corU3VmOj9VOpGd8h1
+         PbT/ARe3T2NSqKNWngfyN5qWzc1OqsAhs3n9ZZyQrDDuHScl7Nr2JTWB+x8JeZlOyyko
+         P5tQHlNf3EVT3+B8s7GTMfx5cyU3EPOa7BMIUEcF18tdKFVP7/imZqF7Gc6HvGN66PIx
+         5ToR0bDQkff9RoTLbYderWP/kMXUMQmBhBIk0OaMApPYi8M+FAuoGvIXyGJjXN4rGBpX
+         nDlg==
+X-Gm-Message-State: AOJu0YxMeq4zsmcmdjmIsxv2pfpfk80acpES5uobIEnAmOPoiaMBuSX7
+	3/+O9C5LjGrUIMqcOIDxTXVaVhInoPGoAwPz8tAakXBhD4DoXoit41y+FJoiIDHFyME4F+stXrP
+	Q2K/+NBB65t39Mp8Cy8bMtoxDbCMBuydQnfpMmaoYJu+riOos
+X-Received: by 2002:a05:6000:1a8e:b0:37d:2d6f:3284 with SMTP id ffacd0b85a97d-381c145bd78mr11357014f8f.9.1730720064179;
+        Mon, 04 Nov 2024 03:34:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEkP4Zbd+9O6CMZwchW3l8vpv6OLKTP/ETsJRZGnTPsM278AqsT3F8LujX9BHKdfUa74Q/oQg==
+X-Received: by 2002:a05:6000:1a8e:b0:37d:2d6f:3284 with SMTP id ffacd0b85a97d-381c145bd78mr11356983f8f.9.1730720063701;
+        Mon, 04 Nov 2024 03:34:23 -0800 (PST)
+Received: from [192.168.0.101] (185-219-167-205-static.vivo.cz. [185.219.167.205])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381c10d4d1fsm12925750f8f.38.2024.11.04.03.34.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Nov 2024 03:34:23 -0800 (PST)
+Message-ID: <62867a31-3e29-442f-b21d-13e16d95f998@redhat.com>
+Date: Mon, 4 Nov 2024 12:34:21 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.115
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 0/3] selftests/bpf: Improve building with
+ extra
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>
+References: <cover.1730449390.git.vmalik@redhat.com>
+ <CAEf4Bzaf4SpcL6cV+VNxfiqifhM=7e_sY5YyBCZKVJqdvxqqQA@mail.gmail.com>
+From: Viktor Malik <vmalik@redhat.com>
+Content-Language: en-US
+In-Reply-To: <CAEf4Bzaf4SpcL6cV+VNxfiqifhM=7e_sY5YyBCZKVJqdvxqqQA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Jiayuan Chen <mrpre@163.com>
+On 11/1/24 20:46, Andrii Nakryiko wrote:
+> On Fri, Nov 1, 2024 at 1:38 AM Viktor Malik <vmalik@redhat.com> wrote:
+>>
+>> When trying to build BPF selftests with additional compiler and linker
+>> flags, we're running into multiple problems. This series addresses all
+>> of them:
+>>
+>> - CFLAGS are not passed to sub-makes of bpftool and libbpf. This is a
+>>   problem when compiling with PIE as libbpf.a ends up being non-PIE and
+>>   cannot be linked with other binaries (patch #1).
+>>
+>> - bpftool Makefile runs `llvm-config --cflags` and appends the result to
+>>   CFLAGS. The result typically contains `-D_GNU_SOURCE` which may be
+>>   already set in CFLAGS. That causes a compilation error (patch #2).
+>>
+>> - Some GCC flags are not supported by Clang but there are binaries which
+>>   are always built with Clang but reuse user-defined CFLAGS. When CFLAGS
+>>   contain such flags, compilation fails (patch #3).
+>>
+>> Changelog:
+>> ----------
+>> v2 -> v3:
+>> - resolve conflicts between patch #1 and 4192bb294f80 ("selftests/bpf:
+>>   Provide a generic [un]load_module helper")
+>> - add Quentin's and Jiri's acks for patches #2 and #3
+>>
+>> v1 -> v2:
+>> - cover forgotten case in patch#1 (noted by Eduard)
+>> - remove -D_GNU_SOURCE unconditionally in patch#2 (suggested by Andrii)
+>> - rewrite patch#3 to just add -Wno-unused-command-line-argument
+>>   (suggested by Andrii)
+>>
+>> Viktor Malik (3):
+>>   selftests/bpf: Allow building with extra flags
+>>   bpftool: Prevent setting duplicate _GNU_SOURCE in Makefile
+>>   selftests/bpf: Disable warnings on unused flags for Clang builds
+>>
+> 
+> I've applied the last two patches, they seem to be independent from
+> the first, right?
 
-[ Upstream commit a32aee8f0d987a7cba7fcc28002553361a392048 ]
+Yes, they are independent, thanks. I'll sync with Toke on the first one.
 
-The tcp_bpf_recvmsg_parser() function, running in user context,
-retrieves seq_copied from tcp_sk without holding the socket lock, and
-stores it in a local variable seq. However, the softirq context can
-modify tcp_sk->seq_copied concurrently, for example, n tcp_read_sock().
+Viktor
 
-As a result, the seq value is stale when it is assigned back to
-tcp_sk->copied_seq at the end of tcp_bpf_recvmsg_parser(), leading to
-incorrect behavior.
-
-Due to concurrency, the copied_seq field in tcp_bpf_recvmsg_parser()
-might be set to an incorrect value (less than the actual copied_seq) at
-the end of function: 'WRITE_ONCE(tcp->copied_seq, seq)'. This causes the
-'offset' to be negative in tcp_read_sock()->tcp_recv_skb() when
-processing new incoming packets (sk->copied_seq - skb->seq becomes less
-than 0), and all subsequent packets will be dropped.
-
-Signed-off-by: Jiayuan Chen <mrpre@163.com>
-Link: https://lore.kernel.org/r/20241028065226.35568-1-mrpre@163.com
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/ipv4/tcp_bpf.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 07a896685d0d3..f67e4c9f8d40e 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -216,11 +216,11 @@ static int tcp_bpf_recvmsg_parser(struct sock *sk,
- 				  int flags,
- 				  int *addr_len)
- {
--	struct tcp_sock *tcp = tcp_sk(sk);
- 	int peek = flags & MSG_PEEK;
--	u32 seq = tcp->copied_seq;
- 	struct sk_psock *psock;
-+	struct tcp_sock *tcp;
- 	int copied = 0;
-+	u32 seq;
- 
- 	if (unlikely(flags & MSG_ERRQUEUE))
- 		return inet_recv_error(sk, msg, len, addr_len);
-@@ -233,7 +233,8 @@ static int tcp_bpf_recvmsg_parser(struct sock *sk,
- 		return tcp_recvmsg(sk, msg, len, flags, addr_len);
- 
- 	lock_sock(sk);
--
-+	tcp = tcp_sk(sk);
-+	seq = tcp->copied_seq;
- 	/* We may have received data on the sk_receive_queue pre-accept and
- 	 * then we can not use read_skb in this context because we haven't
- 	 * assigned a sk_socket yet so have no link to the ops. The work-around
--- 
-2.43.0
+> 
+> 
+>>  tools/bpf/bpftool/Makefile           |  6 ++++-
+>>  tools/testing/selftests/bpf/Makefile | 36 +++++++++++++++++++---------
+>>  2 files changed, 30 insertions(+), 12 deletions(-)
+>>
+>> --
+>> 2.47.0
+>>
+>>
+> 
 
 
