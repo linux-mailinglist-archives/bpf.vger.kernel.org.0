@@ -1,342 +1,241 @@
-Return-Path: <bpf+bounces-43947-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABE719BBEC7
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 21:27:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4C569BBF3C
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 22:06:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2045FB2151D
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 20:27:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B2B01F21EBD
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 21:06:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 897FF1E572C;
-	Mon,  4 Nov 2024 20:27:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E3C1FAC21;
+	Mon,  4 Nov 2024 21:06:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jCQaniXB"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="z1yOEn+f"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71BF41C876D;
-	Mon,  4 Nov 2024 20:27:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BDA71FA266
+	for <bpf@vger.kernel.org>; Mon,  4 Nov 2024 21:06:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730752031; cv=none; b=PpY1YNVVS2ihh9KLSwYOs5Rk9L+ur6RNCmkeVPEdLiWmzq80N77TzeMnJx0m9dhAwj5irS5/U64doBRIAbfr+dMO8LgZp1SD7aICgLt20PeEdlk7GlCeiUI4rcKmWxygiIN5qNr/wx5fmk6vindYVnxdlNQK8uT5zStCE+UIj5I=
+	t=1730754405; cv=none; b=ShUUqurNoj83sck6WOMqFKpmh2UIoUGkU3+mk9svLt+sYiI4LUAo6tkhiWropVGdRw7p7udpuV4jsYWizSmhzOq5W9mlfrBx5cvyxObhbT37lZrMGWhxKswQNRtS2uUNUllIYjF6TsAs68qp6Y0Ki1ZPoOhAPrCheWkmXEndiiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730752031; c=relaxed/simple;
-	bh=zNFhcFpEP65NUzbAtTkXf545aP3mOPVQlH7TWQL+oVc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f9hya3KuGmjDabWyybYLzFCn1hUpId3GVkhf4dgG6JB9gS/VEapTltpvTEwuJ8jvHi4ZsC7STt00ls89hqeNKobEkM0aaUM7CPskHRA4I/ZpzpwNbqLinelloio95oy/+D1ju7qVQ2vei746F0B7YCqq90AFQptQ9JgxIB0wV0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jCQaniXB; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-20c693b68f5so49832345ad.1;
-        Mon, 04 Nov 2024 12:27:09 -0800 (PST)
+	s=arc-20240116; t=1730754405; c=relaxed/simple;
+	bh=5/i4aYa+bDmYTyC5+2MiIF90lU7UD7sa8a5447uXxv8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=bHK58pvYVUSBBupb8sndr3wuBveRqZGJAN9rcy6jkK2Gm/D5b7WSE7RYp4y1ISZ9u8TKxIG71BMMZXo5LD25SNwSSjGjqdk+EOQGtcU82wHvxffGuPgXdvfDLOBh2uJKA7PStxuSkNcAFxi54tsmgxjIH6EcNFBMCGF1v/oXOwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=z1yOEn+f; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-71e3fce4a60so3713125b3a.0
+        for <bpf@vger.kernel.org>; Mon, 04 Nov 2024 13:06:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730752029; x=1731356829; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RHtMBfQecyyKv9bmAtAYemSSyWK9CXs7Ly84qsFf5U8=;
-        b=jCQaniXBwpLOtbgAm8+k5Ttu+/9MfIEemRaPNfqaqUy12DoCPut3MMa/ujisdDYXmQ
-         bVyTmLhLocIN63QcUomWaEgGH80iXHtCgI2KSAvDUOML/eb1S5W0cxLidep+swtyyMbc
-         Uq2GZfH9P9LDvXUbuYFjOaoiMeMKxTH5wU8p12kmv7sNULv5ErAepBwo++t3sJeVcmRA
-         0TKeCuzjPRW2LoJUpM/EMF7kp55tUYEGfPqGwALjTVs18sM5s+U4W+ePOcApfmzMIP/x
-         BiMGrQrb2lJe7l+j9ltF+4VdL6+dH/YMUaNHvZ4JFSXHvDuckpKpoh58ZtfDwjxfuH0D
-         6Tww==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1730754402; x=1731359202; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4V9Yv2fAvOK/vMiP82IoKQz/aaC4GtvY8C8de1dPo6U=;
+        b=z1yOEn+flhKXg8I1JSj4uCDyhQcr++5qhPuW4e9nTtRUhby6Iefe42ANg2SspvsKfv
+         KaIcgOL45jgrnR9I0HEBcgjbTjTCodEvlvwTY+pH3AUb+laFPqyJGEd1YN6P3W5KGxt3
+         RUycyDy9/OGrKHnqqUKQSUkliPPfIEF5ipHIpUq/BO84d/EXAk4Thpdaj3y41xNkPVtc
+         0KMckUeSErZiXjnMPLlrGGPHXCg9wJhlHUUu6YrXyjhMcZNo4zX5SQHZ/mfoQ8ZKMH0V
+         49iqVr9vmjmHmw0YvhXb1/AnuTA0OhkgJeRCBbD9eKTjFWcNa8CJaHq7f8ZFT91h7daz
+         lsvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730752029; x=1731356829;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1730754402; x=1731359202;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RHtMBfQecyyKv9bmAtAYemSSyWK9CXs7Ly84qsFf5U8=;
-        b=Dsor7MRM7GbZg5WrCjCFFMPShvQFabXnwUAUD3C2fYbaB0ToVtAyYu2S4wcUtL3843
-         TsMaKlVKbonh4S4s4kgPx1ZxRZMhIPiGN7D8ejU3K0N+mq54O4tbeC7sinnkyI1Yi03l
-         fLS3KUuhcqEbOgsiFH/9lgh/Pwpswo153eQ4Q8LGvvVixL7zQPJOZu9Uhqo71l4kDgor
-         45GIgTLnMdGjFUyFVB/h5YTuxzOxX0LoBFru2jSKqA85hgxT4h5XD5FF0yzKxVvozwtM
-         Sx7qH4yKdT0M5YAP4Obsa7z6//+3myobVFdBu4LO3lLpwHs4rRPslu4v5a5+B8tXvVS1
-         mM/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW3bJRRYGvK72m6ouOEmAgK38OQxoazg/4VE7NhAeYXU1FwmTmT2AQ6RSGtm94bb+z0RPo=@vger.kernel.org, AJvYcCXvx6KxdfSBfpovkiqEtUnjd1WI1JeZAHMXINplqkpwh3BqtZCjKTtTJk6qRZKNbJYe1ON+edz2orAdZLNf@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywf8+e2FyzDFr8ZCDSE9AbeUaVcYpWeBBfCK5yO4VNC6ncxR/6X
-	HPjzFp8v7AFQtBlCEi93xviYDTtzsCo9OI/gsZzUe+WxKMJD8fgAmrIcb6SP
-X-Google-Smtp-Source: AGHT+IGwx4SmI9ceRF/57XXFL+jnLXt/f43mLfRRmWIi1TEpIz9VSsTQSeK140PRBYiXCKNFROOojg==
-X-Received: by 2002:a17:902:ea0a:b0:20c:b876:b4eb with SMTP id d9443c01a7336-21103ca9ebemr256880845ad.59.1730752028558;
-        Mon, 04 Nov 2024 12:27:08 -0800 (PST)
-Received: from ryzen.lan ([2601:644:8200:dab8::a86])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211057d5326sm63976945ad.278.2024.11.04.12.27.06
+        bh=4V9Yv2fAvOK/vMiP82IoKQz/aaC4GtvY8C8de1dPo6U=;
+        b=qMmUd7HRShVpEwWwKDBGyePyCKMdOKGP1QYv9ZmpYmuFU5V0McqyKXPNi480Q7gc/x
+         +RYYZvGaW/odPBY0L7rnP0FeBimwnZrLDojiyf6j++FxDr+5RtARYzyQeNFCCGUlH539
+         hqG/oycx7Rhg5KJon8pTgvjE6gKk0mO9ISM5Azn0F36KJbalO5rfNnPSTvULYDmuOIqO
+         vZaYsZ6Tz2hxAnmlhBjgrPdTF+yRMwGzAB9jJQmvALjNAc30ttHGhzjwPz6G2LLO0wYd
+         TX6wumongXmpfG6UDWBxsdSJwm9P6ydMS8WUd+eY8/GG3WURWavkIy+x9l5x5bFcGIxG
+         +/Vg==
+X-Forwarded-Encrypted: i=1; AJvYcCWQaEimlMTa1F7bDxQ/KVj3WCDJUn4lXLt2Jg0RXq4YRusOjnAdkmh4zxCCVE7jOtv9BbU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwMNuZFU+2EfHdZdLJ10grxlh/GpzcyUuLwRtSfMqKpOIyHG24e
+	6nw3LRs+beFGl97B4CaiHaAN+XmbeqgPWK4gnswCz20nmL+CDx/kTaxUDor9iM0=
+X-Google-Smtp-Source: AGHT+IFk0UULo9afhQbnlnWjUo65KmcRu9RXVFubvhCDhtDv1i7bMZR037d187cAIN7jV72mG65BAw==
+X-Received: by 2002:a05:6a00:398f:b0:71e:3b8:666f with SMTP id d2e1a72fcca58-72062f712a6mr45086642b3a.11.1730754402245;
+        Mon, 04 Nov 2024 13:06:42 -0800 (PST)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7ee490e08f4sm7248293a12.40.2024.11.04.13.06.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Nov 2024 12:27:08 -0800 (PST)
-From: Rosen Penev <rosenp@gmail.com>
-To: netdev@vger.kernel.org
-Cc: Edward Cree <ecree.xilinx@gmail.com>,
-	Martin Habets <habetsm.xilinx@gmail.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	linux-net-drivers@amd.com (open list:SFC NETWORK DRIVER),
-	linux-kernel@vger.kernel.org (open list),
-	bpf@vger.kernel.org (open list:XDP (eXpress Data Path):Keyword:(?:\b|_)xdp(?:\b|_))
-Subject: [PATCH net-next] net: sfc: use ethtool string helpers
-Date: Mon,  4 Nov 2024 12:27:05 -0800
-Message-ID: <20241104202705.120939-1-rosenp@gmail.com>
-X-Mailer: git-send-email 2.47.0
+        Mon, 04 Nov 2024 13:06:41 -0800 (PST)
+From: Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH RFT 00/16] perf tools: Use generic syscall scripts for all
+ archs
+Date: Mon, 04 Nov 2024 13:06:02 -0800
+Message-Id: <20241104-perf_syscalltbl-v1-0-9adae5c761ef@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADs3KWcC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDS0Nj3YLUorT44sri5MScnJKkHF2zNEuLlNS05GSzNFMloK6CotS0zAq
+ widFKQW4hSrG1tQBojDoLZgAAAA==
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+ Arnaldo Carvalho de Melo <acme@kernel.org>, 
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
+ Adrian Hunter <adrian.hunter@intel.com>, 
+ Paul Walmsley <paul.walmsley@sifive.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, 
+ =?utf-8?q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+ Christian Brauner <brauner@kernel.org>, Guo Ren <guoren@kernel.org>, 
+ John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>, 
+ James Clark <james.clark@linaro.org>, Mike Leach <mike.leach@linaro.org>, 
+ Leo Yan <leo.yan@linux.dev>, Jonathan Corbet <corbet@lwn.net>, 
+ Arnd Bergmann <arnd@arndb.de>
+Cc: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+ linux-riscv@lists.infradead.org, linux-security-module@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-csky@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
+ Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7158; i=charlie@rivosinc.com;
+ h=from:subject:message-id; bh=5/i4aYa+bDmYTyC5+2MiIF90lU7UD7sa8a5447uXxv8=;
+ b=owGbwMvMwCHWx5hUnlvL8Y3xtFoSQ7qmeciNY1P03++xMXAsfRHbpe+78drinTw1tXbGz7+Wr
+ Ju8KWh2RykLgxgHg6yYIgvPtQbm1jv6ZUdFyybAzGFlAhnCwMUpABM5EsbI8GVF2ZM24Xkrris0
+ z/sq5lEb29TY+lRskptvquex1zdnTmVkeMmzRCpUqM1DZ3Uzn/zaQNNXQb5t557syf19M6pitXc
+ /DwA=
+X-Developer-Key: i=charlie@rivosinc.com; a=openpgp;
+ fpr=7D834FF11B1D8387E61C776FFB10D1F27D6B1354
 
-The latter is the preferred way to copy ethtool strings.
+Standardize the generation of syscall headers around syscall tables.
+Previously each architecture independently selected how syscall headers
+would be generated, or would not define a way and fallback onto
+libaudit. Convert all architectures to use a standard syscall header
+generation script and allow each architecture to override the syscall
+table to use if they do not use the generic table.
 
-Avoids manually incrementing the pointer. Cleans up the code quite well.
+As a result of these changes, no architecture will require libaudit, and
+so the fallback case of using libaudit is removed by this series.
 
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
+Testing:
+
+I have tested that the syscall mappings of id to name generation works
+as expected for every architecture, but I have only validated that perf
+trace compiles and runs as expected on riscv, arm64, and x86_64.
+
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
- drivers/net/ethernet/sfc/ethtool_common.c     | 34 +++++++------------
- drivers/net/ethernet/sfc/falcon/ethtool.c     | 24 +++++--------
- drivers/net/ethernet/sfc/falcon/nic.c         |  7 ++--
- drivers/net/ethernet/sfc/nic.c                |  7 ++--
- .../net/ethernet/sfc/siena/ethtool_common.c   | 34 +++++++------------
- drivers/net/ethernet/sfc/siena/nic.c          |  7 ++--
- 6 files changed, 40 insertions(+), 73 deletions(-)
+Charlie Jenkins (16):
+      perf tools: Create generic syscall table support
+      perf tools: arc: Support generic syscall headers
+      perf tools: csky: Support generic syscall headers
+      perf tools: arm: Support syscall headers
+      perf tools: sh: Support syscall headers
+      perf tools: sparc: Support syscall headers
+      perf tools: xtensa: Support syscall header
+      perf tools: x86: Use generic syscall scripts
+      perf tools: alpha: Support syscall header
+      perf tools: parisc: Support syscall header
+      perf tools: arm64: Use syscall table
+      perf tools: loongarch: Use syscall table
+      perf tools: mips: Use generic syscall scripts
+      perf tools: powerpc: Use generic syscall table scripts
+      perf tools: s390: Use generic syscall table scripts
+      perf tools: Remove dependency on libaudit
 
-diff --git a/drivers/net/ethernet/sfc/ethtool_common.c b/drivers/net/ethernet/sfc/ethtool_common.c
-index ae32e08540fa..d46972f45ec1 100644
---- a/drivers/net/ethernet/sfc/ethtool_common.c
-+++ b/drivers/net/ethernet/sfc/ethtool_common.c
-@@ -403,24 +403,19 @@ static size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 *strings)
- 	efx_for_each_channel(channel, efx) {
- 		if (efx_channel_has_tx_queues(channel)) {
- 			n_stats++;
--			if (strings != NULL) {
--				snprintf(strings, ETH_GSTRING_LEN,
--					 "tx-%u.tx_packets",
--					 channel->tx_queue[0].queue /
--					 EFX_MAX_TXQ_PER_CHANNEL);
--
--				strings += ETH_GSTRING_LEN;
--			}
-+			if (strings)
-+				ethtool_sprintf(
-+					&strings, "tx-%u.tx_packets",
-+					channel->tx_queue[0].queue /
-+						EFX_MAX_TXQ_PER_CHANNEL);
- 		}
- 	}
- 	efx_for_each_channel(channel, efx) {
- 		if (efx_channel_has_rx_queue(channel)) {
- 			n_stats++;
--			if (strings != NULL) {
--				snprintf(strings, ETH_GSTRING_LEN,
--					 "rx-%d.rx_packets", channel->channel);
--				strings += ETH_GSTRING_LEN;
--			}
-+			if (strings)
-+				ethtool_sprintf(&strings, "rx-%d.rx_packets",
-+						channel->channel);
- 		}
- 	}
- 	if (efx->xdp_tx_queue_count && efx->xdp_tx_queues) {
-@@ -428,11 +423,10 @@ static size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 *strings)
- 
- 		for (xdp = 0; xdp < efx->xdp_tx_queue_count; xdp++) {
- 			n_stats++;
--			if (strings) {
--				snprintf(strings, ETH_GSTRING_LEN,
--					 "tx-xdp-cpu-%hu.tx_packets", xdp);
--				strings += ETH_GSTRING_LEN;
--			}
-+			if (strings)
-+				ethtool_sprintf(&strings,
-+						"tx-xdp-cpu-%hu.tx_packets",
-+						xdp);
- 		}
- 	}
- 
-@@ -467,9 +461,7 @@ void efx_ethtool_get_strings(struct net_device *net_dev,
- 		strings += (efx->type->describe_stats(efx, strings) *
- 			    ETH_GSTRING_LEN);
- 		for (i = 0; i < EFX_ETHTOOL_SW_STAT_COUNT; i++)
--			strscpy(strings + i * ETH_GSTRING_LEN,
--				efx_sw_stat_desc[i].name, ETH_GSTRING_LEN);
--		strings += EFX_ETHTOOL_SW_STAT_COUNT * ETH_GSTRING_LEN;
-+			ethtool_puts(&strings, efx_sw_stat_desc[i].name);
- 		strings += (efx_describe_per_queue_stats(efx, strings) *
- 			    ETH_GSTRING_LEN);
- 		efx_ptp_describe_stats(efx, strings);
-diff --git a/drivers/net/ethernet/sfc/falcon/ethtool.c b/drivers/net/ethernet/sfc/falcon/ethtool.c
-index f4db683b80f7..41bd63d0c40c 100644
---- a/drivers/net/ethernet/sfc/falcon/ethtool.c
-+++ b/drivers/net/ethernet/sfc/falcon/ethtool.c
-@@ -361,24 +361,18 @@ static size_t ef4_describe_per_queue_stats(struct ef4_nic *efx, u8 *strings)
- 	ef4_for_each_channel(channel, efx) {
- 		if (ef4_channel_has_tx_queues(channel)) {
- 			n_stats++;
--			if (strings != NULL) {
--				snprintf(strings, ETH_GSTRING_LEN,
--					 "tx-%u.tx_packets",
--					 channel->tx_queue[0].queue /
--					 EF4_TXQ_TYPES);
--
--				strings += ETH_GSTRING_LEN;
--			}
-+			if (strings)
-+				ethtool_sprintf(&strings, "tx-%u.tx_packets",
-+						channel->tx_queue[0].queue /
-+							EF4_TXQ_TYPES);
- 		}
- 	}
- 	ef4_for_each_channel(channel, efx) {
- 		if (ef4_channel_has_rx_queue(channel)) {
- 			n_stats++;
--			if (strings != NULL) {
--				snprintf(strings, ETH_GSTRING_LEN,
--					 "rx-%d.rx_packets", channel->channel);
--				strings += ETH_GSTRING_LEN;
--			}
-+			if (strings)
-+				ethtool_sprintf(&strings, "rx-%d.rx_packets",
-+						channel->channel);
- 		}
- 	}
- 	return n_stats;
-@@ -412,9 +406,7 @@ static void ef4_ethtool_get_strings(struct net_device *net_dev,
- 		strings += (efx->type->describe_stats(efx, strings) *
- 			    ETH_GSTRING_LEN);
- 		for (i = 0; i < EF4_ETHTOOL_SW_STAT_COUNT; i++)
--			strscpy(strings + i * ETH_GSTRING_LEN,
--				ef4_sw_stat_desc[i].name, ETH_GSTRING_LEN);
--		strings += EF4_ETHTOOL_SW_STAT_COUNT * ETH_GSTRING_LEN;
-+			ethtool_puts(&strings, ef4_sw_stat_desc[i].name);
- 		strings += (ef4_describe_per_queue_stats(efx, strings) *
- 			    ETH_GSTRING_LEN);
- 		break;
-diff --git a/drivers/net/ethernet/sfc/falcon/nic.c b/drivers/net/ethernet/sfc/falcon/nic.c
-index 78c851b5a56f..a7f0caa8710f 100644
---- a/drivers/net/ethernet/sfc/falcon/nic.c
-+++ b/drivers/net/ethernet/sfc/falcon/nic.c
-@@ -451,11 +451,8 @@ size_t ef4_nic_describe_stats(const struct ef4_hw_stat_desc *desc, size_t count,
- 
- 	for_each_set_bit(index, mask, count) {
- 		if (desc[index].name) {
--			if (names) {
--				strscpy(names, desc[index].name,
--					ETH_GSTRING_LEN);
--				names += ETH_GSTRING_LEN;
--			}
-+			if (names)
-+				ethtool_puts(&names, desc[index].name);
- 			++visible;
- 		}
- 	}
-diff --git a/drivers/net/ethernet/sfc/nic.c b/drivers/net/ethernet/sfc/nic.c
-index a33ed473cc8a..51c975cff4fe 100644
---- a/drivers/net/ethernet/sfc/nic.c
-+++ b/drivers/net/ethernet/sfc/nic.c
-@@ -306,11 +306,8 @@ size_t efx_nic_describe_stats(const struct efx_hw_stat_desc *desc, size_t count,
- 
- 	for_each_set_bit(index, mask, count) {
- 		if (desc[index].name) {
--			if (names) {
--				strscpy(names, desc[index].name,
--					ETH_GSTRING_LEN);
--				names += ETH_GSTRING_LEN;
--			}
-+			if (names)
-+				ethtool_puts(&names, desc[index].name);
- 			++visible;
- 		}
- 	}
-diff --git a/drivers/net/ethernet/sfc/siena/ethtool_common.c b/drivers/net/ethernet/sfc/siena/ethtool_common.c
-index 075fef64de68..53b1cdf872d8 100644
---- a/drivers/net/ethernet/sfc/siena/ethtool_common.c
-+++ b/drivers/net/ethernet/sfc/siena/ethtool_common.c
-@@ -403,24 +403,19 @@ static size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 *strings)
- 	efx_for_each_channel(channel, efx) {
- 		if (efx_channel_has_tx_queues(channel)) {
- 			n_stats++;
--			if (strings != NULL) {
--				snprintf(strings, ETH_GSTRING_LEN,
--					 "tx-%u.tx_packets",
--					 channel->tx_queue[0].queue /
--					 EFX_MAX_TXQ_PER_CHANNEL);
--
--				strings += ETH_GSTRING_LEN;
--			}
-+			if (strings)
-+				ethtool_sprintf(
-+					&strings, "tx-%u.tx_packets",
-+					channel->tx_queue[0].queue /
-+						EFX_MAX_TXQ_PER_CHANNEL);
- 		}
- 	}
- 	efx_for_each_channel(channel, efx) {
- 		if (efx_channel_has_rx_queue(channel)) {
- 			n_stats++;
--			if (strings != NULL) {
--				snprintf(strings, ETH_GSTRING_LEN,
--					 "rx-%d.rx_packets", channel->channel);
--				strings += ETH_GSTRING_LEN;
--			}
-+			if (strings)
-+				ethtool_sprintf(&strings, "rx-%d.rx_packets",
-+						channel->channel);
- 		}
- 	}
- 	if (efx->xdp_tx_queue_count && efx->xdp_tx_queues) {
-@@ -428,11 +423,10 @@ static size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 *strings)
- 
- 		for (xdp = 0; xdp < efx->xdp_tx_queue_count; xdp++) {
- 			n_stats++;
--			if (strings) {
--				snprintf(strings, ETH_GSTRING_LEN,
--					 "tx-xdp-cpu-%hu.tx_packets", xdp);
--				strings += ETH_GSTRING_LEN;
--			}
-+			if (strings)
-+				ethtool_sprintf(&strings,
-+						"tx-xdp-cpu-%hu.tx_packets",
-+						xdp);
- 		}
- 	}
- 
-@@ -467,9 +461,7 @@ void efx_siena_ethtool_get_strings(struct net_device *net_dev,
- 		strings += (efx->type->describe_stats(efx, strings) *
- 			    ETH_GSTRING_LEN);
- 		for (i = 0; i < EFX_ETHTOOL_SW_STAT_COUNT; i++)
--			strscpy(strings + i * ETH_GSTRING_LEN,
--				efx_sw_stat_desc[i].name, ETH_GSTRING_LEN);
--		strings += EFX_ETHTOOL_SW_STAT_COUNT * ETH_GSTRING_LEN;
-+			ethtool_puts(&strings, efx_sw_stat_desc[i].name);
- 		strings += (efx_describe_per_queue_stats(efx, strings) *
- 			    ETH_GSTRING_LEN);
- 		efx_siena_ptp_describe_stats(efx, strings);
-diff --git a/drivers/net/ethernet/sfc/siena/nic.c b/drivers/net/ethernet/sfc/siena/nic.c
-index 0ea0433a6230..06b97218b490 100644
---- a/drivers/net/ethernet/sfc/siena/nic.c
-+++ b/drivers/net/ethernet/sfc/siena/nic.c
-@@ -457,11 +457,8 @@ size_t efx_siena_describe_stats(const struct efx_hw_stat_desc *desc, size_t coun
- 
- 	for_each_set_bit(index, mask, count) {
- 		if (desc[index].name) {
--			if (names) {
--				strscpy(names, desc[index].name,
--					ETH_GSTRING_LEN);
--				names += ETH_GSTRING_LEN;
--			}
-+			if (names)
-+				ethtool_puts(&names, desc[index].name);
- 			++visible;
- 		}
- 	}
+ Documentation/admin-guide/workload-tracing.rst     |   2 +-
+ tools/build/feature/Makefile                       |   4 -
+ tools/build/feature/test-libaudit.c                |  11 -
+ tools/perf/Documentation/perf-check.txt            |   1 -
+ tools/perf/Makefile.config                         |  28 +-
+ tools/perf/Makefile.perf                           |  12 +-
+ tools/perf/arch/alpha/entry/syscalls/Kbuild        |   2 +
+ .../arch/alpha/entry/syscalls/Makefile.syscalls    |   5 +
+ tools/perf/arch/alpha/entry/syscalls/syscall.tbl   | 504 ++++++++++++++++++++
+ tools/perf/arch/alpha/include/syscall_table.h      |   2 +
+ tools/perf/arch/arc/entry/syscalls/Kbuild          |   2 +
+ .../perf/arch/arc/entry/syscalls/Makefile.syscalls |   3 +
+ tools/perf/arch/arc/include/syscall_table.h        |   2 +
+ tools/perf/arch/arm/entry/syscalls/Kbuild          |   4 +
+ .../perf/arch/arm/entry/syscalls/Makefile.syscalls |   2 +
+ tools/perf/arch/arm/entry/syscalls/syscall.tbl     | 479 +++++++++++++++++++
+ tools/perf/arch/arm/include/syscall_table.h        |   2 +
+ tools/perf/arch/arm64/Makefile                     |  22 -
+ tools/perf/arch/arm64/entry/syscalls/Kbuild        |   3 +
+ .../arch/arm64/entry/syscalls/Makefile.syscalls    |   6 +
+ tools/perf/arch/arm64/entry/syscalls/mksyscalltbl  |  46 --
+ .../perf/arch/arm64/entry/syscalls/syscall_32.tbl  | 476 +++++++++++++++++++
+ .../perf/arch/arm64/entry/syscalls/syscall_64.tbl  |   1 +
+ tools/perf/arch/arm64/include/syscall_table.h      |   8 +
+ tools/perf/arch/csky/entry/syscalls/Kbuild         |   2 +
+ .../arch/csky/entry/syscalls/Makefile.syscalls     |   3 +
+ tools/perf/arch/csky/include/syscall_table.h       |   2 +
+ tools/perf/arch/loongarch/Makefile                 |  22 -
+ tools/perf/arch/loongarch/entry/syscalls/Kbuild    |   2 +
+ .../loongarch/entry/syscalls/Makefile.syscalls     |   3 +
+ .../arch/loongarch/entry/syscalls/mksyscalltbl     |  45 --
+ tools/perf/arch/loongarch/include/syscall_table.h  |   2 +
+ tools/perf/arch/mips/Makefile                      |  18 -
+ tools/perf/arch/mips/entry/syscalls/Kbuild         |   2 +
+ .../arch/mips/entry/syscalls/Makefile.syscalls     |   5 +
+ tools/perf/arch/mips/entry/syscalls/mksyscalltbl   |  32 --
+ tools/perf/arch/mips/include/syscall_table.h       |   2 +
+ tools/perf/arch/parisc/entry/syscalls/Kbuild       |   3 +
+ .../arch/parisc/entry/syscalls/Makefile.syscalls   |   6 +
+ tools/perf/arch/parisc/entry/syscalls/syscall.tbl  | 463 +++++++++++++++++++
+ tools/perf/arch/parisc/include/syscall_table.h     |   8 +
+ tools/perf/arch/powerpc/Makefile                   |  25 -
+ tools/perf/arch/powerpc/entry/syscalls/Kbuild      |   3 +
+ .../arch/powerpc/entry/syscalls/Makefile.syscalls  |   6 +
+ .../perf/arch/powerpc/entry/syscalls/mksyscalltbl  |  39 --
+ tools/perf/arch/powerpc/include/syscall_table.h    |   8 +
+ tools/perf/arch/riscv/entry/syscalls/Kbuild        |   2 +
+ .../arch/riscv/entry/syscalls/Makefile.syscalls    |   4 +
+ tools/perf/arch/riscv/include/syscall_table.h      |   8 +
+ tools/perf/arch/s390/Makefile                      |  21 -
+ tools/perf/arch/s390/entry/syscalls/Kbuild         |   2 +
+ .../arch/s390/entry/syscalls/Makefile.syscalls     |   5 +
+ tools/perf/arch/s390/entry/syscalls/mksyscalltbl   |  32 --
+ tools/perf/arch/s390/include/syscall_table.h       |   2 +
+ tools/perf/arch/sh/entry/syscalls/Kbuild           |   2 +
+ .../perf/arch/sh/entry/syscalls/Makefile.syscalls  |   4 +
+ tools/perf/arch/sh/entry/syscalls/syscall.tbl      | 468 +++++++++++++++++++
+ tools/perf/arch/sh/include/syscall_table.h         |   2 +
+ tools/perf/arch/sparc/entry/syscalls/Kbuild        |   3 +
+ .../arch/sparc/entry/syscalls/Makefile.syscalls    |   5 +
+ tools/perf/arch/sparc/entry/syscalls/syscall.tbl   | 510 +++++++++++++++++++++
+ tools/perf/arch/sparc/include/syscall_table.h      |   8 +
+ tools/perf/arch/x86/Build                          |   1 -
+ tools/perf/arch/x86/Makefile                       |  25 -
+ tools/perf/arch/x86/entry/syscalls/Kbuild          |   3 +
+ .../perf/arch/x86/entry/syscalls/Makefile.syscalls |   6 +
+ tools/perf/arch/x86/entry/syscalls/syscalltbl.sh   |  42 --
+ tools/perf/arch/x86/include/syscall_table.h        |   8 +
+ tools/perf/arch/xtensa/entry/syscalls/Kbuild       |   2 +
+ .../arch/xtensa/entry/syscalls/Makefile.syscalls   |   4 +
+ tools/perf/arch/xtensa/entry/syscalls/syscall.tbl  | 435 ++++++++++++++++++
+ tools/perf/arch/xtensa/include/syscall_table.h     |   2 +
+ tools/perf/builtin-check.c                         |   1 -
+ tools/perf/builtin-help.c                          |   2 -
+ tools/perf/builtin-trace.c                         |  30 --
+ tools/perf/check-headers.sh                        |   9 +
+ tools/perf/perf.c                                  |   6 +-
+ tools/perf/scripts/Makefile.syscalls               |  69 +++
+ tools/perf/scripts/syscalltbl.sh                   |  86 ++++
+ tools/perf/tests/make                              |   7 +-
+ tools/perf/util/env.c                              |   4 +-
+ tools/perf/util/generate-cmdlist.sh                |   4 +-
+ tools/perf/util/syscalltbl.c                       |  87 +---
+ tools/scripts/syscall.tbl                          | 405 ++++++++++++++++
+ 84 files changed, 4089 insertions(+), 555 deletions(-)
+---
+base-commit: 59b723cd2adbac2a34fc8e12c74ae26ae45bf230
+change-id: 20240913-perf_syscalltbl-6f98defcc6f5
 -- 
-2.47.0
+- Charlie
 
 
