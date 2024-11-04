@@ -1,193 +1,155 @@
-Return-Path: <bpf+bounces-43916-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43918-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DC0E9BBC72
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 18:53:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 601799BBCE2
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 19:09:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E30D282D04
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 17:53:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D87C81F22287
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 18:09:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0B7E1C9EAF;
-	Mon,  4 Nov 2024 17:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD6D1CACC0;
+	Mon,  4 Nov 2024 18:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="at3Zikhm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PizpS6ym"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC731C728E;
-	Mon,  4 Nov 2024 17:53:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61161C9ED6
+	for <bpf@vger.kernel.org>; Mon,  4 Nov 2024 18:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730742814; cv=none; b=Q0lGiYRtWEgI/Vp9HiPiz2sLnE5V4Qese3GcNap6CPeqUd+FMCD+ZiFd5QMfZAIVPCh1nHiXTkyhHmkuJQmejSCeHVX+3+vDhXsS5f19Y481A/PmtgFOETrqB1Y+hbphBPd7UfxKDaH5acMboKjrm3LOn1gYzFC0TcnW1n44NdQ=
+	t=1730743791; cv=none; b=AGWk5/uks1Z8g+ZZ3FOsFP0+9csZljappyAEY50RWB9au5i0qcHsaZ/4KUfofB8mXTkl7wohmh8MtOgTUngz43/E8pj1QMID0AWcnXcEa2MFvX0l9FK1ERj790PrpgBMQgBnSHxHPNX3QbN1egW8gW0pK4ZksQf4T5Q7E3N/G/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730742814; c=relaxed/simple;
-	bh=mc6KjrSKGNhzk7zMiiT3xKlkLITmL/SlBW3uGdvqw9U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SaGiR0aMYNJOaQ/3BZjaSUg3UIDVma7db7KaL+SGOQaWq9Wk1UX31PXXcfjrkMKvCQOALVkVkpSZd0e4EIeIBi/vEmMyNaDgl8ytSxJ1F+w/sqGm4FV+2iUyle1i1MjrGwxgq8M3uCsOQ7rsy4QR8VwJFxz1L1zmjP6892CwIqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=at3Zikhm; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-37d473c4bb6so4109789f8f.3;
-        Mon, 04 Nov 2024 09:53:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730742811; x=1731347611; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1k5WhoBLORFq44ORkly4uvXN45EdFEcgS+aWmjd7Myg=;
-        b=at3ZikhmArxoybHMYxlpuOY4qaGf37WltOoBukfNqfrEq3iXkoEQ5UP8LxwcRL+dXz
-         y37rgrhaJy7Y8OP4CV4WYz9p2x4922IUkJEbz4PS69w05eh9nqQ0EGvptC3YjczSIeHy
-         vJ4kOjgRSwHS4nWgpO2NTwMLaQXxnbleAE9W0LHatN4pm8pR/ln+ZCobexLrmhV7FVnh
-         vD7jGefy1B0EDT4CLNMFZvEkY+2oCseSRRZbHNkY62WoskpxSdyIMESOyrhN4bR61ksu
-         K4exEMkWNzu2F1pyYVRRoYPA3J38K2afstKVbl4y1GLm6dIQh8HXkxJgT0ttRju7CPRB
-         Pybg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730742811; x=1731347611;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1k5WhoBLORFq44ORkly4uvXN45EdFEcgS+aWmjd7Myg=;
-        b=Fffhq0z1dyE1K1fLyXuA/Fslio08vga5He4Hhknaam5nvM4h9Hc7nt+yV8TPcpm/aE
-         JnJ/uOvbs2fZd3DF9a32JVIRUcXK77BFU+zGOcdCMJzyUHr2X9ueauWQZeqICLgN0w+y
-         n0Jc6mx4Hzf0Y9nPvGWfI5HV1aX85SkmoyXBe/CkmEYsEgGV59rPZ1mYDo9Mr/H3QVGQ
-         nucxjPCLmi/uM9651N9yTI5fk87/tgrHz216Eix8wXKQLxr3Cs9P3nPNW/+x9J8gLKYj
-         X+CYOY4i8y1Xve3aXnW8AoTznukvu17vSRYuov9UUTE0rCGBOpUl7vaDy1O9gQcomuBQ
-         nZWg==
-X-Forwarded-Encrypted: i=1; AJvYcCVyj0vKrUypuwm0pkdWmbx0y5B5U793xWuwKs2rZE6wedKpKrZ7tBsYjjYMuZ3YZ2RVtqyKPN8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5NbEtLucZERQT5fL1+l5KQMXT6dzZdpEjSRbjV0rtmkoli/G8
-	sAwFvqcfLabSWIYmhXS6Q37/BHHWgPRzpmdnnZ86EggFQ4NFddxSOHU4+fUP/6QHmwly21gcdf/
-	1kIZcNy05biV7BeN7bKij9Dp/et/JFw32
-X-Google-Smtp-Source: AGHT+IHv0Bn/+yT08pQ+ksO2hruINo8XwU2hMW0YNh5G0swiEfX9j7Uor5USoaSA5Jcw9ouL2iCiZ12esL+qph4KWlI=
-X-Received: by 2002:a05:6000:1566:b0:37d:43d4:88b7 with SMTP id
- ffacd0b85a97d-381c7a46499mr12792751f8f.3.1730742811229; Mon, 04 Nov 2024
- 09:53:31 -0800 (PST)
+	s=arc-20240116; t=1730743791; c=relaxed/simple;
+	bh=kgxJ9IgKTYJC4IqPD4+Aom+bXgB5VVHsiouoDB7iJv8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VUOM2PsREkjpua5k5KwNvKCh2qPJXUwslb5tg7grXE5KriD6G+2ywp+uqi0ZNCBFLgfjK+kQ2uS8UBVhfODNJfBeWYdX90lQVdrRnJIxhsvY96SP3FRE8KX0bfyqPCR5hzP6tvsv1Kp0uvS0t5oTi45z5foEf6d7sZSsi5QDMDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PizpS6ym; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1730743790; x=1762279790;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=kgxJ9IgKTYJC4IqPD4+Aom+bXgB5VVHsiouoDB7iJv8=;
+  b=PizpS6ym4gUVGVfx+QgETIfu1KI5Shsjs973i6sN5hU8GOJVVWRT4wT1
+   bAMlr0pt5UzW5IeA17fqXolS351ft3Sf33sa6hJ63UQc5tkV9Uz88nDWD
+   JRAz9OfWo1p5qgm9Kp0HWB0d7H4viPbqXMFW2nEem7IptwAaeYgFzeRYm
+   mTiKt5lZcTCoZ4yhFWQiv6QxP7PHN/u8a14LlAbNg2+nQnO15lrop5oO3
+   jnB3vtS7F9UOKKj4SZDr7P8+PuOJ1ZZlwckoA+BYRWwyWgnKYRAhQZZiR
+   XDeRpKvP9cXyOcQFRWiFjDZFj/hYdoFekhL3pQvtlOo32/u5K8Q/UsDks
+   g==;
+X-CSE-ConnectionGUID: KRbuG+54S7SN8/YyJ+miNQ==
+X-CSE-MsgGUID: kwmfDT8pTKKuLFQH7W8FbQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="41562060"
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="41562060"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2024 10:09:49 -0800
+X-CSE-ConnectionGUID: brYT7lhDS0ChbhXjYDdZCg==
+X-CSE-MsgGUID: 3MJkzDbHQUSalfF+eKnXLA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,257,1725346800"; 
+   d="scan'208";a="107071570"
+Received: from tfalcon-desk.amr.corp.intel.com (HELO [10.124.221.97]) ([10.124.221.97])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2024 10:09:48 -0800
+Message-ID: <b9395010-d59a-4ac9-9af8-2cb6710e06c2@intel.com>
+Date: Mon, 4 Nov 2024 10:09:47 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241101111948.1570547-1-xukuohai@huaweicloud.com>
- <CAADnVQKnJkJpWkuxC32UPc4cvTnT2+YEnm8TktrEnDNO7ZbCdA@mail.gmail.com> <5c16fb2f-efa2-4639-862d-99acbd231660@huaweicloud.com>
-In-Reply-To: <5c16fb2f-efa2-4639-862d-99acbd231660@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 4 Nov 2024 09:53:20 -0800
-Message-ID: <CAADnVQLvpwLp=t1oz3ic-EKnaio2DhOCanmuBQ+8nSf-jzBePw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Add kernel symbol for struct_ops trampoline
-To: Xu Kuohai <xukuohai@huaweicloud.com>, Martin KaFai Lau <martin.lau@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Kui-Feng Lee <thinker.li@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 1/2] x86: Perform BPF exception fixup in
+ do_user_addr_fault
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, kkd@meta.com, Puranjay Mohan <puranjay@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski
+ <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Rishabh Iyer <rishabh.iyer@berkeley.edu>,
+ Sanidhya Kashyap <sanidhya.kashyap@epfl.ch>, x86@kernel.org,
+ kernel-team@fb.com, "Shutemov, Kirill" <kirill.shutemov@intel.com>
+References: <20241103193512.4076710-1-memxor@gmail.com>
+ <20241103193512.4076710-2-memxor@gmail.com>
+ <92dfb8cc-f6eb-4753-950b-944cc26e379f@intel.com>
+ <CAP01T77v+__RvLOpfyezfwvyZ1EjZ3gGRPkQMn_6uim0HfB31g@mail.gmail.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Content-Language: en-US
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <CAP01T77v+__RvLOpfyezfwvyZ1EjZ3gGRPkQMn_6uim0HfB31g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Nov 4, 2024 at 3:55=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com>=
- wrote:
->
-> >>                  *(unsigned long *)(udata + moff) =3D prog->aux->id;
-> >> +
-> >> +               /* init ksym for this trampoline */
-> >> +               bpf_struct_ops_ksym_init(prog, image + trampoline_star=
-t,
-> >> +                                        image_off - trampoline_start,
-> >> +                                        ksym++);
-> >
-> > Thanks for the patch.
-> > I think it's overkill to add ksym for each callsite within a single
-> > trampoline.
-> > 1. The prog name will be next in the stack. No need to duplicate it.
-> > 2. ksym-ing callsites this way is quite unusual.
-> > 3. consider irq on other insns within a trampline.
-> >     The unwinder won't find anything in such a case.
-> >
-> > So I suggest to add only one ksym that covers the whole trampoline.
-> > The name could be "bpf_trampoline_structopsname"
-> > that is probably st_ops_desc->type.
-> >
->
-> IIUC, the "whole trampoline" for a struct_ops is actually the page
-> array st_map->image_pages[MAX_TRAMP_IMAGE_PAGES], where each page is
-> allocated by arch_alloc_bpf_trampoline(PAGE_SIZE).
->
-> Since the virtual addresses of these pages are *NOT* guaranteed to
-> be contiguous, I dont think we can create a single ksym for them.
->
-> And if we add a ksym for each individual page, it seems we will end
-> up with an odd name for each ksym.
+On 11/4/24 09:50, Kumar Kartikeya Dwivedi wrote:
+> While reading invalid memory is a rare case that should not happen,
+> it may be possible if some kernel field contains a stale address
+> etc.
 
-I see. Good point. Ok. Let's add ksym for each callback.
+Reading random (unaccepted) memory in a TDX guest is fatal, even from
+kernel addresses.  We had a lot of fun even getting
+load_unaligned_zeropad() to work.
 
-> Given that each page consists of one or more bpf trampolines, which
-> are not different from bpf trampolines for other prog types, such as
-> bpf trampolines for fentry, and since each bpf trampoline for other
-> prog types already has a ksym, I think it is not unusual to add ksym
-> for each single bpf trampoline in the page.
->
-> And, there are no instructions between adjacent bpf trampolines within
-> a page, nothing between two trampolines can be interrupted.
->
-> For the name, bpf_trampoline_<struct_ops_name>_<member_name>, like
-> bpf_trampoline_tcp_congestion_ops_pkts_acked, seems appropriate.
+So, honestly, if you've letting buggy BFP programs get loaded and read
+random memory (kernel or user), you've got bigger problems than a
+verbose kernel panic when the buggy program happens to touch userspace.
 
-Agree. This naming convention makes sense.
-I'd only shorten the prefix to 'bpf_tramp_' or even 'bpf__'
-(with double underscore).
-It's kinda obvious that it's a trampoline and it's an implementation
-detail that doesn't need to be present in the name.
-
->
-> >>          }
-> >>
-> >>          if (st_ops->validate) {
-> >> @@ -790,6 +829,8 @@ static long bpf_struct_ops_map_update_elem(struct =
-bpf_map *map, void *key,
-> >>   unlock:
-> >>          kfree(tlinks);
-> >>          mutex_unlock(&st_map->lock);
-> >> +       if (!err)
-> >> +               bpf_struct_ops_map_ksyms_add(st_map);
-> >>          return err;
-> >>   }
-> >>
-> >> @@ -883,6 +924,10 @@ static void bpf_struct_ops_map_free(struct bpf_ma=
-p *map)
-> >>           */
-> >>          synchronize_rcu_mult(call_rcu, call_rcu_tasks);
-> >>
-> >> +       /* no trampoline in the map is running anymore, delete symbols=
- */
-> >> +       bpf_struct_ops_map_ksyms_del(st_map);
-> >> +       synchronize_rcu();
-> >> +
-> >
-> > This is substantial overhead and why ?
-> > synchronize_rcu_mult() is right above.
-> >
->
-> I think we should ensure no trampoline is running or could run before
-> its ksym is deleted from the symbol table. If this order is not ensured,
-> a trampoline can be interrupted by a perf irq after its symbol is deleted=
-,
-> resulting a broken stacktrace since the trampoline symbol cound not be
-> found by the perf irq handler.
->
-> This patch deletes ksyms after synchronize_rcu_mult() to ensure this orde=
-r.
-
-But the overhead is prohibitive. We had broken stacks with st_ops
-for long time, so it may still hit 0.001% where st_ops are being switched
-as the comment in bpf_struct_ops_map_free() explains.
-
-As a separate clean up I would switch the freeing to call_rcu_tasks.
-Synchronous waiting is expensive.
-
-Martin,
-
-any suggestions?
+I'd rather not hack code into the page fault handler to add to the
+illusion that this is a good idea or safe in any way.
 
