@@ -1,88 +1,74 @@
-Return-Path: <bpf+bounces-43911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D5E39BBC67
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 18:53:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13EBD9BBC6A
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 18:53:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 134CDB21795
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 17:53:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD8581F23220
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 17:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 586D41C9EDB;
-	Mon,  4 Nov 2024 17:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59EBA1CACDD;
+	Mon,  4 Nov 2024 17:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dzcKC5fL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CbcIMMaU"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E8B1C8315;
-	Mon,  4 Nov 2024 17:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C42001C9B87;
+	Mon,  4 Nov 2024 17:53:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730742712; cv=none; b=kFmGsHP2qnIIisgL7x22opLmhLBCdoOwiGtkBykIRZ6qOe3uRgqFtwlf0jPE6sb2JvU2q8NbnjTYCR8Aq3KZKyuPkKbIRG+YWouJpAEcqwsmXuiVKe3g9hgJrcHqso2/bK2e1R/lMgm70fwPUSNuM0UsFTbLbJ8hwDeLoA9GdCQ=
+	t=1730742780; cv=none; b=OgZsxXwcP4/b7QMD+pwjI+rHMpQIg3sbTHkMDq/nr9OOcYBrKFUjrtO2POp6hmnKQUUfoJED9SCosfCkphiXJtGSOC0WJUnyB2LUzK14VXUC1MVwCqjpHHSRA5SCASUpJYwdlW/HvkNK+9rGKVozY/HKxK6GZa6Z+X69XB0w2G0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730742712; c=relaxed/simple;
-	bh=Gfm9SmyBOe5dDEm6FsMqPEiHJp/FRlkXrpYMnjGVGHw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=buzSW2DwtqpeF30q1P09CFUWo6/6VauaNAH8dZ0/eag8Hix/YxJ8VCXZUCk95E+3Ci6S4LWZtIzoh04pZw0tHae079fADHI7uKnVpeOyA5sMge3/fEJ6OabZaSBZbnzoVkhYvmU17mHa4JlDmJ5cP+is+jZ/S4LzrGYu0007Wbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dzcKC5fL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 063C8C4CED0;
-	Mon,  4 Nov 2024 17:51:51 +0000 (UTC)
+	s=arc-20240116; t=1730742780; c=relaxed/simple;
+	bh=xEt4zSH+QXL2Jh8IfBhEq5qCDd2c4PbR3WS+cvwrEZs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gNGpwmrYAC54chyk5+sfOY7bZfXqKXvDcNvmqobBbpHegvVjunKPVYDAOcQChKHTplj4wh8uuQMhsxPyKN8rCe0K1g72kBhVWCJRMq8H+0zEAvBy4FNkY4XgOenaxux2Zp9v0jbPz+QmB5Z/4KUg18dhMCYwTfTSPZz4Qp7Hqh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CbcIMMaU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0418FC4CECE;
+	Mon,  4 Nov 2024 17:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730742712;
-	bh=Gfm9SmyBOe5dDEm6FsMqPEiHJp/FRlkXrpYMnjGVGHw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=dzcKC5fL+I+3XXmyw6V47JdMYWeUZuig3rXQqWtwBXS5hrXNb9VX4fTEgKI2bwG9h
-	 EHOShi9+zPja1IgUU1q1dWMuWVldvs6PDYl/WGeitkXQuticwIdcCYjAP+4EddkBiL
-	 BRT9RlbpNxzanHtflFbn+mgSS+lUOhL7QGmIDNflykfPdnYgNaf1rrgcCbobDQFb3c
-	 OmPeTmmMn0gj1bAXjYzkd8s1f/vqgakJF63Y/b3vlootgXhRvxuwGbXpughM0l+5O+
-	 P+plVMiMUJ7erscW5pUDf9K9GxdjB1qAYYzAeYWagevm8QKLX9gzlT6LWOEQhXNMf9
-	 XNBU/E1sTf43Q==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>, song@kernel.org, 
- Tengda Wu <wutengda@huaweicloud.com>
-Cc: Ingo Molnar <mingo@redhat.com>, 
- Arnaldo Carvalho de Melo <acme@kernel.org>, 
- Mark Rutland <mark.rutland@arm.com>, 
- Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
- Adrian Hunter <adrian.hunter@intel.com>, kan.liang@linux.intel.com, 
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org
-In-Reply-To: <20241021110201.325617-1-wutengda@huaweicloud.com>
-References: <20241021110201.325617-1-wutengda@huaweicloud.com>
-Subject: Re: [PATCH -next v5 0/2] perf stat: Support inherit events for
- bperf
-Message-Id: <173074271194.3826985.11091687571723568879.b4-ty@kernel.org>
-Date: Mon, 04 Nov 2024 09:51:51 -0800
+	s=k20201202; t=1730742780;
+	bh=xEt4zSH+QXL2Jh8IfBhEq5qCDd2c4PbR3WS+cvwrEZs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CbcIMMaUirLQ9a6jguLBy4IIKTusZoAwLRzU/hX9hlBLiWu4qRFThiVvy4Seubv9r
+	 cq5ek6n8+6R+9s6osGecH2BXT0LRA5VCGX5mYdspf/e61bbBLySsMUb0OZniqZmRZ+
+	 3oD3h2r7h6gvQ+6kIyFXFRanqPjKCaQWNrCDwDBq4YRCBcAAqFIs03me65Kxb+Hlxq
+	 f//CQ+cTWauTie+D/yexRFEKFSKxaI9azp4VBTMQmlz0p3lj244a/bdkRF6ae1Fxjv
+	 lD9z1klDYILX+f2Sz7n8OSlD5iH3ttjKQ4EsoLmXgMw11yYQSS7xJHqEvGKSI65fEN
+	 eeyO+V70JLlaQ==
+From: Jiri Olsa <jolsa@kernel.org>
+To: stable@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Fix build ID parsing logic in stable trees
+Date: Mon,  4 Nov 2024 18:52:52 +0100
+Message-ID: <20241104175256.2327164-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-c04d2
+Content-Transfer-Encoding: 8bit
 
-On Mon, 21 Oct 2024 11:01:59 +0000, Tengda Wu wrote:
+hi,
+sending fix for buildid parsing that affects only stable trees
+after merging upstream fix [1].
 
-> Here is the 5th version of the series to support inherit events for bperf.
-> This version added the `inherit` flag for struct `target` instead of
-> `bpf_stat_opts`, and also fixed the logic when TGID w/o inherit.
-> 
-> 
-> bperf (perf-stat --bpf-counter) has not supported inherit events during
-> fork() since it was first introduced.
-> 
-> [...]
+Upstream then factored out the whole buildid parsing code, so it
+does not have the problem.
 
-Applied to perf-tools-next, thanks!
+I'm sending the fix for affected longterm trees 5.15 6.1 6.6 6.11.
 
-Best regards,
-Namhyung
+thanks,
+jirka
 
+
+[1] 905415ff3ffb ("lib/buildid: harden build ID parsing logic")
 
