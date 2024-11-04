@@ -1,281 +1,179 @@
-Return-Path: <bpf+bounces-43873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B602D9BAC62
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 07:12:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99B7F9BAD12
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 08:23:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8EC71C20ECA
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 06:12:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F2E1281A03
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 07:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2648B18C330;
-	Mon,  4 Nov 2024 06:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A3219882C;
+	Mon,  4 Nov 2024 07:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="HpYzSPCG"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lVYQnxCi"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ADED6FC5;
-	Mon,  4 Nov 2024 06:12:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A724418C02E
+	for <bpf@vger.kernel.org>; Mon,  4 Nov 2024 07:23:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730700769; cv=none; b=IS3kd1JJoivfhyuow+hCbFfDZLn0uH4e07iW8btQ51AQB64uptS15MF+FYO8MeeAJMfT1NpTgNMvmb5/SiIaLDZGHP0ZP/VlxZm2pPjPdPXpIAJUm115PV2uyw6JXe92sONScg6HilwmPhTzVQ+aauB2NI2O3yxbLnYoPBq3gH0=
+	t=1730705021; cv=none; b=B9q/cjufRcSsCe13xZjcrEnZEDMehMjmThDMFTI5FvOKeRDlLyw96h4H5tqvBS+ErjFpPqW1dgpi9MNVGXM/Eb83eBWPLUH35EWtrdNGM7LMueQudcSUihtqEgQAMf3uY9k3Gy9H4IbEbLjumGXV0inezGrfTuFWGOwicWsiok0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730700769; c=relaxed/simple;
-	bh=ki9vFG3nfLFbUqAXf6jzfsbvTSQlqjL9yWAin/0ah8U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EqQDAhT1I72Kvhpod/HWxfGR/6c9MOpTtj+hKEydT8UNz1FZ1h4B3VgJ95YYo9EWTs5xMnAng0GExT10/C+Lw/MQy/vy39RyH7cmVONvNhd4tHAYlcB+odhRqnMJ9IwT9NKKrfWdZ551r0/gw97mJW5ahFzlOoO79ojyPF5jXtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=HpYzSPCG; arc=none smtp.client-ip=220.197.31.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=paESjsr5A0A1ELZZUT9Rrg6vQ8i0QK8Ld0xxSWGQ1xY=;
-	b=HpYzSPCGh50YAd9lmjiig+zFH7EvrjVB71Fdrw61xeSO9G6HxBdQBxiNX3v5VS
-	PTW9s8LnnTrYSETLmwWfwc1HOCLyS827jFC+dxV+AZNxaCI56gnCY3Quz6xnhQsc
-	mVNdCurcKVgiHBQsMXW/r/M4AHtz5BUrQJ5HlWnGEFylE=
-Received: from iZ0xi1olgj2q723wq4k6skZ (unknown [47.252.33.72])
-	by gzga-smtp-mtada-g1-0 (Coremail) with SMTP id _____wDXPybOZShnwx48Ag--.2216S2;
-	Mon, 04 Nov 2024 14:12:34 +0800 (CST)
-Date: Mon, 4 Nov 2024 14:12:29 +0800
-From: Jiayuan Chen <mrpre@163.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@kernel.org
-Subject: Re: [PATCH 1/2] bpf: Introduce cpu affinity for sockmap
-Message-ID: <gbtlzrhme5yrbvlwkswlzz44lims7dymougc7376c5hugosqqh@qqrjg6wtmnan>
-References: <20241101023832.32404-1-mrpre@163.com>
- <CAEf4BzbVqcCN1p8ydLN17LygK5R=gBYJV0A-cnycjtsUzrX34g@mail.gmail.com>
+	s=arc-20240116; t=1730705021; c=relaxed/simple;
+	bh=BzZ86BxrPlQC9+39mi52+0OlxseZ8YqyYhJ2yPkZFts=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=X2ZNEznuO/Mul8hbC7GR6GSLTLvXndoGeQaSJ3P/1NBEo0eQQyEIPvDjCoBPLu/ThiOJM05SlhwIFye9Pxypg5NjQ8oRBznbCkmx/vVXgH8OZ+70Al6zCU4zTTorx3H7uKg4lgaYPiHIeEJNlsfI6uHjZMDnCdpl9pixD2V/6D0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lVYQnxCi; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43152b79d25so32817605e9.1
+        for <bpf@vger.kernel.org>; Sun, 03 Nov 2024 23:23:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1730705017; x=1731309817; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jiS8XdRJ5mjLBZvVPPJ1C4Js2HB6fwq261ppgxWkFZU=;
+        b=lVYQnxCiaCiIE+702FWK5E6ZVbgOSWHTppLfk82gvR84bq4EO+oFz6XaQ0MuYQTLNw
+         StYzoRmW3iKix715z88zhO4QMc6t+fI1Vypvq9wqE950cECqtxLVpbYRMo2TkSUWSYqO
+         85RkrP82NcT4bDwJ/TRhJ+dxUviDySkyh2pWb5MtC1uRLzQKAPTdr39E5yr814eU8Eq4
+         rnBE92O+4NBQTbUZ1njSg380x76NcAHW0/TbXNgnDr1IYU5w7kOwS/hC8ToAuLKiEgoB
+         q0AuOl8V7XHQwcjnjXa2xLc6WKM4JnncMkbRuV31B7cErxkniQcLGCbLMt3G963F6Rw0
+         qQyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730705017; x=1731309817;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jiS8XdRJ5mjLBZvVPPJ1C4Js2HB6fwq261ppgxWkFZU=;
+        b=fA6uANCgsOck19thW3TvpGSZC9t1gcPUHuQuV4ncBEipHcD4KIAXfn3onbvvPOExyX
+         OsW2cOItOsRy27Rms9gQ7ghJe43RRhIFumrPvund5ftBZ9qnwoo6yA4qN0ypUt3jOOgg
+         bf3DZnZC/q90AyQ/5vxH97BS2YJwqZ/P4YY6YJSzOZQ3lvrM117XV4dHeCmfed9zBNOS
+         OJzhd3mjmW/jBkCxjPzy3zorLnx9bDJNv7xzN01lCHmIwdNgBKkjxAbQk+mUMMpOxqa3
+         GHXb9yp4SPYuW96g594dc/YFfDLPTTXqFEtl1yYCQZPmVccO+MxPlLzfEtHC/iRNq7iA
+         RtKg==
+X-Forwarded-Encrypted: i=1; AJvYcCVHVP0gcZm7gt8jGSVdPOsVofAX7qMwNbetHrT+tU32chWTlgyl5QLOp3P5Km8sOO0gLbs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyhFtpCuef/1FosbckwiHROKNA3AKo9ndtVzUE8GT3ulaWbRYeY
+	xt+FFkZGTxNsdU1m3QvCCxb8oj1j1hDmmpKLzkzPUH3RHCnGkWsinh/YXS+Yl7Y=
+X-Google-Smtp-Source: AGHT+IH40kTx91Wk2I+uwvpntqh9B6wAV6h1+3zOozojDZ54UMaVhhfVF5oyrYpKHhmXEoEXhdGeTQ==
+X-Received: by 2002:a05:600c:3507:b0:431:4e3f:9dee with SMTP id 5b1f17b1804b1-4327b6f46d3mr123743255e9.4.1730705017060;
+        Sun, 03 Nov 2024 23:23:37 -0800 (PST)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4327d5abfefsm144395155e9.4.2024.11.03.23.23.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Nov 2024 23:23:36 -0800 (PST)
+Date: Mon, 4 Nov 2024 10:23:32 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev, mrpre <mrpre@163.com>,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	martin.lau@kernel.org, edumazet@google.com, jakub@cloudflare.com,
+	davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+	pabeni@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, mrpre <mrpre@163.com>
+Subject: Re: [PATCH v2 1/2] bpf: Introduce cpu affinity for sockmap
+Message-ID: <53444aeb-aa22-4076-95dd-f079861567c9@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbVqcCN1p8ydLN17LygK5R=gBYJV0A-cnycjtsUzrX34g@mail.gmail.com>
-X-CM-TRANSID:_____wDXPybOZShnwx48Ag--.2216S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3GF4kWr4xGFyDWr4fKF13twb_yoW3KF4rpF
-	Z5Ga1UCF4DJayUZw1aq3yUWr4avw48G3WjkFZxKa4Yyr9IgrykWF18KF1a9F1fur4kCr40
-	vrW2gryjk3yUZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U7R67UUUUU=
-X-CM-SenderInfo: xpus2vi6rwjhhfrp/1tbiWwmNp2coXlurDQAAsU
+In-Reply-To: <20241101161624.568527-2-mrpre@163.com>
 
-On Fri, Nov 01, 2024 at 12:25:51PM -0700, Andrii Nakryiko wrote:
-> On Thu, Oct 31, 2024 at 7:40 PM mrpre <mrpre@163.com> wrote:
-> >
-> > Why we need cpu affinity:
-> > Mainstream data planes, like Nginx and HAProxy, utilize CPU affinity
-> > by binding user processes to specific CPUs. This avoids interference
-> > between processes and prevents impact from other processes.
-> >
-> > Sockmap, as an optimization to accelerate such proxy programs,
-> > currently lacks the ability to specify CPU affinity. The current
-> > implementation of sockmap handling backlog is based on workqueue,
-> > which operates by calling 'schedule_delayed_work()'. It's current
-> > implementation prefers to schedule on the local CPU, i.e., the CPU
-> > that handled the packet under softirq.
-> >
-> > For extremely high traffic with large numbers of packets,
-> > 'sk_psock_backlog' becomes a large loop.
-> >
-> > For multi-threaded programs with only one map, we expect different
-> > sockets to run on different CPUs. It is important to note that this
-> > feature is not a general performance optimization. Instead, it
-> > provides users with the ability to bind to specific CPU, allowing
-> > them to enhance overall operating system utilization based on their
-> > own system environments.
-> >
-> > Implementation:
-> > 1.When updating the sockmap, support passing a CPU parameter and
-> > save it to the psock.
-> > 2.When scheduling psock, determine which CPU to run on using the
-> > psock's CPU information.
-> > 3.For thoes sockmap without CPU affinity, keep original logic by using
-> > 'schedule_delayed_work()'.
-> >
-> > Performance Testing:
-> > 'client <-> sockmap proxy <-> server'
-> >
-> > Using 'iperf3' tests, with the iperf server bound to CPU5 and the iperf
-> > client bound to CPU6, performance without using CPU affinity is
-> > around 34 Gbits/s, and CPU usage is concentrated on CPU5 and CPU6.
-> > '''
-> > [  5] local 127.0.0.1 port 57144 connected to 127.0.0.1 port 10000
-> > [ ID] Interval           Transfer     Bitrate
-> > [  5]   0.00-1.00   sec  3.95 GBytes  33.9 Gbits/sec
-> > [  5]   1.00-2.00   sec  3.95 GBytes  34.0 Gbits/sec
-> > ......
-> > '''
-> >
-> > With using CPU affinity, the performnce is close to direct connection
-> > (without any proxy).
-> > '''
-> > [  5] local 127.0.0.1 port 56518 connected to 127.0.0.1 port 10000
-> > [ ID] Interval           Transfer     Bitrate
-> > [  5]   0.00-1.00   sec  7.76 GBytes  66.6 Gbits/sec
-> > [  5]   1.00-2.00   sec  7.76 GBytes  66.7 Gbits/sec
-> > ......
-> > '''
-> >
-> > Signed-off-by: Jiayuan Chen <mrpre@163.com>
-> > ---
-> >  include/linux/bpf.h      |  3 ++-
-> >  include/linux/skmsg.h    |  8 ++++++++
-> >  include/uapi/linux/bpf.h |  4 ++++
-> >  kernel/bpf/syscall.c     | 23 +++++++++++++++++------
-> >  net/core/skmsg.c         | 11 +++++++----
-> >  net/core/sock_map.c      | 12 +++++++-----
-> >  6 files changed, 45 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index c3ba4d475174..a56028c389e7 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -3080,7 +3080,8 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
-> >
-> >  int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
-> >  int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
-> > -int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value, u64 flags);
-> > +int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value, u64 flags,
-> > +                            s32 target_cpu);
-> >  int sock_map_bpf_prog_query(const union bpf_attr *attr,
-> >                             union bpf_attr __user *uattr);
-> >  int sock_map_link_create(const union bpf_attr *attr, struct bpf_prog *prog);
-> > diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> > index d9b03e0746e7..919425a92adf 100644
-> > --- a/include/linux/skmsg.h
-> > +++ b/include/linux/skmsg.h
-> > @@ -117,6 +117,7 @@ struct sk_psock {
-> >         struct delayed_work             work;
-> >         struct sock                     *sk_pair;
-> >         struct rcu_work                 rwork;
-> > +       s32                             target_cpu;
-> >  };
-> >
-> >  int sk_msg_alloc(struct sock *sk, struct sk_msg *msg, int len,
-> > @@ -514,6 +515,13 @@ static inline bool sk_psock_strp_enabled(struct sk_psock *psock)
-> >         return !!psock->saved_data_ready;
-> >  }
-> >
-> > +static inline int sk_psock_strp_get_cpu(struct sk_psock *psock)
-> > +{
-> > +       if (psock->target_cpu != -1)
-> > +               return psock->target_cpu;
-> > +       return WORK_CPU_UNBOUND;
-> > +}
-> > +
-> >  #if IS_ENABLED(CONFIG_NET_SOCK_MSG)
-> >
-> >  #define BPF_F_STRPARSER        (1UL << 1)
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index f28b6527e815..2019a87b5d4a 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -1509,6 +1509,10 @@ union bpf_attr {
-> >                         __aligned_u64 next_key;
-> >                 };
-> >                 __u64           flags;
-> > +               union {
-> > +                       /* specify the CPU where the sockmap job run on */
-> > +                       __aligned_u64 target_cpu;
-> 
-> I have no opinion on the feature itself, I'll leave this to others.
-> But from UAPI perspective:
-> 
-> a) why is this a u64 and not, say, int?
-> b) maybe we should just specify this as flags and not have to update
-> all the UAPIs (including libbpf-side)? Just add a new
-> BPF_F_SOCKNMAP_TARGET_CPU flag or something, and specify that highest
-> 32 bits specify the CPU itself?
-> 
-> We have similar schema for some other helpers, so not *that* unusual.
-> 
-Thank you for your response. I think I should clarify my thoughts:
+Hi mrpre,
 
-My idea is to pass a user-space pointer, with the pointer being null
-to indicate that the user has not provided anything.For example, when
-users use the old interface 'bpf_map_update_elem' and pass in u64 of
-0, it means that the user hasn't specified a CPU. If a u32 or another
-type of value is passed in, when it is 0, it's ambiguous whether this
-indicates target CPU 0 or that the user hasn't provided a value. So
-my design involves passing a user-space pointer.
+kernel test robot noticed the following build warnings:
 
-I also considered using the highest 32 bits of the flag as target_cpu, but
-this approach still encounters the ambiguity mentioned above. Of course
-for programs using libbpf, I can naturally init all the higher 32 bits
-default to 1 to indicate the user hasn't specified a CPU, but this is
-incompatible with programs not using libbpf. Another approach could be
-that a value of 1 for the higher 32 bits indicates CPU 0, and 2 indicates
-CPU 1..., but this seems odd and would require a helper to assist users
-in passing arguments.
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-There is another method, like providing an extra 'attr', to replace the
-passed 'target_cpu', which maintains the general nature of 
-'map_update_elem' interface, like:
-'''
-+struct extra_bpf_attr {
-+    u32 target_cpu;
-+};
-struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
-    __u32   map_fd;
-    __aligned_u64 key;
-    union {
-        __aligned_u64 value;
-        __aligned_u64 next_key;
-    };
-    __u64   flags;
-    +struct extra_bpf_attr extra;
-};
+url:    https://github.com/intel-lab-lkp/linux/commits/mrpre/bpf-Introduce-cpu-affinity-for-sockmap/20241102-001844
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20241101161624.568527-2-mrpre%40163.com
+patch subject: [PATCH v2 1/2] bpf: Introduce cpu affinity for sockmap
+config: i386-randconfig-141-20241102 (https://download.01.org/0day-ci/archive/20241103/202411030036.PSKG1pW3-lkp@intel.com/config)
+compiler: clang version 19.1.3 (https://github.com/llvm/llvm-project ab51eccf88f5321e7c60591c5546b254b6afab99)
 
-static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
--                               void *key, void *value, __u64 flags)
-+                               void *key, void *value, __u64 flags, struct bpf_attr_extra *extra);
-'''
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202411030036.PSKG1pW3-lkp@intel.com/
 
-> > +               };
-> >         };
-> >
-> >         struct { /* struct used by BPF_MAP_*_BATCH commands */
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 8254b2973157..95f719b9c3f3 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -239,10 +239,9 @@ static int bpf_obj_pin_uptrs(struct btf_record *rec, void *obj)
-> >  }
-> >
-> >  static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
-> > -                               void *key, void *value, __u64 flags)
-> > +                               void *key, void *value, __u64 flags, s32 target_cpu)
-> 
-> yeah, this is what I'm talking about. Think how ridiculous it is for a
-> generic "BPF map update" operation to accept the "target_cpu"
-> parameter.
-> 
-> pw-bot: cr
-> 
-> >  {
-> >         int err;
-> > -
-> 
-> why? don't break whitespace formatting
-> 
-> >         /* Need to create a kthread, thus must support schedule */
-> >         if (bpf_map_is_offloaded(map)) {
-> >                 return bpf_map_offload_update_elem(map, key, value, flags);
-> > @@ -252,7 +251,7 @@ static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
-> >                 return map->ops->map_update_elem(map, key, value, flags);
-> >         } else if (map->map_type == BPF_MAP_TYPE_SOCKHASH ||
-> >                    map->map_type == BPF_MAP_TYPE_SOCKMAP) {
-> > -               return sock_map_update_elem_sys(map, key, value, flags);
-> > +               return sock_map_update_elem_sys(map, key, value, flags, target_cpu);
-> >         } else if (IS_FD_PROG_ARRAY(map)) {
-> >                 return bpf_fd_array_map_update_elem(map, map_file, key, value,
-> >                                                     flags);
-> 
-> [...]
+smatch warnings:
+net/core/sock_map.c:511 sock_map_update_common() warn: variable dereferenced before check 'psock' (see line 492)
+
+vim +/psock +511 net/core/sock_map.c
+
+604326b41a6fb9 Daniel Borkmann 2018-10-13  467  static int sock_map_update_common(struct bpf_map *map, u32 idx,
+ffed654afa8dc1 mrpre           2024-11-02  468  				  struct sock *sk, u64 flags, s32 target_cpu)
+604326b41a6fb9 Daniel Borkmann 2018-10-13  469  {
+604326b41a6fb9 Daniel Borkmann 2018-10-13  470  	struct bpf_stab *stab = container_of(map, struct bpf_stab, map);
+604326b41a6fb9 Daniel Borkmann 2018-10-13  471  	struct sk_psock_link *link;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  472  	struct sk_psock *psock;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  473  	struct sock *osk;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  474  	int ret;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  475  
+604326b41a6fb9 Daniel Borkmann 2018-10-13  476  	WARN_ON_ONCE(!rcu_read_lock_held());
+604326b41a6fb9 Daniel Borkmann 2018-10-13  477  	if (unlikely(flags > BPF_EXIST))
+604326b41a6fb9 Daniel Borkmann 2018-10-13  478  		return -EINVAL;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  479  	if (unlikely(idx >= map->max_entries))
+604326b41a6fb9 Daniel Borkmann 2018-10-13  480  		return -E2BIG;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  481  
+604326b41a6fb9 Daniel Borkmann 2018-10-13  482  	link = sk_psock_init_link();
+604326b41a6fb9 Daniel Borkmann 2018-10-13  483  	if (!link)
+604326b41a6fb9 Daniel Borkmann 2018-10-13  484  		return -ENOMEM;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  485  
+2004fdbd8a2b56 Cong Wang       2021-03-30  486  	ret = sock_map_link(map, sk);
+604326b41a6fb9 Daniel Borkmann 2018-10-13  487  	if (ret < 0)
+604326b41a6fb9 Daniel Borkmann 2018-10-13  488  		goto out_free;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  489  
+604326b41a6fb9 Daniel Borkmann 2018-10-13  490  	psock = sk_psock(sk);
+604326b41a6fb9 Daniel Borkmann 2018-10-13  491  	WARN_ON_ONCE(!psock);
+ffed654afa8dc1 mrpre           2024-11-02 @492  	psock->target_cpu = target_cpu;
+                                                        ^^^^^^^^^^^^^^^^^
+The patch adds an unchecked dereference
+
+35d2b7ffffc1d9 John Fastabend  2023-08-29  493  	spin_lock_bh(&stab->lock);
+604326b41a6fb9 Daniel Borkmann 2018-10-13  494  	osk = stab->sks[idx];
+604326b41a6fb9 Daniel Borkmann 2018-10-13  495  	if (osk && flags == BPF_NOEXIST) {
+604326b41a6fb9 Daniel Borkmann 2018-10-13  496  		ret = -EEXIST;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  497  		goto out_unlock;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  498  	} else if (!osk && flags == BPF_EXIST) {
+604326b41a6fb9 Daniel Borkmann 2018-10-13  499  		ret = -ENOENT;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  500  		goto out_unlock;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  501  	}
+604326b41a6fb9 Daniel Borkmann 2018-10-13  502  
+604326b41a6fb9 Daniel Borkmann 2018-10-13  503  	sock_map_add_link(psock, link, map, &stab->sks[idx]);
+
+This also dereferences psock btw.
+
+604326b41a6fb9 Daniel Borkmann 2018-10-13  504  	stab->sks[idx] = sk;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  505  	if (osk)
+604326b41a6fb9 Daniel Borkmann 2018-10-13  506  		sock_map_unref(osk, &stab->sks[idx]);
+35d2b7ffffc1d9 John Fastabend  2023-08-29  507  	spin_unlock_bh(&stab->lock);
+604326b41a6fb9 Daniel Borkmann 2018-10-13  508  	return 0;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  509  out_unlock:
+35d2b7ffffc1d9 John Fastabend  2023-08-29  510  	spin_unlock_bh(&stab->lock);
+604326b41a6fb9 Daniel Borkmann 2018-10-13 @511  	if (psock)
+                                                            ^^^^^
+Probably after 6 years of not triggering the WARN_ON_ONCE() on line 490, we can
+remove this check?
+
+604326b41a6fb9 Daniel Borkmann 2018-10-13  512  		sk_psock_put(sk, psock);
+604326b41a6fb9 Daniel Borkmann 2018-10-13  513  out_free:
+604326b41a6fb9 Daniel Borkmann 2018-10-13  514  	sk_psock_free_link(link);
+604326b41a6fb9 Daniel Borkmann 2018-10-13  515  	return ret;
+604326b41a6fb9 Daniel Borkmann 2018-10-13  516  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
