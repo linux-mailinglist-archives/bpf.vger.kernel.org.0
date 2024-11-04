@@ -1,139 +1,92 @@
-Return-Path: <bpf+bounces-43863-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43864-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35F0E9BAA55
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 02:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B48B89BAAAE
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 03:02:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 611141C21952
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 01:35:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE4491C212E7
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 02:02:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C8D15C147;
-	Mon,  4 Nov 2024 01:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DDBC1632C5;
+	Mon,  4 Nov 2024 02:02:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WpCnwXt1"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6C4CBA34;
-	Mon,  4 Nov 2024 01:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C109733F6;
+	Mon,  4 Nov 2024 02:02:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730684109; cv=none; b=kXcB3gRrBpOhTQTmdxUMYG3FGUkMuueIF7r5Mr941FDdhLNYwcoz3F11NBz0gal7i5FZFepVGUg3Z6wR/1Jfwt0i0b9WDLu9AUJUt0T9VBuHr9d7SK/RotmElEDsSg5TfOzq0N/Z8TJZMwv3NAZaxzjJ3fQHoY0AueZWCRRNj5Q=
+	t=1730685759; cv=none; b=qehR5hMZF2+t2SIFy7qAHtzaOpTob9ElE83SjGsItJlumWI/geDtGTeRZ5s6NxjgFzJ3ViRSONjZpoAida7PeuRm8kh/l3Zp2RgpoUj58bLcVEwzqz0DpztlTbu8pHj+tGCkSypFu+JsFqlzLfAScp6UO6FYobUaGkQLMG6wcag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730684109; c=relaxed/simple;
-	bh=dmjd8SgnTqtPPqJabuSxtaVlktBRQFvwIjLCnmlLeoI=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=fm97ZiFvI5qmBaC8IK7YO41bXJ2qM4p2mVcgD/3iqZ6xfWYDhnNQc3qg4wFz3Tumw/XbE5BP1LEP8Y1RGwUyanakTzvQeWr3KsS+xvqg9VUEEeyJqO5V/QE83VP5+Wh4YIHEPB0SamsMYrSl1Y0zg9r36ReU+CzsK2ZLNgm5CkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XhYt655C6z4f3kvP;
-	Mon,  4 Nov 2024 09:34:38 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 742891A018D;
-	Mon,  4 Nov 2024 09:34:57 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgAHMYW8JChnA0omAw--.49075S2;
-	Mon, 04 Nov 2024 09:34:55 +0800 (CST)
+	s=arc-20240116; t=1730685759; c=relaxed/simple;
+	bh=Vlf3tX58PlgJGwd0FWGFhEROPkOfNoB19VMjuTM1rk8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P7V5ToatRpcV0dWJtJTW8NxHBSzIX1KMj5ftbtTt7NsmmF/ptH9N3jVePF61VDgKY8ZZERZ/+Gp09OzEnPms8D2lskml2qVlDty3FWE6RquwU+XZFOM8Q6zgQ8zILP7yynitW2nvjz8icQHfHi1FUhTFeDSMHkWUxsdfuA/u0zI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WpCnwXt1; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2113da91b53so5127125ad.3;
+        Sun, 03 Nov 2024 18:02:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730685757; x=1731290557; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vlf3tX58PlgJGwd0FWGFhEROPkOfNoB19VMjuTM1rk8=;
+        b=WpCnwXt1xHX+gqXL4tTk6mtmO0o6YiUU/6ZXQGvi4bknabBmguAZcfWeSQTajYlEjx
+         JkPIeYVBb192t7Ts2GPTANZJ0T/JsU/WeDReHrb7zamPUFkDm2uBj+D0qDfubkbvwc7U
+         nrcfO3bj63V15yJAe+kXMLwdZ9AGnfddzNDvMEIIuYrpsaM0c2OMabeVbF94kqbVbBQO
+         CfV42Vp6JhW0jKqxOlfbKXz9omAkicy4j4VKxlqIjd2+nYNN5pFPXCAWZKwRWYdlMk49
+         DwRRbDz+Y9unVOUdJQ67BNETf7nPbcdqxWKkeqj9vYpiOJNcfjExcs4hI8AAOkZg1Eo7
+         af4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730685757; x=1731290557;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vlf3tX58PlgJGwd0FWGFhEROPkOfNoB19VMjuTM1rk8=;
+        b=Z0NpqUxjXGgOae3ewhO4t38YqbS2s7VHJZLeL3XKlGSV59kCpdqqNlJu+ZzhXpd4aE
+         a44ZSjhGWQP6HS2zLB4ugwzHFgLdjwqpJHJG91mjsV7Ya38h6bFo6F050sPaRAmLIye1
+         Xj9Ad59hrRnOL8QPWbzrBqunrD38RxbHXPpKSVVPD44N0dY5+u3dYYIkxDDL7KmIOqmW
+         7emcRULDo1p1tNzoKYSUNSObqvrWWIgzACvQIWPvNBT4CrQHKUppP5+rwhz+LUKzSRYD
+         BkckKpRPAXw/GHnlcaarkjcUitV3VI6dPK7C7VkciJYNTJ3fktWt3G2EWnRyRAzJ79dw
+         SVNg==
+X-Forwarded-Encrypted: i=1; AJvYcCU4CNIUL2aYPQ1HYgZ2VUPbC/eMPdpZ8tHCrh1spI7GA6IfBDyeFBKVqyc+JrvUYw17EzkWWzGU0rvesJix@vger.kernel.org, AJvYcCWj0WnpDK0CDc3zVs2BMQIn/rq/8cwzWfujBWWCuaODUEuS/sIpJ76lzoxqIqahNFqrBE4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzyrk7BfslbL3Vgl+56zYfdmp7j6nm15cRSVK/ZPSyOskisecpt
+	oPh6rbKyCIOgCEdYiJpf2ZrhyEd7Ry9uoNKddPvItLGCPKSCbDEc
+X-Google-Smtp-Source: AGHT+IHmnJIhfE2wNFtFx7dCBi79OOZ755sG8tQ2pQaY9t6b0rtSlaQeQye5un9/ZB23EXef4Muxdw==
+X-Received: by 2002:a17:902:eb81:b0:20c:e65c:8c81 with SMTP id d9443c01a7336-210c68c9527mr439693845ad.20.1730685756987;
+        Sun, 03 Nov 2024 18:02:36 -0800 (PST)
+Received: from byeonguk.jeong ([210.205.14.5])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211056ee490sm52033375ad.18.2024.11.03.18.02.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Nov 2024 18:02:36 -0800 (PST)
+Date: Mon, 4 Nov 2024 11:02:30 +0900
+From: Byeonguk Jeong <jungbu2855@gmail.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: Ilya Leoshkevich <iii@linux.ibm.com>, andrii@kernel.org,
+	daniel@iogearbox.net, martin.lau@linux.dev,
+	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH bpf] selftests/bpf: Add a copyright notice to
  lpm_trie_map_get_next_key
-To: Byeonguk Jeong <jungbu2855@gmail.com>,
- Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
- Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Message-ID: <ZygrNkfNVUmc74ZG@byeonguk.jeong>
 References: <ZycSXwjH4UTvx-Cn@ub22>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <925cb852-df24-81b6-318a-ee6a628d43c7@huaweicloud.com>
-Date: Mon, 4 Nov 2024 09:34:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ <925cb852-df24-81b6-318a-ee6a628d43c7@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZycSXwjH4UTvx-Cn@ub22>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:gCh0CgAHMYW8JChnA0omAw--.49075S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tF4Dur1UZF13Zw1ruFyDWrg_yoW8tFWfpF
-	Z7KFZxKrWDJ3Z0kr1xGF1Uu3y8Kw1qkFyayw18Kw45WF98X397Kry09r4Y93ZFyrs5uw1Y
-	vw47u3s7A348tFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AF
-	wI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2N
-	tUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <925cb852-df24-81b6-318a-ee6a628d43c7@huaweicloud.com>
 
-Hi,
-
-On 11/3/2024 2:04 PM, Byeonguk Jeong wrote:
-> Hi,
->
-> The selftest "verifier_bits_iter/bad words" has been failed with
-> retval 115, while I did not touched anything but a comment.
->
-> Do you have any idea why it failed? I am not sure whether it indicates
-> any bugs in the kernel.
->
-> Best,
-> Byeonguk
-
-Sorry for the inconvenience. It seems the test case
-"verifier_bits_iter/bad words" is flaky. It may fail randomly, such as
-in [1]. I think calling bpf_probe_read_kernel_common() on 3GB addr under
-s390 host may succeed and the content of the memory address will decide
-whether the test case will succeed or not. Do not know the reason why
-reading 3GB address succeeds under s390. Hope to get some insight from
-Ilya.  I think we could fix the failure first by using NULL as the
-address of bad words just like null_pointer test case does. Will merge
-the test in bad_words into the null_pointer case.
-
-[1]:
-https://github.com/kernel-patches/bpf/actions/runs/11625956355/job/32377297736
->
-> On Sun, Nov 03, 2024 at 04:41:26AM +0000, bot+bpf-ci@kernel.org wrote:
->> Dear patch submitter,
->>
->> CI has tested the following submission:
->> Status:     FAILURE
->> Name:       [bpf] selftests/bpf: Add a copyright notice to lpm_trie_map_get_next_key
->> Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?series=905730&state=*
->> Matrix:     https://github.com/kernel-patches/bpf/actions/runs/11648453401
->>
->> Failed jobs:
->> test_progs_no_alu32-s390x-gcc: https://github.com/kernel-patches/bpf/actions/runs/11648453401/job/32434970670
->>
->> First test_progs failure (test_progs_no_alu32-s390x-gcc):
->> #433 verifier_bits_iter
->> tester_init:PASS:tester_log_buf 0 nsec
->> process_subtest:PASS:obj_open_mem 0 nsec
->> process_subtest:PASS:specs_alloc 0 nsec
->> #433/13 verifier_bits_iter/bad words
->> run_subtest:PASS:obj_open_mem 0 nsec
->> run_subtest:PASS:unexpected_load_failure 0 nsec
->> do_prog_test_run:PASS:bpf_prog_test_run 0 nsec
->> run_subtest:FAIL:1035 Unexpected retval: 115 != 0
->>
->>
->> Please note: this email is coming from an unmonitored mailbox. If you have
->> questions or feedback, please reach out to the Meta Kernel CI team at
->> kernel-ci@meta.com.
-> .
-
+Okay, then do I need to resend this patch or it would be accepted anyway?
 
