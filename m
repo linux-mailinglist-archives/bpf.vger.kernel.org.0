@@ -1,221 +1,172 @@
-Return-Path: <bpf+bounces-43897-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43898-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15AA59BBA59
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 17:28:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96F1B9BBA5C
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 17:31:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9869B1F23353
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 16:28:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B033E1C204F3
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 16:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 758361C2325;
-	Mon,  4 Nov 2024 16:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80ED01C07D3;
+	Mon,  4 Nov 2024 16:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vUxy+76d";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5wKubNt2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QsndbPlX"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA0D4A08;
-	Mon,  4 Nov 2024 16:28:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 077D98286A
+	for <bpf@vger.kernel.org>; Mon,  4 Nov 2024 16:31:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730737721; cv=none; b=Rscge52TbztiXul3LYdOc1LtQqG0ohyqDWZjc0cdxYNBXTaT9IVSqOdibpdAYj2vVsGw1MQ0o8PFNS7LkEKabWzEakgx8Rr7B1qTeYdSJuK4ikDnGcNMpJoCEztwlc4V6TP1fIxCV/j61YORU+2z55DwpD4GxstTuZb9rUISvBc=
+	t=1730737895; cv=none; b=lxd8TjvTL4vUjzfxaWEWMCC9ZG6lX9d964/75/ukd6/8QENMoVBSgbdySYk2CVdgTF5iZyREWLllj1uuMAolXbO+DscN2nFH/cNiXB+azbsp9K5Gb+aGVDqurMYljX799045nqr/POMa9Ao10/o1i8t98PVHTx7x731PTkG/1gc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730737721; c=relaxed/simple;
-	bh=1R/Em5fCRSOK0NjH71GssW8QSlYQzsUdM7URV1RwhD8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GfbBhvJXiyRd6KH5KhE+EFBh1J+HmhrZk1s545q7pea+qtOyeToaOpKChzOkQxa3EtRRaOPOgiqbEuyLFDJbfYr0z3rpTyeg6zY6Vo+HnVUvBsojZNJWG+1nG5dqUbpXOhHkuTaaNI4LMUSC3LINq/OEkErrT9Z0NMQou3e32iQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vUxy+76d; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=5wKubNt2; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 4 Nov 2024 17:28:32 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1730737715;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6jg03i2HOOyHrghHv90ujEbU+xepLRRkhBI0ZKP+Fm8=;
-	b=vUxy+76d/OOJGPok1D8si0OLswywxWeXl0IVefY4wS3UA6Lork9tiCRWNEiqJjTsvU3wB5
-	QnxOAjUxqB/9JoZLXGLmcq0NkqXAoy/xgUwHkg8mXU1srxxTkNzlIA/Bmy/6TA33vkcP+M
-	lbo16kWWoMu7EO3qoUu/rRfewiHuvfOnjrlwe2uMLGfX1vSy3mBL11CRhTuOFfT7AUult9
-	IONaNqxbMEhXe4/WimRIGdknrNowLOCOKCgf1O1ceMt/3GELokrEsBJAF8E7wzKow41nTj
-	AcVCqKq5wyOgVWRE+svj+bwHxKLFvzC9ZoxGsmnS/Itl5Rg3x5yZSU0u+MOEvg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1730737715;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6jg03i2HOOyHrghHv90ujEbU+xepLRRkhBI0ZKP+Fm8=;
-	b=5wKubNt2+FZCON3xpdYkEs+YhjDiMOv6tQfzEC8pkTVZoBwpmlCoDLaxRy1qbMmlcckeNZ
-	90bKNGpWDZipIMCg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: syzbot <syzbot+d2adb332fe371b0595e3@syzkaller.appspotmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, boqun.feng@gmail.com,
-	bpf@vger.kernel.org, daniel@iogearbox.net, eadavis@qq.com,
-	eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
-	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-	longman@redhat.com, martin.lau@linux.dev, sdf@fomichev.me,
-	song@kernel.org, syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev, tglx@linutronix.de
-Subject: Re: [syzbot] [bpf?] WARNING: locking bug in bpf_map_put
-Message-ID: <20241104162832.OQvrGDiP@linutronix.de>
-References: <67251dc5.050a0220.529b6.015c.GAE@google.com>
- <67283170.050a0220.3c8d68.0ad6.GAE@google.com>
+	s=arc-20240116; t=1730737895; c=relaxed/simple;
+	bh=yb8Jj2RBrpWDSM+rfoFSsasiNGMe2lUxrdXE7bT0ymE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YJ7VL9ECy3OMk1Bo+uoY3tuaILtsU5PUtPB1T/lCW+i2Nz3g3RXh+CvXHal6VSq40sPDBRpzOuzC6/sRcqMpNWfyZ/eyAf3bkOkOnIHk4jAamUt/OUVj+o94TGNPYiY2CMT07Qp539S47xUzy0/qii66SVqNT9KtZbPto57RoPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QsndbPlX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2D62C4CECE;
+	Mon,  4 Nov 2024 16:31:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730737894;
+	bh=yb8Jj2RBrpWDSM+rfoFSsasiNGMe2lUxrdXE7bT0ymE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=QsndbPlXu4U/4ny79GbiV9De7TNyTi4khgmmZy5zGrtv6ZcJZzeZLFGF/mSMLrAm9
+	 TImjcjpTsolyhYrBGYVGsn/MnXWtcOFSe10JUK5X93whMuczmZHiFjC+GAFRMmrMdG
+	 6biTq4tF+w48RA4qN3NPd4r7uIsXZ96cPvRi3mWVEBvOXOev4QIiKJjEEhmi4TSuoO
+	 MDbl7Yk4ZhGLRnB0XkoLfnb1/fIFAbE+oTQBysi/U8VRlSIHajBEezFPFNPSr/DgI6
+	 4tcqz+a3CpgXcOK+DPtD6vXo5wowIQq8fuClIhPai81dhT1yEVe4m0BAOBpNN3w1SS
+	 /4LCDcgIiyZUg==
+Message-ID: <6dc74cb9-2a99-4fa7-a731-802852770d4d@kernel.org>
+Date: Mon, 4 Nov 2024 17:31:25 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <67283170.050a0220.3c8d68.0ad6.GAE@google.com>
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: remove test_skb_cgroup_id.sh
+ from TEST_PROGS
+Content-Language: en-GB
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ eddyz87@gmail.com, mykolal@fb.com, bjorn@kernel.org,
+ Ihor Solodrai <ihor.solodrai@pm.me>, Geliang Tang <geliang@kernel.org>
+References: <20240916195919.1872371-1-ihor.solodrai@pm.me>
+ <172715882926.3893391.17604218740773697669.git-patchwork-notify@kernel.org>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <172715882926.3893391.17604218740773697669.git-patchwork-notify@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 2024-11-03 18:29:04 [-0800], syzbot wrote:
-> syzbot has bisected this issue to:
-> 
-> commit 560af5dc839eef08a273908f390cfefefb82aa04
-> Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Date:   Wed Oct 9 15:45:03 2024 +0000
-> 
->     lockdep: Enable PROVE_RAW_LOCK_NESTING with PROVE_LOCKING.
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122a4740580000
-> start commit:   f9f24ca362a4 Add linux-next specific files for 20241031
-> git tree:       linux-next
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=112a4740580000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=162a4740580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=328572ed4d152be9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d2adb332fe371b0595e3
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=174432a7980000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ffe55f980000
-> 
-> Reported-by: syzbot+d2adb332fe371b0595e3@syzkaller.appspotmail.com
-> Fixes: 560af5dc839e ("lockdep: Enable PROVE_RAW_LOCK_NESTING with PROVE_LOCKING.")
-> 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Hi Andrii,
 
-This is due to raw_spinlock_t in bucket::lock and the acquired
-spinlock_t underneath. Would it would to move free part outside of the
-locked section?
+(+cc Geliang who reported me the issue)
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index b14b87463ee04..1d8d09fdd2da5 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -824,13 +824,14 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
- 	hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
- 		if (l == tgt_l) {
- 			hlist_nulls_del_rcu(&l->hash_node);
--			check_and_free_fields(htab, l);
- 			bpf_map_dec_elem_count(&htab->map);
- 			break;
- 		}
- 
- 	htab_unlock_bucket(htab, b, tgt_l->hash, flags);
- 
-+	if (l == tgt_l)
-+		check_and_free_fields(htab, l);
- 	return l == tgt_l;
- }
- 
-@@ -1181,14 +1182,18 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
- 	 * concurrent search will find it before old elem
- 	 */
- 	hlist_nulls_add_head_rcu(&l_new->hash_node, head);
--	if (l_old) {
-+	if (l_old)
- 		hlist_nulls_del_rcu(&l_old->hash_node);
-+	htab_unlock_bucket(htab, b, hash, flags);
-+
-+	if (l_old) {
- 		if (!htab_is_prealloc(htab))
- 			free_htab_elem(htab, l_old);
- 		else
- 			check_and_free_fields(htab, l_old);
- 	}
--	ret = 0;
-+	return 0;
-+
- err:
- 	htab_unlock_bucket(htab, b, hash, flags);
- 	return ret;
-@@ -1433,14 +1438,15 @@ static long htab_map_delete_elem(struct bpf_map *map, void *key)
- 
- 	l = lookup_elem_raw(head, hash, key, key_size);
- 
--	if (l) {
-+	if (l)
- 		hlist_nulls_del_rcu(&l->hash_node);
--		free_htab_elem(htab, l);
--	} else {
-+	else
- 		ret = -ENOENT;
--	}
- 
- 	htab_unlock_bucket(htab, b, hash, flags);
-+
-+	if (l)
-+		free_htab_elem(htab, l);
- 	return ret;
- }
- 
-@@ -1647,14 +1653,16 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
- 		}
- 
- 		hlist_nulls_del_rcu(&l->hash_node);
--		if (!is_lru_map)
--			free_htab_elem(htab, l);
- 	}
- 
- 	htab_unlock_bucket(htab, b, hash, bflags);
- 
--	if (is_lru_map && l)
--		htab_lru_push_free(htab, l);
-+	if (l) {
-+		if (is_lru_map)
-+			htab_lru_push_free(htab, l);
-+		else
-+			free_htab_elem(htab, l);
-+	}
- 
- 	return ret;
- }
-@@ -1851,15 +1859,12 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 
- 			/* bpf_lru_push_free() will acquire lru_lock, which
- 			 * may cause deadlock. See comments in function
--			 * prealloc_lru_pop(). Let us do bpf_lru_push_free()
--			 * after releasing the bucket lock.
-+			 * prealloc_lru_pop(). htab_lru_push_free() may allocate
-+			 * sleeping locks. Let us do bpf_lru_push_free() after
-+			 * releasing the bucket lock.
- 			 */
--			if (is_lru_map) {
--				l->batch_flink = node_to_free;
--				node_to_free = l;
--			} else {
--				free_htab_elem(htab, l);
--			}
-+			l->batch_flink = node_to_free;
-+			node_to_free = l;
- 		}
- 		dst_key += key_size;
- 		dst_val += value_size;
-@@ -1871,7 +1876,10 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 	while (node_to_free) {
- 		l = node_to_free;
- 		node_to_free = node_to_free->batch_flink;
--		htab_lru_push_free(htab, l);
-+		if (is_lru_map)
-+			htab_lru_push_free(htab, l);
-+		else
-+			free_htab_elem(htab, l);
- 	}
- 
- next_batch:
+On 24/09/2024 08:20, patchwork-bot+netdevbpf@kernel.org wrote:
+> Hello:
+> 
+> This series was applied to bpf/bpf-next.git (master)
+> by Andrii Nakryiko <andrii@kernel.org>:
+> 
+> On Mon, 16 Sep 2024 19:59:22 +0000 you wrote:
+>> test_skb_cgroup_id.sh was deleted in
+>> https://git.kernel.org/bpf/bpf-next/c/f957c230e173
+>>
+>> It has to be removed from TEST_PROGS variable in
+>> tools/testing/selftests/bpf/Makefile, otherwise install target fails.
+>>
+>> Link:
+>> https://lore.kernel.org/bpf/Q3BN2kW9Kgy6LkrDOwnyY4Pv7_YF8fInLCd2_QA3LimKYM3wD64kRdnwp7blwG2dI_s7UGnfUae-4_dOmuTrxpYCi32G_KTzB3PfmxIerH8=@pm.me/
+
+It looks like the two patches here are fixing issues that are on v6.12
+as well: I'm on top of net-next, and I can see these issues. They are
+fixed by these two patches that can be applied without conflicts.
+
+In these patches, we can find references to the commits that introduced
+the issues:
+
+- Patch 1: f957c230e173 ("selftests/bpf: convert test_skb_cgroup_id_user
+to test_progs")
+
+- Patch 2: 844f7315e77a ("selftests/bpf: Use auto-dependencies for test
+objects")
+
+The two commits are in v6.12-rc1. Could it eventually be possible to
+apply these two patches (with Fixes tags?) in the 'bpf' tree instead of
+the 'bpf-next' one please?
+
+> Here is the summary with links:
+>   - [bpf-next,1/2] selftests/bpf: remove test_skb_cgroup_id.sh from TEST_PROGS
+>     https://git.kernel.org/bpf/bpf-next/c/e4c139a63aff
+
+Just in case, it looks like the history has been rewritten. The last ref
+seems to be:
+
+  d002b922c4d5 ("selftests/bpf: Remove test_skb_cgroup_id.sh from
+TEST_PROGS")
+
+>   - [bpf-next,2/2] selftests/bpf: set vpath in Makefile to search for skels
+>     https://git.kernel.org/bpf/bpf-next/c/494c3a797257
+
+... and:
+
+  fd4a0e67838c ("selftests/bpf: Set vpath in Makefile to search for skels")
+
+Thank you!
+
+Cheers,
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
+
 
