@@ -1,473 +1,141 @@
-Return-Path: <bpf+bounces-43894-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43895-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75FD69BB8BF
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 16:17:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 499099BBA43
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 17:23:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E67891F2246C
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 15:17:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2A44B2291B
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 16:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FF21B6CF9;
-	Mon,  4 Nov 2024 15:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 496871C243C;
+	Mon,  4 Nov 2024 16:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IXs1DpeK"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AxXJF08E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f65.google.com (mail-lf1-f65.google.com [209.85.167.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2CD04A08
-	for <bpf@vger.kernel.org>; Mon,  4 Nov 2024 15:17:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3724D16C854
+	for <bpf@vger.kernel.org>; Mon,  4 Nov 2024 16:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730733443; cv=none; b=ZM5NcFEfcvQYWgCjq1ofaUXV1Vi/9WyGVPK4I5IKiOFbEixaAAoT7B+37QzIr4nvp18bLHKeCFvmnjhXK8xRVaXlYNSh3YOdlZcHkupl8x3rMTB5b1V953xbfF0YK/jPppQyCmbhmsF4MG+JD3hxjp+aj9ogmrhH3S+M6oPfN2A=
+	t=1730737319; cv=none; b=OnxaYy9WBYjjFrG4gZlzVoAqIFQgdWRWqz0IXoF0FVGyAgiSiiqr6BnAwTbQTUU522XaPVYVOWeiHJuOa/08w82I6kYWltmFnlneJb0fah7DwZItKkIvsPxhVUnFuGmzFEiCg9Xv+NUaOVTAujDdprv5k6RjDbyAGtUKsxUIhi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730733443; c=relaxed/simple;
-	bh=3Ja+gj53WfO5u9uqpYF1Mbp8hfuII1mpRXIBL30nrgE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kQMtAWMO5AsBWU6dOwtH2rsnkSCHKAJ7VvUq6w6HOph2Ysx+XDYzuWbBOrmn6lGyI4M9hydf6G9LDcH1H60LsbDPiWbIO1IW1MWaqKjXJrKa3yB+aWRSYQb227Rei4psIl1QCWlddBrjJWZQYkZNl8QIHThb4Y7+9c3M7qjDkOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IXs1DpeK; arc=none smtp.client-ip=209.85.167.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f65.google.com with SMTP id 2adb3069b0e04-53c779ef19cso5015208e87.3
-        for <bpf@vger.kernel.org>; Mon, 04 Nov 2024 07:17:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730733439; x=1731338239; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EP+8q+R7bsEXZGT0auEvqXVsYGzbNSLB1iJR1+KWvYg=;
-        b=IXs1DpeKjrJ+NqfKLTo5hmfEe2IJF0GcyvDP8J4yD6DZfWYndqdmhBRUtjxx9KhdG2
-         BgrnbqKdR88NvNwu0FyRpnnvHRVwo13uL/zJBDi5huQg+jXlG94dIiItRk2pyXFWXQMP
-         W0PY8wMi9es+tHVNYIPH85JDa0jqqHBZC1caZE0E1ott7L8qpkr/6rsKeKIldCYpIORo
-         lyn/iNim7SvrPbOtbot7Y2Or+aJHBOy4SakhysSWZq3kJXmk8jW9wPywqwttRznBF/ZL
-         saT1vZhtBpwCpbnK3Og64jMH+JKGCMVKk8KKfX/gH3B6F4rwvVXs3gH8TpbK/Jur9xAR
-         ywWg==
+	s=arc-20240116; t=1730737319; c=relaxed/simple;
+	bh=wAsv6Hzd+vLzoBRefi30adxZHlxiXeAGF9icWVXVSmo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AFd0Szu8+DBNs24YdR6Sc8lGXGx1JtEEd1f3oI2Fe2BzDk7T/1O5xBQYLNrrTd9DbkaZMXTVawxT8cARHXmv++MSN+MuPLFVO1f3GRwi6cLl3OJB+/Bzp08n1KEka6NZSFWtuPxdMnC823KQXIdkUfGuIa9jqPVLIwjcJWMVg48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AxXJF08E; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1730737317;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3bnz91kXN/ZEAzBQSwkUWrou7I1msisykoc+Lw0NZ9U=;
+	b=AxXJF08EY1Lv7XHOCXzTzjdXyYhexVxrkF4/K/DMgFal/eUvyk7tvFPViqfVY76yh/cjW7
+	r91sa35xK09YuM1XPtlni4OHD/3oEeV4WzM5UGkX2dwdHWSHvoPIxqrJIRikW5slP2vi42
+	xDOFEGdhygZaKWxULHUgu20FFzlkV8E=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-413-Rtlh9aeFM2yMIP_1oABG1Q-1; Mon, 04 Nov 2024 11:21:55 -0500
+X-MC-Unique: Rtlh9aeFM2yMIP_1oABG1Q-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-37d4cf04be1so2316342f8f.2
+        for <bpf@vger.kernel.org>; Mon, 04 Nov 2024 08:21:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730733439; x=1731338239;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EP+8q+R7bsEXZGT0auEvqXVsYGzbNSLB1iJR1+KWvYg=;
-        b=rLCT3EHNPBIfPaWb8oypwNnQTIvwM7J3pPoBhHroXwYvVnI2tEza5s0ul59I0uOE2y
-         L+0JvcBaM0SajZOv9b0I4+8DvmDuL8H/WyybSjkNj7jGbZUmgT1C5TbUF5aQMIK6e2/t
-         OeRtRlhindLs6Q5wrb9Bxho+KFPhZGb1Ynqb8Jh5Rk6Few1RNN5bRULlvndJUEVOBcQm
-         tpTe47YrSUzdW2wEq+wMc8tWPpMCBM32+RDQSXjYP+BYYnIEuOziQ776dt4mBiMIb03M
-         19kXCllFDeSoQJB8Xw69qSnc5mt+corhlb5AlVgIwVR0mYgIjMhv8CwdohW0ISM2rIKF
-         NPuQ==
-X-Gm-Message-State: AOJu0YzFh/RN4/s2ISIh5W2xgYzLAGlZb8yzLrV0Ayg9GnlyKPddk9UF
-	gOyQHd0IXiUPdCJ32RCgfllIm7SRMp1358bBf8UoxhvB3RJpCRZu3+qU7KxNQULi3g==
-X-Google-Smtp-Source: AGHT+IFV0MJrb0ivSHzcQmAvb1Jeci88qtc8NmPHNXg/q5w07aA4ws1hRRWpFUr/FB04gPR5Ew6Qqg==
-X-Received: by 2002:a05:6512:3b91:b0:539:fa3d:a73 with SMTP id 2adb3069b0e04-53c79e91292mr6822143e87.39.1730733438241;
-        Mon, 04 Nov 2024 07:17:18 -0800 (PST)
-Received: from localhost (fwdproxy-cln-021.fbsv.net. [2a03:2880:31ff:15::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4327d6852efsm156128995e9.30.2024.11.04.07.17.17
+        d=1e100.net; s=20230601; t=1730737315; x=1731342115;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3bnz91kXN/ZEAzBQSwkUWrou7I1msisykoc+Lw0NZ9U=;
+        b=uGOceCGrpGjIvGy7Ep/xgXZPia10T4BpgHpcHB+EB4IXPdlIJMecnzfVuPQhctOarU
+         TqXT8P2zgOG71g4+eP8IsQPB2diQKw4POkSWf/Miw5blbOeHpA5zu9pOE/TXSTUfsqCg
+         4zJstWeI71ZnXj/jGAWjzL7x5deuQRZHlrIhNLovO7tqJ92/AMcoZL1Svgt2kZcZzPoD
+         Fz1l9wJxZrNwZvdaMZlKuTfUz2X0WqWUTdVHvmCdpOKPYTrYHEnKrp9naRp4DIj2rUfh
+         FY4GTUz8kfdMfoUYHt/bv37e4arooYqrE+R7awV1T3rsqPDYEaSYA51CxQRkMZwXkyr1
+         YQFg==
+X-Gm-Message-State: AOJu0Yyx+IeAeW1WWtgC53vMUAZ/TQK4/T+ufOtg3R7qEAe0IskYa+TM
+	Ysds8GZv2preMK+ZsPU7G8VdFk0OUo2ydaFn/bYiaLEWiY2QFHsSCPLTBBJn7Lva2QL7x9r7U12
+	HY+gcT2VaxGI93kXm01rTOXZL///Lu5I5gf38MlbqwHV/MF7atQ==
+X-Received: by 2002:a5d:6c65:0:b0:37c:cbd4:ec9 with SMTP id ffacd0b85a97d-381be7add43mr11641452f8f.5.1730737314758;
+        Mon, 04 Nov 2024 08:21:54 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEiNz2DAmZDBpA/TUJ4mXu18j5OCnCv216So36vS1aCJUcD4MmGjqSXsaNebnA9dQ/OhNSrtw==
+X-Received: by 2002:a5d:6c65:0:b0:37c:cbd4:ec9 with SMTP id ffacd0b85a97d-381be7add43mr11641429f8f.5.1730737314294;
+        Mon, 04 Nov 2024 08:21:54 -0800 (PST)
+Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.142.6])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381c113e5d6sm13581941f8f.76.2024.11.04.08.21.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Nov 2024 07:17:17 -0800 (PST)
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To: bpf@vger.kernel.org
-Cc: kkd@meta.com,
-	Alexei Starovoitov <ast@kernel.org>,
+        Mon, 04 Nov 2024 08:21:53 -0800 (PST)
+Date: Mon, 4 Nov 2024 17:21:51 +0100
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, kkd@meta.com, Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	kernel-team@fb.com
-Subject: [PATCH bpf-next v3] bpf: Refactor active lock management
-Date: Mon,  4 Nov 2024 07:17:16 -0800
-Message-ID: <20241104151716.2079893-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.43.5
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Jiri Olsa <olsajiri@gmail.com>, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v2 0/3] Handle possible NULL trusted raw_tp
+ arguments
+Message-ID: <Zyj0n3aWgNd5MmA2@jlelli-thinkpadt14gen4.remote.csb>
+References: <20241103184144.3765700-1-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=12817; h=from:subject; bh=mr5Vq8Tjv5M8EhHdPfnjL4D2wbf5A5+piE6Ce4Nj6pg=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnKOS9hNWTPkcBQOAlHcnLLlN9dozoiCP+8wwgtVRd TvrjN6qJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZyjkvQAKCRBM4MiGSL8Ryh4FD/ 9vewVGyMS6E9fm4S4b7eSrflqR7FYLTDA7uG+piWFCqqAOsH8ey8Medx5UkJIEdNA+tLjoxkkRUW7U IKrZwuD+vrSRYDI9eoXyc1lpNkz87skvH4EOMx5I1+oDIyFqPtTvPJIZH2LBiCIN/K6U+y6nV4grd4 1LiCoRoQ/DyjEW8Vw2ijy29vtJdIEZ83TMPLPBIFnTvLyU+NYRSbB2E7BeEf6qk7d+9j25cRo7Lout N+koDaS6AdSmQYK3b6LasKWVwlq+s6smUXy4tyANHDmJAOv0MX1KHLNwQtDh3rECIVxFbMKhgAS1YH iNEGygIwt8t25Ue1za9xNKcXAyPdHImews4RnOhczAFGBDMaCsO10htJfuHsVnhggjD4l7CBvITj3w za8Blw1pkAUsoV3GK7dXBUVs6t+MB0sT3G8iQiEZjfu+U/VkZZsSI5VTu5uJ1ZCCig1mjmfFlct5Cq lYfFQmOXvF9eOevVz+cYw3lB4SWSiFzuG254PBrdJMSv//EvJl33vHyBYTRQaZXfvrYnpN2YkuJs/U vEI/K2cNvaR5JF56DELwjieJ19mbR8h9XWi4oshHjLw8/tY4jF2BF0JaRqFX0ksdUO8aCuTd+IL1dT FKdFpU61EPjI8LN8zBT2wAvIDE1GLuXps/+JgrK3dSFKuL1SZyV3qROduzag==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241103184144.3765700-1-memxor@gmail.com>
 
-When bpf_spin_lock was introduced originally, there was deliberation on
-whether to use an array of lock IDs, but since bpf_spin_lock is limited
-to holding a single lock at any given time, we've been using a single ID
-to identify the held lock.
+Hello,
 
-In preparation for introducing spin locks that can be taken multiple
-times, introduce support for acquiring multiple lock IDs. For this
-purpose, reuse the acquired_refs array and store both lock and pointer
-references. We tag the entry with REF_TYPE_PTR or REF_TYPE_BPF_LOCK to
-disambiguate and find the relevant entry. The ptr field is used to track
-the map_ptr or btf (for bpf_obj_new allocations) to ensure locks can be
-matched with protected fields within the same "allocation", i.e.
-bpf_obj_new object or map value.
+On 03/11/24 10:41, Kumar Kartikeya Dwivedi wrote:
+> More context is available in [0], but the TLDR; is that the verifier
+> incorrectly assumes that any raw tracepoint argument will always be
+> non-NULL. This means that even when users correctly check possible NULL
+> arguments, the verifier can remove the NULL check due to incorrect
+> knowledge of the NULL-ness of the pointer. Secondly, kernel helpers or
+> kfuncs taking these trusted tracepoint arguments incorrectly assume that
+> all arguments will always be valid non-NULL.
+> 
+> In this set, we mark raw_tp arguments as PTR_MAYBE_NULL on top of
+> PTR_TRUSTED, but special case their behavior when dereferencing them or
+> pointer arithmetic over them is involved. When passing trusted args to
+> helpers or kfuncs, raw_tp programs are permitted to pass possibly NULL
+> pointers in such cases.
+> 
+> Any loads into such maybe NULL trusted PTR_TO_BTF_ID is promoted to a
+> PROBE_MEM load to handle emanating page faults. The verifier will ensure
+> NULL checks on such pointers are preserved and do not lead to dead code
+> elimination.
+> 
+> This new behavior is not applied when ref_obj_id is non-zero, as those
+> pointers do not belong to raw_tp arguments, but instead acquired
+> objects.
+> 
+> Since helpers and kfuncs already require attention for PTR_TO_BTF_ID
+> (non-trusted) pointers, we do not implement any protection for such
+> cases in this patch set, and leave it as future work for an upcoming
+> series.
+> 
+> A selftest is included with this patch set to verify the new behavior,
+> and it crashes the kernel without the first patch.
+> 
+>  [0]: https://lore.kernel.org/bpf/CAADnVQLMPPavJQR6JFsi3dtaaLHB816JN4HCV_TFWohJ61D+wQ@mail.gmail.com
 
-The struct active_lock is changed to a boolean as the state is part of
-the acquired_refs array, and we only need active_lock as a cheap way
-of detecting lock presence.
+This indeed cures the issue for me! Thanks a lot for fixing it.
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
-Changelog:
-v2 -> v3
-v2: https://lore.kernel.org/bpf/20241103212252.547071-1-memxor@gmail.com
+Tested-by: Juri Lelli <juri.lelli@redhat.com>
 
- * Rebase on bpf-next to resolve merge conflict
-
-v1 -> v2
-v1: https://lore.kernel.org/bpf/20241103205856.345580-1-memxor@gmail.com
-
- * Fix refsafe state comparison to check callback_ref and ptr separately.
----
- include/linux/bpf_verifier.h |  34 ++++++---
- kernel/bpf/verifier.c        | 138 ++++++++++++++++++++++++++---------
- 2 files changed, 126 insertions(+), 46 deletions(-)
-
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 4513372c5bc8..1e7e1803d78b 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -266,6 +266,10 @@ struct bpf_stack_state {
- };
-
- struct bpf_reference_state {
-+	/* Each reference object has a type. Ensure REF_TYPE_PTR is zero to
-+	 * default to pointer reference on zero initialization of a state.
-+	 */
-+	enum { REF_TYPE_PTR = 0, REF_TYPE_BPF_LOCK } type;
- 	/* Track each reference created with a unique id, even if the same
- 	 * instruction creates the reference multiple times (eg, via CALL).
- 	 */
-@@ -274,17 +278,23 @@ struct bpf_reference_state {
- 	 * is used purely to inform the user of a reference leak.
- 	 */
- 	int insn_idx;
--	/* There can be a case like:
--	 * main (frame 0)
--	 *  cb (frame 1)
--	 *   func (frame 3)
--	 *    cb (frame 4)
--	 * Hence for frame 4, if callback_ref just stored boolean, it would be
--	 * impossible to distinguish nested callback refs. Hence store the
--	 * frameno and compare that to callback_ref in check_reference_leak when
--	 * exiting a callback function.
--	 */
--	int callback_ref;
-+	union {
-+		/* There can be a case like:
-+		 * main (frame 0)
-+		 *  cb (frame 1)
-+		 *   func (frame 3)
-+		 *    cb (frame 4)
-+		 * Hence for frame 4, if callback_ref just stored boolean, it would be
-+		 * impossible to distinguish nested callback refs. Hence store the
-+		 * frameno and compare that to callback_ref in check_reference_leak when
-+		 * exiting a callback function.
-+		 */
-+		int callback_ref;
-+		/* Use to keep track of the source object of a lock, to ensure
-+		 * it matches on unlock.
-+		 */
-+		void *ptr;
-+	};
- };
-
- struct bpf_retval_range {
-@@ -434,7 +444,7 @@ struct bpf_verifier_state {
- 	u32 insn_idx;
- 	u32 curframe;
-
--	struct bpf_active_lock active_lock;
-+	bool active_lock;
- 	bool speculative;
- 	bool active_rcu_lock;
- 	u32 active_preempt_lock;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index ba800c7611e3..ea8ad320e6cc 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1335,6 +1335,7 @@ static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx)
- 	if (err)
- 		return err;
- 	id = ++env->id_gen;
-+	state->refs[new_ofs].type = REF_TYPE_PTR;
- 	state->refs[new_ofs].id = id;
- 	state->refs[new_ofs].insn_idx = insn_idx;
- 	state->refs[new_ofs].callback_ref = state->in_callback_fn ? state->frameno : 0;
-@@ -1342,6 +1343,23 @@ static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx)
- 	return id;
- }
-
-+static int acquire_lock_state(struct bpf_verifier_env *env, int insn_idx, int type, int id, void *ptr)
-+{
-+	struct bpf_func_state *state = cur_func(env);
-+	int new_ofs = state->acquired_refs;
-+	int err;
-+
-+	err = resize_reference_state(state, state->acquired_refs + 1);
-+	if (err)
-+		return err;
-+	state->refs[new_ofs].type = type;
-+	state->refs[new_ofs].id = id;
-+	state->refs[new_ofs].insn_idx = insn_idx;
-+	state->refs[new_ofs].ptr = ptr;
-+
-+	return 0;
-+}
-+
- /* release function corresponding to acquire_reference_state(). Idempotent. */
- static int release_reference_state(struct bpf_func_state *state, int ptr_id)
- {
-@@ -1349,6 +1367,8 @@ static int release_reference_state(struct bpf_func_state *state, int ptr_id)
-
- 	last_idx = state->acquired_refs - 1;
- 	for (i = 0; i < state->acquired_refs; i++) {
-+		if (state->refs[i].type != REF_TYPE_PTR)
-+			continue;
- 		if (state->refs[i].id == ptr_id) {
- 			/* Cannot release caller references in callbacks */
- 			if (state->in_callback_fn && state->refs[i].callback_ref != state->frameno)
-@@ -1364,6 +1384,43 @@ static int release_reference_state(struct bpf_func_state *state, int ptr_id)
- 	return -EINVAL;
- }
-
-+static int release_lock_state(struct bpf_func_state *state, int type, int id, void *ptr)
-+{
-+	int i, last_idx;
-+
-+	last_idx = state->acquired_refs - 1;
-+	for (i = 0; i < state->acquired_refs; i++) {
-+		if (state->refs[i].type != type)
-+			continue;
-+		if (state->refs[i].id == id && state->refs[i].ptr == ptr) {
-+			if (last_idx && i != last_idx)
-+				memcpy(&state->refs[i], &state->refs[last_idx],
-+				       sizeof(*state->refs));
-+			memset(&state->refs[last_idx], 0, sizeof(*state->refs));
-+			state->acquired_refs--;
-+			return 0;
-+		}
-+	}
-+	return -EINVAL;
-+}
-+
-+static struct bpf_reference_state *find_lock_state(struct bpf_verifier_env *env, int id, void *ptr)
-+{
-+	struct bpf_func_state *state = cur_func(env);
-+	int i;
-+
-+	for (i = 0; i < state->acquired_refs; i++) {
-+		struct bpf_reference_state *s = &state->refs[i];
-+
-+		if (s->type == REF_TYPE_PTR)
-+			continue;
-+
-+		if (s->id == id && s->ptr == ptr)
-+			return s;
-+	}
-+	return NULL;
-+}
-+
- static void free_func_state(struct bpf_func_state *state)
- {
- 	if (!state)
-@@ -1430,12 +1487,11 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
- 		dst_state->frame[i] = NULL;
- 	}
- 	dst_state->speculative = src->speculative;
-+	dst_state->active_lock = src->active_lock;
- 	dst_state->active_rcu_lock = src->active_rcu_lock;
- 	dst_state->active_preempt_lock = src->active_preempt_lock;
- 	dst_state->in_sleepable = src->in_sleepable;
- 	dst_state->curframe = src->curframe;
--	dst_state->active_lock.ptr = src->active_lock.ptr;
--	dst_state->active_lock.id = src->active_lock.id;
- 	dst_state->branches = src->branches;
- 	dst_state->parent = src->parent;
- 	dst_state->first_insn_idx = src->first_insn_idx;
-@@ -5423,7 +5479,7 @@ static bool in_sleepable(struct bpf_verifier_env *env)
- static bool in_rcu_cs(struct bpf_verifier_env *env)
- {
- 	return env->cur_state->active_rcu_lock ||
--	       env->cur_state->active_lock.ptr ||
-+	       env->cur_state->active_lock ||
- 	       !in_sleepable(env);
- }
-
-@@ -7698,6 +7754,7 @@ static int process_spin_lock(struct bpf_verifier_env *env, int regno,
- 	struct bpf_map *map = NULL;
- 	struct btf *btf = NULL;
- 	struct btf_record *rec;
-+	int err;
-
- 	if (!is_const) {
- 		verbose(env,
-@@ -7729,16 +7786,27 @@ static int process_spin_lock(struct bpf_verifier_env *env, int regno,
- 		return -EINVAL;
- 	}
- 	if (is_lock) {
--		if (cur->active_lock.ptr) {
-+		void *ptr;
-+
-+		if (map)
-+			ptr = map;
-+		else
-+			ptr = btf;
-+
-+		if (cur->active_lock) {
- 			verbose(env,
- 				"Locking two bpf_spin_locks are not allowed\n");
- 			return -EINVAL;
- 		}
--		if (map)
--			cur->active_lock.ptr = map;
--		else
--			cur->active_lock.ptr = btf;
--		cur->active_lock.id = reg->id;
-+		err = acquire_lock_state(env, env->insn_idx, REF_TYPE_BPF_LOCK, reg->id, ptr);
-+		if (err < 0) {
-+			verbose(env, "Failed to acquire lock state\n");
-+			return err;
-+		}
-+		/* It is not safe to allow multiple bpf_spin_lock calls, so
-+		 * disallow them until this lock has been unlocked.
-+		 */
-+		cur->active_lock = true;
- 	} else {
- 		void *ptr;
-
-@@ -7747,20 +7815,18 @@ static int process_spin_lock(struct bpf_verifier_env *env, int regno,
- 		else
- 			ptr = btf;
-
--		if (!cur->active_lock.ptr) {
-+		if (!cur->active_lock) {
- 			verbose(env, "bpf_spin_unlock without taking a lock\n");
- 			return -EINVAL;
- 		}
--		if (cur->active_lock.ptr != ptr ||
--		    cur->active_lock.id != reg->id) {
-+
-+		if (release_lock_state(cur_func(env), REF_TYPE_BPF_LOCK, reg->id, ptr)) {
- 			verbose(env, "bpf_spin_unlock of different lock\n");
- 			return -EINVAL;
- 		}
-
- 		invalidate_non_owning_refs(env);
--
--		cur->active_lock.ptr = NULL;
--		cur->active_lock.id = 0;
-+		cur->active_lock = false;
- 	}
- 	return 0;
- }
-@@ -9818,7 +9884,7 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 		const char *sub_name = subprog_name(env, subprog);
-
- 		/* Only global subprogs cannot be called with a lock held. */
--		if (env->cur_state->active_lock.ptr) {
-+		if (env->cur_state->active_lock) {
- 			verbose(env, "global function calls are not allowed while holding a lock,\n"
- 				     "use static function instead\n");
- 			return -EINVAL;
-@@ -10343,6 +10409,8 @@ static int check_reference_leak(struct bpf_verifier_env *env, bool exception_exi
- 		return 0;
-
- 	for (i = 0; i < state->acquired_refs; i++) {
-+		if (state->refs[i].type != REF_TYPE_PTR)
-+			continue;
- 		if (!exception_exit && state->in_callback_fn && state->refs[i].callback_ref != state->frameno)
- 			continue;
- 		verbose(env, "Unreleased reference id=%d alloc_insn=%d\n",
-@@ -10356,7 +10424,7 @@ static int check_resource_leak(struct bpf_verifier_env *env, bool exception_exit
- {
- 	int err;
-
--	if (check_lock && env->cur_state->active_lock.ptr) {
-+	if (check_lock && env->cur_state->active_lock) {
- 		verbose(env, "%s cannot be used inside bpf_spin_lock-ed region\n", prefix);
- 		return -EINVAL;
- 	}
-@@ -11580,7 +11648,7 @@ static int ref_set_non_owning(struct bpf_verifier_env *env, struct bpf_reg_state
- 	struct bpf_verifier_state *state = env->cur_state;
- 	struct btf_record *rec = reg_btf_record(reg);
-
--	if (!state->active_lock.ptr) {
-+	if (!state->active_lock) {
- 		verbose(env, "verifier internal error: ref_set_non_owning w/o active lock\n");
- 		return -EFAULT;
- 	}
-@@ -11677,6 +11745,7 @@ static int ref_convert_owning_non_owning(struct bpf_verifier_env *env, u32 ref_o
-  */
- static int check_reg_allocation_locked(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
- {
-+	struct bpf_reference_state *s;
- 	void *ptr;
- 	u32 id;
-
-@@ -11693,10 +11762,10 @@ static int check_reg_allocation_locked(struct bpf_verifier_env *env, struct bpf_
- 	}
- 	id = reg->id;
-
--	if (!env->cur_state->active_lock.ptr)
-+	if (!env->cur_state->active_lock)
- 		return -EINVAL;
--	if (env->cur_state->active_lock.ptr != ptr ||
--	    env->cur_state->active_lock.id != id) {
-+	s = find_lock_state(env, id, ptr);
-+	if (!s) {
- 		verbose(env, "held lock and object are not in the same allocation\n");
- 		return -EINVAL;
- 	}
-@@ -17561,8 +17630,19 @@ static bool refsafe(struct bpf_func_state *old, struct bpf_func_state *cur,
- 		return false;
-
- 	for (i = 0; i < old->acquired_refs; i++) {
--		if (!check_ids(old->refs[i].id, cur->refs[i].id, idmap))
-+		if (!check_ids(old->refs[i].id, cur->refs[i].id, idmap) ||
-+		    old->refs[i].type != cur->refs[i].type)
- 			return false;
-+		switch (old->refs[i].type) {
-+		case REF_TYPE_PTR:
-+			if (old->refs[i].callback_ref != cur->refs[i].callback_ref)
-+				return false;
-+			break;
-+		default:
-+			if (old->refs[i].ptr != cur->refs[i].ptr)
-+				return false;
-+			break;
-+		}
- 	}
-
- 	return true;
-@@ -17640,17 +17720,7 @@ static bool states_equal(struct bpf_verifier_env *env,
- 	if (old->speculative && !cur->speculative)
- 		return false;
-
--	if (old->active_lock.ptr != cur->active_lock.ptr)
--		return false;
--
--	/* Old and cur active_lock's have to be either both present
--	 * or both absent.
--	 */
--	if (!!old->active_lock.id != !!cur->active_lock.id)
--		return false;
--
--	if (old->active_lock.id &&
--	    !check_ids(old->active_lock.id, cur->active_lock.id, &env->idmap_scratch))
-+	if (old->active_lock != cur->active_lock)
- 		return false;
-
- 	if (old->active_rcu_lock != cur->active_rcu_lock)
-@@ -18551,7 +18621,7 @@ static int do_check(struct bpf_verifier_env *env)
- 					return -EINVAL;
- 				}
-
--				if (env->cur_state->active_lock.ptr) {
-+				if (env->cur_state->active_lock) {
- 					if ((insn->src_reg == BPF_REG_0 && insn->imm != BPF_FUNC_spin_unlock) ||
- 					    (insn->src_reg == BPF_PSEUDO_KFUNC_CALL &&
- 					     (insn->off != 0 || !is_bpf_graph_api_kfunc(insn->imm)))) {
---
-2.43.5
+Best,
+Juri
 
 
