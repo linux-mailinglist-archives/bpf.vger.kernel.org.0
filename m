@@ -1,45 +1,60 @@
-Return-Path: <bpf+bounces-43884-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43885-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2DC09BB3F2
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 12:56:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18DE19BB517
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 13:52:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 506841F2232B
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 11:56:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D17DC281955
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 12:52:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E991B3946;
-	Mon,  4 Nov 2024 11:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AE01B6D04;
+	Mon,  4 Nov 2024 12:52:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010111B392B;
-	Mon,  4 Nov 2024 11:55:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47B5B469D;
+	Mon,  4 Nov 2024 12:52:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730721359; cv=none; b=gUlux2zEfz8sIoXOZu+uBmGQasUE+LIGPh4kpsguXJRfFhYrup3InS6hbcHhQeC3ll8qzkou9Nqm5Rw4V2dP8wC0J0lWtJ7G2C4At4BVgn7zpt2wpUWG8I3pR0KUlrIwkkF+vuSi/gDFk7yDSLFNtjQC+crHKHB7m5SlpueIAps=
+	t=1730724767; cv=none; b=SeKgqUxN3nLAdQjl037is4iGZbMIGDBRX1wkD4KmpBxCQO1Dm3VDzRVuXiCv4sKC3Bte/juPk4KQwdjqPlTpMr+mMPEvMYuTGiKSjnstexX37qacZNYKYuchaLpq+jvsTr45WAp/ubR5gyX1pspiVLyht6kQcDXWH++bT+dR7lU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730721359; c=relaxed/simple;
-	bh=Fa2zPJ/3Hgphh8I53dBAXu1JO6ZGeanmcTyxKNELSJE=;
+	s=arc-20240116; t=1730724767; c=relaxed/simple;
+	bh=qfF7Se/dd2tJLYRgUK05fufd9D+Xh/Ma4qzF4RpFNsE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a2rzRf3eUVRX7419lziyysGiD/OXVUPSHcVHc0AnLFVa4TVsVexmeg9U2/wYBRNmP8DhfvUWK2477AYlqhlKopjd/yCAIsCTU8YcsJeFrGLX6oB1Oqcn7Eyv4bqDI1rKr9kc6ARCmVEf01soSll7TtXFFPyVPjaCl79l5OFHgXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XhqfT2SjKz4f3jXP;
-	Mon,  4 Nov 2024 19:55:29 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 3E2501A018D;
-	Mon,  4 Nov 2024 19:55:47 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP3 (Coremail) with SMTP id _Ch0CgBH2cU_tihnh440Aw--.62234S2;
-	Mon, 04 Nov 2024 19:55:45 +0800 (CST)
-Message-ID: <5c16fb2f-efa2-4639-862d-99acbd231660@huaweicloud.com>
-Date: Mon, 4 Nov 2024 19:55:43 +0800
+	 In-Reply-To:Content-Type; b=sICVirdxaKW2gxbTRhk4AXRVn31qj0149xUcrJUugVJyj6089uRI38tuuSx1SqToAeGPdnlZJbMBxo6mHRUctYZzsrzv1HC08X1l07rNR27PSzMa5GP5t8UOG5u24WEH5IlcFMq+qPjHyDDQFRIb6hV9/Vt0WZ8qZpxtdIePtd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=geekplace.eu; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=geekplace.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-539eb97f26aso1892404e87.2;
+        Mon, 04 Nov 2024 04:52:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730724760; x=1731329560;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g6wdq/nEs/3WVwSaO3vA/OwRN/JMzXZwUfX2FbRlt7w=;
+        b=MIxAu9ADRDRwOcTMvTegT3qp8qT1LZQxlwtF1kzjy9JZyyy8hgUSgvXmvTLRxzrcQ1
+         bGFyAKeebXHTmfACGVa1AldtKjqiBCz30rTDzeBrgpTRxZ8LqQkIIrCG3RgXrLKJR1UO
+         ohe2SUlHHKWF3qqCMtYR23IdwWJkSYH+qwXLuCv3Hr8oeruhhYqadMAvGPCUHrKkfYMO
+         icQqMsk30vMsyUuxmbNseUblBtas8998SVgx4XU2DI+0vvLT51AWf6eh1iLliZV9Cg7V
+         SpVzZyn6UNc7S4bR+yi0joSXzfEA/bIsfTyH2ELcaUko/7480S80uNXVwZB+6xq4R8pw
+         0lIw==
+X-Forwarded-Encrypted: i=1; AJvYcCV03lSJSPqHT/BZxjbsAU/cLYrBEpLSCgTeWIDAa3CEEKKVP/0bxKv6auEcRZM6zeOhl5KuQF7GtbuTw88K@vger.kernel.org, AJvYcCVioPzQ5ra1M0H+L828GKuQJCgh3FQ7ujUyiDVV4G79HwVn9lumT2nuQcHfWi/S6lEnI36XLaf49SfqAcI+@vger.kernel.org, AJvYcCXLnKXsGtTK8/2TmA7TdStu8c4ZstvR/Sgnt/5unGJVtFEZLyVAmIufbL2khaf1zRbqWWc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwkHMSwgEbKTUqwiOXSaXT/JSsyr2s7gYp9zby6GzSHHS7VvfX3
+	dPJgA5PivcIfhpj+ogZHGmgTDSeKfIJMNX4rDaZM+1r8ugxbGl3T
+X-Google-Smtp-Source: AGHT+IFOI2mOAhadRlqXRkvN3uIDMiTt4juDzrYLjOkTHI62hBYYH/cDc17MBb84TYiLbCI5lbkflw==
+X-Received: by 2002:a05:6512:128a:b0:539:f2f6:c70f with SMTP id 2adb3069b0e04-53b7ecd58cdmr8550171e87.8.1730724758556;
+        Mon, 04 Nov 2024 04:52:38 -0800 (PST)
+Received: from ?IPV6:2001:638:a06:1028:af7d:c868:ce43:5ee1? ([2001:638:a06:1028:af7d:c868:ce43:5ee1])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4327d5e7c51sm151606305e9.25.2024.11.04.04.52.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Nov 2024 04:52:37 -0800 (PST)
+Message-ID: <935ac01a-8a1b-4986-9802-d2d1fd6445c2@geekplace.eu>
+Date: Mon, 4 Nov 2024 13:52:35 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -47,356 +62,68 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2] bpf: Add kernel symbol for struct_ops
- trampoline
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Yonghong Song <yonghong.song@linux.dev>, Kui-Feng Lee <thinker.li@gmail.com>
-References: <20241101111948.1570547-1-xukuohai@huaweicloud.com>
- <CAADnVQKnJkJpWkuxC32UPc4cvTnT2+YEnm8TktrEnDNO7ZbCdA@mail.gmail.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <CAADnVQKnJkJpWkuxC32UPc4cvTnT2+YEnm8TktrEnDNO7ZbCdA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild,bpf: pass make jobs' value to pahole
+To: Masahiro Yamada <masahiroy@kernel.org>,
+ =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier
+ <nicolas@fjasle.eu>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20241102100452.793970-1-flo@geekplace.eu>
+ <73398de9-620c-9fb9-8414-d0f5c85ac53a@applied-asynchrony.com>
+ <CAK7LNATd0UNu8KsxeD-q2mDUTxQD3ATL1wF59B9K2pxzU08OQQ@mail.gmail.com>
+Content-Language: en-US, de-DE
+From: Florian Schmaus <flo@geekplace.eu>
+In-Reply-To: <CAK7LNATd0UNu8KsxeD-q2mDUTxQD3ATL1wF59B9K2pxzU08OQQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgBH2cU_tihnh440Aw--.62234S2
-X-Coremail-Antispam: 1UD129KBjvAXoW3Zw43Jw1rKw4fJrWfWF4UArb_yoW8Jw4UAo
-	WUGrn3JF1xJw18Wa1kJwn3XF4avay0qF9rAr4Fq3WrWF4Iq3y7KryUGr1rJFWIqFW8ta17
-	Aa4DK34rAanxJF1rn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUY77kC6x804xWl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK
-	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
-	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF
-	7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7
-	CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
-	rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
-	IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kK
-	e7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On 11/2/2024 2:19 AM, Alexei Starovoitov wrote:
-> On Fri, Nov 1, 2024 at 4:08 AM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+On 03/11/2024 14.22, Masahiro Yamada wrote:
+> On Sun, Nov 3, 2024 at 9:04 PM Holger Hoffstätte
+> <holger@applied-asynchrony.com> wrote:
 >>
->> From: Xu Kuohai <xukuohai@huawei.com>
+>> On 2024-11-02 11:04, Florian Schmaus wrote:
+>>> Pass the value of make's -j/--jobs argument to pahole, to avoid out of
+>>> memory errors and make pahole respect the "jobs" value of make.
+>>>
+>>> On systems with little memory but many cores, invoking pahole using -j
+>>> without argument potentially creates too many pahole instances,
+>>> causing an out-of-memory situation. Instead, we should pass make's
+>>> "jobs" value as an argument to pahole's -j, which is likely configured
+>>> to be (much) lower than the actual core count on such systems.
+>>>
+>>> If make was invoked without -j, either via cmdline or MAKEFLAGS, then
+>>> JOBS will be simply empty, resulting in the existing behavior, as
+>>> expected.
+>>>
+>>> Signed-off-by: Florian Schmaus <flo@geekplace.eu>
 >>
->> Without kernel symbols for struct_ops trampoline, the unwinder may
->> produce unexpected stacktraces.
->>
->> For example, the x86 ORC and FP unwinders check if an IP is in kernel
->> text by verifying the presence of the IP's kernel symbol. When a
->> struct_ops trampoline address is encountered, the unwinder stops due
->> to the absence of symbol, resulting in an incomplete stacktrace that
->> consists only of direct and indirect child functions called from the
->> trampoline.
->>
->> The arm64 unwinder is another example. While the arm64 unwinder can
->> proceed across a struct_ops trampoline address, the corresponding
->> symbol name is displayed as "unknown", which is confusing.
->>
->> Thus, add kernel symbol for struct_ops trampoline. The name is
->> bpf_trampoline_<PROG_NAME>, where PROG_NAME is the name of the
->> struct_ops prog linked to the trampoline.
->>
->> Below is a comparison of stacktraces captured on x86 by perf record,
->> before and after this patch.
->>
->> Before:
->>
->> ... FP chain: nr:4
->> .....  0: ffffffffffffff80 # PERF_CONTEXT_KERNEL mark
->> .....  1: ffffffff8116545d
->> .....  2: ffffffff81167fcc
->> .....  3: ffffffff813088f4
->>   ... thread: iperf:595
->>   ...... dso: /proc/kcore
->> iperf     595 [002]  9015.616291:     824245  cycles:
->>          ffffffff8116545d __lock_acquire+0xad ([kernel.kallsyms])
->>          ffffffff81167fcc lock_acquire+0xcc ([kernel.kallsyms])
->>          ffffffff813088f4 __bpf_prog_enter+0x34 ([kernel.kallsyms])
->>
->> After:
->>
->> ... FP chain: nr:44
->> .....  0: ffffffffffffff80 # PERF_CONTEXT_KERNEL mark
->> .....  1: ffffffff81165930
->> .....  2: ffffffff81167fcc
->> .....  3: ffffffff813088f4
->> .....  4: ffffffffc000da5e
->> .....  5: ffffffff81f243df
->> .....  6: ffffffff81f27326
->> .....  7: ffffffff81f3a3c3
->> .....  8: ffffffff81f3c99b
->> .....  9: ffffffff81ef9870
->> ..... 10: ffffffff81ef9b13
->> ..... 11: ffffffff81ef9c69
->> ..... 12: ffffffff81ef9f47
->> ..... 13: ffffffff81efa15d
->> ..... 14: ffffffff81efa9c0
->> ..... 15: ffffffff81d979eb
->> ..... 16: ffffffff81d987e8
->> ..... 17: ffffffff81ddce16
->> ..... 18: ffffffff81bc7b90
->> ..... 19: ffffffff81bcf677
->> ..... 20: ffffffff81bd1b4f
->> ..... 21: ffffffff81d99693
->> ..... 22: ffffffff81d99a52
->> ..... 23: ffffffff810c9eb2
->> ..... 24: ffffffff810ca631
->> ..... 25: ffffffff822367db
->> ..... 26: ffffffff824015ef
->> ..... 27: ffffffff811678e6
->> ..... 28: ffffffff814f7d85
->> ..... 29: ffffffff814f8119
->> ..... 30: ffffffff81492fb9
->> ..... 31: ffffffff81355c53
->> ..... 32: ffffffff813d79d7
->> ..... 33: ffffffff813d88fc
->> ..... 34: ffffffff8139a52e
->> ..... 35: ffffffff8139a661
->> ..... 36: ffffffff8152c193
->> ..... 37: ffffffff8152cbc5
->> ..... 38: ffffffff814a5908
->> ..... 39: ffffffff814a72d3
->> ..... 40: ffffffff814a758b
->> ..... 41: ffffffff81008869
->> ..... 42: ffffffff822323e8
->> ..... 43: ffffffff8240012f
+>> As discussed on IRC:
 > 
-> The above is a visual noise.
-> Pls remove such addr dumps from the commit log.
-> The below part is enough.
->
+> Do not do this. Others do not see what was discussed.
 
-OK, will do.
+Sorry, you are right. However, not much was discussed. Holger just 
+pointed out that the memory usage of pahole was already reported as 
+problematic in
 
->>   ... thread: sleep:493
->>   ...... dso: /proc/kcore
->> sleep     493 [000]    55.483168:     410428  cycles:
->>          ffffffff81165930 __lock_acquire+0x580 ([kernel.kallsyms])
->>          ffffffff81167fcc lock_acquire+0xcc ([kernel.kallsyms])
->>          ffffffff813088f4 __bpf_prog_enter+0x34 ([kernel.kallsyms])
->>          ffffffffc000da5e bpf_trampoline_bpf_prog_075f577900bac1d2_bpf_cubic_acked+0x3a ([kernel.kallsyms])
->>          ffffffff81f243df tcp_ack+0xd4f ([kernel.kallsyms])
->>          ffffffff81f27326 tcp_rcv_established+0x3b6 ([kernel.kallsyms])
->>          ffffffff81f3a3c3 tcp_v4_do_rcv+0x193 ([kernel.kallsyms])
->>          ffffffff81f3c99b tcp_v4_rcv+0x11fb ([kernel.kallsyms])
->>          ffffffff81ef9870 ip_protocol_deliver_rcu+0x50 ([kernel.kallsyms])
->>          ffffffff81ef9b13 ip_local_deliver_finish+0xb3 ([kernel.kallsyms])
->>          ffffffff81ef9c69 ip_local_deliver+0x79 ([kernel.kallsyms])
->>          ffffffff81ef9f47 ip_sublist_rcv_finish+0xb7 ([kernel.kallsyms])
->>          ffffffff81efa15d ip_sublist_rcv+0x18d ([kernel.kallsyms])
->>          ffffffff81efa9c0 ip_list_rcv+0x110 ([kernel.kallsyms])
->>          ffffffff81d979eb __netif_receive_skb_list_core+0x21b ([kernel.kallsyms])
->>          ffffffff81d987e8 netif_receive_skb_list_internal+0x208 ([kernel.kallsyms])
->>          ffffffff81ddce16 napi_gro_receive+0xf6 ([kernel.kallsyms])
->>          ffffffff81bc7b90 virtnet_receive_done+0x340 ([kernel.kallsyms])
->>          ffffffff81bcf677 receive_buf+0xd7 ([kernel.kallsyms])
->>          ffffffff81bd1b4f virtnet_poll+0xcbf ([kernel.kallsyms])
->>          ffffffff81d99693 __napi_poll.constprop.0+0x33 ([kernel.kallsyms])
->>          ffffffff81d99a52 net_rx_action+0x1c2 ([kernel.kallsyms])
->>          ffffffff810c9eb2 handle_softirqs+0xe2 ([kernel.kallsyms])
->>          ffffffff810ca631 irq_exit_rcu+0x91 ([kernel.kallsyms])
->>          ffffffff822367db sysvec_apic_timer_interrupt+0x9b ([kernel.kallsyms])
->>          ffffffff824015ef asm_sysvec_apic_timer_interrupt+0x1f ([kernel.kallsyms])
->>          ffffffff811678e6 lock_release+0x186 ([kernel.kallsyms])
->>          ffffffff814f7d85 prepend_path+0x395 ([kernel.kallsyms])
->>          ffffffff814f8119 d_path+0x159 ([kernel.kallsyms])
->>          ffffffff81492fb9 file_path+0x19 ([kernel.kallsyms])
->>          ffffffff81355c53 perf_event_mmap+0x1e3 ([kernel.kallsyms])
->>          ffffffff813d79d7 mmap_region+0x2e7 ([kernel.kallsyms])
->>          ffffffff813d88fc do_mmap+0x4ec ([kernel.kallsyms])
->>          ffffffff8139a52e vm_mmap_pgoff+0xde ([kernel.kallsyms])
->>          ffffffff8139a661 vm_mmap+0x31 ([kernel.kallsyms])
->>          ffffffff8152c193 elf_load+0xa3 ([kernel.kallsyms])
->>          ffffffff8152cbc5 load_elf_binary+0x655 ([kernel.kallsyms])
->>          ffffffff814a5908 bprm_execve+0x2a8 ([kernel.kallsyms])
->>          ffffffff814a72d3 do_execveat_common.isra.0+0x193 ([kernel.kallsyms])
->>          ffffffff814a758b __x64_sys_execve+0x3b ([kernel.kallsyms])
->>          ffffffff81008869 x64_sys_call+0x1399 ([kernel.kallsyms])
->>          ffffffff822323e8 do_syscall_64+0x68 ([kernel.kallsyms])
->>          ffffffff8240012f entry_SYSCALL_64_after_hwframe+0x76 ([kernel.kallsyms])
->>
->> Fixes: 85d33df357b6 ("bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS")
->> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->> Acked-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->> v2:
->> Refine the commit message for clarity and fix a test bot warning
->>
->> v1:
->> https://lore.kernel.org/bpf/20241030111533.907289-1-xukuohai@huaweicloud.com/
->> ---
->>   include/linux/bpf.h         |  3 +-
->>   kernel/bpf/bpf_struct_ops.c | 67 +++++++++++++++++++++++++++++++++++++
->>   kernel/bpf/dispatcher.c     |  3 +-
->>   kernel/bpf/trampoline.c     |  9 +++--
->>   4 files changed, 78 insertions(+), 4 deletions(-)
->>
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index c3ba4d475174..46f8d6c1a55c 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -1402,7 +1402,8 @@ int arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int num_func
->>   void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
->>                                  struct bpf_prog *to);
->>   /* Called only from JIT-enabled code, so there's no need for stubs. */
->> -void bpf_image_ksym_add(void *data, unsigned int size, struct bpf_ksym *ksym);
->> +void bpf_image_ksym_init(void *data, unsigned int size, struct bpf_ksym *ksym);
->> +void bpf_image_ksym_add(struct bpf_ksym *ksym);
->>   void bpf_image_ksym_del(struct bpf_ksym *ksym);
->>   void bpf_ksym_add(struct bpf_ksym *ksym);
->>   void bpf_ksym_del(struct bpf_ksym *ksym);
->> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
->> index fda3dd2ee984..172a081ed1c3 100644
->> --- a/kernel/bpf/bpf_struct_ops.c
->> +++ b/kernel/bpf/bpf_struct_ops.c
->> @@ -38,6 +38,9 @@ struct bpf_struct_ops_map {
->>           * that stores the func args before calling the bpf_prog.
->>           */
->>          void *image_pages[MAX_TRAMP_IMAGE_PAGES];
->> +       u32 ksyms_cnt;
->> +       /* ksyms for bpf trampolines */
->> +       struct bpf_ksym *ksyms;
->>          /* The owner moduler's btf. */
->>          struct btf *btf;
->>          /* uvalue->data stores the kernel struct
->> @@ -586,6 +589,35 @@ int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
->>          return 0;
->>   }
->>
->> +static void bpf_struct_ops_ksym_init(struct bpf_prog *prog, void *image,
->> +                                    unsigned int size, struct bpf_ksym *ksym)
->> +{
->> +       int n;
->> +
->> +       n = strscpy(ksym->name, "bpf_trampoline_", KSYM_NAME_LEN);
->> +       strncat(ksym->name + n, prog->aux->ksym.name, KSYM_NAME_LEN - 1 - n);
->> +       INIT_LIST_HEAD_RCU(&ksym->lnode);
->> +       bpf_image_ksym_init(image, size, ksym);
->> +}
->> +
->> +static void bpf_struct_ops_map_ksyms_add(struct bpf_struct_ops_map *st_map)
->> +{
->> +       struct bpf_ksym *ksym = st_map->ksyms;
->> +       struct bpf_ksym *end = ksym + st_map->ksyms_cnt;
->> +
->> +       while (ksym != end && ksym->start)
->> +               bpf_image_ksym_add(ksym++);
->> +}
->> +
->> +static void bpf_struct_ops_map_ksyms_del(struct bpf_struct_ops_map *st_map)
->> +{
->> +       struct bpf_ksym *ksym = st_map->ksyms;
->> +       struct bpf_ksym *end = ksym + st_map->ksyms_cnt;
->> +
->> +       while (ksym != end && ksym->start)
->> +               bpf_image_ksym_del(ksym++);
->> +}
->> +
->>   static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->>                                             void *value, u64 flags)
->>   {
->> @@ -601,6 +633,7 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->>          int prog_fd, err;
->>          u32 i, trampoline_start, image_off = 0;
->>          void *cur_image = NULL, *image = NULL;
->> +       struct bpf_ksym *ksym;
->>
->>          if (flags)
->>                  return -EINVAL;
->> @@ -640,6 +673,7 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->>          kdata = &kvalue->data;
->>
->>          module_type = btf_type_by_id(btf_vmlinux, st_ops_ids[IDX_MODULE_ID]);
->> +       ksym = st_map->ksyms;
->>          for_each_member(i, t, member) {
->>                  const struct btf_type *mtype, *ptype;
->>                  struct bpf_prog *prog;
->> @@ -735,6 +769,11 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->>
->>                  /* put prog_id to udata */
->>                  *(unsigned long *)(udata + moff) = prog->aux->id;
->> +
->> +               /* init ksym for this trampoline */
->> +               bpf_struct_ops_ksym_init(prog, image + trampoline_start,
->> +                                        image_off - trampoline_start,
->> +                                        ksym++);
+https://lore.kernel.org/lkml/20240820085950.200358-1-jirislaby@kernel.org/
+
+My patch would potentially help there as well, as it allows the user to 
+limit the number of threads used by pahole.
+
+
+> I guess the right thing to do is to join the jobserver.
 > 
-> Thanks for the patch.
-> I think it's overkill to add ksym for each callsite within a single
-> trampoline.
-> 1. The prog name will be next in the stack. No need to duplicate it.
-> 2. ksym-ing callsites this way is quite unusual.
-> 3. consider irq on other insns within a trampline.
->     The unwinder won't find anything in such a case.
-> 
-> So I suggest to add only one ksym that covers the whole trampoline.
-> The name could be "bpf_trampoline_structopsname"
-> that is probably st_ops_desc->type.
->
+> https://www.gnu.org/software/make/manual/html_node/POSIX-Jobserver.html
 
-IIUC, the "whole trampoline" for a struct_ops is actually the page
-array st_map->image_pages[MAX_TRAMP_IMAGE_PAGES], where each page is
-allocated by arch_alloc_bpf_trampoline(PAGE_SIZE).
+Yes, this would be the ideal solution. Until it is implemented, the 
+proposed patch is probably the next best thing.
 
-Since the virtual addresses of these pages are *NOT* guaranteed to
-be contiguous, I dont think we can create a single ksym for them.
-
-And if we add a ksym for each individual page, it seems we will end
-up with an odd name for each ksym.
-
-Given that each page consists of one or more bpf trampolines, which
-are not different from bpf trampolines for other prog types, such as
-bpf trampolines for fentry, and since each bpf trampoline for other
-prog types already has a ksym, I think it is not unusual to add ksym
-for each single bpf trampoline in the page.
-
-And, there are no instructions between adjacent bpf trampolines within
-a page, nothing between two trampolines can be interrupted.
-
-For the name, bpf_trampoline_<struct_ops_name>_<member_name>, like
-bpf_trampoline_tcp_congestion_ops_pkts_acked, seems appropriate.
-
->>          }
->>
->>          if (st_ops->validate) {
->> @@ -790,6 +829,8 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->>   unlock:
->>          kfree(tlinks);
->>          mutex_unlock(&st_map->lock);
->> +       if (!err)
->> +               bpf_struct_ops_map_ksyms_add(st_map);
->>          return err;
->>   }
->>
->> @@ -883,6 +924,10 @@ static void bpf_struct_ops_map_free(struct bpf_map *map)
->>           */
->>          synchronize_rcu_mult(call_rcu, call_rcu_tasks);
->>
->> +       /* no trampoline in the map is running anymore, delete symbols */
->> +       bpf_struct_ops_map_ksyms_del(st_map);
->> +       synchronize_rcu();
->> +
-> 
-> This is substantial overhead and why ?
-> synchronize_rcu_mult() is right above.
->
-
-I think we should ensure no trampoline is running or could run before
-its ksym is deleted from the symbol table. If this order is not ensured,
-a trampoline can be interrupted by a perf irq after its symbol is deleted,
-resulting a broken stacktrace since the trampoline symbol cound not be
-found by the perf irq handler.
-
-This patch deletes ksyms after synchronize_rcu_mult() to ensure this order.
-
-> pw-bot: cr
-
+- Florian
 
