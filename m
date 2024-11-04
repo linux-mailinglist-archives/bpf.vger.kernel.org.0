@@ -1,54 +1,54 @@
-Return-Path: <bpf+bounces-43913-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43914-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8146D9BBC6B
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 18:53:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41E0C9BBC6E
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 18:53:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 463A8282A0A
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 17:53:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED3C71F23238
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 17:53:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFA911C4A33;
-	Mon,  4 Nov 2024 17:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B831CACC0;
+	Mon,  4 Nov 2024 17:53:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LLD8ot17"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GCT/aAQQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B14D1C9EBF;
-	Mon,  4 Nov 2024 17:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFECE1CF96;
+	Mon,  4 Nov 2024 17:53:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730742789; cv=none; b=s+DyyPt1KApAHe1XRD5OWpcEb/QxaYlZkJzWc2THNOey0aeFUTpgm1GfbaC535vf7SNkLfQlAJkEM5xGTSRUzDlP+iV5B2Y7PRQUPxyHDjR+pvms375wVMYj2Cj6PeuDDG0s2cKlYjwHtDmuxIcgLkvkV3tXDhcbMoQ/k7vvOOU=
+	t=1730742797; cv=none; b=KoTk8IpuJNx1FTnxTv0iGzwixiqd/zQaXEDe149AmrXqPEqYUB04rgfFAf9/midwBuwvuI1MIUA+yXmVl/C1eUK8lkDTuEJ8Q4OS/VuW0G0bisjNhyO01n8TrvxEBhMifEiDfqxStOLS4ffdPq2v4lK4Rqd3AEvPiWcFAlKHAEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730742789; c=relaxed/simple;
-	bh=KQEqSw56QpMY+tU0npJBHNqknEbzOsbTrBlfS7wAUuQ=;
+	s=arc-20240116; t=1730742797; c=relaxed/simple;
+	bh=ZDiG8zX1fgcovcm8UjN+AmQPvesoI2ZbNOk88XOFpJw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ednIFvdmG4n0Xe1XldA44qJwcwt1SX47hR3LUYdJTPPvCD6wPEADsn7JNwALXWzIgY6QVO2wmeJx1ZzhZ9jokyuvP0VPRkhoddA6KV6aOUYq3GAiQ/OwmHEB66rocoeVJjtjvOXD0re64XFPSshRxG9uDRZrdQJPUn3ElL8rsAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LLD8ot17; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B388C4CECE;
-	Mon,  4 Nov 2024 17:53:07 +0000 (UTC)
+	 MIME-Version; b=M9DAZGvwyV16Sqrlp9Lxv06fDti79rHpzRNRn5oOJG9GU868eu2kqJz79itLH3BfyMhLRVB9egq2NhWF8P0fNNvnGQvnuZPte5YC2x9X7xD+IpbcnMW+9J6b/SCRmrk3RjlmQ1kHxfEoTV6SHWf8mPUJFlnU4lTp8iaBr7Vqr90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GCT/aAQQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 422B7C4CECE;
+	Mon,  4 Nov 2024 17:53:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730742788;
-	bh=KQEqSw56QpMY+tU0npJBHNqknEbzOsbTrBlfS7wAUuQ=;
+	s=k20201202; t=1730742797;
+	bh=ZDiG8zX1fgcovcm8UjN+AmQPvesoI2ZbNOk88XOFpJw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LLD8ot17015udoeLae05V37MdRB1frEjAqt5xB9tLDcRqHugeLaeEWzYzcB4g1ZiL
-	 bPHZUQxN7zgT4dgsJXplgsvAIDLroIi/7tBbmWiBJgCzURW7fgbXHORAltSE6JHg9x
-	 7it6n0D+sI14nKJwRHGUA0kwEoUqauOkZTOBBZN7Wsh5012jVngb+Ecxm7reRdkUi1
-	 ikHwJcmeTf/8mR4j7RdJ951Fw/cb5lBi9iC9nipq0jTWqjHJtnxv+cYBLmBgKGfoDC
-	 I83Q5YxonFSefUv8f69W2nLhXyZzwUIGTB1wmxeBc3CS+aqa2DJjjJIReQUw/PC6Fv
-	 cu/QurP715w8Q==
+	b=GCT/aAQQEmOiE2CO2EdcO0mROEbV/PfAf5s5dFqoJrvi8TiRxqzEg5keAyPOWOFk1
+	 Uys/qnVri2Ogrf8M8+SC4ewpKvGR2yUpM/bijT4NVgYRqY5U6iP8y+JoY9zq89DIhJ
+	 nQTfVzz/LUQyI+5+BXl0on2TvUx8+cKWMRufZx+WEqPhP8miRBpf16hoHi98eaMRZq
+	 fHkKMin7SPACRskgM094/CkCiRzbpEIAZtj39hN0En/kIwGT8dqbT6O4i0pJ1kQP1p
+	 0Z1FS0XLCI7+ahD6hGtDPHvS0sfVvC6JRbMWHZJ7tYisZ57b/QHe3aB+mHmn8h2kRu
+	 VUkjaRDhftlMQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: stable@vger.kernel.org
 Cc: Andrii Nakryiko <andrii@kernel.org>,
 	bpf@vger.kernel.org,
 	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH stable 5.15] lib/buildid: Fix build ID parsing logic
-Date: Mon,  4 Nov 2024 18:52:53 +0100
-Message-ID: <20241104175256.2327164-2-jolsa@kernel.org>
+Subject: [PATCH stable 6.1 ] lib/buildid: Fix build ID parsing logic
+Date: Mon,  4 Nov 2024 18:52:54 +0100
+Message-ID: <20241104175256.2327164-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241104175256.2327164-1-jolsa@kernel.org>
 References: <20241104175256.2327164-1-jolsa@kernel.org>
@@ -64,12 +64,12 @@ The parse_build_id_buf does not account Elf32_Nhdr header size
 when getting the build id data pointer and returns wrong build
 id data as result.
 
-This is problem only stable trees that merged 8fa2b6817a95 fix,
-the upstream build id code was refactored and returns proper
+This is problem only for stable trees that merged 84887f4c1c3a
+fix, the upstream build id code was refactored and returns proper
 build id.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Fixes: 8fa2b6817a95 ("lib/buildid: harden build ID parsing logic")
+Fixes: 84887f4c1c3a ("lib/buildid: harden build ID parsing logic")
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
  lib/buildid.c | 2 +-
