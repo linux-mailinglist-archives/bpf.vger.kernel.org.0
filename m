@@ -1,100 +1,70 @@
-Return-Path: <bpf+bounces-43896-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43897-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ECA49BBA47
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 17:23:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 15AA59BBA59
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 17:28:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3D4A1F2272C
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 16:23:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9869B1F23353
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 16:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715FC1C4A27;
-	Mon,  4 Nov 2024 16:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 758361C2325;
+	Mon,  4 Nov 2024 16:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BmKkL13n"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vUxy+76d";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5wKubNt2"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 534E71C3306
-	for <bpf@vger.kernel.org>; Mon,  4 Nov 2024 16:22:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA0D4A08;
+	Mon,  4 Nov 2024 16:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730737351; cv=none; b=LsAAETSmJ6ikDmuZgCJfmV3b5Sh/euXouR9svWfwwpV9MXRp0mnO3rg6Mt7BVmucPnAb5PE2LtGgeG5skTLCEWExSSAcVjH706JyZjffpzdoPJahmsfqDNZYTu6gmHyhhYkDPUaFvO8LtvsfUl4Dl0GwHMcL50BaL6J//LSVGIY=
+	t=1730737721; cv=none; b=Rscge52TbztiXul3LYdOc1LtQqG0ohyqDWZjc0cdxYNBXTaT9IVSqOdibpdAYj2vVsGw1MQ0o8PFNS7LkEKabWzEakgx8Rr7B1qTeYdSJuK4ikDnGcNMpJoCEztwlc4V6TP1fIxCV/j61YORU+2z55DwpD4GxstTuZb9rUISvBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730737351; c=relaxed/simple;
-	bh=IQeGnFrlKcJMyxCdPHDpA8uwABSsBIQVxA+KFfNERGI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=E3kb3yJKeO74WmSQ9OZFe4hkkb0VbaFV8b4j9U71S1oLlXZebo7wKy0Ju+VfBOcoBNoiv63wlI9+CswsoaeIUysG8UsGkfOGAzK2DN09h42KadQjs1z0y3RWL/7cXT6sXGSSs0wjvJhq4ohBLHk+679VvhnpH6conhdBcU8Mlhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BmKkL13n; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1730737346;
+	s=arc-20240116; t=1730737721; c=relaxed/simple;
+	bh=1R/Em5fCRSOK0NjH71GssW8QSlYQzsUdM7URV1RwhD8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GfbBhvJXiyRd6KH5KhE+EFBh1J+HmhrZk1s545q7pea+qtOyeToaOpKChzOkQxa3EtRRaOPOgiqbEuyLFDJbfYr0z3rpTyeg6zY6Vo+HnVUvBsojZNJWG+1nG5dqUbpXOhHkuTaaNI4LMUSC3LINq/OEkErrT9Z0NMQou3e32iQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vUxy+76d; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=5wKubNt2; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 4 Nov 2024 17:28:32 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1730737715;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DDAuBted5dLeURKBGQFzMNRty5vbrd8/225x2WxUwFs=;
-	b=BmKkL13nDSr0zQXMumytMngyk1VKHhO26//HxoAY4CNDWZ9EMVyx2nH6Xpdg8rJ4Lb6tv0
-	5MKclcTLkA2xNV3vH/JYsCW/5HRYZ/1tlrZpP7m3NjfQzP5yOg4lY6wOdFD5Viztdt42LW
-	eCQdGPxKqyFIM3NzuD2r7KNfl4P+eQg=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-599-SHGe1_rlOQup0vgQFM_exw-1; Mon, 04 Nov 2024 11:22:24 -0500
-X-MC-Unique: SHGe1_rlOQup0vgQFM_exw-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a9a1e429a8fso363947366b.0
-        for <bpf@vger.kernel.org>; Mon, 04 Nov 2024 08:22:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730737343; x=1731342143;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DDAuBted5dLeURKBGQFzMNRty5vbrd8/225x2WxUwFs=;
-        b=UG4Gd1e9vLclJoPuYwg5RXJpk+cXFzp4Q9+6AOWLS62Qhs9WMGBJ3wymKhDagMKW2g
-         ugDENX98dX8PNLm7Bu0mXPe5hIAsoi3yO8KShx/ZbBxMVPP7UBNU627GuRgC/KWGLkiV
-         JLcU9LLMWAkMptuS5LOEAgbyw9rLC7ACKyTKc3LGB8lG9n2e0xyasjtweqGJl7d2GYEo
-         tSUWIanfV+RlpHDiPXqPwTxogS/3QAT2KYTh3mqYBl6Iyl0TmVQdzIUOn0F1KlzxPT6M
-         UHXFcwX36DmujGrZpvHUNbHTHJ3c/Cwcic16/bBTLD9VYmLS5gx7B8BKfgmFExAint5x
-         zxuA==
-X-Forwarded-Encrypted: i=1; AJvYcCWyvRR2i/9ScEWsbVAw5AGIyXz39y3hYbjV2znqkdCGMKqUxXAK44pMIf2aaVHvKF4nXpQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwAwLlHTF13Ud4ZANuF9cgMFRE7egddRjuO0OrTNKs4P59r2zp5
-	Lp2RyyveEyhc3iTYQSDykcLob+XcaX0sx+Ok0cMXQxU8M5qFE6+7qeK4SLUZVx3Ti/Rf7aRfdWZ
-	HXzwh750bjdYRS+ziP6Lvqovg46XSdZXYvmue868Zl14m+LJsCA==
-X-Received: by 2002:a17:907:1c85:b0:a9a:1f38:e736 with SMTP id a640c23a62f3a-a9e654fb423mr1309266566b.31.1730737343238;
-        Mon, 04 Nov 2024 08:22:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHOiR6QMYgQdW4+mshnrfOWBlpQZoTzVQuyXvd/zEM+yk9iclHiooZDENzVV+mOV9mrs3qrAQ==
-X-Received: by 2002:a17:907:1c85:b0:a9a:1f38:e736 with SMTP id a640c23a62f3a-a9e654fb423mr1309263966b.31.1730737342768;
-        Mon, 04 Nov 2024 08:22:22 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9eb16d9ef8sm1803866b.70.2024.11.04.08.22.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Nov 2024 08:22:22 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 4EE44164C05D; Mon, 04 Nov 2024 17:22:21 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>, Stanislav Fomichev <sdf@fomichev.me>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- nex.sw.ncis.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 09/18] page_pool: allow mixing PPs within
- one bulk
-In-Reply-To: <1c32ebcd-ae94-42fb-9b18-726da532161f@intel.com>
-References: <20241030165201.442301-1-aleksander.lobakin@intel.com>
- <20241030165201.442301-10-aleksander.lobakin@intel.com>
- <87ldy39k2g.fsf@toke.dk> <1c32ebcd-ae94-42fb-9b18-726da532161f@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 04 Nov 2024 17:22:21 +0100
-Message-ID: <87y11z7yv6.fsf@toke.dk>
+	bh=6jg03i2HOOyHrghHv90ujEbU+xepLRRkhBI0ZKP+Fm8=;
+	b=vUxy+76d/OOJGPok1D8si0OLswywxWeXl0IVefY4wS3UA6Lork9tiCRWNEiqJjTsvU3wB5
+	QnxOAjUxqB/9JoZLXGLmcq0NkqXAoy/xgUwHkg8mXU1srxxTkNzlIA/Bmy/6TA33vkcP+M
+	lbo16kWWoMu7EO3qoUu/rRfewiHuvfOnjrlwe2uMLGfX1vSy3mBL11CRhTuOFfT7AUult9
+	IONaNqxbMEhXe4/WimRIGdknrNowLOCOKCgf1O1ceMt/3GELokrEsBJAF8E7wzKow41nTj
+	AcVCqKq5wyOgVWRE+svj+bwHxKLFvzC9ZoxGsmnS/Itl5Rg3x5yZSU0u+MOEvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1730737715;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6jg03i2HOOyHrghHv90ujEbU+xepLRRkhBI0ZKP+Fm8=;
+	b=5wKubNt2+FZCON3xpdYkEs+YhjDiMOv6tQfzEC8pkTVZoBwpmlCoDLaxRy1qbMmlcckeNZ
+	90bKNGpWDZipIMCg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: syzbot <syzbot+d2adb332fe371b0595e3@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, boqun.feng@gmail.com,
+	bpf@vger.kernel.org, daniel@iogearbox.net, eadavis@qq.com,
+	eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
+	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+	longman@redhat.com, martin.lau@linux.dev, sdf@fomichev.me,
+	song@kernel.org, syzkaller-bugs@googlegroups.com,
+	yonghong.song@linux.dev, tglx@linutronix.de
+Subject: Re: [syzbot] [bpf?] WARNING: locking bug in bpf_map_put
+Message-ID: <20241104162832.OQvrGDiP@linutronix.de>
+References: <67251dc5.050a0220.529b6.015c.GAE@google.com>
+ <67283170.050a0220.3c8d68.0ad6.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,53 +72,150 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <67283170.050a0220.3c8d68.0ad6.GAE@google.com>
 
-Alexander Lobakin <aleksander.lobakin@intel.com> writes:
+On 2024-11-03 18:29:04 [-0800], syzbot wrote:
+> syzbot has bisected this issue to:
+> 
+> commit 560af5dc839eef08a273908f390cfefefb82aa04
+> Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Date:   Wed Oct 9 15:45:03 2024 +0000
+> 
+>     lockdep: Enable PROVE_RAW_LOCK_NESTING with PROVE_LOCKING.
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122a4740580000
+> start commit:   f9f24ca362a4 Add linux-next specific files for 20241031
+> git tree:       linux-next
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=112a4740580000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=162a4740580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=328572ed4d152be9
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d2adb332fe371b0595e3
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=174432a7980000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ffe55f980000
+> 
+> Reported-by: syzbot+d2adb332fe371b0595e3@syzkaller.appspotmail.com
+> Fixes: 560af5dc839e ("lockdep: Enable PROVE_RAW_LOCK_NESTING with PROVE_LOCKING.")
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Date: Fri, 01 Nov 2024 14:09:59 +0100
->
->> Alexander Lobakin <aleksander.lobakin@intel.com> writes:
->>=20
->>> The main reason for this change was to allow mixing pages from different
->>> &page_pools within one &xdp_buff/&xdp_frame. Why not?
->>> Adjust xdp_return_frame_bulk() and page_pool_put_page_bulk(), so that
->>> they won't be tied to a particular pool. Let the latter create a
->>> separate bulk of pages which's PP is different and flush it recursively.
->>> This greatly optimizes xdp_return_frame_bulk(): no more hashtable
->>> lookups. Also make xdp_flush_frame_bulk() inline, as it's just one if +
->>> function call + one u32 read, not worth extending the call ladder.
->>>
->>> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
->>=20
->> Neat idea, but one comment, see below:
->
-> [...]
->
->>> +	if (sub.count)
->>> +		page_pool_put_page_bulk(sub.q, sub.count, true);
->>> +
->>=20
->> In the worst case here, this function can recursively call itself
->> XDP_BULK_QUEUE_SIZE (=3D16) times. Which will blow ~2.5k of stack size,
->> and lots of function call overhead. I'm not saying this level of
->> recursion is likely to happen today, but who knows about future uses? So
->> why not make it iterative instead of recursive (same basic idea, but
->> some kind of 'goto begin', or loop, instead of the recursive call)?
->
-> Oh, great idea!
-> I was also unsure about the recursion here. Initially, I wanted header
-> split frames, which usually have linear/header part from one PP and
-> frag/payload part from second PP, to be efficiently recycled in bulks.
-> Currently, it's not possible, as a bulk will look like [1, 2, 1, 2, ...]
-> IOW will be flush every frame.
-> But I realize the recursion is not really optimal here, just the first
-> that came to my mind. I'll give you Suggested-by here (or
-> Co-developed-by?), really liked your approach :>
+This is due to raw_spinlock_t in bucket::lock and the acquired
+spinlock_t underneath. Would it would to move free part outside of the
+locked section?
 
-Sure, co-developed-by SGTM :)
-
--Toke
-
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index b14b87463ee04..1d8d09fdd2da5 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -824,13 +824,14 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
+ 	hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
+ 		if (l == tgt_l) {
+ 			hlist_nulls_del_rcu(&l->hash_node);
+-			check_and_free_fields(htab, l);
+ 			bpf_map_dec_elem_count(&htab->map);
+ 			break;
+ 		}
+ 
+ 	htab_unlock_bucket(htab, b, tgt_l->hash, flags);
+ 
++	if (l == tgt_l)
++		check_and_free_fields(htab, l);
+ 	return l == tgt_l;
+ }
+ 
+@@ -1181,14 +1182,18 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+ 	 * concurrent search will find it before old elem
+ 	 */
+ 	hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+-	if (l_old) {
++	if (l_old)
+ 		hlist_nulls_del_rcu(&l_old->hash_node);
++	htab_unlock_bucket(htab, b, hash, flags);
++
++	if (l_old) {
+ 		if (!htab_is_prealloc(htab))
+ 			free_htab_elem(htab, l_old);
+ 		else
+ 			check_and_free_fields(htab, l_old);
+ 	}
+-	ret = 0;
++	return 0;
++
+ err:
+ 	htab_unlock_bucket(htab, b, hash, flags);
+ 	return ret;
+@@ -1433,14 +1438,15 @@ static long htab_map_delete_elem(struct bpf_map *map, void *key)
+ 
+ 	l = lookup_elem_raw(head, hash, key, key_size);
+ 
+-	if (l) {
++	if (l)
+ 		hlist_nulls_del_rcu(&l->hash_node);
+-		free_htab_elem(htab, l);
+-	} else {
++	else
+ 		ret = -ENOENT;
+-	}
+ 
+ 	htab_unlock_bucket(htab, b, hash, flags);
++
++	if (l)
++		free_htab_elem(htab, l);
+ 	return ret;
+ }
+ 
+@@ -1647,14 +1653,16 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
+ 		}
+ 
+ 		hlist_nulls_del_rcu(&l->hash_node);
+-		if (!is_lru_map)
+-			free_htab_elem(htab, l);
+ 	}
+ 
+ 	htab_unlock_bucket(htab, b, hash, bflags);
+ 
+-	if (is_lru_map && l)
+-		htab_lru_push_free(htab, l);
++	if (l) {
++		if (is_lru_map)
++			htab_lru_push_free(htab, l);
++		else
++			free_htab_elem(htab, l);
++	}
+ 
+ 	return ret;
+ }
+@@ -1851,15 +1859,12 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 
+ 			/* bpf_lru_push_free() will acquire lru_lock, which
+ 			 * may cause deadlock. See comments in function
+-			 * prealloc_lru_pop(). Let us do bpf_lru_push_free()
+-			 * after releasing the bucket lock.
++			 * prealloc_lru_pop(). htab_lru_push_free() may allocate
++			 * sleeping locks. Let us do bpf_lru_push_free() after
++			 * releasing the bucket lock.
+ 			 */
+-			if (is_lru_map) {
+-				l->batch_flink = node_to_free;
+-				node_to_free = l;
+-			} else {
+-				free_htab_elem(htab, l);
+-			}
++			l->batch_flink = node_to_free;
++			node_to_free = l;
+ 		}
+ 		dst_key += key_size;
+ 		dst_val += value_size;
+@@ -1871,7 +1876,10 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 	while (node_to_free) {
+ 		l = node_to_free;
+ 		node_to_free = node_to_free->batch_flink;
+-		htab_lru_push_free(htab, l);
++		if (is_lru_map)
++			htab_lru_push_free(htab, l);
++		else
++			free_htab_elem(htab, l);
+ 	}
+ 
+ next_batch:
 
