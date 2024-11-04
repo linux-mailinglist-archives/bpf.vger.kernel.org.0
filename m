@@ -1,67 +1,67 @@
-Return-Path: <bpf+bounces-43879-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43881-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 507799BB1D4
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 11:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97BE79BB20D
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 12:01:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 827E31C221A2
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 10:56:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C99621C22321
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 11:01:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDED1CACED;
-	Mon,  4 Nov 2024 10:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 452351D4332;
+	Mon,  4 Nov 2024 10:53:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YvjVUIn5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e8WVVwx7"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F89D1C9EDC;
-	Mon,  4 Nov 2024 10:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56021D415B;
+	Mon,  4 Nov 2024 10:53:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730717522; cv=none; b=YaXaCV/7fbBh8NX7VyiMsnC739DNifP4jIgHHMmtV3I7QvQ6w70udLwVHYvVJrso49b9A29dMDZs8blDobgIIkSQUfpzIWhQvYgBSzwILOP9+5P7Gt6iQa11/Dt0+RIKaCSAOX8/X/SVhqviasfeODMrETchnmUnsjCD2f0Q/A4=
+	t=1730717586; cv=none; b=QNjOr3WaGuiJOOyFj2nwzD+5QxhZjqPYqOO9mlEylsYVzsm14JPsuqQsoldj+aNAj6VZCKxWY4qkg/Wq8yboa4zqyjxp9mvDtiN8I674Y8mcub2uPa5VrjmILiqAWczbND8qRlrJL3rQrF0PC3ONfOq1oHOIT48QqrN/mKqm/qE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730717522; c=relaxed/simple;
+	s=arc-20240116; t=1730717586; c=relaxed/simple;
 	bh=SxhuDvpyLe08lQ2cNq/7Bt+sb16e8KR2Hp9PnBmPFoE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NOkAMhFXstoepMC2aRU5SRlTfqeVuxn/dEtydZIJGc76ggwwMPHeh2nQT2/Ldv86V2+XBDfqghJI2/3zGEKx891MiYwwmheeaGeBxBbEK5j1a+uM6SVJ72F8f5ViPBjh00q7xoFV2Ft1/sFber55gUcSy6ktUZODanfH0qPrBGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YvjVUIn5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F22CBC4CED2;
-	Mon,  4 Nov 2024 10:52:00 +0000 (UTC)
+	 MIME-Version; b=tMd8xUE6fq+C7r/M77j1TBVHVhl1+J3Zk59TqBB1XylJuC7nRhpYeZlIQwnkeSbQB1jWuDJPQAlAgHP0PHCdR7TEa74Od8vmjdfMUdQgm8deOu0G+x37krGyRWN2BZ7XBu2GHvMWIQM5KhLdHJbpKL9Lleh6cOd5xuUFFJbwGKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e8WVVwx7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1EA2C4CED1;
+	Mon,  4 Nov 2024 10:53:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730717522;
+	s=k20201202; t=1730717586;
 	bh=SxhuDvpyLe08lQ2cNq/7Bt+sb16e8KR2Hp9PnBmPFoE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YvjVUIn5BAq6WQIPIONyBf7Z5lRX+XW+YNYt0akaAfsEfulWE7pF1AjMikohY0khe
-	 FKMu4JLnktoW9S1msqTzEdmkDA2G5hZv0JnGgwaJ8vH1rsejy4eY6N6tetZ4agGHDo
-	 O8BH31FL4BWliNH/EuZhmHX0L+0SChOEefOZRlPFimBryemmO4PBSgeEDcskm8x9FX
-	 6If96hExdhmDNwLjn6aoHXYY89rpVA4LxHHyEpVvztkXhOybKL0Vc8Uf8zBuQ//nYN
-	 ns7+POATb4gLo2Nb8Cwq2JPdFSsySOUP6aTM40Fd2PfLviOUTOcQ/DMn9x9BiSGqkf
-	 giuikhbrQc16Q==
+	b=e8WVVwx7PeH4Sc6raEOUzLUfqX43fun3eWWUyMLjdV2WcdGttO4O0FwvUs54qLLhC
+	 7FG7LnYdr6P1wRv0Flx66myVmgSRHlym/Md/TL+D9mdSqIvmRJA0LuKED7OoSN74Sn
+	 EquwnCPO4SOT/xTRNcGtB2DWPjiJgCi1SpWZAX1TzMjDREUifSqIDDQpup6n5hA/s3
+	 KBDTNfquiCFzA5r9R6FPeJsZ81TPn2h4NgYnbVg+8Jna3AsrTMUmJlvSANQ0GS+LS2
+	 3EMsKrchwwygh6NOo6tqhS20yiTBFCSeWEnlmHcnewAq81G7+nck4sLTocrL3IGuzE
+	 3YaWJIWxctmXQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Jiayuan Chen <mrpre@163.com>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	edumazet@google.com,
 	john.fastabend@gmail.com,
 	jakub@cloudflare.com,
+	edumazet@google.com,
 	davem@davemloft.net,
 	dsahern@kernel.org,
 	kuba@kernel.org,
 	pabeni@redhat.com,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.11 20/21] bpf: fix filed access without lock
-Date: Mon,  4 Nov 2024 05:49:56 -0500
-Message-ID: <20241104105048.96444-20-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 13/14] bpf: fix filed access without lock
+Date: Mon,  4 Nov 2024 05:52:05 -0500
+Message-ID: <20241104105228.97053-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241104105048.96444-1-sashal@kernel.org>
-References: <20241104105048.96444-1-sashal@kernel.org>
+In-Reply-To: <20241104105228.97053-1-sashal@kernel.org>
+References: <20241104105228.97053-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.11.6
+X-stable-base: Linux 6.6.59
 Content-Transfer-Encoding: 8bit
 
 From: Jiayuan Chen <mrpre@163.com>
