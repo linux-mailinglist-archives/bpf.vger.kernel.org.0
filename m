@@ -1,167 +1,105 @@
-Return-Path: <bpf+bounces-43974-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43973-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A14099BC172
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 00:28:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D62C19BC164
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 00:27:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8404EB21707
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 23:28:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BA541C21E6E
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 23:27:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443921FE0FE;
-	Mon,  4 Nov 2024 23:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34B641FDFA5;
+	Mon,  4 Nov 2024 23:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uD6aQVKZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D7qlqngr"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AAC11FDFB8;
-	Mon,  4 Nov 2024 23:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1AD33C6BA;
+	Mon,  4 Nov 2024 23:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730762866; cv=none; b=DUmZPgGllUSpsCScWP67LZ4WMz+xT3AIpFq7UTpxuw5IfdeNNr8pE5DNZPab2rE0JxBnk3V8TCMgYZF5jbe1vGmyB5Lai0nFa1jEqP98FoTjJg38Us1QgBtAOjRLVG82HwqMwtRC1PPLrujn7N1zC02qF3YkIxvSa4oXiQfAZTM=
+	t=1730762865; cv=none; b=Z1Qp4x0P7nK1CJ7gMcR9lklc4rvPTF+sW3joHTegwBXHIgPV3RWuve6Ga3nKPRNt72xHBubaXwg4yJctlVPrJ0uqBA6dfc1OLUGbvxU6ZGbWqJ+2sQSGLIjHx56uFIJopwxriURLop1DMmZV8U9RCqbkuZUg5ioIY5CbUX3ddxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730762866; c=relaxed/simple;
-	bh=G7tF/ZaqXBtDJLMTb97Oc+SktZk//Kx3oRVjwm2Gkec=;
+	s=arc-20240116; t=1730762865; c=relaxed/simple;
+	bh=eJE0p80D+T3UvwAPfjYdm4dQfV/JHA4oN4J3eSvWb3I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iMfr9ma5FM5iB+sdPQI+ndfM51faiAWWz/rSdiqVGlsTnRDmmrbVlCCzCVQfOR+CUMMgOC020tyydBrT60q6bI3PWwXC6wyIs3oc6FirponM3aGC8+VE9nH8tjmg1eu9f4qqmpUcBEEFUvDTV4354qXfHRoQYtp7o5KRUYqqpXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uD6aQVKZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB3A7C4CECE;
-	Mon,  4 Nov 2024 23:27:42 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ddKXS20tDuyvwhIDHxUPWveWe9bZv09n9klp8E/T8pfNAszjHBp/G61jII09F+d5CjqI7JIHy8nQZOR+Teg0DWu21TC1iOEoj8NKY77shoVmvXtjirUaaFGjxmJxYnAoDJmeYmV7jqFtoh90x/nt49kraZLpP1zWd0qNLDYbDMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D7qlqngr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B829BC4CED1;
+	Mon,  4 Nov 2024 23:27:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730762866;
-	bh=G7tF/ZaqXBtDJLMTb97Oc+SktZk//Kx3oRVjwm2Gkec=;
+	s=k20201202; t=1730762865;
+	bh=eJE0p80D+T3UvwAPfjYdm4dQfV/JHA4oN4J3eSvWb3I=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uD6aQVKZ8xYi+PTTwYupZ6PGdQoZjGxor3CJ6T/KZlWjFxurKitUGg4OsLqeVl22R
-	 oTMAQXmWqXP0EO6JaBIYZ9VEqoL35XGUitRTwgi+bJtDhjSL6UuAIcLW7XMfz2tbvE
-	 x3MFVpG1yHfJRXfsS6NaRprs6A1rIqEf/OZ8jX2sy+DwUFdsMetTULRZ3iOQoxlOsn
-	 5JoGBx6K0BrtfF9Z0+hxFGtNMWymLR+Dppngi0NxeJnTpYgOWeDN7FHowhaRXk3khA
-	 u6nha7LupF4lzkb6ryYEoHDIxLmpv0DY+XiF9diWn7xWUzJjMMZ/7hbbF3UF0ISQXS
-	 B++nhrf0RE3MQ==
-Date: Mon, 4 Nov 2024 16:27:41 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
+	b=D7qlqngrtdkOAwNOIsMxxe+dYaUBO2X5GMoy+pVhG+R3rnds/8XURvZShUEMjNu1N
+	 6aBFNnuMzgEerGxRWNOdbnZ/osDjgsCsaYl4am8bVABUBxfHanMAlfDk99xqNFaXuH
+	 EcsIH1tmxXmCVkGYcBjv2Dp1USX5M2Bnwxy9BbdGI38lfilA+uyTc5+3ugjPrYK9mi
+	 K7VZLFnWEwFYtGPUZoZZhMJEGl8KnvOvistMuWyaACYyt/mTf5s42DAMyB9ZcrZjiS
+	 NsnMmPMc+wfiZM9FLg76cMOzX92SvDpy+l6hmQPBAYPEeTR+etvH1vFyDPLG25QxiP
+	 vNyBGZGudvFew==
+Date: Tue, 5 Nov 2024 00:27:42 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, kernel test robot <oliver.sang@intel.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v7 6/8] x86/module: prepare module loading for ROX
- allocations of text
-Message-ID: <20241104232741.GA3843610@thelio-3990X>
-References: <20241023162711.2579610-1-rppt@kernel.org>
- <20241023162711.2579610-7-rppt@kernel.org>
+	Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
+Subject: Re: [PATCH rcu 08/15] srcu: Add srcu_read_lock_lite() and
+ srcu_read_unlock_lite()
+Message-ID: <ZylYbsU7uE7jX5Yd@pavilion.home>
+References: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
+ <20241015161112.442758-8-paulmck@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20241023162711.2579610-7-rppt@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20241015161112.442758-8-paulmck@kernel.org>
 
-Hi Mike,
-
-On Wed, Oct 23, 2024 at 07:27:09PM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+Le Tue, Oct 15, 2024 at 09:11:05AM -0700, Paul E. McKenney a écrit :
+> This patch adds srcu_read_lock_lite() and srcu_read_unlock_lite(), which
+> dispense with the read-side smp_mb() but also are restricted to code
+> regions that RCU is watching.  If a given srcu_struct structure uses
+> srcu_read_lock_lite() and srcu_read_unlock_lite(), it is not permitted
+> to use any other SRCU read-side marker, before, during, or after.
 > 
-> When module text memory will be allocated with ROX permissions, the
-> memory at the actual address where the module will live will contain
-> invalid instructions and there will be a writable copy that contains the
-> actual module code.
+> Another price of light-weight readers is heavier weight grace periods.
+> Such readers mean that SRCU grace periods on srcu_struct structures
+> used by light-weight readers will incur at least two calls to
+> synchronize_rcu().  In addition, normal SRCU grace periods for
+> light-weight-reader srcu_struct structures never auto-expedite.
+> Note that expedited SRCU grace periods for light-weight-reader
+> srcu_struct structures still invoke synchronize_rcu(), not
+> synchronize_srcu_expedited().  Something about wishing to keep
+> the IPIs down to a dull roar.
 > 
-> Update relocations and alternatives patching to deal with it.
+> The srcu_read_lock_lite() and srcu_read_unlock_lite() functions may not
+> (repeat, *not*) be used from NMI handlers, but if this is needed, an
+> additional flavor of SRCU reader can be added by some future commit.
 > 
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> Tested-by: kdevops <kdevops@lists.linux.dev>
+> [ paulmck: Apply Alexei Starovoitov expediting feedback. ]
+> [ paulmck: Apply kernel test robot feedback. ]
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Tested-by: kernel test robot <oliver.sang@intel.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: <bpf@vger.kernel.org>
 
-Hopefully the last time you have to hear from me, as I am only
-experiencing issues with only one of my test machines at this point and
-it is my only machine that supports IBT, so it seems to point to
-something specific with the IBT part of the FineIBT support. I notice
-either a boot hang or an almost immediate reboot (triple fault?). I
-guess this is how I missed reporting this earlier, as my machine was
-falling back to the default distribution kernel after the restart and I
-did not notice I was not actually testing a -next kernel.
+This might be a dump question but I have to ask. Could this replace
+RCU-TASKS-TRACE?
 
-Checking out the version of this change that is in next-20241104, commit
-7ca6ed09db62 ("x86/module: prepare module loading for ROX allocations of
-text"), it boots with either 'cfi=off' or 'cfi=kcfi' but it exhibits the
-issues noted above with 'cfi=fineibt'. At the immediate parent, commit
-b575d981092f ("arch: introduce set_direct_map_valid_noflush()"), all
-three combinations boot fine.
-
-  $ uname -r; tr ' ' '\n' </proc/cmdline | grep cfi=
-
-  6.12.0-rc5-debug-00214-g7ca6ed09db62
-  cfi=kcfi
-
-  6.12.0-rc5-debug-00214-g7ca6ed09db62
-  cfi=off
-
-  6.12.0-rc5-debug-00213-gb575d981092f
-  cfi=fineibt
-
-  6.12.0-rc5-debug-00213-gb575d981092f
-  cfi=kcfi
-
-  6.12.0-rc5-debug-00213-gb575d981092f
-  cfi=off
-
-I do not think this machine has an accessible serial port and I do not
-think IBT virtualization is supported via either KVM or TCG in QEMU, so
-I am not sure how to get more information about what is going on here. I
-wanted to try reverting these changes on top of next-20241104 but there
-was a non-trivial conflict in mm/execmem.c due to some changes on top,
-so I just tested in the mm history.
-
-If there is any other information I can provide or patches I can test, I
-am more than happy to do so.
-
-Cheers,
-Nathan
+Thanks.
 
