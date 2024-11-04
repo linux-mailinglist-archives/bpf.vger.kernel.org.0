@@ -1,124 +1,167 @@
-Return-Path: <bpf+bounces-43972-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43974-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 564F79BC0F7
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 23:32:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A14099BC172
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 00:28:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C570FB22158
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 22:32:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8404EB21707
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2024 23:28:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA791FA270;
-	Mon,  4 Nov 2024 22:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443921FE0FE;
+	Mon,  4 Nov 2024 23:27:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YtPbXOx5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uD6aQVKZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693DE83CD3;
-	Mon,  4 Nov 2024 22:32:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AAC11FDFB8;
+	Mon,  4 Nov 2024 23:27:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730759559; cv=none; b=SfiAst0hQroPCW6dvciYM9WkyAkSY+DVZMJBVEem0st1iaq5JG6Ha8I7/S0o2SnhIVxEyu+kIWJXH+aQrZuM9ennNEI0EjVy0jaiLyTBygNnzzlrJh0iFpFFc9U9ysLsB421RRL83gUvkf2YvXR6nZRNHtK4pucZgVxFt57Bihw=
+	t=1730762866; cv=none; b=DUmZPgGllUSpsCScWP67LZ4WMz+xT3AIpFq7UTpxuw5IfdeNNr8pE5DNZPab2rE0JxBnk3V8TCMgYZF5jbe1vGmyB5Lai0nFa1jEqP98FoTjJg38Us1QgBtAOjRLVG82HwqMwtRC1PPLrujn7N1zC02qF3YkIxvSa4oXiQfAZTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730759559; c=relaxed/simple;
-	bh=mjrv4wTdlcKzFJuhdOyAICGhdxETluIkpGMZRYRv3J0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mb6f12dJScWEXrEL1r0lVYs6fQ9JBnt2DyJAF66+iX4nlQeM5+di4RI9em1MaWO7Kkgc+apfFwrV1baCjd8sZDgQnu+xhW/eJxILQg5hyiC6OsSh/sv0VhSvkwAWLLEAgPllIiNyycG/0J5DgJNXeUzIl3cfpwdnBKp8wkZfaxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YtPbXOx5; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3807dd08cfcso4055360f8f.1;
-        Mon, 04 Nov 2024 14:32:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730759556; x=1731364356; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mjrv4wTdlcKzFJuhdOyAICGhdxETluIkpGMZRYRv3J0=;
-        b=YtPbXOx5GBJfaU4SM9qbDg9F7KyM4VeljOXuQkTwoL92rKVGMMjqztSnieZth66hjJ
-         L1Q7DrgKkHnyHvMGlPW2yS66fkslhdDD4erKa6yoiDkPpRuhVP+5Pxk3s9mgMcm0NitH
-         IciLEd9QaI7mdCV5lvFk02pfVFMh9SGl8Kl8fvQNhe66Ot1hRqWSUkZnvVUTfqBnE3rd
-         O5PHMHPZRlZ4sf/YAkZ98mwr8xUC+ZA9hIffI8cFTyxKSDHqlz0bzqsTfhTIeLCliRLE
-         5tv4faHND0WFXnF6QLpQVJNfs4RWd6jgerb9CvoOmiIPENHoJ0VSY5QPOnlnvCiCUvmE
-         tzOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730759556; x=1731364356;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mjrv4wTdlcKzFJuhdOyAICGhdxETluIkpGMZRYRv3J0=;
-        b=A4sBAAW55ge5fw0J9QatouAnot+KGj2BE9n+6/rRB53jV7Vw/jpD55gIaf2XBG8SkF
-         CvlqRm0J8jVb7WSffSCB+xxy3qHFOThgC21D8X+B55OCPAh2mURF0MX0uf6dj2IcqSgp
-         AGy66swdMc3CNib6mGJUQVpeTU7vbuAEG0GI6KDbgAqkKaBJBfQZzfUtjnnSbeaMUxcK
-         R7NiZFvR7fZwSjWNfo1wUXo8SC3zk3VcXFDw43Rxip0i4Baz/QEVIsQnyaS5263oWQg0
-         k9A6AN9t6z150ftjUyb4DNBpxmyT5ZhMksBb70Lndt0CZSZOsp1u6flOy9J3lBoae00J
-         Eecg==
-X-Forwarded-Encrypted: i=1; AJvYcCU6FrsR4n1Wba52AiQsytL2Dj1uSaSQZDzxLPsbkhW8Ydj6mrYmRTPStytT0ibYeqJ0bv0=@vger.kernel.org, AJvYcCVmEdxn6Ici7RT0dhC+CgNQjE/FK5dyX+HvrL8OW7KMLAup3EG0p3fdVqYssnI29+gpUHVILQkq@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLROUiahilZ3cR/Ea3zhUFqTTFSBWp09vKhxexdQ3Z8NC/QzhH
-	48TUImlCrJQZrjlBiG95OeR/RxUpnhSCB0/au7DBGWuaMc+QwIzDsJx5eBylvbt5DGl7AZx5h1x
-	b09qwLBxRig7d5OiTcA+ykiOQZpA=
-X-Google-Smtp-Source: AGHT+IGK4ZJI9qMe1A38LGaeof9HgpRBPQEJ6YWzV01dbldSAuXAsO8U+wSf0RbxJ9Fma63rPV81lyoJ7muRUIJK6GQ=
-X-Received: by 2002:adf:e199:0:b0:37d:4eeb:7370 with SMTP id
- ffacd0b85a97d-381c7ae14bdmr15071294f8f.56.1730759555465; Mon, 04 Nov 2024
- 14:32:35 -0800 (PST)
+	s=arc-20240116; t=1730762866; c=relaxed/simple;
+	bh=G7tF/ZaqXBtDJLMTb97Oc+SktZk//Kx3oRVjwm2Gkec=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iMfr9ma5FM5iB+sdPQI+ndfM51faiAWWz/rSdiqVGlsTnRDmmrbVlCCzCVQfOR+CUMMgOC020tyydBrT60q6bI3PWwXC6wyIs3oc6FirponM3aGC8+VE9nH8tjmg1eu9f4qqmpUcBEEFUvDTV4354qXfHRoQYtp7o5KRUYqqpXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uD6aQVKZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB3A7C4CECE;
+	Mon,  4 Nov 2024 23:27:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730762866;
+	bh=G7tF/ZaqXBtDJLMTb97Oc+SktZk//Kx3oRVjwm2Gkec=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uD6aQVKZ8xYi+PTTwYupZ6PGdQoZjGxor3CJ6T/KZlWjFxurKitUGg4OsLqeVl22R
+	 oTMAQXmWqXP0EO6JaBIYZ9VEqoL35XGUitRTwgi+bJtDhjSL6UuAIcLW7XMfz2tbvE
+	 x3MFVpG1yHfJRXfsS6NaRprs6A1rIqEf/OZ8jX2sy+DwUFdsMetTULRZ3iOQoxlOsn
+	 5JoGBx6K0BrtfF9Z0+hxFGtNMWymLR+Dppngi0NxeJnTpYgOWeDN7FHowhaRXk3khA
+	 u6nha7LupF4lzkb6ryYEoHDIxLmpv0DY+XiF9diWn7xWUzJjMMZ/7hbbF3UF0ISQXS
+	 B++nhrf0RE3MQ==
+Date: Mon, 4 Nov 2024 16:27:41 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v7 6/8] x86/module: prepare module loading for ROX
+ allocations of text
+Message-ID: <20241104232741.GA3843610@thelio-3990X>
+References: <20241023162711.2579610-1-rppt@kernel.org>
+ <20241023162711.2579610-7-rppt@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241101111948.1570547-1-xukuohai@huaweicloud.com>
- <CAADnVQKnJkJpWkuxC32UPc4cvTnT2+YEnm8TktrEnDNO7ZbCdA@mail.gmail.com>
- <5c16fb2f-efa2-4639-862d-99acbd231660@huaweicloud.com> <CAADnVQLvpwLp=t1oz3ic-EKnaio2DhOCanmuBQ+8nSf-jzBePw@mail.gmail.com>
- <85160853-cc20-40df-b090-62b4359bec37@linux.dev>
-In-Reply-To: <85160853-cc20-40df-b090-62b4359bec37@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 4 Nov 2024 14:32:24 -0800
-Message-ID: <CAADnVQJEE5yfhpqJ0f4BQVtVh+SWrPeA-9pPu0gfRZB6rm59Ag@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Add kernel symbol for struct_ops trampoline
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Xu Kuohai <xukuohai@huaweicloud.com>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Kui-Feng Lee <thinker.li@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241023162711.2579610-7-rppt@kernel.org>
 
-On Mon, Nov 4, 2024 at 2:13=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.d=
-ev> wrote:
->
-> On 11/4/24 9:53 AM, Alexei Starovoitov wrote:
->
-> > As a separate clean up I would switch the freeing to call_rcu_tasks.
-> > Synchronous waiting is expensive.
-> >
-> > Martin,
-> >
-> > any suggestions?
->
-> There is a map->rcu now. May be add a "bool free_after_rcu_tasks_gp" to "=
-struct
-> bpf_map" and do the call_rcu_tasks() in bpf_map_put(). The
-> bpf_struct_ops_map_alloc() can set the map->free_after_rcu_tasks_gp.
+Hi Mike,
 
-Ohh. Great point.
-struct_ops map can just set the existing free_after_mult_rcu_gp flag
-and get rid of this sync call.
-Another flag is overkill imo.
+On Wed, Oct 23, 2024 at 07:27:09PM +0300, Mike Rapoport wrote:
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> 
+> When module text memory will be allocated with ROX permissions, the
+> memory at the actual address where the module will live will contain
+> invalid instructions and there will be a writable copy that contains the
+> actual module code.
+> 
+> Update relocations and alternatives patching to deal with it.
+> 
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> Tested-by: kdevops <kdevops@lists.linux.dev>
 
-> Take this chance to remove the "st_map->rcu" from "struct bpf_struct_ops_=
-map"
-> also. It is a left over after cleaning up the kvalue->refcnt in the
-> commit b671c2067a04 ("bpf: Retire the struct_ops map kvalue->refcnt.").
+Hopefully the last time you have to hear from me, as I am only
+experiencing issues with only one of my test machines at this point and
+it is my only machine that supports IBT, so it seems to point to
+something specific with the IBT part of the FineIBT support. I notice
+either a boot hang or an almost immediate reboot (triple fault?). I
+guess this is how I missed reporting this earlier, as my machine was
+falling back to the default distribution kernel after the restart and I
+did not notice I was not actually testing a -next kernel.
 
-+1
+Checking out the version of this change that is in next-20241104, commit
+7ca6ed09db62 ("x86/module: prepare module loading for ROX allocations of
+text"), it boots with either 'cfi=off' or 'cfi=kcfi' but it exhibits the
+issues noted above with 'cfi=fineibt'. At the immediate parent, commit
+b575d981092f ("arch: introduce set_direct_map_valid_noflush()"), all
+three combinations boot fine.
 
-> Xu, it will be great if you can follow up with this cleanup. Otherwise, I=
- will
-> put it under the top of my todo list. Let me know what you prefer.
+  $ uname -r; tr ' ' '\n' </proc/cmdline | grep cfi=
+
+  6.12.0-rc5-debug-00214-g7ca6ed09db62
+  cfi=kcfi
+
+  6.12.0-rc5-debug-00214-g7ca6ed09db62
+  cfi=off
+
+  6.12.0-rc5-debug-00213-gb575d981092f
+  cfi=fineibt
+
+  6.12.0-rc5-debug-00213-gb575d981092f
+  cfi=kcfi
+
+  6.12.0-rc5-debug-00213-gb575d981092f
+  cfi=off
+
+I do not think this machine has an accessible serial port and I do not
+think IBT virtualization is supported via either KVM or TCG in QEMU, so
+I am not sure how to get more information about what is going on here. I
+wanted to try reverting these changes on top of next-20241104 but there
+was a non-trivial conflict in mm/execmem.c due to some changes on top,
+so I just tested in the mm history.
+
+If there is any other information I can provide or patches I can test, I
+am more than happy to do so.
+
+Cheers,
+Nathan
 
