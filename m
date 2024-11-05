@@ -1,167 +1,119 @@
-Return-Path: <bpf+bounces-43976-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43977-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99A269BC1D8
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 01:11:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 711009BC214
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 01:39:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5212F1F225A5
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 00:11:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92705B2168B
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 00:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D0961367;
-	Tue,  5 Nov 2024 00:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E105BF9E6;
+	Tue,  5 Nov 2024 00:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mKBN0TWU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GAUmDYxd"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F3253D9E
-	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 00:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A00F1FC3;
+	Tue,  5 Nov 2024 00:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730765465; cv=none; b=pbCMwPnBPLn/LCyA3iocs/71el3GtpXt8G1qZPLAZ1wE37ULBE3ZKyCOjJZV9ZiAkEZ7hdXb8gjjFKoo52aN5rxNEGVAPTRU4nVCOld8SeXq8s1Vx30iivvAzO7tI+/8hmr8E1ulDVo6QW0boZzeG3Q5CDSM74idamnQUGwNNSU=
+	t=1730767170; cv=none; b=QxiB/lTBjCTUgGF3Nyl8LuDlNBOep9YI505NmShucG0P+migFNe1IG1rtIvmcAjdsZqWDQXPe2rJ7h7jVmI/SfynlR7aiLeu0NT55JcMKc2cgW2F1DOaAqEPtMuXOPsDGa4LDvfypthxeLQLNZe/iH+X5NUNVmjkgmGaHtHyMOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730765465; c=relaxed/simple;
-	bh=sWX6GWp+IeVd44w9oe6oS+dKPk9x5BRc6TfDXNXr6dg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZtJ+IqA3RZWNyISLkYZrG50p9Po42B48QT+/ymZrutAJYOmJiWzkT9PvT5gx59Jg31qgtoG79wcSAA6+TZ4X+5jrHWB0QgVnF/qgtuBC/jaWSlmBttiwFN9A5CHQ0cIHbU9eU0f4nY+IfTQbdgHzjANqzy1M+2u/FeYlYIMOxhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mKBN0TWU; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <cf62c79d-cba5-49dc-9099-fc86d54ee864@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730765459;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SLUHNASoXi1cubQwEnJ83CylYrNF3onOml8Be0docOM=;
-	b=mKBN0TWUbstpVq25m+JWAKgIyUhoc9CyH85G33VVtaGDuxpVSlpLRNGGvR4Ym/Kk/xRhfK
-	0JkfydW/VeqVhePdFLSusVf3k0tyyva6BwxQDm+8kPxMrN3IgRZAd7CZdpDB7KFwX9f2kd
-	2LYVWWkqCXerV1KKJqrp8/732tHLRA4=
-Date: Mon, 4 Nov 2024 16:10:52 -0800
+	s=arc-20240116; t=1730767170; c=relaxed/simple;
+	bh=xfCaDzMNCkWjtvVW63wVhxSTIXKN+FNrDvQ4Cfad98E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I+Jiwdi5WAw6ZujBy4vxr0IIvq3baT4vIICzq7N+NCH0FHezLCd7k1WZFsW8k+YiwjqQ20ToFKwe5K4sToyTbpfyoER/7dPFx5Rw57CVT76Dm32Zno/+tIH3LZbzzVskVJKS+1dCRshQNgIiqZLswMZBm4A0fZOk/C+GY0QQme4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GAUmDYxd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D31CEC4CED1;
+	Tue,  5 Nov 2024 00:39:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730767169;
+	bh=xfCaDzMNCkWjtvVW63wVhxSTIXKN+FNrDvQ4Cfad98E=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=GAUmDYxd0aAvkPOgtywrDqq+i0iIiVdmO3HP0UqS/edVUwZ+E1jTWIS/MdiLi9d/P
+	 VbZNLgyjVgZx+ePOeHkiW2TF9H2YAXkRDSshBJi4e3T17lBybisI9q+mYW8lsURaf7
+	 WuStRV6MYM/+yCf35uzHwBLeiZpALXzl2cZwcxJ7VtnSX/D3/u6br0IsezX0gcBSkz
+	 amTg6vwNHyKHpCt6trcKreUE4Y3nuuGwvRkhnl29/xVTVmV9dGD/7icLtOKdeCmAIl
+	 UAP78UDhbLSwJwMW9LQSjdv8zmhLFqhM02DZLZVx5AHvkYzqVRdimlvhJwfjlZMCA6
+	 g5PJsc2j4jYhg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 71D04CE093C; Mon,  4 Nov 2024 16:39:29 -0800 (PST)
+Date: Mon, 4 Nov 2024 16:39:29 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, kernel test robot <oliver.sang@intel.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
+Subject: Re: [PATCH rcu 08/15] srcu: Add srcu_read_lock_lite() and
+ srcu_read_unlock_lite()
+Message-ID: <53397727-66c2-4517-9f95-cae073e80744@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
+ <20241015161112.442758-8-paulmck@kernel.org>
+ <ZylYbsU7uE7jX5Yd@pavilion.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2] bpf: Add kernel symbol for struct_ops
- trampoline
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song
- <yonghong.song@linux.dev>, Kui-Feng Lee <thinker.li@gmail.com>,
- bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20241101111948.1570547-1-xukuohai@huaweicloud.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20241101111948.1570547-1-xukuohai@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZylYbsU7uE7jX5Yd@pavilion.home>
 
-On 11/1/24 4:19 AM, Xu Kuohai wrote:
->   static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->   					   void *value, u64 flags)
->   {
-> @@ -601,6 +633,7 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->   	int prog_fd, err;
->   	u32 i, trampoline_start, image_off = 0;
->   	void *cur_image = NULL, *image = NULL;
-> +	struct bpf_ksym *ksym;
->   
->   	if (flags)
->   		return -EINVAL;
-> @@ -640,6 +673,7 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->   	kdata = &kvalue->data;
->   
->   	module_type = btf_type_by_id(btf_vmlinux, st_ops_ids[IDX_MODULE_ID]);
-> +	ksym = st_map->ksyms;
->   	for_each_member(i, t, member) {
->   		const struct btf_type *mtype, *ptype;
->   		struct bpf_prog *prog;
-> @@ -735,6 +769,11 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->   
->   		/* put prog_id to udata */
->   		*(unsigned long *)(udata + moff) = prog->aux->id;
-> +
-> +		/* init ksym for this trampoline */
-> +		bpf_struct_ops_ksym_init(prog, image + trampoline_start,
-> +					 image_off - trampoline_start,
-> +					 ksym++);
->   	}
->   
->   	if (st_ops->validate) {
-> @@ -790,6 +829,8 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->   unlock:
->   	kfree(tlinks);
->   	mutex_unlock(&st_map->lock);
-> +	if (!err)
-> +		bpf_struct_ops_map_ksyms_add(st_map);
->   	return err;
->   }
->   
+On Tue, Nov 05, 2024 at 12:27:42AM +0100, Frederic Weisbecker wrote:
+> Le Tue, Oct 15, 2024 at 09:11:05AM -0700, Paul E. McKenney a écrit :
+> > This patch adds srcu_read_lock_lite() and srcu_read_unlock_lite(), which
+> > dispense with the read-side smp_mb() but also are restricted to code
+> > regions that RCU is watching.  If a given srcu_struct structure uses
+> > srcu_read_lock_lite() and srcu_read_unlock_lite(), it is not permitted
+> > to use any other SRCU read-side marker, before, during, or after.
+> > 
+> > Another price of light-weight readers is heavier weight grace periods.
+> > Such readers mean that SRCU grace periods on srcu_struct structures
+> > used by light-weight readers will incur at least two calls to
+> > synchronize_rcu().  In addition, normal SRCU grace periods for
+> > light-weight-reader srcu_struct structures never auto-expedite.
+> > Note that expedited SRCU grace periods for light-weight-reader
+> > srcu_struct structures still invoke synchronize_rcu(), not
+> > synchronize_srcu_expedited().  Something about wishing to keep
+> > the IPIs down to a dull roar.
+> > 
+> > The srcu_read_lock_lite() and srcu_read_unlock_lite() functions may not
+> > (repeat, *not*) be used from NMI handlers, but if this is needed, an
+> > additional flavor of SRCU reader can be added by some future commit.
+> > 
+> > [ paulmck: Apply Alexei Starovoitov expediting feedback. ]
+> > [ paulmck: Apply kernel test robot feedback. ]
+> > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Tested-by: kernel test robot <oliver.sang@intel.com>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Kent Overstreet <kent.overstreet@linux.dev>
+> > Cc: <bpf@vger.kernel.org>
+> 
+> This might be a dump question but I have to ask. Could this replace
+> RCU-TASKS-TRACE?
 
->   static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->   {
->   	const struct bpf_struct_ops_desc *st_ops_desc;
-> @@ -905,6 +963,8 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->   	struct bpf_map *map;
->   	struct btf *btf;
->   	int ret;
-> +	size_t ksyms_offset;
-> +	u32 ksyms_cnt;
->   
->   	if (attr->map_flags & BPF_F_VTYPE_BTF_OBJ_FD) {
->   		/* The map holds btf for its whole life time. */
-> @@ -951,6 +1011,11 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->   		 */
->   		(vt->size - sizeof(struct bpf_struct_ops_value));
->   
-> +	st_map_size = round_up(st_map_size, sizeof(struct bpf_ksym));
-> +	ksyms_offset = st_map_size;
-> +	ksyms_cnt = count_func_ptrs(btf, t);
-> +	st_map_size += ksyms_cnt * sizeof(struct bpf_ksym);
-> +
->   	st_map = bpf_map_area_alloc(st_map_size, NUMA_NO_NODE);
->   	if (!st_map) {
->   		ret = -ENOMEM;
-> @@ -958,6 +1023,8 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->   	}
->   
->   	st_map->st_ops_desc = st_ops_desc;
-> +	st_map->ksyms = (void *)st_map + ksyms_offset;
+From a purely functional viewpoint, yes, but even without that smp_mb(),
+there are performance issues due to the index fetch, array accesses, and
+return value.  Maybe with improved hardware over time this will change,
+and if it does, yes, we definitely should remove RCU Tasks Trace in
+favor of SRCU-lite.  We are not there yet.
 
-nit. The st_map->ksyms is very similar to the existing st_map->links. Can we do 
-the allocation similar to the st_map->links and use another bpf_map_area_alloc() 
-instead of doing the round_up() and then figuring out the ksyms_offset.
+However, it does mean that we don't need to create a new RCU variant
+for uprobes, and that has to be worth something.  ;-)
 
-> +	st_map->ksyms_cnt = ksyms_cnt;
-
-The same goes for ksyms_cnt. ksyms_cnt is almost the same as the 
-st_map->links_cnt. st_map->links_cnt unnecessarily includes the non func ptr 
-(i.e. a waste). The st_map->links[i] must be NULL if the i-th member of a struct 
-is not a func ptr.
-
-If this patch adds the count_func_ptrs(), I think at least just have one 
-variable to mean funcs_cnt instead of adding another new ksyms_cnt. Both the 
-existing st_map->links and the new st_map->ksyms can use the same funcs_cnt. An 
-adjustment is needed for link in update_elem (probably use link++ similar to 
-your ksym++ idea). bpf_struct_ops_map_put_progs() should work as is.
-
-Also, the actual bpf_link is currently allocated during update_elem() only when 
-there is a bpf prog for an ops. The new st_map->ksyms pre-allocated everything 
-during map_alloc() regardless if there will be a bpf prog (e.g. 
-tcp_congestion_ops has 5 optional ops). I don't have a strong opinion on 
-pre-allocate everything in map_alloc() or allocate on-demand in update_elem(). 
-However, considering bpf_ksym has a "char name[KSYM_NAME_LEN]", the on-demand 
-allocation on bpf_link becomes not very useful. If the next respin stays with 
-the pre-allocate everything way, it is useful to followup later to stay with one 
-way and do the same for bpf_link.
+							Thanx, Paul
 
