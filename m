@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-44072-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44073-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10BF19BD787
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 22:20:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DA069BD789
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 22:20:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9646B1F24153
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 21:20:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C055D1C227A5
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 21:20:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D83E215F56;
-	Tue,  5 Nov 2024 21:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6D3C215F52;
+	Tue,  5 Nov 2024 21:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mNIAQTkA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f8kzD6ns"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F23215C5D
-	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 21:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC4B821219E
+	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 21:20:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730841609; cv=none; b=BrIbyNKjPXUmHRaeCMB+knHUILmhrwd6n4zUzUry7H+JebaAOpjh+yArxxER0Nt0kcK0Ap5Euo6EURqeqoqcJX6NzMaWApB1vitXyoNx1Gpg1+7C2FFvrFq1u0ZkM6w3RNTGdgGbKFI1HEGdvUgFU7GwuyrcCLwZvnG6mjRyaA8=
+	t=1730841613; cv=none; b=myEEycRGIjLCWCmAzw0EhddG8Bkg9LSdR9CrjQY422olDIWHYAUHOBxBfBcdjD8cRCQyQc01keY2jCf34A24FfbiSN0qUOHfhQMeAkiLvZX3geJv3oD1I0/dGdNWG8jUKjZV86At98byNheSkA4brGutbzyh97N01BFJ53bX7Nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730841609; c=relaxed/simple;
-	bh=tdEQWTXXNIDb3SwcEQjUY6rD/OolTRDXOtRdNj9lIfE=;
+	s=arc-20240116; t=1730841613; c=relaxed/simple;
+	bh=k2wJ71wvqksz/GUR7SNdKLpN45pADVmNc35+7PU1r8E=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iZBcBkN3lcRVHd8kyl7njeiYPsrc97/KHe/+gtRJdj31fPYaYayTLeIp3IFviMbHaiNspPPCBBbRFZlWsqez5uiO8wKHfQDEqKXg9HrmtPtkTe1lZTQPVqQ/pXrHFxWRyhE/geMR+/abprQUQ44rzeMvqZ3rFY+xC1sMwoxXjKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mNIAQTkA; arc=none smtp.client-ip=209.85.216.46
+	 MIME-Version; b=PzvbpPb0T2Q9a1L4+7kaKlVbK5G8MPGB5sL7CLigI/Yotqbnf5doba3DZ1wTRpj8+CHbsxlvNM36MWBk7eF4a/P+wRANgy75P7Pf05BWxhysUZLgTkA4FcmJVVU9YIfvVymDP6p7jvWqKwOFHhuKuct0ywf1ISeIKhnAS2NTTAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f8kzD6ns; arc=none smtp.client-ip=209.85.215.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2e2bd0e2c4fso4882365a91.3
-        for <bpf@vger.kernel.org>; Tue, 05 Nov 2024 13:20:07 -0800 (PST)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7ed9c16f687so4159117a12.0
+        for <bpf@vger.kernel.org>; Tue, 05 Nov 2024 13:20:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730841607; x=1731446407; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730841610; x=1731446410; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IEhRVqKt8aAn71kWNEm4Goprl9mZ5SpKxN7w/dPJobw=;
-        b=mNIAQTkAlAHUnpdHhIMpd1DCtCFnW2Wl5lnuEsr799qzj3uqNCCiNpEGek6U076PPN
-         VKZuRjTuxRqC4m+W5QFF5Qu5tmuY42tNeChj7j5QLMgwoc/kSDVBpJidowVxSlQcAyG5
-         gVVdyS12OjBgEtbpClGWoSBYYfdub0LZ1pcUHL55emc+ugPsBRLJrrEAGOYhLKOxjaIY
-         FpTC+Nk9C6lm4cpqkUJlhgwIb6eTnQt8Azmmlju9Q24IktYqG66uQztwiLUkJ8Phk/p/
-         H7yhMUEuFehJ/SWUvfUnm3+nsn61hoXXtG10ciCNDS5tt0gZBK8cSOm0bYeK3CTtAH5m
-         ASJA==
+        bh=K3Aol0LNSzRt9vmJXT7WPPCFO/XhVREnFgmy4iY/h2s=;
+        b=f8kzD6nsaigJAHmhx3WgdrmkXFExSKA0gCXLkI3IY+RQ2vIA/MOHm3v6VJWqxOscbG
+         gi7xp3BqwBOt/Ypr5MfCmOWJfiyqTxrha2IPzr+NQR7R0paHNl5rTGW9pxUgupQbEQPP
+         FfFi0CNsaSa+FEpzg66s9ji0/fsCVEzQSMs1qwSz2j09FqASyvHovDEltcURvWaN1vDA
+         6jFggk15C40pRK0LiaO5XeC2pTjrSJ7OulWIgKvLcHbTaV4lfhNawPMAgC7xna5MaSc+
+         o2+E/i0A2JAWA3dGJ1woQ29BGTAQFod4W86NvFvG2R59dftF95d75NVqP5LGQIwi+z1c
+         U08A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730841607; x=1731446407;
+        d=1e100.net; s=20230601; t=1730841610; x=1731446410;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IEhRVqKt8aAn71kWNEm4Goprl9mZ5SpKxN7w/dPJobw=;
-        b=YYbHo0xwyE8RECnBf2rPb944UOPz9gtreVIUfQZs88XFjqySGceLzvqu9CoH5aiUql
-         1TTclS88rQpStFRz2GMtnwxAJS0Jex/Q2O9rWesSZRISOevAAuPZR7WeZJoQpbxO/t0R
-         zBalKcedC0Nt6oUwvNySZbucOBA6BkArUYVqAgtNZ7Ara2S3uh+ieKeATeovFHuztzB1
-         M5LbQhy/Bf2EoBkzgYy39RvAnQE/kia3xV6qdGGA5+oaPxndfRP8NUm3y1NotdscX+Jl
-         hWKOfchd1Vvljdx0PeZD6w/EwiTfDWeG5jOc7nItuJ4xd5JxOv2/HqpWR918Ab875KJk
-         ghHQ==
-X-Gm-Message-State: AOJu0Yz+1y54k9OYVgJhmwrD+jdh1Uh8AY8kO1hm9RGKBe1MolFIz5xA
-	m1IDL89La5p4xhQk2tD5mlnU30TprHz0f3jCuqrPkwSIYpDBV96e30vFrA==
-X-Google-Smtp-Source: AGHT+IG/DL+J+7D6AHe5u2yZUqv2EO+WRq77wuingKIVhLIQI6+YK9SM16BZu9BYCIwvBvju5rtqEA==
-X-Received: by 2002:a17:90b:2b50:b0:2e2:9a48:dbb7 with SMTP id 98e67ed59e1d1-2e93c1e7db6mr28637017a91.29.1730841607114;
-        Tue, 05 Nov 2024 13:20:07 -0800 (PST)
+        bh=K3Aol0LNSzRt9vmJXT7WPPCFO/XhVREnFgmy4iY/h2s=;
+        b=C8GhyyLJr1jGF7X9j9fa8ouqIxxTTUFzyE3IiAri5hZHFjD7kjzEcMzMvyZXc7TO4i
+         0zt4ecrkmCrbny/pzxKJoUBiwcOCdqWD8G1GsnDW/GqCc3qZefyA+3icABP3q/25NpBU
+         TDtrikfRCfc5RvI+QVssOBMxiuUnw9q7s0acOOYXCc7mYav9bpCjBPQUIwM636DsXYk7
+         tw1qhzRKNSkp7uPiuIgd3gCLiggBYL2ughiwff/olrWV1yB7PlOsxdgG30prAHxYRCzl
+         j2bqfEcNbHBq4D4/owqF63zKpxUTK42st9JYhSTwy9dl6U8E6A6/LCtQ040NibloFHUq
+         dRJw==
+X-Gm-Message-State: AOJu0YwTxUlEaWZiKDp2ETXxuUy1ncDcYignjcpKno8CyiDziMBmlHLj
+	jp7dB9HiNroKIpxBpKNGVODqGd48FneXIEqzUvI8kINBTao/DPL/zCZ8Wg==
+X-Google-Smtp-Source: AGHT+IHhY2fWlcUcjLM9gm0ZLtG3Puv7t8QW/cG7H6l2THgBV91AnWiaK/124E8gGCKjJzvFTpYroQ==
+X-Received: by 2002:a17:90b:3849:b0:2e2:be64:488f with SMTP id 98e67ed59e1d1-2e93c12932amr26392341a91.6.1730841610310;
+        Tue, 05 Nov 2024 13:20:10 -0800 (PST)
 Received: from macbook-pro-49.lan ([2603:3023:16e:5000:1863:9460:a110:750b])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e92fa24ad2sm12733983a91.14.2024.11.05.13.20.05
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e93db183d8sm10203932a91.37.2024.11.05.13.20.09
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 05 Nov 2024 13:20:06 -0800 (PST)
+        Tue, 05 Nov 2024 13:20:09 -0800 (PST)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: daniel@iogearbox.net,
@@ -78,9 +78,9 @@ Cc: daniel@iogearbox.net,
 	simona@ffwll.ch,
 	dri-devel@lists.freedesktop.org,
 	kernel-team@fb.com
-Subject: [PATCH v2 bpf-next 1/2] drm, bpf: Move drm_mm.c to lib to be used by bpf arena
-Date: Tue,  5 Nov 2024 13:20:00 -0800
-Message-Id: <20241105212001.38980-2-alexei.starovoitov@gmail.com>
+Subject: [PATCH v2 bpf-next 2/2] bpf: Switch bpf arena to use drm_mm instead of maple_tree
+Date: Tue,  5 Nov 2024 13:20:01 -0800
+Message-Id: <20241105212001.38980-3-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20241105212001.38980-1-alexei.starovoitov@gmail.com>
 References: <20241105212001.38980-1-alexei.starovoitov@gmail.com>
@@ -94,199 +94,198 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Move drm_mm.c to lib:
-- The next commit will use drm_mm to manage memory regions
-  in bpf arena.
-- Move drm_mm_print to drivers/gpu/drm/drm_print.c, since
-  it's not a core functionality of drm_mm and it depeneds
-  on drm_printer while drm_mm is generic and usuable as-is
-  by other subsystems.
-- Replace DRM_ERROR with pr_err to fix build.
-  DRM_ERROR is deprecated in favor of pr_err anyway.
-- Also add __maybe_unused to suppress compiler warnings.
-- Update MAINTAINERS file as well.
+bpf arena is moving towards non-sleepable allocations in tracing
+context while maple_tree does kmalloc/kfree deep inside. Hence switch
+bpf arena to drm_mm algorithm that works with externally provided
+drm_mm_node-s. This patch kmalloc/kfree-s drm_mm_node-s, but the next
+patch will switch to bpf_mem_alloc and preallocated drm_mm_node-s.
 
 Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- MAINTAINERS                       |  1 +
- drivers/gpu/drm/Makefile          |  1 -
- drivers/gpu/drm/drm_print.c       | 39 +++++++++++++++++++++++++
- lib/Makefile                      |  1 +
- {drivers/gpu/drm => lib}/drm_mm.c | 48 ++++---------------------------
- 5 files changed, 46 insertions(+), 44 deletions(-)
- rename {drivers/gpu/drm => lib}/drm_mm.c (95%)
+ kernel/bpf/arena.c | 67 +++++++++++++++++++++++++++++++++++-----------
+ lib/Makefile       |  1 +
+ 2 files changed, 53 insertions(+), 15 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6880a8fac74c..1bfaa335fae7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7504,6 +7504,7 @@ F:	drivers/gpu/vga/
- F:	include/drm/drm
- F:	include/linux/vga*
- F:	include/uapi/drm/
-+F:	lib/drm_mm.c
- X:	drivers/gpu/drm/amd/
- X:	drivers/gpu/drm/armada/
- X:	drivers/gpu/drm/etnaviv/
-diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-index 784229d4504d..e35d5de2b9f0 100644
---- a/drivers/gpu/drm/Makefile
-+++ b/drivers/gpu/drm/Makefile
-@@ -59,7 +59,6 @@ drm-y := \
- 	drm_ioctl.o \
- 	drm_lease.o \
- 	drm_managed.o \
--	drm_mm.o \
- 	drm_mode_config.o \
- 	drm_mode_object.o \
- 	drm_modes.o \
-diff --git a/drivers/gpu/drm/drm_print.c b/drivers/gpu/drm/drm_print.c
-index 0081190201a7..2a8a5e0d691e 100644
---- a/drivers/gpu/drm/drm_print.c
-+++ b/drivers/gpu/drm/drm_print.c
-@@ -34,6 +34,7 @@
- #include <drm/drm.h>
- #include <drm/drm_drv.h>
- #include <drm/drm_print.h>
+diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+index e52b3ad231b9..ef1de26020f2 100644
+--- a/kernel/bpf/arena.c
++++ b/kernel/bpf/arena.c
+@@ -6,6 +6,7 @@
+ #include <linux/btf_ids.h>
+ #include <linux/vmalloc.h>
+ #include <linux/pagemap.h>
 +#include <drm/drm_mm.h>
  
  /*
-  * __drm_debug: Enable debug output.
-@@ -267,6 +268,44 @@ void drm_printf(struct drm_printer *p, const char *f, ...)
- }
- EXPORT_SYMBOL(drm_printf);
+  * bpf_arena is a sparsely populated shared memory region between bpf program and
+@@ -45,7 +46,7 @@ struct bpf_arena {
+ 	u64 user_vm_start;
+ 	u64 user_vm_end;
+ 	struct vm_struct *kern_vm;
+-	struct maple_tree mt;
++	struct drm_mm mm;
+ 	struct list_head vma_list;
+ 	struct mutex lock;
+ };
+@@ -132,7 +133,7 @@ static struct bpf_map *arena_map_alloc(union bpf_attr *attr)
  
-+static u64 drm_mm_dump_hole(struct drm_printer *p, const struct drm_mm_node *entry)
-+{
-+	u64 start, size;
-+
-+	size = entry->hole_size;
-+	if (size) {
-+		start = drm_mm_hole_node_start(entry);
-+		drm_printf(p, "%#018llx-%#018llx: %llu: free\n",
-+			   start, start + size, size);
+ 	INIT_LIST_HEAD(&arena->vma_list);
+ 	bpf_map_init_from_attr(&arena->map, attr);
+-	mt_init_flags(&arena->mt, MT_FLAGS_ALLOC_RANGE);
++	drm_mm_init(&arena->mm, 0, attr->max_entries);
+ 	mutex_init(&arena->lock);
+ 
+ 	return &arena->map;
+@@ -164,6 +165,7 @@ static int existing_page_cb(pte_t *ptep, unsigned long addr, void *data)
+ static void arena_map_free(struct bpf_map *map)
+ {
+ 	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
++	struct drm_mm_node *node, *next;
+ 
+ 	/*
+ 	 * Check that user vma-s are not around when bpf map is freed.
+@@ -183,7 +185,11 @@ static void arena_map_free(struct bpf_map *map)
+ 	apply_to_existing_page_range(&init_mm, bpf_arena_get_kern_vm_start(arena),
+ 				     KERN_VM_SZ - GUARD_SZ, existing_page_cb, NULL);
+ 	free_vm_area(arena->kern_vm);
+-	mtree_destroy(&arena->mt);
++	drm_mm_for_each_node_safe(node, next, &arena->mm) {
++		drm_mm_remove_node(node);
++		kfree(node);
 +	}
++	drm_mm_takedown(&arena->mm);
+ 	bpf_map_area_free(arena);
+ }
+ 
+@@ -257,6 +263,7 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
+ {
+ 	struct bpf_map *map = vmf->vma->vm_file->private_data;
+ 	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
++	struct drm_mm_node *node;
+ 	struct page *page;
+ 	long kbase, kaddr;
+ 	int ret;
+@@ -274,20 +281,30 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
+ 		/* User space requested to segfault when page is not allocated by bpf prog */
+ 		return VM_FAULT_SIGSEGV;
+ 
+-	ret = mtree_insert(&arena->mt, vmf->pgoff, MT_ENTRY, GFP_KERNEL);
+-	if (ret)
++	node = kzalloc(sizeof(*node), GFP_KERNEL);
++	if (!node)
++		return VM_FAULT_SIGSEGV;
 +
-+	return size;
-+}
-+/**
-+ * drm_mm_print - print allocator state
-+ * @mm: drm_mm allocator to print
-+ * @p: DRM printer to use
-+ */
-+void drm_mm_print(const struct drm_mm *mm, struct drm_printer *p)
-+{
-+	const struct drm_mm_node *entry;
-+	u64 total_used = 0, total_free = 0, total = 0;
-+
-+	total_free += drm_mm_dump_hole(p, &mm->head_node);
-+
-+	drm_mm_for_each_node(entry, mm) {
-+		drm_printf(p, "%#018llx-%#018llx: %llu: used\n", entry->start,
-+			   entry->start + entry->size, entry->size);
-+		total_used += entry->size;
-+		total_free += drm_mm_dump_hole(p, entry);
++	node->start = vmf->pgoff;
++	node->size = 1;
++	ret = drm_mm_reserve_node(&arena->mm, node);
++	if (ret) {
++		kfree(node);
+ 		return VM_FAULT_SIGSEGV;
 +	}
-+	total = total_free + total_used;
-+
-+	drm_printf(p, "total: %llu, used %llu free %llu\n", total,
-+		   total_used, total_free);
-+}
-+EXPORT_SYMBOL(drm_mm_print);
-+
- /**
-  * drm_print_bits - print bits to a &drm_printer stream
-  *
+ 
+ 	/* Account into memcg of the process that created bpf_arena */
+ 	ret = bpf_map_alloc_pages(map, GFP_KERNEL | __GFP_ZERO, NUMA_NO_NODE, 1, &page);
+ 	if (ret) {
+-		mtree_erase(&arena->mt, vmf->pgoff);
++		drm_mm_remove_node(node);
++		kfree(node);
+ 		return VM_FAULT_SIGSEGV;
+ 	}
+ 
+ 	ret = vm_area_map_pages(arena->kern_vm, kaddr, kaddr + PAGE_SIZE, &page);
+ 	if (ret) {
+-		mtree_erase(&arena->mt, vmf->pgoff);
++		drm_mm_remove_node(node);
++		kfree(node);
+ 		__free_page(page);
+ 		return VM_FAULT_SIGSEGV;
+ 	}
+@@ -420,6 +437,7 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
+ 	/* user_vm_end/start are fixed before bpf prog runs */
+ 	long page_cnt_max = (arena->user_vm_end - arena->user_vm_start) >> PAGE_SHIFT;
+ 	u64 kern_vm_start = bpf_arena_get_kern_vm_start(arena);
++	struct drm_mm_node *node;
+ 	struct page **pages;
+ 	long pgoff = 0;
+ 	u32 uaddr32;
+@@ -442,14 +460,21 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
+ 	if (!pages)
+ 		return 0;
+ 
++	node = kzalloc(sizeof(*node), GFP_KERNEL);
++	if (!node) {
++		kvfree(pages);
++		return 0;
++	}
+ 	guard(mutex)(&arena->lock);
+ 
+-	if (uaddr)
+-		ret = mtree_insert_range(&arena->mt, pgoff, pgoff + page_cnt - 1,
+-					 MT_ENTRY, GFP_KERNEL);
+-	else
+-		ret = mtree_alloc_range(&arena->mt, &pgoff, MT_ENTRY,
+-					page_cnt, 0, page_cnt_max - 1, GFP_KERNEL);
++	if (uaddr) {
++		node->start = pgoff;
++		node->size = page_cnt;
++		ret = drm_mm_reserve_node(&arena->mm, node);
++	} else {
++		ret = drm_mm_insert_node(&arena->mm, node, page_cnt);
++		pgoff = node->start;
++	}
+ 	if (ret)
+ 		goto out_free_pages;
+ 
+@@ -476,7 +501,8 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
+ 	kvfree(pages);
+ 	return clear_lo32(arena->user_vm_start) + uaddr32;
+ out:
+-	mtree_erase(&arena->mt, pgoff);
++	drm_mm_remove_node(node);
++	kfree(node);
+ out_free_pages:
+ 	kvfree(pages);
+ 	return 0;
+@@ -499,6 +525,7 @@ static void zap_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
+ static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
+ {
+ 	u64 full_uaddr, uaddr_end;
++	struct drm_mm_node *node, *to_remove;
+ 	long kaddr, pgoff, i;
+ 	struct page *page;
+ 
+@@ -516,7 +543,17 @@ static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
+ 
+ 	pgoff = compute_pgoff(arena, uaddr);
+ 	/* clear range */
+-	mtree_store_range(&arena->mt, pgoff, pgoff + page_cnt - 1, NULL, GFP_KERNEL);
++	for (;;) {
++		to_remove = NULL;
++		drm_mm_for_each_node_in_range(node, &arena->mm, pgoff, pgoff + page_cnt) {
++			to_remove = node;
++			break;
++		}
++		if (!to_remove)
++			break;
++		drm_mm_remove_node(to_remove);
++		kfree(to_remove);
++	}
+ 
+ 	if (page_cnt > 1)
+ 		/* bulk zap if multiple pages being freed */
 diff --git a/lib/Makefile b/lib/Makefile
-index 773adf88af41..320ae0ac227c 100644
+index 320ae0ac227c..4d3e1ae97b75 100644
 --- a/lib/Makefile
 +++ b/lib/Makefile
-@@ -58,6 +58,7 @@ obj-$(CONFIG_TEST_HEXDUMP) += test_hexdump.o
- obj-y += kstrtox.o
+@@ -59,6 +59,7 @@ obj-y += kstrtox.o
  obj-$(CONFIG_FIND_BIT_BENCHMARK) += find_bit_benchmark.o
  obj-$(CONFIG_TEST_BPF) += test_bpf.o
-+lib-$(CONFIG_DRM) += drm_mm.o
+ lib-$(CONFIG_DRM) += drm_mm.o
++lib-$(CONFIG_BPF_SYSCALL) += drm_mm.o
  test_dhry-objs := dhry_1.o dhry_2.o dhry_run.o
  obj-$(CONFIG_TEST_DHRY) += test_dhry.o
  obj-$(CONFIG_TEST_FIRMWARE) += test_firmware.o
-diff --git a/drivers/gpu/drm/drm_mm.c b/lib/drm_mm.c
-similarity index 95%
-rename from drivers/gpu/drm/drm_mm.c
-rename to lib/drm_mm.c
-index 5ace481c1901..c6feaf325fac 100644
---- a/drivers/gpu/drm/drm_mm.c
-+++ b/lib/drm_mm.c
-@@ -126,14 +126,14 @@ static void show_leaks(struct drm_mm *mm)
- 
- 	list_for_each_entry(node, drm_mm_nodes(mm), node_list) {
- 		if (!node->stack) {
--			DRM_ERROR("node [%08llx + %08llx]: unknown owner\n",
--				  node->start, node->size);
-+			pr_err("node [%08llx + %08llx]: unknown owner\n",
-+			       node->start, node->size);
- 			continue;
- 		}
- 
- 		stack_depot_snprint(node->stack, buf, BUFSZ, 0);
--		DRM_ERROR("node [%08llx + %08llx]: inserted at\n%s",
--			  node->start, node->size, buf);
-+		pr_err("node [%08llx + %08llx]: inserted at\n%s",
-+		       node->start, node->size, buf);
- 	}
- 
- 	kfree(buf);
-@@ -151,7 +151,7 @@ static void show_leaks(struct drm_mm *mm) { }
- 
- INTERVAL_TREE_DEFINE(struct drm_mm_node, rb,
- 		     u64, __subtree_last,
--		     START, LAST, static inline, drm_mm_interval_tree)
-+		     START, LAST, static inline __maybe_unused, drm_mm_interval_tree)
- 
- struct drm_mm_node *
- __drm_mm_interval_first(const struct drm_mm *mm, u64 start, u64 last)
-@@ -966,41 +966,3 @@ void drm_mm_takedown(struct drm_mm *mm)
- 		show_leaks(mm);
- }
- EXPORT_SYMBOL(drm_mm_takedown);
--
--static u64 drm_mm_dump_hole(struct drm_printer *p, const struct drm_mm_node *entry)
--{
--	u64 start, size;
--
--	size = entry->hole_size;
--	if (size) {
--		start = drm_mm_hole_node_start(entry);
--		drm_printf(p, "%#018llx-%#018llx: %llu: free\n",
--			   start, start + size, size);
--	}
--
--	return size;
--}
--/**
-- * drm_mm_print - print allocator state
-- * @mm: drm_mm allocator to print
-- * @p: DRM printer to use
-- */
--void drm_mm_print(const struct drm_mm *mm, struct drm_printer *p)
--{
--	const struct drm_mm_node *entry;
--	u64 total_used = 0, total_free = 0, total = 0;
--
--	total_free += drm_mm_dump_hole(p, &mm->head_node);
--
--	drm_mm_for_each_node(entry, mm) {
--		drm_printf(p, "%#018llx-%#018llx: %llu: used\n", entry->start,
--			   entry->start + entry->size, entry->size);
--		total_used += entry->size;
--		total_free += drm_mm_dump_hole(p, entry);
--	}
--	total = total_free + total_used;
--
--	drm_printf(p, "total: %llu, used %llu free %llu\n", total,
--		   total_used, total_free);
--}
--EXPORT_SYMBOL(drm_mm_print);
 -- 
 2.43.5
 
