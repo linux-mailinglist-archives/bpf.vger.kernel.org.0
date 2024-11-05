@@ -1,141 +1,82 @@
-Return-Path: <bpf+bounces-43992-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43993-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D3EC9BC36D
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 03:53:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1491C9BC37A
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 03:59:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B20D28294F
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 02:53:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C06371F22D66
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 02:59:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6409C4F218;
-	Tue,  5 Nov 2024 02:53:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2323D5B1FB;
+	Tue,  5 Nov 2024 02:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="J+MZ8qDk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zck0Cmgd"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AEDF36AF5
-	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 02:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D153A94A;
+	Tue,  5 Nov 2024 02:59:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730775215; cv=none; b=NQt7zhuKbAToUdfggoNb4c/cl4nP2LH/8qC/E1rA/STdLMV+J9+upW2XDkhSA8xXWGFbjtQk61GX334Z9OfFmttmAmIMY+2LBi4BknFhu+QF7Pjo16y+1FDWC2GHT7oHbqSXrXUhv0jgrX8xRGRnzZGt7859d+e++YVKWr6tqqQ=
+	t=1730775573; cv=none; b=roG0QaEmEznb16LLjqlo0Ugq9Ebxz7B5tin+Owj5Q9KTH7QXFGPRUpYojCj2Eo0YFSMj+f8994y2ISIRZCiLM2wUZjAg9YLLNkoFREM60owC1e1C3K6N4lgu5n7eyzWKf+DMymXHA8hb1UQri2KcsvYPyN44MdjAEUj1vTJ1Krc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730775215; c=relaxed/simple;
-	bh=0pSrSXXeV0IFH6Uo3JFZhrEBOVEPAr4DIMy6HqYDZuk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZF1JBw5j0WGxQfBlIXkSY4BKmdPAIFHPgY3/wxaJifaAfuRuK4pJZUsEBkxE/6+4aoCT9BkVsPt+7JNmgGWdLdL4nbh1jaVCQ60HAj2JOyySlYkiLe6VqrVjoDwtiK8uICaMujPuPhOCHaw0gF6Qs186bs0a7n2cCST4w+Hy2BM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=J+MZ8qDk; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6c78f973-341e-4260-aed4-a5cb8e873acc@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730775209;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sO+hhU0VwbpzdP/N2QstfdtzEydLNxwil0imVUdP1wI=;
-	b=J+MZ8qDk+X6vHmBYLcsm8VU6s9xTmOmnGMvXbMzTleLM6M5zWtjDxpIsUnqE5QOIaJP7cM
-	GmT5sBrWDiDu1vKwW+Jw/gogZAMsVtkuSak4LgojPRusYA27c17mChg1KXfF0QL++ODCAi
-	6MdHsH6OMBE6xZnfjSFxngdbgrHlxmE=
-Date: Mon, 4 Nov 2024 18:53:22 -0800
+	s=arc-20240116; t=1730775573; c=relaxed/simple;
+	bh=bu7pN4uruG2MuJ0hCR8PI4hXZNwpCzJvpzIQc6l1SWI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=utTgkuV5URJbzIpnK28BmUXfTuD2jB1bLyT2MCMjvA6FazGwrW/tM/KdTyuq4GzZysivsAXsDMs/HjbJBj2SKFaxdKK8RbEs92dEI2PubImn61CRWVR4kh1oEoN5iOZ5YTsC1lgCHIP6GfTlk5cU/+KXuqhT0KY5t2NmoJT/4ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zck0Cmgd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEEF2C4CECE;
+	Tue,  5 Nov 2024 02:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730775573;
+	bh=bu7pN4uruG2MuJ0hCR8PI4hXZNwpCzJvpzIQc6l1SWI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Zck0Cmgd8m3pQCrr88CvSnwq6cnTgld14GUwtz7BDQzVIq3fpfato6y5tg5TblG5v
+	 n1xTgPiwDmPAmlf2iaupltcpMosX2lcI9q7aAWSEPYo1Wom4jPUb9rBE4Fbmm7tt8Y
+	 7zKJhF3uq9QGJ2KmnhBXTiPCdqhiXT1OvbM+DMGDxVtJcLeY62c2ggu29HVp0Rrq5M
+	 XBE4taJvTWgHZPvLXcPnNHsK2aAH7K94jTwP8yK+4AFz8zTFmD6Wx0wNKEvT7mZdwV
+	 5tjIp7FlkNvlE04y4bO5jwqa5ZChDAZD4I5CDlMwSYVM5UJweXoEQoEJsx1KBOmdrV
+	 /HjB81BDmJizQ==
+Date: Mon, 4 Nov 2024 18:59:32 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Toke
+ =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>, "Alexei
+ Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ "John Fastabend" <john.fastabend@gmail.com>, Andrii Nakryiko
+ <andrii@kernel.org>, Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Magnus Karlsson
+ <magnus.karlsson@intel.com>, <nex.sw.ncis.osdt.itp.upstreaming@intel.com>,
+ <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 10/18] xdp: get rid of xdp_frame::mem.id
+Message-ID: <20241104185932.7c357398@kernel.org>
+In-Reply-To: <4068b108-bd5a-4d09-97e9-4f9196b35eca@intel.com>
+References: <20241030165201.442301-1-aleksander.lobakin@intel.com>
+	<20241030165201.442301-11-aleksander.lobakin@intel.com>
+	<20241031174107.02216ff9@kernel.org>
+	<4068b108-bd5a-4d09-97e9-4f9196b35eca@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v9 02/10] bpf: Return false for
- bpf_prog_check_recur() default case
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
- Tejun Heo <tj@kernel.org>
-References: <20241104193455.3241859-1-yonghong.song@linux.dev>
- <20241104193505.3242662-1-yonghong.song@linux.dev>
- <CAADnVQLr5Rz+L=4CWPxjBGLcYEctLRpPfh642LtNjXKTbyKPgQ@mail.gmail.com>
- <36294e71-4d0b-465d-9bf5-c5640aa3a089@linux.dev>
- <CAADnVQLXbsuzHX6no+CSTAOYxt27jNY5qgtrML6vqEVsggfgRQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQLXbsuzHX6no+CSTAOYxt27jNY5qgtrML6vqEVsggfgRQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Mon, 4 Nov 2024 15:36:34 +0100 Alexander Lobakin wrote:
+> Yeah I only need to assign mem_type instead of mem in that new place.
+> linux-next handles conflicts, but not our CI...
 
-On 11/4/24 5:55 PM, Alexei Starovoitov wrote:
-> On Mon, Nov 4, 2024 at 5:35 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->> On 11/4/24 5:21 PM, Alexei Starovoitov wrote:
->>> On Mon, Nov 4, 2024 at 11:35 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->>>> The bpf_prog_check_recur() funciton is currently used by trampoline
->>>> and tracing programs (also using trampoline) to check whether a
->>>> particular prog supports recursion checking or not. The default case
->>>> (non-trampoline progs) return true in the current implementation.
->>>>
->>>> Let us make the non-trampoline prog recursion check return false
->>>> instead. It does not impact any existing use cases and allows the
->>>> function to be used outside the trampoline context in the next patch.
->>> Does not impact ?! But it does.
->>> This patch removes recursion check from fentry progs.
->>> This cannot be right.
->> The original bpf_prog_check_recur() implementation:
->>
->> static inline bool bpf_prog_check_recur(const struct bpf_prog *prog)
->> {
->>           switch (resolve_prog_type(prog)) {
->>           case BPF_PROG_TYPE_TRACING:
->>                   return prog->expected_attach_type != BPF_TRACE_ITER;
->>           case BPF_PROG_TYPE_STRUCT_OPS:
->>           case BPF_PROG_TYPE_LSM:
->>                   return false;
->>           default:
->>                   return true;
->>           }
->> }
->>
->> fentry prog is a TRACING prog, so it is covered. Did I miss anything?
-> I see. This is way too subtle.
-> You're correct that fentry is TYPE_TRACING,
-> so it could have "worked" if it was used to build trampolines only.
->
-> But this helper is called for other prog types:
->
->          case BPF_FUNC_task_storage_get:
->                  if (bpf_prog_check_recur(prog))
->                          return &bpf_task_storage_get_recur_proto;
->                  return &bpf_task_storage_get_proto;
->
-> so it's still not correct, but for a different reason.
-
-There are four uses for func bpf_prog_check_recur() in kernel based on 
-cscope: 0 kernel/bpf/trampoline.c bpf_trampoline_enter 1053 if 
-(bpf_prog_check_recur(prog)) 1 kernel/bpf/trampoline.c 
-bpf_trampoline_exit 1068 if (bpf_prog_check_recur(prog)) 2 
-kernel/trace/bpf_trace.c bpf_tracing_func_proto 1549 if 
-(bpf_prog_check_recur(prog)) 3 kernel/trace/bpf_trace.c 
-bpf_tracing_func_proto 1553 if (bpf_prog_check_recur(prog)) The 2nd and 
-3rd ones are in bpf_trace.c. 1444 static const struct bpf_func_proto * 
-1445 bpf_tracing_func_proto(enum bpf_func_id func_id, const struct 
-bpf_prog *prog) 1446 { 1447 switch (func_id) { ... 1548 case 
-BPF_FUNC_task_storage_get: 1549 if (bpf_prog_check_recur(prog)) 1550 
-return &bpf_task_storage_get_recur_proto; 1551 return 
-&bpf_task_storage_get_proto; 1552 case BPF_FUNC_task_storage_delete: 
-1553 if (bpf_prog_check_recur(prog)) 1554 return 
-&bpf_task_storage_delete_recur_proto; 1555 return 
-&bpf_task_storage_delete_proto; ... 1568 default: 1569 return 
-bpf_base_func_proto(func_id, prog); 1570 } 1571 } They are used for 
-tracing programs. So we should be safe here. But if you think that 
-changing bpf_proc_check_recur() and calling function 
-bpf_prog_check_recur() in bpf_enable_priv_stack() is too subtle, I can 
-go back to my original approach which makes all supported prog types 
-explicit in bpf_enable_priv_stack().
-
+FWIW we do resolve (see the "(pull: resolved)" markings on the status
+page) but this is a tricky case where the patch will likely apply but
+build will fail. And if we add a local patch in the CI the build will
+break if your series is _not_ pending.. So yeah I don't have any great
+idea how to resolve such cases. It's first time it happened.
 
