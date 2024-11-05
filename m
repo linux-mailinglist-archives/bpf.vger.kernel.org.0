@@ -1,323 +1,342 @@
-Return-Path: <bpf+bounces-44062-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44063-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EABB89BD35C
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 18:27:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 094629BD39F
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 18:41:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 797661F234D7
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 17:27:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CDDB1C22931
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 17:41:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E0591E765B;
-	Tue,  5 Nov 2024 17:26:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7DB01E3DD0;
+	Tue,  5 Nov 2024 17:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KhnfUAkN"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xBQ7446r"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0900C1E572D;
-	Tue,  5 Nov 2024 17:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F6C1E285D
+	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 17:41:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730827602; cv=none; b=ZezHTLKP8HPzBjQuVr+znx+/q2/IQCi0DJGB2hL/0F1GUi1GBunY2D8ZWIYdp0x6722LjtrFV7F/8zxvz2Mtr2xoeJ0CU+F6Lp9OancE4Q0O9lZ+O0++l+UkMTcmmmqHYGhW9cYG7QFWRf3vGFaWxctwTGF0pA8FovbHICM9ibE=
+	t=1730828482; cv=none; b=t7FDE5EirmKlfTxp89PYsTo/qF9XIiJ+go+2S3No+R4Jr/ubyGImXhGkIp3w+NOzP+Y4m6cXvUp8COzTwmxhaZjEB/nyT6ucYH2MfCn+JIyzlTJj81mUS4Eq8Ct4jlSKIZlODArDujUbTuiJzEdgWZylEWgfi+P6B0PA0pKodqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730827602; c=relaxed/simple;
-	bh=rklxV/2//4lWBAPsekffYOBgTTnrf7YeFUf2y+iWzfs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Phmxs1uH+9t8LG+J0vLv5W22piXmKJOznLYvO/zLj2++4cHFmsP1wWqXXCPG0zcm2/NF2isMXsLmlAd5MdCEX9qKAq92zlViE/D8EdWKENbwE/Pn3QNoLnR4I/F4/gKnq8y2bWdTDq7iQ0sMJGvxrAltCne06xW8lRUbTvHPthY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KhnfUAkN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 159DAC4AF0F;
-	Tue,  5 Nov 2024 17:26:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730827601;
-	bh=rklxV/2//4lWBAPsekffYOBgTTnrf7YeFUf2y+iWzfs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KhnfUAkNd+26fCsREoBcuI2sinLC4XQnbVuXzUzDdNNNvzIv7MDvYSyjcOKLzsEDR
-	 StxuoHO+cfGPJS11GQS8aZP+2xdh8SLWWaXlOSp4yaQzVUiALtKI/fmuKBJ5zUtiRp
-	 XDwKUYpxh49/h1uPO/qItUXhKhfsuVC0tkOxev88lLGYv/ND9I2EEPn4svQnDTFsh3
-	 EMIM5fw862gsLbxkFtUWS+tB2cNCR9xiBK5cioftotgR8feWTcJy3dw2JkLJFiU0QA
-	 OxaAA31qkgJJoSRMHka18wpH/bVpdO7Fiqjb9nyNZBzt6Uf48c0nQkWL3KuJnaStZl
-	 ZR4NJ5RGtwZEQ==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org,
-	Stephane Eranian <eranian@google.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Kees Cook <kees@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Subject: [PATCH 4/4] perf lock contention: Handle slab objects in -L/--lock-filter option
-Date: Tue,  5 Nov 2024 09:26:35 -0800
-Message-ID: <20241105172635.2463800-5-namhyung@kernel.org>
-X-Mailer: git-send-email 2.47.0.199.ga7371fff76-goog
-In-Reply-To: <20241105172635.2463800-1-namhyung@kernel.org>
-References: <20241105172635.2463800-1-namhyung@kernel.org>
+	s=arc-20240116; t=1730828482; c=relaxed/simple;
+	bh=qpTbufCwzH8I25DiwP2Bsp0OfQgYMi1mBz9M6K3WF48=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Li6yWnSs9HnGavTunPBcCFeQp9wG21yquoT5maul4i+wqUOCAvSKWb0oSwvu2ZpjUB/mLXKLTztFebMrlllDp60hpRunbq0G4ArXcJNdm7YoxPnF1s6DaixVjr/cZP0BQS/+oCBlE959GKkSsJ+mz3aBoSpUYT7hb+c+95x2/SM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xBQ7446r; arc=none smtp.client-ip=209.85.166.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3a6c3bdbebcso300765ab.1
+        for <bpf@vger.kernel.org>; Tue, 05 Nov 2024 09:41:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1730828478; x=1731433278; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n0lJpoKJj2EK5cJjiPDReD4fq+ImZCdH+adMojPVPqY=;
+        b=xBQ7446rbI86bCNa04PAmv52B6BATfE3kARAa4ctnj8VUO4K3nTGC8TkERRBnjYuSD
+         PdZ8n0LHuH7Zu0RIAxsrkNEx+sR9hAtL51ebwmZvOB3+LBS7qKiNEqhA8cduES/YCtv1
+         LVDcVQuTAnNXXZAK1jeQXAEV30si81bQ/xg87GkblmiJ5MEGEudgGOPBJUOmS062FoqR
+         ipkrrRRDS+ZQAnDxxHuvkeLl+bN1XSrJ2w44AimQcy3+uiUlRKZq++02AmsRuWh58067
+         UMquMEd1MxZ7EXVo3w4dsQn5dsk/D3CDmolAP6y1cYCcUjKjaTmp9lKvArHmVGA8xSod
+         2Jvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730828478; x=1731433278;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n0lJpoKJj2EK5cJjiPDReD4fq+ImZCdH+adMojPVPqY=;
+        b=eEgREFF4Vni2iy5zbNHBv6/oh9mOpBvMUMDKYhxr3ZeGHsolOE4toSVfa+b6/dK2We
+         KCQ0EsswWGxzGwm0QssMRq8g8pUrhLMxsQlLTts/30QMpSA2JFi77E+S/9+mhrnKExn7
+         LHQgnDUpn6gan29uFBM94zf1otnoJxfr0ObnqlRPMjY8dX93ShwD1QJySvvKLdHK1IKx
+         0MR9H41vF3Dyo6K13+jd6LV++6tj7YD3311tieopganlEKlLh0ReSUb/Vd7ckymkFfUJ
+         O0nk7wFvAMqEOVq7Ma1uWHwvnWThQ/4E0NgnBj6RqgRBS8qQtdGMTvPiGSZZKxagX9Xw
+         AGnw==
+X-Forwarded-Encrypted: i=1; AJvYcCU2Nt0uMx1UhJSOD0fGP+qrZCadW+hBtX8PxchG6FSrN9QhtgMmio89b6JIY/LSK5XBKMc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2rNnXmsUIFxC3NDjx5orZg2aBbl9sRVKzRrNXkrYyVx/oQ/H3
+	IbFAOk/ev2G30YSQhWUYFH2nMSnrytUzO/Mwg1Q4gsBR4Y897nss/u0uHV0hZ1zNneqGCUOMbgl
+	o21gZMAyffFtTJDHv6L6kulyfqnJB7VY0f5VO
+X-Gm-Gg: ASbGncv0rZYIZiBTes3OvuQTvOPYvoUTxs35ROnqh1exCxixB0xuNXoZl8jmJsxq3Dh
+	9c7EvKg124cxJABDQpIas+Ki9TFAL4sAg
+X-Google-Smtp-Source: AGHT+IGTvwqqYkeTtirjxSdFHrxdcw5lIc7C0xy3BIx18v0NkSra6VHHJ/ScxATVbz0L5aGGhIxNLX0/HPWm5ouD4D8=
+X-Received: by 2002:a05:6e02:12ca:b0:3a0:44d1:dca4 with SMTP id
+ e9e14a558f8ab-3a6da95f94emr4550175ab.6.1730828476469; Tue, 05 Nov 2024
+ 09:41:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241105172635.2463800-1-namhyung@kernel.org> <20241105172635.2463800-4-namhyung@kernel.org>
+In-Reply-To: <20241105172635.2463800-4-namhyung@kernel.org>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 5 Nov 2024 09:41:05 -0800
+Message-ID: <CAP-5=fV3JAJD_beASNdP_Sxh=oAFv-yh_cqW=P=Bc9FabddUpQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] perf lock contention: Resolve slab object name using BPF
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Kan Liang <kan.liang@linux.intel.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
+	Song Liu <song@kernel.org>, bpf@vger.kernel.org, 
+	Stephane Eranian <eranian@google.com>, Vlastimil Babka <vbabka@suse.cz>, Kees Cook <kees@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This is to filter lock contention from specific slab objects only.
-Like in the lock symbol output, we can use '&' prefix to filter slab
-object names.
+On Tue, Nov 5, 2024 at 9:26=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> The bpf_get_kmem_cache() kfunc can return an address of the slab cache
+> (kmem_cache).  As it has the name of the slab cache from the iterator,
+> we can use it to symbolize some dynamic kernel locks in a slab.
+>
+> Before:
+>   root@virtme-ng:/home/namhyung/project/linux# tools/perf/perf lock con -=
+abl sleep 1
+>    contended   total wait     max wait     avg wait            address   =
+symbol
+>
+>            2      3.34 us      2.87 us      1.67 us   ffff9d7800ad9600   =
+ (mutex)
+>            2      2.16 us      1.93 us      1.08 us   ffff9d7804b992d8   =
+ (mutex)
+>            4      1.37 us       517 ns       343 ns   ffff9d78036e6e00   =
+ (mutex)
+>            1      1.27 us      1.27 us      1.27 us   ffff9d7804b99378   =
+ (mutex)
+>            2       845 ns       599 ns       422 ns   ffffffff9e1c3620   =
+delayed_uprobe_lock (mutex)
+>            1       845 ns       845 ns       845 ns   ffffffff9da0b280   =
+jiffies_lock (spinlock)
+>            2       377 ns       259 ns       188 ns   ffffffff9e1cf840   =
+pcpu_alloc_mutex (mutex)
+>            1       305 ns       305 ns       305 ns   ffffffff9e1b4cf8   =
+tracepoint_srcu_srcu_usage (mutex)
+>            1       295 ns       295 ns       295 ns   ffffffff9e1c0940   =
+pack_mutex (mutex)
+>            1       232 ns       232 ns       232 ns   ffff9d7804b7d8d8   =
+ (mutex)
+>            1       180 ns       180 ns       180 ns   ffffffff9e1b4c28   =
+tracepoint_srcu_srcu_usage (mutex)
+>            1       165 ns       165 ns       165 ns   ffffffff9da8b3a0   =
+text_mutex (mutex)
+>
+> After:
+>   root@virtme-ng:/home/namhyung/project/linux# tools/perf/perf lock con -=
+abl sleep 1
+>    contended   total wait     max wait     avg wait            address   =
+symbol
+>
+>            2      1.95 us      1.77 us       975 ns   ffff9d5e852d3498   =
+&task_struct (mutex)
+>            1      1.18 us      1.18 us      1.18 us   ffff9d5e852d3538   =
+&task_struct (mutex)
+>            4      1.12 us       354 ns       279 ns   ffff9d5e841ca800   =
+&kmalloc-cg-512 (mutex)
+>            2       859 ns       617 ns       429 ns   ffffffffa41c3620   =
+delayed_uprobe_lock (mutex)
+>            3       691 ns       388 ns       230 ns   ffffffffa41c0940   =
+pack_mutex (mutex)
+>            3       421 ns       164 ns       140 ns   ffffffffa3a8b3a0   =
+text_mutex (mutex)
+>            1       409 ns       409 ns       409 ns   ffffffffa41b4cf8   =
+tracepoint_srcu_srcu_usage (mutex)
+>            2       362 ns       239 ns       181 ns   ffffffffa41cf840   =
+pcpu_alloc_mutex (mutex)
+>            1       220 ns       220 ns       220 ns   ffff9d5e82b534d8   =
+&signal_cache (mutex)
+>            1       215 ns       215 ns       215 ns   ffffffffa41b4c28   =
+tracepoint_srcu_srcu_usage (mutex)
+>
+> Note that the name starts with '&' sign for slab objects to inform they
+> are dynamic locks.  It won't give the accurate lock or type names but
+> it's still useful.  We may add type info to the slab cache later to get
+> the exact name of the lock in the type later.
 
-  root@virtme-ng:/home/namhyung/project/linux# tools/perf/perf lock con -abl sleep 1
-   contended   total wait     max wait     avg wait            address   symbol
+Many variables may reference a lock through a pointer, should the name
+not be associated with the lock or from decoding the task_struct?
+The '&' looks redundant as the addresses are clearly different.
+How are >1 lock/mutex in the same struct handled?
 
-           3     14.99 us     14.44 us      5.00 us   ffffffff851c0940   pack_mutex (mutex)
-           2      2.75 us      2.56 us      1.38 us   ffff98d7031fb498   &task_struct (mutex)
-           4      1.42 us       557 ns       355 ns   ffff98d706311400   &kmalloc-cg-512 (mutex)
-           2       953 ns       714 ns       476 ns   ffffffff851c3620   delayed_uprobe_lock (mutex)
-           1       929 ns       929 ns       929 ns   ffff98d7031fb538   &task_struct (mutex)
-           3       561 ns       210 ns       187 ns   ffffffff84a8b3a0   text_mutex (mutex)
-           1       479 ns       479 ns       479 ns   ffffffff851b4cf8   tracepoint_srcu_srcu_usage (mutex)
-           2       320 ns       195 ns       160 ns   ffffffff851cf840   pcpu_alloc_mutex (mutex)
-           1       212 ns       212 ns       212 ns   ffff98d7031784d8   &signal_cache (mutex)
-           1       177 ns       177 ns       177 ns   ffffffff851b4c28   tracepoint_srcu_srcu_usage (mutex)
+Thanks,
+Ian
 
-With the filter, it can show contentions from the task_struct only.
-
-  root@virtme-ng:/home/namhyung/project/linux# tools/perf/perf lock con -abl -L '&task_struct' sleep 1
-   contended   total wait     max wait     avg wait            address   symbol
-
-           2      1.97 us      1.71 us       987 ns   ffff98d7032fd658   &task_struct (mutex)
-           1      1.20 us      1.20 us      1.20 us   ffff98d7032fd6f8   &task_struct (mutex)
-
-It can work with other aggregation mode:
-
-  root@virtme-ng:/home/namhyung/project/linux# tools/perf/perf lock con -ab -L '&task_struct' sleep 1
-   contended   total wait     max wait     avg wait         type   caller
-
-           1     25.10 us     25.10 us     25.10 us        mutex   perf_event_exit_task+0x39
-           1     21.60 us     21.60 us     21.60 us        mutex   futex_exit_release+0x21
-           1      5.56 us      5.56 us      5.56 us        mutex   futex_exec_release+0x21
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/builtin-lock.c                     | 35 ++++++++++++++++
- tools/perf/util/bpf_lock_contention.c         | 40 ++++++++++++++++++-
- .../perf/util/bpf_skel/lock_contention.bpf.c  | 21 +++++++++-
- tools/perf/util/lock-contention.h             |  2 +
- 4 files changed, 95 insertions(+), 3 deletions(-)
-
-diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index 89ee2a2f78603906..405e95666257b7fe 100644
---- a/tools/perf/builtin-lock.c
-+++ b/tools/perf/builtin-lock.c
-@@ -1646,6 +1646,12 @@ static void lock_filter_finish(void)
- 
- 	zfree(&filters.cgrps);
- 	filters.nr_cgrps = 0;
-+
-+	for (int i = 0; i < filters.nr_slabs; i++)
-+		free(filters.slabs[i]);
-+
-+	zfree(&filters.slabs);
-+	filters.nr_slabs = 0;
- }
- 
- static void sort_contention_result(void)
-@@ -2412,6 +2418,27 @@ static bool add_lock_sym(char *name)
- 	return true;
- }
- 
-+static bool add_lock_slab(char *name)
-+{
-+	char **tmp;
-+	char *sym = strdup(name);
-+
-+	if (sym == NULL) {
-+		pr_err("Memory allocation failure\n");
-+		return false;
-+	}
-+
-+	tmp = realloc(filters.slabs, (filters.nr_slabs + 1) * sizeof(*filters.slabs));
-+	if (tmp == NULL) {
-+		pr_err("Memory allocation failure\n");
-+		return false;
-+	}
-+
-+	tmp[filters.nr_slabs++] = sym;
-+	filters.slabs = tmp;
-+	return true;
-+}
-+
- static int parse_lock_addr(const struct option *opt __maybe_unused, const char *str,
- 			   int unset __maybe_unused)
- {
-@@ -2435,6 +2462,14 @@ static int parse_lock_addr(const struct option *opt __maybe_unused, const char *
- 			continue;
- 		}
- 
-+		if (*tok == '&') {
-+			if (!add_lock_slab(tok + 1)) {
-+				ret = -1;
-+				break;
-+			}
-+			continue;
-+		}
-+
- 		/*
- 		 * At this moment, we don't have kernel symbols.  Save the symbols
- 		 * in a separate list and resolve them to addresses later.
-diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-index 50c3039c647d4d77..2891a81380204b1d 100644
---- a/tools/perf/util/bpf_lock_contention.c
-+++ b/tools/perf/util/bpf_lock_contention.c
-@@ -113,7 +113,7 @@ static void exit_slab_cache_iter(void)
- int lock_contention_prepare(struct lock_contention *con)
- {
- 	int i, fd;
--	int ncpus = 1, ntasks = 1, ntypes = 1, naddrs = 1, ncgrps = 1;
-+	int ncpus = 1, ntasks = 1, ntypes = 1, naddrs = 1, ncgrps = 1, nslabs = 1;
- 	struct evlist *evlist = con->evlist;
- 	struct target *target = con->target;
- 
-@@ -202,6 +202,13 @@ int lock_contention_prepare(struct lock_contention *con)
- 
- 	check_slab_cache_iter(con);
- 
-+	if (con->filters->nr_slabs && has_slab_iter) {
-+		skel->rodata->has_slab = 1;
-+		nslabs = con->filters->nr_slabs;
-+	}
-+
-+	bpf_map__set_max_entries(skel->maps.slab_filter, nslabs);
-+
- 	if (lock_contention_bpf__load(skel) < 0) {
- 		pr_err("Failed to load lock-contention BPF skeleton\n");
- 		return -1;
-@@ -272,6 +279,36 @@ int lock_contention_prepare(struct lock_contention *con)
- 	bpf_program__set_autoload(skel->progs.collect_lock_syms, false);
- 
- 	lock_contention_bpf__attach(skel);
-+
-+	/* run the slab iterator after attaching */
-+	run_slab_cache_iter();
-+
-+	if (con->filters->nr_slabs) {
-+		u8 val = 1;
-+		int cache_fd;
-+		long key, *prev_key;
-+
-+		fd = bpf_map__fd(skel->maps.slab_filter);
-+
-+		/* Read the slab cache map and build a hash with its address */
-+		cache_fd = bpf_map__fd(skel->maps.slab_caches);
-+		prev_key = NULL;
-+		while (!bpf_map_get_next_key(cache_fd, prev_key, &key)) {
-+			struct slab_cache_data data;
-+
-+			if (bpf_map_lookup_elem(cache_fd, &key, &data) < 0)
-+				break;
-+
-+			for (i = 0; i < con->filters->nr_slabs; i++) {
-+				if (!strcmp(con->filters->slabs[i], data.name)) {
-+					bpf_map_update_elem(fd, &key, &val, BPF_ANY);
-+					break;
-+				}
-+			}
-+			prev_key = &key;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -397,7 +434,6 @@ static void account_end_timestamp(struct lock_contention *con)
- 
- int lock_contention_start(void)
- {
--	run_slab_cache_iter();
- 	skel->bss->enabled = 1;
- 	return 0;
- }
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index b5bc37955560a58e..048a04fc3a7fc27d 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -100,6 +100,13 @@ struct {
- 	__uint(max_entries, 1);
- } cgroup_filter SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(long));
-+	__uint(value_size, sizeof(__u8));
-+	__uint(max_entries, 1);
-+} slab_filter SEC(".maps");
-+
- struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
- 	__uint(key_size, sizeof(long));
-@@ -131,6 +138,7 @@ const volatile int has_task;
- const volatile int has_type;
- const volatile int has_addr;
- const volatile int has_cgroup;
-+const volatile int has_slab;
- const volatile int needs_callstack;
- const volatile int stack_skip;
- const volatile int lock_owner;
-@@ -213,7 +221,7 @@ static inline int can_record(u64 *ctx)
- 		__u64 addr = ctx[0];
- 
- 		ok = bpf_map_lookup_elem(&addr_filter, &addr);
--		if (!ok)
-+		if (!ok && !has_slab)
- 			return 0;
- 	}
- 
-@@ -226,6 +234,17 @@ static inline int can_record(u64 *ctx)
- 			return 0;
- 	}
- 
-+	if (has_slab && bpf_get_kmem_cache) {
-+		__u8 *ok;
-+		__u64 addr = ctx[0];
-+		long kmem_cache_addr;
-+
-+		kmem_cache_addr = (long)bpf_get_kmem_cache(addr);
-+		ok = bpf_map_lookup_elem(&slab_filter, &kmem_cache_addr);
-+		if (!ok)
-+			return 0;
-+	}
-+
- 	return 1;
- }
- 
-diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
-index 1a7248ff388947e1..95331b6ec062410d 100644
---- a/tools/perf/util/lock-contention.h
-+++ b/tools/perf/util/lock-contention.h
-@@ -10,10 +10,12 @@ struct lock_filter {
- 	int			nr_addrs;
- 	int			nr_syms;
- 	int			nr_cgrps;
-+	int			nr_slabs;
- 	unsigned int		*types;
- 	unsigned long		*addrs;
- 	char			**syms;
- 	u64			*cgrps;
-+	char			**slabs;
- };
- 
- struct lock_stat {
--- 
-2.47.0.199.ga7371fff76-goog
-
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/bpf_lock_contention.c         | 52 +++++++++++++++++++
+>  .../perf/util/bpf_skel/lock_contention.bpf.c  | 21 +++++++-
+>  2 files changed, 71 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_=
+lock_contention.c
+> index a2efd40897bad316..50c3039c647d4d77 100644
+> --- a/tools/perf/util/bpf_lock_contention.c
+> +++ b/tools/perf/util/bpf_lock_contention.c
+> @@ -2,6 +2,7 @@
+>  #include "util/cgroup.h"
+>  #include "util/debug.h"
+>  #include "util/evlist.h"
+> +#include "util/hashmap.h"
+>  #include "util/machine.h"
+>  #include "util/map.h"
+>  #include "util/symbol.h"
+> @@ -20,12 +21,25 @@
+>
+>  static struct lock_contention_bpf *skel;
+>  static bool has_slab_iter;
+> +static struct hashmap slab_hash;
+> +
+> +static size_t slab_cache_hash(long key, void *ctx __maybe_unused)
+> +{
+> +       return key;
+> +}
+> +
+> +static bool slab_cache_equal(long key1, long key2, void *ctx __maybe_unu=
+sed)
+> +{
+> +       return key1 =3D=3D key2;
+> +}
+>
+>  static void check_slab_cache_iter(struct lock_contention *con)
+>  {
+>         struct btf *btf =3D btf__load_vmlinux_btf();
+>         s32 ret;
+>
+> +       hashmap__init(&slab_hash, slab_cache_hash, slab_cache_equal, /*ct=
+x=3D*/NULL);
+> +
+>         ret =3D libbpf_get_error(btf);
+>         if (ret) {
+>                 pr_debug("BTF loading failed: %d\n", ret);
+> @@ -50,6 +64,7 @@ static void run_slab_cache_iter(void)
+>  {
+>         int fd;
+>         char buf[256];
+> +       long key, *prev_key;
+>
+>         if (!has_slab_iter)
+>                 return;
+> @@ -65,6 +80,34 @@ static void run_slab_cache_iter(void)
+>                 continue;
+>
+>         close(fd);
+> +
+> +       /* Read the slab cache map and build a hash with IDs */
+> +       fd =3D bpf_map__fd(skel->maps.slab_caches);
+> +       prev_key =3D NULL;
+> +       while (!bpf_map_get_next_key(fd, prev_key, &key)) {
+> +               struct slab_cache_data *data;
+> +
+> +               data =3D malloc(sizeof(*data));
+> +               if (data =3D=3D NULL)
+> +                       break;
+> +
+> +               if (bpf_map_lookup_elem(fd, &key, data) < 0)
+> +                       break;
+> +
+> +               hashmap__add(&slab_hash, data->id, data);
+> +               prev_key =3D &key;
+> +       }
+> +}
+> +
+> +static void exit_slab_cache_iter(void)
+> +{
+> +       struct hashmap_entry *cur;
+> +       unsigned bkt;
+> +
+> +       hashmap__for_each_entry(&slab_hash, cur, bkt)
+> +               free(cur->pvalue);
+> +
+> +       hashmap__clear(&slab_hash);
+>  }
+>
+>  int lock_contention_prepare(struct lock_contention *con)
+> @@ -398,6 +441,7 @@ static const char *lock_contention_get_name(struct lo=
+ck_contention *con,
+>
+>         if (con->aggr_mode =3D=3D LOCK_AGGR_ADDR) {
+>                 int lock_fd =3D bpf_map__fd(skel->maps.lock_syms);
+> +               struct slab_cache_data *slab_data;
+>
+>                 /* per-process locks set upper bits of the flags */
+>                 if (flags & LCD_F_MMAP_LOCK)
+> @@ -416,6 +460,12 @@ static const char *lock_contention_get_name(struct l=
+ock_contention *con,
+>                                 return "rq_lock";
+>                 }
+>
+> +               /* look slab_hash for dynamic locks in a slab object */
+> +               if (hashmap__find(&slab_hash, flags & LCB_F_SLAB_ID_MASK,=
+ &slab_data)) {
+> +                       snprintf(name_buf, sizeof(name_buf), "&%s", slab_=
+data->name);
+> +                       return name_buf;
+> +               }
+> +
+>                 return "";
+>         }
+>
+> @@ -590,5 +640,7 @@ int lock_contention_finish(struct lock_contention *co=
+n)
+>                 cgroup__put(cgrp);
+>         }
+>
+> +       exit_slab_cache_iter();
+> +
+>         return 0;
+>  }
+> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/=
+util/bpf_skel/lock_contention.bpf.c
+> index fd24ccb00faec0ba..b5bc37955560a58e 100644
+> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> @@ -123,6 +123,8 @@ struct mm_struct___new {
+>         struct rw_semaphore mmap_lock;
+>  } __attribute__((preserve_access_index));
+>
+> +extern struct kmem_cache *bpf_get_kmem_cache(u64 addr) __ksym __weak;
+> +
+>  /* control flags */
+>  const volatile int has_cpu;
+>  const volatile int has_task;
+> @@ -496,8 +498,23 @@ int contention_end(u64 *ctx)
+>                 };
+>                 int err;
+>
+> -               if (aggr_mode =3D=3D LOCK_AGGR_ADDR)
+> -                       first.flags |=3D check_lock_type(pelem->lock, pel=
+em->flags);
+> +               if (aggr_mode =3D=3D LOCK_AGGR_ADDR) {
+> +                       first.flags |=3D check_lock_type(pelem->lock,
+> +                                                      pelem->flags & LCB=
+_F_TYPE_MASK);
+> +
+> +                       /* Check if it's from a slab object */
+> +                       if (bpf_get_kmem_cache) {
+> +                               struct kmem_cache *s;
+> +                               struct slab_cache_data *d;
+> +
+> +                               s =3D bpf_get_kmem_cache(pelem->lock);
+> +                               if (s !=3D NULL) {
+> +                                       d =3D bpf_map_lookup_elem(&slab_c=
+aches, &s);
+> +                                       if (d !=3D NULL)
+> +                                               first.flags |=3D d->id;
+> +                               }
+> +                       }
+> +               }
+>
+>                 err =3D bpf_map_update_elem(&lock_stat, &key, &first, BPF=
+_NOEXIST);
+>                 if (err < 0) {
+> --
+> 2.47.0.199.ga7371fff76-goog
+>
 
