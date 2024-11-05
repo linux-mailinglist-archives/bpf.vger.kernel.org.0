@@ -1,215 +1,263 @@
-Return-Path: <bpf+bounces-43997-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43998-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 233009BC3D6
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 04:24:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 373CD9BC3F1
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 04:37:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A95D01F21B9A
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 03:24:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C9541F21CFD
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 03:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEF2A185923;
-	Tue,  5 Nov 2024 03:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1591B185B78;
+	Tue,  5 Nov 2024 03:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DkNy8tPX"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bZ6K8m8I"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB43B38DDB
-	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 03:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEA583D9E
+	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 03:37:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730777047; cv=none; b=IVdWgEn4jeD97DeQXMtLzHU0xK/Xxwte8qnym+QcIkJDlHuyJ4EhJj56IgZ6g5pVmf5+4FqRpdRzEdE1Gp8MMB5geY31dDvdwukKHYUT2NI2UpE7rPORC8u5GhpR9CsXL/KsVZRVtZilaiH5pyA9A92Lv914RAhxzyDc31GuKS8=
+	t=1730777862; cv=none; b=ryaNnCiTqcVdnuahAAAINfG35RLQwcuW63FL8mlXe0cRGd1nG2cjajykCNyEM4fOL61rbUej8MWbjoNv71F/rQDenQq6qUYXnyu8XDNnjjeXkuJgBNFu5gS6k25o4jWqW+d/jP3/3y4I2n1LNPmI2kYVUcH3Eaxejb0+jZc4vyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730777047; c=relaxed/simple;
-	bh=5QUHgNsVFQlVu3u6ggbOA3TAqcHXnvWxj+mlox2vBQ4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nh+5JfvVTR3V5/JcqqHfiOF8e80jF3Jg0CutuqToBORZp36jeDetcik5z3xo10DssEl6Ngfy2zu+Xhts8KJWjz3Q8HguY99GAPX5QexpgL9ohEAhJ0p5csZuBrkGkz3gINLJgsHtOCWV0tL/bCbV6ivHv51JkcQHnlDj0avY2AE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DkNy8tPX; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1730777045;
+	s=arc-20240116; t=1730777862; c=relaxed/simple;
+	bh=ylI3Q8lXhO0Zoqq1AlDm9w7Qfb5aiI2MLw0PLyCXVn8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r5SZTWmBkklkDoRnTTf7X9sMFQttKdHt0yzI9XxX8EFH2zMHTpUQtJab7qDTx66ozKBzIK+hDi6EW9z8ZoYSfDS8djvX26IP+X6c23bM5N5RgO90ST4aRyZ0cDEtt29rjXMrgtEcjSAG0H3C8ZkYF7dswXM5UoSTrF+dmSgqXag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bZ6K8m8I; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a34f5be8-8cf9-4659-badd-32c387cefe29@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1730777857;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=g5n1SqOXBxh35CLZ/E76FYksVvJeG9eAJd+Pgox1e9A=;
-	b=DkNy8tPXMj+WsVyqheSyAO+i4iQgTh76ucvF5vSeA+ii+ekepmcDdcqRsTBWozIwfOyRd4
-	iwDHwscbkw1ydBOHVTbo6Meo54mQ4qM05PbBtCUTh4KrZxziG+/5Xi/bBOb+JO/F0Lgits
-	yk8HF5p3YvJXgCv/pLAOpIu5t0F7k08=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-580-APMruZGxMHq4ejgctz4ukQ-1; Mon, 04 Nov 2024 22:24:03 -0500
-X-MC-Unique: APMruZGxMHq4ejgctz4ukQ-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-20c9fe994daso51800705ad.2
-        for <bpf@vger.kernel.org>; Mon, 04 Nov 2024 19:24:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730777043; x=1731381843;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g5n1SqOXBxh35CLZ/E76FYksVvJeG9eAJd+Pgox1e9A=;
-        b=Vxjlmt98mc1PKSMZH/jFF6f5S844MktNtXyLRUuk/5n8IVGEcazUo5LgUWUIMbcYYu
-         GLf0jcIiwgJWPRpIwt6Ii8J4vQ8c2vQ5tGl7rBlyqCwNhljwcoM0N5q2BUj9mPwN+Y8n
-         aqY06LELMR0XKpRNdNkan0k4RyJamIt8k6Pkkwl0xu9ZmmtWvGlE452ZBmWUYDI3TgfW
-         iFRjkQjPwWmRYWNrOD04aEFuDRYewCugJEZyGck8GFRqU91C01xgj3f69JYUE6uFWhEw
-         7cMZgdl/HI1szpvONEYDjuQ2Yjg9s80eaRrgSRbZUAeFMmMJBbpbSfIKpb8T0qKqm+D9
-         YZ+A==
-X-Forwarded-Encrypted: i=1; AJvYcCXoAYWuPKv8R6m/LnhUoVFWRG6ho1msigWwhLYyZIGzoQKgIV/9lzsjzWm+6rU1+GSkSP8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywk0Umcte/QP+vS5S/z8HjRqR7jxBoGAeKyYu5ZaRqiBCgeEgJd
-	BOHLQZefKNqMpDe8FNFqbYNQ+WM0wGOq1+zmwRLFiS40kWIKti9SRZRU8L7z8NBExz6dlg6870w
-	IHdLOE4sseoiwpQjDdTJBzgSBkMZbPBOep//ldGTEkuhUnt5Bs/fpeHBX9CNQqallYjQrnsnzBo
-	0HG1ddoO+6NTC6ZJy+J5ZaiU10
-X-Received: by 2002:a17:903:2b06:b0:20c:d5d9:95dc with SMTP id d9443c01a7336-210f76d67cfmr268475855ad.40.1730777042667;
-        Mon, 04 Nov 2024 19:24:02 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEaIDVC9Qi5Y2fDkClwQoOViLbl1azvUa3CWlVG9p2ehPtLvN2mbt9WVC/NUU9tEoAThf431M26JAZ/sT5va9E=
-X-Received: by 2002:a17:903:2b06:b0:20c:d5d9:95dc with SMTP id
- d9443c01a7336-210f76d67cfmr268475545ad.40.1730777042172; Mon, 04 Nov 2024
- 19:24:02 -0800 (PST)
+	bh=OT7he2wBOaYh/UF1kdeXxY9rhIo+PX1RPd4RwaB8oM8=;
+	b=bZ6K8m8IkXb+hiHVAWw/kcryQ6oI9PUf0PlhguzQIkA2SYsqfF71/33TNVbpIqJ/HxW7Ec
+	qyYF7lyWyv9/F1OS3sPJm0sMeJRe6H6oqk+TuKx5qqWPaXzln/MgoQVQM5sGBA/vSQuiv0
+	drotwDH6a1djGQ/oNu3U89GA1U2xK5E=
+Date: Mon, 4 Nov 2024 19:37:28 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241030082453.97310-1-xuanzhuo@linux.alibaba.com> <20241030082453.97310-7-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20241030082453.97310-7-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Tue, 5 Nov 2024 11:23:50 +0800
-Message-ID: <CACGkMEviCSEo4thkFo8gYnv+FCm-v65umJ65fdOwtxbAF_F2Ag@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 06/13] virtio-net: rq submits premapped per-buffer
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, 
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	virtualization@lists.linux.dev, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v9 04/10] bpf: Check potential private stack
+ recursion for progs with async callback
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Tejun Heo <tj@kernel.org>
+References: <20241104193455.3241859-1-yonghong.song@linux.dev>
+ <20241104193515.3243315-1-yonghong.song@linux.dev>
+ <CAADnVQL3MkDgZykq1H3NhJio8gZDnf3+kXXw7AQ36uT8yw5UfQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQL3MkDgZykq1H3NhJio8gZDnf3+kXXw7AQ36uT8yw5UfQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Oct 30, 2024 at 4:25=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
->
-> virtio-net rq submits premapped per-buffer by setting sg page to NULL;
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 792e9eadbfc3..09757fa408bd 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -542,6 +542,12 @@ static struct sk_buff *ptr_to_skb(void *ptr)
->         return (struct sk_buff *)((unsigned long)ptr & ~VIRTIO_ORPHAN_FLA=
-G);
->  }
->
-> +static void sg_fill_dma(struct scatterlist *sg, dma_addr_t addr, u32 len=
-)
-> +{
-> +       sg->dma_address =3D addr;
-> +       sg->length =3D len;
 
-This may work but I think it's better to reuse existing dma sg helpers like=
-:
+On 11/4/24 6:51 PM, Alexei Starovoitov wrote:
+> On Mon, Nov 4, 2024 at 11:38 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> In previous patch, tracing progs are enabled for private stack since
+>> recursion checking ensures there exists no nested same bpf prog run on
+>> the same cpu.
+>>
+>> But it is still possible for nested bpf subprog run on the same cpu
+>> if the same subprog is called in both main prog and async callback,
+>> or in different async callbacks. For example,
+>>    main_prog
+>>     bpf_timer_set_callback(timer, timer_cb);
+>>     call sub1
+>>    sub1
+>>     ...
+>>    time_cb
+>>     call sub1
+>>
+>> In the above case, nested subprog run for sub1 is possible with one in
+>> process context and the other in softirq context. If this is the case,
+>> the verifier will disable private stack for this bpf prog.
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   include/linux/bpf_verifier.h |  2 ++
+>>   kernel/bpf/verifier.c        | 42 +++++++++++++++++++++++++++++++-----
+>>   2 files changed, 39 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+>> index 0622c11a7e19..e921589abc72 100644
+>> --- a/include/linux/bpf_verifier.h
+>> +++ b/include/linux/bpf_verifier.h
+>> @@ -669,6 +669,8 @@ struct bpf_subprog_info {
+>>          /* true if bpf_fastcall stack region is used by functions that can't be inlined */
+>>          bool keep_fastcall_stack: 1;
+>>          bool use_priv_stack: 1;
+>> +       bool visited_with_priv_stack_accum: 1;
+>> +       bool visited_with_priv_stack: 1;
+>>
+>>          u8 arg_cnt;
+>>          struct bpf_subprog_arg_info args[MAX_BPF_FUNC_REG_ARGS];
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 406195c433ea..e01b3f0fd314 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -6118,8 +6118,12 @@ static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx,
+>>                                          idx, subprog_depth);
+>>                                  return -EACCES;
+>>                          }
+>> -                       if (subprog_depth >= BPF_PRIV_STACK_MIN_SIZE)
+>> +                       if (subprog_depth >= BPF_PRIV_STACK_MIN_SIZE) {
+>>                                  subprog[idx].use_priv_stack = true;
+>> +                               subprog[idx].visited_with_priv_stack = true;
+>> +                       }
+>> +               } else {
+>> +                       subprog[idx].visited_with_priv_stack = true;
+> See suggestion for patch 3.
+> It's cleaner to rewrite with a single visited_with_priv_stack = true; statement.
 
-sg_dma_address(sg) =3D addr;
-sg_dma_length(sg) =3D len;
+Ack.
 
-And we probably need to fix the virtio core which only uses
-sg_dma_address() but not sg_dma_length().
+>
+>>                  }
+>>          }
+>>   continue_func:
+>> @@ -6220,10 +6224,12 @@ static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx,
+>>   static int check_max_stack_depth(struct bpf_verifier_env *env)
+>>   {
+>>          struct bpf_subprog_info *si = env->subprog_info;
+>> +       enum priv_stack_mode orig_priv_stack_supported;
+>>          enum priv_stack_mode priv_stack_supported;
+>>          int ret, subtree_depth = 0, depth_frame;
+>>
+>>          priv_stack_supported = bpf_enable_priv_stack(env->prog);
+>> +       orig_priv_stack_supported = priv_stack_supported;
+>>
+>>          if (priv_stack_supported != NO_PRIV_STACK) {
+>>                  for (int i = 0; i < env->subprog_cnt; i++) {
+>> @@ -6240,13 +6246,39 @@ static int check_max_stack_depth(struct bpf_verifier_env *env)
+>>                                                              priv_stack_supported);
+>>                          if (ret < 0)
+>>                                  return ret;
+>> +
+>> +                       if (priv_stack_supported != NO_PRIV_STACK) {
+>> +                               for (int j = 0; j < env->subprog_cnt; j++) {
+>> +                                       if (si[j].visited_with_priv_stack_accum &&
+>> +                                           si[j].visited_with_priv_stack) {
+>> +                                               /* si[j] is visited by both main/async subprog
+>> +                                                * and another async subprog.
+>> +                                                */
+>> +                                               priv_stack_supported = NO_PRIV_STACK;
+>> +                                               break;
+>> +                                       }
+>> +                                       if (!si[j].visited_with_priv_stack_accum)
+>> +                                               si[j].visited_with_priv_stack_accum =
+>> +                                                       si[j].visited_with_priv_stack;
+>> +                               }
+>> +                       }
+>> +                       if (priv_stack_supported != NO_PRIV_STACK) {
+>> +                               for (int j = 0; j < env->subprog_cnt; j++)
+>> +                                       si[j].visited_with_priv_stack = false;
+>> +                       }
+> I cannot understand what this algorithm is doing.
+> What is the meaning of visited_with_priv_stack_accum ?
 
-This helps us to avoid future issues when CONFIG_NEED_SG_DMA_LENGTH is set.
+The following is an example to show how the algorithm works.
+Let us say we have prog like
+    main_prog0  si[0]
+      sub1      si[1]
+      sub2      si[2]
+    async1      si[3]
+      sub4      si[4]
+      sub2      si[2]
+    async2      si[5]
+      sub4      si[4]
+      sub5      si[6]
+      
 
-Others look good.
+Total 9 subprograms.
 
-Thanks
+after iteration 1 (main_prog0)
+    visited_with_priv_stack_accum: si[i] = false for i = 0 ... 9
+    visited_with_priv_stack: si[0] = si[1] = si[2] = true, others false
 
-> +}
-> +
->  static void __free_old_xmit(struct send_queue *sq, struct netdev_queue *=
-txq,
->                             bool in_napi, struct virtnet_sq_free_stats *s=
-tats)
->  {
-> @@ -915,8 +921,7 @@ static void virtnet_rq_init_one_sg(struct receive_que=
-ue *rq, void *buf, u32 len)
->         addr =3D dma->addr - sizeof(*dma) + offset;
+    for all i, visited_with_priv_stack_accum[i] and visited_with_priv_stack[i]
+    is false, so main_prog0 can use priv stack.
+
+    visited_with_priv_stack_accum: si[0] = si[1] = si[2] = true; others false
+    visited_with_priv_stack cleared with false.
+
+after iteration 2 (async1)
+    visited_with_priv_stack_accum: si[0] = si[1] = si[2] = true; others false
+    visited_with_priv_stack: si[2] = si[3] = si[4] = true, others false
+
+    Here, si[2] appears in both visited_with_priv_stack_accum and
+    visited_with_priv_stack, so async1 cannot have priv stack.
+
+    In my algorithm, I flipped the whole thing to no_priv_stack, which is
+    too conservative. We should just skip async1 and continues.
+
+    Let us say, we say async1 not having priv stack while main_prog0 has.
+
+    /* the same as end of iteration 1 */
+    visited_with_priv_stack_accum: si[0] = si[1] = si[2] = true; others false
+    visited_with_priv_stack cleared with false.
+
+after iteration 3 (async2)
+    visited_with_priv_stack_accum: si[0] = si[1] = si[2] = true; others false
+    visited_with_priv_stack: si[4] = si[5] = si[6] = true;
+
+    there are no conflict, so async2 can use private stack.
+
+
+If we only have one bit in bpf_subprog_info, for a async tree,
+if marking a subprog to be true and later we found there is a conflict in
+async tree and we need make the whole async subprogs not eligible for priv stack,
+then it will be hard to undo previous markings.
+
+So visited_with_priv_stack_accum is to accumulate "true" results from
+main_prog/async's.
+
+Maybe we change two bit names to
+   visited_with_priv_stack
+   visited_with_priv_stack_tmp
+?
+
 >
->         sg_init_table(rq->sg, 1);
-> -       rq->sg[0].dma_address =3D addr;
-> -       rq->sg[0].length =3D len;
-> +       sg_fill_dma(rq->sg, addr, len);
->  }
+>>                  }
+>>          }
+>>
+>> -       if (priv_stack_supported == NO_PRIV_STACK && subtree_depth > MAX_BPF_STACK) {
+>> -               verbose(env, "combined stack size of %d calls is %d. Too large\n",
+>> -                       depth_frame, subtree_depth);
+>> -               return -EACCES;
+>> +       if (priv_stack_supported == NO_PRIV_STACK) {
+>> +               if (subtree_depth > MAX_BPF_STACK) {
+>> +                       verbose(env, "combined stack size of %d calls is %d. Too large\n",
+>> +                               depth_frame, subtree_depth);
+>> +                       return -EACCES;
+>> +               }
+>> +               if (orig_priv_stack_supported == PRIV_STACK_ADAPTIVE) {
+>> +                       for (int i = 0; i < env->subprog_cnt; i++)
+>> +                               si[i].use_priv_stack = false;
+>> +               }
+> why? This patch suppose clear use_priv_stack from subprogs
+> that are dual called and only from those subprogs.
+> All other subprogs are fine.
 >
->  static void *virtnet_rq_alloc(struct receive_queue *rq, u32 size, gfp_t =
-gfp)
-> @@ -1068,12 +1073,6 @@ static void check_sq_full_and_disable(struct virtn=
-et_info *vi,
->         }
->  }
->
-> -static void sg_fill_dma(struct scatterlist *sg, dma_addr_t addr, u32 len=
-)
-> -{
-> -       sg->dma_address =3D addr;
-> -       sg->length =3D len;
-> -}
-> -
->  static struct xdp_buff *buf_to_xdp(struct virtnet_info *vi,
->                                    struct receive_queue *rq, void *buf, u=
-32 len)
->  {
-> @@ -1354,7 +1353,8 @@ static int virtnet_add_recvbuf_xsk(struct virtnet_i=
-nfo *vi, struct receive_queue
->                 sg_init_table(rq->sg, 1);
->                 sg_fill_dma(rq->sg, addr, len);
->
-> -               err =3D virtqueue_add_inbuf(rq->vq, rq->sg, 1, xsk_buffs[=
-i], gfp);
-> +               err =3D virtqueue_add_inbuf_premapped(rq->vq, rq->sg, 1, =
-xsk_buffs[i],
-> +                                                   NULL, true, gfp);
->                 if (err)
->                         goto err;
->         }
-> @@ -2431,7 +2431,8 @@ static int add_recvbuf_small(struct virtnet_info *v=
-i, struct receive_queue *rq,
->
->         virtnet_rq_init_one_sg(rq, buf, vi->hdr_len + GOOD_PACKET_LEN);
->
-> -       err =3D virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, ctx, gfp)=
-;
-> +       err =3D virtqueue_add_inbuf_premapped(rq->vq, rq->sg, 1, buf, ctx=
-,
-> +                                           rq->do_dma, gfp);
->         if (err < 0) {
->                 if (rq->do_dma)
->                         virtnet_rq_unmap(rq, buf, 0);
-> @@ -2546,7 +2547,8 @@ static int add_recvbuf_mergeable(struct virtnet_inf=
-o *vi,
->         virtnet_rq_init_one_sg(rq, buf, len);
->
->         ctx =3D mergeable_len_to_ctx(len + room, headroom);
-> -       err =3D virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, ctx, gfp)=
-;
-> +       err =3D virtqueue_add_inbuf_premapped(rq->vq, rq->sg, 1, buf, ctx=
-,
-> +                                           rq->do_dma, gfp);
->         if (err < 0) {
->                 if (rq->do_dma)
->                         virtnet_rq_unmap(rq, buf, 0);
-> --
-> 2.32.0.3.g01195cf9f
->
+> But it seems the alog attempts to detect one such calling scenario
+> and disables priv_stack everywhere?
+
+Sorry about this. Will fix in the next revision.
 
 
