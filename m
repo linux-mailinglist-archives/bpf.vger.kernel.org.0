@@ -1,140 +1,242 @@
-Return-Path: <bpf+bounces-43989-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43990-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B8099BC355
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 03:48:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D17019BC358
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 03:50:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDC7A282D63
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 02:48:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01F5E1C21E49
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 02:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8915542AAF;
-	Tue,  5 Nov 2024 02:47:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bPVnwIrR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6640D487AE;
+	Tue,  5 Nov 2024 02:50:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 660284A0A
-	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 02:47:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF2F74A0A;
+	Tue,  5 Nov 2024 02:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730774879; cv=none; b=G9Q00Z/axhlaaT//6Z7jgESBA8wZw6ZXFpggmMjhlumaev3HduYGSy6FcqPmxYbKjbTLXO+7Rnunh2OQr3OXRQ5Le3YSbOamU8bPYKxZ+7LLS49YkuCZCo+exC76fVCdMHdHkiCLMN26QTN5d40GRbcVPldo1CG0kOXz6HcuKVA=
+	t=1730775000; cv=none; b=YpEhVlPu1ljrqErSeysD9bl9EvCQ6hECr0njY2IZhErPrgikeMFxjiIdmJTlC5NTas/PbZvVBK0issVKtUFMQYon6k2tqTsn9/rFVA9magWZqkWLDKk/yVje2k+5V+UnY1PHGXwlk5eReAkl3zOsHnYMEnE7Q3tiq+eiVoTaqks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730774879; c=relaxed/simple;
-	bh=szHT7iwedjg1MpUpDy4pAPAgz6+XDSwIZaEFYDX+ihE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P9PYGsAMYcOwV2augIBphSNCPZBKjAj/CRbxbVUzITs6PYgOVrdEUof2SvWFBTOOrp0cVoAbmSYKkHL/ezRo5ten+8zQOKwIMtpTsg4YY/eRoYh4SMvQvNCqdlbSx++XeHbITQ5yK4lZu/sQNRjBcYq5cO4A2lzwwWrUhKkFASE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bPVnwIrR; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4315df7b43fso40585305e9.0
-        for <bpf@vger.kernel.org>; Mon, 04 Nov 2024 18:47:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730774876; x=1731379676; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ELfXUT7erbRHfZbq5ySamTTGRJvsa/q1aFZW0UcucIc=;
-        b=bPVnwIrR/Fc8xjyySriOL6IFcBcZXCCf8gblh7hvne4SuWYCWcNLYo5KTdi6NQs6y4
-         wdfMMep9mZYtLWE3IoJxqtvM5gdw/2hQm99Go7qGdi/nJh0ff6ZmLBFSTv+De48fo88H
-         +8LW8rGT0tTdZnrZvaLue2taN9BahNgTlf/6H6RdFE3v0jPUNpoHBZ7pWHOIm7fMtkQS
-         9vkLONsU6DsSagcOVsC9SF9XpTxOIMWCYFOX6fLyKKfV34sX/79qIU8LMn20dl4L2IW6
-         RKkGMIBIvo2NeSCHpKlkbEf5rlpF9QB0Z4EjNqvFgA5YJg2fyGt72+sjvCzRpXDRyucg
-         yKEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730774876; x=1731379676;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ELfXUT7erbRHfZbq5ySamTTGRJvsa/q1aFZW0UcucIc=;
-        b=rIWHf704b7VgVfTo/NrR7fWIMsdNZHHIuW6FpPFXS90aMjkFKZzSjAzLoIv6hSpMOW
-         bIsoRUBRzLbxPaMO10QfRAKhYrMuDpb/H2Vt9gBS/LevOXT9+RfnoxWTlVM+rU+C/Q3W
-         OQz9l2tgnefjMxEOU9lzE5COfZpeYPy9zMGy10KBvXaydsJ34psS+9j+BD2cd8eNcaWo
-         YSVUBIdQ9o0wlDHESRXzDeUYwvwF1gGSCWigAOHiaMNzkWZIXm1T39tb+xmvCk9cGdwD
-         akGfHGfAhMMArXreYeE6kgWEucrUcjP43zCfvagxAm2WkZoj8m9B0lU9YrXxyhCYT8Xt
-         VMLw==
-X-Gm-Message-State: AOJu0YyBL1X9w3IDNsd4S9eCUrtchUJIq2KA4E1c5eIkLFvnuHrKqacA
-	+vtD66K5sQhQZAtCbaMgXF/dkCfOwgU3RtwRNAolGgiXrNfsMjidGnDiZ+VBDdDvzyS5knwOgco
-	aD313Rn3aBg62gwTUbJNkvE4sBQM=
-X-Google-Smtp-Source: AGHT+IHwNzSf3d/S/Yqoe7RB127y5huxxqSakD+dmZHe7Jeo04xrR+vImv8Qk7vxD22anwtfRexnSgfmeYOYTo3P2t4=
-X-Received: by 2002:a5d:50cf:0:b0:37d:45ab:4241 with SMTP id
- ffacd0b85a97d-380610f2e8emr24814027f8f.12.1730774875453; Mon, 04 Nov 2024
- 18:47:55 -0800 (PST)
+	s=arc-20240116; t=1730775000; c=relaxed/simple;
+	bh=Zldqxlyz13smoHjP0fcUVwNkG39W/q3OENBvVhi6u5Y=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=m0mPBjY0kImmVOO0EoyfCXDP5DKCwhSssPPoBLUsTFKBqAIcpO6xtbKrAiUXS2bdDpLjM/B+1+WL+cWHus3WtIOjuqe7BPL0tIi3if22xao/Hh8ztoAu5lJSMYlaXRezS5UlwC6D0yhI5fsY95CQBw14p4q2ftqYaofP0vXnA1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XjCVB3j7kz4f3jtw;
+	Tue,  5 Nov 2024 10:49:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 54B6F1A018D;
+	Tue,  5 Nov 2024 10:49:51 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgDXAIXIhyln09OKAw--.51032S2;
+	Tue, 05 Nov 2024 10:49:48 +0800 (CST)
+Subject: Re: [syzbot] [bpf?] WARNING: locking bug in bpf_map_put
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ syzbot <syzbot+d2adb332fe371b0595e3@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, boqun.feng@gmail.com,
+ bpf@vger.kernel.org, daniel@iogearbox.net, eadavis@qq.com,
+ eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+ longman@redhat.com, martin.lau@linux.dev, sdf@fomichev.me, song@kernel.org,
+ syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev, tglx@linutronix.de
+References: <67251dc5.050a0220.529b6.015c.GAE@google.com>
+ <67283170.050a0220.3c8d68.0ad6.GAE@google.com>
+ <20241104162832.OQvrGDiP@linutronix.de>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <7e8e835d-ef94-80e6-e98e-f8ed4a8fc78c@huaweicloud.com>
+Date: Tue, 5 Nov 2024 10:49:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241104193455.3241859-1-yonghong.song@linux.dev> <20241104193510.3243093-1-yonghong.song@linux.dev>
-In-Reply-To: <20241104193510.3243093-1-yonghong.song@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 4 Nov 2024 18:47:44 -0800
-Message-ID: <CAADnVQK-dCC68pPbrt2DLY5022V64Kget7xyShHqRoK+c5ZTiw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 03/10] bpf: Allow private stack to have each
- subprog having stack size of 512 bytes
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20241104162832.OQvrGDiP@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgDXAIXIhyln09OKAw--.51032S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxurWruFy7Zr4fJr1kJFyfCrg_yoW7Jw4UpF
+	WrGFZIka1kZr1qk3yrt3Z8KrWjgw4ay3yUC348WFy8C3ZxZrnagw1xKFZ7Kr15ur1kZ3ZY
+	vFZFkwn8tw18WFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUxo7KDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Mon, Nov 4, 2024 at 11:35=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
-> @@ -6070,11 +6105,23 @@ static int check_max_stack_depth_subprog(struct b=
-pf_verifier_env *env, int idx,
->                         depth);
->                 return -EACCES;
->         }
-> -       depth +=3D round_up_stack_depth(env, subprog[idx].stack_depth);
-> +       subprog_depth =3D round_up_stack_depth(env, subprog[idx].stack_de=
-pth);
-> +       depth +=3D subprog_depth;
->         if (depth > MAX_BPF_STACK && !*subtree_depth) {
->                 *subtree_depth =3D depth;
->                 *depth_frame =3D frame + 1;
->         }
-> +       if (priv_stack_supported !=3D NO_PRIV_STACK) {
-> +               if (!subprog[idx].use_priv_stack) {
-> +                       if (subprog_depth > MAX_BPF_STACK) {
-> +                               verbose(env, "stack size of subprog %d is=
- %d. Too large\n",
-> +                                       idx, subprog_depth);
-> +                               return -EACCES;
-> +                       }
-> +                       if (subprog_depth >=3D BPF_PRIV_STACK_MIN_SIZE)
-> +                               subprog[idx].use_priv_stack =3D true;
-> +               }
-> +       }
+Hi,
 
-Hold on. If I'm reading this correctly this adaptive priv stack
-concept will make some subprogs with stack >=3D 64 to use priv_stack
-while other subprogs will still use normal stack?
-Same for the main prog. It may or may not use priv stack ?
+On 11/5/2024 12:28 AM, Sebastian Andrzej Siewior wrote:
+> On 2024-11-03 18:29:04 [-0800], syzbot wrote:
+>> syzbot has bisected this issue to:
+>>
+>> commit 560af5dc839eef08a273908f390cfefefb82aa04
+>> Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>> Date:   Wed Oct 9 15:45:03 2024 +0000
+>>
+>>     lockdep: Enable PROVE_RAW_LOCK_NESTING with PROVE_LOCKING.
+>>
+>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122a4740580000
+>> start commit:   f9f24ca362a4 Add linux-next specific files for 20241031
+>> git tree:       linux-next
+>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=112a4740580000
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=162a4740580000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=328572ed4d152be9
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=d2adb332fe371b0595e3
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=174432a7980000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ffe55f980000
+>>
+>> Reported-by: syzbot+d2adb332fe371b0595e3@syzkaller.appspotmail.com
+>> Fixes: 560af5dc839e ("lockdep: Enable PROVE_RAW_LOCK_NESTING with PROVE_LOCKING.")
+>>
+>> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> This is due to raw_spinlock_t in bucket::lock and the acquired
+> spinlock_t underneath. Would it would to move free part outside of the
+> locked section?
 
-I guess this is ok-ish, but needs to be clearly explained in comments
-and commit log.
-My first reaction to such adaptive concept was negative, since
-such "random" mix of priv stack in some subprogs makes
-the whole thing pretty hard to reason about it,
-but I guess it's valid to use normal stack when stack usage
-is small. No need to penalize every subprog.
+I think moving free_htab_elem() after htab_unlock_bucket() is OK. But
+the fix below is not enough, and there is some corn cases for
+pre-allocated element . I had written a patch for the problem a few day
+ago because the problem can be easily reproduced by running test_maps. I
+am also writing a selftest patch for it.  I could post the patch and the
+selftest patch if you are OK with it.
+>
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index b14b87463ee04..1d8d09fdd2da5 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -824,13 +824,14 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
+>  	hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
+>  		if (l == tgt_l) {
+>  			hlist_nulls_del_rcu(&l->hash_node);
+> -			check_and_free_fields(htab, l);
+>  			bpf_map_dec_elem_count(&htab->map);
+>  			break;
+>  		}
+>  
+>  	htab_unlock_bucket(htab, b, tgt_l->hash, flags);
+>  
+> +	if (l == tgt_l)
+> +		check_and_free_fields(htab, l);
+>  	return l == tgt_l;
+>  }
+>  
+> @@ -1181,14 +1182,18 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+>  	 * concurrent search will find it before old elem
+>  	 */
+>  	hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+> -	if (l_old) {
+> +	if (l_old)
+>  		hlist_nulls_del_rcu(&l_old->hash_node);
+> +	htab_unlock_bucket(htab, b, hash, flags);
+> +
+> +	if (l_old) {
+>  		if (!htab_is_prealloc(htab))
+>  			free_htab_elem(htab, l_old);
+>  		else
+>  			check_and_free_fields(htab, l_old);
+>  	}
+> -	ret = 0;
+> +	return 0;
+> +
+>  err:
+>  	htab_unlock_bucket(htab, b, hash, flags);
+>  	return ret;
+> @@ -1433,14 +1438,15 @@ static long htab_map_delete_elem(struct bpf_map *map, void *key)
+>  
+>  	l = lookup_elem_raw(head, hash, key, key_size);
+>  
+> -	if (l) {
+> +	if (l)
+>  		hlist_nulls_del_rcu(&l->hash_node);
+> -		free_htab_elem(htab, l);
+> -	} else {
+> +	else
+>  		ret = -ENOENT;
+> -	}
+>  
+>  	htab_unlock_bucket(htab, b, hash, flags);
+> +
+> +	if (l)
+> +		free_htab_elem(htab, l);
+>  	return ret;
+>  }
+>  
+> @@ -1647,14 +1653,16 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
+>  		}
+>  
+>  		hlist_nulls_del_rcu(&l->hash_node);
+> -		if (!is_lru_map)
+> -			free_htab_elem(htab, l);
+>  	}
+>  
+>  	htab_unlock_bucket(htab, b, hash, bflags);
+>  
+> -	if (is_lru_map && l)
+> -		htab_lru_push_free(htab, l);
+> +	if (l) {
+> +		if (is_lru_map)
+> +			htab_lru_push_free(htab, l);
+> +		else
+> +			free_htab_elem(htab, l);
+> +	}
+>  
+>  	return ret;
+>  }
+> @@ -1851,15 +1859,12 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+>  
+>  			/* bpf_lru_push_free() will acquire lru_lock, which
+>  			 * may cause deadlock. See comments in function
+> -			 * prealloc_lru_pop(). Let us do bpf_lru_push_free()
+> -			 * after releasing the bucket lock.
+> +			 * prealloc_lru_pop(). htab_lru_push_free() may allocate
+> +			 * sleeping locks. Let us do bpf_lru_push_free() after
+> +			 * releasing the bucket lock.
+>  			 */
+> -			if (is_lru_map) {
+> -				l->batch_flink = node_to_free;
+> -				node_to_free = l;
+> -			} else {
+> -				free_htab_elem(htab, l);
+> -			}
+> +			l->batch_flink = node_to_free;
+> +			node_to_free = l;
+>  		}
+>  		dst_key += key_size;
+>  		dst_val += value_size;
+> @@ -1871,7 +1876,10 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+>  	while (node_to_free) {
+>  		l = node_to_free;
+>  		node_to_free = node_to_free->batch_flink;
+> -		htab_lru_push_free(htab, l);
+> +		if (is_lru_map)
+> +			htab_lru_push_free(htab, l);
+> +		else
+> +			free_htab_elem(htab, l);
+>  	}
+>  
+>  next_batch:
+>
+> .
 
-I wonder what others think about it.
-
-Also it would be cleaner to rewrite above as:
-if (subprog_depth > MAX_BPF_STACK) {
-   verbose();
-   return -EACCESS;
-}
-if (priv_stack_supported =3D=3D PRIV_STACK_ADAPTIVE &&
-    subprog_depth >=3D BPF_PRIV_STACK_MIN_SIZE)
-   subprog[idx].use_priv_stack =3D true;
-
-less indent and easier to read.
 
