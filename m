@@ -1,232 +1,244 @@
-Return-Path: <bpf+bounces-44006-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B8C29BC455
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2A3F9BC456
 	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 05:28:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D07BFB21599
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 04:28:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 709541F220CE
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 04:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D041B219F;
-	Tue,  5 Nov 2024 04:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDF771B3928;
+	Tue,  5 Nov 2024 04:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Vjf89mA5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kkZia9dv"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A696118FDAC
-	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 04:28:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A559C18E363
+	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 04:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730780916; cv=none; b=WktUz23/CkB2e1VzG/QKEXN4hDS/QKYR5P7ww2AXIO4GUkQUezyqcgKe4uAA/lP+CbFjnAjRSDDtFWsIQZEKEjpEFfgVXJpqJpvTXS/KVYeFtn2KlrMASMJfOUVza0eDAIAnlUdLFL9rSJD2b0MN/KZK0aFbTsWIoJaeLH9lOJ4=
+	t=1730780921; cv=none; b=mCEFzAk4My5Hkhs/ZwAm9MO5fA3ZzTTb/kJOe4LcNa9Oqu6Khm8rNikwSpO1NCbMXZnJ2yF6Hm8/rSAWJfvex/lovIvhVZYoL0uHb8Ts9fuwaYZk1ZB8JtehHaV7bdYSdRP02pJrcFPDGwzJzWtVR4b0OAPI0ZWV9kQYBSTY2Iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730780916; c=relaxed/simple;
-	bh=jCOhmUK6IbEIRDl5mkQTmEZnPSs5BTtuXv8Ub6PBav4=;
+	s=arc-20240116; t=1730780921; c=relaxed/simple;
+	bh=sPucVRogZDgtmadqgr/cQ9HAetPAiv9rl3/7hvt9lrA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eD1Hdhb8MFjTdLp9UjGuuG2wjp9JBdrhxERDoka0Q1UI4nVu9K/Q7xgnBoFzyUZtG7AlDoXdDRrAPgq93ZvbSiu6QAYzswEn3Oxr+jhMoiqIYlY/ZhhNK/h22h70zLrXnw3E1OJR9wNSor786dqPdDJpjzKVSYu23k4eboDLa/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Vjf89mA5; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1730780913;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2WNP/eiwwlyjDkpO5BsHHqJGwhWGw0F0hz9Z4SjJmr0=;
-	b=Vjf89mA5eWElCFxe2ZYB3fYtWNWc1QURZsRghH1R+h0pOy04xAVMHL6iP072oaLYt4z4Yn
-	f+3YD6rXe+zSVxzdT1Gl2C47Kg4wjYwo76br882znYJiEv+HqjIIKKUWvw2lI7/Mj3/5/l
-	WvCEsIF5OR4MsahAqO1ATC/FSiFOFJk=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-381-5Oztqh8kMne07Zg_0PThpA-1; Mon, 04 Nov 2024 23:28:30 -0500
-X-MC-Unique: 5Oztqh8kMne07Zg_0PThpA-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2e2e146c77cso6534363a91.3
-        for <bpf@vger.kernel.org>; Mon, 04 Nov 2024 20:28:30 -0800 (PST)
+	 To:Cc:Content-Type; b=etfPPxsTt9/CR8gZQAp6/WeH5QFuGGC8VnY3tDgqJpdYe4hBrZTV0xD8WxvWizzju5Wr3gFVdpCN4gR+TY8hMziz1IRJIiC7gjqeXmUE/UE2pZypi/mUN3C3btrMt/ZiYzWwYmHK6ej74ygQmWDXmVM7F1m60L7XbS6N94QYIFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kkZia9dv; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-431ac30d379so40939985e9.1
+        for <bpf@vger.kernel.org>; Mon, 04 Nov 2024 20:28:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730780918; x=1731385718; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BHlpuAcYG+nubV+n3OTk9FM/KABOdoszyNxpu1kMLEc=;
+        b=kkZia9dvJJVyxanu1hmylk+oie/HvJ4NcIrhw98GUJifq129J3dgWDX2ScbBAYc4/9
+         TA83ZWIwUDMKPEvbYg/P5fIvwxUZl7EhLSrwY3ycM3aTMySnaEB9GdPmZE0B37rmIRed
+         Ehk5ogNoSEvtOZlM1KhfehMNBq+SPIL51aB0bjDHe4QocTU6X43aOpMFOPPm8ccZk1y6
+         uoYhOq/IMBnzRmQrmQZ16yzgEWIhcmsrK33pKMhEr6ZeuSzmB0YSw0+tXUk5AFnAtzC3
+         7kEwIry9bKV7D8Gpv0RE2qqhRpdCrV4DW/Onm57s38G/gEh1y+kfjWt1MYmTrTK6pRWs
+         reWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730780909; x=1731385709;
+        d=1e100.net; s=20230601; t=1730780918; x=1731385718;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2WNP/eiwwlyjDkpO5BsHHqJGwhWGw0F0hz9Z4SjJmr0=;
-        b=M52cyYVfGxCacnLNaji1WcRvr8FNdrcO3p63+Px22HgfGbA+NSciVEve/rfmPRCllo
-         jCRYdFyM9FLcB4AXH0P6hjA2nmeG3BV+BVnBMBCSMc9rH06aZlaxXaA6sUHV0iVDw1ge
-         Epvp9pWfHO0qOMAWHoKrq6C93PplD/3tEdvRWjv2Jg2z2rNDZ5/ShyBhT5ckEdq0qvOL
-         zWa7Net96L3ZYWScGI/xFbgFA6oQlZTLOK57OEhzuP3jolMsZU3HO3fTdV83TvE+T6IX
-         rJ/OOsOaY30D6iYCJvbcQNMhNJbvdzDVlbAM2ubSMh0JnNsNui5+zXqhCyfUCVIVQmXl
-         TGNA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2UttOD16+gaRiQ6ouDZ+fZFps437Oy1F2e5rbJfMz3m/zaRqXAqSptXR9HW4uoGDMFtA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxxODqsdy5XwWf/mCxwCk3Y82OC1x/04YTCYrcJx6Nj4FPqz3OP
-	D99coBLqQ1XkUgIaeb0zuodk/07r7V1QWotOjx4c4HVWOvqojDP6plFanjp1VD5S/5S71XXLJgf
-	7ahFekXzHIktvWwpMigeSutkLZXJRrJZPfaJuoHyvo0V3XkVuD8TLSPavyxxdnSXfidpO4WdtIf
-	KoxpAOUFV+ilPza/R/DIXLOKX8
-X-Received: by 2002:a17:90b:2703:b0:2e2:bad3:e393 with SMTP id 98e67ed59e1d1-2e93c1239b8mr23888102a91.3.1730780909403;
-        Mon, 04 Nov 2024 20:28:29 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHCqHP1v9rviscFmYSIZGGEle1Y/T+Yx3tavSzj80nHe7tuCQVnZBAYxDS5nHUdLvz4jkM+KeZYvQfYErHiRy0=
-X-Received: by 2002:a17:90b:2703:b0:2e2:bad3:e393 with SMTP id
- 98e67ed59e1d1-2e93c1239b8mr23888074a91.3.1730780908928; Mon, 04 Nov 2024
- 20:28:28 -0800 (PST)
+        bh=BHlpuAcYG+nubV+n3OTk9FM/KABOdoszyNxpu1kMLEc=;
+        b=H5jCOXgFVeDrSBDZHb5MgcWmzeO7CIdLKqSjvlC2NtndNi+yypVBPtskMYRytvqweT
+         OOKgcCAMTfDQt5fuMbP2TfY+gPx+W8xcnouRI+zgf16Edl9Hix7ywUDLmcz9oTj5lDYY
+         xpBRNsojbK/mJ6BhqaJmeGs/DOvS52HeXde09dwVJ56CAP0rAB1wUY6UO60TmJToP9Mq
+         K0rdm6lFTnYgu+mccKWwebm3P/twTaLQR7BBjGMB2rSFvb7VA0dnPqV9PtCaWxVQN+6m
+         wunMN/6aFvSNiduR4f1N7nWbwzbTDm8HzYTo3uge5JAkosI0VH5Lo7Sy1nELmL1zuZFp
+         0/vQ==
+X-Gm-Message-State: AOJu0YyEBv4ZsI87pPZyYPpb0ZIp4oXK71jGYQE4VfcvsSTEFtNqzzEp
+	vsNgfqxt5PVL/ZQvehHtNiu9Wwcj8UkrLaBgPI0btQzpkp7Mw+OhpiwQLuTD6fASan6nzQZ6HsT
+	+ZLOsD6zeywygpa9IELKKJ6sB3So=
+X-Google-Smtp-Source: AGHT+IE3zT6YrNnLxD2YCJoYXcmc3Op4vjQ988sbqxHPG7xhKAVyKsotJiJs+9KvLGsssr8iB6Qh+MVB6nhc8b4yg1o=
+X-Received: by 2002:a5d:6083:0:b0:37d:2db5:b50c with SMTP id
+ ffacd0b85a97d-380610f2d67mr22589526f8f.8.1730780917801; Mon, 04 Nov 2024
+ 20:28:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241030082453.97310-1-xuanzhuo@linux.alibaba.com> <20241030082453.97310-6-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20241030082453.97310-6-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Tue, 5 Nov 2024 12:28:18 +0800
-Message-ID: <CACGkMEuO4Y04nLLJDXD_atHz8-yD=sk1QLYPidoJSPtAn+ycqQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 05/13] virtio_ring: introduce add api for premapped
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, 
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	virtualization@lists.linux.dev, bpf@vger.kernel.org
+References: <20241104193455.3241859-1-yonghong.song@linux.dev>
+ <20241104193505.3242662-1-yonghong.song@linux.dev> <CAADnVQLr5Rz+L=4CWPxjBGLcYEctLRpPfh642LtNjXKTbyKPgQ@mail.gmail.com>
+ <36294e71-4d0b-465d-9bf5-c5640aa3a089@linux.dev> <CAADnVQLXbsuzHX6no+CSTAOYxt27jNY5qgtrML6vqEVsggfgRQ@mail.gmail.com>
+ <6c78f973-341e-4260-aed4-a5cb8e873acc@linux.dev> <29e2658c-02c9-4ef1-a633-ee5017e72bc3@linux.dev>
+In-Reply-To: <29e2658c-02c9-4ef1-a633-ee5017e72bc3@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 4 Nov 2024 20:28:26 -0800
+Message-ID: <CAADnVQL54BFUpzAWx-4B6_UFyHp4O88=+x8zeWJupiyjNarRfg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 02/10] bpf: Return false for
+ bpf_prog_check_recur() default case
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 30, 2024 at 4:25=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
+On Mon, Nov 4, 2024 at 7:50=E2=80=AFPM Yonghong Song <yonghong.song@linux.d=
+ev> wrote:
 >
-> Two APIs are introduced to submit premapped per-buffers.
 >
-> int virtqueue_add_inbuf_premapped(struct virtqueue *vq,
->                                  struct scatterlist *sg, unsigned int num=
-,
->                                  void *data,
->                                  void *ctx,
->                                  bool premapped,
->                                  gfp_t gfp);
+> On 11/4/24 6:53 PM, Yonghong Song wrote:
+> >
+> > On 11/4/24 5:55 PM, Alexei Starovoitov wrote:
+> >> On Mon, Nov 4, 2024 at 5:35=E2=80=AFPM Yonghong Song
+> >> <yonghong.song@linux.dev> wrote:
+> >>>
+> >>> On 11/4/24 5:21 PM, Alexei Starovoitov wrote:
+> >>>> On Mon, Nov 4, 2024 at 11:35=E2=80=AFAM Yonghong Song
+> >>>> <yonghong.song@linux.dev> wrote:
+> >>>>> The bpf_prog_check_recur() funciton is currently used by trampoline
+> >>>>> and tracing programs (also using trampoline) to check whether a
+> >>>>> particular prog supports recursion checking or not. The default cas=
+e
+> >>>>> (non-trampoline progs) return true in the current implementation.
+> >>>>>
+> >>>>> Let us make the non-trampoline prog recursion check return false
+> >>>>> instead. It does not impact any existing use cases and allows the
+> >>>>> function to be used outside the trampoline context in the next patc=
+h.
+> >>>> Does not impact ?! But it does.
+> >>>> This patch removes recursion check from fentry progs.
+> >>>> This cannot be right.
+> >>> The original bpf_prog_check_recur() implementation:
+> >>>
+> >>> static inline bool bpf_prog_check_recur(const struct bpf_prog *prog)
+> >>> {
+> >>>           switch (resolve_prog_type(prog)) {
+> >>>           case BPF_PROG_TYPE_TRACING:
+> >>>                   return prog->expected_attach_type !=3D BPF_TRACE_IT=
+ER;
+> >>>           case BPF_PROG_TYPE_STRUCT_OPS:
+> >>>           case BPF_PROG_TYPE_LSM:
+> >>>                   return false;
+> >>>           default:
+> >>>                   return true;
+> >>>           }
+> >>> }
+> >>>
+> >>> fentry prog is a TRACING prog, so it is covered. Did I miss anything?
+> >> I see. This is way too subtle.
+> >> You're correct that fentry is TYPE_TRACING,
+> >> so it could have "worked" if it was used to build trampolines only.
+> >>
+> >> But this helper is called for other prog types:
+> >>
+> >>          case BPF_FUNC_task_storage_get:
+> >>                  if (bpf_prog_check_recur(prog))
+> >>                          return &bpf_task_storage_get_recur_proto;
+> >>                  return &bpf_task_storage_get_proto;
+> >>
+> >> so it's still not correct, but for a different reason.
+> >
+> > There are four uses for func bpf_prog_check_recur() in kernel based on
+> > cscope: 0 kernel/bpf/trampoline.c bpf_trampoline_enter 1053 if
+> > (bpf_prog_check_recur(prog)) 1 kernel/bpf/trampoline.c
+> > bpf_trampoline_exit 1068 if (bpf_prog_check_recur(prog)) 2
+> > kernel/trace/bpf_trace.c bpf_tracing_func_proto 1549 if
+> > (bpf_prog_check_recur(prog)) 3 kernel/trace/bpf_trace.c
+> > bpf_tracing_func_proto 1553 if (bpf_prog_check_recur(prog)) The 2nd
+> > and 3rd ones are in bpf_trace.c. 1444 static const struct
+> > bpf_func_proto * 1445 bpf_tracing_func_proto(enum bpf_func_id func_id,
+> > const struct bpf_prog *prog) 1446 { 1447 switch (func_id) { ... 1548
+> > case BPF_FUNC_task_storage_get: 1549 if (bpf_prog_check_recur(prog))
+> > 1550 return &bpf_task_storage_get_recur_proto; 1551 return
+> > &bpf_task_storage_get_proto; 1552 case BPF_FUNC_task_storage_delete:
+> > 1553 if (bpf_prog_check_recur(prog)) 1554 return
+> > &bpf_task_storage_delete_recur_proto; 1555 return
+> > &bpf_task_storage_delete_proto; ... 1568 default: 1569 return
+> > bpf_base_func_proto(func_id, prog); 1570 } 1571 } They are used for
+> > tracing programs. So we should be safe here. But if you think that
+> > changing bpf_proc_check_recur() and calling function
+> > bpf_prog_check_recur() in bpf_enable_priv_stack() is too subtle, I can
+> > go back to my original approach which makes all supported prog types
+> > explicit in bpf_enable_priv_stack().
 >
-> int virtqueue_add_outbuf_premapped(struct virtqueue *vq,
->                                   struct scatterlist *sg, unsigned int nu=
-m,
->                                   void *data,
->                                   bool premapped,
->                                   gfp_t gfp);
+> Sorry. Format issue again. The below is a better format:
 >
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/virtio/virtio_ring.c | 48 ++++++++++++++++++++++++++++++++++++
->  include/linux/virtio.h       | 13 ++++++++++
->  2 files changed, 61 insertions(+)
+> There are four uses for func bpf_prog_check_recur() in kernel based on cs=
+cope:
 >
-> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index a89295b79e66..525308d82728 100644
-> --- a/drivers/virtio/virtio_ring.c
-> +++ b/drivers/virtio/virtio_ring.c
-> @@ -2272,6 +2272,29 @@ int virtqueue_add_outbuf(struct virtqueue *vq,
->  }
->  EXPORT_SYMBOL_GPL(virtqueue_add_outbuf);
+> 0 kernel/bpf/trampoline.c bpf_trampoline_enter 1053 if (bpf_prog_check_re=
+cur(prog))
+> 1 kernel/bpf/trampoline.c bpf_trampoline_exit 1068 if (bpf_prog_check_rec=
+ur(prog))
+> 2 kernel/trace/bpf_trace.c bpf_tracing_func_proto 1549 if (bpf_prog_check=
+_recur(prog))
+> 3 kernel/trace/bpf_trace.c bpf_tracing_func_proto 1553 if (bpf_prog_check=
+_recur(prog))
 >
-> +/**
-> + * virtqueue_add_outbuf_premapped - expose output buffers to other end
-> + * @vq: the struct virtqueue we're talking about.
-> + * @sg: scatterlist (must be well-formed and terminated!)
-> + * @num: the number of entries in @sg readable by other side
-> + * @data: the token identifying the buffer.
-> + * @gfp: how to do memory allocations (if necessary).
-> + *
-> + * Caller must ensure we don't call this with other virtqueue operations
-> + * at the same time (except where noted).
-> + *
-> + * Returns zero or a negative error (ie. ENOSPC, ENOMEM, EIO).
-> + */
-> +int virtqueue_add_outbuf_premapped(struct virtqueue *vq,
-> +                                  struct scatterlist *sg, unsigned int n=
-um,
-> +                                  void *data,
-> +                                  bool premapped,
+> The 2nd and 3rd ones are in bpf_trace.c.
+>
+> 1444 static const struct bpf_func_proto *
+> 1445 bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_pr=
+og *prog)
+> 1446 {
+> 1447     switch (func_id) {
+> ...
+> 1548     case BPF_FUNC_task_storage_get:
+> 1549         if (bpf_prog_check_recur(prog))
+> 1550             return &bpf_task_storage_get_recur_proto;
+> 1551         return &bpf_task_storage_get_proto;
+> 1552     case BPF_FUNC_task_storage_delete:
+> 1553         if (bpf_prog_check_recur(prog))
+> 1554             return &bpf_task_storage_delete_recur_proto;
+> 1555         return &bpf_task_storage_delete_proto;
+> ...
+> 1568     default:
+> 1569         return bpf_base_func_proto(func_id, prog);
+> 1570     }
+> 1571 }
+>
+> They are used for tracing programs. So we should be safe here. But if you=
+ think that
+> changing bpf_proc_check_recur() and calling function bpf_prog_check_recur=
+()
+> in bpf_enable_priv_stack() is too subtle, I can go back to my original ap=
+proach
+> which makes all supported prog types explicit in bpf_enable_priv_stack().
 
-We don't need this parameter consider:
+What do you mean 'it's safe' ?
+If you change bpf_prog_check_recur() to return false like this patch does
+then kprobe progs will not have recursion protection
+calling task_storage_get() helper.
+In the context of this helper it means that kprobe progs have to use:
+nobusy =3D bpf_task_storage_trylock();
+With this patch as-is there will be a deadlock in bpf_task_storage_lock()
+when kprobe is using task storage.
+So it looks broken to me.
 
-1) we've already had virtqueue_add_outbuf() which implies the buf has
-been mapped
-2) no explanation for "premapped" in the function doc
+I also don't understand the point of this patch 2.
+The patch 3 can still do:
 
-Thanks
++ switch (prog->type) {
++ case BPF_PROG_TYPE_KPROBE:
++ case BPF_PROG_TYPE_TRACEPOINT:
++ case BPF_PROG_TYPE_PERF_EVENT:
++ case BPF_PROG_TYPE_RAW_TRACEPOINT:
++   return PRIV_STACK_ADAPTIVE;
++ default:
++   break;
++ }
++
++ if (!bpf_prog_check_recur(prog))
++   return NO_PRIV_STACK;
 
-> +                                  gfp_t gfp)
-> +{
-> +       return virtqueue_add(vq, &sg, num, 1, 0, data, NULL, premapped, g=
-fp);
-> +}
-> +EXPORT_SYMBOL_GPL(virtqueue_add_outbuf_premapped);
-> +
->  /**
->   * virtqueue_add_inbuf - expose input buffers to other end
->   * @vq: the struct virtqueue we're talking about.
-> @@ -2318,6 +2341,31 @@ int virtqueue_add_inbuf_ctx(struct virtqueue *vq,
->  }
->  EXPORT_SYMBOL_GPL(virtqueue_add_inbuf_ctx);
->
-> +/**
-> + * virtqueue_add_inbuf_premapped - expose input buffers to other end
-> + * @vq: the struct virtqueue we're talking about.
-> + * @sg: scatterlist (must be well-formed and terminated!)
-> + * @num: the number of entries in @sg writable by other side
-> + * @data: the token identifying the buffer.
-> + * @ctx: extra context for the token
-> + * @gfp: how to do memory allocations (if necessary).
-> + *
-> + * Caller must ensure we don't call this with other virtqueue operations
-> + * at the same time (except where noted).
-> + *
-> + * Returns zero or a negative error (ie. ENOSPC, ENOMEM, EIO).
-> + */
-> +int virtqueue_add_inbuf_premapped(struct virtqueue *vq,
-> +                                 struct scatterlist *sg, unsigned int nu=
-m,
-> +                                 void *data,
-> +                                 void *ctx,
-> +                                 bool premapped,
-> +                                 gfp_t gfp)
-> +{
-> +       return virtqueue_add(vq, &sg, num, 0, 1, data, ctx, premapped, gf=
-p);
-> +}
-> +EXPORT_SYMBOL_GPL(virtqueue_add_inbuf_premapped);
-> +
->  /**
->   * virtqueue_dma_dev - get the dma dev
->   * @_vq: the struct virtqueue we're talking about.
-> diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-> index 306137a15d07..19afa49b92d0 100644
-> --- a/include/linux/virtio.h
-> +++ b/include/linux/virtio.h
-> @@ -56,6 +56,19 @@ int virtqueue_add_inbuf_ctx(struct virtqueue *vq,
->                             void *ctx,
->                             gfp_t gfp);
->
-> +int virtqueue_add_inbuf_premapped(struct virtqueue *vq,
-> +                                 struct scatterlist *sg, unsigned int nu=
-m,
-> +                                 void *data,
-> +                                 void *ctx,
-> +                                 bool premapped,
-> +                                 gfp_t gfp);
-> +
-> +int virtqueue_add_outbuf_premapped(struct virtqueue *vq,
-> +                                  struct scatterlist *sg, unsigned int n=
-um,
-> +                                  void *data,
-> +                                  bool premapped,
-> +                                  gfp_t gfp);
-> +
->  int virtqueue_add_sgs(struct virtqueue *vq,
->                       struct scatterlist *sgs[],
->                       unsigned int out_sgs,
-> --
-> 2.32.0.3.g01195cf9f
->
+which would mean that iter, lsm, struct_ops will not be allowed
+to use priv stack.
 
+Unless struct_ops will explicit request priv stack via bool flag.
+Then we will also add recursion protection in trampoline.
 
