@@ -1,150 +1,176 @@
-Return-Path: <bpf+bounces-44014-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44015-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D4F69BC55B
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 07:22:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 416C59BC55E
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 07:22:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22CCC282F4B
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 06:22:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF4FCB20EBD
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 06:22:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9503F1D172A;
-	Tue,  5 Nov 2024 06:22:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE14C1D4161;
+	Tue,  5 Nov 2024 06:22:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a+4h7ujw"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F5CAD5B;
-	Tue,  5 Nov 2024 06:22:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7FB0163;
+	Tue,  5 Nov 2024 06:22:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730787726; cv=none; b=Z6bBLGukubPghDXBivGkTHC+iMo2MeUDNN9E5Umpm/G+92+RNyePGioHxglvpr2kmZHCHbADNKEpB7sdVBruYIurxo92czQXm4vn0zI0g5Xkul5UwqXiWprh+qfqwF9xMkL+Zk4BQx6ItMR60Sww7czFAGyppkdSyRb81iJvorg=
+	t=1730787765; cv=none; b=QUO42b9Xkjpb8wpR46IvdjJeJiCvkC14EKFsZ0NOAajee+yxeFgvmIrWkK0hm7ocqhXgERZoqTtje4K8TrcINSvzIXJ2XUB9C82nEYPhiVW5nh4ovdC0lIf0u2b6xzC2XTe8xMxxrSFd0sWu+6EO7w3JYt6iEQkT2n6Kp0Knc5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730787726; c=relaxed/simple;
-	bh=fUsLKpu589KieHw/CBhz56VR/qBOiQQzgesY9vaxU7A=;
-	h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=TTF4tCncWmmTebi2K/FyeJISe2Wzy3AkAaqmgcyaaBWo0AxapurUQEh0VzC6KzfsmRVlng2a/5yx5jA4N3dH7n33m83Pn7VNFvmCcgl2ydczYe9WhSmFhTUxt0panZmS0Sonj4noWf3yzZm2NqXcJCB095L5ISMW13gJxclIEX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XjJBq1HTHz4f3jXl;
-	Tue,  5 Nov 2024 14:21:39 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 1C7A41A058E;
-	Tue,  5 Nov 2024 14:21:57 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgCHfK6BuSlndB+BAw--.16882S2;
-	Tue, 05 Nov 2024 14:21:56 +0800 (CST)
-Subject: Re: [PATCH bpf] selftests/bpf: Add a copyright notice to
- lpm_trie_map_get_next_key
-From: Hou Tao <houtao@huaweicloud.com>
-To: Ilya Leoshkevich <iii@linux.ibm.com>,
- Byeonguk Jeong <jungbu2855@gmail.com>
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
- Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <ZycSXwjH4UTvx-Cn@ub22>
- <925cb852-df24-81b6-318a-ee6a628d43c7@huaweicloud.com>
- <d5137f25846ebf585383de4d994d388eabab9d60.camel@linux.ibm.com>
- <b75e09a9-1028-28a2-f85d-5c7130a201f6@huaweicloud.com>
-Message-ID: <8d61d6ab-b6c4-9e7b-45f2-f0a4972f04ce@huaweicloud.com>
-Date: Tue, 5 Nov 2024 14:21:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1730787765; c=relaxed/simple;
+	bh=aNl2E3H4cKHc9llfDLnp9kLXtaAASb/WBZ21KYfjLvg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qsfMyQdp6iG/ndhL5bKaCo3aFIZBPgtIw19V/WULt4ZFWSV+T/pDAJcJ6t2MhnAW2hgGsFj/HV/FLn1uV+aORb4TU7Rtx7Sdgo5AcPX7DskbNTpYYpANy7j1SPRPvIHPFXqRdozHZFzHhCU2xabOc0WBvWJ+I274mmVis2Yb/f0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a+4h7ujw; arc=none smtp.client-ip=209.85.166.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3a6c3230858so8737015ab.0;
+        Mon, 04 Nov 2024 22:22:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730787763; x=1731392563; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aNl2E3H4cKHc9llfDLnp9kLXtaAASb/WBZ21KYfjLvg=;
+        b=a+4h7ujwM3y0SBCseYnKIYcVVhcrgTVgBVbrqPS0PJup13T7sboh7oCVfpYM7SMJlU
+         aODwacprucIPtdS600d/cmUKPgcjUVlmETTtK/J58IGzHIOsCAe/6EMxpy/wrcW8yNF0
+         1Cje5iXcRawwt7uPYxT+ftmaveIXheKYlnXrI5zXarYiK3lfIkVaENuX1yMG0vwEvgnh
+         HwvhERSFXUvvvf9iW6XGmLRtkPFlvYU7YU2oWiCfQwnYxyzh73BLI/50+41BGpRJ7W1X
+         Nh1NyWRSIT1gYFN/P58JhFQ6HZA3G7ecoYDKtsBKbIqfKpuSXMFk/Qyrdd9WMa4G6tSg
+         IP5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730787763; x=1731392563;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aNl2E3H4cKHc9llfDLnp9kLXtaAASb/WBZ21KYfjLvg=;
+        b=brUBG3Y6W94G1ynL6/gAN9UmdyetU6jgo8w6EcmmAhE7LyULi0xKB5hbV61SV25nyk
+         XFUW1DgnsO4Mdmr/ivUYkrhaqHdXjxqloQ5IZ7ea7Kjhqwaevp6emO8Dkr+g0JFZXu4k
+         5kdX42NatPY+XnlP/mkRCjIHB16YX+I4v1/t4/GMFYLsnfKwjGyUwBxQJZDgI3kF6uo3
+         zq4tUvGjO7E3mXw/tTj3wkMz0/C9nNqVwE7jipW0BcVsr+nCfgXIwI453eZp4YQ1AETR
+         t+KW+a7G9e3JocY12imzGYqTPnhPZp0ZlGKPAXnnUCg+JGtZFmVCKTGJnZhpOAmNJvim
+         sEDg==
+X-Forwarded-Encrypted: i=1; AJvYcCWWpJsKvBh1TudLBlrfpx4NsP52v5SjP6a9dnVe5F+Jp9iIPjtzdoxC7abbpQA8ItEqPbBR+awx@vger.kernel.org, AJvYcCXzJomb2IoW0ZvjVPnQ0ujRnYTxbYK8yGVyb5PHbTTGFZylzkbYZx9vl+hnClCHSoz62dU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YykxRwf59JkNdeJoxcAfUZnC7vLazgBj51d89OMxvp9RZS5A+oG
+	4fLxO938piP9hccCCOmaFWFXd4vjS5EExYxahm2HtmnlQnXOrEWE/iBf5ZoUtfNS7vTwMzqzcDx
+	1Zy0Eq2wfd6hH0MNqIlj6GSVLapw=
+X-Google-Smtp-Source: AGHT+IEpxf2sfvFRjRpi3y6ERACa3nKX/WgSkFLuryGXPofenvfsIic7GodSZtZmsWFbCtAdwSoxq2bVFmBdoslsLfM=
+X-Received: by 2002:a05:6e02:214c:b0:3a4:e4d0:9051 with SMTP id
+ e9e14a558f8ab-3a617572325mr175244565ab.24.1730787762813; Mon, 04 Nov 2024
+ 22:22:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b75e09a9-1028-28a2-f85d-5c7130a201f6@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgCHfK6BuSlndB+BAw--.16882S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFy5XrWUCFyDWw4rXr43Jrb_yoW8tw45pr
-	98tFZxtr4DJr12yw4kt3WDurW0ywnxG3Wagr1DGr15u3Z093Zaqr40kw17CFnF9r48Kw4U
-	Zw1UJFZ7J345Aa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AF
-	wI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUwx
-	hLUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
+ <67218fb61dbb5_31d4d029455@willemb.c.googlers.com.notmuch>
+ <CAL+tcoBhfZ4XB5QgCKKbNyq+dfm26fPsvXfbWbV=jAEKYeLDEg@mail.gmail.com>
+ <67219e5562f8c_37251929465@willemb.c.googlers.com.notmuch>
+ <CAL+tcoDonudsr800HmhDir7f0B6cx0RPwmnrsRmQF=yDUJUszg@mail.gmail.com>
+ <3c7c5f25-593f-4b48-9274-a18a9ea61e8f@linux.dev> <CAL+tcoAy2ryOpLi2am=T68GaFG1ACCtYmcJzDoEOan-0u3aaWw@mail.gmail.com>
+ <672269c08bcd5_3c834029423@willemb.c.googlers.com.notmuch>
+ <CAL+tcoA7Uddjx3OJzTB3+kqmKRt6KQN4G1VDCbE+xwEhATQpQQ@mail.gmail.com>
+ <CAL+tcoDL0by6epqExL0VVMqfveA_awZ3PE9mfwYi3OmovZf3JQ@mail.gmail.com>
+ <d138a81d-f9f5-4d51-bedd-3916d377699d@linux.dev> <CAL+tcoBfuFL7-EOBY4RLMdDZJcUSyq20pJW13OqzNazUP7=gaw@mail.gmail.com>
+ <67237877cd08d_b246b2942b@willemb.c.googlers.com.notmuch> <CAL+tcoBpdxtz5GHkTp6e52VDCtyZWvU7+1hTuEo1CnUemj=-eQ@mail.gmail.com>
+ <65968a5c-2c67-4b66-8fe0-0cebd2bf9c29@linux.dev> <6724d85d8072_1a157829475@willemb.c.googlers.com.notmuch>
+ <1c8ebc16-f8e7-4a98-9518-865db3952f8f@linux.dev>
+In-Reply-To: <1c8ebc16-f8e7-4a98-9518-865db3952f8f@linux.dev>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Tue, 5 Nov 2024 14:22:06 +0800
+Message-ID: <CAL+tcoBf+kQ3_kc9x62KnHx9O+6c==_DN+6EheL82UKQ3xQN1A@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 02/14] net-timestamp: allow two features to
+ work parallelly
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, willemb@google.com, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	dsahern@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, ykolal@fb.com, 
+	bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On 11/5/2024 10:34 AM, Hou Tao wrote:
-> Hi Ilya,
+On Tue, Nov 5, 2024 at 10:09=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
 >
-> On 11/4/2024 6:07 PM, Ilya Leoshkevich wrote:
->> On Mon, 2024-11-04 at 09:34 +0800, Hou Tao wrote:
->>> Hi,
->>>
->>> On 11/3/2024 2:04 PM, Byeonguk Jeong wrote:
->>>> Hi,
->>>>
->>>> The selftest "verifier_bits_iter/bad words" has been failed with
->>>> retval 115, while I did not touched anything but a comment.
->>>>
->>>> Do you have any idea why it failed? I am not sure whether it
->>>> indicates
->>>> any bugs in the kernel.
->>>>
->>>> Best,
->>>> Byeonguk
->>> Sorry for the inconvenience. It seems the test case
->>> "verifier_bits_iter/bad words" is flaky. It may fail randomly, such
->>> as
->>> in [1]. I think calling bpf_probe_read_kernel_common() on 3GB addr
->>> under
->>> s390 host may succeed and the content of the memory address will
->>> decide
->>> whether the test case will succeed or not. Do not know the reason why
->>> reading 3GB address succeeds under s390. Hope to get some insight
->>> from
->>> Ilya.  I think we could fix the failure first by using NULL as the
->>> address of bad words just like null_pointer test case does. Will
->>> merge
->>> the test in bad_words into the null_pointer case.
->> Hi,
->>
->> s390 kernel runs in a completely separate address space, there is no
->> user/kernel split at TASK_SIZE. The same address may be valid in both
->> the kernel and the user address spaces, there is no way to tell by
->> looking at it. The config option related to this property is
->> ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
->>
->> Also, unfortunately, 0 is a valid address in the s390 kernel address
->> space.
-> Thanks for the detailed explanation. It seems both arm and x86 have
-> select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
->> I wonder if we could use -4095 as an address that cannot be
->> dereferenced on all platforms?
-> I have tested it in both arm64 and x86-64 that reading from -4095 by
-> using copy_from_kernel_nofault() will return -EFAULT . For s390, I hope
-> the bpf CI could help to test it. Will post a fix patch later.
-
-On s390 host, it seems that using copy_from_kernel_nofault() to read
-from -4095 returns -EFAULT as well [1], so the suggestion works. Thanks
-again for the suggestion.
-
-[1]
-https://github.com/kernel-patches/bpf/actions/runs/11677589805/job/32515868794
->> Best regards,
->> Ilya
+> On 11/1/24 6:32 AM, Willem de Bruijn wrote:
+> >> In udp/raw/..., I don't know how likely is the user space having "cork=
+->tx_flags
+> >> & SKBTX_ANY_TSTAMP" set but has neither "READ_ONCE(sk->sk_tsflags) &
+> >> SOF_TIMESTAMPING_OPT_ID" nor "cork->flags & IPCORK_TS_OPT_ID" set.
+> > This is not something to rely on. OPT_ID was added relatively recently.
+> > Older applications, or any that just use the most straightforward API,
+> > will not set this.
 >
-> .
+> Good point that the OPT_ID per cmsg is very new.
+>
+> The datagram support on SOF_TIMESTAMPING_OPT_ID in sk->sk_tsflags had
+> been there for quite some time now. Is it a safe assumption that
+> most applications doing udp tx timestamping should have
+> the SOF_TIMESTAMPING_OPT_ID set to be useful?
+>
+> >
+> >> If it is
+> >> unlikely, may be we can just disallow bpf prog from directly setting
+> >> skb_shinfo(skb)->tskey for this particular skb.
+> >>
+> >> For all other cases, in __ip[6]_append_data, directly call a bpf prog =
+and also
+> >> pass the kernel decided tskey to the bpf prog.
+> >>
+> >> The kernel passed tskey could be 0 (meaning the user space has not use=
+d it). The
+> >> bpf prog can give one for the kernel to use. The bpf prog can store th=
+e
+> >> sk_tskey_bpf in the bpf_sk_storage now. Meaning no need to add one to =
+the struct
+> >> sock. The bpf prog does not have to start from 0 (e.g. start from U32_=
+MAX
+> >> instead) if it helps.
+> >>
+> >> If the kernel passed tskey is not 0, the bpf prog can just use that on=
+e
+> >> (assuming the user space is doing something sane, like the value in
+> >> SCM_TS_OPT_ID won't be jumping back and front between 0 to U32_MAX). I=
+ hope this
+> >> is very unlikely also (?) but the bpf prog can probably detect this an=
+d choose
+> >> to ignore this sk.
+> > If an applications uses OPT_ID, it is unlikely that they will toggle
+> > the feature on and off on a per-packet basis. So in the common case
+> > the program could use the user-set counter or use its own if userspace
+> > does not enable the feature. In the rare case that an application does
+> > intermittently set an OPT_ID, the numbering would be erratic. This
+> > does mean that an actively malicious application could mess with admin
+> > measurements.
+>
+> All make sense. Given it is reasonable to assume the user space should ei=
+ther
+> has SOF_TIMESTAMPING_OPT_ID always on or always off. When it is off, the =
+bpf
+> prog can directly provide its own tskey to be used in shinfo->tskey. The =
+bpf
+> prog can generate the id itself without using the sk->sk_tskey, e.g. stor=
+e an
+> atomic int in the bpf_sk_storage.
 
+I wonder, how can we correlate the key with each skb in the bpf
+program for non-TCP type without implementing a bpf extension for
+SCM_TS_OPT_ID? Every time the timestamp is reported, we cannot know
+which sendmsg() the skb belongs to for non-TCP cases.
+
+Thanks,
+Jason
 
