@@ -1,176 +1,98 @@
-Return-Path: <bpf+bounces-44004-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 611609BC44B
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 05:19:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E16E9BC499
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 06:19:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 173DD1F2201D
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 04:19:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FD531C214BC
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 05:19:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684D31AC43A;
-	Tue,  5 Nov 2024 04:18:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D141B394A;
+	Tue,  5 Nov 2024 05:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k2feiB8N"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 312581AF0B5
-	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 04:18:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4400383
+	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 05:19:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730780338; cv=none; b=A9hD5LhNLROWYBumd1Tqt4Em86DZnWNn3RTd8rBcu0FPE0CyaR8gq2l6xbvZ5f26bcdIWoDLwPCEVrJpfWam6bzpYCztkYCygkDbowxjwqVtDQp/E9Vl2K4oXEAsZu3TBz5h+C3iax9nAmtELZ16BWaHN0uZGdP+GI17AtXeCuI=
+	t=1730783968; cv=none; b=TVHp/S5Mq8k0PrUdSmyYHlr6qINlkeCEXgb5WGNzmeIq0Keco7zxVcyoZlyfxpZQ95nb3IAdgz08/Rv7aqPfdnneNkjQiOwzqLflF2dcXF/HHUoTWrFO/jwsaxaCChzbngJqcY84+/JUognRzZLbeGkiEFqsaYcgbynQk/59jh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730780338; c=relaxed/simple;
-	bh=0TsBMbtrgTCiLfWWDw9MPRT326Xl284xsOweH6V7JJs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=M2zsNqZZH1nrIG6VIKaUANLkOfRnRYpwmvwyTKkHm2AlQNBuD1ANvWtuqParqSxGBUVvxz6JD1hnSAtrXd5ugCTwBVVLnBNE44m1eR/8/rvbWtspFj3xIk8mafsDJMROGyVofIaZt4Diemb+6m2RkRCQ74wh/npvqE3YCzxVt8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XjFSk51wKz4f3jXb
-	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 12:18:30 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 9D1501A0568
-	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 12:18:48 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgCXcYWknClnhcKQAw--.50856S4;
-	Tue, 05 Nov 2024 12:18:46 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Byeonguk Jeong <jungbu2855@gmail.com>,
-	Yafang Shao <laoar.shao@gmail.com>,
-	houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: [PATCH bpf] selftests/bpf: Use -4095 as the bad address for bits iterator
-Date: Tue,  5 Nov 2024 12:30:57 +0800
-Message-Id: <20241105043057.3371482-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+	s=arc-20240116; t=1730783968; c=relaxed/simple;
+	bh=aHoxqMdyjJvZDcbHTl5F2k5aRLX6v4tEUFF8tDza72Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D7S2JSeZKwxt1wIyZKx6XQhGbrYf4QtRjNmG2U+RevHaBohHf9OZNNgArwd6mM73D19g8mPKEKp3gO9b/qBCmSIL29mDwdAca8usB+FUtyIkGpX9nJjkLzhSGoKZSIOzeWfCh7X+JaB4XbPpod0wWxbM9hQrj2XZBLf2iLaaMmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k2feiB8N; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-37f52925fc8so3173942f8f.1
+        for <bpf@vger.kernel.org>; Mon, 04 Nov 2024 21:19:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730783965; x=1731388765; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aHoxqMdyjJvZDcbHTl5F2k5aRLX6v4tEUFF8tDza72Y=;
+        b=k2feiB8NC3YpaKu5cO8955FxBZA4z8OdHkhO/nuD4KIaobV9PIWMU6md3NKWheE1sD
+         5dOll/zB5dG+Vioje7n+Mtq3eNXMvC0nQYflIvmiPMM3szcPNYcZFZYAdNmVnXNBG2yl
+         KMXY3ih6+GUzZIt87KYhw9qH5Jg2cUI8R+qi6/lggl8rifvthsckuloLiFLGXK3YnKwm
+         zfD5J/Ku4nYJzHoWSG0NHWeIUEE5fjb2Bsfj0Q2tPteSLayCyIte8vn1aZibcqUZGFw3
+         xgcL61GW59yM/dgI7hbH/hRVYblYRC3fl3THv9xKYLa7VWo2C4iaCLttIsqcQqXUBkLa
+         haEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730783965; x=1731388765;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aHoxqMdyjJvZDcbHTl5F2k5aRLX6v4tEUFF8tDza72Y=;
+        b=prVYkJW9OqnqhwtU19UfZ/BGNrqy51GV/0kOFDB8bsYgRBNHsTd/EGUN3oCJKXFMJd
+         n3D4eSpSRmYrt94mDY9oj2beeb9F+zCHHwBeRoyWW4H8u+MGc7c2jFoqtX9NlQBYW41D
+         BNmcP8Xfn/BQQnVvUsevqFmcon+iHpT1JYNVgYOoMEWTZCXJQnSlJ4Eq/WXpjrgdI83L
+         RraxHER6KnrjE+BMGoke4z0JuCLaKGmaTNSEpwyqpWFuhJUv7e5iAr5s0PKBSMF5CMvH
+         SYrQvWgFqGV8tp8A91nzAAbRU74rFu8R6n3LuXrPsljg9DANgtlx7YtQOe1bzgT5AdI+
+         rUWg==
+X-Gm-Message-State: AOJu0YyVJ0mK7/y07Q0UzlYf5w0jJyRfteaSg/1w0t4vIRWX+IBnoXBJ
+	ZXVP60Enajv15ODYuHbY15FZxdXMBXzkQn5coLubavzPPaPUUQ1GRWKWwZSQ0zT6e1lkvBIPjbB
+	XmrAda3u/q0yuUyVSqWXVljN7EYo=
+X-Google-Smtp-Source: AGHT+IGf9IzlHH1bBgd4pZWR3feyBtN58mKvEZYmDpTzoYCEPtksblRva4kvRH+VFYLExW5gS8nAFroTEh808KAutTc=
+X-Received: by 2002:a5d:64a9:0:b0:36c:ff0c:36d7 with SMTP id
+ ffacd0b85a97d-381c7a49031mr14188322f8f.2.1730783965046; Mon, 04 Nov 2024
+ 21:19:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCXcYWknClnhcKQAw--.50856S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7tw15tFyfCr1xtFWUKr4fGrg_yoW5JF13pa
-	yfZrZIyr48Ar42kwsrGF1jkFyfA3Z2yay5GrWrJr45CFn8Xryq9w1xKw1Yq3Z5JrWFqwsa
-	vrWqkayfC3y8AaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
-	n4kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8
-	ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU0s2-5UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20241104193455.3241859-1-yonghong.song@linux.dev>
+ <20241104193521.3243984-1-yonghong.song@linux.dev> <CAADnVQ+RGgtLtoc_ODv54gt0donCdd_4sLWS1oWA_nGStjb1KQ@mail.gmail.com>
+ <34a35dce-fd05-4353-8eaa-0dc87a78dceb@linux.dev> <06f43c37-a789-49cb-a4b0-bc2c45ae9485@linux.dev>
+In-Reply-To: <06f43c37-a789-49cb-a4b0-bc2c45ae9485@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 4 Nov 2024 21:19:13 -0800
+Message-ID: <CAADnVQLNMCnpTr5A4yNwGnV1vET1oUt3sGgZGVSHz9amWgaYSQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 05/10] bpf: Allocate private stack for
+ eligible main prog or subprogs
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Hou Tao <houtao1@huawei.com>
+On Mon, Nov 4, 2024 at 7:44=E2=80=AFPM Yonghong Song <yonghong.song@linux.d=
+ev> wrote:
+>
+>
+> Agree. I use alignment 16 to cover all architectures. for x86_64,
+> alignment 8 is used. I did some checking in arch/ directory.
 
-As reported by Byeonguk, the bad_words test in verifier_bits_iter.c
-occasionally fails on s390 host. Quoting Ilya's explanation:
-
-  s390 kernel runs in a completely separate address space, there is no
-  user/kernel split at TASK_SIZE. The same address may be valid in both
-  the kernel and the user address spaces, there is no way to tell by
-  looking at it. The config option related to this property is
-  ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
-
-  Also, unfortunately, 0 is a valid address in the s390 kernel address
-  space.
-
-Fix the issue by using -4096 as the bad address for bits iterator, as
-suggested by Ilya. Verify that bpf_iter_bits_new() returns -EINVAL for
-NULL address and -EFAULT for bad address.
-
-Fixes: ebafc1e535db ("selftests/bpf: Add three test cases for bits_iter")
-Reported-by: Byeonguk Jeong <jungbu2855@gmail.com>
-Closes: https://lore.kernel.org/bpf/ZycSXwjH4UTvx-Cn@ub22/
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/progs/verifier_bits_iter.c  | 32 ++++++++++++++++---
- 1 file changed, 28 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bits_iter.c b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-index 156cc278e2fc..7c881bca9af5 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-@@ -57,9 +57,15 @@ __description("null pointer")
- __success __retval(0)
- int null_pointer(void)
- {
--	int nr = 0;
-+	struct bpf_iter_bits iter;
-+	int err, nr = 0;
- 	int *bit;
- 
-+	err = bpf_iter_bits_new(&iter, NULL, 1);
-+	bpf_iter_bits_destroy(&iter);
-+	if (err != -EINVAL)
-+		return 1;
-+
- 	bpf_for_each(bits, bit, NULL, 1)
- 		nr++;
- 	return nr;
-@@ -194,15 +200,33 @@ __description("bad words")
- __success __retval(0)
- int bad_words(void)
- {
--	void *bad_addr = (void *)(3UL << 30);
--	int nr = 0;
-+	void *bad_addr = (void *)-4095;
-+	struct bpf_iter_bits iter;
-+	volatile int nr;
- 	int *bit;
-+	int err;
-+
-+	err = bpf_iter_bits_new(&iter, bad_addr, 1);
-+	bpf_iter_bits_destroy(&iter);
-+	if (err != -EFAULT)
-+		return 1;
- 
-+	nr = 0;
- 	bpf_for_each(bits, bit, bad_addr, 1)
- 		nr++;
-+	if (nr != 0)
-+		return 2;
- 
-+	err = bpf_iter_bits_new(&iter, bad_addr, 4);
-+	bpf_iter_bits_destroy(&iter);
-+	if (err != -EFAULT)
-+		return 3;
-+
-+	nr = 0;
- 	bpf_for_each(bits, bit, bad_addr, 4)
- 		nr++;
-+	if (nr != 0)
-+		return 4;
- 
--	return nr;
-+	return 0;
- }
--- 
-2.29.2
-
+hmm. I'm pretty sure x86 psABI requires 16-byte stack alignment,
+but I don't know why.
 
