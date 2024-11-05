@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-44060-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44061-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2BD59BD358
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 18:27:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 526879BD35A
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 18:27:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D13A1F2339C
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 17:27:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76E761C2263D
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 17:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4268E1E3796;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A481E5728;
 	Tue,  5 Nov 2024 17:26:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TBJDSAnk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ipRGSnc6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5ACC1E2851;
-	Tue,  5 Nov 2024 17:26:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AACC1E379F;
+	Tue,  5 Nov 2024 17:26:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730827600; cv=none; b=XmRCSOlnl81h2NsLYrmGJ0orC7QawFa9oE65NU81P+D+hW/HC6jZtU8G/nt2H55uZZDD9CXcdxAMw5LBB/DRSTuJPAVopFRJufr34Xqphl+oLKUuOkfjqOocFlJViWLzeAbEz4OGj/z63iGOJ+hpuO5jwunf70Q3TZ8qlUD1qMA=
+	t=1730827601; cv=none; b=SVWxN9j7WRl5BkhYQ3z8/AkYxv5iWitSLnhUVQ1u+0thnwCuDojt5WgW9rSis/qjUyZw1EUgGpwLg5VRl24N0I1ittfcleqGIHkficVRZnDGckqMYEUMuqLsDr6AMYF4L1MzHk7XYQcgWhLa1WqJe9rBdZKjYBXcEKuaeu1zwZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730827600; c=relaxed/simple;
-	bh=Q7PJcEHIX5DpXW3MulNYQgSzp8YB6bzZUwfUXY/+6Ic=;
+	s=arc-20240116; t=1730827601; c=relaxed/simple;
+	bh=rCrRH2SCyNzpCWakImf0vWTxXAc5rQV0bb/Ub7r5nWg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XcPOTlv2zzXeLod7fTFKsm3bBkorFgOyUC4UoELP3STIm8XTt9c4CzwlR0ZNv3YM5uJoaqgOoAGr6UOQXETCkw+KSlRf/IilGCRZIzE2H71J1OiF0l7/lKD/3CEi6x2EzrUIxT+QjaXbDXGdoOlRUed5ksDm4w/M3x8YXeSFZRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TBJDSAnk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BADB5C4CED3;
-	Tue,  5 Nov 2024 17:26:39 +0000 (UTC)
+	 MIME-Version; b=fe8lRsSQkHj2Bx7gdpLyATLUbwM6Gdp4Vs1KOYmdANy0UfW5ufyZ+jJP+abGDpS4GjQijGEtqzugslmQgwe1y0xgzFKiovUZbExvNVnDEwlUDHPRBKSBts1y+PKfaG9VsPwkOETRNIjZDy9B/nn3PV/vdLoKKsIY45j/70FaY1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ipRGSnc6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6670CC4CEE4;
+	Tue,  5 Nov 2024 17:26:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1730827600;
-	bh=Q7PJcEHIX5DpXW3MulNYQgSzp8YB6bzZUwfUXY/+6Ic=;
+	bh=rCrRH2SCyNzpCWakImf0vWTxXAc5rQV0bb/Ub7r5nWg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TBJDSAnklCnZmD0dVQkFVb1qVFRrVAOQTNb8UyrHxkMPZhF74wAEO5MpQysVpLZ0Q
-	 tcH101yUySYf61QfYPOrqxgzxQGcivcgqEfSmhOmH2Cy2f4Rao5+TTtN4BHMI+/5SG
-	 fECOdKsRnyzbpuO4rZGYUSxGjgyiH3PA9M9J5K+ZC2xoS8/Umq0J3HNLCYGHL+CjGm
-	 h765/Gjv8nq6uQYSBWVM0Zbc/XwWjCbuK7t/i0LTANNb3xsbI7Ooofp+D1ujA3BFXZ
-	 ce59Q2oFhGxAfgUda2bR6PRGQ3WhUg++3iDYmgB4r/Yke7P8CvJxuuPVw62fY3Lhwf
-	 DTiCnjC7qyhfQ==
+	b=ipRGSnc6C7vR56Zs1f1AZEN4VhugITS8P5E+iL0kahd5mYHMWiLarIUx1ON7xbEMa
+	 uhKH71KXi8tsklx1u/tI3uVbe63x30mMBkKm2v4M2z30XnEyoEtkXP89OtuPFebJUq
+	 FB5OqVb/Y+7HaBc3Jxq6bQ025p5EpXZWkeVmqH1Q6ilCbi3RBoSZ+RhbFfB2jeTpfW
+	 iH477Ln0WyaDlUEJbcyqhh/PNagxp91uo5cBtM+FzzOiXb6QMO4S+OMjcGgeV18eQU
+	 vyia6PMQtFTGB6vM1yYWdgQNj+kJwWYZP9GUnLR51t90R+zD0ge9/m0+m7X8oLzl0E
+	 jMxzH4ultBXzg==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -58,9 +58,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Kees Cook <kees@kernel.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Subject: [PATCH 2/4] perf lock contention: Run BPF slab cache iterator
-Date: Tue,  5 Nov 2024 09:26:33 -0800
-Message-ID: <20241105172635.2463800-3-namhyung@kernel.org>
+Subject: [PATCH 3/4] perf lock contention: Resolve slab object name using BPF
+Date: Tue,  5 Nov 2024 09:26:34 -0800
+Message-ID: <20241105172635.2463800-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.47.0.199.ga7371fff76-goog
 In-Reply-To: <20241105172635.2463800-1-namhyung@kernel.org>
 References: <20241105172635.2463800-1-namhyung@kernel.org>
@@ -72,202 +72,202 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Recently the kernel got the kmem_cache iterator to traverse metadata of
-slab objects.  This can be used to symbolize dynamic locks in a slab.
+The bpf_get_kmem_cache() kfunc can return an address of the slab cache
+(kmem_cache).  As it has the name of the slab cache from the iterator,
+we can use it to symbolize some dynamic kernel locks in a slab.
 
-The new slab_caches hash map will have the pointer of the kmem_cache as
-a key and save the name and a id.  The id will be saved in the flags
-part of the lock.
+Before:
+  root@virtme-ng:/home/namhyung/project/linux# tools/perf/perf lock con -abl sleep 1
+   contended   total wait     max wait     avg wait            address   symbol
+
+           2      3.34 us      2.87 us      1.67 us   ffff9d7800ad9600    (mutex)
+           2      2.16 us      1.93 us      1.08 us   ffff9d7804b992d8    (mutex)
+           4      1.37 us       517 ns       343 ns   ffff9d78036e6e00    (mutex)
+           1      1.27 us      1.27 us      1.27 us   ffff9d7804b99378    (mutex)
+           2       845 ns       599 ns       422 ns   ffffffff9e1c3620   delayed_uprobe_lock (mutex)
+           1       845 ns       845 ns       845 ns   ffffffff9da0b280   jiffies_lock (spinlock)
+           2       377 ns       259 ns       188 ns   ffffffff9e1cf840   pcpu_alloc_mutex (mutex)
+           1       305 ns       305 ns       305 ns   ffffffff9e1b4cf8   tracepoint_srcu_srcu_usage (mutex)
+           1       295 ns       295 ns       295 ns   ffffffff9e1c0940   pack_mutex (mutex)
+           1       232 ns       232 ns       232 ns   ffff9d7804b7d8d8    (mutex)
+           1       180 ns       180 ns       180 ns   ffffffff9e1b4c28   tracepoint_srcu_srcu_usage (mutex)
+           1       165 ns       165 ns       165 ns   ffffffff9da8b3a0   text_mutex (mutex)
+
+After:
+  root@virtme-ng:/home/namhyung/project/linux# tools/perf/perf lock con -abl sleep 1
+   contended   total wait     max wait     avg wait            address   symbol
+
+           2      1.95 us      1.77 us       975 ns   ffff9d5e852d3498   &task_struct (mutex)
+           1      1.18 us      1.18 us      1.18 us   ffff9d5e852d3538   &task_struct (mutex)
+           4      1.12 us       354 ns       279 ns   ffff9d5e841ca800   &kmalloc-cg-512 (mutex)
+           2       859 ns       617 ns       429 ns   ffffffffa41c3620   delayed_uprobe_lock (mutex)
+           3       691 ns       388 ns       230 ns   ffffffffa41c0940   pack_mutex (mutex)
+           3       421 ns       164 ns       140 ns   ffffffffa3a8b3a0   text_mutex (mutex)
+           1       409 ns       409 ns       409 ns   ffffffffa41b4cf8   tracepoint_srcu_srcu_usage (mutex)
+           2       362 ns       239 ns       181 ns   ffffffffa41cf840   pcpu_alloc_mutex (mutex)
+           1       220 ns       220 ns       220 ns   ffff9d5e82b534d8   &signal_cache (mutex)
+           1       215 ns       215 ns       215 ns   ffffffffa41b4c28   tracepoint_srcu_srcu_usage (mutex)
+
+Note that the name starts with '&' sign for slab objects to inform they
+are dynamic locks.  It won't give the accurate lock or type names but
+it's still useful.  We may add type info to the slab cache later to get
+the exact name of the lock in the type later.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/bpf_lock_contention.c         | 51 +++++++++++++++++++
- .../perf/util/bpf_skel/lock_contention.bpf.c  | 28 ++++++++++
- tools/perf/util/bpf_skel/lock_data.h          | 12 +++++
- tools/perf/util/bpf_skel/vmlinux/vmlinux.h    |  8 +++
- 4 files changed, 99 insertions(+)
+ tools/perf/util/bpf_lock_contention.c         | 52 +++++++++++++++++++
+ .../perf/util/bpf_skel/lock_contention.bpf.c  | 21 +++++++-
+ 2 files changed, 71 insertions(+), 2 deletions(-)
 
 diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-index 41a1ad08789511c3..a2efd40897bad316 100644
+index a2efd40897bad316..50c3039c647d4d77 100644
 --- a/tools/perf/util/bpf_lock_contention.c
 +++ b/tools/perf/util/bpf_lock_contention.c
-@@ -12,12 +12,60 @@
- #include <linux/zalloc.h>
- #include <linux/string.h>
- #include <bpf/bpf.h>
-+#include <bpf/btf.h>
- #include <inttypes.h>
- 
- #include "bpf_skel/lock_contention.skel.h"
- #include "bpf_skel/lock_data.h"
+@@ -2,6 +2,7 @@
+ #include "util/cgroup.h"
+ #include "util/debug.h"
+ #include "util/evlist.h"
++#include "util/hashmap.h"
+ #include "util/machine.h"
+ #include "util/map.h"
+ #include "util/symbol.h"
+@@ -20,12 +21,25 @@
  
  static struct lock_contention_bpf *skel;
-+static bool has_slab_iter;
+ static bool has_slab_iter;
++static struct hashmap slab_hash;
 +
-+static void check_slab_cache_iter(struct lock_contention *con)
++static size_t slab_cache_hash(long key, void *ctx __maybe_unused)
 +{
-+	struct btf *btf = btf__load_vmlinux_btf();
-+	s32 ret;
-+
-+	ret = libbpf_get_error(btf);
-+	if (ret) {
-+		pr_debug("BTF loading failed: %d\n", ret);
-+		return;
-+	}
-+
-+	ret = btf__find_by_name_kind(btf, "bpf_iter__kmem_cache", BTF_KIND_STRUCT);
-+	if (ret < 0) {
-+		bpf_program__set_autoload(skel->progs.slab_cache_iter, false);
-+		pr_debug("slab cache iterator is not available: %d\n", ret);
-+		goto out;
-+	}
-+
-+	has_slab_iter = true;
-+
-+	bpf_map__set_max_entries(skel->maps.slab_caches, con->map_nr_entries);
-+out:
-+	btf__free(btf);
++	return key;
 +}
 +
-+static void run_slab_cache_iter(void)
++static bool slab_cache_equal(long key1, long key2, void *ctx __maybe_unused)
 +{
-+	int fd;
-+	char buf[256];
-+
-+	if (!has_slab_iter)
-+		return;
-+
-+	fd = bpf_iter_create(bpf_link__fd(skel->links.slab_cache_iter));
-+	if (fd < 0) {
-+		pr_debug("cannot create slab cache iter: %d\n", fd);
-+		return;
-+	}
-+
-+	/* This will run the bpf program */
-+	while (read(fd, buf, sizeof(buf)) > 0)
-+		continue;
-+
-+	close(fd);
++	return key1 == key2;
 +}
+ 
+ static void check_slab_cache_iter(struct lock_contention *con)
+ {
+ 	struct btf *btf = btf__load_vmlinux_btf();
+ 	s32 ret;
+ 
++	hashmap__init(&slab_hash, slab_cache_hash, slab_cache_equal, /*ctx=*/NULL);
++
+ 	ret = libbpf_get_error(btf);
+ 	if (ret) {
+ 		pr_debug("BTF loading failed: %d\n", ret);
+@@ -50,6 +64,7 @@ static void run_slab_cache_iter(void)
+ {
+ 	int fd;
+ 	char buf[256];
++	long key, *prev_key;
+ 
+ 	if (!has_slab_iter)
+ 		return;
+@@ -65,6 +80,34 @@ static void run_slab_cache_iter(void)
+ 		continue;
+ 
+ 	close(fd);
++
++	/* Read the slab cache map and build a hash with IDs */
++	fd = bpf_map__fd(skel->maps.slab_caches);
++	prev_key = NULL;
++	while (!bpf_map_get_next_key(fd, prev_key, &key)) {
++		struct slab_cache_data *data;
++
++		data = malloc(sizeof(*data));
++		if (data == NULL)
++			break;
++
++		if (bpf_map_lookup_elem(fd, &key, data) < 0)
++			break;
++
++		hashmap__add(&slab_hash, data->id, data);
++		prev_key = &key;
++	}
++}
++
++static void exit_slab_cache_iter(void)
++{
++	struct hashmap_entry *cur;
++	unsigned bkt;
++
++	hashmap__for_each_entry(&slab_hash, cur, bkt)
++		free(cur->pvalue);
++
++	hashmap__clear(&slab_hash);
+ }
  
  int lock_contention_prepare(struct lock_contention *con)
- {
-@@ -109,6 +157,8 @@ int lock_contention_prepare(struct lock_contention *con)
- 			skel->rodata->use_cgroup_v2 = 1;
+@@ -398,6 +441,7 @@ static const char *lock_contention_get_name(struct lock_contention *con,
+ 
+ 	if (con->aggr_mode == LOCK_AGGR_ADDR) {
+ 		int lock_fd = bpf_map__fd(skel->maps.lock_syms);
++		struct slab_cache_data *slab_data;
+ 
+ 		/* per-process locks set upper bits of the flags */
+ 		if (flags & LCD_F_MMAP_LOCK)
+@@ -416,6 +460,12 @@ static const char *lock_contention_get_name(struct lock_contention *con,
+ 				return "rq_lock";
+ 		}
+ 
++		/* look slab_hash for dynamic locks in a slab object */
++		if (hashmap__find(&slab_hash, flags & LCB_F_SLAB_ID_MASK, &slab_data)) {
++			snprintf(name_buf, sizeof(name_buf), "&%s", slab_data->name);
++			return name_buf;
++		}
++
+ 		return "";
  	}
  
-+	check_slab_cache_iter(con);
-+
- 	if (lock_contention_bpf__load(skel) < 0) {
- 		pr_err("Failed to load lock-contention BPF skeleton\n");
- 		return -1;
-@@ -304,6 +354,7 @@ static void account_end_timestamp(struct lock_contention *con)
+@@ -590,5 +640,7 @@ int lock_contention_finish(struct lock_contention *con)
+ 		cgroup__put(cgrp);
+ 	}
  
- int lock_contention_start(void)
- {
-+	run_slab_cache_iter();
- 	skel->bss->enabled = 1;
++	exit_slab_cache_iter();
++
  	return 0;
  }
 diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 1069bda5d733887f..fd24ccb00faec0ba 100644
+index fd24ccb00faec0ba..b5bc37955560a58e 100644
 --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
 +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -100,6 +100,13 @@ struct {
- 	__uint(max_entries, 1);
- } cgroup_filter SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(long));
-+	__uint(value_size, sizeof(struct slab_cache_data));
-+	__uint(max_entries, 1);
-+} slab_caches SEC(".maps");
-+
- struct rw_semaphore___old {
- 	struct task_struct *owner;
+@@ -123,6 +123,8 @@ struct mm_struct___new {
+ 	struct rw_semaphore mmap_lock;
  } __attribute__((preserve_access_index));
-@@ -136,6 +143,8 @@ int perf_subsys_id = -1;
  
- __u64 end_ts;
++extern struct kmem_cache *bpf_get_kmem_cache(u64 addr) __ksym __weak;
++
+ /* control flags */
+ const volatile int has_cpu;
+ const volatile int has_task;
+@@ -496,8 +498,23 @@ int contention_end(u64 *ctx)
+ 		};
+ 		int err;
  
-+__u32 slab_cache_id;
+-		if (aggr_mode == LOCK_AGGR_ADDR)
+-			first.flags |= check_lock_type(pelem->lock, pelem->flags);
++		if (aggr_mode == LOCK_AGGR_ADDR) {
++			first.flags |= check_lock_type(pelem->lock,
++						       pelem->flags & LCB_F_TYPE_MASK);
 +
- /* error stat */
- int task_fail;
- int stack_fail;
-@@ -563,4 +572,23 @@ int BPF_PROG(end_timestamp)
- 	return 0;
- }
++			/* Check if it's from a slab object */
++			if (bpf_get_kmem_cache) {
++				struct kmem_cache *s;
++				struct slab_cache_data *d;
++
++				s = bpf_get_kmem_cache(pelem->lock);
++				if (s != NULL) {
++					d = bpf_map_lookup_elem(&slab_caches, &s);
++					if (d != NULL)
++						first.flags |= d->id;
++				}
++			}
++		}
  
-+SEC("iter/kmem_cache")
-+int slab_cache_iter(struct bpf_iter__kmem_cache *ctx)
-+{
-+	struct kmem_cache *s = ctx->s;
-+	struct slab_cache_data d;
-+
-+	if (s == NULL)
-+		return 0;
-+
-+	d.id = ++slab_cache_id << LCB_F_SLAB_ID_SHIFT;
-+	bpf_probe_read_kernel_str(d.name, sizeof(d.name), s->name);
-+
-+	if (d.id >= LCB_F_SLAB_ID_END)
-+		return 0;
-+
-+	bpf_map_update_elem(&slab_caches, &s, &d, BPF_NOEXIST);
-+	return 0;
-+}
-+
- char LICENSE[] SEC("license") = "Dual BSD/GPL";
-diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
-index 4f0aae5483745dfa..c15f734d7fc4aecb 100644
---- a/tools/perf/util/bpf_skel/lock_data.h
-+++ b/tools/perf/util/bpf_skel/lock_data.h
-@@ -32,9 +32,16 @@ struct contention_task_data {
- #define LCD_F_MMAP_LOCK		(1U << 31)
- #define LCD_F_SIGHAND_LOCK	(1U << 30)
- 
-+#define LCB_F_SLAB_ID_SHIFT	16
-+#define LCB_F_SLAB_ID_START	(1U << 16)
-+#define LCB_F_SLAB_ID_END	(1U << 26)
-+#define LCB_F_SLAB_ID_MASK	0x03FF0000U
-+
- #define LCB_F_TYPE_MAX		(1U << 7)
- #define LCB_F_TYPE_MASK		0x0000007FU
- 
-+#define SLAB_NAME_MAX  28
-+
- struct contention_data {
- 	u64 total_time;
- 	u64 min_time;
-@@ -55,4 +62,9 @@ enum lock_class_sym {
- 	LOCK_CLASS_RQLOCK,
- };
- 
-+struct slab_cache_data {
-+	u32 id;
-+	char name[SLAB_NAME_MAX];
-+};
-+
- #endif /* UTIL_BPF_SKEL_LOCK_DATA_H */
-diff --git a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
-index 4dcad7b682bdee9c..7b81d3173917fdb5 100644
---- a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
-+++ b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
-@@ -195,4 +195,12 @@ struct bpf_perf_event_data_kern {
-  */
- struct rq {};
- 
-+struct kmem_cache {
-+	const char *name;
-+} __attribute__((preserve_access_index));
-+
-+struct bpf_iter__kmem_cache {
-+	struct kmem_cache *s;
-+} __attribute__((preserve_access_index));
-+
- #endif // __VMLINUX_H
+ 		err = bpf_map_update_elem(&lock_stat, &key, &first, BPF_NOEXIST);
+ 		if (err < 0) {
 -- 
 2.47.0.199.ga7371fff76-goog
 
