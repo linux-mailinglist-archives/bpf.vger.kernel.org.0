@@ -1,56 +1,56 @@
-Return-Path: <bpf+bounces-43994-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-43995-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B7F59BC390
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 04:07:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BFAE9BC3A1
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 04:10:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F107E1F22D1D
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 03:07:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20D3CB224CE
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 03:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470166F307;
-	Tue,  5 Nov 2024 03:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95FEE139CFF;
+	Tue,  5 Nov 2024 03:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DxTo2Mmh"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VxZB/Vxu"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46D92A1CA
-	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 03:07:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C24184E18
+	for <bpf@vger.kernel.org>; Tue,  5 Nov 2024 03:09:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730776053; cv=none; b=SFMXPiirRj1zZ05/5SwPNjXLK/Q2K3zmY4LF/z4vCHTKM8JmsC5GCtZQg7K6bWRJIR1UTTXekFAasEnZZr4kG7fgVJlYU7gqHTdorBJVIYl1hADY/jdxOT0XMZkwyJJLVRRAI9MDvQcbQwbiL7D2P1ZmhOcM8D9SUpDGCfOnpP0=
+	t=1730776170; cv=none; b=srkdCOAIvWiv8TkzE6MRBPymZrtA2Qjds2eidu/WV4zapLsI6oagXs3Jv2bJ0BDRjI47WTh6ucfLrCWuy416Mf7aK8Cbgje4YwgUT3ShQeRqrUUF423XuUGtU0sMNe6OFurYWI70uzk6TOPxGIBzz42ckjHZ6UhSJ5Er0iSom7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730776053; c=relaxed/simple;
-	bh=e1bqnIk72+BlalW4jTydiF8www6B4ymhZsxr0SNTUmA=;
+	s=arc-20240116; t=1730776170; c=relaxed/simple;
+	bh=413vjIAK35rg8qPi4ruEjYuOZYFg1xogBU2QFcxkcsU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XrTrwCHKG7H6TFCVQlN55owk4/uB3Z7zjj0OYgSn2Bx5+vZf701Rh2XJU6kFaA7A6fkS2aQ1nGMVfJBEGMkwmN2OW2yscS9VvEQ7R4Y9IR5ktttnitvSPyScbCR55DKe68nlCzHXxz+wWtyjINc3S4zeMIv5UY1gLO089s+4COY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DxTo2Mmh; arc=none smtp.client-ip=95.215.58.175
+	 In-Reply-To:Content-Type; b=KjXYyDsUBwyloWsd4whoBJxnzr/cOVqqEsSwOC2uCfJ39aSXyAhX8JRYYuQ0rvopBT51HuiBkVhW9Qzxu3kowez17f2Uqsx5MITg7VWha4lrcRKAkb4US76W1vIq7PQSqtBcqaJo1SGWofJx6nybW6g7gE5IkolleXr7wq7caWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VxZB/Vxu; arc=none smtp.client-ip=95.215.58.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <34a35dce-fd05-4353-8eaa-0dc87a78dceb@linux.dev>
+Message-ID: <ea1f6dd2-380e-43fd-96b4-b0e189e5d016@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730776048;
+	t=1730776164;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UERrkHL1OHe8PplPtDtkXD5vmvS+sdIDhdzmKCK4Q/E=;
-	b=DxTo2Mmhk+pyr2XFfcpcxJVKQxffnMJXnKZUWBL1fCasDup4KawyRpVfcYMC+r6DylRAI/
-	a98yxL9PNEiZOvsIeD/9bVkkq2/sq6JmhvR1uffhdNmXjSDKmIjj4w8g0Xj/fz2t31+nsY
-	yEkOM8+BWyzjHbWNdrtjgzwqGMddGeo=
-Date: Mon, 4 Nov 2024 19:07:21 -0800
+	bh=MdJ5B6edGG29XfWXFLe8I19iE8TwPAmnHczY4SEhvMg=;
+	b=VxZB/VxuZn8awaZpzTPkUfSZKyQZBLCX8nARCFw74e3EjZn91DApucyl7tmZ7rTF8XfJ4z
+	nT5nKxRQ1KC4ngRNuVOhFJUVXHW8miP8Vb1wB0le1XzbDSncN8ppgw1VXE2u18NP3ZGV7T
+	Au2mmhN25X5bv3DDirzUtV8UXWRWl0M=
+Date: Mon, 4 Nov 2024 19:09:20 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v9 05/10] bpf: Allocate private stack for
- eligible main prog or subprogs
+Subject: Re: [PATCH bpf-next v9 03/10] bpf: Allow private stack to have each
+ subprog having stack size of 512 bytes
 Content-Language: en-GB
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
@@ -58,159 +58,72 @@ Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
  Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
  Tejun Heo <tj@kernel.org>
 References: <20241104193455.3241859-1-yonghong.song@linux.dev>
- <20241104193521.3243984-1-yonghong.song@linux.dev>
- <CAADnVQ+RGgtLtoc_ODv54gt0donCdd_4sLWS1oWA_nGStjb1KQ@mail.gmail.com>
+ <20241104193510.3243093-1-yonghong.song@linux.dev>
+ <CAADnVQK-dCC68pPbrt2DLY5022V64Kget7xyShHqRoK+c5ZTiw@mail.gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQ+RGgtLtoc_ODv54gt0donCdd_4sLWS1oWA_nGStjb1KQ@mail.gmail.com>
+In-Reply-To: <CAADnVQK-dCC68pPbrt2DLY5022V64Kget7xyShHqRoK+c5ZTiw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
 
-On 11/4/24 5:38 PM, Alexei Starovoitov wrote:
-> On Mon, Nov 4, 2024 at 11:38 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->> For any main prog or subprogs, allocate private stack space if requested
->> by subprog info or main prog. The alignment for private stack is 16
->> since maximum stack alignment is 16 for bpf-enabled archs.
->>
->> If jit failed, the allocated private stack will be freed in the same
->> function where the allocation happens. If jit succeeded, e.g., for
->> x86_64 arch, the allocated private stack is freed in arch specific
->> implementation of bpf_jit_free().
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   arch/x86/net/bpf_jit_comp.c |  1 +
->>   include/linux/bpf.h         |  1 +
->>   kernel/bpf/core.c           | 19 ++++++++++++++++---
->>   kernel/bpf/verifier.c       | 13 +++++++++++++
->>   4 files changed, 31 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
->> index 06b080b61aa5..59d294b8dd67 100644
->> --- a/arch/x86/net/bpf_jit_comp.c
->> +++ b/arch/x86/net/bpf_jit_comp.c
->> @@ -3544,6 +3544,7 @@ void bpf_jit_free(struct bpf_prog *prog)
->>                  prog->bpf_func = (void *)prog->bpf_func - cfi_get_offset();
->>                  hdr = bpf_jit_binary_pack_hdr(prog);
->>                  bpf_jit_binary_pack_free(hdr, NULL);
->> +               free_percpu(prog->aux->priv_stack_ptr);
->>                  WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
+On 11/4/24 6:47 PM, Alexei Starovoitov wrote:
+> On Mon, Nov 4, 2024 at 11:35 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> @@ -6070,11 +6105,23 @@ static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx,
+>>                          depth);
+>>                  return -EACCES;
 >>          }
->>
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index 8db3c5d7404b..8a3ea7440a4a 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -1507,6 +1507,7 @@ struct bpf_prog_aux {
->>          u32 max_rdwr_access;
->>          struct btf *attach_btf;
->>          const struct bpf_ctx_arg_aux *ctx_arg_info;
->> +       void __percpu *priv_stack_ptr;
->>          struct mutex dst_mutex; /* protects dst_* pointers below, *after* prog becomes visible */
->>          struct bpf_prog *dst_prog;
->>          struct bpf_trampoline *dst_trampoline;
->> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->> index 14d9288441f2..f7a3e93c41e1 100644
->> --- a/kernel/bpf/core.c
->> +++ b/kernel/bpf/core.c
->> @@ -2396,6 +2396,7 @@ static void bpf_prog_select_func(struct bpf_prog *fp)
->>    */
->>   struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
->>   {
->> +       void __percpu *priv_stack_ptr = NULL;
->>          /* In case of BPF to BPF calls, verifier did all the prep
->>           * work with regards to JITing, etc.
->>           */
->> @@ -2421,11 +2422,23 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
->>                  if (*err)
->>                          return fp;
->>
->> +               if (fp->aux->use_priv_stack && fp->aux->stack_depth) {
->> +                       priv_stack_ptr = __alloc_percpu_gfp(fp->aux->stack_depth, 16, GFP_KERNEL);
->> +                       if (!priv_stack_ptr) {
->> +                               *err = -ENOMEM;
->> +                               return fp;
+>> -       depth += round_up_stack_depth(env, subprog[idx].stack_depth);
+>> +       subprog_depth = round_up_stack_depth(env, subprog[idx].stack_depth);
+>> +       depth += subprog_depth;
+>>          if (depth > MAX_BPF_STACK && !*subtree_depth) {
+>>                  *subtree_depth = depth;
+>>                  *depth_frame = frame + 1;
+>>          }
+>> +       if (priv_stack_supported != NO_PRIV_STACK) {
+>> +               if (!subprog[idx].use_priv_stack) {
+>> +                       if (subprog_depth > MAX_BPF_STACK) {
+>> +                               verbose(env, "stack size of subprog %d is %d. Too large\n",
+>> +                                       idx, subprog_depth);
+>> +                               return -EACCES;
 >> +                       }
->> +                       fp->aux->priv_stack_ptr = priv_stack_ptr;
+>> +                       if (subprog_depth >= BPF_PRIV_STACK_MIN_SIZE)
+>> +                               subprog[idx].use_priv_stack = true;
 >> +               }
->> +
->>                  fp = bpf_int_jit_compile(fp);
->>                  bpf_prog_jit_attempt_done(fp);
->> -               if (!fp->jited && jit_needed) {
->> -                       *err = -ENOTSUPP;
->> -                       return fp;
->> +               if (!fp->jited) {
->> +                       free_percpu(priv_stack_ptr);
->> +                       if (jit_needed) {
->> +                               *err = -ENOTSUPP;
->> +                               return fp;
->> +                       }
->>                  }
->>          } else {
->>                  *err = bpf_prog_offload_compile(fp);
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index e01b3f0fd314..03ae76d57076 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -20073,6 +20073,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
->>   {
->>          struct bpf_prog *prog = env->prog, **func, *tmp;
->>          int i, j, subprog_start, subprog_end = 0, len, subprog;
->> +       void __percpu *priv_stack_ptr;
->>          struct bpf_map *map_ptr;
->>          struct bpf_insn *insn;
->>          void *old_bpf_func;
->> @@ -20169,6 +20170,17 @@ static int jit_subprogs(struct bpf_verifier_env *env)
->>
->>                  func[i]->aux->name[0] = 'F';
->>                  func[i]->aux->stack_depth = env->subprog_info[i].stack_depth;
->> +
->> +               if (env->subprog_info[i].use_priv_stack && func[i]->aux->stack_depth) {
->> +                       priv_stack_ptr = __alloc_percpu_gfp(func[i]->aux->stack_depth, 16,
->> +                                                           GFP_KERNEL);
->> +                       if (!priv_stack_ptr) {
->> +                               err = -ENOMEM;
->> +                               goto out_free;
->> +                       }
->> +                       func[i]->aux->priv_stack_ptr = priv_stack_ptr;
->> +               }
->> +
->>                  func[i]->jit_requested = 1;
->>                  func[i]->blinding_requested = prog->blinding_requested;
->>                  func[i]->aux->kfunc_tab = prog->aux->kfunc_tab;
->> @@ -20201,6 +20213,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
->>                          func[i]->aux->exception_boundary = env->seen_exception;
->>                  func[i] = bpf_int_jit_compile(func[i]);
->>                  if (!func[i]->jited) {
->> +                       free_percpu(func[i]->aux->priv_stack_ptr);
->>                          err = -ENOTSUPP;
->>                          goto out_free;
->>                  }
-> Looks correct from leaks pov, but this is so hard to follow.
-> I still don't like this imbalanced alloc/free.
-> Either both need to be done by core or both by JIT.
+>> +       }
+> Hold on. If I'm reading this correctly this adaptive priv stack
+> concept will make some subprogs with stack >= 64 to use priv_stack
+> while other subprogs will still use normal stack?
+> Same for the main prog. It may or may not use priv stack ?
 >
-> And JIT is probably better, since in:
-> _alloc_percpu_gfp(func[i]->aux->stack_depth, 16
->
-> 16 alignment is x86 specific.
+> I guess this is ok-ish, but needs to be clearly explained in comments
+> and commit log.
 
-Agree. I use alignment 16 to cover all architectures. for x86_64, 
-alignment 8 is used. I did some checking in arch/ directory. 
-[~/work/bpf-next/arch (master)]$ find . -name 'net' ./arm/net ./mips/net 
-./parisc/net ./powerpc/net ./s390/net ./sparc/net ./x86/net ./arc/net 
-./arm64/net ./loongarch/net ./riscv/net [~/work/bpf-next/arch (master)]$ 
-egrep -r bpf_jit_free (excluding not func definition) 
-powerpc/net/bpf_jit_comp.c:void bpf_jit_free(struct bpf_prog *fp) 
-sparc/net/bpf_jit_comp_32.c:void bpf_jit_free(struct bpf_prog *fp) 
-x86/net/bpf_jit_comp.c:void bpf_jit_free(struct bpf_prog *prog) 
-arm64/net/bpf_jit_comp.c:void bpf_jit_free(struct bpf_prog *prog) 
-riscv/net/bpf_jit_core.c:void bpf_jit_free(struct bpf_prog *prog) Looks 
-like all important arch's like x86_64,arm64,riscv having their own 
-bpf_jit_free(). Some others like s390, etc. do not. I think we can do 
-allocation in JIT. If s390 starts to implement private stack, then it 
-can implement arch-specific version of bpf_jit_free() at that time.
+Will do.
+
+> My first reaction to such adaptive concept was negative, since
+> such "random" mix of priv stack in some subprogs makes
+> the whole thing pretty hard to reason about it,
+> but I guess it's valid to use normal stack when stack usage
+> is small. No need to penalize every subprog.
+>
+> I wonder what others think about it.
+
+Ya, other opinions are very welcome!
+
+>
+> Also it would be cleaner to rewrite above as:
+> if (subprog_depth > MAX_BPF_STACK) {
+>     verbose();
+>     return -EACCESS;
+> }
+> if (priv_stack_supported == PRIV_STACK_ADAPTIVE &&
+>      subprog_depth >= BPF_PRIV_STACK_MIN_SIZE)
+>     subprog[idx].use_priv_stack = true;
+>
+> less indent and easier to read.
+
+Okay, will do with less indent.
 
 
