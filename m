@@ -1,281 +1,635 @@
-Return-Path: <bpf+bounces-44079-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44080-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D55D9BD977
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 00:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 004F59BD995
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 00:19:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30CFB1C226A5
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 23:08:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 235141C2288F
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2024 23:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F96216450;
-	Tue,  5 Nov 2024 23:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A518216A18;
+	Tue,  5 Nov 2024 23:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="GPn+pLRk";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="BMUJkXqe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K5sdB8k0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B73383;
-	Tue,  5 Nov 2024 23:07:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730848082; cv=fail; b=k5gBqjJoGaAmLTlMsdT91Chcy5EipSVMRCWufv4ANqMq/euYJ7ERw+qPQN1rRP6YhNFi9TSPUUp3+gLviEdxHG+rMcTN2GL3HHF5CdmDtvPJaQhvG/8Idyn3xPFYd/DyUDYhrF0ir0tQVtyKFoRv2trnLPT+O+JTGxpDiK7bDdU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730848082; c=relaxed/simple;
-	bh=0nfGfDUyz5osWABLP2RGUvB1beJhoqGRqIsDA6kRg+s=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=POyDh8YlNPcFweL5iRwq786kWszkqgUC+Mz+hwqUHngVcbQyvyOWKSUhJZf8KCWY5Yz6MYv9mtoxxiGims/XXPtMZTs5G4HIFRXJk3Sgr7Yx2ckM9mlUn8BKi0664yIAZiN6j45cU5QqlmdIvXJoa5sZI5n/20syg+AyWcq4SHU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=GPn+pLRk; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=BMUJkXqe; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4A5KfYxf019801;
-	Tue, 5 Nov 2024 23:07:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=bocijomQdL8XKPPNCF322+4Lnn2rt6c4dZstyDZyAfE=; b=
-	GPn+pLRkcKa809/0yyh6P+2pbZ7jqT9pT36Hy3SLHZ8QOnWtwUpRbWSbsPLsx5Dy
-	dPd2aIszRmFZu2sSxrh+7+w3EtuyhxCwX7aEYgyrpIdMIHtK+e3epNC2ahbHroRn
-	urPXUXhTyekg5gKbV5ZvXisojeeLYL+EmwMLRKRR+3ecel0VZWQFeQjNZySPY7u0
-	jn/jQdWmsTBAqDZVmcuLTSnU94V3r/4C2RA292eRYMeIUIRnwy99p4guzao/hgeK
-	O1sCzs/7vkiqNap4iF2ea0a0EIodON5w07R/e7ScOmDbhI0Fj/peMOafUKPcnyTK
-	b19dh6ipc60SAxXHZu9+RQ==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42nav26nyu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 05 Nov 2024 23:07:21 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 4A5N2Jnt036689;
-	Tue, 5 Nov 2024 23:07:21 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 42nah7t8jg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 05 Nov 2024 23:07:21 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KO33PkZ6k+yEDoZfY0BV0gGOcHF5NStnu3FicCSTxcOQipYMp6X598IDBkrFPz0LwFGhIsEpvvDeWJM/4mqMhKlBflcyqvPCZBK6lsYn4KtqD9/AZCeEzmENmF+N5O307IdNM27jmjlD8TJwD8WF/SM3JJCSJ7HrbmzhzfErGzv3+wa4A1WH7yHnfNYTTimidqahi7HMotsyTKa2o62+kfJ2+FrGUK4NA0DLewKXURoAZqBtkZG3oZTsmbk+bM/qYro1Mu0ez+pH1Q7BgvKLsXTVCQ8Fm+xmLlPzz/WdnoOhM4QnORLS4cr0DCqJ1bSY9kohti7Jcpm6NEXAQTGs6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bocijomQdL8XKPPNCF322+4Lnn2rt6c4dZstyDZyAfE=;
- b=Mcw454YrITs6v3hOEyHx6GLhe4++9pnyudsvmp8cq/NTC2UNzuYMg72VGEmCnhqjvYDhN+SOEUKxJLpwtNhPKDEUk8YQBmhiyVYjBApe8O3OKUvPJGLdpy8FbgEZNcqLl8qePvzHFQbYKLVsXqzroYcFE5jPuf6P7a9fynYfGPrdWGpix7EMOuBiwDeFTLD2hA92sIu84lGUmCINlVyXoYE0CLnL5J6DjiziUr6GgzyjowrNFmsWPFDen+YX9/5x5qck2u0mDma8BeK6WV8fxHkJOhWB6NbxwSlNSAQ5/6ZyVYIVUqv6/SZtn4OMzIXwYB5BhWXxhAgUkuDn2ceeSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD3701D27BF;
+	Tue,  5 Nov 2024 23:18:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730848742; cv=none; b=Fy0nhH8yeKyooWVL3ibd4j3wepZMw4FkmljKO5Mmx0T9vboyMUU/6bRqroJ9mdJB3jCeXxSbMXeT/Sl8L6rADZs2DBqpaffjaAbS7K8xIDEH3kGVRF0N0xFTFoD033m+OovBhh771uVPA4vB9CQBmKjKAV2B2BMcNCizHuMTyQI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730848742; c=relaxed/simple;
+	bh=S1k0dVOKWVc2a0bfW5WPnv4OSnoCxPWZfLLv7shTM6o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Bx/4VJfZzl9xbv2B4wllb4nv8KKyOFGdA5COxuLslNZiukZJSyPBqr8x3dfjVjtJpmwv4lauFdv0WdiTZOTdVo3ytjKIn2MG5FII2CJhT2P+Pu93+YekXECyXaEYxdtMvQI2U1WlhY5HNj+D+ppyg0uJ12PwqbQcnGVAMMqd+zQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K5sdB8k0; arc=none smtp.client-ip=209.85.166.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-3a6c1cfcb91so13902065ab.0;
+        Tue, 05 Nov 2024 15:18:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bocijomQdL8XKPPNCF322+4Lnn2rt6c4dZstyDZyAfE=;
- b=BMUJkXqeqJMdDxc2DoIM74/DCKjwwY4nqYkMVMNheYgaChb62av6dsv5QDRAS/oQPq2PtJ6G4NB08BJ03y8gFtiUierIQckOtprIHIsurG9okpx83P8PwHceHLGR3ewK5EOTlldmKO18RORyOrmzpv/R5U6JGslM4nYntBouue4=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by CH3PR10MB7395.namprd10.prod.outlook.com (2603:10b6:610:147::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8114.31; Tue, 5 Nov
- 2024 23:07:18 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::682b:c879:9f97:a34f]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::682b:c879:9f97:a34f%3]) with mapi id 15.20.8114.031; Tue, 5 Nov 2024
- 23:07:18 +0000
-Message-ID: <19f0b0bb-dd2d-4cdd-8b86-b995b01bfd03@oracle.com>
-Date: Tue, 5 Nov 2024 23:07:07 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] kbuild,bpf: pass make jobs' value to pahole
-To: Florian Schmaus <flo@geekplace.eu>,
-        Masahiro Yamada
- <masahiroy@kernel.org>,
-        =?UTF-8?Q?Holger_Hoffst=C3=A4tte?=
- <holger@applied-asynchrony.com>
-Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier
- <nicolas@fjasle.eu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-References: <20241102100452.793970-1-flo@geekplace.eu>
- <73398de9-620c-9fb9-8414-d0f5c85ac53a@applied-asynchrony.com>
- <CAK7LNATd0UNu8KsxeD-q2mDUTxQD3ATL1wF59B9K2pxzU08OQQ@mail.gmail.com>
- <935ac01a-8a1b-4986-9802-d2d1fd6445c2@geekplace.eu>
-Content-Language: en-GB
-From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <935ac01a-8a1b-4986-9802-d2d1fd6445c2@geekplace.eu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: LO4P123CA0476.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:1a8::13) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+        d=gmail.com; s=20230601; t=1730848739; x=1731453539; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v8EPFZSgukoBpOa+lawA18BIXOypVCgpy3mTtamrzXU=;
+        b=K5sdB8k0zU0VNHQ2GRkaWcqBpgI90clvWJGaWsxNVNhJQP3QdTpeX34f1XHyBkiKlS
+         /XPv8xBNr8pNGtBAChv6Xra8/6uKh/Qx9f+VxnrrBOdwligg4B427iqpbOjJcQy4gwrt
+         BFqz94gCWyJTh5SysW2DmR1pOV2hMfuOwiKV48E02KzVMzgqWbHkJNrSIi9EfhBKd4um
+         iV4l1yNtJRXPJ/bR6CWG+aykcv1Rpmv4fPjcGrGURonkAPORsQhoB1h9/r6b9PwLILoM
+         UuQxuPtQDI2HqZ0USq74q2LWZ41QyG6sAegVGFj2RvjOMjeyNw8OXeYs3pjVGrs1fbnI
+         n1mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730848739; x=1731453539;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v8EPFZSgukoBpOa+lawA18BIXOypVCgpy3mTtamrzXU=;
+        b=bO872uhGivaLEA1UHdYLZJHA0wVw6YkO7vqK5fbwpuG11csB2eVFV7w+KRICkGbkP6
+         GtkbFhCe0KY8Si0ZAyBGDtYCyCxIpX0+jPaYE2rzwBG1OU75vCR2T5MvmAkH5DFscTEk
+         uvfUNAGhwo1xNuiz/p6Nlp68xY2lHtj5neUAjpjyMF3KPCbqurohb/CkFmyar0NUTp80
+         awFxrnmNn5YTlm57iyxWL3NZhVoIz68S5lSoodcgLzgKP6KXHdHFTkhMC1sBmogYxXsM
+         wG3qUzdTd8ZXM0zwbydasYNevvBggEjEA1+DESpC7cU9aKqULXIqVv3YGrJs3TiEvvlR
+         3PDw==
+X-Forwarded-Encrypted: i=1; AJvYcCV/eQ2Rc4PUWDs2DBmcl3YuOt8AnbUAUi9f9+LSwhryYBpFaLl5HexzNfHQKK5OhIKE+nY=@vger.kernel.org, AJvYcCXBGtg2DV+wmz1GgA72bbUTMM4xMMbnvMAzsNU3s+uAoKXgJoSSasmpma/AZ4MeIyMA7wne5d7xfaI9DSI5@vger.kernel.org
+X-Gm-Message-State: AOJu0Yznc7i9sMuHvd5TKmV6Obdyqvx/63Ts2SHuU+s4r8QgBVskPlHi
+	Y4HTbhxcp5po3VxZ0VLTfhlcKT8+t57L3AbVc8m++o6xaQjhAXaxJVyDWZV9
+X-Google-Smtp-Source: AGHT+IFyJwpCnZypYeVjqrfxhUogtRX8g8lz1frQAMDMe5ER6GX/66EvIzUAj9h4P87PWlMEvszGVA==
+X-Received: by 2002:a05:6e02:1a05:b0:3a0:9952:5fcb with SMTP id e9e14a558f8ab-3a5e2513773mr259212395ab.17.1730848738765;
+        Tue, 05 Nov 2024 15:18:58 -0800 (PST)
+Received: from ryzen.lan ([2601:644:8200:dab8::a86])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7ee455a4fe4sm9482294a12.51.2024.11.05.15.18.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Nov 2024 15:18:58 -0800 (PST)
+From: Rosen Penev <rosenp@gmail.com>
+To: netdev@vger.kernel.org
+Cc: Edward Cree <ecree.xilinx@gmail.com>,
+	Martin Habets <habetsm.xilinx@gmail.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-net-drivers@amd.com (open list:SFC NETWORK DRIVER),
+	linux-kernel@vger.kernel.org (open list),
+	bpf@vger.kernel.org (open list:XDP (eXpress Data Path):Keyword:(?:\b|_)xdp(?:\b|_))
+Subject: [PATCHv2 net-next] net: sfc: use ethtool string helpers
+Date: Tue,  5 Nov 2024 15:18:55 -0800
+Message-ID: <20241105231855.235894-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|CH3PR10MB7395:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3cd7fbce-a858-4003-3655-08dcfdee9888
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|10070799003|366016|1800799024|376014|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?UlNYbzJyRkc4cXJocHF4UCt6aEQ5dzFGcnpyRkFDd2dOeDBwem5HZXBhdXA4?=
- =?utf-8?B?Y24veTVqc0tHdDRweEk2YXRmY2g0UFhxcVJ1WWVPQVNtTjZnNmFOaHJXK2Z5?=
- =?utf-8?B?dWd6RStkSGkyWmgwUDJBQWtBY1c0bEdkV1BZa1V3aXNSYU0xSkhtRUkxMUNG?=
- =?utf-8?B?TXo3bkFEemk1R1o0ZndKcDlEZU03bVdJWHhGeW9iU21JNU5BYWcxbDR0UStZ?=
- =?utf-8?B?c3Y3ZDI3aTV5Z2tHUWpqbzNSMWlLSzNUMlpOVFJpZ3I1ZGFmWUdUbGQ1V0Qw?=
- =?utf-8?B?Z1JoL3RJNXhDZEhtSnl0czdBQ3dZK0s2SWxUSW9NbHlQVXppeGFJY3ZZQllS?=
- =?utf-8?B?Mmk0N1NhblVJbWNWWUdSWTJTS2xlOWtSSVdWRHBlZmdEUkhhclYwL25YZTZT?=
- =?utf-8?B?VXlQQW5lMlBZRXhLRlpScXcrWHRNd05GNFNUbjBrUnlEZ1FFVnpoU2E0VVRt?=
- =?utf-8?B?dnpDKytPY1pDY0NielIreVN2UTZHN1VuY0xENUNoYkc2aTBTa01zN1MzdFMz?=
- =?utf-8?B?bnk4MmFid1hpOFlhQ0I1UWJxc2FFL3gxSVlocCt3Wi9VRWJxejFGazU5aVcv?=
- =?utf-8?B?dDNsUFdINUVGdnZRc1daUW44ayt3SWFrcTVnS3lmTW1pL0JvZnlTZGdqQ0V5?=
- =?utf-8?B?TFpBNmhiSzRIY0xQcXB6Z3g0Z2xOc1NwQmFvUFBwd1ZWR2pNK0lJdlZEVUVW?=
- =?utf-8?B?M0YrVXJmaFNrTC8yTE81Y3Jwd3pEWGp1SE1HZEVrbEw5RmxyeHRMQmZLN1Qv?=
- =?utf-8?B?cGIxT0tGZ0ZVZHA0WjdGZVV2dWpqbndBd1hRYjBpNDMxZnh1UmdmU3h6SFhu?=
- =?utf-8?B?ZkZDRk9YUGR4a29GaVY0Q0FPQ3JZQ2hKOTlYMyt0MnpSVk5udThtT1ZhS3Fm?=
- =?utf-8?B?NGkrRThLTS9pOVBCalE3MmcvTnRXd3lwdVJzL29hRjRYSGdoYW9mOXhUbjBX?=
- =?utf-8?B?UmFnN3FiUHE4d0JIWUM2NjhpT0ZPQUhWL2E3T0lqa0F6M2dKMlhnUzJlSm5m?=
- =?utf-8?B?cUQyNjllRG1aWXFkS2g0ejFnMWFaSGFkVVdUaHdZTWUwTVE1dVlxUzhYRU1S?=
- =?utf-8?B?ekg3MVdYNUhES3l5TjdNSnRkMXRPM1pUbFRuUkRTREdLVHZ0dkpQNXVudmdT?=
- =?utf-8?B?OHkvUkVYc25EUE5sT01OWm9LQndZRkVtZWJUUkY2SWdyMjVobVExV1A4a2xU?=
- =?utf-8?B?ZG5VellyOERqckNjdlVueXdrR3R1aHBsVmxBK1Nmd1VKOHBEb3pDQlpWbVcr?=
- =?utf-8?B?d0RjY21oNTdnYUZ2MFI3eGJtOHJsSXd3VzVXNHFnYW9iK0U5SEJEV3BWbmpx?=
- =?utf-8?B?aFhFRFRPN2hZZmdHVGtoZEJoOVEwT293cGRzTmNMeFcrNWxZUzEvYjhzZjVD?=
- =?utf-8?B?Y0F6dmFYdGp0MkcxckNGblc1NG9FMEdKSEo2bkNUc0EySjlLMEExWG9TbFRO?=
- =?utf-8?B?b2dkSlNPSVZnWHFocVlRZHNEZXRoU2c0cnJDL1dGQjdFNjF0UWlaU3dQSWIy?=
- =?utf-8?B?SWZNa2ZPQnhCTSsrTDlaNGlGYW8zZmRXU2l0YXhha0RxUHZ4M2UyMjk0SW5u?=
- =?utf-8?B?clNrdkRYRzU5U3NFY2Q4R3l3ZWo0dVlMMkFZMWkzWHdRWDlhMzNQSVVibk9L?=
- =?utf-8?B?TzBkT3Q0S0tqMmFCbUtTQ1FRQndnMmY0K2NsWkFkMnl5Qy9QNENGbExJMlAw?=
- =?utf-8?B?cXZ0YzdsOGhKTUhyYjNtRnIxKzgwYlk0VEQ4MFVqN1pNMTlPQXVmZEs5Vmpo?=
- =?utf-8?Q?wSotcAr4iJTzIKKK40Sf33L3VAcFp1Ec903Bb//?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?OStpTzNNTHBBKzZVY2N0MUlWSEJyeGoyeENlYlhlSzUxZkNPY285WEVPOXI0?=
- =?utf-8?B?akFOcU9qT0t3T29GUUVBL1puOWdINlIwR3I0bFpOSDN4cVptOVcxdmw2Yjdx?=
- =?utf-8?B?czBWY0J4bCtndFdJVkQ4NUgzNXVXVEZCRFN6RzJPQzh0aVEyUU1IeGNsdDhm?=
- =?utf-8?B?blYzRGg2OFNtRi9YYW1PYmlNd2EwTEpkSTRDTXJQZFQvd0JTSE83aitOeG0z?=
- =?utf-8?B?dW9GMzY5K1dQRUQxVHZNcnNHKzUzT2NDeEt2cGZFZE5jUXV3WTZqNHp1VXlw?=
- =?utf-8?B?cHN4V1hsdzdsWG1nV2hwQUZLRUo5K3ZTRkh1Sis4NTBIZzF2UnU0aHUvcVcr?=
- =?utf-8?B?VkVvWlYxamh3SFlFNWhDNFplMmtmM04wbW5XSm1ISXFHK1c4RjZUZXhSVlpw?=
- =?utf-8?B?ZjVid0RvMHJlVDdBZlVtcU9vYjU0WkpDdk5qTmw2L0lMeU91dFAxTkczekR2?=
- =?utf-8?B?RWJjWlhBWlN5RmpKb2xVeENlV3BwbWxYL0ZzWXIxOWlaYnI2N0R3SVUxeFIz?=
- =?utf-8?B?OHpzbDF6LzVmeVRBSE5TNG9aamtoNFlmVzZqZFcvT2UrMTRUMjkrR01tTU1i?=
- =?utf-8?B?RitBbG4vZnBJS2tDZ3I0VHRES3lBa2dMQTgwTTI4THZQY1lxeG5LWGgwWUdI?=
- =?utf-8?B?OGtVU1FJUklDVGtNSTZqb0xrNkYzVGRMRHlEL3JRU0hFSEUzaHErOW0vdHA4?=
- =?utf-8?B?aW05RzVLZm9nYnlMUm5xY2NwQlRQLzN3RGwzQzNpZWJDN1FCcXYrRUduYlVN?=
- =?utf-8?B?REJSUUgyM2JHVE5OSG1rK01JZVEzcXhZQUtBVGJSc0xEbkp0aFhGd2ZnZzda?=
- =?utf-8?B?Mk1XU25mZDBES1hZOHBLRGFMVlRJRThHaWkrTTRrTGdWWDFyQUxDNEFyR0Z5?=
- =?utf-8?B?RWFXZ0lUWW43OGNhVFZMM3FGa21UU0p1N0dPdWNndURqSFJvZUF5eUgzYStu?=
- =?utf-8?B?Q2J2cnRKRk1HZWVuc0NzbmJ5bGV6U3VFLzlOcWVBQ3NYYXFtSHowcGphZmgx?=
- =?utf-8?B?d1FOUS9udWxLTHZmb1FKWTNLMjkvWGtScTVvbXBhY0hhamJ6ZXEraFl4QkRK?=
- =?utf-8?B?YkVXVkoxem8xUDlZMU9QNDJ4clhsd0F6NEc3TWJkYVBPU2NUY09NaWZGVk1C?=
- =?utf-8?B?cXJlandNOWUwSWxiZlZHUzlwTzFVZU5TRmtkLzEzRkRtNDVIUXpKUjdJN0lq?=
- =?utf-8?B?TVR5YW1iV0pnZjFGODZPdkduYUM4MmJjQmgyamI2dEZuWElvTmtiMGNkOFlE?=
- =?utf-8?B?RHlXSTRobHA3WHp1YkJEZ214bVdKaG1hYW9TMHRoVlN4eUdrNWJBd250blpp?=
- =?utf-8?B?bGVDMjRtOHRBUDdMNEJSVktNT21Zc3FYWDNHU2w0ekRLblhhTmFxZDkzak5L?=
- =?utf-8?B?Z3lqRWgxbnBqTjU1NXNtbkY0ZThoWWF0T0llbFd3R0cwQ281UEpzY0Z3aEVF?=
- =?utf-8?B?M1UwOGZveklUYVNkd0xWYW8zUjlLclZTcVl2ZmgrVWJaR0FscUs3KytNRjYr?=
- =?utf-8?B?K1FNRUdCOXk0emdzSUxBRVIyS3MwV2RsU0d6ZXBVSjI3TXNpUEVKNitrZ2xZ?=
- =?utf-8?B?c1lHVm91RU52RFVWejAvSFRmeUhrVXpBYWJjNkpjTDF0ZlBua1ZaMW5BeStK?=
- =?utf-8?B?RkE4M3VvdStaQjFaVzBrdGt6a2Z4RHNGU0d0STdzVUJCTEFadnlqVTEyY2RZ?=
- =?utf-8?B?eXAyU2FDRlNISjVXcUxwdWV0Znp4WmlrT2lTQW5yVW1HM0Nka2hEVDk4YUZz?=
- =?utf-8?B?YTEzWk5mekxWVFRmVjMvQWFzYTRFT09UUXBrRFR0MkkyZEZ0KzhsbWNvYUtY?=
- =?utf-8?B?cGpSR0FrelFWMVd6aDE0TkF2NmN3WmhaeDhGYVVOc0hWTENKN3laczg2VnRz?=
- =?utf-8?B?anBsNDUzOXgxZDNQQjdaL0g3OU1FVTlqOWt0amdKOTRpd21uVUkxSXc3bXMv?=
- =?utf-8?B?bks0aXJTRDFYblBDUllCVVd2aHNXZy9QK016b1pxcklQZE5ZcnpET0Z1bXg5?=
- =?utf-8?B?Y05MR1FPNTI2N2YvK3lwUkJhaFZjMk9JVDJETjlaV2NXWUc3Q2hWbllsL1Nz?=
- =?utf-8?B?V3NjVHFGRzVLN0VmYUpqS1VEQmw4Y1JVNkZKTHZ5b2tjZzdFSmZDaG1hVmRL?=
- =?utf-8?B?YXRYTVFSYmRYemduNnludWE2QnBRcTJzMTVPNEdVZis5WEdvT2dydXlOWjYv?=
- =?utf-8?Q?mDFlMwwYxZxs/ubCJYP55WE=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	0N7bMAk/48hwJaYVPzAbB75QMJQCt6AjcFRvg18fdSwtcf9kaRima8w6vc4nFaXVkp5tsOqdsGqnBKIXUXy37qqO6Exu54NtFGG0uNTiW14R85g2r3IFp8ouL9Essikz3sGKCXlCEIi1ySuxh82nKsJeE/6VMevTXCsNfVWaXPUO3RSDCVPqsce++rFRI3rLAYJdLThTI7WAgwNu1HHL4jk6Nb9K98EmEsJ+KaUyYKbomaYUEx/Pl+QAVd1kCrhsOrznN+Vxf47T76eDqc4g5U54udmYgoIJ9GeeFm47KCBCGgfse3GzNt7YpkjJCG1+iSI0VusLVZBuncGwLRF/9PBIR8qviVlOIzMqS+Kc9xisNLb3/EiV0RW1u+yuKDyLY/beQFxPZTtlYMdFvB7hQHhPHwDWLr5MIuf2nEf5OOvnoRBcSCcsnSextobX8pAk6gzVzulycAoL3vWyJy2at8KrvbltLTfMBOT4l9AAoJnVZ25qDt7B9FFdjXjnrRjo1m87pRODcEBm6VkzQOfkwIxrLDhUxzNZwcbxPayvAe6/yNNi8gH1mCQCm56Ui5GS1uh9F/zlZHa1uitIHpGU3ZFv89ndUA970x5iNnTDYA8=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3cd7fbce-a858-4003-3655-08dcfdee9888
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2024 23:07:18.5985
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qBdZsHKAz5NEYEc4Qb52iXQgB3Cjd0q7TsQ5xe6XsEFltLOQTnjcEt7r2+KzpnZcmc9YHoCAc35G6yBZzjhc/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB7395
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-11-05_07,2024-11-05_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
- definitions=main-2411050179
-X-Proofpoint-GUID: 3Amvg7kmtiUdeTBBZXIz5kS9ZloFUAQ8
-X-Proofpoint-ORIG-GUID: 3Amvg7kmtiUdeTBBZXIz5kS9ZloFUAQ8
+Content-Transfer-Encoding: 8bit
 
-On 04/11/2024 12:52, Florian Schmaus wrote:
-> On 03/11/2024 14.22, Masahiro Yamada wrote:
->> On Sun, Nov 3, 2024 at 9:04 PM Holger Hoffstätte
->> <holger@applied-asynchrony.com> wrote:
->>>
->>> On 2024-11-02 11:04, Florian Schmaus wrote:
->>>> Pass the value of make's -j/--jobs argument to pahole, to avoid out of
->>>> memory errors and make pahole respect the "jobs" value of make.
->>>>
->>>> On systems with little memory but many cores, invoking pahole using -j
->>>> without argument potentially creates too many pahole instances,
->>>> causing an out-of-memory situation. Instead, we should pass make's
->>>> "jobs" value as an argument to pahole's -j, which is likely configured
->>>> to be (much) lower than the actual core count on such systems.
->>>>
->>>> If make was invoked without -j, either via cmdline or MAKEFLAGS, then
->>>> JOBS will be simply empty, resulting in the existing behavior, as
->>>> expected.
->>>>
->>>> Signed-off-by: Florian Schmaus <flo@geekplace.eu>
->>>
->>> As discussed on IRC:
->>
->> Do not do this. Others do not see what was discussed.
-> 
-> Sorry, you are right. However, not much was discussed. Holger just
-> pointed out that the memory usage of pahole was already reported as
-> problematic in
-> 
-> https://lore.kernel.org/lkml/20240820085950.200358-1-jirislaby@kernel.org/
-> 
-> My patch would potentially help there as well, as it allows the user to
-> limit the number of threads used by pahole.
-> 
-> 
->> I guess the right thing to do is to join the jobserver.
->>
->> https://www.gnu.org/software/make/manual/html_node/POSIX-Jobserver.html
-> 
-> Yes, this would be the ideal solution. Until it is implemented, the
-> proposed patch is probably the next best thing.
-> 
-> - Florian
-> 
+The latter is the preferred way to copy ethtool strings.
 
-If you haven't already, I'd suggest testing the latest pahole (building
-from master branch). Significant improvements in memory utilization have
-been made and more are planned post the 1.28 release.
+Avoids manually incrementing the pointer. Cleans up the code quite well.
 
-In terms of the patch itself, respecting the "make -j" value seems right
-to me. Thanks!
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ v2: cleaned up further with signature changes to make sure all
+ increments get propagated.
+ drivers/net/ethernet/sfc/ef10.c               |  2 +-
+ drivers/net/ethernet/sfc/ef100_nic.c          |  2 +-
+ drivers/net/ethernet/sfc/ethtool_common.c     | 46 ++++++++-----------
+ drivers/net/ethernet/sfc/falcon/ethtool.c     | 34 ++++++--------
+ drivers/net/ethernet/sfc/falcon/falcon.c      |  2 +-
+ drivers/net/ethernet/sfc/falcon/net_driver.h  |  2 +-
+ drivers/net/ethernet/sfc/falcon/nic.c         |  9 ++--
+ drivers/net/ethernet/sfc/falcon/nic.h         |  2 +-
+ drivers/net/ethernet/sfc/net_driver.h         |  2 +-
+ drivers/net/ethernet/sfc/nic.c                |  9 ++--
+ drivers/net/ethernet/sfc/nic_common.h         |  2 +-
+ drivers/net/ethernet/sfc/ptp.c                |  2 +-
+ drivers/net/ethernet/sfc/ptp.h                |  2 +-
+ .../net/ethernet/sfc/siena/ethtool_common.c   | 46 ++++++++-----------
+ drivers/net/ethernet/sfc/siena/net_driver.h   |  2 +-
+ drivers/net/ethernet/sfc/siena/nic.c          | 14 +++---
+ drivers/net/ethernet/sfc/siena/nic_common.h   |  5 +-
+ drivers/net/ethernet/sfc/siena/ptp.c          |  2 +-
+ drivers/net/ethernet/sfc/siena/ptp.h          |  2 +-
+ drivers/net/ethernet/sfc/siena/siena.c        |  2 +-
+ 20 files changed, 83 insertions(+), 106 deletions(-)
 
-Alan
+diff --git a/drivers/net/ethernet/sfc/ef10.c b/drivers/net/ethernet/sfc/ef10.c
+index de131fc5fa0b..452009ed7a43 100644
+--- a/drivers/net/ethernet/sfc/ef10.c
++++ b/drivers/net/ethernet/sfc/ef10.c
+@@ -1751,7 +1751,7 @@ static void efx_ef10_get_stat_mask(struct efx_nic *efx, unsigned long *mask)
+ #endif
+ }
+ 
+-static size_t efx_ef10_describe_stats(struct efx_nic *efx, u8 *names)
++static size_t efx_ef10_describe_stats(struct efx_nic *efx, u8 **names)
+ {
+ 	DECLARE_BITMAP(mask, EF10_STAT_COUNT);
+ 
+diff --git a/drivers/net/ethernet/sfc/ef100_nic.c b/drivers/net/ethernet/sfc/ef100_nic.c
+index 6da06931187d..62e674d6ff60 100644
+--- a/drivers/net/ethernet/sfc/ef100_nic.c
++++ b/drivers/net/ethernet/sfc/ef100_nic.c
+@@ -583,7 +583,7 @@ static const struct efx_hw_stat_desc ef100_stat_desc[EF100_STAT_COUNT] = {
+ 	EFX_GENERIC_SW_STAT(rx_noskb_drops),
+ };
+ 
+-static size_t ef100_describe_stats(struct efx_nic *efx, u8 *names)
++static size_t ef100_describe_stats(struct efx_nic *efx, u8 **names)
+ {
+ 	DECLARE_BITMAP(mask, EF100_STAT_COUNT) = {};
+ 
+diff --git a/drivers/net/ethernet/sfc/ethtool_common.c b/drivers/net/ethernet/sfc/ethtool_common.c
+index ae32e08540fa..2d734496733f 100644
+--- a/drivers/net/ethernet/sfc/ethtool_common.c
++++ b/drivers/net/ethernet/sfc/ethtool_common.c
+@@ -395,7 +395,7 @@ int efx_ethtool_fill_self_tests(struct efx_nic *efx,
+ 	return n;
+ }
+ 
+-static size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 *strings)
++static size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 **strings)
+ {
+ 	size_t n_stats = 0;
+ 	struct efx_channel *channel;
+@@ -403,24 +403,22 @@ static size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 *strings)
+ 	efx_for_each_channel(channel, efx) {
+ 		if (efx_channel_has_tx_queues(channel)) {
+ 			n_stats++;
+-			if (strings != NULL) {
+-				snprintf(strings, ETH_GSTRING_LEN,
+-					 "tx-%u.tx_packets",
+-					 channel->tx_queue[0].queue /
+-					 EFX_MAX_TXQ_PER_CHANNEL);
++			if (!strings)
++				continue;
+ 
+-				strings += ETH_GSTRING_LEN;
+-			}
++			ethtool_sprintf(strings, "tx-%u.tx_packets",
++					channel->tx_queue[0].queue /
++						EFX_MAX_TXQ_PER_CHANNEL);
+ 		}
+ 	}
+ 	efx_for_each_channel(channel, efx) {
+ 		if (efx_channel_has_rx_queue(channel)) {
+ 			n_stats++;
+-			if (strings != NULL) {
+-				snprintf(strings, ETH_GSTRING_LEN,
+-					 "rx-%d.rx_packets", channel->channel);
+-				strings += ETH_GSTRING_LEN;
+-			}
++			if (!strings)
++				continue;
++
++			ethtool_sprintf(strings, "rx-%d.rx_packets",
++					channel->channel);
+ 		}
+ 	}
+ 	if (efx->xdp_tx_queue_count && efx->xdp_tx_queues) {
+@@ -428,11 +426,11 @@ static size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 *strings)
+ 
+ 		for (xdp = 0; xdp < efx->xdp_tx_queue_count; xdp++) {
+ 			n_stats++;
+-			if (strings) {
+-				snprintf(strings, ETH_GSTRING_LEN,
+-					 "tx-xdp-cpu-%hu.tx_packets", xdp);
+-				strings += ETH_GSTRING_LEN;
+-			}
++			if (!strings)
++				continue;
++
++			ethtool_sprintf(strings, "tx-xdp-cpu-%hu.tx_packets",
++					xdp);
+ 		}
+ 	}
+ 
+@@ -464,15 +462,11 @@ void efx_ethtool_get_strings(struct net_device *net_dev,
+ 
+ 	switch (string_set) {
+ 	case ETH_SS_STATS:
+-		strings += (efx->type->describe_stats(efx, strings) *
+-			    ETH_GSTRING_LEN);
++		efx->type->describe_stats(efx, &strings);
+ 		for (i = 0; i < EFX_ETHTOOL_SW_STAT_COUNT; i++)
+-			strscpy(strings + i * ETH_GSTRING_LEN,
+-				efx_sw_stat_desc[i].name, ETH_GSTRING_LEN);
+-		strings += EFX_ETHTOOL_SW_STAT_COUNT * ETH_GSTRING_LEN;
+-		strings += (efx_describe_per_queue_stats(efx, strings) *
+-			    ETH_GSTRING_LEN);
+-		efx_ptp_describe_stats(efx, strings);
++			ethtool_puts(&strings, efx_sw_stat_desc[i].name);
++		efx_describe_per_queue_stats(efx, &strings);
++		efx_ptp_describe_stats(efx, &strings);
+ 		break;
+ 	case ETH_SS_TEST:
+ 		efx_ethtool_fill_self_tests(efx, NULL, strings, NULL);
+diff --git a/drivers/net/ethernet/sfc/falcon/ethtool.c b/drivers/net/ethernet/sfc/falcon/ethtool.c
+index f4db683b80f7..04766448a545 100644
+--- a/drivers/net/ethernet/sfc/falcon/ethtool.c
++++ b/drivers/net/ethernet/sfc/falcon/ethtool.c
+@@ -353,7 +353,7 @@ static int ef4_ethtool_fill_self_tests(struct ef4_nic *efx,
+ 	return n;
+ }
+ 
+-static size_t ef4_describe_per_queue_stats(struct ef4_nic *efx, u8 *strings)
++static size_t ef4_describe_per_queue_stats(struct ef4_nic *efx, u8 **strings)
+ {
+ 	size_t n_stats = 0;
+ 	struct ef4_channel *channel;
+@@ -361,24 +361,22 @@ static size_t ef4_describe_per_queue_stats(struct ef4_nic *efx, u8 *strings)
+ 	ef4_for_each_channel(channel, efx) {
+ 		if (ef4_channel_has_tx_queues(channel)) {
+ 			n_stats++;
+-			if (strings != NULL) {
+-				snprintf(strings, ETH_GSTRING_LEN,
+-					 "tx-%u.tx_packets",
+-					 channel->tx_queue[0].queue /
+-					 EF4_TXQ_TYPES);
++			if (!strings)
++				continue;
+ 
+-				strings += ETH_GSTRING_LEN;
+-			}
++			ethtool_sprintf(strings, "tx-%u.tx_packets",
++					channel->tx_queue[0].queue /
++						EF4_TXQ_TYPES);
+ 		}
+ 	}
+ 	ef4_for_each_channel(channel, efx) {
+ 		if (ef4_channel_has_rx_queue(channel)) {
+ 			n_stats++;
+-			if (strings != NULL) {
+-				snprintf(strings, ETH_GSTRING_LEN,
+-					 "rx-%d.rx_packets", channel->channel);
+-				strings += ETH_GSTRING_LEN;
+-			}
++			if (!strings)
++				continue;
++
++			ethtool_sprintf(strings, "rx-%d.rx_packets",
++					channel->channel);
+ 		}
+ 	}
+ 	return n_stats;
+@@ -409,14 +407,10 @@ static void ef4_ethtool_get_strings(struct net_device *net_dev,
+ 
+ 	switch (string_set) {
+ 	case ETH_SS_STATS:
+-		strings += (efx->type->describe_stats(efx, strings) *
+-			    ETH_GSTRING_LEN);
++		efx->type->describe_stats(efx, &strings);
+ 		for (i = 0; i < EF4_ETHTOOL_SW_STAT_COUNT; i++)
+-			strscpy(strings + i * ETH_GSTRING_LEN,
+-				ef4_sw_stat_desc[i].name, ETH_GSTRING_LEN);
+-		strings += EF4_ETHTOOL_SW_STAT_COUNT * ETH_GSTRING_LEN;
+-		strings += (ef4_describe_per_queue_stats(efx, strings) *
+-			    ETH_GSTRING_LEN);
++			ethtool_puts(&strings, ef4_sw_stat_desc[i].name);
++		ef4_describe_per_queue_stats(efx, &strings);
+ 		break;
+ 	case ETH_SS_TEST:
+ 		ef4_ethtool_fill_self_tests(efx, NULL, strings, NULL);
+diff --git a/drivers/net/ethernet/sfc/falcon/falcon.c b/drivers/net/ethernet/sfc/falcon/falcon.c
+index 36114ce88034..4af56333ea49 100644
+--- a/drivers/net/ethernet/sfc/falcon/falcon.c
++++ b/drivers/net/ethernet/sfc/falcon/falcon.c
+@@ -2564,7 +2564,7 @@ static void falcon_remove_nic(struct ef4_nic *efx)
+ 	efx->nic_data = NULL;
+ }
+ 
+-static size_t falcon_describe_nic_stats(struct ef4_nic *efx, u8 *names)
++static size_t falcon_describe_nic_stats(struct ef4_nic *efx, u8 **names)
+ {
+ 	return ef4_nic_describe_stats(falcon_stat_desc, FALCON_STAT_COUNT,
+ 				      falcon_stat_mask, names);
+diff --git a/drivers/net/ethernet/sfc/falcon/net_driver.h b/drivers/net/ethernet/sfc/falcon/net_driver.h
+index a2c7139f2b32..7ab0db44720d 100644
+--- a/drivers/net/ethernet/sfc/falcon/net_driver.h
++++ b/drivers/net/ethernet/sfc/falcon/net_driver.h
+@@ -1057,7 +1057,7 @@ struct ef4_nic_type {
+ 	void (*finish_flush)(struct ef4_nic *efx);
+ 	void (*prepare_flr)(struct ef4_nic *efx);
+ 	void (*finish_flr)(struct ef4_nic *efx);
+-	size_t (*describe_stats)(struct ef4_nic *efx, u8 *names);
++	size_t (*describe_stats)(struct ef4_nic *efx, u8 **names);
+ 	size_t (*update_stats)(struct ef4_nic *efx, u64 *full_stats,
+ 			       struct rtnl_link_stats64 *core_stats);
+ 	void (*start_stats)(struct ef4_nic *efx);
+diff --git a/drivers/net/ethernet/sfc/falcon/nic.c b/drivers/net/ethernet/sfc/falcon/nic.c
+index 78c851b5a56f..f7acd81c6b6c 100644
+--- a/drivers/net/ethernet/sfc/falcon/nic.c
++++ b/drivers/net/ethernet/sfc/falcon/nic.c
+@@ -444,18 +444,15 @@ void ef4_nic_get_regs(struct ef4_nic *efx, void *buf)
+  * bits in the first @count bits of @mask for which a name is defined.
+  */
+ size_t ef4_nic_describe_stats(const struct ef4_hw_stat_desc *desc, size_t count,
+-			      const unsigned long *mask, u8 *names)
++			      const unsigned long *mask, u8 **names)
+ {
+ 	size_t visible = 0;
+ 	size_t index;
+ 
+ 	for_each_set_bit(index, mask, count) {
+ 		if (desc[index].name) {
+-			if (names) {
+-				strscpy(names, desc[index].name,
+-					ETH_GSTRING_LEN);
+-				names += ETH_GSTRING_LEN;
+-			}
++			if (names)
++				ethtool_puts(names, desc[index].name);
+ 			++visible;
+ 		}
+ 	}
+diff --git a/drivers/net/ethernet/sfc/falcon/nic.h b/drivers/net/ethernet/sfc/falcon/nic.h
+index ada6e036fd97..1ce9406896bf 100644
+--- a/drivers/net/ethernet/sfc/falcon/nic.h
++++ b/drivers/net/ethernet/sfc/falcon/nic.h
+@@ -498,7 +498,7 @@ size_t ef4_nic_get_regs_len(struct ef4_nic *efx);
+ void ef4_nic_get_regs(struct ef4_nic *efx, void *buf);
+ 
+ size_t ef4_nic_describe_stats(const struct ef4_hw_stat_desc *desc, size_t count,
+-			      const unsigned long *mask, u8 *names);
++			      const unsigned long *mask, u8 **names);
+ void ef4_nic_update_stats(const struct ef4_hw_stat_desc *desc, size_t count,
+ 			  const unsigned long *mask, u64 *stats,
+ 			  const void *dma_buf, bool accumulate);
+diff --git a/drivers/net/ethernet/sfc/net_driver.h b/drivers/net/ethernet/sfc/net_driver.h
+index b54662d32f55..620ba6ef3514 100644
+--- a/drivers/net/ethernet/sfc/net_driver.h
++++ b/drivers/net/ethernet/sfc/net_driver.h
+@@ -1408,7 +1408,7 @@ struct efx_nic_type {
+ 	int (*fini_dmaq)(struct efx_nic *efx);
+ 	void (*prepare_flr)(struct efx_nic *efx);
+ 	void (*finish_flr)(struct efx_nic *efx);
+-	size_t (*describe_stats)(struct efx_nic *efx, u8 *names);
++	size_t (*describe_stats)(struct efx_nic *efx, u8 **names);
+ 	size_t (*update_stats)(struct efx_nic *efx, u64 *full_stats,
+ 			       struct rtnl_link_stats64 *core_stats);
+ 	size_t (*update_stats_atomic)(struct efx_nic *efx, u64 *full_stats,
+diff --git a/drivers/net/ethernet/sfc/nic.c b/drivers/net/ethernet/sfc/nic.c
+index a33ed473cc8a..80aa5e9c732a 100644
+--- a/drivers/net/ethernet/sfc/nic.c
++++ b/drivers/net/ethernet/sfc/nic.c
+@@ -299,18 +299,15 @@ void efx_nic_get_regs(struct efx_nic *efx, void *buf)
+  * bits in the first @count bits of @mask for which a name is defined.
+  */
+ size_t efx_nic_describe_stats(const struct efx_hw_stat_desc *desc, size_t count,
+-			      const unsigned long *mask, u8 *names)
++			      const unsigned long *mask, u8 **names)
+ {
+ 	size_t visible = 0;
+ 	size_t index;
+ 
+ 	for_each_set_bit(index, mask, count) {
+ 		if (desc[index].name) {
+-			if (names) {
+-				strscpy(names, desc[index].name,
+-					ETH_GSTRING_LEN);
+-				names += ETH_GSTRING_LEN;
+-			}
++			if (names)
++				ethtool_puts(names, desc[index].name);
+ 			++visible;
+ 		}
+ 	}
+diff --git a/drivers/net/ethernet/sfc/nic_common.h b/drivers/net/ethernet/sfc/nic_common.h
+index 7ec4ac7b7ff5..821d91efda19 100644
+--- a/drivers/net/ethernet/sfc/nic_common.h
++++ b/drivers/net/ethernet/sfc/nic_common.h
+@@ -241,7 +241,7 @@ void efx_nic_get_regs(struct efx_nic *efx, void *buf);
+ #define EFX_MC_STATS_GENERATION_INVALID ((__force __le64)(-1))
+ 
+ size_t efx_nic_describe_stats(const struct efx_hw_stat_desc *desc, size_t count,
+-			      const unsigned long *mask, u8 *names);
++			      const unsigned long *mask, u8 **names);
+ int efx_nic_copy_stats(struct efx_nic *efx, __le64 *dest);
+ void efx_nic_update_stats(const struct efx_hw_stat_desc *desc, size_t count,
+ 			  const unsigned long *mask, u64 *stats,
+diff --git a/drivers/net/ethernet/sfc/ptp.c b/drivers/net/ethernet/sfc/ptp.c
+index aaacdcfa54ae..5be42e61c40c 100644
+--- a/drivers/net/ethernet/sfc/ptp.c
++++ b/drivers/net/ethernet/sfc/ptp.c
+@@ -399,7 +399,7 @@ static const unsigned long efx_ptp_stat_mask[] = {
+ 	[0 ... BITS_TO_LONGS(PTP_STAT_COUNT) - 1] = ~0UL,
+ };
+ 
+-size_t efx_ptp_describe_stats(struct efx_nic *efx, u8 *strings)
++size_t efx_ptp_describe_stats(struct efx_nic *efx, u8 **strings)
+ {
+ 	if (!efx->ptp_data)
+ 		return 0;
+diff --git a/drivers/net/ethernet/sfc/ptp.h b/drivers/net/ethernet/sfc/ptp.h
+index 6946203499ef..2b52a4b5cc8f 100644
+--- a/drivers/net/ethernet/sfc/ptp.h
++++ b/drivers/net/ethernet/sfc/ptp.h
+@@ -31,7 +31,7 @@ int efx_ptp_change_mode(struct efx_nic *efx, bool enable_wanted,
+ 			unsigned int new_mode);
+ int efx_ptp_tx(struct efx_nic *efx, struct sk_buff *skb);
+ void efx_ptp_event(struct efx_nic *efx, efx_qword_t *ev);
+-size_t efx_ptp_describe_stats(struct efx_nic *efx, u8 *strings);
++size_t efx_ptp_describe_stats(struct efx_nic *efx, u8 **strings);
+ size_t efx_ptp_update_stats(struct efx_nic *efx, u64 *stats);
+ void efx_time_sync_event(struct efx_channel *channel, efx_qword_t *ev);
+ void __efx_rx_skb_attach_timestamp(struct efx_channel *channel,
+diff --git a/drivers/net/ethernet/sfc/siena/ethtool_common.c b/drivers/net/ethernet/sfc/siena/ethtool_common.c
+index 075fef64de68..eeee676fdca7 100644
+--- a/drivers/net/ethernet/sfc/siena/ethtool_common.c
++++ b/drivers/net/ethernet/sfc/siena/ethtool_common.c
+@@ -395,7 +395,7 @@ void efx_siena_ethtool_self_test(struct net_device *net_dev,
+ 		test->flags |= ETH_TEST_FL_FAILED;
+ }
+ 
+-static size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 *strings)
++static size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 **strings)
+ {
+ 	size_t n_stats = 0;
+ 	struct efx_channel *channel;
+@@ -403,24 +403,22 @@ static size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 *strings)
+ 	efx_for_each_channel(channel, efx) {
+ 		if (efx_channel_has_tx_queues(channel)) {
+ 			n_stats++;
+-			if (strings != NULL) {
+-				snprintf(strings, ETH_GSTRING_LEN,
+-					 "tx-%u.tx_packets",
+-					 channel->tx_queue[0].queue /
+-					 EFX_MAX_TXQ_PER_CHANNEL);
++			if (!strings)
++				continue;
+ 
+-				strings += ETH_GSTRING_LEN;
+-			}
++			ethtool_sprintf(strings, "tx-%u.tx_packets",
++					channel->tx_queue[0].queue /
++						EFX_MAX_TXQ_PER_CHANNEL);
+ 		}
+ 	}
+ 	efx_for_each_channel(channel, efx) {
+ 		if (efx_channel_has_rx_queue(channel)) {
+ 			n_stats++;
+-			if (strings != NULL) {
+-				snprintf(strings, ETH_GSTRING_LEN,
+-					 "rx-%d.rx_packets", channel->channel);
+-				strings += ETH_GSTRING_LEN;
+-			}
++			if (!strings)
++				continue;
++
++			ethtool_sprintf(strings, "rx-%d.rx_packets",
++					channel->channel);
+ 		}
+ 	}
+ 	if (efx->xdp_tx_queue_count && efx->xdp_tx_queues) {
+@@ -428,11 +426,11 @@ static size_t efx_describe_per_queue_stats(struct efx_nic *efx, u8 *strings)
+ 
+ 		for (xdp = 0; xdp < efx->xdp_tx_queue_count; xdp++) {
+ 			n_stats++;
+-			if (strings) {
+-				snprintf(strings, ETH_GSTRING_LEN,
+-					 "tx-xdp-cpu-%hu.tx_packets", xdp);
+-				strings += ETH_GSTRING_LEN;
+-			}
++			if (!strings)
++				continue;
++
++			ethtool_sprintf(strings, "tx-xdp-cpu-%hu.tx_packets",
++					xdp);
+ 		}
+ 	}
+ 
+@@ -464,15 +462,11 @@ void efx_siena_ethtool_get_strings(struct net_device *net_dev,
+ 
+ 	switch (string_set) {
+ 	case ETH_SS_STATS:
+-		strings += (efx->type->describe_stats(efx, strings) *
+-			    ETH_GSTRING_LEN);
++		efx->type->describe_stats(efx, &strings);
+ 		for (i = 0; i < EFX_ETHTOOL_SW_STAT_COUNT; i++)
+-			strscpy(strings + i * ETH_GSTRING_LEN,
+-				efx_sw_stat_desc[i].name, ETH_GSTRING_LEN);
+-		strings += EFX_ETHTOOL_SW_STAT_COUNT * ETH_GSTRING_LEN;
+-		strings += (efx_describe_per_queue_stats(efx, strings) *
+-			    ETH_GSTRING_LEN);
+-		efx_siena_ptp_describe_stats(efx, strings);
++			ethtool_puts(&strings, efx_sw_stat_desc[i].name);
++		efx_describe_per_queue_stats(efx, &strings);
++		efx_siena_ptp_describe_stats(efx, &strings);
+ 		break;
+ 	case ETH_SS_TEST:
+ 		efx_ethtool_fill_self_tests(efx, NULL, strings, NULL);
+diff --git a/drivers/net/ethernet/sfc/siena/net_driver.h b/drivers/net/ethernet/sfc/siena/net_driver.h
+index 3fa7c652ae9b..9785eff10607 100644
+--- a/drivers/net/ethernet/sfc/siena/net_driver.h
++++ b/drivers/net/ethernet/sfc/siena/net_driver.h
+@@ -1307,7 +1307,7 @@ struct efx_nic_type {
+ 	void (*finish_flush)(struct efx_nic *efx);
+ 	void (*prepare_flr)(struct efx_nic *efx);
+ 	void (*finish_flr)(struct efx_nic *efx);
+-	size_t (*describe_stats)(struct efx_nic *efx, u8 *names);
++	size_t (*describe_stats)(struct efx_nic *efx, u8 **names);
+ 	size_t (*update_stats)(struct efx_nic *efx, u64 *full_stats,
+ 			       struct rtnl_link_stats64 *core_stats);
+ 	size_t (*update_stats_atomic)(struct efx_nic *efx, u64 *full_stats,
+diff --git a/drivers/net/ethernet/sfc/siena/nic.c b/drivers/net/ethernet/sfc/siena/nic.c
+index 0ea0433a6230..32fce70085e3 100644
+--- a/drivers/net/ethernet/sfc/siena/nic.c
++++ b/drivers/net/ethernet/sfc/siena/nic.c
+@@ -449,20 +449,20 @@ void efx_siena_get_regs(struct efx_nic *efx, void *buf)
+  * Returns the number of visible statistics, i.e. the number of set
+  * bits in the first @count bits of @mask for which a name is defined.
+  */
+-size_t efx_siena_describe_stats(const struct efx_hw_stat_desc *desc, size_t count,
+-				const unsigned long *mask, u8 *names)
++size_t efx_siena_describe_stats(const struct efx_hw_stat_desc *desc,
++				size_t count, const unsigned long *mask,
++				u8 **names)
+ {
+ 	size_t visible = 0;
+ 	size_t index;
+ 
+ 	for_each_set_bit(index, mask, count) {
+ 		if (desc[index].name) {
+-			if (names) {
+-				strscpy(names, desc[index].name,
+-					ETH_GSTRING_LEN);
+-				names += ETH_GSTRING_LEN;
+-			}
+ 			++visible;
++			if (!names)
++				continue;
++
++			ethtool_puts(names, desc[index].name);
+ 		}
+ 	}
+ 
+diff --git a/drivers/net/ethernet/sfc/siena/nic_common.h b/drivers/net/ethernet/sfc/siena/nic_common.h
+index 3af0405eeaa4..b7fbe198008d 100644
+--- a/drivers/net/ethernet/sfc/siena/nic_common.h
++++ b/drivers/net/ethernet/sfc/siena/nic_common.h
+@@ -239,8 +239,9 @@ void efx_siena_get_regs(struct efx_nic *efx, void *buf);
+ 
+ #define EFX_MC_STATS_GENERATION_INVALID ((__force __le64)(-1))
+ 
+-size_t efx_siena_describe_stats(const struct efx_hw_stat_desc *desc, size_t count,
+-				const unsigned long *mask, u8 *names);
++size_t efx_siena_describe_stats(const struct efx_hw_stat_desc *desc,
++				size_t count, const unsigned long *mask,
++				u8 **names);
+ void efx_siena_update_stats(const struct efx_hw_stat_desc *desc, size_t count,
+ 			    const unsigned long *mask, u64 *stats,
+ 			    const void *dma_buf, bool accumulate);
+diff --git a/drivers/net/ethernet/sfc/siena/ptp.c b/drivers/net/ethernet/sfc/siena/ptp.c
+index 85005196b4c5..062c77c92077 100644
+--- a/drivers/net/ethernet/sfc/siena/ptp.c
++++ b/drivers/net/ethernet/sfc/siena/ptp.c
+@@ -393,7 +393,7 @@ static const unsigned long efx_ptp_stat_mask[] = {
+ 	[0 ... BITS_TO_LONGS(PTP_STAT_COUNT) - 1] = ~0UL,
+ };
+ 
+-size_t efx_siena_ptp_describe_stats(struct efx_nic *efx, u8 *strings)
++size_t efx_siena_ptp_describe_stats(struct efx_nic *efx, u8 **strings)
+ {
+ 	if (!efx->ptp_data)
+ 		return 0;
+diff --git a/drivers/net/ethernet/sfc/siena/ptp.h b/drivers/net/ethernet/sfc/siena/ptp.h
+index b6133e7c5608..54840036ab67 100644
+--- a/drivers/net/ethernet/sfc/siena/ptp.h
++++ b/drivers/net/ethernet/sfc/siena/ptp.h
+@@ -28,7 +28,7 @@ int efx_siena_ptp_change_mode(struct efx_nic *efx, bool enable_wanted,
+ 			      unsigned int new_mode);
+ int efx_siena_ptp_tx(struct efx_nic *efx, struct sk_buff *skb);
+ void efx_siena_ptp_event(struct efx_nic *efx, efx_qword_t *ev);
+-size_t efx_siena_ptp_describe_stats(struct efx_nic *efx, u8 *strings);
++size_t efx_siena_ptp_describe_stats(struct efx_nic *efx, u8 **strings);
+ size_t efx_siena_ptp_update_stats(struct efx_nic *efx, u64 *stats);
+ void efx_siena_time_sync_event(struct efx_channel *channel, efx_qword_t *ev);
+ void __efx_siena_rx_skb_attach_timestamp(struct efx_channel *channel,
+diff --git a/drivers/net/ethernet/sfc/siena/siena.c b/drivers/net/ethernet/sfc/siena/siena.c
+index ca33dc08e555..49f0c8a1a90a 100644
+--- a/drivers/net/ethernet/sfc/siena/siena.c
++++ b/drivers/net/ethernet/sfc/siena/siena.c
+@@ -545,7 +545,7 @@ static const unsigned long siena_stat_mask[] = {
+ 	[0 ... BITS_TO_LONGS(SIENA_STAT_COUNT) - 1] = ~0UL,
+ };
+ 
+-static size_t siena_describe_nic_stats(struct efx_nic *efx, u8 *names)
++static size_t siena_describe_nic_stats(struct efx_nic *efx, u8 **names)
+ {
+ 	return efx_siena_describe_stats(siena_stat_desc, SIENA_STAT_COUNT,
+ 					siena_stat_mask, names);
+-- 
+2.47.0
+
 
