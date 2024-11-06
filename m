@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-44096-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44097-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DC6E9BDC5B
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 03:20:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32E2F9BDC82
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 03:24:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88BB51F24BCC
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 02:20:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93326B20DCB
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 02:24:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336101DED73;
-	Wed,  6 Nov 2024 02:11:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48B01E1336;
+	Wed,  6 Nov 2024 02:12:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mnQzFHN2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n6cKe6cQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB2C71DED62;
-	Wed,  6 Nov 2024 02:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223B31D0DE7;
+	Wed,  6 Nov 2024 02:12:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730859112; cv=none; b=e7ma22zUR3mJ2gFdbahFBdVYOlXLB+zrbY699f+1l4S2im7MgZIlBKVYf84EicqsXWTQ0IOT8H6+YRpuPoT5Zu7BlW3s29k3wxHLs5EQ/Ne1LDDcuFt5uRkws7WTb7NV6T64ij6ZIiVu968yPzqVvkllM2YcRtFxBUR/zg7NBaw=
+	t=1730859164; cv=none; b=BCOBIEyoNwdhDBnxUTLhHwbvVMbB4CjGtUDmL79V39SWRKHpFKXCQQxWpOWUXwsqtrt6zKjKNwaPat0b0SZhCnw3tbNhLUuhycuTW2LS7pVq2rESjAD4Mn5thwGxdrWbJEXtTjd1f7/vb46PdovS/Goqlo2/1xlxrxaIDt7IdLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730859112; c=relaxed/simple;
-	bh=ti/DGWP5LfaDz6PiL4R1L6tKhTIaXEnWg44CnOfKWho=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kM2CPMjIZTkxQ+niPTo1g59LTfp5a1U1oqipfxVWLmp5LrD613wADQ/SwQcpbs3lKXLXHLx7g5ydW2aKh0gg8v+dFmj7WxlKeE9FLNAlbuDj5w/TGP431PDXdcamOaHeKB5T0U2q0tNrqAJHlzlCHjptos3K3YxjKa4p0qIveNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mnQzFHN2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59033C4CECF;
-	Wed,  6 Nov 2024 02:11:51 +0000 (UTC)
+	s=arc-20240116; t=1730859164; c=relaxed/simple;
+	bh=uY4B/lhBHquC2Bc4TG99eq7PXATDXRybtgg0opySmJU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IR36wjlKx2/ek2R7lf4CIez/D/wfwrGc+jJEoT63On4p/Z+sluZNM1pI2BYB7F/QrK6QAeRn/+3HkMuFy3g0DXcXClWL87XBLz1XpZ3/INMwedIKl4VKGi+EtyhIVZ+5/1DXrp4Ea2WZOxMCKd7MUTLXoFxrg4UA11WiryufT7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n6cKe6cQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B905C4CECF;
+	Wed,  6 Nov 2024 02:12:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730859112;
-	bh=ti/DGWP5LfaDz6PiL4R1L6tKhTIaXEnWg44CnOfKWho=;
+	s=k20201202; t=1730859164;
+	bh=uY4B/lhBHquC2Bc4TG99eq7PXATDXRybtgg0opySmJU=;
 	h=From:To:Cc:Subject:Date:From;
-	b=mnQzFHN2AlsXGpFsmnDDA5LQKxc3tEmxVj1gkZYlVG+h7K9bBwbODMTuByWRQCDCI
-	 HR8dUrrOv9ikznzatrMWLambpk1n5QTsxCHSd1Vdjtsy5qSyDFPPJ70fmyuLtpE5e+
-	 koaEHm7QPBYLrtX14UCkhx9fjYKTifUkvQGPKiybk/X9c6MD3idE36MPDYoyMMNuxz
-	 Ktm8NmhQWMCxgtMiW1TZRM9/TJBlXi8LpjJvw1R2CoegaCWeIki8rjbyP86r08qm0j
-	 vQ+xmuW7meRiNteGUARxHQ4UyX/vG7V4SEXZeem+s21s0tOe5A5IwG32bFRjQklKDi
-	 gz366Dk4ejhsA==
+	b=n6cKe6cQv4vBc8V2gQ4CfSFb78xTRzFzbA4Iqc3yFdvc+wrgQYYfb02R3titXX2j2
+	 7fVyeoABIg+fVje3ObKIYSQ7y3RfvIBVPTbsIK/ZDK8tuhVapwNS46he5hFEu9pVhb
+	 xckqzZPCyzRkOfjpT0vUB1QXkdmjK4roOEwrVyKqcdBbne1ktSQZLJYDFsJmCPRFKl
+	 QtyklePe/R/rs45GRAu6MBKI7XY+bYEZnpoxlrjP63eoQMLRKXL81EiNT8/HmJU9JT
+	 druU5xSslD2RL3mkI5PsHFxaP8MGrjzNlmvvne2NpGcM4AcK6xbWMHF4hKsXJ1/41I
+	 yi5HcPsMGzAGg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
 	chenridong@huawei.com
@@ -47,9 +47,9 @@ Cc: Vishal Chourasia <vishalc@linux.ibm.com>,
 	Tejun Heo <tj@kernel.org>,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "cgroup/bpf: use a dedicated workqueue for cgroup bpf destruction" failed to apply to v5.15-stable tree
-Date: Tue,  5 Nov 2024 21:11:49 -0500
-Message-ID: <20241106021149.182497-1-sashal@kernel.org>
+Subject: FAILED: Patch "cgroup/bpf: use a dedicated workqueue for cgroup bpf destruction" failed to apply to v5.10-stable tree
+Date: Tue,  5 Nov 2024 21:12:41 -0500
+Message-ID: <20241106021241.183092-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -61,7 +61,7 @@ X-Patchwork-Hint: ignore
 X-stable: review
 Content-Transfer-Encoding: 8bit
 
-The patch below does not apply to the v5.15-stable tree.
+The patch below does not apply to the v5.10-stable tree.
 If someone wants it applied there, or to any other stable or longterm
 tree, then please email the backport, including the original git commit
 id to <stable@vger.kernel.org>.
