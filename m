@@ -1,108 +1,93 @@
-Return-Path: <bpf+bounces-44115-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44116-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF4639BE145
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 09:45:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A17949BE213
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 10:13:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0E041C232B8
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 08:45:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FF90B233BD
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 09:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 757E51D5151;
-	Wed,  6 Nov 2024 08:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="erDPJFAc";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="KiEKYLr8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2411D95A9;
+	Wed,  6 Nov 2024 09:12:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A08DD1CC898
-	for <bpf@vger.kernel.org>; Wed,  6 Nov 2024 08:45:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF6C91D8A04;
+	Wed,  6 Nov 2024 09:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730882733; cv=none; b=DUAy4wu4VfGmPP/9oPx8FqNNJR5Wzn8YhuCbVrJdPBjvTMSTPwMvd/t0Ka+j8kfGcov2CTg7kAkFcTR8KrIcT8UApV5i9aQl14GaNV/LKq/wlWIwOJ2PPW8TgjTpiYgcykN373j51HD0h2735PLO3yVmUFEkiIHdaEkzWzL2giY=
+	t=1730884364; cv=none; b=Lq5IntFa7H0hnCY6oIMQs9TmWUfMigJFJY+kzRTJ3CP4kbGfxXbnbtb+hFyhObVWBxVCG2ZAUVCXYJKVOG52PPQSzGUCHdvlv7/IVbFlfvVasBqHN5zKpfVgQdpW6uKw02FPmh7y/gIAR+l4PlGQGfFDvCApivn4vxo4b+kpC+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730882733; c=relaxed/simple;
-	bh=LtdWU7l8cx3IqN+1uikb8AXINpF84dTmRScL4YkSfHs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J8Yn6vbO46/f0jnqKAPUx+KqcsIjMJ0lld0EGHZd/7QOStFRNAwsIT+Iq3mVc1d2yRmyx2sGMdu7LAap7LNpspjdLzVCEs9rAqij7opqJg0214yJrg8M0EN/niMTNNxZSbCcW5kmxVNnKKAEwbN1ujwPraGJ1QvI2W9zc050RMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=erDPJFAc; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=KiEKYLr8; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 6 Nov 2024 09:45:27 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1730882729;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qvxcUBPyxv+wd8R7BnIoELGy+csXSGkUY0FS0ldNshY=;
-	b=erDPJFAcy2nIa56vmhq4lt9mdTwCc/AIZvx7sD1R3Dd9WX9OSoo8PDTOYObI4kC4/abspw
-	IfDxi8/29ZqK2nMAPg1WegNo/ccfxaJFAVkfBPM6TMg/quvucZB//w0emH3nGiMT/isFUk
-	bLax+/oTL72hXHs7p7lkwW2wyq92IuplZneZJpOFk40y1Ijz7MqutBV+nQTuGP5tPCTTV3
-	i0xZnQ4O+58QW+XdhgcSDVkwds9BHCxrR60IGkBSmxmrF4EtaZXA6ph0y4X0XQy8Jlsq0R
-	P7oqE6tIq3nPBjXuiiUY/QZsiD/54JxlCOHXjYwVOn/dxm7sjboEyY132liQcg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1730882729;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qvxcUBPyxv+wd8R7BnIoELGy+csXSGkUY0FS0ldNshY=;
-	b=KiEKYLr8ra5SmjgAmlv39GgowJjIls90tLCHH4iUnd3rXL2KLT1P+/oZYtwe6lh9OmOHx4
-	gv7tkuNKe+c9x/Ag==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: Re: [PATCH bpf-next 0/3] Fix lockdep warning for htab of map
-Message-ID: <20241106084527.4gPrMnHt@linutronix.de>
-References: <20241106063542.357743-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1730884364; c=relaxed/simple;
+	bh=6YtzTxo27BLuqqybhSbmOu/ytxHDEfIPXSd/2vFzzVc=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=JCI0Pqwn27tjouCGBNvtiz8zhizGBLWcEHDxNF0q8gdZBonXudVWy4CR3bgcZVvU1nPpfKeE7ISrBHaCjoWMeAfKDyayYN6aaRu8/y/tGW/uO/tOIhSNo0Yzaw+lUHt25L1aBfFQr94Y8pqFJCNnBFaO9srozMptUUoJttXwDJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Xjzvb0s1Zz10V78;
+	Wed,  6 Nov 2024 17:10:51 +0800 (CST)
+Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
+	by mail.maildlp.com (Postfix) with ESMTPS id B723418010F;
+	Wed,  6 Nov 2024 17:12:37 +0800 (CST)
+Received: from [10.67.110.108] (10.67.110.108) by
+ kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Wed, 6 Nov 2024 17:12:37 +0800
+Message-ID: <8bcc6d5b-08d6-48a8-99d2-d8bb2bef2d6c@huawei.com>
+Date: Wed, 6 Nov 2024 17:12:36 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20241106063542.357743-1-houtao@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] uprobes: Improve the usage of xol slots for better
+ scalability
+From: "Liao, Chang" <liaochang1@huawei.com>
+To: <andrii@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>, Mark Rutland
+	<mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Oleg Nesterov
+	<oleg@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>
+References: <20240927094549.3382916-1-liaochang1@huawei.com>
+In-Reply-To: <20240927094549.3382916-1-liaochang1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemd200013.china.huawei.com (7.221.188.133)
 
-On 2024-11-06 14:35:39 [+0800], Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
+
+
+在 2024/9/27 17:45, Liao Chang 写道:
+>>  2 files changed, 139 insertions(+), 42 deletions(-)
+>>
+> Liao,
 > 
-> Hi,
-Hi Hou,
+> Assuming your ARM64 improvements go through, would you still need
+> these changes? XOL case is a slow case and if possible should be
+> avoided at all costs. If all common cases for ARM64 are covered
+> through instruction emulation, would we need to add all this
+> complexity to optimize slow case?
 
-> The patch set fixes a lockdep warning for htab of map. The
-> warning is found when running test_maps. The warning occurs when
-> htab_put_fd_value() attempts to acquire map_idr_lock to free the map id
-> of the inner map while already holding the bucket lock (raw_spinlock_t).
-> 
-> The fix moves the invocation of free_htab_elem() after
-> htab_unlock_bucket() and adds a test case to verify the solution. Please
-> see the individual patches for details. Comments are always welcome.
+Andrii,
 
-Thank you.
+I've studied the optimizations merged over the past month, it seems
+that part of the problem addressed in this patch has been resolved
+by Oleg(uprobes: kill xol_area->slot_count). And I hope you've received
+the email with the re-run results for -push using simulated STP on
+the latest kernel (tag next-20241104). It show significant improvements,
+althought there's still room to match the throughput of -nop and -ret.
+So based on these results, I would prioritize the STP simulation patch.
 
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+-- 
+BR
+Liao, Chang
 
-I've seen that you didn't move check_and_free_fields() out of the bucket
-locked section. Type BPF_TIMER does hrtimer_cancel() if the timer
-happens to run on a remote CPU. On PREEMPT_RT this will acquire a
-sleeping lock which is problematic due to the raw_spinlock_t.
-Would it be okay, to cleanup the timer unconditionally via the
-workqueue?
-
-Sebastian
 
