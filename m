@@ -1,55 +1,58 @@
-Return-Path: <bpf+bounces-44097-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44098-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32E2F9BDC82
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 03:24:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82F1D9BDC84
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 03:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93326B20DCB
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 02:24:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FFAC283BED
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 02:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48B01E1336;
-	Wed,  6 Nov 2024 02:12:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D701E25F8;
+	Wed,  6 Nov 2024 02:12:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n6cKe6cQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cRIuiFbD"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223B31D0DE7;
-	Wed,  6 Nov 2024 02:12:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B6DF1D0F56;
+	Wed,  6 Nov 2024 02:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730859164; cv=none; b=BCOBIEyoNwdhDBnxUTLhHwbvVMbB4CjGtUDmL79V39SWRKHpFKXCQQxWpOWUXwsqtrt6zKjKNwaPat0b0SZhCnw3tbNhLUuhycuTW2LS7pVq2rESjAD4Mn5thwGxdrWbJEXtTjd1f7/vb46PdovS/Goqlo2/1xlxrxaIDt7IdLs=
+	t=1730859168; cv=none; b=HwqNS0dqfqSNMKvx/PcNnAVnb9/ggsJmqVE7BM5momm3jbIMaWv/+qMKIjR+kL36tunqmA8+l7MFb7wjRgtFuEhOaIbf08d6lwHEA0Qy0cXvojQDdZpyKo3gtUF8H0sXn28v6jYSTyCNLpWi0Eg81sehHQ+DNJnvq/rdFPN/EOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730859164; c=relaxed/simple;
-	bh=uY4B/lhBHquC2Bc4TG99eq7PXATDXRybtgg0opySmJU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IR36wjlKx2/ek2R7lf4CIez/D/wfwrGc+jJEoT63On4p/Z+sluZNM1pI2BYB7F/QrK6QAeRn/+3HkMuFy3g0DXcXClWL87XBLz1XpZ3/INMwedIKl4VKGi+EtyhIVZ+5/1DXrp4Ea2WZOxMCKd7MUTLXoFxrg4UA11WiryufT7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n6cKe6cQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B905C4CECF;
-	Wed,  6 Nov 2024 02:12:42 +0000 (UTC)
+	s=arc-20240116; t=1730859168; c=relaxed/simple;
+	bh=2o1BZqFvRH5tNGMpGOTU38S45OqjdSIjDmHM0nXBnAI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KhwhLnaZMw5y9xdy7UqSEhTWYw7R538BXnHJ093j24hcG3KEW0zFGW5j1avo92PXcu9q7KaSHhwLkr0/UMxYlAj5woRCKKCG4IxYIExkVWgcyhhAocqf3oLMV3BNLojgFU8pyfe2hensp6U1P41Wx8t6cfr3cVyDYaeCXxfR+rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cRIuiFbD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A3C7C4CECF;
+	Wed,  6 Nov 2024 02:12:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730859164;
-	bh=uY4B/lhBHquC2Bc4TG99eq7PXATDXRybtgg0opySmJU=;
+	s=k20201202; t=1730859167;
+	bh=2o1BZqFvRH5tNGMpGOTU38S45OqjdSIjDmHM0nXBnAI=;
 	h=From:To:Cc:Subject:Date:From;
-	b=n6cKe6cQv4vBc8V2gQ4CfSFb78xTRzFzbA4Iqc3yFdvc+wrgQYYfb02R3titXX2j2
-	 7fVyeoABIg+fVje3ObKIYSQ7y3RfvIBVPTbsIK/ZDK8tuhVapwNS46he5hFEu9pVhb
-	 xckqzZPCyzRkOfjpT0vUB1QXkdmjK4roOEwrVyKqcdBbne1ktSQZLJYDFsJmCPRFKl
-	 QtyklePe/R/rs45GRAu6MBKI7XY+bYEZnpoxlrjP63eoQMLRKXL81EiNT8/HmJU9JT
-	 druU5xSslD2RL3mkI5PsHFxaP8MGrjzNlmvvne2NpGcM4AcK6xbWMHF4hKsXJ1/41I
-	 yi5HcPsMGzAGg==
+	b=cRIuiFbDeN2660gQPau2yy94PiSdT+0hkuAli5AZNjZMUqSgxDLBeALvLC2tkc9ds
+	 SpwIZ70NLky+z+dzec9In22gfyUDlEgvQ9vdniadIJ4WdEwqPzcCOkRHrneEVgVVdo
+	 LAhntl9q4KAFqHUdejqlexexdhUXrvSAxYPFzrhgPGeUjrKypLmMQB5Ki09qd1RaKy
+	 cCkuu6q1vmWYRopKfLAxsW+OEWvLBa5nYFrKfpb0V74vBXQbIDBS93cEKETP+RRE1Z
+	 5Bf1brwSXVks1WMW2/+fB1B6WZ5ueATKbbXBmOIEIIKyQLKyo0PBwJRuTbcTNF81Ky
+	 yb8dFQJTjNsdQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	chenridong@huawei.com
-Cc: Vishal Chourasia <vishalc@linux.ibm.com>,
-	Tejun Heo <tj@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "cgroup/bpf: use a dedicated workqueue for cgroup bpf destruction" failed to apply to v5.10-stable tree
-Date: Tue,  5 Nov 2024 21:12:41 -0500
-Message-ID: <20241106021241.183092-1-sashal@kernel.org>
+	mfleming@cloudflare.com
+Cc: Vlastimil Babka <vbabka@suse.cz>,
+	Mel Gorman <mgorman@techsingularity.net>,
+	Michal Hocko <mhocko@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: FAILED: Patch "mm/page_alloc: let GFP_ATOMIC order-0 allocs access highatomic reserves" failed to apply to v5.10-stable tree
+Date: Tue,  5 Nov 2024 21:12:44 -0500
+Message-ID: <20241106021244.183133-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -71,153 +74,86 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 117932eea99b729ee5d12783601a4f7f5fd58a23 Mon Sep 17 00:00:00 2001
-From: Chen Ridong <chenridong@huawei.com>
-Date: Tue, 8 Oct 2024 11:24:56 +0000
-Subject: [PATCH] cgroup/bpf: use a dedicated workqueue for cgroup bpf
- destruction
+From 281dd25c1a018261a04d1b8bf41a0674000bfe38 Mon Sep 17 00:00:00 2001
+From: Matt Fleming <mfleming@cloudflare.com>
+Date: Fri, 11 Oct 2024 13:07:37 +0100
+Subject: [PATCH] mm/page_alloc: let GFP_ATOMIC order-0 allocs access
+ highatomic reserves
 
-A hung_task problem shown below was found:
+Under memory pressure it's possible for GFP_ATOMIC order-0 allocations to
+fail even though free pages are available in the highatomic reserves.
+GFP_ATOMIC allocations cannot trigger unreserve_highatomic_pageblock()
+since it's only run from reclaim.
 
-INFO: task kworker/0:0:8 blocked for more than 327 seconds.
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-Workqueue: events cgroup_bpf_release
-Call Trace:
- <TASK>
- __schedule+0x5a2/0x2050
- ? find_held_lock+0x33/0x100
- ? wq_worker_sleeping+0x9e/0xe0
- schedule+0x9f/0x180
- schedule_preempt_disabled+0x25/0x50
- __mutex_lock+0x512/0x740
- ? cgroup_bpf_release+0x1e/0x4d0
- ? cgroup_bpf_release+0xcf/0x4d0
- ? process_scheduled_works+0x161/0x8a0
- ? cgroup_bpf_release+0x1e/0x4d0
- ? mutex_lock_nested+0x2b/0x40
- ? __pfx_delay_tsc+0x10/0x10
- mutex_lock_nested+0x2b/0x40
- cgroup_bpf_release+0xcf/0x4d0
- ? process_scheduled_works+0x161/0x8a0
- ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
- ? process_scheduled_works+0x161/0x8a0
- process_scheduled_works+0x23a/0x8a0
- worker_thread+0x231/0x5b0
- ? __pfx_worker_thread+0x10/0x10
- kthread+0x14d/0x1c0
- ? __pfx_kthread+0x10/0x10
- ret_from_fork+0x59/0x70
- ? __pfx_kthread+0x10/0x10
- ret_from_fork_asm+0x1b/0x30
- </TASK>
+Given that such allocations will pass the watermarks in
+__zone_watermark_unusable_free(), it makes sense to fallback to highatomic
+reserves the same way that ALLOC_OOM can.
 
-This issue can be reproduced by the following pressuse test:
-1. A large number of cpuset cgroups are deleted.
-2. Set cpu on and off repeatly.
-3. Set watchdog_thresh repeatly.
-The scripts can be obtained at LINK mentioned above the signature.
+This fixes order-0 page allocation failures observed on Cloudflare's fleet
+when handling network packets:
 
-The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
-acquired in different tasks, which may lead to deadlock.
-It can lead to a deadlock through the following steps:
-1. A large number of cpusets are deleted asynchronously, which puts a
-   large number of cgroup_bpf_release works into system_wq. The max_active
-   of system_wq is WQ_DFL_ACTIVE(256). Consequently, all active works are
-   cgroup_bpf_release works, and many cgroup_bpf_release works will be put
-   into inactive queue. As illustrated in the diagram, there are 256 (in
-   the acvtive queue) + n (in the inactive queue) works.
-2. Setting watchdog_thresh will hold cpu_hotplug_lock.read and put
-   smp_call_on_cpu work into system_wq. However step 1 has already filled
-   system_wq, 'sscs.work' is put into inactive queue. 'sscs.work' has
-   to wait until the works that were put into the inacvtive queue earlier
-   have executed (n cgroup_bpf_release), so it will be blocked for a while.
-3. Cpu offline requires cpu_hotplug_lock.write, which is blocked by step 2.
-4. Cpusets that were deleted at step 1 put cgroup_release works into
-   cgroup_destroy_wq. They are competing to get cgroup_mutex all the time.
-   When cgroup_metux is acqured by work at css_killed_work_fn, it will
-   call cpuset_css_offline, which needs to acqure cpu_hotplug_lock.read.
-   However, cpuset_css_offline will be blocked for step 3.
-5. At this moment, there are 256 works in active queue that are
-   cgroup_bpf_release, they are attempting to acquire cgroup_mutex, and as
-   a result, all of them are blocked. Consequently, sscs.work can not be
-   executed. Ultimately, this situation leads to four processes being
-   blocked, forming a deadlock.
+  kswapd1: page allocation failure: order:0, mode:0x820(GFP_ATOMIC),
+  nodemask=(null),cpuset=/,mems_allowed=0-7
+  CPU: 10 PID: 696 Comm: kswapd1 Kdump: loaded Tainted: G           O 6.6.43-CUSTOM #1
+  Hardware name: MACHINE
+  Call Trace:
+   <IRQ>
+   dump_stack_lvl+0x3c/0x50
+   warn_alloc+0x13a/0x1c0
+   __alloc_pages_slowpath.constprop.0+0xc9d/0xd10
+   __alloc_pages+0x327/0x340
+   __napi_alloc_skb+0x16d/0x1f0
+   bnxt_rx_page_skb+0x96/0x1b0 [bnxt_en]
+   bnxt_rx_pkt+0x201/0x15e0 [bnxt_en]
+   __bnxt_poll_work+0x156/0x2b0 [bnxt_en]
+   bnxt_poll+0xd9/0x1c0 [bnxt_en]
+   __napi_poll+0x2b/0x1b0
+   bpf_trampoline_6442524138+0x7d/0x1000
+   __napi_poll+0x5/0x1b0
+   net_rx_action+0x342/0x740
+   handle_softirqs+0xcf/0x2b0
+   irq_exit_rcu+0x6c/0x90
+   sysvec_apic_timer_interrupt+0x72/0x90
+   </IRQ>
 
-system_wq(step1)		WatchDog(step2)			cpu offline(step3)	cgroup_destroy_wq(step4)
-...
-2000+ cgroups deleted asyn
-256 actives + n inactives
-				__lockup_detector_reconfigure
-				P(cpu_hotplug_lock.read)
-				put sscs.work into system_wq
-256 + n + 1(sscs.work)
-sscs.work wait to be executed
-				warting sscs.work finish
-								percpu_down_write
-								P(cpu_hotplug_lock.write)
-								...blocking...
-											css_killed_work_fn
-											P(cgroup_mutex)
-											cpuset_css_offline
-											P(cpu_hotplug_lock.read)
-											...blocking...
-256 cgroup_bpf_release
-mutex_lock(&cgroup_mutex);
-..blocking...
-
-To fix the problem, place cgroup_bpf_release works on a dedicated
-workqueue which can break the loop and solve the problem. System wqs are
-for misc things which shouldn't create a large number of concurrent work
-items. If something is going to generate >WQ_DFL_ACTIVE(256) concurrent
-work items, it should use its own dedicated workqueue.
-
-Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from cgroup itself")
-Cc: stable@vger.kernel.org # v5.3+
-Link: https://lore.kernel.org/cgroups/e90c32d2-2a85-4f28-9154-09c7d320cb60@huawei.com/T/#t
-Tested-by: Vishal Chourasia <vishalc@linux.ibm.com>
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
+[mfleming@cloudflare.com: update comment]
+  Link: https://lkml.kernel.org/r/20241015125158.3597702-1-matt@readmodwrite.com
+Link: https://lkml.kernel.org/r/20241011120737.3300370-1-matt@readmodwrite.com
+Link: https://lore.kernel.org/all/CAGis_TWzSu=P7QJmjD58WWiu3zjMTVKSzdOwWE8ORaGytzWJwQ@mail.gmail.com/
+Fixes: 1d91df85f399 ("mm/page_alloc: handle a missing case for memalloc_nocma_{save/restore} APIs")
+Signed-off-by: Matt Fleming <mfleming@cloudflare.com>
+Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- kernel/bpf/cgroup.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ mm/page_alloc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index e7113d700b878..025d7e2214aeb 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -24,6 +24,23 @@
- DEFINE_STATIC_KEY_ARRAY_FALSE(cgroup_bpf_enabled_key, MAX_CGROUP_BPF_ATTACH_TYPE);
- EXPORT_SYMBOL(cgroup_bpf_enabled_key);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 8afab64814dc4..94a2ffe280089 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2893,12 +2893,12 @@ struct page *rmqueue_buddy(struct zone *preferred_zone, struct zone *zone,
+ 			page = __rmqueue(zone, order, migratetype, alloc_flags);
  
-+/*
-+ * cgroup bpf destruction makes heavy use of work items and there can be a lot
-+ * of concurrent destructions.  Use a separate workqueue so that cgroup bpf
-+ * destruction work items don't end up filling up max_active of system_wq
-+ * which may lead to deadlock.
-+ */
-+static struct workqueue_struct *cgroup_bpf_destroy_wq;
-+
-+static int __init cgroup_bpf_wq_init(void)
-+{
-+	cgroup_bpf_destroy_wq = alloc_workqueue("cgroup_bpf_destroy", 0, 1);
-+	if (!cgroup_bpf_destroy_wq)
-+		panic("Failed to alloc workqueue for cgroup bpf destroy.\n");
-+	return 0;
-+}
-+core_initcall(cgroup_bpf_wq_init);
-+
- /* __always_inline is necessary to prevent indirect call through run_prog
-  * function pointer.
-  */
-@@ -334,7 +351,7 @@ static void cgroup_bpf_release_fn(struct percpu_ref *ref)
- 	struct cgroup *cgrp = container_of(ref, struct cgroup, bpf.refcnt);
+ 			/*
+-			 * If the allocation fails, allow OOM handling access
+-			 * to HIGHATOMIC reserves as failing now is worse than
+-			 * failing a high-order atomic allocation in the
+-			 * future.
++			 * If the allocation fails, allow OOM handling and
++			 * order-0 (atomic) allocs access to HIGHATOMIC
++			 * reserves as failing now is worse than failing a
++			 * high-order atomic allocation in the future.
+ 			 */
+-			if (!page && (alloc_flags & ALLOC_OOM))
++			if (!page && (alloc_flags & (ALLOC_OOM|ALLOC_NON_BLOCK)))
+ 				page = __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC);
  
- 	INIT_WORK(&cgrp->bpf.release_work, cgroup_bpf_release);
--	queue_work(system_wq, &cgrp->bpf.release_work);
-+	queue_work(cgroup_bpf_destroy_wq, &cgrp->bpf.release_work);
- }
- 
- /* Get underlying bpf_prog of bpf_prog_list entry, regardless if it's through
+ 			if (!page) {
 -- 
 2.43.0
 
