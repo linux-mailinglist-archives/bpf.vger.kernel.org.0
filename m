@@ -1,141 +1,150 @@
-Return-Path: <bpf+bounces-44133-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44134-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15E169BF2D0
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 17:09:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 090AB9BF302
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 17:15:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 472211C269DB
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 16:09:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5C001F21EF9
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 16:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A6320605D;
-	Wed,  6 Nov 2024 16:08:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35EBE205130;
+	Wed,  6 Nov 2024 16:15:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=collabora.com header.i=laura.nao@collabora.com header.b="fkPvdCYb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="awcB549r"
 X-Original-To: bpf@vger.kernel.org
-Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C9420513F;
-	Wed,  6 Nov 2024 16:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730909289; cv=pass; b=CzU27zmVOqsXhTgqG8JGoJ4eMMuAc3cA3iVePjyZtTArTfqrSq29VhviUVOXsIRNYuUg8fVKZflfbHOzKDZYUFZmcntZ6kg+r5CBDN7GMBqQ1jfrX9WOEPeXS1+KWAtqnDvErkQfgb0kJdqzcafZc8tQgu3aQny4MquHcy2bnQE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730909289; c=relaxed/simple;
-	bh=e8ncEEuW7cFbLsRNpBTLTILlUQ0m+ULp/aJ3ntDFyTM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TPfSFclVxURAVr604G7LJAyme0y4tW/opYpV2PAeirWj+B3tVsreNIl6T4uU28wAgQjioHyE6jZpF6X50MD7JgbYj6aqNfJfUtXzVcq8beFw0DaHMax41+CYa3ZdFRWsYMGw5jo1pO2hnvHwIGHst25i60qUlA7h0ZinRZJLn+c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=laura.nao@collabora.com header.b=fkPvdCYb; arc=pass smtp.client-ip=136.143.188.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-ARC-Seal: i=1; a=rsa-sha256; t=1730909280; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=EYaNphjKrf1ONSpkisQ1saF8xG7z3ivaqKEAKMptWBeUcRtlQ9mT1sK9JRT3ssrjlSkzhtfVuSprQ/gGY0VzoZ8udlpIqUPnu9lo6SL64EqVRyTWM1Cio3cZp86t8Ub/rtL8AzCalELmLpnOIJnaP4ky2veMcoa5luMx269AL8c=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1730909280; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=ej7PlNROi5y6rJY01LVfYSZ2mQDOu9Gm4uuZ4iC9/7k=; 
-	b=PX9JtJNoFt5/Eol3PKh1/rQ6j5dwhOM/HusW2krj8VUWDxnC0AJ1C6mBZ9GEewrF5MWTtCVojriHCcslUC1K/hPO9HijxxxX+H2VSv+4IjlF54dOF7Zk6Txj5SUqMmWnaiMnzNLbF/1Zc2ETXsF0TW8+ej2qua3tYvJo0Rmk/UE=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=collabora.com;
-	spf=pass  smtp.mailfrom=laura.nao@collabora.com;
-	dmarc=pass header.from=<laura.nao@collabora.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1730909280;
-	s=zohomail; d=collabora.com; i=laura.nao@collabora.com;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:MIME-Version:Content-Transfer-Encoding:Reply-To;
-	bh=ej7PlNROi5y6rJY01LVfYSZ2mQDOu9Gm4uuZ4iC9/7k=;
-	b=fkPvdCYbLBXCOuPAgBTdLokBGQLdjpPaqRWnAJjGlDi5ymo4UKDWfkyO+VpNGLdm
-	bB4P8Lm8i51f38GHTB4pPd1cE3+Pc0uSTJOVvwNsmO33uugS3Zei+5EI/kXq//Gl+aT
-	gw58eG9n7uewHWoF7tmMy0pedislf4Hik5RmfK9c=
-Received: by mx.zohomail.com with SMTPS id 1730909259613680.21413674386;
-	Wed, 6 Nov 2024 08:07:39 -0800 (PST)
-From: Laura Nao <laura.nao@collabora.com>
-To: regressions@lists.linux.dev
-Cc: linux-kernel@vger.kernel.org,
-	kernel@collabora.com,
-	bpf@vger.kernel.org,
-	chrome-platform@lists.linux.dev
-Subject: [REGRESSION] module BTF validation failure (Error -22) on next
-Date: Wed,  6 Nov 2024 17:08:20 +0100
-Message-Id: <20241106160820.259829-1-laura.nao@collabora.com>
-X-Mailer: git-send-email 2.30.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56145202620;
+	Wed,  6 Nov 2024 16:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730909714; cv=none; b=JD7sgadZLkGhw3VQbwpmOPh7T8OT7ncolQ+i8I/nXQ3TgNoRAV32KB37cSJE3ntpHxrt/f5ttL2Vst8oFhnNEgPk6ic0CS+YysGYJKgutdUHFjb8R7xaXv+OXt4gJnt0SBqpt22bXVlQLEkJgEf99jXsYhX92DYAgztO5YOivY0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730909714; c=relaxed/simple;
+	bh=c9tnBYgUOdSrn0I+qBFaOnvVIUWOFf6RdjI3dGuX/ac=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LnDWj2UEAV/63eKoGJIQJWwFCpVFyvh4rHyKHFQwMf1yVjYz7G1au4duG3XDpbkz2rqrwYY2WE5WVLpt+8LCTHLGFPQxj3Vh6GHjYgXsj+J+PQS8qcm3Lde/rmEh2ByjivtbRS9I4KkFLOAtTC+uzgLuVMyfsEgRjk0FK4r1BUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=awcB549r; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-20c6f492d2dso75705005ad.0;
+        Wed, 06 Nov 2024 08:15:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730909713; x=1731514513; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FuM9FPVYlyiO8dA3+OPrpH3HUSy+nPdZ2IbMvNIALEU=;
+        b=awcB549ryZS1EC9M33SPSVgH3jp90nzLbvp+GfC0HWxsZdgYTnCNGYfYDwFo++tJiA
+         yeeJAwTB7z75kP5M+alBhpe88PyH8rRAGQnCkNGVMsbs5c+8aVJ4mmCcy5xRp9uHAa4r
+         Dfm5UVqVr3thgYYWZrEqWbKEvS0lwWoODPxtqf50b65vGUDH+jW3exdseqm/dwA8AYDC
+         G+WzdMpLq04pQ6/5a6tydLO+I2uExdQJ5tbEl7dCmoGkjkFn5+dgZKDUuaN5LQIblOHz
+         TGpvGDfO5+m4Co0zMwqT1zBmV0q1ehFCfkRx9DfMr/h2feQYtS1RmZ4IX9NV88nRyGD2
+         zubw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730909713; x=1731514513;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FuM9FPVYlyiO8dA3+OPrpH3HUSy+nPdZ2IbMvNIALEU=;
+        b=pxEwhnF59ANK+rSO60BykvPhXz7rsQzQ5GD+ZcntXmhBGQSezfMrBI9f1sSZWsdVYW
+         Eb7c4GDWzjEyC+eD6MEvkZynBvoqikvcOUeLXOmFZGr4y+4XOAcofmzwBWQz6Fw3N5G5
+         tps7NN1nj+qOVdzoJ+c8fxoW6GqbZAvAcpuWalSwdoibqcCMv3HvkpTOppB0Y2LU6lFJ
+         Z62gjLvMAvXO+H0bnYAy252vf0fehfHW7kmVooI0bYbg3jKYqXJvts+4pNVknPrRks2n
+         zf2O6ldbkhHGX32tJN8u8Bp7NqGgzEA8TfgcXYz2OvAeNkZICLShwszo7PimEMxCGtMf
+         e5Lg==
+X-Forwarded-Encrypted: i=1; AJvYcCVEo/NcobFYvk9vlmxl1oZ0FzLXtLxZxz4heOdBQG71rORn8I6RxulSQJ6xmIuWMOfsmSE=@vger.kernel.org, AJvYcCVbBDEVFzOJS7EwLUt32EjkMTye5AuQKF+ZqZfJApOuUTsmdRJRsQgk/EtQevhjuSr+RM/FP0+0lb5MOE17JKijIRPD@vger.kernel.org, AJvYcCWMsZcxqHJhFoy4sP+RAky0LFXivuJlKBtqaGMktSR33vZyWR541xjiLt7CxE5+iPluSRrElE+JF51jW3mE@vger.kernel.org, AJvYcCWQ28n9TG7VVMlZ81UpMfSyfh+BGFOQGgpjCUuLC+1xR5DfQbDh+0UYN5WgETskEk3OxcrfiEXp4kwtPg6Rl0ii9g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxoZj4i8XDY6gEccYWJ9E2WWRNiS3YtD6QBY9yIrJpCSp/TY3xT
+	euz2ZS4by3ge6PR/Ebg7+lWOZG8mRxzMVegIj5Krw+XqDSwHG2PUlCIoEsvfZVNZkuTHrzd/DId
+	BD7gdXkDmnMjryKJdleMDz6i42rQ=
+X-Google-Smtp-Source: AGHT+IGE7as/zhJ/0hEXJE5Nd8KS+oVlK6xJ3ACRVLTTH5+NKKQj62K4Tvc4N/owmW8kKUkfFogKU95TIgG/KpD68IE=
+X-Received: by 2002:a17:903:2cd:b0:207:6fd:57d5 with SMTP id
+ d9443c01a7336-2111af38936mr255571785ad.36.1730909712511; Wed, 06 Nov 2024
+ 08:15:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+References: <CAEf4BzarhiBHAQXECJzP5e-z0fbSaTpfQNPaSXwdgErz2f0vUA@mail.gmail.com>
+ <ZyH_fWNeL3XYNEH1@krava> <CAEf4BzZTTuBdCT2Qe=n7gqhf3yENZwHYUdsrQP9WfaEC4C35rw@mail.gmail.com>
+ <20241106104639.GL10375@noisy.programming.kicks-ass.net> <20241106110557.GY33184@noisy.programming.kicks-ass.net>
+In-Reply-To: <20241106110557.GY33184@noisy.programming.kicks-ass.net>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 6 Nov 2024 08:15:00 -0800
+Message-ID: <CAEf4Bzbv_kv11STXafjdO3FsfyMuMNEG-=xWpeTw1cJdMHj+gw@mail.gmail.com>
+Subject: Re: The state of uprobes work and logistics
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Linux trace kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Oleg Nesterov <oleg@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Liao Chang <liaochang1@huawei.com>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	open list <linux-kernel@vger.kernel.org>, 
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Wed, Nov 6, 2024 at 3:06=E2=80=AFAM Peter Zijlstra <peterz@infradead.org=
+> wrote:
+>
+> On Wed, Nov 06, 2024 at 11:46:39AM +0100, Peter Zijlstra wrote:
+> > On Tue, Nov 05, 2024 at 06:11:07PM -0800, Andrii Nakryiko wrote:
+> > > On Wed, Oct 30, 2024 at 2:42=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com=
+> wrote:
+> > > >
+> > > > On Wed, Oct 16, 2024 at 12:35:21PM -0700, Andrii Nakryiko wrote:
+> > > >
+> > > > SNIP
+> > > >
+> > > > >   - Jiri Olsa's uprobe "session" support ([5]). This is less
+> > > > > performance focused, but important functionality by itself. But I=
+'m
+> > > > > calling this out here because the first two patches are pure upro=
+be
+> > > > > internal changes, and I believe they should go into tip/perf/core=
+ to
+> > > > > avoid conflicts with the rest of pending uprobe changes.
+> > > > >
+> > > > > Peter, do you mind applying those two and creating a stable tag f=
+or
+> > > > > bpf-next to pull? We'll apply the rest of Jiri's series to
+> > > > > bpf-next/master.
+> > > >
+> > > >
+> > > > Hi Ingo,
+> > > > there's uprobe session support change that already landed in tip tr=
+ee,
+> > > > but we have bpf related changes that need to go in through bpf-next=
+ tree
+> > > >
+> > > > could you please create the stable tag that we could pull to bpf-ne=
+xt/master
+> > > > and apply the rest of the uprobe session changes in there?
+> > >
+> > > Ping. We (BPF) are blocked on this, we can't apply Jiri's uprobe
+> > > session series ([0]), until we merge two of his patches that landed
+> > > into perf/core. Can we please get a stable tag which we can use to
+> > > pull perf/core's patches into bpf-next/master?
+> >
+> > The whole tip/perf/core should be stable, but let me try and figure out
+> > how git tags work.. might as well read a man-page today.
+>
+> I might have managed to create a perf-core-for-bpf-next tag, but I'm not
+> sure I know enough about git to even test it.
+>
+> Let me know..
 
-KernelCI has detected a module loading regression affecting all AMD and 
-Intel Chromebooks in the Collabora LAVA lab, occurring between 
-next-20241024 and next-20241025.
+Looks good, thank you. I'm merging it into bpf-next, testing, and if
+everything looks good I'll apply Jiri's patches on top.
 
-The logs indicate a failure in BTF module validation, preventing all 
-modules from loading correctly (with CONFIG_MODULE_ALLOW_BTF_MISMATCH 
-unset). The example below is from an AMD Chromebook (HP 14b na0052xx), 
-with similar errors observed on other AMD and Intel devices:
-
-[    5.284373] failed to validate module [cros_kbd_led_backlight] BTF: -22
-[    5.291392] failed to validate module [i2c_hid] BTF: -22
-[    5.293958] failed to validate module [chromeos_pstore] BTF: -22
-[    5.302832] failed to validate module [coreboot_table] BTF: -22
-[    5.309175] failed to validate module [raydium_i2c_ts] BTF: -22
-[    5.309264] failed to validate module [i2c_cros_ec_tunnel] BTF: -22
-[    5.322158] failed to validate module [typec] BTF: -22
-[    5.327554] failed to validate module [snd_timer] BTF: -22
-[    5.327573] failed to validate module [cros_usbpd_notify] BTF: -22
-[    5.339272] failed to validate module [elan_i2c] BTF: -22
-[    5.345821] failed to validate module [industrialio] BTF: -22
-[    5.423113] failed to validate module [cfg80211] BTF: -22
-[    5.443074] failed to validate module [cros_ec_dev] BTF: -22
-[    5.448857] failed to validate module [snd_pci_acp3x] BTF: -22
-[    5.454736] failed to validate module [cros_kbd_led_backlight] BTF: -22
-[    5.461458] failed to validate module [regmap_i2c] BTF: -22
-[    5.470228] failed to validate module [i2c_piix4] BTF: -22
-[    5.491123] failed to validate module [i2c_hid] BTF: -22
-[    5.491226] failed to validate module [chromeos_pstore] BTF: -22
-[    5.496519] failed to validate module [coreboot_table] BTF: -22
-[    5.502632] failed to validate module [snd_timer] BTF: -22
-[    5.538916] failed to validate module [gsmi] BTF: -22
-[    5.604971] failed to validate module [mii] BTF: -22
-[    5.604971] failed to validate module [videobuf2_common] BTF: -22
-[    5.604972] failed to validate module [sp5100_tco] BTF: -22
-[    5.616068] failed to validate module [snd_soc_acpi] BTF: -22
-[    5.680553] failed to validate module [bluetooth] BTF: -22
-[    5.749320] failed to validate module [chromeos_pstore] BTF: -22
-[    5.755440] failed to validate module [mii] BTF: -22
-[    5.760522] failed to validate module [snd_timer] BTF: -22
-[    5.783549] failed to validate module [bluetooth] BTF: -22
-[    5.841561] failed to validate module [mii] BTF: -22
-[    5.846699] failed to validate module [snd_timer] BTF: -22
-[    5.892444] failed to validate module [mii] BTF: -22
-[    5.897708] failed to validate module [snd_timer] BTF: -22
-[    5.945507] failed to validate module [snd_timer] BTF: -22
-
-The full kernel log is available on [1]. The config used is available on
-[2] and the kernel/modules have been built using gcc-12.
-
-The issue is still present on next-20241105.
-
-I'm sending this report to track the regression while a fix is
-identified. The culprit commit hasn't been pinpointed yet, I'll report
-back once it's identified.
-
-Any feedback or suggestion for additional debugging steps would be greatly 
-appreciated.
-
-Best,
-
-Laura
-
-[1] https://pastebin.com/raw/dtvzBkxh
-[2] https://pastebin.com/raw/a1MGi3wH
-
-#regzbot introduced: next-20241024..next-20241025
-
+Tag is more so of a promise that everything up to that tag won't be
+rebased, otherwise we'll run into tons of problems during the merge
+window. That seems to be the case, so I'm proceeding, thank you!
 
