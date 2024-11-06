@@ -1,190 +1,234 @@
-Return-Path: <bpf+bounces-44126-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44127-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C59169BE6BE
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 13:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B74C9BEEF1
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 14:22:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5627B1F27BC4
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 12:05:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D049C1F25CEC
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 13:22:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F1151E0083;
-	Wed,  6 Nov 2024 12:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F4B1E0084;
+	Wed,  6 Nov 2024 13:22:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="je+W0iyN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAAB31DF729;
-	Wed,  6 Nov 2024 12:03:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730894621; cv=none; b=HA/o/HNK24AL2wGJUv+BvqAAylddFl5qsiPmIst8nEYKf0VR0sdIXy0B+Ogjktff8Wk/lN8AIUa2nxbt3shusmNfALU2Fi70MJTlnP1oK1k+Jjah0yiyfHBQZhe65cdX4SdDKv5uv8yv35iLM6ZM32zGdrVUCC1IQHBbSypwbrw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730894621; c=relaxed/simple;
-	bh=1u9uJe0U72U2UBDcBDMBh9WyxwRnpqCGuTrm9v/jNAA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UUJMuIIxCtRS5Mv77+l7sa1nh/DsMfJUEkRcyCq/KRzfys2yHOX8rwSVh/WvJNTXkgR2ySF3nzYXoOYMAWFlR960jz4PnfBFZGUyzgsrMSMYNWcSl6Ena3x/tl/eCGhJ9/fNghq1MJPtJ8JOCTDvrn2V+ann2g+x3nyYbHHFS0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5ced377447bso4717356a12.1;
-        Wed, 06 Nov 2024 04:03:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730894618; x=1731499418;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mAdKCHu4KzxDCkkQKBDhoW2UK3wGCXxAFsKHJYg1LAI=;
-        b=eNvG87DxnChdVtWAzEOdN6XDlnGvtp3vwRQaJrQCAQgHOnGrdGV6zlcad9n+EBgFXO
-         cr1oNGmruixLHGM2y9DS+9DEeGxmtJZWo7FHGIscFBgHojcVGr5n9qM2Owyjl7Sn0QJl
-         n9oyy36eXSpPC6A7ytbb3UgNmfF6Ffjt1ZMYKDCKRWvpEqWFAsirUiWQ+3tpoaxNICr6
-         TNJ63KP7s1gNobGJ9dRs1T/EFWsIiKjjXwDcCPzZTQZFij+I0nH2JlV3znBTeieoCIJw
-         6Loqy1iwJTrJCycFUn41H1E/olcS5bavQUIY1blbRlFM6gV+PSOiMqsH0077raQfFZwu
-         PJMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU5+gI+HOC/WnObfnUMuaFsPEvw8XA2ec1P9PwugKn6HsnxNagXj/ll3NakcUE4TRqWvWO4dhp7Z8WmipRO@vger.kernel.org, AJvYcCWn9w+ARPW81u2Q9DDWSKjl7l310Jw9Xv8VwL9nJv+nbbZhrYGawmkkbpAqK/yJubtINCk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBn4AT0QyO41B7NBqW3rvztXbsoVyAp/vCXUYLPfSiww4OELpx
-	mWzI3Z3RCyoEhvvXXz0xMV2mO/Tduo0bAVW5rkFcicygxeosLnEB
-X-Google-Smtp-Source: AGHT+IGzKy/R2dqbY68xlQLh8qj6KcnlqGVzvzo5n76OGX3XV31gMGmie4AvwvKPTMNWMeaxOfq1Aw==
-X-Received: by 2002:a05:6402:2187:b0:5cb:6718:7326 with SMTP id 4fb4d7f45d1cf-5cd54a958f5mr18094994a12.21.1730894617844;
-        Wed, 06 Nov 2024 04:03:37 -0800 (PST)
-Received: from gmail.com (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5cee6aafc8dsm2713695a12.24.2024.11.06.04.03.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Nov 2024 04:03:37 -0800 (PST)
-Date: Wed, 6 Nov 2024 04:03:34 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
-	oleg@redhat.com, rostedt@goodmis.org, mhiramat@kernel.org,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org,
-	paulmck@kernel.org, willy@infradead.org, surenb@google.com,
-	akpm@linux-foundation.org, linux-mm@kvack.org
-Subject: Re: [PATCH v5 4/8] uprobes: travers uprobe's consumer list
- locklessly under SRCU protection
-Message-ID: <20241106-transparent-athletic-ammonite-586af8@leitao>
-References: <20240903174603.3554182-1-andrii@kernel.org>
- <20240903174603.3554182-5-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D791CCB5F;
+	Wed,  6 Nov 2024 13:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730899346; cv=fail; b=pwxC1n7wLuJ6fwyncMtFBQ4QNEKUGDQ8XS7rGyy4eP7iOqfQ2s9rhBH/fqQr2YDTGARiodBbWfcJrPL1QoCa/3VOIgrApNXqneTEPZG/k3s2v04fLkVbVfzR8cNTXrR6EziLjXCce77uiIqCtPRyQnJvM12oCV4MCvefV++i8uI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730899346; c=relaxed/simple;
+	bh=ONsyEEdHNryYd8MO2+8s7WIU/hlOKt6LoEv7IlCf7Z0=;
+	h=Subject:To:CC:References:From:Message-ID:Date:In-Reply-To:
+	 Content-Type:MIME-Version; b=EckUgFPLA4kISag4LPmLdPweqk47PAX7BNY/Tj2Lzu+JwC+1WuMj2wy7mwAN4lG2XaLLLqMCbyQDB4m6zX+u97bOuUnU92FVQNah9AkSQ+9Tf/T71+PWl8TsCccMygg1/Lg9QFrILO0XXttabI4L0NsYV3ZsY1mK74NG4z5bLxU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=je+W0iyN; arc=fail smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1730899345; x=1762435345;
+  h=subject:to:cc:references:from:message-id:date:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ONsyEEdHNryYd8MO2+8s7WIU/hlOKt6LoEv7IlCf7Z0=;
+  b=je+W0iyNkkFc/sM8AuLjSXUVFKfyscpqF12aqcKC0SdrW7V6+M3CCu+b
+   TS0zEvQSQWaG9oUQ07EV0XlpedzY8iOU1Pt35xSNowAr9fNsvnO2WHNOv
+   WVRFa4uPhUxwYbKG9PcXB8IJYDXqRa31P+qqoLHhfMB1pNMGouK64NzbS
+   QKQeuCcHC9wlh0FfOgDvj9YKvFDLTHcd9G7ACuUDnzc7Kx2cqJmlVD+KG
+   10y0bpjSH5oZaTemplSYvY3jVrAXixrdGBeK4Yb7ZU4rwpJ5FK/vnSVB2
+   u75EtczCwpmN9dLGKPC6AfpPdG/+/8ejRr8teYuMTBdXEe4LaBR8YXNm5
+   Q==;
+X-CSE-ConnectionGUID: my/FB0h+RiGizsPu2i70vg==
+X-CSE-MsgGUID: Ji6A0EtiR8K8K21YnlqUZA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="30465940"
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="30465940"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2024 05:22:24 -0800
+X-CSE-ConnectionGUID: x4815wZfQ96ZUF2QCvobUA==
+X-CSE-MsgGUID: /9oqWVUrRwSQ6oMhjxPDrQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,262,1725346800"; 
+   d="scan'208";a="85373231"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Nov 2024 05:22:23 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Wed, 6 Nov 2024 05:22:22 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Wed, 6 Nov 2024 05:22:22 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.47) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Wed, 6 Nov 2024 05:22:22 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=X2WHwmN8maG29rdhu7x9sHX3wTFgCa1bdizkXlPojvwXT1B++Yy4nDDs+sBdMO3qw4b+Kh0cmqWvCLD8+TuOj7yidMMRs5GmAOiLnBHYDiR3fOUQebuhw2MSMOuQY5kWrPzOe2n3jWac/A60jEdClddH1zO94rTtRlqhgGE3mc0sfDOB0FUzlePeRXAnp0TwU66z9G7ixLVen3ErHBgkC1x7ruHbGozCbGLs4jWjx6nqT59pQD5B0CxQkLpf6aO/OBs/YQg24/De0yyjL7QLUS+VWlaZHdKv4Ojpwv+fCGolXEE4u8j26QVolGXAdxHWP1m2ZVYvH96Xv3Xl4dMlBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bIYS6I+WWM1vVh1Tu4irMCfKv+43wJmJRstyWMlIryY=;
+ b=jXHb/8GliRT+do1TKuwqSbMJ9nA4B4uIdySRlkjxk4ZoxI9a7oO8NVi2aOwnmTHgMSOI1NnlPooAm6DkhEOqzDsggvQfJ+X1pq7kymjZCaQu7gzyuOalVbgjdTzI8LOlI5cAUv+AQ/KDRdbLAqDUyZfkBfoWD+h3/vlaYMlBbjAfNnla1tPNYSh2X/FgQ8nRuhSpM7Bm+BQDh1QLmArhF2OOFifV2cEpFttXqWk9vtWWUO5WLkIxQ4nzspb+fkuxn2/I48epUG0K4onil3JLOhZB8GLXV5gQFd7pjESOiTO/2T1vpaipoIEmCHV0Vz9wkSWW/pjei98wRqoYYZquXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BY5PR11MB4194.namprd11.prod.outlook.com (2603:10b6:a03:1c0::13)
+ by CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.19; Wed, 6 Nov
+ 2024 13:22:20 +0000
+Received: from BY5PR11MB4194.namprd11.prod.outlook.com
+ ([fe80::9d17:67a6:4f83:ef61]) by BY5PR11MB4194.namprd11.prod.outlook.com
+ ([fe80::9d17:67a6:4f83:ef61%6]) with mapi id 15.20.8114.015; Wed, 6 Nov 2024
+ 13:22:19 +0000
+Subject: Re: [Intel-wired-lan] [PATCH v4 net-next 1/4] igc: Fix passing 0 to
+ ERR_PTR in igc_xdp_run_prog()
+To: Yue Haibing <yuehaibing@huawei.com>, <anthony.l.nguyen@intel.com>,
+	<przemyslaw.kitszel@intel.com>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <ast@kernel.org>,
+	<daniel@iogearbox.net>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
+	<maciej.fijalkowski@intel.com>, <vedang.patel@intel.com>,
+	<jithu.joseph@intel.com>, <andre.guedes@intel.com>, <horms@kernel.org>,
+	<jacob.e.keller@intel.com>, <sven.auhagen@voleatech.de>,
+	<alexander.h.duyck@intel.com>
+CC: <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <20241026041249.1267664-1-yuehaibing@huawei.com>
+ <20241026041249.1267664-2-yuehaibing@huawei.com>
+From: Avigail Dahan <Avigailx.dahan@intel.com>
+Message-ID: <bc46b503-df05-6c33-9246-870cff7ad233@intel.com>
+Date: Wed, 6 Nov 2024 15:22:09 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20241026041249.1267664-2-yuehaibing@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TL2P290CA0020.ISRP290.PROD.OUTLOOK.COM (2603:1096:950:3::9)
+ To BY5PR11MB4194.namprd11.prod.outlook.com (2603:10b6:a03:1c0::13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240903174603.3554182-5-andrii@kernel.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR11MB4194:EE_|CY5PR11MB6139:EE_
+X-MS-Office365-Filtering-Correlation-Id: e9a42f31-449f-4270-882f-08dcfe660a80
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014|921020;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?VUlZTHpUOEVZU29BSUt1VnBOZXlnM3lKVjA5SWZ2UUljTFJyVVBLTUlFeklm?=
+ =?utf-8?B?cFZISHBaZThTbVBHMWZ5NFExdk54NnBsTHNMUG5DWWVORWRMWHMxdUtYditO?=
+ =?utf-8?B?S0tjd2VRUHlwY1NIaithS0FnTUkyQXhMa3RRSTNXOFdIbnpIZGJkRXlLRjI3?=
+ =?utf-8?B?a0VYM254S0U0ekRxOGIzRDI1MXlnZGhiY2ZvZzdqMm5QbTY4RkhwNGErU2Na?=
+ =?utf-8?B?SWZVYVo1SHR0NUtQNUZRcTFoNmV1MkZSRnRwU3B1azRsdlFSR0FtOWU4UlNa?=
+ =?utf-8?B?Tm01QUt1YlBVV25BZm1LYkRBbmIxcit2Yzl3cEt5Vjd3MjRDUDIzcVArSkc4?=
+ =?utf-8?B?SW5uU2xuUTUwbGRFcmlpb25ONjFPMHQ0Tm1MOCt5U1cxZ1hWemVxMkxabWor?=
+ =?utf-8?B?Mmx5YjdEVWVJVExJVGJHbW1YUTFSQlFOdFl2M0FpM1VmMEwvRTZ1QXhCbnVL?=
+ =?utf-8?B?bzNzazBjbHJaRjIrbUdPdmNJdDdxVkd2SXJobS9xb1VQeSs5Vjl3d25FWWZZ?=
+ =?utf-8?B?SWRMVW1SWWlQdGU2M3JMRjd0MUNKQXA2RlJEeHhaNXhEQnlhVmVJakM3WEVm?=
+ =?utf-8?B?Ylhxd2hmRjhrU2dZMEtpT090Q1VXSXE1M1hzWWg1WkpPVFlBSXlsSmJZZzdi?=
+ =?utf-8?B?VmJWeC9xYnN6b21OMHdHRFJSbGpRNUd6R2RxUVlZWmFHMXY4SE1Pb3lYVHZw?=
+ =?utf-8?B?V2hwMVcvMWx4eGFFQWJCMjB3M3NsTjZrd1FlalFlWklHdGFodXUrS0VMZlho?=
+ =?utf-8?B?alZPSTRrK1BORlo2OWhJcXVTOVhKNytLM0hkaUdXV1VKZ3JsMFZwSDlVSHFy?=
+ =?utf-8?B?YnNYQWxNMk13YkhoTWVUMmxkTSswUFE4YnZERXdwWVdxSytJcFArcC9yeEFG?=
+ =?utf-8?B?OUlMNjZFZGZFNlVhQmRCZGVVbzhQL3M4QnlteWJ3Zk5BK2JJUW4xWHl1Wk56?=
+ =?utf-8?B?N1RFQ0gwMG5sMy9GMS9BaHl3Qk1mNUNVU0JsL3NaS3RxU3JBWktZcFlHZDVX?=
+ =?utf-8?B?MElzQTVxZGZMcDZVakJaRmZxYmNpNC9kSFVlby8wejNJOWsrZ0ZKSWxETFVP?=
+ =?utf-8?B?b2U2YjNmWXRneThHbi81YVVsa2MwYUhqUkROTHdVVW5RWmNZV3lyUEg5N09a?=
+ =?utf-8?B?YXpxK09UbGVXdkFUR0MwdkgrZTJTWTZmUTR3eVdiQWpOYXAvMDlLbmdkMUxQ?=
+ =?utf-8?B?WEZiMmRjcGdmalU3TU9xS2l3ZEdMK3czb2RVeXBrODlUaUtZYW1UV0RSOHJk?=
+ =?utf-8?B?am91eDJSVGQ1UWt2VUh2NnJBazhoZkVmZGRaM1hvVWo3d1d5L1kxQXZaWDgv?=
+ =?utf-8?B?ZnJZUHo5VzY3RFZEWnlzakRqMWZyYlo3Q0J5RXBiQVhPODRxZkExdjVHMTJI?=
+ =?utf-8?B?enhRU0N1UDdZT3BtMzhUSm1rRFh6M1IzSW85SW1ZVDBvOC9XRFpLSUIvMGwr?=
+ =?utf-8?B?c3hISDZSTjNaZTExeDZPb0RBTDFaK29pQzR5TE1mVU5oN21xMWFCLzVKZGR2?=
+ =?utf-8?B?U0JLUW5oQnRGaTBkWVdDYlpqQ3BhWEtGRFpwSTROU21RZ3ZjQjEyVU9aaWpk?=
+ =?utf-8?B?YXRxaTBlbzlaTDdTNFlIZSthTWxqcXA1SFFhZzVVSU51ckwyZU51R2J6VU9K?=
+ =?utf-8?B?MzJpc0hYNXY0VUwrSk9pa1VaS1dhYjhFaXlXZytGWTJBV2ttdkUyTVF6amxC?=
+ =?utf-8?B?UUFjcVVVZTNVQXh3VG9ibGo2VkpSNjY2dDEvY0FqaUViMHE3dVlLUkU2bk15?=
+ =?utf-8?B?UjRXS2txM1QzNm9BYXpsR2ljbnB1ZG4yYk94b0o5UzhxVk9rOEtmSGZQZmVm?=
+ =?utf-8?Q?GnNw4kEW7YcEqfQ7sgP7hXEe1IDn7HiNUn5iA=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4194.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eFI1R2tOWXQ2VnJ5ZDlvb3A4aU0vWk1RNG9Yb0w5NStrU01FMkFEMEtEM0FC?=
+ =?utf-8?B?TDVCcjh3UTVpVXV3bW1BSi9QYUtxK25mdnR4aXBUYldac2VKWlVGS1p4Uzhq?=
+ =?utf-8?B?cDR0VmVrcFVNa3JZM2tlZ3FkZWdOUmZIL0JSWjRwSDJ6eDhnMGZQRkU4SWxr?=
+ =?utf-8?B?ZGkwWjBET3RpVUVxNmlCdGF5RXdiYVRIbDdHTXVJQzZKTURlcHFZSnp1cnp4?=
+ =?utf-8?B?MkJPbGttWmhJY3l0N1ErTTBvU0tDNW5KY3VBWlNCVExuaUVwZEhzL3VVS2xn?=
+ =?utf-8?B?WkJuOFVJWnNBdXhBZnNiTVNSYlZza1J4UEYrMU5YYzdUaVpiaExzM3FHSDFu?=
+ =?utf-8?B?TWt1emJkYXJrTklNSlpxSVd1eWo5cWYrZ2wrNXRjSXFkQWU2Sit1bktDdnVh?=
+ =?utf-8?B?ZEd6ZlVFd2F4NlFMSlpXTGdRSnEra1ZNVzM2Q3RoRFhoemhtSC81SDgzcGhI?=
+ =?utf-8?B?ZmFKNXphMnFDOTF4ZDhxQU9ERENRcThhaEVXU3FsTXNHdTJjbkltOVlZN1lU?=
+ =?utf-8?B?ckxMbXZFdlBYTFU5VHI2eEtlZnRIbENFMys1ekd0TkNrZzAwMWNNc0lXT2Ew?=
+ =?utf-8?B?cW1uUElhUHBYbndmNkg1YS91VFB1VExxUzdObEEzL2dyTnYyVmorOXpJY0N2?=
+ =?utf-8?B?aEdtUFlTdSs4WU03MTFhWXRzMWQ5akJNMHZ6UXIvb1g5SUMxRWFIRVlLOHRa?=
+ =?utf-8?B?R0RDQytQazQxMEJHVmJ0bzAwY1YvVUFobWFtbXRXdXB0RVlENVZjSFlDUHdk?=
+ =?utf-8?B?K1pxSHFjSXBCU1lveHRnMEVDVDY1ZjhVYlhhbWhYc2xOU0E4ZGpHeUJ6RWZ4?=
+ =?utf-8?B?Q04vTEN4bTlRdkluV1JxeDF1bWh3bDljazgwb1Zyb0pLOTdqNFZPQU9NckVX?=
+ =?utf-8?B?STVldTF3MEx5ZVpLNkpRZTRKUFFtVXlTT3puSVp6NTk5a2Z5cmlQOUVyUGFE?=
+ =?utf-8?B?V2d3L2FENS9hcVhuRE5uQ0RHdGVEdU1vVDJhbFZJOW81Z2NPZk9oa1BMa1c2?=
+ =?utf-8?B?MndUSEFBbGo4dVAvcEV1U2s1MFRmVWtmdnF4dFdVb3NGTGw1bzZpS2tWSHV0?=
+ =?utf-8?B?ZWpJRWpMMWYxY3FIRXlvQWZyUG4ycXBidmF1ZUtNa0tkQzBvTkRoTFdzTGF2?=
+ =?utf-8?B?aEhFbnJpcUtSdjZtbVJKc3RYc0JxeGdpdWNSVktJelZZMGlxMzhiRlNUQXIv?=
+ =?utf-8?B?b3lNcHFmSG00VzJLdFdQcTR5QlhReFRiWHFFWkpibEpGd1I1QlZSaW1XUWJu?=
+ =?utf-8?B?M0pSamJPZnlmOEtZRTZaalloVlZHKzU1TDN2WStDamhkYXo5QnNvTzRnRkIz?=
+ =?utf-8?B?OVdTNXp4cE0zQXdzSFkzNFhwaVpBUWpFMkZueGRIR2xVYURnVlloZnU3VGtH?=
+ =?utf-8?B?ZCtDMVpZZ3FPTHRXV3ZoRFBkRlozV1pseFExS3RVVmNETWJwOGlKL3E0Y1dT?=
+ =?utf-8?B?R3N4RkJxclNLMFd5Yms1b0hPZTZJWi92NWFUVGNUNTl6ODZZNE13Y20xSzIx?=
+ =?utf-8?B?cmROM2c5Y2UyQk1WUk1CamdIMjZncENTZ2E4M1BReXpCSVFQV2VFOTVhOTM2?=
+ =?utf-8?B?c0cyNG1wcUQxTWk5dElpdkdHV3RJNG8renNGbVZYYjJ1L1NrS05FK3M1MURS?=
+ =?utf-8?B?MzNOQWhJd21JUTYvbXplY2tuVkUyVitRZVFvWWg5Nm13TjFqWU4zTk0yZ0Vx?=
+ =?utf-8?B?Qy9aNkRGTTZUbEVRRndQVldGN3lZSFJLSGtNb0wzRDdOWUpXbUpZYUc3K1BR?=
+ =?utf-8?B?eWQ1VGFrMVpQd1ZVeWhwN2xJWGplUjZHaExHMGlZMXBqRmZVTkZpcFlqSGxO?=
+ =?utf-8?B?d21Qa0Z2aW55UVZpYmpwRlBQL1R6NUtyai9Dd3dtMVVtbVdPV0cxTmZEZHFI?=
+ =?utf-8?B?alJoWjBNcDdrcFJac0pGcWQzSnhBOHpEVVl3ZTgzbU9lMm9FRkViR3FhNDgv?=
+ =?utf-8?B?a3RBMFRiZ2VBZ2FFQTJrWXNiR0N6bTVVOWhBb2pISGZUNzIraUZab2Q1VWxQ?=
+ =?utf-8?B?YU8yVXorUTQ0OTZzcHRZaFBjem9ReUppQXk5b0hEZzQwaEszUWFxZE1zRENT?=
+ =?utf-8?B?WXZJbnppVnluaXE4K1hnSERNTnh2NjBSTXpIRFB5VmhWa1p6cFpQRGdRZ3hk?=
+ =?utf-8?B?WnJQalR5NWhGc0R0cU5md3A1K09BREdPblg5TTVzZVhWc21ibUJOd2F1ZUYw?=
+ =?utf-8?B?WWc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9a42f31-449f-4270-882f-08dcfe660a80
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4194.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2024 13:22:19.7871
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SethL3s5wxT197o4exOfBvK/lDeWw6A3iDxXC3sNJhqd+zx6EJug/2WMNgxorogkVhi9kCt4KJO2XjlSiXNsyccgDTSoa6kC81SOC+sCFkc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6139
+X-OriginatorOrg: intel.com
 
-Hello Andrii,
 
-On Tue, Sep 03, 2024 at 10:45:59AM -0700, Andrii Nakryiko wrote:
-> uprobe->register_rwsem is one of a few big bottlenecks to scalability of
-> uprobes, so we need to get rid of it to improve uprobe performance and
-> multi-CPU scalability.
+
+On 26/10/2024 7:12, Yue Haibing wrote:
+> igc_xdp_run_prog() converts customed xdp action to a negative error code
+> with the sk_buff pointer type which be checked with IS_ERR in
+> igc_clean_rx_irq(). Remove this error pointer handing instead use plain
+> int return value to fix this smatch warnings:
 > 
-> First, we turn uprobe's consumer list to a typical doubly-linked list
-> and utilize existing RCU-aware helpers for traversing such lists, as
-> well as adding and removing elements from it.
+> drivers/net/ethernet/intel/igc/igc_main.c:2533
+>   igc_xdp_run_prog() warn: passing zero to 'ERR_PTR'
 > 
-> For entry uprobes we already have SRCU protection active since before
-> uprobe lookup. For uretprobe we keep refcount, guaranteeing that uprobe
-> won't go away from under us, but we add SRCU protection around consumer
-> list traversal.
-
-I am seeing the following message in a kernel with RCU_PROVE_LOCKING:
-
-	kernel/events/uprobes.c:937 RCU-list traversed without holding the required lock!!
-
-It seems the SRCU is not held, when coming from mmap_region ->
-uprobe_mmap. Here is the message I got in my debug kernel. (sorry for
-not decoding it, but, the stack trace is clear enough).
-
-         WARNING: suspicious RCU usage
-           6.12.0-rc5-kbuilder-01152-gc688a96c432e #26 Tainted: G        W   E    N
-           -----------------------------
-           kernel/events/uprobes.c:938 RCU-list traversed without holding the required lock!!
-
-other info that might help us debug this:
-
-rcu_scheduler_active = 2, debug_locks = 1
-           3 locks held by env/441330:
-            #0: ffff00021c1bc508 (&mm->mmap_lock){++++}-{3:3}, at: vm_mmap_pgoff+0x84/0x1d0
-            #1: ffff800089f3ab48 (&uprobes_mmap_mutex[i]){+.+.}-{3:3}, at: uprobe_mmap+0x20c/0x548
-            #2: ffff0004e564c528 (&uprobe->consumer_rwsem){++++}-{3:3}, at: filter_chain+0x30/0xe8
-
-stack backtrace:
-           CPU: 4 UID: 34133 PID: 441330 Comm: env Kdump: loaded Tainted: G        W   E    N 6.12.0-rc5-kbuilder-01152-gc688a96c432e #26
-           Tainted: [W]=WARN, [E]=UNSIGNED_MODULE, [N]=TEST
-           Hardware name: Quanta S7GM 20S7GCU0010/S7G MB (CG1), BIOS 3D22 07/03/2024
-           Call trace:
-            dump_backtrace+0x10c/0x198
-            show_stack+0x24/0x38
-            __dump_stack+0x28/0x38
-            dump_stack_lvl+0x74/0xa8
-            dump_stack+0x18/0x28
-            lockdep_rcu_suspicious+0x178/0x2c8
-            filter_chain+0xdc/0xe8
-            uprobe_mmap+0x2e0/0x548
-            mmap_region+0x510/0x988
-            do_mmap+0x444/0x528
-            vm_mmap_pgoff+0xf8/0x1d0
-            ksys_mmap_pgoff+0x184/0x2d8
-
-
-That said, it seems we want to hold the SRCU, before reaching the
-filter_chain(). I hacked a bit, and adding the lock in uprobe_mmap()
-solves the problem, but, I might be missing something, since I am not familiar
-with this code.
-
-How does the following patch look like?
-
-commit 1bd7bcf03031ceca86fdddd8be2e5500497db29f
-Author: Breno Leitao <leitao@debian.org>
-Date:   Mon Nov 4 06:53:31 2024 -0800
-
-    uprobes: Get SRCU lock before traverseing the list
-
-    list_for_each_entry_srcu() is being called without holding the lock,
-    which causes LOCKDEP (when enabled with RCU_PROVING) to complain such
-    as:
-
-            kernel/events/uprobes.c:937 RCU-list traversed without holding the required lock!!
-
-    Get the SRCU uprobes_srcu lock before calling filter_chain(), which
-    needs to have the SRCU lock hold, since it is going to call
-    list_for_each_entry_srcu().
-
-    Signed-off-by: Breno Leitao <leitao@debian.org>
-    Fixes: cc01bd044e6a ("uprobes: travers uprobe's consumer list locklessly under SRCU protection")
-
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 4b52cb2ae6d62..cc9d4ddeea9a6 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -1391,6 +1391,7 @@ int uprobe_mmap(struct vm_area_struct *vma)
- 	struct list_head tmp_list;
- 	struct uprobe *uprobe, *u;
- 	struct inode *inode;
-+	int srcu_idx;
-
- 	if (no_uprobe_events())
- 		return 0;
-@@ -1409,6 +1410,7 @@ int uprobe_mmap(struct vm_area_struct *vma)
-
- 	mutex_lock(uprobes_mmap_hash(inode));
- 	build_probe_list(inode, vma, vma->vm_start, vma->vm_end, &tmp_list);
-+	srcu_idx = srcu_read_lock(&uprobes_srcu);
- 	/*
- 	 * We can race with uprobe_unregister(), this uprobe can be already
- 	 * removed. But in this case filter_chain() must return false, all
-@@ -1422,6 +1424,7 @@ int uprobe_mmap(struct vm_area_struct *vma)
- 		}
- 		put_uprobe(uprobe);
- 	}
-+	srcu_read_unlock(&uprobes_srcu, srcu_idx);
- 	mutex_unlock(uprobes_mmap_hash(inode));
-
- 	return 0;
-
+> Fixes: 26575105d6ed ("igc: Add initial XDP support")
+> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+> Reviewed-by: Simon Horman <horms@kernel.org>
+> ---
+>   drivers/net/ethernet/intel/igc/igc_main.c | 20 +++++++-------------
+>   1 file changed, 7 insertions(+), 13 deletions(-)
+> 
+Tested-by: Avigail Dahan <avigailx.dahan@intel.com>
 
