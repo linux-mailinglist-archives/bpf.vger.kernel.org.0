@@ -1,75 +1,72 @@
-Return-Path: <bpf+bounces-44120-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44121-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 706BC9BE378
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 11:05:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 952339BE496
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 11:47:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22CC21F22E1A
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 10:05:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 636A02853C9
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 10:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0E41DB377;
-	Wed,  6 Nov 2024 10:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37F1A1DE4C2;
+	Wed,  6 Nov 2024 10:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="soJ/E+uf";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="U9y4bLjF"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RWgp7HSH"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1545D1D9341
-	for <bpf@vger.kernel.org>; Wed,  6 Nov 2024 10:05:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C448E1DE3D0;
+	Wed,  6 Nov 2024 10:46:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730887514; cv=none; b=skGy5BZNHflavJTDdjJzrCQVehJtYKDVUzApQjhAA2SoDLYLlU6RAUicZh0ge4hzGUFCWGkQyAOf01A/YQXvXOvbKH4m/NO/IG7P/Eza/dNSw1tajYbgYamValPcD7ZGf/JlJ5gq3cK4zdsZfL0yNi0caw7cqazOWz0PZ9zPc98=
+	t=1730890012; cv=none; b=TRXqo3F37T4kFjtFWixHeujVZKjojpE7/DlPYp2GhTm1fV87abDDceydT4kbt6Rg9S7xVrHY9DHfQyiJ4Xmphhw6UXzwzkMO1cpXBb5Jl/mDCglPbl2m5C+OWH9jYn5pcq4DFcP+W/8U2UUBA9ejr9C29rZSfg7uolP+QfOryLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730887514; c=relaxed/simple;
-	bh=QX4l/IhwakdnApfSndwdz9F8PkdFDKfVea8aed3J13k=;
+	s=arc-20240116; t=1730890012; c=relaxed/simple;
+	bh=vkkM2h695D/l5SDWyygknwKCqGMFK5wq+MaFFHsuDNo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GpaoKDPUxZRCHz2K624vBB1mTUvpJKkvN1W0U0wSAtSgObbwdDG9aa6hMWXgDd8M1LG3DEmSvM+ZGeRvEqemsYoPdY8MDxDGpJmGwoQznGHM/82uGIku4b7gIENB7s9b9MWMNC/WMaZPRm5KG5HBvWg2BLu5mfHUAZhHJAlcMX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=soJ/E+uf; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=U9y4bLjF; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 6 Nov 2024 11:05:09 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1730887511;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SjmgkWlw6HP4qSnNSg9lxuyPMsdtRM1NdY8WNCs47RU=;
-	b=soJ/E+ufZTh4LF/T2cIClYZNQ/frk34ocUiA0m6LrRoS2Rhd4vJ4IYB/q7e6KB/XJfoK2v
-	EFc4HLddz9eQ3XTGuk/YmmgqgOOj0rHNmg1JHq6/8dth6XveWSUCGXTJd63raS5e2zTpW5
-	KzarM8iP4oA0lXyaak0kWT1fltpgVUHeAiu3UKarfFrEjSK7CTTA/pXMi+Fm09Qa+Rj2RW
-	+ZTHXSPej4capSByyZHUSQBSJ3RXeUWuuSrm8LwuooExNP2YQM6y3LRaxeKZ1CxJOmPPJQ
-	u03lyqsC+ws7FF1/Ndh9GkggUW+ywwCC2v2q6ZBHlG/WJveBvnlO+39h13ztYg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1730887511;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SjmgkWlw6HP4qSnNSg9lxuyPMsdtRM1NdY8WNCs47RU=;
-	b=U9y4bLjFv2a4qYJ/MAybOU5sfVyTeks0M5Z86kPjBQ2kVR20PaTnEinp/Ass5o2nT+KhvA
-	ZmBX5xPobz1px+Dw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: Re: [PATCH bpf-next 0/3] Fix lockdep warning for htab of map
-Message-ID: <20241106100509.7hAottpx@linutronix.de>
-References: <20241106063542.357743-1-houtao@huaweicloud.com>
- <20241106084527.4gPrMnHt@linutronix.de>
- <892b3592-0896-7634-ed44-9ba610242eb3@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=afEOUtc/YVnUEnihIEedxexc8PLrXO636daWPsnEcfXUhsEdiJ5UCYByPLky6lj36GVj/WaLQCpAWvtu9iKGcmc2CGT8erbblIWYW2RWvykT7lZXgh1uAhJqc1DHFP6IB322U+Duwp7zWjPdRT7eCbfLPJjACZSS5AMEvikkRVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=RWgp7HSH; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=n9pw/ncIr5xOQG+ZVQBxpx/l5w//5qbE75eKMDsD6eQ=; b=RWgp7HSHErvWscYGf1Ffm3pndl
+	wZb86wwxZSTq50rJJ73hOf9XdgYa7NkwXbNsWfbMR490miX4DN5skr2j4TaPcbBBehFi2UOvpfs2L
+	iMGqnFjXS7MuIqFrjI67qlhWA0akoD+5TldIzUnkN+/gcwr/EY+smdDft6Fola4hDzOq2vcSr+x/m
+	OKXrbxMuJtXMOB0pJLvL1fHEP6UoS5BekteG+l+aaMlcIW5HN9kccPF0qkeqCIvSmHs9KXsRDxpkP
+	n9a/7rgziZhXmN3f7DYepd57Le/kzu9dDsPPNRv3I3xiXb26mQ9jPH8Udg8sXcdSgLXxIW/QWLdah
+	L/6nj1sg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1t8dYd-00000004Olv-1fBL;
+	Wed, 06 Nov 2024 10:46:40 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 2C45A300478; Wed,  6 Nov 2024 11:46:39 +0100 (CET)
+Date: Wed, 6 Nov 2024 11:46:39 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Liao Chang <liaochang1@huawei.com>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>,
+	Kernel Team <kernel-team@meta.com>
+Subject: Re: The state of uprobes work and logistics
+Message-ID: <20241106104639.GL10375@noisy.programming.kicks-ass.net>
+References: <CAEf4BzarhiBHAQXECJzP5e-z0fbSaTpfQNPaSXwdgErz2f0vUA@mail.gmail.com>
+ <ZyH_fWNeL3XYNEH1@krava>
+ <CAEf4BzZTTuBdCT2Qe=n7gqhf3yENZwHYUdsrQP9WfaEC4C35rw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,45 +75,39 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <892b3592-0896-7634-ed44-9ba610242eb3@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZTTuBdCT2Qe=n7gqhf3yENZwHYUdsrQP9WfaEC4C35rw@mail.gmail.com>
 
-On 2024-11-06 17:48:59 [+0800], Hou Tao wrote:
-> Hi,
-Hi,
+On Tue, Nov 05, 2024 at 06:11:07PM -0800, Andrii Nakryiko wrote:
+> On Wed, Oct 30, 2024 at 2:42 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Wed, Oct 16, 2024 at 12:35:21PM -0700, Andrii Nakryiko wrote:
+> >
+> > SNIP
+> >
+> > >   - Jiri Olsa's uprobe "session" support ([5]). This is less
+> > > performance focused, but important functionality by itself. But I'm
+> > > calling this out here because the first two patches are pure uprobe
+> > > internal changes, and I believe they should go into tip/perf/core to
+> > > avoid conflicts with the rest of pending uprobe changes.
+> > >
+> > > Peter, do you mind applying those two and creating a stable tag for
+> > > bpf-next to pull? We'll apply the rest of Jiri's series to
+> > > bpf-next/master.
+> >
+> >
+> > Hi Ingo,
+> > there's uprobe session support change that already landed in tip tree,
+> > but we have bpf related changes that need to go in through bpf-next tree
+> >
+> > could you please create the stable tag that we could pull to bpf-next/master
+> > and apply the rest of the uprobe session changes in there?
+> 
+> Ping. We (BPF) are blocked on this, we can't apply Jiri's uprobe
+> session series ([0]), until we merge two of his patches that landed
+> into perf/core. Can we please get a stable tag which we can use to
+> pull perf/core's patches into bpf-next/master?
 
-> Yes. The patch set still invokes check_and_free_fields() under the
-> bucket lock when updating an existing element in a pre-allocated htab. I
-> missed the hrtimer case. For the sleeping lock, you mean the
-> cpu_base->softirq_expiry_lock in hrtimer_cancel_waiting_running(), right
-
-Yes.
-
-> ? Instead of cancelling the timer in workqueue, maybe we could save the
-> old value temporarily in the bucket lock, and try to free it outside of
-> the bucket lock or disabling the extra_elems logic temporarily for the
-> case ?
-
-Well, it is up to you. Either:
-
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 1a43d06eab286..b077af12fc9b4 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1593,10 +1593,7 @@ void bpf_timer_cancel_and_free(void *val)
- 	 * To avoid these issues, punt to workqueue context when we are in a
- 	 * timer callback.
- 	 */
--	if (this_cpu_read(hrtimer_running))
--		queue_work(system_unbound_wq, &t->cb.delete_work);
--	else
--		bpf_timer_delete_work(&t->cb.delete_work);
-+	queue_work(system_unbound_wq, &t->cb.delete_work);
- }
- 
- /* This function is called by map_delete/update_elem for individual element and
-
-Or something smarter where you cancel the timer outside of the bucket
-lock.
-
-Sebastian
+The whole tip/perf/core should be stable, but let me try and figure out
+how git tags work.. might as well read a man-page today.
 
