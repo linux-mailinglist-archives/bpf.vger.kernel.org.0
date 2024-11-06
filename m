@@ -1,114 +1,158 @@
-Return-Path: <bpf+bounces-44129-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44130-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7289A9BF0F8
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 16:00:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 882459BF178
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 16:22:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38B88284E31
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 15:00:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 057B7B22267
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 15:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C873E1E767B;
-	Wed,  6 Nov 2024 14:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89952200CB5;
+	Wed,  6 Nov 2024 15:21:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LURUJwI2"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bSZoc8/S"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48FF6202F8A;
-	Wed,  6 Nov 2024 14:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E470318C03F
+	for <bpf@vger.kernel.org>; Wed,  6 Nov 2024 15:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730905173; cv=none; b=X7gjsKBC0ZBv6vPfNe9JywQFAd9bfV4x6+WBUCqP/C2bEUUcXbxuGUVfg9DWx0A6S2WqPDWNtRIycuu5eL3eaMPCbgpZDp6diErY+07zBlNLSg3ECt5J0YAsAVUUGQGwrlUvtEBmACGWkIiAIXepk/xzw57sk5wLjzNcIidHj5c=
+	t=1730906518; cv=none; b=gnsKrOZtJ1/LEHxHWVR/eXu6SwfOZELY00lDrrAHPNnPOdq0aOAUpQJ8uNaPKiBLbyc02msK1pfVr+iAWxnrwGAs1ntrAlIPGAlsVkIh6KF5xwfPF9bZEXdLksE1FYPPSkuW/QNDP1Nkp5jZFQV/OCGbRzg8Yozb8FVtqfFOZoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730905173; c=relaxed/simple;
-	bh=oY9T9tNg446qMb0aOnJdQRe0Ot6PCpEIBaCDhmC46zo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D1mICmmGKlsvwGb2QkZD5xvPkYdrgrRJemOYoN8pQ8jKJbrBoKYHh/LFsQbWtepKPHUrrnAwoNHgef+QEopNZSNP9RZf+atybh8pV009O1Kk1rx0MFP47JDh9HH5XZnczvIZUSSRjjw+b7Hzzi+u2e9JcWG08FeXpo+FsTXbFAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LURUJwI2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF11CC4CED3;
-	Wed,  6 Nov 2024 14:59:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730905173;
-	bh=oY9T9tNg446qMb0aOnJdQRe0Ot6PCpEIBaCDhmC46zo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LURUJwI23qRr870S7hjbwt/ofN95Wh8dC6YJCCpcHLfmp/OBIVTtw6/M/cNRSwjFb
-	 lXOjZVApBfPE2SA+3xS+pmBoQ9gNmNQz8RKeewsplPgjNi5ilG6AW13hrMuBbrO3Ux
-	 j0TyA8UMJoSw3bBmA6E0y68rK/aIgju4B1MVIlq44XgxnugknPUh9R4tSkq0UQvIrG
-	 CcVcR8gIEVzO5QIw38D5ZElsu4nu8yIM4RYa8NLzH352A3guBVXVG9zv/pcQZA8O6X
-	 YHFdbovfyad/Ti43O7gb4UAXdqucyaK8m/k/LOFlNVW0tnenFDqu2vztpPKsEulZhO
-	 qGrOXGBbtMzsA==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu <rcu@vger.kernel.org>,
+	s=arc-20240116; t=1730906518; c=relaxed/simple;
+	bh=c8KRWnRV1nCFogjaDPLsc4wI3nwNbyWMo+AyHy9ZAUQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=agUPQuGVPrXMtOOdvSsWB6FKrqrf8TzrO10125amvGM+Nd/i0xE26hrCxJLPgQiZXrBH2yMOgl2xPa5CoNdC6X2OXKhjyBzWfT/maA1G/6qRa9YjzY1SByL+BlpzJ7v0YCJ/2iZRWfwcYwohlso/9pFVUt61tjKeSlJMg65IiTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bSZoc8/S; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=FvrkkWhxKvs+zJzYGh6XTPAspYID6zD7W+8NMYQePFs=; b=bSZoc8/Sn4DQnSAuBJOxF81i7v
+	pJ5L1rV21RGducSq6Im7mo1ZR+BmnFxKc0rKE9yLsLnVj8fqlr5GCdwzgwC+l7k/1uA9T58TRnFBE
+	fW+vDtJrAIQ+U7Z8yIN6qPtFcByMuRM/hz2FZeSl9YrqF3JpOKx8FJ37qRSht7y0n2LXQZ26U0AVn
+	tR9ALHcLrsHAO6wkToLbGxxwImbPJbMa2QkuKhi701v5rMWEGWjyDPKBey0eK39JLeHpGF0Sio+rV
+	ozBsI78y5nQnp7ciqhTZXEhexunAaoN3rl7IR+PjEkmKpGhSUwGVWFOE43HQAtuz+Q6ep+T80L6Ao
+	N9539zDg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1t8hql-00000004naT-1gul;
+	Wed, 06 Nov 2024 15:21:40 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 1AD74300478; Wed,  6 Nov 2024 16:21:39 +0100 (CET)
+Date: Wed, 6 Nov 2024 16:21:39 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>,
+	kkd@meta.com, Puranjay Mohan <puranjay@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	bpf@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 5/8] doc: Remove kernel-parameters.txt entry for rcutorture.read_exit
-Date: Wed,  6 Nov 2024 15:59:08 +0100
-Message-ID: <20241106145911.35503-6-frederic@kernel.org>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20241106145911.35503-1-frederic@kernel.org>
-References: <20241106145911.35503-1-frederic@kernel.org>
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Rishabh Iyer <rishabh.iyer@berkeley.edu>,
+	Sanidhya Kashyap <sanidhya.kashyap@epfl.ch>,
+	X86 ML <x86@kernel.org>, Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next v3 2/2] bpf, x86: Skip bounds checking for
+ PROBE_MEM with SMAP
+Message-ID: <20241106152139.GN10375@noisy.programming.kicks-ass.net>
+References: <20241103193512.4076710-1-memxor@gmail.com>
+ <20241103193512.4076710-3-memxor@gmail.com>
+ <20241104195354.GA31782@noisy.programming.kicks-ass.net>
+ <CAADnVQJwV6bg15qJjdHgzUM83V7t1XiM17Xjf+FSTKSZi445KQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJwV6bg15qJjdHgzUM83V7t1XiM17Xjf+FSTKSZi445KQ@mail.gmail.com>
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Tue, Nov 05, 2024 at 10:35:40AM -0800, Alexei Starovoitov wrote:
+> On Mon, Nov 4, 2024 at 11:54 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Sun, Nov 03, 2024 at 11:35:12AM -0800, Kumar Kartikeya Dwivedi wrote:
+> > >  arch/x86/net/bpf_jit_comp.c | 11 +++++++++--
+> > >  1 file changed, 9 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > > index 06b080b61aa5..7e3bd589efc3 100644
+> > > --- a/arch/x86/net/bpf_jit_comp.c
+> > > +++ b/arch/x86/net/bpf_jit_comp.c
+> > > @@ -1954,8 +1954,8 @@ st:                     if (is_imm8(insn->off))
+> > >               case BPF_LDX | BPF_PROBE_MEMSX | BPF_W:
+> > >                       insn_off = insn->off;
+> > >
+> > > -                     if (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
+> > > -                         BPF_MODE(insn->code) == BPF_PROBE_MEMSX) {
+> > > +                     if ((BPF_MODE(insn->code) == BPF_PROBE_MEM ||
+> > > +                          BPF_MODE(insn->code) == BPF_PROBE_MEMSX) && !cpu_feature_enabled(X86_FEATURE_SMAP)) {
+> > >                               /* Conservatively check that src_reg + insn->off is a kernel address:
+> > >                                *   src_reg + insn->off > TASK_SIZE_MAX + PAGE_SIZE
+> > >                                *   and
+> >
+> > Well, I can see why you'd want to get rid of that, that's quite
+> > dreadful code you generate there.
+> >
+> > Can't you do something like:
+> >
+> >   lea off(%src), %r10
+> >   mov %r10, %r11
+> >   inc %r10
+> >   sar $63, %r11
+> >   and %r11, %r10
+> >   dec %r10
+> >
+> >   mov (%r10), %rax
+> 
+> That's a Linus's hack for mask_user_address() and
+> earlier in valid_user_address().
 
-There is only ever the one read-exit task, and there is no module
-parameter named rcutorture.read_exit, so remove the bogus documentation.
-Instead, use rcutorture.read_exit_burst to enable/disable read-exit
-race testing.
+Yes, something along those lines. Preserves everything with MSB 1, and
+maps the rest to ~0.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: <bpf@vger.kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- Documentation/admin-guide/kernel-parameters.txt | 5 -----
- 1 file changed, 5 deletions(-)
+> I don't think it works because of
+> #define VSYSCALL_ADDR (-10UL << 20)
+> 
+> We had to filter out that range.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 1518343bbe22..7edc5a5ba9c9 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5412,11 +5412,6 @@
- 			Set time (jiffies) between CPU-hotplug operations,
- 			or zero to disable CPU-hotplug testing.
- 
--	rcutorture.read_exit= [KNL]
--			Set the number of read-then-exit kthreads used
--			to test the interaction of RCU updaters and
--			task-exit processing.
--
- 	rcutorture.read_exit_burst= [KNL]
- 			The number of times in a given read-then-exit
- 			episode that a set of read-then-exit kthreads
--- 
-2.46.0
+Range of _1_ page. Also, nobody should ever touch that page these days
+anyway.
+
+> I don't understand why valid_user_address() is not broken,
+> since fault handler considers vsyscall address to be user addr
+> in fault_in_kernel_space().
+> And user addr faulting doesn't have extable handling logic.
+
+The vsyscall page has it's own magical exception handling that does
+emulation.
+
+> > I realize that's not exactly pretty either, but no jumps. Not sure
+> > this'll help much if anything with the TDX thing though.
+> 
+> to clarify... this is not bpf specific. This bpf JIT logic is
+> nothing but inlined version of copy_from_kernel_nofault().
+> So if confidential computing has an issue lots of pieces are affected.
+
+It's not copy_from_kernel_nofault() that's a problem per-se, it's
+thinking it's 'safe' for random input that is.
+
 
 
