@@ -1,332 +1,141 @@
-Return-Path: <bpf+bounces-44160-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44161-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 453D09BF89F
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 22:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 05C159BF8DB
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 23:04:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93D0CB2219F
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 21:43:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 872B9B2278E
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 22:04:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803D120CCF9;
-	Wed,  6 Nov 2024 21:43:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FAEC20C313;
+	Wed,  6 Nov 2024 22:04:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kVLTGNEW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MNPSqa5n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5902D1CF2A5;
-	Wed,  6 Nov 2024 21:43:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B42621D0E23;
+	Wed,  6 Nov 2024 22:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730929417; cv=none; b=loQDS7xrODcbNVjdYrDUS3Ap+zdD45Qa4jDkfcliZYsnLiN4vroi4pT4rTWJzdBrRxoJTickg8wrQbh/4KZkXkGtzeSIcM2YrQq3YczmS3pDHZ4QC1qq2UTAHMSr/t2EjXpm1XVC1Am5bYCogFtqwBgTufu+XnuX7qkS/SVE9HQ=
+	t=1730930656; cv=none; b=YR2zAMSXvwGa7AK+RTELIKpCEaUIl188AKQuAIcRitHL10X+r1OJja/fN8gaiOcdgt6TN61If7vNg1dR55G9Upp/JDN/2fHIKUU8cZjEtEnmhhjp7i+Afb+tFsP/zSa7zpI1tI0FHxhUFJY0gcEmfx8oe4+bmqe3SGXmTfNSPnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730929417; c=relaxed/simple;
-	bh=FnSf1vUHNNfBpJkPKGERbOMo7osT6qLVpZEECIj3j40=;
+	s=arc-20240116; t=1730930656; c=relaxed/simple;
+	bh=XWlE48RqZQ5truz2JBDBGqsYLK+eKE8hxeJQAdnWLKw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ccaGSKxUtTyffKlVeJ6uk6rJ/BM0ccWEsAylRbmJYbAcAkYc30WY03qtY4/n9R9M0c9nbb7hbh7BybHJiulzl9slxN+sc4rdM7GnSCG5Ovl59IiC0K6+fIjDTezOPDIxstq8rUC6AlUCwuN8mUM7zCi4HOA69/OUpX9W0JnSTy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kVLTGNEW; arc=none smtp.client-ip=209.85.215.170
+	 To:Cc:Content-Type; b=B1BwLn8aNqV2xr1a75WhtL68vMjd0appGTPPxjDMFvlD1gCMpvn1cEynW+ErP16SQki03JY6uObJkB1s7ZpHeFXUkcjm5vil1QHiuHZ39L9BbrWw+6KRPEAQxnnDS6Z/2OzqsGhByItbMFqYL/7K/alsk6171Oqc1lWGy7uhhI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MNPSqa5n; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-7ee020ec76dso273409a12.3;
-        Wed, 06 Nov 2024 13:43:34 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2e2cc469c62so218563a91.2;
+        Wed, 06 Nov 2024 14:04:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730929413; x=1731534213; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730930653; x=1731535453; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2QSnhMxMsw7IM6qwPkS0rhaEH2zXSwmnLjCctjOaBLQ=;
-        b=kVLTGNEWX8i5RjWHp/S0//DSuwyWnB89R/tOKtSop2FmS7pqBzUApBWgrFaW2Pmvnw
-         4/Cx8xciiXbQi1VSL/iY/PgaHipuwFQn74hNbRjzvSRcDU8fF+1vc1XSJw734Otesngb
-         Cx0VGKqhKHMSaG7+IufRspgHDVAmh4cZFM9RLzuGm3shrpI+wrETpGj7ksoGEXyEO2vV
-         rN1kaGfP2QrIHr0/54vxnaDzbLjvO/RUBDoX9DmSl0WpYDHVXTKp+aBx7/SBbg9tnnuY
-         SwO2dFUYGrC76Xj19fkdDcBWcJ2no84BH5fWNcBgfK1pPR4MJ0Gn7kDqKXRBnpd+UXvN
-         +2/A==
+        bh=PfGNi4Eab08D4rDIFJXSfdEQm138IE7MugUyEGUzqSg=;
+        b=MNPSqa5n7uio5spmm4M5r4BGlaadv+jD90XL8G1DjwCeWuiS0qzkOWDUplXPKwesf5
+         jvplQ5zkvDa+E9GLbAoKGgM6JbxqUKosoVnXp8P2qXINrN8EQzlD0+/FyDIrhk3fBcqt
+         z2JQb1Mcgv7y8/uLRa3CX7hS9ABCzRHr7oVTFwnfo8hH34mtKPkQPQRtAQoJTrkHM+Zm
+         DZpysl9y453gKuUmcAO7Uzc2tHNNTyqYiw1kmS5/YMzch2VgyLC/2HuyV4dr2Az5GPDc
+         eY/Jh46e2icruY4ZhKmK4biU/FHwkO9mFVRWegEXwtHZHGNxuPIO+IfZNDkbjZVh+zSG
+         8VtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730929413; x=1731534213;
+        d=1e100.net; s=20230601; t=1730930654; x=1731535454;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2QSnhMxMsw7IM6qwPkS0rhaEH2zXSwmnLjCctjOaBLQ=;
-        b=OEsMz+l1S1vcmiMxFK3pNgzT0ABTDo0t1CuxlDPyp5p/VOImCc5wfmqxE68KtO9XyS
-         YHAzjxNvnieBxuki4jN33idAcziSYaWXXyRkIOPojhEYQlqQkK9RsZoPYwRKbDFXfFeV
-         A4vizxwuMPMM5ESbU+7MmEgWGd2+oEVijQqlRyHy9LJMo+5gf2UFqiE57RxGadAnzW7j
-         DYsH2FkrbhjI9Ve8M8qz8yW5tZu08k307/cd7ZG5GWErMdNcNyrX3t4g7p4ZoCMVL7Qc
-         AfD9wkOwzhL3CyLISmvKg2Bn84ylzXj6/E5wkmwopcKoF42qGAFYdCwhFIlPo+PLavQW
-         ZHMw==
-X-Forwarded-Encrypted: i=1; AJvYcCUGLRaf3ZUHNkEt/NjtZE73orp85rq2DH0FbHybD6mIO6wsNKHd3jzXxGtD2ak28ZNKIJYisqPA5YGR1um3@vger.kernel.org, AJvYcCW3tNqBgq+51QkCTycNVmFFBudi/55eg77HJ6VVF9Rd5Xrl/KQRBQO6Fu8pnhrJUhL69IQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzqHyICMTh1VA7hcAvBKbo8MlxzGo5QnZnR0UGxsQ5RSQuynxRv
-	vkMo5xtJJiScbPHMg3bu7sOK4Nk3+r/kIKXhuRcVvOk2zU29anax2YTwVf/VE++tzz1QABK29S3
-	vv0X1Rr07kfanB2fN7C8uYSGZu0s=
-X-Google-Smtp-Source: AGHT+IGYw5aqxzmaviJwDc6Zqp7rpeDToIqnDWYnfkla0rOrgMRU95HQmWa9D5wcv0/r3xJtdk9MhuuLNXj1NVLZwpc=
-X-Received: by 2002:a17:90a:4802:b0:2cf:fe5d:ea12 with SMTP id
- 98e67ed59e1d1-2e8f1073b73mr44891842a91.24.1730929413511; Wed, 06 Nov 2024
- 13:43:33 -0800 (PST)
+        bh=PfGNi4Eab08D4rDIFJXSfdEQm138IE7MugUyEGUzqSg=;
+        b=B+/VH5MloSnyyrngddiXckFYi65fdLc0RixQhIN6OIIZi5o82GpVej2Pw4hgyan+J1
+         cvPy3m9NF/yfShWf6mt4LHp5JF5xraVcDu2l//pf0rgUQnd3csHnetECZsJvJCEt2BP+
+         Ry2NrQeoeOO4wall9gel0szWmzQEiOsYLZz8AyRbGwwajaRWC+5gv0vNPF9Ct9eYtiF7
+         SrtXL/jlq9eQ7jn9ao3kbREqkzE2RxIer8RW00v6cmLhE/F6fq0jiXObq6o1AkLVQQXH
+         xRvZCOPH5eCPYzTDTx+5cTx3DyLZbsZ5C6jKtI/n9X6O1efZHpdb8iAByUIU2NJdcz7y
+         uYZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUoHb1z2D4FDIxUIYaIaVxIqXzmyCdBbFPFgrPg+Hfk/VJ/AXAeTvwFIo0CCh+/9PLUuMDlyHUUIKXFqpD3EPO2@vger.kernel.org, AJvYcCVrDZfBya1QPXrRxpeXtU/mGaPqJxSwJ8dJpQAxznNgxp78K2lPrbEdKdHVb9iNTV/hNmQ=@vger.kernel.org, AJvYcCWz3A5bKYnqMoM1JiPeZKVbdeZnlJ9/YZjIwvbuMFZqlU0cGbq7dxBiyQcoXk0xktgtXAWWC8cy@vger.kernel.org, AJvYcCX83aeFlDOFJq/pk595YTtyWRGZV9pXYnpQCFa6Cx/I8jN64mlmevYPGTbl6u8og+D3XN/j+XftPYAmudkZ@vger.kernel.org
+X-Gm-Message-State: AOJu0YyxiF16u5DZHjizrTwzM9G+bkkHNGWlghx8PNWQB8NcGrSB76XC
+	6IObvYVlYKMXcp/GbpzfCA45j6vMCyaDjWOZro2L/fuopoyFjjudmZA6TdR4zCIBZP52vhGzUBZ
+	mQJTFeuJWiIIaYrfgaQrgZrST/5I=
+X-Google-Smtp-Source: AGHT+IHiIFN3vV3i+lrEACl/mdE0HQWZtzx800XFbju733sBmVhjjP4bbDv2RZKt8j7XpLWja7xZVa0f8ftoFXrmJPw=
+X-Received: by 2002:a17:90b:4a49:b0:2e2:b64e:f506 with SMTP id
+ 98e67ed59e1d1-2e94c2afe78mr30385346a91.13.1730930653594; Wed, 06 Nov 2024
+ 14:04:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241101023832.32404-1-mrpre@163.com> <CAEf4BzbVqcCN1p8ydLN17LygK5R=gBYJV0A-cnycjtsUzrX34g@mail.gmail.com>
- <gbtlzrhme5yrbvlwkswlzz44lims7dymougc7376c5hugosqqh@qqrjg6wtmnan>
-In-Reply-To: <gbtlzrhme5yrbvlwkswlzz44lims7dymougc7376c5hugosqqh@qqrjg6wtmnan>
+References: <20240927131355.350918-1-bjorn@kernel.org> <172835823300.66789.3704854116445399222.git-patchwork-notify@kernel.org>
+ <87bjyvpa6h.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <87bjyvpa6h.fsf@all.your.base.are.belong.to.us>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 6 Nov 2024 13:43:21 -0800
-Message-ID: <CAEf4BzYgkuC0HCqx1X_-j36pd5XqrMJayOvORe39Ego_Oj8A6Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] bpf: Introduce cpu affinity for sockmap
-To: Jiayuan Chen <mrpre@163.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	martin.lau@kernel.org
+Date: Wed, 6 Nov 2024 14:04:01 -0800
+Message-ID: <CAEf4BzZbq9OwSGi4pdb5_q8YkErfFiQFKYXg3g1rjpdejafx+Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] libbpf: Add missing per-arch include path
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: patchwork-bot+netdevbpf@kernel.org, andrii@kernel.org, eddyz87@gmail.com, 
+	mykolal@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	bjorn@rivosinc.com, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	charlie@rivosinc.com, Andreas Schwab <schwab@suse.de>, Anand Moon <linux.amoon@gmail.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Nov 3, 2024 at 10:12=E2=80=AFPM Jiayuan Chen <mrpre@163.com> wrote:
+On Mon, Nov 4, 2024 at 2:26=E2=80=AFAM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.=
+org> wrote:
 >
-> On Fri, Nov 01, 2024 at 12:25:51PM -0700, Andrii Nakryiko wrote:
-> > On Thu, Oct 31, 2024 at 7:40=E2=80=AFPM mrpre <mrpre@163.com> wrote:
-> > >
-> > > Why we need cpu affinity:
-> > > Mainstream data planes, like Nginx and HAProxy, utilize CPU affinity
-> > > by binding user processes to specific CPUs. This avoids interference
-> > > between processes and prevents impact from other processes.
-> > >
-> > > Sockmap, as an optimization to accelerate such proxy programs,
-> > > currently lacks the ability to specify CPU affinity. The current
-> > > implementation of sockmap handling backlog is based on workqueue,
-> > > which operates by calling 'schedule_delayed_work()'. It's current
-> > > implementation prefers to schedule on the local CPU, i.e., the CPU
-> > > that handled the packet under softirq.
-> > >
-> > > For extremely high traffic with large numbers of packets,
-> > > 'sk_psock_backlog' becomes a large loop.
-> > >
-> > > For multi-threaded programs with only one map, we expect different
-> > > sockets to run on different CPUs. It is important to note that this
-> > > feature is not a general performance optimization. Instead, it
-> > > provides users with the ability to bind to specific CPU, allowing
-> > > them to enhance overall operating system utilization based on their
-> > > own system environments.
-> > >
-> > > Implementation:
-> > > 1.When updating the sockmap, support passing a CPU parameter and
-> > > save it to the psock.
-> > > 2.When scheduling psock, determine which CPU to run on using the
-> > > psock's CPU information.
-> > > 3.For thoes sockmap without CPU affinity, keep original logic by usin=
-g
-> > > 'schedule_delayed_work()'.
-> > >
-> > > Performance Testing:
-> > > 'client <-> sockmap proxy <-> server'
-> > >
-> > > Using 'iperf3' tests, with the iperf server bound to CPU5 and the ipe=
-rf
-> > > client bound to CPU6, performance without using CPU affinity is
-> > > around 34 Gbits/s, and CPU usage is concentrated on CPU5 and CPU6.
-> > > '''
-> > > [  5] local 127.0.0.1 port 57144 connected to 127.0.0.1 port 10000
-> > > [ ID] Interval           Transfer     Bitrate
-> > > [  5]   0.00-1.00   sec  3.95 GBytes  33.9 Gbits/sec
-> > > [  5]   1.00-2.00   sec  3.95 GBytes  34.0 Gbits/sec
-> > > ......
-> > > '''
-> > >
-> > > With using CPU affinity, the performnce is close to direct connection
-> > > (without any proxy).
-> > > '''
-> > > [  5] local 127.0.0.1 port 56518 connected to 127.0.0.1 port 10000
-> > > [ ID] Interval           Transfer     Bitrate
-> > > [  5]   0.00-1.00   sec  7.76 GBytes  66.6 Gbits/sec
-> > > [  5]   1.00-2.00   sec  7.76 GBytes  66.7 Gbits/sec
-> > > ......
-> > > '''
-> > >
-> > > Signed-off-by: Jiayuan Chen <mrpre@163.com>
-> > > ---
-> > >  include/linux/bpf.h      |  3 ++-
-> > >  include/linux/skmsg.h    |  8 ++++++++
-> > >  include/uapi/linux/bpf.h |  4 ++++
-> > >  kernel/bpf/syscall.c     | 23 +++++++++++++++++------
-> > >  net/core/skmsg.c         | 11 +++++++----
-> > >  net/core/sock_map.c      | 12 +++++++-----
-> > >  6 files changed, 45 insertions(+), 16 deletions(-)
-> > >
-> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index c3ba4d475174..a56028c389e7 100644
-> > > --- a/include/linux/bpf.h
-> > > +++ b/include/linux/bpf.h
-> > > @@ -3080,7 +3080,8 @@ int bpf_prog_test_run_syscall(struct bpf_prog *=
-prog,
-> > >
-> > >  int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog=
- *prog);
-> > >  int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_t=
-ype ptype);
-> > > -int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *v=
-alue, u64 flags);
-> > > +int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *v=
-alue, u64 flags,
-> > > +                            s32 target_cpu);
-> > >  int sock_map_bpf_prog_query(const union bpf_attr *attr,
-> > >                             union bpf_attr __user *uattr);
-> > >  int sock_map_link_create(const union bpf_attr *attr, struct bpf_prog=
- *prog);
-> > > diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> > > index d9b03e0746e7..919425a92adf 100644
-> > > --- a/include/linux/skmsg.h
-> > > +++ b/include/linux/skmsg.h
-> > > @@ -117,6 +117,7 @@ struct sk_psock {
-> > >         struct delayed_work             work;
-> > >         struct sock                     *sk_pair;
-> > >         struct rcu_work                 rwork;
-> > > +       s32                             target_cpu;
-> > >  };
-> > >
-> > >  int sk_msg_alloc(struct sock *sk, struct sk_msg *msg, int len,
-> > > @@ -514,6 +515,13 @@ static inline bool sk_psock_strp_enabled(struct =
-sk_psock *psock)
-> > >         return !!psock->saved_data_ready;
-> > >  }
-> > >
-> > > +static inline int sk_psock_strp_get_cpu(struct sk_psock *psock)
-> > > +{
-> > > +       if (psock->target_cpu !=3D -1)
-> > > +               return psock->target_cpu;
-> > > +       return WORK_CPU_UNBOUND;
-> > > +}
-> > > +
-> > >  #if IS_ENABLED(CONFIG_NET_SOCK_MSG)
-> > >
-> > >  #define BPF_F_STRPARSER        (1UL << 1)
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index f28b6527e815..2019a87b5d4a 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -1509,6 +1509,10 @@ union bpf_attr {
-> > >                         __aligned_u64 next_key;
-> > >                 };
-> > >                 __u64           flags;
-> > > +               union {
-> > > +                       /* specify the CPU where the sockmap job run =
-on */
-> > > +                       __aligned_u64 target_cpu;
-> >
-> > I have no opinion on the feature itself, I'll leave this to others.
-> > But from UAPI perspective:
-> >
-> > a) why is this a u64 and not, say, int?
-> > b) maybe we should just specify this as flags and not have to update
-> > all the UAPIs (including libbpf-side)? Just add a new
-> > BPF_F_SOCKNMAP_TARGET_CPU flag or something, and specify that highest
-> > 32 bits specify the CPU itself?
-> >
-> > We have similar schema for some other helpers, so not *that* unusual.
-> >
-> Thank you for your response. I think I should clarify my thoughts:
+> patchwork-bot+netdevbpf@kernel.org writes:
 >
-> My idea is to pass a user-space pointer, with the pointer being null
-> to indicate that the user has not provided anything.For example, when
-> users use the old interface 'bpf_map_update_elem' and pass in u64 of
-> 0, it means that the user hasn't specified a CPU. If a u32 or another
-> type of value is passed in, when it is 0, it's ambiguous whether this
-> indicates target CPU 0 or that the user hasn't provided a value. So
-> my design involves passing a user-space pointer.
+> > Hello:
+> >
+> > This series was applied to bpf/bpf-next.git (master)
+> > by Andrii Nakryiko <andrii@kernel.org>:
+> >
+> > On Fri, 27 Sep 2024 15:13:52 +0200 you wrote:
+> >> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+> >>
+> >> libbpf does not include the per-arch tools include path, e.g.
+> >> tools/arch/riscv/include. Some architectures depend those files to
+> >> build properly.
+> >>
+> >> Include tools/arch/$(SUBARCH)/include in the libbpf build.
+> >>
+> >> [...]
+> >
+> > Here is the summary with links:
+> >   - [bpf-next,1/2] libbpf: Add missing per-arch include path
+> >     https://git.kernel.org/bpf/bpf-next/c/710fbca820c7
+> >   - [bpf-next,2/2] selftests: bpf: Add missing per-arch include path
+> >     https://git.kernel.org/bpf/bpf-next/c/19090f0306f1
 >
-> I also considered using the highest 32 bits of the flag as target_cpu, bu=
-t
-> this approach still encounters the ambiguity mentioned above. Of course
-> for programs using libbpf, I can naturally init all the higher 32 bits
-> default to 1 to indicate the user hasn't specified a CPU, but this is
-> incompatible with programs not using libbpf. Another approach could be
-> that a value of 1 for the higher 32 bits indicates CPU 0, and 2 indicates
-> CPU 1..., but this seems odd and would require a helper to assist users
-> in passing arguments.
+> Andrii, I just noted that this landed into bpf-next, and not bpf
+> (fixes).
 
-See BPF_F_SOCKMAP_TARGET_CPU flag point in my reply. You need an extra
-flag that would specify that those 32 bits are specifying a CPU
-number. There is no ambiguity. No flag - no CPU, Flag - CPU (even if
-zero).
+Hi Bjorn,
+
+Yes, libbpf and selftests fixes are generally applied through
+bpf-next, unless the issue is pretty bad and immediate.
+
+I'm sorry, but unfortunately it's too late now to move those patches
+as it's now been more than a month since they landed. For the future,
+please let us know ASAP if you think patches were misrouted. I think
+we are stuck with the need to do a stable backport for these, sorry.
 
 >
-> There is another method, like providing an extra 'attr', to replace the
-> passed 'target_cpu', which maintains the general nature of
-> 'map_update_elem' interface, like:
-> '''
-> +struct extra_bpf_attr {
-> +    u32 target_cpu;
-> +};
-> struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
->     __u32   map_fd;
->     __aligned_u64 key;
->     union {
->         __aligned_u64 value;
->         __aligned_u64 next_key;
->     };
->     __u64   flags;
->     +struct extra_bpf_attr extra;
-> };
+> RISC-V libbpf/perf needs this fix in 6.12 to properly build. Would it be
+> possible to have it in the bpf tree, and have it land in 6.12-rc7?
 >
-> static int bpf_map_update_value(struct bpf_map *map, struct file *map_fil=
-e,
-> -                               void *key, void *value, __u64 flags)
-> +                               void *key, void *value, __u64 flags, stru=
-ct bpf_attr_extra *extra);
-> '''
->
-> > > +               };
-> > >         };
-> > >
-> > >         struct { /* struct used by BPF_MAP_*_BATCH commands */
-> > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > > index 8254b2973157..95f719b9c3f3 100644
-> > > --- a/kernel/bpf/syscall.c
-> > > +++ b/kernel/bpf/syscall.c
-> > > @@ -239,10 +239,9 @@ static int bpf_obj_pin_uptrs(struct btf_record *=
-rec, void *obj)
-> > >  }
-> > >
-> > >  static int bpf_map_update_value(struct bpf_map *map, struct file *ma=
-p_file,
-> > > -                               void *key, void *value, __u64 flags)
-> > > +                               void *key, void *value, __u64 flags, =
-s32 target_cpu)
-> >
-> > yeah, this is what I'm talking about. Think how ridiculous it is for a
-> > generic "BPF map update" operation to accept the "target_cpu"
-> > parameter.
-> >
-> > pw-bot: cr
-> >
-> > >  {
-> > >         int err;
-> > > -
-> >
-> > why? don't break whitespace formatting
-> >
-> > >         /* Need to create a kthread, thus must support schedule */
-> > >         if (bpf_map_is_offloaded(map)) {
-> > >                 return bpf_map_offload_update_elem(map, key, value, f=
-lags);
-> > > @@ -252,7 +251,7 @@ static int bpf_map_update_value(struct bpf_map *m=
-ap, struct file *map_file,
-> > >                 return map->ops->map_update_elem(map, key, value, fla=
-gs);
-> > >         } else if (map->map_type =3D=3D BPF_MAP_TYPE_SOCKHASH ||
-> > >                    map->map_type =3D=3D BPF_MAP_TYPE_SOCKMAP) {
-> > > -               return sock_map_update_elem_sys(map, key, value, flag=
-s);
-> > > +               return sock_map_update_elem_sys(map, key, value, flag=
-s, target_cpu);
-> > >         } else if (IS_FD_PROG_ARRAY(map)) {
-> > >                 return bpf_fd_array_map_update_elem(map, map_file, ke=
-y, value,
-> > >                                                     flags);
-> >
-> > [...]
+> Andreas that has a similar fix [1].
 >
 >
+> Bj=C3=B6rn
+>
+> [1] https://lore.kernel.org/linux-riscv/mvm5xq44bqh.fsf@suse.de/
 
