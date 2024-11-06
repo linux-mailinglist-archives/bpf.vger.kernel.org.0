@@ -1,298 +1,323 @@
-Return-Path: <bpf+bounces-44177-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44178-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00BA89BF950
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 23:31:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 594999BF953
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 23:32:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B52C8284398
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 22:31:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE858B21ED5
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2024 22:32:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61AF7204932;
-	Wed,  6 Nov 2024 22:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E991DDC33;
+	Wed,  6 Nov 2024 22:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="WfOsIq+W"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWIbJ8P4"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05olkn2073.outbound.protection.outlook.com [40.92.91.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83E018FDD0;
-	Wed,  6 Nov 2024 22:31:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.91.73
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730932288; cv=fail; b=LnO4nyw4gDEYP6IuHnu3C8bGryG6wigpE7RlKVBgmrkeMGAQVO52yYVHBVm3dSpdhVL+XJZGtwBob8RRJXadEb5Njv1Ixxb7onfhELPjYHTPidpxezMOpw98r7rNEz6uCVtwllubwqE91uIjnu8JmXIP7t3gxcBvgqG/R1ARyGc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730932288; c=relaxed/simple;
-	bh=BfMdaSiHN2P1Icdh89Ycdr9YvGpSQDxs2avMeLO6rKo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=AUCAPHNlKx8rmvHiAMko/300P7fEwZkfMU50nscBbWT0x9Ojal9gfkfvcc7FlRPczHp4PXMyqdi6vd0/JXlTB/FxjzCzyrSdHCV8vqBnqOYhPphz3ZilGSTdGkwBQVYqSiwhTaGJxnnIPcsVRvBhEQi1POJD0IIehEDLT3pPNGM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=WfOsIq+W; arc=fail smtp.client-ip=40.92.91.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=W3NZJ9L/txDJAakwio2s9i0gMCEpGbAcGvHceBg5k+RVH0rTgolOU/YY+KdUNS3qnCa+9MfTTQyu+BZM+RceIhP1l7sJpDgjI6/eR6qYJntnDh48ZP4GO32FwCohQHTh2jajQHflI9MFXF4UgMDUV6r4naRNqDr3tAoNeaume+tMV2dXzcuvynSqm/ma7TLT9H4/9lWbkOUj4/lEBl5J11tjHxvJ9tVMw5LWzk+q86fG61r70SYoIrg6pZ0wY9PX6fxnFDil1Cc2Xt9BEzJcXZq/DCGs9vWNwNYcuuQNuNsubB/9v9dxJKT0v1CxPKYGRDVCMsvXdLs+lBXJYSA+rw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=S1l4C1Co1+xLjmuhszfhqmaE9NKpaF6yGvHgAH/rxps=;
- b=ItNFd3O2lWB/wkhnVSorxBitrso/7fZQEa20PeQAJdZ6er/yc63DfYrOfkmjsmAV4Q57dRh5oUsUQtq8/8bcK+x0/gb182maw6GNbwZrvaxV6+74akx6+cIvvu8ADQtObH7dC4OSfBmKpKds0wT4/GlXGuLXeg4LnQcx+pWepYQqz3G7czCBfby2StHzXxlUfOig4fdNm8nNJAaMndGqUx71aP4fdVzBx1QjYuPPH8jFvgjsDmd0otk9Fqup1MSbANhuqxasBZnbbY4iwcHWSy08pvmdZ4Mc39Ws7FNTVStNb1ZnK57hJOsQcKwllSXwhDegeG4bOcMp0a9Lg4o4RA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S1l4C1Co1+xLjmuhszfhqmaE9NKpaF6yGvHgAH/rxps=;
- b=WfOsIq+WVyecfOlKlJBCBBbw5ZHq2hP7GZ7PEeWnAMt5DtsyQH9PTqeRCw0quxuxolAQNs83oDtMMcgJUHQWDHigLRxFalQ8IzVrg88RX+1E3Kuk5LHITFFJCCQcshGwLp//jkynlMf9h1G6l2Eedj+tNTz8QOi4IfDqFQ2X0MW7TSHhFT9wb886L4vy6+yhBTzDHevx74SxafrDgg3BzaxRD37GfF4O3PTymF1MFJ5QjxqxFwjI5B4pZpsuBMr3Lq6we/VHZZzdeyteOmttvVbz3vVE1Ynn/28cWPnWCkEjF2RG2+XZelz74f1YfRZraqBwYSD9ZMSBuYZ6pwJs0A==
-Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
- by PA4PR03MB7134.eurprd03.prod.outlook.com (2603:10a6:102:f3::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8114.31; Wed, 6 Nov
- 2024 22:31:23 +0000
-Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
- ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
- ([fe80::4b97:bbdb:e0ac:6f7%4]) with mapi id 15.20.8093.027; Wed, 6 Nov 2024
- 22:31:23 +0000
-Message-ID:
- <AM6PR03MB58482B34E2470CA2126A490899532@AM6PR03MB5848.eurprd03.prod.outlook.com>
-Date: Wed, 6 Nov 2024 22:31:21 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 1/4] bpf/crib: Introduce task_file open-coded
- iterator kfuncs
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com,
- Christian Brauner <brauner@kernel.org>, bpf <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
-References: <AM6PR03MB58488FD29EB0D0B89D52AABB99532@AM6PR03MB5848.eurprd03.prod.outlook.com>
- <AM6PR03MB5848C66D53C0204C4EE2655F99532@AM6PR03MB5848.eurprd03.prod.outlook.com>
- <CAADnVQKuyqY7J4iJ=FZVNoon2y_v866H9hvjAn-06c8nq577Ng@mail.gmail.com>
-Content-Language: en-US
-From: Juntong Deng <juntong.deng@outlook.com>
-In-Reply-To: <CAADnVQKuyqY7J4iJ=FZVNoon2y_v866H9hvjAn-06c8nq577Ng@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: LO2P265CA0287.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:a1::35) To AM6PR03MB5848.eurprd03.prod.outlook.com
- (2603:10a6:20b:e4::10)
-X-Microsoft-Original-Message-ID:
- <e890d2b0-b794-4377-9083-8a4024a3850b@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A14B31A00FE
+	for <bpf@vger.kernel.org>; Wed,  6 Nov 2024 22:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730932344; cv=none; b=adI7Hk0wdzD1IKi3vLRLmKxQTPhC9s1pJrJbY2f1zkdoDkbpg+HiUjvHDGina5XOUlu+xCuG2HugbMmAryK/+G0Qnv+8qeQzj71k2QjknPMHS7UXTnezSCRihf57+jsLR5CcjzxOA3Ncbge1O1YBkl/7lad0FCgti1y6aL1p/sw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730932344; c=relaxed/simple;
+	bh=mjWyhtDVW2ZEBxQlLKCPKL2eDRXS6u2U3jVgDq863u0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YsDxwI1aKjDf5cs2C7JvjP0q+a/EDZQblR4F7eb7oF7sl4Ihr6OME/VDaUco4UqomaH8grLYTeDSBTUhBHtSDRkRmUh0/H5CrB3YvcXxrUo9lsOcWlfgwa76vypqEJ2KGKc7CLPeUwy7GON3Bc2467JNxQOHbOsl+CBcAbrO7GU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YWIbJ8P4; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2e2a97c2681so248163a91.2
+        for <bpf@vger.kernel.org>; Wed, 06 Nov 2024 14:32:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730932341; x=1731537141; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DCYIsZH6SPS6czBakdesnlSRtXWHcQMldLVzWuN19oA=;
+        b=YWIbJ8P4r3nJ8RHbRzmRHx4gxy4kJ2lu5uPkkrQ+JVjke/hRkOilEVVxz3D/88fXIZ
+         nOw8wjZl4uGuW65VUCvU6c2dqzEMWI5C6Wrezh9gUQCTt0M460uSpWdTPYdbM3M8PMiV
+         +Jxhqn33FcfhpMBtaHtMRczZf8Qk7DVag0BRzgrIo6sOXf8feNkkTOvWhMLuXsttmqpV
+         uv60Ft6iGukYP8+DcEl2S3bLI7AwMZWAaHYameiy/oqyGANUxr42OUkVrblLtYAqZWrl
+         ILSHnxDamYftlFmpX+w5tChpxTxqgEMv/IFX4i+nVfzAG8wzAjZ5GOlP+5xMQBaIsl6d
+         5fwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730932341; x=1731537141;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DCYIsZH6SPS6czBakdesnlSRtXWHcQMldLVzWuN19oA=;
+        b=gNvxtTg2Nqx8BnmX4Wmb5O7Ge5OHulYQ8RbWb5Me9fNwhN6JlGB85jttvAwPNb7ktE
+         y3rxNRHKtp1uavD2rQi1SvUawWXLS0A8skERx7M3Np0MVVFWwcfb2WcSdmdXWFvQxHpP
+         Vf2FkWlpQx4LNeS3Z+KbH8KBARao5OtFyFbXb9iokHHisiqRWjFdkI0zf5fPsX8MnElI
+         MvLYI0FdfYFiePbTiif0tdYRs2rgnLQvl1MvxbwR7xKw5mK4NVaSaSD+XFKJakgAYX72
+         UK6PgPVv8zo+w/UDy/wkxhlB+NMObAOBKoNOivJXKzEoL430XdRCWKjaZAi1ub++C3p0
+         wTtA==
+X-Gm-Message-State: AOJu0Yw4HaiHrZVJ36oJ4qMkVO1y6Ut/g+9gQaNA7Lv6ObO+c4e4wLeA
+	LhnXvKkfipmx1KMjYV4+n6gsr12TnJhslTG0qOMSIZe/DirOG5Mr0OR16I6jMwTDiLIXb5qnkit
+	uEzii9Ns6bKzb2QKAXMaexFIro0m2dOe5
+X-Google-Smtp-Source: AGHT+IHaJ/rRelltsl8P9R5l7b+ZZN9RxpLEf4fqwxkGn3IqGzByKnwRBF7GE/dH3Irl62wfIBeTizjxDPjzY3t/ZW0=
+X-Received: by 2002:a17:90a:7c06:b0:2e0:921a:3383 with SMTP id
+ 98e67ed59e1d1-2e92ce2e140mr34835498a91.1.1730932340675; Wed, 06 Nov 2024
+ 14:32:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|PA4PR03MB7134:EE_
-X-MS-Office365-Filtering-Correlation-Id: ea099d80-c401-4cbf-a031-08dcfeb2be14
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|461199028|5072599009|15080799006|6090799003|8060799006|19110799003|3412199025|4302099013|440099028|1602099012|10035399004;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?elhjRG9OR0dlQXRscFo4bXhZVTE0UW5iWjFYVVpPVzluMktEZVdSYm5HcGxu?=
- =?utf-8?B?VWRXZVNpNjdVN3E3Z2pNRjJKRUxMOG9pdlBWWjRaZklVbEREWWdyR3VxbXdu?=
- =?utf-8?B?ZHN6ZzhzVVpBSnh4dzNxc3B2VGNSRTF2bmxQSER1M3ZMUm9ZTmdCTUxLZ2Vq?=
- =?utf-8?B?Yi85LzI2MTZCS2RYNzNmOGQyZTVGZVo0L29PSXNUK2hDemRBSDVXZHdRMHNH?=
- =?utf-8?B?SlNYNUhONU5YRHZUYjFHYjgvenVxTlpzY3RZVXdGMUIvU3pyTGYzbWVkMUNV?=
- =?utf-8?B?VFMvbmFwaU4rUDE0eEJ6aVE5RGpOSEtEcWVic2syQXBKTDRycXR3aSs4dG1W?=
- =?utf-8?B?WFRyZXBzQU9BK0dJNGRCM2RTQkVja3VOMjh1L2ZhL3YvSERUajN6T1hOSHU4?=
- =?utf-8?B?UFhTM1NzS1lnSGJXQjlDRy93NE82N0NCc2VvN010b2t3eE9lQmdzOHdFSlhz?=
- =?utf-8?B?dnlYTmxES2dBWkVlbVBZUVZzekhxN3VSY2lIaWN3NU5IY0tCV0V6OFNqdU9k?=
- =?utf-8?B?QzFqTE5PRmZjZkE2cm1GMjY4UlM2RHM2dzJ3TDZFblhUWUdjaHpwM3IwOUdP?=
- =?utf-8?B?eXBhS3o3eHA5SDFZRkgvc21MMkhmVVhZRHBxbVd4SU5sQjM1UWx5RWs5K2VR?=
- =?utf-8?B?WUFjZGxnK1pqUUh5TFgzVTdUOFVOcnFycWh0NW1leHZxbjdOY3lGcno5VE0z?=
- =?utf-8?B?ZnZ2MlUxUWRXTzJHTlN3UWFISlJKb244UFMwSHhVQ0c4Vm12dXlFa0dCNmxY?=
- =?utf-8?B?Nmw3ZTM0UFV5c0Z6eW9NRmlwcjVTT1JIaTlTelBOK3BBY0xiLzROVWVKc09u?=
- =?utf-8?B?Sk9zRDJpMkgyWURlSkt6c0pVMHlOWlNUYVNtSUNTeGhlUVU5eHFZY3pWQ053?=
- =?utf-8?B?RDczNnpEaCtJK0ZEbHRkdkM1WTVBYTdrekMybUdrd3pOOWpLYlkxZXNsTm9U?=
- =?utf-8?B?bUhmcG5TK1dUcWdHWmR4bWd4ZGtrYUpyWW1SNkxtT1ZCM2xUZkptRVphbENr?=
- =?utf-8?B?a25tK3M4R3pVK3cwbnpMT1p1R2d6cFlhd0cwSjJJSjdWQ0tkZEFSNmRzMkVv?=
- =?utf-8?B?MENTbE4yL0ZVZ0ZTNUQzZm9jbDFhblZzcmdiSVVnUVhCekZ3SHlpN216TFFw?=
- =?utf-8?B?d093OFgwaWs2VjdPNUd4cSthTGpmMWFZQm5remU2VlZOZVpZbnB0TFVkSzNi?=
- =?utf-8?B?d1lrRTJZclk1M3ZwSjB2UmZvWk93MElHVUM2aUs4MjJJdCtTZlNWMi91aHpy?=
- =?utf-8?B?VXgza0FvbStZNWM5c2d6TmlZSFlaWWdET0hqVzgrbkgrV2NWeWxRZUxnaHdG?=
- =?utf-8?B?M2h5eFI0dUdZT0V1cXo0SjZpNHVaSXFUN0xxTXNJR0JaTERuS3hPMlY5ZE83?=
- =?utf-8?B?a3N5UVoyZmhac1o5c25wSTA5ZEtaSlBRRmQxMTg2VEhUajVnSThsWFBsMmhw?=
- =?utf-8?B?QlhmV3RPVFlTWjdhUkRZSGFaM1NEMFhmMVdZWkM3SE5zbWt6THU1eGphTENY?=
- =?utf-8?B?YVB0bjBzWHVEQ0lvUGx5WVBjc1I3L3VRQ1hlYXFsQXJaM09UWEhxdUVKZmVs?=
- =?utf-8?B?bDIwQT09?=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?V1QzTVJmQ2M5N29yWXlYdkhOS2ZYQXMrNjMzcmFpZkVZaEZnQnpsMGtGdmRp?=
- =?utf-8?B?Q1pHelJONFdhVmhvTis1V2ZpS2pmOHFHZUJnT3JpWlU1OVpRR0RpM09PZkt4?=
- =?utf-8?B?T1JjQXpyZWJpYkdacUI1OGxLRzdDcWpxOTNKc3V1MXR6cWlpUlZod0M5TzQ4?=
- =?utf-8?B?NlBpMHc4QzY0dTJ3UG1IT2Rzc1M5Y0ZOWXVpL0gzQWtzQzVLUE0wRTBsK1Fo?=
- =?utf-8?B?bHZoSVVLaFFlTFczNlI2OVVHbjJnRjltOC9ZMUpySndhTFFaR21VYi9KcTdu?=
- =?utf-8?B?aWUxdkpRUTVLNzFSaHh2bjgwYWJTVWJLamJHVlArNTZRT2tKeWt1RncxY1ZY?=
- =?utf-8?B?L0U4Qld1UFVkWG5rY1dQMG1sUEVpQXpVZ0Y5eVNvOFJKQnZEaGRsaTI2UVFT?=
- =?utf-8?B?eldMRWp6T29JNFZINEd4ZkJkc005d2Ftb3hVdTdDUDNackdJelFndzBmM2xD?=
- =?utf-8?B?dTdSb0xQNkxSYVJaaXc2cHZuQjJsNFl5RzdnaDdmVWZpVzZnNkR3Nit3RU5Q?=
- =?utf-8?B?Myt1NENsNW4vdkxKVGxWM3ZoSCtkS0FnN1l6WUdWUjFjNXFqYkZjT3c3SnFr?=
- =?utf-8?B?b0dBQnRHRnM4M1ZPbVdSVGx1bVE4ZFY0aWZiaGhOTWRFWmh3dFVhakVuS00y?=
- =?utf-8?B?QzVJNFBXN2pUbzdLcFVsUXlCbjFXczNVYW9SZEpiVmpENk5BSU94cEFqS2s1?=
- =?utf-8?B?dE5aSmdmSExrU3JXSmdkdTQ2cVdCUC9sTFpyaE0zVnAvZWJrN1owZmRjRHZ3?=
- =?utf-8?B?T3lYSXZvMnhKVjJBc21RTG9yNkxkbmNjcFgyTnNqWU5WN1Uzb01VTXl4TWZQ?=
- =?utf-8?B?VSswY0VINEJXd0d4VHA4bnlqQUpVK1dMbFh2OFEyaWNVYlZLbnVoZHRCNFRU?=
- =?utf-8?B?d2JXZXdvdnBWNGJIaTBUalJTbmI0WkhzZngwdU1BNHdvZXhKTGZ3a3RXSmFu?=
- =?utf-8?B?R2Y5ZzEyM0NhbFhtaG9DaFNpL2JwdGpRYWIwdGFJaktmcU1URkw5bHRLenJs?=
- =?utf-8?B?cDI3RFd3RFk1b0NrWnQ0VEhNc1pGK2FRL3ZNS08vWXFkS1dzN1AzN0xKRk5Y?=
- =?utf-8?B?MnMxRmlMQTZQZG1pR3FObTRJaDQzUUE5KzdIb1d1d3NSMENkc09Pbkk3T2RL?=
- =?utf-8?B?eU1tNDEzaEJGT2E1ai80aFV1ZGtVT0Y2TUkvN3V5NEczUkdsejdOQy9RK3F0?=
- =?utf-8?B?YU1weGc0T3I5MHN6cFlhdjBTanEwUUNmVFUzR3ltNG5CWm1mTUNSVks5M05Q?=
- =?utf-8?B?MC9ic0NrR3RmTmhaKzZQTnJad3VBWWYwM0NhUldPbHE2bGNnRUxkOHJQelhK?=
- =?utf-8?B?WlJ1b0QrS01vYkQ2UU94Qnl1U2tTYkhvWjRrU2lFZGkzSS9PclUwZXA1SkI3?=
- =?utf-8?B?dVpEQVl0cGpjVWVMV3JmYXVBajdDb2RtRzgwa003REdoRTJiOVB5bXNmRXZz?=
- =?utf-8?B?V2NZUFQ1SkxvNGJlOGxpWG9jNHhRdGo4M3Q3ekxMd2pCYkI4emx1b0JzVC9i?=
- =?utf-8?B?SkVGUEtvVGdoUGtnOVZHVWh1Z0tpTXdocWNxK2ViWFlvRXFlNlVNeHN6TVE3?=
- =?utf-8?B?b05hWlNxSURWZ1dTLy9YTTh3QkZkdmxDdkpCdXd4dkFLTGkrb0lTVk1OQVlJ?=
- =?utf-8?B?MGUxNmlTVTJ4MjU3SFlaeXp6Mk9wWUlITURsbzJpdVVDS3J0RlV3bFRDNlBZ?=
- =?utf-8?Q?t9dUVyJSJpuZawCBykTc?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea099d80-c401-4cbf-a031-08dcfeb2be14
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2024 22:31:22.9420
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR03MB7134
+References: <20241104171959.2938862-1-memxor@gmail.com> <20241104171959.2938862-2-memxor@gmail.com>
+In-Reply-To: <20241104171959.2938862-2-memxor@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 6 Nov 2024 14:32:08 -0800
+Message-ID: <CAEf4BzYxjWY-YCaCMQ73joU_O96KhKBRXm6KgvENJk1TbeCD_w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] bpf: Mark raw_tp arguments with PTR_MAYBE_NULL
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, kkd@meta.com, Jiri Olsa <jolsa@kernel.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/11/6 21:31, Alexei Starovoitov wrote:
-> On Wed, Nov 6, 2024 at 11:39 AM Juntong Deng <juntong.deng@outlook.com> wrote:
->>
->> This patch adds the open-coded iterator style process file iterator
->> kfuncs bpf_iter_task_file_{new,next,destroy} that iterates over all
->> files opened by the specified process.
-> 
-> This is ok.
-> 
->> In addition, this patch adds bpf_iter_task_file_get_fd() getter to get
->> the file descriptor corresponding to the file in the current iteration.
-> 
-> Unnecessary. Use CORE to read iter internal fields.
-> 
->> The reference to struct file acquired by the previous
->> bpf_iter_task_file_next() is released in the next
->> bpf_iter_task_file_next(), and the last reference is released in the
->> last bpf_iter_task_file_next() that returns NULL.
->>
->> In the bpf_iter_task_file_destroy(), if the iterator does not iterate to
->> the end, then the last struct file reference is released at this time.
->>
->> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
->> ---
->>   kernel/bpf/helpers.c   |  4 ++
->>   kernel/bpf/task_iter.c | 96 ++++++++++++++++++++++++++++++++++++++++++
->>   2 files changed, 100 insertions(+)
->>
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index 395221e53832..1f0f7ca1c47a 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -3096,6 +3096,10 @@ BTF_ID_FLAGS(func, bpf_iter_css_destroy, KF_ITER_DESTROY)
->>   BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS | KF_RCU_PROTECTED)
->>   BTF_ID_FLAGS(func, bpf_iter_task_next, KF_ITER_NEXT | KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_iter_task_destroy, KF_ITER_DESTROY)
->> +BTF_ID_FLAGS(func, bpf_iter_task_file_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
->> +BTF_ID_FLAGS(func, bpf_iter_task_file_next, KF_ITER_NEXT | KF_RET_NULL)
->> +BTF_ID_FLAGS(func, bpf_iter_task_file_get_fd)
->> +BTF_ID_FLAGS(func, bpf_iter_task_file_destroy, KF_ITER_DESTROY)
->>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
->>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
->> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
->> index 5af9e130e500..32e15403a5a6 100644
->> --- a/kernel/bpf/task_iter.c
->> +++ b/kernel/bpf/task_iter.c
->> @@ -1031,6 +1031,102 @@ __bpf_kfunc void bpf_iter_task_destroy(struct bpf_iter_task *it)
->>   {
->>   }
->>
->> +struct bpf_iter_task_file {
->> +       __u64 __opaque[3];
->> +} __aligned(8);
->> +
->> +struct bpf_iter_task_file_kern {
->> +       struct task_struct *task;
->> +       struct file *file;
->> +       int fd;
->> +} __aligned(8);
->> +
->> +/**
->> + * bpf_iter_task_file_new() - Initialize a new task file iterator for a task,
->> + * used to iterate over all files opened by a specified task
->> + *
->> + * @it: the new bpf_iter_task_file to be created
->> + * @task: a pointer pointing to a task to be iterated over
->> + */
->> +__bpf_kfunc int bpf_iter_task_file_new(struct bpf_iter_task_file *it,
->> +               struct task_struct *task)
->> +{
->> +       struct bpf_iter_task_file_kern *kit = (void *)it;
->> +
->> +       BUILD_BUG_ON(sizeof(struct bpf_iter_task_file_kern) > sizeof(struct bpf_iter_task_file));
->> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_task_file_kern) !=
->> +                    __alignof__(struct bpf_iter_task_file));
->> +
->> +       kit->task = task;
-> 
-> This is broken, since task refcnt can drop while iter is running.
-> 
-> Before doing any of that I'd like to see a long term path for crib.
-> All these small additions are ok if they're generic and useful elsewhere.
-> I'm afraid there is no path forward for crib itself though.
-> 
-> pw-bot: cr
+On Mon, Nov 4, 2024 at 9:20=E2=80=AFAM Kumar Kartikeya Dwivedi <memxor@gmai=
+l.com> wrote:
+>
+> Arguments to a raw tracepoint are tagged as trusted, which carries the
+> semantics that the pointer will be non-NULL.  However, in certain cases,
+> a raw tracepoint argument may end up being NULL. More context about this
+> issue is available in [0].
+>
+> Thus, there is a discrepancy between the reality, that raw_tp arguments
+> can actually be NULL, and the verifier's knowledge, that they are never
+> NULL, causing explicit NULL checks to be deleted, and accesses to such
+> pointers potentially crashing the kernel.
+>
+> To fix this, mark raw_tp arguments as PTR_MAYBE_NULL, and then special
+> case the dereference and pointer arithmetic to permit it, and allow
+> passing them into helpers/kfuncs; these exceptions are made for raw_tp
+> programs only. Ensure that we don't do this when ref_obj_id > 0, as in
+> that case this is an acquired object and doesn't need such adjustment.
+>
+> The reason we do mask_raw_tp_trusted_reg logic is because other will
+> recheck in places whether the register is a trusted_reg, and then
+> consider our register as untrusted when detecting the presence of the
+> PTR_MAYBE_NULL flag.
+>
+> To allow safe dereference, we enable PROBE_MEM marking when we see loads
+> into trusted pointers with PTR_MAYBE_NULL.
+>
+> While trusted raw_tp arguments can also be passed into helpers or kfuncs
+> where such broken assumption may cause issues, a future patch set will
+> tackle their case separately, as PTR_TO_BTF_ID (without PTR_TRUSTED) can
+> already be passed into helpers and causes similar problems. Thus, they
+> are left alone for now.
+>
+> It is possible that these checks also permit passing non-raw_tp args
+> that are trusted PTR_TO_BTF_ID with null marking. In such a case,
+> allowing dereference when pointer is NULL expands allowed behavior, so
+> won't regress existing programs, and the case of passing these into
+> helpers is the same as above and will be dealt with later.
+>
+> Also update the failure case in tp_btf_nullable selftest to capture the
+> new behavior, as the verifier will no longer cause an error when
+> directly dereference a raw tracepoint argument marked as __nullable.
+>
+>   [0]: https://lore.kernel.org/bpf/ZrCZS6nisraEqehw@jlelli-thinkpadt14gen=
+4.remote.csb
+>
+> Reviewed-by: Jiri Olsa <jolsa@kernel.org>
+> Reported-by: Juri Lelli <juri.lelli@redhat.com>
+> Tested-by: Juri Lelli <juri.lelli@redhat.com>
+> Fixes: 3f00c5239344 ("bpf: Allow trusted pointers to be passed to KF_TRUS=
+TED_ARGS kfuncs")
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf.h                           |  6 ++
+>  kernel/bpf/btf.c                              |  5 +-
+>  kernel/bpf/verifier.c                         | 79 +++++++++++++++++--
+>  .../bpf/progs/test_tp_btf_nullable.c          |  6 +-
+>  4 files changed, 87 insertions(+), 9 deletions(-)
+>
 
-Thanks for your reply.
+[...]
 
-The long-term path of CRIB is consistent with the initial goal, adding
-kfuncs to help the bpf program obtain process-related information.
+> @@ -12065,12 +12109,15 @@ static int check_kfunc_args(struct bpf_verifier=
+_env *env, struct bpf_kfunc_call_
+>                         return -EINVAL;
+>                 }
+>
+> +               mask =3D mask_raw_tp_reg(env, reg);
+>                 if ((is_kfunc_trusted_args(meta) || is_kfunc_rcu(meta)) &=
+&
+>                     (register_is_null(reg) || type_may_be_null(reg->type)=
+) &&
+>                         !is_kfunc_arg_nullable(meta->btf, &args[i])) {
+>                         verbose(env, "Possibly NULL pointer passed to tru=
+sted arg%d\n", i);
+> +                       unmask_raw_tp_reg(reg, mask);
 
-I think most of the CRIB kfuncs are generic, such as process file
-iterator, skb iterator, bpf_fget_task() that gets struct file based on
-file descriptor, etc.
+Kumar,
 
-This is because obtaining process-related information is not a
-requirement specific to checkpoint/restore scenarios, but is
-required in other scenarios as well.
+Do we really need this unmask? We are already erroring out, restoring
+reg->type is probably not very important at this point?
 
-Here I would like to quote your vision on LPC 2022 [0] [1].
+>                         return -EACCES;
+>                 }
+> +               unmask_raw_tp_reg(reg, mask);
+>
+>                 if (reg->ref_obj_id) {
+>                         if (is_kfunc_release(meta) && meta->ref_obj_id) {
+> @@ -12128,16 +12175,24 @@ static int check_kfunc_args(struct bpf_verifier=
+_env *env, struct bpf_kfunc_call_
+>                         if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu=
+(meta))
+>                                 break;
+>
+> +                       /* Allow passing maybe NULL raw_tp arguments to
+> +                        * kfuncs for compatibility. Don't apply this to
+> +                        * arguments with ref_obj_id > 0.
+> +                        */
+> +                       mask =3D mask_raw_tp_reg(env, reg);
+>                         if (!is_trusted_reg(reg)) {
+>                                 if (!is_kfunc_rcu(meta)) {
+>                                         verbose(env, "R%d must be referen=
+ced or trusted\n", regno);
+> +                                       unmask_raw_tp_reg(reg, mask);
 
-"Starovoitov concluded his presentation by sharing his vision for the
-future of BPF: replacing kernel modules as the de-facto means of
-extending the kernel."
+same as above, do we care about unmasking in this situation? and the
+one immediately below?
 
-"BPF programs are safe and portable kernel modules"
+>                                         return -EINVAL;
+>                                 }
+>                                 if (!is_rcu_reg(reg)) {
+>                                         verbose(env, "R%d must be a rcu p=
+ointer\n", regno);
+> +                                       unmask_raw_tp_reg(reg, mask);
+>                                         return -EINVAL;
+>                                 }
+>                         }
+> +                       unmask_raw_tp_reg(reg, mask);
+>                         fallthrough;
+>                 case KF_ARG_PTR_TO_CTX:
+>                 case KF_ARG_PTR_TO_DYNPTR:
+> @@ -12160,7 +12215,9 @@ static int check_kfunc_args(struct bpf_verifier_e=
+nv *env, struct bpf_kfunc_call_
+>
+>                 if (is_kfunc_release(meta) && reg->ref_obj_id)
+>                         arg_type |=3D OBJ_RELEASE;
+> +               mask =3D mask_raw_tp_reg(env, reg);
+>                 ret =3D check_func_arg_reg_off(env, reg, regno, arg_type)=
+;
+> +               unmask_raw_tp_reg(reg, mask);
+>                 if (ret < 0)
+>                         return ret;
+>
+> @@ -12337,6 +12394,7 @@ static int check_kfunc_args(struct bpf_verifier_e=
+nv *env, struct bpf_kfunc_call_
+>                         ref_tname =3D btf_name_by_offset(btf, ref_t->name=
+_off);
+>                         fallthrough;
+>                 case KF_ARG_PTR_TO_BTF_ID:
+> +                       mask =3D mask_raw_tp_reg(env, reg);
+>                         /* Only base_type is checked, further checks are =
+done here */
+>                         if ((base_type(reg->type) !=3D PTR_TO_BTF_ID ||
+>                              (bpf_type_has_unsafe_modifiers(reg->type) &&=
+ !is_rcu_reg(reg))) &&
+> @@ -12345,9 +12403,11 @@ static int check_kfunc_args(struct bpf_verifier_=
+env *env, struct bpf_kfunc_call_
+>                                 verbose(env, "expected %s or socket\n",
+>                                         reg_type_str(env, base_type(reg->=
+type) |
+>                                                           (type_flag(reg-=
+>type) & BPF_REG_TRUSTED_MODIFIERS)));
+> +                               unmask_raw_tp_reg(reg, mask);
 
-[0]: https://lwn.net/Articles/909095/
-[1]: 
-https://lpc.events/event/16/contributions/1346/attachments/1021/1966/bpf_LPC_2022.pdf
+ditto
 
-If the future of BPF is to become a better kernel module and BPF kfuncs
-is the equivalent of a better EXPORT_SYMBOL_GPL.
+>                                 return -EINVAL;
+>                         }
+>                         ret =3D process_kf_arg_ptr_to_btf_id(env, reg, re=
+f_t, ref_tname, ref_id, meta, i);
+> +                       unmask_raw_tp_reg(reg, mask);
+>                         if (ret < 0)
+>                                 return ret;
+>                         break;
+> @@ -13320,7 +13380,7 @@ static int sanitize_check_bounds(struct bpf_verif=
+ier_env *env,
+>   */
+>  static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+>                                    struct bpf_insn *insn,
+> -                                  const struct bpf_reg_state *ptr_reg,
+> +                                  struct bpf_reg_state *ptr_reg,
+>                                    const struct bpf_reg_state *off_reg)
+>  {
+>         struct bpf_verifier_state *vstate =3D env->cur_state;
+> @@ -13334,6 +13394,7 @@ static int adjust_ptr_min_max_vals(struct bpf_ver=
+ifier_env *env,
+>         struct bpf_sanitize_info info =3D {};
+>         u8 opcode =3D BPF_OP(insn->code);
+>         u32 dst =3D insn->dst_reg;
+> +       bool mask;
+>         int ret;
+>
+>         dst_reg =3D &regs[dst];
+> @@ -13360,11 +13421,14 @@ static int adjust_ptr_min_max_vals(struct bpf_v=
+erifier_env *env,
+>                 return -EACCES;
+>         }
+>
+> +       mask =3D mask_raw_tp_reg(env, ptr_reg);
+>         if (ptr_reg->type & PTR_MAYBE_NULL) {
+>                 verbose(env, "R%d pointer arithmetic on %s prohibited, nu=
+ll-check it first\n",
+>                         dst, reg_type_str(env, ptr_reg->type));
+> +               unmask_raw_tp_reg(ptr_reg, mask);
 
-Then all CRIB kfuncs are useful. CRIB essentially gives bpf programs the
-ability to access process information.
+ditto
 
-Giving bpf the ability to access process information is part of making
-bpf a generic and better "kernel module".
-
-Therefore I believe that CRIB is consistent with the long-term vision of
-BPF, or in other words CRIB is part of the long-term vision of BPF.
-
-Many thanks.
-
+>                 return -EACCES;
+>         }
+> +       unmask_raw_tp_reg(ptr_reg, mask);
+>
+>         switch (base_type(ptr_reg->type)) {
+>         case PTR_TO_CTX:
+> @@ -19866,6 +19930,7 @@ static int convert_ctx_accesses(struct bpf_verifi=
+er_env *env)
+>                  * for this case.
+>                  */
+>                 case PTR_TO_BTF_ID | MEM_ALLOC | PTR_UNTRUSTED:
+> +               case PTR_TO_BTF_ID | PTR_TRUSTED | PTR_MAYBE_NULL:
+>                         if (type =3D=3D BPF_READ) {
+>                                 if (BPF_MODE(insn->code) =3D=3D BPF_MEM)
+>                                         insn->code =3D BPF_LDX | BPF_PROB=
+E_MEM |
+> diff --git a/tools/testing/selftests/bpf/progs/test_tp_btf_nullable.c b/t=
+ools/testing/selftests/bpf/progs/test_tp_btf_nullable.c
+> index bba3e37f749b..5aaf2b065f86 100644
+> --- a/tools/testing/selftests/bpf/progs/test_tp_btf_nullable.c
+> +++ b/tools/testing/selftests/bpf/progs/test_tp_btf_nullable.c
+> @@ -7,7 +7,11 @@
+>  #include "bpf_misc.h"
+>
+>  SEC("tp_btf/bpf_testmod_test_nullable_bare")
+> -__failure __msg("R1 invalid mem access 'trusted_ptr_or_null_'")
+> +/* This used to be a failure test, but raw_tp nullable arguments can now
+> + * directly be dereferenced, whether they have nullable annotation or no=
+t,
+> + * and don't need to be explicitly checked.
+> + */
+> +__success
+>  int BPF_PROG(handle_tp_btf_nullable_bare1, struct bpf_testmod_test_read_=
+ctx *nullable_ctx)
+>  {
+>         return nullable_ctx->len;
+> --
+> 2.43.5
+>
 
