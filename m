@@ -1,56 +1,56 @@
-Return-Path: <bpf+bounces-44300-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44299-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9092A9C10D5
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 22:18:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D32BE9C10C1
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 22:13:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61224284B5E
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 21:17:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89FAC1F2324F
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 21:13:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE67F217F47;
-	Thu,  7 Nov 2024 21:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E658E21830E;
+	Thu,  7 Nov 2024 21:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="aASx2MId"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="G3KE1ns5"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B807D155398
-	for <bpf@vger.kernel.org>; Thu,  7 Nov 2024 21:17:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97301CF7BB
+	for <bpf@vger.kernel.org>; Thu,  7 Nov 2024 21:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731014274; cv=none; b=CxexGqZ47MnZaS4vqXO9V3yrhls8oMJ2/+czN9TslKICEy0MSRpqFhcd5eE9rGhsVn6AgIbuMb0wtd8tVrd0/+mTpqOA7nL0pMy1dH+pJgQpgpL478G+cRs0V0hccQBmsDqbe8Lmirkgf/l/NcjLzeR71g50symcibdUqfVoywo=
+	t=1731013978; cv=none; b=A4Eau49mqbmugGV045fyFT7hSnunLVXrH9dQsHgEw/UVykml8gZWRmiKeS5fdIxfA2ASQ1PdWS91bW5bQMeEcdQ4Ih+/SNNlh3bwSe/zukhgFrIlagcOWQD09Ywxt5/LbGbwRdXT+KXgnN1LgXhzq6DgzQthdtn5eQLTffIzTf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731014274; c=relaxed/simple;
-	bh=WGsV1SaFfLC/K3ND2x1htghQvqRTeu5V6tnV/ziQL4Y=;
+	s=arc-20240116; t=1731013978; c=relaxed/simple;
+	bh=q2zm7XhpWXgczVLTp50flukPx5I2rnMRsgcIbA/JdIM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=c0jQby9PgxqDH/3ElQpu56SF2IiGe/ABhri5vqUe9yz8ytJXVMDP3ODjlNAl2UO9LYJ3+JUOcggYlgHpCahTk92LAf7soesk+4rOpcVuZQnb4ImNdcKwgcv3kanp6r81fMF3pxi+IzooYST4Zh3Jz/+WEH/v9ix7UOhgO269wuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=aASx2MId; arc=none smtp.client-ip=67.231.153.30
+	 MIME-Version:Content-Type; b=heGdWT4nCk/X30KM0BsCD02TIaInHYt7LzmOHVV16r2DQSSujz7Tc03TI/ps/4fGj1+fqwF21vs1i+8gqzBZDWLivHk4Pho8DJmrV9lvjbrQx+GS9cGC0NC3SFB7OCiq/3jyUn4u9cv8S2V8/UFzF4+kEjWgMoTa78bJ+uqpVbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=G3KE1ns5; arc=none smtp.client-ip=67.231.153.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
 Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-	by m0089730.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 4A7KC9aX025532;
-	Thu, 7 Nov 2024 13:12:28 -0800
+	by m0089730.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 4A7KC9ab025532;
+	Thu, 7 Nov 2024 13:12:30 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=s2048-2021-q4;
-	 bh=dcI28znQL45vPqQFKE1MV54vNgiEo9OBLY6TCGqUKGs=; b=aASx2MIdqTFh
-	pMGxcQVtElrUD8vWkLkqa8BC34BZy3svoZ+YPGWQV16bgL3zEfzjMmPNikRVo33M
-	0n4eTK8nJhBVYb3/kOVweSHq4+mspHCMroVJ1h0bjDheQGiXVCV+O100JO8iKJrJ
-	I90T4fqNOgxQK2I76ir4zBTD6Ptz118pd8nm92WFrHi/T0M+WDqUanK9/LxvJbVl
-	fdgZ4Ga+CQzs1WBrssZv0MBalbpGx+NbwgXKNk97v5lAZi6p2YBVdhTzvI+RbZYl
-	DI4R/wuVaYSbMzXtIUI7sdp4e4jMG+0ChpLerz0REgJ5ZgQ9MMk3RD6A+KY8UVB0
-	1ajbDVq6Iw==
+	 bh=B445bxnRd7VbM2XZKpHtwArCnEdBMewd+pcv5w8IaSQ=; b=G3KE1ns5UxY3
+	9mPXocvEH+JgwZRE37WoqZYfeJcBpcFvziibeEQT7LvbERBPibhJYqhKRCyv++WC
+	biHpShKh4hAjcl2JNEgA9SAOV5Xg3OoEPKIfmyAECcXRr512QHsXcfWLWA4MyJuI
+	krZOM79LJoPK9Qq51zfjTYqj+yfG+1PJT+uBWCl9wcF8226ANOviM+0/5DzWLNR4
+	B9XQ9U+KQ+kgilJJ29uvkWgFBTY3n1ZxvZ6S4NMnqfuFpGqW+VyHfxTsOR+w/MT1
+	RLfswj29SbpqCRsJSb2ZiCpY9namaNGgD46bcdjp90hTXtxwKL3uKA+/vtImaAQu
+	dZjGLsyttg==
 Received: from mail.thefacebook.com ([163.114.134.16])
-	by m0089730.ppops.net (PPS) with ESMTPS id 42s12waa00-1
+	by m0089730.ppops.net (PPS) with ESMTPS id 42s12waa00-5
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 07 Nov 2024 13:12:27 -0800 (PST)
+	Thu, 07 Nov 2024 13:12:30 -0800 (PST)
 Received: from devvm4158.cln0.facebook.com (2620:10d:c085:208::f) by
  mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server id
- 15.2.1544.11; Thu, 7 Nov 2024 21:12:24 +0000
+ 15.2.1544.11; Thu, 7 Nov 2024 21:12:26 +0000
 From: Vadim Fedorenko <vadfed@meta.com>
 To: Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann
@@ -67,9 +67,9 @@ CC: <x86@kernel.org>, <bpf@vger.kernel.org>,
         Vadim Fedorenko
 	<vadfed@meta.com>,
         Martin KaFai Lau <martin.lau@linux.dev>
-Subject: [PATCH bpf-next v4 3/4] selftests/bpf: add selftest to check rdtsc jit
-Date: Thu, 7 Nov 2024 13:12:05 -0800
-Message-ID: <20241107211206.2814069-3-vadfed@meta.com>
+Subject: [PATCH bpf-next v4 4/4] selftests/bpf: add usage example for cpu cycles kfuncs
+Date: Thu, 7 Nov 2024 13:12:06 -0800
+Message-ID: <20241107211206.2814069-4-vadfed@meta.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20241107211206.2814069-1-vadfed@meta.com>
 References: <20241107211206.2814069-1-vadfed@meta.com>
@@ -81,149 +81,92 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: V9NVKWU5QbIgRvum-Oolq5nNJAB-otq_
-X-Proofpoint-ORIG-GUID: V9NVKWU5QbIgRvum-Oolq5nNJAB-otq_
+X-Proofpoint-GUID: WZb6L7EBjKHRR-RKtJ-M_jp7Q36w-yzD
+X-Proofpoint-ORIG-GUID: WZb6L7EBjKHRR-RKtJ-M_jp7Q36w-yzD
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
  definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-get_cpu_cycles() is replaced with rdtsc instruction on x86_64. Add
-tests to check it.
+The selftest provides an example of how to measure the latency of bpf
+kfunc/helper call in cycles and nanoseconds.
 
 Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
 ---
- .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../selftests/bpf/progs/verifier_cpu_cycles.c | 104 ++++++++++++++++++
- 2 files changed, 106 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_cpu_cycles.c
+ .../bpf/prog_tests/test_cpu_cycles.c          | 35 +++++++++++++++++++
+ .../selftests/bpf/progs/test_cpu_cycles.c     | 25 +++++++++++++
+ 2 files changed, 60 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_cpu_cycles.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cpu_cycles.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 75f7a2ce334b..d76cc90f4bfb 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -97,6 +97,7 @@
- #include "verifier_xdp_direct_packet_access.skel.h"
- #include "verifier_bits_iter.skel.h"
- #include "verifier_lsm.skel.h"
-+#include "verifier_cpu_cycles.skel.h"
- 
- #define MAX_ENTRIES 11
- 
-@@ -223,6 +224,7 @@ void test_verifier_xdp(void)                  { RUN(verifier_xdp); }
- void test_verifier_xdp_direct_packet_access(void) { RUN(verifier_xdp_direct_packet_access); }
- void test_verifier_bits_iter(void) { RUN(verifier_bits_iter); }
- void test_verifier_lsm(void)                  { RUN(verifier_lsm); }
-+void test_verifier_cpu_cycles(void)           { RUN(verifier_cpu_cycles); }
- 
- void test_verifier_mtu(void)
- {
-diff --git a/tools/testing/selftests/bpf/progs/verifier_cpu_cycles.c b/tools/testing/selftests/bpf/progs/verifier_cpu_cycles.c
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_cpu_cycles.c b/tools/testing/selftests/bpf/prog_tests/test_cpu_cycles.c
 new file mode 100644
-index 000000000000..88bfa7211858
+index 000000000000..d7f3b66594b3
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_cpu_cycles.c
-@@ -0,0 +1,104 @@
++++ b/tools/testing/selftests/bpf/prog_tests/test_cpu_cycles.c
+@@ -0,0 +1,35 @@
 +// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Inc. */
++/* Copyright (c) 2024 Meta Inc. */
++
++#include <test_progs.h>
++#include "test_cpu_cycles.skel.h"
++
++static void cpu_cycles(void)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, opts);
++	struct test_cpu_cycles *skel;
++	int err, pfd;
++
++	skel = test_cpu_cycles__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "test_cpu_cycles open and load"))
++		return;
++
++	pfd = bpf_program__fd(skel->progs.bpf_cpu_cycles);
++	if (!ASSERT_GT(pfd, 0, "test_cpu_cycles fd"))
++		goto fail;
++
++	err = bpf_prog_test_run_opts(pfd, &opts);
++	if (!ASSERT_OK(err, "test_cpu_cycles test run"))
++		goto fail;
++
++	ASSERT_NEQ(skel->bss->cycles, 0, "test_cpu_cycles 0 cycles");
++	ASSERT_NEQ(skel->bss->ns, 0, "test_cpu_cycles 0 ns");
++fail:
++	test_cpu_cycles__destroy(skel);
++}
++
++void test_cpu_cycles(void)
++{
++	if (test__start_subtest("cpu_cycles"))
++		cpu_cycles();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_cpu_cycles.c b/tools/testing/selftests/bpf/progs/test_cpu_cycles.c
+new file mode 100644
+index 000000000000..48762f07ad7f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_cpu_cycles.c
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Meta Inc. */
++
 +#include "vmlinux.h"
 +#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
 +
 +extern u64 bpf_cpu_cycles_to_ns(u64 cycles) __weak __ksym;
 +extern u64 bpf_get_cpu_cycles(void) __weak __ksym;
 +
-+SEC("syscall")
-+__arch_x86_64
-+__xlated("0: call kernel-function")
-+__naked int bpf_rdtsc(void)
-+{
-+	asm volatile(
-+	"call %[bpf_get_cpu_cycles];"
-+	"exit"
-+	:
-+	: __imm(bpf_get_cpu_cycles)
-+	: __clobber_all
-+	);
-+}
++__u64 cycles, ns;
 +
 +SEC("syscall")
-+__arch_x86_64
-+/* program entry for bpf_rdtsc_jit_x86_64(), regular function prologue */
-+__jited("	endbr64")
-+__jited("	nopl	(%rax,%rax)")
-+__jited("	nopl	(%rax)")
-+__jited("	pushq	%rbp")
-+__jited("	movq	%rsp, %rbp")
-+__jited("	endbr64")
-+/* save RDX in R11 as it will be overwritten */
-+__jited("	movq	%rdx, %r11")
-+/* lfence may not be executed depending on cpu features */
-+__jited("	{{(lfence|)}}")
-+__jited("	rdtsc")
-+/* combine EDX:EAX into RAX */
-+__jited("	shlq	${{(32|0x20)}}, %rdx")
-+__jited("	orq	%rdx, %rax")
-+/* restore RDX from R11 */
-+__jited("	movq	%r11, %rdx")
-+__jited("	leave")
-+__naked int bpf_rdtsc_jit_x86_64(void)
++int bpf_cpu_cycles(void)
 +{
-+	asm volatile(
-+	"call %[bpf_get_cpu_cycles];"
-+	"exit"
-+	:
-+	: __imm(bpf_get_cpu_cycles)
-+	: __clobber_all
-+	);
-+}
++	struct bpf_pidns_info pidns;
++	__u64 start;
 +
-+SEC("syscall")
-+__arch_x86_64
-+__xlated("0: r1 = 42")
-+__xlated("1: call kernel-function")
-+__naked int bpf_cyc2ns(void)
-+{
-+	asm volatile(
-+	"r1=0x2a;"
-+	"call %[bpf_cpu_cycles_to_ns];"
-+	"exit"
-+	:
-+	: __imm(bpf_cpu_cycles_to_ns)
-+	: __clobber_all
-+	);
-+}
-+
-+SEC("syscall")
-+__arch_x86_64
-+/* program entry for bpf_rdtsc_jit_x86_64(), regular function prologue */
-+__jited("	endbr64")
-+__jited("	nopl	(%rax,%rax)")
-+__jited("	nopl	(%rax)")
-+__jited("	pushq	%rbp")
-+__jited("	movq	%rsp, %rbp")
-+__jited("	endbr64")
-+/* save RDX in R11 as it will be overwritten */
-+__jited("	movabsq	$0x2a2a2a2a2a, %rdi")
-+__jited("	imulq	${{.*}}, %rdi, %rax")
-+__jited("	shrq	${{.*}}, %rax")
-+__jited("	leave")
-+__naked int bpf_cyc2ns_jit_x86(void)
-+{
-+	asm volatile(
-+	"r1=0x2a2a2a2a2a ll;"
-+	"call %[bpf_cpu_cycles_to_ns];"
-+	"exit"
-+	:
-+	: __imm(bpf_cpu_cycles_to_ns)
-+	: __clobber_all
-+	);
-+}
-+
-+void rdtsc(void)
-+{
-+	bpf_get_cpu_cycles();
-+	bpf_cpu_cycles_to_ns(42);
++	start = bpf_get_cpu_cycles();
++	bpf_get_ns_current_pid_tgid(0, 0, &pidns, sizeof(struct bpf_pidns_info));
++	cycles = bpf_get_cpu_cycles() - start;
++	ns = bpf_cpu_cycles_to_ns(cycles);
++	return 0;
 +}
 +
 +char _license[] SEC("license") = "GPL";
