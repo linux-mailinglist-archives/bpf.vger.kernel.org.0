@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-44254-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44255-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 821ED9C0B23
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:16:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 585579C0B27
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:16:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B44391C2358C
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 16:16:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCA071F22287
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 16:16:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71FAF2178F8;
-	Thu,  7 Nov 2024 16:13:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F88217F40;
+	Thu,  7 Nov 2024 16:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hIIEBd86"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KaL3XjLR"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CDDF217650;
-	Thu,  7 Nov 2024 16:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3822178ED;
+	Thu,  7 Nov 2024 16:13:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730996030; cv=none; b=i8tc39vrEHOIQfmuaHVMVUQIJNmfsfSAoBh4BxJobI6F19QQsWllhomIAiRAk7F26FgmYe/a18knfGRU9VhLo45vz4hRLW8KAyPmW8vO5zhx/mW6+ibt2A8SDIkZUJJ/4UVX+I1B471EC3v3tFUBzneO/tpmWLJVSFUz2saozRM=
+	t=1730996033; cv=none; b=QuVYDESpmhrf11vrGnfzvgLgZ2YgjISiITQ1iewAoXS96w/2BtkRwlU2w4IZqTJf8snDs7eagLlGZ9+2IwZJSaScXlGMf1BzBQ8etsYeaX1f6b+OpMrgtfrTd0sbMLMXaG5CTzsF93Qba1OXgKPst3X46OIh6ragQ5r6dCfs/2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730996030; c=relaxed/simple;
-	bh=4IC24vmZl6WDvgMu457OvjBdl317Y6deaK2gkmSPzBk=;
+	s=arc-20240116; t=1730996033; c=relaxed/simple;
+	bh=AaCUdkZPsgiTWoS9byZEEfNz0SWpUtnffkbv56egmN4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ld74aP/yUIhBPpW6aOSDCgi6EKIIuRp7KrgFcDU+vQ2GBY5cpZ14IAFcvvbUAb6nIkQnT3njTNa/zzTv5mtCq1d9Dh4U3BKg7l7MvkUK/utRmN8M6RVyKqGLsUOGomzulnFuNlH4yJvuAFd2hilMogEDXuGJJukhOpRC8gWPBnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hIIEBd86; arc=none smtp.client-ip=198.175.65.13
+	 MIME-Version; b=M9rs6RmdRRrYNiXxyRmTzdRKHWFc0+4FhCT+Wbnh95ke36PhtRpaklx07Krrv/VrMf5zsN2oCvidyAfd64w9IQBo0jEYtUJu9ImYzt7fKIH7AwqG2YqwCPjA9XijW8eYOD+MSP2xg5Bl89+k/EG0WPsCRD3WBegcqSrA+zyrUV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KaL3XjLR; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730996028; x=1762532028;
+  t=1730996032; x=1762532032;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=4IC24vmZl6WDvgMu457OvjBdl317Y6deaK2gkmSPzBk=;
-  b=hIIEBd86mvgDYBts8Lx2WzNsG0oHYkALaKVFWGanFeo8TwHlJrdIAsXV
-   j3uzwlsciZaQj1wzXeDiiODli0KSedc/iwjJ4MXAkXApscCZXegcdCQo9
-   lRtQcIx3mObEXwZjHnlWWsQiNmlhvoTiaLhu9ImHzvv502ow/Lq+lpuU6
-   /R0H3EQudSA1YCpUmrkca61Nf0/6P/YypXxSkyryewsrX6W8obOMrBXgm
-   NLxchf3kNIKpX5Uds4RJBVKX7GXAzWXFEqdk01Lh9X1tNkU0nnOoAR2i3
-   L6Ik4CsenCF1dDun8Q+h9LXXP32F7ubVilPPZDMABWUxmKfkR71gBzaST
-   A==;
-X-CSE-ConnectionGUID: tkTQiD4yTSyKXMbASqQBiw==
-X-CSE-MsgGUID: 9JGz6hz6TxK9Edt7YMXO+g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="41955690"
+  bh=AaCUdkZPsgiTWoS9byZEEfNz0SWpUtnffkbv56egmN4=;
+  b=KaL3XjLR5B8jBQarjNpeJKLyxRLODuMwP5DYzYcvAvwWrv8wdPfBg7JZ
+   UmvQ6fdcLA+qPoVW13nqWZYdJN0w5hMvUJYJBwl672Ajf5p/iNSSGg6Ij
+   eGgeJDbeTJKSDoxWNuYc4mOtfpzLlVTnEJxdsm1xszH7Oy6xSYINz7XQm
+   bWnqJjnMQ6y5QJUN6qXNKjllTkQ4gSW2AZt5G2fHoiYEdQUEPQ7kQICg1
+   rRqZ3vgRFuNLsgIChBrSK9gLtHl3ZmmKPypHpE09JjEwUvok9ezMzYoGO
+   MSF5Ivu01Dzg7p1AlTkYpi7qfRkDMgkumdqsRcM4UEv+CIXJsA+aHnTI3
+   g==;
+X-CSE-ConnectionGUID: zQTphwLrTyi2+IMiATPo8g==
+X-CSE-MsgGUID: H+9tE69xRQOPgdImQ3/wig==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="41955703"
 X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="41955690"
+   d="scan'208";a="41955703"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 08:13:48 -0800
-X-CSE-ConnectionGUID: ISf04XLKSruvBqVGFSYWCg==
-X-CSE-MsgGUID: 71ITT835QxO0RrQpnn6sIA==
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 08:13:52 -0800
+X-CSE-ConnectionGUID: /9n/fyesSq2I5ZLLa4I/yg==
+X-CSE-MsgGUID: gGQCyB59TjyLp2X6fGnSNw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,135,1728975600"; 
-   d="scan'208";a="90258135"
+   d="scan'208";a="90258139"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa004.jf.intel.com with ESMTP; 07 Nov 2024 08:13:45 -0800
+  by orviesa004.jf.intel.com with ESMTP; 07 Nov 2024 08:13:49 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -76,9 +76,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 01/19] jump_label: export static_key_slow_{inc,dec}_cpuslocked()
-Date: Thu,  7 Nov 2024 17:10:08 +0100
-Message-ID: <20241107161026.2903044-2-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v4 02/19] skbuff: allow 2-4-argument skb_frag_dma_map()
+Date: Thu,  7 Nov 2024 17:10:09 +0100
+Message-ID: <20241107161026.2903044-3-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241107161026.2903044-1-aleksander.lobakin@intel.com>
 References: <20241107161026.2903044-1-aleksander.lobakin@intel.com>
@@ -90,38 +90,87 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Sometimes, there's a need to modify a lot of static keys or modify the
-same key multiple times in a loop. In that case, it seems more optimal
-to lock cpu_read_lock once and then call _cpuslocked() variants.
-The enable/disable functions are already exported, the refcounted
-counterparts however are not. Fix that to allow modules to save some
-cycles.
+skb_frag_dma_map(dev, frag, 0, skb_frag_size(frag), DMA_TO_DEVICE)
+is repeated across dozens of drivers and really wants a shorthand.
+Add a macro which will count args and handle all possible number
+from 2 to 5. Semantics:
+
+skb_frag_dma_map(dev, frag) ->
+__skb_frag_dma_map(dev, frag, 0, skb_frag_size(frag), DMA_TO_DEVICE)
+
+skb_frag_dma_map(dev, frag, offset) ->
+__skb_frag_dma_map(dev, frag, offset, skb_frag_size(frag) - offset,
+		   DMA_TO_DEVICE)
+
+skb_frag_dma_map(dev, frag, offset, size) ->
+__skb_frag_dma_map(dev, frag, offset, size, DMA_TO_DEVICE)
+
+skb_frag_dma_map(dev, frag, offset, size, dir) ->
+__skb_frag_dma_map(dev, frag, offset, size, dir)
+
+No object code size changes for the existing callers. Users passing
+less arguments also won't have bigger size comparing to the full
+equivalent call.
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- kernel/jump_label.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/skbuff.h | 31 ++++++++++++++++++++++++++-----
+ 1 file changed, 26 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/jump_label.c b/kernel/jump_label.c
-index 93a822d3c468..1034c0348995 100644
---- a/kernel/jump_label.c
-+++ b/kernel/jump_label.c
-@@ -182,6 +182,7 @@ bool static_key_slow_inc_cpuslocked(struct static_key *key)
- 	}
- 	return true;
- }
-+EXPORT_SYMBOL_GPL(static_key_slow_inc_cpuslocked);
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index e5095d75abba..9e55223ba362 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -3665,7 +3665,7 @@ static inline void skb_frag_page_copy(skb_frag_t *fragto,
+ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t prio);
  
- bool static_key_slow_inc(struct static_key *key)
+ /**
+- * skb_frag_dma_map - maps a paged fragment via the DMA API
++ * __skb_frag_dma_map - maps a paged fragment via the DMA API
+  * @dev: the device to map the fragment to
+  * @frag: the paged fragment to map
+  * @offset: the offset within the fragment (starting at the
+@@ -3675,15 +3675,36 @@ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t prio);
+  *
+  * Maps the page associated with @frag to @device.
+  */
+-static inline dma_addr_t skb_frag_dma_map(struct device *dev,
+-					  const skb_frag_t *frag,
+-					  size_t offset, size_t size,
+-					  enum dma_data_direction dir)
++static inline dma_addr_t __skb_frag_dma_map(struct device *dev,
++					    const skb_frag_t *frag,
++					    size_t offset, size_t size,
++					    enum dma_data_direction dir)
  {
-@@ -342,6 +343,7 @@ void static_key_slow_dec_cpuslocked(struct static_key *key)
- 	STATIC_KEY_CHECK_USE(key);
- 	__static_key_slow_dec_cpuslocked(key);
+ 	return dma_map_page(dev, skb_frag_page(frag),
+ 			    skb_frag_off(frag) + offset, size, dir);
  }
-+EXPORT_SYMBOL_GPL(static_key_slow_dec_cpuslocked);
  
- void __static_key_slow_dec_deferred(struct static_key *key,
- 				    struct delayed_work *work,
++#define skb_frag_dma_map(dev, frag, ...)				\
++	CONCATENATE(_skb_frag_dma_map,					\
++		    COUNT_ARGS(__VA_ARGS__))(dev, frag, ##__VA_ARGS__)
++
++#define __skb_frag_dma_map1(dev, frag, offset, uf, uo) ({		\
++	const skb_frag_t *uf = (frag);					\
++	size_t uo = (offset);						\
++									\
++	__skb_frag_dma_map(dev, uf, uo, skb_frag_size(uf) - uo,		\
++			   DMA_TO_DEVICE);				\
++})
++#define _skb_frag_dma_map1(dev, frag, offset)				\
++	__skb_frag_dma_map1(dev, frag, offset, __UNIQUE_ID(frag_),	\
++			    __UNIQUE_ID(offset_))
++#define _skb_frag_dma_map0(dev, frag)					\
++	_skb_frag_dma_map1(dev, frag, 0)
++#define _skb_frag_dma_map2(dev, frag, offset, size)			\
++	__skb_frag_dma_map(dev, frag, offset, size, DMA_TO_DEVICE)
++#define _skb_frag_dma_map3(dev, frag, offset, size, dir)		\
++	__skb_frag_dma_map(dev, frag, offset, size, dir)
++
+ static inline struct sk_buff *pskb_copy(struct sk_buff *skb,
+ 					gfp_t gfp_mask)
+ {
 -- 
 2.47.0
 
