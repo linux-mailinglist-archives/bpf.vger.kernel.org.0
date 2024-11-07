@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-44257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44258-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9CA39C0B2E
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B18C9C0B31
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 199B81C2374B
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 16:17:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DD3D1C2334E
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 16:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15BA5218334;
-	Thu,  7 Nov 2024 16:14:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859F821859F;
+	Thu,  7 Nov 2024 16:14:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QO7ZvCrR"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="INm6Erjv"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43A721831C;
-	Thu,  7 Nov 2024 16:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1DA2170CF;
+	Thu,  7 Nov 2024 16:14:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730996044; cv=none; b=VTnb7sXJD/2E/VwXeAXoIdDuT40N5pzFI8U5kXuAnFSu1vb0FavdHoNXd9KliqWf59TEwxhUt35VU6ihqoRH+u6rKuXNuzOeCwatUpnAULg2CcaZz2m6T/Bn6xUoJ0RbE5n7cdK8zyCM4I883JH3J2TCZdzzx7d0/K5b80ltQeo=
+	t=1730996049; cv=none; b=BUCZ9paQ0wtEAN77kbS+9hTACsEjL0VAYoPrcD2AjrVEXR1Cb1liTyLppb8kUa1cj3LK8Jd0LBHeu3Po6WzWJufZe1EHetEYW1j3ujdedzE/a1DMdHJqACEqkgcwcHbjaBqkwSJvjvgEBIzN6t6pItPVlwURtvDb2FFZHDqrP9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730996044; c=relaxed/simple;
-	bh=AfJFNMcUas04sgUA/cbzlvj7FMUvz9x4FoR0A2Rhnxo=;
+	s=arc-20240116; t=1730996049; c=relaxed/simple;
+	bh=0qxT/iWPgC0Ok9rBiKIjoDJnPFrQv3pHHINa8ccSEZo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Om9OMQgLc9Lm5F+mTirLO3FPrIf8f0bAYQ4W4v4xuVX6O3bXOQraFTDtwKKA8TKxT7DA7TimxwNxf2KQmZtbtFWCrP8ilUrJR4bLCZIbFfc/yv2D8HAyCY48SqUjsxuVdTCvtjJJZNIQqDISKiafmZrJOLiy+aUzMmI0po2xsms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QO7ZvCrR; arc=none smtp.client-ip=198.175.65.13
+	 MIME-Version:Content-Type; b=ERpdY4Dii80JD83cr9DVrmbhAgKjBCGYOetMoenSeqrRDnyy1T+gCwPlqCxJL+++I8zs4hj0hO6Ey74RkeoADsFZjdxiioAR2Jhmtg/UASndcHhMFfhXtNy4o2FPySB9yXkB80md+OwVQ5L8Ee0T0+jQnLfE3bKboUqdkH3iwFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=INm6Erjv; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730996043; x=1762532043;
+  t=1730996047; x=1762532047;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=AfJFNMcUas04sgUA/cbzlvj7FMUvz9x4FoR0A2Rhnxo=;
-  b=QO7ZvCrR+H3FmbuxpWbLDwxcbJgWpt67w6Fv3PFizMICH43SKglZ18XI
-   eLJu+WfC/F/C2rhajDFyvO/FFHNMkp+ujUiIuDYhRbq4BqPULxuV1X4Fy
-   9/Uo/rngj+P6aIXNBeGoaRKqMdlrXn1AjVoDXfKCuSDCXtAFlhZv+XgRY
-   afsRPgdR6zOPwIPRBUegXRfF/LVMQ+pQJ8T1GU8Yanj2AHTiBDj4JWVjc
-   IA4BkXLn6Ap7WN42VeFapbPtduhhcmBzevdske+ETWE0e2LACcTSyDITw
-   gRS8WO4LehfDzPBxA7FlkAa82ZHZDmYB69RgD6kC+rbBtXUN6KnLyFbSu
-   g==;
-X-CSE-ConnectionGUID: ORfk8gdrSu61bkTo/scAMw==
-X-CSE-MsgGUID: /knE6/tGRbSvZfSHNKWZbA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="41955784"
+  bh=0qxT/iWPgC0Ok9rBiKIjoDJnPFrQv3pHHINa8ccSEZo=;
+  b=INm6Erjv/M5YtB23em+DbHBNOIsm3YvnJfLGFQt/eJ9xM6erSca5w6D2
+   8hHISqE1WxbcAB7NebY6Qg4v2desTK5NjRg6MKy3J9psdtsBIPvHecXaN
+   B9Psos1q0ZIvEsHAfZiAdUBLZL11t1fq/RErYK0p/9Yq6APEEqXBhgDrM
+   tCzqV7sI/c+l+r0pb65Ie/4cuUXrOp3D3Jjp1uTg7urp72jZlyqBeTL5s
+   a4kuGMdd2QWKv4EpfyyVibZgSoh0Raz3vNz01O0TdVidO1txV0V7/3N/W
+   VqzyT7zlgGlFZKwgFoyMoZggsq1E8EllOncYl867C8FUoCnpts07sxRZI
+   A==;
+X-CSE-ConnectionGUID: D7MTtgxFSJid2wQS46bnpg==
+X-CSE-MsgGUID: qBAcbHVSRIuYyQUHlexRyQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="41955809"
 X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="41955784"
+   d="scan'208";a="41955809"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 08:14:01 -0800
-X-CSE-ConnectionGUID: v9cYsM9LRG+jmP8XpDL12Q==
-X-CSE-MsgGUID: 44NkP3a4QPG3vu9UR63/mQ==
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 08:14:06 -0800
+X-CSE-ConnectionGUID: wpc9a+swQZuHiJRMdwjtmg==
+X-CSE-MsgGUID: CAZgUJEBSVmevT9AHf+OPg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,135,1728975600"; 
-   d="scan'208";a="90258169"
+   d="scan'208";a="90258174"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa004.jf.intel.com with ESMTP; 07 Nov 2024 08:13:57 -0800
+  by orviesa004.jf.intel.com with ESMTP; 07 Nov 2024 08:14:01 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -76,9 +76,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 04/19] bpf, xdp: constify some bpf_prog * function arguments
-Date: Thu,  7 Nov 2024 17:10:11 +0100
-Message-ID: <20241107161026.2903044-5-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v4 05/19] xdp, xsk: constify read-only arguments of some static inline helpers
+Date: Thu,  7 Nov 2024 17:10:12 +0100
+Message-ID: <20241107161026.2903044-6-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241107161026.2903044-1-aleksander.lobakin@intel.com>
 References: <20241107161026.2903044-1-aleksander.lobakin@intel.com>
@@ -91,297 +91,182 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-In lots of places, bpf_prog pointer is used only for tracing or other
-stuff that doesn't modify the structure itself. Same for net_device.
-Address at least some of them and add `const` attributes there. The
-object code didn't change, but that may prevent unwanted data
-modifications and also allow more helpers to have const arguments.
+Lots of read-only helpers for &xdp_buff and &xdp_frame, such as getting
+the frame length, skb_shared_info etc., don't have their arguments
+marked with `const` for no reason. Add the missing annotations to leave
+less place for mistakes and more for optimization.
 
 Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/linux/bpf.h       | 12 ++++++------
- include/linux/filter.h    |  9 +++++----
- include/linux/netdevice.h |  6 +++---
- include/linux/skbuff.h    |  2 +-
- kernel/bpf/devmap.c       |  8 ++++----
- net/core/dev.c            | 10 +++++-----
- net/core/filter.c         | 29 ++++++++++++++++-------------
- net/core/skbuff.c         |  2 +-
- 8 files changed, 41 insertions(+), 37 deletions(-)
+ include/net/xdp.h           | 29 +++++++++++++++++------------
+ include/net/xdp_sock_drv.h  | 11 ++++++-----
+ include/net/xsk_buff_pool.h |  2 +-
+ 3 files changed, 24 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index bdadb0bb6cec..0d537d547dce 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2542,10 +2542,10 @@ int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_frame *xdpf,
- int dev_map_enqueue_multi(struct xdp_frame *xdpf, struct net_device *dev_rx,
- 			  struct bpf_map *map, bool exclude_ingress);
- int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff *skb,
--			     struct bpf_prog *xdp_prog);
-+			     const struct bpf_prog *xdp_prog);
- int dev_map_redirect_multi(struct net_device *dev, struct sk_buff *skb,
--			   struct bpf_prog *xdp_prog, struct bpf_map *map,
--			   bool exclude_ingress);
-+			   const struct bpf_prog *xdp_prog,
-+			   struct bpf_map *map, bool exclude_ingress);
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index e6770dd40c91..197808df1ee1 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -88,7 +88,7 @@ struct xdp_buff {
+ 	u32 flags; /* supported values defined in xdp_buff_flags */
+ };
  
- void __cpu_map_flush(struct list_head *flush_list);
- int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *xdpf,
-@@ -2809,15 +2809,15 @@ struct sk_buff;
- 
- static inline int dev_map_generic_redirect(struct bpf_dtab_netdev *dst,
- 					   struct sk_buff *skb,
--					   struct bpf_prog *xdp_prog)
-+					   const struct bpf_prog *xdp_prog)
+-static __always_inline bool xdp_buff_has_frags(struct xdp_buff *xdp)
++static __always_inline bool xdp_buff_has_frags(const struct xdp_buff *xdp)
  {
- 	return 0;
+ 	return !!(xdp->flags & XDP_FLAGS_HAS_FRAGS);
+ }
+@@ -103,7 +103,8 @@ static __always_inline void xdp_buff_clear_frags_flag(struct xdp_buff *xdp)
+ 	xdp->flags &= ~XDP_FLAGS_HAS_FRAGS;
+ }
+ 
+-static __always_inline bool xdp_buff_is_frag_pfmemalloc(struct xdp_buff *xdp)
++static __always_inline bool
++xdp_buff_is_frag_pfmemalloc(const struct xdp_buff *xdp)
+ {
+ 	return !!(xdp->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
+ }
+@@ -144,15 +145,16 @@ xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
+ 	 SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
+ 
+ static inline struct skb_shared_info *
+-xdp_get_shared_info_from_buff(struct xdp_buff *xdp)
++xdp_get_shared_info_from_buff(const struct xdp_buff *xdp)
+ {
+ 	return (struct skb_shared_info *)xdp_data_hard_end(xdp);
+ }
+ 
+-static __always_inline unsigned int xdp_get_buff_len(struct xdp_buff *xdp)
++static __always_inline unsigned int
++xdp_get_buff_len(const struct xdp_buff *xdp)
+ {
+ 	unsigned int len = xdp->data_end - xdp->data;
+-	struct skb_shared_info *sinfo;
++	const struct skb_shared_info *sinfo;
+ 
+ 	if (likely(!xdp_buff_has_frags(xdp)))
+ 		goto out;
+@@ -177,12 +179,13 @@ struct xdp_frame {
+ 	u32 flags; /* supported values defined in xdp_buff_flags */
+ };
+ 
+-static __always_inline bool xdp_frame_has_frags(struct xdp_frame *frame)
++static __always_inline bool xdp_frame_has_frags(const struct xdp_frame *frame)
+ {
+ 	return !!(frame->flags & XDP_FLAGS_HAS_FRAGS);
+ }
+ 
+-static __always_inline bool xdp_frame_is_frag_pfmemalloc(struct xdp_frame *frame)
++static __always_inline bool
++xdp_frame_is_frag_pfmemalloc(const struct xdp_frame *frame)
+ {
+ 	return !!(frame->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
+ }
+@@ -201,7 +204,7 @@ static __always_inline void xdp_frame_bulk_init(struct xdp_frame_bulk *bq)
+ }
+ 
+ static inline struct skb_shared_info *
+-xdp_get_shared_info_from_frame(struct xdp_frame *frame)
++xdp_get_shared_info_from_frame(const struct xdp_frame *frame)
+ {
+ 	void *data_hard_start = frame->data - frame->headroom - sizeof(*frame);
+ 
+@@ -249,7 +252,8 @@ int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp);
+ struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf);
+ 
+ static inline
+-void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
++void xdp_convert_frame_to_buff(const struct xdp_frame *frame,
++			       struct xdp_buff *xdp)
+ {
+ 	xdp->data_hard_start = frame->data - frame->headroom - sizeof(*frame);
+ 	xdp->data = frame->data;
+@@ -260,7 +264,7 @@ void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
  }
  
  static inline
- int dev_map_redirect_multi(struct net_device *dev, struct sk_buff *skb,
--			   struct bpf_prog *xdp_prog, struct bpf_map *map,
--			   bool exclude_ingress)
-+			   const struct bpf_prog *xdp_prog,
-+			   struct bpf_map *map, bool exclude_ingress)
+-int xdp_update_frame_from_buff(struct xdp_buff *xdp,
++int xdp_update_frame_from_buff(const struct xdp_buff *xdp,
+ 			       struct xdp_frame *xdp_frame)
  {
- 	return 0;
- }
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 7d7578a8eac1..ee067ab13272 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1178,17 +1178,18 @@ static inline int xdp_ok_fwd_dev(const struct net_device *fwd,
-  * This does not appear to be a real limitation for existing software.
-  */
- int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
--			    struct xdp_buff *xdp, struct bpf_prog *prog);
-+			    struct xdp_buff *xdp, const struct bpf_prog *prog);
- int xdp_do_redirect(struct net_device *dev,
- 		    struct xdp_buff *xdp,
--		    struct bpf_prog *prog);
-+		    const struct bpf_prog *prog);
- int xdp_do_redirect_frame(struct net_device *dev,
- 			  struct xdp_buff *xdp,
- 			  struct xdp_frame *xdpf,
--			  struct bpf_prog *prog);
-+			  const struct bpf_prog *prog);
- void xdp_do_flush(void);
+ 	int metasize, headroom;
+@@ -317,9 +321,10 @@ void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq);
+ void xdp_return_frame_bulk(struct xdp_frame *xdpf,
+ 			   struct xdp_frame_bulk *bq);
  
--void bpf_warn_invalid_xdp_action(struct net_device *dev, struct bpf_prog *prog, u32 act);
-+void bpf_warn_invalid_xdp_action(const struct net_device *dev,
-+				 const struct bpf_prog *prog, u32 act);
+-static __always_inline unsigned int xdp_get_frame_len(struct xdp_frame *xdpf)
++static __always_inline unsigned int
++xdp_get_frame_len(const struct xdp_frame *xdpf)
+ {
+-	struct skb_shared_info *sinfo;
++	const struct skb_shared_info *sinfo;
+ 	unsigned int len = xdpf->len;
  
- #ifdef CONFIG_INET
- struct sock *bpf_run_sk_reuseport(struct sock_reuseport *reuse, struct sock *sk,
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 3c552b648b27..201f0c0ec62e 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -3941,9 +3941,9 @@ static inline void dev_consume_skb_any(struct sk_buff *skb)
+ 	if (likely(!xdp_frame_has_frags(xdpf)))
+diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
+index 40085afd9160..f3175a5d28f7 100644
+--- a/include/net/xdp_sock_drv.h
++++ b/include/net/xdp_sock_drv.h
+@@ -101,7 +101,7 @@ static inline struct xdp_buff *xsk_buff_alloc(struct xsk_buff_pool *pool)
+ 	return xp_alloc(pool);
  }
  
- u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
--			     struct bpf_prog *xdp_prog);
--void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog);
--int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff **pskb);
-+			     const struct bpf_prog *xdp_prog);
-+void generic_xdp_tx(struct sk_buff *skb, const struct bpf_prog *xdp_prog);
-+int do_xdp_generic(const struct bpf_prog *xdp_prog, struct sk_buff **pskb);
- int netif_rx(struct sk_buff *skb);
- int __netif_rx(struct sk_buff *skb);
- 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 9e55223ba362..d6920df9b620 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -3618,7 +3618,7 @@ static inline netmem_ref skb_frag_netmem(const skb_frag_t *frag)
- int skb_pp_cow_data(struct page_pool *pool, struct sk_buff **pskb,
- 		    unsigned int headroom);
- int skb_cow_data_for_xdp(struct page_pool *pool, struct sk_buff **pskb,
--			 struct bpf_prog *prog);
-+			 const struct bpf_prog *prog);
- 
- /**
-  * skb_frag_address - gets the address of the data contained in a paged fragment
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 7878be18e9d2..effde52bc857 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -678,7 +678,7 @@ int dev_map_enqueue_multi(struct xdp_frame *xdpf, struct net_device *dev_rx,
+-static inline bool xsk_is_eop_desc(struct xdp_desc *desc)
++static inline bool xsk_is_eop_desc(const struct xdp_desc *desc)
+ {
+ 	return !xp_mb_desc(desc);
+ }
+@@ -143,7 +143,7 @@ static inline void xsk_buff_add_frag(struct xdp_buff *xdp)
+ 	list_add_tail(&frag->list_node, &frag->pool->xskb_list);
  }
  
- int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff *skb,
--			     struct bpf_prog *xdp_prog)
-+			     const struct bpf_prog *xdp_prog)
+-static inline struct xdp_buff *xsk_buff_get_frag(struct xdp_buff *first)
++static inline struct xdp_buff *xsk_buff_get_frag(const struct xdp_buff *first)
  {
- 	int err;
+ 	struct xdp_buff_xsk *xskb = container_of(first, struct xdp_buff_xsk, xdp);
+ 	struct xdp_buff *ret = NULL;
+@@ -200,7 +200,8 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
+ 		XDP_TXMD_FLAGS_CHECKSUM | \
+ 	0)
  
-@@ -701,7 +701,7 @@ int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff *skb,
- 
- static int dev_map_redirect_clone(struct bpf_dtab_netdev *dst,
- 				  struct sk_buff *skb,
--				  struct bpf_prog *xdp_prog)
-+				  const struct bpf_prog *xdp_prog)
+-static inline bool xsk_buff_valid_tx_metadata(struct xsk_tx_metadata *meta)
++static inline bool
++xsk_buff_valid_tx_metadata(const struct xsk_tx_metadata *meta)
  {
- 	struct sk_buff *nskb;
- 	int err;
-@@ -720,8 +720,8 @@ static int dev_map_redirect_clone(struct bpf_dtab_netdev *dst,
+ 	return !(meta->flags & ~XDP_TXMD_FLAGS_VALID);
+ }
+@@ -337,7 +338,7 @@ static inline struct xdp_buff *xsk_buff_alloc(struct xsk_buff_pool *pool)
+ 	return NULL;
  }
  
- int dev_map_redirect_multi(struct net_device *dev, struct sk_buff *skb,
--			   struct bpf_prog *xdp_prog, struct bpf_map *map,
--			   bool exclude_ingress)
-+			   const struct bpf_prog *xdp_prog,
-+			   struct bpf_map *map, bool exclude_ingress)
+-static inline bool xsk_is_eop_desc(struct xdp_desc *desc)
++static inline bool xsk_is_eop_desc(const struct xdp_desc *desc)
  {
- 	struct bpf_dtab *dtab = container_of(map, struct bpf_dtab, map);
- 	struct bpf_dtab_netdev *dst, *last_dst = NULL;
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 6a31152e4606..32dd742450b6 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4931,7 +4931,7 @@ static struct netdev_rx_queue *netif_get_rxqueue(struct sk_buff *skb)
+ 	return false;
+ }
+@@ -360,7 +361,7 @@ static inline void xsk_buff_add_frag(struct xdp_buff *xdp)
+ {
  }
  
- u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
--			     struct bpf_prog *xdp_prog)
-+			     const struct bpf_prog *xdp_prog)
+-static inline struct xdp_buff *xsk_buff_get_frag(struct xdp_buff *first)
++static inline struct xdp_buff *xsk_buff_get_frag(const struct xdp_buff *first)
  {
- 	void *orig_data, *orig_data_end, *hard_start;
- 	struct netdev_rx_queue *rxqueue;
-@@ -5033,7 +5033,7 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
+ 	return NULL;
+ }
+diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+index bb03cee716b3..3832997cc605 100644
+--- a/include/net/xsk_buff_pool.h
++++ b/include/net/xsk_buff_pool.h
+@@ -183,7 +183,7 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
+ 	       !(pool->dma_pages[addr >> PAGE_SHIFT] & XSK_NEXT_PG_CONTIG_MASK);
  }
  
- static int
--netif_skb_check_for_xdp(struct sk_buff **pskb, struct bpf_prog *prog)
-+netif_skb_check_for_xdp(struct sk_buff **pskb, const struct bpf_prog *prog)
+-static inline bool xp_mb_desc(struct xdp_desc *desc)
++static inline bool xp_mb_desc(const struct xdp_desc *desc)
  {
- 	struct sk_buff *skb = *pskb;
- 	int err, hroom, troom;
-@@ -5057,7 +5057,7 @@ netif_skb_check_for_xdp(struct sk_buff **pskb, struct bpf_prog *prog)
- 
- static u32 netif_receive_generic_xdp(struct sk_buff **pskb,
- 				     struct xdp_buff *xdp,
--				     struct bpf_prog *xdp_prog)
-+				     const struct bpf_prog *xdp_prog)
- {
- 	struct sk_buff *skb = *pskb;
- 	u32 mac_len, act = XDP_DROP;
-@@ -5110,7 +5110,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff **pskb,
-  * and DDOS attacks will be more effective. In-driver-XDP use dedicated TX
-  * queues, so they do not have this starvation issue.
-  */
--void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
-+void generic_xdp_tx(struct sk_buff *skb, const struct bpf_prog *xdp_prog)
- {
- 	struct net_device *dev = skb->dev;
- 	struct netdev_queue *txq;
-@@ -5135,7 +5135,7 @@ void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
- 
- static DEFINE_STATIC_KEY_FALSE(generic_xdp_needed_key);
- 
--int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff **pskb)
-+int do_xdp_generic(const struct bpf_prog *xdp_prog, struct sk_buff **pskb)
- {
- 	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
- 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 82f92ed0dc72..b40e091a764d 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4334,9 +4334,9 @@ u32 xdp_master_redirect(struct xdp_buff *xdp)
- EXPORT_SYMBOL_GPL(xdp_master_redirect);
- 
- static inline int __xdp_do_redirect_xsk(struct bpf_redirect_info *ri,
--					struct net_device *dev,
-+					const struct net_device *dev,
- 					struct xdp_buff *xdp,
--					struct bpf_prog *xdp_prog)
-+					const struct bpf_prog *xdp_prog)
- {
- 	enum bpf_map_type map_type = ri->map_type;
- 	void *fwd = ri->tgt_value;
-@@ -4357,10 +4357,10 @@ static inline int __xdp_do_redirect_xsk(struct bpf_redirect_info *ri,
- 	return err;
+ 	return desc->options & XDP_PKT_CONTD;
  }
- 
--static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
--						   struct net_device *dev,
--						   struct xdp_frame *xdpf,
--						   struct bpf_prog *xdp_prog)
-+static __always_inline int
-+__xdp_do_redirect_frame(struct bpf_redirect_info *ri, struct net_device *dev,
-+			struct xdp_frame *xdpf,
-+			const struct bpf_prog *xdp_prog)
- {
- 	enum bpf_map_type map_type = ri->map_type;
- 	void *fwd = ri->tgt_value;
-@@ -4429,7 +4429,7 @@ static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
- }
- 
- int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
--		    struct bpf_prog *xdp_prog)
-+		    const struct bpf_prog *xdp_prog)
- {
- 	struct bpf_redirect_info *ri = bpf_net_ctx_get_ri();
- 	enum bpf_map_type map_type = ri->map_type;
-@@ -4443,7 +4443,8 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
- EXPORT_SYMBOL_GPL(xdp_do_redirect);
- 
- int xdp_do_redirect_frame(struct net_device *dev, struct xdp_buff *xdp,
--			  struct xdp_frame *xdpf, struct bpf_prog *xdp_prog)
-+			  struct xdp_frame *xdpf,
-+			  const struct bpf_prog *xdp_prog)
- {
- 	struct bpf_redirect_info *ri = bpf_net_ctx_get_ri();
- 	enum bpf_map_type map_type = ri->map_type;
-@@ -4458,9 +4459,9 @@ EXPORT_SYMBOL_GPL(xdp_do_redirect_frame);
- static int xdp_do_generic_redirect_map(struct net_device *dev,
- 				       struct sk_buff *skb,
- 				       struct xdp_buff *xdp,
--				       struct bpf_prog *xdp_prog, void *fwd,
--				       enum bpf_map_type map_type, u32 map_id,
--				       u32 flags)
-+				       const struct bpf_prog *xdp_prog,
-+				       void *fwd, enum bpf_map_type map_type,
-+				       u32 map_id, u32 flags)
- {
- 	struct bpf_redirect_info *ri = bpf_net_ctx_get_ri();
- 	struct bpf_map *map;
-@@ -4514,7 +4515,8 @@ static int xdp_do_generic_redirect_map(struct net_device *dev,
- }
- 
- int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
--			    struct xdp_buff *xdp, struct bpf_prog *xdp_prog)
-+			    struct xdp_buff *xdp,
-+			    const struct bpf_prog *xdp_prog)
- {
- 	struct bpf_redirect_info *ri = bpf_net_ctx_get_ri();
- 	enum bpf_map_type map_type = ri->map_type;
-@@ -9061,7 +9063,8 @@ static bool xdp_is_valid_access(int off, int size,
- 	return __is_valid_xdp_access(off, size);
- }
- 
--void bpf_warn_invalid_xdp_action(struct net_device *dev, struct bpf_prog *prog, u32 act)
-+void bpf_warn_invalid_xdp_action(const struct net_device *dev,
-+				 const struct bpf_prog *prog, u32 act)
- {
- 	const u32 act_max = XDP_REDIRECT;
- 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 00afeb90c23a..224cfe8b4368 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -1009,7 +1009,7 @@ int skb_pp_cow_data(struct page_pool *pool, struct sk_buff **pskb,
- EXPORT_SYMBOL(skb_pp_cow_data);
- 
- int skb_cow_data_for_xdp(struct page_pool *pool, struct sk_buff **pskb,
--			 struct bpf_prog *prog)
-+			 const struct bpf_prog *prog)
- {
- 	if (!prog->aux->xdp_has_frags)
- 		return -EINVAL;
 -- 
 2.47.0
 
