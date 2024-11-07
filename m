@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-44278-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44280-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 059719C0D47
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 18:51:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C295A9C0D49
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 18:51:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B84DD284CFC
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:51:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52DA61F2349B
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:51:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D719B215F58;
-	Thu,  7 Nov 2024 17:51:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57245216E1B;
+	Thu,  7 Nov 2024 17:51:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hbyeI1KW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cAFrcXhO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 939E02170B6
-	for <bpf@vger.kernel.org>; Thu,  7 Nov 2024 17:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F63121731B
+	for <bpf@vger.kernel.org>; Thu,  7 Nov 2024 17:51:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731001880; cv=none; b=EhUD2Ran1LAFrLe6JO8vIGWy/ozRlATA+tVnsF13dIGtNyr/4RAAk2DuLr+7hPYwq9f/FcsOnV0lyU/xmvfMYBdEVuq+tl8aNdRtMozyCu5dopjXAFIvsh6dfJGnQn+4c+Qds3jVHcx0+4Yme8r26kaVqQk7uNrzJmrXicIP6BI=
+	t=1731001881; cv=none; b=gNkmepoRmsbbR3pYkIkrVUIkOhrbiKLOwYBSVzembxF8HLeL9MMRNLs11tB0Nd6SRWXNPACRM8WZgZ787/12dMM+rxHxrzErZuqzEaix+I/EiD3/xVHQ3qY2Kx3EwdL6p5h0UhduBKZ7/3tx0KTZXXxmv/JTI/Hz/TdwuxrWFG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731001880; c=relaxed/simple;
-	bh=zeu5CoeZ6YG19S6x/7xeMq/t6BpE4FA9A9EaXljstfA=;
+	s=arc-20240116; t=1731001881; c=relaxed/simple;
+	bh=SssuDJHNUfb+B3XdG4yEPvui3wWfooWvFplr+wbwL88=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cCyRbHJS8o8YcI6hKznonnqDC9uMzCsVBaBxfEU5U+lInPQJPnQSPgK/EZKXhihQUwPGm2bE57veMswA47b2XQXpKBWxxV7yw5y/QomoRooiDWjjtQrIgw95ZWSgQkt7Tcz/LqmvDrsv3jh/WXefDlOJsrIrFBlJVWC96SYSejM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hbyeI1KW; arc=none smtp.client-ip=209.85.210.172
+	 MIME-Version; b=TlA5miRyGsbZzcghoVFkZKF51gXGeP7uGXse1AgDZr+NbTrSwdQtppaa6H7tHstPbnu9BW+rut9e+6XLx3O6I5Hm0WpM9uChdZxFCDgbbdtspbeaxIwaS8Gu35Yd8OFlauk719W8YW67oYYe3idRBlULQXJUmNM93dm0FI9euVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cAFrcXhO; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-72041ff06a0so1030245b3a.2
-        for <bpf@vger.kernel.org>; Thu, 07 Nov 2024 09:51:17 -0800 (PST)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-7eae96e6624so936963a12.2
+        for <bpf@vger.kernel.org>; Thu, 07 Nov 2024 09:51:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731001877; x=1731606677; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1731001878; x=1731606678; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4fxJmOy6+0tWZzzcdyBVrKD6ZybF4WhAuAj/x9zlCLI=;
-        b=hbyeI1KW35AOCitNLDefx+gbZlpxo9KQCOo3tGl/JNyeIFNkpAIPAllx8OX/jJrC8o
-         rA/vKGpwxhdC19ntBQIfDxz7l1WxGjKeYnt7otchIGNiTV7fJg4yfdrDHYGzqcOWflku
-         sOMh+VAcihdhXmRvHp+iq8y+OFRuopDVOfqkF5hrZ/H2SP2JyuMquJvxys+EdmroonRB
-         NGAaf4ZPFBIDtVcG7tbe9I1470+pBXw+xtXuVhGeMNtlWUGPpDiyf6/vUe3PyX41jyOo
-         s6ERG3xFYSIrppHkVKrmrMaHVkEVHIlOEtMBgz5YfqaohcHic+mAkTYvzbC0lU6iQ3oy
-         1iMw==
+        bh=IRSryOh8sM1UxX8jcyoKiLmRfECM9qX3iEZDBbW57Io=;
+        b=cAFrcXhOQAAjsiQQSEEzNerMllRAho2CbbabCwCIMTy8ATxCTZm+DxPfUzYQ2yWEY/
+         F+QDsW4OaqGlT2GkF3gKNtfXDmoJN9zAJUTg9lOibtYlQWDx9H7jBisPJqElkl6ZqkVi
+         QRUk7EwOTIqgpYhBCD+NZr8NbrD+jnJnlFX5NshLXtdYasYLhn1RhdmuJ7Ik7pg8bTfQ
+         JiFOMXLymnJub3iKymyMNQQOvGjozZv8vJcLwtlqNJCJaUG4TSo+1mbQy+mOCtTEd4ak
+         anp7PZMf9YfBvoRz9GvpspBEuNTHYhjTjUtDVJJ4wdaiKsYGNfVPMXNOFBixNWMGuc3z
+         l30Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731001877; x=1731606677;
+        d=1e100.net; s=20230601; t=1731001878; x=1731606678;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4fxJmOy6+0tWZzzcdyBVrKD6ZybF4WhAuAj/x9zlCLI=;
-        b=G8K9Mi3ETvfRwDB5TVxmX/oh2a663bHlGrSpASfxudgFx7QBm2hDnAIwC+/4T2MdqV
-         ZHw8BBRNWe8VTrhXRlpJCm/40tV31/+haYmunSu0/6kLUrtbUu2tEw5oWRjHyKN+g3u0
-         BCbuO4ziesen0BLEhNLZJ/y4iRLe8mc6allmm5sOBBHsBRpITlTLoCchQZfdS8TaLSRA
-         MAldq0iWBqWKwQ6CLWjJHEHGciNucZ4MYSj687Vy31krmTOUMA2WtZIYwi61FXLZ2brK
-         4rgLgqR382afbLxwV51Us16M0NlvOLt/bRMZXhHm77tquPqUmV0QfA/Nqq4TI35L3dhY
-         rx7Q==
-X-Gm-Message-State: AOJu0YzxMywL/kX1PWSLK2YWsHXRUA5wMKrD9/QsKHFdCtI4JIVP/dPC
-	zMUr0tjoz94jbC6898ssTgpWKFKORMYcyKPAwJQprQqJPVJkguPoS7vgHIXP
-X-Google-Smtp-Source: AGHT+IGv+kMB3Xar4bWNEdoU+zSfMLmEkXXOHh3LG+1Ts8cGiR0pVEcH+5sOAGMIXEAuxEMMiQ+r7w==
-X-Received: by 2002:a05:6a20:4311:b0:1db:e96f:4472 with SMTP id adf61e73a8af0-1dc20626f0cmr568186637.31.1731001876730;
-        Thu, 07 Nov 2024 09:51:16 -0800 (PST)
+        bh=IRSryOh8sM1UxX8jcyoKiLmRfECM9qX3iEZDBbW57Io=;
+        b=RzXsxP4pBktVwQ5U8eE7h7puK+UHbVOuWCdvaYpRs9kzCGtXWOQAOJa6GRmxuQARaH
+         hkIByY3g/2V+fmxc8maQ6t7tOpfH11fh+1AoCThRNdkCpQTHfMllgKxOb+tG68kytc0/
+         kGITg0sP5vfmfAm8hwB2yTF/lXUQbctBzlhyKW9t00Xyo0F769Tcqj5itXYtNuLJVVwf
+         js7msmR/IZ7g9ejDvoWsCoT/M8HHHkJPnnsOmWRurfRhor6FOKz2hlIWemQ2LFwxAhS4
+         QsLbVhFfoSzlbrMuBP5Js5cO87q91DRc/hMjCo2nmoP+IYtJSr4hOttRrpgCzJvE+u5u
+         lu8A==
+X-Gm-Message-State: AOJu0Yy87hUwZVxlXxGQaNxWG+WG1OT+IQBceV65khy8AI1xjC+ivzS3
+	M5tccmIsAg37nbxN6N1MTgdQUFupJ/p0pXPzF4mx1APkoGjhfCxllVsMekbm
+X-Google-Smtp-Source: AGHT+IEUhBbUYTd9adISnubrg7fyuBqkY6jiXSx9pYwPxvoDK33iZxZc4KZ7YtK1WvbpDLMRpF8Uug==
+X-Received: by 2002:a17:90b:1a92:b0:2d8:82a2:b093 with SMTP id 98e67ed59e1d1-2e9b1720e9dmr44195a91.13.1731001877914;
+        Thu, 07 Nov 2024 09:51:17 -0800 (PST)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e9a5f52b32sm1730686a91.5.2024.11.07.09.51.15
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e9a5f52b32sm1730686a91.5.2024.11.07.09.51.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Nov 2024 09:51:16 -0800 (PST)
+        Thu, 07 Nov 2024 09:51:17 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -76,9 +76,9 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	memxor@gmail.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [RFC bpf-next 04/11] bpf: allow specifying inlinable kfuncs in modules
-Date: Thu,  7 Nov 2024 09:50:33 -0800
-Message-ID: <20241107175040.1659341-5-eddyz87@gmail.com>
+Subject: [RFC bpf-next 05/11] bpf: dynamic allocation for bpf_verifier_env->subprog_info
+Date: Thu,  7 Nov 2024 09:50:34 -0800
+Message-ID: <20241107175040.1659341-6-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241107175040.1659341-1-eddyz87@gmail.com>
 References: <20241107175040.1659341-1-eddyz87@gmail.com>
@@ -90,312 +90,112 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead of keeping inlinable kfuncs in a single table,
-track them as a list of tables, one table per each module providing
-such kfuncs. Protect the list with an rwlock to safely deal with
-modules load/unload.
-
-Provide two interface functions for use in modules:
-- int bpf_register_inlinable_kfuncs(void *elf_bin, u32 size,
-                                    struct module *module);
-- void bpf_unregister_inlinable_kfuncs(struct module *module);
-
-With an assumption that each module providing inlinable kfuncs would
-include BPF elf in the same way verifier.c does, with
-bpf_register_inlinable_kfuncs() called at load.
-The bpf_unregister_inlinable_kfuncs() is supposed to be called before
-module unload.
-
-Each table holds a reference to btf, the refcount of the btf object is
-not hold by the table. For lifetime management of module's btf object
-relies on:
-- correct usage of bpf_register_inlinable_kfuncs /
-  bpf_unregister_inlinable_kfuncs to insert/remove tables to the list,
-  so that tables are members of the list only when module is loaded;
-- add_kfunc_call(), so that kfuncs referenced from inlined bodies are
-  not unloaded when inlinable kfunc is inlined.
+Follow-up patches use add_hidden_subprog() to inject inlinable kfunc
+bodies into bpf program as subprograms. At the moment only one hidden
+subprogram is allowed, as bpf_verifier_env->subprog_info is allocated
+in advance as array of fixed size. This patch removes the limitation
+by using dynamic memory allocation for this array.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- include/linux/bpf.h   |   3 +
- include/linux/btf.h   |   7 +++
- kernel/bpf/btf.c      |   2 +-
- kernel/bpf/verifier.c | 129 +++++++++++++++++++++++++++++++++++-------
- 4 files changed, 119 insertions(+), 22 deletions(-)
+ include/linux/bpf_verifier.h |  3 ++-
+ kernel/bpf/verifier.c        | 29 ++++++++++++++++++++++-------
+ 2 files changed, 24 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 1b84613b10ac..2bcc9161687b 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -3501,4 +3501,7 @@ static inline bool bpf_prog_is_raw_tp(const struct bpf_prog *prog)
- 	       prog->expected_attach_type == BPF_TRACE_RAW_TP;
- }
- 
-+void bpf_unregister_inlinable_kfuncs(struct module *module);
-+int bpf_register_inlinable_kfuncs(void *elf_bin, u32 size, struct module *module);
-+
- #endif /* _LINUX_BPF_H */
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 4214e76c9168..9e8b27493139 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -582,6 +582,7 @@ int get_kern_ctx_btf_id(struct bpf_verifier_log *log, enum bpf_prog_type prog_ty
- bool btf_types_are_same(const struct btf *btf1, u32 id1,
- 			const struct btf *btf2, u32 id2);
- int btf_check_iter_arg(struct btf *btf, const struct btf_type *func, int arg_idx);
-+struct btf *btf_get_module_btf(const struct module *module);
- 
- static inline bool btf_type_is_struct_ptr(struct btf *btf, const struct btf_type *t)
- {
-@@ -670,5 +671,11 @@ static inline int btf_check_iter_arg(struct btf *btf, const struct btf_type *fun
- {
- 	return -EOPNOTSUPP;
- }
-+struct btf *btf_get_module_btf(const struct module *module)
-+{
-+	return NULL;
-+}
-+
- #endif
-+
- #endif
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index e7a59e6462a9..49b25882fa58 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -8033,7 +8033,7 @@ struct module *btf_try_get_module(const struct btf *btf)
- /* Returns struct btf corresponding to the struct module.
-  * This function can return NULL or ERR_PTR.
-  */
--static struct btf *btf_get_module_btf(const struct module *module)
-+struct btf *btf_get_module_btf(const struct module *module)
- {
- #ifdef CONFIG_DEBUG_INFO_BTF_MODULES
- 	struct btf_module *btf_mod, *tmp;
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index ed4eacfd4db7..b683dc3ede4a 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -738,7 +738,7 @@ struct bpf_verifier_env {
+ 	struct bpf_insn_aux_data *insn_aux_data; /* array of per-insn state */
+ 	const struct bpf_line_info *prev_linfo;
+ 	struct bpf_verifier_log log;
+-	struct bpf_subprog_info subprog_info[BPF_MAX_SUBPROGS + 2]; /* max + 2 for the fake and exception subprogs */
++	struct bpf_subprog_info *subprog_info;
+ 	union {
+ 		struct bpf_idmap idmap_scratch;
+ 		struct bpf_idset idset_scratch;
+@@ -751,6 +751,7 @@ struct bpf_verifier_env {
+ 	struct backtrack_state bt;
+ 	struct bpf_jmp_history_entry *cur_hist_ent;
+ 	u32 pass_cnt; /* number of times do_check() was called */
++	u32 subprog_cap;
+ 	u32 subprog_cnt;
+ 	/* number of instructions analyzed by the verifier */
+ 	u32 prev_insn_processed, insn_processed;
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index fbf51147f319..b86308896358 100644
+index b86308896358..d4ea7fd8a967 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -20534,7 +20534,20 @@ struct inlinable_kfunc {
- 	u32 btf_id;
- };
- 
--static struct inlinable_kfunc inlinable_kfuncs[16];
-+/* Represents inlinable kfuncs provided by a module */
-+struct inlinable_kfuncs_block {
-+	struct list_head list;
-+	/* Module or kernel BTF, refcount not taken. Relies on correct
-+         * calls to bpf_[un]register_inlinable_kfuncs to guarantee BTF
-+         * object lifetime.
-+	 */
-+	const struct btf *btf;
-+	struct inlinable_kfunc funcs[16];
-+};
-+
-+/* List of inlinable_kfuncs_block objects. */
-+static struct list_head inlinable_kfuncs = LIST_HEAD_INIT(inlinable_kfuncs);
-+static DEFINE_RWLOCK(inlinable_kfuncs_lock);
- 
- static void *check_inlinable_kfuncs_ptr(struct blob *blob,
- 				      void *ptr, u64 size, const char *context)
-@@ -20710,8 +20723,10 @@ static int inlinable_kfuncs_parse_sections(struct blob *blob, struct sh_elf_sect
- 			if (strcmp(name, ".text") == 0) {
- 				text = shdr;
- 				text_idx = i;
--			} else if (strcmp(name, ".BTF") == 0 || strcmp(name, ".BTF.ext") == 0) {
--				/* ignore BTF for now */
-+			} else if (strcmp(name, ".BTF") == 0 ||
-+				   strcmp(name, ".BTF.ext") == 0 ||
-+				   strcmp(name, ".modinfo") == 0) {
-+				/* ignore */
- 				break;
- 			} else {
- 				printk("malformed inlinable kfuncs data: unexpected section #%u name ('%s')\n",
-@@ -20841,27 +20856,35 @@ static int inlinable_kfuncs_apply_relocs(struct sh_elf_sections *s, struct btf *
-  * Do some sanity checks for ELF data structures,
-  * (but refrain from being overly paranoid, as this ELF is a part of kernel build).
-  */
--static int bpf_register_inlinable_kfuncs(void *elf_bin, u32 size)
-+int bpf_register_inlinable_kfuncs(void *elf_bin, u32 size, struct module *module)
+@@ -19419,7 +19419,7 @@ static int adjust_jmp_off(struct bpf_prog *prog, u32 tgt_idx, u32 delta)
+ static int adjust_subprog_starts_after_remove(struct bpf_verifier_env *env,
+ 					      u32 off, u32 cnt)
  {
- 	struct blob blob = { .mem = elf_bin, .size = size };
-+	struct inlinable_kfuncs_block *block = NULL;
- 	struct sh_elf_sections s;
- 	struct btf *btf;
- 	Elf_Sym *sym;
- 	u32 i, idx;
- 	int err;
+-	int i, j;
++	int i, j, first_hidden = env->subprog_cnt - env->hidden_subprog_cnt;
  
--	btf = bpf_get_btf_vmlinux();
-+	btf = btf_get_module_btf(module);
- 	if (!btf)
- 		return -EINVAL;
+ 	/* find first prog starting at or after off (first to remove) */
+ 	for (i = 0; i < env->subprog_cnt; i++)
+@@ -19446,6 +19446,8 @@ static int adjust_subprog_starts_after_remove(struct bpf_verifier_env *env,
+ 			env->subprog_info + j,
+ 			sizeof(*env->subprog_info) * move);
+ 		env->subprog_cnt -= j - i;
++		if (first_hidden <= j - 1)
++			env->hidden_subprog_cnt -= j - first_hidden;
  
- 	err = inlinable_kfuncs_parse_sections(&blob, &s);
- 	if (err < 0)
--		return err;
-+		goto err_out;
+ 		/* remove func_info */
+ 		if (aux->func_info) {
+@@ -21215,15 +21217,20 @@ static int resolve_kfunc_calls(struct bpf_verifier_env *env)
+ /* The function requires that first instruction in 'patch' is insnsi[prog->len - 1] */
+ static int add_hidden_subprog(struct bpf_verifier_env *env, struct bpf_insn *patch, int len)
+ {
+-	struct bpf_subprog_info *info = env->subprog_info;
++	struct bpf_subprog_info *info, *tmp;
+ 	int cnt = env->subprog_cnt;
+ 	struct bpf_prog *prog;
  
- 	err = inlinable_kfuncs_apply_relocs(&s, btf);
- 	if (err < 0)
--		return err;
-+		goto err_out;
-+
-+	block = kvmalloc(sizeof(*block), GFP_KERNEL | __GFP_ZERO);
-+	if (!block) {
-+		err = -ENOMEM;
-+		goto err_out;
-+	}
- 
-+	block->btf = btf;
- 	idx = 0;
- 	for (sym = s.sym, i = 0; i < s.sym_cnt; i++, sym++) {
- 		struct inlinable_kfunc *sh;
-@@ -20879,11 +20902,13 @@ static int bpf_register_inlinable_kfuncs(void *elf_bin, u32 size)
- 		    sym->st_value % sizeof(struct bpf_insn) != 0 ||
- 		    sym->st_name >= s.strings_sz) {
- 			printk("malformed inlinable kfuncs data: bad symbol #%u\n", i);
--			return -EINVAL;
-+			err = -EINVAL;
-+			goto err_out;
- 		}
--		if (idx == ARRAY_SIZE(inlinable_kfuncs) - 1) {
-+		if (idx == ARRAY_SIZE(block->funcs) - 1) {
- 			printk("malformed inlinable kfuncs data: too many helper functions\n");
--			return -EINVAL;
-+			err = -EINVAL;
-+			goto err_out;
- 		}
- 		insn_num = sym->st_size / sizeof(struct bpf_insn);
- 		insns = s.text + sym->st_value;
-@@ -20891,9 +20916,10 @@ static int bpf_register_inlinable_kfuncs(void *elf_bin, u32 size)
- 		id = btf_find_by_name_kind(btf, name, BTF_KIND_FUNC);
- 		if (id < 0) {
- 			printk("can't add inlinable kfunc '%s': no btf_id\n", name);
--			return -EINVAL;
-+			err = -EINVAL;
-+			goto err_out;
- 		}
--		sh = &inlinable_kfuncs[idx++];
-+		sh = &block->funcs[idx++];
- 		sh->insn_num = insn_num;
- 		sh->insns = insns;
- 		sh->name = name;
-@@ -20902,25 +20928,86 @@ static int bpf_register_inlinable_kfuncs(void *elf_bin, u32 size)
- 		       sh->name, sym->st_value, sh->insn_num, sh->btf_id);
+-	/* We only reserve one slot for hidden subprogs in subprog_info. */
+-	if (env->hidden_subprog_cnt) {
+-		verbose(env, "verifier internal error: only one hidden subprog supported\n");
+-		return -EFAULT;
++	if (cnt == env->subprog_cap) {
++		env->subprog_cap *= 2;
++		tmp = vrealloc(env->subprog_info,
++			       array_size(sizeof(*env->subprog_info), env->subprog_cap + 1),
++			       GFP_KERNEL | __GFP_ZERO);
++		if (!tmp)
++			return -ENOMEM;
++		env->subprog_info = tmp;
  	}
- 
-+	write_lock(&inlinable_kfuncs_lock);
-+	list_add(&block->list, &inlinable_kfuncs);
-+	write_unlock(&inlinable_kfuncs_lock);
-+	if (module)
-+		btf_put(btf);
- 	return 0;
-+
-+err_out:
-+	kvfree(block);
-+	if (module)
-+		btf_put(btf);
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(bpf_register_inlinable_kfuncs);
-+
-+void bpf_unregister_inlinable_kfuncs(struct module *module)
-+{
-+	struct inlinable_kfuncs_block *block;
-+	struct list_head *pos;
-+	struct btf *btf;
-+
-+	btf = btf_get_module_btf(module);
-+	if (!btf)
-+		return;
-+
-+	write_lock(&inlinable_kfuncs_lock);
-+	list_for_each(pos, &inlinable_kfuncs) {
-+		if (pos == &inlinable_kfuncs)
-+			continue;
-+		block = container_of(pos, typeof(*block), list);
-+		if (block->btf != btf)
-+			continue;
-+		list_del(&block->list);
-+		kvfree(block);
-+		break;
++	info = env->subprog_info;
+ 	/* We're not patching any existing instruction, just appending the new
+ 	 * ones for the hidden subprog. Hence all of the adjustment operations
+ 	 * in bpf_patch_insn_data are no-ops.
+@@ -23122,6 +23129,13 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+ 	ret = -ENOMEM;
+ 	if (!env->insn_aux_data)
+ 		goto err_free_env;
++	env->subprog_cap = BPF_MAX_SUBPROGS;
++	env->subprog_info = vzalloc(array_size(sizeof(*env->subprog_info),
++					       env->subprog_cap + 1 /* max + 1 for the fake subprog */));
++	if (!env->subprog_info) {
++		ret = -ENOMEM;
++		goto err_free_env;
 +	}
-+	write_unlock(&inlinable_kfuncs_lock);
-+	btf_put(btf);
+ 	for (i = 0; i < len; i++)
+ 		env->insn_aux_data[i].orig_idx = i;
+ 	env->prog = *prog;
+@@ -23353,8 +23367,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+ err_unlock:
+ 	if (!is_priv)
+ 		mutex_unlock(&bpf_verifier_lock);
+-	vfree(env->insn_aux_data);
+ err_free_env:
++	vfree(env->subprog_info);
++	vfree(env->insn_aux_data);
+ 	kvfree(env);
+ 	return ret;
  }
-+EXPORT_SYMBOL_GPL(bpf_unregister_inlinable_kfuncs);
- 
- static int __init inlinable_kfuncs_init(void)
- {
- 	return bpf_register_inlinable_kfuncs(&inlinable_kfuncs_data,
--					   &inlinable_kfuncs_data_end - &inlinable_kfuncs_data);
-+					     &inlinable_kfuncs_data_end - &inlinable_kfuncs_data,
-+					     NULL);
- }
- 
- late_initcall(inlinable_kfuncs_init);
- 
--static struct inlinable_kfunc *find_inlinable_kfunc(u32 btf_id)
-+/* If a program refers to a kfunc from some module, this module is guaranteed
-+ * to not be unloaded for the duration of program verification.
-+ * Hence there is no need to protect returned 'inlinable_kfunc' instance,
-+ * as long as find_inlinable_kfunc() is called during program verification.
-+ * However, read_lock(&inlinable_kfuncs_lock) for the duration of this
-+ * function is necessary in case some unrelated modules are loaded/unloaded
-+ * concurrently to find_inlinable_kfunc() call.
-+ */
-+static struct inlinable_kfunc *find_inlinable_kfunc(struct btf *btf, u32 btf_id)
- {
--	struct inlinable_kfunc *sh = inlinable_kfuncs;
-+	struct inlinable_kfuncs_block *block;
-+	struct inlinable_kfunc *sh;
-+	struct list_head *pos;
- 	int i;
- 
--	for (i = 0; i < ARRAY_SIZE(inlinable_kfuncs); ++i, ++sh)
--		if (sh->btf_id == btf_id)
-+	read_lock(&inlinable_kfuncs_lock);
-+	list_for_each(pos, &inlinable_kfuncs) {
-+		block = container_of(pos, typeof(*block), list);
-+		if (block->btf != btf)
-+			continue;
-+		sh = block->funcs;
-+		for (i = 0; i < ARRAY_SIZE(block->funcs); ++i, ++sh) {
-+			if (sh->btf_id != btf_id)
-+				continue;
-+			read_unlock(&inlinable_kfuncs_lock);
- 			return sh;
-+		}
-+		break;
-+	}
-+	read_unlock(&inlinable_kfuncs_lock);
- 	return NULL;
- }
- 
-@@ -20933,7 +21020,7 @@ static struct bpf_prog *inline_kfunc_call(struct bpf_verifier_env *env, struct b
- 					  int insn_idx, int *cnt, s32 stack_base, u16 *stack_depth_extra)
- {
- 	struct inlinable_kfunc_regs_usage regs_usage;
--	const struct bpf_kfunc_desc *desc;
-+	struct bpf_kfunc_call_arg_meta meta;
- 	struct bpf_prog *new_prog;
- 	struct bpf_insn *insn_buf;
- 	struct inlinable_kfunc *sh;
-@@ -20943,10 +21030,10 @@ static struct bpf_prog *inline_kfunc_call(struct bpf_verifier_env *env, struct b
- 	s16 stack_off;
- 	u32 insn_num;
- 
--	desc = find_kfunc_desc(env->prog, insn->imm, insn->off);
--	if (!desc || IS_ERR(desc))
-+	err = fetch_kfunc_meta(env, insn, &meta, NULL);
-+	if (err < 0)
- 		return ERR_PTR(-EFAULT);
--	sh = find_inlinable_kfunc(desc->func_id);
-+	sh = find_inlinable_kfunc(meta.btf, meta.func_id);
- 	if (!sh)
- 		return NULL;
- 
 -- 
 2.47.0
 
