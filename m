@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-44269-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44270-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 058349C0B54
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:21:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CA1E9C0B57
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:21:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9B95281067
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 16:21:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F0A81F21D58
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 16:21:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3316821C177;
-	Thu,  7 Nov 2024 16:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B58A21C19F;
+	Thu,  7 Nov 2024 16:14:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n+7DAeAm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IIsvBaQn"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0904321C168;
-	Thu,  7 Nov 2024 16:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D16CB21C187;
+	Thu,  7 Nov 2024 16:14:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730996089; cv=none; b=O0CKelDpinq1lV6xtP+aYqqQzNeesF/G4MkTmQ4hZkIH+pBXKWmfx0HWM+lRwv7xy/E7R48Uf2Jg4j+x5A2a7z0GI/ln6ParI/ACQk8l9kLDLNyWjDlD3n9nzNZEm2kdpDZKiHUpCC4GYSVUlGkt1tb+11lI0P9FWFll15hqNOo=
+	t=1730996093; cv=none; b=PGdmcZAN8C9LqienpZV43rE6hq5cOTaqQguaGL7Kf2YydWIP6U+0EJaki9KxeH3LqxdpwNa5vh6UGCqoqJTxWodI0ivfxJO4bK1ARcoVu9y/QyhU2QX71GgRnRRJzYetwwc9ZHkXvw8Hd0mKSzxqCCFrew6m/uX7LtEjW7xWoKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730996089; c=relaxed/simple;
-	bh=9eaTcW1714p0ZpDya9uUHH5o6/Xj9bBorsMBheyZWQk=;
+	s=arc-20240116; t=1730996093; c=relaxed/simple;
+	bh=w49RAZ+8uMjhzY9cwwAS/yrxn853A/gL1dROucE0B1Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iaiVMKCpfsftFc8AdCqYEZ8bPQyUiFlnNsvNxTHd/2awfpkGR40WE492AIOqSb3WkTUNIQLiKiYbXuhMyBacxGt6i1DEdb+ElB4nkkDwx5+S8mZVkGWd9dKXU8yd1b4zH9K58kDeqYzZThhzpJao3j64jugtSdG4srtatMM0PYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n+7DAeAm; arc=none smtp.client-ip=198.175.65.13
+	 MIME-Version; b=kDJ7qmwpRZ6wGM/gMtOsjE/60v8ZcTodO61eaBm7KNs+RhRdh08kJURvWW8+QoHVQkmLrgELD9xlm+amuLGZ0WLXZXvVpzaOwSd/ux6nIUh0TZr+rH9YdI67bsCcBEy4uuLKjfinWNa0cGaojWWiZjTCgXB5BkEXGR8MiFbpjMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IIsvBaQn; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730996088; x=1762532088;
+  t=1730996092; x=1762532092;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=9eaTcW1714p0ZpDya9uUHH5o6/Xj9bBorsMBheyZWQk=;
-  b=n+7DAeAm9nAgFk/Ft9rU2RIToVWplnuylqd9SXuSt3vETzbIz3BzZRnA
-   D6npWv7Vy5PL4mZXh74BE3zEKVryNb+vXEia5clnJWOxGTp4D35E40FsI
-   3fRHSchHimyCkOQAhIbikzsvZIc9iSKwhiRQXDbFrQYIPJM3GqokmfMre
-   fJJem6BiWWdO4A9h7ijatEukRYTJxvPAjqhvPC426XtvhoZ4e1RVIs/N/
-   3f3kz0D/KdMpl3r6cpMjmCAFEMzwfqJUbCEzgQh9U/kWnGuZX5YWIgL4L
-   X88lvJJOSUYPjHwz6JePYJxU2AJQUBFB9BCAZjHToz9+LkyfB6TF6MSuO
-   Q==;
-X-CSE-ConnectionGUID: PYvei7UUTIG7g7bMgfVKaQ==
-X-CSE-MsgGUID: IkeL9iNJRTy8F8BuoU5x4Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="41956054"
+  bh=w49RAZ+8uMjhzY9cwwAS/yrxn853A/gL1dROucE0B1Q=;
+  b=IIsvBaQn/HYKppxiAQvQFTjuHiXX/TYWf4olrZAOUBbavNxV5xZt26Gc
+   VGoL+2Di65mamsyQSx1bRfvxUcKI+hheU+MZlLpRAuNz4I7FEjnXHk6yO
+   eU/UkRoBkbh4kgHDq+93idouktHV89aqy+QDN+6z8NIt3kM1tp4SjJw5L
+   IN0MghJMVsYews0r+kqeztlOfrpzPyTbLdAIGkJolO2OLEIkCdgCr/uS8
+   ng8l3SyVox6j4/fJCzBTEUyFj18eHdUHEjqtaj0EW3zorq2lwrUhAx2y2
+   UDtz5itYQud3ivq+6eePN54Jm2BuVb8woastF+puWYxLbYCXDVoxVorBp
+   A==;
+X-CSE-ConnectionGUID: v8jtxeCLSkmESmygHVdYzA==
+X-CSE-MsgGUID: b0cr0KvMTVyF8O44K2Fvsw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="41956064"
 X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="41956054"
+   d="scan'208";a="41956064"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 08:14:48 -0800
-X-CSE-ConnectionGUID: 54iCuNLwS7GMNM9eNS12LA==
-X-CSE-MsgGUID: lWqs+PI1StqSPht2GvBNlA==
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 08:14:52 -0800
+X-CSE-ConnectionGUID: OAOP+ZP5Tja2Zdp3U8DMxA==
+X-CSE-MsgGUID: PFEHxGA5SuSYmGMvkmvO4w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,135,1728975600"; 
-   d="scan'208";a="90258245"
+   d="scan'208";a="90258249"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa004.jf.intel.com with ESMTP; 07 Nov 2024 08:14:44 -0800
+  by orviesa004.jf.intel.com with ESMTP; 07 Nov 2024 08:14:48 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -76,9 +76,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 16/19] xsk: add generic XSk &xdp_buff -> skb conversion
-Date: Thu,  7 Nov 2024 17:10:23 +0100
-Message-ID: <20241107161026.2903044-17-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v4 17/19] xsk: add helper to get &xdp_desc's DMA and meta pointer in one go
+Date: Thu,  7 Nov 2024 17:10:24 +0100
+Message-ID: <20241107161026.2903044-18-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241107161026.2903044-1-aleksander.lobakin@intel.com>
 References: <20241107161026.2903044-1-aleksander.lobakin@intel.com>
@@ -90,193 +90,148 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Same as with converting &xdp_buff to skb on Rx, the code which allocates
-a new skb and copies the XSk frame there is identical across the
-drivers, so make it generic. This includes copying all the frags if they
-are present in the original buff.
-System percpu Page Pools help here a lot: when available, allocate pages
-from there instead of the MM layer. This greatly improves XDP_PASS
-performance on XSk: instead of page_alloc() + page_free(), the net core
-recycles the same pages, so the only overhead left is memcpy()s.
-Note that the passed buff gets freed if the conversion is done w/o any
-error, assuming you don't need this buffer after you convert it to an
-skb.
+Currently, when you send an XSk frame with metadata, you need to do
+the following:
 
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+* call external xsk_buff_raw_get_dma();
+* call inline xsk_buff_get_metadata(), which calls external
+  xsk_buff_raw_get_data() and then do some inline checks.
+
+This effectively means that the following piece:
+
+addr = pool->unaligned ? xp_unaligned_add_offset_to_addr(addr) : addr;
+
+is done twice per frame, plus you have 2 external calls per frame, plus
+this:
+
+	meta = pool->addrs + addr - pool->tx_metadata_len;
+	if (unlikely(!xsk_buff_valid_tx_metadata(meta)))
+
+is always inlined, even if there's no meta or it's invalid.
+
+Add xsk_buff_raw_get_ctx() (xp_raw_get_ctx() to be precise) to do that
+in one go. It returns a small structure with 2 fields: DMA address,
+filled unconditionally, and metadata pointer, valid only if it's
+present. The address correction is performed only once and you also
+have only 1 external call per XSk frame, which does all the calculations
+and checks outside of your hotpath. You only need to check
+`if (ctx.meta)` for the metadata presence.
+
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/net/xdp.h |   1 +
- net/core/xdp.c    | 138 ++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 139 insertions(+)
+ include/net/xdp_sock_drv.h  | 23 +++++++++++++++++++++
+ include/net/xsk_buff_pool.h |  8 ++++++++
+ net/xdp/xsk_buff_pool.c     | 40 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 71 insertions(+)
 
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index b0a25b7060ff..accff7de46d6 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -331,6 +331,7 @@ void xdp_warn(const char *msg, const char *func, const int line);
- #define XDP_WARN(msg) xdp_warn(msg, __func__, __LINE__)
- 
- struct sk_buff *xdp_build_skb_from_buff(const struct xdp_buff *xdp);
-+struct sk_buff *xdp_build_skb_from_zc(struct xdp_buff *xdp);
- struct xdp_frame *xdp_convert_zc_to_xdp_frame(struct xdp_buff *xdp);
- struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 					   struct sk_buff *skb,
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index f046b93faaa0..40c8acde7e3f 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -22,6 +22,8 @@
- #include <trace/events/xdp.h>
- #include <net/xdp_sock_drv.h>
- 
-+#include "dev.h"
-+
- #define REG_STATE_NEW		0x0
- #define REG_STATE_REGISTERED	0x1
- #define REG_STATE_UNREGISTERED	0x2
-@@ -682,6 +684,142 @@ struct sk_buff *xdp_build_skb_from_buff(const struct xdp_buff *xdp)
+diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
+index 6aae95b83645..324a4bb04431 100644
+--- a/include/net/xdp_sock_drv.h
++++ b/include/net/xdp_sock_drv.h
+@@ -205,6 +205,23 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
+ 	return xp_raw_get_data(pool, addr);
  }
- EXPORT_SYMBOL_GPL(xdp_build_skb_from_buff);
  
 +/**
-+ * xdp_copy_frags_from_zc - copy the frags from an XSk buff to an skb
-+ * @skb: skb to copy frags to
-+ * @xdp: XSk &xdp_buff from which the frags will be copied
-+ * @pp: &page_pool backing page allocation, if available
++ * xsk_buff_raw_get_ctx - get &xdp_desc context
++ * @pool: XSk buff pool desc address belongs to
++ * @addr: desc address (from userspace)
 + *
-+ * Copy all frags from an XSk &xdp_buff to an skb to pass it up the stack.
-+ * Allocate a new page / page frag for each frag, copy it and attach to
-+ * the skb.
++ * Wrapper for xp_raw_get_ctx() to be used in drivers, see its kdoc for
++ * details.
 + *
-+ * Return: true on success, false on page allocation fail.
++ * Return: new &xdp_desc_ctx struct containing desc's DMA address and metadata
++ * pointer, if it is present and valid (initialized to %NULL otherwise).
 + */
-+static noinline bool xdp_copy_frags_from_zc(struct sk_buff *skb,
-+					    const struct xdp_buff *xdp,
-+					    struct page_pool *pp)
++static inline struct xdp_desc_ctx
++xsk_buff_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr)
 +{
-+	const struct skb_shared_info *xinfo;
-+	struct skb_shared_info *sinfo;
-+	u32 nr_frags, ts;
-+
-+	xinfo = xdp_get_shared_info_from_buff(xdp);
-+	nr_frags = xinfo->nr_frags;
-+	sinfo = skb_shinfo(skb);
-+
-+#if IS_ENABLED(CONFIG_PAGE_POOL)
-+	ts = 0;
-+#else
-+	ts = xinfo->xdp_frags_truesize ? : nr_frags * xdp->frame_sz;
-+#endif
-+
-+	for (u32 i = 0; i < nr_frags; i++) {
-+		u32 len = skb_frag_size(&xinfo->frags[i]);
-+		void *data;
-+#if IS_ENABLED(CONFIG_PAGE_POOL)
-+		u32 truesize = len;
-+
-+		data = page_pool_dev_alloc_va(pp, &truesize);
-+		ts += truesize;
-+#else
-+		data = napi_alloc_frag(len);
-+#endif
-+		if (unlikely(!data))
-+			return false;
-+
-+		memcpy(data, skb_frag_address(&xinfo->frags[i]),
-+		       LARGEST_ALIGN(len));
-+		__skb_fill_page_desc(skb, sinfo->nr_frags++,
-+				     virt_to_page(data),
-+				     offset_in_page(data), len);
-+	}
-+
-+	xdp_update_skb_shared_info(skb, nr_frags, xinfo->xdp_frags_size,
-+				   ts, false);
-+
-+	return true;
++	return xp_raw_get_ctx(pool, addr);
 +}
++
+ #define XDP_TXMD_FLAGS_VALID ( \
+ 		XDP_TXMD_FLAGS_TIMESTAMP | \
+ 		XDP_TXMD_FLAGS_CHECKSUM | \
+@@ -402,6 +419,12 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
+ 	return NULL;
+ }
+ 
++static inline struct xdp_desc_ctx
++xsk_buff_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr)
++{
++	return (struct xdp_desc_ctx){ };
++}
++
+ static inline bool xsk_buff_valid_tx_metadata(struct xsk_tx_metadata *meta)
+ {
+ 	return false;
+diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+index 50779406bc2d..1dcd4d71468a 100644
+--- a/include/net/xsk_buff_pool.h
++++ b/include/net/xsk_buff_pool.h
+@@ -141,6 +141,14 @@ u32 xp_alloc_batch(struct xsk_buff_pool *pool, struct xdp_buff **xdp, u32 max);
+ bool xp_can_alloc(struct xsk_buff_pool *pool, u32 count);
+ void *xp_raw_get_data(struct xsk_buff_pool *pool, u64 addr);
+ dma_addr_t xp_raw_get_dma(struct xsk_buff_pool *pool, u64 addr);
++
++struct xdp_desc_ctx {
++	dma_addr_t dma;
++	struct xsk_tx_metadata *meta;
++};
++
++struct xdp_desc_ctx xp_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr);
++
+ static inline dma_addr_t xp_get_dma(struct xdp_buff_xsk *xskb)
+ {
+ 	return xskb->dma;
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index ae71da7d2cd6..02c42caec9f4 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -715,3 +715,43 @@ dma_addr_t xp_raw_get_dma(struct xsk_buff_pool *pool, u64 addr)
+ 		(addr & ~PAGE_MASK);
+ }
+ EXPORT_SYMBOL(xp_raw_get_dma);
 +
 +/**
-+ * xdp_build_skb_from_zc - create an skb from an XSk &xdp_buff
-+ * @xdp: source XSk buff
++ * xp_raw_get_ctx - get &xdp_desc context
++ * @pool: XSk buff pool desc address belongs to
++ * @addr: desc address (from userspace)
 + *
-+ * Similar to xdp_build_skb_from_buff(), but for XSk frames. Allocate an skb
-+ * head, new page for the head, copy the data and initialize the skb fields.
-+ * If there are frags, allocate new pages for them and copy.
-+ * If Page Pool is available, the function allocates memory from the system
-+ * percpu pools to try recycling the pages, otherwise it uses the NAPI page
-+ * frag caches.
-+ * If new skb was built successfully, @xdp is returned to XSk pool's freelist.
-+ * On error, it remains untouched and the caller must take care of this.
++ * Helper for getting desc's DMA address and metadata pointer, if present.
++ * Saves one call on hotpath, double calculation of the actual address,
++ * and inline checks for metadata presence and sanity.
++ * Please use xsk_buff_raw_get_ctx() in drivers instead.
 + *
-+ * Return: new &sk_buff on success, %NULL on error.
++ * Return: new &xdp_desc_ctx struct containing desc's DMA address and metadata
++ * pointer, if it is present and valid (initialized to %NULL otherwise).
 + */
-+struct sk_buff *xdp_build_skb_from_zc(struct xdp_buff *xdp)
++struct xdp_desc_ctx xp_raw_get_ctx(const struct xsk_buff_pool *pool, u64 addr)
 +{
-+	const struct xdp_rxq_info *rxq = xdp->rxq;
-+	u32 len = xdp->data_end - xdp->data_meta;
-+	struct page_pool *pp;
-+	struct sk_buff *skb;
-+	int metalen;
-+#if IS_ENABLED(CONFIG_PAGE_POOL)
-+	u32 truesize;
-+	void *data;
++	struct xsk_tx_metadata *meta;
++	struct xdp_desc_ctx ret;
 +
-+	pp = this_cpu_read(system_page_pool);
-+	truesize = xdp->frame_sz;
++	addr = pool->unaligned ? xp_unaligned_add_offset_to_addr(addr) : addr;
++	ret = (typeof(ret)){
++		/* Same logic as in xp_raw_get_dma() */
++		.dma	= (pool->dma_pages[addr >> PAGE_SHIFT] &
++			   ~XSK_NEXT_PG_CONTIG_MASK) + (addr & ~PAGE_MASK),
++	};
 +
-+	data = page_pool_dev_alloc_va(pp, &truesize);
-+	if (unlikely(!data))
-+		return NULL;
++	if (!pool->tx_metadata_len)
++		goto out;
 +
-+	skb = napi_build_skb(data, truesize);
-+	if (unlikely(!skb)) {
-+		page_pool_free_va(pp, data, true);
-+		return NULL;
-+	}
++	/* Same logic as in xp_raw_get_data() + xsk_buff_get_metadata() */
++	meta = pool->addrs + addr - pool->tx_metadata_len;
++	if (unlikely(!xsk_buff_valid_tx_metadata(meta)))
++		goto out;
 +
-+	skb_mark_for_recycle(skb);
-+	skb_reserve(skb, xdp->data_meta - xdp->data_hard_start);
-+#else /* !CONFIG_PAGE_POOL */
-+	struct napi_struct *napi;
++	ret.meta = meta;
 +
-+	pp = NULL;
-+	napi = napi_by_id(rxq->napi_id);
-+	if (likely(napi))
-+		skb = napi_alloc_skb(napi, len);
-+	else
-+		skb = __netdev_alloc_skb_ip_align(rxq->dev, len,
-+						  GFP_ATOMIC | __GFP_NOWARN);
-+	if (unlikely(!skb))
-+		return NULL;
-+#endif /* !CONFIG_PAGE_POOL */
-+
-+	memcpy(__skb_put(skb, len), xdp->data_meta, LARGEST_ALIGN(len));
-+
-+	metalen = xdp->data - xdp->data_meta;
-+	if (metalen > 0) {
-+		skb_metadata_set(skb, metalen);
-+		__skb_pull(skb, metalen);
-+	}
-+
-+	skb_record_rx_queue(skb, rxq->queue_index);
-+
-+	if (unlikely(xdp_buff_has_frags(xdp)) &&
-+	    unlikely(!xdp_copy_frags_from_zc(skb, xdp, pp))) {
-+		napi_consume_skb(skb, true);
-+		return NULL;
-+	}
-+
-+	xsk_buff_free(xdp);
-+
-+	skb->protocol = eth_type_trans(skb, rxq->dev);
-+
-+	return skb;
++out:
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(xdp_build_skb_from_zc);
-+
- struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 					   struct sk_buff *skb,
- 					   struct net_device *dev)
++EXPORT_SYMBOL(xp_raw_get_ctx);
 -- 
 2.47.0
 
