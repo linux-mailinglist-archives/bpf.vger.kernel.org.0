@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-44255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 585579C0B27
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:16:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 142589C0B2A
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:16:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCA071F22287
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 16:16:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45DB71C231AE
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 16:16:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F88217F40;
-	Thu,  7 Nov 2024 16:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8553C218307;
+	Thu,  7 Nov 2024 16:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KaL3XjLR"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n9AzwIAA"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3822178ED;
-	Thu,  7 Nov 2024 16:13:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C5E02170BE;
+	Thu,  7 Nov 2024 16:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730996033; cv=none; b=QuVYDESpmhrf11vrGnfzvgLgZ2YgjISiITQ1iewAoXS96w/2BtkRwlU2w4IZqTJf8snDs7eagLlGZ9+2IwZJSaScXlGMf1BzBQ8etsYeaX1f6b+OpMrgtfrTd0sbMLMXaG5CTzsF93Qba1OXgKPst3X46OIh6ragQ5r6dCfs/2E=
+	t=1730996041; cv=none; b=G53+en25Dv793Z5aBtUSFwehYFkvcAtzIcyY1lMmH8e5Rjbi5OHN1yX06prjbPfwSvGOPk2xnTLzJpcgveBgcfeAgXXQZlpQhR9Yimp+2FwEKednRE0vScf9MAr4ZPwjA+Hm/UbZBlZxECb+kcoJogEa71Ed5hly99PqZ1JuPBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730996033; c=relaxed/simple;
-	bh=AaCUdkZPsgiTWoS9byZEEfNz0SWpUtnffkbv56egmN4=;
+	s=arc-20240116; t=1730996041; c=relaxed/simple;
+	bh=DFGQJNxM+FgbEtL5yJWRP3oVCB90anzIfa9xYAuXcZk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M9rs6RmdRRrYNiXxyRmTzdRKHWFc0+4FhCT+Wbnh95ke36PhtRpaklx07Krrv/VrMf5zsN2oCvidyAfd64w9IQBo0jEYtUJu9ImYzt7fKIH7AwqG2YqwCPjA9XijW8eYOD+MSP2xg5Bl89+k/EG0WPsCRD3WBegcqSrA+zyrUV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KaL3XjLR; arc=none smtp.client-ip=198.175.65.13
+	 MIME-Version; b=TLZhg4mZBAeaqIg0UD8jcHhuI8/SgJtODIpAfD6ReI4d2p4z43DqUtdKi1pydS55SzRTEzmHlvL1S4s0sqOL5cPi/FqKXhMYjuMO2ZSJ1pT/guEBx77FZdEvAU7KGU/MndAuSyxEuifsZLH9fdp/N/F1g3FNpsNRk9t3d9VVX+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n9AzwIAA; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730996032; x=1762532032;
+  t=1730996039; x=1762532039;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=AaCUdkZPsgiTWoS9byZEEfNz0SWpUtnffkbv56egmN4=;
-  b=KaL3XjLR5B8jBQarjNpeJKLyxRLODuMwP5DYzYcvAvwWrv8wdPfBg7JZ
-   UmvQ6fdcLA+qPoVW13nqWZYdJN0w5hMvUJYJBwl672Ajf5p/iNSSGg6Ij
-   eGgeJDbeTJKSDoxWNuYc4mOtfpzLlVTnEJxdsm1xszH7Oy6xSYINz7XQm
-   bWnqJjnMQ6y5QJUN6qXNKjllTkQ4gSW2AZt5G2fHoiYEdQUEPQ7kQICg1
-   rRqZ3vgRFuNLsgIChBrSK9gLtHl3ZmmKPypHpE09JjEwUvok9ezMzYoGO
-   MSF5Ivu01Dzg7p1AlTkYpi7qfRkDMgkumdqsRcM4UEv+CIXJsA+aHnTI3
-   g==;
-X-CSE-ConnectionGUID: zQTphwLrTyi2+IMiATPo8g==
-X-CSE-MsgGUID: H+9tE69xRQOPgdImQ3/wig==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="41955703"
+  bh=DFGQJNxM+FgbEtL5yJWRP3oVCB90anzIfa9xYAuXcZk=;
+  b=n9AzwIAAGJw8rotePzTD0DAD3MSPYPVIOzODSbwE8Y88YMQILMRJEDZg
+   sj8C/fCw4/RSCqls91z5RIG8vGMrHN1QJtcqqkTxIAeuAvP8YTO+sh8Ek
+   va2QATmwKo4u4hWArNGG4rfzZ0+lMqTb+oaVmJywqccdU0bxW0ERuPP4+
+   flchxTL5yQRTJWvpIXYP95vC7X9BDRuMPW4RbtUlL2hEzgyTZ5bof1RvB
+   fjOlSBNeIa39PEArsVtc6h+ehLmWcL/FOBHJKNSnBdEU1yMahrmOJ/f+a
+   0OyeDq9+h53WGgYe9GydNYmqWLSTimGZI8+MBytP8cWntQ1qY3MnkH0UB
+   A==;
+X-CSE-ConnectionGUID: VPc4yxCQQtaT9uy3hZxnGA==
+X-CSE-MsgGUID: ntpXf0wZQJKrsArm6UUIuA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="41955729"
 X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="41955703"
+   d="scan'208";a="41955729"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 08:13:52 -0800
-X-CSE-ConnectionGUID: /9n/fyesSq2I5ZLLa4I/yg==
-X-CSE-MsgGUID: gGQCyB59TjyLp2X6fGnSNw==
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 08:13:57 -0800
+X-CSE-ConnectionGUID: TVm2Bj3SS/6S6JmC/ZJoPA==
+X-CSE-MsgGUID: peKiJZg+RUS5H447JU5lAQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,135,1728975600"; 
-   d="scan'208";a="90258139"
+   d="scan'208";a="90258163"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa004.jf.intel.com with ESMTP; 07 Nov 2024 08:13:49 -0800
+  by orviesa004.jf.intel.com with ESMTP; 07 Nov 2024 08:13:53 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -75,10 +75,12 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 02/19] skbuff: allow 2-4-argument skb_frag_dma_map()
-Date: Thu,  7 Nov 2024 17:10:09 +0100
-Message-ID: <20241107161026.2903044-3-aleksander.lobakin@intel.com>
+	linux-kernel@vger.kernel.org,
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Subject: [PATCH net-next v4 03/19] unroll: add generic loop unroll helpers
+Date: Thu,  7 Nov 2024 17:10:10 +0100
+Message-ID: <20241107161026.2903044-4-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241107161026.2903044-1-aleksander.lobakin@intel.com>
 References: <20241107161026.2903044-1-aleksander.lobakin@intel.com>
@@ -90,87 +92,87 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-skb_frag_dma_map(dev, frag, 0, skb_frag_size(frag), DMA_TO_DEVICE)
-is repeated across dozens of drivers and really wants a shorthand.
-Add a macro which will count args and handle all possible number
-from 2 to 5. Semantics:
+There are cases when we need to explicitly unroll loops. For example,
+cache operations, filling DMA descriptors on very high speeds etc.
+Add compiler-specific attribute macros to give the compiler a hint
+that we'd like to unroll a loop.
+Example usage:
 
-skb_frag_dma_map(dev, frag) ->
-__skb_frag_dma_map(dev, frag, 0, skb_frag_size(frag), DMA_TO_DEVICE)
+ #define UNROLL_BATCH 8
 
-skb_frag_dma_map(dev, frag, offset) ->
-__skb_frag_dma_map(dev, frag, offset, skb_frag_size(frag) - offset,
-		   DMA_TO_DEVICE)
+	unrolled_count(UNROLL_BATCH)
+	for (u32 i = 0; i < UNROLL_BATCH; i++)
+		op(priv, i);
 
-skb_frag_dma_map(dev, frag, offset, size) ->
-__skb_frag_dma_map(dev, frag, offset, size, DMA_TO_DEVICE)
+Note that sometimes the compilers won't unroll loops if they think this
+would have worse optimization and perf than without unrolling, and that
+unroll attributes are available only starting GCC 8. For older compiler
+versions, no hints/attributes will be applied.
+For better unrolling/parallelization, don't have any variables that
+interfere between iterations except for the iterator itself.
 
-skb_frag_dma_map(dev, frag, offset, size, dir) ->
-__skb_frag_dma_map(dev, frag, offset, size, dir)
-
-No object code size changes for the existing callers. Users passing
-less arguments also won't have bigger size comparing to the full
-equivalent call.
-
+Co-developed-by: Jose E. Marchesi <jose.marchesi@oracle.com> # pragmas
+Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
+Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/linux/skbuff.h | 31 ++++++++++++++++++++++++++-----
- 1 file changed, 26 insertions(+), 5 deletions(-)
+ include/linux/unroll.h | 43 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index e5095d75abba..9e55223ba362 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -3665,7 +3665,7 @@ static inline void skb_frag_page_copy(skb_frag_t *fragto,
- bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t prio);
+diff --git a/include/linux/unroll.h b/include/linux/unroll.h
+index d42fd6366373..2870c89a93f4 100644
+--- a/include/linux/unroll.h
++++ b/include/linux/unroll.h
+@@ -9,6 +9,49 @@
  
- /**
-- * skb_frag_dma_map - maps a paged fragment via the DMA API
-+ * __skb_frag_dma_map - maps a paged fragment via the DMA API
-  * @dev: the device to map the fragment to
-  * @frag: the paged fragment to map
-  * @offset: the offset within the fragment (starting at the
-@@ -3675,15 +3675,36 @@ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t prio);
-  *
-  * Maps the page associated with @frag to @device.
-  */
--static inline dma_addr_t skb_frag_dma_map(struct device *dev,
--					  const skb_frag_t *frag,
--					  size_t offset, size_t size,
--					  enum dma_data_direction dir)
-+static inline dma_addr_t __skb_frag_dma_map(struct device *dev,
-+					    const skb_frag_t *frag,
-+					    size_t offset, size_t size,
-+					    enum dma_data_direction dir)
- {
- 	return dma_map_page(dev, skb_frag_page(frag),
- 			    skb_frag_off(frag) + offset, size, dir);
- }
+ #include <linux/args.h>
  
-+#define skb_frag_dma_map(dev, frag, ...)				\
-+	CONCATENATE(_skb_frag_dma_map,					\
-+		    COUNT_ARGS(__VA_ARGS__))(dev, frag, ##__VA_ARGS__)
++#ifdef CONFIG_CC_IS_CLANG
++#define __pick_unrolled(x, y)		_Pragma(#x)
++#elif CONFIG_GCC_VERSION >= 80000
++#define __pick_unrolled(x, y)		_Pragma(#y)
++#else
++#define __pick_unrolled(x, y)		/* not supported */
++#endif
 +
-+#define __skb_frag_dma_map1(dev, frag, offset, uf, uo) ({		\
-+	const skb_frag_t *uf = (frag);					\
-+	size_t uo = (offset);						\
-+									\
-+	__skb_frag_dma_map(dev, uf, uo, skb_frag_size(uf) - uo,		\
-+			   DMA_TO_DEVICE);				\
-+})
-+#define _skb_frag_dma_map1(dev, frag, offset)				\
-+	__skb_frag_dma_map1(dev, frag, offset, __UNIQUE_ID(frag_),	\
-+			    __UNIQUE_ID(offset_))
-+#define _skb_frag_dma_map0(dev, frag)					\
-+	_skb_frag_dma_map1(dev, frag, 0)
-+#define _skb_frag_dma_map2(dev, frag, offset, size)			\
-+	__skb_frag_dma_map(dev, frag, offset, size, DMA_TO_DEVICE)
-+#define _skb_frag_dma_map3(dev, frag, offset, size, dir)		\
-+	__skb_frag_dma_map(dev, frag, offset, size, dir)
++/**
++ * unrolled - loop attributes to ask the compiler to unroll it
++ *
++ * Usage:
++ *
++ * #define BATCH 4
++ *	unrolled_count(BATCH)
++ *	for (u32 i = 0; i < BATCH; i++)
++ *		// loop body without cross-iteration dependencies
++ *
++ * This is only a hint and the compiler is free to disable unrolling if it
++ * thinks the count is suboptimal and may hurt performance and/or hugely
++ * increase object code size.
++ * Not having any cross-iteration dependencies (i.e. when iter x + 1 depends
++ * on what iter x will do with variables) is not a strict requirement, but
++ * provides best performance and object code size.
++ * Available only on Clang and GCC 8.x onwards.
++ */
 +
- static inline struct sk_buff *pskb_copy(struct sk_buff *skb,
- 					gfp_t gfp_mask)
- {
++/* Ask the compiler to pick an optimal unroll count, Clang only */
++#define unrolled							    \
++	__pick_unrolled(clang loop unroll(enable), /* nothing */)
++
++/* Unroll each @n iterations of a loop */
++#define unrolled_count(n)						    \
++	__pick_unrolled(clang loop unroll_count(n), GCC unroll n)
++
++/* Unroll the whole loop */
++#define unrolled_full							    \
++	__pick_unrolled(clang loop unroll(full), GCC unroll 65534)
++
++/* Never unroll a loop */
++#define unrolled_none							    \
++	__pick_unrolled(clang loop unroll(disable), GCC unroll 1)
++
+ #define UNROLL(N, MACRO, args...) CONCATENATE(__UNROLL_, N)(MACRO, args)
+ 
+ #define __UNROLL_0(MACRO, args...)
 -- 
 2.47.0
 
