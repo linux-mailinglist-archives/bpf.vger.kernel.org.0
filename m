@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-44275-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44276-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9A119C0D42
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 18:51:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 460319C0D43
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 18:51:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 988D8284A7D
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:51:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06C2D284C69
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:51:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22FAB216E03;
-	Thu,  7 Nov 2024 17:51:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1102170AD;
+	Thu,  7 Nov 2024 17:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D4bsbi5K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PQEcH6/l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 286AF21219F
-	for <bpf@vger.kernel.org>; Thu,  7 Nov 2024 17:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A02A216A32
+	for <bpf@vger.kernel.org>; Thu,  7 Nov 2024 17:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731001875; cv=none; b=dIKNYL3bppyREDeRrMwRzJhOcB65jAvgfYi/fZz6EoPn/1Dd/LLNgaIOqBBCF8YwbsdFKTZm/it6oywKN2KIOnSFaOh3odrvQhP8DTQNREkx9xAOCagKGJyLYqVj08SKX1NTQ0t83HGEq05FS1hNyEwEsrjmrRGYPEBl6E+kEvM=
+	t=1731001876; cv=none; b=I96YesT1/EWKo6tp+9VY/YK+zK68Vrv5thPI/Srr6hOMIG+CsfZS7MrmG4MPTTNxw89WkTlzXiljeqZrRHnfqDH0mOt/CYKTv38XJsLkby4CW6NusAO4bTdrvB4oK/PSDn0pxZXFRqcQlajOu1lp70K7uQVFoMVRJMEASz2EupU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731001875; c=relaxed/simple;
-	bh=rpwfH7UREpRTm452olMbgYsgD4sekufu1q1uCUALS8c=;
+	s=arc-20240116; t=1731001876; c=relaxed/simple;
+	bh=T8QX5b2CBgdACcPlQMEOyncHYhOUy2dUPRC73WryojY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GVL1BIQY4jmrSmwouBkWJWujTpWgp6kXu0AAsxzj+ALBexD+GCPU3/cCcHqHiVj1amcCv3WsXxfcGnOqeiA4N9chNfFqYPgMk66R25n62XPc3jYx8JztQv64v2gPBWLmARR602VuSwGmUBCvPfmKAZZoAXt0KWLwAVAIQAeVLes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D4bsbi5K; arc=none smtp.client-ip=209.85.216.43
+	 MIME-Version; b=tD+f5/l2l7cjHYufg/nqTghFXN1uzJkWgvVFHd5UldWDiG+BA13O2y94Cw/oG2yfEnizCJ0CFuT/Lnc8KbfcQfe0zoWn4KQUrE661VqrabelX30uJB2dp/02oHAuM6pnkJ0aILbFFJjjvGC/+EEZHzuRHj3q5Gs72oRSUM1Oklc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PQEcH6/l; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2e2e2d09decso1870858a91.1
-        for <bpf@vger.kernel.org>; Thu, 07 Nov 2024 09:51:13 -0800 (PST)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7ea8de14848so941369a12.2
+        for <bpf@vger.kernel.org>; Thu, 07 Nov 2024 09:51:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731001873; x=1731606673; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1731001874; x=1731606674; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=D6W+T8L8Jx2OznMdQFey5kB1B1VvMQB1JGD/jHvtnTY=;
-        b=D4bsbi5KB3P66B30rns5/ftR5xTpXlPuYrRTtT3j/viu8HEsf8drFgnMzQ+MR7vQKE
-         bvwzLV5zixI86IJI86CtiGA7U0NyA8bIKhLzJxCESM815EBOAX5aoC2CKRmATR1e5TA8
-         6eVamzWXwhxTnrK4oJ9zfqMN5j4nbYqEOQ7URhLEHzVuxxgIcaD9xjKm2Fq8R0c+2nOO
-         3dlFnunC4OAGELmL4vEsXGs7VzH6sxJLJS3e9gWEmtjVoBegIK1LN9HT9vlraX61TXyj
-         7gl1gvUNI6SLYVz4XUg0DdHBW9wyswDxTQW7AyQYryS93nETu/weRI0a09X5LBIC7bz+
-         imog==
+        bh=ugDuautYCQncfLo+o9NNjswjmgF8uCkD4Ve2GCTJRIA=;
+        b=PQEcH6/l+FN3zUwDI2s3f7XCzpFlY3lFTn+jNkwHrsWvwSEuZkDGiLDVkDnwYk8vN1
+         jSRZSf096fF/fQvnGD9GNdQ5y6iu+u66OnAuAmLwHFZCcmmEKOHl0xmUYLYgPW9WhI2e
+         u6fdRM2jHYl4pTx5sqOw1jRKWxMRqRwHxP/5RZsi3h2lOlackX4z4i50Kcsl7OWW/7x7
+         6oQ7ATJw3eYmXkDBVScTucLYpmtwT0q3D9QZXHvTYRltMeh+BaAxtazoeRVTJ8qWkTBL
+         /J7yNI2wqSTXqyh2/ApYihLHfkxHo2fDBz/P3i2NwlrmIFZ+bJNWi1ugV9J331WeZurA
+         Ai0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731001873; x=1731606673;
+        d=1e100.net; s=20230601; t=1731001874; x=1731606674;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=D6W+T8L8Jx2OznMdQFey5kB1B1VvMQB1JGD/jHvtnTY=;
-        b=hec/cvE90UpEARil1TvuqFGjj3LDKVEdQuTwKVwLVsNxZeXbBaJo3tXFFxWp1bvB6K
-         d8cpM3cNjKPbjypUCfV3e3i+Ka55qdkFwDxarcUAvt61e3s4afo0Z9gHhOML8BjbONeP
-         1+MJPNGR2wgEz571sngELivmID+uDs7G5jUwI1JocMh3c7nQertKdFeZnOp1/SkCE2i9
-         C+T4xOuS1U0ddGKJIY821wAKAvIMMHNlh9/ykKe5gg+YuT+qnBoS2b9ZjIv2CtVRE69g
-         v8R2YaSi4n8/1IXrJbDBWyu+GMS5Ej4J7VigBSRDj/EANEwA0mcXCl/UMgB9jSo56j/M
-         2I6g==
-X-Gm-Message-State: AOJu0YxFMPiKMH7WCpREXCDqw2R8bBH7hs3WQTk7vw42AH2Nrul11fvu
-	cbSk53V+lPv1Qk7noYEQn2rFWW31P30zu8PB2Cg8cdcTzSaVROd1GMRORJO4
-X-Google-Smtp-Source: AGHT+IEUdI+DsjckHSHQuOOn5U9Nev79dDhl5mvvQyzDe4CEsQ/SLtDn25/9+Bkra4+HquoN788yJQ==
-X-Received: by 2002:a17:90b:17c7:b0:2da:88b3:cff8 with SMTP id 98e67ed59e1d1-2e9b0a4e2cdmr706690a91.6.1731001873152;
-        Thu, 07 Nov 2024 09:51:13 -0800 (PST)
+        bh=ugDuautYCQncfLo+o9NNjswjmgF8uCkD4Ve2GCTJRIA=;
+        b=U1yxWlT9wk0fYXC/SKmIsfN6duHwjkQsZDvX4r75qBEFczIrss+MNQoAcCn+TZtSsb
+         26+1nEMACqGjXRsLuHpUczJfkEfECs92FPU7iatbg/0bbkb73drCcCYXvJ9Vm6j6fou8
+         eQhXMFgzA2zrqLLJfm+un0/wfGhbWYAtzKU6tTAnImRb+piYQMv/m058ddTsRNyU+t1F
+         ySkiNlnjq1orbzF/J/PDd7CJmzspzBXEIwV8dNB0NdeYRWqUYcWUCMIAxo3+gGrjUWZF
+         MOOL6wYqHiSe1aPEvWKg3emayFgjgblYa5ADo08xy69cBkGroZ0zXwMS0TZRfrrnB3nP
+         o05w==
+X-Gm-Message-State: AOJu0Yz69Ym5zmRvyWMX/vj6iuVh0I+zK870HVn6sZFZwLiCW8y1SQA2
+	uBrb4iFZMV6VmjROoIJXINZQOm3lVJo4JWW3mbC7LygoOP6wEO2cMXDVJOpH
+X-Google-Smtp-Source: AGHT+IGABM8JjjY2cpnDgDCuDj5D7UKok8cf67X8kyECbZygUSf7GXrDmNgtbu04APtwOiFrbor2oA==
+X-Received: by 2002:a17:90b:4a91:b0:2e2:a3aa:6509 with SMTP id 98e67ed59e1d1-2e9b1697bf5mr62741a91.14.1731001874228;
+        Thu, 07 Nov 2024 09:51:14 -0800 (PST)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e9a5f52b32sm1730686a91.5.2024.11.07.09.51.12
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e9a5f52b32sm1730686a91.5.2024.11.07.09.51.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Nov 2024 09:51:12 -0800 (PST)
+        Thu, 07 Nov 2024 09:51:13 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -76,9 +76,9 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	memxor@gmail.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [RFC bpf-next 01/11] bpf: use branch predictions in opt_hard_wire_dead_code_branches()
-Date: Thu,  7 Nov 2024 09:50:30 -0800
-Message-ID: <20241107175040.1659341-2-eddyz87@gmail.com>
+Subject: [RFC bpf-next 02/11] selftests/bpf: tests for opt_hard_wire_dead_code_branches()
+Date: Thu,  7 Nov 2024 09:50:31 -0800
+Message-ID: <20241107175040.1659341-3-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241107175040.1659341-1-eddyz87@gmail.com>
 References: <20241107175040.1659341-1-eddyz87@gmail.com>
@@ -90,140 +90,106 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Consider dead code elimination problem for program like below:
-
-    main:
-      1: r1 = 42
-      2: call <subprogram>;
-      3: exit
-
-    subprogram:
-      4: r0 = 1
-      5: if r1 != 42 goto +1
-      6: r0 = 2
-      7: exit;
-
-Here verifier would visit every instruction and thus
-bpf_insn_aux_data->seen flag would be set for both true (7)
-and falltrhough (6) branches of conditional (5).
-Hence opt_hard_wire_dead_code_branches() will not replace
-conditional (5) with unconditional jump.
-
-To cover such cases:
-- add two fields in struct bpf_insn_aux_data:
-  - true_branch_taken;
-  - false_branch_taken;
-- adjust check_cond_jmp_op() to set the fields according to jump
-  predictions;
-- handle these flags in the opt_hard_wire_dead_code_branches():
-  - true_branch_taken && !false_branch_taken
-    always jump, replace instruction with 'goto off';
-  - !true_branch_taken && false_branch_taken
-    always falltrhough, replace with 'goto +0';
-  - true_branch_taken && false_branch_taken
-    jump and falltrhough are possible, don't change the instruction;
-  - !true_branch_taken && !false_branch_taken
-    neither jump, nor falltrhough are possible, if condition itself
-    must be a dead code (should be removed by opt_remove_dead_code).
+As opt_hard_wire_dead_code_branches() was changed to react to
+accumulated branch prediction flags for conditional jumps,
+add tests for various possible predictions.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- include/linux/bpf_verifier.h |  4 +++-
- kernel/bpf/verifier.c        | 16 ++++++++++++----
- 2 files changed, 15 insertions(+), 5 deletions(-)
+ .../selftests/bpf/prog_tests/verifier.c       |  2 +
+ .../selftests/bpf/progs/verifier_dead_code.c  | 63 +++++++++++++++++++
+ 2 files changed, 65 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_dead_code.c
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 4513372c5bc8..ed4eacfd4db7 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -570,7 +570,9 @@ struct bpf_insn_aux_data {
- 	struct btf_struct_meta *kptr_struct_meta;
- 	u64 map_key_state; /* constant (32 bit) key tracking for maps */
- 	int ctx_field_size; /* the ctx field size for load insn, maybe 0 */
--	u32 seen; /* this insn was processed by the verifier at env->pass_cnt */
-+	bool seen; /* this insn was processed by the verifier at env->pass_cnt */
-+	bool true_branch_taken; /* for cond jumps, set if verifier ever took true branch */
-+	bool false_branch_taken; /* for cond jumps, set if verifier ever took false branch */
- 	bool sanitize_stack_spill; /* subject to Spectre v4 sanitation */
- 	bool zext_dst; /* this insn zero extends dst reg */
- 	bool needs_zext; /* alu op needs to clear upper bits */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 7958d6ff6b73..3bae0bbc1da9 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -13265,7 +13265,7 @@ static void sanitize_mark_insn_seen(struct bpf_verifier_env *env)
- 	 * rewrite/sanitize them.
- 	 */
- 	if (!vstate->speculative)
--		env->insn_aux_data[env->insn_idx].seen = env->pass_cnt;
-+		env->insn_aux_data[env->insn_idx].seen = env->pass_cnt > 0;
- }
- 
- static int sanitize_err(struct bpf_verifier_env *env,
-@@ -15484,6 +15484,7 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- {
- 	struct bpf_verifier_state *this_branch = env->cur_state;
- 	struct bpf_verifier_state *other_branch;
-+	struct bpf_insn_aux_data *aux = &env->insn_aux_data[*insn_idx];
- 	struct bpf_reg_state *regs = this_branch->frame[this_branch->curframe]->regs;
- 	struct bpf_reg_state *dst_reg, *other_branch_regs, *src_reg = NULL;
- 	struct bpf_reg_state *eq_branch_regs;
-@@ -15510,6 +15511,8 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- 				insn->off, insn->imm);
- 			return -EINVAL;
- 		}
-+		aux->true_branch_taken = true;
-+		aux->false_branch_taken = true;
- 		prev_st = find_prev_entry(env, cur_st->parent, idx);
- 
- 		/* branch out 'fallthrough' insn as a new state to explore */
-@@ -15579,6 +15582,7 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- 		 * the fall-through branch for simulation under speculative
- 		 * execution.
- 		 */
-+		aux->true_branch_taken = true;
- 		if (!env->bypass_spec_v1 &&
- 		    !sanitize_speculative_path(env, insn, *insn_idx + 1,
- 					       *insn_idx))
-@@ -15592,6 +15596,7 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- 		 * program will go. If needed, push the goto branch for
- 		 * simulation under speculative execution.
- 		 */
-+		aux->false_branch_taken = true;
- 		if (!env->bypass_spec_v1 &&
- 		    !sanitize_speculative_path(env, insn,
- 					       *insn_idx + insn->off + 1,
-@@ -15602,6 +15607,9 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- 		return 0;
- 	}
- 
-+	aux->true_branch_taken = true;
-+	aux->false_branch_taken = true;
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index 75f7a2ce334b..efd42c07f58a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -26,6 +26,7 @@
+ #include "verifier_ctx.skel.h"
+ #include "verifier_ctx_sk_msg.skel.h"
+ #include "verifier_d_path.skel.h"
++#include "verifier_dead_code.skel.h"
+ #include "verifier_direct_packet_access.skel.h"
+ #include "verifier_direct_stack_access_wraparound.skel.h"
+ #include "verifier_div0.skel.h"
+@@ -154,6 +155,7 @@ void test_verifier_const_or(void)             { RUN(verifier_const_or); }
+ void test_verifier_ctx(void)                  { RUN(verifier_ctx); }
+ void test_verifier_ctx_sk_msg(void)           { RUN(verifier_ctx_sk_msg); }
+ void test_verifier_d_path(void)               { RUN(verifier_d_path); }
++void test_verifier_dead_code(void)            { RUN(verifier_dead_code); }
+ void test_verifier_direct_packet_access(void) { RUN(verifier_direct_packet_access); }
+ void test_verifier_direct_stack_access_wraparound(void) { RUN(verifier_direct_stack_access_wraparound); }
+ void test_verifier_div0(void)                 { RUN(verifier_div0); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_dead_code.c b/tools/testing/selftests/bpf/progs/verifier_dead_code.c
+new file mode 100644
+index 000000000000..b2eed6be0d42
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_dead_code.c
+@@ -0,0 +1,63 @@
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
 +
- 	/* Push scalar registers sharing same ID to jump history,
- 	 * do this before creating 'other_branch', so that both
- 	 * 'this_branch' and 'other_branch' share this history
-@@ -19288,7 +19296,7 @@ static void adjust_insn_aux_data(struct bpf_verifier_env *env,
- {
- 	struct bpf_insn_aux_data *old_data = env->insn_aux_data;
- 	struct bpf_insn *insn = new_prog->insnsi;
--	u32 old_seen = old_data[off].seen;
-+	bool old_seen = old_data[off].seen;
- 	u32 prog_len;
- 	int i;
- 
-@@ -19608,9 +19616,9 @@ static void opt_hard_wire_dead_code_branches(struct bpf_verifier_env *env)
- 		if (!insn_is_cond_jump(insn->code))
- 			continue;
- 
--		if (!aux_data[i + 1].seen)
-+		if (aux_data[i].true_branch_taken && !aux_data[i].false_branch_taken)
- 			ja.off = insn->off;
--		else if (!aux_data[i + 1 + insn->off].seen)
-+		else if (!aux_data[i].true_branch_taken && aux_data[i].false_branch_taken)
- 			ja.off = 0;
- 		else
- 			continue;
++SEC("socket")
++__xlated("0: r1 = 1")
++__xlated("1: r0 = 42")
++__xlated("2: r0 = 24")
++__xlated("3: exit")
++__success
++__retval(24)
++__naked void cond_always_false(void)
++{
++	asm volatile (
++		"r1 = 1;"
++		"r0 = 42;"
++		"if r1 != 1 goto +1;"
++		"r0 = 24;"
++		"exit;"
++		::: __clobber_all
++	);
++}
++
++SEC("socket")
++__xlated("0: r1 = 2")
++__xlated("1: r0 = 42")
++__xlated("2: exit")
++__success
++__retval(42)
++__naked void cond_always_true(void)
++{
++	asm volatile (
++		"r1 = 2;"
++		"r0 = 42;"
++		"if r1 != 1 goto +1;"
++		"r0 = 24;"
++		"exit;"
++		::: __clobber_all
++	);
++}
++
++SEC("socket")
++__xlated("0: call")
++__xlated("1: r1 = r0")
++__xlated("2: r0 = 42")
++__xlated("3: if r1 != 0x1 goto pc+1")
++__xlated("4: r0 = 24")
++__xlated("5: exit")
++__success
++__naked void cond_unknown(void)
++{
++	asm volatile (
++		"call %[bpf_get_prandom_u32];"
++		"r1 = r0;"
++		"r0 = 42;"
++		"if r1 != 1 goto +1;"
++		"r0 = 24;"
++		"exit;"
++		:
++		: __imm(bpf_get_prandom_u32)
++		: __clobber_all
++	);
++}
 -- 
 2.47.0
 
