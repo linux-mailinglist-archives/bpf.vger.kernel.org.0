@@ -1,84 +1,93 @@
-Return-Path: <bpf+bounces-44201-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44202-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E997F9BFD0E
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 04:42:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8EC19BFE95
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 07:38:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9C3F283E1D
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 03:42:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AFE71F23DF0
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 06:38:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EFD018D65A;
-	Thu,  7 Nov 2024 03:42:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE1B1CC16A;
+	Thu,  7 Nov 2024 06:37:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nNwbDRFZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OIM5CJnz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 321D617B402;
-	Thu,  7 Nov 2024 03:42:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C4B194C6A;
+	Thu,  7 Nov 2024 06:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730950932; cv=none; b=i6dT3zngJnF1fglhmuYqNoqfB7UZgRK1xlEXdnJMyiOlJN6M0jyrXo4wyDGNo/Ipqfu6FDpHO/zaWoZJ1D+nkQi5Rs7F8+P/JeufweMUdCGX/gmfkgzNQmDMS2E6Y62MWJ5XVD8gWL+JFWAoi/zHqQtVivwOjU8Vw6X0sBgVoRo=
+	t=1730961434; cv=none; b=qc2CSIENd/JTdmFBFZ5ykxap+EHnzwVVA/vWGp4Xh7ZJPvQLOzJl0ZL6/KvaaAKqguN9A5WUrUu/hNYJd5xFfdIPBScMcwvVz7vZ/ce1NtlUr3O9q3+FsdyYSqph72AA5A3YdhQJY/nYVAgxr7tnUmdwOv8rz9jcLsDOOYQornE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730950932; c=relaxed/simple;
-	bh=bes6VF+/tZ3Doc4aMjHGmU/BKzoZuvdTvK3LAfrpBjQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=i+n58BhTdSO8bQmgQAjx1+4RJ54abxGOYGkjNQH0DCNlV8Q6BNzLJDYG+TGXjKYrLU9tnGim1JWbV3Om41JOmjBUitGSTL3CU2mkMjDsj3eemCV+qXg4acOY+o3+RfBHDCRD66dS6AigBRNECS7jlAOTElinx4SoelsmyMJimbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nNwbDRFZ; arc=none smtp.client-ip=209.85.210.173
+	s=arc-20240116; t=1730961434; c=relaxed/simple;
+	bh=AefW8bsaSt3rDRVGJf+8Zsu15+j4HqVp75JUKe9nL44=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BTgsMf8Lgf1/ROAAXBkb5WraOE1odZwGzXLNx9jpgHhza83t/DZbhn0d8K1tD64O7ekTOi2D5dzoQp3tazW+3XboA9byzBhfjAGvqbGLy/sl4UBcybRuQ6HxNhUSVkuIQDqW/XBBkTD9CGDYZH2ApHyaIbgTaebftwCW5Jc1+dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OIM5CJnz; arc=none smtp.client-ip=209.85.167.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-72041ff06a0so377758b3a.2;
-        Wed, 06 Nov 2024 19:42:11 -0800 (PST)
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3e5f86e59f1so399204b6e.1;
+        Wed, 06 Nov 2024 22:37:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730950930; x=1731555730; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sR9Keek2orpgwuio1inl2tEE62ShnL2BJsF5yEukZTQ=;
-        b=nNwbDRFZWl88wHwdaxQ8UkNjUcWbWb3jPjv7SfahMDOicAhhn1EXfOJOT5uOuOUh00
-         py/ni2N9VKILOsS4b+/dEiCRe2+tqUvtRW32hv7epd8W1Hhb6yLLqjomtXhO5GEtpm8S
-         C+/OSpArVewC+fJXl9NDuNNv2USsMZ80xa3MEUyY+MEyXCYs6+hSw9VLkktIpZhUF/56
-         Q79FBK0RXiGDdRydvq84mAVMBGUfmNSpd6fdm1JzTE2tOBazZpDBMd6q+Z+z5Dm2rpM+
-         pY4LT9g0pEXfEaa7UaUGvs7vBkxpcWCJuwYt5T8PCG7Kcmy3J4ghRK8ypnx7qf3W9Vs5
-         rXGg==
+        d=gmail.com; s=20230601; t=1730961432; x=1731566232; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VbO6aB5fSbhKrtKv66n/69pu6+mqeAhZ9XD1hcKe/DY=;
+        b=OIM5CJnzrsWWj+jjp2rR4zzEoeyMvgakGxpyEywKti8RbwXo9aA39Bf1eXVRyfR7hK
+         Qlz3TimI7c28IOYxR0Z5YPZ0YNa+RHCF3oLr+gyWl2BKT6zvJOPzxFVy07Y9VT2ggo3n
+         rI94ElybzkA083Tnvq6mvh17smD7hA1poKktKr+eod6GJsTgKSliE0ZAeMjNcipVy1p9
+         wLNIJT97q13MJkP8GGgOss1BMRe1bYX3uIgfXQPZqVcQjRPs0XjlFjX7PaG3FhmYhh86
+         zwn/myIYzQrAS5bnVBp/NEtPcvmR7KzzQJRFLehQcwXd2woD5wFftLSnmVFM8ySzKRJg
+         bKFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730950930; x=1731555730;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sR9Keek2orpgwuio1inl2tEE62ShnL2BJsF5yEukZTQ=;
-        b=TpoMjoqJPOXwgWmi5U/jmbaaJVAWvxZD8AVDSuxYtz1AI5mR3/nKiBlPpGMjHJJwbO
-         6KGbroCi9yKakWgYAYhU6xOPbeh+hPhZzh4N8PX4SY7BEjv9/D/fC4HMKlXFMECgGEa6
-         wWoOrFXTkgf/1xbhbGKOnuolDHZ/gzdkNsyb0o0o8MrHP6us1tpGqr5WuWHxEt30xbEF
-         NojWqkaiQ7ORKsJcZZQBDw5Su0erQb/gILL8YsOCRgKWX6vQtc9ekVAH/s6QEv6OllII
-         JvGcRqTs4nVns59LBloX5sQdbSJlR0kPcAdmgGbk2jApqqypQI0XN2ZLLSHJ1vD69ceA
-         2J+Q==
-X-Gm-Message-State: AOJu0YyGuQcBbJANfCl++CtO+ScVyRpHE31uUGUBHEJNBe89rEl6Wy6G
-	+9BDEnWcAAF3i9xEP2VafrspWZ6OVrRGXk6MJca3j4vvqU8NQ4qCOI3Hug==
-X-Google-Smtp-Source: AGHT+IFCulYwJCkNZkjB0cYYUsnXaOillODDtzom56d7jChNuUf4l4p0Xyigx/5xtVoQlAqEtv8i3g==
-X-Received: by 2002:a05:6a00:a2a:b0:71d:f64d:ec60 with SMTP id d2e1a72fcca58-720c98a3d45mr29260020b3a.7.1730950930071;
-        Wed, 06 Nov 2024 19:42:10 -0800 (PST)
-Received: from pop-os.hsd1.ca.comcast.net ([2601:647:6881:9060:baaf:f848:1f89:8135])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72407a2367dsm361350b3a.169.2024.11.06.19.42.09
+        d=1e100.net; s=20230601; t=1730961432; x=1731566232;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VbO6aB5fSbhKrtKv66n/69pu6+mqeAhZ9XD1hcKe/DY=;
+        b=RoZ+40jyj+2tmHRxXkJdsFYFu1EoT08bw73592P+Rs+GxTWlJznIeF8PX5K2a1UHdd
+         9eYhWVa7vs0QAY29NZq9UtviJiBIMNQgHYfbUrazW1Ajhc85TUYOKjCHClqDtiRCa5T0
+         PxoR2QBGSa2lF3a5beDJnniLi4QfRdMJY3wo3pShOAKqTeazK5iTXQ95PtbNe3SXFClg
+         LgXpkY9H+UmWoQPilrOGwsSRLY+fqdCcnRuWULxjayp2CyOMLSuOcBDA/X0owj4/7NZy
+         tP03JgEQiw8Oi6o/uU9JheUYAenucj8MbTw4E1f+04z+KO37GRYx7QLdtlBpytn5plot
+         /zGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW1pytsghjG5NyAqxT3P2z3KEjQV3C0GUisQpm9XWWCUn5SY62txuuF8y+hWDiip9rK7NUuEzOmXpK2nHFH@vger.kernel.org, AJvYcCWo6zkjzivEmXUyMalcRngwCIgtb7TwZrqP+TAqo+3+pDh20AB1BOhuSSdItZbfhZBNJT4=@vger.kernel.org, AJvYcCXBsYfQIMY+Im2T4SNS8BZQX2ooC0boOhmmcGkSh/rlIHii6U+rjZPKmP86Gyhf13/klGGjuDHJc3pa@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxntndq2LfVec07jM+tY8cM+IlR8+los8I4w+TPH0s1YkRR6ZJa
+	h1hFlx7CXAVpPN+aoumXR86CmmQSIoV6NKlIwQHJblt1pnwPwN7h
+X-Google-Smtp-Source: AGHT+IGF4lMbiPUR9KrbGhCZDmM8tQUV8/34OZwedmF370vmbPjqFl5VyJ2LhEm1KCCLi5+DOH4kQA==
+X-Received: by 2002:a05:6808:1482:b0:3e5:ff0b:e9ec with SMTP id 5614622812f47-3e78d33d090mr1058502b6e.9.1730961431676;
+        Wed, 06 Nov 2024 22:37:11 -0800 (PST)
+Received: from 1337.tail8aa098.ts.net (ms-studentunix-nat0.cs.ucalgary.ca. [136.159.16.20])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7f41f48abbdsm616310a12.10.2024.11.06.22.37.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Nov 2024 19:42:09 -0800 (PST)
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org,
-	Cong Wang <cong.wang@bytedance.com>,
-	John Fastabend <john.fastabend@gmail.com>,
+        Wed, 06 Nov 2024 22:37:11 -0800 (PST)
+From: Abhinav Saxena <xandfury@gmail.com>
+To: linux-kernel-mentees@lists.linuxfoundation.org,
+	bpf@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Zijian Zhang <zijianzhang@bytedance.com>
-Subject: [Patch bpf 2/2] selftests/bpf: Add a BPF selftest for bpf_skb_change_tail()
-Date: Wed,  6 Nov 2024 19:41:41 -0800
-Message-Id: <20241107034141.250815-2-xiyou.wangcong@gmail.com>
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Abhinav Saxena <xandfury@gmail.com>
+Subject: [PATCH 0/1] BPF verifier documentation cleanup
+Date: Wed,  6 Nov 2024 23:37:07 -0700
+Message-Id: <20241107063708.106340-1-xandfury@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241107034141.250815-1-xiyou.wangcong@gmail.com>
-References: <20241107034141.250815-1-xiyou.wangcong@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,144 +96,25 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Cong Wang <cong.wang@bytedance.com>
+Hi everyone,
 
-As requested by Daniel, we need to add a selftest to cover
-bpf_skb_change_tail() cases in skb_verdict. Here we test trimming,
-growing and error cases, and validate its expected return values.
+I am interested in contributing to the BPF subsystem, starting with
+documentation cleanup. The patch removes trailing whitespace from the
+verifier documentation to maintain consistent formatting.
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Zijian Zhang <zijianzhang@bytedance.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 51 +++++++++++++++++++
- .../bpf/progs/test_sockmap_change_tail.c      | 40 +++++++++++++++
- 2 files changed, 91 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c
+I have tested this patch with scripts/checkpatch.pl and it reports no
+issues.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 82bfb266741c..fe735fced836 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -12,6 +12,7 @@
- #include "test_sockmap_progs_query.skel.h"
- #include "test_sockmap_pass_prog.skel.h"
- #include "test_sockmap_drop_prog.skel.h"
-+#include "test_sockmap_change_tail.skel.h"
- #include "bpf_iter_sockmap.skel.h"
- 
- #include "sockmap_helpers.h"
-@@ -562,6 +563,54 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
- 		test_sockmap_drop_prog__destroy(drop);
- }
- 
-+static void test_sockmap_skb_verdict_change_tail(void)
-+{
-+	struct test_sockmap_change_tail *skel;
-+	int err, map, verdict;
-+	int c1, p1, sent, recvd;
-+	int zero = 0;
-+	char b[3];
-+
-+	skel = test_sockmap_change_tail__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+	verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-+	map = bpf_map__fd(skel->maps.sock_map_rx);
-+
-+	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach"))
-+		goto out;
-+	err = create_pair(AF_INET, SOCK_STREAM, &c1, &p1);
-+	if (!ASSERT_OK(err, "create_pair()"))
-+		goto out;
-+	err = bpf_map_update_elem(map, &zero, &c1, BPF_NOEXIST);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem(c1)"))
-+		goto out_close;
-+	sent = xsend(p1, "Tr", 2, 0);
-+	ASSERT_EQ(sent, 2, "xsend(p1)");
-+	recvd = recv(c1, b, 2, 0);
-+	ASSERT_EQ(recvd, 1, "recv(c1)");
-+	ASSERT_EQ(skel->data->change_tail_ret, 0, "change_tail_ret");
-+
-+	sent = xsend(p1, "G", 1, 0);
-+	ASSERT_EQ(sent, 1, "xsend(p1)");
-+	recvd = recv(c1, b, 2, 0);
-+	ASSERT_EQ(recvd, 2, "recv(c1)");
-+	ASSERT_EQ(skel->data->change_tail_ret, 0, "change_tail_ret");
-+
-+	sent = xsend(p1, "E", 1, 0);
-+	ASSERT_EQ(sent, 1, "xsend(p1)");
-+	recvd = recv(c1, b, 1, 0);
-+	ASSERT_EQ(recvd, 1, "recv(c1)");
-+	ASSERT_EQ(skel->data->change_tail_ret, -EINVAL, "change_tail_ret");
-+
-+out_close:
-+	close(c1);
-+	close(p1);
-+out:
-+	test_sockmap_change_tail__destroy(skel);
-+}
-+
- static void test_sockmap_skb_verdict_peek_helper(int map)
- {
- 	int err, c1, p1, zero = 0, sent, recvd, avail;
-@@ -927,6 +976,8 @@ void test_sockmap_basic(void)
- 		test_sockmap_skb_verdict_fionread(true);
- 	if (test__start_subtest("sockmap skb_verdict fionread on drop"))
- 		test_sockmap_skb_verdict_fionread(false);
-+	if (test__start_subtest("sockmap skb_verdict change tail"))
-+		test_sockmap_skb_verdict_change_tail();
- 	if (test__start_subtest("sockmap skb_verdict msg_f_peek"))
- 		test_sockmap_skb_verdict_peek();
- 	if (test__start_subtest("sockmap skb_verdict msg_f_peek with link"))
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c b/tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c
-new file mode 100644
-index 000000000000..2796dd8545eb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 ByteDance */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, int);
-+} sock_map_rx SEC(".maps");
-+
-+long change_tail_ret = 1;
-+
-+SEC("sk_skb")
-+int prog_skb_verdict(struct __sk_buff *skb)
-+{
-+	char *data, *data_end;
-+
-+	bpf_skb_pull_data(skb, 1);
-+	data = (char *)(unsigned long)skb->data;
-+	data_end = (char *)(unsigned long)skb->data_end;
-+
-+	if (data + 1 > data_end)
-+		return SK_PASS;
-+
-+	if (data[0] == 'T') { /* Trim the packet */
-+		change_tail_ret = bpf_skb_change_tail(skb, skb->len - 1, 0);
-+		return SK_PASS;
-+	} else if (data[0] == 'G') { /* Grow the packet */
-+		change_tail_ret = bpf_skb_change_tail(skb, skb->len + 1, 0);
-+		return SK_PASS;
-+	} else if (data[0] == 'E') { /* Error */
-+		change_tail_ret = bpf_skb_change_tail(skb, 65535, 0);
-+		return SK_PASS;
-+	}
-+	return SK_PASS;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+Best,
+Abhinav
+
+
+Abhinav Saxena (1):
+  docs: bpf: verifier: remove trailing whitespace
+
+ Documentation/bpf/verifier.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
 -- 
 2.34.1
 
