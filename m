@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-44216-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44217-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EEBD9C00BD
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 10:01:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BD299C00C0
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 10:01:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32A2F1C21E85
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 09:00:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B299283F32
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 09:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBF121E103C;
-	Thu,  7 Nov 2024 09:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA6F1E22EF;
+	Thu,  7 Nov 2024 09:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="m35W4CC2"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="n8TwnvEh"
 X-Original-To: bpf@vger.kernel.org
 Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F731DFE33;
-	Thu,  7 Nov 2024 09:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C9C11E04A6;
+	Thu,  7 Nov 2024 09:00:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730970029; cv=none; b=BEno49Gk10fY/frU0h+n8Tyf5ZpIktOU7rzp1S4RpPB3lBI7tm8RFtABsewoTdhaMXaPJjVM8E+hxqsGQ94tOjJtEgrV7sRc2rCdKOiT6EGZr1TlRn69UNBfSjzM652bnSE9KF2f8DQfMm3S6cpmj6p6tpxgJgTBo3rLie9gtLs=
+	t=1730970030; cv=none; b=U6TnprIl06k69TmTwEYf0qiyF+vDOLWtDrxEIR7iIPSqHoChxy/Hb+auMEsT8Qk6jOOtkab1LNiWG5Yj3solxkv4XbFvzu0c6bn53Zf3Dt8sjQFrNcPbK+efjPePHo+kw1Fv9uaznzc9ghi+1LLwJPUwcurUlWC4Qylm0jqTl0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730970029; c=relaxed/simple;
-	bh=2wrVsnJkmIFjBWYbByhcEgEpjPaTXUOPsoNSKAsOXPo=;
+	s=arc-20240116; t=1730970030; c=relaxed/simple;
+	bh=f0DPkx2b/M39zMWjz/rEmo1hUpl6qlE7N0DjTki2sXw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SKS6YdXDhDjFgeFpdWoIcuodShyv2mNWqwSVJJKVdTsB1rkntKUee3JqkdqfgY6YpSXln/HVEwU8L1UV/vXqRb+vHjKYBXzqc03uuhaJWUvZtY/tZ22NX83xGkV4E1UWrK8Ed68tVlZM18jIAK7+Qq2WFO5LKOsPP1PktUwHQdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=m35W4CC2; arc=none smtp.client-ip=115.124.30.101
+	 MIME-Version; b=DarxAinuzAhI8xJy5VhhzkkuYC3JiOZkhgkaZ3GCXnO54BLQaKTczeJq8qer60GC4SQPPlY7R8pr3eorfGqZ5ULXipTLVWk4mb/Nan63zNHCRgFoeUX1laSOhiXsMsBV1YUnEsuk3SQhAizv5cDqV3yYo78CQvjk+hkPLK0E8fg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=n8TwnvEh; arc=none smtp.client-ip=115.124.30.101
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1730970025; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=LHfNUJKLWIQvJsxY7ytRb+qS1OX+a03H1JK3ekZWhSk=;
-	b=m35W4CC2anklLslnzzgbV58LwkD7QGGU2xUKxKr6mf5+l98JOf2OOgQbsbAUaVP1zuOSVtdGeXUGX1ObigDNsxUX+hCXO31jmLFyKcSs0Q3Vq44o7HD6dMi+tONYC58KpHlpZbYxLuNDjQC0ja/7WF6FVgiAD2Jslqioei4Q4Ck=
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0WIv0ukX_1730969711 cluster:ay36)
+	t=1730970026; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=LgR1U2ms27+S2ZlqNBsLcPiwCkcrIV0sDV7JnO0EpJo=;
+	b=n8TwnvEhxPLEcxUdMtqYumCLZSOTlZjoHh1siAsJMfyBHYRzv+8reRkY2ngXSPdD4SQ6QUgr8M1lDnwftyWibV4eGGV/ROqVZYbdaCo14D7CaCpex3JzuUlOODM8887yoNQeQO5hqoGKVxcmsJH+FJWEF4XfB3owh60z51CnFdY=
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0WIuulS9_1730969712 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Thu, 07 Nov 2024 16:55:12 +0800
+          Thu, 07 Nov 2024 16:55:13 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: netdev@vger.kernel.org
 Cc: "Michael S. Tsirkin" <mst@redhat.com>,
@@ -56,9 +56,9 @@ Cc: "Michael S. Tsirkin" <mst@redhat.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	virtualization@lists.linux.dev,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v3 07/13] virtio_ring: remove API virtqueue_set_dma_premapped
-Date: Thu,  7 Nov 2024 16:54:58 +0800
-Message-Id: <20241107085504.63131-8-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next v3 08/13] virtio_net: refactor the xmit type
+Date: Thu,  7 Nov 2024 16:54:59 +0800
+Message-Id: <20241107085504.63131-9-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20241107085504.63131-1-xuanzhuo@linux.alibaba.com>
 References: <20241107085504.63131-1-xuanzhuo@linux.alibaba.com>
@@ -71,140 +71,189 @@ MIME-Version: 1.0
 X-Git-Hash: 2634baada01d
 Content-Transfer-Encoding: 8bit
 
-Now, this API is useless. remove it.
+Because the af-xdp will introduce a new xmit type, so I refactor the
+xmit type mechanism first.
+
+We know both xdp_frame and sk_buff are at least 4 bytes aligned.
+For the xdp tx, we do not pass any pointer to virtio core as data,
+we just need to pass the len of the packet. So we will push len
+to the void pointer. We can make sure the pointer is 4 bytes aligned.
+
+And the data structure of AF_XDP also is at least 4 bytes aligned.
+
+So the last two bits of the pointers are free, we can't use these to
+distinguish them.
+
+    00 for skb
+    01 for SKB_ORPHAN
+    10 for XDP
+    11 for AF-XDP tx
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/net/virtio_net.c     | 13 ----------
- drivers/virtio/virtio_ring.c | 48 ------------------------------------
- include/linux/virtio.h       |  2 --
- 3 files changed, 63 deletions(-)
+ drivers/net/virtio_net.c | 90 +++++++++++++++++++++++-----------------
+ 1 file changed, 51 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 862beacef5d7..e4ebf3ffbf02 100644
+index e4ebf3ffbf02..079d4a213fda 100644
 --- a/drivers/net/virtio_net.c
 +++ b/drivers/net/virtio_net.c
-@@ -6107,15 +6107,6 @@ static int virtnet_alloc_queues(struct virtnet_info *vi)
- 	return -ENOMEM;
- }
+@@ -45,9 +45,6 @@ module_param(napi_tx, bool, 0644);
+ #define VIRTIO_XDP_TX		BIT(0)
+ #define VIRTIO_XDP_REDIR	BIT(1)
  
--static void virtnet_rq_set_premapped(struct virtnet_info *vi)
+-#define VIRTIO_XDP_FLAG		BIT(0)
+-#define VIRTIO_ORPHAN_FLAG	BIT(1)
+-
+ /* RX packet size EWMA. The average packet size is used to determine the packet
+  * buffer size when refilling RX rings. As the entire RX ring may be refilled
+  * at once, the weight is chosen so that the EWMA will be insensitive to short-
+@@ -509,34 +506,35 @@ static struct sk_buff *virtnet_skb_append_frag(struct sk_buff *head_skb,
+ 					       struct page *page, void *buf,
+ 					       int len, int truesize);
+ 
+-static bool is_xdp_frame(void *ptr)
 -{
--	int i;
--
--	for (i = 0; i < vi->max_queue_pairs; i++)
--		/* error should never happen */
--		BUG_ON(virtqueue_set_dma_premapped(vi->rq[i].vq));
+-	return (unsigned long)ptr & VIRTIO_XDP_FLAG;
 -}
--
- static int init_vqs(struct virtnet_info *vi)
++enum virtnet_xmit_type {
++	VIRTNET_XMIT_TYPE_SKB,
++	VIRTNET_XMIT_TYPE_SKB_ORPHAN,
++	VIRTNET_XMIT_TYPE_XDP,
++};
+ 
+-static void *xdp_to_ptr(struct xdp_frame *ptr)
+-{
+-	return (void *)((unsigned long)ptr | VIRTIO_XDP_FLAG);
+-}
++/* We use the last two bits of the pointer to distinguish the xmit type. */
++#define VIRTNET_XMIT_TYPE_MASK (BIT(0) | BIT(1))
+ 
+-static struct xdp_frame *ptr_to_xdp(void *ptr)
++static enum virtnet_xmit_type virtnet_xmit_ptr_unpack(void **ptr)
  {
- 	int ret;
-@@ -6129,10 +6120,6 @@ static int init_vqs(struct virtnet_info *vi)
- 	if (ret)
- 		goto err_free;
- 
--	/* disable for big mode */
--	if (!vi->big_packets || vi->mergeable_rx_bufs)
--		virtnet_rq_set_premapped(vi);
--
- 	cpus_read_lock();
- 	virtnet_set_affinity(vi);
- 	cpus_read_unlock();
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 26d218f6235d..38bea08f0469 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -180,9 +180,6 @@ struct vring_virtqueue {
- 	/* Host publishes avail event idx */
- 	bool event;
- 
--	/* Do DMA mapping by driver */
--	bool premapped;
--
- 	/* Head of free buffer list. */
- 	unsigned int free_head;
- 	/* Number we've added since last sync. */
-@@ -2098,7 +2095,6 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	vq->packed_ring = true;
- 	vq->dma_dev = dma_dev;
- 	vq->use_dma_api = vring_use_dma_api(vdev);
--	vq->premapped = false;
- 
- 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
- 		!context;
-@@ -2689,7 +2685,6 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
- #endif
- 	vq->dma_dev = dma_dev;
- 	vq->use_dma_api = vring_use_dma_api(vdev);
--	vq->premapped = false;
- 
- 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
- 		!context;
-@@ -2816,49 +2811,6 @@ int virtqueue_resize(struct virtqueue *_vq, u32 num,
- }
- EXPORT_SYMBOL_GPL(virtqueue_resize);
- 
--/**
-- * virtqueue_set_dma_premapped - set the vring premapped mode
-- * @_vq: the struct virtqueue we're talking about.
-- *
-- * Enable the premapped mode of the vq.
-- *
-- * The vring in premapped mode does not do dma internally, so the driver must
-- * do dma mapping in advance. The driver must pass the dma_address through
-- * dma_address of scatterlist. When the driver got a used buffer from
-- * the vring, it has to unmap the dma address.
-- *
-- * This function must be called immediately after creating the vq, or after vq
-- * reset, and before adding any buffers to it.
-- *
-- * Caller must ensure we don't call this with other virtqueue operations
-- * at the same time (except where noted).
-- *
-- * Returns zero or a negative error.
-- * 0: success.
-- * -EINVAL: too late to enable premapped mode, the vq already contains buffers.
-- */
--int virtqueue_set_dma_premapped(struct virtqueue *_vq)
--{
--	struct vring_virtqueue *vq = to_vvq(_vq);
--	u32 num;
--
--	START_USE(vq);
--
--	num = vq->packed_ring ? vq->packed.vring.num : vq->split.vring.num;
--
--	if (num != vq->vq.num_free) {
--		END_USE(vq);
--		return -EINVAL;
--	}
--
--	vq->premapped = true;
--
--	END_USE(vq);
--
--	return 0;
+-	return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG);
 -}
--EXPORT_SYMBOL_GPL(virtqueue_set_dma_premapped);
--
- /**
-  * virtqueue_reset - detach and recycle all unused buffers
-  * @_vq: the struct virtqueue we're talking about.
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index 13b3f55abca3..338e0f5efb4b 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -93,8 +93,6 @@ bool virtqueue_enable_cb(struct virtqueue *vq);
++	unsigned long p = (unsigned long)*ptr;
  
- unsigned virtqueue_enable_cb_prepare(struct virtqueue *vq);
+-static bool is_orphan_skb(void *ptr)
+-{
+-	return (unsigned long)ptr & VIRTIO_ORPHAN_FLAG;
++	*ptr = (void *)(p & ~VIRTNET_XMIT_TYPE_MASK);
++
++	return p & VIRTNET_XMIT_TYPE_MASK;
+ }
  
--int virtqueue_set_dma_premapped(struct virtqueue *_vq);
--
- bool virtqueue_poll(struct virtqueue *vq, unsigned);
+-static void *skb_to_ptr(struct sk_buff *skb, bool orphan)
++static void *virtnet_xmit_ptr_pack(void *ptr, enum virtnet_xmit_type type)
+ {
+-	return (void *)((unsigned long)skb | (orphan ? VIRTIO_ORPHAN_FLAG : 0));
++	return (void *)((unsigned long)ptr | type);
+ }
  
- bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
+-static struct sk_buff *ptr_to_skb(void *ptr)
++static int virtnet_add_outbuf(struct send_queue *sq, int num, void *data,
++			      enum virtnet_xmit_type type)
+ {
+-	return (struct sk_buff *)((unsigned long)ptr & ~VIRTIO_ORPHAN_FLAG);
++	return virtqueue_add_outbuf(sq->vq, sq->sg, num,
++				    virtnet_xmit_ptr_pack(data, type),
++				    GFP_ATOMIC);
+ }
+ 
+ static void sg_fill_dma(struct scatterlist *sg, dma_addr_t addr, u32 len)
+@@ -548,29 +546,37 @@ static void sg_fill_dma(struct scatterlist *sg, dma_addr_t addr, u32 len)
+ static void __free_old_xmit(struct send_queue *sq, struct netdev_queue *txq,
+ 			    bool in_napi, struct virtnet_sq_free_stats *stats)
+ {
++	struct xdp_frame *frame;
++	struct sk_buff *skb;
+ 	unsigned int len;
+ 	void *ptr;
+ 
+ 	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
+-		if (!is_xdp_frame(ptr)) {
+-			struct sk_buff *skb = ptr_to_skb(ptr);
++		switch (virtnet_xmit_ptr_unpack(&ptr)) {
++		case VIRTNET_XMIT_TYPE_SKB:
++			skb = ptr;
+ 
+ 			pr_debug("Sent skb %p\n", skb);
++			stats->napi_packets++;
++			stats->napi_bytes += skb->len;
++			napi_consume_skb(skb, in_napi);
++			break;
+ 
+-			if (is_orphan_skb(ptr)) {
+-				stats->packets++;
+-				stats->bytes += skb->len;
+-			} else {
+-				stats->napi_packets++;
+-				stats->napi_bytes += skb->len;
+-			}
++		case VIRTNET_XMIT_TYPE_SKB_ORPHAN:
++			skb = ptr;
++
++			stats->packets++;
++			stats->bytes += skb->len;
+ 			napi_consume_skb(skb, in_napi);
+-		} else {
+-			struct xdp_frame *frame = ptr_to_xdp(ptr);
++			break;
++
++		case VIRTNET_XMIT_TYPE_XDP:
++			frame = ptr;
+ 
+ 			stats->packets++;
+ 			stats->bytes += xdp_get_frame_len(frame);
+ 			xdp_return_frame(frame);
++			break;
+ 		}
+ 	}
+ 	netdev_tx_completed_queue(txq, stats->napi_packets, stats->napi_bytes);
+@@ -1430,8 +1436,7 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
+ 			    skb_frag_size(frag), skb_frag_off(frag));
+ 	}
+ 
+-	err = virtqueue_add_outbuf(sq->vq, sq->sg, nr_frags + 1,
+-				   xdp_to_ptr(xdpf), GFP_ATOMIC);
++	err = virtnet_add_outbuf(sq, nr_frags + 1, xdpf, VIRTNET_XMIT_TYPE_XDP);
+ 	if (unlikely(err))
+ 		return -ENOSPC; /* Caller handle free/refcnt */
+ 
+@@ -3052,8 +3057,9 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb, bool orphan)
+ 			return num_sg;
+ 		num_sg++;
+ 	}
+-	return virtqueue_add_outbuf(sq->vq, sq->sg, num_sg,
+-				    skb_to_ptr(skb, orphan), GFP_ATOMIC);
++
++	return virtnet_add_outbuf(sq, num_sg, skb,
++				  orphan ? VIRTNET_XMIT_TYPE_SKB_ORPHAN : VIRTNET_XMIT_TYPE_SKB);
+ }
+ 
+ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
+@@ -5930,10 +5936,16 @@ static void free_receive_page_frags(struct virtnet_info *vi)
+ 
+ static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
+ {
+-	if (!is_xdp_frame(buf))
++	switch (virtnet_xmit_ptr_unpack(&buf)) {
++	case VIRTNET_XMIT_TYPE_SKB:
++	case VIRTNET_XMIT_TYPE_SKB_ORPHAN:
+ 		dev_kfree_skb(buf);
+-	else
+-		xdp_return_frame(ptr_to_xdp(buf));
++		break;
++
++	case VIRTNET_XMIT_TYPE_XDP:
++		xdp_return_frame(buf);
++		break;
++	}
+ }
+ 
+ static void free_unused_bufs(struct virtnet_info *vi)
 -- 
 2.32.0.3.g01195cf9f
 
