@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-44264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76E0E9C0B45
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34C739C0B48
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:19:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36035284BEE
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 16:19:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECDA1284D57
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 16:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3344219CBE;
-	Thu,  7 Nov 2024 16:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF8321A4BB;
+	Thu,  7 Nov 2024 16:14:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jqpvUjsZ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BXAPyQZW"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946C8219C9C;
-	Thu,  7 Nov 2024 16:14:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6493F216A3C;
+	Thu,  7 Nov 2024 16:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730996073; cv=none; b=RfHkDQ55YfmCn5BEMK2IE6athb4eGFlYYDwZ47B0LFdGEyLgcepYE8ZkETDYabaHffXIHj2OrpMJUHlAGM3EeDPtg6n5U5YgKt3kTezUqfoS+x0qY45izNpOmx7Y7Yu8o6KmXtoH1t4O0MxbP+0vEcPWwwVO0sm6gbdrayE+9L8=
+	t=1730996075; cv=none; b=X83yKroIQRNl/M634YC8eQFG11G+Fh92sh4KFUbgY9sgaQ2vvB5B/Osnt857eblRCCK5CFpc1qMbPG5ogQG/fcXIfKZxLNy+QzKraM9OiArt9TojZkwChbZvI5nvvYriw71fWLG2LrS6+NSm9XrowzVAsndLMmEmwgikLZwDCW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730996073; c=relaxed/simple;
-	bh=gE1Z3BLQSCdCqry/fy5Ufe5cNavHxq8XalIlY63IyKo=;
+	s=arc-20240116; t=1730996075; c=relaxed/simple;
+	bh=YhZ3TfA4ACoplc7R0bWF7mIt9LBHnjrIy4K9m4cZqy4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VC+1dL9Os+Un2hP6OkKxFb80fAk+8driKeRlF9lidI6pbX9AaSUm4NqVn4RdDBoa7m+AuqBoXPY365MAWnATaK0OQx+67aAnk37KSRD2J8BHUFShgIzww9zvETSaVOojHiIs+8jA2GZtEUiitSuxO9wPhwH4eIMcpD2HX4kcZa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jqpvUjsZ; arc=none smtp.client-ip=198.175.65.13
+	 MIME-Version; b=fMFyUfFB6Ggfl9g8JJBCcVtpganm7wBTh69OiGAln+jdptwIWyUHK3UZ7a3qY1ydZUlDm3ocGlQfo+jWYTtKfMrWub+usAR2yz4+PifCkfdt8ajDC2llUG79nXdZ4u14M7SAoqWlnP2zncE9Asv8BWpwJlDTFs9GOIU4mc4llgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BXAPyQZW; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730996072; x=1762532072;
+  t=1730996073; x=1762532073;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=gE1Z3BLQSCdCqry/fy5Ufe5cNavHxq8XalIlY63IyKo=;
-  b=jqpvUjsZMIy6f9wALF7VAgM6i6E2O09qynS/WhGhoR77sIwl7CSDabdB
-   cJQm+JT8YIGlKYpkqcvUcMISnENmquauEyy3dcdnN7o/UrXKjw1SgENXD
-   KZXDCgpDbRAXI9FnbquKnEfksT0P4VhwFhOr4tDNZfswoI2x0lp80CI9W
-   QjND9XfcpF1SWYTSmvyxdyLeHixqIg7q972RbUv31XpqahYCDXV4NBC8X
-   rLSb/AWlFcp1vDWq2/daMW6edbXVlCcqc+JIrDGjxZtL6uxNd/xNQKXzo
-   Jyl5PN9v2BBKki2pfU+xi8ZH9uyxQ3HEn/YSJIWx6UJ+LBgjDzAaPckqL
-   Q==;
-X-CSE-ConnectionGUID: AVh/VSP4TLWe7KTf7NX4Aw==
-X-CSE-MsgGUID: IXxymi6EROKbrK94DB54UQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="41955987"
+  bh=YhZ3TfA4ACoplc7R0bWF7mIt9LBHnjrIy4K9m4cZqy4=;
+  b=BXAPyQZWLXBWfXHgx92P57EtPe4asje4UPwAx12IkTd0gK4AxwqSK+aA
+   CnfVsOSsbP3YHdYayZv6d4SUOWeg9fhF7YZbPUfFfeat4ojCK2eTP/wgw
+   kG2l/paj3f20GXlahyD8Pe/XeukRjlqayP0AYa43SePvZDQObo3sPlILH
+   1eHiUgD1dvWsTRseh+PD9lDNUCbRNTVbcr0JJ8HCX18YpWNWYOtKkHXoA
+   eLTbSakHqiubf/neuA/W9bs9fjtFCbIdHjxdnyGwJKIL8X6mPL3AY3hGT
+   dHK59ny2iL8JwqrLw7MbRlqehO/NkSzNTGshyBhK+sUPg2KT/2xqjxOAd
+   g==;
+X-CSE-ConnectionGUID: i878ptbESUy6mFMCxUuMUw==
+X-CSE-MsgGUID: /f8dUQM+Qqqkq9iGbHbEXw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="41956004"
 X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="41955987"
+   d="scan'208";a="41956004"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 08:14:28 -0800
-X-CSE-ConnectionGUID: vcWgzRf5Td+B0iVzvwIMjA==
-X-CSE-MsgGUID: i3RBgNg6Q6WSbgQ15OCcGQ==
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2024 08:14:32 -0800
+X-CSE-ConnectionGUID: 3Ln6dSAERnqhHk4hCjw1Jw==
+X-CSE-MsgGUID: mZBI4+kZS1WR7kmBuAdfSw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,135,1728975600"; 
-   d="scan'208";a="90258225"
+   d="scan'208";a="90258229"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa004.jf.intel.com with ESMTP; 07 Nov 2024 08:14:25 -0800
+  by orviesa004.jf.intel.com with ESMTP; 07 Nov 2024 08:14:29 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -76,9 +76,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 11/19] xdp: add generic xdp_buff_add_frag()
-Date: Thu,  7 Nov 2024 17:10:18 +0100
-Message-ID: <20241107161026.2903044-12-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v4 12/19] xdp: add generic xdp_build_skb_from_buff()
+Date: Thu,  7 Nov 2024 17:10:19 +0100
+Message-ID: <20241107161026.2903044-13-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241107161026.2903044-1-aleksander.lobakin@intel.com>
 References: <20241107161026.2903044-1-aleksander.lobakin@intel.com>
@@ -90,161 +90,98 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The code piece which would attach a frag to &xdp_buff is almost
-identical across the drivers supporting XDP multi-buffer on Rx.
-Make it a generic elegant "oneliner".
-Also, I see lots of drivers calculating frags_truesize as
-`xdp->frame_sz * nr_frags`. I can't say this is fully correct, since
-frags might be backed by chunks of different sizes, especially with
-stuff like the header split. Even page_pool_alloc() can give you two
-different truesizes on two subsequent requests to allocate the same
-buffer size. Add a field to &skb_shared_info (unionized as there's no
-free slot currently on x86_64) to track the "true" truesize. It can
-be used later when updating an skb.
+The code which builds an skb from an &xdp_buff keeps multiplying itself
+around the drivers with almost no changes. Let's try to stop that by
+adding a generic function.
+Unlike __xdp_build_skb_from_frame(), always allocate an skbuff head
+using napi_build_skb() and make use of the available xdp_rxq pointer to
+assign the Rx queue index. In case of PP-backed buffer, mark the skb to
+be recycled, as every PP user's been switched to recycle skbs.
 
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/linux/skbuff.h | 16 ++++++--
- include/net/xdp.h      | 90 +++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 101 insertions(+), 5 deletions(-)
+ include/net/xdp.h |  1 +
+ net/core/xdp.c    | 55 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 56 insertions(+)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index d6920df9b620..0d7e987a4fdd 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -607,11 +607,19 @@ struct skb_shared_info {
- 	 * Warning : all fields before dataref are cleared in __alloc_skb()
- 	 */
- 	atomic_t	dataref;
--	unsigned int	xdp_frags_size;
- 
--	/* Intermediate layers must ensure that destructor_arg
--	 * remains valid until skb destructor */
--	void *		destructor_arg;
-+	union {
-+		struct {
-+			u32		xdp_frags_size;
-+			u32		xdp_frags_truesize;
-+		};
-+
-+		/*
-+		 * Intermediate layers must ensure that destructor_arg
-+		 * remains valid until skb destructor.
-+		 */
-+		void		*destructor_arg;
-+	};
- 
- 	/* must be last field, see pskb_expand_head() */
- 	skb_frag_t	frags[MAX_SKB_FRAGS];
 diff --git a/include/net/xdp.h b/include/net/xdp.h
-index d33d73e798fe..4c19042adf80 100644
+index 4c19042adf80..b0a25b7060ff 100644
 --- a/include/net/xdp.h
 +++ b/include/net/xdp.h
-@@ -167,6 +167,88 @@ xdp_get_buff_len(const struct xdp_buff *xdp)
- 	return len;
+@@ -330,6 +330,7 @@ xdp_update_skb_shared_info(struct sk_buff *skb, u8 nr_frags,
+ void xdp_warn(const char *msg, const char *func, const int line);
+ #define XDP_WARN(msg) xdp_warn(msg, __func__, __LINE__)
+ 
++struct sk_buff *xdp_build_skb_from_buff(const struct xdp_buff *xdp);
+ struct xdp_frame *xdp_convert_zc_to_xdp_frame(struct xdp_buff *xdp);
+ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+ 					   struct sk_buff *skb,
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index b1b426a9b146..3a9a3c14b080 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -624,6 +624,61 @@ int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp)
  }
+ EXPORT_SYMBOL_GPL(xdp_alloc_skb_bulk);
  
 +/**
-+ * __xdp_buff_add_frag - attach a frag to an &xdp_buff
-+ * @xdp: XDP buffer to attach the frag to
-+ * @page: page containing the frag
-+ * @offset: page offset at which the frag starts
-+ * @size: size of the frag
-+ * @truesize: truesize (page / page frag size) of the frag
-+ * @try_coalesce: whether to try coalescing the frags
++ * xdp_build_skb_from_buff - create an skb from an &xdp_buff
++ * @xdp: &xdp_buff to convert to an skb
 + *
-+ * Attach a frag to an XDP buffer. If it currently has no frags attached,
-+ * initialize the related fields, otherwise check that the frag number
-+ * didn't reach the limit of ``MAX_SKB_FRAGS``. If possible, try coalescing
-+ * the frag with the previous one.
-+ * The function doesn't check/update the pfmemalloc bit. Please use the
-+ * non-underscored wrapper in drivers.
++ * Perform common operations to create a new skb to pass up the stack from
++ * an &xdp_buff: allocate an skb head from the NAPI percpu cache, initialize
++ * skb data pointers and offsets, set the recycle bit if the buff is PP-backed,
++ * Rx queue index, protocol and update frags info.
 + *
-+ * Return: true on success, false if there's no space for the frag in
-+ * the shared info struct.
++ * Return: new &sk_buff on success, %NULL on error.
 + */
-+static inline bool __xdp_buff_add_frag(struct xdp_buff *xdp, struct page *page,
-+				       u32 offset, u32 size, u32 truesize,
-+				       bool try_coalesce)
++struct sk_buff *xdp_build_skb_from_buff(const struct xdp_buff *xdp)
 +{
-+	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-+	skb_frag_t *prev;
-+	u32 nr_frags;
++	const struct xdp_rxq_info *rxq = xdp->rxq;
++	const struct skb_shared_info *sinfo;
++	struct sk_buff *skb;
++	u32 nr_frags = 0;
++	int metalen;
 +
-+	if (!xdp_buff_has_frags(xdp)) {
-+		xdp_buff_set_frags_flag(xdp);
-+
-+		nr_frags = 0;
-+		sinfo->xdp_frags_size = 0;
-+		sinfo->xdp_frags_truesize = 0;
-+
-+		goto fill;
++	if (unlikely(xdp_buff_has_frags(xdp))) {
++		sinfo = xdp_get_shared_info_from_buff(xdp);
++		nr_frags = sinfo->nr_frags;
 +	}
 +
-+	nr_frags = sinfo->nr_frags;
-+	if (unlikely(nr_frags == MAX_SKB_FRAGS))
-+		return false;
++	skb = napi_build_skb(xdp->data_hard_start, xdp->frame_sz);
++	if (unlikely(!skb))
++		return NULL;
 +
-+	prev = &sinfo->frags[nr_frags - 1];
-+	if (try_coalesce && page == skb_frag_page(prev) &&
-+	    offset == skb_frag_off(prev) + skb_frag_size(prev))
-+		skb_frag_size_add(prev, size);
-+	else
-+fill:
-+		__skb_fill_page_desc_noacc(sinfo, nr_frags++, page,
-+					   offset, size);
++	skb_reserve(skb, xdp->data - xdp->data_hard_start);
++	__skb_put(skb, xdp->data_end - xdp->data);
 +
-+	sinfo->nr_frags = nr_frags;
-+	sinfo->xdp_frags_size += size;
-+	sinfo->xdp_frags_truesize += truesize;
++	metalen = xdp->data - xdp->data_meta;
++	if (metalen > 0)
++		skb_metadata_set(skb, metalen);
 +
-+	return true;
++	if (is_page_pool_compiled_in() && rxq->mem.type == MEM_TYPE_PAGE_POOL)
++		skb_mark_for_recycle(skb);
++
++	skb_record_rx_queue(skb, rxq->queue_index);
++
++	if (unlikely(nr_frags)) {
++		u32 tsize;
++
++		tsize = sinfo->xdp_frags_truesize ? : nr_frags * xdp->frame_sz;
++		xdp_update_skb_shared_info(skb, nr_frags,
++					   sinfo->xdp_frags_size, tsize,
++					   xdp_buff_is_frag_pfmemalloc(xdp));
++	}
++
++	skb->protocol = eth_type_trans(skb, rxq->dev);
++
++	return skb;
 +}
++EXPORT_SYMBOL_GPL(xdp_build_skb_from_buff);
 +
-+/**
-+ * xdp_buff_add_frag - attach a frag to an &xdp_buff
-+ * @xdp: XDP buffer to attach the frag to
-+ * @page: page containing the frag
-+ * @offset: page offset at which the frag starts
-+ * @size: size of the frag
-+ * @truesize: truesize (page / page frag size) of the frag
-+ *
-+ * Version of __xdp_buff_add_frag() which takes care of the pfmemalloc bit.
-+ *
-+ * Return: true on success, false if there's no space for the frag in
-+ * the shared info struct.
-+ */
-+static inline bool xdp_buff_add_frag(struct xdp_buff *xdp, struct page *page,
-+				     u32 offset, u32 size, u32 truesize)
-+{
-+	if (!__xdp_buff_add_frag(xdp, page, offset, size, truesize, true))
-+		return false;
-+
-+	if (unlikely(page_is_pfmemalloc(page)))
-+		xdp_buff_set_frag_pfmemalloc(xdp);
-+
-+	return true;
-+}
-+
- struct xdp_frame {
- 	void *data;
- 	u32 len;
-@@ -230,7 +312,13 @@ xdp_update_skb_shared_info(struct sk_buff *skb, u8 nr_frags,
- 			   unsigned int size, unsigned int truesize,
- 			   bool pfmemalloc)
- {
--	skb_shinfo(skb)->nr_frags = nr_frags;
-+	struct skb_shared_info *sinfo = skb_shinfo(skb);
-+
-+	sinfo->nr_frags = nr_frags;
-+	/* ``destructor_arg`` is unionized with ``xdp_frags_{,true}size``,
-+	 * reset it after that these fields aren't used anymore.
-+	 */
-+	sinfo->destructor_arg = NULL;
- 
- 	skb->len += size;
- 	skb->data_len += size;
+ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+ 					   struct sk_buff *skb,
+ 					   struct net_device *dev)
 -- 
 2.47.0
 
