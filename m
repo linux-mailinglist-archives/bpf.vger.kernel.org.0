@@ -1,229 +1,262 @@
-Return-Path: <bpf+bounces-44239-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD2EC9C06BC
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 14:05:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF42C9C07C0
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 14:40:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E4081F213ED
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 13:05:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D390A1C23B42
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 13:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7996521893D;
-	Thu,  7 Nov 2024 12:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3288420FAAD;
+	Thu,  7 Nov 2024 13:40:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B1lWcwnz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ugp6/HBY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826042161E6;
-	Thu,  7 Nov 2024 12:57:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED0A42076A5
+	for <bpf@vger.kernel.org>; Thu,  7 Nov 2024 13:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730984273; cv=none; b=OMv8jtGyKJmoe83ouEy5/AILVuzKtySSBYen36mSRaAD8pcfCjiPyY3AebrL2P2zXw49QGK+D/ebTLR1GX1Pg9BZ8XAaMLDDtpyW/02wmuJPZS1Lcy9C1jpTysdBsGbMMUSjta7q+Z3txqC3gaATf8tYQUejOdAqE0LIWS8EHcM=
+	t=1730986846; cv=none; b=QVphrR4vY2bBbjldnZfEEmdZLTU5I7S+AKWQwfyIUfUWI/Fvt/3aUSbY9tHSXGf9y3TgSDu2XjsZNWxYBNMTxtLlctSBcXzylFP3EiF+DqDwYqXNMo97YyzwefmRVWVO6Xq0XsjYvecS+SOEqLxOk26f+OXczfkLx01GbrnMJ2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730984273; c=relaxed/simple;
-	bh=IYn5S1cwhtaOTvDqjZaJaEnCKsh15AhHI5yVgkDK9C0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hVrmDsujs5RVSY9vnZeL7GA9nq9oi0o8M89xZ0k+4o8ecmW3XCIo+xIcQ1H2JKTKoGvKANnruN/vKif8A0DXWClL0KueH1cEGjdGKE+BRnqw0M3mJ4jbHgaWLg7seGYCtslEguX2apxWuqnn7olqK//I0V1CuLKpRyx6HPgpYaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B1lWcwnz; arc=none smtp.client-ip=209.85.210.193
+	s=arc-20240116; t=1730986846; c=relaxed/simple;
+	bh=yOGGiMTgLJHa8CotK5ZqbHv4fq3LlsO+bZ6yg0aqdsU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h2Yi9V+PxSNeerm1BsWIBPOMJp1GAlACCBm0YF2YMEHE7bIopQ5xgkpY/8v0ZqzUAMKF3tgrUvjnPUtUQYkn5KDcpxa0N4O2LaA08gwy9nKaxdjnG5P+tA4e+XkZosDmjw0/kQfCQkArCLDk/WjbrJql57SefTnFXPfkdWBeSWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ugp6/HBY; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-723f37dd76cso822512b3a.0;
-        Thu, 07 Nov 2024 04:57:51 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a9a16b310f5so153835166b.0
+        for <bpf@vger.kernel.org>; Thu, 07 Nov 2024 05:40:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730984271; x=1731589071; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fHVagOVhSGH6WueHgFMGm5lkR8eH7OQCXVH1PePUNsk=;
-        b=B1lWcwnzcTWtxmIf7lEoNvDci1+pjEHE6M3cflYgFp5BdHXT78xi/11/L1334k5dhu
-         jMo+EJr7UWZgVNRX+jrQNtBHSdNNQ9CnZqCOTiHIiv10Qu1ZjF0e8nfGymQ1wiIhVHWo
-         Vo32jbXAS91PBI8JyZ3MZicyRzRpyPxwGWU6B9w0opH/rquqSFBI5/CH1BpWgxC0Ik0V
-         p0FoRNyor1a5RKLD6iE9xfj6WfoMwyH7dswaEKKBxHwBdYp/cogAGr/6yWddW1ReMk1h
-         mNcO2b5ossqeHYG2clqG6QDn7anlbPqgffF7BB8bsSEF8lRTpFA9GYq3K+yxz9SnLtMV
-         dc+Q==
+        d=gmail.com; s=20230601; t=1730986843; x=1731591643; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jIg5R9BrUrY3PY0JVOFbnxLIIGDyPNDlrluDXiXk7T0=;
+        b=Ugp6/HBYDaawcMMv0PMQydt6aR0YAgmwoTSVQYdNDqKLA2fi408SXBeqJqdQZB6vxy
+         ZrL8draov5A8VkuAc51m86P3cKVGQ6jKYOlOY3iBgLirZNL0qSEstV2ELWWo5aeT1s2I
+         6ayJLx6nXv6GglpFombptCXMblZOUAhrDCKKFD74V3N5CsqnBHBTbH9WfVVOZD1ALirP
+         HYLqr5pp6xBNpmSPSuL9goRg6B4EnYNLxRqXmsFoMNyMRBp280oJGAh0yPgEHy4oX13X
+         GicGS4SJVKdGP0ZW5+TF9JYedQnaSN4BLTaRv/abbaiVI/Nmedfz2hLZ2naimFDu1ggs
+         J8aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730984271; x=1731589071;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fHVagOVhSGH6WueHgFMGm5lkR8eH7OQCXVH1PePUNsk=;
-        b=niy73DlIMfEQDQxxXAxn0gEpD4Y/4MobV+5ijO+ctTYrzOlKR9R0DUoREyZkwjLjOq
-         irfMa8udRt4PGCAM/nZEHuAQXY/6AZ0TA3xU9Lx5JufYE170kiEcJ78xl4OcictNcxoq
-         x+86cYDvtfIJFg8Fl1TTUzsaFLlv4o0XKY5iDQx7EAssehRLxF9BDSJhmNJCgueCt8/W
-         Jbk+0S2O3fzZ4Ji7gYu/Ov9zTOf4zeWWxIN6QpAlRn6Nysam9G3xVL5Rnvz4qLOIr6Yv
-         PQgR7hQ3AEFc7kvhUa0VLWB7zICZ81f87Q0W6vBQjFLjAx1gDazYIV6Vh3SpgKKlCrXd
-         +rjA==
-X-Forwarded-Encrypted: i=1; AJvYcCV7olNwgGb1cShHYVGxkwZmxzb4j4nw1y60BSVVRzHZQKK+jY/pHiDBsmbQmRqAdyNLTfgL+gQA3oh2CCBTioCa@vger.kernel.org, AJvYcCW21VZbGnRkHA4H6qH3RHeu6YOO9BFpCjFVpoTqHxx0ZB0qmrQMwaqmJt6j+Gc3jO256AYoFOHx@vger.kernel.org, AJvYcCW4bs/xATchbZtuT/wPfXjpMST5vkhqSI82afRp7mvnLJvJocj3jkjIsBfMrz7CDRFvb2I=@vger.kernel.org, AJvYcCWcyU0YsurY1k3oGw3KxAso/dvGZYmYbapOEom1B1gSVj4Px6MKcAdkFCL/1ooN5sVDOTGhqA0C3pJhQQZl@vger.kernel.org
-X-Gm-Message-State: AOJu0YybtQ1E5G+XGirSUd6ygy+k0vkmwM59wqetYhu5LlFOc3aBHIHo
-	/Q//ZaJbujJOE5qbqC7Vgutaha2R4+4W5TIXqmwwVkmcA9+6Bcjx
-X-Google-Smtp-Source: AGHT+IF6AoyPkVC2cAAzV84e4L7QNNOe4LnFK0pviynupGO5O8bo/1kcyphCsBxr8Xqaoavaqu60DA==
-X-Received: by 2002:a05:6a20:7488:b0:1d2:e888:3a8e with SMTP id adf61e73a8af0-1dc17a2a834mr1201478637.18.1730984270964;
-        Thu, 07 Nov 2024 04:57:50 -0800 (PST)
-Received: from localhost.localdomain ([43.129.25.208])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7240785ffeesm1441651b3a.3.2024.11.07.04.57.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Nov 2024 04:57:50 -0800 (PST)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: pabeni@redhat.com
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	horms@kernel.org,
-	dsahern@kernel.org,
-	pablo@netfilter.org,
-	kadlec@netfilter.org,
-	roopa@nvidia.com,
-	razor@blackwall.org,
-	gnault@redhat.com,
-	bigeasy@linutronix.de,
-	hawk@kernel.org,
-	idosch@nvidia.com,
-	dongml2@chinatelecom.cn,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	bridge@lists.linux.dev,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next v5 9/9] net: ip: make ip_route_use_hint() return drop reasons
-Date: Thu,  7 Nov 2024 20:56:01 +0800
-Message-Id: <20241107125601.1076814-10-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241107125601.1076814-1-dongml2@chinatelecom.cn>
-References: <20241107125601.1076814-1-dongml2@chinatelecom.cn>
+        d=1e100.net; s=20230601; t=1730986843; x=1731591643;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jIg5R9BrUrY3PY0JVOFbnxLIIGDyPNDlrluDXiXk7T0=;
+        b=sNaVCja133LFkDKjg5WsiNndtHi4Uvl9YHlRsmbwi58MyQprKTOdyDkKZ2Mniq+N3l
+         I63YLPaAWStmIMN7BDgUFec4yQKw/S8ud30zAFULGsuIpP7i6wqQ3iKp2nWBvfN0GONe
+         CQ2lTJOn4io24LWrsz1y6WF245Rs/fcZlorQnpmo0JuiuALvyjZGOeFZCuq6ncsCEeqN
+         H/Q/Jw3hgoUrU/KeEU9088IxN+zyxl7g9UQcsIV14vtS3UZhmZw8Fhz//jC2WMJP/+ox
+         bz6n5RA3Qt6ek9sySnXEwYgTBaMJQEmBDnQR6VDCEPjZTM0KF8iO0hxGtGxRlU40NKHG
+         PYKg==
+X-Gm-Message-State: AOJu0YxBlQk64r6eWjkxeUMZ+Mn1L2KFS2XlFv7mth2bIe3KL5S55SxU
+	8QUbt+qJNM2+R+gJYRdFjQVEVJuWZtCzYoNN/gg9Yo7ge/KKRxd4cq8EFQ==
+X-Google-Smtp-Source: AGHT+IHuG6cWAPRsGjGuOQJeMMHKJxDDOKkaefch81HPRea7u9u1PSw+bRTB36BJbZCqPX84hTs/Zg==
+X-Received: by 2002:a17:907:3e9e:b0:a9a:3cf:cdb8 with SMTP id a640c23a62f3a-a9ee74d62fbmr111301666b.36.1730986842970;
+        Thu, 07 Nov 2024 05:40:42 -0800 (PST)
+Received: from ?IPV6:2a03:83e0:1126:3:e82d:23a4:3ba3:36a3? ([2620:10d:c092:500::4:7613])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0e2f49bsm93728266b.202.2024.11.07.05.40.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Nov 2024 05:40:42 -0800 (PST)
+Message-ID: <0e4dd72d-ac35-4c26-9ed9-9da32046eac9@gmail.com>
+Date: Thu, 7 Nov 2024 13:40:41 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2] libbpf: stringify error codes in warning
+ messages
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ Mykyta Yatsenko <yatsenko@meta.com>
+References: <20241104170048.1158254-1-mykyta.yatsenko5@gmail.com>
+ <CAEf4BzbB_PuJOKq-QuuS8ztBcAaMEZT3bte0QavXze2HT=2epA@mail.gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <CAEf4BzbB_PuJOKq-QuuS8ztBcAaMEZT3bte0QavXze2HT=2epA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-In this commit, we make ip_route_use_hint() return drop reasons. The
-drop reasons that we return are similar to what we do in
-ip_route_input_slow(), and no drop reasons are added in this commit.
+On 07/11/2024 00:39, Andrii Nakryiko wrote:
+> On Mon, Nov 4, 2024 at 9:01 AM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> Libbpf may report error in 2 ways:
+>>   1. Numeric errno
+>>   2. Errno's text representation, returned by strerror
+>> Both ways may be confusing for users: numeric code requires people to
+>> know how to find its meaning and strerror may be too generic and
+>> unclear.
+>>
+>> This patch modifies libbpf error reporting by swapping numeric codes and
+>> strerror with the standard short error name, for example:
+>> "failed to attach: -22" becomes "failed to attach: EINVAL".
+>>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 429 ++++++++++++++++++++++-------------------
+> We have use cases for strerr() in all of libbpf .c files, let's do the
+> conversion there as well. But I'd probably split adding strerr()
+> helper into first separate patch, and then would do the rest of
+> conversions in either one gigantic patch or split into some logical
+> groups of a few .c files (like, linker.c separate from libbpf.c,
+> separate from bpf.c, if we have any strerr() uses there). We have tons
+> of error message prints :)
+>
+> pw-bot: cr
+>
+>>   1 file changed, 231 insertions(+), 198 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 711173acbcef..26608d8585ec 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -336,6 +336,83 @@ static inline __u64 ptr_to_u64(const void *ptr)
+>>          return (__u64) (unsigned long) ptr;
+>>   }
+>>
+>> +/*
+>> + ** string returned from errstr() is invalidated upon the next call
+>> + */
+> keep it as single-line comment, but if you needed multi-line, it
+> should be formatted like so:
+>
+> /*
+>   * blah blah blah lorem ipsum
+>   */
+>
+>> +static const char *errstr(int err)
+> let's move this function into str_error.c, it doesn't have to live in
+> already huge libbpf.c (and you'll need to "expose" it in str_error.h
+> to use from not just libbpf.c anyways)
+>
+>> +{
+>> +       static __thread char buf[11];
+> nit: make it buf[12] to technically handle "-2000000000" ?
+>
+>> +       const char *str;
+>> +       bool neg;
+>> +
+>> +       if (err < 0) {
+>> +               err = -err;
+>> +               neg = true;
+>> +       }
+> honestly, thinking about this a bit more, I think it's ok to always
+> emit negative error in the buffer (because that's what it should
+> always be, at least when this is used internally in libbpf).
+>
+> So let's have, just:
+>
+> if (err > 0)
+>      err = -err;
+>
+> to make it explicit that negative error is the common/expected way
+>
+>
+>> +
+>> +       switch (err) {
+>> +       case EINVAL:
+>> +               str = "-EINVAL"; break;
+> then for all of these we can have a nice and compact style:
+>
+> case -EINVAL: return "-EINVAL";
+> case -EPERM: return "-PERM";
+>
+>> +       case EPERM:
+>> +               str = "-EPERM"; break;
+>> +       case ENOMEM:
+>> +               str = "-ENOMEM"; break;
+>> +       case ENOENT:
+>> +               str = "-ENOENT"; break;
+>> +       case E2BIG:
+>> +               str = "-E2BIG"; break;
+>> +       case EEXIST:
+>> +               str = "-EEXIST"; break;
+>> +       case EFAULT:
+>> +               str = "-EFAULT"; break;
+>> +       case ENOSPC:
+>> +               str = "-ENOSPC"; break;
+>> +       case EACCES:
+>> +               str = "-EACCES"; break;
+>> +       case EAGAIN:
+>> +               str = "-EAGAIN"; break;
+>> +       case EBADF:
+>> +               str = "-EBADF"; break;
+>> +       case ENAMETOOLONG:
+>> +               str = "-ENAMETOOLONG"; break;
+>> +       case ESRCH:
+>> +               str = "-ESRCH"; break;
+>> +       case EBUSY:
+>> +               str = "-EBUSY"; break;
+>> +       case ENOTSUP:
+> Is this one coming from public UAPI header? I don't think so.
+> include/linux/errno.h is not exported to user-space. This means that
+> Github version of libbpf will have trouble with compiling this. This
+> works ok inside kernel repo, but we should be careful about relying on
+> internal headers.
+Got it.
+>
+>
+> Please check all the other ones. BTW, how did you end up with this
+> exact set of errors?
+First I took all errors that bpf syscall sets, then just grepped for 
+uppercase strings
+starting with E in tools/lib/bpf.
+The number of items very roughly matches what you suggested it to be 
+(10-20), I have around 26.
+>
+>> +               str = "-ENOTSUP"; break;
+>> +       case EPROTO:
+>> +               str = "-EPROTO"; break;
+>> +       case ERANGE:
+>> +               str = "-ERANGE"; break;
+>> +       case EMSGSIZE:
+>> +               str = "-EMSGSIZE"; break;
+>> +       case EINTR:
+>> +               str = "-EINTR"; break;
+>> +       case ENODATA:
+>> +               str = "-ENODATA"; break;
+>> +       case EIO:
+>> +               str = "-EIO"; break;
+>> +       case EUCLEAN:
+>> +               str = "-EUCLEAN"; break;
+>> +       case EDOM:
+>> +               str = "-EDOM"; break;
+>> +       case EPROTONOSUPPORT:
+>> +               str = "-EPROTONOSUPPORT"; break;
+>> +       case EDEADLK:
+>> +               str = "-EDEADLK"; break;
+>> +       case EOVERFLOW:
+>> +               str = "-EOVERFLOW"; break;
+>> +       default:
+>> +               snprintf(buf, sizeof(buf), "%d", err);
+>> +               return buf;
+> and then here we'll just
+>
+> snprintf(buf, sizeof(buf), "%d", err);
+> return buf;
+>
+>> +       }
+>> +       if (!neg)
+>> +               ++str;
+>> +
+>> +       return str;
+>> +}
+>> +
+> [...]
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
-v5:
-- replace "return 0" with "return SKB_NOT_DROPPED_YET" in
-  ip_route_use_hint()
----
- include/net/route.h |  7 ++++---
- net/ipv4/ip_input.c |  9 ++++-----
- net/ipv4/route.c    | 28 +++++++++++++++++-----------
- 3 files changed, 25 insertions(+), 19 deletions(-)
-
-diff --git a/include/net/route.h b/include/net/route.h
-index f4ab5412c9c9..4debc335d276 100644
---- a/include/net/route.h
-+++ b/include/net/route.h
-@@ -206,9 +206,10 @@ ip_mc_validate_source(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- enum skb_drop_reason
- ip_route_input_noref(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 		     dscp_t dscp, struct net_device *dev);
--int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
--		      dscp_t dscp, struct net_device *dev,
--		      const struct sk_buff *hint);
-+enum skb_drop_reason
-+ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
-+		  dscp_t dscp, struct net_device *dev,
-+		  const struct sk_buff *hint);
- 
- static inline enum skb_drop_reason
- ip_route_input(struct sk_buff *skb, __be32 dst, __be32 src, dscp_t dscp,
-diff --git a/net/ipv4/ip_input.c b/net/ipv4/ip_input.c
-index 513eb0c6435a..f0a4dda246ab 100644
---- a/net/ipv4/ip_input.c
-+++ b/net/ipv4/ip_input.c
-@@ -322,15 +322,14 @@ static int ip_rcv_finish_core(struct net *net, struct sock *sk,
- 	int err, drop_reason;
- 	struct rtable *rt;
- 
--	drop_reason = SKB_DROP_REASON_NOT_SPECIFIED;
--
- 	if (ip_can_use_hint(skb, iph, hint)) {
--		err = ip_route_use_hint(skb, iph->daddr, iph->saddr,
--					ip4h_dscp(iph), dev, hint);
--		if (unlikely(err))
-+		drop_reason = ip_route_use_hint(skb, iph->daddr, iph->saddr,
-+						ip4h_dscp(iph), dev, hint);
-+		if (unlikely(drop_reason))
- 			goto drop_error;
- 	}
- 
-+	drop_reason = SKB_DROP_REASON_NOT_SPECIFIED;
- 	if (READ_ONCE(net->ipv4.sysctl_ip_early_demux) &&
- 	    !skb_dst(skb) &&
- 	    !skb->sk &&
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 5061a935ce62..d1c4367d3c20 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -2141,28 +2141,34 @@ ip_mkroute_input(struct sk_buff *skb, struct fib_result *res,
-  * assuming daddr is valid and the destination is not a local broadcast one.
-  * Uses the provided hint instead of performing a route lookup.
-  */
--int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
--		      dscp_t dscp, struct net_device *dev,
--		      const struct sk_buff *hint)
-+enum skb_drop_reason
-+ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
-+		  dscp_t dscp, struct net_device *dev,
-+		  const struct sk_buff *hint)
- {
-+	enum skb_drop_reason reason = SKB_DROP_REASON_NOT_SPECIFIED;
- 	struct in_device *in_dev = __in_dev_get_rcu(dev);
- 	struct rtable *rt = skb_rtable(hint);
- 	struct net *net = dev_net(dev);
--	enum skb_drop_reason reason;
--	int err = -EINVAL;
- 	u32 tag = 0;
- 
- 	if (!in_dev)
--		return -EINVAL;
-+		return reason;
- 
--	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr))
-+	if (ipv4_is_multicast(saddr) || ipv4_is_lbcast(saddr)) {
-+		reason = SKB_DROP_REASON_IP_INVALID_SOURCE;
- 		goto martian_source;
-+	}
- 
--	if (ipv4_is_zeronet(saddr))
-+	if (ipv4_is_zeronet(saddr)) {
-+		reason = SKB_DROP_REASON_IP_INVALID_SOURCE;
- 		goto martian_source;
-+	}
- 
--	if (ipv4_is_loopback(saddr) && !IN_DEV_NET_ROUTE_LOCALNET(in_dev, net))
-+	if (ipv4_is_loopback(saddr) && !IN_DEV_NET_ROUTE_LOCALNET(in_dev, net)) {
-+		reason = SKB_DROP_REASON_IP_LOCALNET;
- 		goto martian_source;
-+	}
- 
- 	if (rt->rt_type != RTN_LOCAL)
- 		goto skip_validate_source;
-@@ -2174,11 +2180,11 @@ int ip_route_use_hint(struct sk_buff *skb, __be32 daddr, __be32 saddr,
- 
- skip_validate_source:
- 	skb_dst_copy(skb, hint);
--	return 0;
-+	return SKB_NOT_DROPPED_YET;
- 
- martian_source:
- 	ip_handle_martian_source(dev, in_dev, skb, daddr, saddr);
--	return err;
-+	return reason;
- }
- 
- /* get device for dst_alloc with local routes */
--- 
-2.39.5
 
 
