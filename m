@@ -1,261 +1,270 @@
-Return-Path: <bpf+bounces-44249-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44250-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 415749C0AA9
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:01:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51A2D9C0AB3
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 17:03:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0DAAB2295F
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 16:01:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98155B22206
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 16:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44B8E2144D6;
-	Thu,  7 Nov 2024 16:01:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BBA0213132;
+	Thu,  7 Nov 2024 16:03:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q0Pdl6im"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cWihIlVX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABCC6FB0;
-	Thu,  7 Nov 2024 16:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BF820FAAB
+	for <bpf@vger.kernel.org>; Thu,  7 Nov 2024 16:03:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730995279; cv=none; b=ZanktVT5XKAthJol2LM+Xazd7UcdjTouaSXV/BkaA0UOdxFgQ1Ohz5FeaNykAX/Z/UIw8VA8wGy0TrfKDF2GIrO9mI2OiSj6QeW30j8q2w5QS2x8Nm1yqRcBHeHNzeR9+J10IBXY14EozCCHz0X/SYOt31xoqmOoCTNHopJw1BU=
+	t=1730995428; cv=none; b=pgArh6vXZT7OscDdf9kSkG860XSZVKS7aar8AEm0hIvmsp11w1ChXfF5TB49Ral7GrN5r66iVb915v94G0s8EmY2yThaE3yTnB1CA3Po3/eeDFIEDhut85DtUMzrZauToCadiAqY1BMZ2u3NxjszTADVrpUpQ0XrdSXHHRJVJV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730995279; c=relaxed/simple;
-	bh=+DNeMhf4/QAjfH4tX1M2fXMMTGcpvoQmFrscaEi7qVI=;
+	s=arc-20240116; t=1730995428; c=relaxed/simple;
+	bh=DDhuRttTMdP+BfSvUowmngf/Tltu98lGAIMGNwI6Uu8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z4yAvgeuTH4hpeQSvxlH72w8LE15aHz1ki9vYZRDxExdmoWstGIRdvTK9VmYbb87EE1pI/T46pvYI+xxfxdjwxJupQg9Ex+YwcTCfgkggycfJJxApwQeXizXPYOiqkUiG6t2mweDm1aEQZ3aklUzVz8YA0dK7gwet1dujXS1/Qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q0Pdl6im; arc=none smtp.client-ip=209.85.216.48
+	 To:Cc:Content-Type; b=hDErYCN4hOP5ltT1DfDFYLvy0wNUZhoS1R1Mh87Z8zIxbaGSD/il1DI4iPwOby6a3wMZAYtnYbQBl3RtKHJwhPCC9aCdRMyGDkxqe06Sy131sbWu3bJ8rX8cR2Tnq/Gvu+W1U2yuKf7bafsNrSsC486WIQSciZQOw5aYhmBSgTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cWihIlVX; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2e2cc469c62so829479a91.2;
-        Thu, 07 Nov 2024 08:01:18 -0800 (PST)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20ce65c8e13so12967845ad.1
+        for <bpf@vger.kernel.org>; Thu, 07 Nov 2024 08:03:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730995277; x=1731600077; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730995426; x=1731600226; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9GsBpHXBN7WYjyLsOqeXFU2jUxVAbP9Ec9maZf8+ATk=;
-        b=Q0Pdl6imViz34D+aJ8EyfMe9OIniEUZ4+Tx+Zp9P+jHE6kHKcDDuRe6o9rv1vQ1utB
-         QlS9gpL9gysvPWEtjkTM8/R/rppQ+3e1sOMeOFpCcgLWkF//vm+rCC3n9t54RtwzdTQv
-         i+Z9OuC0Jpd5AxLFpjyEdFtu6o9RU8R1/095INlJVIHjjrKUjgPS1Oj0uQQz48MmBMa2
-         Wti73LZkNegeOqTUvNstWZCsrNcWVPeGrDNwz0X6eHspa7WxvttTtW6ob7wXqsSDorX4
-         1iZM9oJKgGyKunQrwkDsj8Jg294rKF+dGMd86nZzDNnnQiDj4pSSff9xZxSy5HmYX7je
-         DHMw==
+        bh=T6q0LhvpuL9/8Hyfc05HCzRTvQ4bGlTTg7SP7RmTzlc=;
+        b=cWihIlVX4QsFpUw6/TnFNyCgtgLRSbOOOs84K/t+D4NBIQVI06oYDxhMjlH7lPFnh4
+         wTBXNaLPm6dlhRehgWvN+EShfjLL6yTU4R1r7dyz9VvNM6EXW+obMUjrkg/2Qh+Vzp+a
+         tHLWxjt0gzUXKT7bcPZkNVs2/qBwNNMpN1Nj2hhVmEsBjx56lAgKfFJZiYxIFBteBZ5/
+         SKVj/9SZ6m+74fdIHaTAxTs8gju/TSqjapc7B+oZFNYGdK/a9CxjcH3YatFU1zhdFlRz
+         otuevmwyl2+Vlbhyh7gyDd+UKZ/cRikAyWPa9NT7B8vMrCR9ZaT3BOYJFqEvB+K8wM0k
+         /1Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730995277; x=1731600077;
+        d=1e100.net; s=20230601; t=1730995426; x=1731600226;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9GsBpHXBN7WYjyLsOqeXFU2jUxVAbP9Ec9maZf8+ATk=;
-        b=CKmxOuuSJ0NaxPH0Pl12izHJ+RJ4pqPmyXCev/27QO0ujLRkqxGzY+5kbrdEY9uoiQ
-         YLGKW41bZ1SNcLgyS5hXvwoWSYqdrdkGKbsoF37rGgQRS0iWsCHm9ToG7pLuT6Pe6U/A
-         ndFjcm9eh4/j0OK+AWn+B9CzBsj/+uAgQU3mNy0u0MqBfgPzUdtEYquACS9Tf2iMCALD
-         y5XSe1ywcB6l9Tpnr6CbrmpnuNpre9bOU0hPrlWJwoh076NyZsLyqZuYO557mqjkqykj
-         lBXq9FPaYlChxpQQko6LA5On4N3iHt/ZfJUdWhDQ8eFllsWQyl4FNUIvW+CdGih3Gs0z
-         HQxg==
-X-Forwarded-Encrypted: i=1; AJvYcCU82lnNXjpqtq4zRewbuztBq5UTu9NxR/wgPvHReeLFVwcIWrCSUfMT5YrOf1f0xyGaolw=@vger.kernel.org, AJvYcCW8wyeXPGwXMWCsJdc1h/D6bHIRHjyWUUlV6ugWhF2ndJoqO6G6lb8id23svI6iUOgBLksQhPrlJK/Hdg+SvmAxvRgV@vger.kernel.org, AJvYcCXpfJ7gqEbC+vjOLjc8zX3sdOz6vp2fA5DPcmQ0l2A6yNqWHPJdVFSB8GOlZbgZSkwM5y6RXY9Gel4HJVDq@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBe/kEfNB5RDwaBEtd3wD+sSKAMJeQyizHXatvrP6a6qFgmvIM
-	8i+4KkaqKL5noCMFvX0fctfNnWlRB811YtRlsriR8yLdyhsy96/XQ9GfY3q7DvcznJPHZ83W8v8
-	RiJWq/DhyZGHtn2LGidLMi0Om0xNlM8/E
-X-Google-Smtp-Source: AGHT+IEB2f7SlTnpo6K8Xm46OWu/LpB+oG0oeij4NBEcfG4ee4/a4WvRtBx8gMEgYRVXPQe/sna3Y/rLtNIYBwjZFTQ=
-X-Received: by 2002:a17:90b:2d8c:b0:2e2:d3f6:6efc with SMTP id
- 98e67ed59e1d1-2e94c50d05amr32746040a91.28.1730995277245; Thu, 07 Nov 2024
- 08:01:17 -0800 (PST)
+        bh=T6q0LhvpuL9/8Hyfc05HCzRTvQ4bGlTTg7SP7RmTzlc=;
+        b=nryTE/2Td23wx89QjPX9gKixjFIpIh7gaurASwPVPCJ4UxQm0FbSrDNbp2q4CVaM6J
+         FDUXO6LWT3q9UxWc8syTHWniR2bZ7rhIakyc4Qe2v+mPUu43ed9nwDeGOsVoyv9Hihw1
+         +YUneDMSa1ZXkQO2iAlNLLjUWKfKJuYJ3gmHkFR3mZzCyBs6zY6YPqr7SpJoUL24UwXO
+         K3lWTBuSOkdcifB8ZHtNAG0qTViahl7cG6Jp+uDzWRe4lhM1jUrA3cmzQ3qfTxw6LFav
+         XcPNK0usWUBisYus83Y16fp/5iwNcSBZR8vjq5fQQ2OIAE9IJsR7XoUE94RlA6sghS8G
+         2iHA==
+X-Gm-Message-State: AOJu0YzgOX8IjR8oZvgcgiIlAYu+vG2IOgKC/lnpoME9WIj7kTVceXIv
+	vemg/bmypcuGGEhqnBEM3Q+q7VcIMj/oT0LabOy+4eQYkM0EGM/gq5ZOIyLnXQX5tdBdTT3z38X
+	muWM9Bud0xler9bvbMkxbreqspj4=
+X-Google-Smtp-Source: AGHT+IECmtHzk7keGXaP0NQpddZ+dfFGmJcNQNHYKivzRfPiAMVBeQMhWDWpr3EgHTfk8Ug6f4TXW+Pmw7zTYhsrM8k=
+X-Received: by 2002:a17:90b:28c5:b0:2e2:e4d3:3401 with SMTP id
+ 98e67ed59e1d1-2e9af9d63bemr670013a91.20.1730995426348; Thu, 07 Nov 2024
+ 08:03:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240903174603.3554182-1-andrii@kernel.org> <20240903174603.3554182-5-andrii@kernel.org>
- <20241106-transparent-athletic-ammonite-586af8@leitao> <CAEf4Bza3+WYN8dstn1v99yeh+G0cjAeRQy8d5GAbvvecLmbO0A@mail.gmail.com>
- <20241107-uncovered-swinging-bull-1e812e@leitao>
-In-Reply-To: <20241107-uncovered-swinging-bull-1e812e@leitao>
+References: <20241104170048.1158254-1-mykyta.yatsenko5@gmail.com>
+ <CAEf4BzbB_PuJOKq-QuuS8ztBcAaMEZT3bte0QavXze2HT=2epA@mail.gmail.com> <0e4dd72d-ac35-4c26-9ed9-9da32046eac9@gmail.com>
+In-Reply-To: <0e4dd72d-ac35-4c26-9ed9-9da32046eac9@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 7 Nov 2024 08:01:05 -0800
-Message-ID: <CAEf4BzanXs4yAexVXdAp-Q-0anmOVCYx+GObvaHPVDnXobkdSA@mail.gmail.com>
-Subject: Re: [PATCH v5 4/8] uprobes: travers uprobe's consumer list locklessly
- under SRCU protection
-To: Breno Leitao <leitao@debian.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	peterz@infradead.org, oleg@redhat.com, rostedt@goodmis.org, 
-	mhiramat@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	jolsa@kernel.org, paulmck@kernel.org, willy@infradead.org, surenb@google.com, 
-	akpm@linux-foundation.org, linux-mm@kvack.org
+Date: Thu, 7 Nov 2024 08:03:33 -0800
+Message-ID: <CAEf4BzYDSKMc4Wyw5p6EgA2=CT6FnLA9bPF_eUUgH=r_Wc2Jhw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: stringify error codes in warning messages
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 7, 2024 at 3:35=E2=80=AFAM Breno Leitao <leitao@debian.org> wro=
-te:
+On Thu, Nov 7, 2024 at 5:40=E2=80=AFAM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
 >
-> Hello Andrii,
->
-> On Wed, Nov 06, 2024 at 08:25:25AM -0800, Andrii Nakryiko wrote:
-> > On Wed, Nov 6, 2024 at 4:03=E2=80=AFAM Breno Leitao <leitao@debian.org>=
- wrote:
-> > > On Tue, Sep 03, 2024 at 10:45:59AM -0700, Andrii Nakryiko wrote:
-> > > > uprobe->register_rwsem is one of a few big bottlenecks to scalabili=
-ty of
-> > > > uprobes, so we need to get rid of it to improve uprobe performance =
-and
-> > > > multi-CPU scalability.
-> > > >
-> > > > First, we turn uprobe's consumer list to a typical doubly-linked li=
-st
-> > > > and utilize existing RCU-aware helpers for traversing such lists, a=
-s
-> > > > well as adding and removing elements from it.
-> > > >
-> > > > For entry uprobes we already have SRCU protection active since befo=
-re
-> > > > uprobe lookup. For uretprobe we keep refcount, guaranteeing that up=
-robe
-> > > > won't go away from under us, but we add SRCU protection around cons=
-umer
-> > > > list traversal.
-> > >
-> > > I am seeing the following message in a kernel with RCU_PROVE_LOCKING:
-> > >
-> > >         kernel/events/uprobes.c:937 RCU-list traversed without holdin=
-g the required lock!!
-> > >
-> > > It seems the SRCU is not held, when coming from mmap_region ->
-> > > uprobe_mmap. Here is the message I got in my debug kernel. (sorry for
-> > > not decoding it, but, the stack trace is clear enough).
-> > >
-> > >          WARNING: suspicious RCU usage
-> > >            6.12.0-rc5-kbuilder-01152-gc688a96c432e #26 Tainted: G    =
-    W   E    N
-> > >            -----------------------------
-> > >            kernel/events/uprobes.c:938 RCU-list traversed without hol=
-ding the required lock!!
-> > >
-> > > other info that might help us debug this:
-> > >
-> > > rcu_scheduler_active =3D 2, debug_locks =3D 1
-> > >            3 locks held by env/441330:
-> > >             #0: ffff00021c1bc508 (&mm->mmap_lock){++++}-{3:3}, at: vm=
-_mmap_pgoff+0x84/0x1d0
-> > >             #1: ffff800089f3ab48 (&uprobes_mmap_mutex[i]){+.+.}-{3:3}=
-, at: uprobe_mmap+0x20c/0x548
-> > >             #2: ffff0004e564c528 (&uprobe->consumer_rwsem){++++}-{3:3=
-}, at: filter_chain+0x30/0xe8
-> > >
-> > > stack backtrace:
-> > >            CPU: 4 UID: 34133 PID: 441330 Comm: env Kdump: loaded Tain=
-ted: G        W   E    N 6.12.0-rc5-kbuilder-01152-gc688a96c432e #26
-> > >            Tainted: [W]=3DWARN, [E]=3DUNSIGNED_MODULE, [N]=3DTEST
-> > >            Hardware name: Quanta S7GM 20S7GCU0010/S7G MB (CG1), BIOS =
-3D22 07/03/2024
-> > >            Call trace:
-> > >             dump_backtrace+0x10c/0x198
-> > >             show_stack+0x24/0x38
-> > >             __dump_stack+0x28/0x38
-> > >             dump_stack_lvl+0x74/0xa8
-> > >             dump_stack+0x18/0x28
-> > >             lockdep_rcu_suspicious+0x178/0x2c8
-> > >             filter_chain+0xdc/0xe8
-> > >             uprobe_mmap+0x2e0/0x548
-> > >             mmap_region+0x510/0x988
-> > >             do_mmap+0x444/0x528
-> > >             vm_mmap_pgoff+0xf8/0x1d0
-> > >             ksys_mmap_pgoff+0x184/0x2d8
-> > >
-> > >
-> > > That said, it seems we want to hold the SRCU, before reaching the
-> > > filter_chain(). I hacked a bit, and adding the lock in uprobe_mmap()
-> > > solves the problem, but, I might be missing something, since I am not=
- familiar
-> > > with this code.
-> > >
-> > > How does the following patch look like?
-> > >
-> > > commit 1bd7bcf03031ceca86fdddd8be2e5500497db29f
-> > > Author: Breno Leitao <leitao@debian.org>
-> > > Date:   Mon Nov 4 06:53:31 2024 -0800
-> > >
-> > >     uprobes: Get SRCU lock before traverseing the list
-> > >
-> > >     list_for_each_entry_srcu() is being called without holding the lo=
-ck,
-> > >     which causes LOCKDEP (when enabled with RCU_PROVING) to complain =
-such
-> > >     as:
-> > >
-> > >             kernel/events/uprobes.c:937 RCU-list traversed without ho=
-lding the required lock!!
-> > >
-> > >     Get the SRCU uprobes_srcu lock before calling filter_chain(), whi=
-ch
-> > >     needs to have the SRCU lock hold, since it is going to call
-> > >     list_for_each_entry_srcu().
-> > >
-> > >     Signed-off-by: Breno Leitao <leitao@debian.org>
-> > >     Fixes: cc01bd044e6a ("uprobes: travers uprobe's consumer list loc=
-klessly under SRCU protection")
-> > >
-> > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > > index 4b52cb2ae6d62..cc9d4ddeea9a6 100644
-> > > --- a/kernel/events/uprobes.c
-> > > +++ b/kernel/events/uprobes.c
-> > > @@ -1391,6 +1391,7 @@ int uprobe_mmap(struct vm_area_struct *vma)
-> > >         struct list_head tmp_list;
-> > >         struct uprobe *uprobe, *u;
-> > >         struct inode *inode;
-> > > +       int srcu_idx;
-> > >
-> > >         if (no_uprobe_events())
-> > >                 return 0;
-> > > @@ -1409,6 +1410,7 @@ int uprobe_mmap(struct vm_area_struct *vma)
-> > >
-> > >         mutex_lock(uprobes_mmap_hash(inode));
-> > >         build_probe_list(inode, vma, vma->vm_start, vma->vm_end, &tmp=
-_list);
-> > > +       srcu_idx =3D srcu_read_lock(&uprobes_srcu);
+> On 07/11/2024 00:39, Andrii Nakryiko wrote:
+> > On Mon, Nov 4, 2024 at 9:01=E2=80=AFAM Mykyta Yatsenko
+> > <mykyta.yatsenko5@gmail.com> wrote:
+> >> From: Mykyta Yatsenko <yatsenko@meta.com>
+> >>
+> >> Libbpf may report error in 2 ways:
+> >>   1. Numeric errno
+> >>   2. Errno's text representation, returned by strerror
+> >> Both ways may be confusing for users: numeric code requires people to
+> >> know how to find its meaning and strerror may be too generic and
+> >> unclear.
+> >>
+> >> This patch modifies libbpf error reporting by swapping numeric codes a=
+nd
+> >> strerror with the standard short error name, for example:
+> >> "failed to attach: -22" becomes "failed to attach: EINVAL".
+> >>
+> >> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> >> ---
+> >>   tools/lib/bpf/libbpf.c | 429 ++++++++++++++++++++++-----------------=
+--
+> > We have use cases for strerr() in all of libbpf .c files, let's do the
+> > conversion there as well. But I'd probably split adding strerr()
+> > helper into first separate patch, and then would do the rest of
+> > conversions in either one gigantic patch or split into some logical
+> > groups of a few .c files (like, linker.c separate from libbpf.c,
+> > separate from bpf.c, if we have any strerr() uses there). We have tons
+> > of error message prints :)
 > >
-> > Thanks for catching that (production testing FTW, right?!).
->
-> Correct. I am running some hosts with RCU_PROVING and I am finding some
-> cases where RCU protected areas are touched without holding the RCU read
-> lock.
->
-> > But I think you a) adding wrong RCU protection flavor (it has to be
-> > rcu_read_lock_trace()/rcu_read_unlock_trace(), see uprobe_apply() for
-> > an example) and b) I think this is the wrong place to add it. We
-> > should add it inside filter_chain(). filter_chain() is called from
-> > three places, only one of which is already RCU protected (that's the
-> > handler_chain() case). But there is also register_for_each_vma(),
-> > which needs RCU protection as well.
->
-> Thanks for the guidance!
->
-> My initial plan was to protect filter_chain(), but, handler_chain()
-> already has the lock. Is it OK to get into a critical section in a
-> nested form?
->
-> The code will be something like:
->
-> handle_swbp() {
->         rcu_read_lock_trace();
->         handler_chain() {
->                 filter_chain() {
->                         rcu_read_lock_trace();
->                         list_for_each_entry_rcu()
->                         rcu_read_lock_trace();
->                 }
->         }
->         rcu_read_lock_trace();
-> }
->
-> Is this nested locking fine?
->
+> > pw-bot: cr
+> >
+> >>   1 file changed, 231 insertions(+), 198 deletions(-)
+> >>
+> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >> index 711173acbcef..26608d8585ec 100644
+> >> --- a/tools/lib/bpf/libbpf.c
+> >> +++ b/tools/lib/bpf/libbpf.c
+> >> @@ -336,6 +336,83 @@ static inline __u64 ptr_to_u64(const void *ptr)
+> >>          return (__u64) (unsigned long) ptr;
+> >>   }
+> >>
+> >> +/*
+> >> + ** string returned from errstr() is invalidated upon the next call
+> >> + */
+> > keep it as single-line comment, but if you needed multi-line, it
+> > should be formatted like so:
+> >
+> > /*
+> >   * blah blah blah lorem ipsum
+> >   */
+> >
+> >> +static const char *errstr(int err)
+> > let's move this function into str_error.c, it doesn't have to live in
+> > already huge libbpf.c (and you'll need to "expose" it in str_error.h
+> > to use from not just libbpf.c anyways)
+> >
+> >> +{
+> >> +       static __thread char buf[11];
+> > nit: make it buf[12] to technically handle "-2000000000" ?
+> >
+> >> +       const char *str;
+> >> +       bool neg;
+> >> +
+> >> +       if (err < 0) {
+> >> +               err =3D -err;
+> >> +               neg =3D true;
+> >> +       }
+> > honestly, thinking about this a bit more, I think it's ok to always
+> > emit negative error in the buffer (because that's what it should
+> > always be, at least when this is used internally in libbpf).
+> >
+> > So let's have, just:
+> >
+> > if (err > 0)
+> >      err =3D -err;
+> >
+> > to make it explicit that negative error is the common/expected way
+> >
+> >
+> >> +
+> >> +       switch (err) {
+> >> +       case EINVAL:
+> >> +               str =3D "-EINVAL"; break;
+> > then for all of these we can have a nice and compact style:
+> >
+> > case -EINVAL: return "-EINVAL";
+> > case -EPERM: return "-PERM";
+> >
+> >> +       case EPERM:
+> >> +               str =3D "-EPERM"; break;
+> >> +       case ENOMEM:
+> >> +               str =3D "-ENOMEM"; break;
+> >> +       case ENOENT:
+> >> +               str =3D "-ENOENT"; break;
+> >> +       case E2BIG:
+> >> +               str =3D "-E2BIG"; break;
+> >> +       case EEXIST:
+> >> +               str =3D "-EEXIST"; break;
+> >> +       case EFAULT:
+> >> +               str =3D "-EFAULT"; break;
+> >> +       case ENOSPC:
+> >> +               str =3D "-ENOSPC"; break;
+> >> +       case EACCES:
+> >> +               str =3D "-EACCES"; break;
+> >> +       case EAGAIN:
+> >> +               str =3D "-EAGAIN"; break;
+> >> +       case EBADF:
+> >> +               str =3D "-EBADF"; break;
+> >> +       case ENAMETOOLONG:
+> >> +               str =3D "-ENAMETOOLONG"; break;
+> >> +       case ESRCH:
+> >> +               str =3D "-ESRCH"; break;
+> >> +       case EBUSY:
+> >> +               str =3D "-EBUSY"; break;
+> >> +       case ENOTSUP:
+> > Is this one coming from public UAPI header? I don't think so.
+> > include/linux/errno.h is not exported to user-space. This means that
+> > Github version of libbpf will have trouble with compiling this. This
+> > works ok inside kernel repo, but we should be careful about relying on
+> > internal headers.
+> Got it.
+> >
+> >
+> > Please check all the other ones. BTW, how did you end up with this
+> > exact set of errors?
+> First I took all errors that bpf syscall sets, then just grepped for
+> uppercase strings
+> starting with E in tools/lib/bpf.
+> The number of items very roughly matches what you suggested it to be
+> (10-20), I have around 26.
 
-Yes, it's totally fine to nest RCU lock regions.
+Ok, I was going to suggest to at least search across main BPF code
+base in kernel (kernel/bpf/...) and maybe tracing stuff as well
+(kernel/trace/... and kernel/events/...). That should cover a lot of
+relevant grounds. Check net/... but that might use a lot of niche
+error codes that won't ever come up from BPF side of things, so I'm
+not sure about that. We shall use our best judgement for that.
 
-> Thanks
-> --breno
+> >
+> >> +               str =3D "-ENOTSUP"; break;
+> >> +       case EPROTO:
+> >> +               str =3D "-EPROTO"; break;
+> >> +       case ERANGE:
+> >> +               str =3D "-ERANGE"; break;
+> >> +       case EMSGSIZE:
+> >> +               str =3D "-EMSGSIZE"; break;
+> >> +       case EINTR:
+> >> +               str =3D "-EINTR"; break;
+> >> +       case ENODATA:
+> >> +               str =3D "-ENODATA"; break;
+> >> +       case EIO:
+> >> +               str =3D "-EIO"; break;
+> >> +       case EUCLEAN:
+> >> +               str =3D "-EUCLEAN"; break;
+> >> +       case EDOM:
+> >> +               str =3D "-EDOM"; break;
+> >> +       case EPROTONOSUPPORT:
+> >> +               str =3D "-EPROTONOSUPPORT"; break;
+> >> +       case EDEADLK:
+> >> +               str =3D "-EDEADLK"; break;
+> >> +       case EOVERFLOW:
+> >> +               str =3D "-EOVERFLOW"; break;
+> >> +       default:
+> >> +               snprintf(buf, sizeof(buf), "%d", err);
+> >> +               return buf;
+> > and then here we'll just
+> >
+> > snprintf(buf, sizeof(buf), "%d", err);
+> > return buf;
+> >
+> >> +       }
+> >> +       if (!neg)
+> >> +               ++str;
+> >> +
+> >> +       return str;
+> >> +}
+> >> +
+> > [...]
+>
+>
 
