@@ -1,239 +1,216 @@
-Return-Path: <bpf+bounces-44190-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44191-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F9A19BFB48
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 02:19:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB37F9BFC9F
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 03:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24E281F22A24
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 01:19:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE4361C21C7C
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 02:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A0979F6;
-	Thu,  7 Nov 2024 01:19:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KE3otffs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D6144C6C;
+	Thu,  7 Nov 2024 02:41:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0202028F4;
-	Thu,  7 Nov 2024 01:19:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94222182BC
+	for <bpf@vger.kernel.org>; Thu,  7 Nov 2024 02:41:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730942392; cv=none; b=K8i4iPzYcPIiPIJgVrfWvy9bfeqKWfd8e7nBi+A3AKjTlCHKKF3PViRJYLd73GRAMxKjyem8hfCaSQu0pm8uLnsgUMfb9EOeEILn+dUd+yca1QrZrVynVqAOsMPukQpB9Ih7FR9lf8Sa2tZpRJGGctLLij5zR5auHEG+KcAPR+0=
+	t=1730947317; cv=none; b=Zr2SWF6PrdtZcyV0h4iyLmY8TWe0uHOlQa4SqrTACNvogljKytboYFZrvBHYiCqD3QtaUv2DlMbZAHolhigx6c4635d6aAf6rclPlQYfJXhMSh1YgfussEkIpIA41sUsEcjOkzwrV9D4aQYH36C59+QS6g7kKjyNsIm1XIG2MX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730942392; c=relaxed/simple;
-	bh=ascCbzhcSGbBvZZqUcwg813ce3rDFdTCCRNFSzOHDTg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jB/oc76MCIXTgJTEfFay5TeF1yZMjp/pTUHj2gixPq4NtvGjwCdKSjc0lAAN0gdkoGYI2yxvAmBdrCnKrlMz9XbEctnE3dNs5s64/AL8w10dXHmcxRlOCp57veG7cSB2Md7ofHWvndP4C540BYLQdlmPQOAOAiIzCgtkiiMvkzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KE3otffs; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <49ad2b87-29af-429e-8acb-2bba13e2b2aa@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730942386;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ThItE6RrQVjW+V5DIFsvkMqpM7Ki0rhjv5HfjUjDAW8=;
-	b=KE3otffsel9h+yldP/nMPkrw8v143Te8IUZuM59wZpBfPM+s59ufTis56+bxE+Wb2+1S0K
-	dpzdSNigogJYdA5BnOHc12qgkSYoMGAuxgLH5ZMLrs0MnzwzXXJGizrRGu5cflGDXVEnmC
-	9T2B02MYN9MuQrxL9cvWvy8YoQGqPAE=
-Date: Wed, 6 Nov 2024 17:19:36 -0800
+	s=arc-20240116; t=1730947317; c=relaxed/simple;
+	bh=wQEozKx5w3qVbS/KwvZVRL34L4VHnhg5FUHUz9ahAYI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kmTLAUkqO9l/a/taLAeSph3HIYBBVJ+UoRaHbxeAxNvwvEoac0q+xpRCBixQy15uqr4qWmzt2ard5bq/nVDUUm17Y+Tioqd2HTfpkmSaCPn/BMWrF4lGbkm2mNZcBhd4qQrvAjEe6VOPhNPlsS7SuPX2voSHtK67N3HX7PjdNvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id D635FAD19EE0; Wed,  6 Nov 2024 18:41:38 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Tejun Heo <tj@kernel.org>
+Subject: [PATCH bpf-next v10 0/7] bpf: Support private stack for bpf progs
+Date: Wed,  6 Nov 2024 18:41:38 -0800
+Message-ID: <20241107024138.3355687-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v3 02/14] net-timestamp: allow two features to
- work parallelly
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, willemb@google.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
- ykolal@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
- Jason Xing <kernelxing@tencent.com>
-References: <20241028110535.82999-1-kerneljasonxing@gmail.com>
- <672269c08bcd5_3c834029423@willemb.c.googlers.com.notmuch>
- <CAL+tcoA7Uddjx3OJzTB3+kqmKRt6KQN4G1VDCbE+xwEhATQpQQ@mail.gmail.com>
- <CAL+tcoDL0by6epqExL0VVMqfveA_awZ3PE9mfwYi3OmovZf3JQ@mail.gmail.com>
- <d138a81d-f9f5-4d51-bedd-3916d377699d@linux.dev>
- <CAL+tcoBfuFL7-EOBY4RLMdDZJcUSyq20pJW13OqzNazUP7=gaw@mail.gmail.com>
- <67237877cd08d_b246b2942b@willemb.c.googlers.com.notmuch>
- <CAL+tcoBpdxtz5GHkTp6e52VDCtyZWvU7+1hTuEo1CnUemj=-eQ@mail.gmail.com>
- <65968a5c-2c67-4b66-8fe0-0cebd2bf9c29@linux.dev>
- <6724d85d8072_1a157829475@willemb.c.googlers.com.notmuch>
- <1c8ebc16-f8e7-4a98-9518-865db3952f8f@linux.dev>
- <CAL+tcoBf+kQ3_kc9x62KnHx9O+6c==_DN+6EheL82UKQ3xQN1A@mail.gmail.com>
- <f27ab4ce-02df-464e-90ed-852652fb7e3e@linux.dev>
- <CAL+tcoDEMJGYNw01QnEUZwtG5BMj3AyLwtp1m1_hJfY2bG=-dQ@mail.gmail.com>
- <97d8f9b3-9ae3-4146-a933-70dbe393132e@linux.dev>
- <CAL+tcoBzces5_awOzZsyqpTWjk0moxkjj7kHjCtPcsU3kNJ4tg@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAL+tcoBzces5_awOzZsyqpTWjk0moxkjj7kHjCtPcsU3kNJ4tg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
 
-On 11/5/24 6:51 PM, Jason Xing wrote:
-> On Wed, Nov 6, 2024 at 9:09 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 11/5/24 4:17 PM, Jason Xing wrote:
->>> On Wed, Nov 6, 2024 at 3:22 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>>>
->>>> On 11/4/24 10:22 PM, Jason Xing wrote:
->>>>> On Tue, Nov 5, 2024 at 10:09 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>>>>>
->>>>>> On 11/1/24 6:32 AM, Willem de Bruijn wrote:
->>>>>>>> In udp/raw/..., I don't know how likely is the user space having "cork->tx_flags
->>>>>>>> & SKBTX_ANY_TSTAMP" set but has neither "READ_ONCE(sk->sk_tsflags) &
->>>>>>>> SOF_TIMESTAMPING_OPT_ID" nor "cork->flags & IPCORK_TS_OPT_ID" set.
->>>>>>> This is not something to rely on. OPT_ID was added relatively recently.
->>>>>>> Older applications, or any that just use the most straightforward API,
->>>>>>> will not set this.
->>>>>>
->>>>>> Good point that the OPT_ID per cmsg is very new.
->>>>>>
->>>>>> The datagram support on SOF_TIMESTAMPING_OPT_ID in sk->sk_tsflags had
->>>>>> been there for quite some time now. Is it a safe assumption that
->>>>>> most applications doing udp tx timestamping should have
->>>>>> the SOF_TIMESTAMPING_OPT_ID set to be useful?
->>>>>>
->>>>>>>
->>>>>>>> If it is
->>>>>>>> unlikely, may be we can just disallow bpf prog from directly setting
->>>>>>>> skb_shinfo(skb)->tskey for this particular skb.
->>>>>>>>
->>>>>>>> For all other cases, in __ip[6]_append_data, directly call a bpf prog and also
->>>>>>>> pass the kernel decided tskey to the bpf prog.
->>>>>>>>
->>>>>>>> The kernel passed tskey could be 0 (meaning the user space has not used it). The
->>>>>>>> bpf prog can give one for the kernel to use. The bpf prog can store the
->>>>>>>> sk_tskey_bpf in the bpf_sk_storage now. Meaning no need to add one to the struct
->>>>>>>> sock. The bpf prog does not have to start from 0 (e.g. start from U32_MAX
->>>>>>>> instead) if it helps.
->>>>>>>>
->>>>>>>> If the kernel passed tskey is not 0, the bpf prog can just use that one
->>>>>>>> (assuming the user space is doing something sane, like the value in
->>>>>>>> SCM_TS_OPT_ID won't be jumping back and front between 0 to U32_MAX). I hope this
->>>>>>>> is very unlikely also (?) but the bpf prog can probably detect this and choose
->>>>>>>> to ignore this sk.
->>>>>>> If an applications uses OPT_ID, it is unlikely that they will toggle
->>>>>>> the feature on and off on a per-packet basis. So in the common case
->>>>>>> the program could use the user-set counter or use its own if userspace
->>>>>>> does not enable the feature. In the rare case that an application does
->>>>>>> intermittently set an OPT_ID, the numbering would be erratic. This
->>>>>>> does mean that an actively malicious application could mess with admin
->>>>>>> measurements.
->>>>>>
->>>>>> All make sense. Given it is reasonable to assume the user space should either
->>>>>> has SOF_TIMESTAMPING_OPT_ID always on or always off. When it is off, the bpf
->>>>>> prog can directly provide its own tskey to be used in shinfo->tskey. The bpf
->>>>>> prog can generate the id itself without using the sk->sk_tskey, e.g. store an
->>>>>> atomic int in the bpf_sk_storage.
->>>>>
->>>>> I wonder, how can we correlate the key with each skb in the bpf
->>>>> program for non-TCP type without implementing a bpf extension for
->>>>> SCM_TS_OPT_ID? Every time the timestamp is reported, we cannot know
->>>>> which sendmsg() the skb belongs to for non-TCP cases.
->>>>
->>>> SCM_TS_OPT_ID is eventually setting the shinfo->tskey.
->>>> If the shinfo->tskey is not set by the user space, the bpf prog can directly set
->>>> the shinfo->tskey. There is no need to use the sk->sk_tskey as the ID generator
->>>> also. The bpf prog can have its own id generator.
->>>>
->>>> If the user space has already set the shinfo->tskey (either by sk->sk_tskey or
->>>> SCM_TS_OPT_ID), the bpf prog can just use the user space one.
->>>>
->>>> If there is a weird application that flips flops between OPT_ID on/off, the bpf
->>>> prog will get confused which is fine. The bpf prog can detect this and choose to
->>>> ignore measuring this sk/skb. The bpf prog can also choose to be on the very
->>>> safe side and ignore all skb with SKBTX_ANY_TSTAMP set in txflags but with no
->>>> OPT_ID. The bpf prog can look into the details of the sk and skb to decide what
->>>> makes the most sense for its deployment.
->>>>
->>>> I don't know whether it makes more sense to call the bpf prog to decide the
->>>> shinfo->{tx_flags,tskey} just before the "while (length > 0)" in
->>>> __ip[6]_append_data or it is better to call the bpf prog in ip[6]_setup_cork.
->>>> I admittedly less familiar with this code path than the tcp one.
->>>
->>> Now I feel it could be complicated for a software engineer to consider
->>> how they will handle the key if they don't read the kernel code very
->>> carefully. They are facing different situations. Being user-friendly
->>> lets this feature have more chances to get widely used. As I insisted
->>> before, I still would like to know if it is possible that we can try
->>> to introduce sk_tskey_bpf_offset (like patch 10-12) to calculate a bpf
->>> exclusive tskey for bpf use? Only exporting one key. It will be really
->>> simple and easy-to-use :)
->>
->> imo, there is no need for adding sk_tskey_bpf_offset to sk. just allow the bpf
->> prog to decide what is the tskey.
->>
->> There is no usability issue in bpf prog. It is pretty normal for a bpf prog
->> author to look at the sk details to make decision.
->>
->> Abstracting the sk/skb is not helping the bpf prog and not the right direction
->> to go. Over time, there has been case over case that the bpf prog wants to know
->> more instead of being abstracted away like running in the user space. e.g. The
->> "struct bpf_sock" abstraction in the uapi/linux/bpf.h does not scale and we have
->> stopped adding more abstraction this way. The btf (and PTR_TO_BTF_ID,
->> CO-RE...etc) has been added to allow the bpf prog to learn other details in sk
->> and skb.
->>
->> Instead, design a better bpf kfunc to help the bpf prog to set the bits/tskey in
->> the skb. I think this is more important. tcp tskey is easy. just need some care
->> on the udp tskey and need to check if the user space has already set one.
->> A good designed bpf kfunc is all it needs.
-> 
-> Thanks!
-> 
-> Let me confirm again in case I'm missing something important.
-> 1) For tcp, as you said before, bpf prog can extract the seq from the
-> exported skb, so I don't need to export any key in this case.
-> 2) For udp, if the skb has skb_shinfo(skb)->tskey set, then export the
-> key, else, export zero to the bpf program.
+The main motivation for private stack comes from nested scheduler in
+sched-ext from Tejun. The basic idea is that
+ - each cgroup will its own associated bpf program,
+ - bpf program with parent cgroup will call bpf programs
+   in immediate child cgroups.
 
-A follow up to myself on the earlier bpf kfunc comment. Something like this:
+Let us say we have the following cgroup hierarchy:
+  root_cg (prog0):
+    cg1 (prog1):
+      cg11 (prog11):
+        cg111 (prog111)
+        cg112 (prog112)
+      cg12 (prog12):
+        cg121 (prog121)
+        cg122 (prog122)
+    cg2 (prog2):
+      cg21 (prog21)
+      cg22 (prog22)
+      cg23 (prog23)
 
-/* ack: request ACK timestamp (tcp only)
-  * req_tskey: bpf prog can request to use a particular tskey.
-  *            req_tskey should always be 0 for tcp.
-  * return: -ve for error. u32 for the tskey that the bpf prog should use.
-  *	   may be different from the req_tskey (e.g. the user space has
-  *         already set one).
-  */
-__bpf_kfunc s64 bpf_skops_enable_tx_tstamp(struct bpf_sock_ops_kern *skops,
-					   bool ack, u32 req_tskey);
+In the above example, prog0 will call a kfunc which will call prog1 and
+prog2 to get sched info for cg1 and cg2 and then the information is
+summarized and sent back to prog0. Similarly, prog11 and prog12 will be
+invoked in the kfunc and the result will be summarized and sent back to
+prog1, etc. The following illustrates a possible call sequence:
+   ... -> bpf prog A -> kfunc -> ops.<callback_fn> (bpf prog B) ...
 
-/* "not sure" if this kfunc is needed. probably no. I think it is easier to pass
-  * true/false in the args[0]. It seems tskey can be 0 in udp, so
-  * passing tskey can't tell if the skb/cork/sockcm_cookie has the tskey.
-  */
-__bpf_kfunc bool bpf_skops_has_tskey(struct bpf_sock_ops_kern *skops);
+Currently, for each thread, the x86 kernel allocate 16KB stack. Each
+bpf program (including its subprograms) has maximum 512B stack size to
+avoid potential stack overflow. Nested bpf programs further increase the
+risk of stack overflow. To avoid potential stack overflow caused by bpf
+programs, this patch set supported private stack and bpf program stack
+space is allocated during jit time. Using private stack for bpf progs
+can reduce or avoid potential kernel stack overflow.
 
-For udp, I don't know whether it will be easier to set the tskey in the 'cork' 
-or 'sockcm_cookie' or 'skb'. I guess it depends where the bpf prog is called. If 
-skb, it seems the bpf prog may be called repetitively for doing the same thing 
-in the while loop in __ip[6]_append_data. If it is better to set the 'cork' or 
-'sockcm_cookie', the cork/sockcm_cookie pointer can be added to 'struct 
-bpf_sock_ops_kern'. The sizeof(struct bpf_sock_ops_kern) is at 64bytes. Adding 
-one pointer is not ideal.... probably it can be union with syn_skb but will need 
-some code audit (so please check).
+Currently private stack is applied to tracing programs like kprobe/uprobe=
+,
+perf_event, tracepoint, raw tracepoint and struct_ops progs.
+Tracing progs enable private stack if any subprog stack size is more
+than a threshold (i.e. 64B). Struct-ops progs enable private stack
+based on particular struct op implementation which can enable private
+stack before verification at per-insn level. Struct-ops progs have
+the same treatment as tracing progs w.r.t when to enable private stack.
 
+For all these progs, the kernel will do recursion check (no nesting for
+per prog per cpu) to ensure that private stack won't be overwritten.
+The bpf_prog_aux struct has a callback func recursion_detected() which
+can be implemented by kernel subsystem to synchronously detect recursion,
+report error, etc.
 
-> 3) extend SCM_TS_OPT_ID for the udp/bpf case.
+Only x86_64 arch supports private stack now. It can be extended to other
+archs later. Please see each individual patch for details.
 
-I don't understand. What does it mean to extend SCM_TS_OPT_ID?
+Change logs:
+  v9 -> v10:
+    - v9 link: https://lore.kernel.org/bpf/20241104193455.3241859-1-yongh=
+ong.song@linux.dev/
+    - Simplify handling async cbs by making those async cb related progs =
+using normal
+      kernel stack.
+    - Do percpu allocation in jit instead of verifier.
+  v8 -> v9:
+    - v8 link: https://lore.kernel.org/bpf/20241101030950.2677215-1-yongh=
+ong.song@linux.dev/
+    - Use enum to express priv stack mode.
+    - Use bits in bpf_subprog_info struct to do subprog recursion check b=
+etween
+      main/async and async subprogs.
+    - Fix potential memory leak.
+    - Rename recursion detection func from recursion_skipped() to recursi=
+on_detected().
+  v7 -> v8:
+    - v7 link: https://lore.kernel.org/bpf/20241029221637.264348-1-yongho=
+ng.song@linux.dev/
+    - Add recursion_skipped() callback func to bpf_prog->aux structure su=
+ch that if
+      a recursion miss happened and bpf_prog->aux->recursion_skipped is n=
+ot NULL, the
+      callback fn will be called so the subsystem can do proper action ba=
+sed on their
+      respective design.
+  v6 -> v7:
+    - v6 link: https://lore.kernel.org/bpf/20241020191341.2104841-1-yongh=
+ong.song@linux.dev/
+    - Going back to do private stack allocation per prog instead per subt=
+ree. This can
+      simplify implementation and avoid verifier complexity.
+    - Handle potential nested subprog run if async callback exists.
+    - Use struct_ops->check_member() callback to set whether a particular=
+ struct-ops
+      prog wants private stack or not.
+  v5 -> v6:
+    - v5 link: https://lore.kernel.org/bpf/20241017223138.3175885-1-yongh=
+ong.song@linux.dev/
+    - Instead of using (or not using) private stack at struct_ops level,
+      each prog in struct_ops can decide whether to use private stack or =
+not.
+  v4 -> v5:
+    - v4 link: https://lore.kernel.org/bpf/20241010175552.1895980-1-yongh=
+ong.song@linux.dev/
+    - Remove bpf_prog_call() related implementation.
+    - Allow (opt-in) private stack for sched-ext progs.
+  v3 -> v4:
+    - v3 link: https://lore.kernel.org/bpf/20240926234506.1769256-1-yongh=
+ong.song@linux.dev/
+      There is a long discussion in the above v3 link trying to allow pri=
+vate
+      stack to be used by kernel functions in order to simplify implement=
+ation.
+      But unfortunately we didn't find a workable solution yet, so we ret=
+urn
+      to the approach where private stack is only used by bpf programs.
+    - Add bpf_prog_call() kfunc.
+  v2 -> v3:
+    - Instead of per-subprog private stack allocation, allocate private
+      stacks at main prog or callback entry prog. Subprogs not main or ca=
+llback
+      progs will increment the inherited stack pointer to be their
+      frame pointer.
+    - Private stack allows each prog max stack size to be 512 bytes, inte=
+ad
+      of the whole prog hierarchy to be 512 bytes.
+    - Add some tests.
 
-> I'm not sure if I should postpone implementing this part after the
-> basic framework of this series gets merged. Anyway, I will try this :)
+Yonghong Song (7):
+  bpf: Find eligible subprogs for private stack support
+  bpf: Enable private stack for eligible subprogs
+  bpf, x86: Avoid repeated usage of bpf_prog->aux->stack_depth
+  bpf, x86: Support private stack in jit
+  selftests/bpf: Add tracing prog private stack tests
+  bpf: Support private stack for struct_ops progs
+  selftests/bpf: Add struct_ops prog private stack tests
+
+ arch/x86/net/bpf_jit_comp.c                   |  88 +++++-
+ include/linux/bpf.h                           |   3 +
+ include/linux/bpf_verifier.h                  |   8 +
+ include/linux/filter.h                        |   1 +
+ kernel/bpf/core.c                             |   5 +
+ kernel/bpf/trampoline.c                       |   4 +
+ kernel/bpf/verifier.c                         | 109 ++++++-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 104 +++++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   5 +
+ .../bpf/prog_tests/struct_ops_private_stack.c | 106 +++++++
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../bpf/progs/struct_ops_private_stack.c      |  62 ++++
+ .../bpf/progs/struct_ops_private_stack_fail.c |  62 ++++
+ .../progs/struct_ops_private_stack_recur.c    |  50 ++++
+ .../bpf/progs/verifier_private_stack.c        | 272 ++++++++++++++++++
+ 15 files changed, 867 insertions(+), 14 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_pri=
+vate_stack.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
+stack.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
+stack_fail.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
+stack_recur.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_private_st=
+ack.c
+
+--=20
+2.43.5
+
 
