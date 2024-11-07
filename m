@@ -1,88 +1,89 @@
-Return-Path: <bpf+bounces-44218-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44219-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52A009C00E5
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 10:13:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 505D89C0156
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 10:42:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8476E1C21338
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 09:13:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 675FAB22276
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2024 09:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDB81E0E01;
-	Thu,  7 Nov 2024 09:12:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 578591E1C37;
+	Thu,  7 Nov 2024 09:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AttxUdHk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fNBcltbY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C2E1E0090
-	for <bpf@vger.kernel.org>; Thu,  7 Nov 2024 09:12:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF23126C01;
+	Thu,  7 Nov 2024 09:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730970772; cv=none; b=RT/nv2JaejVkWE5XmuYjd3SiZt2T56HYEC2FqeW/v/bhDdjkZSybe2ReTcL19IEFTFMvJIkTp+Hf5srBAEpNbhBJvaVMdVTW1AGk1fuhX6FUgCPdgc4u7/N+kwuQ0dROQYJAXVszo2coRU4oJPLe1V2JPJhQ54SkR4Ke1x7/p7o=
+	t=1730972527; cv=none; b=lllUrq0iNhqMp8VCRAMYa0qOQKkgBrf3Ru6EG/cE/wuZV4sP/UGRVBESltSZtu9ldbAB6tNSDl2qdDQ6DveeuTw+rjoQy69MiA5K3xtVTLJlKWtWnw1Hx5ttPUH6KlJAizEhDiEuIhjMNOx1Vh4pKsNm7VyKrR3Lyx/X7nKqWbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730970772; c=relaxed/simple;
-	bh=oEq6Bpq9jtRyKMwhrFiYBsMaw4wa9Blc95c7/NVmjfo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gwuGxmGuC/XuvXBVmTMvrfloBPedVqhA2dcOc75gvyscKhwnoC6nSGdkrj2bfzZDucpB3RdcZJlUoBRDcJupAdwW5hAB93gWNCRTHlhpePjAWOZ/FYmva7xG+M8ZkxBB9nRgqABADpXtWEWDQGu1PDDHGI3waOJz/16xrp6Z+fU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AttxUdHk; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-381ee2e10dfso211731f8f.0
-        for <bpf@vger.kernel.org>; Thu, 07 Nov 2024 01:12:49 -0800 (PST)
+	s=arc-20240116; t=1730972527; c=relaxed/simple;
+	bh=6rCfQjYqKedxRoDt5Nu+GGmE+Ps1PathpCfylFya1ns=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EwsjFLWXPihTJopc+L0kD3iYrFwhWRPMJ3XXAqI3/arNn3jU0pK0QEWgVJBd3foeNjxRo5e5wdnQg2qOYKktj+81Gp7NBvDV79uJ8fxE4/rkXaIC5btUfXLFdvCZVECAD5KOrOQ5v2x26cAEQsGRlL+ZatEq1Q0hv08VCNpRejg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fNBcltbY; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-53b13ea6b78so961321e87.2;
+        Thu, 07 Nov 2024 01:42:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1730970768; x=1731575568; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1730972524; x=1731577324; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=CSGQrTX6RPEJ5ltwOkhPplbF6XskuwzGte6a11RVMyU=;
-        b=AttxUdHkoPUdZek2amJl27dnAgtyDCG0M7sXMDT4ZMw3vxquTKLkOOQ6pQJgkd+eca
-         fjRdNwBzdh4drejsCyeNzBELsFxOETgQomxrZGNUQPYrWkook1syt3r3XDLJX3tbLgXi
-         2AzICpSM2QqKPaAa3q3hjFfwSXpYv8cabK4FK/0x+v0hmBcF/+dsVpSCZLobyfs6pksl
-         QjwhnZj1se33bs81/BbZXpGBqWo2yw4jCqH9oOIWGRYJ1FjdMdUu+BUgRT+5vzeyox6Z
-         2fM2cqMjoju35+XwaIs1HQ2+rAq/4uWlufa6B+kmbRXNhoRXSrmL6KZxujZkkNYWbBSU
-         t94Q==
+        bh=cb032bMxCB2+U/0i/l2uSww85w5ZIQiK34d0j8RbCUM=;
+        b=fNBcltbY4kDNmswkpGmqPT91RadjLlwcKkqpJIQ3vZQbqsHjo68Bl9pTScJc6gJ8/N
+         VurEEVC69PIQWg8Vq9NzS4vZdkbE1ccr+Apq1OclSp8RoX16KXcepamCqVPfb05FfYX1
+         YThSQmvEGkxnApBZ1MqWNDc0Pt0C4+1fQ+uPXPVCAUZKdMf7BSqcD9NAUCaeX5S9ZID3
+         0C9tCkrpYeL3f9rFMoPyF/Q6kmbHyooaXxIz8CgqJJY3rTllKNaGjw6611KfaMJNXCee
+         PiQ7eUrdHJ0ONJ+BMQT93KeFujVWicavinJ7pDkHVXHxb0ihGgMK+mGSPUz3bByHIjbM
+         ui+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730970768; x=1731575568;
+        d=1e100.net; s=20230601; t=1730972524; x=1731577324;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+         :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CSGQrTX6RPEJ5ltwOkhPplbF6XskuwzGte6a11RVMyU=;
-        b=s/g6JzcAVOYnKpDCiZ1CaW3NdivYCjXIoZ9KZ9fUTWNEqP4enOOKAF2uuysbRPpuMR
-         2wF+iUG3xwTuFgDYDwOUfiNscQZ3czYC6Z9pEjtbryfeHKQeV25Ybr/jrFdpMmMv+49L
-         iH57mWkbQkK/PFxxOGxbbWyZs45XhMqVHIX+CVVU+p8uMvp0AYmEwKqH+k0ZR8h4/E52
-         b9Wc1+wUZvxCm17t1QNztiaHWLfmwmBNpjYfmJyhnZg+GnxWYgo00unLFqkqGUFT2q9E
-         kyDv+BcF+l5MYura7EXD/f327lrgO1A21vGUqpkkUOd2xlCnD2w/N0CQpQq4y2TysDzj
-         ZILA==
-X-Gm-Message-State: AOJu0Yx2KqfXjiZqcySarInz+obA3eYfSRFPtPquUFpQ0/V58hL5V464
-	V3kobwMtr9vPKRxm7Ky2mt+Hb/m0nnOaUiN0O0+0xHYsdQrs/5DKuXLySGSSbLw=
-X-Google-Smtp-Source: AGHT+IEMgszAeoujvnm+EHb15Ezxw32/wzRi/AgvpY4lG2K21v203JKIrGkQz4rMrdtjTjqkqPH+Bw==
-X-Received: by 2002:a5d:64c7:0:b0:37d:4937:c9eb with SMTP id ffacd0b85a97d-381c7a5e2bfmr19441264f8f.21.1730970767795;
-        Thu, 07 Nov 2024 01:12:47 -0800 (PST)
-Received: from myrica ([2.221.137.100])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381eda04ad0sm1145847f8f.100.2024.11.07.01.12.47
+        bh=cb032bMxCB2+U/0i/l2uSww85w5ZIQiK34d0j8RbCUM=;
+        b=FFyrfrIvqhLdbWxda/ZVJH1baKjELxgWmbvBTOY+bhNyR6g7WjOi/6xc4QGIBSsHZ1
+         mDJphAvDdfy6U+JIpLsFJCa9V35x9+wnJj5ZEEM1StV/2uITbtuFeKFigIe1ctjVExEo
+         aQcazCZFdGGo+SBUp1nw+pZ6AyoCf9XOKm/VggASVkQA8wJu+IbsarrxjHymd5hQ2dE0
+         RQaSpS6kXmpNDVgLMZnR4tiPrxzzJ/KFRQfwKlUmMtkEWdbug2ofqWK4344bZUQl/d73
+         VvIZ0O5zWopCZxhX9ek3bXtPpUfR8owx7DuVYLJgFHbI6EgwmshyIYulF+2r2aJCFxnM
+         6iFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUR8Iu303S2TVTFuITCUyzS3tBGxnuKyqa4yQLdw/EG5BXsIdgVnj7Kn+xnkklAIdPr9Vkox3ywh9SenCIp56jdYg==@vger.kernel.org, AJvYcCWCVJvdleKb5fVmF9aXQpAw0G1yLVZTEQYSvcVMmv2XHSD2t8ulBK9VQYPXSTBFutdMlYg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyiKfpTR6R1MrxoT548QV++Imhee+qgYfU23mdyf254JSNOD3kn
+	cuh78ixLtX30hlTaWqXxKV/Gwo2V0MPnGcNLyyxJ3ImNyzcBzH+pxcVhIw==
+X-Google-Smtp-Source: AGHT+IE3UvgBbetOwUqCCtrQ8FSFsJ6GnQCGXbM/x6ClL3eoM4FpQvpjGrgJAM/kpcHBe+EhaBhErg==
+X-Received: by 2002:a05:6512:3b86:b0:536:55cc:963e with SMTP id 2adb3069b0e04-53d65e0b43fmr18656955e87.44.1730972523756;
+        Thu, 07 Nov 2024 01:42:03 -0800 (PST)
+Received: from krava (85-193-35-145.rib.o2.cz. [85.193.35.145])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0a176e1sm69539366b.31.2024.11.07.01.42.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Nov 2024 01:12:47 -0800 (PST)
-Date: Thu, 7 Nov 2024 09:13:07 +0000
-From: Jean-Philippe Brucker <jean-philippe@linaro.org>
-To: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Quentin Monnet <qmo@kernel.org>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	David Abdurachmanov <davidlt@rivosinc.com>
-Subject: Re: [PATCH] tools: Override makefile ARCH variable if defined, but
- empty
-Message-ID: <20241107091307.GA2016393@myrica>
-References: <20241106193208.290067-1-bjorn@kernel.org>
+        Thu, 07 Nov 2024 01:42:03 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 7 Nov 2024 10:42:01 +0100
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+	Peter Zijlstra <peterz@infradead.org>, Sean Young <sean@mess.org>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix uprobe consumer test (again)
+Message-ID: <ZyyLaWxHbWW87IG-@krava>
+References: <20241106224025.3708580-1-jolsa@kernel.org>
+ <CAEf4BzZ9wd4ZRGk=Gp3dXOVC5W2=ap90FcQaa9XmAmhY-4CCvw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,52 +93,83 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241106193208.290067-1-bjorn@kernel.org>
+In-Reply-To: <CAEf4BzZ9wd4ZRGk=Gp3dXOVC5W2=ap90FcQaa9XmAmhY-4CCvw@mail.gmail.com>
 
-On Wed, Nov 06, 2024 at 08:32:06PM +0100, Björn Töpel wrote:
-> From: Björn Töpel <bjorn@rivosinc.com>
+On Wed, Nov 06, 2024 at 04:26:11PM -0800, Andrii Nakryiko wrote:
+> On Wed, Nov 6, 2024 at 2:40 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > The new uprobe changes bring bit some new behaviour that we need
 > 
-> There are a number of tools (bpftool, selftests), that require a
-> "bootstrap" build. Here, a bootstrap build is a build host variant of
-> a target. E.g., assume that you're performing a bpftool cross-build on
-> x86 to riscv, a bootstrap build would then be an x86 variant of
-> bpftool. The typical way to perform the host build variant, is to pass
-> "ARCH=" in a sub-make. However, if a variable has been set with a
-> command argument, then ordinary assignments in the makefile are
-> ignored.
+> needs some proofreading, not sure what you were trying to say
 > 
-> This side-effect results in that ARCH, and variables depending on ARCH
-> are not set.
+> > to reflect in the consumer test.
+> >
+> > There's special case when we have one of the existing uretprobes removed
 > 
-> Workaround by overriding ARCH to the host arch, if ARCH is empty.
+> see below, I don't like how special that case seems. It's actually not
+> that special, we just have a rule under which uretprobe instance
+> survives before->after transition, and we can express that pretty
+> clearly and explicitly.
 > 
-> Fixes: 8859b0da5aac ("tools/bpftool: Fix cross-build")
-> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+> pw-bot: cr
+> 
+> > and at the same time we're adding the other uretprobe. In this case we get
+> > hit on the new uretprobe consumer only if there was already another uprobe
+> > existing so the uprobe object stayed valid for uprobe return instance.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  .../selftests/bpf/prog_tests/uprobe_multi_test.c    | 13 ++++++++++++-
+> >  1 file changed, 12 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> > index 619b31cd24a1..545b91385749 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> > @@ -873,10 +873,21 @@ static int consumer_test(struct uprobe_multi_consumers *skel,
+> >                          * which means one of the 'return' uprobes was alive when probe was hit:
+> >                          *
+> >                          *   idxs: 2/3 uprobe return in 'installed' mask
+> > +                        *
+> > +                        * There's special case when we have one of the existing uretprobes removed
+> > +                        * and at the same time we're adding the other uretprobe. In this case we get
+> > +                        * hit on the new uretprobe consumer only if there was already another uprobe
+> > +                        * existing so the uprobe object stayed valid for uprobe return instance.
+> >                          */
+> >                         unsigned long had_uretprobes  = before & 0b1100; /* is uretprobe installed */
+> > +                       unsigned long b = before >> 2, a = after >> 2;
+> > +                       bool hit = true;
+> > +
+> > +                       /* Match for following a/b cases: 01/10 10/01 */
+> > +                       if ((a ^ b) == 0b11)
+> > +                               hit = before & 0b11;
+> >
+> > -                       if (had_uretprobes && test_bit(idx, after))
+> > +                       if (hit && had_uretprobes && test_bit(idx, after))
+> 
+> I found these changes very hard to reason about (not because of bit
+> manipulations, but due to very specific 01/10 requirement, which seems
+> too specific). So I came up with this:
+> 
+>     bool uret_stays = before & after & 0b1100;
+>     bool uret_survives = (before & 0b1100) && (after & 0b1100) &&
+> (before & 0b0011);
+> 
+>     if ((uret_stays || uret_survives) && test_bit(idx, after))
+>         val++;
+> 
+> The idea being that uretprobe under test either stayed from before to
+> after (uret_stays + test_bit) or uretprobe instance survived and we
+> have uretprobe active in after (uret_survives + test_bit).
+> 
+> uret_survives just states that uretprobe survives if there are *any*
+> uretprobes both before and after (overlapping or not, doesn't matter)
+> and uprobe was attached before.
+> 
+> Does it make sense? Can you incorporate that into v2, if you agree?
 
-Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+ok, seems easier.. will send v2
 
-> ---
->  tools/scripts/Makefile.arch | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/scripts/Makefile.arch b/tools/scripts/Makefile.arch
-> index f6a50f06dfc4..eabfe9f411d9 100644
-> --- a/tools/scripts/Makefile.arch
-> +++ b/tools/scripts/Makefile.arch
-> @@ -7,8 +7,8 @@ HOSTARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
->                                    -e s/sh[234].*/sh/ -e s/aarch64.*/arm64/ \
->                                    -e s/riscv.*/riscv/ -e s/loongarch.*/loongarch/)
->  
-> -ifndef ARCH
-> -ARCH := $(HOSTARCH)
-> +ifeq ($(strip $(ARCH)),)
-> +override ARCH := $(HOSTARCH)
->  endif
->  
->  SRCARCH := $(ARCH)
-> 
-> base-commit: 7758b206117dab9894f0bcb8333f8e4731c5065a
-> -- 
-> 2.45.2
-> 
+thanks,
+jirka
 
