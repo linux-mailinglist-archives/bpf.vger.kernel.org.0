@@ -1,286 +1,183 @@
-Return-Path: <bpf+bounces-44371-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44373-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C75BA9C24A0
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 19:05:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13A789C24E1
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 19:28:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EF051F242FB
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 18:05:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96AAE1F237D7
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 18:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CEA2233D84;
-	Fri,  8 Nov 2024 18:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587B51A9B23;
+	Fri,  8 Nov 2024 18:28:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="QiDGOCZZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C55D233D7F
-	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 18:05:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE1B3233D60
+	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 18:28:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731089140; cv=none; b=f6jJxzOpnZnTPlPgUr48MeRn2wDXrLnu8lteCDOyxJWlJne2NEfzIc/zX2UeFxmKsxXoyZPb/y2x7GBl5lRUH0SA2tHhw6noQqJMc2qtB6fJgOI11mIfqa4bV8EoKLc4k6GBnIHfMMUhKX7JI1/z3Q1kNE9PEYCiVH1jzJ5rjZQ=
+	t=1731090509; cv=none; b=Jen50T5XWBbFOs/Qwdq/K3tGtv7DLbLf1gzkU6L782Gbc1jj4iRxJROk3z64n2Y0rj8NMrnjxXjDpV1j4M2kjkzNp9shIl/xoX8jo/pMuql33SKMoA3OE8IESjQ2tYpE681roEaztJwc4DmhAjnrfAMziQ1BLxUCq3nsftXY2YI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731089140; c=relaxed/simple;
-	bh=GlkCP08p0eqAT92FlAT8fDKmDzDhz9aB/Ri1AEPvhKE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c8r32mcZDkz9NrGuOAKbtsr1fXcsQ+qls7weg+JXm4N2iloOhhonXsKYVeB9jwCQM6gaumm5FwZSfa47PiqYF/CF6W7opfgKXMEQ2gMkIlULOI+NCRJ75GBhdAY/V8vmdeGMBu4WAY3mXnJqQde0TFduaQVnYGTHMRp++3cGY78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id E9B9EADDC559; Fri,  8 Nov 2024 10:05:24 -0800 (PST)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: Alan Maguire <alan.maguire@oracle.com>,
-	Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-	dwarves@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Song Liu <song@kernel.org>
-Subject: [PATCH dwarves 3/3] dwarf_loader: Check DW_OP_[GNU_]entry_value for possible parameter matching
-Date: Fri,  8 Nov 2024 10:05:24 -0800
-Message-ID: <20241108180524.1198900-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241108180508.1196431-1-yonghong.song@linux.dev>
-References: <20241108180508.1196431-1-yonghong.song@linux.dev>
+	s=arc-20240116; t=1731090509; c=relaxed/simple;
+	bh=aomfWlwmh/DGJ3+fy8dkpzWlh+NgDtApGrsMDMYyB5M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ccj7xizEv7B8oPpbRnLNnY+e6JIRm3y66k4aqgya5qxiNjw8thfBe9L5ZYVHWusC+GBLN354XsA4BbtNGLCjJoxxo4RCiGcQPmx3gZfqWiy4usVoJ2TAacn2+2qN3x826wfAh7YhnKFAWgh87vhqAwHhxQraC4w/niHzz+ukZhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=QiDGOCZZ; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-7b15467f383so172344985a.3
+        for <bpf@vger.kernel.org>; Fri, 08 Nov 2024 10:28:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1731090507; x=1731695307; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wWt0QTmkUmV9Tp/JVuTsCK3jbXPMK6hXiV333qvXKtQ=;
+        b=QiDGOCZZxblNzWHL0id1BZtHqWX/RYbam7FWXoQ8HYTMK30u2TNVUPTQ8e0oby2XfL
+         SBtiVqnA+Y2XdSgfYMljZOYSH4muyWiKcGwC6wZ16bSXS5qQ4Ct7FlBXyEPE66o/L3/i
+         7LnUpOsfH4dTiLC8aWYKfdVG/K5y0/jY6F9WyQpNDso5F3DCp0IxdB52DmDcPwG/u1xF
+         tqVrv7I8aVWZBMPVJ4hUTQIH5Nvfct3AvATHR9w26V6hNfSCRgVahQ+fjEBngWriJwG7
+         5cLlvZ+MRX4u6bMCHei/pmXVyl7YsK16UTTx1W8luCk8Cf4Twhev/hCf2BXlJjMsneNs
+         ctsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731090507; x=1731695307;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wWt0QTmkUmV9Tp/JVuTsCK3jbXPMK6hXiV333qvXKtQ=;
+        b=nkwlGkM14mN5iG9CTutNIudJDGx1XA14pFT7r8BwbnVc/5h4vHEdLeP977VspVkJe5
+         AlysHih+JCvtERt7mFPIV5qi9JdrWSxcJE22X46mbVwgYPps3rt+d2UTLROSdXfiIjvX
+         reJ8awx4I+GlwLll5buiDqI7NctMVBeuhOTxdthN1lvH1LTyIb8KGUdLrgES59n26YyE
+         82RQ0l3vCC7tsjw5t5dN8q/7xiDogky4ByVsAoxKyhWpc3fEfbucsKL+T4w9hbfk6oBM
+         kx2gan8lf/w3Y1Td3rW7+ofedXxl6g/9Xc4Ny6osrwY/96ker80tGJBaadDM++9T+6Gy
+         dEog==
+X-Gm-Message-State: AOJu0Yz5xbYAFOEfUrmagjaIlygqhQtgq3d3F49RG/w8UTKz8RmyNOC9
+	9vBPBYD+qK5ar8oSyVFp2MCVmM4mCrbqPMVp4I7y356Tuy7XHsFvxgehgz2z2lo=
+X-Google-Smtp-Source: AGHT+IHmZYkgO0mMRiqiwCpCNOTh+1bYly26r67Tsj8ccO33Oezw4Rv/52fZCQXG3sX6Lf+gYpAjZg==
+X-Received: by 2002:a05:620a:4510:b0:7a7:dd3a:a699 with SMTP id af79cd13be357-7b331d81d49mr504881285a.11.1731090506810;
+        Fri, 08 Nov 2024 10:28:26 -0800 (PST)
+Received: from ?IPV6:2601:647:4200:9750:c471:fcfc:9a61:b786? ([2601:647:4200:9750:c471:fcfc:9a61:b786])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b32acb0496sm182379985a.89.2024.11.08.10.28.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Nov 2024 10:28:26 -0800 (PST)
+Message-ID: <1016b317-d521-4787-80dc-3b92320f2d19@bytedance.com>
+Date: Fri, 8 Nov 2024 10:28:22 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [External] Re: [PATCH bpf 2/2] tcp_bpf: add sk_rmem_alloc related
+ logic for ingress redirection
+To: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: bpf@vger.kernel.org, john.fastabend@gmail.com, jakub@cloudflare.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, dsahern@kernel.org, netdev@vger.kernel.org,
+ cong.wang@bytedance.com
+References: <20241017005742.3374075-1-zijianzhang@bytedance.com>
+ <20241017005742.3374075-3-zijianzhang@bytedance.com>
+ <Zy2N48atzfYYTY6X@pop-os.localdomain>
+Content-Language: en-US
+From: Zijian Zhang <zijianzhang@bytedance.com>
+In-Reply-To: <Zy2N48atzfYYTY6X@pop-os.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Song Liu reported that a kernel func (perf_event_read()) cannot be traced
-in certain situations since the func is not in vmlinux bTF. This happens
-in kernels 6.4, 6.9 and 6.11 and the kernel is built with pahole 1.27.
 
-The perf_event_read() signature in kernel (kernel/events/core.c):
-   static int perf_event_read(struct perf_event *event, bool group)
+On 11/7/24 8:04 PM, Cong Wang wrote:
+> On Thu, Oct 17, 2024 at 12:57:42AM +0000, zijianzhang@bytedance.com wrote:
+>> From: Zijian Zhang <zijianzhang@bytedance.com>
+>>
+>> Although we sk_rmem_schedule and add sk_msg to the ingress_msg of sk_redir
+>> in bpf_tcp_ingress, we do not update sk_rmem_alloc. As a result, except
+>> for the global memory limit, the rmem of sk_redir is nearly unlimited.
+>>
+>> Thus, add sk_rmem_alloc related logic to limit the recv buffer.
+>>
+>> Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
+>> ---
+>>   include/linux/skmsg.h | 11 ++++++++---
+>>   net/core/skmsg.c      |  6 +++++-
+>>   net/ipv4/tcp_bpf.c    |  4 +++-
+>>   3 files changed, 16 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+>> index d9b03e0746e7..2cbe0c22a32f 100644
+>> --- a/include/linux/skmsg.h
+>> +++ b/include/linux/skmsg.h
+>> @@ -317,17 +317,22 @@ static inline void sock_drop(struct sock *sk, struct sk_buff *skb)
+>>   	kfree_skb(skb);
+>>   }
+>>   
+>> -static inline void sk_psock_queue_msg(struct sk_psock *psock,
+>> +static inline bool sk_psock_queue_msg(struct sk_psock *psock,
+>>   				      struct sk_msg *msg)
+>>   {
+>> +	bool ret;
+>> +
+>>   	spin_lock_bh(&psock->ingress_lock);
+>> -	if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED))
+>> +	if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED)) {
+>>   		list_add_tail(&msg->list, &psock->ingress_msg);
+>> -	else {
+>> +		ret = true;
+>> +	} else {
+>>   		sk_msg_free(psock->sk, msg);
+>>   		kfree(msg);
+>> +		ret = false;
+>>   	}
+>>   	spin_unlock_bh(&psock->ingress_lock);
+>> +	return ret;
+>>   }
+>>   
+>>   static inline struct sk_msg *sk_psock_dequeue_msg(struct sk_psock *psock)
+>> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+>> index b1dcbd3be89e..110ee0abcfe0 100644
+>> --- a/net/core/skmsg.c
+>> +++ b/net/core/skmsg.c
+>> @@ -445,8 +445,10 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+>>   			if (likely(!peek)) {
+>>   				sge->offset += copy;
+>>   				sge->length -= copy;
+>> -				if (!msg_rx->skb)
+>> +				if (!msg_rx->skb) {
+>>   					sk_mem_uncharge(sk, copy);
+>> +					atomic_sub(copy, &sk->sk_rmem_alloc);
+>> +				}
+>>   				msg_rx->sg.size -= copy;
+>>   
+>>   				if (!sge->length) {
+>> @@ -772,6 +774,8 @@ static void __sk_psock_purge_ingress_msg(struct sk_psock *psock)
+>>   
+>>   	list_for_each_entry_safe(msg, tmp, &psock->ingress_msg, list) {
+>>   		list_del(&msg->list);
+>> +		if (!msg->skb)
+>> +			atomic_sub(msg->sg.size, &psock->sk->sk_rmem_alloc);
+>>   		sk_msg_free(psock->sk, msg);
+> 
+> Why not calling this atomic_sub() in sk_msg_free_elem()?
+> 
+> Thanks.
 
-Adding '-V' to pahole command line, and the following error msg can be fo=
-und:
-   skipping addition of 'perf_event_read'(perf_event_read) due to unexpec=
-ted register used for parameter
+sk_msg_free_elem called by sk_msg_free or sk_msg_free_no_charge will
+be invoked in multiple locations including TX/RX/Error and etc.
 
-Eventually the error message is attributed to the setting
-(parm->unexpected_reg =3D 1) in parameter__new() function.
+We should call atomic_sub(&sk->sk_rmem_alloc) for sk_msgs that have
+been atomic_add before. In other words, we need to call atomic_sub
+only for sk_msgs in ingress_msg.
 
-The following is the dwarf representation for perf_event_read():
-    0x0334c034:   DW_TAG_subprogram
-                DW_AT_low_pc    (0xffffffff812c6110)
-                DW_AT_high_pc   (0xffffffff812c640a)
-                DW_AT_frame_base        (DW_OP_reg7 RSP)
-                DW_AT_GNU_all_call_sites        (true)
-                DW_AT_name      ("perf_event_read")
-                DW_AT_decl_file ("/rw/compile/kernel/events/core.c")
-                DW_AT_decl_line (4641)
-                DW_AT_prototyped        (true)
-                DW_AT_type      (0x03324f6a "int")
-    0x0334c04e:     DW_TAG_formal_parameter
-                  DW_AT_location        (0x007de9fd:
-                     [0xffffffff812c6115, 0xffffffff812c6141): DW_OP_reg5=
- RDI
-                     [0xffffffff812c6141, 0xffffffff812c6323): DW_OP_reg1=
-4 R14
-                     [0xffffffff812c6323, 0xffffffff812c63fe): DW_OP_GNU_=
-entry_value(DW_OP_reg5 RDI), DW_OP_stack_value
-                     [0xffffffff812c63fe, 0xffffffff812c6405): DW_OP_reg1=
-4 R14
-                     [0xffffffff812c6405, 0xffffffff812c640a): DW_OP_GNU_=
-entry_value(DW_OP_reg5 RDI), DW_OP_stack_value)
-                  DW_AT_name    ("event")
-                  DW_AT_decl_file       ("/rw/compile/kernel/events/core.=
-c")
-                  DW_AT_decl_line       (4641)
-                  DW_AT_type    (0x0333aac2 "perf_event *")
-    0x0334c05e:     DW_TAG_formal_parameter
-                  DW_AT_location        (0x007dea82:
-                     [0xffffffff812c6137, 0xffffffff812c63f2): DW_OP_reg1=
-2 R12
-                     [0xffffffff812c63f2, 0xffffffff812c63fe): DW_OP_GNU_=
-entry_value(DW_OP_reg4 RSI), DW_OP_stack_value
-                     [0xffffffff812c63fe, 0xffffffff812c640a): DW_OP_reg1=
-2 R12)
-                  DW_AT_name    ("group")
-                  DW_AT_decl_file       ("/rw/compile/kernel/events/core.=
-c")
-                  DW_AT_decl_line       (4641)
-                  DW_AT_type    (0x03327059 "bool")
+As for "!msg->skb" check here, I want to make sure the sk_msg is not
+from function sk_psock_skb_ingress_enqueue, because these sk_msgs'
+rmem accounting has already handled by skb_set_owner_r in function
+sk_psock_skb_ingress.
 
-By inspecting the binary, the second argument ("bool group") is used
-in the function. The following are the disasm code:
-    ffffffff812c6110 <perf_event_read>:
-    ffffffff812c6110: 0f 1f 44 00 00        nopl    (%rax,%rax)
-    ffffffff812c6115: 55                    pushq   %rbp
-    ffffffff812c6116: 41 57                 pushq   %r15
-    ffffffff812c6118: 41 56                 pushq   %r14
-    ffffffff812c611a: 41 55                 pushq   %r13
-    ffffffff812c611c: 41 54                 pushq   %r12
-    ffffffff812c611e: 53                    pushq   %rbx
-    ffffffff812c611f: 48 83 ec 18           subq    $24, %rsp
-    ffffffff812c6123: 41 89 f4              movl    %esi, %r12d
-    <=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D NOTE that here '%esi' is used and =
-moved to '%r12d'.
-    ffffffff812c6126: 49 89 fe              movq    %rdi, %r14
-    ffffffff812c6129: 65 48 8b 04 25 28 00 00 00    movq    %gs:40, %rax
-    ffffffff812c6132: 48 89 44 24 10        movq    %rax, 16(%rsp)
-    ffffffff812c6137: 8b af a8 00 00 00     movl    168(%rdi), %ebp
-    ffffffff812c613d: 85 ed                 testl   %ebp, %ebp
-    ffffffff812c613f: 75 3f                 jne     0xffffffff812c6180 <p=
-erf_event_read+0x70>
-    ffffffff812c6141: 66 2e 0f 1f 84 00 00 00 00 00 nopw    %cs:(%rax,%ra=
-x)
-    ffffffff812c614b: 0f 1f 44 00 00        nopl    (%rax,%rax)
-    ffffffff812c6150: 49 8b 9e 28 02 00 00  movq    552(%r14), %rbx
-    ffffffff812c6157: 48 89 df              movq    %rbx, %rdi
-    ffffffff812c615a: e8 c1 a0 d7 00        callq   0xffffffff82040220 <_=
-raw_spin_lock_irqsave>
-    ffffffff812c615f: 49 89 c7              movq    %rax, %r15
-    ffffffff812c6162: 41 8b ae a8 00 00 00  movl    168(%r14), %ebp
-    ffffffff812c6169: 85 ed                 testl   %ebp, %ebp
-    ffffffff812c616b: 0f 84 9a 00 00 00     je      0xffffffff812c620b <p=
-erf_event_read+0xfb>
-    ffffffff812c6171: 48 89 df              movq    %rbx, %rdi
-    ffffffff812c6174: 4c 89 fe              movq    %r15, %rsi
-    <=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D NOTE: %rsi is overwritten
-    ......
-    ffffffff812c63f0: 41 5c                 popq    %r12
-    <=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D POP r12
-    ffffffff812c63f2: 41 5d                 popq    %r13
-    ffffffff812c63f4: 41 5e                 popq    %r14
-    ffffffff812c63f6: 41 5f                 popq    %r15
-    ffffffff812c63f8: 5d                    popq    %rbp
-    ffffffff812c63f9: e9 e2 a8 d7 00        jmp     0xffffffff82040ce0 <_=
-_x86_return_thunk>
-    ffffffff812c63fe: 31 c0                 xorl    %eax, %eax
-    ffffffff812c6400: e9 be fe ff ff        jmp     0xffffffff812c62c3 <p=
-erf_event_read+0x1b3>
-
-It is not clear why dwarf didn't encode %rsi in locations. But
-DW_OP_GNU_entry_value(DW_OP_reg4 RSI) tells us that RSI is live at
-the entry of perf_event_read(). So this patch tries to search
-DW_OP_GNU_entry_value/DW_OP_entry_value location/expression so if
-the expected parameter register matchs the register in
-DW_OP_GNU_entry_value/DW_OP_entry_value, then the original parameter
-is not optimized.
-
-For one of internal 6.11 kernel, there are 62498 functions in BTF and
-perf_event_read() is not there. With this patch, there are 61552 function=
-s
-in BTF and perf_event_read() is included.
-
-Reported-by: Song Liu <song@kernel.org>
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- dwarf_loader.c | 81 +++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 57 insertions(+), 24 deletions(-)
-
-diff --git a/dwarf_loader.c b/dwarf_loader.c
-index e0b8c11..1fe44bc 100644
---- a/dwarf_loader.c
-+++ b/dwarf_loader.c
-@@ -1169,34 +1169,67 @@ static bool check_dwarf_locations(Dwarf_Attribute=
- *attr, struct parameter *parm,
- 		return false;
-=20
- #if _ELFUTILS_PREREQ(0, 157)
--	/* dwarf_getlocations() handles location lists; here we are
--	 * only interested in the first expr.
--	 */
--	if (dwarf_getlocations(attr, 0, &base, &start, &end,
--			       &loc.expr, &loc.exprlen) > 0 &&
--		loc.exprlen !=3D 0) {
--		expr =3D loc.expr;
--
--		switch (expr->atom) {
--		case DW_OP_reg0 ... DW_OP_reg31:
--			/* mark parameters that use an unexpected
--			 * register to hold a parameter; these will
--			 * be problematic for users of BTF as they
--			 * violate expectations about register
--			 * contents.
-+	bool reg_matched =3D false, reg_unmatched =3D false, first_expr_reg =3D=
- false, ret =3D false;
-+	ptrdiff_t offset =3D 0;
-+	int loc_num =3D -1;
-+
-+	while ((offset =3D dwarf_getlocations(attr, offset, &base, &start, &end=
-, &loc.expr, &loc.exprlen)) > 0 &&
-+	       loc.exprlen !=3D 0) {
-+		ret =3D true;
-+		loc_num++;
-+
-+		for (int i =3D 0; i < loc.exprlen; i++) {
-+			Dwarf_Attribute entry_attr;
-+			Dwarf_Op *entry_ops;
-+			size_t entry_len;
-+
-+			expr =3D &loc.expr[i];
-+			switch (expr->atom) {
-+			case DW_OP_reg0 ... DW_OP_reg31:
-+				/* first location, first expression */
-+				if (loc_num =3D=3D 0 && i =3D=3D 0) {
-+					if (expected_reg >=3D 0) {
-+						if (expected_reg =3D=3D expr->atom) {
-+							reg_matched =3D true;
-+							return true;
-+						} else {
-+							reg_unmatched =3D true;
-+						}
-+					}
-+					first_expr_reg =3D true;
-+				}
-+				break;
-+			/* For the following dwarf entry (arch x86_64) in parameter locations=
-:
-+			 *    DW_OP_GNU_entry_value(DW_OP_reg4 RSI), DW_OP_stack_value
-+			 * RSI register should be available at the entry of the program.
- 			 */
--			if (expected_reg >=3D 0 && expected_reg !=3D expr->atom)
--				parm->unexpected_reg =3D 1;
--			break;
--		default:
--			parm->optimized =3D 1;
--			break;
-+			case DW_OP_entry_value:
-+			case DW_OP_GNU_entry_value:
-+				if (reg_matched)
-+					break;
-+				if (dwarf_getlocation_attr (attr, expr, &entry_attr) !=3D 0)
-+					break;
-+				if (dwarf_getlocation (&entry_attr, &entry_ops, &entry_len) !=3D 0)
-+					break;
-+				if (entry_len !=3D 1)
-+					break;
-+				if (expected_reg >=3D 0 && expected_reg =3D=3D entry_ops->atom) {
-+					reg_matched =3D true;
-+					return true;
-+				}
-+				break;
-+			default:
-+				break;
-+			}
- 		}
--
--		return true;
- 	}
-=20
--	return false;
-+	if (reg_unmatched)
-+		parm->unexpected_reg =3D 1;
-+	else if (ret && !first_expr_reg)
-+		parm->optimized =3D 1;
-+
-+	return ret;
- #else
- 	if (dwarf_getlocation(attr, &loc.expr, &loc.exprlen) =3D=3D 0 &&
- 		loc.exprlen !=3D 0) {
---=20
-2.43.5
 
 
