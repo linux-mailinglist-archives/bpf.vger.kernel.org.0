@@ -1,70 +1,75 @@
-Return-Path: <bpf+bounces-44333-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44338-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA1459C167C
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 07:32:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07EDF9C17B9
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 09:19:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 068D81C22A70
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 06:32:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80ECDB22D1B
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 08:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57F028F5;
-	Fri,  8 Nov 2024 06:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81EBF1DF723;
+	Fri,  8 Nov 2024 08:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XdeUC+b/"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="smORHAsT"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88FDA14D2BB
-	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 06:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C4131DACA1;
+	Fri,  8 Nov 2024 08:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731047571; cv=none; b=H/NGDM4p1R8SOq7zj4GfOZGkrqQ82PxCMPKqb2AFdVge9MR2L8+mdFk49s9CCaU6tCrJEOmrfdSVSoFte6AJzDpuK4spLRP9go9nmyBRCWk0SRdsN2e+rnoXcpQBw3dyDouWPiFVZwpjKFUHrDuW5bMywFmo6/FbqIDdtrs+DXQ=
+	t=1731053950; cv=none; b=f5UGPk9jS0ohws4EX57QmrGDB4sZWCjjbXktly+kbAW8wVbHD+NEJGwZk51CK93ceqjBq88KjzVpkjFE8Ifo2d+1SHDSGrA7dmdYiB93EKDG/aZOSLfmQ6R9aLxM78z1cG/RktYdh8DjIUumxe5QBZugZ++gv0Vx/eIRNHiVng0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731047571; c=relaxed/simple;
-	bh=glCvAj1wcmZlfuLGIavms5IdCXD7UIBEhGCsE6OsPSA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RuCGbvSc6Rcgq0/ILQjH59qocOdM/ibH8DtJvfns9L5Xffu699dE3rsT9yuJMQXstL+pO3NgcweMiC+238MrN1jUxJBqphCVjMCOIl7jp622vJMxDtwRTDrlxog9Xmzlvf1aboDI3023QGw4vLZf2+/2W5jtAxsZyiVwjb0Bzsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XdeUC+b/; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731047565;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Y5zsbgVR21nLaT8o8D3suARsPPte/XErGgbHlgcN2T4=;
-	b=XdeUC+b/PsEPKYhSUhCXEeSZDo2ATbBi6IW3AfDM0HrbRigcyzHwZrU1mf49fM3VGU2Cun
-	K3ZkjFbEzrMxREW0DnZZdxpTsoLhBwccy77GCxaFgBoPNX1opmKTTs7BYgMS3YEF7UjJkT
-	TasIclJ+z+B4mgTWJ8IX3Hb6VH0rTyM=
-From: Kunwu Chan <kunwu.chan@linux.dev>
-To: ast@kernel.org,
+	s=arc-20240116; t=1731053950; c=relaxed/simple;
+	bh=iXHrBL4LQP1zfCQw9hd4nGFRXBxeQitQM7MrOkznPzc=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=UsHfPaDE+xjH4Sd8KyYp8p7yQwvAr3bBIpcjxCDefjzLZP4zDjXIfOIgZX0yiNRXR9PaaVQT0yFx8skd12af5feueo0lFaiw8JPT8Ye4dyAPrF5mbK4YlQJJZ5AH7O3WcYK7j46RHBppaD7QFbtSBIpX4GF40WS3ddt2SdKnZGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=smORHAsT; arc=none smtp.client-ip=162.62.57.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1731053935;
+	bh=G5AasHwJUPIvWba5jjKssBCTEs7Viz1urDez9UtIGzc=;
+	h=From:To:Cc:Subject:Date;
+	b=smORHAsTdH+SaYHmUQE6XY8GXKLweSmecF3RMEPV+3Dw6wMLRHW3LU4hVjPtFkmns
+	 ouvugG75fFU1qt6xs3KcPEOgO6ieoP6UdWYqXybBMlQ5YEHCKaPICDZhnW1jsPDxnX
+	 8UIwpKHCoV/+jqWS/7riFW07/5XZViW5iettoZzI=
+Received: from localhost.localdomain ([114.246.200.160])
+	by newxmesmtplogicsvrszc25-0.qq.com (NewEsmtp) with SMTP
+	id 4B4A2013; Fri, 08 Nov 2024 16:18:52 +0800
+X-QQ-mid: xmsmtpt1731053932tsxe9qji1
+Message-ID: <tencent_CFD3D1C3D68B45EA9F52D8EC76D2C4134306@qq.com>
+X-QQ-XMAILINFO: MvTK+AXQ7a4FRRnkPllYZNdQ/lMUxf8qYP61N+F2M9eOeuDg+Aj2hJ9HXQwA+p
+	 gNx7R6MEjXFKeDh0fJ9SZ3e1PIvZf3SAhotqftLNRborP5RWDmdt+H3SPw6dvoGk5yniv+j2VQym
+	 yf6XWlLOfBDgueGwlt+T1p2ncskLXiY6bLp98czjmafHe4yLNRLqWzY7HQaW2d0khiYjNfBgTk13
+	 VQNoJ/QyFdzJWhcsLWjSJmtOVGX/cRzq3qkiGQnJQrcRymn2gTJDNLAULQkrWxwHX8R5DxD+xek6
+	 plyuNE093/ypGQotP4QrcqTIba3vsahKnKAdv+AdFV7KOLOptM8heC2rp8hu1NaSmhfTuX+Mndky
+	 RSuG5e+7XpjBxcBS8prgBSTUezTPPgRpCHh/VdSF7fGLBRKdAVTPwAMpRPa3wU5m8RLkBmoQ4S9Z
+	 VOeC2GuvJSHTQr21AG8rJlZ1YBPsbDS+zMAazYSB5oIfAXAIkmlKFiNlPjRLGNWRx4TeSMSjjjNS
+	 zTsLdfr2PZ1zd06BEl/BG5b5GpaSJoBObGjJ7cOXoauKO2TbfUlja1d2f8hyx2Ng8GR4aRdTVYCK
+	 No+1LvEp0foOqU0OM2CSPa11eKbCWh2ZTN7cQVc+nNqJJIjJ4vtIfvXfgqwHv9xGVMN1MfAOqHtb
+	 R2tUKk18MJf829paRMGMGGW9m+kC3rzRuZYMX/9KUbUCbAB0F7R/zHKVwmWNtRVHKimhxtiibZ5P
+	 GwtNAtycL6SU0R7cDubYNGrL/LR0jo1OHgLAvMJmAnKCtEbsamYwIIXWN6EGo0UZJQQVPp4ARO2C
+	 QBkjD8cYJ4xk++MvLUCN2LXVlgGLLElYcW2Rn85jgd5KGikxypShUyuWBd8Xtd+/9hp3zr54l/cJ
+	 Fb6+hoOAfi8GNf8DFq3TdH0MWFYdYxWcYiPVDSxxzHViZY/ZWENcq0B5WSVfNAk8CAMl+NXRg5JR
+	 k8bKpgnYEvdkLHLK0Bti4MUvirFOyLtHQFCt8PWUhRIHXO0lxIZkBpiZDh42deZ2+0Dz1CofWwk9
+	 0u17MGAzyCkMSr2sO/orLwcy1Og7D7qWXsVfvgtw==
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+From: Jiawei Ye <jiawei.ye@foxmail.com>
+To: martin.lau@linux.dev,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bigeasy@linutronix.de,
-	clrkwllms@kernel.org,
-	rostedt@goodmis.org,
-	tglx@linutronix.de
+	edumazet@google.com,
+	kuba@kernel.org
 Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev,
-	Kunwu Chan <chentao@kylinos.cn>,
-	syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com
-Subject: [PATCH] bpf: Convert lpm_trie::lock to 'raw_spinlock_t'
-Date: Fri,  8 Nov 2024 14:32:14 +0800
-Message-Id: <20241108063214.578120-1-kunwu.chan@linux.dev>
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] bpf: Fix mismatched RCU unlock flavour in bpf_out_neigh_v6
+Date: Fri,  8 Nov 2024 08:18:52 +0000
+X-OQ-MSGID: <20241108081852.2188323-1-jiawei.ye@foxmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,154 +77,41 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-From: Kunwu Chan <chentao@kylinos.cn>
+In the bpf_out_neigh_v6 function, rcu_read_lock() is used to begin an RCU
+read-side critical section. However, when unlocking, one branch
+incorrectly uses a different RCU unlock flavour rcu_read_unlock_bh()
+instead of rcu_read_unlock(). This mismatch in RCU locking flavours can
+lead to unexpected behavior and potential concurrency issues.
 
-When PREEMPT_RT is enabled, 'spinlock_t' becomes preemptible
-and bpf program has owned a raw_spinlock under a interrupt handler,
-which results in invalid lock acquire context.
+This possible bug was identified using a static analysis tool developed
+by myself, specifically designed to detect RCU-related issues.
 
-[ BUG: Invalid wait context ]
-6.12.0-rc5-next-20241031-syzkaller #0 Not tainted
------------------------------
-swapper/0/0 is trying to lock:
-ffff8880261e7a00 (&trie->lock){....}-{3:3},
-at: trie_delete_elem+0x96/0x6a0 kernel/bpf/lpm_trie.c:462
-other info that might help us debug this:
-context-{3:3}
-5 locks held by swapper/0/0:
- #0: ffff888020bb75c8 (&vp_dev->lock){-...}-{3:3},
-at: vp_vring_interrupt drivers/virtio/virtio_pci_common.c:80 [inline]
- #0: ffff888020bb75c8 (&vp_dev->lock){-...}-{3:3},
-at: vp_interrupt+0x142/0x200 drivers/virtio/virtio_pci_common.c:113
- #1: ffff88814174a120 (&vb->stop_update_lock){-...}-{3:3},
-at: spin_lock include/linux/spinlock.h:351 [inline]
- #1: ffff88814174a120 (&vb->stop_update_lock){-...}-{3:3},
-at: stats_request+0x6f/0x230 drivers/virtio/virtio_balloon.c:438
- #2: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
- #2: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
- #2: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-at: __queue_work+0x199/0xf50 kernel/workqueue.c:2259
- #3: ffff8880b863dd18 (&pool->lock){-.-.}-{2:2},
-at: __queue_work+0x759/0xf50
- #4: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
- #4: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
- #4: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-at: __bpf_trace_run kernel/trace/bpf_trace.c:2339 [inline]
- #4: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-at: bpf_trace_run1+0x1d6/0x520 kernel/trace/bpf_trace.c:2380
-stack backtrace:
-CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Not tainted
-6.12.0-rc5-next-20241031-syzkaller #0
-Hardware name: Google Compute Engine/Google Compute Engine,
-BIOS Google 09/13/2024
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- print_lock_invalid_wait_context kernel/locking/lockdep.c:4826 [inline]
- check_wait_context kernel/locking/lockdep.c:4898 [inline]
- __lock_acquire+0x15a8/0x2100 kernel/locking/lockdep.c:5176
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
- trie_delete_elem+0x96/0x6a0 kernel/bpf/lpm_trie.c:462
- bpf_prog_2c29ac5cdc6b1842+0x43/0x47
- bpf_dispatcher_nop_func include/linux/bpf.h:1290 [inline]
- __bpf_prog_run include/linux/filter.h:701 [inline]
- bpf_prog_run include/linux/filter.h:708 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2340 [inline]
- bpf_trace_run1+0x2ca/0x520 kernel/trace/bpf_trace.c:2380
- trace_workqueue_activate_work+0x186/0x1f0 include/trace/events/workqueue.h:59
- __queue_work+0xc7b/0xf50 kernel/workqueue.c:2338
- queue_work_on+0x1c2/0x380 kernel/workqueue.c:2390
- queue_work include/linux/workqueue.h:662 [inline]
- stats_request+0x1a3/0x230 drivers/virtio/virtio_balloon.c:441
- vring_interrupt+0x21d/0x380 drivers/virtio/virtio_ring.c:2595
- vp_vring_interrupt drivers/virtio/virtio_pci_common.c:82 [inline]
- vp_interrupt+0x192/0x200 drivers/virtio/virtio_pci_common.c:113
- __handle_irq_event_percpu+0x29a/0xa80 kernel/irq/handle.c:158
- handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
- handle_irq_event+0x89/0x1f0 kernel/irq/handle.c:210
- handle_fasteoi_irq+0x48a/0xae0 kernel/irq/chip.c:720
- generic_handle_irq_desc include/linux/irqdesc.h:173 [inline]
- handle_irq arch/x86/kernel/irq.c:247 [inline]
- call_irq_handler arch/x86/kernel/irq.c:259 [inline]
- __common_interrupt+0x136/0x230 arch/x86/kernel/irq.c:285
- common_interrupt+0xb4/0xd0 arch/x86/kernel/irq.c:278
- </IRQ>
+This patch corrects the mismatched unlock flavour by replacing the
+incorrect rcu_read_unlock_bh() with the appropriate rcu_read_unlock(),
+ensuring that the RCU critical section is properly exited. This change
+prevents potential synchronization issues and aligns with proper RCU
+usage patterns.
 
-Reported-by: syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/bpf/6723db4a.050a0220.35b515.0168.GAE@google.com/
-Fixes: 66150d0dde03 ("bpf, lpm: Make locking RT friendly")
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Fixes: 09eed1192cec ("neighbour: switch to standard rcu, instead of rcu_bh")
+Signed-off-by: Jiawei Ye <jiawei.ye@foxmail.com>
 ---
- kernel/bpf/lpm_trie.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ net/core/filter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-index 9b60eda0f727..373cdcfa0505 100644
---- a/kernel/bpf/lpm_trie.c
-+++ b/kernel/bpf/lpm_trie.c
-@@ -35,7 +35,7 @@ struct lpm_trie {
- 	size_t				n_entries;
- 	size_t				max_prefixlen;
- 	size_t				data_size;
--	spinlock_t			lock;
-+	raw_spinlock_t			lock;
- };
- 
- /* This trie implements a longest prefix match algorithm that can be used to
-@@ -330,7 +330,7 @@ static long trie_update_elem(struct bpf_map *map,
- 	if (key->prefixlen > trie->max_prefixlen)
- 		return -EINVAL;
- 
--	spin_lock_irqsave(&trie->lock, irq_flags);
-+	raw_spin_lock_irqsave(&trie->lock, irq_flags);
- 
- 	/* Allocate and fill a new node */
- 
-@@ -437,7 +437,7 @@ static long trie_update_elem(struct bpf_map *map,
- 		kfree(im_node);
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 64248d0ac4ad..44bbc1dbfb50 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2232,7 +2232,7 @@ static int bpf_out_neigh_v6(struct net *net, struct sk_buff *skb,
+ 		rcu_read_unlock();
+ 		return ret;
  	}
- 
--	spin_unlock_irqrestore(&trie->lock, irq_flags);
-+	raw_spin_unlock_irqrestore(&trie->lock, irq_flags);
- 	kfree_rcu(free_node, rcu);
- 
- 	return ret;
-@@ -459,7 +459,7 @@ static long trie_delete_elem(struct bpf_map *map, void *_key)
- 	if (key->prefixlen > trie->max_prefixlen)
- 		return -EINVAL;
- 
--	spin_lock_irqsave(&trie->lock, irq_flags);
-+	raw_spin_lock_irqsave(&trie->lock, irq_flags);
- 
- 	/* Walk the tree looking for an exact key/length match and keeping
- 	 * track of the path we traverse.  We will need to know the node
-@@ -535,7 +535,7 @@ static long trie_delete_elem(struct bpf_map *map, void *_key)
- 	free_node = node;
- 
- out:
--	spin_unlock_irqrestore(&trie->lock, irq_flags);
-+	raw_spin_unlock_irqrestore(&trie->lock, irq_flags);
- 	kfree_rcu(free_parent, rcu);
- 	kfree_rcu(free_node, rcu);
- 
-@@ -581,7 +581,7 @@ static struct bpf_map *trie_alloc(union bpf_attr *attr)
- 			  offsetof(struct bpf_lpm_trie_key_u8, data);
- 	trie->max_prefixlen = trie->data_size * 8;
- 
--	spin_lock_init(&trie->lock);
-+	raw_spin_lock_init(&trie->lock);
- 
- 	return &trie->map;
- }
+-	rcu_read_unlock_bh();
++	rcu_read_unlock();
+ 	if (dst)
+ 		IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTNOROUTES);
+ out_drop:
 -- 
 2.34.1
 
