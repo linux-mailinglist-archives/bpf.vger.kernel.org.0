@@ -1,166 +1,252 @@
-Return-Path: <bpf+bounces-44377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC3669C24FD
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 19:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4419C9C252B
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 19:54:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E86EE1C23DF1
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 18:44:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E0A91C2227E
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 18:54:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93A301A9B4E;
-	Fri,  8 Nov 2024 18:44:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D5A1A9B4C;
+	Fri,  8 Nov 2024 18:53:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZBXnKKbb"
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="lnKNa55K"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1130194082;
-	Fri,  8 Nov 2024 18:44:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C1719259B
+	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 18:53:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731091449; cv=none; b=OZEpjNItVWaP0EDklj1VMLP1rLrjtIFQwt8MqsaaVIZsF+av1PBnQD5rGyx3k8rGdpNb0WODLqVrYsfw36XeipsfSKX81sMDNUHH9Qs8nu7ugVTt1hj8z4yjvdvDPtNhxW60h9f6MOpF/VMb7Yt04hbmyw1NXb+8fWn1wxZMz38=
+	t=1731092035; cv=none; b=C1e6tfOm7nJTdCdBsW4noEX3x51C6YJ3YQl+HnBObt3/FjnNFkRb9mPQ4Aobl7KeS9vjGkEdOPzGb+8QgD1P5YlZJYfBGcJ/SqOB+YT3w1IMTz6tyJF5GkjpNJe0rz6xONxHrYaMEMDdP+YFk4fkf0t5y8M4H/tmCMpclw2hAeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731091449; c=relaxed/simple;
-	bh=C+hxhapf+iZyc0pcpQdnvxpMDyqwHITK/5KpnubEpVQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GEAF/dqkQB8wNpOF2VzU17FAQzAG/nJMElETYNhNXBpAr6WfdiShfcockgYka+GP91o7mxlNKJgoVnbU/JEXYCDdGOrATRymIAJVgCNYTk0/I1j/smLxnVrqgeMiuuTYyoXBlUgWvTpqq//RDF1xO57Zf11yHj+E6X+HzttYvGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZBXnKKbb; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-7eda47b7343so1761472a12.0;
-        Fri, 08 Nov 2024 10:44:07 -0800 (PST)
+	s=arc-20240116; t=1731092035; c=relaxed/simple;
+	bh=C1qfXDBbz73toITU0058NUmGoALhiTU/4UgMmjcZYwU=;
+	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QhSuthPKavxKRISEO0uv+HcpiAUtVVRDGVqlmEBmmY1WY58wFgqQQoYUn0fc4EhXPCfUI0EB8HFoQMK0lD8snPKWxPwEgAuaT9YGTPDILu/k8vB1wNi5TMPqX3PsyllOXV+RvWWIWMU6iQdR9Wq5bUQWbt0qwyZeqpFrAjUJxbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=lnKNa55K; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-7ed9c16f687so1720158a12.0
+        for <bpf@vger.kernel.org>; Fri, 08 Nov 2024 10:53:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731091447; x=1731696247; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eoRzY+OGqSnXflEIRU3jjsFUxNnysaUNIoTmFkKC6/I=;
-        b=ZBXnKKbbcMom3ACIPeUYUBOXIb+MbiuXwwxxPthvlDOOBPiWhVZtieXaSmPsely+dJ
-         eZqpCj9nM2vI6MxxLZT9b0ay8bGFAlogGqsCT2IvDCGOAMOj249R1YSO6za6GqACeQvp
-         +T+KGnVzDV/qwy8pDITi0hKKJrj2YoDZWTGVUwPnSCQek5yWudZQUBnnqBkCPfG0G7nB
-         OIIu+IgK+OySUNZKRGXUpU4OSwVU67CzQjgMwH0CwVXUhXyxM7R2vjWEKEWfPuH6NUXn
-         CIhK2uHDT7by/bVE+nQXADyEXgee9EfdZ7MZBqOy741MLBpnh5jdyxLaIq2Q6BG9ZqFE
-         ZV6g==
+        d=googlemail.com; s=20230601; t=1731092033; x=1731696833; darn=vger.kernel.org;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hoVx3IzbvzgGPPMK+ztcJErqY3DDxw1a4kxx2dSZOIs=;
+        b=lnKNa55KjkagmUTCBV4bLkdT97i4T5DWjZOGH7Ezpu8R7GMCBoCqNRHAQoXl8ImSOW
+         lvL7AjcoUB+hfxu9THM9WQvy33Q55uLcNrjLreOkxNnM1SlEBT4tXeyBn3JzGL+NT5/Y
+         n53h45l4YgUyfIodp2I/Vu04IZHpLkVpN7zjHf+OamcP4PLOV/HCwQj6KB/Ize5oOEfz
+         M+teHVnCNnVQWChhndhgZ9bWp4bDJmNH27lpjjCQpN7NHDmY9zApEsFkcYcGBV16tm7c
+         9w18eCCHsX10BtADiTmnTcq/8q7RkJ10IwUfhJW3zRUNX5ffYRDKCXNuVHOkxpwTAQR3
+         STYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731091447; x=1731696247;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eoRzY+OGqSnXflEIRU3jjsFUxNnysaUNIoTmFkKC6/I=;
-        b=YlkKE1pQ6D3vFwCVdDp2xCjF0kxW/xC9YH0OOobxaPcvzT1u9O9lwV8HvbYjl1ox40
-         ZZWuyn/bsf1Fb0XDj+OWNAteU6HUaTiBcyrVP7Jg78FpEq72ZXPDt3cq8rBWthkmbi1m
-         5WubSsCsrlxbTJUDAoVdfk1AAmKWAf98ZEFdkdFIqdGBtuOMHnkRtrGHXJ0O0rm0Q9SR
-         QKrmS4fCMxgLer+5iYNS7OUKaOJYIVSjwPRVVE89lW9VMntn8AY96a/4PEm5MeT9KaG1
-         pS7dg4MHedbi0eE6J0kOdufrkiGaK00sh/li6bB+vlJ4HcG/nV2bTH+oyXC7O6jufgLL
-         5W+g==
-X-Forwarded-Encrypted: i=1; AJvYcCU2Tk7w014RfSifyIITuJEiGYtSr9MMeWsoL8b7Me8y+2fUo3oBxabAqZwGftQiVuVb+BgmtyH4NxM8EJo=@vger.kernel.org, AJvYcCVvJORK+UkCKh8j2cz/BwxXsu1kE1ynLAqyWRK3RgLSwtzGwtrxXMzBcgDiK2+swf5y+iKvdagmOT2ukN2Xrc+1@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywcnf6AibK2KGUIPJHqW7/MHVgbm/PpcEzZnC3pZhiotPC4tGKk
-	XH+pYuTpFCH/H457/Wpx36E/YnyyD/VS84+3HpTpm5oUFdoc+P/ylILYmJF4gSN6KYQZxwG7FgV
-	6KXTkZqFyUZAs7kqnUSJ/j61tVd4=
-X-Google-Smtp-Source: AGHT+IGzDtW/S/3ZNx2BdBWgq6UlNpXAogQZJHwXY8381fWN4WHd4BNZtX7ea2q9D3b6aKYQkz+LVuyHgAwqMy2v1R4=
-X-Received: by 2002:a17:90b:1344:b0:2c9:5a85:f8dd with SMTP id
- 98e67ed59e1d1-2e9b174124cmr5790628a91.18.1731091447156; Fri, 08 Nov 2024
- 10:44:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1731092033; x=1731696833;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hoVx3IzbvzgGPPMK+ztcJErqY3DDxw1a4kxx2dSZOIs=;
+        b=eAiI4OcKZpVsb+W4v+/FHt3wLMPzvrkGt31jqofG+Grr5ZCJ0vW0nZsf5yOHV9VcAs
+         5PPznhmpJQvDXnAJdJu/qEYloWH5EHhL7uxBnzXpYYEyiexj8XOESuka4YYKYwe/kJrC
+         JkzWDeWjab+m2l/gCgilZhDizZEYWD5Y1A7gLxbR590ZSMQY8jftctD9fC89Thno87P2
+         Wi4Iq8nSi4oxTntrnU1ihAvvPy1jrUqf0OKdmrmMKH8altO6o5iadV9x92lo3RK8xc9e
+         zvSJx/Zkj10EorCD0IN1EGMuW3LCV+zFdfvyx721YHflHsKZJw3aeupThrkQUMsnTHIk
+         pOxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUhJi3kM/d3o+uHOrOko6GjV7Qtomk6qXL1Xa4nZGWqFrMUrz92XwA4pBgGef4Hura+H2Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxMe0c/BPUzXlor6q4RRaFzRN4hLvN/Z50eS7EyeJzpf+qN+naA
+	/O6vXAKIjsj0zZumOJ+GVMVSUeP4kgRv1qZRAIbNkRO5LVq6ifOk
+X-Google-Smtp-Source: AGHT+IEJNzgS4D6XSuxlhvumNgnxU7Rx5rhzo/5zBwcEpyKpy5W+exuYFBh03DQbSyZj1mey6frm0w==
+X-Received: by 2002:a05:6a21:2e81:b0:1db:e1b0:b679 with SMTP id adf61e73a8af0-1dc229cc1ccmr3685278637.18.1731092032962;
+        Fri, 08 Nov 2024 10:53:52 -0800 (PST)
+Received: from ArmidaleLaptop (64-119-15-60.fiber.ric.network. [64.119.15.60])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078a7e09sm4099264b3a.50.2024.11.08.10.53.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 08 Nov 2024 10:53:52 -0800 (PST)
+From: Dave Thaler <dthaler1968@googlemail.com>
+X-Google-Original-From: "Dave Thaler" <dthaler1968@gmail.com>
+To: "'Alexei Starovoitov'" <alexei.starovoitov@gmail.com>,
+	"'Dave Thaler'" <dthaler1968@googlemail.com>
+Cc: "'Yonghong Song'" <yonghong.song@linux.dev>,
+	<bpf@ietf.org>,
+	"'bpf'" <bpf@vger.kernel.org>,
+	"'Alexei Starovoitov'" <ast@kernel.org>,
+	"'Andrii Nakryiko'" <andrii@kernel.org>,
+	"'Daniel Borkmann'" <daniel@iogearbox.net>,
+	"'Martin KaFai Lau'" <martin.lau@kernel.org>
+References: <20240927033904.2702474-1-yonghong.song@linux.dev> <CAADnVQJZLRnT3J31CLB85by=SmC2UY1pmUZX0kkyePtVdTdy9A@mail.gmail.com> <e93729b5-199f-4809-84f5-7efdf7c8aaf3@linux.dev> <181301db143b$ba6fd9c0$2f4f8d40$@gmail.com> <CAADnVQKDwZ0+Fjiz21AFAbOgEonVojvpojU1ZyQDu8V4Jm0DYQ@mail.gmail.com> <000c01db3186$1dd30930$59791b90$@gmail.com> <CAADnVQKHHvrJjAMuXC5-wQHfMfxoSXnOBnqrZ5PC7p3C8ut3rQ@mail.gmail.com>
+In-Reply-To: <CAADnVQKHHvrJjAMuXC5-wQHfMfxoSXnOBnqrZ5PC7p3C8ut3rQ@mail.gmail.com>
+Subject: RE: [PATCH bpf-next] docs/bpf: Document some special sdiv/smod operations
+Date: Fri, 8 Nov 2024 10:53:50 -0800
+Message-ID: <09ee01db320f$8d37bc60$a7a73520$@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241104050007.13812-1-skb99@linux.ibm.com> <20241104050007.13812-3-skb99@linux.ibm.com>
-In-Reply-To: <20241104050007.13812-3-skb99@linux.ibm.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 8 Nov 2024 10:43:54 -0800
-Message-ID: <CAEf4BzZ9Bz8a_hY-jDkqaYg6Phi9bjvoxbBeVZqcgjYXg4a-mA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] libbpf: Remove powerpc prefix from syscall function names
-To: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, ast@kernel.org, hbathini@linux.ibm.com, 
-	andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, mykolal@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+	charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKzqMffW8FFfWCd3ulEKsb+gfc3egGOkjXjAfqQ6mkCtID1/gMZ/eqXAhACfxMDWut5qbCGtxtg
+Content-Language: en-us
 
-On Sun, Nov 3, 2024 at 9:00=E2=80=AFPM Saket Kumar Bhaskar <skb99@linux.ibm=
-.com> wrote:
->
-> Since commit 94746890202cf ("powerpc: Don't add __powerpc_ prefix to
-> syscall entry points") drops _powerpc prefix to syscall entry points,
-> even though powerpc now supports syscall wrapper, so /proc/kallsyms
-> have symbols for syscall entry without powerpc prefix(sys_*).
->
-> For this reason, arch specific prefix for syscall functions in powerpc
-> is dropped.
->
-> Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-> ---
->  tools/lib/bpf/libbpf.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 219facd0e66e..3a370fa37d8a 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -11110,9 +11110,7 @@ static const char *arch_specific_syscall_pfx(void=
-)
->  #elif defined(__riscv)
->         return "riscv";
->  #elif defined(__powerpc__)
-> -       return "powerpc";
-> -#elif defined(__powerpc64__)
-> -       return "powerpc64";
-> +       return "";
->  #else
->         return NULL;
->  #endif
-> @@ -11127,7 +11125,11 @@ int probe_kern_syscall_wrapper(int token_fd)
->         if (!ksys_pfx)
->                 return 0;
->
-> +#if defined(__powerpc__)
-> +       snprintf(syscall_name, sizeof(syscall_name), "sys_bpf");
-> +#else
->         snprintf(syscall_name, sizeof(syscall_name), "__%s_sys_bpf", ksys=
-_pfx);
-> +#endif
+> -----Original Message-----
+> From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Sent: Friday, November 8, 2024 10:38 AM
+> To: Dave Thaler <dthaler1968@googlemail.com>
+> Cc: Yonghong Song <yonghong.song@linux.dev>; bpf@ietf.org; bpf
+> <bpf@vger.kernel.org>; Alexei Starovoitov <ast@kernel.org>; Andrii =
+Nakryiko
+> <andrii@kernel.org>; Daniel Borkmann <daniel@iogearbox.net>; Martin =
+KaFai Lau
+> <martin.lau@kernel.org>
+> Subject: Re: [PATCH bpf-next] docs/bpf: Document some special =
+sdiv/smod
+> operations
+>=20
+> On Thu, Nov 7, 2024 at 6:30=E2=80=AFPM Dave Thaler =
+<dthaler1968@googlemail.com>
+> wrote:
+> >
+> >
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > On Tue, Oct 1, 2024 at 12:54=E2=80=AFPM Dave Thaler
+> > > <dthaler1968@googlemail.com>
+> > > wrote:
+> > [...]
+> > > > I'm adding bpf@ietf.org to the To line since all changes in the
+> > > > standardization directory should include that mailing list.
+> > > >
+> > > > The WG should discuss whether any changes should be done via a =
+new
+> > > > RFC that obsoletes the first one, or as RFCs that Update and =
+just
+> > > > describe deltas (additions, etc.).
+> > > >
+> > > > There are precedents both ways and I don't have a strong
+> > > > preference, but I have a weak preference for delta-based ones
+> > > > since they're shorter and are less likely to re-open discussion =
+on
+> > > > previously resolved issues, thus often saving the WG time.
+> > >
+> > > Delta-based additions make sense to me.
+> > >
+> > > > Also FYI to Linux kernel folks:
+> > > > With WG and AD approval, it's also possible (but not ideal) to
+> > > > take changes at AUTH48.  That'd be up to the chairs and AD to
+> > > > decide though, and normally that's just for purely editorial
+> > > > clarifications, e.g., to confusion called out by the RFC editor =
+pass.
+> > >
+> > > Also agree. We should keep AUTH going its course as-is.
+> > > All ISA additions can be in the future delta RFC.
+> > >
+> > > As far as file logistics... my preference is to keep
+> > > Documentation/bpf/standardization/instruction-set.rst
+> > > up to date.
+> > > Right now it's effectively frozen while awaiting changes (if any) =
+necessary for
+> AUTH.
+> > > After official RFC is issued we can start landing patches into
+> > > instruction-set.rst and git diff 04efaebd72d1..whatever_future_sha
+> > > instruction-set.rst will automatically generate the future delta =
+RFC.
+> > > Once RFC number is issued we can add a git tag for the particular
+> > > sha that was the base for RFC as a documentation step and to =
+simplify future 'git
+> diff'.
+> >
+> > My concern is that index.rst says:
+> > > This directory contains documents that are being iterated on as =
+part
+> > > of the BPF standardization effort with the IETF. See the `IETF BPF
+> > > Working Group`_ page for the working group charter, documents, and =
+more.
+> >
+> > So having a document that is NOT part of the IETF BPF Working Group
+> > would seem out of place and, in my view, better located up a level =
+(outside
+> standardization).
+>=20
+> It's a part of bpf wg. It's not a new document.
 
-The problem is that on older versions of kernel it will have this
-prefix, while on newer ones it won't. So to not break anything on old
-kernels, we'd need to do feature detection and pick whether to use
-prefix or not, right?
+RFC 9669 is immutable.  Any additions require a new document, in
+IETF terminology, since would result in a new RFC number.
 
-So it seems like this change needs a bit more work.
+> > Here=E2=80=99s some examples of delta-based RFCs which explain the =
+gap and
+> > provide the addition or clarification, and formally Update (not
+> > replace/obsolete) the original
+> > RFC:
+> > * https://www.rfc-editor.org/rfc/rfc6585.html: Additional HTTP =
+Status
+> > Codes
+> > * https://www.rfc-editor.org/rfc/rfc6840.html: Clarifications and =
+Implementation
+> Notes
+> >    for DNS Security (DNSSEC)
+> > * https://www.rfc-editor.org/rfc/rfc9295.html: Clarifications for =
+Ed25519, Ed448,
+> >    X25519, and X448 Algorithm Identifiers
+> > * https://www.rfc-editor.org/rfc/rfc5756.html: Updates for =
+RSAES-OAEP and
+> >    RSASSA-PSS Algorithm Parameters
+> >
+> > Having a full document too is valuable but unless the IETF BPF WG
+> > decides to take on a -bis document, I'd suggest keeping it out of =
+the
+> "standardization"
+> > (say up 1 level) to avoid confusion, and just have one or more
+> > delta-based rst files in the standardization directory.
+>=20
+> This patch is effectively a fix to the standard.
 
-pw-bot: cr
+Two of the examples I provided above fit into that category.
+Two are examples of adding new codepoints.
 
->
->         if (determine_kprobe_perf_type() >=3D 0) {
->                 int pfd;
-> @@ -11272,8 +11274,12 @@ struct bpf_link *bpf_program__attach_ksyscall(co=
-nst struct bpf_program *prog,
->                  * compiler does not know that we have an explicit condit=
-ional
->                  * as well.
->                  */
-> +#if defined(__powerpc__)
-> +               snprintf(func_name, sizeof(func_name), "sys_%s", syscall_=
-name);
-> +#else
->                 snprintf(func_name, sizeof(func_name), "__%s_sys_%s",
->                          arch_specific_syscall_pfx() ? : "", syscall_name=
-);
-> +#endif
->         } else {
->                 snprintf(func_name, sizeof(func_name), "__se_sys_%s", sys=
-call_name);
->         }
-> --
-> 2.43.5
->
+> It's a standard git development process when fixes are applied to the =
+existing
+> document.
+> Forking the whole doc into a different file just to apply fixes makes =
+no sense to me.
+
+Welcome to the IETF and immutable RFCs =F0=9F=98=8A
+
+> The formal delta-s for IETF can be created out of git.
+
+Not in the IETF per se, since a new document needs new boilerplate, with
+a new abstract, introduction, etc.  At most, part of the document could =
+be created
+out of git, but I'm not convinced that git diffs alone (as opposed to =
+some English
+prose too for each, as in the examples I cited) make for good content in =
+an IETF document.
+
+> We only need to tag the current version and then git diff =
+rfc9669_tag..HEAD will give
+> us that delta.
+> That will satisfy IETF process and won't mess up normal git style =
+kernel
+> development.
+
+I am not convinced it is sufficient.  Can you point to any precedents in =
+the IETF for
+such an approach?  I can't offhand... See the RFC 5756 reference above =
+for what
+I mean by English prose for each diff.
+
+> btw do we still need to do any minor edit/fixes to instruction-set.rst =
+before tagging it
+> as RFC9669 ?
+
+Yes, we need to backport the formatting/nits from the RFC editor pass.
+
+Dave
+
 
