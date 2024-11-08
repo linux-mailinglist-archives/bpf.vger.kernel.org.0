@@ -1,189 +1,102 @@
-Return-Path: <bpf+bounces-44337-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44334-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E31CD9C17B4
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 09:19:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64B619C1799
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 09:15:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D601B22A03
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 08:19:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 163E21F23FAF
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 08:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E971D1DD861;
-	Fri,  8 Nov 2024 08:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bLqBijBI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035B31DC06B;
+	Fri,  8 Nov 2024 08:15:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74701D9A47;
-	Fri,  8 Nov 2024 08:19:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B141F5FA;
+	Fri,  8 Nov 2024 08:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731053950; cv=none; b=B2XP7HRa5pJ01kmUs0Y/k0jFdMJaj8MWwRNSB8LEuxmjdTeEwQ4ZO6QAcNEfgz0IAJKLN5XRRpC+8JGiUFu07+o9SbAi2jjjfyLrGi1qC3oQs6gZehiWjWBGucuI7NigueH3Nwx8zK1LV7enVH2Z/0DutzKJxckV1w8HFUgQXlo=
+	t=1731053738; cv=none; b=WTIy7aDYECh++A9MnJiRlcsiiKp2R9z/tUjnSQ+Djixq1YAhD+9ZhPRoJElxhQyTwM7SnlZA4PhFyFgmZQPtaIhbZYIBeWGsRe35CAMa8q0ub6OGxR3n71P6w/i4x2urGBQjZ7Y8pXBvegAhxAtLnoC4huULJSOjF9iJWxQGs8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731053950; c=relaxed/simple;
-	bh=fcaxWAKwSggVINL7s4cOeCkGkdgYXwPQA6QqYZice6o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cXL9jnLJcVA+//GKgEdlZesBaFekrIPzTkadGYnWBYnR8DE2JGLpiMVa+r6lXC1OOlcL5fOTaW7+XIJyxgfaXkxrFNgKjxb1oaLJpvN2waMWcsTBkTwwSyky6P+VrldgNLMldW8814/Rmh2kfqKr5da7X/Hy7P9U5JyFq3/PjlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bLqBijBI; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6cc03b649f2so10777696d6.3;
-        Fri, 08 Nov 2024 00:19:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731053948; x=1731658748; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YYnPIcef+Gr4wVDS0pv9Hxfg4U8coSTCpeAYrCDBj1I=;
-        b=bLqBijBINi07SqZJsstZdJol1gmGg25tPR4a2yHRqYl+GaT1SPcU/0WZErd/H4ujBn
-         DEZFArvwH/W4HBt7hhhxcVuERo7L1/xj4YfgrBOnIxp6o0u38ELjdvBZQrZ3eb9D7eYL
-         sJEaTTog3klkz32gNOp9WFlDjL1MPNwlFZssaR0ITp43/DnDggZnf+hWmteLHUdwnfK5
-         FsyuF4o8weJi5XR7GeGoMthS0cmeuXXU0vvEfNJ+nGhXt/vI4zY4o7L7MJqKkM+SY27T
-         YlLKCh2PrKVcU5L45+MmFInajL5AGhEjytXFIuUt3IyPev6ng5FjDyx5Dg7Tg25CT7w+
-         Kd+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731053948; x=1731658748;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YYnPIcef+Gr4wVDS0pv9Hxfg4U8coSTCpeAYrCDBj1I=;
-        b=QH9mgOUsIfB6ewxtcN6QmTQW8o+Ylrsq/vq2IqTYulGZtDVXmtmeoyWp87Flr+/5Ca
-         +DwxiFBGvQ7iNBoRpaMPT1dl0oN2jBnQ+R8vlPohqyTDO/iYSK9Wc0iYsJhTL9UDhZ4/
-         jDmtcSY/V6Filu9xcTHVMNgyAzunWwjOykfPuZ4Se4PJtWQU5TM9b+GKTmC6pEf0aDym
-         7KmBG5cJVqcCNezuRVCGkyEtxfmqV6p1+dFfmg5ZaaQ0yn0HkwnMTbYsOFow/bJOEhZ0
-         556oC+5KnxANrLj+0CMS68Q91o/4TvuIZXWpKY7YVCb8fc3w9N/JvzMCu1X9f90FusF0
-         C+eg==
-X-Forwarded-Encrypted: i=1; AJvYcCUdn6pkkT9m1ktOjv3Dgc8sjA5jocd1nxQqaIi7Qg5eJifWpX3JUmusrRIfNAHUrlq4Sv9DujAkBySQUrTc@vger.kernel.org, AJvYcCVVavo5xNB+R9MSYfRCY49M4zxSwIeqAYSVRHMd4yhn5DYY+IigSg4JFno4QMe57XkZSaE=@vger.kernel.org, AJvYcCX15aIJyJWCfpc6u2KIEMb/pwSmozDhjai5qlMO0v0uoBFAHkrpdfYquHYjmb3iGM6QY3BZvVl6/AzNsEItRQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMcm3wBlPJoSFqpg03y0kRBFPXyR+ToY2SYTkSG70cTomIUhJQ
-	3jKajaRYL7ZiW2Pt+D9TuD8UzAo+b+i4PMnGfwN28JfM5i4u4HYL0MD2YtI+3bRblhilD2F+/Gv
-	RMRV20E4KGwH0BaOXXpqTdO79sF7qen75
-X-Google-Smtp-Source: AGHT+IFZv8PSsw2vzs5KyXgqh7Ek5bU7XBipV7biSuklfKmyZGD5sTjwUCdbD+p6EXhgBCBKspkSJbpvyMiTLlHl4zE=
-X-Received: by 2002:a05:6214:4288:b0:6cb:e6b2:4a84 with SMTP id
- 6a1803df08f44-6d39e17e6b6mr25724376d6.14.1731053947613; Fri, 08 Nov 2024
- 00:19:07 -0800 (PST)
+	s=arc-20240116; t=1731053738; c=relaxed/simple;
+	bh=HHHyiUWdL+mT8XT8mOSl8Zd9IRBTVbg2Xlu2B1EnlZM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tzuTDkyW29VIMiKVMJgluWR9YkPpqmrOrQZVvhiFrsihLsBqZ+kfp3b5yJSI+2MtFkos3nUj+eGX72u6GDZmAB6hRtNqj1mpJhw7OhJ2Xs07cBLClnaxdhTWjFAZbSG2FsuNTJ7nKJai5URS0qkDSXhXnU08cky/ej7u5yu+Cik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XlBZP31Qnz4f3jXc;
+	Fri,  8 Nov 2024 16:15:09 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 77D8A1A07BA;
+	Fri,  8 Nov 2024 16:15:27 +0800 (CST)
+Received: from k01.huawei.com (unknown [10.67.174.197])
+	by APP1 (Coremail) with SMTP id cCh0CgAXDK6eyC1nOEOhBA--.5950S2;
+	Fri, 08 Nov 2024 16:15:27 +0800 (CST)
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+To: bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [PATCH bpf-next 0/2] Fix release of struct_ops map
+Date: Fri,  8 Nov 2024 16:26:31 +0800
+Message-Id: <20241108082633.2338543-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241029231244.2834368-1-song@kernel.org> <20241029231244.2834368-6-song@kernel.org>
- <CAOQ4uxjDudLwKuxXaFihdYJUv2yvwkETouP9zJtJ6bRSpmV-Kw@mail.gmail.com>
- <DAAF8ED0-42E2-4CC6-842D-589DF6162B90@fb.com> <CAOQ4uxgJiUfO4RL-xYmfRTz7f5m-niLG10xeCGazuk7nuiBhqw@mail.gmail.com>
- <CAPhsuW71hKC1G9jayVqmAMFu+kPOibWC9xqdMj9tLmCcteQuEQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW71hKC1G9jayVqmAMFu+kPOibWC9xqdMj9tLmCcteQuEQ@mail.gmail.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 8 Nov 2024 09:18:56 +0100
-Message-ID: <CAOQ4uxjXjjkKMa1xcPyxE5vxh1U5oGZJWtofRCwp-3ikCA6cgg@mail.gmail.com>
-Subject: Re: [RFC bpf-next fanotify 5/5] selftests/bpf: Add test for BPF based
- fanotify fastpath handler
-To: Song Liu <song@kernel.org>
-Cc: Song Liu <songliubraving@meta.com>, bpf <bpf@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Kernel Team <kernel-team@meta.com>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "martin.lau@linux.dev" <martin.lau@linux.dev>, 
-	"viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, "brauner@kernel.org" <brauner@kernel.org>, 
-	"jack@suse.cz" <jack@suse.cz>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
-	"mattbobrowski@google.com" <mattbobrowski@google.com>, "repnop@google.com" <repnop@google.com>, 
-	"jlayton@kernel.org" <jlayton@kernel.org>, Josef Bacik <josef@toxicpanda.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAXDK6eyC1nOEOhBA--.5950S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruFy3tF43KF1kWr48Xw4DCFg_yoW3urbE9w
+	43KrykGw43G3WFyFW5Cr13WFZ2g39xKryUZF1DXasrXrn8trn8AF4kCrsxKa45ZrWfGFya
+	vw1kX34I9r1aqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbaxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kK
+	e7AKxVWUtVW8ZwCY1x0264kExVAvwVAq07x20xyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYx
+	BIdaVFxhVjvjDU0xZFpf9x07jeLvtUUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On Thu, Nov 7, 2024 at 9:48=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> On Thu, Nov 7, 2024 at 12:34=E2=80=AFPM Amir Goldstein <amir73il@gmail.co=
-m> wrote:
-> >
-> > On Thu, Nov 7, 2024 at 8:53=E2=80=AFPM Song Liu <songliubraving@meta.co=
-m> wrote:
-> > >
-> > >
-> > >
-> > > > On Nov 7, 2024, at 3:10=E2=80=AFAM, Amir Goldstein <amir73il@gmail.=
-com> wrote:
-> > > >
-> > > > On Wed, Oct 30, 2024 at 12:13=E2=80=AFAM Song Liu <song@kernel.org>=
- wrote:
-> > > >>
-> > > >> This test shows a simplified logic that monitors a subtree. This i=
-s
-> > > >> simplified as it doesn't handle all the scenarios, such as:
-> > > >>
-> > > >>  1) moving a subsubtree into/outof the being monitoring subtree;
-> > > >
-> > > > There is a solution for that (see below)
-> > > >
-> > > >>  2) mount point inside the being monitored subtree
-> > > >
-> > > > For that we will need to add the MOUNT/UNMOUNT/MOVE_MOUNT events,
-> > > > but those have been requested by userspace anyway.
-> > > >
-> > > >>
-> > > >> Therefore, this is not to show a way to reliably monitor a subtree=
-.
-> > > >> Instead, this is to test the functionalities of bpf based fastpath=
-.
-> > > >> To really monitor a subtree reliably, we will need more complex lo=
-gic.
-> > > >
-> > > > Actually, this example is the foundation of my vision for efficient=
- and race
-> > > > free subtree filtering:
-> > > >
-> > > > 1. The inode map is to be treated as a cache for the is_subdir() qu=
-ery
-> > >
-> > > Using is_subdir() as the truth and managing the cache in inode map se=
-ems
-> > > promising to me.
-> > >
-> > > > 2. Cache entries can also have a "distance from root" (i.e. depth) =
-value
-> > > > 3. Each unknown queried path can call is_subdir() and populate the =
-cache
-> > > >    entries for all ancestors
-> > > > 4. The cache/map size should be limited and when limit is reached,
-> > > >    evicting entries by depth priority makes sense
-> > > > 5. A rename event for a directory whose inode is in the map and who=
-se
-> > > >   new parent is not in the map or has a different value than old pa=
-rent
-> > > >   needs to invalidate the entire map
-> > > > 6. fast_path also needs a hook from inode evict to clear cache entr=
-ies
-> > >
-> > > The inode map is physically attached to the inode itself. So the evic=
-t
-> > > event is automatically handled. IOW, an inode's entry in the inode ma=
-p
-> > > is automatically removed when the inode is freed. For the same reason=
-,
-> > > we don't need to set a limit in map size and add evicting logic. Of
-> > > course, this works based on the assumption that we don't use too much
-> > > memory for each inode. I think this assumption is true.
-> >
-> > Oh no, it is definitely wrong each inode is around 1K and this was the
-> > main incentive to implement FAN_MARK_EVICTABLE and
-> > FAN_MARK_FILESYSTEK in the first place, because recursive
-> > pinning of all inodes in a large tree is not scalable to large trees.
->
-> The inode map does not pin the inode in memory. The inode will
-> still be evicted as normal. The entry associated with the being
-> evicted inode in the map will be freed together as the inoide is freed.
-> The overhead I mentioned was the extra few bytes (for the flag, etc.)
-> per inode. When an evicted inode is loaded again, we will use
-> is_subdir() to recreate the entry in the inode map.
->
-> Does this make sense and address the concern?
->
+From: Xu Kuohai <xukuohai@huawei.com>
 
-Yes, that sounds good.
+This series fix a bug I found when doing rcu waiting cleanup for struct_ops
+map. When there is sleepable prog in struct_ops map, the map risks being
+released while the prog is still running.
 
-Thanks,
-Amir.
+Xu Kuohai (2):
+  bpf: Fix release of struct_ops map
+  selftests/bpf: Add test for struct_ops map release
+
+ kernel/bpf/bpf_struct_ops.c                   |  37 +++--
+ kernel/bpf/syscall.c                          |   7 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  78 ++++++---
+ .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |   2 +-
+ .../bpf/prog_tests/test_struct_ops_module.c   | 154 ++++++++++++++++++
+ .../bpf/progs/struct_ops_map_release.c        |  30 ++++
+ 6 files changed, 267 insertions(+), 41 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_map_release.c
+
+-- 
+2.39.5
+
 
