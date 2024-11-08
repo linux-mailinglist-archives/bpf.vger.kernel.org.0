@@ -1,211 +1,200 @@
-Return-Path: <bpf+bounces-44390-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44391-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A9049C266A
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 21:23:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D67EC9C269F
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 21:34:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9020B2352E
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 20:23:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF82F1C2181A
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 20:34:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1CB61C1F2B;
-	Fri,  8 Nov 2024 20:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 944B01C1F20;
+	Fri,  8 Nov 2024 20:34:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h0Y2guDw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U/Q4Wmh0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CF6E1AA1C1;
-	Fri,  8 Nov 2024 20:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6994E12D1F1
+	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 20:34:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731097376; cv=none; b=L30bu3Lfv6KTcRg1buP9nP1olaBd6HrFuSlLNiJhaqxZh1OisFg9HOOHCGZQkAr4/hGm8nkv26cYNK0byNaoL/gFtU3RroCMreMvACLx2s3B8g7Pff/zsl7MsKnIbztdBWIS2PMUI/CqMZd6uENGKdU/RR6Zn6J0cDKfqWtXNz4=
+	t=1731098057; cv=none; b=ga6wYfT0P7BpZAtEJdrUboOhOlKHp827CLaB+hmuC8NoSzidIBrDkYycUUzxAcF2NtApamuBQ3URSGeoyDnZRW75V7XnLYvr3VGKZb8GpJt5qw+dgi6uJtLsaBJw42NNKkVU39lhtJwEmd0xkhC+Ndv5ki514fPJjiF4DEO1Qxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731097376; c=relaxed/simple;
-	bh=XJU61EN1IqZaoeR1rSzm9dj0fle8xMBiTlgB72uJXus=;
+	s=arc-20240116; t=1731098057; c=relaxed/simple;
+	bh=I9UtMaVnLWJq1HHPD3dldmIi4jKg+YPw1TZ/iseR8gg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tte/cCm0yVul0du51uRBRV6+Ze1nr5BVJ1nDcCe/pbTVNykKG0tJHAVgsSDG2YHmaky9FmpbDK7E72T0AxyprCo85lUBOtMC7cy3Tqz6I3IQlRDsIx/qJwKW+htq/5FMV3YQtmqZNvSEqha09Cu3TqVdKNMqbfVwqTwO1wniTFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h0Y2guDw; arc=none smtp.client-ip=209.85.128.53
+	 To:Cc:Content-Type; b=VWW68GeFhXLJGTzKohmcSxwA6awPMf9GrQUXZpFjsQH9Qfwmm5+0IH/ShvRh8QMnC/qWmmxLeuX36H1Yi61OuewwTaNwARY+ZUrkqtTiMdMLVP1QG3wddLGHqjLL38/M6Iw9PTaDVjYgWI8+Uiz0v1hqhkTbLbXIgOnmWGkGQ4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U/Q4Wmh0; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4314c452180so21177125e9.0;
-        Fri, 08 Nov 2024 12:22:54 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4316cce103dso29731165e9.3
+        for <bpf@vger.kernel.org>; Fri, 08 Nov 2024 12:34:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731097373; x=1731702173; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1731098054; x=1731702854; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U/xUMGKi2SD6hf3c1UEJz+hJwgmvF3CxZFQ3ymqr9uE=;
-        b=h0Y2guDwQa+zIHHx9V9M5qx0NkK6t3VbhW7ISIiGEXNXDiC21UqiPCeB119EPsTn0e
-         NeWEZJhzCwGAoPM6WzBOX1UhGNfliwlFJuiFhyd9hj6yegjuGtlWx2g5jes18SG2NMTV
-         2P3IIVWHuKhWdIFsvAQnCbFi2boUQsIH15mvJurcPuiUai/zsJSi6rrBoYSuDVZQ9Fow
-         As0f3sZvBOAjZoshcyECebsJLmZpuoWyqqiq0PMAg93/Icrt1V5vm1bWajIlzMMtQ3Sv
-         kwYbHVvR9/GKoUYZas648o8Zx/vLJC8AbelW/kKpwGTYcJk7LCI+lYfuwoBrPllnp2f+
-         NNTg==
+        bh=a5qH54nQAIEd/FZEboYHabkBp2OxI8z+hX3S+2K65CA=;
+        b=U/Q4Wmh0mzByjjWhFI8VyqzgR23K5wonguSZpxM8Y2RkZgOt4GNB+tKDpplCgjUZaW
+         vv7x7Owa6wmMqDtGaGgH8mhKEFdKp2ffVuIyVDvQCCkD37fvSl0A06m17rl9mX0QN1fk
+         tumq1Fa/DQDprC30djXGH2CG8mEpbRyQHUYowpOafm9+RgcOudpP9T3RhqDjJSfGeZVa
+         WX6nmCEBBsprQqGgvzM9DSiTGQdBdmRYBfqbGqIMAo2sLyuuS7cFtq9XDVCMPwndDWIk
+         sgcoC2e5wsUG3SI9t+7MvUWPKElLnB16vDlBnBOY27iYLKS6TMR+IyCVS7XU/dSYlp8Q
+         Vqrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731097373; x=1731702173;
+        d=1e100.net; s=20230601; t=1731098054; x=1731702854;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U/xUMGKi2SD6hf3c1UEJz+hJwgmvF3CxZFQ3ymqr9uE=;
-        b=nNBv6LaWsZCovJp10JhnWICWtB/W9IrDGzJMAy59GSamETx6yIRemKQinUWzUaS7h5
-         /Mr0AJ3EP6R25Eu22uiltIMXUMlF0AOg6NHI3Q/0lGkmoxwSMUE41Icw2gLv0u+922MV
-         EgtUT7/+Yabs28Q3XTcfMVgbOYLOXgZdkVHDYnjpat3s96oYwYDahG/KbKt7vtIeG6/N
-         MITcn3Wo8+bouxYjbv4r4T3xsT7Lo0+qxejZ0CopEHi00H2hmOkdM21GbSjhhvGOt8WT
-         oVHJookP0g41cPwu3RN3LYfaOhEY0A8wI0a0BP1ta+Lk+ZBAb4gGy+e5JROUZKK4U8U9
-         uJoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUL7imeKpef3FYLY3k9fArNXyEDOMALpL/N5PVb+5Qobg8YScENE9lU07nSmTrkz0YTC6w=@vger.kernel.org, AJvYcCXiArkjKMFkBaPE1fdtJrQXR3VSmqCjyh8NEm4ab6myRe43b+90b4NLefmGMelKiKCxGEVpMaMT69xT78SR@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzux6cqt5f294gu1sJeUw2nuU9GbUp5SqEbB/0OpB6CKs69u5+M
-	AK88756CnZWZf3Gh896OAgm8pWqXfe2pcySvyQj90jUVrUJ7bVjGShVjE/5OGvtJ6hhmAAX2Zwo
-	KHReM3EthRon+nC/C/SSuWg5nrt8=
-X-Google-Smtp-Source: AGHT+IGUHee0ozy2XcI20tavIZRFKwh+dhcBCCR60pmA9ssCOt/7grB0zNc6bidarNowdjUxSilPi6pqfzPAsuINZCQ=
-X-Received: by 2002:a5d:64c7:0:b0:37c:fdc8:77ab with SMTP id
- ffacd0b85a97d-381f0f57f22mr4424747f8f.7.1731097372614; Fri, 08 Nov 2024
- 12:22:52 -0800 (PST)
+        bh=a5qH54nQAIEd/FZEboYHabkBp2OxI8z+hX3S+2K65CA=;
+        b=seBrI2SDLZ0o3/a1x/7pf3sn8s7VpDFqVpo22YNIbor9LgH7GUumwq3F4WaMmzf68R
+         95avphzTnvm5nN4VCta8KHhCDQosPTfX7FtahkOxccNBjq4moRJ76PDYKSYnwz9Gp7KX
+         kWli3urCGGDPTjNBLauRAD+RzXhIuj72pJP20l4xI0oHm4JAQpe6r9DUor+DN5SB7zmg
+         BDwAci4Jezuwi9gEyqbVvkgaK5kCXYCvVEWXq1zrgVLqs0XIME1aNx/N7DV40zSgRbxc
+         DGeo8PAWjQh9V7AyFJIb0HhNdoZE8cb3I5LerbyFlHqjPOKpjUNS/Rc+lFOSbndRmnug
+         b/TA==
+X-Forwarded-Encrypted: i=1; AJvYcCXVFyNhRio/Z5DKTCepsRwUQnaGai9AtsX7RvDqXwk7Tg8PLl+95kZYQ5gpMze9tWrx6ss=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUTuV5UXG0uc/EGGUt63afy3b5Vw1wvibukXuq8VRoM6uWky6N
+	Yg/lZzGwgZ07qyKVwxgZCkyjwhV0Mk34KqRW2YxjaweysaTBBjz2ncvnune1eMzwoEuGrGddIeX
+	aO3m2puidflrXyi/9ADYatfBMWmk=
+X-Google-Smtp-Source: AGHT+IFAI5rkjwf1qSkM1nPz7ZF1K2LzjOZH6ZWfrLKk3ZNN/1SCNN3lfVwdqwAIvZfgLCSWzgSlKquxukpYnXl0fAU=
+X-Received: by 2002:a05:600c:458d:b0:428:d31:ef25 with SMTP id
+ 5b1f17b1804b1-432b7505acemr44716725e9.12.1731098053536; Fri, 08 Nov 2024
+ 12:34:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241108063214.578120-1-kunwu.chan@linux.dev>
-In-Reply-To: <20241108063214.578120-1-kunwu.chan@linux.dev>
+References: <20240927033904.2702474-1-yonghong.song@linux.dev>
+ <CAADnVQJZLRnT3J31CLB85by=SmC2UY1pmUZX0kkyePtVdTdy9A@mail.gmail.com>
+ <e93729b5-199f-4809-84f5-7efdf7c8aaf3@linux.dev> <181301db143b$ba6fd9c0$2f4f8d40$@gmail.com>
+ <CAADnVQKDwZ0+Fjiz21AFAbOgEonVojvpojU1ZyQDu8V4Jm0DYQ@mail.gmail.com>
+ <000c01db3186$1dd30930$59791b90$@gmail.com> <CAADnVQKHHvrJjAMuXC5-wQHfMfxoSXnOBnqrZ5PC7p3C8ut3rQ@mail.gmail.com>
+ <09ee01db320f$8d37bc60$a7a73520$@gmail.com>
+In-Reply-To: <09ee01db320f$8d37bc60$a7a73520$@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 8 Nov 2024 12:22:41 -0800
-Message-ID: <CAADnVQJ8KzVdScXM=qhdT4jMrZLBPpgd+pf1Fqyc-9TFnfabAg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Convert lpm_trie::lock to 'raw_spinlock_t'
-To: Kunwu Chan <kunwu.chan@linux.dev>, Hou Tao <houtao@huaweicloud.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Sebastian Sewior <bigeasy@linutronix.de>, clrkwllms@kernel.org, 
-	Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-rt-devel@lists.linux.dev, 
-	Kunwu Chan <chentao@kylinos.cn>, syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com
+Date: Fri, 8 Nov 2024 12:34:02 -0800
+Message-ID: <CAADnVQLbk9ogKn8kHBGiq8yNuugNQTfMcd5m9RHc9KmZhrxmNw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] docs/bpf: Document some special sdiv/smod operations
+To: Dave Thaler <dthaler1968@googlemail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@ietf.org, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 7, 2024 at 10:32=E2=80=AFPM Kunwu Chan <kunwu.chan@linux.dev> w=
-rote:
+On Fri, Nov 8, 2024 at 10:53=E2=80=AFAM Dave Thaler <dthaler1968@googlemail=
+.com> wrote:
 >
-> From: Kunwu Chan <chentao@kylinos.cn>
+> > >
+> > > My concern is that index.rst says:
+> > > > This directory contains documents that are being iterated on as par=
+t
+> > > > of the BPF standardization effort with the IETF. See the `IETF BPF
+> > > > Working Group`_ page for the working group charter, documents, and =
+more.
+> > >
+> > > So having a document that is NOT part of the IETF BPF Working Group
+> > > would seem out of place and, in my view, better located up a level (o=
+utside
+> > standardization).
+> >
+> > It's a part of bpf wg. It's not a new document.
 >
-> When PREEMPT_RT is enabled, 'spinlock_t' becomes preemptible
-> and bpf program has owned a raw_spinlock under a interrupt handler,
-> which results in invalid lock acquire context.
+> RFC 9669 is immutable.  Any additions require a new document, in
+> IETF terminology, since would result in a new RFC number.
+
+Sure. It's an IETF process. Not arguing about that.
+
+> > > Here=E2=80=99s some examples of delta-based RFCs which explain the ga=
+p and
+> > > provide the addition or clarification, and formally Update (not
+> > > replace/obsolete) the original
+> > > RFC:
+> > > * https://www.rfc-editor.org/rfc/rfc6585.html: Additional HTTP Status
+> > > Codes
+> > > * https://www.rfc-editor.org/rfc/rfc6840.html: Clarifications and Imp=
+lementation
+> > Notes
+> > >    for DNS Security (DNSSEC)
+> > > * https://www.rfc-editor.org/rfc/rfc9295.html: Clarifications for Ed2=
+5519, Ed448,
+> > >    X25519, and X448 Algorithm Identifiers
+> > > * https://www.rfc-editor.org/rfc/rfc5756.html: Updates for RSAES-OAEP=
+ and
+> > >    RSASSA-PSS Algorithm Parameters
+> > >
+> > > Having a full document too is valuable but unless the IETF BPF WG
+> > > decides to take on a -bis document, I'd suggest keeping it out of the
+> > "standardization"
+> > > (say up 1 level) to avoid confusion, and just have one or more
+> > > delta-based rst files in the standardization directory.
+> >
+> > This patch is effectively a fix to the standard.
 >
-> [ BUG: Invalid wait context ]
-> 6.12.0-rc5-next-20241031-syzkaller #0 Not tainted
-> -----------------------------
-> swapper/0/0 is trying to lock:
-> ffff8880261e7a00 (&trie->lock){....}-{3:3},
-> at: trie_delete_elem+0x96/0x6a0 kernel/bpf/lpm_trie.c:462
-> other info that might help us debug this:
-> context-{3:3}
-> 5 locks held by swapper/0/0:
->  #0: ffff888020bb75c8 (&vp_dev->lock){-...}-{3:3},
-> at: vp_vring_interrupt drivers/virtio/virtio_pci_common.c:80 [inline]
->  #0: ffff888020bb75c8 (&vp_dev->lock){-...}-{3:3},
-> at: vp_interrupt+0x142/0x200 drivers/virtio/virtio_pci_common.c:113
->  #1: ffff88814174a120 (&vb->stop_update_lock){-...}-{3:3},
-> at: spin_lock include/linux/spinlock.h:351 [inline]
->  #1: ffff88814174a120 (&vb->stop_update_lock){-...}-{3:3},
-> at: stats_request+0x6f/0x230 drivers/virtio/virtio_balloon.c:438
->  #2: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-> at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
->  #2: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-> at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
->  #2: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-> at: __queue_work+0x199/0xf50 kernel/workqueue.c:2259
->  #3: ffff8880b863dd18 (&pool->lock){-.-.}-{2:2},
-> at: __queue_work+0x759/0xf50
->  #4: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-> at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
->  #4: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-> at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
->  #4: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-> at: __bpf_trace_run kernel/trace/bpf_trace.c:2339 [inline]
->  #4: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
-> at: bpf_trace_run1+0x1d6/0x520 kernel/trace/bpf_trace.c:2380
-> stack backtrace:
-> CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Not tainted
-> 6.12.0-rc5-next-20241031-syzkaller #0
-> Hardware name: Google Compute Engine/Google Compute Engine,
-> BIOS Google 09/13/2024
-> Call Trace:
->  <IRQ>
->  __dump_stack lib/dump_stack.c:94 [inline]
->  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
->  print_lock_invalid_wait_context kernel/locking/lockdep.c:4826 [inline]
->  check_wait_context kernel/locking/lockdep.c:4898 [inline]
->  __lock_acquire+0x15a8/0x2100 kernel/locking/lockdep.c:5176
->  lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
->  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
->  _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
->  trie_delete_elem+0x96/0x6a0 kernel/bpf/lpm_trie.c:462
-
-This trace is from non-RT kernel where spin_lock =3D=3D raw_spin_lock.
-
-I don't think Hou's explanation earlier is correct.
-https://lore.kernel.org/bpf/e14d8882-4760-7c9c-0cfc-db04eda494ee@huaweiclou=
-d.com/
-
->  bpf_prog_2c29ac5cdc6b1842+0x43/0x47
->  bpf_dispatcher_nop_func include/linux/bpf.h:1290 [inline]
->  __bpf_prog_run include/linux/filter.h:701 [inline]
->  bpf_prog_run include/linux/filter.h:708 [inline]
->  __bpf_trace_run kernel/trace/bpf_trace.c:2340 [inline]
->  bpf_trace_run1+0x2ca/0x520 kernel/trace/bpf_trace.c:2380
->  trace_workqueue_activate_work+0x186/0x1f0 include/trace/events/workqueue=
-.h:59
->  __queue_work+0xc7b/0xf50 kernel/workqueue.c:2338
->  queue_work_on+0x1c2/0x380 kernel/workqueue.c:2390
-
-here irqs are disabled, but raw_spin_lock in lpm should be fine.
-
->  queue_work include/linux/workqueue.h:662 [inline]
->  stats_request+0x1a3/0x230 drivers/virtio/virtio_balloon.c:441
->  vring_interrupt+0x21d/0x380 drivers/virtio/virtio_ring.c:2595
->  vp_vring_interrupt drivers/virtio/virtio_pci_common.c:82 [inline]
->  vp_interrupt+0x192/0x200 drivers/virtio/virtio_pci_common.c:113
->  __handle_irq_event_percpu+0x29a/0xa80 kernel/irq/handle.c:158
->  handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
->  handle_irq_event+0x89/0x1f0 kernel/irq/handle.c:210
->  handle_fasteoi_irq+0x48a/0xae0 kernel/irq/chip.c:720
->  generic_handle_irq_desc include/linux/irqdesc.h:173 [inline]
->  handle_irq arch/x86/kernel/irq.c:247 [inline]
->  call_irq_handler arch/x86/kernel/irq.c:259 [inline]
->  __common_interrupt+0x136/0x230 arch/x86/kernel/irq.c:285
->  common_interrupt+0xb4/0xd0 arch/x86/kernel/irq.c:278
->  </IRQ>
+> Two of the examples I provided above fit into that category.
+> Two are examples of adding new codepoints.
 >
-> Reported-by: syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/bpf/6723db4a.050a0220.35b515.0168.GAE@goo=
-gle.com/
-> Fixes: 66150d0dde03 ("bpf, lpm: Make locking RT friendly")
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> ---
->  kernel/bpf/lpm_trie.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+> > It's a standard git development process when fixes are applied to the e=
+xisting
+> > document.
+> > Forking the whole doc into a different file just to apply fixes makes n=
+o sense to me.
 >
-> diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-> index 9b60eda0f727..373cdcfa0505 100644
-> --- a/kernel/bpf/lpm_trie.c
-> +++ b/kernel/bpf/lpm_trie.c
-> @@ -35,7 +35,7 @@ struct lpm_trie {
->         size_t                          n_entries;
->         size_t                          max_prefixlen;
->         size_t                          data_size;
-> -       spinlock_t                      lock;
-> +       raw_spinlock_t                  lock;
->  };
+> Welcome to the IETF and immutable RFCs =F0=9F=98=8A
+>
+> > The formal delta-s for IETF can be created out of git.
+>
+> Not in the IETF per se, since a new document needs new boilerplate, with
+> a new abstract, introduction, etc.  At most, part of the document could b=
+e created
+> out of git, but I'm not convinced that git diffs alone (as opposed to som=
+e English
+> prose too for each, as in the examples I cited) make for good content in =
+an IETF document.
 
-We're certainly not going back.
+git diff might need another script :)
+Just like you did earlier with an old script that took this .rst
+and converted it to IETF suitable format.
 
-pw-bot: cr
+Now we'd need a new script that will take git diff with new header/footer
+and whatever extra words necessary.
+
+> > We only need to tag the current version and then git diff rfc9669_tag..=
+HEAD will give
+> > us that delta.
+> > That will satisfy IETF process and won't mess up normal git style kerne=
+l
+> > development.
+>
+> I am not convinced it is sufficient.  Can you point to any precedents in =
+the IETF for
+> such an approach?  I can't offhand... See the RFC 5756 reference above fo=
+r what
+> I mean by English prose for each diff.
+
+It's all a matter of additional scripting.
+We're not going to ask every kernel developer to learn IETF process.
+People will be sending patches for instruction-set.rst and
+this file will keep evolving.
+As soon as we land Yonghong's patch it won't be 1-1 with RFC9669 and
+it's fine.
+Even today it's not 1-1 either. It needs to go through your
+existing script to fit IETF rules.
+The new patches will keep landing and the file will become a working
+document towards the next delta RFC.
+
+> > btw do we still need to do any minor edit/fixes to instruction-set.rst =
+before tagging it
+> > as RFC9669 ?
+>
+> Yes, we need to backport the formatting/nits from the RFC editor pass.
+
+Ok. Please send the patch. Will wait for that first.
 
