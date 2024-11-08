@@ -1,90 +1,114 @@
-Return-Path: <bpf+bounces-44384-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44385-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F4D49C258F
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 20:29:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DE5F9C25AE
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 20:40:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 378DCB22851
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 19:29:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB5A7284EA0
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 19:40:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA791C1F10;
-	Fri,  8 Nov 2024 19:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C021C1F36;
+	Fri,  8 Nov 2024 19:40:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ED0EU0Mm"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T5j3Zhn2"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175361A9B54
-	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 19:29:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D28E1C1F1E
+	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 19:40:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731094163; cv=none; b=T4+Qpa4Gqc3t/zA3qqrnrhrY4gVsrRWtFVyhGNDZeSMEekHz8QrXN46/BM9vAlc740Ns4rio0kke0vhm0vNTSQ+/mGBwR2YJc+C9RapvEoQnhhMIvBiHjVzdoPLGwU0a2PxpOaO+9xpBf09MBBAup+3JZnAMY7oFKFH5eoqcnaQ=
+	t=1731094810; cv=none; b=kTurzFBcydrLV+c35gUn+q0GembiJmTrIQ/gFKelIT0DeFTailyWoDmX3BmGUcYp9med/PpGoSItWSdto6M1K4/0wW4XIXlxOhEGP/f3i7cF9ewHyuHu+q+gWOrYq0PkydHwapvdkxZETsCRaceogwYVQ7FNSoF9iGFDC3GEtMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731094163; c=relaxed/simple;
-	bh=EtRuuaWJP2fFK7jgl2zOWZpe/+b0yhTJHKDU8kdNXNU=;
+	s=arc-20240116; t=1731094810; c=relaxed/simple;
+	bh=U6GqppO5h30LzkbdesIwC7AVuSxiPTkWg2MOhbNuwJ4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fsF4p5U0u1lgXXiNYOSDXIk4qVR3fCUIfkvedA4P5Abn9L5QMuRekQNrvAvfUdK9NujibyYtqodBuxeIzI014fPz4aAzJg1rwrqbdw4Qy8H21ZL2wE9YO5/oW9gIGw7NU1XTDuX/5HidXqPVwR16zS82n5qvDvHaQWO/rYpazGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ED0EU0Mm; arc=none smtp.client-ip=91.218.175.178
+	 In-Reply-To:Content-Type; b=azlic1eoETgKoO2ZKcAQTedZeh7vhlyFvMo4XpLnmuesjasbUhjHQlapXIcuVWHw/OmcY9in9213HCjsnifEYsX/ktlFwBbCCJfm9NHsO3aPYv3/IEhCsw4rJWMD6x4P3OpqwPjgVKB1Iw4VSNynW5X+S87RU39Ds3jetJ6j88U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=T5j3Zhn2; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ea4d87c5-ce13-43e3-8cec-b068055b0f58@linux.dev>
+Message-ID: <60a50f93-5416-4ee5-b34a-a1a88652dc82@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731094157;
+	t=1731094804;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EtRuuaWJP2fFK7jgl2zOWZpe/+b0yhTJHKDU8kdNXNU=;
-	b=ED0EU0Mm2Ud6CX5BBMKugOxqt1lA76Z8CaFmKdfEm6nhmtixIbGkeZJpxZa12eyATXiUt3
-	QLBMK7w/sRGpyDQ/R9dWH6kngRe144grQPdaLVsywNYDUdFm/372OGc85Fd3gM8X1hyu8h
-	5bOO3joXWZaHISHUuLSOWDOwTkCP2cE=
-Date: Fri, 8 Nov 2024 11:29:10 -0800
+	bh=FAOI2LPYL9wEomc5SXhn83DASh1XX2UxQA82nGz7zuI=;
+	b=T5j3Zhn2LKVDAOXz12rPWhhyKCk4MYFsdXeZfbCbk0lSW6EDjLLBQnhVxoWjmAXjBHV0DN
+	lflh7LW/zXlg/B8qj8Nmtzcmip0wLxRIaw+Mc6HBk8BsHDTX7Yy0X1eEKRu/8MJRPmrvmx
+	afGdWAjNtKTsKZnuBCafI04FzSyYNNI=
+Date: Fri, 8 Nov 2024 11:39:56 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: Fix mismatched RCU unlock flavour in
- bpf_out_neigh_v6
-Content-Language: en-GB
-To: Jiawei Ye <jiawei.ye@foxmail.com>, martin.lau@linux.dev,
- daniel@iogearbox.net, edumazet@google.com, kuba@kernel.org
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <tencent_CFD3D1C3D68B45EA9F52D8EC76D2C4134306@qq.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add test for struct_ops map
+ release
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Yonghong Song <yonghong.song@linux.dev>, Kui-Feng Lee <thinker.li@gmail.com>
+References: <20241108082633.2338543-1-xukuohai@huaweicloud.com>
+ <20241108082633.2338543-3-xukuohai@huaweicloud.com>
+Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <tencent_CFD3D1C3D68B45EA9F52D8EC76D2C4134306@qq.com>
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20241108082633.2338543-3-xukuohai@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
+On 11/8/24 12:26 AM, Xu Kuohai wrote:
+> -static void bpf_testmod_test_2(int a, int b)
+> +static void bpf_dummy_unreg(void *kdata, struct bpf_link *link)
+>   {
+> +	WRITE_ONCE(__bpf_dummy_ops, &__bpf_testmod_ops);
+>   }
 
+[ ... ]
 
+> +static int run_struct_ops(const char *val, const struct kernel_param *kp)
+> +{
+> +	int ret;
+> +	unsigned int repeat;
+> +	struct bpf_testmod_ops *ops;
+> +
+> +	ret = kstrtouint(val, 10, &repeat);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (repeat > 10000)
+> +		return -ERANGE;
+> +
+> +	while (repeat-- > 0) {
+> +		ops = READ_ONCE(__bpf_dummy_ops);
 
-On 11/8/24 12:18 AM, Jiawei Ye wrote:
-> In the bpf_out_neigh_v6 function, rcu_read_lock() is used to begin an RCU
-> read-side critical section. However, when unlocking, one branch
-> incorrectly uses a different RCU unlock flavour rcu_read_unlock_bh()
-> instead of rcu_read_unlock(). This mismatch in RCU locking flavours can
-> lead to unexpected behavior and potential concurrency issues.
->
-> This possible bug was identified using a static analysis tool developed
-> by myself, specifically designed to detect RCU-related issues.
->
-> This patch corrects the mismatched unlock flavour by replacing the
-> incorrect rcu_read_unlock_bh() with the appropriate rcu_read_unlock(),
-> ensuring that the RCU critical section is properly exited. This change
-> prevents potential synchronization issues and aligns with proper RCU
-> usage patterns.
->
-> Fixes: 09eed1192cec ("neighbour: switch to standard rcu, instead of rcu_bh")
-> Signed-off-by: Jiawei Ye <jiawei.ye@foxmail.com>
+I don't think it is the usual bpf_struct_ops implementation which only uses 
+READ_ONCE and WRITE_ONCE to protect the registered ops. tcp-cc uses a 
+refcnt+rcu. It seems hid uses synchronize_srcu(). sched_ext seems to also use 
+kthread_flush_work() to wait for all ops calling finished. Meaning I don't think 
+the current bpf_struct_ops unreg implementation will run into this issue for 
+sleepable ops.
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+The current synchronize_rcu_mult(call_rcu, call_rcu_tasks) is only needed for 
+the tcp-cc because a tcp-cc's ops (which uses refcnt+rcu) can decrement its own 
+refcnt. Looking back, this was a mistake (mine). A new tcp-cc ops should have 
+been introduced instead to return a new tcp-cc-ops to be used.
 
+> +		if (ops->test_1)
+> +			ops->test_1();
+> +		if (ops->test_2)
+> +			ops->test_2(0, 0);
+> +	}
+> +
+> +	return 0;
+> +}
 
