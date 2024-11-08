@@ -1,146 +1,136 @@
-Return-Path: <bpf+bounces-44397-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44398-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A6149C26FE
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 22:25:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65F0D9C271F
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 22:42:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56FF41C20A65
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 21:25:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 982EC1C22006
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 21:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF561DC184;
-	Fri,  8 Nov 2024 21:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC2A1E883E;
+	Fri,  8 Nov 2024 21:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="El554r9h"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nnmVtmf6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70080233D80
-	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 21:25:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38BCE1DF977
+	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 21:41:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731101138; cv=none; b=YGoAAqyJCmytGZdp3A/QllDuhZhm6gfgB6avfZkd+Hvwo0IgRRgjkoGoP2+CE/FVrxUH/B7XthGniJ9+0ctSr9yYLI3YZZBozIPTWEjtsBfu3cW/mPrHkIHbR6XzpisekCk7mO4aq+xjcS4Ns4pNtPMjwpptl2mrxwQ15S0Zwr8=
+	t=1731102109; cv=none; b=WBDbxrpFouSiIt81KJTl906AR0ZhO0YNOoN0aQAUJe/rKArDPYNUNvAZDrFiMpKqv7ep6U4C2cqobK3xSWSwAmHxH1FhTm2zN9kC+f/LSUIX2WmJNcy7c0+aD9iBOD7mYukCBlvYv9H6vUHIAfsOlkTFVHar3+aAy8kErP3oFRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731101138; c=relaxed/simple;
-	bh=nMSAiYBSCGv3EKC0vh3yQxO2vp8OykGIjtE2sBm8Ogw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=aD5DP4p4o5PPGFZm8MQKt0nYeg2+0kGgDkP04kM7VbcUFNV1EqiIRNEodhtzL61GKoJWW1QoqMvr0mno+zVl8zQB7o3V7UoNoTAKCYFkV/1hwd1dC3jWDjhRD85mz9P1EktV+rMWeOM0fy3xX2gRr/NRkLqVFmVB//waQYoEnng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=El554r9h; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-20e6981ca77so31530175ad.2
-        for <bpf@vger.kernel.org>; Fri, 08 Nov 2024 13:25:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731101136; x=1731705936; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=9+V6sFKd0joUIdM3ECyn1kbn326D1kN16XuW4OZgCI4=;
-        b=El554r9hnLnmxdmQSrxtsW6WkaE3xX2/p+8OAf/4vz+sXvPGmq9UYhg9SAgrD7csXu
-         mRQKhiPWDY7jhLPrL3zCyjduHqaCACCq+BJkL6TjOHKFozoshzoC1clQYQO0B/3b6DYR
-         0fn9OgRtYT+umIAlU9/XYgArqfOYj2bRdbru0KUQ6N/cNlE511JzlsJF1L1QjdwAvn4U
-         n6fm7xaTtW1YPEAKg8no+0vRTb0CSDhqnqVHp0SWH8p0D/n2KuVG025TM8SyVQmnVW8j
-         2ytZAXbPqFo1soB4BAVbQ0kheOIWAOKU2u1+GUjdMAfMmaQ2yPhvO515ISeMYYvFM5zy
-         z0/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731101136; x=1731705936;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9+V6sFKd0joUIdM3ECyn1kbn326D1kN16XuW4OZgCI4=;
-        b=uJXQEt79EgkOPQEKKOTNrzh25Fo4L+GYa0wWVU3ucdZaeKycztU5btuNgZV5SyVabW
-         izXQWJtTNBeE4QIlRNz4wthcdF4gV436EE1fTk6WCrU/GhmMSp925ELbYTmdphcr3eLy
-         4Sk82tbXdnQJPzx4d6o+ypBzP2fjb0OFqetUQAEZg4qZOW0d8Oezv76VrxNgD2sxA+ah
-         NM9TfJNTlpx0T116BySGYiLgZbvKkU1TOs2i9x8QWLxfeRiElK6sxSrNOSErohY1fd4q
-         e1EjUDRQRD/o5l7RXnYKU6XrcT3+QuG431yACCO33j87dEipoUTRarK/Jh6w/u1WqPvX
-         RN+A==
-X-Forwarded-Encrypted: i=1; AJvYcCURbUtyEHuBTZHFiPas0/eZnLhusEdgOLiU5BMgeSjx1V/S80VenXWoIMlLMP/WkZn4Onc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbiLy3wDkwy9OxWfGHGGdHXkL2arhh2O13zxDm/LaAnW25MDtE
-	RS125LeQ1LDR9b9tKkJ0zGmJIthn+pKgIpXKck9yImIaJVGWDdXCg9xc9w==
-X-Google-Smtp-Source: AGHT+IGivsZT2XkPjbPgJ9NGCH2hfgaPvjlPaGvnHf63DJhJvMZXfZ6mprK6dOJI2dkC86VGl8mQDQ==
-X-Received: by 2002:a17:902:ec8c:b0:20c:ea04:a186 with SMTP id d9443c01a7336-211835da2e5mr48441185ad.48.1731101136454;
-        Fri, 08 Nov 2024 13:25:36 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21177e49bcbsm35343075ad.161.2024.11.08.13.25.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Nov 2024 13:25:35 -0800 (PST)
-Message-ID: <1ab081f87a60bacb563f4a55d02fa7749aaaeaf9.camel@gmail.com>
-Subject: Re: [RFC bpf-next 03/11] bpf: shared BPF/native kfuncs
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>, 
-	bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	kernel-team@fb.com, yonghong.song@linux.dev, memxor@gmail.com
-Date: Fri, 08 Nov 2024 13:25:31 -0800
-In-Reply-To: <87ses15udm.fsf@toke.dk>
-References: <20241107175040.1659341-1-eddyz87@gmail.com>
-	 <20241107175040.1659341-4-eddyz87@gmail.com> <87ses15udm.fsf@toke.dk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1731102109; c=relaxed/simple;
+	bh=Ey99CT+rrUo7TJH7takPl89q+fek4dnH6OIoVlA+yi8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RNTJ8h3QmoOgektKAEAcLkmbL9e1cB8WwavhSgTxGs2xSSlv8K8oRmNBj/jEDdUmYrwunGEkSxZdiOSiksSW/dNbrpMUxB3nURKb8SqAcuMA3KT+bPymQTDJQT4PzJ0PH6ehSa5tsZoYQyfFSDvFlg9RnEvfy6LZxZT957sTc6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nnmVtmf6; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f1241234-4c52-4b11-ba4b-0a064b9a6874@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731102105;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6LvKFX6Feoo7ZOgbEd3O5J9Qfh5ZY4gUVAgMwZFNEws=;
+	b=nnmVtmf6dcv7rxwyhavCWuJ1a5+ZXCETCjpcUeuwoS5Nc4xx7r63sPS0RIRhwEAaK3rE6y
+	jHJNypyf9cIe6wWv5/Q4gbVJH3QnJdY5ykxFRbMhTgTS9Py60F4r0J2qV8rjPydKp/BK0U
+	OdYNwuYwSTE+pKs/niEWRNSvdMN1+8g=
+Date: Fri, 8 Nov 2024 13:41:36 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v10 2/7] bpf: Enable private stack for eligible
+ subprogs
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Tejun Heo <tj@kernel.org>
+References: <20241107024138.3355687-1-yonghong.song@linux.dev>
+ <20241107024149.3356316-1-yonghong.song@linux.dev>
+ <CAADnVQ+Y0Gj-S43oh5MXm71e=qDdRhK7FcigctLGg2TD3n5GkA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+Y0Gj-S43oh5MXm71e=qDdRhK7FcigctLGg2TD3n5GkA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 2024-11-08 at 21:43 +0100, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Eduard Zingerman <eddyz87@gmail.com> writes:
->=20
-> > Inlinable kfuncs are available only if CLANG is used for kernel
-> > compilation.
->=20
-> To what extent is this a fundamental limitation? AFAIU, this comes from
-> the fact that you are re-using the intermediate compilation stages,
-> right?
 
-Yes, the main obstacle is C --clang--> bitcode as for host --llc--> BPF pip=
-eline.
-And this intermediate step is needed to include some of the header
-files as-is (but not all will work, e.g. those where host inline
-assembly is not dead-code-eliminated by optimizer would error out).
-The reason why 'clang --target=3Dbpf' can't be used with these headers
-is that headers check current architecture in various places, however:
-- there is no BPF architecture defined at the moment;
-- most of the time host architecture is what's needed, e.g.
-  here is a fragment of arch/x86/include/asm/current.h:
 
-  struct pcpu_hot {
-  	union {
-  		struct {
-  			struct task_struct	*current_task;
-  			int			preempt_count;
-  			int			cpu_number;
-  #ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
-  			u64			call_depth;
-  #endif
-  			unsigned long		top_of_stack;
-  			void			*hardirq_stack_ptr;
-  			u16			softirq_pending;
-  #ifdef CONFIG_X86_64
-  			bool			hardirq_stack_inuse;
-  #else
-  			void			*softirq_stack_ptr;
-  #endif
-  		};
-  		u8	pad[64];
-  	};
-  };
 
-In case if inlinable kfunc operates on pcpu_hot structure,
-it has to see same binary layout as the host.
-So, technically, 'llc' step is not necessary, but if it is not present
-something else should be done about header files.
+On 11/8/24 11:11 AM, Alexei Starovoitov wrote:
+> On Wed, Nov 6, 2024 at 6:42 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 2284b909b499..09bb9dc939d6 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -6278,6 +6278,10 @@ static int check_max_stack_depth(struct bpf_verifier_env *env)
+>>                                  return ret;
+>>                  }
+>>          }
+>> +
+> and patch 6 adds this line here:
+> + env->prog->aux->priv_stack_requested = false;
+>
+>> +       if (si[0].priv_stack_mode == PRIV_STACK_ADAPTIVE)
+>> +               env->prog->aux->priv_stack_requested = true;
+>> +
+> which makes the above hard to reason about.
+>
+> I think the root of the problem is the dual meaning of
+> the priv_stack_requested flag.
+> On one side it's a way for sched-ext to ask bpf core to enable priv stack,
+> and on the other side it's a request from bpf core to bpf jit
+> to allocate it.
 
-> But if those are absent, couldn't we just invoke a full clang
-> compile from source of the same file (so you could get the inlining even
-> when compiling with GCC)?
+You are right. I use the same priv_stack_requested to do two things.
 
-Yes, hybrid should work w/o problems if headers are dealt with in some
-other way.
+>
+> I think it's better to split these two conditions.
+> Extra bool is cheap.
+>
+> How about 'bool priv_stack_requested' will be used by sched-ext only
+> and patch 6 largely stays as-is.
+>
+> While patch 1 drops the introduction of priv_stack_requested flag.
+> Instead 'bool jits_use_priv_stack' is introduced in the patch 2
+> and used by JITs to allocate priv stack.
+>
+> I know we use 'jit_requested' to tell JITs to jit it,
+> so we can bike shed on alternative ways to name these two flags.
+
+Two bool's approach sound good to me. As you mentioned, two bool's
+are not expensive and can make logic cleaner. Will do in the next
+revision.
+
+>
+>>          return 0;
+>>   }
+>>
+>> @@ -20211,6 +20215,9 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+>>
+>>                  func[i]->aux->name[0] = 'F';
+>>                  func[i]->aux->stack_depth = env->subprog_info[i].stack_depth;
+>> +               if (env->subprog_info[i].priv_stack_mode == PRIV_STACK_ADAPTIVE)
+>> +                       func[i]->aux->priv_stack_requested = true;
+>> +
+>>                  func[i]->jit_requested = 1;
+>>                  func[i]->blinding_requested = prog->blinding_requested;
+>>                  func[i]->aux->kfunc_tab = prog->aux->kfunc_tab;
+>> --
+>> 2.43.5
+>>
 
 
