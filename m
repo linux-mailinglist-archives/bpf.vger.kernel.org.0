@@ -1,143 +1,195 @@
-Return-Path: <bpf+bounces-44380-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44381-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 355159C2538
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 19:58:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5E6F9C2542
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 20:01:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D9351C20FCD
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 18:58:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BA631C217F0
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 19:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6CE1A9B5D;
-	Fri,  8 Nov 2024 18:58:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3120219C572;
+	Fri,  8 Nov 2024 19:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Xq5j5PJA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VdgJVHgx"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39CB233D96
-	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 18:58:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9278E233D83
+	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 19:01:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731092302; cv=none; b=qdJzLA+Vb0kcxACefDPcBSp9J3nKTLXSXWLVNLre/iJVpNZG4JchSlIHvXf50jZczhguFPTkOUM/+I54tF9LlXJw72SHFkXmo+9671cE9snuJqu2vpBGqgfc67EPX9VDVpvhTC1cbskFUBP75QFGjprQsqeh7rw8mir4I2hK1YY=
+	t=1731092467; cv=none; b=FpYnHlgiJPGHrlebjaVqNCk91+/SmsapG4v/dP5zMC7ilEdGLJelmhSGDqgND3w5pouhhxJYFfKoVxAPHhsf3wG5ETIy9xiI3Z5kR2Uz1A5zbMp1RsQUX75SHRlvJe4tNWObPE/21CjUBC7sPlbvh8p2GErg4KsnPke/F5AnwZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731092302; c=relaxed/simple;
-	bh=y5z+A9NupvZs4nnBpZrmvKCzP+8ZODrJ/XnKXmyBZO8=;
+	s=arc-20240116; t=1731092467; c=relaxed/simple;
+	bh=VnvczCRmvxmbRu1VaVuyfuslYoJJuVqu5lcnkeVJ7oU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Nn6Tg/1wxAOhlGVPdUI1hR+qpopLGYihYhPUmsC7XKKCzwD8MBp8gPvqn3wfIuVc/3H+6PS5+CVeKB3j/jZs+9bscD6nU5a/AbgxQdsef6r0dtY2cR1BRe4/wmIhNb7TaMhplVvKb37rvd6X6Z4mAy3J2x1XnYSUiW3YoJNkKEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Xq5j5PJA; arc=none smtp.client-ip=95.215.58.186
+	 In-Reply-To:Content-Type; b=K2nORKF68DcthuNoh2CtLfKzAzucqhv/EclWAMTRb6vQBgM2e8V4cclTZzujeHq/3ivIC6aliqzqMkgcnhYdTOc5DpkpqJRh3haovn2yPfmPLMvwI/4mHpFutDj2UpPQGKF/ri/k37hQBsglrml2+aWEmW7uh5jEG5DXTt/4u9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VdgJVHgx; arc=none smtp.client-ip=95.215.58.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e4833d40-31d9-4de6-94b2-964870671006@linux.dev>
+Message-ID: <ae954e1c-46c0-4ee6-90b4-5b17880dba22@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731092297;
+	t=1731092463;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uKOz2Ke3deWKx3LB9Ol2VggCwIo/TvK8NNumftjVwTM=;
-	b=Xq5j5PJA9CgtkmeafRikaDn8aGf9Tv9Nhpqunc9lWXEq7vCl1W4FWeC/HaS7GkGFr8Xf7k
-	eq7io/Hys8sHq5dO135k6r/GkvSNv0pAri6W735l6BrK387GeAuR7OuE/u8/1bh6HVTALi
-	KDwjsa00h6dPh+bKaEbi8c3yVT6f0Gk=
-Date: Fri, 8 Nov 2024 10:58:09 -0800
+	bh=VoGK5QITX3hxcu+xCYFruci6yig+fA5PNRRZt9qp3EI=;
+	b=VdgJVHgxpUb5RzU0utX/2nSQE0ysgYDDaFQVvih9glcnumhZb5g9oYmxFd1v+qZWxDd7DH
+	/yHNcYc/OSISwDJjXbdC+j8t9GPXT9pr72q1oCeefISQrYyvmjeF2zB1X/zohLtT6loRW5
+	ubrEQnLZ0lnes0EpoEH8eLccvcShq8c=
+Date: Fri, 8 Nov 2024 11:00:58 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [BUG] WARNING: at lib/vsprintf.c:2659 format_decode+0x121a/0x1c00
-To: Yeqi Fu <fufuyqqqqqq@gmail.com>,
- "jakub@cloudflare.com" <jakub@cloudflare.com>,
- "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "edumazet@google.com" <edumazet@google.com>,
- "kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com"
- <pabeni@redhat.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
- bonan.ruan@u.nus.edu
-References: <D47BDD2E-217F-4F16-A74C-ADE4DA025FED@gmail.com>
+Subject: Re: [PATCH bpf-next] docs/bpf: Document some special sdiv/smod
+ operations
 Content-Language: en-GB
+To: Dave Thaler <dthaler1968@googlemail.com>,
+ 'Alexei Starovoitov' <alexei.starovoitov@gmail.com>
+Cc: bpf@ietf.org, 'bpf' <bpf@vger.kernel.org>,
+ 'Alexei Starovoitov' <ast@kernel.org>, 'Andrii Nakryiko'
+ <andrii@kernel.org>, 'Daniel Borkmann' <daniel@iogearbox.net>,
+ 'Martin KaFai Lau' <martin.lau@kernel.org>
+References: <20240927033904.2702474-1-yonghong.song@linux.dev>
+ <CAADnVQJZLRnT3J31CLB85by=SmC2UY1pmUZX0kkyePtVdTdy9A@mail.gmail.com>
+ <e93729b5-199f-4809-84f5-7efdf7c8aaf3@linux.dev>
+ <181301db143b$ba6fd9c0$2f4f8d40$@gmail.com>
+ <CAADnVQKDwZ0+Fjiz21AFAbOgEonVojvpojU1ZyQDu8V4Jm0DYQ@mail.gmail.com>
+ <000c01db3186$1dd30930$59791b90$@gmail.com>
+ <CAADnVQKHHvrJjAMuXC5-wQHfMfxoSXnOBnqrZ5PC7p3C8ut3rQ@mail.gmail.com>
+ <09ee01db320f$8d37bc60$a7a73520$@gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <D47BDD2E-217F-4F16-A74C-ADE4DA025FED@gmail.com>
+In-Reply-To: <09ee01db320f$8d37bc60$a7a73520$@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
 
 
 
-On 11/8/24 6:28 AM, Yeqi Fu wrote:
-> Hi there,
-> A warning is triggered in lib/vsprintf.c due to an unsupported '%' in a format string. This issue occurs in the function format_decode at line 2659 of kernel version 6.12.0-rc3-gb22db8b8befe. A proof-of-concept is available, and I have manually reproduced this bug.
-
-I think the below patch set (not merged yet)
-   https://lore.kernel.org/bpf/20241028195343.2104-1-rabbelkin@mail.ru/
-should fix this issue.
-
+On 11/8/24 10:53 AM, Dave Thaler wrote:
+>> -----Original Message-----
+>> From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+>> Sent: Friday, November 8, 2024 10:38 AM
+>> To: Dave Thaler <dthaler1968@googlemail.com>
+>> Cc: Yonghong Song <yonghong.song@linux.dev>; bpf@ietf.org; bpf
+>> <bpf@vger.kernel.org>; Alexei Starovoitov <ast@kernel.org>; Andrii Nakryiko
+>> <andrii@kernel.org>; Daniel Borkmann <daniel@iogearbox.net>; Martin KaFai Lau
+>> <martin.lau@kernel.org>
+>> Subject: Re: [PATCH bpf-next] docs/bpf: Document some special sdiv/smod
+>> operations
+>>
+>> On Thu, Nov 7, 2024 at 6:30 PM Dave Thaler <dthaler1968@googlemail.com>
+>> wrote:
+>>>
+>>> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>>>> On Tue, Oct 1, 2024 at 12:54 PM Dave Thaler
+>>>> <dthaler1968@googlemail.com>
+>>>> wrote:
+>>> [...]
+>>>>> I'm adding bpf@ietf.org to the To line since all changes in the
+>>>>> standardization directory should include that mailing list.
+>>>>>
+>>>>> The WG should discuss whether any changes should be done via a new
+>>>>> RFC that obsoletes the first one, or as RFCs that Update and just
+>>>>> describe deltas (additions, etc.).
+>>>>>
+>>>>> There are precedents both ways and I don't have a strong
+>>>>> preference, but I have a weak preference for delta-based ones
+>>>>> since they're shorter and are less likely to re-open discussion on
+>>>>> previously resolved issues, thus often saving the WG time.
+>>>> Delta-based additions make sense to me.
+>>>>
+>>>>> Also FYI to Linux kernel folks:
+>>>>> With WG and AD approval, it's also possible (but not ideal) to
+>>>>> take changes at AUTH48.  That'd be up to the chairs and AD to
+>>>>> decide though, and normally that's just for purely editorial
+>>>>> clarifications, e.g., to confusion called out by the RFC editor pass.
+>>>> Also agree. We should keep AUTH going its course as-is.
+>>>> All ISA additions can be in the future delta RFC.
+>>>>
+>>>> As far as file logistics... my preference is to keep
+>>>> Documentation/bpf/standardization/instruction-set.rst
+>>>> up to date.
+>>>> Right now it's effectively frozen while awaiting changes (if any) necessary for
+>> AUTH.
+>>>> After official RFC is issued we can start landing patches into
+>>>> instruction-set.rst and git diff 04efaebd72d1..whatever_future_sha
+>>>> instruction-set.rst will automatically generate the future delta RFC.
+>>>> Once RFC number is issued we can add a git tag for the particular
+>>>> sha that was the base for RFC as a documentation step and to simplify future 'git
+>> diff'.
+>>> My concern is that index.rst says:
+>>>> This directory contains documents that are being iterated on as part
+>>>> of the BPF standardization effort with the IETF. See the `IETF BPF
+>>>> Working Group`_ page for the working group charter, documents, and more.
+>>> So having a document that is NOT part of the IETF BPF Working Group
+>>> would seem out of place and, in my view, better located up a level (outside
+>> standardization).
+>>
+>> It's a part of bpf wg. It's not a new document.
+> RFC 9669 is immutable.  Any additions require a new document, in
+> IETF terminology, since would result in a new RFC number.
 >
-> Report:
-> ```
-> Please remove unsupported % in format string
-> WARNING: CPU: 1 PID: 29307 at lib/vsprintf.c:2659 format_decode+0x121a/0x1c00 lib/vsprintf.c:2659
-> Modules linked in:
-> CPU: 1 UID: 0 PID: 29307 Comm: syz.5.9298 Not tainted 6.12.0-rc3-gb22db8b8befe #2
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-> RIP: 0010:format_decode+0x121a/0x1c00 lib/vsprintf.c:2659
-> Code: 8b 9c 24 80 00 00 00 48 89 d8 48 c1 e8 03 42 8a 04 30 84 c0 0f 85 d5 09 00 00 0f b6 33 48 c7 c7 00 bd eb 92 e8 b7 59 67 fc 90 <0f> 0b 90 90 4d 89 f7 48 8b 5c 24 18 e9 d7 fc ff ff 89 d1 80 e1 07
-> RSP: 0018:ffff888041197600 EFLAGS: 00010246
-> RAX: ea46d93351edcc00 RBX: ffff88804119792c RCX: ffff888009a78000
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: ffff8880411976f0 R08: ffffffff8ebc8e3b R09: 1ffff1100d9e515a
-> R10: dffffc0000000000 R11: ffffed100d9e515b R12: ffff0000ffffff00
-> R13: ffff888041197700 R14: dffffc0000000000 R15: dffffc0000000000
-> FS: 00007fbe06321640(0000) GS:ffff88806cf00000(0000) knlGS:0000000000000000
-> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020a8c000 CR3: 00000000404b6005 CR4: 0000000000370ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
-> <TASK>
-> bstr_printf+0x136/0x1260 lib/vsprintf.c:3232
-> ____bpf_trace_printk kernel/trace/bpf_trace.c:389 [inline]
-> bpf_trace_printk+0x1a1/0x220 kernel/trace/bpf_trace.c:374
-> bpf_prog_7ee8fe4dad0c4460+0x4e/0x50
-> bpf_dispatcher_nop_func include/linux/bpf.h:1257 [inline]
-> __bpf_prog_run include/linux/filter.h:692 [inline]
-> bpf_prog_run include/linux/filter.h:708 [inline]
-> bpf_test_run+0x7a9/0x910 net/bpf/test_run.c:433
-> bpf_prog_test_run_skb+0xc47/0x1750 net/bpf/test_run.c:1094
-> bpf_prog_test_run+0x2df/0x350 kernel/bpf/syscall.c:4247
-> __sys_bpf+0x484/0x850 kernel/bpf/syscall.c:5652
-> __do_sys_bpf kernel/bpf/syscall.c:5741 [inline]
-> __se_sys_bpf kernel/bpf/syscall.c:5739 [inline]
-> __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5739
-> do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> do_syscall_64+0xd8/0x1c0 arch/x86/entry/common.c:83
-> entry_SYSCALL_64_after_hwframe+0x67/0x6f
-> RIP: 0033:0x7fbe07ccd72d
-> Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fbe06320f98 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 00007fbe07ea5f80 RCX: 00007fbe07ccd72d
-> RDX: 0000000000000050 RSI: 0000000020000700 RDI: 000000000000000a
-> RBP: 00007fbe07d57584 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 0000000000000000 R14: 00007fbe07ea5f80 R15: 00007fbe06301000
-> </TASK>
-> irq event stamp: 39314
-> hardirqs last enabled at (39324): [<ffffffff8ed766cb>] __up_console_sem kernel/printk/printk.c:344 [inline]
-> hardirqs last enabled at (39324): [<ffffffff8ed766cb>] __console_unlock+0xfb/0x130 kernel/printk/printk.c:2844
-> hardirqs last disabled at (39335): [<ffffffff8ed766b0>] __up_console_sem kernel/printk/printk.c:342 [inline]
-> hardirqs last disabled at (39335): [<ffffffff8ed766b0>] __console_unlock+0xe0/0x130 kernel/printk/printk.c:2844
-> softirqs last enabled at (38482): [<ffffffff9195aaea>] bpf_test_run+0x31a/0x910
-> softirqs last disabled at (38484): [<ffffffff9195aaea>] bpf_test_run+0x31a/0x910
-> ---[ end trace 0000000000000000 ]---
-> ```
-[...]
+>>> Here’s some examples of delta-based RFCs which explain the gap and
+>>> provide the addition or clarification, and formally Update (not
+>>> replace/obsolete) the original
+>>> RFC:
+>>> * https://www.rfc-editor.org/rfc/rfc6585.html: Additional HTTP Status
+>>> Codes
+>>> * https://www.rfc-editor.org/rfc/rfc6840.html: Clarifications and Implementation
+>> Notes
+>>>     for DNS Security (DNSSEC)
+>>> * https://www.rfc-editor.org/rfc/rfc9295.html: Clarifications for Ed25519, Ed448,
+>>>     X25519, and X448 Algorithm Identifiers
+>>> * https://www.rfc-editor.org/rfc/rfc5756.html: Updates for RSAES-OAEP and
+>>>     RSASSA-PSS Algorithm Parameters
+>>>
+>>> Having a full document too is valuable but unless the IETF BPF WG
+>>> decides to take on a -bis document, I'd suggest keeping it out of the
+>> "standardization"
+>>> (say up 1 level) to avoid confusion, and just have one or more
+>>> delta-based rst files in the standardization directory.
+>> This patch is effectively a fix to the standard.
+> Two of the examples I provided above fit into that category.
+> Two are examples of adding new codepoints.
+>
+>> It's a standard git development process when fixes are applied to the existing
+>> document.
+>> Forking the whole doc into a different file just to apply fixes makes no sense to me.
+> Welcome to the IETF and immutable RFCs 😊
+>
+>> The formal delta-s for IETF can be created out of git.
+> Not in the IETF per se, since a new document needs new boilerplate, with
+> a new abstract, introduction, etc.  At most, part of the document could be created
+> out of git, but I'm not convinced that git diffs alone (as opposed to some English
+> prose too for each, as in the examples I cited) make for good content in an IETF document.
+>
+>> We only need to tag the current version and then git diff rfc9669_tag..HEAD will give
+>> us that delta.
+>> That will satisfy IETF process and won't mess up normal git style kernel
+>> development.
+> I am not convinced it is sufficient.  Can you point to any precedents in the IETF for
+> such an approach?  I can't offhand... See the RFC 5756 reference above for what
+> I mean by English prose for each diff.
+
+I think we can add sufficient details in the commit message. What things we need to
+put in the commit message to satisfy the rIETF equirement?
+
+>> btw do we still need to do any minor edit/fixes to instruction-set.rst before tagging it
+>> as RFC9669 ?
+> Yes, we need to backport the formatting/nits from the RFC editor pass.
+>
+> Dave
+>
+
 
