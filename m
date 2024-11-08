@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-44352-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44353-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 865119C1E68
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 14:49:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF4EA9C1E6A
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 14:49:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3388B2187A
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 13:49:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 692B9283C46
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 13:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6201F12EF;
-	Fri,  8 Nov 2024 13:48:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F221F4FCB;
+	Fri,  8 Nov 2024 13:48:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aGJdCzle"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AvJaPW2L"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B75E1EF935;
-	Fri,  8 Nov 2024 13:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFDA1EB9FA;
+	Fri,  8 Nov 2024 13:48:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731073713; cv=none; b=UcYA/eyWVwZjJ5oL//D4BzvNCTlWh7Pg+Fr4EjZptOUD+Ylg3/esXLpIrCeBGKBwWbmf8vHmEUJ8arKmxFP709h8ZKWPsvwwr1NjCBp1bSlOGv5q5f5teKXDWxtnc12YeUJrP7wQhEQC4EXY0xLBBzCWlZeZlw/ipjL6sEUmNZM=
+	t=1731073725; cv=none; b=rRx26CTg3TotEOQvMNjPgjxxCuAcxjHpMcxuNEJw/k2Jl8X10L8MEAIH9jf57rNaNSxRYIWFz74wB2GYp6gjRbFcIiMemZouxVXGQ9ZtpFi6j61MmywKby3jkpBihwj7b3j/P28G06XNmeX1PWybYq7S1y2DI5TRdTpOvSea9YM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731073713; c=relaxed/simple;
-	bh=m03RbtHaJ1wSanq35C6qO/NPF0kBT1tb+6ISO1ytOW4=;
+	s=arc-20240116; t=1731073725; c=relaxed/simple;
+	bh=y2Tog37CDq5vumXRee4x6T/zmLQfZs28g05NoM6hSq0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YGUv2atwc4+PI6WQsGy1H0R/lkHoTBn8R9DX7iVJ7RXvqc9+sD3TQP47319pSiYHNYg8snbdmQ+aFRP6zLbbaxLTqUupS54rpRXlEHqkixuoKOJ5NQvONIyGXUB5iWOQzzDVc8Nj4lRz100RkcnZfmBWCygFsBgO6w8Zv20OAX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aGJdCzle; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 010CAC4CECD;
-	Fri,  8 Nov 2024 13:48:26 +0000 (UTC)
+	 MIME-Version; b=M9FEp3xzPIl0/ptKk94uD2BVBdMWowaCiCOCZy3HKAY4zyIEV26lXPeqJ24/DrHRcfY1glZadJhBY0EnJKPbK+bfIOCH1HrTjM9bdBeEAwL+6ZaSRFOSEdomYX5Ot1UTAMvZvOAUhYbdzVeiABoQqrhM9QSLa/qkuJGmiWWCMCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AvJaPW2L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD75BC4CECD;
+	Fri,  8 Nov 2024 13:48:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731073713;
-	bh=m03RbtHaJ1wSanq35C6qO/NPF0kBT1tb+6ISO1ytOW4=;
+	s=k20201202; t=1731073725;
+	bh=y2Tog37CDq5vumXRee4x6T/zmLQfZs28g05NoM6hSq0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aGJdCzlecrywibVbzhuyKuvtSemKstgo8Sy+6c+vUXX79ZNTH/DSCr8N+7PTuF+2h
-	 I9hIR6Sj86r4+oIr4mAEQRyYjpeZ4s1EjBZ7/dunowrHTglzdRFGSARAoF8F8KSzvg
-	 5A9vsQUOplKji20dnQjuZ6xkHh4vcvojCWpprcqcgg2nJFf4dUD/FrfiaKcxRbGBUo
-	 +mWxWuGG+jg8mlNegsIDPAETwOb6yaLx2UUKhqZQgU/LlSat8SK18rDVcVT7mgPJ+Z
-	 bUDPHeK2VcUL1W/BC9y18Owaelr6CsX7f7Gs7GFQqsdDJoOrjUe+D0ph3jX+s4mXr1
-	 WPyKKB78xAdvg==
+	b=AvJaPW2L1CCTjghfq2amjC6JDoVXTOgVFGENcUmVgsoAFAGYRK6uU1pbTUgfwpwCh
+	 6YYf9AqurRPPXeR0Q1eaK41Tq6BZYHwSUdSp+abSfE+9WKoM29k9ClTPA2vYJVAQIZ
+	 13oG/FCWNtR2l1622SDXKXzxDKBhUgjL2lmT+avEOtqX7inwa+pit78sJfy5jDp/Ll
+	 0RztyJVVSwAbUPX20L9MQuxBk8MYnUucKcfVtE9C7wlQcnCt9x4FUTfsv6cTwavkHM
+	 HNV54ukyEQK8/flhTncBgZx1Se2UGnxgBoIf/CuncqaOqI4A8/xaIOVuGkt0syhx94
+	 dy19EmvrhcGyg==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCHv9 bpf-next 12/13] selftests/bpf: Add uprobe sessions to consumer test
-Date: Fri,  8 Nov 2024 14:45:43 +0100
-Message-ID: <20241108134544.480660-13-jolsa@kernel.org>
+Subject: [PATCHv9 bpf-next 13/13] selftests/bpf: Add threads to consumer test
+Date: Fri,  8 Nov 2024 14:45:44 +0100
+Message-ID: <20241108134544.480660-14-jolsa@kernel.org>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241108134544.480660-1-jolsa@kernel.org>
 References: <20241108134544.480660-1-jolsa@kernel.org>
@@ -73,174 +73,225 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding uprobe session consumers to the consumer test,
-so we get the session into the test mix.
+With recent uprobe fix [1] the sync time after unregistering uprobe is
+much longer and prolongs the consumer test which creates and destroys
+hundreds of uprobes.
 
-In addition scaling down the test to have just 1 uprobe
-and 1 uretprobe, otherwise the test time grows and is
-unsuitable for CI even with threads.
+This change adds 16 threads (which fits the test logic) and speeds up
+the test.
 
+Before the change:
+
+  # perf stat --null ./test_progs -t uprobe_multi_test/consumers
+  #421/9   uprobe_multi_test/consumers:OK
+  #421     uprobe_multi_test:OK
+  Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+
+   Performance counter stats for './test_progs -t uprobe_multi_test/consumers':
+
+        28.818778973 seconds time elapsed
+
+         0.745518000 seconds user
+         0.919186000 seconds sys
+
+After the change:
+
+  # perf stat --null ./test_progs -t uprobe_multi_test/consumers 2>&1
+  #421/9   uprobe_multi_test/consumers:OK
+  #421     uprobe_multi_test:OK
+  Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+
+   Performance counter stats for './test_progs -t uprobe_multi_test/consumers':
+
+         3.504790814 seconds time elapsed
+
+         0.012141000 seconds user
+         0.751760000 seconds sys
+
+[1] commit 87195a1ee332 ("uprobes: switch to RCU Tasks Trace flavor for better performance")
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../bpf/prog_tests/uprobe_multi_test.c        | 70 +++++++++++++------
- .../bpf/progs/uprobe_multi_consumers.c        |  6 +-
- 2 files changed, 52 insertions(+), 24 deletions(-)
+ .../bpf/prog_tests/uprobe_multi_test.c        | 98 +++++++++++++++----
+ 1 file changed, 80 insertions(+), 18 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-index 93f5cabd6d01..0a31ba2d6fb2 100644
+index 0a31ba2d6fb2..2ee17ef1dae2 100644
 --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
 +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-@@ -799,10 +799,13 @@ static int uprobe_attach(struct uprobe_multi_consumers *skel, int idx)
+@@ -789,7 +789,7 @@ get_link(struct uprobe_multi_consumers *skel, int link)
+ 	}
+ }
+ 
+-static int uprobe_attach(struct uprobe_multi_consumers *skel, int idx)
++static int uprobe_attach(struct uprobe_multi_consumers *skel, int idx, unsigned long offset)
+ {
+ 	struct bpf_program *prog = get_program(skel, idx);
+ 	struct bpf_link **link = get_link(skel, idx);
+@@ -798,6 +798,9 @@ static int uprobe_attach(struct uprobe_multi_consumers *skel, int idx)
+ 	if (!prog || !link)
  		return -1;
  
++	opts.offsets = &offset;
++	opts.cnt = 1;
++
  	/*
--	 * bit/prog: 0,1 uprobe entry
--	 * bit/prog: 2,3 uprobe return
-+	 * bit/prog: 0 uprobe entry
-+	 * bit/prog: 1 uprobe return
-+	 * bit/prog: 2 uprobe session without return
-+	 * bit/prog: 3 uprobe session with return
- 	 */
--	opts.retprobe = idx == 2 || idx == 3;
-+	opts.retprobe = idx == 1;
-+	opts.session  = idx == 2 || idx == 3;
+ 	 * bit/prog: 0 uprobe entry
+ 	 * bit/prog: 1 uprobe return
+@@ -807,9 +810,7 @@ static int uprobe_attach(struct uprobe_multi_consumers *skel, int idx)
+ 	opts.retprobe = idx == 1;
+ 	opts.session  = idx == 2 || idx == 3;
  
- 	*link = bpf_program__attach_uprobe_multi(prog, 0, "/proc/self/exe",
- 						"uprobe_consumer_test",
-@@ -867,31 +870,55 @@ static int consumer_test(struct uprobe_multi_consumers *skel,
+-	*link = bpf_program__attach_uprobe_multi(prog, 0, "/proc/self/exe",
+-						"uprobe_consumer_test",
+-						&opts);
++	*link = bpf_program__attach_uprobe_multi(prog, 0, "/proc/self/exe", NULL, &opts);
+ 	if (!ASSERT_OK_PTR(*link, "bpf_program__attach_uprobe_multi"))
+ 		return -1;
+ 	return 0;
+@@ -830,7 +831,8 @@ static bool test_bit(int bit, unsigned long val)
+ 
+ noinline int
+ uprobe_consumer_test(struct uprobe_multi_consumers *skel,
+-		     unsigned long before, unsigned long after)
++		     unsigned long before, unsigned long after,
++		     unsigned long offset)
+ {
+ 	int idx;
+ 
+@@ -843,15 +845,43 @@ uprobe_consumer_test(struct uprobe_multi_consumers *skel,
+ 	/* ... and attach all new programs in 'after' state */
+ 	for (idx = 0; idx < 4; idx++) {
+ 		if (!test_bit(idx, before) && test_bit(idx, after)) {
+-			if (!ASSERT_OK(uprobe_attach(skel, idx), "uprobe_attach_after"))
++			if (!ASSERT_OK(uprobe_attach(skel, idx, offset), "uprobe_attach_after"))
+ 				return -1;
+ 		}
+ 	}
+ 	return 0;
+ }
+ 
++/*
++ * We generate 16 consumer_testX functions that will have uprobe installed on
++ * and will be called in separate threads. All function pointer are stored in
++ * "consumers" section and each thread will pick one function based on index.
++ */
++
++extern const void *__start_consumers;
++
++#define __CONSUMER_TEST(func) 							\
++noinline int func(struct uprobe_multi_consumers *skel, unsigned long before,	\
++		  unsigned long after, unsigned long offset)			\
++{										\
++	return uprobe_consumer_test(skel, before, after, offset);		\
++}										\
++void *__ ## func __used __attribute__((section("consumers"))) = (void *) func;
++
++#define CONSUMER_TEST(func) __CONSUMER_TEST(func)
++
++#define C1  CONSUMER_TEST(__PASTE(consumer_test, __COUNTER__))
++#define C4  C1 C1 C1 C1
++#define C16 C4 C4 C4 C4
++
++C16
++
++typedef int (*test_t)(struct uprobe_multi_consumers *, unsigned long,
++		      unsigned long, unsigned long);
++
+ static int consumer_test(struct uprobe_multi_consumers *skel,
+-			 unsigned long before, unsigned long after)
++			 unsigned long before, unsigned long after,
++			 test_t test, unsigned long offset)
+ {
+ 	int err, idx, ret = -1;
+ 
+@@ -860,12 +890,12 @@ static int consumer_test(struct uprobe_multi_consumers *skel,
+ 	/* 'before' is each, we attach uprobe for every set idx */
+ 	for (idx = 0; idx < 4; idx++) {
+ 		if (test_bit(idx, before)) {
+-			if (!ASSERT_OK(uprobe_attach(skel, idx), "uprobe_attach_before"))
++			if (!ASSERT_OK(uprobe_attach(skel, idx, offset), "uprobe_attach_before"))
+ 				goto cleanup;
+ 		}
+ 	}
+ 
+-	err = uprobe_consumer_test(skel, before, after);
++	err = test(skel, before, after, offset);
+ 	if (!ASSERT_EQ(err, 0, "uprobe_consumer_test"))
  		goto cleanup;
  
- 	for (idx = 0; idx < 4; idx++) {
-+		bool uret_stays, uret_survives;
- 		const char *fmt = "BUG";
- 		__u64 val = 0;
+@@ -934,14 +964,46 @@ static int consumer_test(struct uprobe_multi_consumers *skel,
+ 	return ret;
+ }
  
--		if (idx < 2) {
-+		switch (idx) {
-+		case 0:
- 			/*
- 			 * uprobe entry
- 			 *   +1 if define in 'before'
- 			 */
- 			if (test_bit(idx, before))
- 				val++;
--			fmt = "prog 0/1: uprobe";
--		} else {
-+			fmt = "prog 0: uprobe";
-+			break;
-+		case 1:
- 			/*
- 			 * To trigger uretprobe consumer, the uretprobe under test either stayed from
- 			 * before to after (uret_stays + test_bit) or uretprobe instance survived and
- 			 * we have uretprobe active in after (uret_survives + test_bit)
- 			 */
--
--			bool uret_stays = before & after & 0b1100;
--			bool uret_survives = (before & 0b1100) && (after & 0b1100) && (before & 0b0011);
-+			uret_stays = before & after & 0b0110;
-+			uret_survives = ((before & 0b0110) && (after & 0b0110) && (before & 0b1001));
+-static void test_consumers(void)
++#define CONSUMER_MAX 16
++
++/*
++ * Each thread runs 1/16 of the load by running test for single
++ * 'before' number (based on thread index) and full scale of
++ * 'after' numbers.
++ */
++static void *consumer_thread(void *arg)
+ {
++	unsigned long idx = (unsigned long) arg;
+ 	struct uprobe_multi_consumers *skel;
+-	int before, after;
++	unsigned long offset;
++	const void *func;
++	int after;
  
- 			if ((uret_stays || uret_survives) && test_bit(idx, after))
- 				val++;
--
--			fmt = "idx 2/3: uretprobe";
-+			fmt = "prog 1: uretprobe";
-+			break;
-+		case 2:
-+			/*
-+			 * session with return
-+			 *  +1 if defined in 'before'
-+			 *  +1 if defined in 'after'
-+			 */
-+			if (test_bit(idx, before)) {
-+				val++;
-+				if (test_bit(idx, after))
-+					val++;
-+			}
-+			fmt = "prog 2: session with return";
-+			break;
-+		case 3:
-+			/*
-+			 * session without return
-+			 *   +1 if defined in 'before'
-+			 */
-+			if (test_bit(idx, before))
-+				val++;
-+			fmt = "prog 3: session with NO return";
-+			break;
- 		}
+ 	skel = uprobe_multi_consumers__open_and_load();
+ 	if (!ASSERT_OK_PTR(skel, "uprobe_multi_consumers__open_and_load"))
+-		return;
++		return NULL;
++
++	func = *((&__start_consumers) + idx);
++
++	offset = get_uprobe_offset(func);
++	if (!ASSERT_GE(offset, 0, "uprobe_offset"))
++		goto out;
++
++	for (after = 0; after < CONSUMER_MAX; after++)
++		if (consumer_test(skel, idx, after, func, offset))
++			goto out;
++
++out:
++	uprobe_multi_consumers__destroy(skel);
++	return NULL;
++}
++
++
++static void test_consumers(void)
++{
++	pthread_t pt[CONSUMER_MAX];
++	unsigned long idx;
++	int err;
  
- 		if (!ASSERT_EQ(skel->bss->uprobe_result[idx], val, fmt))
-@@ -920,8 +947,10 @@ static void test_consumers(void)
+ 	/*
  	 * The idea of this test is to try all possible combinations of
- 	 * uprobes consumers attached on single function.
- 	 *
--	 *  - 2 uprobe entry consumer
--	 *  - 2 uprobe exit consumers
-+	 *  - 1 uprobe entry consumer
-+	 *  - 1 uprobe exit consumer
-+	 *  - 1 uprobe session with return
-+	 *  - 1 uprobe session without return
- 	 *
- 	 * The test uses 4 uprobes attached on single function, but that
- 	 * translates into single uprobe with 4 consumers in kernel.
-@@ -929,25 +958,24 @@ static void test_consumers(void)
- 	 * The before/after values present the state of attached consumers
- 	 * before and after the probed function:
- 	 *
--	 *  bit/prog 0,1 : uprobe entry
--	 *  bit/prog 2,3 : uprobe return
-+	 *  bit/prog 0 : uprobe entry
-+	 *  bit/prog 1 : uprobe return
- 	 *
- 	 * For example for:
- 	 *
--	 *   before = 0b0101
--	 *   after  = 0b0110
-+	 *   before = 0b01
-+	 *   after  = 0b10
- 	 *
- 	 * it means that before we call 'uprobe_consumer_test' we attach
- 	 * uprobes defined in 'before' value:
- 	 *
--	 *   - bit/prog 0: uprobe entry
--	 *   - bit/prog 2: uprobe return
-+	 *   - bit/prog 1: uprobe entry
- 	 *
- 	 * uprobe_consumer_test is called and inside it we attach and detach
- 	 * uprobes based on 'after' value:
- 	 *
--	 *   - bit/prog 0: stays untouched
--	 *   - bit/prog 2: uprobe return is detached
-+	 *   - bit/prog 0: is detached
-+	 *   - bit/prog 1: is attached
- 	 *
- 	 * uprobe_consumer_test returns and we check counters values increased
- 	 * by bpf programs on each uprobe to match the expected count based on
-diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi_consumers.c b/tools/testing/selftests/bpf/progs/uprobe_multi_consumers.c
-index 7e0fdcbbd242..93752bb5690b 100644
---- a/tools/testing/selftests/bpf/progs/uprobe_multi_consumers.c
-+++ b/tools/testing/selftests/bpf/progs/uprobe_multi_consumers.c
-@@ -24,16 +24,16 @@ int uprobe_1(struct pt_regs *ctx)
- 	return 0;
+@@ -982,14 +1044,14 @@ static void test_consumers(void)
+ 	 * before/after bits.
+ 	 */
+ 
+-	for (before = 0; before < 16; before++) {
+-		for (after = 0; after < 16; after++)
+-			if (consumer_test(skel, before, after))
+-				goto out;
++	for (idx = 0; idx < CONSUMER_MAX; idx++) {
++		err = pthread_create(&pt[idx], NULL, consumer_thread, (void *) idx);
++		if (!ASSERT_OK(err, "pthread_create"))
++			break;
+ 	}
+ 
+-out:
+-	uprobe_multi_consumers__destroy(skel);
++	while (idx)
++		pthread_join(pt[--idx], NULL);
  }
  
--SEC("uprobe.multi")
-+SEC("uprobe.session")
- int uprobe_2(struct pt_regs *ctx)
- {
- 	uprobe_result[2]++;
- 	return 0;
- }
- 
--SEC("uprobe.multi")
-+SEC("uprobe.session")
- int uprobe_3(struct pt_regs *ctx)
- {
- 	uprobe_result[3]++;
--	return 0;
-+	return 1;
- }
+ static struct bpf_program *uprobe_multi_program(struct uprobe_multi_pid_filter *skel, int idx)
 -- 
 2.47.0
 
