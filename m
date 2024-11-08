@@ -1,242 +1,123 @@
-Return-Path: <bpf+bounces-44308-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44309-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 044FE9C12DC
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 01:02:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FC699C138D
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 02:21:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 275281C22740
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 00:02:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1CD41C223F4
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2024 01:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8823C28F7;
-	Fri,  8 Nov 2024 00:02:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2765B3D6D;
+	Fri,  8 Nov 2024 01:21:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="c4zLCZ4F"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kmRlcWQX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C5418D
-	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 00:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 110597464
+	for <bpf@vger.kernel.org>; Fri,  8 Nov 2024 01:20:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731024150; cv=none; b=CR12Rep5jjOpR7gv1G2huJVNC17CrsAHdLASkptlDL8zvaF77Cpa4Jd1wQ6gp38qf2jG5SiwmvGk3GPfpZeUm2CuOf0veMLpFuGMric56ffi2dU0rO1KuXSpfVXlX1M/dRSmJdRWhO5Ao8Q/FxZS2RPWfJ+63FenM7vE7PvVRS0=
+	t=1731028861; cv=none; b=WZj3T8yqLJvAGe2zHg2ae3skzrlBCBi1tir9nNQTeYAbN42AM8OQ78bs5tsyq6zi7rfA4V2UYFB8N8OUM6nvHTTNfIIioG51Yth5OfNtENL33aqCIb+H31D9R2KqaHwcLbyhnrrJptIjTsZmXFNAsinI1moMPY0o0VITYkL2uyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731024150; c=relaxed/simple;
-	bh=2MG9//RGDvIRpUHiW6s38hbiGw2pARbllLQUrUn/NSk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=srT9iYiaP8cZzcLXRl2dobmnzEi9aLSNq9OCoNbX11+cbvlFs46kIzGbD9XXDi2xzZX47Oa/m4qrO2VX8LCQs8oCngPCNfb4BD4aWmwQ0mFfX6GAIjceCo+gFfgnSR+eQmVE0Ar4VsELsfdroLdzlnfkrIIGAMd5tMeI9WyOdAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=c4zLCZ4F; arc=none smtp.client-ip=209.85.160.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-460ace055d8so9826551cf.1
-        for <bpf@vger.kernel.org>; Thu, 07 Nov 2024 16:02:26 -0800 (PST)
+	s=arc-20240116; t=1731028861; c=relaxed/simple;
+	bh=y2Z6rDXqtVhYy+az9EA6lxeENtS7gCrnC+61nB1PU3E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Lks4lopWS388eS0c8zNUzYtj86Oi7tbDn8g9/+PYtBMZNVgdSevibSWlPsEaiDVXMPlG1Uh5GDer7r+iZEY9PFYTqCRBzbVoEPOxO62gFpuyq7QQ94KB+ZbPykeT1Clbyfwj0OwnAXRtXZdQXZBf0y3PFNY5AHPc/mSKha7x+gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kmRlcWQX; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-37d518f9abcso1001901f8f.2
+        for <bpf@vger.kernel.org>; Thu, 07 Nov 2024 17:20:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1731024146; x=1731628946; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9JHLVzplk+fSvzu6Q2t8SmBivUJYy0aGjGNOZjNnsGM=;
-        b=c4zLCZ4FwW0uNan18rsJ30kpP5mkZtC88zvXy/gXmzNzuStwHag8yuJ/tc7CFmWBZc
-         +xlPUjKsr4//N9y4fv3Misk121FLmp1T5VAZmWPsTMdEEdEkJlfhuGZ3Gha8DjFFKXSl
-         WZ19tQWkerFc853LXsL10gBK52j20bCQEVQsrskbC8qwdFYVKCO6Ke1ZC2sVN2ZVQUOR
-         jbgYfpUTceDtT9eVWY+gGtjuH6XCqDhBfZSa7u/njyT6/mmKIf1ywA2FSOJsb4PtxQxL
-         97P80DS7PcTfUo6boTWouOEgguV4PLbGik66JyWqY4eNCo4sWS6Et3tATb5wD8sMYB1x
-         6MLA==
+        d=gmail.com; s=20230601; t=1731028858; x=1731633658; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=csXEQJ0hOWDqTcb5yESFfn1ne2rBnPQKOjpHE+1KT3o=;
+        b=kmRlcWQXXtou7DD7L7Jc+lsC14E/WYm2naD9SqFXJcgyTvB0JQrRZWRCe3HLW1PKsg
+         zBCENWpRrAw9GcLKjaGRyN6b/UDv4C60bU1o5DuvABKRFeSH9ciCjLhEBvBrE6m9S4MB
+         UhBQQ1uvQ7Q/PZ8BK8uKoyzc56nhRznKgH/DxbK5ymbGV5Jz/DFnDoRlqB3rmCZpaS+N
+         H4VCjXDR/9ZH+KWX5KDrGZv51t9TOMpPoei4nKano+8RE2WFQ2p0sZlugMQHTrb8GMg1
+         VMBtkoNggAihgFbTB8/hcRVRX85FTD7MPK2aTNozrLQXFBklJWfa/DMp+izwfX0cK5nQ
+         6DLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731024146; x=1731628946;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9JHLVzplk+fSvzu6Q2t8SmBivUJYy0aGjGNOZjNnsGM=;
-        b=Y0bJy6KKuyx4vVVQH8C1nl3UUUXNKVLFsAMar6a4RBptaxiH5MxGITlKZRifyDpLsb
-         lz5guN0XxKj2CaX0+55PUN2CK4TSi5/1kuXvpKIm7B1jBaWuhX4Ty8LOqdyBavXlbNJf
-         p6FgZ8lQAxu/fOv7gA1l5f9WQSohC0Ffg21E+LHdz9/DpPxLEDqJrX4J5AwjXpYmRBKf
-         P+Q4ag37y1s7YapdBnbl5+C9VCe36l1+uxlTaNOHrlPo/fLZ4KxB/7vEGW1unO/wd/vc
-         T4mDzqXPcEvV5qExivy8sRG/sTbs62ocF20gLVQY6QE5BujSEnCSSSXsXKdm2DaMspvR
-         P1tg==
-X-Gm-Message-State: AOJu0YxgtxZaQSyIzGG+HjJb23UKl/mt86anGOsiMhcyhuu5icRo5DHH
-	JDQwQQE5PurrZX88hVKAEmtJrjf860nrBuXLUSaAB559Q0aXymAIxTEWY/ISCqvjN/iwFyAiR7U
-	k
-X-Google-Smtp-Source: AGHT+IE16mkFJKOM+UYMHKJ+xXAGCdoxHpEChKkBovuwExlvIWljbPf2YHP6Lfspclv8pfBc1LD7ew==
-X-Received: by 2002:ac8:594e:0:b0:461:1c54:5bcd with SMTP id d75a77b69052e-46309339b1emr11277051cf.13.1731024145805;
-        Thu, 07 Nov 2024 16:02:25 -0800 (PST)
-Received: from [10.73.215.90] ([72.29.204.230])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-462ff4671f6sm13410171cf.39.2024.11.07.16.02.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Nov 2024 16:02:24 -0800 (PST)
-Message-ID: <67a0fb14-f791-4499-8751-01bbbd1cafcb@bytedance.com>
-Date: Thu, 7 Nov 2024 16:02:19 -0800
+        d=1e100.net; s=20230601; t=1731028858; x=1731633658;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=csXEQJ0hOWDqTcb5yESFfn1ne2rBnPQKOjpHE+1KT3o=;
+        b=t4peM9aZUbSTWQX/msIvdgwXAXlf9QPUTYpU+yJkr4mv+ykP3rlu6Ig+zERCLyQ8WE
+         p16N5xAxwMMnkITOnahxNgloM43JwTk0QYLQKYn7aEVOdr15KavmcdIuG/5knps+R0Hi
+         eULKNHnllViP9hf1ryg84Sodwt5/v+U6d7yZ0iRJwNSSf04x2Gun7L9zpgsHeCO4UYNk
+         pltbfwzfKG3V2jMIwhQ4Gk12k7vQZFFP/cG+h6RzrhjP8DD14BLxwQVeMltdykAJJ3ml
+         AKDyMUd7P3TL9RT0I2DHkgLjNNVwOOOK2ZQIhvcgg3fF2wj+PgxUKzLd3CPpzxptsGAe
+         odWA==
+X-Gm-Message-State: AOJu0YykSRhtnjBALl2LD5ymxcuKsqgz5HWaWY+Xf/1+kwF1jVsrkvuT
+	D/gmKlmueriLDTT4hbIPVpv6h1ka19wHBAHPmrCYhL4N3+rYFoeyXpnM90TvWJxEmfyo8PfcGgs
+	AAZh0Lo7zU0QgZKT96MJZ4pitMSllJw==
+X-Google-Smtp-Source: AGHT+IGv+N35bYAXi2ED91kiigdt2gFXgegiInZyRgIz29V/KnLU08Z7EGRSjBE/pUniNsL6oH5bCieF8fIFO/nhyIo=
+X-Received: by 2002:a05:6000:1f81:b0:37d:398f:44f9 with SMTP id
+ ffacd0b85a97d-381f1872f2dmr700190f8f.32.1731028858034; Thu, 07 Nov 2024
+ 17:20:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [External] [Patch bpf 2/2] selftests/bpf: Add a BPF selftest for
- bpf_skb_change_tail()
-To: Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
- John Fastabend <john.fastabend@gmail.com>,
- Daniel Borkmann <daniel@iogearbox.net>
-References: <20241107034141.250815-1-xiyou.wangcong@gmail.com>
- <20241107034141.250815-2-xiyou.wangcong@gmail.com>
-Content-Language: en-US
-From: Zijian Zhang <zijianzhang@bytedance.com>
-In-Reply-To: <20241107034141.250815-2-xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20241105212001.38980-1-alexei.starovoitov@gmail.com> <20241105212001.38980-2-alexei.starovoitov@gmail.com>
+In-Reply-To: <20241105212001.38980-2-alexei.starovoitov@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 7 Nov 2024 17:20:46 -0800
+Message-ID: <CAADnVQLMwA1fgApP=H8_jeTeF8JRUXDtMt13qcwUGezvcAQg_Q@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/2] drm, bpf: Move drm_mm.c to lib to be used
+ by bpf arena
+To: bpf <bpf@vger.kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, maarten.lankhorst@linux.intel.com, mripard@kernel.org, 
+	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch, 
+	dri-devel@lists.freedesktop.org, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/6/24 7:41 PM, Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> As requested by Daniel, we need to add a selftest to cover
-> bpf_skb_change_tail() cases in skb_verdict. Here we test trimming,
-> growing and error cases, and validate its expected return values.
-> 
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Zijian Zhang <zijianzhang@bytedance.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+On Tue, Nov 5, 2024 at 1:20=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> Move drm_mm.c to lib:
+> - The next commit will use drm_mm to manage memory regions
+>   in bpf arena.
+> - Move drm_mm_print to drivers/gpu/drm/drm_print.c, since
+>   it's not a core functionality of drm_mm and it depeneds
+>   on drm_printer while drm_mm is generic and usuable as-is
+>   by other subsystems.
+> - Replace DRM_ERROR with pr_err to fix build.
+>   DRM_ERROR is deprecated in favor of pr_err anyway.
+> - Also add __maybe_unused to suppress compiler warnings.
+> - Update MAINTAINERS file as well.
+>
+> Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
->   .../selftests/bpf/prog_tests/sockmap_basic.c  | 51 +++++++++++++++++++
->   .../bpf/progs/test_sockmap_change_tail.c      | 40 +++++++++++++++
->   2 files changed, 91 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> index 82bfb266741c..fe735fced836 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> @@ -12,6 +12,7 @@
->   #include "test_sockmap_progs_query.skel.h"
->   #include "test_sockmap_pass_prog.skel.h"
->   #include "test_sockmap_drop_prog.skel.h"
-> +#include "test_sockmap_change_tail.skel.h"
->   #include "bpf_iter_sockmap.skel.h"
->   
->   #include "sockmap_helpers.h"
-> @@ -562,6 +563,54 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
->   		test_sockmap_drop_prog__destroy(drop);
->   }
->   
-> +static void test_sockmap_skb_verdict_change_tail(void)
-> +{
-> +	struct test_sockmap_change_tail *skel;
-> +	int err, map, verdict;
-> +	int c1, p1, sent, recvd;
-> +	int zero = 0;
-> +	char b[3];
-> +
-> +	skel = test_sockmap_change_tail__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-> +		return;
-> +	verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-> +	map = bpf_map__fd(skel->maps.sock_map_rx);
-> +
-> +	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
-> +	if (!ASSERT_OK(err, "bpf_prog_attach"))
-> +		goto out;
-> +	err = create_pair(AF_INET, SOCK_STREAM, &c1, &p1);
-> +	if (!ASSERT_OK(err, "create_pair()"))
-> +		goto out;
-> +	err = bpf_map_update_elem(map, &zero, &c1, BPF_NOEXIST);
-> +	if (!ASSERT_OK(err, "bpf_map_update_elem(c1)"))
-> +		goto out_close;
-> +	sent = xsend(p1, "Tr", 2, 0);
-> +	ASSERT_EQ(sent, 2, "xsend(p1)");
-> +	recvd = recv(c1, b, 2, 0);
-> +	ASSERT_EQ(recvd, 1, "recv(c1)");
-> +	ASSERT_EQ(skel->data->change_tail_ret, 0, "change_tail_ret");
-> +
-> +	sent = xsend(p1, "G", 1, 0);
-> +	ASSERT_EQ(sent, 1, "xsend(p1)");
-> +	recvd = recv(c1, b, 2, 0);
-> +	ASSERT_EQ(recvd, 2, "recv(c1)");
-> +	ASSERT_EQ(skel->data->change_tail_ret, 0, "change_tail_ret");
-> +
-> +	sent = xsend(p1, "E", 1, 0);
-> +	ASSERT_EQ(sent, 1, "xsend(p1)");
-> +	recvd = recv(c1, b, 1, 0);
-> +	ASSERT_EQ(recvd, 1, "recv(c1)");
-> +	ASSERT_EQ(skel->data->change_tail_ret, -EINVAL, "change_tail_ret");
-> +
-> +out_close:
-> +	close(c1);
-> +	close(p1);
-> +out:
-> +	test_sockmap_change_tail__destroy(skel);
-> +}
-> +
->   static void test_sockmap_skb_verdict_peek_helper(int map)
->   {
->   	int err, c1, p1, zero = 0, sent, recvd, avail;
-> @@ -927,6 +976,8 @@ void test_sockmap_basic(void)
->   		test_sockmap_skb_verdict_fionread(true);
->   	if (test__start_subtest("sockmap skb_verdict fionread on drop"))
->   		test_sockmap_skb_verdict_fionread(false);
-> +	if (test__start_subtest("sockmap skb_verdict change tail"))
-> +		test_sockmap_skb_verdict_change_tail();
->   	if (test__start_subtest("sockmap skb_verdict msg_f_peek"))
->   		test_sockmap_skb_verdict_peek();
->   	if (test__start_subtest("sockmap skb_verdict msg_f_peek with link"))
-> diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c b/tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c
-> new file mode 100644
-> index 000000000000..2796dd8545eb
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c
-> @@ -0,0 +1,40 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 ByteDance */
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-> +	__uint(max_entries, 1);
-> +	__type(key, int);
-> +	__type(value, int);
-> +} sock_map_rx SEC(".maps");
-> +
-> +long change_tail_ret = 1;
-> +
-> +SEC("sk_skb")
-> +int prog_skb_verdict(struct __sk_buff *skb)
-> +{
-> +	char *data, *data_end;
-> +
-> +	bpf_skb_pull_data(skb, 1);
-> +	data = (char *)(unsigned long)skb->data;
-> +	data_end = (char *)(unsigned long)skb->data_end;
-> +
-> +	if (data + 1 > data_end)
-> +		return SK_PASS;
-> +
-> +	if (data[0] == 'T') { /* Trim the packet */
-> +		change_tail_ret = bpf_skb_change_tail(skb, skb->len - 1, 0);
-> +		return SK_PASS;
-> +	} else if (data[0] == 'G') { /* Grow the packet */
-> +		change_tail_ret = bpf_skb_change_tail(skb, skb->len + 1, 0);
-> +		return SK_PASS;
-> +	} else if (data[0] == 'E') { /* Error */
-> +		change_tail_ret = bpf_skb_change_tail(skb, 65535, 0);
-> +		return SK_PASS;
-> +	}
-> +	return SK_PASS;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
+>  MAINTAINERS                       |  1 +
+>  drivers/gpu/drm/Makefile          |  1 -
+>  drivers/gpu/drm/drm_print.c       | 39 +++++++++++++++++++++++++
+>  lib/Makefile                      |  1 +
+>  {drivers/gpu/drm =3D> lib}/drm_mm.c | 48 ++++---------------------------
+>  5 files changed, 46 insertions(+), 44 deletions(-)
+>  rename {drivers/gpu/drm =3D> lib}/drm_mm.c (95%)
 
-LGTM!
+DRM folks seem unresponsive :(
+A simple move of the file shouldn't take a week to acknowledge.
+I had plans to tailor drm_mm to bpf needs, but at this pace
+it will take too long, so I'm abandoning this approach
+and going a different route. It was worth a try. Fail fast.
 
-I think it will be better if the test could also cover the case you
-indicated in the first patch, where skb_transport_offset is a negative
-value.
-
-Thanks,
-Zijian
-
+pw-bot: cr
 
