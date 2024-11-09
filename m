@@ -1,127 +1,121 @@
-Return-Path: <bpf+bounces-44433-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44434-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B64159C2F42
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 20:00:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D9BF9C2F6F
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 21:07:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF8301C20EBE
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 19:00:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92B261F21AC5
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 20:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9CC19DFA5;
-	Sat,  9 Nov 2024 19:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C3019F42D;
+	Sat,  9 Nov 2024 20:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fKKnwUM2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.itouring.de (mail.itouring.de [85.10.202.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5678213BC12
-	for <bpf@vger.kernel.org>; Sat,  9 Nov 2024 19:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.202.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C9C13D502
+	for <bpf@vger.kernel.org>; Sat,  9 Nov 2024 20:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731178853; cv=none; b=EnLoutYWqmsAtjoQr5DjOc00SfMIrpw/Yu3YpLCcwKdKT8w1RC2H6dILGTdY31YbbUl6bv7bVjYAQxiBjyzNz5lOfXos97rowzk9FRhTtt78GdMmCGsYiSJHpzsBoRjhfa2L1vJ3oYOAAAnG02Z7zXyWIKgJesUpLTaQ1X9iQYI=
+	t=1731182834; cv=none; b=c5AZ5lOmJDue/DoPY3QVSi9s/a2kuiMBTiYrA/ws1/7J4j1nNPrZEUH36ePA7Nr+73LnyXCW54QmpO5EJAVtNuKSluWRp0grnoLt3sfxlsPDY5P/PJ42kfxXGGZkQOQBmPhw8Vd0vPQ6yxikRJhNIHlMj1skFZb8KsnQg63+F8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731178853; c=relaxed/simple;
-	bh=RbmBsjyVdVipep8//kCJszLJENXj8/QhfbP7YFtwk98=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=LPqhlz/5IUqbgrtZQJ4smK8sdvOHRE/qJa/sJtYPBEgRm59e23D7KtZx8JUw38Ckr22vLsvTdVeFRh/RhIJ95fr/G7Gqq00gE4hDl6qGXVohlg/jk5Ft4i6vpaZLU6D6SMZJIKLvFWKVlLL+dq/K5W8vkwMEyQxrVbNcqVvKtIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com; spf=pass smtp.mailfrom=applied-asynchrony.com; arc=none smtp.client-ip=85.10.202.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=applied-asynchrony.com
-Received: from tux.applied-asynchrony.com (p5ddd7b29.dip0.t-ipconnect.de [93.221.123.41])
-	by mail.itouring.de (Postfix) with ESMTPSA id 19DDA11DD55;
-	Sat, 09 Nov 2024 20:00:47 +0100 (CET)
-Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
-	by tux.applied-asynchrony.com (Postfix) with ESMTP id 7AC0C600BCD01;
-	Sat, 09 Nov 2024 20:00:46 +0100 (CET)
-Subject: Re: Using gcc-bpf for bpftool: problems with CO-RE feature detection
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc: bpf@vger.kernel.org, indu.bhagat@oracle.com
-References: <8665818f-8a32-3796-1efc-1a9e5d036f18@applied-asynchrony.com>
- <87zfm8bdx2.fsf@oracle.com>
-From: =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <2aa58e90-a837-e075-8b13-65dc4fce42b8@applied-asynchrony.com>
-Date: Sat, 9 Nov 2024 20:00:46 +0100
+	s=arc-20240116; t=1731182834; c=relaxed/simple;
+	bh=Wey3Izot175JmC/t8HYgVV+V84ihr+JapoWBUSnIY/k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y8Z30G1ebcpVI4h0uKGvoAde+Bzp3+jV7KXnFLV9NFz2CaKfGqHdB6Q6OT1kt+9aGIlRwNZZ6nndce72lOaiHQGD5msmWftqoTCBiOx1vBoKfexJWDbhyO0F0obAL0xqmyjuA66qw8aq9jhqA8/aba6/y9JeMeTEXiqGJAPjUHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fKKnwUM2; arc=none smtp.client-ip=209.85.218.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-a99cc265e0aso504727166b.3
+        for <bpf@vger.kernel.org>; Sat, 09 Nov 2024 12:07:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731182831; x=1731787631; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BToEawLEBzh2YLR/zt4bmHvtLEjLTMkDmmzVsBBUhnI=;
+        b=fKKnwUM2YHJMMyv9Jm2xNk/EYlYBVFY0nYx9FUTbWaABHL1nYmKS8kOesrnid8KymW
+         JYr2/6Fe+y/8K3sechc0AI8BOqYmbfTzZF993q7OLGuUfq3JrzD19+krearfXNRxoM84
+         9gzNg/hV/hrW7QED+4rnnGuaGj86iediXpJNT53ZOX0gdRkvEgpqd0dcjjufCGfzXIgs
+         xgBKggpoPOCls/8CzF00I5GW0nItk7r0w3Eh+N0U2kKbu3n+8bQnc+UWmxgsl+0IsgPQ
+         6j5bLuyNCSsuU8lgiFQuNSijKyqbPSdADU4T74/XET1Ya4VedCY5uDTuCb9zeftFclvG
+         xuog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731182831; x=1731787631;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BToEawLEBzh2YLR/zt4bmHvtLEjLTMkDmmzVsBBUhnI=;
+        b=NTtF07gkajcorfbsqy41X4TmNEU2GIi6a8I4pCI7TKJngiqoWUJJwP8MLKm2mNAobn
+         8XbbjaySChd0sofY1uBaSQtF1Bj7JMt9AxK1hTJiUb5++EAeK8siBc7nxQ3PK2RNiMpo
+         Wm53lTQ/KNMMyERK/oD04CAvuNOGxCB4HGU1AxFFsK/jrxUvWJTqCSuBNEovTZ0sDU1i
+         r7cZ2Ac9maYDXTpUe78oAm2L3XtFisoqbrwm6iN6jwSKBWnG4kwyPalTRd7+dYPsb2M7
+         5CBKEdHhGqLNu/Wb/qS31SXG7EQhBiMUriHnc4jvxW1WnWdaDJFGgh9NOBClLmRblctU
+         Gjuw==
+X-Forwarded-Encrypted: i=1; AJvYcCWCOeNjszI4vHMMWl1fZ/9bV74RfjHcVas2zaWJWayTWGS8vfbw3F4jDHFhU50EV4j2q64=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxIKf0KFG8elMq1q6fiUSZ6BdiHbHO7hetgJeegAGejkkvBJ3i5
+	FxbbLNQCLaWnZpJIcoenfGoSGtGXyIjmPTFLDgQgA//GWRP556Hf77L3qiH/jeJEnB0h5yLqDU7
+	5LhAcxGHu+F8tq6SoyWnKH8rH0Ys=
+X-Google-Smtp-Source: AGHT+IFZgQJFtUoiWzzFjWaQimxTT0vQ3uRAbJIhyWoziSKFN66LbcKQO92wwH6ZytaJDxB22Sl8U7igqiNE2McVHVE=
+X-Received: by 2002:a17:907:3e8d:b0:a9a:b70:2a92 with SMTP id
+ a640c23a62f3a-a9eeff0da7dmr744544866b.16.1731182830783; Sat, 09 Nov 2024
+ 12:07:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <87zfm8bdx2.fsf@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20241107115231.75200-1-vmalik@redhat.com> <940bc790-62ea-44c6-bd7c-e8bb1f747678@linux.alibaba.com>
+In-Reply-To: <940bc790-62ea-44c6-bd7c-e8bb1f747678@linux.alibaba.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Sat, 9 Nov 2024 21:06:34 +0100
+Message-ID: <CAP01T75BUcPJ22fgGRPSEXzgBbzjy6EPehBxUVYRY-5vMt=eqg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: skip the timer_lockup test for
+ single-CPU nodes
+To: Philo Lu <lulie@linux.alibaba.com>
+Cc: Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024-11-09 17:02, Jose E. Marchesi wrote:
-> 
-> Hello.
-> 
->> I'm trying to use Gentoo's bpf-toolchain - basically just gcc built for
->> the BPF target - to build the CO-RE support in bpftool, in order to
->> provide an alternative to clang.
->>
->> This currently fails because the feature detection relies on a comment
->> in the generated BPF assembly, which gcc does not seem to generate.
->>
->> While I'm using the Github mirror for bpftool, the same check is
->> being done in the kernel build, so it affects both.
->>
->> Our tracker bug with full output etc. is: https://bugs.gentoo.org/943113
->>
->> Basically the problem boils down to:
->>
->> 	.long	16777248                        # 0x1000020
->> 	.long	9                               # BTF_KIND_VAR(id = 3)
->> 	.long	234881024                       # 0xe000000
->>
->> generated by clang (19.1.3)
->>
->> vs.
->>
->> 	.4byte	0x1000020
->> 	.4byte	0x9
->> 	.4byte	0xe000000
->>
->> generated by gcc (14.2.0).
->>
->> As the values themselves are correct, the problem is really just
->> the missing debug information in gcc's output. So far I've tried
->> every option I could find, but to no avail. I have no idea whether
->> this is because I'm holding it wrong, gcc cannot do it for the bpf
->> target (yet?) or anything else.
->>
->> Does anybody know how I can convince gcc to generate symbol comments?
->> Alternatively can we find a better way to verify the generated output
->> instead of grepping for a comment?
-> 
-> GCC can generate similar comments if you pass the -dA option.  These are
-> intended for testing the generated BTF in the GCC testsuite, however,
-> and right now I don't remember whether the comments mimic what clang
-> generates.  You can give it a try...
+On Fri, 8 Nov 2024 at 05:41, Philo Lu <lulie@linux.alibaba.com> wrote:
+>
+>
+>
+> On 2024/11/7 19:52, Viktor Malik wrote:
+> > The timer_lockup test needs 2 CPUs to work, on single-CPU nodes it fails
+> > to set thread affinity to CPU 1 since it doesn't exist:
+> >
+> >      # ./test_progs -t test_lockup
+>
+> nit: s/test_lockup/timer_lockup
+>
+> >      test_timer_lockup:PASS:timer_lockup__open_and_load 0 nsec
+> >      test_timer_lockup:PASS:pthread_create thread1 0 nsec
+> >      test_timer_lockup:PASS:pthread_create thread2 0 nsec
+> >      timer_lockup_thread:PASS:cpu affinity 0 nsec
+> >      timer_lockup_thread:FAIL:cpu affinity unexpected error: 22 (errno 0)
+> >      test_timer_lockup:PASS: 0 nsec
+> >      #406     timer_lockup:FAIL
+> >
+> > Skip the test if only 1 CPU is available.
+> >
+> > Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> > Fixes: 50bd5a0c658d1 ("selftests/bpf: Add timer lockup selftest")
+> > ---
+>
 
-Thank you so much for your reply, that's the one flag I hadn't tried yet,
-and it does indeed output exactly the needed value.
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-After a bit of creative Makefile surgery I now get:
-
-..
-Makefile.feature:32: Probing: feature-clang-bpf-co-re
-Makefile.feature:33: printf '%s\n' 'struct s { int i; } __attribute__((preserve_access_index)); struct s foo = {};' | bpf-unknown-none-gcc -g -dA -S -o - -x c -  | grep -q BTF_KIND_VAR && (echo 1 && >&2 echo result: 1) || (echo 0 && >&2 echo result: 0)
-result: 1
-..
-
-There's a few things to clean up like clang-specific annotations and LLVM_STRIP,
-but so far the resulting binary says:
-
-   bpftool v7.5.0
-   using libbpf v1.5
-   features: libbfd, skeletons
-
-so it seems to have worked. \o/
-
-cheers
-Holger
+> [...]
+>
 
