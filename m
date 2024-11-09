@@ -1,339 +1,516 @@
-Return-Path: <bpf+bounces-44419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59CB69C2A46
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 06:10:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 560C59C2B0F
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 08:43:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89CD62851CA
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 05:04:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18B10282D44
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 07:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6120714C5A1;
-	Sat,  9 Nov 2024 05:03:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B94A141987;
+	Sat,  9 Nov 2024 07:43:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="PwfxpWhD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QIq+HPB8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2954813D8B5
-	for <bpf@vger.kernel.org>; Sat,  9 Nov 2024 05:03:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DACB554652
+	for <bpf@vger.kernel.org>; Sat,  9 Nov 2024 07:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731128599; cv=none; b=Z8gLfpcx9XlgHF+oESQ/M2aa0qLBYvA1j+3eLJJ0LfSEUoQTKzvOJGHztVwJ+65ugJ1eA37JT/L3iC3T6thH3KQnoFYTYBXEoIRumjD6kGAntiE0OTaQmyRDzNSfgbdPuF7tiRsM7FpwUNXjUX6kxAApAfFVTCs+DfBxffFeD5Y=
+	t=1731138232; cv=none; b=FzherkPMwuzc5DLXdMTo+h7eRl5h12/7YPKLd+GL4TZY7u5MlOeJ1yJdoFM1P41EDQyQKp7m6wDmb9tld3akMG+eTUG62q7kY/wHygA2YHzKtxaxXS3V9M/DyuxwufeP16aFFG9c3Ljfp8MUqWGEXw7vqWF94Q0Pjq5v0pR6CFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731128599; c=relaxed/simple;
-	bh=dIGeynGkMLjGNXXYNRqQVjC5Ja6EgwuB0H/jBnVmRu0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=M78vclYWxGX3UoCS5XfeZ+7w/2qrvfXgtBK4SRlAILxVcq+q0vbkvo0YYCFbAqpbM0zWH4pNI9RY8Iq+1cKSDQOZRdtegfElvKWYxDbPe36bCczK3jKmONsJBw1GeMQz9OlAnNoDgMEudB+b8YXJ8bJaEoCF4NZbkgXttuHdJBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=PwfxpWhD; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-20c77459558so27698935ad.0
-        for <bpf@vger.kernel.org>; Fri, 08 Nov 2024 21:03:17 -0800 (PST)
+	s=arc-20240116; t=1731138232; c=relaxed/simple;
+	bh=6EGPeoV7duzSplYuLDh/of7elmwMPn1JyBYbVb7V8ko=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KBO29173fleICF0E0lAGJbEaONZfGVRNElCkukOovy3pj4O+x1SQVyiVyTVokALYKVhq7Is4BJ2XYQnHnKDydfbOyp3Y8TgZv/FeX55QwvvC9lPFvPhgpn7IcO6p56M29sVv6+V4Y0h3gdIAFRp9Sk298dPtwVdLYU9nxEi1bYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QIq+HPB8; arc=none smtp.client-ip=209.85.128.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-43161e7bb25so23866305e9.2
+        for <bpf@vger.kernel.org>; Fri, 08 Nov 2024 23:43:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1731128597; x=1731733397; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UJgan6o2RSMXdq36KFGAXLuMMgpefFNHI2RLTAg8Qn4=;
-        b=PwfxpWhDv7sjkTj77IkvNGmCvI9OW9LPBx6lofxJY4Dhj3mm1WddJcqYT5f2LgdRNj
-         A+vGo+hQVr2bCoRCbN7KAngRwxgytzWbpTK8HX2FfqQl5K/kFpReIjxqSUCMh3tXs9LL
-         +3D6T9Lyht8mn3wv94Gr+pn3GQiznibgx922Y=
+        d=gmail.com; s=20230601; t=1731138228; x=1731743028; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KkA4LHB+ccxDjkmki0exm0Gw7JFuXQTERA/l6T0taK0=;
+        b=QIq+HPB8GPoxtZApz5e48AGPx5ebmMBP/B0qw6HU0p3TQd5tmOUN2c1eMtOMLcJjE2
+         UkrVY7iIXvN8niOzuy5aRnY6H9/aqXn1H2e6eC9uv5/mZffsyi/+bvmZsD8z3tfHj7SB
+         fhc8ePKlqiY5Q0e+GlhMumAiAxml3BE8DUDzfiMMlcsb11/bubo0coKGveJ/3kBKsewN
+         Q/YN04+tOuT0maTYvTq9HQlgpqG+uSqLckUIKvrc80YyBKA9Ny0t3Uu8phpQtgS+v0JB
+         DujVCDi/oS9jJbdLmrUoNJWFzinq/Uo1zUJAXEHWDXlgM1Ii8Bvgage2OsydBxXyadzZ
+         jiBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731128597; x=1731733397;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UJgan6o2RSMXdq36KFGAXLuMMgpefFNHI2RLTAg8Qn4=;
-        b=n72t3SwuEg7q2gqhhJwTA9ucy3kqbNV2kqatfCfKOrJgheFyWVkF2cYi5yMcs4jtzh
-         sgNhF4uR8zwOXxy9ThcSfOYwMzjC6OUkZD5oi7tW56C4Yk5YnfnzgReVZkbVtDVexRmk
-         c3bq3Rx58ulrIWvpoi+gMNO2vK2rzvrZJGpQbB9SxSFVIL1p/HoS8LTvJOBHeUOoWYfx
-         7lrfYZeYBrLQZuTyYjAAEHBoyH9mSvNHk3oQgBU2zpQkQSG5wfk2nByejlZ/7iLRi8pT
-         KLwPUVCl+XWNdYmZfTM0L+TOm+SBQ85d4+Mm5kjB9I9NJ9t7ix+VEBnM0Z6VSk9apmho
-         VtcA==
-X-Forwarded-Encrypted: i=1; AJvYcCW1wpfYKg8EZbxc1WekvR3UZZi/z0EMZ9K7URPoga8KTABRhXrsqpOyCw6HDfPA4hGRzxk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxcC+SDep5GzodDYe/vaqHJjWz2ZmcjOr3Yr0Ga54UxWX8YKq+G
-	cMWn73Q+NVVC5DirSvOs92TPoFc7qItkSZfc6mZPPxUr6qOgr1ds3NDYWRSNK4s=
-X-Google-Smtp-Source: AGHT+IEjn+xcAUceHGud+HMcQkcqQ12yJi0EZgs+YV9Lxlbj7Jgw/sVFn4oeHmzdyGkeNYnEiaY7TA==
-X-Received: by 2002:a17:902:d509:b0:20c:a8cf:fa25 with SMTP id d9443c01a7336-211835df588mr81407165ad.46.1731128597393;
-        Fri, 08 Nov 2024 21:03:17 -0800 (PST)
-Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21177e5853csm39182305ad.186.2024.11.08.21.03.15
+        d=1e100.net; s=20230601; t=1731138228; x=1731743028;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KkA4LHB+ccxDjkmki0exm0Gw7JFuXQTERA/l6T0taK0=;
+        b=Uzg4iqlk0HOU1VHZMwru6jqsxxae9Gojcd3xFrl5+xHuEZQ1dd+m55LR/VZLSWTY6o
+         pTUF/m7P7vFbsaDv7IDNp962c1Jk56h/D5XtRJAIPNOPojxe8zQ3Enpy13E/Rim2wGUk
+         MlKSSpt+puTRa4npEQGL/LZbJV8k3KCjowkO0yn5dDSP+J1bqBihU5zylD6i1N+490jB
+         BWNwa5rQOj2m2SLusyiiGPp70IpI597DvU/nUCcRE+kEhIRfqDKQPLIfi+I3J9pKMfJp
+         4VVeT6cMZs5b08XXLYP0+ZxPvcDM1BSDZgnsKeqCYe+dVcEPBiakwzzNVYO4/lM4y2J9
+         k7TA==
+X-Gm-Message-State: AOJu0YwATR9qm+MXzn4/G14rvFViBfDUCbL60d4ikW8nINamifhVJ29R
+	5IRIw8GFzoQ876TiqV1cYj++IZIHE/eaoPIDkHIerCe9LFDv4Nb7710Emihq51I=
+X-Google-Smtp-Source: AGHT+IHIhhoqTEQWPCK/Sk0Chso0xK72iwuMVdYVYQeBl2y9gaguxnAGxFmjN50C4WNZDxuMQplHkQ==
+X-Received: by 2002:a05:600c:4fcc:b0:431:5044:e388 with SMTP id 5b1f17b1804b1-432b75166femr48610785e9.22.1731138228278;
+        Fri, 08 Nov 2024 23:43:48 -0800 (PST)
+Received: from localhost (fwdproxy-cln-032.fbsv.net. [2a03:2880:31ff:20::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432aa5b5e3dsm131236035e9.9.2024.11.08.23.43.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Nov 2024 21:03:16 -0800 (PST)
-From: Joe Damato <jdamato@fastly.com>
-To: netdev@vger.kernel.org
-Cc: corbet@lwn.net,
-	hdanton@sina.com,
-	bagasdotme@gmail.com,
-	pabeni@redhat.com,
-	namangulati@google.com,
-	edumazet@google.com,
-	amritha.nambiar@intel.com,
-	sridhar.samudrala@intel.com,
-	sdf@fomichev.me,
-	peter@typeblog.net,
-	m2shafiei@uwaterloo.ca,
-	bjorn@rivosinc.com,
-	hch@infradead.org,
-	willy@infradead.org,
-	willemdebruijn.kernel@gmail.com,
-	skhawaja@google.com,
-	kuba@kernel.org,
-	Joe Damato <jdamato@fastly.com>,
-	Martin Karsten <mkarsten@uwaterloo.ca>,
-	"David S. Miller" <davem@davemloft.net>,
-	Simon Horman <horms@kernel.org>,
-	linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-	linux-kernel@vger.kernel.org (open list),
-	bpf@vger.kernel.org (open list:BPF [MISC]:Keyword:(?:\b|_)bpf(?:\b|_))
-Subject: [PATCH net-next v9 6/6] docs: networking: Describe irq suspension
-Date: Sat,  9 Nov 2024 05:02:36 +0000
-Message-Id: <20241109050245.191288-7-jdamato@fastly.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20241109050245.191288-1-jdamato@fastly.com>
-References: <20241109050245.191288-1-jdamato@fastly.com>
+        Fri, 08 Nov 2024 23:43:47 -0800 (PST)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: kkd@meta.com,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	kernel-team@fb.com
+Subject: [PATCH bpf-next v4] bpf: Refactor active lock management
+Date: Fri,  8 Nov 2024 23:43:47 -0800
+Message-ID: <20241109074347.1434011-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=13846; h=from:subject; bh=E27kuIJlQ+HSCVW0yWxye6Cjnnv5OdhV+AHOUMQW2Dw=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnLxGpRt17nXqiVna6Oc+wIo8kDuDBeTchLpmUy1R/ NUBjPAWJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZy8RqQAKCRBM4MiGSL8Ryk/zD/ sEH7m8Za7aWQFKF6mBw7yyHFQLTGWPNUbqaTLC7lzunsMADYTx/V50XJUupzJWJ4bsQ1nBdO0fBOf7 bRtNhVWmknXFnzzq5pvT+7vojgmG6w8biLT81mYvXC6/wcz/RMNY1STj3aIhOIrek3eoGMS1m5HVF7 xFw4oitdRw0XfsMR9ELscIzZAYXzljR0+rplaPudQ9uc+ZpAaO4BNDcwWITLxTaLDFioRTT1/vm4HB dVQZS4lXZog+LoNKTMd5brto5m45msaFnqdfEvEFMBOiVvq/f0rHZ5XdmifNDaApD6j31Mp93RcNry jUwiUgwwAwTfgVzUAwtSqeyXpY+YKPWHS7XyaZ/UEm8N3WZTYWbiks5YfNFlKeRk8nZDwdE5kznXSx Ff5VVcOarkyU5vMAJjQQ9HwqE+nx9V83Gk9PD0ALUaeXWvqXk7yopMQcPEh0SYktPISWfniqy6YFsk Lk4ibAIWLxsH3jQFFVAZGd2m0/x6w6xI1EMWKRQU0pDxWr6+epXQmKAVMy45KlV5npOZPohRRkWf2b LJJ3DFjVm1krMuSnPD9XBeEOdKAEchvkvGzfY4+rbbg+CPwZcedYdDMBCImEHTiYS2uufwtFad83Ar rbGfHXS0wTfeiGhvSzcMSKa7ZkkaNr9PlvTz7XPRPBICV0ux/0xaeP4h8O5g==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Describe irq suspension, the epoll ioctls, and the tradeoffs of using
-different gro_flush_timeout values.
+When bpf_spin_lock was introduced originally, there was deliberation on
+whether to use an array of lock IDs, but since bpf_spin_lock is limited
+to holding a single lock at any given time, we've been using a single ID
+to identify the held lock.
 
-Signed-off-by: Joe Damato <jdamato@fastly.com>
-Co-developed-by: Martin Karsten <mkarsten@uwaterloo.ca>
-Signed-off-by: Martin Karsten <mkarsten@uwaterloo.ca>
-Reviewed-by: Sridhar Samudrala <sridhar.samudrala@intel.com>
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+In preparation for introducing spin locks that can be taken multiple
+times, introduce support for acquiring multiple lock IDs. For this
+purpose, reuse the acquired_refs array and store both lock and pointer
+references. We tag the entry with REF_TYPE_PTR or REF_TYPE_LOCK to
+disambiguate and find the relevant entry. The ptr field is used to track
+the map_ptr or btf (for bpf_obj_new allocations) to ensure locks can be
+matched with protected fields within the same "allocation", i.e.
+bpf_obj_new object or map value.
+
+The struct active_lock is changed to an int as the state is part of the
+acquired_refs array, and we only need active_lock as a cheap way of
+detecting lock presence.
+
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- v6:
-   - Fixed packet processing loop description based on feedback from
-     Bagas Sanjaya so that it renders properly when generated as html
+Changelog:
+v3 -> v4
+v3: https://lore.kernel.org/bpf/20241104151716.2079893-1-memxor@gmail.com
 
- v5:
-   - Fixed a minor typo in the epoll-based busy polling section
-   - Removed short paragraph referring to experimental data as that data
-     is not included in the documentation
+ * Address comments from Alexei
+   * Drop struct bpf_active_lock definition
+   * Name enum type, expand definition to multiple lines
+   * s/REF_TYPE_BPF_LOCK/REF_TYPE_LOCK/g
+   * Change active_lock type to int
+   * Fix type of 'type' in acquire_lock_state
+   * Filter by taking type explicitly in find_lock_state
+   * WARN for default case in refsafe switch statement
 
- v4:
-   - Updated documentation to further explain irq suspension
-   - Dropped Stanislav's Acked-by tag because of the doc changes
-   - Dropped Bagas' Reviewed-by tag because of the doc changes
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20241103212252.547071-1-memxor@gmail.com
 
- v1 -> v2:
-   - Updated documentation to describe the per-NAPI configuration
-     parameters.
+  * Rebase on bpf-next to resolve merge conflict
 
- Documentation/networking/napi.rst | 170 +++++++++++++++++++++++++++++-
- 1 file changed, 168 insertions(+), 2 deletions(-)
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20241103205856.345580-1-memxor@gmail.com
 
-diff --git a/Documentation/networking/napi.rst b/Documentation/networking/napi.rst
-index dfa5d549be9c..02720dd71a76 100644
---- a/Documentation/networking/napi.rst
-+++ b/Documentation/networking/napi.rst
-@@ -192,6 +192,33 @@ is reused to control the delay of the timer, while
- ``napi_defer_hard_irqs`` controls the number of consecutive empty polls
- before NAPI gives up and goes back to using hardware IRQs.
- 
-+The above parameters can also be set on a per-NAPI basis using netlink via
-+netdev-genl. When used with netlink and configured on a per-NAPI basis, the
-+parameters mentioned above use hyphens instead of underscores:
-+``gro-flush-timeout`` and ``napi-defer-hard-irqs``.
+  * Fix refsafe state comparison to check callback_ref and ptr separately.
+---
+ include/linux/bpf_verifier.h |  53 ++++++-------
+ kernel/bpf/verifier.c        | 143 ++++++++++++++++++++++++++---------
+ 2 files changed, 134 insertions(+), 62 deletions(-)
+
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 4513372c5bc8..b248850396ac 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -48,22 +48,6 @@ enum bpf_reg_liveness {
+ 	REG_LIVE_DONE = 0x8, /* liveness won't be updating this register anymore */
+ };
+
+-/* For every reg representing a map value or allocated object pointer,
+- * we consider the tuple of (ptr, id) for them to be unique in verifier
+- * context and conside them to not alias each other for the purposes of
+- * tracking lock state.
+- */
+-struct bpf_active_lock {
+-	/* This can either be reg->map_ptr or reg->btf. If ptr is NULL,
+-	 * there's no active lock held, and other fields have no
+-	 * meaning. If non-NULL, it indicates that a lock is held and
+-	 * id member has the reg->id of the register which can be >= 0.
+-	 */
+-	void *ptr;
+-	/* This will be reg->id */
+-	u32 id;
+-};
+-
+ #define ITER_PREFIX "bpf_iter_"
+
+ enum bpf_iter_state {
+@@ -266,6 +250,13 @@ struct bpf_stack_state {
+ };
+
+ struct bpf_reference_state {
++	/* Each reference object has a type. Ensure REF_TYPE_PTR is zero to
++	 * default to pointer reference on zero initialization of a state.
++	 */
++	enum ref_state_type {
++		REF_TYPE_PTR = 0,
++		REF_TYPE_LOCK,
++	} type;
+ 	/* Track each reference created with a unique id, even if the same
+ 	 * instruction creates the reference multiple times (eg, via CALL).
+ 	 */
+@@ -274,17 +265,23 @@ struct bpf_reference_state {
+ 	 * is used purely to inform the user of a reference leak.
+ 	 */
+ 	int insn_idx;
+-	/* There can be a case like:
+-	 * main (frame 0)
+-	 *  cb (frame 1)
+-	 *   func (frame 3)
+-	 *    cb (frame 4)
+-	 * Hence for frame 4, if callback_ref just stored boolean, it would be
+-	 * impossible to distinguish nested callback refs. Hence store the
+-	 * frameno and compare that to callback_ref in check_reference_leak when
+-	 * exiting a callback function.
+-	 */
+-	int callback_ref;
++	union {
++		/* There can be a case like:
++		 * main (frame 0)
++		 *  cb (frame 1)
++		 *   func (frame 3)
++		 *    cb (frame 4)
++		 * Hence for frame 4, if callback_ref just stored boolean, it would be
++		 * impossible to distinguish nested callback refs. Hence store the
++		 * frameno and compare that to callback_ref in check_reference_leak when
++		 * exiting a callback function.
++		 */
++		int callback_ref;
++		/* Use to keep track of the source object of a lock, to ensure
++		 * it matches on unlock.
++		 */
++		void *ptr;
++	};
+ };
+
+ struct bpf_retval_range {
+@@ -434,7 +431,7 @@ struct bpf_verifier_state {
+ 	u32 insn_idx;
+ 	u32 curframe;
+
+-	struct bpf_active_lock active_lock;
++	int active_lock;
+ 	bool speculative;
+ 	bool active_rcu_lock;
+ 	u32 active_preempt_lock;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 132fc172961f..e04be1241a2c 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1354,6 +1354,7 @@ static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx)
+ 	if (err)
+ 		return err;
+ 	id = ++env->id_gen;
++	state->refs[new_ofs].type = REF_TYPE_PTR;
+ 	state->refs[new_ofs].id = id;
+ 	state->refs[new_ofs].insn_idx = insn_idx;
+ 	state->refs[new_ofs].callback_ref = state->in_callback_fn ? state->frameno : 0;
+@@ -1361,6 +1362,24 @@ static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx)
+ 	return id;
+ }
+
++static int acquire_lock_state(struct bpf_verifier_env *env, int insn_idx, enum ref_state_type type,
++			      int id, void *ptr)
++{
++	struct bpf_func_state *state = cur_func(env);
++	int new_ofs = state->acquired_refs;
++	int err;
 +
-+Per-NAPI configuration can be done programmatically in a user application
-+or by using a script included in the kernel source tree:
-+``tools/net/ynl/cli.py``.
++	err = resize_reference_state(state, state->acquired_refs + 1);
++	if (err)
++		return err;
++	state->refs[new_ofs].type = type;
++	state->refs[new_ofs].id = id;
++	state->refs[new_ofs].insn_idx = insn_idx;
++	state->refs[new_ofs].ptr = ptr;
 +
-+For example, using the script:
++	return 0;
++}
 +
-+.. code-block:: bash
+ /* release function corresponding to acquire_reference_state(). Idempotent. */
+ static int release_reference_state(struct bpf_func_state *state, int ptr_id)
+ {
+@@ -1368,6 +1387,8 @@ static int release_reference_state(struct bpf_func_state *state, int ptr_id)
+
+ 	last_idx = state->acquired_refs - 1;
+ 	for (i = 0; i < state->acquired_refs; i++) {
++		if (state->refs[i].type != REF_TYPE_PTR)
++			continue;
+ 		if (state->refs[i].id == ptr_id) {
+ 			/* Cannot release caller references in callbacks */
+ 			if (state->in_callback_fn && state->refs[i].callback_ref != state->frameno)
+@@ -1383,6 +1404,44 @@ static int release_reference_state(struct bpf_func_state *state, int ptr_id)
+ 	return -EINVAL;
+ }
+
++static int release_lock_state(struct bpf_func_state *state, int type, int id, void *ptr)
++{
++	int i, last_idx;
 +
-+  $ kernel-source/tools/net/ynl/cli.py \
-+            --spec Documentation/netlink/specs/netdev.yaml \
-+            --do napi-set \
-+            --json='{"id": 345,
-+                     "defer-hard-irqs": 111,
-+                     "gro-flush-timeout": 11111}'
++	last_idx = state->acquired_refs - 1;
++	for (i = 0; i < state->acquired_refs; i++) {
++		if (state->refs[i].type != type)
++			continue;
++		if (state->refs[i].id == id && state->refs[i].ptr == ptr) {
++			if (last_idx && i != last_idx)
++				memcpy(&state->refs[i], &state->refs[last_idx],
++				       sizeof(*state->refs));
++			memset(&state->refs[last_idx], 0, sizeof(*state->refs));
++			state->acquired_refs--;
++			return 0;
++		}
++	}
++	return -EINVAL;
++}
 +
-+Similarly, the parameter ``irq-suspend-timeout`` can be set using netlink
-+via netdev-genl. There is no global sysfs parameter for this value.
++static struct bpf_reference_state *find_lock_state(struct bpf_verifier_env *env, enum ref_state_type type,
++						   int id, void *ptr)
++{
++	struct bpf_func_state *state = cur_func(env);
++	int i;
 +
-+``irq-suspend-timeout`` is used to determine how long an application can
-+completely suspend IRQs. It is used in combination with SO_PREFER_BUSY_POLL,
-+which can be set on a per-epoll context basis with ``EPIOCSPARAMS`` ioctl.
++	for (i = 0; i < state->acquired_refs; i++) {
++		struct bpf_reference_state *s = &state->refs[i];
 +
- .. _poll:
- 
- Busy polling
-@@ -207,6 +234,46 @@ selected sockets or using the global ``net.core.busy_poll`` and
- ``net.core.busy_read`` sysctls. An io_uring API for NAPI busy polling
- also exists.
- 
-+epoll-based busy polling
-+------------------------
++		if (s->type == REF_TYPE_PTR || s->type != type)
++			continue;
 +
-+It is possible to trigger packet processing directly from calls to
-+``epoll_wait``. In order to use this feature, a user application must ensure
-+all file descriptors which are added to an epoll context have the same NAPI ID.
++		if (s->id == id && s->ptr == ptr)
++			return s;
++	}
++	return NULL;
++}
 +
-+If the application uses a dedicated acceptor thread, the application can obtain
-+the NAPI ID of the incoming connection using SO_INCOMING_NAPI_ID and then
-+distribute that file descriptor to a worker thread. The worker thread would add
-+the file descriptor to its epoll context. This would ensure each worker thread
-+has an epoll context with FDs that have the same NAPI ID.
+ static void free_func_state(struct bpf_func_state *state)
+ {
+ 	if (!state)
+@@ -1449,12 +1508,11 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
+ 		dst_state->frame[i] = NULL;
+ 	}
+ 	dst_state->speculative = src->speculative;
++	dst_state->active_lock = src->active_lock;
+ 	dst_state->active_rcu_lock = src->active_rcu_lock;
+ 	dst_state->active_preempt_lock = src->active_preempt_lock;
+ 	dst_state->in_sleepable = src->in_sleepable;
+ 	dst_state->curframe = src->curframe;
+-	dst_state->active_lock.ptr = src->active_lock.ptr;
+-	dst_state->active_lock.id = src->active_lock.id;
+ 	dst_state->branches = src->branches;
+ 	dst_state->parent = src->parent;
+ 	dst_state->first_insn_idx = src->first_insn_idx;
+@@ -5442,7 +5500,7 @@ static bool in_sleepable(struct bpf_verifier_env *env)
+ static bool in_rcu_cs(struct bpf_verifier_env *env)
+ {
+ 	return env->cur_state->active_rcu_lock ||
+-	       env->cur_state->active_lock.ptr ||
++	       env->cur_state->active_lock ||
+ 	       !in_sleepable(env);
+ }
+
+@@ -7737,6 +7795,7 @@ static int process_spin_lock(struct bpf_verifier_env *env, int regno,
+ 	struct bpf_map *map = NULL;
+ 	struct btf *btf = NULL;
+ 	struct btf_record *rec;
++	int err;
+
+ 	if (!is_const) {
+ 		verbose(env,
+@@ -7768,16 +7827,27 @@ static int process_spin_lock(struct bpf_verifier_env *env, int regno,
+ 		return -EINVAL;
+ 	}
+ 	if (is_lock) {
+-		if (cur->active_lock.ptr) {
++		void *ptr;
 +
-+Alternatively, if the application uses SO_REUSEPORT, a bpf or ebpf program can
-+be inserted to distribute incoming connections to threads such that each thread
-+is only given incoming connections with the same NAPI ID. Care must be taken to
-+carefully handle cases where a system may have multiple NICs.
++		if (map)
++			ptr = map;
++		else
++			ptr = btf;
 +
-+In order to enable busy polling, there are two choices:
++		if (cur->active_lock) {
+ 			verbose(env,
+ 				"Locking two bpf_spin_locks are not allowed\n");
+ 			return -EINVAL;
+ 		}
+-		if (map)
+-			cur->active_lock.ptr = map;
+-		else
+-			cur->active_lock.ptr = btf;
+-		cur->active_lock.id = reg->id;
++		err = acquire_lock_state(env, env->insn_idx, REF_TYPE_LOCK, reg->id, ptr);
++		if (err < 0) {
++			verbose(env, "Failed to acquire lock state\n");
++			return err;
++		}
++		/* It is not safe to allow multiple bpf_spin_lock calls, so
++		 * disallow them until this lock has been unlocked.
++		 */
++		cur->active_lock++;
+ 	} else {
+ 		void *ptr;
+
+@@ -7786,20 +7856,18 @@ static int process_spin_lock(struct bpf_verifier_env *env, int regno,
+ 		else
+ 			ptr = btf;
+
+-		if (!cur->active_lock.ptr) {
++		if (!cur->active_lock) {
+ 			verbose(env, "bpf_spin_unlock without taking a lock\n");
+ 			return -EINVAL;
+ 		}
+-		if (cur->active_lock.ptr != ptr ||
+-		    cur->active_lock.id != reg->id) {
 +
-+1. ``/proc/sys/net/core/busy_poll`` can be set with a time in useconds to busy
-+   loop waiting for events. This is a system-wide setting and will cause all
-+   epoll-based applications to busy poll when they call epoll_wait. This may
-+   not be desirable as many applications may not have the need to busy poll.
-+
-+2. Applications using recent kernels can issue an ioctl on the epoll context
-+   file descriptor to set (``EPIOCSPARAMS``) or get (``EPIOCGPARAMS``) ``struct
-+   epoll_params``:, which user programs can define as follows:
-+
-+.. code-block:: c
-+
-+  struct epoll_params {
-+      uint32_t busy_poll_usecs;
-+      uint16_t busy_poll_budget;
-+      uint8_t prefer_busy_poll;
-+
-+      /* pad the struct to a multiple of 64bits */
-+      uint8_t __pad;
-+  };
-+
- IRQ mitigation
- ---------------
- 
-@@ -222,12 +289,111 @@ Such applications can pledge to the kernel that they will perform a busy
- polling operation periodically, and the driver should keep the device IRQs
- permanently masked. This mode is enabled by using the ``SO_PREFER_BUSY_POLL``
- socket option. To avoid system misbehavior the pledge is revoked
--if ``gro_flush_timeout`` passes without any busy poll call.
-+if ``gro_flush_timeout`` passes without any busy poll call. For epoll-based
-+busy polling applications, the ``prefer_busy_poll`` field of ``struct
-+epoll_params`` can be set to 1 and the ``EPIOCSPARAMS`` ioctl can be issued to
-+enable this mode. See the above section for more details.
- 
- The NAPI budget for busy polling is lower than the default (which makes
- sense given the low latency intention of normal busy polling). This is
- not the case with IRQ mitigation, however, so the budget can be adjusted
--with the ``SO_BUSY_POLL_BUDGET`` socket option.
-+with the ``SO_BUSY_POLL_BUDGET`` socket option. For epoll-based busy polling
-+applications, the ``busy_poll_budget`` field can be adjusted to the desired value
-+in ``struct epoll_params`` and set on a specific epoll context using the ``EPIOCSPARAMS``
-+ioctl. See the above section for more details.
-+
-+It is important to note that choosing a large value for ``gro_flush_timeout``
-+will defer IRQs to allow for better batch processing, but will induce latency
-+when the system is not fully loaded. Choosing a small value for
-+``gro_flush_timeout`` can cause interference of the user application which is
-+attempting to busy poll by device IRQs and softirq processing. This value
-+should be chosen carefully with these tradeoffs in mind. epoll-based busy
-+polling applications may be able to mitigate how much user processing happens
-+by choosing an appropriate value for ``maxevents``.
-+
-+Users may want to consider an alternate approach, IRQ suspension, to help deal
-+with these tradeoffs.
-+
-+IRQ suspension
-+--------------
-+
-+IRQ suspension is a mechanism wherein device IRQs are masked while epoll
-+triggers NAPI packet processing.
-+
-+While application calls to epoll_wait successfully retrieve events, the kernel will
-+defer the IRQ suspension timer. If the kernel does not retrieve any events
-+while busy polling (for example, because network traffic levels subsided), IRQ
-+suspension is disabled and the IRQ mitigation strategies described above are
-+engaged.
-+
-+This allows users to balance CPU consumption with network processing
-+efficiency.
-+
-+To use this mechanism:
-+
-+  1. The per-NAPI config parameter ``irq-suspend-timeout`` should be set to the
-+     maximum time (in nanoseconds) the application can have its IRQs
-+     suspended. This is done using netlink, as described above. This timeout
-+     serves as a safety mechanism to restart IRQ driver interrupt processing if
-+     the application has stalled. This value should be chosen so that it covers
-+     the amount of time the user application needs to process data from its
-+     call to epoll_wait, noting that applications can control how much data
-+     they retrieve by setting ``max_events`` when calling epoll_wait.
-+
-+  2. The sysfs parameter or per-NAPI config parameters ``gro_flush_timeout``
-+     and ``napi_defer_hard_irqs`` can be set to low values. They will be used
-+     to defer IRQs after busy poll has found no data.
-+
-+  3. The ``prefer_busy_poll`` flag must be set to true. This can be done using
-+     the ``EPIOCSPARAMS`` ioctl as described above.
-+
-+  4. The application uses epoll as described above to trigger NAPI packet
-+     processing.
-+
-+As mentioned above, as long as subsequent calls to epoll_wait return events to
-+userland, the ``irq-suspend-timeout`` is deferred and IRQs are disabled. This
-+allows the application to process data without interference.
-+
-+Once a call to epoll_wait results in no events being found, IRQ suspension is
-+automatically disabled and the ``gro_flush_timeout`` and
-+``napi_defer_hard_irqs`` mitigation mechanisms take over.
-+
-+It is expected that ``irq-suspend-timeout`` will be set to a value much larger
-+than ``gro_flush_timeout`` as ``irq-suspend-timeout`` should suspend IRQs for
-+the duration of one userland processing cycle.
-+
-+While it is not stricly necessary to use ``napi_defer_hard_irqs`` and
-+``gro_flush_timeout`` to use IRQ suspension, their use is strongly
-+recommended.
-+
-+IRQ suspension causes the system to alternate between polling mode and
-+irq-driven packet delivery. During busy periods, ``irq-suspend-timeout``
-+overrides ``gro_flush_timeout`` and keeps the system busy polling, but when
-+epoll finds no events, the setting of ``gro_flush_timeout`` and
-+``napi_defer_hard_irqs`` determine the next step.
-+
-+There are essentially three possible loops for network processing and
-+packet delivery:
-+
-+1) hardirq -> softirq -> napi poll; basic interrupt delivery
-+2) timer -> softirq -> napi poll; deferred irq processing
-+3) epoll -> busy-poll -> napi poll; busy looping
-+
-+Loop 2 can take control from Loop 1, if ``gro_flush_timeout`` and
-+``napi_defer_hard_irqs`` are set.
-+
-+If ``gro_flush_timeout`` and ``napi_defer_hard_irqs`` are set, Loops 2
-+and 3 "wrestle" with each other for control.
-+
-+During busy periods, ``irq-suspend-timeout`` is used as timer in Loop 2,
-+which essentially tilts network processing in favour of Loop 3.
-+
-+If ``gro_flush_timeout`` and ``napi_defer_hard_irqs`` are not set, Loop 3
-+cannot take control from Loop 1.
-+
-+Therefore, setting ``gro_flush_timeout`` and ``napi_defer_hard_irqs`` is
-+the recommended usage, because otherwise setting ``irq-suspend-timeout``
-+might not have any discernible effect.
- 
- .. _threaded:
- 
--- 
-2.25.1
++		if (release_lock_state(cur_func(env), REF_TYPE_LOCK, reg->id, ptr)) {
+ 			verbose(env, "bpf_spin_unlock of different lock\n");
+ 			return -EINVAL;
+ 		}
+
+ 		invalidate_non_owning_refs(env);
+-
+-		cur->active_lock.ptr = NULL;
+-		cur->active_lock.id = 0;
++		cur->active_lock--;
+ 	}
+ 	return 0;
+ }
+@@ -9861,7 +9929,7 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 		const char *sub_name = subprog_name(env, subprog);
+
+ 		/* Only global subprogs cannot be called with a lock held. */
+-		if (env->cur_state->active_lock.ptr) {
++		if (env->cur_state->active_lock) {
+ 			verbose(env, "global function calls are not allowed while holding a lock,\n"
+ 				     "use static function instead\n");
+ 			return -EINVAL;
+@@ -10386,6 +10454,8 @@ static int check_reference_leak(struct bpf_verifier_env *env, bool exception_exi
+ 		return 0;
+
+ 	for (i = 0; i < state->acquired_refs; i++) {
++		if (state->refs[i].type != REF_TYPE_PTR)
++			continue;
+ 		if (!exception_exit && state->in_callback_fn && state->refs[i].callback_ref != state->frameno)
+ 			continue;
+ 		verbose(env, "Unreleased reference id=%d alloc_insn=%d\n",
+@@ -10399,7 +10469,7 @@ static int check_resource_leak(struct bpf_verifier_env *env, bool exception_exit
+ {
+ 	int err;
+
+-	if (check_lock && env->cur_state->active_lock.ptr) {
++	if (check_lock && env->cur_state->active_lock) {
+ 		verbose(env, "%s cannot be used inside bpf_spin_lock-ed region\n", prefix);
+ 		return -EINVAL;
+ 	}
+@@ -11623,7 +11693,7 @@ static int ref_set_non_owning(struct bpf_verifier_env *env, struct bpf_reg_state
+ 	struct bpf_verifier_state *state = env->cur_state;
+ 	struct btf_record *rec = reg_btf_record(reg);
+
+-	if (!state->active_lock.ptr) {
++	if (!state->active_lock) {
+ 		verbose(env, "verifier internal error: ref_set_non_owning w/o active lock\n");
+ 		return -EFAULT;
+ 	}
+@@ -11720,6 +11790,7 @@ static int ref_convert_owning_non_owning(struct bpf_verifier_env *env, u32 ref_o
+  */
+ static int check_reg_allocation_locked(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+ {
++	struct bpf_reference_state *s;
+ 	void *ptr;
+ 	u32 id;
+
+@@ -11736,10 +11807,10 @@ static int check_reg_allocation_locked(struct bpf_verifier_env *env, struct bpf_
+ 	}
+ 	id = reg->id;
+
+-	if (!env->cur_state->active_lock.ptr)
++	if (!env->cur_state->active_lock)
+ 		return -EINVAL;
+-	if (env->cur_state->active_lock.ptr != ptr ||
+-	    env->cur_state->active_lock.id != id) {
++	s = find_lock_state(env, REF_TYPE_LOCK, id, ptr);
++	if (!s) {
+ 		verbose(env, "held lock and object are not in the same allocation\n");
+ 		return -EINVAL;
+ 	}
+@@ -17635,8 +17706,22 @@ static bool refsafe(struct bpf_func_state *old, struct bpf_func_state *cur,
+ 		return false;
+
+ 	for (i = 0; i < old->acquired_refs; i++) {
+-		if (!check_ids(old->refs[i].id, cur->refs[i].id, idmap))
++		if (!check_ids(old->refs[i].id, cur->refs[i].id, idmap) ||
++		    old->refs[i].type != cur->refs[i].type)
++			return false;
++		switch (old->refs[i].type) {
++		case REF_TYPE_PTR:
++			if (old->refs[i].callback_ref != cur->refs[i].callback_ref)
++				return false;
++			break;
++		case REF_TYPE_LOCK:
++			if (old->refs[i].ptr != cur->refs[i].ptr)
++				return false;
++			break;
++		default:
++			WARN_ONCE(1, "Unhandled enum type for reference state: %d\n", old->refs[i].type);
+ 			return false;
++		}
+ 	}
+
+ 	return true;
+@@ -17714,17 +17799,7 @@ static bool states_equal(struct bpf_verifier_env *env,
+ 	if (old->speculative && !cur->speculative)
+ 		return false;
+
+-	if (old->active_lock.ptr != cur->active_lock.ptr)
+-		return false;
+-
+-	/* Old and cur active_lock's have to be either both present
+-	 * or both absent.
+-	 */
+-	if (!!old->active_lock.id != !!cur->active_lock.id)
+-		return false;
+-
+-	if (old->active_lock.id &&
+-	    !check_ids(old->active_lock.id, cur->active_lock.id, &env->idmap_scratch))
++	if (old->active_lock != cur->active_lock)
+ 		return false;
+
+ 	if (old->active_rcu_lock != cur->active_rcu_lock)
+@@ -18625,7 +18700,7 @@ static int do_check(struct bpf_verifier_env *env)
+ 					return -EINVAL;
+ 				}
+
+-				if (env->cur_state->active_lock.ptr) {
++				if (env->cur_state->active_lock) {
+ 					if ((insn->src_reg == BPF_REG_0 && insn->imm != BPF_FUNC_spin_unlock) ||
+ 					    (insn->src_reg == BPF_PSEUDO_KFUNC_CALL &&
+ 					     (insn->off != 0 || !is_bpf_graph_api_kfunc(insn->imm)))) {
+--
+2.43.5
 
 
