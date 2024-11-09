@@ -1,223 +1,225 @@
-Return-Path: <bpf+bounces-44409-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44411-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1242A9C298B
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 03:46:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88EE39C2991
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 03:53:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88D38283DA8
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 02:46:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACB131C2152A
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 02:53:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 198C143AD9;
-	Sat,  9 Nov 2024 02:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA1D126C1D;
+	Sat,  9 Nov 2024 02:53:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD5C117C7C;
-	Sat,  9 Nov 2024 02:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C5E6126BFC
+	for <bpf@vger.kernel.org>; Sat,  9 Nov 2024 02:53:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731120382; cv=none; b=G1MgsB+r9RPuEuoDuV1DNDWBCg5HVdVsvlW5fp+qLuSH4BRLOvt+WAE6r5etkBnZ69FRWytAtOQc7AXzcgznIInTY4MeyQr7iaP3bza2pAif06SB7PDOf5VoBPKT9polmJ7J/Dm3AVhgm6aM1L6GUrBhzxBfkaKEnmtuO+M05eg=
+	t=1731120807; cv=none; b=CWk2jEu1VoOQIEorWH9W3whLKgC9sb6icxN89mwba8PziXus4C6BhsXED2EiVewIoJM11i3zsQnX9PuYN9ExDpjuwGl+f0YGvuJyi6HRU/xYOPAhsQGY+SzE3X+4vtgQaTRN2CVFHNarMKL/gePwCzqRW3jXjNBB5dzZ1WSkmnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731120382; c=relaxed/simple;
-	bh=BTrxe8BRxQB6xm1Tx6vzyZJeFDO8zSbZX5OzaGTvjto=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=bv7YTqqMe//lm/HFJXJL2v4iTYzRznHv77TqcfYhzilk9MLQK4S4dB7cUc3UUxbFDjGZ0VV50/ZggjGO86PCZwI5JSmovJhz1s17V5+IWiJ5kpZiLuNu6o4FKk5r0zhY4h+vysXEX9rMZKwAIwOsF0lADTZAHSCusAeSjLqXeXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XlgD50VFnz4f3lVL;
-	Sat,  9 Nov 2024 10:45:57 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 05B6A1A018D;
-	Sat,  9 Nov 2024 10:46:16 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgAXDK7xzC5nE0PpBA--.19966S2;
-	Sat, 09 Nov 2024 10:46:13 +0800 (CST)
-Subject: Re: [PATCH] bpf: Convert lpm_trie::lock to 'raw_spinlock_t'
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Kunwu Chan <kunwu.chan@linux.dev>
+	s=arc-20240116; t=1731120807; c=relaxed/simple;
+	bh=YQweArDHFc/ZwoZnORdASNUirKzE322N0t6ehfIuyuY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NKEE8MQ4Riia7KICXrYFL4PDYH8FGNL/ESaUK6WnZE559hLXmGsK4v11RTdqPbjI0mRnyCMRGE7E+00AzM0VbN6Hd35nnlyhmA0G3wl3A1DcZkglpOu7JnL3wL1zLl1xGctDWE6gZxKPPUfgF593G3A/v/4sv0I1RvOE09i2Vvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 410BDAE0753A; Fri,  8 Nov 2024 18:53:12 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Sebastian Sewior <bigeasy@linutronix.de>,
- clrkwllms@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
- Thomas Gleixner <tglx@linutronix.de>, bpf <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, linux-rt-devel@lists.linux.dev,
- Kunwu Chan <chentao@kylinos.cn>,
- syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com
-References: <20241108063214.578120-1-kunwu.chan@linux.dev>
- <CAADnVQJ8KzVdScXM=qhdT4jMrZLBPpgd+pf1Fqyc-9TFnfabAg@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <78012426-80d2-4d77-23c4-ae000148fadd@huaweicloud.com>
-Date: Sat, 9 Nov 2024 10:46:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Tejun Heo <tj@kernel.org>
+Subject: [PATCH bpf-next v11 0/7] bpf: Support private stack for bpf progs
+Date: Fri,  8 Nov 2024 18:53:12 -0800
+Message-ID: <20241109025312.148539-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJ8KzVdScXM=qhdT4jMrZLBPpgd+pf1Fqyc-9TFnfabAg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgAXDK7xzC5nE0PpBA--.19966S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKFy3Gry7CF4kur4DKw43Awb_yoWxAF1UpF
-	WfCFZrAr4UXa4j9ay0vw4jvay5Xws8Kw43GrWfWryxZF1agrn2qrs2yr1fXr90yryvyFZI
-	yF1qqFWkKw18ZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4I
-	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
-	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
-	IYCTnIWIevJa73UjIFyTuYvjxUIa0PDUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Transfer-Encoding: quoted-printable
 
-Hi Alexei,
+The main motivation for private stack comes from nested scheduler in
+sched-ext from Tejun. The basic idea is that
+ - each cgroup will its own associated bpf program,
+ - bpf program with parent cgroup will call bpf programs
+   in immediate child cgroups.
 
-On 11/9/2024 4:22 AM, Alexei Starovoitov wrote:
-> On Thu, Nov 7, 2024 at 10:32 PM Kunwu Chan <kunwu.chan@linux.dev> wrote:
->> From: Kunwu Chan <chentao@kylinos.cn>
->>
->> When PREEMPT_RT is enabled, 'spinlock_t' becomes preemptible
->> and bpf program has owned a raw_spinlock under a interrupt handler,
->> which results in invalid lock acquire context.
->>
->> [ BUG: Invalid wait context ]
->> 6.12.0-rc5-next-20241031-syzkaller #0 Not tainted
->> -----------------------------
->> swapper/0/0 is trying to lock:
->> ffff8880261e7a00 (&trie->lock){....}-{3:3},
->> at: trie_delete_elem+0x96/0x6a0 kernel/bpf/lpm_trie.c:462
->> other info that might help us debug this:
->> context-{3:3}
->> 5 locks held by swapper/0/0:
->>  #0: ffff888020bb75c8 (&vp_dev->lock){-...}-{3:3},
->> at: vp_vring_interrupt drivers/virtio/virtio_pci_common.c:80 [inline]
->>  #0: ffff888020bb75c8 (&vp_dev->lock){-...}-{3:3},
->> at: vp_interrupt+0x142/0x200 drivers/virtio/virtio_pci_common.c:113
->>  #1: ffff88814174a120 (&vb->stop_update_lock){-...}-{3:3},
->> at: spin_lock include/linux/spinlock.h:351 [inline]
->>  #1: ffff88814174a120 (&vb->stop_update_lock){-...}-{3:3},
->> at: stats_request+0x6f/0x230 drivers/virtio/virtio_balloon.c:438
->>  #2: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
->> at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
->>  #2: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
->> at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
->>  #2: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
->> at: __queue_work+0x199/0xf50 kernel/workqueue.c:2259
->>  #3: ffff8880b863dd18 (&pool->lock){-.-.}-{2:2},
->> at: __queue_work+0x759/0xf50
->>  #4: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
->> at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
->>  #4: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
->> at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
->>  #4: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
->> at: __bpf_trace_run kernel/trace/bpf_trace.c:2339 [inline]
->>  #4: ffffffff8e939f20 (rcu_read_lock){....}-{1:3},
->> at: bpf_trace_run1+0x1d6/0x520 kernel/trace/bpf_trace.c:2380
->> stack backtrace:
->> CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Not tainted
->> 6.12.0-rc5-next-20241031-syzkaller #0
->> Hardware name: Google Compute Engine/Google Compute Engine,
->> BIOS Google 09/13/2024
->> Call Trace:
->>  <IRQ>
->>  __dump_stack lib/dump_stack.c:94 [inline]
->>  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
->>  print_lock_invalid_wait_context kernel/locking/lockdep.c:4826 [inline]
->>  check_wait_context kernel/locking/lockdep.c:4898 [inline]
->>  __lock_acquire+0x15a8/0x2100 kernel/locking/lockdep.c:5176
->>  lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
->>  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
->>  _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
->>  trie_delete_elem+0x96/0x6a0 kernel/bpf/lpm_trie.c:462
-> This trace is from non-RT kernel where spin_lock == raw_spin_lock.
+Let us say we have the following cgroup hierarchy:
+  root_cg (prog0):
+    cg1 (prog1):
+      cg11 (prog11):
+        cg111 (prog111)
+        cg112 (prog112)
+      cg12 (prog12):
+        cg121 (prog121)
+        cg122 (prog122)
+    cg2 (prog2):
+      cg21 (prog21)
+      cg22 (prog22)
+      cg23 (prog23)
 
-Yes. However, I think the reason for the warning is that lockdep
-considers the case is possible under PREEMPT_RT and it violates the rule
-of lock [1].
+In the above example, prog0 will call a kfunc which will call prog1 and
+prog2 to get sched info for cg1 and cg2 and then the information is
+summarized and sent back to prog0. Similarly, prog11 and prog12 will be
+invoked in the kfunc and the result will be summarized and sent back to
+prog1, etc. The following illustrates a possible call sequence:
+   ... -> bpf prog A -> kfunc -> ops.<callback_fn> (bpf prog B) ...
 
-[1]:
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=560af5dc839eef08a273908f390cfefefb82aa04
->
-> I don't think Hou's explanation earlier is correct.
-> https://lore.kernel.org/bpf/e14d8882-4760-7c9c-0cfc-db04eda494ee@huaweicloud.com/
+Currently, for each thread, the x86 kernel allocate 16KB stack. Each
+bpf program (including its subprograms) has maximum 512B stack size to
+avoid potential stack overflow. Nested bpf programs further increase the
+risk of stack overflow. To avoid potential stack overflow caused by bpf
+programs, this patch set supported private stack and bpf program stack
+space is allocated during jit time. Using private stack for bpf progs
+can reduce or avoid potential kernel stack overflow.
 
-OK. Is the bpf mem allocator part OK for you ?
->
->>  bpf_prog_2c29ac5cdc6b1842+0x43/0x47
->>  bpf_dispatcher_nop_func include/linux/bpf.h:1290 [inline]
->>  __bpf_prog_run include/linux/filter.h:701 [inline]
->>  bpf_prog_run include/linux/filter.h:708 [inline]
->>  __bpf_trace_run kernel/trace/bpf_trace.c:2340 [inline]
->>  bpf_trace_run1+0x2ca/0x520 kernel/trace/bpf_trace.c:2380
->>  trace_workqueue_activate_work+0x186/0x1f0 include/trace/events/workqueue.h:59
->>  __queue_work+0xc7b/0xf50 kernel/workqueue.c:2338
->>  queue_work_on+0x1c2/0x380 kernel/workqueue.c:2390
-> here irqs are disabled, but raw_spin_lock in lpm should be fine.
->
->>  queue_work include/linux/workqueue.h:662 [inline]
->>  stats_request+0x1a3/0x230 drivers/virtio/virtio_balloon.c:441
->>  vring_interrupt+0x21d/0x380 drivers/virtio/virtio_ring.c:2595
->>  vp_vring_interrupt drivers/virtio/virtio_pci_common.c:82 [inline]
->>  vp_interrupt+0x192/0x200 drivers/virtio/virtio_pci_common.c:113
->>  __handle_irq_event_percpu+0x29a/0xa80 kernel/irq/handle.c:158
->>  handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
->>  handle_irq_event+0x89/0x1f0 kernel/irq/handle.c:210
->>  handle_fasteoi_irq+0x48a/0xae0 kernel/irq/chip.c:720
->>  generic_handle_irq_desc include/linux/irqdesc.h:173 [inline]
->>  handle_irq arch/x86/kernel/irq.c:247 [inline]
->>  call_irq_handler arch/x86/kernel/irq.c:259 [inline]
->>  __common_interrupt+0x136/0x230 arch/x86/kernel/irq.c:285
->>  common_interrupt+0xb4/0xd0 arch/x86/kernel/irq.c:278
->>  </IRQ>
->>
->> Reported-by: syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com
->> Closes: https://lore.kernel.org/bpf/6723db4a.050a0220.35b515.0168.GAE@google.com/
->> Fixes: 66150d0dde03 ("bpf, lpm: Make locking RT friendly")
->> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->> ---
->>  kernel/bpf/lpm_trie.c | 12 ++++++------
->>  1 file changed, 6 insertions(+), 6 deletions(-)
->>
->> diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
->> index 9b60eda0f727..373cdcfa0505 100644
->> --- a/kernel/bpf/lpm_trie.c
->> +++ b/kernel/bpf/lpm_trie.c
->> @@ -35,7 +35,7 @@ struct lpm_trie {
->>         size_t                          n_entries;
->>         size_t                          max_prefixlen;
->>         size_t                          data_size;
->> -       spinlock_t                      lock;
->> +       raw_spinlock_t                  lock;
->>  };
-> We're certainly not going back.
+Currently private stack is applied to tracing programs like kprobe/uprobe=
+,
+perf_event, tracepoint, raw tracepoint and struct_ops progs.
+Tracing progs enable private stack if any subprog stack size is more
+than a threshold (i.e. 64B). Struct-ops progs enable private stack
+based on particular struct op implementation which can enable private
+stack before verification at per-insn level. Struct-ops progs have
+the same treatment as tracing progs w.r.t when to enable private stack.
 
-Only switching from spinlock_t to raw_spinlock_t is not enough, running
-it under PREEMPT_RT after the change will still trigger the similar
-lockdep warning. That is because kmalloc() may acquire a spinlock_t as
-well. However, after changing the kmalloc and its variants to bpf memory
-allocator, I think the switch to raw_spinlock_t will be safe. I have
-already written a draft patch set. Will post after after polishing and
-testing it. WDYT ?
->
-> pw-bot: cr
+For all these progs, the kernel will do recursion check (no nesting for
+per prog per cpu) to ensure that private stack won't be overwritten.
+The bpf_prog_aux struct has a callback func recursion_detected() which
+can be implemented by kernel subsystem to synchronously detect recursion,
+report error, etc.
+
+Only x86_64 arch supports private stack now. It can be extended to other
+archs later. Please see each individual patch for details.
+
+Change logs:
+  v10 -> v11:
+    - v10 link: https://lore.kernel.org/bpf/20241107024138.3355687-1-yong=
+hong.song@linux.dev/
+    - Use two bool variables, priv_stack_requested (used by struct-ops on=
+ly) and
+      jits_use_priv_stack, in order to make code cleaner.
+    - Set env->prog->aux->jits_use_priv_stack to true if any subprog uses=
+ private stack.
+      This is for struct-ops use case to kick in recursion protection.
+  v9 -> v10:
+    - v9 link: https://lore.kernel.org/bpf/20241104193455.3241859-1-yongh=
+ong.song@linux.dev/
+    - Simplify handling async cbs by making those async cb related progs =
+using normal
+      kernel stack.
+    - Do percpu allocation in jit instead of verifier.
+  v8 -> v9:
+    - v8 link: https://lore.kernel.org/bpf/20241101030950.2677215-1-yongh=
+ong.song@linux.dev/
+    - Use enum to express priv stack mode.
+    - Use bits in bpf_subprog_info struct to do subprog recursion check b=
+etween
+      main/async and async subprogs.
+    - Fix potential memory leak.
+    - Rename recursion detection func from recursion_skipped() to recursi=
+on_detected().
+  v7 -> v8:
+    - v7 link: https://lore.kernel.org/bpf/20241029221637.264348-1-yongho=
+ng.song@linux.dev/
+    - Add recursion_skipped() callback func to bpf_prog->aux structure su=
+ch that if
+      a recursion miss happened and bpf_prog->aux->recursion_skipped is n=
+ot NULL, the
+      callback fn will be called so the subsystem can do proper action ba=
+sed on their
+      respective design.
+  v6 -> v7:
+    - v6 link: https://lore.kernel.org/bpf/20241020191341.2104841-1-yongh=
+ong.song@linux.dev/
+    - Going back to do private stack allocation per prog instead per subt=
+ree. This can
+      simplify implementation and avoid verifier complexity.
+    - Handle potential nested subprog run if async callback exists.
+    - Use struct_ops->check_member() callback to set whether a particular=
+ struct-ops
+      prog wants private stack or not.
+  v5 -> v6:
+    - v5 link: https://lore.kernel.org/bpf/20241017223138.3175885-1-yongh=
+ong.song@linux.dev/
+    - Instead of using (or not using) private stack at struct_ops level,
+      each prog in struct_ops can decide whether to use private stack or =
+not.
+  v4 -> v5:
+    - v4 link: https://lore.kernel.org/bpf/20241010175552.1895980-1-yongh=
+ong.song@linux.dev/
+    - Remove bpf_prog_call() related implementation.
+    - Allow (opt-in) private stack for sched-ext progs.
+  v3 -> v4:
+    - v3 link: https://lore.kernel.org/bpf/20240926234506.1769256-1-yongh=
+ong.song@linux.dev/
+      There is a long discussion in the above v3 link trying to allow pri=
+vate
+      stack to be used by kernel functions in order to simplify implement=
+ation.
+      But unfortunately we didn't find a workable solution yet, so we ret=
+urn
+      to the approach where private stack is only used by bpf programs.
+    - Add bpf_prog_call() kfunc.
+  v2 -> v3:
+    - Instead of per-subprog private stack allocation, allocate private
+      stacks at main prog or callback entry prog. Subprogs not main or ca=
+llback
+      progs will increment the inherited stack pointer to be their
+      frame pointer.
+    - Private stack allows each prog max stack size to be 512 bytes, inte=
+ad
+      of the whole prog hierarchy to be 512 bytes.
+    - Add some tests.
+
+Yonghong Song (7):
+  bpf: Find eligible subprogs for private stack support
+  bpf: Enable private stack for eligible subprogs
+  bpf, x86: Avoid repeated usage of bpf_prog->aux->stack_depth
+  bpf, x86: Support private stack in jit
+  selftests/bpf: Add tracing prog private stack tests
+  bpf: Support private stack for struct_ops progs
+  selftests/bpf: Add struct_ops prog private stack tests
+
+ arch/x86/net/bpf_jit_comp.c                   |  88 +++++-
+ include/linux/bpf.h                           |   4 +
+ include/linux/bpf_verifier.h                  |   8 +
+ include/linux/filter.h                        |   1 +
+ kernel/bpf/core.c                             |   5 +
+ kernel/bpf/trampoline.c                       |   4 +
+ kernel/bpf/verifier.c                         | 112 +++++++-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 104 +++++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   5 +
+ .../bpf/prog_tests/struct_ops_private_stack.c | 106 +++++++
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../bpf/progs/struct_ops_private_stack.c      |  62 ++++
+ .../bpf/progs/struct_ops_private_stack_fail.c |  62 ++++
+ .../progs/struct_ops_private_stack_recur.c    |  50 ++++
+ .../bpf/progs/verifier_private_stack.c        | 272 ++++++++++++++++++
+ 15 files changed, 871 insertions(+), 14 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_pri=
+vate_stack.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
+stack.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
+stack_fail.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
+stack_recur.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_private_st=
+ack.c
+
+--=20
+2.43.5
 
 
