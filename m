@@ -1,139 +1,102 @@
-Return-Path: <bpf+bounces-44421-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F36F9C2B4C
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 09:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 88FE89C2C56
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 12:56:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C0B61F21E79
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 08:41:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 408F01F21D6E
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 11:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C300145B0C;
-	Sat,  9 Nov 2024 08:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0155C18EFF8;
+	Sat,  9 Nov 2024 11:55:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mail.itouring.de (mail.itouring.de [85.10.202.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35FE2647;
-	Sat,  9 Nov 2024 08:40:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EEB115443D
+	for <bpf@vger.kernel.org>; Sat,  9 Nov 2024 11:55:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.202.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731141654; cv=none; b=qhl4iChl3qidDOP+hP79+eNaRqjHQaKTAun1RxGHA2mJrfTe2qXxPb8e3dkVK43Oa/whO6TCHEbGHiD/jHbx0qboSuPOtFuRhvWsTRPC+iU8/TwwNd8dEZNVMYp/wnPu51Nrf4pQN7DUVlxZdFX1NNjo8Ln8O9Ni0VE0FswomYE=
+	t=1731153348; cv=none; b=fhFFlzyxYI7qlHBmsjBhSuDkCObfqPn8aL06LJdzxofa4dKsixYiyRQ0gF7qjF43He9VBgGciemNF/Ua0Mbs92v9OMfRxs+CMboXIVtZIHG6mTEntc47Ah05rSV9osOAON4ewuVy6J6KzcjiYqFoCDYuoSN0fLLLAiuz7yg35T0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731141654; c=relaxed/simple;
-	bh=pxd33NTDnSG5J/R/Y7RshQj9GXCHq3NO8FHMWwcbTrc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ijxuzTNpZeRsSOp6gUi/CHn758jw9fEqtJwGFzTHLfk46NewMRdfVs7juDHjWj4nKx+8Itu1Bw11/luX/5RoWq8Dxs7U4WeVRlrxBnXtHn1qEaNfgDAxc+bGN/e9kjFVY3vXFznQt2dABMzz6zy06nbulVJeAhj2RN1twkVQeVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Xlq521TC1z4f3n6H;
-	Sat,  9 Nov 2024 16:40:22 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 2AD4C1A0196;
-	Sat,  9 Nov 2024 16:40:41 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP1 (Coremail) with SMTP id cCh0CgAXDK4HIC9nUlMABQ--.1264S2;
-	Sat, 09 Nov 2024 16:40:41 +0800 (CST)
-Message-ID: <e898a2b2-779b-45e6-b2d2-a2a796e322ff@huaweicloud.com>
-Date: Sat, 9 Nov 2024 16:40:39 +0800
+	s=arc-20240116; t=1731153348; c=relaxed/simple;
+	bh=6Ej6ejPEZkOpUFC9v1VtSXJl6v8WRzPbIdWo2CeB70U=;
+	h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type; b=dn3+w6wP0HekD9xKbm/T7yNZE/HCxXLWPm7cd6sJZcDseWwsd3Wuyszmp9L1U9Zyb4xBQB4aoLIXPM9EQC8DtF72zzI2k4mCdnMVdCKM/PBtfFFoan4YkNtWtilW3urYKrD0yKexM38HsbyZ+vuR0P7Q5qVAImqGHex+R5rPY2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com; spf=pass smtp.mailfrom=applied-asynchrony.com; arc=none smtp.client-ip=85.10.202.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=applied-asynchrony.com
+Received: from tux.applied-asynchrony.com (p5ddd7b29.dip0.t-ipconnect.de [93.221.123.41])
+	by mail.itouring.de (Postfix) with ESMTPSA id A993F11DD55
+	for <bpf@vger.kernel.org>; Sat, 09 Nov 2024 12:55:36 +0100 (CET)
+Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
+	by tux.applied-asynchrony.com (Postfix) with ESMTP id 152FD600BC989
+	for <bpf@vger.kernel.org>; Sat, 09 Nov 2024 12:55:36 +0100 (CET)
+To: bpf@vger.kernel.org
+From: =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Subject: Using gcc-bpf for bpftool: problems with CO-RE feature detection
+Organization: Applied Asynchrony, Inc.
+Message-ID: <8665818f-8a32-3796-1efc-1a9e5d036f18@applied-asynchrony.com>
+Date: Sat, 9 Nov 2024 12:55:36 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add test for struct_ops map
- release
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Yonghong Song <yonghong.song@linux.dev>, Kui-Feng Lee <thinker.li@gmail.com>
-References: <20241108082633.2338543-1-xukuohai@huaweicloud.com>
- <20241108082633.2338543-3-xukuohai@huaweicloud.com>
- <60a50f93-5416-4ee5-b34a-a1a88652dc82@linux.dev>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <60a50f93-5416-4ee5-b34a-a1a88652dc82@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAXDK4HIC9nUlMABQ--.1264S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7CrWxAF15tw4kJr17ZF1rtFb_yoW8uFyfpF
-	s5JrWUAFZrJrsYqF1jgr1UZFyrAr1qqw1DXry8X3Z8Ar47Zr9YgF1jqrs29F15Cr4kGF1U
-	A3yjvr9rZr17AaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUymb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Transfer-Encoding: 7bit
 
-On 11/9/2024 3:39 AM, Martin KaFai Lau wrote:
-> On 11/8/24 12:26 AM, Xu Kuohai wrote:
->> -static void bpf_testmod_test_2(int a, int b)
->> +static void bpf_dummy_unreg(void *kdata, struct bpf_link *link)
->>   {
->> +    WRITE_ONCE(__bpf_dummy_ops, &__bpf_testmod_ops);
->>   }
-> 
-> [ ... ]
-> 
->> +static int run_struct_ops(const char *val, const struct kernel_param *kp)
->> +{
->> +    int ret;
->> +    unsigned int repeat;
->> +    struct bpf_testmod_ops *ops;
->> +
->> +    ret = kstrtouint(val, 10, &repeat);
->> +    if (ret)
->> +        return ret;
->> +
->> +    if (repeat > 10000)
->> +        return -ERANGE;
->> +
->> +    while (repeat-- > 0) {
->> +        ops = READ_ONCE(__bpf_dummy_ops);
-> 
-> I don't think it is the usual bpf_struct_ops implementation which only uses READ_ONCE and WRITE_ONCE to protect the registered ops. tcp-cc uses a refcnt+rcu. It seems hid uses synchronize_srcu(). sched_ext seems to also use kthread_flush_work() to wait for 
-> all ops calling finished. Meaning I don't think the current bpf_struct_ops unreg implementation will run into this issue for sleepable ops.
-> 
+Hi,
 
-Thanks for the explanation.
+I'm trying to use Gentoo's bpf-toolchain - basically just gcc built for
+the BPF target - to build the CO-RE support in bpftool, in order to
+provide an alternative to clang.
 
-Are you saying that it's not the struct_ops framework's
-responsibility to ensure the struct_ops map is not
-released while it may be still in use? And the "bug" in
-this series should be "fixed" in the test, namely this
-patch?
+This currently fails because the feature detection relies on a comment
+in the generated BPF assembly, which gcc does not seem to generate.
 
-> The current synchronize_rcu_mult(call_rcu, call_rcu_tasks) is only needed for the tcp-cc because a tcp-cc's ops (which uses refcnt+rcu) can decrement its own refcnt. Looking back, this was a mistake (mine). A new tcp-cc ops should have been introduced 
-> instead to return a new tcp-cc-ops to be used.
+While I'm using the Github mirror for bpftool, the same check is
+being done in the kernel build, so it affects both.
 
-Not quite clear, but from the description, it seems that
-the synchronize_rcu_mult(call_rcu, call_rcu_tasks) could
-be just removed in some way, no need to do a cleanup to
-switch it to call_rcu.
+Our tracker bug with full output etc. is: https://bugs.gentoo.org/943113
 
-> 
->> +        if (ops->test_1)
->> +            ops->test_1();
->> +        if (ops->test_2)
->> +            ops->test_2(0, 0);
->> +    }
->> +
->> +    return 0;
->> +}
+Basically the problem boils down to:
 
+	.long	16777248                        # 0x1000020
+	.long	9                               # BTF_KIND_VAR(id = 3)
+	.long	234881024                       # 0xe000000
+
+generated by clang (19.1.3)
+
+vs.
+
+	.4byte	0x1000020
+	.4byte	0x9
+	.4byte	0xe000000
+
+generated by gcc (14.2.0).
+
+As the values themselves are correct, the problem is really just
+the missing debug information in gcc's output. So far I've tried
+every option I could find, but to no avail. I have no idea whether
+this is because I'm holding it wrong, gcc cannot do it for the bpf
+target (yet?) or anything else.
+
+Does anybody know how I can convince gcc to generate symbol comments?
+Alternatively can we find a better way to verify the generated output
+instead of grepping for a comment?
+
+This is not really a bug, but IMHO having an alternative toolchain to
+build BPF seems like a good idea in general. Gentoo's bpf-toolchain
+package was initially made to build dtrace, and seems to be working
+fine so far.
+
+Thanks for any suggestions!
+
+cheers
+Holger
 
