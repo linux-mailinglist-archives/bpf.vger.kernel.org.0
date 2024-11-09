@@ -1,603 +1,702 @@
-Return-Path: <bpf+bounces-44417-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44418-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EEA79C2997
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 03:54:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 079A89C2A2C
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 06:03:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D405BB22A67
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 02:54:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CF281F22BF4
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 05:03:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9FE128369;
-	Sat,  9 Nov 2024 02:54:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D764813C9A6;
+	Sat,  9 Nov 2024 05:02:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="eTE6dhYB"
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46ECB129E9C
-	for <bpf@vger.kernel.org>; Sat,  9 Nov 2024 02:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0BF43FB9C
+	for <bpf@vger.kernel.org>; Sat,  9 Nov 2024 05:02:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731120842; cv=none; b=d81CWEmDcTUkf2OCnzYU7tuvR+/yPHVuLro79AmlT59gyoqCCG+b3hYhzhoF+ugfWALxK+nZ7ga5EkiZSDdrqt1R+DA7+QIjYUSdJ+XiQgBlBKaLTR2IXNdRUrGbs6+ghPSVOPfYBgG35okxtTgf5qTnu7e8HCuNNwJ2M7s2PtQ=
+	t=1731128579; cv=none; b=J0EZRgiWTmOiPONlxyq4yFWoasL+pB4Q0nVX18OKSHTFUrK4iMz38jxE/FdZJo/76hgnE5d4Lx0vwSKiGUeamTqNrJXOcg6WToNUmj0lKeYd7vNTwqQpxjDZmtPCV4ejz9qlUyGuOVzKjLZolBJFpntOFKTWTRIrP28b0nw/Shc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731120842; c=relaxed/simple;
-	bh=5AstnVy3aqttJDEaVH1IaNKfohIrJ7O0raWldSbSPjM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rLaYL/5yZyP3c9ufil54yj5Ta/xw6RxQ3EPqJlvqpDsiGx6LKRf532sYXUnD7nxHlsD15aHFXgiZ18Gy18nNEE3SwrTacj2dj5GhhLVmHHPokM+bYioq4ks4bUfu5vIWfOJrvmJyM3ReXjxhDpgtVGO4ZEMW7wuFdNjPWFk5ago=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 11830AE075E0; Fri,  8 Nov 2024 18:53:48 -0800 (PST)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v11 7/7] selftests/bpf: Add struct_ops prog private stack tests
-Date: Fri,  8 Nov 2024 18:53:48 -0800
-Message-ID: <20241109025348.150681-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241109025312.148539-1-yonghong.song@linux.dev>
-References: <20241109025312.148539-1-yonghong.song@linux.dev>
+	s=arc-20240116; t=1731128579; c=relaxed/simple;
+	bh=5bO9Ipdetr/fi10MAqK/2DILdxDbSzs+xTQLbU+zKNo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fV88YDklavQM5YSNfww3c5QEwWdERveoefVdlpyQ9aKZ0bI60OEypLF7EM5J8eHtjW750wtbL18OQtu8CBSmbjNPns/676C59dA2/PSxvcnoLcb/9tSCKJ7B606KdziWGoiq6SYh8fHUXcuTIuEdf3MKw0cEhg4Kl0W+gndyQ7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=eTE6dhYB; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2118dfe6042so2902145ad.2
+        for <bpf@vger.kernel.org>; Fri, 08 Nov 2024 21:02:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1731128576; x=1731733376; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FywM59AAYX0uDiqO68dexix1rV39xIq9q086H8NI22c=;
+        b=eTE6dhYBdTOJou/zzHOz1TDGYx1Hb5aJZ+u0WJ3cOtTp/gvVYeT5xrpgb+wfI3yqh9
+         bDLFYp+zz03NZ2mF2tsdYZ9Ia5YFejeK4WXs6JEnisDQh9bWUpcaKE7GV9GGRSX10bdJ
+         yxWlaOffs85JSawPBzPzx1XdORYXdPHahuMRU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731128576; x=1731733376;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FywM59AAYX0uDiqO68dexix1rV39xIq9q086H8NI22c=;
+        b=IMJm9ETPFtV6f6vrd/ZKU3aQoWSjJh7sMhPTPKLFGKn3N8I2eQI1Go6r9DeHZy8tD8
+         slFV9kmLID87ZLcS4UAmPd984rnD4SELYcM24sy44OKVBFLaYOnTSjQHIHfsxmr7gNXj
+         goCnjbH1QL1Vv4ulyu03jMr2RjOtNTG7A+2WHFKOlD4dGhllgKMu7/zJJ2zlWzHw/RKE
+         nbOXqHViMTq95dJN+Oalk29ioKUCnPVuy/CiSWvUn2JDXyiyJsv+oBRgfaJgWWsduyMk
+         S3YbHcIsjCKeS5e20HEJZGjDYScRMcEXKLAXG9gbwGtzZWqHI8L0mgbdz0xKcmJZNDUj
+         R4LA==
+X-Forwarded-Encrypted: i=1; AJvYcCWWRI6XiZDs6HW2uva+UcHho9SQEYxV6BqT3Cxbd52fdTt5uE9rNkayOtyifkqVcn30WAI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxiRQeQXB97e63pqq6659J/Nsv6PV2MjELj7miAh0ByK6SGgWPb
+	G7/mU2V0revt0XOvpcUp19HYmPLm3cnT9XYYHBLhykzDxDGsLY1TBsCQZYcA5Jc=
+X-Google-Smtp-Source: AGHT+IEjA0eQqsTs85lLMR00L4VUebEp/wmHpy2IsaMbo+yqwVKhVppRsPyopNGcdG6QNWDoEUzoJw==
+X-Received: by 2002:a17:902:ced1:b0:20c:da98:d752 with SMTP id d9443c01a7336-21183551205mr69771465ad.16.1731128576021;
+        Fri, 08 Nov 2024 21:02:56 -0800 (PST)
+Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21177e5853csm39182305ad.186.2024.11.08.21.02.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Nov 2024 21:02:55 -0800 (PST)
+From: Joe Damato <jdamato@fastly.com>
+To: netdev@vger.kernel.org
+Cc: corbet@lwn.net,
+	hdanton@sina.com,
+	bagasdotme@gmail.com,
+	pabeni@redhat.com,
+	namangulati@google.com,
+	edumazet@google.com,
+	amritha.nambiar@intel.com,
+	sridhar.samudrala@intel.com,
+	sdf@fomichev.me,
+	peter@typeblog.net,
+	m2shafiei@uwaterloo.ca,
+	bjorn@rivosinc.com,
+	hch@infradead.org,
+	willy@infradead.org,
+	willemdebruijn.kernel@gmail.com,
+	skhawaja@google.com,
+	kuba@kernel.org,
+	Joe Damato <jdamato@fastly.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	bpf@vger.kernel.org (open list:BPF [MISC]:Keyword:(?:\b|_)bpf(?:\b|_)),
+	Christian Brauner <brauner@kernel.org>,
+	Daniel Jurgens <danielj@nvidia.com>,
+	David Ahern <dsahern@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Donald Hunter <donald.hunter@gmail.com>,
+	Jan Kara <jack@suse.cz>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Johannes Berg <johannes.berg@intel.com>,
+	linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+	linux-fsdevel@vger.kernel.org (open list:FILESYSTEMS (VFS and infrastructure)),
+	linux-kernel@vger.kernel.org (open list),
+	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Martin Karsten <mkarsten@uwaterloo.ca>,
+	Mina Almasry <almasrymina@google.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Shuah Khan <shuah@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next v9 0/6] Suspend IRQs during application busy periods
+Date: Sat,  9 Nov 2024 05:02:30 +0000
+Message-Id: <20241109050245.191288-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Add three tests for struct_ops using private stack.
-  ./test_progs -t struct_ops_private_stack
-  #333/1   struct_ops_private_stack/private_stack:OK
-  #333/2   struct_ops_private_stack/private_stack_fail:OK
-  #333/3   struct_ops_private_stack/private_stack_recur:OK
-  #333     struct_ops_private_stack:OK
+Greetings:
 
-The following is a snippet of a struct_ops check_member() implementation:
+Welcome to v9, see changelog below.
 
-	u32 moff =3D __btf_member_bit_offset(t, member) / 8;
-	switch (moff) {
-	case offsetof(struct bpf_testmod_ops3, test_1):
-        	prog->aux->priv_stack_requested =3D true;
-                prog->aux->recursion_detected =3D test_1_recursion_detect=
-ed;
-        	fallthrough;
-	default:
-        	break;
-	}
-	return 0;
+This revision addresses feedback Willem gave on the selftests. No
+functional or code changes to the implementation were made and
+performance tests were not re-run.
 
-The first test is with nested two different callback functions where the
-first prog has more than 512 byte stack size (including subprogs) with
-private stack enabled.
+This series introduces a new mechanism, IRQ suspension, which allows
+network applications using epoll to mask IRQs during periods of high
+traffic while also reducing tail latency (compared to existing
+mechanisms, see below) during periods of low traffic. In doing so, this
+balances CPU consumption with network processing efficiency.
 
-The second test is a negative test where the second prog has more than 51=
-2
-byte stack size without private stack enabled.
+Martin Karsten (CC'd) and I have been collaborating on this series for
+several months and have appreciated the feedback from the community on
+our RFC [1]. We've updated the cover letter and kernel documentation in
+an attempt to more clearly explain how this mechanism works, how
+applications can use it, and how it compares to existing mechanisms in
+the kernel.
 
-The third test is the same callback function recursing itself. At run tim=
-e,
-the jit trampoline recursion check kicks in to prevent the recursion. The
-recursion_detected() callback function is implemented by the bpf_testmod,
-the following message in dmesg
-  bpf_testmod: oh no, recursing into test_1, recursion_misses 1
-demonstrates the callback function is indeed triggered when recursion mis=
-s
-happens.
+I briefly mentioned this idea at netdev conf 2024 (for those who were
+there) and Martin described this idea in an earlier paper presented at
+Sigmetrics 2024 [2].
 
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 104 +++++++++++++++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   5 +
- .../bpf/prog_tests/struct_ops_private_stack.c | 106 ++++++++++++++++++
- .../bpf/progs/struct_ops_private_stack.c      |  62 ++++++++++
- .../bpf/progs/struct_ops_private_stack_fail.c |  62 ++++++++++
- .../progs/struct_ops_private_stack_recur.c    |  50 +++++++++
- 6 files changed, 389 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_pri=
-vate_stack.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
-stack.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
-stack_fail.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
-stack_recur.c
+~ The short explanation (TL;DR)
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tool=
-s/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 987d41af71d2..cc9dde507aba 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -245,6 +245,39 @@ __bpf_kfunc void bpf_testmod_ctx_release(struct bpf_=
-testmod_ctx *ctx)
- 		call_rcu(&ctx->rcu, testmod_free_cb);
- }
-=20
-+static struct bpf_testmod_ops3 *st_ops3;
-+
-+static int bpf_testmod_test_3(void)
-+{
-+	return 0;
-+}
-+
-+static int bpf_testmod_test_4(void)
-+{
-+	return 0;
-+}
-+
-+static struct bpf_testmod_ops3 __bpf_testmod_ops3 =3D {
-+	.test_1 =3D bpf_testmod_test_3,
-+	.test_2 =3D bpf_testmod_test_4,
-+};
-+
-+static void bpf_testmod_test_struct_ops3(void)
-+{
-+	if (st_ops3)
-+		st_ops3->test_1();
-+}
-+
-+__bpf_kfunc void bpf_testmod_ops3_call_test_1(void)
-+{
-+	st_ops3->test_1();
-+}
-+
-+__bpf_kfunc void bpf_testmod_ops3_call_test_2(void)
-+{
-+	st_ops3->test_2();
-+}
-+
- struct bpf_testmod_btf_type_tag_1 {
- 	int a;
- };
-@@ -382,6 +415,8 @@ bpf_testmod_test_read(struct file *file, struct kobje=
-ct *kobj,
-=20
- 	(void)trace_bpf_testmod_test_raw_tp_null(NULL);
-=20
-+	bpf_testmod_test_struct_ops3();
-+
- 	struct_arg3 =3D kmalloc((sizeof(struct bpf_testmod_struct_arg_3) +
- 				sizeof(int)), GFP_KERNEL);
- 	if (struct_arg3 !=3D NULL) {
-@@ -586,6 +621,8 @@ BTF_ID_FLAGS(func, bpf_kfunc_trusted_num_test, KF_TRU=
-STED_ARGS)
- BTF_ID_FLAGS(func, bpf_kfunc_rcu_task_test, KF_RCU)
- BTF_ID_FLAGS(func, bpf_testmod_ctx_create, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_testmod_ctx_release, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_testmod_ops3_call_test_1)
-+BTF_ID_FLAGS(func, bpf_testmod_ops3_call_test_2)
- BTF_KFUNCS_END(bpf_testmod_common_kfunc_ids)
-=20
- BTF_ID_LIST(bpf_testmod_dtor_ids)
-@@ -1096,6 +1133,10 @@ static const struct bpf_verifier_ops bpf_testmod_v=
-erifier_ops =3D {
- 	.is_valid_access =3D bpf_testmod_ops_is_valid_access,
- };
-=20
-+static const struct bpf_verifier_ops bpf_testmod_verifier_ops3 =3D {
-+	.is_valid_access =3D bpf_testmod_ops_is_valid_access,
-+};
-+
- static int bpf_dummy_reg(void *kdata, struct bpf_link *link)
- {
- 	struct bpf_testmod_ops *ops =3D kdata;
-@@ -1175,6 +1216,68 @@ struct bpf_struct_ops bpf_testmod_ops2 =3D {
- 	.owner =3D THIS_MODULE,
- };
-=20
-+static int st_ops3_reg(void *kdata, struct bpf_link *link)
-+{
-+	int err =3D 0;
-+
-+	mutex_lock(&st_ops_mutex);
-+	if (st_ops3) {
-+		pr_err("st_ops has already been registered\n");
-+		err =3D -EEXIST;
-+		goto unlock;
-+	}
-+	st_ops3 =3D kdata;
-+
-+unlock:
-+	mutex_unlock(&st_ops_mutex);
-+	return err;
-+}
-+
-+static void st_ops3_unreg(void *kdata, struct bpf_link *link)
-+{
-+	mutex_lock(&st_ops_mutex);
-+	st_ops3 =3D NULL;
-+	mutex_unlock(&st_ops_mutex);
-+}
-+
-+static void test_1_recursion_detected(struct bpf_prog *prog)
-+{
-+	struct bpf_prog_stats *stats;
-+
-+	stats =3D this_cpu_ptr(prog->stats);
-+	printk("bpf_testmod: oh no, recursing into test_1, recursion_misses %ll=
-u",
-+	       u64_stats_read(&stats->misses));
-+}
-+
-+static int st_ops3_check_member(const struct btf_type *t,
-+				const struct btf_member *member,
-+				const struct bpf_prog *prog)
-+{
-+	u32 moff =3D __btf_member_bit_offset(t, member) / 8;
-+
-+	switch (moff) {
-+	case offsetof(struct bpf_testmod_ops3, test_1):
-+		prog->aux->priv_stack_requested =3D true;
-+		prog->aux->recursion_detected =3D test_1_recursion_detected;
-+		fallthrough;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+struct bpf_struct_ops bpf_testmod_ops3 =3D {
-+	.verifier_ops =3D &bpf_testmod_verifier_ops3,
-+	.init =3D bpf_testmod_ops_init,
-+	.init_member =3D bpf_testmod_ops_init_member,
-+	.reg =3D st_ops3_reg,
-+	.unreg =3D st_ops3_unreg,
-+	.check_member =3D st_ops3_check_member,
-+	.cfi_stubs =3D &__bpf_testmod_ops3,
-+	.name =3D "bpf_testmod_ops3",
-+	.owner =3D THIS_MODULE,
-+};
-+
- static int bpf_test_mod_st_ops__test_prologue(struct st_ops_args *args)
- {
- 	return 0;
-@@ -1333,6 +1436,7 @@ static int bpf_testmod_init(void)
- 	ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &bpf=
-_testmod_kfunc_set);
- 	ret =3D ret ?: register_bpf_struct_ops(&bpf_bpf_testmod_ops, bpf_testmo=
-d_ops);
- 	ret =3D ret ?: register_bpf_struct_ops(&bpf_testmod_ops2, bpf_testmod_o=
-ps2);
-+	ret =3D ret ?: register_bpf_struct_ops(&bpf_testmod_ops3, bpf_testmod_o=
-ps3);
- 	ret =3D ret ?: register_bpf_struct_ops(&testmod_st_ops, bpf_testmod_st_=
-ops);
- 	ret =3D ret ?: register_btf_id_dtor_kfuncs(bpf_testmod_dtors,
- 						 ARRAY_SIZE(bpf_testmod_dtors),
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tool=
-s/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index fb7dff47597a..356803d1c10e 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -94,6 +94,11 @@ struct bpf_testmod_ops2 {
- 	int (*test_1)(void);
- };
-=20
-+struct bpf_testmod_ops3 {
-+	int (*test_1)(void);
-+	int (*test_2)(void);
-+};
-+
- struct st_ops_args {
- 	u64 a;
- };
-diff --git a/tools/testing/selftests/bpf/prog_tests/struct_ops_private_st=
-ack.c b/tools/testing/selftests/bpf/prog_tests/struct_ops_private_stack.c
-new file mode 100644
-index 000000000000..4006879ca3fe
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/struct_ops_private_stack.c
-@@ -0,0 +1,106 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "struct_ops_private_stack.skel.h"
-+#include "struct_ops_private_stack_fail.skel.h"
-+#include "struct_ops_private_stack_recur.skel.h"
-+
-+static void test_private_stack(void)
-+{
-+	struct struct_ops_private_stack *skel;
-+	struct bpf_link *link;
-+	int err;
-+
-+	skel =3D struct_ops_private_stack__open();
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack__open"))
-+		return;
-+
-+	if (skel->data->skip) {
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	err =3D struct_ops_private_stack__load(skel);
-+	if (!ASSERT_OK(err, "struct_ops_private_stack__load"))
-+		goto cleanup;
-+
-+	link =3D bpf_map__attach_struct_ops(skel->maps.testmod_1);
-+	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
-+		goto cleanup;
-+
-+	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
-+
-+	ASSERT_EQ(skel->bss->val_i, 3, "val_i");
-+	ASSERT_EQ(skel->bss->val_j, 8, "val_j");
-+
-+	bpf_link__destroy(link);
-+
-+cleanup:
-+	struct_ops_private_stack__destroy(skel);
-+}
-+
-+static void test_private_stack_fail(void)
-+{
-+	struct struct_ops_private_stack_fail *skel;
-+	int err;
-+
-+	skel =3D struct_ops_private_stack_fail__open();
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack_fail__open"))
-+		return;
-+
-+	if (skel->data->skip) {
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	err =3D struct_ops_private_stack_fail__load(skel);
-+	if (!ASSERT_ERR(err, "struct_ops_private_stack_fail__load"))
-+		goto cleanup;
-+	return;
-+
-+cleanup:
-+	struct_ops_private_stack_fail__destroy(skel);
-+}
-+
-+static void test_private_stack_recur(void)
-+{
-+	struct struct_ops_private_stack_recur *skel;
-+	struct bpf_link *link;
-+	int err;
-+
-+	skel =3D struct_ops_private_stack_recur__open();
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack_recur__open"))
-+		return;
-+
-+	if (skel->data->skip) {
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	err =3D struct_ops_private_stack_recur__load(skel);
-+	if (!ASSERT_OK(err, "struct_ops_private_stack_recur__load"))
-+		goto cleanup;
-+
-+	link =3D bpf_map__attach_struct_ops(skel->maps.testmod_1);
-+	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
-+		goto cleanup;
-+
-+	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
-+
-+	ASSERT_EQ(skel->bss->val_j, 3, "val_j");
-+
-+	bpf_link__destroy(link);
-+
-+cleanup:
-+	struct_ops_private_stack_recur__destroy(skel);
-+}
-+
-+void test_struct_ops_private_stack(void)
-+{
-+	if (test__start_subtest("private_stack"))
-+		test_private_stack();
-+	if (test__start_subtest("private_stack_fail"))
-+		test_private_stack_fail();
-+	if (test__start_subtest("private_stack_recur"))
-+		test_private_stack_recur();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c=
- b/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c
-new file mode 100644
-index 000000000000..8ea57e5348ab
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+#if defined(__TARGET_ARCH_x86)
-+bool skip __attribute((__section__(".data"))) =3D false;
-+#else
-+bool skip =3D true;
-+#endif
-+
-+void bpf_testmod_ops3_call_test_2(void) __ksym;
-+
-+int val_i, val_j;
-+
-+__noinline static int subprog2(int *a, int *b)
-+{
-+	return val_i + a[10] + b[20];
-+}
-+
-+__noinline static int subprog1(int *a)
-+{
-+	/* stack size 200 bytes */
-+	int b[50] =3D {};
-+
-+	b[20] =3D 2;
-+	return subprog2(a, b);
-+}
-+
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_1)
-+{
-+	/* stack size 400 bytes */
-+	int a[100] =3D {};
-+
-+	a[10] =3D 1;
-+	val_i =3D subprog1(a);
-+	bpf_testmod_ops3_call_test_2();
-+	return 0;
-+}
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_2)
-+{
-+	/* stack size 200 bytes */
-+	int a[50] =3D {};
-+
-+	a[10] =3D 3;
-+	val_j =3D subprog1(a);
-+	return 0;
-+}
-+
-+SEC(".struct_ops")
-+struct bpf_testmod_ops3 testmod_1 =3D {
-+	.test_1 =3D (void *)test_1,
-+	.test_2 =3D (void *)test_2,
-+};
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_f=
-ail.c b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c
-new file mode 100644
-index 000000000000..1f55ec4cee37
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+#if defined(__TARGET_ARCH_x86)
-+bool skip __attribute((__section__(".data"))) =3D false;
-+#else
-+bool skip =3D true;
-+#endif
-+
-+void bpf_testmod_ops3_call_test_2(void) __ksym;
-+
-+int val_i, val_j;
-+
-+__noinline static int subprog2(int *a, int *b)
-+{
-+	return val_i + a[10] + b[20];
-+}
-+
-+__noinline static int subprog1(int *a)
-+{
-+	/* stack size 200 bytes */
-+	int b[50] =3D {};
-+
-+	b[20] =3D 2;
-+	return subprog2(a, b);
-+}
-+
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_1)
-+{
-+	/* stack size 100 bytes */
-+	int a[25] =3D {};
-+
-+	a[10] =3D 1;
-+	val_i =3D subprog1(a);
-+	bpf_testmod_ops3_call_test_2();
-+	return 0;
-+}
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_2)
-+{
-+	/* stack size 400 bytes */
-+	int a[100] =3D {};
-+
-+	a[10] =3D 3;
-+	val_j =3D subprog1(a);
-+	return 0;
-+}
-+
-+SEC(".struct_ops")
-+struct bpf_testmod_ops3 testmod_1 =3D {
-+	.test_1 =3D (void *)test_1,
-+	.test_2 =3D (void *)test_2,
-+};
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_r=
-ecur.c b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur=
-.c
-new file mode 100644
-index 000000000000..f2f300d50988
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur.c
-@@ -0,0 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+#if defined(__TARGET_ARCH_x86)
-+bool skip __attribute((__section__(".data"))) =3D false;
-+#else
-+bool skip =3D true;
-+#endif
-+
-+void bpf_testmod_ops3_call_test_1(void) __ksym;
-+
-+int val_i, val_j;
-+
-+__noinline static int subprog2(int *a, int *b)
-+{
-+	return val_i + a[1] + b[20];
-+}
-+
-+__noinline static int subprog1(int *a)
-+{
-+	/* stack size 400 bytes */
-+	int b[100] =3D {};
-+
-+	b[20] =3D 2;
-+	return subprog2(a, b);
-+}
-+
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_1)
-+{
-+	/* stack size 20 bytes */
-+	int a[5] =3D {};
-+
-+	a[1] =3D 1;
-+	val_j +=3D subprog1(a);
-+	bpf_testmod_ops3_call_test_1();
-+	return 0;
-+}
-+
-+SEC(".struct_ops")
-+struct bpf_testmod_ops3 testmod_1 =3D {
-+	.test_1 =3D (void *)test_1,
-+};
---=20
-2.43.5
+We propose adding a new napi config parameter: irq_suspend_timeout to
+help balance CPU usage and network processing efficiency when using IRQ
+deferral and napi busy poll.
+
+If this parameter is set to a non-zero value *and* a user application
+has enabled preferred busy poll on a busy poll context (via the
+EPIOCSPARAMS ioctl introduced in commit 18e2bf0edf4d ("eventpoll: Add
+epoll ioctl for epoll_params")), then application calls to epoll_wait
+for that context will cause device IRQs and softirq processing to be
+suspended as long as epoll_wait successfully retrieves data from the
+NAPI. Each time data is retrieved, the irq_suspend_timeout is deferred.
+
+If/when network traffic subsides and epoll_wait returns no data, IRQ
+suspension is immediately reverted back to the existing
+napi_defer_hard_irqs and gro_flush_timeout mechanism which was
+introduced in commit 6f8b12d661d0 ("net: napi: add hard irqs deferral
+feature")).
+
+The irq_suspend_timeout serves as a safety mechanism. If userland takes
+a long time processing data, irq_suspend_timeout will fire and restart
+normal NAPI processing.
+
+For a more in depth explanation, please continue reading.
+
+~ Comparison with existing mechanisms
+
+Interrupt mitigation can be accomplished in napi software, by setting
+napi_defer_hard_irqs and gro_flush_timeout, or via interrupt coalescing
+in the NIC. This can be quite efficient, but in both cases, a fixed
+timeout (or packet count) needs to be configured. However, a fixed
+timeout cannot effectively support both low- and high-load situations:
+
+At low load, an application typically processes a few requests and then
+waits to receive more input data. In this scenario, a large timeout will
+cause unnecessary latency.
+
+At high load, an application typically processes many requests before
+being ready to receive more input data. In this case, a small timeout
+will likely fire prematurely and trigger irq/softirq processing, which
+interferes with the application's execution. This causes overhead, most
+likely due to cache contention.
+
+While NICs attempt to provide adaptive interrupt coalescing schemes,
+these cannot properly take into account application-level processing.
+
+An alternative packet delivery mechanism is busy-polling, which results
+in perfect alignment of application processing and network polling. It
+delivers optimal performance (throughput and latency), but results in
+100% cpu utilization and is thus inefficient for below-capacity
+workloads.
+
+We propose to add a new packet delivery mode that properly alternates
+between busy polling and interrupt-based delivery depending on busy and
+idle periods of the application. During a busy period, the system
+operates in busy-polling mode, which avoids interference. During an idle
+period, the system falls back to interrupt deferral, but with a small
+timeout to avoid excessive latencies. This delivery mode can also be
+viewed as an extension of basic interrupt deferral, but alternating
+between a small and a very large timeout.
+
+This delivery mode is efficient, because it avoids softirq execution
+interfering with application processing during busy periods. It can be
+used with blocking epoll_wait to conserve cpu cycles during idle
+periods. The effect of alternating between busy and idle periods is that
+performance (throughput and latency) is very close to full busy polling,
+while cpu utilization is lower and very close to interrupt mitigation.
+
+~ Usage details
+
+IRQ suspension is introduced via a per-NAPI configuration parameter that
+controls the maximum time that IRQs can be suspended.
+
+Here's how it is intended to work:
+  - The user application (or system administrator) uses the netdev-genl
+    netlink interface to set the pre-existing napi_defer_hard_irqs and
+    gro_flush_timeout NAPI config parameters to enable IRQ deferral.
+
+  - The user application (or system administrator) sets the proposed
+    irq_suspend_timeout parameter via the netdev-genl netlink interface
+    to a larger value than gro_flush_timeout to enable IRQ suspension.
+
+  - The user application issues the existing epoll ioctl to set the
+    prefer_busy_poll flag on the epoll context.
+
+  - The user application then calls epoll_wait to busy poll for network
+    events, as it normally would.
+
+  - If epoll_wait returns events to userland, IRQs are suspended for the
+    duration of irq_suspend_timeout.
+
+  - If epoll_wait finds no events and the thread is about to go to
+    sleep, IRQ handling using napi_defer_hard_irqs and gro_flush_timeout
+    is resumed.
+
+As long as epoll_wait is retrieving events, IRQs (and softirq
+processing) for the NAPI being polled remain disabled. When network
+traffic reduces, eventually a busy poll loop in the kernel will retrieve
+no data. When this occurs, regular IRQ deferral using gro_flush_timeout
+for the polled NAPI is re-enabled.
+
+Unless IRQ suspension is continued by subsequent calls to epoll_wait, it
+automatically times out after the irq_suspend_timeout timer expires.
+Regular deferral is also immediately re-enabled when the epoll context
+is destroyed.
+
+~ Usage scenario
+
+The target scenario for IRQ suspension as packet delivery mode is a
+system that runs a dominant application with substantial network I/O.
+The target application can be configured to receive input data up to a
+certain batch size (via epoll_wait maxevents parameter) and this batch
+size determines the worst-case latency that application requests might
+experience. Because packet delivery is suspended during the target
+application's processing, the batch size also determines the worst-case
+latency of concurrent applications using the same RX queue(s).
+
+gro_flush_timeout should be set as small as possible, but large enough to
+make sure that a single request is likely not being interfered with.
+
+irq_suspend_timeout is largely a safety mechanism against misbehaving
+applications. It should be set large enough to cover the processing of an
+entire application batch, i.e., the factor between gro_flush_timeout and
+irq_suspend_timeout should roughly correspond to the maximum batch size
+that the target application would process in one go.
+
+~ Important call out in the implementation
+
+  - Enabling per epoll-context preferred busy poll will now effectively
+    lead to a nonblocking iteration through napi_busy_loop, even when
+    busy_poll_usecs is 0. See patch 4.
+
+~ Benchmark configs & descriptions
+
+The changes were benchmarked with memcached [3] using the benchmarking
+tool mutilate [4].
+
+To facilitate benchmarking, a small patch [5] was applied to memcached
+1.6.29 to allow setting per-epoll context preferred busy poll and other
+settings via environment variables. Another small patch [6] was applied
+to libevent to enable full busy-polling.
+
+Multiple scenarios were benchmarked as described below and the scripts
+used for producing these results can be found on github [7] (note: all
+scenarios use NAPI-based traffic splitting via SO_INCOMING_ID by passing
+-N to memcached):
+
+  - base:
+    - no other options enabled
+  - deferX:
+    - set defer_hard_irqs to 100
+    - set gro_flush_timeout to X,000
+  - napibusy:
+    - set defer_hard_irqs to 100
+    - set gro_flush_timeout to 200,000
+    - enable busy poll via the existing ioctl (busy_poll_usecs = 64,
+      busy_poll_budget = 64, prefer_busy_poll = true)
+  - fullbusy:
+    - set defer_hard_irqs to 100
+    - set gro_flush_timeout to 5,000,000
+    - enable busy poll via the existing ioctl (busy_poll_usecs = 1000,
+      busy_poll_budget = 64, prefer_busy_poll = true)
+    - change memcached's nonblocking epoll_wait invocation (via
+      libevent) to using a 1 ms timeout
+  - suspend0:
+    - set defer_hard_irqs to 0
+    - set gro_flush_timeout to 0
+    - set irq_suspend_timeout to 20,000,000
+    - enable busy poll via the existing ioctl (busy_poll_usecs = 0,
+      busy_poll_budget = 64, prefer_busy_poll = true)
+  - suspendX:
+    - set defer_hard_irqs to 100
+    - set gro_flush_timeout to X,000
+    - set irq_suspend_timeout to 20,000,000
+    - enable busy poll via the existing ioctl (busy_poll_usecs = 0,
+      busy_poll_budget = 64, prefer_busy_poll = true)
+
+~ Benchmark results
+
+Tested on:
+
+Single socket AMD EPYC 7662 64-Core Processor
+Hyperthreading disabled
+4 NUMA Zones (NPS=4)
+16 CPUs per NUMA zone (64 cores total)
+2 x Dual port 100gbps Mellanox Technologies ConnectX-5 Ex EN NIC
+
+The test machine is configured such that a single interface has 8 RX
+queues. The queues' IRQs and memcached are pinned to CPUs that are
+NUMA-local to the interface which is under test. The NIC's interrupt
+coalescing configuration is left at boot-time defaults.
+
+Results:
+
+Results are shown below. The mechanism added by this series is
+represented by the 'suspend' cases. Data presented shows a summary over
+nearly 10 runs of each test case [8] using the scripts on github [7].
+For latency, the median is shown. For throughput and CPU utilization,
+the average is shown.
+
+The results also include cycles-per-query (cpq) and
+instruction-per-query (ipq) metrics, following the methodology proposed
+in [2], to augment the CPU utilization numbers, which could be skewed
+due to frequency scaling. We find that this does not appear to be the
+case as CPU utilization and low-level metrics show similar trends.
+
+These results were captured using the scripts on github [7] to
+illustrate how this approach compares with other pre-existing
+mechanisms. This data is not to be interpreted as scientific data
+captured in a fully isolated lab setting, but instead as best effort,
+illustrative information comparing and contrasting tradeoffs.
+
+The absolute QPS results shift between submissions, but the
+relative differences are equivalent. As patches are rebased,
+several factors likely influence overall performance.
+
+Compare:
+- Throughput (MAX) and latencies of base vs suspend.
+- CPU usage of napibusy and fullbusy during lower load (200K, 400K for
+  example) vs suspend.
+- Latency of the defer variants vs suspend as timeout and load
+  increases.
+- suspend0, which sets defer_hard_irqs and gro_flush_timeout to 0, has
+  nearly the same performance as the base case (this is FAQ item #1).
+
+The overall takeaway is that the suspend variants provide a superior
+combination of high throughput, low latency, and low cpu utilization
+compared to all other variants. Each of the suspend variants works very
+well, but some fine-tuning between latency and cpu utilization is still
+possible by tuning the small timeout (gro_flush_timeout).
+
+Note: we've reorganized the results to make comparison among testcases
+with the same load easier.
+
+  testcase  load     qps  avglat  95%lat  99%lat     cpu     cpq     ipq
+      base  200K  199946     112     239     416      26   12973   11343
+   defer10  200K  199971      54     124     142      29   19412   17460
+   defer20  200K  199986      60     130     153      26   15644   14095
+   defer50  200K  200025      79     144     182      23   12122   11632
+  defer200  200K  199999     164     254     309      19    8923    9635
+  fullbusy  200K  199998      46     118     133     100   43658   23133
+  napibusy  200K  199983     100     237     277      56   24840   24716
+  suspend0  200K  200020     105     249     432      30   14264   11796
+ suspend10  200K  199950      53     123     141      32   19518   16903
+ suspend20  200K  200037      58     126     151      30   16426   14736
+ suspend50  200K  199961      73     136     177      26   13310   12633
+suspend200  200K  199998     149     251     306      21    9566   10203
+
+  testcase  load     qps  avglat  95%lat  99%lat     cpu     cpq     ipq
+      base  400K  400014     139     269     707      41    9476    9343
+   defer10  400K  400016      59     133     166      53   13991   12989
+   defer20  400K  399952      67     140     172      47   12063   11644
+   defer50  400K  400007      87     162     198      39    9384    9880
+  defer200  400K  399979     181     274     330      31    7089    8430
+  fullbusy  400K  399987      50     123     156     100   21827   16037
+  napibusy  400K  400014      76     222     272      83   18185   16529
+  suspend0  400K  400015     127     350     776      47   10699    9603
+ suspend10  400K  400023      57     129     164      54   13758   13178
+ suspend20  400K  400043      62     135     169      49   12071   11826
+ suspend50  400K  400071      76     149     186      42   10011   10301
+suspend200  400K  399961     154     269     327      34    7827    8774
+
+  testcase  load     qps  avglat  95%lat  99%lat     cpu     cpq     ipq
+      base  600K  599951     149     266     574      61    9265    8876
+   defer10  600K  600006      71     147     203      76   11866   10936
+   defer20  600K  600123      76     152     203      66   10430   10342
+   defer50  600K  600162      95     172     217      54    8526    9142
+  defer200  600K  599942     200     301     357      46    6977    8212
+  fullbusy  600K  599990      55     127     177     100   14551   13983
+  napibusy  600K  600035      63     160     250      96   13937   14140
+  suspend0  600K  599903     127     320     732      68   10166    8963
+ suspend10  600K  599908      63     137     192      69   10902   11100
+ suspend20  600K  599961      66     141     194      65    9976   10370
+ suspend50  600K  599973      80     159     204      57    8678    9381
+suspend200  600K  600010     157     277     346      48    7133    8381
+
+  testcase  load     qps  avglat  95%lat  99%lat     cpu     cpq     ipq
+      base  800K  800039     181     300     536      87    9585    8304
+   defer10  800K  800038     181     530     939      96   10564    8970
+   defer20  800K  800029     112     225     329      90   10056    8935
+   defer50  800K  799999     120     208     296      82    9234    8562
+  defer200  800K  800066     227     338     401      63    7117    8129
+  fullbusy  800K  800040      61     134     190     100   10913   12608
+  napibusy  800K  799944      64     141     214      99   10828   12588
+  suspend0  800K  799911     126     248     509      85    9346    8498
+ suspend10  800K  800006      69     143     200      83    9410    9845
+ suspend20  800K  800120      74     150     207      78    8786    9454
+ suspend50  800K  799989      87     168     224      71    7946    8833
+suspend200  800K  799987     160     292     357      62    6923    8229
+
+  testcase  load     qps  avglat  95%lat  99%lat     cpu     cpq     ipq
+      base 1000K  906879    4079    5751    6216      98    9496    7904
+   defer10 1000K  860849    3643    6274    6730      99   10040    8676
+   defer20 1000K  896063    3298    5840    6349      98    9620    8237
+   defer50 1000K  919782    2962    5513    5807      97    9284    7951
+  defer200 1000K  970941    3059    5348    5984      95    8593    7959
+  fullbusy 1000K  999950      70     150     207     100    8732   10777
+  napibusy 1000K  999996      78     154     223     100    8722   10656
+  suspend0 1000K  949706    2666    5770    6660      99    9071    8046
+ suspend10 1000K 1000024      80     160     220      92    8137    9035
+ suspend20 1000K 1000059      83     165     226      89    7850    8804
+ suspend50 1000K  999955      95     180     240      84    7411    8459
+suspend200 1000K  999914     163     299     366      77    6833    8078
+
+  testcase  load     qps  avglat  95%lat  99%lat     cpu     cpq     ipq
+      base   MAX 1037654    4184    5453    5810     100    8411    7938
+   defer10   MAX  905607    4840    6151    6380     100    9639    8431
+   defer20   MAX  986463    4455    5594    5796     100    8848    8110
+   defer50   MAX 1077030    4000    5073    5299     100    8104    7920
+  defer200   MAX 1040728    4152    5385    5765     100    8379    7849
+  fullbusy   MAX 1247536    3518    3935    3984     100    6998    7930
+  napibusy   MAX 1136310    3799    7756    9964     100    7670    7877
+  suspend0   MAX 1057509    4132    5724    6185     100    8253    7918
+ suspend10   MAX 1215147    3580    3957    4041     100    7185    7944
+ suspend20   MAX 1216469    3576    3953    3988     100    7175    7950
+ suspend50   MAX 1215871    3577    3961    4075     100    7181    7949
+suspend200   MAX 1216882    3556    3951    3988     100    7175    7955
+
+~ FAQ
+
+  - Why is a new parameter needed? Does irq_suspend_timeout override
+    gro_flush_timeout?
+
+    Using the suspend mechanism causes the system to alternate between
+    polling mode and irq-driven packet delivery. During busy periods,
+    irq_suspend_timeout overrides gro_flush_timeout and keeps the system
+    busy polling, but when epoll finds no events, the setting of
+    gro_flush_timeout and napi_defer_hard_irqs determine the next step.
+
+    There are essentially three possible loops for network processing and
+    packet delivery:
+
+    1) hardirq -> softirq -> napi poll; basic interrupt delivery
+    2) timer -> softirq -> napi poll; deferred irq processing
+    3) epoll -> busy-poll -> napi poll; busy looping
+
+    Loop 2 can take control from Loop 1, if gro_flush_timeout and
+    napi_defer_hard_irqs are set.
+
+    If gro_flush_timeout and napi_defer_hard_irqs are set, Loops 2 and
+    3 "wrestle" with each other for control. During busy periods,
+    irq_suspend_timeout is used as timer in Loop 2, which essentially
+    tilts this in favour of Loop 3.
+
+    If gro_flush_timeout and napi_defer_hard_irqs are not set, Loop 3
+    cannot take control from Loop 1.
+
+    Therefore, setting gro_flush_timeout and napi_defer_hard_irqs is the
+    recommended usage, because otherwise setting irq_suspend_timeout
+    might not have any discernible effect.
+
+    This is shown in the results above: compare suspend0 with the base
+    case. Note that the lack of napi_defer_hard_irqs and
+    gro_flush_timeout produce similar results for both, which encourages
+    the use of napi_defer_hard_irqs and gro_flush_timeout in addition to
+    irq_suspend_timeout.
+
+  - Can the new timeout value be threaded through the new epoll ioctl ?
+
+    It is possible, but presents challenges for userspace. User
+    applications must ensure that the file descriptors added to epoll
+    contexts have the same NAPI ID to support busy polling.
+
+    An epoll context is not permanently tied to any particular NAPI ID.
+    So, a user application could decide to clear the file descriptors
+    from the context and add a new set of file descriptors with a
+    different NAPI ID to the context. Busy polling would work as
+    expected, but the meaning of the suspend timeout becomes ambiguous
+    because IRQs are not inherently associated with epoll contexts, but
+    rather with the NAPI. The user program would need to reissue the
+    ioctl to set the irq_suspend_timeout, but the napi_defer_hard_irqs
+    and gro_flush_timeout settings would come from the NAPI's
+    napi_config (which are set either by sysfs or by netlink). Such an
+    interface seems awkard to use from a user perspective.
+
+    Further, IRQs are related to NAPIs, which is why they are stored in
+    the napi_config space. Putting the irq_suspend_timeout in
+    the epoll context while other IRQ deferral mechanisms remain in the
+    NAPI's napi_config space seems like an odd design choice.
+
+    We've opted to keep all of the IRQ deferral parameters together and
+    place the irq_suspend_timeout in napi_config. This has nice benefits
+    for userspace: if a user app were to remove all file descriptors
+    from an epoll context and add new file descriptors with a new NAPI ID,
+    the correct suspend timeout for that NAPI ID would be used automatically
+    without the user application needing to do anything (like re-issuing an
+    ioctl, for example). All IRQ deferral related parameters are in one
+    place and can all be set the same way: with netlink.
+
+  - Can irq suspend be built by combining NIC coalescing and
+    gro_flush_timeout ?
+
+    No. The problem is that the long timeout must engage if and only if
+    prefer-busy is active.
+
+    When using NIC coalescing for the short timeout (without
+    napi_defer_hard_irqs/gro_flush_timeout), an interrupt after an idle
+    period will trigger softirq, which will run napi polling. At this
+    point, prefer-busy is not active, so NIC interrupts would be
+    re-enabled. Then it is not possible for the longer timeout to
+    interject to switch control back to polling. In other words, only by
+    using the software timer for the short timeout, it is possible to
+    extend the timeout without having to reprogram the NIC timer or
+    reach down directly and disable interrupts.
+
+    Using gro_flush_timeout for the long timeout also has problems, for
+    the same underlying reason. In the current napi implementation,
+    gro_flush_timeout is not tied to prefer-busy. We'd either have to
+    change that and in the process modify the existing deferral
+    mechanism, or introduce a state variable to determine whether
+    gro_flush_timeout is used as long timeout for irq suspend or whether
+    it is used for its default purpose. In an earlier version, we did
+    try something similar to the latter and made it work, but it ends up
+    being a lot more convoluted than our current proposal.
+
+  - Isn't it already possible to combine busy looping with irq deferral?
+
+    Yes, in fact enabling irq deferral via napi_defer_hard_irqs and
+    gro_flush_timeout is a precondition for prefer_busy_poll to have an
+    effect. If the application also uses a tight busy loop with
+    essentially nonblocking epoll_wait (accomplished with a very short
+    timeout parameter), this is the fullbusy case shown in the results.
+    An application using blocking epoll_wait is shown as the napibusy
+    case in the results. It's a hybrid approach that provides limited
+    latency benefits compared to the base case and plain irq deferral,
+    but not as good as fullbusy or suspend.
+
+~ Special thanks
+
+Several people were involved in earlier stages of the development of this
+mechanism whom we'd like to thank:
+
+  - Peter Cai (CC'd), for the initial kernel patch and his contributions
+    to the paper.
+    
+  - Mohammadamin Shafie (CC'd), for testing various versions of the kernel
+    patch and providing helpful feedback.
+
+Thanks,
+Martin and Joe
+
+[1]: https://lore.kernel.org/netdev/20240812125717.413108-1-jdamato@fastly.com/
+[2]: https://doi.org/10.1145/3626780
+[3]: https://github.com/memcached/memcached/blob/master/doc/napi_ids.txt
+[4]: https://github.com/leverich/mutilate
+[5]: https://raw.githubusercontent.com/martinkarsten/irqsuspend/main/patches/memcached.patch
+[6]: https://raw.githubusercontent.com/martinkarsten/irqsuspend/main/patches/libevent.patch
+[7]: https://github.com/martinkarsten/irqsuspend
+[8]: https://github.com/martinkarsten/irqsuspend/tree/main/results
+
+v9:
+  - Addresses Willem's feedback on the selftests in patch 5 by fixing
+    the SPDX-License-Identifier, moving constants into variables in the
+    test script, reducing code duplication, shortening long lines, and
+    renaming variables to be more reader friendly. In the C test file,
+    added a comment explaining the if def blob and changed a few types
+    for strtoul.
+
+v8: https://lore.kernel.org/netdev/20241108045337.292905-1-jdamato@fastly.com/
+  - Update patch 2 to drop the exports, as requested by Jakub.
+
+v7: https://lore.kernel.org/netdev/20241108023912.98416-1-jdamato@fastly.com/
+  - Jakub noted that patch 2 adds unnecessary complexity by checking the
+    suspend timeout in the NAPI loop. This makes the code more
+    complicated and difficult to reason about. He's right; we've dropped
+    patch 2 which simplifies this series.
+  - Updated the cover letter with a full re-run of all test cases.
+  - Updated FAQ #2.
+
+v6: https://lore.kernel.org/netdev/20241104215542.215919-1-jdamato@fastly.com/
+  - Updated the cover letter with a full re-run of all test cases,
+    including a new case suspend0, as requested by Sridhar previously.
+  - Updated the kernel documentation in patch 7 as suggested by Bagas
+    Sanjaya, which improved the htmldoc output.
+
+v5: https://lore.kernel.org/netdev/20241103052421.518856-1-jdamato@fastly.com/
+  - Adjusted patch 5 to only suspend IRQs when ep_send_events returns a
+    positive return value. This issue was pointed out by Hillf Danton.
+  - Updated the commit message of patch 6 which still mentioned netcat,
+    despite the code being updated in v4 to replace it with socat and fixed
+    misspelling of netdevsim.
+  - Fixed a minor typo in patch 7 and removed an unnecessary paragraph.
+  - Added Sridhar Samudrala's Reviewed-by to patch 1-5 and 7.
+
+v4: https://lore.kernel.org/netdev/20241102005214.32443-1-jdamato@fastly.com/
+  - Added a new FAQ item to cover letter.
+  - Updated patch 6 to use socat instead of nc in busy_poll_test.sh and
+    updated busy_poller.c to use netlink directly to configure napi
+    params.
+  - Updated the kernel documentation in patch 7 to include more details.
+  - Dropped Stanislav's Acked-by and Bagas' Reviewed-by from patch 7
+    since the documentation was updated.
+
+v3: https://lore.kernel.org/netdev/20241101004846.32532-1-jdamato@fastly.com/
+  - Added Stanislav Fomichev's Acked-by to every patch except the newly
+    added selftest.
+  - Added Bagas Sanjaya's Reviewed-by to the documentation patch.
+  - Fixed the commit message of patch 2 to remove a reference to the now
+    non-existent sysfs setting.
+  - Added a self test which tests both "regular" busy poll and busy poll
+    with suspend enabled. This was added as patch 6 as requested by
+    Paolo. netdevsim was chosen instead of veth due to netdevsim's
+    pre-existing support for netdev-genl. See the commit message of
+    patch 6 for more details.
+
+v2: https://lore.kernel.org/bpf/20241021015311.95468-1-jdamato@fastly.com/
+  - Cover letter updated, including a re-run of test data.
+  - Patch 1 rewritten to use netdev-genl instead of sysfs.
+  - Patch 3 updated with a comment added to napi_resume_irqs.
+  - Patch 4 rebased to apply now that commit b9ca079dd6b0 ("eventpoll:
+    Annotate data-race of busy_poll_usecs") has been picked up from VFS.
+  - Patch 6 updated the kernel documentation.
+
+rfc -> v1:
+  - Cover letter updated to include more details.
+  - Patch 1 updated to remove the documentation added. This was moved to
+    patch 6 with the rest of the docs (see below).
+  - Patch 5 updated to fix an error uncovered by the kernel build robot.
+    See patch 5's changelog for more details.
+  - Patch 6 added which updates kernel documentation.
+
+Joe Damato (2):
+  selftests: net: Add busy_poll_test
+  docs: networking: Describe irq suspension
+
+Martin Karsten (4):
+  net: Add napi_struct parameter irq_suspend_timeout
+  net: Add control functions for irq suspension
+  eventpoll: Trigger napi_busy_loop, if prefer_busy_poll is set
+  eventpoll: Control irq suspension for prefer_busy_poll
+
+ Documentation/netlink/specs/netdev.yaml       |   7 +
+ Documentation/networking/napi.rst             | 170 ++++++++-
+ fs/eventpoll.c                                |  36 +-
+ include/linux/netdevice.h                     |   2 +
+ include/net/busy_poll.h                       |   3 +
+ include/uapi/linux/netdev.h                   |   1 +
+ net/core/dev.c                                |  39 ++
+ net/core/dev.h                                |  25 ++
+ net/core/netdev-genl-gen.c                    |   5 +-
+ net/core/netdev-genl.c                        |  12 +
+ tools/include/uapi/linux/netdev.h             |   1 +
+ tools/testing/selftests/net/.gitignore        |   1 +
+ tools/testing/selftests/net/Makefile          |   3 +-
+ tools/testing/selftests/net/busy_poll_test.sh | 165 +++++++++
+ tools/testing/selftests/net/busy_poller.c     | 346 ++++++++++++++++++
+ 15 files changed, 809 insertions(+), 7 deletions(-)
+ create mode 100755 tools/testing/selftests/net/busy_poll_test.sh
+ create mode 100644 tools/testing/selftests/net/busy_poller.c
+
+
+base-commit: dc7c381bb8649e3701ed64f6c3e55316675904d7
+-- 
+2.25.1
 
 
