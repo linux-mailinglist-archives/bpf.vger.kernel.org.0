@@ -1,102 +1,126 @@
-Return-Path: <bpf+bounces-44422-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44423-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88FE89C2C56
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 12:56:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7D159C2DBF
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 15:25:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 408F01F21D6E
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 11:56:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CAB1B22050
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 14:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0155C18EFF8;
-	Sat,  9 Nov 2024 11:55:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1AA4197A72;
+	Sat,  9 Nov 2024 14:24:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D4sl1PyA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.itouring.de (mail.itouring.de [85.10.202.141])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EEB115443D
-	for <bpf@vger.kernel.org>; Sat,  9 Nov 2024 11:55:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.202.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699231E4BE;
+	Sat,  9 Nov 2024 14:24:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731153348; cv=none; b=fhFFlzyxYI7qlHBmsjBhSuDkCObfqPn8aL06LJdzxofa4dKsixYiyRQ0gF7qjF43He9VBgGciemNF/Ua0Mbs92v9OMfRxs+CMboXIVtZIHG6mTEntc47Ah05rSV9osOAON4ewuVy6J6KzcjiYqFoCDYuoSN0fLLLAiuz7yg35T0=
+	t=1731162298; cv=none; b=MkBA3T4Juv4KfbnhvZadE5MjTN1i6nXqlnJWUgOy/gHxwBJH/vU8ChhjacK+pOdHboSsAzD3UGMUY/BGDOMaVYaZGjQBH4Fh2ygr9HYvDz2aBjqeocfn3KCnCvq2fArFhHRm9UrxCMeqg4Gj6wQinVOpn5jKGwZWAKm4/8yteVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731153348; c=relaxed/simple;
-	bh=6Ej6ejPEZkOpUFC9v1VtSXJl6v8WRzPbIdWo2CeB70U=;
-	h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type; b=dn3+w6wP0HekD9xKbm/T7yNZE/HCxXLWPm7cd6sJZcDseWwsd3Wuyszmp9L1U9Zyb4xBQB4aoLIXPM9EQC8DtF72zzI2k4mCdnMVdCKM/PBtfFFoan4YkNtWtilW3urYKrD0yKexM38HsbyZ+vuR0P7Q5qVAImqGHex+R5rPY2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com; spf=pass smtp.mailfrom=applied-asynchrony.com; arc=none smtp.client-ip=85.10.202.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=applied-asynchrony.com
-Received: from tux.applied-asynchrony.com (p5ddd7b29.dip0.t-ipconnect.de [93.221.123.41])
-	by mail.itouring.de (Postfix) with ESMTPSA id A993F11DD55
-	for <bpf@vger.kernel.org>; Sat, 09 Nov 2024 12:55:36 +0100 (CET)
-Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
-	by tux.applied-asynchrony.com (Postfix) with ESMTP id 152FD600BC989
-	for <bpf@vger.kernel.org>; Sat, 09 Nov 2024 12:55:36 +0100 (CET)
-To: bpf@vger.kernel.org
-From: =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Subject: Using gcc-bpf for bpftool: problems with CO-RE feature detection
-Organization: Applied Asynchrony, Inc.
-Message-ID: <8665818f-8a32-3796-1efc-1a9e5d036f18@applied-asynchrony.com>
-Date: Sat, 9 Nov 2024 12:55:36 +0100
+	s=arc-20240116; t=1731162298; c=relaxed/simple;
+	bh=v9l5l8b91vxON4bj2aWHj1KqPysotO/V5/B7MgXRpkg=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=iYXQ6WGNmYDceWLk7kLjkdaAQvIQudmvxnbNC9JauF3YfpN/JP3sBxcLX19+9xH8O6hA1F3/Rw36IzYENvmFZARqo5QV+dnxKWxQ8QKyHQSTgXmWQFs9177iHzZaaOFOYqhiNv95B/x4/GQOx4OP8wdalRA2rIK2mNYEJj3USWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D4sl1PyA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AA46C4CECE;
+	Sat,  9 Nov 2024 14:24:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731162297;
+	bh=v9l5l8b91vxON4bj2aWHj1KqPysotO/V5/B7MgXRpkg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=D4sl1PyAPw5ZC6cLLsXQDv+MOSOamLLaxOVvt4VrYfx6IgcRlbMJhnffk1A1Pc20a
+	 O8uza36K7i0TtCaepvX7gNMwLQq8912Mm+kYzzsSkR0CrGIU5oOz8hIoIoie3y2KZP
+	 zCtsTjGeS45sgKjYfL4lvE2hKvmAa/UnCqpceyJEMJkGbk5fxDkX8qMO4MMs6pot0U
+	 JEsjainnAeAmplxEbKIcCfECjocBbCPFEyD2fCw2Nxw1gOQSPpcq+cSW5Qbz15qkG5
+	 9jM4rh29L96GccbknSIsJw9MFFa33KBPf0S7hKPhzkB6yMHWJTH2Dzsu0JRJ1nmIms
+	 z48dPXNONT+/Q==
+Date: Sat, 9 Nov 2024 23:24:48 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, linux-arch@vger.kernel.org, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Huacai Chen
+ <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Michael Ellerman
+ <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, Madhavan
+ Srinivasan <maddy@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH v18 01/17] fgraph: Pass ftrace_regs to entryfunc
+Message-Id: <20241109232448.f1c3e174da2b1c4276530894@kernel.org>
+In-Reply-To: <20241101065023.72933d1b@gandalf.local.home>
+References: <172991731968.443985.4558065903004844780.stgit@devnote2>
+	<172991733069.443985.15154246733356205391.stgit@devnote2>
+	<20241031155324.108ed8ef@gandalf.local.home>
+	<20241101105102.eb308ab85b2b13d03444d4bf@kernel.org>
+	<20241101065023.72933d1b@gandalf.local.home>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-Hi,
+On Fri, 1 Nov 2024 06:50:23 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-I'm trying to use Gentoo's bpf-toolchain - basically just gcc built for
-the BPF target - to build the CO-RE support in bpftool, in order to
-provide an alternative to clang.
+> On Fri, 1 Nov 2024 10:51:02 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> 
+> > Ah, good catch! It should put the flag only when HAVE_DYNAMIC_FTRACE_WITH_ARGS
+> > is enabled.
+> > 
+> > static struct ftrace_ops graph_ops = {
+> > 	.func			= ftrace_graph_func,
+> > #ifdef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+> > 	.flags			= FTRACE_OPS_GRAPH_STUB | FTRACE_OPS_FL_SAVE_ARGS,
+> > #elif defined(CONFIG_DYNAMIC_FTRACE_WITH_ARGS)
+> > 	.flags			= FTRACE_OPS_GRAPH_STUB | FTRACE_OPS_FL_SAVE_REGS,
+> > #else
+> > 	.flags			= FTRACE_OPS_GRAPH_STUB,
+> > #endif
+> > 
+> > This will save fregs or regs or NULL according to the configuration.
+> > 
+> 
+> Please do not add that to the C code. It's really ugly. Just correct the
+> comment. Note, FTRACE_OPS_FL_SAVE_ARGS is already dynamic by configuration:
+> 
+> #ifndef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+> #define FTRACE_OPS_FL_SAVE_ARGS                        FTRACE_OPS_FL_SAVE_REGS
+> #else
+> #define FTRACE_OPS_FL_SAVE_ARGS                        0
+> #endif
+> 
+> I'm a bit confused at what you are trying to achieve here.
 
-This currently fails because the feature detection relies on a comment
-in the generated BPF assembly, which gcc does not seem to generate.
+So it may need FTRACE_OPS_FL_SAVE_REGS instead of FTRACE_OPS_FL_SAVE_ARGS,
+right?
+OK, I'll do that.
 
-While I'm using the Github mirror for bpftool, the same check is
-being done in the kernel build, so it affects both.
+Thank you,
 
-Our tracker bug with full output etc. is: https://bugs.gentoo.org/943113
+> 
+> -- Steve
 
-Basically the problem boils down to:
 
-	.long	16777248                        # 0x1000020
-	.long	9                               # BTF_KIND_VAR(id = 3)
-	.long	234881024                       # 0xe000000
-
-generated by clang (19.1.3)
-
-vs.
-
-	.4byte	0x1000020
-	.4byte	0x9
-	.4byte	0xe000000
-
-generated by gcc (14.2.0).
-
-As the values themselves are correct, the problem is really just
-the missing debug information in gcc's output. So far I've tried
-every option I could find, but to no avail. I have no idea whether
-this is because I'm holding it wrong, gcc cannot do it for the bpf
-target (yet?) or anything else.
-
-Does anybody know how I can convince gcc to generate symbol comments?
-Alternatively can we find a better way to verify the generated output
-instead of grepping for a comment?
-
-This is not really a bug, but IMHO having an alternative toolchain to
-build BPF seems like a good idea in general. Gentoo's bpf-toolchain
-package was initially made to build dtrace, and seems to be working
-fine so far.
-
-Thanks for any suggestions!
-
-cheers
-Holger
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
