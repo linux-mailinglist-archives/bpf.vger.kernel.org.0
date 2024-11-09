@@ -1,230 +1,127 @@
-Return-Path: <bpf+bounces-44432-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44433-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3628C9C2F3B
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 19:54:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B64159C2F42
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 20:00:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A48AC1F215A1
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 18:54:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF8301C20EBE
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2024 19:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AE981A00E2;
-	Sat,  9 Nov 2024 18:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bHCfx0LP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9CC19DFA5;
+	Sat,  9 Nov 2024 19:00:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.itouring.de (mail.itouring.de [85.10.202.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A5619ADB0;
-	Sat,  9 Nov 2024 18:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5678213BC12
+	for <bpf@vger.kernel.org>; Sat,  9 Nov 2024 19:00:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.202.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731178474; cv=none; b=oNiMjMcyvFgOsYCcEJ39ajtVTkBDJ1qhOAyUedi4uQwgJKxuiTuwh9MYwCHh10Y49uN3eRZC1xvpJw+ioZb08krRUG9OVkvGbr4oz04xsKlXSyjEFypeDsyJWZMhvHDiWPcvPhquFIPbGNP876ng0Vte33n61e0T+OBgkx+X/SY=
+	t=1731178853; cv=none; b=EnLoutYWqmsAtjoQr5DjOc00SfMIrpw/Yu3YpLCcwKdKT8w1RC2H6dILGTdY31YbbUl6bv7bVjYAQxiBjyzNz5lOfXos97rowzk9FRhTtt78GdMmCGsYiSJHpzsBoRjhfa2L1vJ3oYOAAAnG02Z7zXyWIKgJesUpLTaQ1X9iQYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731178474; c=relaxed/simple;
-	bh=YH7ClifcMoUz4Md9QFyZKQn6Y5kckcViCFDHlX9qvUM=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=TWbcXG98QQiewxXg+r3mknFsKYiPEsZGJK2Wfa+vXRv0kPGxvVpvjwVO53YBWJKP9Volt2EBOOAFBew9/RiB8TfUj6tSFvwMpMqbAo4mYU+wtLVTyUStAg7oX7fgTLhxBjuXvsvuTqM0lN5h5kQaRTpDDBKj6PLNAmtOtowNZmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bHCfx0LP; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a9a628b68a7so568789166b.2;
-        Sat, 09 Nov 2024 10:54:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731178470; x=1731783270; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7ggW0cG1LTIqavxbE80YU/eqIO8unC+7CGF0sLuNCCE=;
-        b=bHCfx0LPiT/lVznWPg3ke08desN0C9BifQW3t3+kCpGPHJd2tvHkXgwXvTBAj3Nw9R
-         8oavnU7jvia6nPKqeS3rqbSdy6Ix+4A11A4XIvdxF2QA5ydJ0yc7rVbcRjj7959txJ45
-         bwEC0Oxn14+ZwuppacZc3sS/2r+G09+MYR4D2uue1zBwxUwhI/GSHTjfhmkvRbO55mHL
-         HnDDiv/EKqOqGBJ6yz11Blsm/Bi+lzxn0+PidBLCemPcFzHObo6Kx9BO4HFCeh7VMO6U
-         vdKj0rqx7gofDW53mH0odzBtm5m5jnjYMa/s9erSxcUEANgA+WPRDVdykrgUeXAp1EFP
-         Flqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731178470; x=1731783270;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7ggW0cG1LTIqavxbE80YU/eqIO8unC+7CGF0sLuNCCE=;
-        b=aO1VvIza7Bn+ER9DsXygl1W+dfydyINeBVjBR9pddLrcfidljb+GIdj5SXwln+SSvB
-         v7WR0yXLKzuxVQ/u6PZ05aUu3q/azeBUCN4+dJ9tk8fAyjhC4j6ZhDgtZgJWYJ3LY5Nc
-         IVQeX5nGyYmom7rjNnlc7KA7cAb0VzByjzoXUNSvWJEBVDpjXp8r36XRQMvDKMZXCom5
-         p90Uw9iXoizn39tBHJ1NKasQylRIw+IlmGvECtsCcC/hsDep79oYkVI9RtD26ZXDmZZP
-         +NSRO0xWpEaMSwkVu3xr0bwnujYGxq++GDDfyLEqly/jR7WR9MeDhaL2shOhRmaYDfe9
-         Ru3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU4I1MwmswglOcTrCkeQnh98AklqQZbin2ixLP0Btoq/EKNvfjz5tOpwW6y6OucOKUJ7hkFi+sJPCfxtH8=@vger.kernel.org, AJvYcCVmaiY/sW6fraeAmhuIsFW95pRQfjhp7csubUPSY6/F3sdR9MFVU+MyTKmfJ1juIK2ixaVIzNztWZBvjeOxHkDb@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyc5EUwD129sZ1ylzNI6Q69u6f6njrbCzRLOji8qE7r45f9G1cC
-	WAuHHFtg27NHw9JJm4lpD3zZh8ttjFnKQ8kcLbeLTAPt9k5TEUS9YIE66Q==
-X-Google-Smtp-Source: AGHT+IGYTqv3ejoDc8u7yNNJ4oZdbuc34HZWBGEOe2X/BnoG9he+txu7j4n+IMDbvJ5Ix6N14Rdbcw==
-X-Received: by 2002:a17:906:730d:b0:a9a:a5a:1d47 with SMTP id a640c23a62f3a-a9eefeb27a3mr710647666b.2.1731178469358;
-        Sat, 09 Nov 2024 10:54:29 -0800 (PST)
-Received: from [192.168.178.20] (dh207-40-48.xnet.hr. [88.207.40.48])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0a17b58sm398923766b.25.2024.11.09.10.54.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Nov 2024 10:54:28 -0800 (PST)
-Message-ID: <56998f22-004c-4629-bd8b-8b494290f787@gmail.com>
-Date: Sat, 9 Nov 2024 19:53:32 +0100
+	s=arc-20240116; t=1731178853; c=relaxed/simple;
+	bh=RbmBsjyVdVipep8//kCJszLJENXj8/QhfbP7YFtwk98=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=LPqhlz/5IUqbgrtZQJ4smK8sdvOHRE/qJa/sJtYPBEgRm59e23D7KtZx8JUw38Ckr22vLsvTdVeFRh/RhIJ95fr/G7Gqq00gE4hDl6qGXVohlg/jk5Ft4i6vpaZLU6D6SMZJIKLvFWKVlLL+dq/K5W8vkwMEyQxrVbNcqVvKtIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com; spf=pass smtp.mailfrom=applied-asynchrony.com; arc=none smtp.client-ip=85.10.202.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=applied-asynchrony.com
+Received: from tux.applied-asynchrony.com (p5ddd7b29.dip0.t-ipconnect.de [93.221.123.41])
+	by mail.itouring.de (Postfix) with ESMTPSA id 19DDA11DD55;
+	Sat, 09 Nov 2024 20:00:47 +0100 (CET)
+Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
+	by tux.applied-asynchrony.com (Postfix) with ESMTP id 7AC0C600BCD01;
+	Sat, 09 Nov 2024 20:00:46 +0100 (CET)
+Subject: Re: Using gcc-bpf for bpftool: problems with CO-RE feature detection
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc: bpf@vger.kernel.org, indu.bhagat@oracle.com
+References: <8665818f-8a32-3796-1efc-1a9e5d036f18@applied-asynchrony.com>
+ <87zfm8bdx2.fsf@oracle.com>
+From: =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <2aa58e90-a837-e075-8b13-65dc4fce42b8@applied-asynchrony.com>
+Date: Sat, 9 Nov 2024 20:00:46 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+In-Reply-To: <87zfm8bdx2.fsf@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>,
- Antony Antony <antony.antony@secunet.com>,
- Cupertino Miranda <cupertino.miranda@oracle.com>,
- Artem Savkov <asavkov@redhat.com>, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-From: Mirsad Todorovac <mtodorovac69@gmail.com>
-Subject: [PROBLEM] selftests/bpf/progs/test_tunnel_kern.c: 678: 41-47: ERROR:
- application of sizeof to pointer
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Hi, all!
+On 2024-11-09 17:02, Jose E. Marchesi wrote:
+> 
+> Hello.
+> 
+>> I'm trying to use Gentoo's bpf-toolchain - basically just gcc built for
+>> the BPF target - to build the CO-RE support in bpftool, in order to
+>> provide an alternative to clang.
+>>
+>> This currently fails because the feature detection relies on a comment
+>> in the generated BPF assembly, which gcc does not seem to generate.
+>>
+>> While I'm using the Github mirror for bpftool, the same check is
+>> being done in the kernel build, so it affects both.
+>>
+>> Our tracker bug with full output etc. is: https://bugs.gentoo.org/943113
+>>
+>> Basically the problem boils down to:
+>>
+>> 	.long	16777248                        # 0x1000020
+>> 	.long	9                               # BTF_KIND_VAR(id = 3)
+>> 	.long	234881024                       # 0xe000000
+>>
+>> generated by clang (19.1.3)
+>>
+>> vs.
+>>
+>> 	.4byte	0x1000020
+>> 	.4byte	0x9
+>> 	.4byte	0xe000000
+>>
+>> generated by gcc (14.2.0).
+>>
+>> As the values themselves are correct, the problem is really just
+>> the missing debug information in gcc's output. So far I've tried
+>> every option I could find, but to no avail. I have no idea whether
+>> this is because I'm holding it wrong, gcc cannot do it for the bpf
+>> target (yet?) or anything else.
+>>
+>> Does anybody know how I can convince gcc to generate symbol comments?
+>> Alternatively can we find a better way to verify the generated output
+>> instead of grepping for a comment?
+> 
+> GCC can generate similar comments if you pass the -dA option.  These are
+> intended for testing the generated BTF in the GCC testsuite, however,
+> and right now I don't remember whether the comments mimic what clang
+> generates.  You can give it a try...
 
-In the linux-next tree, next-20241108, coccinelle found an error.
+Thank you so much for your reply, that's the one flag I hadn't tried yet,
+and it does indeed output exactly the needed value.
 
-In the line 617, ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(local_gopt));
-In the line 678, ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(gopt));
+After a bit of creative Makefile surgery I now get:
 
-when
+..
+Makefile.feature:32: Probing: feature-clang-bpf-co-re
+Makefile.feature:33: printf '%s\n' 'struct s { int i; } __attribute__((preserve_access_index)); struct s foo = {};' | bpf-unknown-none-gcc -g -dA -S -o - -x c -  | grep -q BTF_KIND_VAR && (echo 1 && >&2 echo result: 1) || (echo 0 && >&2 echo result: 0)
+result: 1
+..
 
- 592         struct local_geneve_opt local_gopt;
- 593         struct geneve_opt *gopt = (struct geneve_opt *) &local_gopt;
+There's a few things to clean up like clang-specific annotations and LLVM_STRIP,
+but so far the resulting binary says:
 
-and
+   bpftool v7.5.0
+   using libbpf v1.5
+   features: libbfd, skeletons
 
- 652         struct local_geneve_opt local_gopt;
- 653         struct geneve_opt *gopt = (struct geneve_opt *) &local_gopt;
+so it seems to have worked. \o/
 
-So, in all other call to bpf_skb_set_tunnel_opt(), the third parameter is the size of
-the  struct, not the size of the pointer:
-
-./tools/testing/selftests/bpf/progs/test_tunnel_kern.c:193:	ret = bpf_skb_set_tunnel_opt(skb, &md, sizeof(md));
-./tools/testing/selftests/bpf/progs/test_tunnel_kern.c:273:	ret = bpf_skb_set_tunnel_opt(skb, &md, sizeof(md));
-./tools/testing/selftests/bpf/progs/test_tunnel_kern.c:349:	ret = bpf_skb_set_tunnel_opt(skb, &md, sizeof(md));
-./tools/testing/selftests/bpf/progs/test_tunnel_kern.c:388:	ret = bpf_skb_set_tunnel_opt(skb, &md, sizeof(md));
-./tools/testing/selftests/bpf/progs/test_tunnel_kern.c:617:	ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(local_gopt));
-./tools/testing/selftests/bpf/progs/test_tunnel_kern.c:678:	ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(gopt));
-
-
-
-===========================================
-
- 587 SEC("tc")
- 588 int geneve_set_tunnel(struct __sk_buff *skb)
- 589 {
- 590         int ret;
- 591         struct bpf_tunnel_key key;
- 592         struct local_geneve_opt local_gopt;
- 593         struct geneve_opt *gopt = (struct geneve_opt *) &local_gopt;
- 594 
- 595         __builtin_memset(&key, 0x0, sizeof(key));
- 596         key.remote_ipv4 = 0xac100164; /* 172.16.1.100 */
- 597         key.tunnel_id = 2;
- 598         key.tunnel_tos = 0;
- 599         key.tunnel_ttl = 64;
- 600 
- 601         __builtin_memset(gopt, 0x0, sizeof(local_gopt));
- 602         gopt->opt_class = bpf_htons(0x102); /* Open Virtual Networking (OVN) */
- 603         gopt->type = 0x08;
- 604         gopt->r1 = 0;
- 605         gopt->r2 = 0;
- 606         gopt->r3 = 0;
- 607         gopt->length = 2; /* 4-byte multiple */
- 608         *(int *) &gopt->opt_data = bpf_htonl(0xdeadbeef);
- 609 
- 610         ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key),
- 611                                      BPF_F_ZERO_CSUM_TX);
- 612         if (ret < 0) {
- 613                 log_err(ret);
- 614                 return TC_ACT_SHOT;
- 615         }
- 616 
- 617 →       ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(local_gopt));
- 618         if (ret < 0) {
- 619                 log_err(ret);
- 620                 return TC_ACT_SHOT;
- 621         }
- 622 
- 623         return TC_ACT_OK;
- 624 }
-
- 648 SEC("tc")
- 649 int ip6geneve_set_tunnel(struct __sk_buff *skb)
- 650 {
- 651         struct bpf_tunnel_key key;
- 652         struct local_geneve_opt local_gopt;
- 653         struct geneve_opt *gopt = (struct geneve_opt *) &local_gopt;
- 654         int ret;
- 655 
- 656         __builtin_memset(&key, 0x0, sizeof(key));
- 657         key.remote_ipv6[3] = bpf_htonl(0x11); /* ::11 */
- 658         key.tunnel_id = 22;
- 659         key.tunnel_tos = 0;
- 660         key.tunnel_ttl = 64;
- 661 
- 662         ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key),
- 663                                      BPF_F_TUNINFO_IPV6);
- 664         if (ret < 0) {
- 665                 log_err(ret);
- 666                 return TC_ACT_SHOT;
- 667         }
- 668 
- 669         __builtin_memset(gopt, 0x0, sizeof(local_gopt));
- 670         gopt->opt_class = bpf_htons(0x102); /* Open Virtual Networking (OVN) */
- 671         gopt->type = 0x08;
- 672         gopt->r1 = 0;
- 673         gopt->r2 = 0;
- 674         gopt->r3 = 0;
- 675         gopt->length = 2; /* 4-byte multiple */
- 676         *(int *) &gopt->opt_data = bpf_htonl(0xfeedbeef);
- 677 
- 678  →      ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(gopt));
- 679         if (ret < 0) {
- 680                 log_err(ret);
- 681                 return TC_ACT_SHOT;
- 682         }
- 683 
- 684         return TC_ACT_OK;
- 685 }
-
-SOLUTION:
-
-Fixes: 5ddafcc377f98 ("selftests/bpf: Fix a few tests for GCC related warnings.")
-
-------------------
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 32127f1cd687..b53d367451b2 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -675,7 +675,7 @@ int ip6geneve_set_tunnel(struct __sk_buff *skb)
-        gopt->length = 2; /* 4-byte multiple */
-        *(int *) &gopt->opt_data = bpf_htonl(0xfeedbeef);
- 
--       ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(gopt));
-+       ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(local_gopt));
-        if (ret < 0) {
-                log_err(ret);
-                return TC_ACT_SHOT;
---
-
-Best regards,
-MT
+cheers
+Holger
 
