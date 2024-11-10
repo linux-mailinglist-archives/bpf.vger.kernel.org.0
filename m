@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-44484-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44485-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BBF59C33E3
-	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2024 18:05:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC45B9C33E7
+	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2024 18:06:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CE541C208FB
-	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2024 17:05:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5877FB20E03
+	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2024 17:06:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2623E13A87C;
-	Sun, 10 Nov 2024 17:05:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D4F13C3C2;
+	Sun, 10 Nov 2024 17:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="f00ljkgJ"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sCcq2szq"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC6E12D758;
-	Sun, 10 Nov 2024 17:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6961E12D758;
+	Sun, 10 Nov 2024 17:05:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731258341; cv=none; b=o5X/Sjet/606OGMpo+SxTe0w3C5/5jbxehTrwDSF2h3QiB0X2HlNr0WN758w+fLlf4oZGJEwTj7YgMvnimYrQ5iE1DaZvYkgcxN3DUdVpLC8yi976tnj73iZlQju5DNQG7XxUXyamVjoBy5G2bwoHJuXeuSkB/r9GjP9dUGr/yM=
+	t=1731258354; cv=none; b=sv6vhVfGad3OqXaDkd3snDD7MUGRtdoP52c80kmdOXVMMnPnFZHZGlNxa8J4J/GHjvydLYQitAn9gIL5iIvO7K0wL2bhJDNyoC/zymRCRxSFJCvhZ34ZwYtwdCyTc5bw5WRmrafag/Jz9rX0NCmrNKegwbYCpVjzkatfTBtL25M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731258341; c=relaxed/simple;
-	bh=Zh43aHcr41VN7hfnjL4eA6KL8O6ghcfl65fvv/diVUE=;
+	s=arc-20240116; t=1731258354; c=relaxed/simple;
+	bh=W8IBu8OYgKSWbGvUJPVuafrSAwC9pJZTPDqexPgiF44=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JV6W9FxdsfXUyzTn6wknyT+sZn5crQrcUSZCjFFWdSM0B3jAQeDLPBKAglDLQFU2xQcNmQ/ryIaNeL5/4E5pWBuJPyF/KCuGeeVR+zNSzhFDekKKvtvEMP0xsFW5k7uD7eqT5/2LOp154pE+SXvlx/ZobKrwuNMzxTZlAOi+y3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=f00ljkgJ; arc=none smtp.client-ip=148.163.156.1
+	 Content-Type:Content-Disposition:In-Reply-To; b=QqoUxeL5ckejZN90gbqO2tqs9vnZe60+fnJp8NHrhRB9pDu0A1qyjjozDVzO4SHDkozxXqtx+AAKbUoSXIWn132L8ztd+gPhABr846TEnG6tgBe+mEBQMm2lSmf5/B0YSRJB1wcZTNQ0Dwqu7NrBG8oiZQY/Bfr1xQ1VLwtf5Zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sCcq2szq; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AADb9lj029404;
-	Sun, 10 Nov 2024 17:05:30 GMT
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AAFQGiX031518;
+	Sun, 10 Nov 2024 17:05:15 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=/MQhKShWGkxbTeinh+Z0QoTvscc1CN
-	ozq3b2Qju3K/M=; b=f00ljkgJCYMVH/kIe+h8R2/uVkFz0lul6v37QQbffmXg9V
-	13J+Tny2uwtcAn1tdkAd0oFWC2x7QZshmRznr6kNomzynShHN/tnZIZ7hbHYTWJj
-	MqspCoxfMk8PlanhbxxBQdRBBsGwS62xIWKgCAa62k4bjjwUDU93/tla1lRL9e4k
-	kVkHExNntK1pkjk9obsOP2u8VGBYYucCjXQMZerF+aFHKvnAxZ601c5w8IUw4LDG
-	JB1oyOFrxzNOwpy8enC54iE+pCTg7DOw0/1+fTj9YFCEHcaMDQ1y3yzkiNbHy8cN
-	MXNY5qIkZHjp1m48WMkl1ZX5vLrwEhQ7H3SUFKHg==
+	:references:subject:to; s=pp1; bh=w9UgQPRR37++TdBcs9cU8wlUS7kfeK
+	sLzG25KHuCYbk=; b=sCcq2szqvl7V388Evf81ubigfPzqtOJNzlcNBvsY99W98O
+	gOjAjQ29ZmdSGDI6S9qyQZ9bZqHgxtcI44Gep0IQAfrWTQKZ1l20GgScmV1xioDq
+	J97YpP+g0v+w1QEFcJv1ASn0FWoR+LjCYLHwKbp/ibrT1184HD0bEvHz17F1S77c
+	PRV6HKiBhswtOm1HCxb7bf+ibJgCo64e6uukqrOyKFMwfqjfZ2Xb5++jbrQQd8Ia
+	5h0Z/vR4Pfn1M+Nh/zCcXfu/bK8OoDbrfyhc+SeUWPUOA32EU0acocfOAWkxT0uU
+	HaNWufxPDin76lDfr0J+olmOOzAM4HNy9U4F9BRA==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42tpvmsd2g-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42tpvmsd22-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 10 Nov 2024 17:05:29 +0000 (GMT)
+	Sun, 10 Nov 2024 17:05:15 +0000 (GMT)
 Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AAH5TLr016963;
-	Sun, 10 Nov 2024 17:05:29 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42tpvmsd2d-1
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AAH5EnY016863;
+	Sun, 10 Nov 2024 17:05:14 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42tpvmsd1x-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 10 Nov 2024 17:05:29 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AA3FxuE004065;
-	Sun, 10 Nov 2024 17:05:28 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 42tms10uc3-1
+	Sun, 10 Nov 2024 17:05:14 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AAFVWrx029688;
+	Sun, 10 Nov 2024 17:05:13 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 42tkjk5udm-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 10 Nov 2024 17:05:28 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AAH5QGw58130722
+	Sun, 10 Nov 2024 17:05:13 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AAH59Sc58851720
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 10 Nov 2024 17:05:26 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8705E20049;
-	Sun, 10 Nov 2024 17:05:26 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CBBBB20040;
-	Sun, 10 Nov 2024 17:05:25 +0000 (GMT)
+	Sun, 10 Nov 2024 17:05:09 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 780B020043;
+	Sun, 10 Nov 2024 17:05:09 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 30DAD20040;
+	Sun, 10 Nov 2024 17:05:08 +0000 (GMT)
 Received: from osiris (unknown [9.171.74.231])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Sun, 10 Nov 2024 17:05:25 +0000 (GMT)
-Date: Sun, 10 Nov 2024 18:05:24 +0100
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Sun, 10 Nov 2024 17:05:08 +0000 (GMT)
+Date: Sun, 10 Nov 2024 18:05:04 +0100
 From: Heiko Carstens <hca@linux.ibm.com>
 To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
@@ -86,11 +86,26 @@ Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
         Alan Maguire <alan.maguire@oracle.com>,
         Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: [PATCH v19 11/19] s390/tracing: Enable HAVE_FTRACE_GRAPH_FUNC
-Message-ID: <20241110170524.6661-C-hca@linux.ibm.com>
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Naveen N Rao <naveen@kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v19 07/19] tracing: Add ftrace_fill_perf_regs() for perf
+ event
+Message-ID: <20241110170504.6661-B-hca@linux.ibm.com>
 References: <173125372214.172790.6929368952404083802.stgit@devnote2>
- <173125385879.172790.60734156759309440.stgit@devnote2>
+ <173125380933.172790.13871919598133716103.stgit@devnote2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -99,37 +114,33 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <173125385879.172790.60734156759309440.stgit@devnote2>
+In-Reply-To: <173125380933.172790.13871919598133716103.stgit@devnote2>
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Zz-6mYj45FElpJcXUgDWkm5Iza_ji5jI
-X-Proofpoint-GUID: GFyYZ8N9EpRadcR7Uav-c2AYEabtmZET
+X-Proofpoint-ORIG-GUID: mDl8ANvFO62Yl3Du7gW-GA6W-IDMkZTL
+X-Proofpoint-GUID: VTiNSnrSFul-aTZQ_oPMYdMgRFJUlpu0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
  definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=474 phishscore=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=681 phishscore=0
  priorityscore=1501 malwarescore=0 clxscore=1015 suspectscore=0
  adultscore=0 spamscore=0 mlxscore=0 impostorscore=0 lowpriorityscore=0
  bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2409260000 definitions=main-2411100151
 
-On Mon, Nov 11, 2024 at 12:50:58AM +0900, Masami Hiramatsu (Google) wrote:
-> From: Sven Schnelle <svens@linux.ibm.com>
+On Mon, Nov 11, 2024 at 12:50:09AM +0900, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
-> Add ftrace_graph_func() which is required for fprobe to access registers.
-> This also eliminates the need for calling prepare_ftrace_return() from
-> ftrace_caller().
+> Add ftrace_fill_perf_regs() which should be compatible with the
+> perf_fetch_caller_regs(). In other words, the pt_regs returned from the
+> ftrace_fill_perf_regs() must satisfy 'user_mode(regs) == false' and can be
+> used for stack tracing.
 > 
-> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Acked-by: Will Deacon <will@kernel.org>
 > ---
->  Changes in v19:
->   - Newly added.
-> ---
->  arch/s390/Kconfig              |    1 +
->  arch/s390/include/asm/ftrace.h |    5 ++++
->  arch/s390/kernel/entry.h       |    1 -
->  arch/s390/kernel/ftrace.c      |   48 ++++++++++++----------------------------
->  arch/s390/kernel/mcount.S      |   11 ---------
->  5 files changed, 20 insertions(+), 46 deletions(-)
+>  arch/arm64/include/asm/ftrace.h   |    7 +++++++
+>  arch/powerpc/include/asm/ftrace.h |    7 +++++++
+>  arch/s390/include/asm/ftrace.h    |    6 ++++++
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Acked-by: Heiko Carstens <hca@linux.ibm.com> # s390
 
