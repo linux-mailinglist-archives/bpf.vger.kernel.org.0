@@ -1,148 +1,107 @@
-Return-Path: <bpf+bounces-44487-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44488-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3E939C33F3
-	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2024 18:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DAA19C343E
+	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2024 19:45:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 348A6B20A7A
-	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2024 17:17:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A49EDB20D85
+	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2024 18:44:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07BB913AA26;
-	Sun, 10 Nov 2024 17:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B52A13C690;
+	Sun, 10 Nov 2024 18:44:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="c4vg8FMP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mtC1JXit"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 199E483CC7;
-	Sun, 10 Nov 2024 17:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A0713BC12
+	for <bpf@vger.kernel.org>; Sun, 10 Nov 2024 18:44:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731259036; cv=none; b=ZK6eXgWgTbE1WPD+yWZrr4UOhGC9Vyo0w9SKr+j0Z0azvNy6btM4XsCyyrSUDqdbWYGDAeyu9ktfyjZfUav35QVO6mCUBUgJtCr7A9c5rZC2x0ASRMLlBDPMREoCh85p0b+jmDcyZm1WDK7qFXNzRJVkQvyqoZX+Ng+urF5vRIU=
+	t=1731264293; cv=none; b=bcDxKwzGirnI0jWOreOEEQ+QD8YF4EqpExEthaAg+W1fG4FlVQubQI8Ml9JeCXEZ3WeVqS7GkUyf5fnmDinMHCVr4/1ghKdDLuxknqum1O33lRJbtocp9rIgeKZFi6Dr8JYxUL4wu1mmfiMsxNUcHqbdyaZxuEjAMgab6E3zTwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731259036; c=relaxed/simple;
-	bh=d/Nbv/2a4fNGYpYfknQMtQ/oP/laBmvhR1O2gSULEUE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UGIBYSSNZ3Z2xxtrLutlvBqz9+xY9zXre3Wea3Zhjhy8vlX5OniHncZkMH5fIIaxOJnNeG38H6qDQsVWP2u26KsGfyu0U8kPencYD5Mw3h2MooHypyMURJHM+JudiPcz9RbjtMoN2g4iLodt/RCI0VrmUEn/NqQddp6+eau8HqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=c4vg8FMP; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AAFb5L1032278;
-	Sun, 10 Nov 2024 17:16:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=lFd4Fam7Rl/a+c8SETSijmhw1wHdaw
-	vG28+eDPKUbTY=; b=c4vg8FMPd5AkvBn7/EwHFTHjzKEByCnTy9mxwklBTl5QOB
-	Iup4yAtEAtH083cxsjawyIAccQpg3ZKNVHK5mwQR/F9B4XMNwUqvyIiTSTTD8ziH
-	e8FETXvslUZspkYOBGnIgcotR2fRV1le+A3egia/S5xw5rkCtz8h2H6i84R9/n7Z
-	5lRQRjxnUeNa505alx/OH8Xg/TLH86GVkDdRe1qL2zYsv+YUWdj1prIYfXUxWFP1
-	ZAwJkkXrMOq6DAVatxG0R6FCGxBQah9KUWwtcgAV4ohtZfM3KJeB0w1AJDNWxDPz
-	ZHD/JBr9YnC0myexcE7sUaP/uc8Vbzosb3v/hcWQ==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42tjg3a9qj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 10 Nov 2024 17:16:46 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AAHGjEu019200;
-	Sun, 10 Nov 2024 17:16:45 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42tjg3a9qg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 10 Nov 2024 17:16:45 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AA2gvH9007218;
-	Sun, 10 Nov 2024 17:16:44 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 42tm9j8vnk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 10 Nov 2024 17:16:44 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AAHGeVw21692846
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 10 Nov 2024 17:16:41 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D150E20043;
-	Sun, 10 Nov 2024 17:16:40 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A8E3F20040;
-	Sun, 10 Nov 2024 17:16:39 +0000 (GMT)
-Received: from osiris (unknown [9.171.74.231])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Sun, 10 Nov 2024 17:16:39 +0000 (GMT)
-Date: Sun, 10 Nov 2024 18:16:38 +0100
-From: Heiko Carstens <hca@linux.ibm.com>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH v19 13/19] fprobe: Add fprobe_header encoding feature
-Message-ID: <20241110171638.6661-E-hca@linux.ibm.com>
-References: <173125372214.172790.6929368952404083802.stgit@devnote2>
- <173125388510.172790.1161831132316963172.stgit@devnote2>
+	s=arc-20240116; t=1731264293; c=relaxed/simple;
+	bh=nuoEPP3hsTRytoVgglBE5dmjS+82640VQlxIGlKoAns=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fQCimywim1t6DDGvye834Pbsa6eaeza0sRTxZciYdFiaMyfcQIqoaqQ4SWyo4DIqurILnePiBJd1hCnxP8jcyhPvysR3dFvtivY2vFzByymyu3oaS9sD2g4V2U1/2ew5OiJO0vq7/uNhqby7OZTHe/oeNXjgtbVP5bm/0/iDjlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mtC1JXit; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a9e71401844so487471866b.3
+        for <bpf@vger.kernel.org>; Sun, 10 Nov 2024 10:44:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731264290; x=1731869090; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=whJFXZkNBSsBlx/3skV5Sl3ph1oX31uQ5AVZ1wTBllY=;
+        b=mtC1JXitTcpXKdYyWOxe+4U5PGNL0gWVuujlw1bLQkbNRcrhdYV3TyAtnCFaeOzshs
+         rAjQCVMu4SVfDCd6nlU0gg/c3f4X1otlCVS63yDLIWHQbltzsFlvhx9IAzTFaP3ssim1
+         YFPm+kBjFkuqEBImoUVde59CcNzfOYn4yrr8lcqXXgC0i3zFwPaWBjEpasODAPbdbOMN
+         AAFCfL5m2QI9M1zQdd3enVW7AefAAlVwqiwmWTng3oWM2tQlhD7z+MtQN+GHuLND7wU2
+         Pipj7QzIeymH+uUFXQE+LnQu+ta2woBf+NAjC05WyosPHCMtEkkRC2UnwzWY6hr52pI6
+         aqmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731264290; x=1731869090;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=whJFXZkNBSsBlx/3skV5Sl3ph1oX31uQ5AVZ1wTBllY=;
+        b=xFIB5vg/AFWpsXO7N+M80V4KI3I4PxnzGD1vIisjAOVeHYbczjsSr4nhV62g/8lmP1
+         AYYuWdZbLAXBLPC1KjrYGXqjLKe043uIomYf0tifOP4gsCmztIFmdlSoMSnRor5DjIWX
+         xXRAqBbgPZU+veEXDetxI2fS8+Tj9GOGOnspWzFvkNBFIxETRnsEfDnMnQsv+LUNUfbF
+         VRBtmdCCmKMXSieqTcNGCkEQjtwqdYjd+yrjieckuBwdeNNK8ocYmvLXV08G34r2HqoR
+         57wpD8KHegBKsk0EKavVBW3ik03LZRVC9Nh30MRmIs2hYDHXc2+XEaxZD+7k250S8LO1
+         0JTg==
+X-Gm-Message-State: AOJu0Yw5rItGnIE89leU+B1Ql3xqdKkyDWdTzzb2lplGQP9I2+GS5z0s
+	BFqbn90ovJFQ8PGADBMSd62m1i4Yrp2KI68wWSVD88ooj+5SUjGOS3fkIg==
+X-Google-Smtp-Source: AGHT+IH2igW+hwDzqHXe0QQLZaamlISD8La83puixWQf3HSKRLgmiUx4HKJJc0lVoY0FdI+kFK+TUQ==
+X-Received: by 2002:a17:907:3e9e:b0:a9e:b1f9:bc52 with SMTP id a640c23a62f3a-a9ef0010e1bmr918735366b.55.1731264289896;
+        Sun, 10 Nov 2024 10:44:49 -0800 (PST)
+Received: from localhost.localdomain ([2a02:a03f:864b:8201:1677:ed83:8020:fb22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0e2f4a6sm501542166b.199.2024.11.10.10.44.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Nov 2024 10:44:49 -0800 (PST)
+From: Daan De Meyer <daan.j.demeyer@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Daan De Meyer <daan.j.demeyer@gmail.com>
+Subject: [PATCH] bpftool: Set srctree correctly when not building out of source tree
+Date: Sun, 10 Nov 2024 19:44:25 +0100
+Message-ID: <20241110184429.823986-1-daan.j.demeyer@gmail.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <173125388510.172790.1161831132316963172.stgit@devnote2>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: GJCKposUAeWJS4L6p4y06TvBF-vByzu7
-X-Proofpoint-GUID: n_GXdkFm3pIvgXraT9dt0EiUt6IaSzmq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- mlxlogscore=345 lowpriorityscore=0 adultscore=0 mlxscore=0 impostorscore=0
- bulkscore=0 phishscore=0 clxscore=1015 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
- definitions=main-2411100151
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 11, 2024 at 12:51:25AM +0900, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> Fprobe store its data structure address and size on the fgraph return stack
-> by __fprobe_header. But most 64bit architecture can combine those to
-> one unsigned long value because 4 MSB in the kernel address are the same.
-> With this encoding, fprobe can consume less space on ret_stack.
-> 
-> This introduces asm/fprobe.h to define arch dependent encode/decode
-> macros. Note that since fprobe depends on CONFIG_HAVE_FUNCTION_GRAPH_FREGS,
-> currently only arm64, loongarch, riscv, s390 and x86 are supported.
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->  arch/arm64/include/asm/Kbuild       |    1 +
->  arch/loongarch/include/asm/fprobe.h |   12 +++++++++
->  arch/riscv/include/asm/Kbuild       |    1 +
->  arch/s390/include/asm/fprobe.h      |   10 ++++++++
+This allows building bpftool directly via "make -C tools/bpf/bpftool".
+---
+ tools/bpf/bpftool/Makefile | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com> # s390
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index ba927379eb20..7c7d731077c9 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -2,6 +2,12 @@
+ include ../../scripts/Makefile.include
+ 
+ ifeq ($(srctree),)
++update_srctree := 1
++endif
++ifndef building_out_of_srctree
++update_srctree := 1
++endif
++ifeq ($(update_srctree),1)
+ srctree := $(patsubst %/,%,$(dir $(CURDIR)))
+ srctree := $(patsubst %/,%,$(dir $(srctree)))
+ srctree := $(patsubst %/,%,$(dir $(srctree)))
+-- 
+2.47.0
+
 
