@@ -1,215 +1,281 @@
-Return-Path: <bpf+bounces-44551-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44552-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0259A9C4935
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 23:43:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEE6C9C498A
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 00:05:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AA18B23F3D
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 22:32:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 706B81F23812
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 23:05:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BF57F477;
-	Mon, 11 Nov 2024 22:32:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8D41BD4F7;
+	Mon, 11 Nov 2024 23:04:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iWcAaGWl"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SFnl289s"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0174B178368
-	for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 22:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19668224FD
+	for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 23:04:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731364321; cv=none; b=HMRMdsEGcVzi0KfrwzFHl3SIxZsEp7EitrxxqVftdIt9W52Wc0hfX3a9vzgo4jYFSHOoQ24C4iFqKWlun2YiPpvCnUt60w8bzC6OglIPLB/QNhEjBwbg8MkQYWqLiu8ElOarn0jiCHjs8cZck8umnJfHt+Y4xP9oYqYZiHARZXs=
+	t=1731366295; cv=none; b=DPmykTWlPR0qQFTZ08D/ybWHSPerop1YjJuFGvL25sHjAbyWyvVUkYYvI92kCYfYUpzECkbMATmvpsYjnuUBxJaHKkK4txj23lj5Xk4bAxHCssjBPyycIG2wsTlY5WygGsjOxFidIJQgXNfs0xrGa2ewapqjHNi9q0d/eUDQuGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731364321; c=relaxed/simple;
-	bh=+B2jCHqovMbEZCOQbKeewbgdIgWOpiU6BZsU3IadQWc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GD57nfkrgQUH5cyjJ2UAqE2K8tWR3Fh95HnJ6DavqiB8W0veGQ5UJd1InAi/AIEzgpgVLflk4o6BtxUuJDHH5y27VJ5x4m9B/qGWmnM9Ss4J6EiHdhREQNkifLlPB0ockthOJOlovZu2QxPBoVjr2tc6Wbe96FQMHf1HWDTL62Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iWcAaGWl; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-37d4ac91d97so4724695f8f.2
-        for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 14:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731364318; x=1731969118; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=whMLfkFhmB0kTQ5n1EwyjhoJFLIXX49NP6R8v2awvxM=;
-        b=iWcAaGWlCrub/F6toO5OxsfVfbsRbIUJoNTnNPbDx0AcSZG3irJyhIpkPTiKsqhN34
-         kkd+bYJUbGZbrUbtMBiakDpYB5CrHYXkeWSybQg8FzJOQEDrIfX+vZyjpiBavqqT6e8Z
-         45kmR4pBwvmROC6/Ej1XJ8fa5uQQkPLoCuYwiTMdFSDNfjnup2I7435gTbmIPzTMTg3h
-         S+I260XOoUnPVgSh30nS6szVxLIkwmSZMMVUxeFL+o6Vougn86Ylz2EvJJpRZWH1TlCR
-         8EQ3sdLkku0+f0xzWgGSPZOkfZ+Uj/W3gW3RjsDsR7wu+cVA7ahBWRgv0uehBF1Ey4ys
-         emQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731364318; x=1731969118;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=whMLfkFhmB0kTQ5n1EwyjhoJFLIXX49NP6R8v2awvxM=;
-        b=NIq1OexPgPLnsxV+Rfb/L0fFaTAovJ3/7u21ER9f5+8jMJ7WrfgzbPSTFUZgg0nSFZ
-         OqCf5wCCHSKM0BqK6EY9KwkPJIeQp2bw36SWLHbirqiJyiS1ERwCLYoQAOGOC8B6YTq1
-         ji4KX37R2IWQSMBTFQASV/lUmraptBMIYUZdHWj0skVfJx4o1NnUu1VZI/HwPFrlb7YT
-         8/hukeRzM6ScLklsX6T2cAOXYFsbVP9OwrIyilmEPfV0zge7ths3L5kvOwX1dcSKe0/m
-         Hyd1tbKGl2eFzZANiS17QACD6+3d/JmQZuaHOmccR0AEKbmR61M1LBG164PNVjachJZy
-         ZHTA==
-X-Forwarded-Encrypted: i=1; AJvYcCVUrmrsLjuyExK+PRRGlxRxXcPF326Ze/66Mmwm8LIfRJ0ynIEySpKOnIROrCgaPJk+k7g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNlp/ULtwwpoTW7EifX1yT/txehO5zmKMPeafsZRat+MB6JPQP
-	nv8Wc+1qlIQLpc69LFnI5nmAm0BCz+GFBHwf+RKs7RdMy7wjGthqQR6bE2Na/pdITl6HqA1g0Er
-	bi/vHJXs/g72bnm2GC/C7g+6F7T0=
-X-Google-Smtp-Source: AGHT+IFsAstlz1EEodBK6P6tvOAUuJLaeixNIQLBhVbhM0Y/A6pTiFlD1pxQnOc1LKJgGzsacE4FRr5Iw2ta8LNw0xQ=
-X-Received: by 2002:a05:6000:1543:b0:37d:95a7:9e57 with SMTP id
- ffacd0b85a97d-381f1866efamr15177668f8f.2.1731364318053; Mon, 11 Nov 2024
- 14:31:58 -0800 (PST)
+	s=arc-20240116; t=1731366295; c=relaxed/simple;
+	bh=QlFHaXoGdrdsdtsxaMNZEFvMRFaugC/uaB2aDp2fMvg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=al9gQKqu85wCYH9y5GZYU8/exEK1waL2ahTSarwwm+S/a0Ul8Kwo74mYKFHOzS4ttZdjUO/hpvBWMLecBczgpzy6lYYsEDIhAAsdZO1S13VbjjzB/XKrnpcZjz3H2JII219FcdeCkZvfXdeD56+iXz1TDGTEJda6CVxk1eHGGT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SFnl289s; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f35f4d0e-77df-4e52-b62e-9e1254fb4b5c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731366289;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nEuEfLgRpLMggNTLxWl+/ldUjnJz5XMj52pXTGqAcac=;
+	b=SFnl289s5f7ztp763yUfJc+/dJHQ9IYmL41SxAQxZ8sqeyPvmFwQB8VwAfAzRdokQAaqRK
+	ODDSpZwyJoWI05Us9Mwe3jPfD1pPzP+JQMMsQSJ3u8FU8HRTZ/CuhW37QhaXReDcfj49OD
+	6ypasCl86eZmrhQ/Ka3HE8GfMebic8M=
+Date: Mon, 11 Nov 2024 15:04:42 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241030235057.1984848-1-andrii@kernel.org> <CAADnVQ+pShXOS9WnDSA5CjrGvNRC7NS-MQrgr_X_Obo5zLs8yA@mail.gmail.com>
- <CAEf4BzZMObcOs5NzHqY-v3scjv7zHL2oKf=zn36LsAXhYuwn8Q@mail.gmail.com>
- <CAEf4BzYks_vSzoYMxSCED=kTJ6n9WHY5daJTwPam6KXaWv0feg@mail.gmail.com> <CAEf4BzZGmi=zqAB032eLjGZZ1b4bq2jTdFsF_qiMwSJEZrB2Zg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZGmi=zqAB032eLjGZZ1b4bq2jTdFsF_qiMwSJEZrB2Zg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 11 Nov 2024 14:31:47 -0800
-Message-ID: <CAADnVQLE9x8Oy_BdBs804rW=M=Sm6EJjf7uej9uGAVmCoZGHmA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: use common instruction history across all states
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Eduard Zingerman <eddyz87@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3 2/2] bpf: Add kernel symbol for struct_ops
+ trampoline
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Yonghong Song <yonghong.song@linux.dev>, Kui-Feng Lee <thinker.li@gmail.com>
+References: <20241111121641.2679885-1-xukuohai@huaweicloud.com>
+ <20241111121641.2679885-3-xukuohai@huaweicloud.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20241111121641.2679885-3-xukuohai@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Nov 11, 2024 at 2:19=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Nov 11, 2024 at 1:56=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, Nov 11, 2024 at 1:53=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Mon, Nov 11, 2024 at 10:46=E2=80=AFAM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Wed, Oct 30, 2024 at 4:51=E2=80=AFPM Andrii Nakryiko <andrii@ker=
-nel.org> wrote:
-> > > > >
-> > > > > Async callback state enqueing, while logically detached from pare=
-nt
-> > > >
-> > > > typo. enqueuing
-> > >
-> > > yep, tricky word :) should be "enqueueing", fixed
-> > >
-> > > >
-> > > > > -static int get_prev_insn_idx(struct bpf_verifier_state *st, int =
-i,
-> > > > > -                            u32 *history)
-> > > > > +static int get_prev_insn_idx(const struct bpf_verifier_env *env,
-> > > > > +                            struct bpf_verifier_state *st,
-> > > > > +                            int insn_idx, u32 hist_start, u32 *h=
-ist_endp)
-> > > > >  {
-> > > > > -       u32 cnt =3D *history;
-> > > > > +       u32 hist_end =3D *hist_endp;
-> > > > > +       u32 cnt =3D hist_end - hist_start;
-> > > > >
-> > > > > -       if (i =3D=3D st->first_insn_idx) {
-> > > > > +       if (insn_idx =3D=3D st->first_insn_idx) {
-> > > > >                 if (cnt =3D=3D 0)
-> > > > >                         return -ENOENT;
-> > > > > -               if (cnt =3D=3D 1 && st->jmp_history[0].idx =3D=3D=
- i)
-> > > > > +               if (cnt =3D=3D 1 && env->insn_hist[hist_end - 1].=
-idx =3D=3D insn_idx)
-> > > > >                         return -ENOENT;
-> > > > >         }
-> > > >
-> > > > I think the above bit would be easier to understand if it was
-> > > > env->insn_hist[hist_start].
-> > > >
-> > > > When cnt=3D=3D1 it's the same as hist_end-1, but it took me more ti=
-me
-> > > > to grok that part. With [hist_start] would have been easier.
-> > > > Not a big deal.
-> > >
-> > > yep, I agree. Originally I didn't pass hist_start directly, so I woul=
-d
-> > > have to use st->insn_hist_start, and it felt too verbose. But now
-> > > that's not a problem, I'll use hist_start everywhere.
-> > >
-> > > >
-> > > > Another minor suggestion...
-> > > > wouldn't it be cleaner to take hist_start/end from 'st' both
-> > > > in get_prev_insn_idx() and in get_insn_hist_entry() ?
-> > > >
-> > > > So that __mark_chain_precision() doesn't need to reach out into
-> > > > details of 'st' just to pass hist_start/end values into other helpe=
-rs.
-> > >
-> > > Note that for get_prev_insn_idx() we modify (but only locally!)
-> > > hist_end, as we process instruction history for the currently
-> > > processed state (we do a virtual stack pop for each entry). So we
-> > > can't just use st->insn_hist_end, we need a local copy for hist_end
-> > > that will be updated without touching the actual insn_hist_end. That'=
-s
-> > > the reason I have `u32 hist_end =3D st->insn_hist_end;`, to pass
-> > > &hist_end into get_prev_insn_idx().
-> > >
-> > > Having said that, if you prefer, I can fetch insn_hist_{start, end}
-> > > from st, always, but then maintain local hist_cnt as input argument
-> > > for get_insn_hist_enrty() and in/out argument for get_prev_insn_idx()=
-.
-> > > Would you prefer that? something like below:
-> > >
-> >
-> > Argh, gmail messed this up. See [0] for better formatting.
-> >
-> >   [0] https://gist.github.com/anakryiko/25228b0ae2760f78b7ae7f0160faa5c=
-1
->
-> I had a tiny bug in get_prev_insns_idx(), fixing which makes
-> get_prev_insn_idx() a bit verbose if using this hist_cnt approach:
->
-> static int get_prev_insn_idx(const struct bpf_verifier_env *env,
->                              struct bpf_verifier_state *st,
->                              int insn_idx, u32 *hist_cntp)
-> {
->   u32 cnt =3D *hist_cntp;
->
->   if (insn_idx =3D=3D st->first_insn_idx) {
->     if (cnt =3D=3D 0)
->       return -ENOENT;
->       if (cnt =3D=3D 1 && env->insn_hist[st->insn_hist_start].idx =3D=3D =
-insn_idx)
->         return -ENOENT;
+On 11/11/24 4:16 AM, Xu Kuohai wrote:
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index e99fce81e916..d6dd56fc80d8 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -23,7 +23,6 @@ struct bpf_struct_ops_value {
+>   
+>   struct bpf_struct_ops_map {
+>   	struct bpf_map map;
+> -	struct rcu_head rcu;
+
+Since it needs a respin (more on it later), it will be useful to separate this 
+cleanup as a separate patch in the same patch series.
+
+>   	const struct bpf_struct_ops_desc *st_ops_desc;
+>   	/* protect map_update */
+>   	struct mutex lock;
+> @@ -32,6 +31,8 @@ struct bpf_struct_ops_map {
+>   	 * (in kvalue.data).
+>   	 */
+>   	struct bpf_link **links;
+> +	/* ksyms for bpf trampolines */
+> +	struct bpf_ksym **ksyms;
+>   	u32 funcs_cnt;
+>   	u32 image_pages_cnt;
+>   	/* image_pages is an array of pages that has all the trampolines
+> @@ -586,6 +587,49 @@ int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
+>   	return 0;
 >   }
->
->   if (cnt && env->insn_hist[st->insn_hist_start + hist_cnt - 1].idx =3D=
-=3D
-> insn_idx) {
->     *hist_cntp =3D cnt - 1;
->     return env->insn_hist[st->insn_hist_start + hist_cnt - 1].prev_idx;
->   } else {
->     return insn_idx - 1;
+>   
+> +static void bpf_struct_ops_ksym_init(const char *tname, const char *mname,
+> +				     void *image, unsigned int size,
+> +				     struct bpf_ksym *ksym)
+> +{
+> +	snprintf(ksym->name, KSYM_NAME_LEN, "bpf__%s_%s", tname, mname);
+> +	INIT_LIST_HEAD_RCU(&ksym->lnode);
+> +	bpf_image_ksym_init(image, size, ksym);
+> +}
+> +
+> +static void bpf_struct_ops_map_ksyms_add(struct bpf_struct_ops_map *st_map)
+> +{
+> +	u32 i;
+> +
+> +	for (i = 0; i < st_map->funcs_cnt; i++) {
+> +		if (!st_map->ksyms[i])
+> +			break;
+> +		bpf_image_ksym_add(st_map->ksyms[i]);
+> +	}
+> +}
+> +
+> +static void bpf_struct_ops_map_del_ksyms(struct bpf_struct_ops_map *st_map)
+> +{
+> +	u32 i;
+> +
+> +	for (i = 0; i < st_map->funcs_cnt; i++) {
+> +		if (!st_map->ksyms[i])
+> +			break;
+> +		bpf_image_ksym_del(st_map->ksyms[i]);
+> +	}
+> +}
+> +
+> +static void bpf_struct_ops_map_free_ksyms(struct bpf_struct_ops_map *st_map)
+> +{
+> +	u32 i;
+> +
+> +	for (i = 0; i < st_map->funcs_cnt; i++) {
+> +		if (!st_map->ksyms[i])
+> +			break;
+> +		kfree(st_map->ksyms[i]);
+> +		st_map->links[i] = NULL;
+
+s/links/ksyms/
+
+pw-bot: cr
+
+> +	}
+> +}
+> +
+>   static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   					   void *value, u64 flags)
+>   {
+> @@ -602,6 +646,8 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   	u32 i, trampoline_start, image_off = 0;
+>   	void *cur_image = NULL, *image = NULL;
+>   	struct bpf_link **plink;
+> +	struct bpf_ksym **pksym;
+> +	const char *tname, *mname;
+>   
+>   	if (flags)
+>   		return -EINVAL;
+> @@ -641,14 +687,18 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   	kdata = &kvalue->data;
+>   
+>   	plink = st_map->links;
+> +	pksym = st_map->ksyms;
+> +	tname = btf_name_by_offset(st_map->btf, t->name_off);
+>   	module_type = btf_type_by_id(btf_vmlinux, st_ops_ids[IDX_MODULE_ID]);
+>   	for_each_member(i, t, member) {
+>   		const struct btf_type *mtype, *ptype;
+>   		struct bpf_prog *prog;
+>   		struct bpf_tramp_link *link;
+> +		struct bpf_ksym *ksym;
+>   		u32 moff;
+>   
+>   		moff = __btf_member_bit_offset(t, member) / 8;
+> +		mname = btf_name_by_offset(st_map->btf, member->name_off);
+>   		ptype = btf_type_resolve_ptr(st_map->btf, member->type, NULL);
+>   		if (ptype == module_type) {
+>   			if (*(void **)(udata + moff))
+> @@ -718,6 +768,14 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   			      &bpf_struct_ops_link_lops, prog);
+>   		*plink++ = &link->link;
+>   
+> +		ksym = kzalloc(sizeof(*ksym), GFP_USER);
+
+link is also using kzalloc but probably both link and ksym allocation should use 
+bpf_map_kzalloc instead. This switch can be done for both together later as a 
+follow up patch.
+
+> +		if (!ksym) {
+> +			bpf_prog_put(prog);
+
+afaik, this bpf_prog_put is not needed. The bpf_link_init above took the prog 
+ownership and the bpf_struct_ops_map_put_progs() at the error path will take 
+care of it.
+
+> +			err = -ENOMEM;
+> +			goto reset_unlock;
+> +		}
+> +		*pksym = ksym;
+
+nit. Follow the *plink++ style above and does the same *pksym++ here.
+
+> +
+>   		trampoline_start = image_off;
+>   		err = bpf_struct_ops_prepare_trampoline(tlinks, link,
+>   						&st_ops->func_models[i],
+> @@ -737,6 +795,12 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   
+>   		/* put prog_id to udata */
+>   		*(unsigned long *)(udata + moff) = prog->aux->id;
+> +
+> +		/* init ksym for this trampoline */
+> +		bpf_struct_ops_ksym_init(tname, mname,
+> +					 image + trampoline_start,
+> +					 image_off - trampoline_start,
+> +					 *pksym++);
+
+then uses "ksym" here.
+
+>   	}
+>   
+>   	if (st_ops->validate) {
+> @@ -785,6 +849,7 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   	 */
+>   
+>   reset_unlock:
+> +	bpf_struct_ops_map_free_ksyms(st_map);
+>   	bpf_struct_ops_map_free_image(st_map);
+>   	bpf_struct_ops_map_put_progs(st_map);
+>   	memset(uvalue, 0, map->value_size);
+> @@ -792,6 +857,8 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>   unlock:
+>   	kfree(tlinks);
+>   	mutex_unlock(&st_map->lock);
+> +	if (!err)
+> +		bpf_struct_ops_map_ksyms_add(st_map);
+>   	return err;
 >   }
-> }
->
->
-> I mean that `env->insn_hist[st->insn_hist_start + hist_cnt - 1]` in
-> last if/else. But let me know which way you prefer it anyways.
+>   
+> @@ -851,7 +918,10 @@ static void __bpf_struct_ops_map_free(struct bpf_map *map)
+>   
+>   	if (st_map->links)
+>   		bpf_struct_ops_map_put_progs(st_map);
+> +	if (st_map->ksyms)
+> +		bpf_struct_ops_map_free_ksyms(st_map);
+>   	bpf_map_area_free(st_map->links);
+> +	bpf_map_area_free(st_map->ksyms);
+>   	bpf_struct_ops_map_free_image(st_map);
+>   	bpf_map_area_free(st_map->uvalue);
+>   	bpf_map_area_free(st_map);
+> @@ -868,6 +938,9 @@ static void bpf_struct_ops_map_free(struct bpf_map *map)
+>   	if (btf_is_module(st_map->btf))
+>   		module_put(st_map->st_ops_desc->st_ops->owner);
+>   
+> +	if (st_map->ksyms)
 
-Ohh. I missed that decrement is local to __mark_chain_precision().
-Original version is probably better than when it passes start/end around.
-This hist_cnt approach is harder to read.
+This null test should not be needed.
 
-So pls resend with typo fixed.
+> +		bpf_struct_ops_map_del_ksyms(st_map);
+> +
+>   	/* The struct_ops's function may switch to another struct_ops.
+>   	 *
+>   	 * For example, bpf_tcp_cc_x->init() may switch to
+> @@ -980,7 +1053,11 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>   	st_map->links =
+>   		bpf_map_area_alloc(st_map->funcs_cnt * sizeof(struct bpf_links *),
+>   				   NUMA_NO_NODE);
+> -	if (!st_map->uvalue || !st_map->links) {
+> +
+> +	st_map->ksyms =
+> +		bpf_map_area_alloc(st_map->funcs_cnt * sizeof(struct bpf_ksyms *),
+> +				   NUMA_NO_NODE);
+
+.map_mem_usage at least needs to include the st_map->ksyms[] pointer array. 
+func_cnts should be used instead of btf_type_vlen(vt) for link also in 
+.map_mem_usage.
+
+> +	if (!st_map->uvalue || !st_map->links || !st_map->ksyms) {
+>   		ret = -ENOMEM;
+>   		goto errout_free;
+>   	}
 
