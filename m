@@ -1,199 +1,350 @@
-Return-Path: <bpf+bounces-44501-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44502-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98AA79C3956
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 09:01:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A43E9C3B6A
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 10:54:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCD0E1C216E8
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 08:01:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEE132833A3
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 09:54:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8B21552E4;
-	Mon, 11 Nov 2024 08:01:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E351662FA;
+	Mon, 11 Nov 2024 09:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VOAnpuvh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KMOzJZmB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B79E20B22;
-	Mon, 11 Nov 2024 08:01:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD3D12C54B;
+	Mon, 11 Nov 2024 09:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731312081; cv=none; b=sHu7UFeT7tc1aCvDCure/U+ifG7l4NWotPK/xON3SJv5Y09o7lSdDX2uCeHTEEnPbztnJlTaMUPh6+uu8TPz9RSImWdL0maueEkwVsz8vSFgWs6Jpkdo1o3eOMyvWp13FbA65glmj68ENNs3I1dFSbBtpe9xLy1MGaJZUu0ROEQ=
+	t=1731318861; cv=none; b=aplepYeir666u51LWI5LLo4r/4QWaQqZz55WD74PvsJB9vbqU3CxJS16z5D5t5uSmyQdHqfmEsuHc/wGn52fe08sdQOF+SsEZJY7+yW7/DzbpV4IrY/UZNH9FDb1I/lyev8qwAM8KoafI+M/FmvEIFvDhV/Xx3x/gPWYDWpkV0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731312081; c=relaxed/simple;
-	bh=jZ7ENZPy7ezvm1ueMoO95rXI3rEIOWyfBlzRfA0Zgqc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=QG0bH4fBWBTg+tBUuv+7HIZjbXq/2u1xbGwz//uvBbN+S/WE4HiqYXiJN8cvtdr46iZeGRGK8/aCsY6uKzc6fYsv1k3JmUSpNGcagUmziLvbFuwSTO2V/A2HNmWS3m9shkT8vp6D0VbjM/BdRMspbV5pw1S3NWiR7ZD6vEbSNYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VOAnpuvh; arc=none smtp.client-ip=209.85.210.176
+	s=arc-20240116; t=1731318861; c=relaxed/simple;
+	bh=YHJxIYeY914HoQ20eShbZnSorfeSy6xxRBUKJzUfbuM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KgKwfCPwogbozM6BOT86Du2UqKzJ8H1Y+W0U74tfWqPZfNvPOV/EYPMhxcu9zzTd9ivjdtrwhc4b2fVGdeiSzl9L2eI6G+eI8NftZFPo2rD8o7lGGrlyRRbDWMI+qyWx2nCFNeX1jeC/QQFfk+I7wJ5vCX3OORAxsU0nlRikr40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KMOzJZmB; arc=none smtp.client-ip=209.85.218.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-71e681bc315so2994724b3a.0;
-        Mon, 11 Nov 2024 00:01:20 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a9ed49edd41so772805066b.0;
+        Mon, 11 Nov 2024 01:54:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731312079; x=1731916879; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8M31YD7FQ0nkvWKqMn3TSMLbR9sftbadyBeWh92HzY8=;
-        b=VOAnpuvhXHm/hWtmKdw8y1PXhvJO3VHSjSwK9/dCsazMSDu96EmE8m+QmfYsdPlXLW
-         5IpBUgLPu1kZ5gVnbj0g4HBQ4iE05BVtk4NqIOLB55uq0Kx1fenIoeTSCXzGFgQKqXUH
-         4Ul6LhndQ97GaVEA7YJz4DuhToVUjHKLHehiTxgBQ89VuePckcgxFCVmmKkoU1TYUYn1
-         LPhVdS2ML1sayJ+XmK1FyxdhDmQo7jsvBt8T4cLV3jLSTZZcqWJYacHpdPtihysI1L0P
-         Ax60PXpS1CLawrWGUIExCXQDJW+Eb64HXj9Sptijn8iJmhLSjEusbfcyTHmzO3j/FQ1E
-         a6dw==
+        d=gmail.com; s=20230601; t=1731318858; x=1731923658; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xccvxVAPcgqQw26WknZ5D9ZxLw9B/1sb3k0l0/IcmvY=;
+        b=KMOzJZmBqfdruqZ7IzX4wgk1Sdkz2QHvTGiDtpZy8eVPDxeOAiIxNGsuKDTTPiCqhq
+         XRUNd5shp6kqLoiRyZYhL8VURyPqMIkv23Yn2YhPkfhUu9jjN5XaGnBgl7vEzuHLTY/g
+         n2kwMIHy3BvbWA6ewRCzEv6McDnj01u97lidbx98lLreiKvpAUgCrcHAu1z3O0GCRlZt
+         7otZkKP9DHZjtAptEJlR4oWbpF5m8ti57b33KzrAZciJEUVf2R2m7E/HxzOs+AjXuwWO
+         Y8bOzAUcxhtvrphWBOXeSw/8gtY6Nc2IkmZ53946Z8CsLiAk/Wgye2+6sJF2ebImF77D
+         9wSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731312079; x=1731916879;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8M31YD7FQ0nkvWKqMn3TSMLbR9sftbadyBeWh92HzY8=;
-        b=tGYGJ4zE38yGA9xOF1Vlh/IwemHG/u0P2a3uS7xtYjetlkR/CMEWa8bKudNjuhFCKa
-         BjzkuFqk2y2XZ1/ssCh2ho/2+eCrNWy+Rc8rT/CUILJNsMDnCGbbbT19g7KG2Z+9Gebu
-         gvnceT0CkdeMIwBh5ySDn+UFHq4BeQNu6PR4FxzK4WZb9CX3jhAPo8VYNkW6R0Pk4wYm
-         qhksw17VYmpkVRvifRaPBVfvJrTCITClBhNl1P8AVbsyN2CsS06R5klQ/bAo2F2k4Oeu
-         sRy0LveVepIYLhhU96AT33QG6pjqbSriqVx7fGB+4aW3+m/D1FHaFxXRO8o3pjM+nXm/
-         MOVg==
-X-Forwarded-Encrypted: i=1; AJvYcCUimXw4q+XpQ+EXWsHIKXY31v+2He5UW2+esGcQENNgAM9c8rS+k3bpSV63enAb4NKnwk4=@vger.kernel.org, AJvYcCX/wtI9YdvBBLdz9SK8uWyZku8fFk146Rzr/tnszaobiM17P7JpC66QU2kKf2jH15j9vgsKJmeSZA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZYqedVxXSNkDj5ysoNWvrg3kG5aU2XWOmGL/eOXe3NR7fhTN6
-	rVItc6tQl52SQqJ529IXJz8V1nhjIrEJfQf+Fhj9KtFq3AYf77hi
-X-Google-Smtp-Source: AGHT+IFl3LD1BqQwGKrszPIvnvBG5PgoCfMlwB91WtdPsYx40tiL8vzpjqgQbcDyYkQYR4CVIc7cDw==
-X-Received: by 2002:a05:6a00:21c4:b0:71e:7f08:492c with SMTP id d2e1a72fcca58-72413f4c526mr17682664b3a.1.1731312079244;
-        Mon, 11 Nov 2024 00:01:19 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72407864f78sm8447011b3a.33.2024.11.11.00.01.18
+        d=1e100.net; s=20230601; t=1731318858; x=1731923658;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xccvxVAPcgqQw26WknZ5D9ZxLw9B/1sb3k0l0/IcmvY=;
+        b=anOs+Xt3224jyOLYZFEhGjoqHwls1OA4vcOcmLdosumJjCVV3msKfnYG72lqKICtj5
+         RnnyXm+psKdrlRYqCnv6Rr1z8vOpYiJFIS9Foc2XPaC+1QKuvqRfMV5HhzzgAsJ1RmtW
+         m6g8P6CToQjKlaolH9Zfs9S7T7Dq37BYf+XYchxDxXUkhTA/w5IaB3cRuhOLRRJpGFGK
+         mf8LK1VKIPKxV3f3IbdFf4AjztZ01dbbgNv46L37AWut7Geq92yghLZAD6kMGUaKue0j
+         Wad8rr5JoFddSsZSg/p42lwBNUH9MpVYMIRBIz/nO3QavKEy7R+yPpbtZfFjSlJkd9ve
+         9i4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVCR6T++eFd/q7YeYTAZDeHMdH5r5FKnmXYaGy+eymemvdHpyYGE4M50YOKBip6CJjh0O3g5ujaKw==@vger.kernel.org, AJvYcCWA1Fw2v3PLibRSLJBpDVItG5qJk9svZ+TqBoId1PcvKiJRuX0snT7VKXkD/3IErWqKpyo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yybcu1xgJT7IeFcvrJjDMHPg+OJo+M1OCDJgkY8LnZr/LoXB/1A
+	p0TnS2uUj238GmrB9ghUg7Egi3p+p+6DCPgpNk5RjhM3oiFD5W0S
+X-Google-Smtp-Source: AGHT+IF85PLdQJFJatQ+e77gMdZ/BxH/s8vcoH2ZXna9kNyDh1TWF3Ani7j5hG1947AnSLrsp3V8dg==
+X-Received: by 2002:a17:907:844:b0:a9a:a96a:e280 with SMTP id a640c23a62f3a-a9eeff0ea22mr1206840266b.20.1731318857698;
+        Mon, 11 Nov 2024 01:54:17 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0df0c85sm572170866b.171.2024.11.11.01.54.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2024 00:01:18 -0800 (PST)
-Message-ID: <080794545d8eb3df3d6eba90ac621111ab7171f5.camel@gmail.com>
+        Mon, 11 Nov 2024 01:54:17 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 11 Nov 2024 10:54:15 +0100
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Alan Maguire <alan.maguire@oracle.com>,
+	Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+	dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+	Song Liu <song@kernel.org>
 Subject: Re: [PATCH dwarves 3/3] dwarf_loader: Check DW_OP_[GNU_]entry_value
  for possible parameter matching
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, Alan Maguire
- <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo
- <arnaldo.melo@gmail.com>,  dwarves@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  bpf@vger.kernel.org, Daniel Borkmann
- <daniel@iogearbox.net>, kernel-team@fb.com,  Song Liu <song@kernel.org>
-Date: Mon, 11 Nov 2024 00:01:13 -0800
-In-Reply-To: <31dea31e6f75916fdc078d433263daa6bb0bffdc.camel@gmail.com>
+Message-ID: <ZzHURz01dzLHO2H4@krava>
 References: <20241108180508.1196431-1-yonghong.song@linux.dev>
-	 <20241108180524.1198900-1-yonghong.song@linux.dev>
-	 <31dea31e6f75916fdc078d433263daa6bb0bffdc.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+ <20241108180524.1198900-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241108180524.1198900-1-yonghong.song@linux.dev>
 
-On Sun, 2024-11-10 at 03:38 -0800, Eduard Zingerman wrote:
+On Fri, Nov 08, 2024 at 10:05:24AM -0800, Yonghong Song wrote:
+> Song Liu reported that a kernel func (perf_event_read()) cannot be traced
+> in certain situations since the func is not in vmlinux bTF. This happens
+> in kernels 6.4, 6.9 and 6.11 and the kernel is built with pahole 1.27.
+> 
+> The perf_event_read() signature in kernel (kernel/events/core.c):
+>    static int perf_event_read(struct perf_event *event, bool group)
+> 
+> Adding '-V' to pahole command line, and the following error msg can be found:
+>    skipping addition of 'perf_event_read'(perf_event_read) due to unexpected register used for parameter
+> 
+> Eventually the error message is attributed to the setting
+> (parm->unexpected_reg = 1) in parameter__new() function.
+> 
+> The following is the dwarf representation for perf_event_read():
+>     0x0334c034:   DW_TAG_subprogram
+>                 DW_AT_low_pc    (0xffffffff812c6110)
+>                 DW_AT_high_pc   (0xffffffff812c640a)
+>                 DW_AT_frame_base        (DW_OP_reg7 RSP)
+>                 DW_AT_GNU_all_call_sites        (true)
+>                 DW_AT_name      ("perf_event_read")
+>                 DW_AT_decl_file ("/rw/compile/kernel/events/core.c")
+>                 DW_AT_decl_line (4641)
+>                 DW_AT_prototyped        (true)
+>                 DW_AT_type      (0x03324f6a "int")
+>     0x0334c04e:     DW_TAG_formal_parameter
+>                   DW_AT_location        (0x007de9fd:
+>                      [0xffffffff812c6115, 0xffffffff812c6141): DW_OP_reg5 RDI
+>                      [0xffffffff812c6141, 0xffffffff812c6323): DW_OP_reg14 R14
+>                      [0xffffffff812c6323, 0xffffffff812c63fe): DW_OP_GNU_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value
+>                      [0xffffffff812c63fe, 0xffffffff812c6405): DW_OP_reg14 R14
+>                      [0xffffffff812c6405, 0xffffffff812c640a): DW_OP_GNU_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value)
+>                   DW_AT_name    ("event")
+>                   DW_AT_decl_file       ("/rw/compile/kernel/events/core.c")
+>                   DW_AT_decl_line       (4641)
+>                   DW_AT_type    (0x0333aac2 "perf_event *")
+>     0x0334c05e:     DW_TAG_formal_parameter
+>                   DW_AT_location        (0x007dea82:
+>                      [0xffffffff812c6137, 0xffffffff812c63f2): DW_OP_reg12 R12
+>                      [0xffffffff812c63f2, 0xffffffff812c63fe): DW_OP_GNU_entry_value(DW_OP_reg4 RSI), DW_OP_stack_value
+>                      [0xffffffff812c63fe, 0xffffffff812c640a): DW_OP_reg12 R12)
+>                   DW_AT_name    ("group")
+>                   DW_AT_decl_file       ("/rw/compile/kernel/events/core.c")
+>                   DW_AT_decl_line       (4641)
+>                   DW_AT_type    (0x03327059 "bool")
 
-[...]
+hi,
+I don't see that on gcc compiled kernel, is that related to clang?
 
-> Also, it appears there is some bug either in pahole or in libdw's
-> implementation of dwarf_getlocation(). When I try both your patch-set
-> and my variant there is a segfault once in a while:
->=20
->   $ for i in $(seq 1 100); \
->     do echo "---> $i"; \
->        pahole -j --skip_encoding_btf_inconsistent_proto -J --btf_encode_d=
-etached=3D/dev/null vmlinux ; \
->     done
->   ---> 1
->   ...
->   ---> 71
->   Segmentation fault (core dumped)
->   ...
->=20
-> The segfault happens only when -j (multiple threads) is passed.
-> If pahole is built with sanitizers
-> (passing -DCMAKE_C_FLAGS=3D"-fsanitize=3Dundefined,address")
-> the stack trace looks as follows:
 
-Did some additional research for these SEGFAULTs.
-Looks like all we are in trouble.
+ <1><318d475>: Abbrev Number: 74 (DW_TAG_subprogram)
+    <318d476>   DW_AT_name        : (indirect string, offset: 0xf5776): perf_event_read
+    <318d47a>   DW_AT_decl_file   : 1
+    <318d47a>   DW_AT_decl_line   : 4746
+    <318d47c>   DW_AT_decl_column : 12
+    <318d47d>   DW_AT_prototyped  : 1
+    <318d47d>   DW_AT_type        : <0x3135e35>
+    <318d481>   DW_AT_low_pc      : 0xffffffff8135be90
+    <318d489>   DW_AT_high_pc     : 0x196
+    <318d491>   DW_AT_frame_base  : 1 byte block: 9c    (DW_OP_call_frame_cfa)
+    <318d493>   DW_AT_call_all_calls: 1
+    <318d493>   DW_AT_sibling     : <0x318d900>
+ <2><318d497>: Abbrev Number: 30 (DW_TAG_formal_parameter)
+    <318d498>   DW_AT_name        : (indirect string, offset: 0x491590): event
+    <318d49c>   DW_AT_decl_file   : 1
+    <318d49c>   DW_AT_decl_line   : 4746
+    <318d49e>   DW_AT_decl_column : 47
+    <318d49f>   DW_AT_type        : <0x313a680>
+    <318d4a3>   DW_AT_location    : 0x70c118 (location list)
+    <318d4a7>   DW_AT_GNU_locviews: 0x70c110
+ <2><318d4ab>: Abbrev Number: 30 (DW_TAG_formal_parameter)
+    <318d4ac>   DW_AT_name        : (indirect string, offset: 0x51a865): group
+    <318d4b0>   DW_AT_decl_file   : 1
+    <318d4b0>   DW_AT_decl_line   : 4746
+    <318d4b2>   DW_AT_decl_column : 59
+    <318d4b3>   DW_AT_type        : <0x3136055>
+    <318d4b7>   DW_AT_location    : 0x70c144 (location list)
+    <318d4bb>   DW_AT_GNU_locviews: 0x70c13e
 
-# TLDR
+locations:
+    0070c144 ffffffff8135be90 (base address)
+    0070c14d v000000000000000 v000000000000000 views at 0070c13e for:
+             ffffffff8135be90 ffffffff8135bed2 (DW_OP_reg4 (rsi))
+    0070c152 v000000000000000 v000000000000000 views at 0070c140 for:
+             ffffffff8135bed2 ffffffff8135bf17 (DW_OP_reg14 (r14))
+    0070c158 v000000000000000 v000000000000000 views at 0070c142 for:
+             ffffffff8135bf17 ffffffff8135c026 (DW_OP_entry_value: (DW_OP_reg4 (rsi)); DW_OP_stack_value)
+    0070c162 <End of list>
 
-libdw is not supposed to be used in a concurrent context.
-libdw is a part of elfutils package, the configuration flag
-making API thread-safe is documented as experimental:
-  --enable-thread-safety  enable thread safety of libraries EXPERIMENTAL
-At-least Fedora 40 does not ship elfutils built with this flag set.
-This colours all current parallel DWARF decoding questionable.
 
-# Why segfault happens
+other than that lgtm and I like the change Eduard suggested
 
-Any references to elfutils source code are for commit [1].
-The dwarf_getlocation() is one of a few libdw APIs that uses memory
-allocation internally. The function dwarf_getlocation.c:__libdw_intern_expr=
-ession
-iterates over expression encodings in DWARF and allocates
-a set of objects of type `struct loclist` and `Dwarf_Op`.
-Pointers to allocated objects are put to a binary tree for caching,
-see dwarf_getlocation.c:660, the call to eu_tsearch() function.
-The eu_tsearch() is a wrapper around libc tsearch() function.
-This wrapper provides locking for the tree,
-but only if --enable-thread-safety was set during elfutils configuration.
-The SEGFAULT happens inside tsearch() call because binary tree is malformed=
-, e.g.:
+thanks,
+jirka
 
-  Thread 8 "pahole" received signal SIGSEGV, Segmentation fault.
-  [Switching to Thread 0x7fffd9c006c0 (LWP 2630074)]
-  0x00007ffff7c5d200 in maybe_split_for_insert (...) at tsearch.c:228
-  228	      if (parentp !=3D NULL && RED(DEREFNODEPTR(parentp)))
-  (gdb) bt
-  #0  0x00007ffff7c5d200 in maybe_split_for_insert (...) at tsearch.c:228
-  #1  0x00007ffff7c5d466 in __GI___tsearch (...) at tsearch.c:358
-  #2  __GI___tsearch (...) at tsearch.c:290
-  #3  0x000000000048f096 in __interceptor_tsearch ()
-  #4  0x00007ffff7f5c482 in __libdw_intern_expression (...) at dwarf_getloc=
-ation.c:660
-  #5  0x00007ffff7f5cf51 in getlocation (...) at dwarf_getlocation.c:678
-  #6  getlocation (...) at dwarf_getlocation.c:667
-  #7  dwarf_getlocation (..._ at dwarf_getlocation.c:708
-  #8  0x00000000005a2ee5 in parameter.new ()
-  #9  0x00000000005a0122 in die.process_function ()
-  #10 0x0000000000597efd in __die__process_tag ()
-  #11 0x0000000000595ad9 in die.process_unit ()
-  #12 0x0000000000595436 in die.process ()
-  #13 0x00000000005b0187 in dwarf_cus.process_cu ()
-  #14 0x00000000005afa38 in dwarf_cus.process_cu_thread ()
-  #15 0x00000000004c7b8d in asan_thread_start(void*) ()
-  #16 0x00007ffff7bda6d7 in start_thread (arg=3D<optimized out>) at pthread=
-_create.c:447
-  #17 0x00007ffff7c5e60c in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/=
-clone3.S:78
-  (gdb) p parentp
-  $1 =3D (node *) 0x50300079d2a0
-  (gdb) p *parentp
-  $2 =3D (node) 0x0
-
-glibc provides a way to validate binary tree structure.
-For this misc/tsearch.c has to be changed to define DEBUGGING variable.
-(I used glibc 2.39 as provided by source rpm for Fedora 40 for experiments)=
-.
-If this is done and custom glibc is used for pahole execution,
-the following error is reported if '-j' flag is present:
-
-  $ pahole -j --skip_encoding_btf_inconsistent_proto -J --btf_encode_detach=
-ed=3D/home/eddy/work/tmp/my-new.btf vmlinux=20
-  Fatal glibc error: tsearch.c:164 (check_tree_recurse): assertion failed: =
-d_sofar =3D=3D d_total
-  Fatal glibc error: tsearch.c:164 (check_tree_recurse): assertion failed: =
-d_sofar =3D=3D d_total
-  Aborted (core dumped)
-
-Executing pahole using a custom-built libdw,
-built with --enable-thread-safety resolves the issue.
-
-[1] b2f225d6bff8 ("Consolidate and add files to clean target variables")
-    git://sourceware.org/git/elfutils.git
-
+> 
+> By inspecting the binary, the second argument ("bool group") is used
+> in the function. The following are the disasm code:
+>     ffffffff812c6110 <perf_event_read>:
+>     ffffffff812c6110: 0f 1f 44 00 00        nopl    (%rax,%rax)
+>     ffffffff812c6115: 55                    pushq   %rbp
+>     ffffffff812c6116: 41 57                 pushq   %r15
+>     ffffffff812c6118: 41 56                 pushq   %r14
+>     ffffffff812c611a: 41 55                 pushq   %r13
+>     ffffffff812c611c: 41 54                 pushq   %r12
+>     ffffffff812c611e: 53                    pushq   %rbx
+>     ffffffff812c611f: 48 83 ec 18           subq    $24, %rsp
+>     ffffffff812c6123: 41 89 f4              movl    %esi, %r12d
+>     <=========== NOTE that here '%esi' is used and moved to '%r12d'.
+>     ffffffff812c6126: 49 89 fe              movq    %rdi, %r14
+>     ffffffff812c6129: 65 48 8b 04 25 28 00 00 00    movq    %gs:40, %rax
+>     ffffffff812c6132: 48 89 44 24 10        movq    %rax, 16(%rsp)
+>     ffffffff812c6137: 8b af a8 00 00 00     movl    168(%rdi), %ebp
+>     ffffffff812c613d: 85 ed                 testl   %ebp, %ebp
+>     ffffffff812c613f: 75 3f                 jne     0xffffffff812c6180 <perf_event_read+0x70>
+>     ffffffff812c6141: 66 2e 0f 1f 84 00 00 00 00 00 nopw    %cs:(%rax,%rax)
+>     ffffffff812c614b: 0f 1f 44 00 00        nopl    (%rax,%rax)
+>     ffffffff812c6150: 49 8b 9e 28 02 00 00  movq    552(%r14), %rbx
+>     ffffffff812c6157: 48 89 df              movq    %rbx, %rdi
+>     ffffffff812c615a: e8 c1 a0 d7 00        callq   0xffffffff82040220 <_raw_spin_lock_irqsave>
+>     ffffffff812c615f: 49 89 c7              movq    %rax, %r15
+>     ffffffff812c6162: 41 8b ae a8 00 00 00  movl    168(%r14), %ebp
+>     ffffffff812c6169: 85 ed                 testl   %ebp, %ebp
+>     ffffffff812c616b: 0f 84 9a 00 00 00     je      0xffffffff812c620b <perf_event_read+0xfb>
+>     ffffffff812c6171: 48 89 df              movq    %rbx, %rdi
+>     ffffffff812c6174: 4c 89 fe              movq    %r15, %rsi
+>     <=========== NOTE: %rsi is overwritten
+>     ......
+>     ffffffff812c63f0: 41 5c                 popq    %r12
+>     <============ POP r12
+>     ffffffff812c63f2: 41 5d                 popq    %r13
+>     ffffffff812c63f4: 41 5e                 popq    %r14
+>     ffffffff812c63f6: 41 5f                 popq    %r15
+>     ffffffff812c63f8: 5d                    popq    %rbp
+>     ffffffff812c63f9: e9 e2 a8 d7 00        jmp     0xffffffff82040ce0 <__x86_return_thunk>
+>     ffffffff812c63fe: 31 c0                 xorl    %eax, %eax
+>     ffffffff812c6400: e9 be fe ff ff        jmp     0xffffffff812c62c3 <perf_event_read+0x1b3>
+> 
+> It is not clear why dwarf didn't encode %rsi in locations. But
+> DW_OP_GNU_entry_value(DW_OP_reg4 RSI) tells us that RSI is live at
+> the entry of perf_event_read(). So this patch tries to search
+> DW_OP_GNU_entry_value/DW_OP_entry_value location/expression so if
+> the expected parameter register matchs the register in
+> DW_OP_GNU_entry_value/DW_OP_entry_value, then the original parameter
+> is not optimized.
+> 
+> For one of internal 6.11 kernel, there are 62498 functions in BTF and
+> perf_event_read() is not there. With this patch, there are 61552 functions
+> in BTF and perf_event_read() is included.
+> 
+> Reported-by: Song Liu <song@kernel.org>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  dwarf_loader.c | 81 +++++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 57 insertions(+), 24 deletions(-)
+> 
+> diff --git a/dwarf_loader.c b/dwarf_loader.c
+> index e0b8c11..1fe44bc 100644
+> --- a/dwarf_loader.c
+> +++ b/dwarf_loader.c
+> @@ -1169,34 +1169,67 @@ static bool check_dwarf_locations(Dwarf_Attribute *attr, struct parameter *parm,
+>  		return false;
+>  
+>  #if _ELFUTILS_PREREQ(0, 157)
+> -	/* dwarf_getlocations() handles location lists; here we are
+> -	 * only interested in the first expr.
+> -	 */
+> -	if (dwarf_getlocations(attr, 0, &base, &start, &end,
+> -			       &loc.expr, &loc.exprlen) > 0 &&
+> -		loc.exprlen != 0) {
+> -		expr = loc.expr;
+> -
+> -		switch (expr->atom) {
+> -		case DW_OP_reg0 ... DW_OP_reg31:
+> -			/* mark parameters that use an unexpected
+> -			 * register to hold a parameter; these will
+> -			 * be problematic for users of BTF as they
+> -			 * violate expectations about register
+> -			 * contents.
+> +	bool reg_matched = false, reg_unmatched = false, first_expr_reg = false, ret = false;
+> +	ptrdiff_t offset = 0;
+> +	int loc_num = -1;
+> +
+> +	while ((offset = dwarf_getlocations(attr, offset, &base, &start, &end, &loc.expr, &loc.exprlen)) > 0 &&
+> +	       loc.exprlen != 0) {
+> +		ret = true;
+> +		loc_num++;
+> +
+> +		for (int i = 0; i < loc.exprlen; i++) {
+> +			Dwarf_Attribute entry_attr;
+> +			Dwarf_Op *entry_ops;
+> +			size_t entry_len;
+> +
+> +			expr = &loc.expr[i];
+> +			switch (expr->atom) {
+> +			case DW_OP_reg0 ... DW_OP_reg31:
+> +				/* first location, first expression */
+> +				if (loc_num == 0 && i == 0) {
+> +					if (expected_reg >= 0) {
+> +						if (expected_reg == expr->atom) {
+> +							reg_matched = true;
+> +							return true;
+> +						} else {
+> +							reg_unmatched = true;
+> +						}
+> +					}
+> +					first_expr_reg = true;
+> +				}
+> +				break;
+> +			/* For the following dwarf entry (arch x86_64) in parameter locations:
+> +			 *    DW_OP_GNU_entry_value(DW_OP_reg4 RSI), DW_OP_stack_value
+> +			 * RSI register should be available at the entry of the program.
+>  			 */
+> -			if (expected_reg >= 0 && expected_reg != expr->atom)
+> -				parm->unexpected_reg = 1;
+> -			break;
+> -		default:
+> -			parm->optimized = 1;
+> -			break;
+> +			case DW_OP_entry_value:
+> +			case DW_OP_GNU_entry_value:
+> +				if (reg_matched)
+> +					break;
+> +				if (dwarf_getlocation_attr (attr, expr, &entry_attr) != 0)
+> +					break;
+> +				if (dwarf_getlocation (&entry_attr, &entry_ops, &entry_len) != 0)
+> +					break;
+> +				if (entry_len != 1)
+> +					break;
+> +				if (expected_reg >= 0 && expected_reg == entry_ops->atom) {
+> +					reg_matched = true;
+> +					return true;
+> +				}
+> +				break;
+> +			default:
+> +				break;
+> +			}
+>  		}
+> -
+> -		return true;
+>  	}
+>  
+> -	return false;
+> +	if (reg_unmatched)
+> +		parm->unexpected_reg = 1;
+> +	else if (ret && !first_expr_reg)
+> +		parm->optimized = 1;
+> +
+> +	return ret;
+>  #else
+>  	if (dwarf_getlocation(attr, &loc.expr, &loc.exprlen) == 0 &&
+>  		loc.exprlen != 0) {
+> -- 
+> 2.43.5
+> 
+> 
 
