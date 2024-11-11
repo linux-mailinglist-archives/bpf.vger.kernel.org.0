@@ -1,385 +1,199 @@
-Return-Path: <bpf+bounces-44510-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A39839C3DF1
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 13:06:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBE539C3E89
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 13:37:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 090D2B22349
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 12:06:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4B832846A4
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 12:37:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F40919ABB7;
-	Mon, 11 Nov 2024 12:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BEE719CD0B;
+	Mon, 11 Nov 2024 12:36:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jBzsDgmM"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F019317BECA;
-	Mon, 11 Nov 2024 12:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D73A19C56C;
+	Mon, 11 Nov 2024 12:36:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731326758; cv=none; b=IzuuGNrahVcUHCb9JrPnVyf+ovRnmUJ++wCcpdn3qLDK51mAWeMGp1x3SRZNqDTJa2atYpqeBca0IrxU05jQPrRrUgoNTENxxUVkfx3HGFfDxEhtQPVMJf/OMiXrjdHOPeaS6zIXeHVQ1RHMTpmppldlNp9KMfArW63zNQajnfM=
+	t=1731328619; cv=none; b=R1SKqWvrB9ipzwpj9/tp3nEmxqOtIuL0AjukGGAfZ1NwDNzgqHPHNraFFjhqkUA7lYCFNLvFp6qoahNuLva9QayrY9HrTZajtI5IQ4vDak3zIiCRpTF/iojNb2Q4Cx/jzoxIdZvBJBYLkPxi9s17sbKU8kZYIE/1HKpFQNkRSaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731326758; c=relaxed/simple;
-	bh=TXnwsp44Zy0rcR1HsWf307XQtxlwptmdt+Lz4wakjqE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DJe7566/r5C1NSLbmIPqky0FAlaMMcpP/BdlHfJoCqNf+hK//F9tGZ7C0I9hzVOpfkmjJJ3IxSSs5aZMZxx6st5I6ihQTGVlnBP6j/fxiQ2UoBpODpYd1H/M7CK4MxCBxqiu3dTYcZVO+3N2+2EFrGQu0OId2zjnKFZx7DCDag4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Xn7Xs2XBkz4f3jdK;
-	Mon, 11 Nov 2024 20:05:33 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 811C91A0359;
-	Mon, 11 Nov 2024 20:05:51 +0800 (CST)
-Received: from k01.huawei.com (unknown [10.67.174.197])
-	by APP2 (Coremail) with SMTP id Syh0CgBH9uIc8zFnxbLkBQ--.11390S4;
-	Mon, 11 Nov 2024 20:05:51 +0800 (CST)
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v3 2/2] bpf: Add kernel symbol for struct_ops trampoline
-Date: Mon, 11 Nov 2024 20:16:41 +0800
-Message-Id: <20241111121641.2679885-3-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241111121641.2679885-1-xukuohai@huaweicloud.com>
-References: <20241111121641.2679885-1-xukuohai@huaweicloud.com>
+	s=arc-20240116; t=1731328619; c=relaxed/simple;
+	bh=1sVMATZ+XHzhI8+EZUQums1C9tIjgrVA6aLaiEGhr3c=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=haa7Q/CKA8XwT+slfYHJKqPrNTCAjIsw2L++RE4FyrLmqCIyzTKESTLId5A9QzWoqh2DHOKNrTDWzykOxfvTbpd1YnuH1ZZn0ro2mzGX6tL4FD3c1CkPja/tSvveRA8Cei8rMDQ9SxkxiW2d0kvPFbJIyKNZJhhGl696S/1mygc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jBzsDgmM; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a9ec86a67feso783016466b.1;
+        Mon, 11 Nov 2024 04:36:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731328615; x=1731933415; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b46JJpzk9fLxJAjQq3bc85OciVgWHq7oFJZ0M84pMjA=;
+        b=jBzsDgmM0wzl3gneBd8xvVlb1S4LrD6l83pTbRvKODMxYyBmtYe+YN1FmCZW+WIUrJ
+         F3pCs4OaRCOjWBgQNWRlvH7RaXC9hcRTXfr14TLKvZImiBivkm24OAMt+82jrWrYZN9w
+         WLevF6Ysja8PHa/HVoQWkTg3ZFnlyaVGq+znXaYSkRvLxTPQjPq8eu52B4gEiQh2TQmi
+         KDqnvZZru6FA27+4V5YNYpFFG2cD8Ac+BmWL+DD5/5Si/lL6cVll3u/Y0wRVz7+bcXDJ
+         UWSG0ZZ7fZvAQtjSm7j1WQxrj1CcbfRJSxSLgHC9ABfWR5cbROKEMXMU/8o6eWLfkxdZ
+         xRHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731328615; x=1731933415;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b46JJpzk9fLxJAjQq3bc85OciVgWHq7oFJZ0M84pMjA=;
+        b=k16Z/+N0I9RtnViCH3Q1tKWJd1aPGo5pvqTqPGCe1BX4NxBebV6W90p3K068Ionb5x
+         LkRSDmudkH/VQ6Wgla7dpjD9e9i2l/U65KO8Uc51zxL7Ghiop5p3mwlmSz42KcIHdlAE
+         0TkScO8Er7Cc6059eGZDtaFwTPBRuCksvCxAKMNytE67vTgmOf0scZluF38LHys1tA9y
+         5lc67/a86g2gbC2qVRooztYHLEXrPYW7UWtT2etLFi0olQH6Z749KQxDX2a6SFwsYE83
+         KXSkEcoXN10v/2Dq+VNnNquIC4VWvqji3lp31lUg5Sw78iOszEclzshooOPDtxMawxZ5
+         oTIg==
+X-Forwarded-Encrypted: i=1; AJvYcCUiTU906HuO9OCBD3he/7D5H1h77J3BUiKJfRdxtMPxgefdvqTgYh2zMS9T/DfimNDzmVs=@vger.kernel.org, AJvYcCXOADK2s013CimRXSXYdBJdZ6R8sfJXR2wUXarKUX28OQetIKvPxd6eZPbIR8C8IPUaeXNWpwk/DA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyz+j5lqhT+n3AxPCIsZtKupS3mTojdb2utBHF5Wikrazwedyg5
+	rc8Gz1nJtzteWU8qZlMbXBxbzwZDiA3qgUD/EnIdmFFR4FARjbz8HxtlIw==
+X-Google-Smtp-Source: AGHT+IFN4KR2uGUxhjK3BkyRsSM96rm6k/XIq4eBm1aBDVfcFjn4dis0roSa7C79TC/eOTb4DISHiw==
+X-Received: by 2002:a17:907:6ea4:b0:a9a:515:1904 with SMTP id a640c23a62f3a-a9eeff0dc1bmr1281832066b.15.1731328615221;
+        Mon, 11 Nov 2024 04:36:55 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0a17624sm594371666b.24.2024.11.11.04.36.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Nov 2024 04:36:54 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 11 Nov 2024 13:36:52 +0100
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+	dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+	Song Liu <song@kernel.org>
+Subject: Re: [PATCH dwarves 3/3] dwarf_loader: Check DW_OP_[GNU_]entry_value
+ for possible parameter matching
+Message-ID: <ZzH6ZDucO2nm9Y52@krava>
+References: <20241108180508.1196431-1-yonghong.song@linux.dev>
+ <20241108180524.1198900-1-yonghong.song@linux.dev>
+ <31dea31e6f75916fdc078d433263daa6bb0bffdc.camel@gmail.com>
+ <080794545d8eb3df3d6eba90ac621111ab7171f5.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBH9uIc8zFnxbLkBQ--.11390S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3KF1xXrWfXw1DJw13Ar45trb_yoWkJw4DpF
-	1jy345CF4UXr47WrW8Xa15uF9xKw1vq3W7GFWDJ3yFkrWYgr1kX3W8tFyUu398tr4DuF17
-	tFn2grW2yay7ArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmab4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI
-	0_Jw0_GFylc7CjxVAKzI0EY4vE52x082I5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
-	c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
-	CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
-	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
-	4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsG
-	vfC2KfnxnUUI43ZEXa7IU047K7UUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <080794545d8eb3df3d6eba90ac621111ab7171f5.camel@gmail.com>
 
-From: Xu Kuohai <xukuohai@huawei.com>
+On Mon, Nov 11, 2024 at 12:01:13AM -0800, Eduard Zingerman wrote:
+> On Sun, 2024-11-10 at 03:38 -0800, Eduard Zingerman wrote:
+> 
+> [...]
+> 
+> > Also, it appears there is some bug either in pahole or in libdw's
+> > implementation of dwarf_getlocation(). When I try both your patch-set
+> > and my variant there is a segfault once in a while:
+> > 
+> >   $ for i in $(seq 1 100); \
+> >     do echo "---> $i"; \
+> >        pahole -j --skip_encoding_btf_inconsistent_proto -J --btf_encode_detached=/dev/null vmlinux ; \
+> >     done
+> >   ---> 1
+> >   ...
+> >   ---> 71
+> >   Segmentation fault (core dumped)
+> >   ...
+> > 
+> > The segfault happens only when -j (multiple threads) is passed.
+> > If pahole is built with sanitizers
+> > (passing -DCMAKE_C_FLAGS="-fsanitize=undefined,address")
+> > the stack trace looks as follows:
+> 
+> Did some additional research for these SEGFAULTs.
+> Looks like all we are in trouble.
+> 
+> # TLDR
+> 
+> libdw is not supposed to be used in a concurrent context.
+> libdw is a part of elfutils package, the configuration flag
+> making API thread-safe is documented as experimental:
+>   --enable-thread-safety  enable thread safety of libraries EXPERIMENTAL
+> At-least Fedora 40 does not ship elfutils built with this flag set.
+> This colours all current parallel DWARF decoding questionable.
+> 
+> # Why segfault happens
+> 
+> Any references to elfutils source code are for commit [1].
+> The dwarf_getlocation() is one of a few libdw APIs that uses memory
+> allocation internally. The function dwarf_getlocation.c:__libdw_intern_expression
+> iterates over expression encodings in DWARF and allocates
+> a set of objects of type `struct loclist` and `Dwarf_Op`.
+> Pointers to allocated objects are put to a binary tree for caching,
+> see dwarf_getlocation.c:660, the call to eu_tsearch() function.
+> The eu_tsearch() is a wrapper around libc tsearch() function.
+> This wrapper provides locking for the tree,
+> but only if --enable-thread-safety was set during elfutils configuration.
+> The SEGFAULT happens inside tsearch() call because binary tree is malformed, e.g.:
+> 
+>   Thread 8 "pahole" received signal SIGSEGV, Segmentation fault.
+>   [Switching to Thread 0x7fffd9c006c0 (LWP 2630074)]
+>   0x00007ffff7c5d200 in maybe_split_for_insert (...) at tsearch.c:228
+>   228	      if (parentp != NULL && RED(DEREFNODEPTR(parentp)))
+>   (gdb) bt
+>   #0  0x00007ffff7c5d200 in maybe_split_for_insert (...) at tsearch.c:228
+>   #1  0x00007ffff7c5d466 in __GI___tsearch (...) at tsearch.c:358
+>   #2  __GI___tsearch (...) at tsearch.c:290
+>   #3  0x000000000048f096 in __interceptor_tsearch ()
+>   #4  0x00007ffff7f5c482 in __libdw_intern_expression (...) at dwarf_getlocation.c:660
+>   #5  0x00007ffff7f5cf51 in getlocation (...) at dwarf_getlocation.c:678
+>   #6  getlocation (...) at dwarf_getlocation.c:667
+>   #7  dwarf_getlocation (..._ at dwarf_getlocation.c:708
+>   #8  0x00000000005a2ee5 in parameter.new ()
+>   #9  0x00000000005a0122 in die.process_function ()
+>   #10 0x0000000000597efd in __die__process_tag ()
+>   #11 0x0000000000595ad9 in die.process_unit ()
+>   #12 0x0000000000595436 in die.process ()
+>   #13 0x00000000005b0187 in dwarf_cus.process_cu ()
+>   #14 0x00000000005afa38 in dwarf_cus.process_cu_thread ()
+>   #15 0x00000000004c7b8d in asan_thread_start(void*) ()
+>   #16 0x00007ffff7bda6d7 in start_thread (arg=<optimized out>) at pthread_create.c:447
+>   #17 0x00007ffff7c5e60c in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+>   (gdb) p parentp
+>   $1 = (node *) 0x50300079d2a0
+>   (gdb) p *parentp
+>   $2 = (node) 0x0
+> 
+> glibc provides a way to validate binary tree structure.
+> For this misc/tsearch.c has to be changed to define DEBUGGING variable.
+> (I used glibc 2.39 as provided by source rpm for Fedora 40 for experiments).
+> If this is done and custom glibc is used for pahole execution,
+> the following error is reported if '-j' flag is present:
+> 
+>   $ pahole -j --skip_encoding_btf_inconsistent_proto -J --btf_encode_detached=/home/eddy/work/tmp/my-new.btf vmlinux 
+>   Fatal glibc error: tsearch.c:164 (check_tree_recurse): assertion failed: d_sofar == d_total
+>   Fatal glibc error: tsearch.c:164 (check_tree_recurse): assertion failed: d_sofar == d_total
+>   Aborted (core dumped)
+> 
+> Executing pahole using a custom-built libdw,
+> built with --enable-thread-safety resolves the issue.
 
-Without kernel symbols for struct_ops trampoline, the unwinder may
-produce unexpected stacktraces.
+could we use libdw__lock around that? but I guess we use it on other
+places as well..
 
-For example, the x86 ORC and FP unwinders check if an IP is in kernel
-text by verifying the presence of the IP's kernel symbol. When a
-struct_ops trampoline address is encountered, the unwinder stops due
-to the absence of symbol, resulting in an incomplete stacktrace that
-consists only of direct and indirect child functions called from the
-trampoline.
+jirka
 
-The arm64 unwinder is another example. While the arm64 unwinder can
-proceed across a struct_ops trampoline address, the corresponding
-symbol name is displayed as "unknown", which is confusing.
-
-Thus, add kernel symbol for struct_ops trampoline. The name is
-bpf__<struct_ops_name>_<member_name>, where <struct_ops_name> is the
-type name of the struct_ops, and <member_name> is the name of
-the member that the trampoline is linked to.
-
-Below is a comparison of stacktraces captured on x86 by perf record,
-before and after this patch.
-
-Before:
-ffffffff8116545d __lock_acquire+0xad ([kernel.kallsyms])
-ffffffff81167fcc lock_acquire+0xcc ([kernel.kallsyms])
-ffffffff813088f4 __bpf_prog_enter+0x34 ([kernel.kallsyms])
-
-After:
-ffffffff811656bd __lock_acquire+0x30d ([kernel.kallsyms])
-ffffffff81167fcc lock_acquire+0xcc ([kernel.kallsyms])
-ffffffff81309024 __bpf_prog_enter+0x34 ([kernel.kallsyms])
-ffffffffc000d7e9 bpf__tcp_congestion_ops_cong_avoid+0x3e ([kernel.kallsyms])
-ffffffff81f250a5 tcp_ack+0x10d5 ([kernel.kallsyms])
-ffffffff81f27c66 tcp_rcv_established+0x3b6 ([kernel.kallsyms])
-ffffffff81f3ad03 tcp_v4_do_rcv+0x193 ([kernel.kallsyms])
-ffffffff81d65a18 __release_sock+0xd8 ([kernel.kallsyms])
-ffffffff81d65af4 release_sock+0x34 ([kernel.kallsyms])
-ffffffff81f15c4b tcp_sendmsg+0x3b ([kernel.kallsyms])
-ffffffff81f663d7 inet_sendmsg+0x47 ([kernel.kallsyms])
-ffffffff81d5ab40 sock_write_iter+0x160 ([kernel.kallsyms])
-ffffffff8149c67b vfs_write+0x3fb ([kernel.kallsyms])
-ffffffff8149caf6 ksys_write+0xc6 ([kernel.kallsyms])
-ffffffff8149cb5d __x64_sys_write+0x1d ([kernel.kallsyms])
-ffffffff81009200 x64_sys_call+0x1d30 ([kernel.kallsyms])
-ffffffff82232d28 do_syscall_64+0x68 ([kernel.kallsyms])
-ffffffff8240012f entry_SYSCALL_64_after_hwframe+0x76 ([kernel.kallsyms])
-
-Note that while adding new member ksyms to struct bpf_struct_ops_map,
-this patch also removes an unused member rcu from the structure.
-
-Fixes: 85d33df357b6 ("bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS")
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
----
- include/linux/bpf.h         |  3 +-
- kernel/bpf/bpf_struct_ops.c | 81 ++++++++++++++++++++++++++++++++++++-
- kernel/bpf/dispatcher.c     |  3 +-
- kernel/bpf/trampoline.c     |  9 ++++-
- 4 files changed, 90 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 1b84613b10ac..6fc6398d86c6 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1402,7 +1402,8 @@ int arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int num_func
- void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
- 				struct bpf_prog *to);
- /* Called only from JIT-enabled code, so there's no need for stubs. */
--void bpf_image_ksym_add(void *data, unsigned int size, struct bpf_ksym *ksym);
-+void bpf_image_ksym_init(void *data, unsigned int size, struct bpf_ksym *ksym);
-+void bpf_image_ksym_add(struct bpf_ksym *ksym);
- void bpf_image_ksym_del(struct bpf_ksym *ksym);
- void bpf_ksym_add(struct bpf_ksym *ksym);
- void bpf_ksym_del(struct bpf_ksym *ksym);
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index e99fce81e916..d6dd56fc80d8 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -23,7 +23,6 @@ struct bpf_struct_ops_value {
- 
- struct bpf_struct_ops_map {
- 	struct bpf_map map;
--	struct rcu_head rcu;
- 	const struct bpf_struct_ops_desc *st_ops_desc;
- 	/* protect map_update */
- 	struct mutex lock;
-@@ -32,6 +31,8 @@ struct bpf_struct_ops_map {
- 	 * (in kvalue.data).
- 	 */
- 	struct bpf_link **links;
-+	/* ksyms for bpf trampolines */
-+	struct bpf_ksym **ksyms;
- 	u32 funcs_cnt;
- 	u32 image_pages_cnt;
- 	/* image_pages is an array of pages that has all the trampolines
-@@ -586,6 +587,49 @@ int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
- 	return 0;
- }
- 
-+static void bpf_struct_ops_ksym_init(const char *tname, const char *mname,
-+				     void *image, unsigned int size,
-+				     struct bpf_ksym *ksym)
-+{
-+	snprintf(ksym->name, KSYM_NAME_LEN, "bpf__%s_%s", tname, mname);
-+	INIT_LIST_HEAD_RCU(&ksym->lnode);
-+	bpf_image_ksym_init(image, size, ksym);
-+}
-+
-+static void bpf_struct_ops_map_ksyms_add(struct bpf_struct_ops_map *st_map)
-+{
-+	u32 i;
-+
-+	for (i = 0; i < st_map->funcs_cnt; i++) {
-+		if (!st_map->ksyms[i])
-+			break;
-+		bpf_image_ksym_add(st_map->ksyms[i]);
-+	}
-+}
-+
-+static void bpf_struct_ops_map_del_ksyms(struct bpf_struct_ops_map *st_map)
-+{
-+	u32 i;
-+
-+	for (i = 0; i < st_map->funcs_cnt; i++) {
-+		if (!st_map->ksyms[i])
-+			break;
-+		bpf_image_ksym_del(st_map->ksyms[i]);
-+	}
-+}
-+
-+static void bpf_struct_ops_map_free_ksyms(struct bpf_struct_ops_map *st_map)
-+{
-+	u32 i;
-+
-+	for (i = 0; i < st_map->funcs_cnt; i++) {
-+		if (!st_map->ksyms[i])
-+			break;
-+		kfree(st_map->ksyms[i]);
-+		st_map->links[i] = NULL;
-+	}
-+}
-+
- static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 					   void *value, u64 flags)
- {
-@@ -602,6 +646,8 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 	u32 i, trampoline_start, image_off = 0;
- 	void *cur_image = NULL, *image = NULL;
- 	struct bpf_link **plink;
-+	struct bpf_ksym **pksym;
-+	const char *tname, *mname;
- 
- 	if (flags)
- 		return -EINVAL;
-@@ -641,14 +687,18 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 	kdata = &kvalue->data;
- 
- 	plink = st_map->links;
-+	pksym = st_map->ksyms;
-+	tname = btf_name_by_offset(st_map->btf, t->name_off);
- 	module_type = btf_type_by_id(btf_vmlinux, st_ops_ids[IDX_MODULE_ID]);
- 	for_each_member(i, t, member) {
- 		const struct btf_type *mtype, *ptype;
- 		struct bpf_prog *prog;
- 		struct bpf_tramp_link *link;
-+		struct bpf_ksym *ksym;
- 		u32 moff;
- 
- 		moff = __btf_member_bit_offset(t, member) / 8;
-+		mname = btf_name_by_offset(st_map->btf, member->name_off);
- 		ptype = btf_type_resolve_ptr(st_map->btf, member->type, NULL);
- 		if (ptype == module_type) {
- 			if (*(void **)(udata + moff))
-@@ -718,6 +768,14 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 			      &bpf_struct_ops_link_lops, prog);
- 		*plink++ = &link->link;
- 
-+		ksym = kzalloc(sizeof(*ksym), GFP_USER);
-+		if (!ksym) {
-+			bpf_prog_put(prog);
-+			err = -ENOMEM;
-+			goto reset_unlock;
-+		}
-+		*pksym = ksym;
-+
- 		trampoline_start = image_off;
- 		err = bpf_struct_ops_prepare_trampoline(tlinks, link,
- 						&st_ops->func_models[i],
-@@ -737,6 +795,12 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 
- 		/* put prog_id to udata */
- 		*(unsigned long *)(udata + moff) = prog->aux->id;
-+
-+		/* init ksym for this trampoline */
-+		bpf_struct_ops_ksym_init(tname, mname,
-+					 image + trampoline_start,
-+					 image_off - trampoline_start,
-+					 *pksym++);
- 	}
- 
- 	if (st_ops->validate) {
-@@ -785,6 +849,7 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 	 */
- 
- reset_unlock:
-+	bpf_struct_ops_map_free_ksyms(st_map);
- 	bpf_struct_ops_map_free_image(st_map);
- 	bpf_struct_ops_map_put_progs(st_map);
- 	memset(uvalue, 0, map->value_size);
-@@ -792,6 +857,8 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- unlock:
- 	kfree(tlinks);
- 	mutex_unlock(&st_map->lock);
-+	if (!err)
-+		bpf_struct_ops_map_ksyms_add(st_map);
- 	return err;
- }
- 
-@@ -851,7 +918,10 @@ static void __bpf_struct_ops_map_free(struct bpf_map *map)
- 
- 	if (st_map->links)
- 		bpf_struct_ops_map_put_progs(st_map);
-+	if (st_map->ksyms)
-+		bpf_struct_ops_map_free_ksyms(st_map);
- 	bpf_map_area_free(st_map->links);
-+	bpf_map_area_free(st_map->ksyms);
- 	bpf_struct_ops_map_free_image(st_map);
- 	bpf_map_area_free(st_map->uvalue);
- 	bpf_map_area_free(st_map);
-@@ -868,6 +938,9 @@ static void bpf_struct_ops_map_free(struct bpf_map *map)
- 	if (btf_is_module(st_map->btf))
- 		module_put(st_map->st_ops_desc->st_ops->owner);
- 
-+	if (st_map->ksyms)
-+		bpf_struct_ops_map_del_ksyms(st_map);
-+
- 	/* The struct_ops's function may switch to another struct_ops.
- 	 *
- 	 * For example, bpf_tcp_cc_x->init() may switch to
-@@ -980,7 +1053,11 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
- 	st_map->links =
- 		bpf_map_area_alloc(st_map->funcs_cnt * sizeof(struct bpf_links *),
- 				   NUMA_NO_NODE);
--	if (!st_map->uvalue || !st_map->links) {
-+
-+	st_map->ksyms =
-+		bpf_map_area_alloc(st_map->funcs_cnt * sizeof(struct bpf_ksyms *),
-+				   NUMA_NO_NODE);
-+	if (!st_map->uvalue || !st_map->links || !st_map->ksyms) {
- 		ret = -ENOMEM;
- 		goto errout_free;
- 	}
-diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-index 70fb82bf1637..aad8a11cc7e5 100644
---- a/kernel/bpf/dispatcher.c
-+++ b/kernel/bpf/dispatcher.c
-@@ -154,7 +154,8 @@ void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
- 			d->image = NULL;
- 			goto out;
- 		}
--		bpf_image_ksym_add(d->image, PAGE_SIZE, &d->ksym);
-+		bpf_image_ksym_init(d->image, PAGE_SIZE, &d->ksym);
-+		bpf_image_ksym_add(d->image);
- 	}
- 
- 	prev_num_progs = d->num_progs;
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 9f36c049f4c2..c3efca44c8f7 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -115,10 +115,14 @@ bool bpf_prog_has_trampoline(const struct bpf_prog *prog)
- 		(ptype == BPF_PROG_TYPE_LSM && eatype == BPF_LSM_MAC);
- }
- 
--void bpf_image_ksym_add(void *data, unsigned int size, struct bpf_ksym *ksym)
-+void bpf_image_ksym_init(void *data, unsigned int size, struct bpf_ksym *ksym)
- {
- 	ksym->start = (unsigned long) data;
- 	ksym->end = ksym->start + size;
-+}
-+
-+void bpf_image_ksym_add(struct bpf_ksym *ksym)
-+{
- 	bpf_ksym_add(ksym);
- 	perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_BPF, ksym->start,
- 			   PAGE_SIZE, false, ksym->name);
-@@ -377,7 +381,8 @@ static struct bpf_tramp_image *bpf_tramp_image_alloc(u64 key, int size)
- 	ksym = &im->ksym;
- 	INIT_LIST_HEAD_RCU(&ksym->lnode);
- 	snprintf(ksym->name, KSYM_NAME_LEN, "bpf_trampoline_%llu", key);
--	bpf_image_ksym_add(image, size, ksym);
-+	bpf_image_ksym_init(image, size, ksym);
-+	bpf_image_ksym_add(image);
- 	return im;
- 
- out_free_image:
--- 
-2.39.5
-
+> 
+> [1] b2f225d6bff8 ("Consolidate and add files to clean target variables")
+>     git://sourceware.org/git/elfutils.git
+> 
+> 
 
