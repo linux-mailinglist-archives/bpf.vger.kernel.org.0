@@ -1,119 +1,219 @@
-Return-Path: <bpf+bounces-44519-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44520-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91B5B9C4032
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 15:03:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEC489C405F
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 15:09:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57B532839EF
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 14:03:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B749B2161B
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 14:09:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B40819E99E;
-	Mon, 11 Nov 2024 14:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD5019E994;
+	Mon, 11 Nov 2024 14:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f0GaUyBv"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ln9fse8M";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5NxOqGTg";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ln9fse8M";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5NxOqGTg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C98F18BBA8
-	for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 14:03:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6455915A85A;
+	Mon, 11 Nov 2024 14:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731333802; cv=none; b=VKduKGXQ6Q0Dfd9SjtoCgFXJfKqryyESw9FPs628l/LrqX4AtTSo2SJUGNejsNY3JQKGb0T3NJFIYde2yitYtneCQHvr6HJCD/I6VDzw9rrUgYny8s2uD8Ca7CdOmclrVheUYdnxhyWO/CH5PvReeoCL1dfhFZTDRlo6xYvuHwk=
+	t=1731334170; cv=none; b=auJ4Jy+bj6etaLKQsdwNGtVdnlZoyGpCEyg2OSjwWDEKxPHkcwkGs8BP+fqcQsyIHrkaPWsrZYAXTFBiU+36A8o9enIVXZAwMMqKc2zH6slRcXvm5szFLyT3zwmq74cgcbaMgCPbJwAiyg0MlHwKqXBFOgrFCaqsmgKybXiW5+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731333802; c=relaxed/simple;
-	bh=LoEcg354B+4fkxcSQH+M6GFaeji/p5hHxLDTPgv55Jg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BmL0pA5rYD20YgJZCoEWU7usEhvPX2RuRm6DNeLi/pumdZ6v44bnyflbQcjQCMJZxOHfnpVJ7HI2nA/llMGK0mlznxpXPREWbQ/qjYRUUzSvTVgWgzZqR43HbBpphyJbIYac647lUqdFkHricSgletmFjqTb7nV+VLuZ4DhJJUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f0GaUyBv; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-539fb49c64aso6497655e87.0
-        for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 06:03:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731333799; x=1731938599; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=feLnU2HjyjVcvMD8PCEH+qFSuq+qXY5p7QQp5nG89EI=;
-        b=f0GaUyBv8GlJlzpFYfnFQn8xWkoogOrbkW51gdP7t5iQAQsgS+YFn7rOc5/QVDsxwC
-         xhn0MmaV1F9C9fIqEIT/IwF9LfMOESxEoZOOQPIkou0P5CFhrxIPKG7luAsuSGJifK+W
-         caZyhkJzFsLF3xzkmdinQZH9NfN4XKc/V/MkHMmafe+DCfQA09p0dUrVPYHWOeZAG8Ib
-         2vi+Xpvb20LOUUCRapq9aIIvK5SRrQNfS1KTAr9WmVXpWPGOtSAHqcS0pZMTuFzNDVD6
-         5Py+tQOnR09R5iujT24Dtnub5LjEx+phRBxy2EcK2O1W1/CwgXrShXdWmeb4TwokIEY1
-         m3cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731333799; x=1731938599;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=feLnU2HjyjVcvMD8PCEH+qFSuq+qXY5p7QQp5nG89EI=;
-        b=IfXp5TH2S4mxWqLKh2WeqA5FpgiTEXVEkkAPWtzOSYU8SGb+gYGs5L9NEgthQiP1yU
-         3PqSVUP4eS/hnJF+NBoDOXiBZ1eLgyy/NMID3fe5l6aRukDPXmZ0Ccqo5X/acZ/tS3JU
-         6ki4uy7uZ9jreaojwjopxkq6SvicQAULckWJNM1qLGpWlZ6MAETbvxsHPP9qnBeRlcnb
-         4umAvh/07vTIDYm93DgzDGWp8ZpnPIkfPVTm77nn1HVD9An3EoF96ee0+hvd1Lx7d0xP
-         xHEo3wiWCQmbPZsSTxpWGAUowmqm4ktO/yG63qaMVFeQuT0V02pz4C0KtJEV4aIOO8Z2
-         0IkQ==
-X-Gm-Message-State: AOJu0Ywv3wZNhES0QVJd0eeTkqaaIqxXV75XPfUhNjGu+rodTo6KLFTP
-	r0BFAMK6IleCk/uXsmrXWdQpHtQrCX2oKexKxp4fw68jrd5K9ZzHzp1qlw==
-X-Google-Smtp-Source: AGHT+IEUjoi1BKHnV5/mwy8/f4Y6YWydGbXjsTDu1k6/LaVPYVE6xVleSJGGY64k8OHooI0o7iDQIw==
-X-Received: by 2002:a05:6512:3c88:b0:53b:1e9b:b073 with SMTP id 2adb3069b0e04-53d862beb18mr6920679e87.3.1731333798602;
-        Mon, 11 Nov 2024 06:03:18 -0800 (PST)
-Received: from localhost.localdomain ([2a02:a03f:864b:8201:1677:ed83:8020:fb22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0df2857sm597838766b.173.2024.11.11.06.03.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2024 06:03:17 -0800 (PST)
-From: Daan De Meyer <daan.j.demeyer@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Daan De Meyer <daan.j.demeyer@gmail.com>
-Subject: [PATCH v2] bpftool: Set srctree correctly when not building out of source tree
-Date: Mon, 11 Nov 2024 15:02:59 +0100
-Message-ID: <20241111140305.832808-1-daan.j.demeyer@gmail.com>
-X-Mailer: git-send-email 2.47.0
+	s=arc-20240116; t=1731334170; c=relaxed/simple;
+	bh=+Kqj0wUzn8ov779XVt7eb/3ht2dGP3T5U3kcawmJ53o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=drQlCTTYSoPnLkqvWptuKr9rTdjVn7/xmWDZHmXrNH4lghXPMD4yMDyB5Meli0N976WT/rUdosoaKz2SORz+GYqJD1irHJWki8aN5x6t5+IJR+HqozL8MZ2GezxEE5i8s4XviF1dXdsY20l40wNdoJcx4ygbFJIS426krRpp+a0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ln9fse8M; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5NxOqGTg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ln9fse8M; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5NxOqGTg; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7CA572197F;
+	Mon, 11 Nov 2024 14:09:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1731334165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V0Pt73YJ20dEht5wZaXQwgMJ6DvPqwUd8ZGZK+GzCfs=;
+	b=Ln9fse8MOtn6aKCAzKFL5y9BX2pdajZLwEKjiphBuCvIC3GC8PzFlI89+xLmeAJOLQ+/ev
+	JYr6h6TODHWC1cc4U/mhbeD9smnq+1Ajd4vmO1Ndpim8nebAHU87BCsSFjxm4cjzXHorkT
+	bTA9FMCODOmU+hfQpDvo2enfd6NStXE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1731334165;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V0Pt73YJ20dEht5wZaXQwgMJ6DvPqwUd8ZGZK+GzCfs=;
+	b=5NxOqGTglxzhTvvAbh0Gw8f9+YPJ9v8AphAFvytsLuCVti0FbYfD+9k2o7jtclQLTTNPf0
+	TSwKjRrncg1DJeAA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Ln9fse8M;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5NxOqGTg
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1731334165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V0Pt73YJ20dEht5wZaXQwgMJ6DvPqwUd8ZGZK+GzCfs=;
+	b=Ln9fse8MOtn6aKCAzKFL5y9BX2pdajZLwEKjiphBuCvIC3GC8PzFlI89+xLmeAJOLQ+/ev
+	JYr6h6TODHWC1cc4U/mhbeD9smnq+1Ajd4vmO1Ndpim8nebAHU87BCsSFjxm4cjzXHorkT
+	bTA9FMCODOmU+hfQpDvo2enfd6NStXE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1731334165;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V0Pt73YJ20dEht5wZaXQwgMJ6DvPqwUd8ZGZK+GzCfs=;
+	b=5NxOqGTglxzhTvvAbh0Gw8f9+YPJ9v8AphAFvytsLuCVti0FbYfD+9k2o7jtclQLTTNPf0
+	TSwKjRrncg1DJeAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C6E113301;
+	Mon, 11 Nov 2024 14:09:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PkqDGhUQMmdWYQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 11 Nov 2024 14:09:25 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1CFC1A0986; Mon, 11 Nov 2024 15:09:25 +0100 (CET)
+Date: Mon, 11 Nov 2024 15:09:25 +0100
+From: Jan Kara <jack@suse.cz>
+To: Song Liu <songliubraving@meta.com>
+Cc: Jan Kara <jack@suse.cz>, Song Liu <song@kernel.org>,
+	bpf <bpf@vger.kernel.org>,
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Kernel Team <kernel-team@meta.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	KP Singh <kpsingh@kernel.org>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"repnop@google.com" <repnop@google.com>,
+	"jlayton@kernel.org" <jlayton@kernel.org>,
+	Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [RFC bpf-next fanotify 1/5] fanotify: Introduce fanotify
+ fastpath handler
+Message-ID: <20241111140925.ykmdp3oywuw2ut5p@quack3>
+References: <20241029231244.2834368-1-song@kernel.org>
+ <20241029231244.2834368-2-song@kernel.org>
+ <20241107104821.xpu45m3volgixour@quack3>
+ <AE6EEE9B-B84F-4097-859B-B4509F2B6AF8@fb.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <AE6EEE9B-B84F-4097-859B-B4509F2B6AF8@fb.com>
+X-Rspamd-Queue-Id: 7CA572197F
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,kernel.org,vger.kernel.org,meta.com,gmail.com,iogearbox.net,linux.dev,zeniv.linux.org.uk,google.com,toxicpanda.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
+X-Spam-Flag: NO
 
-This allows building bpftool directly via "make -C tools/bpf/bpftool".
+On Thu 07-11-24 19:13:23, Song Liu wrote:
+> > On Nov 7, 2024, at 2:48 AM, Jan Kara <jack@suse.cz> wrote:
+> > On Tue 29-10-24 16:12:40, Song Liu wrote:
+> >> fanotify fastpath handler enables handling fanotify events within the
+> >> kernel, and thus saves a trip to the user space. fanotify fastpath handler
+> >> can be useful in many use cases. For example, if a user is only interested
+> >> in events for some files in side a directory, a fastpath handler can be
+> >> used to filter out irrelevant events.
+> >> 
+> >> fanotify fastpath handler is attached to fsnotify_group. At most one
+> >> fastpath handler can be attached to a fsnotify_group. The attach/detach
+> >> of fastpath handlers are controlled by two new ioctls on the fanotify fds:
+> >> FAN_IOC_ADD_FP and FAN_IOC_DEL_FP.
+> >> 
+> >> fanotify fastpath handler is packaged in a kernel module. In the future,
+> >> it is also possible to package fastpath handler in a BPF program. Since
+> >> loading modules requires CAP_SYS_ADMIN, _loading_ fanotify fastpath
+> >> handler in kernel modules is limited to CAP_SYS_ADMIN. However,
+> >> non-SYS_CAP_ADMIN users can _attach_ fastpath handler loaded by sys admin
+> >> to their fanotify fds. To make fanotify fastpath handler more useful
+> >> for non-CAP_SYS_ADMIN users, a fastpath handler can take arguments at
+> >> attach time.
+> > 
+> > Hum, I'm not sure I'd be fine as an sysadmin to allow arbitary users to
+> > attach arbitrary filters to their groups. I might want some filters for
+> > priviledged programs which know what they are doing (e.g. because the
+> > filters are expensive) and other filters may be fine for anybody. But
+> > overall I'd think we'll soon hit requirements for permission control over
+> > who can attach what... Somebody must have created a solution for this
+> > already?
+> 
+> I have "flags" in fanotify_fastpath_ops. In an earlier version of my 
+> local code, I actually have "SYS_ADMIN_ONLY" flag that specifies some
+> filters are only available to users with CAP_SYS_ADMIN. I removed this 
+> flag later before sending the first RFC for simplicity. 
+> 
+> The model here (fast path loaded in kernel modules) is similar to 
+> different TCP congestion control algorithms. Regular user can choose 
+> which algorithm to use for each TCP connection. This model is 
+> straightforward because the kernel modules are global. With BPF, we 
+> have the option not to add the fast path to a global list, so that 
+> whoever loads the fast path can attach it to specific group (I didn't
+> include this model in the RFC).
+> 
+> For the first version, I think a SYS_ADMIN_ONLY flag would be good
+> enough?
 
-Without this change, building bpftool via "make -C tools/bpf/bpftool"
-fails with the following error:
+Yes, initially that should be enough.
 
-"""
-+ make ARCH=x86 -C tools/bpf/bpftool bootstrap
-Makefile:127: tools/build/Makefile.feature: No such file or directory
-make[3]: *** No rule to make target 'tools/build/Makefile.feature'.  Stop.
-error: Bad exit status from /var/tmp/rpm-tmp.3p0IcJ (%build)
-"""
-
-This is the same workaround that is also applied in tools/bpf/Makefile.
----
- tools/bpf/bpftool/Makefile | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index ba927379eb20..7c7d731077c9 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -2,6 +2,12 @@
- include ../../scripts/Makefile.include
- 
- ifeq ($(srctree),)
-+update_srctree := 1
-+endif
-+ifndef building_out_of_srctree
-+update_srctree := 1
-+endif
-+ifeq ($(update_srctree),1)
- srctree := $(patsubst %/,%,$(dir $(CURDIR)))
- srctree := $(patsubst %/,%,$(dir $(srctree)))
- srctree := $(patsubst %/,%,$(dir $(srctree)))
+								Honza
 -- 
-2.47.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
