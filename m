@@ -1,69 +1,71 @@
-Return-Path: <bpf+bounces-44542-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44543-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD6E69C48BF
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 23:05:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51D3F9C480D
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 22:29:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D186B2DE56
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 21:29:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D699F1F223A2
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 21:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AABAD1B4F07;
-	Mon, 11 Nov 2024 21:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34DC01B86F7;
+	Mon, 11 Nov 2024 21:29:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Doa2I3io"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R2giizAE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A996D19CD1B
-	for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 21:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A12C156644
+	for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 21:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731360571; cv=none; b=gtRJxhEuri7BYA/USekShxcLLJAkOCJFhltkOyNdmTqqASZ9kku6cil2+GAcKmd3gF4FkIe7kihGFBlssZ5hsqefmga3ejuti6XPSVomCL/4mmv0i+k+Y82ho5bWqu37Ms1DUp+OE6SelZ5I/srRNFX+hiXMx/09+C9Q3qxBEsY=
+	t=1731360572; cv=none; b=PCM4p0xaAuJ+BxdTO5aeCdWQIHhiHVLdgonEJ6mJIbSSEvt0//mGOJrViwi/pgQLF9XIyuv68u6HBX0Ttl3G11nVQNec8I+sGkHfxmgKBKnh3aVi7oU+zkstZJy50c74BwfNDq96htziJkzXy9e12/B6eiznlFV2hgAN4wUCb8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731360571; c=relaxed/simple;
-	bh=dwOJJM/S6xsgWRwUFpiAC+HzTJBbmLexM6keJAtd9kk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z8OqyPxgRjE/E8FxXWs5ZgVkau8oCwKB1+dQ8Ahslbk0pEyzXU++zmncUxqjuJuqVlxkmQEun2js5l3ZLAd9dqn/TE/yGzeDU6cvWA7WEsD/MbAHBc3eAxtq0c9x5Q6UBNJqpLaL57JGd5C2QRcgWtwh5Un4IZGDPHwiDgUfKSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Doa2I3io; arc=none smtp.client-ip=209.85.218.42
+	s=arc-20240116; t=1731360572; c=relaxed/simple;
+	bh=RSYyNiZIi6mO3JMMfCl1AZGQVGHJvI2MkKk3T0ygrX4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=MNDW57Rc8YjHH1/mntSndbQa5W2oPenovTfUBowgx5z8vox2CEFLKKdnVfgW/oPZiBvDJUP56TufK/fz0VzqbgZ4l03hVsUMMY7cHqPJKGwV5zz+wawbPZPf9VAoRbV65ULdic1LDUH7P7SpwaFEr7trMcJ/uiv0RljgC+V5URs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R2giizAE; arc=none smtp.client-ip=209.85.218.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a9a6b4ca29bso723409366b.3
-        for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 13:29:29 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a99e3b3a411so1032649566b.0
+        for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 13:29:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731360568; x=1731965368; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3nq3ntCwXUnJqOsNv7yAXD58cw8IZtRbR4hPM9Xoc64=;
-        b=Doa2I3iotjvPGuzgfMXWV9JgOop88hScKACQW78GFWVnxwYaOsm0hucuNex0p2Igey
-         LuZ72klIuzD73g8pDg0n7HJXyuAuLgdPZiSz2Pdc8EGmlTZxql4/b831RKMgbTNCiPdJ
-         wNTADu3/fuensZ+bx7ebw+fbip7mBgLNUXEXfgV9Pjcmt/Y5C3ysjVbEE/Ts0PIfYS9W
-         NV/DcIOtUEcLZO1uLo1Ls7SHa/zeZdKEN8LhGRgJafKaFrt+h/Hm48AnQbpeTx13eemp
-         c7aQ7GkkhkcbG6blHxfIL4+jafcUXfFoNPt1Oirnk/lKJSC7Nltc4/smXgTIHm3bekgs
-         oThA==
+        d=gmail.com; s=20230601; t=1731360569; x=1731965369; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=beH5iaxbGlcBFcC2AvDILXcT9XOS9MS2kCicKxJu2cY=;
+        b=R2giizAEiKMJ9JoMglGB5EvTdHD05UHJJS7APQxE4/NuM6P6woRJEJnqVHWbS4jJ3u
+         rtn9BaT/wNOcZxFtEJ1TRDDybJLSjZT9o9cT5FPb8jTT4f5xKWi4mpEadJk+yhVsEXNu
+         +TMA93ir25F8BJsXPabKlLsZmajQbfWcwbYJXCFmPWB9j8iPnMVtDXqpspmAiKJ1gte0
+         XtwWCnhJMABMfwqGxCcZPMcQ9YVv1fE2+yPQDvas7Ue3sDgqbovu6kK3OyOpL8SFnL8P
+         JShqBjGFl8DeSDJV1+l8Fg/gIMWUvWPwmpv+fb6zvlxOH+fmYeuVnP2OLfenQC+tKCrx
+         8mag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731360568; x=1731965368;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3nq3ntCwXUnJqOsNv7yAXD58cw8IZtRbR4hPM9Xoc64=;
-        b=WomTGcDTLSqHX4VsJ5+F5OHQLblljQQqZPuAcxWIQH0uVz4yNqML7e4V/yB7P/O8oC
-         vlOiQFSUusqG80FeKTcl4q6HFN+PS242M29T/4ybQN393aIMErbTPNQuf4GUaeTJEtlb
-         nJncCLT0UQZ/Jt5OlsuijakTqqJdB4McuoNvF0G6tAvP4v6zwwXsdzGrMiN06iIfFeKM
-         CUbbXrpo/jisip4ee/cKErbAWzUdid+uODTDfaFjweqbuFLj7JgvWTO4sc/iZ2U+NCDm
-         0xmjf4Zt748uq08thGtFAC8C7tIvQXK5JjsqzMUv+vEae+X2yStZOmIeG3a8Kn0fS6bO
-         Q/CA==
-X-Gm-Message-State: AOJu0Yx/uG87pkXe7frE/qMcEHkSxmB9wloUSyfMiox0bJhBdueTyUIb
-	+EhhfP7wkErGSWbYigabYRmMjLsKBj9JF+dLaj3WxCw0LNxvuX1qRtLMPw==
-X-Google-Smtp-Source: AGHT+IFVZrJbkv1oyvNIRuMCSNrQaPfa9uRmpmt2iL4JaPOmAxlJ4Jc0En0dB2Wp2Fpakdn2Roe9IQ==
-X-Received: by 2002:a17:906:c112:b0:a99:6036:90a with SMTP id a640c23a62f3a-a9eeff0d262mr1384032266b.14.1731360567777;
-        Mon, 11 Nov 2024 13:29:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1731360569; x=1731965369;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=beH5iaxbGlcBFcC2AvDILXcT9XOS9MS2kCicKxJu2cY=;
+        b=bsr4uHjEtgks9sg5K2xhwFqSXbJrL79lI9zXS7/QNLVZZNvmcgvQbAswegnZ0NxgaI
+         WejFyVXL3mnSVsZd0UyFxJ4Ona8rsp0Cx9P1VEhr3LYTnbeLY+N7KMDsO3gfdDfk7u1C
+         9E/HpRU062ABW+kffAiFxrBzF8kHFKa6n0A+0S9jldB89NrIm4e3ctFXtzUIFq5YIdzS
+         ZfDqKZ0lw2xxyln41iuyHwiC+KEE2k55Cylz99v2+hOv5/d1tqoNbkXpVflsDCjcwIiu
+         r++2KTBbC+Gt3PVWsNVqTKjzQH8xYiRiUdDs+uzrMkKhgIqC6iXhwCp7KOnuQMa1/F0q
+         AP6w==
+X-Gm-Message-State: AOJu0Yy+IwaHg19+f8W2tSLkRncXzN9xRuWmG69FLnTci4JbfuWj9uaI
+	0WJ6uy0ktB7B8CnsciMElDfz10nvdVfmw89HE6GFjnH1KruxyfmmLjQTgw==
+X-Google-Smtp-Source: AGHT+IFbZJ6g/U7x2fY8RyjXaWkOWAmF4j6zgxw/V9iN2h+hHXj50NYJqpAXf2hNfewbbHjVXm8sRA==
+X-Received: by 2002:a17:907:1c0f:b0:a9e:df83:ba57 with SMTP id a640c23a62f3a-a9eeca83660mr1352284766b.22.1731360569258;
+        Mon, 11 Nov 2024 13:29:29 -0800 (PST)
 Received: from msi-laptop.thefacebook.com ([2620:10d:c092:500::5:3961])
         by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0defc3csm629570266b.166.2024.11.11.13.29.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2024 13:29:27 -0800 (PST)
+        Mon, 11 Nov 2024 13:29:28 -0800 (PST)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -72,10 +74,12 @@ To: bpf@vger.kernel.org,
 	kafai@meta.com,
 	kernel-team@meta.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v3 0/4] libbpf: stringify error codes in log messages
-Date: Mon, 11 Nov 2024 21:29:15 +0000
-Message-ID: <20241111212919.368971-1-mykyta.yatsenko5@gmail.com>
+Subject: [PATCH bpf-next v3 1/4] libbpf: introduce errstr() for stringifying errno
+Date: Mon, 11 Nov 2024 21:29:16 +0000
+Message-ID: <20241111212919.368971-2-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.47.0
+In-Reply-To: <20241111212919.368971-1-mykyta.yatsenko5@gmail.com>
+References: <20241111212919.368971-1-mykyta.yatsenko5@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,36 +90,105 @@ Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Libbpf may report error in 2 ways:
- 1. Numeric errno
- 2. Errno's text representation, returned by strerror
-Both ways may be confusing for users: numeric code requires people to
-know how to find its meaning and strerror may be too generic and
-unclear.
+Add function errstr(int err) that allows converting numeric error codes
+into string representations.
 
-These patches modify libbpf error reporting by swapping numeric codes
-and strerror with the standard short error name, for example:
-"failed to attach: -22" becomes "failed to attach: -EINVAL".
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+---
+ tools/lib/bpf/str_error.c | 59 +++++++++++++++++++++++++++++++++++++++
+ tools/lib/bpf/str_error.h |  7 +++++
+ 2 files changed, 66 insertions(+)
 
-Mykyta Yatsenko (4):
-  libbpf: introduce errstr() for stringifying errno
-  libbpf: stringify errno in log messages in libbpf.c
-  libbpf: stringify errno in log messages in btf*.c
-  libbpf: stringify errno in log messages in the remaining code
-
- tools/lib/bpf/btf.c        |  26 +--
- tools/lib/bpf/btf_dump.c   |   3 +-
- tools/lib/bpf/elf.c        |   4 +-
- tools/lib/bpf/features.c   |  15 +-
- tools/lib/bpf/gen_loader.c |   3 +-
- tools/lib/bpf/libbpf.c     | 356 ++++++++++++++++---------------------
- tools/lib/bpf/linker.c     |  21 ++-
- tools/lib/bpf/ringbuf.c    |  34 ++--
- tools/lib/bpf/str_error.c  |  59 ++++++
- tools/lib/bpf/str_error.h  |   7 +
- tools/lib/bpf/usdt.c       |  32 ++--
- 11 files changed, 294 insertions(+), 266 deletions(-)
-
+diff --git a/tools/lib/bpf/str_error.c b/tools/lib/bpf/str_error.c
+index 5e6a1e27ddf9..cf817c0c7ddd 100644
+--- a/tools/lib/bpf/str_error.c
++++ b/tools/lib/bpf/str_error.c
+@@ -5,6 +5,10 @@
+ #include <errno.h>
+ #include "str_error.h"
+ 
++#ifndef ENOTSUPP
++#define ENOTSUPP	524
++#endif
++
+ /* make sure libbpf doesn't use kernel-only integer typedefs */
+ #pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
+ 
+@@ -31,3 +35,58 @@ char *libbpf_strerror_r(int err, char *dst, int len)
+ 	}
+ 	return dst;
+ }
++
++const char *errstr(int err)
++{
++	static __thread char buf[12];
++
++	if (err > 0)
++		err = -err;
++
++	switch (err) {
++	case -EINVAL: return "-EINVAL";
++	case -EPERM: return "-EPERM";
++	case -ENXIO: return "-ENXIO";
++	case -ENOMEM: return "-ENOMEM";
++	case -ENOENT: return "-ENOENT";
++	case -E2BIG: return "-E2BIG";
++	case -EEXIST: return "-EEXIST";
++	case -EFAULT: return "-EFAULT";
++	case -ENOSPC: return "-ENOSPC";
++	case -EACCES: return "-EACCES";
++	case -EAGAIN: return "-EAGAIN";
++	case -EBADF: return "-EBADF";
++	case -ENAMETOOLONG: return "-ENAMETOOLONG";
++	case -ESRCH: return "-ESRCH";
++	case -EBUSY: return "-EBUSY";
++	case -ENOTSUPP: return "-ENOTSUPP";
++	case -EPROTO: return "-EPROTO";
++	case -ERANGE: return "-ERANGE";
++	case -EMSGSIZE: return "-EMSGSIZE";
++	case -EINTR: return "-EINTR";
++	case -ENODATA: return "-ENODATA";
++	case -ENODEV: return "-ENODEV";
++	case -ENOLINK:return "-ENOLINK";
++	case -EIO: return "-EIO";
++	case -EUCLEAN: return "-EUCLEAN";
++	case -EDOM: return "-EDOM";
++	case -ELOOP: return "-ELOOP";
++	case -EPROTONOSUPPORT: return "-EPROTONOSUPPORT";
++	case -EDEADLK: return "-EDEADLK";
++	case -EOVERFLOW: return "-EOVERFLOW";
++	case -EOPNOTSUPP: return "-EOPNOTSUPP";
++	case -EINPROGRESS: return "-EINPROGRESS";
++	case -EBADFD: return "-EBADFD";
++	case -EADDRINUSE: return "-EADDRINUSE";
++	case -EADDRNOTAVAIL: return "-EADDRNOTAVAIL";
++	case -ECANCELED: return "-ECANCELED";
++	case -EILSEQ: return "-EILSEQ";
++	case -EMFILE: return "-EMFILE";
++	case -ENOTTY: return "-ENOTTY";
++	case -EALREADY: return "-EALREADY";
++	case -ECHILD: return "-ECHILD";
++	default:
++		snprintf(buf, sizeof(buf), "%d", err);
++		return buf;
++	}
++}
+diff --git a/tools/lib/bpf/str_error.h b/tools/lib/bpf/str_error.h
+index 626d7ffb03d6..66ffebde0684 100644
+--- a/tools/lib/bpf/str_error.h
++++ b/tools/lib/bpf/str_error.h
+@@ -6,4 +6,11 @@
+ 
+ char *libbpf_strerror_r(int err, char *dst, int len);
+ 
++/**
++ * @brief **errstr()** returns string corresponding to numeric errno
++ * @param err negative numeric errno
++ * @return pointer to string representation of the errno, that is invalidated
++ * upon the next call.
++ */
++const char *errstr(int err);
+ #endif /* __LIBBPF_STR_ERROR_H */
 -- 
 2.47.0
 
