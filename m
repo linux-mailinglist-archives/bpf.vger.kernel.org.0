@@ -1,67 +1,60 @@
-Return-Path: <bpf+bounces-44535-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44536-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 007439C442F
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 18:53:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A1579C4544
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 19:50:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB8621F265AD
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 17:53:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD027B2B066
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 18:41:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B24881AA793;
-	Mon, 11 Nov 2024 17:51:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D0F1AA78A;
+	Mon, 11 Nov 2024 18:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OGW9RJsJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SUioYOnQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F06E1A725E;
-	Mon, 11 Nov 2024 17:51:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69C571A2567
+	for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 18:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731347506; cv=none; b=ra7Osb96zCvRG/lYFFAaRObN7nPjlnVh3HeXs+06379RjG3E7JVkhjYH8OuJACzlfTS7HuWnhWwhB4Gog1COaaoYG9zBx3L6aLhYmsBtT1sOt1SvmanY/PI4QNT+YLgvpd2QVmLJWOkxynax+WWVMIAtfT4UAc2obZjc8CYDJ2k=
+	t=1731350494; cv=none; b=ZmC0+i3XtpQQN/0rqmv0U1iq9QcK8HIIXHtHvjTpEOgHuoUmVHxEKJBMDbRmu4pZVG3+TSyY2MOnnK0T2uglmndVhnN7cgntlbDHUYAkmYVPpD2TViNgo8JIWhXPWbxNLUksmpipIMnQnV9cNe7MtuOk6kzuFymrCCKa2yJnu5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731347506; c=relaxed/simple;
-	bh=BbKFMf/zgfJJywRXAq3rAWpxUsMiJjrwpn3KzCpxqWI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WjtVpf3s1ZRUAHTg3UD6ocgqGLsD/6j7jwqmnpOzTS9Tgefg/YyHgQufh2xzNjI77+fSiNrLjmJiutNCB0Sl0IWENrA7l83CYYr0YQJBptcP1fW3IcpGgleu5NtJLaukGAkmPPpHMA1RouPECbOTeUb0rva80hR6wMLIYMtoaSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OGW9RJsJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B6D9C4CECF;
-	Mon, 11 Nov 2024 17:51:45 +0000 (UTC)
+	s=arc-20240116; t=1731350494; c=relaxed/simple;
+	bh=6KSIMkKy5Sk+ZrBZwzLsPt1x6NxAHnXIC2fzBbKlGJE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=tYcYHh8IAHvb/NqT/F+7/oV7TEqyaeUqtoh9o/QZdf+xOBkz5mCl+wyMLmBKtuMQstHTBnFN9RyobTtosahiK6+KNLnnUf8aa5+8D11fBTp253nIExh0SMpoDmd87/PIZjDivWPTx1ex54WPItIpqTJgQVST7Ju7ijnbnuLhpBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SUioYOnQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3D5FC4CECF;
+	Mon, 11 Nov 2024 18:41:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731347505;
-	bh=BbKFMf/zgfJJywRXAq3rAWpxUsMiJjrwpn3KzCpxqWI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=OGW9RJsJ60Q2RLevpJZg2Jdcya1/+oWaZNpRYiO4TyzYJMbI9sG2wDHyKyGODfW36
-	 YrdQ1liIOWwOjaQh2EP7TtnyZ6s7PKd5MAqOOIZdnSQUlT1XwFZrY3svz2FjIPickN
-	 xkHEG4D09iBm3Zvp8tFlXqtYoXPKo7PHXc3zqjsUI5jUfR+EiuigZr+iWYmjj1XKTK
-	 z2jqh7ilN00HpFZD7HCLyusO8F4kFi3i+0Gr2EkGxihHP2aPYzEVIhjseOOW4JxPGK
-	 X8cNqnNf0WH0y9pg1Kr4jlB5/JN5xI20GZ6T9UHDnw/mcNjf2k76HMrsyzOnxA+d+3
-	 pGZEX4TQDG+2Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 19F4CCE09DE; Mon, 11 Nov 2024 09:51:45 -0800 (PST)
-Date: Mon, 11 Nov 2024 09:51:45 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, kernel test robot <oliver.sang@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 08/15] srcu: Add srcu_read_lock_lite() and
- srcu_read_unlock_lite()
-Message-ID: <722827bc-fc48-4ae0-aa6a-b28d8ab8dfbb@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
- <20241015161112.442758-8-paulmck@kernel.org>
- <d07e8f4a-d5ff-4c8e-8e61-50db285c57e9@amd.com>
- <0726384d-fe56-4f2d-822b-5e94458aa28a@paulmck-laptop>
- <CAEf4BzbMOSfQ3gdhujUyz_NuiDG7w74n7n52ZO5VCyc-XKOeQg@mail.gmail.com>
+	s=k20201202; t=1731350493;
+	bh=6KSIMkKy5Sk+ZrBZwzLsPt1x6NxAHnXIC2fzBbKlGJE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=SUioYOnQOYHjqhbhDZJloVEjR5xbuBY/fVl6wC85pNU814aeBBjYAczW8ryN27EQG
+	 Yimvpy0tDqfbMnyXxozbzkNojbXupk+gti1cKhxWEQFQl2PrrKbiSgegOINrWmBPM/
+	 8jR0mcb/aygxIPw7OzCZULLWqNL4xN+g9laYe1J37Gw3ps2VF7MibXRCar/dH1CT6o
+	 suA/RGsDQxRlr4WfZZ5gQVSSm4fChZQ5q2KwjXTNC8ELyqZ1Kxqh723vEm8G0EB4yw
+	 elHrylS29O88QTEyx0JOWhpzFA0Hf52ypMFkubuvYI4/jM7q3UcPozJPCTauqwgI/z
+	 WX2h4y0AkAXbw==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 061CE164CC9B; Mon, 11 Nov 2024 19:41:31 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ kernel-team@fb.com, yonghong.song@linux.dev, memxor@gmail.com
+Subject: Re: [RFC bpf-next 03/11] bpf: shared BPF/native kfuncs
+In-Reply-To: <1ab081f87a60bacb563f4a55d02fa7749aaaeaf9.camel@gmail.com>
+References: <20241107175040.1659341-1-eddyz87@gmail.com>
+ <20241107175040.1659341-4-eddyz87@gmail.com> <87ses15udm.fsf@toke.dk>
+ <1ab081f87a60bacb563f4a55d02fa7749aaaeaf9.camel@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 11 Nov 2024 19:41:30 +0100
+Message-ID: <87r07h4nqd.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,43 +62,76 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbMOSfQ3gdhujUyz_NuiDG7w74n7n52ZO5VCyc-XKOeQg@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 11, 2024 at 09:46:22AM -0800, Andrii Nakryiko wrote:
-> On Mon, Nov 11, 2024 at 7:17 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Mon, Nov 11, 2024 at 04:47:49PM +0530, Neeraj Upadhyay wrote:
-> > >
-> > > > +/**
-> > > > + * srcu_read_unlock_lite - unregister a old reader from an SRCU-protected structure.
-> > > > + * @ssp: srcu_struct in which to unregister the old reader.
-> > > > + * @idx: return value from corresponding srcu_read_lock().
-> > > > + *
-> > > > + * Exit a light-weight SRCU read-side critical section.
-> > > > + */
-> > > > +static inline void srcu_read_unlock_lite(struct srcu_struct *ssp, int idx)
-> > > > +   __releases(ssp)
-> > > > +{
-> > > > +   WARN_ON_ONCE(idx & ~0x1);
-> > > > +   srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_LITE);
-> > > > +   srcu_lock_release(&ssp->dep_map);
-> > > > +   __srcu_read_unlock(ssp, idx);
-> > >
-> > > s/__srcu_read_unlock/__srcu_read_unlock_lite/ ?
-> >
-> > Right you are!  I am testing the patch.
-> >
-> > The effect of this bug is that srcu_read_unlock_lite() has a needless
-> > memory barrier and fails to check for RCU watching, so not a blazing
-> > emergency.  But it does mean that Andrii was only seeing half of the
-> > performance benefit of using _lite().
-> 
-> That's exciting, happy to re-test once we have fixed patches.
+Eduard Zingerman <eddyz87@gmail.com> writes:
 
-Neeraj also found a functional error, so a bit more work to do.
-Better him finding it that me doing so the hard way!  ;-)
+> On Fri, 2024-11-08 at 21:43 +0100, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Eduard Zingerman <eddyz87@gmail.com> writes:
+>>=20
+>> > Inlinable kfuncs are available only if CLANG is used for kernel
+>> > compilation.
+>>=20
+>> To what extent is this a fundamental limitation? AFAIU, this comes from
+>> the fact that you are re-using the intermediate compilation stages,
+>> right?
+>
+> Yes, the main obstacle is C --clang--> bitcode as for host --llc--> BPF p=
+ipeline.
+> And this intermediate step is needed to include some of the header
+> files as-is (but not all will work, e.g. those where host inline
+> assembly is not dead-code-eliminated by optimizer would error out).
+> The reason why 'clang --target=3Dbpf' can't be used with these headers
+> is that headers check current architecture in various places, however:
+> - there is no BPF architecture defined at the moment;
+> - most of the time host architecture is what's needed, e.g.
+>   here is a fragment of arch/x86/include/asm/current.h:
+>
+>   struct pcpu_hot {
+>   	union {
+>   		struct {
+>   			struct task_struct	*current_task;
+>   			int			preempt_count;
+>   			int			cpu_number;
+>   #ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
+>   			u64			call_depth;
+>   #endif
+>   			unsigned long		top_of_stack;
+>   			void			*hardirq_stack_ptr;
+>   			u16			softirq_pending;
+>   #ifdef CONFIG_X86_64
+>   			bool			hardirq_stack_inuse;
+>   #else
+>   			void			*softirq_stack_ptr;
+>   #endif
+>   		};
+>   		u8	pad[64];
+>   	};
+>   };
+>
+> In case if inlinable kfunc operates on pcpu_hot structure,
+> it has to see same binary layout as the host.
+> So, technically, 'llc' step is not necessary, but if it is not present
+> something else should be done about header files.
 
-							Thanx, Paul
+Right, makes sense. Do any of the kfuncs you are targeting currently use
+headers that have this problem? If not, could a stopgap solution be to
+just restrict the set of kfuncs that can be inlined to those that can be
+compiled with `clang --target=3Dbpf`? That may require moving around some
+code a bit, but there are other examples where all the kfuncs for a
+subsystem are kept in a separate .c file anyway (IIRC, netfilter does this).
+
+>> But if those are absent, couldn't we just invoke a full clang
+>> compile from source of the same file (so you could get the inlining even
+>> when compiling with GCC)?
+>
+> Yes, hybrid should work w/o problems if headers are dealt with in some
+> other way.
+
+But couldn't a hybrid approach be used even in the case of GCC
+compilation? I.e., compile it both with GCC (for inclusion into
+vmlinux/.ko file) and once with clang (in host mode) and then pass it
+through LLC to generate BPF?
+
+-Toke
 
