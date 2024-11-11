@@ -1,179 +1,132 @@
-Return-Path: <bpf+bounces-44525-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44526-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10E929C41CD
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 16:26:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A02C9C4207
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 16:39:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCF2F1F21DFA
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 15:26:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27A4B2878F8
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 15:39:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C2B145FE0;
-	Mon, 11 Nov 2024 15:26:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E2B119F12D;
+	Mon, 11 Nov 2024 15:39:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kc93dQ8C"
+	dkim=pass (2048-bit key) header.d=qmon.net header.i=@qmon.net header.b="FCLcnHcG"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from outbound.soverin.net (outbound.soverin.net [185.233.34.146])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DEBE49625;
-	Mon, 11 Nov 2024 15:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17211BC58
+	for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 15:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.233.34.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731338810; cv=none; b=nuTFfUizonHAZQAobQWKGklkx3QtfQ7K+8n68AfUTiij0T0N9e+A4DqrjPC1JUFXW8FsCPlVQdnGKfpU5X0rrglLUCnxvXMAYWV18/5CNvQtB9TcN6W+5U0Z9nY29Q/FRBe/ZkNtrnypB9K2ahkRnxXhaM0sQRhpH37AtmjXr38=
+	t=1731339562; cv=none; b=H6SEjMbCg59vFbjr0y69SbfJyyACH1DjvJuTIWHcnCwLT8ojwmfB4sXQ3iXSDr6/s6TOmnZJehyYzzHFDQ0k/t4P/SBAeD5UxK5ziZ91LC9aHN/Ee1jw9f49EtIMMVbgs2aeipmgjd1ERqrrAx0YagIE3pRr6MDZS6I8zLLH6io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731338810; c=relaxed/simple;
-	bh=aRpz3GDck8LbCUy52HRyneKWrKaslIMPNIow1APgFFw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JfyCqz6xwkJKZLkmZIQb1zTGMlB+hhP/OsiZM/zPzmaDdYKju4+/42IJvXKthI1iarf7OrDTxdaOcd3icdCTUdAEdsvE5OGVT6n5NUb2QSHro+CyecZbJMxdcgowPXG1Xo63h8GnoChKzXcaRthHMKXUA6Eb3AQICU4E5Tt3CNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kc93dQ8C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 049D2C4CECF;
-	Mon, 11 Nov 2024 15:26:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731338810;
-	bh=aRpz3GDck8LbCUy52HRyneKWrKaslIMPNIow1APgFFw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Kc93dQ8Cmpqrluh3NGcSGYEPERq7TncA7MjZDKNRscM0LjMtJ2A+R4MXGYWWaeZhZ
-	 X/nPDhiL+bG0AAJo5QMBiaX0N5ihimzSwoTqdFQLYMSL/lItr+ppiA0v2ZuaA4EhR2
-	 fu+4N6o9oQKAA5f+BdCrtHWaKvEfDuzxoVgmoLe2FtrcRrfPwwHFvogw1+wzTcUvbE
-	 XajxdV82ap3yabCHrlVbjFAcixkC2//Vz69p5v7YApLWmRyFeZmr5DGa74eqBr1/HH
-	 FsHBsNdboXFCzxEtUmNrWp+7ZaiGZml2ZvE9EMZuzc6DEfLZ+2+jYIWnIWrZutH4Rq
-	 yCzaHEFI6RTkw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 8CA28CE00C9; Mon, 11 Nov 2024 07:26:49 -0800 (PST)
-Date: Mon, 11 Nov 2024 07:26:49 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com, rostedt@goodmis.org,
-	kernel test robot <oliver.sang@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 06/12] srcu: Add srcu_read_lock_lite() and
- srcu_read_unlock_lite()
-Message-ID: <71a72bcc-ba85-4f86-9d41-cccfd433fa09@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
- <20241009180719.778285-6-paulmck@kernel.org>
- <e46a4c37-47d3-4a02-a7a5-278d047dd7a2@amd.com>
+	s=arc-20240116; t=1731339562; c=relaxed/simple;
+	bh=Vv40MpjHanV+0vl5R+TroH3DBZzOPEdti7yxvS9vaGY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=M/cEEpTTuLcyIJUmLENiBXYZRHXFy5Qw4TN8pgmqExWaUBWJlKDRZzhfdLW8e5UbgcFcWLwlxImiI9eTaYDSW3UPNaWJQm6FeHtHH9tuFgGgRTEVLfzCkW+zhMzAb4kkZIv3WzDtf2qCyX2Geu6sMGnPAmm4mNvPimaXVHq+j1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=qmon.net; spf=pass smtp.mailfrom=qmon.net; dkim=pass (2048-bit key) header.d=qmon.net header.i=@qmon.net header.b=FCLcnHcG; arc=none smtp.client-ip=185.233.34.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=qmon.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qmon.net
+Received: from smtp.soverin.net (c04cst-smtp-sov02.int.sover.in [10.10.4.100])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by outbound.soverin.net (Postfix) with ESMTPS id 4XnDHP30YRzwq;
+	Mon, 11 Nov 2024 15:39:13 +0000 (UTC)
+Received: from smtp.soverin.net (smtp.soverin.net [10.10.4.100]) by soverin.net (Postfix) with ESMTPSA id 4XnDHN6h6CzLm;
+	Mon, 11 Nov 2024 15:39:12 +0000 (UTC)
+Authentication-Results: smtp.soverin.net;
+	dkim=pass (2048-bit key; unprotected) header.d=qmon.net header.i=@qmon.net header.a=rsa-sha256 header.s=soverin1 header.b=FCLcnHcG;
+	dkim-atps=neutral
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qmon.net; s=soverin1;
+	t=1731339553;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ot3TiqStbzlqAUM2K83YUmmDFbh03HEzThgavjlR39k=;
+	b=FCLcnHcGqM4vI5naIhHj/1MpbrPa7UxAUi0TtuN3DUeucjHUw3E6O3o0Rel8szY6M7HqyP
+	Bi5H/vIyaZo1e4xFEizQdZ2YMYKFTuXbXp1aNazpl/h56tfd7E60qQu1bQtNE2Zgjm0EX4
+	Uc/7NktCMTQQE0eAecm5RP1T9fhVU69hOizswpITfjEYtVXuUi/xDagME52JnPj1QFOF9n
+	it35pmqK1HK+C5dCjti4KEQ7KZ/DgeE0CPaQRDnAtosIB9vKhPtscByPjCxNxFxFwFnlUj
+	wjRse9RJiQbB498ExW/o+TxhtoMFYyD1kR7pd0L09GEFwbC1KTrGbDM5lh/6cA==
+Message-ID: <1319dcc5-979b-43d5-8737-ae7716648937@qmon.net>
+Date: Mon, 11 Nov 2024 15:39:12 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e46a4c37-47d3-4a02-a7a5-278d047dd7a2@amd.com>
+Subject: Re: [PATCH v2] bpftool: Set srctree correctly when not building out
+ of source tree
+To: Daan De Meyer <daan.j.demeyer@gmail.com>, bpf@vger.kernel.org
+References: <20241111140305.832808-1-daan.j.demeyer@gmail.com>
+From: Quentin Monnet <qmo@qmon.net>
+Content-Language: en-GB
+In-Reply-To: <20241111140305.832808-1-daan.j.demeyer@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spampanel-Class: ham
 
-On Mon, Nov 11, 2024 at 06:24:58PM +0530, Neeraj Upadhyay wrote:
+2024-11-11 15:02 UTC+0100 ~ Daan De Meyer <daan.j.demeyer@gmail.com>
+> This allows building bpftool directly via "make -C tools/bpf/bpftool".
 > 
-> >  
-> >  /*
-> > - * Returns approximate total of the readers' ->srcu_lock_count[] values
-> > - * for the rank of per-CPU counters specified by idx.
-> > + * Computes approximate total of the readers' ->srcu_lock_count[] values
-> > + * for the rank of per-CPU counters specified by idx, and returns true if
-> > + * the caller did the proper barrier (gp), and if the count of the locks
-> > + * matches that of the unlocks passed in.
-> >   */
-> > -static unsigned long srcu_readers_lock_idx(struct srcu_struct *ssp, int idx)
-> > +static bool srcu_readers_lock_idx(struct srcu_struct *ssp, int idx, bool gp, unsigned long unlocks)
-> >  {
-> >  	int cpu;
-> > +	unsigned long mask = 0;
-> >  	unsigned long sum = 0;
-> >  
-> >  	for_each_possible_cpu(cpu) {
-> >  		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
-> >  
-> >  		sum += atomic_long_read(&sdp->srcu_lock_count[idx]);
-> > +		if (IS_ENABLED(CONFIG_PROVE_RCU))
-> > +			mask = mask | READ_ONCE(sdp->srcu_reader_flavor);
-> >  	}
-> > -	return sum;
-> > +	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask - 1)),
-> > +		  "Mixed reader flavors for srcu_struct at %ps.\n", ssp);
+> Without this change, building bpftool via "make -C tools/bpf/bpftool"
+> fails with the following error:
 > 
-> I am trying to understand the (unlikely) case where synchronize_srcu() is done before any
-> srcu reader lock/unlock lite call is done. Can new SRCU readers fail to observe the
-> updates?
-
-If a SRCU reader fail to observe the index flip, then isn't it the case
-that the synchronize_rcu() invoked from srcu_readers_active_idx_check()
-must wait on it?
-
-> > +	if (mask & SRCU_READ_FLAVOR_LITE && !gp)
-> > +		return false;
+> """
+> + make ARCH=x86 -C tools/bpf/bpftool bootstrap
+> Makefile:127: tools/build/Makefile.feature: No such file or directory
+> make[3]: *** No rule to make target 'tools/build/Makefile.feature'.  Stop.
+> error: Bad exit status from /var/tmp/rpm-tmp.3p0IcJ (%build)
+> """
 > 
-> So, srcu_readers_active_idx_check() can potentially return false for very long
-> time, until the CPU executing srcu_readers_active_idx_check() does
-> at least one read lock/unlock lite call?
+> This is the same workaround that is also applied in tools/bpf/Makefile.
 
-That is correct.  The theory is that until after an srcu_read_lock_lite()
-has executed, there is no need to wait on it.  Does the practice match the
-theory in this case, or is there some sequence of events that I missed?
 
-> > +	return sum == unlocks;
-> >  }
-> >  
-> >  /*
-> > @@ -473,6 +482,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
-> >   */
-> >  static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
-> >  {
-> > +	bool did_gp = !!(raw_cpu_read(ssp->sda->srcu_reader_flavor) & SRCU_READ_FLAVOR_LITE);
+My understanding of the check on building_out_of_srctree in
+tools/bpf/Makefile (from commit 55d554f5d140's description) is that it
+fixes the build from "make TARGETS=bpf kselftest", not from "make -C
+tools/bpf".
+
+Trying again "make ARCH=x86 -C tools/bpf/bpftool bootstrap" at the root
+of the Linux repo, not building out-of-tree, this works fine for me,
+without the need for your patch. I'm trying to understand what your
+setup is and what creates the failure that you observe (and that I can't
+reproduce), so I'd like more context if possible. Are you just running
+that command from the root of the tree? If that's the case, what values
+do you observe for $(srctree) and $(building_out_of_srctree) when
+entering bpftool's Makefile?
+
+Your v2 also still misses your sign-off, and please remember as well to
+add all relevant maintainers in copy of your email.
+
+
+> ---
+>  tools/bpf/bpftool/Makefile | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> sda->srcu_reader_flavor is only set when CONFIG_PROVE_RCU is enabled. But we
-> need the reader flavor information for srcu lite variant to work. So, lite
-> variant does not work when CONFIG_PROVE_RCU is disabled. Am I missing something
-> obvious here?
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index ba927379eb20..7c7d731077c9 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -2,6 +2,12 @@
+>  include ../../scripts/Makefile.include
+>  
+>  ifeq ($(srctree),)
+> +update_srctree := 1
+> +endif
+> +ifndef building_out_of_srctree
+> +update_srctree := 1
+> +endif
+> +ifeq ($(update_srctree),1)
+>  srctree := $(patsubst %/,%,$(dir $(CURDIR)))
+>  srctree := $(patsubst %/,%,$(dir $(srctree)))
+>  srctree := $(patsubst %/,%,$(dir $(srctree)))
 
-At first glance, it appears that I am the one who missed something obvious.
-Including in testing, which failed to uncover this issue.
-
-Thank you for the careful reviews!
-
-							Thanx, Paul
-
-> - Neeraj
-> 
-> >  	unsigned long unlocks;
-> >  
-> >  	unlocks = srcu_readers_unlock_idx(ssp, idx);
-> > @@ -482,13 +492,16 @@ static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
-> >  	 * unlock is counted. Needs to be a smp_mb() as the read side may
-> >  	 * contain a read from a variable that is written to before the
-> >  	 * synchronize_srcu() in the write side. In this case smp_mb()s
-> > -	 * A and B act like the store buffering pattern.
-> > +	 * A and B (or X and Y) act like the store buffering pattern.
-> >  	 *
-> > -	 * This smp_mb() also pairs with smp_mb() C to prevent accesses
-> > -	 * after the synchronize_srcu() from being executed before the
-> > -	 * grace period ends.
-> > +	 * This smp_mb() also pairs with smp_mb() C (or, in the case of X,
-> > +	 * Z) to prevent accesses after the synchronize_srcu() from being
-> > +	 * executed before the grace period ends.
-> >  	 */
-> > -	smp_mb(); /* A */
-> > +	if (!did_gp)
-> > +		smp_mb(); /* A */
-> > +	else
-> > +		synchronize_rcu(); /* X */
-> >  
-> >  	/*
-> >  	 * If the locks are the same as the unlocks, then there must have
-> > @@ -546,7 +559,7 @@ static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
-> >  	 * which are unlikely to be configured with an address space fully
-> >  	 * populated with memory, at least not anytime soon.
-> >  	 */
-> > -	return srcu_readers_lock_idx(ssp, idx) == unlocks;
-> > +	return srcu_readers_lock_idx(ssp, idx, did_gp, unlocks);
-> >  }
-> >  
-> 
 
