@@ -1,62 +1,69 @@
-Return-Path: <bpf+bounces-44686-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 137C99C6578
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 00:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F65D9C6586
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 00:53:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C11591F25AA0
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 23:49:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 018131F25BFE
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 23:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F4FC21C192;
-	Tue, 12 Nov 2024 23:49:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66FB621C19F;
+	Tue, 12 Nov 2024 23:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WuFVYI1+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tNq2tg7+"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C2620ADC6;
-	Tue, 12 Nov 2024 23:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA912FC23;
+	Tue, 12 Nov 2024 23:53:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731455341; cv=none; b=sW3sp4w1zRDFUwHgSksZx/xsvv6cgpYeuiJi0Ii2ZRyAdOuB27VP+i+kyY529nObPG75LsCmxCCXdxQJL/UgnTDMhMz2lTKLGyhEgCJiS3F+OSeXX9Q2gPsZ/k8/7PqPdBw0tuVunz0Fioec7EAg4motpa05Rf7jVsrkDyK6Si0=
+	t=1731455596; cv=none; b=L6Do/7upSUU0geph63xALC1xIAZHf3chFkyQqxXWu3j0zBFntEbNH2XXbvadkB/wZpodeOFGauSJR/B1KQhH4QIDg1AUJenST+rUfmTE+MFjUJ50GlUhTluP04w5tgGMpDfuP3XFsq4SFqGZlcizrvNg2/12uQh71NM5OjQGTI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731455341; c=relaxed/simple;
-	bh=cDlrFqORAmp5emql+69NznXzQgn4UDJSwI2wrBQJcFc=;
+	s=arc-20240116; t=1731455596; c=relaxed/simple;
+	bh=ih61Z8/MVo0T4Hy4eeyqAgKhCZUJdb0YIDdPbmpfJFI=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=bPCra+PvJMIBKXpwJSsqf8jCLBQfax0ow75+xl8EGvHE/yq8j5SOVT8H66+nlfIcpnJ3RJVhnJf7rGG7UQ7GU90k28Id+/uEH++e8AR3KO93T/Rt4f+xMv6KqMnN1/kTedmA1xybX/Iw92JmopBNfk7xezOCm8E5Hl5gLwQWgK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WuFVYI1+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8C33C4CECD;
-	Tue, 12 Nov 2024 23:48:58 +0000 (UTC)
+	 Mime-Version:Content-Type; b=qmte8IlyR9fF3eAgu52E8aFQ00+Z9uvKAMRxTDStQ339CcvPi5lVsOz0FlKp87Mq7EhkZnEXwXNBuX3M1BI9bjfhhA6CXY3CP8NBjQgJh/tFVnk9SDjIgu2BvUMnFiVAFbL4FtROrZNc5e9H4uCKUvpQ/6TNDpwpLPF4y8zNv6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tNq2tg7+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43319C4CED9;
+	Tue, 12 Nov 2024 23:53:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731455340;
-	bh=cDlrFqORAmp5emql+69NznXzQgn4UDJSwI2wrBQJcFc=;
+	s=k20201202; t=1731455595;
+	bh=ih61Z8/MVo0T4Hy4eeyqAgKhCZUJdb0YIDdPbmpfJFI=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=WuFVYI1+IKCTbvtt0oi5mmbx/JgG2Q5My3qVWGqXPgigrZ90ssTNhFrFXGGpoXcwK
-	 9VF7f4pN8D6Fu53tVAa781dvqB9b3hBqmf1xFnPh+HdUlZKTWWDa6VFgirtFYcvrVV
-	 ceVSBA2Irj3jEJX5Lw/a8T6HLcM4ILPWjcWQpNWwUJLSpUPf2XKUT+eyBtA7r53H/A
-	 gaNN7fNjo4/lMrMG4SGphYw3Btd4hYXejlKg03u49nbDSd9wxhV4em0m+yl4EV8e0d
-	 S44VLS0bRxzs1dMCkLrKvuNfVZg/Lu9hqynl+372WdpcSHsyU9ipsKw0rffGP4QnZV
-	 H+wsTFnES1aiQ==
-Date: Wed, 13 Nov 2024 08:48:57 +0900
+	b=tNq2tg7+q1RV93nSwDuwnuJqZ7uvrDZMpH5zJhkkacbZhStZ9RfwnaWcTiLVrdrC3
+	 85zafAwMmXpd0qLy6CNgCClH4pM1Ex0nA8iJV+YRsJCqE9mDjqmgBTxerr3VofuhN1
+	 2AsPoOf/fDT3XHDVsk5XYX1Yhvg44scna6PQ98awwipVCLzsjdyLhBl9cHOjzD0UGu
+	 85iKx0RgLD9d28hDsOCSE3eoAqmOoFvpqscuuUlQu3AewrgsSJZA4H2XG3v9by67hz
+	 rWwk3rENIRtR9m+pYc4Sxi+sSx5hljkx15KDVbVq48bR387/9fow/5GdvkQcRRyNfH
+	 DcWzvQYmgYeAg==
+Date: Wed, 13 Nov 2024 08:53:09 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
- <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, linux-arch@vger.kernel.org
-Subject: Re: [PATCH v18 16/17] Documentation: probes: Update fprobe on
- function-graph tracer
-Message-Id: <20241113084857.962b4af542fe700542ace929@kernel.org>
-In-Reply-To: <20241101101448.10a3a0a9@gandalf.local.home>
-References: <172991731968.443985.4558065903004844780.stgit@devnote2>
-	<172991752671.443985.17111177875574390269.stgit@devnote2>
-	<20241101101448.10a3a0a9@gandalf.local.home>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Suren Baghdasaryan <surenb@google.com>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org,
+ akpm@linux-foundation.org, peterz@infradead.org, oleg@redhat.com,
+ rostedt@goodmis.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ jolsa@kernel.org, paulmck@kernel.org, willy@infradead.org,
+ mjguzik@gmail.com, brauner@kernel.org, jannh@google.com, mhocko@kernel.org,
+ vbabka@suse.cz, shakeel.butt@linux.dev, hannes@cmpxchg.org,
+ Liam.Howlett@oracle.com, lorenzo.stoakes@oracle.com, david@redhat.com,
+ arnd@arndb.de, richard.weiyang@gmail.com, zhangpeng.00@bytedance.com,
+ linmiaohe@huawei.com, viro@zeniv.linux.org.uk, hca@linux.ibm.com
+Subject: Re: [PATCH v4 tip/perf/core 4/4] uprobes: add speculative lockless
+ VMA-to-inode-to-uprobe resolution
+Message-Id: <20241113085309.e3752f5c33f86106fcb81180@kernel.org>
+In-Reply-To: <CAEf4BzZEvHzDFryW52Em8gdVZJJDByM+1eVukOJn-ZUf8ukxiA@mail.gmail.com>
+References: <20241028010818.2487581-1-andrii@kernel.org>
+	<20241028010818.2487581-5-andrii@kernel.org>
+	<20241112092816.cf5b0aa1ef10f50ce872892f@kernel.org>
+	<CAJuCfpFPFRWrrMOQL2wbeTS0Y7eTc81TV3MX0cHaCuQ85foiag@mail.gmail.com>
+	<CAEf4BzZEvHzDFryW52Em8gdVZJJDByM+1eVukOJn-ZUf8ukxiA@mail.gmail.com>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -64,129 +71,195 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, 1 Nov 2024 10:14:48 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, 12 Nov 2024 10:09:58 -0800
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-> On Sat, 26 Oct 2024 13:38:46 +0900
-> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> On Mon, Nov 11, 2024 at 5:05 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > On Mon, Nov 11, 2024 at 4:28 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > >
+> > > On Sun, 27 Oct 2024 18:08:18 -0700
+> > > Andrii Nakryiko <andrii@kernel.org> wrote:
+> > >
+> > > > Given filp_cachep is marked SLAB_TYPESAFE_BY_RCU (and FMODE_BACKING
+> > > > files, a special case, now goes through RCU-delated freeing), we can
+> > > > safely access vma->vm_file->f_inode field locklessly under just
+> > > > rcu_read_lock() protection, which enables looking up uprobe from
+> > > > uprobes_tree completely locklessly and speculatively without the need to
+> > > > acquire mmap_lock for reads. In most cases, anyway, assuming that there
+> > > > are no parallel mm and/or VMA modifications. The underlying struct
+> > > > file's memory won't go away from under us (even if struct file can be
+> > > > reused in the meantime).
+> > > >
+> > > > We rely on newly added mmap_lock_speculation_{begin,end}() helpers to
+> > > > validate that mm_struct stays intact for entire duration of this
+> > > > speculation. If not, we fall back to mmap_lock-protected lookup.
+> > > > The speculative logic is written in such a way that it will safely
+> > > > handle any garbage values that might be read from vma or file structs.
+> > > >
+> > > > Benchmarking results speak for themselves.
+> > > >
+> > > > BEFORE (latest tip/perf/core)
+> > > > =============================
+> > > > uprobe-nop            ( 1 cpus):    3.384 ± 0.004M/s  (  3.384M/s/cpu)
+> > > > uprobe-nop            ( 2 cpus):    5.456 ± 0.005M/s  (  2.728M/s/cpu)
+> > > > uprobe-nop            ( 3 cpus):    7.863 ± 0.015M/s  (  2.621M/s/cpu)
+> > > > uprobe-nop            ( 4 cpus):    9.442 ± 0.008M/s  (  2.360M/s/cpu)
+> > > > uprobe-nop            ( 5 cpus):   11.036 ± 0.013M/s  (  2.207M/s/cpu)
+> > > > uprobe-nop            ( 6 cpus):   10.884 ± 0.019M/s  (  1.814M/s/cpu)
+> > > > uprobe-nop            ( 7 cpus):    7.897 ± 0.145M/s  (  1.128M/s/cpu)
+> > > > uprobe-nop            ( 8 cpus):   10.021 ± 0.128M/s  (  1.253M/s/cpu)
+> > > > uprobe-nop            (10 cpus):    9.932 ± 0.170M/s  (  0.993M/s/cpu)
+> > > > uprobe-nop            (12 cpus):    8.369 ± 0.056M/s  (  0.697M/s/cpu)
+> > > > uprobe-nop            (14 cpus):    8.678 ± 0.017M/s  (  0.620M/s/cpu)
+> > > > uprobe-nop            (16 cpus):    7.392 ± 0.003M/s  (  0.462M/s/cpu)
+> > > > uprobe-nop            (24 cpus):    5.326 ± 0.178M/s  (  0.222M/s/cpu)
+> > > > uprobe-nop            (32 cpus):    5.426 ± 0.059M/s  (  0.170M/s/cpu)
+> > > > uprobe-nop            (40 cpus):    5.262 ± 0.070M/s  (  0.132M/s/cpu)
+> > > > uprobe-nop            (48 cpus):    6.121 ± 0.010M/s  (  0.128M/s/cpu)
+> > > > uprobe-nop            (56 cpus):    6.252 ± 0.035M/s  (  0.112M/s/cpu)
+> > > > uprobe-nop            (64 cpus):    7.644 ± 0.023M/s  (  0.119M/s/cpu)
+> > > > uprobe-nop            (72 cpus):    7.781 ± 0.001M/s  (  0.108M/s/cpu)
+> > > > uprobe-nop            (80 cpus):    8.992 ± 0.048M/s  (  0.112M/s/cpu)
+> > > >
+> > > > AFTER
+> > > > =====
+> > > > uprobe-nop            ( 1 cpus):    3.534 ± 0.033M/s  (  3.534M/s/cpu)
+> > > > uprobe-nop            ( 2 cpus):    6.701 ± 0.007M/s  (  3.351M/s/cpu)
+> > > > uprobe-nop            ( 3 cpus):   10.031 ± 0.007M/s  (  3.344M/s/cpu)
+> > > > uprobe-nop            ( 4 cpus):   13.003 ± 0.012M/s  (  3.251M/s/cpu)
+> > > > uprobe-nop            ( 5 cpus):   16.274 ± 0.006M/s  (  3.255M/s/cpu)
+> > > > uprobe-nop            ( 6 cpus):   19.563 ± 0.024M/s  (  3.261M/s/cpu)
+> > > > uprobe-nop            ( 7 cpus):   22.696 ± 0.054M/s  (  3.242M/s/cpu)
+> > > > uprobe-nop            ( 8 cpus):   24.534 ± 0.010M/s  (  3.067M/s/cpu)
+> > > > uprobe-nop            (10 cpus):   30.475 ± 0.117M/s  (  3.047M/s/cpu)
+> > > > uprobe-nop            (12 cpus):   33.371 ± 0.017M/s  (  2.781M/s/cpu)
+> > > > uprobe-nop            (14 cpus):   38.864 ± 0.004M/s  (  2.776M/s/cpu)
+> > > > uprobe-nop            (16 cpus):   41.476 ± 0.020M/s  (  2.592M/s/cpu)
+> > > > uprobe-nop            (24 cpus):   64.696 ± 0.021M/s  (  2.696M/s/cpu)
+> > > > uprobe-nop            (32 cpus):   85.054 ± 0.027M/s  (  2.658M/s/cpu)
+> > > > uprobe-nop            (40 cpus):  101.979 ± 0.032M/s  (  2.549M/s/cpu)
+> > > > uprobe-nop            (48 cpus):  110.518 ± 0.056M/s  (  2.302M/s/cpu)
+> > > > uprobe-nop            (56 cpus):  117.737 ± 0.020M/s  (  2.102M/s/cpu)
+> > > > uprobe-nop            (64 cpus):  124.613 ± 0.079M/s  (  1.947M/s/cpu)
+> > > > uprobe-nop            (72 cpus):  133.239 ± 0.032M/s  (  1.851M/s/cpu)
+> > > > uprobe-nop            (80 cpus):  142.037 ± 0.138M/s  (  1.775M/s/cpu)
+> > > >
+> > > > Previously total throughput was maxing out at 11mln/s, and gradually
+> > > > declining past 8 cores. With this change, it now keeps growing with each
+> > > > added CPU, reaching 142mln/s at 80 CPUs (this was measured on a 80-core
+> > > > Intel(R) Xeon(R) Gold 6138 CPU @ 2.00GHz).
+> > > >
+> > >
+> > > Looks good to me, except one question below.
+> > >
+> > > > Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+> > > > Suggested-by: Matthew Wilcox <willy@infradead.org>
+> > > > Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > ---
+> > > >  kernel/events/uprobes.c | 45 +++++++++++++++++++++++++++++++++++++++++
+> > > >  1 file changed, 45 insertions(+)
+> > > >
+> > > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> > > > index 290c445768fa..efcd62f7051d 100644
+> > > > --- a/kernel/events/uprobes.c
+> > > > +++ b/kernel/events/uprobes.c
+> > > > @@ -2074,6 +2074,47 @@ static int is_trap_at_addr(struct mm_struct *mm, unsigned long vaddr)
+> > > >       return is_trap_insn(&opcode);
+> > > >  }
+> > > >
+> > > > +static struct uprobe *find_active_uprobe_speculative(unsigned long bp_vaddr)
+> > > > +{
+> > > > +     struct mm_struct *mm = current->mm;
+> > > > +     struct uprobe *uprobe = NULL;
+> > > > +     struct vm_area_struct *vma;
+> > > > +     struct file *vm_file;
+> > > > +     loff_t offset;
+> > > > +     unsigned int seq;
+> > > > +
+> > > > +     guard(rcu)();
+> > > > +
+> > > > +     if (!mmap_lock_speculation_begin(mm, &seq))
+> > > > +             return NULL;
+> > > > +
+> > > > +     vma = vma_lookup(mm, bp_vaddr);
+> > > > +     if (!vma)
+> > > > +             return NULL;
+> > > > +
+> > > > +     /*
+> > > > +      * vm_file memory can be reused for another instance of struct file,
+> > > > +      * but can't be freed from under us, so it's safe to read fields from
+> > > > +      * it, even if the values are some garbage values; ultimately
+> > > > +      * find_uprobe_rcu() + mmap_lock_speculation_end() check will ensure
+> > > > +      * that whatever we speculatively found is correct
+> > >
+> > > If vm_file is a garbage value, may `vm_file->f_inode` access be dangerous?
+> > >
+> > > > +      */
+> > > > +     vm_file = READ_ONCE(vma->vm_file);
+> > > > +     if (!vm_file)
+> > > > +             return NULL;
+> > > > +
+> > > > +     offset = (loff_t)(vma->vm_pgoff << PAGE_SHIFT) + (bp_vaddr - vma->vm_start);
+> > > > +     uprobe = find_uprobe_rcu(vm_file->f_inode, offset);
+> > >                                        ^^^^ Here
+> > >
+> > > if it only stores vm_file or NULL, there's no problem.
+> >
+> > IIRC correctly, vma->vm_file is RCU-safe and we are in the read RCU
+> > section, so it should not contain a garbage value.
 > 
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Update fprobe documentation for the new fprobe on function-graph
-> > tracer. This includes some bahvior changes and pt_regs to
-> > ftrace_regs interface change.
-> > 
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > ---
-> >  Changes in v2:
-> >   - Update @fregs parameter explanation.
-> > ---
-> >  Documentation/trace/fprobe.rst |   42 ++++++++++++++++++++++++++--------------
-> >  1 file changed, 27 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.rst
-> > index 196f52386aaa..f58bdc64504f 100644
-> > --- a/Documentation/trace/fprobe.rst
-> > +++ b/Documentation/trace/fprobe.rst
-> > @@ -9,9 +9,10 @@ Fprobe - Function entry/exit probe
-> >  Introduction
-> >  ============
-> >  
-> > -Fprobe is a function entry/exit probe mechanism based on ftrace.
-> > -Instead of using ftrace full feature, if you only want to attach callbacks
-> > -on function entry and exit, similar to the kprobes and kretprobes, you can
-> > +Fprobe is a function entry/exit probe mechanism based on the function-graph
-> > +tracer.
-> 
-> You could still say "ftrace" as function-graph is part of the "ftrace"
-> infrastructure. But I don't care either way.
-> 
-> > +Instead of tracing all functions, if you want to attach callbacks on specific
-> > +function entry and exit, similar to the kprobes and kretprobes, you can
-> >  use fprobe. Compared with kprobes and kretprobes, fprobe gives faster
-> >  instrumentation for multiple functions with single handler. This document
-> >  describes how to use fprobe.
-> > @@ -91,12 +92,14 @@ The prototype of the entry/exit callback function are as follows:
-> >  
-> >  .. code-block:: c
-> >  
-> > - int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-> > + int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
-> >  
-> > - void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-> > + void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
-> >  
-> > -Note that the @entry_ip is saved at function entry and passed to exit handler.
-> > -If the entry callback function returns !0, the corresponding exit callback will be cancelled.
-> > +Note that the @entry_ip is saved at function entry and passed to exit
-> > +handler.
-> > +If the entry callback function returns !0, the corresponding exit callback
-> > +will be cancelled.
-> >  
-> >  @fp
-> >          This is the address of `fprobe` data structure related to this handler.
-> > @@ -112,12 +115,10 @@ If the entry callback function returns !0, the corresponding exit callback will
-> >          This is the return address that the traced function will return to,
-> >          somewhere in the caller. This can be used at both entry and exit.
-> >  
-> > -@regs
-> > -        This is the `pt_regs` data structure at the entry and exit. Note that
-> > -        the instruction pointer of @regs may be different from the @entry_ip
-> > -        in the entry_handler. If you need traced instruction pointer, you need
-> > -        to use @entry_ip. On the other hand, in the exit_handler, the instruction
-> > -        pointer of @regs is set to the current return address.
-> > +@fregs
-> > +        This is the `ftrace_regs` data structure at the entry and exit. This
-> > +        includes the function parameters, or the return values. So user can
-> > +        access thos values via appropriate `ftrace_regs_*` APIs.
-> >  
-> >  @entry_data
-> >          This is a local storage to share the data between entry and exit handlers.
-> > @@ -125,6 +126,17 @@ If the entry callback function returns !0, the corresponding exit callback will
-> >          and `entry_data_size` field when registering the fprobe, the storage is
-> >          allocated and passed to both `entry_handler` and `exit_handler`.
-> >  
-> > +Entry data size and exit handlers on the same function
-> > +======================================================
-> > +
-> > +Since the entry data is passed via per-task stack and it is has limited size,
-> 
-> 						"and it has limited size"
+> Correct. vm_file itself can be either TYPESAFE_BY_RCU for normal
+> files, or properly RCU protected for FMODE_BACKING ones. Either way,
+> there is some correct struct file pointed to, and so all this is valid
+> and won't dereference invalid memory.
 
-Ah, I missed updating this document patch in v19. Need to fix that.
+OK, thanks for confirmation! This looks good to me.
 
-Thank you!
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
+Thank you,
 
 > 
-> > +the entry data size per probe is limited to `15 * sizeof(long)`. You also need
-> > +to take care that the different fprobes are probing on the same function, this
-> > +limit becomes smaller. The entry data size is aligned to `sizeof(long)` and
-> > +each fprobe which has exit handler uses a `sizeof(long)` space on the stack,
-> > +you should keep the number of fprobes on the same function as small as
-> > +possible.
-> 
-> -- Steve
-> 
-> > +
-> >  Share the callbacks with kprobes
-> >  ================================
-> >  
-> > @@ -165,8 +177,8 @@ This counter counts up when;
-> >   - fprobe fails to take ftrace_recursion lock. This usually means that a function
-> >     which is traced by other ftrace users is called from the entry_handler.
-> >  
-> > - - fprobe fails to setup the function exit because of the shortage of rethook
-> > -   (the shadow stack for hooking the function return.)
-> > + - fprobe fails to setup the function exit because of failing to allocate the
-> > +   data buffer from the per-task shadow stack.
-> >  
-> >  The `fprobe::nmissed` field counts up in both cases. Therefore, the former
-> >  skips both of entry and exit callback and the latter skips the exit
-> 
+> >
+> > >
+> > > Thank you,
+> > >
+> > > > +     if (!uprobe)
+> > > > +             return NULL;
+> > > > +
+> > > > +     /* now double check that nothing about MM changed */
+> > > > +     if (!mmap_lock_speculation_end(mm, seq))
+> > > > +             return NULL;
+> > > > +
+> > > > +     return uprobe;
+> > > > +}
+> > > > +
+> > > >  /* assumes being inside RCU protected region */
+> > > >  static struct uprobe *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_swbp)
+> > > >  {
+> > > > @@ -2081,6 +2122,10 @@ static struct uprobe *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_swb
+> > > >       struct uprobe *uprobe = NULL;
+> > > >       struct vm_area_struct *vma;
+> > > >
+> > > > +     uprobe = find_active_uprobe_speculative(bp_vaddr);
+> > > > +     if (uprobe)
+> > > > +             return uprobe;
+> > > > +
+> > > >       mmap_read_lock(mm);
+> > > >       vma = vma_lookup(mm, bp_vaddr);
+> > > >       if (vma) {
+> > > > --
+> > > > 2.43.5
+> > > >
+> > >
+> > >
+> > > --
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
 
 -- 
