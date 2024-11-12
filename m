@@ -1,259 +1,203 @@
-Return-Path: <bpf+bounces-44559-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44560-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12B589C4BB1
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 02:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F31569C4BB6
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 02:29:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 993C31F236B7
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 01:28:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84AB41F23A17
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 01:29:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF25520494B;
-	Tue, 12 Nov 2024 01:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F42204959;
+	Tue, 12 Nov 2024 01:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EMwblpTM"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="XEWpS2xG"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1D7204921;
-	Tue, 12 Nov 2024 01:28:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2152AF06;
+	Tue, 12 Nov 2024 01:29:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731374925; cv=none; b=ZyLmLLkc+1u4pPr+m4+K6m/2gj7969YuGoAlh2hNGTQ8Sh4vcxpFrbYfTzk/975llafFgssdpTT+2Lg+4zOgtMjlnQDAbHqNFf+0DFbOosQuVbghBtg7XbxggE17bVM5ex7Ti2ALj29LbXVPPAzWidNet/b1QVZdkOirsJUYUdA=
+	t=1731374975; cv=none; b=INEI/Fclnymin3THpmzOw368nud0Z6d8zLo4REbto7p/bX408MqqYc5fS+4Zo0VMZ8KQZR86pgB5lu0jzukHsZ4KLknxjKxTDwD4RywsKzekJMbB/MWY8Tr9vNsxcuMi+Il5SveDnsWOURczqbbobxZ1L7T94WiOT0Xu5TYtjYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731374925; c=relaxed/simple;
-	bh=1ESE2VPKTU3JRaOnmP+kg3oYTLo3tW6IyA6ZD5e5zkY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ftHEv4ljnNI4nsFY2oWbhugRsi6aSrx9XgvS5TGnGHAYSb63JkwbFAG4V8OtVgN6xXAA/mX5O/bZrzuPnseZr9pZoz3jPHDz8m6Q3rV/RMRXbbfNMlGiwbShti2idAUjAmHPWt7qSq0pH07E12xJpphSPnj4GgKXBxmGL+06gDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EMwblpTM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBE9DC4CECF;
-	Tue, 12 Nov 2024 01:28:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731374924;
-	bh=1ESE2VPKTU3JRaOnmP+kg3oYTLo3tW6IyA6ZD5e5zkY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=EMwblpTMywyOAmQx+gEq4VIAgtOo1sO6ctCD/gLfKTNtWdd7MiURwNWm8DgE/Epq6
-	 t2Lqgaa7zGlvEGSGit7DSRHisR1UFqyVstjnDhFIvvVUXZB/XN0pquQmYIum4pJhrz
-	 u5L+QZlLskTmm76ZHvp7ntFaQ4k7im9FLn+579wcK5mApymZHVHbySNmkqwe5JGNV4
-	 LIDjb4qs7LlFt65xwDSAJWiziPw8IcAhTKGEQMdhTiJxs2ASCGha1rMtYcKXRaokYG
-	 G2NDl1z/JFkL6cMenrTJ5+ToQcOghmCN886rFR+BMOjD43BqqimZUMBtqHoJiNe383
-	 iMZ3qobwEE9Mg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 70619CE0BA3; Mon, 11 Nov 2024 17:28:44 -0800 (PST)
-Date: Mon, 11 Nov 2024 17:28:44 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com, rostedt@goodmis.org,
-	kernel test robot <oliver.sang@intel.com>,
+	s=arc-20240116; t=1731374975; c=relaxed/simple;
+	bh=51UECk28dV15zIq3POGflUXGPV5B5IFZ/GPDdueH+Wo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Cnlr5rQOF7YD85jWuBi7Abk87Gj/nSfku8KfHeO2kEOmWBAGT6rsJpTIBC/LaWA7RK9Flok6anenrHLmm4iBsim0gjPClcTQqOWvIBJek01TTihKeYjwZi1U+EiPxldg7TLZkNIWGW0r4lkOAMSxDC1xde9LA1iRecHxXOJPNVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=XEWpS2xG; arc=none smtp.client-ip=115.124.30.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1731374969; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=24nPIwKKsU+tzcVmELJ3VnjLe54hrnQQxWsvNlefg7k=;
+	b=XEWpS2xGzrLsg7BAfJhbsn45SUNAVYdQEc2WwfdLgmyfgecZN4l+KPEBGr4rQPru/xrs0aYZ1mHgiToBEd9Alspv5VlA0e6gE54AOZ0mirXwO8xCwQcC+pIICqhf0VSAJMvpeM1Eusgpll41yx3nw21jLgh/sLtMVUW1VVAtYiY=
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0WJF8T7F_1731374968 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 12 Nov 2024 09:29:29 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: netdev@vger.kernel.org
+Cc: "Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	=?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 06/12] srcu: Add srcu_read_lock_lite() and
- srcu_read_unlock_lite()
-Message-ID: <bb96e032-4f7d-41bf-a675-81350dca8d0a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
- <20241009180719.778285-6-paulmck@kernel.org>
- <e46a4c37-47d3-4a02-a7a5-278d047dd7a2@amd.com>
- <71a72bcc-ba85-4f86-9d41-cccfd433fa09@paulmck-laptop>
- <c15d4a80-2f27-4588-af87-9cf7cf3ad79e@amd.com>
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	virtualization@lists.linux.dev,
+	bpf@vger.kernel.org
+Subject: [PATCH net-next v4 00/13] virtio-net: support AF_XDP zero copy (tx)
+Date: Tue, 12 Nov 2024 09:29:15 +0800
+Message-Id: <20241112012928.102478-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c15d4a80-2f27-4588-af87-9cf7cf3ad79e@amd.com>
+X-Git-Hash: ee9bd377a389
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 11, 2024 at 10:21:58PM +0530, Neeraj Upadhyay wrote:
-> On 11/11/2024 8:56 PM, Paul E. McKenney wrote:
-> > On Mon, Nov 11, 2024 at 06:24:58PM +0530, Neeraj Upadhyay wrote:
-> >>>  /*
-> >>> - * Returns approximate total of the readers' ->srcu_lock_count[] values
-> >>> - * for the rank of per-CPU counters specified by idx.
-> >>> + * Computes approximate total of the readers' ->srcu_lock_count[] values
-> >>> + * for the rank of per-CPU counters specified by idx, and returns true if
-> >>> + * the caller did the proper barrier (gp), and if the count of the locks
-> >>> + * matches that of the unlocks passed in.
-> >>>   */
-> >>> -static unsigned long srcu_readers_lock_idx(struct srcu_struct *ssp, int idx)
-> >>> +static bool srcu_readers_lock_idx(struct srcu_struct *ssp, int idx, bool gp, unsigned long unlocks)
-> >>>  {
-> >>>  	int cpu;
-> >>> +	unsigned long mask = 0;
-> >>>  	unsigned long sum = 0;
-> >>>  
-> >>>  	for_each_possible_cpu(cpu) {
-> >>>  		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
-> >>>  
-> >>>  		sum += atomic_long_read(&sdp->srcu_lock_count[idx]);
-> >>> +		if (IS_ENABLED(CONFIG_PROVE_RCU))
-> >>> +			mask = mask | READ_ONCE(sdp->srcu_reader_flavor);
-> >>>  	}
-> >>> -	return sum;
-> >>> +	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask - 1)),
-> >>> +		  "Mixed reader flavors for srcu_struct at %ps.\n", ssp);
-> >>
-> >> I am trying to understand the (unlikely) case where synchronize_srcu() is done before any
-> >> srcu reader lock/unlock lite call is done. Can new SRCU readers fail to observe the
-> >> updates?
-> > 
-> > If a SRCU reader fail to observe the index flip, then isn't it the case
-> > that the synchronize_rcu() invoked from srcu_readers_active_idx_check()
-> > must wait on it?
-> 
-> Below is the sequence of operations I was thinking of, where at step 4 CPU2
-> reads old pointer
-> 
-> ptr = old
-> 
-> 
-> CPU1                                         CPU2
-> 
-> 1. Update ptr = new
-> 
-> 2. synchronize_srcu()
-> 
-> <Does not use synchronize_rcu()
->  as SRCU_READ_FLAVOR_LITE is not
->  set for any sdp as srcu_read_lock_lite()
->  hasn't been called by any CPU>
-> 
->                                       3. srcu_read_lock_lite()
->                                         <No smp_mb() ordering>
-> 
->                                       4.  Can read ptr == old ?
+v4:
+    1. rebase net-next
+    2. update the kdoc for the new APIs
 
-As long as the kernel was built with CONFIG_PROVE_RCU=y and given a fix
-to the wrong-CPU issue you quite rightly point out below, no it cannot.
-The CPU's first call to srcu_read_lock_lite() will use cmpxchg() to update
-->srcu_reader_flavor, which will place full ordering between that update
-and the later read from "ptr".
+v3:
+    1. use sg_dma_address/length api to set the premapped sg
+    2. remove 'premapped' parameter from the new APIs
+    3. tweak the comment of commit #2,#3
 
-So if the synchronize_srcu() is too early to see the SRCU_READ_FLAVOR_LITE
-bit, then the reader must see the new value of "ptr".  Similarly,
-if the reader can see the old value of "ptr", then synchronize_srcu()
-must see the reader's setting of the SRCU_READ_FLAVOR_LITE bit.
+v2:
+    1. use new api to submit premapped buffer instead of using sgs to pass this info
+    2. some small fixes for http://lore.kernel.org/all/20240924013204.13763-1-xuanzhuo@linux.alibaba.com
 
-But both the CONFIG_PROVE_RCU=n and the wrong-CPU issue must be fixed
-for this to work.  Please see the upcoming patches to be posted as a
-reply to this email.
 
-> >>> +	if (mask & SRCU_READ_FLAVOR_LITE && !gp)
-> >>> +		return false;
-> >>
-> >> So, srcu_readers_active_idx_check() can potentially return false for very long
-> >> time, until the CPU executing srcu_readers_active_idx_check() does
-> >> at least one read lock/unlock lite call?
-> > 
-> > That is correct.  The theory is that until after an srcu_read_lock_lite()
-> > has executed, there is no need to wait on it.  Does the practice match the
-> > theory in this case, or is there some sequence of events that I missed?
-> 
-> Below sequence
-> 
-> CPU1                     CPU2     
->                        1. srcu_read_lock_lite()
->                        
->                        
->                        2. srcu_read_unlock_lite()
-> 
-> 3. synchronize_srcu()
-> 
-> 3.1 srcu_readers_lock_idx() is
-> called with gp = false as
-> srcu_read_lock_lite() was never
-> called on this CPU for this
-> srcu_struct. So
-> ssp->sda->srcu_reader_flavor is not
-> set for CPU1's sda.
+v1:
+    1. some small fixes for http://lore.kernel.org/all/20240820073330.9161-1-xuanzhuo@linux.alibaba.com
+        1. fix the title of the commit #2, #3
+        2. fix the gcc error for commit #3
+        3. use virtqueue_dma_xxxx for tx hdr
+        4. rename virtnet_ptr_to_xsk to virtnet_ptr_to_xsk_buff_len
+        5. squash #11 in last patch set to #10
 
-Good eyes!  Yes, the scan that sums the ->srcu_unlock_count[] counters
-must also OR together the ->srcu_reader_flavor fields.
+================================================================================
 
-> 3.2 Inside srcu_readers_lock_idx()
-> "mask" contains SRCU_READ_FLAVOR_LITE
-> as CPU2's sdp->srcu_reader_flavor has it.
-> 
-> 3.3 CPU1 keeps returning false from
-> below check until CPU1 does at least
-> one srcu_read_lock_lite() call or
-> the thread migrates.
-> 
-> if (mask & SRCU_READ_FLAVOR_LITE && !gp)
->   return false;
+## AF_XDP
 
-This is also fixed by the OR of the ->srcu_reader_flavor fields, correct?
+XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
+copy feature of xsk (XDP socket) needs to be supported by the driver. The
+performance of zero copy is very good. mlx5 and intel ixgbe already support
+this feature, This patch set allows virtio-net to support xsk's zerocopy xmit
+feature.
 
-I guess I could claim that this bug prevents the wrong-CPU bug above
-from resulting in a too-short SRCU grace period, but it is of course
-better to just fix the bugs.  ;-)
+At present, we have completed some preparation:
 
-> >>> +	return sum == unlocks;
-> >>>  }
-> >>>  
-> >>>  /*
-> >>> @@ -473,6 +482,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
-> >>>   */
-> >>>  static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
-> >>>  {
-> >>> +	bool did_gp = !!(raw_cpu_read(ssp->sda->srcu_reader_flavor) & SRCU_READ_FLAVOR_LITE);
-> >>
-> >> sda->srcu_reader_flavor is only set when CONFIG_PROVE_RCU is enabled. But we
-> >> need the reader flavor information for srcu lite variant to work. So, lite
-> >> variant does not work when CONFIG_PROVE_RCU is disabled. Am I missing something
-> >> obvious here?
-> > 
-> > At first glance, it appears that I am the one who missed something obvious.
-> > Including in testing, which failed to uncover this issue.
-> > 
-> > Thank you for the careful reviews!
-> 
-> Sure thing, no problem!
+1. vq-reset (virtio spec and kernel code)
+2. virtio-core premapped dma
+3. virtio-net xdp refactor
 
-And again, thank you!
+So it is time for Virtio-Net to complete the support for the XDP Socket
+Zerocopy.
 
-							Thanx, Paul
+Virtio-net can not increase the queue num at will, so xsk shares the queue with
+kernel.
 
-> >>>  	unsigned long unlocks;
-> >>>  
-> >>>  	unlocks = srcu_readers_unlock_idx(ssp, idx);
-> >>> @@ -482,13 +492,16 @@ static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
-> >>>  	 * unlock is counted. Needs to be a smp_mb() as the read side may
-> >>>  	 * contain a read from a variable that is written to before the
-> >>>  	 * synchronize_srcu() in the write side. In this case smp_mb()s
-> >>> -	 * A and B act like the store buffering pattern.
-> >>> +	 * A and B (or X and Y) act like the store buffering pattern.
-> >>>  	 *
-> >>> -	 * This smp_mb() also pairs with smp_mb() C to prevent accesses
-> >>> -	 * after the synchronize_srcu() from being executed before the
-> >>> -	 * grace period ends.
-> >>> +	 * This smp_mb() also pairs with smp_mb() C (or, in the case of X,
-> >>> +	 * Z) to prevent accesses after the synchronize_srcu() from being
-> >>> +	 * executed before the grace period ends.
-> >>>  	 */
-> >>> -	smp_mb(); /* A */
-> >>> +	if (!did_gp)
-> >>> +		smp_mb(); /* A */
-> >>> +	else
-> >>> +		synchronize_rcu(); /* X */
-> >>>  
-> >>>  	/*
-> >>>  	 * If the locks are the same as the unlocks, then there must have
-> >>> @@ -546,7 +559,7 @@ static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
-> >>>  	 * which are unlikely to be configured with an address space fully
-> >>>  	 * populated with memory, at least not anytime soon.
-> >>>  	 */
-> >>> -	return srcu_readers_lock_idx(ssp, idx) == unlocks;
-> >>> +	return srcu_readers_lock_idx(ssp, idx, did_gp, unlocks);
-> >>>  }
-> >>>  
-> >>
+This patch set includes some refactor to the virtio-net to let that to support
+AF_XDP.
+
+## About virtio premapped mode
+
+The current configuration sets the virtqueue (vq) to premapped mode,
+implying that all buffers submitted to this queue must be mapped ahead
+of time. This presents a challenge for the virtnet send queue (sq): the
+virtnet driver would be required to keep track of dma information for vq
+size * 17, which can be substantial. However, if the premapped mode were
+applied on a per-buffer basis, the complexity would be greatly reduced.
+With AF_XDP enabled, AF_XDP buffers would become premapped, while kernel
+skb buffers could remain unmapped.
+
+We can distinguish them by sg_page(sg), When sg_page(sg) is NULL, this
+indicates that the driver has performed DMA mapping in advance, allowing
+the Virtio core to directly utilize sg_dma_address(sg) without
+conducting any internal DMA mapping. Additionally, DMA unmap operations
+for this buffer will be bypassed.
+
+## performance
+
+ENV: Qemu with vhost-user(polling mode).
+Host CPU: Intel(R) Xeon(R) Platinum 8163 CPU @ 2.50GHz
+
+### virtio PMD in guest with testpmd
+
+testpmd> show port stats all
+
+ ######################## NIC statistics for port 0 ########################
+ RX-packets: 19531092064 RX-missed: 0     RX-bytes: 1093741155584
+ RX-errors: 0
+ RX-nombuf: 0
+ TX-packets: 5959955552 TX-errors: 0     TX-bytes: 371030645664
+
+
+ Throughput (since last show)
+ Rx-pps:   8861574     Rx-bps:  3969985208
+ Tx-pps:   8861493     Tx-bps:  3969962736
+ ############################################################################
+
+### AF_XDP PMD in guest with testpmd
+
+testpmd> show port stats all
+
+  ######################## NIC statistics for port 0  ########################
+  RX-packets: 68152727   RX-missed: 0          RX-bytes:  3816552712
+  RX-errors: 0
+  RX-nombuf:  0
+  TX-packets: 68114967   TX-errors: 33216      TX-bytes:  3814438152
+
+  Throughput (since last show)
+  Rx-pps:      6333196          Rx-bps:   2837272088
+  Tx-pps:      6333227          Tx-bps:   2837285936
+  ############################################################################
+
+But AF_XDP consumes more CPU for tx and rx napi(100% and 86%).
+
+Please review.
+
+Thanks.
+
+
+
+
+Xuan Zhuo (13):
+  virtio_ring: introduce vring_need_unmap_buffer
+  virtio_ring: split: record extras for indirect buffers
+  virtio_ring: packed: record extras for indirect buffers
+  virtio_ring: perform premapped operations based on per-buffer
+  virtio_ring: introduce add api for premapped
+  virtio-net: rq submits premapped per-buffer
+  virtio_ring: remove API virtqueue_set_dma_premapped
+  virtio_net: refactor the xmit type
+  virtio_net: xsk: bind/unbind xsk for tx
+  virtio_net: xsk: prevent disable tx napi
+  virtio_net: xsk: tx: support xmit xsk buffer
+  virtio_net: update tx timeout record
+  virtio_net: xdp_features add NETDEV_XDP_ACT_XSK_ZEROCOPY
+
+ drivers/net/virtio_net.c     | 369 ++++++++++++++++++++++++++++-------
+ drivers/virtio/virtio_ring.c | 356 ++++++++++++++++-----------------
+ include/linux/virtio.h       |  13 +-
+ 3 files changed, 489 insertions(+), 249 deletions(-)
+
+--
+2.32.0.3.g01195cf9f
+
 
