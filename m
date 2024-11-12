@@ -1,50 +1,68 @@
-Return-Path: <bpf+bounces-44593-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44595-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFF9F9C4E6A
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 06:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 882469C4F93
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 08:38:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48DDFB21633
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 05:50:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C4AAB25AF3
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 07:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC3620100C;
-	Tue, 12 Nov 2024 05:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZnMrFmJw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99F020BB49;
+	Tue, 12 Nov 2024 07:37:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 650244502F
-	for <bpf@vger.kernel.org>; Tue, 12 Nov 2024 05:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from cmccmta3.chinamobile.com (cmccmta6.chinamobile.com [111.22.67.139])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5639D20ADED;
+	Tue, 12 Nov 2024 07:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731390620; cv=none; b=eqq01FPttmXjXNlkuwMeApYkh0LaBVhVnEwEVmLHFfTfAMLtsRwxhm0FZ4rl+kuTyQ4w/8N4pAjI9EZkx+tDS5IAnQVb0FsWAzm/fC3yvJ26nw8GCK0YSIXbOYMtDIRfv4Ri2h2VnzLsygHyqJBwxbd4yx7oFrI4OP/c7+tDhto=
+	t=1731397032; cv=none; b=rqr6HtMiXALLvfqme7SWZzTn9Bdc4ZrfzRBts4UtNJsHZ2aGa1hQNxROlTmLDM+4pOtpcK9I07yf7edi8ZcocUeXFyE990g3h6zwxi4ebOipo4jf/842UdR4ZXT0XKSJi7ck2HgLk2SbcbkLQKvv7ghKSzmyOEozb1iXW6mGkLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731390620; c=relaxed/simple;
-	bh=s9qlv141yYv8ZzJNesSbY4VGUQcrRNrwKY+GYuSSLLc=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Fr78WSZDsT324wpc0F45ASOoeYbh23NIpbWJjGE9buwfWZBysS/cNk4iSb+gS3sJS1tueV+CZY4tR06oG34EWM/SRfOPeMi/yNsZobiTcaqnik47nW3zrw9dQZ93S3X4Xgs6WdkoMCmIvst/rFpGcWQv/4Fl0UrZoJhIwbpPYGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZnMrFmJw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7914C4CECD;
-	Tue, 12 Nov 2024 05:50:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731390619;
-	bh=s9qlv141yYv8ZzJNesSbY4VGUQcrRNrwKY+GYuSSLLc=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ZnMrFmJwEN9KiB1I8ZmVnhfr7GfIH+hK6rW3VZrE20lov7ydGoDi9NyyNdgac6QT6
-	 qIARlLgLZ0n2RfrfTYblU2UsWP0Dp2peIi7ve2eLy6iTWED9nylLz+AQbUZwVlAt+B
-	 mk9F5ljt+KlApr9lnftLbXZLFB1rRyLCQDd/Wmv1Ily7EJG5sTaVN330bFCvSLLWvb
-	 /ZvJH/yKVv7DiiRkO73fQSQbHikoqvAeApQRtyQTePqYLn3wi8HGOlruiswiI65wua
-	 8LGBo+6s0kU5+o/EfedjT0PdycAdNBxL7lO0tfK4Rj8mqfMUNXCt7KzONKQab2VZD+
-	 AJXuPImoz9SIg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D503809A80;
-	Tue, 12 Nov 2024 05:50:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1731397032; c=relaxed/simple;
+	bh=RsvRD2b/+78gwa4Dmk21x5+fQX25aqCJmIaqjGECiSc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=j8d35vYx4zJuqqcKJv0+7u0Ytn3bovgCVu/JnuMbd2swOcoEQpFG2+rax7P8KwEi0n/RfQUpQqF8mO6+FfuNl27duUIk4U8n0q3DCZmpCbIboUZo2bKwfDS8wo7VVRWHqvUj82BAeEsrFYJ4SChhKueLqD0N474BFNdDBqweoZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
+	by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee96733059f3b5-133ca;
+	Tue, 12 Nov 2024 15:37:04 +0800 (CST)
+X-RM-TRANSID:2ee96733059f3b5-133ca
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from localhost.localdomain (unknown[223.108.79.103])
+	by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee46733059fb2e-34fce;
+	Tue, 12 Nov 2024 15:37:04 +0800 (CST)
+X-RM-TRANSID:2ee46733059fb2e-34fce
+From: Luo Yifan <luoyifan@cmss.chinamobile.com>
+To: andrii.nakryiko@gmail.com,
+	qmo@kernel.org
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	luoyifan@cmss.chinamobile.com,
+	martin.lau@linux.dev,
+	sdf@fomichev.me,
+	song@kernel.org,
+	yonghong.song@linux.dev
+Subject: [PATCH] bpftool: Cast variable `var` to long long
+Date: Tue, 12 Nov 2024 15:37:01 +0800
+Message-Id: <20241112073701.283362-1-luoyifan@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <CAEf4BzYgqb=NcSCJiJQEPUPhE02cUZqaFdYc4FJXvQUeXxhHJA@mail.gmail.com>
+References: <CAEf4BzYgqb=NcSCJiJQEPUPhE02cUZqaFdYc4FJXvQUeXxhHJA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,44 +70,31 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next] bpf: use common instruction history across all
- states
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <173139063001.99001.4097081801335291237.git-patchwork-notify@kernel.org>
-Date: Tue, 12 Nov 2024 05:50:30 +0000
-References: <20241112035530.1219098-1-andrii@kernel.org>
-In-Reply-To: <20241112035530.1219098-1-andrii@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, kernel-team@meta.com, eddyz87@gmail.com
 
-Hello:
+When the SIGNED condition is met, the variable `var` should be cast to
+`long long` instead of `unsigned long long`.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Signed-off-by: Luo Yifan <luoyifan@cmss.chinamobile.com>
+---
+ tools/bpf/bpftool/btf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Mon, 11 Nov 2024 19:55:29 -0800 you wrote:
-> Instead of allocating and copying instruction history each time we
-> enqueue child verifier state, switch to a model where we use one common
-> dynamically sized array of instruction history entries across all states.
-> 
-> The key observation for proving this is correct is that instruction
-> history is only relevant while state is active, which means it either is
-> a current state (and thus we are actively modifying instruction history
-> and no other state can interfere with us) or we are checkpointed state
-> with some children still active (either enqueued or being current).
-> 
-> [...]
-
-Here is the summary with links:
-  - [v2,bpf-next] bpf: use common instruction history across all states
-    https://git.kernel.org/bpf/bpf-next/c/042d95c6b30e
-
-You are awesome, thank you!
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index 547c1ccdc..d005e4fd6 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -289,7 +289,7 @@ static int dump_btf_type(const struct btf *btf, __u32 id,
+ 			} else {
+ 				if (btf_kflag(t))
+ 					printf("\n\t'%s' val=%lldLL", name,
+-					       (unsigned long long)val);
++					       (long long)val);
+ 				else
+ 					printf("\n\t'%s' val=%lluULL", name,
+ 					       (unsigned long long)val);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+2.27.0
+
 
 
 
