@@ -1,307 +1,168 @@
-Return-Path: <bpf+bounces-44553-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44554-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7596A9C49A0
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 00:19:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18BDB9C4AAF
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 01:27:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEFF8B220F4
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2024 23:19:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D245828847B
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 00:27:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD6BB15C15B;
-	Mon, 11 Nov 2024 23:19:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 745EA1F4FD0;
+	Tue, 12 Nov 2024 00:26:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ETbGS1f1"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kO+Lnfri"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB3F156F36
-	for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 23:19:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E6401CEEB3
+	for <bpf@vger.kernel.org>; Tue, 12 Nov 2024 00:26:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731367144; cv=none; b=UVf92jnK/p4A41Q4vvGDsRpjBZR1+J0OGxpsIM84mq3KWM/67M/5Wy9F8r/4MQdGDGbq6N8/31h1cBdkkiFoSyqvQdbucBfkPv09ZITKpy7XNcl09oEfd4L9H6shgExcjiQPez4uIavIa54Xs0E+jfpDeyiTUg+M8OcoYisH8jE=
+	t=1731371177; cv=none; b=QSA4Rtqbn2S23eJhPU3SBPCw9GaslTCIntGyYljTEAuPDS/tQ+Xw6tOH21lJuzUXj/llH2AV0sS6X9huO+d/uWbhn+C610fAm134DxoTDxpKe9dDVzfVJCq+Hj8qt+Iywc39wWVUBixlNJQoez4Gnzdlji5avdIT0snlKIh8mM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731367144; c=relaxed/simple;
-	bh=w0GSoaI2tWrKsyNKWoS9N/ec507VvCy6oEUew11UFgg=;
+	s=arc-20240116; t=1731371177; c=relaxed/simple;
+	bh=Kcit5CA4vTs4RMwxjpt8VPjivGf4nauNqiLQ3xNz1dg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=osJ7kqDoIXAqnjgsnViTd/6ikCFXdv4DWIAaRxu0bIC3V5o5fT6DdfYNeudhqGJo381LSg5Oi3hpd/1ljCeM01ZhkA3V6qAtHr+Kgwfm9UcVxgqek8aI92PecCz11noX/RnH9vJOq/JxIhab+xCPJwMSMFpl3B3GI6mcavaVA7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ETbGS1f1; arc=none smtp.client-ip=95.215.58.173
+	 In-Reply-To:Content-Type; b=faJ1EiLyoZrK3BXILw4LmZh69PFnU4WB1d/Urc7e0OmcQIs1/qI/HhUCQjnmj2gVge20P6B/UTI8EJxi/Sb9fHp84mwH83hvEh5aTQeves9h6mcbhPSiykawM37iQR6hIcCB0MR68+iyjROx6leF+mHeB1OdaxAt+edSbwQoei8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kO+Lnfri; arc=none smtp.client-ip=95.215.58.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a339f24d-eeb3-4086-b2b4-914e4c41766a@linux.dev>
+Message-ID: <fe7a61b3-627f-4e60-9bba-28a4d40d1ec8@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731367139;
+	t=1731371167;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1ALrsg4o6QpFdFVBGotzo0daHvEq2FHsDvh447lU07E=;
-	b=ETbGS1f1bhR1V0L0HovpiMN9ul3c0mcAnBOwx8hK4dKF7kaSSeIXt0pgoX+cmYka46PLYo
-	DCJ2R+gpAnXxmvn9Yx3a4MYRhuIYrVjBXFm/q5U26JLConTXcZjgRppTuQz1VomIHQS2wI
-	doPNPW6WEjXakWfkNlrP26R/hM1UjwQ=
-Date: Mon, 11 Nov 2024 15:18:53 -0800
+	bh=KPcxxtMej3Q9CrLa0p7MBeuTQqkwQgbrelNqYAfqzhE=;
+	b=kO+LnfriD7MOhewKFJpty3IQAqd0dlGZ+c7DOynj4za0S9K9ZS9SETPO/8NRvjGAerVzvJ
+	Q0jIfU5gyX6JGdptORBpAnVmzpRrvLyZVY5VNVdw0fYfpRl60xvFxEZoL/DFU8lHQVNHq8
+	fOFrEnQrB+XfHDY836G2Zx//9t3WznE=
+Date: Mon, 11 Nov 2024 16:25:52 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v11 4/7] bpf, x86: Support private stack in jit
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
- Tejun Heo <tj@kernel.org>
-References: <20241109025312.148539-1-yonghong.song@linux.dev>
- <20241109025332.150019-1-yonghong.song@linux.dev>
- <CAADnVQJ4OiJbVMU-xrQhokPoECh4v4fWf-N-0YMx0k=h12f8EQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next/net 1/5] bpf: Register mptcp common kfunc set
+To: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>,
+ Geliang Tang <geliang@kernel.org>
+Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20241108-bpf-next-net-mptcp-bpf_iter-subflows-v1-0-cf16953035c1@kernel.org>
+ <20241108-bpf-next-net-mptcp-bpf_iter-subflows-v1-1-cf16953035c1@kernel.org>
+Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQJ4OiJbVMU-xrQhokPoECh4v4fWf-N-0YMx0k=h12f8EQ@mail.gmail.com>
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20241108-bpf-next-net-mptcp-bpf_iter-subflows-v1-1-cf16953035c1@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
+On 11/8/24 7:52 AM, Matthieu Baerts (NGI0) wrote:
+> From: Geliang Tang <tanggeliang@kylinos.cn>
+> 
+> MPTCP helper mptcp_sk() is used to convert struct sock to mptcp_sock.
+> Helpers mptcp_subflow_ctx() and mptcp_subflow_tcp_sock() are used to
+> convert between struct mptcp_subflow_context and sock. They all will
+> be used in MPTCP BPF programs too.
+> 
+> This patch defines corresponding wrappers of them, and put the
+> wrappers into mptcp common kfunc set and register the set with the
+> flag BPF_PROG_TYPE_UNSPEC to let them accessible to all types of BPF
+> programs.
+> 
+> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> Reviewed-by: Mat Martineau <martineau@kernel.org>
+> Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+> Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+> ---
+>   net/mptcp/bpf.c | 40 +++++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 39 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/mptcp/bpf.c b/net/mptcp/bpf.c
+> index 8a16672b94e2384f5263e1432296cbca1236bb30..6f96a5927fd371f8ea92cbf96c875edef9272b98 100644
+> --- a/net/mptcp/bpf.c
+> +++ b/net/mptcp/bpf.c
+> @@ -29,8 +29,46 @@ static const struct btf_kfunc_id_set bpf_mptcp_fmodret_set = {
+>   	.set   = &bpf_mptcp_fmodret_ids,
+>   };
+>   
+> +__bpf_kfunc_start_defs();
+> +
+> +__bpf_kfunc static struct mptcp_sock *bpf_mptcp_sk(struct sock *sk)
+> +{
+> +	return mptcp_sk(sk);
+> +}
+> +
+> +__bpf_kfunc static struct mptcp_subflow_context *
+> +bpf_mptcp_subflow_ctx(const struct sock *sk)
+> +{
+> +	return mptcp_subflow_ctx(sk);
 
+This returns "struct mptcp_subflow_context *" without checking the sk is a mptcp 
+subflow or not...
 
+> +}
+> +
+> +__bpf_kfunc static struct sock *
+> +bpf_mptcp_subflow_tcp_sock(const struct mptcp_subflow_context *subflow)
+> +{
+> +	return mptcp_subflow_tcp_sock(subflow);
 
-On 11/9/24 12:14 PM, Alexei Starovoitov wrote:
-> On Fri, Nov 8, 2024 at 6:53 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->>          stack_depth = bpf_prog->aux->stack_depth;
->> +       if (bpf_prog->aux->priv_stack_ptr) {
->> +               priv_frame_ptr = bpf_prog->aux->priv_stack_ptr + round_up(stack_depth, 16);
->> +               stack_depth = 0;
->> +       }
-> ...
->
->> +       priv_stack_ptr = prog->aux->priv_stack_ptr;
->> +       if (!priv_stack_ptr && prog->aux->jits_use_priv_stack) {
->> +               priv_stack_ptr = __alloc_percpu_gfp(prog->aux->stack_depth, 16, GFP_KERNEL);
-> After applying I started to see crashes running test_progs -j like:
->
-> [  173.465191] Oops: general protection fault, probably for
-> non-canonical address 0xdffffc0000000af9: 0000 [#1] PREEMPT SMP KASAN
-> [  173.466053] KASAN: probably user-memory-access in range
-> [0x00000000000057c8-0x00000000000057cf]
-> [  173.466053] RIP: 0010:dst_dev_put+0x1e/0x220
-> [  173.466053] Call Trace:
-> [  173.466053]  <IRQ>
-> [  173.466053]  ? die_addr+0x40/0xa0
-> [  173.466053]  ? exc_general_protection+0x138/0x1f0
-> [  173.466053]  ? asm_exc_general_protection+0x26/0x30
-> [  173.466053]  ? dst_dev_put+0x1e/0x220
-> [  173.466053]  rt_fibinfo_free_cpus.part.0+0x8c/0x130
-> [  173.466053]  fib_nh_common_release+0xd6/0x2a0
-> [  173.466053]  free_fib_info_rcu+0x129/0x360
-> [  173.466053]  ? rcu_core+0xa55/0x1340
-> [  173.466053]  rcu_core+0xa55/0x1340
-> [  173.466053]  ? rcutree_report_cpu_dead+0x380/0x380
-> [  173.466053]  ? hrtimer_interrupt+0x319/0x7c0
-> [  173.466053]  handle_softirqs+0x14c/0x4d0
->
-> [   35.134115] Oops: general protection fault, probably for
-> non-canonical address 0xe0000bfff101fbbc: 0000 [#1] PREEMPT SMP KASAN
-> [   35.135089] KASAN: probably user-memory-access in range
-> [0x00007fff880fdde0-0x00007fff880fdde7]
-> [   35.135089] RIP: 0010:destroy_workqueue+0x4b4/0xa70
-> [   35.135089] Call Trace:
-> [   35.135089]  <TASK>
-> [   35.135089]  ? die_addr+0x40/0xa0
-> [   35.135089]  ? exc_general_protection+0x138/0x1f0
-> [   35.135089]  ? asm_exc_general_protection+0x26/0x30
-> [   35.135089]  ? destroy_workqueue+0x4b4/0xa70
-> [   35.135089]  ? destroy_workqueue+0x592/0xa70
-> [   35.135089]  ? __mutex_unlock_slowpath.isra.0+0x270/0x270
-> [   35.135089]  ext4_put_super+0xff/0xd70
-> [   35.135089]  generic_shutdown_super+0x148/0x4c0
-> [   35.135089]  kill_block_super+0x3b/0x90
-> [   35.135089]  ext4_kill_sb+0x65/0x90
->
-> I think I see the bug... quoted it above...
->
-> Please make sure you reproduce it first.
+...and then the "struct mptcp_subflow_context *" can be used by this kfunc here. 
+Is it really safe?
 
-Indeed, to use the allocation size round_up(stack_depth, 16) for __alloc_percpu_gfp()
-indeed fixed the problem.
+> +}
+> +
+> +__bpf_kfunc_end_defs();
+> +
+> +BTF_KFUNCS_START(bpf_mptcp_common_kfunc_ids)
+> +BTF_ID_FLAGS(func, bpf_mptcp_sk)
+> +BTF_ID_FLAGS(func, bpf_mptcp_subflow_ctx)
+> +BTF_ID_FLAGS(func, bpf_mptcp_subflow_tcp_sock)
 
-The following is additional change on top of this patch set to
-   - fix the memory access bug as suggested by Alexei in the above
-   - Add guard space for private stack, additional 16 bytes at the
-     end of stack will be the guard space. The content is prepopulated
-     and checked at per cpu private stack free site. If the content
-     is not expected, a kernel message will emit.
-   - Add kasan support for guard space.
+All of them has no KF_TRUSTED_ARGS or KF_RCU, so the returned ptr is supposed to 
+be read-only? Why are they needed and why bpf_rdonly_cast (aka the bpf_core_cast 
+in libbpf) cannot be used?
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 55556a64f776..d796d419bb48 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1446,6 +1446,9 @@ static void emit_priv_frame_ptr(u8 **pprog, void __percpu *priv_frame_ptr)
-  #define LOAD_TAIL_CALL_CNT_PTR(stack)                          \
-         __LOAD_TCC_PTR(BPF_TAIL_CALL_CNT_PTR_STACK_OFF(stack))
-  
-+#define PRIV_STACK_GUARD_SZ    16
-+#define PRIV_STACK_GUARD_VAL   0xEB9F1234eb9f1234ULL
-+
-  static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image,
-                   int oldproglen, struct jit_context *ctx, bool jmp_padding)
-  {
-@@ -1462,10 +1465,11 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
-         u8 *prog = temp;
-         u32 stack_depth;
-         int err;
-+       // int stack_size;
-  
-         stack_depth = bpf_prog->aux->stack_depth;
-         if (bpf_prog->aux->priv_stack_ptr) {
--               priv_frame_ptr = bpf_prog->aux->priv_stack_ptr + round_up(stack_depth, 16);
-+               priv_frame_ptr = bpf_prog->aux->priv_stack_ptr + round_up(stack_depth, 16) + PRIV_STACK_GUARD_SZ;
-                 stack_depth = 0;
-         }
-  
-@@ -1496,8 +1500,18 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
-                 emit_mov_imm64(&prog, X86_REG_R12,
-                                arena_vm_start >> 32, (u32) arena_vm_start);
-  
--       if (priv_frame_ptr)
-+       if (priv_frame_ptr) {
-+#if 0
-+               /* hack to emit and write some data to guard area */
-+               emit_priv_frame_ptr(&prog, bpf_prog->aux->priv_stack_ptr);
-+
-+               /* See case BPF_ST | BPF_MEM | BPF_W */
-+               EMIT2(0x41, 0xC7);
-+               EMIT2(add_1reg(0x40, X86_REG_R9), 0);
-+               EMIT(0xFFFFFFFF, bpf_size_to_x86_bytes(BPF_W));
-+#endif
-                 emit_priv_frame_ptr(&prog, priv_frame_ptr);
-+       }
-  
-         ilen = prog - temp;
-         if (rw_image)
-@@ -3383,11 +3397,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
-         struct x64_jit_data *jit_data;
-         int proglen, oldproglen = 0;
-         struct jit_context ctx = {};
-+       int priv_stack_size, cpu;
-         bool tmp_blinded = false;
-         bool extra_pass = false;
-         bool padding = false;
-         u8 *rw_image = NULL;
-         u8 *image = NULL;
-+       u64 *guard_ptr;
-         int *addrs;
-         int pass;
-         int i;
-@@ -3418,11 +3434,17 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
-         }
-         priv_stack_ptr = prog->aux->priv_stack_ptr;
-         if (!priv_stack_ptr && prog->aux->jits_use_priv_stack) {
--               priv_stack_ptr = __alloc_percpu_gfp(prog->aux->stack_depth, 16, GFP_KERNEL);
-+               priv_stack_size = round_up(prog->aux->stack_depth, 16) + PRIV_STACK_GUARD_SZ;
-+               priv_stack_ptr = __alloc_percpu_gfp(priv_stack_size, 16, GFP_KERNEL);
-                 if (!priv_stack_ptr) {
-                         prog = orig_prog;
-                         goto out_priv_stack;
-                 }
-+               for_each_possible_cpu(cpu) {
-+                       guard_ptr = per_cpu_ptr(priv_stack_ptr, cpu);
-+                       guard_ptr[0] = guard_ptr[1] = PRIV_STACK_GUARD_VAL;
-+                       kasan_poison_vmalloc(guard_ptr, PRIV_STACK_GUARD_SZ);
-+               }
-                 prog->aux->priv_stack_ptr = priv_stack_ptr;
-         }
-         addrs = jit_data->addrs;
-@@ -3561,6 +3583,10 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
-  out_addrs:
-                 kvfree(addrs);
-                 if (!image && priv_stack_ptr) {
-+                       for_each_possible_cpu(cpu) {
-+                               guard_ptr = per_cpu_ptr(priv_stack_ptr, cpu);
-+                               kasan_unpoison_vmalloc(guard_ptr, PRIV_STACK_GUARD_SZ, KASAN_VMALLOC_PROT_NORMAL);
-+                       }
-                         free_percpu(priv_stack_ptr);
-                         prog->aux->priv_stack_ptr = NULL;
-                 }
-@@ -3603,6 +3629,9 @@ void bpf_jit_free(struct bpf_prog *prog)
-         if (prog->jited) {
-                 struct x64_jit_data *jit_data = prog->aux->jit_data;
-                 struct bpf_binary_header *hdr;
-+               void __percpu *priv_stack_ptr;
-+               u64 *guard_ptr;
-+               int cpu;
-  
-                 /*
-                  * If we fail the final pass of JIT (from jit_subprogs),
-@@ -3618,7 +3647,21 @@ void bpf_jit_free(struct bpf_prog *prog)
-                 prog->bpf_func = (void *)prog->bpf_func - cfi_get_offset();
-                 hdr = bpf_jit_binary_pack_hdr(prog);
-                 bpf_jit_binary_pack_free(hdr, NULL);
--               free_percpu(prog->aux->priv_stack_ptr);
-+
-+               priv_stack_ptr = prog->aux->priv_stack_ptr;
-+               if (priv_stack_ptr) {
-+                       int stack_size;
-+
-+                       stack_size = round_up(prog->aux->stack_depth, 16) + PRIV_STACK_GUARD_SZ;
-+                       for_each_possible_cpu(cpu) {
-+                               guard_ptr = per_cpu_ptr(priv_stack_ptr, cpu);
-+                               kasan_unpoison_vmalloc(guard_ptr, PRIV_STACK_GUARD_SZ, KASAN_VMALLOC_PROT_NORMAL);
-+                               if (guard_ptr[0] != PRIV_STACK_GUARD_VAL || guard_ptr[1] != PRIV_STACK_GUARD_VAL)
-+                                       pr_err("Private stack Overflow happened for prog %sx\n", prog->aux->name);
-+                       }
-+                       free_percpu(priv_stack_ptr);
-+               }
-+
-                 WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
-         }
+pw-bot: cr
 
-This fixed the issue Alexei discovered.
-
-16 bytes guard space is allocated since allocation is done with 16byte aligned
-with multiple-16 size. If bpf program overflows the stack (change '#if 0' to '#if 1')
-in the above change, we will see:
-
-[root@arch-fb-vm1 bpf]# ./test_progs -n 336
-[   28.447390] bpf_testmod: loading out-of-tree module taints kernel.
-[   28.448180] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
-#336/1   struct_ops_private_stack/private_stack:OK
-#336/2   struct_ops_private_stack/private_stack_fail:OK
-#336/3   struct_ops_private_stack/private_stack_recur:OK
-#336     struct_ops_private_stack:OK
-Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
-[   28.737710] Private stack Overflow happened for prog Fx
-[   28.739284] Private stack Overflow happened for prog Fx
-[   28.968732] Private stack Overflow happened for prog Fx
-
-Here the func name is 'Fx' (representing the sub prog). We might need
-to add more meaningful info (e.g. main prog name) to make message more
-meaningful.
-
-I added some changes related kasan. If I made a change to guard space in kernel (not in bpf prog),
-the kasan can print out the error message properly. But unfortunately, in jit, there is no
-kasan instrumentation so warning (with "#if 1" change) is not reported. One possibility is
-if kernel config enables kasan, bpf jit could add kasan to jited binary. Not sure the
-complexity and whether it is worthwhile or not since supposedly verifier should already
-prevent overflow and we already have a guard check (Private stack overflow happened ...)
-in jit.
-
-> Then let's figure out a way how to test for such things and
-> what we can do to make kasan detect it sooner,
-> since above crashes have no indication at all that bpf priv stack
-> is responsible.
-> If there is another bug in priv stack and it will cause future
-> crashes we need to make sure that priv stack corruption is
-> detected by kasan (or whatever mechanism) earlier.
->
-> We cannot land private stack support when there is
-> a possibility of such silent corruption.
->
-> pw-bot: cr
+> +BTF_KFUNCS_END(bpf_mptcp_common_kfunc_ids)
+> +
+> +static const struct btf_kfunc_id_set bpf_mptcp_common_kfunc_set = {
+> +	.owner	= THIS_MODULE,
+> +	.set	= &bpf_mptcp_common_kfunc_ids,
+> +};
+> +
+>   static int __init bpf_mptcp_kfunc_init(void)
+>   {
+> -	return register_btf_fmodret_id_set(&bpf_mptcp_fmodret_set);
+> +	int ret;
+> +
+> +	ret = register_btf_fmodret_id_set(&bpf_mptcp_fmodret_set);
+> +	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC,
+> +					       &bpf_mptcp_common_kfunc_set);
+> +
+> +	return ret;
+>   }
+>   late_initcall(bpf_mptcp_kfunc_init);
+> 
 
 
