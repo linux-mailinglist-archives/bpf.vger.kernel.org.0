@@ -1,68 +1,72 @@
-Return-Path: <bpf+bounces-44595-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44596-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 882469C4F93
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 08:38:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F0119C507F
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 09:26:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C4AAB25AF3
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 07:38:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D59042826FF
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 08:26:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99F020BB49;
-	Tue, 12 Nov 2024 07:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF01120B804;
+	Tue, 12 Nov 2024 08:26:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AgvFWbqf"
 X-Original-To: bpf@vger.kernel.org
-Received: from cmccmta3.chinamobile.com (cmccmta6.chinamobile.com [111.22.67.139])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5639D20ADED;
-	Tue, 12 Nov 2024 07:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.139
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3591F1AB535;
+	Tue, 12 Nov 2024 08:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731397032; cv=none; b=rqr6HtMiXALLvfqme7SWZzTn9Bdc4ZrfzRBts4UtNJsHZ2aGa1hQNxROlTmLDM+4pOtpcK9I07yf7edi8ZcocUeXFyE990g3h6zwxi4ebOipo4jf/842UdR4ZXT0XKSJi7ck2HgLk2SbcbkLQKvv7ghKSzmyOEozb1iXW6mGkLU=
+	t=1731399977; cv=none; b=AisxllpP33DG1CFgOsrkMWJjlqDCdqNYbwMiOchZ2K+bFXzUz1yPHmHICvkhNImC04Aq56cxIplAZX7ra2WiwlOkzZrgO4igkGUAb7DluFpbs1oYFOd/gKWjio+rbyIa7tZu6ZUUsA/sYVVTYua6/CV7q/svVv1z6C7yAwPodHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731397032; c=relaxed/simple;
-	bh=RsvRD2b/+78gwa4Dmk21x5+fQX25aqCJmIaqjGECiSc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=j8d35vYx4zJuqqcKJv0+7u0Ytn3bovgCVu/JnuMbd2swOcoEQpFG2+rax7P8KwEi0n/RfQUpQqF8mO6+FfuNl27duUIk4U8n0q3DCZmpCbIboUZo2bKwfDS8wo7VVRWHqvUj82BAeEsrFYJ4SChhKueLqD0N474BFNdDBqweoZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
-	by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee96733059f3b5-133ca;
-	Tue, 12 Nov 2024 15:37:04 +0800 (CST)
-X-RM-TRANSID:2ee96733059f3b5-133ca
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from localhost.localdomain (unknown[223.108.79.103])
-	by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee46733059fb2e-34fce;
-	Tue, 12 Nov 2024 15:37:04 +0800 (CST)
-X-RM-TRANSID:2ee46733059fb2e-34fce
-From: Luo Yifan <luoyifan@cmss.chinamobile.com>
-To: andrii.nakryiko@gmail.com,
-	qmo@kernel.org
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
+	s=arc-20240116; t=1731399977; c=relaxed/simple;
+	bh=Y7htZnOFEVmRmOqBgRScScBjdMikNneCM17OkUCYvXk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Qa2CiW7vZFgzuWrE5cEbIvCWpmXR39Ad1CxCbG3yHay5kzOWe8lhUt03FnJC4C+go8uyuXqSxjYRRbTba+1peu/P+z8jXh2dAcrzeP1+j5V9UB0GpkLTFDk/ngXrA/xmmLaa/BtgpPVcPUuZFF2x+9upKS3KFU2tv6209A6x2tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AgvFWbqf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A95CBC4CED4;
+	Tue, 12 Nov 2024 08:26:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731399976;
+	bh=Y7htZnOFEVmRmOqBgRScScBjdMikNneCM17OkUCYvXk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=AgvFWbqfY8us0MnqJPE7B1tbrr1lscwKh/m9bOW5I3r+CEh9/YqsPQfEvC0mSbolz
+	 9UQgfOQzeBYaObuCl6jTj1HscYwnvkjMTwwgh7ZA5dfr6k0CHk3Cv4PgRi55fZr5y1
+	 KYkzc6gxBtwzZL1ORmXVQW9rUGVh5PTzJy1/WhTWjV+HO2M6ft7Q+aW4JTIe7PjSaA
+	 KyUhS8vAd+ETeA0wy6+toQylGsKTSXdbrVNdMOSVbzP6g4aryyLbHEHbH96z6FcUaV
+	 Q8i92C1a8OhoAgNuZvjBW9c4sAvL1OQX1xJ8a8pgxol9YVuxyvoX9F8iRwCq1QIbJY
+	 pG6WX1vFRvtNg==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	luoyifan@cmss.chinamobile.com,
+	linux-security-module@vger.kernel.org
+Cc: kernel-team@meta.com,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
 	martin.lau@linux.dev,
-	sdf@fomichev.me,
-	song@kernel.org,
-	yonghong.song@linux.dev
-Subject: [PATCH] bpftool: Cast variable `var` to long long
-Date: Tue, 12 Nov 2024 15:37:01 +0800
-Message-Id: <20241112073701.283362-1-luoyifan@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <CAEf4BzYgqb=NcSCJiJQEPUPhE02cUZqaFdYc4FJXvQUeXxhHJA@mail.gmail.com>
-References: <CAEf4BzYgqb=NcSCJiJQEPUPhE02cUZqaFdYc4FJXvQUeXxhHJA@mail.gmail.com>
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	kpsingh@kernel.org,
+	mattbobrowski@google.com,
+	amir73il@gmail.com,
+	repnop@google.com,
+	jlayton@kernel.org,
+	josef@toxicpanda.com,
+	mic@digikod.net,
+	gnoack@google.com,
+	Song Liu <song@kernel.org>
+Subject: [PATCH bpf-next 0/4] Make inode storage available to tracing prog
+Date: Tue, 12 Nov 2024 00:25:54 -0800
+Message-ID: <20241112082600.298035-1-song@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,30 +75,39 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When the SIGNED condition is met, the variable `var` should be cast to
-`long long` instead of `unsigned long long`.
+bpf inode local storage can be useful beyond LSM programs. For example,
+bcc/libbpf-tools file* can use inode local storage to simplify the logic.
+This set makes inode local storage available to tracing program.
 
-Signed-off-by: Luo Yifan <luoyifan@cmss.chinamobile.com>
----
- tools/bpf/bpftool/btf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+1/4 is missing change for bpf task local storage. 2/4 move inode local
+storage from security blob to inode.
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 547c1ccdc..d005e4fd6 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -289,7 +289,7 @@ static int dump_btf_type(const struct btf *btf, __u32 id,
- 			} else {
- 				if (btf_kflag(t))
- 					printf("\n\t'%s' val=%lldLL", name,
--					       (unsigned long long)val);
-+					       (long long)val);
- 				else
- 					printf("\n\t'%s' val=%lluULL", name,
- 					       (unsigned long long)val);
--- 
-2.27.0
+Similar to task local storage in tracing program, it is necessary to add
+recursion prevention logic for inode local storage. Patch 3/4 adds such
+logic, and 4/4 add a test for the recursion prevention logic.
 
+Song Liu (4):
+  bpf: lsm: Remove hook to bpf_task_storage_free
+  bpf: Make bpf inode storage available to tracing program
+  bpf: Add recursion prevention logic for inode storage
+  selftest/bpf: Test inode local storage recursion prevention
 
+ fs/inode.c                                    |   1 +
+ include/linux/bpf.h                           |   9 +
+ include/linux/bpf_lsm.h                       |  29 ---
+ include/linux/fs.h                            |   4 +
+ kernel/bpf/Makefile                           |   3 +-
+ kernel/bpf/bpf_inode_storage.c                | 185 +++++++++++++-----
+ kernel/bpf/bpf_lsm.c                          |   4 -
+ kernel/trace/bpf_trace.c                      |   8 +
+ security/bpf/hooks.c                          |   7 -
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ .../bpf/prog_tests/inode_local_storage.c      |  72 +++++++
+ .../bpf/progs/inode_storage_recursion.c       |  90 +++++++++
+ 12 files changed, 320 insertions(+), 93 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/inode_local_storage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/inode_storage_recursion.c
 
+--
+2.43.5
 
