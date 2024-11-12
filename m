@@ -1,106 +1,98 @@
-Return-Path: <bpf+bounces-44578-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44579-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42D6B9C4C89
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 03:24:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8DFA9C4C98
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 03:30:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07CC628C07B
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 02:24:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCF71B288D8
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 02:29:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 743FF1F7092;
-	Tue, 12 Nov 2024 02:24:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4F9C205E00;
+	Tue, 12 Nov 2024 02:28:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bfYxQyaM";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SQBfM083"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DcH0CnzE"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2184AF50F;
-	Tue, 12 Nov 2024 02:24:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2940B4C91
+	for <bpf@vger.kernel.org>; Tue, 12 Nov 2024 02:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731378285; cv=none; b=u4KumY8geQF+BoZAmFlywiRBp85OwaU933qu5yfj24n8UJbjoUnhls8xFBmPJWNg3GIzj+dUJlGyIyQs/4zXo2fvNdXj2HWKfpzQwRIIs2DROmPA84huNCB1b5q74/30pXew4ohc7g2iaFz8Lmbd6nARQwkaorE0ta84nP4Af6M=
+	t=1731378533; cv=none; b=qePhAuQMkmU3+/hf8E4ST03epQTwQ8AzPmIohM/6vzQhroMzFM6W71ovCKl/QEPfLFUXuL46Q22og41g8ORNBnfSWM3tNZVrvDUbPYcFwQ8+X+5DB+QKZ+LUlV/a8i+MbYUI5qPOcGqoISJHbFW2q89ow4c2uLmgXLZqxvVfFyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731378285; c=relaxed/simple;
-	bh=KVKMXh4FE95DmyLC3d/lW+4dH0pIFisXMVeS2B6sp6E=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Ko5+RCVNs6/qdFO4VPh0NzOzXqtoSUDoszLo/6ZeylTttR/4OGAUTg5jebBytKKt6bJEiB1btP/ML4DY7Uryl5KdIVZ4kEgkY0yEOWtT9csadlil9fe+x/Ol4ZWju1gdYLavw/UjpeBSBY8PeMrHzKRc4r6DepFof2XdJZKUllU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bfYxQyaM; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SQBfM083; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1731378280;
+	s=arc-20240116; t=1731378533; c=relaxed/simple;
+	bh=WNzIMDWQdxkcsvqN3S+237dyecY9CfJTYr/6Ew976Pk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Q4RprQbgIKR5Vmwob7dIV5/pHm8LV5ZFihDVGg+6PjwYPa9wm8jsxbeZDdFGABNZas8Ptc5eowzL1SQ1T4Zo1BELIn4Ce3vOjoPeF7CbAwUX9juUQEztYod3NE42bz6BOE32IvVeAI/nzXAOXT8hGjsrNKkwPVtp0wBvA3dv/WM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DcH0CnzE; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731378529;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7IraCr5pUZE8N7jYvVRfjYhiLHWwDnE2AZVmguY66tw=;
-	b=bfYxQyaM6xtTIVfxxTpdJFe9HDFvDRvPhkyFDPZflCDx7MdxsmNvawiJI1msTlQqeU7O9G
-	8MpkCBWHQ5hs1ywP1Odxao/x1ckYg10k7wzhzjZdFvJm5BDbGtwNReokD3py5xuXIoNYqW
-	HjUMOCiMK6X5G5bqylNV/wk7v6ZG9/PmGqu241VYHFkObn0P3Fp1+XT9zjoT98W5oCAEAi
-	cq1NLXDfdEM5OBCDpMJTtVMfOGwkf5NwoL8i2EtDLbdKHABuOODBCksl00PCedytj0ZV2N
-	imXkfg3hCIzvxdkss+3Ysr4nYhdwC/jcEg+72tlco3Boa8rDoF+tlo26wOeYuA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1731378280;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7IraCr5pUZE8N7jYvVRfjYhiLHWwDnE2AZVmguY66tw=;
-	b=SQBfM083NBEYl8ahu8d9nwOH3//abzVN6ZdXA85A4oHHoFJzfSUIRLNYEr+NKKy+xPDumQ
-	2iCqn6wLJHMLuQDA==
-To: syzbot <syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com>,
- andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, eddyz87@gmail.com, frederic@kernel.org,
- haoluo@google.com, houtao@huaweicloud.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, peterz@infradead.org, sdf@fomichev.me,
- song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] WARNING: locking bug in trie_delete_elem
-In-Reply-To: <672d2a52.050a0220.15a23d.01a1.GAE@google.com>
-References: <672d2a52.050a0220.15a23d.01a1.GAE@google.com>
-Date: Tue, 12 Nov 2024 03:24:44 +0100
-Message-ID: <87bjylnq8j.ffs@tglx>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ND5todS9J9CstKjvKk5frxUAvHZOaVKj6kMybP6v2zM=;
+	b=DcH0CnzErClR0dSEkYzLHHr0JbD1GFA6aXQqwU5/TjQfdzAk+uF/vI0/qSwWfc82mU+sMY
+	IQLonj1Sk2+Q3a/T6nQ3z/RTpxzQ3UA8i0ionhwUkqpdVKGUPlZd27ELxPHsHQLR3x51bH
+	1TYKw/J1PePf9cISq8lI+fcq38bSzL4=
+From: Hao Ge <hao.ge@linux.dev>
+To: peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	kan.liang@linux.intel.com
+Cc: linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	hao.ge@linux.dev,
+	Hao Ge <gehao@kylinos.cn>
+Subject: [PATCH] perf bpf-filter: Return -1 directly when pfi allocation fails
+Date: Tue, 12 Nov 2024 10:28:15 +0800
+Message-Id: <20241112022815.191201-1-hao.ge@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Nov 07 2024 at 13:00, syzbot wrote:
-> syzbot has bisected this issue to:
->
-> commit 4febce44cfebcb490b196d5d10ae9f403ca4c956
-> Author: Thomas Gleixner <tglx@linutronix.de>
-> Date:   Tue Oct 1 08:42:03 2024 +0000
->
->     posix-timers: Cure si_sys_private race
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=129f2d87980000
-> start commit:   f9f24ca362a4 Add linux-next specific files for 20241031
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=169f2d87980000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=328572ed4d152be9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b506de56cbbb63148c33
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1387655f980000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ac5540580000
->
-> Reported-by: syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com
-> Fixes: 4febce44cfeb ("posix-timers: Cure si_sys_private race")
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+From: Hao Ge <gehao@kylinos.cn>
 
-I seriously doubt that this bisection is even remotely correct.
+Directly return -1 when pfi allocation fails,
+instead of performing other operations on pfi.
 
-This commit has absolutely nothing to do with the lockdep splat and
-trie_delete_elem().
+Fixes: 0fe2b18ddc40 ("perf bpf-filter: Support multiple events properly")
+Signed-off-by: Hao Ge <gehao@kylinos.cn>
+---
+ tools/perf/util/bpf-filter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
+diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
+index e87b6789eb9e..34c8bf7e469e 100644
+--- a/tools/perf/util/bpf-filter.c
++++ b/tools/perf/util/bpf-filter.c
+@@ -375,7 +375,7 @@ static int create_idx_hash(struct evsel *evsel, struct perf_bpf_filter_entry *en
+ 	pfi = zalloc(sizeof(*pfi));
+ 	if (pfi == NULL) {
+ 		pr_err("Cannot save pinned filter index\n");
+-		goto err;
++		return -1;
+ 	}
+ 
+ 	pfi->evsel = evsel;
+-- 
+2.25.1
 
-        tglx
 
