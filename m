@@ -1,72 +1,56 @@
-Return-Path: <bpf+bounces-44642-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF85B9C5B13
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 15:58:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66F0A9C5B27
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 16:01:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 831081F22144
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 14:58:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1342B80D2B
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 14:48:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5852200114;
-	Tue, 12 Nov 2024 14:53:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lsLl9uQv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 836471FF043;
+	Tue, 12 Nov 2024 14:48:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36908202F9E;
-	Tue, 12 Nov 2024 14:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAE251F4FA2;
+	Tue, 12 Nov 2024 14:48:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731423188; cv=none; b=I0Q8hUOnP5j6qgP2hsyCK5dmVkJHie6c+fwYEoXl0Z+GEoGWhxDZa1HPAlxuXEuXU4REaDjiRpT3VENeayLSVMBrty2MkIvhun8Tp5hgAeDMLKJCvmsu1S46sso7pDaV4uiF5M5eUtET1alrNAg5X/M28Qnlg03ynoyF7+Miges=
+	t=1731422898; cv=none; b=Y/FNFdfwYglb5d5kHU1MIki7RdNnuVy+DIs566ekAcvL6Lc2wMn0WgNgNewloELgp3zrvw0UKF3BHFP/0gJa1YX/w87vOZWIsLszY17yCu5s2UNreFk0V1GelizlJk5T8NqTr4AdbBAtRFRbbV15wiynzQYr3oDC8nUvYBl6NVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731423188; c=relaxed/simple;
-	bh=DSNbca3lQ8LSXso6jqYZBWuI3HmmlzLJZscELXWEgfM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DPdN6G9DxNiLLsoT5gv5afnOVDfNVbsuvFyrhHpnHutiv4C/ZwBG6M59t64DNxSUgwEz3mXcw7ouGGuvKFPVEB9SnPQJZ+ru4zYNIuZm88Gf3VtYN+Mh/wV0C7bWb7rWVy08YHpU0KOwXZPq+fhA0AJT/dDTrldm1gDfIrI9pDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lsLl9uQv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3F2BC4CEDB;
-	Tue, 12 Nov 2024 14:53:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731423187;
-	bh=DSNbca3lQ8LSXso6jqYZBWuI3HmmlzLJZscELXWEgfM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lsLl9uQvLt8thmWmeMZSNMaub4BZv51O5iIP//APEUCfgN+bjQ1CZ0MVStIZmS3b+
-	 hu13ktakC0BZhufXS5q+zV6kXHDF5BfegCMlNst9SX4dJV5SHY/2IQkl8TTMw2VXVB
-	 8EYtfrQ/3ifIbHLbEKFzAVvlt8FXyjb8f72itSwXtENX0m3Pga+QZ+BwltzddhfucA
-	 LV/oJmR7CyqxJ7H2n+MIcfvhTV9IU/0m6VvXTv9K1M08knmIFXVzelFXEp/6H+RdNm
-	 ijMQrQmvib3MXp2qmJ9SVrRKFVuSbr1ffRdXmc5f6qboI0ZKmPR171otuGyYSf17uk
-	 S9O9wym6AR+NQ==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu <rcu@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1731422898; c=relaxed/simple;
+	bh=RzdDctxTzqMyCSoGEwF0H4UR+OejUmtUfAjcIRuuXhM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h1PEkZEV6iEdbodSaDSVgTO04lNR08KMR4iiCiwtqvWNMNO6g/NJNXNPI1nOyj8Y9iQjOPLfIZckd70FAsM7ANPNIV87zIu5VL84hlLAj/aXT9Xs4YXPHOJpYRshuzNPGfhJuQSKplSrJuu5vmkpErgeek/29CmVcdCzBSZAEu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Xnq5c2jqpz4f3jQv;
+	Tue, 12 Nov 2024 22:47:48 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 93A1C1A0359;
+	Tue, 12 Nov 2024 22:48:06 +0800 (CST)
+Received: from k01.huawei.com (unknown [10.67.174.197])
+	by APP4 (Coremail) with SMTP id gCh0CgBnjoKhajNnscdXBg--.33841S2;
+	Tue, 12 Nov 2024 22:48:02 +0800 (CST)
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+To: bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	bpf@vger.kernel.org,
-	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 15/16] refscale: Add srcu_read_lock_lite() support using "srcu-lite"
-Date: Tue, 12 Nov 2024 15:51:58 +0100
-Message-ID: <20241112145159.23032-16-frederic@kernel.org>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20241112145159.23032-1-frederic@kernel.org>
-References: <20241112145159.23032-1-frederic@kernel.org>
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [PATCH bpf-next v4 0/3] Add kernel symbol for struct_ops trampoline
+Date: Tue, 12 Nov 2024 22:58:46 +0800
+Message-Id: <20241112145849.3436772-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,83 +58,63 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgBnjoKhajNnscdXBg--.33841S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF45Zry7Kw48XF1fGr48Zwb_yoW8Wr47pF
+	4rZr15Cr48trs7u3yfGay7CrWS93y8Xry5Wr9rJw1fCFy2qr1DCryIgr43uryaqF9Ik34r
+	JF9I9FyYka4UZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Sb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
+	n4kS14v26r1q6r43MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0EwIxGrwCFx2IqxV
+	CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
+	6r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
+	WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG
+	6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+	1UYxBIdaVFxhVjvjDU0xZFpf9x07jeLvtUUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+Add kernel symbol for struct_ops trampoline.
 
-This commit creates a new srcu-lite option for the refscale.scale_type
-module parameter that selects srcu_read_lock_lite() and
-srcu_read_unlock_lite().
+Without kernel symbol for struct_ops trampoline, the unwinder may
+produce unexpected stacktraces. For example, the x86 ORC and FP
+unwinder stops stacktrace on a struct_ops trampoline address since
+there is no kernel symbol for the address.
 
-[ paulmck: Apply Dan Carpenter feedback. ]
+v4:
+- Add a separate cleanup patch to remove unused member rcu from
+  bpf_struct_ops_map (patch 1)
+- Use funcs_cnt instead of btf_type_vlen(vt) for links memory
+  calculation in .map_mem_usage (patch 2)
+- Include ksyms[] memory in map_mem_usage (patch 3)
+- Various fixes in patch 3 (Thanks to Martin)
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: <bpf@vger.kernel.org>
-Reviewed-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/rcu/refscale.c | 37 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 34 insertions(+), 3 deletions(-)
+v3: https://lore.kernel.org/bpf/20241111121641.2679885-1-xukuohai@huaweicloud.com/
+- Add a separate cleanup patch to replace links_cnt with funcs_cnt
+- Allocate ksyms on-demand in update_elem() to stay with the links
+  allocation way
+- Set ksym name to prog__<struct_ops_name>_<member_name>
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 0db9db73f57f..338e7c5ac44a 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -212,6 +212,36 @@ static const struct ref_scale_ops srcu_ops = {
- 	.name		= "srcu"
- };
- 
-+static void srcu_lite_ref_scale_read_section(const int nloops)
-+{
-+	int i;
-+	int idx;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		idx = srcu_read_lock_lite(srcu_ctlp);
-+		srcu_read_unlock_lite(srcu_ctlp, idx);
-+	}
-+}
-+
-+static void srcu_lite_ref_scale_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	int i;
-+	int idx;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		idx = srcu_read_lock_lite(srcu_ctlp);
-+		un_delay(udl, ndl);
-+		srcu_read_unlock_lite(srcu_ctlp, idx);
-+	}
-+}
-+
-+static const struct ref_scale_ops srcu_lite_ops = {
-+	.init		= rcu_sync_scale_init,
-+	.readsection	= srcu_lite_ref_scale_read_section,
-+	.delaysection	= srcu_lite_ref_scale_delay_section,
-+	.name		= "srcu-lite"
-+};
-+
- #ifdef CONFIG_TASKS_RCU
- 
- // Definitions for RCU Tasks ref scale testing: Empty read markers.
-@@ -1082,9 +1112,10 @@ ref_scale_init(void)
- 	long i;
- 	int firsterr = 0;
- 	static const struct ref_scale_ops *scale_ops[] = {
--		&rcu_ops, &srcu_ops, RCU_TRACE_OPS RCU_TASKS_OPS &refcnt_ops, &rwlock_ops,
--		&rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops, &clock_ops, &jiffies_ops,
--		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
-+		&rcu_ops, &srcu_ops, &srcu_lite_ops, RCU_TRACE_OPS RCU_TASKS_OPS
-+		&refcnt_ops, &rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops,
-+		&clock_ops, &jiffies_ops, &typesafe_ref_ops, &typesafe_lock_ops,
-+		&typesafe_seqlock_ops,
- 	};
- 
- 	if (!torture_init_begin(scale_type, verbose))
+v2: https://lore.kernel.org/bpf/20241101111948.1570547-1-xukuohai@huaweicloud.com/
+- Refine the commit message for clarity and fix a test bot warning
+
+v1: https://lore.kernel.org/bpf/20241030111533.907289-1-xukuohai@huaweicloud.com/
+
+Xu Kuohai (3):
+  bpf: Remove unused member rcu from bpf_struct_ops_map
+  bpf: Use function pointers count as struct_ops links count
+  bpf: Add kernel symbol for struct_ops trampoline
+
+ include/linux/bpf.h         |   3 +-
+ kernel/bpf/bpf_struct_ops.c | 115 ++++++++++++++++++++++++++++++++----
+ kernel/bpf/dispatcher.c     |   3 +-
+ kernel/bpf/trampoline.c     |   9 ++-
+ 4 files changed, 114 insertions(+), 16 deletions(-)
+
 -- 
-2.46.0
+2.39.5
 
 
