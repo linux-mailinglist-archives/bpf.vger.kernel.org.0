@@ -1,380 +1,334 @@
-Return-Path: <bpf+bounces-44628-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44643-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D1BF9C5AD3
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 15:48:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FB009C5B76
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 16:10:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0D822862CE
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 14:48:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FDBB2835E4
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 15:10:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 662931FF61D;
-	Tue, 12 Nov 2024 14:48:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2426D202621;
+	Tue, 12 Nov 2024 15:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FvX6CCdP"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADC283A14;
-	Tue, 12 Nov 2024 14:48:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731422899; cv=none; b=iGI/8chlMMtGTGHrjN9bWkTLkfeuA3byd9Mm8kqkn5lfmCDmj7429IDPwHjQMVxOTeaCa2tzXSzdjOm79O+Vlb/V6cWhTYFt9nGSQ6TRbsNGzXLJqmjQwJ50vsBcNzN9Gb7M8z5FhIH4SrczF3tfm5Vf0Xp0sIh4C+AJSlTENoQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731422899; c=relaxed/simple;
-	bh=PIdCRs52AJYswvNBESs7jYNi5g40OT1kHU0TF+inCyQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=W1h+qmWEVYGcG1BROTECAvMwHlV1z3tORKmCVDrzrUHSTvD07DWAtEfVEeOlHBGJLpUGVMF3atoQKQcc87Jqf78kkFZgsArcdmDwBF2p2766fWhmsOljQ0MFu/vy6LAjKUEk8pYsYp5iPWG4X4PwRxQsfoMeqRj5oV0qNwc9lYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Xnq5c4Hz0z4f3jXc;
-	Tue, 12 Nov 2024 22:47:48 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id C74451A0194;
-	Tue, 12 Nov 2024 22:48:06 +0800 (CST)
-Received: from k01.huawei.com (unknown [10.67.174.197])
-	by APP4 (Coremail) with SMTP id gCh0CgBnjoKhajNnscdXBg--.33841S5;
-	Tue, 12 Nov 2024 22:48:06 +0800 (CST)
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v4 3/3] bpf: Add kernel symbol for struct_ops trampoline
-Date: Tue, 12 Nov 2024 22:58:49 +0800
-Message-Id: <20241112145849.3436772-4-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241112145849.3436772-1-xukuohai@huaweicloud.com>
-References: <20241112145849.3436772-1-xukuohai@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D1B4201260;
+	Tue, 12 Nov 2024 15:06:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731424000; cv=fail; b=WRivzSsFKSFQHRU+Z5x7+6HiF31dLyjfocPbwNXHcrr88E2y5mpO1UftfJTEgmGrQs+wWO4iJv8iL0fNn0/z/I1Afwf+hbO8cFNN73CeegCfhv0xgMVSrtncwr/OeYvxFzEwDpEFlJ6hCpqEPfMp6k4eR3Xq1DfbIwAF6VVTT1A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731424000; c=relaxed/simple;
+	bh=OpixYVVKZnUiQVv/7cQyz8dVQ/DdzFqKTFba6PV0nLo=;
+	h=Subject:To:CC:References:From:Message-ID:Date:In-Reply-To:
+	 Content-Type:MIME-Version; b=gQpbhBJecrLR2yXHZCo89SgZAG43EH2TMPsdkSUvhDATAfs81U12rU7FIzU1R3GCqYgPvKrg3zZbMxzlpFARMAC/ojZFktQ1ppUwJgZpn/vEyLOARmiLswlBKafpbO5UDuk94XiOegyRuiEcLNy6n84lsEpr8gCnoV8QVooubvE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FvX6CCdP; arc=fail smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1731423999; x=1762959999;
+  h=subject:to:cc:references:from:message-id:date:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=OpixYVVKZnUiQVv/7cQyz8dVQ/DdzFqKTFba6PV0nLo=;
+  b=FvX6CCdPAWpwsVZ0mjZMqdXgCuXHDOhWFd+8F8W1Z7cQvIdPzPJbB17u
+   GQMOCXGor/GLmuhrqvxg05lbc8xYizbcddrqfWDrncZw4L8MZYs6R/MAE
+   bzF62SZ6mlsi+kpK4Wz8dl+QvHqzLnpJ+7aCVgHGYJroNLtgxgn51FYUh
+   O3hJ+YLKFf9nSvf1wkV2WvzvmYNY+MYWLYoVszgc+m4xBLhz4z3Nax3cX
+   t3MG172wbuqdKx83+8jHGE38iSfoheTG5hU440zkPx8FHYPMHFptXp3Ez
+   liTyaEQghTEIqmBOGqQ2uBJbApgV8oCcZJRHmYlb6HVnXnpAeHZdcYD8r
+   Q==;
+X-CSE-ConnectionGUID: TmaHb5X/SvGBca5Qh7ZlNQ==
+X-CSE-MsgGUID: eiWZKVgvStih1o05d5+xcw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11254"; a="41871493"
+X-IronPort-AV: E=Sophos;i="6.12,148,1728975600"; 
+   d="scan'208";a="41871493"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2024 07:06:37 -0800
+X-CSE-ConnectionGUID: Y5VZRXhYQla3exixNdKVEQ==
+X-CSE-MsgGUID: IoN+1wOvQZy20JwnEBJjJA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,148,1728975600"; 
+   d="scan'208";a="87091168"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Nov 2024 07:06:36 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Tue, 12 Nov 2024 07:06:36 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Tue, 12 Nov 2024 07:06:36 -0800
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Tue, 12 Nov 2024 07:06:35 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=SphtuJKOCJ3354Gi+JRxMfdm4rk0mG9B6/IMXNkXZKi/YgmWSpZUdE0sJWy3fq7EMwkN2a0Q6KNG93heL9TwlPZH8iH+3cD/zRhtYL6Mdv9oBWrBJJEClI1wM3puEXLdlENgrS51GJh6HPlmxxutOlLPiUlvqqR33Q+hmO0j4U6l3mEdEWmaGj9nIWHxGUstVYx0FV7e3v/UzzBn1YoFzkVj4AfB6p9LPLX/MefWUpn0L3tgF6xQgVWWLGdHDtvrVf1uGDY+UbYTeUwjsASmbrMp8AkgLXlqnMzysjijwldMR9/oyM4Hd8Pk4SnV87lPPpw24OI5YyjjPOtBWke83w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rFVZvk6DkBj1q/nRI4r8OWznQsiUHPP9Fh7EQb7RzJA=;
+ b=uCbJv/LFxfnUa6tPCEH4myTI4MiT7s4RqsfiB4vJzwzyp2cVbxxrCHPDF+fGZhGzwRClLIkSP0rOc+XMmNmZ9fxMuuhuJNyBSeElndIiK4H4h5322fhf8q0Da8yJgakr7fOlMbauJID+GCStUdTZFSXuS+FqH44I8/P51IRd/ZcqPs99WwA1wC8209alNg4Ce8K71mYCRcd5rq/spIWK11DbHNTXAAPV6tN+fyGMFV7AzSp9VrwbpW4J1BQloeB2XsXvm8sqoUrOQW8nk7AnWNmJFkNUtHzvN+2bNkG0dHZYxAmCfX8nekIx74lDDA7f53Sbk/lCsK1shRTBIXlEsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BY5PR11MB4194.namprd11.prod.outlook.com (2603:10b6:a03:1c0::13)
+ by SJ0PR11MB4942.namprd11.prod.outlook.com (2603:10b6:a03:2ac::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.29; Tue, 12 Nov
+ 2024 15:06:30 +0000
+Received: from BY5PR11MB4194.namprd11.prod.outlook.com
+ ([fe80::9d17:67a6:4f83:ef61]) by BY5PR11MB4194.namprd11.prod.outlook.com
+ ([fe80::9d17:67a6:4f83:ef61%6]) with mapi id 15.20.8114.015; Tue, 12 Nov 2024
+ 15:06:30 +0000
+Subject: Re: [Intel-wired-lan] [PATCH iwl-next v6 2/2] igc: Link queues to
+ NAPI instances
+To: Joe Damato <jdamato@fastly.com>, <netdev@vger.kernel.org>
+CC: <vitaly.lifshits@intel.com>, <jacob.e.keller@intel.com>,
+	<kurt@linutronix.de>, <vinicius.gomes@intel.com>, Tony Nguyen
+	<anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, "Paolo
+ Abeni" <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, "Daniel
+ Borkmann" <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, "moderated list:INTEL ETHERNET
+ DRIVERS" <intel-wired-lan@lists.osuosl.org>, open list
+	<linux-kernel@vger.kernel.org>, "open list:XDP (eXpress Data Path)"
+	<bpf@vger.kernel.org>
+References: <20241029201218.355714-1-jdamato@fastly.com>
+ <20241029201218.355714-3-jdamato@fastly.com>
+From: Avigail Dahan <Avigailx.dahan@intel.com>
+Message-ID: <5febc201-0bbf-bb08-2bde-7ada5b356740@intel.com>
+Date: Tue, 12 Nov 2024 17:06:20 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20241029201218.355714-3-jdamato@fastly.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TL2P290CA0008.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:2::11) To BY5PR11MB4194.namprd11.prod.outlook.com
+ (2603:10b6:a03:1c0::13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBnjoKhajNnscdXBg--.33841S5
-X-Coremail-Antispam: 1UD129KBjvJXoW3KF1xXrWfXw1DJw13Ar45trb_yoWkJryfpF
-	1jy345CF4UXr47WrWrXa15ZF9xKw1vq3W7GFWDJ3yFkrWYgr1kXF18tFy7uwsxtr4DuF17
-	tFn2grW2yay7ArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmab4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI
-	0_Jw0_GFylc7CjxVAKzI0EY4vE52x082I5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
-	c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
-	CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
-	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
-	4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsG
-	vfC2KfnxnUUI43ZEXa7IU8D5r7UUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR11MB4194:EE_|SJ0PR11MB4942:EE_
+X-MS-Office365-Filtering-Correlation-Id: a430efe2-f7de-4b7d-5cd6-08dd032b969b
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?bmpSNEs3ZHlDM08vazBhdlg2Zk5PdVdkNS9Yamg2c0F5RXppOFlGMW85enN3?=
+ =?utf-8?B?VGdNdjIxNUxNSGRYdDBMUGExYmxucjdCVnhXKzZFM25SN1ZGVERVdTdmMzlB?=
+ =?utf-8?B?Mk5MRklxQXB3L0tpMTgxcDJIcjhXdSt5bmFQVFRKdU53OGVzbWRNQ3Jwb3ZB?=
+ =?utf-8?B?QlpxdUxwamJnOEwxTTRJbEFxdzY0QTNtUHlSc0RkRUxjYWcweTRqU1NNVGpN?=
+ =?utf-8?B?cnRVcytDWGw5c2tURVppa0FQeUZCcWxzQkhtOWVMZlJweDNnTW0xZmJ0dzFU?=
+ =?utf-8?B?bWlXTU0xR0tkUzFidlgxYnV0em41NWpwdjRlSGRCa3pXRkxYSEpqdXNSVUgv?=
+ =?utf-8?B?amJrMVNQVDNxSHJiUVIvVDNTRzczQjNZQWlJekxtVjNYWGpvWHAzL2x1ckUy?=
+ =?utf-8?B?ZGxlRXIvUXBGUW13UTFYdE9FMDRDMUFaTkswZ1U0VjhTRTBjL1E0RDJQa1dG?=
+ =?utf-8?B?U0ZBRHN2ZVJ4WDVJSU9teFVzZkFYSUkwRUFMNUxDeXVGeENoUnppUDdxTjdt?=
+ =?utf-8?B?VmFFT2VCcWdKcGFiN1JHbHR1T1lQKzQ4VHNNeG5iK1Q3SXZyWVFiaW8xR2Vv?=
+ =?utf-8?B?aWpndlorU3RKdjg0UXZvVDhnVUUzc2JYalBIN20zOVZyejV2d1hWSlJaWjZ5?=
+ =?utf-8?B?aWI4RkpqWm1hTkZWZnVNYU5VeUVVek1TVXBTR1VqeHVqM2pMSExuWlo3U29r?=
+ =?utf-8?B?VFpDZDFmR0VmWmRYYlpRalZqRFhWZ0ZxR2pPbEoxRkNKZVRGOE9TM3VNR3Vi?=
+ =?utf-8?B?V3BFQloxSndhTFBhM0xweEttV0NTUDFWOWNndVhNN3RiUkU3djNWcy9PVnho?=
+ =?utf-8?B?OFc1QnFnVEhjUVZLQzhjOHlneTV3b0tzMkRsSzA0TVcxSFk1bFJxZ09LQnhW?=
+ =?utf-8?B?cUpkUVcxNjZDcFhDNTdMOGxBRTROOENWbDRzcFZQMWd1NGdsVnZKUStTMUU2?=
+ =?utf-8?B?aE8zdkhOZm1ZbnJocVU5ME9lRmg4Z0h6UUNpNkZKbk04UFIxSFpDOUlOaS9t?=
+ =?utf-8?B?R3NMM2J6Q1JMb2lQZ0F4ZW9MUDBBUVpzSVlZSkJhV0xFakZRbGI3djB1ZWdP?=
+ =?utf-8?B?eDVpbkZRWHBYVnpFTHJwSDVoemZwNUlhM2J0WnVMUU9jNkluOGNNODRqQ1VC?=
+ =?utf-8?B?UjJJVEIvTldDSllPWUtTZmpMdWNFRlJja1MyQ1FOOVV5WCsra1NjWEdtSWVZ?=
+ =?utf-8?B?RnkzSS93TUd2ci85UFN6aU5TM2tYVUJnSzYvZS94WWxLNUxyZlZrai9melpi?=
+ =?utf-8?B?UFBSdWlXS1JiR2ZBdzFGYU1ic3JIVWczSm1RenhISVJEY3JFZXdLK1FCV3V5?=
+ =?utf-8?B?VHA4aXF3bXowVDRRRGozMGZ0andWN0VIM0NBMk5xR0JMNU9pVnY5TUI5b0U3?=
+ =?utf-8?B?UzBOcVFaSjNDN1dCaDg3OUMxdWYzTDJMbUtlWjY5K1VsTmtKd3dMeUgybENV?=
+ =?utf-8?B?RmpDYlZRa1BBNGF6VUw3TFdoNWZqNXMxRHBYWGRFWmgrN1ZLeDBpUHpWcVFR?=
+ =?utf-8?B?U2NZd21KQ2JqUXI3cGxWVWoyd2VreXI3QnRYc2pHRysvVlhsK2lkL0xIQVMr?=
+ =?utf-8?B?VlpoQnBHdFc3M29lZW9nZ3dPUDJZY0VGVVViK3V2VEtLellaUncvYXpYVDFa?=
+ =?utf-8?B?RCswaFB6eG55bVg0bDlNVTJkN0VhU1p5L2VhanZmaXZqcW43TXM0YnVRYUh1?=
+ =?utf-8?B?UlNEZjAzWnVhYnN5WVd1UmVYWkVoS01nN202TUpFLzlrWXIvdWhJYlQ2c0ZZ?=
+ =?utf-8?Q?D+Ao8HbtcZ/p8vfj/dfJqEKI4H2/YMGm+yF2dZ0?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4194.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NmpyNVh6NGZoaWFsbytRT3ZuUE9TQk1lWHFGWEw0ZWJJNWMweWJsd0xBWWQ0?=
+ =?utf-8?B?eTgveUlyWkhlbXdYVFQ0Q1JRMU9UMERjditWSHJvWGc0RFJPWlJyUVNrMmZG?=
+ =?utf-8?B?NTc4SzgwQWU5NURtbUc1RGMwbjNsSFhVb3dqeVlMaUtkSStyb2NpWk9zZWFE?=
+ =?utf-8?B?cFYyaHNpa3BwcTFsWjkvbjE2djV6TExrNHVJOFFOUXFydVpWc1M2cHR5dXJM?=
+ =?utf-8?B?djlXdGsyNVc5d1ltTE5Na3ZreStrR24yVThTTmcxUFNsTmZCRHkyUWRaMW1r?=
+ =?utf-8?B?QUd1SW9qZFh6c2lmaGVVQk1Ma1NtYk1pOTZYSzFwOENaZVNzd0tnY3ZFZzFn?=
+ =?utf-8?B?Ky9DaUcwWGhWajRJalRBbFRCS1RsWW4zM3FTcHo4NGZKeFEyLzk3ZXhFTXUv?=
+ =?utf-8?B?Qk93TnFhSDB5amtJcWJ3K3FESDYvc2RodlBiR011NHR1STg0ZVBPa3lodWla?=
+ =?utf-8?B?WnpMOEdIZXc0L1NlTFBzRTAyNStxOFZUMDk1ZE1pU1Z3WWtZcEZOVU1mQjlX?=
+ =?utf-8?B?QW5Pcmh0SFZISkFxY2lzelJTd01HY0tTSlIrMUl5aWpLSStJNCthd3doS3lm?=
+ =?utf-8?B?SkdreFVLZXllbTc2V050aXA2SmRSTVZyVDhDbU5XdnJxR1M0UncrSjZJQ055?=
+ =?utf-8?B?R0w4L0pkOXQ2VzkzdmcxeFhkNnM4RVhkTHpvb21MWVpFU2dyOFgyN00yLytH?=
+ =?utf-8?B?SCtBRHlwT0VXKzd4TG5iM1RJb2VEc0RJNnE3SDNNNkdUV0p0U1hvN3UvcHVh?=
+ =?utf-8?B?ZVI1NCtNbVlST0xEZGJoM3dQekZWS25CNE5GbHRzbjlleWVQTDk5REg5REJT?=
+ =?utf-8?B?Z05BR0hTK2VYdEM3c3lZMTc5WlRvR1BpaHpiYXNEeEZxaG1sQThVTTN1YUl1?=
+ =?utf-8?B?ZGN6ditIR28wY1c1d0lIK1Q1K25EMjRNSjJZU29NTjBKcG5PQXFpSmhDU3BE?=
+ =?utf-8?B?MmdnbFpRa0k2Wmh5TFd5Q0Q2UmNYM0QrZVd5REpYeW1EYVNKOG5rUFhiUFpz?=
+ =?utf-8?B?N3RXMEJneVhObzBBL0w0UmRkYWIxRld3VUpacmhLMlhoVEpmMzJ5WnoxT0pw?=
+ =?utf-8?B?SXRVWHltVm9KaU5FTXpMbEZrSGlFL1BxSmVxbE5MNGtOUzdRTzE5YjBWMjNT?=
+ =?utf-8?B?c0pGTHhhNjVUOGhyM2VvYzRvMU5SZTV3U3phYVU2L2lCWlQ5b3ZYelZhaWFu?=
+ =?utf-8?B?cGwvVGZNM2FBMGM4MHdMVmlyOEhsZnNITk1yMlpRdWFLN3ZwYXIyQm04MWJ3?=
+ =?utf-8?B?VUdYTXBlRmVDVTJjeHlHdDh1ZnFlQ09ueC8zVSsvVld0a251QjJsSGQ2Y09x?=
+ =?utf-8?B?OGR1S2JDTEVGazFCcXhqcE9SLzR6ZFZjUzdDaE5KQU1JTm9yNExYbFQyR2x5?=
+ =?utf-8?B?MDBpUDJYRTJGekk4dWxqOFZrSXlEWGQrQjVaU1d1bUZWbTdkVzZvem9wWER3?=
+ =?utf-8?B?Q1pwWmFiUGp0bUJLR0RhTTU3MmRWKzcwdy9HclJLNFJEL2JRNFNUQWI3VnQ2?=
+ =?utf-8?B?VHF0aXl1U3dLMVhyRWdtZ1d0ckFpYmFENG5qR3plMmYySXpPL1hoM29BbFF4?=
+ =?utf-8?B?Snk0OWhKcWFnWmtaSkZpajJrNlo2OTlwdFNKeFNsRmkrS2MzOXpqNmZ0VWs4?=
+ =?utf-8?B?Y05LcThVbTRBTVNPL1c0cXhKZys0Q1VnWmxhRDMxYmd3NUlzdVJsS3BKWW5J?=
+ =?utf-8?B?WmpIa2N4RGFNRlRDdDJYVzZPNkwwZUpBWkk0ODB5bTk0SGFYZkhlRS9JQ3JX?=
+ =?utf-8?B?amc3RHg0SDd2RUNnQmEvVXRjT3BEZU9mZGZhb0hTdmhiUHBmYzBNVkVUV0Jo?=
+ =?utf-8?B?ejVwTktHVlNPeFo1YVk2eHJlS05YNDlMRnhtZmJqdUpyMHZ1ZHorSXZyNmp4?=
+ =?utf-8?B?SnErQ21nMVFXaVJBLyt1UlppQ3dzOS84dFV3Rll3WTEzMzR5RjQ2ejhWdVYr?=
+ =?utf-8?B?MUlqQ2kwVmN1dFRMRUJ4eEFEeEJ0OTRMemh6R09JbWZLV3NJSWlyUi9GR21V?=
+ =?utf-8?B?Zmx2QUdkcUhONGRlYlcwL3htMVB3MmV1b05BWit5UVlmd3JGaittcWVDOGtF?=
+ =?utf-8?B?RmVkNmMrRU1yUzc4VWJDeUJYNHJqUHFlMHBUd2orOUt2YnBCN3YxS3dzS1pG?=
+ =?utf-8?B?WmNCazZPTjc5NWw5bTF2SEFTYUVYTG9DZFpLejQxajFhcEN5UjQ2R0xDb2Vt?=
+ =?utf-8?B?TlE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a430efe2-f7de-4b7d-5cd6-08dd032b969b
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4194.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2024 15:06:30.5385
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LOOymdGxF6NJRATcPJ/TKtmKc+moeOxJLIKx3GhrzoIhpNUp5UVA2bbXvbEFrwVFpE0tDpRidIoyAIzekDOiCA4B8sNWVmB4EqTLJlgAJP0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4942
+X-OriginatorOrg: intel.com
 
-From: Xu Kuohai <xukuohai@huawei.com>
 
-Without kernel symbols for struct_ops trampoline, the unwinder may
-produce unexpected stacktraces.
 
-For example, the x86 ORC and FP unwinders check if an IP is in kernel
-text by verifying the presence of the IP's kernel symbol. When a
-struct_ops trampoline address is encountered, the unwinder stops due
-to the absence of symbol, resulting in an incomplete stacktrace that
-consists only of direct and indirect child functions called from the
-trampoline.
-
-The arm64 unwinder is another example. While the arm64 unwinder can
-proceed across a struct_ops trampoline address, the corresponding
-symbol name is displayed as "unknown", which is confusing.
-
-Thus, add kernel symbol for struct_ops trampoline. The name is
-bpf__<struct_ops_name>_<member_name>, where <struct_ops_name> is the
-type name of the struct_ops, and <member_name> is the name of
-the member that the trampoline is linked to.
-
-Below is a comparison of stacktraces captured on x86 by perf record,
-before and after this patch.
-
-Before:
-ffffffff8116545d __lock_acquire+0xad ([kernel.kallsyms])
-ffffffff81167fcc lock_acquire+0xcc ([kernel.kallsyms])
-ffffffff813088f4 __bpf_prog_enter+0x34 ([kernel.kallsyms])
-
-After:
-ffffffff811656bd __lock_acquire+0x30d ([kernel.kallsyms])
-ffffffff81167fcc lock_acquire+0xcc ([kernel.kallsyms])
-ffffffff81309024 __bpf_prog_enter+0x34 ([kernel.kallsyms])
-ffffffffc000d7e9 bpf__tcp_congestion_ops_cong_avoid+0x3e ([kernel.kallsyms])
-ffffffff81f250a5 tcp_ack+0x10d5 ([kernel.kallsyms])
-ffffffff81f27c66 tcp_rcv_established+0x3b6 ([kernel.kallsyms])
-ffffffff81f3ad03 tcp_v4_do_rcv+0x193 ([kernel.kallsyms])
-ffffffff81d65a18 __release_sock+0xd8 ([kernel.kallsyms])
-ffffffff81d65af4 release_sock+0x34 ([kernel.kallsyms])
-ffffffff81f15c4b tcp_sendmsg+0x3b ([kernel.kallsyms])
-ffffffff81f663d7 inet_sendmsg+0x47 ([kernel.kallsyms])
-ffffffff81d5ab40 sock_write_iter+0x160 ([kernel.kallsyms])
-ffffffff8149c67b vfs_write+0x3fb ([kernel.kallsyms])
-ffffffff8149caf6 ksys_write+0xc6 ([kernel.kallsyms])
-ffffffff8149cb5d __x64_sys_write+0x1d ([kernel.kallsyms])
-ffffffff81009200 x64_sys_call+0x1d30 ([kernel.kallsyms])
-ffffffff82232d28 do_syscall_64+0x68 ([kernel.kallsyms])
-ffffffff8240012f entry_SYSCALL_64_after_hwframe+0x76 ([kernel.kallsyms])
-
-Fixes: 85d33df357b6 ("bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS")
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
----
- include/linux/bpf.h         |  3 +-
- kernel/bpf/bpf_struct_ops.c | 79 ++++++++++++++++++++++++++++++++++++-
- kernel/bpf/dispatcher.c     |  3 +-
- kernel/bpf/trampoline.c     |  9 ++++-
- 4 files changed, 89 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 7da41ae2eac8..e1954029d1a1 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1402,7 +1402,8 @@ int arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int num_func
- void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
- 				struct bpf_prog *to);
- /* Called only from JIT-enabled code, so there's no need for stubs. */
--void bpf_image_ksym_add(void *data, unsigned int size, struct bpf_ksym *ksym);
-+void bpf_image_ksym_init(void *data, unsigned int size, struct bpf_ksym *ksym);
-+void bpf_image_ksym_add(struct bpf_ksym *ksym);
- void bpf_image_ksym_del(struct bpf_ksym *ksym);
- void bpf_ksym_add(struct bpf_ksym *ksym);
- void bpf_ksym_del(struct bpf_ksym *ksym);
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index ff94c8120ebb..606efe32485a 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -31,6 +31,8 @@ struct bpf_struct_ops_map {
- 	 * (in kvalue.data).
- 	 */
- 	struct bpf_link **links;
-+	/* ksyms for bpf trampolines */
-+	struct bpf_ksym **ksyms;
- 	u32 funcs_cnt;
- 	u32 image_pages_cnt;
- 	/* image_pages is an array of pages that has all the trampolines
-@@ -585,6 +587,49 @@ int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
- 	return 0;
- }
- 
-+static void bpf_struct_ops_ksym_init(const char *tname, const char *mname,
-+				     void *image, unsigned int size,
-+				     struct bpf_ksym *ksym)
-+{
-+	snprintf(ksym->name, KSYM_NAME_LEN, "bpf__%s_%s", tname, mname);
-+	INIT_LIST_HEAD_RCU(&ksym->lnode);
-+	bpf_image_ksym_init(image, size, ksym);
-+}
-+
-+static void bpf_struct_ops_map_add_ksyms(struct bpf_struct_ops_map *st_map)
-+{
-+	u32 i;
-+
-+	for (i = 0; i < st_map->funcs_cnt; i++) {
-+		if (!st_map->ksyms[i])
-+			break;
-+		bpf_image_ksym_add(st_map->ksyms[i]);
-+	}
-+}
-+
-+static void bpf_struct_ops_map_del_ksyms(struct bpf_struct_ops_map *st_map)
-+{
-+	u32 i;
-+
-+	for (i = 0; i < st_map->funcs_cnt; i++) {
-+		if (!st_map->ksyms[i])
-+			break;
-+		bpf_image_ksym_del(st_map->ksyms[i]);
-+	}
-+}
-+
-+static void bpf_struct_ops_map_free_ksyms(struct bpf_struct_ops_map *st_map)
-+{
-+	u32 i;
-+
-+	for (i = 0; i < st_map->funcs_cnt; i++) {
-+		if (!st_map->ksyms[i])
-+			break;
-+		kfree(st_map->ksyms[i]);
-+		st_map->ksyms[i] = NULL;
-+	}
-+}
-+
- static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 					   void *value, u64 flags)
- {
-@@ -601,6 +646,8 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 	u32 i, trampoline_start, image_off = 0;
- 	void *cur_image = NULL, *image = NULL;
- 	struct bpf_link **plink;
-+	struct bpf_ksym **pksym;
-+	const char *tname, *mname;
- 
- 	if (flags)
- 		return -EINVAL;
-@@ -640,14 +687,18 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 	kdata = &kvalue->data;
- 
- 	plink = st_map->links;
-+	pksym = st_map->ksyms;
-+	tname = btf_name_by_offset(st_map->btf, t->name_off);
- 	module_type = btf_type_by_id(btf_vmlinux, st_ops_ids[IDX_MODULE_ID]);
- 	for_each_member(i, t, member) {
- 		const struct btf_type *mtype, *ptype;
- 		struct bpf_prog *prog;
- 		struct bpf_tramp_link *link;
-+		struct bpf_ksym *ksym;
- 		u32 moff;
- 
- 		moff = __btf_member_bit_offset(t, member) / 8;
-+		mname = btf_name_by_offset(st_map->btf, member->name_off);
- 		ptype = btf_type_resolve_ptr(st_map->btf, member->type, NULL);
- 		if (ptype == module_type) {
- 			if (*(void **)(udata + moff))
-@@ -717,6 +768,13 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 			      &bpf_struct_ops_link_lops, prog);
- 		*plink++ = &link->link;
- 
-+		ksym = kzalloc(sizeof(*ksym), GFP_USER);
-+		if (!ksym) {
-+			err = -ENOMEM;
-+			goto reset_unlock;
-+		}
-+		*pksym++ = ksym;
-+
- 		trampoline_start = image_off;
- 		err = bpf_struct_ops_prepare_trampoline(tlinks, link,
- 						&st_ops->func_models[i],
-@@ -736,6 +794,12 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 
- 		/* put prog_id to udata */
- 		*(unsigned long *)(udata + moff) = prog->aux->id;
-+
-+		/* init ksym for this trampoline */
-+		bpf_struct_ops_ksym_init(tname, mname,
-+					 image + trampoline_start,
-+					 image_off - trampoline_start,
-+					 ksym);
- 	}
- 
- 	if (st_ops->validate) {
-@@ -784,6 +848,7 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 	 */
- 
- reset_unlock:
-+	bpf_struct_ops_map_free_ksyms(st_map);
- 	bpf_struct_ops_map_free_image(st_map);
- 	bpf_struct_ops_map_put_progs(st_map);
- 	memset(uvalue, 0, map->value_size);
-@@ -791,6 +856,8 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- unlock:
- 	kfree(tlinks);
- 	mutex_unlock(&st_map->lock);
-+	if (!err)
-+		bpf_struct_ops_map_add_ksyms(st_map);
- 	return err;
- }
- 
-@@ -850,7 +917,10 @@ static void __bpf_struct_ops_map_free(struct bpf_map *map)
- 
- 	if (st_map->links)
- 		bpf_struct_ops_map_put_progs(st_map);
-+	if (st_map->ksyms)
-+		bpf_struct_ops_map_free_ksyms(st_map);
- 	bpf_map_area_free(st_map->links);
-+	bpf_map_area_free(st_map->ksyms);
- 	bpf_struct_ops_map_free_image(st_map);
- 	bpf_map_area_free(st_map->uvalue);
- 	bpf_map_area_free(st_map);
-@@ -867,6 +937,8 @@ static void bpf_struct_ops_map_free(struct bpf_map *map)
- 	if (btf_is_module(st_map->btf))
- 		module_put(st_map->st_ops_desc->st_ops->owner);
- 
-+	bpf_struct_ops_map_del_ksyms(st_map);
-+
- 	/* The struct_ops's function may switch to another struct_ops.
- 	 *
- 	 * For example, bpf_tcp_cc_x->init() may switch to
-@@ -979,7 +1051,11 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
- 	st_map->links =
- 		bpf_map_area_alloc(st_map->funcs_cnt * sizeof(struct bpf_link *),
- 				   NUMA_NO_NODE);
--	if (!st_map->uvalue || !st_map->links) {
-+
-+	st_map->ksyms =
-+		bpf_map_area_alloc(st_map->funcs_cnt * sizeof(struct bpf_ksym *),
-+				   NUMA_NO_NODE);
-+	if (!st_map->uvalue || !st_map->links || !st_map->ksyms) {
- 		ret = -ENOMEM;
- 		goto errout_free;
- 	}
-@@ -1009,6 +1085,7 @@ static u64 bpf_struct_ops_map_mem_usage(const struct bpf_map *map)
- 			vt->size - sizeof(struct bpf_struct_ops_value);
- 	usage += vt->size;
- 	usage += st_map->funcs_cnt * sizeof(struct bpf_link *);
-+	usage += st_map->funcs_cnt * sizeof(struct bpf_ksym *);
- 	usage += PAGE_SIZE;
- 	return usage;
- }
-diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-index 70fb82bf1637..b77db7413f8c 100644
---- a/kernel/bpf/dispatcher.c
-+++ b/kernel/bpf/dispatcher.c
-@@ -154,7 +154,8 @@ void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
- 			d->image = NULL;
- 			goto out;
- 		}
--		bpf_image_ksym_add(d->image, PAGE_SIZE, &d->ksym);
-+		bpf_image_ksym_init(d->image, PAGE_SIZE, &d->ksym);
-+		bpf_image_ksym_add(&d->ksym);
- 	}
- 
- 	prev_num_progs = d->num_progs;
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 9f36c049f4c2..ecdd2660561f 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -115,10 +115,14 @@ bool bpf_prog_has_trampoline(const struct bpf_prog *prog)
- 		(ptype == BPF_PROG_TYPE_LSM && eatype == BPF_LSM_MAC);
- }
- 
--void bpf_image_ksym_add(void *data, unsigned int size, struct bpf_ksym *ksym)
-+void bpf_image_ksym_init(void *data, unsigned int size, struct bpf_ksym *ksym)
- {
- 	ksym->start = (unsigned long) data;
- 	ksym->end = ksym->start + size;
-+}
-+
-+void bpf_image_ksym_add(struct bpf_ksym *ksym)
-+{
- 	bpf_ksym_add(ksym);
- 	perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_BPF, ksym->start,
- 			   PAGE_SIZE, false, ksym->name);
-@@ -377,7 +381,8 @@ static struct bpf_tramp_image *bpf_tramp_image_alloc(u64 key, int size)
- 	ksym = &im->ksym;
- 	INIT_LIST_HEAD_RCU(&ksym->lnode);
- 	snprintf(ksym->name, KSYM_NAME_LEN, "bpf_trampoline_%llu", key);
--	bpf_image_ksym_add(image, size, ksym);
-+	bpf_image_ksym_init(image, size, ksym);
-+	bpf_image_ksym_add(ksym);
- 	return im;
- 
- out_free_image:
--- 
-2.39.5
-
+On 29/10/2024 22:12, Joe Damato wrote:
+> Link queues to NAPI instances via netdev-genl API so that users can
+> query this information with netlink. Handle a few cases in the driver:
+>    1. Link/unlink the NAPIs when XDP is enabled/disabled
+>    2. Handle IGC_FLAG_QUEUE_PAIRS enabled and disabled
+> 
+> Example output when IGC_FLAG_QUEUE_PAIRS is enabled:
+> 
+> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+>                           --dump queue-get --json='{"ifindex": 2}'
+> 
+> [{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+>   {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
+>   {'id': 2, 'ifindex': 2, 'napi-id': 8195, 'type': 'rx'},
+>   {'id': 3, 'ifindex': 2, 'napi-id': 8196, 'type': 'rx'},
+>   {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'tx'},
+>   {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'tx'},
+>   {'id': 2, 'ifindex': 2, 'napi-id': 8195, 'type': 'tx'},
+>   {'id': 3, 'ifindex': 2, 'napi-id': 8196, 'type': 'tx'}]
+> 
+> Since IGC_FLAG_QUEUE_PAIRS is enabled, you'll note that the same NAPI ID
+> is present for both rx and tx queues at the same index, for example
+> index 0:
+> 
+> {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+> {'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'tx'},
+> 
+> To test IGC_FLAG_QUEUE_PAIRS disabled, a test system was booted using
+> the grub command line option "maxcpus=2" to force
+> igc_set_interrupt_capability to disable IGC_FLAG_QUEUE_PAIRS.
+> 
+> Example output when IGC_FLAG_QUEUE_PAIRS is disabled:
+> 
+> $ lscpu | grep "On-line CPU"
+> On-line CPU(s) list:      0,2
+> 
+> $ ethtool -l enp86s0  | tail -5
+> Current hardware settings:
+> RX:		n/a
+> TX:		n/a
+> Other:		1
+> Combined:	2
+> 
+> $ cat /proc/interrupts  | grep enp
+>   144: [...] enp86s0
+>   145: [...] enp86s0-rx-0
+>   146: [...] enp86s0-rx-1
+>   147: [...] enp86s0-tx-0
+>   148: [...] enp86s0-tx-1
+> 
+> 1 "other" IRQ, and 2 IRQs for each of RX and Tx, so we expect netlink to
+> report 4 IRQs with unique NAPI IDs:
+> 
+> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+>                           --dump napi-get --json='{"ifindex": 2}'
+> [{'id': 8196, 'ifindex': 2, 'irq': 148},
+>   {'id': 8195, 'ifindex': 2, 'irq': 147},
+>   {'id': 8194, 'ifindex': 2, 'irq': 146},
+>   {'id': 8193, 'ifindex': 2, 'irq': 145}]
+> 
+> Now we examine which queues these NAPIs are associated with, expecting
+> that since IGC_FLAG_QUEUE_PAIRS is disabled each RX and TX queue will
+> have its own NAPI instance:
+> 
+> $ ./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
+>                           --dump queue-get --json='{"ifindex": 2}'
+> [{'id': 0, 'ifindex': 2, 'napi-id': 8193, 'type': 'rx'},
+>   {'id': 1, 'ifindex': 2, 'napi-id': 8194, 'type': 'rx'},
+>   {'id': 0, 'ifindex': 2, 'napi-id': 8195, 'type': 'tx'},
+>   {'id': 1, 'ifindex': 2, 'napi-id': 8196, 'type': 'tx'}]
+> 
+> Signed-off-by: Joe Damato <jdamato@fastly.com>
+> Reviewed-by: Vitaly Lifshits <vitaly.lifshits@intel.com>
+> ---
+>   v6:
+>     - Rename __igc_do_resume to __igc_resume and rename the boolean
+>       argument "need_rtnl" to "rpm" as seen in igb, as per Vitaly's
+>       feedback to make the code look more like commit ac8c58f5b535 ("igb:
+>       fix deadlock caused by taking RTNL in RPM resume path").
+> 
+>   v5:
+>     - Rename igc_resume to __igc_do_resume and pass in a boolean
+>       "need_rtnl" to signal whether or not rtnl should be held before
+>       caling __igc_open. Call this new function from igc_runtime_resume
+>       and igc_resume passing in false (for igc_runtime_resume) and true
+>       (igc_resume), respectively. This is done to avoid reintroducing a
+>       bug fixed in commit: 6f31d6b: "igc: Refactor runtime power
+>       management flow" where rtnl is held in runtime_resume causing a
+>       deadlock.
+> 
+>   v4:
+>     - Add rtnl_lock/rtnl_unlock in two paths: igc_resume and
+>       igc_io_error_detected. The code added to the latter is inspired by
+>       a similar implementation in ixgbe's ixgbe_io_error_detected.
+> 
+>   v3:
+>     - Replace igc_unset_queue_napi with igc_set_queue_napi(adapater, i,
+>       NULL), as suggested by Vinicius Costa Gomes
+>     - Simplify implemention of igc_set_queue_napi as suggested by Kurt
+>       Kanzenbach, with a tweak to use ring->queue_index
+> 
+>   v2:
+>     - Update commit message to include tests for IGC_FLAG_QUEUE_PAIRS
+>       disabled
+>     - Refactored code to move napi queue mapping and unmapping to helper
+>       functions igc_set_queue_napi and igc_unset_queue_napi
+>     - Adjust the code to handle IGC_FLAG_QUEUE_PAIRS disabled
+>     - Call helpers to map/unmap queues to NAPIs in igc_up, __igc_open,
+>       igc_xdp_enable_pool, and igc_xdp_disable_pool
+> 
+>   drivers/net/ethernet/intel/igc/igc.h      |  2 +
+>   drivers/net/ethernet/intel/igc/igc_main.c | 56 +++++++++++++++++++----
+>   drivers/net/ethernet/intel/igc/igc_xdp.c  |  2 +
+>   3 files changed, 51 insertions(+), 9 deletions(-)
+> 
+Tested-by: Avigail Dahan <avigailx.dahan@intel.com>
 
