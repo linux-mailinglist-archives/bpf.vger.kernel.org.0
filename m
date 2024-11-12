@@ -1,603 +1,100 @@
-Return-Path: <bpf+bounces-44652-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44656-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3D5A9C5D84
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 17:39:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 448829C5E0D
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 18:01:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B31CB2822FF
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 16:39:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F04AC1F21D30
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 17:01:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CA0420696C;
-	Tue, 12 Nov 2024 16:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1C420DD40;
+	Tue, 12 Nov 2024 16:58:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="STiu4vFw"
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D3C9205ABA
-	for <bpf@vger.kernel.org>; Tue, 12 Nov 2024 16:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9A941FCC43;
+	Tue, 12 Nov 2024 16:58:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731429587; cv=none; b=Eb8Y4s+1Ep1i+U4kNWVr9io+gc5yYdjb94xVAzw+4owfldFIBG8x0SqFX/okw7Qo8DONmluCfkh79Y9BbbXvCjsJ6V+i1BQkcUZe6gmLjoLuM8XNF44XGhz0vUtWIKGTwRL548S/8g7+pcCGGr2LVniXTAtwWg6PdKT0DBydZ9w=
+	t=1731430717; cv=none; b=SbgqhKUw4jytgj/1Mqa5yx2ljIN4dVtSjIGiD0OrI7Me3N3ikic9JgbyCRuKVFH6mE5a1+BoNHTZrcxO3bXAV0M95Pc57f1QmmybHtBITeW6xdmPishi0sxzPFudMedhNHuAtxqZzeNk6oq/7Q5j/HFJoRDgjDagQCuznLyQvEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731429587; c=relaxed/simple;
-	bh=i5t2+z2MMNqZGO6Wrqgf12+UCdXgj75xfzXfVa9vStg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fmiID0pa1aa+rg8gJOmUea6KDFnkRQlpFW8EgjNQ52saSZDVOCEQnri+SJ5QAVNBuNqRMC4pkPkOrURBNTu8/tlixN49S37zN7NdCNiRZiShkvGY1HL2huw9zFydMQCPpOid5CsjqVGfWJCb+8UWGeT3DSG2zYDaQcarFo7/Htc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 35A77AFAF925; Tue, 12 Nov 2024 08:39:38 -0800 (PST)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v12 7/7] selftests/bpf: Add struct_ops prog private stack tests
-Date: Tue, 12 Nov 2024 08:39:38 -0800
-Message-ID: <20241112163938.2225528-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241112163902.2223011-1-yonghong.song@linux.dev>
-References: <20241112163902.2223011-1-yonghong.song@linux.dev>
+	s=arc-20240116; t=1731430717; c=relaxed/simple;
+	bh=6MATLaNTaFPSyKBlF8ht5BCoK52hQMWsO7YQuGpBK9M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ESheaBQNk8yHAivAYzfbyTqNXRPS03niwxbnLPkKLUAB0rY2DYDYeBRLvvjJIozardhKn8EEY7a+jQzLim21DetpAufqovf4dBkmteGyUtpBbl7X/cjBb2lHQCRy5j93jA5kuzpgy84H84zQVCf2r5Ch477o0X2SmbM+0WyKVCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=STiu4vFw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C8FAC4CECD;
+	Tue, 12 Nov 2024 16:58:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731430717;
+	bh=6MATLaNTaFPSyKBlF8ht5BCoK52hQMWsO7YQuGpBK9M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=STiu4vFwe+SdIbAaKqeygcdVCSIzYQuVq2GT2lEMoYIVlGA/32lnlDAeCU7V4KhE5
+	 oF5FNDajS6y4JZjt/yc5mPw4YJIDqwD1pJzJ19u1F679c1+foDl+OqzQ96Jedoj5mn
+	 sqGiYk9W/4pY1xJjV18Km9BScqIDyfAw7GHLQp6AObOizNwHKIOEYMYIWIOHPb79Sy
+	 kqFI2+TnKlNw48qyqMbzs0SNqEDUFS2/GTImtQ9INWtxCDPv0L8YTOlXXZuOj27vcc
+	 QvODrfJK32ePKD34SFxB9SS0lD95wtZ/2AepPK+F3Oonz84apjc4lmLBLh8zcOT9i+
+	 Q6kkjwfiLoaEw==
+Date: Tue, 12 Nov 2024 13:58:32 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Hao Ge <hao.ge@linux.dev>
+Cc: peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
+	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+	kan.liang@linux.intel.com, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Hao Ge <gehao@kylinos.cn>
+Subject: Re: [PATCH] perf bpf-filter: Return -1 directly when pfi allocation
+ fails
+Message-ID: <ZzOJOEpyAc92462-@x1>
+References: <20241112022815.191201-1-hao.ge@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241112022815.191201-1-hao.ge@linux.dev>
 
-Add three tests for struct_ops using private stack.
-  ./test_progs -t struct_ops_private_stack
-  #336/1   struct_ops_private_stack/private_stack:OK
-  #336/2   struct_ops_private_stack/private_stack_fail:OK
-  #336/3   struct_ops_private_stack/private_stack_recur:OK
-  #336     struct_ops_private_stack:OK
+On Tue, Nov 12, 2024 at 10:28:15AM +0800, Hao Ge wrote:
+> From: Hao Ge <gehao@kylinos.cn>
+> 
+> Directly return -1 when pfi allocation fails,
 
-The following is a snippet of a struct_ops check_member() implementation:
+The convention for this function is to return -errno, so please resubmit
+returning -ENOMEM.
 
-	u32 moff =3D __btf_member_bit_offset(t, member) / 8;
-	switch (moff) {
-	case offsetof(struct bpf_testmod_ops3, test_1):
-        	prog->aux->priv_stack_requested =3D true;
-                prog->aux->recursion_detected =3D test_1_recursion_detect=
-ed;
-        	fallthrough;
-	default:
-        	break;
-	}
-	return 0;
+- Arnaldo
 
-The first test is with nested two different callback functions where the
-first prog has more than 512 byte stack size (including subprogs) with
-private stack enabled.
-
-The second test is a negative test where the second prog has more than 51=
-2
-byte stack size without private stack enabled.
-
-The third test is the same callback function recursing itself. At run tim=
-e,
-the jit trampoline recursion check kicks in to prevent the recursion. The
-recursion_detected() callback function is implemented by the bpf_testmod,
-the following message in dmesg
-  bpf_testmod: oh no, recursing into test_1, recursion_misses 1
-demonstrates the callback function is indeed triggered when recursion mis=
-s
-happens.
-
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 104 +++++++++++++++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   5 +
- .../bpf/prog_tests/struct_ops_private_stack.c | 106 ++++++++++++++++++
- .../bpf/progs/struct_ops_private_stack.c      |  62 ++++++++++
- .../bpf/progs/struct_ops_private_stack_fail.c |  62 ++++++++++
- .../progs/struct_ops_private_stack_recur.c    |  50 +++++++++
- 6 files changed, 389 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_pri=
-vate_stack.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
-stack.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
-stack_fail.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
-stack_recur.c
-
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tool=
-s/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 987d41af71d2..cc9dde507aba 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -245,6 +245,39 @@ __bpf_kfunc void bpf_testmod_ctx_release(struct bpf_=
-testmod_ctx *ctx)
- 		call_rcu(&ctx->rcu, testmod_free_cb);
- }
-=20
-+static struct bpf_testmod_ops3 *st_ops3;
-+
-+static int bpf_testmod_test_3(void)
-+{
-+	return 0;
-+}
-+
-+static int bpf_testmod_test_4(void)
-+{
-+	return 0;
-+}
-+
-+static struct bpf_testmod_ops3 __bpf_testmod_ops3 =3D {
-+	.test_1 =3D bpf_testmod_test_3,
-+	.test_2 =3D bpf_testmod_test_4,
-+};
-+
-+static void bpf_testmod_test_struct_ops3(void)
-+{
-+	if (st_ops3)
-+		st_ops3->test_1();
-+}
-+
-+__bpf_kfunc void bpf_testmod_ops3_call_test_1(void)
-+{
-+	st_ops3->test_1();
-+}
-+
-+__bpf_kfunc void bpf_testmod_ops3_call_test_2(void)
-+{
-+	st_ops3->test_2();
-+}
-+
- struct bpf_testmod_btf_type_tag_1 {
- 	int a;
- };
-@@ -382,6 +415,8 @@ bpf_testmod_test_read(struct file *file, struct kobje=
-ct *kobj,
-=20
- 	(void)trace_bpf_testmod_test_raw_tp_null(NULL);
-=20
-+	bpf_testmod_test_struct_ops3();
-+
- 	struct_arg3 =3D kmalloc((sizeof(struct bpf_testmod_struct_arg_3) +
- 				sizeof(int)), GFP_KERNEL);
- 	if (struct_arg3 !=3D NULL) {
-@@ -586,6 +621,8 @@ BTF_ID_FLAGS(func, bpf_kfunc_trusted_num_test, KF_TRU=
-STED_ARGS)
- BTF_ID_FLAGS(func, bpf_kfunc_rcu_task_test, KF_RCU)
- BTF_ID_FLAGS(func, bpf_testmod_ctx_create, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_testmod_ctx_release, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_testmod_ops3_call_test_1)
-+BTF_ID_FLAGS(func, bpf_testmod_ops3_call_test_2)
- BTF_KFUNCS_END(bpf_testmod_common_kfunc_ids)
-=20
- BTF_ID_LIST(bpf_testmod_dtor_ids)
-@@ -1096,6 +1133,10 @@ static const struct bpf_verifier_ops bpf_testmod_v=
-erifier_ops =3D {
- 	.is_valid_access =3D bpf_testmod_ops_is_valid_access,
- };
-=20
-+static const struct bpf_verifier_ops bpf_testmod_verifier_ops3 =3D {
-+	.is_valid_access =3D bpf_testmod_ops_is_valid_access,
-+};
-+
- static int bpf_dummy_reg(void *kdata, struct bpf_link *link)
- {
- 	struct bpf_testmod_ops *ops =3D kdata;
-@@ -1175,6 +1216,68 @@ struct bpf_struct_ops bpf_testmod_ops2 =3D {
- 	.owner =3D THIS_MODULE,
- };
-=20
-+static int st_ops3_reg(void *kdata, struct bpf_link *link)
-+{
-+	int err =3D 0;
-+
-+	mutex_lock(&st_ops_mutex);
-+	if (st_ops3) {
-+		pr_err("st_ops has already been registered\n");
-+		err =3D -EEXIST;
-+		goto unlock;
-+	}
-+	st_ops3 =3D kdata;
-+
-+unlock:
-+	mutex_unlock(&st_ops_mutex);
-+	return err;
-+}
-+
-+static void st_ops3_unreg(void *kdata, struct bpf_link *link)
-+{
-+	mutex_lock(&st_ops_mutex);
-+	st_ops3 =3D NULL;
-+	mutex_unlock(&st_ops_mutex);
-+}
-+
-+static void test_1_recursion_detected(struct bpf_prog *prog)
-+{
-+	struct bpf_prog_stats *stats;
-+
-+	stats =3D this_cpu_ptr(prog->stats);
-+	printk("bpf_testmod: oh no, recursing into test_1, recursion_misses %ll=
-u",
-+	       u64_stats_read(&stats->misses));
-+}
-+
-+static int st_ops3_check_member(const struct btf_type *t,
-+				const struct btf_member *member,
-+				const struct bpf_prog *prog)
-+{
-+	u32 moff =3D __btf_member_bit_offset(t, member) / 8;
-+
-+	switch (moff) {
-+	case offsetof(struct bpf_testmod_ops3, test_1):
-+		prog->aux->priv_stack_requested =3D true;
-+		prog->aux->recursion_detected =3D test_1_recursion_detected;
-+		fallthrough;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+struct bpf_struct_ops bpf_testmod_ops3 =3D {
-+	.verifier_ops =3D &bpf_testmod_verifier_ops3,
-+	.init =3D bpf_testmod_ops_init,
-+	.init_member =3D bpf_testmod_ops_init_member,
-+	.reg =3D st_ops3_reg,
-+	.unreg =3D st_ops3_unreg,
-+	.check_member =3D st_ops3_check_member,
-+	.cfi_stubs =3D &__bpf_testmod_ops3,
-+	.name =3D "bpf_testmod_ops3",
-+	.owner =3D THIS_MODULE,
-+};
-+
- static int bpf_test_mod_st_ops__test_prologue(struct st_ops_args *args)
- {
- 	return 0;
-@@ -1333,6 +1436,7 @@ static int bpf_testmod_init(void)
- 	ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &bpf=
-_testmod_kfunc_set);
- 	ret =3D ret ?: register_bpf_struct_ops(&bpf_bpf_testmod_ops, bpf_testmo=
-d_ops);
- 	ret =3D ret ?: register_bpf_struct_ops(&bpf_testmod_ops2, bpf_testmod_o=
-ps2);
-+	ret =3D ret ?: register_bpf_struct_ops(&bpf_testmod_ops3, bpf_testmod_o=
-ps3);
- 	ret =3D ret ?: register_bpf_struct_ops(&testmod_st_ops, bpf_testmod_st_=
-ops);
- 	ret =3D ret ?: register_btf_id_dtor_kfuncs(bpf_testmod_dtors,
- 						 ARRAY_SIZE(bpf_testmod_dtors),
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tool=
-s/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index fb7dff47597a..356803d1c10e 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -94,6 +94,11 @@ struct bpf_testmod_ops2 {
- 	int (*test_1)(void);
- };
-=20
-+struct bpf_testmod_ops3 {
-+	int (*test_1)(void);
-+	int (*test_2)(void);
-+};
-+
- struct st_ops_args {
- 	u64 a;
- };
-diff --git a/tools/testing/selftests/bpf/prog_tests/struct_ops_private_st=
-ack.c b/tools/testing/selftests/bpf/prog_tests/struct_ops_private_stack.c
-new file mode 100644
-index 000000000000..4006879ca3fe
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/struct_ops_private_stack.c
-@@ -0,0 +1,106 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "struct_ops_private_stack.skel.h"
-+#include "struct_ops_private_stack_fail.skel.h"
-+#include "struct_ops_private_stack_recur.skel.h"
-+
-+static void test_private_stack(void)
-+{
-+	struct struct_ops_private_stack *skel;
-+	struct bpf_link *link;
-+	int err;
-+
-+	skel =3D struct_ops_private_stack__open();
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack__open"))
-+		return;
-+
-+	if (skel->data->skip) {
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	err =3D struct_ops_private_stack__load(skel);
-+	if (!ASSERT_OK(err, "struct_ops_private_stack__load"))
-+		goto cleanup;
-+
-+	link =3D bpf_map__attach_struct_ops(skel->maps.testmod_1);
-+	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
-+		goto cleanup;
-+
-+	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
-+
-+	ASSERT_EQ(skel->bss->val_i, 3, "val_i");
-+	ASSERT_EQ(skel->bss->val_j, 8, "val_j");
-+
-+	bpf_link__destroy(link);
-+
-+cleanup:
-+	struct_ops_private_stack__destroy(skel);
-+}
-+
-+static void test_private_stack_fail(void)
-+{
-+	struct struct_ops_private_stack_fail *skel;
-+	int err;
-+
-+	skel =3D struct_ops_private_stack_fail__open();
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack_fail__open"))
-+		return;
-+
-+	if (skel->data->skip) {
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	err =3D struct_ops_private_stack_fail__load(skel);
-+	if (!ASSERT_ERR(err, "struct_ops_private_stack_fail__load"))
-+		goto cleanup;
-+	return;
-+
-+cleanup:
-+	struct_ops_private_stack_fail__destroy(skel);
-+}
-+
-+static void test_private_stack_recur(void)
-+{
-+	struct struct_ops_private_stack_recur *skel;
-+	struct bpf_link *link;
-+	int err;
-+
-+	skel =3D struct_ops_private_stack_recur__open();
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_private_stack_recur__open"))
-+		return;
-+
-+	if (skel->data->skip) {
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	err =3D struct_ops_private_stack_recur__load(skel);
-+	if (!ASSERT_OK(err, "struct_ops_private_stack_recur__load"))
-+		goto cleanup;
-+
-+	link =3D bpf_map__attach_struct_ops(skel->maps.testmod_1);
-+	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
-+		goto cleanup;
-+
-+	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
-+
-+	ASSERT_EQ(skel->bss->val_j, 3, "val_j");
-+
-+	bpf_link__destroy(link);
-+
-+cleanup:
-+	struct_ops_private_stack_recur__destroy(skel);
-+}
-+
-+void test_struct_ops_private_stack(void)
-+{
-+	if (test__start_subtest("private_stack"))
-+		test_private_stack();
-+	if (test__start_subtest("private_stack_fail"))
-+		test_private_stack_fail();
-+	if (test__start_subtest("private_stack_recur"))
-+		test_private_stack_recur();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c=
- b/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c
-new file mode 100644
-index 000000000000..8ea57e5348ab
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+#if defined(__TARGET_ARCH_x86)
-+bool skip __attribute((__section__(".data"))) =3D false;
-+#else
-+bool skip =3D true;
-+#endif
-+
-+void bpf_testmod_ops3_call_test_2(void) __ksym;
-+
-+int val_i, val_j;
-+
-+__noinline static int subprog2(int *a, int *b)
-+{
-+	return val_i + a[10] + b[20];
-+}
-+
-+__noinline static int subprog1(int *a)
-+{
-+	/* stack size 200 bytes */
-+	int b[50] =3D {};
-+
-+	b[20] =3D 2;
-+	return subprog2(a, b);
-+}
-+
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_1)
-+{
-+	/* stack size 400 bytes */
-+	int a[100] =3D {};
-+
-+	a[10] =3D 1;
-+	val_i =3D subprog1(a);
-+	bpf_testmod_ops3_call_test_2();
-+	return 0;
-+}
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_2)
-+{
-+	/* stack size 200 bytes */
-+	int a[50] =3D {};
-+
-+	a[10] =3D 3;
-+	val_j =3D subprog1(a);
-+	return 0;
-+}
-+
-+SEC(".struct_ops")
-+struct bpf_testmod_ops3 testmod_1 =3D {
-+	.test_1 =3D (void *)test_1,
-+	.test_2 =3D (void *)test_2,
-+};
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_f=
-ail.c b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c
-new file mode 100644
-index 000000000000..1f55ec4cee37
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+#if defined(__TARGET_ARCH_x86)
-+bool skip __attribute((__section__(".data"))) =3D false;
-+#else
-+bool skip =3D true;
-+#endif
-+
-+void bpf_testmod_ops3_call_test_2(void) __ksym;
-+
-+int val_i, val_j;
-+
-+__noinline static int subprog2(int *a, int *b)
-+{
-+	return val_i + a[10] + b[20];
-+}
-+
-+__noinline static int subprog1(int *a)
-+{
-+	/* stack size 200 bytes */
-+	int b[50] =3D {};
-+
-+	b[20] =3D 2;
-+	return subprog2(a, b);
-+}
-+
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_1)
-+{
-+	/* stack size 100 bytes */
-+	int a[25] =3D {};
-+
-+	a[10] =3D 1;
-+	val_i =3D subprog1(a);
-+	bpf_testmod_ops3_call_test_2();
-+	return 0;
-+}
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_2)
-+{
-+	/* stack size 400 bytes */
-+	int a[100] =3D {};
-+
-+	a[10] =3D 3;
-+	val_j =3D subprog1(a);
-+	return 0;
-+}
-+
-+SEC(".struct_ops")
-+struct bpf_testmod_ops3 testmod_1 =3D {
-+	.test_1 =3D (void *)test_1,
-+	.test_2 =3D (void *)test_2,
-+};
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_r=
-ecur.c b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur=
-.c
-new file mode 100644
-index 000000000000..f2f300d50988
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur.c
-@@ -0,0 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+#if defined(__TARGET_ARCH_x86)
-+bool skip __attribute((__section__(".data"))) =3D false;
-+#else
-+bool skip =3D true;
-+#endif
-+
-+void bpf_testmod_ops3_call_test_1(void) __ksym;
-+
-+int val_i, val_j;
-+
-+__noinline static int subprog2(int *a, int *b)
-+{
-+	return val_i + a[1] + b[20];
-+}
-+
-+__noinline static int subprog1(int *a)
-+{
-+	/* stack size 400 bytes */
-+	int b[100] =3D {};
-+
-+	b[20] =3D 2;
-+	return subprog2(a, b);
-+}
-+
-+
-+SEC("struct_ops")
-+int BPF_PROG(test_1)
-+{
-+	/* stack size 20 bytes */
-+	int a[5] =3D {};
-+
-+	a[1] =3D 1;
-+	val_j +=3D subprog1(a);
-+	bpf_testmod_ops3_call_test_1();
-+	return 0;
-+}
-+
-+SEC(".struct_ops")
-+struct bpf_testmod_ops3 testmod_1 =3D {
-+	.test_1 =3D (void *)test_1,
-+};
---=20
-2.43.5
-
+> instead of performing other operations on pfi.
+> 
+> Fixes: 0fe2b18ddc40 ("perf bpf-filter: Support multiple events properly")
+> Signed-off-by: Hao Ge <gehao@kylinos.cn>
+> ---
+>  tools/perf/util/bpf-filter.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
+> index e87b6789eb9e..34c8bf7e469e 100644
+> --- a/tools/perf/util/bpf-filter.c
+> +++ b/tools/perf/util/bpf-filter.c
+> @@ -375,7 +375,7 @@ static int create_idx_hash(struct evsel *evsel, struct perf_bpf_filter_entry *en
+>  	pfi = zalloc(sizeof(*pfi));
+>  	if (pfi == NULL) {
+>  		pr_err("Cannot save pinned filter index\n");
+> -		goto err;
+> +		return -1;
+>  	}
+>  
+>  	pfi->evsel = evsel;
+> -- 
+> 2.25.1
 
