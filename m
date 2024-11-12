@@ -1,252 +1,213 @@
-Return-Path: <bpf+bounces-44592-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44594-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 271099C4DCD
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 05:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FAB99C4E6B
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 06:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C1CEB247FB
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 04:43:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2398B2188A
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 05:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04E9208970;
-	Tue, 12 Nov 2024 04:43:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57C5E205AD9;
+	Tue, 12 Nov 2024 05:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="bItI+Xjg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gp1QpyX/"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2048.outbound.protection.outlook.com [40.107.223.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8EDA208222;
-	Tue, 12 Nov 2024 04:42:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731386580; cv=fail; b=GvktGvb1Y7kW7OZLayXvp1lFau51gNlAJI9ZTuS5HCTkQ/0YgugJT+/1Bv8IT3nBzzg22weIu9dQbShMuSGpOkFc12oAtFytEt0QjiCPw1WeInK5h7AFJzrhghr0TSRzeZDJAHInaoS2Ir7uZFEuxW0NzbdGnnxg2C5XFWSx44w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731386580; c=relaxed/simple;
-	bh=gqvsadeLUGz2O4Wf9TKNa+JwXGV93mm5Xx95cG6cb6k=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=mwY0C+Sb+cVufn7/GlosM69gK10SH5mtHBCSw2O9BBeTo+AjTRky3nVeyTRF+ZsBAbLtrcwJ4c/bYl6Nh3Un/7TkdULDBiUeKWVR9d/PYgKGh8Uvd25oetHam339K/CRi/cgfYvhlV1WQB6ky3F1okzFm7a7fghoJPFIIMPxxWA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=bItI+Xjg; arc=fail smtp.client-ip=40.107.223.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Tk7Leo+55x5vxYGzSLAigouihCJes4OfHkgpJQzZrwkUx+5eHOKm+PEOiuwUZXlo4rI2h4yRwhpL8RRHjs3sXk7KjgZZwEZ1R38x5t0fcTktWtQD2KLmvi9KeDUdcWMnz5nn5EtMwQmu94SR2AcvG2v9jNNG4c86vLj8pm1iXAGdRyfFQmA+BDi4PBJhU4FAVqT9v94+bA4ZooFkhslGPjtzXelFBCmpuJ+yr33Jgyvav1u0gw/jQW/a2UyLGl+TDI5ZoVmGFPcsqdt/aHsJN1HLYGzk41Ft6W3zjD2fM3aBuM+a1wddWtzR/II2sigE0Ip07CUWvVzjpcD7sN4dAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oxgScA0dSg7YFy9knkmyTqFVeEcS5/8+2JpKM5QvG9A=;
- b=w97OzjE93//YnYlw1sr00gnaPFMD3cy+R5+CHV172jLx0H2hzDDqyzKOSKG/S3cPTDqzp051P1Bf6nZmv8HL7SkibEAWbugOiBubUS7tXs/zocQ2cH5rW5xkctCODaSWJrwqxHllU9qozdIllveNmHoy92dRFWo6U2tB8yjAl+KvNLGGBBKF1Km6aNgXZ9YRfw4kMcgG74IgxiPj+emrKWy9MJzSUQnmq7uRUyJsNI/I3V0LCiGBMH+8B/kvwvJWZGGUHz54dWLU6nlLD92pwbH+mN9PMEdT0QNLUXCnM5JR/YXzHBv+MIMk3LKBwAbe3wN66sXEEKUb4vcLxHXNwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oxgScA0dSg7YFy9knkmyTqFVeEcS5/8+2JpKM5QvG9A=;
- b=bItI+Xjg8Ag5dYErPjB4YV5ht5PYoxNvEn3mK3cb1oiEMF/bMrAiAjwVLWcb4ijw3GOvmRT6/MyVCgYIQuEQAHgtZ94GLwrjUFJ6FRWfAzAUqGsYvN7pUDpahRJIlx9VHPKR0hd60pfY0KSlU7TZFfKNduYKmeoQBYbjZANhQvM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS0PR12MB6608.namprd12.prod.outlook.com (2603:10b6:8:d0::10) by
- CH3PR12MB8879.namprd12.prod.outlook.com (2603:10b6:610:171::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.16; Tue, 12 Nov
- 2024 04:42:52 +0000
-Received: from DS0PR12MB6608.namprd12.prod.outlook.com
- ([fe80::b71d:8902:9ab3:f627]) by DS0PR12MB6608.namprd12.prod.outlook.com
- ([fe80::b71d:8902:9ab3:f627%3]) with mapi id 15.20.8137.027; Tue, 12 Nov 2024
- 04:42:52 +0000
-Message-ID: <c48c9dca-fe07-4833-acaa-28c827e5a79e@amd.com>
-Date: Tue, 12 Nov 2024 10:12:40 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH rcu 11/15] rcutorture: Add reader_flavor parameter for
- SRCU readers
-To: "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
-References: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
- <20241015161112.442758-11-paulmck@kernel.org>
-Content-Language: en-US
-From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-In-Reply-To: <20241015161112.442758-11-paulmck@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0055.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::16) To DS0PR12MB6608.namprd12.prod.outlook.com
- (2603:10b6:8:d0::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584CF4502F
+	for <bpf@vger.kernel.org>; Tue, 12 Nov 2024 05:50:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731390642; cv=none; b=OVAcva637IS6+uAlebEDdMQIUrkfKTjCUT649gOjLnoZtVxFr2G1THjYenzBvB4SpDivFY2PJFjJXeugTrj8fTjUJYeZCrXqTR6zfUH27lf4ki+lZjbYy5+2LRUktdjdLvZbOxFiq5KYlD5nMRURGrJvn48TJdlq2U8P+IBeEyI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731390642; c=relaxed/simple;
+	bh=O1qMFbwg3lemh3gZEt42SRpu6sGoOpL1+Xk8pg+11YE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UAF30WExN//5nRyTNAjFN7r9JBts0RTznLJhpzgIG0UY9rT80NlYZDNwdJwzWd0GRYEBMqha8LvTLCBhpFitLyMfoq5furv5ndNl1yqjM/9INjHDXZUx0Qe8hoj4fCpgwC0kEKR3O5QSmpE5HfCyNEOpftJBZT1DM92IsTzzRMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gp1QpyX/; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-720d14c8dbfso5034074b3a.0
+        for <bpf@vger.kernel.org>; Mon, 11 Nov 2024 21:50:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731390640; x=1731995440; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vm7spx7LJb7JQaIGq/8nVMJfyh4AF6FYZhix4XfniFk=;
+        b=Gp1QpyX/SuIKow92tkkqaNp7TH0J6kjpIozxr9Nlvp5PpTwIBGaQMhRWmLWl8xw+s7
+         uUpOaAY2w0IzWZJfQfPvfZX6me7GiByDn7CsqC2yypRaoqfIPk5dW4j86UnhMtlJFKct
+         xepx7B0x489nqETXMGkpoR4fiptPB/iZJMzaiL/RD1989N7Hu2HJdhwywLXkdzN6lZI3
+         hhWNpSdRFCnCGEgu/x/4MFLvkLxjuhv8YLP87DD+/4VBC1wvweVjSX0SjI2Z1uESYfhp
+         i8nkq4hiZtnjtEzn3QnqvjSu2wiiAl1HZ6Buv2U9uQQjRvvJwIqtdjp4SnpQqdfnfTgm
+         QEXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731390640; x=1731995440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vm7spx7LJb7JQaIGq/8nVMJfyh4AF6FYZhix4XfniFk=;
+        b=BN1qRMgsNKeVdBRLyIuuMSMV4sYNWO17oO/ih2E5vzLeal0Z0etz0Ckf1EKuyc+TsH
+         76xdhY7cmV2rzsGrn5dfqfCCJg8RbNTG4AZyIdz6/Fl+DTAnCEL4tfr4PMXnv74otATE
+         2x18ZH4TH87vsmHdYE9X6tE0l1XEBEc0Mr/3ucyd8rmc3nxiPeVWmoYMJV/rDe//wp0J
+         gZhXszbzDuzwoQxwziC5JkrDgyJMTNYoUOVETwQX9Wl1alI9fR7Hu35X738KPHZIQnML
+         nbEF5espFpX6H5r3jIZsZTjXom1TeKzgXA1IbQCte56K4HjP1dYHv0lOzNM1W9Agr9pj
+         ELVA==
+X-Forwarded-Encrypted: i=1; AJvYcCW0L1VfpmOG93Ehfsry8WT8iLzRKOpF/3h+3cYcuhBays3KqCmawebAPtmv49rfV5tpov0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw5ARbwQLEviSWEPiIs8kJgKUWb3PhDh8mJi3Q2Kfqvj3pFHyU2
+	1vsVnwXstV9/otJwjxxQUkR1yPEgHjCJJXay2ojnQr54v1r2XmsX9DW3Y9rsMLEgfyNYtyGt4U5
+	9z1rPPbQHoKmyXMxE9GyMEd7G4GM=
+X-Google-Smtp-Source: AGHT+IHLshkr0pR2jweJnGF6aZ9zlgZ3E/GHWHhhoanURuf6BXKGB7+2h9hQv/JeC1YMd21VRpVsM1CxC+rz37vwbNA=
+X-Received: by 2002:a05:6300:808c:b0:1db:e16c:cd90 with SMTP id
+ adf61e73a8af0-1dc229a6f96mr16321447637.17.1731390640421; Mon, 11 Nov 2024
+ 21:50:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6608:EE_|CH3PR12MB8879:EE_
-X-MS-Office365-Filtering-Correlation-Id: d8bdc729-ca33-4d53-0d37-08dd02d47798
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|7416014|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?TnRVMzJGNkMrbVIxQlNtT05wVDNHMmxyQys5SDh2aWZaMXpKVk5VaEptT3ho?=
- =?utf-8?B?WkpNRkVpdHJCZnBkUjByUlVlN2ErcjMyRG9UMVBUN29sSWJJNUFLaHdOY1ds?=
- =?utf-8?B?eVNEcGtVWUx5TXd4c1JiMDJQckFIUEdtVTVMVTJXVk5DMldsM2lsZmZIU3Bq?=
- =?utf-8?B?eWdNaEEyelp2Nmh6bitaUmNWYVNFV1B5SXhPQ1JGSlVtVUo4RnFpY0NhOW1h?=
- =?utf-8?B?YlROUjltdDdONXpBTEtRaHJNcCtESGpuR2ZSUVdBM1hteXRJOHluNzVlOE9l?=
- =?utf-8?B?ZVpjS0pQNTNOWVgxZWtxQUtyNVJZQU1XdmtyeTFpZmVCalBvSXZ5Ukwvdllt?=
- =?utf-8?B?dUtKS2NuN2RHdVFyVzRBUHdNbi9INmZOWTU3MHdiODhMZ3c3aDJmTkI4bWVI?=
- =?utf-8?B?N0tRYytPWGtwT2IveWVrdjd2K25JbnN6a2RmbldWeFlsZ3ptQ3c4YlJvbWEr?=
- =?utf-8?B?SFd3MU8vTWIyYi8rMlpqTzc4MVRkUlMvNVhtZFg2eHJUT09RQy9SNnlFVFY4?=
- =?utf-8?B?UCtrNDY0ZkRlTGlkYS9uUDlmSEZobXkzSVpOQ21KOVhCbjdGSmVsQUY1OTZh?=
- =?utf-8?B?OFpYR3BMcUFVaXc5NW1hWTBzdmo1V3Brclp6UVRqeFhBUkRVaktkWXZCWVNR?=
- =?utf-8?B?VUpKdHVISXJqMCs4aHdDdzFvMmNUTStmM0FyRWFxNHVLU21QMVQ3b0kwVTJL?=
- =?utf-8?B?Y0xHKzFvRHgvVmpWY1JOSEpmeGJzb1oyV3A4WXpCcEZJU29hdXYyWFM4dmdR?=
- =?utf-8?B?RStESjNmWGR5S0lZU3dkbnkzem5TRjljeWpiUkY0T2thQ2NtWXVvY1FaV1FK?=
- =?utf-8?B?REJFWjRvdktQZjlNVGlZcmZTZmo5bWErYSswemxJVWhQZUIvdVIyZmFlZnY4?=
- =?utf-8?B?K3EyYjBYTjVOVHdVYW04S014dkkvQ3VRQ1VrSjJVMlVsNzdoVFZiSTNYaFRZ?=
- =?utf-8?B?MDVwVGpsc3FzeHVKTlM5QmZHbEg0SUVwKzBpVHh6QkZ5S1ViUWhaQkFibjZl?=
- =?utf-8?B?OXMyZnRuOC9Jb1JWUzA3bzc5NGtvbi9sVXFkMlRsRUlwd2hVT25VN21XWGJO?=
- =?utf-8?B?aXYyS1ZpUWVXanEvaGZRWUNTcGxDVG5lbTd3NDhoNGhWUUpmS0twcDJBTE9C?=
- =?utf-8?B?dUFiZktnaGYrQVhJalFMK1JvOUlBbTJjRjFNblk2TjREck1ITzBSSUQ0OE85?=
- =?utf-8?B?TmdWdUxjUjNYMy9ld3VtNmZHa3Z0K29OLzVpU2dyL3JiR3ZJR1ZONUVBWWVt?=
- =?utf-8?B?L3NNbnRBbkc2WDZkSFMrSDRyZ2Zady9yRS9oZzg2VkdIWmlua0VGdG9RT1cy?=
- =?utf-8?B?dmNmQ2NzeWROSkFDdE5WazRLWmJRNmo1dlM5T3R0M1Zlb3FKdkQ4QkI1d3Nm?=
- =?utf-8?B?TmZMcnp2SVI2d0xpNStUZDBBT2xBR3BEYzFVYmtOeS85SnNFL2R0RnhxNmZZ?=
- =?utf-8?B?QXVmdG11Zk5sR2UxZWFwamtFOVFhRE90N2paN1ZZRTdjZWpwcmJPQlMzN2JJ?=
- =?utf-8?B?WmtWK2xlSkpXbi9HNXIwZi95a1ZINThTdVhVT0VYcFhjTDdwREkydTNaTVNS?=
- =?utf-8?B?V3ZoejRkdlE5eUsvQmU3MEJDY00yWHo4dmpkZFlvYmRMWkVxZXNOTzNIRjlG?=
- =?utf-8?B?Sk8xOEROTDdtbm5HbldTUVArRGRhTVhleVRFZXVPS3FNZkNJbnk5dHVUNXFT?=
- =?utf-8?B?R0NDWHpTYnhhUU83dUkwaVFOVld5VDZKemJGb3ZiYVQxcHNLWFZRcVU3TUM3?=
- =?utf-8?Q?HmQ/zQ3HUsRq1zv9+KpJB7qpCwUIOZz95u5pD6z?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6608.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?T0hyZ3NJNnpCRktVbkFtSXd6dk9UL1E3WS9CL3Z4aTdJNXNpZG41TkNQMU1W?=
- =?utf-8?B?RFpPZkk0K29jR0RyUE5FaDZqZDlLS2NCcmJIaEtQa2gwWm0rR21wODQyWGxv?=
- =?utf-8?B?OFRHZXdSU3R6RVovWGxpN0VpNUNVRzFlVEpVSzErRGxTNW4xWDZGUDNkWktY?=
- =?utf-8?B?VGp0czhZeDNFdFR6dEhsbisvRkl6UklzenhpRTB0V1FKS3V4YnJyL1JwWUdm?=
- =?utf-8?B?eHJjZ3luTkM0NkhVZStJOTJER0ZJMTFoRG9na1NUaE1kcUJaa1RPcVlZSHdr?=
- =?utf-8?B?cGE5UUxuR0Vkc1VXWCsxS2NYTXI5WjYyZERTSGZ3c240TTlJaVN2T2YzYzhv?=
- =?utf-8?B?Y2lZUjFGWlp1YTN0cVhTZXFncU1NWWdDM1ZuSFhMd0k0NmNPZ2NwQkdmVlR4?=
- =?utf-8?B?V3JTLytGZ1l4OEQyRS9xZlEzT3ZPZytnbGwyaS9jNWlUUnZIaVBoUkovY1Ex?=
- =?utf-8?B?LzVCalFXN3ExTzdmbVVDbm0xbUlHNmQyb08yelRVWmxJb04xMi84YkFBVTlz?=
- =?utf-8?B?YlJwSExLYU00d1NQL0ZETmh6S1BRVEJ0eDNTb2lQTWpldlBoUGlOTGtCRGY4?=
- =?utf-8?B?eUgzU05VYi92NUdqQmh3Rm1KUENOWUtNMU5ua2wyZnlSRHJya1Z3TXA3NjIv?=
- =?utf-8?B?RWY2dEdteW9yV3YzRldDYnBGenV4R3Y5MVUzc2w5Tm1HbDNhUEhVWHN3N0tK?=
- =?utf-8?B?VjA3RTNHZDdaMk9jTEpzd1MwYkZmamZobXdEVDFzMGFRTUVUVjBmUUo0UzNH?=
- =?utf-8?B?cmhkUFNzYkl1Y1pkWG1PYk1JM2FieG8wT1VjdFI3Y3FnalJhZ1l1SkJ4MWE1?=
- =?utf-8?B?cUZvY013UklacllsTW5jKzMyUUJ6NkgxS3lBYkxQTnR3V2VhRXBnSm1lVDN6?=
- =?utf-8?B?bjVjaWMvek9jZ0VCWTlzL3hJbUFMeE5ianEzUVcwanI0R2grQmsyMDRjOGFC?=
- =?utf-8?B?Q2dNRzZtWVB1Q015cnZ0N1BnUjdIa3IvN1FQSGczc0JBSWZ3WXVvZ0dZT2hL?=
- =?utf-8?B?QkRQWXJxZkZPMTNkNFNxck9iM0crcnlHNjB6dEZ6ai84RmQrVUpDUUJFdnpQ?=
- =?utf-8?B?U09JWjlUK0Y5N2NhOUhTdWw4RjZ0WG9ra2I4VXo1OUhNNDJRcjVuM0xmang5?=
- =?utf-8?B?dWZZMUprT2JZNFo0d2VqZUtzaTg0SWFTcDBwVU05Nlkydm5sRHA1ZU92MkJF?=
- =?utf-8?B?RDUyZFFPeTB6ZDN1Z2V6NkFldG9SR3RhYmdDd3M5VXpnRjVNUWVMdDJQRWl3?=
- =?utf-8?B?a3N4WDRhMU4yWWo5NTYxTDdwbmx5clhkU0k0UmdvUVMwbXVpWnp5UUs1MHN4?=
- =?utf-8?B?U2ZiMXl3c1hSU1FsdjJEUWkwOXhzck51OUdna2diRnZyTm9zc0duaFNCTXV6?=
- =?utf-8?B?ZHl3dkE3ZDJYZnNpbnRxRUhCcjZ5QU9wd2E1cGFkSUxwcGJrR1ZobTBHU3J6?=
- =?utf-8?B?RmxZWnhEUzlZb0h6RnBtZ0VkdEZXK01WS01oNnJGRlowNUdnZkJ3RTVnUUU2?=
- =?utf-8?B?WnhqWFd0Z1ppeC9xWG5HdHpzc3ZWbG1pTmY2S1hhVm1kYStXWUVjK1lYMjR2?=
- =?utf-8?B?TFd3bEEzclZKa2dUbzRXUk9PWlREaU1kcTUrT1lEc2t1VkdwN1RxVCtJU1J0?=
- =?utf-8?B?dmlpMzVoSXB5UkhDaldWSFd1SWFRUUM1cERIMnczYVU2V1p0Sm1RWGhJT1Bs?=
- =?utf-8?B?SVhrVWJtWnR1a3FFYUlzd2tXbFZDeDR5YkIyMFM1Z2hpNGhwTlBSaUxEbFlO?=
- =?utf-8?B?QnpHMHd0cjZNa291cnJhMjc3SVptUmZDaDZuNGlyZHlReWdnNDdyQUtnS0ZB?=
- =?utf-8?B?aU1nN1lrV0h0K1pJZC9hc3N0NllyWUFXZHRHWnN1SnY0MjRhS3hYeXBtdmlw?=
- =?utf-8?B?OGF4VmRnNDFET0MxbWYvV0Yyd2xSRVBTR1VOT3lySGM1SjhPQnpxbTdtNDJh?=
- =?utf-8?B?MWI5OUlxTDQ2R2VCYUQ5eHRZcUVYNVdERW9yS21YTHpaM1NxZmg3cVh2UXJG?=
- =?utf-8?B?UkVwWm1JZ0hKOWoySlhBbE45V01mL3MydUtIRzhvOXY0TmNRMXFEYTdzWVpx?=
- =?utf-8?B?b09tQTk5UXh3cEI2QXNEM0VLNTNPV2FiS1pPK0VtdklHdDFOUmp2QVFkcmt4?=
- =?utf-8?Q?lQZ2E5yMfDBtQvF7R5zo3zqfg?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8bdc729-ca33-4d53-0d37-08dd02d47798
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6608.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2024 04:42:52.0294
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eLQqgFJv4QwT92t/fovJb2naHNXG/3tq/l0y6o7sCrp+vGxDpwLmD9fZH6IWFTEnxX0cBxQyRiY03T2gtbBodw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8879
+References: <20241109004158.2259301-1-vadfed@meta.com>
+In-Reply-To: <20241109004158.2259301-1-vadfed@meta.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 11 Nov 2024 21:50:28 -0800
+Message-ID: <CAEf4BzaRb+fUK17wrj4sWnYM5oKxTvwZC=U-GjvsdUtF94PqrA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/4] bpf: add bpf_get_cpu_cycles kfunc
+To: Vadim Fedorenko <vadfed@meta.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Vadim Fedorenko <vadim.fedorenko@linux.dev>, 
+	Mykola Lysenko <mykolal@fb.com>, Jakub Kicinski <kuba@kernel.org>, x86@kernel.org, bpf@vger.kernel.org, 
+	Martin KaFai Lau <martin.lau@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10/15/2024 9:41 PM, Paul E. McKenney wrote:
-> This commit adds an rcutorture.reader_flavor parameter whose bits
-> correspond to reader flavors.  For example, SRCU's readers are 0x1 for
-> normal and 0x2 for NMI-safe.
-> 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Kent Overstreet <kent.overstreet@linux.dev>
-> Cc: <bpf@vger.kernel.org>
+On Fri, Nov 8, 2024 at 4:42=E2=80=AFPM Vadim Fedorenko <vadfed@meta.com> wr=
+ote:
+>
+> New kfunc to return ARCH-specific timecounter. For x86 BPF JIT converts
+> it into rdtsc ordered call. Other architectures will get JIT
+> implementation too if supported. The fallback is to
+> __arch_get_hw_counter().
+>
+> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
 > ---
->  .../admin-guide/kernel-parameters.txt         |  8 +++++
->  kernel/rcu/rcutorture.c                       | 30 ++++++++++++++-----
->  2 files changed, 30 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 1518343bbe223..52922727006fc 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5426,6 +5426,14 @@
->  			The delay, in seconds, between successive
->  			read-then-exit testing episodes.
->  
-> +	rcutorture.reader_flavor= [KNL]
-> +			A bit mask indicating which readers to use.
-> +			If there is more than one bit set, the readers
-> +			are entered from low-order bit up, and are
-> +			exited in the opposite order.  For SRCU, the
-> +			0x1 bit is normal readers and the 0x2 bit is
-> +			for NMI-safe readers.
-> +
->  	rcutorture.shuffle_interval= [KNL]
->  			Set task-shuffle interval (s).  Shuffling tasks
->  			allows some CPUs to go into dyntick-idle mode
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index f96ab98f8182f..405decec33677 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -111,6 +111,7 @@ torture_param(int, nocbs_nthreads, 0, "Number of NOCB toggle threads, 0 to disab
->  torture_param(int, nocbs_toggle, 1000, "Time between toggling nocb state (ms)");
->  torture_param(int, read_exit_delay, 13, "Delay between read-then-exit episodes (s)");
->  torture_param(int, read_exit_burst, 16, "# of read-then-exit bursts per episode, zero to disable");
-> +torture_param(int, reader_flavor, 0x1, "Reader flavors to use, one per bit.");
->  torture_param(int, shuffle_interval, 3, "Number of seconds between shuffles");
->  torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
->  torture_param(int, stall_cpu, 0, "Stall duration (s), zero to disable.");
-> @@ -644,10 +645,20 @@ static void srcu_get_gp_data(int *flags, unsigned long *gp_seq)
->  
->  static int srcu_torture_read_lock(void)
->  {
-> -	if (cur_ops == &srcud_ops)
-> -		return srcu_read_lock_nmisafe(srcu_ctlp);
-> -	else
-> -		return srcu_read_lock(srcu_ctlp);
-> +	int idx;
-> +	int ret = 0;
-> +
-> +	if ((reader_flavor & 0x1) || !(reader_flavor & 0x7)) {
 
-Minor: Maybe use macros in place of 0x1, 0x2, 0x7 as a cleanup later.
+nit: please add cover letter for the next revision, multi-patch sets
+generally should come with a cover letter, unless it's some set of
+trivial and mostly independent patches. Anyways...
 
+I haven't yet looked through the code (yet), but I was curious to
+benchmark the perf benefit, so that's what I did for fun this evening.
 
-- Neeraj
+(!!!) BTW, a complete aside, but I think it's interesting. It turned
+out that using bpf_test_prog_run() scales *VERY POORLY* with large
+number of CPUs, because we start spending tons of time in
+fdget()/fdput(), so I initially got pretty unscalable results,
+profiled a bit, and then switched to just doing
+syscall(syscall(__NR_getpgid); + SEC("raw_tp/sys_enter")). Anyways,
+the point is that microbenchmarking is tricky and we need to improve
+our existing bench setup for some benchmarks. Anyways, getting back to
+the main topic.
 
-> +		idx = srcu_read_lock(srcu_ctlp);
-> +		WARN_ON_ONCE(idx & ~0x1);
-> +		ret += idx;
-> +	}
-> +	if (reader_flavor & 0x2) {
-> +		idx = srcu_read_lock_nmisafe(srcu_ctlp);
-> +		WARN_ON_ONCE(idx & ~0x1);
-> +		ret += idx << 1;
-> +	}
-> +	return ret;
->  }
->  
+I wrote a quick two benchmarks testing what I see as intended use case
+for these kfuncs (batching amortizes the cost of triggering BPF
+program, batch_iters =3D 500 in my case):
 
+SEC("?raw_tp/sys_enter")
+int trigger_driver_ktime(void *ctx)
+{
+        volatile __u64 total =3D 0;
+        int i;
+
+        for (i =3D 0; i < batch_iters; i++) {
+                __u64 start, end;
+
+                start =3D bpf_ktime_get_ns();
+                end =3D bpf_ktime_get_ns();
+                total +=3D end - start;
+        }
+        inc_counter_batch(batch_iters);
+
+        return 0;
+}
+
+extern __u64 bpf_get_cpu_cycles(void) __weak __ksym;
+extern __u64 bpf_cpu_cycles_to_ns(__u64 cycles) __weak __ksym;
+
+SEC("?raw_tp/sys_enter")
+int trigger_driver_cycles(void *ctx)
+{
+        volatile __u64 total =3D 0;
+        int i;
+
+        for (i =3D 0; i < batch_iters; i++) {
+                __u64 start, end;
+
+                start =3D bpf_get_cpu_cycles();
+                end =3D bpf_get_cpu_cycles();
+                total +=3D bpf_cpu_cycles_to_ns(end - start);
+        }
+        inc_counter_batch(batch_iters);
+
+        return 0;
+}
+
+And here's what I got across multiple numbers of parallel CPUs on our
+production host.
+
+# ./bench_timing.sh
+
+ktime                 ( 1 cpus):   32.286 =C2=B1 0.309M/s  ( 32.286M/s/cpu)
+ktime                 ( 2 cpus):   63.021 =C2=B1 0.538M/s  ( 31.511M/s/cpu)
+ktime                 ( 3 cpus):   94.211 =C2=B1 0.686M/s  ( 31.404M/s/cpu)
+ktime                 ( 4 cpus):  124.757 =C2=B1 0.691M/s  ( 31.189M/s/cpu)
+ktime                 ( 5 cpus):  154.855 =C2=B1 0.693M/s  ( 30.971M/s/cpu)
+ktime                 ( 6 cpus):  185.551 =C2=B1 2.304M/s  ( 30.925M/s/cpu)
+ktime                 ( 7 cpus):  211.117 =C2=B1 4.755M/s  ( 30.160M/s/cpu)
+ktime                 ( 8 cpus):  236.454 =C2=B1 0.226M/s  ( 29.557M/s/cpu)
+ktime                 (10 cpus):  295.526 =C2=B1 0.126M/s  ( 29.553M/s/cpu)
+ktime                 (12 cpus):  322.282 =C2=B1 0.153M/s  ( 26.857M/s/cpu)
+ktime                 (14 cpus):  375.347 =C2=B1 0.087M/s  ( 26.811M/s/cpu)
+ktime                 (16 cpus):  399.813 =C2=B1 0.181M/s  ( 24.988M/s/cpu)
+ktime                 (24 cpus):  617.675 =C2=B1 7.053M/s  ( 25.736M/s/cpu)
+ktime                 (32 cpus):  819.695 =C2=B1 0.231M/s  ( 25.615M/s/cpu)
+ktime                 (40 cpus):  996.264 =C2=B1 0.290M/s  ( 24.907M/s/cpu)
+ktime                 (48 cpus): 1180.201 =C2=B1 0.160M/s  ( 24.588M/s/cpu)
+ktime                 (56 cpus): 1321.084 =C2=B1 0.099M/s  ( 23.591M/s/cpu)
+ktime                 (64 cpus): 1482.061 =C2=B1 0.121M/s  ( 23.157M/s/cpu)
+ktime                 (72 cpus): 1666.540 =C2=B1 0.460M/s  ( 23.146M/s/cpu)
+ktime                 (80 cpus): 1851.419 =C2=B1 0.439M/s  ( 23.143M/s/cpu)
+
+cycles                ( 1 cpus):   45.815 =C2=B1 0.018M/s  ( 45.815M/s/cpu)
+cycles                ( 2 cpus):   86.706 =C2=B1 0.068M/s  ( 43.353M/s/cpu)
+cycles                ( 3 cpus):  129.899 =C2=B1 0.101M/s  ( 43.300M/s/cpu)
+cycles                ( 4 cpus):  168.435 =C2=B1 0.073M/s  ( 42.109M/s/cpu)
+cycles                ( 5 cpus):  210.520 =C2=B1 0.164M/s  ( 42.104M/s/cpu)
+cycles                ( 6 cpus):  252.596 =C2=B1 0.050M/s  ( 42.099M/s/cpu)
+cycles                ( 7 cpus):  294.356 =C2=B1 0.159M/s  ( 42.051M/s/cpu)
+cycles                ( 8 cpus):  317.167 =C2=B1 0.163M/s  ( 39.646M/s/cpu)
+cycles                (10 cpus):  396.141 =C2=B1 0.208M/s  ( 39.614M/s/cpu)
+cycles                (12 cpus):  431.938 =C2=B1 0.511M/s  ( 35.995M/s/cpu)
+cycles                (14 cpus):  503.055 =C2=B1 0.070M/s  ( 35.932M/s/cpu)
+cycles                (16 cpus):  534.261 =C2=B1 0.107M/s  ( 33.391M/s/cpu)
+cycles                (24 cpus):  836.838 =C2=B1 0.141M/s  ( 34.868M/s/cpu)
+cycles                (32 cpus): 1099.689 =C2=B1 0.314M/s  ( 34.365M/s/cpu)
+cycles                (40 cpus): 1336.573 =C2=B1 0.015M/s  ( 33.414M/s/cpu)
+cycles                (48 cpus): 1571.734 =C2=B1 11.151M/s  ( 32.744M/s/cpu=
+)
+cycles                (56 cpus): 1819.242 =C2=B1 4.627M/s  ( 32.486M/s/cpu)
+cycles                (64 cpus): 2046.285 =C2=B1 5.169M/s  ( 31.973M/s/cpu)
+cycles                (72 cpus): 2287.683 =C2=B1 0.787M/s  ( 31.773M/s/cpu)
+cycles                (80 cpus): 2505.414 =C2=B1 0.626M/s  ( 31.318M/s/cpu)
+
+So, from about +42% on a single CPU, to +36% at 80 CPUs. Not that bad.
+Scalability-wise, we still see some drop off in performance, but
+believe me, with bpf_prog_test_run() it was so much worse :) I also
+verified that now we spend cycles almost exclusively inside the BPF
+program (so presumably in those benchmarked kfuncs).
 
