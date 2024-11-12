@@ -1,233 +1,329 @@
-Return-Path: <bpf+bounces-44648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44657-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F8279C626C
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 21:20:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA8409C630A
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 22:05:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61C36B47BEA
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 16:39:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41EDDB67122
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 17:15:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C5720696C;
-	Tue, 12 Nov 2024 16:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F07BB7081B;
+	Tue, 12 Nov 2024 17:07:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MNvP0/gT"
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00801206944
-	for <bpf@vger.kernel.org>; Tue, 12 Nov 2024 16:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B840B2123EE
+	for <bpf@vger.kernel.org>; Tue, 12 Nov 2024 17:07:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731429561; cv=none; b=tSwucO/L0qHXcRaXHd5Z35cDHoi5SxREgtqGm4yWPcpXpQjOD1l8oUSXxNqnZV7SYp1yzIgDsIgHIcoaVPR7KzqeyXJPTpQURxVSWU/PVIxs6GXbqp2deQnTZK0iYnywb+arDSN3Bqmx6xlWCbpwmI9lhQjzv0ToU8zsyK+Ye9Q=
+	t=1731431270; cv=none; b=hVUoFzyRPc9mX4TRrPq4OSwK1PIf6xR+G4WpLlEFSy3f7dCDAo9kQGuWmxoK2OM/zI25hCwON1cnq22jJKNEAshplKv++O52nqV82YAEJ+F3f9OSFssoYNKqn6Os+RLfAKpOEhmckAOeHAkexV5l8lpOktfN9nY3VYtfT8/x+nM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731429561; c=relaxed/simple;
-	bh=FMaDkt4KE7bgT/1Msd2G9MyMAA/+yiV08+fWss3f69M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kqQ709zYjTzN6MsNoeDi423OyuOD+nu/XQGa5Ru34U1aLmjdHC+k6SgB7CFbwIlFtzaspYmajiAKeSBQAFkfvOGsRedRfz23rFwiyOZ6nN5LbgCAl/J7giDTelX96nV0QSioAdfDbqCpv7q8TwoMBg8RdXGv69IN10bap5ak3dA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 23201AFAF84A; Tue, 12 Nov 2024 08:39:02 -0800 (PST)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next v12 0/7] bpf: Support private stack for bpf progs
-Date: Tue, 12 Nov 2024 08:39:02 -0800
-Message-ID: <20241112163902.2223011-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1731431270; c=relaxed/simple;
+	bh=ReQnSw+bxPpsKEXNUfGY1wZis1FGzWMZ+p/JQVDw6Fs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rtQsMcilU72K8gQKvXpb+PETv2RPyzJr/6omIvav5DzLjo0pXTw3wPxn1ErqzP9nfonv26ktlfOLcE7oV8tWbyQENIMWMXTNkYhFsQmdV/7+e8jXiSBWffcNnhs4TKHv75/UjMcxxpn0vPDThlGftIqEj5dP/dsUOGhapXUZ2Yo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MNvP0/gT; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <48a2d5a2-38e0-4c36-90cc-122602ff6386@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731431265;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bK2s3vs44MK62StHOPp6xhc2KA8n6cAVMSCtIx6fpfU=;
+	b=MNvP0/gTIKs807kz6shUbWVGXGEfFc+BbrTdLgEAEGUZgtryAkC+IBF+1LR4TAX0zWXHda
+	IUnXQL+lM/KDFnfEAny601hS7U4wogOPeCEQkI9ELNAgGdoGi7BPsy255U3VfXXdCGBOZI
+	iJONwdHT+WcK7q4e+OpOI+4QRadxanQ=
+Date: Tue, 12 Nov 2024 09:07:41 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH dwarves 3/3] dwarf_loader: Check DW_OP_[GNU_]entry_value
+ for possible parameter matching
+Content-Language: en-GB
+To: Alan Maguire <alan.maguire@oracle.com>,
+ Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, dwarves@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Song Liu <song@kernel.org>
+References: <20241108180508.1196431-1-yonghong.song@linux.dev>
+ <20241108180524.1198900-1-yonghong.song@linux.dev>
+ <b32b2892-31b1-4dc0-8398-d8fadfaafcc6@oracle.com>
+ <5be88704-1bb0-4332-8626-26e7c908184c@linux.dev>
+ <e311899e-5502-4d46-b9ee-edc0ee9dd023@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <e311899e-5502-4d46-b9ee-edc0ee9dd023@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-The main motivation for private stack comes from nested scheduler in
-sched-ext from Tejun. The basic idea is that
- - each cgroup will its own associated bpf program,
- - bpf program with parent cgroup will call bpf programs
-   in immediate child cgroups.
 
-Let us say we have the following cgroup hierarchy:
-  root_cg (prog0):
-    cg1 (prog1):
-      cg11 (prog11):
-        cg111 (prog111)
-        cg112 (prog112)
-      cg12 (prog12):
-        cg121 (prog121)
-        cg122 (prog122)
-    cg2 (prog2):
-      cg21 (prog21)
-      cg22 (prog22)
-      cg23 (prog23)
 
-In the above example, prog0 will call a kfunc which will call prog1 and
-prog2 to get sched info for cg1 and cg2 and then the information is
-summarized and sent back to prog0. Similarly, prog11 and prog12 will be
-invoked in the kfunc and the result will be summarized and sent back to
-prog1, etc. The following illustrates a possible call sequence:
-   ... -> bpf prog A -> kfunc -> ops.<callback_fn> (bpf prog B) ...
 
-Currently, for each thread, the x86 kernel allocate 16KB stack. Each
-bpf program (including its subprograms) has maximum 512B stack size to
-avoid potential stack overflow. Nested bpf programs further increase the
-risk of stack overflow. To avoid potential stack overflow caused by bpf
-programs, this patch set supported private stack and bpf program stack
-space is allocated during jit time. Using private stack for bpf progs
-can reduce or avoid potential kernel stack overflow.
+On 11/12/24 8:56 AM, Alan Maguire wrote:
+> On 12/11/2024 01:51, Yonghong Song wrote:
+>>
+>>
+>> On 11/11/24 7:39 AM, Alan Maguire wrote:
+>>> On 08/11/2024 18:05, Yonghong Song wrote:
+>>>> Song Liu reported that a kernel func (perf_event_read()) cannot be
+>>>> traced
+>>>> in certain situations since the func is not in vmlinux bTF. This happens
+>>>> in kernels 6.4, 6.9 and 6.11 and the kernel is built with pahole 1.27.
+>>>>
+>>>> The perf_event_read() signature in kernel (kernel/events/core.c):
+>>>>      static int perf_event_read(struct perf_event *event, bool group)
+>>>>
+>>>> Adding '-V' to pahole command line, and the following error msg can
+>>>> be found:
+>>>>      skipping addition of 'perf_event_read'(perf_event_read) due to
+>>>> unexpected register used for parameter
+>>>>
+>>>> Eventually the error message is attributed to the setting
+>>>> (parm->unexpected_reg = 1) in parameter__new() function.
+>>>>
+>>>> The following is the dwarf representation for perf_event_read():
+>>>>       0x0334c034:   DW_TAG_subprogram
+>>>>                   DW_AT_low_pc    (0xffffffff812c6110)
+>>>>                   DW_AT_high_pc   (0xffffffff812c640a)
+>>>>                   DW_AT_frame_base        (DW_OP_reg7 RSP)
+>>>>                   DW_AT_GNU_all_call_sites        (true)
+>>>>                   DW_AT_name      ("perf_event_read")
+>>>>                   DW_AT_decl_file ("/rw/compile/kernel/events/core.c")
+>>>>                   DW_AT_decl_line (4641)
+>>>>                   DW_AT_prototyped        (true)
+>>>>                   DW_AT_type      (0x03324f6a "int")
+>>>>       0x0334c04e:     DW_TAG_formal_parameter
+>>>>                     DW_AT_location        (0x007de9fd:
+>>>>                        [0xffffffff812c6115, 0xffffffff812c6141):
+>>>> DW_OP_reg5 RDI
+>>>>                        [0xffffffff812c6141, 0xffffffff812c6323):
+>>>> DW_OP_reg14 R14
+>>>>                        [0xffffffff812c6323, 0xffffffff812c63fe):
+>>>> DW_OP_GNU_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value
+>>>>                        [0xffffffff812c63fe, 0xffffffff812c6405):
+>>>> DW_OP_reg14 R14
+>>>>                        [0xffffffff812c6405, 0xffffffff812c640a):
+>>>> DW_OP_GNU_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value)
+>>>>                     DW_AT_name    ("event")
+>>>>                     DW_AT_decl_file       ("/rw/compile/kernel/events/
+>>>> core.c")
+>>>>                     DW_AT_decl_line       (4641)
+>>>>                     DW_AT_type    (0x0333aac2 "perf_event *")
+>>>>       0x0334c05e:     DW_TAG_formal_parameter
+>>>>                     DW_AT_location        (0x007dea82:
+>>>>                        [0xffffffff812c6137, 0xffffffff812c63f2):
+>>>> DW_OP_reg12 R12
+>>>>                        [0xffffffff812c63f2, 0xffffffff812c63fe):
+>>>> DW_OP_GNU_entry_value(DW_OP_reg4 RSI), DW_OP_stack_value
+>>>>                        [0xffffffff812c63fe, 0xffffffff812c640a):
+>>>> DW_OP_reg12 R12)
+>>>>                     DW_AT_name    ("group")
+>>>>                     DW_AT_decl_file       ("/rw/compile/kernel/events/
+>>>> core.c")
+>>>>                     DW_AT_decl_line       (4641)
+>>>>                     DW_AT_type    (0x03327059 "bool")
+>>>>
+>>>> By inspecting the binary, the second argument ("bool group") is used
+>>>> in the function. The following are the disasm code:
+>>>>       ffffffff812c6110 <perf_event_read>:
+>>>>       ffffffff812c6110: 0f 1f 44 00 00        nopl    (%rax,%rax)
+>>>>       ffffffff812c6115: 55                    pushq   %rbp
+>>>>       ffffffff812c6116: 41 57                 pushq   %r15
+>>>>       ffffffff812c6118: 41 56                 pushq   %r14
+>>>>       ffffffff812c611a: 41 55                 pushq   %r13
+>>>>       ffffffff812c611c: 41 54                 pushq   %r12
+>>>>       ffffffff812c611e: 53                    pushq   %rbx
+>>>>       ffffffff812c611f: 48 83 ec 18           subq    $24, %rsp
+>>>>       ffffffff812c6123: 41 89 f4              movl    %esi, %r12d
+>>>>       <=========== NOTE that here '%esi' is used and moved to '%r12d'.
+>>>>       ffffffff812c6126: 49 89 fe              movq    %rdi, %r14
+>>>>       ffffffff812c6129: 65 48 8b 04 25 28 00 00 00    movq    %gs:40,
+>>>> %rax
+>>>>       ffffffff812c6132: 48 89 44 24 10        movq    %rax, 16(%rsp)
+>>>>       ffffffff812c6137: 8b af a8 00 00 00     movl    168(%rdi), %ebp
+>>>>       ffffffff812c613d: 85 ed                 testl   %ebp, %ebp
+>>>>       ffffffff812c613f: 75 3f                 jne
+>>>> 0xffffffff812c6180 <perf_event_read+0x70>
+>>>>       ffffffff812c6141: 66 2e 0f 1f 84 00 00 00 00 00 nopw    %cs:
+>>>> (%rax,%rax)
+>>>>       ffffffff812c614b: 0f 1f 44 00 00        nopl    (%rax,%rax)
+>>>>       ffffffff812c6150: 49 8b 9e 28 02 00 00  movq    552(%r14), %rbx
+>>>>       ffffffff812c6157: 48 89 df              movq    %rbx, %rdi
+>>>>       ffffffff812c615a: e8 c1 a0 d7 00        callq
+>>>> 0xffffffff82040220 <_raw_spin_lock_irqsave>
+>>>>       ffffffff812c615f: 49 89 c7              movq    %rax, %r15
+>>>>       ffffffff812c6162: 41 8b ae a8 00 00 00  movl    168(%r14), %ebp
+>>>>       ffffffff812c6169: 85 ed                 testl   %ebp, %ebp
+>>>>       ffffffff812c616b: 0f 84 9a 00 00 00     je
+>>>> 0xffffffff812c620b <perf_event_read+0xfb>
+>>>>       ffffffff812c6171: 48 89 df              movq    %rbx, %rdi
+>>>>       ffffffff812c6174: 4c 89 fe              movq    %r15, %rsi
+>>>>       <=========== NOTE: %rsi is overwritten
+>>>>       ......
+>>>>       ffffffff812c63f0: 41 5c                 popq    %r12
+>>>>       <============ POP r12
+>>>>       ffffffff812c63f2: 41 5d                 popq    %r13
+>>>>       ffffffff812c63f4: 41 5e                 popq    %r14
+>>>>       ffffffff812c63f6: 41 5f                 popq    %r15
+>>>>       ffffffff812c63f8: 5d                    popq    %rbp
+>>>>       ffffffff812c63f9: e9 e2 a8 d7 00        jmp
+>>>> 0xffffffff82040ce0 <__x86_return_thunk>
+>>>>       ffffffff812c63fe: 31 c0                 xorl    %eax, %eax
+>>>>       ffffffff812c6400: e9 be fe ff ff        jmp
+>>>> 0xffffffff812c62c3 <perf_event_read+0x1b3>
+>>>>
+>>>> It is not clear why dwarf didn't encode %rsi in locations. But
+>>>> DW_OP_GNU_entry_value(DW_OP_reg4 RSI) tells us that RSI is live at
+>>>> the entry of perf_event_read(). So this patch tries to search
+>>>> DW_OP_GNU_entry_value/DW_OP_entry_value location/expression so if
+>>>> the expected parameter register matchs the register in
+>>>> DW_OP_GNU_entry_value/DW_OP_entry_value, then the original parameter
+>>>> is not optimized.
+>>>>
+>>>> For one of internal 6.11 kernel, there are 62498 functions in BTF and
+>>>> perf_event_read() is not there. With this patch, there are 61552
+>>>> functions
+>>>> in BTF and perf_event_read() is included.
+>>>>
+>>> hi Yonghong,
+>>>
+>>> I'm confused by these numbers. I would have thought your changes would
+>>> have led to a net increase of functions encoded in vmlinux BTF since we
+>>> are now likely catching more cases where registers are expected.  When I
+>>> ran your patches against an LLVM-built kernel, that's what I saw; 70
+>>> additional functions were recognized as having expected parameters, and
+>>> thus were encoded in BTF. In your case it looks like we lost nearly 1000
+>>> functions. Any idea what's going on there? If you can share your config,
+>>> LLVM version I can dig into this from my side too. Thanks!
+>> Attached is my config (based on one of meta internal configs). I tried
+>> with master branch with head:
+>>
+>> 7b6e5bfa2541380b478ea1532880210ea3e39e11 (HEAD -> master, origin/master,
+>> origin/HEAD) Merge branch 'refactor-lock-management'
+>> ae6e3a273f590a2b64f14a9fab3546c3a8f44ed4 bpf: Drop special callback
+>> reference handling
+>> f6b9a69a9e56b2083aca8a925fc1a28eb698e3ed bpf: Refactor active lock
+>> management
+>>
+>> I am using pahole v1.27.
+>>
+>> I am using an llvm built from upstream. The following is llvm-project head:
+>> beb12f92c71981670e07e47275efc6b5647011c1 (HEAD -> main) [RISCV] Add
+>> +optimized-nfN-segment-load-store (#114414)
+>> 6bad4514c938b3b48c0c719b8dd98b3906f2c290 [AArch64] Extend vector mull
+>> test coverage. NFC
+>> 915b910d800d7fab6a692294ff1d7075d8cba824 [libc] Fix typos in proxy type
+>> headers (#114717)
+>> 98ea1a81a28a6dd36941456c8ab4ce46f665f57a [IPO] Remove unused includes
+>> (NFC) (#114716)
+>>
+>> With the above setup, when to do
+>>
+>> pahole -JV --
+>> btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs vmlinux >& log.pahole
+>>
+>> You will find the below info in the log:
+>>    skipping addition of 'perf_event_read'(perf_event_read) due to
+>> unexpected register used for paramet
+>>
+>> In the dwarf:
+>>
+>> 0x02122746:   DW_TAG_subprogram
+>>                  DW_AT_low_pc    (0xffffffff81299740)
+>>                  DW_AT_high_pc   (0xffffffff812999f7)
+>>                  DW_AT_frame_base        (DW_OP_reg7 RSP)
+>>                  DW_AT_GNU_all_call_sites        (true)
+>>                  DW_AT_name      ("perf_event_read")
+>>                  DW_AT_decl_file ("/home/yhs/work/bpf-next/kernel/events/
+>> core.c")
+>>                  DW_AT_decl_line (4746)
+>>                  DW_AT_prototyped        (true)
+>>                  DW_AT_type      (0x020f95f5 "int")
+>>
+>> 0x02122760:     DW_TAG_formal_parameter
+>>                    DW_AT_location        (0x00769b72:
+>>                       [0xffffffff81299745, 0xffffffff81299764):
+>> DW_OP_reg5 RDI
+>>                       [0xffffffff81299764, 0xffffffff81299937):
+>> DW_OP_reg3 RBX
+>>                       [0xffffffff81299937, 0xffffffff812999f0):
+>> DW_OP_GNU_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value
+>>                       [0xffffffff812999f0, 0xffffffff812999f7):
+>> DW_OP_reg3 RBX)
+>>                    DW_AT_name    ("event")
+>>                    DW_AT_decl_file       ("/home/yhs/work/bpf-next/
+>> kernel/events/core.c")
+>>                    DW_AT_decl_line       (4746)
+>>                    DW_AT_type    (0x0210f654 "perf_event *")
+>>                      0x02122770:     DW_TAG_formal_parameter
+>>                    DW_AT_location        (0x00769c61:
+>>                       [0xffffffff81299758, 0xffffffff81299926):
+>> DW_OP_reg6 RBP
+>>                       [0xffffffff81299926, 0xffffffff812999f0):
+>> DW_OP_GNU_entry_value(DW_OP_reg4 RSI), DW_OP_stack_value
+>>                       [0xffffffff812999f0, 0xffffffff812999f7):
+>> DW_OP_reg6 RBP)
+>>                    DW_AT_name    ("group")
+>>                    DW_AT_decl_file       ("/home/yhs/work/bpf-next/
+>> kernel/events/core.c")
+>>
+>> The above is slightly different from our production kernel where Song
+>> reported. But essence is the same.
+>> The second parameter needs to check DW_OP_GNU_entry_value(DW_OP_reg4
+>> RSI) to ensure the second
+>> argument is available.
+>>
+>> My patch is supposed to only make improvement. I am curiously why you
+>> get less functions encoded in BTF.
+>>
+> Thanks for the config etc! When I build bpf-next using master branch
+> llvm and this config, I see
+>
+> with baseline (master branch pahole): 62371 functions, no perf_event_read
+> your series on top of master branch pahole: 62433 functions,
+> perf_event_read present
+>
+> So that's consistent with what I've seen with other configs; more
+> functions are present in vmlinux BTF since we are now seeing more cases
+> where parameters are in fact consistent.  The part that confuses me
+> though is the numbers you initially reported above
+>
+> "for one of internal 6.11 kernel, there are 62498 functions in BTF and
+> perf_event_read() is not there. With this patch, there are 61552
+> functions in BTF and perf_event_read() is included."
+>
+> These numbers suggest you lost nearly 1000 functions when building
+> vmlinux BTF with pahole using this series. That's the part I don't
+> understand - we should just see a gain in numbers of functions in
+> vmlinux BTF, right? Did you mean 62552 functions rather than 61552 perhaps?
 
-Currently private stack is applied to tracing programs like kprobe/uprobe=
-,
-perf_event, tracepoint, raw tracepoint and struct_ops progs.
-Tracing progs enable private stack if any subprog stack size is more
-than a threshold (i.e. 64B). Struct-ops progs enable private stack
-based on particular struct op implementation which can enable private
-stack before verification at per-insn level. Struct-ops progs have
-the same treatment as tracing progs w.r.t when to enable private stack.
+Sorry, really embarrassing. it is typo. Indeed it should be 62552 functions
+in BTF instead.
 
-For all these progs, the kernel will do recursion check (no nesting for
-per prog per cpu) to ensure that private stack won't be overwritten.
-The bpf_prog_aux struct has a callback func recursion_detected() which
-can be implemented by kernel subsystem to synchronously detect recursion,
-report error, etc.
-
-Only x86_64 arch supports private stack now. It can be extended to other
-archs later. Please see each individual patch for details.
-
-Change logs:
-  v11 -> v12:
-    - v11 link: https://lore.kernel.org/bpf/20241109025312.148539-1-yongh=
-ong.song@linux.dev/
-    - Fix a bug where allocated percpu space is less than actual private =
-stack.
-    - Add guard memory (before and after actual prog stack) to detect pot=
-ential
-      underflow/overflow.
-  v10 -> v11:
-    - v10 link: https://lore.kernel.org/bpf/20241107024138.3355687-1-yong=
-hong.song@linux.dev/
-    - Use two bool variables, priv_stack_requested (used by struct-ops on=
-ly) and
-      jits_use_priv_stack, in order to make code cleaner.
-    - Set env->prog->aux->jits_use_priv_stack to true if any subprog uses=
- private stack.
-      This is for struct-ops use case to kick in recursion protection.
-  v9 -> v10:
-    - v9 link: https://lore.kernel.org/bpf/20241104193455.3241859-1-yongh=
-ong.song@linux.dev/
-    - Simplify handling async cbs by making those async cb related progs =
-using normal
-      kernel stack.
-    - Do percpu allocation in jit instead of verifier.
-  v8 -> v9:
-    - v8 link: https://lore.kernel.org/bpf/20241101030950.2677215-1-yongh=
-ong.song@linux.dev/
-    - Use enum to express priv stack mode.
-    - Use bits in bpf_subprog_info struct to do subprog recursion check b=
-etween
-      main/async and async subprogs.
-    - Fix potential memory leak.
-    - Rename recursion detection func from recursion_skipped() to recursi=
-on_detected().
-  v7 -> v8:
-    - v7 link: https://lore.kernel.org/bpf/20241029221637.264348-1-yongho=
-ng.song@linux.dev/
-    - Add recursion_skipped() callback func to bpf_prog->aux structure su=
-ch that if
-      a recursion miss happened and bpf_prog->aux->recursion_skipped is n=
-ot NULL, the
-      callback fn will be called so the subsystem can do proper action ba=
-sed on their
-      respective design.
-  v6 -> v7:
-    - v6 link: https://lore.kernel.org/bpf/20241020191341.2104841-1-yongh=
-ong.song@linux.dev/
-    - Going back to do private stack allocation per prog instead per subt=
-ree. This can
-      simplify implementation and avoid verifier complexity.
-    - Handle potential nested subprog run if async callback exists.
-    - Use struct_ops->check_member() callback to set whether a particular=
- struct-ops
-      prog wants private stack or not.
-  v5 -> v6:
-    - v5 link: https://lore.kernel.org/bpf/20241017223138.3175885-1-yongh=
-ong.song@linux.dev/
-    - Instead of using (or not using) private stack at struct_ops level,
-      each prog in struct_ops can decide whether to use private stack or =
-not.
-  v4 -> v5:
-    - v4 link: https://lore.kernel.org/bpf/20241010175552.1895980-1-yongh=
-ong.song@linux.dev/
-    - Remove bpf_prog_call() related implementation.
-    - Allow (opt-in) private stack for sched-ext progs.
-  v3 -> v4:
-    - v3 link: https://lore.kernel.org/bpf/20240926234506.1769256-1-yongh=
-ong.song@linux.dev/
-      There is a long discussion in the above v3 link trying to allow pri=
-vate
-      stack to be used by kernel functions in order to simplify implement=
-ation.
-      But unfortunately we didn't find a workable solution yet, so we ret=
-urn
-      to the approach where private stack is only used by bpf programs.
-    - Add bpf_prog_call() kfunc.
-  v2 -> v3:
-    - Instead of per-subprog private stack allocation, allocate private
-      stacks at main prog or callback entry prog. Subprogs not main or ca=
-llback
-      progs will increment the inherited stack pointer to be their
-      frame pointer.
-    - Private stack allows each prog max stack size to be 512 bytes, inte=
-ad
-      of the whole prog hierarchy to be 512 bytes.
-    - Add some tests.
-
-Yonghong Song (7):
-  bpf: Find eligible subprogs for private stack support
-  bpf: Enable private stack for eligible subprogs
-  bpf, x86: Avoid repeated usage of bpf_prog->aux->stack_depth
-  bpf, x86: Support private stack in jit
-  selftests/bpf: Add tracing prog private stack tests
-  bpf: Support private stack for struct_ops progs
-  selftests/bpf: Add struct_ops prog private stack tests
-
- arch/x86/net/bpf_jit_comp.c                   | 147 +++++++++-
- include/linux/bpf.h                           |   4 +
- include/linux/bpf_verifier.h                  |   8 +
- include/linux/filter.h                        |   1 +
- kernel/bpf/core.c                             |   5 +
- kernel/bpf/trampoline.c                       |   4 +
- kernel/bpf/verifier.c                         | 112 +++++++-
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 104 +++++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   5 +
- .../bpf/prog_tests/struct_ops_private_stack.c | 106 +++++++
- .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../bpf/progs/struct_ops_private_stack.c      |  62 ++++
- .../bpf/progs/struct_ops_private_stack_fail.c |  62 ++++
- .../progs/struct_ops_private_stack_recur.c    |  50 ++++
- .../bpf/progs/verifier_private_stack.c        | 272 ++++++++++++++++++
- 15 files changed, 930 insertions(+), 14 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_pri=
-vate_stack.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
-stack.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
-stack_fail.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_private_=
-stack_recur.c
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_private_st=
-ack.c
-
---=20
-2.43.5
+>
+> Alan
+>
+>>> Alan
+>>>
+>>>> Reported-by: Song Liu <song@kernel.org>
+>>>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>>>> ---
+>>>>    dwarf_loader.c | 81 +++++++++++++++++++++++++++++++++++---------------
+>>>>    1 file changed, 57 insertions(+), 24 deletions(-)
+>>>>
+>> [...]
 
 
