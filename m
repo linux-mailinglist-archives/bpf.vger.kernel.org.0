@@ -1,330 +1,257 @@
-Return-Path: <bpf+bounces-44661-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44663-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F4659C6351
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 22:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 331089C61BA
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 20:46:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E60DB3B9D9
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 18:10:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E20DBC80B2
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 18:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050DC21502C;
-	Tue, 12 Nov 2024 18:10:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0008219E52;
+	Tue, 12 Nov 2024 18:44:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FoBG5WAJ"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="eV9s6ZZp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D785B201270;
-	Tue, 12 Nov 2024 18:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731435013; cv=none; b=YdD4b7HoGXWyIn44x4twoGwOo1bvuBcNTigZFPCNGvs5NMbBtFH39y0bSasypSnDoYmw8jCMFb2zLtUPcVBk2n9OEb3AXKNvnsof3hO2NV+gnOvDcvZTq6RMaUoyaO23dUYcTtyYEqZEWebiSy4HsH6Bpq/Ok4E0KiXGIYLj7YM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731435013; c=relaxed/simple;
-	bh=GGzoUqoXMI+EqsY+/Dk0p6y19AtBPLDir4gWMkKJLFI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uXYtW5HdZza3Q6mjhi+BErhNhqTJaa2DCrfFqgGR1XfYLoA8yvKMORySS4wc63n2pyl3R5qWbKS5L0zWRqW8xhaW5K7b3qWChsMa1yfuUb0wDH2fPulMjoAexhX9sqXspwzkJc/bSn/PsJh4eXVGpZNVnl4WoaTCKMmnick2+Dk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FoBG5WAJ; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7f3f1849849so4138310a12.1;
-        Tue, 12 Nov 2024 10:10:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731435011; x=1732039811; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i6RgqeDH1wVQOoWDzTtohzRu8Xfe2E7upOTxZntw7p0=;
-        b=FoBG5WAJ46rhpjFMquy294lzriMWAqhKu6cLos5VBKX3gZ49HRWNKMljVGWRAa8iBf
-         0iv//uEiyM5sd4iP8fUyR0X+8qYFAo7zlNSLLdfQfNJWASwbLB3IwUXZZNwnmK3dhUtf
-         ZS7dSUIXUe+pefq5mfrs27TZ9DL1ZEWUzne4sgdwIy/DF1GP67danqAVDpdt7udiWJKS
-         uEbmRgTi2w21UigNFCNRHIssgoSurfiauCiAFmCse0w392n529DiP6CiOT5FG4hcBUtd
-         4ZRYaWIaOTEveu8PFDT2lJpU7UTVNLlubTpVKLX5+LkrTk/EIvcP2eeI/yaCt097TT58
-         3Q3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731435011; x=1732039811;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i6RgqeDH1wVQOoWDzTtohzRu8Xfe2E7upOTxZntw7p0=;
-        b=euw+ehuQ/lxylrbKrUihNAuHul/rLUR6FYUGsDV8VhunOxcazKQ9vp8ULvgj7i5VJ0
-         VZ/BRw/6JoUSgsa532uocira3DoDYjYqDknGX6ionWk5v3WINjmSXv03sDpGXelfx3AI
-         JDckxM6R/t8a5WnaBmdxFP7hEvX1/wiePA8RTm+COzL+6qY1HOT3WIHqdR0fAYmXpvAT
-         Qrar+qYRNDfV+SeVMG7+YJWgVlYlVzdOvjg/MoN8buZmCJfQxnOVxrdZPI+mJHDE0751
-         8pvpt9eDEPqfmJJ+3lZ6ahmWwKTL+C9hCkrvz+7qmQkkKSLzt4c3kOsFnmiRyX4QxVTD
-         EPsw==
-X-Forwarded-Encrypted: i=1; AJvYcCUoXldK80/tyAqoxFePPo4ylHvSL5kWsAttHx/qPfjS0Ij/f3X3yZ1OXTnV6nLVRWHb4tYGyAUEv9zPbRLb@vger.kernel.org, AJvYcCVzZY21RaVqnwzQNyhPuJQ4qhUYH2ga0RxLWcx3aarqe6iXVj0i0U+B+Wj3I8WANpPzCzQ=@vger.kernel.org, AJvYcCX8WXXNmrbLM47w8SLbwCoOD5CiQBKEXdUv0CzLVQMuAvtWw9vLLlYSn3yDcNpH9z8HblPRroV2BZc9v3oUy2dkTCWB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz6Xr8SHQGGA68HEcsYyHwcdd8ybA6g9OD95NySDjKLNCKTKq4q
-	g4OJ1THYWZQ6zgh3hAHJU/m3eJe7Y/7Z4lt6BkUTQ+Ytf64LMb/hUr8BqDDgeiJK1oE2KZ/aZVJ
-	wcBdLsz2n2Lr7YCcXCcqX9hnUnog=
-X-Google-Smtp-Source: AGHT+IFl6MFFzHYffblN+GvtzC1b0S3nhKK4UXwxyrJe3p27dCMFRGYiwzk6JTdRx/iUsGAyUyP+x/dM/zCVqV+Dbtk=
-X-Received: by 2002:a17:90b:350b:b0:2e8:f58e:27bb with SMTP id
- 98e67ed59e1d1-2e9e4aa8cadmr4501330a91.8.1731435010936; Tue, 12 Nov 2024
- 10:10:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F978219CBB;
+	Tue, 12 Nov 2024 18:44:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731437077; cv=fail; b=HNpTPyEUFp0olhXC5KpxSivdsc5k/cg2ONedDWtHfOj2J6jzLrVWWnCYKCSmivfYmlhsJ9bEnadzmHb1zA3uGQiY2Bqr/NYpZb44GQ9G1jhKXZRJu2vNousEKn74VrwC1w/kWlzIMaymCmCbY9QwegyCDG9iGivJrP+SpZFUADU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731437077; c=relaxed/simple;
+	bh=w4NAp/8fIsRH7erMMcXnAKkz0dJ8PYqCWc6e3QskWMg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Y8hfNikLvvnicOlNCKloqGBr5GgKOk+EBzb6pkML5ZwNRQ6fBJfeqKuZHH3zwvyCz9TxuFd7I6KLp9cxTzBOG2m8rB9hwp1OG8Pv57xQsQkuoTmtMH3NF8ztvm4kq3qlIGJI6StRytkbv+QgS53u+voubhACVEGW42G2NqIFduQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=eV9s6ZZp; arc=fail smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4ACHYKvd017953;
+	Tue, 12 Nov 2024 10:44:33 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-id:content-transfer-encoding:content-type:date:from
+	:in-reply-to:message-id:mime-version:references:subject:to; s=
+	s2048-2021-q4; bh=w4NAp/8fIsRH7erMMcXnAKkz0dJ8PYqCWc6e3QskWMg=; b=
+	eV9s6ZZpMMNKMHR1XCjUMDIsp+rd96ye7evHyPMwS+99MRKBBL5pzrB+uDxqQVc5
+	uCnEHdybLNq/HTPwu5WJYetJgW2hbiYfVsSf61gqWg6+Laxfpxf1lSRRRa8eYfMi
+	x5A9nf1OlVeO2qW9IFYR7qB2V9T7JvPVp31rIUtmheyZp7c82U5zbuBuPCnYAbLL
+	QXdmdkpVpOrY2UgEgajZ9W4c/6XXbSVQj3uHH7GRaA3gZMt1SjUkZVOnGswCC5dU
+	NQMDhYb2Rd4WC+Gb9L3domSdzAwHLR5bk4CWdmUgCgu2zreaHR9Y2fYNuCqInapa
+	mccMfegvlpUonDPbv9pYGQ==
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 42vbhkrkqa-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Nov 2024 10:44:33 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=WFkxrtJbkkiZhXyVG5Otg7hH8PEGPulYZaax1wrA7xWOQAFPDOnzMjqjQb6306poDcyY55jOi5CLrQlmLPyKzazAswklwloH0ejWTm6Vuv2aXpsPo6LMENjfbVH/h3W3wSGSUqbW+lX7KHbi3CoiXiXWg4c3IZ3J2m4rzpD+E6m2HRva0AfUnEyxBdU9J3Q/l8tB00tTRhn9qkj5RvIH0HuwOpL5mm2Akceg+zx4iSwMwbOOcysgbEtNaZOJ/9B8MrTE/vce7L9nkAetVVCnnLWeMZKxXhWS3fUSCiW50fGVJivoh5lQq4vdkyKCanx5WDWLtrTgG9WFB8oVCkfiJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=w4NAp/8fIsRH7erMMcXnAKkz0dJ8PYqCWc6e3QskWMg=;
+ b=rsPeBqKi5gSFkiLlRA/exbf1ypOvwvoECHfPTvDhUPgmBSfoQLmDUSDL05S5YiHyXXID9Wi4Snfx5Jpim7OnlEItCLINHjXBwjkIfM1hUapRcIZOdeF87QLrusv8bCbrIvQiW3ZDWsXSTf6IU2h6Ur+ou7g0gkbB5i3EWmhuyAGktKgVpVmcz/ytN4UTIRMKz6fx5dQlj2UyHFxZaGZmooWkLon7CpjBFVuSAg6aN4vxH7Xe5ayGZ7h/m2mQHDDwuOFgQoALu4lp8ErUrtXs0VrB/ifAa22ziP65J0+e/DOHr+5g2XWpmOWuG5wEMDHpHy3CiWswf/no1m80VzZNfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by PH0PR15MB5069.namprd15.prod.outlook.com (2603:10b6:510:ca::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.17; Tue, 12 Nov
+ 2024 18:44:09 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::662b:d7bd:ab1b:2610]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::662b:d7bd:ab1b:2610%3]) with mapi id 15.20.8137.027; Tue, 12 Nov 2024
+ 18:44:09 +0000
+From: Song Liu <songliubraving@meta.com>
+To: Casey Schaufler <casey@schaufler-ca.com>
+CC: Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org"
+	<linux-security-module@vger.kernel.org>,
+        Kernel Team <kernel-team@meta.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "eddyz87@gmail.com"
+	<eddyz87@gmail.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "martin.lau@linux.dev"
+	<martin.lau@linux.dev>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "mattbobrowski@google.com"
+	<mattbobrowski@google.com>,
+        "amir73il@gmail.com" <amir73il@gmail.com>,
+        "repnop@google.com" <repnop@google.com>,
+        "jlayton@kernel.org"
+	<jlayton@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "mic@digikod.net"
+	<mic@digikod.net>,
+        "gnoack@google.com" <gnoack@google.com>
+Subject: Re: [PATCH bpf-next 0/4] Make inode storage available to tracing prog
+Thread-Topic: [PATCH bpf-next 0/4] Make inode storage available to tracing
+ prog
+Thread-Index: AQHbNNyP/8kz7bh9sEuMXmmPH8p6e7Kz8jgAgAAJuQA=
+Date: Tue, 12 Nov 2024 18:44:09 +0000
+Message-ID: <ACCC67D1-E206-4D9B-98F7-B24A2A44A532@fb.com>
+References: <20241112082600.298035-1-song@kernel.org>
+ <d3e82f51-d381-4aaf-a6aa-917d5ec08150@schaufler-ca.com>
+In-Reply-To: <d3e82f51-d381-4aaf-a6aa-917d5ec08150@schaufler-ca.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-mailer: Apple Mail (2.3826.200.121)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR15MB5109:EE_|PH0PR15MB5069:EE_
+x-ms-office365-filtering-correlation-id: ca25b063-b95d-43a0-1787-08dd0349fe66
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|7416014|376014|10070799003|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?T1hvL0ZwM1p1UVZUNHRHcmNyT3hyaUJFcnlFczM4bytoTUo5QUhUaFI4TXpU?=
+ =?utf-8?B?cXpjVy9EdmxKNjlQSnBvc2NlWkRWSUxFNjNzRE90ZFRnUEkvK3MzdzE4YTlL?=
+ =?utf-8?B?R0ZXd0R5U0l3Z3VzZENLeFg5Vk13clNlZ0twazlZak9lbnAzZlFVcStqdklI?=
+ =?utf-8?B?VmhXYS9sTHJBQlc5YkozSW9PZlpsbGNzL1MwSmxkcnF0Q2lqQkcvUHVCMVBV?=
+ =?utf-8?B?QmszQWl3VlRSRXRWRDJVUGl4bXhHeE5PK3p1a0x2VUY1WStMOGFRT1hzbENE?=
+ =?utf-8?B?YURsaGdDT3ZGM1JHa1U0MWNvWFdLNXlKQmlxSytPNEpoOVhIYlN2M0hnRzk0?=
+ =?utf-8?B?WUpXTjJNb25CVkttRVZEZThZNm9iczJnczJqR3l6eFFmTS9FeTJSTERiTHJp?=
+ =?utf-8?B?UzVpeFkyaFVCcVAvVkxXcDZkeUF5RGZsSUNXN3BkNExTWHMrVkR1MTMzSVk3?=
+ =?utf-8?B?ZXUzWFRjZUUzdzNMQ3E2WjZnSjlVZ2h4YUZDcUg3YnBzRStMZjFCc215Rnky?=
+ =?utf-8?B?a0lhV0hJUVFtRGtLR1JXc2dzNFBrZ05OZlVoU1lEYXFYUk1nNFp0elZOWkNF?=
+ =?utf-8?B?ZUNNNnpGZmJhaTFVamFFdHZzY2VZQm5oRDd0NVNzQ1E4aEI1MnRSMFQ2bzY0?=
+ =?utf-8?B?SzJ6NEV3WWNMMWhNajBtT29SNmZsZ1Z1QmFMdStnU3FzU1R5Z0xxR085YkNs?=
+ =?utf-8?B?SUZzMmdwWEpsYjdMWGRBQ2QxdklOYjFwcnNjbEtvQXRMQmZjVGlQK1p2b20y?=
+ =?utf-8?B?SW5tTGhDOEFiZVBOT2p3WHRRaytiSmpnNkx2ekd4UUcvL3J3aVk1MDEwTjNn?=
+ =?utf-8?B?NnZnUUdKYzBIN3JGbXU1clBaZE9wdTV4elNuOE5zbDhMNmlPcjVLRnJSWE9N?=
+ =?utf-8?B?NHZiNW4xTFZFTTgxY2M3SFM3QWpHeWpuWkRqNVl6OFFOaGVZOVdSeUJDUjdo?=
+ =?utf-8?B?emVsaXdSaEdBL2lpVnlSMWZZTXNaZElvRDJnZEc1dDlRWmxrV2Yra2RnQ3lG?=
+ =?utf-8?B?YStaOVVTbmthQlJ0bzByQzlXMW9NOHhOQWl1Zk03cmRLS3E0WTJIeUQxNnl1?=
+ =?utf-8?B?MHFEUVQ5VjlyZCtuRU5Jdm0xNDlJQnY3MEd2R2xRdUxFYlNHbjFGbHRoTnpm?=
+ =?utf-8?B?Z2tZNXpnOHl0bjlVVTAvRGJMUnlnVVJmeldiR0NpZ1dqME1LejlETWgxTnN3?=
+ =?utf-8?B?cGRQU1M3VUtEcXdwa2lPajB5U1ZRejlnZ3VHWGdEMEcrdXJkc1hUKzBRN1RK?=
+ =?utf-8?B?cHNHTEIvcVdKVnhac2gyendERVNaaFlic1BnM2pIZWgvbEg5cHJlKzc1OXFw?=
+ =?utf-8?B?ak9TZ0t2VFJmVHRlRGdKQzFHODNHWC9QZS9UNEZZVnlpWm5yY3A3QVBUWEpC?=
+ =?utf-8?B?NUxsZ3JUVmNuMnZLWS9jZWhsdDFFQ3F5RXdvR09LYndmc1J4ZjhUM1dONSt1?=
+ =?utf-8?B?b2psaDZ2Tnl1QnpWNWpMQkFuYVV6d3A3b0paOWVDem5qY2J3SUw3K09MakRO?=
+ =?utf-8?B?cmpVSWg4MkF0SDZHaWxXb0w0T012MW9meWVlWm5TQTdHZG5sMEtlZ3pXTG51?=
+ =?utf-8?B?dVBjSFVMTk8xSG9qM0hvL0txY2VtQ0ltYkZNaXlkZHlTRDBjQzk1RkhTdXVF?=
+ =?utf-8?B?akdrMmJuZDRFQTY1VGRONlZaRDlvdDVxblBFNUpNSGY4Q3JWRU1IdGhEVWU3?=
+ =?utf-8?B?T1oyT1pQdVVZTWhkSmNsU1pTY0VaUmh1cEh3cnV2cVZ3RlJqWTZyL2c2T1dY?=
+ =?utf-8?B?d2FjQUtXVHpzYWxlaFByVUJkS0J1TS8vL1V6NHBiV2xzbEtTc3FwdTlrNjdy?=
+ =?utf-8?Q?GKEXl+6As+WaF9qn00/u5n/cUxHPxFLVhwkxI=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(10070799003)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?Y0YyRjZPZEZsUmxLMFpicHZTRXJrajZUY1dDWjBSWE5INGcraXBRcENTeUx0?=
+ =?utf-8?B?K3p3WFo0SjhBY1ZKTTFQUHkvMG5FU0VBMG43amhyWEtXZVFDRDdBMEFzMFJP?=
+ =?utf-8?B?OFRkdVVGT1lSRFV0UGJjeUtLeGVxWi9IYWxoc3RvNkR0emFQSlhicnlGT0Fx?=
+ =?utf-8?B?cjVnNXdHMTl2d0IxcFN3R2U0eEtBYnJSc1A1aUVJb2dDSTFKUTNLcWc5NFdM?=
+ =?utf-8?B?MldIOTRLZkM1WmdDakRXenhDV1dOR0FzNmJ5eVU4NFdvcDNVMTlTbmlENEls?=
+ =?utf-8?B?S2hPUTM4ODArUDNKUlJpQlhPa0N0OEhHQ2dJVENKZ2dQZDF3VnhPV3BDMlhq?=
+ =?utf-8?B?aGJKbjBsZ3NvWVJoNE5pdHF1bUtRV3Y1Y0FSMng4SExEWHZyd0xDS1E0QVZy?=
+ =?utf-8?B?U0lmSTVLRmlmV1ZBUEdGU0dHaHM5SWJjRzE3c21JeFBIYjl5RXl6endSMWVS?=
+ =?utf-8?B?M2YzL0E4SzlaQ0FwQTN3dnJma0hRb0VLRTV6TnhBSzZsRzZEQ0pjYWcvVUJE?=
+ =?utf-8?B?Z3dxbDJ5dTFLMjkyMHNkN0pBL0hkdml5NElaY3VJUnVQbWhMZDVQZXZ6RVFE?=
+ =?utf-8?B?UFRlUTJTcyt4V2dGdTBSUHR2T1lmZE5yVzVuMlp4MzJKUjZhK2xwRzJaeXh4?=
+ =?utf-8?B?TXlaai9naWVENExZZTh2QlVVK2pyZ0dOU0lwc2daM1E2TS9FRHNDZnNsb0ln?=
+ =?utf-8?B?VjlqNE0wcHV1aGp3dlhIWDAzaC91KzJMT3E1aWl2V0tFODF4bEMxNXN5WVh6?=
+ =?utf-8?B?NThRbm0wdHpaKzhqbm1rR2Qxc1VzUXJWYWxST1lYb01wZExEV1Yra1dvY2p5?=
+ =?utf-8?B?MU5LS0NyblN1K21SYXRuc2JDUFRPaGJQVDNkZ1VOWElodDBUZE1INzI2NDYx?=
+ =?utf-8?B?VnFEYTlTdU5WaHlWOExhV3ZMVm9qVWg0d1AzU2FPUmN0YW5ETGkwb0N2Q1Fh?=
+ =?utf-8?B?YmVYc2RqSnJYRUFnVG94cktTZmhXeUlPd2hCay9DdU45ekUzOElGekQ1a0Yv?=
+ =?utf-8?B?VWkxdzN3ZzVGZTNPYXdqVnRWY0lQSnNQUGdJczU3d0pmMUtiNXBTemF6cWtP?=
+ =?utf-8?B?NGFQMGtiTzd5ZjNIRHd1aWVPVlYxM3ZJNnZNYy9HTzhERFhkNnRrSVR6MjJp?=
+ =?utf-8?B?MFdROVU4UnF6ZnBia0MvNDRKYTY2YjhTeGZQU2NZaEp6YXJlckpWSFBqWGMw?=
+ =?utf-8?B?MEN5RE9QWFhKY1BNdXlVOEYrZmh5SnFUTUE4dlBJT2JWRUlOc294VHFCK3Bt?=
+ =?utf-8?B?enJqV0FtYzU5QWpmOWp5YlErS1I0UnIrbTRZaHhyRDVDa0xSSkRKeVBTNUNE?=
+ =?utf-8?B?d05mWTVKWkRPS1NtV2ppUjJsWXlNS01scnhyOTFTaGp4L0h0Z1NGQzhqRDR2?=
+ =?utf-8?B?bUhoek5KbVNWWWdDNC9FQWxMT1JvM0tsM2pjcEk1M1pZSXpVdEdWZ1RIa05k?=
+ =?utf-8?B?T1orZ2Y1b1c1cVducmduWXI5ZFo0TEtTOTA1SmlTbWNlZHNKS1YyZHNiU2po?=
+ =?utf-8?B?eEtNVklpSkVOYi9RYjJHTlc1VnR3VjhWcStaYVhNcEVTcDB0MFBDNXNBbWkv?=
+ =?utf-8?B?SExYeld2TEF1MEFXcSszTWdQVjhwQWNvb1l0cEpDcEQ0dlRiUkw2SVFzdkRX?=
+ =?utf-8?B?ZGlGTk1hcC9EaEhWYUJLemtMcll5WDZRb3hZL1lCY2ZVZzRtYldsOEZhbDdH?=
+ =?utf-8?B?YVIxSG9TNVJNY09uVks5K0ZZbUZ0K2ZZamtVWGMwRjQ2ZVo2cUoveEp3cFVj?=
+ =?utf-8?B?M09seEo0NFlUbnZpK0trTExHMTZQSSs1aDRRckpHWmhNYzg5MXpmaitpaHB2?=
+ =?utf-8?B?U1ZYeG9ZUUlvZmtlcjMzT1MxcWdFekNrWnFYQWZ1TW8wV3k4aVhlNlgzRHdS?=
+ =?utf-8?B?Vk43ckV0ck1yWXFCQk5XcFFpVER0UjBOb1dLMFRuLzhpK1U3clAxZFpMWTN2?=
+ =?utf-8?B?dXBmLzJmQ0o1T2xnVysvbFBWLzZSdk0wS2JCWEZ3UzQzeG1hb1RuM0VJK1lM?=
+ =?utf-8?B?TDF3VXF2RGNyU1lpZ0h4VUdES3FqTnQ5eldjb2p6VHJPMVpibzJtU2dzNTh4?=
+ =?utf-8?B?eW4wdzlpWFViNHBtak02MktOTUViUXFIQ1hTcWQxZEowNGt2UEZaby8reUt4?=
+ =?utf-8?B?dmtqQ3UrcU9YcjR0dHJseGxlc2M2Q3oyL1RwL1ZIUnlOY0xqZk1CWUxLd0Yv?=
+ =?utf-8?Q?73jv85lRk6WzUooSAY0QHvE=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F27135A23A778444A80A1E8CA3A0B1E5@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241028010818.2487581-1-andrii@kernel.org> <20241028010818.2487581-5-andrii@kernel.org>
- <20241112092816.cf5b0aa1ef10f50ce872892f@kernel.org> <CAJuCfpFPFRWrrMOQL2wbeTS0Y7eTc81TV3MX0cHaCuQ85foiag@mail.gmail.com>
-In-Reply-To: <CAJuCfpFPFRWrrMOQL2wbeTS0Y7eTc81TV3MX0cHaCuQ85foiag@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 12 Nov 2024 10:09:58 -0800
-Message-ID: <CAEf4BzZEvHzDFryW52Em8gdVZJJDByM+1eVukOJn-ZUf8ukxiA@mail.gmail.com>
-Subject: Re: [PATCH v4 tip/perf/core 4/4] uprobes: add speculative lockless
- VMA-to-inode-to-uprobe resolution
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, peterz@infradead.org, oleg@redhat.com, 
-	rostedt@goodmis.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	jolsa@kernel.org, paulmck@kernel.org, willy@infradead.org, mjguzik@gmail.com, 
-	brauner@kernel.org, jannh@google.com, mhocko@kernel.org, vbabka@suse.cz, 
-	shakeel.butt@linux.dev, hannes@cmpxchg.org, Liam.Howlett@oracle.com, 
-	lorenzo.stoakes@oracle.com, david@redhat.com, arnd@arndb.de, 
-	richard.weiyang@gmail.com, zhangpeng.00@bytedance.com, linmiaohe@huawei.com, 
-	viro@zeniv.linux.org.uk, hca@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca25b063-b95d-43a0-1787-08dd0349fe66
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Nov 2024 18:44:09.1938
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kIIzlGCRSxC7xfZSCfSR4Ll5RkVkrU+VX8WlvNJ79OFMyyCjnO8ixSbB2AoT78nXGIbAfiaYb55h/uzH2c2p6w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB5069
+X-Proofpoint-ORIG-GUID: -ZbzmJi_Mm2S0ZtzqATKKykmgstfPAtc
+X-Proofpoint-GUID: -ZbzmJi_Mm2S0ZtzqATKKykmgstfPAtc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-On Mon, Nov 11, 2024 at 5:05=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Mon, Nov 11, 2024 at 4:28=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel=
-.org> wrote:
-> >
-> > On Sun, 27 Oct 2024 18:08:18 -0700
-> > Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > > Given filp_cachep is marked SLAB_TYPESAFE_BY_RCU (and FMODE_BACKING
-> > > files, a special case, now goes through RCU-delated freeing), we can
-> > > safely access vma->vm_file->f_inode field locklessly under just
-> > > rcu_read_lock() protection, which enables looking up uprobe from
-> > > uprobes_tree completely locklessly and speculatively without the need=
- to
-> > > acquire mmap_lock for reads. In most cases, anyway, assuming that the=
-re
-> > > are no parallel mm and/or VMA modifications. The underlying struct
-> > > file's memory won't go away from under us (even if struct file can be
-> > > reused in the meantime).
-> > >
-> > > We rely on newly added mmap_lock_speculation_{begin,end}() helpers to
-> > > validate that mm_struct stays intact for entire duration of this
-> > > speculation. If not, we fall back to mmap_lock-protected lookup.
-> > > The speculative logic is written in such a way that it will safely
-> > > handle any garbage values that might be read from vma or file structs=
-.
-> > >
-> > > Benchmarking results speak for themselves.
-> > >
-> > > BEFORE (latest tip/perf/core)
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> > > uprobe-nop            ( 1 cpus):    3.384 =C2=B1 0.004M/s  (  3.384M/=
-s/cpu)
-> > > uprobe-nop            ( 2 cpus):    5.456 =C2=B1 0.005M/s  (  2.728M/=
-s/cpu)
-> > > uprobe-nop            ( 3 cpus):    7.863 =C2=B1 0.015M/s  (  2.621M/=
-s/cpu)
-> > > uprobe-nop            ( 4 cpus):    9.442 =C2=B1 0.008M/s  (  2.360M/=
-s/cpu)
-> > > uprobe-nop            ( 5 cpus):   11.036 =C2=B1 0.013M/s  (  2.207M/=
-s/cpu)
-> > > uprobe-nop            ( 6 cpus):   10.884 =C2=B1 0.019M/s  (  1.814M/=
-s/cpu)
-> > > uprobe-nop            ( 7 cpus):    7.897 =C2=B1 0.145M/s  (  1.128M/=
-s/cpu)
-> > > uprobe-nop            ( 8 cpus):   10.021 =C2=B1 0.128M/s  (  1.253M/=
-s/cpu)
-> > > uprobe-nop            (10 cpus):    9.932 =C2=B1 0.170M/s  (  0.993M/=
-s/cpu)
-> > > uprobe-nop            (12 cpus):    8.369 =C2=B1 0.056M/s  (  0.697M/=
-s/cpu)
-> > > uprobe-nop            (14 cpus):    8.678 =C2=B1 0.017M/s  (  0.620M/=
-s/cpu)
-> > > uprobe-nop            (16 cpus):    7.392 =C2=B1 0.003M/s  (  0.462M/=
-s/cpu)
-> > > uprobe-nop            (24 cpus):    5.326 =C2=B1 0.178M/s  (  0.222M/=
-s/cpu)
-> > > uprobe-nop            (32 cpus):    5.426 =C2=B1 0.059M/s  (  0.170M/=
-s/cpu)
-> > > uprobe-nop            (40 cpus):    5.262 =C2=B1 0.070M/s  (  0.132M/=
-s/cpu)
-> > > uprobe-nop            (48 cpus):    6.121 =C2=B1 0.010M/s  (  0.128M/=
-s/cpu)
-> > > uprobe-nop            (56 cpus):    6.252 =C2=B1 0.035M/s  (  0.112M/=
-s/cpu)
-> > > uprobe-nop            (64 cpus):    7.644 =C2=B1 0.023M/s  (  0.119M/=
-s/cpu)
-> > > uprobe-nop            (72 cpus):    7.781 =C2=B1 0.001M/s  (  0.108M/=
-s/cpu)
-> > > uprobe-nop            (80 cpus):    8.992 =C2=B1 0.048M/s  (  0.112M/=
-s/cpu)
-> > >
-> > > AFTER
-> > > =3D=3D=3D=3D=3D
-> > > uprobe-nop            ( 1 cpus):    3.534 =C2=B1 0.033M/s  (  3.534M/=
-s/cpu)
-> > > uprobe-nop            ( 2 cpus):    6.701 =C2=B1 0.007M/s  (  3.351M/=
-s/cpu)
-> > > uprobe-nop            ( 3 cpus):   10.031 =C2=B1 0.007M/s  (  3.344M/=
-s/cpu)
-> > > uprobe-nop            ( 4 cpus):   13.003 =C2=B1 0.012M/s  (  3.251M/=
-s/cpu)
-> > > uprobe-nop            ( 5 cpus):   16.274 =C2=B1 0.006M/s  (  3.255M/=
-s/cpu)
-> > > uprobe-nop            ( 6 cpus):   19.563 =C2=B1 0.024M/s  (  3.261M/=
-s/cpu)
-> > > uprobe-nop            ( 7 cpus):   22.696 =C2=B1 0.054M/s  (  3.242M/=
-s/cpu)
-> > > uprobe-nop            ( 8 cpus):   24.534 =C2=B1 0.010M/s  (  3.067M/=
-s/cpu)
-> > > uprobe-nop            (10 cpus):   30.475 =C2=B1 0.117M/s  (  3.047M/=
-s/cpu)
-> > > uprobe-nop            (12 cpus):   33.371 =C2=B1 0.017M/s  (  2.781M/=
-s/cpu)
-> > > uprobe-nop            (14 cpus):   38.864 =C2=B1 0.004M/s  (  2.776M/=
-s/cpu)
-> > > uprobe-nop            (16 cpus):   41.476 =C2=B1 0.020M/s  (  2.592M/=
-s/cpu)
-> > > uprobe-nop            (24 cpus):   64.696 =C2=B1 0.021M/s  (  2.696M/=
-s/cpu)
-> > > uprobe-nop            (32 cpus):   85.054 =C2=B1 0.027M/s  (  2.658M/=
-s/cpu)
-> > > uprobe-nop            (40 cpus):  101.979 =C2=B1 0.032M/s  (  2.549M/=
-s/cpu)
-> > > uprobe-nop            (48 cpus):  110.518 =C2=B1 0.056M/s  (  2.302M/=
-s/cpu)
-> > > uprobe-nop            (56 cpus):  117.737 =C2=B1 0.020M/s  (  2.102M/=
-s/cpu)
-> > > uprobe-nop            (64 cpus):  124.613 =C2=B1 0.079M/s  (  1.947M/=
-s/cpu)
-> > > uprobe-nop            (72 cpus):  133.239 =C2=B1 0.032M/s  (  1.851M/=
-s/cpu)
-> > > uprobe-nop            (80 cpus):  142.037 =C2=B1 0.138M/s  (  1.775M/=
-s/cpu)
-> > >
-> > > Previously total throughput was maxing out at 11mln/s, and gradually
-> > > declining past 8 cores. With this change, it now keeps growing with e=
-ach
-> > > added CPU, reaching 142mln/s at 80 CPUs (this was measured on a 80-co=
-re
-> > > Intel(R) Xeon(R) Gold 6138 CPU @ 2.00GHz).
-> > >
-> >
-> > Looks good to me, except one question below.
-> >
-> > > Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-> > > Suggested-by: Matthew Wilcox <willy@infradead.org>
-> > > Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  kernel/events/uprobes.c | 45 +++++++++++++++++++++++++++++++++++++++=
-++
-> > >  1 file changed, 45 insertions(+)
-> > >
-> > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > > index 290c445768fa..efcd62f7051d 100644
-> > > --- a/kernel/events/uprobes.c
-> > > +++ b/kernel/events/uprobes.c
-> > > @@ -2074,6 +2074,47 @@ static int is_trap_at_addr(struct mm_struct *m=
-m, unsigned long vaddr)
-> > >       return is_trap_insn(&opcode);
-> > >  }
-> > >
-> > > +static struct uprobe *find_active_uprobe_speculative(unsigned long b=
-p_vaddr)
-> > > +{
-> > > +     struct mm_struct *mm =3D current->mm;
-> > > +     struct uprobe *uprobe =3D NULL;
-> > > +     struct vm_area_struct *vma;
-> > > +     struct file *vm_file;
-> > > +     loff_t offset;
-> > > +     unsigned int seq;
-> > > +
-> > > +     guard(rcu)();
-> > > +
-> > > +     if (!mmap_lock_speculation_begin(mm, &seq))
-> > > +             return NULL;
-> > > +
-> > > +     vma =3D vma_lookup(mm, bp_vaddr);
-> > > +     if (!vma)
-> > > +             return NULL;
-> > > +
-> > > +     /*
-> > > +      * vm_file memory can be reused for another instance of struct =
-file,
-> > > +      * but can't be freed from under us, so it's safe to read field=
-s from
-> > > +      * it, even if the values are some garbage values; ultimately
-> > > +      * find_uprobe_rcu() + mmap_lock_speculation_end() check will e=
-nsure
-> > > +      * that whatever we speculatively found is correct
-> >
-> > If vm_file is a garbage value, may `vm_file->f_inode` access be dangero=
-us?
-> >
-> > > +      */
-> > > +     vm_file =3D READ_ONCE(vma->vm_file);
-> > > +     if (!vm_file)
-> > > +             return NULL;
-> > > +
-> > > +     offset =3D (loff_t)(vma->vm_pgoff << PAGE_SHIFT) + (bp_vaddr - =
-vma->vm_start);
-> > > +     uprobe =3D find_uprobe_rcu(vm_file->f_inode, offset);
-> >                                        ^^^^ Here
-> >
-> > if it only stores vm_file or NULL, there's no problem.
->
-> IIRC correctly, vma->vm_file is RCU-safe and we are in the read RCU
-> section, so it should not contain a garbage value.
-
-Correct. vm_file itself can be either TYPESAFE_BY_RCU for normal
-files, or properly RCU protected for FMODE_BACKING ones. Either way,
-there is some correct struct file pointed to, and so all this is valid
-and won't dereference invalid memory.
-
->
-> >
-> > Thank you,
-> >
-> > > +     if (!uprobe)
-> > > +             return NULL;
-> > > +
-> > > +     /* now double check that nothing about MM changed */
-> > > +     if (!mmap_lock_speculation_end(mm, seq))
-> > > +             return NULL;
-> > > +
-> > > +     return uprobe;
-> > > +}
-> > > +
-> > >  /* assumes being inside RCU protected region */
-> > >  static struct uprobe *find_active_uprobe_rcu(unsigned long bp_vaddr,=
- int *is_swbp)
-> > >  {
-> > > @@ -2081,6 +2122,10 @@ static struct uprobe *find_active_uprobe_rcu(u=
-nsigned long bp_vaddr, int *is_swb
-> > >       struct uprobe *uprobe =3D NULL;
-> > >       struct vm_area_struct *vma;
-> > >
-> > > +     uprobe =3D find_active_uprobe_speculative(bp_vaddr);
-> > > +     if (uprobe)
-> > > +             return uprobe;
-> > > +
-> > >       mmap_read_lock(mm);
-> > >       vma =3D vma_lookup(mm, bp_vaddr);
-> > >       if (vma) {
-> > > --
-> > > 2.43.5
-> > >
-> >
-> >
-> > --
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+SGkgQ2FzZXksIA0KDQpUaGFua3MgZm9yIHlvdXIgaW5wdXQuIA0KDQo+IE9uIE5vdiAxMiwgMjAy
+NCwgYXQgMTA6MDnigK9BTSwgQ2FzZXkgU2NoYXVmbGVyIDxjYXNleUBzY2hhdWZsZXItY2EuY29t
+PiB3cm90ZToNCj4gDQo+IE9uIDExLzEyLzIwMjQgMTI6MjUgQU0sIFNvbmcgTGl1IHdyb3RlOg0K
+Pj4gYnBmIGlub2RlIGxvY2FsIHN0b3JhZ2UgY2FuIGJlIHVzZWZ1bCBiZXlvbmQgTFNNIHByb2dy
+YW1zLiBGb3IgZXhhbXBsZSwNCj4+IGJjYy9saWJicGYtdG9vbHMgZmlsZSogY2FuIHVzZSBpbm9k
+ZSBsb2NhbCBzdG9yYWdlIHRvIHNpbXBsaWZ5IHRoZSBsb2dpYy4NCj4+IFRoaXMgc2V0IG1ha2Vz
+IGlub2RlIGxvY2FsIHN0b3JhZ2UgYXZhaWxhYmxlIHRvIHRyYWNpbmcgcHJvZ3JhbS4NCj4gDQo+
+IE1peGluZyB0aGUgc3RvcmFnZSBhbmQgc2NvcGUgb2YgTFNNIGRhdGEgYW5kIHRyYWNpbmcgZGF0
+YSBsZWF2ZXMgYWxsIHNvcnRzDQo+IG9mIG9wcG9ydHVuaXRpZXMgZm9yIGFidXNlLiBBZGQgaW5v
+ZGUgZGF0YSBmb3IgdHJhY2luZyBpZiB5b3UgY2FuIGdldCB0aGUNCj4gcGF0Y2ggYWNjZXB0ZWQs
+IGJ1dCBkbyBub3QgbW92ZSB0aGUgTFNNIGRhdGEgb3V0IG9mIGlfc2VjdXJpdHkuIE1vdmluZw0K
+PiB0aGUgTFNNIGRhdGEgd291bGQgYnJlYWsgdGhlIGludGVncml0eSAoc3VjaCB0aGF0IHRoZXJl
+IGlzKSBvZiB0aGUgTFNNDQo+IG1vZGVsLg0KDQpJIGhvbmVzdGx5IGRvbid0IHNlZSBob3cgdGhp
+cyB3b3VsZCBjYXVzZSBhbnkgaXNzdWVzLiBFYWNoIGJwZiBpbm9kZSANCnN0b3JhZ2UgbWFwcyBh
+cmUgaW5kZXBlbmRlbnQgb2YgZWFjaCBvdGhlciwgYW5kIHRoZSBicGYgbG9jYWwgc3RvcmFnZSBp
+cyANCmRlc2lnbmVkIHRvIGhhbmRsZSBtdWx0aXBsZSBpbm9kZSBzdG9yYWdlIG1hcHMgcHJvcGVy
+bHkuIFRoZXJlZm9yZSwgaWYNCnRoZSB1c2VyIGRlY2lkZSB0byBzdGljayB3aXRoIG9ubHkgTFNN
+IGhvb2tzLCB0aGVyZSBpc24ndCBhbnkgYmVoYXZpb3IgDQpjaGFuZ2UuIE9UT0gsIGlmIHRoZSB1
+c2VyIGRlY2lkZXMgc29tZSB0cmFjaW5nIGhvb2tzIChvbiB0cmFjZXBvaW50cywgDQpldGMuKSBh
+cmUgbmVlZGVkLCBtYWtpbmcgYSBpbm9kZSBzdG9yYWdlIG1hcCBhdmFpbGFibGUgZm9yIGJvdGgg
+dHJhY2luZyANCnByb2dyYW1zIGFuZCBMU00gcHJvZ3JhbXMgd291bGQgaGVscCBzaW1wbGlmeSB0
+aGUgbG9naWMuIChBbHRlcm5hdGl2ZWx5LA0KdGhlIHRyYWNpbmcgcHJvZ3JhbXMgbmVlZCB0byBz
+dG9yZSBwZXIgaW5vZGUgZGF0YSBpbiBhIGhhc2ggbWFwLCBhbmQgDQp0aGUgTFNNIHByb2dyYW0g
+d291bGQgcmVhZCB0aGF0IGluc3RlYWQgb2YgdGhlIGlub2RlIHN0b3JhZ2UgbWFwLikNCg0KRG9l
+cyB0aGlzIGFuc3dlciB0aGUgcXVlc3Rpb24gYW5kIGFkZHJlc3MgdGhlIGNvbmNlcm5zPw0KDQpU
+aGFua3MsDQpTb25nDQoNCj4gDQo+PiANCj4+IDEvNCBpcyBtaXNzaW5nIGNoYW5nZSBmb3IgYnBm
+IHRhc2sgbG9jYWwgc3RvcmFnZS4gMi80IG1vdmUgaW5vZGUgbG9jYWwNCj4+IHN0b3JhZ2UgZnJv
+bSBzZWN1cml0eSBibG9iIHRvIGlub2RlLg0KPj4gDQo+PiBTaW1pbGFyIHRvIHRhc2sgbG9jYWwg
+c3RvcmFnZSBpbiB0cmFjaW5nIHByb2dyYW0sIGl0IGlzIG5lY2Vzc2FyeSB0byBhZGQNCj4+IHJl
+Y3Vyc2lvbiBwcmV2ZW50aW9uIGxvZ2ljIGZvciBpbm9kZSBsb2NhbCBzdG9yYWdlLiBQYXRjaCAz
+LzQgYWRkcyBzdWNoDQo+PiBsb2dpYywgYW5kIDQvNCBhZGQgYSB0ZXN0IGZvciB0aGUgcmVjdXJz
+aW9uIHByZXZlbnRpb24gbG9naWMuDQo+PiANCj4+IFNvbmcgTGl1ICg0KToNCj4+ICBicGY6IGxz
+bTogUmVtb3ZlIGhvb2sgdG8gYnBmX3Rhc2tfc3RvcmFnZV9mcmVlDQo+PiAgYnBmOiBNYWtlIGJw
+ZiBpbm9kZSBzdG9yYWdlIGF2YWlsYWJsZSB0byB0cmFjaW5nIHByb2dyYW0NCj4+ICBicGY6IEFk
+ZCByZWN1cnNpb24gcHJldmVudGlvbiBsb2dpYyBmb3IgaW5vZGUgc3RvcmFnZQ0KPj4gIHNlbGZ0
+ZXN0L2JwZjogVGVzdCBpbm9kZSBsb2NhbCBzdG9yYWdlIHJlY3Vyc2lvbiBwcmV2ZW50aW9uDQoN
+ClsuLi5dDQoNCg==
 
