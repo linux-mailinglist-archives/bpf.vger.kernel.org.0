@@ -1,110 +1,117 @@
-Return-Path: <bpf+bounces-44677-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44678-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 747A09C64C7
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 00:04:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D44719C64C5
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 00:03:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97ED6B32904
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 23:01:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71B611F2521E
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2024 23:03:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF5821B44A;
-	Tue, 12 Nov 2024 23:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D1B121B457;
+	Tue, 12 Nov 2024 23:03:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G+9XjOSw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fy9jSCEY"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 232B921A6F0
-	for <bpf@vger.kernel.org>; Tue, 12 Nov 2024 23:00:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD01D21A6F3
+	for <bpf@vger.kernel.org>; Tue, 12 Nov 2024 23:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731452458; cv=none; b=ebTOkiTJYdFMVqdXZMppYF5VZ9Z2elfa5OzRNR6vpma8RXIikYUp65r3h+TBgP0dsdt0tI62tFVTb/U5lx1vydtWMDwJpLSre2B6P32MdUB/0jSvNFp3EXXQORYxWQFttKkCjBEH6MiUWGnRvDnf58PdPqDiHTJLVMda112jdqs=
+	t=1731452606; cv=none; b=Y0JYcuslN2iY+KPpFXfhWX7xNvJRiBGdG5GUvQ4ZRYUAY5KaTry3A583okgvB5R7flk9NIVBavxIJJUd+9a9t4UP/ORFdkpZbO7Z4FRpV2J9nP3bK5HbkrQUlX/QQf3Ttvw1yelMGlaWYf4wbXfDkQpmzKn+QyGme+mGSb0V8wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731452458; c=relaxed/simple;
-	bh=vKviNln8+HqiyyQDyWlEiTh1attruNE8dCnzglGdyMI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=De2sl0bVN89lkJV724+75i2X1DPrNPe9HZ3eRa/ESEF6bl5BMXZDoGQedLpvuqcSmkfHiz6Hn+hZr0bsoM2uELN9DqkDrIcxfc63TfmDc0wsYAt6lzxP7jU4sImbLq2HXDvEJTNP3YGXE1miG9Qy6EJ5cNr102bRvRu4CgnX6C4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G+9XjOSw; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2cb0cd4f-5d78-4b7f-b280-2a3377ffbc21@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731452454;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=60ywXsma7A1FQGRCvG3j7Xi4+6xd1zwISgp42e7ZGx0=;
-	b=G+9XjOSwFph0ZOLrgRvd7ZcnuhRiwfya8guYFzC1634yyBde4sKQbJyiA7UbbMlIr1AIJ1
-	QVRTjA1JG/OzDn65CLKRAX6agSwjjputUbgGzNfUwfNPUZqaUIx4vyjKzHQKBE4c1oqKwV
-	Caiu6p2/68Xv08w8tXeZDnJymVBxcuw=
-Date: Tue, 12 Nov 2024 15:00:48 -0800
+	s=arc-20240116; t=1731452606; c=relaxed/simple;
+	bh=C69do44Y6CPXa9qM42rROUMKRetiWAaNbVY/wGziF28=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=OhVVixj420GB5d75nnyqnLvzm/m6UBAmxtxSQxVUGYJLxHczk2OmTLo8TAeeqhLthxDx7TCiecRsOKvZuoTEQR/b3kevUQL2J6/eG2YFWPbg6A/bSZqlBK3eGFdE81WofjrNOxDl6RpKtdPsmZscfCejrAYoMgLq5NRFLWrOCiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fy9jSCEY; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7ea7e250c54so4612110a12.0
+        for <bpf@vger.kernel.org>; Tue, 12 Nov 2024 15:03:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731452604; x=1732057404; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=YuiEpADpImsrCR4exqTMJIH0ZxxdD3/tNotZLR0mHDY=;
+        b=Fy9jSCEYN3fJOdrausZgMbzZuTeOom0Ykr9X91TFA83SnauWhJSdTp8wUWAwywCsMG
+         aA//1CKRMtfLPOyCUqMhNqyUrTzd81sq2TMNXowAK8dbpLIiEIfPgX+Y2JaF5bNY+XnG
+         0kefyNFgeoSTOJp0AlW2BysoJLrk/wngtRlZgBZLJTz5CvLJLFFd+yybxs9CLRgRqA4a
+         LV8YxbMl2fV+dVFJfvQh4b9nwuhomD1LYUmaEhSekPzx1GveICLV9cf6Uj/aZoYVRoGJ
+         U1Vcz/3p1JCRRNPFHuUvze0K/1BMK6xRzKDzFgPMupxbNK7+Tsdax/2poC9y5Cbg8lbE
+         byuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731452604; x=1732057404;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YuiEpADpImsrCR4exqTMJIH0ZxxdD3/tNotZLR0mHDY=;
+        b=bnqVM6e1WDcGn8hEW+H2QI2b3rl4wS3bfAR7428NvHpgb27DU7GzHr5vAjGySp17Kw
+         d42fiMP7PKIaVLljI6tIELw/NpUMG181lK3NBAZBBdhhrbbPBoIUE9cZlUyM4C2U2otL
+         qboBlNpsd30U5WX0IC27pBNqdrpC+GGb/fPbHQlfYkFyhmHE+EpJwuAnTboc5mL373xD
+         figgzUrBf16S9sgL3mfHzrW8mdt+aX0V5mO/92gwkSRZweQd1VS8s2orBPpwDrCpOjtu
+         Pp85V4RJpvA//XsxKfrhp2Ngwj4w7hmdGBu+13Cx93fU+lMSSBwxVGP2bzRMoHrQeAMb
+         ewYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW8G/j7MJ+BWeAVo9rcdqWvvc4Pk993hLpPA3jroCVIotHGqQfCfyZGF8XHpT/xats7XRo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxG1P3O9LLhynGKOaRZYBJRR9FFexPRM57D/bCNB0WrU/igsF7J
+	eMNiTtwN4Btv97v0i3CzAY2u1MJxfaIux/bgohRujOd0tQrWTu2A
+X-Google-Smtp-Source: AGHT+IEXhCSJBH2wJKKlD/Lgfa/+nrOwtJsf8cb09w3e9KWZojgkQwi5/w09FJdQg998mWGVmtGrng==
+X-Received: by 2002:a05:6a21:99aa:b0:1db:ec5c:cae7 with SMTP id adf61e73a8af0-1dc22b35024mr28502038637.40.1731452603995;
+        Tue, 12 Nov 2024 15:03:23 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7f41f4895fesm11039547a12.12.2024.11.12.15.03.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Nov 2024 15:03:23 -0800 (PST)
+Message-ID: <fae6da7518ff75fefb9b237af368093a848bfd08.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/4] bpf: add bpf_cpu_cycles_to_ns helper
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Vadim Fedorenko <vadfed@meta.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,  Vadim Fedorenko
+ <vadim.fedorenko@linux.dev>, Mykola Lysenko <mykolal@fb.com>, Jakub
+ Kicinski <kuba@kernel.org>
+Cc: x86@kernel.org, bpf@vger.kernel.org, Martin KaFai Lau
+ <martin.lau@linux.dev>
+Date: Tue, 12 Nov 2024 15:03:18 -0800
+In-Reply-To: <20241109004158.2259301-2-vadfed@meta.com>
+References: <20241109004158.2259301-1-vadfed@meta.com>
+	 <20241109004158.2259301-2-vadfed@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 bpf-next 2/4] bpf: Make bpf inode storage available to
- tracing program
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
- kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
- daniel@iogearbox.net, viro@zeniv.linux.org.uk, brauner@kernel.org,
- jack@suse.cz, kpsingh@kernel.org, mattbobrowski@google.com,
- amir73il@gmail.com, repnop@google.com, jlayton@kernel.org,
- josef@toxicpanda.com, mic@digikod.net, gnoack@google.com
-References: <20241112083700.356299-1-song@kernel.org>
- <20241112083700.356299-3-song@kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20241112083700.356299-3-song@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 11/12/24 12:36 AM, Song Liu wrote:
->   void __destroy_inode(struct inode *inode)
->   {
->   	BUG_ON(inode_has_buffers(inode));
-> +	bpf_inode_storage_free(inode);
+On Fri, 2024-11-08 at 16:41 -0800, Vadim Fedorenko wrote:
+> The new helper should be used to convert cycles received by
+> bpf_get_cpu_cycle() into nanoseconds.
+>=20
+> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
+> ---
 
-Not sure if this is done in the rcu callback (i.e. after the rcu gp). Please check.
+Tried this with and without invtsc flag for qemu,
+the switch between call / inlined version occurs as expected.
 
->   	inode_detach_wb(inode);
->   	security_inode_free(inode);
->   	fsnotify_inode_delete(inode);
+In the off-list discussion Vadim explained that:
+- mult and shift constants are not updated after boot if constant_tsc
+  feature is present for CPU.
+- despite gettimeofday.h:vdso_calc_ns() doing more complex
+  calculations to avoid negative time motion, we again assume that
+  this is not needed for BPF use-case (two measurements close in time).
+  (If there would be a v6, it would be nice to have a comment about
+   these differences, I think).
 
-[ ... ]
+Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
 
-> @@ -136,12 +119,7 @@ BPF_CALL_5(bpf_inode_storage_get, struct bpf_map *, map, struct inode *, inode,
->   	if (flags & ~(BPF_LOCAL_STORAGE_GET_F_CREATE))
->   		return (unsigned long)NULL;
->   
-> -	/* explicitly check that the inode_storage_ptr is not
-> -	 * NULL as inode_storage_lookup returns NULL in this case and
-> -	 * bpf_local_storage_update expects the owner to have a
-> -	 * valid storage pointer.
-> -	 */
-> -	if (!inode || !inode_storage_ptr(inode))
-> +	if (!inode)
->   		return (unsigned long)NULL;
-
-There is an atomic_read in this function:
-
-	/* only allocate new storage, when the inode is refcounted */
-	if (atomic_read(&inode->i_count) &&
-	    flags & BPF_LOCAL_STORAGE_GET_F_CREATE) {
-
-If the bpf_inode_storage_free is not done after rcu gp, this will need a 
-inc_not_zero like how the sk storage does. I think moving the storage_free to 
-the inode rcu call back may be easier if it is not the case now.
-
+[...]
 
 
