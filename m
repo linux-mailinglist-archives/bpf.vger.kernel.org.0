@@ -1,277 +1,276 @@
-Return-Path: <bpf+bounces-44753-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44754-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E11DF9C75B6
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 16:12:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A1629C7590
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 16:05:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAF02B23A0B
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 14:32:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B89271F25F6F
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 15:05:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1D8202653;
-	Wed, 13 Nov 2024 14:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="dUN837Gt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0004713B791;
+	Wed, 13 Nov 2024 15:05:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7D42022F0
-	for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 14:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49E61369A8
+	for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 15:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731508086; cv=none; b=vEz4P9vFLkVpTCfooc4abKOWXUw4fOJeX4NF+chGu1DQ2VOBYTrrA1/uueQ6jecNILkp0i9PWMO8l74Y4mW8iQMe2zrupREDY2rkIuZ94L4ewF1W/iNLSALItJk/bsQ8FIriiJnIVG5WBgtcz1uQxGcm9zEEBtxTdHyXl5c9x9k=
+	t=1731510325; cv=none; b=tNGxowFbkveKWVCyxliW42ihMUlIxIMqawQ/kQExyF1asHaK0by68JksvirXxxwQfY4jRaFMACb/CitrkpmgcOjF2+vQKwyTdvjToOWs/ojXJTuG9jHw9l3WhxNteAg/2QA9cdkwK+VQwGb1Cc0LEkv6uFigEDSfyEbRprF4y6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731508086; c=relaxed/simple;
-	bh=e3tKvAENgT1t91Jk2QWLaDwnuAoEYVDBIwQYDspG3d8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Kiyi/nkTekPfuXQVrLusU5pjTJluZhAuaxnk3m7vIGNOu2718AzxHBZwUwrhLy3yKgD9kXHYPp0qqznv+94TDBliV4ZzKoB/DsiCXmEb8GQSP1Uf6dZvwNLc4SlbkdLjeaxl2LMeccRPcad0X9fo8Qoehzv1H0EK5Gn4KQCGGNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=dUN837Gt; arc=none smtp.client-ip=209.85.222.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7b152a23e9aso474999785a.0
-        for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 06:28:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1731508083; x=1732112883; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XEHbh/duNWJqgspUZhgQYf55G1Gom+pwpEcdzlYloE8=;
-        b=dUN837GtgJ1JDKlkS1aIv5lpzvtAy9vPRbrlOPisGmBrgMBKR9TlmNlsP6lZ9kdi0P
-         4JJ1DlLCj/4ivN42Dc5sbwX/omIjjRjk7lc0JRJW8ejRcD5akBmkeMhqYA2vWbop+G+Q
-         NLr1WS5iRiSuTyS4ctzKT/p5lCUE80DXa6NF4=
+	s=arc-20240116; t=1731510325; c=relaxed/simple;
+	bh=Qzb3SWYKN5kATyrvzc/giVlT23Wo4lYTj5Z0PrALw+M=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=LD7YT22ZxkNVyY6s5NNaTEWRseey3lHbvNeObXBPzmXAvNcrXwWyY7uwGtmw9WXuhM7Dlhd6wNyorVLgIP8dyFO3PsT8B0Nq+U8ljWwmfaUGx2AI3cm/y/hf+RH7wEdNbrFZT2ggWNDQzlorkMxtfCPvkq1zhHVf/96zxlf3O2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-83ae0af926dso748501939f.2
+        for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 07:05:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731508083; x=1732112883;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XEHbh/duNWJqgspUZhgQYf55G1Gom+pwpEcdzlYloE8=;
-        b=ddulTiUscaLqWvzqqQX2UkQWrPL79cgIERcLKvq41tQLYkAansHWYdNjNpgHQBxTTK
-         zlwOd3h8ayhsx3Ap45RT4RyQWSRxr7/HgXO4N6yJVWGsZi1sGKWn6CWpCks5UOi4iStj
-         1teGFkngjgsGoqU55mMbHGkMstqfBl8TFc0RAE0SLpY6RiKjyk6+gHgZ41uAi6e/4mwu
-         YyYmidAwDKsUXZomd84Y6ouOOkvSKiNi3Wt6I1fJ86iJp10M4iiL3KxSligLRQf/ZKmm
-         DgDsRUN0L+L5cej6AlXDYuWxsGmLIxp+WcNXPoMPAfoRD6Y7JpzreDUXTB/EulsC00fI
-         xSsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWmQIamq3Uj6rIUn/LjZUfKgmi6SpVhReRfpq0t8CtZ91ts5168RDP5DD7ivD9XXIl8nVs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxyVWWz06X08sOWXp/cQHVzbDm3RJKGPcwIYh7/sZ7Rt00obho6
-	XKRM3RksII1ETkn+UMj49MgQlc/ihc6c3zXQ4Ec/b8iazC0EDTQ1nFhlGB5lQw==
-X-Google-Smtp-Source: AGHT+IGKsfb5qCjLVoyCtZSg3Na9acwl7ff97AOrrv2+jJxIw+mkA/tSW7GMk8T0IzM/qYZJ/Czvyg==
-X-Received: by 2002:a05:6214:4990:b0:6cb:3c08:6a6a with SMTP id 6a1803df08f44-6d39e1ce9b1mr331094176d6.49.1731508083409;
-        Wed, 13 Nov 2024 06:28:03 -0800 (PST)
-Received: from vb004028-vm1.. ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d3961defe5sm85134976d6.10.2024.11.13.06.28.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Nov 2024 06:28:02 -0800 (PST)
-From: Vamsi Krishna Brahmajosyula <vamsi-krishna.brahmajosyula@broadcom.com>
-To: stable@vger.kernel.org,
-	gregkh@linuxfoundation.org
-Cc: rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mqaio@linux.alibaba.com,
-	namhyung.kim@lge.com,
-	oleg@redhat.com,
-	andrii@kernel.org,
-	jolsa@kernel.org,
-	sashal@kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	ajay.kaher@broadcom.com,
-	alexey.makhalov@broadcom.com,
-	vasavi.sirnapalli@broadcom.com,
-	Vamsi Krishna Brahmajosyula <vamsi-krishna.brahmajosyula@broadcom.com>
-Subject: [PATCH v6.1 2/2] uprobe: avoid out-of-bounds memory access of fetching args
-Date: Wed, 13 Nov 2024 14:27:34 +0000
-Message-Id: <20241113142734.2406886-3-vamsi-krishna.brahmajosyula@broadcom.com>
-X-Mailer: git-send-email 2.39.4
-In-Reply-To: <20241113142734.2406886-1-vamsi-krishna.brahmajosyula@broadcom.com>
-References: <20241113142734.2406886-1-vamsi-krishna.brahmajosyula@broadcom.com>
+        d=1e100.net; s=20230601; t=1731510323; x=1732115123;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Js2tCNoHj99UZbl15cY2mUZXw4l/roodQ0DjM9uGmiY=;
+        b=XERNE9jQp9vvlaZzWkNGY3PhAZdRSvaiCcWQmDcrwAGa6MT4Mhd1OXketMKIWNA9B6
+         SmfSPu2lXlVDLTEKmngXtBGqehxBbQZ62ecjAUUXjVdPT+KyHA0rRzhVvFLyBv9hL/bI
+         aEL6PQQn3YSWEuB2wPlFW02a5+UJ6RdgA3GeVQzgntxAc4V3E6KBwbj69S7ykJvtpUYJ
+         I3X52eYaXNgZnFc9vNyRNfPrwTcgL83gXmRjfGhbudeCc9rBqxGyEMEUBg57wWGXtTlo
+         /CHmCj5yi9UuQNXYj1LBoFxKwp9865PHUJySpl9LFovkfeorKuucx53XAVZXpw/V8NMC
+         tJ8g==
+X-Forwarded-Encrypted: i=1; AJvYcCV5BoQUf8mA+Pbppfwg8RT1ob4PvRbjj/wCOODAn7Go1raHSQSUzt5MJEJ0QEX04vV1LLY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz6ynkUOZduieWC8/tQcNpVoQ5uBfsOELzFPJooqWDL/ARuB145
+	cdMZKGn9vcVzimIN32zYtRNOkghEw+YNCheCT3wW/g6KQYmRGU34QbT4FYkdkwPpbHWFszT6oP4
+	tCbHFFbKdlWWeaQi/URDBUjnxmKF5jq21WrSddZLvc/snQ64GF5164nM=
+X-Google-Smtp-Source: AGHT+IERF9C5WIE83rp9obP4lMyBNE0WYs9a1Ck9M5zPa5hSQMEY65QzFGJn21AgGj9jA/YgK+xVplkj68B4tCmdzOlqyt8IpWE4
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1384:b0:3a7:1a2a:85c3 with SMTP id
+ e9e14a558f8ab-3a71a2a863fmr15848105ab.22.1731510323076; Wed, 13 Nov 2024
+ 07:05:23 -0800 (PST)
+Date: Wed, 13 Nov 2024 07:05:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6734c033.050a0220.2a2fcc.0015.GAE@google.com>
+Subject: [syzbot] [bpf?] [net?] KASAN: slab-use-after-free Read in
+ sk_psock_verdict_data_ready (2)
+From: syzbot <syzbot+dd90a702f518e0eac072@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	horms@kernel.org, jakub@cloudflare.com, john.fastabend@gmail.com, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Qiao Ma <mqaio@linux.alibaba.com>
+Hello,
 
-[ Upstream commit 373b9338c9722a368925d83bc622c596896b328e ]
+syzbot found the following issue on:
 
-Uprobe needs to fetch args into a percpu buffer, and then copy to ring
-buffer to avoid non-atomic context problem.
+HEAD commit:    4861333b4217 bonding: add ESP offload features when slaves..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=122e6ea7980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ea5200d154f868aa
+dashboard link: https://syzkaller.appspot.com/bug?extid=dd90a702f518e0eac072
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Sometimes user-space strings, arrays can be very large, but the size of
-percpu buffer is only page size. And store_trace_args() won't check
-whether these data exceeds a single page or not, caused out-of-bounds
-memory access.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-It could be reproduced by following steps:
-1. build kernel with CONFIG_KASAN enabled
-2. save follow program as test.c
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/4263c9834cd5/disk-4861333b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/14c4f9ec4615/vmlinux-4861333b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6cc8fe1b802d/bzImage-4861333b.xz
 
-```
-\#include <stdio.h>
-\#include <stdlib.h>
-\#include <string.h>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dd90a702f518e0eac072@syzkaller.appspotmail.com
 
-// If string length large than MAX_STRING_SIZE, the fetch_store_strlen()
-// will return 0, cause __get_data_size() return shorter size, and
-// store_trace_args() will not trigger out-of-bounds access.
-// So make string length less than 4096.
-\#define STRLEN 4093
-
-void generate_string(char *str, int n)
-{
-    int i;
-    for (i = 0; i < n; ++i)
-    {
-        char c = i % 26 + 'a';
-        str[i] = c;
-    }
-    str[n-1] = '\0';
-}
-
-void print_string(char *str)
-{
-    printf("%s\n", str);
-}
-
-int main()
-{
-    char tmp[STRLEN];
-
-    generate_string(tmp, STRLEN);
-    print_string(tmp);
-
-    return 0;
-}
-```
-3. compile program
-`gcc -o test test.c`
-
-4. get the offset of `print_string()`
-```
-objdump -t test | grep -w print_string
-0000000000401199 g     F .text  000000000000001b              print_string
-```
-
-5. configure uprobe with offset 0x1199
-```
-off=0x1199
-
-cd /sys/kernel/debug/tracing/
-echo "p /root/test:${off} arg1=+0(%di):ustring arg2=\$comm arg3=+0(%di):ustring"
- > uprobe_events
-echo 1 > events/uprobes/enable
-echo 1 > tracing_on
-```
-
-6. run `test`, and kasan will report error.
 ==================================================================
-BUG: KASAN: use-after-free in strncpy_from_user+0x1d6/0x1f0
-Write of size 8 at addr ffff88812311c004 by task test/499CPU: 0 UID: 0 PID: 499 Comm: test Not tainted 6.12.0-rc3+ #18
-Hardware name: Red Hat KVM, BIOS 1.16.0-4.al8 04/01/2014
+BUG: KASAN: slab-use-after-free in sk_psock_verdict_data_ready+0x6d/0x390 net/core/skmsg.c:1221
+Read of size 8 at addr ffff88807595c220 by task syz.8.2987/16517
+
+CPU: 1 UID: 0 PID: 16517 Comm: syz.8.2987 Not tainted 6.12.0-rc6-syzkaller-01230-g4861333b4217 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
 Call Trace:
  <TASK>
- dump_stack_lvl+0x55/0x70
- print_address_description.constprop.0+0x27/0x310
- kasan_report+0x10f/0x120
- ? strncpy_from_user+0x1d6/0x1f0
- strncpy_from_user+0x1d6/0x1f0
- ? rmqueue.constprop.0+0x70d/0x2ad0
- process_fetch_insn+0xb26/0x1470
- ? __pfx_process_fetch_insn+0x10/0x10
- ? _raw_spin_lock+0x85/0xe0
- ? __pfx__raw_spin_lock+0x10/0x10
- ? __pte_offset_map+0x1f/0x2d0
- ? unwind_next_frame+0xc5f/0x1f80
- ? arch_stack_walk+0x68/0xf0
- ? is_bpf_text_address+0x23/0x30
- ? kernel_text_address.part.0+0xbb/0xd0
- ? __kernel_text_address+0x66/0xb0
- ? unwind_get_return_address+0x5e/0xa0
- ? __pfx_stack_trace_consume_entry+0x10/0x10
- ? arch_stack_walk+0xa2/0xf0
- ? _raw_spin_lock_irqsave+0x8b/0xf0
- ? __pfx__raw_spin_lock_irqsave+0x10/0x10
- ? depot_alloc_stack+0x4c/0x1f0
- ? _raw_spin_unlock_irqrestore+0xe/0x30
- ? stack_depot_save_flags+0x35d/0x4f0
- ? kasan_save_stack+0x34/0x50
- ? kasan_save_stack+0x24/0x50
- ? mutex_lock+0x91/0xe0
- ? __pfx_mutex_lock+0x10/0x10
- prepare_uprobe_buffer.part.0+0x2cd/0x500
- uprobe_dispatcher+0x2c3/0x6a0
- ? __pfx_uprobe_dispatcher+0x10/0x10
- ? __kasan_slab_alloc+0x4d/0x90
- handler_chain+0xdd/0x3e0
- handle_swbp+0x26e/0x3d0
- ? __pfx_handle_swbp+0x10/0x10
- ? uprobe_pre_sstep_notifier+0x151/0x1b0
- irqentry_exit_to_user_mode+0xe2/0x1b0
- asm_exc_int3+0x39/0x40
-RIP: 0033:0x401199
-Code: 01 c2 0f b6 45 fb 88 02 83 45 fc 01 8b 45 fc 3b 45 e4 7c b7 8b 45 e4 48 98 48 8d 50 ff 48 8b 45 e8 48 01 d0 ce
-RSP: 002b:00007ffdf00576a8 EFLAGS: 00000206
-RAX: 00007ffdf00576b0 RBX: 0000000000000000 RCX: 0000000000000ff2
-RDX: 0000000000000ffc RSI: 0000000000000ffd RDI: 00007ffdf00576b0
-RBP: 00007ffdf00586b0 R08: 00007feb2f9c0d20 R09: 00007feb2f9c0d20
-R10: 0000000000000001 R11: 0000000000000202 R12: 0000000000401040
-R13: 00007ffdf0058780 R14: 0000000000000000 R15: 0000000000000000
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0x169/0x550 mm/kasan/report.c:488
+ kasan_report+0x143/0x180 mm/kasan/report.c:601
+ sk_psock_verdict_data_ready+0x6d/0x390 net/core/skmsg.c:1221
+ unix_stream_sendmsg+0x7d5/0xf80 net/unix/af_unix.c:2345
+ sock_sendmsg_nosec net/socket.c:729 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:744
+ ____sys_sendmsg+0x52a/0x7e0 net/socket.c:2609
+ ___sys_sendmsg net/socket.c:2663 [inline]
+ __sys_sendmsg+0x292/0x380 net/socket.c:2692
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fc8c817e719
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc8c9018038 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007fc8c8335f80 RCX: 00007fc8c817e719
+RDX: 0000000000000000 RSI: 0000000020000500 RDI: 0000000000000004
+RBP: 00007fc8c81f139e R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fc8c8335f80 R15: 00007ffeb3aa3828
  </TASK>
 
-This commit enforces the buffer's maxlen less than a page-size to avoid
-store_trace_args() out-of-memory access.
+Allocated by task 16517:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ unpoison_slab_object mm/kasan/common.c:319 [inline]
+ __kasan_slab_alloc+0x66/0x80 mm/kasan/common.c:345
+ kasan_slab_alloc include/linux/kasan.h:247 [inline]
+ slab_post_alloc_hook mm/slub.c:4085 [inline]
+ slab_alloc_node mm/slub.c:4134 [inline]
+ kmem_cache_alloc_lru_noprof+0x139/0x2b0 mm/slub.c:4153
+ sock_alloc_inode+0x28/0xc0 net/socket.c:307
+ alloc_inode+0x65/0x1a0 fs/inode.c:265
+ sock_alloc net/socket.c:633 [inline]
+ __sock_create+0x127/0xa30 net/socket.c:1540
+ sock_create net/socket.c:1634 [inline]
+ __sys_socketpair+0x2ca/0x720 net/socket.c:1781
+ __do_sys_socketpair net/socket.c:1834 [inline]
+ __se_sys_socketpair net/socket.c:1831 [inline]
+ __x64_sys_socketpair+0x9b/0xb0 net/socket.c:1831
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-Link: https://lore.kernel.org/all/20241015060148.1108331-1-mqaio@linux.alibaba.com/
+Freed by task 16:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:579
+ poison_slab_object mm/kasan/common.c:247 [inline]
+ __kasan_slab_free+0x59/0x70 mm/kasan/common.c:264
+ kasan_slab_free include/linux/kasan.h:230 [inline]
+ slab_free_hook mm/slub.c:2342 [inline]
+ slab_free mm/slub.c:4579 [inline]
+ kmem_cache_free+0x1a2/0x420 mm/slub.c:4681
+ rcu_do_batch kernel/rcu/tree.c:2567 [inline]
+ rcu_core+0xaaa/0x17a0 kernel/rcu/tree.c:2823
+ handle_softirqs+0x2c5/0x980 kernel/softirq.c:554
+ run_ksoftirqd+0xca/0x130 kernel/softirq.c:927
+ smpboot_thread_fn+0x544/0xa30 kernel/smpboot.c:164
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
 
-Fixes: dcad1a204f72 ("tracing/uprobes: Fetch args before reserving a ring buffer")
-Signed-off-by: Qiao Ma <mqaio@linux.alibaba.com>
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Vamsi Krishna Brahmajosyula <vamsi-krishna.brahmajosyula@broadcom.com>
+Last potentially related work creation:
+ kasan_save_stack+0x3f/0x60 mm/kasan/common.c:47
+ __kasan_record_aux_stack+0xac/0xc0 mm/kasan/generic.c:541
+ __call_rcu_common kernel/rcu/tree.c:3086 [inline]
+ call_rcu+0x167/0xa70 kernel/rcu/tree.c:3190
+ destroy_inode fs/inode.c:320 [inline]
+ evict+0x83c/0x9b0 fs/inode.c:756
+ __dentry_kill+0x20d/0x630 fs/dcache.c:615
+ dput+0x19f/0x2b0 fs/dcache.c:857
+ __fput+0x5d2/0x880 fs/file_table.c:439
+ __do_sys_close fs/open.c:1567 [inline]
+ __se_sys_close fs/open.c:1552 [inline]
+ __x64_sys_close+0x7f/0x110 fs/open.c:1552
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The buggy address belongs to the object at ffff88807595c200
+ which belongs to the cache sock_inode_cache of size 1408
+The buggy address is located 32 bytes inside of
+ freed 1408-byte region [ffff88807595c200, ffff88807595c780)
+
+The buggy address belongs to the physical page:
+page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x75958
+head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+memcg:ffff88802edbb601
+anon flags: 0xfff00000000040(head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 00fff00000000040 ffff88801eac6c80 0000000000000000 dead000000000001
+raw: 0000000000000000 0000000080150015 00000001f5000000 ffff88802edbb601
+head: 00fff00000000040 ffff88801eac6c80 0000000000000000 dead000000000001
+head: 0000000000000000 0000000080150015 00000001f5000000 ffff88802edbb601
+head: 00fff00000000003 ffffea0001d65601 ffffffffffffffff 0000000000000000
+head: 0000000000000008 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Reclaimable, gfp_mask 0xd20d0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_RECLAIMABLE), pid 5853, tgid 5853 (syz-executor), ts 63362518844, free_ts 14776689664
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x1f3/0x230 mm/page_alloc.c:1537
+ prep_new_page mm/page_alloc.c:1545 [inline]
+ get_page_from_freelist+0x303f/0x3190 mm/page_alloc.c:3457
+ __alloc_pages_noprof+0x292/0x710 mm/page_alloc.c:4733
+ alloc_pages_mpol_noprof+0x3e8/0x680 mm/mempolicy.c:2265
+ alloc_slab_page+0x6a/0x140 mm/slub.c:2412
+ allocate_slab+0x5a/0x2f0 mm/slub.c:2578
+ new_slab mm/slub.c:2631 [inline]
+ ___slab_alloc+0xcd1/0x14b0 mm/slub.c:3818
+ __slab_alloc+0x58/0xa0 mm/slub.c:3908
+ __slab_alloc_node mm/slub.c:3961 [inline]
+ slab_alloc_node mm/slub.c:4122 [inline]
+ kmem_cache_alloc_lru_noprof+0x1c5/0x2b0 mm/slub.c:4153
+ sock_alloc_inode+0x28/0xc0 net/socket.c:307
+ alloc_inode+0x65/0x1a0 fs/inode.c:265
+ sock_alloc net/socket.c:633 [inline]
+ __sock_create+0x127/0xa30 net/socket.c:1540
+ sock_create net/socket.c:1634 [inline]
+ __sys_socket_create net/socket.c:1671 [inline]
+ __sys_socket+0x150/0x3c0 net/socket.c:1718
+ __do_sys_socket net/socket.c:1732 [inline]
+ __se_sys_socket net/socket.c:1730 [inline]
+ __x64_sys_socket+0x7a/0x90 net/socket.c:1730
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+page last free pid 1 tgid 1 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1108 [inline]
+ free_unref_page+0xcfb/0xf20 mm/page_alloc.c:2638
+ free_contig_range+0x152/0x550 mm/page_alloc.c:6748
+ destroy_args+0x92/0x910 mm/debug_vm_pgtable.c:1017
+ debug_vm_pgtable+0x4be/0x550 mm/debug_vm_pgtable.c:1397
+ do_one_initcall+0x248/0x880 init/main.c:1269
+ do_initcall_level+0x157/0x210 init/main.c:1331
+ do_initcalls+0x3f/0x80 init/main.c:1347
+ kernel_init_freeable+0x435/0x5d0 init/main.c:1580
+ kernel_init+0x1d/0x2b0 init/main.c:1469
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+Memory state around the buggy address:
+ ffff88807595c100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88807595c180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88807595c200: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff88807595c280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88807595c300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
 ---
- kernel/trace/trace_uprobe.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index e09eef65d32f..a6a3ff2a441e 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -862,6 +862,7 @@ struct uprobe_cpu_buffer {
- };
- static struct uprobe_cpu_buffer __percpu *uprobe_cpu_buffer;
- static int uprobe_buffer_refcnt;
-+#define MAX_UCB_BUFFER_SIZE PAGE_SIZE
- 
- static int uprobe_buffer_init(void)
- {
-@@ -960,6 +961,11 @@ static struct uprobe_cpu_buffer *prepare_uprobe_buffer(struct trace_uprobe *tu,
- 	ucb = uprobe_buffer_get();
- 	ucb->dsize = tu->tp.size + dsize;
- 
-+	if (WARN_ON_ONCE(ucb->dsize > MAX_UCB_BUFFER_SIZE)) {
-+		ucb->dsize = MAX_UCB_BUFFER_SIZE;
-+		dsize = MAX_UCB_BUFFER_SIZE - tu->tp.size;
-+	}
-+
- 	store_trace_args(ucb->buf, &tu->tp, regs, esize, dsize);
- 
- 	return ucb;
-@@ -978,9 +984,6 @@ static void __uprobe_trace_func(struct trace_uprobe *tu,
- 
- 	WARN_ON(call != trace_file->event_call);
- 
--	if (WARN_ON_ONCE(ucb->dsize > PAGE_SIZE))
--		return;
--
- 	if (trace_trigger_soft_disabled(trace_file))
- 		return;
- 
--- 
-2.39.4
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
