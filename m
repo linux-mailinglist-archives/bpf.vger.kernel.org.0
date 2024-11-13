@@ -1,54 +1,54 @@
-Return-Path: <bpf+bounces-44736-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44743-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FD819C736D
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 15:23:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E45549C72B8
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 15:09:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68209B27A6D
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 13:54:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7853AB292EB
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 13:56:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 328231EBA0A;
-	Wed, 13 Nov 2024 13:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C533204095;
+	Wed, 13 Nov 2024 13:54:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="No6i8T17"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="o/+rx23Z"
 X-Original-To: bpf@vger.kernel.org
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E5541D88C4;
-	Wed, 13 Nov 2024 13:53:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291462038B1;
+	Wed, 13 Nov 2024 13:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731506038; cv=none; b=Cs59WinD6O/kpyv3u4F89+nkitg42KHXPwzR/uol6EkaIJeYG+neNmGlUaKMmNutGv4+gSBKl7f7OHDf3exvyEZMFv+tEuvAAsQ8Fcp4FvrvZwGHUoRGVxb6XRfAp/XAMOKpSQ2ik0xvv7Tk06C/LEM8ZTVwrhB/mwBqQS9yiLY=
+	t=1731506052; cv=none; b=diArKrJetKBFMJ6GdjOV7efrevRIKX3Dtg7v+CXKlACyRGokZhu2IHcoFHeCiC92p3rxURNkx6/Im38+jb45b9sYarecHko4G9jKfjXpRM4anIPWy17JGiwf1iZ9kZq9AKv6ME2HnVoF17Kvsw7nc79HChW+WVxI9afcNM4Dv0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731506038; c=relaxed/simple;
-	bh=/HUWGsxkdIsxfJ7EzIyVHvdpufTGZWFZ4X+DZQ5bl/o=;
+	s=arc-20240116; t=1731506052; c=relaxed/simple;
+	bh=zC0BkYMv5dWS9NNUKOzI1WQT9YI5CaMfNg47aVjXiWM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Sjn6M+XIP+R+WFx1JQmPi942du7HrL80H8Ftmav+iHWWT7v1JZdQ9qx4dyFGPRZ9PRzxb2J8KwZe4G+HQF50o3w1CO097GQjQNxX8OCz0fik9woqih0fNL6LU3gzhb4LzJ7UZvpYNIxgQBqqZiSEGnpe0kI+ZYfK8tBq00D+mfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=No6i8T17; arc=none smtp.client-ip=217.70.183.200
+	 In-Reply-To:To:Cc; b=Pk1z8sqsW8QO5b/Jv/Bb1UioHCpY4WPxEXkD405m3zR7yQy/Ea/0CRHbMwHsGaEqVxmvEZB9hh5G7cVNiuTMSLi6LYIcdUxjgYI1arRezDNKy6R5qTL+DVrDcywlAjvMfJFzjAmAJbbjrUBRUiSJF9MeBN5r7IYvlLPNrVM/HJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=o/+rx23Z; arc=none smtp.client-ip=217.70.183.200
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2E86120005;
-	Wed, 13 Nov 2024 13:53:48 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D351E2000B;
+	Wed, 13 Nov 2024 13:54:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1731506034;
+	t=1731506048;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aYiFKvTK5rWFG/UdHeix0aT9loXjRZeDSaCLkDrIvnM=;
-	b=No6i8T17/mTGxEeKeLdrwxmTfae/NGHC/LBaPNFl1mBXFGErRvUdNNcT6bOW/6Q3bDWE0E
-	84VtMbBQ8vpLcvEITrO9Qn3mAJveGoYE+5rjAuV0jL5V7iHEuylLoE8Gv1JBWzEYovgG09
-	yoDcfYxTiU7ZjdO26z4hEHlNJTt+egn/zR/JI59XvYl3NNl8hW4HaiRtx6lxX7yA8KIRtK
-	YZ40d/EqMCYMNFWMRJ+DVv5S6dq41QK3Jlnlz2itBQWGaon2lhk4drdwd0u8HmJbQXAXno
-	PY0TJBSQVT1MPKv6kOOuYg5y1IY2T5OEVwadkK8AHEF4O74na76hWBCyr1HgsA==
+	bh=gh3KgQeocVU3LhWpCb9FrWrxjJcX8AjuQG6H8QqII3Y=;
+	b=o/+rx23Z9tEaa5SaD27Yy5GuP/AQIhobfdiGr/GQnklXSv5XLxVAXANFHLfTzq8Hp9JHak
+	WpHwR7bADNLzC+x/YMzu6C3cnSh9ZEfzBVswlXko4iAibCKNICWWC51uBvnhSm8sUpKMGH
+	F1y+lkzkJ9099qoa49crfXp4hn6TUPG6CzofAXGXYMmyHPBSyDBcrEzE+/zQJL6WlMsZ+h
+	LfrpeCuFc/yqYgq3QRBeXMlvzMtKmS2cuK3Vvp8ryiTTdib5LGTOFSyUUFMkYkUIpXuBbK
+	loqhxbnjFA7nTeKJoqBHqWImLztxVW6bFpAv+F2DJ4GpAgkOFmJWWoMGaR3vkg==
 From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Wed, 13 Nov 2024 14:53:24 +0100
-Subject: [PATCH bpf-next 01/10] selftests/bpf: add a macro to compare raw
- memory
+Date: Wed, 13 Nov 2024 14:53:30 +0100
+Subject: [PATCH bpf-next 07/10] selftests/bpf: migrate flow_dissector
+ namespace exclusivity test
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,7 +57,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20241113-flow_dissector-v1-1-27c4df0592dc@bootlin.com>
+Message-Id: <20241113-flow_dissector-v1-7-27c4df0592dc@bootlin.com>
 References: <20241113-flow_dissector-v1-0-27c4df0592dc@bootlin.com>
 In-Reply-To: <20241113-flow_dissector-v1-0-27c4df0592dc@bootlin.com>
 To: Andrii Nakryiko <andrii@kernel.org>, 
@@ -77,62 +77,106 @@ Cc: ebpf@linuxfoundation.org,
 X-Mailer: b4 0.14.2
 X-GND-Sasl: alexis.lothore@bootlin.com
 
-We sometimes need to compare whole structures in an assert. It is
-possible to use the existing macros on each field, but when the whole
-structure has to be checked, it is more convenient to simply compare the
-whole structure memory
+Commit a11c397c43d5 ("bpf/flow_dissector: add mode to enforce global BPF
+flow dissector") is currently tested in test_flow_dissector.sh, which is
+not part of test_progs. Add the corresponding test to flow_dissector.c,
+which is part of test_progs. The new test reproduces the behavior
+implemented in its shell script counterpart:
+- attach a  flow dissector program to the root net namespace, ensure
+  that we can not attach another flow dissector in any non-root net
+  namespace
+- attach a flow dissector program to a non-root net namespace, ensure
+  that we can not attach another flow dissector in root namespace
 
-Add a dedicated assert macro, ASSERT_MEMEQ, to allow bare memory
-comparision
+Since the new test is performing operations in the root net namespace,
+make sure to set it as a "serial" test to make sure not to conflict with
+any other test.
 
 Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
 ---
- tools/testing/selftests/bpf/test_progs.h | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ .../selftests/bpf/prog_tests/flow_dissector.c      | 62 ++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-index 74de33ae37e56c90646cd1e0bb58ed7e3f345ec0..bdde741543836991398daacfe5423e6af8ef9151 100644
---- a/tools/testing/selftests/bpf/test_progs.h
-+++ b/tools/testing/selftests/bpf/test_progs.h
-@@ -186,6 +186,19 @@ void test__skip(void);
- void test__fail(void);
- int test__join_cgroup(const char *path);
+diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
+index 05f3953c6266efdedeb74a81969ccfdabf009ccd..216f89070144f5fd19d602d0691f0aa6eed10a8e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
++++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
+@@ -7,6 +7,7 @@
  
-+#define DUMP_BUFFER(name, buf, len)						\
-+	({									\
-+		fprintf(stdout, "%s:\n", name);					\
-+		for (int i = 0; i < len; i++) {					\
-+			if (i && !(i % 16))					\
-+				fprintf(stdout, "\n");				\
-+			if (i && !(i % 8) && (i % 16))				\
-+				fprintf(stdout, "\t");				\
-+			fprintf(stdout, "%02X ", ((uint8_t *)(buf))[i]);	\
-+		}								\
-+		fprintf(stdout, "\n");						\
-+	})
-+
- #define PRINT_FAIL(format...)                                                  \
- 	({                                                                     \
- 		test__fail();                                                  \
-@@ -344,6 +357,18 @@ int test__join_cgroup(const char *path);
- 	___ok;								\
- })
+ #include "bpf_flow.skel.h"
  
-+#define ASSERT_MEMEQ(actual, expected, len, name) ({			\
-+	static int duration = 0;					\
-+	const void *__act = actual;					\
-+	const void *__exp = expected;					\
-+	int __len = len;						\
-+	bool ___ok = memcmp(__act, __exp, __len) == 0;			\
-+	CHECK(!___ok, (name), "unexpected memory mismatch\n");		\
-+	DUMP_BUFFER("actual", __act, __len);				\
-+	DUMP_BUFFER("expected:", __exp, __len);				\
-+	___ok;								\
-+})
++#define TEST_NS	"flow_dissector_ns"
+ #define FLOW_CONTINUE_SADDR 0x7f00007f /* 127.0.0.127 */
+ #define TEST_NAME_MAX_LEN	64
+ 
+@@ -495,6 +496,67 @@ struct test tests[] = {
+ 	},
+ };
+ 
++void serial_test_flow_dissector_namespace(void)
++{
++	struct bpf_flow *skel;
++	struct nstoken *ns;
++	int err, prog_fd;
 +
- #define ASSERT_OK(res, name) ({						\
- 	static int duration = 0;					\
- 	long long ___res = (res);					\
++	skel = bpf_flow__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open/load skeleton"))
++		return;
++
++	prog_fd = bpf_program__fd(skel->progs._dissect);
++	if (!ASSERT_OK_FD(prog_fd, "get dissector fd"))
++		goto out_destroy_skel;
++
++	/* We must be able to attach a flow dissector to root namespace */
++	err = bpf_prog_attach(prog_fd, 0, BPF_FLOW_DISSECTOR, 0);
++	if (!ASSERT_OK(err, "attach on root namespace ok"))
++		goto out_destroy_skel;
++
++	err = make_netns(TEST_NS);
++	if (!ASSERT_OK(err, "create non-root net namespace"))
++		goto out_destroy_skel;
++
++	/* We must not be able to additionally attach a flow dissector to a
++	 * non-root net namespace
++	 */
++	ns = open_netns(TEST_NS);
++	if (!ASSERT_OK_PTR(ns, "enter non-root net namespace"))
++		goto out_clean_ns;
++
++	err = bpf_prog_attach(prog_fd, 0, BPF_FLOW_DISSECTOR, 0);
++	close_netns(ns);
++	ASSERT_ERR(err, "refuse new flow dissector in non-root net namespace");
++	ASSERT_EQ(errno, EEXIST, "refused because of already attached prog");
++
++	/* If no flow dissector is attached to the root namespace, we must
++	 * be able to attach one to a non-root net namespace
++	 */
++	bpf_prog_detach2(prog_fd, 0, BPF_FLOW_DISSECTOR);
++	ns = open_netns(TEST_NS);
++	ASSERT_OK_PTR(ns, "enter non-root net namespace");
++	err = bpf_prog_attach(prog_fd, 0, BPF_FLOW_DISSECTOR, 0);
++	close_netns(ns);
++	ASSERT_OK(err, "accept new flow dissector in non-root net namespace");
++
++	/* If a flow dissector is attached to non-root net namespace, attaching
++	 * a flow dissector to root namespace must fail
++	 */
++	err = bpf_prog_attach(prog_fd, 0, BPF_FLOW_DISSECTOR, 0);
++	ASSERT_ERR(err, "refuse new flow dissector on root namespace");
++	ASSERT_EQ(errno, EEXIST, "refused because of already attached prog");
++
++	ns = open_netns(TEST_NS);
++	bpf_prog_detach2(prog_fd, 0, BPF_FLOW_DISSECTOR);
++	close_netns(ns);
++out_clean_ns:
++	remove_netns(TEST_NS);
++out_destroy_skel:
++	bpf_flow__destroy(skel);
++}
++
+ static int create_tap(const char *ifname)
+ {
+ 	struct ifreq ifr = {
 
 -- 
 2.47.0
