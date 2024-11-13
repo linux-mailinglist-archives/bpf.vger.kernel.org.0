@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-44762-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44763-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF9C49C7721
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 16:29:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A6E99C7728
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 16:30:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D1152874B6
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 15:29:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE1C42831CC
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 15:29:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78C2B205140;
-	Wed, 13 Nov 2024 15:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 138FD20607D;
+	Wed, 13 Nov 2024 15:25:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Tlzoo7O6"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J5gsEdTY"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E488204001;
-	Wed, 13 Nov 2024 15:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB30204092;
+	Wed, 13 Nov 2024 15:25:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731511534; cv=none; b=ErQcnrEhqRmTzR4ZAC0qqpXYsHZ4b0pz3qmg2kzPU8Opww+y0ZLCle7L+p+Zifqy9FdnskhGeEDrcw7bHwyU8MDWAsb2kXjf4qAHii1qxHO/fTH7Js6W1RkRswzd7C69Kp4htJlZJJCcJIvt+xpg/A+BIUt/spmostK8DvfBZMo=
+	t=1731511535; cv=none; b=OpEadQDn/6BtyIDZ7SSqyNMBOB3SuLi/fAmdty7I79R7ep8BoX34sHYmiR37x2J0wQLxv8SbL9916BbbZXuUCdUIOWhuapL14IxIIfJ8J9V9Gq4s33T3X/yqZvnD1dU8WwWxM4qgAyv+bjz/0zQPnSklszJ5inoIkKsfYxoK1GU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731511534; c=relaxed/simple;
-	bh=0qxT/iWPgC0Ok9rBiKIjoDJnPFrQv3pHHINa8ccSEZo=;
+	s=arc-20240116; t=1731511535; c=relaxed/simple;
+	bh=O0WV0RZjG9HbL6X6rUxaqZZkljkGQLs1kJd7vuGPXZI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nyQ+erfbhcmO9J04F1xrHVZoNLnzJEDJ0RPFOz0BfJEQaJ5cLfZfKBM7wDuMXsFhtvtskI5NT2k7hCYECHe+s0IZyJyXRwhsHTM1aun7bU06AmHqczcVOUiZvWiO7EKtZbBrJZzhBKN39FMFWSuGy0kPn7rmk6bo7Jw+CkCSqW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Tlzoo7O6; arc=none smtp.client-ip=192.198.163.10
+	 MIME-Version:Content-Type; b=BVQbbnDwYnyWxpT7nZc0xul5xmypNRP4YuLCgMiInW7gRS4i7do3nr4k2+wNogl/azImlEGXBx8SSdpr9MgGB1mqMR9DTK7M+i3t+YrTiqH3NLqo8ZULIsYMsOc250E3DfY8NoH1R1lv/ObGb3xffvtpFO3NlWSLKBucCXf1jRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J5gsEdTY; arc=none smtp.client-ip=192.198.163.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1731511532; x=1763047532;
+  t=1731511534; x=1763047534;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=0qxT/iWPgC0Ok9rBiKIjoDJnPFrQv3pHHINa8ccSEZo=;
-  b=Tlzoo7O6taAb+V0kE982QQq2tO32XevSYvRw/zGwGowo3w0xckKgBxJt
-   wsOqV/KOrJyyMjfrMrM7ncLLiJXGudYwvzDNqvF9t7D0oGuTjQ9lPfjHH
-   hZD4DA4PTq/nllyeGKH6DZx8KwB+T4+FztKHPK/RCFsfV6QRPwavYrdKj
-   TxxXB55SraKHunqZCot7iCHEMwuSTczQZ7GHkagAGVR1moCKeTOQ8eHOK
-   vQhR8ygahW3hn1OaJz7m/r2otpCw80VLT384QPoXtl2JEMNCtzZSlAwIS
-   mlBribD7EoOTcKQ2SbFW4Uas4dlUEy6eHpFX6lZy9hmrW8UTs3M/jrPXT
+  bh=O0WV0RZjG9HbL6X6rUxaqZZkljkGQLs1kJd7vuGPXZI=;
+  b=J5gsEdTYOFgoLxYEVnMq6hAbzI9be7MGW0FMgFfskwbI4PNf0YDKTu6i
+   /diaPkR/8EkYrXFW5bIOnm12k+18nXYGU1umWCVLlBe5mqgF0QfIJsBEe
+   T6Muk8ceIJlKpcPn9k9luBvMJEZl8u95GehZnBzf4ylJQq0fStl8BR6lp
+   Oo0+U25xupG62SK8rBSYiO2nLOUlbPcvJq1AVLLJa/ZN2N2RzdKA+sych
+   WGSIUPsYg6ip/0n9esi7jV2fFooONNx33uaMQ7hZoDvJKOyvmHIGRlhw/
+   Vq+sPZN4J9NE5/dg0A6zrlbFCXEb5mBfPrD9W6t7nSmzUY3lCnjMy1sfM
    A==;
-X-CSE-ConnectionGUID: 447LmedeTFOrxmnfMiib8A==
-X-CSE-MsgGUID: Pp/iOiCXQE2i/33SB0Srsw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11254"; a="42799295"
+X-CSE-ConnectionGUID: qjqWBaFGS4yIpSnp+MCP4g==
+X-CSE-MsgGUID: Wf3BX6xkSIGVHc998auLwg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11254"; a="42799327"
 X-IronPort-AV: E=Sophos;i="6.12,151,1728975600"; 
-   d="scan'208";a="42799295"
+   d="scan'208";a="42799327"
 Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2024 07:25:21 -0800
-X-CSE-ConnectionGUID: IsePiTBSS7aK0SApW2dfCg==
-X-CSE-MsgGUID: vkVuD9ZNRre1266gIoh4NQ==
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2024 07:25:33 -0800
+X-CSE-ConnectionGUID: 9k2Grbb4TDmtXxdsXCoTIA==
+X-CSE-MsgGUID: HH+s+lD6Q8yNZpEHm+OwtA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,151,1728975600"; 
-   d="scan'208";a="118726900"
+   d="scan'208";a="118726935"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa002.jf.intel.com with ESMTP; 13 Nov 2024 07:25:17 -0800
+  by orviesa002.jf.intel.com with ESMTP; 13 Nov 2024 07:25:29 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -76,9 +76,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v5 05/19] xdp, xsk: constify read-only arguments of some static inline helpers
-Date: Wed, 13 Nov 2024 16:24:28 +0100
-Message-ID: <20241113152442.4000468-6-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v5 08/19] page_pool: make page_pool_put_page_bulk() actually handle array of pages
+Date: Wed, 13 Nov 2024 16:24:31 +0100
+Message-ID: <20241113152442.4000468-9-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241113152442.4000468-1-aleksander.lobakin@intel.com>
 References: <20241113152442.4000468-1-aleksander.lobakin@intel.com>
@@ -91,182 +91,107 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Lots of read-only helpers for &xdp_buff and &xdp_frame, such as getting
-the frame length, skb_shared_info etc., don't have their arguments
-marked with `const` for no reason. Add the missing annotations to leave
-less place for mistakes and more for optimization.
+Currently, page_pool_put_page_bulk() indeed takes an array of pointers
+to the data, not pages, despite the name. As one side effect, when
+you're freeing frags from &skb_shared_info, xdp_return_frame_bulk()
+converts page pointers to virtual addresses and then
+page_pool_put_page_bulk() converts them back.
+Make page_pool_put_page_bulk() actually handle array of pages. Pass
+frags directly and use virt_to_page() when freeing xdpf->data, so that
+the PP core will then get the compound head and take care of the rest.
 
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/net/xdp.h           | 29 +++++++++++++++++------------
- include/net/xdp_sock_drv.h  | 11 ++++++-----
- include/net/xsk_buff_pool.h |  2 +-
- 3 files changed, 24 insertions(+), 18 deletions(-)
+ include/net/page_pool/types.h | 8 ++++----
+ include/net/xdp.h             | 2 +-
+ net/core/page_pool.c          | 6 +++---
+ net/core/xdp.c                | 4 ++--
+ 4 files changed, 10 insertions(+), 10 deletions(-)
 
+diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
+index c022c410abe3..6c1be99a5959 100644
+--- a/include/net/page_pool/types.h
++++ b/include/net/page_pool/types.h
+@@ -259,8 +259,8 @@ void page_pool_disable_direct_recycling(struct page_pool *pool);
+ void page_pool_destroy(struct page_pool *pool);
+ void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *),
+ 			   const struct xdp_mem_info *mem);
+-void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+-			     int count);
++void page_pool_put_page_bulk(struct page_pool *pool, struct page **data,
++			     u32 count);
+ #else
+ static inline void page_pool_destroy(struct page_pool *pool)
+ {
+@@ -272,8 +272,8 @@ static inline void page_pool_use_xdp_mem(struct page_pool *pool,
+ {
+ }
+ 
+-static inline void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+-					   int count)
++static inline void page_pool_put_page_bulk(struct page_pool *pool,
++					   struct page **data, u32 count)
+ {
+ }
+ #endif
 diff --git a/include/net/xdp.h b/include/net/xdp.h
-index e6770dd40c91..197808df1ee1 100644
+index 3e748bb916d3..4416cd4b5086 100644
 --- a/include/net/xdp.h
 +++ b/include/net/xdp.h
-@@ -88,7 +88,7 @@ struct xdp_buff {
- 	u32 flags; /* supported values defined in xdp_buff_flags */
+@@ -194,7 +194,7 @@ xdp_frame_is_frag_pfmemalloc(const struct xdp_frame *frame)
+ struct xdp_frame_bulk {
+ 	int count;
+ 	void *xa;
+-	void *q[XDP_BULK_QUEUE_SIZE];
++	struct page *q[XDP_BULK_QUEUE_SIZE];
  };
  
--static __always_inline bool xdp_buff_has_frags(struct xdp_buff *xdp)
-+static __always_inline bool xdp_buff_has_frags(const struct xdp_buff *xdp)
+ static __always_inline void xdp_frame_bulk_init(struct xdp_frame_bulk *bq)
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index a813d30d2135..ad219206ee8d 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -854,8 +854,8 @@ EXPORT_SYMBOL(page_pool_put_unrefed_page);
+  * Please note the caller must not use data area after running
+  * page_pool_put_page_bulk(), as this function overwrites it.
+  */
+-void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+-			     int count)
++void page_pool_put_page_bulk(struct page_pool *pool, struct page **data,
++			     u32 count)
  {
- 	return !!(xdp->flags & XDP_FLAGS_HAS_FRAGS);
- }
-@@ -103,7 +103,8 @@ static __always_inline void xdp_buff_clear_frags_flag(struct xdp_buff *xdp)
- 	xdp->flags &= ~XDP_FLAGS_HAS_FRAGS;
- }
+ 	int i, bulk_len = 0;
+ 	bool allow_direct;
+@@ -864,7 +864,7 @@ void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+ 	allow_direct = page_pool_napi_local(pool);
  
--static __always_inline bool xdp_buff_is_frag_pfmemalloc(struct xdp_buff *xdp)
-+static __always_inline bool
-+xdp_buff_is_frag_pfmemalloc(const struct xdp_buff *xdp)
- {
- 	return !!(xdp->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
+ 	for (i = 0; i < count; i++) {
+-		netmem_ref netmem = page_to_netmem(virt_to_head_page(data[i]));
++		netmem_ref netmem = page_to_netmem(compound_head(data[i]));
+ 
+ 		/* It is not the last user for the page frag case */
+ 		if (!page_pool_is_last_ref(netmem))
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index bd2aa340baad..779e646f347b 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -556,12 +556,12 @@ void xdp_return_frame_bulk(struct xdp_frame *xdpf,
+ 		for (i = 0; i < sinfo->nr_frags; i++) {
+ 			skb_frag_t *frag = &sinfo->frags[i];
+ 
+-			bq->q[bq->count++] = skb_frag_address(frag);
++			bq->q[bq->count++] = skb_frag_page(frag);
+ 			if (bq->count == XDP_BULK_QUEUE_SIZE)
+ 				xdp_flush_frame_bulk(bq);
+ 		}
+ 	}
+-	bq->q[bq->count++] = xdpf->data;
++	bq->q[bq->count++] = virt_to_page(xdpf->data);
  }
-@@ -144,15 +145,16 @@ xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
- 	 SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
+ EXPORT_SYMBOL_GPL(xdp_return_frame_bulk);
  
- static inline struct skb_shared_info *
--xdp_get_shared_info_from_buff(struct xdp_buff *xdp)
-+xdp_get_shared_info_from_buff(const struct xdp_buff *xdp)
- {
- 	return (struct skb_shared_info *)xdp_data_hard_end(xdp);
- }
- 
--static __always_inline unsigned int xdp_get_buff_len(struct xdp_buff *xdp)
-+static __always_inline unsigned int
-+xdp_get_buff_len(const struct xdp_buff *xdp)
- {
- 	unsigned int len = xdp->data_end - xdp->data;
--	struct skb_shared_info *sinfo;
-+	const struct skb_shared_info *sinfo;
- 
- 	if (likely(!xdp_buff_has_frags(xdp)))
- 		goto out;
-@@ -177,12 +179,13 @@ struct xdp_frame {
- 	u32 flags; /* supported values defined in xdp_buff_flags */
- };
- 
--static __always_inline bool xdp_frame_has_frags(struct xdp_frame *frame)
-+static __always_inline bool xdp_frame_has_frags(const struct xdp_frame *frame)
- {
- 	return !!(frame->flags & XDP_FLAGS_HAS_FRAGS);
- }
- 
--static __always_inline bool xdp_frame_is_frag_pfmemalloc(struct xdp_frame *frame)
-+static __always_inline bool
-+xdp_frame_is_frag_pfmemalloc(const struct xdp_frame *frame)
- {
- 	return !!(frame->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
- }
-@@ -201,7 +204,7 @@ static __always_inline void xdp_frame_bulk_init(struct xdp_frame_bulk *bq)
- }
- 
- static inline struct skb_shared_info *
--xdp_get_shared_info_from_frame(struct xdp_frame *frame)
-+xdp_get_shared_info_from_frame(const struct xdp_frame *frame)
- {
- 	void *data_hard_start = frame->data - frame->headroom - sizeof(*frame);
- 
-@@ -249,7 +252,8 @@ int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp);
- struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf);
- 
- static inline
--void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
-+void xdp_convert_frame_to_buff(const struct xdp_frame *frame,
-+			       struct xdp_buff *xdp)
- {
- 	xdp->data_hard_start = frame->data - frame->headroom - sizeof(*frame);
- 	xdp->data = frame->data;
-@@ -260,7 +264,7 @@ void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
- }
- 
- static inline
--int xdp_update_frame_from_buff(struct xdp_buff *xdp,
-+int xdp_update_frame_from_buff(const struct xdp_buff *xdp,
- 			       struct xdp_frame *xdp_frame)
- {
- 	int metasize, headroom;
-@@ -317,9 +321,10 @@ void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq);
- void xdp_return_frame_bulk(struct xdp_frame *xdpf,
- 			   struct xdp_frame_bulk *bq);
- 
--static __always_inline unsigned int xdp_get_frame_len(struct xdp_frame *xdpf)
-+static __always_inline unsigned int
-+xdp_get_frame_len(const struct xdp_frame *xdpf)
- {
--	struct skb_shared_info *sinfo;
-+	const struct skb_shared_info *sinfo;
- 	unsigned int len = xdpf->len;
- 
- 	if (likely(!xdp_frame_has_frags(xdpf)))
-diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-index 40085afd9160..f3175a5d28f7 100644
---- a/include/net/xdp_sock_drv.h
-+++ b/include/net/xdp_sock_drv.h
-@@ -101,7 +101,7 @@ static inline struct xdp_buff *xsk_buff_alloc(struct xsk_buff_pool *pool)
- 	return xp_alloc(pool);
- }
- 
--static inline bool xsk_is_eop_desc(struct xdp_desc *desc)
-+static inline bool xsk_is_eop_desc(const struct xdp_desc *desc)
- {
- 	return !xp_mb_desc(desc);
- }
-@@ -143,7 +143,7 @@ static inline void xsk_buff_add_frag(struct xdp_buff *xdp)
- 	list_add_tail(&frag->list_node, &frag->pool->xskb_list);
- }
- 
--static inline struct xdp_buff *xsk_buff_get_frag(struct xdp_buff *first)
-+static inline struct xdp_buff *xsk_buff_get_frag(const struct xdp_buff *first)
- {
- 	struct xdp_buff_xsk *xskb = container_of(first, struct xdp_buff_xsk, xdp);
- 	struct xdp_buff *ret = NULL;
-@@ -200,7 +200,8 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
- 		XDP_TXMD_FLAGS_CHECKSUM | \
- 	0)
- 
--static inline bool xsk_buff_valid_tx_metadata(struct xsk_tx_metadata *meta)
-+static inline bool
-+xsk_buff_valid_tx_metadata(const struct xsk_tx_metadata *meta)
- {
- 	return !(meta->flags & ~XDP_TXMD_FLAGS_VALID);
- }
-@@ -337,7 +338,7 @@ static inline struct xdp_buff *xsk_buff_alloc(struct xsk_buff_pool *pool)
- 	return NULL;
- }
- 
--static inline bool xsk_is_eop_desc(struct xdp_desc *desc)
-+static inline bool xsk_is_eop_desc(const struct xdp_desc *desc)
- {
- 	return false;
- }
-@@ -360,7 +361,7 @@ static inline void xsk_buff_add_frag(struct xdp_buff *xdp)
- {
- }
- 
--static inline struct xdp_buff *xsk_buff_get_frag(struct xdp_buff *first)
-+static inline struct xdp_buff *xsk_buff_get_frag(const struct xdp_buff *first)
- {
- 	return NULL;
- }
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index bb03cee716b3..3832997cc605 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -183,7 +183,7 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
- 	       !(pool->dma_pages[addr >> PAGE_SHIFT] & XSK_NEXT_PG_CONTIG_MASK);
- }
- 
--static inline bool xp_mb_desc(struct xdp_desc *desc)
-+static inline bool xp_mb_desc(const struct xdp_desc *desc)
- {
- 	return desc->options & XDP_PKT_CONTD;
- }
 -- 
 2.47.0
 
