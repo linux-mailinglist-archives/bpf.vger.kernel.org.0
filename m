@@ -1,54 +1,54 @@
-Return-Path: <bpf+bounces-44740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1500D9C7277
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 15:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D82239C724A
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 15:05:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F26FEB322B2
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 13:55:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 056CBB2E369
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 13:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E89872022F0;
-	Wed, 13 Nov 2024 13:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D742036F4;
+	Wed, 13 Nov 2024 13:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WvncKeB6"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="En2rAyRf"
 X-Original-To: bpf@vger.kernel.org
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E628201035;
-	Wed, 13 Nov 2024 13:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9A52022C7;
+	Wed, 13 Nov 2024 13:54:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731506046; cv=none; b=g0VtgdNyi24h/02Sck4cBH648YN3cKR5qop+VhucmokczC6OV6YDk+en9nDHw0RvGUww+qaD7AY0iB1QSwaE621DROMmEdNuYeYlBKj182A0iTkbUVp/5cuQQN+DAtBeo04ni5tHkuzrCYREJnz3urP/SoXyIj3rxWxffMFeNqk=
+	t=1731506048; cv=none; b=IlE1Q1XkrI2Z+PvfmImwiKellTUF9FR0mMqmZsrVk2hGaHCkdjGdfZcjzoCGVJABlxqVtkKI1PTejtuatxDf+p315LYZo1Vj9kiRHVAy5d/siTFVA1HQSi3E40KPFkIlNhVn4g/bhqcpxVEVfMZjr9WEss/o6p6AoL8UC7sXEG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731506046; c=relaxed/simple;
-	bh=RVc7soD/PJ8Oa8IRpVC+KbqCyR27bgvJqs9/ZWQ0HXY=;
+	s=arc-20240116; t=1731506048; c=relaxed/simple;
+	bh=H7kuHQKncYvM+6lxk7ZQbp14bGXHW4XZcG+2P+09E1E=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=EG95rOciU6t16K/CTM+TVHrfOEa/beIY34KpmwU97GEdwHPPOiD+f4QCmAQ8IMFM74tW5mXCLkOnsT/aezmXmxTU4cNuzPvD7bccxDlhESzRuo10X9dHUdw56EbMhQWFj/J8azhJDuiA9sOoGCjI6J97t7Ck0r1v+SfyPJGjE1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WvncKeB6; arc=none smtp.client-ip=217.70.183.200
+	 In-Reply-To:To:Cc; b=WfPhemeRdUMbuGRhKmv7v6A0AWk0HAA+n/2jgeFXLyB29UIsvxHA7KJgHKRbU9vFHHqUyqTGJLlpEKMJ/3RWhhebrPlREnK2PsawdjndlzPosSVQ1PkgohKQIr4fGiOa4TyQtyix8leMeb/KV2DfkrK/SFJT72Ie3Y+1T4ocXyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=En2rAyRf; arc=none smtp.client-ip=217.70.183.200
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 960F320009;
-	Wed, 13 Nov 2024 13:54:00 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id ED9082000D;
+	Wed, 13 Nov 2024 13:54:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1731506042;
+	t=1731506044;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=imSdRuTJg7qdXsmbI1hDld3b3dFK/CmGe+t4q6hSFAw=;
-	b=WvncKeB6iVqU4t6ZpCk9dLhEIg7w5zlexhKjIa9W+mIi0ac1hL9q3u8qGhOX9Frr1h5ts5
-	MdWEcaKTUdTWzvr7HU5GuY6pf/Wgve/6OwJjgosiPZUeclTkB22iU15yT4xl6aBNFTkhnl
-	DLCB3mm01JkxsQLKOakmgPzY+X9w2sZKWhL9l2Dh9man2QIZCdu2Jiw0xaPOKvGvhSwQGW
-	sFU4Etrx4y4YDi1F7QFXXozlu5rMRoVrdeJt0gwB9DZx5RvfyOVS3BhFqPMrOVJyTlX/ot
-	TsLXlc0A/QetrDREcY/u6nvDblDUaUiDXUFKlhzjIxRrGCFy89NCzNCx/PxqFw==
+	bh=R5blECHBLanDdkK5uyoxTvkGtvm8vzUZmRPBWUfioFE=;
+	b=En2rAyRfu/lhkeCknSzEGfh6LeXEa3eL9vKkSk/WyyGtt4ueWk+tB9gdb7zKzxineVPN/t
+	pscLSlf6MNOK4oFsZc4Wz1nbzzbMCTwsxgOKGefccwbzMwNAdqskC0ojmhu2NIYwAYunhv
+	faPnqDCHOS3v/j1LfvRu1Qq+vfNeBZEslIZYTE/XSV+GC+xYdArCqBob0RWb2nLHyLJNls
+	zR5n3U/gjAU1lw6L89MjytPCtP3K5uS0qpvgP7Ou2JU8c7xwXTVbMCiPSi8OvPhApp8PQu
+	tFTzVUaiOc3AvI8IwrSCgTTp+KREFsUj5qoKPyNZ0b0Nlf5i0ND4AotK5bW6mQ==
 From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Wed, 13 Nov 2024 14:53:27 +0100
-Subject: [PATCH bpf-next 04/10] selftests/bpf: re-split main function into
- dedicated tests
+Date: Wed, 13 Nov 2024 14:53:28 +0100
+Subject: [PATCH bpf-next 05/10] selftests/bpf: expose all subtests from
+ flow_dissector
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,7 +57,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20241113-flow_dissector-v1-4-27c4df0592dc@bootlin.com>
+Message-Id: <20241113-flow_dissector-v1-5-27c4df0592dc@bootlin.com>
 References: <20241113-flow_dissector-v1-0-27c4df0592dc@bootlin.com>
 In-Reply-To: <20241113-flow_dissector-v1-0-27c4df0592dc@bootlin.com>
 To: Andrii Nakryiko <andrii@kernel.org>, 
@@ -77,169 +77,141 @@ Cc: ebpf@linuxfoundation.org,
 X-Mailer: b4 0.14.2
 X-GND-Sasl: alexis.lothore@bootlin.com
 
-The flow_dissector runs plenty of tests over diffent kind of packets,
-grouped into three categories: skb mode, non-skb mode with direct
-attach, and non-skb with indirect attach.
+The flow_dissector test integrated in test_progs actually runs a wide
+matrix of tests over different packets types and bpf programs modes, but
+exposes only 3 main tests, preventing tests users from running specific
+subtests with a specific input only.
 
-Re-split the main function into dedicated tests. Each test now must have
-its own setup/teardown, but for the advantage of being able to run them
-separately.
+Expose all subtests executed by flow_dissector by using
+test__start_subtest().
 
 Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
 ---
- .../selftests/bpf/prog_tests/flow_dissector.c      | 92 ++++++++++++++--------
- 1 file changed, 57 insertions(+), 35 deletions(-)
+This change resulsts in the exposure of 42 subtests with the current
+content from flow_dissector:
+  # ./test_progs -a flow_dissector
+  #102/1   flow_dissector/ipv4-skb:OK
+  #102/2   flow_dissector/ipv6-skb:OK
+  #102/3   flow_dissector/802.1q-ipv4-skb:OK
+  #102/4   flow_dissector/802.1ad-ipv6-skb:OK
+  #102/5   flow_dissector/ipv4-frag-skb:OK
+  #102/6   flow_dissector/ipv4-no-frag-skb:OK
+  #102/7   flow_dissector/ipv6-frag-skb:OK
+  #102/8   flow_dissector/ipv6-no-frag-skb:OK
+  #102/9   flow_dissector/ipv6-flow-label-skb:OK
+  #102/10  flow_dissector/ipv6-no-flow-label-skb:OK
+  #102/11  flow_dissector/ipv6-empty-flow-label-skb:OK
+  #102/12  flow_dissector/ipip-encap-skb:OK
+  #102/13  flow_dissector/ipip-no-encap-skb:OK
+  #102/14  flow_dissector/ipip-encap-dissector-continue-skb:OK
+  #102/15  flow_dissector/ipv4-non-skb-indirect-attach:OK
+  #102/16  flow_dissector/ipv6-non-skb-indirect-attach:OK
+  #102/17  flow_dissector/802.1q-ipv4-non-skb-indirect-attach:OK
+  #102/18  flow_dissector/802.1ad-ipv6-non-skb-indirect-attach:OK
+  #102/19  flow_dissector/ipv4-frag-non-skb-indirect-attach:OK
+  #102/20  flow_dissector/ipv4-no-frag-non-skb-indirect-attach:OK
+  #102/21  flow_dissector/ipv6-frag-non-skb-indirect-attach:OK
+  #102/22  flow_dissector/ipv6-no-frag-non-skb-indirect-attach:OK
+  #102/23  flow_dissector/ipv6-flow-label-non-skb-indirect-attach:OK
+  #102/24  flow_dissector/ipv6-no-flow-label-non-skb-indirect-attach:OK
+  #102/25  flow_dissector/ipv6-empty-flow-label-non-skb-indirect-attach:OK
+  #102/26  flow_dissector/ipip-encap-non-skb-indirect-attach:OK
+  #102/27  flow_dissector/ipip-no-encap-non-skb-indirect-attach:OK
+  #102/28  flow_dissector/ipip-encap-dissector-continue-non-skb-indirect-attach:OK
+  #102/29  flow_dissector/ipv4-non-skb-direct-attach:OK
+  #102/30  flow_dissector/ipv6-non-skb-direct-attach:OK
+  #102/31  flow_dissector/802.1q-ipv4-non-skb-direct-attach:OK
+  #102/32  flow_dissector/802.1ad-ipv6-non-skb-direct-attach:OK
+  #102/33  flow_dissector/ipv4-frag-non-skb-direct-attach:OK
+  #102/34  flow_dissector/ipv4-no-frag-non-skb-direct-attach:OK
+  #102/35  flow_dissector/ipv6-frag-non-skb-direct-attach:OK
+  #102/36  flow_dissector/ipv6-no-frag-non-skb-direct-attach:OK
+  #102/37  flow_dissector/ipv6-flow-label-non-skb-direct-attach:OK
+  #102/38  flow_dissector/ipv6-no-flow-label-non-skb-direct-attach:OK
+  #102/39  flow_dissector/ipv6-empty-flow-label-non-skb-direct-attach:OK
+  #102/40  flow_dissector/ipip-encap-non-skb-direct-attach:OK
+  #102/41  flow_dissector/ipip-no-encap-non-skb-direct-attach:OK
+  #102/42  flow_dissector/ipip-encap-dissector-continue-non-skb-direct-attach:OK
+  #102     flow_dissector:OK
+  Summary: 1/42 PASSED, 0 SKIPPED, 0 FAILED
+---
+ .../selftests/bpf/prog_tests/flow_dissector.c        | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-index 6fbe8b6dad561aec02db552caea02517ac1e2109..c5dfff333fe31dd55ac152fe9b107828227c8177 100644
+index c5dfff333fe31dd55ac152fe9b107828227c8177..8ab3268ef4c92fc33ac40e8f8f963a4d8b6551a8 100644
 --- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
 +++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-@@ -549,63 +549,101 @@ static void run_tests_skb_less(int tap_fd, struct bpf_map *keys)
- 	}
+@@ -8,6 +8,7 @@
+ #include "bpf_flow.skel.h"
+ 
+ #define FLOW_CONTINUE_SADDR 0x7f00007f /* 127.0.0.127 */
++#define TEST_NAME_MAX_LEN	64
+ 
+ #ifndef IP_MF
+ #define IP_MF 0x2000
+@@ -505,8 +506,10 @@ static int init_prog_array(struct bpf_object *obj, struct bpf_map *prog_array)
+ 	return 0;
  }
  
--static void test_skb_less_prog_attach(struct bpf_flow *skel, int tap_fd)
-+void serial_test_flow_dissector_skb_less_direct_attach(void)
+-static void run_tests_skb_less(int tap_fd, struct bpf_map *keys)
++static void run_tests_skb_less(int tap_fd, struct bpf_map *keys,
++			       char *test_suffix)
  {
--	int err, prog_fd;
-+	int err, prog_fd, tap_fd;
-+	struct bpf_flow *skel;
-+
-+	skel = bpf_flow__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open/load skeleton"))
-+		return;
-+
-+	err = init_prog_array(skel->obj, skel->maps.jmp_table);
-+	if (!ASSERT_OK(err, "init_prog_array"))
-+		goto out_destroy_skel;
++	char test_name[TEST_NAME_MAX_LEN];
+ 	int i, err, keys_fd;
  
- 	prog_fd = bpf_program__fd(skel->progs._dissect);
- 	if (!ASSERT_OK_FD(prog_fd, "bpf_program__fd"))
--		return;
-+		goto out_destroy_skel;
+ 	keys_fd = bpf_map__fd(keys);
+@@ -520,6 +523,10 @@ static void run_tests_skb_less(int tap_fd, struct bpf_map *keys)
+ 		struct bpf_flow_keys flow_keys = {};
+ 		__u32 key = (__u32)(tests[i].keys.sport) << 16 |
+ 			    tests[i].keys.dport;
++		snprintf(test_name, TEST_NAME_MAX_LEN, "%s-%s", tests[i].name,
++			 test_suffix);
++		if (!test__start_subtest(test_name))
++			continue;
  
- 	err = bpf_prog_attach(prog_fd, 0, BPF_FLOW_DISSECTOR, 0);
- 	if (!ASSERT_OK(err, "bpf_prog_attach"))
--		return;
-+		goto out_destroy_skel;
-+
-+	tap_fd = create_tap("tap0");
-+	if (!ASSERT_OK_FD(tap_fd, "create_tap"))
-+		goto out_destroy_skel;
-+	err = ifup("tap0");
-+	if (!ASSERT_OK(err, "ifup"))
-+		goto out_close_tap;
+ 		/* For skb-less case we can't pass input flags; run
+ 		 * only the tests that have a matching set of flags.
+@@ -577,7 +584,8 @@ void serial_test_flow_dissector_skb_less_direct_attach(void)
+ 	if (!ASSERT_OK(err, "ifup"))
+ 		goto out_close_tap;
  
- 	run_tests_skb_less(tap_fd, skel->maps.last_dissection);
+-	run_tests_skb_less(tap_fd, skel->maps.last_dissection);
++	run_tests_skb_less(tap_fd, skel->maps.last_dissection,
++			   "non-skb-direct-attach");
  
  	err = bpf_prog_detach2(prog_fd, 0, BPF_FLOW_DISSECTOR);
  	ASSERT_OK(err, "bpf_prog_detach2");
-+
-+out_close_tap:
-+	close(tap_fd);
-+out_destroy_skel:
-+	bpf_flow__destroy(skel);
- }
- 
--static void test_skb_less_link_create(struct bpf_flow *skel, int tap_fd)
-+void serial_test_flow_dissector_skb_less_indirect_attach(void)
- {
-+	int err, net_fd, tap_fd;
-+	struct bpf_flow *skel;
- 	struct bpf_link *link;
--	int err, net_fd;
-+
-+	skel = bpf_flow__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open/load skeleton"))
-+		return;
- 
- 	net_fd = open("/proc/self/ns/net", O_RDONLY);
- 	if (!ASSERT_OK_FD(net_fd, "open(/proc/self/ns/net"))
--		return;
-+		goto out_destroy_skel;
-+
-+	err = init_prog_array(skel->obj, skel->maps.jmp_table);
-+	if (!ASSERT_OK(err, "init_prog_array"))
-+		goto out_destroy_skel;
-+
-+	tap_fd = create_tap("tap0");
-+	if (!ASSERT_OK_FD(tap_fd, "create_tap"))
-+		goto out_clean_ns;
-+	err = ifup("tap0");
-+	if (!ASSERT_OK(err, "ifup"))
-+		goto out_clean_ns;
- 
- 	link = bpf_program__attach_netns(skel->progs._dissect, net_fd);
+@@ -617,7 +625,8 @@ void serial_test_flow_dissector_skb_less_indirect_attach(void)
  	if (!ASSERT_OK_PTR(link, "attach_netns"))
--		goto out_close;
-+		goto out_clean_ns;
+ 		goto out_clean_ns;
  
- 	run_tests_skb_less(tap_fd, skel->maps.last_dissection);
+-	run_tests_skb_less(tap_fd, skel->maps.last_dissection);
++	run_tests_skb_less(tap_fd, skel->maps.last_dissection,
++			   "non-skb-indirect-attach");
  
  	err = bpf_link__destroy(link);
  	ASSERT_OK(err, "bpf_link__destroy");
--out_close:
-+
-+out_clean_ns:
- 	close(net_fd);
-+out_destroy_skel:
-+	bpf_flow__destroy(skel);
- }
+@@ -630,6 +639,7 @@ void serial_test_flow_dissector_skb_less_indirect_attach(void)
  
--void test_flow_dissector(void)
-+void serial_test_flow_dissector_skb(void)
+ void serial_test_flow_dissector_skb(void)
  {
--	int i, err, prog_fd, keys_fd = -1, tap_fd;
++	char test_name[TEST_NAME_MAX_LEN];
  	struct bpf_flow *skel;
-+	int i, err, prog_fd;
+ 	int i, err, prog_fd;
  
- 	skel = bpf_flow__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "open/load skeleton"))
- 		return;
+@@ -654,6 +664,10 @@ void serial_test_flow_dissector_skb(void)
+ 		);
+ 		static struct bpf_flow_keys ctx = {};
  
--	prog_fd = bpf_program__fd(skel->progs._dissect);
--	if (!ASSERT_OK_FD(prog_fd, "bpf_program__fd"))
--		return;
--	keys_fd = bpf_map__fd(skel->maps.last_dissection);
--	if (!ASSERT_OK_FD(keys_fd, "bpf_map__fd"))
--		return;
- 	err = init_prog_array(skel->obj, skel->maps.jmp_table);
- 	if (!ASSERT_OK(err, "init_prog_array"))
--		return;
-+		goto out_destroy_skel;
++		snprintf(test_name, TEST_NAME_MAX_LEN, "%s-skb", tests[i].name);
++		if (!test__start_subtest(test_name))
++			continue;
 +
-+	prog_fd = bpf_program__fd(skel->progs._dissect);
-+	if (!ASSERT_OK_FD(prog_fd, "bpf_program__fd"))
-+		goto out_destroy_skel;
- 
- 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
- 		struct bpf_flow_keys flow_keys;
-@@ -635,24 +673,8 @@ void test_flow_dissector(void)
- 			     sizeof(struct bpf_flow_keys),
- 			     "returned flow keys");
- 	}
--	/* Do the same tests but for skb-less flow dissector.
--	 * We use a known path in the net/tun driver that calls
--	 * eth_get_headlen and we manually export bpf_flow_keys
--	 * via BPF map in this case.
--	 */
--	tap_fd = create_tap("tap0");
--	if (!ASSERT_OK_FD(tap_fd, "create_tap"))
--		goto out_destroy_skel;
--	err = ifup("tap0");
--	if (!ASSERT_OK(err, "ifup"))
--		goto out_destroy_skel;
- 
--	/* Test direct prog attachment */
--	test_skb_less_prog_attach(skel, tap_fd);
--	/* Test indirect prog attachment via link */
--	test_skb_less_link_create(skel, tap_fd);
--
--	close(tap_fd);
- out_destroy_skel:
- 	bpf_flow__destroy(skel);
- }
-+
+ 		if (tests[i].flags) {
+ 			topts.ctx_in = &ctx;
+ 			topts.ctx_size_in = sizeof(ctx);
 
 -- 
 2.47.0
