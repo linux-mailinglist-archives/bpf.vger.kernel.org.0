@@ -1,62 +1,63 @@
-Return-Path: <bpf+bounces-44755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44760-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3929F9C78C9
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 17:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D72F9C7845
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 17:08:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9C3AB3EC4C
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 15:26:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04D4AB347A3
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 15:28:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCAB314C588;
-	Wed, 13 Nov 2024 15:25:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21A0C204923;
+	Wed, 13 Nov 2024 15:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="liMFllBF"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="G42zPcut"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7461A770E2;
-	Wed, 13 Nov 2024 15:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93EC2038D4;
+	Wed, 13 Nov 2024 15:25:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731511503; cv=none; b=qpNHFoQf/JlFPq8+A6icYBpXO9X797i1jYRmNaS9o5QQvBRW/WOFWGhfQERu6z49enobKbqyiOwVFr9DZbNXP6UrHBgH8Aj1NLiU9DTpzfu+z1xVZyABCwS000SFtNLdoSvbtiH/eFGSqe+yfqpPeKeR2NSoPHy1rXon+t1pz50=
+	t=1731511533; cv=none; b=QHRX6RTXr/GUHtUdBPnrD7jch/9Iib+rEtbd/p+9uhIqBfaddSyb6EjhwtLImbhURk0z1CkVtuZQXP0cUN3aRHF1CyXi5e+QWw/pZtB/CSlTb/LjSp1OoUT4uj3xSAHIP/TjdfBMsGrtJNf7EHtU/BviQjhSmWbwbOkBnDHDEqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731511503; c=relaxed/simple;
-	bh=WCrAxWwpOAyvuAGM50NmMD1HXewTYcsNb4PFEkMBTHI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AXLFlIAwRLGYsAYVINWPgyQK1TujqCX0AEGhCGT6Lm8PIFY9/oJfKSCH5ZYm75TTUyAg6g3wAnLb8H6zKnx2t4pV5xcSGvU5qvxmZhxpuHNdajAUdi2GciXK0vK5BQAHvX/jhOKt4abiSJMP0h3M33k29WnoRIPglUZdycg8nyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=liMFllBF; arc=none smtp.client-ip=192.198.163.10
+	s=arc-20240116; t=1731511533; c=relaxed/simple;
+	bh=HZLVt3NKSatf1L4OsRgd6FV0DcJ57iInm81GihqPMDw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FR6/r2QWCKMydhu/tTUQ2EnQgWD4WevZa0tBYEkJBIkrVqSJHp7IBTS5oSzFNq+98iv4zTKYrp0lqEQOOKfe2eY9jsBsBlVCV/LXJ455PiDblxxMaK9PGe+pw7GZ+O9DGlrhWQzZ7khzmVodFOiW3unTr8HBBSDgd0foQecNhbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=G42zPcut; arc=none smtp.client-ip=192.198.163.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1731511501; x=1763047501;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=WCrAxWwpOAyvuAGM50NmMD1HXewTYcsNb4PFEkMBTHI=;
-  b=liMFllBF+8h2zh7xs+HvUjbpNrZJTGLoiHHNpIOOmMi9P7J/hqzrLn2l
-   PKJq6TV32d++w/2W0RO+2Wd9VUbLwyLSTjTRtp8vql/nCmCbRYLQfEHdb
-   VqXFV5OSzck53NcpGyPxHP6v8X1YvUhEck/X1X3+ehwFE9QOx93/yFjrT
-   gus8KRwFFwspEw+pFAiC13QnZ24mfgFQLuKfT74ywv2gCX7+T5sLApL3E
-   53lDAfvAhWvRkFJRtAdI2h89RTHxlHOP8egN8/31oQYAqwu5m/qvBH8Qe
-   /TvAqYPCIK5XSvso6VfIOqsmjWR8ZKh6YzBudEuY5DKCilFBsAm3BO6Hc
-   Q==;
-X-CSE-ConnectionGUID: VjWatRebSCeSGmUYF1Gkeg==
-X-CSE-MsgGUID: n0uWavrgRGe70IdMy6KHCg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11254"; a="42799214"
+  t=1731511532; x=1763047532;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=HZLVt3NKSatf1L4OsRgd6FV0DcJ57iInm81GihqPMDw=;
+  b=G42zPcut6UvR1CemeFdQcIMSJp4Dyq3k9ATy/wsYF6JFvIJqDzuFyHaI
+   gJFZ0dtLbwsyKAmyf1203N92zTThOGTRtzCU3q4Vpt6p6CvRc1L2mf84L
+   E9CbAYt4zQDCpljjvrxhiNk15O+vhN/GG0dLK5MptGPIlw0TH9/AmZDd0
+   kbAUAqfz12Y4RQWZkgjFGdLmehPBq8+no6snxdDeetnthduBJqEQ6Idtg
+   6VoHr95/lARfxanqE4KTvjnpknSrzVEF2G2p0x/P6KDmimRfRFBFtNTEN
+   ZymV5n7FDNz/b5F5+1vYMOg0tDu6jmleR853FVruHxnWm0bbp43UgZ+1I
+   g==;
+X-CSE-ConnectionGUID: bag3GovuRUOSfoMIf//rmQ==
+X-CSE-MsgGUID: YfZ8eb+AT9KzIB8uLLp1ZA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11254"; a="42799303"
 X-IronPort-AV: E=Sophos;i="6.12,151,1728975600"; 
-   d="scan'208";a="42799214"
+   d="scan'208";a="42799303"
 Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2024 07:25:01 -0800
-X-CSE-ConnectionGUID: /JM+zewiTLymTT+CrooEmA==
-X-CSE-MsgGUID: MasPLYUeQ5WcqW1nCqaE/Q==
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2024 07:25:25 -0800
+X-CSE-ConnectionGUID: 5RUvSglJQI+B/qJ2cGZrwQ==
+X-CSE-MsgGUID: fbI8WOy3QxS2yFxIffbuYg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,151,1728975600"; 
-   d="scan'208";a="118726803"
+   d="scan'208";a="118726910"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa002.jf.intel.com with ESMTP; 13 Nov 2024 07:24:57 -0800
+  by orviesa002.jf.intel.com with ESMTP; 13 Nov 2024 07:25:21 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -75,10 +76,12 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v5 00/19] xdp: a fistful of generic changes (+libeth_xdp)
-Date: Wed, 13 Nov 2024 16:24:23 +0100
-Message-ID: <20241113152442.4000468-1-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v5 06/19] xdp: allow attaching already registered memory model to xdp_rxq_info
+Date: Wed, 13 Nov 2024 16:24:29 +0100
+Message-ID: <20241113152442.4000468-7-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.47.0
+In-Reply-To: <20241113152442.4000468-1-aleksander.lobakin@intel.com>
+References: <20241113152442.4000468-1-aleksander.lobakin@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,144 +91,132 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-XDP for idpf is currently 5 chapters:
-* convert Rx to libeth;
-* convert Tx and stats to libeth;
-* generic XDP and XSk code changes (this);
-* actual XDP for idpf via libeth_xdp;
-* XSk for idpf (^).
+One may need to register memory model separately from xdp_rxq_info. One
+simple example may be XDP test run code, but in general, it might be
+useful when memory model registering is managed by one layer and then
+XDP RxQ info by a different one.
+Allow such scenarios by adding a simple helper which "attaches" an
+already registered memory model to the desired xdp_rxq_info. As this
+is mostly needed for Page Pool, add a special function to do that for
+a &page_pool pointer.
 
-Part III does the following:
-* does some cleanups with marking read-only bpf_prog and xdp_buff
-  arguments const for some generic functions;
-* allows attaching already registered XDP memory model to Rxq info;
-* allows mixing pages from several Page Pools within one XDP frame;
-* optimizes &xdp_frame structure and removes no-more-used field;
-* adds generic functions to build skbs from xdp_buffs (regular and
-  XSk) and attach frags to xdp_buffs (regular and XSk);
-* adds helper to optimize XSk xmit in drivers;
-* extends libeth Rx to support XDP requirements (headroom etc.) on Rx;
-* adds libeth_xdp -- libeth module with common XDP and XSk routines.
-
-They are implemented mostly as inlines with inline callback arguments.
-They will be then uninlined in the drivers with sane function sizes,
-but without any indirect calls.
-All those inlines and macros really removes tons of driver code, which
-is mostly the same across the drivers minus HW-specific part. You just
-basically need functions which read Rx descriptors and fill Tx
-descriptors, call a couple macros and that's it. The rest is written
-once in libeth_xdp.
-All exception and cold code is external. Error handling etc, anything
-that doesn't happen at line rates, is external. Only the hottest things
-are inlined ensuring driver code doesn't bloat for no gain and that
-cold code won't push hot code into more cachelines than wanted.
-
-Note on diffstat: don't be scared, almost 1500 lines are documentation
-explaining everything in details. The actual new code is around 2500.
-
-Alexander Lobakin (18):
-  jump_label: export static_key_slow_{inc,dec}_cpuslocked()
-  skbuff: allow 2-4-argument skb_frag_dma_map()
-  unroll: add generic loop unroll helpers
-  bpf, xdp: constify some bpf_prog * function arguments
-  xdp, xsk: constify read-only arguments of some static inline helpers
-  xdp: allow attaching already registered memory model to xdp_rxq_info
-  page_pool: make page_pool_put_page_bulk() actually handle array of
-    pages
-  page_pool: allow mixing PPs within one bulk
-  xdp: get rid of xdp_frame::mem.id
-  xdp: add generic xdp_buff_add_frag()
-  xdp: add generic xdp_build_skb_from_buff()
-  xsk: align &xdp_buff_xsk harder
-  xsk: allow attaching XSk pool via xdp_rxq_info_reg_mem_model()
-  xsk: make xsk_buff_add_frag really add a frag via
-    __xdp_buff_add_frag()
-  xsk: add generic XSk &xdp_buff -> skb conversion
-  xsk: add helper to get &xdp_desc's DMA and meta pointer in one go
-  libeth: support native XDP and register memory model
-  libeth: add a couple of XDP helpers (libeth_xdp)
-
-Toke Høiland-Jørgensen (1):
-  xdp: register system page pool as an XDP memory model
-
- drivers/net/ethernet/intel/libeth/Kconfig     |    6 +
- drivers/net/ethernet/intel/libeth/Makefile    |    6 +
- include/net/libeth/types.h                    |  102 +-
- include/net/page_pool/types.h                 |    6 +-
- drivers/net/ethernet/intel/libeth/priv.h      |   37 +
- include/linux/bpf.h                           |   12 +-
- include/linux/filter.h                        |    9 +-
- include/linux/netdevice.h                     |    7 +-
- include/linux/skbuff.h                        |   49 +-
- include/linux/unroll.h                        |   43 +
- include/net/libeth/rx.h                       |    6 +-
- include/net/libeth/tx.h                       |   34 +-
- include/net/libeth/xdp.h                      | 1861 +++++++++++++++++
- include/net/libeth/xsk.h                      |  684 ++++++
- include/net/xdp.h                             |  185 +-
- include/net/xdp_sock_drv.h                    |   52 +-
- include/net/xsk_buff_pool.h                   |   12 +-
- .../net/ethernet/freescale/dpaa/dpaa_eth.c    |    2 +-
- drivers/net/ethernet/intel/i40e/i40e_xsk.c    |   30 +-
- drivers/net/ethernet/intel/ice/ice_xsk.c      |   32 +-
- drivers/net/ethernet/intel/libeth/rx.c        |   22 +-
- drivers/net/ethernet/intel/libeth/tx.c        |   39 +
- drivers/net/ethernet/intel/libeth/xdp.c       |  446 ++++
- drivers/net/ethernet/intel/libeth/xsk.c       |  264 +++
- drivers/net/veth.c                            |    4 +-
- kernel/bpf/cpumap.c                           |    2 +-
- kernel/bpf/devmap.c                           |    8 +-
- kernel/jump_label.c                           |    2 +
- net/bpf/test_run.c                            |    4 +-
- net/core/dev.c                                |   20 +-
- net/core/filter.c                             |   41 +-
- net/core/page_pool.c                          |   60 +-
- net/core/skbuff.c                             |    2 +-
- net/core/xdp.c                                |  311 ++-
- net/xdp/xsk_buff_pool.c                       |   40 +
- 35 files changed, 4219 insertions(+), 221 deletions(-)
- create mode 100644 drivers/net/ethernet/intel/libeth/priv.h
- create mode 100644 include/net/libeth/xdp.h
- create mode 100644 include/net/libeth/xsk.h
- create mode 100644 drivers/net/ethernet/intel/libeth/tx.c
- create mode 100644 drivers/net/ethernet/intel/libeth/xdp.c
- create mode 100644 drivers/net/ethernet/intel/libeth/xsk.c
-
+Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
-From v4[0]:
-* 12: pick RB from Toke;
-* 19: drop redundant ';'s (Jakub);
-* 19: fix a couple context imbalance warnings by moving __acquires() /
-  __releases() to the proper place (smatch);
-* no functional changes.
+ include/net/xdp.h | 32 +++++++++++++++++++++++++++
+ net/core/xdp.c    | 56 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 88 insertions(+)
 
-From v3[1]:
-* rebase on top of the latest net-next to solve conflict (Jakub);
-* 09: use iterative approach instead of recursive to not blow the stack
-  (Toke);
-* 12: rephrase the commitmsg since the functionality changed, so that
-  it's not actual anymore (Toke);
-* align &xdp_buff_xsk a bit harder since its alignment degraded
-  recently;
-* pick RBs from Toke.
-
-From v2[2]:
-* cover: rename the series;
-* collect RBs and Acks from Maciej;
-* 007: reword the commitmsg;
-* 011: fix typos in the commitmsg (M);
-* 012: 'ts' -> 'tsize' (M; not 'truesize' to fit into 80 cols =\);
-* 016: fix the intro sentence (M);
-* no functional changes.
-
-From v1[3]:
-* rebase on top of the latest net-next;
-* no other changes.
-
-[0] https://lore.kernel.org/netdev/20241107161026.2903044-1-aleksander.lobakin@intel.com
-[1] https://lore.kernel.org/netdev/20241030165201.442301-1-aleksander.lobakin@intel.com
-[2] https://lore.kernel.org/netdev/20241015145350.4077765-1-aleksander.lobakin@intel.com
-[3] https://lore.kernel.org/netdev/20241009152756.3113697-1-aleksander.lobakin@intel.com
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 197808df1ee1..3e748bb916d3 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -356,6 +356,38 @@ void xdp_rxq_info_unreg_mem_model(struct xdp_rxq_info *xdp_rxq);
+ int xdp_reg_mem_model(struct xdp_mem_info *mem,
+ 		      enum xdp_mem_type type, void *allocator);
+ void xdp_unreg_mem_model(struct xdp_mem_info *mem);
++int xdp_reg_page_pool(struct page_pool *pool);
++void xdp_unreg_page_pool(const struct page_pool *pool);
++void xdp_rxq_info_attach_page_pool(struct xdp_rxq_info *xdp_rxq,
++				   const struct page_pool *pool);
++
++/**
++ * xdp_rxq_info_attach_mem_model - attach a registered mem info to an RxQ info
++ * @xdp_rxq: XDP RxQ info to attach the memory info to
++ * @mem: already registered memory info
++ *
++ * If a driver registers its memory providers manually, it must use this
++ * function instead of xdp_rxq_info_reg_mem_model().
++ */
++static inline void
++xdp_rxq_info_attach_mem_model(struct xdp_rxq_info *xdp_rxq,
++			      const struct xdp_mem_info *mem)
++{
++	xdp_rxq->mem = *mem;
++}
++
++/**
++ * xdp_rxq_info_detach_mem_model - detach a registered mem info from RxQ info
++ * @xdp_rxq: XDP RxQ info to detach the memory info from
++ *
++ * If a driver registers its memory providers manually and then attaches it
++ * via xdp_rxq_info_attach_mem_model(), it must call this function before
++ * xdp_rxq_info_unreg().
++ */
++static inline void xdp_rxq_info_detach_mem_model(struct xdp_rxq_info *xdp_rxq)
++{
++	xdp_rxq->mem = (struct xdp_mem_info){ };
++}
+ 
+ /* Drivers not supporting XDP metadata can use this helper, which
+  * rejects any room expansion for metadata as a result.
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index bcc5551c6424..bd2aa340baad 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -365,6 +365,62 @@ int xdp_rxq_info_reg_mem_model(struct xdp_rxq_info *xdp_rxq,
+ 
+ EXPORT_SYMBOL_GPL(xdp_rxq_info_reg_mem_model);
+ 
++/**
++ * xdp_reg_page_pool - register a &page_pool as a memory provider for XDP
++ * @pool: &page_pool to register
++ *
++ * Can be used to register pools manually without connecting to any XDP RxQ
++ * info, so that the XDP layer will be aware of them. Then, they can be
++ * attached to an RxQ info manually via xdp_rxq_info_attach_page_pool().
++ *
++ * Return: %0 on success, -errno on error.
++ */
++int xdp_reg_page_pool(struct page_pool *pool)
++{
++	struct xdp_mem_info mem;
++
++	return xdp_reg_mem_model(&mem, MEM_TYPE_PAGE_POOL, pool);
++}
++EXPORT_SYMBOL_GPL(xdp_reg_page_pool);
++
++/**
++ * xdp_unreg_page_pool - unregister a &page_pool from the memory providers list
++ * @pool: &page_pool to unregister
++ *
++ * A shorthand for manual unregistering page pools. If the pool was previously
++ * attached to an RxQ info, it must be detached first.
++ */
++void xdp_unreg_page_pool(const struct page_pool *pool)
++{
++	struct xdp_mem_info mem = {
++		.type	= MEM_TYPE_PAGE_POOL,
++		.id	= pool->xdp_mem_id,
++	};
++
++	xdp_unreg_mem_model(&mem);
++}
++EXPORT_SYMBOL_GPL(xdp_unreg_page_pool);
++
++/**
++ * xdp_rxq_info_attach_page_pool - attach a registered pool to an RxQ info
++ * @xdp_rxq: XDP RxQ info to attach the pool to
++ * @pool: pool to attach
++ *
++ * If the pool was registered manually, this function must be called instead
++ * of xdp_rxq_info_reg_mem_model() to connect it to an RxQ info.
++ */
++void xdp_rxq_info_attach_page_pool(struct xdp_rxq_info *xdp_rxq,
++				   const struct page_pool *pool)
++{
++	struct xdp_mem_info mem = {
++		.type	= MEM_TYPE_PAGE_POOL,
++		.id	= pool->xdp_mem_id,
++	};
++
++	xdp_rxq_info_attach_mem_model(xdp_rxq, &mem);
++}
++EXPORT_SYMBOL_GPL(xdp_rxq_info_attach_page_pool);
++
+ /* XDP RX runs under NAPI protection, and in different delivery error
+  * scenarios (e.g. queue full), it is possible to return the xdp_frame
+  * while still leveraging this protection.  The @napi_direct boolean
 -- 
 2.47.0
 
