@@ -1,204 +1,200 @@
-Return-Path: <bpf+bounces-44734-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44735-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 383289C701D
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 14:03:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9964C9C7163
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 14:51:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC790282156
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 13:03:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55286B2A1BC
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 13:45:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB26206079;
-	Wed, 13 Nov 2024 12:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AuKpQGr+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501E91FF7C2;
+	Wed, 13 Nov 2024 13:42:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from PNZPR01CU001.outbound.protection.outlook.com (mail-centralindiaazon11021108.outbound.protection.outlook.com [40.107.51.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E56AF200BAB;
-	Wed, 13 Nov 2024 12:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731502710; cv=none; b=FlZdVhA33/D/hlMYNpgwBqWpnnxN4M9yDr6QwMp7Jyq3OcTKpGDUQmvnIKw2yOPSPl1TZTzqYf1IP6nPDfuw/z+cdKSj0bPm3woFtx1faXwcd6ZS03LgumXUW4lwyc84c2L/YSrwcb5qMN8MkWWw3iTxsirvYJTZEvtYGyNzF4M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731502710; c=relaxed/simple;
-	bh=MiIGFE7JQmeCulMCTNzU+03Zvl9uvgozGAxqw8x+eUI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=q3NPV58sgxYS3noyIQ25rRmrBl55BwWccZFal7b5yMGAm/urLbiMr5i4/YAB3JC01Nq7Dpl5KfDUNJdU85favmjSXi7uru2tVZns84rg26YuYZ0MontgRjV9p0N5iuLZcq8kTk9a932hNjR0CqkFH8UpRxO/w+RA+Gm2ZsZ7AvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AuKpQGr+; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2e9b55b83d2so4231647a91.3;
-        Wed, 13 Nov 2024 04:58:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731502707; x=1732107507; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tqrrLk6+C692qIcVQOp9KatlJAZHjGryjisTBrwbzoI=;
-        b=AuKpQGr+TdF2ChIJohhWsFdVKp4kAXgRA6k+SK4b1DUiyvHUATwQUViv9lsaVf9t5v
-         vuxbV74pusxqjqorQfGH0Jg86vVbOPzvd/s4gFDCyPQyDXAXHBHZL9oy9wHxv06C5h6x
-         L2wSA/vgpy4gKuwZE7CRc+pOoYKBEEzWmefGVS0Rz99HX7fUCIYTax0cxmBHQgRuypRV
-         uBn+LlJmWBHnRx4Jr+D9SRx19t9OX+W3i7k9mBCT/CDlHzSW7SMdSn2DDHaXZNq768KV
-         bVV1osooSxE/32U3Aboe1m205SjNGOv9ZXrZaFBy8gBDecXuxzyfXk6FYCre3kyFOgOU
-         vD3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731502707; x=1732107507;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tqrrLk6+C692qIcVQOp9KatlJAZHjGryjisTBrwbzoI=;
-        b=AMzYyX8uYwpKwENZ0IWCg7FUOnXhrD5N3+qA+3locZ1wrd0UMpOkKw6zUX1LwP97rA
-         NXul85JTsBfU0sFY+g5yW5cjYc2a9ywp9pvWETc1WZVebkPIGfTBZoLiIEIiEzaYXw8t
-         hgxxo8oZQ503HJxrYsA4uiH+WL/8guPjMKFVPqeb0xvD8P0cwa7rWg0ujLsRH5vsvKJG
-         I3zhk7CER1V15O8+cqPPWk8YnLcxlLedCD3R8yXT3/EQQRa0qzZFPbYXYJPWWDo7xgOU
-         gPxEXm4PiZFzmDCP/KhpXPm+GxmIlg8RU99FUPtTSvTxe1rUxl1neLHlaaY77omTL4yP
-         saVg==
-X-Forwarded-Encrypted: i=1; AJvYcCULsCtWFGahO/3fn7PwjJZbiC7SOZqPwWGg7yu+S82iKiHEW276pRd8UosYdAvdTrscdlBg7VGCGlIjtT6NwrU=@vger.kernel.org, AJvYcCVFUpZnCvRgG48vMQRVzLwmk0QWt/TQiM4tkHupx2B0OkSzA9wYIYk50D8TunnGESvaq8BZfcEnucxrOQ==@vger.kernel.org, AJvYcCVOIRpbZuqSeBGkXU7PDL7wwi+3RAGwRlBpAn+jAOeDEZGs1QW2wGjx8Lzmvv64sJFBKtyI+Nvb1yKE/g==@vger.kernel.org, AJvYcCVTStIh8Bwzq/vYTeoGXNwdgeuIxjjf4GXTW1a4uo5aUWuqmyihF/E5euhPcymkKkKH5Z8tzDaWg4Jl@vger.kernel.org, AJvYcCVjMX/MVXuce6ym31Z3DHeDh9DEFi7qGD9iQ5tQXAKeYrhRgrbY6DPpFOyNrquDN5yDJUHV0i2ay3GBl6yUvrm3@vger.kernel.org, AJvYcCVvUUPVH8lthRGVUr74f6GW/glOQiKgeSfQfhPBN1afYlGLd/hmmKJ++KAI9v9aE9AjG3A=@vger.kernel.org, AJvYcCX/guAv7i9DWMk+S+nJIOtmEzMmrMIA/GDP9KEnQEaux3WGKTebEwbA5hbGF7l56Xl7hw5oo6Of/ZK2@vger.kernel.org, AJvYcCXhfOgdk4KDgDJm8+3EgJjhjX4DVRiyE3A0i3nTl5QXFODlmZ5V5KCCkZRm1+2Nffp8RZUSJNrRD8WbN1Wy@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2gpZaroi1T1BGtN0s4SWlL4zHzjEUjpTWxcup1pUzyDRuh65b
-	ec5prC8vTpQHvfyNOyucRF+ED+Mgo2EadYGK5AganDcN1bByWLI8MahgRBr7WAc=
-X-Google-Smtp-Source: AGHT+IE/vtXg73mPc9UwMocIh3JnpJ4Nx9KNFh/J++F7E0J+l3pL2CaZbF6bhZwKtLiUviIv9q/4Rw==
-X-Received: by 2002:a17:90b:3c12:b0:2e2:b2ce:e41e with SMTP id 98e67ed59e1d1-2e9f2c78421mr3106773a91.13.1731502707231;
-        Wed, 13 Nov 2024 04:58:27 -0800 (PST)
-Received: from nova-ws.. ([103.167.140.11])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e9f3f8ed0esm1398632a91.40.2024.11.13.04.58.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Nov 2024 04:58:26 -0800 (PST)
-From: Xiao Liang <shaw.leon@gmail.com>
-To: netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Donald Hunter <donald.hunter@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Simon Horman <horms@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Hangbin Liu <liuhangbin@gmail.com>,
-	linux-rdma@vger.kernel.org,
-	linux-can@vger.kernel.org,
-	osmocom-net-gprs@lists.osmocom.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4471B1EF928;
+	Wed, 13 Nov 2024 13:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.51.108
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731505329; cv=fail; b=jOOic7VCBFG89xD3m8P1NWE9//NtxWn44WZmS3ztB/FTaBvZnIE3l7VXll90dYsRCxHxiaddd0IqSI+NmExzMpktfRM0osBgn5WAZrX0/lMnxwGuoGFXQDaX8mHi44zFkPSJOpv+TBm93YaFSznAwwro90hp7RY8uVJ9Nz8upUk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731505329; c=relaxed/simple;
+	bh=ES1ovOuy8vKaxhhsARPgAeMu5iCche0mEQJJlebA9fk=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=U/UEgm0+igjuFaSSwgp+9cjYOmjZldXm+qOo1UNmS9nUTLvb/3/kpS6d9+EICdz/FshkRgJRMA25tinKW3MhTsgzqm0NtJZEN8+I2x8DGuv4QKdCLgkxQymbgKl0U/N+utznWfkbKPBBZgRpNWa+ZSO4J2K3ItXiZgSktKa4lO0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=siliconsignals.io; spf=pass smtp.mailfrom=siliconsignals.io; arc=fail smtp.client-ip=40.107.51.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=siliconsignals.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siliconsignals.io
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=pvI6TcBU7r6oMnlbBUDbvuwGxXHsz87RG0uk4PvkSE3Wg8m8TpZ6XsUPuQYIC9pP9lLMNOJl0vCDeTXsQM0VgSw7mhQgwP5SUlp1YwdF16Kx6wggMUZY7JqGEAfKPQuNJynxcin1mdgIeUzvcH4wZM7dlhRM3+nea6IbuK97RuloizQikC3w8lZugDr4XNTYBz01eeEuFQAr0VMST9OkPH0LutNxzNMfu0s/ZyOG1UdOBb6LEX6NF9QXnSl5x7l2+MYPvHSBXOc/WjC1GGL8KqGw/e3pzqAas+M3VtTTxTwFcVB+YQWqAfWEgITZ8MeSt92hrqQAnnk6WZRkhCTKkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xNr0FCbfp36m9B1IQbVS86qKWwKysSDc4T3DifzCGCY=;
+ b=xhGzALELob1iPSesgYqvx/ViqV/SsYg80AGYxJoE2yfXn0KAf18fYQQ1RGaA9rqlh/hFqL5kiNaYJMN8UaUd719LP+xaw4jYWioFfUgMIksdx0HlFfVJwVe//2lJCU+Bl6tXTIu/trVGKMbpXIDFeUEu/QCu3A+jPixSVgb7mdAQK6n58pXks7tSzDOFSeJGlgk7G6NXaxSHRfBvsZeeU8Cd0IKw5Ol7RB2iXL1lQguK+52kuB73gj4dGIuYOo1+1abOBr1YUsIORkQB69FiPsavH413iAxaiy6HSclMmm46xBPbZodasgD+CmGpF5ZHr5qqimzbRbAAAG6yE48q+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siliconsignals.io; dmarc=pass action=none
+ header.from=siliconsignals.io; dkim=pass header.d=siliconsignals.io; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=siliconsignals.io;
+Received: from PN0P287MB2843.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:204::8)
+ by MAYP287MB3598.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:14e::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.17; Wed, 13 Nov
+ 2024 13:42:03 +0000
+Received: from PN0P287MB2843.INDP287.PROD.OUTLOOK.COM
+ ([fe80::1134:92d7:1f68:2fac]) by PN0P287MB2843.INDP287.PROD.OUTLOOK.COM
+ ([fe80::1134:92d7:1f68:2fac%3]) with mapi id 15.20.8137.027; Wed, 13 Nov 2024
+ 13:42:02 +0000
+From: Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>
+To: ast@kernel.org,
+	vadim.fedorenko@linux.dev,
+	list+bpf@vahedi.org
+Cc: tarang.raval@siliconsignals.io,
+	Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Vineet Gupta <vgupta@kernel.org>,
 	bpf@vger.kernel.org,
-	linux-ppp@vger.kernel.org,
-	wireguard@lists.zx2c4.com,
-	linux-wireless@vger.kernel.org,
-	b.a.t.m.a.n@lists.open-mesh.org,
-	bridge@lists.linux.dev,
-	linux-wpan@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 6/6] selftests: net: Add two test cases for link netns
-Date: Wed, 13 Nov 2024 20:57:15 +0800
-Message-ID: <20241113125715.150201-7-shaw.leon@gmail.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241113125715.150201-1-shaw.leon@gmail.com>
-References: <20241113125715.150201-1-shaw.leon@gmail.com>
+Subject: [PATCH v2] ARC: bpf: Correct conditional check in 'check_jmp_32'
+Date: Wed, 13 Nov 2024 19:11:18 +0530
+Message-ID: <20241113134142.14970-1-hardevsinh.palaniya@siliconsignals.io>
+X-Mailer: git-send-email 2.43.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: PN2PR01CA0140.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:6::25) To PN0P287MB2843.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:c01:204::8)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PN0P287MB2843:EE_|MAYP287MB3598:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0c96ea63-193d-43d3-319b-08dd03e8f4a5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|52116014|366016|1800799024|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?2jfGyk+IuSGdqMzvrZZA5q7Qk63jrhKj8rPJQJ6OsliINzF3rD1s7f51UBnO?=
+ =?us-ascii?Q?pGeEXs9YTQkbEZ2I4Mdd5s56trcdDGsSjBIZ+GkJfX0gvDuKOQGoZwUfO1f7?=
+ =?us-ascii?Q?VqFxmk7PKfflnMfZhrgbyNoQfccIyvdMjiadpbEgil3pJX+AQaUesHWsZt9n?=
+ =?us-ascii?Q?OQlHfisMlAqCstiLg/R3eWsZLySK3HYyjT20+s7/oEPdrE6WA2GO0Eix9n5k?=
+ =?us-ascii?Q?Z68xk/sQZzfsYq1agUPChNi1UB523w7l/y4by3D0eoLeGFhUfuSITEK+oyCj?=
+ =?us-ascii?Q?7IrfIGBh/ZzGgOvXf7v/fvHbSDWvcaNSzNT6Z4KaoVZ/QEnSnZp36ufAnw1N?=
+ =?us-ascii?Q?xZUBDyey1gtydo1UJSpXtT6NfB2VZgppCvAtacfRrs0O35x3R/i/Ejbzu6zM?=
+ =?us-ascii?Q?6jXgZ2FznppaW2UCtWD5DZCsUVSq+zLpPK0jgfgZK+RcOJQkqXUzOJQ79hp0?=
+ =?us-ascii?Q?/AvuHjFz1/yAAqbuyryN+FkCEQeO2sUakK1ghtRexbK5UkwdhZJnXrDMl5hU?=
+ =?us-ascii?Q?QByb1BvwdIJlGL7KfuyA+E/HV40gjRSzay9UvVJk3dC5muaxuDmcjEarFr9q?=
+ =?us-ascii?Q?0DeT2yu5i//8cjTfiSiSM+GA3wPjyj6aDijPOlowT+els9OKb9tcxZggbX20?=
+ =?us-ascii?Q?RAgGyDUNMt7z2To0hWm1xIWOzhKUmvzzLY6C+Q+IcWs2Q6P5PSksK3kCYWxV?=
+ =?us-ascii?Q?ya2caDtfSg5c9vG4Xj5fc3j2QuEvxo6sfwb80tu+y6tnIPfd+MnhzV5n1K5F?=
+ =?us-ascii?Q?7dbzPip/BKL62lnZ3AR+lpJEEB5eVgxyh2gej6s9u9T7slcn6a+uc0Z+nEej?=
+ =?us-ascii?Q?7FH09V43ZmRFW1sUKp0ZF585mXpjVGUiRqs6i+Cl3ecjUuk4+FLP7SIaUOfF?=
+ =?us-ascii?Q?SsvxdymIPfNZFY4QpEttcEaXZ38VKnTTogLxw+bm9bjKXHUj7f6K/0FPEDcc?=
+ =?us-ascii?Q?zCtpMYJMeg2FX3/LvHxj+AC330YdmfxW/WJZcMTFWXDTUfFksKDDOcBCbmG3?=
+ =?us-ascii?Q?24EEoThfUoefUvjLoUDV7KFEwj6UscNjiyaBhzAYJHS4Dvw9sfoIOY//MuNH?=
+ =?us-ascii?Q?6+svGmPs5ypQawvoflObLgwfP2lVuJ46VsbfLGnjggVAy+ex1fn7P3skXUEr?=
+ =?us-ascii?Q?28c7jDfgmmxHaUubzNt3D7H6qRaMwmeu0rN02W+uykTGZVTCknfQOchnKnu5?=
+ =?us-ascii?Q?iGOenEazyqr0pAIXLLba+PbLvnzENfFVBwHSAIiVmnYs9ZKaic2rUTT7cU7M?=
+ =?us-ascii?Q?Wa1IZlioiPMvEs1yBHMhghhn1IOUQOQYtVyAtlRfrP8CbRBgwKt1UL4iJynB?=
+ =?us-ascii?Q?u0jBJ2wkAxrxypTujUuRfdS+?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PN0P287MB2843.INDP287.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(52116014)(366016)(1800799024)(38350700014);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?qpsSLwGweqg+fQJyHkGy4ttJbZn+AucR9LFP6bPqP1IzxV5au3pZEgU1BRmu?=
+ =?us-ascii?Q?KaePQd2OEFyFy+jHwwffKJhEFMPhWZX4YNCRkemuqJHl9dqe1G4vrDtsdEvd?=
+ =?us-ascii?Q?4vCsmOKmnsUHWjRMH5hduZciJfazwjxq1P6uk5Z1nXswLdsVe+pSkg6eC+KM?=
+ =?us-ascii?Q?t1ocbeVRZ+SKH3NHnUul25W13h7s40wQdCPnVO53HYeKvAzFqDszv1apUgcu?=
+ =?us-ascii?Q?3opeZT1yhdvNcTY6ux+UxH9bSBdvc2Dq/+KlZp8uv79dODEq9XLmzAunVcWa?=
+ =?us-ascii?Q?iPMZQm0RINAqngOnLeTocYhw4nfeKHwKUnxhdE+hMTC8sdPVGOXzUEmf7KcF?=
+ =?us-ascii?Q?5dl1nDChsftH3fEoBq1BsTpta8DAQAZdkPWAAu7tDx8SictyZ8osq2Ni8TMT?=
+ =?us-ascii?Q?alalxms2AU7DNlrk9VQunQFEDY6b+VNmykku2Y/oINwR502ZID/4L9oZA5pP?=
+ =?us-ascii?Q?zHHphqlU6YPcX7rwBUOp3CZx0ng4KtIYZ8X17yc+My/E3VIirM1EYyG+rLaY?=
+ =?us-ascii?Q?BErvUW+EDwVv0LBSx4zYjdUyRsFxYONm3wd/APTUcfEpDF7kCMHWPBhplU2y?=
+ =?us-ascii?Q?Hgmi6PpbaT2VDvmKLzIe4suMN+f08qyGIiEWWqhtkLOtF0SjHTvspQl2uxu/?=
+ =?us-ascii?Q?3lo4DwC3gfdqO2fJFwJNws+yaujImx0otQc07vpfr2gXuVG8/8ic/XscJDOm?=
+ =?us-ascii?Q?C9KZi+qU3lI/HcyKzWNXUpzUhE28qKizpXfdTd89yPWzwH0P1Yri+/Avp3vF?=
+ =?us-ascii?Q?x7EuztJLFNhjh+UXTgpzQl7XVNvKC+8F4KU3f1g806jZVgtXFS0iNhstiKfs?=
+ =?us-ascii?Q?mbKpaS4eqA/b5haPwC16iFN0GZCvAPacYPJTi/mU2jPE7N7aj7jhUHyJoZqV?=
+ =?us-ascii?Q?oYSyKWizd0+v5DNsxmR0VG6tMKviUumMP94DmN6z4lcnctOy5qwSqG03RCw+?=
+ =?us-ascii?Q?jfp/6WDrUM6YIV3sRH9I9UCE1hSO6hcf2y206AcvfNXgP2K3RCFvlQ7yRAnB?=
+ =?us-ascii?Q?41XLVjYaS9LQ5ZAi8Gsz1QeNPsO5iyGiS6B+JyVp4leMRgZSGf33xUKv2PJh?=
+ =?us-ascii?Q?9JNkuDsMvzyP7E3QiVjbKq6LxhZi/5fNAhDDaCNrxF/fEUatpE2+7MXMK9S6?=
+ =?us-ascii?Q?9mcfR6I5ViSsN1E7B8LmFG+1A1KjSKprkY2hWQNerB8l/12uZsL8GP5vmWZQ?=
+ =?us-ascii?Q?TpfTgx/CfWci/Oy6gVMo4WvvTdS5O1QHlRpa0AbEqMi5b3U37h7hcu0yk8JQ?=
+ =?us-ascii?Q?80/6k9nkusXL+xMdklQBU6yYLvrhVeSl0KKLmS/JelvPzswWpMjDyajBJHND?=
+ =?us-ascii?Q?CjrbZ4ZCrmazm9AvkmoIIxO+6xsldk3D/K/F3OLEzbSZuScKiGG92cJ2JboU?=
+ =?us-ascii?Q?xw5s/mrnma4H0OYmghEdqi7Kck5I+XHnRXR0jhILZYF86i0Yc0UBeNFulMx8?=
+ =?us-ascii?Q?mkDefoJIZQwVU6uXqXXFLwuFXfhvwpcsKetZ/EYzW2Ep4HIkSZl2IMp2IUuY?=
+ =?us-ascii?Q?f+s/TURNw3EIG2I9F4FwGf6yZxQkoj+HZ1qn8avDwJVEf0TcXRnlAB9ajPUG?=
+ =?us-ascii?Q?xSMed2SvtWK6lIAieIDRdbMaRKPjl4y+0GG7lmYl1ZUoAc2uRHtbvht5kquq?=
+ =?us-ascii?Q?nWLqHBSA0kW/IeuZwwSbYewKClQPX+G4ccsLNlc4SHH4?=
+X-OriginatorOrg: siliconsignals.io
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c96ea63-193d-43d3-319b-08dd03e8f4a5
+X-MS-Exchange-CrossTenant-AuthSource: PN0P287MB2843.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2024 13:42:02.9525
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 7ec5089e-a433-4bd1-a638-82ee62e21d37
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NlkB5Z9wcRQbWr4tusDAGGGWbhLZFYLTr94B+Gx99UNkwdVggKhgFgMNHQUJCpU+7esKaosLEMElPx/o5239KgDefICIBsv5G8efxSI6A9eRuDyUD0oSmWNKxrOgWCdZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MAYP287MB3598
 
- - Add test for creating link in another netns when a link of the same
-   name and ifindex exists in current netns.
- - Add test for link netns atomicity - create link directly in target
-   netns, and no notifications should be generated in current netns.
+The original code checks 'if (ARC_CC_AL)', which is always true since
+ARC_CC_AL is a constant. This makes the check redundant and likely
+obscures the intention of verifying whether the jump is conditional.
 
-Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
+Updates the code to check cond == ARC_CC_AL instead, reflecting the intent
+to differentiate conditional from unconditional jumps.
+
+Suggested-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Signed-off-by: Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>
 ---
- tools/testing/selftests/net/Makefile        |  1 +
- tools/testing/selftests/net/netns-name.sh   | 10 ++++++
- tools/testing/selftests/net/netns_atomic.py | 38 +++++++++++++++++++++
- 3 files changed, 49 insertions(+)
- create mode 100755 tools/testing/selftests/net/netns_atomic.py
 
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 2b2a5ec7fa6a..4c15a115c251 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -34,6 +34,7 @@ TEST_PROGS += gre_gso.sh
- TEST_PROGS += cmsg_so_mark.sh
- TEST_PROGS += cmsg_time.sh cmsg_ipv6.sh
- TEST_PROGS += netns-name.sh
-+TEST_PROGS += netns_atomic.py
- TEST_PROGS += nl_netdev.py
- TEST_PROGS += srv6_end_dt46_l3vpn_test.sh
- TEST_PROGS += srv6_end_dt4_l3vpn_test.sh
-diff --git a/tools/testing/selftests/net/netns-name.sh b/tools/testing/selftests/net/netns-name.sh
-index 6974474c26f3..0be1905d1f2f 100755
---- a/tools/testing/selftests/net/netns-name.sh
-+++ b/tools/testing/selftests/net/netns-name.sh
-@@ -78,6 +78,16 @@ ip -netns $NS link show dev $ALT_NAME 2> /dev/null &&
-     fail "Can still find alt-name after move"
- ip -netns $test_ns link del $DEV || fail
+Changelog in V2:
+
+- Changed subject line
+- Updated condition check to 'if (cond == ARC_CC_AL)' instead of removing it
+
+Link for v1: https://lore.kernel.org/bpf/e6d27adb-151c-46c1-9668-1cd2b492321b@linux.dev/T/#t
+---
+ arch/arc/net/bpf_jit_arcv2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arc/net/bpf_jit_arcv2.c b/arch/arc/net/bpf_jit_arcv2.c
+index 4458e409ca0a..6d989b6d88c6 100644
+--- a/arch/arc/net/bpf_jit_arcv2.c
++++ b/arch/arc/net/bpf_jit_arcv2.c
+@@ -2916,7 +2916,7 @@ bool check_jmp_32(u32 curr_off, u32 targ_off, u8 cond)
+ 	addendum = (cond == ARC_CC_AL) ? 0 : INSN_len_normal;
+ 	disp = get_displacement(curr_off + addendum, targ_off);
  
-+#
-+# Test no conflict of the same name/ifindex in different netns
-+#
-+ip -netns $NS link add name $DEV index 100 type dummy || fail
-+ip -netns $NS link add netns $test_ns name $DEV index 100 type dummy ||
-+    fail "Can create in netns without moving"
-+ip -netns $test_ns link show dev $DEV >> /dev/null || fail "Device not found"
-+ip -netns $NS link del $DEV || fail
-+ip -netns $test_ns link del $DEV || fail
-+
- echo -ne "$(basename $0) \t\t\t\t"
- if [ $RET_CODE -eq 0 ]; then
-     echo "[  OK  ]"
-diff --git a/tools/testing/selftests/net/netns_atomic.py b/tools/testing/selftests/net/netns_atomic.py
-new file mode 100755
-index 000000000000..e6c4147ef75e
---- /dev/null
-+++ b/tools/testing/selftests/net/netns_atomic.py
-@@ -0,0 +1,38 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+import time
-+
-+from lib.py import ksft_run, ksft_exit, ksft_true
-+from lib.py import ip
-+from lib.py import NetNS, NetNSEnter
-+from lib.py import RtnlFamily
-+
-+
-+def test_event(ns1, ns2) -> None:
-+    with NetNSEnter(str(ns1)):
-+        rtnl = RtnlFamily()
-+
-+    rtnl.ntf_subscribe("rtnlgrp-link")
-+
-+    ip(f"netns set {ns1} 0", ns=str(ns2))
-+
-+    ip(f"link add netns {ns2} link-netnsid 0 dummy1 type dummy")
-+    ip(f"link add netns {ns2} dummy2 type dummy", ns=str(ns1))
-+
-+    ip("link del dummy1", ns=str(ns2))
-+    ip("link del dummy2", ns=str(ns2))
-+
-+    time.sleep(1)
-+    rtnl.check_ntf()
-+    ksft_true(not rtnl.async_msg_queue, "Received unexpected link notification")
-+
-+
-+def main() -> None:
-+    with NetNS() as ns1, NetNS() as ns2:
-+        ksft_run([test_event], args=(ns1, ns2))
-+    ksft_exit()
-+
-+
-+if __name__ == "__main__":
-+    main()
+-	if (ARC_CC_AL)
++	if (cond == ARC_CC_AL)
+ 		return is_valid_far_disp(disp);
+ 	else
+ 		return is_valid_near_disp(disp);
 -- 
-2.47.0
+2.43.0
 
 
