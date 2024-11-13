@@ -1,174 +1,121 @@
-Return-Path: <bpf+bounces-44691-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44692-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F0C89C662C
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 01:42:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B30EE9C6640
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 01:54:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C054281A24
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 00:42:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B1C81F2512D
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 00:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D6B5DF71;
-	Wed, 13 Nov 2024 00:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3F9111AD;
+	Wed, 13 Nov 2024 00:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FBy8e21p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i4CtvmwB"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC56AAD24;
-	Wed, 13 Nov 2024 00:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245892C9A;
+	Wed, 13 Nov 2024 00:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731458540; cv=none; b=R5LaeoporgIH/7kPVeCh2+T/iqNT7ZmOYzSd3cvDV/HWRFDgD97f5JAuMCRAOK65Qx7gUVy9sRLJmtdaVeWvdiJprtkEG5ZwnLZmX2Rhw70Rk90tS+ZXBU1k9CLF7BTBwnDTpMZo31QuQKc2WJXRBIWbaXx+2l1u03JUR4EbkZs=
+	t=1731459255; cv=none; b=qX4mLJ3CN9+bidX9fL+CDhnw3psfwFBp3H6VmPHg4dhZHLLsmxdXI6Ah1F9PsiyUfaCxLJRpkdPjMRjnOFzA9oBXDqM6CWD8dJF4EFHW5qxnN4A98oWGOlHNHzfoIvyXt7omWl1nxftGHppm/JDDiiCPLcf8Y3RKYdKJTBpPqAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731458540; c=relaxed/simple;
-	bh=UtTCpRAQSW0k/5mHxhY2EZqFTnQ1dV5Qa9iPw8SEhkw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uE1LB8DMOUH3FZymtsbiiiBs04+aFsUoY/ZcWBlY5M5n6KzoPUBXe1YWElqTR9UWIC61ysav3OLEZD9WpYmao9I29ehWPpNHvTtzeLZRDhn28P4RG+psRaEkEQZ8INXS8hU49wMMzYMRhU4/V00ZvIZ7YH7/9TJEoIhcjCcvg1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FBy8e21p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26EBDC4CED4;
-	Wed, 13 Nov 2024 00:42:15 +0000 (UTC)
+	s=arc-20240116; t=1731459255; c=relaxed/simple;
+	bh=2/BzEDLl8uZtmkZu3QBWi0fXXCGMuB/3jo/IFlR+2dk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gd9YuzRkaIpqiZgE9GzJsv+mPkwBNdua6q/R1V9MphxioCdgmqytXP4bVJBP/B50Yyp0nX1YsvuMlrdRM0H0nv7/Rn+30Pi/UeCL6kEX2joNCWXfBuNdE6zIEErwV6wRxzDPaAzvH2pRGhwjjXlI3r5+VUREOxV1JoLqBsCEZ8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i4CtvmwB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FF79C4CECD;
+	Wed, 13 Nov 2024 00:54:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731458538;
-	bh=UtTCpRAQSW0k/5mHxhY2EZqFTnQ1dV5Qa9iPw8SEhkw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FBy8e21pLgOBkxC/k6fXB6T29dQkKz1xcv0GZ8z6MW3RKUqpDF/nQnL1a2AAIWwhc
-	 8HOdZYUfUhaTlfku4YK9SKbKuTR8O3RVvsRVGbw6Gh9y9Q3Nmy6UyHdlIc6amWoVPv
-	 EKDqSRH1LqFGtXm3aVNlBlS7JuTiOdtKQXKotd4SuH6IPC7u4VzOjZzRewdn5PsiT0
-	 yLJLbD2Q907tgWHB8d19iY91xQNxyDo8+fv8aQ/u9O7kdfQ2Yg+6mwZxgz7OkHFISq
-	 qfv3KOCQR+UCbu5YmY2lw6r11ipIXs25yS5O1aGLCoHFpIAsVz24NOZDPifM/YB3UY
-	 ZhvLuvBroh+Tg==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-arch@vger.kernel.org
-Subject: [PATCH 19.1] Documentation: probes: Update fprobe on function-graph tracer
-Date: Wed, 13 Nov 2024 09:42:13 +0900
-Message-ID: <173145853330.190048.8075164639336145964.stgit@devnote2>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <173125393047.172790.8427492388173333634.stgit@devnote2>
-References: <173125393047.172790.8427492388173333634.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=k20201202; t=1731459254;
+	bh=2/BzEDLl8uZtmkZu3QBWi0fXXCGMuB/3jo/IFlR+2dk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=i4CtvmwB6H1T4GSXb+N5S5Sy3BCj1XG8ooAYTXbE2wDnKGStibmR+0saHieYvfCg2
+	 wcrJDJPoa28mpVADlkpuk4f8exZ4chOcwJuhdHbYNt4runPcz2Qbn7/bcNmBsIj3y0
+	 vshFHN66eWfEY/DMv8vVrxEIXxNSNTMsDXhKdiPDzphm3ximVagbjCnsW/7HgLOHOn
+	 jsRm+PJutXpf3Lqxjbd1OcfcNA6UlJpaUY2pRkSlywscoZToiYiimOE3J2TS+Uai07
+	 4pbXDL4CTCnQeyb1r6kDxy6vYORD1oIAlz2lc0NK/tAv83oljKFjtZUEA/qhgDyx39
+	 DhlWtFIFb4QWA==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Cc: kernel-team@meta.com,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	kpsingh@kernel.org,
+	mattbobrowski@google.com,
+	amir73il@gmail.com,
+	repnop@google.com,
+	jlayton@kernel.org,
+	josef@toxicpanda.com,
+	mic@digikod.net,
+	gnoack@google.com,
+	Song Liu <song@kernel.org>
+Subject: [PATCH v3 bpf-next 0/4] Make inode storage available to tracing prog
+Date: Tue, 12 Nov 2024 16:53:47 -0800
+Message-ID: <20241113005351.2197340-1-song@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+bpf inode local storage can be useful beyond LSM programs. For example,
+bcc/libbpf-tools file* can use inode local storage to simplify the logic.
+This set makes inode local storage available to tracing program.
 
-Update fprobe documentation for the new fprobe on function-graph
-tracer. This includes some bahvior changes and pt_regs to
-ftrace_regs interface change.
+1/4 is missing change for bpf task local storage. 2/4 move inode local
+storage from security blob to inode.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v19.1:
-  - Fix typo
-  - function-graph tracer -> function graph tracing feature in ftrace.
- Changes in v2:
-  - Update @fregs parameter explanation.
----
- Documentation/trace/fprobe.rst |   42 ++++++++++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
+Similar to task local storage in tracing program, it is necessary to add
+recursion prevention logic for inode local storage. Patch 3/4 adds such
+logic, and 4/4 add a test for the recursion prevention logic.
 
-diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.rst
-index 196f52386aaa..71cd40472d36 100644
---- a/Documentation/trace/fprobe.rst
-+++ b/Documentation/trace/fprobe.rst
-@@ -9,9 +9,10 @@ Fprobe - Function entry/exit probe
- Introduction
- ============
- 
--Fprobe is a function entry/exit probe mechanism based on ftrace.
--Instead of using ftrace full feature, if you only want to attach callbacks
--on function entry and exit, similar to the kprobes and kretprobes, you can
-+Fprobe is a function entry/exit probe based on the function-graph tracing
-+feature in ftrace.
-+Instead of tracing all functions, if you want to attach callbacks on specific
-+function entry and exit, similar to the kprobes and kretprobes, you can
- use fprobe. Compared with kprobes and kretprobes, fprobe gives faster
- instrumentation for multiple functions with single handler. This document
- describes how to use fprobe.
-@@ -91,12 +92,14 @@ The prototype of the entry/exit callback function are as follows:
- 
- .. code-block:: c
- 
-- int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
- 
-- void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
- 
--Note that the @entry_ip is saved at function entry and passed to exit handler.
--If the entry callback function returns !0, the corresponding exit callback will be cancelled.
-+Note that the @entry_ip is saved at function entry and passed to exit
-+handler.
-+If the entry callback function returns !0, the corresponding exit callback
-+will be cancelled.
- 
- @fp
-         This is the address of `fprobe` data structure related to this handler.
-@@ -112,12 +115,10 @@ If the entry callback function returns !0, the corresponding exit callback will
-         This is the return address that the traced function will return to,
-         somewhere in the caller. This can be used at both entry and exit.
- 
--@regs
--        This is the `pt_regs` data structure at the entry and exit. Note that
--        the instruction pointer of @regs may be different from the @entry_ip
--        in the entry_handler. If you need traced instruction pointer, you need
--        to use @entry_ip. On the other hand, in the exit_handler, the instruction
--        pointer of @regs is set to the current return address.
-+@fregs
-+        This is the `ftrace_regs` data structure at the entry and exit. This
-+        includes the function parameters, or the return values. So user can
-+        access thos values via appropriate `ftrace_regs_*` APIs.
- 
- @entry_data
-         This is a local storage to share the data between entry and exit handlers.
-@@ -125,6 +126,17 @@ If the entry callback function returns !0, the corresponding exit callback will
-         and `entry_data_size` field when registering the fprobe, the storage is
-         allocated and passed to both `entry_handler` and `exit_handler`.
- 
-+Entry data size and exit handlers on the same function
-+======================================================
-+
-+Since the entry data is passed via per-task stack and it has limited size,
-+the entry data size per probe is limited to `15 * sizeof(long)`. You also need
-+to take care that the different fprobes are probing on the same function, this
-+limit becomes smaller. The entry data size is aligned to `sizeof(long)` and
-+each fprobe which has exit handler uses a `sizeof(long)` space on the stack,
-+you should keep the number of fprobes on the same function as small as
-+possible.
-+
- Share the callbacks with kprobes
- ================================
- 
-@@ -165,8 +177,8 @@ This counter counts up when;
-  - fprobe fails to take ftrace_recursion lock. This usually means that a function
-    which is traced by other ftrace users is called from the entry_handler.
- 
-- - fprobe fails to setup the function exit because of the shortage of rethook
--   (the shadow stack for hooking the function return.)
-+ - fprobe fails to setup the function exit because of failing to allocate the
-+   data buffer from the per-task shadow stack.
- 
- The `fprobe::nmissed` field counts up in both cases. Therefore, the former
- skips both of entry and exit callback and the latter skips the exit
+Changes v2 => v3:
+1. Move bpf_inode_storage_free to i_callback(). (Martin)
+2. Fix __bpf_inode_storage_get(). (Martin)
 
+Changes v1 => v2:
+1. Rebase.
+2. Fix send-email mistake.
+
+Song Liu (4):
+  bpf: lsm: Remove hook to bpf_task_storage_free
+  bpf: Make bpf inode storage available to tracing program
+  bpf: Add recursion prevention logic for inode storage
+  selftest/bpf: Test inode local storage recursion prevention
+
+ fs/inode.c                                    |   2 +
+ include/linux/bpf.h                           |   9 +
+ include/linux/bpf_lsm.h                       |  29 ---
+ include/linux/fs.h                            |   4 +
+ kernel/bpf/Makefile                           |   3 +-
+ kernel/bpf/bpf_inode_storage.c                | 185 +++++++++++++-----
+ kernel/bpf/bpf_lsm.c                          |   4 -
+ kernel/trace/bpf_trace.c                      |   8 +
+ security/bpf/hooks.c                          |   7 -
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ .../bpf/prog_tests/inode_local_storage.c      |  72 +++++++
+ .../bpf/progs/inode_storage_recursion.c       |  90 +++++++++
+ 12 files changed, 321 insertions(+), 93 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/inode_local_storage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/inode_storage_recursion.c
+
+--
+2.43.5
 
