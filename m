@@ -1,112 +1,241 @@
-Return-Path: <bpf+bounces-44790-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44791-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 690EC9C7A48
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 18:51:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC5289C7A8A
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 19:02:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 212491F23191
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 17:51:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C2E8B2742A
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 17:52:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 216B2202634;
-	Wed, 13 Nov 2024 17:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90CD20262A;
+	Wed, 13 Nov 2024 17:52:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PhjiuYhI"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FLCbE1qA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57DB51494DD;
-	Wed, 13 Nov 2024 17:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8DC31494DD
+	for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 17:52:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731520267; cv=none; b=aJIYG8m07hJWCiyj5ubI+cUqqH/stmCUUj/LmUJjSn4jVK2BeYVPoAUxVumfjjcrIKbWHQIOiauArnxw64Ii5a2yiGetoH0FjDavyWRd5CWrWMgr3VMSRFgB5wdZA04rUF6Bde1H/ZM/b6iElKnPnsIXnttJc77qq1ophzxTRnc=
+	t=1731520371; cv=none; b=o78YOh0WKF7Dd+YChGvXmm8pQaeu1n1qU9uWa7b2Ltmmrwx6hZXBoBgcvctIL+TcVBYXSnLqMRxR03hRAdtBg2T80CdKZY2/jIddvd8XlZIwe76+f8ml2jjBah1Bb+SGt41DUaOXiM0Hjr4O9SdreWMYhOG/dg35sgZHVnqOcYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731520267; c=relaxed/simple;
-	bh=cgqSQ8xsWHXRGC0MqikHOjOXkKohYabtUMH4O6rqTqs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lyCBcxK884MqMr5ZfYRqdhVtyc7lqezkjQRjs5oEtr519xLIZ1Npjs2Wi4YVGbrCIToX1jC13r2jHjrM1tv37ZwdiNy7e6koijkhXTI6uXZ0CodDDbUp1zxPgMTSdibO27BcZEj1vZ30zoSjaqJYPiDt2g3L4Irl7L6XJC6Nr5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PhjiuYhI; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-7e9e38dd5f1so5465913a12.0;
-        Wed, 13 Nov 2024 09:51:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731520266; x=1732125066; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=x6gtkvcCPZ9I0VV3HqGxEXwX4IHpcNbFDVKM5W6x9oc=;
-        b=PhjiuYhIKeUrBW/U067y06mpj8si2FwNL+8B22A6Io6ms6FByLMOu6Zlv2egpSwmuN
-         MSzG3IWARyBlRh+T7Mc8B1j0lgfHgfuHpRL5dHW1vVYtksEWUTSBAFMKRc94udChcAS3
-         SydEj/Ly31RgUDFZ2rP0CqDzFmmN9e5fFtBXM0D6plnep+KYELCScD4W0vdORfJUCtY0
-         pr+P2StVJDa9tPk4QsSfNGIlosH+dCDUqJGa/hf0O41WYs+Vop/EU26ftwXftRa41PKN
-         ilvRaYYMJiIevDRrmokl+jBJLkPIvP2sWHKwot/+MHK3QAQQcwRbbHGXPnVCxegutuM1
-         Pluw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731520266; x=1732125066;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=x6gtkvcCPZ9I0VV3HqGxEXwX4IHpcNbFDVKM5W6x9oc=;
-        b=XSo8o0+z4n9rKReAvwox4MPHPcs6LiiZzTElw8AAGN331IYH/9LuCyZE7PmrinMfYo
-         v2AB/lO8S37T04L/363rOy7UxkFi+/EJ5iZLAuAoz2kSLbxroZM79AphjOygXJD5Rd/X
-         1y1sibTsSvOXLBCmHm/aPgTKh921offkbTyL6k+nUbcjMEYe6UTvOGsZibD6AjBxyHbA
-         GXvKKlH1ZMMrv4DC5cGVzrC7cH6j/buiASL5kO6SE4WrlBUi2hZNXG8AWXlL/vCgpfSG
-         N3W9CaBteTdRjjHbOb2PLkuq9mA149bHz/cwPIfjYGg3qY0EZvTmeZ5ZOZZN+2SWS+aw
-         T1zQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVDHlROpax0FXUywtk2wfknOAUrTi4NWMIeiX7u95R1TbMfp7znJajrryOIuv8QtCjH4ycitlUuGgPQPQD3+SHR@vger.kernel.org, AJvYcCWK0Ys7IEg2qhsg74W6AYwFLmD/ys3i/BPKn/FeSAKFpkoGp3yCKjUIfRgEnWcyqM4XlT/pLVeijXjbnrfj@vger.kernel.org, AJvYcCXRweiyFkzfqZN420i314FoiQhinNS03Zk/l3qbcLLpeeAEqMLHtyQ9NjZbHr1AQSFO6oI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8UjQyBGEPvhe/7weoX/jAujhfmEJLUGLdQr6kmR+uzmTPFYO5
-	Dy+96pd78BduV01KGATUxrSnkfCkehlt17P7VZXAFFQWhUqbUks=
-X-Google-Smtp-Source: AGHT+IExNgKfZuMC+us/QH4h1GKtke20sX75DpAwViqqCK1JuaDNhybMuTDWjUF/HDbeQAF0/19nWA==
-X-Received: by 2002:a17:903:230a:b0:20c:d1ec:aeb with SMTP id d9443c01a7336-21183cbb269mr279382965ad.21.1731520265693;
-        Wed, 13 Nov 2024 09:51:05 -0800 (PST)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21177dc9073sm112513715ad.1.2024.11.13.09.51.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Nov 2024 09:51:05 -0800 (PST)
-Date: Wed, 13 Nov 2024 09:51:04 -0800
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Alexis =?utf-8?Q?Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>, ebpf@linuxfoundation.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Bastien Curutchet <bastien.curutchet@bootlin.com>,
-	Petar Penkov <ppenkov@google.com>, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 08/10] selftests/bpf: Enable generic tc actions
- in selftests config
-Message-ID: <ZzTnCKwdkSxiaqJe@mini-arch>
-References: <20241113-flow_dissector-v1-0-27c4df0592dc@bootlin.com>
- <20241113-flow_dissector-v1-8-27c4df0592dc@bootlin.com>
+	s=arc-20240116; t=1731520371; c=relaxed/simple;
+	bh=Gaw3faqNwCUHnqKuTQZtbArWPlYhy3IIH56fifhBHAw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ppAu2uIBJEGjZIfU44HY7dMyr0HGrbfXqQPnYy+fzvKojLygseb7kunEGmX/YF2JVRZt04238Bo958ks/s0StIAbg18GfI3V/UgwdMykbKMbkwYQk7HL1z2hga+TrSHH+GCdiuZTwyTTRe5bwotNUZo9ZPOWJ2kZ7mf3f6bGFBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FLCbE1qA; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <27ee9031-3304-49a5-ac82-0fbe50294646@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731520366;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V4aDMmfDOJYCHW4ysXQOHBRGSe8+ayOugdnOtaAmV+M=;
+	b=FLCbE1qAs9X1OTsMrF1FdMoUwxOlnd205DLXKw3lM2ZCNugtPdOVAAedaR3Viu/0kwP5ou
+	fnLoBSczbPL0sycS96erVngLfwLnbIDE5GKES9WP/mlXZKp3Y+hZpMKnW4SiThC13dfv/J
+	6YyZIdxfrEJYHZPjz7Bag3cRn9zxpVs=
+Date: Wed, 13 Nov 2024 17:52:42 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH bpf-next v5 1/4] bpf: add bpf_get_cpu_cycles kfunc
+To: Yonghong Song <yonghong.song@linux.dev>, Vadim Fedorenko
+ <vadfed@meta.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Mykola Lysenko <mykolal@fb.com>, Jakub Kicinski <kuba@kernel.org>
+Cc: x86@kernel.org, bpf@vger.kernel.org,
+ Martin KaFai Lau <martin.lau@linux.dev>
+References: <20241109004158.2259301-1-vadfed@meta.com>
+ <3c10fd70-ef6d-4762-b5a4-7ed912d97693@linux.dev>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <3c10fd70-ef6d-4762-b5a4-7ed912d97693@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241113-flow_dissector-v1-8-27c4df0592dc@bootlin.com>
+X-Migadu-Flow: FLOW_OUT
 
-On 11/13, Alexis Lothoré (eBPF Foundation) wrote:
-> Enable CONFIG_NET_ACT_GACT to allow adding simple actions with tc
-> filters. This is for example needed to migrate test_flow_dissector into
-> the automated testing performed in CI.
+On 13/11/2024 17:38, Yonghong Song wrote:
 > 
-> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+> 
+> 
+> On 11/8/24 4:41 PM, Vadim Fedorenko wrote:
+>> New kfunc to return ARCH-specific timecounter. For x86 BPF JIT converts
+>> it into rdtsc ordered call. Other architectures will get JIT
+>> implementation too if supported. The fallback is to
+>> __arch_get_hw_counter().
+>>
+>> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
+>> ---
+>> v4 -> v5:
+>> * use if instead of ifdef with IS_ENABLED
+>> v3 -> v4:
+>> * change name of the helper to bpf_get_cpu_cycles (Andrii)
+>> * Hide the helper behind CONFIG_GENERIC_GETTIMEOFDAY to avoid exposing
+>>    it on architectures which do not have vDSO functions and data
+>> * reduce the scope of check of inlined functions in verifier to only 2,
+>>    which are actually inlined.
+>> v2 -> v3:
+>> * change name of the helper to bpf_get_cpu_cycles_counter to explicitly
+>>    mention what counter it provides (Andrii)
+>> * move kfunc definition to bpf.h to use it in JIT.
+>> * introduce another kfunc to convert cycles into nanoseconds as more
+>>    meaningful time units for generic tracing use case (Andrii)
+>> v1 -> v2:
+>> * Fix incorrect function return value type to u64
+>> * Introduce bpf_jit_inlines_kfunc_call() and use it in
+>>    mark_fastcall_pattern_for_call() to avoid clobbering in case of
+>>    running programs with no JIT (Eduard)
+>> * Avoid rewriting instruction and check function pointer directly
+>>    in JIT (Alexei)
+>> * Change includes to fix compile issues on non x86 architectures
+>> ---
+>>   arch/x86/net/bpf_jit_comp.c   | 28 ++++++++++++++++++++++++++++
+>>   arch/x86/net/bpf_jit_comp32.c | 14 ++++++++++++++
+>>   include/linux/bpf.h           |  5 +++++
+>>   include/linux/filter.h        |  1 +
+>>   kernel/bpf/core.c             | 11 +++++++++++
+>>   kernel/bpf/helpers.c          | 13 +++++++++++++
+>>   kernel/bpf/verifier.c         | 30 +++++++++++++++++++++++++++++-
+>>   7 files changed, 101 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index 06b080b61aa5..4f78ed93ee7f 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -2126,6 +2126,26 @@ st:            if (is_imm8(insn->off))
+>>           case BPF_JMP | BPF_CALL: {
+>>               u8 *ip = image + addrs[i - 1];
+>> +            if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL &&
+>> +                imm32 == BPF_CALL_IMM(bpf_get_cpu_cycles)) {
+>> +                /* Save RDX because RDTSC will use EDX:EAX to return 
+>> u64 */
+>> +                emit_mov_reg(&prog, true, AUX_REG, BPF_REG_3);
+>> +                if (boot_cpu_has(X86_FEATURE_LFENCE_RDTSC))
+>> +                    EMIT_LFENCE();
+>> +                EMIT2(0x0F, 0x31);
+>> +
+>> +                /* shl RDX, 32 */
+>> +                maybe_emit_1mod(&prog, BPF_REG_3, true);
+>> +                EMIT3(0xC1, add_1reg(0xE0, BPF_REG_3), 32);
+>> +                /* or RAX, RDX */
+>> +                maybe_emit_mod(&prog, BPF_REG_0, BPF_REG_3, true);
+>> +                EMIT2(0x09, add_2reg(0xC0, BPF_REG_0, BPF_REG_3));
+>> +                /* restore RDX from R11 */
+>> +                emit_mov_reg(&prog, true, BPF_REG_3, AUX_REG);
+>> +
+>> +                break;
+>> +            }
+>> +
+>>               func = (u8 *) __bpf_call_base + imm32;
+>>               if (tail_call_reachable) {
+>>                   LOAD_TAIL_CALL_CNT_PTR(bpf_prog->aux->stack_depth);
+>> @@ -3652,3 +3672,11 @@ u64 bpf_arch_uaddress_limit(void)
+>>   {
+>>       return 0;
+>>   }
+>> +
+>> +/* x86-64 JIT can inline kfunc */
+>> +bool bpf_jit_inlines_kfunc_call(s32 imm)
+>> +{
+>> +    if (imm == BPF_CALL_IMM(bpf_get_cpu_cycles))
+>> +        return true;
+>> +    return false;
+>> +}
+>> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/ 
+>> bpf_jit_comp32.c
+>> index de0f9e5f9f73..e6097a371b69 100644
+>> --- a/arch/x86/net/bpf_jit_comp32.c
+>> +++ b/arch/x86/net/bpf_jit_comp32.c
+>> @@ -2094,6 +2094,13 @@ static int do_jit(struct bpf_prog *bpf_prog, 
+>> int *addrs, u8 *image,
+>>               if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+>>                   int err;
+>> +                if (imm32 == BPF_CALL_IMM(bpf_get_cpu_cycles)) {
+>> +                    if (boot_cpu_has(X86_FEATURE_LFENCE_RDTSC))
+>> +                        EMIT3(0x0F, 0xAE, 0xE8);
+>> +                    EMIT2(0x0F, 0x31);
+>> +                    break;
+>> +                }
+>> +
+>>                   err = emit_kfunc_call(bpf_prog,
+>>                                 image + addrs[i],
+>>                                 insn, &prog);
+>> @@ -2621,3 +2628,10 @@ bool bpf_jit_supports_kfunc_call(void)
+>>   {
+>>       return true;
+>>   }
+>> +
+>> +bool bpf_jit_inlines_kfunc_call(s32 imm)
+>> +{
+>> +    if (imm == BPF_CALL_IMM(bpf_get_cpu_cycles))
+>> +        return true;
+>> +    return false;
+>> +}
+> 
+> [...]
+> 
+>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>> index 395221e53832..5c6c0383ebf4 100644
+>> --- a/kernel/bpf/helpers.c
+>> +++ b/kernel/bpf/helpers.c
+>> @@ -23,6 +23,9 @@
+>>   #include <linux/btf_ids.h>
+>>   #include <linux/bpf_mem_alloc.h>
+>>   #include <linux/kasan.h>
+>> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
+>> +#include <vdso/datapage.h>
+>> +#endif
+>>   #include "../../lib/kstrtox.h"
+>> @@ -3023,6 +3026,13 @@ __bpf_kfunc int bpf_copy_from_user_str(void 
+>> *dst, u32 dst__sz, const void __user
+>>       return ret + 1;
+>>   }
+>> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
+>> +__bpf_kfunc u64 bpf_get_cpu_cycles(void)
+>> +{
+>> +    return __arch_get_hw_counter(1, NULL);
+> 
+> Some comment to explain what '1' mean in the above?
 
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+That's arch-specific value which translates to HW implemented counter on
+all architectures which have vDSO gettimeofday() implementation.
+
+For x86 it translates to VDSO_CLOCKMODE_TSC, while for aarch64/RISC-V
+it's VDSO_CLOCKMODE_ARCHTIMER. Actually, for RISC-V the value of the
+first parameter doesn't matter at all, for aarch64 it should be 0.
+The only arch which is more strict about this parameter is x86, but it
+has it's own special name...
+
+> 
+>> +}
+>> +#endif
+>> +
+>>   __bpf_kfunc_end_defs();
+>>   BTF_KFUNCS_START(generic_btf_ids)
+>> @@ -3115,6 +3125,9 @@ BTF_ID_FLAGS(func, bpf_get_kmem_cache)
+>>   BTF_ID_FLAGS(func, bpf_iter_kmem_cache_new, KF_ITER_NEW | KF_SLEEPABLE)
+>>   BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_ITER_NEXT | 
+>> KF_RET_NULL | KF_SLEEPABLE)
+>>   BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | 
+>> KF_SLEEPABLE)
+>> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
+>> +BTF_ID_FLAGS(func, bpf_get_cpu_cycles, KF_FASTCALL)
+>> +#endif
+>>   BTF_KFUNCS_END(common_btf_ids)
+>>   static const struct btf_kfunc_id_set common_kfunc_set = {
+> [...]
+
 
