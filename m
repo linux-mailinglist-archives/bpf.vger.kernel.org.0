@@ -1,116 +1,79 @@
-Return-Path: <bpf+bounces-44786-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45EFB9C7A1E
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 18:43:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71BFF9C7A40
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 18:49:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A399284D02
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 17:43:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6631B3196D
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 17:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0896202650;
-	Wed, 13 Nov 2024 17:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A9252022ED;
+	Wed, 13 Nov 2024 17:19:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kIdry9fU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cm91Zimk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E4702022E4;
-	Wed, 13 Nov 2024 17:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197BE1632FD;
+	Wed, 13 Nov 2024 17:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731519806; cv=none; b=tAz84ZbfrLa9XHNXyXIpsm+B15RFkZo43NG4iBV/ZJG7hIHFjy3m49t9yY4BzEtrUyf/riSDafG6ZnAlSrOYQwfz0X+VPPo4aHKasHyiev/+H5Cm19g45qIIxpjEAwqLF84n93fv4bYDn6dZvekv6tGjWrNvg8BYPs60hSnheYQ=
+	t=1731518344; cv=none; b=pUZpDa4NjF7QUcJUorV/Fx1mc0fuBcNwiciLXnk2g4EBjmOTVAFmigtSVTh1guZasukCivT1vIGJUHm1PBi9sFXwzAC348uQcj5ibErUpSf3fs9NworEZsZ0GUCWaqfKAP2dLBP+gc4Sb5IzZZWUId0lXtNt4ntwC/jYLBCL71A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731519806; c=relaxed/simple;
-	bh=ppk0DUXZE7SCkPcT+d0mwFpKJ2BW3fnSWS8UBzFdzy8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m1R2TSoTLLhoCvq59t9lUIvoRZVRblzAYo7B2R4Ef2QjEr0ms2iTMk4BQQzJ8+RnOXJTvxUFoV2rITsmNlx+r68xVYBMyCxaVl9H9W2crFQ2qh0tnU6MSmWaIXjmezAljPlVpS9zI8+OP5gUpI4bUI6bHJVO8nmnoCv9aPjrbgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kIdry9fU; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20ca388d242so76400155ad.2;
-        Wed, 13 Nov 2024 09:43:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731519804; x=1732124604; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=BV72+3ZpwcNw1vtM04R974G4OSzv6JXyNQR3jeSSWck=;
-        b=kIdry9fUkyWLFsCJ8ave5y8tSwIg7i8t78J+TznDx+S/2BXNvw1mKMHfSx7+0kIrWM
-         IRcbZ5Debd77ivEDPKDNJf9qXlQBzvniXmj1KHz1IGys9MeIezs9dHKnDvpgbaeEDm6R
-         4CnZgmqswksrvGQMGkDHQJGctL18lb5z0ajNrz8pCWs5Blr9uD30omtaOqG0s2J7nDyr
-         gOwlXSHztUvt0W97wQpEgA/HFiaKy18bfjrnTebBMkTdUvbC8qooMfbzHkyMBcqjwekM
-         4bBKtiA1cFYUntBeplhrzTrXyd7N5iYXwn82XNaijJmzqbui6KPnQKGgaFGI6fZ9/Llw
-         dVDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731519804; x=1732124604;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BV72+3ZpwcNw1vtM04R974G4OSzv6JXyNQR3jeSSWck=;
-        b=ReJmhoIbAqU0Ma8J4Djg7tYZSh3SltdZFKK9u0H0gMO5DZVX+bijwlswpl98uko0MN
-         32RiZdUpnXm97TBfBlngHb6KxM2Inbdf+aqpSUQ/DD7aPOXNlQCqc7UCa0LU4Y6mPcsy
-         iWX3fpbBFe5Qr0O3hM4TWLG9Am3FpaaNcTov+iX33HjTzpiAKlS8P1cJ1Hxyk3IZJK1g
-         lezqtVByWh9sgdLkBplHCvniiuwFdj7cZaZQ/s3gBFppmBkMKUIo4T2Kpa295vwttUnL
-         hzd0vQcBSJVG+jRyWDNJw2cudkMaCOXjCI7LTwHjX3RUwTstALBgfEBVkvSTIHMaSlST
-         eaPw==
-X-Forwarded-Encrypted: i=1; AJvYcCWGz+IqJejnYBYsumDhUKQqCitaZhWzSB6wZWvb6llLtKVnJLIBUxuK/emURInY44bwKGhfiica5ovau01d@vger.kernel.org, AJvYcCWKSOzChZ/GVRykBGhYRsZ8T7btUxAZen/4+7Rl215tj9+TrCCohbCJT6lEHPXQy27zmCiTpDAXG0m33iK/HlFQ@vger.kernel.org, AJvYcCWNqyyT8cPvFKLF56lE1n+rHynhOkFecrWaUdi9LBoLwbDqaUslc+emNdjmh0R8HbcSpSI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0vAES++02K/y8auSYOq+Rg/blDuX9GV0IVUD5JNyziM2y2ED2
-	gltI4R0BKZTXW/H6kRCLWp8P1s0d8HNpE/zCpzqLbjABrXFaHnk=
-X-Google-Smtp-Source: AGHT+IHPEWWm6okD4vlePvfsSz/17eemiZD1ccUkGYCho+wfOQkSzsumZEda2hVkg35rk38M6YSOWg==
-X-Received: by 2002:a17:902:e84e:b0:20c:774b:5aeb with SMTP id d9443c01a7336-21183d1024cmr280164975ad.3.1731519804314;
-        Wed, 13 Nov 2024 09:43:24 -0800 (PST)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21177e70408sm112206805ad.260.2024.11.13.09.43.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Nov 2024 09:43:23 -0800 (PST)
-Date: Wed, 13 Nov 2024 09:43:23 -0800
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Alexis =?utf-8?Q?Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>, ebpf@linuxfoundation.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Bastien Curutchet <bastien.curutchet@bootlin.com>,
-	Petar Penkov <ppenkov@google.com>, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 05/10] selftests/bpf: expose all subtests from
- flow_dissector
-Message-ID: <ZzTlO04y8jyZxIm-@mini-arch>
-References: <20241113-flow_dissector-v1-0-27c4df0592dc@bootlin.com>
- <20241113-flow_dissector-v1-5-27c4df0592dc@bootlin.com>
+	s=arc-20240116; t=1731518344; c=relaxed/simple;
+	bh=eTYbVJIlt9pjDfQQC/rqZPZIrsQ0kAelz2j0zUwZgs8=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=QEaNFffurws/m2yfUoCJ839F99gIVJnnQFqj71BN5fn9HydCjnDiam6zwy2Q/XpGeTo+tcnWVIoB9PEWC1UNQw/6kEefzl0Tn2PJB4I9GlCmrezFqG3MkrZpMShiUrtkSfCC8OP1atlgueBwLANo6puD8OvId3PZB9Sbo57qE68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cm91Zimk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAD01C4CEED;
+	Wed, 13 Nov 2024 17:19:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731518343;
+	bh=eTYbVJIlt9pjDfQQC/rqZPZIrsQ0kAelz2j0zUwZgs8=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=Cm91ZimkU6i/o90xLDL4T5a8HUs7va+wIwNovkw59iFTOSge72pvLLGrXkYHpmqxZ
+	 bapVuUrSVlE2X/gcWc4E2rW84v/zPBmjUB6VDBi9pvh44UheSRFjW1IqHdcUOMibs1
+	 jqr3ihFbaEeOA5jVsoZ1R7Zz1Wkfnys+5fZXSK+tAgKj6ZQZWEK+10IiAzRrrI9FcA
+	 B5jgTH6mF3cmOPCZ9ivz6gkI4vPjfdHnwrg9AN3bBZdUmdTwfHleCsVF/f1VoKZeQH
+	 k0bFPVQKHExolieM7H0EsZyVuhAtW981EKBdNNd0qUZPnRdWdxu5eQZwRco66fWRJI
+	 4eMvbf48OIViA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33CD63809A80;
+	Wed, 13 Nov 2024 17:19:15 +0000 (UTC)
+Subject: Re: [GIT PULL] bpf for v6.12-rc8
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20241113030640.24492-1-daniel@iogearbox.net>
+References: <20241113030640.24492-1-daniel@iogearbox.net>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20241113030640.24492-1-daniel@iogearbox.net>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+X-PR-Tracked-Commit-Id: fb86c42a2a5d44e849ddfbc98b8d2f4f40d36ee3
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9f8e716d46c68112484a23d1742d9ec725e082fc
+Message-Id: <173151835375.1293865.15470561655588494554.pr-tracker-bot@kernel.org>
+Date: Wed, 13 Nov 2024 17:19:13 +0000
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: torvalds@linux-foundation.org, bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241113-flow_dissector-v1-5-27c4df0592dc@bootlin.com>
 
-On 11/13, Alexis Lothoré (eBPF Foundation) wrote:
-> The flow_dissector test integrated in test_progs actually runs a wide
-> matrix of tests over different packets types and bpf programs modes, but
-> exposes only 3 main tests, preventing tests users from running specific
-> subtests with a specific input only.
-> 
-> Expose all subtests executed by flow_dissector by using
-> test__start_subtest().
-> 
-> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+The pull request you sent on Wed, 13 Nov 2024 04:06:40 +0100:
 
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9f8e716d46c68112484a23d1742d9ec725e082fc
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
