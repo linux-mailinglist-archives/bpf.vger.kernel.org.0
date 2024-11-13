@@ -1,153 +1,165 @@
-Return-Path: <bpf+bounces-44798-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44799-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 866AD9C7B23
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 19:30:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E7809C7B3B
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 19:33:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 131161F24E2E
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 18:30:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 005961F28456
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 18:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0720920DD47;
-	Wed, 13 Nov 2024 18:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C4B120694A;
+	Wed, 13 Nov 2024 18:30:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tK59r/pI"
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="IOZR70XK"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sonic308-15.consmr.mail.ne1.yahoo.com (sonic308-15.consmr.mail.ne1.yahoo.com [66.163.187.38])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF332076A6;
-	Wed, 13 Nov 2024 18:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C30206070
+	for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 18:30:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.187.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731522464; cv=none; b=jqT03nKTZ2JFJjG7IwjHfKryXvdQnV43kQbKkS7iJTxi+BoxRXvToIvpoftR8vc2r4L3v1aQBL9kx+LbiVvs5QyWqXjl+pHXa+OazcXVlEgvs+maioI3ZXwKTAk/+NenNFowdRvcTAcpURwM4MBfyscVopdHWkBIZpCEoe60NZI=
+	t=1731522606; cv=none; b=RyDm9CuNL//TU5iHMpCcZ0IGNDt+skzprLztksa6ZdEfWEmkSQ7DHABVylEqZ/lt0De9Q0neKsNudk8Lc3Ym0Ra2pAVlhlF1dlZWpz1t/ZOTzvI8Wr+9xamGL4f9onzOttpBw+f8U2MIQyPftGe2voQwhj3Lv4q++kSsSSWwFwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731522464; c=relaxed/simple;
-	bh=E6exQRgO4sdK82FYXUgJ7ORg1cC4LHmn/GIadt+Xi3I=;
+	s=arc-20240116; t=1731522606; c=relaxed/simple;
+	bh=TqQVBVCHriEkNKCOfkPbxVbxF9alnSjCgNiwvehYleg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DASnv8JFmwdODlsS7W7JFFKMQS38ljMSmD794nirlvH3l+dv1YZutLmoxKb1R8b+WUTa3BHt3miadoWOD5g3LoKFmihCPsYxV5/PPFx5dDHaqX3YUkfw3m62C647FYMdwIQ7kwpZGHUFRiBwSDKaPXq3U9XAuNMFCmnIplTK4PU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tK59r/pI; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <548c7b6b-3b84-4053-baa7-72976731ab87@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731522460;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wtq/hCa1avqHR2oznEXfOIIBcgWPUCwPcwLPqp3rxH0=;
-	b=tK59r/pI3vHGzA1E1Vb/b0Or2d9yDK/P7Ko0+iD3P+ZEgxb0tosMamBfp5VYJuettaOUW7
-	kpXUXSk4AnKUk7FY2UHXRI10MuJg5wvbtOfBOQ/M7Yt5rQSfdlNT9PVhHud+w4Y+kCjVRK
-	6Ku2bmKNEQWyyUy/ycvlHr8IsnTK6Rs=
-Date: Wed, 13 Nov 2024 10:27:32 -0800
+	 In-Reply-To:Content-Type; b=ckOOeKmIjNgc7ywiskYfbMMysUP5Iq3tUA2s60Ps6+h5JlaJC1uUxeAOAjQuwsvGOfu9WQqE5yevQg6ebxGYkwutSj47BpSHXiVmcwnEyucQwZYVdsDaiVeh0qcIJLzZtNrCcbCseDyxCLCTQdEt8ommyMlt3yLxJOA+02Obp+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=IOZR70XK; arc=none smtp.client-ip=66.163.187.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1731522603; bh=92DLNUHxdjAQlOdpMMs4zu56cp+QoRjiOMbtt8PhTVs=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=IOZR70XKERAbRc7Ad4k8KHZy3hqft+X8K+5W7mL4lkJoXMSYpXHMSzdSgIQwcMiUjtbQqG5IHbJs6q9xeR/dSIwzItUhDCotZ+ghoLpafRfFc6rVZcIVhsaNvXmZr/J3YKRd+6NqjcHmVE96jHHWGRzoIWe4+Wks/G4cy34+k6pcx06DgG3S2+Ks2W3IOKgk8LALP6B3W3/nC24uhOMeWRYATb32FQIKRWagcTbEvNbqhUvx2loRuG3H50CmevLI8Xd5wOAffGZI11o3W8STEcIwLkQ9hjSh6rCGTuqnTHuUVlj4VMBb8WKz8doouEJzTXEPuBiggnayo1adYFcNWg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1731522603; bh=1n8VMNSw0sJ5ajfb3bl7mepzHnc4yw9UbJ3joUZtj8m=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=CQN2AEFCbE83CtSsGg3JSnOUmQbiON7P+yeMpiI280C4RGWM0waZ6x0XsPj+KmaeQvJRF9xYdTIGermLCkgB/x4iXdbzbEheAXXcOi0D/BlQobWwQCa8aUiT04NiAQPPH6I/YF2FYVYcFcoUeBCqYrS0SXm6LNCJsRp4tfJKXm+uvIl73HUtzDSg3OdUsbGaG+tIKqzyBHLnvFaVcvNgKULsUtN1IzU1VThBXJg02nXRfQsjpu7+fEiGirSood89pc9Gqw/51j5j8wJwGswGuG95fV1n3Y4gOPClq/7OCEg/u2rWudTp7MRXAj6RmbCBa91IfvahRIWs/6jEAZKmLg==
+X-YMail-OSG: eTtnwqAVM1lwPsF1g4WBXIx7I4w3UFTjNnvsNbFcZXCXQgdrxU5_t3veDbyLpc_
+ NkftLcx7faGCM3JfrOFZs1..p1rlCY8KcjzkJ9RVDGjrx_vxkqn317m3rE1jzTtgrxeQQhIRfSMj
+ Gqg_qHQ778FX01aij9KargNRah55yak47ngtKCGCTBbyHnI2JJ2.ykKtmq8FBQLYJy_sFI4bDRdz
+ 25c7J3.kXA5YgmkHH2h1py2fqlMER07Is4UUD1kVabdbrg_HVNEjYvLTe3WcBO9nUyJPc.PQRemy
+ pQiBsHtCKnNMYmLgH8aTrh1Aa3w8j2iN.LFDuzsVWm3NHwyTp3D_a2s9K3dnH8lswIv7qpjg9..e
+ W8jrsfghME5ez0boJaNLHHZipw8bOfoMpyJ0k6DCKqwPBBj4YPKdzKXSq69LbE2mtb24nKlx0_fo
+ OCCQOE3BRj2NoUTMGkB7pBSq9OnS.1M9pOKd.wawJtzqJio8EK_61PpM_8UKvmQNFCfGplyEtydc
+ T8wMWTUUJ26hJw9b_A8BhlBbNDt03NcUIDie_SwoUiTC79jl5RO0NKM762_N8NNiqkC1SMq_mOLG
+ llhWrZs5hsMeRQaZ5yiO8QN6hyNu9puv2GCxjePFbrjtQJVnhJ21_z0UdxPpEzuWM7MsWd.VGaA5
+ FoyW.EvbxGTBnQDHngHKodW014ThaSaHI01jg1N2aF5XPJZzAOyRFsQlKJ7ddRthCBaBhzqc_h5T
+ ohv82JzNCi1igpaH5a6p63t15sU0GByOOXn_V6vae0VXkFi.suMloNFPKHg2u1rKUXsDblbI9nkz
+ dhIuvvEFDZlGcwXpH7Z7l_gtorCYw1CyXuz8Nk9UXGGZVCXI2m0dwQhi_2MITv9.tyxaJgwXNwZu
+ rjRG764eoytSPqLzbh07z74z3W9lo3IADZ7xr7xI.GCtsnJ_Bg1.rp.PcKcRIy0wQ42SZLs5nDNx
+ WYmHJAk61ZvHOIFCEDX8rVH_Tpw8649tYuOEKw.gfPKoUUqUzgygfE0qFl89kltg8PJWR1AiMnuf
+ mxvGned3Je9ncmqWvFntjjLnYbpM1icGAO5QEjny_TnTN.NTH3TQoP4l6Af6_HV3nUUSfm3jneBM
+ UJrkNAB5JfRc0wTI76aehlqUnmM1n9PWznPCrGIkX_Mzgj80yzUlBqUU3QQk84O4z65qRjanar3y
+ K_ybOu7oqVSgXhZOSSOTx0mpsESe_t8LdkkHprQ4d3Do2UmlCpaBOBJYxA8PljGVXlN7TU5lrI9w
+ B24atAyjFRXw5vNuSzLLPEzGrNLkKIY3PiA.Lxmj0c9RgdSK0Og4grfmtWS7KRU8nfqobDb4q9BZ
+ pP45PxIAXkXuaxrR0ZSz3h5hwYuig0kJLwNw_7ygB7WLHgvE_.Z1qLKLYIsrYmWkLG2QEowrG_Hd
+ TofH1DY6BvXXDg4rF8jc5G3oE8ANO5Wz.XbO.tulY6Cyf6yHgNKHLj99law_HMooEfUw7wzr2wmK
+ FekmQtLresU773IimLyXpKSU0sNh71cWmfBwNETiUnXenmuJp6oyqPPxDyn1k3.77r9j4wqi232E
+ RB9raIuFXArCP9d2E_CInHC2ZzI32DPFL0IrtjtSS8lsY7zRDfUIFwB88mLI6Lu1oYYFaDJYzfHs
+ v9bMhOTkYvyp6Ou6xIrN94ghqu1fHPuh.7eZ4cAttYcEfy8RD_RS.ky8ZpPitr_rPi39YZCiiDed
+ 4PbPI4JnY8rsZYMPUe1oXSaFybtesnWNTVXsUYDUnyzS88PXXwfvf4UqPXigR34SyUytSn0Hb9p8
+ 5pe0oQMjIq0phWpeWThkLrcHyrjmTJs0BpN5U0ueiLP_i34mldwSkbyhcm55VlzzF.fDmFxiGI9r
+ WUSMk1GxTlKy6T.6PeS45cX3OdYZYEkI6iZWEzoN7cylnEt5eMSb9Yl1_bLkqpCrWVlppcKmUMf4
+ itPAtdGiw_YFcyge2jD1mhpaBDiHVJ.DWj7_SrayhglJq.i9m0z7AJGY1KSQfWRCjsobC_UBGeDr
+ qQYlDfAVdTj_jVAtb7cd1h2_RdbA4IjkUs8LS06YO8.4Ge2txPCVHmEYZz0VSRCZBBd07mvKULVZ
+ v61eN465NT.qNBJmoVdRkJVhIs1s9u0F7n3Fk3uoGdqkY_C0NTFLNvtfshMxnMf_Dh21fLdngZQe
+ QGx4UHVlSgzNFFkaj_P1SVudL0lgKsN1.r0qOwy4UQ70r0ZYvbdjFpkSkLQYzuNW0xRkhed2MF0L
+ NiOP_9gVdhkxO4SY_JFPgxiK30X_NO7X.3du5kM3gaEIa.NYgwDPxjjrA2jRrguqmiMWyxsiU61y
+ HHhc.bKs-
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 71e488c6-e823-4e79-9756-32b77378fd19
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Wed, 13 Nov 2024 18:30:03 +0000
+Received: by hermes--production-gq1-5dd4b47f46-5kxd4 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID af2e520e4fc25b996d153d4d132eb18f;
+          Wed, 13 Nov 2024 18:29:59 +0000 (UTC)
+Message-ID: <1cd17944-8c1f-4b13-9ac5-912086fbead6@schaufler-ca.com>
+Date: Wed, 13 Nov 2024 10:29:57 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH dwarves 3/3] dwarf_loader: Check DW_OP_[GNU_]entry_value
- for possible parameter matching
-Content-Language: en-GB
-To: Alan Maguire <alan.maguire@oracle.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
- dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Song Liu <song@kernel.org>
-References: <20241108180508.1196431-1-yonghong.song@linux.dev>
- <20241108180524.1198900-1-yonghong.song@linux.dev>
- <b32b2892-31b1-4dc0-8398-d8fadfaafcc6@oracle.com>
- <5be88704-1bb0-4332-8626-26e7c908184c@linux.dev>
- <e311899e-5502-4d46-b9ee-edc0ee9dd023@oracle.com>
- <48a2d5a2-38e0-4c36-90cc-122602ff6386@linux.dev>
- <5e640168-7753-413a-ab00-f297948e84ef@oracle.com> <ZzOoGJBiL-l6BfQd@x1>
- <71778df3-62a6-4b1d-9ccf-4a8eb0e23828@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <71778df3-62a6-4b1d-9ccf-4a8eb0e23828@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 2/4] bpf: Make bpf inode storage available to
+ tracing program
+To: Song Liu <songliubraving@meta.com>, Christian Brauner <brauner@kernel.org>
+Cc: Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-security-module@vger.kernel.org"
+ <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>,
+ "andrii@kernel.org" <andrii@kernel.org>,
+ "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "martin.lau@linux.dev" <martin.lau@linux.dev>,
+ "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+ "jack@suse.cz" <jack@suse.cz>, "kpsingh@kernel.org" <kpsingh@kernel.org>,
+ "mattbobrowski@google.com" <mattbobrowski@google.com>,
+ "amir73il@gmail.com" <amir73il@gmail.com>,
+ "repnop@google.com" <repnop@google.com>,
+ "jlayton@kernel.org" <jlayton@kernel.org>, Josef Bacik
+ <josef@toxicpanda.com>, "mic@digikod.net" <mic@digikod.net>,
+ "gnoack@google.com" <gnoack@google.com>,
+ Casey Schaufler <casey@schaufler-ca.com>
+References: <20241112082600.298035-1-song@kernel.org>
+ <20241112082600.298035-3-song@kernel.org>
+ <20241113-sensation-morgen-852f49484fd8@brauner>
+ <2621E9B1-D3F7-47D5-A185-7EA47AF750B3@fb.com>
+Content-Language: en-US
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <2621E9B1-D3F7-47D5-A185-7EA47AF750B3@fb.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Mailer: WebService/1.1.22876 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-
-
-
-On 11/13/24 9:33 AM, Alan Maguire wrote:
-> On 12/11/2024 19:10, Arnaldo Carvalho de Melo wrote:
->> On Tue, Nov 12, 2024 at 06:33:38PM +0000, Alan Maguire wrote:
->>> On 12/11/2024 17:07, Yonghong Song wrote:
->>>> On 11/12/24 8:56 AM, Alan Maguire wrote:
->>>>> On 12/11/2024 01:51, Yonghong Song wrote:
->>>>>> On 11/11/24 7:39 AM, Alan Maguire wrote:
->>>>> "for one of internal 6.11 kernel, there are 62498 functions in BTF and
->>>>> perf_event_read() is not there. With this patch, there are 61552
->>>>> functions in BTF and perf_event_read() is included."
->>>>> These numbers suggest you lost nearly 1000 functions when building
->>>>> vmlinux BTF with pahole using this series. That's the part I don't
->>>>> understand - we should just see a gain in numbers of functions in
->>>>> vmlinux BTF, right? Did you mean 62552 functions rather than 61552
->>>>> perhaps?tion
->>   
->>>> Sorry, really embarrassing. it is typo. Indeed it should be 62552 functions
->>>> in BTF instead.
->>   
->>> No problem, makes perfect sense now, thanks! I'm trying to reproduce the
->>> core dumps Eduard saw now with this setup; I'll report back if I manage
->>> to do so and see if locks as Jiri and Arnaldo suggested help. If so a v2
->>> along the lines of Eduard's suggested change plus locking might be the
->>> best approach, what do you think? Thanks!
->> So the idea is to try to see what are the data structures that are
->> being corrupted in the features we use from elfutils libraries and check
->> how they are being protected via their non-default enabled experimental
->> thread safety locks and then use it before calling their functions that
->> would use those locks.
->>
->> At some point we need to do some feature check to see if the lock is
->> enabled there and avoid adding it from pahole's side.
->>
->> I.e. a transitional strategy to keep pahole -j feature that works with
->> older elfutils versions as well as with modern, thread safe ones.
->>
->> This was used with the existing libdw__lock we have in the pahole
->> codebase with, AFAIK, good results.
->>
-> Thanks for the additional info! From Eduard's analysis, it seems like it
-> is safer to take the libdw__lock around dwarf_getlocation(s), since
-> multiple threads can access the CU location cache. I've tried tweaking
-> Eduard's modification of Yonghong's original patch and adding a second
-> patch to add locking; with these two patches applied
+On 11/13/2024 6:15 AM, Song Liu wrote:
+> Hi Christian, 
 >
-> - we see the desired behaviour where perf_event_read() is present in
-> BTF; and
-> - we don't see any segmentation faults after ~700 iterations where I saw
-> one every 200 or so before
+> Thanks for your review. 
 >
-> Yonghong, Eduard - do these changes look okay from your side? Feel free
-> to resubmit if so (fixing up attributions as you see fit if they look
-> wrong of course). Thanks!
+>> On Nov 13, 2024, at 2:19 AM, Christian Brauner <brauner@kernel.org> wrote:
+> [...]
+>
+>>> diff --git a/include/linux/fs.h b/include/linux/fs.h
+>>> index 3559446279c1..479097e4dd5b 100644
+>>> --- a/include/linux/fs.h
+>>> +++ b/include/linux/fs.h
+>>> @@ -79,6 +79,7 @@ struct fs_context;
+>>> struct fs_parameter_spec;
+>>> struct fileattr;
+>>> struct iomap_ops;
+>>> +struct bpf_local_storage;
+>>>
+>>> extern void __init inode_init(void);
+>>> extern void __init inode_init_early(void);
+>>> @@ -648,6 +649,9 @@ struct inode {
+>>> #ifdef CONFIG_SECURITY
+>>> void *i_security;
+>>> #endif
+>>> +#ifdef CONFIG_BPF_SYSCALL
+>>> + struct bpf_local_storage __rcu *i_bpf_storage;
+>>> +#endif
+>> Sorry, we're not growing struct inode for this. It just keeps getting
+>> bigger. Last cycle we freed up 8 bytes to shrink it and we're not going
+>> to waste them on special-purpose stuff. We already NAKed someone else's
+>> pet field here.
+> Would it be acceptable if we union i_bpf_storage with i_security?
 
-Thanks Alan for working on this. The following are some suggestions for patch one:
-   1. rename __dwarf_getlocations() to __parameter__locations()?
-   2. rename param_reg_at_entry to parameter__locations()?
-   3. You missed the following:
-static int param_reg_at_entry(Dwarf_Attribute *attr, int expected_reg)
-{
-...
-         if (first_expr)                     // this line
-                 return first_expr->atom;    // this line
-         return -1;
-}
+No!
 
-Patch 2 needs adjustment as well due to the above point #3.
-Otherwise, LGTM. Since you are already preparing the patch,
-please go ahead to pose v2 after you fixing the above things.
+> IOW, if CONFIG_SECURITY is enabled, we will use existing logic. 
+> If CONFIG_SECURITY is not enabled, we will use i_bpf_storage. 
+> Given majority of default configs have CONFIG_SECURITY=y, this 
+> will not grow inode for most users. OTOH, users with 
+> CONFIG_SECURITY=n && CONFIG_BPF_SYSCALL=y combination can still 
+> use inode local storage in the tracing BPF programs. 
+>
+> Does this make sense?
+
+All it would take is one BPF programmer assuming that CONFIG_SECURITY=n
+is the norm for this to blow up spectacularly.
 
 >
-> Alan
-
+> Thanks,
+> Song 
+>
 
