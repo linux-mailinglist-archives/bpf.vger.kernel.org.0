@@ -1,105 +1,129 @@
-Return-Path: <bpf+bounces-44721-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44722-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77C269C6A43
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 09:03:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 765469C6B86
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 10:36:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8750B237A0
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 08:03:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23F9A2840B1
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 09:36:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9EFD189B86;
-	Wed, 13 Nov 2024 08:03:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D7A1F77AC;
+	Wed, 13 Nov 2024 09:36:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vahedi.org header.i=@vahedi.org header.b="ramRqTKG"
+	dkim=pass (1024-bit key) header.d=collabora.com header.i=laura.nao@collabora.com header.b="al5Jqn40"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3755F18595E
-	for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 08:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731485027; cv=none; b=TANdIeOp5m7qhU5/WJqmGGvY8zAkyFTiS1q/ySpxoSfLUzalAmwjsq3EzQAJSjUXItq0eNXRZ7nvBjpxjmjrlwoM0I3CsgKS6OUjbOwIZ1HdIQ3nLgBtE9eCmokwHEsfcsybM1Cc2bnYAyytxpkxz/NAXrvxJCGECc7rL1kIoIg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731485027; c=relaxed/simple;
-	bh=9bkdI7aPmf2NlA1l+V03H+kg5MblsdE4hSkBMw4jzLM=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=D45RSQ5mLfw12L5zQVc7SxNBhtSZ+dTHGVmKPHVRB7DqCo5hBCNtcErQnNLbuNXwmcga3J5IdvwPGDcHX2EkCIPXh94UuRo+o89ETKhRi7PUNhFZluzVSPovBH1jDY8BhChteW96hagCnVOmH1wuoAyT9o87SwnelSjraiyIJQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vahedi.org; spf=pass smtp.mailfrom=vahedi.org; dkim=pass (2048-bit key) header.d=vahedi.org header.i=@vahedi.org header.b=ramRqTKG; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vahedi.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vahedi.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E30A18A6D1;
+	Wed, 13 Nov 2024 09:36:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731490596; cv=pass; b=DvTVOPvl7BCEASpulsqy8sU6dc+OnkwM14U9YHrBisImS5jtY6owrJJfzsh2v7KE+/ysz823OwEdeonvxPOBo4cKUEZimesml6uTJkA+iHw2QZ96ITLvGs2tYSDWXeyRha/uprfYWahlFW5mEvSy4eImHTmxH7/IqeTOO9lQ3zg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731490596; c=relaxed/simple;
+	bh=G/PPIWUKDquwuz1Fp1afut8we4tEfYfyAYTMs+8Hc9Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AzjmTB7e6tiAHLLGfzcdVVR0W+v2z8kE4a9QaCAjyKf7VcsPLpMNir7F7yJhmYM1V2JjZmmbgrj8xw5Q/KGgCodzCJDFYZQ7Y/zNWrwF0QW0ICqbU3CwTYhvBiBJ/WDOVz/LDivXW+pJqbxbc9rLpNxuXoOXXi5WBKztFl/zUMk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=laura.nao@collabora.com header.b=al5Jqn40; arc=pass smtp.client-ip=136.143.188.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+ARC-Seal: i=1; a=rsa-sha256; t=1731490582; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=fIE6aOUOUMd0Ve6/RTlxdS6G7iMFSSethcOwWHFbOYgDDVnZXQgciiynV2l7Nct877vmC70zsgejx/r33gY4lztYHIBHErQFeI/HTkybQmyfBJrL1vhFrI9zQWURPc7rmPI86L0aFlLc8ZIMyLWNJpnwADrPbVhJun2sneOTg+s=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1731490582; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=TJfEmYEhbGQhswwb5+U7HA/wWFpu51ttU5Sd0h5wvgo=; 
+	b=E31xkO2iwCSmt2Kl00mK+Wqdx/dR8sWuCZVks6n/k2glsT38Tt7sYP0Cvii5SN8pclfewj6/HSV92aea8uYksT8xPIfTkQeLdwWPkUroAuYeB5K8GPQxIRa/DmKoNOwC2IHpzUjUNMcAe3c2jikFdUhToO4EywgTO9T8lm43V7A=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=collabora.com;
+	spf=pass  smtp.mailfrom=laura.nao@collabora.com;
+	dmarc=pass header.from=<laura.nao@collabora.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1731490582;
+	s=zohomail; d=collabora.com; i=laura.nao@collabora.com;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding:Reply-To;
+	bh=TJfEmYEhbGQhswwb5+U7HA/wWFpu51ttU5Sd0h5wvgo=;
+	b=al5Jqn40DBMKnXdJtWz+DGp78qDMJAKI4tkP7qL/LnBG9Hi/h7btkoDQ5iYfpPk9
+	7w698vPtPvF18DEkfiNvN8jSgqi4+lHF1Uai4tqA3+J46N5y04PujFnsn3rFUxXDZPu
+	Okv3/OWraAQgZS4koiU06L9m7L6olB88Pt8NAoEA=
+Received: by mx.zohomail.com with SMTPS id 1731490581620674.1613596696902;
+	Wed, 13 Nov 2024 01:36:21 -0800 (PST)
+From: Laura Nao <laura.nao@collabora.com>
+To: alan.maguire@oracle.com
+Cc: bpf@vger.kernel.org,
+	chrome-platform@lists.linux.dev,
+	kernel@collabora.com,
+	laura.nao@collabora.com,
+	linux-kernel@vger.kernel.org,
+	regressions@lists.linux.dev
+Subject: Re: [REGRESSION] module BTF validation failure (Error -22) on next
+Date: Wed, 13 Nov 2024 10:37:03 +0100
+Message-Id: <20241113093703.9936-1-laura.nao@collabora.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <90b3b613-8665-425b-8132-5b9ac86ab616@oracle.com>
+References: <90b3b613-8665-425b-8132-5b9ac86ab616@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vahedi.org; s=key1;
-	t=1731485020;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EU1k9AMEn/tc26JK+CGYVsgo3nAeKg3I3puW7ATTdAM=;
-	b=ramRqTKGMlEWUG6s8JlLeeewYyPHOO1FlckkgQKa2+duIcS10fkhQf97a9r6F5EZAlIdkQ
-	yfLymEAegdz+pjls2QXVoMI5y7CzSsX7HF0B4VFAoXPIWKYKkdSx4CkzQuF3W6UtPzwhoO
-	asb0qODJMEpQorv7vtWDdgqp4helBnPPOMXi8ESmHSYFN/GkWDvNZaBe6OvBZS5F7X7axY
-	j8HMdXSxJW/+ksbo0R4fH+FkPfRobdsHovUAhehl9cxHYBtvWt7mcoLe2du6dkchg13YhZ
-	cQmF4DfdamuhYdwf2dXuDcETwsmfWVgS9IySjtXJE0JzCBbStAukA3VaL3OXPA==
-Date: Wed, 13 Nov 2024 08:03:38 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Shahab Vahedi" <list+bpf@vahedi.org>
-Message-ID: <c617471892505a16188397d4120b21ebd553a457@vahedi.org>
-TLS-Required: No
-Subject: Re: [PATCH] ARC: bpf_jit_arcv2: Remove redundant condition check
-To: "Hardevsinh Palaniya" <hardevsinh.palaniya@siliconsignals.io>, "Vadim 
- Fedorenko" <vadim.fedorenko@linux.dev>, ast@kernel.org, andrii@kernel.org
-Cc: "Daniel Borkmann" <daniel@iogearbox.net>, "Martin KaFai Lau"
- <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>, "Song 
- Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "John 
- Fastabend" <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>,
- "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
- "Jiri Olsa" <jolsa@kernel.org>, "Vineet Gupta" <vgupta@kernel.org>,
- bpf@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <PN0P287MB28435A985BADB4B4D857223AFF5A2@PN0P287MB2843.INDP287.PROD.OUTLOOK.COM>
-References: <20241111142028.67708-1-hardevsinh.palaniya@siliconsignals.io>
- <e6d27adb-151c-46c1-9668-1cd2b492321b@linux.dev>
- <6454497ff35d2a534cd34b7635fb044e4033fe6b@vahedi.org>
- <PN0P287MB28435A985BADB4B4D857223AFF5A2@PN0P287MB2843.INDP287.PROD.OUTLOOK.COM>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 
-Hardev wrote:
+Hi Alan,
 
-> Shahab wrote:=C2=A0
-> >=20=20
->=20> Vadim wrote:
-> > >=20
->=20> >=20
->=20> > The original code is obviously optimized out, but the intention, =
-I
-> > > believe, was to check if the jump is conditional or not.
-> > > So the proper fix should change the code to check cond:
-> > >
-> > >   - if (ARC_CC_AL)
-> > >   + if (cond =3D=3D ARC_CC_AL)
-> >
-> >=20
->=20> That is absolutely correct. If a new patch is not submitted soon
-> > I'll try to fix it myself.
->
-> if you are okay with that then I can proceed by submitting version 2
-> of the patch with the proposed changes included
+On 11/7/24 16:05, Alan Maguire wrote:
+> Thanks for the report! Judging from the config, you're seeing this with
+> pahole v1.24. I have seen issues like this in the past where during a
+> kernel build, module BTF has been built against vmlinux BTF, and then
+> something later re-triggers vmlinux BTF generation. If that re-triggered
+> vmlinux BTF does not use the same type ids for types, this can result in
+> mismatch errors as above since modules are referring to out-of-date type
+> ids in vmlinux. That's just a preliminary guess though, we'll
+> need more info to help get to the bottom of this.
+> 
+> A few suggestions to help debug this:
+> 
+> - if you have build logs, check BTF generation of vmlinux. Did it in
+> fact happen twice perhaps? Even better if, if kernel CI saves logs, feel
+> free to send a pointer and I'll take a look.
 
-Of course. Please go ahead. To be clear, What I meant by "soon" was
-something around a week time.
+Thanks for the pointers!
 
+From what I can tell in the logs, the BTF generation of vmlinux only 
+occurred once. The automated build process in KernelCI generally involves 
+building the kernel first, followed by the modules and other artifacts 
+(such as the kselftest archive). 
+The full build log can be downloaded by selecting 'build_log' from 
+the dropdown menu at the top of this page:
 
-Cheers,
-Shahab
+https://kernelci-api.westus3.cloudapp.azure.com/viewer?node_id=6732f41d58937056c61734ab
+
+I do see some warnings reported in the logs though:
+
+WARN: resolve_btfids: unresolved symbol bpf_lsm_task_getsecid_obj
+WARN: resolve_btfids: unresolved symbol bpf_lsm_current_getsecid_subj
+
+> - can you post the vmlinux (stripped of DWARF data if possible to limit
+> size) and one of the failing modules somewhere so we can analyze?
+> - Failing that,
+> bpftool btf dump file /path/2/vmlinux_from_build > vmlinux.raw
+> and upload of the vmlinux.raw and one of the failing module .kos would help.
+> 
+
+Currently, KernelCI only retains the bzImage, not the vmlinux binary. The 
+bzImage can be downloaded from the same link mentioned above by selecting 
+'kernel' from the dropdown menu (modules can also be downloaded the same
+way). I’ll try to replicate the build on my end and share the vmlinux 
+with DWARF data stripped for convenience.
+
+Thanks,
+
+Laura
+
 
