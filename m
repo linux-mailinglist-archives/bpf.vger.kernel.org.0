@@ -1,111 +1,182 @@
-Return-Path: <bpf+bounces-44794-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44797-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF9EC9C7A85
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 19:01:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B80E9C7AE0
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 19:16:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07C34B359F2
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 18:01:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9623B1F22153
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 18:16:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C565C2022F2;
-	Wed, 13 Nov 2024 17:59:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F4E174EFA;
+	Wed, 13 Nov 2024 18:16:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VToI0X0o"
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="BBQGjNFK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from sonic310-30.consmr.mail.ne1.yahoo.com (sonic310-30.consmr.mail.ne1.yahoo.com [66.163.186.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2594374C4;
-	Wed, 13 Nov 2024 17:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FD0613D8B1
+	for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 18:16:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.186.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731520753; cv=none; b=parRFJKVF483gbkVB0hqfjt3h+RsRNLgj1nTom4JWyQX6MdAuMBdQlpLIyyzkeyHFUx367Yf4PYFUlzXOHYROAuZDLPeMovxibDjtiFEhBYHfsyP/oBD55Iu8FY2qppSnJyPdJY8ecCa5nJCcYPTbhhprV1gH9KikDiIQZAfooI=
+	t=1731521803; cv=none; b=NVUBRZFbLewSLmmFVTLvDgGGEQ98pg9mtFGcC3MNJb0B837Q7JdFq5d9omjDxSXgJjIsQFfeNWzhM3rnbpHvM9+a+bGIJjvUMIc5XgMAz3F3AlqlucuC5QvW5dWxaZjGVn/anKf4ugpaTCHJvUoURt+FLoTXuqNPbyOi79ZspCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731520753; c=relaxed/simple;
-	bh=FvI8dNWt1XzzwNR9jrLk1P2nfJK1ic/KFVBxI1WuEDw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=umwmkD/S7y2IPg4qvtcdnOPDlM4aVyNypRD5uOIxW53pq5S06L1hTrFzK5WoMQskt1ZWw0jIEyD8HVrSOtIjfMpltiSRQB9/d8JEvmK1vcpGsPemXjklSzvoDa52pCJoAdxB8NyclnUY8EkH1/If2V5u9TbU/NnrHOTOKUvMyzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VToI0X0o; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2113da91b53so53432035ad.3;
-        Wed, 13 Nov 2024 09:59:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731520751; x=1732125551; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7QU6eCVp1bzsezZotXldnZDkljMrGl4ICLAg+W/F8jg=;
-        b=VToI0X0oXv2d6Ogv0d/GgZJXcKB+ryUDfWLGd1QA7UX8xTOA+atULWk0AxLkACGefu
-         McsfjvwyeLZBQBwZ6SqAth6WQRZwaIoDs45SvJxF4nFZIyfa6zrpTgLb+WlW/L32mV6s
-         VLZA3yL2xI6vzAi4zlaQygSP7Ao/UnfG9jvqN5ZMEvwWUB12xyotbTH1NB9zubBVRt4P
-         AGJ9OtQ/f3PvIhVdgR6e3DuC/bdqpMewjzXYxNu5fQM8tshQR6c0hxJSWVszkulNx+rL
-         fFbKm42M0W0mAhRLkCdznX6cGUQ+HHx++rE1C9bd6gjRZYKss5OzXLC5UPenVVnpbB9w
-         eGHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731520751; x=1732125551;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7QU6eCVp1bzsezZotXldnZDkljMrGl4ICLAg+W/F8jg=;
-        b=n+pWcOw2WRc0S9XBARDiB8P0gLhWPlUgvMQkGIJBVaGicrLAIT/hjxflS0D5pLF5ip
-         S9n2fuukGH+y1l+I5wrZ2CNLM6iz8mLjn27NJgcuc/kBoQYujYLEkEP9zlav6uHtZDuZ
-         tJRd4JjbeWXtmF5AUkJ5ChoDb1eD4GrwOgAY9V6sa1qb6UgdjSNJmB8kcMFe/UgeIduG
-         MbBXgbre/rb8DVfx5qhepfX0xk8+3vXrHiT723RaITeHrFxhFfEtnBIUEYyDwxXWVG9z
-         p9rLT/9fqr8Z0iKCt+uq2pXcEvnOCIgXYg8BnIvLthP+4cR9S711qZkdQXuuqYfzPlKr
-         SmEg==
-X-Forwarded-Encrypted: i=1; AJvYcCUnpnSOd6W9h3rU9sC8eh7Kq9/K0FQ2c2/LvPNFrBPLkX+FRqcR52ISS4km4xkQbJ+7ZS3NjrcYgMAe/Io5RnDU@vger.kernel.org, AJvYcCW6GLw3YNT52RvoBtOHgeIqyPn4sR7QERq896IlXrWRNGuKxVbUFDUTbVFU9iwKjpQsDSAnLHDIrBgMP1n6@vger.kernel.org, AJvYcCXgfDrAq/9szz+qfMmFkrh+nORhN+v6Q1zz1yom9W+zzScioBvmBIr+9b0aiiiMxfipIso=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwkbcVvfB7eDn5ugsk+AS0e4C6FgcYaDV6aWrqtoWNEWMoZGzfF
-	Bz982kfyT3kXaAdbqhomZSE6y2YLQiCrh//sSK0wCtLuWIVCzAQ=
-X-Google-Smtp-Source: AGHT+IEkhNrGbY20mPHNStDw/5A5v5/HFu2nkrc8z587y6bTl9+lun4HaV3eMTadxeZDuPuoOWsDWw==
-X-Received: by 2002:a17:902:ce89:b0:20b:a10c:9bdf with SMTP id d9443c01a7336-21183d67d05mr308594605ad.32.1731520751230;
-        Wed, 13 Nov 2024 09:59:11 -0800 (PST)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21177e45839sm112845395ad.143.2024.11.13.09.59.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Nov 2024 09:59:10 -0800 (PST)
-Date: Wed, 13 Nov 2024 09:59:10 -0800
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Alexis =?utf-8?Q?Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>, ebpf@linuxfoundation.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Bastien Curutchet <bastien.curutchet@bootlin.com>,
-	Petar Penkov <ppenkov@google.com>, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 10/10] selftests/bpf: remove
- test_flow_dissector.sh
-Message-ID: <ZzTo7mTsFfbBIihU@mini-arch>
-References: <20241113-flow_dissector-v1-0-27c4df0592dc@bootlin.com>
- <20241113-flow_dissector-v1-10-27c4df0592dc@bootlin.com>
+	s=arc-20240116; t=1731521803; c=relaxed/simple;
+	bh=98TZmzT2MooiEezIeSkgUrdFZXX490rOVv6Tto3W0wQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JPk4+oArE+EGMFuhtkb3a9ZgXD8GV6OCcSHzVUoDT7fOtB85kZM77DObO2czj0ZlYjheMDAauF7etas7Rb4Nr2uH8xy5PqfU4jilppxWq0Mq+a60ZQLShLoou+OL5jJCKNRL2B071I3+0/SaAsZhek8k46YX1R/TYUiKPCz3d/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=BBQGjNFK; arc=none smtp.client-ip=66.163.186.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1731521795; bh=nK3uVT0icuqVtInCsSNHN4I+MCkUBZj85NQuNcPcveQ=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=BBQGjNFKCOrMnODOnGG382npnC7ZeH5NRQmjZdBM2kHpbeqVdxERVJ7Tvii8qj5k3CL6usuj3yrdh8PWWZ+8oDTV/6HZ3jWJmLgrkL9dg9GZG39gHpdfmlq+kOnkfJkmXu1DbA3H0UrAKkSdQfy2D1+azEpjJJfNiSTKvV6ckIjasLm8hMbOE48vQ8hZg/u07WzBpYMlyAaqzpazPR7sNRaPQ/Bi0J3sCKfdhd3zY2TrmBQiFdmrvOHQXgjv4MZM6haF1lRRIzYWzBeyLzcbbXIOqXyO0hdd+U2IgazYm3WZgJKH7B+lanAcmdE/5eRJSR1a0Y502kXDFe+xVlhyMA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1731521795; bh=BNlNYR5UrzceehY+vKtuO8A7BaaRHoKIyqXSV5Kqeoc=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=m6X530obMM8UbRAc0/PVTz8pGlU3lSWeSlibtRMbT7cqkWuFtdMo0GdCK+zTn8A6nL5vpb04z5UMWykmWUuUhJ5zs5SO19ZpjdD+af2QEuTlOGRlNpD+k0ZHkbV00QSUxkTWDNxuTS1IzAV8wgxHs+nMc++k8rHw5x/g/4O2kGQ+EgxdEiy0Fkvjc6R4QcgVmnWB5rssFeQMBZjAODKRxTNXV2geUIFYJeaAd8J/xjUhjh/1n/5ZieCD6hRzMDjIGobpaMETayQEEhSvaGJuIoJQ7orjXsVjVxcZQpxBw9N20agrxUHEZWnygU4LDfTjqodSKdygBKJ9oNxO0g2N3A==
+X-YMail-OSG: Uxjk32kVM1luneeRTquscdUZ4LgKFH.IAkCUxC5LV.UP.gulMSYd04ah4LUwcU0
+ LD3.wRosaVEzYtfAkWU7Z_LTYnQ06y_oxjnJmpDKzhMCWg2njhnkUHtCgITevk6nyHfbi5UH2NOU
+ 2IxCzvy1k4ZlfLkvf2jIFDytUpSSOYI7k3c.6JGqQjF.8V5kadDoX8nejGdOVIB8rOuLeA.7pAmX
+ zMZ_X2NpJBcO8kOZpCFDte2lwLxsWn4Sct6mXUDJt7_y5.FZXQHx0my9ULIphC2sZRHvAukfYO9P
+ s2Y19pY_Onm5JTnCqj4Wj8xFKcI9ku6bdZLSqQCmaIFTLSrrqfZ8brcTUW8gRQQ.28yCrJhBO7fU
+ KYxUUMApjUTiLDj4Nwt4GR.B_BOfcH7QK5.kQBQ3HFYmhn2XYIURB7cXmyP8xYlK0qqTSJYPTfiX
+ w0vQ4xksf_WkGwjXZCG6AukyhckFdWTXLMAhw8GoyJ9Qsspx39XR8HqioGmxM30yzdmIyIybZUkt
+ WCU6blPIEextXkCMEJDDf_8JrCq4zSEaWlqU3wC0B9FAOTQkrLDhoZNcqrXxmzkx7fxst.ooBHxn
+ EsXfJMegnFMoYeZna9WALp9v8TVFiKniRPioMjmR9RGcdolK3QzxDdddO0_EOr1TCSoFk1gE..Iu
+ 6mSRCiOctTPG9ZdDhZ6PPLfn.PUHHfrRncIlVtTxf_g6WmKo_lJXorFe.ginNVOWXt4m1sW77FOM
+ xbg.C5nI9lDIVCFjhp6uRbociKZtOYdhhXzqKYPYVwgXhRjznQX4jp9QuWWtycetTQRi8l1DjCeG
+ CAWgMGQDsK1aYkEhamOF48xjHFnuH8x7Tby8NZtrZ1g4IS1OgRN9l381_35EnPp8hYXFmvKzRSLw
+ Cu8OvKIhjvpeXJqxOHH5XY4iJNNMxvgB29_rMPxotTzWIbUmUshaQwLuHIkZgC9GFFRuXpHDqBnW
+ WShy4OBMVtxy8PgSa7oLGN7VO7bV6vE0K4.srHyEdQb9YTrEYUSvUmcrKRgCexTusTzp9NuTl8LS
+ _tLM6OcOMMyVVj00GRip_5yF0qqv5lTI5OAzos73R4WkyT6d1BElDysgjrokJnJqxn8IAjp8rkMF
+ dZIYsaagoaBwwrp_KpbVBTGTh8RtLU5wcqSS0pNSoz2MdMIIlUCU_li3omFvzLuvv.eqExNoffwJ
+ 9I_sJB9uvHsSVjRjb0XIuc9awy0m_twhjpRajB4I9rXYiHPYZG_B_YpNjiD9ZwGWkz6xqgwknNvS
+ jbwNXzqxvJBniwa4won.ARKeNwvJPKrppCyMohuH49R_4CeyCwiUpdv09sTjke.tbhxW1GYqqGMd
+ 7.7vrE5_ahv_zbFAdlvS9Fx5HwHP5niboB2eUNCdTNAIvX_Q7QclcWZeuEDK8gaMRA8rJ3NscHey
+ iOvAYcDkwHWSaBfY4a598zmt1yrwmTsrch0L1jkwQaxuN9Twpxq1szlzv6e66RtrDZsZQd.2fP7x
+ xRP__yFGS4mxecz7GjTVA6PzGR4ZCWke0jGnWK8ip8fCZwbdRVdkt1ewz5o0MpikZ1a_Tq9_cN00
+ AidJstdHNRuQp6DQp9pLPiHnVaM8fOk9npgbWM.MbyBfJK.B5tYVK3naQRhUe_sDsOALGufxY4PQ
+ KP34cqMdSNvN1_cJuJDK0eLpQAs5RyjM4Pf3mFizK2th4jlDEBgfKQOHgC3yFzcFOSsDnX7vKgcE
+ 4kCdfpnEPX7R2Tim0tkpJXD3sGFtjYxE_PzKOyFeBeEN3wM2EdzjKDGWIXZVSMnfFVNngiCrrB9N
+ 1INigPvBNyKnbTNipkn8NcBaRQUQcabmuODql7VM6kN9EjVVP6JpxT6wdxvmAnXibOyKCi.S0JVG
+ krRtnxnSxNT_xA_fi5LEOxzWCW31NL9fluxf3DrfFGmXtD.x4Ez4m.F.qBWfOixt1w3VjXXtp.Vm
+ Tw59EGEFR4FMnWCG94LAgA7MPLyWSsEaQrqr0d9y3TPemyTvmywQSnJtrECtSbyyPq3019SZ6McB
+ .D3zJG.np3KJBCS_2zqwY0JxsZWRXQ828z0aVjIeRxYvfX4UUK8SAZrOQo9kxUhaRkeLdmJmyqfQ
+ Q2e1YQ4U5VlEBf4s_TxpbQo3sV_LL2pJEdOe.wHkDeSTG_KOkS.qihmw3kv2a0j83aM_n3TmGa.t
+ EmczdJBbd7lxkO.UrBsxA3Ckd66HZEyAWMewm3VKLKbUiUXPfCE9fOmbJyUg3ZMTpawiWUVAtKG.
+ zacAbSPsGR9jyeME6WTudQxkDth.eSqgrS1sLdY94lV4KhLS8vMzxdCUhtM5bx_spqA99NTgX.fw
+ -
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 523fd01a-36c6-4113-a0a5-f206da02e08a
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.ne1.yahoo.com with HTTP; Wed, 13 Nov 2024 18:16:35 +0000
+Received: by hermes--production-gq1-5dd4b47f46-ps69l (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 3a47f707b068f3c37ad3e14e6ceee550;
+          Wed, 13 Nov 2024 18:06:25 +0000 (UTC)
+Message-ID: <8c86c2b4-cd23-42e0-9eb6-2c8f7a4cbcd4@schaufler-ca.com>
+Date: Wed, 13 Nov 2024 10:06:23 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 0/4] Make inode storage available to tracing prog
+To: Song Liu <songliubraving@meta.com>
+Cc: Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-security-module@vger.kernel.org"
+ <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>,
+ "andrii@kernel.org" <andrii@kernel.org>,
+ "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "martin.lau@linux.dev" <martin.lau@linux.dev>,
+ "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+ "brauner@kernel.org" <brauner@kernel.org>, "jack@suse.cz" <jack@suse.cz>,
+ "kpsingh@kernel.org" <kpsingh@kernel.org>,
+ "mattbobrowski@google.com" <mattbobrowski@google.com>,
+ "amir73il@gmail.com" <amir73il@gmail.com>,
+ "repnop@google.com" <repnop@google.com>,
+ "jlayton@kernel.org" <jlayton@kernel.org>, Josef Bacik
+ <josef@toxicpanda.com>, "mic@digikod.net" <mic@digikod.net>,
+ "gnoack@google.com" <gnoack@google.com>,
+ Casey Schaufler <casey@schaufler-ca.com>
+References: <20241112082600.298035-1-song@kernel.org>
+ <d3e82f51-d381-4aaf-a6aa-917d5ec08150@schaufler-ca.com>
+ <ACCC67D1-E206-4D9B-98F7-B24A2A44A532@fb.com>
+ <d7d23675-88e6-4f63-b04d-c732165133ba@schaufler-ca.com>
+ <332BDB30-BCDC-4F24-BB8C-DD29D5003426@fb.com>
+Content-Language: en-US
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <332BDB30-BCDC-4F24-BB8C-DD29D5003426@fb.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241113-flow_dissector-v1-10-27c4df0592dc@bootlin.com>
+X-Mailer: WebService/1.1.22876 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-On 11/13, Alexis Lothoré (eBPF Foundation) wrote:
-> Now that test_flow_dissector.sh has been converted to test_progs, remove
-> the legacy test.
-> 
-> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+On 11/12/2024 5:37 PM, Song Liu wrote:
+>
+>> On Nov 12, 2024, at 5:10 PM, Casey Schaufler <casey@schaufler-ca.com> wrote:
+>>
+>> On 11/12/2024 10:44 AM, Song Liu wrote:
+>>> Hi Casey, 
+>>>
+>>> Thanks for your input. 
+>>>
+>>>> On Nov 12, 2024, at 10:09 AM, Casey Schaufler <casey@schaufler-ca.com> wrote:
+>>>>
+>>>> On 11/12/2024 12:25 AM, Song Liu wrote:
+>>>>> bpf inode local storage can be useful beyond LSM programs. For example,
+>>>>> bcc/libbpf-tools file* can use inode local storage to simplify the logic.
+>>>>> This set makes inode local storage available to tracing program.
+>>>> Mixing the storage and scope of LSM data and tracing data leaves all sorts
+>>>> of opportunities for abuse. Add inode data for tracing if you can get the
+>>>> patch accepted, but do not move the LSM data out of i_security. Moving
+>>>> the LSM data would break the integrity (such that there is) of the LSM
+>>>> model.
+>>> I honestly don't see how this would cause any issues. Each bpf inode 
+>>> storage maps are independent of each other, and the bpf local storage is 
+>>> designed to handle multiple inode storage maps properly. Therefore, if
+>>> the user decide to stick with only LSM hooks, there isn't any behavior 
+>>> change. OTOH, if the user decides some tracing hooks (on tracepoints, 
+>>> etc.) are needed, making a inode storage map available for both tracing 
+>>> programs and LSM programs would help simplify the logic. (Alternatively,
+>>> the tracing programs need to store per inode data in a hash map, and 
+>>> the LSM program would read that instead of the inode storage map.)
+>>>
+>>> Does this answer the question and address the concerns?
+>> First off, I had no question. No, this does not address my concern.
+>> LSM data should be kept in and managed by the LSMs. We're making an
+>> effort to make the LSM infrastructure more consistent.
+> Could you provide more information on the definition of "more 
+> consistent" LSM infrastructure?
 
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+We're doing several things. The management of security blobs
+(e.g. inode->i_security) has been moved out of the individual
+modules and into the infrastructure. The use of a u32 secid is
+being replaced with a more general lsm_prop structure, except
+where networking code won't allow it. A good deal of work has
+gone into making the return values of LSM hooks consistent.
+
+Some of this was done as part of the direct call change, and some
+in support of LSM stacking. There are also some hardening changes
+that aren't ready for prime-time, but that are in the works.
+There have been concerns about the potential expoitability of the
+LSM infrastructure, and we're serious about addressing those.
+
+>
+> BPF LSM programs have full access to regular BPF maps (hash map, 
+> array, etc.). There was never a separation of LSM data vs. other 
+> data. 
+>
+> AFAICT, other LSMs also use kzalloc and similar APIs for memory 
+> allocation. So data separation is not a goal for any LSM, right?
+>
+> Thanks,
+> Song
+>
+>> Moving some of
+>> the LSM data into an LSM specific field in the inode structure goes
+>> against this. What you're proposing is a one-off clever optimization
+>> hack. We have too many of those already.
+>
+>
 
