@@ -1,54 +1,54 @@
-Return-Path: <bpf+bounces-44742-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44744-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 840ED9C7183
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 14:56:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ADBB9C7188
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 14:56:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A9FB28607A
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 13:56:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40E4C1F25744
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 13:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FBD01EF956;
-	Wed, 13 Nov 2024 13:54:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8420204F66;
+	Wed, 13 Nov 2024 13:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SIAiOolz"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ndcO+nxu"
 X-Original-To: bpf@vger.kernel.org
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9E920265A;
-	Wed, 13 Nov 2024 13:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B5B204027;
+	Wed, 13 Nov 2024 13:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731506050; cv=none; b=XEd2KKoVbeD9afHQCcYo+5fN/g+ptbR2ktOmRZ6SDsXEDa5IgBQvfUd7acRw020VpN6ON/ChWxB2zvr1sWrxoSjxiCrjQLvtlawVb3GyqENBiKNkqA4bc3l2uvPRdZrNZzu4VjiDhlj+oI6LXVZMkiC0Pll3FovX5G7sAIvsI/0=
+	t=1731506054; cv=none; b=eXyAAuvkijNdURtN07nP8v+Nilh+f3l2NVwy1RQMEWdNa+iyt2OpdDajZ6rsrkA/lKKN2sLtpnGR4PC7AUuT/9DkuX0WuNiuf/fQOCxUCBD2FICCxp86Q4tk+tOwpBVdKJcXDT5u/IpWZOHWtr8aqS7/SeUaSG3CpVxcg/2dMr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731506050; c=relaxed/simple;
-	bh=GCHtMt4Fw9AAM7R0KRvvLjnehulBKQfM0eUof2yhdxQ=;
+	s=arc-20240116; t=1731506054; c=relaxed/simple;
+	bh=mAO07X+covGLJLGKAAcX5Ah/uyyAbdxtjCTFS0+RRac=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=V2GerRz4+l+SC+FDBu8jG7LTFWqDTn0Cs+CSZcfJ2W/zFcSykqIbx1Scct49MzWSwq2F0mFQzVCSIel4U57eTQLtQDL7Hna3W+qh+uoNmtcGN/sHiXZ/YQyJrAk3vned12DvAbbsESRYDq7U0+jdH3hPvjCrSClUg32L97lVUwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SIAiOolz; arc=none smtp.client-ip=217.70.183.200
+	 In-Reply-To:To:Cc; b=PnkO4v1oJVO8D49vaVQGypPMkR5InaUUIn6OIicmNzYqMZhV4D26ug6hp59ZdO548TQ6oZ79FQREV3OBgRAhNhH28osZr6iPcgjzRIQ5ZrdAc29AlA2pzFv0xToaK45zPRICqaX/Rr4FTUYph+4t65LA/am8fsXrnQVab5t0YDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ndcO+nxu; arc=none smtp.client-ip=217.70.183.200
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1168120005;
-	Wed, 13 Nov 2024 13:54:04 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CDD0520012;
+	Wed, 13 Nov 2024 13:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1731506046;
+	t=1731506051;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IOaCr7A3LSnXjzXtLcfdOSspe/hUz9oHOCWScbif1cw=;
-	b=SIAiOolzZ/JQYdbkoYsfrHd3mn3ZmMQaORPMfwy+zTDAeXr/ur6uUnsCd6///fb9A95PRm
-	/XqEaTKNhPv46JaTbik8+Ub+BvT22Tjh83UmLtxtIrlWAP20SEZ03OJuqvGorR0si+gxAX
-	vr1EuAzVOQ2MIQsfn77NM/49hreU/4ofI7+UZDt7UbfXc9ePPvCjLT0TV26nfEUkhhFZcr
-	ojmAtLPdsEDJufCl6yNnY9MsHW9Q6CxsbPViXKh8uWe5rHe7sNtyiEkMHScilYMFMQv5/8
-	HHeXlwbvJqJmyBsUZrIif42lOT2Ukx1hdU9LUXNZpARk+TsH0oC+bQteZ/n8iQ==
+	bh=SpGhBhHZ7VLh+hxah2PHVC8IPwB2ITRf9W8F5JgyEMk=;
+	b=ndcO+nxulFsGegfeISwdXsLKEURv9P0bDjGIAnjNZbuU7dT4WjOEtHZ/pTIrBmh8EMPdK1
+	zfvVgah8SyPfKF70EtQOVL5XIS1rXBvQZdqR30v6N28Hr557oHOqV6tibZ0wx9yvpJwXpt
+	EJCJAvWqksoF4TV4zqBsyv+jXhgZDQ2erpUmx3cP05MSX9/ea6hGaGWnnu3s4Iwns3vJAv
+	ELr0L7BMtKLk1Vv/fa79F8m0M/P1wsuUt5fDfVN3dobdJn9dH/ImuiCWI/7ivUEdu242Az
+	FgStzM1OD5qXPc4aaUn8Qb4yi8dsmUDVj8MLj1tt312MpjwGu28SuYIRYycqGg==
 From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Wed, 13 Nov 2024 14:53:29 +0100
-Subject: [PATCH bpf-next 06/10] selftests/bpf: add gre packets testing to
- flow_dissector
+Date: Wed, 13 Nov 2024 14:53:31 +0100
+Subject: [PATCH bpf-next 08/10] selftests/bpf: Enable generic tc actions in
+ selftests config
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,7 +57,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20241113-flow_dissector-v1-6-27c4df0592dc@bootlin.com>
+Message-Id: <20241113-flow_dissector-v1-8-27c4df0592dc@bootlin.com>
 References: <20241113-flow_dissector-v1-0-27c4df0592dc@bootlin.com>
 In-Reply-To: <20241113-flow_dissector-v1-0-27c4df0592dc@bootlin.com>
 To: Andrii Nakryiko <andrii@kernel.org>, 
@@ -77,118 +77,27 @@ Cc: ebpf@linuxfoundation.org,
 X-Mailer: b4 0.14.2
 X-GND-Sasl: alexis.lothore@bootlin.com
 
-The bpf_flow program is able to handle GRE headers in IP packets. Add a
-few test data input simulating those GRE packets, with 2 different
-cases:
-- parse GRE and the encapsulated packet
-- parse GRE only
+Enable CONFIG_NET_ACT_GACT to allow adding simple actions with tc
+filters. This is for example needed to migrate test_flow_dissector into
+the automated testing performed in CI.
 
 Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
 ---
- .../selftests/bpf/prog_tests/flow_dissector.c      | 76 ++++++++++++++++++++++
- 1 file changed, 76 insertions(+)
+ tools/testing/selftests/bpf/config | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-index 8ab3268ef4c92fc33ac40e8f8f963a4d8b6551a8..05f3953c6266efdedeb74a81969ccfdabf009ccd 100644
---- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-+++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-@@ -63,6 +63,19 @@ struct dvlan_ipv6_pkt {
- 	struct tcphdr tcp;
- } __packed;
- 
-+struct gre_base_hdr {
-+	__be16 flags;
-+	__be16 protocol;
-+} gre_base_hdr;
-+
-+struct gre_minimal_pkt {
-+	struct ethhdr eth;
-+	struct iphdr iph;
-+	struct gre_base_hdr gre_hdr;
-+	struct iphdr iph_inner;
-+	struct tcphdr tcp;
-+} __packed;
-+
- struct test {
- 	const char *name;
- 	union {
-@@ -72,6 +85,7 @@ struct test {
- 		struct ipv6_pkt ipv6;
- 		struct ipv6_frag_pkt ipv6_frag;
- 		struct dvlan_ipv6_pkt dvlan_ipv6;
-+		struct gre_minimal_pkt gre_minimal;
- 	} pkt;
- 	struct bpf_flow_keys keys;
- 	__u32 flags;
-@@ -417,6 +431,68 @@ struct test tests[] = {
- 		},
- 		.retval = BPF_FLOW_DISSECTOR_CONTINUE,
- 	},
-+	{
-+		.name = "ip-gre",
-+		.pkt.gre_minimal = {
-+			.eth.h_proto = __bpf_constant_htons(ETH_P_IP),
-+			.iph.ihl = 5,
-+			.iph.protocol = IPPROTO_GRE,
-+			.iph.tot_len = __bpf_constant_htons(MAGIC_BYTES),
-+			.gre_hdr = {
-+				.flags = 0,
-+				.protocol = __bpf_constant_htons(ETH_P_IP),
-+			},
-+			.iph_inner.ihl = 5,
-+			.iph_inner.protocol = IPPROTO_TCP,
-+			.iph_inner.tot_len =
-+				__bpf_constant_htons(MAGIC_BYTES -
-+				sizeof(struct iphdr)),
-+			.tcp.doff = 5,
-+			.tcp.source = 80,
-+			.tcp.dest = 8080,
-+		},
-+		.keys = {
-+			.nhoff = ETH_HLEN,
-+			.thoff = ETH_HLEN + sizeof(struct iphdr) * 2 +
-+				 sizeof(struct gre_base_hdr),
-+			.addr_proto = ETH_P_IP,
-+			.ip_proto = IPPROTO_TCP,
-+			.n_proto = __bpf_constant_htons(ETH_P_IP),
-+			.is_encap = true,
-+			.sport = 80,
-+			.dport = 8080,
-+		},
-+		.retval = BPF_OK,
-+	},
-+	{
-+		.name = "ip-gre-no-encap",
-+		.pkt.ipip = {
-+			.eth.h_proto = __bpf_constant_htons(ETH_P_IP),
-+			.iph.ihl = 5,
-+			.iph.protocol = IPPROTO_GRE,
-+			.iph.tot_len = __bpf_constant_htons(MAGIC_BYTES),
-+			.iph_inner.ihl = 5,
-+			.iph_inner.protocol = IPPROTO_TCP,
-+			.iph_inner.tot_len =
-+				__bpf_constant_htons(MAGIC_BYTES -
-+				sizeof(struct iphdr)),
-+			.tcp.doff = 5,
-+			.tcp.source = 80,
-+			.tcp.dest = 8080,
-+		},
-+		.keys = {
-+			.flags = BPF_FLOW_DISSECTOR_F_STOP_AT_ENCAP,
-+			.nhoff = ETH_HLEN,
-+			.thoff = ETH_HLEN + sizeof(struct iphdr)
-+				 + sizeof(struct gre_base_hdr),
-+			.addr_proto = ETH_P_IP,
-+			.ip_proto = IPPROTO_GRE,
-+			.n_proto = __bpf_constant_htons(ETH_P_IP),
-+			.is_encap = true,
-+		},
-+		.flags = BPF_FLOW_DISSECTOR_F_STOP_AT_ENCAP,
-+		.retval = BPF_OK,
-+	},
- };
- 
- static int create_tap(const char *ifname)
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index 4ca84c8d9116a48b1ebf04488ebf7ebfcb633282..c378d5d07e029109061fcd433cec223280a525a4 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -58,6 +58,7 @@ CONFIG_MPLS=y
+ CONFIG_MPLS_IPTUNNEL=y
+ CONFIG_MPLS_ROUTING=y
+ CONFIG_MPTCP=y
++CONFIG_NET_ACT_GACT=y
+ CONFIG_NET_ACT_SKBMOD=y
+ CONFIG_NET_CLS=y
+ CONFIG_NET_CLS_ACT=y
 
 -- 
 2.47.0
