@@ -1,165 +1,265 @@
-Return-Path: <bpf+bounces-44799-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44800-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E7809C7B3B
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 19:33:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 799299C7B70
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 19:42:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 005961F28456
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 18:33:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 386FD288998
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 18:42:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C4B120694A;
-	Wed, 13 Nov 2024 18:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E3D2038B8;
+	Wed, 13 Nov 2024 18:42:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="IOZR70XK"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D8xQHotu"
 X-Original-To: bpf@vger.kernel.org
-Received: from sonic308-15.consmr.mail.ne1.yahoo.com (sonic308-15.consmr.mail.ne1.yahoo.com [66.163.187.38])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C30206070
-	for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 18:30:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.187.38
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 221E2201261
+	for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 18:42:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731522606; cv=none; b=RyDm9CuNL//TU5iHMpCcZ0IGNDt+skzprLztksa6ZdEfWEmkSQ7DHABVylEqZ/lt0De9Q0neKsNudk8Lc3Ym0Ra2pAVlhlF1dlZWpz1t/ZOTzvI8Wr+9xamGL4f9onzOttpBw+f8U2MIQyPftGe2voQwhj3Lv4q++kSsSSWwFwc=
+	t=1731523362; cv=none; b=jWi67zRUs7j1ipITdVbJW7lRDWTxBXdibLO45/f1lPp4bUfL0Y/sbXvgBSD+N+l1uTaiJnFIFmVxtOA6xwh3W3J6cJr+6HQwd3NfxDGOJghOUAPiIKiUJI7ncY48Nfw9ClpglDCO9HBCVy3dWAdVQWOP7DuXS0r/D5QBQ/dBo2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731522606; c=relaxed/simple;
-	bh=TqQVBVCHriEkNKCOfkPbxVbxF9alnSjCgNiwvehYleg=;
+	s=arc-20240116; t=1731523362; c=relaxed/simple;
+	bh=VdJ5bAuF4F64JVBpuXUQJ7aXhDY1NwPPi5WOmkJmups=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ckOOeKmIjNgc7ywiskYfbMMysUP5Iq3tUA2s60Ps6+h5JlaJC1uUxeAOAjQuwsvGOfu9WQqE5yevQg6ebxGYkwutSj47BpSHXiVmcwnEyucQwZYVdsDaiVeh0qcIJLzZtNrCcbCseDyxCLCTQdEt8ommyMlt3yLxJOA+02Obp+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=IOZR70XK; arc=none smtp.client-ip=66.163.187.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1731522603; bh=92DLNUHxdjAQlOdpMMs4zu56cp+QoRjiOMbtt8PhTVs=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=IOZR70XKERAbRc7Ad4k8KHZy3hqft+X8K+5W7mL4lkJoXMSYpXHMSzdSgIQwcMiUjtbQqG5IHbJs6q9xeR/dSIwzItUhDCotZ+ghoLpafRfFc6rVZcIVhsaNvXmZr/J3YKRd+6NqjcHmVE96jHHWGRzoIWe4+Wks/G4cy34+k6pcx06DgG3S2+Ks2W3IOKgk8LALP6B3W3/nC24uhOMeWRYATb32FQIKRWagcTbEvNbqhUvx2loRuG3H50CmevLI8Xd5wOAffGZI11o3W8STEcIwLkQ9hjSh6rCGTuqnTHuUVlj4VMBb8WKz8doouEJzTXEPuBiggnayo1adYFcNWg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1731522603; bh=1n8VMNSw0sJ5ajfb3bl7mepzHnc4yw9UbJ3joUZtj8m=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=CQN2AEFCbE83CtSsGg3JSnOUmQbiON7P+yeMpiI280C4RGWM0waZ6x0XsPj+KmaeQvJRF9xYdTIGermLCkgB/x4iXdbzbEheAXXcOi0D/BlQobWwQCa8aUiT04NiAQPPH6I/YF2FYVYcFcoUeBCqYrS0SXm6LNCJsRp4tfJKXm+uvIl73HUtzDSg3OdUsbGaG+tIKqzyBHLnvFaVcvNgKULsUtN1IzU1VThBXJg02nXRfQsjpu7+fEiGirSood89pc9Gqw/51j5j8wJwGswGuG95fV1n3Y4gOPClq/7OCEg/u2rWudTp7MRXAj6RmbCBa91IfvahRIWs/6jEAZKmLg==
-X-YMail-OSG: eTtnwqAVM1lwPsF1g4WBXIx7I4w3UFTjNnvsNbFcZXCXQgdrxU5_t3veDbyLpc_
- NkftLcx7faGCM3JfrOFZs1..p1rlCY8KcjzkJ9RVDGjrx_vxkqn317m3rE1jzTtgrxeQQhIRfSMj
- Gqg_qHQ778FX01aij9KargNRah55yak47ngtKCGCTBbyHnI2JJ2.ykKtmq8FBQLYJy_sFI4bDRdz
- 25c7J3.kXA5YgmkHH2h1py2fqlMER07Is4UUD1kVabdbrg_HVNEjYvLTe3WcBO9nUyJPc.PQRemy
- pQiBsHtCKnNMYmLgH8aTrh1Aa3w8j2iN.LFDuzsVWm3NHwyTp3D_a2s9K3dnH8lswIv7qpjg9..e
- W8jrsfghME5ez0boJaNLHHZipw8bOfoMpyJ0k6DCKqwPBBj4YPKdzKXSq69LbE2mtb24nKlx0_fo
- OCCQOE3BRj2NoUTMGkB7pBSq9OnS.1M9pOKd.wawJtzqJio8EK_61PpM_8UKvmQNFCfGplyEtydc
- T8wMWTUUJ26hJw9b_A8BhlBbNDt03NcUIDie_SwoUiTC79jl5RO0NKM762_N8NNiqkC1SMq_mOLG
- llhWrZs5hsMeRQaZ5yiO8QN6hyNu9puv2GCxjePFbrjtQJVnhJ21_z0UdxPpEzuWM7MsWd.VGaA5
- FoyW.EvbxGTBnQDHngHKodW014ThaSaHI01jg1N2aF5XPJZzAOyRFsQlKJ7ddRthCBaBhzqc_h5T
- ohv82JzNCi1igpaH5a6p63t15sU0GByOOXn_V6vae0VXkFi.suMloNFPKHg2u1rKUXsDblbI9nkz
- dhIuvvEFDZlGcwXpH7Z7l_gtorCYw1CyXuz8Nk9UXGGZVCXI2m0dwQhi_2MITv9.tyxaJgwXNwZu
- rjRG764eoytSPqLzbh07z74z3W9lo3IADZ7xr7xI.GCtsnJ_Bg1.rp.PcKcRIy0wQ42SZLs5nDNx
- WYmHJAk61ZvHOIFCEDX8rVH_Tpw8649tYuOEKw.gfPKoUUqUzgygfE0qFl89kltg8PJWR1AiMnuf
- mxvGned3Je9ncmqWvFntjjLnYbpM1icGAO5QEjny_TnTN.NTH3TQoP4l6Af6_HV3nUUSfm3jneBM
- UJrkNAB5JfRc0wTI76aehlqUnmM1n9PWznPCrGIkX_Mzgj80yzUlBqUU3QQk84O4z65qRjanar3y
- K_ybOu7oqVSgXhZOSSOTx0mpsESe_t8LdkkHprQ4d3Do2UmlCpaBOBJYxA8PljGVXlN7TU5lrI9w
- B24atAyjFRXw5vNuSzLLPEzGrNLkKIY3PiA.Lxmj0c9RgdSK0Og4grfmtWS7KRU8nfqobDb4q9BZ
- pP45PxIAXkXuaxrR0ZSz3h5hwYuig0kJLwNw_7ygB7WLHgvE_.Z1qLKLYIsrYmWkLG2QEowrG_Hd
- TofH1DY6BvXXDg4rF8jc5G3oE8ANO5Wz.XbO.tulY6Cyf6yHgNKHLj99law_HMooEfUw7wzr2wmK
- FekmQtLresU773IimLyXpKSU0sNh71cWmfBwNETiUnXenmuJp6oyqPPxDyn1k3.77r9j4wqi232E
- RB9raIuFXArCP9d2E_CInHC2ZzI32DPFL0IrtjtSS8lsY7zRDfUIFwB88mLI6Lu1oYYFaDJYzfHs
- v9bMhOTkYvyp6Ou6xIrN94ghqu1fHPuh.7eZ4cAttYcEfy8RD_RS.ky8ZpPitr_rPi39YZCiiDed
- 4PbPI4JnY8rsZYMPUe1oXSaFybtesnWNTVXsUYDUnyzS88PXXwfvf4UqPXigR34SyUytSn0Hb9p8
- 5pe0oQMjIq0phWpeWThkLrcHyrjmTJs0BpN5U0ueiLP_i34mldwSkbyhcm55VlzzF.fDmFxiGI9r
- WUSMk1GxTlKy6T.6PeS45cX3OdYZYEkI6iZWEzoN7cylnEt5eMSb9Yl1_bLkqpCrWVlppcKmUMf4
- itPAtdGiw_YFcyge2jD1mhpaBDiHVJ.DWj7_SrayhglJq.i9m0z7AJGY1KSQfWRCjsobC_UBGeDr
- qQYlDfAVdTj_jVAtb7cd1h2_RdbA4IjkUs8LS06YO8.4Ge2txPCVHmEYZz0VSRCZBBd07mvKULVZ
- v61eN465NT.qNBJmoVdRkJVhIs1s9u0F7n3Fk3uoGdqkY_C0NTFLNvtfshMxnMf_Dh21fLdngZQe
- QGx4UHVlSgzNFFkaj_P1SVudL0lgKsN1.r0qOwy4UQ70r0ZYvbdjFpkSkLQYzuNW0xRkhed2MF0L
- NiOP_9gVdhkxO4SY_JFPgxiK30X_NO7X.3du5kM3gaEIa.NYgwDPxjjrA2jRrguqmiMWyxsiU61y
- HHhc.bKs-
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 71e488c6-e823-4e79-9756-32b77378fd19
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Wed, 13 Nov 2024 18:30:03 +0000
-Received: by hermes--production-gq1-5dd4b47f46-5kxd4 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID af2e520e4fc25b996d153d4d132eb18f;
-          Wed, 13 Nov 2024 18:29:59 +0000 (UTC)
-Message-ID: <1cd17944-8c1f-4b13-9ac5-912086fbead6@schaufler-ca.com>
-Date: Wed, 13 Nov 2024 10:29:57 -0800
+	 In-Reply-To:Content-Type; b=aWIHs8xqtoJcg9NqzxM9/z9/LLoS7ts8jHWkGH3ByFcU3Pg4WnFj2EzZTRGyxiNZG41kZcnWxXEHur+qFiJoUWbUky8OJbp8bbbAZBsdLdhxD3bXY0KYPoHo9PPlIw3wFwGIeyIS32g/XxmN76JqZtuxbWo18o1PyBc6qte9PEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D8xQHotu; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <bcb4f6eb-737c-4023-b643-8d27105438fc@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731523358;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nn1OnvZ4kD+8KBDWTOQR3SrFnWa28Nr7DyNl/LtZqIk=;
+	b=D8xQHotuMbqHzJ6C7UQh3qcdsL54E48GNzHwsUvlGIqJXbGELlX8RK/gt130zJNMeF1O2f
+	EZyNEgKLJVmLSvtNAO4nH65rp8Rd3Ttkh+Gr1nrt96tPgP9qAmdviIw2mjs1mLRksgcfSm
+	vzI2m/KEub7sn8AD5m1F9qPJ9x6r8zQ=
+Date: Wed, 13 Nov 2024 10:42:29 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 2/4] bpf: Make bpf inode storage available to
- tracing program
-To: Song Liu <songliubraving@meta.com>, Christian Brauner <brauner@kernel.org>
-Cc: Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-security-module@vger.kernel.org"
- <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>,
- "andrii@kernel.org" <andrii@kernel.org>,
- "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "martin.lau@linux.dev" <martin.lau@linux.dev>,
- "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
- "jack@suse.cz" <jack@suse.cz>, "kpsingh@kernel.org" <kpsingh@kernel.org>,
- "mattbobrowski@google.com" <mattbobrowski@google.com>,
- "amir73il@gmail.com" <amir73il@gmail.com>,
- "repnop@google.com" <repnop@google.com>,
- "jlayton@kernel.org" <jlayton@kernel.org>, Josef Bacik
- <josef@toxicpanda.com>, "mic@digikod.net" <mic@digikod.net>,
- "gnoack@google.com" <gnoack@google.com>,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <20241112082600.298035-1-song@kernel.org>
- <20241112082600.298035-3-song@kernel.org>
- <20241113-sensation-morgen-852f49484fd8@brauner>
- <2621E9B1-D3F7-47D5-A185-7EA47AF750B3@fb.com>
-Content-Language: en-US
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <2621E9B1-D3F7-47D5-A185-7EA47AF750B3@fb.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH bpf-next v5 1/4] bpf: add bpf_get_cpu_cycles kfunc
+Content-Language: en-GB
+To: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+ Vadim Fedorenko <vadfed@meta.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Mykola Lysenko <mykolal@fb.com>, Jakub Kicinski <kuba@kernel.org>
+Cc: x86@kernel.org, bpf@vger.kernel.org,
+ Martin KaFai Lau <martin.lau@linux.dev>
+References: <20241109004158.2259301-1-vadfed@meta.com>
+ <3c10fd70-ef6d-4762-b5a4-7ed912d97693@linux.dev>
+ <27ee9031-3304-49a5-ac82-0fbe50294646@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <27ee9031-3304-49a5-ac82-0fbe50294646@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.22876 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Migadu-Flow: FLOW_OUT
 
-On 11/13/2024 6:15 AM, Song Liu wrote:
-> Hi Christian, 
->
-> Thanks for your review. 
->
->> On Nov 13, 2024, at 2:19 AM, Christian Brauner <brauner@kernel.org> wrote:
-> [...]
->
->>> diff --git a/include/linux/fs.h b/include/linux/fs.h
->>> index 3559446279c1..479097e4dd5b 100644
->>> --- a/include/linux/fs.h
->>> +++ b/include/linux/fs.h
->>> @@ -79,6 +79,7 @@ struct fs_context;
->>> struct fs_parameter_spec;
->>> struct fileattr;
->>> struct iomap_ops;
->>> +struct bpf_local_storage;
+
+
+
+On 11/13/24 9:52 AM, Vadim Fedorenko wrote:
+> On 13/11/2024 17:38, Yonghong Song wrote:
+>>
+>>
+>>
+>> On 11/8/24 4:41 PM, Vadim Fedorenko wrote:
+>>> New kfunc to return ARCH-specific timecounter. For x86 BPF JIT converts
+>>> it into rdtsc ordered call. Other architectures will get JIT
+>>> implementation too if supported. The fallback is to
+>>> __arch_get_hw_counter().
 >>>
->>> extern void __init inode_init(void);
->>> extern void __init inode_init_early(void);
->>> @@ -648,6 +649,9 @@ struct inode {
->>> #ifdef CONFIG_SECURITY
->>> void *i_security;
->>> #endif
->>> +#ifdef CONFIG_BPF_SYSCALL
->>> + struct bpf_local_storage __rcu *i_bpf_storage;
+>>> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
+>>> ---
+>>> v4 -> v5:
+>>> * use if instead of ifdef with IS_ENABLED
+>>> v3 -> v4:
+>>> * change name of the helper to bpf_get_cpu_cycles (Andrii)
+>>> * Hide the helper behind CONFIG_GENERIC_GETTIMEOFDAY to avoid exposing
+>>>    it on architectures which do not have vDSO functions and data
+>>> * reduce the scope of check of inlined functions in verifier to only 2,
+>>>    which are actually inlined.
+>>> v2 -> v3:
+>>> * change name of the helper to bpf_get_cpu_cycles_counter to explicitly
+>>>    mention what counter it provides (Andrii)
+>>> * move kfunc definition to bpf.h to use it in JIT.
+>>> * introduce another kfunc to convert cycles into nanoseconds as more
+>>>    meaningful time units for generic tracing use case (Andrii)
+>>> v1 -> v2:
+>>> * Fix incorrect function return value type to u64
+>>> * Introduce bpf_jit_inlines_kfunc_call() and use it in
+>>>    mark_fastcall_pattern_for_call() to avoid clobbering in case of
+>>>    running programs with no JIT (Eduard)
+>>> * Avoid rewriting instruction and check function pointer directly
+>>>    in JIT (Alexei)
+>>> * Change includes to fix compile issues on non x86 architectures
+>>> ---
+>>>   arch/x86/net/bpf_jit_comp.c   | 28 ++++++++++++++++++++++++++++
+>>>   arch/x86/net/bpf_jit_comp32.c | 14 ++++++++++++++
+>>>   include/linux/bpf.h           |  5 +++++
+>>>   include/linux/filter.h        |  1 +
+>>>   kernel/bpf/core.c             | 11 +++++++++++
+>>>   kernel/bpf/helpers.c          | 13 +++++++++++++
+>>>   kernel/bpf/verifier.c         | 30 +++++++++++++++++++++++++++++-
+>>>   7 files changed, 101 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>>> index 06b080b61aa5..4f78ed93ee7f 100644
+>>> --- a/arch/x86/net/bpf_jit_comp.c
+>>> +++ b/arch/x86/net/bpf_jit_comp.c
+>>> @@ -2126,6 +2126,26 @@ st:            if (is_imm8(insn->off))
+>>>           case BPF_JMP | BPF_CALL: {
+>>>               u8 *ip = image + addrs[i - 1];
+>>> +            if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL &&
+>>> +                imm32 == BPF_CALL_IMM(bpf_get_cpu_cycles)) {
+>>> +                /* Save RDX because RDTSC will use EDX:EAX to 
+>>> return u64 */
+>>> +                emit_mov_reg(&prog, true, AUX_REG, BPF_REG_3);
+>>> +                if (boot_cpu_has(X86_FEATURE_LFENCE_RDTSC))
+>>> +                    EMIT_LFENCE();
+>>> +                EMIT2(0x0F, 0x31);
+>>> +
+>>> +                /* shl RDX, 32 */
+>>> +                maybe_emit_1mod(&prog, BPF_REG_3, true);
+>>> +                EMIT3(0xC1, add_1reg(0xE0, BPF_REG_3), 32);
+>>> +                /* or RAX, RDX */
+>>> +                maybe_emit_mod(&prog, BPF_REG_0, BPF_REG_3, true);
+>>> +                EMIT2(0x09, add_2reg(0xC0, BPF_REG_0, BPF_REG_3));
+>>> +                /* restore RDX from R11 */
+>>> +                emit_mov_reg(&prog, true, BPF_REG_3, AUX_REG);
+>>> +
+>>> +                break;
+>>> +            }
+>>> +
+>>>               func = (u8 *) __bpf_call_base + imm32;
+>>>               if (tail_call_reachable) {
+>>> LOAD_TAIL_CALL_CNT_PTR(bpf_prog->aux->stack_depth);
+>>> @@ -3652,3 +3672,11 @@ u64 bpf_arch_uaddress_limit(void)
+>>>   {
+>>>       return 0;
+>>>   }
+>>> +
+>>> +/* x86-64 JIT can inline kfunc */
+>>> +bool bpf_jit_inlines_kfunc_call(s32 imm)
+>>> +{
+>>> +    if (imm == BPF_CALL_IMM(bpf_get_cpu_cycles))
+>>> +        return true;
+>>> +    return false;
+>>> +}
+>>> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/ 
+>>> bpf_jit_comp32.c
+>>> index de0f9e5f9f73..e6097a371b69 100644
+>>> --- a/arch/x86/net/bpf_jit_comp32.c
+>>> +++ b/arch/x86/net/bpf_jit_comp32.c
+>>> @@ -2094,6 +2094,13 @@ static int do_jit(struct bpf_prog *bpf_prog, 
+>>> int *addrs, u8 *image,
+>>>               if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+>>>                   int err;
+>>> +                if (imm32 == BPF_CALL_IMM(bpf_get_cpu_cycles)) {
+>>> +                    if (boot_cpu_has(X86_FEATURE_LFENCE_RDTSC))
+>>> +                        EMIT3(0x0F, 0xAE, 0xE8);
+>>> +                    EMIT2(0x0F, 0x31);
+>>> +                    break;
+>>> +                }
+>>> +
+>>>                   err = emit_kfunc_call(bpf_prog,
+>>>                                 image + addrs[i],
+>>>                                 insn, &prog);
+>>> @@ -2621,3 +2628,10 @@ bool bpf_jit_supports_kfunc_call(void)
+>>>   {
+>>>       return true;
+>>>   }
+>>> +
+>>> +bool bpf_jit_inlines_kfunc_call(s32 imm)
+>>> +{
+>>> +    if (imm == BPF_CALL_IMM(bpf_get_cpu_cycles))
+>>> +        return true;
+>>> +    return false;
+>>> +}
+>>
+>> [...]
+>>
+>>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>>> index 395221e53832..5c6c0383ebf4 100644
+>>> --- a/kernel/bpf/helpers.c
+>>> +++ b/kernel/bpf/helpers.c
+>>> @@ -23,6 +23,9 @@
+>>>   #include <linux/btf_ids.h>
+>>>   #include <linux/bpf_mem_alloc.h>
+>>>   #include <linux/kasan.h>
+>>> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
+>>> +#include <vdso/datapage.h>
 >>> +#endif
->> Sorry, we're not growing struct inode for this. It just keeps getting
->> bigger. Last cycle we freed up 8 bytes to shrink it and we're not going
->> to waste them on special-purpose stuff. We already NAKed someone else's
->> pet field here.
-> Would it be acceptable if we union i_bpf_storage with i_security?
-
-No!
-
-> IOW, if CONFIG_SECURITY is enabled, we will use existing logic. 
-> If CONFIG_SECURITY is not enabled, we will use i_bpf_storage. 
-> Given majority of default configs have CONFIG_SECURITY=y, this 
-> will not grow inode for most users. OTOH, users with 
-> CONFIG_SECURITY=n && CONFIG_BPF_SYSCALL=y combination can still 
-> use inode local storage in the tracing BPF programs. 
+>>>   #include "../../lib/kstrtox.h"
+>>> @@ -3023,6 +3026,13 @@ __bpf_kfunc int bpf_copy_from_user_str(void 
+>>> *dst, u32 dst__sz, const void __user
+>>>       return ret + 1;
+>>>   }
+>>> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
+>>> +__bpf_kfunc u64 bpf_get_cpu_cycles(void)
+>>> +{
+>>> +    return __arch_get_hw_counter(1, NULL);
+>>
+>> Some comment to explain what '1' mean in the above?
 >
-> Does this make sense?
+> That's arch-specific value which translates to HW implemented counter on
+> all architectures which have vDSO gettimeofday() implementation.
+>
+> For x86 it translates to VDSO_CLOCKMODE_TSC, while for aarch64/RISC-V
+> it's VDSO_CLOCKMODE_ARCHTIMER. Actually, for RISC-V the value of the
+> first parameter doesn't matter at all, for aarch64 it should be 0.
+> The only arch which is more strict about this parameter is x86, but it
+> has it's own special name...
 
-All it would take is one BPF programmer assuming that CONFIG_SECURITY=n
-is the norm for this to blow up spectacularly.
+So in the future, if we want add aarch64 support or other architecture,
+the argument could be different, right?
+
+I think we should avoid to have arch specific control in helpers.c.
+How about we define a __weak func like bpf_arch_get_hw_counter() so we
+have
+
+__bpf_kfunc u64 bpf_get_cpu_cycles(void)
+{
+	return bpf_arch_get_hw_counter();
+}
+
+Each arch can implement their own bpf_arch_get_hw_counter().
+Do you think this will make more sense? This should not impact jit inlining
+of this kfunc.
 
 >
-> Thanks,
-> Song 
+>>
+>>> +}
+>>> +#endif
+>>> +
+>>>   __bpf_kfunc_end_defs();
+>>>   BTF_KFUNCS_START(generic_btf_ids)
+>>> @@ -3115,6 +3125,9 @@ BTF_ID_FLAGS(func, bpf_get_kmem_cache)
+>>>   BTF_ID_FLAGS(func, bpf_iter_kmem_cache_new, KF_ITER_NEW | 
+>>> KF_SLEEPABLE)
+>>>   BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_ITER_NEXT | 
+>>> KF_RET_NULL | KF_SLEEPABLE)
+>>>   BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | 
+>>> KF_SLEEPABLE)
+>>> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
+>>> +BTF_ID_FLAGS(func, bpf_get_cpu_cycles, KF_FASTCALL)
+>>> +#endif
+>>>   BTF_KFUNCS_END(common_btf_ids)
+>>>   static const struct btf_kfunc_id_set common_kfunc_set = {
+>> [...]
 >
+
 
