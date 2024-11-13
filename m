@@ -1,142 +1,192 @@
-Return-Path: <bpf+bounces-44724-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44725-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E974F9C6D57
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 12:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E74DB9C6D8E
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 12:15:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B223EB22D55
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 11:04:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B45F2B29090
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 11:13:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD3E1FEFA4;
-	Wed, 13 Nov 2024 11:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574A11FF5EA;
+	Wed, 13 Nov 2024 11:13:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MGA2zcLj"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IZrIaotl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99EA26AEC
-	for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 11:04:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25FB41FF043
+	for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 11:13:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731495879; cv=none; b=T4KbLn7za1OTVdjSocEZ7Ibz1K2dC/WjNMMQBwHBW1wD0xf88qCmyrA4Gsl4bTW1U50dum8wXaa6yYjWbF5LOKoxneLrykHbSr+1c+6GwFdiBCo8TZwtA/aDVzXEULqqL5e+F2+Ditah/PpSmvQbfBHuzI4alv5ym5GPyaxrUJQ=
+	t=1731496414; cv=none; b=ruGKK1lLgsJ7ko7V96JCXiR89laXmwWR62m/YQSgmUdxGl1yvIwV8Sp/+ylrIDuyrxTgg5pCOpuvM3SutE8Txui4rIEnD0aIAsZpYxY/H9m8g6T4RMHg9Kz+8/V+jNX5EctKqCan2/W/kRv5xFTPD9xq9M57YTkk1Gb7ZtW20ME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731495879; c=relaxed/simple;
-	bh=hiEKG0Y/wVS1hVVfn6hW+Hn/EPfdMAbyw57JMuySK30=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MTYiZyW+OnCQwD3/eE0DjXyUndrl3y7zsjBQ0bHE9IYwECyD5PeGkbtMq6Mu/nhNvZgCdowlrXt549IjZ+DFaZEGH+efLnAJT234aAYc95cg6tsCYAh1w3zP1Tr6rjV8bb+SIfQ8V0t5vwkiwahXPOFl3RJJgSTp9NpLKqIca6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MGA2zcLj; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7f4324503d7so232519a12.3
-        for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 03:04:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1731495877; x=1732100677; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iMOqhaCgw8IKmEsNJSLqBPkergpNUbgBzqtDMTWnOM0=;
-        b=MGA2zcLjvmq+nDaRIa7gzHm3ioKbRidKi+X9R4hg6egh09etk52w3cTAye7mXd70N+
-         LDrTyPt1n517CfiyCbyHqJVDmhn99hg+gdgpAqS76C1rAlhIafq5UH2wGjOldwoQa7VX
-         uXLl69YOHTQ2dNwgnmIKJxOKkQKP+ggWoSb5XZzq6jn+7uMnYCUC/ZMvNelsiXyTXAdU
-         bLar0XRdnvjqvTGFFdqmc9mmkqq1AAcj1YqgVUJIcvJDuUSRbiQxdfBulVikYMxNDThd
-         f9CJ2F4IRVWWmAtvQVGSdkapyvOwf9pPijaE4QG9tXAsaJbCco77OJzDLy2/KjNCjHWC
-         Lk4w==
+	s=arc-20240116; t=1731496414; c=relaxed/simple;
+	bh=22tXa6W66/9VsYnPQrGRCitE2eppvQQ0IMbf6+LEBjc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=LxzkrY6Y/RUEGcJmF9KfEBmkdDxqmdUxN/ZeHc1wnfYYoRmxCVQqT2vRK0XeoIDaZVJxvSMfOLL2P8ZnhfiBOTwVlMgE94oDyNi/vqt4QCtN1c/OGGEYSYJRGtk74zqD5flHIVlAR5zM0p5Cj1uP7P+QKFRhYcxbcmz2Hz9IbjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IZrIaotl; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1731496412;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7KH3jFAzHQ+vGvm3mHBwhCVY2i7N56HbwqH72OHd34o=;
+	b=IZrIaotl/w6Gbj5ZnWhfjgOPptZuQQ89t20n4qwYkDZttFzVl2AnFeZ4fOXMT79iCd1Hql
+	ClEam7/tFiqonUd7RaYZqCqVXydwYiehG3N3K1ooFaNLMWSEwBqd6Ij1/H8JTCIFgCNVJp
+	isZbNjBrZF7xg+A9OiCuyPiuLtPdBAo=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-249-qyw29RVsNiqHkaUb7znR7A-1; Wed, 13 Nov 2024 06:13:31 -0500
+X-MC-Unique: qyw29RVsNiqHkaUb7znR7A-1
+X-Mimecast-MFC-AGG-ID: qyw29RVsNiqHkaUb7znR7A
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4315eaa3189so62429465e9.1
+        for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 03:13:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731495877; x=1732100677;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1731496410; x=1732101210;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iMOqhaCgw8IKmEsNJSLqBPkergpNUbgBzqtDMTWnOM0=;
-        b=Kb2+qYx7whSnM1HUfHqBlTNeSSIk/zY4UKPdh3dTiw3uofXIX3mhv1yq01CgTV/qxd
-         MiO/Z2vKzjkzxyu4PVv9G8lgj91ifBLlFPeb05RWve0r4BBGZABoMRVIoAe8uWr4a2Gc
-         +d1/dezSLRMOcXtLfWfbcEyuKWwg1pm3tuhxCeZoyKRvR4K6vgLIXzkKf7qRtXya1KrG
-         qOBcA0mGiQK7cgJXPMK1wANQnmJfezUqNMsifo4asl+QoJcXgOGRFqjOCVw24n5ReIj9
-         z9IYjvR5KtWsNaYYacSjhzlKg87FJN1sJg9yja7hCSU8wTrr+6DDyBQn4cDzEGb7L+Y6
-         bEKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXW+RwWy4gdLqhXpBwG17AVbyvsDcd1BTfNNwSZVNXZzFDUJDk4vNV/QjZ5asuMvHbe0w8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyxtdNpWI4/MHpRtVsV6jrMfiAoopsIqwdhmoWtH/xIcMbxGyAc
-	Ao9puPjeBqYV8q/NwNHX6OYfn07870gE9O6Jn/YgCaeqldsK1qZut5eaVYV0s6iYqyMQSTOQDJX
-	pzTGEfYNGBqXU3I1BKtginQkm9eOPaP1/EiSh
-X-Google-Smtp-Source: AGHT+IFCGCxcDOLZAmdw80iYEzsYnxhIrxgVHLCqYanCStMyqQB/LYaoF/ZRtSAnjJ9StjD0+4B3355HPCGxxZvP09U=
-X-Received: by 2002:a17:90b:388f:b0:2e2:cd62:549c with SMTP id
- 98e67ed59e1d1-2e9b17412a3mr29382581a91.22.1731495876849; Wed, 13 Nov 2024
- 03:04:36 -0800 (PST)
+        bh=7KH3jFAzHQ+vGvm3mHBwhCVY2i7N56HbwqH72OHd34o=;
+        b=bnMLXVN6jCRwBNdQZXa1R4iObUCxPaskaa0HVyg5OACJrvLq79ZMX0/U5lPv1qcT0Z
+         dXf4j98XSqkwW/zegBU7pYFq37sClq/6Ydc/XIkHH8tizBPjr8wC3DOzw4AECCexTOJu
+         gzP29iimUVW8Rext22XG0YcnpPfX9ngA2tDlCLkJi3TFJCk9M7/IKhm7/sczP3a7MoSL
+         bcxOAS4VhRSafuJW8XOUO11atGE7J9WNpGgX0/XQ7hgAPcLvSCCio/p8V1117RrmRVJ3
+         MDQeNlW8w4ZURdLjnDNHB6m/hRu8/d8+/76mlElfVsBYKzC+iX8gOJpyXqnFx/wi2hdJ
+         cUMg==
+X-Forwarded-Encrypted: i=1; AJvYcCVW3nTfrAcmKuRaaUSCJo4fMDH452ejCkaA8wLUB7ut5puoJB3yDTBlrznp57RIAD32arI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxr2S77sWbomJ5illF5G3a79xzVDS33jsWTA+x8r+6Z5XCwCfBK
+	/UQG+fAV87ak473rU35bGaUO1Zsmmzp+H8nBzeuaVlXRHfJdWZ6GFVt/j8fkfyjwL/uJ4eNANJk
+	1FRqSmW26oJofx5qdzBxqxufznBiPbVkpT29RSfaz5Dx4rXML2A==
+X-Received: by 2002:a05:600c:35c4:b0:431:5f8c:ccb9 with SMTP id 5b1f17b1804b1-432b750b51fmr240149535e9.17.1731496409748;
+        Wed, 13 Nov 2024 03:13:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF9RucFV9Ew08qPy5i1G8sCR+OaEbhk/PQOtNp5R4sHWFEKUlGZQkpKroCT+e+qPw1wj5q18g==
+X-Received: by 2002:a05:600c:35c4:b0:431:5f8c:ccb9 with SMTP id 5b1f17b1804b1-432b750b51fmr240149255e9.17.1731496409386;
+        Wed, 13 Nov 2024 03:13:29 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381eda05f89sm17970671f8f.98.2024.11.13.03.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Nov 2024 03:13:28 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id B9F7B164CF1D; Wed, 13 Nov 2024 12:13:27 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, Andrii
+ Nakryiko <andrii@kernel.org>, Maciej Fijalkowski
+ <maciej.fijalkowski@intel.com>, Stanislav Fomichev <sdf@fomichev.me>,
+ Magnus Karlsson <magnus.karlsson@intel.com>,
+ nex.sw.ncis.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v4 12/19] xdp: add generic
+ xdp_build_skb_from_buff()
+In-Reply-To: <e35afda3-a64a-432e-a69d-80519eb0ff33@intel.com>
+References: <20241107161026.2903044-1-aleksander.lobakin@intel.com>
+ <20241107161026.2903044-13-aleksander.lobakin@intel.com>
+ <875xot67xk.fsf@toke.dk> <e35afda3-a64a-432e-a69d-80519eb0ff33@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 13 Nov 2024 12:13:27 +0100
+Message-ID: <87zfm3wfmw.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <672d2a52.050a0220.15a23d.01a1.GAE@google.com> <87bjylnq8j.ffs@tglx>
-In-Reply-To: <87bjylnq8j.ffs@tglx>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Wed, 13 Nov 2024 12:04:25 +0100
-Message-ID: <CANp29Y7O8tgw=NLydjYq=Wa4CrfT1NsidhrOByW6He9qS4LpmQ@mail.gmail.com>
-Subject: Re: [syzbot] [bpf?] WARNING: locking bug in trie_delete_elem
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: syzbot <syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com>, 
-	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
-	eddyz87@gmail.com, frederic@kernel.org, haoluo@google.com, 
-	houtao@huaweicloud.com, john.fastabend@gmail.com, jolsa@kernel.org, 
-	kpsingh@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
-	peterz@infradead.org, sdf@fomichev.me, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 12, 2024 at 3:24=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
->
-> On Thu, Nov 07 2024 at 13:00, syzbot wrote:
-> > syzbot has bisected this issue to:
-> >
-> > commit 4febce44cfebcb490b196d5d10ae9f403ca4c956
-> > Author: Thomas Gleixner <tglx@linutronix.de>
-> > Date:   Tue Oct 1 08:42:03 2024 +0000
-> >
-> >     posix-timers: Cure si_sys_private race
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D129f2d87=
-980000
-> > start commit:   f9f24ca362a4 Add linux-next specific files for 20241031
-> > git tree:       linux-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D169f2d87980=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D328572ed4d1=
-52be9
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Db506de56cbbb6=
-3148c33
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1387655f9=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D11ac5540580=
-000
-> >
-> > Reported-by: syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com
-> > Fixes: 4febce44cfeb ("posix-timers: Cure si_sys_private race")
-> >
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bise=
-ction
->
-> I seriously doubt that this bisection is even remotely correct.
->
-> This commit has absolutely nothing to do with the lockdep splat and
-> trie_delete_elem().
+Alexander Lobakin <aleksander.lobakin@intel.com> writes:
 
-Yes, the bisection is wrong, please ignore it.
-I've added this case to the issue that tracks the underlying problem:
-https://github.com/google/syzkaller/issues/5414
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Date: Mon, 11 Nov 2024 17:39:51 +0100
+>
+>> Alexander Lobakin <aleksander.lobakin@intel.com> writes:
+>>=20
+>>> The code which builds an skb from an &xdp_buff keeps multiplying itself
+>>> around the drivers with almost no changes. Let's try to stop that by
+>>> adding a generic function.
+>>> Unlike __xdp_build_skb_from_frame(), always allocate an skbuff head
+>>> using napi_build_skb() and make use of the available xdp_rxq pointer to
+>>> assign the Rx queue index. In case of PP-backed buffer, mark the skb to
+>>> be recycled, as every PP user's been switched to recycle skbs.
+>>>
+>>> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+>>> ---
+>>>  include/net/xdp.h |  1 +
+>>>  net/core/xdp.c    | 55 +++++++++++++++++++++++++++++++++++++++++++++++
+>>>  2 files changed, 56 insertions(+)
+>>>
+>>> diff --git a/include/net/xdp.h b/include/net/xdp.h
+>>> index 4c19042adf80..b0a25b7060ff 100644
+>>> --- a/include/net/xdp.h
+>>> +++ b/include/net/xdp.h
+>>> @@ -330,6 +330,7 @@ xdp_update_skb_shared_info(struct sk_buff *skb, u8 =
+nr_frags,
+>>>  void xdp_warn(const char *msg, const char *func, const int line);
+>>>  #define XDP_WARN(msg) xdp_warn(msg, __func__, __LINE__)
+>>>=20=20
+>>> +struct sk_buff *xdp_build_skb_from_buff(const struct xdp_buff *xdp);
+>>>  struct xdp_frame *xdp_convert_zc_to_xdp_frame(struct xdp_buff *xdp);
+>>>  struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+>>>  					   struct sk_buff *skb,
+>>> diff --git a/net/core/xdp.c b/net/core/xdp.c
+>>> index b1b426a9b146..3a9a3c14b080 100644
+>>> --- a/net/core/xdp.c
+>>> +++ b/net/core/xdp.c
+>>> @@ -624,6 +624,61 @@ int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp=
+_t gfp)
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(xdp_alloc_skb_bulk);
+>>>=20=20
+>>> +/**
+>>> + * xdp_build_skb_from_buff - create an skb from an &xdp_buff
+>>> + * @xdp: &xdp_buff to convert to an skb
+>>> + *
+>>> + * Perform common operations to create a new skb to pass up the stack =
+from
+>>> + * an &xdp_buff: allocate an skb head from the NAPI percpu cache, init=
+ialize
+>>> + * skb data pointers and offsets, set the recycle bit if the buff is P=
+P-backed,
+>>> + * Rx queue index, protocol and update frags info.
+>>> + *
+>>> + * Return: new &sk_buff on success, %NULL on error.
+>>> + */
+>>> +struct sk_buff *xdp_build_skb_from_buff(const struct xdp_buff *xdp)
+>>> +{
+>>> +	const struct xdp_rxq_info *rxq =3D xdp->rxq;
+>>> +	const struct skb_shared_info *sinfo;
+>>> +	struct sk_buff *skb;
+>>> +	u32 nr_frags =3D 0;
+>>> +	int metalen;
+>>> +
+>>> +	if (unlikely(xdp_buff_has_frags(xdp))) {
+>>> +		sinfo =3D xdp_get_shared_info_from_buff(xdp);
+>>> +		nr_frags =3D sinfo->nr_frags;
+>>> +	}
+>>=20
+>> Why this separate branch at the start of the function? nr_frags is no
+>> used until the other branch below, so why not just make that branch on
+>> xdp_buff_has_frags() and keep everything frags-related together in one
+>> block?
+>
+> Because napi_build_skb() will call build_skb_around() which will
+> memset() a piece of shared info including nr_frags.
+> xdp_build_skb_from_frame() has the same logic. I'd be happy to have only
+> one block, but I can't =3D\
 
---=20
-Aleksandr
+Ah, right. Annoying, but OK :)
 
->
-> Thanks,
->
->         tglx
->
-> --
+-Toke
+
 
