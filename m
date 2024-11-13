@@ -1,214 +1,142 @@
-Return-Path: <bpf+bounces-44723-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44724-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F2499C6CB1
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 11:19:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E974F9C6D57
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 12:04:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2438B28B471
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 10:19:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B223EB22D55
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2024 11:04:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2461FB8B0;
-	Wed, 13 Nov 2024 10:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD3E1FEFA4;
+	Wed, 13 Nov 2024 11:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R/yZkrUW"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MGA2zcLj"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F09C12AE90;
-	Wed, 13 Nov 2024 10:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99EA26AEC
+	for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 11:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731493170; cv=none; b=ZPWVtRUdXaBjJxODlhUbEagQiTzg09tKhdZF7FeG6n8UaMcTiBeUUzL0Z61go4XjFEy9l0YIKrAaKqwa9OfzyILnSo0YnXeGHVguGRIDfbviiXk5nQxSZ3ka28tAV1YmJUra9rdU0rzjBpJZze7FN5AAoh4YkiZeqUvHA2ofSCc=
+	t=1731495879; cv=none; b=T4KbLn7za1OTVdjSocEZ7Ibz1K2dC/WjNMMQBwHBW1wD0xf88qCmyrA4Gsl4bTW1U50dum8wXaa6yYjWbF5LOKoxneLrykHbSr+1c+6GwFdiBCo8TZwtA/aDVzXEULqqL5e+F2+Ditah/PpSmvQbfBHuzI4alv5ym5GPyaxrUJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731493170; c=relaxed/simple;
-	bh=pU6pB26ySh8saykSDK55Zekt0Hffao3oKz0ODlb9rwI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PV4sQbXiQ0PUi+h6Ekng87MHXqWhUg5XVmxFpxVR0XbG8hNN308bA4W/mkI1IziCJlK/1A/2KmC7/775z0PBkqqDJNXrs1XUX/wkEjKdcIp3tv5AY3Qzt7G3qP44BJ1SKYpPE6rU5/SWKl/isws+0y/S+GeERC5H83jb0CzQQd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R/yZkrUW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C35D8C4CECD;
-	Wed, 13 Nov 2024 10:19:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731493169;
-	bh=pU6pB26ySh8saykSDK55Zekt0Hffao3oKz0ODlb9rwI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R/yZkrUWUvToi2+LtTxf2a/fPltRPGO+/ty4021M9ZAtKNdlaNa9Vp7vJJ9geLzZB
-	 9m0/squq+pWy8pCIqOr9Uo06uoFUNAoAQbkCElGhB15bgTIDioSNMpx6+PSYYu3jbr
-	 RDMJRZkHJRdBusYp6s8a7RNzU/Gb4gg/FjMEjzAonbSxNdSo+smBBtBN734t6tWvAD
-	 hSEt0Po4oAQGGQJcMRWdOkvF+ab8rfz8yamb2matfsD78hV0tKPAKmJXQRQ8+Tu5ga
-	 WCMLJiJa3zOlXtuzkcU48roxDhuSEEzp0cEBIAOHeeXNe57s0PritQVqFEw2S8g2ok
-	 8/xZIBD5dysRg==
-Date: Wed, 13 Nov 2024 11:19:20 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, kernel-team@meta.com, 
-	andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@linux.dev, viro@zeniv.linux.org.uk, jack@suse.cz, kpsingh@kernel.org, 
-	mattbobrowski@google.com, amir73il@gmail.com, repnop@google.com, jlayton@kernel.org, 
-	josef@toxicpanda.com, mic@digikod.net, gnoack@google.com
-Subject: Re: [PATCH bpf-next 2/4] bpf: Make bpf inode storage available to
- tracing program
-Message-ID: <20241113-sensation-morgen-852f49484fd8@brauner>
-References: <20241112082600.298035-1-song@kernel.org>
- <20241112082600.298035-3-song@kernel.org>
+	s=arc-20240116; t=1731495879; c=relaxed/simple;
+	bh=hiEKG0Y/wVS1hVVfn6hW+Hn/EPfdMAbyw57JMuySK30=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MTYiZyW+OnCQwD3/eE0DjXyUndrl3y7zsjBQ0bHE9IYwECyD5PeGkbtMq6Mu/nhNvZgCdowlrXt549IjZ+DFaZEGH+efLnAJT234aAYc95cg6tsCYAh1w3zP1Tr6rjV8bb+SIfQ8V0t5vwkiwahXPOFl3RJJgSTp9NpLKqIca6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MGA2zcLj; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7f4324503d7so232519a12.3
+        for <bpf@vger.kernel.org>; Wed, 13 Nov 2024 03:04:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1731495877; x=1732100677; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iMOqhaCgw8IKmEsNJSLqBPkergpNUbgBzqtDMTWnOM0=;
+        b=MGA2zcLjvmq+nDaRIa7gzHm3ioKbRidKi+X9R4hg6egh09etk52w3cTAye7mXd70N+
+         LDrTyPt1n517CfiyCbyHqJVDmhn99hg+gdgpAqS76C1rAlhIafq5UH2wGjOldwoQa7VX
+         uXLl69YOHTQ2dNwgnmIKJxOKkQKP+ggWoSb5XZzq6jn+7uMnYCUC/ZMvNelsiXyTXAdU
+         bLar0XRdnvjqvTGFFdqmc9mmkqq1AAcj1YqgVUJIcvJDuUSRbiQxdfBulVikYMxNDThd
+         f9CJ2F4IRVWWmAtvQVGSdkapyvOwf9pPijaE4QG9tXAsaJbCco77OJzDLy2/KjNCjHWC
+         Lk4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731495877; x=1732100677;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iMOqhaCgw8IKmEsNJSLqBPkergpNUbgBzqtDMTWnOM0=;
+        b=Kb2+qYx7whSnM1HUfHqBlTNeSSIk/zY4UKPdh3dTiw3uofXIX3mhv1yq01CgTV/qxd
+         MiO/Z2vKzjkzxyu4PVv9G8lgj91ifBLlFPeb05RWve0r4BBGZABoMRVIoAe8uWr4a2Gc
+         +d1/dezSLRMOcXtLfWfbcEyuKWwg1pm3tuhxCeZoyKRvR4K6vgLIXzkKf7qRtXya1KrG
+         qOBcA0mGiQK7cgJXPMK1wANQnmJfezUqNMsifo4asl+QoJcXgOGRFqjOCVw24n5ReIj9
+         z9IYjvR5KtWsNaYYacSjhzlKg87FJN1sJg9yja7hCSU8wTrr+6DDyBQn4cDzEGb7L+Y6
+         bEKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXW+RwWy4gdLqhXpBwG17AVbyvsDcd1BTfNNwSZVNXZzFDUJDk4vNV/QjZ5asuMvHbe0w8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyxtdNpWI4/MHpRtVsV6jrMfiAoopsIqwdhmoWtH/xIcMbxGyAc
+	Ao9puPjeBqYV8q/NwNHX6OYfn07870gE9O6Jn/YgCaeqldsK1qZut5eaVYV0s6iYqyMQSTOQDJX
+	pzTGEfYNGBqXU3I1BKtginQkm9eOPaP1/EiSh
+X-Google-Smtp-Source: AGHT+IFCGCxcDOLZAmdw80iYEzsYnxhIrxgVHLCqYanCStMyqQB/LYaoF/ZRtSAnjJ9StjD0+4B3355HPCGxxZvP09U=
+X-Received: by 2002:a17:90b:388f:b0:2e2:cd62:549c with SMTP id
+ 98e67ed59e1d1-2e9b17412a3mr29382581a91.22.1731495876849; Wed, 13 Nov 2024
+ 03:04:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20241112082600.298035-3-song@kernel.org>
+References: <672d2a52.050a0220.15a23d.01a1.GAE@google.com> <87bjylnq8j.ffs@tglx>
+In-Reply-To: <87bjylnq8j.ffs@tglx>
+From: Aleksandr Nogikh <nogikh@google.com>
+Date: Wed, 13 Nov 2024 12:04:25 +0100
+Message-ID: <CANp29Y7O8tgw=NLydjYq=Wa4CrfT1NsidhrOByW6He9qS4LpmQ@mail.gmail.com>
+Subject: Re: [syzbot] [bpf?] WARNING: locking bug in trie_delete_elem
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: syzbot <syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com>, 
+	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	eddyz87@gmail.com, frederic@kernel.org, haoluo@google.com, 
+	houtao@huaweicloud.com, john.fastabend@gmail.com, jolsa@kernel.org, 
+	kpsingh@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
+	peterz@infradead.org, sdf@fomichev.me, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 12, 2024 at 12:25:56AM -0800, Song Liu wrote:
-> inode storage can be useful for non-LSM program. For example, file* tools
-> from bcc/libbpf-tools can use inode storage instead of hash map; fanotify
-> fastpath [1] can also use inode storage to store useful data.
-> 
-> Make inode storage available for tracing program. Move bpf inode storage
-> from a security blob to inode->i_bpf_storage, and adjust related code
-> accordingly.
-> 
-> [1] https://lore.kernel.org/linux-fsdevel/20241029231244.2834368-1-song@kernel.org/
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->  fs/inode.c                     |  1 +
->  include/linux/bpf.h            |  9 +++++++++
->  include/linux/bpf_lsm.h        | 29 -----------------------------
->  include/linux/fs.h             |  4 ++++
->  kernel/bpf/Makefile            |  3 +--
->  kernel/bpf/bpf_inode_storage.c | 32 +++++---------------------------
->  kernel/bpf/bpf_lsm.c           |  4 ----
->  kernel/trace/bpf_trace.c       |  4 ++++
->  security/bpf/hooks.c           |  6 ------
->  9 files changed, 24 insertions(+), 68 deletions(-)
-> 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 8dabb224f941..3c679578169f 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -286,6 +286,7 @@ static struct inode *alloc_inode(struct super_block *sb)
->  void __destroy_inode(struct inode *inode)
->  {
->  	BUG_ON(inode_has_buffers(inode));
-> +	bpf_inode_storage_free(inode);
->  	inode_detach_wb(inode);
->  	security_inode_free(inode);
->  	fsnotify_inode_delete(inode);
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 1b84613b10ac..0b31d2e74df6 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2672,6 +2672,7 @@ struct bpf_link *bpf_link_by_id(u32 id);
->  const struct bpf_func_proto *bpf_base_func_proto(enum bpf_func_id func_id,
->  						 const struct bpf_prog *prog);
->  void bpf_task_storage_free(struct task_struct *task);
-> +void bpf_inode_storage_free(struct inode *inode);
->  void bpf_cgrp_storage_free(struct cgroup *cgroup);
->  bool bpf_prog_has_kfunc_call(const struct bpf_prog *prog);
->  const struct btf_func_model *
-> @@ -2942,6 +2943,10 @@ static inline void bpf_task_storage_free(struct task_struct *task)
->  {
->  }
->  
-> +static inline void bpf_inode_storage_free(struct inode *inode)
-> +{
-> +}
-> +
->  static inline bool bpf_prog_has_kfunc_call(const struct bpf_prog *prog)
->  {
->  	return false;
-> @@ -3305,6 +3310,10 @@ extern const struct bpf_func_proto bpf_task_storage_get_recur_proto;
->  extern const struct bpf_func_proto bpf_task_storage_get_proto;
->  extern const struct bpf_func_proto bpf_task_storage_delete_recur_proto;
->  extern const struct bpf_func_proto bpf_task_storage_delete_proto;
-> +extern const struct bpf_func_proto bpf_inode_storage_get_proto;
-> +extern const struct bpf_func_proto bpf_inode_storage_get_recur_proto;
-> +extern const struct bpf_func_proto bpf_inode_storage_delete_proto;
-> +extern const struct bpf_func_proto bpf_inode_storage_delete_recur_proto;
->  extern const struct bpf_func_proto bpf_for_each_map_elem_proto;
->  extern const struct bpf_func_proto bpf_btf_find_by_name_kind_proto;
->  extern const struct bpf_func_proto bpf_sk_setsockopt_proto;
-> diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-> index aefcd6564251..a819c2f0a062 100644
-> --- a/include/linux/bpf_lsm.h
-> +++ b/include/linux/bpf_lsm.h
-> @@ -19,31 +19,12 @@
->  #include <linux/lsm_hook_defs.h>
->  #undef LSM_HOOK
->  
-> -struct bpf_storage_blob {
-> -	struct bpf_local_storage __rcu *storage;
-> -};
-> -
-> -extern struct lsm_blob_sizes bpf_lsm_blob_sizes;
-> -
->  int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
->  			const struct bpf_prog *prog);
->  
->  bool bpf_lsm_is_sleepable_hook(u32 btf_id);
->  bool bpf_lsm_is_trusted(const struct bpf_prog *prog);
->  
-> -static inline struct bpf_storage_blob *bpf_inode(
-> -	const struct inode *inode)
-> -{
-> -	if (unlikely(!inode->i_security))
-> -		return NULL;
-> -
-> -	return inode->i_security + bpf_lsm_blob_sizes.lbs_inode;
-> -}
-> -
-> -extern const struct bpf_func_proto bpf_inode_storage_get_proto;
-> -extern const struct bpf_func_proto bpf_inode_storage_delete_proto;
-> -void bpf_inode_storage_free(struct inode *inode);
-> -
->  void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func);
->  
->  int bpf_lsm_get_retval_range(const struct bpf_prog *prog,
-> @@ -66,16 +47,6 @@ static inline int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
->  	return -EOPNOTSUPP;
->  }
->  
-> -static inline struct bpf_storage_blob *bpf_inode(
-> -	const struct inode *inode)
-> -{
-> -	return NULL;
-> -}
-> -
-> -static inline void bpf_inode_storage_free(struct inode *inode)
-> -{
-> -}
-> -
->  static inline void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
->  					   bpf_func_t *bpf_func)
->  {
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 3559446279c1..479097e4dd5b 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -79,6 +79,7 @@ struct fs_context;
->  struct fs_parameter_spec;
->  struct fileattr;
->  struct iomap_ops;
-> +struct bpf_local_storage;
->  
->  extern void __init inode_init(void);
->  extern void __init inode_init_early(void);
-> @@ -648,6 +649,9 @@ struct inode {
->  #ifdef CONFIG_SECURITY
->  	void			*i_security;
->  #endif
-> +#ifdef CONFIG_BPF_SYSCALL
-> +	struct bpf_local_storage __rcu *i_bpf_storage;
-> +#endif
+On Tue, Nov 12, 2024 at 3:24=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
+>
+> On Thu, Nov 07 2024 at 13:00, syzbot wrote:
+> > syzbot has bisected this issue to:
+> >
+> > commit 4febce44cfebcb490b196d5d10ae9f403ca4c956
+> > Author: Thomas Gleixner <tglx@linutronix.de>
+> > Date:   Tue Oct 1 08:42:03 2024 +0000
+> >
+> >     posix-timers: Cure si_sys_private race
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D129f2d87=
+980000
+> > start commit:   f9f24ca362a4 Add linux-next specific files for 20241031
+> > git tree:       linux-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D169f2d87980=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D328572ed4d1=
+52be9
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Db506de56cbbb6=
+3148c33
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1387655f9=
+80000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D11ac5540580=
+000
+> >
+> > Reported-by: syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com
+> > Fixes: 4febce44cfeb ("posix-timers: Cure si_sys_private race")
+> >
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bise=
+ction
+>
+> I seriously doubt that this bisection is even remotely correct.
+>
+> This commit has absolutely nothing to do with the lockdep splat and
+> trie_delete_elem().
 
-Sorry, we're not growing struct inode for this. It just keeps getting
-bigger. Last cycle we freed up 8 bytes to shrink it and we're not going
-to waste them on special-purpose stuff. We already NAKed someone else's
-pet field here.
+Yes, the bisection is wrong, please ignore it.
+I've added this case to the issue that tracks the underlying problem:
+https://github.com/google/syzkaller/issues/5414
+
+--=20
+Aleksandr
+
+>
+> Thanks,
+>
+>         tglx
+>
+> --
 
