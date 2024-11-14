@@ -1,82 +1,83 @@
-Return-Path: <bpf+bounces-44889-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44890-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 948B09C963C
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 00:42:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 481219C963E
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 00:42:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08745B24D6A
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 23:42:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0797D28322E
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 23:42:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D557D1B6CF9;
-	Thu, 14 Nov 2024 23:41:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 251321B6D1D;
+	Thu, 14 Nov 2024 23:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PTcXgl8e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vjry5jrX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8811B6CEA;
-	Thu, 14 Nov 2024 23:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195DA1B3935;
+	Thu, 14 Nov 2024 23:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731627681; cv=none; b=Fp/jfxwoyfqTVL9hsL3yT0BXJB/YOKtbm+HnX4M/7TmJda1Z96OY/tAyQAVQ6rg/xhLWBvpAignHZmlugNUgflvB1SBvmlu6h65l4xVCm7RdiL7j1rcjQsY7CR4zO8XS+CNAVhr6BfPpu/DHZhPFUQKdiZWc9MiDtkeevB45dj8=
+	t=1731627685; cv=none; b=ByS+XZa9gniCSmWQL/DyOS5eLWsYcMstFq4QfKPuud3AW8OIUoWTiJaZGwXXorNrjOESmAhxAL85Xx03igxPA6df9ipHb0uYQT91aFXrzmAZSRfHQFL6yUgferkrq1AQABd+5sD7Tabp+n9yqwgaBK45V4xXnLDDxYOc9VZRouU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731627681; c=relaxed/simple;
-	bh=UBpbiWquLqRO8+0oIrD36l/VRiFiV+lsOnKi9bFAoH0=;
+	s=arc-20240116; t=1731627685; c=relaxed/simple;
+	bh=BPo4Ql1iuyifEvEPuCSIs+ptp9YlEUOKHaAy1kVQdpk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SDzWaVpdGa0wi6s74rJ682pI+xCkcLPwa8LezH1/GtXWOWA1mHQpszUqE+vRmLru8QFjB4Tz+FIQoE+SqxnG1hdpElzkIEpcj17t41rHeSULll0Ktb1abfqwIBX4UClwA6JiZkPwcwuV1kd29H9czXUZvhXONjW0vHwYCxHL4AU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PTcXgl8e; arc=none smtp.client-ip=209.85.210.182
+	 To:Cc:Content-Type; b=F0AsQBvq8xJ1+yS03sI7oKHPp8uqvhl2PpPQpRrzEzZwx7W5AwSymPipoEASZJUsvDJE/APvsR+Gie/E0KrEXELPs/E7peKT4MDT9s2arAIFHoBF9FxTdSvd1vTWUPDpNXDhUCiUNZ+dfWLKYO5doGuxpJOMiai/9jmpEitYHrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vjry5jrX; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7240d93fffdso142923b3a.2;
-        Thu, 14 Nov 2024 15:41:18 -0800 (PST)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2e59746062fso140247a91.2;
+        Thu, 14 Nov 2024 15:41:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731627678; x=1732232478; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1731627683; x=1732232483; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lWOkzk9IX/VIC/wGI1eUw6NOMFS4iLtIIZiKC2APgog=;
-        b=PTcXgl8erWjm0kC0nCKwPQV/IfZeq2n0a4YJ8zIbbFyBt/IqaDWBAKY0x+g5GBPTdp
-         ZDB+eWpUVhDQMnhh40hmfnn72RjxtdFo3tdseGLHg7fxfIi4xZ9ooThHOF4LI+FJs4fo
-         j8X8YaAVvJ/0egNOJIuZm8VCz8UEHTGuku7cQDgsVp6nvba/+B4iIyFDySknHBDM6AOD
-         LmJ1z+xEboimHEi+cgxccrzZHv5g8oclroWCRPHCymOQcKjhQ5yMB/JfdpBRYMXeESOc
-         KY6qF5P9rF2qRlmEzHmMupXkyvrIbQNKLBLsq63DNyT5G/89tpCjOkbHf9ayx3h1qM6C
-         f3XQ==
+        bh=Dpk89JtPBszNTY15D/qwUMevQ8PyuL8jZbzAM5ZU2cU=;
+        b=Vjry5jrXK5G6tKmen01mYkNsl7jK/0cqlxYkeORHQfFxk/1MSlTe+9pKx5f/EsvZg6
+         0d9S0BZWz0zb23gIruLn3NF8T/xe31OO1/k8+JxhSuB85Vx8LdE1pDGJ6MPizUineW2H
+         vw4suEL2PcrLgLypSGNTHYtffNUCFLJJxFi+YFYeYONH2hKWgN/q1eKn7J9TiB7gDoqe
+         kbtRZUPCFmQrlhfAt0dWOAjv045KuNMN4dOksVUcvXy0qGskAsO36g6ZTCdQWVZZUtjX
+         HC0IrWVjguheRCqHP11hvoONvISbbNJZItVLhJIuwNKLl/z/23QEn/c8JG3l0lnlBHMV
+         Ierg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731627678; x=1732232478;
+        d=1e100.net; s=20230601; t=1731627683; x=1732232483;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lWOkzk9IX/VIC/wGI1eUw6NOMFS4iLtIIZiKC2APgog=;
-        b=LbNvMNNkafX6zlGFdQ9AIbVSXL+d8G+kTBNAWX09hUHI3Cojwj+Xzzo9Y6MYUCkyy6
-         nv816mcLe1KncKzwYPwDWWOUS7NrWBfcREueiQizETAlP0dQ0y/Z4NiAJOMARwvtmuIO
-         sOJASj0EOFo7n1/y3BwE4NqMCqnYShaly6+7q8350P3zS4eZoKQYt6GKmRdjuRGxcUyz
-         ARu9DadZy21j4SFFtKIcvPObM0HEyP1kQskgv1V9t3MtSshNhRp12XWFnA90pDYTVz4o
-         SE08iQMZ5zoNCUj5ZhFinLJukt6VRKat39waBgkw5imFpmXBJoX5twskgh9JS0nOfC2l
-         PlDg==
-X-Forwarded-Encrypted: i=1; AJvYcCUNX1s1QpBgxDsJU4vMQI9n4+TvkJsRaz+JkZ8bAjDvZy707d3g+AEBJHhJb739JdZR9zs=@vger.kernel.org, AJvYcCWv2dXrWsdv2Q8dCsdwN3YhjOvXQAL3vYvJv8X+zaPuvBXBlbwZwILydZ9fF5fU8gfLZTEyrtmKVTj8P1Jw@vger.kernel.org, AJvYcCXEvzP6IQRA0Yvh/58455KxukJxVDN/hb42XIppQOtpaDL2Z4EzN2L+16PMbMZ7my7Z6jR0MlbWh4V8KGOz5cEvQ6qp@vger.kernel.org
-X-Gm-Message-State: AOJu0YywkguJo7sZqFOfCK3KHOMOn6+HMhcXJbjj7QVs22ZHiz3yviwA
-	zYkzO0dw+oNBb1lQYYYJ3qCAA0XnGcEvWizRqTnzrUIuwnSbfD+3y7noDnu83i7DGwDphJAQNgK
-	kDWVB/41xr5eVloveHIRUmmOgRkQ=
-X-Google-Smtp-Source: AGHT+IGAMEVC6FYqpkx71XyUtxmC/kq4Od6rEDPLTdOVqFkPsGey+JX48FtyQiiebld0Fp3BoizP3Q9fUfNIyyw1X+U=
-X-Received: by 2002:a17:90b:48c4:b0:2e2:bd7a:71ea with SMTP id
- 98e67ed59e1d1-2ea154cf3c7mr1035285a91.8.1731627677858; Thu, 14 Nov 2024
- 15:41:17 -0800 (PST)
+        bh=Dpk89JtPBszNTY15D/qwUMevQ8PyuL8jZbzAM5ZU2cU=;
+        b=jNdEBeVpho6Xee3WXhGhlHykeWoEYAjS9OcNNwSZjOmZsRyLpuRkRqz8Y43dnRKOuM
+         W6uIO4ZX6htaK/lCfkr+8c0ScG9bgH70DjNvyk/whsNLu3NSz6fj9mKCuYB/neMftGyH
+         jbMvLC1+WihvPPLlxbedfYwELV2g+dN5f5okTUgV1zT/F89WWQfawayqA59IRPLYXxYr
+         ufIkGCw4SdBIkdjZFhs9tLcqOi0h0Iy+qadn2/JV/+iUNYBjoG4DC2MHszETnZ9vaNmp
+         ATKX9N1DS9822l9nyanZvBPv1MZa2FJ4PzFJdooCwGyBm51kK9CpkgUoI5bE9th0PJn6
+         vR9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV97cwjS2S6tP1V3807liIQ9nq0aUeU0brGCImC1Bt79eLL/HfDQl+EMxNAbS4Yb8fUyRnRw4T3+8Fdy52P@vger.kernel.org, AJvYcCWJ8QC6wYP7d/8mZS9ZQtuLarzBzJj24Epy3ZZe2DOhSi1A623CSssHK23fLjp2BEIld0mhjl5aDvEVNGyZWTqloJ71@vger.kernel.org, AJvYcCXeGD6YdB+nASdI3J2FWAuCch9No5Lmuh0Txm/VnlZnPRItN5gAenU3bFtCHI2wsd5RedU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWi8Eo3ylcgYKFEs/1dtbHh7XE0sZ48nG+YeRN2pndj3rW/Nwy
+	m6amqnxeiOMQJXKQ+YS6Rf9nmCJu3eF//XaeHIPTQ4ZPGxbfA4ivPTAt/56rAzkc9mKf/3RL0VH
+	fUMeq2rLTDJKVVrKkv6toodPhHD0=
+X-Google-Smtp-Source: AGHT+IG1L8HnS9t8sf+G3681Lpr1KxtsAJg/iK5alf9Dc4FLqgEdWd+9Ai+u9JJtRMSDjsjJni2ua71g7kgcOJFuW6A=
+X-Received: by 2002:a17:90a:fc4e:b0:2da:d766:1925 with SMTP id
+ 98e67ed59e1d1-2ea1559c7e1mr976495a91.37.1731627683314; Thu, 14 Nov 2024
+ 15:41:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241105133405.2703607-1-jolsa@kernel.org> <20241105133405.2703607-4-jolsa@kernel.org>
-In-Reply-To: <20241105133405.2703607-4-jolsa@kernel.org>
+References: <20241105133405.2703607-1-jolsa@kernel.org> <20241105133405.2703607-5-jolsa@kernel.org>
+In-Reply-To: <20241105133405.2703607-5-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 14 Nov 2024 15:41:03 -0800
-Message-ID: <CAEf4BzbM+warM65tnYampngqOGzQ-FS7frH88Hayx7veMjpjZA@mail.gmail.com>
-Subject: Re: [RFC perf/core 03/11] uprobes: Add len argument to uprobe_write_opcode
+Date: Thu, 14 Nov 2024 15:41:08 -0800
+Message-ID: <CAEf4Bzbufp=pSqNHZu6+FPAqGSOqoE56R4KnewECFbdtAe-eeg@mail.gmail.com>
+Subject: Re: [RFC perf/core 04/11] uprobes: Add data argument to
+ uprobe_write_opcode function
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, 
@@ -89,114 +90,153 @@ Content-Transfer-Encoding: quoted-printable
 
 On Tue, Nov 5, 2024 at 5:34=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding len argument to uprobe_write_opcode as preparation
-> fo writing longer instructions in following changes.
-
-typo: for
-
+> Adding data argument to uprobe_write_opcode function and passing
+> it to newly added arch overloaded functions:
+>
+>   arch_uprobe_verify_opcode
+>   arch_uprobe_is_register
+>
+> This way each architecture can provide custmized verification.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  include/linux/uprobes.h |  3 ++-
->  kernel/events/uprobes.c | 14 ++++++++------
->  2 files changed, 10 insertions(+), 7 deletions(-)
+>  include/linux/uprobes.h |  6 +++++-
+>  kernel/events/uprobes.c | 25 +++++++++++++++++++------
+>  2 files changed, 24 insertions(+), 7 deletions(-)
 >
 > diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> index 28068f9fcdc1..7d23a4fee6f4 100644
+> index 7d23a4fee6f4..be306028ed59 100644
 > --- a/include/linux/uprobes.h
 > +++ b/include/linux/uprobes.h
-> @@ -181,7 +181,8 @@ extern bool is_swbp_insn(uprobe_opcode_t *insn);
->  extern bool is_trap_insn(uprobe_opcode_t *insn);
+> @@ -182,7 +182,7 @@ extern bool is_trap_insn(uprobe_opcode_t *insn);
 >  extern unsigned long uprobe_get_swbp_addr(struct pt_regs *regs);
 >  extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
-> -extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_st=
-ruct *mm, unsigned long vaddr, uprobe_opcode_t);
-> +extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_st=
+>  extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_st=
 ruct *mm,
-> +                              unsigned long vaddr, uprobe_opcode_t *insn=
+> -                              unsigned long vaddr, uprobe_opcode_t *insn=
 , int len);
-
-is len in sizeof(uprobe_opcode_t) units or in bytes? it would be good
-to make this clearer
-
-it feels like passing `void *` for insns would be better, tbh...
-
-
-
+> +                              unsigned long vaddr, uprobe_opcode_t *insn=
+, int len, void *data);
 >  extern struct uprobe *uprobe_register(struct inode *inode, loff_t offset=
 , loff_t ref_ctr_offset, struct uprobe_consumer *uc);
 >  extern int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *u=
 c, bool);
 >  extern void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprob=
 e_consumer *uc);
+> @@ -215,6 +215,10 @@ extern void uprobe_handle_trampoline(struct pt_regs =
+*regs);
+>  extern void *arch_uretprobe_trampoline(unsigned long *psize);
+>  extern unsigned long uprobe_get_trampoline_vaddr(void);
+>  extern void uprobe_copy_from_page(struct page *page, unsigned long vaddr=
+, void *dst, int len);
+> +extern int uprobe_verify_opcode(struct page *page, unsigned long vaddr, =
+uprobe_opcode_t *new_opcode);
+> +extern int arch_uprobe_verify_opcode(struct page *page, unsigned long va=
+ddr,
+> +                                    uprobe_opcode_t *new_opcode, void *d=
+ata);
+> +extern bool arch_uprobe_is_register(uprobe_opcode_t *insn, int len, void=
+ *data);
+>  #else /* !CONFIG_UPROBES */
+>  struct uprobes_state {
+>  };
 > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index e9308649bba3..3e275717789b 100644
+> index 3e275717789b..944d9df1f081 100644
 > --- a/kernel/events/uprobes.c
 > +++ b/kernel/events/uprobes.c
-> @@ -471,7 +471,7 @@ static int update_ref_ctr(struct uprobe *uprobe, stru=
+> @@ -264,7 +264,13 @@ static void copy_to_page(struct page *page, unsigned=
+ long vaddr, const void *src
+>         kunmap_atomic(kaddr);
+>  }
+>
+> -static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_=
+opcode_t *new_opcode)
+> +__weak bool arch_uprobe_is_register(uprobe_opcode_t *insn, int len, void=
+ *data)
+> +{
+> +       return is_swbp_insn(insn);
+> +}
+> +
+> +int uprobe_verify_opcode(struct page *page, unsigned long vaddr,
+> +                        uprobe_opcode_t *new_opcode)
+>  {
+>         uprobe_opcode_t old_opcode;
+>         bool is_swbp;
+> @@ -292,6 +298,12 @@ static int verify_opcode(struct page *page, unsigned=
+ long vaddr, uprobe_opcode_t
+>         return 1;
+>  }
+>
+> +__weak int arch_uprobe_verify_opcode(struct page *page, unsigned long va=
+ddr,
+> +                                    uprobe_opcode_t *new_opcode, void *d=
+ata)
+
+why wrapping lines? even original longer code was single line
+
+
+> +{
+> +       return uprobe_verify_opcode(page, vaddr, new_opcode);
+> +}
+> +
+>  static struct delayed_uprobe *
+>  delayed_uprobe_check(struct uprobe *uprobe, struct mm_struct *mm)
+>  {
+> @@ -471,7 +483,8 @@ static int update_ref_ctr(struct uprobe *uprobe, stru=
 ct mm_struct *mm,
 >   * Return 0 (success) or a negative errno.
 >   */
 >  int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *m=
 m,
-> -                       unsigned long vaddr, uprobe_opcode_t opcode)
-> +                       unsigned long vaddr, uprobe_opcode_t *insn, int l=
+> -                       unsigned long vaddr, uprobe_opcode_t *insn, int l=
 en)
+> +                       unsigned long vaddr, uprobe_opcode_t *insn, int l=
+en,
+> +                       void *data)
 >  {
 >         struct uprobe *uprobe;
 >         struct page *old_page, *new_page;
-> @@ -480,7 +480,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, =
+> @@ -480,7 +493,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, =
 struct mm_struct *mm,
 >         bool orig_page_huge =3D false;
 >         unsigned int gup_flags =3D FOLL_FORCE;
 >
-> -       is_register =3D is_swbp_insn(&opcode);
-> +       is_register =3D is_swbp_insn(insn);
+> -       is_register =3D is_swbp_insn(insn);
+> +       is_register =3D arch_uprobe_is_register(insn, len, data);
 >         uprobe =3D container_of(auprobe, struct uprobe, arch);
 >
 >  retry:
-> @@ -491,7 +491,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, =
+> @@ -491,7 +504,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, =
 struct mm_struct *mm,
 >         if (IS_ERR(old_page))
 >                 return PTR_ERR(old_page);
 >
-> -       ret =3D verify_opcode(old_page, vaddr, &opcode);
-> +       ret =3D verify_opcode(old_page, vaddr, insn);
+> -       ret =3D verify_opcode(old_page, vaddr, insn);
+> +       ret =3D arch_uprobe_verify_opcode(old_page, vaddr, insn, data);
 >         if (ret <=3D 0)
 >                 goto put_old;
 >
-> @@ -525,7 +525,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, =
-struct mm_struct *mm,
->
->         __SetPageUptodate(new_page);
->         copy_highpage(new_page, old_page);
-> -       copy_to_page(new_page, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE);
-> +       copy_to_page(new_page, vaddr, insn, len);
->
->         if (!is_register) {
->                 struct page *orig_page;
-> @@ -582,7 +582,9 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, =
-struct mm_struct *mm,
->   */
->  int __weak set_swbp(struct arch_uprobe *auprobe, struct mm_struct *mm, u=
-nsigned long vaddr)
+> @@ -584,7 +597,7 @@ int __weak set_swbp(struct arch_uprobe *auprobe, stru=
+ct mm_struct *mm, unsigned
 >  {
-> -       return uprobe_write_opcode(auprobe, mm, vaddr, UPROBE_SWBP_INSN);
-> +       uprobe_opcode_t insn =3D UPROBE_SWBP_INSN;
-> +
-> +       return uprobe_write_opcode(auprobe, mm, vaddr, &insn, UPROBE_SWBP=
+>         uprobe_opcode_t insn =3D UPROBE_SWBP_INSN;
+>
+> -       return uprobe_write_opcode(auprobe, mm, vaddr, &insn, UPROBE_SWBP=
 _INSN_SIZE);
+> +       return uprobe_write_opcode(auprobe, mm, vaddr, &insn, UPROBE_SWBP=
+_INSN_SIZE, NULL);
 >  }
 >
 >  /**
-> @@ -598,7 +600,7 @@ int __weak
+> @@ -600,7 +613,7 @@ int __weak
 >  set_orig_insn(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigne=
 d long vaddr)
 >  {
 >         return uprobe_write_opcode(auprobe, mm, vaddr,
-> -                       *(uprobe_opcode_t *)&auprobe->insn);
-> +                       (uprobe_opcode_t *)&auprobe->insn, UPROBE_SWBP_IN=
+> -                       (uprobe_opcode_t *)&auprobe->insn, UPROBE_SWBP_IN=
 SN_SIZE);
+> +                       (uprobe_opcode_t *)&auprobe->insn, UPROBE_SWBP_IN=
+SN_SIZE, NULL);
 >  }
 >
 >  /* uprobe should have guaranteed positive refcount */
