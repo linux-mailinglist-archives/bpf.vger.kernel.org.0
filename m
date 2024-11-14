@@ -1,169 +1,150 @@
-Return-Path: <bpf+bounces-44849-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44850-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2475C9C8EFD
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 17:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9409E9C8FC8
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 17:30:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDC3328AF19
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 16:01:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58CE8282441
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 16:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B8F188006;
-	Thu, 14 Nov 2024 15:59:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F89217A583;
+	Thu, 14 Nov 2024 16:29:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="DfwJewut"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="r69F1I7U"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB917187550;
-	Thu, 14 Nov 2024 15:59:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0762F51C4A
+	for <bpf@vger.kernel.org>; Thu, 14 Nov 2024 16:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731599943; cv=none; b=bNW391SFrU+c6PS67QxERtS0sMXu7tovmC57t5bv/5KIREjz1Im7lkNS5uivt1I2ffL6f0vHJsN5unYoyYNdnEpKNx9e+6PzAhDtp7xF8Q+NAAq8J5zPWc7Dw8/R4d1I4hQphrx6i/tKe8HE9SQKULU4FADx6SxXJxoS8Okvpgo=
+	t=1731601759; cv=none; b=CNRrhpJxOBcFBlfBPNwCfxC1KqoaqNgSYCRSCeYEc8oW5WuryDG52JjaU95V2yAHRw049F0rAfPpnYLud5+R3CDRXRIqM+wfAJYNnfyikOTQGBH9IYvR9GDCFfOUY7OrkqPqPjlgwblaMeC/DMfnCRDaFyyG3fNhrgdPrC9z/V8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731599943; c=relaxed/simple;
-	bh=hIrLCG53omfoa/gth0dMljiSmJ9oPplGXGL6H4s1t9U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kgoF5bchlC2ESWOPGaG+2/uMtylEGMS786Gwih271bZrGHqb+nZ2+EnT04vXCslzePRhP2Bf7YIX7WL3WdiOZ08qKW9xH68vfjljRqECdLcX0UW58JTcT5NvM8zNt8XgF6Vv6wNDYGziHAfcV0vXYDHvUsKhGk7sRfKIPsmvWqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=DfwJewut; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AEChiZc015748;
-	Thu, 14 Nov 2024 15:58:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2023-11-20; bh=/Ww6N
-	pz6FeI6PRwspBdygNXKp74rvjfyzn1ZkIHpJdU=; b=DfwJewutr0Nf/ElltjXH9
-	gzRp7prGUCOlrBsbA3ZkyFpe1h7CisKl/az06adS/MwD6v9pX8pWOYLE9ukAspvH
-	ZO13jBHrq0VOpm1/jNd4Yjm9yJ6HWr1uNsL0Ba+qZFENovk/mkEkn9pSuxeg6OUy
-	0EGcUwECV/CHCrOmC1QK5uFNME1xxBNObcqllSXgZ6dRWYAS6ad5A4oYBK8xGBmx
-	gXIOBD81efYUvjbVBvXjjeXMUoTy7SWoAOhW2uViuKLgqtagU+VDPO2HXvQQjxJ7
-	jdnUiEBfnSrb4wz1ZQUujHln/NCOmcSWKTjgE1sjkeGpFDtqSp78BkPFM3nmousJ
-	w==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42t0k29hms-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 14 Nov 2024 15:58:38 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 4AEFMbV8000346;
-	Thu, 14 Nov 2024 15:58:37 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 42tbpad7gv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 14 Nov 2024 15:58:37 +0000
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4AEFwUgk002439;
-	Thu, 14 Nov 2024 15:58:37 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-175-214-128.vpn.oracle.com [10.175.214.128])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 42tbpad778-3;
-	Thu, 14 Nov 2024 15:58:36 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: acme@kernel.org
-Cc: yonghong.song@linux.dev, dwarves@vger.kernel.org, ast@kernel.org,
-        andrii@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, song@kernel.org, eddyz87@gmail.com,
-        olsajiri@gmail.com, Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v2 dwarves 2/2] dwarf_loader: use libdw__lock for
-Date: Thu, 14 Nov 2024 15:58:22 +0000
-Message-ID: <20241114155822.898466-3-alan.maguire@oracle.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241114155822.898466-1-alan.maguire@oracle.com>
-References: <20241114155822.898466-1-alan.maguire@oracle.com>
+	s=arc-20240116; t=1731601759; c=relaxed/simple;
+	bh=jHldP1zFkwmIw1b+wrZoVG3viZlbK8CqR1ZO3jsgYBQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BQWd9EnNUjqoMjZa3FRqQKRE/rDV9kLXB5PqX1soqhLQrvwbS+k4d7dy1q6DCBX9Ep+1i+bXAEXbSQvx1/Z7BGfKSDC6OxyLNEFBZhjqc0FnJrNjvC3vML2RSqtOvn00HsdaxTNHwIO+wBGNr6QIxfmR4/XQlWCJq1cg/OBXuec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=r69F1I7U; arc=none smtp.client-ip=91.218.175.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <5b777915-ef7f-4d21-8b23-cc79016aef32@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731601755;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ACbkQ9EQubbduYBGoGWvNxCoW7nZ5amK3ybGUy2gQO8=;
+	b=r69F1I7U+fciAP5/ZN8fYGBq4LZ5V16uzwLJ8BccECQ/HOeK4c94uLGw8dOu4T+Exbreys
+	IZJDLfWkUVKxqgaCklS5c0RH3vJkJ4jU5y1ECbHGrPZyo0bFsIvUAyY5tTnxPx8CG2QgOh
+	lyA9Me1QARcTehKwm8lOxOoGglWYb1Y=
+Date: Thu, 14 Nov 2024 08:29:09 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH dwarves 3/3] dwarf_loader: Check DW_OP_[GNU_]entry_value
+ for possible parameter matching
+Content-Language: en-GB
+To: Alan Maguire <alan.maguire@oracle.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+ dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Song Liu <song@kernel.org>
+References: <20241108180508.1196431-1-yonghong.song@linux.dev>
+ <20241108180524.1198900-1-yonghong.song@linux.dev>
+ <b32b2892-31b1-4dc0-8398-d8fadfaafcc6@oracle.com>
+ <5be88704-1bb0-4332-8626-26e7c908184c@linux.dev>
+ <e311899e-5502-4d46-b9ee-edc0ee9dd023@oracle.com>
+ <48a2d5a2-38e0-4c36-90cc-122602ff6386@linux.dev>
+ <5e640168-7753-413a-ab00-f297948e84ef@oracle.com> <ZzOoGJBiL-l6BfQd@x1>
+ <71778df3-62a6-4b1d-9ccf-4a8eb0e23828@oracle.com>
+ <548c7b6b-3b84-4053-baa7-72976731ab87@linux.dev>
+ <9bfe242b-b09b-47a5-9446-1cfc0897aef2@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <9bfe242b-b09b-47a5-9446-1cfc0897aef2@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-11-14_05,2024-11-13_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 malwarescore=0
- mlxlogscore=951 spamscore=0 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
- definitions=main-2411140125
-X-Proofpoint-ORIG-GUID: p7HpRg_Ye_0SDgHzyaVjQPqi2UrTLpXn
-X-Proofpoint-GUID: p7HpRg_Ye_0SDgHzyaVjQPqi2UrTLpXn
+X-Migadu-Flow: FLOW_OUT
 
-Eduard noticed [1] intermittent segmentation faults triggered by caching
-done internally in dwarf_getlocation(s).  A binary tree of location
-information is cached in the CU, and if multiple threads access it
-concurrently we can get segmentation faults.  It is possible to
-compile elfutils with experimental thread-safe support, but safer for
-now to add locking to pahole.
 
-No additional overhead in pahole encoding was observed
-as a result of these changes.
 
-Reported-by: Eduard Zingerman <eddyz87@gmail.com>
-Suggested-by: Arnaldo Carvalho de Melo <acme@kernel.org>
-Suggested-by: Jiri Olsa <olsajiri@gmail.com>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 
-[1] https://lore.kernel.org/dwarves/080794545d8eb3df3d6eba90ac621111ab7171f5.camel@gmail.com/
----
- dwarf_loader.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+On 11/14/24 4:16 AM, Alan Maguire wrote:
+> On 13/11/2024 18:27, Yonghong Song wrote:
+>>> Thanks for the additional info! From Eduard's analysis, it seems like it
+>>> is safer to take the libdw__lock around dwarf_getlocation(s), since
+>>> multiple threads can access the CU location cache. I've tried tweaking
+>>> Eduard's modification of Yonghong's original patch and adding a second
+>>> patch to add locking; with these two patches applied
+>>>
+>>> - we see the desired behaviour where perf_event_read() is present in
+>>> BTF; and
+>>> - we don't see any segmentation faults after ~700 iterations where I saw
+>>> one every 200 or so before
+>>>
+>>> Yonghong, Eduard - do these changes look okay from your side? Feel free
+>>> to resubmit if so (fixing up attributions as you see fit if they look
+>>> wrong of course). Thanks!
+>> Thanks Alan for working on this. The following are some suggestions for
+>> patch one:
+>>    1. rename __dwarf_getlocations() to __parameter__locations()?
+>>    2. rename param_reg_at_entry to parameter__locations()?
+> Since it returns the register number, what about
+> __parameter_reg/parameter_reg()?
+>
+>>    3. You missed the following:
+>> static int param_reg_at_entry(Dwarf_Attribute *attr, int expected_reg)
+>> {
+>> ...
+>>          if (first_expr)                     // this line
+>>                  return first_expr->atom;    // this line
+>>          return -1;
+>> }
+>>
+> I _think_ I've preserved the behaviour described by the comment at the
+> start without using the first_expr code. Note that we set "ret" in the
+> "case DW_OP_reg0 ... DW_OP_reg31:" clause of the switch statement, so
+> will return that value; either directly, if the register number matches
+> expected reg, or eventually if we don't find any DW_OP_*entry_value
+> location info to return. This I think matches the described behaviour:
+>
+> /* For DW_AT_location 'attr':
+>   * - if first location is DW_OP_regXX with expected number, returns the
+> register;
+>   * - if location DW_OP_entry_value(DW_OP_regXX) is in the list, returns
+> the register;
+>   * - if first location is DW_OP_regXX, returns the register;
+>   * - otherwise returns -1.
+>   */
+>
+> ...but again I may have missed something here.
 
-diff --git a/dwarf_loader.c b/dwarf_loader.c
-index bc862b5..9299c1f 100644
---- a/dwarf_loader.c
-+++ b/dwarf_loader.c
-@@ -450,7 +450,14 @@ static bool attr_type(Dwarf_Die *die, uint32_t attr_name, Dwarf_Off *offset)
- static int attr_location(Dwarf_Die *die, Dwarf_Op **expr, size_t *exprlen)
- {
- 	Dwarf_Attribute attr;
-+	int ret = 1;
-+
- 	if (dwarf_attr(die, DW_AT_location, &attr) != NULL) {
-+		/* use libdw__lock as dwarf_getlocation(s) has concurrency
-+		 * issues when libdw is not compiled with experimental
-+		 * --enable-thread-safety
-+		 */
-+		pthread_mutex_lock(&libdw__lock);
- 		if (dwarf_getlocation(&attr, expr, exprlen) == 0) {
- 			/* DW_OP_addrx needs additional lookup for real addr. */
- 			if (*exprlen != 0 && expr[0]->atom == DW_OP_addrx) {
-@@ -462,11 +469,12 @@ static int attr_location(Dwarf_Die *die, Dwarf_Op **expr, size_t *exprlen)
- 
- 				expr[0]->number = address;
- 			}
--			return 0;
-+			ret = 0;
- 		}
-+		pthread_mutex_unlock(&libdw__lock);
- 	}
- 
--	return 1;
-+	return ret;
- }
- 
- /* The struct dwarf_tag has a fixed size while the 'struct tag' is just the base
-@@ -1193,6 +1201,10 @@ static int parameter__reg(Dwarf_Attribute *attr, int expected_reg)
- 	int loc_num = -1;
- 	int ret = -1;
- 
-+	/* use libdw__lock as dwarf_getlocation(s) has concurrency issues
-+	 * when libdw is not compiled with experimental --enable-thread-safety
-+	 */
-+	pthread_mutex_lock(&libdw__lock);
- 	while ((offset = __dwarf_getlocations(attr, offset, &base, &start, &end, &expr, &exprlen)) > 0) {
- 		loc_num++;
- 
-@@ -1228,6 +1240,7 @@ static int parameter__reg(Dwarf_Attribute *attr, int expected_reg)
- 		}
- 	}
- out:
-+	pthread_mutex_unlock(&libdw__lock);
- 	return ret;
- }
- 
--- 
-2.31.1
+I have some comments in v2 and will reply there.
+
+>
+>> Patch 2 needs adjustment as well due to the above point #3.
+>> Otherwise, LGTM. Since you are already preparing the patch,
+>> please go ahead to pose v2 after you fixing the above things.
+>>
+> Sure; if the above sounds okay, I'll submit the patches with updates.
+> After testing over 2000 iterations of pahole, I haven't seen a
+> segmentation fault so I _think_ the locking in patch 2 is sufficient to
+> avoid crashes.
+>
+> Thanks!
+>
+> Alan
+>
+>>> Alan
 
 
