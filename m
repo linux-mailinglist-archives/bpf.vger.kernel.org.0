@@ -1,85 +1,191 @@
-Return-Path: <bpf+bounces-44868-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44869-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B15E39C94A4
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 22:43:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 091AB9C94AC
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 22:49:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33D22B22F1A
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 21:43:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6923BB23AE9
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 21:49:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E179E1AF0C5;
-	Thu, 14 Nov 2024 21:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2963C1AF0CA;
+	Thu, 14 Nov 2024 21:49:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QAyCrM95"
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="gHI+7GjR";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="gHI+7GjR"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A1C76026
-	for <bpf@vger.kernel.org>; Thu, 14 Nov 2024 21:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D38876026;
+	Thu, 14 Nov 2024 21:49:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731620616; cv=none; b=KJth5g833MT848qN2KjRwiGDQSnHPx/d4Oq43wA/Om3W5e/Xv6ShHHcZQFZmxrOOwE71SUB9zkC0gg1D1N98ECku6k382nmx/+Bh+QeuL6BpHDKObR3YudGJpzke4qAiMV5zlKHErw+jsy2+O84pot2aTCg2W8DfZvaccOkJ0To=
+	t=1731620974; cv=none; b=eBYUQwkHSsaJ1l9ivWZhaw+34A80Byo/oG2mAD35P1zWmp9+ZVpyK8YcX+npdx7KZOl5h8JptSoHM9QNnTcHeFGOeN6Fwv0nt3P3yn6MoK410jLKoIf8cOsuMnZ09xkFJT2Ozp4kmpNdCvcxacWwBxpKpDbW+sebpIgCT4leqU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731620616; c=relaxed/simple;
-	bh=n7JmvDQEJTOnk++XK6eA+PE6CAAvjld8xZERnikAMqY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cz51cpLXBss3MZM1n3VvWJuSVgoDHusgyUg2WVjhtX1vZIMj6Gj7gx05F+UhEZ0RVPXEu36wEAefllh4Y2Y0Ue5hDm6+0TUMrRuua8w5LxzJ1V/so38zMtwb0M3n9kEHqXoQCUC9BfHWBw72VqSKlpCRyiWecW/I08ICD0TYNEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QAyCrM95; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e5edc796-7ae3-4b57-b8ee-223f2c26f936@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731620611;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PDmTfCI6RKcz57gtjFsW2JZrMbqYTYu7rhILfnoxFRk=;
-	b=QAyCrM95sT4SgqKL1YZL6gh5Iio9mME7K9TkmbaOtg2G5WNw0ki8VNgeGHcwHa6XCEIAKU
-	r7l8SYf7aFKyP248QyuEjAFCg6fxDG/JzxE4grnJ/GMSBp83J5tHcS4IcrJCo9HepY796w
-	RTWkXD8WOF4oYi3JWqcf5KW8V73gyew=
-Date: Thu, 14 Nov 2024 13:43:22 -0800
+	s=arc-20240116; t=1731620974; c=relaxed/simple;
+	bh=wS4IETU5H8sOM3r7VeRA6L017b67dL9K8MWdsQ3ApBI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=hN/4qKiGwkL8/ZxVgsNkMmGcqfRoqhFmS3UNfT15o3uVOuAyNBylmMsunA+5e2WXF/QqSlOjwpBbkXxUo3WxHCvofNJPnJFDl8uj3GJAfMfZ/UMRtlcIyLWOGytBHzh38BOHWFFjQwfTtqyrkVjLRsALlkmVlfIyyodf5IiCgI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=gHI+7GjR; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=gHI+7GjR; arc=none smtp.client-ip=96.44.175.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1731620970;
+	bh=wS4IETU5H8sOM3r7VeRA6L017b67dL9K8MWdsQ3ApBI=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=gHI+7GjRldAEcpgCpFSXhyICRh0Cfi6dViARKCbystU2jZQ3FtCIQLTLIHc0mbCCn
+	 QDmjfK0u9aw2b4pBSES/WV7xbUqdE903v10f7PXPdrGRMlgC8jRfwksr4igdulFBoI
+	 GfJvlirt2ofPfEHJgT/uQ+jqe0Zpj7ghrXa/T6Jc=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id D82BF128171F;
+	Thu, 14 Nov 2024 16:49:30 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id qbUAHw1uv0wD; Thu, 14 Nov 2024 16:49:30 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1731620970;
+	bh=wS4IETU5H8sOM3r7VeRA6L017b67dL9K8MWdsQ3ApBI=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=gHI+7GjRldAEcpgCpFSXhyICRh0Cfi6dViARKCbystU2jZQ3FtCIQLTLIHc0mbCCn
+	 QDmjfK0u9aw2b4pBSES/WV7xbUqdE903v10f7PXPdrGRMlgC8jRfwksr4igdulFBoI
+	 GfJvlirt2ofPfEHJgT/uQ+jqe0Zpj7ghrXa/T6Jc=
+Received: from [10.106.168.49] (unknown [167.220.104.49])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id B91D712810F1;
+	Thu, 14 Nov 2024 16:49:29 -0500 (EST)
+Message-ID: <b1e82da8daa1c372e4678b1984ac942c98db998d.camel@HansenPartnership.com>
+Subject: Re: [PATCH bpf-next 0/4] Make inode storage available to tracing
+ prog
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Song Liu <songliubraving@meta.com>, Casey Schaufler
+ <casey@schaufler-ca.com>
+Cc: "Dr. Greg" <greg@enjellic.com>, Song Liu <song@kernel.org>, 
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-security-module@vger.kernel.org"
+ <linux-security-module@vger.kernel.org>, Kernel Team
+ <kernel-team@meta.com>,  "andrii@kernel.org" <andrii@kernel.org>,
+ "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,  "martin.lau@linux.dev"
+ <martin.lau@linux.dev>, "viro@zeniv.linux.org.uk"
+ <viro@zeniv.linux.org.uk>,  "brauner@kernel.org" <brauner@kernel.org>,
+ "jack@suse.cz" <jack@suse.cz>, "kpsingh@kernel.org" <kpsingh@kernel.org>,
+ "mattbobrowski@google.com" <mattbobrowski@google.com>, 
+ "amir73il@gmail.com" <amir73il@gmail.com>, "repnop@google.com"
+ <repnop@google.com>,  "jlayton@kernel.org" <jlayton@kernel.org>, Josef
+ Bacik <josef@toxicpanda.com>, "mic@digikod.net" <mic@digikod.net>,
+ "gnoack@google.com" <gnoack@google.com>
+Date: Thu, 14 Nov 2024 13:49:28 -0800
+In-Reply-To: <4BF6D271-51D5-4768-A460-0853ABC5602D@fb.com>
+References: <20241112082600.298035-1-song@kernel.org>
+	 <d3e82f51-d381-4aaf-a6aa-917d5ec08150@schaufler-ca.com>
+	 <ACCC67D1-E206-4D9B-98F7-B24A2A44A532@fb.com>
+	 <d7d23675-88e6-4f63-b04d-c732165133ba@schaufler-ca.com>
+	 <332BDB30-BCDC-4F24-BB8C-DD29D5003426@fb.com>
+	 <8c86c2b4-cd23-42e0-9eb6-2c8f7a4cbcd4@schaufler-ca.com>
+	 <CAPhsuW5zDzUp7eSut9vekzH7WZHpk38fKHmFVRTMiBbeW10_SQ@mail.gmail.com>
+	 <20241114163641.GA8697@wind.enjellic.com>
+	 <53a3601e-0999-4603-b69f-7bed39d4d89a@schaufler-ca.com>
+	 <4BF6D271-51D5-4768-A460-0853ABC5602D@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf] xsk: Free skb when TX metadata options are invalid
-To: Felix Maurer <fmaurer@redhat.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: bjorn@kernel.org, magnus.karlsson@intel.com,
- maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
- ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, yoong.siang.song@intel.com, sdf@fomichev.me,
- netdev@vger.kernel.org, Michal Schmidt <mschmidt@redhat.com>,
- bpf@vger.kernel.org
-References: <edb9b00fb19e680dff5a3350cd7581c5927975a8.1731581697.git.fmaurer@redhat.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <edb9b00fb19e680dff5a3350cd7581c5927975a8.1731581697.git.fmaurer@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 11/14/24 3:30 AM, Felix Maurer wrote:
-> When a new skb is allocated for transmitting an xsk descriptor, i.e., for
-> every non-multibuf descriptor or the first frag of a multibuf descriptor,
-> but the descriptor is later found to have invalid options set for the TX
-> metadata, the new skb is never freed. This can leak skbs until the send
-> buffer is full which makes sending more packets impossible.
+On Thu, 2024-11-14 at 18:08 +0000, Song Liu wrote:
 > 
-> Fix this by freeing the skb in the error path if we are currently dealing
-> with the first frag, i.e., an skb allocated in this iteration of
-> xsk_build_skb.
+> 
+> > On Nov 14, 2024, at 9:29 AM, Casey Schaufler
+> > <casey@schaufler-ca.com> wrote:
+> 
+> [...]
+> 
+> > > 
+> > > 
+> > > The LSM inode information is obviously security sensitive, which
+> > > I
+> > > presume would be be the motivation for Casey's concern that a
+> > > 'mistake
+> > > by a BPF programmer could cause the whole system to blow up',
+> > > which in
+> > > full disclosure is only a rough approximation of his statement.
+> > > 
+> > > We obviously can't speak directly to Casey's concerns.  Casey,
+> > > any
+> > > specific technical comments on the challenges of using a common
+> > > inode
+> > > specific storage architecture?
+> > 
+> > My objection to using a union for the BPF and LSM pointer is based
+> > on the observation that a lot of modern programmers don't know what
+> > a union does. The BPF programmer would see that there are two ways
+> > to accomplish their task, one for CONFIG_SECURITY=y and the other
+> > for when it isn't. The second is much simpler. Not understanding
+> > how kernel configuration works, nor being "real" C language savvy,
+> > the programmer installs code using the simpler interfaces on a
+> > Redhat system. The SELinux inode data is compromised by the BPF
+> > code, which thinks the data is its own. Hilarity ensues.
+> 
+> There must be some serious misunderstanding here. So let me 
+> explain the idea again. 
+> 
+> With CONFIG_SECURITY=y, the code will work the same as right now. 
+> BPF inode storage uses i_security, just as any other LSMs. 
+> 
+> With CONFIG_SECURITY=n, i_security does not exist, so the bpf
+> inode storage will use i_bpf_storage. 
+> 
+> Since this is a CONFIG_, all the logic got sorted out at compile
+> time. Thus the user API (for user space and for bpf programs) 
+> stays the same. 
+> 
+> 
+> Actually, I can understand the concern with union. Although, 
+> the logic is set at kernel compile time, it is still possible 
+> for kernel source code to use i_bpf_storage when 
+> CONFIG_SECURITY is enabled. (Yes, I guess now I finally understand
+> the concern). 
+> 
+> We can address this with something like following:
+> 
+> #ifdef CONFIG_SECURITY
+>         void                    *i_security;
+> #elif CONFIG_BPF_SYSCALL
+>         struct bpf_local_storage __rcu *i_bpf_storage;
+> #endif
+> 
+> This will help catch all misuse of the i_bpf_storage at compile
+> time, as i_bpf_storage doesn't exist with CONFIG_SECURITY=y. 
+> 
+> Does this make sense?
 
-Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
+Got to say I'm with Casey here, this will generate horrible and failure
+prone code.
 
-Jakub, can you help to take it directly to the net tree? Thanks!
+Since effectively you're making i_security always present anyway,
+simply do that and also pull the allocation code out of security.c in a
+way that it's always available?  That way you don't have to special
+case the code depending on whether CONFIG_SECURITY is defined. 
+Effectively this would give everyone a generic way to attach some
+memory area to an inode.  I know it's more complex than this because
+there are LSM hooks that run from security_inode_alloc() but if you can
+make it work generically, I'm sure everyone will benefit.
+
+Regards,
+
+James
+
+
 
 
