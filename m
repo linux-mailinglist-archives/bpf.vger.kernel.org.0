@@ -1,101 +1,85 @@
-Return-Path: <bpf+bounces-44843-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44844-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ED119C8C71
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 15:07:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A87519C8D68
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 15:56:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D7B4283D75
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 14:07:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E247282179
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 14:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560102B9B7;
-	Thu, 14 Nov 2024 14:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E563133987;
+	Thu, 14 Nov 2024 14:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oEbKNCDP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kVSIF4JE"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B1E1172A;
-	Thu, 14 Nov 2024 14:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C5A6770FE;
+	Thu, 14 Nov 2024 14:56:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731593244; cv=none; b=t+F92o0TmQ2iHF70/D6cATWHMRcnX2nJKEvkyYrQ5m7bkKBc3FO3Lz9gkaeynU5d7ZpAyXp+ivBFofBgR2bNEVtR6JVN7WN51jaIt0PQs71JPvQ0ceOUMsch2Q495L7VqdPvcKtfkFW5pI2PBv/laT7v9EqoEtqH1UshHnxPXTg=
+	t=1731596177; cv=none; b=dw4va7IRXUDYPhQSq5sIa5ZNw4VQW5gV1fiN3Y0rnUXilJYSIxjA44KlQpvr6oQVB16BaCB4qioH5/a/K5MTegAX95wEzmET+7NC/dJYR1O27aGk0nF7332bPLJUIqxWJULBrQ5uKXhbnlFP4TNWt5R2u+4jFRTslmjRq1z0ufs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731593244; c=relaxed/simple;
-	bh=cmBTVApJMNcFet7wkNI1x1Ku/qmWQAFhSpIckrpBrmo=;
+	s=arc-20240116; t=1731596177; c=relaxed/simple;
+	bh=5sOe9ripCxbSEVyi9HSWTx+dlYBbi2HF+KFmFLJmqIY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OlGUD1n29Zf2k0mxOmss7tBWRcg1lVMLgKwCkkfRj/oC6C4z4J4442sgiK1wLpuv1lL1fwkhOETBVb3ntmeC6ZhmcnFTdStmkkEPwF7gxQ6nGcuXBzUayJi6t1ntxMwQlcdDcTBXtmfQgFKsg8ydDWPwV6BaX5UHKAzpwyITiOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org; spf=none smtp.mailfrom=idosch.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oEbKNCDP; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfout.phl.internal (Postfix) with ESMTP id 39C1E1380462;
-	Thu, 14 Nov 2024 09:07:22 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Thu, 14 Nov 2024 09:07:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1731593242; x=1731679642; bh=oc4swEVh3lPUUxMLlORAbc0MG0A5KtUOHZt
-	1LGdDUvk=; b=oEbKNCDP1+FuJfZoSF12ZfR7C8tWY/SYAA8t+vYzOORTpRyn8TP
-	bHnoKh8iIFVCe82eJfxvL5BOe7esKWhu4/NToLQSbcI0z+7DWCqR13bPHyz+q4jE
-	9runIp+FguSnF5CUe4jszuJSgw6ZnKl6Eb3bdfDeOfxID7tv9qTTD4ZHhLNJ4CDJ
-	2NxMChz8mTzb6hixYoK0ktciTBpeDctWw8m+u64QagS+IgEjn6nSFVlM8k9f7NUw
-	izR3PMMjMRYvz/IK7I+gytV7dezfqllSW8pGr6SzVGEUWJ/Zh3d65Sls1wFeQNgn
-	vo30BcV7+GGudzsZcxsUGyHIYx3Q+t9QrmA==
-X-ME-Sender: <xms:GQQ2Z-464U_61Q4-E7qRA6_7-T_9FityRoPoY1Gi-WYflNZUF6qYgQ>
-    <xme:GQQ2Z34HNl38XS7oYv9Q-DxAmruEhW-SkUK1mUbyIzNuJEEtZSssP2q-nzuXzPZdj
-    J7SLRR3JXj-zUA>
-X-ME-Received: <xmr:GQQ2Z9e8RF74ht6xL8vWEVrm9cC-Bm6qtVsu0DYXlSBJzwlIj7X6Dg774XvHHmXflLTww0qAjzgG0g8oMolpyT3L-8zTLw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvddvgdeitdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
-    tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
-    hsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecu
-    hfhrohhmpefkughoucfutghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorh
-    hgqeenucggtffrrghtthgvrhhnpedvudefveekheeugeeftddvveefgfduieefudeifefg
-    leekheegleegjeejgeeghfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhgpdhnsggprhgtphhtthho
-    pedujedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghlvghkshgrnhguvghrrd
-    hlohgsrghkihhnsehinhhtvghlrdgtohhmpdhrtghpthhtohepuggrvhgvmhesuggrvhgv
-    mhhlohhfthdrnhgvthdprhgtphhtthhopegvughumhgriigvthesghhoohhglhgvrdgtoh
-    hmpdhrtghpthhtohepkhhusggrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehprggs
-    vghnihesrhgvughhrghtrdgtohhmpdhrtghpthhtohepthhokhgvsehrvgguhhgrthdrtg
-    homhdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghn
-    ihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopehjohhhnhdrfhgrshhtrg
-    gsvghnugesghhmrghilhdrtghomh
-X-ME-Proxy: <xmx:GQQ2Z7L9BLJS2mDM--kuEoQlelbz2e53lSdtauzGD-LCOtxuDAUsZA>
-    <xmx:GQQ2ZyK1acC3J7ENhs20Dcw4Gw0o_DZ1WxMtWXVI-mg8PLaEXzgtcw>
-    <xmx:GQQ2Z8xH_d3Xw-XA_xVhbwmeYoH55yTcgNK_B1z72J3mJVTJTYxPAA>
-    <xmx:GQQ2Z2JrBp7Df2uZDpBienOktUr0B1elquaO7gKMzgGCPJSHvZrWlw>
-    <xmx:GgQ2Zz5YZeRjyzCT9PIKcryRfj1vaeIU_eu3CEo-HZcR21ekH2vZMTP0>
-Feedback-ID: i494840e7:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Nov 2024 09:07:20 -0500 (EST)
-Date: Thu, 14 Nov 2024 16:07:17 +0200
-From: Ido Schimmel <idosch@idosch.org>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	nex.sw.ncis.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v5 11/19] xdp: add generic xdp_buff_add_frag()
-Message-ID: <ZzYEFb4xK6IquBhI@shredder>
-References: <20241113152442.4000468-1-aleksander.lobakin@intel.com>
- <20241113152442.4000468-12-aleksander.lobakin@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ct3l1RsafEQWMATyzmHSwVDR+AgmbqvmJFroqV3JZDZr2rjUOh4DTY96M5i/6PJ1pnjBiXg1qgbt0HhcyO/+HuwL4gvT+DmX1GXmmvtP/hD5zFl9n2tEu8ybFi2TqFJnjfeqmAXQeUR4fbXgaY11bApltDrP6mJZ8dR6JZGYe7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kVSIF4JE; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-43193678216so6957125e9.0;
+        Thu, 14 Nov 2024 06:56:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731596174; x=1732200974; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ypIe2x5wqkPNzyRl0qrW7xKxln38d/rreWFO8HGI778=;
+        b=kVSIF4JE4UKJyHl8ZYMzhKxkofQ8bWgd8BrIxqftmFDiqB2F6JLkovGrcjywbXcC+M
+         kDmf4QRD7t7DjvjTBMg6WAmjW1TyhdYlYA2fHE/BHAtb6dj5p7L3tZ/YESygT/+XSc1Y
+         YGH1Tl/KIus7JNxhzW5rtH5/vuwfp+nrRb6OuT6caZ1bI3ycwmFiUTgU1dcPdynoZiEx
+         29yrtxuANeLnYRs7XTJra7Tr4jIGHZkzuVtjWz6YK/ixclt7zvJIDRh74wi5z02LAhYM
+         grGJELPxs9803D6y5MyKNm2U7OkaNsVdCrcCdQd0SLw7I4uaj6Gnlj4xM6Fv4f0ttR8c
+         ghHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731596174; x=1732200974;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ypIe2x5wqkPNzyRl0qrW7xKxln38d/rreWFO8HGI778=;
+        b=fCf2uch7E/Y6E1uatyYnO7UDeCScQJ9OPd4KubjjSXRLsqHIWU89gI3/93tHnX7bK9
+         vVrcngt7jjIEBckQ2cZ+4sD1SKn4RYQsovnwFYGeY6vYPLX77Rx21n3wkNcYNaq677Zr
+         u20Ri9dwILMMqkCu1zFKt4xDR9BsigunJUIQ5gZvgwcB50whmGJseWRCg1+/a5dbRsWc
+         Q7zFYBKa1IHJlZkK/hux5jUvnnmtOggTjcFWN5x1C0EDx+10f1WAMTO0uUGRleK/nwJi
+         DZlFfY1Jsfz8NkBOp6mdfV3ERaYTDFV2h0SPgxCs2zJhvt6Ux0D9VpTD6cRYXjJTVHkL
+         ZYfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWkYnS7a2PhFOVwnUoYcabSZp+ta9Em2vXZRTfz8dCjvHi9OKDA1sZluHo0WXUctndjqlSqLTbTWRecCP1P@vger.kernel.org, AJvYcCXzQcdIsRcrUzBmWNntu7qtF9QP49fOnnwUve3Ip+SscVrmY2Vpq+fkati/JZcENrIqSBc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwSXCpO8kMO9XWAyTvc/xBTPc9AtuRwIXQaZi40z1iTwZ0c9dqU
+	zRy25KBPDxkSaMZGXQ0uG4VFlnqyxcIQBeUfrQeQSmjbx+pfPCCt
+X-Google-Smtp-Source: AGHT+IGfT3/q3KJg0BmJv0M3JSpyylmNbOkhP3+kI1SDAPayxBKjFLi0azP6rHT0HtymqiHBO+xoLg==
+X-Received: by 2002:a05:6000:1787:b0:37d:5026:f787 with SMTP id ffacd0b85a97d-381f1885612mr21224023f8f.38.1731596173714;
+        Thu, 14 Nov 2024 06:56:13 -0800 (PST)
+Received: from andrea ([149.62.244.44])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3821ada3e7bsm1730816f8f.7.2024.11.14.06.56.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Nov 2024 06:56:12 -0800 (PST)
+Date: Thu, 14 Nov 2024 16:56:01 +0200
+From: Andrea Parri <parri.andrea@gmail.com>
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, puranjay@kernel.org,
+	bpf@vger.kernel.org, lkmm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: Some observations (results) on BPF acquire and release
+Message-ID: <ZzYPgd8rJDG9p6WQ@andrea>
+References: <Zxk2wNs4sxEIg-4d@andrea>
+ <13f60db0-b334-4638-a768-d828ecf7c8d0@paulmck-laptop>
+ <Zxor8xosL-XSxnwr@andrea>
+ <ZxujgUwRWLCp6kxF@andrea>
+ <ZzT9NR7mlSZQHzpD@andrea>
+ <CANk7y0gdNGM36Er9vq42-YouoGVVQ4gp0yvgVHarm0-NFC2i1w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -104,27 +88,31 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241113152442.4000468-12-aleksander.lobakin@intel.com>
+In-Reply-To: <CANk7y0gdNGM36Er9vq42-YouoGVVQ4gp0yvgVHarm0-NFC2i1w@mail.gmail.com>
 
-On Wed, Nov 13, 2024 at 04:24:34PM +0100, Alexander Lobakin wrote:
-> The code piece which would attach a frag to &xdp_buff is almost
-> identical across the drivers supporting XDP multi-buffer on Rx.
-
-Yes, I was reviewing such a change when I noticed your patch. We will
-use this helper instead. Thanks!
-
-> Make it a generic elegant "oneliner".
-> Also, I see lots of drivers calculating frags_truesize as
-> `xdp->frame_sz * nr_frags`. I can't say this is fully correct, since
-> frags might be backed by chunks of different sizes, especially with
-> stuff like the header split. Even page_pool_alloc() can give you two
-> different truesizes on two subsequent requests to allocate the same
-> buffer size. Add a field to &skb_shared_info (unionized as there's no
-> free slot currently on x86_64) to track the "true" truesize. It can
-> be used later when updating an skb.
+> I have applied your patches and modified them to add the new tests to
+> kinds.txt and shelf.py
+> now these tests will run with all other tests using 'make cata-bpf-test'
 > 
-> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> All 175 tests, including new tests added by you, pass :D
+> 
+> make cata-bpf-test
+> 
+> _build/default/internal/herd_catalogue_regression_test.exe \
+>         -j 32 \
+>         -herd-timeout 16.0 \
+>         -herd-path _build/install/default/bin/herd7 \
+>         -libdir-path ./herd/libdir \
+>         -kinds-path catalogue/bpf/tests/kinds.txt \
+>         -shelf-path catalogue/bpf/shelf.py \
+>         test
+> herd7 catalogue bpf tests: OK
+> 
+> 
+> I have pushed it and sent a PR so we can get all this merged to master.
+> https://github.com/herd/herdtools7/pull/1050
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Cool!  Thank you for the follow-up.
+
+  Andrea
 
