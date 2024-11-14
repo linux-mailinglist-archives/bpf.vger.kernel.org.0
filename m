@@ -1,150 +1,191 @@
-Return-Path: <bpf+bounces-44850-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9409E9C8FC8
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 17:30:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5981E9C9083
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 18:07:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58CE8282441
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 16:30:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD1431F22424
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 17:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F89217A583;
-	Thu, 14 Nov 2024 16:29:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="r69F1I7U"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F0B318BB82;
+	Thu, 14 Nov 2024 17:06:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0762F51C4A
-	for <bpf@vger.kernel.org>; Thu, 14 Nov 2024 16:29:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF6C433D2;
+	Thu, 14 Nov 2024 17:06:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.10.64.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731601759; cv=none; b=CNRrhpJxOBcFBlfBPNwCfxC1KqoaqNgSYCRSCeYEc8oW5WuryDG52JjaU95V2yAHRw049F0rAfPpnYLud5+R3CDRXRIqM+wfAJYNnfyikOTQGBH9IYvR9GDCFfOUY7OrkqPqPjlgwblaMeC/DMfnCRDaFyyG3fNhrgdPrC9z/V8=
+	t=1731604007; cv=none; b=Zzd9UcySQu9ttBC8lVAVtVO9BBmNx7mPDj4p4igToCRpYuoHJp/nDpmPWvXtCUplR/4nkiEW6eMJ1vg/T57tehC2ktrpb2u3BRrOMjXsMz1iLbn2h4l/HJa513tdcDKa0P76c7PNPW7hQd8W6vSrjmr066XX4i06QaGeQdFGPog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731601759; c=relaxed/simple;
-	bh=jHldP1zFkwmIw1b+wrZoVG3viZlbK8CqR1ZO3jsgYBQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BQWd9EnNUjqoMjZa3FRqQKRE/rDV9kLXB5PqX1soqhLQrvwbS+k4d7dy1q6DCBX9Ep+1i+bXAEXbSQvx1/Z7BGfKSDC6OxyLNEFBZhjqc0FnJrNjvC3vML2RSqtOvn00HsdaxTNHwIO+wBGNr6QIxfmR4/XQlWCJq1cg/OBXuec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=r69F1I7U; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5b777915-ef7f-4d21-8b23-cc79016aef32@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731601755;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ACbkQ9EQubbduYBGoGWvNxCoW7nZ5amK3ybGUy2gQO8=;
-	b=r69F1I7U+fciAP5/ZN8fYGBq4LZ5V16uzwLJ8BccECQ/HOeK4c94uLGw8dOu4T+Exbreys
-	IZJDLfWkUVKxqgaCklS5c0RH3vJkJ4jU5y1ECbHGrPZyo0bFsIvUAyY5tTnxPx8CG2QgOh
-	lyA9Me1QARcTehKwm8lOxOoGglWYb1Y=
-Date: Thu, 14 Nov 2024 08:29:09 -0800
+	s=arc-20240116; t=1731604007; c=relaxed/simple;
+	bh=LBpVriT/45fHDSuwLK7td1akcqS9lpNzp3EEEVmNJIA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P+0SCZVuXeEelCET4O77YE26dmvjAdaWn3YRIP4Zb2fnS99xwgG6pGRFlGqiT1cFerrB/b20pQHtWgDpwQASAWm2x58Te4Ho+PMPfLsCoCeJtlkJRvDw+erB7FZCF55l56Cb0o3RIFkHdP1EkkOVq3NM2msym+i+GkNAF2Y60vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com; spf=pass smtp.mailfrom=wind.enjellic.com; arc=none smtp.client-ip=76.10.64.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 4AEGah9Z009457;
+	Thu, 14 Nov 2024 10:36:43 -0600
+Received: (from greg@localhost)
+	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 4AEGafRI009456;
+	Thu, 14 Nov 2024 10:36:41 -0600
+Date: Thu, 14 Nov 2024 10:36:41 -0600
+From: "Dr. Greg" <greg@enjellic.com>
+To: Song Liu <song@kernel.org>
+Cc: Casey Schaufler <casey@schaufler-ca.com>,
+        Song Liu <songliubraving@meta.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>,
+        Kernel Team <kernel-team@meta.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "eddyz87@gmail.com" <eddyz87@gmail.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "mattbobrowski@google.com" <mattbobrowski@google.com>,
+        "amir73il@gmail.com" <amir73il@gmail.com>,
+        "repnop@google.com" <repnop@google.com>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "mic@digikod.net" <mic@digikod.net>,
+        "gnoack@google.com" <gnoack@google.com>
+Subject: Re: [PATCH bpf-next 0/4] Make inode storage available to tracing prog
+Message-ID: <20241114163641.GA8697@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20241112082600.298035-1-song@kernel.org> <d3e82f51-d381-4aaf-a6aa-917d5ec08150@schaufler-ca.com> <ACCC67D1-E206-4D9B-98F7-B24A2A44A532@fb.com> <d7d23675-88e6-4f63-b04d-c732165133ba@schaufler-ca.com> <332BDB30-BCDC-4F24-BB8C-DD29D5003426@fb.com> <8c86c2b4-cd23-42e0-9eb6-2c8f7a4cbcd4@schaufler-ca.com> <CAPhsuW5zDzUp7eSut9vekzH7WZHpk38fKHmFVRTMiBbeW10_SQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH dwarves 3/3] dwarf_loader: Check DW_OP_[GNU_]entry_value
- for possible parameter matching
-Content-Language: en-GB
-To: Alan Maguire <alan.maguire@oracle.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
- dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Song Liu <song@kernel.org>
-References: <20241108180508.1196431-1-yonghong.song@linux.dev>
- <20241108180524.1198900-1-yonghong.song@linux.dev>
- <b32b2892-31b1-4dc0-8398-d8fadfaafcc6@oracle.com>
- <5be88704-1bb0-4332-8626-26e7c908184c@linux.dev>
- <e311899e-5502-4d46-b9ee-edc0ee9dd023@oracle.com>
- <48a2d5a2-38e0-4c36-90cc-122602ff6386@linux.dev>
- <5e640168-7753-413a-ab00-f297948e84ef@oracle.com> <ZzOoGJBiL-l6BfQd@x1>
- <71778df3-62a6-4b1d-9ccf-4a8eb0e23828@oracle.com>
- <548c7b6b-3b84-4053-baa7-72976731ab87@linux.dev>
- <9bfe242b-b09b-47a5-9446-1cfc0897aef2@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <9bfe242b-b09b-47a5-9446-1cfc0897aef2@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW5zDzUp7eSut9vekzH7WZHpk38fKHmFVRTMiBbeW10_SQ@mail.gmail.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Thu, 14 Nov 2024 10:36:44 -0600 (CST)
 
+On Wed, Nov 13, 2024 at 10:57:05AM -0800, Song Liu wrote:
 
+Good morning, I hope the week is going well for everyone.
 
+> On Wed, Nov 13, 2024 at 10:06???AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >
+> > On 11/12/2024 5:37 PM, Song Liu wrote:
+> [...]
+> > > Could you provide more information on the definition of "more
+> > > consistent" LSM infrastructure?
+> >
+> > We're doing several things. The management of security blobs
+> > (e.g. inode->i_security) has been moved out of the individual
+> > modules and into the infrastructure. The use of a u32 secid is
+> > being replaced with a more general lsm_prop structure, except
+> > where networking code won't allow it. A good deal of work has
+> > gone into making the return values of LSM hooks consistent.
+> 
+> Thanks for the information. Unifying per-object memory usage of
+> different LSMs makes sense. However, I don't think we are limiting
+> any LSM to only use memory from the lsm_blobs. The LSMs still
+> have the freedom to use other memory allocators. BPF inode
+> local storage, just like other BPF maps, is a way to manage
+> memory. BPF LSM programs have full access to BPF maps. So
+> I don't think it makes sense to say this BPF map is used by tracing,
+> so we should not allow LSM to use it.
+> 
+> Does this make sense?
 
-On 11/14/24 4:16 AM, Alan Maguire wrote:
-> On 13/11/2024 18:27, Yonghong Song wrote:
->>> Thanks for the additional info! From Eduard's analysis, it seems like it
->>> is safer to take the libdw__lock around dwarf_getlocation(s), since
->>> multiple threads can access the CU location cache. I've tried tweaking
->>> Eduard's modification of Yonghong's original patch and adding a second
->>> patch to add locking; with these two patches applied
->>>
->>> - we see the desired behaviour where perf_event_read() is present in
->>> BTF; and
->>> - we don't see any segmentation faults after ~700 iterations where I saw
->>> one every 200 or so before
->>>
->>> Yonghong, Eduard - do these changes look okay from your side? Feel free
->>> to resubmit if so (fixing up attributions as you see fit if they look
->>> wrong of course). Thanks!
->> Thanks Alan for working on this. The following are some suggestions for
->> patch one:
->>    1. rename __dwarf_getlocations() to __parameter__locations()?
->>    2. rename param_reg_at_entry to parameter__locations()?
-> Since it returns the register number, what about
-> __parameter_reg/parameter_reg()?
->
->>    3. You missed the following:
->> static int param_reg_at_entry(Dwarf_Attribute *attr, int expected_reg)
->> {
->> ...
->>          if (first_expr)                     // this line
->>                  return first_expr->atom;    // this line
->>          return -1;
->> }
->>
-> I _think_ I've preserved the behaviour described by the comment at the
-> start without using the first_expr code. Note that we set "ret" in the
-> "case DW_OP_reg0 ... DW_OP_reg31:" clause of the switch statement, so
-> will return that value; either directly, if the register number matches
-> expected reg, or eventually if we don't find any DW_OP_*entry_value
-> location info to return. This I think matches the described behaviour:
->
-> /* For DW_AT_location 'attr':
->   * - if first location is DW_OP_regXX with expected number, returns the
-> register;
->   * - if location DW_OP_entry_value(DW_OP_regXX) is in the list, returns
-> the register;
->   * - if first location is DW_OP_regXX, returns the register;
->   * - otherwise returns -1.
->   */
->
-> ...but again I may have missed something here.
+As involved bystanders, some questions and thoughts that may help
+further the discussion.
 
-I have some comments in v2 and will reply there.
+With respect to inode specific storage, the currently accepted pattern
+in the LSM world is roughly as follows:
 
->
->> Patch 2 needs adjustment as well due to the above point #3.
->> Otherwise, LGTM. Since you are already preparing the patch,
->> please go ahead to pose v2 after you fixing the above things.
->>
-> Sure; if the above sounds okay, I'll submit the patches with updates.
-> After testing over 2000 iterations of pahole, I haven't seen a
-> segmentation fault so I _think_ the locking in patch 2 is sufficient to
-> avoid crashes.
->
-> Thanks!
->
-> Alan
->
->>> Alan
+The LSM initialization code, at boot, computes the total amount of
+storage needed by all of the LSM's that are requesting inode specific
+storage.  A single pointer to that 'blob' of storage is included in
+the inode structure.
 
+In an include file, an inline function similar to the following is
+declared, whose purpose is to return the location inside of the
+allocated storage or 'LSM inode blob' where a particular LSM's inode
+specific data structure is located:
+
+static inline struct tsem_inode *tsem_inode(struct inode *inode)
+{
+	return inode->i_security + tsem_blob_sizes.lbs_inode;
+}
+
+In an LSM's implementation code, the function gets used in something
+like the following manner:
+
+static int tsem_inode_alloc_security(struct inode *inode)
+{
+	struct tsem_inode *tsip = tsem_inode(inode);
+
+	/* Do something with the structure pointed to by tsip. */
+}
+
+Christian appears to have already chimed in and indicated that there
+is no appetite to add another pointer member to the inode structure.
+
+So, if this were to proceed forward, is it proposed that there will be
+a 'flag day' requirement to have each LSM that uses inode specific
+storage implement a security_inode_alloc() event handler that creates
+an LSM specific BPF map key/value pair for that inode?
+
+Which, in turn, would require that the accessor functions be converted
+to use a bpf key request to return the LSM specific information for
+that inode?
+
+A flag day event is always somewhat of a concern, but the larger
+concern may be the substitution of simple pointer arithmetic for a
+body of more complex code.  One would assume with something like this,
+that there may be a need for a shake-out period to determine what type
+of potential regressions the more complex implementation may generate,
+with regressions in security sensitive code always a concern.
+
+In a larger context.  Given that the current implementation works on
+simple pointer arithmetic over a common block of storage, there is not
+much of a safety guarantee that one LSM couldn't interfere with the
+inode storage of another LSM.  However, using a generic BPF construct
+such as a map, would presumably open the level of influence over LSM
+specific inode storage to a much larger audience, presumably any BPF
+program that would be loaded.
+
+The LSM inode information is obviously security sensitive, which I
+presume would be be the motivation for Casey's concern that a 'mistake
+by a BPF programmer could cause the whole system to blow up', which in
+full disclosure is only a rough approximation of his statement.
+
+We obviously can't speak directly to Casey's concerns.  Casey, any
+specific technical comments on the challenges of using a common inode
+specific storage architecture?
+
+Song, FWIW going forward.  I don't know how closely you follow LSM
+development, but we believe an unbiased observer would conclude that
+there is some degree of reticence about BPF's involvement with the LSM
+infrastructure by some of the core LSM maintainers, that in turn makes
+these types of conversations technically sensitive.
+
+> Song
+
+We will look forward to your thoughts on the above.
+
+Have a good week.
+
+As always,
+Dr. Greg
+
+The Quixote Project - Flailing at the Travails of Cybersecurity
+              https://github.com/Quixote-Project
 
