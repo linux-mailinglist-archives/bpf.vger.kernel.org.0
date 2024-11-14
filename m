@@ -1,109 +1,146 @@
-Return-Path: <bpf+bounces-44838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44839-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20D1D9C8756
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 11:21:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 533279C8923
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 12:40:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBE681F22108
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 10:21:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3065B2FF2D
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 11:31:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A62B1F8F10;
-	Thu, 14 Nov 2024 10:09:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41431F8F1D;
+	Thu, 14 Nov 2024 11:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AhL/2Gve";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ovuE8Y+m"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="A4DUkJnJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B27A1F8F02;
-	Thu, 14 Nov 2024 10:09:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B5C1F77B0
+	for <bpf@vger.kernel.org>; Thu, 14 Nov 2024 11:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731578996; cv=none; b=ssBDX67WA6NwmbS9d+DHDTBpNp0oRVJD4Vf0CnFcOLWx7i6Oepcqac0NBF68ynUG82SSFvOrlYXKwT+SBhR64UrDqx8UXkHUeVkGXPtpunor0mKfLmya/GDHTHudNE0R7MWOYDlbpPnP/4rZ/XLQBVp/QKyKe6/1yncPeyuXd4Q=
+	t=1731583868; cv=none; b=OCOqHnmMtnEExUguJJcnEKGxFRrEsmbNBsK4S/qoZnkLg7WiGVcXx6vI3787UWIxvbWQUMxFt0sVJKY3t9QQYOFolvp7uQvg0QcBzs1W8t9J0ahfjZdE0/qobpNvNHOzdiECLIc93/BwRkpMKJGOUqlu5PL72nVs9rfd7hp9Uh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731578996; c=relaxed/simple;
-	bh=j8/bDpeWMxzFyIBUMAW1K7Nkzc2G+SHXLJZy1z8VPtQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=foNLq6cJszixzYVL5shTsZLOGOi+Pr1NXJwFsCJeqq7tETdXNU4adDS7J0TdC/w3fi3Zu65WekX5Ie/8uF9dQGR+JgKpS2MhxmaVdwosAZsGbSCM6lM78hFdf3msFu9JbXPRuY0H5NhY5rYN9dl0oekMtxMAR70cniGOwFLTy1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AhL/2Gve; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ovuE8Y+m; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 14 Nov 2024 11:09:45 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1731578987;
+	s=arc-20240116; t=1731583868; c=relaxed/simple;
+	bh=0tGnOkLkuCVaicPehNHxrDGVKILBsbC1h/fro6Aq3+A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bL/ne/eg1grVkgqWUKB0Jd6z9wiajs8F9UHaZs3LINYapE0njHOumk2pzOLLo7gLr1Lbhf+mT92HSZEKDaaaJh38BCd5N/PZLNmNAuBeoAq7tqRPQY08VXc6jxd7G5WeDbLAI5l8+gBl9qtvPs8NmRXXh0S79xvnADjJPLb6FhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=A4DUkJnJ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1731583866;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o4rhu1rOyXbmFKCWkfY+2TotSXX7WMQkDT9IBgiSvNc=;
-	b=AhL/2GveqCJpSpZuvQsj5ghGqrVWFhPzXwCmwe8TCBNJPMBfCV9lvZSSNa/U8aKcDRjUNq
-	VRecRC6hYkncpzi28MeBh/CjiP+cb/F0Bpr45gGkTmPeeYFfePMkoXvYLZfCS7ds6IDueO
-	+ML5pdw1UaN9wkCUq1at1m9Ld6uUfDZ/N6C2CjXTLC/WZRcFaNzBoN2rXU8dzZnl2yw+ga
-	/jvm5iA4sDar5007p38ulLQIf3wGgHvWxUjIoIuZwPgi0dBtAGep+wTNvU7W4PKs2M9e8v
-	2qQ2/EZ2vhpgYnhKr04tGLx1rjKYpTu+UgBSF/EJWcNWQmPTI5/Vk3Yx/L2ttA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1731578987;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o4rhu1rOyXbmFKCWkfY+2TotSXX7WMQkDT9IBgiSvNc=;
-	b=ovuE8Y+mje/KzO5huf9Oa6KS1A0AzBvYojD/oc+fJiiqsyryH6r82+Lme2b6jNrJTiR0T8
-	bSQkonZIRA6olSBw==
-From: Sebastian Sewior <bigeasy@linutronix.de>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Kunwu Chan <kunwu.chan@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	clrkwllms@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, bpf <bpf@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, linux-rt-devel@lists.linux.dev,
-	Kunwu Chan <chentao@kylinos.cn>,
-	syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com
-Subject: Re: [PATCH] bpf: Convert lpm_trie::lock to 'raw_spinlock_t'
-Message-ID: <20241114100945.VWuTi7kg@linutronix.de>
-References: <20241108063214.578120-1-kunwu.chan@linux.dev>
- <CAADnVQJ8KzVdScXM=qhdT4jMrZLBPpgd+pf1Fqyc-9TFnfabAg@mail.gmail.com>
- <78012426-80d2-4d77-23c4-ae000148fadd@huaweicloud.com>
- <CAADnVQK_FptUD17REjtT1wnRyxZ2dx6sZuePsJQES-q27NKKLA@mail.gmail.com>
- <ab0abca0-57b3-b379-0070-4625395c6707@huaweicloud.com>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=2pKA3GTpOh9/f3NnK5qEkZdAnNwcLEwZm2dnKgbtTVc=;
+	b=A4DUkJnJF5+wgRGmDo9vYm8BMrQir8JonMJoBCae3Pu/buYSWpb6a6z7FpiCFj5SHPAPP8
+	IJ5caZGWIScN/6rDUVSvnt1TZdVJAJMP1UYPxWa/JrOPa+Fv+fj9xw1i3REeaCQQ90PiKi
+	i2Kzbe7C9n8k3X4tb2v8scpd4AWoErA=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-518-tRFImoO-PBmhXVUweUQzAw-1; Thu,
+ 14 Nov 2024 06:31:01 -0500
+X-MC-Unique: tRFImoO-PBmhXVUweUQzAw-1
+X-Mimecast-MFC-AGG-ID: tRFImoO-PBmhXVUweUQzAw
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BB7FE1955EE9;
+	Thu, 14 Nov 2024 11:30:58 +0000 (UTC)
+Received: from thinkpad.redhat.com (unknown [10.45.226.57])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0A4151955F3C;
+	Thu, 14 Nov 2024 11:30:52 +0000 (UTC)
+From: Felix Maurer <fmaurer@redhat.com>
+To: bpf@vger.kernel.org
+Cc: bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	yoong.siang.song@intel.com,
+	sdf@fomichev.me,
+	netdev@vger.kernel.org,
+	Michal Schmidt <mschmidt@redhat.com>
+Subject: [PATCH bpf] xsk: Free skb when TX metadata options are invalid
+Date: Thu, 14 Nov 2024 12:30:05 +0100
+Message-ID: <edb9b00fb19e680dff5a3350cd7581c5927975a8.1731581697.git.fmaurer@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ab0abca0-57b3-b379-0070-4625395c6707@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-On 2024-11-10 10:08:00 [+0800], Hou Tao wrote:
-> >> well. However, after changing the kmalloc and its variants to bpf memory
-> >> allocator, I think the switch to raw_spinlock_t will be safe. I have
-> >> already written a draft patch set. Will post after after polishing and
-> >> testing it. WDYT ?
-> > Switching lpm to bpf_mem_alloc would address the issue.
-> > Why do you want a switch to raw_spin_lock as well?
-> > kfree_rcu() is already done outside of the lock.
-> 
-> After switching to raw_spinlock_t, the lpm trie could be used under
-> interrupt context even under PREEMPT_RT.
+When a new skb is allocated for transmitting an xsk descriptor, i.e., for
+every non-multibuf descriptor or the first frag of a multibuf descriptor,
+but the descriptor is later found to have invalid options set for the TX
+metadata, the new skb is never freed. This can leak skbs until the send
+buffer is full which makes sending more packets impossible.
 
-I would have to dig why the lock has been moved away from raw_spinlock_t
-and why we need it back and what changed since. I have some vague memory
-that there was a test case which added plenty of items and cleaning it
-up created latency spikes.
-Note that interrupts are threaded on PREEMPT_RT. Using it in "interrupt
-context" would mean you need this in the primary handler/ hardirq.
+Fix this by freeing the skb in the error path if we are currently dealing
+with the first frag, i.e., an skb allocated in this iteration of
+xsk_build_skb.
 
-Sebastian
+Fixes: 48eb03dd2630 ("xsk: Add TX timestamp and TX checksum offload support")
+Reported-by: Michal Schmidt <mschmidt@redhat.com>
+Signed-off-by: Felix Maurer <fmaurer@redhat.com>
+---
+ net/xdp/xsk.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 1140b2a120ca..b57d5d2904eb 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -675,6 +675,8 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 		len = desc->len;
+ 
+ 		if (!skb) {
++			first_frag = true;
++
+ 			hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
+ 			tr = dev->needed_tailroom;
+ 			skb = sock_alloc_send_skb(&xs->sk, hr + len + tr, 1, &err);
+@@ -685,12 +687,8 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 			skb_put(skb, len);
+ 
+ 			err = skb_store_bits(skb, 0, buffer, len);
+-			if (unlikely(err)) {
+-				kfree_skb(skb);
++			if (unlikely(err))
+ 				goto free_err;
+-			}
+-
+-			first_frag = true;
+ 		} else {
+ 			int nr_frags = skb_shinfo(skb)->nr_frags;
+ 			struct page *page;
+@@ -758,6 +756,9 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 	return skb;
+ 
+ free_err:
++	if (first_frag && skb)
++		kfree_skb(skb);
++
+ 	if (err == -EOVERFLOW) {
+ 		/* Drop the packet */
+ 		xsk_set_destructor_arg(xs->skb);
+-- 
+2.47.0
+
 
