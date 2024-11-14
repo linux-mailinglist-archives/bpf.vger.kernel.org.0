@@ -1,311 +1,333 @@
-Return-Path: <bpf+bounces-44851-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44852-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93BB29C9021
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 17:49:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF87A9C902B
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 17:51:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 251C41F27A19
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 16:49:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EB7C28482E
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 16:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8598618CC17;
-	Thu, 14 Nov 2024 16:48:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE80F17D358;
+	Thu, 14 Nov 2024 16:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="jOiUdxfR"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Tece2Of4"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2048.outbound.protection.outlook.com [40.107.21.48])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5EC18C907;
-	Thu, 14 Nov 2024 16:48:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731602916; cv=fail; b=A0V5f70JxtSnN8aO7kEU1sb7UJy/lnSdZdOZmkKhi+88RH5wDrycUm0L4mi3SU77teZxKhfqPkJ2uqz5XVW30FkonoDU12dmskQKW640P53wZvbBD4GwWyqx8CLkwB/AF52caHbHWTeBDwICCmR9XbgmiSWJ+hVb7zCiECtY6qM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731602916; c=relaxed/simple;
-	bh=/ywDMbDzzxDUqtY2Ck3rc3ljoVMNiZpAt14nK6jQxJk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=d5jk/2zPVXmSVxChFq449iN5hndY4uHRtyapJpjGZmWWssQEDPicS5INdMe6AWGLh/l7fm6zkiZw/wZE1R676LJE8AbWgtJHNQqo0l2AgTP5P3gPtYTN3aNTMmHQUC3BtXGM5WI7bj/SxrLl992H2uxirHxBk9ZdBCjU/GS0LCA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=jOiUdxfR; arc=fail smtp.client-ip=40.107.21.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=WyqsScC6LEgoerzmur2LeaFU2DxcDcun99mCAG9Y8WCE3ZtFBor7pIwDjtC8dzTdcJrQNLDmZQyuwQRHDYJiSFevQQV4Du0054/qRzVC37Fe9FM7eNcGgE6D/BrhRsLV41u9r4WAWHUZxgoRLqKthPI/ebLkKkMvcyKcQhxDsIla9MI5RB42eND1PdnJLkj857XVCUxuux7g0cvDHjj2KBH0mMWRWZxYEkHaXcm7VcCPIth6rJtalSgdVzG0NJVmo7a1uLpasO7W/UwarPDgbkdtHYFSQecNTv8oUNI1053YoKQufOmrJZcog4ix2tatQ8RJoDJjiiTHr2b5DprB9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Jbao3XRKimQAZ/FWQ/Z64keA/6Hqw8lZBwbXcKCusF0=;
- b=aTZZHyxuTO2bEz2+i7eL60Y2by7/N2AlTt0AFAOsHzL9lE3pqtzzO5EXKqBaP2k2tG+fp+V1LjIvajocEyMMG/shfoUL8qOVfMfpr/tQFmz6avm8tXVWX4iIuEU5z3GIWH0IPzyacAWWBMq2IHpEco3IehI4zOiYLL4wXq4F5Q7bAofI+AupbnDbRpFi1yY5bDOfLqRTUHzCAF55FG8fG10I5on87ekU2ktD8Kfi4knQlFFEdgm7JZ9CdHTekj9XMAUHHCC0vMm4vs1Fv9rHneD5Krv96mSvSX14eHs6GhFVg1sQ+uU2icqZP1ITS99HdKa5Xi2rlf6T30PA8USnoA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jbao3XRKimQAZ/FWQ/Z64keA/6Hqw8lZBwbXcKCusF0=;
- b=jOiUdxfR/GEEK3MdZ/dZ1zPSKMrXLUin0lQnzfqwyhVoj54vd2ikHDJxMzXfgJJrQCBKJ2tbg4N+06O116Z/FiwJxB+scscw+bapl9fv7pRm7Jkiadq98k8daFjecl8RrjdYr/qUaDqeW6Aa1yRaS+FlE4dPmDMT3VCQuj4LC9i0x91u61BdOgYu38JeLMbg4PSFN4LM4eIaqsvoU+vfzBnHF58dpKl6c5Q0J+uAKhRDmPY32atEZYaL7cgmwpnAHa6wp64Xr8ilS4T7NcG6JujmbcyLkOpa3kpR3AaqmZ+2F+UQ0lW+fYxBZ2LakKxemW9RWbdxmrEEm3xZI+cnvA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by VI2PR04MB10594.eurprd04.prod.outlook.com (2603:10a6:800:26f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.28; Thu, 14 Nov
- 2024 16:48:30 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9126:a61e:341d:4b06%4]) with mapi id 15.20.8137.027; Thu, 14 Nov 2024
- 16:48:30 +0000
-Date: Thu, 14 Nov 2024 11:48:20 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
-	alyssa@rosenzweig.io, bpf@vger.kernel.org, broonie@kernel.org,
-	jgg@ziepe.ca, joro@8bytes.org, lgirdwood@gmail.com, maz@kernel.org,
-	p.zabel@pengutronix.de, robin.murphy@arm.com, will@kernel.org
-Subject: Re: [PATCH v5 0/2] PCI: add enabe(disable)_device() hook for bridge
-Message-ID: <ZzYp1G+cVlzPvBXb@lizhi-Precision-Tower-5810>
-References: <20241104-imx95_lut-v5-0-feb972f3f13b@nxp.com>
- <ZzTL/b4BEAGvSa1Q@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZzTL/b4BEAGvSa1Q@lizhi-Precision-Tower-5810>
-X-ClientProxiedBy: SJ0PR03CA0122.namprd03.prod.outlook.com
- (2603:10b6:a03:33c::7) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F35286A1
+	for <bpf@vger.kernel.org>; Thu, 14 Nov 2024 16:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731603092; cv=none; b=GBSZf64BcypOvakwFSPFxyZZAgkrQ6i25sQYIGYhVQPYEAtG/QbfwkOiFvDEZOxAKQRsTVYbmdICnDK6bNZfZDRbtbJOt4fvpsIsC7P+rXD1sySztKf/yyptO5RzGXlU2zoYGf+1K5wfEA33uDFdd0tOVbqzUie4pT2+HF6bLP8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731603092; c=relaxed/simple;
+	bh=ZsgVCq3zE87zMETEAMrhMkikx6U3367ToSBuJ+ytKNk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bvfZemFKUPiUmO2A4uEVnc+Kd6tx5Jyn59Ee26OvUczvFgbGYQFTeeGKVATcQV2tZqolzhReJRAo1Q+l4LYupeCQ726oVBSJ3/mLN+8lreRt56FSaGHl77gfmQP5sDeCkaSKsGmAq4xdmH4fbKByAc0eRy04xmQmQuQpJghlJ7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Tece2Of4; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8a08219a-9312-429d-a291-d93a932c849a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731603087;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UAOQP9gdLdiwDLbXGrcaK9S5AQrarCnGm2t4FUbfuqQ=;
+	b=Tece2Of4ahwbdcRUaxDVpGMuorfBwWpMndmgid+qvISST9rZYbMDooLtlfIcrSBPILpuAj
+	JNcQvZ6OjMmyrlJUa3kX5HNyLF1edynDezDk8JVsziYwkk5ukGArlPmszcgb9Ja2gVNUyC
+	8S9VZKOg/+gUG7dCqIATheuWqI4fDF4=
+Date: Thu, 14 Nov 2024 08:51:19 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VI2PR04MB10594:EE_
-X-MS-Office365-Filtering-Correlation-Id: 22cc8402-4082-4ccf-1b48-08dd04cc2b3e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|52116014|376014|1800799024|366016|921020|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?d3R0NVlJenVTMkdwcG01L2NJTUZLek4yRjk3MlZLQTE3T2lYbjhYeW1Sczcz?=
- =?utf-8?B?VUM4V3FLUUl5SWJmc3Mwd3cyMmlGb2FVSFdKaDdvRDRObjVYR09nVXlaQXNv?=
- =?utf-8?B?SEdFT1NycENXVnc3NmpCdUkxT2t3YTNWblMzN3Q1RjlzaTNOeUdQUkh0Unlt?=
- =?utf-8?B?UmxQMVJqbUJ4LzZvK3Y4UjBoYWZGb01lUHdMNkZ6NlBwUzJIZWJ4d2YrT1k5?=
- =?utf-8?B?UjgvUUFHNHhUWU1VSlZVRzFvVjJBQ2xhSmpVOEs1SERab1hXZFpSY1VUa0J6?=
- =?utf-8?B?bktMQlo3K0JtNG1hZUxkNzNKVmdqa3A0YmVjZCtUdDhpWXVKdzJma1dFb3RE?=
- =?utf-8?B?Q1ZIMWJaWkVtWmE2bERLdDdyUk82dTBKL2VWcW5zRmYxQWg0a3dLMzRSMUZu?=
- =?utf-8?B?Q0xIV2tDaTRhTkxVV0NEcittWVhNMXRwK24xYkpWT1d1UnJnQURvOE9LRHlr?=
- =?utf-8?B?Lzk3K3hLVS9zbDg4c1FYOFlnZStMUG9STTE2YXY0eGtLZkxxTk5aeUVaMkJr?=
- =?utf-8?B?SFM3TGw2dHNKOU1ZQmRxb01BRndqRFlIMnZIaFNvbkNNUHptZ0RhQ3F6Q2dP?=
- =?utf-8?B?RXNQbnVvWHM2NG9MVkxBOXR4aFNkSlNPb3owNDVKNGE2bzloNjBVcGh6M0tq?=
- =?utf-8?B?UkROZnhiSSs0QTZLL3hETkwxaTN3c2hmQnFUWW1WQ2szWU9OclkwRTI2eHhJ?=
- =?utf-8?B?VjdKNkdXS0ZjNkI0QkRjSnJQSzlqM2N4clRkV1o2dUE5OHNTbGNHM2gva2hr?=
- =?utf-8?B?bm1uTktCTTMzems2S2hETUx0cG9SNDgwbXpHY1pIS216bTB2VEFTMnVUeGtB?=
- =?utf-8?B?TTE3ajBTT3hJRzhyQjBzN05VWnp6Q3ArTnc2Yzl5OUZ0U0VRTkdiQ2dkYjVG?=
- =?utf-8?B?bEpiM3Uzd0xhUC9QUTNub1BDRkhVQU9GL3Q0MENhUjhGbFdSc28xUnRySEpu?=
- =?utf-8?B?UDNPbmc3bHdVMTJiL0NOYXlNTC9HeUh1enluRmE5ZmVJZE9oVHcrS0tNblNu?=
- =?utf-8?B?Yk9xS0o0bGhqM0lXVVBiRUtubDhadGtialMzM0xrTE5USUIxUjBmYVZJeDZJ?=
- =?utf-8?B?VU9NK3V0MXZRbGJiNzNWSUN3MmkvZXBJdEFuYUQvRzR0QWU3TE0rM2paaHZD?=
- =?utf-8?B?SEdZcVNDMlZiOEtQbnVEcnU3dnQ1bWVQR241TUwvTFVSN3MwTFBabjl6UGlz?=
- =?utf-8?B?MDJLSUdQOGVYbGtzRHB1L2NhRUdDQXFnTEQvYzRJWlB4QUtFdzVTV2dJZm0w?=
- =?utf-8?B?dTVoOUFZQmF3RWZzQkRibzJpMTB6WFRqYmZXQXROSHFPWHl1cWVoUElJbmtL?=
- =?utf-8?B?OXNDb2ZvSlk5YWhzTjI0c3A2dWN5SmI4anplQkw2UWwvZEFQMEJ5WUJXU0tC?=
- =?utf-8?B?UzhRY1M3QnYxYmR6L29qRm1ycmZ0VkRLOWpuMXpMTVVTNys3US9TWE5mUTFz?=
- =?utf-8?B?ZEJ2bzNoUDVabllqVnZJMTlVNDRQM1FkYnBrT2FrR3hwdEdIVk9tQTZ0RzlL?=
- =?utf-8?B?bzBXeHVscVgwMFRoS2dnTWlKRHp0anM5VndOaFhQZ0pnWE5WWEEzdzV3UjF3?=
- =?utf-8?B?SDlpbHhmQWU3eUxDSmxqaWI5T0ZsMWY2cURaUS90d09sNmxWU0FWMlpsY05x?=
- =?utf-8?B?NndpcUpMMFpzWFNZWnhoT3ZKbmZqLzQzQ00ybVpqa1Z4b1F4akNjME5qckE4?=
- =?utf-8?B?bWU3NnpVcnVibzF6MUduMjNPVHZyUkpUbGJjc1h4bmJZbk52T1VGOHF0VTFy?=
- =?utf-8?B?UWFmUVdWWUZBbGRuN3lUb29BRXoybm1uZ1dkSmllUGZBWHRTUWd4OHZDWkZD?=
- =?utf-8?B?eGtQS0h4aENES3ZEV0cwOGZXQzBtNmM5STE5c3ozT1lIb3BZTE00RGI3bHhk?=
- =?utf-8?B?YXA3dVMycEJMa3pIV1NObFhiNzRNWHd1RVExdlVjVTZEamc9PQ==?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(52116014)(376014)(1800799024)(366016)(921020)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZjhDNmFwcTh5cmtGZFkvYWVqUGNjMlZJWEtuUlhIcmZJQ3JBcmttWkc4S2I5?=
- =?utf-8?B?RitDV1M2Q2pjcEF0UnZsQVRjellGbmhkY0NRTHdSKzg1Zng4OTdzUE5PQytp?=
- =?utf-8?B?U2YyLyt3WCtXU0MrRFAyZkRaS2ZuZktyY2VJZTIxWTRtUlRNckFhM083RUZH?=
- =?utf-8?B?Q1Zsb2VMWG93QjlZc3pxZDQrRzY1bFVsaW93NU5HcXQ1TXVEZVNFcmNrUzRP?=
- =?utf-8?B?WHVhQ0I4bVJTTk9CTGV1WjZtQlZORkU1S3NPKzlOQW1RNmVCcnphTEhDOU9J?=
- =?utf-8?B?R1haZUtpbXkrckpXc2NDV2dYVmNTSDZtNThwWWdwNng4Q09yY0t5RGhUbmQv?=
- =?utf-8?B?OER6emREMkxDWnNUQTBZOEM2NldMVlFhZVYwejhjLy93WkZ4WXdKOFdoQ0xu?=
- =?utf-8?B?WGlaOFExdld0ZHR1eEhTSi82Zy9jTElYMFRuMHJBNWRabFZSZDJwN0I1Y0w0?=
- =?utf-8?B?RlBlRTFSRW95ZTlXc0cyZFhmTjRSRTJCNURUeUtMK0pTV3I3L3IxOEdhb1ZE?=
- =?utf-8?B?STJsMHExSlpyMFJUeGVwaWNhL3hlcldxVmgvMC9zNWl4bVNxZkt5bGNRNGVU?=
- =?utf-8?B?cmt5OGtvRnF4dkNqR1JyNVpqQUJOUUtpMjRoL3NYbHJBOGhXbDRrQWdVNENN?=
- =?utf-8?B?QVFyWVhZR1Zwbk9ZR2puYkFkZ1VHZFJsU3pWaWNVMm10OVBQenBPVXVvOFNK?=
- =?utf-8?B?a0FLVVpIQldRdGhBbEp5WlMvU3NsNzlYUWJxb1ljTjI1dHdTVlovT0hWYWNY?=
- =?utf-8?B?aTdlZlZaUGsyUHNGRWp0UnplMk4zZ2VvUjBJMGlKQm1nVDQ1aEx5WGhXS0ho?=
- =?utf-8?B?VXI4bFh6MVlFSmUvVXFFRWlIMDBSRVlCbTFBWW1ZeUdnVGVhakMvZEdhSXR0?=
- =?utf-8?B?Qys2cnE1MWdmOXM4R3RiUmgyS3U2R1NMa21KKzRFZDJDTWV1Wlc4ZnNQU1hW?=
- =?utf-8?B?OGxvOUZOV3d6Y3hhRXRrRzdHdTcvTkRzMm5Ma1JLUG9UWUtiZGFWQWUwU0VD?=
- =?utf-8?B?KzVjOTFRWjlzVGdPbm8zVjl4aGZjeE41UllubWI3bFhEdE9TY0VQNnFlVWJs?=
- =?utf-8?B?b3N1WUdBMXlpYU5kNWg3UnZqTk5jWmlESm83aEhFVkhmVDBxN2kxTFNiUGk3?=
- =?utf-8?B?UWJmajBLZDVXbmlZbjhRb2hOQ2M4cnJ5VjltcmtCeDRtSXZVeThnNzRtS2RK?=
- =?utf-8?B?UUNYK3ZzNlRTWVcrVml3T1h2RFVjSTRBWEJVaDZ2LzNHak9GU0M2QndzMURP?=
- =?utf-8?B?UjF5djNKcFZQcmNsdGp4Qzk0YzNrQWZuYSt3U21OaVd3OXJGcS9UYU5vL2Fr?=
- =?utf-8?B?OEdmSTZqVVoyUDVmS2FQZ2hNTDVTcUpvQmVPbFZLejBHalVNd3FQZkF1Qmoy?=
- =?utf-8?B?b3h5MjdpRlBKOEFsQk1lUDYxc0dDV0dOZzdVYXpaTFFFSWJOVGtMRWxxQlN4?=
- =?utf-8?B?UkZyYUZaN2c0dlJnZndOMGRYRzZTbXV3UXo3OVZnQ1FodmllcFU2ZmwzN2Fl?=
- =?utf-8?B?SzBvRWxjRjY0VWpIK284VXJnTDZWYml4aGNTUU9LdTNxUWhWUmtYbHZ1R083?=
- =?utf-8?B?Zy9uZjVINWJ0OEpJR1ZSYnFBR0duN21qVy9rclhsN3VJb2ptd1prMmlFODJ2?=
- =?utf-8?B?dk1oT05VdnJWMnRqc0Nma1NyU2M2R1FqeVpBSnk1QUlYRFVVRm1OV1laUnZO?=
- =?utf-8?B?YkQrYnVjd1p3bWxJR0tDRml6eUJxNjJvcktyalJnVEdhSWg5WTdBSUN2aTAz?=
- =?utf-8?B?SXFqb1hoMnpTNWJrMmNaUjc5clZ5RlNGTGF1ekE0c2lQd3JIandIbGh1Wmhv?=
- =?utf-8?B?R1F1amhiSlhYaFNqZlNvRFBFeTlRa1g0NE15QzBsUGhqYndaR3k5UzlVM3ZF?=
- =?utf-8?B?bWppR1BlT25PL1lqK28zVkc4OW5KaFNKVU85YUFyS2xRd0ZUdHF1VlBsYUlC?=
- =?utf-8?B?R2QxY0cxalRKbEhDUjNDbkMyenVaVVhhb3UrYmNBRHZ2UmZjRWVsNHlvanh3?=
- =?utf-8?B?SHVnZXo0aURCNE4yTjU3MTJXb3h3R2NLeVhnVG5lUkc2WXZzbHcxSDNBZ0NL?=
- =?utf-8?B?enFleVd6WVRLZXdHa3ROQ1FmOXd1ZDBTQjd6U0thWG5Nd3R5UG9sVGNvQ08y?=
- =?utf-8?Q?SenjAKHwMM7tEW7klbU+nAlaa?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22cc8402-4082-4ccf-1b48-08dd04cc2b3e
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2024 16:48:30.3464
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hPPrQngCqcODNBclzldA1ldkti5GYGmYNCo4ow/YSr83tM8RYK0QDbhIcQICft0Sftom4z96RaBygKZrSpiEhA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI2PR04MB10594
+Subject: Re: [PATCH v2 dwarves 1/2] dwarf_loader: Check
+ DW_OP_[GNU_]entry_value for possible parameter matching
+Content-Language: en-GB
+To: Alan Maguire <alan.maguire@oracle.com>, acme@kernel.org
+Cc: dwarves@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ bpf@vger.kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
+ song@kernel.org, eddyz87@gmail.com, olsajiri@gmail.com
+References: <20241114155822.898466-1-alan.maguire@oracle.com>
+ <20241114155822.898466-2-alan.maguire@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20241114155822.898466-2-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Nov 13, 2024 at 10:55:41AM -0500, Frank Li wrote:
-> On Mon, Nov 04, 2024 at 02:22:58PM -0500, Frank Li wrote:
->
-> Any comments for this patches?
->
-> Bjorn and give ack at v4 and Marc Zyngier give test/review tag at v4. I
-> just drop these because change to use helper function and funtionality is
-> the same.
->
-> After this patch merge, I think apply's bus notification can convert to
-> this way.
 
-Bjorn:
-	Can I keep your ack tag in next version? you give ack tag at v4,
-but I change to helper function at v5. I plan send v6 soon to fix mani's
-comment about patch2.
 
-Frank
 
+On 11/14/24 7:58 AM, Alan Maguire wrote:
+> From: Eduard Zingerman <eddyz87@gmail.com>
 >
-> Frank
+> Song Liu reported that a kernel func (perf_event_read()) cannot be traced
+> in certain situations since the func is not in vmlinux bTF. This happens
+> in kernels 6.4, 6.9 and 6.11 and the kernel is built with pahole 1.27.
 >
-> > Some system's IOMMU stream(master) ID bits(such as 6bits) less than
-> > pci_device_id (16bit). It needs add hardware configuration to enable
-> > pci_device_id to stream ID convert.
-> >
-> > https://lore.kernel.org/imx/20240622173849.GA1432357@bhelgaas/
-> > This ways use pcie bus notifier (like apple pci controller), when new PCIe
-> > device added, bus notifier will call register specific callback to handle
-> > look up table (LUT) configuration.
-> >
-> > https://lore.kernel.org/imx/20240429150842.GC1709920-robh@kernel.org/
-> > which parse dt's 'msi-map' and 'iommu-map' property to static config LUT
-> > table (qcom use this way). This way is rejected by DT maintainer Rob.
-> >
-> > Above ways can resolve LUT take or stream id out of usage the problem. If
-> > there are not enough stream id resource, not error return, EP hardware
-> > still issue DMA to do transfer, which may transfer to wrong possition.
-> >
-> > Add enable(disable)_device() hook for bridge can return error when not
-> > enough resource, and PCI device can't enabled.
-> >
-> > Basicallly this version can match Bjorn's requirement:
-> > 1: simple, because it is rare that there are no LUT resource.
-> > 2: EP driver probe failure when no LUT, but lspci can see such device.
-> >
-> > [    2.164415] nvme nvme0: pci function 0000:01:00.0
-> > [    2.169142] pci 0000:00:00.0: Error enabling bridge (-1), continuing
-> > [    2.175654] nvme 0000:01:00.0: probe with driver nvme failed with error -12
-> >
-> > > lspci
-> > 0000:00:00.0 PCI bridge: Philips Semiconductors Device 0000
-> > 0000:01:00.0 Non-Volatile memory controller: Micron Technology Inc 2100AI NVMe SSD [Nitro] (rev 03)
-> >
-> > To: Bjorn Helgaas <bhelgaas@google.com>
-> > To: Richard Zhu <hongxing.zhu@nxp.com>
-> > To: Lucas Stach <l.stach@pengutronix.de>
-> > To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> > To: Krzysztof Wilczyński <kw@linux.com>
-> > To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > To: Rob Herring <robh@kernel.org>
-> > To: Shawn Guo <shawnguo@kernel.org>
-> > To: Sascha Hauer <s.hauer@pengutronix.de>
-> > To: Pengutronix Kernel Team <kernel@pengutronix.de>
-> > To: Fabio Estevam <festevam@gmail.com>
-> > Cc: linux-pci@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: imx@lists.linux.dev
-> > Cc: Frank.li@nxp.com \
-> > Cc: alyssa@rosenzweig.io \
-> > Cc: bpf@vger.kernel.org \
-> > Cc: broonie@kernel.org \
-> > Cc: jgg@ziepe.ca \
-> > Cc: joro@8bytes.org \
-> > Cc: l.stach@pengutronix.de \
-> > Cc: lgirdwood@gmail.com \
-> > Cc: maz@kernel.org \
-> > Cc: p.zabel@pengutronix.de \
-> > Cc: robin.murphy@arm.com \
-> > Cc: will@kernel.org \
-> > Cc: Robin Murphy <robin.murphy@arm.com>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> >
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> > Changes in v5:
-> > - Add help function of pci_bridge_enable(disable)_device
-> > - Because big change, removed Bjorn's review tags and have not
-> > added
-> > Marc Zyngier't review and test tags
-> > - Fix pci-imx6.c according to Mani's feedback
-> > - Link to v4: https://lore.kernel.org/r/20241101-imx95_lut-v4-0-0fdf9a2fe754@nxp.com
-> >
-> > Changes in v4:
-> > - Add Bjorn Helgaas review tag for patch1
-> > - check 'target' value for patch2
-> > - detail see each patches
-> > - Link to v3: https://lore.kernel.org/r/20241024-imx95_lut-v3-0-7509c9bbab86@nxp.com
-> >
-> > Changes in v3:
-> > - disable_device when error happen
-> > - use target for of_map_id
-> > - Check if rid already in lut table when enable deviced
-> > - Link to v2: https://lore.kernel.org/r/20240930-imx95_lut-v2-0-3b6467ba539a@nxp.com
-> >
-> > Changes in v2:
-> > - see each patch
-> > - Link to v1: https://lore.kernel.org/r/20240926-imx95_lut-v1-0-d0c62087dbab@nxp.com
-> >
-> > ---
-> > Frank Li (2):
-> >       PCI: Add enable_device() and disable_device() callbacks for bridges
-> >       PCI: imx6: Add IOMMU and ITS MSI support for i.MX95
-> >
-> >  drivers/pci/controller/dwc/pci-imx6.c | 176 +++++++++++++++++++++++++++++++++-
-> >  drivers/pci/pci.c                     |  36 ++++++-
-> >  include/linux/pci.h                   |   2 +
-> >  3 files changed, 212 insertions(+), 2 deletions(-)
-> > ---
-> > base-commit: 06fb071a1aefbe4c6cc8fd41aacd0b9422361721
-> > change-id: 20240926-imx95_lut-1c68222e0944
-> >
-> > Best regards,
-> > ---
-> > Frank Li <Frank.Li@nxp.com>
-> >
+> The perf_event_read() signature in kernel (kernel/events/core.c):
+>     static int perf_event_read(struct perf_event *event, bool group)
+>
+> Adding '-V' to pahole command line, and the following error msg can be found:
+>     skipping addition of 'perf_event_read'(perf_event_read) due to unexpected register used for parameter
+>
+> Eventually the error message is attributed to the setting
+> (parm->unexpected_reg = 1) in parameter__new() function.
+>
+> The following is the dwarf representation for perf_event_read():
+>      0x0334c034:   DW_TAG_subprogram
+>                  DW_AT_low_pc    (0xffffffff812c6110)
+>                  DW_AT_high_pc   (0xffffffff812c640a)
+>                  DW_AT_frame_base        (DW_OP_reg7 RSP)
+>                  DW_AT_GNU_all_call_sites        (true)
+>                  DW_AT_name      ("perf_event_read")
+>                  DW_AT_decl_file ("/rw/compile/kernel/events/core.c")
+>                  DW_AT_decl_line (4641)
+>                  DW_AT_prototyped        (true)
+>                  DW_AT_type      (0x03324f6a "int")
+>      0x0334c04e:     DW_TAG_formal_parameter
+>                    DW_AT_location        (0x007de9fd:
+>                       [0xffffffff812c6115, 0xffffffff812c6141): DW_OP_reg5 RDI
+>                       [0xffffffff812c6141, 0xffffffff812c6323): DW_OP_reg14 R14
+>                       [0xffffffff812c6323, 0xffffffff812c63fe): DW_OP_GNU_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value
+>                       [0xffffffff812c63fe, 0xffffffff812c6405): DW_OP_reg14 R14
+>                       [0xffffffff812c6405, 0xffffffff812c640a): DW_OP_GNU_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value)
+>                    DW_AT_name    ("event")
+>                    DW_AT_decl_file       ("/rw/compile/kernel/events/core.c")
+>                    DW_AT_decl_line       (4641)
+>                    DW_AT_type    (0x0333aac2 "perf_event *")
+>      0x0334c05e:     DW_TAG_formal_parameter
+>                    DW_AT_location        (0x007dea82:
+>                       [0xffffffff812c6137, 0xffffffff812c63f2): DW_OP_reg12 R12
+>                       [0xffffffff812c63f2, 0xffffffff812c63fe): DW_OP_GNU_entry_value(DW_OP_reg4 RSI), DW_OP_stack_value
+>                       [0xffffffff812c63fe, 0xffffffff812c640a): DW_OP_reg12 R12)
+>                    DW_AT_name    ("group")
+>                    DW_AT_decl_file       ("/rw/compile/kernel/events/core.c")
+>                    DW_AT_decl_line       (4641)
+>                    DW_AT_type    (0x03327059 "bool")
+>
+> By inspecting the binary, the second argument ("bool group") is used
+> in the function. The following are the disasm code:
+>      ffffffff812c6110 <perf_event_read>:
+>      ffffffff812c6110: 0f 1f 44 00 00        nopl    (%rax,%rax)
+>      ffffffff812c6115: 55                    pushq   %rbp
+>      ffffffff812c6116: 41 57                 pushq   %r15
+>      ffffffff812c6118: 41 56                 pushq   %r14
+>      ffffffff812c611a: 41 55                 pushq   %r13
+>      ffffffff812c611c: 41 54                 pushq   %r12
+>      ffffffff812c611e: 53                    pushq   %rbx
+>      ffffffff812c611f: 48 83 ec 18           subq    $24, %rsp
+>      ffffffff812c6123: 41 89 f4              movl    %esi, %r12d
+>      <=========== NOTE that here '%esi' is used and moved to '%r12d'.
+>      ffffffff812c6126: 49 89 fe              movq    %rdi, %r14
+>      ffffffff812c6129: 65 48 8b 04 25 28 00 00 00    movq    %gs:40, %rax
+>      ffffffff812c6132: 48 89 44 24 10        movq    %rax, 16(%rsp)
+>      ffffffff812c6137: 8b af a8 00 00 00     movl    168(%rdi), %ebp
+>      ffffffff812c613d: 85 ed                 testl   %ebp, %ebp
+>      ffffffff812c613f: 75 3f                 jne     0xffffffff812c6180 <perf_event_read+0x70>
+>      ffffffff812c6141: 66 2e 0f 1f 84 00 00 00 00 00 nopw    %cs:(%rax,%rax)
+>      ffffffff812c614b: 0f 1f 44 00 00        nopl    (%rax,%rax)
+>      ffffffff812c6150: 49 8b 9e 28 02 00 00  movq    552(%r14), %rbx
+>      ffffffff812c6157: 48 89 df              movq    %rbx, %rdi
+>      ffffffff812c615a: e8 c1 a0 d7 00        callq   0xffffffff82040220 <_raw_spin_lock_irqsave>
+>      ffffffff812c615f: 49 89 c7              movq    %rax, %r15
+>      ffffffff812c6162: 41 8b ae a8 00 00 00  movl    168(%r14), %ebp
+>      ffffffff812c6169: 85 ed                 testl   %ebp, %ebp
+>      ffffffff812c616b: 0f 84 9a 00 00 00     je      0xffffffff812c620b <perf_event_read+0xfb>
+>      ffffffff812c6171: 48 89 df              movq    %rbx, %rdi
+>      ffffffff812c6174: 4c 89 fe              movq    %r15, %rsi
+>      <=========== NOTE: %rsi is overwritten
+>      ......
+>      ffffffff812c63f0: 41 5c                 popq    %r12
+>      <============ POP r12
+>      ffffffff812c63f2: 41 5d                 popq    %r13
+>      ffffffff812c63f4: 41 5e                 popq    %r14
+>      ffffffff812c63f6: 41 5f                 popq    %r15
+>      ffffffff812c63f8: 5d                    popq    %rbp
+>      ffffffff812c63f9: e9 e2 a8 d7 00        jmp     0xffffffff82040ce0 <__x86_return_thunk>
+>      ffffffff812c63fe: 31 c0                 xorl    %eax, %eax
+>      ffffffff812c6400: e9 be fe ff ff        jmp     0xffffffff812c62c3 <perf_event_read+0x1b3>
+>
+> It is not clear why dwarf didn't encode %rsi in locations. But
+> DW_OP_GNU_entry_value(DW_OP_reg4 RSI) tells us that RSI is live at
+> the entry of perf_event_read(). So this patch tries to search
+> DW_OP_GNU_entry_value/DW_OP_entry_value location/expression so if
+> the expected parameter register matches the register in
+> DW_OP_GNU_entry_value/DW_OP_entry_value, then the original parameter
+> is not optimized.
+>
+> For one of internal 6.11 kernel, there are 62498 functions in BTF and
+> perf_event_read() is not there. With this patch, there are 62552 functions
+> in BTF and perf_event_read() is included.
+>
+> Reported-by: Song Liu <song@kernel.org>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>   dwarf_loader.c | 104 ++++++++++++++++++++++++++++++++++++++-----------
+>   1 file changed, 81 insertions(+), 23 deletions(-)
+>
+> diff --git a/dwarf_loader.c b/dwarf_loader.c
+> index ec8641b..bc862b5 100644
+> --- a/dwarf_loader.c
+> +++ b/dwarf_loader.c
+> @@ -1157,16 +1157,88 @@ static struct template_parameter_pack *template_parameter_pack__new(Dwarf_Die *d
+>   	return pack;
+>   }
+>   
+> +/* Returns number of locations found or negative value for errors. */
+> +static ptrdiff_t __dwarf_getlocations(Dwarf_Attribute *attr,
+> +				      ptrdiff_t offset, Dwarf_Addr *basep,
+> +				      Dwarf_Addr *startp, Dwarf_Addr *endp,
+> +				      Dwarf_Op **expr, size_t *exprlen)
+> +{
+> +	int ret;
+> +
+> +#if _ELFUTILS_PREREQ(0, 157)
+> +	ret = dwarf_getlocations(attr, offset, basep, startp, endp, expr, exprlen);
+> +#else
+> +	if (offset == 0) {
+> +		ret = dwarf_getlocation(attr, expr, exprlen);
+> +		if (ret == 0)
+> +			ret = 1;
+> +	}
+> +#endif
+> +	return ret;
+> +}
+> +
+> +/* For DW_AT_location 'attr':
+> + * - if first location is DW_OP_regXX with expected number, returns the register;
+> + * - if location DW_OP_entry_value(DW_OP_regXX) is in the list, returns the register;
+> + * - if first location is DW_OP_regXX, returns the register;
+> + * - otherwise returns -1.
+> + */
+> +static int parameter__reg(Dwarf_Attribute *attr, int expected_reg)
+> +{
+> +	Dwarf_Addr base, start, end;
+> +	Dwarf_Op *expr, *entry_ops;
+> +	Dwarf_Attribute entry_attr;
+> +	size_t exprlen, entry_len;
+> +	ptrdiff_t offset = 0;
+> +	int loc_num = -1;
+> +	int ret = -1;
+> +
+> +	while ((offset = __dwarf_getlocations(attr, offset, &base, &start, &end, &expr, &exprlen)) > 0) {
+> +		loc_num++;
+> +
+> +		/* Convert expression list (XX DW_OP_stack_value) -> (XX).
+> +		 * DW_OP_stack_value instructs interpreter to pop current value from
+> +		 * DWARF expression evaluation stack, and thus is not important here.
+> +		 */
+> +		if (exprlen > 1 && expr[exprlen - 1].atom == DW_OP_stack_value)
+> +			exprlen--;
+> +
+> +		if (exprlen != 1)
+> +			continue;
+> +
+> +		switch (expr->atom) {
+> +		/* match DW_OP_regXX at first location */
+> +		case DW_OP_reg0 ... DW_OP_reg31:
+> +			if (loc_num != 0)
+> +				break;
+> +			ret = expr->atom;
+> +			if (expr->atom == expected_reg)
+> +				goto out;
+> +			break;
+> +		/* match DW_OP_entry_value(DW_OP_regXX) at any location */
+> +		case DW_OP_entry_value:
+> +		case DW_OP_GNU_entry_value:
+> +			if (dwarf_getlocation_attr(attr, expr, &entry_attr) == 0 &&
+> +			    dwarf_getlocation(&entry_attr, &entry_ops, &entry_len) == 0 &&
+> +			    entry_len == 1) {
+> +				ret = entry_ops->atom;
+
+Could we have more than one DW_OP_entry_value? What if the second one
+matches execpted_reg? From dwarf5 documentation, there is no say about
+whether we could have more than one DW_OP_entry_value or not.
+
+If we have evidence that only one DW_OP_entry_value will appear in parameter
+locations, a comment will be needed in the above.
+
+Otherwise, let us not do 'goto out' here. Rather, let us compare
+entry_ops->atom with expected_reg. Do 'ret = entry_ops->atom' and
+'goto out' only if entry_ops->atom == expected_reg. Otherwise,
+the original 'ret' value is preserved.
+
+> +				goto out;
+> +			}
+> +			break;
+> +		}
+> +	}
+> +out:
+> +	return ret;
+> +}
+> +
+>   static struct parameter *parameter__new(Dwarf_Die *die, struct cu *cu,
+>   					struct conf_load *conf, int param_idx)
+>   {
+>   	struct parameter *parm = tag__alloc(cu, sizeof(*parm));
+>   
+>   	if (parm != NULL) {
+> -		Dwarf_Addr base, start, end;
+>   		bool has_const_value;
+>   		Dwarf_Attribute attr;
+> -		struct location loc;
+>   
+>   		tag__init(&parm->tag, cu, die);
+>   		parm->name = attr_string(die, DW_AT_name, conf);
+> @@ -1208,35 +1280,21 @@ static struct parameter *parameter__new(Dwarf_Die *die, struct cu *cu,
+>   		 */
+>   		has_const_value = dwarf_attr(die, DW_AT_const_value, &attr) != NULL;
+>   		parm->has_loc = dwarf_attr(die, DW_AT_location, &attr) != NULL;
+> -		/* dwarf_getlocations() handles location lists; here we are
+> -		 * only interested in the first expr.
+> -		 */
+> -		if (parm->has_loc &&
+> -#if _ELFUTILS_PREREQ(0, 157)
+> -		    dwarf_getlocations(&attr, 0, &base, &start, &end,
+> -				       &loc.expr, &loc.exprlen) > 0 &&
+> -#else
+> -		    dwarf_getlocation(&attr, &loc.expr, &loc.exprlen) == 0 &&
+> -#endif
+> -			loc.exprlen != 0) {
+> +
+> +		if (parm->has_loc) {
+>   			int expected_reg = cu->register_params[param_idx];
+> -			Dwarf_Op *expr = loc.expr;
+> +			int actual_reg = parameter__reg(&attr, expected_reg);
+>   
+> -			switch (expr->atom) {
+> -			case DW_OP_reg0 ... DW_OP_reg31:
+> +			if (actual_reg < 0)
+> +				parm->optimized = 1;
+> +			else if (expected_reg >= 0 && expected_reg != actual_reg)
+>   				/* mark parameters that use an unexpected
+>   				 * register to hold a parameter; these will
+>   				 * be problematic for users of BTF as they
+>   				 * violate expectations about register
+>   				 * contents.
+>   				 */
+> -				if (expected_reg >= 0 && expected_reg != expr->atom)
+> -					parm->unexpected_reg = 1;
+> -				break;
+> -			default:
+> -				parm->optimized = 1;
+> -				break;
+> -			}
+> +				parm->unexpected_reg = 1;
+>   		} else if (has_const_value) {
+>   			parm->optimized = 1;
+>   		}
+
 
