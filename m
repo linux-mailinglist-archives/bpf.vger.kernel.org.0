@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-44892-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44893-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA8FF9C965C
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 00:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ECB9F9C965E
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 00:46:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57DD3B24B05
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 23:46:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62124B25590
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 23:46:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF51F1B4F0A;
-	Thu, 14 Nov 2024 23:44:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A5EC1B85CA;
+	Thu, 14 Nov 2024 23:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H7ifhL1m"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LpYg/YSB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC49A1AF0AA;
-	Thu, 14 Nov 2024 23:44:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E381B6CF3;
+	Thu, 14 Nov 2024 23:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731627869; cv=none; b=QwPPb+FDAWucN7q5tBr2hn38iDCsMebeq8Jczgu1RqKXlBQ5ybYqz5jPpNvgy2O2d/Tw377k5fQJSNVxI2Qb2e59rH8J++hNJI7uUzbZsMbAUjdEzxJrSVmR9AT/xZxMOCUhiUdENb82KwVxXiHYx/HTUH29VHwbl4EoeON6aRM=
+	t=1731627875; cv=none; b=XMg6yk5/1zDzcjCurQ8QKp4xlW3cv4DPEPam+SwceBGqGFugC4v5wKgBQ+m75MYL3WOs8RswvXddtrERwKDG8U/29jwRuz5l8VytG4PM9zy1jDnbbsHAv8xVJ+NcDvmoVh1qNQTUYi321RCExUQovemwPpuwpTlW810nOhFBNqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731627869; c=relaxed/simple;
-	bh=GR234zBpNcBoD/pJp9WP4uBBVruMLv1xZDuF06B5mEM=;
+	s=arc-20240116; t=1731627875; c=relaxed/simple;
+	bh=nrzL63usYT6Zit64pBsY748wpg51x/pKDZ198Hroddo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VSHGlXCY/Z74jFKSwLuTkN0zltKy8es1jZY3JPRXTitos3zXhqj99AJFTsTOJs+5ztcSkc+v58KZxQbtjUko1MnJgKUX+mXuZo2MGRUUzHEqhVQ2XLWGgQQpPWej3J5koWe/96WtO9zurlhyfLZrC0VHg8/sqZHNuwhL21XDN50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H7ifhL1m; arc=none smtp.client-ip=209.85.210.171
+	 To:Cc:Content-Type; b=IDTw+cjZKpTItQ3UNxXsBGiUDr2PC8fwQnpr6Oimoft3L7uSXX+Gq59CyhDr22PMqAA/8T5bZPqi7Ob3Jl3BngPgjJoXgQfqOdlo+l2IvaMrmCRHVDFymGCP+Ib/QjWxTSGVJ63vgg7O5Hvfp3SCVa+/py9xLKT9IW1siN4Z7Kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LpYg/YSB; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-71ec997ad06so925310b3a.3;
-        Thu, 14 Nov 2024 15:44:27 -0800 (PST)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2ea0c38f0fdso766378a91.3;
+        Thu, 14 Nov 2024 15:44:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731627867; x=1732232667; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1731627873; x=1732232673; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zjOP5kTCHnrD1+M1LVzZFAiTUUabR1gQTzr55Tchjr0=;
-        b=H7ifhL1mvud+BdWy8BaIzcnhwJ7CV4MlOdNVijGIOA5bN2ekmyXPrv9Dsc7Ijzwjcu
-         tGu5TqvbhZsTRhO2+Xejv/snAKU6dFxRI21V8wFaze41Xjt0d4yaeUn8z6GSHYbsedtj
-         ZniLW5lXKwLgXilhcEA+/Ik++rj2dbtAPwYFtD1B8mD/4DkDcCfzZKseIcqgRLQWOvtG
-         mBb2XnliPNYyiHQcKo051o4vFLwvh5coPQHQDAPYYsxomYGE/C+bn17pByNK0e+xfGR5
-         wBk7fNQEeHoZwpqiNbkLH5brWsP0Yk/I9ROt84XKj4gjtOca5tlRrEu6RWZZHEcP9JJA
-         20kA==
+        bh=NkEc0pjQBiJKihcl8Ampp9WSxBNI3byp8MstTjhwb3g=;
+        b=LpYg/YSBOiMyrkeYJ15Nl0gbrtcKE75ePpBEWhl0DVo3DsSEKd7/3RyTz1jDD/YWZc
+         zu2BoZSQwj4cyFCZslYJwrvGk48wJ5oiQhLwnUmznCeFuv/KROEP5a+mVPdh5/sqbsog
+         Vn1sxKfwYVHaVJSdtuX5ekp6xznh+uv87MV+Sjg5iFPUgFaexj1TnuHR8IoLX0uD2CQA
+         /J7tfba+F2V4hfY5wWSfG47i1Owfi9uANo/REgqlFrF4ikfbgMs2hm5D29sfnC3dKaA7
+         qGAuAKb77gok5T9CZ8fU32RhnFc/+GvOHYmMUNxDZIx0bR/l6Wg0NeWD06dzRL5862nV
+         JxYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731627867; x=1732232667;
+        d=1e100.net; s=20230601; t=1731627873; x=1732232673;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zjOP5kTCHnrD1+M1LVzZFAiTUUabR1gQTzr55Tchjr0=;
-        b=u5muRoJ6arvdMkYUUHCsFxSSX06HP5meMGCj+rhqcWH76sqWFnNL2+D+sxw2MSZbvl
-         sK5bRaSNbpY+yhyYdyRN9eNb8WaKd7xFma3w6/8Xdqr/pnFXC+Bb38KyHmQK5phRNaBt
-         Evj+v/7ZFnbNkYw7YgduUZq3X+EuEJNCEIA4MlAnPqPGHWIY6mXqV9fjWSDKIZf6en0p
-         7ReRqXzEjv08NMuZqpjkFDHTCX1R6z4xnu5ECVmDF/pdsIPnLDoDyEssgfcd3ZEJseQi
-         93FWlcBvEaGmtEWrgYSZCyPcGD0sDhVLaS9mX+AoRiWllWkCI/g8jbRS/uykXAU2N1v8
-         tCZw==
-X-Forwarded-Encrypted: i=1; AJvYcCV0VbY0I8AUnieZ+xjl3XLohLwYE5hyCvIIGbE20/pl+aOu1TaGQtdK+sAoim2nx9k8t1L//Ju9naUS0qtrlV3Hgemm@vger.kernel.org, AJvYcCV5azG+iIZ7pNJh0t1i0vboKi/UQPieEA/Pbz3JstiRY8V4P0TwVpm/UvMT8HDnEE63bHy43+e4PimUowgN@vger.kernel.org, AJvYcCVGXCLoMl9w1em+Kc7p2ozlnwo3b2OUGdlDOCg0FiVd678kIE1KY6vJXTIgSveKqgvHjHg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwarXG9SO24mDNdXBUZsk9aIePJQSCjjT0j7+O0yU2OP0D40ixF
-	cRZYJpqenn28aCtj4RPUzU6SH8MfE6O7fwEaOLCwpr9TZBVn7ZNJZhXWepXeW0lwL52oqwsreLB
-	6FJZWxsmW+T9xielV3xGFMO05D2w=
-X-Google-Smtp-Source: AGHT+IHRo5oSn/zayyT93OELVc7qVyuxgGxdmHmb/wcr/wVTXcL7Eq56aFzr826TbfGsaj+Zh8X+u8FY/qPRRzVujKA=
-X-Received: by 2002:a17:90b:1e43:b0:2da:9115:15ce with SMTP id
- 98e67ed59e1d1-2ea154fc51emr1098575a91.15.1731627867244; Thu, 14 Nov 2024
- 15:44:27 -0800 (PST)
+        bh=NkEc0pjQBiJKihcl8Ampp9WSxBNI3byp8MstTjhwb3g=;
+        b=qMYttUq6uWmrK7MvV771/oNahJjxVTWe0IoVfPZqNIpAvqwOumaneJDrUnIRIyypj9
+         nwV1hwgnxYs0vkBiXtsO1reN5+H1iQh527ozMKrzPEb8sONzfdPSljWguDW1k1jqZljB
+         0bOW/0VkeISWJ3FmbPd0kqqmbYk4IOoQFAwEOkNm8iTDJIqFPPV3nAuaIzriJjFkmEfk
+         tDfharIZtequAzeW5QpQHrFUvDjUfGGftgwlNjNDf2GPKO2Y2IM+QYcAuPYZfBLJ9+ex
+         049AgTMHxnB1zCFcl3GgTusnLGQ4OSgJq3K8bzXUbmxWH6MAwY/6M+saXo8Uwl6hWrzf
+         0iAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUfY2UtLe+XXXW6twsG1bcPsynerxBaLX53rKSvK2/ZXgeUeo/bpaxjpdORRpBgOjjVCwg=@vger.kernel.org, AJvYcCVanLWgCqJZ4zNxuJ97M1lIekiFW8foacmGYsPvfyUiUp8DzpyjDm+gVfirgKlmLpfFeqPSaiWmbOb0OdfE@vger.kernel.org, AJvYcCW9KzVvb1+KOWoAqBz0GGxbKZSkIVo3v0es/uTJJ2gVfFuv7wj8kYWIAxekk3iLyea4Lxb3TBOS+EcvId78cBRNrVJs@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz8DJOel7IXtktu98AkeNCyj7Nv+V+EUVU6JEVbG5uFdeNEHGiq
+	5I3hOUIxOmhh/sreXqHvSXGhyW8u0DH2oiy+KKLPBpJSel9btzf6u2gvAOQgVXhnBjkR8CDQ7vi
+	f/taMwsbL3jGrh4l9oiEkgC2MvE8=
+X-Google-Smtp-Source: AGHT+IFmnnSPmZNJVfy7K3kH6Qfs6QPidvlhFwrzhcCtpQtHc2v0wh6eszbMV+FHcExN5m+9ba8PTZ84bCN28P+Dy7A=
+X-Received: by 2002:a17:90b:1dcc:b0:2e2:e31a:220e with SMTP id
+ 98e67ed59e1d1-2ea154cc16fmr1063746a91.8.1731627872931; Thu, 14 Nov 2024
+ 15:44:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241105133405.2703607-1-jolsa@kernel.org> <20241105133405.2703607-6-jolsa@kernel.org>
-In-Reply-To: <20241105133405.2703607-6-jolsa@kernel.org>
+References: <20241105133405.2703607-1-jolsa@kernel.org> <20241105133405.2703607-8-jolsa@kernel.org>
+In-Reply-To: <20241105133405.2703607-8-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 14 Nov 2024 15:44:14 -0800
-Message-ID: <CAEf4BzYycU7_8uNgi9XrnnPSAvP7iyWwNA7cHu0aLTcAUxsBFA@mail.gmail.com>
-Subject: Re: [RFC perf/core 05/11] uprobes: Add mapping for optimized uprobe trampolines
+Date: Thu, 14 Nov 2024 15:44:20 -0800
+Message-ID: <CAEf4BzYH8YvNLjBPB5sBQ-gz3GkvCVBbU1JCxqpHoVb9Zq51Gw@mail.gmail.com>
+Subject: Re: [RFC perf/core 07/11] uprobes/x86: Add support to optimize uprobes
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, 
@@ -89,233 +89,274 @@ Content-Transfer-Encoding: quoted-printable
 
 On Tue, Nov 5, 2024 at 5:35=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding interface to add special mapping for user space page that will be
-> used as place holder for uprobe trampoline in following changes.
+> Putting together all the previously added pieces to support optimized
+> uprobes on top of 5-byte nop instruction.
 >
-> The get_tramp_area(vaddr) function either finds 'callable' page or create
-> new one.  The 'callable' means it's reachable by call instruction (from
-> vaddr argument) and is decided by each arch via new arch_uprobe_is_callab=
-le
-> function.
+> The current uprobe execution goes through following:
+>   - installs breakpoint instruction over original instruction
+>   - exception handler hit and calls related uprobe consumers
+>   - and either simulates original instruction or does out of line single =
+step
+>     execution of it
+>   - returns to user space
 >
-> The put_tramp_area function either drops refcount or destroys the special
-> mapping and all the maps are clean up when the process goes down.
+> The optimized uprobe path
+>
+>   - checks the original instruction is 5-byte nop (plus other checks)
+>   - adds (or uses existing) user space trampoline and overwrites original
+>     instruction (5-byte nop) with call to user space trampoline
+>   - the user space trampoline executes uprobe syscall that calls related =
+uprobe
+>     consumers
+>   - trampoline returns back to next instruction
+>
+> This approach won't speed up all uprobes as it's limited to using nop5 as
+> original instruction, but we could use nop5 as USDT probe instruction (wh=
+ich
+> uses single byte nop ATM) and speed up the USDT probes.
+
+As discussed offline, it's not as simple as just replacing nop1 with
+nop5 in USDT definition due to performance considerations on old
+kernels (nop5 isn't fast as far as uprobe is concerned), but I think
+we'll be able to accommodate transparent "nop1 or nop5" behavior in
+user space, we'll just need a careful backwards compatible extension
+to USDT definition.
+
+BTW, do you plan to send an optimization for nop5 to avoid
+single-stepping them? Ideally we'd just handle any-sized nop, so we
+don't have to do this "nop1 or nop5" acrobatics in the future.
+
+>
+> This patch overloads related arch functions in uprobe_write_opcode and
+> set_orig_insn so they can install call instruction if needed.
+>
+> The arch_uprobe_optimize triggers the uprobe optimization and is called a=
+fter
+> first uprobe hit. I originally had it called on uprobe installation but t=
+hen
+> it clashed with elf loader, because the user space trampoline was added i=
+n a
+> place where loader might need to put elf segments, so I decided to do it =
+after
+> first uprobe hit when loading is done.
+
+fun... ideally we wouldn't do this lazily, I just came up with another
+possible idea, but let's keep all this discussion to another thread
+with Peter
+
+>
+> TODO release uprobe trampoline when it's no longer needed.. we might need=
+ to
+> stop all cpus to make sure no user space thread is in the trampoline.. or=
+ we
+> might just keep it, because there's just one 4GB memory region?
+
+4KB not 4GB, right? Yeah, probably leaving it until process exists is
+totally fine.
+
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  include/linux/uprobes.h |  12 ++++
->  kernel/events/uprobes.c | 141 ++++++++++++++++++++++++++++++++++++++++
->  kernel/fork.c           |   2 +
->  3 files changed, 155 insertions(+)
+>  arch/x86/include/asm/uprobes.h |   7 ++
+>  arch/x86/kernel/uprobes.c      | 130 +++++++++++++++++++++++++++++++++
+>  include/linux/uprobes.h        |   1 +
+>  kernel/events/uprobes.c        |   3 +
+>  4 files changed, 141 insertions(+)
 >
-> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> index be306028ed59..222d8e82cee2 100644
-> --- a/include/linux/uprobes.h
-> +++ b/include/linux/uprobes.h
-> @@ -172,6 +172,15 @@ struct xol_area;
+> diff --git a/arch/x86/include/asm/uprobes.h b/arch/x86/include/asm/uprobe=
+s.h
+> index 678fb546f0a7..84a75ed748f0 100644
+> --- a/arch/x86/include/asm/uprobes.h
+> +++ b/arch/x86/include/asm/uprobes.h
+> @@ -20,6 +20,11 @@ typedef u8 uprobe_opcode_t;
+>  #define UPROBE_SWBP_INSN               0xcc
+>  #define UPROBE_SWBP_INSN_SIZE             1
 >
->  struct uprobes_state {
->         struct xol_area         *xol_area;
-> +       struct hlist_head       tramp_head;
-> +       struct mutex            tramp_mutex;
+> +enum {
+> +       ARCH_UPROBE_FLAG_CAN_OPTIMIZE   =3D 0,
+> +       ARCH_UPROBE_FLAG_OPTIMIZED      =3D 1,
 > +};
 > +
-> +struct tramp_area {
-> +       unsigned long           vaddr;
-> +       struct page             *page;
-> +       struct hlist_node       node;
-> +       refcount_t              ref;
-
-nit: any reason we are unnecessarily trying to save 4 bytes on
-refcount (and we don't actually, due to padding)
-
+>  struct uprobe_xol_ops;
+>
+>  struct arch_uprobe {
+> @@ -45,6 +50,8 @@ struct arch_uprobe {
+>                         u8      ilen;
+>                 }                       push;
+>         };
+> +
+> +       unsigned long flags;
 >  };
 >
->  extern void __init uprobes_init(void);
-> @@ -219,6 +228,9 @@ extern int uprobe_verify_opcode(struct page *page, un=
-signed long vaddr, uprobe_o
->  extern int arch_uprobe_verify_opcode(struct page *page, unsigned long va=
-ddr,
->                                      uprobe_opcode_t *new_opcode, void *d=
-ata);
->  extern bool arch_uprobe_is_register(uprobe_opcode_t *insn, int len, void=
- *data);
-> +struct tramp_area *get_tramp_area(unsigned long vaddr);
+>  struct arch_uprobe_task {
+> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+> index 02aa4519b677..50ccf24ff42c 100644
+> --- a/arch/x86/kernel/uprobes.c
+> +++ b/arch/x86/kernel/uprobes.c
+> @@ -18,6 +18,7 @@
+>  #include <asm/processor.h>
+>  #include <asm/insn.h>
+>  #include <asm/mmu_context.h>
+> +#include <asm/nops.h>
+>
+>  /* Post-execution fixups. */
+>
+> @@ -877,6 +878,33 @@ static const struct uprobe_xol_ops push_xol_ops =3D =
+{
+>         .emulate  =3D push_emulate_op,
+>  };
+>
+> +static int is_nop5_insns(uprobe_opcode_t *insn)
 
-uprobe_get_tramp_area() to make it clear this is uprobe specific,
-given this is exposed function?
+insns -> insn?
 
-and add that extern like we do for other functions?
+> +{
+> +       return !memcmp(insn, x86_nops[5], 5);
+> +}
+> +
+> +static int is_call_insns(uprobe_opcode_t *insn)
 
-> +void put_tramp_area(struct tramp_area *area);
+ditto, insn, singular?
 
-uprobe_put_tramp_area() ?
+> +{
+> +       return *insn =3D=3D 0xe8;
+> +}
+> +
+> +static void relative_insn(void *dest, void *from, void *to, u8 op)
+> +{
+> +       struct __arch_relative_insn {
+> +               u8 op;
+> +               s32 raddr;
+> +       } __packed *insn;
+> +
+> +       insn =3D (struct __arch_relative_insn *)dest;
+> +       insn->raddr =3D (s32)((long)(to) - ((long)(from) + 5));
+> +       insn->op =3D op;
+> +}
+> +
+> +static void relative_call(void *dest, void *from, void *to)
+> +{
+> +       relative_insn(dest, from, to, CALL_INSN_OPCODE);
+> +}
+> +
+>  /* Returns -ENOSYS if branch_xol_ops doesn't handle this insn */
+>  static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn=
+ *insn)
+>  {
+> @@ -896,6 +924,10 @@ static int branch_setup_xol_ops(struct arch_uprobe *=
+auprobe, struct insn *insn)
+>                 break;
+>
+>         case 0x0f:
+> +               if (is_nop5_insns((uprobe_opcode_t *) &auprobe->insn)) {
+> +                       set_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->=
+flags);
+> +                       break;
+> +               }
+>                 if (insn->opcode.nbytes !=3D 2)
+>                         return -ENOSYS;
+>                 /*
+> @@ -1267,3 +1299,101 @@ bool arch_uretprobe_is_alive(struct return_instan=
+ce *ret, enum rp_check ctx,
+>         else
+>                 return regs->sp <=3D ret->stack;
+>  }
+> +
+> +int arch_uprobe_verify_opcode(struct page *page, unsigned long vaddr,
+> +                             uprobe_opcode_t *new_opcode, void *opt)
+> +{
+> +       if (opt) {
+> +               uprobe_opcode_t old_opcode[5];
+> +               bool is_call;
+> +
+> +               uprobe_copy_from_page(page, vaddr, (uprobe_opcode_t *) &o=
+ld_opcode, 5);
+> +               is_call =3D is_call_insns((uprobe_opcode_t *) &old_opcode=
+);
+> +
+> +               if (is_call_insns(new_opcode)) {
+> +                       if (is_call)            /* register: already inst=
+alled? */
 
-> +bool arch_uprobe_is_callable(unsigned long vtramp, unsigned long vaddr);
+probably should check that the destination of the call instruction is
+what we expect?
+
+> +                               return 0;
+> +               } else {
+> +                       if (!is_call)           /* unregister: was it cha=
+nged by us? */
+> +                               return 0;
+> +               }
+> +
+> +               return 1;
+> +       }
+> +
+> +       return uprobe_verify_opcode(page, vaddr, new_opcode);
+> +}
+
+[...]
+
+> +int set_orig_insn(struct arch_uprobe *auprobe, struct mm_struct *mm, uns=
+igned long vaddr)
+> +{
+> +       uprobe_opcode_t *insn =3D (uprobe_opcode_t *) auprobe->insn;
+> +
+> +       if (test_bit(ARCH_UPROBE_FLAG_OPTIMIZED, &auprobe->flags))
+> +               return uprobe_write_opcode(auprobe, mm, vaddr, insn, 5, (=
+void *) 1);
+> +
+> +       return uprobe_write_opcode(auprobe, mm, vaddr, insn, UPROBE_SWBP_=
+INSN_SIZE, NULL);
+> +}
+> +
+> +bool arch_uprobe_is_callable(unsigned long vtramp, unsigned long vaddr)
+> +{
+> +       unsigned long delta;
+> +
+> +       /* call instructions size */
+> +       vaddr +=3D 5;
+> +       delta =3D vaddr < vtramp ? vtramp - vaddr : vaddr - vtramp;
+> +       return delta < 0xffffffff;
+
+isn't immediate a sign extended 32-bit value (that is, int)? wouldn't
+this work and be correct:
+
+long delta =3D (long)(vaddr + 5 - vtramp);
+return delta >=3D INT_MIN && delta <=3D INT_MAX;
+
+?
+
+
+> +}
+> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> index 4024e6ea52a4..42ab29f80220 100644
+> --- a/include/linux/uprobes.h
+> +++ b/include/linux/uprobes.h
+> @@ -233,6 +233,7 @@ void put_tramp_area(struct tramp_area *area);
+>  bool arch_uprobe_is_callable(unsigned long vtramp, unsigned long vaddr);
+>  extern void *arch_uprobe_trampoline(unsigned long *psize);
+>  extern void handle_syscall_uprobe(struct pt_regs *regs, unsigned long bp=
+_vaddr);
+> +extern void arch_uprobe_optimize(struct arch_uprobe *auprobe, unsigned l=
+ong vaddr);
 >  #else /* !CONFIG_UPROBES */
 >  struct uprobes_state {
 >  };
 > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 944d9df1f081..a44305c559a4 100644
+> index b8399684231c..efe45fcd5d0a 100644
 > --- a/kernel/events/uprobes.c
 > +++ b/kernel/events/uprobes.c
-> @@ -616,6 +616,145 @@ set_orig_insn(struct arch_uprobe *auprobe, struct m=
-m_struct *mm, unsigned long v
->                         (uprobe_opcode_t *)&auprobe->insn, UPROBE_SWBP_IN=
-SN_SIZE, NULL);
->  }
+> @@ -2759,6 +2759,9 @@ static void handle_swbp(struct pt_regs *regs)
 >
-> +bool __weak arch_uprobe_is_callable(unsigned long vtramp, unsigned long =
-vaddr)
-> +{
-> +       return false;
-> +}
+>         handler_chain(uprobe, regs);
+>
+> +       /* Try to optimize after first hit. */
+> +       arch_uprobe_optimize(&uprobe->arch, bp_vaddr);
 > +
-> +static unsigned long find_nearest_page(unsigned long vaddr)
-> +{
-> +       struct mm_struct *mm =3D current->mm;
-> +       struct vm_area_struct *vma, *prev;
-> +       VMA_ITERATOR(vmi, mm, 0);
-> +
-> +       prev =3D vma_next(&vmi);
-> +       vma =3D vma_next(&vmi);
-> +       while (vma) {
-> +               if (vma->vm_start - prev->vm_end  >=3D PAGE_SIZE &&
-> +                   arch_uprobe_is_callable(prev->vm_end, vaddr))
-> +                       return prev->vm_end;
-
-shouldn't we try both `prev->vm_end` and `vma->vm_start - PAGE_SIZE`
-as two possible places
-
-> +
-> +               prev =3D vma;
-> +               vma =3D vma_next(&vmi);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static vm_fault_t tramp_fault(const struct vm_special_mapping *sm,
-> +                             struct vm_area_struct *vma, struct vm_fault=
- *vmf)
-> +{
-> +       struct hlist_head *head =3D &vma->vm_mm->uprobes_state.tramp_head=
-;
-> +       struct tramp_area *area;
-> +
-> +       hlist_for_each_entry(area, head, node) {
-> +               if (vma->vm_start =3D=3D area->vaddr) {
-> +                       vmf->page =3D area->page;
-> +                       get_page(vmf->page);
-> +                       return 0;
-> +               }
-> +       }
-> +
-> +       return -EINVAL;
-> +}
-> +
-> +static int tramp_mremap(const struct vm_special_mapping *sm, struct vm_a=
-rea_struct *new_vma)
-> +{
-> +       return -EPERM;
-> +}
-> +
-> +static const struct vm_special_mapping tramp_mapping =3D {
-> +       .name =3D "[uprobes-trampoline]",
-> +       .fault =3D tramp_fault,
-> +       .mremap =3D tramp_mremap,
-> +};
-> +
-> +static struct tramp_area *create_tramp_area(unsigned long vaddr)
-> +{
-> +       struct mm_struct *mm =3D current->mm;
-> +       struct vm_area_struct *vma;
-> +       struct tramp_area *area;
-> +
-> +       vaddr =3D find_nearest_page(vaddr);
-> +       if (!vaddr)
-> +               return NULL;
-> +
-> +       area =3D kzalloc(sizeof(*area), GFP_KERNEL);
-> +       if (unlikely(!area))
-> +               return NULL;
-> +
-> +       area->page =3D alloc_page(GFP_HIGHUSER);
-> +       if (!area->page)
-> +               goto free_area;
-> +
-> +       refcount_set(&area->ref, 1);
-> +       area->vaddr =3D vaddr;
-> +
-> +       vma =3D _install_special_mapping(mm, area->vaddr, PAGE_SIZE,
-> +                               VM_READ|VM_EXEC|VM_MAYEXEC|VM_MAYREAD|VM_=
-DONTCOPY|VM_IO,
-> +                               &tramp_mapping);
-> +       if (!IS_ERR(vma))
-> +               return area;
-
-please keep a pattern, it's less surprising that way
-
-    if (IS_ERR(vma))
-        goto free_page;
-
-    return area;
-
-free_page:
-
-> +
-> +       __free_page(area->page);
-> + free_area:
-> +       kfree(area);
-> +       return NULL;
-> +}
-> +
-> +struct tramp_area *get_tramp_area(unsigned long vaddr)
-> +{
-> +       struct uprobes_state *state =3D &current->mm->uprobes_state;
-> +       struct tramp_area *area =3D NULL;
-> +
-> +       mutex_lock(&state->tramp_mutex);
-> +       hlist_for_each_entry(area, &state->tramp_head, node) {
-> +               if (arch_uprobe_is_callable(area->vaddr, vaddr)) {
-> +                       refcount_inc(&area->ref);
-> +                       goto unlock;
-> +               }
-> +       }
-> +
-> +       area =3D create_tramp_area(vaddr);
-> +       if (area)
-> +               hlist_add_head(&area->node, &state->tramp_head);
-> +
-> +unlock:
-> +       mutex_unlock(&state->tramp_mutex);
-> +       return area;
-> +}
-> +
-> +static void destroy_tramp_area(struct tramp_area *area)
-> +{
-> +       hlist_del(&area->node);
-> +       put_page(area->page);
-> +       kfree(area);
-> +}
-> +
-> +void put_tramp_area(struct tramp_area *area)
-> +{
-> +       struct mm_struct *mm =3D current->mm;
-> +       struct uprobes_state *state =3D &mm->uprobes_state;
-> +
-> +       if (area =3D=3D NULL)
-
-nit: !area
-
-> +               return;
-> +
-> +       mutex_lock(&state->tramp_mutex);
-> +       if (refcount_dec_and_test(&area->ref))
-> +               destroy_tramp_area(area);
-> +       mutex_unlock(&state->tramp_mutex);
-> +}
-> +
-
-[...]
+>         if (arch_uprobe_skip_sstep(&uprobe->arch, regs))
+>                 goto out;
+>
+> --
+> 2.47.0
+>
 
