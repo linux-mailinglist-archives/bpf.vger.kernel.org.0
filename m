@@ -1,152 +1,112 @@
-Return-Path: <bpf+bounces-44863-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44864-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C75529C92E0
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 21:04:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AE459C930D
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 21:14:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7335A1F2348F
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 20:04:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F4592855F6
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 20:14:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D79D1AB6CB;
-	Thu, 14 Nov 2024 20:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC741ABEA7;
+	Thu, 14 Nov 2024 20:14:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lZijfZKN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SvNoxTAj"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918DF1A7AC7
-	for <bpf@vger.kernel.org>; Thu, 14 Nov 2024 20:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4191AAE39;
+	Thu, 14 Nov 2024 20:14:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731614678; cv=none; b=j2SPM4dHGHbCI8c6Z4jZ2DSQcBZkVsT5h32LSzRVscOsn0CahQ+jYv9RtPx5JFNG2XPalDzHczzpaMPeg9vP8Rkn3QGvPWtfw7D8ti6Db3OwFuirRZ9udjM0YYXBPVD1kdmSSx7JX6WNaaBkmoMUYItQcj/vtz1PBS0hS5zIOaM=
+	t=1731615262; cv=none; b=cxy/4NzyfslizKK5B9A5N/ETHPYQA7X1mmW5en/lmdRbAaPorxB4RtHPfukSABzRiHYfax4Lc72YC1i6zrv9NRm0KxfE6jw6NJPzgleJG+C9oT93bHlisuWJOH3FoYxnYnHNZKJE6cAaJdAwDjtR7NlNAVyKQYLtjNBlOWKTroQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731614678; c=relaxed/simple;
-	bh=toAVjuke/pygGXRKY/wXVoiJB/xxDFPMBB779RcYWaU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZrAlCUoaLf7RGh5+1qlNGgnLvr0INWcAfeiyLsZ1vvZ/UHt7uDMVZuoNM1db7QNoZiYg7Qg7FnhGr0O8kBi3YWZP28Np8KfhI9rLyplxNKmeTIOTC1xxH25DBG2NidqwbAVQ7mc6PXlBjCEv3e3ToW3S+Y/8250L4Az5RNrRMl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lZijfZKN; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <fa3f1a9b-7fee-42f4-9827-b28b1bb3eff6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731614673;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7pcFK7jw/pPKGjT5evkUQ7HzTJpzDJog3tOiYKbe/zk=;
-	b=lZijfZKNX6j0tbzIB5GvIXXWZ+FIT835qwA4jFdNkIvqX6+KkhdBSl1FqQCC5zraQ+QCbQ
-	MA2TQ2TdWaryhEH0IRXc6nn9dHapJIUOO5ysDhE9Wo0JFFbhcu2FbUcDz+/DTjd/l4+kp1
-	U+zagfWYwO+3YY3C8UYXK7Kz+vfvrFk=
-Date: Thu, 14 Nov 2024 12:04:24 -0800
+	s=arc-20240116; t=1731615262; c=relaxed/simple;
+	bh=XtNg4k51hF59mvYHKYsqm9M6xnzczvoM4FNPSaRFKzc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fXrU8saqW8RCZZ6jACmrNYbcD8Z1hsNovgw5juTNaDSLXBoXmZmUi1p8VvbRs2SWhEWGyddpdzzyC6drl+CEKaayAN6prfDK/6660NbFHc/xiCAiaQfo3PJwzWp0n5iJIOCYv8Xfy0Cb7A5mBk7EG8t9Sk83QkfLc+/uIegF4/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SvNoxTAj; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-37d495d217bso832198f8f.0;
+        Thu, 14 Nov 2024 12:14:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731615259; x=1732220059; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hPRirCK3lhthn4lCppmTRv3W8De7Ak9KG1z6XIgAvWg=;
+        b=SvNoxTAjUfpAYravCFQ8b7y8pXttHKm00LTG4UwCVNgFY9kKCSruvzM4/a+23hoheW
+         CeuprQr2meznwL4YIg/S2g4Tcw6N+eOYETe3FCSsN6uxF07wIxsLbVIDoSVwYMOv/Kgz
+         GqfVGtYndoH+awgi7Sp/63V3skKmuoXP/83ktkam0PUp7mccqHgNku3sCR87806JrXck
+         szUQ69sc/LfxyLOJm85zN16M4u19F58aLBVXYmIv4nuWsDZIrkYgVua9Mc2BqNhxsgG0
+         NrerGkJly2Umq185qRZ8blwsXbvCLkxovlqUkgHbMtBhSy/R6gXKj3mjbCfLqnZb0D8E
+         9VMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731615259; x=1732220059;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hPRirCK3lhthn4lCppmTRv3W8De7Ak9KG1z6XIgAvWg=;
+        b=oYQbrBfR63q876cXSd3VGP4TDSUTmu0pymjP4Fi4n2sk1tkjAvs9ZXCDNpLJLwl2eP
+         5m8xHUHbQHe3gUIWLkCY9LvJs4eFkWhuImHyr0FgIpLDoDtq9lXU39pFyS4qMOVfbn6e
+         z6dQI8uMI+Wyl8W7hG2DaIAy1qihhees2kCspM1bHnfV/jfQtQsfH/atcrNpSyi/3wfW
+         QZb1J0sBo8vhTSMiduQGaTKm7tCdAqyG4rDwxb4hZAPGpA+QoItfwU1NCnVWJXf5GmYg
+         n/qVIDDCcO8hjgOeevm3Fl6wqgVb5JEP8V1gB67nGvOnb7h2KzJFPudsU6xGLZYnHPcT
+         4rGw==
+X-Forwarded-Encrypted: i=1; AJvYcCW5ilZbYOl/Dq1ncMsVt0Z6pbj1p5RHkOO6I75nzXELPRe3xDx/DHjTgnT+8H/gh0NsEINxJrETLo2iHkGY@vger.kernel.org, AJvYcCW9sMh3iaWLx85NAiuVDcl5TFAHToh4aidwa5EdVJyyrzJKMnQAQQsX2B80OmpoZzUt1/I9uNDuxEGPIP0zlkrZAI+kbwdl@vger.kernel.org, AJvYcCX0vt1/10qgO6RG+qE5jclv9ZHC5bfz4rj4x56bXkcH2CmmOXKUeU/nYFYzCHz2Gn/+copnsKd0lLGtRe6p@vger.kernel.org
+X-Gm-Message-State: AOJu0YzY804rIPMRcGnOR95gYMkBvyA7i3ElrR/mN2wb0anAbwBbUk91
+	KktGjkZqOxsaC/DOUCnu1Wwez2KHJC1MflakBx1HZd+TFwm5sgr1NTF/u10PGdv6PPDu1o5JIEw
+	70aqc3GHpg9vIoOlgPBhAJD5HHkE=
+X-Google-Smtp-Source: AGHT+IGkMeVSaBG5rRKAduAAHTiSeSOwLLcww6UElDBZ+fxd2bmg2YZz/pUfL6t9m+65xGdQcwb2ZF+ns36YghmYaw8=
+X-Received: by 2002:a05:6000:1868:b0:37d:43d4:88b7 with SMTP id
+ ffacd0b85a97d-38225a21c50mr101460f8f.3.1731615259233; Thu, 14 Nov 2024
+ 12:14:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 dwarves 1/2] dwarf_loader: Check
- DW_OP_[GNU_]entry_value for possible parameter matching
-Content-Language: en-GB
-To: Eduard Zingerman <eddyz87@gmail.com>,
- Alan Maguire <alan.maguire@oracle.com>, acme@kernel.org
-Cc: dwarves@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- bpf@vger.kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
- song@kernel.org, olsajiri@gmail.com
-References: <20241114155822.898466-1-alan.maguire@oracle.com>
- <20241114155822.898466-2-alan.maguire@oracle.com>
- <8a08219a-9312-429d-a291-d93a932c849a@linux.dev>
- <80623f0b630bd3761f0239dbe0f3197dcc6ae575.camel@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <80623f0b630bd3761f0239dbe0f3197dcc6ae575.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20241114084345.1564165-1-song@kernel.org> <20241114084345.1564165-8-song@kernel.org>
+In-Reply-To: <20241114084345.1564165-8-song@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 14 Nov 2024 12:14:08 -0800
+Message-ID: <CAADnVQK6YyPUzQoPKkXptLHoHXJZ50A8vNPfpDAk8Jc3Z6+iRw@mail.gmail.com>
+Subject: Re: [RFC/PATCH v2 bpf-next fanotify 7/7] selftests/bpf: Add test for
+ BPF based fanotify fastpath handler
+To: Song Liu <song@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, KP Singh <kpsingh@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, repnop@google.com, 
+	Jeff Layton <jlayton@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, gnoack@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Nov 14, 2024 at 12:44=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+>
+> +
+> +       if (bpf_is_subdir(dentry, v->dentry))
+> +               ret =3D FAN_FP_RET_SEND_TO_USERSPACE;
+> +       else
+> +               ret =3D FAN_FP_RET_SKIP_EVENT;
 
+It seems to me that all these patches and feature additions
+to fanotify, new kfuncs, etc are done just to do the above
+filtering by subdir ?
 
-
-On 11/14/24 10:21 AM, Eduard Zingerman wrote:
-> On Thu, 2024-11-14 at 08:51 -0800, Yonghong Song wrote:
->
-> [...]
->
->>> +		/* match DW_OP_entry_value(DW_OP_regXX) at any location */
->>> +		case DW_OP_entry_value:
->>> +		case DW_OP_GNU_entry_value:
->>> +			if (dwarf_getlocation_attr(attr, expr, &entry_attr) == 0 &&
->>> +			    dwarf_getlocation(&entry_attr, &entry_ops, &entry_len) == 0 &&
->>> +			    entry_len == 1) {
->>> +				ret = entry_ops->atom;
->> Could we have more than one DW_OP_entry_value? What if the second one
->> matches execpted_reg? From dwarf5 documentation, there is no say about
->> whether we could have more than one DW_OP_entry_value or not.
->>
->> If we have evidence that only one DW_OP_entry_value will appear in parameter
->> locations, a comment will be needed in the above.
->>
->> Otherwise, let us not do 'goto out' here. Rather, let us compare
->> entry_ops->atom with expected_reg. Do 'ret = entry_ops->atom' and
->> 'goto out' only if entry_ops->atom == expected_reg. Otherwise,
->> the original 'ret' value is preserved.
-> Basing on this description in lldb source:
-> https://github.com/llvm/llvm-project/blob/1cd981a5f3c89058edd61cdeb1efa3232b1f71e6/lldb/source/Expression/DWARFExpression.cpp#L538
-> It would be surprising if DW_OP_entry_value records had different expressions.
-> However, there are 50 instances of such behaviour in my clang 18.1.8 built kernel., e.g.:
->
-> 0x01f75d14:   DW_TAG_subprogram
->                  DW_AT_low_pc    (0xffffffff818c43a0)
->                  DW_AT_high_pc   (0xffffffff818c43c9)
->                  DW_AT_frame_base        (DW_OP_reg7 RSP)
->                  DW_AT_call_all_calls    (true)
->                  DW_AT_name      ("hwcache_align_show")
->                  DW_AT_decl_file ("/home/eddy/work/bpf-next/mm/slub.c")
->                  DW_AT_decl_line (6621)
->                  DW_AT_prototyped        (true)
->                  DW_AT_type      (0x01f51a9b "ssize_t")
->
-> 0x01f75d26:     DW_TAG_formal_parameter
->                    DW_AT_location        (indexed (0xa0f) loclist = 0x0062c64f:
->                       [0xffffffff818c43a9, 0xffffffff818c43b5): DW_OP_reg5 RDI
->                       [0xffffffff818c43b5, 0xffffffff818c43c1): DW_OP_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value
->                       [0xffffffff818c43c1, 0xffffffff818c43c9): DW_OP_entry_value(DW_OP_reg4 RSI), DW_OP_stack_value)
->                    DW_AT_name    ("s")
->                    DW_AT_decl_file       ("/home/eddy/work/bpf-next/mm/slub.c")
->                    DW_AT_decl_line       (6621)
->                    DW_AT_type    (0x01f4f449 "kmem_cache *")
->
-> The following change seem not to affect pahole execution time:
->
-> @@ -1234,7 +1234,8 @@ static int parameter__reg(Dwarf_Attribute *attr, int expected_reg)
->                              dwarf_getlocation(&entry_attr, &entry_ops, &entry_len) == 0 &&
->                              entry_len == 1) {
->                                  ret = entry_ops->atom;
-> -                               goto out;
-> +                               if (expr->atom == expected_reg)
-> +                                       goto out;
->                          }
->                          break;
->                  }
-
-Should we do
-			...
-			dwarf_getlocation(&entry_attr, &entry_ops, &entry_len) == 0 &&
-			entry_len == 1 && expr->atom == expected_reg) {
-				ret = entry_ops->atom;
-				goto out;
-		}
-		...
-?
-
->
-> This question aside, I think the changes fine.
->
-> [...]
->
-
+If so, just hard code this logic as an extra flag to fanotify ?
+So it can filter all events by subdir.
+bpf programmability makes sense when it needs to express
+user space policy. Here it's just a filter by subdir.
+bpf hammer doesn't look like the right tool for this use case.
 
