@@ -1,191 +1,150 @@
-Return-Path: <bpf+bounces-44869-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44870-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 091AB9C94AC
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 22:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E78629C94B0
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 22:51:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6923BB23AE9
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 21:49:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48E06B23F78
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 21:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2963C1AF0CA;
-	Thu, 14 Nov 2024 21:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036671AF0D1;
+	Thu, 14 Nov 2024 21:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="gHI+7GjR";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="gHI+7GjR"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RMedzhgu"
 X-Original-To: bpf@vger.kernel.org
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D38876026;
-	Thu, 14 Nov 2024 21:49:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FBD76026;
+	Thu, 14 Nov 2024 21:51:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731620974; cv=none; b=eBYUQwkHSsaJ1l9ivWZhaw+34A80Byo/oG2mAD35P1zWmp9+ZVpyK8YcX+npdx7KZOl5h8JptSoHM9QNnTcHeFGOeN6Fwv0nt3P3yn6MoK410jLKoIf8cOsuMnZ09xkFJT2Ozp4kmpNdCvcxacWwBxpKpDbW+sebpIgCT4leqU0=
+	t=1731621075; cv=none; b=hC3PTjFM4W78uZq867umISczP4EKQQlMtLxXWbnYM3vMyOv3VVZhw9216L4WfM4WbGXOY3VajHjxCEC1kF4dX6y2UHOTIO+e+0fWj8MkyTr4XmMwRJgRBxWyoQM6gRmtVgWHOL1wtSYYy1uYbL+VopzTx5kUTbKjXoml0J6eEzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731620974; c=relaxed/simple;
-	bh=wS4IETU5H8sOM3r7VeRA6L017b67dL9K8MWdsQ3ApBI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hN/4qKiGwkL8/ZxVgsNkMmGcqfRoqhFmS3UNfT15o3uVOuAyNBylmMsunA+5e2WXF/QqSlOjwpBbkXxUo3WxHCvofNJPnJFDl8uj3GJAfMfZ/UMRtlcIyLWOGytBHzh38BOHWFFjQwfTtqyrkVjLRsALlkmVlfIyyodf5IiCgI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=gHI+7GjR; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=gHI+7GjR; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1731620970;
-	bh=wS4IETU5H8sOM3r7VeRA6L017b67dL9K8MWdsQ3ApBI=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=gHI+7GjRldAEcpgCpFSXhyICRh0Cfi6dViARKCbystU2jZQ3FtCIQLTLIHc0mbCCn
-	 QDmjfK0u9aw2b4pBSES/WV7xbUqdE903v10f7PXPdrGRMlgC8jRfwksr4igdulFBoI
-	 GfJvlirt2ofPfEHJgT/uQ+jqe0Zpj7ghrXa/T6Jc=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id D82BF128171F;
-	Thu, 14 Nov 2024 16:49:30 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id qbUAHw1uv0wD; Thu, 14 Nov 2024 16:49:30 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1731620970;
-	bh=wS4IETU5H8sOM3r7VeRA6L017b67dL9K8MWdsQ3ApBI=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=gHI+7GjRldAEcpgCpFSXhyICRh0Cfi6dViARKCbystU2jZQ3FtCIQLTLIHc0mbCCn
-	 QDmjfK0u9aw2b4pBSES/WV7xbUqdE903v10f7PXPdrGRMlgC8jRfwksr4igdulFBoI
-	 GfJvlirt2ofPfEHJgT/uQ+jqe0Zpj7ghrXa/T6Jc=
-Received: from [10.106.168.49] (unknown [167.220.104.49])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id B91D712810F1;
-	Thu, 14 Nov 2024 16:49:29 -0500 (EST)
-Message-ID: <b1e82da8daa1c372e4678b1984ac942c98db998d.camel@HansenPartnership.com>
-Subject: Re: [PATCH bpf-next 0/4] Make inode storage available to tracing
- prog
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Song Liu <songliubraving@meta.com>, Casey Schaufler
- <casey@schaufler-ca.com>
-Cc: "Dr. Greg" <greg@enjellic.com>, Song Liu <song@kernel.org>, 
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-security-module@vger.kernel.org"
- <linux-security-module@vger.kernel.org>, Kernel Team
- <kernel-team@meta.com>,  "andrii@kernel.org" <andrii@kernel.org>,
- "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,  "martin.lau@linux.dev"
- <martin.lau@linux.dev>, "viro@zeniv.linux.org.uk"
- <viro@zeniv.linux.org.uk>,  "brauner@kernel.org" <brauner@kernel.org>,
- "jack@suse.cz" <jack@suse.cz>, "kpsingh@kernel.org" <kpsingh@kernel.org>,
- "mattbobrowski@google.com" <mattbobrowski@google.com>, 
- "amir73il@gmail.com" <amir73il@gmail.com>, "repnop@google.com"
- <repnop@google.com>,  "jlayton@kernel.org" <jlayton@kernel.org>, Josef
- Bacik <josef@toxicpanda.com>, "mic@digikod.net" <mic@digikod.net>,
- "gnoack@google.com" <gnoack@google.com>
-Date: Thu, 14 Nov 2024 13:49:28 -0800
-In-Reply-To: <4BF6D271-51D5-4768-A460-0853ABC5602D@fb.com>
-References: <20241112082600.298035-1-song@kernel.org>
-	 <d3e82f51-d381-4aaf-a6aa-917d5ec08150@schaufler-ca.com>
-	 <ACCC67D1-E206-4D9B-98F7-B24A2A44A532@fb.com>
-	 <d7d23675-88e6-4f63-b04d-c732165133ba@schaufler-ca.com>
-	 <332BDB30-BCDC-4F24-BB8C-DD29D5003426@fb.com>
-	 <8c86c2b4-cd23-42e0-9eb6-2c8f7a4cbcd4@schaufler-ca.com>
-	 <CAPhsuW5zDzUp7eSut9vekzH7WZHpk38fKHmFVRTMiBbeW10_SQ@mail.gmail.com>
-	 <20241114163641.GA8697@wind.enjellic.com>
-	 <53a3601e-0999-4603-b69f-7bed39d4d89a@schaufler-ca.com>
-	 <4BF6D271-51D5-4768-A460-0853ABC5602D@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1731621075; c=relaxed/simple;
+	bh=WjZXsL/Ggv5UxmzL0W2lHjr1qDI30J7jiFurXL1yZN4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=lB3oMVBSl1u27WxJBgWY4ISbNiYn2UgSpIyJq/9C+oi1lyP/1XJglkmVkUQJjKqbXvrHgLqh7eeShoGlXLwIZOzS//tSjFtef0F7XyivPgBeEHgXu7VL6Kf+myrCcE4eywDRtBK6RpPaxEoljvzhSlqd3kTtBM5TGXd6SYHrzS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RMedzhgu; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8D6A520003;
+	Thu, 14 Nov 2024 21:51:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1731621070;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=n3bfEiuXzWiyxNpW5BbZa2NuPMpbT/vYsRPGYQ4Ljww=;
+	b=RMedzhgu3sJZurlFt3wTLbZwSnVLYQLfXU1TtNlvI3EPOzi6cUGJQe1vaNUvJXmeZT65Bw
+	22kGKeMLw2ZOC+PBhzMwrB+pgIsLONZSoUdTd4MJaHGUd/kl0K/XCHFundwPNnOrqqTq4T
+	YgzTBGhsZaJNApguYsSLZ+0Uh1s9+mADWj5K0lj4a4QHw33ZjC8a1n4mSWR3TLGXtMrW0r
+	jW2MPdAe79+zeP5+fQNR7D4/UCbyVAVSg4PJWWqbEO5Y4z+jzJysnqWawRDMOi5IhRjs+K
+	r7Mz5niUKboLJ//BXEvts+YofQwKF5bxZBvWhQKYBLa4oHBPyWNPX/I1uG53hw==
+From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+Subject: [PATCH bpf-next v2 00/13] selftests/bpf: migrate
+ test_flow_dissector.sh to test_progs
+Date: Thu, 14 Nov 2024 22:50:31 +0100
+Message-Id: <20241114-flow_dissector-v2-0-ee4a3be3de65@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAKdwNmcC/12NQQrCMBBFryKzNpJJq6WuvIcUsZOJHahJSUqtl
+ N7dkKXLx+e9v0HiKJzgetgg8iJJgs9gjgeg4elfrMRmBqNNjRpb5cbweVhJiWkOUVXca9KNI7x
+ UkKUpspO1BO/QT055Xmfo8jJIysK3PC1Y9hJFrP6jCyqtTEO1dfrcGku3PoR5FH+i8IZu3/cfu
+ Z1tlbgAAAA=
+X-Change-ID: 20241019-flow_dissector-3eb0c07fc163
+To: Andrii Nakryiko <andrii@kernel.org>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: ebpf@linuxfoundation.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Bastien Curutchet <bastien.curutchet@bootlin.com>, bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+X-Mailer: b4 0.14.2
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-On Thu, 2024-11-14 at 18:08 +0000, Song Liu wrote:
-> 
-> 
-> > On Nov 14, 2024, at 9:29 AM, Casey Schaufler
-> > <casey@schaufler-ca.com> wrote:
-> 
-> [...]
-> 
-> > > 
-> > > 
-> > > The LSM inode information is obviously security sensitive, which
-> > > I
-> > > presume would be be the motivation for Casey's concern that a
-> > > 'mistake
-> > > by a BPF programmer could cause the whole system to blow up',
-> > > which in
-> > > full disclosure is only a rough approximation of his statement.
-> > > 
-> > > We obviously can't speak directly to Casey's concerns.  Casey,
-> > > any
-> > > specific technical comments on the challenges of using a common
-> > > inode
-> > > specific storage architecture?
-> > 
-> > My objection to using a union for the BPF and LSM pointer is based
-> > on the observation that a lot of modern programmers don't know what
-> > a union does. The BPF programmer would see that there are two ways
-> > to accomplish their task, one for CONFIG_SECURITY=y and the other
-> > for when it isn't. The second is much simpler. Not understanding
-> > how kernel configuration works, nor being "real" C language savvy,
-> > the programmer installs code using the simpler interfaces on a
-> > Redhat system. The SELinux inode data is compromised by the BPF
-> > code, which thinks the data is its own. Hilarity ensues.
-> 
-> There must be some serious misunderstanding here. So let me 
-> explain the idea again. 
-> 
-> With CONFIG_SECURITY=y, the code will work the same as right now. 
-> BPF inode storage uses i_security, just as any other LSMs. 
-> 
-> With CONFIG_SECURITY=n, i_security does not exist, so the bpf
-> inode storage will use i_bpf_storage. 
-> 
-> Since this is a CONFIG_, all the logic got sorted out at compile
-> time. Thus the user API (for user space and for bpf programs) 
-> stays the same. 
-> 
-> 
-> Actually, I can understand the concern with union. Although, 
-> the logic is set at kernel compile time, it is still possible 
-> for kernel source code to use i_bpf_storage when 
-> CONFIG_SECURITY is enabled. (Yes, I guess now I finally understand
-> the concern). 
-> 
-> We can address this with something like following:
-> 
-> #ifdef CONFIG_SECURITY
->         void                    *i_security;
-> #elif CONFIG_BPF_SYSCALL
->         struct bpf_local_storage __rcu *i_bpf_storage;
-> #endif
-> 
-> This will help catch all misuse of the i_bpf_storage at compile
-> time, as i_bpf_storage doesn't exist with CONFIG_SECURITY=y. 
-> 
-> Does this make sense?
+Hello,
+this new series aims to migrate test_flow_dissector.sh into test_progs.
+There are 2 "main" parts in test_flow_dissector.sh:
+- a set of tests checking flow_dissector programs attachment to either
+  root namespace or non-root namespace
+- dissection test
 
-Got to say I'm with Casey here, this will generate horrible and failure
-prone code.
+The first set is integrated in flow_dissector.c, which already contains
+some existing tests for flow_dissector programs. This series uses the
+opportunity to update a bit this file (use new assert, re-split tests,
+etc)
+The second part is migrated into a new file under test_progs,
+flow_dissector_classification.c. It uses the same eBPF programs as
+flow_dissector.c, but the difference is rather about how those program
+are executed:
+- flow_dissector.c manually runs programs with BPF_PROG_RUN
+- flow_dissector_classification.c sends real packets to be dissected, and
+  so it also executes kernel code related to eBPF flow dissector (eg:
+__skb_flow_bpf_to_target)
 
-Since effectively you're making i_security always present anyway,
-simply do that and also pull the allocation code out of security.c in a
-way that it's always available?  That way you don't have to special
-case the code depending on whether CONFIG_SECURITY is defined. 
-Effectively this would give everyone a generic way to attach some
-memory area to an inode.  I know it's more complex than this because
-there are LSM hooks that run from security_inode_alloc() but if you can
-make it work generically, I'm sure everyone will benefit.
+---
+Changes in v2:
+- allow tests to run in parallel
+- move some generic helpers to network_helpers.h
+- define proper function for ASSERT_MEMEQ
+- fetch acked-by tags
+- Link to v1: https://lore.kernel.org/r/20241113-flow_dissector-v1-0-27c4df0592dc@bootlin.com
 
-Regards,
+---
+Alexis Lothoré (eBPF Foundation) (13):
+      selftests/bpf: add a macro to compare raw memory
+      selftests/bpf: use ASSERT_MEMEQ to compare bpf flow keys
+      selftests/bpf: replace CHECK calls with ASSERT macros in flow_dissector test
+      selftests/bpf: re-split main function into dedicated tests
+      selftests/bpf: expose all subtests from flow_dissector
+      selftests/bpf: add gre packets testing to flow_dissector
+      selftests/bpf: migrate flow_dissector namespace exclusivity test
+      selftests/bpf: Enable generic tc actions in selftests config
+      selftests/bpf: move ip checksum helper to network helpers
+      selftests/bpf: rename pseudo headers checksum computation
+      selftests/bpf: add network helpers to generate udp checksums
+      selftests/bpf: migrate bpf flow dissectors tests to test_progs
+      selftests/bpf: remove test_flow_dissector.sh
 
-James
+ tools/testing/selftests/bpf/.gitignore             |   1 -
+ tools/testing/selftests/bpf/Makefile               |   3 +-
+ tools/testing/selftests/bpf/config                 |   1 +
+ tools/testing/selftests/bpf/network_helpers.h      |  64 +-
+ .../selftests/bpf/prog_tests/flow_dissector.c      | 323 +++++++--
+ .../bpf/prog_tests/flow_dissector_classification.c | 807 +++++++++++++++++++++
+ .../selftests/bpf/prog_tests/xdp_metadata.c        |  24 +-
+ tools/testing/selftests/bpf/test_flow_dissector.c  | 780 --------------------
+ tools/testing/selftests/bpf/test_flow_dissector.sh | 178 -----
+ tools/testing/selftests/bpf/test_progs.c           |  15 +
+ tools/testing/selftests/bpf/test_progs.h           |  15 +
+ tools/testing/selftests/bpf/xdp_hw_metadata.c      |  12 +-
+ 12 files changed, 1153 insertions(+), 1070 deletions(-)
+---
+base-commit: 9e71d50d3befb93a6394b0979f8ebd0dc9bd8d0f
+change-id: 20241019-flow_dissector-3eb0c07fc163
 
-
+Best regards,
+-- 
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
