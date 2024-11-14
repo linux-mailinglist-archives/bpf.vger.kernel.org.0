@@ -1,122 +1,130 @@
-Return-Path: <bpf+bounces-44842-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44843-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0DAD9C8B9A
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 14:15:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ED119C8C71
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 15:07:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6528A281A39
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 13:15:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D7B4283D75
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 14:07:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140351FB8A4;
-	Thu, 14 Nov 2024 13:13:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560102B9B7;
+	Thu, 14 Nov 2024 14:07:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LmwUwzfR"
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oEbKNCDP"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 475A71FB734
-	for <bpf@vger.kernel.org>; Thu, 14 Nov 2024 13:13:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B1E1172A;
+	Thu, 14 Nov 2024 14:07:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731589996; cv=none; b=hkYE0Y90suHXTLQtULrFDsH3l9EyDTTK7bH00ENz3UR0Q4yu6JWX7pEs+0cRN1+otv1NUzXJINBHZYN3WQMkiE8/EVKQ4rkt99yFLmiDVMFJj30V+NZgoVMb793lMFcZ1j2E9Bd/iyzObety/B8x6juayMRQzeuz+pG2WBTOjN4=
+	t=1731593244; cv=none; b=t+F92o0TmQ2iHF70/D6cATWHMRcnX2nJKEvkyYrQ5m7bkKBc3FO3Lz9gkaeynU5d7ZpAyXp+ivBFofBgR2bNEVtR6JVN7WN51jaIt0PQs71JPvQ0ceOUMsch2Q495L7VqdPvcKtfkFW5pI2PBv/laT7v9EqoEtqH1UshHnxPXTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731589996; c=relaxed/simple;
-	bh=BMqdEvSo2XGJTRPGsNA6sRZBHIQCF0fBhcmVmqff8lE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=swom7llgyCN87l/z8WZMn5+knEfXFHeXAiKyhO+Qstt6tv3648BF8YczP7pYethiwypT4sVu5GegavWBlSTTC0JE3/fKx8bX9O3KRMTNdoZlHOpNaoljuy5+zBp6Q5MFvB3rS6r929JeylbbKsZX2tUqS2yIOWGgpOXVbt0cu2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LmwUwzfR; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1731589993;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BMqdEvSo2XGJTRPGsNA6sRZBHIQCF0fBhcmVmqff8lE=;
-	b=LmwUwzfRjXkY4thwfX73uLhrvejfug+lHfRpXeol7HkNfw60CsFZs71IR4dgjEUfvOAFkb
-	bf4aEn4HEP3R0vuHPB4RZPEyMLUjwWHOBBeRK2EyQMmaVrHYS2sfUb3EVhRBO4xyHS+UYV
-	UzcFz4xhGx3SSlOC4p0lAfHxtuszy60=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-42-J0-wJ5xXOL6aDZzrkz0TNw-1; Thu, 14 Nov 2024 08:13:12 -0500
-X-MC-Unique: J0-wJ5xXOL6aDZzrkz0TNw-1
-X-Mimecast-MFC-AGG-ID: J0-wJ5xXOL6aDZzrkz0TNw
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a9a0710ca24so61950566b.3
-        for <bpf@vger.kernel.org>; Thu, 14 Nov 2024 05:13:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731589991; x=1732194791;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BMqdEvSo2XGJTRPGsNA6sRZBHIQCF0fBhcmVmqff8lE=;
-        b=RfMs1BC/Zgz77hOdS0G/cjVkesY5HP0ufuzz/y71E1qUyrscVZoRV/iFFIHu+wxRGQ
-         ohxH6SjHlOsGEOunj/WBTOibBSdqRs5oU0W/uX8NPUc39Ab8e/vx92SymvRG97t2MfHY
-         fSQMNM35k+vcWmA9OZg5FzKKtRhoaB+vQROqCoapAcskjacy+asiJrrEXXcvTjXJB36z
-         Sfj9Tvlp8bJMmCv6gW9xegyXe8wzBop/OOWQI4ZsWMHnf1Blktcz8Xv40MDGkuOFgLaR
-         JwSxYdDqCtxL26WT1Hbt5Unqjz7nSLGKrrAzFlCeHZoEvQQqULMmJE7crJoF+R0YiqdT
-         6XwA==
-X-Forwarded-Encrypted: i=1; AJvYcCUUDSg607JYCwX9H+GkS/MIK3tVNZ3Sm8kO9EQHwl4DzmX9J2QFhIisSmuNI0UsMZOmZio=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMxdyCZjQ92/Gv3aft3qqinpENySxgcA+5HvX/tXeY4RabBY7R
-	jgcpE3mbsvef6MJel5mth5QLSOMUMNLiwno4FRbBdXU32Mq6RYPzvs28mWNpO8VLxQHooEdrYbm
-	WkYe47K3Bq/3U085D6VbkfZtnKxQ1Cw40rVeUJoG80NfuUNFZYA==
-X-Received: by 2002:a17:906:da87:b0:a9a:7f87:904b with SMTP id a640c23a62f3a-aa1b10a373amr1064627966b.29.1731589990892;
-        Thu, 14 Nov 2024 05:13:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEOyxFRsRS28SbNhlIJrT9v3tkoYAXjzIK+RwTYwfJqA2Fz4E6wn0BXG7P2/Dh7o754OHjiSg==
-X-Received: by 2002:a17:906:da87:b0:a9a:7f87:904b with SMTP id a640c23a62f3a-aa1b10a373amr1064625166b.29.1731589990523;
-        Thu, 14 Nov 2024 05:13:10 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa20dffd742sm63384266b.109.2024.11.14.05.13.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Nov 2024 05:13:09 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 6074D164D081; Thu, 14 Nov 2024 14:13:08 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Felix Maurer <fmaurer@redhat.com>, bpf@vger.kernel.org
-Cc: bjorn@kernel.org, magnus.karlsson@intel.com,
- maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, horms@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- hawk@kernel.org, john.fastabend@gmail.com, yoong.siang.song@intel.com,
- sdf@fomichev.me, netdev@vger.kernel.org, Michal Schmidt
- <mschmidt@redhat.com>
-Subject: Re: [PATCH bpf] xsk: Free skb when TX metadata options are invalid
-In-Reply-To: <edb9b00fb19e680dff5a3350cd7581c5927975a8.1731581697.git.fmaurer@redhat.com>
-References: <edb9b00fb19e680dff5a3350cd7581c5927975a8.1731581697.git.fmaurer@redhat.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Thu, 14 Nov 2024 14:13:07 +0100
-Message-ID: <87jzd6q7q4.fsf@toke.dk>
+	s=arc-20240116; t=1731593244; c=relaxed/simple;
+	bh=cmBTVApJMNcFet7wkNI1x1Ku/qmWQAFhSpIckrpBrmo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OlGUD1n29Zf2k0mxOmss7tBWRcg1lVMLgKwCkkfRj/oC6C4z4J4442sgiK1wLpuv1lL1fwkhOETBVb3ntmeC6ZhmcnFTdStmkkEPwF7gxQ6nGcuXBzUayJi6t1ntxMwQlcdDcTBXtmfQgFKsg8ydDWPwV6BaX5UHKAzpwyITiOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org; spf=none smtp.mailfrom=idosch.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oEbKNCDP; arc=none smtp.client-ip=103.168.172.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
+Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
+	by mailfout.phl.internal (Postfix) with ESMTP id 39C1E1380462;
+	Thu, 14 Nov 2024 09:07:22 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-06.internal (MEProxy); Thu, 14 Nov 2024 09:07:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1731593242; x=1731679642; bh=oc4swEVh3lPUUxMLlORAbc0MG0A5KtUOHZt
+	1LGdDUvk=; b=oEbKNCDP1+FuJfZoSF12ZfR7C8tWY/SYAA8t+vYzOORTpRyn8TP
+	bHnoKh8iIFVCe82eJfxvL5BOe7esKWhu4/NToLQSbcI0z+7DWCqR13bPHyz+q4jE
+	9runIp+FguSnF5CUe4jszuJSgw6ZnKl6Eb3bdfDeOfxID7tv9qTTD4ZHhLNJ4CDJ
+	2NxMChz8mTzb6hixYoK0ktciTBpeDctWw8m+u64QagS+IgEjn6nSFVlM8k9f7NUw
+	izR3PMMjMRYvz/IK7I+gytV7dezfqllSW8pGr6SzVGEUWJ/Zh3d65Sls1wFeQNgn
+	vo30BcV7+GGudzsZcxsUGyHIYx3Q+t9QrmA==
+X-ME-Sender: <xms:GQQ2Z-464U_61Q4-E7qRA6_7-T_9FityRoPoY1Gi-WYflNZUF6qYgQ>
+    <xme:GQQ2Z34HNl38XS7oYv9Q-DxAmruEhW-SkUK1mUbyIzNuJEEtZSssP2q-nzuXzPZdj
+    J7SLRR3JXj-zUA>
+X-ME-Received: <xmr:GQQ2Z9e8RF74ht6xL8vWEVrm9cC-Bm6qtVsu0DYXlSBJzwlIj7X6Dg774XvHHmXflLTww0qAjzgG0g8oMolpyT3L-8zTLw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvddvgdeitdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
+    tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
+    hsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecu
+    hfhrohhmpefkughoucfutghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorh
+    hgqeenucggtffrrghtthgvrhhnpedvudefveekheeugeeftddvveefgfduieefudeifefg
+    leekheegleegjeejgeeghfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhgpdhnsggprhgtphhtthho
+    pedujedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghlvghkshgrnhguvghrrd
+    hlohgsrghkihhnsehinhhtvghlrdgtohhmpdhrtghpthhtohepuggrvhgvmhesuggrvhgv
+    mhhlohhfthdrnhgvthdprhgtphhtthhopegvughumhgriigvthesghhoohhglhgvrdgtoh
+    hmpdhrtghpthhtohepkhhusggrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehprggs
+    vghnihesrhgvughhrghtrdgtohhmpdhrtghpthhtohepthhokhgvsehrvgguhhgrthdrtg
+    homhdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghn
+    ihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopehjohhhnhdrfhgrshhtrg
+    gsvghnugesghhmrghilhdrtghomh
+X-ME-Proxy: <xmx:GQQ2Z7L9BLJS2mDM--kuEoQlelbz2e53lSdtauzGD-LCOtxuDAUsZA>
+    <xmx:GQQ2ZyK1acC3J7ENhs20Dcw4Gw0o_DZ1WxMtWXVI-mg8PLaEXzgtcw>
+    <xmx:GQQ2Z8xH_d3Xw-XA_xVhbwmeYoH55yTcgNK_B1z72J3mJVTJTYxPAA>
+    <xmx:GQQ2Z2JrBp7Df2uZDpBienOktUr0B1elquaO7gKMzgGCPJSHvZrWlw>
+    <xmx:GgQ2Zz5YZeRjyzCT9PIKcryRfj1vaeIU_eu3CEo-HZcR21ekH2vZMTP0>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Nov 2024 09:07:20 -0500 (EST)
+Date: Thu, 14 Nov 2024 16:07:17 +0200
+From: Ido Schimmel <idosch@idosch.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	nex.sw.ncis.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5 11/19] xdp: add generic xdp_buff_add_frag()
+Message-ID: <ZzYEFb4xK6IquBhI@shredder>
+References: <20241113152442.4000468-1-aleksander.lobakin@intel.com>
+ <20241113152442.4000468-12-aleksander.lobakin@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241113152442.4000468-12-aleksander.lobakin@intel.com>
 
-Felix Maurer <fmaurer@redhat.com> writes:
+On Wed, Nov 13, 2024 at 04:24:34PM +0100, Alexander Lobakin wrote:
+> The code piece which would attach a frag to &xdp_buff is almost
+> identical across the drivers supporting XDP multi-buffer on Rx.
 
-> When a new skb is allocated for transmitting an xsk descriptor, i.e., for
-> every non-multibuf descriptor or the first frag of a multibuf descriptor,
-> but the descriptor is later found to have invalid options set for the TX
-> metadata, the new skb is never freed. This can leak skbs until the send
-> buffer is full which makes sending more packets impossible.
->
-> Fix this by freeing the skb in the error path if we are currently dealing
-> with the first frag, i.e., an skb allocated in this iteration of
-> xsk_build_skb.
->
-> Fixes: 48eb03dd2630 ("xsk: Add TX timestamp and TX checksum offload suppo=
-rt")
-> Reported-by: Michal Schmidt <mschmidt@redhat.com>
-> Signed-off-by: Felix Maurer <fmaurer@redhat.com>
+Yes, I was reviewing such a change when I noticed your patch. We will
+use this helper instead. Thanks!
 
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Make it a generic elegant "oneliner".
+> Also, I see lots of drivers calculating frags_truesize as
+> `xdp->frame_sz * nr_frags`. I can't say this is fully correct, since
+> frags might be backed by chunks of different sizes, especially with
+> stuff like the header split. Even page_pool_alloc() can give you two
+> different truesizes on two subsequent requests to allocate the same
+> buffer size. Add a field to &skb_shared_info (unionized as there's no
+> free slot currently on x86_64) to track the "true" truesize. It can
+> be used later when updating an skb.
+> 
+> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
 
