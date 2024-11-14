@@ -1,121 +1,131 @@
-Return-Path: <bpf+bounces-44824-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44825-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D65A09C80EF
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 03:44:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCEA09C8465
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 08:57:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94FE11F224CC
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 02:44:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A30402838B3
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 07:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 497471E7C0F;
-	Thu, 14 Nov 2024 02:44:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD571F584C;
+	Thu, 14 Nov 2024 07:57:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dkWWRN/u"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="bc4IW6F5"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3DA18BBB6
-	for <bpf@vger.kernel.org>; Thu, 14 Nov 2024 02:43:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F191F4718;
+	Thu, 14 Nov 2024 07:57:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731552241; cv=none; b=l7CkGzwWlyTHW3qlQYdWi6Mu1th+qkmOEuJ49TIHzEjskbg9jtWYzid94SWfDdhuUlG9QHYH+VsHlm/8jED0FcvhDqovTrqo0mObQva9OBkugslTlcJgGcSKCY7KzDxxly1RxpVISMuvsfGNimbiUH/Urkwj1mTV314jox4baxs=
+	t=1731571064; cv=none; b=h/fKOAx4CFr11277qHsicxUheS/LYvUJnG8XLtJguFqKEqhfGBDTRap+gmxaDDzUAcYyuXlY4gmEAHuKKKxwWQv30BTT51IWheHbU6Cy1McQU31FwY7f/6sSzyalWdOblStKPcc90W08XT+V+netMIG48Qm5kXxSHKgQdnLSsms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731552241; c=relaxed/simple;
-	bh=6iJY4ltv672XaXhf4m/gfXZErkmr1WtPDKD10agsoZw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d3aWr3J4XItgvXportn7PZOn4ad35MjTBV7umVQJu7Z5g5P9eRV7+BwVztkowRF1MLkq0quQfiZ+LbN8A0ZTfrkH+4Rms2OoqUoM99KzuQ1SN+SXFREWlITX/mpfV+OwbC7B1xr23Yrs5NtSoEjux4yP0ZTT1tgC0ehvT7OwZ9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dkWWRN/u; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1e5910b1-ea54-4b7a-a68b-a02634a517dd@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731552237;
+	s=arc-20240116; t=1731571064; c=relaxed/simple;
+	bh=iAEOEoNOWFiIs5/OwjoUTJswC7CgiTryfEWzht/D81M=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=D2NxDBsK3awcH97G3/oB9S07v0YwKZlgnWGMdr9lFrC8b6V5nrcRxJ1s++xSc10LqJMPOAvnvlDWmc4Mu2TlAFn2u1PiDtaFhPFa5wXV8yGw1LAo+eQMktYaRDAO/vTvWUpDqGlPFZYPIJ8gwerEgzXf7Bt8zm24vQgTJAWd2N0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=bc4IW6F5; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BBCC2240003;
+	Thu, 14 Nov 2024 07:57:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1731571059;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gtMocB/TdMcBvjfzykmOTKc5Oyowa+q8EiSBYJLs9xQ=;
-	b=dkWWRN/ujLHTS1d8V5Ln376KZiQmYUn4Sxtsk0JU9FAmau0zlBpIhgsDY4zsEcvKLBKECI
-	mqotRk9XAh/JufM8+hoN1KD+QPLWvV+4Ya3UpVjsthCrJQzmuw9i8RyIDAqYAbyZxTOYNd
-	PNKX6HAKwG7mTvRztuFcQSyx4pGGB1s=
-Date: Thu, 14 Nov 2024 10:43:26 +0800
+	bh=uW46j0hoRVyEJ1yAN4knY/aeYLI8Z+zPAW0pDq/7ANw=;
+	b=bc4IW6F5O63KcseNnavL4GRs1/uM2CtRpf7gh0cY+vi5s8+SXiAnJ3d159TXwxVaESWHcL
+	/SYBYd/usuwPWEZxKpf0ysVv5Swhi7pJm/9avBzz51E9CNVJ7Xx7nHQ+owvXfbFGMC5K7d
+	O1Awekt1q3EC04wIQixR0mPk2Jt4CE+AbPCamQAqFF79O539illLI5E4/Rc5E84mr0y26l
+	meLAJvMaX4Px0ZU/ITe4xqfVOOyEvLG8Rm8xkuO33iYouEXEU9LBlgb2qPZfS3TzPgIvoh
+	dIeChYkrkSDL5mzWOjPEpaabFv+KUST3M1fOlwUJCnEwQEcNskezSuUG2d5SOQ==
+Message-ID: <1a1df82b-6008-4be5-8f93-98fccfe7d40a@bootlin.com>
+Date: Thu, 14 Nov 2024 08:57:37 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: Convert lpm_trie::lock to 'raw_spinlock_t'
+User-Agent: Mozilla Thunderbird
+From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Subject: Re: [PATCH bpf-next 04/10] selftests/bpf: re-split main function into
+ dedicated tests
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Bastien Curutchet <bastien.curutchet@bootlin.com>,
+ Petar Penkov <ppenkov@google.com>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20241113-flow_dissector-v1-0-27c4df0592dc@bootlin.com>
+ <20241113-flow_dissector-v1-4-27c4df0592dc@bootlin.com>
+ <ZzTlAmxagJmqNRe7@mini-arch>
 Content-Language: en-US
-To: Thomas Gleixner <tglx@linutronix.de>, Kunwu Chan <kunwu.chan@linux.dev>,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bigeasy@linutronix.de,
- clrkwllms@kernel.org, rostedt@goodmis.org
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rt-devel@lists.linux.dev,
- syzbot+b506de56cbbb63148c33@syzkaller.appspotmail.com
-References: <20241108063214.578120-1-kunwu.chan@linux.dev>
- <87v7wsmqv4.ffs@tglx>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kunwu Chan <kunwu.chan@linux.dev>
-In-Reply-To: <87v7wsmqv4.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <ZzTlAmxagJmqNRe7@mini-arch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-Thanks all for the reply.
+Hello Stanislas, thanks for the reviews !
 
-On 2024/11/12 23:08, Thomas Gleixner wrote:
-> On Fri, Nov 08 2024 at 14:32, Kunwu Chan wrote:
->> When PREEMPT_RT is enabled, 'spinlock_t' becomes preemptible
->> and bpf program has owned a raw_spinlock under a interrupt handler,
->> which results in invalid lock acquire context.
-> This explanation is just wrong.
->
-> The problem has nothing to do with an interrupt handler. Interrupt
-> handlers on RT kernels are force threaded.
->
->>   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
->>   _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
->>   trie_delete_elem+0x96/0x6a0 kernel/bpf/lpm_trie.c:462
->>   bpf_prog_2c29ac5cdc6b1842+0x43/0x47
->>   bpf_dispatcher_nop_func include/linux/bpf.h:1290 [inline]
->>   __bpf_prog_run include/linux/filter.h:701 [inline]
->>   bpf_prog_run include/linux/filter.h:708 [inline]
->>   __bpf_trace_run kernel/trace/bpf_trace.c:2340 [inline]
->>   bpf_trace_run1+0x2ca/0x520 kernel/trace/bpf_trace.c:2380
->>   trace_workqueue_activate_work+0x186/0x1f0 include/trace/events/workqueue.h:59
->>   __queue_work+0xc7b/0xf50 kernel/workqueue.c:2338
-> The problematic lock nesting is the work queue pool lock, which is a raw
-> spinlock.
->
->> @@ -330,7 +330,7 @@ static long trie_update_elem(struct bpf_map *map,
->>   	if (key->prefixlen > trie->max_prefixlen)
->>   		return -EINVAL;
->>   
->> -	spin_lock_irqsave(&trie->lock, irq_flags);
->> +	raw_spin_lock_irqsave(&trie->lock, irq_flags);
->>   
->>   	/* Allocate and fill a new node */
-> Making this a raw spinlock moves the problem from the BPF trie code into
-> the memory allocator. On RT the memory allocator cannot be invoked under
-> a raw spinlock.
-I'am newbiee in this field. But actually when i change it to a raw 
-spinlock, the problem syzbot reported dispeared.
-If don't change like this, we should do what to deal with this problem, 
-if you have any good idea, pls tell me to do.
-> Thanks,
->
->          tglx
->
--- 
+On 11/13/24 18:42, Stanislav Fomichev wrote:
+> On 11/13, Alexis Lothoré (eBPF Foundation) wrote:
+>> The flow_dissector runs plenty of tests over diffent kind of packets,
+>> grouped into three categories: skb mode, non-skb mode with direct
+>> attach, and non-skb with indirect attach.
+>>
+>> Re-split the main function into dedicated tests. Each test now must have
+>> its own setup/teardown, but for the advantage of being able to run them
+>> separately.
+>>
+>> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+>> ---
+>>  .../selftests/bpf/prog_tests/flow_dissector.c      | 92 ++++++++++++++--------
+>>  1 file changed, 57 insertions(+), 35 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
+>> index 6fbe8b6dad561aec02db552caea02517ac1e2109..c5dfff333fe31dd55ac152fe9b107828227c8177 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
+>> @@ -549,63 +549,101 @@ static void run_tests_skb_less(int tap_fd, struct bpf_map *keys)
+>>  	}
+>>  }
+>>  
+>> -static void test_skb_less_prog_attach(struct bpf_flow *skel, int tap_fd)
+> 
+> [..]
+> 
+>> +void serial_test_flow_dissector_skb_less_direct_attach(void)
+> 
+> Any specific reason you keep these as serial? Seems like one of the benefits
+> of splitting them up is to be able to run them in parallel?
+
+I guess there is no reason (I added those while investigating the namespace
+exclusivity test issue, and forgot to remove them). I'll remove the serial prefix.
+
+By the way I realize that each of those new tests could likely benefit from
+running in an isolated net namespace (especially if they can run in
+parallel), I'll add that too in v2.
+
 Thanks,
-   Kunwu.Chan
 
+Alexis
+
+-- 
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
