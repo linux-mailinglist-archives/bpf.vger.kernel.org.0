@@ -1,112 +1,130 @@
-Return-Path: <bpf+bounces-44864-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44865-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AE459C930D
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 21:14:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 718159C9340
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 21:29:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F4592855F6
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 20:14:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A6F81F22E0B
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2024 20:29:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC741ABEA7;
-	Thu, 14 Nov 2024 20:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1321AC8B8;
+	Thu, 14 Nov 2024 20:28:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SvNoxTAj"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XURbVFyk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4191AAE39;
-	Thu, 14 Nov 2024 20:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79D501AAE1D
+	for <bpf@vger.kernel.org>; Thu, 14 Nov 2024 20:28:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731615262; cv=none; b=cxy/4NzyfslizKK5B9A5N/ETHPYQA7X1mmW5en/lmdRbAaPorxB4RtHPfukSABzRiHYfax4Lc72YC1i6zrv9NRm0KxfE6jw6NJPzgleJG+C9oT93bHlisuWJOH3FoYxnYnHNZKJE6cAaJdAwDjtR7NlNAVyKQYLtjNBlOWKTroQ=
+	t=1731616131; cv=none; b=IxBzl1Ruvn3FbIBxdLiSk/stB0fm345Nkc8l0bQIslpBbPu5lUy3BRuBjDVFYNHZxKSSm9ZjDIxRDi361wb1Rp34BnT28ORTcQt2w9KMTKUOYMD7q5/UVI//xt3w2qwLdgh4Ia2iPP0sk6gV2ESyRe4IkLeZUKTDMa/HPCEQpfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731615262; c=relaxed/simple;
-	bh=XtNg4k51hF59mvYHKYsqm9M6xnzczvoM4FNPSaRFKzc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fXrU8saqW8RCZZ6jACmrNYbcD8Z1hsNovgw5juTNaDSLXBoXmZmUi1p8VvbRs2SWhEWGyddpdzzyC6drl+CEKaayAN6prfDK/6660NbFHc/xiCAiaQfo3PJwzWp0n5iJIOCYv8Xfy0Cb7A5mBk7EG8t9Sk83QkfLc+/uIegF4/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SvNoxTAj; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-37d495d217bso832198f8f.0;
-        Thu, 14 Nov 2024 12:14:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731615259; x=1732220059; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hPRirCK3lhthn4lCppmTRv3W8De7Ak9KG1z6XIgAvWg=;
-        b=SvNoxTAjUfpAYravCFQ8b7y8pXttHKm00LTG4UwCVNgFY9kKCSruvzM4/a+23hoheW
-         CeuprQr2meznwL4YIg/S2g4Tcw6N+eOYETe3FCSsN6uxF07wIxsLbVIDoSVwYMOv/Kgz
-         GqfVGtYndoH+awgi7Sp/63V3skKmuoXP/83ktkam0PUp7mccqHgNku3sCR87806JrXck
-         szUQ69sc/LfxyLOJm85zN16M4u19F58aLBVXYmIv4nuWsDZIrkYgVua9Mc2BqNhxsgG0
-         NrerGkJly2Umq185qRZ8blwsXbvCLkxovlqUkgHbMtBhSy/R6gXKj3mjbCfLqnZb0D8E
-         9VMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731615259; x=1732220059;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hPRirCK3lhthn4lCppmTRv3W8De7Ak9KG1z6XIgAvWg=;
-        b=oYQbrBfR63q876cXSd3VGP4TDSUTmu0pymjP4Fi4n2sk1tkjAvs9ZXCDNpLJLwl2eP
-         5m8xHUHbQHe3gUIWLkCY9LvJs4eFkWhuImHyr0FgIpLDoDtq9lXU39pFyS4qMOVfbn6e
-         z6dQI8uMI+Wyl8W7hG2DaIAy1qihhees2kCspM1bHnfV/jfQtQsfH/atcrNpSyi/3wfW
-         QZb1J0sBo8vhTSMiduQGaTKm7tCdAqyG4rDwxb4hZAPGpA+QoItfwU1NCnVWJXf5GmYg
-         n/qVIDDCcO8hjgOeevm3Fl6wqgVb5JEP8V1gB67nGvOnb7h2KzJFPudsU6xGLZYnHPcT
-         4rGw==
-X-Forwarded-Encrypted: i=1; AJvYcCW5ilZbYOl/Dq1ncMsVt0Z6pbj1p5RHkOO6I75nzXELPRe3xDx/DHjTgnT+8H/gh0NsEINxJrETLo2iHkGY@vger.kernel.org, AJvYcCW9sMh3iaWLx85NAiuVDcl5TFAHToh4aidwa5EdVJyyrzJKMnQAQQsX2B80OmpoZzUt1/I9uNDuxEGPIP0zlkrZAI+kbwdl@vger.kernel.org, AJvYcCX0vt1/10qgO6RG+qE5jclv9ZHC5bfz4rj4x56bXkcH2CmmOXKUeU/nYFYzCHz2Gn/+copnsKd0lLGtRe6p@vger.kernel.org
-X-Gm-Message-State: AOJu0YzY804rIPMRcGnOR95gYMkBvyA7i3ElrR/mN2wb0anAbwBbUk91
-	KktGjkZqOxsaC/DOUCnu1Wwez2KHJC1MflakBx1HZd+TFwm5sgr1NTF/u10PGdv6PPDu1o5JIEw
-	70aqc3GHpg9vIoOlgPBhAJD5HHkE=
-X-Google-Smtp-Source: AGHT+IGkMeVSaBG5rRKAduAAHTiSeSOwLLcww6UElDBZ+fxd2bmg2YZz/pUfL6t9m+65xGdQcwb2ZF+ns36YghmYaw8=
-X-Received: by 2002:a05:6000:1868:b0:37d:43d4:88b7 with SMTP id
- ffacd0b85a97d-38225a21c50mr101460f8f.3.1731615259233; Thu, 14 Nov 2024
- 12:14:19 -0800 (PST)
+	s=arc-20240116; t=1731616131; c=relaxed/simple;
+	bh=Z5Ognq7lw2HAWunqOpKCdPtwBarj4MBAdsTm07h6Sos=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BM8W88fmXn2oh5Fnkb9MJJOvFfYd8kkoywk4idCdU2x9fdM2BrwVlfygYQgH60oeSj3GUhvoX7wuI6O+tZLeK/S7ZVUyD5FrZ4ITiZ+1kRmR86CcGdmnmeOiT2A5x6+1ZumQVGh0SXo4/3ydwJoVyl5qDS7a0BYkIjjTvGSPYBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XURbVFyk; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731616127;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MhTsEtmVCd4GgZxWQiL5bXWykf/c3mGt0T84SKQe0zA=;
+	b=XURbVFyk+V6UTjHBbCM5/jiUQmCKw1whf00ppWm5USjUROjshXMj7Wg+kYPXnC0+OcaFli
+	uPO2bd0a7lywnfNuk3SVkZjwEF4m6ahuVPr7nU5rLrAEdo2goKbD3csL4mNyvlqiyLvDJL
+	q2r0oeAuY0kQk5HuGv6A/1ViyQDsehM=
+From: Martin KaFai Lau <martin.lau@linux.dev>
+To: davem@davemloft.net
+Cc: kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: pull-request: bpf-next 2024-11-14
+Date: Thu, 14 Nov 2024 12:28:32 -0800
+Message-ID: <20241114202832.3187927-1-martin.lau@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241114084345.1564165-1-song@kernel.org> <20241114084345.1564165-8-song@kernel.org>
-In-Reply-To: <20241114084345.1564165-8-song@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 14 Nov 2024 12:14:08 -0800
-Message-ID: <CAADnVQK6YyPUzQoPKkXptLHoHXJZ50A8vNPfpDAk8Jc3Z6+iRw@mail.gmail.com>
-Subject: Re: [RFC/PATCH v2 bpf-next fanotify 7/7] selftests/bpf: Add test for
- BPF based fanotify fastpath handler
-To: Song Liu <song@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, KP Singh <kpsingh@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, repnop@google.com, 
-	Jeff Layton <jlayton@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, gnoack@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Nov 14, 2024 at 12:44=E2=80=AFAM Song Liu <song@kernel.org> wrote:
->
-> +
-> +       if (bpf_is_subdir(dentry, v->dentry))
-> +               ret =3D FAN_FP_RET_SEND_TO_USERSPACE;
-> +       else
-> +               ret =3D FAN_FP_RET_SKIP_EVENT;
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-It seems to me that all these patches and feature additions
-to fanotify, new kfuncs, etc are done just to do the above
-filtering by subdir ?
+The following pull-request contains BPF updates for your *net-next* tree.
 
-If so, just hard code this logic as an extra flag to fanotify ?
-So it can filter all events by subdir.
-bpf programmability makes sense when it needs to express
-user space policy. Here it's just a filter by subdir.
-bpf hammer doesn't look like the right tool for this use case.
+We've added 9 non-merge commits during the last 4 day(s) which contain
+a total of 3 files changed, 226 insertions(+), 84 deletions(-).
+
+The main changes are:
+
+1) Fixes to bpf_msg_push/pop_data and test_sockmap. The changes has
+   dependency on the other changes in the bpf-next/net branch,
+   from Zijian Zhang.
+
+2) Drop netns codes from mptcp test. Reuse the common helpers in
+   test_progs, from Geliang Tang.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+John Fastabend, Matthieu Baerts (NGI0)
+
+----------------------------------------------------------------
+
+The following changes since commit 8d1807a95c7dbb9633817fba776fa2f5e7c5146b:
+
+  Merge branch 'mlx5-misc-patches-2024-10-31' (2024-11-03 15:37:17 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git for-netdev
+
+for you to fetch changes up to 141b4d6a8049cecdc8124f87e044b83a9e80730d:
+
+  Merge branch 'Fixes to bpf_msg_push/pop_data and test_sockmap' (2024-11-06 16:02:08 -0800)
+
+----------------------------------------------------------------
+bpf-next-for-netdev
+
+----------------------------------------------------------------
+Geliang Tang (1):
+      selftests/bpf: Drop netns helpers in mptcp
+
+Martin KaFai Lau (1):
+      Merge branch 'Fixes to bpf_msg_push/pop_data and test_sockmap'
+
+Zijian Zhang (8):
+      selftests/bpf: Add txmsg_pass to pull/push/pop in test_sockmap
+      selftests/bpf: Fix SENDPAGE data logic in test_sockmap
+      selftests/bpf: Fix total_bytes in msg_loop_rx in test_sockmap
+      selftests/bpf: Add push/pop checking for msg_verify_data in test_sockmap
+      selftests/bpf: Add more tests for test_txmsg_push_pop in test_sockmap
+      bpf, sockmap: Several fixes to bpf_msg_push_data
+      bpf, sockmap: Several fixes to bpf_msg_pop_data
+      bpf, sockmap: Fix sk_msg_reset_curr
+
+ net/core/filter.c                              |  88 +++++++-----
+ tools/testing/selftests/bpf/prog_tests/mptcp.c |  42 ++----
+ tools/testing/selftests/bpf/test_sockmap.c     | 180 ++++++++++++++++++++++---
+ 3 files changed, 226 insertions(+), 84 deletions(-)
 
