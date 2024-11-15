@@ -1,225 +1,158 @@
-Return-Path: <bpf+bounces-44981-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44985-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 550B49CF54B
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 20:52:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 371529CF54D
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 20:54:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B8C0B31240
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 19:43:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 033EFB3211C
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 19:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187781E1C03;
-	Fri, 15 Nov 2024 19:41:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F8CD1E1A27;
+	Fri, 15 Nov 2024 19:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V3Eztt1G"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="KdgKBHTj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFAE91CEE97;
-	Fri, 15 Nov 2024 19:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59CE71E0B72
+	for <bpf@vger.kernel.org>; Fri, 15 Nov 2024 19:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731699711; cv=none; b=Ym3oBIRnkFLaeANFrf+JClyehcYIwiCtjs1XavASd3X5vW9801d/SrFmNqFnQCLWAjCur/SCFXexrYbR7dXl5IMj496LgoS9uptczf5O2/IAlwirMENOyK01AXwpPuGYSxf0aLKcu6oum3h9jr+6NaSwlP0OO+4KvCAZPNw2gNg=
+	t=1731700167; cv=none; b=Ys2snNxZcaInaRXq6ZVKCkLTJAHfBKA5hlX2Coba5qog3yV8jHg4/7Vl+m57svyilRjPaUg5nxxWQ+SuaMbcnPhl2DY2stsjWiZqe5zwB1BSjZa2zpdm9XFn1vybjHy8PFDPBwY5OQoJXHbBX8ea+eumR9rkxYhJdSBQDVCndPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731699711; c=relaxed/simple;
-	bh=11+JLjIDjOOyK0Aqas1540GH5ts0hbJToWK8RT6in2Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RElvCZoHE2hNTmNZ7POSY/n2t0woe1LUByuRA8TTawuMTH7q4JFs5DTyHgUuUvSal6bgZlm3q9f0ALcQbjWJ2nsvMUbilppBKYuuwg5zL/KuIjQeyntnQw20gQYwEsbXo7AxIr0bPGP7qkuhmdlF4pSR9Nb2Ddq+WkMdfCztFpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V3Eztt1G; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3821a905dbcso1384467f8f.0;
-        Fri, 15 Nov 2024 11:41:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731699708; x=1732304508; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nOgoGVaGPGzqc8HLQFO0H9kyoYBMblQj8Truem6RMlg=;
-        b=V3Eztt1GU5sGkaAu+0hIjjMiWDrFZguJSTyhXACLs+LDVYKqTr2ont3IUaMFRH6IHB
-         0PNzqTwCvdo4EzhFX7Lz9mfj2y1aTTHbcKozAx3AlUz5Bgyeasndcu0IsfIUgwJ4rVeF
-         gRr14a1yZxI9REaRvEVD3wHLrnU+MGlLI1GZR7CKQQxIz8iBTJfsCoegDh0DNK+Eg3Ie
-         D9neFNnThzrKo84HQzT6S2XaKXCQF2DUsbn8pwzMp8R9a1S/5yPrMlVAEgTEMU4d0W3P
-         jl8JIguQPOQKKrhFTIR+DDNvpzqvUKp+0yhShQ65rwf1ijQZ9LIfsBzH0bMdgWKiXOhz
-         AaVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731699708; x=1732304508;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nOgoGVaGPGzqc8HLQFO0H9kyoYBMblQj8Truem6RMlg=;
-        b=S7xMu3ufqWt4hiL57n8XOYXSlmMZ3aeZ15qsz73jOgDoraosvhT8BMK+zvpogCpkj7
-         wG7yiSgxJjHu3lOkbM0CiDEG2ofX2TDcy1P+vvphlHHBs/2apuVF+Mc4lh+d01dRdVTf
-         c5GMlo0wIV4XE2m9YyMyYYGwR9h9XeDMApPm/BYRm6kUJ2RgJOXq85ftS0/OB45+qAs4
-         WH6Fqp/s05U5wS1Aaz7FWlZWEGs1syBWmjTJ0JGk9BzTI6SIbNatCBgZR7epuL+VNUl7
-         aUZ0I0dTe559D1vpg/WZeTc/pjaWi3dBFQ61ndZoVkQvBF9LdmELBYr//rRYlJgoBlLU
-         crOg==
-X-Forwarded-Encrypted: i=1; AJvYcCUztC56waOTJ0rXottSRHRPXKjVfdDiFu63nu+AlFq06+iA+/93wVLhrf0txRmgDsvcQD8yOvI1AJN6K2SVfMjxFQu6adyG@vger.kernel.org, AJvYcCVNeAykylK1vGcWCDqQ8KoG3VBZXcB8jRgdwYIYn0iRILCzc0cwPKMng8x8q/vnp+11BrMKsB2hflZfTo4w@vger.kernel.org, AJvYcCWE/905eFDJiTAMXkX8zHklyu/zAWICPA/PVqBhlYeGK+DUJV0tMYr4eWWSu7yb9P6eVkcI3r687OUgh08XUw==@vger.kernel.org, AJvYcCXCnI5oKWH5ExIBFIdLWlUUJrZKyxzn+2x93BTQ4rS8u2KqBjDqmpphdBw7gz0Q3N6WNsA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZa2//VFSA2l1WVvMBj3PM9RyiQuvSMA0g1XU24oYF6GoUFZ6f
-	gHZyfmEgcqZeg1/YMtJBdtmA79Cq6DxvYxy3JdeDafILduzkAswubPdeOPTD3FD4BhPc+QnbXqU
-	+h4RaPfigFNS+mn7dAUG+czvImuM=
-X-Google-Smtp-Source: AGHT+IGHWSINqizwBrIJZlSoKrrg7DDQwkttX3kAOSa+kF7ZXNbLwGYJTiHnJ0AB6OJJOAogaGxA3sd8WRNWsXBj4wU=
-X-Received: by 2002:a5d:47a4:0:b0:37d:4e74:684 with SMTP id
- ffacd0b85a97d-38225aa59f8mr3079318f8f.52.1731699707797; Fri, 15 Nov 2024
- 11:41:47 -0800 (PST)
+	s=arc-20240116; t=1731700167; c=relaxed/simple;
+	bh=+MOvsLE8IUleZZKVL4HDYF/P66B+hNeFyOKpbSyPlhY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lHVxCsCaygS2LUAYkXON8XspR+iVw71QzwscQhhQ87r1VnzCUKIifhhDCVRp1eG63qGkLr8NJolhkbqtk6lfY6S98tyECOZVGZvJ0L0fvhqUoBU231wAwaURZ6wsxdvGrLU4D1KQj+X1jz8eZnA/Gsm3pba/5d1fTzeGlzGExdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=KdgKBHTj; arc=none smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AFIV806027503;
+	Fri, 15 Nov 2024 11:48:51 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=s2048-2021-q4; bh=CnpVEElDJxq7UkK1h7
+	4HlafHnD/mHEfEAeWa5a/VQd0=; b=KdgKBHTjdkQmL+PP4DJ9U/tUi9DPcyTJE3
+	wuolN4eP7gR8HR0zLz4eU2ACjLKnw5sVLxst+6BtzNs8x+1STIsdIHrOq3DHTWkZ
+	UYj3OmV6JanUOUb88UsS2PaPlCIfjxNXtedQgwDY+cWh182Z/IMwtQEUNhImNmCY
+	A5fhSRpJCYGGitfHAAtY/ctnmvdkuzZsXpGa+R5+waQUdnI302l4zJbDtGUbh3kd
+	OM8RLiX0no+Hkb/x6T9Di+gzW9Q1E2epszlgGt+AGzHeNusy5fU/Og3/TwJZrDxk
+	HRWRA82iDXJRuxhb8tahn8uejgapBz0GiXHFxETZ5hrhsy+rRLdg==
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 42x9wb9hku-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Fri, 15 Nov 2024 11:48:51 -0800 (PST)
+Received: from devvm4158.cln0.facebook.com (2620:10d:c0a8:1b::2d) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server id
+ 15.2.1544.11; Fri, 15 Nov 2024 19:48:48 +0000
+From: Vadim Fedorenko <vadfed@meta.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann
+	<daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Eduard Zingerman
+	<eddyz87@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vadim Fedorenko
+	<vadim.fedorenko@linux.dev>,
+        Mykola Lysenko <mykolal@fb.com>
+CC: <x86@kernel.org>, <bpf@vger.kernel.org>,
+        Vadim Fedorenko
+	<vadfed@meta.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+Subject: [PATCH bpf-next v6 0/4] bpf: add cpu cycles kfuncss
+Date: Fri, 15 Nov 2024 11:48:37 -0800
+Message-ID: <20241115194841.2108634-1-vadfed@meta.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241114084345.1564165-1-song@kernel.org> <20241114084345.1564165-8-song@kernel.org>
- <CAADnVQK6YyPUzQoPKkXptLHoHXJZ50A8vNPfpDAk8Jc3Z6+iRw@mail.gmail.com>
- <E5457BFD-F7B9-4077-9EAC-168DA5C271E4@fb.com> <CAADnVQJ1um9u4cBpAEw83CS8xZJN=iP8WXdG0Ops5oTP-_NDFg@mail.gmail.com>
- <DCE25AB7-E337-4E11-9D57-2880F822BF33@fb.com> <CAADnVQ+bRO+UakzouzR5OfmvJAcyOs7VqCJKiLsjnfW1xkPZOg@mail.gmail.com>
- <C7C15985-2560-4D52-ADF9-C7680AF10E90@fb.com>
-In-Reply-To: <C7C15985-2560-4D52-ADF9-C7680AF10E90@fb.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 15 Nov 2024 11:41:36 -0800
-Message-ID: <CAADnVQK2mhS0RLN7fEpn=zuLMT0D=QFMuibLAvc42Td0eU=eaQ@mail.gmail.com>
-Subject: Re: [RFC/PATCH v2 bpf-next fanotify 7/7] selftests/bpf: Add test for
- BPF based fanotify fastpath handler
-To: Song Liu <songliubraving@meta.com>
-Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, KP Singh <kpsingh@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, 
-	"repnop@google.com" <repnop@google.com>, Jeff Layton <jlayton@kernel.org>, 
-	Josef Bacik <josef@toxicpanda.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	"gnoack@google.com" <gnoack@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: 2mMJ-ynUW-KRut7CxU9j2JVpnFdbW16D
+X-Proofpoint-ORIG-GUID: 2mMJ-ynUW-KRut7CxU9j2JVpnFdbW16D
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-On Thu, Nov 14, 2024 at 11:01=E2=80=AFPM Song Liu <songliubraving@meta.com>=
- wrote:
->
-> >
-> > I think bpf-lsm hook fires before fanotify, so bpf-lsm prog
-> > implementing some security policy has to decide right
-> > at the moment what to do with, say, security_file_open().
-> > fanotify with or without bpf fastpath is too late.
->
-> Actually, fanotify in permission mode can stop a file open.
+This patchset adds 2 kfuncs to provide a way to precisely measure the
+time spent running some code. The first patch provides a way to get cpu
+cycles counter which is used to feed CLOCK_MONOTONIC_RAW. On x86
+architecture it is effectively rdtsc_ordered() function while on other
+architectures it falls back to __arch_get_hw_counter(). The second patch
+adds a kfunc to convert cpu cycles to nanoseconds using shift/mult
+constants discovered by kernel. JIT version is done for x86 for now, on
+other architectures it falls back to slightly simplified version of
+vdso_calc_ns.
 
-The proposed patch 1 did:
+Selftests are also added to check whether the JIT implementation is
+correct and to show the simplest usage example.
 
-+/* Return value of fp_handler */
-+enum fanotify_fastpath_return {
-+ /* The event should be sent to user space */
-+ FAN_FP_RET_SEND_TO_USERSPACE =3D 0,
-+ /* The event should NOT be sent to user space */
-+ FAN_FP_RET_SKIP_EVENT =3D 1,
-+};
+Change log:
+v5 -> v6:
+* added cover letter
+* add comment about dropping S64_MAX manipulation in jitted
+  implementation of rdtsc_oredered (Alexey)
+* add comment about using 'lfence;rdtsc' variant (Alexey)
+* change the check in fixup_kfunc_call() (Eduard)
+* make __arch_get_hw_counter() call more aligned with vDSO
+  implementation (Yonghong)
+v4 -> v5:
+* use #if instead of #ifdef with IS_ENABLED
+v3 -> v4:
+* change name of the helper to bpf_get_cpu_cycles (Andrii)
+* Hide the helper behind CONFIG_GENERIC_GETTIMEOFDAY to avoid exposing
+  it on architectures which do not have vDSO functions and data
+* reduce the scope of check of inlined functions in verifier to only 2,
+  which are actually inlined.
+* change helper name to bpf_cpu_cycles_to_ns.
+* hide it behind CONFIG_GENERIC_GETTIMEOFDAY to avoid exposing on
+  unsupported architectures.
+v2 -> v3:
+* change name of the helper to bpf_get_cpu_cycles_counter to
+* explicitly mention what counter it provides (Andrii)
+* move kfunc definition to bpf.h to use it in JIT.
+* introduce another kfunc to convert cycles into nanoseconds as
+* more meaningful time units for generic tracing use case (Andrii)
+v1 -> v2:
+* Fix incorrect function return value type to u64
+* Introduce bpf_jit_inlines_kfunc_call() and use it in
+	mark_fastcall_pattern_for_call() to avoid clobbering in case
+	of running programs with no JIT (Eduard)
+* Avoid rewriting instruction and check function pointer directly
+	in JIT (Alexei)
+* Change includes to fix compile issues on non x86 architectures
 
-It looked like a read-only notification to user space
-where bpf prog is merely a filter.
+Vadim Fedorenko (4):
+  bpf: add bpf_get_cpu_cycles kfunc
+  bpf: add bpf_cpu_cycles_to_ns helper
+  selftests/bpf: add selftest to check rdtsc jit
+  selftests/bpf: add usage example for cpu cycles kfuncs
 
-> In current upstream code, fsnotify hook fsnotify_open_perm
-> is actually part of security_file_open(). It will be moved
-> to do_dentry_open(), right after security_file_open(). This
-> move is done by 1cda52f1b461 in linux-next.
+ arch/x86/net/bpf_jit_comp.c                   |  60 ++++++++++
+ arch/x86/net/bpf_jit_comp32.c                 |  33 ++++++
+ include/linux/bpf.h                           |   6 +
+ include/linux/filter.h                        |   1 +
+ kernel/bpf/core.c                             |  11 ++
+ kernel/bpf/helpers.c                          |  32 ++++++
+ kernel/bpf/verifier.c                         |  41 ++++++-
+ .../bpf/prog_tests/test_cpu_cycles.c          |  35 ++++++
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/test_cpu_cycles.c     |  25 +++++
+ .../selftests/bpf/progs/verifier_cpu_cycles.c | 104 ++++++++++++++++++
+ 11 files changed, 344 insertions(+), 6 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_cpu_cycles.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cpu_cycles.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_cpu_cycles.c
 
-Separating fsnotify from LSM makes sense.
+-- 
+2.43.5
 
-> In practice, we are not likely to use BPF LSM and fanotify
-> on the same hook at the same time. Instead, we can use
-> BPF LSM hooks to gather information and use fanotify to
-> make allow/deny decision, or vice versa.
-
-Pick one.
-If the proposal is changing to let fsnotify-bpf prog to deny
-file_open then it's a completely different discussion.
-
-In such a case make it clear upfront that fsnotify will
-rely on CONFIG_FANOTIFY_ACCESS_PERMISSIONS and
-bpf-lsm part of file access will not be used,
-since interaction of two callbacks at file_open makes little sense.
-
-> > In general fanotify is not for security. It's notifying
-> > user space of events that already happened, so I don't see
-> > how these two can be combined.
->
-> fanotify is actually used by AntiVirus softwares. For
-> example, CalmAV (https://www.clamav.net/) uses fanotify
-> for its Linux version (it also supports Window and MacOS).
-
-It's relying on user space to send back FANOTIFY_PERM_EVENTS ?
-
-fsnotify_open_perm->fsnotify->send_to_group->fanotify_handle_event.
-
-is a pretty long path to call bpf prog and
-preparing a giant 'struct fanotify_fastpath_event'
-is not going to fast either.
-
-If we want to accelerate that with bpf it needs to be done
-sooner with negligible overhead.
-
->
-> I guess I didn't state the motivation clearly. So let me
-> try it now.
->
-> Tracing is a critical part of a security solution. With
-> LSM, blocking an operation is straightforward. However,
-> knowing which operation should be blocked is not always
-> easy. Also, security hooks (LSM or fanotify) sit in the
-> critical path of user requests. It is very important to
-> optimize the latency of a security hook. Ideally, the
-> tracing logic should gather all the information ahead
-> of time, and make the actual hook fast.
->
-> For example, if security_file_open() only needs to read
-> a flag from inode local storage, the overhead is minimal
-> and predictable. If security_file_open() has to walk the
-> dentry tree, or call d_path(), the overhead will be
-> much higher. fanotify_file_perm() provides another
-> level of optimization over security_file_open(). If a
-> file is not being monitored, fanotify will not generate
-> the event.
-
-I agree with motivation, but don't see this in the patches.
-The overhead to call into bpf prog is big.
-Even if prog does nothing it's still going to be slower.
-
-> Security solutions hold higher bars for the tracing logic:
->
-> - It needs to be accurate, as false positives and false
->   negatives can be very annoying and/or harmful.
-> - It needs to be efficient, as security daemons run 24/7.
->
-> Given these requirements of security solutions, I believe
-> it is important to optimize tracing logic as much as
-> possible. And BPF based fanotify fastpath handler can
-> bring non-trivials benefit to BPF based security solutions.
-
-Doing everything in the kernel is certainly faster than
-going back and forth to user space,
-but bpf-lsm should be able to do the same already.
-
-Without patch 1 and only patches 4,5 that add few kfuncs,
-bpf-lsm prog will be able to remember subtree dentry and
-do the same is_subdir() to deny.
-The patch 7 stays pretty much as-is. All in bpf-lsm.
-Close to zero overhead without long chain of fsnotify callbacks.
-
-> fanotify also has a feature that LSM doesn't provide.
-> When a file is accessed, user space daemon can get a
-> fd on this file from fanotify. OTOH, LSM can only send
-> an ino or a path to user space, which is not always
-> reliable.
-
-That sounds useful, but we're mixing too many things.
-If user space cares about fd it will be using the existing
-mechanism with all accompanied overhead. fsnotify-bpf can
-barely accelerate anything, since user space makes
-ultimate decisions.
-If user space is not in the driving seat then existing bpf-lsm
-plus few kfuncs to remember dentry and call is_subdir()
-will do the job and no need for patch 1.
 
