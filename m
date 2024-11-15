@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-44959-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86F249CF144
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 17:19:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AE7C9CF129
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 17:12:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB3F9B393E3
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 15:39:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB261B3936C
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 15:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B9111F8920;
-	Fri, 15 Nov 2024 15:32:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 576551D6199;
+	Fri, 15 Nov 2024 15:40:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eEafp7xh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TjdiOCR1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B12A1D5CEA;
-	Fri, 15 Nov 2024 15:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC381C75E2;
+	Fri, 15 Nov 2024 15:40:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731684732; cv=none; b=ta8hwlHXgYBdbPsUUIarvS1VUGiZOKf5vqUnZK3WeOD6F4oDQbNGs5BSiSlmVQKRzPeqkD3U5LRc6l3Xbbu/irUYuSg02Bu6htBL+l7LBsmg+ZWimiVCEWtXvzd6RX6QmWinLGY690FuTJKcjKhyM47Xr9kz3E9S30NEBis5eGk=
+	t=1731685202; cv=none; b=m6qwWkuzgIgdjikUosArYUdGA6ploV2/Rof9zFu0Bot7h3gtGjmR36DWmJQYddEbCKj+llDsPaah4WfsCEPz3s714PnN7gFgcPsGTvThSjR1sEQamoZ5IxyNhu1zLRSwh+3g56YS/mVE0JRhQYllP8Zr+qsQszMlvvy3ixwOCcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731684732; c=relaxed/simple;
-	bh=RN9Jj7cHogNrffiEZA8NFS52iMspRx44QQcFduM5dms=;
+	s=arc-20240116; t=1731685202; c=relaxed/simple;
+	bh=VYy5Z/F2SKHEKyEF2sWqcE3UJqYratJdw86SVPgNnLI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YVK2C3tABR3rCadjwXHPGkpmr34L2xFUQKCJP4/Op817g5GoSZQIYxnDd2J6E+RL0f7Hy0pSpSSMzAbYwPqyERy/XMez0kGKPWLiscou260Flp5vaDtD14+4zJ1Q3e5TKfLFuNDyNoxIU1MCNDmVIZuE/SRWCV39nrw5o0B5Isk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eEafp7xh; arc=none smtp.client-ip=209.85.214.169
+	 Content-Type:Content-Disposition:In-Reply-To; b=h/8J3rDOHff0TrD4xqTldyk1InPaSZkOAeKnVkLyDrri7f0QRo/TsQ0jTohJRvF0pcAjVZG53VlNQb4Zq772r88yZwAGQgoKMqUfM0K4RcjoLdD1UPtgAOf/DlU+ne4JXal06IEpexh9NVyIEg8NeH/GrEA6VW3OdszHcmGtcVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TjdiOCR1; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-20cf3e36a76so9927115ad.0;
-        Fri, 15 Nov 2024 07:32:11 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2e9ecba5db0so1529924a91.2;
+        Fri, 15 Nov 2024 07:40:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731684730; x=1732289530; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1731685201; x=1732290001; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=t3mL9zxHm0hXSKqka75HzWuRbkoD06vFkDW9uQg2MYc=;
-        b=eEafp7xho7mW/TqWwIm3E9+O8bxECQQvyFVwUbroSysVMLDmxVefETVyMYuNq4Luxn
-         rE/PSydY6fToZ9tNPYr3DcyI4EmBvHio0g0+fyp0fTTIymf11jQE6+J+Kpj/zzvFtc3s
-         B682m6NBk7U5Ptnm9f/aoLekeVmwwhVFVQ7gh+Nx1dW1dDR0T1GGInBAKdFqSqLPSfSb
-         ggf+yA2wql1pLNRlm9oCd1jojUJSjhuwP4BZDqhVSQFWLCBrAneM+xezP40e7y/8xLEC
-         x2DtSFdXYrkscPyZge4s6Ak8v7eIvjEBgXubHP34ML+SmX6Tj7GJq6/3n/VDGtW7U3dK
-         QATg==
+        bh=tvgMmyLZQaJHTw5Hy6Dx7Hfozw7BNQ60DAzTrMshfo8=;
+        b=TjdiOCR1OK75K/1UZ1otICKC0vylhd2CORWgqkBc57cXGlnr2DMPuLtulMua/eyAir
+         tWTjMYp23DI/RGnqo0YimokEhGZvlZR7uRY9T/F1BMMlcN/Gdsc9Jlgoz38wVYbHmdYp
+         K/aQxhBqNbyo0ux7UvDIVC0/OUrl4FzCsWHlbRhkjkUCnBzJUYmS9eBCbZmOzYVyiH3r
+         Q9Sip7NWAAVn7eu8L1TatbINlI5A3D2igwm+bE/Y7g+4E5FYk4W45VhXu6F1kEALpgNe
+         QU2lTjGXBIzh09ke6jdEwoXom1VmTQ8cKyWzDFecni1FFdUoOB4/Q3St1C6qQ3qzSDBC
+         5SGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731684730; x=1732289530;
+        d=1e100.net; s=20230601; t=1731685201; x=1732290001;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t3mL9zxHm0hXSKqka75HzWuRbkoD06vFkDW9uQg2MYc=;
-        b=djDQqWeLOLjQFR45vl45nXt0rjeWPAtMFJiSU7dKhLobj+GbBei+dhCW0J2oGIXRgt
-         fYGR0uSY+A5L9iPmifs3nTLtK6oVwLP8+hcNV3xutpbT4JFRLCmR3FTmE9vGpzAMhOBs
-         77eBHTRX5HywHIRBllIaxEXAJD14aVUU3qoYIC4wZLAE/RzPQEBdW66f+8hUFxMNk7it
-         RRhO/KLIhKUkUcgqVqxI7thptfSZP6vl/ZMLLjPIcTxtlbsPRy8XuqgEOlQB8U5w2Y7T
-         wMypI9/aLb3lXjzIU8ESZKRk779Rh6p4Q4D/VPJympmidNhoE+kHg7IMECtSFRIjF7Lf
-         R+qw==
-X-Forwarded-Encrypted: i=1; AJvYcCVFspe4MReIPGRbfe/wivX/uaUJZuX7/bTPeQnOuG8DfGzOETzblMoZ75yAfEnlDdgST/ShefI9@vger.kernel.org, AJvYcCVPKXm5kpk+QyYpR29yJuK3vRJ5HLSukcMUbico36uYnDOT57SZUBKnW1cf1xUEbon9vaaoc/kNEa9tSR/g@vger.kernel.org, AJvYcCVUjP7HjbeA2yzudtGKoe+XOIS5HkuFHzzQjCANkem57kRwp4pieGZeYfhLV7kSbs61vAU=@vger.kernel.org, AJvYcCVbUVAbEHpfhiQZvpOOCMBs5uHOh7HpaX4Uu1ecHob87/CAQiS2TH7Iky8OhG1tEJk3Y40XJ32NUUwQCByGb8pa@vger.kernel.org
-X-Gm-Message-State: AOJu0YyVRI4MkVx3PZcEdubOzdqnv+tMqBF7+VcIZjdAzbgIiM/3pbIB
-	2lP/Ar7k/uM0EJK3XBUHxCOvMQgIaHPMI4hIx+Fi1bjiNLZfoJ4=
-X-Google-Smtp-Source: AGHT+IFu+wWBbSvilK2OnzkPoK8R5vT66fi/p1DGzyvRqcs8PA0GgHoXEk/ABVqi78aUUYcKl9It+w==
-X-Received: by 2002:a17:903:22c5:b0:207:6fb:b04f with SMTP id d9443c01a7336-211d0d7f99amr39921495ad.17.1731684729575;
-        Fri, 15 Nov 2024 07:32:09 -0800 (PST)
+        bh=tvgMmyLZQaJHTw5Hy6Dx7Hfozw7BNQ60DAzTrMshfo8=;
+        b=HorHiFuWFzv3NxaVAfR2dTB8yxYH3Lkyx5kfm1XcH+CwXr1j/xPsc28WO/TMuh073W
+         Y5atHKtKpeKIwq7Qszovbx53T2JltirDdNMWHTct/VPMOTSmVjHs2L8cpB7J26U7o26D
+         QRXhOdKSjv+60TyWjkjs+lneoDukei0WruaYV3JmqBHvny5ARQiarR5aja3uZ3iSU/2w
+         OcesKFse6xUUojX+UxBq7BXFjIfabMbJAeFNawacgVm2hiEt1irbba4IDLZjprhtXpBl
+         U+CzXFJrnASEszCsJFVFWjo0m0hy+wP7A4DhysTH85H9l/pR4n03R8mPfBkTj9b4Ld0x
+         KdXg==
+X-Forwarded-Encrypted: i=1; AJvYcCUKkSH4nJY3z7VgORpzsBhjnf7RB/VVBpuGofbXrm22E9Wn8LNSpRfeminUT8i8BGtNAOrHpbHX@vger.kernel.org, AJvYcCXDjWpU/XzHbHxDIROvnBqjMg9bRfVN2XPf+nhBlwXYX0PgHNCapEuHTQrIOqtFImZDH0a4Vf6XSmXx7FSmZJqU@vger.kernel.org, AJvYcCXkpu62zowRapeyFonLEDh3O00jpuDrYABvLyp3KaUxCjz8LX2MO1eNuJapM5yXnN75RGY=@vger.kernel.org, AJvYcCXnSOw1neDy0ixAzYfPmrKvgaaB4njFV1wdqlzo4Abq4+m3UF3aun3jJANCTAJDm0UPHUpZPaLiqAvLkVbx@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxa55KOc3Fert0XkYu1DYRzF1tKKymhOGDXHf+wSyITVTJ2Vd9Z
+	NMF8/DcXZ+JWczZXn0nWyLho0gKa85BdymD3Nf4X2kmjp5uldqk=
+X-Google-Smtp-Source: AGHT+IH9ZWeCw/lNubIqk1jjDJsSroUKoAIH0xi66bmklYnQSLVYg94H0OHQhU69Od2f8QbCO80hGA==
+X-Received: by 2002:a17:90b:3d87:b0:2e2:d175:5f8d with SMTP id 98e67ed59e1d1-2ea154dfa68mr4076574a91.10.1731685200714;
+        Fri, 15 Nov 2024 07:40:00 -0800 (PST)
 Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ea06f1a634sm2983489a91.14.2024.11.15.07.32.08
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ea024ab569sm3049473a91.32.2024.11.15.07.40.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2024 07:32:09 -0800 (PST)
-Date: Fri, 15 Nov 2024 07:32:08 -0800
+        Fri, 15 Nov 2024 07:40:00 -0800 (PST)
+Date: Fri, 15 Nov 2024 07:39:59 -0800
 From: Stanislav Fomichev <stfomichev@gmail.com>
 To: Alexis =?utf-8?Q?Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>,
@@ -88,11 +88,11 @@ Cc: Andrii Nakryiko <andrii@kernel.org>,
 	Bastien Curutchet <bastien.curutchet@bootlin.com>,
 	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 09/13] selftests/bpf: move ip checksum helper
- to network helpers
-Message-ID: <ZzdpeMsHGh1zCZei@mini-arch>
+Subject: Re: [PATCH bpf-next v2 04/13] selftests/bpf: re-split main function
+ into dedicated tests
+Message-ID: <ZzdrT7wEUjUDNyGj@mini-arch>
 References: <20241114-flow_dissector-v2-0-ee4a3be3de65@bootlin.com>
- <20241114-flow_dissector-v2-9-ee4a3be3de65@bootlin.com>
+ <20241114-flow_dissector-v2-4-ee4a3be3de65@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,46 +102,19 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241114-flow_dissector-v2-9-ee4a3be3de65@bootlin.com>
+In-Reply-To: <20241114-flow_dissector-v2-4-ee4a3be3de65@bootlin.com>
 
 On 11/14, Alexis Lothoré (eBPF Foundation) wrote:
-> xdp_metadata test has a small helper computing ipv checksums to allow
-> manually building packets.
+> The flow_dissector runs plenty of tests over diffent kind of packets,
+> grouped into three categories: skb mode, non-skb mode with direct
+> attach, and non-skb with indirect attach.
 > 
-> Move this helper to network_helpers to share it with other tests.
+> Re-split the main function into dedicated tests. Each test now must have
+> its own setup/teardown, but for the advantage of being able to run them
+> separately. While at it, make sure that tests attaching the bpf programs
+> are run in a dedicated ns.
 > 
 > Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
-> ---
-> Changes in v2:
-> - new patch
-> ---
->  tools/testing/selftests/bpf/network_helpers.h      | 23 ++++++++++++++++++++++
->  .../selftests/bpf/prog_tests/xdp_metadata.c        | 19 +-----------------
->  2 files changed, 24 insertions(+), 18 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-> index c72c16e1aff825439896b38e59962ffafe92dc71..c9b72960c651ab9fb249f6eb9e153b8416b7a488 100644
-> --- a/tools/testing/selftests/bpf/network_helpers.h
-> +++ b/tools/testing/selftests/bpf/network_helpers.h
-> @@ -104,6 +104,29 @@ static __u16 csum_fold(__u32 csum)
->  	return (__u16)~csum;
->  }
->  
 
-[..]
-
-> +static unsigned long add_csum_hword(const __u16 *start, int num_u16)
-> +{
-> +	unsigned long sum = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < num_u16; i++)
-> +		sum += start[i];
-> +
-> +	return sum;
-> +}
-
-Sorry for nitpicking, but can we call it csum_partial? And match
-kernel's prototype with extra sum argument? Should be more greppable
-for the future test cases that might want to use it...
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
