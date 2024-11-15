@@ -1,150 +1,124 @@
-Return-Path: <bpf+bounces-44905-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B9F99CD4B7
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 01:42:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B85129CD4C0
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 01:43:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C062FB23F05
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 00:42:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39DBC1F22793
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 00:43:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F9E4084D;
-	Fri, 15 Nov 2024 00:41:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6084084D;
+	Fri, 15 Nov 2024 00:43:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hp8OcZDJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jb91M8u3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91AD01096F;
-	Fri, 15 Nov 2024 00:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04DC438DC0
+	for <bpf@vger.kernel.org>; Fri, 15 Nov 2024 00:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731631308; cv=none; b=W0+4661+UtOem0DQXkxC2Yg9MK8TQlVTlTw7k0sqludLaiHzMbpX4+xqaY22yZVpRF5rzHE9zq7ooQQjST2Wgprd/tweMRrZjzxZ9vXBZTq76X2kqzl2/mfQmalHmuJoGGtj7rH4OaCDuaEwdpEC5QvlacmnrdPydrkjaEr56NM=
+	t=1731631417; cv=none; b=ZXYufkp2y9DStsQ2YMS/yC0GRWwdSogD51Af8ne+hdPx2znpLcgLtwE1wFTERP1U9dhEnafolCDCy+7DlBA5w5KtA/rsU2yore0138q6aAXv8wb8xbrc44APzNX6xeURLbEFpe8iPUfYJTfL9R5PG8lwrr2Mst8h0VdOP2eLtSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731631308; c=relaxed/simple;
-	bh=0eGjTFcYgGoj8hPrqRlT0CDvGF5RbC0bBVnopIte/c4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=szCmJlNVYzCoc8s0b+SWF5MPKdnuX7vDL38ZSUTNAHnBTf4vB8/a37oM5IQkl0EMSfrFW/7sKODi/jF82328pKMFqd4rUcIvz6WdBKHn6fvGgsT43mU9FOWO6TUu0+8NWseHHf5G37w2K87RTZgK6TwfGRSeL3el/dXKCk5b8iY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hp8OcZDJ; arc=none smtp.client-ip=209.85.221.44
+	s=arc-20240116; t=1731631417; c=relaxed/simple;
+	bh=CHqacG3x36iB7oLaJxLdifxVbhYwwCvLTR8xF6EDq54=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=i8PlavPwo3fyY6uIwX+PngEk24fOr63wJcSuE+C3ckDfqqFgp6IhGMpVHpUPpv3tUGVFmkBcd57qnvjedSRBqTp90/BTiTmMBTsNN6F0Hu5eUGwsOYqaZp/o4iFZMkSesa5n1oxA1YNsQwoeCEefIijxZi1VC7Kik1D8+UMpx2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jb91M8u3; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-38222245a86so489712f8f.1;
-        Thu, 14 Nov 2024 16:41:46 -0800 (PST)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-21145812538so10279465ad.0
+        for <bpf@vger.kernel.org>; Thu, 14 Nov 2024 16:43:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731631305; x=1732236105; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8Ch4TFbpDEuiX+VexPStq204AKlKumcG/xHw5pvpktQ=;
-        b=hp8OcZDJfWv9Jsm9SsTvcrCJsXQS5uTWFIxznqOON6/0wRYGM+DMV+/fU45yCPOPz2
-         gxZJqYpC+6UyN9lF+Cok1aCL0r7BSp7elFjagEVFR9xiozFmGyt1ij71vxDSk1IDMm7F
-         EHlQLcv8/oZcnhTG+JC1LupQYNgOGDdyfMlLGhHxC2vWQ5TxolqXCgk3LinIWDQ73BMO
-         yl4DNkBitCpDcshuFbouAT5Tnv1fuGBzul2YOb4qSfblNb736iZLeKpnF+30t2IUji4H
-         7TovwiOP6qkgXCbHxGqX/AKql9DJzzOGp3qXTrCsF3/R9S13b20JObYZCyVcF4+ZHaVm
-         Islw==
+        d=gmail.com; s=20230601; t=1731631415; x=1732236215; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ddP9oSWtuB14d68X5LVkgBBgtbWDCzsIHxObUABxV1s=;
+        b=jb91M8u3F9mgBEbqbKs1C/ksWjE5kXEpUJvpj/yelpUUQeGSWj8jbKz9FqjLx3Sq91
+         ifyuE7ef9Ef8Mfr7UBWSYcEUE3JsjUWoxvo7C5IdDbzihOcTfvjSSmp6s1fwpJX/+cYn
+         zrQes8H+w7kyr7U4bIN+hzYgzcVzVX5qT+9PQwEr2X0IGwHesE0FLYTWQMHKfAmyOJsz
+         aVUp5I+LthP5oyAlwgorXg6yJjx9rs8SNz8sGF7uv8o6hhX20sPKE021m9zVWO61HYSp
+         UQrgshnhxVk4smOjqpxDU6p+0n0FJBRuf9EFoUOGfpM+mzcg4p4nMNmHApb3IpY9dhOO
+         1h3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731631305; x=1732236105;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8Ch4TFbpDEuiX+VexPStq204AKlKumcG/xHw5pvpktQ=;
-        b=FDBVsCU3Uk3u4BA1pIAQHuJTP0BpFwKnHrR/TkKiB3hEOYlaBt6ZIjgH5uFACI9rPq
-         GhgENRqFvp0oDZ9J01JqctVl0kFBNUKuCOk5p8srkqe2y2sOH940qgJRojdjnTziqttv
-         uU6J1mJFXiKjEvlQxHjjzQsHuzxiIgOPtQmidwTdFhnH/QZFpdefgPlBSlUiOLCZWLUV
-         sncIt9a4NtGH+MmBMZz3DrnideOsZ/9uO0Z2xnmCdPrmipRDJXzdwQ8+X+A/90TdSg6+
-         9gxowN2JDohUJWZIGrfLvrl1aAy8f66H+J9zRM+N64/afQ3aF3UcgISi4YY+mq3V8K2P
-         emQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU49ZppMSycDFZwUH6aFkjpyJCjIosEoChq5tXnIS0Vw+qWofB9iOs6HFIG7nsk51+OFeIJ1hcsEXbSYIylmQ==@vger.kernel.org, AJvYcCV6MSoeAoHPO21dYDosB7nQGFpE2VhaX6+WowSudoyj64pcYXxYdeqWsrUUYKLJwTP8txej2McPvBEucm+M@vger.kernel.org, AJvYcCXBeQOaLbe/bwMbJniPBzdGv3Ft1dyVlh7coEqQ5rV7N19kqZBnz0G5IhhjM3d9xKOTzxPSGZspotQSNWtkHxFdp5cD9rdk@vger.kernel.org, AJvYcCXtrVToO2wAcxX7S0l0hEcGaLJfMRbzDRaIzRNMZMckYTFrwfQtg6iwsZH2ft84cz4xDyo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzR/Mxl5JGjbynXYUD5x7uZ6We+l7YilBDHElF09h41uT8/8b2h
-	SM3BIxD5bHKs1uOsUQyoutyx8cvHKXmQGyCJrym+o1ApozmSiV1CFyZlxjNBwcKaQtofzHaW76d
-	NzQVZU25fF0CYUnssyL3mhm8bryk=
-X-Google-Smtp-Source: AGHT+IFE8xhBVAHiZKN085M2hxkV87sb2WFKPHHYgfTzwJpNlqX6EqQovyrHUJuSHWalozXNtjynuL9sDH7REuPinfg=
-X-Received: by 2002:a5d:5c12:0:b0:381:f443:21d0 with SMTP id
- ffacd0b85a97d-38225ab4464mr589953f8f.59.1731631304689; Thu, 14 Nov 2024
- 16:41:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1731631415; x=1732236215;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ddP9oSWtuB14d68X5LVkgBBgtbWDCzsIHxObUABxV1s=;
+        b=RmFaAXwkIaSvIavJ+A2yIdQHQ11RfmkSbuyDfDGK5wn6DA1d3dSSLL0/RAc1OIqgri
+         PU6Y1hN78OW05sAMzsluzDUHnjO3BZqmxdXPeq4aHDm+gngpEaYXXfNFAlIxIZQXIX3B
+         7CTYZvokXJEcxhWvB1Z3laGP2dmuG+gnUXXWG3hlmvjsB+tk6LoYL2tbBTnaLcmUfvdU
+         PbNTGQBLSwC1Sq7U4AOwQlDLmpzD/b63tzJiszRKyVdg3rJeL7XADabBEA56NtJAox3k
+         Shaje0lwhcQL9m6/m8/v/+inqTRYMRbLDD+3BH1jZTjRVDOFNiGJsLsvgxdjHEwC5b7Y
+         KLVA==
+X-Forwarded-Encrypted: i=1; AJvYcCVjF/w2WCZJoCrwShNhj/mLkK1wh3K/PcdTF1KlzdUphJqR1qV0syGaHXyfj2SoyA4mW1o=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8iQaNV7q6eRyyoqpQymADqCjcv7Y2G7DkiN4eUMEJ4Ssc2ZIm
+	KFezSpkMZq0s/G+4pqQ3tlvTvhfy5q7/5kd/vSNoe3N1IPbxvqku
+X-Google-Smtp-Source: AGHT+IEqTnAfkkSbSeISG81CySPjdP8G285uKuGm52DA7L5ZCYYgtDTKOndcgPgcEIymDTa2xS4PYw==
+X-Received: by 2002:a17:903:18e:b0:20f:c225:f28c with SMTP id d9443c01a7336-211d0eceae5mr11040015ad.52.1731631415182;
+        Thu, 14 Nov 2024 16:43:35 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211d0dc5df5sm2319795ad.10.2024.11.14.16.43.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Nov 2024 16:43:34 -0800 (PST)
+Message-ID: <6855cb2475d684ed9f93e9a3f4bed2c8d4536ef2.camel@gmail.com>
+Subject: Re: [RFC bpf-next 01/11] bpf: use branch predictions in
+ opt_hard_wire_dead_code_branches()
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf <bpf@vger.kernel.org>, 
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, Yonghong Song
+ <yonghong.song@linux.dev>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 14 Nov 2024 16:43:29 -0800
+In-Reply-To: <CAADnVQJ0mPBaVDpLHmHHrV3N3u_7M4D12MiOPv6=-fVSSC=o8g@mail.gmail.com>
+References: <20241107175040.1659341-1-eddyz87@gmail.com>
+	 <20241107175040.1659341-2-eddyz87@gmail.com>
+	 <0f0cf220fa711f0bd376bdb167c035e53dd409f9.camel@gmail.com>
+	 <CAEf4BzYUMMOdfwsWovDqQMgDnd8eGQVEyJLVRvqzmSwsZoW-wA@mail.gmail.com>
+	 <d34cbd7bf86d01ecccd70220078a7279756c8ec6.camel@gmail.com>
+	 <CAADnVQJoRiZXRgzJt6pMFKqsCh93caARjA0hGQ_-V-B0VZ-+-w@mail.gmail.com>
+	 <595a43d159bec96fd774c63024038006e8be2722.camel@gmail.com>
+	 <CAADnVQJ0mPBaVDpLHmHHrV3N3u_7M4D12MiOPv6=-fVSSC=o8g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241114084345.1564165-1-song@kernel.org> <20241114084345.1564165-8-song@kernel.org>
- <CAADnVQK6YyPUzQoPKkXptLHoHXJZ50A8vNPfpDAk8Jc3Z6+iRw@mail.gmail.com> <E5457BFD-F7B9-4077-9EAC-168DA5C271E4@fb.com>
-In-Reply-To: <E5457BFD-F7B9-4077-9EAC-168DA5C271E4@fb.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 14 Nov 2024 16:41:33 -0800
-Message-ID: <CAADnVQJ1um9u4cBpAEw83CS8xZJN=iP8WXdG0Ops5oTP-_NDFg@mail.gmail.com>
-Subject: Re: [RFC/PATCH v2 bpf-next fanotify 7/7] selftests/bpf: Add test for
- BPF based fanotify fastpath handler
-To: Song Liu <songliubraving@meta.com>
-Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, KP Singh <kpsingh@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, 
-	"repnop@google.com" <repnop@google.com>, Jeff Layton <jlayton@kernel.org>, 
-	Josef Bacik <josef@toxicpanda.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	"gnoack@google.com" <gnoack@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 14, 2024 at 3:02=E2=80=AFPM Song Liu <songliubraving@meta.com> =
-wrote:
->
->
->
-> > On Nov 14, 2024, at 12:14=E2=80=AFPM, Alexei Starovoitov <alexei.starov=
-oitov@gmail.com> wrote:
-> >
-> > On Thu, Nov 14, 2024 at 12:44=E2=80=AFAM Song Liu <song@kernel.org> wro=
-te:
-> >>
-> >> +
-> >> +       if (bpf_is_subdir(dentry, v->dentry))
-> >> +               ret =3D FAN_FP_RET_SEND_TO_USERSPACE;
-> >> +       else
-> >> +               ret =3D FAN_FP_RET_SKIP_EVENT;
-> >
-> > It seems to me that all these patches and feature additions
-> > to fanotify, new kfuncs, etc are done just to do the above
-> > filtering by subdir ?
-> >
-> > If so, just hard code this logic as an extra flag to fanotify ?
-> > So it can filter all events by subdir.
-> > bpf programmability makes sense when it needs to express
-> > user space policy. Here it's just a filter by subdir.
-> > bpf hammer doesn't look like the right tool for this use case.
->
-> Current version is indeed tailored towards the subtree
-> monitoring use case. This is mostly because feedback on v1
-> mostly focused on this use case. V1 itself actually had some
-> other use cases.
+On Thu, 2024-11-14 at 16:38 -0800, Alexei Starovoitov wrote:
 
-like?
+[...]
 
-> In practice, fanotify fastpath can benefit from bpf
-> programmability. For example, with bpf programmability, we
-> can combine fanotify and BPF LSM in some security use cases.
-> If some security rules only applies to a few files, a
-> directory, or a subtree, we can use fanotify to only monitor
-> these files. LSM hooks, such as security_file_open(), are
-> always global. The overhead is higher if we are only
-> interested in a few files.
->
-> Does this make sense?
+> > The 101m -> 116m is for inlining w/o known branch removal -> inlining w=
+ith branch removal.
+> > (With 76m being no inlining at all).
+>=20
+> Not following. Which patch # does branch removal then?
 
-Not yet.
-This fanotify bpf filtering only reduces the number of events
-sent to user space.
-How is it supposed to interact with bpf-lsm?
+- "bpf: shared BPF/native kfuncs" (patch #3)
+  Build system integration and kfuncs inlining after verification.
 
-Say, security policy applies to /usr/bin/*
-so lsm suppose to act on all files and subdirs in there.
-How fanotify helps ?
+- "bpf: instantiate inlinable kfuncs before verification" (patch #7)
+  Adds a pass that clones inlinable kfunc bodies as hidden
+  subprograms, one subprogram per callsite.
+
+#3 does inlining, but does not remove any branches.
+#7 moves where inlining is done which allows to remove branches.
+
+Performance numbers for the simple test:
+- #3 alone : 76m -> 101m
+- #3 + #7  : 76m -> 116m
+
 
