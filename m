@@ -1,230 +1,144 @@
-Return-Path: <bpf+bounces-44936-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44937-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4E499CDAE9
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 09:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8032A9CDBAF
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 10:34:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74B6F1F2313D
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 08:51:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3849E1F23492
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 09:34:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7404618FC67;
-	Fri, 15 Nov 2024 08:51:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13A1D190056;
+	Fri, 15 Nov 2024 09:34:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZgTozD10"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fg9e0gUn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A6618D622;
-	Fri, 15 Nov 2024 08:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B3818FDDB;
+	Fri, 15 Nov 2024 09:34:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731660678; cv=none; b=Hlekv/HrOB6qw3raZxsysPB+HZ22dx2VIvrETlvvmG3ulsp4LtEAykNGc0Js7aZn+5iiaMqwf2hfXraMmaHDEnGoL8p6aAVztY++Qs38yg+lMyB0oh9Slvs3Ae8fk4FIPfceeAbpoykav5XJT6A9ap901q49nfiQZM/cOstgvms=
+	t=1731663281; cv=none; b=cJQHuS0ydLtuNcywmjlpcAEvgLP/s2EB465V70u6LbNR8RLkjtKv5fIZ06eWrKhfF6hxCveZJHxEBg6cT6J1qu4h08puwGaDqvuu1J35jbQ9ZhFc3Rr4vwpaAqxX7QqP5aIfzJHJvFMXmqFR4yY+4NiYT97/AP2lULAerrw+j+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731660678; c=relaxed/simple;
-	bh=IDDtktDLwP0qAgJC0D9PubIcErY5MwpxzPAS/SeEg7E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fhFUbE4YnHYD8c72I64bxRTEStGzohb+aKnOgjDYq2RVEIpoIxEjfC6cuCSOthiOG74llL9p6BjwYLXLTurvzfPe/HY4+wa7Etk36WshMRGYHRzuhzC0xQ3v3q6PvxI1pQbyxOYIdy7aGVQ1c2R+358XhMB6yeWpj3DQgAxK2Ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZgTozD10; arc=none smtp.client-ip=209.85.218.54
+	s=arc-20240116; t=1731663281; c=relaxed/simple;
+	bh=WtmG4Vkcl7Z6XOh0kChSiuBh21pZ/wDtQ7qmRnedq/g=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sBTDzA5pKwv15JhDhkpk+pRoEZBsZVMn/YKHmwAhF5kNDPeW9lyJMmcW4GmHsUaRRqvA3QQACuS+W5NyNH03hAf2VbUvm60J/W9deYBBH5x5TfMZZNjXwktH5WcT4LI/5afp0BD8fU7U2eJpolecgh04mmr91SVGXZpFrzapvOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fg9e0gUn; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-aa20c733e92so64281066b.0;
-        Fri, 15 Nov 2024 00:51:15 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-aa20c733e92so69747766b.0;
+        Fri, 15 Nov 2024 01:34:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731660674; x=1732265474; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uQeS1B4d8WAUBiwGM9M4b/ckH0pDS9RfJAuzaYkRioI=;
-        b=ZgTozD10T3GhBvCwVDpJiMFwta1SsSmPB7eP7LfrZr3RnIpY52Dkk0VSsFr9tdrFBY
-         lakGPEn09MmJjeBWpCHjaApQRPVZHe1T00Jwh3mHDyEooHJLalUSVsFRBqg4TwdDh3f1
-         lXq6CqewuVgRAsQKHH4f3XikKvGWiK7ZmBildE0oNJLfQHY1PmdxkpQEDN8PGScvCK94
-         5kBm+WRVSvabBRYppRl38SqUv9S6N3cYu5XJqQ0vAiFCPZlTWkkSzrOv0fCJT+YTNreA
-         H35M0kj9v6/j7xCbsKneADb/6q/0AaDPNRj5zOyZ64Kz0glzGhYCN1DeKN056mOioGlT
-         7rRw==
+        d=gmail.com; s=20230601; t=1731663278; x=1732268078; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MX66+aEET0Wug4jq+LlfR7APokjStdY3uwRIUrvs+1g=;
+        b=Fg9e0gUnqB2hc0HTlQYhAtHwXlZ50k6Jqbpgtoad+EQgIiqe1+oPuEkq9Ib3X+ijKS
+         0bsmP5CefjtjO8OKhdAA6Jyt/5fBJf88tYidqwytGtbeO10fBo/VaKWHR6LnO9+bBOjZ
+         bUNTVVJ3KudYGhHTF2zslkZWs7XTLosxgjrueN0xaFhNuGIbzhj2aO/7jt50P1bVFr0U
+         GeAB1pYVslhynmWI824fb0MUJJmAQGTkgmJbmJ44vrsJMqVbZPQVptAk1DSXcI+rvhM3
+         fmPmUVJSHkHdb2JZ9qCEIhu1NNW0lkldZchbeFMB4jNF2s7SF/xGH3SNzQMmDPaQv7r8
+         cgnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731660674; x=1732265474;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uQeS1B4d8WAUBiwGM9M4b/ckH0pDS9RfJAuzaYkRioI=;
-        b=LYQ34r9b84OlmdvXcTTIfR+zQeLWuQtTqvkyXi30XJQMz3CIeTgeUXua/IK6+nu1jZ
-         4VXxG357wen656zDWPJTtDNPjZaaysq4ODn/hJiAwf5IIor57tFdcPE+A9gx5DP9YFZX
-         mWINcCyJN0KO2rGXzhWRtqzDgRGw9UgKgEvGmvTwx+um4WwNhgOaS8/U8953CNta53qH
-         Nl4go5iD8k0aLU2TWMnOfNYjGiLA3BTo+/yeIaE6lFb7kF9aud6x7HT51hPIYGpNpTBi
-         FZamYbVUBDBripiQiaPtq3qpEMuN+PdGBz+mgFtaj78QAdhfz9RY+hLL+iRo+onJivhI
-         2yYw==
-X-Forwarded-Encrypted: i=1; AJvYcCWNrR3CDdRG+x3d8GcWIfJpo/bA75avaMRirlXNJ/D4KGnlFV432H8b52EtoZHHso3rkchE2nBUDlSe0Th7kg/g7To9XW+G@vger.kernel.org, AJvYcCXTftrou0nzAPg08ON6lK9UHifViiuMyZqNGXYNSx8zqh7/yOVZPeEnsV4NPDYFARCnoRlM6EcmyI75XG/e@vger.kernel.org, AJvYcCXpS2PfcZWhik01N3Zz9ZSg4VW+z568wYkFfE1XGonHgPqlgfyS0tyVg37ms/Cc68HkUvma3/qh3sdlswNM@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOqEMSVW97U8yrZX3tT8/et67DWzV7oauuwkwLoIsusvE42sn3
-	s7fiHq88BZGzwnVYlUT0o/laa+aUxIyTD4jJzNG+Ok9t1eLZphUULf38NT1NPJc2ps9wSxRuLIu
-	+OUhun7dJlbRN2QfM/4BR0sUYycQ=
-X-Google-Smtp-Source: AGHT+IGKfSTOg6x0Z08frLiT8lNJLV2fwoZT7W4fNbV7m3f4x+0eisTDSrwGEYppIv5w2GfL3RuWoHmSEOeT2BWwfF4=
-X-Received: by 2002:a17:907:26cb:b0:a9a:3f9d:62f8 with SMTP id
- a640c23a62f3a-aa48341362cmr173901366b.19.1731660673989; Fri, 15 Nov 2024
- 00:51:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1731663278; x=1732268078;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MX66+aEET0Wug4jq+LlfR7APokjStdY3uwRIUrvs+1g=;
+        b=lt9Etl7+Rdd/8z9iLefy/w2aediW8QwdaOfYekxBT2IC8eedTa8kHeCNarayTUxMnV
+         iwFuyGB+Xt/edeJEepLfr5p0JHS5zpI59i/AP/Qb1qrcy2S+WK5OBGuEkh1Tu2hcZeJA
+         Ie2WVqu4OBKsfovR68hdlXz74zkd8H+mDvdMhW+pF+r3UlNzsJvSp4rISN0UNZSw8Sp6
+         ICBbuvA9UQAcR6NOkV1x97Q1XRhlwKE890UDlER/DwiMBfSLcD2Tao6rqGaftucZDKrT
+         ITBLXWxNOb6XuLZLu5E+KCeuvJ83AYTbQzBj2M9HgBRazfajXHNG5Gb5pp6jNqbPPusb
+         xKHA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqwuicsOhd3uVI9falPCmznhNhwqcxszIdAQUfPGyv5QmVwlGPh8XiE01mmt4f7EwnBkPDt150aA==@vger.kernel.org, AJvYcCVVVeskrlSWSeoKPLtEOJ2Brvm/zbtHq0FGpyUe9YRf+ji5PLSh1Bfh+rC2jz6ZP6/vTw4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwRdASA66Kp2TfX1RjYx3z3dljLd02B4xB1nXvQndO/1n6HXrdF
+	UmBWqiQCJBv327EsmL1Ed4sTxYvttf3DHlybH2F5xdE5KYB3LL7B
+X-Google-Smtp-Source: AGHT+IGrMqybB5jssKYeWnRPqQhqhyeYeLg/u6t6KCD93Nl8rEDXC/pZDwA8SzH6oD5DBeffxy3L5Q==
+X-Received: by 2002:a17:907:9688:b0:a9a:1437:3175 with SMTP id a640c23a62f3a-aa48354c8b7mr180185266b.51.1731663278071;
+        Fri, 15 Nov 2024 01:34:38 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa20e003ff2sm161775066b.123.2024.11.15.01.34.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Nov 2024 01:34:37 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 15 Nov 2024 10:34:35 +0100
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: acme@kernel.org, yonghong.song@linux.dev, dwarves@vger.kernel.org,
+	ast@kernel.org, andrii@kernel.org, bpf@vger.kernel.org,
+	daniel@iogearbox.net, kernel-team@fb.com, song@kernel.org,
+	eddyz87@gmail.com, olsajiri@gmail.com
+Subject: Re: [PATCH v2 dwarves 0/2] Check DW_OP_[GNU_]entry_value for
+ possible parameter matching
+Message-ID: <ZzcVq8zcdFm0mNxJ@krava>
+References: <20241114155822.898466-1-alan.maguire@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241114084345.1564165-1-song@kernel.org> <20241114084345.1564165-2-song@kernel.org>
-In-Reply-To: <20241114084345.1564165-2-song@kernel.org>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 15 Nov 2024 09:51:02 +0100
-Message-ID: <CAOQ4uxjFpsOLipPN5tXgBG4SsLJEFpndnmoc67Nr7z66QTuHnQ@mail.gmail.com>
-Subject: Re: [RFC/PATCH v2 bpf-next fanotify 1/7] fanotify: Introduce fanotify
- fastpath handler
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
-	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
-	mattbobrowski@google.com, repnop@google.com, jlayton@kernel.org, 
-	josef@toxicpanda.com, mic@digikod.net, gnoack@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241114155822.898466-1-alan.maguire@oracle.com>
 
-On Thu, Nov 14, 2024 at 9:44=E2=80=AFAM Song Liu <song@kernel.org> wrote:
->
-> fanotify fastpath handler enables handling fanotify events within the
-> kernel, and thus saves a trip to the user space. fanotify fastpath handle=
-r
-> can be useful in many use cases. For example, if a user is only intereste=
-d
-> in events for some files in side a directory, a fastpath handler can be
-> used to filter out irrelevant events.
->
-> fanotify fastpath handler is attached to fsnotify_group. At most one
-> fastpath handler can be attached to a fsnotify_group. The attach/detach
-> of fastpath handlers are controlled by two new ioctls on the fanotify fds=
-:
-> FAN_IOC_ADD_FP and FAN_IOC_DEL_FP.
->
-> fanotify fastpath handler is packaged in a kernel module. In the future,
-> it is also possible to package fastpath handler in a BPF program. Since
-> loading modules requires CAP_SYS_ADMIN, _loading_ fanotify fastpath
-> handler in kernel modules is limited to CAP_SYS_ADMIN. However,
-> non-SYS_CAP_ADMIN users can _attach_ fastpath handler loaded by sys admin
-> to their fanotify fds. To make fanotify fastpath handler more useful
-> for non-CAP_SYS_ADMIN users, a fastpath handler can take arguments at
-> attach time.
->
-> sysfs entry /sys/kernel/fanotify_fastpath is added to help users know
-> which fastpath handlers are available. At the moment, files are added for
-> each fastpath handler: flags, desc, and init_args.
->
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->  fs/notify/fanotify/Kconfig             |  13 ++
->  fs/notify/fanotify/Makefile            |   1 +
->  fs/notify/fanotify/fanotify.c          |  29 +++
->  fs/notify/fanotify/fanotify_fastpath.c | 282 +++++++++++++++++++++++++
->  fs/notify/fanotify/fanotify_user.c     |   7 +
->  include/linux/fanotify.h               | 131 ++++++++++++
->  include/linux/fsnotify_backend.h       |   4 +
->  include/uapi/linux/fanotify.h          |  25 +++
->  8 files changed, 492 insertions(+)
->  create mode 100644 fs/notify/fanotify/fanotify_fastpath.c
->
-> diff --git a/fs/notify/fanotify/Kconfig b/fs/notify/fanotify/Kconfig
-> index 0e36aaf379b7..74677d3699a3 100644
-> --- a/fs/notify/fanotify/Kconfig
-> +++ b/fs/notify/fanotify/Kconfig
-> @@ -24,3 +24,16 @@ config FANOTIFY_ACCESS_PERMISSIONS
->            hierarchical storage management systems.
->
->            If unsure, say N.
-> +
-> +config FANOTIFY_FASTPATH
-> +       bool "fanotify fastpath handler"
-> +       depends on FANOTIFY
-> +       default y
-> +       help
-> +          Say Y here if you want to use fanotify in kernel fastpath hand=
-ler.
-> +          The fastpath handler can be implemented in a kernel module or =
-a
-> +          BPF program. The fastpath handler can speed up fanotify in man=
-y
-> +          use cases. For example, when the listener is only interested i=
-n
-> +          a subset of events.
-> +
-> +          If unsure, say Y.
-> \ No newline at end of file
-> diff --git a/fs/notify/fanotify/Makefile b/fs/notify/fanotify/Makefile
-> index 25ef222915e5..543cb7aa08fc 100644
-> --- a/fs/notify/fanotify/Makefile
-> +++ b/fs/notify/fanotify/Makefile
-> @@ -1,2 +1,3 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  obj-$(CONFIG_FANOTIFY)         +=3D fanotify.o fanotify_user.o
-> +obj-$(CONFIG_FANOTIFY_FASTPATH)        +=3D fanotify_fastpath.o
-> diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.=
-c
-> index 224bccaab4cc..b395b628a58b 100644
-> --- a/fs/notify/fanotify/fanotify.c
-> +++ b/fs/notify/fanotify/fanotify.c
-> @@ -18,6 +18,8 @@
->
->  #include "fanotify.h"
->
-> +extern struct srcu_struct fsnotify_mark_srcu;
-> +
->  static bool fanotify_path_equal(const struct path *p1, const struct path=
- *p2)
->  {
->         return p1->mnt =3D=3D p2->mnt && p1->dentry =3D=3D p2->dentry;
-> @@ -888,6 +890,7 @@ static int fanotify_handle_event(struct fsnotify_grou=
-p *group, u32 mask,
->         struct fsnotify_event *fsn_event;
->         __kernel_fsid_t fsid =3D {};
->         u32 match_mask =3D 0;
-> +       struct fanotify_fastpath_hook *fp_hook __maybe_unused;
->
->         BUILD_BUG_ON(FAN_ACCESS !=3D FS_ACCESS);
->         BUILD_BUG_ON(FAN_MODIFY !=3D FS_MODIFY);
-> @@ -933,6 +936,27 @@ static int fanotify_handle_event(struct fsnotify_gro=
-up *group, u32 mask,
->         if (FAN_GROUP_FLAG(group, FANOTIFY_FID_BITS))
->                 fsid =3D fanotify_get_fsid(iter_info);
->
-> +#ifdef CONFIG_FANOTIFY_FASTPATH
-> +       fp_hook =3D srcu_dereference(group->fanotify_data.fp_hook, &fsnot=
-ify_mark_srcu);
-> +       if (fp_hook) {
-> +               struct fanotify_fastpath_event fp_event =3D {
-> +                       .mask =3D mask,
-> +                       .data =3D data,
-> +                       .data_type =3D data_type,
-> +                       .dir =3D dir,
-> +                       .file_name =3D file_name,
-> +                       .fsid =3D &fsid,
-> +                       .match_mask =3D match_mask,
-> +               };
-> +
-> +               ret =3D fp_hook->ops->fp_handler(group, fp_hook, &fp_even=
-t);
-> +               if (ret =3D=3D FAN_FP_RET_SKIP_EVENT) {
-> +                       ret =3D 0;
-> +                       goto finish;
-> +               }
-> +       }
-> +#endif
-> +
+On Thu, Nov 14, 2024 at 03:58:20PM +0000, Alan Maguire wrote:
+> Currently, pahole relies on DWARF to find whether a particular func
+> has its parameter mismatched with standard or optimized away.
+> In both these cases, the func will not be put in BTF and this
+> will prevent fentry/fexit tracing for these functions.
+> 
+> The current parameter checking focuses on the first location/expression
+> to match intended parameter register. But in some cases, the first
+> location/expression does not have expected matching information,
+> but further location like DW_OP_[GNU_]entry_value can provide
+> information which matches the expected parameter register.
+> 
+> Patch 1 supports this; patch 2 adds locking around dwarf_getlocation*
+> as it is unsafe in a multithreaded environment.
+> 
+> Run ~4000 times without observing a segmentation fault (as compared
+> to without patch 2, where a segmentation fault is observed approximately
+> every 200 invokations).
+> 
+> Changes since v1:
+> 
+> - used Eduard's approach of using a __dwarf_getlocations()
+>   internal wrapper (Eduard, patch 1).
+> - renamed function to parameter__reg(); did not rename
+>   __dwarf_getlocations() since its functionality is based around
+>   retrieving DWARF location info rather than parameter register
+>   indices (Yonghong, patch 2)
+> - added locking around dwarf_getlocation*() usage in dwarf_loader
+>   to avoid segmentation faults reported by Eduard (Jiri, Arnaldo,
+>   patch 2)
 
-To me it makes sense that the fastpath module could also return a negative
-(deny) result for permission events.
+looks good, I got 95 more functions in clang build including perf_event_read
+and there's no change in generated functions with gcc build
 
-Is there a specific reason that you did not handle this or just didn't thin=
-k
-of this option?
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-Thanks,
-Amir.
+thanks,
+jirka
+
+> 
+> Alan Maguire (1):
+>   dwarf_loader: use libdw__lock for dwarf_getlocation(s)
+> 
+> Eduard Zingerman (1):
+>   dwarf_loader: Check DW_OP_[GNU_]entry_value for possible parameter
+>     matching
+> 
+>  dwarf_loader.c | 121 +++++++++++++++++++++++++++++++++++++++----------
+>  1 file changed, 96 insertions(+), 25 deletions(-)
+> 
+> -- 
+> 2.31.1
+> 
 
