@@ -1,126 +1,106 @@
-Return-Path: <bpf+bounces-44963-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44966-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A413B9CF277
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 18:11:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9FEA9CF20F
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 17:49:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46507B3F046
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 15:48:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB764B2B16F
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 15:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3D91E1A27;
-	Fri, 15 Nov 2024 15:41:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E181D5ABF;
+	Fri, 15 Nov 2024 15:54:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J09PLWlb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dnd3hVW4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA2301D514B;
-	Fri, 15 Nov 2024 15:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329851BD507;
+	Fri, 15 Nov 2024 15:54:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731685280; cv=none; b=dxBLyIw5Ca5ti4DNXGYrz/DQ8u3Zv8NWjDVNBQ8KE+FCK2njHFUpS9rSWPTKZ6fxkq2vqH1SIlQYez99K/F+LuYytZbH0/iinmuzn1HXeq6OdJJ2dB8EBiVcLyKmA62vRTFn+iUFyaW3H2mUD0mysRWgR0+UQTupJ7o1FgtjmE8=
+	t=1731686058; cv=none; b=jmEnZmttSZhXhRZzFpoK4wRculEVbzm2SKRR2ycEH0Dw5G+oyfqrqopq6RO2vyLwA7XxfbeZwsr1th0vWZ1IEj2UUI9781aw65ofSeE1mHEzFxCMnxmo/ehqtTt7bYjVQGQTfdwUXkfe9Rg4JyYtcP2opFUD/V4E5Uw2uNrA880=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731685280; c=relaxed/simple;
-	bh=F0HrlOCDVc0tS4fkIk0rdPU7YPq64z4ioMtMs50nIss=;
+	s=arc-20240116; t=1731686058; c=relaxed/simple;
+	bh=gb74Kc/q+nFSszw5N2j1YB6+1HAF1gP9acQGIF9Ek3o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VK9MkuOMPrvpjhYzZsUmHQgRcWYZrjlhRnGLRZF4oXiTJ5cWSyu78sqYkrSEcr8TVAnPdkAiZ0J5M36wLr4hjNnrKsj3/9wv7gET7M0eJtpP6OTxnlwujw80GFPse4ZyEoIsZXK+G92feuD6O0itrlPm6yBj4/YCX5uk6bX/q1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J09PLWlb; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21145812538so16278195ad.0;
-        Fri, 15 Nov 2024 07:41:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731685278; x=1732290078; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=mad4SOqK1QCQ4o/oex/SlfSeha24kQsA2ic3rSWilNk=;
-        b=J09PLWlbf62DCWJir0VuXSPzlwfs5QhZc2lwbS2bhnhkjlSKJwxpOCMPtMgf9U2tnA
-         NTmADYoHUU+CakC4ToxLLZ2teYd64oAZ38kYjjMEzvO2R7Afub8oZGPd3CjDKSdZ1tWR
-         MZDLA7iD+s1cjpv9EoAlPThABpnxCCnNlx6aWn2NnSK7G1Ay/hZqHsstmyUUccpueDwO
-         4h2h4waP1UNflakJQkmeZYyAOtc1sgd3I8yE7LpQb8g8dpvAF4mIgA2WvkV2hTk+BOeS
-         33Nzl8fsKfYB8E5oiiJ64qAuDhCemKP15KYOEknV8R61a5jBjTI/s55RjRDbtsbZvkf9
-         MJZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731685278; x=1732290078;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mad4SOqK1QCQ4o/oex/SlfSeha24kQsA2ic3rSWilNk=;
-        b=lr9uw5spI65kbFxW6Z5YrWn3XunTEvqzU4N1A2thpNnjaKUDEPmt7aItoyTjMvGFyA
-         HyjspCF4zqwH6X/8ZjXozIO5qs2h7hozWKxLL/WsPc1TZWwhlny91/h2corKnBc6hfu0
-         /xMmo9nTEiKy+FAlEBzoK1itsB2sOfhu/kG8KRyIk1/VQT6w+LgCr2OB84sSH4xItq45
-         IBvTXMbxIywnkGC+4s2Gx8QXbZdg23qGCnC4Dm8z+G9qtKXXN2s7G97K64QQm8b9Pg6m
-         psgMvV0/bIkj0TXRi22WHf5wJzz1NDYloXFm/L2ePCD/ZugLfCW2KEa9aQMc4FpZADDU
-         xNrA==
-X-Forwarded-Encrypted: i=1; AJvYcCUJI8BwFZ+J0vRiqKdiC4L0vdV6E8tV7xvseYbMcUbdRidrLVpoMtgcc/KSJp5ASC/77S04Pqnu1yafKKdYA9qb@vger.kernel.org, AJvYcCUsPpvQarTLuKhq5Z46t2ZCYG6RTpJJJc65kExRR//9XrCRNfZ39TrF0sQDCEW46A/H1eFoT579@vger.kernel.org, AJvYcCVwPxo1WOXA7LdhAx7BOxI2UAZ9uBRIQeW7lhiG20yE1JYqjDtsySNuVgLS0O7LaA0039YwkgAb+Ze66+Um@vger.kernel.org, AJvYcCXps6fV4m4IxDeeW2l6hajksWjUPaK9Cwl72P+6ghwHlcyu95/MFf1Z/W92MCovEjNLubk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxqIFmrIKfPnqbqBzbIbP1C1LTlsx20kSJ1vWAKPvYQqxORaUag
-	4RdfoGooyKUyYyHrc71/vkez4gxOXt3EiMgPrs55PMFhkxYtRgM=
-X-Google-Smtp-Source: AGHT+IFvSiKK5pXTnS4v7BMtZSxnBSDmRb4ts7GfpqHnQT1u8ZOxciaO6lEhrbKtEKbuENFeyhoGoQ==
-X-Received: by 2002:a17:902:e808:b0:20c:e6e4:9daf with SMTP id d9443c01a7336-211d0d65103mr39412615ad.13.1731685277965;
-        Fri, 15 Nov 2024 07:41:17 -0800 (PST)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211d0f61372sm13526245ad.278.2024.11.15.07.41.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2024 07:41:17 -0800 (PST)
-Date: Fri, 15 Nov 2024 07:41:17 -0800
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Alexis =?utf-8?Q?Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, ebpf@linuxfoundation.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Bastien Curutchet <bastien.curutchet@bootlin.com>,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 07/13] selftests/bpf: migrate flow_dissector
- namespace exclusivity test
-Message-ID: <ZzdrnYe0Jf6VwEqB@mini-arch>
-References: <20241114-flow_dissector-v2-0-ee4a3be3de65@bootlin.com>
- <20241114-flow_dissector-v2-7-ee4a3be3de65@bootlin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TXqBAk9JtQQJ1DLK8q5dQ2Riyq1WV4MoG+nbrHgzztJyNmbtZSKJtCfqYJMwmJWI11n9wjOt+EFMxBrlalinA/MqdvHBtlCA2wz2thn9uWuJWoBPJvCrtVQAzejy19WPjfi74DYjExg4UnmaYF9s/oyXCSlfO3doHVBSLjMDZ5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dnd3hVW4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E4B5C4CECF;
+	Fri, 15 Nov 2024 15:54:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731686056;
+	bh=gb74Kc/q+nFSszw5N2j1YB6+1HAF1gP9acQGIF9Ek3o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dnd3hVW4g4lR9Z57JVZivswvhqCqws67TI7Ir0rI3QGgeGonPWu8jXoQwC9CoCfe/
+	 Ot/jK0HULKEI3hsTVcAX//Oy+Fq91rnoPnPM9d02khpsB9c+leoOh6RmWbOP3gNSSb
+	 5mk1qVtKiwoFIEItrupJ8s6uxU8CDwGoRv2r2vMzE00IfO/wIIoDBXR9v8XdKAEvjd
+	 07YhujJ/CHplW2+M7YzaCBO8Bu+YmbvdrUsiSl52984wfLwDq84eKMX7aZiAN6bdmR
+	 fUrcgzsHik5hFqXGpZMiPZkces3jurBCuyjxiKhbPosnmdwMNHOi35ktcl+i/hKCwz
+	 nqKUVvcloiFTA==
+Date: Fri, 15 Nov 2024 12:54:14 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: yonghong.song@linux.dev, dwarves@vger.kernel.org, ast@kernel.org,
+	andrii@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+	kernel-team@fb.com, song@kernel.org, eddyz87@gmail.com,
+	olsajiri@gmail.com
+Subject: Re: [PATCH v3 dwarves 0/2] Check DW_OP_[GNU_]entry_value for
+ possible parameter matching
+Message-ID: <Zzdupj2ifjERTijl@x1>
+References: <20241115113605.1504796-1-alan.maguire@oracle.com>
+ <a1ffc678-5d72-45f5-a304-07be3cca7f86@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241114-flow_dissector-v2-7-ee4a3be3de65@bootlin.com>
+In-Reply-To: <a1ffc678-5d72-45f5-a304-07be3cca7f86@oracle.com>
 
-On 11/14, Alexis Lothoré (eBPF Foundation) wrote:
-> Commit a11c397c43d5 ("bpf/flow_dissector: add mode to enforce global BPF
-> flow dissector") is currently tested in test_flow_dissector.sh, which is
-> not part of test_progs. Add the corresponding test to flow_dissector.c,
-> which is part of test_progs. The new test reproduces the behavior
-> implemented in its shell script counterpart:
-> - attach a  flow dissector program to the root net namespace, ensure
->   that we can not attach another flow dissector in any non-root net
->   namespace
-> - attach a flow dissector program to a non-root net namespace, ensure
->   that we can not attach another flow dissector in root namespace
+On Fri, Nov 15, 2024 at 11:40:16AM +0000, Alan Maguire wrote:
+> On 15/11/2024 11:36, Alan Maguire wrote:
+> > Currently, pahole relies on DWARF to find whether a particular func
+> > has its parameter mismatched with standard or optimized away.
+> > In both these cases, the func will not be put in BTF and this
+> > will prevent fentry/fexit tracing for these functions.
+> > 
+> > The current parameter checking focuses on the first location/expression
+> > to match intended parameter register. But in some cases, the first
+> > location/expression does not have expected matching information,
+> > but further location like DW_OP_[GNU_]entry_value can provide
+> > information which matches the expected parameter register.
+> > 
+> > Patch 1 supports this; patch 2 adds locking around dwarf_getlocation*
+> > as it is unsafe in a multithreaded environment.
+> >
 > 
-> Since the new test is performing operations in the root net namespace,
-> make sure to set it as a "serial" test to make sure not to conflict with
-> any other test.
+> apologies, forgot to note
 > 
-> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+> Changes since v2:
+> 
+> - handle multiple DW_OP_entry_value expressions by bailing if the
+> register matches expected, otherwise save reg in return value (Eduard
+> Yonghong, Jiri, patch 1)
 
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+Thanks, applied locally, will perform tests and push publicly later
+today.
+
+- Arnaldo
+ 
+> > Alan Maguire (1):
+> >   dwarf_loader: use libdw__lock for dwarf_getlocation(s)
+> > 
+> > Eduard Zingerman (1):
+> >   dwarf_loader: Check DW_OP_[GNU_]entry_value for possible parameter
+> >     matching
+> > 
+> >  dwarf_loader.c | 123 +++++++++++++++++++++++++++++++++++++++----------
+> >  1 file changed, 98 insertions(+), 25 deletions(-)
+> > 
 
