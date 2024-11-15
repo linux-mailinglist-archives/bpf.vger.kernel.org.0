@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-44922-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44923-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D1109CD5DF
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 04:30:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B1719CD5E1
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 04:31:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B24E2832E0
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 03:30:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13B8F1F22170
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 03:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FFE616A956;
-	Fri, 15 Nov 2024 03:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56FF6170A13;
+	Fri, 15 Nov 2024 03:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nv4K74NE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pAm5z0c9"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B76E14D9FB;
-	Fri, 15 Nov 2024 03:30:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F5516DC01;
+	Fri, 15 Nov 2024 03:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731641424; cv=none; b=DiXQq5ue+k/KeBCWrMNXYVg88Wx0ysdra4znxmUCzIRCqGXEskmvPp7IXbc2U6EKso7jp73bpmTzBtA76kJ8+lhxiXJ/d/PykMcuOfUeYjPod3U3R8aIabBBx51r80LULsSTFXZt/qIemrnG0Q0tK1kggVzttIlkj230ySUFVY0=
+	t=1731641425; cv=none; b=or6TgZVewbwWRQbw2wrVN3LeUntrLcRYmfqHqIunv0nlIWVqLHeVpA2ie8TQXRCMluTTyyg19fan/sSDl6b7jwlBhrkuWQUfRPP7CE7tfwm8Xohx6+95sYM4LVG+jjC8SoPaGTjMpOC7KP6/EZc0JXNyJreir3zPBL66EI3J0dQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731641424; c=relaxed/simple;
-	bh=+ufclaApr/0BR4iWbKqH2pyYxQdUe4d8Ad3IQrgrroE=;
+	s=arc-20240116; t=1731641425; c=relaxed/simple;
+	bh=Py9vnXsgiVyuBBqGgunlukHcQ6tS6uAdDLyvGN20wDg=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=LZeBnqF74RnnZtzC4RBORh83O/euIrSeDr9uu7IFQZUuyKVukm1a4ELczIi3MsaItuBat9nvg3FxDZSoocDw3S+Smogdoi5xoUUMtBd5NHhHl0E7LhKVo0afCbyTptZy1M+1h6MHQK0sQEgETcbL6v+wzcMjHeep4Ip7/PVIVFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nv4K74NE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 211D0C4CECD;
-	Fri, 15 Nov 2024 03:30:24 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=EZ/7Ma96laDn2BgtZOo7ELXHpWgqQJT+mZ6c4fk6aXNTisay1eV162mvFMizWw5oHqHM4/9n+PCTn23W9Hpzarbo3+kWW9bJhOPPGlUiQUAQaU1T7ZpqzfcWtJNDMP7aM2XtaPB+8CQ1xuxRFVbzvw1AxRU5d1MQ+Kf9yS/tAyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pAm5z0c9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54E36C4CED0;
+	Fri, 15 Nov 2024 03:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731641424;
-	bh=+ufclaApr/0BR4iWbKqH2pyYxQdUe4d8Ad3IQrgrroE=;
+	s=k20201202; t=1731641425;
+	bh=Py9vnXsgiVyuBBqGgunlukHcQ6tS6uAdDLyvGN20wDg=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Nv4K74NEoU0XEauLu8mLEjZ9XjIf/qtIAudVKkatj1GWEAHmiZqfe5HCUsm8n8pAA
-	 RMgk4I7OO2xRuUO53hN8TemJ3AuUSihUPC8oUlud+xf5Smh/xlTecPPGcX4rP8Wgzm
-	 5pdpBoBpJ5AgTobehBZqLqdlt0DTpgtEfDTXBs8rTMHKZA4LaucAIU1DG1+f7J+xx/
-	 sRyKWJurMLmal9qv/p3ljcvrLvReuJAvPu3Lmnju8CZTLKax6hEjG4V+ifxvC5w7z4
-	 d4hffNewVj9rqpns2R82J9aU2n1yOuZL3BaCDrIUC85k8C+4gcyJY2f18F4NhZziZq
-	 fWALOXAFvYIeA==
+	b=pAm5z0c9wFxMHN/9UgKKNqUUt188rkwO4QCH4ZAX+/CMbeUTmVIgM1dSyVy2vdSlh
+	 /pmK6qJYL0i44reiWLbuqxcBdXymnU+5XUBjzuGAjYrwtreLDKuG9zxRMX5DdyNsV2
+	 JK9bO+jfqQGyNE+K125eMpsEHyW3lN9loB3CIuSB/9WteJqsBM4AzPF8sAAIRyiM/0
+	 341LLIoOmv8v1B8dgwLf5Z56QIuodVE8rSncbojNnheNdoZPS69Ne7NvaDKPJp5L2X
+	 JntzOkTdxL99IyU0b/eloevS5CJeZUzu1kkQlvcdCeyuRNeCqfGD6XgjsJcfGPYIX8
+	 WWNL1KtrgBhsg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAE213809A80;
-	Fri, 15 Nov 2024 03:30:35 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33BCB3809A80;
+	Fri, 15 Nov 2024 03:30:37 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,42 +52,36 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] ipv4: Prepare bpf helpers to .flowi4_tos
- conversion.
+Subject: Re: pull-request: bpf-next 2024-11-14
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <173164143473.2139249.2172625891763389024.git-patchwork-notify@kernel.org>
-Date: Fri, 15 Nov 2024 03:30:34 +0000
-References: <cover.1731064982.git.gnault@redhat.com>
-In-Reply-To: <cover.1731064982.git.gnault@redhat.com>
-To: Guillaume Nault <gnault@redhat.com>
+ <173164143599.2139249.221234838078018840.git-patchwork-notify@kernel.org>
+Date: Fri, 15 Nov 2024 03:30:35 +0000
+References: <20241114202832.3187927-1-martin.lau@linux.dev>
+In-Reply-To: <20241114202832.3187927-1-martin.lau@linux.dev>
+To: Martin KaFai Lau <martin.lau@linux.dev>
 Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, netdev@vger.kernel.org, horms@kernel.org,
- martin.lau@linux.dev, daniel@iogearbox.net, john.fastabend@gmail.com,
- ast@kernel.org, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, idosch@nvidia.com, bpf@vger.kernel.org
+ edumazet@google.com, daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (main)
+This pull request was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Fri, 8 Nov 2024 17:47:09 +0100 you wrote:
-> Continue the process of making a dscp_t variable available when setting
-> .flowi4_tos. This series focuses on the BPF helpers that initialise a
-> struct flowi4 manually.
+On Thu, 14 Nov 2024 12:28:32 -0800 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
 > 
-> The objective is to eventually convert .flowi4_tos to dscp_t, (to get
-> type annotation and prevent ECN bits from interfering with DSCP).
+> The following pull-request contains BPF updates for your *net-next* tree.
+> 
+> We've added 9 non-merge commits during the last 4 day(s) which contain
+> a total of 3 files changed, 226 insertions(+), 84 deletions(-).
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,1/2] bpf: ipv4: Prepare __bpf_redirect_neigh_v4() to future .flowi4_tos conversion.
-    https://git.kernel.org/netdev/net-next/c/bfe086be5c4c
-  - [net-next,2/2] bpf: lwtunnel: Prepare bpf_lwt_xmit_reroute() to future .flowi4_tos conversion.
-    https://git.kernel.org/netdev/net-next/c/dab9c6307161
+  - pull-request: bpf-next 2024-11-14
+    https://git.kernel.org/netdev/net-next/c/55c8590129b5
 
 You are awesome, thank you!
 -- 
