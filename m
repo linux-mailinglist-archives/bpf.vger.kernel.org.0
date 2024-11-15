@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-44965-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44959-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED8CD9CF0C0
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 16:54:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86F249CF144
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 17:19:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF7A628C991
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 15:54:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB3F9B393E3
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 15:39:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5251D5146;
-	Fri, 15 Nov 2024 15:54:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B9111F8920;
+	Fri, 15 Nov 2024 15:32:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PG/5zjYK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eEafp7xh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC541CDA26;
-	Fri, 15 Nov 2024 15:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B12A1D5CEA;
+	Fri, 15 Nov 2024 15:32:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731686048; cv=none; b=Tjs/NRZDSMPqIBJdLnFhBrKrovYEAGHkpQV9VTHXm27WztFko3uCXqytMir44qmStQzesziDfFvAhs/NmtfTunsws2bsBQxH2fohW2PGxH/ri7V5bwZMEVURetKLBRA1MvpbarcHCVdrbZR8st+JM5zow/5evOhub/IfsLZvsO0=
+	t=1731684732; cv=none; b=ta8hwlHXgYBdbPsUUIarvS1VUGiZOKf5vqUnZK3WeOD6F4oDQbNGs5BSiSlmVQKRzPeqkD3U5LRc6l3Xbbu/irUYuSg02Bu6htBL+l7LBsmg+ZWimiVCEWtXvzd6RX6QmWinLGY690FuTJKcjKhyM47Xr9kz3E9S30NEBis5eGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731686048; c=relaxed/simple;
-	bh=c1l4GXR1ccW/xD+32IV2+ugVHn5Gyxka4/K2klNuZJc=;
+	s=arc-20240116; t=1731684732; c=relaxed/simple;
+	bh=RN9Jj7cHogNrffiEZA8NFS52iMspRx44QQcFduM5dms=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dG/8dpUl9LskFCeuBPcGSyJByMwbXbZ8moFspx8AY3yoeDJgo4sv6MM4fr9Pw3hS3y1nO1C1Zv9rDOS0GP9SFcPObFL0A+IGXv8zc9ENoyk4uFZMr+SuVYVpEj+yhuP7YbHnWOz8pZblr59HCj4Enx7MY5VKJRFZjjicBKUs7K4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PG/5zjYK; arc=none smtp.client-ip=209.85.215.178
+	 Content-Type:Content-Disposition:In-Reply-To; b=YVK2C3tABR3rCadjwXHPGkpmr34L2xFUQKCJP4/Op817g5GoSZQIYxnDd2J6E+RL0f7Hy0pSpSSMzAbYwPqyERy/XMez0kGKPWLiscou260Flp5vaDtD14+4zJ1Q3e5TKfLFuNDyNoxIU1MCNDmVIZuE/SRWCV39nrw5o0B5Isk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eEafp7xh; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-7f8095a200eso1544344a12.1;
-        Fri, 15 Nov 2024 07:54:06 -0800 (PST)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-20cf3e36a76so9927115ad.0;
+        Fri, 15 Nov 2024 07:32:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731686046; x=1732290846; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1731684730; x=1732289530; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=fWIBrIMxKYuT2qQy0v4XlTOCuAe13toBzYEPCk6nTWY=;
-        b=PG/5zjYK3CgrOJoW4Txfns7wfSwA951Av89PkpjktpnoPfAOkBvg0PGkuIBvizC1rP
-         Cxyi+i46A+P1/hC2qUevC6Wr2XAwTl+Vj0h/Ps8SKHydzaJinZj/Cb9//3MnK/63Yxm2
-         50yKdDv81dtkHQQbSg0HMJYZf79dwcAWfwLpG2UjdBZZGHR3u/xuDZ1ySDkbQJtVIc3j
-         Rm2WXjHM5aGtdZGpWDi7suwUMU8XaKmgdMf+kKp6fjkZ7NKJpKoMSMjfqbw4UrqNwa2P
-         KL46VSZUkvM/k3MHDdjE/ukJVG7sZiWnE/jEPZVZahX0B5GlhKugzhTN8HxfLID7XPNx
-         bmWQ==
+        bh=t3mL9zxHm0hXSKqka75HzWuRbkoD06vFkDW9uQg2MYc=;
+        b=eEafp7xho7mW/TqWwIm3E9+O8bxECQQvyFVwUbroSysVMLDmxVefETVyMYuNq4Luxn
+         rE/PSydY6fToZ9tNPYr3DcyI4EmBvHio0g0+fyp0fTTIymf11jQE6+J+Kpj/zzvFtc3s
+         B682m6NBk7U5Ptnm9f/aoLekeVmwwhVFVQ7gh+Nx1dW1dDR0T1GGInBAKdFqSqLPSfSb
+         ggf+yA2wql1pLNRlm9oCd1jojUJSjhuwP4BZDqhVSQFWLCBrAneM+xezP40e7y/8xLEC
+         x2DtSFdXYrkscPyZge4s6Ak8v7eIvjEBgXubHP34ML+SmX6Tj7GJq6/3n/VDGtW7U3dK
+         QATg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731686046; x=1732290846;
+        d=1e100.net; s=20230601; t=1731684730; x=1732289530;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fWIBrIMxKYuT2qQy0v4XlTOCuAe13toBzYEPCk6nTWY=;
-        b=sS81yE9jmGElhbt3n1uUHxQqIvi7tkAGkEiwjjJZE3AyhaKPMsRvfTNzm2ivZNNcTE
-         0bmagYYNR+oOSXvwFZe4UMSMqD1XFvTaY1hgpXzfRZhq5wJADtdg2/4MILZOcidllJeW
-         pQU5WyUNXU4IHqM1uzhgteDx/nwsgja0uM7cz5lEvVIuc9sHONBT8RwlffrsEG7OeQP5
-         FztrKFSI2MdWw+cAS09LQJXmUZZeTvrABz1BrFLHBdtUf59KsyTPNdARWPqpx29uxtNV
-         jXxV5qjtqvQ8b7iquUA8p11rbZ6PW5Yc3JqR6r6uSg9D9I+aUD9vpt6IcztheQjRp5kV
-         EVbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUJ8uhC74a2h7e7jIezID7PnkV5+/2/RII/kJqBQ3RITqg0yJ4hCwFFalNZSbhQHgh++vW/MZIsKKrfM1Wk@vger.kernel.org, AJvYcCVXdxYu9ftPg5zA3p3TjvZsdwyFdTg83uv2dg2U7HBoDixE2WWncV2g7gvlSLo5qfxnB7E=@vger.kernel.org, AJvYcCWq+Cwl1eQuSvbVSoqzRZUXyVYvWm9N/7dUoOiKU/8DIx7Rhj9sb4gyCqnOt3BFqIa+SCUAnB8q@vger.kernel.org, AJvYcCWro4oK/qxZX6iPCZiMd81L9GC9SSx/vq2L9IJavUKdYmoHVwlAadSpU4tpkPmOitgQMFqREyUS6NkqyHeKCoRV@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/X11PcuKcATz8DJr1h/YPt6gEgkDd+fLT90393y8nSc5P2N9l
-	WbmnoOLyIv+eTSE7QiT5V+AY2KEejyfoPQxzmIolk/GzqH+AH2U=
-X-Google-Smtp-Source: AGHT+IHGe4+uNNOZ3ukuyHDnNclxsbVkbJuiLiZd35z/0yWQm/2bZPe0ujlu4zVAWrkwWhOIYZdUOQ==
-X-Received: by 2002:a05:6a20:258d:b0:1d9:281f:2f27 with SMTP id adf61e73a8af0-1dc8fe85070mr5085175637.19.1731686046375;
-        Fri, 15 Nov 2024 07:54:06 -0800 (PST)
+        bh=t3mL9zxHm0hXSKqka75HzWuRbkoD06vFkDW9uQg2MYc=;
+        b=djDQqWeLOLjQFR45vl45nXt0rjeWPAtMFJiSU7dKhLobj+GbBei+dhCW0J2oGIXRgt
+         fYGR0uSY+A5L9iPmifs3nTLtK6oVwLP8+hcNV3xutpbT4JFRLCmR3FTmE9vGpzAMhOBs
+         77eBHTRX5HywHIRBllIaxEXAJD14aVUU3qoYIC4wZLAE/RzPQEBdW66f+8hUFxMNk7it
+         RRhO/KLIhKUkUcgqVqxI7thptfSZP6vl/ZMLLjPIcTxtlbsPRy8XuqgEOlQB8U5w2Y7T
+         wMypI9/aLb3lXjzIU8ESZKRk779Rh6p4Q4D/VPJympmidNhoE+kHg7IMECtSFRIjF7Lf
+         R+qw==
+X-Forwarded-Encrypted: i=1; AJvYcCVFspe4MReIPGRbfe/wivX/uaUJZuX7/bTPeQnOuG8DfGzOETzblMoZ75yAfEnlDdgST/ShefI9@vger.kernel.org, AJvYcCVPKXm5kpk+QyYpR29yJuK3vRJ5HLSukcMUbico36uYnDOT57SZUBKnW1cf1xUEbon9vaaoc/kNEa9tSR/g@vger.kernel.org, AJvYcCVUjP7HjbeA2yzudtGKoe+XOIS5HkuFHzzQjCANkem57kRwp4pieGZeYfhLV7kSbs61vAU=@vger.kernel.org, AJvYcCVbUVAbEHpfhiQZvpOOCMBs5uHOh7HpaX4Uu1ecHob87/CAQiS2TH7Iky8OhG1tEJk3Y40XJ32NUUwQCByGb8pa@vger.kernel.org
+X-Gm-Message-State: AOJu0YyVRI4MkVx3PZcEdubOzdqnv+tMqBF7+VcIZjdAzbgIiM/3pbIB
+	2lP/Ar7k/uM0EJK3XBUHxCOvMQgIaHPMI4hIx+Fi1bjiNLZfoJ4=
+X-Google-Smtp-Source: AGHT+IFu+wWBbSvilK2OnzkPoK8R5vT66fi/p1DGzyvRqcs8PA0GgHoXEk/ABVqi78aUUYcKl9It+w==
+X-Received: by 2002:a17:903:22c5:b0:207:6fb:b04f with SMTP id d9443c01a7336-211d0d7f99amr39921495ad.17.1731684729575;
+        Fri, 15 Nov 2024 07:32:09 -0800 (PST)
 Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7f8c1dada40sm1426549a12.61.2024.11.15.07.54.05
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ea06f1a634sm2983489a91.14.2024.11.15.07.32.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2024 07:54:05 -0800 (PST)
-Date: Fri, 15 Nov 2024 07:54:05 -0800
+        Fri, 15 Nov 2024 07:32:09 -0800 (PST)
+Date: Fri, 15 Nov 2024 07:32:08 -0800
 From: Stanislav Fomichev <stfomichev@gmail.com>
 To: Alexis =?utf-8?Q?Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>,
@@ -88,11 +88,11 @@ Cc: Andrii Nakryiko <andrii@kernel.org>,
 	Bastien Curutchet <bastien.curutchet@bootlin.com>,
 	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 11/13] selftests/bpf: add network helpers to
- generate udp checksums
-Message-ID: <ZzdunVLMaX1iy85i@mini-arch>
+Subject: Re: [PATCH bpf-next v2 09/13] selftests/bpf: move ip checksum helper
+ to network helpers
+Message-ID: <ZzdpeMsHGh1zCZei@mini-arch>
 References: <20241114-flow_dissector-v2-0-ee4a3be3de65@bootlin.com>
- <20241114-flow_dissector-v2-11-ee4a3be3de65@bootlin.com>
+ <20241114-flow_dissector-v2-9-ee4a3be3de65@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,67 +102,46 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241114-flow_dissector-v2-11-ee4a3be3de65@bootlin.com>
+In-Reply-To: <20241114-flow_dissector-v2-9-ee4a3be3de65@bootlin.com>
 
 On 11/14, Alexis Lothoré (eBPF Foundation) wrote:
-> network_helpers.c provides some helpers to generate ip checksums or ip
-> pseudo-header checksums, but not for upper layers (eg: udp checksums)
+> xdp_metadata test has a small helper computing ipv checksums to allow
+> manually building packets.
 > 
-> Add helpers for udp checksum to allow manually building udp packets.
+> Move this helper to network_helpers to share it with other tests.
 > 
 > Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
 > ---
 > Changes in v2:
 > - new patch
 > ---
->  tools/testing/selftests/bpf/network_helpers.h | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
+>  tools/testing/selftests/bpf/network_helpers.h      | 23 ++++++++++++++++++++++
+>  .../selftests/bpf/prog_tests/xdp_metadata.c        | 19 +-----------------
+>  2 files changed, 24 insertions(+), 18 deletions(-)
 > 
 > diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-> index 6d1ae56080c56a65c437899c32566f0e4c496c33..fa82269f7a169a518ba210fa8641eba02f262333 100644
+> index c72c16e1aff825439896b38e59962ffafe92dc71..c9b72960c651ab9fb249f6eb9e153b8416b7a488 100644
 > --- a/tools/testing/selftests/bpf/network_helpers.h
 > +++ b/tools/testing/selftests/bpf/network_helpers.h
-> @@ -161,6 +161,33 @@ build_ipv6_pseudo_header_csum(const struct in6_addr *saddr,
->  	return csum_fold((__u32)s);
+> @@ -104,6 +104,29 @@ static __u16 csum_fold(__u32 csum)
+>  	return (__u16)~csum;
 >  }
 >  
-> +static inline __sum16 build_udp_v4_csum(const struct iphdr *iph, __u8 l4_proto,
-> +					__u16 l4_len, const void *l4_start,
-> +					int num_words)
-> +{
-> +	unsigned long pseudo_sum;
-> +	int num_u16 = sizeof(iph->saddr); /* halfwords: twice byte len */
-> +
-> +	pseudo_sum = add_csum_hword((void *)&iph->saddr, num_u16);
-> +	pseudo_sum += htons(l4_proto);
-> +	pseudo_sum += l4_len;
-> +	pseudo_sum += add_csum_hword(l4_start, num_words);
-> +	return csum_fold(pseudo_sum);
 
-I was expecting to see a call to csum_tcpudp_magic here. And csum_ipv6_magic
-down below. These build pseudo header csum, so no need to manually do it
-again.
+[..]
 
-> +}
-> +
-> +static inline __sum16 build_udp_v6_csum(const struct ipv6hdr *ip6h,
-> +					const void *l4_start, int num_words)
+> +static unsigned long add_csum_hword(const __u16 *start, int num_u16)
 > +{
-> +	unsigned long pseudo_sum;
-> +	int num_u16 = sizeof(ip6h->saddr); /* halfwords: twice byte len */
+> +	unsigned long sum = 0;
+> +	int i;
 > +
-> +	pseudo_sum = add_csum_hword((void *)&ip6h->saddr, num_u16);
-> +	pseudo_sum += htons(ip6h->nexthdr);
-> +	pseudo_sum += ip6h->payload_len;
-> +	pseudo_sum += add_csum_hword(l4_start, num_words);
-> +	return csum_fold(pseudo_sum);
+> +	for (i = 0; i < num_u16; i++)
+> +		sum += start[i];
+> +
+> +	return sum;
 > +}
-> +
->  struct tmonitor_ctx;
->  
->  #ifdef TRAFFIC_MONITOR
-> 
-> -- 
-> 2.47.0
-> 
+
+Sorry for nitpicking, but can we call it csum_partial? And match
+kernel's prototype with extra sum argument? Should be more greppable
+for the future test cases that might want to use it...
 
