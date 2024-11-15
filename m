@@ -1,144 +1,117 @@
-Return-Path: <bpf+bounces-44937-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44938-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8032A9CDBAF
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 10:34:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A158B9CDCAD
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 11:34:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3849E1F23492
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 09:34:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E50D1F23429
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 10:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13A1D190056;
-	Fri, 15 Nov 2024 09:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E513B18FDDB;
+	Fri, 15 Nov 2024 10:34:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fg9e0gUn"
+	dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b="fEGi9A2t"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B3818FDDB;
-	Fri, 15 Nov 2024 09:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2445A18950A
+	for <bpf@vger.kernel.org>; Fri, 15 Nov 2024 10:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731663281; cv=none; b=cJQHuS0ydLtuNcywmjlpcAEvgLP/s2EB465V70u6LbNR8RLkjtKv5fIZ06eWrKhfF6hxCveZJHxEBg6cT6J1qu4h08puwGaDqvuu1J35jbQ9ZhFc3Rr4vwpaAqxX7QqP5aIfzJHJvFMXmqFR4yY+4NiYT97/AP2lULAerrw+j+4=
+	t=1731666883; cv=none; b=m7+/3gZRSnmJ+QQx70vpnjOqYEUtleTKz415Lyc4S20oW19OZ25KCeUC4i5XTGKWfhCSOpkarplY1M/iKNfpQjhKq3yN5KZM6RIC6/mrDrrWLj51FGRcz0z3jwUv+bAC6XEIbtqwNCrnbJCsyY9pG8oPBtqbu5lD2ZR8m9FuWq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731663281; c=relaxed/simple;
-	bh=WtmG4Vkcl7Z6XOh0kChSiuBh21pZ/wDtQ7qmRnedq/g=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sBTDzA5pKwv15JhDhkpk+pRoEZBsZVMn/YKHmwAhF5kNDPeW9lyJMmcW4GmHsUaRRqvA3QQACuS+W5NyNH03hAf2VbUvm60J/W9deYBBH5x5TfMZZNjXwktH5WcT4LI/5afp0BD8fU7U2eJpolecgh04mmr91SVGXZpFrzapvOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fg9e0gUn; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-aa20c733e92so69747766b.0;
-        Fri, 15 Nov 2024 01:34:39 -0800 (PST)
+	s=arc-20240116; t=1731666883; c=relaxed/simple;
+	bh=0k5j4H4ThGyosbeAZR4mh0eRqVc7n4UR16sQfdLyedA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dd6f2Ih1p5tZlIVe4DIJokrY0lb8pONSnBJVUlMRywBHgyTKR4o0UHJ1BmPF8+K49QTEPsfsdfOCxSRp6RuYy/wZ5+AEgjX2mS/M3W9NZpYcuMSFPiqLO08LiqOs6VtALSjRUvqrbnOPnRCYXKZICIZH2D7BkG5c1TGH7mgU1Qw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai; spf=none smtp.mailfrom=furiosa.ai; dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b=fEGi9A2t; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=furiosa.ai
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-20c77459558so14905615ad.0
+        for <bpf@vger.kernel.org>; Fri, 15 Nov 2024 02:34:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731663278; x=1732268078; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MX66+aEET0Wug4jq+LlfR7APokjStdY3uwRIUrvs+1g=;
-        b=Fg9e0gUnqB2hc0HTlQYhAtHwXlZ50k6Jqbpgtoad+EQgIiqe1+oPuEkq9Ib3X+ijKS
-         0bsmP5CefjtjO8OKhdAA6Jyt/5fBJf88tYidqwytGtbeO10fBo/VaKWHR6LnO9+bBOjZ
-         bUNTVVJ3KudYGhHTF2zslkZWs7XTLosxgjrueN0xaFhNuGIbzhj2aO/7jt50P1bVFr0U
-         GeAB1pYVslhynmWI824fb0MUJJmAQGTkgmJbmJ44vrsJMqVbZPQVptAk1DSXcI+rvhM3
-         fmPmUVJSHkHdb2JZ9qCEIhu1NNW0lkldZchbeFMB4jNF2s7SF/xGH3SNzQMmDPaQv7r8
-         cgnA==
+        d=furiosa-ai.20230601.gappssmtp.com; s=20230601; t=1731666881; x=1732271681; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DCgxJEtdxcQBWvgHN5JlceMQQr3Zip321u703iLLdL0=;
+        b=fEGi9A2t3o455S77tsQS3cBkhSd9nJEm7y32uh5DFH1DBAdJpu1ZIl6A7dT4Dy1BS8
+         F2/F6sOxp/LXFqb0mDzejZQAJ9xd7Y67qTUQULjvIKicz7I2lwBU4Yj2jrQxNfqaN773
+         YAyklu8DAQfrNJ50ccYTCapqC/R+IL4q3nbtYGkQG6M5hDCvpG9K6QeEFRYkjZCHeVJr
+         VjAxJJr9BmC3hLXH53aDVE4Nwpc7RP3O+3nezKujUf5IHkl3YIBC9OONX6yQaDOh75A/
+         mznqq2epMZ8oIyf3AthAUPk0zAXsjiZYDnUR0w6i5k1TGiKdRTzzgGk37TcEj/7ZLq90
+         MXJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731663278; x=1732268078;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MX66+aEET0Wug4jq+LlfR7APokjStdY3uwRIUrvs+1g=;
-        b=lt9Etl7+Rdd/8z9iLefy/w2aediW8QwdaOfYekxBT2IC8eedTa8kHeCNarayTUxMnV
-         iwFuyGB+Xt/edeJEepLfr5p0JHS5zpI59i/AP/Qb1qrcy2S+WK5OBGuEkh1Tu2hcZeJA
-         Ie2WVqu4OBKsfovR68hdlXz74zkd8H+mDvdMhW+pF+r3UlNzsJvSp4rISN0UNZSw8Sp6
-         ICBbuvA9UQAcR6NOkV1x97Q1XRhlwKE890UDlER/DwiMBfSLcD2Tao6rqGaftucZDKrT
-         ITBLXWxNOb6XuLZLu5E+KCeuvJ83AYTbQzBj2M9HgBRazfajXHNG5Gb5pp6jNqbPPusb
-         xKHA==
-X-Forwarded-Encrypted: i=1; AJvYcCUqwuicsOhd3uVI9falPCmznhNhwqcxszIdAQUfPGyv5QmVwlGPh8XiE01mmt4f7EwnBkPDt150aA==@vger.kernel.org, AJvYcCVVVeskrlSWSeoKPLtEOJ2Brvm/zbtHq0FGpyUe9YRf+ji5PLSh1Bfh+rC2jz6ZP6/vTw4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRdASA66Kp2TfX1RjYx3z3dljLd02B4xB1nXvQndO/1n6HXrdF
-	UmBWqiQCJBv327EsmL1Ed4sTxYvttf3DHlybH2F5xdE5KYB3LL7B
-X-Google-Smtp-Source: AGHT+IGrMqybB5jssKYeWnRPqQhqhyeYeLg/u6t6KCD93Nl8rEDXC/pZDwA8SzH6oD5DBeffxy3L5Q==
-X-Received: by 2002:a17:907:9688:b0:a9a:1437:3175 with SMTP id a640c23a62f3a-aa48354c8b7mr180185266b.51.1731663278071;
-        Fri, 15 Nov 2024 01:34:38 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa20e003ff2sm161775066b.123.2024.11.15.01.34.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2024 01:34:37 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 15 Nov 2024 10:34:35 +0100
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: acme@kernel.org, yonghong.song@linux.dev, dwarves@vger.kernel.org,
-	ast@kernel.org, andrii@kernel.org, bpf@vger.kernel.org,
-	daniel@iogearbox.net, kernel-team@fb.com, song@kernel.org,
-	eddyz87@gmail.com, olsajiri@gmail.com
-Subject: Re: [PATCH v2 dwarves 0/2] Check DW_OP_[GNU_]entry_value for
- possible parameter matching
-Message-ID: <ZzcVq8zcdFm0mNxJ@krava>
-References: <20241114155822.898466-1-alan.maguire@oracle.com>
+        d=1e100.net; s=20230601; t=1731666881; x=1732271681;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DCgxJEtdxcQBWvgHN5JlceMQQr3Zip321u703iLLdL0=;
+        b=g7p+ZIqgUT9wZJGbxKBxH0/Fqxcd24TKk9ttNVXvUTrqPCaiKqRRHcEjXlYVqEPh/u
+         MDJkZ/UJSDq2oH72Y68BmXkU2ZKd0NLTf3ROlzSQ+jZ6DNCMPYwRXY5jKM1oC7gyjdGi
+         CI2u32td+Mk8GtFrlJFy/1zV4+bmf0B3jdSST3b1wvKq8ew18AZuCkePd52nIJhwxAS9
+         EqrMdcyRXnbKXME/NhY05PfC4EWLLG/BgaWTFD5hg0+GeytRWY9gRjMCWzS8e+fURiV2
+         oznnXUT4kkzWgVnKi8gJmaNjejUKnxYgySE2mdZDRfk6eOmxqtoERFzx4r0RKvOKQekb
+         uSzg==
+X-Forwarded-Encrypted: i=1; AJvYcCXrihRz7xMjUBJrF49OWk9Y0lAxblQ+Dkfw3rpdy8XzQzNrpcCaIG6N5aY7XE2wIpdBGLU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxNdka3jszv8AR4BEM6DUPr2/dVlEgSSQR/F22vPGPg5HthhLc0
+	myqjcj3jMZPyLOE+jvC6Lsb3rOLTElyHl9HoKyVpn4A9hXVMAPBqLHG/q8bWJ2o=
+X-Google-Smtp-Source: AGHT+IGdmb5QMtEi6lF6HVCbZpuUNSUsm3Dwd5WKiUob1G+Fjl1XkprbRQ1GycAsAJid0oXqoEgdtw==
+X-Received: by 2002:a17:902:e885:b0:20f:aee9:d8d7 with SMTP id d9443c01a7336-211d0d81e71mr34790435ad.32.1731666881434;
+        Fri, 15 Nov 2024 02:34:41 -0800 (PST)
+Received: from localhost.localdomain ([221.148.76.1])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211d0f36dbasm9519345ad.156.2024.11.15.02.34.38
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 15 Nov 2024 02:34:40 -0800 (PST)
+From: Sidong Yang <sidong.yang@furiosa.ai>
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Sidong Yang <sidong.yang@furiosa.ai>
+Subject: [RFC PATCH] libbpf: Change hash_combine parameters from long to __u32
+Date: Fri, 15 Nov 2024 19:34:19 +0900
+Message-ID: <20241115103422.55040-1-sidong.yang@furiosa.ai>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241114155822.898466-1-alan.maguire@oracle.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 14, 2024 at 03:58:20PM +0000, Alan Maguire wrote:
-> Currently, pahole relies on DWARF to find whether a particular func
-> has its parameter mismatched with standard or optimized away.
-> In both these cases, the func will not be put in BTF and this
-> will prevent fentry/fexit tracing for these functions.
-> 
-> The current parameter checking focuses on the first location/expression
-> to match intended parameter register. But in some cases, the first
-> location/expression does not have expected matching information,
-> but further location like DW_OP_[GNU_]entry_value can provide
-> information which matches the expected parameter register.
-> 
-> Patch 1 supports this; patch 2 adds locking around dwarf_getlocation*
-> as it is unsafe in a multithreaded environment.
-> 
-> Run ~4000 times without observing a segmentation fault (as compared
-> to without patch 2, where a segmentation fault is observed approximately
-> every 200 invokations).
-> 
-> Changes since v1:
-> 
-> - used Eduard's approach of using a __dwarf_getlocations()
->   internal wrapper (Eduard, patch 1).
-> - renamed function to parameter__reg(); did not rename
->   __dwarf_getlocations() since its functionality is based around
->   retrieving DWARF location info rather than parameter register
->   indices (Yonghong, patch 2)
-> - added locking around dwarf_getlocation*() usage in dwarf_loader
->   to avoid segmentation faults reported by Eduard (Jiri, Arnaldo,
->   patch 2)
+The hash_combine() could be trapped when compiled with sanitizer like "zig cc".
+This patch changes parameters to __u32 to fix it.
 
-looks good, I got 95 more functions in clang build including perf_event_read
-and there's no change in generated functions with gcc build
+Signed-off-by: Sidong Yang <sidong.yang@furiosa.ai>
+---
+ tools/lib/bpf/btf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 8befb8103e32..11ccb5aa4958 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -3548,7 +3548,7 @@ struct btf_dedup {
+ 	struct strset *strs_set;
+ };
+ 
+-static long hash_combine(long h, long value)
++static __u32 hash_combine(__u32 h, __u32 value)
+ {
+ 	return h * 31 + value;
+ }
+-- 
+2.42.0
 
-thanks,
-jirka
-
-> 
-> Alan Maguire (1):
->   dwarf_loader: use libdw__lock for dwarf_getlocation(s)
-> 
-> Eduard Zingerman (1):
->   dwarf_loader: Check DW_OP_[GNU_]entry_value for possible parameter
->     matching
-> 
->  dwarf_loader.c | 121 +++++++++++++++++++++++++++++++++++++++----------
->  1 file changed, 96 insertions(+), 25 deletions(-)
-> 
-> -- 
-> 2.31.1
-> 
 
