@@ -1,152 +1,150 @@
-Return-Path: <bpf+bounces-44904-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44905-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7657E9CD4B0
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 01:39:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B9F99CD4B7
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 01:42:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FC241F223BB
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 00:39:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C062FB23F05
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 00:42:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FFF21096F;
-	Fri, 15 Nov 2024 00:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F9E4084D;
+	Fri, 15 Nov 2024 00:41:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="cG/R3c/S"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hp8OcZDJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20FB263B9
-	for <bpf@vger.kernel.org>; Fri, 15 Nov 2024 00:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91AD01096F;
+	Fri, 15 Nov 2024 00:41:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731631150; cv=none; b=cI/rGATYlHol2ba0JLn2S4qUzhIgL900wBUgO/Vwln+rXtI32pqwoUCKd+sW5WoyYLvOGh4TVsD1GTDCUI3YSMeI1pKbQnEGxUy+jldqY4kLIZGRfs7dVKkyGAprbT2y9wEaFRHer2Cvps3O1XlfR466K7xcIIOrK2D5ajMpkCI=
+	t=1731631308; cv=none; b=W0+4661+UtOem0DQXkxC2Yg9MK8TQlVTlTw7k0sqludLaiHzMbpX4+xqaY22yZVpRF5rzHE9zq7ooQQjST2Wgprd/tweMRrZjzxZ9vXBZTq76X2kqzl2/mfQmalHmuJoGGtj7rH4OaCDuaEwdpEC5QvlacmnrdPydrkjaEr56NM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731631150; c=relaxed/simple;
-	bh=xqVTrsJgaqYLpCuVFY8b5Yeks6WAioT3ytYzblQoCLs=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ErCjEgTKQDJEUMdQZtvZ8Nl0gbRMW1+FCofFg8pXKF2jrIe+W8Atl/zqWdFWKrOg55MDvygf7E/fj7WsnMa3p3wIAOCs1P3R6URfezVRavoIuDEfWYyk9ZCg05h7NEKoEqegFafwiS6U5kX7tb9g0LkV1yyyVB0VnEHbwxG3uaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=cG/R3c/S; arc=none smtp.client-ip=185.70.43.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1731631141; x=1731890341;
-	bh=xqVTrsJgaqYLpCuVFY8b5Yeks6WAioT3ytYzblQoCLs=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
-	 List-Unsubscribe:List-Unsubscribe-Post;
-	b=cG/R3c/SzOZLaOi56Im1pHa963Dw1uxyuVnQHtGkQFHsyXd8WEy3Syq5oSNHW9ph8
-	 F9S1fw2W6nkBzCRSuihHkUf9UBSpe0yyo0NMrTQJHquMZ+f0KE6WkVvs8d+M8MUdhq
-	 1mXCaWlFMnaFZ4BQkMm+tUdEHgTbWehmNrD0O44IkOimLf9lMTwJdMJHB+hiCEYYLe
-	 8MWD37MgPrs0UH/ULtdDOm6rNCM+cBBuKaBCZlpv15MpgtFvAVXQqp+jEVwuFy3C09
-	 hzSh1bMJX3QoaBd8Se+lomWtXhHUm0WVzUuNHP9m2hGSHgYa3VHWmYWKygEDGRG5+F
-	 2UKJzFnT9XsJA==
-Date: Fri, 15 Nov 2024 00:38:55 +0000
-To: bpf@vger.kernel.org, andrii@kernel.org
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, mykolal@fb.com
-Subject: [PATCH bpf-next] selftests/bpf: set test path for token/obj_priv_implicit_token_envvar
-Message-ID: <20241115003853.864397-1-ihor.solodrai@pm.me>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: 0425275de50b34d359522147cbb07ae0e9d29707
+	s=arc-20240116; t=1731631308; c=relaxed/simple;
+	bh=0eGjTFcYgGoj8hPrqRlT0CDvGF5RbC0bBVnopIte/c4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=szCmJlNVYzCoc8s0b+SWF5MPKdnuX7vDL38ZSUTNAHnBTf4vB8/a37oM5IQkl0EMSfrFW/7sKODi/jF82328pKMFqd4rUcIvz6WdBKHn6fvGgsT43mU9FOWO6TUu0+8NWseHHf5G37w2K87RTZgK6TwfGRSeL3el/dXKCk5b8iY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hp8OcZDJ; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-38222245a86so489712f8f.1;
+        Thu, 14 Nov 2024 16:41:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731631305; x=1732236105; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8Ch4TFbpDEuiX+VexPStq204AKlKumcG/xHw5pvpktQ=;
+        b=hp8OcZDJfWv9Jsm9SsTvcrCJsXQS5uTWFIxznqOON6/0wRYGM+DMV+/fU45yCPOPz2
+         gxZJqYpC+6UyN9lF+Cok1aCL0r7BSp7elFjagEVFR9xiozFmGyt1ij71vxDSk1IDMm7F
+         EHlQLcv8/oZcnhTG+JC1LupQYNgOGDdyfMlLGhHxC2vWQ5TxolqXCgk3LinIWDQ73BMO
+         yl4DNkBitCpDcshuFbouAT5Tnv1fuGBzul2YOb4qSfblNb736iZLeKpnF+30t2IUji4H
+         7TovwiOP6qkgXCbHxGqX/AKql9DJzzOGp3qXTrCsF3/R9S13b20JObYZCyVcF4+ZHaVm
+         Islw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731631305; x=1732236105;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8Ch4TFbpDEuiX+VexPStq204AKlKumcG/xHw5pvpktQ=;
+        b=FDBVsCU3Uk3u4BA1pIAQHuJTP0BpFwKnHrR/TkKiB3hEOYlaBt6ZIjgH5uFACI9rPq
+         GhgENRqFvp0oDZ9J01JqctVl0kFBNUKuCOk5p8srkqe2y2sOH940qgJRojdjnTziqttv
+         uU6J1mJFXiKjEvlQxHjjzQsHuzxiIgOPtQmidwTdFhnH/QZFpdefgPlBSlUiOLCZWLUV
+         sncIt9a4NtGH+MmBMZz3DrnideOsZ/9uO0Z2xnmCdPrmipRDJXzdwQ8+X+A/90TdSg6+
+         9gxowN2JDohUJWZIGrfLvrl1aAy8f66H+J9zRM+N64/afQ3aF3UcgISi4YY+mq3V8K2P
+         emQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU49ZppMSycDFZwUH6aFkjpyJCjIosEoChq5tXnIS0Vw+qWofB9iOs6HFIG7nsk51+OFeIJ1hcsEXbSYIylmQ==@vger.kernel.org, AJvYcCV6MSoeAoHPO21dYDosB7nQGFpE2VhaX6+WowSudoyj64pcYXxYdeqWsrUUYKLJwTP8txej2McPvBEucm+M@vger.kernel.org, AJvYcCXBeQOaLbe/bwMbJniPBzdGv3Ft1dyVlh7coEqQ5rV7N19kqZBnz0G5IhhjM3d9xKOTzxPSGZspotQSNWtkHxFdp5cD9rdk@vger.kernel.org, AJvYcCXtrVToO2wAcxX7S0l0hEcGaLJfMRbzDRaIzRNMZMckYTFrwfQtg6iwsZH2ft84cz4xDyo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzR/Mxl5JGjbynXYUD5x7uZ6We+l7YilBDHElF09h41uT8/8b2h
+	SM3BIxD5bHKs1uOsUQyoutyx8cvHKXmQGyCJrym+o1ApozmSiV1CFyZlxjNBwcKaQtofzHaW76d
+	NzQVZU25fF0CYUnssyL3mhm8bryk=
+X-Google-Smtp-Source: AGHT+IFE8xhBVAHiZKN085M2hxkV87sb2WFKPHHYgfTzwJpNlqX6EqQovyrHUJuSHWalozXNtjynuL9sDH7REuPinfg=
+X-Received: by 2002:a5d:5c12:0:b0:381:f443:21d0 with SMTP id
+ ffacd0b85a97d-38225ab4464mr589953f8f.59.1731631304689; Thu, 14 Nov 2024
+ 16:41:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20241114084345.1564165-1-song@kernel.org> <20241114084345.1564165-8-song@kernel.org>
+ <CAADnVQK6YyPUzQoPKkXptLHoHXJZ50A8vNPfpDAk8Jc3Z6+iRw@mail.gmail.com> <E5457BFD-F7B9-4077-9EAC-168DA5C271E4@fb.com>
+In-Reply-To: <E5457BFD-F7B9-4077-9EAC-168DA5C271E4@fb.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 14 Nov 2024 16:41:33 -0800
+Message-ID: <CAADnVQJ1um9u4cBpAEw83CS8xZJN=iP8WXdG0Ops5oTP-_NDFg@mail.gmail.com>
+Subject: Re: [RFC/PATCH v2 bpf-next fanotify 7/7] selftests/bpf: Add test for
+ BPF based fanotify fastpath handler
+To: Song Liu <songliubraving@meta.com>
+Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, KP Singh <kpsingh@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, 
+	"repnop@google.com" <repnop@google.com>, Jeff Layton <jlayton@kernel.org>, 
+	Josef Bacik <josef@toxicpanda.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	"gnoack@google.com" <gnoack@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-token/obj_priv_implicit_token_envvar test may fail in an environment
-where the process executing tests can not write to the root path.
+On Thu, Nov 14, 2024 at 3:02=E2=80=AFPM Song Liu <songliubraving@meta.com> =
+wrote:
+>
+>
+>
+> > On Nov 14, 2024, at 12:14=E2=80=AFPM, Alexei Starovoitov <alexei.starov=
+oitov@gmail.com> wrote:
+> >
+> > On Thu, Nov 14, 2024 at 12:44=E2=80=AFAM Song Liu <song@kernel.org> wro=
+te:
+> >>
+> >> +
+> >> +       if (bpf_is_subdir(dentry, v->dentry))
+> >> +               ret =3D FAN_FP_RET_SEND_TO_USERSPACE;
+> >> +       else
+> >> +               ret =3D FAN_FP_RET_SKIP_EVENT;
+> >
+> > It seems to me that all these patches and feature additions
+> > to fanotify, new kfuncs, etc are done just to do the above
+> > filtering by subdir ?
+> >
+> > If so, just hard code this logic as an extra flag to fanotify ?
+> > So it can filter all events by subdir.
+> > bpf programmability makes sense when it needs to express
+> > user space policy. Here it's just a filter by subdir.
+> > bpf hammer doesn't look like the right tool for this use case.
+>
+> Current version is indeed tailored towards the subtree
+> monitoring use case. This is mostly because feedback on v1
+> mostly focused on this use case. V1 itself actually had some
+> other use cases.
 
-Example:
-https://github.com/libbpf/libbpf/actions/runs/11844507007/job/33007897936
+like?
 
-Change default path used by the test to /tmp/bpf-token-fs, and make it
-runtime configurable via an environment variable.
+> In practice, fanotify fastpath can benefit from bpf
+> programmability. For example, with bpf programmability, we
+> can combine fanotify and BPF LSM in some security use cases.
+> If some security rules only applies to a few files, a
+> directory, or a subtree, we can use fanotify to only monitor
+> these files. LSM hooks, such as security_file_open(), are
+> always global. The overhead is higher if we are only
+> interested in a few files.
+>
+> Does this make sense?
 
-Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
----
- tools/testing/selftests/bpf/prog_tests/token.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+Not yet.
+This fanotify bpf filtering only reduces the number of events
+sent to user space.
+How is it supposed to interact with bpf-lsm?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/token.c b/tools/testing=
-/selftests/bpf/prog_tests/token.c
-index fe86e4fdb89c..39f5414b674b 100644
---- a/tools/testing/selftests/bpf/prog_tests/token.c
-+++ b/tools/testing/selftests/bpf/prog_tests/token.c
-@@ -828,8 +828,11 @@ static int userns_obj_priv_btf_success(int mnt_fd, str=
-uct token_lsm *lsm_skel)
- =09return validate_struct_ops_load(mnt_fd, true /* should succeed */);
- }
-=20
-+static const char* token_bpffs_custom_dir() {
-+=09return getenv("BPF_SELFTESTS_BPF_TOKEN_DIR") ? : "/tmp/bpf-token-fs";
-+}
-+
- #define TOKEN_ENVVAR "LIBBPF_BPF_TOKEN_PATH"
--#define TOKEN_BPFFS_CUSTOM "/bpf-token-fs"
-=20
- static int userns_obj_priv_implicit_token(int mnt_fd, struct token_lsm *ls=
-m_skel)
- {
-@@ -892,6 +895,7 @@ static int userns_obj_priv_implicit_token(int mnt_fd, s=
-truct token_lsm *lsm_skel
-=20
- static int userns_obj_priv_implicit_token_envvar(int mnt_fd, struct token_=
-lsm *lsm_skel)
- {
-+=09const char *custom_dir =3D token_bpffs_custom_dir();
- =09LIBBPF_OPTS(bpf_object_open_opts, opts);
- =09struct dummy_st_ops_success *skel;
- =09int err;
-@@ -909,10 +913,10 @@ static int userns_obj_priv_implicit_token_envvar(int =
-mnt_fd, struct token_lsm *l
- =09 * BPF token implicitly, unless pointed to it through
- =09 * LIBBPF_BPF_TOKEN_PATH envvar
- =09 */
--=09rmdir(TOKEN_BPFFS_CUSTOM);
--=09if (!ASSERT_OK(mkdir(TOKEN_BPFFS_CUSTOM, 0777), "mkdir_bpffs_custom"))
-+=09rmdir(custom_dir);
-+=09if (!ASSERT_OK(mkdir(custom_dir, 0777), "mkdir_bpffs_custom"))
- =09=09goto err_out;
--=09err =3D sys_move_mount(mnt_fd, "", AT_FDCWD, TOKEN_BPFFS_CUSTOM, MOVE_M=
-OUNT_F_EMPTY_PATH);
-+=09err =3D sys_move_mount(mnt_fd, "", AT_FDCWD, custom_dir, MOVE_MOUNT_F_E=
-MPTY_PATH);
- =09if (!ASSERT_OK(err, "move_mount_bpffs"))
- =09=09goto err_out;
-=20
-@@ -925,7 +929,7 @@ static int userns_obj_priv_implicit_token_envvar(int mn=
-t_fd, struct token_lsm *l
- =09=09goto err_out;
- =09}
-=20
--=09err =3D setenv(TOKEN_ENVVAR, TOKEN_BPFFS_CUSTOM, 1 /*overwrite*/);
-+=09err =3D setenv(TOKEN_ENVVAR, custom_dir, 1 /*overwrite*/);
- =09if (!ASSERT_OK(err, "setenv_token_path"))
- =09=09goto err_out;
-=20
-@@ -951,11 +955,11 @@ static int userns_obj_priv_implicit_token_envvar(int =
-mnt_fd, struct token_lsm *l
- =09if (!ASSERT_ERR(err, "obj_empty_token_path_load"))
- =09=09goto err_out;
-=20
--=09rmdir(TOKEN_BPFFS_CUSTOM);
-+=09rmdir(custom_dir);
- =09unsetenv(TOKEN_ENVVAR);
- =09return 0;
- err_out:
--=09rmdir(TOKEN_BPFFS_CUSTOM);
-+=09rmdir(custom_dir);
- =09unsetenv(TOKEN_ENVVAR);
- =09return -EINVAL;
- }
---=20
-2.47.0
-
-
+Say, security policy applies to /usr/bin/*
+so lsm suppose to act on all files and subdirs in there.
+How fanotify helps ?
 
