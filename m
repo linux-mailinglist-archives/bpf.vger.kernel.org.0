@@ -1,261 +1,116 @@
-Return-Path: <bpf+bounces-44940-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-44941-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D88B9CDD5A
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 12:19:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1807F9CDD8E
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 12:36:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A337FB246BC
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 11:19:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1DA02816D9
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 11:36:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFD711B85D1;
-	Fri, 15 Nov 2024 11:19:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569C71B6CF4;
+	Fri, 15 Nov 2024 11:36:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HqB1BP1x";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kN03Zm3u";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HqB1BP1x";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kN03Zm3u"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Y7XKslwC"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D0531A9B43;
-	Fri, 15 Nov 2024 11:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B60A18FC84;
+	Fri, 15 Nov 2024 11:36:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731669559; cv=none; b=JB0NNUNT2tJmkMjFI/+SLChkNJxGQrpcjWBpIwFDAyeEebMMACkEpsGRPi1BVI56q0ebzlfw2a+ChwgV/2R9DyMsrHUz0OUfKQX/fcGWVoRCJYw5R6CTZb4h0crDbTCZEoGPuCnTLtI+oXMiy7+Mi5fmohqYVlNBdl+HF9+T+co=
+	t=1731670599; cv=none; b=BPsi5DEJb2Iuby8hnJn+VLvXUufPMT5KsBHBt97kcY2yHSbpdtLyGcrrzVRdtrWh8pHtNs23llPaxX66QTNb4JiXUI7ddCjz8kbYbKSjXsFyN+POyozjxG90NgB11UMXlc13waHk61LQNCNX/KFosYYewfJXLffVj2kWIzOr09g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731669559; c=relaxed/simple;
-	bh=HePw0MhTX+2YKPo/iddO/0Ka/yHkSPd7A7ISGLWLO/U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HSwFOZ84r286Uljuy9Jip6ZrvB0BlJmr40ccQbSW5cQ4jki8f01hfLscZAICb2eSVMqBbbEabLp37O1O6gi7eDx4Qp9+cZK/VCAmI2TPi9/55ldYd72KswjTAGbrhkXyC0jldaT1j+CwzK9S6tY9OryjojKthMXz/yL875k1XvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HqB1BP1x; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kN03Zm3u; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HqB1BP1x; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kN03Zm3u; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 66D4D1F78E;
-	Fri, 15 Nov 2024 11:19:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731669555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I2hitBIn/xJ/t6vXV9cjGhmEmqYY65JSS4l5iwoyulE=;
-	b=HqB1BP1xoRavXLQZ10yzG5Jz95Rxvyz0olma1J6dqoOHKNSzB5h7AijiZCUQSN7xytAVGT
-	EyeUpdI9mp8bVZfgoVg0I1T3WrF8CjSrbRObRU+PdJUG+cGmTBGmY7ppnfTpQ3qciQ6Ami
-	RrjbDej1r1vzTIIpK3PkcP6jI3hLAks=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731669555;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I2hitBIn/xJ/t6vXV9cjGhmEmqYY65JSS4l5iwoyulE=;
-	b=kN03Zm3uq8j++R+E7iMTpLyDYip5aPZ3wpc7polciyLkdruD6FsrHMpcBVW6+tgqnfppb2
-	xyip8F1RpLBa9VCA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731669555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I2hitBIn/xJ/t6vXV9cjGhmEmqYY65JSS4l5iwoyulE=;
-	b=HqB1BP1xoRavXLQZ10yzG5Jz95Rxvyz0olma1J6dqoOHKNSzB5h7AijiZCUQSN7xytAVGT
-	EyeUpdI9mp8bVZfgoVg0I1T3WrF8CjSrbRObRU+PdJUG+cGmTBGmY7ppnfTpQ3qciQ6Ami
-	RrjbDej1r1vzTIIpK3PkcP6jI3hLAks=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731669555;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I2hitBIn/xJ/t6vXV9cjGhmEmqYY65JSS4l5iwoyulE=;
-	b=kN03Zm3uq8j++R+E7iMTpLyDYip5aPZ3wpc7polciyLkdruD6FsrHMpcBVW6+tgqnfppb2
-	xyip8F1RpLBa9VCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 596C613485;
-	Fri, 15 Nov 2024 11:19:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id HyjRFTMuN2eIaAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 15 Nov 2024 11:19:15 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0879FA0986; Fri, 15 Nov 2024 12:19:14 +0100 (CET)
-Date: Fri, 15 Nov 2024 12:19:14 +0100
-From: Jan Kara <jack@suse.cz>
-To: Song Liu <songliubraving@meta.com>
-Cc: Christian Brauner <brauner@kernel.org>, Song Liu <song@kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>,
-	Kernel Team <kernel-team@meta.com>,
-	"andrii@kernel.org" <andrii@kernel.org>,
-	"eddyz87@gmail.com" <eddyz87@gmail.com>,
-	"ast@kernel.org" <ast@kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"martin.lau@linux.dev" <martin.lau@linux.dev>,
-	"viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-	"jack@suse.cz" <jack@suse.cz>,
-	"kpsingh@kernel.org" <kpsingh@kernel.org>,
-	"mattbobrowski@google.com" <mattbobrowski@google.com>,
-	"amir73il@gmail.com" <amir73il@gmail.com>,
-	"repnop@google.com" <repnop@google.com>,
-	"jlayton@kernel.org" <jlayton@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	"mic@digikod.net" <mic@digikod.net>,
-	"gnoack@google.com" <gnoack@google.com>
-Subject: Re: [PATCH bpf-next 2/4] bpf: Make bpf inode storage available to
- tracing program
-Message-ID: <20241115111914.qhrwe4mek6quthko@quack3>
-References: <20241112082600.298035-1-song@kernel.org>
- <20241112082600.298035-3-song@kernel.org>
- <20241113-sensation-morgen-852f49484fd8@brauner>
- <86C65B85-8167-4D04-BFF5-40FD4F3407A4@fb.com>
+	s=arc-20240116; t=1731670599; c=relaxed/simple;
+	bh=Qr+Pzo+6ixiG9UmcoTqd0IUAJDKFScvwt5NMX9rCdzc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tyukMZ1TTXPODfxaJKN0s2ytsjRPfDaIU9gSQAPjyuHnJ6t8wLnFKC35l5qYCEidKBaEdYXwtukAQH9/i1FxeqzDRR1P0gF6DQ+iGR41pfSb6LltiRWfts5QVvaAs5psyu3NoucCepXfB+6UIIJZ+FMLTEnIrfqqgvrs9GMlHK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Y7XKslwC; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AFAHHVL021506;
+	Fri, 15 Nov 2024 11:36:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2023-11-20; bh=F6lWJPZG9iq0xd6xykUJ4TxSwOtzI
+	Xr2bNLi6Yr0YTI=; b=Y7XKslwCMbCNJUUwZ0w8egnBUsK/kKdH3KaDVe0F7yB2z
+	WLkijnyAjB/aBnpS3nOnW9XAdUev7lXjAU5ngI3WFO0pCN3Yqs+259ZP4ISNFgq7
+	yRfBWZcJRaZsqL308NUrjekZOO9somPfBftmhPY1tMYlP4jiDohhPjb7iUUI+EYi
+	ac0kZDxd48XtiozXALGJW+78QLFuiYBMKLSIEkkQIr4dDa///HjW6Pq/WBxQbwro
+	IpkLMb93xhdvAiRBc5wOn3poMl1sINylpd0cooFx5xcvo3vANdYnC2j3074UPj8X
+	k1JqSYMUzlvXgV9LI7OhSZxeA3XChCdxAPt+GlMKQ==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42vsp4mxeb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 15 Nov 2024 11:36:10 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 4AFAaaYl035933;
+	Fri, 15 Nov 2024 11:36:10 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 42sx6c38a3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 15 Nov 2024 11:36:10 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4AFBa9PF010008;
+	Fri, 15 Nov 2024 11:36:09 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-175-214-128.vpn.oracle.com [10.175.214.128])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 42sx6c388q-1;
+	Fri, 15 Nov 2024 11:36:09 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: acme@kernel.org
+Cc: yonghong.song@linux.dev, dwarves@vger.kernel.org, ast@kernel.org,
+        andrii@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, song@kernel.org, eddyz87@gmail.com,
+        olsajiri@gmail.com, Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH v3 dwarves 0/2] Check DW_OP_[GNU_]entry_value for possible parameter matching
+Date: Fri, 15 Nov 2024 11:36:03 +0000
+Message-ID: <20241115113605.1504796-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <86C65B85-8167-4D04-BFF5-40FD4F3407A4@fb.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,meta.com,gmail.com,iogearbox.net,linux.dev,zeniv.linux.org.uk,suse.cz,google.com,toxicpanda.com,digikod.net];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-11-14_05,2024-11-14_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 suspectscore=0 phishscore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
+ definitions=main-2411150099
+X-Proofpoint-ORIG-GUID: 3Z-gptsem9APIg7lmHxAoHs9C9mLZVXS
+X-Proofpoint-GUID: 3Z-gptsem9APIg7lmHxAoHs9C9mLZVXS
 
-Hi Song!
+Currently, pahole relies on DWARF to find whether a particular func
+has its parameter mismatched with standard or optimized away.
+In both these cases, the func will not be put in BTF and this
+will prevent fentry/fexit tracing for these functions.
 
-On Thu 14-11-24 21:11:57, Song Liu wrote:
-> > On Nov 13, 2024, at 2:19 AM, Christian Brauner <brauner@kernel.org> wrote:
-> >> static inline void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
-> >>   bpf_func_t *bpf_func)
-> >> {
-> >> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> >> index 3559446279c1..479097e4dd5b 100644
-> >> --- a/include/linux/fs.h
-> >> +++ b/include/linux/fs.h
-> >> @@ -79,6 +79,7 @@ struct fs_context;
-> >> struct fs_parameter_spec;
-> >> struct fileattr;
-> >> struct iomap_ops;
-> >> +struct bpf_local_storage;
-> >> 
-> >> extern void __init inode_init(void);
-> >> extern void __init inode_init_early(void);
-> >> @@ -648,6 +649,9 @@ struct inode {
-> >> #ifdef CONFIG_SECURITY
-> >> void *i_security;
-> >> #endif
-> >> +#ifdef CONFIG_BPF_SYSCALL
-> >> + struct bpf_local_storage __rcu *i_bpf_storage;
-> >> +#endif
-> > 
-> > Sorry, we're not growing struct inode for this. It just keeps getting
-> > bigger. Last cycle we freed up 8 bytes to shrink it and we're not going
-> > to waste them on special-purpose stuff. We already NAKed someone else's
-> > pet field here.
-> 
-> Per other discussions in this thread, I am implementing the following:
-> 
-> #ifdef CONFIG_SECURITY
->         void                    *i_security;
-> #elif CONFIG_BPF_SYSCALL
->         struct bpf_local_storage __rcu *i_bpf_storage;
-> #endif
-> 
-> However, it is a bit trickier than I thought. Specifically, we need 
-> to deal with the following scenarios:
->  
-> 1. CONFIG_SECURITY=y && CONFIG_BPF_LSM=n && CONFIG_BPF_SYSCALL=y
-> 2. CONFIG_SECURITY=y && CONFIG_BPF_LSM=y && CONFIG_BPF_SYSCALL=y but 
->    bpf lsm is not enabled at boot time. 
-> 
-> AFAICT, we need to modify how lsm blob are managed with 
-> CONFIG_BPF_SYSCALL=y && CONFIG_BPF_LSM=n case. The solution, even
-> if it gets accepted, doesn't really save any memory. Instead of 
-> growing struct inode by 8 bytes, the solution will allocate 8
-> more bytes to inode->i_security. So the total memory consumption
-> is the same, but the memory is more fragmented. 
+The current parameter checking focuses on the first location/expression
+to match intended parameter register. But in some cases, the first
+location/expression does not have expected matching information,
+but further location like DW_OP_[GNU_]entry_value can provide
+information which matches the expected parameter register.
 
-I guess you've found a better solution for this based on James' suggestion.
+Patch 1 supports this; patch 2 adds locking around dwarf_getlocation*
+as it is unsafe in a multithreaded environment.
 
-> Therefore, I think we should really step back and consider adding
-> the i_bpf_storage to struct inode. While this does increase the
-> size of struct inode by 8 bytes, it may end up with less overall
-> memory consumption for the system. This is why. 
->
-> When the user cannot use inode local storage, the alternative is 
-> to use hash maps (use inode pointer as key). AFAICT, all hash maps 
-> comes with non-trivial overhead, in memory consumption, in access 
-> latency, and in extra code to manage the memory. OTOH, inode local 
-> storage doesn't have these issue, and is usually much more efficient: 
->  - memory is only allocated for inodes with actual data, 
->  - O(1) latency, 
->  - per inode data is freed automatically when the inode is evicted. 
-> Please refer to [1] where Amir mentioned all the work needed to 
-> properly manage a hash map, and I explained why we don't need to 
-> worry about these with inode local storage. 
+Alan Maguire (1):
+  dwarf_loader: use libdw__lock for dwarf_getlocation(s)
 
-Well, but here you are speaking of a situation where bpf inode storage
-space gets actually used for most inodes. Then I agree i_bpf_storage is the
-most economic solution. But I'd also expect that for vast majority of
-systems the bpf inode storage isn't used at all and if it does get used, it
-is used only for a small fraction of inodes. So we are weighting 8 bytes
-per inode for all those users that don't need it against more significant
-memory savings for users that actually do need per inode bpf storage. A
-factor in this is that a lot of people are running some distribution kernel
-which generally enables most config options that are at least somewhat
-useful. So hiding the cost behind CONFIG_FOO doesn't really help such
-people.
- 
-I'm personally not *so* hung up about a pointer in struct inode but I can
-see why Christian is and I agree adding a pointer there isn't a win for
-everybody.
+Eduard Zingerman (1):
+  dwarf_loader: Check DW_OP_[GNU_]entry_value for possible parameter
+    matching
 
-Longer term, I think it may be beneficial to come up with a way to attach
-private info to the inode in a way that doesn't cost us one pointer per
-funcionality that may possibly attach info to the inode. We already have
-i_crypt_info, i_verity_info, i_flctx, i_security, etc. It's always a tough
-call where the space overhead for everybody is worth the runtime &
-complexity overhead for users using the functionality...
+ dwarf_loader.c | 123 +++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 98 insertions(+), 25 deletions(-)
 
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.31.1
+
 
