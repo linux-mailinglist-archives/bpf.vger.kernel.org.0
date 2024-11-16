@@ -1,182 +1,144 @@
-Return-Path: <bpf+bounces-45029-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45030-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FFE19D0108
-	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 22:41:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06D579D010A
+	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 22:42:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27CF2286866
-	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 21:41:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9708CB24269
+	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 21:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067FE198841;
-	Sat, 16 Nov 2024 21:41:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C2061ADFE4;
+	Sat, 16 Nov 2024 21:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DNUuzzfX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AOSuNPVL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C99EA15E97;
-	Sat, 16 Nov 2024 21:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C97198841
+	for <bpf@vger.kernel.org>; Sat, 16 Nov 2024 21:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731793308; cv=none; b=bYYXOLxhIhuwZbhV2XNRjxuaDftz8pWzm17t/Om0BpRc+GA0YOZzNinEYhXp+ox5gInMk0RAFHQs+TgCtMvzYpOramRvVyJYR8Q4hynx+KaHJX0mq9rOcHISx4SLJkLxTUwKXJPu1rpSda0JuH/Qv/gui3ih+OQtnOqGUyK0YQs=
+	t=1731793316; cv=none; b=hHy6GCpGHUIIeXVniYuYyqjJJOUo0OOkLAsCGC8Z9EA07J5mq/TeA6Syq7U7MOYjim57/l3PC4ypQlraWRlOSNpYO1Ju2jkiULe1AIdYGqJ6soU0W5gnD0OXCY4Qqg9AtTpI4R4ZEN/7VEoVNkUsqowoTm5ouyLt5CAi/4vxxbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731793308; c=relaxed/simple;
-	bh=rOlrV0T1yge/XKcECTuLt52SugDKbCyjmfsmlMuMuSQ=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lxdXaGVGslqsCSpiecMTuNvlzAUH/D3rG+EaSrNBAf3mWULzstLhtm3CLDtdORyf8K7BdhqAIsFm6cq7jLWPSjcWkYrqriELmc7a69mZ8GhRn2fs62BbGSvvynPPVlq3fcoxZ4ulnmmFh7M1LqOWKiSskxB0zM4+pJpvdB3MZu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DNUuzzfX; arc=none smtp.client-ip=209.85.218.42
+	s=arc-20240116; t=1731793316; c=relaxed/simple;
+	bh=+kEYCGmAIPwQOQilNb6t2y8UUcCGRkgBPsSsBRstrps=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=O/pgMV93UaaOVdf+zDSM9AJH3y83eD9F0sFW2smT1cd28NYT/+BM1WW2uQ3A/ITy3XCS5qh5wPuL6o7MhdADkSF/5S5/yLlSnrsYUKYyX4NpSjNEoxyE6V6ZHts2BahFy3IOtoEKiOuNx8DaYwERFCZsQNTomq0Kt5eq3z/PEzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AOSuNPVL; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a9ed49ec0f1so506666466b.1;
-        Sat, 16 Nov 2024 13:41:46 -0800 (PST)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4315e62afe0so26606675e9.1
+        for <bpf@vger.kernel.org>; Sat, 16 Nov 2024 13:41:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731793305; x=1732398105; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0vMX0IqGCKL/SMwGq+jgppYO3PlvC4SaHpBCmTku15Q=;
-        b=DNUuzzfXPH7gMeA9BW/A31/lCwI/OlMoxY8oFeJBWQ840ZhM4r3hYB5UBP/k3vHgz8
-         YB9AI5MT6r/lZogbXE6W+I0M9bp0p1B325IAqzY09ygpu7fUhLDWbjwIMPP9CfCvO52Q
-         /i4fO4rGaKeTC6l4jx+uiJF8e9ewjOnLy8rguhv/CJx6B+Id39PVgZB9a1n+2AcdSha8
-         4IY+bm3vQtBl37fG+FFsoH7yYkXEQnkRglq+nC6nhkNEkWa2dgad0dwzuxIYHgkfjBsr
-         hgfI/slGMD/si/B5/7kwO8vKxfqzZs8FuyL00y4lV6oNNMOF6bilejnEMCK+leTbcR9a
-         6DKA==
+        d=gmail.com; s=20230601; t=1731793313; x=1732398113; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PAM+JMcevy7dk6/RSgQT/r9T8/npnpybDTB2TzL73lc=;
+        b=AOSuNPVLoQV3BqrXFf5rsb6N87YOi2Jlny0pEP/fafIYM6wFk4DHicSBDpGxbGdBzi
+         ngiW2/rRt7nSFTIoFP7N7OnainHj7PE0mkMDHio/1f8w8xg25yClA/iMT41rtQvOFjD+
+         DZQDArtKU6+6NtLveShoJzQC8GBW3UCRBbE7YiL1pBnfAWuv/LfI7CXuYLHzKIRf21Pd
+         QIWsl47s7x8M+PbrSYwzqNiy/PQppwxhYTcr4VVvwHdGdAkVz86FqGEI5/2f/RbailuN
+         JJX97XYZxMMm2ig5pVDCp1lClOq7f4MWFrq41Ja24L37SvQwf7/yYA3NM/OId/yjQYab
+         X9MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731793305; x=1732398105;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0vMX0IqGCKL/SMwGq+jgppYO3PlvC4SaHpBCmTku15Q=;
-        b=AS564MOVY7E1AOmM7fUJ7hx0UErwZfNqbU5u55bA+7+IA0x0+VAJShKpnGZ930yowo
-         TACCKFwr9X/uE9Xx7dqXWDgy6ve75mlqiGdwp++Hh1uzY7YgpJTWxrf36TShGoVlhl1K
-         j+nm/naNPX7sml1iEc4NDx2BiqGlMcxfyfvalRMn9ueTXudFtrya9rLPBibyZFzIcx1C
-         s1nKJuvS14nxu6eICJCVHhK4MprSUZHd8lCCyf8cfHLwRL0OJYydUUjd0lSnzqe7bZX/
-         9ii0t5yw3E82MuSa9gPygqbwG0U4vQ8ZrkuXUIkQerZuxishizInomUAOJIqWOvcOHhg
-         fPzw==
-X-Forwarded-Encrypted: i=1; AJvYcCV0kY0RZAOZrcIxVgI2y84IgF4cl9PvYuDDT9T6q+cERdEeFe8sNh8T5qnOp20YfdqIniFGH1fP/NaZasr8@vger.kernel.org, AJvYcCVILCUr23vAHL3H0IIBaLM17GITqMT9LXFK9O7jh7gefFkVXZD/qzBZEd+pP7pYNzc51Io=@vger.kernel.org, AJvYcCVp4RFKqz9CXKA0YnlbCXwZ/GDCa6vdroboRojugLfk//+4aXbEcLM6IlbEAXJhvZJAmNY0DWGzFe+RVbKTPoAsj8XY@vger.kernel.org
-X-Gm-Message-State: AOJu0YzziPQ/KLfwv+GQyyh5FHaqnHY9Q1BkeIZ3Gk3V9fsm6QcYFOS4
-	vBDBDpmnnknXwagCqtczgj2lu3qmqN2z4SYWmxiAgK9OG+pbKpfM
-X-Google-Smtp-Source: AGHT+IHqb/LaXEcKiRo4I6dbR49FkuB/lR/1goV5z5QOE/LNlVIua58FP4/nDjADDy7UncS4/aF8eg==
-X-Received: by 2002:a17:906:519:b0:a9f:508:5f5a with SMTP id a640c23a62f3a-aa4a28a3cb5mr146492366b.40.1731793304893;
-        Sat, 16 Nov 2024 13:41:44 -0800 (PST)
-Received: from krava (85-193-35-167.rib.o2.cz. [85.193.35.167])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa20dfffc00sm351293866b.101.2024.11.16.13.41.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Nov 2024 13:41:44 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sat, 16 Nov 2024 22:41:38 +0100
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC perf/core 02/11] uprobes: Make copy_from_page global
-Message-ID: <ZzkRkmxWIIf1fWsC@krava>
-References: <20241105133405.2703607-1-jolsa@kernel.org>
- <20241105133405.2703607-3-jolsa@kernel.org>
- <CAEf4BzaqbBPmCvW5m8VCpxoKMu8B=1yYxAJ64m9gtS=Tg5Rz7g@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1731793313; x=1732398113;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PAM+JMcevy7dk6/RSgQT/r9T8/npnpybDTB2TzL73lc=;
+        b=ejOPZfEcRFODV7SIyI21nnY7/Hx8AJYQQCbkJ9xyGwdWG+qdVo16y1Dk9it9WYA00Y
+         ktsyJIIdOQ1rmeKoSL3Q+mNMMwn6jA29iNKDoyhN+VUb4pKvuI5T5TzGm+kom0hnuupw
+         74HNU2mL+x7NHAcEP5kR5z3vudhgHRdDB8DVOGJN8SuS2P0g91+O9jAKnNu6vK5MHC3O
+         yMSoxZYDRwqdRk28h6Sxfmb3iJikxnSeCK/cIB9FxRfENNI+hh31lihsB5AqSTsAs75W
+         oTm9xPu2/sKq0gohcr0wwRivDLaL7CTRuPszPU4shGsQh+khLe0YbYBCZ9WfrDsIizdL
+         fCCg==
+X-Gm-Message-State: AOJu0YzPGd4cIXWOFfhwhWXqi/DnjGyKUmTJONUTOb0Bu0GmPb182L3/
+	j5cmJWEO2Z3lssxnLmoenjyZ13FsKUfAy0idgmbaES9N3uTHpRUtKXv+ReW4de65lJDZmdsh+8U
+	WMu+YZAxEHgn+QbQDPYMpdcIra8E=
+X-Google-Smtp-Source: AGHT+IGf6gvN4jEx9YE+20Lv/GedyixsQFvTvgnVK1Sa8wmWxB4twDEATHAbbcPt3p8ZgQ7C8Z7ymWZzsPrWh16AW54=
+X-Received: by 2002:a05:600c:4505:b0:431:1868:417f with SMTP id
+ 5b1f17b1804b1-432df74be9amr71917705e9.17.1731793313022; Sat, 16 Nov 2024
+ 13:41:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzaqbBPmCvW5m8VCpxoKMu8B=1yYxAJ64m9gtS=Tg5Rz7g@mail.gmail.com>
+References: <20241116014854.55141-1-alexei.starovoitov@gmail.com>
+ <20241116194202.GR22801@noisy.programming.kicks-ass.net> <CAADnVQLOyY=Jvibq-hnv6dpXy+hAJFWojyHh7wuEiMn-itMvaw@mail.gmail.com>
+ <CAADnVQLA9CkUtcEyjvrTCPZfMWdDXGRzr1O-GD58XM6xjfLTJg@mail.gmail.com>
+In-Reply-To: <CAADnVQLA9CkUtcEyjvrTCPZfMWdDXGRzr1O-GD58XM6xjfLTJg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 16 Nov 2024 13:41:41 -0800
+Message-ID: <CAADnVQJm64vyeXehTVRbyFqHuuPQWgD-iBYqCChjQE+tHTbKGA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] mm, bpf: Introduce __GFP_TRYLOCK for
+ opportunistic page allocation
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Hou Tao <houtao1@huawei.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev, Michal Hocko <mhocko@suse.com>, 
+	Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 14, 2024 at 03:40:58PM -0800, Andrii Nakryiko wrote:
-> On Tue, Nov 5, 2024 at 5:34 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Sat, Nov 16, 2024 at 1:34=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sat, Nov 16, 2024 at 1:13=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > Making copy_from_page global and adding uprobe prefix.
+> > On Sat, Nov 16, 2024 at 11:42=E2=80=AFAM Peter Zijlstra <peterz@infrade=
+ad.org> wrote:
+> > >
+> > > On Fri, Nov 15, 2024 at 05:48:53PM -0800, Alexei Starovoitov wrote:
+> > > > +static inline struct page *try_alloc_page_noprof(int nid)
+> > > > +{
+> > > > +     /* If spin_locks are not held and interrupts are enabled, use=
+ normal path. */
+> > > > +     if (preemptible())
+> > > > +             return alloc_pages_node_noprof(nid, GFP_NOWAIT | __GF=
+P_ZERO, 0);
+> > >
+> > > This isn't right for PREEMPT_RT, spinlock_t will be preemptible, but =
+you
+> > > very much do not want regular allocation calls while inside the
+> > > allocator itself for example.
 > >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/linux/uprobes.h |  1 +
-> >  kernel/events/uprobes.c | 10 +++++-----
-> >  2 files changed, 6 insertions(+), 5 deletions(-)
+> > I'm aware that spinlocks are preemptible in RT.
+> > Here is my understanding of why the above is correct...
+> > - preemptible() means that IRQs are not disabled and preempt_count =3D=
+=3D 0.
 > >
-> > diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> > index 2f500bc97263..28068f9fcdc1 100644
-> > --- a/include/linux/uprobes.h
-> > +++ b/include/linux/uprobes.h
-> > @@ -213,6 +213,7 @@ extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
-> >  extern void uprobe_handle_trampoline(struct pt_regs *regs);
-> >  extern void *arch_uretprobe_trampoline(unsigned long *psize);
-> >  extern unsigned long uprobe_get_trampoline_vaddr(void);
-> > +extern void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len);
-> >  #else /* !CONFIG_UPROBES */
-> >  struct uprobes_state {
-> >  };
-> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > index 0b04c051d712..e9308649bba3 100644
-> > --- a/kernel/events/uprobes.c
-> > +++ b/kernel/events/uprobes.c
-> > @@ -250,7 +250,7 @@ bool __weak is_trap_insn(uprobe_opcode_t *insn)
-> >         return is_swbp_insn(insn);
-> >  }
+> > - All page alloc operations are protected either by
+> > pcp_spin_trylock() or by spin_lock_irqsave(&zone->lock, flags)
+> > or both together.
 > >
-> > -static void copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len)
-> > +void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len)
-> >  {
-> >         void *kaddr = kmap_atomic(page);
-> >         memcpy(dst, kaddr + (vaddr & ~PAGE_MASK), len);
-> > @@ -278,7 +278,7 @@ static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t
-> >          * is a trap variant; uprobes always wins over any other (gdb)
-> >          * breakpoint.
-> >          */
-> > -       copy_from_page(page, vaddr, &old_opcode, UPROBE_SWBP_INSN_SIZE);
-> > +       uprobe_copy_from_page(page, vaddr, &old_opcode, UPROBE_SWBP_INSN_SIZE);
-> >         is_swbp = is_swbp_insn(&old_opcode);
+> > - In non-RT spin_lock_irqsave disables IRQs, so preemptible()
+> > check guarantees that we're not holding zone->lock.
+> > The page alloc logic can hold pcp lock when try_alloc_page() is called,
+> > but it's always using pcp_trylock, so it's still ok to call it
+> > with GFP_NOWAIT. pcp trylock will fail and zone->lock will proceed
+> > to acquire zone->lock.
 > >
-> >         if (is_swbp_insn(new_opcode)) {
-> > @@ -1027,7 +1027,7 @@ static int __copy_insn(struct address_space *mapping, struct file *filp,
-> >         if (IS_ERR(page))
-> >                 return PTR_ERR(page);
-> >
-> > -       copy_from_page(page, offset, insn, nbytes);
-> > +       uprobe_copy_from_page(page, offset, insn, nbytes);
-> >         put_page(page);
-> >
-> >         return 0;
-> > @@ -1368,7 +1368,7 @@ struct uprobe *uprobe_register(struct inode *inode,
-> >                 return ERR_PTR(-EINVAL);
-> >
-> >         /*
-> > -        * This ensures that copy_from_page(), copy_to_page() and
-> > +        * This ensures that uprobe_copy_from_page(), copy_to_page() and
-> 
-> rename copy_to_page() for symmetry?
+> > - In RT spin_lock_irqsave doesn't disable IRQs despite its name.
+> > It calls rt_spin_lock() which calls rcu_read_lock()
+> > which increments preempt_count.
+>
+> The maze of ifdef-s beat me :(
+> It doesn't increment in PREEMPT_RCU.
+> Need an additional check then. hmm.
 
-ok
+Like:
+if (preemptible() && !rcu_preempt_depth())
+  return alloc_pages_node_noprof(nid, GFP_NOWAIT | __GFP_ZERO, 0);
 
-jirka
-
-> 
-> 
-> >          * __update_ref_ctr() can't cross page boundary.
-> >          */
-> >         if (!IS_ALIGNED(offset, UPROBE_SWBP_INSN_SIZE))
-> > @@ -2288,7 +2288,7 @@ static int is_trap_at_addr(struct mm_struct *mm, unsigned long vaddr)
-> >         if (result < 0)
-> >                 return result;
-> >
-> > -       copy_from_page(page, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE);
-> > +       uprobe_copy_from_page(page, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE);
-> >         put_page(page);
-> >   out:
-> >         /* This needs to return true for any variant of the trap insn */
-> > --
-> > 2.47.0
-> >
+Not pretty, but should do.
+wdyt?
 
