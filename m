@@ -1,132 +1,112 @@
-Return-Path: <bpf+bounces-45004-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45005-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE5E29CFC4B
-	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 02:49:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B344C9CFC60
+	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 03:41:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73C58288877
-	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 01:49:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3A43B27C21
+	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 02:41:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87FF718C004;
-	Sat, 16 Nov 2024 01:49:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9BC23C9;
+	Sat, 16 Nov 2024 02:41:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JWyMYmle"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ND8xm/n7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE1012913
-	for <bpf@vger.kernel.org>; Sat, 16 Nov 2024 01:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E40982A1BF;
+	Sat, 16 Nov 2024 02:41:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731721745; cv=none; b=kQHkMAXMRLRxVuqA+WWZY7KM4K9AGgwxCEPnQ74fW23+hYhYNEoDVhU0AhxIB7h8brNue6RtYLWdGBDIgTG6LKBjhmAt4/uYCiU28/WzQi+3grucEOraIGpo3XAc5LrZvT3mfMNrfja5GXEfw/nrF/aH7FV34Ewo8e6qV9doEYk=
+	t=1731724862; cv=none; b=kHTnwVYFzlbNWl4zPGqMi5dFfuz+ySjGJ4Bu57qkmQFJUkiNpwl3MiBxF8Qgn9LpWI++NhcDZlGbgaKfsGZL94CeAGUIU5NQky8789SdZMFLvyEsEVg/E/vM5A80C11XRFqaA80VhJXH38IgNvrTXAwf0DQGRxktY32Nc1tC8yI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731721745; c=relaxed/simple;
-	bh=lSwWfuCW9PE91B6KJS6oLIv5NXEAEObVlt6JhSndn6A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QrtE3iIvJp0T/8by8hjbtvPwm/buZEdVyVjyAFPpylnMb8b5ub605EtgJpfgV3qMIKdl5l8oNOkqlyWU8FoqHDTJ6PbqrhxByGzStU7b5yZr2y4+YnZYXo4zGBIgQ8+EQoG/DTWn9Rj6ebcYzrR8+GjlSDR/NiJPjdSWS9g8oR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JWyMYmle; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2e2eb9dde40so1050628a91.0
-        for <bpf@vger.kernel.org>; Fri, 15 Nov 2024 17:49:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731721742; x=1732326542; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EQx3r5mMfkKCKYgKnvoSO6BlBctlynKxVbPBT4K9QIk=;
-        b=JWyMYmle/xeUM79OcHozHMIYISIB4plHjlvW3qvqy+sExkNunXiSJVO85GOfubA9+y
-         VF+7Fi5jBSOQgAT9Wzb2/uuugDrXp3h2jn2C7YEeu1uhk7AdWVqZ53yEAwWv0EupxQO9
-         Vi2H9LrYM4JsrNuPrCH5FqVaVb1pX3D/QWRWSTsZFid6w/zfEDe9ThCCEywE/TppFi0J
-         4JCSEpvtObY6W/8jWyUUAYayfNlu4HsMPN1lQGipdv6AJsdn/xur39hD4eOLhGe6Ak7b
-         xcptDMiQ+pZf3oJILZNp3kldk2zpAa3bZoEUoDBv6Or2EBCAIBlMlNQTmtVP2Gs751i5
-         ms1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731721742; x=1732326542;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EQx3r5mMfkKCKYgKnvoSO6BlBctlynKxVbPBT4K9QIk=;
-        b=OiJI6C8jPJwC7CNr5L+eOrDvrDQPiXEWWY+kCR1rQbX3/Lf3PN7e9szx999tTNBbu1
-         vCy/Qyti88u1VSZxAOnYyK7gLBJqfxGkm+E0ZRbjGzL8EtqwrUK9NPobr3kqtdEzsHaE
-         Ch87q+Wdv99daHT2O82VBztxRE+zomDHvQFuXz8CMgXbrk66EuwWsHSKf8MPTeX1zHol
-         dI+UOhBQYFyfmJtnJGg9KevKK85eKQUecKvOiMbo/ix9vtcmLu/WV6uf3191LzGqY8R+
-         rqvWMLVHTxaTmTXTVS1ay36+LoNqal/j4YJkRH4k95MoiZkhT6oJZwq99lYz/c9fgXve
-         my8g==
-X-Gm-Message-State: AOJu0YyctihWGIuzcCdkXaowMdwtiMVspFaIaoUuxAHwbDaEP/+5Fljx
-	iYFiw2U8IqSSbhnU4RJBC0EPgAPLOP5ml3b7LHn5pOQJuZ52pouiUCHzsA==
-X-Google-Smtp-Source: AGHT+IEgHpH9AjNO4IF0+21XofZgAxvjxp9bfZDCDBA88H84ASylOHL4q9vvZJ9MPtwKF8HTV/85lw==
-X-Received: by 2002:a17:90b:48c4:b0:2e2:bd7a:71ea with SMTP id 98e67ed59e1d1-2ea154cf3c7mr6322465a91.8.1731721742130;
-        Fri, 15 Nov 2024 17:49:02 -0800 (PST)
-Received: from macbook-pro-49.lan ([2603:3023:16e:5000:1863:9460:a110:750b])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ea02495986sm3606970a91.15.2024.11.15.17.48.59
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 15 Nov 2024 17:49:01 -0800 (PST)
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: bpf@vger.kernel.org
-Cc: andrii@kernel.org,
-	memxor@gmail.com,
-	akpm@linux-foundation.org,
-	peterz@infradead.org,
-	vbabka@suse.cz,
-	houtao1@huawei.com,
-	hannes@cmpxchg.org,
-	shakeel.butt@linux.dev,
-	mhocko@suse.com,
-	tj@kernel.org,
-	linux-mm@kvack.org,
-	kernel-team@fb.com
-Subject: [PATCH bpf-next 2/2] bpf: Use try_alloc_page() to allocate pages for bpf needs.
-Date: Fri, 15 Nov 2024 17:48:54 -0800
-Message-Id: <20241116014854.55141-2-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20241116014854.55141-1-alexei.starovoitov@gmail.com>
-References: <20241116014854.55141-1-alexei.starovoitov@gmail.com>
+	s=arc-20240116; t=1731724862; c=relaxed/simple;
+	bh=QzEHm+NBAWswWMxRYSx9ZLwy0c7HR2Yt/M1ynYrRliw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=k5h1uqFNF2398XZshxcU69/V+mepAI2JZ5xrszQOaxAspW8woJ7QBEqXclbQQxZ2RIbK9XLBDUreKqIC9i31VA+AmaVNH8eRd4+0jGG460wNxWreJFmmeJNI7sd/fRH4+UGCchTFGyX8o93YSQXinwxsyPEAPg/zKDVsWixpuMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ND8xm/n7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87381C4CECF;
+	Sat, 16 Nov 2024 02:41:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731724861;
+	bh=QzEHm+NBAWswWMxRYSx9ZLwy0c7HR2Yt/M1ynYrRliw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ND8xm/n7S2+0ZAGq4sFr07MqYAhobzXnr5eI23h0NhDtEOwQR/ckxTR21T6xB3TOj
+	 sTzHawDMHwGn3yva8JL6jxOPvHHtKyztscn+p/iNzO8VM7fIxQ6EgZgiRi68JSc6jX
+	 2J5OEXK58oACR2WltOp8u6AL5mYUBevftFr0avh2uPubuG6WpfIzNb0jSoOnYD8kb4
+	 qbTjto4PpAo0o8vd0wUAbmVQYrKg/u12yK53kDQ7I0sBDcMxvSxktFckSSO+CQ7E5a
+	 7jVWZGB4pxirv75KR9DmVttbAsvuXxz9a2HhduhqXf+rSBk2qtG+cGTYtMjyZa8VSi
+	 MIas3fLw4CLbQ==
+Date: Fri, 15 Nov 2024 18:40:59 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Toke
+ =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John
+ Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Stanislav Fomichev
+ <sdf@fomichev.me>, Magnus Karlsson <magnus.karlsson@intel.com>,
+ nex.sw.ncis.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5 11/19] xdp: add generic xdp_buff_add_frag()
+Message-ID: <20241115184059.3b369970@kernel.org>
+In-Reply-To: <20241113152442.4000468-12-aleksander.lobakin@intel.com>
+References: <20241113152442.4000468-1-aleksander.lobakin@intel.com>
+	<20241113152442.4000468-12-aleksander.lobakin@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Alexei Starovoitov <ast@kernel.org>
+On Wed, 13 Nov 2024 16:24:34 +0100 Alexander Lobakin wrote:
+> +static inline bool __xdp_buff_add_frag(struct xdp_buff *xdp, struct page *page,
+> +				       u32 offset, u32 size, u32 truesize,
+> +				       bool try_coalesce)
+> +{
+> +	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
+> +	skb_frag_t *prev;
+> +	u32 nr_frags;
+> +
+> +	if (!xdp_buff_has_frags(xdp)) {
+> +		xdp_buff_set_frags_flag(xdp);
+> +
+> +		nr_frags = 0;
+> +		sinfo->xdp_frags_size = 0;
+> +		sinfo->xdp_frags_truesize = 0;
+> +
+> +		goto fill;
+> +	}
+> +
+> +	nr_frags = sinfo->nr_frags;
+> +	if (unlikely(nr_frags == MAX_SKB_FRAGS))
+> +		return false;
+> +
+> +	prev = &sinfo->frags[nr_frags - 1];
+> +	if (try_coalesce && page == skb_frag_page(prev) &&
+> +	    offset == skb_frag_off(prev) + skb_frag_size(prev))
+> +		skb_frag_size_add(prev, size);
 
-Incomplete patch.
+don't we have to release the reference if we coalesced?
 
-If the __GFP_TRYLOCK approach is acceptable the support
-for memcg charging and async page freeing will follow.
-
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- kernel/bpf/syscall.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 58190ca724a2..26e6cffb2fe9 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -581,12 +581,14 @@ int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
- 	old_memcg = set_active_memcg(memcg);
- #endif
- 	for (i = 0; i < nr_pages; i++) {
--		pg = alloc_pages_node(nid, gfp | __GFP_ACCOUNT, 0);
-+		/* TODO: add async memcg charge */
-+		pg = try_alloc_page(nid);
- 
- 		if (pg) {
- 			pages[i] = pg;
- 			continue;
- 		}
-+		/* TODO: add async page free */
- 		for (j = 0; j < i; j++)
- 			__free_page(pages[j]);
- 		ret = -ENOMEM;
--- 
-2.43.5
+> +	else
+> +fill:
+> +		__skb_fill_page_desc_noacc(sinfo, nr_frags++, page,
+> +					   offset, size);
+> +
+> +	sinfo->nr_frags = nr_frags;
+> +	sinfo->xdp_frags_size += size;
+> +	sinfo->xdp_frags_truesize += truesize;
+> +
+> +	return true;
+> +}
 
 
