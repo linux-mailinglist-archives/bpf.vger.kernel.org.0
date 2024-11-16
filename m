@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-45035-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45036-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 984609D0113
-	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 22:45:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D92509D0115
+	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 22:45:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 583C82868E9
-	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 21:45:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69E5F1F23B37
+	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 21:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCF41AED3F;
-	Sat, 16 Nov 2024 21:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B072E1AAE33;
+	Sat, 16 Nov 2024 21:45:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kVqARUZY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lrBC4ibE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A89091AC450;
-	Sat, 16 Nov 2024 21:44:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CEC3CA5A;
+	Sat, 16 Nov 2024 21:45:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731793498; cv=none; b=pIs1cl7Q3SSL9uE49McTNwUheuYlYShJBffH+xQwQxxqF9p7oxDQ69tBv1AD+9090SyTGzHAa5r9sTYhCILdwLc7SHQg0p0A3lvO0ugs5tgicaOk1M6A9awdlLaowCpfTeL9t4nPDqBzVT3pPOt3z70oYUtF4uMqJvZ4dvpD3CI=
+	t=1731793518; cv=none; b=mxcK/cP9lLneKikR5E6pfpDhj+W9un5GrN/JmIDf++0y+gS0o9Tkbom2SnrBR/vg9gureUimeGIV9D9uNG2IDrsOWf4zcsRVqQpJA6O34pkgpJBBx0FXC4pCoo5JR9Jsxhs84K092I5KCUcBvuQ5jL1R8Dwg8R3fRrhh2gdvvXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731793498; c=relaxed/simple;
-	bh=sOx2Ag0ScF8wh6TtmKiWfjtR9qFeYTMPg62TLje5hG8=;
+	s=arc-20240116; t=1731793518; c=relaxed/simple;
+	bh=VA7G5R4OMbjA1umZrQ3nYQZKZu+s12TK7GTSpfwkWlM=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GxRlt1nmjL2PCnQ9hzaPzzKtYmsQzVqoMkb0kaYTFnlIDVFL8lTfoEnT1H6p6sJ7iudjvLYD70RsDMREjXOJimnrQsvuG22u6OT9axpLxNqI82wSS4I61fcMEsjtB/A4Z/1x2avJmz+YP078UZ/eSSR61sCBcQZp3I2EkKUh1rA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kVqARUZY; arc=none smtp.client-ip=209.85.208.45
+	 Content-Type:Content-Disposition:In-Reply-To; b=KHXAAgN6lP36hASyhF8xH+lwwxlNsWbBuR64ziBUA0FcpHjt6qXNd3XW6wDr7oBe7DTUHYWPaFmwOCtz1W6P085AAWWdrBsEBgIGQZgG0g8BVijGVHq/UAIF4zqPMkCq4ljVQ1HF73eFYlP9I/X4YrFMUmxDE3fUA07u0tn2YT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lrBC4ibE; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5cfabc686c8so796982a12.0;
-        Sat, 16 Nov 2024 13:44:56 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aa3a79d4d59so491191566b.3;
+        Sat, 16 Nov 2024 13:45:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731793495; x=1732398295; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1731793515; x=1732398315; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=SvxeYy13y2KqrurgQrjcUr3Ij+2mb9+VDwgtgoU+jXU=;
-        b=kVqARUZYF5qTgBIRHeMpQtZIjJLmN/a7fBn6GZ3hHgUkgf2asblgBbXvb5gT1k05dy
-         gtpJxQLWWAonHkgLnx+Hmi4NWC93YFOf4bWWfq5MUAOJqyoBoGW4lpc/Y77oziYwXFsR
-         b4PF8akfii6Ahf/iJE8LyR/EDnipM4+qq0l5iKA2F+QfqVjG6/XVVq5vo6ZdhZ4gIQTZ
-         r6MOH1DD21Fr08P01XFDMPjxZkUmLA6I7QqLlsJ9GgFnpO59VoyoUqxxcyqizkorT5Uo
-         HkwZqcKRUUPcJUw5Een5isMaklPbjTw9JxO3zySzWcgaG0YfJprrvndbPnvx3ZEwVOnU
-         FrGg==
+        bh=Eirc8liM9DGwCdKXydsX14lymRZu7XA+FZBPTFnkgWE=;
+        b=lrBC4ibEM4oxb7oHFhQRClx0XsForhzxAJD9e/ZM0yjCQHSUjvIvs0nDCBMNqc98kc
+         atAACnrXDxjxZRGkYM2dpjoHGrxKw/FBVihZiPmLruV30uR0cQ0zYW1n0fVe88unJWVD
+         gx8LmPZcT84jzDD0VqY+191DKdPpsEMRhnbwhzs6Fmb75dEtwf9Pm+MDBPvERKq46n+w
+         tk/2JWmDoTvxpOse0gJY/o7zWVjBqzdGJ3mLo3vD20lQXUNdhOQlcUrMKhX1CQ0d7Nyv
+         V0qezn0lI2dh14SBLfBaHn3ReJwzM25wmnTdS6SSu6b+zEjU/hmTngTOgyYxkMQ0PEe8
+         1mvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731793495; x=1732398295;
+        d=1e100.net; s=20230601; t=1731793515; x=1732398315;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SvxeYy13y2KqrurgQrjcUr3Ij+2mb9+VDwgtgoU+jXU=;
-        b=IdMq4jAgmbk3YmsGTvE13Q5lpnvPRv5ThA6KZlOuT42rEmBJhTfrk3UeiUM6j8NfEm
-         QAKuRCzLMprdphSR2ooONcHE2OOIV4BF5c3dtz/wLx0QT9X67vBpbo566JZNyd8XWIUo
-         /I270XG6ruwpZ9b+sYV6zxPnmepu9KIdJi4J+KmKdhpiaxKIIpREowShMBAWbEHADofN
-         6HADL5pUrTZeH0KApGS6VCkGCZhA9gsfqFsmXF+NEQl+7vBDqqKLwAj08e6CCAt+JKvX
-         05EhxDH6qixdw97EITatW1GjE7sTfQo7N/6syOTuxQjA3isiBFD+5Vxjjh6SGtnb/D3J
-         /e6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU3hbXlSasy9n/Q4lm11dxt/p8cVm7Mi/P0VlIdBsEwK6Xh4JtyWaNAGlflNcLhPo5JCHb0XRr4eL3u+LA6y82VR1WU@vger.kernel.org, AJvYcCVMOaDhPWwKquExb5GeDoKXkKYTCbrPfkEscdxaT9oBFRQPe9zG8xAjxcjSGOR2mT05uwV2FMxo3oY1GDXB@vger.kernel.org, AJvYcCWToU1b8m/Nb5upw+0N1YTBBhWG4WDPz6LMsL6TRxsk+6dxpWuj69J8HQehaNSYb7ahBCA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxG7JiOxyg2Ttp8FUeSosPl0zAz0BVhMZmC4CBYomqkJn4Mo4vN
-	IJbxN5zJYJLBu2ZpbNDdxjf+d8C9SUSUnIGHzxqW8E4TOg/6nqMa
-X-Google-Smtp-Source: AGHT+IFTdILf4UHjnranbaprGYH2Kv3R3ibtgHBCwc+0MjAOehWBsJTzA54DJtm2+4ZsdmJaId5K3Q==
-X-Received: by 2002:a05:6402:26c4:b0:5cf:b9a0:399c with SMTP id 4fb4d7f45d1cf-5cfb9a03a11mr685277a12.31.1731793494859;
-        Sat, 16 Nov 2024 13:44:54 -0800 (PST)
+        bh=Eirc8liM9DGwCdKXydsX14lymRZu7XA+FZBPTFnkgWE=;
+        b=OKKMSEDf4YyQKdsYCQG5o7GwmmywznRJa7qgXBNx7kQgO7bsYGsqZqZOi05bc+Pwfq
+         5bPofgzDvgzH6E5ZCCIgn/wKn3tzbsLciDHauafKR3rgYNYsJQxBJpiZcamLr3qyyqgy
+         kB2by0TKPCtnEuMwFE1545vwXByQHSHsm1Ejlz9pMuOHB+25nay7ol7bn77InVIMqEXC
+         bVv07ATMoAW2zgT/KH+K7KtJj7ijjRk9to/dn1KrtPQbv5Q2siFq17ufnXW7hRKlqCDi
+         bmZ9HXj3p5Pa0tfTNnLlXNpVi6oSY7tDq5WtldzV6VTPSPvNabx/zl8PHC22bCGB6X4f
+         hRpw==
+X-Forwarded-Encrypted: i=1; AJvYcCU5wqMZ2yEp7inXckskYFF+ztJAo+DxKPaswpl1eCDuL7jrUMnptie+yfUMf78BOf5OSyC6Axq5jEL5zZrr@vger.kernel.org, AJvYcCUmXm6nuzF7uBRDHIeM6wlnMtkCKzslm94qIhkvV471ZZIxDQl0omvlxV+nw7cmf5S+y4ZMzboM2GSK9auHP3AjmwKi@vger.kernel.org, AJvYcCWUj748Qfu7toEFIqqyUbe2wHTFLdOGtz6YWJ5oAy1v7qtU7WHbKitsaUj5JFOpKByrRc0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YymYQGykg9hfChNEnp7EKiNbPZqueqATMwwT3P1hRBtPkzdJZp/
+	PV3O0WERhp4zE2FY5R3z2wChVeAaOmlcn+Z7L1LHYUtefsgDGGVQ
+X-Google-Smtp-Source: AGHT+IGtTukmbY9nZP1NMptqVSU5ZMJ1WFIOBJBYgnN9XAmN80g9H7SJdz8E0TqS9eGvKw3ftrfOYA==
+X-Received: by 2002:a17:907:1b2a:b0:a9e:82d2:3168 with SMTP id a640c23a62f3a-aa483525ea9mr697639266b.46.1731793514524;
+        Sat, 16 Nov 2024 13:45:14 -0800 (PST)
 Received: from krava (85-193-35-167.rib.o2.cz. [85.193.35.167])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5cf79ba2cccsm2962592a12.34.2024.11.16.13.44.53
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa20df268d5sm345366866b.5.2024.11.16.13.45.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Nov 2024 13:44:54 -0800 (PST)
+        Sat, 16 Nov 2024 13:45:14 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sat, 16 Nov 2024 22:44:51 +0100
+Date: Sat, 16 Nov 2024 22:45:01 +0100
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
@@ -79,12 +79,11 @@ Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Alan Maguire <alan.maguire@oracle.com>,
 	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC perf/core 07/11] uprobes/x86: Add support to optimize
- uprobes
-Message-ID: <ZzkSUwQio_HaY5Ka@krava>
+Subject: Re: [RFC bpf-next 09/11] selftests/bpf: Add usdt trigger bench
+Message-ID: <ZzkSXTjGxNGnpzZX@krava>
 References: <20241105133405.2703607-1-jolsa@kernel.org>
- <20241105133405.2703607-8-jolsa@kernel.org>
- <CAEf4BzYH8YvNLjBPB5sBQ-gz3GkvCVBbU1JCxqpHoVb9Zq51Gw@mail.gmail.com>
+ <20241105133405.2703607-10-jolsa@kernel.org>
+ <CAEf4BzaXvdXr4dyHrozWYyMHJor5GpaHnPF8=8qy0r_5Crb3wg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,137 +93,158 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYH8YvNLjBPB5sBQ-gz3GkvCVBbU1JCxqpHoVb9Zq51Gw@mail.gmail.com>
+In-Reply-To: <CAEf4BzaXvdXr4dyHrozWYyMHJor5GpaHnPF8=8qy0r_5Crb3wg@mail.gmail.com>
 
-On Thu, Nov 14, 2024 at 03:44:20PM -0800, Andrii Nakryiko wrote:
+On Thu, Nov 14, 2024 at 03:40:53PM -0800, Andrii Nakryiko wrote:
 > On Tue, Nov 5, 2024 at 5:35 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > Putting together all the previously added pieces to support optimized
-> > uprobes on top of 5-byte nop instruction.
+> > Adding usdt trigger bench to meassure optimized usdt probes.
 > >
-> > The current uprobe execution goes through following:
-> >   - installs breakpoint instruction over original instruction
-> >   - exception handler hit and calls related uprobe consumers
-> >   - and either simulates original instruction or does out of line single step
-> >     execution of it
-> >   - returns to user space
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/testing/selftests/bpf/bench.c           |  2 +
+> >  .../selftests/bpf/benchs/bench_trigger.c      | 45 +++++++++++++++++++
+> >  .../selftests/bpf/progs/trigger_bench.c       | 10 ++++-
+> >  3 files changed, 56 insertions(+), 1 deletion(-)
 > >
-> > The optimized uprobe path
-> >
-> >   - checks the original instruction is 5-byte nop (plus other checks)
-> >   - adds (or uses existing) user space trampoline and overwrites original
-> >     instruction (5-byte nop) with call to user space trampoline
-> >   - the user space trampoline executes uprobe syscall that calls related uprobe
-> >     consumers
-> >   - trampoline returns back to next instruction
-> >
-> > This approach won't speed up all uprobes as it's limited to using nop5 as
-> > original instruction, but we could use nop5 as USDT probe instruction (which
-> > uses single byte nop ATM) and speed up the USDT probes.
 > 
-> As discussed offline, it's not as simple as just replacing nop1 with
-> nop5 in USDT definition due to performance considerations on old
-> kernels (nop5 isn't fast as far as uprobe is concerned), but I think
-> we'll be able to accommodate transparent "nop1 or nop5" behavior in
-> user space, we'll just need a careful backwards compatible extension
-> to USDT definition.
-> 
-> BTW, do you plan to send an optimization for nop5 to avoid
-> single-stepping them? Ideally we'd just handle any-sized nop, so we
-> don't have to do this "nop1 or nop5" acrobatics in the future.
+> Why not just adding uprobe-nop5 benchmark instead of going all the way
+> into USDT? Seems simpler and will benchmark all the same stuff?
 
-I'll prepare that, but I'd like to check on the alternative calls
-you suggested first
-
-> 
-> >
-> > This patch overloads related arch functions in uprobe_write_opcode and
-> > set_orig_insn so they can install call instruction if needed.
-> >
-> > The arch_uprobe_optimize triggers the uprobe optimization and is called after
-> > first uprobe hit. I originally had it called on uprobe installation but then
-> > it clashed with elf loader, because the user space trampoline was added in a
-> > place where loader might need to put elf segments, so I decided to do it after
-> > first uprobe hit when loading is done.
-> 
-> fun... ideally we wouldn't do this lazily, I just came up with another
-> possible idea, but let's keep all this discussion to another thread
-> with Peter
-> 
-> >
-> > TODO release uprobe trampoline when it's no longer needed.. we might need to
-> > stop all cpus to make sure no user space thread is in the trampoline.. or we
-> > might just keep it, because there's just one 4GB memory region?
-> 
-> 4KB not 4GB, right? Yeah, probably leaving it until process exists is
-> totally fine.
-
-yep, ok
-
-SNIP
-
-> > +#include <asm/nops.h>
-> >
-> >  /* Post-execution fixups. */
-> >
-> > @@ -877,6 +878,33 @@ static const struct uprobe_xol_ops push_xol_ops = {
-> >         .emulate  = push_emulate_op,
-> >  };
-> >
-> > +static int is_nop5_insns(uprobe_opcode_t *insn)
-> 
-> insns -> insn?
-> 
-> > +{
-> > +       return !memcmp(insn, x86_nops[5], 5);
-> > +}
-> > +
-> > +static int is_call_insns(uprobe_opcode_t *insn)
-> 
-> ditto, insn, singular?
-
-ok
-
-SNIP
-
-> > +int arch_uprobe_verify_opcode(struct page *page, unsigned long vaddr,
-> > +                             uprobe_opcode_t *new_opcode, void *opt)
-> > +{
-> > +       if (opt) {
-> > +               uprobe_opcode_t old_opcode[5];
-> > +               bool is_call;
-> > +
-> > +               uprobe_copy_from_page(page, vaddr, (uprobe_opcode_t *) &old_opcode, 5);
-> > +               is_call = is_call_insns((uprobe_opcode_t *) &old_opcode);
-> > +
-> > +               if (is_call_insns(new_opcode)) {
-> > +                       if (is_call)            /* register: already installed? */
-> 
-> probably should check that the destination of the call instruction is
-> what we expect?
-
-ok
-
-SNIP
-
-> > +bool arch_uprobe_is_callable(unsigned long vtramp, unsigned long vaddr)
-> > +{
-> > +       unsigned long delta;
-> > +
-> > +       /* call instructions size */
-> > +       vaddr += 5;
-> > +       delta = vaddr < vtramp ? vtramp - vaddr : vaddr - vtramp;
-> > +       return delta < 0xffffffff;
-> 
-> isn't immediate a sign extended 32-bit value (that is, int)? wouldn't
-> this work and be correct:
-> 
-> long delta = (long)(vaddr + 5 - vtramp);
-> return delta >= INT_MIN && delta <= INT_MAX;
-> 
-> ?
-
-ah, right.. should be sign value :-\ thanks
+ok, perhaps with your new usdt library and the possible nop/nop5 tricks we
+might want to have specific usdt benchmarks.. but that's for later anyway
 
 jirka
+
+> 
+> > diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
+> > index 1bd403a5ef7b..dc5121e49623 100644
+> > --- a/tools/testing/selftests/bpf/bench.c
+> > +++ b/tools/testing/selftests/bpf/bench.c
+> > @@ -526,6 +526,7 @@ extern const struct bench bench_trig_uprobe_multi_push;
+> >  extern const struct bench bench_trig_uretprobe_multi_push;
+> >  extern const struct bench bench_trig_uprobe_multi_ret;
+> >  extern const struct bench bench_trig_uretprobe_multi_ret;
+> > +extern const struct bench bench_trig_usdt;
+> >
+> >  extern const struct bench bench_rb_libbpf;
+> >  extern const struct bench bench_rb_custom;
+> > @@ -586,6 +587,7 @@ static const struct bench *benchs[] = {
+> >         &bench_trig_uretprobe_multi_push,
+> >         &bench_trig_uprobe_multi_ret,
+> >         &bench_trig_uretprobe_multi_ret,
+> > +       &bench_trig_usdt,
+> >         /* ringbuf/perfbuf benchmarks */
+> >         &bench_rb_libbpf,
+> >         &bench_rb_custom,
+> > diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/testing/selftests/bpf/benchs/bench_trigger.c
+> > index 32e9f194d449..bdee8b8362d0 100644
+> > --- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
+> > +++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
+> > @@ -8,6 +8,7 @@
+> >  #include "bench.h"
+> >  #include "trigger_bench.skel.h"
+> >  #include "trace_helpers.h"
+> > +#include "../sdt.h"
+> >
+> >  #define MAX_TRIG_BATCH_ITERS 1000
+> >
+> > @@ -333,6 +334,13 @@ static void *uprobe_producer_ret(void *input)
+> >         return NULL;
+> >  }
+> >
+> > +static void *uprobe_producer_usdt(void *input)
+> > +{
+> > +       while (true)
+> > +               STAP_PROBE(trigger, usdt);
+> > +       return NULL;
+> > +}
+> > +
+> >  static void usetup(bool use_retprobe, bool use_multi, void *target_addr)
+> >  {
+> >         size_t uprobe_offset;
+> > @@ -383,6 +391,37 @@ static void usetup(bool use_retprobe, bool use_multi, void *target_addr)
+> >         }
+> >  }
+> >
+> > +static void __usdt_setup(const char *provider, const char *name)
+> > +{
+> > +       struct bpf_link *link;
+> > +       int err;
+> > +
+> > +       setup_libbpf();
+> > +
+> > +       ctx.skel = trigger_bench__open();
+> > +       if (!ctx.skel) {
+> > +               fprintf(stderr, "failed to open skeleton\n");
+> > +               exit(1);
+> > +       }
+> > +
+> > +       bpf_program__set_autoload(ctx.skel->progs.bench_trigger_usdt, true);
+> > +
+> > +       err = trigger_bench__load(ctx.skel);
+> > +       if (err) {
+> > +               fprintf(stderr, "failed to load skeleton\n");
+> > +               exit(1);
+> > +       }
+> > +
+> > +       link = bpf_program__attach_usdt(ctx.skel->progs.bench_trigger_usdt,
+> > +                                       -1 /* all PIDs */, "/proc/self/exe",
+> > +                                       provider, name, NULL);
+> > +       if (!link) {
+> > +               fprintf(stderr, "failed to attach uprobe!\n");
+> > +               exit(1);
+> > +       }
+> > +       ctx.skel->links.bench_trigger_usdt = link;
+> > +}
+> > +
+> >  static void usermode_count_setup(void)
+> >  {
+> >         ctx.usermode_counters = true;
+> > @@ -448,6 +487,11 @@ static void uretprobe_multi_ret_setup(void)
+> >         usetup(true, true /* use_multi */, &uprobe_target_ret);
+> >  }
+> >
+> > +static void usdt_setup(void)
+> > +{
+> > +       __usdt_setup("trigger", "usdt");
+> > +}
+> > +
+> >  const struct bench bench_trig_syscall_count = {
+> >         .name = "trig-syscall-count",
+> >         .validate = trigger_validate,
+> > @@ -506,3 +550,4 @@ BENCH_TRIG_USERMODE(uprobe_multi_ret, ret, "uprobe-multi-ret");
+> >  BENCH_TRIG_USERMODE(uretprobe_multi_nop, nop, "uretprobe-multi-nop");
+> >  BENCH_TRIG_USERMODE(uretprobe_multi_push, push, "uretprobe-multi-push");
+> >  BENCH_TRIG_USERMODE(uretprobe_multi_ret, ret, "uretprobe-multi-ret");
+> > +BENCH_TRIG_USERMODE(usdt, usdt, "usdt");
+> > diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/testing/selftests/bpf/progs/trigger_bench.c
+> > index 044a6d78923e..7b7d4a71e7d4 100644
+> > --- a/tools/testing/selftests/bpf/progs/trigger_bench.c
+> > +++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
+> > @@ -1,8 +1,9 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  // Copyright (c) 2020 Facebook
+> > -#include <linux/bpf.h>
+> > +#include "vmlinux.h"
+> >  #include <asm/unistd.h>
+> >  #include <bpf/bpf_helpers.h>
+> > +#include <bpf/usdt.bpf.h>
+> >  #include <bpf/bpf_tracing.h>
+> >  #include "bpf_misc.h"
+> >
+> > @@ -138,3 +139,10 @@ int bench_trigger_rawtp(void *ctx)
+> >         inc_counter();
+> >         return 0;
+> >  }
+> > +
+> > +SEC("?usdt")
+> > +int bench_trigger_usdt(struct pt_regs *ctx)
+> > +{
+> > +       inc_counter();
+> > +       return 0;
+> > +}
+> > --
+> > 2.47.0
+> >
 
