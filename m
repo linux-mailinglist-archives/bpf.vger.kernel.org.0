@@ -1,94 +1,83 @@
-Return-Path: <bpf+bounces-45000-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45001-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C821F9CFB3C
-	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 00:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D804B9CFBB4
+	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 01:33:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B9291F24C6D
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2024 23:35:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84D461F22FA3
+	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 00:33:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1478F1ADFF5;
-	Fri, 15 Nov 2024 23:35:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1998DD529;
+	Sat, 16 Nov 2024 00:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SWd4Fyxc"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eqv7VY2h"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CC5216631C;
-	Fri, 15 Nov 2024 23:35:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8D02F2D
+	for <bpf@vger.kernel.org>; Sat, 16 Nov 2024 00:33:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731713728; cv=none; b=BOv/nfrJNV5J0AB0LdLgzQ9y8Sau2Kuey+i55pi+Xm9GIRRDEI8aBlpqearghPLCezsISwccNrcFhO5VFsAIKw7OQaR6G+FNbev+CP8gQOEDf626oJidpD+msQUMqf37lL4fNVq7d3IkyBbRljd9KP1o4V6viWjbKmPmC3o7HfM=
+	t=1731717195; cv=none; b=USOIYxMCL/lPEIz1A97mlJAIhX1EPbuLWHqMoDkcNEnFzYwxwHk0ZiTjswl/lqLZh3ZcZL992eQ++5/+u12qXvdDkoVCV16svDjOb6F+faMUlmMyomSJ3ccSADiWEB6PTg+PnmEwc3RzLUs7VcolpC0e9m9F7ZbnLCSnmEsfbXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731713728; c=relaxed/simple;
-	bh=+0nSqXJMNPJie6Agi0DCflpUksVQqJLNIcznPm67J68=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pzWJtHq4vv1JbdBbp338G1ATWPxqT0zYhS6MQQ4nBW+a/ydVEA9MP3/VTKSYZdcc8+inR/P3q6DWGf6KtTB4OerM4ajRPMUUzczEFZEQKCcT4h6WyuAAwwuUcJphUvZPdxme75H0BwZKTO4JvJCpePHYHIS2Xi4c4f0qQ1c9+r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SWd4Fyxc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 018E7C4CECF;
-	Fri, 15 Nov 2024 23:35:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731713727;
-	bh=+0nSqXJMNPJie6Agi0DCflpUksVQqJLNIcznPm67J68=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SWd4Fyxcy6vkPAs/DoAyKv+eu9nnqiy9VDr1E7w6DAOPjGk3sTNyu3CQVJ1ftQ1Vl
-	 KQx7V76ZwBrflcMdU07dZ08pvCiVuMniy4GhDYMkJ/3vahjg0pawSvaX+3JhHfGywU
-	 5B5tE+7wI6tq8XfAriVL28lj/YBhGHcMmGeFVzCIrjSd9YzsgSS8omaH0MLx3DWaMn
-	 /8V/Hup5AfF5QtyTL3sde4ia3ZIuFa+PC0Cl0GrtcqcB8u0C+PbGN/aNnGXfwN1oRZ
-	 wKyFrTPI/2pLhWCxOGsAbPXDBSZL+32gxSUIudNzbcxe8lV0SDX6LcluNtG1LiyPmb
-	 wMVTTXTFPHQrg==
-Date: Fri, 15 Nov 2024 15:35:26 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Xiao Liang <shaw.leon@gmail.com>
-Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, Kuniyuki
- Iwashima <kuniyu@amazon.com>, Donald Hunter <donald.hunter@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ido
- Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Simon
- Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>, Jiri Pirko
- <jiri@resnulli.us>, Hangbin Liu <liuhangbin@gmail.com>,
- linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
- osmocom-net-gprs@lists.osmocom.org, bpf@vger.kernel.org,
- linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
- linux-wireless@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
- bridge@lists.linux.dev, linux-wpan@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 4/6] rtnetlink: Decouple net namespaces in
- rtnl_newlink_create()
-Message-ID: <20241115153526.3582ebcd@kernel.org>
-In-Reply-To: <20241113125715.150201-5-shaw.leon@gmail.com>
-References: <20241113125715.150201-1-shaw.leon@gmail.com>
-	<20241113125715.150201-5-shaw.leon@gmail.com>
+	s=arc-20240116; t=1731717195; c=relaxed/simple;
+	bh=F6fU7KlLSzUs1gveo2BCh7OFm372YDhjsxyCVNn+gQw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o1gPBj/EuhqBgGgDL0kVYqpgLdQQWHTQppLeEBCICMNNb1wxIaDSFAmH4rj2PjnYFW6vQHckEBs2A135+A6ZjUDqTunaqRgvXw5tW6FepX03FMAonK+W/tSctisua3hal86T+2zercQbkAXakmGwhhKMfGxPfPsRAKOfliyd3ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eqv7VY2h; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <fb9476ac-74da-4a58-b997-14b25d3ec2a1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731717186;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F6fU7KlLSzUs1gveo2BCh7OFm372YDhjsxyCVNn+gQw=;
+	b=eqv7VY2hqwalOemrPrMnqrHOsLRx0dzdCNIWgJGlTfxdGhEbUIFRU6taalMso/HIkZsKaz
+	JflZEFhlDgBvvNXxsd9DkJXRYCutgMfxGt8XtWvG+D9JCmraW74oi8BkSdzS6TAoOPwbCu
+	5Pc6mO51yuHeWL2Qd6DTdYVrLTEVAwU=
+Date: Fri, 15 Nov 2024 16:32:59 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [PATCH v2] ARC: bpf: Correct conditional check in 'check_jmp_32'
+To: Shahab Vahedi <list+bpf@vahedi.org>
+Cc: vadim.fedorenko@linux.dev, tarang.raval@siliconsignals.io,
+ Vineet Gupta <vgupta@kernel.org>, bpf@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>
+References: <20241113134142.14970-1-hardevsinh.palaniya@siliconsignals.io>
+ <920e71ab-2375-4722-bcf3-d6aaf8e68b3a@vahedi.org>
+ <f5f49eee8979985439408e7bd6fbd1534e91a115@vahedi.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vineet Gupta <vineet.gupta@linux.dev>
+Content-Language: en-US
+In-Reply-To: <f5f49eee8979985439408e7bd6fbd1534e91a115@vahedi.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 13 Nov 2024 20:57:13 +0800 Xiao Liang wrote:
-> +/**
-> + *	struct rtnl_link_nets - net namespace context of newlink.
-> + *
-> + *	@src_net: Source netns of rtnetlink socket
-> + *	@link_net: Link netns by IFLA_LINK_NETNSID, NULL if not specified.
-> + */
-> +struct rtnl_link_nets {
-> +	struct net *src_net;
-> +	struct net *link_net;
-> +};
+On 11/15/24 07:55, Shahab Vahedi wrote:
+> Hi Vineet,
+>
+> Could you pick up this patch [1] in your "next"?
+>
+> Thanks,
+> Shahab
+>
+> [1]
+> https://lore.kernel.org/bpf/920e71ab-2375-4722-bcf3-d6aaf8e68b3a@vahedi.org/T/#t
 
-Let's not limit ourselves to passing just netns via this struct.
-Let's call it rtnl_newlink_args or params.
+Done. Given We are in the last week this all will land in 6.13 cycle.
 
-The first patch of the series got merged independently so you'll
-need to respin.
--- 
-pw-bot: cr
+-Vineet
 
