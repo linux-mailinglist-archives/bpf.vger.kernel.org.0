@@ -1,140 +1,118 @@
-Return-Path: <bpf+bounces-45013-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45014-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F87F9CFCF0
-	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 08:14:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77E299CFD35
+	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 09:11:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ACAE1F24D4D
-	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 07:14:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BEACB24AD5
+	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2024 08:11:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3376019004A;
-	Sat, 16 Nov 2024 07:14:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB44A192B63;
+	Sat, 16 Nov 2024 08:11:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RnCUPjX5"
+	dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b="ns0BAJ6L"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28BAC10F9;
-	Sat, 16 Nov 2024 07:14:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21507B64A
+	for <bpf@vger.kernel.org>; Sat, 16 Nov 2024 08:11:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731741250; cv=none; b=lXbwbiUF+lKcbwWpgv5trXYyH2f4dp1R+2KOjeDr33+j9KAPtsYJfopS5ErZSdYsQLEfgOfgvoozOCCSWReNGfaNxB1qMjeIUrNZAqDtxClFCF3IxG4R7pFwvxFq5LiX/bih11dOGtMtZquzK3JG+w5UW3soXiqbeLDNtaT2TAc=
+	t=1731744672; cv=none; b=hF4os9DUCeJ+zM46DZ+3/PyH00bQ/mX69Qth0f/7Ce2Z87cEuzG3hBQMVpG082T18aNZnMSFzZZXtKoS4NqYqEUo80V6jUANjerEW22gUMbdxY6DtTKQNqsdvf7SHd88QRuEh4PPBTAUO2KlWSMbBGXkhCfi2a2/ZQ3m75UEVlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731741250; c=relaxed/simple;
-	bh=gHjzzYf64JH5t6/OfXvNtrh+s30Y+a6d8u5n129b2YE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AbPv8z5pVJSmgD7DNhduFxARAp9c65KbfqbgZpXAJbL7FLUwPq/GVpG3cAn2BgEpN3N8BkuxadRgsETr4frPLabtqV7hhatVIhm7wL59hul5kwrrvsnCIEhawAys4vSOmosR3OPG+iLC1R+ktncNTjsyvYIJ4eNuC0esYoU4MVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RnCUPjX5; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-38231e9d518so493143f8f.0;
-        Fri, 15 Nov 2024 23:14:08 -0800 (PST)
+	s=arc-20240116; t=1731744672; c=relaxed/simple;
+	bh=I5d6xq8yApFLD3lqBQul4LMzk21YrsqnImFrxksSgCM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VmTqCPnDpdXjn2nTC5u5wI5Ihs/3WY/5yccoMPUwOn+hejN5LVkjEbY6Dvc08yq8zWop7lFj0oknx0kGfryvBOSNcCpxXRT4y1hFQXlUjg2GSdkvRFICTWVuUG9Z2evE9rRcmXSOc6h6Cep52gZ/uhAm2objXL/EKOn1eNjzjVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai; spf=none smtp.mailfrom=furiosa.ai; dkim=pass (2048-bit key) header.d=furiosa-ai.20230601.gappssmtp.com header.i=@furiosa-ai.20230601.gappssmtp.com header.b=ns0BAJ6L; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=furiosa.ai
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=furiosa.ai
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7ee6edc47abso331432a12.3
+        for <bpf@vger.kernel.org>; Sat, 16 Nov 2024 00:11:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731741247; x=1732346047; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ky6ai1Jh1s6fwaQ538hBKuOPeo++ZlVzBLCCCuBMY88=;
-        b=RnCUPjX5URlu0jqMqPZboipvqyqnlmx2a37s+xnZ3JB5b9ZjpEjl81AFdckbIZz4Yt
-         wGoW6Qv38qFK5VohgO7NCHu5/wK9NVsl76DU/SwOpvMSLw8QkGbdHRyZjyqIKRCAuQS4
-         VfZ5uD+sNYSJhKDulozqt4ysb/Gydmbclh2Z0XA8fMNHLFNV4UaXMD+YHFteMMzSpI/K
-         cfwubaARM+bD5zatF4eBnNwW2xGm60SS/fq529+RSoVVxPJvS/qJwS37buD844dj39v0
-         iZRsNP2df6SEAx8Xr3dcnsDmEzStM/eSiVgfnfmeuK4b60VU2bL2TKQ1hLx9eTCKkPvy
-         WmOQ==
+        d=furiosa-ai.20230601.gappssmtp.com; s=20230601; t=1731744670; x=1732349470; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=96+ITd4Yn9GceeD6WwWI1juRk5f17FxOFIRFnl0ul0k=;
+        b=ns0BAJ6LhrQ+QXzoKO1fuDfYAfkqdLKT1RchI2RjJeetwET4vKDe1mBXdr4diTnBRL
+         /Ya9frbJDr9sjB//OPU+aPZ8ZfgPSKIUfR3nf48RfMKhxA/jn0waEYVzuo60HC0UyGHh
+         wrOUPD4ZK1gNsCcYJs8Tbc8oV3NT99hX0TMQLT/848qilMEHvW1N+hENCs9KhjA29jln
+         Vrlhs0+IYAyCBkcqk1xBCT/eABsI+Ro1eOU1XTEI35MrH5ueOChGQo1BhxfIviM76NjK
+         lj+tR1w4mRpEkwpBJRco7bj0AF/W9R1iCuBaubG2z3A6d2rql6uyek5xV/J4TLTiODM1
+         dVvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731741247; x=1732346047;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ky6ai1Jh1s6fwaQ538hBKuOPeo++ZlVzBLCCCuBMY88=;
-        b=gysgt+HgQXFcFBzpu9YnLQAuyZgDn29ZxqJQJgcG3BB8vrhQKuzpz+Cs9D3IqZEfFc
-         6516FalfFa71hhEC43MgfL69uswFyHbSMOsc9+S8jncC6cI8K1685kEwCuYOYDjrbm2I
-         oLwLyg+6ofijmOZwbZCAaNE3gIqJkxDCEFgfzGDJOUDwiVb+aFDIbot7d+CAAgoZE7by
-         SIV5XHJXRZtjfAJKBYfmB+MsWCVOlB7rOEoLgGgVQ/nNXNWmZvpMNZ4pDtOLDDdiNwdo
-         /P9q7aj3XMCZg1c0xBYIy0sY0kGt0EKwC4GnTAmdyVfPFnvMEOkzle+Jd1aJCBaH8Zu0
-         my/g==
-X-Forwarded-Encrypted: i=1; AJvYcCWIXOu9un91UgUH7IBMsDqNJrxccnCFX+RVFfzHlYHLAxT6WgX7C8cahlTUUy5a8/2OWp8=@vger.kernel.org, AJvYcCWPUkPb/EzIep34hBrE2/3XX/2M8PdEY8QI8KuWFBvrHYLXhiEIxLgKd5jYwKwPteciEvZn/JB5lc03oNCm@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRj3YSuVmUrnRWo+rfD41boyu3ad3Exxu/6HyzSlrKbjjUIc9f
-	wpkC/oexZ+2c4Ka+OP45NPkYu5Sg13g2PgYP3qZPonrKWFd2Png=
-X-Google-Smtp-Source: AGHT+IFMYcg/vrpa1XK93IYG62K+1//cOQ1DqPDnAC23d6IHrRgk80Mi+m8ErFf4B8jpab3SbJaDJA==
-X-Received: by 2002:a5d:5847:0:b0:381:f5c3:1d02 with SMTP id ffacd0b85a97d-38225a91e8bmr5142684f8f.44.1731741247391;
-        Fri, 15 Nov 2024 23:14:07 -0800 (PST)
-Received: from qoroot.. ([2.181.242.206])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-382308532cbsm2370905f8f.88.2024.11.15.23.14.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2024 23:14:05 -0800 (PST)
-From: Amir Mohammadi <amirmohammadi1999.am@gmail.com>
-X-Google-Original-From: Amir Mohammadi <amiremohamadi@yahoo.com>
-To: qmo@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
+        d=1e100.net; s=20230601; t=1731744670; x=1732349470;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=96+ITd4Yn9GceeD6WwWI1juRk5f17FxOFIRFnl0ul0k=;
+        b=dqYNunuXhngZ4ADCAZykYuOA15OlfWIhYCj4UUpgcloKDv0qJkosxM31Pe2D9maC99
+         eWTVRtafI+ceUG1gUqXRGPJEGfGPTQp0wgzvWIiQTx3wmPz01NMoPE1eIZJU83JcTFQD
+         ppb/g43+1Z6yFhAv1j55Oh5ANFU9bbEXyyCzsx67g9PHeM8zABSk7KZ1/6aYAdnU7tp2
+         xECyt6tG5NPLVocOYyNEnZD/fscVr06jqOA9r7l+iMldcQLrdS5Z8MM8UNVjjPR4pf9S
+         OAEflq+JeOo9ZsLNaibOhF6HBMu8cZtZsemWZkZeQ2JDv+FOHKffU4VnTJlDB1tk6/74
+         y5ag==
+X-Forwarded-Encrypted: i=1; AJvYcCWF3Oc/Sjga1A3mEl5KNOX4pHq08k6hjrGv1u1UVszCOlQT+soR0q4WtJJCsSRuiBuu9lI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzqM3BWNxGoxfVhRInRI0quStOrm67RWUSS/K0Bugr4RBEyE4p0
+	d3grDKAtY+l/QVhBRQ9M6dtRY31OYSC9SQKm92jXFsL30sdM49P+EM+NBqFb2qM=
+X-Google-Smtp-Source: AGHT+IEbav/q6nbtcpi6jdgXPqNXxpTkVa7JXKPtww5C9bR4QElLwnA5phd49NQB6khRf9cPHWGSBg==
+X-Received: by 2002:a17:902:ecca:b0:211:ce94:866a with SMTP id d9443c01a7336-211d0ebf214mr78997325ad.40.1731744670439;
+        Sat, 16 Nov 2024 00:11:10 -0800 (PST)
+Received: from localhost.localdomain ([61.83.209.48])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211eca09906sm8106475ad.246.2024.11.16.00.11.07
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Sat, 16 Nov 2024 00:11:10 -0800 (PST)
+From: Sidong Yang <sidong.yang@furiosa.ai>
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Cc: Amir Mohammadi <amiremohamadi@yahoo.com>
-Subject: [PATCH v2] bpftool: fix potential NULL pointer dereferencing in prog_dump()
-Date: Sat, 16 Nov 2024 10:43:46 +0330
-Message-ID: <20241116071346.1412266-1-amiremohamadi@yahoo.com>
+Cc: Sidong Yang <sidong.yang@furiosa.ai>
+Subject: [PATCH] libbpf: Change hash_combine parameters from long to unsigned long
+Date: Sat, 16 Nov 2024 17:10:52 +0900
+Message-ID: <20241116081054.65195-1-sidong.yang@furiosa.ai>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <47225498-12ab-4e69-ac50-2aab9dbe62c0@kernel.org>
-References: <47225498-12ab-4e69-ac50-2aab9dbe62c0@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-A NULL pointer dereference could occur if ksyms
-is not properly checked before usage in the prog_dump() function.
+The hash_combine() could be trapped when compiled with sanitizer like "zig cc"
+or clang with signed-integer-overflow option. This patch parameters and return
+type to unsigned long to remove the potential overflow.
 
-Signed-off-by: Amir Mohammadi <amiremohamadi@yahoo.com>
+Signed-off-by: Sidong Yang <sidong.yang@furiosa.ai>
 ---
- tools/bpf/bpftool/prog.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ tools/lib/bpf/btf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 2ff949ea8..e71be67f1 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -822,11 +822,18 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
- 					printf("%s:\n", sym_name);
- 				}
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 8befb8103e32..12468ae0d573 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -3548,7 +3548,7 @@ struct btf_dedup {
+ 	struct strset *strs_set;
+ };
  
--				if (disasm_print_insn(img, lens[i], opcodes,
--						      name, disasm_opt, btf,
--						      prog_linfo, ksyms[i], i,
--						      linum))
--					goto exit_free;
-+				if (ksyms) {
-+					if (disasm_print_insn(img, lens[i], opcodes,
-+							      name, disasm_opt, btf,
-+							      prog_linfo, ksyms[i], i,
-+							      linum))
-+						goto exit_free;
-+				} else {
-+					if (disasm_print_insn(img, lens[i], opcodes,
-+							      name, disasm_opt, btf,
-+							      NULL, 0, 0, false))
-+						goto exit_free;
-+				}
- 
- 				img += lens[i];
- 
+-static long hash_combine(long h, long value)
++static unsigned long hash_combine(unsigned long h, unsigned long value)
+ {
+ 	return h * 31 + value;
+ }
 -- 
 2.42.0
 
