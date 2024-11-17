@@ -1,139 +1,333 @@
-Return-Path: <bpf+bounces-45049-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45050-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09C199D041F
-	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2024 14:44:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3EA99D04F7
+	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2024 19:12:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E1B8B2192F
-	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2024 13:44:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C507B21D1E
+	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2024 18:12:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D428C1CBE98;
-	Sun, 17 Nov 2024 13:44:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC821DB522;
+	Sun, 17 Nov 2024 18:12:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FvuCIQXU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y7r5QCXY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D9E1CBE8E
-	for <bpf@vger.kernel.org>; Sun, 17 Nov 2024 13:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD1C819BA6
+	for <bpf@vger.kernel.org>; Sun, 17 Nov 2024 18:12:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731851082; cv=none; b=rzadd6TEYUeFJKv4fd5piYYth8G1eDxxQqlBsJjVicik2hXlRLz25+VFkz9SivHhvshPKDwCf4PTMBl+ZvfAyNeCtYC4nmgNK4xdyJq70/GkUINLAFoCkNBjFA+0f86p0MeQ+LJ8BFIOYIljVfDw7BG+8jbzCwEQd7yGiXxfTsQ=
+	t=1731867126; cv=none; b=PAblQoHBLzzNdclZDu2q8LRPOf6fO1mpe4P/Hadr15/zU32DGgWBdxKkoUSbyF980wVI5NfaBBd8xVzFi3jqlRVNlRWAXlTrHOP0GBDOwsTRPdTzvD9sNnGkB4fJn8Abn7IrsLYFr5jJiGhe5yNJdKp1bezJBIU14EsHOIFT+zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731851082; c=relaxed/simple;
-	bh=bzudhJQ6DLerwXyo13kvSCjAxnVApP3ZVF8C/ZXDAYM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kEsvpz5xMXCuJnQ+a/roG+/SR/G3ljB6chM+ix5p0iMUMj7L8Gkd76dOFD1D/b01gOVaKXQLAQZxti2OrRqxZplmjBOxORLeRqQIeDkgKK5Vrrkk5WICeqBmGu+NcnLLK5ri21BwIFhJZbe436V/PghsepxPc4cx9tx8v0/pb5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FvuCIQXU; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1731851080; x=1763387080;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bzudhJQ6DLerwXyo13kvSCjAxnVApP3ZVF8C/ZXDAYM=;
-  b=FvuCIQXUw6AlSPyThJ73V2xXANjbhI8+yUyQHVZqT97LHzGl9lE6oolm
-   LBhkW78xfOI8zWioSzfeJLlXB/w/Sk3VT3dwm5PDCw+lUdln6EBR/t92e
-   WDKJOPX0ENDA6pP15Xi2WEvB9W3h4S1hrBrk6Sz5Hm5zXz4OhXMBFgwHd
-   I6Ir2PxXJMsK7wqq34RraHXU7hLTxsnKwwsd7Sit48jvMg8SbcKgSxK+7
-   ilaPXB/E/EJZkfW6nF3wSXQ6SsuQhOtOePGGunW61idRXaM+0oclWi/h9
-   LixzwcMJnW7YbO8HlZ913mgFnetxnVmUTfT4q+EqDy4OXNg7Bnk591DAS
-   Q==;
-X-CSE-ConnectionGUID: vfeh+aHXTguZEyY1cuXngQ==
-X-CSE-MsgGUID: EjlrGS0lTV2SpliKXuFPNQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11259"; a="42333469"
-X-IronPort-AV: E=Sophos;i="6.12,162,1728975600"; 
-   d="scan'208";a="42333469"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2024 05:44:39 -0800
-X-CSE-ConnectionGUID: daUKfGchSWW2k7D27BkxTw==
-X-CSE-MsgGUID: yL/A4YVMTm6KYnbJx1UIvw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,162,1728975600"; 
-   d="scan'208";a="112283922"
-Received: from lkp-server01.sh.intel.com (HELO 1e3cc1889ffb) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 17 Nov 2024 05:44:37 -0800
-Received: from kbuild by 1e3cc1889ffb with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tCfZr-0001mD-0m;
-	Sun, 17 Nov 2024 13:44:35 +0000
-Date: Sun, 17 Nov 2024 21:44:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ryan Wilson <ryantimwilson@gmail.com>, bpf@vger.kernel.org,
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net
-Cc: oe-kbuild-all@lists.linux.dev, ryantimwilson@meta.com
-Subject: Re: [PATCH bpf-next] bpf: Add multi-prog support for XDP BPF programs
-Message-ID: <202411172107.yHI94Ps2-lkp@intel.com>
-References: <20241114170721.3939099-1-ryantimwilson@gmail.com>
+	s=arc-20240116; t=1731867126; c=relaxed/simple;
+	bh=DQNJfubwCzLjETVCDhoCHTgOouZJfGAO8eDcaWTy5Oo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ihM60fdzu1GSTEULH5Fr8zPdQpkX4usB0FNz6LNwEPlm0tVbcVuXP3QTWJKjh+RtkjbVKWfsouQrVabIVCWcgYEUddDW92V7/5SjoyEp5nn1/IC8BsAUkTp/g27ClXTC4/oPda++8YbEHbWXcmbcO0V9Dfjaqxzug4raCnn2VuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y7r5QCXY; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <cd72d9eb-bdcd-4316-9987-9fd412151a82@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731867120;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3Ig6AOJS5Q12ZmBdubeISo3h+V1nlcaD5Sg2lSYMDEU=;
+	b=Y7r5QCXYiLZ7GjFibebrTyIGVo6EOH8BujM0MJ47XcppWupnq3+83ZHr5YFaVSw9aRuoLk
+	IlzjYkvxvjYJKD82MM08DcuuBTKTO9HzwJqfgOcYdKmAM9X/5TUdTVgoZqm6OdLww/uijA
+	6bB8htXnZQiOVGm7YdBDp50XwVt+zu0=
+Date: Sun, 17 Nov 2024 10:11:53 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241114170721.3939099-1-ryantimwilson@gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/4] bpf: add bpf_get_cpu_cycles kfunc
+To: Yonghong Song <yonghong.song@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>
+Cc: x86@kernel.org, bpf@vger.kernel.org,
+ Martin KaFai Lau <martin.lau@linux.dev>, Mykola Lysenko <mykolal@fb.com>,
+ Daniel Borkmann <daniel@iogearbox.net>, Thomas Gleixner <tglx@linutronix.de>
+References: <20241115194841.2108634-1-vadfed@meta.com>
+ <20241115194841.2108634-2-vadfed@meta.com>
+ <c6eb8ab6-2db4-40dc-9ce5-3f0985c93f58@linux.dev>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <c6eb8ab6-2db4-40dc-9ce5-3f0985c93f58@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Ryan,
+On 15/11/2024 21:54, Yonghong Song wrote:
+> 
+> 
+> On 11/15/24 11:48 AM, Vadim Fedorenko wrote:
+>> New kfunc to return ARCH-specific timecounter. For x86 BPF JIT converts
+>> it into rdtsc ordered call. Other architectures will get JIT
+>> implementation too if supported. The fallback is to
+>> __arch_get_hw_counter().
+>>
+>> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+>> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
+> 
+> LGTM with a small nit below.
+> 
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
-kernel test robot noticed the following build warnings:
+@Yonghong The changes to align to vdso call bring this patch to the
+state when the kernel fails to compile with CONFIG_PARAVIRT_CLOCK or
+CONFIG_HYPERV_TIMER enabled. This happens because on x86 there is
+special way to grab cpu cycle counter in PARAVIRT mode. The paravirt
+memory structure is hidden for kernel and linked for vDSO only using
+arch/x86/entry/vdso/vdso-layout.lds.S. But in anycase both
+vread_pvclock() and vread_hvclock() end up doing rdtsc_ordered().
+I believe we can have constant clock_mode for x86 equal to
+VDSO_CLOCKMODE_TSC given we have JIT for x86 ready.
 
-[auto build test WARNING on bpf-next/master]
+Another way is to switch to use get_cycles() which is also defined for
+all architectures. But that will bring up another discussion whether we
+should use rdtsc_ordered in JIT, because on x86 get_cycles() ends up
+calling rdtsc() which has no LFENCE in assembly. If I remember correctly
+there was a question of maybe using simple rdtsc() in this patchset as
+ordered version might be slow on modern CPUs. We still can use shift
+and mult values for cycles2ns helper because we know that CS_RAW uses
+the same cpu cycles counter.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ryan-Wilson/bpf-Add-multi-prog-support-for-XDP-BPF-programs/20241115-015104
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20241114170721.3939099-1-ryantimwilson%40gmail.com
-patch subject: [PATCH bpf-next] bpf: Add multi-prog support for XDP BPF programs
-config: x86_64-randconfig-122-20241117 (https://download.01.org/0day-ci/archive/20241117/202411172107.yHI94Ps2-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241117/202411172107.yHI94Ps2-lkp@intel.com/reproduce)
+I'm up for any option, but let's just agree on how to proceed.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202411172107.yHI94Ps2-lkp@intel.com/
+Thanks.
+> 
+>> ---
+>> v5 -> v6:
+>> * add comment about dropping S64_MAX manipulation in jitted
+>>    implementation of rdtsc_oredered (Alexey)
+>> * add comment about using 'lfence;rdtsc' variant (Alexey)
+>> * change the check in fixup_kfunc_call() (Eduard)
+>> * make __arch_get_hw_counter() call more aligned with vDSO
+>>    implementation (Yonghong)
+>> v4 -> v5:
+>> * use if instead of ifdef with IS_ENABLED
+>> v3 -> v4:
+>> * change name of the helper to bpf_get_cpu_cycles (Andrii)
+>> * Hide the helper behind CONFIG_GENERIC_GETTIMEOFDAY to avoid exposing
+>>    it on architectures which do not have vDSO functions and data
+>> * reduce the scope of check of inlined functions in verifier to only 2,
+>>    which are actually inlined.
+>> v2 -> v3:
+>> * change name of the helper to bpf_get_cpu_cycles_counter to explicitly
+>>    mention what counter it provides (Andrii)
+>> * move kfunc definition to bpf.h to use it in JIT.
+>> * introduce another kfunc to convert cycles into nanoseconds as more
+>>    meaningful time units for generic tracing use case (Andrii)
+>> v1 -> v2:
+>> * Fix incorrect function return value type to u64
+>> * Introduce bpf_jit_inlines_kfunc_call() and use it in
+>>    mark_fastcall_pattern_for_call() to avoid clobbering in case of
+>>    running programs with no JIT (Eduard)
+>> * Avoid rewriting instruction and check function pointer directly
+>>    in JIT (Alexei)
+>> * Change includes to fix compile issues on non x86 architectures
+>> ---
+>>   arch/x86/net/bpf_jit_comp.c   | 39 +++++++++++++++++++++++++++++++++
+>>   arch/x86/net/bpf_jit_comp32.c | 14 ++++++++++++
+>>   include/linux/bpf.h           |  5 +++++
+>>   include/linux/filter.h        |  1 +
+>>   kernel/bpf/core.c             | 11 ++++++++++
+>>   kernel/bpf/helpers.c          | 21 ++++++++++++++++++
+>>   kernel/bpf/verifier.c         | 41 ++++++++++++++++++++++++++++++-----
+>>   7 files changed, 126 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index a43fc5af973d..107bd921f104 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -2185,6 +2185,37 @@ st:            if (is_imm8(insn->off))
+>>           case BPF_JMP | BPF_CALL: {
+>>               u8 *ip = image + addrs[i - 1];
+>> +            if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL &&
+>> +                imm32 == BPF_CALL_IMM(bpf_get_cpu_cycles)) {
+>> +                /* The default implementation of this kfunc uses
+>> +                 * __arch_get_hw_counter() which is implemented as
+>> +                 * `(u64)rdtsc_ordered() & S64_MAX`. We skip masking
+>> +                 * part because we assume it's not needed in BPF
+>> +                 * use case (two measurements close in time).
+>> +                 * Original code for rdtsc_ordered() uses sequence:
+>> +                 * 'rdtsc; nop; nop; nop' to patch it into
+>> +                 * 'lfence; rdtsc' or 'rdtscp' depending on CPU 
+>> features.
+>> +                 * JIT uses 'lfence; rdtsc' variant because BPF program
+>> +                 * doesn't care about cookie provided by rdtsp in RCX.
+> 
+> rdtsp -> tdtscp?
+> 
+>> +                 * Save RDX because RDTSC will use EDX:EAX to return u64
+>> +                 */
+>> +                emit_mov_reg(&prog, true, AUX_REG, BPF_REG_3);
+>> +                if (boot_cpu_has(X86_FEATURE_LFENCE_RDTSC))
+>> +                    EMIT_LFENCE();
+>> +                EMIT2(0x0F, 0x31);
+>> +
+>> +                /* shl RDX, 32 */
+>> +                maybe_emit_1mod(&prog, BPF_REG_3, true);
+>> +                EMIT3(0xC1, add_1reg(0xE0, BPF_REG_3), 32);
+>> +                /* or RAX, RDX */
+>> +                maybe_emit_mod(&prog, BPF_REG_0, BPF_REG_3, true);
+>> +                EMIT2(0x09, add_2reg(0xC0, BPF_REG_0, BPF_REG_3));
+>> +                /* restore RDX from R11 */
+>> +                emit_mov_reg(&prog, true, BPF_REG_3, AUX_REG);
+>> +
+>> +                break;
+>> +            }
+>> +
+>>               func = (u8 *) __bpf_call_base + imm32;
+>>               if (src_reg == BPF_PSEUDO_CALL && tail_call_reachable) {
+>>                   LOAD_TAIL_CALL_CNT_PTR(stack_depth);
+>> @@ -3791,3 +3822,11 @@ u64 bpf_arch_uaddress_limit(void)
+>>   {
+>>       return 0;
+>>   }
+>> +
+>> +/* x86-64 JIT can inline kfunc */
+>> +bool bpf_jit_inlines_kfunc_call(s32 imm)
+>> +{
+>> +    if (imm == BPF_CALL_IMM(bpf_get_cpu_cycles))
+>> +        return true;
+>> +    return false;
+>> +}
+>> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/ 
+>> bpf_jit_comp32.c
+>> index de0f9e5f9f73..e6097a371b69 100644
+>> --- a/arch/x86/net/bpf_jit_comp32.c
+>> +++ b/arch/x86/net/bpf_jit_comp32.c
+>> @@ -2094,6 +2094,13 @@ static int do_jit(struct bpf_prog *bpf_prog, 
+>> int *addrs, u8 *image,
+>>               if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+>>                   int err;
+>> +                if (imm32 == BPF_CALL_IMM(bpf_get_cpu_cycles)) {
+>> +                    if (boot_cpu_has(X86_FEATURE_LFENCE_RDTSC))
+>> +                        EMIT3(0x0F, 0xAE, 0xE8);
+>> +                    EMIT2(0x0F, 0x31);
+>> +                    break;
+>> +                }
+>> +
+>>                   err = emit_kfunc_call(bpf_prog,
+>>                                 image + addrs[i],
+>>                                 insn, &prog);
+>> @@ -2621,3 +2628,10 @@ bool bpf_jit_supports_kfunc_call(void)
+>>   {
+>>       return true;
+>>   }
+>> +
+>> +bool bpf_jit_inlines_kfunc_call(s32 imm)
+>> +{
+>> +    if (imm == BPF_CALL_IMM(bpf_get_cpu_cycles))
+>> +        return true;
+>> +    return false;
+>> +}
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 3ace0d6227e3..43a5207a1591 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -3333,6 +3333,11 @@ void bpf_user_rnd_init_once(void);
+>>   u64 bpf_user_rnd_u32(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
+>>   u64 bpf_get_raw_cpu_id(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
+>> +/* Inlined kfuncs */
+>> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
+>> +u64 bpf_get_cpu_cycles(void);
+>> +#endif
+>> +
+>>   #if defined(CONFIG_NET)
+>>   bool bpf_sock_common_is_valid_access(int off, int size,
+>>                        enum bpf_access_type type,
+>> diff --git a/include/linux/filter.h b/include/linux/filter.h
+>> index 3a21947f2fd4..9cf57233874f 100644
+>> --- a/include/linux/filter.h
+>> +++ b/include/linux/filter.h
+>> @@ -1111,6 +1111,7 @@ struct bpf_prog *bpf_int_jit_compile(struct 
+>> bpf_prog *prog);
+>>   void bpf_jit_compile(struct bpf_prog *prog);
+>>   bool bpf_jit_needs_zext(void);
+>>   bool bpf_jit_inlines_helper_call(s32 imm);
+>> +bool bpf_jit_inlines_kfunc_call(s32 imm);
+>>   bool bpf_jit_supports_subprog_tailcalls(void);
+>>   bool bpf_jit_supports_percpu_insn(void);
+>>   bool bpf_jit_supports_kfunc_call(void);
+>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> index 14d9288441f2..daa3ab458c8a 100644
+>> --- a/kernel/bpf/core.c
+>> +++ b/kernel/bpf/core.c
+>> @@ -2965,6 +2965,17 @@ bool __weak bpf_jit_inlines_helper_call(s32 imm)
+>>       return false;
+>>   }
+>> +/* Return true if the JIT inlines the call to the kfunc corresponding to
+>> + * the imm.
+>> + *
+>> + * The verifier will not patch the insn->imm for the call to the 
+>> helper if
+>> + * this returns true.
+>> + */
+>> +bool __weak bpf_jit_inlines_kfunc_call(s32 imm)
+>> +{
+>> +    return false;
+>> +}
+>> +
+>>   /* Return TRUE if the JIT backend supports mixing bpf2bpf and 
+>> tailcalls. */
+>>   bool __weak bpf_jit_supports_subprog_tailcalls(void)
+>>   {
+>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>> index 751c150f9e1c..12d40537e57b 100644
+>> --- a/kernel/bpf/helpers.c
+>> +++ b/kernel/bpf/helpers.c
+>> @@ -23,6 +23,10 @@
+>>   #include <linux/btf_ids.h>
+>>   #include <linux/bpf_mem_alloc.h>
+>>   #include <linux/kasan.h>
+>> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
+>> +#include <vdso/datapage.h>
+>> +#include <asm/vdso/vsyscall.h>
+>> +#endif
+>>   #include "../../lib/kstrtox.h"
+>> @@ -3057,6 +3061,20 @@ __bpf_kfunc int bpf_copy_from_user_str(void 
+>> *dst, u32 dst__sz, const void __user
+>>       return ret + 1;
+>>   }
+>> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
+>> +__bpf_kfunc u64 bpf_get_cpu_cycles(void)
+>> +{
+>> +    const struct vdso_data *vd = __arch_get_k_vdso_data();
+>> +
+>> +    vd = &vd[CS_RAW];
+>> +
+>> +    /* CS_RAW clock_mode translates to VDSO_CLOCKMODE_TSC on x86 and
+>> +     * to VDSO_CLOCKMODE_ARCHTIMER on aarch64/risc-v.
+>> +     */
+>> +    return __arch_get_hw_counter(vd->clock_mode, vd);
+>> +}
+>> +#endif
+>> +
+>>   __bpf_kfunc_end_defs();
+>>   BTF_KFUNCS_START(generic_btf_ids)
+>> @@ -3149,6 +3167,9 @@ BTF_ID_FLAGS(func, bpf_get_kmem_cache)
+>>   BTF_ID_FLAGS(func, bpf_iter_kmem_cache_new, KF_ITER_NEW | KF_SLEEPABLE)
+>>   BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_ITER_NEXT | 
+>> KF_RET_NULL | KF_SLEEPABLE)
+>>   BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | 
+>> KF_SLEEPABLE)
+>> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
+>> +BTF_ID_FLAGS(func, bpf_get_cpu_cycles, KF_FASTCALL)
+>> +#endif
+>>   BTF_KFUNCS_END(common_btf_ids)
+>>   static const struct btf_kfunc_id_set common_kfunc_set = {
+> [...]
 
-sparse warnings: (new ones prefixed by >>)
-   net/core/dev.c:3387:23: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected restricted __wsum [usertype] csum @@     got unsigned int @@
-   net/core/dev.c:3387:23: sparse:     expected restricted __wsum [usertype] csum
-   net/core/dev.c:3387:23: sparse:     got unsigned int
-   net/core/dev.c:3387:23: sparse: sparse: cast from restricted __wsum
->> net/core/dev.c:9416:76: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct bpf_mprog_entry *entry @@     got struct bpf_mprog_entry [noderef] __rcu * @@
-   net/core/dev.c:9416:76: sparse:     expected struct bpf_mprog_entry *entry
-   net/core/dev.c:9416:76: sparse:     got struct bpf_mprog_entry [noderef] __rcu *
-   net/core/dev.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
-   include/linux/page-flags.h:237:46: sparse: sparse: self-comparison always evaluates to false
-   include/linux/page-flags.h:237:46: sparse: sparse: self-comparison always evaluates to false
-   net/core/dev.c:3837:17: sparse: sparse: context imbalance in '__dev_queue_xmit' - different lock contexts for basic block
-   net/core/dev.c:4800:9: sparse: sparse: context imbalance in 'kick_defer_list_purge' - different lock contexts for basic block
-   net/core/dev.c:4901:19: sparse: sparse: context imbalance in 'enqueue_to_backlog' - different lock contexts for basic block
-   net/core/dev.c:5315:17: sparse: sparse: context imbalance in 'net_tx_action' - different lock contexts for basic block
-   net/core/dev.c:5996:9: sparse: sparse: context imbalance in 'flush_backlog' - different lock contexts for basic block
-   net/core/dev.c:6123:9: sparse: sparse: context imbalance in 'process_backlog' - different lock contexts for basic block
-
-vim +9416 net/core/dev.c
-
-  9409	
-  9410	u8 dev_xdp_prog_count(struct net_device *dev)
-  9411	{
-  9412		u8 count = 0;
-  9413		int i;
-  9414	
-  9415		for (i = 0; i < __MAX_XDP_MODE; i++)
-> 9416			if (dev->xdp_state[i] && xdp_entry_is_active(dev->xdp_state[i]))
-  9417				count++;
-  9418		return count;
-  9419	}
-  9420	EXPORT_SYMBOL_GPL(dev_xdp_prog_count);
-  9421	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
