@@ -1,100 +1,111 @@
-Return-Path: <bpf+bounces-45156-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45043-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 217499D2291
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 10:37:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 788BA9D02FE
+	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2024 11:50:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCACB1F21947
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 09:37:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0CCA1F21BDE
+	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2024 10:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3FE1AF0AC;
-	Tue, 19 Nov 2024 09:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D3812E1E0;
+	Sun, 17 Nov 2024 10:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="I5XhPSiD"
 X-Original-To: bpf@vger.kernel.org
-Received: from cmccmta2.chinamobile.com (cmccmta4.chinamobile.com [111.22.67.137])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90571925B3;
-	Tue, 19 Nov 2024 09:36:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.137
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989C81392
+	for <bpf@vger.kernel.org>; Sun, 17 Nov 2024 10:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732009018; cv=none; b=NMjMqrJzhQTg1Vj3QKzH47KqPk88vPkkNWFYVxvaFwNj5MYjjm8fYiNJ6Ezgm95A6fpQI4AvmbirHoYRf/Ux/RuPWmvYOyMcCM6uZp0/TzhOo+QtFK+dRLAiWKwm4M0sB7GAdZtTL9u3uz7Okg8Ts9rNvwz6Un8HxqM6GoD9TT4=
+	t=1731840625; cv=none; b=eES/Zqc4pfdOnua1eUYnCSMq1Ft4V/Z8dwlmWiM/Nwj1pNga9Ryx21OBvd3sdcP24oU4qQTQ8VJcWyFJHRoTCjTjrfuLiwXT1qmwu588dIF9w1fNOOHKukCW9AQL6c67S+j9TAoKnlkLlm7XGVNLu+s+XvaKq3Hu6KHKCh5tQRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732009018; c=relaxed/simple;
-	bh=52/0Yw7upQLX+DkYnXMAKU3T9jvRn9MiFFYrwKplFjs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OG15doHaTZ8jOLTsib+5vHYr54LyfdpXkOI0T8V74PYp9/i2cyKYgwHsxU+7UxC0pTWtfhVgW9lXy0DhMNDZakciv0M2XXZ3R3GOlDCeRVtLuk01yPq87wPGuXbYNXAsZSFUz7IaON9UvgXw4spkQ+IuwJlYYXpunGO0tBoTRhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
-	by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee8673c5c2d300-8634b;
-	Tue, 19 Nov 2024 17:36:46 +0800 (CST)
-X-RM-TRANSID:2ee8673c5c2d300-8634b
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from localhost.localdomain (unknown[223.108.79.101])
-	by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee4673c5c2657d-04a4e;
-	Tue, 19 Nov 2024 17:36:46 +0800 (CST)
-X-RM-TRANSID:2ee4673c5c2657d-04a4e
-From: guanjing <guanjing@cmss.chinamobile.com>
-To: andrii@kernel.org,
-	eddyz87@gmail.com,
-	mykolal@fb.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	guanjing <guanjing@cmss.chinamobile.com>
-Subject: [PATCH v1] selftests/bpf: Fix unnecessary conversion to bool in 'run_subtest'
-Date: Sun, 17 Nov 2024 18:28:57 +0800
-Message-Id: <20241117102857.198803-1-guanjing@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.33.0
+	s=arc-20240116; t=1731840625; c=relaxed/simple;
+	bh=dZEpdMNktylf3JiHSsjSYHDlL4tRbc2K1rKO3wBWqPs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h4gn1dWTyyzp06NJ/RhLYezAtt2SJcyKMXf8JvtLfcI5k6vojxm8hdcPHrkcK1HoHCs30a6Chsbu1SCoKyXtTEvptiewlQWLy8/8Seszy0aPhLyMr2N6Gk1/JYQuEigpAFCF6iWPL2rg3tVxkY/2JCBsuv4MsHXSPsalreYJuZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=I5XhPSiD; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=pshiIs3frOWk0a9YBcwoAUViLhisC1xEmCnwHIj23MA=; b=I5XhPSiDYaBULLTJ4FiFE0Cves
+	a9n2Sg0Ig6GTtSO6ABAGVePvOdGx9abwZ9dAl5xACUslE41B285l1G4Vtjy6MVGpAEe5jhHid2tt6
+	HmT0i1A1C4C0bUqtghrY+lyQ4jL4ROjHFW1/UoNvMJhhVj185WyYwbrSDmhEU2sv+4fScOjrXx8Gx
+	nu0ugpUr5XUEHbf0EN1iGvPb4JmENI3B9gRj22/dqDL3cqAWa+W62muw0oOigh1jm72GU64uW/THH
+	BWSVA0ekDlMUmDInqcW1TriJ11Lhnyf+Up7kl1d7kdKugMG8989eg2knMCvKbhpd7ijQCxUuUPKiZ
+	KDB5sxsQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tCcr0-000000007T5-3cpd;
+	Sun, 17 Nov 2024 10:50:07 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 04BC23006B7; Sun, 17 Nov 2024 11:50:06 +0100 (CET)
+Date: Sun, 17 Nov 2024 11:50:05 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@suse.cz>, Hou Tao <houtao1@huawei.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev,
+	Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
+	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 1/2] mm, bpf: Introduce __GFP_TRYLOCK for
+ opportunistic page allocation
+Message-ID: <20241117105005.GA27667@noisy.programming.kicks-ass.net>
+References: <20241116014854.55141-1-alexei.starovoitov@gmail.com>
+ <20241116194202.GR22801@noisy.programming.kicks-ass.net>
+ <CAADnVQLOyY=Jvibq-hnv6dpXy+hAJFWojyHh7wuEiMn-itMvaw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLOyY=Jvibq-hnv6dpXy+hAJFWojyHh7wuEiMn-itMvaw@mail.gmail.com>
 
-Fixes the following coccicheck:
+On Sat, Nov 16, 2024 at 01:13:20PM -0800, Alexei Starovoitov wrote:
+> On Sat, Nov 16, 2024 at 11:42 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Fri, Nov 15, 2024 at 05:48:53PM -0800, Alexei Starovoitov wrote:
+> > > +static inline struct page *try_alloc_page_noprof(int nid)
+> > > +{
+> > > +     /* If spin_locks are not held and interrupts are enabled, use normal path. */
+> > > +     if (preemptible())
+> > > +             return alloc_pages_node_noprof(nid, GFP_NOWAIT | __GFP_ZERO, 0);
+> >
+> > This isn't right for PREEMPT_RT, spinlock_t will be preemptible, but you
+> > very much do not want regular allocation calls while inside the
+> > allocator itself for example.
+> 
+> I'm aware that spinlocks are preemptible in RT.
+> Here is my understanding of why the above is correct...
+> - preemptible() means that IRQs are not disabled and preempt_count == 0.
+> 
+> - All page alloc operations are protected either by
+> pcp_spin_trylock() or by spin_lock_irqsave(&zone->lock, flags)
+> or both together.
+> 
+> - In non-RT spin_lock_irqsave disables IRQs, so preemptible()
+> check guarantees that we're not holding zone->lock.
+> The page alloc logic can hold pcp lock when try_alloc_page() is called,
+> but it's always using pcp_trylock, so it's still ok to call it
+> with GFP_NOWAIT. pcp trylock will fail and zone->lock will proceed
+> to acquire zone->lock.
+> 
+> - In RT spin_lock_irqsave doesn't disable IRQs despite its name.
+> It calls rt_spin_lock() which calls rcu_read_lock()
+> which increments preempt_count.
 
-tools/testing/selftests/bpf/test_loader.c:1033:64-69: WARNING: conversion to bool not needed here
-
-Fixes: 80a4129fcf20 ("selftests/bpf: Add unit tests for bpf_arena_alloc/free_pages")
-Signed-off-by: guanjing <guanjing@cmss.chinamobile.com>
----
- tools/testing/selftests/bpf/test_loader.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-index 3e9b009580d4..400f56f81272 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -1030,7 +1030,7 @@ void run_subtest(struct test_loader *tester,
- 		}
- 
- 		do_prog_test_run(bpf_program__fd(tprog), &retval,
--				 bpf_program__type(tprog) == BPF_PROG_TYPE_SYSCALL ? true : false);
-+				 bpf_program__type(tprog) == BPF_PROG_TYPE_SYSCALL);
- 		if (retval != subspec->retval && subspec->retval != POINTER_VALUE) {
- 			PRINT_FAIL("Unexpected retval: %d != %d\n", retval, subspec->retval);
- 			goto tobj_cleanup;
--- 
-2.33.0
-
-
-
+It does not on PREEMPT_RCU, which is mandatory for PREEMPT_RT.
 
