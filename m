@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-45052-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45053-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 872EC9D0628
-	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2024 22:21:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8251E9D0646
+	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2024 22:27:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4F61B219CB
-	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2024 21:21:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42FFA2820B6
+	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2024 21:27:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 399C41DDA0F;
-	Sun, 17 Nov 2024 21:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D9F1DDA39;
+	Sun, 17 Nov 2024 21:27:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="EUc0xoFd"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="WdELKkRV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD071DDA30
-	for <bpf@vger.kernel.org>; Sun, 17 Nov 2024 21:21:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9388F1DD86E
+	for <bpf@vger.kernel.org>; Sun, 17 Nov 2024 21:27:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731878495; cv=none; b=EEdy4tSTjEcx/k0XteXqw9o7GE59mbXLmo9Q7rtvcIkh85WcfVtJiGtrNpAXKD9U+J6IxiQdSyk8ujIUceF+q6cjKHWH9oYZLxD5ZofhWTM+dTIYW/Kcc6GIrUasalbMK11aVASxfzZmk+pIfcnOCJWLRlM+WMQVFY26N/doxro=
+	t=1731878850; cv=none; b=L31VzJQsH0aGHb+rEcUmvmN0xL5RgZZkbfPw4V6GO9yr2paYF0sqU77+AQOYOLABpwXgQRodW4UxFfeQzIyiZLm8Y7fpnQQna1YEhHP9nYPRp/JfUNb8F26+c+TXonEQVpNzjeRjNvrmmXPIDjLD+XiGEjWsrLJUNHcoQcG8dM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731878495; c=relaxed/simple;
-	bh=Kk0ehcahFJc+mJIo8h+wjIC7rB+ZTQ0xag6GiXr/5js=;
+	s=arc-20240116; t=1731878850; c=relaxed/simple;
+	bh=R245TqSjsvh5+lUXXJgex0hSvWwFajBBrSotBzwy/kI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M6MrB/6UI/leSNeK86Y3mZhGCSBj+VCjLR6MKaZbRdjkF+tsgZ1J/rhsetnghz2FX/rnXnpwrMyNruIWMsGeskBaYczwwYtavK3Eyc8yDU7gqePEOZz705sJ0gl3cSj86x/Ldv3XixrJO5NlEp86mXc1yKj7/KkxaMfMzoAuH+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=EUc0xoFd; arc=none smtp.client-ip=209.85.208.46
+	 Content-Type:Content-Disposition:In-Reply-To; b=UWVwwYlndaE4q8RQJ/mod6PMnBIYp9yo8PZvqsWQ6Q6PzJGDwfrrmedfwWg8eefpIseTymXrtGNhWi+cignZgNJ3+jx98i7Eq1AxaEdyZva8z4oR4EAdNnlbssQOXlZApptmeCem2b9WybF4XMPTkQa1pUESZ+1cWY+JEX0G0pY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=WdELKkRV; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5cefc36c5d4so2022230a12.0
-        for <bpf@vger.kernel.org>; Sun, 17 Nov 2024 13:21:33 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4316a44d1bbso19666915e9.3
+        for <bpf@vger.kernel.org>; Sun, 17 Nov 2024 13:27:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1731878492; x=1732483292; darn=vger.kernel.org;
+        d=isovalent.com; s=google; t=1731878845; x=1732483645; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=s+WA6zYLqnUjQ947xocV1ZUiDTAVxqMfxx3/8iKYRNQ=;
-        b=EUc0xoFdwrzU7JoSJfHFVO1q4NI6Hmhw28kJYChMULwc+ZrskdpYPgvu0lSt6f1bFv
-         OY9d8LPmbZdl45R3bc6IqdaXn9mNJPwKuVadXVG1SSX9ULzxV42YW6ugilZpx6PNtr8l
-         6A3nU0F3c1ZdphrowjTRiTAABqG/2iQtnT0x7taB3s6FsYsyBTZUobctMu3WGU/ZQOKX
-         yroOGfu7psk9TV+t5RL0okRruIh+bSIW7/hVazveonrh8lyVYEdyk2Q/xsbpXdIg7Vap
-         bn7vBv1IZL7qtvH5pROZfCp+Vjljs13IracFh0fNpkziZDuDfn/06Z5U0dOvrysBvWt+
-         029w==
+        bh=IBhQzgA/0h0FbJ17bVvEpfiFxjXHLd19apX1blqOUow=;
+        b=WdELKkRVjz3Ta7q79T2RoJXXrtjuI8kXbGNkm7BVDQnye94M+wuwFYP+EwDJulvLWb
+         xMYSaz6pVF9V2P2sr0oNaMYo1O0HnINr5ynyVx1MGsYc4P/qJbMRzdwjy4xDi9IBBaJ6
+         rx6KMPkKfF9cBdeb/6SorQGlkZM9BRZ8KewlTkjeqd1WgM9yRneo6vL9qG5I9mIA2C4m
+         CJmD/Q/NrQz/m9XpWYrIDMoh0EWUY/0w7NnfP+j+5A0/0WU9dIYloVGRZ+oV1qRKkiNl
+         ZQ3qVCe9uNs6Lkohahyw2dnMSBQ/KVcvzQnYHLAKWLHteHjsCYe6OqWRMjKNY2U51ryK
+         k51A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731878492; x=1732483292;
+        d=1e100.net; s=20230601; t=1731878845; x=1732483645;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s+WA6zYLqnUjQ947xocV1ZUiDTAVxqMfxx3/8iKYRNQ=;
-        b=NZEJu+WBIa+IDZ3wdqKQ4KH+dw0E4CgRig9jJFGS61EvL11JTxU6C9wMwTQdi93HdX
-         hIzdtFoMEbKhivs1Ce+bB/GTCIpHD3RZ1w5jyDK5Vqw4LcJFi7AxSNR/ds8Tmi3i0Lmv
-         fpr/3rj0rM7jzJ2TFBgNKPdhny6VrMn1hWqxy6p1g+U53Hkrehg47giY1Gwt5au+j2Ix
-         zN/FWrIPb98ue5jDxl+BG6OPooXqaXdAwFCwEf8FavMdJnFHpC+4iAXyfGp0a27882so
-         1mr08muM4lGkavXfmtlfPYxqhLHFKu7rslhZdcsqNcy4Bju//MiPhBX2R90+uwbpPknO
-         0nxw==
-X-Gm-Message-State: AOJu0Yy60Ofj10egnYSTZ8mzfsOCrrO2vKXdOwuYjU6L4CPGmEax0aJS
-	p/rLnBotMpj9n4jqZR0Jfh3jDZDs/u5GYuBxPojbSfsk7/7XhSGE6egd7oSgg18=
-X-Google-Smtp-Source: AGHT+IETgwl/mzXIyfncq9JBE6Ep4zK/CQo7DcPwVaX4WbiBpzHlbVMFuKOpl/7jUfyQi8aPIXpung==
-X-Received: by 2002:aa7:cf97:0:b0:5cf:c303:c59b with SMTP id 4fb4d7f45d1cf-5cfc303c7c9mr1460305a12.28.1731878492303;
-        Sun, 17 Nov 2024 13:21:32 -0800 (PST)
+        bh=IBhQzgA/0h0FbJ17bVvEpfiFxjXHLd19apX1blqOUow=;
+        b=IV3h05L5Tp5+Tc7HND1LilV6rLoWnOsjcfLP26Wv/kjghs97nM5ouwf/5KIjAxCO/6
+         v5lbq+AGdDwAJpY6vZ3oTAm12jR6r9zaaM2KuKcnDrBtvm9l6ftdTxqAKzr7gdAYj0jl
+         WHphMU/z1IobtuM0D1BYw85NxhMGuAFf8I6f7UZST1JwNLR1HGb1cFQ0Qt93Q48qcQyi
+         WnvrP+J8yrIMV8mj5dCoZVtZNqQiGXULfuserGrElo82SO4ztvtP7GH/YKxzpGp9GYRH
+         ENGNhlAqN9MosueGKSeKUdxC83tco7Z/5klCAeaNEwHphNCrDucqo7CMBdbVHuKCAxGy
+         f0pg==
+X-Gm-Message-State: AOJu0YwApqmW8U6lJ4nN0+nKUr9CVbmfAgdFWVWJ9gOD5dPsw72tV126
+	NwSLYz0f1dREob9Q2h7KdjIwxJ3ustzeGbdnQaYh8z9l7sZ+2kb+NKOlVGCfCi2ITlHY9nj15ND
+	A
+X-Google-Smtp-Source: AGHT+IH9UDQEX18PDnn3mB0dfxk7azK2n7Jg/OEsiQQpD8mBx+2sU3SJ6oKEe/1UWuJb8XzplTbuSQ==
+X-Received: by 2002:a05:600c:1e89:b0:431:5863:4240 with SMTP id 5b1f17b1804b1-432df78e296mr81189105e9.24.1731878844913;
+        Sun, 17 Nov 2024 13:27:24 -0800 (PST)
 Received: from eis ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5cfbba90daesm1026214a12.74.2024.11.17.13.21.31
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432dac223e6sm131912985e9.43.2024.11.17.13.27.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Nov 2024 13:21:31 -0800 (PST)
-Date: Sun, 17 Nov 2024 21:24:30 +0000
+        Sun, 17 Nov 2024 13:27:24 -0800 (PST)
+Date: Sun, 17 Nov 2024 21:30:22 +0000
 From: Anton Protopopov <aspsk@isovalent.com>
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next 3/5] bpf: add fd_array_cnt attribute for
- prog_load
-Message-ID: <ZzpfDvL8CeiZCztK@eis>
+Subject: Re: [PATCH bpf-next 4/5] selftests/bpf: Add tests for fd_array_cnt
+Message-ID: <ZzpgbsM7j1Z4fE05@eis>
 References: <20241115004607.3144806-1-aspsk@isovalent.com>
- <20241115004607.3144806-4-aspsk@isovalent.com>
- <a21258aa3de7f478ff7144d0d453adc610f3797b.camel@gmail.com>
+ <20241115004607.3144806-5-aspsk@isovalent.com>
+ <d4a2099893f2cf3c2a97fd1960b269a0850dcf50.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,73 +83,126 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a21258aa3de7f478ff7144d0d453adc610f3797b.camel@gmail.com>
+In-Reply-To: <d4a2099893f2cf3c2a97fd1960b269a0850dcf50.camel@gmail.com>
 
 On 24/11/15 07:06PM, Eduard Zingerman wrote:
 > On Fri, 2024-11-15 at 00:46 +0000, Anton Protopopov wrote:
 > 
 > [...]
 > 
-> > @@ -22537,6 +22543,76 @@ struct btf *bpf_get_btf_vmlinux(void)
-> >  	return btf_vmlinux;
-> >  }
-> >  
-> > +/*
-> > + * The add_fd_from_fd_array() is executed only if fd_array_cnt is given.  In
-> > + * this case expect that every file descriptor in the array is either a map or
-> > + * a BTF, or a hole (0). Everything else is considered to be trash.
-> > + */
-> > +static int add_fd_from_fd_array(struct bpf_verifier_env *env, int fd)
+> > @@ -0,0 +1,374 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <test_progs.h>
+> > +
+> > +#include <linux/btf.h>
+> > +#include <sys/syscall.h>
+> > +#include <bpf/bpf.h>
+> > +
+> > +static inline int _bpf_map_create(void)
 > > +{
-> > +	struct bpf_map *map;
-> > +	CLASS(fd, f)(fd);
-> > +	int ret;
+> > +	static union bpf_attr attr = {
+> > +		.map_type = BPF_MAP_TYPE_ARRAY,
+> > +		.key_size = 4,
+> > +		.value_size = 8,
+> > +		.max_entries = 1,
+> > +	};
 > > +
-> > +	map = __bpf_map_get(f);
-> > +	if (IS_ERR(map)) {
-> > +		if (!IS_ERR(__btf_get_by_fd(f)))
-> > +			return 0;
+> > +	return syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
+> > +}
 > > +
-> > +		/* allow holes */
-> > +		if (!fd)
-> > +			return 0;
+> > +#define BTF_INFO_ENC(kind, kind_flag, vlen) \
+> > +	((!!(kind_flag) << 31) | ((kind) << 24) | ((vlen) & BTF_MAX_VLEN))
+> > +#define BTF_TYPE_ENC(name, info, size_or_type) (name), (info), (size_or_type)
+> > +#define BTF_INT_ENC(encoding, bits_offset, nr_bits) \
+> > +	((encoding) << 24 | (bits_offset) << 16 | (nr_bits))
+> > +#define BTF_TYPE_INT_ENC(name, encoding, bits_offset, bits, sz) \
+> > +	BTF_TYPE_ENC(name, BTF_INFO_ENC(BTF_KIND_INT, 0, 0), sz), \
+> > +	BTF_INT_ENC(encoding, bits_offset, bits)
+> 
+> Nit: these macro are already defined in tools/testing/selftests/bpf/test_btf.h .
+
+Ok, right, I will move them to some common place in v2.
+
 > > +
-> > +		verbose(env, "fd %d is not pointing to valid bpf_map or btf\n", fd);
-> > +		return PTR_ERR(map);
-> > +	}
+> > +static int _btf_create(void)
+> > +{
+> > +	struct btf_blob {
+> > +		struct btf_header btf_hdr;
+> > +		__u32 types[8];
+> > +		__u32 str;
+> > +	} raw_btf = {
+> > +		.btf_hdr = {
+> > +			.magic = BTF_MAGIC,
+> > +			.version = BTF_VERSION,
+> > +			.hdr_len = sizeof(struct btf_header),
+> > +			.type_len = sizeof(__u32) * 8,
+> > +			.str_off = sizeof(__u32) * 8,
+> > +			.str_len = sizeof(__u32),
+> 
+> Nit: offsetof(struct btf_blob, str), sizeof(raw_btf.str), sizeof(raw_btf.types)
+>      are legal in this position.
+
+Ok, thanks. (I've copy-pasted this part from some other test, will
+change the similar code at the source as well then.)
+
+> > +		},
+> > +		.types = {
+> > +			/* long */
+> > +			BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 64, 8),  /* [1] */
+> > +			/* unsigned long */
+> > +			BTF_TYPE_INT_ENC(0, 0, 0, 64, 8),  /* [2] */
+> > +		},
+> > +	};
+> > +	static union bpf_attr attr = {
+> > +		.btf_size = sizeof(raw_btf),
+> > +	};
 > > +
-> > +	ret = add_used_map(env, map);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +	return 0;
+> > +	attr.btf = (long)&raw_btf;
+> > +
+> > +	return syscall(__NR_bpf, BPF_BTF_LOAD, &attr, sizeof(attr));
 > > +}
 > 
-> Nit: keeping this function "flat" would allow easier extension, if necessary.
->      E.g.:
-> 
->     static int add_fd_from_fd_array(struct bpf_verifier_env *env, int fd)
->     {
->     	struct bpf_map *map;
->     	CLASS(fd, f)(fd);
->     	int ret;
-> 
->     	/* allow holes */
->     	if (!fd) {
->     		return 0;
->     	}
->     	map = __bpf_map_get(f);
->     	if (!IS_ERR(map)) {
->     		ret = add_used_map(env, map);
->     		return ret < 0 ? ret : 0;
->     	}
->     	if (!IS_ERR(__btf_get_by_fd(f))) {
->     		return 0;
->     	}
->     	verbose(env, "fd %d is not pointing to valid bpf_map or btf\n", fd);
->     	return -EINVAL;
->     }
-
-Thanks, this makes sense, I will change it to a flat version in v2.
-
 > [...]
+> 
+> > +static void check_fd_array_cnt__fd_array_ok(void)
+> > +{
+> > +	int extra_fds[128];
+> > +	__u32 map_ids[16];
+> > +	__u32 nr_map_ids;
+> > +	int prog_fd;
+> > +
+> > +	extra_fds[0] = _bpf_map_create();
+> > +	if (!ASSERT_GE(extra_fds[0], 0, "_bpf_map_create"))
+> > +		return;
+> > +	extra_fds[1] = _bpf_map_create();
+> > +	if (!ASSERT_GE(extra_fds[1], 0, "_bpf_map_create"))
+> > +		return;
+> > +	prog_fd = load_test_prog(extra_fds, 2);
+> > +	if (!ASSERT_GE(prog_fd, 0, "BPF_PROG_LOAD"))
+> > +		return;
+> > +	nr_map_ids = ARRAY_SIZE(map_ids);
+> > +	if (!check_expected_map_ids(prog_fd, 3, map_ids, &nr_map_ids))
+> 
+> Nit: should probably close prog_fd and extra_fds (and in tests below).
+
+Ah, thanks! I will also check the other tests in this file for the
+same bugs.
+
+> 
+> > +		return;
+> > +
+> > +	/* maps should still exist when original file descriptors are closed */
+> > +	close(extra_fds[0]);
+> > +	close(extra_fds[1]);
+> > +	if (!ASSERT_EQ(map_exists(map_ids[0]), true, "map_ids[0] should exist"))
+> > +		return;
+> > +	if (!ASSERT_EQ(map_exists(map_ids[1]), true, "map_ids[1] should exist"))
+> > +		return;
+> > +
+> > +	close(prog_fd);
+> > +}
+> 
+> [...]
+> 
 
