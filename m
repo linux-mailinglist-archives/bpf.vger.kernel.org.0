@@ -1,110 +1,111 @@
-Return-Path: <bpf+bounces-45136-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B8769D1E66
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 03:47:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E9EA9D01F6
+	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2024 04:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D04A72828E4
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 02:47:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2080C1F22D6D
+	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2024 03:37:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5744A13C8EA;
-	Tue, 19 Nov 2024 02:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 662F511712;
+	Sun, 17 Nov 2024 03:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dHnAiepZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from cmccmta2.chinamobile.com (cmccmta4.chinamobile.com [111.22.67.137])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 278AD33F7;
-	Tue, 19 Nov 2024 02:47:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.137
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59AC0EAFA
+	for <bpf@vger.kernel.org>; Sun, 17 Nov 2024 03:37:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731984425; cv=none; b=VX9zzWeib73T2h5HjCF33asUwru7VxlG9xVLfZznwikTfKQ/MuFi91MlX0tS7cA4M+UKSbrk7gtM6MhNWqQPd1AOw1BoHyCnNsIUgfk6YbYlFVtRopKir0F1LFWXEBziIuYIAKvJIleqtwfxVh/9zRAmA8KFY0T54I9JnjXdndg=
+	t=1731814667; cv=none; b=Rng4EyWmqvqElavFOdhra+QI4mbRpiu17mZg4uRelTgN1Ilq3ExFNmkALkfQeqKDfNdEjpr0UjZ4suPPt3Awel86cifasbzTI0apbWZTSHRvH66nt5Uw6TdRim7fcr9ePse7qgCYFIHwR60OFCKkdjmLfi386qiHnD/XsA0M1Ww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731984425; c=relaxed/simple;
-	bh=l7EGQCVzS8e+Cm9uLnOIk+DQliZX4oyPru3AsAUlqBU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mZyATknYAylfGvaMhqKh6KTpdqlTykxbMwnYEoM0akTGgPx+m75DhktF2pRBb+1JDRjYyx8sAdELNS06ICzKzWvcEFPuA9pENpzeHExEEHQ/KTw9DrKjJASsKxlqdwNk7Fcy+M0oPuOBWShZmAnPFvP7BVpxfjsI7hPO5U+Mdio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
-	by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee8673bfc2197e-819c9;
-	Tue, 19 Nov 2024 10:46:59 +0800 (CST)
-X-RM-TRANSID:2ee8673bfc2197e-819c9
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from localhost.localdomain (unknown[223.108.79.101])
-	by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee6673bfc163b6-0b1a5;
-	Tue, 19 Nov 2024 10:46:59 +0800 (CST)
-X-RM-TRANSID:2ee6673bfc163b6-0b1a5
-From: guanjing <guanjing@cmss.chinamobile.com>
-To: andrii@kernel.org,
-	eddyz87@gmail.com,
-	mykolal@fb.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	dxu@dxuuu.xyz,
-	antony.antony@secunet.com,
-	cupertino.miranda@oracle.com,
-	asavkov@redhat.com
-Cc: bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	guanjing <guanjing@cmss.chinamobile.com>
-Subject: [PATCH v1] selftests/bpf: fix application of sizeof to pointer
-Date: Sun, 17 Nov 2024 11:18:38 +0800
-Message-Id: <20241117031838.161576-1-guanjing@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.33.0
+	s=arc-20240116; t=1731814667; c=relaxed/simple;
+	bh=DJ02RtNjrNPMn5Ag6Ve0e9HpyEO3fCUM3EcDrUJ0ROY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZGoPHoc/9n53Z2MN5MSApRuYs4AmvwalBYe+7NPZd0Xo552cdIHZ/uM7bHpW1yQOH8oubj66Sj2olRt/0NT9EkVhC28U3ix2NgEJnVs4gNaZddWFeCfYhVsDlZOuGpq6FQeXVKu+HRGePLtw7BQKiWs+/CFRPQpootaqtjBGRoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dHnAiepZ; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1731814666; x=1763350666;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DJ02RtNjrNPMn5Ag6Ve0e9HpyEO3fCUM3EcDrUJ0ROY=;
+  b=dHnAiepZaRUFNUh58yHnvY+w+UlKwdLdmmg98dnUXcdb5FJQnBj6BKqv
+   60XUgYNGYLflKOENRIJs3vZ64pX8zPFXZFBrhx12Rcsy7qL8SMlqdNrtq
+   lefFJejs4XIL9vXMbkdhC7OWhFnSUNGiTWXgytDLrO6U9KSXDZ8rtYCFM
+   /A9+H7yl3HLuqdtFsFeINZyMZwEQM90aYbPfD9nmpUpW0yYgZK02zw2kS
+   6bz/Zo5TibTzZotnhTD0YQ8cvyuNhhjjVuDZiYiY8tSzN2s0H1Nx3PW7X
+   HZ1NCBNrtiD9rPOKq9+bA7Jlm8U1e07KuLtiIssIsvaMhN6aOH7S7HdN8
+   g==;
+X-CSE-ConnectionGUID: bVNvsatyRD2dZ+Ui6QP6bQ==
+X-CSE-MsgGUID: rqksREolRSC4aHb/1vE2mA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11258"; a="35558698"
+X-IronPort-AV: E=Sophos;i="6.12,161,1728975600"; 
+   d="scan'208";a="35558698"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2024 19:37:45 -0800
+X-CSE-ConnectionGUID: oK2cWgXRQKq6Tb1rTFy8yg==
+X-CSE-MsgGUID: enb6Q7l8S6q6byp8BWuj8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,161,1728975600"; 
+   d="scan'208";a="88802284"
+Received: from lkp-server01.sh.intel.com (HELO 1e3cc1889ffb) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 16 Nov 2024 19:37:43 -0800
+Received: from kbuild by 1e3cc1889ffb with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tCW6W-0001Mn-20;
+	Sun, 17 Nov 2024 03:37:40 +0000
+Date: Sun, 17 Nov 2024 11:36:57 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ryan Wilson <ryantimwilson@gmail.com>, bpf@vger.kernel.org,
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net
+Cc: oe-kbuild-all@lists.linux.dev, ryantimwilson@meta.com
+Subject: Re: [PATCH bpf-next] bpf: Add multi-prog support for XDP BPF programs
+Message-ID: <202411171129.PWAzidIE-lkp@intel.com>
+References: <20241114170721.3939099-1-ryantimwilson@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241114170721.3939099-1-ryantimwilson@gmail.com>
 
-sizeof when applied to a pointer typed expression gives the size of
-the pointer.
+Hi Ryan,
 
-tools/testing/selftests/bpf/progs/test_tunnel_kern.c:678:41-47: ERROR: application of sizeof to pointer
+kernel test robot noticed the following build errors:
 
-The proper fix in this particular case is to code sizeof(*gopt)
-instead of sizeof(gopt).
+[auto build test ERROR on bpf-next/master]
 
-This issue was detected with the help of Coccinelle.
+url:    https://github.com/intel-lab-lkp/linux/commits/Ryan-Wilson/bpf-Add-multi-prog-support-for-XDP-BPF-programs/20241115-015104
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20241114170721.3939099-1-ryantimwilson%40gmail.com
+patch subject: [PATCH bpf-next] bpf: Add multi-prog support for XDP BPF programs
+config: openrisc-defconfig (https://download.01.org/0day-ci/archive/20241117/202411171129.PWAzidIE-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241117/202411171129.PWAzidIE-lkp@intel.com/reproduce)
 
-Fixes: 5ddafcc377f9 ("selftests/bpf: Fix a few tests for GCC related warnings.")
-Signed-off-by: guanjing <guanjing@cmss.chinamobile.com>
----
- tools/testing/selftests/bpf/progs/test_tunnel_kern.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202411171129.PWAzidIE-lkp@intel.com/
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 32127f1cd687..3a437cdc5c15 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -675,7 +675,7 @@ int ip6geneve_set_tunnel(struct __sk_buff *skb)
- 	gopt->length = 2; /* 4-byte multiple */
- 	*(int *) &gopt->opt_data = bpf_htonl(0xfeedbeef);
- 
--	ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(gopt));
-+	ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(*gopt));
- 	if (ret < 0) {
- 		log_err(ret);
- 		return TC_ACT_SHOT;
+All errors (new ones prefixed by >>):
+
+   or1k-linux-ld: net/core/dev.o: in function `dev_xdp_attach_netlink.constprop.0':
+>> dev.c:(.text+0x12290): undefined reference to `bpf_mprog_detach'
+>> dev.c:(.text+0x12290): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `bpf_mprog_detach'
+
 -- 
-2.33.0
-
-
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
