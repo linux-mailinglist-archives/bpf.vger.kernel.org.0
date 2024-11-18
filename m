@@ -1,127 +1,161 @@
-Return-Path: <bpf+bounces-45109-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45111-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D210B9D1865
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 19:46:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38EF69D1879
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 19:54:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BFFC1F249AD
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 18:46:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B228E1F23F1C
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 18:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A681E2833;
-	Mon, 18 Nov 2024 18:45:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E931DED6A;
+	Mon, 18 Nov 2024 18:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BRUiChqv"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="giMV+ukl"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04FFD1E102E;
-	Mon, 18 Nov 2024 18:45:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1C41E102A
+	for <bpf@vger.kernel.org>; Mon, 18 Nov 2024 18:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731955533; cv=none; b=ddgf9K/JdYjFqFTByPdPijA90v6ah758DARZUt1biVmH53OBhBaY6Wux9HUqwmMGy6H/ldjJBzh0v0TYRaHcyS7rnDde4iMBAiyG46W1BjsH65DBGGGVu8Zm/Vl/KsM8LmbFB49KG9H9JA8T0eUblYpO1qUBJdM9D6z8h6P8WTI=
+	t=1731956023; cv=none; b=ACTyJdyjxfabf9NssKE2l09nEEWj8NhEIaTMo7U7ISAB8c310rB86/2pueKHgbtKK37FFSSa4sSyQmXfuzu0r+uFptrtWKcKPOTEYZkS7YE/AnTO7+dRIhEJznk7K+Vp6pBGGwybHNmZO6947KRRgzL84gMKmbr2+MOCvVZy41k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731955533; c=relaxed/simple;
-	bh=pTpgbEQ2v4xOlxmRjIKhSkuxO6OUIO3GQ62UFcCIbLY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jwyP9NiRd7AJADvQdMkppRdhnBBEnfbYsb1LYrkDhg1DoiWVjjj/A8l08s1lsMPmBVHAdmVszL4wgXh6unRldVlxz5G/xSjlt7k4uolAj0kNbfj9firMpkgGHdyba5vjF9LgqElOeYU+bPsh4o9O97SFVZ8pp3M/jDV7QZZthDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BRUiChqv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3CA0C4CECC;
-	Mon, 18 Nov 2024 18:45:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731955532;
-	bh=pTpgbEQ2v4xOlxmRjIKhSkuxO6OUIO3GQ62UFcCIbLY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BRUiChqvD9wUkB+adJ+j8Xum+Z5bFMu7qqMilBlF5myMtJpFm+ezFJJycgSZgRlk4
-	 nrIeUmu9p+u6KR7wQEZR5mDtx1a8iiN6wTIZfl9kujk/gidgH2lP1mjNrnoxr45PLX
-	 WjyL1x/RYudJqea+GmyXXBKiW4zVDF/G1p0lMHiAe8dzi+eSQVI/wcmfTYlrZBkOal
-	 3FaitVSX+TMZHTvEEHoTHrvlKucmCcZxE7No5iutEhyoi3U5ifmMxt/HKGzBpxZy6n
-	 s3GWwbfYFeIbfCmmGPoYxbezl6CrHAeswrA3Eyfqfw7w3U/stkp4P29+oul4GbqOXP
-	 6V3ZY2RPwRaOw==
-Date: Mon, 18 Nov 2024 10:45:30 -0800
-From: Namhyung Kim <namhyung@kernel.org>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, Kees Cook <kees@kernel.org>
-Subject: Re: [PATCH v2 3/4] perf lock contention: Resolve slab object name
- using BPF
-Message-ID: <ZzuLSkThfgkA_8hT@google.com>
-References: <20241108061500.2698340-1-namhyung@kernel.org>
- <20241108061500.2698340-4-namhyung@kernel.org>
- <5f95c0d7-01a4-485d-a9d7-1a39acf9c680@suse.cz>
- <ZzNrIdiHCxTy1QId@x1>
- <00aa92be-85db-4163-9576-dfc71eafb415@suse.cz>
+	s=arc-20240116; t=1731956023; c=relaxed/simple;
+	bh=cbQ+DWCjCkcMhndSa1EJpMWde5gxCWPfifJ4v+szBg8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qc1lWD4JDbErQiglZ7kttO/73/dSPPcO9Ytigx/9AcKK6b1JzBY+2z+GmWsbvpU1Adg03YpfjU2wsVvYPLNBVbg5tjK7AgpdMFzdoTLiVcHfbd2uZQ8fWifZKZLa/QyOjqLTfCZx4WyUG5ywkwV9FfcWdbvIA6eIknUTMGL9DE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=giMV+ukl; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+	by m0001303.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 4AIH0wlw026767;
+	Mon, 18 Nov 2024 10:53:03 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=s2048-2021-q4; bh=jYrVHfEGyH4EbntrDl
+	Zf8F+8Pcr1VWl218ESKtvEgFA=; b=giMV+uklhA21IxeUhNFLFNHQ9iQfn78xbZ
+	E+7N5ZXIPvLsNxxGkDD5fabad4SXvQ1VtC06gqrx0sRyYxGmJmruaN/efkGcbkWK
+	lx3MQcPNUlTToZRlYLrbBKvgE+nDNhArhhiLWkEqlaKkOWe4vTVD087iwoc3cfi5
+	iM8wlwFC7xn4yONLK0HqSv/Aqn9HJg6Roudc75EBHFnXZGK1E/CpBF4RuXkbcvc3
+	MiqL5qVZGN1qTq8TKjP3hHbqW+W2wDV5+wcjGocg0t1gC6vU6qq28tJjll4CXHmk
+	CV6SK7p8rqTDwBqSYYXDTH15ikGoUPmRRxGNd6VF4qoUHgknMAHQ==
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by m0001303.ppops.net (PPS) with ESMTPS id 4309m20vdy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Mon, 18 Nov 2024 10:53:02 -0800 (PST)
+Received: from devvm4158.cln0.facebook.com (2620:10d:c0a8:1b::8e35) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server id
+ 15.2.1544.11; Mon, 18 Nov 2024 18:53:00 +0000
+From: Vadim Fedorenko <vadfed@meta.com>
+To: Borislav Petkov <bp@alien8.de>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        Vadim Fedorenko
+	<vadim.fedorenko@linux.dev>,
+        Mykola Lysenko <mykolal@fb.com>
+CC: <x86@kernel.org>, <bpf@vger.kernel.org>,
+        Vadim Fedorenko
+	<vadfed@meta.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+Subject: [PATCH bpf-next v7 0/4] bpf: add cpu cycles kfuncss
+Date: Mon, 18 Nov 2024 10:52:41 -0800
+Message-ID: <20241118185245.1065000-1-vadfed@meta.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <00aa92be-85db-4163-9576-dfc71eafb415@suse.cz>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: qTCmlufkbmIuGvAUzHx338WfVDDTKZBy
+X-Proofpoint-GUID: qTCmlufkbmIuGvAUzHx338WfVDDTKZBy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-Hello,
+This patchset adds 2 kfuncs to provide a way to precisely measure the
+time spent running some code. The first patch provides a way to get cpu
+cycles counter which is used to feed CLOCK_MONOTONIC_RAW. On x86
+architecture it is effectively rdtsc_ordered() function while on other
+architectures it falls back to __arch_get_hw_counter(). The second patch
+adds a kfunc to convert cpu cycles to nanoseconds using shift/mult
+constants discovered by kernel. JIT version is done for x86 for now, on
+other architectures it falls back to slightly simplified version of
+vdso_calc_ns.
 
-On Wed, Nov 13, 2024 at 03:20:43PM +0100, Vlastimil Babka wrote:
-> On 11/12/24 15:50, Arnaldo Carvalho de Melo wrote:
-> > On Tue, Nov 12, 2024 at 12:09:24PM +0100, Vlastimil Babka wrote:
-> > +               /* look slab_hash for dynamic locks in a slab object */
-> > +               if (hashmap__find(&slab_hash, flags & LCB_F_SLAB_ID_MASK, &slab_data)) {
-> > +                       snprintf(name_buf, sizeof(name_buf), "&%s", slab_data->name);
-> > +                       return name_buf;
-> > +        	}
-> > 
-> > He wants to avoid storing 64 bytes (the slab cache pointer, 's'), instead
-> > he wants to store a shorter 'id' and encode it in the upper bits of the
-> > 'struct contention_data' 'flags' field.
-> > 
-> > The iterator, at the beggining of the session attributes this id,
-> > starting from zero, to each of the slab caches, so it needs to map it
-> > back from the address at contention_end tracepoint.
-> > 
-> > At post processing time it converts the id back to the name of the slab
-> > cache.
-> > 
-> > I hope this helps,
+Selftests are also added to check whether the JIT implementation is
+correct and to show the simplest usage example.
 
-Thanks Analdo for the explanation!
+Change log:
+v6 -> v7:
+* change boot_cpu_has() to cpu_feature_enabled() (Borislav)
+* return constant clock_mode in __arch_get_hw_counter() call
+v5 -> v6:
+* added cover letter
+* add comment about dropping S64_MAX manipulation in jitted
+  implementation of rdtsc_oredered (Alexey)
+* add comment about using 'lfence;rdtsc' variant (Alexey)
+* change the check in fixup_kfunc_call() (Eduard)
+* make __arch_get_hw_counter() call more aligned with vDSO
+  implementation (Yonghong)
+v4 -> v5:
+* use #if instead of #ifdef with IS_ENABLED
+v3 -> v4:
+* change name of the helper to bpf_get_cpu_cycles (Andrii)
+* Hide the helper behind CONFIG_GENERIC_GETTIMEOFDAY to avoid exposing
+  it on architectures which do not have vDSO functions and data
+* reduce the scope of check of inlined functions in verifier to only 2,
+  which are actually inlined.
+* change helper name to bpf_cpu_cycles_to_ns.
+* hide it behind CONFIG_GENERIC_GETTIMEOFDAY to avoid exposing on
+  unsupported architectures.
+v2 -> v3:
+* change name of the helper to bpf_get_cpu_cycles_counter to
+* explicitly mention what counter it provides (Andrii)
+* move kfunc definition to bpf.h to use it in JIT.
+* introduce another kfunc to convert cycles into nanoseconds as
+* more meaningful time units for generic tracing use case (Andrii)
+v1 -> v2:
+* Fix incorrect function return value type to u64
+* Introduce bpf_jit_inlines_kfunc_call() and use it in
+	mark_fastcall_pattern_for_call() to avoid clobbering in case
+	of running programs with no JIT (Eduard)
+* Avoid rewriting instruction and check function pointer directly
+	in JIT (Alexei)
+* Change includes to fix compile issues on non x86 architectures
 
-> 
-> Thanks a lot, if it's a tradeoff to do a bit more work in order to store
-> less data, then it makes sense to me.
 
-Right, I don't want to increase the data size for this as we have some
-unused bits in the flags.  It'd call one more bpf hashmap lookup during
-record but I don't think it's gonna be a problem.
+Vadim Fedorenko (4):
+  bpf: add bpf_get_cpu_cycles kfunc
+  bpf: add bpf_cpu_cycles_to_ns helper
+  selftests/bpf: add selftest to check rdtsc jit
+  selftests/bpf: add usage example for cpu cycles kfuncs
 
-Thanks,
-Namhyung
+ arch/x86/net/bpf_jit_comp.c                   |  61 ++++++++++
+ arch/x86/net/bpf_jit_comp32.c                 |  33 ++++++
+ include/linux/bpf.h                           |   6 +
+ include/linux/filter.h                        |   1 +
+ kernel/bpf/core.c                             |  11 ++
+ kernel/bpf/helpers.c                          |  39 +++++++
+ kernel/bpf/verifier.c                         |  41 ++++++-
+ .../bpf/prog_tests/test_cpu_cycles.c          |  35 ++++++
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/test_cpu_cycles.c     |  25 +++++
+ .../selftests/bpf/progs/verifier_cpu_cycles.c | 104 ++++++++++++++++++
+ 11 files changed, 352 insertions(+), 6 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_cpu_cycles.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cpu_cycles.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_cpu_cycles.c
 
-> > 
-> >> - if it's postprocessing, it would be too late for bpf_get_kmem_cache() as
-> >> the object might be gone already?
-> >> 
-> >> The second alternative would be worse as it could miss the cache or
-> >> misattribute (in case page is reallocated by another cache), the first is
-> >> just less efficient than possible.
-> >> 
-> >> > +			}
-> >> > +		}
-> >> >  
-> >> >  		err = bpf_map_update_elem(&lock_stat, &key, &first, BPF_NOEXIST);
-> >> >  		if (err < 0) {
-> 
+-- 
+2.43.5
+
 
