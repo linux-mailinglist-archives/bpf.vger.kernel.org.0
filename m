@@ -1,98 +1,100 @@
-Return-Path: <bpf+bounces-45086-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45087-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DAEB9D108E
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 13:28:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D8359D1090
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 13:30:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E465283765
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 12:28:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDF7F1F226BF
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 12:30:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFB319924E;
-	Mon, 18 Nov 2024 12:28:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A1915250F;
+	Mon, 18 Nov 2024 12:30:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iWtcCuI/"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gWzZ1ooj"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CABC1E529
-	for <bpf@vger.kernel.org>; Mon, 18 Nov 2024 12:28:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C9C2747B
+	for <bpf@vger.kernel.org>; Mon, 18 Nov 2024 12:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731932903; cv=none; b=O3naLexS3m8k6d7r8TzZPqwmdzsktuwk28nCZg8QgZKpmuqtWxo18AAIGlGEpulRSh6JFwQrTVcHSoObWFWON8VVWdFngv3kwn+79gZ6i2X/0fxE0bvu8yHg0U+xbdmQVH2zaHWsIbk2pUdZHOyaXGnvvUwln9bUTJFBqBGmJ+g=
+	t=1731933015; cv=none; b=E7hlwFqUn8MkzGgbaZFNuKK5gnuomXii+zLB4JDfiumR5yxLwE0nkbw+qU0zbHHbJQTT9sc184iieRzMCgH8K/w6aSI6i1uXDRU5YdDv/IjK8j6FssAJMlbd/EYhhw86vg4BDY+NL/yL2mnjf0200l7Nk13joFVQqI5ZuFF/L54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731932903; c=relaxed/simple;
-	bh=a5PMJuIheTZSJYz9j4L7hnc4jQbZtmom0+ZK4aHxoNg=;
+	s=arc-20240116; t=1731933015; c=relaxed/simple;
+	bh=NO6EOQUTyDmVY3USQKNqdzZmkrIFfdaDhePgnUCOeS4=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Z3OaxCUSbddK1Eh9GjxYOahrVmXKGzLLCKGb2QdfcD37+y0poSDG0q32FRkH3RHbwlTF5TeXUbhBZQK7M5LHbtgPF8Q/JIRdSBtVD+w+MJpzE2+UrenAyJnmYyB55g7A3t3i54Ge3BndpbYXgrDUCuBKHsplhasEhxAOgE8crIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iWtcCuI/; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=u2/MrNse0tzgnQsMW8SLWjjxbjNmXLSh30b4DHDZUDV2HqrTeStWrhYmmCiRTo0roMibwuHYWTOEn940JkeOzs+xAUIK+gFM+vKLsbSyTb9U2dwAwphGDtCDvdKH6yIm+PhkrOF+01wxnwqxbgYlc41ddmLSnF+ffv8NQtQHNOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gWzZ1ooj; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1731932900;
+	s=mimecast20190719; t=1731933013;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=a5PMJuIheTZSJYz9j4L7hnc4jQbZtmom0+ZK4aHxoNg=;
-	b=iWtcCuI/PDEQ+akpMz7Wx7CLdvAY594WWrokZ81AniyYXtSW4BVvOQYGbGsFcCHU0byOwc
-	lOqr5rczgVZEpXWbGPnDPwFCU+UfNapUA9au1PT8Nn7GiLvcv+DOwpXjSPOMK7nr+japqO
-	2/u2luvsOslwf44Kt1uGXCxqCHIn240=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=NO6EOQUTyDmVY3USQKNqdzZmkrIFfdaDhePgnUCOeS4=;
+	b=gWzZ1ooj5TkE4mTkujbL++zzAY2AB5NYEZvwzhv1/y0T4gUo7bSQnLjO+xkFz/sfuHCc8d
+	VXXrawR3Nom2XP88ngGWY+asgrol8UAMKb2onFNw5eET5sjq+WHvxwP0aXBo8MoKjxO0ES
+	NxhXV7/fi7pdTgBsGDnMDJQAYHsjWf8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-160--6PaQRAHNf-SOV_jNZu6Yw-1; Mon, 18 Nov 2024 07:28:19 -0500
-X-MC-Unique: -6PaQRAHNf-SOV_jNZu6Yw-1
-X-Mimecast-MFC-AGG-ID: -6PaQRAHNf-SOV_jNZu6Yw
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-382341057e6so938244f8f.2
-        for <bpf@vger.kernel.org>; Mon, 18 Nov 2024 04:28:18 -0800 (PST)
+ us-mta-202-OHX8cQsNP0e6bXTscEUZYw-1; Mon, 18 Nov 2024 07:30:11 -0500
+X-MC-Unique: OHX8cQsNP0e6bXTscEUZYw-1
+X-Mimecast-MFC-AGG-ID: OHX8cQsNP0e6bXTscEUZYw
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4314c6ca114so22231835e9.1
+        for <bpf@vger.kernel.org>; Mon, 18 Nov 2024 04:30:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731932898; x=1732537698;
+        d=1e100.net; s=20230601; t=1731933010; x=1732537810;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a5PMJuIheTZSJYz9j4L7hnc4jQbZtmom0+ZK4aHxoNg=;
-        b=wI9HG9z/mWluxNj88G3OyDDxqyNI1OYRyEZdfcls0zw7/NfSfQJxmuLlxRs1CFJRhS
-         3ocugXrmx98cMoAMR9NZI5knW4GcqOQFm8FeeJc/AvCZPF/onOVTaFpUZPKAVyd47jMC
-         prJLVWLq35iNs+H/YxNpIbw+802ftIe1lzSED5uCxoPVD5VZvD2Qq21kRa8NPz2PDmRY
-         9WbBXhxRtx5ooexauXAb9gV7o2PhtOWOQO16Amjrv5+nnY9dFH0Uje0H8G5v9QB9g0+2
-         c7jLSuPp4oWCBcxlr2mr0W/8Kv3BqC358SKxRjEaP6Y71mmo/Xj0orjaV5l6mnqFG5uO
-         JeKw==
-X-Forwarded-Encrypted: i=1; AJvYcCX/Bu3uCaxK5/e+iWSRK8mfcNUB0QsZZ2rEisb8NESF/HyePaFjNQKHKzXskCuCzL5ror4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBYIc7b7QjLSEj8vmbvxUpvh0xqLm2yZAPWPa/YfPBFdNRx9Kx
-	MfTonzPAz6IbOh4AEd5bCoWJNip/qUTnp4twUDhUzWKuAZMJ+elOujnmbcDSRXyOM6wfBo2Jj2t
-	C++8pz/coBvhwpX2QEhkwf1i7OxVKgelbzNWSE3FQfQb5pqRmEw==
-X-Received: by 2002:a05:6000:1f88:b0:37c:d276:f04 with SMTP id ffacd0b85a97d-38225a915fbmr8419320f8f.45.1731932897851;
-        Mon, 18 Nov 2024 04:28:17 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHvUSesMJRyfpD4TZAAq7HWvYwAaBvYrcLEgAyZnzJ30O5fX5SLDeKa4T0Pf5ECbNyeCQU7xg==
-X-Received: by 2002:a05:6000:1f88:b0:37c:d276:f04 with SMTP id ffacd0b85a97d-38225a915fbmr8419306f8f.45.1731932897464;
-        Mon, 18 Nov 2024 04:28:17 -0800 (PST)
+        bh=NO6EOQUTyDmVY3USQKNqdzZmkrIFfdaDhePgnUCOeS4=;
+        b=cQ8ApT75eS0wDBvtlUbY1qIrERGcMsAQMu/Tbi32ecfJV83nOef8SNLACg5kEbxRYH
+         kku2WAyxxqcGywpUpulWOqvJf6n3HKbubTEAI0K8jpZKRCPVPmZ7cSbkIHC0REnRMP09
+         47LIPXqF38VNubzjnmCeVoaAGsiWeKEjlNy2Jkrpf3gEJmDPZF4Y6aOMXyFhwfphrLj+
+         mJA7MGtCf/BWxkbHNNjAFTZD18J4N+O5q1/oDZbZzu+GS8Oz7ehpBuSl7+P3LsDOqNUe
+         X/E/yVP4EhIlCxzHXMIk6GUXpapjCgvcfNltPC28pdbpQa//RxiZTv8BZe6fxB5oEfDu
+         Eujg==
+X-Forwarded-Encrypted: i=1; AJvYcCUwxbsfgSUtVkhodZsZPkIg75X1juIGvloG5egRCwKteJjet1jYSWChWu1OMqhZHc98OMA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUY0y3ZC11QGeJcUgdyn2mqWsCb1secpgL3jSndJw3OGJpjMsQ
+	WrnSTegWfOkqfvLbkbShXOTdM2rUpZ7h53eJNcYL+IElNdiH9h10jQWQnyIyDTVzchJwixxB7lh
+	JDxhJwpviSMm9EYE/Xts0+3YKCkUI8D/ndccpunomF8L48QLt2Q==
+X-Received: by 2002:a05:600c:1e27:b0:431:5043:87c3 with SMTP id 5b1f17b1804b1-432df78bb53mr83701305e9.22.1731933010545;
+        Mon, 18 Nov 2024 04:30:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH7oK0+2Gv2ZYhVUhG0VyLtCz8pqw41xvHq2CRum6J9E5cnOuLJcYos2MdCEG+4t+BLPsAE8Q==
+X-Received: by 2002:a05:600c:1e27:b0:431:5043:87c3 with SMTP id 5b1f17b1804b1-432df78bb53mr83701165e9.22.1731933010270;
+        Mon, 18 Nov 2024 04:30:10 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38232cde8dasm7782246f8f.103.2024.11.18.04.28.16
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432dab72085sm158073035e9.3.2024.11.18.04.30.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Nov 2024 04:28:16 -0800 (PST)
+        Mon, 18 Nov 2024 04:30:09 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 9576C164D313; Mon, 18 Nov 2024 13:28:15 +0100 (CET)
+	id A8597164D318; Mon, 18 Nov 2024 13:30:08 +0100 (CET)
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v4] selftests/bpf: Consolidate kernel modules
- into common directory
-In-Reply-To: <CAEf4Bzb7KXhZW06vB=01O3SstQo8zNYfooyMNSx=6O0VXH__Bw@mail.gmail.com>
-References: <20241113-bpf-selftests-mod-compile-v4-1-730d5b824617@redhat.com>
- <CAEf4Bzb7KXhZW06vB=01O3SstQo8zNYfooyMNSx=6O0VXH__Bw@mail.gmail.com>
+To: Ryan Wilson <ryantimwilson@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Network Development
+ <netdev@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, ryantimwilson@meta.com, Willem de Bruijn
+ <willemdebruijn.kernel@gmail.com>, Jason Wang <jasowang@redhat.com>, Eric
+ Dumazet <edumazet@google.com>
+Subject: Re: [PATCH bpf-next] bpf: Add multi-prog support for XDP BPF programs
+In-Reply-To: <CA+Fy8UaKWJ+8SoF_purtcOju-Xdt-m5qeUvg5keK3KGW9=ApQw@mail.gmail.com>
+References: <20241114170721.3939099-1-ryantimwilson@gmail.com>
+ <CAADnVQJ2V6JnDhvNuqRHEmBcK-6Aty9GRkdRCGEyxnWnRrAKcA@mail.gmail.com>
+ <CA+Fy8Ub7b1SXByugjDo-D13H_12w0iWzQhO-rf=MMhSjby+maA@mail.gmail.com>
+ <874j48rc13.fsf@toke.dk>
+ <CA+Fy8UaKWJ+8SoF_purtcOju-Xdt-m5qeUvg5keK3KGW9=ApQw@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 18 Nov 2024 13:28:15 +0100
-Message-ID: <87h684rajk.fsf@toke.dk>
+Date: Mon, 18 Nov 2024 13:30:08 +0100
+Message-ID: <87ed38ragf.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,45 +104,66 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Ryan Wilson <ryantimwilson@gmail.com> writes:
 
-> On Wed, Nov 13, 2024 at 3:25=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen =
+> On Fri, Nov 15, 2024 at 3:07=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen =
 <toke@redhat.com> wrote:
 >>
->> The selftests build four kernel modules which use copy-pasted Makefile
->> targets. This is a bit messy, and doesn't scale so well when we add more
->> modules, so let's consolidate these rules into a single rule generated
->> for each module name, and move the module sources into a single
->> directory.
+>> Hi Ryan
 >>
->> To avoid parallel builds of the different modules stepping on each
->> other's toes during the 'modpost' phase of the Kbuild 'make modules', we
->> annotate the module copy target as .NOTPARALLEL, which makes all
->> its *dependencies* execute sequentially regardless of whether make is
->> doing parallel builds or not. This means the recursive make calls into
->> the test_kmods directory will be serialised, and when the first one
->> actually builds all four modules in the subdirectory, make will
->> correctly skip the three other calls, so we end up with just one build
->> of the subdir modules.
+>> I'll take a more detailed look at your patch later, but wanted to add
+>> a few smallish comment now, see below:
 >>
->> Acked-by: Viktor Malik <vmalik@redhat.com>
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
->> Changes in v4:
->> - Rebase on bpf-next
->> - Link to v3: https://lore.kernel.org/r/20241111-bpf-selftests-mod-compi=
-le-v3-1-e2e6369ed670@redhat.com
 >>
->> Changes in v3:
->> - Use .NOTPARALLEL annotation instead of creating a modules.built file
+>> Ryan Wilson <ryantimwilson@gmail.com> writes:
+>> > On Thu, Nov 14, 2024 at 4:52=E2=80=AFPM Alexei Starovoitov
+>> > <alexei.starovoitov@gmail.com> wrote:
+>> >>
+>> >> On Thu, Nov 14, 2024 at 9:07=E2=80=AFAM Ryan Wilson <ryantimwilson@gm=
+ail.com> wrote:
+>> >> >
+>> >> > Currently, network devices only support a single XDP program. Howev=
+er,
+>> >> > there are use cases for multiple XDP programs per device. For examp=
+le,
+>> >> > at Meta, we have XDP programs for firewalls, DDOS and logging that =
+must
+>> >> > all run in a specific order. To work around the lack of multi-progr=
+am
+>> >> > support, a single daemon loads all programs and uses bpf_tail_call()
+>> >> > in a loop to jump to each program contained in a BPF map.
+>> >>
+>> >> The support for multiple XDP progs per netdev is long overdue.
+>> >> Thank you for working on this!
+>>
+>> +1 on this!
+>>
+>>
+>> [...]
+>>
+>> > Note for real drivers, we do not hit this code. This is how it works
+>> > for real drivers:
+>> > - When installing a BPF program on a driver, we call the driver's
+>> > ndo_bpf() callback function with command =3D XDP_QUERY_MPROG_SUPPORT. =
+If
+>> > this returns 0, then mprog is supported. Otherwise, mprog is not
+>> > supported.
+>>
+>> We already have feature flags for XDP, so why not just make mprog
+>> support a feature flag instead of the query thing? It probably should be
+>> anyway, so it can also be reported to userspace.
 >
-> Is it just me, or did this make everything non-parallel? When I
-> applied this locally, even .bpf.c compilation and skeleton generation
-> was sequential despite `make -j$(nproc)`.
->
-> We can't do that, it's too much of a regression.
+> Oh wow can't believe I missed the feature flag API. Yes, I'll use this
+> in v2 instead. Thanks for the suggestion!
 
-Huh, no, that was certainly not the intention! Will take another look...
+Cool! You're welcome.
+
+> And if it's exposed to userspace, users no longer need to guess if
+> their driver supports mprog or not - although hopefully this is an
+> intermediary state and the mprog migration for all drivers will be
+> relatively quick and painless.
+
+Famous last words? ;)
 
 -Toke
 
