@@ -1,152 +1,143 @@
-Return-Path: <bpf+bounces-45091-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45092-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3142D9D1225
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 14:40:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B42AE9D12D6
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 15:21:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E600B28193E
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 13:40:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74B96B28B9C
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 14:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1E11A0AE0;
-	Mon, 18 Nov 2024 13:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D47211A0BC0;
+	Mon, 18 Nov 2024 14:07:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xqBj3tYo";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="i6Ttu225"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="CZAEuHg6"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02691A9B22
-	for <bpf@vger.kernel.org>; Mon, 18 Nov 2024 13:39:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59BD3196C67;
+	Mon, 18 Nov 2024 14:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731937184; cv=none; b=myJAcqi6FatxyTYDLn+DNrUdPAQpijHytl2q9ljqvM9l5NcSi86sSBMi1LRl1VMS144+9kSbN2o9sKWsNEBO3a/fLMDh1zOr39cTHrt6tVcKRW806/x8T+Gb7MKB6JLpJVhm5L2lVhi3uh0RH28za+oT/1jlSP6v+1Fkz5OemBc=
+	t=1731938839; cv=none; b=MpklfGCSbhOS2SMKd0IQ+DbxveeaOtZKRNrWnHyiZuaXKWyLfouXZPhXf/LbNTD4zg7ng/Z1cbszu9cIiKsQ1cnjsTZHxTQ6FhSCMoeWJSC4Xr8GOIQAuWourPqGt5Uq7Y0qRQRSdRjVHEsXIY4WCRDvJ9+kWgPhk5zzxB+tZMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731937184; c=relaxed/simple;
-	bh=mO8CWt557HTNzUd1RC6lG/3TLwTfSrdvOFp17qz4dOY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lwCaGWxk3Oj+ALqH+QZSw+ZzY0uK8D6KmYpQ5oz0IqnLqy6LtUDL6DPe185DMdShU9exoPMAY6QhxwPUrZouzvVergE/yy2CW0jahgQQsUqGp0GFx47Sb/snouSRnUoSO12jQz5kYXnKyBTxGsYYl4246wIvpGbWoW2Co266uCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xqBj3tYo; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=i6Ttu225; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 18 Nov 2024 14:39:39 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1731937179;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=utlXgDsKPK+R1Kc8WsvdWru5Tu7HJ/AsbbFn+bgDdNo=;
-	b=xqBj3tYonzb4aAVjNwRz7wBeeUmPLbllIRHoWiwlw9dHHmn7Oh9xKMoXwy7YkWIBKcXxQr
-	fLfLEIkIFdhJdA/V+Qu2dkU+CmolaBrSjgmTLlnRb2CEf7TvYxhUfhhi4cmfoFXCqU2aZF
-	JFep5ovrnRm9QEIK5hfd89++RP/65e4aHWfO8iIv59elQbJki3tr7vaLEeeU9SP16jdXBN
-	1nM8Ls5HLdwjmxZGlNGO+a/7BWcYTmskVfxvocemZUsDoPLmysey0weNRkvsFQVbNvXOO8
-	t3unFcF1/r/7Z9oIYgNQvZ6cj7xedLuKtFkEN41VrR9Dvz7z7w1b0xquxAP6Aw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1731937179;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=utlXgDsKPK+R1Kc8WsvdWru5Tu7HJ/AsbbFn+bgDdNo=;
-	b=i6Ttu225GMIM1rXoiP9XAZTMccAUpMeCHkNFoATgqCHT/447M/pGnKOZr7XdIg+cDPbjMI
-	5nnuzFkjZl2AqaDg==
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, 
-	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>, houtao1@huawei.com, xukuohai@huawei.com
-Subject: Re: [PATCH bpf-next 03/10] bpf: Handle BPF_EXIST and BPF_NOEXIST for
- LPM trie
-Message-ID: <20241118143028-304ae6cf-d766-4604-8663-49887a02e06e@linutronix.de>
-References: <20241118010808.2243555-1-houtao@huaweicloud.com>
- <20241118010808.2243555-4-houtao@huaweicloud.com>
+	s=arc-20240116; t=1731938839; c=relaxed/simple;
+	bh=x6vfhzdgog0R2D4+u+nvAJH8rjr4e04bhFPsdcpjJes=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Pk901zD4e+bCrQScvMG87Ag9u0hKFmDZ5OvyAPsucXHDVj36g/cTLlgox19MKOFEsV1a8gXr5+Bq+doAGm0W2GkqZRBLL7FGSpjVzorUQaGXizfFjw0HG5BLHkI9srYpZJMbhL9I8agQMFxhJj3DwpODmO5xNVyX5cMjCMhhhYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=CZAEuHg6; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=/HM2i
+	Hvf97NP3FjbIWxYEj7KCm2FhZwT0bdFWr+gBXM=; b=CZAEuHg6h5CSgjZJour9Y
+	0/lqNyj6NTL0t2n3wxRYgbO/MoTXAzZF/0NLDb168RuRVTTUCdX6XoJ7DTRL6Mcl
+	eQ1uFFPgDs8We8QiF22WNp3BDtkCpYZHnQDJxk7wtccZtOxjYUyclAbUCTIOOG2+
+	QU6Vy14R6THb48miR9Kino=
+Received: from localhost.localdomain (unknown [47.252.33.72])
+	by gzsmtp1 (Coremail) with SMTP id PCgvCgD3_+X0STtnMoCsDw--.3348S2;
+	Mon, 18 Nov 2024 22:06:50 +0800 (CST)
+From: Jiayuan Chen <mrpre@163.com>
+To: skhan@linuxfoundation.org,
+	linux-kselftest@vger.kernel.org
+Cc: song@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	martin.lau@linux.dev,
+	andrii@kernel.org,
+	ast@kernel.org,
+	kpsingh@kernel.org,
+	jolsa@kernel.org,
+	Jiayuan Chen <mrpre@163.com>
+Subject: [PATCH kselftest] fix single bpf test
+Date: Mon, 18 Nov 2024 22:06:08 +0800
+Message-ID: <20241118140608.53524-1-mrpre@163.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241118010808.2243555-4-houtao@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:PCgvCgD3_+X0STtnMoCsDw--.3348S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZF4rtr4rGF4rZr4DGw1Dtrb_yoW5WFykpa
+	48Jwn8Kr1kKFWUtryrJ3WUXry8Wr4v9392vF18ZrWUZw15JFZ7Xw4IkFZ5Aa47WrZ5Z3y5
+	Za4IgF17ua9rAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piX_-PUUUUU=
+X-CM-SenderInfo: xpus2vi6rwjhhfrp/1tbiWxmbp2c7QysO+wABs+
 
-On Mon, Nov 18, 2024 at 09:08:01AM +0800, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> There is exact match during the update of LPM trie, therefore, add the
-> missed handling for BPF_EXIST and BPF_NOEXIST flags.
+Currently, when testing a certain target in selftests, executing the
+command 'make TARGETS=XX -C tools/testing/selftests' succeeds for non-BPF,
+but a similar command fails for BPF:
+'''
+make TARGETS=bpf -C tools/testing/selftests
 
-"There is" can be interpreted as "this can be true" and "this will
-always be true".
+make: Entering directory '/linux-kselftest/tools/testing/selftests'
+make: *** [Makefile:197: all] Error 1
+make: Leaving directory '/linux-kselftest/tools/testing/selftests'
+'''
 
-Maybe:
+The reason is that the previous commit:
+commit 7a6eb7c34a78 ("selftests: Skip BPF seftests by default")
+led to the default filtering of bpf in TARGETS which make TARGETS empty.
+That commit also mentioned that building BPF tests requires external
+commands to run. This caused target like 'bpf' or 'sched_ext' defined
+in SKIP_TARGETS to need an additional specification of SKIP_TARGETS as
+empty to avoid skipping it, for example:
+'''
+make TARGETS=bpf SKIP_TARGETS="" -C tools/testing/selftests
+'''
 
-Add the currently missing handling for the BPF_EXIST and BPF_NOEXIST
-flags, as these can be specified by users.
+If special steps are required to execute certain test, it is extremely
+unfair. We need a fairer way to treat different test targets.
 
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
->  kernel/bpf/lpm_trie.c | 23 ++++++++++++++++++++---
->  1 file changed, 20 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-> index c6f036e3044b..4300bd51ec6e 100644
-> --- a/kernel/bpf/lpm_trie.c
-> +++ b/kernel/bpf/lpm_trie.c
-> @@ -375,6 +375,10 @@ static long trie_update_elem(struct bpf_map *map,
->  	 * simply assign the @new_node to that slot and be done.
->  	 */
->  	if (!node) {
-> +		if (flags == BPF_EXIST) {
-> +			ret = -ENOENT;
-> +			goto out;
-> +		}
->  		rcu_assign_pointer(*slot, new_node);
->  		goto out;
->  	}
-> @@ -383,18 +387,31 @@ static long trie_update_elem(struct bpf_map *map,
->  	 * which already has the correct data array set.
->  	 */
->  	if (node->prefixlen == matchlen) {
-> +		if (!(node->flags & LPM_TREE_NODE_FLAG_IM)) {
-> +			if (flags == BPF_NOEXIST) {
-> +				ret = -EEXIST;
-> +				goto out;
-> +			}
-> +			trie->n_entries--;
-> +		} else if (flags == BPF_EXIST) {
-> +			ret = -ENOENT;
-> +			goto out;
-> +		}
-> +
->  		new_node->child[0] = node->child[0];
->  		new_node->child[1] = node->child[1];
->  
-> -		if (!(node->flags & LPM_TREE_NODE_FLAG_IM))
-> -			trie->n_entries--;
-> -
->  		rcu_assign_pointer(*slot, new_node);
->  		free_node = node;
->  
->  		goto out;
->  	}
->  
-> +	if (flags == BPF_EXIST) {
-> +		ret = -ENOENT;
-> +		goto out;
-> +	}
-> +
->  	/* If the new node matches the prefix completely, it must be inserted
->  	 * as an ancestor. Simply insert it between @node and *@slot.
->  	 */
-> -- 
-> 2.29.2
-> 
+This commit provider a way: If a user has specified a single TARGETS,
+it indicates an expectation to run the specified target, and thus the
+object should not be skipped.
+
+Another way is to change TARGETS to DEFAULT_TARGETS in the Makefile and
+then check if the user specified TARGETS and decide whether filter or not,
+though this approach requires too many modifications.
+Signed-off-by: Jiayuan Chen <mrpre@163.com>
+---
+ tools/testing/selftests/Makefile | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index 363d031a16f7..d76c1781ec09 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -116,7 +116,7 @@ TARGETS += vDSO
+ TARGETS += mm
+ TARGETS += x86
+ TARGETS += zram
+-#Please keep the TARGETS list alphabetically sorted
++# Please keep the TARGETS list alphabetically sorted
+ # Run "make quicktest=1 run_tests" or
+ # "make quicktest=1 kselftest" from top level Makefile
+ 
+@@ -132,12 +132,15 @@ endif
+ 
+ # User can optionally provide a TARGETS skiplist. By default we skip
+ # targets using BPF since it has cutting edge build time dependencies
+-# which require more effort to install.
++# If user provide custom TARGETS, we just ignore SKIP_TARGETS so that
++# user can easy to test single target which defined in SKIP_TARGETS
+ SKIP_TARGETS ?= bpf sched_ext
+ ifneq ($(SKIP_TARGETS),)
++ifneq ($(words $(TARGETS)), 1)
+ 	TMP := $(filter-out $(SKIP_TARGETS), $(TARGETS))
+ 	override TARGETS := $(TMP)
+ endif
++endif
+ 
+ # User can set FORCE_TARGETS to 1 to require all targets to be successfully
+ # built; make will fail if any of the targets cannot be built. If
+
+base-commit: 67b6d342fb6d5abfbeb71e0f23141b9b96cf7bb1
+-- 
+2.43.5
+
 
