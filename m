@@ -1,104 +1,183 @@
-Return-Path: <bpf+bounces-45072-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45073-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 429D79D0981
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 07:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5049E9D0A8D
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 09:05:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3F221F211E2
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 06:20:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA2AE1F21C87
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 08:05:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E56921474A9;
-	Mon, 18 Nov 2024 06:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B06F14F9D6;
+	Mon, 18 Nov 2024 08:05:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZXpr+HFu"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F4A13D50C
-	for <bpf@vger.kernel.org>; Mon, 18 Nov 2024 06:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8200405FB;
+	Mon, 18 Nov 2024 08:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731910834; cv=none; b=SCoq6EegCAQ1j+y0cyiH9ugfVfzL1DqHom5U0XHDOQc6M8E1k6Y9VPhMKSbhV/YMT90kcjDs5YvopAv8nXDeGbDHN0VKgg400SFAEwU4Zp9J9m+7rGmnZjnL461FXFT9zB/Ok4uU0jPZCU45VZDbMMdzVT+fQ7OplTVNbqUOksc=
+	t=1731917104; cv=none; b=s9IvyJWkwmhsQ7opYLgB4mEzNyz6PZ1e2EvwgE1UGeKoBBPg+o8cxPcKBWWYbHxRudWN4kxPYEECIjREijegekP017sMqQNlMLFkLRpEoGwWjEkHkChVVNhs+3dN60ra8y4RtBW2OKfoSonm1QPVs2l6oizfqN/6aMqFCPQA8NI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731910834; c=relaxed/simple;
-	bh=tTspQRPqL6psxjcaDar8pXC8pPqUmv1tiUZplSfH9MY=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=BXbtSN3KHyI4JbQN7Rfy714v43RWwgRQpKE6NGYJAajlMtNZs56iE8Mm3DWC9G/sI0hrvB6Jr/8V4Vq7izKJkMMMnknXIKe1GTjfmHwy3SJ1UWbCbaJzMY3S5eVPBHF0waLrwApfe0sGITl7zSgV1krQNjv2i1+ZP+y770Oyc+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XsHY300sYz4f3lg7
-	for <bpf@vger.kernel.org>; Mon, 18 Nov 2024 14:20:06 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 54E381A06D7
-	for <bpf@vger.kernel.org>; Mon, 18 Nov 2024 14:20:26 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgAX84ak3Dpns0t1CA--.55900S2;
-	Mon, 18 Nov 2024 14:20:23 +0800 (CST)
-Subject: Re: [PATCH bpf-next 00/10] Fixes for LPM trie
-To: bot+bpf-ci@kernel.org
-Cc: kernel-ci@meta.com, andrii@kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev, bpf <bpf@vger.kernel.org>
-References: <20241118010808.2243555-1-houtao@huaweicloud.com>
- <46268aa9ef13a24388af833b17f6cef8bdd3a7be8402fec7640e65a2f1118468@mail.kernel.org>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <fd947bab-1445-4d43-ce7e-ed53697d466a@huaweicloud.com>
-Date: Mon, 18 Nov 2024 14:20:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1731917104; c=relaxed/simple;
+	bh=Se1/3EGyEUGoIHskyijwcLj2gMIA+uBgyClSkko/PjY=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=CasQF8muIoqRLyZk6Qc9YmHjCK5dZ2DuKZlA+7VNSjProoaSRcS3ozArnt/bnRsgmcCxOCL6cReyDsn22BLe8fM8jt7R8EsY9rdC7GDukoRnoaK5o/R1YpOI9xNOeKbEDXMhXLPFs1SbBdKGdE7de0k/TYG8IuPZmTQfN2gIA/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZXpr+HFu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21912C4CECC;
+	Mon, 18 Nov 2024 08:05:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731917104;
+	bh=Se1/3EGyEUGoIHskyijwcLj2gMIA+uBgyClSkko/PjY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ZXpr+HFuGZvL/uQqg/vOBP5dEJAbbcCyhKFzlzeKOeqAYepp3DbaoSR24rl6ngFmp
+	 L09wY4N0d0jBQdx6bGWp62FWQY+FvJdi5ZmgHgm8tUNfUOVfpwZSGPWfWrvKZ214ei
+	 DrYNXhRsFYhi7h/m4GuRSAwiFbFTxkZ+ju+ZqrNpaI5twr+NCI8VSQLugMXGo/borC
+	 K+kNmWlJoViCvFtI1G8fzmcl19MfbncnwHbF/qD8t6qC9V4wnIfWVjfBZ0Y67ZQGh0
+	 CwJFti2Wr/HKpMI5E7EgB8Xzx02QPSuR2SVLX2ajpDDivv9XjFkK1T9UXRamO/nZtC
+	 upS17kZl8XSdg==
+Date: Mon, 18 Nov 2024 17:04:58 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Song Liu
+ <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
+ <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Alan Maguire
+ <alan.maguire@oracle.com>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Beau Belgrave
+ <beaub@linux.microsoft.com>
+Subject: Re: [RFC 00/11] uprobes: Add support to optimize usdt probes on
+ x86_64
+Message-Id: <20241118170458.c825bf255c2fb93f2e6a3519@kernel.org>
+In-Reply-To: <20241105133405.2703607-1-jolsa@kernel.org>
+References: <20241105133405.2703607-1-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <46268aa9ef13a24388af833b17f6cef8bdd3a7be8402fec7640e65a2f1118468@mail.kernel.org>
-Content-Type: text/plain; charset=windows-1252
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:gCh0CgAX84ak3Dpns0t1CA--.55900S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF15Gr4UGw47Zw45uFy8Zrb_yoW3uFXEkw
-	4kur97GrnxA3Z8KF1xXr4xWFs2gry8ZFyFyr4DtrW7Zwn0kryDXrs5Gr93ZF98Xa9xXr9x
-	Z3Z3J390krnxCjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AK
-	xVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j
-	6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxU7I
-	JmUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi,
+Hi Jiri,
 
-On 11/18/2024 9:42 AM, bot+bpf-ci@kernel.org wrote:
-> Dear patch submitter,
->
-> CI has tested the following submission:
-> Status:     SUCCESS
-> Name:       [bpf-next,00/10] Fixes for LPM trie
-> Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?series=910440&state=*
-> Matrix:     https://github.com/kernel-patches/bpf/actions/runs/11884065937
->
-> No further action is necessary on your part.
->
->
-> Please note: this email is coming from an unmonitored mailbox. If you have
-> questions or feedback, please reach out to the Meta Kernel CI team at
-> kernel-ci@meta.com.
+On Tue,  5 Nov 2024 14:33:54 +0100
+Jiri Olsa <jolsa@kernel.org> wrote:
 
-I am curious about the reason on why test_maps on s390 is disabled. If I
-remember correctly, test_maps on s390 was still enabled last year [1].
+> hi,
+> this patchset adds support to optimize usdt probes on top of 5-byte
+> nop instruction.
+> 
+> The generic approach (optimize all uprobes) is hard due to emulating
+> possible multiple original instructions and its related issues. The
+> usdt case, which stores 5-byte nop seems much easier, so starting
+> with that.
+> 
+> The basic idea is to replace breakpoint exception with syscall which
+> is faster on x86_64. For more details please see changelog of patch 7.
 
-[1]: https://github.com/kernel-patches/bpf/actions/runs/7164372250
+This looks like a great idea!
 
+> 
+> The first benchmark shows about 68% speed up (see below). The benchmark
+> triggers usdt probe in a loop and counts how many of those happened
+> per second.
+
+Hmm, interesting result. I'd like to compare it with user-space event,
+which is also use "write" syscall to write the pre-defined events
+in the ftrace trace buffer.
+
+But if uprobe trampoline can run in the comparable speed, user may
+want to use uprobes because it is based on widely used usdt and
+avoid accessing tracefs from application. (The user event user
+application has to setup their events via tracefs interface)
+
+> 
+> It's still rfc state with some loose ends, but I'd be interested in
+> any feedback about the direction of this.
+
+So does this change the usdt macro? Or it just reuse the usdt so that
+user applications does not need to be recompiled?
+
+Thank you,
+
+> 
+> It's based on tip/perf/core with bpf-next/master merged on top of
+> that together with uprobe session patchset.
+> 
+> thanks,
+> jirka
+> 
+> 
+> current:
+>         # ./bench -w2 -d5 -a  trig-usdt
+>         Setting up benchmark 'trig-usdt'...
+>         Benchmark 'trig-usdt' started.
+>         Iter   0 ( 46.982us): hits    4.893M/s (  4.893M/prod), drops    0.000M/s, total operations    4.893M/s
+>         Iter   1 ( -5.967us): hits    4.892M/s (  4.892M/prod), drops    0.000M/s, total operations    4.892M/s
+>         Iter   2 ( -2.771us): hits    4.899M/s (  4.899M/prod), drops    0.000M/s, total operations    4.899M/s
+>         Iter   3 (  1.286us): hits    4.889M/s (  4.889M/prod), drops    0.000M/s, total operations    4.889M/s
+>         Iter   4 ( -2.871us): hits    4.881M/s (  4.881M/prod), drops    0.000M/s, total operations    4.881M/s
+>         Iter   5 (  1.005us): hits    4.886M/s (  4.886M/prod), drops    0.000M/s, total operations    4.886M/s
+>         Iter   6 ( 11.626us): hits    4.906M/s (  4.906M/prod), drops    0.000M/s, total operations    4.906M/s
+>         Iter   7 ( -6.638us): hits    4.896M/s (  4.896M/prod), drops    0.000M/s, total operations    4.896M/s
+>         Summary: hits    4.893 +- 0.009M/s (  4.893M/prod), drops    0.000 +- 0.000M/s, total operations    4.893 +- 0.009M/s
+> 
+> optimized:
+>         # ./bench -w2 -d5 -a  trig-usdt
+>         Setting up benchmark 'trig-usdt'...
+>         Benchmark 'trig-usdt' started.
+>         Iter   0 ( 46.073us): hits    8.258M/s (  8.258M/prod), drops    0.000M/s, total operations    8.258M/s
+>         Iter   1 ( -5.752us): hits    8.264M/s (  8.264M/prod), drops    0.000M/s, total operations    8.264M/s
+>         Iter   2 ( -1.333us): hits    8.263M/s (  8.263M/prod), drops    0.000M/s, total operations    8.263M/s
+>         Iter   3 ( -2.996us): hits    8.265M/s (  8.265M/prod), drops    0.000M/s, total operations    8.265M/s
+>         Iter   4 ( -0.620us): hits    8.264M/s (  8.264M/prod), drops    0.000M/s, total operations    8.264M/s
+>         Iter   5 ( -2.624us): hits    8.236M/s (  8.236M/prod), drops    0.000M/s, total operations    8.236M/s
+>         Iter   6 ( -0.840us): hits    8.232M/s (  8.232M/prod), drops    0.000M/s, total operations    8.232M/s
+>         Iter   7 ( -1.783us): hits    8.235M/s (  8.235M/prod), drops    0.000M/s, total operations    8.235M/s
+>         Summary: hits    8.249 +- 0.016M/s (  8.249M/prod), drops    0.000 +- 0.000M/s, total operations    8.249 +- 0.016M/s
+> 
+> ---
+> Jiri Olsa (11):
+>       uprobes: Rename arch_uretprobe_trampoline function
+>       uprobes: Make copy_from_page global
+>       uprobes: Add len argument to uprobe_write_opcode
+>       uprobes: Add data argument to uprobe_write_opcode function
+>       uprobes: Add mapping for optimized uprobe trampolines
+>       uprobes: Add uprobe syscall to speed up uprobe
+>       uprobes/x86: Add support to optimize uprobes
+>       selftests/bpf: Use 5-byte nop for x86 usdt probes
+>       selftests/bpf: Add usdt trigger bench
+>       selftests/bpf: Add uprobe/usdt optimized test
+>       selftests/bpf: Add hit/attach/detach race optimized uprobe test
+> 
+>  arch/x86/entry/syscalls/syscall_64.tbl                    |   1 +
+>  arch/x86/include/asm/uprobes.h                            |   7 +++
+>  arch/x86/kernel/uprobes.c                                 | 180 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+>  include/linux/syscalls.h                                  |   2 +
+>  include/linux/uprobes.h                                   |  25 +++++++++-
+>  kernel/events/uprobes.c                                   | 222 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------
+>  kernel/fork.c                                             |   2 +
+>  kernel/sys_ni.c                                           |   1 +
+>  tools/testing/selftests/bpf/bench.c                       |   2 +
+>  tools/testing/selftests/bpf/benchs/bench_trigger.c        |  45 +++++++++++++++++
+>  tools/testing/selftests/bpf/prog_tests/uprobe_optimized.c | 252 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/trigger_bench.c         |  10 +++-
+>  tools/testing/selftests/bpf/progs/uprobe_optimized.c      |  29 +++++++++++
+>  tools/testing/selftests/bpf/sdt.h                         |   9 +++-
+>  14 files changed, 768 insertions(+), 19 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_optimized.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_optimized.c
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
