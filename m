@@ -1,178 +1,108 @@
-Return-Path: <bpf+bounces-45074-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0AC59D0AAA
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 09:18:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C78279D0B74
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 10:14:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6645D281E89
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 08:18:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 316A2281A16
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 09:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9E01552F5;
-	Mon, 18 Nov 2024 08:18:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76B0188904;
+	Mon, 18 Nov 2024 09:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bBtJomjM"
+	dkim=pass (1024-bit key) header.d=datadoghq.com header.i=@datadoghq.com header.b="RLUpxDC6"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0E93BBF2;
-	Mon, 18 Nov 2024 08:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0586C18871A
+	for <bpf@vger.kernel.org>; Mon, 18 Nov 2024 09:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731917894; cv=none; b=gC5q6Xba02APbHY1mAyv8B+ACcpfdXZZzAZeJsdgt/cSosPFwaoBwLiYBRcgsPCdtu2N1m4ZdCqFcsnuBULTm8Xex4qwtm/gWgIfHArkIXa9HWmk1sl+v2sqw2CC4C7FG2m0/TUWcNd4Do7JSICybbIk7LRy7o3pBWxyy/Pl3hc=
+	t=1731921261; cv=none; b=A+Q6iu0P7nuBHYdMm0GZaW140ImbtfB3PI7lgThU6jBFggynpwxI+uu2ivyDkjXjQkR6nLvgohgnSgwdjhMdFpdn8iLlhoOx2vldzoLtHRd8hL2AKnwV6D7DiBxfqBIIEhtHQUwcEv9Q347aOKXUX/BWydX1NL9fkrO32gWy2DI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731917894; c=relaxed/simple;
-	bh=yB126og11Z2QbsbKhKtQEVuRANQlHW9pxdXRcHedxuE=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=irONBb+oJBp7shpj7yzLsEgZha+LlM7QhplAWC/gVpUdRaprkJtqFKuYPJWH0+E7vJ/5RArx4IaRFdOJOIySvZjlUpAyVS3m+gOg+XqZtcco0t7GzYvcnig7cUkRFHTR3BrMIe4CIX5t1out4CcGZjILbOg9xWlaXlOkWu47kSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bBtJomjM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8851DC4CECC;
-	Mon, 18 Nov 2024 08:18:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731917893;
-	bh=yB126og11Z2QbsbKhKtQEVuRANQlHW9pxdXRcHedxuE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=bBtJomjMHghzWIATHwiIk2YXgtwldU82l6jNt8QDjLZCPhvAX6+N1E7uNKlx+MlUC
-	 VaHffFMfxHuTftxDiX4OpN8oNqCzCueYAUJW5dmdrdPE+Xii7djebXY6k7yBrJw0Rf
-	 vP4V+EVri/FPmftMZwUq8G9U8SHUkxzjjzAm18aL19oKtShJ7c2TgdkAIkYSe7B5q/
-	 DDAgllYnE8HaWFTW9fP4jA6JENVpL4Meg5uQdLj9LNVnmlvJoVgKNlPKYXvqVZYgHk
-	 aOgh8poRQKNfBM7sbrV8XB1YR7/DhByZG7f8jcwvx1KOw5l4DwrkJBNez/Qb9z3YiE
-	 W2YDwcF95Xe8A==
-Date: Mon, 18 Nov 2024 17:18:08 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Song Liu
- <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
- <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Alan Maguire
- <alan.maguire@oracle.com>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC perf/core 07/11] uprobes/x86: Add support to optimize
- uprobes
-Message-Id: <20241118171808.316ae124cd57886e813cb98f@kernel.org>
-In-Reply-To: <20241105133405.2703607-8-jolsa@kernel.org>
-References: <20241105133405.2703607-1-jolsa@kernel.org>
-	<20241105133405.2703607-8-jolsa@kernel.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1731921261; c=relaxed/simple;
+	bh=6UYL4Of/RWENh/wQRVOwvR1L/OHKG+2n8kTTS5Rbzts=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=I0cbausI2fN2gD4BNs7Eef5OOnZyG0AnuVKWEYC2Ir5DM/jLF7wNCUnnkbWjzBTqWqjwclh+h2RsX7sEfmtr+1ZmPvMNhDvolf0GFXpIBA8rl2Q3yrOkPS6DbvDh0FrLjXM0acgVcT1vNGR3AL322OB3GYLgzWlosDtK4+IR2Hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=datadoghq.com; spf=pass smtp.mailfrom=datadoghq.com; dkim=pass (1024-bit key) header.d=datadoghq.com header.i=@datadoghq.com header.b=RLUpxDC6; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=datadoghq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=datadoghq.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2ea4d429e43so842465a91.3
+        for <bpf@vger.kernel.org>; Mon, 18 Nov 2024 01:14:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=datadoghq.com; s=google; t=1731921258; x=1732526058; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6UYL4Of/RWENh/wQRVOwvR1L/OHKG+2n8kTTS5Rbzts=;
+        b=RLUpxDC6V8bGEQ9w+v4HGkbzCAQz7DOt2k0O0/HQAp2bK6becR5hxAeKie8JmM/1Ve
+         9+QPRi6kkmns1vfJF2jz75hmZFB8BxTILeRNJmF3jOakjxsMPGacfF2DrJOWtgagbd9G
+         qJzrfODXXuHzfE6TB7+TiKkT2PiFNPwMIF9BM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731921258; x=1732526058;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6UYL4Of/RWENh/wQRVOwvR1L/OHKG+2n8kTTS5Rbzts=;
+        b=WPkwlnkulo40BjSYay0qRPlNiaoZ713ohQ+IBIeZqzh2zqCFEZf+9ap/xt82DmRlaS
+         3D1z23rIdtR8jWZnbd7BbS3MzWl/P4IGm1h4RECuyRlPOfx3XhcTPvN+fyEqhx+CD9w9
+         M4jk2WTOVcZNVFcmy2aWlykdol0erMOsAgO1F2JqSUBJgSFQIMgky48nNh3ivWxwOfWk
+         rhaDfcGq8JofJ7PWHjBEbEPpCnj84mmNFQ5z1sEGS3OBgEPPtUq4KQzoOAKwom+jMGPd
+         ASgzcGXatYcIkb1XX3YfvuaXgCCoLUeJ5zZaxw1+AmT+MpcI73cFmhnKsQlx4+LTj4Um
+         LlNA==
+X-Gm-Message-State: AOJu0YyAUbvuLgwDbGsEYtmKlfXAyJMVCZBABMlLVqMXCVw91eehtkd1
+	q1uYogjogyoBuB+hPn2UOgYe5txBbjxcc46BIlNCwOIy65hH5R5Kqd5VG0xE/Ly1Yx8hLQlbTrg
+	gGq15a5A5ayZftCi5OPlUB17WOQeIs2gGjEt8pw==
+X-Google-Smtp-Source: AGHT+IFUqVrUkKuWkAbHig/exPeWSrnZhdnpp8GBx4IRm2yw5kOLc4WljxsR9K9QsLA/8t5mVVB1ojGAoKYP8s9DBXU=
+X-Received: by 2002:a17:90b:3ec9:b0:2ea:7fd8:9dc1 with SMTP id
+ 98e67ed59e1d1-2ea7fd8a2c1mr2472879a91.18.1731921258060; Mon, 18 Nov 2024
+ 01:14:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+From: Usama Saqib <usama.saqib@datadoghq.com>
+Date: Mon, 18 Nov 2024 10:14:07 +0100
+Message-ID: <CAOzX8ixn1d4ja+LOJq_S_WDq=ZqtUTcV0RZzKpyJ2Yd0pBMx2g@mail.gmail.com>
+Subject: BPF and lazy preemption.
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue,  5 Nov 2024 14:34:01 +0100
-Jiri Olsa <jolsa@kernel.org> wrote:
+Hello,
 
-> Putting together all the previously added pieces to support optimized
-> uprobes on top of 5-byte nop instruction.
-> 
-> The current uprobe execution goes through following:
->   - installs breakpoint instruction over original instruction
->   - exception handler hit and calls related uprobe consumers
->   - and either simulates original instruction or does out of line single step
->     execution of it
->   - returns to user space
-> 
-> The optimized uprobe path
-> 
->   - checks the original instruction is 5-byte nop (plus other checks)
->   - adds (or uses existing) user space trampoline and overwrites original
->     instruction (5-byte nop) with call to user space trampoline
->   - the user space trampoline executes uprobe syscall that calls related uprobe
->     consumers
->   - trampoline returns back to next instruction
-> 
-> This approach won't speed up all uprobes as it's limited to using nop5 as
-> original instruction, but we could use nop5 as USDT probe instruction (which
-> uses single byte nop ATM) and speed up the USDT probes.
-> 
-> This patch overloads related arch functions in uprobe_write_opcode and
-> set_orig_insn so they can install call instruction if needed.
-> 
-> The arch_uprobe_optimize triggers the uprobe optimization and is called after
-> first uprobe hit. I originally had it called on uprobe installation but then
-> it clashed with elf loader, because the user space trampoline was added in a
-> place where loader might need to put elf segments, so I decided to do it after
-> first uprobe hit when loading is done.
-> 
-> TODO release uprobe trampoline when it's no longer needed.. we might need to
-> stop all cpus to make sure no user space thread is in the trampoline.. or we
-> might just keep it, because there's just one 4GB memory region?
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  arch/x86/include/asm/uprobes.h |   7 ++
->  arch/x86/kernel/uprobes.c      | 130 +++++++++++++++++++++++++++++++++
->  include/linux/uprobes.h        |   1 +
->  kernel/events/uprobes.c        |   3 +
->  4 files changed, 141 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/uprobes.h b/arch/x86/include/asm/uprobes.h
-> index 678fb546f0a7..84a75ed748f0 100644
-> --- a/arch/x86/include/asm/uprobes.h
-> +++ b/arch/x86/include/asm/uprobes.h
-> @@ -20,6 +20,11 @@ typedef u8 uprobe_opcode_t;
->  #define UPROBE_SWBP_INSN		0xcc
->  #define UPROBE_SWBP_INSN_SIZE		   1
->  
-> +enum {
-> +	ARCH_UPROBE_FLAG_CAN_OPTIMIZE	= 0,
-> +	ARCH_UPROBE_FLAG_OPTIMIZED	= 1,
-> +};
-> +
->  struct uprobe_xol_ops;
->  
->  struct arch_uprobe {
-> @@ -45,6 +50,8 @@ struct arch_uprobe {
->  			u8	ilen;
->  		}			push;
->  	};
-> +
-> +	unsigned long flags;
->  };
->  
->  struct arch_uprobe_task {
-> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-> index 02aa4519b677..50ccf24ff42c 100644
-> --- a/arch/x86/kernel/uprobes.c
-> +++ b/arch/x86/kernel/uprobes.c
-> @@ -18,6 +18,7 @@
->  #include <asm/processor.h>
->  #include <asm/insn.h>
->  #include <asm/mmu_context.h>
-> +#include <asm/nops.h>
->  
->  /* Post-execution fixups. */
->  
-> @@ -877,6 +878,33 @@ static const struct uprobe_xol_ops push_xol_ops = {
->  	.emulate  = push_emulate_op,
->  };
->  
-> +static int is_nop5_insns(uprobe_opcode_t *insn)
-> +{
-> +	return !memcmp(insn, x86_nops[5], 5);
+I hope everyone is doing well. It seems that work has started to
+introduce a new preemption model in the linux kernel PREEMPT_LAZY [1].
+According to the mailing list, the maintainers intend for this to
+replace PREEMPT_NONE and PREEMPT_VOLUTARY as the default preemption
+model.
 
-Maybe better to use BYTES_NOP5 directly?
+From the changeset, it looks like PREEMPT_LAZY allows
+irqentry_exit_cond_resched() to get called on IRQ exit. This change,
+similar to PREEMPT_FULL, can get two bpf programs attached to a kprobe
+or tracepoint running in user context, to nest. This currently causes
+the nesting program to miss. I have been able to get these misses to
+happen on top of this new patch.
 
-> +}
-> +
-> +static int is_call_insns(uprobe_opcode_t *insn)
-> +{
-> +	return *insn == 0xe8;
+This behavior is currently not possible with the default preemption
+model used in most distributions, PREEMPT_VOLUNTARY. For many products
+using BPF for tracing/security, this would constitute a regression in
+terms of reliability.
 
-0xe8 -> CALL_INSN_OPCODE
+My question is whether there is any ongoing work to fix this behavior
+of kprobes and tracepoints, so they do not miss on nesting. I have
+previously been told that there is ongoing work related to
+bpf-specific spinlocks to resolve this problem [2]. Will that be
+available by the time this is merged into the mainline, and the
+current defaults deprecated?
 
-Thank you,
+Thanks,
+Usama Saqib.
 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+1. https://lwn.net/ml/all/20241007074609.447006177@infradead.org/
+2. https://lore.kernel.org/bpf/CAOzX8ixsxPbw1ke=DsDd_b38k1TE+JRG3LvJfh4wD60mhHvAqA@mail.gmail.com/T/#m206e33e5a0a0d9d3d498480a53aa9c87c81d91ff
 
