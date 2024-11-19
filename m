@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-45202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F26D19D29E0
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 16:41:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A92A29D29E4
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 16:42:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1B4E1F238D0
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 15:41:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 635961F239BB
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 15:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EE21D2B25;
-	Tue, 19 Nov 2024 15:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1F791D0F63;
+	Tue, 19 Nov 2024 15:38:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EmhGlSfm"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ksdh/qUf"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705731CBEB4
-	for <bpf@vger.kernel.org>; Tue, 19 Nov 2024 15:37:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9CCE1D0F50
+	for <bpf@vger.kernel.org>; Tue, 19 Nov 2024 15:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732030677; cv=none; b=I2/twOxkkUQ6PrLGoRpZcJslpzPKoxaDD5gjrmRiIiK2naSjReUtBLX045CywgIADHSMY8x4tOi32XWMDpYNyzCRVoV35u6CNqZV+nMQ7YU9rJcHF5DnmGdl67vkv5JmWESzXMRKLKI7E6a565QwSl3UVkvgM+IbklGzp1zVlxg=
+	t=1732030690; cv=none; b=bFW5K7BcL5S2dAZEza1sfzmHxvPiT7DNULLqEfwj62cwwG4AYd4LVuW5tWdsTda5JDYBy2PdPUk52xYkmqRDRvkptURrzqOc6/JPznJuWkF/PePYMwbBjaMBE8nqh5HK8z5NKYmLAk47tydhUvNIGY+reSr97TNrCw78JH+OUp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732030677; c=relaxed/simple;
-	bh=9pH7ZkeY4viWe7Wod5zfr5y5mOdJFAFbwB72hayvvGQ=;
+	s=arc-20240116; t=1732030690; c=relaxed/simple;
+	bh=WcoRXmH8EHSSUkrYncG38ywpgNOrSaCBNAPretltWvc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ke0cRFuG1YrtzLBkrtZZWeCV2vjdd/Y5dgjJxl+MS0AStDxhRtgWvOmhfCj1Glx+6ypW5A887h/P/cTOwhSs6y5c0Kp5qGagzyHmyJ/2i3CBXsN3Qyt6IBm6cvdW1b447NG8sUpv1umZGarZxSox8YkCdPSV3w08KufiV9AjyT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EmhGlSfm; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=BIAp+9bxbQbG3j1E9dq0+va/roGvt4pCBm8SuNFHJlitreMAargO8fOGEYGg1roeYQ+mtx+0hdvnkh005ZaZ1ro8Ig3c3AYos2MCpbSF+xHilnxrPJdUvOtY8taASqKXxVIe8WosCkmIck2kBFjWqFSEbslvOEglYhedFi5Epqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ksdh/qUf; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1732030674;
+	s=mimecast20190719; t=1732030688;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UFFvFWWnWyZvXw5qfQp0QkusU/cmiYrMNoaijrYT6Zw=;
-	b=EmhGlSfm8hdPJWRsRDYL/UnwnX2SruRLZDgp+klzfdreuCGdWPTZUZ2GwGL0QFRgodgdrH
-	OoY4owdroepHWkVotYDVJPNO46tkWyNR58b8n3wUzdQURSpXI5vxemXH0C/S7ZUPCifXH8
-	DyssTqJJX3ksMo3ZMBTuhEaSfzQfpjQ=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+	bh=lpSGcS2OHkivSptNEqV1yoUV7L+1Tpt77Idg0XadxAw=;
+	b=Ksdh/qUfMGAu3JF60FBMQQA8j5wcLeTDikdgTdcG/3VfJ7rqNBrEJ3w6b83/WBkylTaf9p
+	GJrpI8XeDKN4Qci7qUdjy2EHfJycO42eIA1roL9NZsOV6FOnAKmEdbSABiOKL/AFzDT5yF
+	EgBcphIs5Mu7KHFkPluWl44QWo8zcnk=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-594-8NjzI6AZPs6iJgNCQczRug-1; Tue,
- 19 Nov 2024 10:37:49 -0500
-X-MC-Unique: 8NjzI6AZPs6iJgNCQczRug-1
-X-Mimecast-MFC-AGG-ID: 8NjzI6AZPs6iJgNCQczRug
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-209-w8WZReDNPhuTuNl53MRXLw-1; Tue,
+ 19 Nov 2024 10:38:05 -0500
+X-MC-Unique: w8WZReDNPhuTuNl53MRXLw-1
+X-Mimecast-MFC-AGG-ID: w8WZReDNPhuTuNl53MRXLw
 Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DF4C91979052;
-	Tue, 19 Nov 2024 15:37:43 +0000 (UTC)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8F25E1955F41;
+	Tue, 19 Nov 2024 15:37:59 +0000 (UTC)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.194.94])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B133F30001A0;
-	Tue, 19 Nov 2024 15:37:27 +0000 (UTC)
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 59F3B30001A2;
+	Tue, 19 Nov 2024 15:37:44 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	linux-doc@vger.kernel.org,
@@ -117,9 +117,9 @@ Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Yair Podemsky <ypodemsk@redhat.com>,
 	Daniel Wagner <dwagner@suse.de>,
 	Petr Tesarik <ptesarik@suse.com>
-Subject: [RFC PATCH v3 07/15] x86/speculation/mds: Make mds_idle_clear forceful
-Date: Tue, 19 Nov 2024 16:34:54 +0100
-Message-ID: <20241119153502.41361-8-vschneid@redhat.com>
+Subject: [RFC PATCH v3 08/15] sched/clock, x86: Make __sched_clock_stable forceful
+Date: Tue, 19 Nov 2024 16:34:55 +0100
+Message-ID: <20241119153502.41361-9-vschneid@redhat.com>
 In-Reply-To: <20241119153502.41361-1-vschneid@redhat.com>
 References: <20241119153502.41361-1-vschneid@redhat.com>
 Precedence: bulk
@@ -135,31 +135,30 @@ Later commits will cause objtool to warn about non __ro_after_init static
 keys being used in .noinstr sections in order to safely defer instruction
 patching IPIs targeted at NOHZ_FULL CPUs.
 
-mds_idle_clear is used in .noinstr code, and can be modified at
-runtime (SMT hotplug). Suppressing the text_poke_sync() IPI has little
-benefits for this key, as hotplug implies eventually going through
-takedown_cpu() -> stop_machine_cpuslocked() which is going to cause
-interference on all online CPUs anyway.
+__sched_clock_stable is used in .noinstr code, and can be modified at
+runtime (e.g. KVM module loading). Suppressing the text_poke_sync() IPI has
+little benefits for this key, as NOHZ_FULL is incompatible with an unstable
+TSC anyway.
 
 Mark it as forceful to let the kernel know to always send the
 text_poke_sync() IPI for it, and to let objtool know not to warn about it.
 
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- arch/x86/kernel/cpu/bugs.c | 2 +-
+ kernel/sched/clock.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 47a01d4028f60..dcc4d5d6e3b95 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -114,7 +114,7 @@ DEFINE_STATIC_KEY_FALSE(switch_mm_cond_ibpb);
- DEFINE_STATIC_KEY_FALSE(switch_mm_always_ibpb);
- 
- /* Control MDS CPU buffer clear before idling (halt, mwait) */
--DEFINE_STATIC_KEY_FALSE(mds_idle_clear);
-+DEFINE_STATIC_KEY_FALSE_FORCE(mds_idle_clear);
- EXPORT_SYMBOL_GPL(mds_idle_clear);
+diff --git a/kernel/sched/clock.c b/kernel/sched/clock.c
+index 200e5568b9894..dc94b3717f5ce 100644
+--- a/kernel/sched/clock.c
++++ b/kernel/sched/clock.c
+@@ -76,7 +76,7 @@ static DEFINE_STATIC_KEY_FALSE_RO(sched_clock_running);
+  * Similarly we start with __sched_clock_stable_early, thereby assuming we
+  * will become stable, such that there's only a single 1 -> 0 transition.
+  */
+-static DEFINE_STATIC_KEY_FALSE(__sched_clock_stable);
++static DEFINE_STATIC_KEY_FALSE_FORCE(__sched_clock_stable);
+ static int __sched_clock_stable_early = 1;
  
  /*
 -- 
