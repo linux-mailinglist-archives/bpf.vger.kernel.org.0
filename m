@@ -1,99 +1,164 @@
-Return-Path: <bpf+bounces-45211-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45212-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B43289D2AA2
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 17:18:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 004549D2AC5
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 17:23:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F5F01F23451
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 16:18:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA265B2AC72
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 16:18:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C621CF7DB;
-	Tue, 19 Nov 2024 16:18:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 136013C463;
+	Tue, 19 Nov 2024 16:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CUOnknXZ"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gm0HhRTJ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YYtpCLDm"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDA878C76
-	for <bpf@vger.kernel.org>; Tue, 19 Nov 2024 16:18:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 099EF146A9F;
+	Tue, 19 Nov 2024 16:18:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732033084; cv=none; b=C7XuW5Sh3Cx0/yW4Ol1+p0Zo/b8wyA5bf8KiuCl4MH0gY9071HNp0u2jHGZxbKnV81VDvQ+7WEUrQYkadldD0Uc0x3MSESag0IMf3oRIU3Gzp3P2+JDY4XB0LCUkrqaUxk2y8glEalHQSmRu7ZvxtMgUjLv4YMouRMg7KhyHNe0=
+	t=1732033104; cv=none; b=AWHN7Qq00mjZzzmSOARiwu4pnIBlXxdW8RYELGvel8XeHTIsMpCD+qaVFhsJGr8NN/4vtwePq0E9CRqlZ1BqTTr2SVkeBrJahyBqELBjkNnBZbgMUNh7e3y/Ts8dfRFLn6e3VX3CLgHd20/MXNVE3V4J9Ob1kHC3ZgO7F9zGsMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732033084; c=relaxed/simple;
-	bh=3PFWdD7nwTQ4C0nec3wVqAja7Vmb6iGj6M0K5bxySR8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MSW4WRuEpg2Aida8wu6sb/BI1/8lN5URlB5Ic0TroM4gW2EGn5f7DugbVVI1dv8XQqS74BxrA2miTujbqbYq3oNQG6heNAxemxg7HQ/xkbID/nG8cxjW9lVC5SsiQMk23io+q2O5hnkCl0cDVr5lCQmNeQ7PPm1cqMAc71QRNuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=CUOnknXZ; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=nYFgcjCueV+6cR7np5RCfwb6q1dXgAYJTV3bbCiFaFg=; b=CUOnknXZa8i6m/VJu3p4lIlGsC
-	Jr9pnWju+34/BC9Bidm/OtNepl3oY9MT6fed5GWjQxCa3cLpC2oNOvaEz09tb7rGGCK5Q/arIoOxK
-	W1juUMwe9Lw04FidQYHJdJbhD1bIwhdMWQedhIqmSy0oqroeHJhOesjt2x9D+z67KAJv0h9BHV5N0
-	AzmRkIBLIwRy3tuLkVAoxhpW1b5tQqvRKGT7p3HumyTYFW1xCIjIHUJ0lz2wSoOijiY/0fQ5pL2D/
-	tySCFa15BswrgbYyXLm6I2vJOQqqFB6BKjyEs17NBLTB61xsY+ntZM4zMogXXFNMv2hNiKiwgar9m
-	VHUQ/yzA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tDQvK-00000000MPx-2waH;
-	Tue, 19 Nov 2024 16:17:54 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 854DE3006AB; Tue, 19 Nov 2024 17:17:53 +0100 (CET)
-Date: Tue, 19 Nov 2024 17:17:53 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: Borislav Petkov <bp@alien8.de>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
+	s=arc-20240116; t=1732033104; c=relaxed/simple;
+	bh=RlqfthpzERhgPS1WG4wKwvmmB3qMfE5F7MyIpfxXgnM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=IGtq2PrwceFgWCkeHX3styAovTrJiMse8uMnKo0oJK/lfl7XZK+KXSDEyFl+cECWdVeMrEbWZDAON9TYcPNjPrNVLu1FlNBIJCwsD01F9LMd9bg/zHUtjuB8aHMlWmM0sxFaguh8Bn/j7B5tuSgJJeNw93IWbkp2js1GniyvWEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gm0HhRTJ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YYtpCLDm; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 19 Nov 2024 17:18:19 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1732033101;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=Ipgz3VH5tPCd7/JyBoEHZcyXqUDtyFVudCf3Ihe4Tyg=;
+	b=gm0HhRTJ02OKuR/D6dE+ED71+pGiSWyNWDgmPJppQLYr6QScJ9PE+DuYDBfZL9JMZRbKFr
+	whackjm888NYDSTnRNXZwdTkFXPR+6QfKGwEktJm8nsxpgl0WaLWGiPwHBmlR4VGtfRTpl
+	LIORmSufmFlH8d1wiQJQ376yT0dhhKPEKA8njwFlFiqTcgDSxn70Pt0AgXJRbJSw+RPZjV
+	bwPAOPyxLky4CmgcCk3TwuLn0cFgZY7K+E1Bsq+vIbJsoXr2BXO6gLMqmaManHxa3Wx6V8
+	KpRzt21q13jzD6FtnQ0wuDn3rXLMuZtlkpxesJGMRuZmssMh0lmpWImm9i+lLA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1732033101;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=Ipgz3VH5tPCd7/JyBoEHZcyXqUDtyFVudCf3Ihe4Tyg=;
+	b=YYtpCLDmhZPdz4rrCToZvx3g6faSmizKjeUeAyYSdybZTn6iB2iUOkojxTJdOuikwkkNQc
+	apK4nLfdlc7yssCA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Mykola Lysenko <mykolal@fb.com>, x86@kernel.org,
-	bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>
-Subject: Re: [PATCH bpf-next v7 1/4] bpf: add bpf_get_cpu_cycles kfunc
-Message-ID: <20241119161753.GA28920@noisy.programming.kicks-ass.net>
-References: <20241118185245.1065000-1-vadfed@meta.com>
- <20241118185245.1065000-2-vadfed@meta.com>
- <20241119111809.GB2328@noisy.programming.kicks-ass.net>
- <bade75b3-92d2-42e8-aede-f7a361b491a9@linux.dev>
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH bpf] selftests/bpf: Check for PREEMPTION instead of PREEMPT
+Message-ID: <20241119161819.qvEcs-n_@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <bade75b3-92d2-42e8-aede-f7a361b491a9@linux.dev>
 
-On Tue, Nov 19, 2024 at 06:29:09AM -0800, Vadim Fedorenko wrote:
-> On 19/11/2024 03:18, Peter Zijlstra wrote:
-> > On Mon, Nov 18, 2024 at 10:52:42AM -0800, Vadim Fedorenko wrote:
-> > > @@ -2094,6 +2094,13 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
-> > >   			if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
-> > >   				int err;
-> > > +				if (imm32 == BPF_CALL_IMM(bpf_get_cpu_cycles)) {
-> > > +					if (cpu_feature_enabled(X86_FEATURE_LFENCE_RDTSC))
-> > > +						EMIT3(0x0F, 0xAE, 0xE8);
-> > > +					EMIT2(0x0F, 0x31);
-> > > +					break;
-> > > +				}
-> > 
-> > TSC != cycles. Naming is bad.
-> 
-> Any suggestions?
-> 
-> JIT for other architectures will come after this one is merged and some
-> of them will be using cycles, so not too far away form the truth..
+CONFIG_PREEMPT is a preemtion model the so called "Low-Latency Desktop".
+A different preemption model is PREEMPT_RT the so called "Real-Time".
+Both implement preemption in kernel and set CONFIG_PREEMPTION.
+There is also the so called "LAZY PREEMPT" which the "Scheduler
+controlled preemption model". Here we have also preemption in the kernel
+the rules are slightly different.
 
-bpf_get_time_stamp() ?
-bpf_get_counter() ?
+Therefore the testsuite should not check for CONFIG_PREEMPT (as one
+model) but for CONFIG_PREEMPTION to figure out if preemption in the
+kernel is possible.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ tools/testing/selftests/bpf/map_tests/task_storage_map.c      | 4 ++--
+ tools/testing/selftests/bpf/prog_tests/task_local_storage.c   | 2 +-
+ .../testing/selftests/bpf/progs/read_bpf_task_storage_busy.c  | 4 ++--
+ tools/testing/selftests/bpf/progs/task_storage_nodeadlock.c   | 4 ++--
+ 4 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/map_tests/task_storage_map.c b/tools/testing/selftests/bpf/map_tests/task_storage_map.c
+index 7d050364efca1..5fd7c923544c3 100644
+--- a/tools/testing/selftests/bpf/map_tests/task_storage_map.c
++++ b/tools/testing/selftests/bpf/map_tests/task_storage_map.c
+@@ -77,8 +77,8 @@ void test_task_storage_map_stress_lookup(void)
+ 	CHECK(err, "open_and_load", "error %d\n", err);
+ 
+ 	/* Only for a fully preemptible kernel */
+-	if (!skel->kconfig->CONFIG_PREEMPT) {
+-		printf("%s SKIP (no CONFIG_PREEMPT)\n", __func__);
++	if (!skel->kconfig->CONFIG_PREEMPTION) {
++		printf("%s SKIP (no CONFIG_PREEMPTION)\n", __func__);
+ 		read_bpf_task_storage_busy__destroy(skel);
+ 		skips++;
+ 		return;
+diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+index c33c05161a9ea..acaeebf83f3ee 100644
+--- a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
++++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+@@ -189,7 +189,7 @@ static void test_nodeadlock(void)
+ 	/* Unnecessary recursion and deadlock detection are reproducible
+ 	 * in the preemptible kernel.
+ 	 */
+-	if (!skel->kconfig->CONFIG_PREEMPT) {
++	if (!skel->kconfig->CONFIG_PREEMPTION) {
+ 		test__skip();
+ 		goto done;
+ 	}
+diff --git a/tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c b/tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c
+index 76556e0b42b24..69da05bb6c63e 100644
+--- a/tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c
++++ b/tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c
+@@ -4,7 +4,7 @@
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ 
+-extern bool CONFIG_PREEMPT __kconfig __weak;
++extern bool CONFIG_PREEMPTION __kconfig __weak;
+ extern const int bpf_task_storage_busy __ksym;
+ 
+ char _license[] SEC("license") = "GPL";
+@@ -24,7 +24,7 @@ int BPF_PROG(read_bpf_task_storage_busy)
+ {
+ 	int *value;
+ 
+-	if (!CONFIG_PREEMPT)
++	if (!CONFIG_PREEMPTION)
+ 		return 0;
+ 
+ 	if (bpf_get_current_pid_tgid() >> 32 != pid)
+diff --git a/tools/testing/selftests/bpf/progs/task_storage_nodeadlock.c b/tools/testing/selftests/bpf/progs/task_storage_nodeadlock.c
+index ea2dbb80f7b3e..986829aaf73a6 100644
+--- a/tools/testing/selftests/bpf/progs/task_storage_nodeadlock.c
++++ b/tools/testing/selftests/bpf/progs/task_storage_nodeadlock.c
+@@ -10,7 +10,7 @@ char _license[] SEC("license") = "GPL";
+ #define EBUSY 16
+ #endif
+ 
+-extern bool CONFIG_PREEMPT __kconfig __weak;
++extern bool CONFIG_PREEMPTION __kconfig __weak;
+ int nr_get_errs = 0;
+ int nr_del_errs = 0;
+ 
+@@ -29,7 +29,7 @@ int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
+ 	int ret, zero = 0;
+ 	int *value;
+ 
+-	if (!CONFIG_PREEMPT)
++	if (!CONFIG_PREEMPTION)
+ 		return 0;
+ 
+ 	task = bpf_get_current_task_btf();
+-- 
+2.45.2
+
 
