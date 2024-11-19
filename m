@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-45162-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45163-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96A649D2326
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 11:13:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8035A9D2328
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 11:13:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50F4A1F2269C
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 10:13:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E3CB1F21788
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 10:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5211C2DB2;
-	Tue, 19 Nov 2024 10:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C3F71C2DC8;
+	Tue, 19 Nov 2024 10:13:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="R9UTcPM8"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="XggMmK6n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDFF19D06E
-	for <bpf@vger.kernel.org>; Tue, 19 Nov 2024 10:13:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8731C2DB4
+	for <bpf@vger.kernel.org>; Tue, 19 Nov 2024 10:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732011199; cv=none; b=peMTI9u/YoCfXU1ffF5cGjB5YS5lddrCRWaMgppFOblxKCU/7tqFNDhGyzq3mknpknoRgeXqPLeInIvjhPiTqV8QYWzHOMv3/kFcGBuElYpyAYGS0ipm92ZhIkefvRM3NCXhXbpAH28M1+jGT3KUOkbikWx8QgmwoL9i0NOvsd8=
+	t=1732011201; cv=none; b=qbJzfgZHg2wT/y7j1KWQDjue9xDJtWqajtuR+JY2c69Np5vQzSDyDoOjc7JHdDygEeTUBZQJo8wKhVH9pxcxMZzhcdjiBCAmY8sQ09KUqFCZdZnbIYFgR5BzqteF3Ipy/OBcUedh4ljXZL+Kf6/gwYPVsvw5HRuk5FZdA7lBhg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732011199; c=relaxed/simple;
-	bh=+leBIfGTx3qYqG0qr3EMc/+ailKE10I/dQRiyX0z0CA=;
+	s=arc-20240116; t=1732011201; c=relaxed/simple;
+	bh=5M+9sZ2uOISCSb6KW/FXzpjBYHwIs149KFBIoWPdbV4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CmqHhoToGYHUM8uu8cgLu5HEU6lRzDbTWtLL7ERTsy8d0KRbojOmD8gN0Hegq8P/i7JOMiR/hYkpbfp29MO+2CXlcwyVqSyKiI2oFPr0DzVLTWBGVp2SZvHOzb+i71uxDOuU9ikCLNKAkC94D+Zqfl0yLhK6dpzSZH33UpJo7Hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=R9UTcPM8; arc=none smtp.client-ip=209.85.218.49
+	 MIME-Version; b=Nqh7g2eAbY2LMrWnXKsOGpiIxiSvfmVkDYePaR88+Rj+1FK1fLvbTXKqhFQWB7f4Yf5XUNKxSCA1uQWtyzWAvH4QGrJzOcdBtIR5Sr0qQSQATSVbnRsrVUZ7uP4LyTQ5lmffu0EQKyUI4fEKc8zkbNkvmPFQnJ1dgv0Dc0HfIjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=XggMmK6n; arc=none smtp.client-ip=209.85.208.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aa1e6ecd353so247151966b.1
-        for <bpf@vger.kernel.org>; Tue, 19 Nov 2024 02:13:17 -0800 (PST)
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2fb5fa911aaso41524101fa.2
+        for <bpf@vger.kernel.org>; Tue, 19 Nov 2024 02:13:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1732011196; x=1732615996; darn=vger.kernel.org;
+        d=isovalent.com; s=google; t=1732011197; x=1732615997; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=G329gGS4RBx9EPCJNPCJhs4+g77tte1wqZgFhLBI2LE=;
-        b=R9UTcPM8gA0ZOe2mbM+BbpwSuTX7VyXA/mMRpW+wiQ1b9LDrp4tMn/Dd9lfQlYJp1V
-         BTxcvjyz4qRrEGwYwOYZXnEWom9R9djQ/qhjPFX+ygShshSCy1a49fJ7QzAYDiiaUP8G
-         tv0KYDJ7KL2AtcKhkKyNY8+dUA0tM3zeKy8bSoa3iWBMFa864njoNRWu5Y1bEUZNalAj
-         GisYd1uSUbOQ7/2ox8fC+aWM5ENu5lusbTFJntiPCl9JsNlQC3dwcolvI0Z0F2TcNzy9
-         6FPqGetjbcv+iany8BVPPvk3cTilPv43WqBLAyb7lDLiTEy+IMeCXwtdcE7k7dqUKpVI
-         8veg==
+        bh=95uLp76JDqCGAntKfWwQIWRGb8VQc95vaaCgVutyp08=;
+        b=XggMmK6nnotAihdXwE23OFGRs/6p7Djhfa6jDXSo8begomuup39mxR5kIiuFJckPxv
+         YD7HWWDalWoXHUJy4H52zMVL42bMU0WeFYdlLbbQZ66B0yTJt9lEQRi84iklLiWnStbJ
+         YabMFIJkiAh7+u/nqGOrRfZgm3tIaKd5FhzMXH/Y4Rknf4EeRgL0piV5dF863+3OcxBk
+         YqlZdYbuFTsTl/MAwLWfsWJ+dm0qQT1YGb+YtkfQgBGiZn9AHtnxBGfr76Hitx95vT13
+         DLDnMRvSXzJrL+ZRDzWxysQiC8ueM1a8I7b7Ah2J2+xCHgev81ZYjnIbvQd6X/q2u9kd
+         Soiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732011196; x=1732615996;
+        d=1e100.net; s=20230601; t=1732011197; x=1732615997;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=G329gGS4RBx9EPCJNPCJhs4+g77tte1wqZgFhLBI2LE=;
-        b=G42s/iHLb4kcUI7vRUHIzr3axvR/0oXyGYUsgGJgJnaQZeYpgZOgd8WOBGlhN1CSy+
-         hihKSChy1XqsrtOSxjPCAcsq8Aa1h/b4qCcDSZx+E8Ov5uA0lOOUVGf64ZrChUOlMjN/
-         aQ43cx46xSUZm0IwH3FnTTLPa8k7Nr75fshc/2b/8qZB6POpH8yEpSixIPwKwog9UVmX
-         FazCcthRXXXZ5WjIZEyoQeN89H1EWkQo6+UB9KLjgxjjFi21vav46r7gR0HpjqMbleDL
-         98sWF+CkAo1z7skUjyyqq/HJzs/FHnK+tJA+g3ekDoaSXpq0UyZyTfCjffdQ7GMHM5pq
-         LNQg==
-X-Gm-Message-State: AOJu0YyLTh/COrS1kjNKMhCQ6gxR6/X/62CVu6BH6iUS735mm1bdZNNi
-	8MMi3HpglhYfh8Kw2Wdq+X7juGHjtByERDZuMzUHy7iHzXTeXXUGlmELqx9VNgqDfeIG4pAF9yr
-	z
-X-Google-Smtp-Source: AGHT+IHJ3MZYqcCV1sUwncobiSFUkCiM7cwd9lBH8dknWp/MRytwCRP+DfXxrhifqDlap4wTQdpRYQ==
-X-Received: by 2002:a05:6402:13c4:b0:5cf:14fa:d24d with SMTP id 4fb4d7f45d1cf-5cf8fd2c8b2mr21770494a12.22.1732011195759;
-        Tue, 19 Nov 2024 02:13:15 -0800 (PST)
+        bh=95uLp76JDqCGAntKfWwQIWRGb8VQc95vaaCgVutyp08=;
+        b=BLjBY9PAMQAMZvwKO6GCSRmflr+NPicn3+JNWb0Y7uCqaJXYWo+r+4ej785/ywW2KJ
+         fposTsWJmV4ZTNtQDy/O+o34KBoJNwM+/czNd5lQK63GEeNJO/BGPqraCdEfqTQO1fJC
+         sSd7MUlubePakBJVncHkDJrVUm9Tfd+mzL9kaYoct7DF4AJHKo/C3fYiDVIAphu58htv
+         zYw7d3TgVbeQjB8DLRZmEjYOehShAS/Jiu9O2CGQfQ4pXvRqBUbhK+2bn/ntrvwTR3g6
+         ASQQ26t/SAuAbtYiLv3dPQsRek7fU51Yh+EryqkmtgpowqQVYxUpTcf3MRsbXB5/n+sC
+         +Etg==
+X-Gm-Message-State: AOJu0YzIIOmbMIuJIZ3GnctnN8Lui5OiLibFdBl54E/3x08UjEBX30hB
+	P0/N8iW7apAQ3BHOSheK2Xndy7vhpFZkiXzNL9j1L/ssn6uVHd33lR2WA2tq5A26jPSeOGRtTPL
+	b
+X-Google-Smtp-Source: AGHT+IEcv7FD1KJhVSOoA2npLdTtfQkh/oHfzo0MtgjvXRaXBhWb7TRMalIGetTdQnkzsGhH9IkCEQ==
+X-Received: by 2002:a05:651c:158d:b0:2f7:5a41:b0b with SMTP id 38308e7fff4ca-2ff606db221mr103930511fa.26.1732011196669;
+        Tue, 19 Nov 2024 02:13:16 -0800 (PST)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa20df7eee4sm629003066b.87.2024.11.19.02.13.14
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa20df7eee4sm629003066b.87.2024.11.19.02.13.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 19 Nov 2024 02:13:15 -0800 (PST)
 From: Anton Protopopov <aspsk@isovalent.com>
 To: bpf@vger.kernel.org
 Cc: Anton Protopopov <aspsk@isovalent.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH v2 bpf-next 5/6] bpf: fix potential error return
-Date: Tue, 19 Nov 2024 10:15:51 +0000
-Message-Id: <20241119101552.505650-6-aspsk@isovalent.com>
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH v2 bpf-next 6/6] selftest/bpf: replace magic constants by macros
+Date: Tue, 19 Nov 2024 10:15:52 +0000
+Message-Id: <20241119101552.505650-7-aspsk@isovalent.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241119101552.505650-1-aspsk@isovalent.com>
 References: <20241119101552.505650-1-aspsk@isovalent.com>
@@ -85,45 +85,32 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The bpf_remove_insns() function returns WARN_ON_ONCE(error), where
-error is a result of bpf_adj_branches(), and thus should be always 0
-However, if for any reason it is not 0, then it will be converted to
-boolean by WARN_ON_ONCE and returned to user space as 1, not an actual
-error value. Fix this by returning the original err after the WARN check.
+Replace magic constants in a BTF structure initialization code by
+proper macros, as is done in other similar selftests.
 
 Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/core.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/progs/syscall.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 14d9288441f2..a15059918768 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -539,6 +539,8 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
- 
- int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
- {
-+	int err;
-+
- 	/* Branch offsets can't overflow when program is shrinking, no need
- 	 * to call bpf_adj_branches(..., true) here
- 	 */
-@@ -546,7 +548,12 @@ int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
- 		sizeof(struct bpf_insn) * (prog->len - off - cnt));
- 	prog->len -= cnt;
- 
--	return WARN_ON_ONCE(bpf_adj_branches(prog, off, off + cnt, off, false));
-+	err = bpf_adj_branches(prog, off, off + cnt, off, false);
-+	WARN_ON_ONCE(err);
-+	if (err)
-+		return err;
-+
-+	return 0;
- }
- 
- static void bpf_prog_kallsyms_del_subprogs(struct bpf_prog *fp)
+diff --git a/tools/testing/selftests/bpf/progs/syscall.c b/tools/testing/selftests/bpf/progs/syscall.c
+index 0f4dfb770c32..b698cc62a371 100644
+--- a/tools/testing/selftests/bpf/progs/syscall.c
++++ b/tools/testing/selftests/bpf/progs/syscall.c
+@@ -76,9 +76,9 @@ static int btf_load(void)
+ 			.magic = BTF_MAGIC,
+ 			.version = BTF_VERSION,
+ 			.hdr_len = sizeof(struct btf_header),
+-			.type_len = sizeof(__u32) * 8,
+-			.str_off = sizeof(__u32) * 8,
+-			.str_len = sizeof(__u32),
++			.type_len = sizeof(raw_btf.types),
++			.str_off = offsetof(struct btf_blob, str) - offsetof(struct btf_blob, types),
++			.str_len = sizeof(raw_btf.str),
+ 		},
+ 		.types = {
+ 			/* long */
 -- 
 2.34.1
 
