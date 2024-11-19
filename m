@@ -1,267 +1,401 @@
-Return-Path: <bpf+bounces-45194-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45195-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B1579D29A5
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 16:30:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 548E99D2A43
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 16:56:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D57532819E3
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 15:30:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4682FB2E3A0
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 15:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B901D0145;
-	Tue, 19 Nov 2024 15:30:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32B81D04B9;
+	Tue, 19 Nov 2024 15:36:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sa09hhh4"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AO2ItHCV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDEFF1CBEAD;
-	Tue, 19 Nov 2024 15:30:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766A01CF7D0
+	for <bpf@vger.kernel.org>; Tue, 19 Nov 2024 15:36:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732030245; cv=none; b=BaD+pIm5EAuuJdZ3TB9uqGVBOjlYDlvOm+ihU6Li8IOKKhtxKvhC4l/jZEvxiKoAUqOidOyqTEvrg/Lz1qekRh0DQdxzUv+wQ7hbWu6G0GEjmxNS6dphqiRjYuWcJNJypcD8Rjj3419rUQM3AXZSOsrGxH2YvOEkV5HFybbl+1E=
+	t=1732030565; cv=none; b=I36NELEuIVXQj0Z1hAFgTa3vDt4+ag3JZVtYFn3aqgP/yyffYjH+OPZvdBGDuZ1lAzePcNXx6mh1kt+L3W98CbyicOItPX5pxIyucIfnfPVLAVoMYiKad1u+F8xQFNRyFOQI2YoZqxCXoR+oTgwXgZeJIOVP6wWk74Xi79E2Uls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732030245; c=relaxed/simple;
-	bh=0l68236m+d1U0qZf6vvK/HHF8L8fwKfJF4Q6N2KuAgU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uJXB/HgibQZ+sVc/YaqUuOuEvOWJskTeyd4Blx4tljNqG/O6SK32yd9Rs2Oau/cBerbnU2hhaBsW/+8zjh4msNY++NhBIMKNxoA3YFxTW1CNnOkzLrB3K1srQHRVQOq5k1P1dEk9LxukjzFro1Bsx0tIpBHq5Rj8V+nd+hcdGDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sa09hhh4; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a9ec267b879so736392166b.2;
-        Tue, 19 Nov 2024 07:30:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732030242; x=1732635042; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vTh3Pm1HhT7mhO94+Ldu2gIZs1fQFE6vJRGHe3q/UIw=;
-        b=Sa09hhh4EITKyChFaxSrKDgiJdWED16EVRHxySzQag5iA8sAMIN4gskdXSYXsNu/mz
-         f0sB6pF/LeJG8HaYm442/EbnMl7ZCTISIcSqoc75CkJy4MW/j1TNDgEsSMMG4Zqle2ug
-         nl1yebrIe8BtYBQVEKWEKdWW3G/V/n7SKmqDIPr6W/tSNAqhv3fmsY8rsaX2RXdynvsP
-         pf6Vx/Uka3agr5coq/WrTL2pDEcViujPgaKe0vse94REl+xGlFBNsyVsNJtWjzIJC4s+
-         R1WA4CXRZOmkVpdDFDZDL1BtMg0WJyWfxBKTi8tOYqYXi4MIdkxFnwTDYxcWWMY5vYBR
-         eaSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732030242; x=1732635042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vTh3Pm1HhT7mhO94+Ldu2gIZs1fQFE6vJRGHe3q/UIw=;
-        b=Siw3G8iePfgqdYQZ+he2RjX+61YfokyvQBYqwtQi6hGHa3dAt0OXRg4+Am42ED0OWv
-         2eO51VgJ/9IKjZJTdwY7DPnO/g34JfNJL4l0FZuMxkBEhrtr3We+0PP7WqhhfDAZC55f
-         bK7Dq7pBGpAtekDl4+BgUpIt5B5zDkoXbtl7SHHuYn+MZed4pG+1RSK43ydVdoHVHq3+
-         GH0sFkvz8hLAuZM6j6sei+d9/qBR8SlXYEGPne5ug8+tYNOf3Qsh8Ca1pioH3/gCuzS9
-         ndtkgK4gVOXfiujcukTUWHw5dABmX2LTqMfiCfWck73+NmRjxvJSo8IVnDj+8e//WCs/
-         g7/w==
-X-Forwarded-Encrypted: i=1; AJvYcCW32p0cglqm56awYv309bZZd99WKrsoMNRDGtju9qWYn6ImXr6lGxHkfQx5B4pH2fkS8aU5qpeVhhgLtfMa2A==@vger.kernel.org, AJvYcCW5qN1jBSq+0O2pJrg3b7M3KimkmZIH5/RFcWXFepQU+IKhcee69hsSDF7/8I7dGKNMsOzbKA8pIc1DMHQd@vger.kernel.org, AJvYcCWmXS5MZsJjqdRZrXWMaIxjbSloyw2AUe6aFWTZh7maWjhLzMlt9ZVL3fbMnTiYcHhD+9cbq19rRDQIlNUqQoJPBhbPhGmb@vger.kernel.org, AJvYcCWwshfgRdPMeYxwccxgXe0fWIlXt8yeGjjY6zLStAy5tjjNblJ/ya5uDSDJS0nL6voNu8c=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzeKUzEZCaGd6eNgYnjZO3dueILvIIErB/qQY9S/9prL0/Z1KWt
-	VOxXuvYP9ik/KoyB7QKJa1YZ9FmT0DJw//T+RWuDg4yULGJJ+sxc34EEGitONU4Qd5luutqV0jv
-	9QjdRcGDguMPpTPjkxJdhpQUhuqg=
-X-Google-Smtp-Source: AGHT+IHJ/Q6yFJTPMGKhQd7/RsyLpC/uS3vZwNIXI0m6yZaCZ0ouC/Iqk8rWH5+DhL/qsz5x9wt+tTOPOsUrf+QtVFM=
-X-Received: by 2002:a17:906:b196:b0:aa4:9848:b4c1 with SMTP id
- a640c23a62f3a-aa49848b870mr996078466b.20.1732030241358; Tue, 19 Nov 2024
- 07:30:41 -0800 (PST)
+	s=arc-20240116; t=1732030565; c=relaxed/simple;
+	bh=D1rofV3oRhZOTQ+T7fGzUEs+cN2/IbQ6kETzo+bifK4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qgotYiayKreXM/9yTh4J7hiXkspwyK5P2SDxh7fd10TOWJFySj+6x8tZGJ+0rJJhsJKJLxult1d+nwh8ah/cxO7JA+LUINHQVbw5/9GwumZMxshA7o4oCRuWk0gq8UuXm0Gp4IYeg6YpHMnyWtX+5u0fYMsKXsjDayzd9hjxaO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AO2ItHCV; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1732030562;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=zH2CMwOdooVj+NeQcv1HMbkRUyiK2yzOQDjTUDSA8M0=;
+	b=AO2ItHCV7j/SZhdpiJC0IwYTzZgZfdI3HoO7Eb7Iov2lKKF2hjD+ey4VYboOaPnVx2RDXi
+	8VzzNiGtINDJSKcWM3sP29XaD4vlPlUdO4we2c65i7VQspmfxAjEMDUmT/Kwe15B8zDb8+
+	dYaC3w0hEks+LyqoSnjIH05GMng3fFw=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-637-pDtHmMNBNmO7bfsG9lq97w-1; Tue,
+ 19 Nov 2024 10:35:59 -0500
+X-MC-Unique: pDtHmMNBNmO7bfsG9lq97w-1
+X-Mimecast-MFC-AGG-ID: pDtHmMNBNmO7bfsG9lq97w
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F3AC11944DEF;
+	Tue, 19 Nov 2024 15:35:50 +0000 (UTC)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.194.94])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1797730001A0;
+	Tue, 19 Nov 2024 15:35:33 +0000 (UTC)
+From: Valentin Schneider <vschneid@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	kvm@vger.kernel.org,
+	linux-mm@kvack.org,
+	bpf@vger.kernel.org,
+	x86@kernel.org,
+	rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Jason Baron <jbaron@akamai.com>,
+	Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Juerg Haefliger <juerg.haefliger@canonical.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Nadav Amit <namit@vmware.com>,
+	Dan Carpenter <error27@gmail.com>,
+	Chuang Wang <nashuiliang@gmail.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Petr Mladek <pmladek@suse.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Song Liu <song@kernel.org>,
+	Julian Pidancet <julian.pidancet@oracle.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>,
+	Daniel Wagner <dwagner@suse.de>,
+	Petr Tesarik <ptesarik@suse.com>
+Subject: [RFC PATCH v3 00/15] context_tracking,x86: Defer some IPIs until a user->kernel transition
+Date: Tue, 19 Nov 2024 16:34:47 +0100
+Message-ID: <20241119153502.41361-1-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241112082600.298035-1-song@kernel.org> <20241112082600.298035-3-song@kernel.org>
- <20241113-sensation-morgen-852f49484fd8@brauner> <86C65B85-8167-4D04-BFF5-40FD4F3407A4@fb.com>
- <20241115111914.qhrwe4mek6quthko@quack3> <E79EFA17-A911-40E8-8A51-CB5438FD2020@fb.com>
- <8ae11e3e0d9339e6c60556fcd2734a37da3b4a11.camel@kernel.org> <CAOQ4uxgUYHEZTx7udTXm8fDTfhyFM-9LOubnnAc430xQSLvSVA@mail.gmail.com>
-In-Reply-To: <CAOQ4uxgUYHEZTx7udTXm8fDTfhyFM-9LOubnnAc430xQSLvSVA@mail.gmail.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 19 Nov 2024 16:30:30 +0100
-Message-ID: <CAOQ4uxhyDAHjyxUeLfWeff76+Qpe5KKrygj2KALqRPVKRHjSOA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] bpf: Make bpf inode storage available to
- tracing program
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Song Liu <songliubraving@meta.com>, Jan Kara <jack@suse.cz>, 
-	Christian Brauner <brauner@kernel.org>, Song Liu <song@kernel.org>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	"andrii@kernel.org" <andrii@kernel.org>, "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "martin.lau@linux.dev" <martin.lau@linux.dev>, 
-	"viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
-	"mattbobrowski@google.com" <mattbobrowski@google.com>, "repnop@google.com" <repnop@google.com>, 
-	Josef Bacik <josef@toxicpanda.com>, "mic@digikod.net" <mic@digikod.net>, 
-	"gnoack@google.com" <gnoack@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-On Tue, Nov 19, 2024 at 4:25=E2=80=AFPM Amir Goldstein <amir73il@gmail.com>=
- wrote:
->
-> On Tue, Nov 19, 2024 at 3:21=E2=80=AFPM Jeff Layton <jlayton@kernel.org> =
-wrote:
-> >
-> > On Fri, 2024-11-15 at 17:35 +0000, Song Liu wrote:
-> > > Hi Jan,
-> > >
-> > > > On Nov 15, 2024, at 3:19=E2=80=AFAM, Jan Kara <jack@suse.cz> wrote:
-> > >
-> > > [...]
-> > >
-> > > > > AFAICT, we need to modify how lsm blob are managed with
-> > > > > CONFIG_BPF_SYSCALL=3Dy && CONFIG_BPF_LSM=3Dn case. The solution, =
-even
-> > > > > if it gets accepted, doesn't really save any memory. Instead of
-> > > > > growing struct inode by 8 bytes, the solution will allocate 8
-> > > > > more bytes to inode->i_security. So the total memory consumption
-> > > > > is the same, but the memory is more fragmented.
-> > > >
-> > > > I guess you've found a better solution for this based on James' sug=
-gestion.
-> > > >
-> > > > > Therefore, I think we should really step back and consider adding
-> > > > > the i_bpf_storage to struct inode. While this does increase the
-> > > > > size of struct inode by 8 bytes, it may end up with less overall
-> > > > > memory consumption for the system. This is why.
-> > > > >
-> > > > > When the user cannot use inode local storage, the alternative is
-> > > > > to use hash maps (use inode pointer as key). AFAICT, all hash map=
-s
-> > > > > comes with non-trivial overhead, in memory consumption, in access
-> > > > > latency, and in extra code to manage the memory. OTOH, inode loca=
-l
-> > > > > storage doesn't have these issue, and is usually much more effici=
-ent:
-> > > > > - memory is only allocated for inodes with actual data,
-> > > > > - O(1) latency,
-> > > > > - per inode data is freed automatically when the inode is evicted=
-.
-> > > > > Please refer to [1] where Amir mentioned all the work needed to
-> > > > > properly manage a hash map, and I explained why we don't need to
-> > > > > worry about these with inode local storage.
-> > > >
-> > > > Well, but here you are speaking of a situation where bpf inode stor=
-age
-> > > > space gets actually used for most inodes. Then I agree i_bpf_storag=
-e is the
-> > > > most economic solution. But I'd also expect that for vast majority =
-of
-> > > > systems the bpf inode storage isn't used at all and if it does get =
-used, it
-> > > > is used only for a small fraction of inodes. So we are weighting 8 =
-bytes
-> > > > per inode for all those users that don't need it against more signi=
-ficant
-> > > > memory savings for users that actually do need per inode bpf storag=
-e. A
-> > > > factor in this is that a lot of people are running some distributio=
-n kernel
-> > > > which generally enables most config options that are at least somew=
-hat
-> > > > useful. So hiding the cost behind CONFIG_FOO doesn't really help su=
-ch
-> > > > people.
-> > >
-> > > Agreed that an extra pointer will be used if there is no actual users
-> > > of it. However, in longer term, "most users do not use bpf inode
-> > > storage" may not be true. As kernel engineers, we may not always noti=
-ce
-> > > when user space is using some BPF features. For example, systemd has
-> > > a BPF LSM program "restrict_filesystems" [1]. It is enabled if the
-> > > user have lsm=3Dbpf in kernel args. I personally noticed it as a
-> > > surprise when we enabled lsm=3Dbpf.
-> > >
-> > > > I'm personally not *so* hung up about a pointer in struct inode but=
- I can
-> > > > see why Christian is and I agree adding a pointer there isn't a win=
- for
-> > > > everybody.
-> > >
-> > > I can also understand Christian's motivation. However, I am a bit
-> > > frustrated because similar approach (adding a pointer to the struct)
-> > > worked fine for other popular data structures: task_struct, sock,
-> > > cgroup.
-> > >
-> >
-> > There are (usually) a lot more inodes on a host than all of those other
-> > structs combined. Worse, struct inode is often embedded in other
-> > structs, and adding fields can cause alignment problems there.
-> >
-> >
-> > > > Longer term, I think it may be beneficial to come up with a way to =
-attach
-> > > > private info to the inode in a way that doesn't cost us one pointer=
- per
-> > > > funcionality that may possibly attach info to the inode. We already=
- have
-> > > > i_crypt_info, i_verity_info, i_flctx, i_security, etc. It's always =
-a tough
-> > > > call where the space overhead for everybody is worth the runtime &
-> > > > complexity overhead for users using the functionality...
-> > >
-> > > It does seem to be the right long term solution, and I am willing to
-> > > work on it. However, I would really appreciate some positive feedback
-> > > on the idea, so that I have better confidence my weeks of work has a
-> > > better chance to worth it.
-> > >
-> > > Thanks,
-> > > Song
-> > >
-> > > [1] https://github.com/systemd/systemd/blob/main/src/core/bpf/restric=
-t_fs/restrict-fs.bpf.c
-> >
-> > fsnotify is somewhat similar to file locking in that few inodes on the
-> > machine actually utilize these fields.
-> >
-> > For file locking, we allocate and populate the inode->i_flctx field on
-> > an as-needed basis. The kernel then hangs on to that struct until the
-> > inode is freed. We could do something similar here. We have this now:
-> >
-> > #ifdef CONFIG_FSNOTIFY
-> >         __u32                   i_fsnotify_mask; /* all events this ino=
-de cares about */
-> >         /* 32-bit hole reserved for expanding i_fsnotify_mask */
-> >         struct fsnotify_mark_connector __rcu    *i_fsnotify_marks;
-> > #endif
-> >
-> > What if you were to turn these fields into a pointer to a new struct:
-> >
-> >         struct fsnotify_inode_context {
-> >                 struct fsnotify_mark_connector __rcu    *i_fsnotify_mar=
-ks;
-> >                 struct bpf_local_storage __rcu          *i_bpf_storage;
-> >                 __u32                                   i_fsnotify_mask=
-; /* all events this inode cares about */
-> >         };
-> >
->
-> The extra indirection is going to hurt for i_fsnotify_mask
-> it is being accessed frequently in fsnotify hooks, so I wouldn't move it
-> into a container, but it could be moved to the hole after i_state.
->
-> > Then whenever you have to populate any of these fields, you just
-> > allocate one of these structs and set the inode up to point to it.
-> > They're tiny too, so don't bother freeing it until the inode is
-> > deallocated.
-> >
-> > It'd mean rejiggering a fair bit of fsnotify code, but it would give
-> > the fsnotify code an easier way to expand per-inode info in the future.
-> > It would also slightly shrink struct inode too.
->
-> This was already done for s_fsnotify_marks, so you can follow the recipe
-> of 07a3b8d0bf72 ("fsnotify: lazy attach fsnotify_sb_info state to sb")
-> and create an fsnotify_inode_info container.
->
+Context
+=======
 
-On second thought, fsnotify_sb_info container is allocated and attached
-in the context of userspace adding a mark.
+We've observed within Red Hat that isolated, NOHZ_FULL CPUs running a
+pure-userspace application get regularly interrupted by IPIs sent from
+housekeeping CPUs. Those IPIs are caused by activity on the housekeeping CPUs
+leading to various on_each_cpu() calls, e.g.:
 
-If you will need allocate and attach fsnotify_inode_info in the content of
-fast path fanotify hook in order to add the inode to the map, I don't
-think that is going to fly??
+  64359.052209596    NetworkManager       0    1405     smp_call_function_many_cond (cpu=0, func=do_kernel_range_flush)
+    smp_call_function_many_cond+0x1
+    smp_call_function+0x39
+    on_each_cpu+0x2a
+    flush_tlb_kernel_range+0x7b
+    __purge_vmap_area_lazy+0x70
+    _vm_unmap_aliases.part.42+0xdf
+    change_page_attr_set_clr+0x16a
+    set_memory_ro+0x26
+    bpf_int_jit_compile+0x2f9
+    bpf_prog_select_runtime+0xc6
+    bpf_prepare_filter+0x523
+    sk_attach_filter+0x13
+    sock_setsockopt+0x92c
+    __sys_setsockopt+0x16a
+    __x64_sys_setsockopt+0x20
+    do_syscall_64+0x87
+    entry_SYSCALL_64_after_hwframe+0x65
 
-Thanks,
-Amir.
+The heart of this series is the thought that while we cannot remove NOHZ_FULL
+CPUs from the list of CPUs targeted by these IPIs, they may not have to execute
+the callbacks immediately. Anything that only affects kernelspace can wait
+until the next user->kernel transition, providing it can be executed "early
+enough" in the entry code.
+
+The original implementation is from Peter [1]. Nicolas then added kernel TLB
+invalidation deferral to that [2], and I picked it up from there.
+
+Deferral approach
+=================
+
+Storing each and every callback, like a secondary call_single_queue turned out
+to be a no-go: the whole point of deferral is to keep NOHZ_FULL CPUs in
+userspace for as long as possible - no signal of any form would be sent when
+deferring an IPI. This means that any form of queuing for deferred callbacks
+would end up as a convoluted memory leak.
+
+Deferred IPIs must thus be coalesced, which this series achieves by assigning
+IPIs a "type" and having a mapping of IPI type to callback, leveraged upon
+kernel entry.
+
+What about IPIs whose callback take a parameter, you may ask?
+
+Peter suggested during OSPM23 [3] that since on_each_cpu() targets
+housekeeping CPUs *and* isolated CPUs, isolated CPUs can access either global or
+housekeeping-CPU-local state to "reconstruct" the data that would have been sent
+via the IPI.
+
+This series does not affect any IPI callback that requires an argument, but the
+approach would remain the same (one coalescable callback executed on kernel
+entry).
+
+Kernel entry vs execution of the deferred operation
+===================================================
+
+This is what I've referred to as the "Danger Zone" during my LPC24 talk [4].
+
+There is a non-zero length of code that is executed upon kernel entry before the
+deferred operation can be itself executed (i.e. before we start getting into
+context_tracking.c proper), i.e.:
+
+  idtentry_func_foo()                <--- we're in the kernel
+    irqentry_enter()
+      enter_from_user_mode()
+	__ct_user_exit()
+	    ct_kernel_enter_state()
+	      ct_work_flush()        <--- deferred operation is executed here
+
+This means one must take extra care to what can happen in the early entry code,
+and that <bad things> cannot happen. For instance, we really don't want to hit
+instructions that have been modified by a remote text_poke() while we're on our
+way to execute a deferred sync_core(). Patches doing the actual deferral have
+more detail on this.
+
+Patches
+=======
+
+o Patches 1-3 are standalone cleanups.
+o Patches 4-5 add an RCU testing feature.
+
+o Patches 6-8 add a new type of jump label for static keys that will not have
+  their IPI be deferred.
+o Patch 9 adds objtool verification of static keys vs their text_poke IPI
+  deferral
+o Patches 10-14 add the actual IPI deferrals
+
+o Patch 15 is a freebie to enable the deferral feature for NO_HZ_IDLE
+
+Patches are also available at:
+https://gitlab.com/vschneid/linux.git -b redhat/isolirq/defer/v3
+
+RFC status
+==========
+
+Things I'd like to get comments on and/or that are a bit WIPish; they're called
+out in the individual changelogs:
+
+o "forceful" jump label naming which I don't particularly like
+
+o objtool usage of 'offset_of(static_key.type)' and JUMP_TYPE_FORCEFUL. I've
+  hardcoded them but it could do with being shoved in a kernel header objtool
+  can include directly
+
+o The noinstr variant of __flush_tlb_all() doesn't have a paravirt variant, does
+  it need one?
+
+  
+
+Testing
+=======
+
+Xeon E5-2699 system with SMToff, NOHZ_FULL, isolated CPUs.
+RHEL9 userspace.
+
+Workload is using rteval (kernel compilation + hackbench) on housekeeping CPUs
+and a dummy stay-in-userspace loop on the isolated CPUs. The main invocation is:
+
+$ trace-cmd record -e "csd_queue_cpu" -f "cpu & CPUS{$ISOL_CPUS}" \
+ 	           -e "ipi_send_cpumask" -f "cpumask & CPUS{$ISOL_CPUS}" \
+	           -e "ipi_send_cpu"     -f "cpu & CPUS{$ISOL_CPUS}" \
+		   rteval --onlyload --loads-cpulist=$HK_CPUS \
+		   --hackbench-runlowmem=True --duration=$DURATION
+
+This only records IPIs sent to isolated CPUs, so any event there is interference
+(with a bit of fuzz at the start/end of the workload when spawning the
+processes). All tests were done with a duration of 1hr.
+
+v6.12-rc4
+# This is the actual IPI count
+$ trace-cmd report trace-base.dat | grep callback | awk '{ print $(NF) }' | sort | uniq -c | sort -nr
+   1782 callback=generic_smp_call_function_single_interrupt+0x0
+     73 callback=0x0
+
+# These are the different CSD's that caused IPIs    
+$ trace-cmd report | grep csd_queue | awk '{ print $(NF-1) }' | sort | uniq -c | sort -nr
+  22048 func=tlb_remove_table_smp_sync
+  16536 func=do_sync_core
+   2262 func=do_flush_tlb_all
+    182 func=do_kernel_range_flush
+    144 func=rcu_exp_handler
+     60 func=sched_ttwu_pending
+
+v6.12-rc4 + patches:
+# This is the actual IPI count
+$ trace-cmd report | grep callback | awk '{ print $(NF) }' | sort | uniq -c | sort -nr
+   1168 callback=generic_smp_call_function_single_interrupt+0x0
+     74 callback=0x0
+
+# These are the different CSD's that caused IPIs          
+$ trace-cmd report | grep csd_queue | awk '{ print $(NF-1) }' | sort | uniq -c | sort -nr
+  23686 func=tlb_remove_table_smp_sync
+    192 func=rcu_exp_handler
+     65 func=sched_ttwu_pending
+
+Interestingly tlb_remove_table_smp_sync() started showing up on this machine,
+while it didn't during testing for v2 and it's the same machine. Yair had a
+series adressing this [5] which per these results would be worth revisiting.
+
+Acknowledgements
+================
+
+Special thanks to:
+o Clark Williams for listening to my ramblings about this and throwing ideas my way
+o Josh Poimboeuf for his guidance regarding objtool and hinting at the
+  .data..ro_after_init section.
+o All of the folks who attended various talks about this and provided precious
+  feedback.  
+
+Links
+=====
+
+[1]: https://lore.kernel.org/all/20210929151723.162004989@infradead.org/
+[2]: https://github.com/vianpl/linux.git -b ct-work-defer-wip
+[3]: https://youtu.be/0vjE6fjoVVE
+[4]: https://lpc.events/event/18/contributions/1889/
+[5]: https://lore.kernel.org/lkml/20230620144618.125703-1-ypodemsk@redhat.com/
+
+Revisions
+=========
+
+RFCv2 -> RFCv3
++++++++++++
+
+o Rebased onto v6.12-rc7
+
+o Added objtool documentation for the new warning (Josh)
+o Added low-size RCU watching counter to TREE04 torture scenario (Paul)
+o Added FORCEFUL jump label and static key types
+o Added noinstr-compliant helpers for tlb flush deferral
+
+o Overall changelog & comments cleanup
+
+
+RFCv1 -> RFCv2
+++++++++++++++
+
+o Rebased onto v6.5-rc1
+
+o Updated the trace filter patches (Steven)
+
+o Fixed __ro_after_init keys used in modules (Peter)
+o Dropped the extra context_tracking atomic, squashed the new bits in the
+  existing .state field (Peter, Frederic)
+  
+o Added an RCU_EXPERT config for the RCU dynticks counter size, and added an
+  rcutorture case for a low-size counter (Paul) 
+
+o Fixed flush_tlb_kernel_range_deferrable() definition
+
+Valentin Schneider (15):
+  objtool: Make validate_call() recognize indirect calls to pv_ops[]
+  objtool: Flesh out warning related to pv_ops[] calls
+  sched/clock: Make sched_clock_running __ro_after_init
+  rcu: Add a small-width RCU watching counter debug option
+  rcutorture: Make TREE04 use CONFIG_RCU_DYNTICKS_TORTURE
+  jump_label: Add forceful jump label type
+  x86/speculation/mds: Make mds_idle_clear forceful
+  sched/clock, x86: Make __sched_clock_stable forceful
+  objtool: Warn about non __ro_after_init static key usage in .noinstr
+  x86/alternatives: Record text_poke's of JUMP_TYPE_FORCEFUL labels
+  context-tracking: Introduce work deferral infrastructure
+  context_tracking,x86: Defer kernel text patching IPIs
+  context_tracking,x86: Add infrastructure to defer kernel TLBI
+  x86/mm, mm/vmalloc: Defer flush_tlb_kernel_range() targeting NOHZ_FULL
+    CPUs
+  context-tracking: Add a Kconfig to enable IPI deferral for NO_HZ_IDLE
+
+ arch/Kconfig                                  |  9 +++
+ arch/x86/Kconfig                              |  1 +
+ arch/x86/include/asm/context_tracking_work.h  | 20 +++++++
+ arch/x86/include/asm/special_insns.h          |  1 +
+ arch/x86/include/asm/text-patching.h          | 13 ++++-
+ arch/x86/include/asm/tlbflush.h               | 17 +++++-
+ arch/x86/kernel/alternative.c                 | 49 ++++++++++++----
+ arch/x86/kernel/cpu/bugs.c                    |  2 +-
+ arch/x86/kernel/cpu/common.c                  |  6 +-
+ arch/x86/kernel/jump_label.c                  |  7 ++-
+ arch/x86/kernel/kprobes/core.c                |  4 +-
+ arch/x86/kernel/kprobes/opt.c                 |  4 +-
+ arch/x86/kernel/module.c                      |  2 +-
+ arch/x86/mm/tlb.c                             | 49 ++++++++++++++--
+ include/linux/context_tracking.h              | 21 +++++++
+ include/linux/context_tracking_state.h        | 54 ++++++++++++++---
+ include/linux/context_tracking_work.h         | 28 +++++++++
+ include/linux/jump_label.h                    | 26 ++++++---
+ kernel/context_tracking.c                     | 46 ++++++++++++++-
+ kernel/rcu/Kconfig.debug                      | 14 +++++
+ kernel/sched/clock.c                          |  4 +-
+ kernel/time/Kconfig                           | 19 ++++++
+ mm/vmalloc.c                                  | 35 +++++++++--
+ tools/objtool/Documentation/objtool.txt       | 13 +++++
+ tools/objtool/check.c                         | 58 ++++++++++++++++---
+ tools/objtool/include/objtool/check.h         |  1 +
+ tools/objtool/include/objtool/special.h       |  2 +
+ tools/objtool/special.c                       |  3 +
+ .../selftests/rcutorture/configs/rcu/TREE04   |  1 +
+ 29 files changed, 450 insertions(+), 59 deletions(-)
+ create mode 100644 arch/x86/include/asm/context_tracking_work.h
+ create mode 100644 include/linux/context_tracking_work.h
+
+--
+2.43.0
+
 
