@@ -1,95 +1,92 @@
-Return-Path: <bpf+bounces-45191-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45192-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37BAF9D296A
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 16:17:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE3DD9D2982
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 16:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6F831F22E13
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 15:17:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A40152830B1
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 15:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD111CF2A6;
-	Tue, 19 Nov 2024 15:15:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5C81CF2A6;
+	Tue, 19 Nov 2024 15:23:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bi/gPMnI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HzK2ILIy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 736F922067;
-	Tue, 19 Nov 2024 15:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFFA1CEAB8;
+	Tue, 19 Nov 2024 15:23:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732029348; cv=none; b=XdyR/MQYkeKU8DWkxBlI38k/GPHQEt1t1ZSCDqi7d6pFETRfrfJO18T8FcimMtajy2v0o7pvjSiRZ1MymAWnjTakzhAuhldlgu6Wz2Lv1RGR///kIwWzAea9BbaAwJ/V7gqPgiE4ndDnapE+GtJA3O0jGNogobxBn5D2KglD4WA=
+	t=1732029784; cv=none; b=UBM3AcoIeGcsw336GHJJQ0vxsilYiSA6RuyZ95xkMJiLX+CKi5vIuQutVk8JQ5+/HsucfS0IdJJ0eI/uUUXjEv23pr1dMddXAHsLQcP3dFLcbWp6Gr9uPcAVJHCDZ1iNrT01ns/C7f/XdoUt7UcP8ylS2732u9n5q9qiAqTHX/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732029348; c=relaxed/simple;
-	bh=iPWDJs3HvioJCWxk5FkWG2QEGmZ5PwQQdJ9AY+MrLrw=;
+	s=arc-20240116; t=1732029784; c=relaxed/simple;
+	bh=5u9IOamW6ThE9+oNsHjhT6A1o1r9h/A0pmniqNKUgiI=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k0HzpXhElrxbnQ7CvNxGkH9MJBut3s2YsecMeI/VUdlqzhmXBGxqkstCPRBgq61s9Ih29opfP+Gt4s2VOOJzgETrE0fmrWu9TBmElch94+eTeNP5iSU+PVP8C/kOwJgsKSk77K3i1wwL6TRMhbKvU6SRIlO+QFZrFyXD6sWMLHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bi/gPMnI; arc=none smtp.client-ip=209.85.221.49
+	 Content-Type:Content-Disposition:In-Reply-To; b=GnvaAcH5Ysc+hGVpLXX3f1cBzE8XkW2Nn4CTq/U8aObmSTR0gLNTDCxOHRqtjmO8KXPHtgvNSp1dhbKdCTs359rjCTfkP5CnTAgyKMfxyy5bcSqIRsUd8NDTUru+CguPlPyGkHh5Pa4sN7GxZ98SOqSHRoXc/++vTjnzbz+eYSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HzK2ILIy; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-38230ed9baeso2721714f8f.1;
-        Tue, 19 Nov 2024 07:15:46 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4314fa33a35so47081775e9.1;
+        Tue, 19 Nov 2024 07:23:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732029345; x=1732634145; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1732029781; x=1732634581; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5UnjguskM1CBCHwdwWLnatT26Qhvy0ZOY59Zn/zy5zQ=;
-        b=bi/gPMnIWVrHYWf5apQhbEinQZxp9DmwE+aaDB85mDPU57kA9DAsbS47UCuiz6UywM
-         0c5OXKU1jIcHhXq3rfDBF+6/ql7gT5CO2lvSK5VRHTXhB0DgSbZbtOq3vPqlG9f0rFqm
-         o2KKOvk38kX57ixECiRmJANIANEwCHQRdibLINteGltfas/VkmEE42fj67CieOrYGEy/
-         xd4HGWTWISaNO2OSmcDgtVH3Rf4uZJU29iRA14CxYA5X+cau/pBB0SyIRXl5Jt7QzSe1
-         wLMg9mKUMq481XJTZzTkzTsPNzOE8Bl5CnveflN7QigNbgfj7AAwL4+niiXxVi5oDk9T
-         Kdrw==
+        bh=4DR5BsjCRl1rkPCWbfou0D00YBGACEs7JX1z1Y/fK5Y=;
+        b=HzK2ILIy6z32wVI2Kz41TCzl7i+6sYmg3I/uvy2IKf7oI4co+qGU0PmyXUm+3pE5va
+         /EVjdcMMYosMl2ohQOD7UkxX5b0A2+dM8bdKM03U38vcV37o3qq2zyO+4vKOxjDVBOL8
+         mTJPj18pHXdvlExqL2D63HIcfRM19vt5rvlRXb28cneRxUrmrulDdSOILxVwOWFlodIE
+         yZBQuw1ZyTZNnVORymc+V5gF+BPlMPE//NsiBFaFcfP4B7F7rXJhDNmbgPs11WabYQdb
+         TTDpetzUgFM3//B+qLY3lTj9nIdIq/iVZOca3/8850xcoZYA0utOt9LfPhbz9UP6pTBZ
+         HMuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732029345; x=1732634145;
+        d=1e100.net; s=20230601; t=1732029781; x=1732634581;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5UnjguskM1CBCHwdwWLnatT26Qhvy0ZOY59Zn/zy5zQ=;
-        b=YgB2p5YA3pHesLTzTp40qs1IrAN8zge78txVXmi9KRAJEchF4ypMJMruZX/CJqoLf+
-         tMSfsekpyEC0iBKEMn9mweYLLdHnAqx6hdML8icD+ScWaq7B15vxffGMf0b4EhrVu7B+
-         TeYlEnKjYe1lyrqv6ZwYXhQ/A6X8R7KaTZqdUJ167Hu1EG6vtpkKegSrGALzlQuuplIy
-         YGGQx3FC+DbbEPti/TDfTft0uk5i6BUwmSziFbKg9p04aN0Q+OtBTtMZWZFNTPWAEkpa
-         rvCpVADWrnRnhnY/X4mG89kPjNsihdKCwLgLpnmxS2CcGEFz0yrhRkLOmtPSZBRqgzkS
-         VJbg==
-X-Forwarded-Encrypted: i=1; AJvYcCU6HmHEtcMtaXgluKNkvm93xNQP1H8CCSC3r7pm3kWlVw0tYza4yJ3At18nPxN8oRlvBuo+wvrP+QEuffBYBpyqqROB@vger.kernel.org, AJvYcCUoRoMPSGb/mIPonO2M8OC3k/PVmGJuK06/K2oa40GlV3DZ18wC9lcZU8rbNqlVyz9BOupNyynIpNAHf2BE@vger.kernel.org, AJvYcCWGKzt3GsPzOMmHBuZyqN9GqbmirwZZh4GVSCGOtZXbE/OTSifjOLLTGKKrHPw9Oe4bX9c=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzx/x1kNnueeWaxxRiZOVWDSfja4S9swELwpPCWtESyySy5D5l0
-	SMKnxN2tZ7hwH31DI2epICbqEPAc0McpGNubZbORYbOuQv9xgNhd
-X-Google-Smtp-Source: AGHT+IE9Y7pxj33K3yA6gYgW+k/j0jo42x8TApKD/yxEDkHrWGgKpdhfKl+F/IJjX4y7KkaWTn5wfA==
-X-Received: by 2002:a05:6000:4814:b0:382:4a1b:16de with SMTP id ffacd0b85a97d-3824a1b19e2mr5228088f8f.21.1732029344459;
-        Tue, 19 Nov 2024 07:15:44 -0800 (PST)
+        bh=4DR5BsjCRl1rkPCWbfou0D00YBGACEs7JX1z1Y/fK5Y=;
+        b=Iube6tBxPa8mqsx7EWkPjyqXcG4Y29EuI+Y9wJAOBdeAjfrMO98fMClCPg+uKBr3T5
+         uSdZa0gaa6XZnMgJTQw0JjsnZX5+cVCxKwKqtqqy7Ab6eMhAlDjxyqKsVS2/UFARiyJ2
+         IC0YNQwlzs1sTWW/dLewN1RsIQ9pfCEorhsHBSb9mK5inv4oL+X1iA6YLVB850WCzrxQ
+         383mudM+YkV8T8klx7q/sCAtmn8IVIYYAYP4iHW9ImzU4FItBXdSF4wXezVt9zwfyOsb
+         PJTvMQR/NxVWhswPiquAMtwsQrhhsE41c1xbk/eea8Gfm2Ncu+g2pgVKT5/G66N4DUNR
+         kXhA==
+X-Forwarded-Encrypted: i=1; AJvYcCUiXZKdvBk58Ft6o3DNaUX9Utmav4KMb88XPNSnr7XS1906efd1fqOcPdSg68YQBizAqPZoc1ji@vger.kernel.org, AJvYcCVx16XABJwV7XWBVoDYKuc1XbOPAtpnbV+sv9ipjxN19pILZwsoSiV3rPGNj7yEJUr09qE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwOWF8PdtJbFa3aq9Rt85IvVlm3xBbQp1S1sELyOqLErrpU7365
+	oSi/tMVYyFKMGSfXsBaaDkV3ZDDcJVBOb+b0q/aCHM1PcvubHRf2
+X-Google-Smtp-Source: AGHT+IE215p1cfBnYIitD+B1fAUaDKTRHNGSjEbICNKHauWOyVHxwOfRESqgE/oA9BawlC/YjrjSIg==
+X-Received: by 2002:a05:600c:3b2a:b0:431:6060:8b22 with SMTP id 5b1f17b1804b1-432df72c076mr163048685e9.10.1732029780937;
+        Tue, 19 Nov 2024 07:23:00 -0800 (PST)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38232ec369fsm11374271f8f.70.2024.11.19.07.15.43
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432dab7206csm194647105e9.7.2024.11.19.07.23.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Nov 2024 07:15:44 -0800 (PST)
+        Tue, 19 Nov 2024 07:23:00 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 19 Nov 2024 16:15:42 +0100
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Jiri Olsa <olsajiri@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC perf/core 05/11] uprobes: Add mapping for optimized uprobe
- trampolines
-Message-ID: <Zzyrnvnw1I8HfAYN@krava>
-References: <20241105133405.2703607-1-jolsa@kernel.org>
- <20241105133405.2703607-6-jolsa@kernel.org>
- <20241105142327.GF10375@noisy.programming.kicks-ass.net>
- <ZypI3n-2wbS3_w5p@krava>
- <CAEf4BzZ4XgSOHz0T5nXPyd+keo=rQvH5jc0Jghw1db0a7qR9GQ@mail.gmail.com>
- <ZzkSKQSrbffwOFvd@krava>
- <CAEf4BzbSrtJWUZUcq-RouwwRxK1GOAwO++aSgjbyQf26cQMfow@mail.gmail.com>
- <20241119091348.GE11903@noisy.programming.kicks-ass.net>
+Date: Tue, 19 Nov 2024 16:22:58 +0100
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Omar Sandoval <osandov@osandov.com>, stable@vger.kernel.org,
+	Jiri Olsa <olsajiri@gmail.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: Fix build ID parsing logic in stable trees
+Message-ID: <ZzytUhGqbCMZtS7T@krava>
+References: <ZyniGMz5QLhGVWSY@krava>
+ <2024110636-rebound-chip-f389@gregkh>
+ <ZytZrt31Y1N7-hXK@krava>
+ <Zy0dNahbYlHISjkU@telecaster>
+ <Zy3NVkewYPO9ZSDx@krava>
+ <Zy6eJdwR3LWOlrQg@krava>
+ <CAEf4Bza3PFp53nkBxupn1Z6jYw-FyXJcZp7kJh8aeGhe1cc6CA@mail.gmail.com>
+ <ZzUWRyDmndTpZU3Y@krava>
+ <ZzeQrYy-6I3NK4gX@telecaster>
+ <2024111955-excursion-diaper-2675@gregkh>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,28 +95,45 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241119091348.GE11903@noisy.programming.kicks-ass.net>
+In-Reply-To: <2024111955-excursion-diaper-2675@gregkh>
 
-On Tue, Nov 19, 2024 at 10:13:48AM +0100, Peter Zijlstra wrote:
-> On Mon, Nov 18, 2024 at 10:06:51PM -0800, Andrii Nakryiko wrote:
-> 
-> > > > Jiri, we could also have an option to support 64-bit call, right? We'd
-> > > > need nop9 for that, but it's an option as well to future-proofing this
-> > > > approach, no?
-> > >
-> > > hm, I don't think there's call with relative 64bit offset
+On Tue, Nov 19, 2024 at 12:58:21PM +0100, Greg KH wrote:
+
+SNIP
+
+> > > > >
+> > > > > ok, so the fix the issue in 6.11 with upstream backports we'd need both:
+> > > > >
+> > > > >   1) de3ec364c3c3 lib/buildid: add single folio-based file reader abstraction
+> > > > >   2) 60c845b4896b lib/buildid: take into account e_phoff when fetching program headers
+> > > > >
+> > > > > 2) is needed because 1) seems to omit ehdr->e_phoff addition (patch below)
+> > > > > which is added back in 2)
+> > > > >
+> > > > > IMO 6.11 is close to upstream and by taking above upstream fixes it will be
+> > > > > easier to backport other possible fixes in the future, for other trees I'd
+> > > > > take the original one line fix I posted
+> > > > 
+> > > > I still maintain that very minimal is the way to go instead of risking
+> > > > bringing new potential regressions by partially backporting folio
+> > > > rework patchset.
+> > > > 
+> > > > Jiri, there is no point in risking this, best to fix this quickly and
+> > > > minimally. If we ever need to backport further fixes, *then* we can
+> > > > think about folio-based implementation backport.
+> > > 
+> > > ok, make sense, the original plan works for me as well
+> > > 
+> > > jirka
 > > 
-> > why do you need a relative, when you have 64 bits? ;) there is a call
-> > to absolute address, no?
+> > Greg, could you please queue up Jiri's one line fixes for 5.15, 6.1,
+> > 6.6, and 6.11?
 > 
-> No, there is not :/ You get to use an indirect call, which means
-> multiple instructions and all the speculation joy.
-> 
-> IFF USDT thingies have AX clobbered (I couldn't find in a hurry) then
-> patching the multi instruction thing is relatively straight forward, if
-> they don't, its going to be a pain.
+> Ok, will do, but hopefully you all will help out if there's any problems
+> with the change going forward...
 
-I don't follow, what's the reason for that?
+no worries, will help with that
 
+thanks,
 jirka
 
