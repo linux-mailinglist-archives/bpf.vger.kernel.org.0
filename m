@@ -1,105 +1,127 @@
-Return-Path: <bpf+bounces-45137-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45138-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8D899D1EA5
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 04:07:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 707C79D1EE3
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 04:37:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2A501F21FA5
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 03:07:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDBCBB218EF
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 03:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E10D146A62;
-	Tue, 19 Nov 2024 03:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E0B3149DE8;
+	Tue, 19 Nov 2024 03:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oGWzVf9f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UU+Nk87j"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB7D13775E;
-	Tue, 19 Nov 2024 03:07:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ADD9146A72;
+	Tue, 19 Nov 2024 03:37:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731985623; cv=none; b=J/nYG2R5emdrf/B6Qxy3Dl2KSYZ4F9NsyllYHkj7yoySGJR7DnYpoPij/1OiRvUaD+7+RsN3Mk2Fe3116qE2u/q0oL0QshQqpQvBEZiBqGmp9S4Tl9TJs9gSJ+wjbd+WZO1Irjked3EPtpg5MZXfnx2PwkrIcT8JwpVf0UCHdyk=
+	t=1731987444; cv=none; b=ee9qokTLxmGEzN78fJvEXm3qin1kqsv6H7qoRpz5m5/jhoH3/ikQUE6CtwGJfQ/TxF4O/tQ2wiwECe2YKWJObRrlvhb5sHigCvf4ADhOzSwy7oz9qBL7IqyoeDxBqMZk4KEOFxFM1EtC8rAklEH/LYu1m2GqoEzoNvLtg2OTdO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731985623; c=relaxed/simple;
-	bh=PGoG8fEB7llM322/jpcOwn3LGAi0gafsk5SM9vL39KQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=H9KUdDdg2Pywl0c/wAu2E7DH5nMKCEX8sNTgvGUmZ/DWaNLS+RDwx9R/DRSGoVlKnr9uib+00w3veqmIB97V8s7WNkAk2YMIr03I8FHs3J45z8Km4wqwr6mRNvA6Gl9VV940/X9STBtscGXroR0mjpZ3XmSFmzGBhnVJ2yyKl18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oGWzVf9f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAD48C4CECF;
-	Tue, 19 Nov 2024 03:07:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731985622;
-	bh=PGoG8fEB7llM322/jpcOwn3LGAi0gafsk5SM9vL39KQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=oGWzVf9fm47IURqF82sBjxlSLSQaSxQvnftln+sAaadyrOaTpKmG1QB1++Q+XtGq2
-	 iqnrNBO0CyTqqEwlU/q+011kC2hwIrbq/6K0SGXImw3qfRg1+XKGoOsssJ5vIMkYcz
-	 Z6YQRFxP4izqrZoqEbsdoy+taGRJqRWgfpsrekJKESn6nbT7e6NOHGhh6GN5IbeTmn
-	 lzthFeg7CnYNFnEs0XFbrLEZd2ql/Jl9IGwusT5cDv1Qr6Psf8Q5n6XqbkH/peqmPn
-	 uwk0TjN/tbOC/IkQ2CmF/L5xISUzVUBpQQlxdujGCk9lYUVk7IvT7QmP1ZZAPQtMkX
-	 AVNlOOjcQBmSw==
-Date: Mon, 18 Nov 2024 19:07:00 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Xiao Liang <shaw.leon@gmail.com>
-Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, Kuniyuki
- Iwashima <kuniyu@amazon.com>, Donald Hunter <donald.hunter@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ido
- Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Simon
- Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>, Jiri Pirko
- <jiri@resnulli.us>, Hangbin Liu <liuhangbin@gmail.com>,
- linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
- osmocom-net-gprs@lists.osmocom.org, bpf@vger.kernel.org,
- linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
- linux-wireless@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
- bridge@lists.linux.dev, linux-wpan@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v4 0/5] net: Improve netns handling in RTNL and
- ip_tunnel
-Message-ID: <20241118190700.4c1b8156@kernel.org>
-In-Reply-To: <20241118143244.1773-1-shaw.leon@gmail.com>
-References: <20241118143244.1773-1-shaw.leon@gmail.com>
+	s=arc-20240116; t=1731987444; c=relaxed/simple;
+	bh=dCaQDrjjsMlbKMHjkTKCfmDN0bnh7bTyWM1/3ifufWk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=slkQuebX3RhBOjFx/mK0OYjBC6VhUjUle6URT95wDL7eM9LyCpl/tnq9pfxEFWHbpRhYskBOgWwkjGuXSUYzQm4UhtGdNZcvCX8qsqK6iV2MF+TQroF5WauTWhpSJOv4ihUkhYPlxDGxOi9+ogR9hydbx4o6UK/Z/mIJG8xgHtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UU+Nk87j; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-20cdb889222so35854635ad.3;
+        Mon, 18 Nov 2024 19:37:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731987442; x=1732592242; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=g2E2ZlpfPZCjUZubD0v6yvsYpnLBIbhUcb15gmeLAW8=;
+        b=UU+Nk87jOIoDUWWoaNEmXQjkm6ihSk2UAStUxQs/SfPwUdkRtX0D/9aSj0fBFdTYx1
+         SMm/6360hqsa6O59w51Fvxw4w3He2U7I0zOIpjKQATdcH7kuZ/ei2oYM4EVq92EvhEST
+         A/1jh3DzR2PLYFW0rt5GVYIca6+i4kD0iw7DrZ4HdRHyq1HzhBKyoMHlUD8Pfvll8z0F
+         l0G1J9TDAt+1+FhPLpZcYpsplGKTME1eU6XGuRH1jsrndcrr1cgpQ2kj7rBe1p8BV0CV
+         4sZiMo8qYd59OL2DDZgc4kSA97pnjsONl05QjmqCJXH8317Yc8TKaGga/IGgDCGnXU2z
+         IAZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731987442; x=1732592242;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g2E2ZlpfPZCjUZubD0v6yvsYpnLBIbhUcb15gmeLAW8=;
+        b=XZVqUuwQcAF2K2vH838/Wv8p2f/K5flOPrlkx0FI0Z2k44sfTDh2TE7GA7SnwlN+b7
+         Xcs97z1jxWXVuyq3b20IO4llxJ8kiIw6rvqkyKbGlj5g1fPgRrrz+gpIlUmqoKq6q/Qf
+         qSraN68Qg4zRa1GMHBp40jULQp4HQJbh0Fq+l9wsceY31r9OmJXIAOtkDSo8GaNYusD6
+         AM14qzxZxuMZI3scxzYpxbTYqc7ZcEQn5MrxgXm2gLJwPxkBUqmbepupJ71Bk4W8PSoT
+         W3sjsskndEEYOo6hLgS9MK0rukKekW/QXITQ/dXjs4UvyPxh+Xru3OG4wDkAOmUArnja
+         7MCw==
+X-Forwarded-Encrypted: i=1; AJvYcCUAeWFR/W9NX4jo6A3DP3NHX6XKNHjJpLAv8Em7zDs99PlO9xG51gkisPNMMJpB/B5a2wZMJOCyh1T6/e0Fp8jf@vger.kernel.org, AJvYcCVbVw1tQtbIEasAl+ZKLDXvHbKysalriK9TIGnq58sQTEht4FAUEOujTMl//yC16ODekObWSfCSRGp4ji8S@vger.kernel.org, AJvYcCW2y8jYGWpnHGlRp6vpt4ewAI0FGmJOV/Y7keaqwa4Z8eODzmGcMzsv3Qr84GSaqwjoZ08=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzR99GlFpORg+0qw1zayvcw9zwDuaeVo863olQJBnXhhNR5uzPA
+	UJ5PeGSi6ZRM0pkXK3oDR+ZmtVV5SD6U5xjL3/PlzhrrwD9evUDr
+X-Google-Smtp-Source: AGHT+IFjjMSAg8vXQGT6xt9qDee1RQiBoViFJfIqzIwsQD9MT3RmvB4st8SRTNmASPhdxDFOmy7QyA==
+X-Received: by 2002:a17:903:110c:b0:20b:9379:f1f7 with SMTP id d9443c01a7336-211d0ecb0a4mr221143125ad.40.1731987441660;
+        Mon, 18 Nov 2024 19:37:21 -0800 (PST)
+Received: from localhost ([2601:647:6881:9060:fd49:bc41:343a:fee5])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ea06ef69edsm9280679a91.1.2024.11.18.19.37.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Nov 2024 19:37:21 -0800 (PST)
+Date: Mon, 18 Nov 2024 19:37:19 -0800
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: guanjing <guanjing@cmss.chinamobile.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	jolsa@kernel.org, shuah@kernel.org, dxu@dxuuu.xyz,
+	antony.antony@secunet.com, cupertino.miranda@oracle.com,
+	asavkov@redhat.com, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] selftests/bpf: fix application of sizeof to pointer
+Message-ID: <ZzwH77QE/Ch9+evD@pop-os.localdomain>
+References: <20241117031838.161576-1-guanjing@cmss.chinamobile.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241117031838.161576-1-guanjing@cmss.chinamobile.com>
 
-On Mon, 18 Nov 2024 22:32:39 +0800 Xiao Liang wrote:
-> This patch series includes some netns-related improvements and fixes for
-> RTNL and ip_tunnel, to make link creation more intuitive:
+On Sun, Nov 17, 2024 at 11:18:38AM +0800, guanjing wrote:
+> sizeof when applied to a pointer typed expression gives the size of
+> the pointer.
 > 
->  - Creating link in another net namespace doesn't conflict with link names
->    in current one.
->  - Refector rtnetlink link creation. Create link in target namespace
->    directly. Pass both source and link netns to drivers via newlink()
->    callback.
+> tools/testing/selftests/bpf/progs/test_tunnel_kern.c:678:41-47: ERROR: application of sizeof to pointer
 > 
-> So that
+> The proper fix in this particular case is to code sizeof(*gopt)
+> instead of sizeof(gopt).
 > 
->   # ip link add netns ns1 link-netns ns2 tun0 type gre ...
+> This issue was detected with the help of Coccinelle.
 > 
-> will create tun0 in ns1, rather than create it in ns2 and move to ns1.
-> And don't conflict with another interface named "tun0" in current netns.
+> Fixes: 5ddafcc377f9 ("selftests/bpf: Fix a few tests for GCC related warnings.")
+> Signed-off-by: guanjing <guanjing@cmss.chinamobile.com>
+> ---
+>  tools/testing/selftests/bpf/progs/test_tunnel_kern.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> index 32127f1cd687..3a437cdc5c15 100644
+> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> @@ -675,7 +675,7 @@ int ip6geneve_set_tunnel(struct __sk_buff *skb)
+>  	gopt->length = 2; /* 4-byte multiple */
+>  	*(int *) &gopt->opt_data = bpf_htonl(0xfeedbeef);
+>  
+> -	ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(gopt));
+> +	ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(*gopt));
 
-## Form letter - net-next-closed
+Good catch!
 
-The merge window for v6.13 has begun and net-next is closed for new drivers,
-features, code refactoring and optimizations. We are currently accepting
-bug fixes only.
+I think sizeof(local_gopt) is better, to align with geneve_set_tunnel(),
+what do you think?
 
-Please repost when net-next reopens after Dec 2nd.
-
-RFC patches sent for review only are welcome at any time.
-
-See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
--- 
-pw-bot: defer
-
+Thanks.
 
