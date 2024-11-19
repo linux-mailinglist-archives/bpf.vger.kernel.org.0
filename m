@@ -1,139 +1,250 @@
-Return-Path: <bpf+bounces-45192-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45193-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE3DD9D2982
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 16:23:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF0279D298D
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 16:26:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A40152830B1
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 15:23:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F3782831AD
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 15:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5C81CF2A6;
-	Tue, 19 Nov 2024 15:23:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E83661D0164;
+	Tue, 19 Nov 2024 15:26:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HzK2ILIy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kqBjHQR/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFFA1CEAB8;
-	Tue, 19 Nov 2024 15:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5F81CEAC8;
+	Tue, 19 Nov 2024 15:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732029784; cv=none; b=UBM3AcoIeGcsw336GHJJQ0vxsilYiSA6RuyZ95xkMJiLX+CKi5vIuQutVk8JQ5+/HsucfS0IdJJ0eI/uUUXjEv23pr1dMddXAHsLQcP3dFLcbWp6Gr9uPcAVJHCDZ1iNrT01ns/C7f/XdoUt7UcP8ylS2732u9n5q9qiAqTHX/w=
+	t=1732029964; cv=none; b=FJaUM/CIZB95EDROquoC48dvmin4CUGxTATS7KwWYmjpxJPyppPYzJpF5Ohz+05M3s8AFq3LYjdCA0GnW0UFhYf0shKRGa9DLtWDStRG8NIswLydk3S9RSkDrsam85OHf3t+INUGmhTPSF1FccEnCSGgUzMoGaGB1Ss3csaQi2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732029784; c=relaxed/simple;
-	bh=5u9IOamW6ThE9+oNsHjhT6A1o1r9h/A0pmniqNKUgiI=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GnvaAcH5Ysc+hGVpLXX3f1cBzE8XkW2Nn4CTq/U8aObmSTR0gLNTDCxOHRqtjmO8KXPHtgvNSp1dhbKdCTs359rjCTfkP5CnTAgyKMfxyy5bcSqIRsUd8NDTUru+CguPlPyGkHh5Pa4sN7GxZ98SOqSHRoXc/++vTjnzbz+eYSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HzK2ILIy; arc=none smtp.client-ip=209.85.128.45
+	s=arc-20240116; t=1732029964; c=relaxed/simple;
+	bh=XGFJFA0Pb+X8dLV1bgWBosmY1QjO1cLIy7Ti2jNcu14=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=L5B2sMlDJHsVJfzwVJvYwurRX/E21EYACAXk21ASE78aB86UqjUPAooG/1OL1iRkN6HPYfWbycdQFTleB9Hi2ywZE7ZXHhoot5oXyDaK1SuzqiRRBp4ou/mZndEwcbqdCNbyIxXK5JCiVEEE1ruGOP+v6kdr2kuMQa9dr380sD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kqBjHQR/; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4314fa33a35so47081775e9.1;
-        Tue, 19 Nov 2024 07:23:02 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a9f1d76dab1so940333966b.0;
+        Tue, 19 Nov 2024 07:26:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732029781; x=1732634581; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4DR5BsjCRl1rkPCWbfou0D00YBGACEs7JX1z1Y/fK5Y=;
-        b=HzK2ILIy6z32wVI2Kz41TCzl7i+6sYmg3I/uvy2IKf7oI4co+qGU0PmyXUm+3pE5va
-         /EVjdcMMYosMl2ohQOD7UkxX5b0A2+dM8bdKM03U38vcV37o3qq2zyO+4vKOxjDVBOL8
-         mTJPj18pHXdvlExqL2D63HIcfRM19vt5rvlRXb28cneRxUrmrulDdSOILxVwOWFlodIE
-         yZBQuw1ZyTZNnVORymc+V5gF+BPlMPE//NsiBFaFcfP4B7F7rXJhDNmbgPs11WabYQdb
-         TTDpetzUgFM3//B+qLY3lTj9nIdIq/iVZOca3/8850xcoZYA0utOt9LfPhbz9UP6pTBZ
-         HMuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732029781; x=1732634581;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1732029961; x=1732634761; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4DR5BsjCRl1rkPCWbfou0D00YBGACEs7JX1z1Y/fK5Y=;
-        b=Iube6tBxPa8mqsx7EWkPjyqXcG4Y29EuI+Y9wJAOBdeAjfrMO98fMClCPg+uKBr3T5
-         uSdZa0gaa6XZnMgJTQw0JjsnZX5+cVCxKwKqtqqy7Ab6eMhAlDjxyqKsVS2/UFARiyJ2
-         IC0YNQwlzs1sTWW/dLewN1RsIQ9pfCEorhsHBSb9mK5inv4oL+X1iA6YLVB850WCzrxQ
-         383mudM+YkV8T8klx7q/sCAtmn8IVIYYAYP4iHW9ImzU4FItBXdSF4wXezVt9zwfyOsb
-         PJTvMQR/NxVWhswPiquAMtwsQrhhsE41c1xbk/eea8Gfm2Ncu+g2pgVKT5/G66N4DUNR
-         kXhA==
-X-Forwarded-Encrypted: i=1; AJvYcCUiXZKdvBk58Ft6o3DNaUX9Utmav4KMb88XPNSnr7XS1906efd1fqOcPdSg68YQBizAqPZoc1ji@vger.kernel.org, AJvYcCVx16XABJwV7XWBVoDYKuc1XbOPAtpnbV+sv9ipjxN19pILZwsoSiV3rPGNj7yEJUr09qE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwOWF8PdtJbFa3aq9Rt85IvVlm3xBbQp1S1sELyOqLErrpU7365
-	oSi/tMVYyFKMGSfXsBaaDkV3ZDDcJVBOb+b0q/aCHM1PcvubHRf2
-X-Google-Smtp-Source: AGHT+IE215p1cfBnYIitD+B1fAUaDKTRHNGSjEbICNKHauWOyVHxwOfRESqgE/oA9BawlC/YjrjSIg==
-X-Received: by 2002:a05:600c:3b2a:b0:431:6060:8b22 with SMTP id 5b1f17b1804b1-432df72c076mr163048685e9.10.1732029780937;
-        Tue, 19 Nov 2024 07:23:00 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432dab7206csm194647105e9.7.2024.11.19.07.23.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Nov 2024 07:23:00 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 19 Nov 2024 16:22:58 +0100
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Omar Sandoval <osandov@osandov.com>, stable@vger.kernel.org,
-	Jiri Olsa <olsajiri@gmail.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: Fix build ID parsing logic in stable trees
-Message-ID: <ZzytUhGqbCMZtS7T@krava>
-References: <ZyniGMz5QLhGVWSY@krava>
- <2024110636-rebound-chip-f389@gregkh>
- <ZytZrt31Y1N7-hXK@krava>
- <Zy0dNahbYlHISjkU@telecaster>
- <Zy3NVkewYPO9ZSDx@krava>
- <Zy6eJdwR3LWOlrQg@krava>
- <CAEf4Bza3PFp53nkBxupn1Z6jYw-FyXJcZp7kJh8aeGhe1cc6CA@mail.gmail.com>
- <ZzUWRyDmndTpZU3Y@krava>
- <ZzeQrYy-6I3NK4gX@telecaster>
- <2024111955-excursion-diaper-2675@gregkh>
+        bh=DK8C27uKyKWzuTgVBXpkuQwVY8traPUvnr1dyQWjbb0=;
+        b=kqBjHQR/DdhA7rTRHk2QgQ9N4Dcu0oF2nDznmsw1kGeXbt3SgztSL9KFNajp0nabXX
+         Cj60i4QKQokzPJiptYEdXCjTAMT7rD+XOuc5mXjMg8FoDeBgKVvtSwn/hrrizpqjNc88
+         KNK3ev1shX/+DYZuYpsxPqF/4BPgcieB0JVx16SGd/Nd8V1NnmA7BiMnZ/7YxOJp2mNL
+         RKdp0ISIgc1JWYrq5NkaeProK/cHJZMeO45+jwi81N1JUi9m1VvPMqVz6JImw9d6Ggch
+         KsiNNyjRt/8Jw8J6eK+sMjr9OdEKIybhZHS33QhhoqqN5EUwRKjn1ygwAnqkOZxwbNvC
+         5Qgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732029961; x=1732634761;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DK8C27uKyKWzuTgVBXpkuQwVY8traPUvnr1dyQWjbb0=;
+        b=dmWqKJsSwPzA2d3EP6EzeH+A4jOim54a/ruo2k/B+P8/pgVPprFYGS8RfwIOyfsKou
+         EtMPcMOrhmWVxBkd7uhylvff9dYYFBQ3JR0Yav6nL/IFS9VIH9ylcdqPs6wLod/2chL0
+         1osmqhEHHyGFnwEbNvnxmkTyq4xfWhzaYI5d5o93FJD1xRLudD96TN3HMSdHG7+MPHjs
+         +Ob9GuY8P98/zuvcumDE2+UENH57CuTb2vVPebVUr6CXTp4oHGXLNgdK8R7keUIGub8W
+         KR80ObmbwxlxBHd5FSL3ww9mb1T1ZHRqMmhinZY57nbAQhHa7CtOEA7I7OP1QHMmhjVq
+         4xtg==
+X-Forwarded-Encrypted: i=1; AJvYcCUaAkmx3wJwTR4pQgOBKsHzRxwxVve81TcWddcbwwTVT54PH2Y7oasyFppnZmI4AYq66mk=@vger.kernel.org, AJvYcCV37oAWJHMxjX9hWwvE3htcLlFGMLkLF9fjXE0VWFRrKXQnEg+CvdtoREowTNTiuwScVpuZh0U0qgMeJrHN@vger.kernel.org, AJvYcCV5Ziu+AUutwnSgKIQbv4/BsGfTtqFaEiH9WrHcH6RYNCmwrQ+mKnfg1VWMa1j4JsroRFyBXiF+ta3SgPpQAE7cEeop06ep@vger.kernel.org, AJvYcCVZIYxL8mynQTjHxy9X2vvVjtHtvcysA7Uaxfhc9/samFfkhWDgMJAYTxq3G8Eap6xP54hB27dFIZW4O0fMpQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdraSgZv7t/T8szmj92zJjT/nJMtbGgHaHzeqrO6bf+p0gvgYl
+	RYHnyGD+pwViP8oEzfRdvMBDE0muL6siuoqXuOPVKkQ1wgojdPL36nQhNeY8nQR0ozUyuK/LwHr
+	uFaY0sHnkSNkUo0iQERPQLaxqdTY=
+X-Google-Smtp-Source: AGHT+IE6JJVR1xDspmHSXdwbi6cSAjCbWfc003DUiLj97RF+qYLTBw5EYQNLe8tbgCQCpyE+0Q0rzLCohLfCdc4EUUY=
+X-Received: by 2002:a17:907:f79b:b0:aa4:ce42:fa7f with SMTP id
+ a640c23a62f3a-aa4ce4304fcmr234765566b.7.1732029960623; Tue, 19 Nov 2024
+ 07:26:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024111955-excursion-diaper-2675@gregkh>
+References: <20241112082600.298035-1-song@kernel.org> <20241112082600.298035-3-song@kernel.org>
+ <20241113-sensation-morgen-852f49484fd8@brauner> <86C65B85-8167-4D04-BFF5-40FD4F3407A4@fb.com>
+ <20241115111914.qhrwe4mek6quthko@quack3> <E79EFA17-A911-40E8-8A51-CB5438FD2020@fb.com>
+ <8ae11e3e0d9339e6c60556fcd2734a37da3b4a11.camel@kernel.org>
+In-Reply-To: <8ae11e3e0d9339e6c60556fcd2734a37da3b4a11.camel@kernel.org>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 19 Nov 2024 16:25:49 +0100
+Message-ID: <CAOQ4uxgUYHEZTx7udTXm8fDTfhyFM-9LOubnnAc430xQSLvSVA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf: Make bpf inode storage available to
+ tracing program
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Song Liu <songliubraving@meta.com>, Jan Kara <jack@suse.cz>, 
+	Christian Brauner <brauner@kernel.org>, Song Liu <song@kernel.org>, 
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>, 
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "martin.lau@linux.dev" <martin.lau@linux.dev>, 
+	"viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
+	"mattbobrowski@google.com" <mattbobrowski@google.com>, "repnop@google.com" <repnop@google.com>, 
+	Josef Bacik <josef@toxicpanda.com>, "mic@digikod.net" <mic@digikod.net>, 
+	"gnoack@google.com" <gnoack@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 19, 2024 at 12:58:21PM +0100, Greg KH wrote:
+On Tue, Nov 19, 2024 at 3:21=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
+ote:
+>
+> On Fri, 2024-11-15 at 17:35 +0000, Song Liu wrote:
+> > Hi Jan,
+> >
+> > > On Nov 15, 2024, at 3:19=E2=80=AFAM, Jan Kara <jack@suse.cz> wrote:
+> >
+> > [...]
+> >
+> > > > AFAICT, we need to modify how lsm blob are managed with
+> > > > CONFIG_BPF_SYSCALL=3Dy && CONFIG_BPF_LSM=3Dn case. The solution, ev=
+en
+> > > > if it gets accepted, doesn't really save any memory. Instead of
+> > > > growing struct inode by 8 bytes, the solution will allocate 8
+> > > > more bytes to inode->i_security. So the total memory consumption
+> > > > is the same, but the memory is more fragmented.
+> > >
+> > > I guess you've found a better solution for this based on James' sugge=
+stion.
+> > >
+> > > > Therefore, I think we should really step back and consider adding
+> > > > the i_bpf_storage to struct inode. While this does increase the
+> > > > size of struct inode by 8 bytes, it may end up with less overall
+> > > > memory consumption for the system. This is why.
+> > > >
+> > > > When the user cannot use inode local storage, the alternative is
+> > > > to use hash maps (use inode pointer as key). AFAICT, all hash maps
+> > > > comes with non-trivial overhead, in memory consumption, in access
+> > > > latency, and in extra code to manage the memory. OTOH, inode local
+> > > > storage doesn't have these issue, and is usually much more efficien=
+t:
+> > > > - memory is only allocated for inodes with actual data,
+> > > > - O(1) latency,
+> > > > - per inode data is freed automatically when the inode is evicted.
+> > > > Please refer to [1] where Amir mentioned all the work needed to
+> > > > properly manage a hash map, and I explained why we don't need to
+> > > > worry about these with inode local storage.
+> > >
+> > > Well, but here you are speaking of a situation where bpf inode storag=
+e
+> > > space gets actually used for most inodes. Then I agree i_bpf_storage =
+is the
+> > > most economic solution. But I'd also expect that for vast majority of
+> > > systems the bpf inode storage isn't used at all and if it does get us=
+ed, it
+> > > is used only for a small fraction of inodes. So we are weighting 8 by=
+tes
+> > > per inode for all those users that don't need it against more signifi=
+cant
+> > > memory savings for users that actually do need per inode bpf storage.=
+ A
+> > > factor in this is that a lot of people are running some distribution =
+kernel
+> > > which generally enables most config options that are at least somewha=
+t
+> > > useful. So hiding the cost behind CONFIG_FOO doesn't really help such
+> > > people.
+> >
+> > Agreed that an extra pointer will be used if there is no actual users
+> > of it. However, in longer term, "most users do not use bpf inode
+> > storage" may not be true. As kernel engineers, we may not always notice
+> > when user space is using some BPF features. For example, systemd has
+> > a BPF LSM program "restrict_filesystems" [1]. It is enabled if the
+> > user have lsm=3Dbpf in kernel args. I personally noticed it as a
+> > surprise when we enabled lsm=3Dbpf.
+> >
+> > > I'm personally not *so* hung up about a pointer in struct inode but I=
+ can
+> > > see why Christian is and I agree adding a pointer there isn't a win f=
+or
+> > > everybody.
+> >
+> > I can also understand Christian's motivation. However, I am a bit
+> > frustrated because similar approach (adding a pointer to the struct)
+> > worked fine for other popular data structures: task_struct, sock,
+> > cgroup.
+> >
+>
+> There are (usually) a lot more inodes on a host than all of those other
+> structs combined. Worse, struct inode is often embedded in other
+> structs, and adding fields can cause alignment problems there.
+>
+>
+> > > Longer term, I think it may be beneficial to come up with a way to at=
+tach
+> > > private info to the inode in a way that doesn't cost us one pointer p=
+er
+> > > funcionality that may possibly attach info to the inode. We already h=
+ave
+> > > i_crypt_info, i_verity_info, i_flctx, i_security, etc. It's always a =
+tough
+> > > call where the space overhead for everybody is worth the runtime &
+> > > complexity overhead for users using the functionality...
+> >
+> > It does seem to be the right long term solution, and I am willing to
+> > work on it. However, I would really appreciate some positive feedback
+> > on the idea, so that I have better confidence my weeks of work has a
+> > better chance to worth it.
+> >
+> > Thanks,
+> > Song
+> >
+> > [1] https://github.com/systemd/systemd/blob/main/src/core/bpf/restrict_=
+fs/restrict-fs.bpf.c
+>
+> fsnotify is somewhat similar to file locking in that few inodes on the
+> machine actually utilize these fields.
+>
+> For file locking, we allocate and populate the inode->i_flctx field on
+> an as-needed basis. The kernel then hangs on to that struct until the
+> inode is freed. We could do something similar here. We have this now:
+>
+> #ifdef CONFIG_FSNOTIFY
+>         __u32                   i_fsnotify_mask; /* all events this inode=
+ cares about */
+>         /* 32-bit hole reserved for expanding i_fsnotify_mask */
+>         struct fsnotify_mark_connector __rcu    *i_fsnotify_marks;
+> #endif
+>
+> What if you were to turn these fields into a pointer to a new struct:
+>
+>         struct fsnotify_inode_context {
+>                 struct fsnotify_mark_connector __rcu    *i_fsnotify_marks=
+;
+>                 struct bpf_local_storage __rcu          *i_bpf_storage;
+>                 __u32                                   i_fsnotify_mask; =
+/* all events this inode cares about */
+>         };
+>
 
-SNIP
+The extra indirection is going to hurt for i_fsnotify_mask
+it is being accessed frequently in fsnotify hooks, so I wouldn't move it
+into a container, but it could be moved to the hole after i_state.
 
-> > > > >
-> > > > > ok, so the fix the issue in 6.11 with upstream backports we'd need both:
-> > > > >
-> > > > >   1) de3ec364c3c3 lib/buildid: add single folio-based file reader abstraction
-> > > > >   2) 60c845b4896b lib/buildid: take into account e_phoff when fetching program headers
-> > > > >
-> > > > > 2) is needed because 1) seems to omit ehdr->e_phoff addition (patch below)
-> > > > > which is added back in 2)
-> > > > >
-> > > > > IMO 6.11 is close to upstream and by taking above upstream fixes it will be
-> > > > > easier to backport other possible fixes in the future, for other trees I'd
-> > > > > take the original one line fix I posted
-> > > > 
-> > > > I still maintain that very minimal is the way to go instead of risking
-> > > > bringing new potential regressions by partially backporting folio
-> > > > rework patchset.
-> > > > 
-> > > > Jiri, there is no point in risking this, best to fix this quickly and
-> > > > minimally. If we ever need to backport further fixes, *then* we can
-> > > > think about folio-based implementation backport.
-> > > 
-> > > ok, make sense, the original plan works for me as well
-> > > 
-> > > jirka
-> > 
-> > Greg, could you please queue up Jiri's one line fixes for 5.15, 6.1,
-> > 6.6, and 6.11?
-> 
-> Ok, will do, but hopefully you all will help out if there's any problems
-> with the change going forward...
+> Then whenever you have to populate any of these fields, you just
+> allocate one of these structs and set the inode up to point to it.
+> They're tiny too, so don't bother freeing it until the inode is
+> deallocated.
+>
+> It'd mean rejiggering a fair bit of fsnotify code, but it would give
+> the fsnotify code an easier way to expand per-inode info in the future.
+> It would also slightly shrink struct inode too.
 
-no worries, will help with that
+This was already done for s_fsnotify_marks, so you can follow the recipe
+of 07a3b8d0bf72 ("fsnotify: lazy attach fsnotify_sb_info state to sb")
+and create an fsnotify_inode_info container.
 
-thanks,
-jirka
+Thanks,
+Amir.
 
