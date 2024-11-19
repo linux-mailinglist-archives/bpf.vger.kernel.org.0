@@ -1,129 +1,133 @@
-Return-Path: <bpf+bounces-45225-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45226-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 384DC9D2ED2
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 20:27:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73CF09D2F9F
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 21:39:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F122B2843A9
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 19:27:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FCFCB275F3
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 20:38:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A17B01D04BF;
-	Tue, 19 Nov 2024 19:27:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E66C1D4324;
+	Tue, 19 Nov 2024 20:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Tc9jXsbp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bqgdvrBa"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AFF8528E
-	for <bpf@vger.kernel.org>; Tue, 19 Nov 2024 19:27:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ADD11D3566;
+	Tue, 19 Nov 2024 20:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732044457; cv=none; b=auh6pbBH8fhPJuAxgjrAPGFBI/qmvzunBFOFpHE/cVqIw3p33JVTqCqePOmZTrBkLSNrjfqKyO5QKqmGA8ZGUjCPNpCa1bJetroAKcF+f6nySf/03UPzkpImC460joy7NvhuEtwFUKbOAs8YnD6fCBF8+Ua1UJM4CmRffFj0iwA=
+	t=1732048693; cv=none; b=sN4L4nFR+I2BzAXdAeAdbeNXrIbG2C5/pIp1juRfUIWmmxmkn77Z3OwPVKyCFaBcq8vqU+amY8gVaRFAlQ2jwXsYeJF+wM89Tunj+/iDpFw2sp6GWLp5FFKaf3ndyFRlgY5NBRpWc/ijmBeoTS8PJ6WhbwAAQCBlwAzHg98LJ+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732044457; c=relaxed/simple;
-	bh=wWTLxf603LZG6b+/uWhMm3wAZcWtQAYB8kOFsnsyETM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U7qRKftAzLvI7lM0/4AfjsCkwGpL8v4/EHdQfkC+HHx2ircXZhxzUZRULUsLKlYnLvIqCMJ+LGSnCnZAY6EksSz4mGGJeLD1k8rX7Co0FFFUH0sg0hdan5y5mef/3jJFZiu684YVo0eFwHRwc+qUWtzo0s9vBtCR2Whp8e0H9Ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Tc9jXsbp; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e6886e32-0200-42d8-8f37-808487595081@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1732044452;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JilRxa0SoMmNYBEkylYW+bTughLuJ0jd6r87UEGff7s=;
-	b=Tc9jXsbpb6O8YwnlwtaG7LOq86WT8sBagwUjwwQNUp0t21xLTi1T+NBIZnQziWYO+yqNzo
-	QlTlJdZlORkOISCxa7wOJH1L5Q4Ts/inckfkFKU9hY/KaMLxBODe+IT7/Sinw1SpiO7h7T
-	4q3VCKTZPSsjZ9+w6oak2HXAPJRYbDw=
-Date: Tue, 19 Nov 2024 11:27:25 -0800
+	s=arc-20240116; t=1732048693; c=relaxed/simple;
+	bh=aZtx8D0JIDJUy4jb6paGGJ/YMK9y9mdX3qt+a6Plzbw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UaR8W2PRDDoacaYXWZHvMSCnD6cNgBGBxm5XWnpb8c4K8ngIU1omD8g2pBVb9hL9HdVuZjYDRjMdPcHdvQ9SZUFIHRtn/g0u3GLpyVQVLDjHso6Is/oITxr5df/Nprw1L0p5XIf4tzTA2ZGxmmN3iXzQKbBjdO4ejB+PXclR/3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bqgdvrBa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FDC1C4CECF;
+	Tue, 19 Nov 2024 20:38:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732048692;
+	bh=aZtx8D0JIDJUy4jb6paGGJ/YMK9y9mdX3qt+a6Plzbw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bqgdvrBaiDxMyjQzGHu5p8KD0C93igpPKRnUy5UtfEkVZeMzkIQnh6cOad/ipuMEy
+	 njpfahWj2R+Pw7cFV/WOF3ln/QTjXH6a10DMilFsgRWhnLiymRWLkgI4WHjk7UWhVO
+	 t3SicS6vDAbW1mWdeQbBEPdaPSutxU3lpYTvB+wylx3hxuogimYFLPm2J+H/cv25CB
+	 ya04g52bgAmigcw7PCCBUL/QtnTsn1pWHVHOKQZM4cor/+Kdsrr1gXdNn+XJ4IDSdd
+	 HY5mKjOk90Yh8I/NZniAmGJGWiWuzfbser0fX1fvvnhQUWi6aetB+obxHsJ8dDzcR+
+	 7ATtWmfHSb1uw==
+Date: Tue, 19 Nov 2024 12:38:08 -0800
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+	x86@kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Juerg Haefliger <juerg.haefliger@canonical.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
+	Chuang Wang <nashuiliang@gmail.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Petr Mladek <pmladek@suse.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+	Julian Pidancet <julian.pidancet@oracle.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>,
+	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
+Subject: Re: [RFC PATCH v3 01/15] objtool: Make validate_call() recognize
+ indirect calls to pv_ops[]
+Message-ID: <20241119203808.rb2yfqbuin35iye3@jpoimboe>
+References: <20241119153502.41361-1-vschneid@redhat.com>
+ <20241119153502.41361-2-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v7 1/4] bpf: add bpf_get_cpu_cycles kfunc
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Borislav Petkov <bp@alien8.de>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Eduard Zingerman <eddyz87@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- Yonghong Song <yonghong.song@linux.dev>, Mykola Lysenko <mykolal@fb.com>,
- x86@kernel.org, bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>
-References: <20241118185245.1065000-1-vadfed@meta.com>
- <20241118185245.1065000-2-vadfed@meta.com>
- <20241119111809.GB2328@noisy.programming.kicks-ass.net>
- <bade75b3-92d2-42e8-aede-f7a361b491a9@linux.dev>
- <20241119161753.GA28920@noisy.programming.kicks-ass.net>
- <6d525549-b623-4292-b700-ee94eb313eb1@linux.dev>
- <CAEf4BzbK5JS6dXxOcXJ344KE1mDcH-sHKX+b+U8k_9FyQ4jW6Q@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <CAEf4BzbK5JS6dXxOcXJ344KE1mDcH-sHKX+b+U8k_9FyQ4jW6Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241119153502.41361-2-vschneid@redhat.com>
 
-On 19/11/2024 11:16, Andrii Nakryiko wrote:
-> On Tue, Nov 19, 2024 at 10:03 AM Vadim Fedorenko
-> <vadim.fedorenko@linux.dev> wrote:
->>
->> On 19/11/2024 08:17, Peter Zijlstra wrote:
->>> On Tue, Nov 19, 2024 at 06:29:09AM -0800, Vadim Fedorenko wrote:
->>>> On 19/11/2024 03:18, Peter Zijlstra wrote:
->>>>> On Mon, Nov 18, 2024 at 10:52:42AM -0800, Vadim Fedorenko wrote:
->>>>>> @@ -2094,6 +2094,13 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
->>>>>>                             if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
->>>>>>                                     int err;
->>>>>> +                          if (imm32 == BPF_CALL_IMM(bpf_get_cpu_cycles)) {
->>>>>> +                                  if (cpu_feature_enabled(X86_FEATURE_LFENCE_RDTSC))
->>>>>> +                                          EMIT3(0x0F, 0xAE, 0xE8);
->>>>>> +                                  EMIT2(0x0F, 0x31);
->>>>>> +                                  break;
->>>>>> +                          }
->>>>>
->>>>> TSC != cycles. Naming is bad.
->>>>
->>>> Any suggestions?
->>>>
->>>> JIT for other architectures will come after this one is merged and some
->>>> of them will be using cycles, so not too far away form the truth..
->>>
->>> bpf_get_time_stamp() ?
->>> bpf_get_counter() ?
->>
->> Well, we have already been somewhere nearby these names [1].
->>
->> [1]
->> https://lore.kernel.org/bpf/CAEf4BzaBNNCYaf9a4oHsB2AzYyc6JCWXpHx6jk22Btv=UAgX4A@mail.gmail.com/
->>
->> bpf_get_time_stamp() doesn't really explain that the actual timestamp
->> will be provided by CPU hardware.
->> bpf_get_counter() is again too general, doesn't provide any information
->> about what type of counter will be returned. The more specific name,
->> bpf_get_cycles_counter(), was also discussed in v3 (accidentally, it
->> didn't reach mailing list). The quote of feedback from Andrii is:
->>
->>     Bikeshedding time, but let's be consistently slightly verbose, but
->>     readable. Give nwe have bpf_get_cpu_cycles_counter (which maybe we
->>     should shorten to "bpf_get_cpu_cycles()"), we should call this
->>     something like "bpf_cpu_cycles_to_ns()".
->>
->> It might make a bit more sense to name it bpf_get_cpu_counter(), but it
->> still looks too general.
->>
->> Honestly, I'm not a fan of renaming functions once again, I would let
->> Andrii to vote for naming.
+On Tue, Nov 19, 2024 at 04:34:48PM +0100, Valentin Schneider wrote:
+> call_dest_name() does not get passed the file pointer of validate_call(),
+> which means its invocation of insn_reloc() will always return NULL. Make it
+> take a file pointer.
 > 
-> Let's go with bpf_get_cpu_time_counter() and bpf_cpu_time_counter_to_ns().
+> While at it, make sure call_dest_name() uses arch_dest_reloc_offset(),
+> otherwise it gets the pv_ops[] offset wrong.
+> 
+> Fabricating an intentional warning shows the change; previously:
+> 
+>   vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: call to {dynamic}() leaves .noinstr.text section
+> 
+> now:
+> 
+>   vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: call to pv_ops[1]() leaves .noinstr.text section
+> 
+> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 
-Ok, sure. @Peter are you OK with these names?
+Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
+
+-- 
+Josh
 
