@@ -1,134 +1,147 @@
-Return-Path: <bpf+bounces-45182-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45183-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A974F9D26EC
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 14:31:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC1359D27F5
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 15:20:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FF9C1F24247
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 13:31:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03DF7B2881E
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 14:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F5F1BDCF;
-	Tue, 19 Nov 2024 13:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76DE51CCB23;
+	Tue, 19 Nov 2024 14:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tecnico.ulisboa.pt header.i=@tecnico.ulisboa.pt header.b="p70S1vxU"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2Z7QYPEo";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="j96Bsgkb"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp1.tecnico.ulisboa.pt (smtp1.tecnico.ulisboa.pt [193.136.128.21])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD07F4778E;
-	Tue, 19 Nov 2024 13:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.136.128.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7D331CC14A
+	for <bpf@vger.kernel.org>; Tue, 19 Nov 2024 14:15:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732023061; cv=none; b=LHlAIAwd6UfbmCqg1KuVfBdujSqGR8zNUX1Pf6JM+rX/yAiteL91/SYTLNhKLiEJNx/oDgpwjuUCuk76dQKKJfmiJU6efg0MEI7Rpgs4AlLTzWoWekFHsIVySHhzCL8Yv0BhUCOJ1wmCXEcMYe7KSJsKP6xPjS1mSDqAJKvsZ1c=
+	t=1732025731; cv=none; b=HA6R9CJV5IdB3084sPEpkVDjmQrLW2P9oZ0Otzg7J48Ozxl7vHJd+QofKedg9Cb6MZmTJ6GAHwkQLwjWRtIJ0wzld/A4a8FVnDMfXgvFZawYaO13y026Rp8lZyVheeBFoChfsa7P6Bo3Dzvc/PbEEKo1Sird3vLEMahZq+Uvqu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732023061; c=relaxed/simple;
-	bh=BAAE0j0xLXZnHfRXnAth5iMPF53rUMceNOeA+gjmmdY=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=c90yD5w5mOkZr7Lpgv2CtGOX8l9adiPaxcct/JeD43v3F1QPTIGOdTE6cLIj+jEXpJsNS1HZsTgmzTFc/xgXqEbXZSXzjA3icLac3kieYOxlFoFo2+vyvVqTCGO9dvNT+cJiJ4x3EaM9b9ByV1VhJcXVPwl3efXcKiXzJ42U3tE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tecnico.ulisboa.pt; spf=pass smtp.mailfrom=tecnico.ulisboa.pt; dkim=pass (1024-bit key) header.d=tecnico.ulisboa.pt header.i=@tecnico.ulisboa.pt header.b=p70S1vxU; arc=none smtp.client-ip=193.136.128.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tecnico.ulisboa.pt
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tecnico.ulisboa.pt
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by smtp1.tecnico.ulisboa.pt (Postfix) with ESMTP id 691E56002992;
-	Tue, 19 Nov 2024 13:30:50 +0000 (WET)
-X-Virus-Scanned: by amavis-2.13.0 (20230106) (Debian) at tecnico.ulisboa.pt
-Received: from smtp1.tecnico.ulisboa.pt ([127.0.0.1])
- by localhost (smtp1.tecnico.ulisboa.pt [127.0.0.1]) (amavis, port 10025)
- with LMTP id 9GtfmMDcXrM3; Tue, 19 Nov 2024 13:30:48 +0000 (WET)
-Received: from mail1.tecnico.ulisboa.pt (mail1.ist.utl.pt [193.136.128.10])
-	by smtp1.tecnico.ulisboa.pt (Postfix) with ESMTPS id 149F360029B8;
-	Tue, 19 Nov 2024 13:30:48 +0000 (WET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tecnico.ulisboa.pt;
-	s=mail; t=1732023048;
+	s=arc-20240116; t=1732025731; c=relaxed/simple;
+	bh=fgeng2/hLioU9Dll8rVvWGyGfeeZ9EL/GBoYglDhaB4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k8as5yjYi2pMI6yMpy+yG24Xo+yoSdJmoLGmJBjf6KciKS4aqaIVTZ0GVGSonnHGSEYtJG1j0/iGa8tLwFi2tclKtJVamgC7YqpkfVfl63fQo1PNeKAqLLwntZccYfKLUpZNvjc/KIULIWkUzh7RE5FR1Lw/wsfse2js0LDKy/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2Z7QYPEo; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=j96Bsgkb; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 19 Nov 2024 15:15:25 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1732025727;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=26B60l0+7TcUSct9vhG4haf+xf9B94pU4CLtrv8j1qM=;
-	b=p70S1vxUqazc4DCkAOnTsbStozfprOUGBj4DV8WecQLpDmLYIKx7GtTL7RElRchU3+pdK2
-	9us1JVwCU0Gi1iR0/GQ5gDraKJmovmdgIsKsGgIl0Kej7rvEn/6MSwJHyxchOua0s6w2Kd
-	8KKlRFaQy7bG0002NaAVcMaAQOYbS9k=
-Received: from webmail.tecnico.ulisboa.pt (webmail4.tecnico.ulisboa.pt [IPv6:2001:690:2100:1::8a3:363d])
-	(Authenticated sender: ist426067)
-	by mail1.tecnico.ulisboa.pt (Postfix) with ESMTPSA id B2DF3360154;
-	Tue, 19 Nov 2024 13:30:47 +0000 (WET)
-Received: from a95-93-247-17.cpe.netcabo.pt ([95.93.247.17])
- via vs1.ist.utl.pt ([2001:690:2100:1::33])
- by webmail.tecnico.ulisboa.pt
- with HTTP (HTTP/1.1 POST); Tue, 19 Nov 2024 13:30:47 +0000
+	bh=fgeng2/hLioU9Dll8rVvWGyGfeeZ9EL/GBoYglDhaB4=;
+	b=2Z7QYPEoUS6V+3vAsIrGFwWH5suiR0WOaYvpIBVtlEuaJmO74VAmITyLmcSCr7ukc/JeH5
+	hx64Q/eGqOUp6FLiBh5TUElF+7j8R5JOGF5kwG8ccPqKLmlD2TGI+CyFxTKd8NTH0Kh9qC
+	4ni4Ezzk/NWRRSexForEc3DEuwuPzySM+JicglHDDDQFTRPZ52zoF+ajNzx8bN8IktYUbL
+	T8S6jG8Y/A96dkYM7HCT3KWv9/Ket8WKJ+VLWryS2mcqknTw8WQLk+X6YZWcE7NVOY05J3
+	wCw2ekQJl7GbOE8K8fLDzhosw9CYRqxfjfyujVOpoWnL8GlbpVt0TMUGChtMrg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1732025727;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fgeng2/hLioU9Dll8rVvWGyGfeeZ9EL/GBoYglDhaB4=;
+	b=j96Bsgkbwvtua4QpnxdQu3Wst+9FQuDGel7CpuQZvHtjc60P6pBFf2OHWmA/xiGl1Oh7oM
+	2WTxpkOWyDhleKCg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	houtao1@huawei.com, xukuohai@huawei.com
+Subject: Re: [PATCH bpf-next 00/10] Fixes for LPM trie
+Message-ID: <20241119141525.M8SVAUF-@linutronix.de>
+References: <20241118010808.2243555-1-houtao@huaweicloud.com>
+ <20241118153901.izwoXYhc@linutronix.de>
+ <6919992c-179e-300e-9f5f-dc3a8a7bdaf3@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Tue, 19 Nov 2024 13:30:47 +0000
-From: =?UTF-8?Q?Sebasti=C3=A3o_Santos_Boavida_Amaro?=
- <sebastiao.amaro@tecnico.ulisboa.pt>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: bpf@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, Masami Hiramatsu
- <mhiramat@kernel.org>, linux-trace-kernel@vger.kernel.org
-Subject: Re: uprobe overhead when specifying a pid
-In-Reply-To: <ZzW-GWh7Iqp-AxGA@krava>
-References: <66ba4183c94d28f7020c118029d45650@tecnico.ulisboa.pt>
- <ZzW-GWh7Iqp-AxGA@krava>
-User-Agent: Roundcube Webmail
-Message-ID: <dfdb91b06c3987e22a5f252324b55a4d@tecnico.ulisboa.pt>
-X-Sender: sebastiao.amaro@tecnico.ulisboa.pt
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <6919992c-179e-300e-9f5f-dc3a8a7bdaf3@huaweicloud.com>
 
-I am using a normal SEC(uprobe) in the eBPF code. The workload is ycsb 
-(with 1 thread) running against a cluster of 3 Redis nodes, I filter the 
-uprobes for 3 pids (the Redis nodes).
-When I profiled the machine with perf, I could not see glaring 
-differences. Should I repeat this and send the .data here?
-Best Regards,
-Sebastião
+On 2024-11-19 09:35:51 [+0800], Hou Tao wrote:
+> Hi Sebastian,
+Hi Hou,
 
-A 2024-11-14 09:08, Jiri Olsa escreveu:
-> On Wed, Nov 13, 2024 at 11:33:01PM +0000, Sebastião Santos Boavida 
-> Amaro wrote:
->> Hi,
->> I am using:
->> libbpf-cargo = "0.24.6"
->> libbpf-rs = "0.24.6"
->> libbpf-sys = "1.4.3"
->> On kernel 6.8.0-47-generic.
->> I contacted the libbpf-rs guys, and they told me this belonged here.
->> I am attaching 252 uprobes to a system, these symbols are not 
->> regularly
->> called (90ish times over 9 minutes), however, when I specify a pid the
->> throughput drops 3 times from 12k ops/sec to 4k ops/sec. When I do not
->> specify a PID, and simply pass -1 the throughput remains the same (as 
->> it
->> should, since 90 times is not significant to affect overhead I would 
->> say).
->> It looks as if we are switching from userspace to kernel space without
->> triggering the uprobe.
->> Do not know if this is a known issue, it does not look like an 
->> intended
->> behavior.
-> 
-> hi,
-> thanks for the report, I cc-ed some other folks and trace list
-> 
-> I'm not aware about such slowdown, I think with pid filter in place
-> there should be less work to do
-> 
-> could you please provide more details?
->   - do you know which uprobe interface you are using
->     uprobe over perf event or uprobe_multi (likely uprobe_multi,
->     because you said above you attach 250 probes)
->   - more details on the workload, like is the threads/processes,
->     how many and I guess you trigger bpf program
->   - do you filter out single pid or more
->   - could you profile the workload with perf
-> 
-> thanks,
-> jirka
+> On 11/18/2024 11:39 PM, Sebastian Andrzej Siewior wrote:
+> > On 2024-11-18 09:07:58 [+0800], Hou Tao wrote:
+> >> From: Hou Tao <houtao1@huawei.com>
+> >>
+> >> Hi,
+> > Hi,
+> >
+> >> Please see individual patches for more details. Comments are always
+> >> welcome.
+> > This might be a coincidence but it seems I get
+> >
+> > | helper_fill_hashmap(282):FAIL:can't update hashmap err: Unknown error=
+ -12
+> > | test_maps: test_maps.c:1379: __run_parallel: Assertion `status =3D=3D=
+ 0' failed.
+> >
+> > more often with the series when I do ./test_maps. I never managed to
+> > pass the test with series while it passed on v6.12. I'm not blaming the
+> > series, just pointing this out it might be known=E2=80=A6
+>=20
+> Thanks for the information. 12 is ENOMEM, so the hash map failed to
+> allocate an element for it. There are multiple possible reasons for ENOME=
+M:
+>=20
+> 1) something is wrong for bpf mem allocator. E.g., it could not refill
+> the free list timely. It may be possible when running under RT, because
+> the irq work is threaded under RT.
+
+right. forgot to switch that one off. I had it for the initial test=E2=80=A6
+
+> 2) the series causes the shortage of memory (e.g., It uses a lot memory
+> then free these memory, but the reclaim of the memory is slow)
+
+> Could you please share the kernel config file and the VM setup, so I
+> could try to reproduce the problem ?
+
+I very much thing this is due to the RT switch. The irq-work and
+testcase run on different CPUs so=E2=80=A6
+
+> > In 08/10 you switch the locks to raw_spinlock_t. I was a little worried
+> > that a lot of elements will make the while() loop go for a long time. Is
+> > there a test for this? I run into "test_progs -a map_kptr" and noticed
+> > something else=E2=80=A6
+>=20
+> The concern is the possibility of hard-lockup, right ? The total time
+Not lockup but spending a "visible amount of time" for the lookup.
+
+> used for update or deletion is decided by the max_prefixlen. The typical
+> use case will use 32 or 128 as the max_prefixlen. The max value of
+> max_prefixlen is LPM_DATA_SIZE_MAX * 8 =3D 2048, I think the loop time
+> will be fine. Will try to construct some test cases for it.
+
+Okay, thank you.
+
+Sebastian
 
