@@ -1,127 +1,99 @@
-Return-Path: <bpf+bounces-45138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 707C79D1EE3
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 04:37:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03ABD9D1F06
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 05:00:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDBCBB218EF
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 03:37:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C574F282814
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 04:00:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E0B3149DE8;
-	Tue, 19 Nov 2024 03:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C81C14A609;
+	Tue, 19 Nov 2024 04:00:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UU+Nk87j"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k3emyD3o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ADD9146A72;
-	Tue, 19 Nov 2024 03:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8620ED2FA;
+	Tue, 19 Nov 2024 04:00:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731987444; cv=none; b=ee9qokTLxmGEzN78fJvEXm3qin1kqsv6H7qoRpz5m5/jhoH3/ikQUE6CtwGJfQ/TxF4O/tQ2wiwECe2YKWJObRrlvhb5sHigCvf4ADhOzSwy7oz9qBL7IqyoeDxBqMZk4KEOFxFM1EtC8rAklEH/LYu1m2GqoEzoNvLtg2OTdO8=
+	t=1731988820; cv=none; b=nRhikR7OUCCd15RJjMJo+aUDYOuocnaAEf2EXC2PrWAt1XozFN7o7yxUNixJhBfTpD7lVP0nSMYqZi9ry0huIdvWWUxff+nfljFfw96II5bH/BQ4u3rDvcehVazbUJoMOPGfXNF7ROI17w9O2ZoodVu8cjc1CuI14lYA6RzyeiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731987444; c=relaxed/simple;
-	bh=dCaQDrjjsMlbKMHjkTKCfmDN0bnh7bTyWM1/3ifufWk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=slkQuebX3RhBOjFx/mK0OYjBC6VhUjUle6URT95wDL7eM9LyCpl/tnq9pfxEFWHbpRhYskBOgWwkjGuXSUYzQm4UhtGdNZcvCX8qsqK6iV2MF+TQroF5WauTWhpSJOv4ihUkhYPlxDGxOi9+ogR9hydbx4o6UK/Z/mIJG8xgHtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UU+Nk87j; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-20cdb889222so35854635ad.3;
-        Mon, 18 Nov 2024 19:37:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731987442; x=1732592242; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=g2E2ZlpfPZCjUZubD0v6yvsYpnLBIbhUcb15gmeLAW8=;
-        b=UU+Nk87jOIoDUWWoaNEmXQjkm6ihSk2UAStUxQs/SfPwUdkRtX0D/9aSj0fBFdTYx1
-         SMm/6360hqsa6O59w51Fvxw4w3He2U7I0zOIpjKQATdcH7kuZ/ei2oYM4EVq92EvhEST
-         A/1jh3DzR2PLYFW0rt5GVYIca6+i4kD0iw7DrZ4HdRHyq1HzhBKyoMHlUD8Pfvll8z0F
-         l0G1J9TDAt+1+FhPLpZcYpsplGKTME1eU6XGuRH1jsrndcrr1cgpQ2kj7rBe1p8BV0CV
-         4sZiMo8qYd59OL2DDZgc4kSA97pnjsONl05QjmqCJXH8317Yc8TKaGga/IGgDCGnXU2z
-         IAZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731987442; x=1732592242;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g2E2ZlpfPZCjUZubD0v6yvsYpnLBIbhUcb15gmeLAW8=;
-        b=XZVqUuwQcAF2K2vH838/Wv8p2f/K5flOPrlkx0FI0Z2k44sfTDh2TE7GA7SnwlN+b7
-         Xcs97z1jxWXVuyq3b20IO4llxJ8kiIw6rvqkyKbGlj5g1fPgRrrz+gpIlUmqoKq6q/Qf
-         qSraN68Qg4zRa1GMHBp40jULQp4HQJbh0Fq+l9wsceY31r9OmJXIAOtkDSo8GaNYusD6
-         AM14qzxZxuMZI3scxzYpxbTYqc7ZcEQn5MrxgXm2gLJwPxkBUqmbepupJ71Bk4W8PSoT
-         W3sjsskndEEYOo6hLgS9MK0rukKekW/QXITQ/dXjs4UvyPxh+Xru3OG4wDkAOmUArnja
-         7MCw==
-X-Forwarded-Encrypted: i=1; AJvYcCUAeWFR/W9NX4jo6A3DP3NHX6XKNHjJpLAv8Em7zDs99PlO9xG51gkisPNMMJpB/B5a2wZMJOCyh1T6/e0Fp8jf@vger.kernel.org, AJvYcCVbVw1tQtbIEasAl+ZKLDXvHbKysalriK9TIGnq58sQTEht4FAUEOujTMl//yC16ODekObWSfCSRGp4ji8S@vger.kernel.org, AJvYcCW2y8jYGWpnHGlRp6vpt4ewAI0FGmJOV/Y7keaqwa4Z8eODzmGcMzsv3Qr84GSaqwjoZ08=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzR99GlFpORg+0qw1zayvcw9zwDuaeVo863olQJBnXhhNR5uzPA
-	UJ5PeGSi6ZRM0pkXK3oDR+ZmtVV5SD6U5xjL3/PlzhrrwD9evUDr
-X-Google-Smtp-Source: AGHT+IFjjMSAg8vXQGT6xt9qDee1RQiBoViFJfIqzIwsQD9MT3RmvB4st8SRTNmASPhdxDFOmy7QyA==
-X-Received: by 2002:a17:903:110c:b0:20b:9379:f1f7 with SMTP id d9443c01a7336-211d0ecb0a4mr221143125ad.40.1731987441660;
-        Mon, 18 Nov 2024 19:37:21 -0800 (PST)
-Received: from localhost ([2601:647:6881:9060:fd49:bc41:343a:fee5])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ea06ef69edsm9280679a91.1.2024.11.18.19.37.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Nov 2024 19:37:21 -0800 (PST)
-Date: Mon, 18 Nov 2024 19:37:19 -0800
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: guanjing <guanjing@cmss.chinamobile.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
-	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org, shuah@kernel.org, dxu@dxuuu.xyz,
-	antony.antony@secunet.com, cupertino.miranda@oracle.com,
-	asavkov@redhat.com, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] selftests/bpf: fix application of sizeof to pointer
-Message-ID: <ZzwH77QE/Ch9+evD@pop-os.localdomain>
-References: <20241117031838.161576-1-guanjing@cmss.chinamobile.com>
+	s=arc-20240116; t=1731988820; c=relaxed/simple;
+	bh=cYneMGn3oJqW5FRh6O69nf0Ew12DjHQoIA3RWXGZzmo=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=GO3/dBcddij9Xc191QkkDOutjeIfqrmq+ZdjYGdnTUTpeL4jqVmz9RrCE4xRV0pm2xEi064dcFBXmoLr4zkUniRQekAJC6qd+nHPnzo2n5DKbh17u/9C/QYmE5SOkHmfmD/3MgEwRAtN09o8rH5aDMznHqiOp4QairE4Tjqwtx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k3emyD3o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C150C4CED1;
+	Tue, 19 Nov 2024 04:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731988818;
+	bh=cYneMGn3oJqW5FRh6O69nf0Ew12DjHQoIA3RWXGZzmo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=k3emyD3onkzWrUPAavclZ64Y5ZJNaw9sS5HAOxoEA5MGrAax1HO5kquvJwTeiKj6L
+	 LC4WKFKD4Cs3FpDLfhN95SwLa9tcBhfCFo2nc0TKLJ3aUt6h1g/2X76mlTkchJjuHR
+	 8mPaHBHLI6OjKUpqxzNx9kZE1h8b9xG2NxzSbVaWDKpvXeoXzdZKVOrfGWNqNpsBmx
+	 2FyXFAjhM5qEtWJ7SzcDneP6jD2/qKp2jMwVuwr3mLyabwQzuwEO1Vrnxk8GAnpzZV
+	 4agD6hoR2u6yiPO47wWLR3p72eWlGdu93zNu+CBpIt1HegFc7cb1eX81YJf2ucIYMK
+	 zXxYs7+OffyRA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAE513809A80;
+	Tue, 19 Nov 2024 04:00:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241117031838.161576-1-guanjing@cmss.chinamobile.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v4 0/2] bpf: fix recursive lock and add test
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173198882976.97799.1627971734543862873.git-patchwork-notify@kernel.org>
+Date: Tue, 19 Nov 2024 04:00:29 +0000
+References: <20241118030910.36230-1-mrpre@163.com>
+In-Reply-To: <20241118030910.36230-1-mrpre@163.com>
+To: Jiayuan Chen <mrpre@163.com>
+Cc: martin.lau@linux.dev, edumazet@google.com, jakub@cloudflare.com,
+ davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ horms@kernel.org, daniel@iogearbox.net, mykolal@fb.com, ast@kernel.org,
+ kpsingh@kernel.org, jolsa@kernel.org, eddyz87@gmail.com, shuah@kernel.org,
+ sdf@fomichev.me, linux-kselftest@vger.kernel.org, haoluo@google.com,
+ song@kernel.org, john.fastabend@gmail.com, andrii@kernel.org, mhal@rbox.co,
+ yonghong.song@linux.dev
 
-On Sun, Nov 17, 2024 at 11:18:38AM +0800, guanjing wrote:
-> sizeof when applied to a pointer typed expression gives the size of
-> the pointer.
-> 
-> tools/testing/selftests/bpf/progs/test_tunnel_kern.c:678:41-47: ERROR: application of sizeof to pointer
-> 
-> The proper fix in this particular case is to code sizeof(*gopt)
-> instead of sizeof(gopt).
-> 
-> This issue was detected with the help of Coccinelle.
-> 
-> Fixes: 5ddafcc377f9 ("selftests/bpf: Fix a few tests for GCC related warnings.")
-> Signed-off-by: guanjing <guanjing@cmss.chinamobile.com>
-> ---
->  tools/testing/selftests/bpf/progs/test_tunnel_kern.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> index 32127f1cd687..3a437cdc5c15 100644
-> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> @@ -675,7 +675,7 @@ int ip6geneve_set_tunnel(struct __sk_buff *skb)
->  	gopt->length = 2; /* 4-byte multiple */
->  	*(int *) &gopt->opt_data = bpf_htonl(0xfeedbeef);
->  
-> -	ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(gopt));
-> +	ret = bpf_skb_set_tunnel_opt(skb, gopt, sizeof(*gopt));
+Hello:
 
-Good catch!
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-I think sizeof(local_gopt) is better, to align with geneve_set_tunnel(),
-what do you think?
+On Mon, 18 Nov 2024 11:09:08 +0800 you wrote:
+> 1. fix recursive lock when ebpf prog return SK_PASS.
+> 2. add selftest to reproduce recursive lock.
+> 
+> Note that the test code can reproduce the 'dead-lock' and if just
+> the selftest merged without first patch, the test case will
+> definitely fail, because the issue of deadlock is inevitable.
+> 
+> [...]
 
-Thanks.
+Here is the summary with links:
+  - [bpf,v4,1/2] bpf: fix recursive lock when verdict program return SK_PASS
+    https://git.kernel.org/netdev/net/c/8ca2a1eeadf0
+  - [bpf,v4,2/2] selftests/bpf: Add some tests with sockmap SK_PASS
+    https://git.kernel.org/netdev/net/c/0c4d5cb9a1c3
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
