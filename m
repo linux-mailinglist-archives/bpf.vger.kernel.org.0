@@ -1,83 +1,105 @@
-Return-Path: <bpf+bounces-45125-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45126-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D572B9D1AB2
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 22:40:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E87D9D1C1B
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 01:08:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A591283C16
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2024 21:40:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40A531F221F2
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 00:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6151E8836;
-	Mon, 18 Nov 2024 21:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9696C2CA6;
+	Tue, 19 Nov 2024 00:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="arPwm1sD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FafuMRs0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C09F1E7653;
-	Mon, 18 Nov 2024 21:39:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1348010F4;
+	Tue, 19 Nov 2024 00:08:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731965981; cv=none; b=jBsGmiclZ/zQmIT1MUOurYN56I1TWGycwWvXstNPTr4x/xEuDWZY0AbjwnPb65y3TU8E74/wo3qjxCAiQdvy5htf8r1SOFfMFQsJSQiJm6vTORaZ0VZBi5ZNT28KAEuoozsiFV0h/Vm/UymAtYDCPC/LXSqGNGKbDULox97tfvo=
+	t=1731974899; cv=none; b=pPAmjpwnoqhlKIvHolwP0+6KpIbmklwTKIqB4kzW+lUqAy5WdeoTF5RRFiB4DIqySZXLZ4P5P9flSbrhVxnwsGZzlH7s28MD5hPRbljgc9QgGdHItuInwsh4ahyAa2pBhJG34eP831opWdQb1hE8TliPyxjJoK0z7O5dDUvp0TQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731965981; c=relaxed/simple;
-	bh=VozJIrDceJq4zgppU8iRDiha9kXDC6EVUdlJkNnNnBg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oPpGvqw0/lp/Rf9qMqW10x0C1GpReqhH2IqekcCamaDaXxINW5uXkbvhBhYMhUNZ8umkV/OyDBYOc8Da9XJ5HwNnEPt0EmKuKBy+OMb+Ruy7RyuFAB//qsJDCXwbLUs+FT39fQjvAaaI+HRdXZ3Bfae4wUV4f1h8zUGhCdAP4PI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=arPwm1sD; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ba7c39cb-18ab-4c51-a4cb-89769ea09e6b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731965971;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NfkamGQY47DZR9G8xLHyPYfbW34L0/79y4mIancRHDQ=;
-	b=arPwm1sDNXI47rNpmsXiVNGRTa3+wVnwbKvsMavZG7g4bMP8cGjGQnTk+ixlpFpn6fMf+9
-	KQ2zGVdaJ3AQS9O4j5EDrpzfBKnqZh16YfwGW4Wc9DH6Zat3sBnCtnXE/YhMGS//TAzZdD
-	+vEDPgyltTw1AldiRoeUmVcow5N0D+g=
-Date: Mon, 18 Nov 2024 13:39:16 -0800
+	s=arc-20240116; t=1731974899; c=relaxed/simple;
+	bh=eUuSfbYWvh7whiSfUWQGab3NxAv06TDKoryEboI+zpc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Isp8HHs0sHEhKjw6tvvvAIkO8/+NKTrMCQdcbzuvVH6nzM7Nv95TBRqRxZTGBqYJLWXnnyyISqQDoYXy7WqiPlY4Kjo6elVe7bXIsj3LFy0980tYmovkkn8QBzf2VvsiofNDmC5AcBM2sUIIDoxub2UzEugANDSlzzfi7drrF9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FafuMRs0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12C6CC4CECC;
+	Tue, 19 Nov 2024 00:08:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731974896;
+	bh=eUuSfbYWvh7whiSfUWQGab3NxAv06TDKoryEboI+zpc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FafuMRs0Z0+BP96xR9RGJj/8bR+CXl8jcI89TI/UPz1omwfpAUbDq7b2ViMzUBIpL
+	 +3/zS2+0+TK9HN+FBxMOpqtjXdZQzh3JAGuVmNj2Nl8aWRP6EbwD4lOXAnhic1n4v+
+	 moB6woiF4AQ5q1t5t7cepIA+H8nWWBHcgwqXWWhy9ofw4RwNiHkjDeDHUuFTG3UMjM
+	 S8xc9aw0qDYZEkkF6oSGUvIErguYTjJh1+6OCxssP7wj8z3g2JJQw0913+WeL13Y2I
+	 SqQCRPWmGWNufzmk13/JB6PcRX4e8UXfzSCZxxk84p1vXF9YLxLEFiuN6canlAXzch
+	 Yoiq+kn3wSBtg==
+Date: Mon, 18 Nov 2024 16:08:14 -0800
+From: Namhyung Kim <namhyung@kernel.org>
+To: Hao Ge <hao.ge@linux.dev>
+Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+	kan.liang@linux.intel.com, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Hao Ge <gehao@kylinos.cn>
+Subject: Re: [PATCH v2] perf bpf-filter: Return -ENOMEM directly when pfi
+ allocation fails
+Message-ID: <ZzvW7qjkVYWMSNP5@google.com>
+References: <ZzOJOEpyAc92462-@x1>
+ <20241113030537.26732-1-hao.ge@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf v4 0/2] bpf: fix recursive lock and add test
-To: Jiayuan Chen <mrpre@163.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: edumazet@google.com, jakub@cloudflare.com, davem@davemloft.net,
- dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- horms@kernel.org, daniel@iogearbox.net, mykolal@fb.com, ast@kernel.org,
- kpsingh@kernel.org, jolsa@kernel.org, eddyz87@gmail.com, shuah@kernel.org,
- sdf@fomichev.me, linux-kselftest@vger.kernel.org, haoluo@google.com,
- song@kernel.org, john.fastabend@gmail.com, andrii@kernel.org, mhal@rbox.co,
- yonghong.song@linux.dev
-References: <20241118030910.36230-1-mrpre@163.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20241118030910.36230-1-mrpre@163.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241113030537.26732-1-hao.ge@linux.dev>
 
-On 11/17/24 7:09 PM, Jiayuan Chen wrote:
-> 1. fix recursive lock when ebpf prog return SK_PASS.
-> 2. add selftest to reproduce recursive lock.
+On Wed, Nov 13, 2024 at 11:05:37AM +0800, Hao Ge wrote:
+> From: Hao Ge <gehao@kylinos.cn>
 > 
-> Note that the test code can reproduce the 'dead-lock' and if just
-> the selftest merged without first patch, the test case will
-> definitely fail, because the issue of deadlock is inevitable.
+> Directly return -ENOMEM when pfi allocation fails,
+> instead of performing other operations on pfi.
+> 
+> Fixes: 0fe2b18ddc40 ("perf bpf-filter: Support multiple events properly")
+> Signed-off-by: Hao Ge <gehao@kylinos.cn>
 
-Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Jakub, please help to land it to the net tree. Thanks!
+Thanks,
+Namhyung
 
+> ---
+> v2: Replace -1 with -ENOMEM as per Arnaldo's reminder.
+>     Update title and commit message due to code change
+> ---
+>  tools/perf/util/bpf-filter.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
+> index e87b6789eb9e..a4fdf6911ec1 100644
+> --- a/tools/perf/util/bpf-filter.c
+> +++ b/tools/perf/util/bpf-filter.c
+> @@ -375,7 +375,7 @@ static int create_idx_hash(struct evsel *evsel, struct perf_bpf_filter_entry *en
+>  	pfi = zalloc(sizeof(*pfi));
+>  	if (pfi == NULL) {
+>  		pr_err("Cannot save pinned filter index\n");
+> -		goto err;
+> +		return -ENOMEM;
+>  	}
+>  
+>  	pfi->evsel = evsel;
+> -- 
+> 2.25.1
+> 
 
