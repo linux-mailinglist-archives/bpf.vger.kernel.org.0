@@ -1,98 +1,148 @@
-Return-Path: <bpf+bounces-45153-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45154-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B788C9D2240
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 10:14:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6004C9D2255
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 10:17:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7567B2829AC
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 09:14:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2251B23AE0
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2024 09:17:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7911B0F0C;
-	Tue, 19 Nov 2024 09:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028D71B0F0C;
+	Tue, 19 Nov 2024 09:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NsNqJwFy"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tDDYHoth"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445C312CDAE;
-	Tue, 19 Nov 2024 09:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1123B1547EE
+	for <bpf@vger.kernel.org>; Tue, 19 Nov 2024 09:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732007638; cv=none; b=pb7OzwRN6ssv5GnN1/JSqVDivmKhKJ/gIF0baDkHXA/9DLYhdJMPt4ox3ShcKULEIA0SbsPWmYLuLvtP7ETyxn75yYIPUxPcQTeUUhNFwjOWnTa28trW9gOJnki9MIjB9nYMNJpprk5DwPxA0Zd/v8rQzIjR41xCLJAnqUnEQcQ=
+	t=1732007833; cv=none; b=IAShgpQV7SjOD4U2TG/vQt7lDHiuoNZLO0oM36UBumBXcB/86KvwsGcjVT4ughWY/R15d6Cc3P823455qujnK5C1mF84365zo8xFQVL7e/pEo6AUCyjrM4xFYgJN+KF3c3J6Y+VsiUZQHNfZ2Ec4IAgFjJU/cFWexvsFZVogYZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732007638; c=relaxed/simple;
-	bh=ecTbzJ5AaNWfrV0C1O4VXMVfV5Sfpj63ONG+7CIujDg=;
+	s=arc-20240116; t=1732007833; c=relaxed/simple;
+	bh=g810kb0XgvzxYZQtrMTm+l/lpKzxxUTGIDTHgLMIkq4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GOjhantewPZ0hRGL4YC1f7Fspzw/Yfh9vjmpSv0KvvAzpEbMQyc5jnfvIQ49tPoAMx7C6DbRr90J8xwBUaZ5vmSA0ABQhBhJ1CQdgzXKeaBIRQm3c2mjsRjRzKnHBUqbK/XjZExY/vjAmqUQ78QJ5JqZqTot9g6jHsED/YzUYQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NsNqJwFy; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=fl+NTXtpNg4Pp8q2Lsf9iJ/z+achogFWtubvIsHu1dI=; b=NsNqJwFyPpwrWTn1KZS0+oK0VW
-	HQXe0hRFdDH5zdmbQMoDS4arEhib00WDZY0CSkDBwYZh5Y4S1h3frPNXG58jLDaUsBX/jEN/XUb2M
-	aiVi2NF5h5yDj8Zk/JHTOTWS7QxlDVuJSJKt1D1GpdldlMfhKsE7cY0B9DL2dzcI487dlCcIGR4wV
-	JeEbOBX/9FizfuuAE28MoQy919qfM2wYtz9ppQyKLJjKRbKBC4V1/XCYzZLvZo2WY03hexfnA3V1G
-	s2sJgs8CtRmbcD2ZX9UTi0qTamojZfaOVrp0YD6rscnWRsVnUfAnCazeXE2vZ5NTtvMUYCuBbHW4L
-	LOF24LWA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tDKIw-00000000KUn-0y7U;
-	Tue, 19 Nov 2024 09:13:50 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 16C3A3006AB; Tue, 19 Nov 2024 10:13:49 +0100 (CET)
-Date: Tue, 19 Nov 2024 10:13:48 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC perf/core 05/11] uprobes: Add mapping for optimized uprobe
- trampolines
-Message-ID: <20241119091348.GE11903@noisy.programming.kicks-ass.net>
-References: <20241105133405.2703607-1-jolsa@kernel.org>
- <20241105133405.2703607-6-jolsa@kernel.org>
- <20241105142327.GF10375@noisy.programming.kicks-ass.net>
- <ZypI3n-2wbS3_w5p@krava>
- <CAEf4BzZ4XgSOHz0T5nXPyd+keo=rQvH5jc0Jghw1db0a7qR9GQ@mail.gmail.com>
- <ZzkSKQSrbffwOFvd@krava>
- <CAEf4BzbSrtJWUZUcq-RouwwRxK1GOAwO++aSgjbyQf26cQMfow@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TmgdQanX2cRZn1d4dexr+OPfkB5+kiRHPqXVRSKE/RxVWwENb3YsqHknP4GIbCdgGanjjaggiuzAp8dcZU347/Pum3Wi87vrzWFo6WqEFUxfP2gibwG+lAjn5YuC/AHUM7fH9CGd4argXrgXBrHHAcWf5sahJxqn/zPr6uyUOWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tDDYHoth; arc=none smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5ebc1af9137so322527eaf.2
+        for <bpf@vger.kernel.org>; Tue, 19 Nov 2024 01:17:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1732007831; x=1732612631; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mh9tKfQZDVb7Srbzricoyx+VzVp7BjyJVZmRNXjCsTY=;
+        b=tDDYHothy5Z8/MjQH9Uv+r7JVAFrKy+UcW1UzNJVH4LkuEjXwkswPEAwOqq0J4mGPr
+         xv8z1M4e+t/f1wEgLeW1FxNwrKFv/umbGPvkjvEm6DBD2mTUldApLSaUFuSUXN4kuAWH
+         Gw+kAnHWHhYd86+MVJGfFRjDxsavf8pMq1cO8Q2pwS2OdtBcRdEyWsNK025zOzDAIfG0
+         vjIyiZEXpv/youE5cTlbAKkyU7yEiYbDkCsHVd0nPMpSamHdjR6chHHicy+BM4wl5mWo
+         ZfpLIf4+2ahMBg+6iFmPOZItFS399UAoXqUxvd8JZzzHigus22NAWo7TRRXZlxF3BU3Y
+         EN0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732007831; x=1732612631;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mh9tKfQZDVb7Srbzricoyx+VzVp7BjyJVZmRNXjCsTY=;
+        b=GioiPJCFV/Rwne4Q8p/FfOpgWJq05TIlmlYJLsDv4J+NsdW9vcUE+pvhMtM13rJpJb
+         qBH+XkA+3MGRPX5WyjcaoJMD1Mow7DuEKPAJpTEIQzCZOi7BdtPEp6+W3vIsKJR81OHR
+         /rSoBkt6ZyEpWkkRocEXVVIlzwpUQTXLuVzccT6ytKgM6rucbbFxr6YnSfKygd0uHSSI
+         vKtmDek9D9QJ+gibWmhtBUb2PmR88JdroKFkJ3ru/A++DXyGtIFGZJn7zhZsHM38SYDM
+         ZOjFChUQ8ZfOGNc/y+rjxqjs/knyZAlRvqybRFGYAQOLTVjcui7V4hdB1GwfbWmvh3Az
+         eYOg==
+X-Forwarded-Encrypted: i=1; AJvYcCWZ4JaX0QNvvuDNnp9QVTdgIbr3tKcdeIRvB35yEw7+SXxbArNX0Sghv6yPW5epGC3orsw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+dyAOvbI5KBKi24WKEJreQ3vLr9Fvnt2wPiEg02qs26AbYO4l
+	oUwzYNYMLXNp4puysDK44q3VW5+67icMS+CgAKO/7ZrOmQPZCgkkMz5QWVUdZQ==
+X-Google-Smtp-Source: AGHT+IF6oNS7zAaqiMj3qBtazoexGSI49TeW8s00tlEKm6P+2kEMfwF3rimz60UqsKAumxJWheQLUg==
+X-Received: by 2002:a05:6830:2a8f:b0:718:a3e:29b7 with SMTP id 46e09a7af769-71a779213bamr15070132a34.7.1732007830619;
+        Tue, 19 Nov 2024 01:17:10 -0800 (PST)
+Received: from thinkpad ([117.213.96.14])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7f8c1dade0esm7241941a12.66.2024.11.19.01.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Nov 2024 01:17:10 -0800 (PST)
+Date: Tue, 19 Nov 2024 14:46:59 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
+	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
+	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
+	robin.murphy@arm.com, will@kernel.org
+Subject: Re: [PATCH v5 2/2] PCI: imx6: Add IOMMU and ITS MSI support for
+ i.MX95
+Message-ID: <20241119091659.rmdufvdi6jkynvfe@thinkpad>
+References: <20241104-imx95_lut-v5-0-feb972f3f13b@nxp.com>
+ <20241104-imx95_lut-v5-2-feb972f3f13b@nxp.com>
+ <20241113174841.olnyu5l6rbmr3tqh@thinkpad>
+ <ZzTrdUX0NUsHQLvd@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbSrtJWUZUcq-RouwwRxK1GOAwO++aSgjbyQf26cQMfow@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZzTrdUX0NUsHQLvd@lizhi-Precision-Tower-5810>
 
-On Mon, Nov 18, 2024 at 10:06:51PM -0800, Andrii Nakryiko wrote:
+On Wed, Nov 13, 2024 at 01:09:57PM -0500, Frank Li wrote:
 
-> > > Jiri, we could also have an option to support 64-bit call, right? We'd
-> > > need nop9 for that, but it's an option as well to future-proofing this
-> > > approach, no?
+[...]
+
+> > > +	for (i = 0; i < IMX95_MAX_LUT; i++) {
+> > > +		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, IMX95_PEO_LUT_RWA | i);
+> > > +		regmap_read(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA1, &data1);
+> > > +
+> > > +		if (!(data1 & IMX95_PE0_LUT_VLD)) {
+> > > +			if (free < 0)
+> > > +				free = i;
 > >
-> > hm, I don't think there's call with relative 64bit offset
+> > So you don't increment 'free' once it becomes >=0? Why can't you use the loop
+> > iterator 'i' itself instead of 'free'?
 > 
-> why do you need a relative, when you have 64 bits? ;) there is a call
-> to absolute address, no?
+> It is used to find first free slot. This loop check if there are duplicated
+> entry. If no duplicated rid entry, then use first free slot.
+> 
 
-No, there is not :/ You get to use an indirect call, which means
-multiple instructions and all the speculation joy.
+Ah, so you have combined both in one loop. A comment on top would've been
+helpful to understand the logic.
 
-IFF USDT thingies have AX clobbered (I couldn't find in a hurry) then
-patching the multi instruction thing is relatively straight forward, if
-they don't, its going to be a pain.
+[...]
+
+> > > +	if (!err_i)
+> > > +		return imx_pcie_add_lut(imx_pcie, rid, sid_i);
+> > > +	else if (!err_m)
+> > > +		/* Hardware auto add 2 bit controller id ahead of stream ID */
+> >
+> > What is this comment for? I don't find it relevant here.
+> 
+> The comment for why need mask 2bits before config lut. for example, dts
+> set stream id is 0xC4, but lut only need 0x4.
+> 
+
+Ok. It was not super clear. Could you please reword it as below?
+
+"LUT only needs the lower 6 bits of the SID as it will prepend the 2 bit
+controller ID by default."
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
