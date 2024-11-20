@@ -1,119 +1,149 @@
-Return-Path: <bpf+bounces-45285-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45286-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A33D39D4030
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 17:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EC369D40CC
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 18:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0979B3C94D
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 16:05:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C86D5B2B7A5
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 16:07:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACCB414F132;
-	Wed, 20 Nov 2024 16:03:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5AE7145B10;
+	Wed, 20 Nov 2024 16:07:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aBRUWNLH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hDlgQbp3"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7B413B58A;
-	Wed, 20 Nov 2024 16:03:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB37044C77;
+	Wed, 20 Nov 2024 16:07:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732118605; cv=none; b=ARlfOLutSs6zUMqnattwFzuSR49fEUpHiAOTio0YbvIL1lXGhFQuWBBjekPv75SfL/Reoitjowr7NgVM4ign6bfg2iPjmFqiDA7kY4QkQVUps7Jyr6ohLxtFSbEADntyI1hdXdGkZ/cPidZG5RxmUqCOFDRNyUXTEcEOgKEo3ig=
+	t=1732118865; cv=none; b=lwse4KNaVYg2uBcjy91MjE8ApH2Lk/Zdx6enCvxQCK3SkGRLMqcYf6F202Adw+tyHfln2I0tKFmJgp/UwFX6n9o3sWl6/0pFONyu0fcG1KIKutucdQpwXBiLUMahgUpwRK8r+xSQQZp3s/CI+tdh+VMGWOkLVtxpIE6snjKV1Bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732118605; c=relaxed/simple;
-	bh=l9At4QAU1UWOdiHd0AM/zaIAhJIXZNKutllsFxhd04c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ovfen8eFRUGC4ijEPOY/ufR7D838CcGe2ZXMv21Q+N7izwqpoTVahfTAuX6Tary8DltZmxA3kn3zJVJNTXIsafZoUF4u+FKQW50uoPxj11p3U+JzeX0Irkdb68IBTwLmkdTFdcXpAxgXaV6QeOpXN7jKg8ST8vhCKsZ8YsNpp7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aBRUWNLH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA3DCC4CECD;
-	Wed, 20 Nov 2024 16:03:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732118604;
-	bh=l9At4QAU1UWOdiHd0AM/zaIAhJIXZNKutllsFxhd04c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aBRUWNLHRfZeQXMu7YAN3oI6Uslc8DdiOozdXsGOLr5vSQVyQBykU8uvU1q668mLY
-	 TMtblbKYRnL24mIoJatHJ2AZiGKghQBFG/eTgfk4sIjgVRqe8TfyJ/xk2vwnX1WnHA
-	 wLA6aGH16h/F9Bis7foCon/OkCF9RPqyCsY9TCjStwVdBSUbWembvOCPmjIF4GOvVj
-	 tvbF11Dc4XbXwkRf0KNuvjtSsjT634wGzdQ1R5MtHwraGXLVV/LWT0FSyqQ25APhJs
-	 coRzeI/IFJZzzvtDkp8ZglyDCN+ym0jqz5AWZqyiCK8smJvW+qPsrJTsUl1y8VlJI2
-	 +dPiw54jhcWWQ==
-Date: Wed, 20 Nov 2024 17:03:13 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org,
-	akpm@linux-foundation.org, oleg@redhat.com, rostedt@goodmis.org,
-	mhiramat@kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org,
-	willy@infradead.org, surenb@google.com, mjguzik@gmail.com,
-	brauner@kernel.org, jannh@google.com, mhocko@kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>, vbabka@suse.cz,
-	shakeel.butt@linux.dev, hannes@cmpxchg.org, Liam.Howlett@oracle.com,
-	lorenzo.stoakes@oracle.com, david@redhat.com, arnd@arndb.de,
-	richard.weiyang@gmail.com, zhangpeng.00@bytedance.com,
-	linmiaohe@huawei.com, viro@zeniv.linux.org.uk, hca@linux.ibm.com,
-	Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Kernel Team <kernel-team@meta.com>
-Subject: Re: [PATCH v4 tip/perf/core 0/4] uprobes,mm: speculative lockless
- VMA-to-uprobe lookup
-Message-ID: <Zz4IQaF9CCfjS28S@gmail.com>
-References: <20241028010818.2487581-1-andrii@kernel.org>
- <CAEf4BzYPajbgyvcvm7z1EiPgkee1D1r=a8gaqxzd7k13gh9Uzw@mail.gmail.com>
- <CAEf4Bza=pwrZvd+3dz-a7eiAQMk9rwBDO1Kk_iwXSCM70CAARw@mail.gmail.com>
- <CAEf4BzbiZT5mZrQp3EDY688PzAnLV5DrqGQdx6Pzo6oGZ2KCXQ@mail.gmail.com>
- <20241120154323.GA24774@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1732118865; c=relaxed/simple;
+	bh=aO9TKFKPXbpzZpQOYdLRcgOnIQRaSyBu7w9NImnsmsE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=I3Z9q/xJhIlOwDrxOJ3lK97USTlmjNyOcCae6JmTXv1tlg+kyzJDE6o2/2W04K+rfgosw6rEn3S3c0n89vlNdPVtLRRnCTLdjM5phRIvsrZNKkqbuD1Xa1Dpo3mQ18BFBvik1WYv8VCiqfZtn+FfLyyD0M9SV1WsNR+4y+Up3w0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hDlgQbp3; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3823f1ed492so614977f8f.1;
+        Wed, 20 Nov 2024 08:07:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732118862; x=1732723662; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aO9TKFKPXbpzZpQOYdLRcgOnIQRaSyBu7w9NImnsmsE=;
+        b=hDlgQbp3Q4LHFX2aooP4FsOpdySNws7Q80jZ8Qfez0OIcdHfMxQVNQpB9v1uaU2v/6
+         hduzVDX4ke1t8PCftPhHq1/VOtm+icmzcF0Va3UEMw4SDYO3fTV7SQiuArXKxE9sH+zt
+         HFX5KaNEtEVOgNSfQ86UODh47uXe2U8i8aTdIw5QZLXLcRiSQvsU4uXt681fWa5zVXmj
+         6gyCXEzOALVircbcZqE7t1I4ZlThzOxM/YuA5IxQEm1xgSuz5DyaP3fwBBnMtXMev3Xd
+         X46RZSU09TPiyGK9I4AMMdzq669MX5OZFzMIY7NPQxYRSc+mKWse9KJLDNPy4rrICGS2
+         Ow7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732118862; x=1732723662;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aO9TKFKPXbpzZpQOYdLRcgOnIQRaSyBu7w9NImnsmsE=;
+        b=xGN8gG6e92aEV3kwudiiJFKn7apBJ9VzrqjeOZkVZpa9SuBmYfXkY/OgZX0P9xcp5e
+         GAeU2/06xLq+z2Ytb7YI2mAPPl449Jiyqixbxz9UxYxhCxZlpt5Oe6Ks5PuIWPMi0ew1
+         yhCLG2/r3t58RCbFrBDbWxP0YKpJ4R4KKXQejXn2hjXggaCEq/xzuPs1czVKJnoHrkTc
+         w6Nhg23jxv1Vf7x1yfHf/099wkhgv2QlY9q2qE2pMcUsOD7h51vs8y14x0Fot/q8lhwn
+         urdo3f9A4QaW4iRXtUDQIHosAyoplWtURkzRXiqATyqIMseYJeJJa/N3vTtlmiigLltT
+         z00w==
+X-Forwarded-Encrypted: i=1; AJvYcCVJIOo91gmJzYGO7/7oNOtoQiY0xUz+GQoJc5r1/Q5hQ60THThpElP135v6+UvJfy+0ai30WuUAem9OhKs=@vger.kernel.org, AJvYcCXChBfuYSlofYIvEjSdeNAacldQ3eGOKq5hvZuj/a2df6I9zR6c+uIZN6IHRg2C0CxOXfuZ63eU@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJM0/hanWgjpeWCKE/urlQUqSHC1zVbXlTcgAVVMomxgKDGqGc
+	TgC16E8ayGBu4QnBjfXDwFagziArMQSdOTtpQenqPivo8VH4TmIqb+iar3qIfl/Weq7PoamlCeN
+	SSoE8G9M8Zr8QZoKefwo1x0wuIRSL1w==
+X-Google-Smtp-Source: AGHT+IER19cs4sf33fj71/KdeC2bmUz2qJiOH/3CwjU2YUbA7W8Lei2R7xOzyjFNQyjpAY+9DrOmVMYouOIU50rMkJ4=
+X-Received: by 2002:a5d:5f48:0:b0:382:498a:9cc4 with SMTP id
+ ffacd0b85a97d-382544c19f7mr2706793f8f.9.1732118861694; Wed, 20 Nov 2024
+ 08:07:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241120154323.GA24774@noisy.programming.kicks-ass.net>
+References: <cover.1692748902.git.dxu@dxuuu.xyz> <eb20fd2c-0fb7-48f7-9fd0-4d654363f4da@app.fastmail.com>
+ <CAADnVQ+T2nSCA8Tcddh8eD27CnvD1E3vPK0zutDt8Boz7MURQA@mail.gmail.com> <7ec1a922-30c5-4899-a23f-11e3ef9d6fef@app.fastmail.com>
+In-Reply-To: <7ec1a922-30c5-4899-a23f-11e3ef9d6fef@app.fastmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 20 Nov 2024 08:07:29 -0800
+Message-ID: <CAADnVQJ5NnDqx_TMbwHOPySUaJRE-N5K7L_whDsfeyMRBNOFkA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/2] Improve prog array uref semantics
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Nov 20, 2024 at 7:55=E2=80=AFAM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+>
+>
+> On Sat, Nov 16, 2024, at 2:17 PM, Alexei Starovoitov wrote:
+> > On Tue, Oct 29, 2024 at 11:36=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrot=
+e:
+> >>
+> >> Hey Daniel,
+> >>
+> >> On Wed, Aug 23, 2023, at 9:08 AM, Daniel Xu wrote:
+> >> > This patchset changes the behavior of TC and XDP hooks during attach=
+ment
+> >> > such that any BPF_MAP_TYPE_PROG_ARRAY that the prog uses has an extr=
+a
+> >> > uref taken.
+> >> >
+> >> > The goal behind this change is to try and prevent confusion for the
+> >> > majority of use cases. The current behavior where when the last uref=
+ is
+> >> > dropped the prog array map is emptied is quite confusing. Confusing
+> >> > enough for there to be multiple references to it in ebpf-go [0][1].
+> >> >
+> >> > Completely solving the problem is difficult. As stated in c9da161c65=
+17
+> >> > ("bpf: fix clearing on persistent program array maps"), it is
+> >> > difficult-to-impossible to walk the full dependency graph b/c it is =
+too
+> >> > dynamic.
+> >> >
+> >> > However in practice, I've found that all progs in a tailcall chain
+> >> > share the same prog array map. Knowing that, if we take a uref on an=
+y
+> >> > used prog array map when the program is attached, we can simplify th=
+e
+> >> > majority use case and make it more ergonomic.
+> >
+> > Are you proposing to inc map uref when prog is attached?
+> >
+> > But that re-adds the circular dependency that uref concept is solving.
+> > When prog is inserted into prog array prog refcnt is incremented.
+> > So if prog also incremented uref. The user space can exit
+> > but prog array and progs will stay there though nothing is using them.
+> > I guess I'm missing the idea.
+>
+> IIRC the old-style tc/xdp attachment is the one incrementing the uref.
 
-* Peter Zijlstra <peterz@infradead.org> wrote:
+uref is incremented when FD is given to user space and
+file->release() callback decrements uref.
 
-> On Wed, Nov 20, 2024 at 07:40:15AM -0800, Andrii Nakryiko wrote:
-> > Linus,
-> > 
-> > I'm not sure what's going on here, this patch set seems to be in some
-> > sort of "ignore list" on Peter's side with no indication on its
-> > destiny.
-> 
-> *sigh* it is not, but my inbox is like drinking from a firehose :/
+I don't think any of the attach operations mess with uref.
+At least they shouldn't.
 
-And I've been considering that particular series WIP for two reasons:
-
- 1) Oleg was still unconvinced about patch 5/5 in the v2 discussion. 
-    Upon re-reading it I think he might have come around and has agreed 
-    to the current approach - but sending a v3 & not seeing Oleg object 
-    would ascertain that.
-
- 2) There was a build failure reported against -v2 at:
-
-       https://lore.kernel.org/all/202410050745.2Nuvusy4-lkp@intel.com/t.mbox.gz
-
-    We cannot and will not merge patches with build failures.
-
-Andrii did get some other uprobes scalability work merged in v6.13:
-
-    - Switch to RCU Tasks Trace flavor for better performance (Andrii Nakryiko)
-
-    - Massively increase uretprobe SMP scalability by SRCU-protecting
-      the uretprobe lifetime (Andrii Nakryiko)
-
-So we've certainly not been ignoring his patches, to the contrary ...
-
-Thanks,
-
-	Ingo
+> Once
+> whatever program there is detached the uref is dropped. So I don't think
+> any circular refs can happen unless a prog can somehow prevent its own
+> detachment.
+>
+> Could be mis-remembering though.
+>
+> Thanks,
+> Daniel
 
