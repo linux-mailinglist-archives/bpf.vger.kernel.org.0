@@ -1,180 +1,159 @@
-Return-Path: <bpf+bounces-45257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45258-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85DD89D38CD
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 11:55:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D89549D38D0
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 11:55:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F710B27C36
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 10:55:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DA97284303
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 10:55:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA4E619F406;
-	Wed, 20 Nov 2024 10:54:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17CCC19E7E2;
+	Wed, 20 Nov 2024 10:55:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oerig4Qz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AkBfVSFb"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3E919C56C;
-	Wed, 20 Nov 2024 10:54:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1330A19C551;
+	Wed, 20 Nov 2024 10:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732100080; cv=none; b=TOHMF9oMcxIhIi7cVwUQ3xhZEqff+uvCAuA7OdLXnyZt/rDGB51S6NoFNDR9z2w4Gd0o2T8fINL0M41blsxhKihZC1vZ/We8w4F47KctN1qKHPNL+tkYvJcUUQYkDt8CXwBR5iKiSXigcb/lSyV+Anqi9reoTT5AqT3odlJse/0=
+	t=1732100129; cv=none; b=bWdxkTdXtFYhx1LQuOxal8juW2/nHT14XH+0T4g3P/B+kveY3qgdfZJN/cQw8gpSIWX3rZLdBWMnGzCJuZsI2IYlAz2hj0kVSdVRB24IMXKKdQwSNQgBKmRQAkjdQxutx1tLZg01TMjqBbKaL1zip8tTS0vWBlfyQbqNVPxDWfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732100080; c=relaxed/simple;
-	bh=v56PH/TC6VfhJinSkV1dT70LzT5v+DrJrRasoRvKhFI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PVThZ6bq7YTY2BZvws/Er7PoUtNQt2VZVza7r8OHnAsaJxTykK721ELvfUNCiOJ+4+jNzBkKTFv8gmr8jxgv7Szjq/vwOc/MPX5CYqBzY6DvRj/H3ximyySznzJzcgf/YdWTMtZeLyvoJQWTZSi/WGOmZmiR9oCQPkHm+vgSqeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oerig4Qz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 544F2C4CECD;
-	Wed, 20 Nov 2024 10:54:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732100078;
-	bh=v56PH/TC6VfhJinSkV1dT70LzT5v+DrJrRasoRvKhFI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oerig4QzLHxMLkwFcONbh+QH7JccDk0DYE3OO/JNvQbbuExvz1IHXFtkNKc6ws900
-	 Ph+vlJcQywEm83n2EWh8eOD3E6AZfrjvVpMWMXWX3fTt+R3wkNOnwGEEtf5zQCC2uo
-	 zm2de2K9vuAY5MO1/HoqnapioBJ0nJglbW9z3CJkqGC66wmic0Hh3Y8wS9bq3PAygE
-	 DQRp/srrPst1RiqG1ma/fqzGFR4rh5hRjKE6OJ7Hk2bXvOPwq0Ufil5r28O7veX/F6
-	 Ad1KjhFA/txIArs9lwbKNUhi2TBYUTNnd4c9ugCn654jg7d9lyoYTrVJbr+9dD32Ud
-	 iibD+W02/qyJg==
-Date: Wed, 20 Nov 2024 11:54:36 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
-	x86@kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Juerg Haefliger <juerg.haefliger@canonical.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
-	Chuang Wang <nashuiliang@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Petr Mladek <pmladek@suse.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-	Julian Pidancet <julian.pidancet@oracle.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>,
-	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
-Subject: Re: [RFC PATCH v3 11/15] context-tracking: Introduce work deferral
- infrastructure
-Message-ID: <Zz2_7MbxvfjKsz08@pavilion.home>
-References: <20241119153502.41361-1-vschneid@redhat.com>
- <20241119153502.41361-12-vschneid@redhat.com>
+	s=arc-20240116; t=1732100129; c=relaxed/simple;
+	bh=5fAO1WmNHsbkwm5ApUCHwwKfxltnVmGaCcB8bsehc/M=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D94q1fqeVRxy/wva+uylywGLMabmsQWC3CTDYxjSLn0BcgpbIYGm2kkw6fbTnB6t5lkCkX5w85+RR/Djb5G8MMDdToLrFD6KxpqRfwwPmGS0ghTuTIup+HcBgKLmRqxP6MdARaMUq4UC+SbyoGaso50hugxKdh+2QQAfWU3GHyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AkBfVSFb; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aa1e51ce601so774024666b.3;
+        Wed, 20 Nov 2024 02:55:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732100126; x=1732704926; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bZ832vKXSaqdK6+2qvAMZI0ii8aOixUcx8WfJ8JlLv0=;
+        b=AkBfVSFbVbPbNvC5nSEwUdZ6NXpyeUfnDneaA3TZ3GpJJdtfTDJlNq09fZ+o5DbHPC
+         MPQBdSb/zYEtJNIRON8gek1WGsaQfyA/h1bD+oYSVfDbPo5FPSFr4fb7KAfenTriFPXQ
+         1tzX9/htduYBrjx4gC57mRfQLvPiEQ5CcDRvJsy1EJ4zE33nQmdcRGt/mlJsOGu7Wye5
+         nUJwkPllODp8N5ZufbFWB+Uz5MiqxI8sJUiT33fb/B3l8OW376QitTSSsYH13mUOVIc4
+         Q4kxBb943uYhMgeLaGVj8fp08Nnz56EdLN+i596cUfFU/R+xC6ehAJKZ+yX/Jv4CeFzY
+         fqTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732100126; x=1732704926;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bZ832vKXSaqdK6+2qvAMZI0ii8aOixUcx8WfJ8JlLv0=;
+        b=eTQDw7trB109bXm0bm3j6aAdfIEnfGS3pa65fELoDneDK1RK6g62NPm7/9tXxyblBN
+         Ua+t4xFu0SGrgmscHvIKjFaEjqo1mynLYWXlffx56Ki4sg4P5KfN2OxhlIRBflp+vJs7
+         5FqpgFjNJuvYSMxoMGMZZRdhPXtFWnFIwd374Y1VuLCvMNMw6d2hEG+p/b/MRY897SAf
+         DGOrgS+sof8xS/0hmvtv/1DFTxBXZECTM6ZuYr+2pFS/iMOGQchZGN76JBW+QQKu6eZI
+         N/4vP/WxZblDj+XA5DtTvvepP1aZ3GXHpH6keQ/7gqL4FO4zxF01yD1qUc47s12xQATc
+         mIiA==
+X-Forwarded-Encrypted: i=1; AJvYcCUuC+TvN7xtPDy6o5hddPKPWcfDTHLXVmKKkiN6hl4V6b0QBGr7l7Ta3OGwEXGKBebBvjSDvBJ5IoT58p88/g==@vger.kernel.org, AJvYcCVCo6tTaCobizMwuTWTuuikK0t0Qww80DFr3cUaDXtXvmQsJ8Dtm5M5mKHiTX4z1DKrO18=@vger.kernel.org, AJvYcCWXoQkgXPJ51zBNLB90J4k93Gg96GC9hHzVAo6+42dXRF0PCD8oQtIlPU13fgFEGOANx8UYmZm6NG3Jnt3H@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIKf17O4remfxGrZBBOI09Dkf0xm/TLg/GWiqz1W/MjT6CntfB
+	smBYWpUk80dF+ajE6qPZIwRD3usq8chafQsBJKFg+cwBq/34em3Z
+X-Google-Smtp-Source: AGHT+IFXmsOSAoa+aCWV/3Pq4idAxDbgFh0yb212Bgl0eSG0cXGpq+b2iVUhk3XUjdBPp97jt/v2Rw==
+X-Received: by 2002:a17:906:6a08:b0:aa4:9ab1:1982 with SMTP id a640c23a62f3a-aa4dd548167mr196917766b.4.1732100126159;
+        Wed, 20 Nov 2024 02:55:26 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa20e042ed1sm751701466b.134.2024.11.20.02.55.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Nov 2024 02:55:25 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 20 Nov 2024 11:55:23 +0100
+To: Juntong Deng <juntong.deng@outlook.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
+	song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
+	sdf@fomichev.me, haoluo@google.com, memxor@gmail.com,
+	snorcht@gmail.com, brauner@kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 1/5] bpf: Introduce task_file open-coded
+ iterator kfuncs
+Message-ID: <Zz3AG0htZjt9RTFl@krava>
+References: <AM6PR03MB50804C0DF9FB1E844B593FDB99202@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB508013A6E8B5DEF15A87B1EC99202@AM6PR03MB5080.eurprd03.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241119153502.41361-12-vschneid@redhat.com>
+In-Reply-To: <AM6PR03MB508013A6E8B5DEF15A87B1EC99202@AM6PR03MB5080.eurprd03.prod.outlook.com>
 
-Le Tue, Nov 19, 2024 at 04:34:58PM +0100, Valentin Schneider a écrit :
-> +bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
+On Tue, Nov 19, 2024 at 05:53:58PM +0000, Juntong Deng wrote:
+
+SNIP
+
+> +/**
+> + * bpf_iter_task_file_next() - Get the next file in bpf_iter_task_file
+> + *
+> + * bpf_iter_task_file_next acquires a reference to the struct file.
+> + *
+> + * The reference to struct file acquired by the previous
+> + * bpf_iter_task_file_next() is released in the next bpf_iter_task_file_next(),
+> + * and the last reference is released in the last bpf_iter_task_file_next()
+> + * that returns NULL.
+> + *
+> + * @it: the bpf_iter_task_file to be checked
+> + *
+> + * @returns a pointer to bpf_iter_task_file_item
+> + */
+> +__bpf_kfunc struct bpf_iter_task_file_item *bpf_iter_task_file_next(struct bpf_iter_task_file *it)
 > +{
-> +	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
-> +	unsigned int old;
-> +	bool ret = false;
+> +	struct bpf_iter_task_file_kern *kit = (void *)it;
+> +	struct bpf_iter_task_file_item *item = &kit->item;
 > +
-> +	preempt_disable();
+> +	if (item->file)
+> +		fput(item->file);
 > +
-> +	old = atomic_read(&ct->state);
-> +	/*
-> +	 * Try setting the work until either
-> +	 * - the target CPU has entered kernelspace
-> +	 * - the work has been set
-> +	 */
-> +	do {
-> +		ret = atomic_try_cmpxchg(&ct->state, &old, old | (work << CT_WORK_START));
-> +	} while (!ret && ((old & CT_STATE_MASK) != CT_STATE_KERNEL));
+
+missing rcu_read_lock ?
+
+jirka
+
+> +	item->file = task_lookup_next_fdget_rcu(item->task, &kit->next_fd);
+> +	item->fd = kit->next_fd;
 > +
-> +	preempt_enable();
-> +	return ret;
-
-Does it ignore the IPI even if:
-
-     (ret && (old & CT_STATE_MASK) == CT_STATE_KERNEL))
-
-?
-
-And what about CT_STATE_IDLE?
-
-Is the work ignored in those two cases?
-
-But would it be cleaner to never set the work if the target is elsewhere
-than CT_STATE_USER. So you don't need to clear the work on kernel exit
-but rather on kernel entry.
-
-That is:
-
-bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
-{
-	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
-	unsigned int old;
-	bool ret = false;
-
-	preempt_disable();
-
-	old = atomic_read(&ct->state);
-
-	/* Start with our best wishes */
-	old &= ~CT_STATE_MASK;
-	old |= CT_STATE_USER
-
-	/*
-	 * Try setting the work until either
-	 * - the target CPU has exited userspace
-	 * - the work has been set
-	 */
-	do {
-		ret = atomic_try_cmpxchg(&ct->state, &old, old | (work << CT_WORK_START));
-	} while (!ret && ((old & CT_STATE_MASK) == CT_STATE_USER));
-
-	preempt_enable();
-
-	return ret;
-}
-
-Thanks.
+> +	kit->next_fd++;
+> +
+> +	if (!item->file)
+> +		return NULL;
+> +
+> +	return item;
+> +}
+> +
+> +/**
+> + * bpf_iter_task_file_destroy() - Destroy a bpf_iter_task_file
+> + *
+> + * If the iterator does not iterate to the end, then the last
+> + * struct file reference is released at this time.
+> + *
+> + * @it: the bpf_iter_task_file to be destroyed
+> + */
+> +__bpf_kfunc void bpf_iter_task_file_destroy(struct bpf_iter_task_file *it)
+> +{
+> +	struct bpf_iter_task_file_kern *kit = (void *)it;
+> +	struct bpf_iter_task_file_item *item = &kit->item;
+> +
+> +	if (item->file)
+> +		fput(item->file);
+> +}
+> +
+>  __bpf_kfunc_end_defs();
+>  
+>  DEFINE_PER_CPU(struct mmap_unlock_irq_work, mmap_unlock_work);
+> -- 
+> 2.39.5
+> 
 
