@@ -1,151 +1,180 @@
-Return-Path: <bpf+bounces-45301-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45302-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 837979D4320
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 21:33:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF899D43A9
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 22:54:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 204001F21EA4
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 20:33:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CF33B24067
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 21:54:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9261714A3;
-	Wed, 20 Nov 2024 20:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E03D51BD9FC;
+	Wed, 20 Nov 2024 21:54:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="arOtEsuP"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="qI/NuPOg";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="rmDemweV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A0A313C689
-	for <bpf@vger.kernel.org>; Wed, 20 Nov 2024 20:33:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C50B516130B;
+	Wed, 20 Nov 2024 21:54:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732134809; cv=none; b=IkQlXLOPQS8weDPEf6DoCxYXoFQ60Po8HFUTBOkcWZQl79kq/DzO6UdD2/NTb+3/fOWFJFM9dRNBVicavO4pjggKiW4DNtIy+0JrMoAXwU5gek+3znVNISvCoQx56eFEMuz9iCnfSfcKMuaZYRhLkNvt7WGi7xkm4FH5JWtH6n0=
+	t=1732139678; cv=none; b=rzZ8mvgmTmY81NATop96AedHhD4OL9tG7eyu57fSS1vlHcbsXzidSIEKaif5JsAxZDpP5XkHjmeAhMLDqW6HFkBBBxY6lXkyrUmQqlUcL++w9I9y7FaMctEEmRUJ05vuCNKnftSkea+Iqlj6i4ZLyjMeNysrPXK4ca/nZkKt7TQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732134809; c=relaxed/simple;
-	bh=PFvaS2xCNB/338I+bM6LZey4FUjv0SGsrVTlcylLEVw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LWY18DR5ju4Pe7N5WvEycvq6muZlENs0eV744qYRLwwFpyiPIwrR5m1/nZ4PtHgaOVUGsWMc9AViecFcw9bkKXFIL178I76wMuZmnLMFQPQkFyEu0kZEBQ8hs3OVY/0ddlVAWGnSUvIo2IrBXKQUiCY+il2KZJfolQfq9+kfW7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=arOtEsuP; arc=none smtp.client-ip=209.85.167.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3e5ffbc6acbso175088b6e.3
-        for <bpf@vger.kernel.org>; Wed, 20 Nov 2024 12:33:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1732134807; x=1732739607; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lD3e2zU+8DR7zrFaLuLnlvbhl8xXthiwkjgmnnPvoSA=;
-        b=arOtEsuPiqtEwtGwP575es8tXNfoV+3uVIKZuRnJf+zC9dLYfvH3EK+O+Hbb2g96rf
-         JJ4iN1L0fy+QZlsLAW6T1gfRNm9n4111BSXJaHsa5y77d0z2D+LCR4qM+ElCLNmDdfsQ
-         bAHgSw8eZ/5rtPco8wCwg4CAAV4LTqJXVwxZ2BqBpc6Q4RC+ErtQsfNnAU5SGtJVfDFb
-         aIOg6ye8PnVrEWKNVoJA65MObAJnDA+0+qkSpuVFOM8Wv0YQvHIYXzbzfPUu8T5FqzhO
-         KVH6xnFocHfBIE3VsV/IKJYB/uNgkC/+UwBFeSZ4tg3UKrafUDm3dqvg3uG1DvcU90JU
-         e7mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732134807; x=1732739607;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lD3e2zU+8DR7zrFaLuLnlvbhl8xXthiwkjgmnnPvoSA=;
-        b=qqPQrAEEWOgc4NtHjnGqBVCRdccpOMA+7tzdayENTZu+bBZo24YsaWBlm7iUz/fyM5
-         hmnx2SVT+Yzu1zkElZyFPBeB9EfZ0n+TV8Z721A88RrsUiEcy9/vjHe+oqsxYhGZIvoM
-         KBU6u0SclXgGIq6B4g6vsM0oB/IKBwTh5iazUZ6vNSacLmLg4K1fmkkEegOAyl5aixuW
-         bo1NmYNSWEQcFv+x+crHmEnwgQXm4gX4TM2gWjRAuLO/3Wz91jEIq74fZqkfK5JOMoeO
-         cDS4g9x7umErS9fzTRyKmbTy0FBpj5zDZubBzIl1GGuF+iOwpH1fwN64cYjaTojlTXrO
-         Igsg==
-X-Gm-Message-State: AOJu0Yxu9D3LnZaEMSxj5qZ8cQxIgCsPb2+NXhVNC8Pcwoba9FvmhspS
-	CeDFG/1q6HKNOF3RWuwQZvYEu+09WfupeoS3Ou7N86yAZg57rPcac5inJ5Xh6sYl5lEhgrDyjoH
-	A2VNGk1QxA9n4C4TR1Edo63DZYKXyrhGid1WmGQ==
-X-Google-Smtp-Source: AGHT+IG8fndGcX50XTBsTT0rWZHNy25EkMTy4MMAj3odhI4lGn7bdcraVUgr1wg6k1xjk/gkYA7nMjFWGw4lEJr2gKY=
-X-Received: by 2002:a05:6808:1485:b0:3e7:63ce:2025 with SMTP id
- 5614622812f47-3e7eb7d19camr3813966b6e.37.1732134807255; Wed, 20 Nov 2024
- 12:33:27 -0800 (PST)
+	s=arc-20240116; t=1732139678; c=relaxed/simple;
+	bh=BHMpf0cVyl5CAzI0kw/SRq5lsrzKo0uunowvoB1/rGg=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=GRevFeucjzZYcoHscY9lEUTIi54TuvXIEI4/K9c+zU/+i7gSsmdK6ThOg7cRZr8WGTX99XzrJoOxe6A2NxUVTJRExA9sLm6FjX8PH+2Br9MaBEKozdDdMMC64JONKNS1DlJr+kXOb78duF281YwT9OUf8eoH3aJ4NZTocGJbktU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=qI/NuPOg; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=rmDemweV; arc=none smtp.client-ip=202.12.124.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 9FB6125400DB;
+	Wed, 20 Nov 2024 16:54:32 -0500 (EST)
+Received: from phl-imap-08 ([10.202.2.84])
+  by phl-compute-03.internal (MEProxy); Wed, 20 Nov 2024 16:54:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1732139672;
+	 x=1732226072; bh=BHMpf0cVyl5CAzI0kw/SRq5lsrzKo0uunowvoB1/rGg=; b=
+	qI/NuPOgWJa0nW8Amf1CWjfzzN1YhOwDNsDHfFmCwnvm8f6Z9pQq9Xnjez8fiyLp
+	rvkFGAYuUBD2D7ClHMa47QuVOTH+dvHFp8DYb4EnNaD7JMrlDUwErsivJBz0ULBB
+	seJosy3N5WUnjuyTDayXGqH65lG8ce2hzuzvVRRghsubDgHkWeEkiXmaHkKgurpr
+	fDi4MCAugrdpdoqG1UXUnryyDkjyyYUUoWk8CkgOAQw3Tuc48fJsnMHHlcfzzdHW
+	JCP6ZshKzDoCJqtemlZGoaNW8r4u/JRNWc+tL0ApOlLbEeXUf+lD7JztHHsad6xA
+	H4cz8/lTROoRX+lrZ8Z3Cw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1732139672; x=
+	1732226072; bh=BHMpf0cVyl5CAzI0kw/SRq5lsrzKo0uunowvoB1/rGg=; b=r
+	mDemweVeMIzpgjFv8p7SRaysb12MCFDgU9OlB44ojtM/fSVEIlAAMdEMPJVJAzGJ
+	Jmqs7Jfx1RZHXDjX/JZ6zDkSA4oGMLgqfxR0bHZ1Q28vCuvdyYNBnJ9wYsFP839P
+	6o6F3eLa5eDeqCAIOey72XVV8ofHeoWP/yDjiUc54DAc75IS/mLy+2s4pG+4KUJ6
+	mlaKqTtmvk1m83gONwMmlEcQDN9jNSHvjYrtegAEPObZzPMfuyGIl8x/grn4Nr56
+	WVLXitdecOM2x52hODGLLHmCwf1vuTKS1OxlHmAAKYk3rg92HBlUYp2gY5SPre5p
+	ci+7OiEZVPXZjdxJ3Httw==
+X-ME-Sender: <xms:mFo-ZzB_ThV0BX6xmgbQjNGC3PwhHIVz2U6XK4r-6GqIu2thdTt68Q>
+    <xme:mFo-Z5hj58D4JAUPPdAknjinkVGC6F2eF1-l7lbOm71dhv4MaA_jACU-OCttU3FW5
+    qdA0h7K7ow1Ka57mA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrfeeggdduheefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnegfrhhlucfvnfffucdlfeehmdenucfjughrpefoggffhffvvefk
+    jghfufgtgfesthhqredtredtjeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugi
+    husegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgleeitefgvefffedufefh
+    ffdtieetgeetgeegheeufeeufeekgfefueffvefhffenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhnsggp
+    rhgtphhtthhopeehpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegrlhgvgigvih
+    drshhtrghrohhvohhithhovhesghhmrghilhdrtghomhdprhgtphhtthhopegurghnihgv
+    lhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrh
+    hnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgv
+    rhhnvghlrdhorhhgpdhrtghpthhtohepnhgvthguvghvsehvghgvrhdrkhgvrhhnvghlrd
+    horhhg
+X-ME-Proxy: <xmx:mFo-Z-lPgJ1Z6e7DlEnvT_Iab3vWIAmhP4v1P2yschmUYvY4vakbug>
+    <xmx:mFo-Z1zIHFXFDgrJM65lLxQ7AfzI5M3WzKlDjJ7Ix2Bovcik4YX9-Q>
+    <xmx:mFo-Z4S7V9LtwLjhnBcgL_g5wmyR6PC9hc76eq4Z-vPhRJT3-FCTGw>
+    <xmx:mFo-Z4YLajjwNobHYwCs7pyFBa6d0Lde-Fo0aatlz_CGRSKJ6Dxb0g>
+    <xmx:mFo-Z-MKd7FEKAPrmn80Q5x2JCC22sYMGPGeCM6ed_ZztqDerZcvsNYe>
+Feedback-ID: i6a694271:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 0E7CF18A0068; Wed, 20 Nov 2024 16:54:32 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <50b7301fcfd0682c9923b3639c1589f3eb37af33.camel@crowdstrike.com>
-In-Reply-To: <50b7301fcfd0682c9923b3639c1589f3eb37af33.camel@crowdstrike.com>
-From: Maxim Mikityanskiy <maxim@isovalent.com>
-Date: Wed, 20 Nov 2024 22:33:11 +0200
-Message-ID: <CAD0BsJWf=28Cte5KBpM_O6bsB55kfR885f2ikfn1+UmJHgMYqg@mail.gmail.com>
-Subject: Re: Recent eBPF verifier rejects program that was accepted by 6.8
- eBPF verifier
-To: Francis Deslauriers <francis.deslauriers@crowdstrike.com>
-Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
-	"ast@kernel.org" <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 20 Nov 2024 13:54:11 -0800
+From: "Daniel Xu" <dxu@dxuuu.xyz>
+To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ "Network Development" <netdev@vger.kernel.org>,
+ "Daniel Borkmann" <daniel@iogearbox.net>
+Message-Id: <6eb74343-54a4-4725-97e8-e762ab3adfbc@app.fastmail.com>
+In-Reply-To: 
+ <CAADnVQJ5NnDqx_TMbwHOPySUaJRE-N5K7L_whDsfeyMRBNOFkA@mail.gmail.com>
+References: <cover.1692748902.git.dxu@dxuuu.xyz>
+ <eb20fd2c-0fb7-48f7-9fd0-4d654363f4da@app.fastmail.com>
+ <CAADnVQ+T2nSCA8Tcddh8eD27CnvD1E3vPK0zutDt8Boz7MURQA@mail.gmail.com>
+ <7ec1a922-30c5-4899-a23f-11e3ef9d6fef@app.fastmail.com>
+ <CAADnVQJ5NnDqx_TMbwHOPySUaJRE-N5K7L_whDsfeyMRBNOFkA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/2] Improve prog array uref semantics
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Francis,
 
-On Fri, 15 Nov 2024 at 22:59, Francis Deslauriers
-<francis.deslauriers@crowdstrike.com> wrote:
-> I added a stripped down libbpf reproducer based on the libbpf-bootstrap repo to
-> showcase this issue (see below). Note that if I change the RULE_LIST_SIZE from
-> 380 to 30, the verifier accepts the program.
+
+On Wed, Nov 20, 2024, at 8:07 AM, Alexei Starovoitov wrote:
+> On Wed, Nov 20, 2024 at 7:55=E2=80=AFAM Daniel Xu <dxu@dxuuu.xyz> wrot=
+e:
+>>
+>>
+>>
+>> On Sat, Nov 16, 2024, at 2:17 PM, Alexei Starovoitov wrote:
+>> > On Tue, Oct 29, 2024 at 11:36=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> =
+wrote:
+>> >>
+>> >> Hey Daniel,
+>> >>
+>> >> On Wed, Aug 23, 2023, at 9:08 AM, Daniel Xu wrote:
+>> >> > This patchset changes the behavior of TC and XDP hooks during at=
+tachment
+>> >> > such that any BPF_MAP_TYPE_PROG_ARRAY that the prog uses has an =
+extra
+>> >> > uref taken.
+>> >> >
+>> >> > The goal behind this change is to try and prevent confusion for =
+the
+>> >> > majority of use cases. The current behavior where when the last =
+uref is
+>> >> > dropped the prog array map is emptied is quite confusing. Confus=
+ing
+>> >> > enough for there to be multiple references to it in ebpf-go [0][=
+1].
+>> >> >
+>> >> > Completely solving the problem is difficult. As stated in c9da16=
+1c6517
+>> >> > ("bpf: fix clearing on persistent program array maps"), it is
+>> >> > difficult-to-impossible to walk the full dependency graph b/c it=
+ is too
+>> >> > dynamic.
+>> >> >
+>> >> > However in practice, I've found that all progs in a tailcall cha=
+in
+>> >> > share the same prog array map. Knowing that, if we take a uref o=
+n any
+>> >> > used prog array map when the program is attached, we can simplif=
+y the
+>> >> > majority use case and make it more ergonomic.
+>> >
+>> > Are you proposing to inc map uref when prog is attached?
+>> >
+>> > But that re-adds the circular dependency that uref concept is solvi=
+ng.
+>> > When prog is inserted into prog array prog refcnt is incremented.
+>> > So if prog also incremented uref. The user space can exit
+>> > but prog array and progs will stay there though nothing is using th=
+em.
+>> > I guess I'm missing the idea.
+>>
+>> IIRC the old-style tc/xdp attachment is the one incrementing the uref.
 >
-> I bisected the issue down to this commit:
->         commit 8ecfc371d829bfed75e0ef2cab45b2290b982f64
->         Author: Maxim Mikityanskiy <maxim@isovalent.com>
->         Date:   Mon Jan 8 22:52:02 2024 +0200
+> uref is incremented when FD is given to user space and
+> file->release() callback decrements uref.
 >
->         bpf: Assign ID to scalars on spill
+> I don't think any of the attach operations mess with uref.
+> At least they shouldn't.
 
-This commit was part of a series with a few new features that are
-indeed expected to raise the complexity with some programs. To
-compensate for it, a patch by Eduard was submitted within the same
-series. Could you please test your program on this kernel commit?
-
-6efbde200bf3 bpf: Handle scalar spill vs all MISC in stacksafe()
-
-I.e. whether it passes or fails, and If it fails, what's the biggest
-RULE_LIST_SIZE that passes. Let's see if Eduard's patch helps
-partially or doesn't address this issue at all (or helps fully, but
-there is another regression after his commit).
-
-> It's my understanding that a eBPF program that is accepted by one
-> version of the verifier should be accepted on all subsequent versions.
-
-That's basically the goal. Obviously, some new features will increase
-the verification complexity, but we are trying to compensate for it or
-to make it insignificant.
-
-For example, when I introduced my changes (with Eduard's patch), I
-tested the complexity before and after on the set of BPF programs that
-included kernel selftests and Cilium:
-
-https://patchwork.kernel.org/project/netdevbpf/cover/20240108205209.838365-1-maxtram95@gmail.com/
-https://patchwork.kernel.org/project/netdevbpf/cover/20240127175237.526726-1-maxtram95@gmail.com/
-
-As you can see, Eduard's patch really helped with most regressions,
-and the whole picture looked good enough. Apparently (if this series
-is indeed the culprit), your program uses some pattern that wasn't
-covered by the set of programs that I checked.
-
-> I'm investigating how this commit affects how instructions are counted
->  and why it leads to such a drastic change for this particular program.
-
-I'd guess, most likely, something inside the loop body became more
-complex to verify, and it's repeated 380 times, further increasing the
-total complexity.
-
-I wonder where 380 comes from. Is it just the maximum number of
-iterations that the old verifier could handle? Or does it have a
-deeper meaning?
-
-Is bpf_loop an option for you?
-
-> I wanted to share my findings early in case someone has any hints for me.
->
-> To reproduce, use the following file as a drop in replacement of
-> libbpf-boostrap's examples/c/tc.bpf.c:
-
-I reproduced the issue on 6.11.6, the highest RULE_LIST_SIZE that
-works for me is 35, but I currently lack time to take a deeper look.
-Do you have any new findings in the meanwhile?
+None yet. My patch was adding it. It's fine if it's too much of a hack -
+was just an idea.
 
