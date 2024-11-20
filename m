@@ -1,162 +1,147 @@
-Return-Path: <bpf+bounces-45299-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 845D39D4126
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 18:30:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A90CC9D429D
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 20:39:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49D3D283B59
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 17:30:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19B7DB25151
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 19:39:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71ADB1ABEA2;
-	Wed, 20 Nov 2024 17:30:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C821BC088;
+	Wed, 20 Nov 2024 19:39:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kf3Dyd2C"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bF0CW4lC"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFBE9487BE;
-	Wed, 20 Nov 2024 17:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 853A4146A6B
+	for <bpf@vger.kernel.org>; Wed, 20 Nov 2024 19:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732123821; cv=none; b=kSMpxYOH1zh+7Y3NgAM+M6pOU8ng3FPz1EaO1VV8IXcL763pdnljRpFO/W8LJFC6Q3i8Q3+jA536WYJkz6qsTOSWCdnXrbmjty1KdOdqTRDF9BWxKuCtRun93JtsUlMWWI+hEW5hQuoTLgCHTPw/dBFwmGSxltpbQ+F09kmCKhU=
+	t=1732131546; cv=none; b=lZjwVK6JVpOv7rd1HOIhcmP0ajBOB6RdxDyR4jFbSdAqc9Xb5zqlCx5En77g5vk4QkpCLCK3/rJvho+PQKikkqFA9MclTGtt2OYZrfKj4mvq7liCuNWv122n2JxkfrBZRdcYB6OIRDYvXXRtIG4ogXgSTciEhF5Gz1SkxxpjEhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732123821; c=relaxed/simple;
-	bh=PFA7J969PABg1BMHj5bUVkB7wuVSRSb1IQcjJeE4WLw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gcwn+hQQKNGRbLZdO8uCz1fFesc5gsFP4cOShAsrom6ApGjhp4syIdVNNIpRSuVOwyqo3xqnBhfYAm5z44oWMLCVk2nv+V35CsnmBXElzUPry/N4nDipBjHT5pACImX2fTYBpRG5ScLit8gZEJWwMyuVR/eXiuRUCL1T1LV85bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kf3Dyd2C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD605C4CECD;
-	Wed, 20 Nov 2024 17:30:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732123820;
-	bh=PFA7J969PABg1BMHj5bUVkB7wuVSRSb1IQcjJeE4WLw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Kf3Dyd2CKUZa3tMlA5c9d+2ELCZPrv6chpFxvCS+UiOnBey7DGXhhzWANw/Gp+cVf
-	 9ekUEtoHku9jwPT9QXn/R2VMK+633Zwv3F8SW/w65Og7YAa79XArf9PDSYf46Yny/f
-	 CrYCCnTD0bWSCkL5fF9NGkrNb77XNSWjrPupERZ/bTBF5I2Jc5S3xRmc9IDdaoFlod
-	 GylypmxLKgFB8l61QEhIJKuBcBziS7S2je/uwRmgBZtYP0rWwBCTQiHaso7+9c9Aeo
-	 QatfyLQ2wrkudg0oAe0ccQENxnmONZH9eFt1AMIDeWXdmNfFX87/aC3WxZnfDlQGNL
-	 8lnRD6NSI6heA==
-Date: Wed, 20 Nov 2024 18:30:17 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
-	x86@kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Juerg Haefliger <juerg.haefliger@canonical.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
-	Chuang Wang <nashuiliang@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Petr Mladek <pmladek@suse.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-	Julian Pidancet <julian.pidancet@oracle.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>,
-	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
-Subject: Re: [RFC PATCH v3 11/15] context-tracking: Introduce work deferral
- infrastructure
-Message-ID: <Zz4cqfVfyb1enxql@localhost.localdomain>
-References: <20241119153502.41361-1-vschneid@redhat.com>
- <20241119153502.41361-12-vschneid@redhat.com>
- <Zz2_7MbxvfjKsz08@pavilion.home>
- <Zz3w0o_3wZDgJn0K@localhost.localdomain>
- <xhsmho729hlv0.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	s=arc-20240116; t=1732131546; c=relaxed/simple;
+	bh=BswoRCjKKXweS/WtphnFG/PL2RNKbELKMOgtRgJVRJg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mzr/hhZ/Rqe2oZMot7ULuaxaYRQBIe73nIdk3rkZtjrVX33HUvy/vOCYC1yybV2tQeClEng8cE0rhkLz4SGQgeVIHkAggniqf4686EEVObAPQiocH0Nran49jTiTGC4JtOx04mqxj8Vgb6Iba+DD31xv0ny3G0EhxmcjQAa9VOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bF0CW4lC; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-382378f359dso35844f8f.1
+        for <bpf@vger.kernel.org>; Wed, 20 Nov 2024 11:39:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732131543; x=1732736343; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RM11PzLq5ceMIy3smOrg2SVjZbre2Fy4EJMh/VAMmF4=;
+        b=bF0CW4lC1K9XQn4iwtfqLrRrLNWFmTw4p50sEbKdqlHeoPZCswU+jWmJe70W5uJJxE
+         79nDye09/7d7AvHI9YM474CVbvRIPNl4F395OagvzzF5b9c/sqXWn4rpIOdQ1inQqqRM
+         gWfTCUOjkYuvch77ZgjHYNsKs+6lenGM/5umbGurhi6vxL0IPLE+VXbEQH9l7S15OOxA
+         7Vd/2vBpWqWNlSF0rpU/0PY/cx2wVFQr20Y96xL895aO8d4w+zVhaNghDeAe0gV5OfPx
+         vYWk2IteKKWOt3vODRL/okqXVxHEarST2nQkghOpKTyLhphrU39C6K7p+ELkvPhS9CPJ
+         gaVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732131543; x=1732736343;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RM11PzLq5ceMIy3smOrg2SVjZbre2Fy4EJMh/VAMmF4=;
+        b=mX+A0m/SOgKn+YHzw6R1w2v2xocxGo2Bb0nE4C0KNjl7X0DJVQnMYb3BW5YR6et+yJ
+         EOTMhU6AxgHOl3RDIzZUhX24AHez14u4x1CTnfxUkcL8wroaAabgpqXJFJ8FV/9QIZRh
+         nzVl+A2Xy8ZFPAF+tklocaw8vRupZnnSVHDQv1fK5CLihAqLzsuZsCkqP83e0P4BY4iC
+         hzF2a5gyocoRlyuwR223tEd5mO21mYd67NcPSZ1Y8qx32MLdyi6vTTjiAiPoFfnkCPKd
+         fd9zzpjYUfszkGGxQ5+FP7rM/yTAaSX8f2HUBzJw06Nf1yrOOJ2Ury5wPqQs6x+xZXpu
+         ol2A==
+X-Forwarded-Encrypted: i=1; AJvYcCVp+kMOamNtecsXHfU1Lk85pRHmcWAV7AQXPIg3aHNHUxCE15mLktAiHv35bIpIumE63sw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwysrjYLeX6CzrY4Wn6eORqtiBhq2fqlKidx81+N6kcEDAw1wQR
+	GoCQvlddhnUeG/fOU5l1lDZbu4ftQZ6rtsAnf9tSVDbIGI8FzM3fuyJCdpC5HS8J+1xAKP6oCMd
+	qyGDmJLIwibpfoPil1fwfRASzp1I0zw==
+X-Google-Smtp-Source: AGHT+IGgBqgjEi6jGzOm381ZlEqxW1i1ntNqY6RtdC5veD+WMJh/KWv+Opjkka003N/jFVb7f99b5V4v0Nh8WOhaPCg=
+X-Received: by 2002:a5d:584f:0:b0:37d:5134:fe1 with SMTP id
+ ffacd0b85a97d-38254ae4400mr3108720f8f.17.1732131542714; Wed, 20 Nov 2024
+ 11:39:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <xhsmho729hlv0.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+References: <20241119114023.397450-1-shung-hsi.yu@suse.com>
+ <20241119114023.397450-4-shung-hsi.yu@suse.com> <9eb3de07-6802-426a-b59c-bb412d70ccfc@huaweicloud.com>
+In-Reply-To: <9eb3de07-6802-426a-b59c-bb412d70ccfc@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 20 Nov 2024 11:38:51 -0800
+Message-ID: <CAADnVQKp54gnSjw-MqGORuxpJ8Ju_JT1jQqADRkWE-ZSrSeAGQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 3/3] selftests/bpf: add more verifier tests for
+ signed range deduction of BPF_AND
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>, bpf <bpf@vger.kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Edward Cree <ecree.xilinx@gmail.com>, 
+	Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Le Wed, Nov 20, 2024 at 06:10:43PM +0100, Valentin Schneider a écrit :
-> On 20/11/24 15:23, Frederic Weisbecker wrote:
-> 
-> > Ah but there is CT_STATE_GUEST and I see the last patch also applies that to
-> > CT_STATE_IDLE.
+On Wed, Nov 20, 2024 at 4:16=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com=
+> wrote:
+>
+> On 11/19/2024 7:40 PM, Shung-Hsi Yu wrote:
+> > Add more specific test cases into verifier_and.c to test against signed
+> > range deduction.
 > >
-> > So that could be:
+> > WIP, Test failing.
+> > ---
+> > The GitHub action is at https://github.com/kernel-patches/bpf/actions/r=
+uns/11909088689/
 > >
-> > bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
-> > {
-> > 	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
-> > 	unsigned int old;
-> > 	bool ret = false;
+> > For and_mixed_range_vs_neg_const()
 > >
-> > 	preempt_disable();
+> >    Error: #432/8 verifier_and/[-1,0] range vs negative constant @unpriv
+> >    ...
+> >    VERIFIER LOG:
+> >    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >    0: R1=3Dctx() R10=3Dfp0
+> >    0: (85) call bpf_get_prandom_u32#7    ; R0_w=3DPscalar()
+> >    1: (67) r0 <<=3D 63                     ; R0_w=3DPscalar(smax=3Dsmax=
+32=3Dumax32=3D0,umax=3D0x8000000000000000,smin32=3D0,var_off=3D(0x0; 0x8000=
+000000000000))
+> >    2: (c7) r0 s>>=3D 63                    ; R0_w=3DPscalar(smin=3Dsmin=
+32=3D-1,smax=3Dsmax32=3D0)
+> >    3: (b7) r1 =3D -13                      ; R1_w=3DP-13
+> >    4: (5f) r0 &=3D r1                      ; R0_w=3DPscalar(smin=3Dsmin=
+32=3D-16,smax=3Dsmax32=3D0,umax=3D0xfffffffffffffff3,umax32=3D0xfffffff3,va=
+r_off=3D(0x0; 0xfffffffffffffff3)) R1_w=3DP-13
+> >    5: (b7) r2 =3D 0                        ; R2_w=3DP0
+> >    6: (6d) if r0 s> r2 goto pc+4         ; R0_w=3DPscalar(smin=3Dsmin32=
+=3D-16,smax=3Dsmax32=3D0,umax=3D0xfffffffffffffff3,umax32=3D0xfffffff3,var_=
+off=3D(0x0; 0xfffffffffffffff3)) R2_w=3DP0
+> >    7: (b7) r2 =3D -16                      ; R2=3DP-16
+> >    8: (cd) if r0 s< r2 goto pc+2 11: R0=3DPscalar() R1=3DP-13 R2=3DPsca=
+lar() R10=3Dfp0
 > >
-> > 	old = atomic_read(&ct->state);
+> >       Somehow despite the verifier knows that r0's smin=3D-16 and smax=
+=3D0,
+> >       and r2's smin=3D-16 and smax=3D-16, it does determine that
+> >       [-16, 0] s< -16 is always false.
 > >
-> > 	/* CT_STATE_IDLE can be added to last patch here */
-> > 	if (!(old & (CT_STATE_USER | CT_STATE_GUEST))) {
-> > 		old &= ~CT_STATE_MASK;
-> > 		old |= CT_STATE_USER;
-> > 	}
-> 
-> Hmph, so that lets us leverage the cmpxchg for a !CT_STATE_KERNEL check,
-> but we get an extra loop if the target CPU exits kernelspace not to
-> userspace (e.g. vcpu or idle) in the meantime - not great, not terrible.
+> >    11: (61) r1 =3D *(u32 *)(r1 +0)
+> >    R1 invalid mem access 'scalar'
+> >
+>
+> Interesting, CI reported failure in unpriv test, while the priv
+> test ran well. It seems to be related to some security policy.
+> I think it is bypass_spec_v1, which makes the verifier to check
+> the unreachable target instruction.
 
-The thing is, what you read with atomic_read() should be close to reality.
-If it already is != CT_STATE_KERNEL then you're good (minus racy changes).
-If it is CT_STATE_KERNEL then you still must do a failing cmpxchg() in any case,
-at least to make sure you didn't miss a context tracking change. So the best
-you can do is a bet.
+Correct. See speculative path in the verifier.
 
-> 
-> At the cost of one extra bit for the CT_STATE area, with CT_STATE_KERNEL=1
-> we could do: 
-> 
->   old = atomic_read(&ct->state);
->   old &= ~CT_STATE_KERNEL;
+The patch is missing SOB too.
 
-And perhaps also old |= CT_STATE_IDLE (I'm seeing the last patch now),
-so you at least get a chance of making it right (only ~CT_STATE_KERNEL
-will always fail) and CPUs usually spend most of their time idle.
-
-Thanks.
+pw-bot: cr
 
