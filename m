@@ -1,142 +1,217 @@
-Return-Path: <bpf+bounces-45264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 658D99D3C9F
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 14:40:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2085A9D3D74
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 15:23:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F33B9284FDA
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 13:40:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A97CC1F2145A
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 14:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD11C1AC438;
-	Wed, 20 Nov 2024 13:39:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF851AA7A9;
+	Wed, 20 Nov 2024 14:23:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JQY9JXpk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cOJXeO4d"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63311A76C4
-	for <bpf@vger.kernel.org>; Wed, 20 Nov 2024 13:39:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CCB2174EDB;
+	Wed, 20 Nov 2024 14:23:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732109995; cv=none; b=u+c+YuBfHJSEUJaML8cCWXiJv+z4LqZUK6SUkQmvQ8AV46t4x8KA2CRYZAclCOBSOELoFkhWagq9XL2jIp6+0ZuuDRwNHJRed0pr3R91H/wcJGz61cDDVsqXQltnLrkozjjPNVwVJQGJ9hE3YuaMydVAE6irVCobnsCBn8mf78Q=
+	t=1732112598; cv=none; b=i+veCh2GrVZ+m21hIjN8PiAmiyRcv0E2cVcz1BI5AHbbjOie57rvvgdf9eFuLf1UFpRBJ5LfFu9HBVATLrZLsK6uToC27RWPwegRWh4ga1GJH8MQkamFpYAs6qJmD/EAZqzrWABy6PW1W//oAQotHY72qRT69VpJJTCUcJfafm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732109995; c=relaxed/simple;
-	bh=JLZhcK3UTp0Uo4+KrXeqpJFDEmAaS/Bdhpjfrn67DZE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SaNE5bOA0z1sRp4PlbYRajapYMlLWfVFOrF4KNn3om8WMQ+z7T9xd2IOFR2FSoiuoztJTfFTUlD0VBBxAyeaIQmuMPPmkqfI4JNCgt9BT5DV+JdpXVegMB8L6SXnLRjA1Bff5RoaWzf+qXbY7NAMbcBZXv5f7vIewpGVUzIenRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JQY9JXpk; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <47d9fb73-f665-4566-bf3e-e016469ea3e3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1732109990;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=em7OGNwUhGvHsH5O6kmCphTWKqfFSEfigLXqzlxL+tA=;
-	b=JQY9JXpkE+hCdZACJqA4IuT5x0lmp4k7v1IjfFT+w38XISKxW9Trx62Ci+BLgl69MfBAlm
-	+alih2ok5D0bGV7R0eZ3+/5oWglOINiKMHqy3HWYC1TbpktXNX6m8kTybLsDkc0Cu/ftrD
-	SEXe4mR4FsFnwJ+6EVcJAHNLNcnQGdQ=
-Date: Wed, 20 Nov 2024 05:39:43 -0800
+	s=arc-20240116; t=1732112598; c=relaxed/simple;
+	bh=BPomXTZqeEIbKC5DTXtaQe0v+mhLEggg8jnDCvzzxp8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VfaXEWEO/Nvi/M9qBQD3QuzF8is182h5vZ4SWCyZo5oTlYZXI1jNv+EYRm1PWfTEabLswKbQUnW2cHD/rRtzSCbB13UaYvA9fyQbdAQptWxbzQZM+rlRBkOuB8u23g2fvJQOxnbndlHNF4JHZXGHTpaqmsXrZyJPYE4p4Wy8k3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cOJXeO4d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89846C4CECD;
+	Wed, 20 Nov 2024 14:23:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732112597;
+	bh=BPomXTZqeEIbKC5DTXtaQe0v+mhLEggg8jnDCvzzxp8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cOJXeO4d8M/mqZJUH8CB5566vq/Z0/bAxmaeq/2Nxtiwpe+wtSTC/6SmNIk1+SJJZ
+	 /yfnF9ol9QoOk56ZHEfwKjQmx6of+pGKJ41lVxK6LciOHxIWC4LDlvEfsKiEw6qmmN
+	 xn8oMPj1juCbMl2rXRmHxZLhxeB8ztWS3vWIitW8S9/QUIWBjEk1ljtW5W2sHBrAE5
+	 LmPZgcJ5DcNO+8n0fSgyIa1KdjDoyIK0TpURmc4pOHSp48VL2utv8hHs0RYNGkAP0k
+	 2LtN6sF3YaFxsShTVjNTq6ScITbdERYtqS12vfHNP/f+2EzmOb9f0mMb/yfMQ5mPxo
+	 DRkZFo/Kh54Fg==
+Date: Wed, 20 Nov 2024 15:23:14 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+	x86@kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Juerg Haefliger <juerg.haefliger@canonical.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
+	Chuang Wang <nashuiliang@gmail.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Petr Mladek <pmladek@suse.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+	Julian Pidancet <julian.pidancet@oracle.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>,
+	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
+Subject: Re: [RFC PATCH v3 11/15] context-tracking: Introduce work deferral
+ infrastructure
+Message-ID: <Zz3w0o_3wZDgJn0K@localhost.localdomain>
+References: <20241119153502.41361-1-vschneid@redhat.com>
+ <20241119153502.41361-12-vschneid@redhat.com>
+ <Zz2_7MbxvfjKsz08@pavilion.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v7 2/4] bpf: add bpf_cpu_cycles_to_ns helper
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Borislav Petkov <bp@alien8.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- Yonghong Song <yonghong.song@linux.dev>, Mykola Lysenko <mykolal@fb.com>,
- x86@kernel.org, bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>
-References: <20241118185245.1065000-1-vadfed@meta.com>
- <20241118185245.1065000-3-vadfed@meta.com>
- <20241119112814.GC2328@noisy.programming.kicks-ass.net>
- <a2a219fb-ae89-42e0-b920-9a0704677930@linux.dev>
- <20241120084943.GB19989@noisy.programming.kicks-ass.net>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20241120084943.GB19989@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zz2_7MbxvfjKsz08@pavilion.home>
 
-On 20/11/2024 00:49, Peter Zijlstra wrote:
-> On Tue, Nov 19, 2024 at 06:38:51AM -0800, Vadim Fedorenko wrote:
->> On 19/11/2024 03:28, Peter Zijlstra wrote:
->>> On Mon, Nov 18, 2024 at 10:52:43AM -0800, Vadim Fedorenko wrote:
->>>
->>>> +			if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL &&
->>>> +			    imm32 == BPF_CALL_IMM(bpf_cpu_cycles_to_ns) &&
->>>> +			    cpu_feature_enabled(X86_FEATURE_CONSTANT_TSC)) {
->>>> +				u32 mult, shift;
->>>> +
->>>> +				clocks_calc_mult_shift(&mult, &shift, tsc_khz, USEC_PER_SEC, 0);
->>>> +				/* imul RAX, RDI, mult */
->>>> +				maybe_emit_mod(&prog, BPF_REG_1, BPF_REG_0, true);
->>>> +				EMIT2_off32(0x69, add_2reg(0xC0, BPF_REG_1, BPF_REG_0),
->>>> +					    mult);
->>>> +
->>>> +				/* shr RAX, shift (which is less than 64) */
->>>> +				maybe_emit_1mod(&prog, BPF_REG_0, true);
->>>> +				EMIT3(0xC1, add_1reg(0xE8, BPF_REG_0), shift);
->>>> +
->>>> +				break;
->>>> +			}
->>>
->>> This is ludicrously horrible. Why are you using your own mult/shift and
->>> not offset here instead of using the one from either sched_clock or
->>> clocksource_tsc ?
->>
->> With X86_FEATURE_CONSTANT_TSC, tsc_khz is actually constant after
->> switching from tsc_early. And the very same call to
->> clocks_calc_mult_shift() is used to create clocksource_tsc mult and
->> shift constants. Unfortunately, clocksources don't have proper API to
->> get the underlying info, that's why I have to calculate shift and mult
->> values on my own.
+Le Wed, Nov 20, 2024 at 11:54:36AM +0100, Frederic Weisbecker a écrit :
+> Le Tue, Nov 19, 2024 at 04:34:58PM +0100, Valentin Schneider a écrit :
+> > +bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
+> > +{
+> > +	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
+> > +	unsigned int old;
+> > +	bool ret = false;
+> > +
+> > +	preempt_disable();
+> > +
+> > +	old = atomic_read(&ct->state);
+> > +	/*
+> > +	 * Try setting the work until either
+> > +	 * - the target CPU has entered kernelspace
+> > +	 * - the work has been set
+> > +	 */
+> > +	do {
+> > +		ret = atomic_try_cmpxchg(&ct->state, &old, old | (work << CT_WORK_START));
+> > +	} while (!ret && ((old & CT_STATE_MASK) != CT_STATE_KERNEL));
+> > +
+> > +	preempt_enable();
+> > +	return ret;
 > 
-> There is cyc2ns_read_begin() / cyc2ns_read_end(), and you can use the
-> VDSO thing you do below.
-
-Looks like I missed arch-specific implementation. Thanks, I'll use it in
-the next version.
-
->>> And being totally inconsistent with your own alternative implementation
->>> which uses the VDSO, which in turn uses clocksource_tsc:
->>
->> With what I said above it is consistent with clocksource_tsc.
->>
->>>
->>>> +__bpf_kfunc u64 bpf_cpu_cycles_to_ns(u64 cycles)
->>>> +{
->>>> +	const struct vdso_data *vd = __arch_get_k_vdso_data();
->>>> +
->>>> +	vd = &vd[CS_RAW];
->>>> +	/* kfunc implementation does less manipulations than vDSO
->>>> +	 * implementation. BPF use-case assumes two measurements are close
->>>> +	 * in time and can simplify the logic.
->>>> +	 */
->>>> +	return mul_u64_u32_shr(cycles, vd->mult, vd->shift);
->>>> +}
->>>
->>> Also, if I'm not mistaken, the above is broken, you really should add
->>> the offset, without it I don't think we guarantee the result is
->>> monotonic.
->>
->> Not quite sure how constant offset can affect monotonic guarantee of
->> cycles, given that the main use case will be to calculate ns out of
->> small deltas?
+> Does it ignore the IPI even if:
 > 
-> Well, when I read this patch I didn't know, because your changelogs
-> don't mention anything at all.
+>      (ret && (old & CT_STATE_MASK) == CT_STATE_KERNEL))
+> 
+> ?
+> 
+> And what about CT_STATE_IDLE?
+> 
+> Is the work ignored in those two cases?
+> 
+> But would it be cleaner to never set the work if the target is elsewhere
+> than CT_STATE_USER. So you don't need to clear the work on kernel exit
+> but rather on kernel entry.
+> 
+> That is:
+> 
+> bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
+> {
+> 	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
+> 	unsigned int old;
+> 	bool ret = false;
+> 
+> 	preempt_disable();
+> 
+> 	old = atomic_read(&ct->state);
+> 
+> 	/* Start with our best wishes */
+> 	old &= ~CT_STATE_MASK;
+> 	old |= CT_STATE_USER
+> 
+> 	/*
+> 	 * Try setting the work until either
+> 	 * - the target CPU has exited userspace
+> 	 * - the work has been set
+> 	 */
+> 	do {
+> 		ret = atomic_try_cmpxchg(&ct->state, &old, old | (work << CT_WORK_START));
+> 	} while (!ret && ((old & CT_STATE_MASK) == CT_STATE_USER));
+> 
+> 	preempt_enable();
+> 
+> 	return ret;
+> }
 
-Fair, I'll improve commit message in v8, thanks.
+Ah but there is CT_STATE_GUEST and I see the last patch also applies that to
+CT_STATE_IDLE.
+
+So that could be:
+
+bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
+{
+	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
+	unsigned int old;
+	bool ret = false;
+
+	preempt_disable();
+
+	old = atomic_read(&ct->state);
+
+	/* CT_STATE_IDLE can be added to last patch here */
+	if (!(old & (CT_STATE_USER | CT_STATE_GUEST))) {
+		old &= ~CT_STATE_MASK;
+		old |= CT_STATE_USER;
+	}
+
+	/*
+	 * Try setting the work until either
+	 * - the target CPU has exited userspace / guest
+	 * - the work has been set
+	 */
+	do {
+		ret = atomic_try_cmpxchg(&ct->state, &old, old | (work << CT_WORK_START));
+	} while (!ret && old & (CT_STATE_USER | CT_STATE_GUEST));
+
+	preempt_enable();
+
+	return ret;
+}
+
+Thanks.
 
