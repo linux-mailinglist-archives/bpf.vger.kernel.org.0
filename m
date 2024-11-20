@@ -1,126 +1,137 @@
-Return-Path: <bpf+bounces-45295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 541979D41AF
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 18:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22E979D4159
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 18:45:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A68EB3521F
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 17:20:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EC4CB36FE2
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 17:23:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CB419E82A;
-	Wed, 20 Nov 2024 17:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0890218660C;
+	Wed, 20 Nov 2024 17:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oZA+a+++"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NpTvxnFG"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C88685A4D5
-	for <bpf@vger.kernel.org>; Wed, 20 Nov 2024 17:20:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2663B19E82A;
+	Wed, 20 Nov 2024 17:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732123209; cv=none; b=hk1kdZ6WYZDkZWdYNqfOx4qaBhl2AV18pJiYQoednpp+blnFdmpa+bIUPmWXAKrhoOPV9g1gUD1wej7Wecc3fQplJUgtNE9KC9TbfI7DflHxv4opdaofnEjf29xsEo9ep8qn2Y1Hg3c2msgkej6WkjzGA+7Ke5bdxGMSFFHKyy8=
+	t=1732123408; cv=none; b=PR627+tWdJ7+2BE6NOCmzI5+cQu25915nGlgiSWkiEWmxbGxcYoh3Ljl+VGvYT+gQ+R6AmE75C+mhFyC656DMWPVX5xL2HIr56RTeDPCF3K4zfKufr6isTXDfD44gBxv0rsEkDJhrcs45PeTSZMJ+WOYGjGT0UhMZ4uRCE5WbK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732123209; c=relaxed/simple;
-	bh=TwlEUO1djPRoIcwSrPG46uNGrt+C2Av7Kxm8t/b3tYo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BXi5d+oUNcJLHypKGmYqiSq1gX4z4185B6VYAV8pETXF01gooWTHvCVentKbut+2Xhjk8C06jF1tP8eeC/5Kc4eaMQLm6iER0hufBNdKr6HrCj6baPMJwyY5GB9+XDimBsjosABiPlEaVwCjK4wwXKslrDFUH8DiM+wAfi+bTFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oZA+a+++; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2ca4feab-c63c-4d86-8213-26cca774d4b1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1732123204;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=osC62syVo+J2rIxGsRvQhiPOqdUv1do/2hu4dHlnaTc=;
-	b=oZA+a+++G1vKhbyG8CCI/QcrYdjKA1joid8Dl/CXQQEJMDlDuQRhbkqnWmZymcWBXeUS+4
-	Cfvyz86TU+hZwYXEc9kaKVNIXgIdJosUXPgIg4JJDyRT8MX4rQOaV2UhzaJ7vT1XEgt/mV
-	dYOjs046B5THlTSdaGUJq4Cc76ywm6A=
-Date: Wed, 20 Nov 2024 09:19:57 -0800
+	s=arc-20240116; t=1732123408; c=relaxed/simple;
+	bh=WPjlW3G22oxYPA//YNtFl/VzA6ErTKX/duX9P/vcjeI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fkNRMnBB1ZCj5AEEMUU9lE0tP/3cwcsOx81/oE1HEdTYWkS93mcyKlIdRj8bzwbYwNWevpKVIqL5d/jttWzesMGaAhCvcOH3FeI42hChCz6ghzYP1PL11w5mA+nZttMOeta3jQlpmiJV7LCPbJbIg1Y+6iInTqJZRmZBorKBTO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NpTvxnFG; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2e3d523a24dso44315a91.0;
+        Wed, 20 Nov 2024 09:23:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732123406; x=1732728206; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aFHW1yuZZLm+TyLZbm5x3CLYzm52WpF6KpYXZUZOuxg=;
+        b=NpTvxnFGsFCRFNVHvS1T5mTGGXsbw37/vwD/l58ABPGJC3jicsos0/ITUVxkPn1mUG
+         SYeT8q6ug3xWaV6zDbQQ4uRK7sWt21XsRQKUpUiWK7KftWkrKn5OYQT1+1maaTAzkqbR
+         yRI6tqMBKMi/WLALGJr7AFzgwgs1crU7T44dvCE5Utdcc5gCbC1529GBntHQYf6Hyx1x
+         hkmIQ3rSs4RbG8rW2WuHsD730oNgrk15fMdRED+C8Gfepy0I0KXt6Luerx+A0Z3pjHe8
+         MsJrWWITjyBXnW+blkPWaLc6UGm88C9RW5j9zlGwRXI6GqilDIuSxhvEDxQ4wtzfe9WR
+         q6lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732123406; x=1732728206;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aFHW1yuZZLm+TyLZbm5x3CLYzm52WpF6KpYXZUZOuxg=;
+        b=bGbyP0NVuDjvIRnjCHz2HDCSejvKo6xzitzsNHu8bZAZPS56INFGBfZbXdz+er7RLN
+         6FZStf5WIuT0ZkbYru05VQl/hQ4uF94WTmkfQZiYGctIYiGGNh/QMx8IA2viqW39IKTD
+         eMKFtHMK9Z/+MSA3bt0jXQvY77GrHEAC+tm/+YVuZsMO3drRPNdullpboyScanthrGKO
+         oqO7l35zUGhkgNfk3AcJzUYmacRsX1Ev7LLJj0oV008gzcVjjYNxVkfgHUAcwD4fFR26
+         GEogBmWjgTSuBc6l0YvvxVht8jjuI0eU2wvx6l1qd5Czy6ILKLap9duL7wlhawNVzioY
+         6jAw==
+X-Forwarded-Encrypted: i=1; AJvYcCUHruPJIJFRXLTHDgGrhbj06glDeNWtzM+yNw0TwJD8ANg4sa4U1Ga+Y89MdyalsBo+TGKFHSHovk+IHLMq@vger.kernel.org, AJvYcCUnU7R6WrJNRCBbz2NfF2t93ZSYMKmNxRWDCAiJtdqI3qa/V+VvBMcGo05QCPibqe9SuVXqMuqFc4I2DnO5owN5keY5@vger.kernel.org, AJvYcCXMKmQXsNEC7YxkexhYLVEf1ZuHfo/PPqw28wa9MlL5YicL8SAxxBkAR585xZ56GwMnH5A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzwuqinuMjCSdS5fs2DB2OcxviFIvrnZmIeKMgQyb/MhecX2TqI
+	U/mM1x9vl11mGIcu51TxgrexHtTpH2inz0otuLbE5wwwSRtplNDvYCbjsTLjqN+wJFhuJa+DaWj
+	GUE6wYqrnx2YlvR+qlXuXByhGgf4=
+X-Google-Smtp-Source: AGHT+IHmU99QzKqQHpCseY8baqlMhIw/oJlWpRrEPSQmFS/0a2TRodl3EStY/QfZqpeLzWRchDtrlaIkbPnx9yZ9EXY=
+X-Received: by 2002:a17:90b:4a4a:b0:2ea:853b:2761 with SMTP id
+ 98e67ed59e1d1-2eaca7e6a5fmr4440543a91.37.1732123406448; Wed, 20 Nov 2024
+ 09:23:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v7 4/4] selftests/bpf: add usage example for cpu
- cycles kfuncs
+References: <20241028010818.2487581-1-andrii@kernel.org> <CAEf4BzYPajbgyvcvm7z1EiPgkee1D1r=a8gaqxzd7k13gh9Uzw@mail.gmail.com>
+ <CAEf4Bza=pwrZvd+3dz-a7eiAQMk9rwBDO1Kk_iwXSCM70CAARw@mail.gmail.com>
+ <CAEf4BzbiZT5mZrQp3EDY688PzAnLV5DrqGQdx6Pzo6oGZ2KCXQ@mail.gmail.com> <20241120154323.GA24774@noisy.programming.kicks-ass.net>
+In-Reply-To: <20241120154323.GA24774@noisy.programming.kicks-ass.net>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 20 Nov 2024 09:23:14 -0800
+Message-ID: <CAEf4BzaVCg6LcqT8i60ZpZ6Qz3+xMMp_HY1ao4-UtARTPMb=Lg@mail.gmail.com>
+Subject: Re: [PATCH v4 tip/perf/core 0/4] uprobes,mm: speculative lockless
+ VMA-to-uprobe lookup
 To: Peter Zijlstra <peterz@infradead.org>
-Cc: Borislav Petkov <bp@alien8.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- Yonghong Song <yonghong.song@linux.dev>, Mykola Lysenko <mykolal@fb.com>,
- x86@kernel.org, bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>
-References: <20241118185245.1065000-1-vadfed@meta.com>
- <20241118185245.1065000-5-vadfed@meta.com>
- <20241119114714.GD2328@noisy.programming.kicks-ass.net>
- <de9a2138-39ee-46ce-9838-f6d6a4dde747@linux.dev>
- <20241120085117.GC19989@noisy.programming.kicks-ass.net>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20241120085117.GC19989@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, 
+	linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	akpm@linux-foundation.org, oleg@redhat.com, rostedt@goodmis.org, 
+	mhiramat@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	jolsa@kernel.org, paulmck@kernel.org, willy@infradead.org, surenb@google.com, 
+	mjguzik@gmail.com, brauner@kernel.org, jannh@google.com, mhocko@kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>, vbabka@suse.cz, shakeel.butt@linux.dev, 
+	hannes@cmpxchg.org, Liam.Howlett@oracle.com, lorenzo.stoakes@oracle.com, 
+	david@redhat.com, arnd@arndb.de, richard.weiyang@gmail.com, 
+	zhangpeng.00@bytedance.com, linmiaohe@huawei.com, viro@zeniv.linux.org.uk, 
+	hca@linux.ibm.com, Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 20/11/2024 00:51, Peter Zijlstra wrote:
-> On Tue, Nov 19, 2024 at 06:45:57AM -0800, Vadim Fedorenko wrote:
->> On 19/11/2024 03:47, Peter Zijlstra wrote:
->>> On Mon, Nov 18, 2024 at 10:52:45AM -0800, Vadim Fedorenko wrote:
->>>
->>>> +int bpf_cpu_cycles(void)
->>>> +{
->>>> +	struct bpf_pidns_info pidns;
->>>> +	__u64 start;
->>>> +
->>>> +	start = bpf_get_cpu_cycles();
->>>> +	bpf_get_ns_current_pid_tgid(0, 0, &pidns, sizeof(struct bpf_pidns_info));
->>>> +	cycles = bpf_get_cpu_cycles() - start;
->>>> +	ns = bpf_cpu_cycles_to_ns(cycles);
->>>> +	return 0;
->>>> +}
->>>
->>> Oh, the intent is to use that cycles_to_ns() on deltas. That wasn't at
->>> all clear.
->>
->> Yep, that's the main use case, it was discussed in the previous
->> versions of the patchset.
-> 
-> Should bloody well be in the changelogs then. As is I'm tempted to NAK
-> the entire series because there is not a single word on WHY for any of
-> this.
+On Wed, Nov 20, 2024 at 7:43=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Wed, Nov 20, 2024 at 07:40:15AM -0800, Andrii Nakryiko wrote:
+> > Linus,
+> >
+> > I'm not sure what's going on here, this patch set seems to be in some
+> > sort of "ignore list" on Peter's side with no indication on its
+> > destiny.
+>
+> *sigh* it is not, but my inbox is like drinking from a firehose :/
 
-Sure, I'll add this info in the next version.
+Yet, you had time to look at and reply to much more recent patch sets
+(e.g., [0] and [1], which landed 5 and 3 days ago).
 
->>> Anyway, the above has more problems than just bad naming. TSC is
->>> constant and not affected by DVFS, so depending on the DVFS state of
->>> things your function will return wildly different readings.
->>
->> Why should I care about DVFS? The use case is to measure the time spent
->> in some code. If we replace it with bpf_ktime_get_ns(), it will also be
->> affected by DVFS, and it's fine. We will be able to see the difference
->> for different DVFS states.
-> 
-> Again, this goes to usage, why do you want this, what are you going to
-> do with the results?
-> 
-> Run-ro-run numbers will be absolutely useless because of DVFS.
+And to be clear, your reviews and input there is appreciated, but
+there has to be some wider timeliness and fairness here. This
+particular patch set has been ready for a month, it's not that much
+time to apply patches. Liao's patch set is even more stale. And for
+the latter one I did give you a ping as well ([2]), just in case it
+slipped through the cracks. That wasn't enough, unfortunately.
 
-We do a lot of measurements of bpf programs and kernel stack functions
-at scale. We can filter out variations due to DVFS as well as slice the
-results by the HW generations, etc. In general, we do see benefits of
-the values we gather. The goal of this patchset is to optimize the
-overhead added by bpf_ktime_get_ns(). Andrii has already shown the
-benefit in [1]. TL;DR - it's about 35-40% faster than the pair of
-bpf_ktime_get_ns(). And helps to save a lot of CPU at scale.
+I'm not going to advise you on handling emails out of respect, sorry.
+I'm sure you can figure it out. But if you feel overloaded and
+overwhelmed, consider not *gaining* more responsibilities, like what
+happened with the uprobe subsystem ([2]). Work can be shared,
+delegated, and, sometimes, maybe just be "let go" and trust others to
+do the right thing.
 
-[1] 
-https://lore.kernel.org/bpf/CAEf4BzaRb+fUK17wrj4sWnYM5oKxTvwZC=U-GjvsdUtF94PqrA@mail.gmail.com/
+  [0] https://lore.kernel.org/bpf/20241116194202.GR22801@noisy.programming.=
+kicks-ass.net/
+  [1] https://lore.kernel.org/bpf/20241119111809.GB2328@noisy.programming.k=
+icks-ass.net/
+  [2] https://lore.kernel.org/linux-trace-kernel/CAEf4BzY-0Eu27jyT_s2kRO1Uu=
+UPOkE9_SRrBOqu2gJfmxsv+3A@mail.gmail.com/
+  [3] https://lore.kernel.org/all/172074397710.247544.17045299807723238107.=
+stgit@devnote2/
 
