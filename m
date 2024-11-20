@@ -1,166 +1,116 @@
-Return-Path: <bpf+bounces-45279-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45280-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 265659D4021
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 17:34:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 802639D3F77
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 16:56:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F2C8B387F3
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 15:56:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 395FD1F23B8F
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 15:56:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A31414F9E7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55F91537AA;
 	Wed, 20 Nov 2024 15:55:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="jr9LaOxA";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MwSIPPLe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Avhvu7/2"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-b7-smtp.messagingengine.com (fhigh-b7-smtp.messagingengine.com [202.12.124.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46EC213BAEE;
-	Wed, 20 Nov 2024 15:55:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E591113B59E;
+	Wed, 20 Nov 2024 15:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732118130; cv=none; b=JgGUI1fEJ6hUUEj2FuQgwM1fQUzvP8av/JPgCg4eWA0tFy0JRW3zN8KeZycKNdmgfkqz5mA5PIIMg03M1vmrd/m1NnoBZwifOcvdxErV9oqUtS0srFexu7Duy+o3ezU2I8F46ADl5jg+Qmr0bHZi/unLlBbVkD3PzWJdRiq2Z/s=
+	t=1732118131; cv=none; b=gvODhrxhKVw4BbT1ta27GvhKK8wg98owz5btilw4pIUScYiIL0wa78t1vqUe0Se49zhJ5JrcOZH7FV2SFc4VCj0tWOjjaOKU/xivwgqPet+UBKMoLFDaQvK8gXw9Rs0APPRbU2BGc7a3BdPoWKbR08a2V8RNbu4/LYOVXQqCvN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732118130; c=relaxed/simple;
-	bh=00WpXFIMxEyV2iKHvNFZB4Op5fXY92mlcVDIdzmXXUs=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=uBccIJm6Y8kJcR6SyCEcT8R9qGEs+GueW8AZZ/BOLFZFJBT4uivOqDP5KKMC6udSbTvvu67e0PebxmFKhz2MGcpJQCWi91Zz8ADCTHTR0dROkZed9OEXs6k7UhOwlRoUdbPkT43ODM6yzUCVy/2cLGJ7eDoy0hKVOefCNuW4lPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=jr9LaOxA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MwSIPPLe; arc=none smtp.client-ip=202.12.124.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id E64D92540111;
-	Wed, 20 Nov 2024 10:55:26 -0500 (EST)
-Received: from phl-imap-08 ([10.202.2.84])
-  by phl-compute-03.internal (MEProxy); Wed, 20 Nov 2024 10:55:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1732118126;
-	 x=1732204526; bh=00WpXFIMxEyV2iKHvNFZB4Op5fXY92mlcVDIdzmXXUs=; b=
-	jr9LaOxA5vlDDEzLGjvcCIyFUhYn5q/5Chcxk3YLTZeJ35MJrHEK58P3lWA727jp
-	fZa1GvH//VgM7pr8n4Ucl1c0iFMaLBDlUkZNl50KxrDRMnvgELQUIyJ6yLwzfgzD
-	t5VzS+l/ARVEabQYW0q2buVyeyTa1PtmacMJ//hHI/ebCk/6iMJPFJuYR78N3vuD
-	h29KzMkzaC4qtW2kpyPq4FgyAvWELB2G7gdc45mJtjrcBSrnSD2KtkvQnk9ZT4y/
-	j1bEsPk2T99HLl5gX+WH6Ae/hCp9WeyHQIGoYzYqN/YZ6TAr7Bo4v/pRIDd+JFVK
-	9fH8qBovQwFygbrFgxIaUQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1732118126; x=
-	1732204526; bh=00WpXFIMxEyV2iKHvNFZB4Op5fXY92mlcVDIdzmXXUs=; b=M
-	wSIPPLeXyHPu/cnsvcAv5vxk7SkbhtWjM1FCuz7G5CYMqBEkEMpHBlTK4fJ9V7ID
-	0ayzIeyQwAXgNYPQOIJ5ymRg9z2T9E1Gs6PLRYs+ky77Kt5wMPye6cQkoVPYRo9A
-	6h8j2FDSbON/aDLoAhcFO6vZuJNHxzTqVX5msH3Zc2v99PWd8rC4I3OT5nsUUWlD
-	LAiL6cLJ7nj+D+vCkv4JU1JhYPj4CQijMvi/ovr9c5yR3Mst/vZ1oKVq9h5TILvH
-	hYblwscKvZn6ydKShXJXaGZ0+2tEpbVa/pdmU0thVEm4GSdXPUtjomWbgh1RVQQp
-	C+EhL2Zcuvho4lVEPOQZA==
-X-ME-Sender: <xms:bgY-Z6HspSshKaOnkxvwNhLiYc2dGb6Tg2ZDneEj3aAkB4gIlZHc_A>
-    <xme:bgY-Z7WCoLIyCM34HlsNquutAtLkoYM9ecmYzqh0joPYfmO9kntnR3uuQF8Lj0RTb
-    exyse4Q8rgGiCCUxw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrfeeggdekudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
-    tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
-    hsucdlqddutddtmdenfghrlhcuvffnffculdefhedmnecujfgurhepofggfffhvfevkfgj
-    fhfutgfgsehtqhertdertdejnecuhfhrohhmpedfffgrnhhivghlucgiuhdfuceougiguh
-    esugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfelieetgfevffefudefhfff
-    tdeiteegteeggeehueefueefkefgfeeuffevhfffnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiidpnhgspghr
-    tghpthhtohephedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghlvgigvghird
-    hsthgrrhhovhhoihhtohhvsehgmhgrihhlrdgtohhmpdhrtghpthhtohepuggrnhhivghl
-    sehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtohepsghpfhesvhhgvghrrdhkvghrnh
-    gvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghr
-    nhgvlhdrohhrghdprhgtphhtthhopehnvghtuggvvhesvhhgvghrrdhkvghrnhgvlhdroh
-    hrgh
-X-ME-Proxy: <xmx:bgY-Z0KdArCNM1k7TJoGYfbBWpqDymIh-rF0jEpIwVRCD3YVKl_bgw>
-    <xmx:bgY-Z0GtIcSwVOdD9anoyhTnbZasE-JK8nsDlfs7EOHD7ICeB0b6pQ>
-    <xmx:bgY-ZwXvLhbDGVjraFipbcVek-tamS41bC5kYAWnUDVuwyKkSc3hWw>
-    <xmx:bgY-Z3PfPMyHAh74gzw7FW5xDqgdxMXw9ZopRInzc0a8lSGxLcMdyw>
-    <xmx:bgY-Z-wouH4_dYoaXaDcff3imo91pmM2IYs_JgKvHr_oEn3spmoU-_zA>
-Feedback-ID: i6a694271:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 2236018A0068; Wed, 20 Nov 2024 10:55:26 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1732118131; c=relaxed/simple;
+	bh=3PG089p3Ex0v2Wrdrf8Lk4pxMtzsNWx7cgErFJHA86s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EjtGFKE1e0msyNffQ70gOo/ekiExF6fQv4Oc5dMt6ZX4177iT9nyuEXneY71K0fNUE4xxWiNdjKbOppZpQ9aPQMF9mQB0S8tDOplCKyj3gWZDEQR/L8R2z8GI0PGYI6lVkmKP311sL9MsYbAZG33JicFPZINJjocmInWE/9HVPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Avhvu7/2; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7eab7622b61so1712971a12.1;
+        Wed, 20 Nov 2024 07:55:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732118129; x=1732722929; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=53ZiGkp+LxJkB24OAL7nCI7ecSWvuqL5Z3qJZGV0j2w=;
+        b=Avhvu7/2a+8HFY04qknF0WaspF7gUsqeQAnOP9KNKgC13uSTZvigGAMGkopQFXUKEU
+         P1hXSWXGHNPdvJnhhXZCS9udM/gIMEvFZSPnf8KmgEllFRsKBmITNnBbbnX3F+IomF3K
+         HQWD6gda/JJK4ZleCBHLfzG/GSEZoNEnyn+vj+JV8gA7wuDXdQPTjOp7N5hmrb95ppGS
+         s3WEma8PL9tKdLlbJlK+QaDFkPhKyrbsz0PU1GwTXxEfT8aui7QvUD4CK7ls+YpyYkrV
+         n2177cq1ZWPSeh1JHdMox9s+hvg42wr5fDCGTUmwnE/hsuo9bCXA6QTElOotEu+JjGiZ
+         3Kyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732118129; x=1732722929;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=53ZiGkp+LxJkB24OAL7nCI7ecSWvuqL5Z3qJZGV0j2w=;
+        b=KcWE605ScQhd0I95YAy4A/l52GIDXp7QQzaKSIiaBI+C2JpQVzDJnkIsylaMzuqCfI
+         Rde5l6c+zeGt6JLnIYreEGbJcE6aK0Ywxh8h8LXHBb0wq36SuM1Rw4nudi07Q5lAI4ON
+         12pz+snhYkQbEf9sIK+v78VKQ8J+skOcPXlReu7FccQSqlaAaFNT/2WeVu1ldPeXFuOl
+         l+A0ytSj2c4tpr+FP7kWYIesCdemqGoL6Wr9sXvXlD1qnhezj0BQwkRDn5uDDpw6oeZN
+         /XONvNVTRCErBLd3UEo0TWvS4EikjR1o/K3H2hi53Hn6dj8NNO/bj0mCD3kLzoeoWg9G
+         +nSg==
+X-Forwarded-Encrypted: i=1; AJvYcCVCFQz4mk4Ub5VmsFp6s5GBvBI4Oj2/fliueuMUuY0LCZfFggwSo7mkvZjnUUnW45ZMN+s=@vger.kernel.org, AJvYcCVadrKrZ/p6vexboqzWLgFK96UHS+C6/ae7WuawuZ9I45UicTJFg+AnnNoGPXSmNjfmub/qnSKrXFhf0zFS@vger.kernel.org, AJvYcCVe0eOvf2boUm3E47OKEYYP8Gx+Hg+tPzll5+jFEiTHLolkswE9gj1oFmhHoliUmce0uclfXkdu7jHhcyhfn4XD@vger.kernel.org, AJvYcCWg4KAhRhn6Ejy5fpi/Sze4evb4W89nfkgbRSGiaHbb9U/TAYHpzG88xMUs829O91BVKg0SzJiu@vger.kernel.org
+X-Gm-Message-State: AOJu0YylvJVBELLXjQdEFwGgdafru+iY/86wrpEHK57VMWVLHxk2BNFr
+	KKUZRUCok9pQZmX3G5vOzGzwn/GIIzuv5W9/p3pXqaX9kXxJcSA=
+X-Google-Smtp-Source: AGHT+IExsnj6MCpf5hhC2Cwbjg1B3wy76hUf0JGWdA1LY8wf4ob3MW9+JbKpFPwkJNIjVP6kFAXl1Q==
+X-Received: by 2002:a05:6a21:386:b0:1db:efbc:1d4c with SMTP id adf61e73a8af0-1ddafd57969mr4719860637.30.1732118128980;
+        Wed, 20 Nov 2024 07:55:28 -0800 (PST)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724befe9a9csm1789051b3a.193.2024.11.20.07.55.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Nov 2024 07:55:28 -0800 (PST)
+Date: Wed, 20 Nov 2024 07:55:27 -0800
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Alexis =?utf-8?Q?Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>, ebpf@linuxfoundation.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Bastien Curutchet <bastien.curutchet@bootlin.com>,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 09/14] selftests/bpf: move ip checksum helper
+ to network helpers
+Message-ID: <Zz4Gb0TA5e3k11eX@mini-arch>
+References: <20241120-flow_dissector-v3-0-45b46494f937@bootlin.com>
+ <20241120-flow_dissector-v3-9-45b46494f937@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 20 Nov 2024 07:55:03 -0800
-From: "Daniel Xu" <dxu@dxuuu.xyz>
-To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- "Network Development" <netdev@vger.kernel.org>,
- "Daniel Borkmann" <daniel@iogearbox.net>
-Message-Id: <7ec1a922-30c5-4899-a23f-11e3ef9d6fef@app.fastmail.com>
-In-Reply-To: 
- <CAADnVQ+T2nSCA8Tcddh8eD27CnvD1E3vPK0zutDt8Boz7MURQA@mail.gmail.com>
-References: <cover.1692748902.git.dxu@dxuuu.xyz>
- <eb20fd2c-0fb7-48f7-9fd0-4d654363f4da@app.fastmail.com>
- <CAADnVQ+T2nSCA8Tcddh8eD27CnvD1E3vPK0zutDt8Boz7MURQA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/2] Improve prog array uref semantics
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20241120-flow_dissector-v3-9-45b46494f937@bootlin.com>
 
+On 11/20, Alexis Lothoré (eBPF Foundation) wrote:
+> xdp_metadata test has a small helper computing ipv4 checksums to allow
+> manually building packets.
+> 
+> Move this helper to network_helpers to share it with other tests.
+> 
+> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
 
-
-On Sat, Nov 16, 2024, at 2:17 PM, Alexei Starovoitov wrote:
-> On Tue, Oct 29, 2024 at 11:36=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wro=
-te:
->>
->> Hey Daniel,
->>
->> On Wed, Aug 23, 2023, at 9:08 AM, Daniel Xu wrote:
->> > This patchset changes the behavior of TC and XDP hooks during attac=
-hment
->> > such that any BPF_MAP_TYPE_PROG_ARRAY that the prog uses has an ext=
-ra
->> > uref taken.
->> >
->> > The goal behind this change is to try and prevent confusion for the
->> > majority of use cases. The current behavior where when the last ure=
-f is
->> > dropped the prog array map is emptied is quite confusing. Confusing
->> > enough for there to be multiple references to it in ebpf-go [0][1].
->> >
->> > Completely solving the problem is difficult. As stated in c9da161c6=
-517
->> > ("bpf: fix clearing on persistent program array maps"), it is
->> > difficult-to-impossible to walk the full dependency graph b/c it is=
- too
->> > dynamic.
->> >
->> > However in practice, I've found that all progs in a tailcall chain
->> > share the same prog array map. Knowing that, if we take a uref on a=
-ny
->> > used prog array map when the program is attached, we can simplify t=
-he
->> > majority use case and make it more ergonomic.
->
-> Are you proposing to inc map uref when prog is attached?
->
-> But that re-adds the circular dependency that uref concept is solving.
-> When prog is inserted into prog array prog refcnt is incremented.
-> So if prog also incremented uref. The user space can exit
-> but prog array and progs will stay there though nothing is using them.
-> I guess I'm missing the idea.
-
-IIRC the old-style tc/xdp attachment is the one incrementing the uref. O=
-nce
-whatever program there is detached the uref is dropped. So I don't think
-any circular refs can happen unless a prog can somehow prevent its own
-detachment.
-
-Could be mis-remembering though.
-
-Thanks,
-Daniel
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
