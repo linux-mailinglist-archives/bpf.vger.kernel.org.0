@@ -1,167 +1,283 @@
-Return-Path: <bpf+bounces-45259-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45260-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 435969D3929
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 12:09:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C01819D3954
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 12:20:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B19EB2B39F
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 11:05:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52D701F21F96
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2024 11:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F251A0BE3;
-	Wed, 20 Nov 2024 11:04:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D1419F13F;
+	Wed, 20 Nov 2024 11:20:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g2J4+Vz1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JJD6YwZ1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5097319F464;
-	Wed, 20 Nov 2024 11:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AF8197A87;
+	Wed, 20 Nov 2024 11:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732100666; cv=none; b=bCRS/+DHIunWGUvibaSgi5d+FQRy0Gy+xv9R4Lev1xqrWDuwDJqt6jPJpYzN1KgwAy/WiffliaybuVffjFNfD+Ij+wotdiTpmy5q0J/ZtleUvu1Bzp4oL+nb9ep50IWWJpY87Z5+rJR9JgJ++h+ZQJNky0u2XtLGw+1lwdbC/G8=
+	t=1732101607; cv=none; b=DRfLU2Dx+EIU5ETrhgQ8f0G2T8mFRqLsI5IJLDu5wLh0LWdlugNGxaPRMgkb4BptJ+6N3lr9mF/QRI6Ywie9OV/Rdbwtuv5Kk0QTvRFbRkA6zznE4J5qM4epU84uEv5kDI58cudECs+hbLHIcgE6Gl0UsSCvvrVpOsBKhqaOlnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732100666; c=relaxed/simple;
-	bh=HLIF31sLBH0UFLU1mL0HvKWOocAmOPTN1vR/q9fWAxc=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zdod6NlfVxG14RFoURJFbN73Ia4PN32rLJlz9a0jQXf/ySDHX/eZ2ksMrLNETesxgOvp7M3feLXn5/RPjX1dBMRuHX5b3xNwJ6awoW0verH6Ud5sCgxqsG3VWlOLoVlHn9G+OKYUEWdUJeP248KJ3+TuOyvTdz6HjSv+rHaedc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g2J4+Vz1; arc=none smtp.client-ip=209.85.128.43
+	s=arc-20240116; t=1732101607; c=relaxed/simple;
+	bh=yeFmOmmm0HmgGLHlXnstkrzyk4jwienx0zxD65heW6A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LIc1yCp//ba74y/VbtAvGkAqz1mcHtMiDqkq3D/KG4JpgkK4IlvtblE7y3wo7M48YtQT916MDzbVCzDwYibcSc/OMhBeB6m4Nl93W1B7SauiU3GznsaRqhedl89YjYG9Icu9y2In+/8ucL0Vi+QCba30dPVa7gBQREz4tw+4R28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JJD6YwZ1; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43167ff0f91so47806665e9.1;
-        Wed, 20 Nov 2024 03:04:24 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a9f1d76dab1so1092036166b.0;
+        Wed, 20 Nov 2024 03:20:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732100662; x=1732705462; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hSUV8u/PigmG/RnkK9L9y5PvfBVnhZwSbQHvFo3bfTI=;
-        b=g2J4+Vz1NCMqnTwFBD1x7h00iaM6wOwQN7X1p1n35X+HqrAWheczvl93vDULjELIRR
-         tZOBioc79/AWW0NhzFgxgdORnjdbJY/FI00PyvPgkJO1asRQVZ4O0U86F7Yxpbgv17He
-         T/0fErIgKMnKSU06UG3MOuZEvxj4GYBs37WGvUj8F0+y6OQzYxCgwt8EUuDrB9FP8lp4
-         MtrFiOh+EvCzN6Y/Ct1VZ+xcq9h0FrUDW+STHBcryz9cavBqNI3tWgacip1Ib+c0++Ry
-         NOrqdSltMyTHwbrjCF9JWLRwxXQAlfv8TjD94i3zGDefnaA4Z7J9LNj1cfBYRKj66u5i
-         k3Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732100662; x=1732705462;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1732101604; x=1732706404; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hSUV8u/PigmG/RnkK9L9y5PvfBVnhZwSbQHvFo3bfTI=;
-        b=I4WCNv2Ny7bDlJpkLVEaSpoLmN6pi7ISzO/NKjt1s/EFSH06JtG3Xo877d3grEpzuq
-         x70CwwBiV6tI0lNKUuGU4trrGnOik1TYtAxxfqf6DeHOmS77SMkW7cTQZ1c1JkEpcCHL
-         8AsdlHYhGyebbFE2saXG3BsRvuJMqP+5WQy2qu5trBIS0qgnbe4FXEmU1zs09zPJ6+Cx
-         k2EGhZZJMocPRcGRRwwZiVSwk/j1gLY2YSVs1GlLMKnfOMXJFdil39bEwBW7278wZ1fS
-         hA1jdaWRUYC3Gh3L6IEkKaY9njynmv4QRy+z041VDeQURW26z4Pl/3NF/bEBkUep+bvg
-         YFcA==
-X-Forwarded-Encrypted: i=1; AJvYcCUhCDwtSO49p5ZBBAYp3F70QrNaeMNeCFuAUkGvhoWtvT1qkUcTtbBlkXLpDS9p9DNvORyHGDKFdt0BeX+sQA==@vger.kernel.org, AJvYcCUtlhHGJQMZLA1Z3JxgwlAaHt13ILia3Qh6f1CiUbTcHGE7ule3QqrWv+fOcKwPQuKwZQoWuVfQrkDgMgJW@vger.kernel.org, AJvYcCWsRhKaGdcFVW2FTIn1gGtgaWNz1fAwQrq/2SlUCohWw3jFquawLBQsYkZP9umxiWQ8lZw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3vczGD3xYovSs7RQgmgdu4PK4inG7S0i4SLA2OB8WdIeGByYa
-	HNORzjw7332RGWd+4votkyGdo4bctjRxLshz2i80QzTrzTmKrvEl
-X-Google-Smtp-Source: AGHT+IFQ7Bytdn5N8T8vu8IeyWK5Lkg6W07FQ6lpT7b0IjOKbcxy5UJ6hV7EtotQ/xH7fh57DPLL+w==
-X-Received: by 2002:a05:6000:1448:b0:382:4a66:f4ff with SMTP id ffacd0b85a97d-38254af4fefmr1679670f8f.13.1732100662486;
-        Wed, 20 Nov 2024 03:04:22 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3825490bee8sm1755590f8f.23.2024.11.20.03.04.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Nov 2024 03:04:22 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 20 Nov 2024 12:04:20 +0100
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Juntong Deng <juntong.deng@outlook.com>, ast@kernel.org,
-	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, memxor@gmail.com, snorcht@gmail.com,
-	brauner@kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v4 1/5] bpf: Introduce task_file open-coded
- iterator kfuncs
-Message-ID: <Zz3CNMZB94Qmy8nY@krava>
-References: <AM6PR03MB50804C0DF9FB1E844B593FDB99202@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB508013A6E8B5DEF15A87B1EC99202@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <Zz3AG0htZjt9RTFl@krava>
+        bh=SQhHDDRyasWUH8XMwYCMdjoNnB2OVAyDq6YcktEdCiM=;
+        b=JJD6YwZ1DrhmMLSf2AoDdWFAsv+lku5YKtS5Bq1PFutOzIgWPaUaUoD1AOtAKopkRl
+         stFvzaFeubm8QInbJ2qQh4GrkRxVdddIfQE0aM+JOMRVTy/A7YKcUXzGx96g5gyh5/wj
+         NnfZdSN+mhiiaslJT/ijbCZYbX9YiJFbryIrt1fM+vaH+CSlyT5HBdA3XeNfnVHyQLN8
+         h6MR6bGopE0w+JucjKSUl52pTj5Rh0fERPGIfhxe8DPyuYTBB4FSQMn89iGKSxMDn7oQ
+         2I999SU4MMw8l/uaPTu4fg+gwuZQR6JI67LmZ5/iTKPIT3SK9vM9c1qwQM89y4zYQkpN
+         H2fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732101604; x=1732706404;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SQhHDDRyasWUH8XMwYCMdjoNnB2OVAyDq6YcktEdCiM=;
+        b=S1AA6xZGhwAHq9MMx56cVS3HVSxrMYDLYQ5lgzACLKFO676R2LQhaOjPFqh+r6/Ioo
+         2Yvg3QQpliypFcZcf4xTeOpyobMm/rGyw4xBmIMoOcqVVo+Xz5CSiH2pDgtXUrDYQ8ol
+         pX775xqEHkc+n5QmZQ3CH5sYFiI2g/BHOPBwCKZcjWO5Nj3knCqlklMxxbsSCNRqTlVw
+         RdTMi1jwwzbuq3y+3llS7w0QuTxRLBUIj4wAigvNTSWXcWSIrhI5XLKnXNJ1Yu2eTGZ1
+         YwFrGO7iYcred6Bt47qRdI5fB1kmHlxuXmqL7N01qxFeRw2gRiEUfXEcUyXMgagTcHTn
+         sQVA==
+X-Forwarded-Encrypted: i=1; AJvYcCU8e6mCJZ/SJkfEIr59Gs5KG8vxtJRMqVB6LkgMJkOeCTbCSKWOZrw/AxM2Iq0QskFw4VQ=@vger.kernel.org, AJvYcCWCD0d3r22ZFKzB4HVhnbvHrv67ade5dG9+l2Bjr5DZuQ73jrYjRmiukZdEZ69mrcmcX3TeWzJOM2hPJR4YUQ==@vger.kernel.org, AJvYcCWIPozCpH5UJNHh3XhZ6m/8Lwr6rZPhNcXCgeTbhjt5EDexiBe0BgZ2sN0DAZ4/PVgmHF9XW7/VHkbSjh7oU81JiI/EYsu4@vger.kernel.org, AJvYcCXnAFf6pxYVfa9N3RFiTou3zl1mC3CcHkQeSKrS+ppEN15O45I92510IKFYM3NJAf3D/7QgINOjnxexV/6E@vger.kernel.org
+X-Gm-Message-State: AOJu0YzW7ML2sLaGKG8R5ByWRRLWhfD6gt0RnZSl75jSrScM3obdIHPK
+	+9niKRVBjIxbh8avfdcTPGcEOXi4IOV+02z1OOAEjKnsefiS0lx8/0Snnnm76Mk0UN1e3u0OLoS
+	fBu8XDkrzWKphi76EqHKFnZwBgcU=
+X-Google-Smtp-Source: AGHT+IHCbwSKEziXFTHIgb1Xrsy0GuL6SjA/eCppu4tgbUbTE0vB3Kz/tpXxmInZf6cGkBSUA4L6gQJYpQAmtNy0AZ4=
+X-Received: by 2002:a17:907:2da3:b0:a9a:26a5:d508 with SMTP id
+ a640c23a62f3a-aa4dd53db4bmr194834366b.9.1732101603607; Wed, 20 Nov 2024
+ 03:20:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zz3AG0htZjt9RTFl@krava>
+References: <20241112082600.298035-1-song@kernel.org> <20241112082600.298035-3-song@kernel.org>
+ <20241113-sensation-morgen-852f49484fd8@brauner> <86C65B85-8167-4D04-BFF5-40FD4F3407A4@fb.com>
+ <20241115111914.qhrwe4mek6quthko@quack3> <E79EFA17-A911-40E8-8A51-CB5438FD2020@fb.com>
+ <8ae11e3e0d9339e6c60556fcd2734a37da3b4a11.camel@kernel.org>
+ <CAOQ4uxgUYHEZTx7udTXm8fDTfhyFM-9LOubnnAc430xQSLvSVA@mail.gmail.com>
+ <CAOQ4uxhyDAHjyxUeLfWeff76+Qpe5KKrygj2KALqRPVKRHjSOA@mail.gmail.com>
+ <DF0C7613-56CC-4A85-B775-0E49688A6363@fb.com> <20241120-wimpel-virologen-1a58b127eec6@brauner>
+In-Reply-To: <20241120-wimpel-virologen-1a58b127eec6@brauner>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 20 Nov 2024 12:19:51 +0100
+Message-ID: <CAOQ4uxhSM0PL8g3w6E2fZUUGds-13Swj-cfBvPz9b9+8XhHD3w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf: Make bpf inode storage available to
+ tracing program
+To: Christian Brauner <brauner@kernel.org>
+Cc: Song Liu <songliubraving@meta.com>, Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>, 
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "martin.lau@linux.dev" <martin.lau@linux.dev>, 
+	"viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
+	"mattbobrowski@google.com" <mattbobrowski@google.com>, "repnop@google.com" <repnop@google.com>, 
+	Josef Bacik <josef@toxicpanda.com>, "mic@digikod.net" <mic@digikod.net>, 
+	"gnoack@google.com" <gnoack@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 20, 2024 at 11:55:23AM +0100, Jiri Olsa wrote:
-> On Tue, Nov 19, 2024 at 05:53:58PM +0000, Juntong Deng wrote:
-> 
-> SNIP
-> 
-> > +/**
-> > + * bpf_iter_task_file_next() - Get the next file in bpf_iter_task_file
-> > + *
-> > + * bpf_iter_task_file_next acquires a reference to the struct file.
-> > + *
-> > + * The reference to struct file acquired by the previous
-> > + * bpf_iter_task_file_next() is released in the next bpf_iter_task_file_next(),
-> > + * and the last reference is released in the last bpf_iter_task_file_next()
-> > + * that returns NULL.
-> > + *
-> > + * @it: the bpf_iter_task_file to be checked
-> > + *
-> > + * @returns a pointer to bpf_iter_task_file_item
-> > + */
-> > +__bpf_kfunc struct bpf_iter_task_file_item *bpf_iter_task_file_next(struct bpf_iter_task_file *it)
-> > +{
-> > +	struct bpf_iter_task_file_kern *kit = (void *)it;
-> > +	struct bpf_iter_task_file_item *item = &kit->item;
-> > +
-> > +	if (item->file)
-> > +		fput(item->file);
-> > +
-> 
-> missing rcu_read_lock ?
+On Wed, Nov 20, 2024 at 10:28=E2=80=AFAM Christian Brauner <brauner@kernel.=
+org> wrote:
+>
+> On Tue, Nov 19, 2024 at 09:53:20PM +0000, Song Liu wrote:
+> > Hi Jeff and Amir,
+> >
+> > Thanks for your inputs!
+> >
+> > > On Nov 19, 2024, at 7:30=E2=80=AFAM, Amir Goldstein <amir73il@gmail.c=
+om> wrote:
+> > >
+> > > On Tue, Nov 19, 2024 at 4:25=E2=80=AFPM Amir Goldstein <amir73il@gmai=
+l.com> wrote:
+> > >>
+> > >> On Tue, Nov 19, 2024 at 3:21=E2=80=AFPM Jeff Layton <jlayton@kernel.=
+org> wrote:
+> > >>>
+> >
+> > [...]
+> >
+> > >>> Longer term, I think it may be beneficial to come up with a way to =
+attach
+> > >>>>> private info to the inode in a way that doesn't cost us one point=
+er per
+> > >>>>> funcionality that may possibly attach info to the inode. We alrea=
+dy have
+> > >>>>> i_crypt_info, i_verity_info, i_flctx, i_security, etc. It's alway=
+s a tough
+> > >>>>> call where the space overhead for everybody is worth the runtime =
+&
+> > >>>>> complexity overhead for users using the functionality...
+> > >>>>
+> > >>>> It does seem to be the right long term solution, and I am willing =
+to
+> > >>>> work on it. However, I would really appreciate some positive feedb=
+ack
+> > >>>> on the idea, so that I have better confidence my weeks of work has=
+ a
+> > >>>> better chance to worth it.
+> > >>>>
+> > >>>> Thanks,
+> > >>>> Song
+> > >>>>
+> > >>>> [1] https://github.com/systemd/systemd/blob/main/src/core/bpf/rest=
+rict_fs/restrict-fs.bpf.c
+> > >>>
+> > >>> fsnotify is somewhat similar to file locking in that few inodes on =
+the
+> > >>> machine actually utilize these fields.
+> > >>>
+> > >>> For file locking, we allocate and populate the inode->i_flctx field=
+ on
+> > >>> an as-needed basis. The kernel then hangs on to that struct until t=
+he
+> > >>> inode is freed.
+> >
+> > If we have some universal on-demand per-inode memory allocator,
+> > I guess we can move i_flctx to it?
+> >
+> > >>> We could do something similar here. We have this now:
+> > >>>
+> > >>> #ifdef CONFIG_FSNOTIFY
+> > >>>        __u32                   i_fsnotify_mask; /* all events this =
+inode cares about */
+> > >>>        /* 32-bit hole reserved for expanding i_fsnotify_mask */
+> > >>>        struct fsnotify_mark_connector __rcu    *i_fsnotify_marks;
+> > >>> #endif
+> >
+> > And maybe some fsnotify fields too?
+> >
+> > With a couple users, I think it justifies to have some universal
+> > on-demond allocator.
+> >
+> > >>> What if you were to turn these fields into a pointer to a new struc=
+t:
+> > >>>
+> > >>>        struct fsnotify_inode_context {
+> > >>>                struct fsnotify_mark_connector __rcu    *i_fsnotify_=
+marks;
+> > >>>                struct bpf_local_storage __rcu          *i_bpf_stora=
+ge;
+> > >>>                __u32                                   i_fsnotify_m=
+ask; /* all events this inode cares about */
+> > >>>        };
+> > >>>
+> > >>
+> > >> The extra indirection is going to hurt for i_fsnotify_mask
+> > >> it is being accessed frequently in fsnotify hooks, so I wouldn't mov=
+e it
+> > >> into a container, but it could be moved to the hole after i_state.
+> >
+> > >>> Then whenever you have to populate any of these fields, you just
+> > >>> allocate one of these structs and set the inode up to point to it.
+> > >>> They're tiny too, so don't bother freeing it until the inode is
+> > >>> deallocated.
+> > >>>
+> > >>> It'd mean rejiggering a fair bit of fsnotify code, but it would giv=
+e
+> > >>> the fsnotify code an easier way to expand per-inode info in the fut=
+ure.
+> > >>> It would also slightly shrink struct inode too.
+> >
+> > I am hoping to make i_bpf_storage available to tracing programs.
+> > Therefore, I would rather not limit it to fsnotify context. We can
+> > still use the universal on-demand allocator.
+>
+> Can't we just do something like:
+>
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 7e29433c5ecc..cc05a5485365 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -627,6 +627,12 @@ is_uncached_acl(struct posix_acl *acl)
+>  #define IOP_DEFAULT_READLINK   0x0010
+>  #define IOP_MGTIME     0x0020
+>
+> +struct inode_addons {
+> +        struct fsnotify_mark_connector __rcu    *i_fsnotify_marks;
+> +        struct bpf_local_storage __rcu          *i_bpf_storage;
+> +        __u32                                   i_fsnotify_mask; /* all =
+events this inode cares about */
+> +};
+> +
+>  /*
+>   * Keep mostly read-only and often accessed (especially for
+>   * the RCU path lookup and 'stat' data) fields at the beginning
+> @@ -731,12 +737,7 @@ struct inode {
+>                 unsigned                i_dir_seq;
+>         };
+>
+> -
+> -#ifdef CONFIG_FSNOTIFY
+> -       __u32                   i_fsnotify_mask; /* all events this inode=
+ cares about */
+> -       /* 32-bit hole reserved for expanding i_fsnotify_mask */
+> -       struct fsnotify_mark_connector __rcu    *i_fsnotify_marks;
+> -#endif
+> +       struct inode_addons *i_addons;
+>
+>  #ifdef CONFIG_FS_ENCRYPTION
+>         struct fscrypt_inode_info       *i_crypt_info;
+>
+> Then when either fsnotify or bpf needs that storage they can do a
+> cmpxchg() based allocation for struct inode_addons just like I did with
+> f_owner:
+>
+> int file_f_owner_allocate(struct file *file)
+> {
+>         struct fown_struct *f_owner;
+>
+>         f_owner =3D file_f_owner(file);
+>         if (f_owner)
+>                 return 0;
+>
+>         f_owner =3D kzalloc(sizeof(struct fown_struct), GFP_KERNEL);
+>         if (!f_owner)
+>                 return -ENOMEM;
+>
+>         rwlock_init(&f_owner->lock);
+>         f_owner->file =3D file;
+>         /* If someone else raced us, drop our allocation. */
+>         if (unlikely(cmpxchg(&file->f_owner, NULL, f_owner)))
+>                 kfree(f_owner);
+>         return 0;
+> }
+>
+> The internal allocations for specific fields are up to the subsystem
+> ofc. Does that make sense?
+>
 
-nah user needs to take it explicitly, should have read the whole thing first, sry
+Maybe, but as I wrote, i_fsnotify_mask should not be moved out
+of inode struct, because it is accessed in fast paths of fsnotify vfs
+hooks, where we do not want to have to deref another context,
+but i_fsnotify_mask can be moved to the hole after i_state.
 
-jirka
+And why stop at i_fsnotify/i_bfp?
+If you go to "addons" why not also move i_security/i_crypt/i_verify?
+Need to have some common rationale behind those decisions.
 
-> 
-> jirka
-> 
-> > +	item->file = task_lookup_next_fdget_rcu(item->task, &kit->next_fd);
-> > +	item->fd = kit->next_fd;
-> > +
-> > +	kit->next_fd++;
-> > +
-> > +	if (!item->file)
-> > +		return NULL;
-> > +
-> > +	return item;
-> > +}
-> > +
-> > +/**
-> > + * bpf_iter_task_file_destroy() - Destroy a bpf_iter_task_file
-> > + *
-> > + * If the iterator does not iterate to the end, then the last
-> > + * struct file reference is released at this time.
-> > + *
-> > + * @it: the bpf_iter_task_file to be destroyed
-> > + */
-> > +__bpf_kfunc void bpf_iter_task_file_destroy(struct bpf_iter_task_file *it)
-> > +{
-> > +	struct bpf_iter_task_file_kern *kit = (void *)it;
-> > +	struct bpf_iter_task_file_item *item = &kit->item;
-> > +
-> > +	if (item->file)
-> > +		fput(item->file);
-> > +}
-> > +
-> >  __bpf_kfunc_end_defs();
-> >  
-> >  DEFINE_PER_CPU(struct mmap_unlock_irq_work, mmap_unlock_work);
-> > -- 
-> > 2.39.5
-> > 
+Thanks,
+Amir.
 
