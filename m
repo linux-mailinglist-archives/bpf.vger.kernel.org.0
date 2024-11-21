@@ -1,227 +1,215 @@
-Return-Path: <bpf+bounces-45409-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45411-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 585069D53AA
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 20:55:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B43D9D53E8
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 21:21:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C51CF1F22C3E
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 19:55:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B63D0B23725
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 20:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08971A9B38;
-	Thu, 21 Nov 2024 19:54:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46A5F1D5157;
+	Thu, 21 Nov 2024 20:21:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="ao8ygTmu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZkyW/0gJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 254071C879E;
-	Thu, 21 Nov 2024 19:54:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AEB843AA1
+	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 20:21:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732218897; cv=none; b=LHe8kD0GMRUkQUTFSV8wf+TqcUWOrwHCy7KtZn4DVLwXkTMwiI8Psy14Z7dD+H4Urf0h/L4TsWtt4BQxal6a0ga/Wa2Y25tH0xRZ0TyOeeHVbUt1SNvDIA558i5yl4y9JyAh8+FFgcVF7z67FJ4hq9QFpuWwhsM8ZIG7JI5wwhc=
+	t=1732220470; cv=none; b=W4rnUvF5QjshXKlt3dWJxfycKHk1u2E3+iGRvWhQk1FbBy8Nd/kglzTU5yLmZmkob5TsUOuTfsQYtmN02qxMdOl5JJYnkYVRkuRvGu7HO99gk5wp+woCf7lIO7jP4qluACuVmMMvAw6yQ5xAI4X0KEZBa8k5jWarOcjVW0/KRG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732218897; c=relaxed/simple;
-	bh=cCkp6T/5ut6jxWfa0q3B3JwltBL8bFyvsA59iU+TBn0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EGuqvoLwOme4v6wvGVDp8h54cpmZyZ6FnXsdnWPP6PlnPKKf91JIw65DnaD4JPixdu07vcU6ZQob1rmCy8T8yvOWJx6q5/A/HLjCtsHDVSmR8RLAl/7FQCb8yB58EJQ5YnLq7FC/e+egY+3p3zb/rZEp3djno97AalcxGdK84GE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=ao8ygTmu; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1tEDG1-009CVy-1G; Thu, 21 Nov 2024 20:54:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=v/OvbCX67fiKfDPsOSvPlJ92i6d6HdXD7QxhiNZ5o1A=; b=ao8ygTmuqcjWbO3II1En1aQBkC
-	2gZyAB+jNnFyLPsepBk4un1gldp7aG6CfL4pxq2OODmYGqMne6gmf7q8ZYbMTaSI27tGUJXjoWj9D
-	aXnyjlmqOZ1CGFb0km8lGUqDVXthOZviHuCjjnwfICdp6N1hghhDMZLmc45R6ocXxQDMoAZcfAKZv
-	A26udFzPYIwx5KWeJCUILYLMag1qqTYdTVdi2XYE1LQvxnWXObyQE7a5gCOgAqGcaS12HrYW7OZ/q
-	K6tz3II2oHo7kIuIqR2ZBbmGLHyfMpp1rlOy01MwhbhTnk8U7b90aLZxI/TxaG8XLZHpc+xjD3Eat
-	C5G3fgbA==;
-Received: from [10.9.9.74] (helo=submission03.runbox)
-	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1tEDFz-0006kb-KT; Thu, 21 Nov 2024 20:54:27 +0100
-Received: by submission03.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1tEDFs-00CqIR-VC; Thu, 21 Nov 2024 20:54:21 +0100
-Message-ID: <350e3a3f-7ebd-471e-95fa-05225d786f1c@rbox.co>
-Date: Thu, 21 Nov 2024 20:54:19 +0100
+	s=arc-20240116; t=1732220470; c=relaxed/simple;
+	bh=d3Z97F88nILCk3ZGfgFMB22Ulk9JFXwSfRf7CEYMmUg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=o8CY0VrknwfOAKBxlhx9s2EgEUVSlEKNpV6EPbKNITs+x1byxuzdNqZ6zlDyQP7Vs+8gToU2RD8J3Eo2k8nUnrJIDQrDQKFa0oA4/diK38J8U0vCQ6cHfWkxY27eEgK/nwKYsXVbKkNK1Uhs7EaUzK2ljKOQ2qhLgTNMI3eoxbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZkyW/0gJ; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7248c1849bdso1419447b3a.3
+        for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 12:21:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732220468; x=1732825268; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SLC+PApReZLOEgNPWheVo82I0O60Tq8pui30yy0WjZc=;
+        b=ZkyW/0gJoxbHaqfcZagoAoOCNhbJ71rcEPFw8YvyJZvJnOq7vr9Kd3AEmo/1k4VHYd
+         mK8bivflfrn1/Fkhr3i0eERuFMQWngnuLdmXYUZiCmm8agzctJYvKv1Wkuc/Q5xZt1//
+         BwIjfbzt6qeBKXsYgCcFao+DudkUdI6uxGJznkEoSVj3ShD1sy/eLZhEqjjV4u3mSIED
+         W2uoJbZqTH6yy4L93F0wdIxeVmbHoDyPwG3mB99gQhS55F84WawW8ZpK8jpj2FOALT+Z
+         rN3dzfGkYOIE9IFtfkHGvJqdz8wGfx6dbIYKBjKnivKFCvhEHVcDpU7Wt1QMaxTEj3Us
+         UUMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732220468; x=1732825268;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SLC+PApReZLOEgNPWheVo82I0O60Tq8pui30yy0WjZc=;
+        b=ML51s/B/O/VbQiu5zcfXBcjrjJvyvgrT/qSLIVWrWF8f8T4tNNtXxcxta4yRbhvOAI
+         99ng7sdULFU5G28Nl9f1wuIFIx/k7+WbfM/W3T2YwNgZPufgQBWWn3uXDz5d1389j01j
+         nUuzSFf3KMK1Q4rVStKWPFWghWmUr4ZKVEebIJZKrTyxoNuIX32r4Vb7+bZnD6ySP4zT
+         IcTwkL/EJ2VFFrPNl/spanNy+yNbBNXP2T/579JdG0lw+QQH21XbVD3Ywi4bqj6PKugM
+         EYzKOv4kra+FuvYwkSvMhB3vEpIJWUzrB7MeKzuyth4iH8psz8vBPJ9+s6WnBtEue3T9
+         pAQg==
+X-Forwarded-Encrypted: i=1; AJvYcCVkfdgl+9kQsiXUO9U4M0yXQGJ7QffFv8tYWzPev/nyNVrw3VWALxsmacTEecASQlKpNOs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/ci2KUpN//2Lo8JFoidhjK3IptgxbJn9+A7cEAy1aURaT/Cka
+	rbwF5AWYZyCgAAIwk9z0g+rWeN3w3rMJ1FGFndxMS7QP2DlIXaVF
+X-Gm-Gg: ASbGncsHU/NKdds+W6rVqilmzECm2IIwKd4P5GrqAuVYkVhyRI3OOyLIs6ucPtWl5Lc
+	WivFEyCnI/f5YvqYlLeJpN69ImGDryHyPidbIefUpH8n4J5U7EjyceHm22KRtcQ+kTEnhWa5OJh
+	/sytZXjcBx8uVHqmbrAQ2KL4p4CNASVA0JcElmJNkzP2U2csj04Bq2n4laRLHiZBJJcG1n9ZdGl
+	o/ilUo72QFS7/cl/WQ03ZNe31LlqDrxqdrxxET7iHt8NkI=
+X-Google-Smtp-Source: AGHT+IEMA39ioZFKR25J9PV+saxJwIAQj7Sm9fz0eKhvuWsfankH7roCXY9vqHTSulPoPRRIvduglg==
+X-Received: by 2002:a17:90b:38c9:b0:2ea:61de:3903 with SMTP id 98e67ed59e1d1-2eb0e865fe5mr162180a91.27.1732220468463;
+        Thu, 21 Nov 2024 12:21:08 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ead02ea680sm3688939a91.8.2024.11.21.12.21.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Nov 2024 12:21:07 -0800 (PST)
+Message-ID: <c49e756f6e4ef492a68b7cd3b856240282963f8e.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 5/7] bpf: Introduce support for
+ bpf_local_irq_{save,restore}
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
+ Lau <martin.lau@kernel.org>, kernel-team@fb.com
+Date: Thu, 21 Nov 2024 12:21:02 -0800
+In-Reply-To: <20241121005329.408873-6-memxor@gmail.com>
+References: <20241121005329.408873-1-memxor@gmail.com>
+	 <20241121005329.408873-6-memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf 3/4] bpf, vsock: Invoke proto::close on close()
-To: Stefano Garzarella <sgarzare@redhat.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Bobby Eshleman <bobby.eshleman@bytedance.com>,
- "Michael S. Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20241118-vsock-bpf-poll-close-v1-0-f1b9669cacdc@rbox.co>
- <20241118-vsock-bpf-poll-close-v1-3-f1b9669cacdc@rbox.co>
- <7wufhaaytdjp3m3xv7jrdadqjg75is5eirv4bzmjzmezc7v7ls@p52fm6y537di>
-From: Michal Luczaj <mhal@rbox.co>
-Content-Language: pl-PL, en-GB
-In-Reply-To: <7wufhaaytdjp3m3xv7jrdadqjg75is5eirv4bzmjzmezc7v7ls@p52fm6y537di>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 11/21/24 10:22, Stefano Garzarella wrote:
-> On Mon, Nov 18, 2024 at 10:03:43PM +0100, Michal Luczaj wrote:
->> vsock defines a BPF callback to be invoked when close() is called. However,
->> this callback is never actually executed. As a result, a closed vsock
->> socket is not automatically removed from the sockmap/sockhash.
->>
->> Introduce a dummy vsock_close() and make vsock_release() call proto::close.
->>
->> Note: changes in __vsock_release() look messy, but it's only due to indent
->> level reduction and variables xmas tree reorder.
->>
->> Fixes: 634f1a7110b4 ("vsock: support sockmap")
->> Signed-off-by: Michal Luczaj <mhal@rbox.co>
->> ---
->> net/vmw_vsock/af_vsock.c | 67 +++++++++++++++++++++++++++++-------------------
->> 1 file changed, 40 insertions(+), 27 deletions(-)
->>
->> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->> index 919da8edd03c838cbcdbf1618425da6c5ec2df1a..b52b798aa4c2926c3f233aad6cd31b4056f6fee2 100644
->> --- a/net/vmw_vsock/af_vsock.c
->> +++ b/net/vmw_vsock/af_vsock.c
->> @@ -117,12 +117,14 @@
->> static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr);
->> static void vsock_sk_destruct(struct sock *sk);
->> static int vsock_queue_rcv_skb(struct sock *sk, struct sk_buff *skb);
->> +static void vsock_close(struct sock *sk, long timeout);
->>
->> /* Protocol family. */
->> struct proto vsock_proto = {
->> 	.name = "AF_VSOCK",
->> 	.owner = THIS_MODULE,
->> 	.obj_size = sizeof(struct vsock_sock),
->> +	.close = vsock_close,
->> #ifdef CONFIG_BPF_SYSCALL
->> 	.psock_update_sk_prot = vsock_bpf_update_proto,
->> #endif
->> @@ -797,39 +799,37 @@ static bool sock_type_connectible(u16 type)
->>
->> static void __vsock_release(struct sock *sk, int level)
->> {
->> -	if (sk) {
->> -		struct sock *pending;
->> -		struct vsock_sock *vsk;
->> -
->> -		vsk = vsock_sk(sk);
->> -		pending = NULL;	/* Compiler warning. */
->> +	struct vsock_sock *vsk;
->> +	struct sock *pending;
->>
->> -		/* When "level" is SINGLE_DEPTH_NESTING, use the nested
->> -		 * version to avoid the warning "possible recursive locking
->> -		 * detected". When "level" is 0, lock_sock_nested(sk, level)
->> -		 * is the same as lock_sock(sk).
->> -		 */
->> -		lock_sock_nested(sk, level);
->> +	vsk = vsock_sk(sk);
->> +	pending = NULL;	/* Compiler warning. */
->>
->> -		if (vsk->transport)
->> -			vsk->transport->release(vsk);
->> -		else if (sock_type_connectible(sk->sk_type))
->> -			vsock_remove_sock(vsk);
->> +	/* When "level" is SINGLE_DEPTH_NESTING, use the nested
->> +	 * version to avoid the warning "possible recursive locking
->> +	 * detected". When "level" is 0, lock_sock_nested(sk, level)
->> +	 * is the same as lock_sock(sk).
->> +	 */
->> +	lock_sock_nested(sk, level);
->>
->> -		sock_orphan(sk);
->> -		sk->sk_shutdown = SHUTDOWN_MASK;
->> +	if (vsk->transport)
->> +		vsk->transport->release(vsk);
->> +	else if (sock_type_connectible(sk->sk_type))
->> +		vsock_remove_sock(vsk);
->>
->> -		skb_queue_purge(&sk->sk_receive_queue);
->> +	sock_orphan(sk);
->> +	sk->sk_shutdown = SHUTDOWN_MASK;
->>
->> -		/* Clean up any sockets that never were accepted. */
->> -		while ((pending = vsock_dequeue_accept(sk)) != NULL) {
->> -			__vsock_release(pending, SINGLE_DEPTH_NESTING);
->> -			sock_put(pending);
->> -		}
->> +	skb_queue_purge(&sk->sk_receive_queue);
->>
->> -		release_sock(sk);
->> -		sock_put(sk);
->> +	/* Clean up any sockets that never were accepted. */
->> +	while ((pending = vsock_dequeue_accept(sk)) != NULL) {
->> +		__vsock_release(pending, SINGLE_DEPTH_NESTING);
->> +		sock_put(pending);
->> 	}
->> +
->> +	release_sock(sk);
->> +	sock_put(sk);
->> }
->>
->> static void vsock_sk_destruct(struct sock *sk)
->> @@ -901,9 +901,22 @@ void vsock_data_ready(struct sock *sk)
->> }
->> EXPORT_SYMBOL_GPL(vsock_data_ready);
->>
->> +/* Dummy callback required by sockmap.
->> + * See unconditional call of saved_close() in sock_map_close().
->> + */
->> +static void vsock_close(struct sock *sk, long timeout)
->> +{
->> +}
->> +
->> static int vsock_release(struct socket *sock)
->> {
->> -	__vsock_release(sock->sk, 0);
->> +	struct sock *sk = sock->sk;
->> +
->> +	if (!sk)
->> +		return 0;
-> 
-> Compared with before, now we return earlier and so we don't set SS_FREE, 
-> could it be risky?
->
-> I think no, because in theory we have already set it in a previous call, 
-> right?
+On Wed, 2024-11-20 at 16:53 -0800, Kumar Kartikeya Dwivedi wrote:
+> Teach the verifier about IRQ-disabled sections through the introduction
+> of two new kfuncs, bpf_local_irq_save, to save IRQ state and disable
+> them, and bpf_local_irq_restore, to restore IRQ state and enable them
+> back again.
+>=20
+> For the purposes of tracking the saved IRQ state, the verifier is taught
+> about a new special object on the stack of type STACK_IRQ_FLAG. This is
+> a 8 byte value which saves the IRQ flags which are to be passed back to
+> the IRQ restore kfunc.
+>=20
+> To track a dynamic number of IRQ-disabled regions and their associated
+> saved states, a new resource type RES_TYPE_IRQ is introduced, which its
+> state management functions: acquire_irq_state and release_irq_state,
+> taking advantage of the refactoring and clean ups made in earlier
+> commits.
+>=20
+> One notable requirement of the kernel's IRQ save and restore API is that
+> they cannot happen out of order. For this purpose, resource state is
+> extended with a new type-specific member 'prev_id'. This is used to
+> remember the ordering of acquisitions of IRQ saved states, so that we
+> maintain a logical stack in acquisition order of resource identities,
+> and can enforce LIFO ordering when restoring IRQ state. The top of the
+> stack is maintained using bpf_func_state's active_irq_id.
+>=20
+> The logic to detect initialized and unitialized irq flag slots, marking
+> and unmarking is similar to how it's done for iterators. We do need to
+> update ressafe to perform check_ids based satisfiability check, and
+> additionally match prev_id for RES_TYPE_IRQ entries in the resource
+> array.
+>=20
+> The kfuncs themselves are plain wrappers over local_irq_save and
+> local_irq_restore macros.
+>=20
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
 
-Yeah, and is there actually a way to call vsock_release() for a second
-time? The only caller I see is __sock_release(), which won't allow that.
+I think this matches what is done for iterators and dynptrs.
 
-As for the sockets that never had ->sk assigned, I assume it doesn't matter.
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-> 
->> +
->> +	sk->sk_prot->close(sk, 0);
->> +	__vsock_release(sk, 0);
->> 	sock->sk = NULL;
->> 	sock->state = SS_FREE;
+[...]
+
+> @@ -263,10 +267,16 @@ struct bpf_resource_state {
+>  	 * is used purely to inform the user of a resource leak.
+>  	 */
+>  	int insn_idx;
+> -	/* Use to keep track of the source object of a lock, to ensure
+> -	 * it matches on unlock.
+> -	 */
+> -	void *ptr;
+> +	union {
+> +		/* Use to keep track of the source object of a lock, to ensure
+> +		 * it matches on unlock.
+> +		 */
+> +		void *ptr;
+> +		/* Track the reference id preceding the IRQ entry in acquisition
+> +		 * order, to enforce an ordering on the release.
+> +		 */
+> +		int prev_id;
+> +	};
+
+Nit:  Do we anticipate any other resource kinds that would need LIFO acquir=
+e/release?
+      If we do, an alternative to prev_id would be to organize bpf_func_sta=
+te->res as
+      a stack (by changing erase_resource_state() implementation).
+
+[...]
+
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 751c150f9e1c..302f0d5976be 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -3057,6 +3057,28 @@ __bpf_kfunc int bpf_copy_from_user_str(void *dst, =
+u32 dst__sz, const void __user
+>  	return ret + 1;
+>  }
+> =20
+> +/* Keep unsinged long in prototype so that kfunc is usable when emitted =
+to
+> + * vmlinux.h in BPF programs directly, but since unsigned long may poten=
+tially
+> + * be 4 byte, always cast to u64 when reading/writing from this pointer =
+as it
+> + * always points to an 8-byte memory region in BPF stack.
+> + */
+> +__bpf_kfunc void bpf_local_irq_save(unsigned long *flags__irq_flag)
+
+Nit: 'unsigned long long' is guaranteed to be at-least 64 bit.
+     What would go wrong if 'u64' is used here?
+
+> +{
+> +	u64 *ptr =3D (u64 *)flags__irq_flag;
+> +	unsigned long flags;
+> +
+> +	local_irq_save(flags);
+> +	*ptr =3D flags;
+> +}
+
+[...]
+
+> @@ -1447,7 +1607,7 @@ static struct bpf_resource_state *find_lock_state(s=
+truct bpf_func_state *state,
+>  	for (i =3D 0; i < state->acquired_res; i++) {
+>  		struct bpf_resource_state *s =3D &state->res[i];
+> =20
+> -		if (s->type =3D=3D RES_TYPE_PTR || s->type !=3D type)
+> +		if (s->type < __RES_TYPE_LOCK_BEGIN || s->type !=3D type)
+
+Nit: I think this would be easier to read if there was a bitmask
+     associated with lock types.
+
+>  			continue;
+> =20
+>  		if (s->id =3D=3D id && s->ptr =3D=3D ptr)
+
+[...]
 
 
