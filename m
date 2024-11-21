@@ -1,85 +1,85 @@
-Return-Path: <bpf+bounces-45331-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45332-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0510A9D479D
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 07:35:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FD709D47A7
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 07:38:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 955F6B20FCF
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 06:35:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E3BF283A61
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 06:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA72155C9A;
-	Thu, 21 Nov 2024 06:34:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B67E1C9DC8;
+	Thu, 21 Nov 2024 06:38:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OdjCCAWU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tup/CgMr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70FCB1474CC;
-	Thu, 21 Nov 2024 06:34:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA521C4A3C;
+	Thu, 21 Nov 2024 06:38:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732170891; cv=none; b=r+I03xLMM7LUdqIYaqDH9ycvNT9WOqET1p5PK2tRdURUuwO1HdKReLKHO9TWfIFuf5e8haZqBb0GMfcobVvN9y+0E7k6GqdNEJKPOJrcGo5H0xNax3GHEKwJyZk2+01XkOPA0MTMr1dPG0S+ujMrP6nVhrrh9arniYGOtK3rUFs=
+	t=1732171108; cv=none; b=nN16fpdGftgSAs7bhlzVbQW+zfAdzQ5GRvbS2E6Ot7kuYlAELnDaVhFmIcgahk3UCdhmbxxHuMuhFn3VbyNhZGh3vD3II+OBrMtKbDcgE6cWmWnT71Q7hUjgmOUyP2TGzRjj0FUVC5UBGwgLTJHVJsBysmz7pcZEiY5zoZ/eVyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732170891; c=relaxed/simple;
-	bh=CCJYpnNoFaP4PSwtx+JJstwBCvQf8IP9xq6B/BY7U7k=;
+	s=arc-20240116; t=1732171108; c=relaxed/simple;
+	bh=u8feEyqexppjlae/GbKD9ygY4w89F+NohiFM3+a3grw=;
 	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=mHikSo+PwwtBbDCnusguS9o6To7+CyRMOdNadYheA/6ZKptXQhyNBWyGL6tcXpmidIbp228X1hK/SH8r4TE1Vk+8k1Dc6dBw4cLbG+tqpZs732fc2u4Il0lWkf6irPMlrHOPbNeQ7mgYqhMfXoMl/sIhJ45mB7Aq95/k/e9sdhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OdjCCAWU; arc=none smtp.client-ip=209.85.214.174
+	 Mime-Version:Content-Type; b=hHLiyyOIE7T3+xB3mXh0xus4YlarAU+Z718wieaK0irJXQ5Kq97wkpkYVhpguhjv7GQ1b3YaWZjNpN1CmJyHTCIgyQp/XWF/rE9EyZ/3osxXBheIxZZKod1PQzm1w7QIGRAwAQ77KdC9L3L5KXgxUVfqcjhm3zs/zbW941elpmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tup/CgMr; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21260cfc918so4016055ad.0;
-        Wed, 20 Nov 2024 22:34:50 -0800 (PST)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-724d23df764so93843b3a.1;
+        Wed, 20 Nov 2024 22:38:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732170890; x=1732775690; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1732171106; x=1732775906; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vcbwmTLwIfF0uyzEPmfMHhi+eaHOIrhHi87bo0ww+6M=;
-        b=OdjCCAWU4oWNYqIpGyb28ctc34sEPzUVOOwEArp9JfFxOAaKYiasScU4o6qe1zVWBL
-         lzPYKBwMPR+SYYgCodbI500fmQ8CS9HEdSG9z4LTgFOcMz5ycF0PRjc+N0gssu2L8N7s
-         l+qnXNWfA0jzKvQVRDoSr6m3z2OWEoftFuKSo/ProaqXErKmlP8/jNQGq4zKmOGaek6V
-         qvhl5kxvV7KEtcS6fCi1Sl339NABadX3O+i60Ah5vm3iFsL2Cfks7+9EEvEGVNHjhHu3
-         T5Uyd2vVsQpkqhqzTvUccGsI+Ayg97zy3aZeH3yMK+PlfMlvFGaiL6GxkfFnL6vDlqwy
-         ZvHg==
+        bh=yVhGB+uhK4i7clXBCrnAFu8xplWivYQ5CRd7LNvitZE=;
+        b=Tup/CgMrZtx6Zvij04D9KFNYopjZYdH3nAvROmQeVgQ92QgYEco1/UN/uZy342c9zx
+         x0FviRz7oEIzZLnMekPKTOSC5YNgmWFGkw3xwrzqnFD30zYFfhZnJMWhkYWrvjeWXKao
+         74Pgyspa1Iga7HJ4RVAI2ijzKJ6C89+hmu25O6I097b1XL/wsWiDw1oCiVdIqC2xwVix
+         04o5QlUV0NkKSunNRjPQjlAWX1mZC3OItgUm6ahoxAJr7MSI46w6ldbNw9odJ2s2r/VB
+         tQvKorldB8Zh+EXlKfXTVSG57LCIpIO+ffwqfIcZaLke8ys0h6WyAdk4/SmFa4NMDNa8
+         WdXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732170890; x=1732775690;
+        d=1e100.net; s=20230601; t=1732171106; x=1732775906;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=vcbwmTLwIfF0uyzEPmfMHhi+eaHOIrhHi87bo0ww+6M=;
-        b=n803uwXIDkqYVnuLy7l8N4YlEUVlS5jgMRaec1pqXmSvDHrth9kcahBbov0s43egQv
-         bB50WrtduYwYFyRxPreC7B7OKrWfdbWm/ogJQJx5XRebR91+3hO7zl8QRKQmpV4HcBXo
-         dVBJcScRNhtOY0upIMJvFBI6+oLx9k/iiEqfOpOcb7BkUuVXoJ3UNOxWN9KI3LpLu0jf
-         6Zwlh80R/0ygdoy1oKbVlAT+bG7YcgYdzTLYazJxoOdBrepVMUTikyj9FrHRpEveaYnp
-         LSeXpnWmL55mlfQZhWETvZn7jcV3BfD1byhJF9XgLz+eFQwjAioSelm3TLVi1DaprGKq
-         JTNA==
-X-Forwarded-Encrypted: i=1; AJvYcCUapA2WEjJA2GoGshXxdWzCRWrOBM4HyikQYONGepcVfTVfo/ISvXw0sR1lz/lrFX93/zpI3D9A3JF/Bm1+@vger.kernel.org, AJvYcCVXDhpFgkBaIHMnUwku5YRCWEdny0w/lNAeHBCVZixznmIoDaUMdgnuK4feRqj6jRJWxEc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKE17q6AecPlMIfXqe8beCVhtEfd5NQkNyIaltJi7EHWmXFAig
-	Rtp15k1AwJcjaDifrsC0D55/satr2Bh3vpARO/xHUlLsNiFUAE99
-X-Gm-Gg: ASbGnctK8Im5vojO9NbnX9J6I4ISWbvvvQcRXUBfrd48RweGJbpQK9mBCHxlOVRi2JG
-	M2mt1ibTy+C1cKR0YeloH6RkAqKNJIs5aGWhvIbJzWOoBqm5dT6qJOx8Gw0KIMUHZH6azhyaduS
-	J/Cxzg4yqElU/gyacfMJpsvA0b51dm6zoshE1fX4EKt28Q9emmfPsIp8weZ8F1YU95L3LqfHh9w
-	3QIJw/m/61pvUtNXr5PM+h8MM0TfgJ8MgkNCSsxbO79wFnesQk=
-X-Google-Smtp-Source: AGHT+IFkmlVd18uw8U9dudkF6C+D/TZ9qT66mPffZJqim4Ux43xTlK89LhBU1qMqtrdo02x2/fQwCw==
-X-Received: by 2002:a17:903:8c5:b0:20e:552c:5408 with SMTP id d9443c01a7336-2126a4551c7mr64693705ad.51.1732170889716;
-        Wed, 20 Nov 2024 22:34:49 -0800 (PST)
+        bh=yVhGB+uhK4i7clXBCrnAFu8xplWivYQ5CRd7LNvitZE=;
+        b=bt9KhZlgX9+ZB8dTs0SX0xO9yBKhmKuxhxwmIM8701QqFl6rW11Udj5pu3DOtGNdpX
+         B9fZ4+5enkx7VZ1IhTBuhysophwiGzT+X4b4IOlvaBwXyhu5Fd23cm3bxkd+XrISbDxu
+         y2rZsQEYpjylBp6jrUn/ey1N+Tm581Yf23sJ79ZSGuvqnvSm52uTRgM04IkrQBx6p3Zw
+         kK+KEa2vpwIr8rCHgu8TlnLTDBUHC3bNdmDSpgSvJectM3ovmdCQIoISpgHeYBMZqSP1
+         wnCim+JjG/v/hQUhvfnYidTMD9oMwqjFPOvBtcoFQ14nNPAU1BfK+VbRWJtT+WMyPyvX
+         hQFg==
+X-Forwarded-Encrypted: i=1; AJvYcCVnj/rbbrbUcv7sN+tV8Rn4gSWAOoKsdIqjiJZqiD5l1TckBfnUX92HQtzdex8KKwWJF4z18mwMAk+UCDk=@vger.kernel.org, AJvYcCWXSbgPISgp1hVDjLd/kAFYAPIMjcG43E7WOZWqDRKaZdugAIBpXx1ydflRORGCD09vZlybTtcdcyV7yQ//H41t@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw14pm9O7pNxbbJE9KJDbuVQBs5wcyMkcQYKF3gZI3SuZKNnkAR
+	8pN5VxUvVFofev9HiRZFAL1KVtl26g/UCqjm+4He1m0ALC6JmfYKAxIVOw==
+X-Gm-Gg: ASbGncuHW1RChy8H7EVy/kWQ/cYdrJRzq6ygYMQmP1i2oJlX8yyA1VvzHbCQswpankV
+	vQnVQuG4PD93oEe/ARvehsgpvgx61CPq/qLqqGjSvpnLyP4TbmtTI/XP58accvqu4JWlrmT7p6z
+	sln3Y6LdSWwtH8oGk8+iGwAfUK3WWDR/WXY1sXtPZD3kqG8GYG4kCVZHTgmI4VCTbiBuMVoxH3Q
+	VmnV45CtgkRmysROBzXCmwGdGbeHyzbS/ySOGbLwKA/KfRta/Q=
+X-Google-Smtp-Source: AGHT+IFY90NoJv1XxElOiRWRnX47j8HegmgYtWeza+AkhFrK3qwrcxG1yRoT1C9s1mGFMNPvmL/n5g==
+X-Received: by 2002:a05:6a00:acf:b0:720:2e44:8781 with SMTP id d2e1a72fcca58-724becb775bmr6019934b3a.11.1732171105841;
+        Wed, 20 Nov 2024 22:38:25 -0800 (PST)
 Received: from localhost ([98.97.39.253])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21287ee14e4sm6035055ad.147.2024.11.20.22.34.48
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724bef8da5csm2812081b3a.130.2024.11.20.22.38.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Nov 2024 22:34:49 -0800 (PST)
-Date: Wed, 20 Nov 2024 22:34:47 -0800
+        Wed, 20 Nov 2024 22:38:25 -0800 (PST)
+Date: Wed, 20 Nov 2024 22:38:24 -0800
 From: John Fastabend <john.fastabend@gmail.com>
-To: Amir Mohammadi <amirmohammadi1999.am@gmail.com>, 
- qmo@kernel.org, 
+To: guanjing <guanjing@cmss.chinamobile.com>, 
+ andrii@kernel.org, 
+ eddyz87@gmail.com, 
+ mykolal@fb.com, 
  ast@kernel.org, 
  daniel@iogearbox.net, 
- andrii@kernel.org, 
  martin.lau@linux.dev, 
- eddyz87@gmail.com, 
  song@kernel.org, 
  yonghong.song@linux.dev, 
  john.fastabend@gmail.com, 
@@ -87,15 +87,16 @@ To: Amir Mohammadi <amirmohammadi1999.am@gmail.com>,
  sdf@fomichev.me, 
  haoluo@google.com, 
  jolsa@kernel.org, 
- bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Cc: Amir Mohammadi <amiremohamadi@yahoo.com>
-Message-ID: <673ed487b45f4_157a208ab@john.notmuch>
-In-Reply-To: <20241116071346.1412266-1-amiremohamadi@yahoo.com>
-References: <47225498-12ab-4e69-ac50-2aab9dbe62c0@kernel.org>
- <20241116071346.1412266-1-amiremohamadi@yahoo.com>
-Subject: RE: [PATCH v2] bpftool: fix potential NULL pointer dereferencing in
- prog_dump()
+ shuah@kernel.org
+Cc: bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ guanjing <guanjing@cmss.chinamobile.com>
+Message-ID: <673ed56061103_157a208bc@john.notmuch>
+In-Reply-To: <20241117102857.198803-1-guanjing@cmss.chinamobile.com>
+References: <20241117102857.198803-1-guanjing@cmss.chinamobile.com>
+Subject: RE: [PATCH v1] selftests/bpf: Fix unnecessary conversion to bool in
+ 'run_subtest'
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -106,14 +107,38 @@ Content-Type: text/plain;
  charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-Amir Mohammadi wrote:
-> A NULL pointer dereference could occur if ksyms
-> is not properly checked before usage in the prog_dump() function.
+guanjing wrote:
+> Fixes the following coccicheck:
 > 
-> Signed-off-by: Amir Mohammadi <amiremohamadi@yahoo.com>
+> tools/testing/selftests/bpf/test_loader.c:1033:64-69: WARNING: conversion to bool not needed here
+> 
+> Fixes: 80a4129fcf20 ("selftests/bpf: Add unit tests for bpf_arena_alloc/free_pages")
+> Signed-off-by: guanjing <guanjing@cmss.chinamobile.com>
 > ---
->  tools/bpf/bpftool/prog.c | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
 
-LGTM but still needs a Fixes line.
+I'll argue this is bpf-next and no need for a fixes tag here.
+
+>  tools/testing/selftests/bpf/test_loader.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
+> index 3e9b009580d4..400f56f81272 100644
+> --- a/tools/testing/selftests/bpf/test_loader.c
+> +++ b/tools/testing/selftests/bpf/test_loader.c
+> @@ -1030,7 +1030,7 @@ void run_subtest(struct test_loader *tester,
+>  		}
+>  
+>  		do_prog_test_run(bpf_program__fd(tprog), &retval,
+> -				 bpf_program__type(tprog) == BPF_PROG_TYPE_SYSCALL ? true : false);
+> +				 bpf_program__type(tprog) == BPF_PROG_TYPE_SYSCALL);
+>  		if (retval != subspec->retval && subspec->retval != POINTER_VALUE) {
+>  			PRINT_FAIL("Unexpected retval: %d != %d\n", retval, subspec->retval);
+>  			goto tobj_cleanup;
+> -- 
+> 2.33.0
+> 
+> 
+> 
+
+
 
