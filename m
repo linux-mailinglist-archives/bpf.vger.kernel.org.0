@@ -1,128 +1,108 @@
-Return-Path: <bpf+bounces-45410-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45412-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED7C59D53E6
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 21:21:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 361259D53ED
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 21:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99F051F2282B
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 20:21:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B924AB23F51
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 20:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137391CD1EE;
-	Thu, 21 Nov 2024 20:21:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FFF51C2337;
+	Thu, 21 Nov 2024 20:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TOqjNU7Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LtGtruM/"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71DF81885B0;
-	Thu, 21 Nov 2024 20:21:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581DC1BF58
+	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 20:23:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732220470; cv=none; b=T2eRdSWOGOES+WCaUjKu5dM8QwZN7ycNHs+MOsM5MQ+oAhXGQyJkhCvEjBrLo076TgjX57u/mfCUwZ/yuxfCxkx0rEtUuKbtt/ocrM+zv7sXY+pszoeECcVOsSxtJx3MKUt2kXFEg0fw5S+Nd6h+seTmNi9WCvH5ydPu6jFgcqQ=
+	t=1732220640; cv=none; b=efgxgcAzDOWh3U9G1fzsTr8i6XpVQxhvLaF/YVdw6b8yDYXHDv7zE3zXcGBZXnSaLfAoIVZ9zr0ikQHXEXxamqR+J4IGgmrOI+A9K3C2EDQBKL2p5jkrdsmZerA0GB4THzNwXfGQRmc0IB0bo6id0lCz+CNc+StfkvxcWX2x3fw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732220470; c=relaxed/simple;
-	bh=wNYkfuMHGFqeyTu02+G0cxoLxThoICjuoPLXY/5UBYU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Uklgf66FieT6o14W2A8UAL6pUkr4rY1Qb8jsc+pjb444MItKgXGOBmbZC8G4Ar/0xDtVXArw4dhnYPb/TH00pPkRCI2o6VZ2kHyiPkG0SNfl9+t2YHuFviTlxmLT/bFtyQA3BiuhMq1UTmXEbKMTMj3ATtpo11VTpNJ7+6EFSZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TOqjNU7Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F078FC4CECC;
-	Thu, 21 Nov 2024 20:21:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732220469;
-	bh=wNYkfuMHGFqeyTu02+G0cxoLxThoICjuoPLXY/5UBYU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TOqjNU7YKRRxGlU4c8C939Ds5dQ3oWgCHi+HIi9SAWqhPZoTnaadXgUOKBADkM39p
-	 bKpk7g8t61Qm8fZ+XutRzXLc+fMlHcfWWYf4ErODUfSTaQzEDMDnBtGRGjhKTWJ5nq
-	 sBttLWdygAiNOBZEQ91PPHm0TUdHHLy1wNXLc99AyW3xbzRVYuQb1kYgS4r/PFeY/e
-	 t/Ildf4N3ekcAFa6CEAIhWFEoPBehSXKK+GqSFk0ijuCbucPr+xzJFwlUA5eLkqff6
-	 cpmyLXfIcSVA56+JnbQEFKYu5YhmNFA0tldkKGGPV+K3l7DuzWYdVwRgJiiHCFIffG
-	 DY7/UWJzfaJag==
-Date: Thu, 21 Nov 2024 12:21:06 -0800
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-	bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Juerg Haefliger <juerg.haefliger@canonical.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
-	Chuang Wang <nashuiliang@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Petr Mladek <pmladek@suse.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-	Julian Pidancet <julian.pidancet@oracle.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>,
-	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
-Subject: Re: [RFC PATCH v3 06/15] jump_label: Add forceful jump label type
-Message-ID: <20241121202106.nqybif4yru57wgu3@jpoimboe>
-References: <20241119153502.41361-1-vschneid@redhat.com>
- <20241119153502.41361-7-vschneid@redhat.com>
- <20241119233902.kierxzg2aywpevqx@jpoimboe>
- <20241120145649.GJ19989@noisy.programming.kicks-ass.net>
- <20241120145746.GL38972@noisy.programming.kicks-ass.net>
- <20241120165515.qx4qyenlb5guvmfe@jpoimboe>
- <20241121110020.GC24774@noisy.programming.kicks-ass.net>
- <xhsmhcyioa8lu.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	s=arc-20240116; t=1732220640; c=relaxed/simple;
+	bh=kvOEFeJYI+wr3NQaQmzQlYaw1aXCj/ks+IiE+3t8RiE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=JkBLR+EqW3CHYYa6xK7bBF7Y5/U34Cj7CYm3HPZLX8SwZ5JbxKUPloE8hp5GbErY+pR5ExotSGOjN93ID0GL8YB/cRXIBO/cGE+XaQrT1rOH37Fbjboz6jSBFtvWEjyS0cPec2yoyqZpZl7A1LNRvV5luVQY/DCTqsl2y0AC8k0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LtGtruM/; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-21145812538so10624605ad.0
+        for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 12:23:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732220638; x=1732825438; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=kvOEFeJYI+wr3NQaQmzQlYaw1aXCj/ks+IiE+3t8RiE=;
+        b=LtGtruM/2MCmQR7NXo1L6qlzVfaRZTiRjsILkHs55ps+vucfZHJzVM6Ib4rUDEo9hx
+         6TvKO9rTQBfDKmrAirN+yEGA2qbOBiyQeMuFc5pw0i+nDtk/qkEVFi5mzfOL1jMeIsCw
+         aOLfofVsvqHQYw5luUYG+8Y6V3keAIIjYOk1aIbfcOsQ6GE9SnjyMK7VQ0F9twjhJxjV
+         d0IyI3kC60A3ifNiHsONkeYD1i586l23PKu5bBTPyDp+fOVsEejM9ul6EXI2A4yn/6fQ
+         ffQQsLhNxQ+YoFjijGtX7Orf4bdOrPA9tnEfX9QC44dklF1GwJ2lBxMlSfD/O3g8EMvI
+         04Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732220638; x=1732825438;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kvOEFeJYI+wr3NQaQmzQlYaw1aXCj/ks+IiE+3t8RiE=;
+        b=o4GvQt/ykqoxU0U+27A7GPZ3/MHxSS+oQFgUM+UhbYulB3s1XHA7QDH/xO+jbmZ/vR
+         dduvPmnfwb9CdPWbLoLnqg8MzVB5K4j2FeQmP0rL7MwsoiHEu0E5jcMW8+Fd2b2UdaF7
+         creZD1f4e8tEREutOLk/KitpVUGDz5ULxqYDAt4Gs47MQiUi+x0cSwsHSRGkH/77AolV
+         slNErnq8I6s4dbrH0OR/H5K8k0ivszErIfRrOGeT2Yt8p7rTPLVg7b90pSyAsPmRDAjz
+         8geHJQ2MBBje8X+W7dLXNLQR8cMih4UaqEyHXSmxO3rPQYTZ6h16ezb00vYferVTxdme
+         /jgA==
+X-Forwarded-Encrypted: i=1; AJvYcCVw6+1q8t3Fp8oXBKYmAgoMHvPknk1WqjhVO8UMd14dO/6SQ8j4VdobQOTTycpDaUzU5Q8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx9QDcWP9kOhcF4e4knHwNmR2CiXTHJPkc3NNJ+tbH6Rl6rDfAD
+	DqCj0y80+clIf3wtlnnRaWhDHLWkoMW1tUyUAMGGC67IgIQl4r3p
+X-Gm-Gg: ASbGncuWk0zBQXnL9q+amJkocvDtZPOrWEoXWZR8HEnRi+peBH+dw5YtG/FmCjqrvFp
+	bwgVKLVf1IXeGewsrzFcoaLRY2+qrp3qToArd1yXc8mt2wugkCfZrEN6EyDJ+sCDWs3xQC7So8/
+	Ox+bdJqb8pyvVkErRp5wMck9cfdE3Uxudi4tJT5t94y1hNsrvZW59MMT+wlfZbCxYBF5D+3GHI6
+	NmWgKENI32Mf/J1dqcdkBntHx8rfnnS2lDVGvnh1oZ82ao=
+X-Google-Smtp-Source: AGHT+IHihRknYdR0oGNyooa4g04M3oZIxjXwznnvcQtyRAehqInVxi8iyfouHCPVNQD5VXfBFKduyg==
+X-Received: by 2002:a17:902:e5cb:b0:212:10e3:7671 with SMTP id d9443c01a7336-2129fce2fcdmr1444165ad.4.1732220638527;
+        Thu, 21 Nov 2024 12:23:58 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2129db8d449sm2446155ad.28.2024.11.21.12.23.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Nov 2024 12:23:58 -0800 (PST)
+Message-ID: <9ef6bac0d6200246680cee1268165bc69944e981.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 6/7] selftests/bpf: Expand coverage of
+ preempt tests to sleepable kfunc
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
+ Lau <martin.lau@kernel.org>, kernel-team@fb.com
+Date: Thu, 21 Nov 2024 12:23:53 -0800
+In-Reply-To: <20241121005329.408873-7-memxor@gmail.com>
+References: <20241121005329.408873-1-memxor@gmail.com>
+	 <20241121005329.408873-7-memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <xhsmhcyioa8lu.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 
-On Thu, Nov 21, 2024 at 04:51:09PM +0100, Valentin Schneider wrote:
-> Okay so forcing the IPI for .noinstr patching lets us get rid of all the
-> force_ipi faff; however I would still want the special marking to tell
-> objtool "yep we're okay with this one", and still get warnings when a new
-> .noinstr key gets added so we double think about it.
+On Wed, 2024-11-20 at 16:53 -0800, Kumar Kartikeya Dwivedi wrote:
+> For preemption-related kfuncs, we don't test their interaction with
+> sleepable kfuncs (we do test helpers) even though the verifier has
+> code to protect against such a pattern. Expand coverage of the selftest
+> to include this case.
+>=20
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-Yeah.  Though, instead of DECLARE_STATIC_KEY_FALSE_NOINSTR adding a new
-jump label type, it could just add an objtool annotation pointing to the
-key.  If that's the way we're going I could whip up a patch if that
-would help.
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
--- 
-Josh
+[...]
+
 
