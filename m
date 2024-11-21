@@ -1,150 +1,129 @@
-Return-Path: <bpf+bounces-45382-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45383-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F33799D4FD0
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 16:37:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D87359D4FE4
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 16:39:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB7641F23223
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 15:37:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DD8E284116
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 15:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B6014F9E2;
-	Thu, 21 Nov 2024 15:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B4C11A704B;
+	Thu, 21 Nov 2024 15:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Jj58eW6D"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M/DBLHPF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0B07083A
-	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 15:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8BCB41A8F;
+	Thu, 21 Nov 2024 15:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732203417; cv=none; b=ocYKrG5v6oxqxYPIDUoadkkEedydt/esuOGO9/op3ky08OIqgZ/b0NQYumieqEG6t7t5pWE3g+YulIh+XLe33desoB0ddTwI7lo1UugxkiYSb8BQR6sZx/OoGr8UirpSJRg4NBQ0UXiKXGduZZGNXGXbv4edGBYmKvDyk/mTT4A=
+	t=1732203485; cv=none; b=K7OSZrUvyEOKOCKH0GOxPF6kV8bDx56Cee8xN7g6M7ry8GQh+wzMo3iYnF4BqPHfpRygIn6Ukw0hnRmJ4LnqtJUup1BfWOMGY7NZ9NYw8p8kkEUgaThhusEZU39THiKxvKQQhe5Hgl6X1+iSoRaahNhX1ZewZ8x/2aYOcZXQ7DQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732203417; c=relaxed/simple;
-	bh=f+5eu3i1biuvPB++1VXhnk1wXT/1aJPH0TLJr3C9z00=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gQAbBJU99l2P3YoJfHQ56fdtejjfhHeyongtu4Mhu0+7w7fGba1Y5YaOAu9jsTsCAdG5ZaLw2tCel7JYl6H/HIRMx2DnjEsO64xWaBalHM7yxRaSyIautwgtDq/8Q0dtvaKafA02MKZ5SKzwY8ZoDQ3r8sdvBhotL/a1YUBIj7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Jj58eW6D; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-460969c49f2so310941cf.0
-        for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 07:36:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1732203415; x=1732808215; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n4nPPmITE0cgPNHF19a0j6DIt0zlAK0qCukXxXNbX+I=;
-        b=Jj58eW6DXiSgkZ1HKgXxEUul2yHOdoD/lUMOybrQcS/lbBOxid0LiSeM6cOsyOjmum
-         R7DYH8mXdicq4TyTpKVioIyoQHB4TEY7ahRuq5NeomnOIwFTIQBH4FXO0hEU6Ixb/kdx
-         x3EcMo6TRXveMVp5VMeFPv1JDvHOHOlgomwQp36lr9wK0AeqEwX/bEU0oxQb4rFYS8bz
-         2VeDIZuC0kc+jBFPAr3xuS+lOXp4KOggO9+7gxKaIVJnkXRb65aTTMAJk+cjvw5cCYbt
-         1Es3AeHAvz+/HVQbN5oEyOXzjO6nDKDLZhjQzUNxcZzOQ6f9C/6ktzaGGFp0hWjjxTZU
-         4dHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732203415; x=1732808215;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n4nPPmITE0cgPNHF19a0j6DIt0zlAK0qCukXxXNbX+I=;
-        b=TbLdLtj/JmutkPmYbeOrYe7lKUVi+SWW17qdwr3LWU0qyzp/loAaigHkLZxxlXhbBM
-         eTLS0fVskR0xvCtX8KyNEZrdGkp/w6xkGbQloLPbnEqZFXw+mJD2jt2YUUfCSapQdze3
-         aSvJK8mzlLR+MLyg17clvsiwDAj/tFCulfC3XJaTzsZzErIpFivmAfkgCAJXf7w4mSbU
-         tki1gQMPYCEzldwEeF7lfk0nPxQVQ/hbHhaGTJRcYGmtmNbsoE5UX1FmAJeazNOarE2y
-         OJypeDJoydH2i+gC1KFbbXeZAuQmIShKel8UY2g3r3EklrQqlPDfwK7VzNQQ8Hk6Uk/l
-         1QKg==
-X-Forwarded-Encrypted: i=1; AJvYcCVEr5BdCn/7U+QiCcMYJRiJe8iyXFNGeMbevMItjqFHZYg6rAq5hpFHBHsUsfLCXPlrvM8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwKaItH+Mt6HIJVSVlM9aYJyGEpO8kBXhhHSfzSuFQqtCpKiTKf
-	MiS4Zf62BEWneZElHDVkOGPQRRPs5b/4B8Li2XTRkVjeqgjg9N8FjAzWvHzyjvVdQI5fb/FNISa
-	Hoh43qsmKYUar/mY6G8MooIsHKCHOYchk48+S
-X-Gm-Gg: ASbGncsomE0jS6ZCx6RWoWfhUmYrarNKvBmiPmYVDPHAFXuu63SnqELcU8oCyG2E/4D
-	Dm74ItRgkrAiTBbj5h6f4sPGQiceXyAyfb3Je5fryrHXTrml8TvB7WhxiZU73
-X-Google-Smtp-Source: AGHT+IH1SWogEGFZbng5bmadf/PzQLLTFdgdPJQJD536g3mvOBUR/1NIEP5wbiUXW212c2x/5zIIe+RImYF2DYJPRZE=
-X-Received: by 2002:a05:622a:19a3:b0:463:6f64:7ee4 with SMTP id
- d75a77b69052e-4653bcc2063mr148291cf.3.1732203414816; Thu, 21 Nov 2024
- 07:36:54 -0800 (PST)
+	s=arc-20240116; t=1732203485; c=relaxed/simple;
+	bh=iMGDwYNrJI3EdUwArTwdQPBRSEQDPz1TvZbtZxtrmsQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e1nGCpfCLyWBeCbwwdmaySZTfPgXxKuIfpoWWbeJQ4hjeEGVpBILyOB6UJ8WeXMe/rEPpGMyQ1q0fjKNMluMjZ4XWS+9rmp6RVnvgMqzmjP8Z5c2Q4FEhgkLDow2c8naGhkWYQMASAiBrJ6yJMT5ObXmCdiBWAoCRROJPnEn484=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M/DBLHPF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26EE1C4CECC;
+	Thu, 21 Nov 2024 15:38:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732203485;
+	bh=iMGDwYNrJI3EdUwArTwdQPBRSEQDPz1TvZbtZxtrmsQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=M/DBLHPFUgWRywDCFIXEK+SISpdl7LvUmwBPfH1doxqCCPPLV8yi72H7SxEGvNvd+
+	 fSzIaQwKyP/xtQv6AuqkHTZyDEx5CScCQH6lWb8/9WKFdA4T8/TdmxYnor3vcKhXR1
+	 AnUf3fE/FS5COU4mNH9kr3Um97kU+J+NqDplmdaQgU3u4nLBKFoNZapfxI5a0ikl3v
+	 c009KkvNpy26xZqxPkTpdOUE+LmDgvbgFsTJNpI8zeBo7prztovd9IItUNLaDtpgNP
+	 sbkH7NYSVvLtsPmTDxuM+Oq2h8LrMQ44oCpkmX3FSmL00J9k/NwBcV5ffTPKvat1QR
+	 u5busJkdRwLYA==
+Date: Thu, 21 Nov 2024 07:38:01 -0800
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+	bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Juerg Haefliger <juerg.haefliger@canonical.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
+	Chuang Wang <nashuiliang@gmail.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Petr Mladek <pmladek@suse.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+	Julian Pidancet <julian.pidancet@oracle.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>,
+	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
+Subject: Re: [RFC PATCH v3 06/15] jump_label: Add forceful jump label type
+Message-ID: <20241121153801.es5y72zjefzvbrnk@jpoimboe>
+References: <20241119153502.41361-1-vschneid@redhat.com>
+ <20241119153502.41361-7-vschneid@redhat.com>
+ <20241119233902.kierxzg2aywpevqx@jpoimboe>
+ <20241120145649.GJ19989@noisy.programming.kicks-ass.net>
+ <20241120145746.GL38972@noisy.programming.kicks-ass.net>
+ <20241120165515.qx4qyenlb5guvmfe@jpoimboe>
+ <20241121110020.GC24774@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241028010818.2487581-1-andrii@kernel.org> <20241028010818.2487581-3-andrii@kernel.org>
- <20241121144442.GL24774@noisy.programming.kicks-ass.net> <20241121152257.GN38972@noisy.programming.kicks-ass.net>
-In-Reply-To: <20241121152257.GN38972@noisy.programming.kicks-ass.net>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 21 Nov 2024 07:36:43 -0800
-Message-ID: <CAJuCfpE04MtnmRR+JYpYqC07-u9yXRUF0FB2mSaQatzwSkNNdw@mail.gmail.com>
-Subject: Re: [PATCH v4 tip/perf/core 2/4] mm: Introduce mmap_lock_speculation_{begin|end}
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, akpm@linux-foundation.org, oleg@redhat.com, 
-	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, 
-	willy@infradead.org, mjguzik@gmail.com, brauner@kernel.org, jannh@google.com, 
-	mhocko@kernel.org, vbabka@suse.cz, shakeel.butt@linux.dev, hannes@cmpxchg.org, 
-	Liam.Howlett@oracle.com, lorenzo.stoakes@oracle.com, david@redhat.com, 
-	arnd@arndb.de, richard.weiyang@gmail.com, zhangpeng.00@bytedance.com, 
-	linmiaohe@huawei.com, viro@zeniv.linux.org.uk, hca@linux.ibm.com, 
-	Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241121110020.GC24774@noisy.programming.kicks-ass.net>
 
-On Thu, Nov 21, 2024 at 7:23=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Thu, Nov 21, 2024 at 03:44:42PM +0100, Peter Zijlstra wrote:
->
-> > But perhaps it makes even more sense to add this functionality to
-> > seqcount itself. The same argument can be made for seqcount_mutex and
-> > seqcount_rwlock users.
->
-> Something like so I suppose.
+On Thu, Nov 21, 2024 at 12:00:20PM +0100, Peter Zijlstra wrote:
+> But yeah, this is not quite the same as not marking anything and simply
+> forcing the IPI when the target address is noinstr.
+> 
+> And having written all that; perhaps that is the better solution, it
+> sticks the logic in text_poke and ensure it automagically work for all
+> its users, obviating the need for special marking.
+> 
+> Is that what you were thinking?
 
-Ok, let me put this all together. Thanks!
+Yes, though I can't take credit for the idea as that's what I thought
+you were suggesting!  That seems simpler and more bulletproof.
 
->
-> ---
-> diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-> index 5298765d6ca4..102afdf8c7db 100644
-> --- a/include/linux/seqlock.h
-> +++ b/include/linux/seqlock.h
-> @@ -318,6 +318,28 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    tru=
-e,     mutex)
->         __seq;                                                          \
->  })
->
-> +/**
-> + * raw_seqcount_try_begin() - begin a seqcount_t read critical section
-> + *                            w/o lockdep and w/o counter stabilization
-> + * @s: Pointer to seqcount_t or any of the seqcount_LOCKNAME_t variants
-> + *
-> + * Very like raw_seqcount_begin(), except it enables eliding the critica=
-l
-> + * section entirely if odd, instead of doing the speculation knowing it =
-will
-> + * fail.
-> + *
-> + * Useful when counter stabilization is more or less equivalent to takin=
-g
-> + * the lock and there is a slowpath that does that.
-> + *
-> + * If true, start will be set to the (even) sequence count read.
-> + *
-> + * Return: true when a read critical section is started.
-> + */
-> +#define raw_seqcount_try_begin(s, start)                               \
-> +({                                                                     \
-> +       start =3D raw_read_seqcount(s);                                  =
- \
-> +       !(start & 1);                                                   \
-> +})
-> +
->  /**
->   * raw_seqcount_begin() - begin a seqcount_t read critical section w/o
->   *                        lockdep and w/o counter stabilization
+-- 
+Josh
 
