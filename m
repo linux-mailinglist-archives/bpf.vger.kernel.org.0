@@ -1,85 +1,81 @@
-Return-Path: <bpf+bounces-45348-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45349-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 227349D4ACE
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 11:24:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9C7B9D4AD8
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 11:26:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2C9D1F22C00
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 10:24:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF79E287EE2
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 10:26:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F54F1CCB26;
-	Thu, 21 Nov 2024 10:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C9F13B58B;
+	Thu, 21 Nov 2024 10:25:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UZQ4LReN"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y2aMupyJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50391CD1EE
-	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 10:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 572D31C7299
+	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 10:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732184580; cv=none; b=R8pyE4wVXvLcVSArgya2irHDwMapPTybVOUVOsLobCVkLNGbQhS/jZ14k8oLlnNEad33NmMRgY7jBithNbO9C2j+RxlQCyn1AE3tVNlqCKnl5JAk3WMVzeEyjBkB0UddsRCn452RXWtc++7JhwgbVL/pSHYL0jKltAELyu+P5wA=
+	t=1732184750; cv=none; b=UvmtFn/Vn2Z0FOERFeZXRjgdXjSqFSedmgR4/9Eq42hHlZ3HULszeSqpG2IlWtxpPKyFKWaGU0a4pfTfcZsmYHDEJfMOszo5Y9nuZEEbV4YpKRP6gZh87WqwrUFv13JXlp+PCmyH9jvvRpIHkV5mz5NecUzaOfpKnCEjkKqmXjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732184580; c=relaxed/simple;
-	bh=MEEW3GaIo/BZ3XAUIwizKD0IUMvjTjImwRsmnJBN/y0=;
+	s=arc-20240116; t=1732184750; c=relaxed/simple;
+	bh=UZ8cM1uYdrYJxP47AFHdB0yp4Zg7D4x+JNIYLbXJ1qw=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=gxJoFmXVahQqbFRF8Z3aGPO5t3NZdQ4NXZZ3M8W9iVW1TWz/EuRLGgaPfV7adCoh322xAtpL6f3SF/B6sAyt3r6x6LRTz4eGUOEFY+1GevNeR/HGmw25MQJdb57SNYVfehoMY+2R2nTvBdLd8RK/qXHvqTLvOSqTnuqvJMDiBGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UZQ4LReN; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=HNoSmGpRIcHY0OkBeWERARbNoUim2hg1Ko0fG1ky8KJGL4nYMNb9Qc7UUHCvSJh5hsnmlo7v1+r2ez96O/2aFqvpl+ec/hZa8e5jkm0vDHPY4TVZeJQCVWWXGvN0MfU72dHz03I19jfIpdo9bTagM9d+bR5xmuSKk0c0KsiKcDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y2aMupyJ; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1732184576;
+	s=mimecast20190719; t=1732184747;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MEEW3GaIo/BZ3XAUIwizKD0IUMvjTjImwRsmnJBN/y0=;
-	b=UZQ4LReNOfU6qs8+Gk/ZS2u7RdwiHncWxPnclThDms6ALBah4Qi4XmHVKkV2z5O9R+OG0E
-	NV+VcAF5VuWqqYmGlAqM3ezQaC8f8qVKqBbg32/Fa67dubbI79Cpx/B78S6c/8heD/Ene+
-	5uC7Xd+9yA8kl9F0UatcDHe2qYTWze0=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=UZ8cM1uYdrYJxP47AFHdB0yp4Zg7D4x+JNIYLbXJ1qw=;
+	b=Y2aMupyJBKCnuNjKFAfHGChHqJRTgweLbGFnAMdC4BnzS2PZmRw28RaP0qzqySXEaYopzd
+	ROfd+7eok/x7iL1H3SLla7pedko7OfUd/gZMb3GqwIwdFKz8HsppxIAYrG+H643Yvbe9/K
+	wQy1qL+T2i0OL0+NRnFwdzQshiR1YTo=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-49-T_1vY5ItO-KYno-UuoanBA-1; Thu, 21 Nov 2024 05:22:55 -0500
-X-MC-Unique: T_1vY5ItO-KYno-UuoanBA-1
-X-Mimecast-MFC-AGG-ID: T_1vY5ItO-KYno-UuoanBA
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a9a1af73615so50711266b.0
-        for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 02:22:55 -0800 (PST)
+ us-mta-616-R44CVUi4Od2zGXro5oDFUA-1; Thu, 21 Nov 2024 05:25:45 -0500
+X-MC-Unique: R44CVUi4Od2zGXro5oDFUA-1
+X-Mimecast-MFC-AGG-ID: R44CVUi4Od2zGXro5oDFUA
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-539ebb5a10cso597362e87.3
+        for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 02:25:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732184574; x=1732789374;
+        d=1e100.net; s=20230601; t=1732184744; x=1732789544;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MEEW3GaIo/BZ3XAUIwizKD0IUMvjTjImwRsmnJBN/y0=;
-        b=qEYbS0HGyLSt4lz0+Y2nLvYV9TKEUXcyusezLu8Fhb79G5Hi441JDatKpNDPF/aUyh
-         2HFsvPEuIO8wdfjHFdgVtqIG/81ccaNwyObDAM/BuyiJDRynwQzDRps2Hx2nAI/qZK8H
-         lATee24NYgxDYNyG9UU86EB+SbUIKvW1QN67xeswPsGO3zHHxkwXx574e/nYStb7tw06
-         ktslaIqvyKw11ylVynYGsG2TGNhLVUu+k8aejjT1p+fGMdRliCHHVNal94CoXLWB3uSx
-         +3GTc6POcgoPABZ9wZSF6pnaVUePCK4Bkj6y+BRBiP4ljlVOS5lWhPv64Ahl2wqjhLc2
-         dHmA==
-X-Forwarded-Encrypted: i=1; AJvYcCXiApimLdet7mOTMA7P0nyRFin75DAys04fHjy/e13Bm5uzQjs8GbooHPMQUlXF5Ld3HVY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTy/IUuShUsBc+ysbZAWX7eNxrYwmki8JQO+JX3ePAGP0REzg0
-	zrzHQzvgyW/j1wygWb2ON8Ld8q/nhCmoCK8IFgdhmsB2YxU1wV9Lf9T68WS2p4a9O7H0iTgtXQS
-	rcdm4qWYXHjfP0oeKn6K+qfd5QtAMHBkMuudOg+pXXXSpAw3hqg==
-X-Gm-Gg: ASbGncvzXLC68zVwh1+nB3MqTC5Akvwj1q/TK4Qlj0CavNfo4ZtOy9bJ0DjszE83doM
-	sQQP6K6zbhrsvko1Gj2b5yC9RDm9KnwvOZOa7wpyrx3jbbiyolFdbSsbUdPzW6YcSf2U7HF/p6x
-	TVxUQUzZTwLwyMrNXnlP0xsirb/keOBZJ2sIK+5Q/0aoK/nS9/zI9saGn/mWEGTQHcftjv1uhxw
-	nL1mFVyIYvx7qZm7WnvO7CD7qyzsagM5t9yZAp0mCTHxNnCk9g1Y/RSmdJ6MNsJlP/6oRSpmsc=
-X-Received: by 2002:a17:906:da81:b0:a9a:6477:bd03 with SMTP id a640c23a62f3a-aa4dd71b750mr659101966b.38.1732184574445;
-        Thu, 21 Nov 2024 02:22:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFm2wxojHyCsmpPj5AcS5tr6hu0mr2MUwhZGu9tXey0poXKu7ocPeRXDl+vgXp1X2FfZIdlnQ==
-X-Received: by 2002:a17:906:da81:b0:a9a:6477:bd03 with SMTP id a640c23a62f3a-aa4dd71b750mr659098066b.38.1732184574093;
-        Thu, 21 Nov 2024 02:22:54 -0800 (PST)
+        bh=UZ8cM1uYdrYJxP47AFHdB0yp4Zg7D4x+JNIYLbXJ1qw=;
+        b=sWUbxA+Ig9WrElzIFhvcho2Yy/8ASjZ2kjw2uNNcQuJQMQj3ch6yUAYsZL5Via8vmn
+         efq4vKUYpWccxV6YnsWHKjJMWfqt7USnedGoTkHxJuazjEXMpaylp9XFLF3u2k/0j3P9
+         QSwEPUik/1RcdiP9sUUiPh4nswKOqlfWCWuYKsiAsVOuUvOtoHZclrMVgTwXpcWDm1PL
+         5pAe8bw08XwWJAVBF6UJhvUe7dXvhrJfmm/uXsjoGllod+IQmOEddWE/rV7k/vwUxXnR
+         Ms9mFeJ9XyRh7v8q+17WAOv5RK2glJmVIDH3aX1goJ6BlBEDMiqZBmlMVLL1d3/3GSc9
+         sKhg==
+X-Forwarded-Encrypted: i=1; AJvYcCVAIbI5vQLdH61T0Zw3LPbF3NiaL4WxhfStHorTMx3COKRAJyqGn8sKK/fnWfmec9XMVfs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5iS7Um+2fmNDHOEZowUfvn8oO954wsW84A4mv9WmKyge8+yp/
+	mMWVlU0r+a4aM4ot4vGVYH6nAs0tuMN76i5gikcaBlCib6cbe7K7voO2F86k6GEhOZ4p1g2T3py
+	gofb87FXBZxDT1+FHBzWwL2DdXH2+y5Jw2y/DF+sToj8ONWZMUg==
+X-Received: by 2002:a05:6512:2214:b0:539:8f3c:4586 with SMTP id 2adb3069b0e04-53dc136babemr5242607e87.55.1732184744189;
+        Thu, 21 Nov 2024 02:25:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG9jJCbFHMGfga3YWld4LxJ9T0RLL8xE1KFiQpn2IKAtLVQ8a4Lkxu6tK+1wpz6Im+uXCHAoQ==
+X-Received: by 2002:a05:6512:2214:b0:539:8f3c:4586 with SMTP id 2adb3069b0e04-53dc136babemr5242575e87.55.1732184743763;
+        Thu, 21 Nov 2024 02:25:43 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa4f437ff05sm63292966b.191.2024.11.21.02.22.53
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa4f41805bfsm64092666b.71.2024.11.21.02.25.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Nov 2024 02:22:53 -0800 (PST)
+        Thu, 21 Nov 2024 02:25:43 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 790AD164D8D4; Thu, 21 Nov 2024 11:22:52 +0100 (CET)
+	id 5B1D1164D8D6; Thu, 21 Nov 2024 11:25:42 +0100 (CET)
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov
@@ -92,14 +88,14 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov
  <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, Thomas
  =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>, houtao1@huawei.com,
  xukuohai@huawei.com
-Subject: Re: [PATCH bpf-next 01/10] bpf: Remove unnecessary check when
- updating LPM trie
-In-Reply-To: <20241118010808.2243555-2-houtao@huaweicloud.com>
+Subject: Re: [PATCH bpf-next 02/10] bpf: Remove unnecessary kfree(im_node)
+ in lpm_trie_update_elem
+In-Reply-To: <20241118010808.2243555-3-houtao@huaweicloud.com>
 References: <20241118010808.2243555-1-houtao@huaweicloud.com>
- <20241118010808.2243555-2-houtao@huaweicloud.com>
+ <20241118010808.2243555-3-houtao@huaweicloud.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date: Thu, 21 Nov 2024 11:22:52 +0100
-Message-ID: <87h680j37n.fsf@toke.dk>
+Date: Thu, 21 Nov 2024 11:25:42 +0100
+Message-ID: <87ed34j32x.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -113,21 +109,11 @@ Hou Tao <houtao@huaweicloud.com> writes:
 
 > From: Hou Tao <houtao1@huawei.com>
 >
-> When "node->prefixlen =3D=3D matchlen" is true, it means that the node is
-> fully matched. If "node->prefixlen =3D=3D key->prefixlen" is false, it me=
-ans
-> the prefix length of key is greater than the prefix length of node,
-> otherwise, matchlen will not be equal with node->prefixlen. However, it
-> also implies that the prefix length of node must be less than
-> max_prefixlen.
->
-> Therefore, "node->prefixlen =3D=3D trie->max_prefixlen" will always be fa=
-lse
-> when the check of "node->prefixlen =3D=3D key->prefixlen" returns false.
-> Remove this unnecessary comparison.
+> There is no need to call kfree(im_node) when updating element fails,
+> because im_node must be NULL. Remove the unnecessary kfree() for
+> im_node.
 >
 > Signed-off-by: Hou Tao <houtao1@huawei.com>
-
 
 Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
