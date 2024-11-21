@@ -1,93 +1,113 @@
-Return-Path: <bpf+bounces-45340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39C259D4952
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 09:56:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B91C69D497C
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 10:04:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9F271F20FB6
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 08:56:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E80E282E83
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 09:04:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941871D07BA;
-	Thu, 21 Nov 2024 08:55:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FEE81CBE8F;
+	Thu, 21 Nov 2024 09:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CkDwaxgZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from cmccmta1.chinamobile.com (cmccmta2.chinamobile.com [111.22.67.135])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08B031CB338;
-	Thu, 21 Nov 2024 08:55:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.135
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F256B1C9ECE;
+	Thu, 21 Nov 2024 09:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732179326; cv=none; b=bzYEmH3gVW9G9XAJiToqUllKSPiSr4xboPobVzvHN2B9y3Fa4qTz8zC2wdxiiheAq9AwFXoHPoIVC6RQjOOT3zHExavgbSlpWlU614hEWaLMp1o/FDJdAwthsNU07UF+nTlWDO+8WopjCrYqlXrHyYgZ7VN8wqTZpYOaC5Ic+74=
+	t=1732179856; cv=none; b=XMVjmdk+QEage7mRs63wewIpI82uPRmRYHzsacFRQpU4rloBae7YVB4RZYIs4tHq2zIxmwK7Qj8EdA326Ah4WC4o0egGs7BvbinGJOdvZtez88hRuvCUIsrbM0wZZN6o18FT7M6M/Il5PFd3kclWkmEX5rRPFWneklXY/mH9vCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732179326; c=relaxed/simple;
-	bh=idWFuNeGFu+29MpLoouGziP9KKOimeHGYWeDbZAYpaI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=e+Mk+VRiWYAz2B/5dzOS5a21nURShEibnzNEcRi7/qSNRkSNA1OVNbrTnnglMuZsjK/jDN6B7UnPjKzZyysGza6mgQafnwMyBLxPRkeaIghKc1jtSeffy+R4rngRoSUW2rbuA5FGfM2/XYSR2TJllP0i5TNhFLegBPp3zhxFBtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
-	by rmmx-syy-dmz-app03-12003 (RichMail) with SMTP id 2ee3673ef579959-2c181;
-	Thu, 21 Nov 2024 16:55:21 +0800 (CST)
-X-RM-TRANSID:2ee3673ef579959-2c181
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from localhost.localdomain (unknown[10.55.1.69])
-	by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee5673ef578cd4-ca220;
-	Thu, 21 Nov 2024 16:55:21 +0800 (CST)
-X-RM-TRANSID:2ee5673ef578cd4-ca220
-From: liujing <liujing@cmss.chinamobile.com>
-To: qmo@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	liujing <liujing@cmss.chinamobile.com>
-Subject: [PATCH] bpftool: Fix the wrong format specifier
-Date: Thu, 21 Nov 2024 16:55:18 +0800
-Message-Id: <20241121085518.3738-1-liujing@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.27.0
+	s=arc-20240116; t=1732179856; c=relaxed/simple;
+	bh=yb6ZXmGUVTsn8jk1XyiL4tSuEqp9cHwvmbK/CUpdlUw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=maQV6k5MXHYROjgYxTzRc04F+kSSfvek9zkKwxByqwFlptA4K0nqYizF9Sjyzkj35udPlL4DxMaus54NUsS9YL5ZrAwdzRtfErSiHZ+mU4VD3EyvDgmxi2A5gYgsW4m4XQWqUhG0YCwm/Fog6Uy5kpeBM7h/EWTJg/bCWaLKLKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CkDwaxgZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CFB6C4CECC;
+	Thu, 21 Nov 2024 09:04:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732179855;
+	bh=yb6ZXmGUVTsn8jk1XyiL4tSuEqp9cHwvmbK/CUpdlUw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CkDwaxgZQxFDtf7JUHhS4ih3vU31F5iuXE1KE94NSmUlz62+dl2ghBAQTdcToo6cK
+	 IkxTvEBEGQsiykR1F1Fxv9eca3ksI9tzfhmv2FpLr3JcaCTnTRa1OoL0rZH6L0eQUs
+	 sJ2lfIRh0OIijM7iOUaLzt8KqS7m8f4fX96V9ZQiFh80yg188KvUb/8HcJ1wWAFQDx
+	 qPAunj8Rj3UT/zUpMl4k6aMPLrI+vnTcNzwcVwVZMknsTh0EdIhHsNkbdjSCR/k2gu
+	 vztnO/m3we6qAxoVDIOXq19PcGBTV/vBQq/VugQE7mq84P1CCLh/jrGRy8UoVCVELx
+	 gY+agx5+C9zIA==
+Date: Thu, 21 Nov 2024 10:04:07 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Song Liu <songliubraving@meta.com>
+Cc: Song Liu <song@kernel.org>, 
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "eddyz87@gmail.com" <eddyz87@gmail.com>, 
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
+	"martin.lau@linux.dev" <martin.lau@linux.dev>, "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, 
+	"jack@suse.cz" <jack@suse.cz>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
+	"mattbobrowski@google.com" <mattbobrowski@google.com>, "amir73il@gmail.com" <amir73il@gmail.com>, 
+	"repnop@google.com" <repnop@google.com>, "jlayton@kernel.org" <jlayton@kernel.org>, 
+	Josef Bacik <josef@toxicpanda.com>, "mic@digikod.net" <mic@digikod.net>, 
+	"gnoack@google.com" <gnoack@google.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf: Make bpf inode storage available to
+ tracing program
+Message-ID: <20241121-wahrsagung-kantholz-97d1717c78b1@brauner>
+References: <20241112082600.298035-1-song@kernel.org>
+ <20241112082600.298035-3-song@kernel.org>
+ <20241113-sensation-morgen-852f49484fd8@brauner>
+ <2621E9B1-D3F7-47D5-A185-7EA47AF750B3@fb.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <2621E9B1-D3F7-47D5-A185-7EA47AF750B3@fb.com>
 
-The type of lines is unsigned int, so the correct format specifier should be
-%u instead of %d.
+On Wed, Nov 13, 2024 at 02:15:20PM +0000, Song Liu wrote:
+> Hi Christian, 
+> 
+> Thanks for your review. 
+> 
+> > On Nov 13, 2024, at 2:19 AM, Christian Brauner <brauner@kernel.org> wrote:
+> [...]
+> 
+> >> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> >> index 3559446279c1..479097e4dd5b 100644
+> >> --- a/include/linux/fs.h
+> >> +++ b/include/linux/fs.h
+> >> @@ -79,6 +79,7 @@ struct fs_context;
+> >> struct fs_parameter_spec;
+> >> struct fileattr;
+> >> struct iomap_ops;
+> >> +struct bpf_local_storage;
+> >> 
+> >> extern void __init inode_init(void);
+> >> extern void __init inode_init_early(void);
+> >> @@ -648,6 +649,9 @@ struct inode {
+> >> #ifdef CONFIG_SECURITY
+> >> void *i_security;
+> >> #endif
+> >> +#ifdef CONFIG_BPF_SYSCALL
+> >> + struct bpf_local_storage __rcu *i_bpf_storage;
+> >> +#endif
+> > 
+> > Sorry, we're not growing struct inode for this. It just keeps getting
+> > bigger. Last cycle we freed up 8 bytes to shrink it and we're not going
+> > to waste them on special-purpose stuff. We already NAKed someone else's
+> > pet field here.
+> 
+> Would it be acceptable if we union i_bpf_storage with i_security?
 
-Signed-off-by: liujing <liujing@cmss.chinamobile.com>
-
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 08d0ac543c67..030556ce4d61 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -423,7 +423,7 @@ static int do_batch(int argc, char **argv)
- 		err = -1;
- 	} else {
- 		if (!json_output)
--			printf("processed %d commands\n", lines);
-+			printf("processed %u commands\n", lines);
- 	}
- err_close:
- 	if (fp != stdin)
--- 
-2.27.0
-
-
-
+I have no quarrels with this if this is acceptable to you.
 
