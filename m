@@ -1,100 +1,227 @@
-Return-Path: <bpf+bounces-45408-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45409-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E99BF9D5375
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 20:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 585069D53AA
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 20:55:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DF5A1F23653
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 19:39:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C51CF1F22C3E
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 19:55:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C868B1C303A;
-	Thu, 21 Nov 2024 19:39:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08971A9B38;
+	Thu, 21 Nov 2024 19:54:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="ao8ygTmu"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9691143ACB;
-	Thu, 21 Nov 2024 19:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 254071C879E;
+	Thu, 21 Nov 2024 19:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732217964; cv=none; b=Us4QAJTGEyzOSqc3Fv3kDOBuNEZ637qo/B+FNrIQ1PlEZg+lA5gf0BqIHDRXqN8P72sZb54LUqUqYWMBYZl14KFfOlVXQLvkkNOuq2wILwK2HzjRCnBr6JIANDQsxakSluGm9rNWXkYbf2jAu3EKTstZZiPGiZtfB8hqlFpkAOQ=
+	t=1732218897; cv=none; b=LHe8kD0GMRUkQUTFSV8wf+TqcUWOrwHCy7KtZn4DVLwXkTMwiI8Psy14Z7dD+H4Urf0h/L4TsWtt4BQxal6a0ga/Wa2Y25tH0xRZ0TyOeeHVbUt1SNvDIA558i5yl4y9JyAh8+FFgcVF7z67FJ4hq9QFpuWwhsM8ZIG7JI5wwhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732217964; c=relaxed/simple;
-	bh=Nyzjvz4KYFaiD67hHwcz3LhDNHxN1WB5SGIxMXQszWE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QdNTNW0X8A0XdVsYEv8as4IumAaztNE5XRART+Uf2wTCZSVIZ8KDPLseuhcIXe/3x1ZIIHvQqHw0sXSRTdmiu9Gf3W1QazpRVpPaeh4wv2T3HOcNJPG5iLRIAkh/lfLDznrRyy2aphH0UT1O1IORS6Z1KZqCt9Z/E6ywN0XZFnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6AD0112FC;
-	Thu, 21 Nov 2024 11:39:50 -0800 (PST)
-Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3AF13F5A1;
-	Thu, 21 Nov 2024 11:39:17 -0800 (PST)
-Date: Thu, 21 Nov 2024 19:38:58 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Jiri Olsa <olsajiri@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [RFC perf/core 05/11] uprobes: Add mapping for optimized uprobe
- trampolines
-Message-ID: <Zz-MI1J1FpvqItdq@J2N7QTR9R3>
-References: <ZypI3n-2wbS3_w5p@krava>
- <CAEf4BzZ4XgSOHz0T5nXPyd+keo=rQvH5jc0Jghw1db0a7qR9GQ@mail.gmail.com>
- <ZzkSKQSrbffwOFvd@krava>
- <CAEf4BzbSrtJWUZUcq-RouwwRxK1GOAwO++aSgjbyQf26cQMfow@mail.gmail.com>
- <20241119091348.GE11903@noisy.programming.kicks-ass.net>
- <CAEf4BzbhDE2B41pULQuTfx0f_-1fn5ugJEdPpweKWZVJetCxrQ@mail.gmail.com>
- <20241121115353.GJ24774@noisy.programming.kicks-ass.net>
- <CAADnVQJJ0WS=Y1EudjiFD8fn4zHCz6x1auaEEHaYHsP15Vks2Q@mail.gmail.com>
- <20241121163450.GN24774@noisy.programming.kicks-ass.net>
- <CAADnVQ+3VA-SW2FKVv7iSPps00gZRkOb9L7NiKFZ5Jc5NwDedQ@mail.gmail.com>
+	s=arc-20240116; t=1732218897; c=relaxed/simple;
+	bh=cCkp6T/5ut6jxWfa0q3B3JwltBL8bFyvsA59iU+TBn0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EGuqvoLwOme4v6wvGVDp8h54cpmZyZ6FnXsdnWPP6PlnPKKf91JIw65DnaD4JPixdu07vcU6ZQob1rmCy8T8yvOWJx6q5/A/HLjCtsHDVSmR8RLAl/7FQCb8yB58EJQ5YnLq7FC/e+egY+3p3zb/rZEp3djno97AalcxGdK84GE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=ao8ygTmu; arc=none smtp.client-ip=185.226.149.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
+	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1tEDG1-009CVy-1G; Thu, 21 Nov 2024 20:54:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
+	bh=v/OvbCX67fiKfDPsOSvPlJ92i6d6HdXD7QxhiNZ5o1A=; b=ao8ygTmuqcjWbO3II1En1aQBkC
+	2gZyAB+jNnFyLPsepBk4un1gldp7aG6CfL4pxq2OODmYGqMne6gmf7q8ZYbMTaSI27tGUJXjoWj9D
+	aXnyjlmqOZ1CGFb0km8lGUqDVXthOZviHuCjjnwfICdp6N1hghhDMZLmc45R6ocXxQDMoAZcfAKZv
+	A26udFzPYIwx5KWeJCUILYLMag1qqTYdTVdi2XYE1LQvxnWXObyQE7a5gCOgAqGcaS12HrYW7OZ/q
+	K6tz3II2oHo7kIuIqR2ZBbmGLHyfMpp1rlOy01MwhbhTnk8U7b90aLZxI/TxaG8XLZHpc+xjD3Eat
+	C5G3fgbA==;
+Received: from [10.9.9.74] (helo=submission03.runbox)
+	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1tEDFz-0006kb-KT; Thu, 21 Nov 2024 20:54:27 +0100
+Received: by submission03.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1tEDFs-00CqIR-VC; Thu, 21 Nov 2024 20:54:21 +0100
+Message-ID: <350e3a3f-7ebd-471e-95fa-05225d786f1c@rbox.co>
+Date: Thu, 21 Nov 2024 20:54:19 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+3VA-SW2FKVv7iSPps00gZRkOb9L7NiKFZ5Jc5NwDedQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf 3/4] bpf, vsock: Invoke proto::close on close()
+To: Stefano Garzarella <sgarzare@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Bobby Eshleman <bobby.eshleman@bytedance.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20241118-vsock-bpf-poll-close-v1-0-f1b9669cacdc@rbox.co>
+ <20241118-vsock-bpf-poll-close-v1-3-f1b9669cacdc@rbox.co>
+ <7wufhaaytdjp3m3xv7jrdadqjg75is5eirv4bzmjzmezc7v7ls@p52fm6y537di>
+From: Michal Luczaj <mhal@rbox.co>
+Content-Language: pl-PL, en-GB
+In-Reply-To: <7wufhaaytdjp3m3xv7jrdadqjg75is5eirv4bzmjzmezc7v7ls@p52fm6y537di>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-[resending as I somehow messed up the 'From' header and got a tonne of
-bounces]
-
-On Thu, Nov 21, 2024 at 08:47:56AM -0800, Alexei Starovoitov wrote:
-> On Thu, Nov 21, 2024 at 8:34 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > Elsewhere in the thread Mark Rutland already noted that arm64 really
-> > doesn't need or want this.
+On 11/21/24 10:22, Stefano Garzarella wrote:
+> On Mon, Nov 18, 2024 at 10:03:43PM +0100, Michal Luczaj wrote:
+>> vsock defines a BPF callback to be invoked when close() is called. However,
+>> this callback is never actually executed. As a result, a closed vsock
+>> socket is not automatically removed from the sockmap/sockhash.
+>>
+>> Introduce a dummy vsock_close() and make vsock_release() call proto::close.
+>>
+>> Note: changes in __vsock_release() look messy, but it's only due to indent
+>> level reduction and variables xmas tree reorder.
+>>
+>> Fixes: 634f1a7110b4 ("vsock: support sockmap")
+>> Signed-off-by: Michal Luczaj <mhal@rbox.co>
+>> ---
+>> net/vmw_vsock/af_vsock.c | 67 +++++++++++++++++++++++++++++-------------------
+>> 1 file changed, 40 insertions(+), 27 deletions(-)
+>>
+>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>> index 919da8edd03c838cbcdbf1618425da6c5ec2df1a..b52b798aa4c2926c3f233aad6cd31b4056f6fee2 100644
+>> --- a/net/vmw_vsock/af_vsock.c
+>> +++ b/net/vmw_vsock/af_vsock.c
+>> @@ -117,12 +117,14 @@
+>> static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr);
+>> static void vsock_sk_destruct(struct sock *sk);
+>> static int vsock_queue_rcv_skb(struct sock *sk, struct sk_buff *skb);
+>> +static void vsock_close(struct sock *sk, long timeout);
+>>
+>> /* Protocol family. */
+>> struct proto vsock_proto = {
+>> 	.name = "AF_VSOCK",
+>> 	.owner = THIS_MODULE,
+>> 	.obj_size = sizeof(struct vsock_sock),
+>> +	.close = vsock_close,
+>> #ifdef CONFIG_BPF_SYSCALL
+>> 	.psock_update_sk_prot = vsock_bpf_update_proto,
+>> #endif
+>> @@ -797,39 +799,37 @@ static bool sock_type_connectible(u16 type)
+>>
+>> static void __vsock_release(struct sock *sk, int level)
+>> {
+>> -	if (sk) {
+>> -		struct sock *pending;
+>> -		struct vsock_sock *vsk;
+>> -
+>> -		vsk = vsock_sk(sk);
+>> -		pending = NULL;	/* Compiler warning. */
+>> +	struct vsock_sock *vsk;
+>> +	struct sock *pending;
+>>
+>> -		/* When "level" is SINGLE_DEPTH_NESTING, use the nested
+>> -		 * version to avoid the warning "possible recursive locking
+>> -		 * detected". When "level" is 0, lock_sock_nested(sk, level)
+>> -		 * is the same as lock_sock(sk).
+>> -		 */
+>> -		lock_sock_nested(sk, level);
+>> +	vsk = vsock_sk(sk);
+>> +	pending = NULL;	/* Compiler warning. */
+>>
+>> -		if (vsk->transport)
+>> -			vsk->transport->release(vsk);
+>> -		else if (sock_type_connectible(sk->sk_type))
+>> -			vsock_remove_sock(vsk);
+>> +	/* When "level" is SINGLE_DEPTH_NESTING, use the nested
+>> +	 * version to avoid the warning "possible recursive locking
+>> +	 * detected". When "level" is 0, lock_sock_nested(sk, level)
+>> +	 * is the same as lock_sock(sk).
+>> +	 */
+>> +	lock_sock_nested(sk, level);
+>>
+>> -		sock_orphan(sk);
+>> -		sk->sk_shutdown = SHUTDOWN_MASK;
+>> +	if (vsk->transport)
+>> +		vsk->transport->release(vsk);
+>> +	else if (sock_type_connectible(sk->sk_type))
+>> +		vsock_remove_sock(vsk);
+>>
+>> -		skb_queue_purge(&sk->sk_receive_queue);
+>> +	sock_orphan(sk);
+>> +	sk->sk_shutdown = SHUTDOWN_MASK;
+>>
+>> -		/* Clean up any sockets that never were accepted. */
+>> -		while ((pending = vsock_dequeue_accept(sk)) != NULL) {
+>> -			__vsock_release(pending, SINGLE_DEPTH_NESTING);
+>> -			sock_put(pending);
+>> -		}
+>> +	skb_queue_purge(&sk->sk_receive_queue);
+>>
+>> -		release_sock(sk);
+>> -		sock_put(sk);
+>> +	/* Clean up any sockets that never were accepted. */
+>> +	while ((pending = vsock_dequeue_accept(sk)) != NULL) {
+>> +		__vsock_release(pending, SINGLE_DEPTH_NESTING);
+>> +		sock_put(pending);
+>> 	}
+>> +
+>> +	release_sock(sk);
+>> +	sock_put(sk);
+>> }
+>>
+>> static void vsock_sk_destruct(struct sock *sk)
+>> @@ -901,9 +901,22 @@ void vsock_data_ready(struct sock *sk)
+>> }
+>> EXPORT_SYMBOL_GPL(vsock_data_ready);
+>>
+>> +/* Dummy callback required by sockmap.
+>> + * See unconditional call of saved_close() in sock_map_close().
+>> + */
+>> +static void vsock_close(struct sock *sk, long timeout)
+>> +{
+>> +}
+>> +
+>> static int vsock_release(struct socket *sock)
+>> {
+>> -	__vsock_release(sock->sk, 0);
+>> +	struct sock *sk = sock->sk;
+>> +
+>> +	if (!sk)
+>> +		return 0;
 > 
-> Doesn't look like you've read what you quoted above.
-> On arm64 the _HW_ cost may be the same.
-> The _SW_ difference in handling trap vs syscall is real.
-> I bet once uprobe syscall is benchmarked on arm64 there will
-> be a delta.
+> Compared with before, now we return earlier and so we don't set SS_FREE, 
+> could it be risky?
+>
+> I think no, because in theory we have already set it in a previous call, 
+> right?
 
-I already pointed out in [1] that on arm64 we can make the trap case
-*faster* than the syscall. If that's not already the case, there's only
-a small amount of rework needed, (pulling BRK handling into
-entry-common.c), which we want to do for other reasons anyway.
+Yeah, and is there actually a way to call vsock_release() for a second
+time? The only caller I see is __sock_release(), which won't allow that.
 
-On arm64 I do not want the syscall; the trap is faster and simpler to
-maintain.
+As for the sockets that never had ->sk assigned, I assume it doesn't matter.
 
-Mark
+> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+> 
+>> +
+>> +	sk->sk_prot->close(sk, 0);
+>> +	__vsock_release(sk, 0);
+>> 	sock->sk = NULL;
+>> 	sock->state = SS_FREE;
 
-[1] https://lore.kernel.org/lkml/ZzsRfhGSYXVK0mst@J2N7QTR9R3/
 
