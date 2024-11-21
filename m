@@ -1,132 +1,90 @@
-Return-Path: <bpf+bounces-45380-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45381-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA3EB9D4FCB
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 16:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 922C39D4FCE
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 16:36:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 999A4281D38
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 15:35:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5271C2833BB
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 15:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11DB116A397;
-	Thu, 21 Nov 2024 15:35:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C79A189F37;
+	Thu, 21 Nov 2024 15:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LrA0ehL6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cDHM1RpQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2185513AD3F
-	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 15:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D83B41A8F;
+	Thu, 21 Nov 2024 15:35:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732203329; cv=none; b=nKOIyFOEfH2HY9JAEmQxfhzdJSwo0/ALXFVtbCUrscyQ8Gh57tmZR3HOvM7jU7LSRKPytK2rxT0YtHFmW/Yb413DpNvC1f9Bid170aNE2o4FtaqnlO381+Wbv4QKyXqUYurOJjSbtir7b71PufdAZVg8cyBpabqtnZVRfp+o740=
+	t=1732203335; cv=none; b=SWt+oTmhZZit/I1/dGbvo7GCSIsNF2UjYld7hhxoQhsIBZOTaT2AzRYvWbaVTLMqWgZfDTa3ggME8r7JeS9TrBXe5LjFodwwp1ZX8CpCOX4WNi0ft0nyaE6PaIJv0Nqv4XFMlyuh5lRZCleJT+VjIidwnIfgLJYH/mDKxrMxJLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732203329; c=relaxed/simple;
-	bh=SsArjD+1glKC3LFuUTU1qcWsOXBbI35QwXJjYvQPPgA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bLXLSoTAuHxTomUM5Ye6zp4W3AuC4Xqi0g6rOH2GcTpcU3hKpA0wWb2atitB4nUXa2WnyKXi54hZi8vEY6IF3QQjKGb5zS0dIRDL1lS7SVQzsvTbOL2jCKeaXS4qW4trHtz88z/MaUZYaA4lH04GFdPvxQCRSaXTHgIfPl3SEfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LrA0ehL6; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-460969c49f2so310311cf.0
-        for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 07:35:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1732203325; x=1732808125; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=547IccmQdfQpz/uAg3RPtdIl621CchRTsFZX3/wSte0=;
-        b=LrA0ehL6FTKR5tjVH6H7Sz1LsI2UZxFCr7xYy40jxgryu6zR+aFZvSqmA9N9f5WCz2
-         DJLxu053DEtZRDaNl3XQFC7VO8uV78F7xuNwvJXBz0OJsw5PgxKS0poXzu94reKRWxfm
-         ry/pGpd8aAvjCW83om3onFTfX9EqavzbXADID/DMmfphL3zwBF6UULv0/Jdp/cKpR3MW
-         Unw2X0eleCHKBGMQS17yQncoihX8fdf2SHUGXXew/rnzGuAAxpPkZl93Xs8ujHAsDPWX
-         4IY4tUCljB511KYHE4agp51sowqB4Oo9+rg1GOtWhccOc5KlpMYh7Gy0GS95nk/l1ENx
-         mW2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732203325; x=1732808125;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=547IccmQdfQpz/uAg3RPtdIl621CchRTsFZX3/wSte0=;
-        b=hAvOezrxRJ2Wjv9hQp+rkJluW6HOUweCjmQnz6EQs4mBEQablDCE9pur1fpRvTWtFn
-         J/hJU3jdgs3r12tRRYThSVTNiJMEsBgAJ37a+jiQqHfUiZL0sN5eY21BZgQhTZbL9bav
-         RcDLbOMP3QhHyt6hX083JKKsUUk/wUUiZ8HNQZTZ75z9oz5ihzQNYFFt+sJ7H5a+4n1q
-         oPfoIGnsIAb/tpbTNnJLQEsBovLgpMZFH6OcvqgnVR/bhThFfbnBw8sL3CkeU5hzvJyD
-         lAU2JKXLC5v+Mg8m7xnzwco8yNJZDJgLVrZLHRCo/O7ZLWDjtIjqV1kiS7qUBf2cDAXK
-         ETmw==
-X-Forwarded-Encrypted: i=1; AJvYcCU9ZyfOBno6DBeQ2rcvvcWmKgV9pJH9l1uTgVUGx3SnLBZYnvzOSkDfjXDDA8sApJTqHUI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwSxBIICuE4z5WAxjC9BTOvLz4nZEXagueNMqhL8jq+vADCOMOW
-	ywlZXGYi400yhpCU+9PfdWLC+neNQ75HIDrcdEtf2DBdjIgzDyShHURWLE/uWPVdPiMVpuHWHZ3
-	iNm/yOiNndR0zH2zUt0hwqFIN1/7XfLe8Wegd
-X-Gm-Gg: ASbGncvXAEoOXh5E5W5IkQkqrSzPClbbeq/ykqXV27KTYdlkExK4PteyFtrpzsaPVVJ
-	xrc40kEgsbsOlTpehf0b2FF2Xwgt0VjKtyI0jfWcDKeJV+llVNmh1muZq+XX0
-X-Google-Smtp-Source: AGHT+IFADvU4IPxoEGDBvsiWv2fnt3CEBsmaslZcEQXF5z8gP7iOsIe3UKpqtmvlizSwxHzRxnFWvsa1H0vOdEmntPk=
-X-Received: by 2002:ac8:59ca:0:b0:461:6e0a:6a27 with SMTP id
- d75a77b69052e-4653bd848d4mr96191cf.20.1732203323364; Thu, 21 Nov 2024
- 07:35:23 -0800 (PST)
+	s=arc-20240116; t=1732203335; c=relaxed/simple;
+	bh=s3B6KDwq2wWcZl/AqSpHlNNnUkEaNyDWXIsvkzPgCUU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jPPz1RTQf3tUud+6ed5hJaEvfz/uKowiLsM3KnZeclF6Y86bisMLK0afQSsGS+YZmKW1ozYcLuijuM3GR1VqhXxOqB0HwNMj+9sr450qJk+WRn5aLxq5nCQrTkr9OVdFV21s+goE77Cf5XzdUJt9/da2vsUl42Kl+M09lXBKcIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cDHM1RpQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00B4FC4CECD;
+	Thu, 21 Nov 2024 15:35:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732203334;
+	bh=s3B6KDwq2wWcZl/AqSpHlNNnUkEaNyDWXIsvkzPgCUU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=cDHM1RpQEHhJGHOiAq9ERJHmHdSW0vA1YbCxudrak6fnKpg2qLSrfmyTUM6wqJ4Aw
+	 fSW4idV6tfD7C/jXWvjVZE57VtiLvTeYp8hD5QT2qehkhPgdFCax8VI48DJ0BN/dK3
+	 vSYb2zMXzmOqc0CduadBxF/F19AQHYq0ijkzWUIF8Gx9DDbyIz4xOv7f8w/RCFDDoZ
+	 5AE0ATK5/2tA9vX9/8wEaP0eW4OnadS9o3A0JH/g/C+F73LyyNdKsk3z2MWNX600Gf
+	 VIPqCpGLmKk7ABniZt6U4Q7T1l/bHgb7xYOwY46PWXL/mMB/3ectpl/OTosWEZrZYG
+	 0UHKbgzjzoChg==
+Message-ID: <6e2e589b-4ddd-411e-a1a7-a2caf9689417@kernel.org>
+Date: Thu, 21 Nov 2024 15:35:29 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241028010818.2487581-1-andrii@kernel.org> <20241028010818.2487581-2-andrii@kernel.org>
- <20241121124011.GK24774@noisy.programming.kicks-ass.net>
-In-Reply-To: <20241121124011.GK24774@noisy.programming.kicks-ass.net>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 21 Nov 2024 07:35:12 -0800
-Message-ID: <CAJuCfpEBJsR803Ac-cwN0MWadzWW_WKZchaexdJauYETaww40w@mail.gmail.com>
-Subject: Re: [PATCH v4 tip/perf/core 1/4] mm: Convert mm_lock_seq to a proper seqcount
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, akpm@linux-foundation.org, oleg@redhat.com, 
-	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, 
-	willy@infradead.org, mjguzik@gmail.com, brauner@kernel.org, jannh@google.com, 
-	mhocko@kernel.org, vbabka@suse.cz, shakeel.butt@linux.dev, hannes@cmpxchg.org, 
-	Liam.Howlett@oracle.com, lorenzo.stoakes@oracle.com, david@redhat.com, 
-	arnd@arndb.de, richard.weiyang@gmail.com, zhangpeng.00@bytedance.com, 
-	linmiaohe@huawei.com, viro@zeniv.linux.org.uk, hca@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpftool: Fix the wrong format specifier
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
+ liujing <liujing@cmss.chinamobile.com>, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20241121121712.5633-1-liujing@cmss.chinamobile.com>
+ <edfccd59-007c-411d-8ca0-17bf3b9f1f43@bootlin.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <edfccd59-007c-411d-8ca0-17bf3b9f1f43@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 21, 2024 at 4:40=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Sun, Oct 27, 2024 at 06:08:15PM -0700, Andrii Nakryiko wrote:
-> > +/*
-> > + * Drop all currently-held per-VMA locks.
-> > + * This is called from the mmap_lock implementation directly before re=
-leasing
-> > + * a write-locked mmap_lock (or downgrading it to read-locked).
-> > + * This should normally NOT be called manually from other places.
-> > + * If you want to call this manually anyway, keep in mind that this wi=
-ll release
-> > + * *all* VMA write locks, including ones from further up the stack.
-> > + */
-> > +static inline void vma_end_write_all(struct mm_struct *mm)
-> > +{
-> > +     mmap_assert_write_locked(mm);
-> > +     /*
-> > +      * Nobody can concurrently modify mm->mm_lock_seq due to exclusiv=
-e
-> > +      * mmap_lock being held.
-> > +      */
->
-> You can write:
->
->         ASSERT_EXCLUSIVE_WRITER(mm->mm_lock_seq);
->
-> instead of that comment. Then KCSAN will validate the claim.
+2024-11-21 13:43 UTC+0100 ~ Alexis Lothoré <alexis.lothore@bootlin.com>
+> Hi Liujing,
+> 
+> On 11/21/24 13:17, liujing wrote:
+>> The type of lines is unsigned int, so the correct format specifier should be
+>> %u instead of %d.
+>>
+>> Signed-off-by: liujing <liujing@cmss.chinamobile.com>
+>>
+>> V1 -> V2: Fixed two other wrong type outputs about lines
+> 
+> This commit changelog line should not appear in the commit message. This is
+> still useful for review though, so you can keep it in the commit by using a ---
+> separator (see other patches on the ML), which will make it automatically
+> trimmed when the maintainers will apply the patch.
 
-Thanks for the tip! This one looks not critical but I see there are
-more important comments in "mm: Introduce
-mmap_lock_speculation_{begin|end}". I'll send a new version shortly.
+Also next time please remember to tag your patch as "v2" in the email
+subject.
 
->
-> > +     mm_lock_seqcount_end(mm);
-> > +}
+Patch looks good, thank you!
+
+Reviewed-by: Quentin Monnet <qmo@kernel.org>
 
