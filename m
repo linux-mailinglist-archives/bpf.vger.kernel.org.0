@@ -1,151 +1,219 @@
-Return-Path: <bpf+bounces-45416-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45417-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28E3E9D5529
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 23:04:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6FCE9D552B
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 23:07:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97D44B22504
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 22:04:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 863AB283839
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 22:07:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692211DA103;
-	Thu, 21 Nov 2024 22:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA381DC054;
+	Thu, 21 Nov 2024 22:07:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IEV++uf/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bnKVKvcw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f194.google.com (mail-lj1-f194.google.com [209.85.208.194])
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com [209.85.208.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385C81A4F20
-	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 22:04:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1663F176AC7
+	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 22:07:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732226683; cv=none; b=oFKhoFR9h+AJPbk/Cmw0TmD3iJCE3RPljoevlXtP6B6idADyYduQR0MwTQ7qjgTSYp0PFra5gwQbVv61VKp/S2jzAHXbNwYg1SyHiaIQimENLSlT2cYcMvoRgMUPVrdQSN28BUCbi+nV+bhe4zDSZi5BN3feUXPysB1lSOqPUc4=
+	t=1732226823; cv=none; b=Q1xNvqLpl457Ry8RiZauZMzfQS72tTxT9NoJfz+1L6+vZIK2luNGUuWX3kn2slJbC2aWL/VnMHu6yGxP7EAZa6hMDI4CJwE+tbPKx5IJEM/ykQFMAWeaxpk59o7N19Pevvv/VqY2ITHThxDRV08jHs49M/rOZnbwihsJm26IA50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732226683; c=relaxed/simple;
-	bh=t2L/E3UzzPDfVQBhWoWgRtWph1B81U74fF5oxgYLAXg=;
+	s=arc-20240116; t=1732226823; c=relaxed/simple;
+	bh=ahy+yBU4dMzY+25VBJr8cWPjOs5Bsmkj+0bpMGJvXSE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NJBBO+tNt+QLuDy4fFUpKgpY2UmVzLRddqXXIBbAhdmmpcSO4OSwgFb+YmWz2r5ILUyMwnuNJPP4mXyHPo7Y7zGMMKFTxZ0XSDgABZwrROjHMOTkGbbdE0B5j23LrhNm5re2JOKV0J0AA+R3QUPfskaMICQUdSKx6A6cNjszC5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IEV++uf/; arc=none smtp.client-ip=209.85.208.194
+	 To:Cc:Content-Type; b=pJklAfoebh8uggWdNP8jiCicKmXrPlYwYcsXN6uuzL0ZI3mocrxIYi3+tM7lemCjz4ZP1Zwhsq0cdDzLOUYSDY2fzVaNHgS8GbcGxBolClYd4PxX9xS6Hkpdf5fmGJVoo3XjDYIZxZyeI8qP15TJHT7nt7ZGhB/hrUWEYutQP5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bnKVKvcw; arc=none smtp.client-ip=209.85.208.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f194.google.com with SMTP id 38308e7fff4ca-2fb5014e2daso16639731fa.0
-        for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 14:04:40 -0800 (PST)
+Received: by mail-ed1-f65.google.com with SMTP id 4fb4d7f45d1cf-5cfcb7183deso4431967a12.0
+        for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 14:07:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732226679; x=1732831479; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1732226820; x=1732831620; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FTwkHWmFvIQbSA3h/UlfgB5YmwFsTo2G+wVmtp+thOo=;
-        b=IEV++uf/sGQe1skm0LLC/2YCtWO8l6i4ljPuIo2wr2EfOu01fsKxvMJEWiZo9vrlG+
-         Y0KGXKyBZbyVWZbRC/TuMQ0hNB0As6Fls5pnH+YLlnqowBOjhAeUX+5POxoEP35ynKHn
-         jXAU376P9P8wME3vT3gnPlL5L2lQtVwNnxRr5u822DY49F7G9U4UyIxO7WOlnnsrCoTl
-         wNyyj9AmTGWNUOaWv9Fmm9ES0kEGC7I1qAolb0SNWBq+rmwqnyhRuCqO51/FpTXFGmwP
-         Vi55r+9+Y54j+yKdBLkS5/FPu1r8K7zW5XtKgJiLkm4mOl5obLDumBUIXAxrms1aj8dj
-         QYwQ==
+        bh=Uqpaqv4MAji4EzBHx5rLDApluUmIduIaNGKpaEGxGZ8=;
+        b=bnKVKvcwd6+/ZTgP5lz5Pctod6mbTWtjCDsLfl1zLH+zhEgnIil505cUbR/1ELTqPa
+         GwUiq+pAHDsBBbfUOtnK5AWFDw7NlcXtO96Y0LWjYKVZMbFpX732Kupg3f4bRuMBy2wB
+         g5VTASB9CB6y9BuhPSLhGfrsJZp6zacpqfMnCxu9gmAXyJYefwgyF4bZAj91rh6t7/dJ
+         AYLliNC+y8X1wHl3MxWYs8BR7rIwi0pifvxKdWKpd7YIkFXaBlJhlJJ8qzzue17DWnRH
+         dXzH8DqGNYXhG8mpNPO5HTs7xvQqg9ThOzu6jR0U7BnTF2+vfPsvj1VXY6UeKcCKfmx0
+         qqlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732226679; x=1732831479;
+        d=1e100.net; s=20230601; t=1732226820; x=1732831620;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FTwkHWmFvIQbSA3h/UlfgB5YmwFsTo2G+wVmtp+thOo=;
-        b=kAHvcZErwkrC91l1Czk22Z7LKO9LhekhoOig6hmXofxKCkFZGpj2Uv8WrjxFYE1mPX
-         2O5v3t4bUcJ8nR1o0P8Mwg4Fgrhp1pmQFEgU65Ggg4/jn6KRTWFNR9YgXysIe0jb9J7k
-         ekBKS9roUmH8H9XN9Qusvn3+vg92YJXSXpd0NwUpSV0Lt3cIxMoB7vJ32fenD3Ko/AbB
-         6mU7bMtZW+MR3fxsnjAtiUNLEkVaQyv/19R2PZ/9jlJkedNfY2hPjBgXQlFFygbNK8xr
-         WgnXrAdstIcS4xJBpGd5Idj1vnYnw4DDvXmecS5+qkLCVLvTXKhQ/kU5tpmyQZ/mLS9M
-         VyLw==
-X-Gm-Message-State: AOJu0YwT26b37vPbVXViZJg1EVD7FWODeIVpttFu3e2Yk8g6ARVKbcdM
-	FE7rwViv50vrkRmJJJANfhzI9NEZaQbYs7kADE9OF5HHofEWVskxrDLzEvdyqqfjpkcEAYmeJPB
-	cJ45XsEBtwhU4k9uCI5qWleyjOWw=
-X-Gm-Gg: ASbGncvUSv1+1Mavjk9e84P+aqx5bdeZ+e3w/7paFdBUObGp0vS9JeukoL5eKxGs2Qd
-	tPLuz4cyAhLIHaYZy+LVwUli1W4vrQvwgsQ==
-X-Google-Smtp-Source: AGHT+IFu8z6QrbDoj5HJD7GbFewvB/cHK/UqheHny7FjniEKcrvS+3o/Phh1Kuv1mq18++lvHe0sRI+1CDXqfF5Zapc=
-X-Received: by 2002:a05:651c:b0f:b0:2fb:65c8:b4ae with SMTP id
- 38308e7fff4ca-2ffa71a7b98mr1630521fa.31.1732226678975; Thu, 21 Nov 2024
- 14:04:38 -0800 (PST)
+        bh=Uqpaqv4MAji4EzBHx5rLDApluUmIduIaNGKpaEGxGZ8=;
+        b=KHC7jRA7TZsJroBk7mRVZz4//oNczB8j5grsvYMg2pC9vxNLz6a0MhXDUeAl3lv3dZ
+         OHuqrTmiYyWIrTaZAjj8ixDXDC0HJ7y+wSXXDtTLXmXU/ba5V1y2eqsShpzHxS3pZgcy
+         ZL4+kCB6M3gURzdRDgJ41/Sy5EqMz6jLxo1JwUACjkTmgQgSJmDoT2/Es310eGkgZBU0
+         wQOJhxQ0nw/LMUvawa2xdLFArrsdRhxu14ET6/Yj5w/3KqF+LVmuRn2b+9Ai9+su9/K3
+         L12cLYEi18nsRksWqRzu17D5zexOQjtIGbVxnMFI29ruH/i119KnvJjpap+Oxe2CysfV
+         TKSw==
+X-Gm-Message-State: AOJu0Yy1lmoqCVJMd0hlc1QlQPCaa51xP8IqYUqItSPRCBKKYJ5A+HlI
+	DydD0O6xHWemiryD4T7chPBWAAhQewUOOrE2jDNOb8nSO7NlBRT+G9a1tfHWdZBXk417nYj1RGM
+	f16PK/x7Sy66XnrLQLFJ5Oms11I8=
+X-Gm-Gg: ASbGncvEJlSPA2Jd3BrxEA4xNSJMKWCADRs6rQW+mTB8CVzFkyaYsT5iPunaPOKZrcS
+	PKit/yMuALxJ9OH/IikzRUDmDcpnZZuun4w==
+X-Google-Smtp-Source: AGHT+IHZOp0y1yk24CgrQLzKMIVyl9inhYP4KCb7SxnygyNaSNQcyTan1lHdaDl+21SmxToihtOMNeyhutRDmJWZXeU=
+X-Received: by 2002:a05:6402:2548:b0:5cf:74c0:b4af with SMTP id
+ 4fb4d7f45d1cf-5d007ca45fcmr5182165a12.13.1732226820249; Thu, 21 Nov 2024
+ 14:07:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241121005329.408873-1-memxor@gmail.com> <20241121005329.408873-4-memxor@gmail.com>
- <dfe594d893ce83a3be0ddaa3559043908465eaec.camel@gmail.com>
- <CAP01T75sz0YB7dj3fchyw-E2kjftaewcXhWJP_=hf_OBnWBDQA@mail.gmail.com> <763a88cb28f66ac5c62ddbeef763b77fc6833418.camel@gmail.com>
-In-Reply-To: <763a88cb28f66ac5c62ddbeef763b77fc6833418.camel@gmail.com>
+References: <20241121005329.408873-1-memxor@gmail.com> <20241121005329.408873-6-memxor@gmail.com>
+ <c49e756f6e4ef492a68b7cd3b856240282963f8e.camel@gmail.com>
+In-Reply-To: <c49e756f6e4ef492a68b7cd3b856240282963f8e.camel@gmail.com>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Thu, 21 Nov 2024 23:04:02 +0100
-Message-ID: <CAP01T766TUw03pB2B9GMX61_6N1m4xLKJht74dgsC96sp9A7_A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/7] bpf: Consolidate RCU and preempt locks in bpf_func_state
+Date: Thu, 21 Nov 2024 23:06:23 +0100
+Message-ID: <CAP01T75FEfodis5YLie5kBPG4FSyyinSAa0m+ZP8H+_PhseWRQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 5/7] bpf: Introduce support for bpf_local_irq_{save,restore}
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Martin KaFai Lau <martin.lau@kernel.org>, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 21 Nov 2024 at 19:54, Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Thu, 21 Nov 2024 at 21:21, Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> On Thu, 2024-11-21 at 19:12 +0100, Kumar Kartikeya Dwivedi wrote:
-> > On Thu, 21 Nov 2024 at 19:09, Eduard Zingerman <eddyz87@gmail.com> wrote:
-> > >
-> > > On Wed, 2024-11-20 at 16:53 -0800, Kumar Kartikeya Dwivedi wrote:
-> > > > To ensure consistency in resource handling, move RCU and preemption
-> > > > state counters to bpf_func_state, and convert all users to access them
-> > > > through cur_func(env).
-> > > >
-> > > > For the sake of consistency, also compare active_locks in ressafe as a
-> > > > quick way to eliminate iteration and entry matching if the number of
-> > > > locks are not the same.
-> > > >
-> > > > OTOH, the comparison of active_preempt_locks and active_rcu_lock is
-> > > > needed for correctness, as state exploration cannot be avoided if these
-> > > > counters do not match, and not comparing them will lead to problems
-> > > > since they lack an actual entry in the acquired_res array.
-> > > >
-> > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > ---
-> > >
-> > > This change is a bit confusing to me.
-> > > The following is done currently:
-> > > - in setup_func_entry() called from check_func_call():
-> > >   copy_resource_state(callee, caller);
-> > > - in prepare_func_exit():
-> > >   copy_resource_state(caller, callee);
-> > >
-> > > So it seems that it is logical to track resources in the
-> > > bpf_verifier_state and avoid copying.
-> > > There is probably something I don't understand.
-> > >
+> On Wed, 2024-11-20 at 16:53 -0800, Kumar Kartikeya Dwivedi wrote:
+> > Teach the verifier about IRQ-disabled sections through the introduction
+> > of two new kfuncs, bpf_local_irq_save, to save IRQ state and disable
+> > them, and bpf_local_irq_restore, to restore IRQ state and enable them
+> > back again.
 > >
-> > This is what we were doing all along, and you're right, it is sort of
-> > a global entity.
->
-> Right, but since this patch-set does a refactoring,
-> might be a good time to change.
->
-> > But we've moved active_locks to bpf_func_state, where references reside, while
-> > RCU and preempt lock state stays in verifier state. Either everything
-> > should be in
-> > cur_func, or in bpf_verifier_state. I am fine with either of them,
-> > because it would
-> > materially does not matter too much.
+> > For the purposes of tracking the saved IRQ state, the verifier is taught
+> > about a new special object on the stack of type STACK_IRQ_FLAG. This is
+> > a 8 byte value which saves the IRQ flags which are to be passed back to
+> > the IRQ restore kfunc.
 > >
-> > Alexei's preference has been stashing this in bpf_func_state instead in [0].
-> > Let me know what you think.
+> > To track a dynamic number of IRQ-disabled regions and their associated
+> > saved states, a new resource type RES_TYPE_IRQ is introduced, which its
+> > state management functions: acquire_irq_state and release_irq_state,
+> > taking advantage of the refactoring and clean ups made in earlier
+> > commits.
 > >
-> >   [0] https://lore.kernel.org/bpf/CAADnVQKxgE7=WhjNckvMDTZ5GZujPuT3Dqd+sY=pW8CWoaF9FA@mail.gmail.com
+> > One notable requirement of the kernel's IRQ save and restore API is that
+> > they cannot happen out of order. For this purpose, resource state is
+> > extended with a new type-specific member 'prev_id'. This is used to
+> > remember the ordering of acquisitions of IRQ saved states, so that we
+> > maintain a logical stack in acquisition order of resource identities,
+> > and can enforce LIFO ordering when restoring IRQ state. The top of the
+> > stack is maintained using bpf_func_state's active_irq_id.
+> >
+> > The logic to detect initialized and unitialized irq flag slots, marking
+> > and unmarking is similar to how it's done for iterators. We do need to
+> > update ressafe to perform check_ids based satisfiability check, and
+> > additionally match prev_id for RES_TYPE_IRQ entries in the resource
+> > array.
+> >
+> > The kfuncs themselves are plain wrappers over local_irq_save and
+> > local_irq_restore macros.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
 >
-> As far as I understand check_func_call(), function calls to static
-> functions are allowed while holding each kind of resources currently
-> tracked. So it seems odd to track it as a part of function state.
-> The way I understand Alexei in the thread [0] the idea is more
-> to track all counters in one place.
+> I think this matches what is done for iterators and dynptrs.
 >
-> Let's wait what Alexei has to say.
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 >
+> [...]
+>
+> > @@ -263,10 +267,16 @@ struct bpf_resource_state {
+> >        * is used purely to inform the user of a resource leak.
+> >        */
+> >       int insn_idx;
+> > -     /* Use to keep track of the source object of a lock, to ensure
+> > -      * it matches on unlock.
+> > -      */
+> > -     void *ptr;
+> > +     union {
+> > +             /* Use to keep track of the source object of a lock, to ensure
+> > +              * it matches on unlock.
+> > +              */
+> > +             void *ptr;
+> > +             /* Track the reference id preceding the IRQ entry in acquisition
+> > +              * order, to enforce an ordering on the release.
+> > +              */
+> > +             int prev_id;
+> > +     };
+>
+> Nit:  Do we anticipate any other resource kinds that would need LIFO acquire/release?
+>       If we do, an alternative to prev_id would be to organize bpf_func_state->res as
+>       a stack (by changing erase_resource_state() implementation).
 
-Discussed with Alexei (who discussed with you I presume) that we're
-doing this in bpf_verifier_state, will fix.
+I don't think so, this was the weird case requiring such an ordering,
+so I tried to find the least intrusive way.
+
+>
+> [...]
+>
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 751c150f9e1c..302f0d5976be 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -3057,6 +3057,28 @@ __bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__sz, const void __user
+> >       return ret + 1;
+> >  }
+> >
+> > +/* Keep unsinged long in prototype so that kfunc is usable when emitted to
+> > + * vmlinux.h in BPF programs directly, but since unsigned long may potentially
+> > + * be 4 byte, always cast to u64 when reading/writing from this pointer as it
+> > + * always points to an 8-byte memory region in BPF stack.
+> > + */
+> > +__bpf_kfunc void bpf_local_irq_save(unsigned long *flags__irq_flag)
+>
+> Nit: 'unsigned long long' is guaranteed to be at-least 64 bit.
+>      What would go wrong if 'u64' is used here?
+
+It goes like this:
+If I make this unsigned long long * or u64 *, the kfunc emitted to
+vmlinux.h expects a pointer of that type.
+Typically, kernel code is always passing unsigned long flags to these
+functions, and that's what people are used to.
+Given for --target=bpf unsigned long * is always a 8-byte value, I
+just did this, so that in kernels that are 32-bit,
+we don't end up relying on unsigned long still being 8 when
+fetching/storing flags on BPF stack.
+
+>
+> > +{
+> > +     u64 *ptr = (u64 *)flags__irq_flag;
+> > +     unsigned long flags;
+> > +
+> > +     local_irq_save(flags);
+> > +     *ptr = flags;
+> > +}
+>
+> [...]
+>
+> > @@ -1447,7 +1607,7 @@ static struct bpf_resource_state *find_lock_state(struct bpf_func_state *state,
+> >       for (i = 0; i < state->acquired_res; i++) {
+> >               struct bpf_resource_state *s = &state->res[i];
+> >
+> > -             if (s->type == RES_TYPE_PTR || s->type != type)
+> > +             if (s->type < __RES_TYPE_LOCK_BEGIN || s->type != type)
+>
+> Nit: I think this would be easier to read if there was a bitmask
+>      associated with lock types.
+
+Ack, will fix.
+
+>
+> >                       continue;
+> >
+> >               if (s->id == id && s->ptr == ptr)
+>
+> [...]
+>
 
