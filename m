@@ -1,114 +1,93 @@
-Return-Path: <bpf+bounces-45366-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45367-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8416C9D4C48
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 12:52:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A8B49D4C50
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 12:54:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D14D1F2155A
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 11:52:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00B20282698
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 11:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03DE31D3562;
-	Thu, 21 Nov 2024 11:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC4C1D2234;
+	Thu, 21 Nov 2024 11:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AwNK8SED";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OQYcCsdD"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="i8kPc53J"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFC61CEEB3
-	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 11:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE281CD1EE;
+	Thu, 21 Nov 2024 11:54:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732189945; cv=none; b=bXUCXyT8HlTAHwxoV1aHNYyDYMJSmFqT9fXUv+7mQum2n3+ksNpj/+Dqq7na0jhenXIzjH6JVTdjpeE7YnqatI/AzgKoAECyKX6M74nx6G/snAKcTEnI7233vWApYJWLbyfMHWGmXAP3TSPx8kCO2GGr3+pnPvMsX5zaxTHVyVU=
+	t=1732190043; cv=none; b=H2NP316dOD7wA7LXcuxknWAHt1pyg2soV415FlwodjZ8VJtV6C4BoNFpBhKYhAzptlbySg7ascDrNK3GTNdnCIVcco8ktR2cueCCQ4o4cjNgWzgW1Zuy5424Slzll7BT64FApJxS4ReZsXxMSpc8ewdlZET2kxHik4HUS4WtcxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732189945; c=relaxed/simple;
-	bh=NnoW7RCaJNS57gupSs3WZ5kzYCS03Pm7QLNnCfWtqKU=;
+	s=arc-20240116; t=1732190043; c=relaxed/simple;
+	bh=AmK0AI1qoNjZ0cH1lAwLtt6sWfdkbtQrIoeS241Raec=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KEu/JCR7ze8glhQaEEpSfYyFtaBFav7+XZutfEsjqlV3X8Ik90Yds+YmbLTg+1ZbiJ8cWx3rSq4Tr2eeGCgKsrOEjeYrtuLy10Eppf81amJdzyogvtAL7HJWuAshIeP/hgNucRv6dI8UN8+zWb8xFKwwiLpi/561KcDYTChfitU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AwNK8SED; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OQYcCsdD; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 21 Nov 2024 12:52:21 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1732189941;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T4KKlNM8g685FXOE+FyH9mQrkclrVUa2UavF0Z2MVUM=;
-	b=AwNK8SEDfzJyauCSBV+/CiN0LeVCaUrYiOcApsBs1tf/eVT+51v8803szKSEjVS3jWc8q+
-	2lFBxvSfR8bUd7nae5dskk3+Y8tx8JzgQPvqoYLiikxkbdLxDTw4G1GLnLK5erciqds/f/
-	ocQrgh+mDG18MpMWTB3cCCpcpyG/UkXG8KI4bgGgWkQVu3gRDP9JaaAuFC454Y25CGgWsU
-	Ay86JrsveSrgqsEdglN2yx9KYskhlYyViBfm87uH30TSc/8hvFOj2+9vsRKf7XLWovxK2X
-	joar7pj6o7dNUNF++sszsYgl0JRyV+Js5tayqh/sDIqf+73RpP+jn6RF1Ju5DQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1732189941;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T4KKlNM8g685FXOE+FyH9mQrkclrVUa2UavF0Z2MVUM=;
-	b=OQYcCsdDUpbRk17/+O+WsPlR4P7TzeFDRocfqOjWdNScmMHz24HTNJOT7PWCxl/1v7CyYy
-	pnQl7oQE4rgW4lDg==
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Thomas Gleixner <tglx@linutronix.de>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
-	houtao1@huawei.com, xukuohai@huawei.com
-Subject: Re: [PATCH bpf-next 07/10] bpf: Switch to bpf mem allocator for LPM
- trie
-Message-ID: <20241121124649-bc310634-8cc9-464e-bb81-6a9ad0f8e136@linutronix.de>
-References: <20241118010808.2243555-1-houtao@huaweicloud.com>
- <20241118010808.2243555-8-houtao@huaweicloud.com>
- <8734jkizoj.fsf@toke.dk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mhMJxmPS5rCTPZ731euklN91BZWZLnBYogRBq8/ILXmogwEuvZEH+PBdrnE5Amncl5nFdN2Ef978yB/ggwwyXMUA9Gp0DCo3jW15oxnR2UzKAKUOrMJpSM15khfOIMjNQVBKmCGL4H8Ev0dbUVfm1+CaouSYaqi8kFwjsUvPSjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=i8kPc53J; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=AmK0AI1qoNjZ0cH1lAwLtt6sWfdkbtQrIoeS241Raec=; b=i8kPc53JEweieYf82/XNWs+MyZ
+	y4TdePE7L5rOgPuxlWUHzcVG6gzltYkmMsaE/ZzgBBynjqMwGiE+6yFLxQvITJvcH7YGqUYLkNaUo
+	Qn0lvht+b2fv6Uq8UKqIZHgHfoTNAYjqbeJ1capS9O1WbedziHKV9DK7xsXuaA3Ta90tiAThMD8Ow
+	IDMPeF/uK4/iX1VS8IQTC9idKd0O0yp9Co4xmqi+FU1LZtLHXRySZh8HVH6PkynqdkebIAQiuVifM
+	ENg5RvdtXFb6WZIRurvGvEZHCyzs2oZ8tLHTrN29ItXiy8FUmXg9AVXM5eSe1PV5ZjVj9O4DrBFVX
+	nIlPDXLw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tE5ku-00000006LDa-2iuE;
+	Thu, 21 Nov 2024 11:53:54 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 83C1B30068B; Thu, 21 Nov 2024 12:53:53 +0100 (CET)
+Date: Thu, 21 Nov 2024 12:53:53 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [RFC perf/core 05/11] uprobes: Add mapping for optimized uprobe
+ trampolines
+Message-ID: <20241121115353.GJ24774@noisy.programming.kicks-ass.net>
+References: <20241105133405.2703607-1-jolsa@kernel.org>
+ <20241105133405.2703607-6-jolsa@kernel.org>
+ <20241105142327.GF10375@noisy.programming.kicks-ass.net>
+ <ZypI3n-2wbS3_w5p@krava>
+ <CAEf4BzZ4XgSOHz0T5nXPyd+keo=rQvH5jc0Jghw1db0a7qR9GQ@mail.gmail.com>
+ <ZzkSKQSrbffwOFvd@krava>
+ <CAEf4BzbSrtJWUZUcq-RouwwRxK1GOAwO++aSgjbyQf26cQMfow@mail.gmail.com>
+ <20241119091348.GE11903@noisy.programming.kicks-ass.net>
+ <CAEf4BzbhDE2B41pULQuTfx0f_-1fn5ugJEdPpweKWZVJetCxrQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8734jkizoj.fsf@toke.dk>
+In-Reply-To: <CAEf4BzbhDE2B41pULQuTfx0f_-1fn5ugJEdPpweKWZVJetCxrQ@mail.gmail.com>
 
-On Thu, Nov 21, 2024 at 12:39:08PM +0100, Toke Høiland-Jørgensen wrote:
-> Hou Tao <houtao@huaweicloud.com> writes:
-> 
-> > Fix these warnings by replacing kmalloc()/kfree()/kfree_rcu() with
-> > equivalent bpf memory allocator APIs. Since intermediate node and leaf
-> > node have fixed sizes, fixed-size allocation APIs are used.
-> >
-> > Two aspects of this change require explanation:
-> >
-> > 1. A new flag LPM_TREE_NODE_FLAG_ALLOC_LEAF is added to track the
-> >    original allocator. This is necessary because during deletion, a leaf
-> >    node may be used as an intermediate node. These nodes must be freed
-> >    through the leaf allocator.
-> > 2. The intermediate node allocator and leaf node allocator may be merged
-> >    because value_size for LPM trie is usually small. The merging reduces
-> >    the memory overhead of bpf memory allocator.
-> 
-> This seems like an awfully complicated way to fix this. Couldn't we just
-> move the node allocations in trie_update_elem() out so they happen
-> before the trie lock is taken instead?
+On Wed, Nov 20, 2024 at 04:07:38PM -0800, Andrii Nakryiko wrote:
 
-The problematic lock nesting is not between the trie lock and the
-allocator lock but between each of them and any other lock in the kernel.
-BPF programs can be called from any context through tracepoints.
-In this specific case the issue was a tracepoint executed under the
-workqueue lock.
+> USDTs are meant to be "transparent" to the surrounding code and they
+> don't mark any clobbered registers. Technically it could be added, but
+> I'm not a fan of this.
 
-
-Thomas
+Sure. Anyway, another thing to consider is FRED, will all of this still
+matter once that lands? If FRED gets us INT3 performance close to what
+SYSCALL has, then all this work will go unused.
 
