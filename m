@@ -1,141 +1,117 @@
-Return-Path: <bpf+bounces-45326-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45327-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 835009D4755
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 06:49:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA8319D4768
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 07:05:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C32DB21C7D
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 05:49:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4348C282F2F
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 06:05:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D351547E0;
-	Thu, 21 Nov 2024 05:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFDD01A76C4;
+	Thu, 21 Nov 2024 06:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TmE1YDbH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HNTLZfFQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C1F6126F1E
-	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 05:49:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF901CA84;
+	Thu, 21 Nov 2024 06:04:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732168187; cv=none; b=IEhXXe0oL3IJu1t31ko/MkCOb7MOWLyMJde09jFPZVEXjNwIIlTiTLiDGjmuvEL8yNTAlDKhzlxs5UHQi+nzaUkNsPnCTl+RwPdTRUtnwuTSqtKxFCkVzaW+ykfENBYVHWVEjTrBhb97swDOknrQHj2es/KUnhZbnwQZgmfgn/0=
+	t=1732169095; cv=none; b=cfGLBOaSL5Agut1WAMRp+lT+g6Ainiw5XNzOPOk1lQjhuc3SYNijfEeM2rl8jthYrdOQPnANfJXlmlqAGZTx9yBONenuqCvN1+yReMVqnm9tiS9Ov7FuIiV5HqkQOVAc4fCfo8HTzaA7WUtMw85gE7LUOG7rHElWBL2cJjlH4oU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732168187; c=relaxed/simple;
-	bh=e0DJB3iGuuHSM0RgZMwRBr7aQLFF3u5U57sldBXrKuE=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=I4OfzhoncMPMpXgfQl1cFt4bhb1YDMuD76dTvXqDrV4IAmpy5jRCU9gq4pyqQp5Rs61ipF6akMq7sAlAW+mCgPCepH/XMtUIBIAWYwSxW+OqGQ+xISudio+MisL3jdTVkfrqLOe094fs5zU7cv+X7qb5DeTJDHT8f9NNbwtGRuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TmE1YDbH; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-211fb27cc6bso4955205ad.0
-        for <bpf@vger.kernel.org>; Wed, 20 Nov 2024 21:49:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732168185; x=1732772985; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mn4sc7JVDNyH1xmUmNZT288UQVkSFD+RhIIySgz4Ht4=;
-        b=TmE1YDbH0cTzGhVL+K/W2cYv+krqC271bcvLyrZIxnm8NvkXP+uOiNDUvGeeRbdhho
-         C370BsH65k0gPnhBO59Ignp1GnuSsOaQlxVhyhugb5JzPkj4bZSc45lQJojDodKjvkil
-         Z9DDpH/cVEpYRnx702qGEvx7oMJuV04F7ih2IqzPzCor0zLAzyl0F6imGEHNgdPzQ0Yh
-         dJdmfaQHCMgxs3BfpicdZtw8Erwsm68/NXHlTGizNW3lB5NF/Lj6B1Il0I38gdvCaNh1
-         JkTpIfNh2RxIpmg0B5paQaLdoID2snvFMVQuANlI3QfarGaFdVIVKWcUB0KbWgiIdEeq
-         FSyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732168185; x=1732772985;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Mn4sc7JVDNyH1xmUmNZT288UQVkSFD+RhIIySgz4Ht4=;
-        b=qAgAAAtg+cyIZs/Zi47Yhn02C3t3Rhb9aZIxzyWz4Tb8fg9L2phtEms9dQDfU624Ut
-         HS+ep0XmG/oJbfbeTQs9ObE6X8B1SnVig7fwcc1hTYePlji+hCd2BQFHYcGIFBlHOxJN
-         33K7vwStPerFuc17ucp5UokR8ji8bNDqkrjgnCWvEKNtAvWmehi/Z6B1shPWAcExJh9Q
-         leuA7ArpUccTrM55xkfV7SjdIN6FokbzPwy/zCIWeQzvkJuzfWo0YCDhGhtHJOcCtMED
-         lInXwnqkq1fk7CBmGEIrPAey6Dexp6AEAYGOlEECAlY8KvJe3NhKGlQv4xVR+nEFv3Rt
-         +OBg==
-X-Forwarded-Encrypted: i=1; AJvYcCULokpoCKIBlKu8ttmAUU9gWK0u6glF99Q2FrFzyCn/tqdBtYRjCVu+1gHinkR9avUTdF8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwIZxKyTCa3hpknKyooftqV0pdSqo1sr4hD5JW+S5ezIlho19CR
-	EoYjBBGdC5nNWmMXSNpBJ146nLzCr8FuVy97BTCzXov8rDTlXSMu
-X-Google-Smtp-Source: AGHT+IHkqfqG2I0tv5JSI++unwUqtwjlC0faysjzz7LVB3LU+hTO8gwEM57KD8MCKCQaAcpNijvx3A==
-X-Received: by 2002:a17:902:e810:b0:20c:5cdd:a91 with SMTP id d9443c01a7336-2126cb20a48mr70855355ad.41.1732168185323;
-        Wed, 20 Nov 2024 21:49:45 -0800 (PST)
-Received: from localhost ([98.97.39.253])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-212883ff4b2sm5176205ad.251.2024.11.20.21.49.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Nov 2024 21:49:44 -0800 (PST)
-Date: Wed, 20 Nov 2024 21:49:43 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: zijianzhang@bytedance.com, 
- bpf@vger.kernel.org
-Cc: edumazet@google.com, 
- john.fastabend@gmail.com, 
- jakub@cloudflare.com, 
- davem@davemloft.net, 
- dsahern@kernel.org, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- martin.lau@linux.dev, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- mykolal@fb.com, 
- shuah@kernel.org, 
- wangyufen@huawei.com, 
- xiyou.wangcong@gmail.com, 
- zijianzhang@bytedance.com
-Message-ID: <673ec9f7d8f02_157a20835@john.notmuch>
-In-Reply-To: <20241016234838.3167769-1-zijianzhang@bytedance.com>
-References: <20241016234838.3167769-1-zijianzhang@bytedance.com>
-Subject: RE: [PATCH bpf 0/2] tcp_bpf: Fix the sk_mem_uncharge logic in
- tcp_bpf_sendmsg
+	s=arc-20240116; t=1732169095; c=relaxed/simple;
+	bh=5SzfSvmW6/EPTP4rQKZCAGqAdZ0pvivToAjN8Y2m9VA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L2PkPWHhjyUnSKaT696ety0i7OT5aFB0GMQve6db3lIDPo/INeEKyHqHNernVaSN70c4WOtEm9PRx8TQR1lgVyPC8DZCdqm857X+wHvf+Mn/UPDEcLowDIMoYZSnH5Hcagd7Ueigsw6xqNuA8CBMnYVgirPfo6YqyjiRr5PvT9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HNTLZfFQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4073BC4CECC;
+	Thu, 21 Nov 2024 06:04:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732169094;
+	bh=5SzfSvmW6/EPTP4rQKZCAGqAdZ0pvivToAjN8Y2m9VA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HNTLZfFQdJoBGLUj/Pf2GLZJL1xjs3lT6zJqK68EcV/k1VghZ12lSCUsvVmtpqfkP
+	 2vCJXXlH+JFp6qJOxbtoJ1yfY+gXOccwgKWHlo+Tc3KNksHIEUwMDSzrduOqSOxitA
+	 /4wwoIV/n4bv4srSwtqkk3//3gXk1ej5lW8qno7wls9MiJkjkpAempHg/VSOZEovc3
+	 2+64hp3/lyiYj0ZcIRB5dr5ZcaAsAVNxu6PP+TeEGRAyQWgzgtl94iGePzfGM0v+BZ
+	 O1dI2gYBUkCAuVeBHFzC1sksj6Qep33n+ymFBqWN6ZlWCnqs0sUJB5yY1I8+CAE+Pb
+	 XPrYDrJfPhQkA==
+Date: Wed, 20 Nov 2024 22:04:51 -0800
+From: Namhyung Kim <namhyung@kernel.org>
+To: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Quentin Monnet <qmo@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	David Abdurachmanov <davidlt@rivosinc.com>
+Subject: Re: [PATCH] tools: Override makefile ARCH variable if defined, but
+ empty
+Message-ID: <Zz7Ng9CzrF_ciAz-@google.com>
+References: <20241106193208.290067-1-bjorn@kernel.org>
+ <87r076nikd.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87r076nikd.fsf@all.your.base.are.belong.to.us>
 
-zijianzhang@ wrote:
-> From: Zijian Zhang <zijianzhang@bytedance.com>
+On Wed, Nov 20, 2024 at 02:25:22PM +0100, Björn Töpel wrote:
+> Björn Töpel <bjorn@kernel.org> writes:
 > 
-> When apply_bytes are not zero, sk_mem_uncharge for __SK_REDIRECT and
-> __SK_DROP in tcp_bpf_sendmsg has some problem. Added a selftest to trigger
-> the memory accounting WARNING, and fixed the sk_mem_uncharge logic in
-> tcp_bpf_sendmsg
+> > From: Björn Töpel <bjorn@rivosinc.com>
+> >
+> > There are a number of tools (bpftool, selftests), that require a
+> > "bootstrap" build. Here, a bootstrap build is a build host variant of
+> > a target. E.g., assume that you're performing a bpftool cross-build on
+> > x86 to riscv, a bootstrap build would then be an x86 variant of
+> > bpftool. The typical way to perform the host build variant, is to pass
+> > "ARCH=" in a sub-make. However, if a variable has been set with a
+> > command argument, then ordinary assignments in the makefile are
+> > ignored.
+> >
+> > This side-effect results in that ARCH, and variables depending on ARCH
+> > are not set.
+> >
+> > Workaround by overriding ARCH to the host arch, if ARCH is empty.
+> >
+> > Fixes: 8859b0da5aac ("tools/bpftool: Fix cross-build")
+> > Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+
+Reviewed-by: Namhyung Kim <namhyung@kernel.org>
+
 > 
-> Zijian Zhang (2):
->   selftests/bpf: Add apply_bytes test to test_txmsg_redir_wait_sndmem in
->     test_sockmap
->   tcp_bpf: Fix the sk_mem_uncharge logic in tcp_bpf_sendmsg
+> Arnaldo/Palmer/Quentin:
+> 
+> A bit unsure what tree this patch should go. It's very important for the
+> RISC-V builds, so maybe via Palmer's RISC-V tree?
 
-I would probably prefer the patches with the fix first than the selftest
-just to avoid tripping up any bisect.
+I think it'd be best to route this through the bpf tree as it seems the
+main target is bpftool.  But given the size and the scope of the change,
+it should be fine with perf-tools or RISC-V tree.
 
-But patches look good. Thanks and sorry for the delay again I was
-travelling and OOO for a bit.
+Thanks,
+Namhyung
 
 > 
->  net/ipv4/tcp_bpf.c                         | 11 ++++-------
->  tools/testing/selftests/bpf/test_sockmap.c |  6 +++++-
->  2 files changed, 9 insertions(+), 8 deletions(-)
+> Opinions? Just want to make sure it doesn't fall between any chairs!
+> :-)
 > 
-> -- 
-> 2.20.1
 > 
-
-
+> Björn
 
