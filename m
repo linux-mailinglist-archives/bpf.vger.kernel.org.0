@@ -1,102 +1,110 @@
-Return-Path: <bpf+bounces-45426-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45427-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AF279D562A
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 00:29:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D7789D5632
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 00:34:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC6EC1F230ED
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 23:29:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 061BA2814BD
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 23:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0021B1DE3D1;
-	Thu, 21 Nov 2024 23:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 652631DE2DE;
+	Thu, 21 Nov 2024 23:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K/MUxuwZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RzRynrtC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30BFC1DE3AB;
-	Thu, 21 Nov 2024 23:29:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0624E1BBBDC;
+	Thu, 21 Nov 2024 23:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732231770; cv=none; b=t8U6pE0NDPC18F3KnnuMeo1wVWvMDZjM9ZmwIMgUFKM88ZF81zUQC7lQoc8HbIAOhWYM34P6eJhH8EthU4bf4tRdGoRGJtC/E0xQ3/acGs/pnRk0X5XZLAaV+v6Yb6F7mVMdAAiFPQ4Vz6LKCLmZJFeRf1txYPDtGEAaHrQHV+E=
+	t=1732232053; cv=none; b=LWA/lyuJqHbUSEw6r2liY4uIMGntcaoW0W3uL7KiNuslOvt9J+9hB7WjM0/+DByy6JT0FZ2554iMcBW3gY33aDBOrklHVYRgYakJ5MLnmmItKb1gWLOQA0t4kNuCMAegggyJXotUYKiHE8RtGiKvqslp01Cic0zo3zzWG+pf/Dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732231770; c=relaxed/simple;
-	bh=3agi3g463cUMfLUPzQ1P7IltDVf69J4wx8NL57FN8Y8=;
+	s=arc-20240116; t=1732232053; c=relaxed/simple;
+	bh=qdLMV8zGkvT/QtA/r+qtvK3bWoQ/glpHCnqXfNcoVvA=;
 	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=o0NQibaU9DPpLXenXxL/nzD6nge19U3E8VifZyo+XyoE5etZ+7lQmoM6FY2dr22tW6kdQKHnJkTybaMDe0ox61YU0W3i6SUVPyE3oFvDxE2NorYNAkvTGYsGfJzeT+KBUQGFfmObr0PoLutGbpzyEJW4+xAPnJ/nk5TJpi9CPuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K/MUxuwZ; arc=none smtp.client-ip=209.85.210.178
+	 Mime-Version:Content-Type; b=dVZ2WMWTgwcN0+Uul8QlKjhjywvkWtdnR4lEKf5/BpWJ3mr9gxTDGv1d1jODjppf1wYvXUNq5yXEdifWySDmtqB3DzHZh9WdHZ5gAJbBHx24IBCcaUr/WubSqtYFjDlomdOy3qVOhKpRFO7/X9uP/WWE2W/bJksfrPr09T99gQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RzRynrtC; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-71e681bc315so1078041b3a.0;
-        Thu, 21 Nov 2024 15:29:27 -0800 (PST)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2ea78d164b3so1291085a91.2;
+        Thu, 21 Nov 2024 15:34:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732231767; x=1732836567; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1732232051; x=1732836851; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/uvUYPAt+7GuR03C0B8LYpvwYn6Rpq5Y+1RIDzkqP44=;
-        b=K/MUxuwZ3tHC9LG7eRFmE77UM/3Lyj3XmaFcQHACx/evgAGtEoe/AbkUO+B0MRkEvZ
-         Q7QhSzudxI5lesBkoydvRLSoaID8jMCjXF7HbQTjZFBcK8+LNeUTO9wG8S28wMwheo9v
-         alFzsk38J2vbstf3DOrnG6KeNXXZa7psHX8PKvlnwMxLwyNNzVtO+JW5ewzXbzZYZ0jn
-         vv9QOgobzOjDWvUxJAEPBBN7JYXOLu4pY5/90pKCuvYewzv1fHdtx+N7f6UcSlThmInF
-         +Z1J0SjroBvOo2qcHklXJpgbTIZWcNweCgGqhiXPx1LlyZF2MCRByLE4yE7K9gYpIEUe
-         dhOQ==
+        bh=sUac66YlDe4DsE8EEWH0kHICeDsnP4YHiVPJ73sgToc=;
+        b=RzRynrtCHnsw7N9bgr/dp5/VkGRt8lKh5NvACjzDna3gVXwP5c4dYXMmiANzcQDptX
+         YsQ9BsMTAJXv7FNZWKldi8/rrv2itdRa48iU7uJjyaO8TS5iGDgkNWoByzGLtNfAbvZc
+         OixTg5UsKdfWe6zyBZGt77uIIrqfg2UMeM/Ss/t/0s/wLTI8ECnW13nBYFNsYW3lyJ2Y
+         oFTvRYEVacRF9ZXKpeveZ+bqR2d+gDCyY4R3hGEeUalA/D/czIgUrVpfyyrtXMUeml65
+         ol/2rzp4pS/u0KOKtcNkvhMtsPrptQ+vRG/+FTWbcVgbiuGRUtOipi8Lp+NVDIdVSzyn
+         nq/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732231767; x=1732836567;
+        d=1e100.net; s=20230601; t=1732232051; x=1732836851;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=/uvUYPAt+7GuR03C0B8LYpvwYn6Rpq5Y+1RIDzkqP44=;
-        b=SiUIVD4lG37sfg7fd4vJovyKhsVWZ/24Y1nQ6iPiwyDJRCCS64vTHnYiqDOVzokxj/
-         IvjuiCO58xm9wVuy34W8m/sKa87tIKPf/bOVjl1LxNfKvEm4EZu9Bz/BR3zuv/B8oURF
-         y/jHOLNsmENYll574cow0BijmMpFkZFwfbXsWLOSl5xkljc1B1tSd8ZS3wb7P+tUdwoM
-         UM0F+id8Wymucp1JGP2ScTcEK+GkXe/u2Hh7cM79+3ugtfLHC6gitHMfgMIHKCx8Kash
-         5/AzmvxBtNrVCAnavyp+1l7SQZJVQllEhs+8s/XbwOHIJEgufzmV5gFZO5RkIaEI0cgk
-         7O+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVtHyS3+NnQZ4YBOxqmlJigocyriUqhPPBX9oENXlO73BE91pOEKH3/ukFzaqBr/Tc7hCYNBDBqlNHJGhzJ@vger.kernel.org, AJvYcCXX1OcwQLj0HSTQqFjV9jLuK+d1Oqi9s1yVeMPyvsIJ9wx0XFZ+rok+KxKW37LRbU78o3A=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2hbGOvmKy02tKBzsSKggMEcYSVswJFTFasqBl+wGrCV8j93+b
-	mcPAW2tk8imRI3K4Yu5h+6FpIqG8h8PERrji2FN/W6tqiSdXJM6j
-X-Gm-Gg: ASbGnctGO4WW7hz3dYgjYbGg0p3u6u6TKPqK/hDtnYmcWgd1FhAKZK8vKK26R5VHqjL
-	HOSbZD5ucEAoWGQvdFWUc99Ensf4ZjyjyASPseq+4OSWBnixKb0GhJOdmQrkpWkSNnshqH25JOE
-	HV3wbZZLb8oZxINyA3B9Wikc0v718wZmIfEvO8gQ4DJQfMRb81Ksf2UZOw5z3c6ktEw0M/JKfZU
-	ihU1ZyKzRLuHBAl0ARd//7y59EcQYtWgMzhFc62buRSJKlwe5U=
-X-Google-Smtp-Source: AGHT+IFwRZR66UGKDfsRQTBL5+hGumVNJ7KxGH/k9/6jYpZRGJi6GXSmOSC6F4rG2rJoOhyuTRjP8A==
-X-Received: by 2002:a05:6a00:181c:b0:724:d06a:e0b7 with SMTP id d2e1a72fcca58-724de571aacmr2027085b3a.3.1732231766981;
-        Thu, 21 Nov 2024 15:29:26 -0800 (PST)
+        bh=sUac66YlDe4DsE8EEWH0kHICeDsnP4YHiVPJ73sgToc=;
+        b=e6ZBpVwCzowMQqvdQoVnkVILtWX649zZ9whGFZLxUMmyVpUisdiJnxb12ysI/HCVrj
+         3xjmH+uXgFWVGRYk7PDglR8QwVdpbIMhvXSbENNBTQeSE3bhIvJqj/2Bmt7SyYBSsqFQ
+         vtkv8df74w4wTuH+ENkzSKdrsQ6Ex2sQmH9FyWEIPzBRylpwvnyDpsojfK+YSACqfIZg
+         u5bCdWK1EPlyiee9DPd1bMxmjj2gKMBquCynp24UMZSz+gXw+kmDkG13DPB9MZPUxDnB
+         Z8CKmYgX934jDlsdfpCLPXIJVZjNOCwpI7Bp9wCae8B22L4ciMTLu/FpbdZYYLsyMWhe
+         fFYw==
+X-Forwarded-Encrypted: i=1; AJvYcCUTGWEveDWIe51UqMqu0KOmjP2wUc+y2rqxRH4laoQ2Hb5cqr6B/xJSRxBUOClTcIcgAZLMnYiK@vger.kernel.org, AJvYcCW+iBcFrL5bAN/RT6MxgyqTvrZf73tW1jmpmLA+EJLXbuGQs64p4mH8XMJMwi5e3dHBG2k=@vger.kernel.org, AJvYcCXgTKAOEjc6/gVZgg7RLY7NFig2VR2mdv7wmUiNWeh/Fzun146j36c3Jy4JQcddbDw2D0+jdEWoW6N5L/c6lyoL@vger.kernel.org
+X-Gm-Message-State: AOJu0YzkZMB/n7prZjh7SydNj8C2ID77FJsOTTSYObVCW8E/M8FKODLK
+	G5JL8vQJSscyFdw0g3aot7qr23qrm+qbI3FeW9065bNrmQwG7X5d
+X-Gm-Gg: ASbGncu2y9bmwEEs1BLhfDAbfZymCjhYypFik3FyL4tj5s3wSawiV4MngWmJ2K9j4SI
+	DqCr2H+6p8P8Q1uNChHcNOTFYq4F1TXa9q+IidYJp4/nK9fCTbalmBpMGc9NCDtYgd9N3IypIlh
+	wuwtmCFSV91OGiqZ25jSecO18Wsitrwm0zIIyVXFBwOnX1mILPKPU2JWocO9nhvAkuvmJgXvu8H
+	BMndc2NJNU5Npls5Sk30F41uUAF8/aO7SEvrxVBYkAoWV6JcC8=
+X-Google-Smtp-Source: AGHT+IEkytm/0Te1RFpMjsSqr2S2XW50TP0rS/sdJu/aDq05wk1ZduEAst0IkX1ljEDoqogYVHMagg==
+X-Received: by 2002:a17:90b:4a47:b0:2ea:3d61:1846 with SMTP id 98e67ed59e1d1-2eb0e86b6a4mr738871a91.26.1732232051137;
+        Thu, 21 Nov 2024 15:34:11 -0800 (PST)
 Received: from localhost ([98.97.39.253])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724de454bc4sm331221b3a.5.2024.11.21.15.29.26
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fbcc42262esm265604a12.86.2024.11.21.15.34.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Nov 2024 15:29:26 -0800 (PST)
-Date: Thu, 21 Nov 2024 15:29:25 -0800
+        Thu, 21 Nov 2024 15:34:10 -0800 (PST)
+Date: Thu, 21 Nov 2024 15:34:09 -0800
 From: John Fastabend <john.fastabend@gmail.com>
-To: Quentin Monnet <qmo@kernel.org>, 
- Amir Mohammadi <amirmohammadi1999.am@gmail.com>, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- martin.lau@linux.dev, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
+To: Stefano Garzarella <sgarzare@redhat.com>, 
+ John Fastabend <john.fastabend@gmail.com>
+Cc: Michal Luczaj <mhal@rbox.co>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Simon Horman <horms@kernel.org>, 
+ Bobby Eshleman <bobby.eshleman@bytedance.com>, 
+ "Michael S. Tsirkin" <mst@redhat.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, 
+ Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, 
+ Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, 
+ Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>, 
+ netdev@vger.kernel.org, 
  bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Cc: Amir Mohammadi <amiremohamadi@yahoo.com>
-Message-ID: <673fc25593a24_111820886@john.notmuch>
-In-Reply-To: <3ec0fb06-79a4-403c-8ff8-84f7477ddf1f@kernel.org>
-References: <47225498-12ab-4e69-ac50-2aab9dbe62c0@kernel.org>
- <20241121083413.7214-1-amiremohamadi@yahoo.com>
- <3ec0fb06-79a4-403c-8ff8-84f7477ddf1f@kernel.org>
-Subject: Re: [PATCH v3] bpftool: fix potential NULL pointer dereferencing in
- prog_dump()
+ linux-kselftest@vger.kernel.org
+Message-ID: <673fc371c9de1_11182089c@john.notmuch>
+In-Reply-To: <dpt2h73fnzgzufuvilmaw5lbs2nydc3572xqn4yoicateys6cb@reuefsarvhka>
+References: <20241118-vsock-bpf-poll-close-v1-0-f1b9669cacdc@rbox.co>
+ <673ed7b929dbe_157a2089e@john.notmuch>
+ <dpt2h73fnzgzufuvilmaw5lbs2nydc3572xqn4yoicateys6cb@reuefsarvhka>
+Subject: Re: [PATCH bpf 0/4] bpf, vsock: Fix poll() and close()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -107,17 +115,49 @@ Content-Type: text/plain;
  charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-Quentin Monnet wrote:
-> 2024-11-21 12:04 UTC+0330 ~ Amir Mohammadi <amirmohammadi1999.am@gmail.com>
-> > A NULL pointer dereference could occur if ksyms
-> > is not properly checked before usage in the prog_dump() function.
-> > 
-> > Fixes: b053b439b72a ("bpf: libbpf: bpftool: Print bpf_line_info during prog dump")
-> > Signed-off-by: Amir Mohammadi <amiremohamadi@yahoo.com>
+Stefano Garzarella wrote:
+> On Wed, Nov 20, 2024 at 10:48:25PM -0800, John Fastabend wrote:
+> >Michal Luczaj wrote:
+> >> Two small fixes for vsock: poll() missing a queue check, and close() not
+> >> invoking sockmap cleanup.
+> >>
+> >> Signed-off-by: Michal Luczaj <mhal@rbox.co>
+> >> ---
+> >> Michal Luczaj (4):
+> >>       bpf, vsock: Fix poll() missing a queue
+> >>       selftest/bpf: Add test for af_vsock poll()
+> >>       bpf, vsock: Invoke proto::close on close()
+> >>       selftest/bpf: Add test for vsock removal from sockmap on close()
+> >>
+> >>  net/vmw_vsock/af_vsock.c                           | 70 ++++++++++++--------
+> >>  .../selftests/bpf/prog_tests/sockmap_basic.c       | 77 ++++++++++++++++++++++
+> >>  2 files changed, 120 insertions(+), 27 deletions(-)
+> >> ---
+> >> base-commit: 6c4139b0f19b7397286897caee379f8321e78272
+> >> change-id: 20241118-vsock-bpf-poll-close-64f432e682ec
+> >>
+> >> Best regards,
+> >> --
+> >> Michal Luczaj <mhal@rbox.co>
+> >>
+> >
+> >LGTM, would be nice to get an ack from someone on the vsock side
+> >though.
 > 
-> Reviewed-by: Quentin Monnet <qmo@kernel.org>
+> Sorry, is at the top of my list but other urgent things have come up.
 > 
-> Thanks!
+> I will review it by today.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Thanks a lot Stefano much appreciated! I was also slow to review as I
+was travelling and on PTO.
+
+> 
+> Stefano
+> 
+> >
+> >Acked-by: John Fastabend <john.fastabend@gmail.com>
+> >
+> 
+
+
 
