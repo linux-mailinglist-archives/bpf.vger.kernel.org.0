@@ -1,225 +1,321 @@
-Return-Path: <bpf+bounces-45413-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45414-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A3C79D5449
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 21:49:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E41259D54DA
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 22:40:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2F191F23296
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 20:49:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C2B4B21606
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 21:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6880B1DBB19;
-	Thu, 21 Nov 2024 20:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E8B41D9A6F;
+	Thu, 21 Nov 2024 21:40:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cyTEEHGQ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="SeKIyC00"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6064E1DB943
-	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 20:43:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653A31C9EA4;
+	Thu, 21 Nov 2024 21:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732221833; cv=none; b=SJyW5TZjvvRm2rcSdhANVwijftbdt2tbG/OhYjCrTvJA4NnAetmNQGMJaKa4QmuJqSTTBJbqsrUascfCEeFfv1qxASPTyAsiiLHct667yfvQOxsIkZwgr5Wy6xHCLsbOYWyhyhonPI4tVbgSlPAr/6aZsIKQzRXn7LFCnm9w3nE=
+	t=1732225231; cv=none; b=pyqkGQI4OkfdlcJTHqr8dnIZgrRJ0qux/xxh6v1rpTF79UCg9ZrVoBIjQFgy7afcqMY/SrMEn7T/FXh5HiJwH//t4qZYG0RAnqQBt3TB15jXg139ZRp0FkDKNWuT+RbSUbXjzhB/IbrRpeDOVTsdTBSqXLBOHanwBhhiMDVRj1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732221833; c=relaxed/simple;
-	bh=BXVfCm0WaPVUkQd61jjVYmnmVg2EH0VPPUb4qmg0aNg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=j2n+t3XDfj/mXI94yWdos+rXASnaTVIB/B9++0tF6rnnHiaZRhCq4kAZ/kfGg1i0OGY0/i/9LBVoQJoJB4uG3rg0+XAWg41CBCZhgDBi8TdKndyNm2KcAiY8ClGtT1ZNNLBs/PymekQ7VnX4s3PJB/7OSnJCSgk3bXsIqN3x0Nk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cyTEEHGQ; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-72487ebd2f5so1213881b3a.1
-        for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 12:43:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732221832; x=1732826632; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=u3TomkKtSodVzw0CP76inVWFrgVsEss2OTmX9eCp4GI=;
-        b=cyTEEHGQhDTUu2EFlxWzPGHMVUM3CE/fRIBn0kBDeaaZ72F9ciK8PwvM1ixCsSotPv
-         i4jmudg5RooQ8MD64Aa1P1VeJf/pnaa/Ufqg/dQ+FxFh4Xh0lTbMqoVx4OM1r52VBCDO
-         L7t2ShkrgfIPyl06PgNgf5iCNfdPJgWmCWeWuqELer/Et8RCqJwOZNkcmVrDqMVlxrUt
-         VtJgbbrBOwxSHEBhmFO/zWbnDGNfiPxNkgy544DfK+r0YPES1LYQxlhpivTYA96dZd1A
-         LPMt2SmSmQ5VKFTLezvToWAq8+V7YrC17S2CDneXfirbrJztAtJH76eAvvo+6Ffmt1uU
-         1S+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732221832; x=1732826632;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=u3TomkKtSodVzw0CP76inVWFrgVsEss2OTmX9eCp4GI=;
-        b=jrbIto4+1Uc8SLooknhKFuUh3A6LICuM1lqE8Ip6VIxJB+Zej0Yh5jIUegD/N8duSU
-         gly2hEf/prBU4cPfhVTkBf5I/a5axdUn1YBfhnjhCuqFnL4ZFFjw1k0Qwpa4GzhSVDRD
-         njSf/Q5x37FObWguytxLsyoepRZEZZ9y0QQVdmFsDX+BV3tz2QkUhnHHXqAjP9h6xpcK
-         ynVMk2NvYFsC1/qY30Odl+ptuKsCHxa2j+HN98rzGSN4L0OQfcGuVUQ1Z7oyzISxfVyU
-         ep+lU1QrNIodcdgbooV7u2f/K9qPZrB6wzDWNeqqe9OaYSmxcjUv2b0RC3Cw14VDZxIv
-         GJCA==
-X-Forwarded-Encrypted: i=1; AJvYcCXEngJAgpwN5M3R4gSgAJ0YBq1n7RaUQXT+DdQ9LF9qaRM6CZigaw1jrdBdniN5ePLKFHU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YylN4etLsWypzdFnWAaAXsRfWLcHxsupW8jPL4COo5Nx8hWQND4
-	aPI9q0bdW51k18VPhecuIX2ylbK1YEl/mFRRxdW17nmwXW9szvbH
-X-Gm-Gg: ASbGncviwaXg1J+X4Dm0SUSzjtkJGtm63BvbB0kU6kD+l5kjRWiI/qLARyaWzre2FwR
-	18PVo6bBC/pufLUpgkfipJ5v815y4OCNcD4yn1HLY0YplUh31cNpLYBj1+gym6Geq/JneG0CJ+j
-	V9x59e7eTktXi52b9YvkKWioO5kMcbRbF88nd6IBVta36KVSEC/LbdTICMCcnVfRU6D5yDJsLjm
-	7TMCouDenkem7xZBxGTZmE6kEeLgH6X72mXZ/MPHWuXgVg=
-X-Google-Smtp-Source: AGHT+IE45DuQFDHTmvB67h4+l0ltCfjdq2aqCUQLyN4qBAvvwlZAeyNkgs8Qi4TcTu43E7uMf5Rx5w==
-X-Received: by 2002:a05:6a00:2d98:b0:71e:3b8f:92e with SMTP id d2e1a72fcca58-724df3c96f5mr560257b3a.3.1732221831447;
-        Thu, 21 Nov 2024 12:43:51 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724de531b68sm185251b3a.111.2024.11.21.12.43.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Nov 2024 12:43:51 -0800 (PST)
-Message-ID: <8db8d815dc263edd8d3883a770c0bc0ac511dd77.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 7/7] selftests/bpf: Add IRQ save/restore
- tests
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc: kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
- Lau <martin.lau@kernel.org>, kernel-team@fb.com
-Date: Thu, 21 Nov 2024 12:43:46 -0800
-In-Reply-To: <20241121005329.408873-8-memxor@gmail.com>
-References: <20241121005329.408873-1-memxor@gmail.com>
-	 <20241121005329.408873-8-memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1732225231; c=relaxed/simple;
+	bh=IsgDyk4/Q/xsbX6x8oFtEMlXQv8eNbWUjUBFrSAjFBI=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Z/BgMZQiIGEVGSqmRKCNTXoU4dtEa0vnIPFgeYBy0YAdQEvrSSr7IpXLbJBaX3nBUzE1k/dK5Pz/88Ymo4qRgZHV09p7htICt+sX/CQQibA982Fjp9mywz8RTuBa/gblnYlFGUc84VoyNI0Mz00mSzQnO5odQpCHy6LLCdFT0cM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=SeKIyC00; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1732225221; x=1732484421;
+	bh=Cu2Bd3Ez7fOOVo2QM+nxuTvu5Mm47YD1/T4deHVsNtI=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
+	 List-Unsubscribe:List-Unsubscribe-Post;
+	b=SeKIyC00MRDfHSupsDl97N5KFVUujTUjWyspfwiwdSBYT/6Yn1VzUUZx9bcBYSSbm
+	 tvgj7oERtM8m7Lx857c1LwJg1xKAYCvT0WcOMD9CSq5rFmOJXd4u+2nGwl+d6a0OpB
+	 IcE/da3Mq3btlwK4C9hbc4QWE5/G1rH9kwA9Nj6lBobN9SBBJLces+DAnq3EflK3BD
+	 c02IoyLjsV88by6wErgT0K+iQvMoCbywSmcfEAHYmkYwGLoUL1bpoWNF4iOYvH4Qin
+	 RizNY0W6RVcCb34AFIgQB44JjhwpwSe9Laeu9u9Y72SOOC6yvWDQkK+WuZ7FhpVFqT
+	 QqMJinpIZmY0g==
+Date: Thu, 21 Nov 2024 21:40:17 +0000
+To: tj@kernel.org, void@manifault.com
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, andrii@kernel.org, mykolal@fb.com
+Subject: [PATCH] selftests/sched_ext: fix build after renames in sched_ext API
+Message-ID: <20241121214014.3346203-1-ihor.solodrai@pm.me>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 5dd75cc029e2f21bb162659bb367d0ced252a70a
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-11-20 at 16:53 -0800, Kumar Kartikeya Dwivedi wrote:
-> Include tests that check for rejection in erroneous cases, like
-> unbalanced IRQ-disabled counts, within and across subprogs, invalid IRQ
-> flag state or input to kfuncs, behavior upon overwriting IRQ saved state
-> on stack, interaction with sleepable kfuncs/helpers, global functions,
-> and out of order restore. Include some success scenarios as well to
-> demonstrate usage.
->=20
-> #123/1   irq/irq_restore_missing_1:OK
-> #123/2   irq/irq_restore_missing_2:OK
-> #123/3   irq/irq_restore_missing_3:OK
-> #123/4   irq/irq_restore_missing_3_minus_2:OK
-> #123/5   irq/irq_restore_missing_1_subprog:OK
-> #123/6   irq/irq_restore_missing_2_subprog:OK
-> #123/7   irq/irq_restore_missing_3_subprog:OK
-> #123/8   irq/irq_restore_missing_3_minus_2_subprog:OK
-> #123/9   irq/irq_balance:OK
-> #123/10  irq/irq_balance_n:OK
-> #123/11  irq/irq_balance_subprog:OK
-> #123/12  irq/irq_balance_n_subprog:OK
-> #123/13  irq/irq_global_subprog:OK
-> #123/14  irq/irq_restore_ooo:OK
-> #123/15  irq/irq_restore_ooo_3:OK
-> #123/16  irq/irq_restore_3_subprog:OK
-> #123/17  irq/irq_restore_4_subprog:OK
-> #123/18  irq/irq_restore_ooo_3_subprog:OK
-> #123/19  irq/irq_restore_invalid:OK
-> #123/20  irq/irq_save_invalid:OK
-> #123/21  irq/irq_restore_iter:OK
-> #123/22  irq/irq_save_iter:OK
-> #123/23  irq/irq_flag_overwrite:OK
-> #123/24  irq/irq_flag_overwrite_partial:OK
-> #123/25  irq/irq_sleepable_helper:OK
-> #123/26  irq/irq_sleepable_kfunc:OK
-> #123     irq:OK
-> Summary: 1/26 PASSED, 0 SKIPPED, 0 FAILED
->=20
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
+The selftests are falining to build on current tip of bpf-next and
+sched_ext [1]. This has broken BPF CI [2] after merge from upstream.
 
-The following error condition is not tested:
-"arg#%d doesn't point to an irq flag on stack".
-Also, I think a few tests are excessive.
-Otherwise looks good.
+Use appropriate function names in the selftests according to the
+recent changes in the sched_ext API [3].
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+[1]
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=
+=3Dfc39fb56917bb3cb53e99560ca3612a84456ada2
+[2] https://github.com/kernel-patches/bpf/actions/runs/11959327258/job/3334=
+0923745
+[3] https://lore.kernel.org/all/20241109194853.580310-1-tj@kernel.org/
 
-[...]
+Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
+---
+ .../testing/selftests/sched_ext/ddsp_bogus_dsq_fail.bpf.c | 2 +-
+ .../selftests/sched_ext/ddsp_vtimelocal_fail.bpf.c        | 4 ++--
+ tools/testing/selftests/sched_ext/dsp_local_on.bpf.c      | 2 +-
+ .../selftests/sched_ext/enq_select_cpu_fails.bpf.c        | 2 +-
+ tools/testing/selftests/sched_ext/exit.bpf.c              | 4 ++--
+ tools/testing/selftests/sched_ext/maximal.bpf.c           | 4 ++--
+ tools/testing/selftests/sched_ext/select_cpu_dfl.bpf.c    | 2 +-
+ .../selftests/sched_ext/select_cpu_dfl_nodispatch.bpf.c   | 2 +-
+ .../testing/selftests/sched_ext/select_cpu_dispatch.bpf.c | 2 +-
+ .../selftests/sched_ext/select_cpu_dispatch_bad_dsq.bpf.c | 2 +-
+ .../selftests/sched_ext/select_cpu_dispatch_dbl_dsp.bpf.c | 4 ++--
+ tools/testing/selftests/sched_ext/select_cpu_vtime.bpf.c  | 8 ++++----
+ 12 files changed, 19 insertions(+), 19 deletions(-)
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/irq.c b/tools/testing=
-/selftests/bpf/prog_tests/irq.c
-> new file mode 100644
-> index 000000000000..496f4826ac37
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/irq.c
-> @@ -0,0 +1,9 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-> +#include <test_progs.h>
-> +#include <irq.skel.h>
-> +
-> +void test_irq(void)
-> +{
-> +	RUN_TESTS(irq);
-> +}
+diff --git a/tools/testing/selftests/sched_ext/ddsp_bogus_dsq_fail.bpf.c b/=
+tools/testing/selftests/sched_ext/ddsp_bogus_dsq_fail.bpf.c
+index 37d9bf6fb745..6f4c3f5a1c5d 100644
+--- a/tools/testing/selftests/sched_ext/ddsp_bogus_dsq_fail.bpf.c
++++ b/tools/testing/selftests/sched_ext/ddsp_bogus_dsq_fail.bpf.c
+@@ -20,7 +20,7 @@ s32 BPF_STRUCT_OPS(ddsp_bogus_dsq_fail_select_cpu, struct=
+ task_struct *p,
+ =09=09 * If we dispatch to a bogus DSQ that will fall back to the
+ =09=09 * builtin global DSQ, we fail gracefully.
+ =09=09 */
+-=09=09scx_bpf_dispatch_vtime(p, 0xcafef00d, SCX_SLICE_DFL,
++=09=09scx_bpf_dsq_insert_vtime(p, 0xcafef00d, SCX_SLICE_DFL,
+ =09=09=09=09       p->scx.dsq_vtime, 0);
+ =09=09return cpu;
+ =09}
+diff --git a/tools/testing/selftests/sched_ext/ddsp_vtimelocal_fail.bpf.c b=
+/tools/testing/selftests/sched_ext/ddsp_vtimelocal_fail.bpf.c
+index dffc97d9cdf1..e4a55027778f 100644
+--- a/tools/testing/selftests/sched_ext/ddsp_vtimelocal_fail.bpf.c
++++ b/tools/testing/selftests/sched_ext/ddsp_vtimelocal_fail.bpf.c
+@@ -17,8 +17,8 @@ s32 BPF_STRUCT_OPS(ddsp_vtimelocal_fail_select_cpu, struc=
+t task_struct *p,
+=20
+ =09if (cpu >=3D 0) {
+ =09=09/* Shouldn't be allowed to vtime dispatch to a builtin DSQ. */
+-=09=09scx_bpf_dispatch_vtime(p, SCX_DSQ_LOCAL, SCX_SLICE_DFL,
+-=09=09=09=09       p->scx.dsq_vtime, 0);
++=09=09scx_bpf_dsq_insert_vtime(p, SCX_DSQ_LOCAL, SCX_SLICE_DFL,
++=09=09=09=09=09 p->scx.dsq_vtime, 0);
+ =09=09return cpu;
+ =09}
+=20
+diff --git a/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c b/tools/t=
+esting/selftests/sched_ext/dsp_local_on.bpf.c
+index 6a7db1502c29..6325bf76f47e 100644
+--- a/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
++++ b/tools/testing/selftests/sched_ext/dsp_local_on.bpf.c
+@@ -45,7 +45,7 @@ void BPF_STRUCT_OPS(dsp_local_on_dispatch, s32 cpu, struc=
+t task_struct *prev)
+=20
+ =09target =3D bpf_get_prandom_u32() % nr_cpus;
+=20
+-=09scx_bpf_dispatch(p, SCX_DSQ_LOCAL_ON | target, SCX_SLICE_DFL, 0);
++=09scx_bpf_dsq_insert(p, SCX_DSQ_LOCAL_ON | target, SCX_SLICE_DFL, 0);
+ =09bpf_task_release(p);
+ }
+=20
+diff --git a/tools/testing/selftests/sched_ext/enq_select_cpu_fails.bpf.c b=
+/tools/testing/selftests/sched_ext/enq_select_cpu_fails.bpf.c
+index 1efb50d61040..a7cf868d5e31 100644
+--- a/tools/testing/selftests/sched_ext/enq_select_cpu_fails.bpf.c
++++ b/tools/testing/selftests/sched_ext/enq_select_cpu_fails.bpf.c
+@@ -31,7 +31,7 @@ void BPF_STRUCT_OPS(enq_select_cpu_fails_enqueue, struct =
+task_struct *p,
+ =09/* Can only call from ops.select_cpu() */
+ =09scx_bpf_select_cpu_dfl(p, 0, 0, &found);
+=20
+-=09scx_bpf_dispatch(p, SCX_DSQ_GLOBAL, SCX_SLICE_DFL, enq_flags);
++=09scx_bpf_dsq_insert(p, SCX_DSQ_GLOBAL, SCX_SLICE_DFL, enq_flags);
+ }
+=20
+ SEC(".struct_ops.link")
+diff --git a/tools/testing/selftests/sched_ext/exit.bpf.c b/tools/testing/s=
+elftests/sched_ext/exit.bpf.c
+index d75d4faf07f6..4bc36182d3ff 100644
+--- a/tools/testing/selftests/sched_ext/exit.bpf.c
++++ b/tools/testing/selftests/sched_ext/exit.bpf.c
+@@ -33,7 +33,7 @@ void BPF_STRUCT_OPS(exit_enqueue, struct task_struct *p, =
+u64 enq_flags)
+ =09if (exit_point =3D=3D EXIT_ENQUEUE)
+ =09=09EXIT_CLEANLY();
+=20
+-=09scx_bpf_dispatch(p, DSQ_ID, SCX_SLICE_DFL, enq_flags);
++=09scx_bpf_dsq_insert(p, DSQ_ID, SCX_SLICE_DFL, enq_flags);
+ }
+=20
+ void BPF_STRUCT_OPS(exit_dispatch, s32 cpu, struct task_struct *p)
+@@ -41,7 +41,7 @@ void BPF_STRUCT_OPS(exit_dispatch, s32 cpu, struct task_s=
+truct *p)
+ =09if (exit_point =3D=3D EXIT_DISPATCH)
+ =09=09EXIT_CLEANLY();
+=20
+-=09scx_bpf_consume(DSQ_ID);
++=09scx_bpf_dsq_move_to_local(DSQ_ID);
+ }
+=20
+ void BPF_STRUCT_OPS(exit_enable, struct task_struct *p)
+diff --git a/tools/testing/selftests/sched_ext/maximal.bpf.c b/tools/testin=
+g/selftests/sched_ext/maximal.bpf.c
+index 4d4cd8d966db..4c005fa71810 100644
+--- a/tools/testing/selftests/sched_ext/maximal.bpf.c
++++ b/tools/testing/selftests/sched_ext/maximal.bpf.c
+@@ -20,7 +20,7 @@ s32 BPF_STRUCT_OPS(maximal_select_cpu, struct task_struct=
+ *p, s32 prev_cpu,
+=20
+ void BPF_STRUCT_OPS(maximal_enqueue, struct task_struct *p, u64 enq_flags)
+ {
+-=09scx_bpf_dispatch(p, SCX_DSQ_GLOBAL, SCX_SLICE_DFL, enq_flags);
++=09scx_bpf_dsq_insert(p, SCX_DSQ_GLOBAL, SCX_SLICE_DFL, enq_flags);
+ }
+=20
+ void BPF_STRUCT_OPS(maximal_dequeue, struct task_struct *p, u64 deq_flags)
+@@ -28,7 +28,7 @@ void BPF_STRUCT_OPS(maximal_dequeue, struct task_struct *=
+p, u64 deq_flags)
+=20
+ void BPF_STRUCT_OPS(maximal_dispatch, s32 cpu, struct task_struct *prev)
+ {
+-=09scx_bpf_consume(SCX_DSQ_GLOBAL);
++=09scx_bpf_dsq_move_to_local(SCX_DSQ_GLOBAL);
+ }
+=20
+ void BPF_STRUCT_OPS(maximal_runnable, struct task_struct *p, u64 enq_flags=
+)
+diff --git a/tools/testing/selftests/sched_ext/select_cpu_dfl.bpf.c b/tools=
+/testing/selftests/sched_ext/select_cpu_dfl.bpf.c
+index f171ac470970..13d0f5be788d 100644
+--- a/tools/testing/selftests/sched_ext/select_cpu_dfl.bpf.c
++++ b/tools/testing/selftests/sched_ext/select_cpu_dfl.bpf.c
+@@ -30,7 +30,7 @@ void BPF_STRUCT_OPS(select_cpu_dfl_enqueue, struct task_s=
+truct *p,
+ =09}
+ =09scx_bpf_put_idle_cpumask(idle_mask);
+=20
+-=09scx_bpf_dispatch(p, SCX_DSQ_GLOBAL, SCX_SLICE_DFL, enq_flags);
++=09scx_bpf_dsq_insert(p, SCX_DSQ_GLOBAL, SCX_SLICE_DFL, enq_flags);
+ }
+=20
+ SEC(".struct_ops.link")
+diff --git a/tools/testing/selftests/sched_ext/select_cpu_dfl_nodispatch.bp=
+f.c b/tools/testing/selftests/sched_ext/select_cpu_dfl_nodispatch.bpf.c
+index 9efdbb7da928..815f1d5d61ac 100644
+--- a/tools/testing/selftests/sched_ext/select_cpu_dfl_nodispatch.bpf.c
++++ b/tools/testing/selftests/sched_ext/select_cpu_dfl_nodispatch.bpf.c
+@@ -67,7 +67,7 @@ void BPF_STRUCT_OPS(select_cpu_dfl_nodispatch_enqueue, st=
+ruct task_struct *p,
+ =09=09saw_local =3D true;
+ =09}
+=20
+-=09scx_bpf_dispatch(p, dsq_id, SCX_SLICE_DFL, enq_flags);
++=09scx_bpf_dsq_insert(p, dsq_id, SCX_SLICE_DFL, enq_flags);
+ }
+=20
+ s32 BPF_STRUCT_OPS(select_cpu_dfl_nodispatch_init_task,
+diff --git a/tools/testing/selftests/sched_ext/select_cpu_dispatch.bpf.c b/=
+tools/testing/selftests/sched_ext/select_cpu_dispatch.bpf.c
+index 59bfc4f36167..4bb99699e920 100644
+--- a/tools/testing/selftests/sched_ext/select_cpu_dispatch.bpf.c
++++ b/tools/testing/selftests/sched_ext/select_cpu_dispatch.bpf.c
+@@ -29,7 +29,7 @@ s32 BPF_STRUCT_OPS(select_cpu_dispatch_select_cpu, struct=
+ task_struct *p,
+ =09cpu =3D prev_cpu;
+=20
+ dispatch:
+-=09scx_bpf_dispatch(p, dsq_id, SCX_SLICE_DFL, 0);
++=09scx_bpf_dsq_insert(p, dsq_id, SCX_SLICE_DFL, 0);
+ =09return cpu;
+ }
+=20
+diff --git a/tools/testing/selftests/sched_ext/select_cpu_dispatch_bad_dsq.=
+bpf.c b/tools/testing/selftests/sched_ext/select_cpu_dispatch_bad_dsq.bpf.c
+index 3bbd5fcdfb18..2a75de11b2cf 100644
+--- a/tools/testing/selftests/sched_ext/select_cpu_dispatch_bad_dsq.bpf.c
++++ b/tools/testing/selftests/sched_ext/select_cpu_dispatch_bad_dsq.bpf.c
+@@ -18,7 +18,7 @@ s32 BPF_STRUCT_OPS(select_cpu_dispatch_bad_dsq_select_cpu=
+, struct task_struct *p
+ =09=09   s32 prev_cpu, u64 wake_flags)
+ {
+ =09/* Dispatching to a random DSQ should fail. */
+-=09scx_bpf_dispatch(p, 0xcafef00d, SCX_SLICE_DFL, 0);
++=09scx_bpf_dsq_insert(p, 0xcafef00d, SCX_SLICE_DFL, 0);
+=20
+ =09return prev_cpu;
+ }
+diff --git a/tools/testing/selftests/sched_ext/select_cpu_dispatch_dbl_dsp.=
+bpf.c b/tools/testing/selftests/sched_ext/select_cpu_dispatch_dbl_dsp.bpf.c
+index 0fda57fe0ecf..99d075695c97 100644
+--- a/tools/testing/selftests/sched_ext/select_cpu_dispatch_dbl_dsp.bpf.c
++++ b/tools/testing/selftests/sched_ext/select_cpu_dispatch_dbl_dsp.bpf.c
+@@ -18,8 +18,8 @@ s32 BPF_STRUCT_OPS(select_cpu_dispatch_dbl_dsp_select_cpu=
+, struct task_struct *p
+ =09=09   s32 prev_cpu, u64 wake_flags)
+ {
+ =09/* Dispatching twice in a row is disallowed. */
+-=09scx_bpf_dispatch(p, SCX_DSQ_GLOBAL, SCX_SLICE_DFL, 0);
+-=09scx_bpf_dispatch(p, SCX_DSQ_GLOBAL, SCX_SLICE_DFL, 0);
++=09scx_bpf_dsq_insert(p, SCX_DSQ_GLOBAL, SCX_SLICE_DFL, 0);
++=09scx_bpf_dsq_insert(p, SCX_DSQ_GLOBAL, SCX_SLICE_DFL, 0);
+=20
+ =09return prev_cpu;
+ }
+diff --git a/tools/testing/selftests/sched_ext/select_cpu_vtime.bpf.c b/too=
+ls/testing/selftests/sched_ext/select_cpu_vtime.bpf.c
+index e6c67bcf5e6e..bfcb96cd4954 100644
+--- a/tools/testing/selftests/sched_ext/select_cpu_vtime.bpf.c
++++ b/tools/testing/selftests/sched_ext/select_cpu_vtime.bpf.c
+@@ -2,8 +2,8 @@
+ /*
+  * A scheduler that validates that enqueue flags are properly stored and
+  * applied at dispatch time when a task is directly dispatched from
+- * ops.select_cpu(). We validate this by using scx_bpf_dispatch_vtime(), a=
+nd
+- * making the test a very basic vtime scheduler.
++ * ops.select_cpu(). We validate this by using scx_bpf_dsq_insert_vtime(),
++ * and making the test a very basic vtime scheduler.
+  *
+  * Copyright (c) 2024 Meta Platforms, Inc. and affiliates.
+  * Copyright (c) 2024 David Vernet <dvernet@meta.com>
+@@ -47,13 +47,13 @@ s32 BPF_STRUCT_OPS(select_cpu_vtime_select_cpu, struct =
+task_struct *p,
+ =09cpu =3D prev_cpu;
+ =09scx_bpf_test_and_clear_cpu_idle(cpu);
+ ddsp:
+-=09scx_bpf_dispatch_vtime(p, VTIME_DSQ, SCX_SLICE_DFL, task_vtime(p), 0);
++=09scx_bpf_dsq_insert_vtime(p, VTIME_DSQ, SCX_SLICE_DFL, task_vtime(p), 0)=
+;
+ =09return cpu;
+ }
+=20
+ void BPF_STRUCT_OPS(select_cpu_vtime_dispatch, s32 cpu, struct task_struct=
+ *p)
+ {
+-=09if (scx_bpf_consume(VTIME_DSQ))
++=09if (scx_bpf_dsq_move_to_local(VTIME_DSQ))
+ =09=09consumed =3D true;
+ }
+=20
+--=20
+2.47.0
 
-Nit: tools/testing/selftests/bpf/prog_tests/verifier.c
-     could be used instead of a separate file.
-
-> diff --git a/tools/testing/selftests/bpf/progs/irq.c b/tools/testing/self=
-tests/bpf/progs/irq.c
-> new file mode 100644
-> index 000000000000..5301b66fc752
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/irq.c
-> @@ -0,0 +1,393 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_misc.h"
-> +
-> +SEC("?tc")
-> +__failure __msg("BPF_EXIT instruction cannot be used inside bpf_local_ir=
-q_save-ed region")
-
-Nit: I know this is not a fault of this series, but the error message
-     is sort of confusing. BPF_EXIT is allowed for irq saved region,
-     just it has to be an exit from a sub-program, not a whole program.
-
-> +int irq_restore_missing_1(struct __sk_buff *ctx)
-> +{
-> +	unsigned long flags;
-> +
-> +	bpf_local_irq_save(&flags);
-> +	return 0;
-> +}
-
-[...]
-
-Nit: don't think this test adds much compared to irq_restore_missing_2.
-
-> +{
-> +	unsigned long flags1;
-> +	unsigned long flags2;
-> +	unsigned long flags3;
-> +
-> +	bpf_local_irq_save(&flags1);
-> +	bpf_local_irq_save(&flags2);
-> +	bpf_local_irq_save(&flags3);
-> +	return 0;
-> +}
-
-[...]
-
-> +SEC("?tc")
-> +__success
-> +int irq_balance_n_subprog(struct __sk_buff *ctx)
-
-Nit: don't think this test adds much given irq_balance_n()
-     and irq_balance_subprog().
-
-> +{
-> +	local_irq_balance_n();
-> +	return 0;
-> +}
-
-[...]
 
 
