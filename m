@@ -1,90 +1,90 @@
-Return-Path: <bpf+bounces-45422-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45423-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DAD99D560B
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 00:08:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AD919D560C
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 00:09:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27B8B1F23B43
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 23:08:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C53BBB21450
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 23:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E631DDC26;
-	Thu, 21 Nov 2024 23:08:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C745A1DE2A0;
+	Thu, 21 Nov 2024 23:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VDgr0zP4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W4ueFbUD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DEF323098E
-	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 23:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B2B23098E
+	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 23:09:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732230524; cv=none; b=hz8kdbuPHA3s6lTMgm9maWNlWIiLsgUEC2fbZe6oYl7Mz+y55ztd1Xq1M2Y3FIt5j1EfqOT1l6GaE/3I4d0xKiHxarElPTguPL3DGtS+CXziVoX39HpnflBzfHFm5EDGn9LRmBQHOpBPOzRMX+NaSBJrrWPlGUu3vfMxneDbhkk=
+	t=1732230577; cv=none; b=KvUpmPDnPQvoPGAbWg5EOUOx37q275Sp+BvqdRkXpDpeSSkfoemPUx4CT0cnorYm3xncn2L1ndNUfdkW9viEvX+Blk/kb+cDROmadRpScejI8r1/Z4NleQuCjmbKXMgvf3KskcrpIN0t2k1dFQMQkyDhiTpKhRblUbgL2bO6Qr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732230524; c=relaxed/simple;
-	bh=BTEhivixK6bXYqyL00qM+RkT0CjyubyMg//WI7J6y4U=;
+	s=arc-20240116; t=1732230577; c=relaxed/simple;
+	bh=htdqicJ1jbvSYHjGLAmr/3FoSHN8+GNOShnisVZdoSE=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=sHR8eYbsF1ozRlKRX+vxcPJq1eMq9gSh3aiD8WrVhxi7Mn4EeG5JBX4pK4AZxsYngNOtAkUbtYQgDjAP83w+hh7gpWznPj9kgsHCuHup60eQvibZhEEfCk7nSxJi+0lU9atXFvzeOveeBzN+S8RWPpS4mLwbSbFG0gwlf4Q+b2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VDgr0zP4; arc=none smtp.client-ip=209.85.210.169
+	 Content-Type:MIME-Version; b=rzuZ/BB5E6hItnmsHopBqAJ2izDvxwzcvm409OGBsnRrIv7V52FiG4tapixDKyZNTCqtwSJRZxqXBKDm+Hak5PG/6PC4eaFh/J93dV85tnclyZpBNVz3i5oUPz2jKu8bfMehlzbwMWFtrrZKPpPUgYPI+p35Ij7KD4mnGLHhNyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W4ueFbUD; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7242f559a9fso1498941b3a.1
-        for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 15:08:42 -0800 (PST)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-21288ce11d7so12206585ad.2
+        for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 15:09:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732230522; x=1732835322; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1732230575; x=1732835375; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=luJLt51Iggv3bUqKX5wC5umswxvrQizFBlbW9u1n/FE=;
-        b=VDgr0zP4IYStxjtlbG0ib7k9eY/awqsoVDb+/9IbmUaYnQPFjbLMnqPDNylSzRDUYs
-         lTXf36ZF0849x9AXwhtswcf/merm+afDEnR/USXYEnX5NTTH+fJ5DlqB9UArukBOwoc0
-         pdyLJOJ2uW1H92YQyKATJdjcGw/fTwP2u4fxOelbmYBrgDd+5LE22ovTpwoRU27lyFwu
-         jjYlEEipKsxW0xipKcVq/8scotEVW0/w5Mc5HB64V3r0Db+c3LrnXQy/tTPHZ/NW0zDu
-         e1mk9zx3O5HB+1uLbk0eVZyjWRgfzK3EfqF8NSJA/dVGP8l/XIfx/brmDMJ/rA0QDqYJ
-         aYdg==
+        bh=dDhEr+LvJnAy73fEWwOmmxZrvp1vutDND283NQH8rsA=;
+        b=W4ueFbUD8KtnOiTo2cLXzu4hlQaAOFDJo2hjzliUFltWSsbuEqNSigJYbSDBOxIwf9
+         OWhCYmgC3x8kTQwMwa2MnnlqjD1WD20UjnJOMcialH1yNssJfW+Fg//35BVj2iB7ulL5
+         2nYnSg/mBfaBmN73MD7pBK+ZqftTHrp2lev908R6FV2RqdmWY7y8ymgrF/tpDAvn7G+N
+         vh/NpfeCBBS2l19C3cqPrML0I3XVrhpFz3TdvUUBdVUSFEJhJx8HfiI6epKZGdKNQO9y
+         eDtMtwPHxK/ZSdOJDHb8Ll1LgY7yY8DvqGmQSWDLgzvzm53UVNbv1yLXAJCVwkKyaNkr
+         4k1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732230522; x=1732835322;
+        d=1e100.net; s=20230601; t=1732230575; x=1732835375;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=luJLt51Iggv3bUqKX5wC5umswxvrQizFBlbW9u1n/FE=;
-        b=I9s/UXi+iP29pyf+nPZo2Nrd+9Yz1alIgkDSk/ma0PW5EeC67xbWrmP/QkT54mYzo9
-         TJat+Je0qxhzEqyTr0XPYc2Bd/Tl/r80skmAvpOLAp1BwgtNSzbEDmWYT0Uq8Lo+K9IC
-         29CdQRByczM/g41tlnazIxaSJOru/8YGF5luKSJGbaE2FOvNNRU+bPH2h51dLM7eyLuD
-         7F0s4MFT3pMpeO5O06hcY5DD0yuGKF9toq28aQVxsuJX9Vcc1JYcksj3zI/ffGVS8vgK
-         CSsMmCrf8gkugwKYdWP6WtbECChn9E0LAT0qmqXLnilMuhACpb3PTPYPQoVlqDqNAl6i
-         GUJA==
-X-Gm-Message-State: AOJu0YzcvU8BsGkuiRKFd4XV6idFKxQVUDNG2jYL2zdebJIgA1zuSzgz
-	NAPLwO/N4K/h+8YLQRV6WF/p32d+kQSqDpQIvOHwhPTkknqMQc2i
-X-Gm-Gg: ASbGncth1g6hx4KFg2S707aiiufUsRgkhwkZ5UsDL0p6bCQ5VUFKfuBezdLz4jlBYix
-	6ZRf9wk2WtohTt6BRk8SqjQi88x2U/G2wxmDza6dswrsh9SlJmIWvW5AI9gySqqmQQVmzWJgbqg
-	7jID8HE5rIqtTWHq35DZpQQ1mfC8VsButLo3ldkjX5v055XGtGatMpnRFX+oJX3KoOV4Uep+GbA
-	AkpWfPkziHI3Efn8cJRRH+7Z/mU980b8dvrrTDMnwgmnag=
-X-Google-Smtp-Source: AGHT+IEvo2CAFPraFXNsDyT9ZKaODGmrAtYVtfRyim9EsUeS3PRcR77+ZbQrQs2wJkYeaHEbkkLMjw==
-X-Received: by 2002:a05:6a00:3e1f:b0:71e:5033:c5 with SMTP id d2e1a72fcca58-724df64a700mr975980b3a.14.1732230522211;
-        Thu, 21 Nov 2024 15:08:42 -0800 (PST)
+        bh=dDhEr+LvJnAy73fEWwOmmxZrvp1vutDND283NQH8rsA=;
+        b=XJ272COQo2YMPwK6VLwyXQn4JDNSyI71L1abtqhF9bTa5O70Bxwy92iZAv+bRLqo17
+         ejdYrwq9TGXorB4v9Br2L5pF3WBV56prRKbrjtCZ2uI3Fiqwj5u5+BhxiL/3wzANlQWE
+         8xRLJtc+TaKu8WaqoK2DAmieVb+3aktEAbNTmhr85d6piJyEOBiKXaC1dyHxX+j14kZP
+         q2sP4NAHV8eJ0OdvKcOA5uOby2nj2A88eKynn6Otw5Lz2NEsRPmuv/ZRfFxSGj6kaKfX
+         lly00sSpib1OCr8+r/+PxB3b+9zBaI/5Fe9lwAb0qAATbmMUIWPcIIJxs+8uLObg4O2G
+         GLSA==
+X-Gm-Message-State: AOJu0YzAtS0Hm7o/XQM5Yk+qSbMgERYVCuLgEnHOlBOEjDqqMDxvloCl
+	WfdVN2Pbt3oXmQRIdk4EwLugkSEiyZpYDhHHnAoQe1xIZXtrybTRNJMXOw==
+X-Gm-Gg: ASbGncsM4mzCFlSgUr0lKEMF1yimPOQmnT0mo/PAhT8NRUABKPUD7VYAJVWvsSBXayE
+	X+kmMuX2usTeb0DaWllIN80hxBv39ZvZ3g5CvMLxUd9zCuHQy3GMYOzk+Cd4UGvg0g8TeA3zINu
+	ct7177GofsrcIESPfVrJdFtrt4iO7D4F4MQpasCGMk3Gp+sAymTbnaNquJlF5oLS9Rnxm9tVOW/
+	IJLQI5etEVJdGU0XvDnlNei2DpDVYgDY5jXbd93GBzEH9o=
+X-Google-Smtp-Source: AGHT+IH7nSWfSKfRlSfwyHWVmcySi48G6T143pUBWQLEm4tll40zfI0zi31lYseyCLDXiIddTG1dHw==
+X-Received: by 2002:a17:902:f608:b0:20c:6bff:fca1 with SMTP id d9443c01a7336-2129f23f12emr12430855ad.23.1732230575256;
+        Thu, 21 Nov 2024 15:09:35 -0800 (PST)
 Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724de5553e0sm311529b3a.144.2024.11.21.15.08.41
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2129dbf9d37sm3574565ad.155.2024.11.21.15.09.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Nov 2024 15:08:41 -0800 (PST)
-Message-ID: <46250fef76c4b78eb283c724f27fcf4e275d4839.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 5/7] bpf: Introduce support for
- bpf_local_irq_{save,restore}
+        Thu, 21 Nov 2024 15:09:34 -0800 (PST)
+Message-ID: <a95e5dbc5ecf93405ccc2ce8e64cd5ae625d1157.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 7/7] selftests/bpf: Add IRQ save/restore
+ tests
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc: bpf@vger.kernel.org, kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, 
  Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
  <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>,
  kernel-team@fb.com
-Date: Thu, 21 Nov 2024 15:08:37 -0800
-In-Reply-To: <CAP01T75FEfodis5YLie5kBPG4FSyyinSAa0m+ZP8H+_PhseWRQ@mail.gmail.com>
+Date: Thu, 21 Nov 2024 15:09:30 -0800
+In-Reply-To: <CAP01T74Jb02yxHT9x72PVCUtGoWVZ09v4nHq_RDKYQG0489VYQ@mail.gmail.com>
 References: <20241121005329.408873-1-memxor@gmail.com>
-	 <20241121005329.408873-6-memxor@gmail.com>
-	 <c49e756f6e4ef492a68b7cd3b856240282963f8e.camel@gmail.com>
-	 <CAP01T75FEfodis5YLie5kBPG4FSyyinSAa0m+ZP8H+_PhseWRQ@mail.gmail.com>
+	 <20241121005329.408873-8-memxor@gmail.com>
+	 <8db8d815dc263edd8d3883a770c0bc0ac511dd77.camel@gmail.com>
+	 <CAP01T74Jb02yxHT9x72PVCUtGoWVZ09v4nHq_RDKYQG0489VYQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
@@ -95,58 +95,24 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Thu, 2024-11-21 at 23:06 +0100, Kumar Kartikeya Dwivedi wrote:
+On Thu, 2024-11-21 at 23:07 +0100, Kumar Kartikeya Dwivedi wrote:
 
 [...]
 
-> > > +/* Keep unsinged long in prototype so that kfunc is usable when emit=
-ted to
-> > > + * vmlinux.h in BPF programs directly, but since unsigned long may p=
-otentially
-> > > + * be 4 byte, always cast to u64 when reading/writing from this poin=
-ter as it
-> > > + * always points to an 8-byte memory region in BPF stack.
-> > > + */
-> > > +__bpf_kfunc void bpf_local_irq_save(unsigned long *flags__irq_flag)
+> > > +SEC("?tc")
+> > > +__success
+> > > +int irq_balance_n_subprog(struct __sk_buff *ctx)
 > >=20
-> > Nit: 'unsigned long long' is guaranteed to be at-least 64 bit.
-> >      What would go wrong if 'u64' is used here?
+> > Nit: don't think this test adds much given irq_balance_n()
+> >      and irq_balance_subprog().
 >=20
-> It goes like this:
-> If I make this unsigned long long * or u64 *, the kfunc emitted to
-> vmlinux.h expects a pointer of that type.
-> Typically, kernel code is always passing unsigned long flags to these
-> functions, and that's what people are used to.
-> Given for --target=3Dbpf unsigned long * is always a 8-byte value, I
-> just did this, so that in kernels that are 32-bit,
-> we don't end up relying on unsigned long still being 8 when
-> fetching/storing flags on BPF stack.
+> My idea with both of these was to ensure when the state is copied in
+> and out on calls and when we're doing one or more than one
+> save/restore (which links prev_id into active_irq_id etc.) we don't
+> have problems, so they were definitely testing different scenarios.
+> But with the move into bpf_verifier_state they will indeed become
+> redundant, so I'm going to drop them in v2.
 
-So, the goal is to enable the following pattern:
-
-  unsigned long flags;
-  bpf_local_irq_save(&flags);
-
-Right?
-
-For a 32-bit system 'flags' would be 4 bytes long.
-Consider the following example:
-
-  unsigned long flags; // assume 'flags' and 'foo'
-  int foo;             // are allocated sequentially.
- =20
-  bpf_local_irq_save(&flags);
-
-I think that in such case '*ptr =3D flags;' would overwrite foo.
-
-[...]
-
-> > > +{
-> > > +     u64 *ptr =3D (u64 *)flags__irq_flag;
-> > > +     unsigned long flags;
-> > > +
-> > > +     local_irq_save(flags);
-> > > +     *ptr =3D flags;
-> > > +}
+Understood, thank you for explaining.
 
 
