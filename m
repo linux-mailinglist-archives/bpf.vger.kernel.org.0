@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-45362-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45363-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61EBC9D4C27
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 12:42:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3DC49D4C29
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 12:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ABAE9B236F3
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 11:42:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C787B2537C
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 11:42:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B960D1D0F56;
-	Thu, 21 Nov 2024 11:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F04F11D3634;
+	Thu, 21 Nov 2024 11:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O2u1SsIm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UOgFOKzJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D4153C47B;
-	Thu, 21 Nov 2024 11:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7393D3C47B;
+	Thu, 21 Nov 2024 11:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732189324; cv=none; b=NBqsc8RgHtK1MNeDm1aq+n2CEXW3mVtm0HDnxt238BSG0q8ILkO0cyYIj3E4kQnYtIzg+LgWEwTvqoM0DXFKGhL8B/IDrnuetGAzRz0XDo5ZxCIz/pqcRyBjtNgIDMBdigNNh7fw/9ob6bdHsGSAyllssz0cPxYDHY3V9AACVwo=
+	t=1732189329; cv=none; b=N1pWmhEpGMEDFp+HjFVehfFS+vTPQvxvVWkA5aQnQJMQmKP5gvV/WQ6OwKiL0lnsS0NZTrEGltT7s2QjSAmHYjl5VWTgSZ4GG/UW9tEfO/W/J0INJl8i/DylqGgWuTh3YDZ09YERymjPt2hY6SCKfBlROgA6xQix35a2BhigDlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732189324; c=relaxed/simple;
-	bh=GN7T/oKi6RZ26ifF9n4LUCLL2FNXyzaNe8nav9f304U=;
+	s=arc-20240116; t=1732189329; c=relaxed/simple;
+	bh=ppdP5C6+NmUaAZ8ionJv/HF1F4enkFjg2vCtdGt7v7E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rrFS7OqV9VqH2PXB9NZL7jpJ7TJvHR71m8w/WXmVowDQFDzMP1nelhcT5VSX/mgsZZCc13A1z+34BTViLJn9XOMDjZ4br3munyAVVtFKh+E/xxtGKH8E5bY87MNN8jeplUkOIo1fjO477+1PwkXYsqtILSS57gQBnQN0H7tj/6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O2u1SsIm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11119C4CECC;
-	Thu, 21 Nov 2024 11:42:00 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=jVUnuCtlPU7ylS2rFiO0OOoORj2JiCVtvMm/NfRFAM/hBrd3CAYiZtBOMXKoHLRK2Ixjf0FIXEaXviY/KLLNsH3t2bsw6tz3DWvKfLFjeMnHntf1CX2dEBwL27cUgZ1hGg0vRbAjldEFKUL3+/MuQR1OU3XUf6f81YIsPffgD88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UOgFOKzJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 641F7C4CECC;
+	Thu, 21 Nov 2024 11:42:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732189323;
-	bh=GN7T/oKi6RZ26ifF9n4LUCLL2FNXyzaNe8nav9f304U=;
+	s=k20201202; t=1732189329;
+	bh=ppdP5C6+NmUaAZ8ionJv/HF1F4enkFjg2vCtdGt7v7E=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=O2u1SsIm5hUW0RcLqZ6v0L4Ij6MdIMt7hJKQ1es+MluZISJsuEqlTXqupLbxftDaY
-	 DYJpB7jZugsdlvxfFh6OioeHg6p9ZBoPiEVt6uOqmxtrTLoZ+X50fi6A6gMJ3t/ZsB
-	 yi9aUsjcJ+zN3ih/Y1fU9bu3sUYrPNK5W1lSyXBRXICN4c+iQrgFy5GjaQieLEZl5/
-	 szyn1+re5zBEfaVyTmsKLmN+QKjuOUBGpPt29OwcgqUOPybRn21sh4YJSuk61l2g4G
-	 3a/Jzht7WQQHvlcTlJqVGhCv4M5IM3FNDlKK/NRMwSLouNSml0vQL+FPgmSF01CavE
-	 KrDWKelyn1YTQ==
-Message-ID: <beb38cbc-9ac8-4205-aac9-3bb1b2fa6e97@kernel.org>
-Date: Thu, 21 Nov 2024 11:41:59 +0000
+	b=UOgFOKzJ4YH4vyEcqO1kxme7OZ/uMlTNWIMYRR+hH2ApX81p5Zaw0oH/VdC7szNkn
+	 okKizIkrBoZGWr5bI3R38iUiZbfe+l1wfq/SN6rKXtT2FjAzU/7FN5G2KP1Axg5gJ6
+	 h1PB4KfbU3p2AbVjk+PuRu3PwhV8ILUfBd2tLNnQNborEC9d9MuP8XNTV+DbxSbf+u
+	 bgymeHrdLeqSyHM20y/spJOhsZZKXSkVslIOqtYYVP22xY72w4v0vc6xjRNPe8Kwuo
+	 imUh9d38inmU8+zvttVAHs+dE58NLSOGsH3qnPOGeszKmT6K4bkwROFlSwVFYkfLhE
+	 7H8ksbp3P++uw==
+Message-ID: <80690ecf-2d21-460c-b031-8133ca571e7c@kernel.org>
+Date: Thu, 21 Nov 2024 11:42:06 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,8 +71,24 @@ Content-Transfer-Encoding: 7bit
 > of pf is 'unsigned int'.
 > 
 > Signed-off-by: liujing <liujing@cmss.chinamobile.com>
+> 
+> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+> index 5cd503b763d7..5bc442d93456 100644
+> --- a/tools/bpf/bpftool/link.c
+> +++ b/tools/bpf/bpftool/link.c
+> @@ -699,7 +699,7 @@ void netfilter_dump_plain(const struct bpf_link_info *info)
+>  	if (pfname)
+>  		printf("\n\t%s", pfname);
+>  	else
+> -		printf("\n\tpf: %d", pf);
+> +		printf("\n\tpf: %u", pf);
+>  
+>  	if (hookname)
+>  		printf(" %s", hookname);
 
-Reviewed-by: Quentin Monnet <qmo@kernel.org>
 
-Thank you
+Thanks, but while at it can you also fix the format specifier for the
+other two prints of "lines" in the function (via "p_err()"), please?
+
+Quentin
 
