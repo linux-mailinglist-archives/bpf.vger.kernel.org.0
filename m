@@ -1,142 +1,244 @@
-Return-Path: <bpf+bounces-45337-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45338-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8022E9D48EE
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 09:34:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 602989D491B
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 09:44:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7663B240FB
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 08:34:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2106D282F1D
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 08:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47B2E1C7B64;
-	Thu, 21 Nov 2024 08:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D8FB1CCB26;
+	Thu, 21 Nov 2024 08:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bN4BHeyB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZZd9bmXE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218711BD501;
-	Thu, 21 Nov 2024 08:34:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C40C21CB323;
+	Thu, 21 Nov 2024 08:44:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732178079; cv=none; b=SFjuqGvWpRtrkJbRMgbwZvP26rDxOTRNGooU2eh8b+1ZaleqIht0ztFeVvK9lkRxzmrIApH78XmnkxfkIhuXeX8hyfKG4UGdgNZeMj4u9cyFffXibJ4P8OxIHHxCMMT2iVdNupkg8UY2oSPIhcUFe6F4Ie6nfiQa0RQyE/tkQtM=
+	t=1732178641; cv=none; b=N31ONkJ20D0ZxiA/l3JmJXZBXxUcSz+l6Vep17XbOPlVf2QHJfW6J1xsslnAZpH6gO+huQ/IsOa7GPLizEi5UkunKaf8kAwDi+ZvrifxPV4MhF3Jm31A7Uf0VwUwpl2NwKMVLDpm1av6E4yLJ142xGHhjUxrTzoPqJ4J8PDqUv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732178079; c=relaxed/simple;
-	bh=zjTOpW2VoG1jkCz4sfFZmC1KrVbbCTNewmnwv7ZVvow=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=omEvwvYHdzrjKqCUhT0tl75DbV98ZcPqSL+JrKJ7GQt0TB1JSVglkdhUKgDGFmyBiyFRlc8L15jg2Nxb1hK2BKKptEqo1MbmB7Yg7DT6/cW40HPuI8vl5ljhNaEusOTZMU1oGibFG/sllo3rgztoD6QmHLIfc0BYW72iqHfNBoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bN4BHeyB; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4316cce103dso7066605e9.3;
-        Thu, 21 Nov 2024 00:34:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732178076; x=1732782876; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xuY9UIumhzkIskqm/6SfN6e7LblNj5wpgZ/rsXPts54=;
-        b=bN4BHeyBV2VREztHtKyl/wCugyrLw37xHgq16597EFBfeRQTnKp3NFcUCeEKSs+M/Z
-         nttwkg8VsO/o2/UVYpiB3YUJhbVS7JdPlaX+60J8/3NxgGnCcju1sA1DAPyGnZt5WkdW
-         WaNe7Lhv6tp1zRi4xzmAIqXDB+21WUCJVqyF6oxFb0rge1NjewXxRiuop5Nss0rBX703
-         S8W2p1uU1TPNqNjnRH7oNa0PAS9YBTKTH3q6Vc7zB8v/rlrj3DsawhJzLJPhfq4Xw4Yx
-         /DV5BtZZns/rps/aVqNXPjUiRwT1xFR/0+QN6V86/5PqGOcashnyxiU2vY+GbVRcnnzq
-         UNeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732178076; x=1732782876;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xuY9UIumhzkIskqm/6SfN6e7LblNj5wpgZ/rsXPts54=;
-        b=ETbU7/JoKOm1nYYWz8p5F0Oh3+DL7mNQb1n4v+Jp2nqR2WolPFD42ACd1nE7+a9fJd
-         Yj2S7pCThmmGIPvqXS21xyB2uCMRKj+CYpGzv5b3r5/DBbDaIhhyn8hQ5+2GtX8/q+O/
-         07HoGsC+85/JjqM1anRM1PQL3vOtLz/b49CkMWneLuleg3DYe+ioWUTDNcGAwZKiKJGs
-         n3tZKlhltTDk4E9LpB+NUqjpi6M3rouhNdNoeXuZrn16FybiEZx0wI1CZqLdrIcoO3Vv
-         BwZ3zotEYZWniIP6EuhA85RqwC5hrjKLPqP0QpSP1/28/Y3wzjFOhp/Lxzo4zRFwqxdr
-         AHxw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+CGh1Wy0K6foly1meMR+YeL8xiMEA9OQqlMq7zjmoUUPB/6Rx+10LseViUEQU3mptiX/jBJpAzd/Kr5Kv@vger.kernel.org, AJvYcCVr4ykj4ANGbqwgaH5jzM1B4nqGLERLmWKdpzWveHcKdE50ZX3MyLS/t/oFbuXXNc/2dpo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+/AcF9BOapqNLA2bZ+7BLvMuJ5Y+mEt5uOwvDzCp3T6GcNgPj
-	4fz7SWAFsBiU4wnSq4vKeoa/UCHBh5Wr87Fd14YbTF/jrhD15f8=
-X-Google-Smtp-Source: AGHT+IHeO1HwhmFK4O5/NJbZp2M0Ctx7jARETW7C4rvS3zI6J6/qaqoBgcBCSOBXifhAzWODgPr6ag==
-X-Received: by 2002:a05:600c:34ce:b0:432:bb4d:cd77 with SMTP id 5b1f17b1804b1-433489ca951mr53704995e9.19.1732178076223;
-        Thu, 21 Nov 2024 00:34:36 -0800 (PST)
-Received: from qoroot.. ([195.181.116.221])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-433b45d16f8sm45392335e9.2.2024.11.21.00.34.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Nov 2024 00:34:35 -0800 (PST)
-From: Amir Mohammadi <amirmohammadi1999.am@gmail.com>
-X-Google-Original-From: Amir Mohammadi <amiremohamadi@yahoo.com>
-To: qmo@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Amir Mohammadi <amiremohamadi@yahoo.com>
-Subject: [PATCH v3] bpftool: fix potential NULL pointer dereferencing in prog_dump()
-Date: Thu, 21 Nov 2024 12:04:13 +0330
-Message-ID: <20241121083413.7214-1-amiremohamadi@yahoo.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <47225498-12ab-4e69-ac50-2aab9dbe62c0@kernel.org>
-References: <47225498-12ab-4e69-ac50-2aab9dbe62c0@kernel.org>
+	s=arc-20240116; t=1732178641; c=relaxed/simple;
+	bh=93d+OqbVd9Ea0NG2jzTeioEuzX6Aq7NOIU6RQqe9nlY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l0Dx6DGzrYPDM4oCJHDskmJPQJX5zm/5Ua+XcyCBHNRp49GxrWH5zix8/p6QsjZ+/MoXxrvl21X7GymSj+XbETj/NzcLpNubWYzh707q7jdJyj6NK2E80OTzUTv6MwhjLNvZbYuAFf0KvInMHGlE50YFAVjYbZaFZdOSCBjUTPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZZd9bmXE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 193F1C4CECE;
+	Thu, 21 Nov 2024 08:43:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732178641;
+	bh=93d+OqbVd9Ea0NG2jzTeioEuzX6Aq7NOIU6RQqe9nlY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZZd9bmXEsHfChSC2aGGlnkiIzf9lWdGjwnqCPXDdGdAN+Z+csyftlF80cpphfn0zi
+	 ozvQS+XQXfe/gtGwm3cOUHr/4L2vKNNqChErygaOJ1t/mrVSnBczW5+X1HQCSlRPBU
+	 aX1XCMRqDLLuko25njgEYFoLzGb2wuLbhmN4zDNzXuKDUOo0kWcpm0EqBakv/v8/k7
+	 CYiqRae1FtkzC705/sCiOGSip1nXQkq6mQMR0ETfHk1NzHJLkLPARKS1NGWh8WUcTs
+	 84gt0t3tzzVmieSC7eLIhsQ1FU/msJ5G48ejiJzUhnQUzm/bg1OUG2+95xXkCpZxBd
+	 2z+CjzORZ7IgA==
+Date: Thu, 21 Nov 2024 09:43:52 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Song Liu <songliubraving@meta.com>, Jeff Layton <jlayton@kernel.org>, 
+	Jan Kara <jack@suse.cz>, Song Liu <song@kernel.org>, 
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "eddyz87@gmail.com" <eddyz87@gmail.com>, 
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
+	"martin.lau@linux.dev" <martin.lau@linux.dev>, "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, 
+	"kpsingh@kernel.org" <kpsingh@kernel.org>, "mattbobrowski@google.com" <mattbobrowski@google.com>, 
+	"repnop@google.com" <repnop@google.com>, Josef Bacik <josef@toxicpanda.com>, 
+	"mic@digikod.net" <mic@digikod.net>, "gnoack@google.com" <gnoack@google.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf: Make bpf inode storage available to
+ tracing program
+Message-ID: <20241121-erleuchten-getobt-aba2e8f03611@brauner>
+References: <20241113-sensation-morgen-852f49484fd8@brauner>
+ <86C65B85-8167-4D04-BFF5-40FD4F3407A4@fb.com>
+ <20241115111914.qhrwe4mek6quthko@quack3>
+ <E79EFA17-A911-40E8-8A51-CB5438FD2020@fb.com>
+ <8ae11e3e0d9339e6c60556fcd2734a37da3b4a11.camel@kernel.org>
+ <CAOQ4uxgUYHEZTx7udTXm8fDTfhyFM-9LOubnnAc430xQSLvSVA@mail.gmail.com>
+ <CAOQ4uxhyDAHjyxUeLfWeff76+Qpe5KKrygj2KALqRPVKRHjSOA@mail.gmail.com>
+ <DF0C7613-56CC-4A85-B775-0E49688A6363@fb.com>
+ <20241120-wimpel-virologen-1a58b127eec6@brauner>
+ <CAOQ4uxhSM0PL8g3w6E2fZUUGds-13Swj-cfBvPz9b9+8XhHD3w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxhSM0PL8g3w6E2fZUUGds-13Swj-cfBvPz9b9+8XhHD3w@mail.gmail.com>
 
-A NULL pointer dereference could occur if ksyms
-is not properly checked before usage in the prog_dump() function.
+On Wed, Nov 20, 2024 at 12:19:51PM +0100, Amir Goldstein wrote:
+> On Wed, Nov 20, 2024 at 10:28 AM Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > On Tue, Nov 19, 2024 at 09:53:20PM +0000, Song Liu wrote:
+> > > Hi Jeff and Amir,
+> > >
+> > > Thanks for your inputs!
+> > >
+> > > > On Nov 19, 2024, at 7:30 AM, Amir Goldstein <amir73il@gmail.com> wrote:
+> > > >
+> > > > On Tue, Nov 19, 2024 at 4:25 PM Amir Goldstein <amir73il@gmail.com> wrote:
+> > > >>
+> > > >> On Tue, Nov 19, 2024 at 3:21 PM Jeff Layton <jlayton@kernel.org> wrote:
+> > > >>>
+> > >
+> > > [...]
+> > >
+> > > >>> Longer term, I think it may be beneficial to come up with a way to attach
+> > > >>>>> private info to the inode in a way that doesn't cost us one pointer per
+> > > >>>>> funcionality that may possibly attach info to the inode. We already have
+> > > >>>>> i_crypt_info, i_verity_info, i_flctx, i_security, etc. It's always a tough
+> > > >>>>> call where the space overhead for everybody is worth the runtime &
+> > > >>>>> complexity overhead for users using the functionality...
+> > > >>>>
+> > > >>>> It does seem to be the right long term solution, and I am willing to
+> > > >>>> work on it. However, I would really appreciate some positive feedback
+> > > >>>> on the idea, so that I have better confidence my weeks of work has a
+> > > >>>> better chance to worth it.
+> > > >>>>
+> > > >>>> Thanks,
+> > > >>>> Song
+> > > >>>>
+> > > >>>> [1] https://github.com/systemd/systemd/blob/main/src/core/bpf/restrict_fs/restrict-fs.bpf.c
+> > > >>>
+> > > >>> fsnotify is somewhat similar to file locking in that few inodes on the
+> > > >>> machine actually utilize these fields.
+> > > >>>
+> > > >>> For file locking, we allocate and populate the inode->i_flctx field on
+> > > >>> an as-needed basis. The kernel then hangs on to that struct until the
+> > > >>> inode is freed.
+> > >
+> > > If we have some universal on-demand per-inode memory allocator,
+> > > I guess we can move i_flctx to it?
+> > >
+> > > >>> We could do something similar here. We have this now:
+> > > >>>
+> > > >>> #ifdef CONFIG_FSNOTIFY
+> > > >>>        __u32                   i_fsnotify_mask; /* all events this inode cares about */
+> > > >>>        /* 32-bit hole reserved for expanding i_fsnotify_mask */
+> > > >>>        struct fsnotify_mark_connector __rcu    *i_fsnotify_marks;
+> > > >>> #endif
+> > >
+> > > And maybe some fsnotify fields too?
+> > >
+> > > With a couple users, I think it justifies to have some universal
+> > > on-demond allocator.
+> > >
+> > > >>> What if you were to turn these fields into a pointer to a new struct:
+> > > >>>
+> > > >>>        struct fsnotify_inode_context {
+> > > >>>                struct fsnotify_mark_connector __rcu    *i_fsnotify_marks;
+> > > >>>                struct bpf_local_storage __rcu          *i_bpf_storage;
+> > > >>>                __u32                                   i_fsnotify_mask; /* all events this inode cares about */
+> > > >>>        };
+> > > >>>
+> > > >>
+> > > >> The extra indirection is going to hurt for i_fsnotify_mask
+> > > >> it is being accessed frequently in fsnotify hooks, so I wouldn't move it
+> > > >> into a container, but it could be moved to the hole after i_state.
+> > >
+> > > >>> Then whenever you have to populate any of these fields, you just
+> > > >>> allocate one of these structs and set the inode up to point to it.
+> > > >>> They're tiny too, so don't bother freeing it until the inode is
+> > > >>> deallocated.
+> > > >>>
+> > > >>> It'd mean rejiggering a fair bit of fsnotify code, but it would give
+> > > >>> the fsnotify code an easier way to expand per-inode info in the future.
+> > > >>> It would also slightly shrink struct inode too.
+> > >
+> > > I am hoping to make i_bpf_storage available to tracing programs.
+> > > Therefore, I would rather not limit it to fsnotify context. We can
+> > > still use the universal on-demand allocator.
+> >
+> > Can't we just do something like:
+> >
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index 7e29433c5ecc..cc05a5485365 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -627,6 +627,12 @@ is_uncached_acl(struct posix_acl *acl)
+> >  #define IOP_DEFAULT_READLINK   0x0010
+> >  #define IOP_MGTIME     0x0020
+> >
+> > +struct inode_addons {
+> > +        struct fsnotify_mark_connector __rcu    *i_fsnotify_marks;
+> > +        struct bpf_local_storage __rcu          *i_bpf_storage;
+> > +        __u32                                   i_fsnotify_mask; /* all events this inode cares about */
+> > +};
+> > +
+> >  /*
+> >   * Keep mostly read-only and often accessed (especially for
+> >   * the RCU path lookup and 'stat' data) fields at the beginning
+> > @@ -731,12 +737,7 @@ struct inode {
+> >                 unsigned                i_dir_seq;
+> >         };
+> >
+> > -
+> > -#ifdef CONFIG_FSNOTIFY
+> > -       __u32                   i_fsnotify_mask; /* all events this inode cares about */
+> > -       /* 32-bit hole reserved for expanding i_fsnotify_mask */
+> > -       struct fsnotify_mark_connector __rcu    *i_fsnotify_marks;
+> > -#endif
+> > +       struct inode_addons *i_addons;
+> >
+> >  #ifdef CONFIG_FS_ENCRYPTION
+> >         struct fscrypt_inode_info       *i_crypt_info;
+> >
+> > Then when either fsnotify or bpf needs that storage they can do a
+> > cmpxchg() based allocation for struct inode_addons just like I did with
+> > f_owner:
+> >
+> > int file_f_owner_allocate(struct file *file)
+> > {
+> >         struct fown_struct *f_owner;
+> >
+> >         f_owner = file_f_owner(file);
+> >         if (f_owner)
+> >                 return 0;
+> >
+> >         f_owner = kzalloc(sizeof(struct fown_struct), GFP_KERNEL);
+> >         if (!f_owner)
+> >                 return -ENOMEM;
+> >
+> >         rwlock_init(&f_owner->lock);
+> >         f_owner->file = file;
+> >         /* If someone else raced us, drop our allocation. */
+> >         if (unlikely(cmpxchg(&file->f_owner, NULL, f_owner)))
+> >                 kfree(f_owner);
+> >         return 0;
+> > }
+> >
+> > The internal allocations for specific fields are up to the subsystem
+> > ofc. Does that make sense?
+> >
+> 
+> Maybe, but as I wrote, i_fsnotify_mask should not be moved out
+> of inode struct, because it is accessed in fast paths of fsnotify vfs
+> hooks, where we do not want to have to deref another context,
+> but i_fsnotify_mask can be moved to the hole after i_state.
+> 
+> And why stop at i_fsnotify/i_bfp?
+> If you go to "addons" why not also move i_security/i_crypt/i_verify?
+> Need to have some common rationale behind those decisions.
 
-Fixes: b053b439b72a ("bpf: libbpf: bpftool: Print bpf_line_info during prog dump")
-Signed-off-by: Amir Mohammadi <amiremohamadi@yahoo.com>
----
- tools/bpf/bpftool/prog.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+The rationale is that we need a mechanism to stop bloating our
+structures with ever more stuff somehow. What happens to older members
+of struct inode is a cleanup matter and then it needs to be seen what
+can be moved into a substruct and not mind the additional pointer chase.
 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 2ff949ea8..e71be67f1 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -822,11 +822,18 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
- 					printf("%s:\n", sym_name);
- 				}
- 
--				if (disasm_print_insn(img, lens[i], opcodes,
--						      name, disasm_opt, btf,
--						      prog_linfo, ksyms[i], i,
--						      linum))
--					goto exit_free;
-+				if (ksyms) {
-+					if (disasm_print_insn(img, lens[i], opcodes,
-+							      name, disasm_opt, btf,
-+							      prog_linfo, ksyms[i], i,
-+							      linum))
-+						goto exit_free;
-+				} else {
-+					if (disasm_print_insn(img, lens[i], opcodes,
-+							      name, disasm_opt, btf,
-+							      NULL, 0, 0, false))
-+						goto exit_free;
-+				}
- 
- 				img += lens[i];
- 
--- 
-2.42.0
-
+It's just a generalization of your proposal in a way because I don't
+understand why you would move the bpf stuff into fsnotify specific
+parts.
 
