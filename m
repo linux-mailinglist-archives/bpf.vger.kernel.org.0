@@ -1,185 +1,123 @@
-Return-Path: <bpf+bounces-45376-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45377-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAB8B9D4F6F
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 16:09:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A5C79D4F9E
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 16:23:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C132AB26D47
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 15:08:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C8051F227D0
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 15:23:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6A61DBB19;
-	Thu, 21 Nov 2024 15:07:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9A51DAC97;
+	Thu, 21 Nov 2024 15:23:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D73kYvtk"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ppfws4NZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A40521D47A3;
-	Thu, 21 Nov 2024 15:07:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362861D7E5C;
+	Thu, 21 Nov 2024 15:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732201672; cv=none; b=Ao1HWQtUiMHjedRgYAGClkhOCAfFQcy8KXwKCuUlhiM9BWk9eTz5nNbzwZuVXug2qCRBn7KcwzBqWvkCW7brZGv/s+zuuchN3gHixZGB/ZXTApAQK98KSmS3zbckkiPHBmYgPbxrrEW5UPO8Q0tJnCzLhMr/b3pRy5FPmd4Njd4=
+	t=1732202607; cv=none; b=tg5FyUaIXH3fKwy/cC7/VO6L29vhnwvYHCOAGeJJSHNzUmHf1YW7JGXMK9OMA8agvW4a+CoExHycDLa/V6FjF7EB9OXl4fSxXEjC8uqCKZWLUk2hvllbQHVzYhIK+4xklzdAuOJUiIHpU229LNv9LnwsoWNFzWhCO7viGeD//bY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732201672; c=relaxed/simple;
-	bh=G7fHsSCn6nvijQfIxss66aGWrcoAEc4hnIHW/t/+QvM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mfJ0iigCjfDWoSoznyXZF7ZfhqXWXhga5lC9IP0mY/7h6fMdKXuc6bLCdmA1XjLnwzSh3PjKiVIyKgqSy0LehdiMWEhOWGqpHGUWjfeskvsjB3Zz1ZFGY/i9DWvm2ZvO/9WRWH+SNpCkvIpLTPpLhPcSzfpUKCfQSw3zy7q2hEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D73kYvtk; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1732201671; x=1763737671;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=G7fHsSCn6nvijQfIxss66aGWrcoAEc4hnIHW/t/+QvM=;
-  b=D73kYvtkWOrmasZ0cHLXECa3KgloLAAxU2V5ZrHbmWeQgI23VaajODRk
-   +Hk1hAPg1ZrAxZKIm0x9E8mWnJYHAYKB2BSBddIblmR+1LbrfvJonFeHy
-   zPjzZv2FUqxrdrRxoV8+x2OWKtfXYhfFsLUFgSGULQrNlb+/6+s8E+p2e
-   vSZLgCC57smSXGGzFdiCbFjaaZ/a7l40ePEnV8tUOCxXmUtdp5KVyJoMk
-   iDQREJQG2oEXRHtnNmWzVPlsVeN+YQF4Loi7xKYeyuYC0L5D11MEXXJUG
-   1m+Y9GuP8Ski3rKMR+0JdggHXy21SD/jfqOj4fEfwyej4+jbf/w+z0OHg
-   Q==;
-X-CSE-ConnectionGUID: tHNvrWX0S1GcI2PGkGpspw==
-X-CSE-MsgGUID: 1aZZbOjyRU+QhxEDTb6ahg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11263"; a="57716453"
-X-IronPort-AV: E=Sophos;i="6.12,173,1728975600"; 
-   d="scan'208";a="57716453"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2024 07:07:49 -0800
-X-CSE-ConnectionGUID: RqARAqDlQkCUSCLelj6P9g==
-X-CSE-MsgGUID: Y+aAd0LDT2meQIj/VioIzQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="95338688"
-Received: from bjrankin-mobl3.amr.corp.intel.com (HELO [10.124.223.230]) ([10.124.223.230])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2024 07:07:46 -0800
-Message-ID: <4b562cd0-7500-4b3a-8f5c-e6acfea2896e@intel.com>
-Date: Thu, 21 Nov 2024 07:07:44 -0800
+	s=arc-20240116; t=1732202607; c=relaxed/simple;
+	bh=y5x6xEpM40jtwklXcJiTMsWMil5e1bPUB64pkE2nqDQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=koQoGimwkt1ZvNWjGQU7SfVzmp7WD82M7D5h/JP2znHhj89tIj/u9TT8yu7j3WbHwtg/5f4fTwkv8jTbfi4/ep6vu1ZGoAG9t0D7UHoTTurNGtsTHhWlVTBDO61EauuIlpruliOXz6wWbEOnXZTtHSTf+ZknnskMBq3i4j8kS0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Ppfws4NZ; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=rxevy5h5i8g9QJaX9dDgnxXQcDraOey7eWADfayEl0k=; b=Ppfws4NZ9w0ZwYZapvn7JbPIDU
+	Kx1j9blrZQAcRovxmKXJHt0enTDoPvlAS+KHbSPE5wf3jxA24prNJXl4J1Q8/KixFx+qU4a7F4Jw5
+	uSxVL7lioES1lirZdA70En42ToKOskNdj4j3sHig07hRdlWIYOa2ci8X+BBGLnewQPM5Ph+mFOiek
+	7qzqpOeX8fiwwLudpnJsega7agLjvfb+Mv/9JVEBSs+zZPeRy6qMsSON84zTZqOmEbFvKiUkfN5qv
+	AJ37nsW3ZgmrYdWR6QahOhkqj2+K9u70PACJIaVQs4CdCGdZcRM49kSmO3zhRpYg0NqVu9wtYWZ0C
+	qL9W7Wkw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tE91F-00000006WEF-1bLS;
+	Thu, 21 Nov 2024 15:22:58 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id B54E430068B; Thu, 21 Nov 2024 16:22:57 +0100 (CET)
+Date: Thu, 21 Nov 2024 16:22:57 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org,
+	akpm@linux-foundation.org, oleg@redhat.com, rostedt@goodmis.org,
+	mhiramat@kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org,
+	willy@infradead.org, surenb@google.com, mjguzik@gmail.com,
+	brauner@kernel.org, jannh@google.com, mhocko@kernel.org,
+	vbabka@suse.cz, shakeel.butt@linux.dev, hannes@cmpxchg.org,
+	Liam.Howlett@oracle.com, lorenzo.stoakes@oracle.com,
+	david@redhat.com, arnd@arndb.de, richard.weiyang@gmail.com,
+	zhangpeng.00@bytedance.com, linmiaohe@huawei.com,
+	viro@zeniv.linux.org.uk, hca@linux.ibm.com,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v4 tip/perf/core 2/4] mm: Introduce
+ mmap_lock_speculation_{begin|end}
+Message-ID: <20241121152257.GN38972@noisy.programming.kicks-ass.net>
+References: <20241028010818.2487581-1-andrii@kernel.org>
+ <20241028010818.2487581-3-andrii@kernel.org>
+ <20241121144442.GL24774@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 13/15] context_tracking,x86: Add infrastructure to
- defer kernel TLBI
-To: Peter Zijlstra <peterz@infradead.org>,
- Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
- x86@kernel.org, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Wanpeng Li <wanpengli@tencent.com>, Vitaly Kuznetsov <vkuznets@redhat.com>,
- Andy Lutomirski <luto@kernel.org>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- Lorenzo Stoakes <lstoakes@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
- Sami Tolvanen <samitolvanen@google.com>, Ard Biesheuvel <ardb@kernel.org>,
- Nicholas Piggin <npiggin@gmail.com>,
- Juerg Haefliger <juerg.haefliger@canonical.com>,
- Nicolas Saenz Julienne <nsaenz@kernel.org>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
- Chuang Wang <nashuiliang@gmail.com>, Yang Jihong <yangjihong1@huawei.com>,
- Petr Mladek <pmladek@suse.com>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
- Song Liu <song@kernel.org>, Julian Pidancet <julian.pidancet@oracle.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze
- <dionnaglaze@google.com>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
- <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>,
- Marcelo Tosatti <mtosatti@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>,
- Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
-References: <20241119153502.41361-1-vschneid@redhat.com>
- <20241119153502.41361-14-vschneid@redhat.com>
- <20241120152216.GM19989@noisy.programming.kicks-ass.net>
- <20241120153221.GM38972@noisy.programming.kicks-ass.net>
- <xhsmhldxdhl7b.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <20241121111221.GE24774@noisy.programming.kicks-ass.net>
-From: Dave Hansen <dave.hansen@intel.com>
-Content-Language: en-US
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20241121111221.GE24774@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241121144442.GL24774@noisy.programming.kicks-ass.net>
 
-On 11/21/24 03:12, Peter Zijlstra wrote:
->> I see e.g. ds_clear_cea() clears PTEs that can have the _PAGE_GLOBAL flag,
->> and it correctly uses the non-deferrable flush_tlb_kernel_range().
-> 
-> I always forget what we use global pages for, dhansen might know, but
-> let me try and have a look.
-> 
-> I *think* we only have GLOBAL on kernel text, and that only sometimes.
+On Thu, Nov 21, 2024 at 03:44:42PM +0100, Peter Zijlstra wrote:
 
-I think you're remembering how _PAGE_GLOBAL gets used when KPTI is in play.
+> But perhaps it makes even more sense to add this functionality to
+> seqcount itself. The same argument can be made for seqcount_mutex and
+> seqcount_rwlock users.
 
-Ignoring KPTI for a sec... We use _PAGE_GLOBAL for all kernel mappings.
-Before PCIDs, global mappings let the kernel TLB entries live across CR3
-writes. When PCIDs are in play, global mappings let two different ASIDs
-share TLB entries.
+Something like so I suppose.
 
-When KPTI is around, the kernel writes CR3 at user/kernel switches to
-make sure secrets are unmapped and can't be leaked by Meltdown. But
-unmapping those secrets doesn't do squat if they were mapped globally
-since they'll still be in the TLB and quite usable. There, we're more
-judicious and only mark performance-sensitive things that are not secret
-to be global, like kernel text.
+---
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index 5298765d6ca4..102afdf8c7db 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -318,6 +318,28 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
+ 	__seq;								\
+ })
+ 
++/**
++ * raw_seqcount_try_begin() - begin a seqcount_t read critical section
++ *                            w/o lockdep and w/o counter stabilization
++ * @s: Pointer to seqcount_t or any of the seqcount_LOCKNAME_t variants
++ *
++ * Very like raw_seqcount_begin(), except it enables eliding the critical
++ * section entirely if odd, instead of doing the speculation knowing it will
++ * fail.
++ *
++ * Useful when counter stabilization is more or less equivalent to taking
++ * the lock and there is a slowpath that does that.
++ *
++ * If true, start will be set to the (even) sequence count read.
++ *
++ * Return: true when a read critical section is started.
++ */
++#define raw_seqcount_try_begin(s, start)				\
++({									\
++	start = raw_read_seqcount(s);					\
++	!(start & 1);							\
++})
++
+ /**
+  * raw_seqcount_begin() - begin a seqcount_t read critical section w/o
+  *                        lockdep and w/o counter stabilization
 
