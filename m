@@ -1,198 +1,185 @@
-Return-Path: <bpf+bounces-45322-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45323-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E60969D45A3
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 03:00:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 439AC9D469A
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 05:22:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A73A428278B
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 02:00:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC9ED1F22307
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 04:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E498F136E21;
-	Thu, 21 Nov 2024 02:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2F31AA793;
+	Thu, 21 Nov 2024 04:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="MCZN9h4v"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="lJ5xHgVr"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCEDC2309A2;
-	Thu, 21 Nov 2024 02:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E306B148838
+	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 04:22:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732154429; cv=none; b=b7OxoJIDDDQlgbLcltEiiWzMu36VC97NFwzfetkAqC6EarFbftURkLkR0G1u1aiG3iFN2f8SRXvwSWiFxeuuoLO2CoevHRmP4zYRA1wxVZAv4rs3kl5ieAl0m5fjDoopYTk7ZNuIVobev6YekM9et0xfjqM4WxjoJ2Ncur+9HEw=
+	t=1732162950; cv=none; b=q3FvwnFWtzjWVYo+2DfM8ZaAQsERF5Bx9VSzj/MqKjatSJLLczzJx/ZHKazb580VCitAhWBQZjdPOnjDGTUAJo8N3zfMsoGOT76VZuMImPO+fVT9SM+H7TxSQnSm9ehotflSPauwGsCloNz4fI1FMUP5/5YaSa83X4P09Bl2Dhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732154429; c=relaxed/simple;
-	bh=xPcOqsgfWRP7fz7JFDU7Jg1juGljBjJgB+PKbapdhn0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jsR4lJ1z3uJRasIwHQQ03P1Z5hTCE+lbXoceODTL/psrUj4NaS3SRIgp0IBb5UeYZmvBOglDr6EutAmJWGWYljkNnjBygrGeisM2OmxAyZ/i3blCxhMURWlNDjHzA8mML12EcgzreyDGkRDJIoGNcX7Yv44siEVshPw+nbGoAxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=MCZN9h4v; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1732154423; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=xh5Bpj6oIo/uqbOf5Itvj/cPaIQp+JkS88W542IzEM8=;
-	b=MCZN9h4vAdFjiZtaNKa4Z392ZjS7c4D3UJCyPzZ3Aaf/UnbDHtKYQG4+OIJLRsRe1PLLJGPlc7s3M7KN3Apn0UjeWUgO9aP/RSskfsLGkKIbK7L0Mk7kF5m6/3f2fQ+gKbxMqQxLWBax0z271zkguq1t3OPcqKt1B48v3UuzThU=
-Received: from 30.221.147.241(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WJu1vbm_1732154420 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 21 Nov 2024 10:00:21 +0800
-Message-ID: <e8ba7dc0-96b5-4119-b2f6-b07432f65fdb@linux.alibaba.com>
-Date: Thu, 21 Nov 2024 10:00:20 +0800
+	s=arc-20240116; t=1732162950; c=relaxed/simple;
+	bh=SpAAQo3l0wT/aBxSUBDG8LR2a69OhY7lZutFyWBoaSI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HPyuX5F8FvKsOvdDMFqik1AeUtARNZWOCW/9wK7YwwdQiJuOFs6P2yVowuOQxJIUXSmezl+HP7TMyw/0lIzGwP9Rk+m2JMX7GDxveKvfc4fxXAT8qoB7Q2jmO7pJC0yJIa5pLIS/bI7OTIQ1oqKF9YkDVUtrtSOwErF7Kf70jYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=lJ5xHgVr; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6eea47d51aeso4117937b3.2
+        for <bpf@vger.kernel.org>; Wed, 20 Nov 2024 20:22:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1732162947; x=1732767747; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cP3Um0hz7Gv16Gtk91dL7DlYT6sIqAVCB2yrXnpMevM=;
+        b=lJ5xHgVrpeJelHGu3h+m+kpP+CpJio03F91Rbvepr+CWIi+9zzppZNlKGNpp8Ygsm3
+         Sjn3pfi0iup6FCY6VRUX/gvK0tToQVNp0Q1qdmUuwb3oyNDO0x+aTkFXUbPDPq2+uMYV
+         6Kkw1xQI1Og8AGiNWJdTkgrqygfd4mt9dNclhjlQwoslCkM4OjYkdA0dHkCZnDnLbXxN
+         1nxctHciljQ+3LXCJ/9o80XgWTNvdelIrPEluX+jd/rnZxIX0fjubBWinpxABfVVzOI3
+         0bzGibPw4zzKvqUUMZGV+0LajHL2/tYGbJNQKduNU2tQl84HB9kxxSB40UKEfbU5hHC1
+         Fthg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732162947; x=1732767747;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cP3Um0hz7Gv16Gtk91dL7DlYT6sIqAVCB2yrXnpMevM=;
+        b=pJ8b7NgH/Cz3jT9NrgTn/VH54Ml3NTOYMjxyiqkxwox8m7gEd0AAZHyTmwOxQRPa5c
+         PimNeDoIEcH2jV6cCTRqlJQ+axCwjd7plpeGZLVjARQ3usjU8poIDvhSMXVGDdIW1KKk
+         qnEakOwuZPpccLASuLhOmxbw5u2X29+wgYb5s/Spjz4Butug5Fv6WshzvGRS2ImntRro
+         uAOb0lB+ffHQ0BkC/zf4Mz6U+l2drNtrlsJeod5Xhrs/Bsv+7EhVQxozFxxKvf5J24rd
+         R1O4hgLJxiBPW03FFJlyevMCmLek/nvTMk/K7IrUV4e1cMF7wENKGEO0s7HLCMCZmp3L
+         WiOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVo/9ogRJky9DDvVwjKIi/Mmt9xtr84JxgefIW1Yt6/iWAmZVvhW0WiVOGF+HgsgpiwAbY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxod+liLwDxwe81YKW6ZtAqj+xcUdgnKubZanzYdPZOJu7a3w1o
+	jawNCO/CaJdrG4E76eI2oGdxe2AGx5TrDFLU+ZzsFyMJdRYMsqCmIRE4ISUkNxo=
+X-Google-Smtp-Source: AGHT+IFG/0lmdLf+PuJVUiUVDthedJQkU+yi8kvRYeLAcyp/RSQ9OGzeQL0b0Fr9yTqYmM0khQUKNg==
+X-Received: by 2002:a05:690c:5a15:b0:6ee:5068:7510 with SMTP id 00721157ae682-6eecc57b073mr20304047b3.26.1732162946630;
+        Wed, 20 Nov 2024 20:22:26 -0800 (PST)
+Received: from ghost ([50.146.0.9])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6ee71341e4dsm25749277b3.90.2024.11.20.20.22.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Nov 2024 20:22:25 -0800 (PST)
+Date: Wed, 20 Nov 2024 20:22:23 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Ian Rogers <irogers@google.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
+	Christian Brauner <brauner@kernel.org>, guoren <guoren@kernel.org>,
+	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
+	James Clark <james.clark@linaro.org>,
+	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linux.dev>,
+	Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+	"linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH RFT 00/16] perf tools: Use generic syscall scripts for
+ all archs
+Message-ID: <Zz61f02p8s52G6ba@ghost>
+References: <20241104-perf_syscalltbl-v1-0-9adae5c761ef@rivosinc.com>
+ <3b56fc50-4c6c-4520-adba-461797a3b5ec@app.fastmail.com>
+ <Zyk9hX8CB_2rbWsi@ghost>
+ <CAP-5=fUdZRbCp+2ghEUdp+qJ1BuMDuTtw9R+dFAaom+3oqQV_g@mail.gmail.com>
+ <ZylaRaMqEsEjYjs6@ghost>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 4/4] bpf/selftests: add simple selftest for
- bpf_smc_ops
-To: Zhu Yanjun <yanjun.zhu@linux.dev>, kgraul@linux.ibm.com,
- wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- pabeni@redhat.com, song@kernel.org, sdf@google.com, haoluo@google.com,
- yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com,
- kpsingh@kernel.org, jolsa@kernel.org, guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- dtcccc@linux.alibaba.com
-References: <1729737768-124596-1-git-send-email-alibuda@linux.alibaba.com>
- <1729737768-124596-5-git-send-email-alibuda@linux.alibaba.com>
- <8c06240b-540b-472f-974f-d2db80d90c22@linux.dev>
-Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <8c06240b-540b-472f-974f-d2db80d90c22@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZylaRaMqEsEjYjs6@ghost>
 
-
-
-On 11/3/24 9:01 PM, Zhu Yanjun wrote:
-> 在 2024/10/24 4:42, D. Wythe 写道:
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>
->> This PATCH adds a tiny selftest for bpf_smc_ops, to verify the ability
->> to attach and write access.
->>
->> Follow the steps below to run this test.
->>
->> make -C tools/testing/selftests/bpf
->> cd tools/testing/selftests/bpf
->> sudo ./test_progs -t smc
+On Mon, Nov 04, 2024 at 03:35:33PM -0800, Charlie Jenkins wrote:
+> On Mon, Nov 04, 2024 at 02:03:28PM -0800, Ian Rogers wrote:
+> > On Mon, Nov 4, 2024 at 1:32 PM Charlie Jenkins <charlie@rivosinc.com> wrote:
+> > >
+> > > On Mon, Nov 04, 2024 at 10:13:18PM +0100, Arnd Bergmann wrote:
+> > > > On Mon, Nov 4, 2024, at 22:06, Charlie Jenkins wrote:
+> > > > > Standardize the generation of syscall headers around syscall tables.
+> > > > > Previously each architecture independently selected how syscall headers
+> > > > > would be generated, or would not define a way and fallback onto
+> > > > > libaudit. Convert all architectures to use a standard syscall header
+> > > > > generation script and allow each architecture to override the syscall
+> > > > > table to use if they do not use the generic table.
+> > > > >
+> > > > > As a result of these changes, no architecture will require libaudit, and
+> > > > > so the fallback case of using libaudit is removed by this series.
+> > > > >
+> > > > > Testing:
+> > > > >
+> > > > > I have tested that the syscall mappings of id to name generation works
+> > > > > as expected for every architecture, but I have only validated that perf
+> > > > > trace compiles and runs as expected on riscv, arm64, and x86_64.
+> > > > >
+> > > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > > >
+> > > > Thanks for doing this, I had plans to do this myself, but hadn't
+> > > > completed that bit so far. I'm travelling at the moment, so I'm
+> > > > not sure I have time to look at it in enough detail this week.
+> > > >
+> > > > One problem I ran into doing this previously was the incompatible
+> > > > format of the tables for x86 and s390, which have conflicting
+> > > > interpretations of what the '-' character means. It's possible
+> > > > that this is only really relevant for the in-kernel table,
+> > > > not the version in tools.
+> > > >
+> > >
+> > > I don't think that is an issue for this usecase because the only
+> > > information that is taken from the syscall table is the number and the
+> > > name of the syscall. '-' doesn't appear in either of these columns!
+> > 
+> > This is cool stuff. An area that may not be immediately apparent for
+> > improvement is that the x86-64 build only has access to the 64-bit
+> > syscall table. Perhaps all the syscall tables should always be built
+> > and then at runtime the architecture of the perf.data file, etc. used
+> > to choose the appropriate one. The cleanup to add an ELF host #define
+> > could help with this:
+> > https://lore.kernel.org/linux-perf-users/20241017002520.59124-1-irogers@google.com/
 > 
-> Thanks a lot.
+> Oh that's a great idea! I think these changes will make it more seamless
+> to make that a reality.
 > 
-> # ./test_progs -t smc
-> #27/1    bpf_smc/load:OK
-> #27      bpf_smc:OK
-> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+> > 
+> > Ultimately I'd like to see less arch code as it inherently makes cross
+> > platform worker harder. That doesn't impact this work which I'm happy
+> > to review.
 > 
-> The above command is based on several kernel modules. After these dependent kernel modules are 
-> loaded, then can run the above command successfully.
+> Yeah I agree. Reducing arch code was the motivation for this change.
+> There was the issue a couple weeks ago that caused all architectures
+> that used libaudit to break from commit 7a2fb5619cc1fb53 ("perf trace:
+> Fix iteration of syscall ids in syscalltbl->entries"), so this change
+> will eliminate that source of difference between architectures.
 > 
-> Zhu Yanjun
+> - Charlie
 > 
+> > 
+> > Thanks,
+> > Ian
 
-Hi, Yanjun
+Let me know if you have any feedback on this series!
 
-This is indeed a problem, a better way may be to create a separate testing directory for SMC, and we 
-are trying to do this.
+- Charlie
 
-Best wishes,
-D. Wythe
-
->>
->> Results shows:
->> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
->>
->> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->> ---
->>   .../selftests/bpf/prog_tests/test_bpf_smc.c        | 21 +++++++++++
->>   tools/testing/selftests/bpf/progs/bpf_smc.c        | 44 ++++++++++++++++++++++
->>   2 files changed, 65 insertions(+)
->>   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c 
->> b/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
->> new file mode 100644
->> index 00000000..2299853
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
->> @@ -0,0 +1,21 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +#include <test_progs.h>
->> +
->> +#include "bpf_smc.skel.h"
->> +
->> +static void load(void)
->> +{
->> +    struct bpf_smc *skel;
->> +
->> +    skel = bpf_smc__open_and_load();
->> +    if (!ASSERT_OK_PTR(skel, "bpf_smc__open_and_load"))
->> +        return;
->> +
->> +    bpf_smc__destroy(skel);
->> +}
->> +
->> +void test_bpf_smc(void)
->> +{
->> +    if (test__start_subtest("load"))
->> +        load();
->> +}
->> diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c 
->> b/tools/testing/selftests/bpf/progs/bpf_smc.c
->> new file mode 100644
->> index 00000000..ebff477
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
->> @@ -0,0 +1,44 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +
->> +#include "vmlinux.h"
->> +
->> +#include <bpf/bpf_helpers.h>
->> +#include <bpf/bpf_tracing.h>
->> +
->> +char _license[] SEC("license") = "GPL";
->> +
->> +struct smc_bpf_ops_ctx {
->> +    struct {
->> +        struct tcp_sock *tp;
->> +    } set_option;
->> +    struct {
->> +        const struct tcp_sock *tp;
->> +        struct inet_request_sock *ireq;
->> +        int smc_ok;
->> +    } set_option_cond;
->> +};
->> +
->> +struct smc_bpf_ops {
->> +    void (*set_option)(struct smc_bpf_ops_ctx *ctx);
->> +    void (*set_option_cond)(struct smc_bpf_ops_ctx *ctx);
->> +};
->> +
->> +SEC("struct_ops/bpf_smc_set_tcp_option_cond")
->> +void BPF_PROG(bpf_smc_set_tcp_option_cond, struct smc_bpf_ops_ctx *arg)
->> +{
->> +    arg->set_option_cond.smc_ok = 1;
->> +}
->> +
->> +SEC("struct_ops/bpf_smc_set_tcp_option")
->> +void BPF_PROG(bpf_smc_set_tcp_option, struct smc_bpf_ops_ctx *arg)
->> +{
->> +    struct tcp_sock *tp = arg->set_option.tp;
->> +
->> +    tp->syn_smc = 1;
->> +}
->> +
->> +SEC(".struct_ops.link")
->> +struct smc_bpf_ops sample_smc_bpf_ops = {
->> +    .set_option         = (void *) bpf_smc_set_tcp_option,
->> +    .set_option_cond    = (void *) bpf_smc_set_tcp_option_cond,
->> +};
 
