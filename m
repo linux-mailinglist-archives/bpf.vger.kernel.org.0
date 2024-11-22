@@ -1,134 +1,194 @@
-Return-Path: <bpf+bounces-45430-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45431-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 868BA9D5676
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 00:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F4E69D5680
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 01:00:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAC6B282CFF
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2024 23:56:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14077282A28
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 00:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2243D1D90BE;
-	Thu, 21 Nov 2024 23:56:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44BAA15D5A1;
+	Fri, 22 Nov 2024 00:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="R3PZmztI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cR21Rhmn"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 430161C9DC9
-	for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 23:55:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FCC322075;
+	Fri, 22 Nov 2024 00:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732233361; cv=none; b=t7Rh5SmADXEOH0L7u9AJ24ulaBri+IkUkcW5RfXenxQRYPK5cTUR0LKRZrBb1QYsKaICxxH/BPQFjaZ5vcYX+XMljs8BasFgRKTo5Cm0vmPiHYfnAsRfpquncgeEFEKUXF8bRAtdJWThncOTsCCd0a/JE8Myzi6D3tpmRkEiVuw=
+	t=1732233627; cv=none; b=Uo8rPvzUkvA5w5geeU154PVf7+41StLtztwFhvuntz4cPFU4l5x0nPyc9rNbtnxtWDxxTCGRu2wTa8UrQNCblmTVLa3hEuSECawO7DEBm6Mll2b6eYeClbHfafilBPkzcllwNVEk+AF1VebzR8iah4QbeU7aV8jFsL0BdkyGL5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732233361; c=relaxed/simple;
-	bh=92B4Hjsqn8AMytofmY2y420WpgRZrJ9J9GxhG+UQ688=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fIc/4jub7KWDCSieTtx5bUq2CqhSBVqCqWQrg3kUpnghdf6Er8u44Y/PhWypiBBaWBBaXOU/F2DbZSPQGN2ntPoZqU2jcTrPNshR7caapjTngZIy1UzQlX1RP1BSzTH3auv4LJspCwox5U9Xt4ZSm11C/btNKZrHVHcQzmD8/iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=R3PZmztI; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <14f3d0a2-04bd-4843-8ac3-51e4ca65bae2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1732233356;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nIWyi37SiF76vM97yalqXgfo+AVSafmFww7OlNbRJo4=;
-	b=R3PZmztIcd4OLGuXYt876dCXN7x7HsG1HjUOzpG/b8nWEH/RIUIrJrb/PtzuyHcu/XyXLj
-	j0HfXg1KqlPUGVc9vLCw2G3oVYCbqQx95Qm4rrndfLG60wiVH5VdUG/LUmKqahBr7HXp9o
-	SjMaYHJjygkGWnQ2F1s5/AZSSq/r3sE=
-Date: Thu, 21 Nov 2024 15:55:46 -0800
+	s=arc-20240116; t=1732233627; c=relaxed/simple;
+	bh=3cWKZugZJxDOhUapugdR2abukBsPxFZ5p124n5cXN5k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RXnMz6S+VvBbl9o5WByaB5fEdrkz6ciySSlHbXDi6l+skA0uE2sn1VIdRzcmL7ZqLe9nH/G1OS+riPdcyJpcaAt5Ktu41zjYJwI26YgucKKF47y85EWsI8AsdAwMXxPUtcayT8uWHTESlTbtUJOq6EgnZ0439RvsJdrDY52z6ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cR21Rhmn; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2ea78d164b3so1303196a91.2;
+        Thu, 21 Nov 2024 16:00:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732233625; x=1732838425; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WlaaiUw1+qbimgNp5by8wuj8PuQzxZYCtB1SgwFkKMA=;
+        b=cR21Rhmn5ULzK+PNcFv3LNEjc+LUEpiQumfQ/flEpxvGXFfms3m6R7ugoyKf3W9Q46
+         Xs7oe4h9y2OMVCwJXUR5oCZx3KlZHT2fQfkyZdcZlDBnE4ADBuvQyGf4FaOZFJhBIoJd
+         BPmZr7kWUyzz+LmWj7aPx189AH7ri1uAF/QGnibfIj15b+FB4M2Kqxx8HXsiDxio5kaW
+         SmQDqyrMEVspBd2lrdxWJ3yJg+moFYt7dolzXWtwiGgJ/7LXd89RkyvIoj8tAkQg/IZB
+         ueuvupiYxdkB4JO5fHPVx6xgFgXCUNLfb2bNZQc4oukltAjjzkGvzpTl9Dl5lSwuIBTt
+         v4zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732233625; x=1732838425;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WlaaiUw1+qbimgNp5by8wuj8PuQzxZYCtB1SgwFkKMA=;
+        b=l5UqW0beMKVrBW4GPUDkTz5tAB0zxgUi3OmxDcKl/1h2Vl2Ftq/rea/FGspzLb6hTM
+         Mu9tMijJ/TK30vyMnWDma/dWo9YLtZtiEOSHqQY7AeuXMIof18S1H5OEWFlzAMBk0uI/
+         CsbwjrU/7BbigE7o5TB6nWcFXixN6nwy+5LELn22cQyQaMY7HYiFX7gj/e4/HCyZTRmM
+         ruEEaYgonqgWHWOtvReMt8EC00h8sBwmUKPT3pmWW8sfRiinnLNgo0aXktn5VXw0kwGL
+         cCgZGDjLCB81+kiybtJDSOpBQ6kktV9YZBHnh+l+cx2ryAqecWHw9/jVMoaLV6tRPpxG
+         mzjA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqWw8qlLOo1WCKXoJnSSBCcPudbD89onS9PqHad3MVGrPM3h/uCkkljJeXISZoLxSq4WGfL6TQ4T/o1XV97v5D@vger.kernel.org, AJvYcCVhOLzKk3jhl3MYiHlZV9s+b2OdIjH3RaGX2GUCs5+ZJ+79pquE34uT7tcxXRM151wcbtW9cRCirVvSbkQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yziwy4xs9E1Jn4DMLAQyxo7o3VL5uscuzWr7recJz5cM4kpeRtI
+	nCQJZ5eZOb5RPNH5fDZPj8JWPmbNUE3RoaQNSckgL9Ol9V78psK6zOmleAqxbdgH5FtCzTg4ifj
+	4FNKu7x83Ro0mnfHOuXxvcrG9JB47Cg==
+X-Gm-Gg: ASbGncsysIyZQMewuW+MsZlz4dPekhkC5nH4Mbpi/mOo+KJfh+njVwZh+gDR480j46w
+	UC7ABOqCVw45d8sXe3z+xpzFuQm1rLf3CWOSbDNMx5PPO/Hg=
+X-Google-Smtp-Source: AGHT+IHXmGhqDIKiWF0toIfiSYwGNPcAD0woUlH3kLTSEh/GVmAZU3LwJBZT1h8h9Gt+9ZL2zAh5HrYPGyUm0VNNZxA=
+X-Received: by 2002:a17:90b:4c41:b0:2ea:9cd6:985d with SMTP id
+ 98e67ed59e1d1-2eb0e8881d8mr957449a91.35.1732233625537; Thu, 21 Nov 2024
+ 16:00:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v8 1/4] bpf: add bpf_get_cpu_time_counter kfunc
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>
-Cc: Vadim Fedorenko <vadfed@meta.com>, Borislav Petkov <bp@alien8.de>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Thomas Gleixner <tglx@linutronix.de>, Yonghong Song
- <yonghong.song@linux.dev>, Mykola Lysenko <mykolal@fb.com>, x86@kernel.org,
- bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>
-References: <20241121000814.3821326-1-vadfed@meta.com>
- <20241121000814.3821326-2-vadfed@meta.com>
- <20241121113202.GG24774@noisy.programming.kicks-ass.net>
- <482d32d5-2caa-4759-b3b1-765678ac42a2@linux.dev>
- <20241121153334.GN39245@noisy.programming.kicks-ass.net>
- <CAEf4BzZtph98_qR1CFpj5Fh_wVg=XaZQ75G44dS-oigLExUHSw@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <CAEf4BzZtph98_qR1CFpj5Fh_wVg=XaZQ75G44dS-oigLExUHSw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20241104050007.13812-1-skb99@linux.ibm.com> <20241104050007.13812-3-skb99@linux.ibm.com>
+ <CAEf4BzZ9Bz8a_hY-jDkqaYg6Phi9bjvoxbBeVZqcgjYXg4a-mA@mail.gmail.com> <Zz33lM0rTJBZpaJR@linux.ibm.com>
+In-Reply-To: <Zz33lM0rTJBZpaJR@linux.ibm.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 21 Nov 2024 16:00:13 -0800
+Message-ID: <CAEf4Bzbek6CYbx5Atz_xwwx5J3gC1ELdVmW-kFrrR=CWNLMyBA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] libbpf: Remove powerpc prefix from syscall function names
+To: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, ast@kernel.org, hbathini@linux.ibm.com, 
+	andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, mykolal@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 21/11/2024 15:51, Andrii Nakryiko wrote:
-> On Thu, Nov 21, 2024 at 7:33 AM Peter Zijlstra <peterz@infradead.org> wrote:
->>
->> On Thu, Nov 21, 2024 at 06:35:39AM -0800, Vadim Fedorenko wrote:
->>> On 21/11/2024 03:32, Peter Zijlstra wrote:
->>>> On Wed, Nov 20, 2024 at 04:08:11PM -0800, Vadim Fedorenko wrote:
->>>>> New kfunc to return ARCH-specific timecounter. For x86 BPF JIT converts
->>>>> it into rdtsc ordered call. Other architectures will get JIT
->>>>> implementation too if supported. The fallback is to
->>>>> __arch_get_hw_counter().
->>>>
->>>> Still not a single word as to *WHY* and what you're going to do with
->>>> those values.
->>>>
->>>> NAK
->>>
->>> Did you have a chance to read cover letter?
->>
->> Cover letter is disposable and not retained when applying patches, as
->> such I rarely read it.
-> 
-> It's not disposable for BPF trees. We preserve them as part of the
-> merge commit for the patch set, e.g. [0]. Both bpf and netdev
-> maintainers use a set of scripts to apply patches (pw-apply,
-> specifically), that does all that automatically.
+On Wed, Nov 20, 2024 at 6:52=E2=80=AFAM Saket Kumar Bhaskar <skb99@linux.ib=
+m.com> wrote:
+>
+> On Fri, Nov 08, 2024 at 10:43:54AM -0800, Andrii Nakryiko wrote:
+> > On Sun, Nov 3, 2024 at 9:00=E2=80=AFPM Saket Kumar Bhaskar <skb99@linux=
+.ibm.com> wrote:
+> > >
+> > > Since commit 94746890202cf ("powerpc: Don't add __powerpc_ prefix to
+> > > syscall entry points") drops _powerpc prefix to syscall entry points,
+> > > even though powerpc now supports syscall wrapper, so /proc/kallsyms
+> > > have symbols for syscall entry without powerpc prefix(sys_*).
+> > >
+> > > For this reason, arch specific prefix for syscall functions in powerp=
+c
+> > > is dropped.
+> > >
+> > > Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c | 12 +++++++++---
+> > >  1 file changed, 9 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index 219facd0e66e..3a370fa37d8a 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -11110,9 +11110,7 @@ static const char *arch_specific_syscall_pfx(=
+void)
+> > >  #elif defined(__riscv)
+> > >         return "riscv";
+> > >  #elif defined(__powerpc__)
+> > > -       return "powerpc";
+> > > -#elif defined(__powerpc64__)
+> > > -       return "powerpc64";
+> > > +       return "";
+> > >  #else
+> > >         return NULL;
+> > >  #endif
+> > > @@ -11127,7 +11125,11 @@ int probe_kern_syscall_wrapper(int token_fd)
+> > >         if (!ksys_pfx)
+> > >                 return 0;
+> > >
+> > > +#if defined(__powerpc__)
+> > > +       snprintf(syscall_name, sizeof(syscall_name), "sys_bpf");
+> > > +#else
+> > >         snprintf(syscall_name, sizeof(syscall_name), "__%s_sys_bpf", =
+ksys_pfx);
+> > > +#endif
+> >
+> > The problem is that on older versions of kernel it will have this
+> > prefix, while on newer ones it won't. So to not break anything on old
+> > kernels, we'd need to do feature detection and pick whether to use
+> > prefix or not, right?
+> >
+> > So it seems like this change needs a bit more work.
+> >
+> > pw-bot: cr
+> >
+> Hi Andrii,
+>
+> IMO since both the patches 7e92e01b7245(powerpc: Provide syscall wrapper)
+> and 94746890202cf(powerpc: Don't add __powerpc_ prefix to syscall entry p=
+oints)
+> went into the same kernel version v6.1-rc1, there won't me much kernel
+> versions that has only one of these patches.
+>
+> Also, to test more I tried this patch with ARCH_HAS_SYSCALL_WRAPPER disab=
+led,
+> and it the test passed in this case too.
+>
 
-Yeah, was going to write the same...
+Keep in mind that libbpf is supposed to work across many kernel
+versions. So as long as there are powerpc (old) kernels that do use
+arch-specific prefix, we need to detect them and supply prefix when
+attaching ksyscall programs.
 
-> Vadim,
-> 
-> Please do another careful pass over commit messages and cover letter.
-> I'd suggest moving the version history into cover letter (see other
-> multi-version cover letter for an example). You can use an example
-> from your BPF selftests as an intended use case (measuring the
-> duration of some BPF piece of logic), and I'd also mention that this
-> is useful to measure the duration of two related BPF events. E.g.,
-> uprobe entry and exit, of kprobe entry/exit. kprobe.session and
-> uprobe.session programs are especially well suited for that, as they
-> allow to capture initial timestamp, store it in session cookie, then
-> retrieve it in return probe and calculate the difference.
-
-Sure, I'm on it already.
-
-> 
-> Please also update all the "cycles" references to "time counter",
-> stuff like that.
-
-Yeah, I've done it already in my local branch.
-
-Thanks.
-
-> 
-> pw-bot: cr
-> 
-> 
->    [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?h=bpf-next-6.13&id=379d5ee624eda6a897d9e1f7f88c68ea482bd5fa
->    [1] https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/pw.git/
-
-
+> Thanks,
+> Saket
+> > >
+> > >         if (determine_kprobe_perf_type() >=3D 0) {
+> > >                 int pfd;
+> > > @@ -11272,8 +11274,12 @@ struct bpf_link *bpf_program__attach_ksyscal=
+l(const struct bpf_program *prog,
+> > >                  * compiler does not know that we have an explicit co=
+nditional
+> > >                  * as well.
+> > >                  */
+> > > +#if defined(__powerpc__)
+> > > +               snprintf(func_name, sizeof(func_name), "sys_%s", sysc=
+all_name);
+> > > +#else
+> > >                 snprintf(func_name, sizeof(func_name), "__%s_sys_%s",
+> > >                          arch_specific_syscall_pfx() ? : "", syscall_=
+name);
+> > > +#endif
+> > >         } else {
+> > >                 snprintf(func_name, sizeof(func_name), "__se_sys_%s",=
+ syscall_name);
+> > >         }
+> > > --
+> > > 2.43.5
+> > >
 
