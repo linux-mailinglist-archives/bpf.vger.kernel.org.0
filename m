@@ -1,231 +1,128 @@
-Return-Path: <bpf+bounces-45449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45450-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35DAB9D59B8
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 08:02:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A4C79D5A1D
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 08:40:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AADF01F2199D
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 07:02:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF6CBB220CB
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 07:40:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D575D15C13E;
-	Fri, 22 Nov 2024 07:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ebm+Cz3u"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925FE1741C6;
+	Fri, 22 Nov 2024 07:39:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44D9230999;
-	Fri, 22 Nov 2024 07:02:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D56C6156C40;
+	Fri, 22 Nov 2024 07:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732258961; cv=none; b=JQF/9dX3gyKbxBdcHkEFqUkVbwG3NLRBOnbSWfLKECN8sl00Crw3tSWBygNAbutdy+7g3t13JoZKpm6o3655Fne+5nFS/E3iKpRSmPqLn0524kivzlSFCZCoC3y5xjSTNwAxczbXLIUaJNm0JUrJAKfxC35X6PhMG9OUz2oZj6Y=
+	t=1732261196; cv=none; b=pHVTwNHNUYcmLf6pNCwfesjGtRovzm6uKLsHafMQSJdLINBKQWYY1K2Ojq2iWGU3SJRk1uvbVwgCbV6fi6cXu0I3Zt8qyp5mvwutKyEeEivN1yFOAziZwRrTy4RuOk2f7OC6JSHD7rra+bFQeXVaDptyAWD+L2l09oVINbX4wew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732258961; c=relaxed/simple;
-	bh=BCzQavMbTLZovY7ZiCYU9OQQrG1Bbg+lSGciM7uD4oM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lnybeEqfGWem2C0efVUvtX1ahtM6BJuqrz58kIt+gYj7SLa061rVFJrRhaGNS6/nlF/X+lYwAw3crsi+SyQWMpd9o+xE+y2cwaKVsr9sAoNIp6opNsM+Izu/Ra6QBhxWfnfZFkcz90tRBqIc3mrRJuwk2vZpv5+DD+cMi7PGCMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ebm+Cz3u; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7246c8c9b1cso1459897b3a.3;
-        Thu, 21 Nov 2024 23:02:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732258959; x=1732863759; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LhhSvv5L8cYQpEtuyqj4yMfGtjtEeZ7T3AiRgYyYgoE=;
-        b=Ebm+Cz3uXfwOMW+xbI1CqPAnHlhbYNQzA0L4pr7ZqfF+IwhBT2sKIDDyJ1FNGwaS2u
-         A61xp+RD3wlV3A8gt5+HOsiHbgs6v6gsuaJwuKR+kDbSJSOWU9jyD9f4F5AVJoorBKJR
-         mgeiyHYhsOrMq851p8jIHw1RjKWTb6zx47rsnROnl9eZX3mlNvqGWfmzrHVR+jTOkfFq
-         xAv3VBUxD+386V6IOISvX9b2Mtim3l86gbSr0iCqL0yJnLyWVvHtZUP8CLXpINqNuDNe
-         nLB9+TXdhTi5QtejNRNOBJxezRTdXq7E+bGsZrYbgV+Ws6T6nvnGQX7BSj1CP5iCq5So
-         EbjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732258959; x=1732863759;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LhhSvv5L8cYQpEtuyqj4yMfGtjtEeZ7T3AiRgYyYgoE=;
-        b=chO4+OmS8oSi2o1zY1EVmmYoE41leS0G6CLGjzZTFBpzV33xc0H/goijkgJwpfQ2K6
-         UUPBTV9Cexf2eA2+zVAjDjQdbi5TuctMY4ZJPJhHwnV1o2qNr8zwoHQncQX/xtIbr6i0
-         xZYnnSwWg3kbkErLwB9GhTZa+uKtfJ0mflLc9IvflOYd3hdglVraZJWhX7k6EnObsoPr
-         SZQ2V18p2n2miyuZaRXsj3fBA1gRzuuIMlObrGdNG7EadCCIJ2hkqCH7aR7NJM3c1DJO
-         7HoxDdnFU6EAwlsxx88pOFJ8AZnW5A8Da4gjJFV4oUqfLcO2IBADgblgEnPw6oysBW7G
-         mMcA==
-X-Gm-Message-State: AOJu0YzCPmVNv6OByDr8w6o8fpigz3Zu6t1HN9/oimn4fvVLrSBwUABl
-	stq2G5b5WD1CIEXB3XsdN9lkQob2bm73i2LNM8yuiVdQz/ZJqvR9T8Pacg==
-X-Gm-Gg: ASbGncsUXeYlfjNTR8fobLKeHyhfBIc3KWMnnNjya9xhvN3mewiwZ9hlksn3vHWUB9j
-	cYCfkmXwODQEDbYvYbR9yUdpF5LoaSIrhn+N7vF+DeghRlGbNEl6KgvxYEMe4HLtlkOBfpHi8/d
-	q94WX3utEHjWtrQDj3YnyymsCM+xiC59azpDsA6bpHoRNFFfk3XVLgulhugWUlAUEYC2Qrjztpc
-	7PFECw4BsvMc4lJu62XFroJFS5H/3P+fPsZ6rsaoxWgUQ==
-X-Google-Smtp-Source: AGHT+IEk/H/JS2CEAhv7Q1icOOTs1AZvoyydLZF3P5nUuQqQgXSspCY6KbzAcjtw3e9LO0om2hKSrg==
-X-Received: by 2002:a05:6a00:9282:b0:71e:cb5:2219 with SMTP id d2e1a72fcca58-724df63c337mr2207090b3a.9.1732258958849;
-        Thu, 21 Nov 2024 23:02:38 -0800 (PST)
-Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fbcc219426sm929720a12.40.2024.11.21.23.02.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Nov 2024 23:02:38 -0800 (PST)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: dwarves@vger.kernel.org,
-	arnaldo.melo@gmail.com
-Cc: bpf@vger.kernel.org,
-	kernel-team@fb.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	yonghong.song@linux.dev,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Daniel Xu <dxu@dxuuu.xyz>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Vadim Fedorenko <vadfed@meta.com>
-Subject: [PATCH dwarves v1] btf_encoder: handle .BTF_ids section endianness when cross-compiling
-Date: Thu, 21 Nov 2024 23:02:18 -0800
-Message-ID: <20241122070218.3832680-1-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.47.0
+	s=arc-20240116; t=1732261196; c=relaxed/simple;
+	bh=JIco9AWeLSoaR1KYuj+BvTtVCXXIWjicWNQO08uVO7I=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=kT/Nwm+4tZMmG0ZxvD/fbAJXxK9/aYMLcYlLYvYpH2gvlknjcIoGOb1/TIH5RIvg7U+Iw8D0lv+zrlYrQk6s3cLweZBzYwMFHwhJ8zHYfXDuVKR9XDVUoIXLe0VU0qeA1jFHnlLRlbq80kRicP9uSiJefxe2b6CTDD3ntYMudEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8CxSOFGNUBnP9xFAA--.5272S3;
+	Fri, 22 Nov 2024 15:39:50 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+	by front1 (Coremail) with SMTP id qMiowMDx+0ZFNUBnH8liAA--.35062S3;
+	Fri, 22 Nov 2024 15:39:50 +0800 (CST)
+Subject: Re: [PATCH] LoongArch: BPF: Sign-extend return values
+To: John Fastabend <john.fastabend@gmail.com>,
+ Huacai Chen <chenhuacai@kernel.org>
+References: <20241119065230.19157-1-yangtiezhu@loongson.cn>
+ <673fd322ce3ac_1118208b3@john.notmuch>
+Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <4f6c74e0-dd22-8460-96fa-f408291a3ef8@loongson.cn>
+Date: Fri, 22 Nov 2024 15:39:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <673fd322ce3ac_1118208b3@john.notmuch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:qMiowMDx+0ZFNUBnH8liAA--.35062S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7KF17Zr45CrWDCrWxAw1rKrX_yoW8Zr1fpr
+	9xAa9IyFWDW34jq3ZFy3y5Wr18KrsxWFW3Wa4YgryUXFnIva48Xw18Kws8XFZYvw48Wa4I
+	qr90y343Aa1DJacCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
+	67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+	AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
+	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw
+	1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
+	xVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
+	4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jO
+	uc_UUUUU=
 
-btf_encoder__tag_kfuncs() reads .BTF_ids section to identify a set of
-kfuncs present in the ELF being processed. This section consists of
-records of the following shape:
+On 11/22/2024 08:41 AM, John Fastabend wrote:
+> Tiezhu Yang wrote:
+>> (1) Description of Problem:
+>>
+>> When testing BPF JIT with the latest compiler toolchains on LoongArch,
+>> there exist some strange failed test cases, dmesg shows something like
+>> this:
+>>
+>>   # dmesg -t | grep FAIL | head -1
+>>   ... ret -3 != -3 (0xfffffffd != 0xfffffffd)FAIL ...
 
-  struct btf_id_and_flag {
-      uint32_t id;
-      uint32_t flags;
-  };
+...
 
-When endianness of binary operated by pahole differs from the
-host endianness these fields require byte swap before using.
+>>
+>> (5) Final Solution:
+>>
+>> Keep a5 zero-extended, but explicitly sign-extend a0 (which is used
+>> outside BPF land). Because libbpf currently defines the return value
+>> of an ebpf program as a 32-bit unsigned integer, just use addi.w to
+>> extend bit 31 into bits 63 through 32 of a5 to a0. This is similar
+>> with commit 2f1b0d3d7331 ("riscv, bpf: Sign-extend return values").
+>>
+>> Fixes: 5dc615520c4d ("LoongArch: Add BPF JIT support")
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>  arch/loongarch/net/bpf_jit.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+>> index 7dbefd4ba210..dd350cba1252 100644
+>> --- a/arch/loongarch/net/bpf_jit.c
+>> +++ b/arch/loongarch/net/bpf_jit.c
+>> @@ -179,7 +179,7 @@ static void __build_epilogue(struct jit_ctx *ctx, bool is_tail_call)
+>>
+>>  	if (!is_tail_call) {
+>>  		/* Set return value */
+>> -		move_reg(ctx, LOONGARCH_GPR_A0, regmap[BPF_REG_0]);
+>> +		emit_insn(ctx, addiw, LOONGARCH_GPR_A0, regmap[BPF_REG_0], 0);
+>
+> Not overly familiar with this JIT but just to check this wont be used
+> for BPF 2 BPF calls correct?
 
-At the moment such byte swap does not happen and kfuncs are not marked
-with decl tags when e.g. s390 kernel is compiled on x86.
-To reproduces the bug:
-- follow instructions from [0] to build an s390 vmlinux;
-- execute:
-  pahole --btf_features_strict=decl_tag_kfuncs,decl_tag \
-         --btf_encode_detached=test.btf vmlinux
-- observe no kfuncs generated:
-  bpftool btf dump test.btf format c | grep __ksym
+I am not sure I understand your comment correctly, but with and without
+this patch, the LoongArch JIT uses a5 as a dedicated register for BPF
+return values, a5 is kept as zero-extended for bpf2bpf, just make a0
+(which is used outside BPF land) as sign-extend, all of the test cases
+in test_bpf.ko passed with "echo 1 > /proc/sys/net/core/bpf_jit_enable".
 
-This commit fixes the issue by adding an endianness conversion step
-for .BTF_ids section data before main processing step, modifying the
-Elf_Data object in-place.
-The choice is such in order to:
-- minimize changes;
-- keep using Elf_Data, as it provides fields {d_size,d_off} used
-  by kfunc processing routines;
-- avoid sprinkling bswap_32 at each 'struct btf_id_and_flag' field
-  access in fear of forgetting to add new ones when code is modified.
-
-[0] https://docs.kernel.org/bpf/s390.html
-
-Cc: Alan Maguire <alan.maguire@oracle.com>
-Cc: Daniel Xu <dxu@dxuuu.xyz>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Vadim Fedorenko <vadfed@meta.com>
-Fixes: 72e88f29c6f7 ("pahole: Inject kfunc decl tags into BTF")
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- btf_encoder.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- lib/bpf       |  2 +-
- 2 files changed, 43 insertions(+), 1 deletion(-)
-
-diff --git a/btf_encoder.c b/btf_encoder.c
-index e1adddf..3bdb73b 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -33,6 +33,7 @@
- #include <stdint.h>
- #include <search.h> /* for tsearch(), tfind() and tdestroy() */
- #include <pthread.h>
-+#include <byteswap.h>
- 
- #define BTF_IDS_SECTION		".BTF_ids"
- #define BTF_ID_FUNC_PFX		"__BTF_ID__func__"
-@@ -1847,11 +1848,47 @@ static int btf_encoder__tag_kfunc(struct btf_encoder *encoder, struct gobuffer *
- 	return 0;
- }
- 
-+/* If byte order of 'elf' differs from current byte order, convert the data->d_buf.
-+ * ELF file is opened in a readonly mode, so data->d_buf cannot be modified in place.
-+ * Instead, allocate a new buffer if modification is necessary.
-+ */
-+static int convert_idlist_endianness(Elf *elf, Elf_Data *data, bool *copied)
-+{
-+	int byteorder, i;
-+	char *elf_ident;
-+	uint32_t *tmp;
-+
-+	*copied = false;
-+	elf_ident = elf_getident(elf, NULL);
-+	if (elf_ident == NULL) {
-+		fprintf(stderr, "Cannot get ELF identification from header\n");
-+		return -EINVAL;
-+	}
-+	byteorder = elf_ident[EI_DATA];
-+	if ((BYTE_ORDER == LITTLE_ENDIAN && byteorder == ELFDATA2LSB)
-+	    || (BYTE_ORDER == BIG_ENDIAN && byteorder == ELFDATA2MSB))
-+		return 0;
-+	tmp = malloc(data->d_size);
-+	if (tmp == NULL) {
-+		fprintf(stderr, "Cannot allocate %lu bytes of memory\n", data->d_size);
-+		return -ENOMEM;
-+	}
-+	memcpy(tmp, data->d_buf, data->d_size);
-+	data->d_buf = tmp;
-+	*copied = true;
-+
-+	/* .BTF_ids sections consist of u32 objects */
-+	for (i = 0; i < data->d_size / sizeof(uint32_t); i++)
-+		tmp[i] = bswap_32(tmp[i]);
-+	return 0;
-+}
-+
- static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
- {
- 	const char *filename = encoder->source_filename;
- 	struct gobuffer btf_kfunc_ranges = {};
- 	struct gobuffer btf_funcs = {};
-+	bool free_idlist = false;
- 	Elf_Data *symbols = NULL;
- 	Elf_Data *idlist = NULL;
- 	Elf_Scn *symscn = NULL;
-@@ -1919,6 +1956,9 @@ static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
- 			idlist_shndx = i;
- 			idlist_addr = shdr.sh_addr;
- 			idlist = data;
-+			err = convert_idlist_endianness(elf, idlist, &free_idlist);
-+			if (err < 0)
-+				goto out;
- 		}
- 	}
- 
-@@ -2031,6 +2071,8 @@ static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
- out:
- 	__gobuffer__delete(&btf_funcs);
- 	__gobuffer__delete(&btf_kfunc_ranges);
-+	if (free_idlist)
-+		free(idlist->d_buf);
- 	if (elf)
- 		elf_end(elf);
- 	if (fd != -1)
-diff --git a/lib/bpf b/lib/bpf
-index 09b9e83..caa17bd 160000
---- a/lib/bpf
-+++ b/lib/bpf
-@@ -1 +1 @@
--Subproject commit 09b9e83102eb8ab9e540d36b4559c55f3bcdb95d
-+Subproject commit caa17bdcbfc58e68eaf4d017c058e6577606bf56
--- 
-2.47.0
+Thanks,
+Tiezhu
 
 
