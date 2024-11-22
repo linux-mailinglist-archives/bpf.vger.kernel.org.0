@@ -1,191 +1,183 @@
-Return-Path: <bpf+bounces-45435-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45436-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0170C9D56C2
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 01:33:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB54E9D56CD
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 01:41:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CC82B217A8
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 00:33:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 526391F22A87
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 00:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF13469D;
-	Fri, 22 Nov 2024 00:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB7E86FC5;
+	Fri, 22 Nov 2024 00:41:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fg6XUcd6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MlbV2ERH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D011853
-	for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 00:32:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD814A0C;
+	Fri, 22 Nov 2024 00:41:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732235576; cv=none; b=VwcFh/QtUD0kOtclVT/8LcqAeSmgEWJdlufLsSKAGdaQKxlWWmbM+Rjm91N2/WvXoAWhWYpXJ3AkxhJkAj245H9zpLgFck9B9uTheSFornHuu65aIw9+HHI/vi8XJ+lWKKuOpGcGZJfn+qlOwQV03w5TYcakMQW3H1ZLStNIzN0=
+	t=1732236071; cv=none; b=sRduoQMoPBMMRF7glFRT0cg0MWuM7xRLWJ0XH3AUk8FV8hU25cy2tp/VYWqoKF+qlhWaQ7UG3LSbENDOMoeIaLulcf4gH1j929RGAQfbsfMWYIXE5izslmL8cbohJhNaAokWBWgdcYSwy2LRjIioll8p2aELPE7ASnqntJ1wIiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732235576; c=relaxed/simple;
-	bh=ElSsttoFn2tGSNq82VTCshnhAkd6hfWiXA+i8XzFziM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OcTuwbiWEFNJK/Fq06L8ytvVOLZD78w74w51MO5wyfYH3uVG07abaurMTdqSZEj9Ut+BUnGemII/Bz31jwS3+hiC0i/0Ny6hgI/875SrdX/zEo5jrDoJgLVrLhHDtthC1wU2JADV9fO2TOy5sLyJQhbk9X6MoMKwJ/iYCIrVkbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fg6XUcd6; arc=none smtp.client-ip=209.85.128.52
+	s=arc-20240116; t=1732236071; c=relaxed/simple;
+	bh=z9dF6Emhtspyw3VwGifMj3kprIqiID/ABO92TYKcqwM=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=CRpekzuIf5q5fnZuNz32FDb321ZEk5NPqm9Vxh4u8yyxriK9fSEP73iZdR+sKvexMyD4xwmtVRXQLVWX6VHPNyh/jRabwVGBHaD5W5EzkMFEYyGOJLxJ1zxCrv10sRl/OQgTn6Yv5vKWSvIHsaGzaD8e9dvS/+oDFNPzv9IQB2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MlbV2ERH; arc=none smtp.client-ip=209.85.166.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-43193678216so13931345e9.0
-        for <bpf@vger.kernel.org>; Thu, 21 Nov 2024 16:32:54 -0800 (PST)
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-83a9cd37a11so58839639f.3;
+        Thu, 21 Nov 2024 16:41:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732235573; x=1732840373; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1732236069; x=1732840869; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RL1lgmMyWO+nl8XA8JUiAgLOBzU7S7bZemUo2gpmwro=;
-        b=fg6XUcd6aOVLel6zZVHI1q+EPy0uAH2kMDMeJ3YiqM2r4YrzMAObIb5dLSf9cl40i1
-         UXkUpJp1heZ4eHhgsvLRNmIlGsjR7iFunBeLihgILvc/l2iTb8R4Fc0p94xt+HDuw4i5
-         2+b6Yrw0ps9U7rYMAj7WCUqVruRrRynPV7Gdg/v86rSsq3GOGT2deGPjjXSjd1tZSYvh
-         bwuWcWTvaPkKx3wiI/B1J5sNXyl3SkLSsBtMUYKs0zK0YjZiJrmn6b6jTrzZx+xoXicD
-         U1cjBtiPnqkymzZNQD4VyrxPYC7be9TxRmA+MjvG0LW/kNuDepcRLHOaqGQHWMPvoSGX
-         in/g==
+        bh=04MVoN+OIvJr2YdZQzPbMEP15dXCFEy6P+SherFyn/8=;
+        b=MlbV2ERHDx6tj2pkkODaTPi8WddbuBeH7JkqxhkIaV/bcn+dDQfr0SuXZX/oRRNnih
+         TTTeRHwnsxXO9kc3Z6ag9+iCIvN8Rj7c8spXliJ/nkfbKJh+mLD7zbqr9d6gNGx4FtaJ
+         2VeHqXYsmsTS+p4ECOJqiPj0Q5OVDiVs5nDXm3AnYZUgEC7JYS+VLurnJqYUSIv7+VP1
+         9fSAiYnBxdH/vHsfWQaQjafO1jR6B3/sus+vYuKT2MdtlHqf5amQud3IVIZzGBaQVpBO
+         /h71o8QwSh5mKy5fd2wQd1X+Bcr15XBhcGcHDYQzr2Yq8EmY7JaAErxDG7ku2ptKzJU2
+         Kqkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732235573; x=1732840373;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RL1lgmMyWO+nl8XA8JUiAgLOBzU7S7bZemUo2gpmwro=;
-        b=HhQoMTCYeTETMglo0U0qyLdo++Fe6jiV7fczhFEp/jFF2XUSnZfURvg2l5fF/BemqH
-         xYOdIpGcOTVmGKZDP7db82nukAKsLKOMbGzfKFxbdCQygkw36R+42LUV5WmvEuQbth7Z
-         aZElmrEFanejWFWvs+S4YNd028NzpXegyST75fTe791S+37lCOxMgvrU90thtq/y7aoi
-         L/iVuGr/LtEeRgeTpZMhkH3EhZnLU2G09gPaKkI2Ost+UWZ0n/tLmD7WQ7P+JJP5E4u2
-         pK+M46bxo5Y+UOm2cA2W9m8ods0SwURtlS57j7tML4spQ28FufecIjrM4dzqBUoSR6TH
-         AtRA==
-X-Forwarded-Encrypted: i=1; AJvYcCXWuOJWbhXg+7DyvgeSG2GR/npDdZS/OsSJJJUzFkXTK2aKhu9G7gXk6u0Fu15GlP9jRlM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw6n+Wn8Ijca6juaUe4Mml95iJbhNYITqjdq6hlk/a40S+XjFmf
-	bpg0L2qAVZb0FJuqLjx41W8YIElKjhIvZN8G9HmV9MG9GwWTYKoS6DDhWEbTQuL6Xu+o7R2HQAa
-	8KbcRPHzYSu4ZYa6MnkUp8vlfk28ytOmo
-X-Gm-Gg: ASbGncsa25h1BWQRWNauZIoNSg7wqWrc2Y6+pxvLI7QErkePiwMMYh3gc+1xQdYqiFK
-	43dnzceKiWIQo0fYOGQ46YMfpFVen4Q==
-X-Google-Smtp-Source: AGHT+IGDIyEZHWzdBCUSs65vxG8YUr+XuN7mp2AGAkhG7rc6lHMPOXUtnoud6YH4HMj475XcrNFkre3MkYHKctklXcs=
-X-Received: by 2002:a05:6000:2ce:b0:37d:446a:4142 with SMTP id
- ffacd0b85a97d-38260b867a5mr726295f8f.32.1732235572462; Thu, 21 Nov 2024
- 16:32:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1732236069; x=1732840869;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=04MVoN+OIvJr2YdZQzPbMEP15dXCFEy6P+SherFyn/8=;
+        b=luuHYvat9Panr9C20pjat2rVX2rw6c6UBalT6MXO82MFY/a7mJFS9MoQzlHaDHqoUk
+         005hSAbVOiDgG7UoxPixO0nqvrcs8GoY18N5lwJkqfmGHK/kV5m1XwGby7QVt6o8hHZc
+         PiIDa1UVV0rxUNEYevUZY6A/t2tO8iezyz2jy8F9BPbv6n5Wh8Zm5qZx54GykJ6KC0W2
+         AgzOqH6Xo3d/sK4o9PLO3NtX8Tx4zYZAHgRdZOQNwE39pMsesSQRSc1qJsunK/PyoqLs
+         WMCWvP/t88ddYQadLfFfyI+KiPk75woyeUVzvWlFgGJxwBRVWM0Bs2Mxwn9npAP3wVzw
+         NfPg==
+X-Forwarded-Encrypted: i=1; AJvYcCUItiGUnhyarUHOLB/hsWHAJcG5K0B1YmeD28XlCqIwhqkttLy5ECL3M3TaI9rAkZWyTo4=@vger.kernel.org, AJvYcCWpDnQENbSkcEZ23LA/hGs28r441NRwj0B8I3JWpAO4x0kej39mVpdSAKFEGavZOtRP7DiymaNKfKlTwfm/@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx4FhMnUEu6gA7uE1rvuLFEqtAMEEx+2ZRh45C/fqvLpXLTer5y
+	PcOSdiEc1jYnQpxnWN3RiPJMQ8RxHfCXZApd17RD7taikvOpTpjnlqU2LQ==
+X-Gm-Gg: ASbGncv+fy0A70iyTuK0NRXHkjkPdovCTxf/AqYeynnJ0QouAmV4Mvww+q87jJIcnXI
+	4aoUQJk3Rl9yUSw2oY5WcW/Bngl/sJKL++mTqEAv7OVj/xmVfLyQibLMH4O09dvYgE5cjbuO5Y6
+	RhTBeDtaiV1u0u41hKDzDZsH/pwWTn+XDuLINtHfIZcvxFk1+b1JyGBfcjv9YBJ6MYSnM0bF6JH
+	MpbBTt8koNHn5zlIpu6E+S7mpZ3Xq0rwT2su2+lfTdi45u23jw=
+X-Google-Smtp-Source: AGHT+IEpZv48o7EMNyfIQ2/+C0TuoNaUSVg007ysRSyWDMDywOYlRzeOC5AR7mKVUg9lOrgUPMj8Kw==
+X-Received: by 2002:a05:6602:154d:b0:83a:f443:875 with SMTP id ca18e2360f4ac-83ecdd140e9mr91707739f.15.1732236068775;
+        Thu, 21 Nov 2024 16:41:08 -0800 (PST)
+Received: from localhost ([98.97.39.253])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fbcbfc08efsm402586a12.16.2024.11.21.16.41.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Nov 2024 16:41:08 -0800 (PST)
+Date: Thu, 21 Nov 2024 16:41:06 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Tiezhu Yang <yangtiezhu@loongson.cn>, 
+ Huacai Chen <chenhuacai@kernel.org>
+Cc: loongarch@lists.linux.dev, 
+ bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Message-ID: <673fd322ce3ac_1118208b3@john.notmuch>
+In-Reply-To: <20241119065230.19157-1-yangtiezhu@loongson.cn>
+References: <20241119065230.19157-1-yangtiezhu@loongson.cn>
+Subject: RE: [PATCH] LoongArch: BPF: Sign-extend return values
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20241121005329.408873-1-memxor@gmail.com> <20241121005329.408873-6-memxor@gmail.com>
- <c49e756f6e4ef492a68b7cd3b856240282963f8e.camel@gmail.com> <CAP01T75FEfodis5YLie5kBPG4FSyyinSAa0m+ZP8H+_PhseWRQ@mail.gmail.com>
-In-Reply-To: <CAP01T75FEfodis5YLie5kBPG4FSyyinSAa0m+ZP8H+_PhseWRQ@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 21 Nov 2024 16:32:41 -0800
-Message-ID: <CAADnVQKenFC_pRBd2Erb=OBO9R+CPnxiz8krsgkFHNNm84ERvQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 5/7] bpf: Introduce support for bpf_local_irq_{save,restore}
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, kkd@meta.com, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Nov 21, 2024 at 2:07=E2=80=AFPM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Thu, 21 Nov 2024 at 21:21, Eduard Zingerman <eddyz87@gmail.com> wrote:
-> >
-> > On Wed, 2024-11-20 at 16:53 -0800, Kumar Kartikeya Dwivedi wrote:
-> > > Teach the verifier about IRQ-disabled sections through the introducti=
-on
-> > > of two new kfuncs, bpf_local_irq_save, to save IRQ state and disable
-> > > them, and bpf_local_irq_restore, to restore IRQ state and enable them
-> > > back again.
-> > >
-> > > For the purposes of tracking the saved IRQ state, the verifier is tau=
-ght
-> > > about a new special object on the stack of type STACK_IRQ_FLAG. This =
-is
-> > > a 8 byte value which saves the IRQ flags which are to be passed back =
-to
-> > > the IRQ restore kfunc.
-> > >
-> > > To track a dynamic number of IRQ-disabled regions and their associate=
-d
-> > > saved states, a new resource type RES_TYPE_IRQ is introduced, which i=
-ts
-> > > state management functions: acquire_irq_state and release_irq_state,
-> > > taking advantage of the refactoring and clean ups made in earlier
-> > > commits.
-> > >
-> > > One notable requirement of the kernel's IRQ save and restore API is t=
-hat
-> > > they cannot happen out of order. For this purpose, resource state is
-> > > extended with a new type-specific member 'prev_id'. This is used to
-> > > remember the ordering of acquisitions of IRQ saved states, so that we
-> > > maintain a logical stack in acquisition order of resource identities,
-> > > and can enforce LIFO ordering when restoring IRQ state. The top of th=
-e
-> > > stack is maintained using bpf_func_state's active_irq_id.
-> > >
-> > > The logic to detect initialized and unitialized irq flag slots, marki=
-ng
-> > > and unmarking is similar to how it's done for iterators. We do need t=
-o
-> > > update ressafe to perform check_ids based satisfiability check, and
-> > > additionally match prev_id for RES_TYPE_IRQ entries in the resource
-> > > array.
-> > >
-> > > The kfuncs themselves are plain wrappers over local_irq_save and
-> > > local_irq_restore macros.
-> > >
-> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > ---
-> >
-> > I think this matches what is done for iterators and dynptrs.
-> >
-> > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> >
-> > [...]
-> >
-> > > @@ -263,10 +267,16 @@ struct bpf_resource_state {
-> > >        * is used purely to inform the user of a resource leak.
-> > >        */
-> > >       int insn_idx;
-> > > -     /* Use to keep track of the source object of a lock, to ensure
-> > > -      * it matches on unlock.
-> > > -      */
-> > > -     void *ptr;
-> > > +     union {
-> > > +             /* Use to keep track of the source object of a lock, to=
- ensure
-> > > +              * it matches on unlock.
-> > > +              */
-> > > +             void *ptr;
-> > > +             /* Track the reference id preceding the IRQ entry in ac=
-quisition
-> > > +              * order, to enforce an ordering on the release.
-> > > +              */
-> > > +             int prev_id;
-> > > +     };
-> >
-> > Nit:  Do we anticipate any other resource kinds that would need LIFO ac=
-quire/release?
-> >       If we do, an alternative to prev_id would be to organize bpf_func=
-_state->res as
-> >       a stack (by changing erase_resource_state() implementation).
->
-> I don't think so, this was the weird case requiring such an ordering,
-> so I tried to find the least intrusive way.
+Tiezhu Yang wrote:
+> (1) Description of Problem:
+> 
+> When testing BPF JIT with the latest compiler toolchains on LoongArch,
+> there exist some strange failed test cases, dmesg shows something like
+> this:
+> 
+>   # dmesg -t | grep FAIL | head -1
+>   ... ret -3 != -3 (0xfffffffd != 0xfffffffd)FAIL ...
+> 
+> (2) Steps to Reproduce:
+> 
+>   # echo 1 > /proc/sys/net/core/bpf_jit_enable
+>   # modprobe test_bpf
+> 
+> (3) Additional Info:
+> 
+> There are no failed test cases compiled with the lower version of GCC
+> such as 13.3.0, while the problems only appear with higher version of
+> GCC such as 14.2.0.
+> 
+> This is because the problems were hidden by the lower version of GCC
+> due to there are redundant sign extension instructions generated by
+> compiler, but with optimization of higher version of GCC, the sign
+> extension instructions have been removed.
+> 
+> (4) Root Cause Analysis:
+> 
+> The LoongArch architecture does not expose sub-registers, and hold all
+> 32-bit values in a sign-extended format. While BPF, on the other hand,
+> exposes sub-registers, and use zero-extension (similar to arm64/x86).
+> 
+> This has led to some subtle bugs, where a BPF JITted program has not
+> sign-extended the a0 register (return value in LoongArch land), passed
+> the return value up the kernel, for example:
+> 
+>   | int from_bpf(void);
+>   |
+>   | long foo(void)
+>   | {
+>   |    return from_bpf();
+>   | }
+> 
+> Here, a0 would be 0xffff_ffff, instead of the expected
+> 0xffff_ffff_ffff_ffff.
+> 
+> Internally, the LoongArch JIT uses a5 as a dedicated register for BPF
+> return values. That is to say, the LoongArch BPF uses a5 for BPF return
+> values, which are zero-extended, whereas the LoongArch ABI uses a0 which
+> is sign-extended.
+> 
+> (5) Final Solution:
+> 
+> Keep a5 zero-extended, but explicitly sign-extend a0 (which is used
+> outside BPF land). Because libbpf currently defines the return value
+> of an ebpf program as a 32-bit unsigned integer, just use addi.w to
+> extend bit 31 into bits 63 through 32 of a5 to a0. This is similar
+> with commit 2f1b0d3d7331 ("riscv, bpf: Sign-extend return values").
+> 
+> Fixes: 5dc615520c4d ("LoongArch: Add BPF JIT support")
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/loongarch/net/bpf_jit.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index 7dbefd4ba210..dd350cba1252 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -179,7 +179,7 @@ static void __build_epilogue(struct jit_ctx *ctx, bool is_tail_call)
+>  
+>  	if (!is_tail_call) {
+>  		/* Set return value */
+> -		move_reg(ctx, LOONGARCH_GPR_A0, regmap[BPF_REG_0]);
+> +		emit_insn(ctx, addiw, LOONGARCH_GPR_A0, regmap[BPF_REG_0], 0);
 
-Acquire_refs is already a stack.
-Manual push/pop via prev_id looks unnecessary.
-Just search the top of acquired_refs for id.
-If it doesn't match error.
+Not overly familiar with this JIT but just to check this wont be used
+for BPF 2 BPF calls correct?
 
-I don't like this bit either:
-+ if (id !=3D state->active_irq_id)
-+               return -EPROTO;
+>  		/* Return to the caller */
+>  		emit_insn(ctx, jirl, LOONGARCH_GPR_RA, LOONGARCH_GPR_ZERO, 0);
+>  	} else {
+> -- 
+> 2.42.0
+> 
+> 
 
 
-Why invent new error codes for such conditions?
-It's EACESS or EINVAL like everywhere else in the verifier.
 
