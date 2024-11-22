@@ -1,151 +1,98 @@
-Return-Path: <bpf+bounces-45458-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F2219D5E4A
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 12:40:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A85379D5E3A
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 12:34:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3833B1F22B1D
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 11:40:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EA9728138A
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 11:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E019C1DED6D;
-	Fri, 22 Nov 2024 11:40:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1281DE2D2;
+	Fri, 22 Nov 2024 11:34:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fBhS4Exb"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KzdX/m4n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C9BB17E00E;
-	Fri, 22 Nov 2024 11:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78B011DDC39
+	for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 11:34:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732275636; cv=none; b=QJXbFs6Opt/d4cV/KMbUVLc2//RrF2eyVznJN4u4V+2hli/2Esta6t1cuWxYQsWgNIQM1P35g9CaVcH9z+6x3YlIwDZZVLFaa9W1JS/rZagL7h7FQMQiZgLaQyazi+/s+tI0OL3gAu697hoU1Z/JZIlsaEBTCfSh38lQjU/P/Lg=
+	t=1732275257; cv=none; b=le9JMFZCtz3KU3VwXx1Nt8Iy7XYnvORbvEtquhv+zUx+DBTUuoKCk29hd46CtarCj1AkcLe1IsGJs1EbHwAObDhOM/nzDzmg8KFJlOYBRo2zyQ/l5XLDAY510t/a+Uj4fYtfSdi/Rh9DhgyZkT7/dx6Kj+v39qtszIWf3lxEqMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732275636; c=relaxed/simple;
-	bh=i6CLV1FXRfEQmnP0bc/FJIlv39wNpE+G83O2FsKArr0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HK9ECLexx0krmJdZPxCjfajjVouWbK1QgriHcK2cK8Vi9r7DYM8So86mB4RnshTsj2fymxJ/U8lKLLHefIciAyV8Z7BRluQjHRizBlV4UgtwEL5ffjl6awO8hPMbOch8VR82rGdwuWppg1G4GL8hDWOxzMnzqulR0atIaIfh5yI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fBhS4Exb; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1732275631; x=1763811631;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=i6CLV1FXRfEQmnP0bc/FJIlv39wNpE+G83O2FsKArr0=;
-  b=fBhS4Exb5g2Vc+2vZ7VOgeNuDThW9YvyBkhOAoxtRkEHCUypbVWzWUsJ
-   jlrIHE32ksSfP6KyFiWsnmq4WGlCw9CR8kmXL4Nv2WtH7iqgIhe105osP
-   7Xez3W7hDqE0Q5jCos2xAZPx3hoAPKv3UKZ0Vpd6poi4VV7CJA+Zx1PQ5
-   B/uEn98dORLLyrWYpSoVxFkzPDrY6hFjOmcLPIdaKzDeOaeRAU5xzLXRM
-   7zQtNDpWD3CDOGpYKQm1krBlVInCL6CjedtbuTZn12LXnmgZOlF2RrLMt
-   dB+9WUCC7dVoeCs58pViItWQK3HjgP6iLNRUezSeDLG4+NY4+dvLZE9JL
-   Q==;
-X-CSE-ConnectionGUID: XQo6tbalTW6xvIyI8skeTQ==
-X-CSE-MsgGUID: bShtfSmfTwWoUvI/Izb+UQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11263"; a="31783571"
-X-IronPort-AV: E=Sophos;i="6.12,175,1728975600"; 
-   d="scan'208";a="31783571"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2024 03:40:30 -0800
-X-CSE-ConnectionGUID: +DIRouKGQyG4razPmurnuw==
-X-CSE-MsgGUID: RVWYirEYQtKOFB+YzOf+PQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,175,1728975600"; 
-   d="scan'208";a="121511166"
-Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by fmviesa001.fm.intel.com with ESMTP; 22 Nov 2024 03:40:27 -0800
-Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id DA89228778;
-	Fri, 22 Nov 2024 11:40:24 +0000 (GMT)
-From: Larysa Zaremba <larysa.zaremba@intel.com>
-To: bpf@vger.kernel.org
-Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1732275257; c=relaxed/simple;
+	bh=CGdFSTpCJdiMMviqvMyvU200vMCiOiab0iSLFJ6Non4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BICqNkG7MJQ55tZlTqijq6+npCADlNvfhVoafKagMzZGTzEuapx5yvYXZwlJC7nWAYsGq15fA7wl06An0aEUSw2suSUJSysypCgEmr2fN3OVguVe9qR2UO2lcThEggkvppFBFj4BV9MAqVNOHEXi2nCt2TcbWJIzhNH54T2JGJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=KzdX/m4n; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=CGdFSTpCJdiMMviqvMyvU200vMCiOiab0iSLFJ6Non4=; b=KzdX/m4ngNSYfY3kFTWHd+P1Xu
+	wcg0aq25KEUzAgdmGfTKjVSr9XaXyLtO84lYjbWveUnVkCVoV6EQLbr4P33xF6hde0pZO8B+fO6NY
+	zO5jRdooWSq+qI0t6ZfL2pnHtG5VPvmI1m9FVSAAzLIpWNFFZ2qMpDDGgLeQSr8KBaNc304W83YKv
+	0BjXyJ6VuVmkkueag+5kZc2DM/vUCt3W9tPIGoNcgBc3VwKvKOJK+02acL7yqA4zhKLdtenCUHl64
+	wJqUwOm/HagzYjKsxpkdbtuoKQ1WcnjflvXCZLwVUF0hQex5eCOKbv/SiadXtMLYxopHL+pEBxuYc
+	3uMKi3Mw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tERvN-00000000hQK-2Um1;
+	Fri, 22 Nov 2024 11:34:09 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 2A6C830066A; Fri, 22 Nov 2024 12:34:09 +0100 (CET)
+Date: Fri, 22 Nov 2024 12:34:09 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Vadim Fedorenko <vadfed@meta.com>
+Cc: Borislav Petkov <bp@alien8.de>, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Simon Horman <horms@kernel.org>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alasdair McWilliam <alasdair.mcwilliam@outlook.com>
-Subject: [PATCH bpf] xsk: always clear DMA mapping information when unmapping the pool
-Date: Fri, 22 Nov 2024 12:29:09 +0100
-Message-ID: <20241122112912.89881-1-larysa.zaremba@intel.com>
-X-Mailer: git-send-email 2.43.0
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	Mykola Lysenko <mykolal@fb.com>, x86@kernel.org,
+	bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>
+Subject: Re: [PATCH bpf-next v8 0/4] bpf: add cpu cycles kfuncss
+Message-ID: <20241122113409.GV24774@noisy.programming.kicks-ass.net>
+References: <20241121000814.3821326-1-vadfed@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241121000814.3821326-1-vadfed@meta.com>
 
-When the umem is shared, the DMA mapping is also shared between the xsk
-pools, therefore it should stay valid as long as at least 1 user remains.
-However, the pool also keeps the copies of DMA-related information that are
-initialized in the same way in xp_init_dma_info(), but cleared by
-xp_dma_unmap() only for the last remaining pool, this causes the problems
-below.
+On Wed, Nov 20, 2024 at 04:08:10PM -0800, Vadim Fedorenko wrote:
+> This patchset adds 2 kfuncs to provide a way to precisely measure the
+> time spent running some code. The first patch provides a way to get cpu
+> cycles counter which is used to feed CLOCK_MONOTONIC_RAW. On x86
+> architecture it is effectively rdtsc_ordered() function while on other
+> architectures it falls back to __arch_get_hw_counter(). The second patch
+> adds a kfunc to convert cpu cycles to nanoseconds using shift/mult
+> constants discovered by kernel. The main use-case for this kfunc is to
+> convert deltas of timestamp counter values into nanoseconds. It is not
+> supposed to get CLOCK_MONOTONIC_RAW values as offset part is skipped.
+> JIT version is done for x86 for now, on other architectures it falls
+> back to slightly simplified version of vdso_calc_ns.
 
-The first one is that the commit adbf5a42341f ("ice: remove af_xdp_zc_qps
-bitmap") relies on pool->dev to determine the presence of a ZC pool on a
-given queue, avoiding internal bookkeeping. This works perfectly fine if
-the UMEM is not shared, but reliably fails otherwise as stated in the
-linked report.
+So having now read this. I'm still left wondering why you would want to
+do this.
 
-The second one is pool->dma_pages which is dynamically allocated and
-only freed in xp_dma_unmap(), this leads to a small memory leak. kmemleak
-does not catch it, but by printing the allocation results after terminating
-the userspace program it is possible to see that all addresses except the
-one belonging to the last detached pool are still accessible through the
-kmemleak dump functionality.
+Is this just debug stuff, for when you're doing a poor man's profile
+run? If it is, why do we care about all the precision or the ns. And why
+aren't you using perf?
 
-Always clear the DMA mapping information from the pool and free
-pool->dma_pages when unmapping the pool, so that the only difference
-between results of the last remaining user's call and the ones before would
-be the destruction of the DMA mapping.
+Is it something else?
 
-Fixes: adbf5a42341f ("ice: remove af_xdp_zc_qps bitmap")
-Fixes: 921b68692abb ("xsk: Enable sharing of dma mappings")
-Reported-by: Alasdair McWilliam <alasdair.mcwilliam@outlook.com>
-Closes: https://lore.kernel.org/PA4P194MB10056F208AF221D043F57A3D86512@PA4P194MB1005.EURP194.PROD.OUTLOOK.COM
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
----
- net/xdp/xsk_buff_pool.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index 521a2938e50a..0662d34b09ee 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -387,10 +387,9 @@ void xp_dma_unmap(struct xsk_buff_pool *pool, unsigned long attrs)
- 		return;
- 	}
- 
--	if (!refcount_dec_and_test(&dma_map->users))
--		return;
-+	if (refcount_dec_and_test(&dma_map->users))
-+		__xp_dma_unmap(dma_map, attrs);
- 
--	__xp_dma_unmap(dma_map, attrs);
- 	kvfree(pool->dma_pages);
- 	pool->dma_pages = NULL;
- 	pool->dma_pages_cnt = 0;
--- 
-2.43.0
-
+Again, what are you going to do with this information?
 
