@@ -1,134 +1,152 @@
-Return-Path: <bpf+bounces-45473-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45475-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B27CF9D621D
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 17:22:44 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B38909D6309
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 18:27:13 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4C90160E42
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 16:21:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E2ABB247DC
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 17:27:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5751DFE12;
-	Fri, 22 Nov 2024 16:20:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90BD21DF961;
+	Fri, 22 Nov 2024 17:27:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L1uSW2Ml"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hzpftI8M"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350D81DFE06
-	for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 16:20:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42474156883
+	for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 17:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732292442; cv=none; b=PklFV0xRR1KkHyMlT94XZexYOts+dF2nC5+iMYB/0VNr3pCP6HzK483cF7nG4MSgGMoLr4sgni/0bC8vTVo7XOJQPHdALyptWhYUrvopUpX4j6qr3I4HjQtWMVi3PAPi6rPR4gkLkWk01aeAU6VsZvA/yt8tlAi2N3VUMlaOW3U=
+	t=1732296426; cv=none; b=nUG+YmMifCg7UPQQdEhKEIJ4fend1ynDLCh2m9xJ0PGACRMfnt2letbsHKGpsnm363VvgiDxOAQlgurhCwxOZvJ6NpeEqfODYe/F2F6YWoayOxROxjxheIA5rRHTBXbL9xMHPA6xjmMF+fVA4eiJsifagLoqg95xYWl+2QI+8zY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732292442; c=relaxed/simple;
-	bh=wbzJg7Rh0/IJD93w2qv9ayIORHCQa+JXkVfav46PNLg=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NMRfICKYrzn5i2fsPF5zKqOtM4hLIyxBUKyiRqpToMPu2OxuVIN9CtIcgMvlpDpsSM3dx7+ak2dn01+e1GhxdAPkjyjaycWpNDXe/1U6ch6XkiN6tIgoRt77Bu9A7Za1p6vDRx33cXOp++wJ8g1UeYhK0bXdoSg9BSoMscYi8Tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L1uSW2Ml; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a9a0ec0a94fso337950966b.1
-        for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 08:20:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732292438; x=1732897238; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3dwNOyYmk12DopNVn2ZcrR1xTULhE8ZG0b8p3Tx9hLw=;
-        b=L1uSW2Mlvt+Dwt5d3LWaCqgxfCit3lO2ob/BsVYxbLK9+ZrhOaskVb7kQh/ZBlweV/
-         aSh7+rLalrcqij5znUn0T5P0rIFaM4HHhJJV5ASZRNkxGQfBZVaNGJhxhLjjq1ClO1rA
-         ZeVsKAUqcoc+lQWDtOqiuqyalOOLsH19d36Xpt2wdxwly7UH8D69bugrdfvuiOY/a07a
-         7hZHsIjN/Gg5XhBFa0eIvbrcPu4GVnFv2usp5eQ9c2nbJ/t2K8fjQrNM/bpy8Cw93JGR
-         9PVgRQRRs1mzs1iGTp5XiPMdOWbhRxyIDXj1DrJESeeaX0rG1syJdhjmpKhuWi2MZKhP
-         U0Xw==
+	s=arc-20240116; t=1732296426; c=relaxed/simple;
+	bh=ClLKHDqr6PkmVcgcEQS26XuKU5WAQb5CRj4MznEbpvY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=C/p/+lcggnsnrPhl876VkRdihx30M7p90hUqNuCYYo4vLpbO29ivuu2IoqNhYp1qjEs0Nhp5GmB1/KFbZRoKEbMyHffsn1IpHH4ZvJzyi/gXyhNwHs7nEHSq/0iznpOkcWrRrucp9S5tfq8zOjQL5jFI9EH56XSY8fZ5lrgbkwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hzpftI8M; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1732296419;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bonjTJEsrDIaVijnWhdP+tUvaZ22+wg4ayk5WPuEpAc=;
+	b=hzpftI8MVcQb9YtSAjIo4mF5YWKYGV8o1YZv7fIamFPtYviYoRrNI2H73j5eDYeCpUrerp
+	jWXsev7LyKgmN+AA4JQ1siibAQjoS/bVvnlWYV3GHelTutpeT+r2+uegNYp8+fmH4rmckG
+	IOMmDFVwGkWO8berNWTHeaz7lcgTrho=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-8-lflmpJpTOuabCsV9w_yM3w-1; Fri, 22 Nov 2024 12:26:58 -0500
+X-MC-Unique: lflmpJpTOuabCsV9w_yM3w-1
+X-Mimecast-MFC-AGG-ID: lflmpJpTOuabCsV9w_yM3w
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-432d04b3d40so15009475e9.1
+        for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 09:26:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732292438; x=1732897238;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3dwNOyYmk12DopNVn2ZcrR1xTULhE8ZG0b8p3Tx9hLw=;
-        b=FpTPjl5MKeFvRc7oIqXmSxzUj0d6qHfdNGVVE6IksiBod4ZV1Qej85mZi3CvVbsohN
-         +UZaBVC16KAKF010IrLAgtguJGkkgSs9j2IXrFWrOZBU8drGyN+3TIf1Zmj1TEIH+J5/
-         Zjzjpk1UjXdih3+uc3V8+8fD6T1UPc3hHPWXADVoVjULto/+hr0TO3wxbuPn7TlM/s3X
-         EsoH6y3dsYXvJgSKZPGNkK5NcUqm+OBTr0KqxAf4bNFThur1f93+FqDfH8uAQubtNREz
-         jVue5e0ZhL+rGJ26IEVMT16kV5dmLgk9xKQ8XBCOMUfC7/+y4WYX2QziF3d4yPgEcLnQ
-         FzNQ==
-X-Gm-Message-State: AOJu0YyXmji3fw7mXx26C81JjRQcRS4mOHsPp8r09rDktPvyEeg7a8c7
-	h14gT9dYQpOQmtV1IbrbyHO0hL3OXTinfd/+N9Mjkk11duA5qKtk
-X-Gm-Gg: ASbGncttyGzJ7Kh5kPS/OgEp8siAOMu+63jm+k6KRyDqTlm9Rb7bMjAd8Dh/IxwxLgW
-	+3Mxf6qOILwj3igKJRi+x2DeS301JpXzjTHLHxqeJAIJX/jjWZAoW/dJ8dZDLhx3GU6wBRpA8i4
-	qNjxgZ1b/B/9eWgVo7L2gGsVfAEMsFynmnPk/dYsjsRky76QXoC1gLHIbX/S6yEKex5jPtjaqzl
-	8VDAgeeQsiAEohwbD27uZ38Rk2KX/RTed8DAdfkNAW4YaziBh4CMq4drKsYWyWrlxhfxI2n
-X-Google-Smtp-Source: AGHT+IEUl+DE92Rw6d+0Gq3IkP2D0aXdQ0krI9rjQGtooA895zp+kIvHGxvy3w8gIDqi/jkSh8ek4A==
-X-Received: by 2002:a17:907:7751:b0:a8d:6648:813f with SMTP id a640c23a62f3a-aa5099065afmr299549166b.3.1732292438278;
-        Fri, 22 Nov 2024 08:20:38 -0800 (PST)
-Received: from krava (static-84-42-143-70.bb.vodafone.cz. [84.42.143.70])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa50b2f9e25sm117017666b.78.2024.11.22.08.20.37
+        d=1e100.net; s=20230601; t=1732296417; x=1732901217;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bonjTJEsrDIaVijnWhdP+tUvaZ22+wg4ayk5WPuEpAc=;
+        b=NRB8Qu19gsJKsHIeFoP9SD4KZoSQdOme5HxqZDMOBcIPyaR3PPVWlyS+zbTe7YUmLG
+         fBX2PLwBC4YYr3lkLgdGBufonJRnDAGleXAL/4NI7noTdCjIVz6igHx3Doa5WpXgbRoF
+         vDtVmTn/mNnb7GJKQVeoXLQtnqdI1Yrbhdy6gZZyWMTRoTSJR2jnU99ZrUNSxaditWar
+         1w03czMnEOf8W/UKNlXxWorh5YO3e5hGAXKXmtcJMwDvkoH8kFLtkSQUbGKtx2Jbs99f
+         /fUoNG7MGoo7XuRi5PZl6yPoQtAQGejJQOcXZfxt++0KpyFEf3hXNStcCoSloWrDjzP6
+         jviQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU6obzvty9RXTITcgxwUD1tkeWsO16f0kfKjCfEonbHM172NO3diUYXgRu+t3pc9hqXrUE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+njEGPv8GVNvmfsxp49kgPyFXhNRKcAN4Cfev757JjKdazBuc
+	9cnyJHqBTEA4Bl6e0sgw4UmV8ply9+HSn4MlSN1MdR9ZMmBiiw1K/9Or4uyLPJdQt4l2poCuf0/
+	L2j6qHP4LUwkeRByT+pyUVbl152f+CqoKhKQnmgUNDgreotpuaA==
+X-Gm-Gg: ASbGncuGrKA+JAjnsUDJfjwEpvIN56+KpkKXWZsrCWpih9Ots4dp1or/ux/L2iTnhYW
+	8aQtLaaip4SEj1gxwC0CXfsStMrjoid3nTlm7S2yUqpXoxXb5KcbCh9Aow8ztLJzUywhM7tbB+S
+	Qt9vwPIkT8cwSrXYFPyfielPPmc3lyj88IZm+mrS95+PeRdy1FOBnUkENLcQ1CpIXXWLiXxIlmN
+	tu4lWVMnbPEv71IJrgLIe31JzGOfW07lK/4FnuFL4snN1mX+/bJAAJHQFZnQ5Im7OMCfe0ayQVW
+	ParzxQ==
+X-Received: by 2002:a5d:5f8c:0:b0:382:39a7:3995 with SMTP id ffacd0b85a97d-38260b5b5a5mr3051897f8f.17.1732296417181;
+        Fri, 22 Nov 2024 09:26:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFJ8cnKY3PHy55oSgMvuyy7GftnO8GWR0CeQCP0dYaT9/4MetPL4C2V96vIO3UU3FglDdAiFg==
+X-Received: by 2002:a5d:5f8c:0:b0:382:39a7:3995 with SMTP id ffacd0b85a97d-38260b5b5a5mr3051859f8f.17.1732296416829;
+        Fri, 22 Nov 2024 09:26:56 -0800 (PST)
+Received: from lleonard-thinkpadp16vgen1.rmtit.csb ([176.206.22.110])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3825fbc3557sm3016023f8f.81.2024.11.22.09.26.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Nov 2024 08:20:37 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 22 Nov 2024 17:20:36 +0100
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next] libbpf: don't adjust USDT semaphore address if
- .stapsdt.base addr is missing
-Message-ID: <Z0CvVOjlaknq-vZ5@krava>
-References: <20241121224558.796110-1-andrii@kernel.org>
+        Fri, 22 Nov 2024 09:26:56 -0800 (PST)
+From: Luigi Leonardi <leonardi@redhat.com>
+To: mhal@rbox.co
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bobby.eshleman@bytedance.com,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	davem@davemloft.net,
+	eddyz87@gmail.com,
+	edumazet@google.com,
+	haoluo@google.com,
+	horms@kernel.org,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	kuba@kernel.org,
+	linux-kselftest@vger.kernel.org,
+	martin.lau@linux.dev,
+	mst@redhat.com,
+	mykolal@fb.com,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	sdf@fomichev.me,
+	sgarzare@redhat.com,
+	shuah@kernel.org,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	Luigi Leonardi <leonardi@redhat.com>
+Subject: Re: [PATCH bpf 1/4] bpf, vsock: Fix poll() missing a queue
+Date: Fri, 22 Nov 2024 18:26:29 +0100
+Message-ID: <20241122172629.62588-1-leonardi@redhat.com>
+X-Mailer: git-send-email 2.47.0
+In-Reply-To: <20241118-vsock-bpf-poll-close-v1-1-f1b9669cacdc@rbox.co>
+References: <20241118-vsock-bpf-poll-close-v1-1-f1b9669cacdc@rbox.co>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241121224558.796110-1-andrii@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 21, 2024 at 02:45:58PM -0800, Andrii Nakryiko wrote:
-> USDT ELF note optionally can record an offset of .stapsdt.base, which is
-> used to make adjustments to USDT target attach address. Currently,
-> libbpf will do this address adjustment unconditionally if it finds
-> .stapsdt.base ELF section in target binary. But there is a corner case
-> where .stapsdt.base ELF section is present, but specific USDT note
-> doesn't reference it. In such case, libbpf will basically just add base
-> address and end up with absolutely incorrect USDT target address.
+>When a verdict program simply passes a packet without redirection, sk_msg
+>is enqueued on sk_psock::ingress_msg. Add a missing check to poll().
+>
+>Fixes: 634f1a7110b4 ("vsock: support sockmap")
+>Signed-off-by: Michal Luczaj <mhal@rbox.co>
+>---
+> net/vmw_vsock/af_vsock.c | 3 +++
+> 1 file changed, 3 insertions(+)
+>
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index dfd29160fe11c4675f872c1ee123d65b2da0dae6..919da8edd03c838cbcdbf1618425da6c5ec2df1a 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -1054,6 +1054,9 @@ static __poll_t vsock_poll(struct file *file, struct socket *sock,
+> 		mask |= EPOLLRDHUP;
+> 	}
 > 
-> This adjustment has to be done only if both .stapsdt.sema section is
-> present and USDT note is recording a reference to it.
-> 
-> Fixes: 74cc6311cec9 ("libbpf: Add USDT notes parsing and resolution logic")
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>+	if (sk_is_readable(sk))
+>+		mask |= EPOLLIN | EPOLLRDNORM;
+>+
+> 	if (sock->type == SOCK_DGRAM) {
+> 		/* For datagram sockets we can read if there is something in
+> 		 * the queue and write as long as the socket isn't shutdown for
 
-nice, lgtm
+LGTM, thanks!
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Reviewed-by: Luigi Leonardi <leonardi@redhat.com>
 
-jirka
-
-> ---
->  tools/lib/bpf/usdt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-> index 5f085736c6c4..4e4a52742b01 100644
-> --- a/tools/lib/bpf/usdt.c
-> +++ b/tools/lib/bpf/usdt.c
-> @@ -661,7 +661,7 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
->  		 *   [0] https://sourceware.org/systemtap/wiki/UserSpaceProbeImplementation
->  		 */
->  		usdt_abs_ip = note.loc_addr;
-> -		if (base_addr)
-> +		if (base_addr && note.base_addr)
->  			usdt_abs_ip += base_addr - note.base_addr;
->  
->  		/* When attaching uprobes (which is what USDTs basically are)
-> -- 
-> 2.43.5
-> 
-> 
 
