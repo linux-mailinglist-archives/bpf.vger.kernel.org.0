@@ -1,132 +1,134 @@
-Return-Path: <bpf+bounces-45474-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45473-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BCDF9D6229
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 17:23:50 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B27CF9D621D
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 17:22:44 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31A5C282174
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 16:23:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4C90160E42
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 16:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707251E1A36;
-	Fri, 22 Nov 2024 16:21:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5751DFE12;
+	Fri, 22 Nov 2024 16:20:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MctXfxfP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L1uSW2Ml"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 573A11E1A1C
-	for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 16:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350D81DFE06
+	for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 16:20:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732292483; cv=none; b=SoXa9eL7ZrHCKfg7EcRqWQhCvzz2yYWzEJ92xeiFjZ478roh39aea2mMhdyTjmMrFLWBrY12nL5hAkaxbH4X6tFG6wz+MTXzdGks1kArjcKKdQlk3DGOamNOX68OEegPeOIM6HsD4OSiYFYD/UHUrqbBw9KHFceSpbBhf29Lxrk=
+	t=1732292442; cv=none; b=PklFV0xRR1KkHyMlT94XZexYOts+dF2nC5+iMYB/0VNr3pCP6HzK483cF7nG4MSgGMoLr4sgni/0bC8vTVo7XOJQPHdALyptWhYUrvopUpX4j6qr3I4HjQtWMVi3PAPi6rPR4gkLkWk01aeAU6VsZvA/yt8tlAi2N3VUMlaOW3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732292483; c=relaxed/simple;
-	bh=qKtTB5DV3Zl7Y+bAH9RuF3TD9YvDTYHWYvVeSislgT4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cXA3V7x8L9mabQ5BxtCgfXEOf+Li4S1YdHTRsjNCOBFvqu1lZOydnTuqJxbik04QqyOBZmxwGmGoBr/6G93ocowjNpFIjlUD9AzZYDBP+8L/W9Wm4IaRGhDn0Iljm0pnRtXso2GFzYnkiBWu4WNXKcY9IO+nR7oVTcIYfWQBREw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MctXfxfP; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1732292479;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qKtTB5DV3Zl7Y+bAH9RuF3TD9YvDTYHWYvVeSislgT4=;
-	b=MctXfxfPobufAJTIZN1DFV1XrTqVYArGsgZysGxdZ22pctOnR8obDojkRN//qpmJlZm9ap
-	oklp/UsRR4spujdGbQIfSYbRfAFC3mNfAPv9kQ7KjBFcEwC2MP/bbNJhoI1iUW1ATFhdy2
-	Z/fifoAG6t2KxIn54yyLzjAz/AndwxQ=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-56-uF-0LgduNHCWGVKX-XWosg-1; Fri, 22 Nov 2024 11:21:18 -0500
-X-MC-Unique: uF-0LgduNHCWGVKX-XWosg-1
-X-Mimecast-MFC-AGG-ID: uF-0LgduNHCWGVKX-XWosg
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-539fb5677c9so2301301e87.0
-        for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 08:21:17 -0800 (PST)
+	s=arc-20240116; t=1732292442; c=relaxed/simple;
+	bh=wbzJg7Rh0/IJD93w2qv9ayIORHCQa+JXkVfav46PNLg=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NMRfICKYrzn5i2fsPF5zKqOtM4hLIyxBUKyiRqpToMPu2OxuVIN9CtIcgMvlpDpsSM3dx7+ak2dn01+e1GhxdAPkjyjaycWpNDXe/1U6ch6XkiN6tIgoRt77Bu9A7Za1p6vDRx33cXOp++wJ8g1UeYhK0bXdoSg9BSoMscYi8Tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L1uSW2Ml; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a9a0ec0a94fso337950966b.1
+        for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 08:20:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732292438; x=1732897238; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3dwNOyYmk12DopNVn2ZcrR1xTULhE8ZG0b8p3Tx9hLw=;
+        b=L1uSW2Mlvt+Dwt5d3LWaCqgxfCit3lO2ob/BsVYxbLK9+ZrhOaskVb7kQh/ZBlweV/
+         aSh7+rLalrcqij5znUn0T5P0rIFaM4HHhJJV5ASZRNkxGQfBZVaNGJhxhLjjq1ClO1rA
+         ZeVsKAUqcoc+lQWDtOqiuqyalOOLsH19d36Xpt2wdxwly7UH8D69bugrdfvuiOY/a07a
+         7hZHsIjN/Gg5XhBFa0eIvbrcPu4GVnFv2usp5eQ9c2nbJ/t2K8fjQrNM/bpy8Cw93JGR
+         9PVgRQRRs1mzs1iGTp5XiPMdOWbhRxyIDXj1DrJESeeaX0rG1syJdhjmpKhuWi2MZKhP
+         U0Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732292476; x=1732897276;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qKtTB5DV3Zl7Y+bAH9RuF3TD9YvDTYHWYvVeSislgT4=;
-        b=IJhkSrC6G1T6XKSYmCDWQ3+Hg8ITQmNCMexdlvPcuGWOdC436vkbNXYVTB+IYmI58d
-         zAPurfLJSjum9rQarl2kGSofC8JfvrZ+2HZOULLSEgs1e/RennSP/WOkP/9vJ0Oj4hEU
-         dc0uei1RuFhD0zjCC1+cf6QKuln2gR7pY5CS98hRMz+HMjeQi8Zh0wLqrIOkNN8npJ7M
-         8SZv4sSilRtrGGgHEBq8oKfSzNQkwePuMIX0+xworDfFLp/fklQQ5qkhefTeA8Di+I+E
-         05VLu1/mpp5olzNPlOhBqwctwPedlfYoNKEMa8cr5i/Vk9UnkHSYGHmsK9+an5vqvvy0
-         mRJg==
-X-Forwarded-Encrypted: i=1; AJvYcCXdIb7cydzFgmIWVdY/+n9t6cl+dOysCssPwofhL6hJgaa5e3y2jjGgil+pVEvs6qMtVoE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YywAbHPOmaGYZJKgfqsJ7A4GiRHX7pEDSmXjl3DiPsWOPhZ6VlS
-	P9Rj+bzcGR+AVqGpmCiVLVgkSvxV16QmfWPlExwG1omDM0wywKNadXUGIdcoeHTbjvfmFG2Ar8q
-	fbx//DbH0b0e0UbITqBciSCUGSKVTYSPbghk8FQYcTKQcPxoYXA==
-X-Gm-Gg: ASbGncu16BI9LPfchfu00PNJR59IG+h1Edj1VRiEBfc69je5LHf3dpE85I0oH6Yr6sS
-	JrmN77U/fSrhiyhHgajvorfCRahAiPj802XIB4m4oBnO3KyIYEhAcsmYKyJC9gZ0fOf+fCHTZoB
-	xBTnWDlzpIfuvqdagSXVmSVxuqExy9WUMuFR2m2hCg044z+MjR7nExLbXxUiLV4TU3SZ7gazG77
-	mi6cjZ4tBW/a5E+XqGcmpZCau8P4h8N9H29fE+Ouw712TJ4uzTxzbFS68m8mAj4vkF+a7iqq8dQ
-	nC85Xw==
-X-Received: by 2002:ac2:51c9:0:b0:53d:8c79:ace5 with SMTP id 2adb3069b0e04-53dd3aabeffmr2344585e87.54.1732292476485;
-        Fri, 22 Nov 2024 08:21:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFR0ePfE3lovnWGuzpFCv2uMYuHyzHPO1LZjbHFLMvu00pbafujzeSDjCej37Sftl/YHlPHDg==
-X-Received: by 2002:ac2:51c9:0:b0:53d:8c79:ace5 with SMTP id 2adb3069b0e04-53dd3aabeffmr2344568e87.54.1732292476130;
-        Fri, 22 Nov 2024 08:21:16 -0800 (PST)
-Received: from lleonard-thinkpadp16vgen1.rmtit.csb ([176.206.22.110])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-433b463ab5fsm98768945e9.27.2024.11.22.08.21.14
+        d=1e100.net; s=20230601; t=1732292438; x=1732897238;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3dwNOyYmk12DopNVn2ZcrR1xTULhE8ZG0b8p3Tx9hLw=;
+        b=FpTPjl5MKeFvRc7oIqXmSxzUj0d6qHfdNGVVE6IksiBod4ZV1Qej85mZi3CvVbsohN
+         +UZaBVC16KAKF010IrLAgtguJGkkgSs9j2IXrFWrOZBU8drGyN+3TIf1Zmj1TEIH+J5/
+         Zjzjpk1UjXdih3+uc3V8+8fD6T1UPc3hHPWXADVoVjULto/+hr0TO3wxbuPn7TlM/s3X
+         EsoH6y3dsYXvJgSKZPGNkK5NcUqm+OBTr0KqxAf4bNFThur1f93+FqDfH8uAQubtNREz
+         jVue5e0ZhL+rGJ26IEVMT16kV5dmLgk9xKQ8XBCOMUfC7/+y4WYX2QziF3d4yPgEcLnQ
+         FzNQ==
+X-Gm-Message-State: AOJu0YyXmji3fw7mXx26C81JjRQcRS4mOHsPp8r09rDktPvyEeg7a8c7
+	h14gT9dYQpOQmtV1IbrbyHO0hL3OXTinfd/+N9Mjkk11duA5qKtk
+X-Gm-Gg: ASbGncttyGzJ7Kh5kPS/OgEp8siAOMu+63jm+k6KRyDqTlm9Rb7bMjAd8Dh/IxwxLgW
+	+3Mxf6qOILwj3igKJRi+x2DeS301JpXzjTHLHxqeJAIJX/jjWZAoW/dJ8dZDLhx3GU6wBRpA8i4
+	qNjxgZ1b/B/9eWgVo7L2gGsVfAEMsFynmnPk/dYsjsRky76QXoC1gLHIbX/S6yEKex5jPtjaqzl
+	8VDAgeeQsiAEohwbD27uZ38Rk2KX/RTed8DAdfkNAW4YaziBh4CMq4drKsYWyWrlxhfxI2n
+X-Google-Smtp-Source: AGHT+IEUl+DE92Rw6d+0Gq3IkP2D0aXdQ0krI9rjQGtooA895zp+kIvHGxvy3w8gIDqi/jkSh8ek4A==
+X-Received: by 2002:a17:907:7751:b0:a8d:6648:813f with SMTP id a640c23a62f3a-aa5099065afmr299549166b.3.1732292438278;
+        Fri, 22 Nov 2024 08:20:38 -0800 (PST)
+Received: from krava (static-84-42-143-70.bb.vodafone.cz. [84.42.143.70])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa50b2f9e25sm117017666b.78.2024.11.22.08.20.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Nov 2024 08:21:15 -0800 (PST)
-From: Luigi Leonardi <leonardi@redhat.com>
-To: mhal@rbox.co
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bobby.eshleman@bytedance.com,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	davem@davemloft.net,
-	eddyz87@gmail.com,
-	edumazet@google.com,
-	haoluo@google.com,
-	horms@kernel.org,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	kuba@kernel.org,
-	linux-kselftest@vger.kernel.org,
-	martin.lau@linux.dev,
-	mst@redhat.com,
-	mykolal@fb.com,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	sdf@fomichev.me,
-	sgarzare@redhat.com,
-	shuah@kernel.org,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	Luigi Leonardi <leonardi@redhat.com>
-Subject: Re: [PATCH bpf 3/4] bpf, vsock: Invoke proto::close on close()
-Date: Fri, 22 Nov 2024 17:20:31 +0100
-Message-ID: <20241122162031.55141-1-leonardi@redhat.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241118-vsock-bpf-poll-close-v1-3-f1b9669cacdc@rbox.co>
-References: <20241118-vsock-bpf-poll-close-v1-3-f1b9669cacdc@rbox.co>
+        Fri, 22 Nov 2024 08:20:37 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 22 Nov 2024 17:20:36 +0100
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next] libbpf: don't adjust USDT semaphore address if
+ .stapsdt.base addr is missing
+Message-ID: <Z0CvVOjlaknq-vZ5@krava>
+References: <20241121224558.796110-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241121224558.796110-1-andrii@kernel.org>
 
-I spent some time checking and nobody but __sock_create (net/socket.c)
-and vsock_release can set sock->sk to NULL.
+On Thu, Nov 21, 2024 at 02:45:58PM -0800, Andrii Nakryiko wrote:
+> USDT ELF note optionally can record an offset of .stapsdt.base, which is
+> used to make adjustments to USDT target attach address. Currently,
+> libbpf will do this address adjustment unconditionally if it finds
+> .stapsdt.base ELF section in target binary. But there is a corner case
+> where .stapsdt.base ELF section is present, but specific USDT note
+> doesn't reference it. In such case, libbpf will basically just add base
+> address and end up with absolutely incorrect USDT target address.
+> 
+> This adjustment has to be done only if both .stapsdt.sema section is
+> present and USDT note is recording a reference to it.
+> 
+> Fixes: 74cc6311cec9 ("libbpf: Add USDT notes parsing and resolution logic")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-I also ran checkpatch, everything LGTM.
-Thanks for the fix!
+nice, lgtm
 
-Reviewed-by: Luigi Leonardi <leonardi@redhat.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
+jirka
+
+> ---
+>  tools/lib/bpf/usdt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+> index 5f085736c6c4..4e4a52742b01 100644
+> --- a/tools/lib/bpf/usdt.c
+> +++ b/tools/lib/bpf/usdt.c
+> @@ -661,7 +661,7 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
+>  		 *   [0] https://sourceware.org/systemtap/wiki/UserSpaceProbeImplementation
+>  		 */
+>  		usdt_abs_ip = note.loc_addr;
+> -		if (base_addr)
+> +		if (base_addr && note.base_addr)
+>  			usdt_abs_ip += base_addr - note.base_addr;
+>  
+>  		/* When attaching uprobes (which is what USDTs basically are)
+> -- 
+> 2.43.5
+> 
+> 
 
