@@ -1,128 +1,266 @@
-Return-Path: <bpf+bounces-45450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45451-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A4C79D5A1D
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 08:40:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4507A9D5AD3
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 09:14:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF6CBB220CB
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 07:40:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04976283C7C
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2024 08:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925FE1741C6;
-	Fri, 22 Nov 2024 07:39:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F89A18C033;
+	Fri, 22 Nov 2024 08:13:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IblTUbJc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D56C6156C40;
-	Fri, 22 Nov 2024 07:39:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD9218A94C
+	for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 08:13:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732261196; cv=none; b=pHVTwNHNUYcmLf6pNCwfesjGtRovzm6uKLsHafMQSJdLINBKQWYY1K2Ojq2iWGU3SJRk1uvbVwgCbV6fi6cXu0I3Zt8qyp5mvwutKyEeEivN1yFOAziZwRrTy4RuOk2f7OC6JSHD7rra+bFQeXVaDptyAWD+L2l09oVINbX4wew=
+	t=1732263215; cv=none; b=MdblqXEI3Pl3JILgzbT0W6Ju2jqUW/yO3yXpXNksjAPHKOA+0FhzghtWvu9OcmO0cyGKjBjG8rgP9lBZin38bTyoGPJwzsjAjzyDmAt+XAqcliGQQRaOl6ZiFQUuAjB3StY4msKP3+u+/NFE1dSfQ3tpc6R7xsUhoFZpY4lvl8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732261196; c=relaxed/simple;
-	bh=JIco9AWeLSoaR1KYuj+BvTtVCXXIWjicWNQO08uVO7I=;
-	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=kT/Nwm+4tZMmG0ZxvD/fbAJXxK9/aYMLcYlLYvYpH2gvlknjcIoGOb1/TIH5RIvg7U+Iw8D0lv+zrlYrQk6s3cLweZBzYwMFHwhJ8zHYfXDuVKR9XDVUoIXLe0VU0qeA1jFHnlLRlbq80kRicP9uSiJefxe2b6CTDD3ntYMudEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8CxSOFGNUBnP9xFAA--.5272S3;
-	Fri, 22 Nov 2024 15:39:50 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-	by front1 (Coremail) with SMTP id qMiowMDx+0ZFNUBnH8liAA--.35062S3;
-	Fri, 22 Nov 2024 15:39:50 +0800 (CST)
-Subject: Re: [PATCH] LoongArch: BPF: Sign-extend return values
-To: John Fastabend <john.fastabend@gmail.com>,
- Huacai Chen <chenhuacai@kernel.org>
-References: <20241119065230.19157-1-yangtiezhu@loongson.cn>
- <673fd322ce3ac_1118208b3@john.notmuch>
-Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <4f6c74e0-dd22-8460-96fa-f408291a3ef8@loongson.cn>
-Date: Fri, 22 Nov 2024 15:39:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+	s=arc-20240116; t=1732263215; c=relaxed/simple;
+	bh=JCxji8+zZEwg3Qp6iHQDZxtQInqv5sJnQ+PuEwTDVrg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hVGeNIW/8yiquTOTuLeTftyKi/yked+fAx+Mt3mQmGh4E6cxGEt0xRPRe3pC02BsVo5y9v++8yFAyR/BEc7naTZan9B6teNAU3E+HOYrRWo53my+HrqapPdvVksyHdcsstzTMSnLir+LFJRishB9tV2f1jGa16bL1s6R/V40ybg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IblTUbJc; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1732263211;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Jyif/vwioQZSx22jeV7A3meclVkznYeYdCGV00kxmmo=;
+	b=IblTUbJceemp4PUG3LBKNjPa5xEjIJ41lN204pbxGIka0zPrBVzVbLtJy3UMazxkqTkAXj
+	3HqlP9MMpkbyZfxmOqCgoQMNRi7jh+QvWrW5I1jGiPrcKNV9ko5Ge9hMWtHETFxtiK9u22
+	cnG4NDdVV7rzSCS+36/56DBY33PCowo=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-524-6C_OhSFjOdutc1-_6ZBYlQ-1; Fri, 22 Nov 2024 03:13:30 -0500
+X-MC-Unique: 6C_OhSFjOdutc1-_6ZBYlQ-1
+X-Mimecast-MFC-AGG-ID: 6C_OhSFjOdutc1-_6ZBYlQ
+Received: by mail-yb1-f199.google.com with SMTP id 3f1490d57ef6-e3891f31330so3272873276.3
+        for <bpf@vger.kernel.org>; Fri, 22 Nov 2024 00:13:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732263210; x=1732868010;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jyif/vwioQZSx22jeV7A3meclVkznYeYdCGV00kxmmo=;
+        b=MWU0vwLI/GirD0e0gVg1OV1/oSTRANtOIoFagyvrHNO6ha7IxjJ/nzc6LkJgdT62J5
+         WGZ8ZnpfHaZQknPIRPJOJ9XtT4kEwQOX6F7d3u69L2zHuYYCRjKk7mQd54679qbN1di7
+         Gh5DSDrCiJF3H4IhgZSjxqpBVhhMmwS6TAB6B+vOCFqomJDr1sGZGe/pw2nlEpDdZT7b
+         M5uj9ve+8wy3MKA6KWOEVIHcNpTsbr9tFwadvPgCTaD2gYk1VblI8x5fDQZ2ycnymm3W
+         cZJOKx/SI6zhGvBHLEqyrC8x8gj0T24NkD/HiYWxGBQN9/co1/R6MAM11Jo9+1+WoPSk
+         ceYg==
+X-Forwarded-Encrypted: i=1; AJvYcCVDBHRlAWStcruY6PUWYa1m6hZo5wCe0qPtLNIqV7U10Q2rrCMLDheaeQ8/UtNCrQ4MGvg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzievmFGYBDGhDBE1lJbOHkAMVuTD0srACfwhRZPS1wvWWAkehP
+	Fv3J08N1wFdE3UFg8lffrCCAWTnQ/8OQ4i++TBZW9j2FQtzSffs6g7abAl2ZkKTjQEakEpXpMnn
+	1iKuG8g1S/8cOFMRdDY1bz3+wvrk11RgbPz/zrmAmHHfkMbsu7YPgsYUBaROn8sWThoB0KyMG5i
+	ftp0XkXbcm4m7lxQz0dcuwvCpP
+X-Gm-Gg: ASbGncvJjLuiEih1DOzjt/axjBeEMK3pCu1/Vvgk80ssYBWUc3uZz8LX4/PZ3FNw1i2
+	lrAX3+Prx7jMQzTy0YXTxZaZ9PSobt2g=
+X-Received: by 2002:a05:6902:1a47:b0:e38:c0ed:8110 with SMTP id 3f1490d57ef6-e38f8af84afmr1719576276.8.1732263209932;
+        Fri, 22 Nov 2024 00:13:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGKRhMEchEwv851aJVBwXS4rpjG90mS+TEvahOSXsiWvE5DyfFNG4Z+Ig23pjG3EVB8nsNtJzWE+ExjTpdJI/I=
+X-Received: by 2002:a05:6902:1a47:b0:e38:c0ed:8110 with SMTP id
+ 3f1490d57ef6-e38f8af84afmr1719537276.8.1732263209529; Fri, 22 Nov 2024
+ 00:13:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <673fd322ce3ac_1118208b3@john.notmuch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:qMiowMDx+0ZFNUBnH8liAA--.35062S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7KF17Zr45CrWDCrWxAw1rKrX_yoW8Zr1fpr
-	9xAa9IyFWDW34jq3ZFy3y5Wr18KrsxWFW3Wa4YgryUXFnIva48Xw18Kws8XFZYvw48Wa4I
-	qr90y343Aa1DJacCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
-	67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
-	AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
-	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw
-	1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
-	xVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
-	4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jO
-	uc_UUUUU=
+References: <20241118-vsock-bpf-poll-close-v1-0-f1b9669cacdc@rbox.co>
+ <20241118-vsock-bpf-poll-close-v1-3-f1b9669cacdc@rbox.co> <7wufhaaytdjp3m3xv7jrdadqjg75is5eirv4bzmjzmezc7v7ls@p52fm6y537di>
+ <350e3a3f-7ebd-471e-95fa-05225d786f1c@rbox.co>
+In-Reply-To: <350e3a3f-7ebd-471e-95fa-05225d786f1c@rbox.co>
+From: Stefano Garzarella <sgarzare@redhat.com>
+Date: Fri, 22 Nov 2024 09:13:18 +0100
+Message-ID: <CAGxU2F5M9Mzpef4ef7NXCR2YP=k_SC93GC_k9CMj1DgVSkpQSw@mail.gmail.com>
+Subject: Re: [PATCH bpf 3/4] bpf, vsock: Invoke proto::close on close()
+To: Michal Luczaj <mhal@rbox.co>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Bobby Eshleman <bobby.eshleman@bytedance.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/22/2024 08:41 AM, John Fastabend wrote:
-> Tiezhu Yang wrote:
->> (1) Description of Problem:
->>
->> When testing BPF JIT with the latest compiler toolchains on LoongArch,
->> there exist some strange failed test cases, dmesg shows something like
->> this:
->>
->>   # dmesg -t | grep FAIL | head -1
->>   ... ret -3 != -3 (0xfffffffd != 0xfffffffd)FAIL ...
-
-...
-
->>
->> (5) Final Solution:
->>
->> Keep a5 zero-extended, but explicitly sign-extend a0 (which is used
->> outside BPF land). Because libbpf currently defines the return value
->> of an ebpf program as a 32-bit unsigned integer, just use addi.w to
->> extend bit 31 into bits 63 through 32 of a5 to a0. This is similar
->> with commit 2f1b0d3d7331 ("riscv, bpf: Sign-extend return values").
->>
->> Fixes: 5dc615520c4d ("LoongArch: Add BPF JIT support")
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>  arch/loongarch/net/bpf_jit.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
->> index 7dbefd4ba210..dd350cba1252 100644
->> --- a/arch/loongarch/net/bpf_jit.c
->> +++ b/arch/loongarch/net/bpf_jit.c
->> @@ -179,7 +179,7 @@ static void __build_epilogue(struct jit_ctx *ctx, bool is_tail_call)
->>
->>  	if (!is_tail_call) {
->>  		/* Set return value */
->> -		move_reg(ctx, LOONGARCH_GPR_A0, regmap[BPF_REG_0]);
->> +		emit_insn(ctx, addiw, LOONGARCH_GPR_A0, regmap[BPF_REG_0], 0);
+On Thu, Nov 21, 2024 at 8:54=E2=80=AFPM Michal Luczaj <mhal@rbox.co> wrote:
 >
-> Not overly familiar with this JIT but just to check this wont be used
-> for BPF 2 BPF calls correct?
+> On 11/21/24 10:22, Stefano Garzarella wrote:
+> > On Mon, Nov 18, 2024 at 10:03:43PM +0100, Michal Luczaj wrote:
+> >> vsock defines a BPF callback to be invoked when close() is called. How=
+ever,
+> >> this callback is never actually executed. As a result, a closed vsock
+> >> socket is not automatically removed from the sockmap/sockhash.
+> >>
+> >> Introduce a dummy vsock_close() and make vsock_release() call proto::c=
+lose.
+> >>
+> >> Note: changes in __vsock_release() look messy, but it's only due to in=
+dent
+> >> level reduction and variables xmas tree reorder.
+> >>
+> >> Fixes: 634f1a7110b4 ("vsock: support sockmap")
+> >> Signed-off-by: Michal Luczaj <mhal@rbox.co>
+> >> ---
+> >> net/vmw_vsock/af_vsock.c | 67 +++++++++++++++++++++++++++++-----------=
+--------
+> >> 1 file changed, 40 insertions(+), 27 deletions(-)
+> >>
+> >> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+> >> index 919da8edd03c838cbcdbf1618425da6c5ec2df1a..b52b798aa4c2926c3f233a=
+ad6cd31b4056f6fee2 100644
+> >> --- a/net/vmw_vsock/af_vsock.c
+> >> +++ b/net/vmw_vsock/af_vsock.c
+> >> @@ -117,12 +117,14 @@
+> >> static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr);
+> >> static void vsock_sk_destruct(struct sock *sk);
+> >> static int vsock_queue_rcv_skb(struct sock *sk, struct sk_buff *skb);
+> >> +static void vsock_close(struct sock *sk, long timeout);
+> >>
+> >> /* Protocol family. */
+> >> struct proto vsock_proto =3D {
+> >>      .name =3D "AF_VSOCK",
+> >>      .owner =3D THIS_MODULE,
+> >>      .obj_size =3D sizeof(struct vsock_sock),
+> >> +    .close =3D vsock_close,
+> >> #ifdef CONFIG_BPF_SYSCALL
+> >>      .psock_update_sk_prot =3D vsock_bpf_update_proto,
+> >> #endif
+> >> @@ -797,39 +799,37 @@ static bool sock_type_connectible(u16 type)
+> >>
+> >> static void __vsock_release(struct sock *sk, int level)
+> >> {
+> >> -    if (sk) {
+> >> -            struct sock *pending;
+> >> -            struct vsock_sock *vsk;
+> >> -
+> >> -            vsk =3D vsock_sk(sk);
+> >> -            pending =3D NULL; /* Compiler warning. */
+> >> +    struct vsock_sock *vsk;
+> >> +    struct sock *pending;
+> >>
+> >> -            /* When "level" is SINGLE_DEPTH_NESTING, use the nested
+> >> -             * version to avoid the warning "possible recursive locki=
+ng
+> >> -             * detected". When "level" is 0, lock_sock_nested(sk, lev=
+el)
+> >> -             * is the same as lock_sock(sk).
+> >> -             */
+> >> -            lock_sock_nested(sk, level);
+> >> +    vsk =3D vsock_sk(sk);
+> >> +    pending =3D NULL; /* Compiler warning. */
+> >>
+> >> -            if (vsk->transport)
+> >> -                    vsk->transport->release(vsk);
+> >> -            else if (sock_type_connectible(sk->sk_type))
+> >> -                    vsock_remove_sock(vsk);
+> >> +    /* When "level" is SINGLE_DEPTH_NESTING, use the nested
+> >> +     * version to avoid the warning "possible recursive locking
+> >> +     * detected". When "level" is 0, lock_sock_nested(sk, level)
+> >> +     * is the same as lock_sock(sk).
+> >> +     */
+> >> +    lock_sock_nested(sk, level);
+> >>
+> >> -            sock_orphan(sk);
+> >> -            sk->sk_shutdown =3D SHUTDOWN_MASK;
+> >> +    if (vsk->transport)
+> >> +            vsk->transport->release(vsk);
+> >> +    else if (sock_type_connectible(sk->sk_type))
+> >> +            vsock_remove_sock(vsk);
+> >>
+> >> -            skb_queue_purge(&sk->sk_receive_queue);
+> >> +    sock_orphan(sk);
+> >> +    sk->sk_shutdown =3D SHUTDOWN_MASK;
+> >>
+> >> -            /* Clean up any sockets that never were accepted. */
+> >> -            while ((pending =3D vsock_dequeue_accept(sk)) !=3D NULL) =
+{
+> >> -                    __vsock_release(pending, SINGLE_DEPTH_NESTING);
+> >> -                    sock_put(pending);
+> >> -            }
+> >> +    skb_queue_purge(&sk->sk_receive_queue);
+> >>
+> >> -            release_sock(sk);
+> >> -            sock_put(sk);
+> >> +    /* Clean up any sockets that never were accepted. */
+> >> +    while ((pending =3D vsock_dequeue_accept(sk)) !=3D NULL) {
+> >> +            __vsock_release(pending, SINGLE_DEPTH_NESTING);
+> >> +            sock_put(pending);
+> >>      }
+> >> +
+> >> +    release_sock(sk);
+> >> +    sock_put(sk);
+> >> }
+> >>
+> >> static void vsock_sk_destruct(struct sock *sk)
+> >> @@ -901,9 +901,22 @@ void vsock_data_ready(struct sock *sk)
+> >> }
+> >> EXPORT_SYMBOL_GPL(vsock_data_ready);
+> >>
+> >> +/* Dummy callback required by sockmap.
+> >> + * See unconditional call of saved_close() in sock_map_close().
+> >> + */
+> >> +static void vsock_close(struct sock *sk, long timeout)
+> >> +{
+> >> +}
+> >> +
+> >> static int vsock_release(struct socket *sock)
+> >> {
+> >> -    __vsock_release(sock->sk, 0);
+> >> +    struct sock *sk =3D sock->sk;
+> >> +
+> >> +    if (!sk)
+> >> +            return 0;
+> >
+> > Compared with before, now we return earlier and so we don't set SS_FREE=
+,
+> > could it be risky?
+> >
+> > I think no, because in theory we have already set it in a previous call=
+,
+> > right?
+>
+> Yeah, and is there actually a way to call vsock_release() for a second
+> time? The only caller I see is __sock_release(), which won't allow that.
 
-I am not sure I understand your comment correctly, but with and without
-this patch, the LoongArch JIT uses a5 as a dedicated register for BPF
-return values, a5 is kept as zero-extended for bpf2bpf, just make a0
-(which is used outside BPF land) as sign-extend, all of the test cases
-in test_bpf.ko passed with "echo 1 > /proc/sys/net/core/bpf_jit_enable".
+Maybe no, but the `sock->sk` check made me think so.
 
-Thanks,
-Tiezhu
+>
+> As for the sockets that never had ->sk assigned, I assume it doesn't matt=
+er.
+
+Yep, so my R-b stays here ;-)
+
+Thanks for these great fixes,
+Stefano
+
+>
+> > Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+> >
+> >> +
+> >> +    sk->sk_prot->close(sk, 0);
+> >> +    __vsock_release(sk, 0);
+> >>      sock->sk =3D NULL;
+> >>      sock->state =3D SS_FREE;
+>
 
 
