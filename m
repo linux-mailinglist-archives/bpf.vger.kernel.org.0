@@ -1,115 +1,150 @@
-Return-Path: <bpf+bounces-45496-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45497-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D930F9D68DF
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 12:31:56 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE3C9D6903
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 13:37:14 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F77C281B69
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 11:31:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D6F8161520
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 12:37:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2707718A6BA;
-	Sat, 23 Nov 2024 11:31:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3FED189B80;
+	Sat, 23 Nov 2024 12:37:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nu5aczPb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KDnWeUWz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63DE04204B;
-	Sat, 23 Nov 2024 11:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D0208F62;
+	Sat, 23 Nov 2024 12:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732361509; cv=none; b=Xx3qrbfrxumE5/LyeMGMWxbJdbvCjzc0MZBahdOFiI9MMr0r9y2iB8NHfrfcgS4a+MzairsJuiuOwdr2V8XO21qzez18j218xza5HkOIb0mCbLw70iNpU0+JngTy9bV3kZfsb1PiomuGiVEzOdeFOEOk/d95WCHMkWqAEDmPiSM=
+	t=1732365428; cv=none; b=SjyicnSpgtk/iDnKpjwtdJDlyDtynjCeF6UBjXmz6zMCQcElRojdw7FdNo0zXssIsBPuX4Ee1ygR8iZDmZ+UbNSzW/PUn6CyesRWQgFdl8E/0s1wupUyiliBc0wCxYeucINK5X8JaqQ8WwPIi/Ruv2gPP6ThIj1/V+/dTaGTIjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732361509; c=relaxed/simple;
-	bh=7l53ff7oBSbondRTNi7K/Blxj+8PK+VAW7cT64gbz7g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BL3HUXHwh5MwmRARMwAVmhfTIrEtjJ32wwXMeFnVAgqcVyVlkJVI1d0NHKBF5iCiFeDIqEWubHGMYeldZb9wKncw8vld3+7UIlRrqF6Jw4DYxLVfMOM5w3XfzmhgHhfH1BJtcG1ZNJYuTC0GWiYaqmCALEB2C55yBpee4hJ4aoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nu5aczPb; arc=none smtp.client-ip=209.85.214.178
+	s=arc-20240116; t=1732365428; c=relaxed/simple;
+	bh=/KqLI+c6V+eHCk3PcyFlMtCqEsq2g5NGUwg4Z3SZNO4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kSxrEXz/PjbZ7KyHq9SDdpK5e6SAD5lqyBTxSj+/LEKapLj5ECWI08obbcnJr2mxtzFukilmrG26s2FgYIbL/ccDLPV0n+XUpGvRCMAXFTAtN62S63ZnrWLmNfm4kmpR2Gkk4I/QvCkAPYzo12qm8qK5eoFdMcNegpW0bnbDY1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KDnWeUWz; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2124ccf03edso29380135ad.2;
-        Sat, 23 Nov 2024 03:31:48 -0800 (PST)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-431616c23b5so16589915e9.0;
+        Sat, 23 Nov 2024 04:37:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732361508; x=1732966308; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=U8nb5xhW2sO139VthmTPAswqENky3wnHBx6HMmEx694=;
-        b=Nu5aczPbkM7GY6OmEqle9LQmZgmAq6N7fTKa+7JqrYPjty0C5/V4ZbSg5Q+dXa3NzC
-         ivChGbr4onI7oMFsatzKx8ysnf/0+DPSoynDAWFfKd7Hx6nfHFXPfB5uimvW2Tq19+1a
-         xmFZJMpG6p9XXCk9cXIaWW8d2z+PESK8zz0eZ2q/81uzAcHVOG9pQ1MN4hTyVFzhFpX4
-         haSWOpGT0OsbXDfR5jJf8WXJHKWAYq01jaAtUUqMCeJVbdPAQYHZBSd801sZqyv9Jjm3
-         +3XAbilOmmL/HRV6H3yD+elPVPdA29nWB89NuadbnPCE3HbL0khHzGnVS2naWy5/g4/B
-         rRPw==
+        d=gmail.com; s=20230601; t=1732365424; x=1732970224; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=j+FIYWNxDRo9TU3lZYYljtUtoA1ai5ejfbOQhPyfFvI=;
+        b=KDnWeUWzG7cuHyquu8J075LbsAPTI8lJImB+IQ/n+8xJlUunWsDaRG7xEUA+g0MuUY
+         klolXIGrFuUAXajcRLvUfWPi4lyxh1KUD3Uw5fMqLBXrvV5Kz1FrEveVyHs/9pLIVBQj
+         4rlwtNoWjXK6SLQlG0+aet0GdiR/fy5MDEh1YizTw4BUBoFGNPYTz4Ad/dUbTbybUaTq
+         yi05xwsXbkXdf0B2Me8aKkdVOMH4yAmNk8jqo426nmGslHH+UYueTwG69DkTucVzkDFv
+         7FJSSwGXvGOIO8WvUBniWg8mK8GNYaWcy364ITnC5ZI7FLil9Bx3gqDxMEqyTvrvlqOu
+         j1Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732361508; x=1732966308;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U8nb5xhW2sO139VthmTPAswqENky3wnHBx6HMmEx694=;
-        b=rpraVvY0OX8HfnpSouPXi2uGdiXvVE4DYc0YifPsv6bku9qDatSxYC3A+wIYkNbUDu
-         Hi4j2CRFkqSyJsa4oQYAimuyClZy5YqjL/b+0CyJOFLTSu1/i0YwQxXvA6RM/yiPeHMP
-         F/7V703mCXN5pXcoVvXWLNbLwCGs5Prl8ZhBDE9uRynf+363RkNaYe01CH0dHBaOPMWA
-         d0spp/Jd2oDpBGHkS3Cbeq+aeDSCA5as9a2/g4NJYUAWnRIrEtNtTGXNoDu/5SGKji19
-         feMPqUTS2v3SDPPAaF4Jxdb1sbO9MALmIEuzKTQhT5p1lGbo8Kh0Tm41UE0NWTHcU0wN
-         kLfA==
-X-Forwarded-Encrypted: i=1; AJvYcCVaGxIZWBjbNSoz99jjvVS2NL2ysu+S4mkk4yzk/bypj6DfLJb3h0zUnaUUEsIR5Uxg68YEM0mgvOssJq8=@vger.kernel.org, AJvYcCXTl7FlxcKtTs8hM+nENMo98RUY5uHILhI4HAePeVj30OwrPb5YW80wG18SJBoVYJTDiKn2e3zvjifLGA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwQuwqRLDiCjcP6PbA/Y/t9FaBMUJtPJkgeHhe9gLcrHtfKXOpY
-	Smbv1LpPh+pfaUOXIGgHTa8h2FF59on5pHSaZEWc35qOBY42lDpE
-X-Gm-Gg: ASbGncvai36YrLcqk2NiAtoCFjVkbadlYptBiLX9/Vl+NZtsw23lmF9rCsY3uoMcxZl
-	SeSNZfKOmgl8rsdPc+MFOJHBIClTLso4O0PRtjOaQeTTPjkFR+nFqh+a5JWTPH9vXNnh5Z3YQA3
-	iz0vEtiZvqjUP79Uno5maJWe50c8LHXVmWwUfNpaaiQQj5OwbyzaB1GZOgpwvW4nTvIeb06Pozl
-	hmiZ/kiCK01zZM0QQRbNWaYQTh0Rsw3/0Kk5z8DdO7VuUyYJKcO7/RxF3xUM/oBwWmrv0prlo9v
-	M32Llr1OpXwp+kjSSj2ca6vKo/09pyn++w==
-X-Google-Smtp-Source: AGHT+IG3PzaM8Bw+R0W394CBKZEv9djrxBQmV3JOp7Wd20s/KiyA5JnyhBFunBImiThgsNSsPn2G/A==
-X-Received: by 2002:a17:902:e5c3:b0:20d:cb6:11e with SMTP id d9443c01a7336-2129f797c7amr70270315ad.26.1732361507576;
-        Sat, 23 Nov 2024 03:31:47 -0800 (PST)
-Received: from localhost.localdomain ([121.241.130.50])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fbcc218925sm3187487a12.43.2024.11.23.03.31.44
+        d=1e100.net; s=20230601; t=1732365424; x=1732970224;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j+FIYWNxDRo9TU3lZYYljtUtoA1ai5ejfbOQhPyfFvI=;
+        b=Dl4PfRqjud3HYnRqo+8lIiywsJvjcrUQapXWqV+ID8Wv3lCEfDaRb+LAKWCRU6fZgV
+         /9eb5CKBC8lwP7bXx+rTipFve28peKTAQe38g3ebk0nLyI93q4pW/8166AAx58UyDbN1
+         KkGnl4vT+ttyxip52lMp0BTe6MQ8O+I8VAGfG2selUTsdRP2znZoJ5EPY4kmuA/wMK6T
+         IHUEp4kxgqSn1jkBwHd5Vok7YfEFXRLwovXGi2yRdU70kpohRFBl3Upkg6loiiJNv01Y
+         1/KVI7lBJxQi75bBD18efB+jtnSSQgvo6eTePtFUvhh5+O9JuhiJOI5pJC0lBW+zq3TA
+         ytMg==
+X-Forwarded-Encrypted: i=1; AJvYcCWOH/0VzFe3auhXNqyPIHdNY5HkLZ+pv0lzHCe2pRtoDt3H/2dp6sHqE0aQYLxnzNP5TZF9EcLp9kjVZPLU@vger.kernel.org, AJvYcCX6lR4KNipb73OQ/yQT/ah6PAP7uDvEcDrEgtTTaEO2M7sZatjB8tmfn9yisHKdI2o1tZ2L@vger.kernel.org, AJvYcCXI8sN0DafD2sdmnAF35WATy0W9C/GBrnYJ/G/YaHS8AkmpgC3yLSrMMVCU6brJDsXCK+B5z3UQVQ==@vger.kernel.org, AJvYcCXiQOSZLg6Qut3EbvkRMqpNuH0MV9iPKnKMOy41ItDu8NTKZIoHTL8FLVK5KTf6Ypkch0WbaA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxa265K8xLZfcqovMrgEMcA4tqRrJMv4tSO/dWIcJ/yuGoUF0Uf
+	e3izegQhrPpzePWfxxSYz1cGVNzZ+ZUPbHczt58kStHNldptlB9o
+X-Gm-Gg: ASbGncsjZmwhfG/GYFoo9tvTWKYdmnRsb5f395JSjnDSjGLOvVwAP4xX4r5mK/LzC6l
+	rthDn3dpvM1++W19s9g9zhWHsatrUKZzRP0DFAzFEiR0f/iGjL+rewiMIhzyvruPxFzVMpmn0gY
+	wJVgiK/iCw5D9u8Sbmj3QvByWd2WchCqquoSNg4QXOQQ/Cho6VgWPYBbEgptarZO/WGHtm/9vv6
+	TDzTW200egtMerJZHTJpulgF72QYODvRWahz/Yhcly6liXq1YFRjM1dpoiZ439dHkLHLj4=
+X-Google-Smtp-Source: AGHT+IGHNtE8JDX0+q6Lv6PMJPfhfsNRALK4ZhqFSQb8QeR03JV46vW7ocE89UcLvWXZNiEP33bteQ==
+X-Received: by 2002:a05:600c:1ca1:b0:431:559d:4103 with SMTP id 5b1f17b1804b1-433cdb0b2ffmr52512575e9.7.1732365424054;
+        Sat, 23 Nov 2024 04:37:04 -0800 (PST)
+Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43498a31432sm3012315e9.28.2024.11.23.04.37.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Nov 2024 03:31:47 -0800 (PST)
-From: Ayush Satyam <ayushsatyam146@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev
-Cc: bpf@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Ayush Satyam <ayushsatyam146@gmail.com>
-Subject: [PATCH] bpf: sparc64: fix typo dont->don't
-Date: Sat, 23 Nov 2024 03:31:16 -0800
-Message-Id: <20241123113116.1983-1-ayushsatyam146@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Sat, 23 Nov 2024 04:37:03 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sat, 23 Nov 2024 13:37:00 +0100
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: KP Singh <kpsingh@kernel.org>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+	Paul Moore <paul@paul-moore.com>,
+	Casey Schaufler <casey@schaufler-ca.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, audit@vger.kernel.org,
+	selinux@vger.kernel.org
+Subject: Re: [PATCH] bpf, lsm: Fix getlsmprop hooks BTF IDs
+Message-ID: <Z0HMbErrqgrklLSC@krava>
+References: <20241123-bpf_lsm_task_getsecid_obj-v1-1-0d0f94649e05@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20241123-bpf_lsm_task_getsecid_obj-v1-1-0d0f94649e05@weissschuh.net>
 
-Signed-off-by: Ayush Satyam <ayushsatyam146@gmail.com>
----
- arch/sparc/net/bpf_jit_comp_64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sat, Nov 23, 2024 at 11:19:01AM +0100, Thomas Weiﬂschuh wrote:
+> The hooks got renamed, adapt the BTF IDs.
+> Fixes the following build warning:
+> 
+>   BTFIDS  vmlinux
+> WARN: resolve_btfids: unresolved symbol bpf_lsm_task_getsecid_obj
+> WARN: resolve_btfids: unresolved symbol bpf_lsm_current_getsecid_subj
+> 
+> Fixes: 37f670aacd48 ("lsm: use lsm_prop in security_current_getsecid")
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
 
-diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
-index 73bf0aea8..0f850bbe7 100644
---- a/arch/sparc/net/bpf_jit_comp_64.c
-+++ b/arch/sparc/net/bpf_jit_comp_64.c
-@@ -732,7 +732,7 @@ static int emit_compare_and_branch(const u8 code, const u8 dst, u8 src,
- 			br_opcode = BLE;
- 			break;
- 		default:
--			/* Make sure we dont leak kernel information to the
-+			/* Make sure we don't leak kernel information to the
- 			 * user.
- 			 */
- 			return -EFAULT;
--- 
-2.20.1
+Acked-by: Jiri Olsa <olsajiri@gmail.com>
 
+thanks,
+jirka
+
+> ---
+>  kernel/bpf/bpf_lsm.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> index 3bc61628ab251e05d7837eb27dabc3b62bcc4783..5be76572ab2e8a0c6e18a81f9e4c14812a11aad2 100644
+> --- a/kernel/bpf/bpf_lsm.c
+> +++ b/kernel/bpf/bpf_lsm.c
+> @@ -375,8 +375,8 @@ BTF_ID(func, bpf_lsm_socket_socketpair)
+>  
+>  BTF_ID(func, bpf_lsm_syslog)
+>  BTF_ID(func, bpf_lsm_task_alloc)
+> -BTF_ID(func, bpf_lsm_current_getsecid_subj)
+> -BTF_ID(func, bpf_lsm_task_getsecid_obj)
+> +BTF_ID(func, bpf_lsm_current_getlsmprop_subj)
+> +BTF_ID(func, bpf_lsm_task_getlsmprop_obj)
+>  BTF_ID(func, bpf_lsm_task_prctl)
+>  BTF_ID(func, bpf_lsm_task_setscheduler)
+>  BTF_ID(func, bpf_lsm_task_to_inode)
+> 
+> ---
+> base-commit: 228a1157fb9fec47eb135b51c0202b574e079ebf
+> change-id: 20241123-bpf_lsm_task_getsecid_obj-afdd47f84c7f
+> 
+> Best regards,
+> -- 
+> Thomas Weiﬂschuh <linux@weissschuh.net>
+> 
 
