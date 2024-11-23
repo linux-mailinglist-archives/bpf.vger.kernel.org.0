@@ -1,116 +1,115 @@
-Return-Path: <bpf+bounces-45495-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45496-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB4DD9D6891
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 11:19:27 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C81C1612C2
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 10:19:24 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36E51885A0;
-	Sat, 23 Nov 2024 10:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="S04WjwXl"
-X-Original-To: bpf@vger.kernel.org
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D930F9D68DF
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 12:31:56 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C84B54A0A;
-	Sat, 23 Nov 2024 10:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F77C281B69
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 11:31:55 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2707718A6BA;
+	Sat, 23 Nov 2024 11:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nu5aczPb"
+X-Original-To: bpf@vger.kernel.org
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63DE04204B;
+	Sat, 23 Nov 2024 11:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732357161; cv=none; b=ssCCjRevrNJL610QjtydAdRfT6lWG15QAK1eCsF4h7Zeylf9EzbQAiQz1GSkKO/2cYXM6ieA5+Mk8sK6GpdxLphLcnQ6f9j5s38Kx2OpCB0FvmbjcurDYC4EqCAFqMxLGRXXNvm4zRUErylRqh1mRaCYxBlLFAeOKT7Ah7bmua0=
+	t=1732361509; cv=none; b=Xx3qrbfrxumE5/LyeMGMWxbJdbvCjzc0MZBahdOFiI9MMr0r9y2iB8NHfrfcgS4a+MzairsJuiuOwdr2V8XO21qzez18j218xza5HkOIb0mCbLw70iNpU0+JngTy9bV3kZfsb1PiomuGiVEzOdeFOEOk/d95WCHMkWqAEDmPiSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732357161; c=relaxed/simple;
-	bh=0ibmJ8f3A4hcCPMhLVIPy6wl6iW3h7ziHqKf6IlJjlU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=LZ77ZUohvOeVOkLw/lUIY+/vTMnDov2yIx0ChrJH0uwVy4bl1EAiKPkzhFSgga2j+Glu7E7qvIxy/J/dwOzRFZ1j1nYaO8jCbzlzqVdIk5PBv/ewkAJs/msjtoc4YjuhTURoIpfL5vcxEJwjaI/Jqe1mFmjDKpvL+Qb7Yjml19E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=S04WjwXl; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1732357147;
-	bh=0ibmJ8f3A4hcCPMhLVIPy6wl6iW3h7ziHqKf6IlJjlU=;
-	h=From:Date:Subject:To:Cc:From;
-	b=S04WjwXlYA5woaAimaYd7wzRVWGRtnalWZnfETYiEPVvkLGkxMQc6RUMztwIMZix7
-	 21yqYuJVZheMhpnXRGNns1qN+AE0bmpE7iR8YcWKyYEN2Qxo7+KUc1YfjRnCJgHBJU
-	 OOtLf/9OAktOe9KhAMKxJX+UZkpLawLUMG1+Kbcg=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Sat, 23 Nov 2024 11:19:01 +0100
-Subject: [PATCH] bpf, lsm: Fix getlsmprop hooks BTF IDs
+	s=arc-20240116; t=1732361509; c=relaxed/simple;
+	bh=7l53ff7oBSbondRTNi7K/Blxj+8PK+VAW7cT64gbz7g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BL3HUXHwh5MwmRARMwAVmhfTIrEtjJ32wwXMeFnVAgqcVyVlkJVI1d0NHKBF5iCiFeDIqEWubHGMYeldZb9wKncw8vld3+7UIlRrqF6Jw4DYxLVfMOM5w3XfzmhgHhfH1BJtcG1ZNJYuTC0GWiYaqmCALEB2C55yBpee4hJ4aoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nu5aczPb; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2124ccf03edso29380135ad.2;
+        Sat, 23 Nov 2024 03:31:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732361508; x=1732966308; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U8nb5xhW2sO139VthmTPAswqENky3wnHBx6HMmEx694=;
+        b=Nu5aczPbkM7GY6OmEqle9LQmZgmAq6N7fTKa+7JqrYPjty0C5/V4ZbSg5Q+dXa3NzC
+         ivChGbr4onI7oMFsatzKx8ysnf/0+DPSoynDAWFfKd7Hx6nfHFXPfB5uimvW2Tq19+1a
+         xmFZJMpG6p9XXCk9cXIaWW8d2z+PESK8zz0eZ2q/81uzAcHVOG9pQ1MN4hTyVFzhFpX4
+         haSWOpGT0OsbXDfR5jJf8WXJHKWAYq01jaAtUUqMCeJVbdPAQYHZBSd801sZqyv9Jjm3
+         +3XAbilOmmL/HRV6H3yD+elPVPdA29nWB89NuadbnPCE3HbL0khHzGnVS2naWy5/g4/B
+         rRPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732361508; x=1732966308;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U8nb5xhW2sO139VthmTPAswqENky3wnHBx6HMmEx694=;
+        b=rpraVvY0OX8HfnpSouPXi2uGdiXvVE4DYc0YifPsv6bku9qDatSxYC3A+wIYkNbUDu
+         Hi4j2CRFkqSyJsa4oQYAimuyClZy5YqjL/b+0CyJOFLTSu1/i0YwQxXvA6RM/yiPeHMP
+         F/7V703mCXN5pXcoVvXWLNbLwCGs5Prl8ZhBDE9uRynf+363RkNaYe01CH0dHBaOPMWA
+         d0spp/Jd2oDpBGHkS3Cbeq+aeDSCA5as9a2/g4NJYUAWnRIrEtNtTGXNoDu/5SGKji19
+         feMPqUTS2v3SDPPAaF4Jxdb1sbO9MALmIEuzKTQhT5p1lGbo8Kh0Tm41UE0NWTHcU0wN
+         kLfA==
+X-Forwarded-Encrypted: i=1; AJvYcCVaGxIZWBjbNSoz99jjvVS2NL2ysu+S4mkk4yzk/bypj6DfLJb3h0zUnaUUEsIR5Uxg68YEM0mgvOssJq8=@vger.kernel.org, AJvYcCXTl7FlxcKtTs8hM+nENMo98RUY5uHILhI4HAePeVj30OwrPb5YW80wG18SJBoVYJTDiKn2e3zvjifLGA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQuwqRLDiCjcP6PbA/Y/t9FaBMUJtPJkgeHhe9gLcrHtfKXOpY
+	Smbv1LpPh+pfaUOXIGgHTa8h2FF59on5pHSaZEWc35qOBY42lDpE
+X-Gm-Gg: ASbGncvai36YrLcqk2NiAtoCFjVkbadlYptBiLX9/Vl+NZtsw23lmF9rCsY3uoMcxZl
+	SeSNZfKOmgl8rsdPc+MFOJHBIClTLso4O0PRtjOaQeTTPjkFR+nFqh+a5JWTPH9vXNnh5Z3YQA3
+	iz0vEtiZvqjUP79Uno5maJWe50c8LHXVmWwUfNpaaiQQj5OwbyzaB1GZOgpwvW4nTvIeb06Pozl
+	hmiZ/kiCK01zZM0QQRbNWaYQTh0Rsw3/0Kk5z8DdO7VuUyYJKcO7/RxF3xUM/oBwWmrv0prlo9v
+	M32Llr1OpXwp+kjSSj2ca6vKo/09pyn++w==
+X-Google-Smtp-Source: AGHT+IG3PzaM8Bw+R0W394CBKZEv9djrxBQmV3JOp7Wd20s/KiyA5JnyhBFunBImiThgsNSsPn2G/A==
+X-Received: by 2002:a17:902:e5c3:b0:20d:cb6:11e with SMTP id d9443c01a7336-2129f797c7amr70270315ad.26.1732361507576;
+        Sat, 23 Nov 2024 03:31:47 -0800 (PST)
+Received: from localhost.localdomain ([121.241.130.50])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fbcc218925sm3187487a12.43.2024.11.23.03.31.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Nov 2024 03:31:47 -0800 (PST)
+From: Ayush Satyam <ayushsatyam146@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev
+Cc: bpf@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Ayush Satyam <ayushsatyam146@gmail.com>
+Subject: [PATCH] bpf: sparc64: fix typo dont->don't
+Date: Sat, 23 Nov 2024 03:31:16 -0800
+Message-Id: <20241123113116.1983-1-ayushsatyam146@gmail.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20241123-bpf_lsm_task_getsecid_obj-v1-1-0d0f94649e05@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIABSsQWcC/x3MTQqEMAxA4atI1hZsLSheRaTUNnHiP43IgHj3K
- bP8Fu89IJgYBbrigYQ3Cx97hi4LCB+/T6g4ZoOpjNXa1Go8ya2yucvL4ia8BANHd4yz8hSjbai
- 1oSHI/ZmQ+Pt/98P7/gAXtBbrawAAAA==
-X-Change-ID: 20241123-bpf_lsm_task_getsecid_obj-afdd47f84c7f
-To: KP Singh <kpsingh@kernel.org>, 
- Matt Bobrowski <mattbobrowski@google.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Paul Moore <paul@paul-moore.com>, 
- Casey Schaufler <casey@schaufler-ca.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- audit@vger.kernel.org, selinux@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1732357146; l=1280;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=0ibmJ8f3A4hcCPMhLVIPy6wl6iW3h7ziHqKf6IlJjlU=;
- b=HynXczZNRclf1wN9yXh/kJXQfwzyd+8zRhLo+1ga/IcPu61S7BN1OpzOprpnZbNcRi2WCtkKc
- 0fSgXz5IEiuASPTTvOgab/oB98tpNfqRgjsdZp53x/ksR1eCpN4vXe1
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-The hooks got renamed, adapt the BTF IDs.
-Fixes the following build warning:
-
-  BTFIDS  vmlinux
-WARN: resolve_btfids: unresolved symbol bpf_lsm_task_getsecid_obj
-WARN: resolve_btfids: unresolved symbol bpf_lsm_current_getsecid_subj
-
-Fixes: 37f670aacd48 ("lsm: use lsm_prop in security_current_getsecid")
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Ayush Satyam <ayushsatyam146@gmail.com>
 ---
- kernel/bpf/bpf_lsm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/sparc/net/bpf_jit_comp_64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index 3bc61628ab251e05d7837eb27dabc3b62bcc4783..5be76572ab2e8a0c6e18a81f9e4c14812a11aad2 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -375,8 +375,8 @@ BTF_ID(func, bpf_lsm_socket_socketpair)
- 
- BTF_ID(func, bpf_lsm_syslog)
- BTF_ID(func, bpf_lsm_task_alloc)
--BTF_ID(func, bpf_lsm_current_getsecid_subj)
--BTF_ID(func, bpf_lsm_task_getsecid_obj)
-+BTF_ID(func, bpf_lsm_current_getlsmprop_subj)
-+BTF_ID(func, bpf_lsm_task_getlsmprop_obj)
- BTF_ID(func, bpf_lsm_task_prctl)
- BTF_ID(func, bpf_lsm_task_setscheduler)
- BTF_ID(func, bpf_lsm_task_to_inode)
-
----
-base-commit: 228a1157fb9fec47eb135b51c0202b574e079ebf
-change-id: 20241123-bpf_lsm_task_getsecid_obj-afdd47f84c7f
-
-Best regards,
+diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
+index 73bf0aea8..0f850bbe7 100644
+--- a/arch/sparc/net/bpf_jit_comp_64.c
++++ b/arch/sparc/net/bpf_jit_comp_64.c
+@@ -732,7 +732,7 @@ static int emit_compare_and_branch(const u8 code, const u8 dst, u8 src,
+ 			br_opcode = BLE;
+ 			break;
+ 		default:
+-			/* Make sure we dont leak kernel information to the
++			/* Make sure we don't leak kernel information to the
+ 			 * user.
+ 			 */
+ 			return -EFAULT;
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
+2.20.1
 
 
