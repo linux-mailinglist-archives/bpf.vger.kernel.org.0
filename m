@@ -1,129 +1,103 @@
-Return-Path: <bpf+bounces-45514-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45515-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC70F9D6B74
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 21:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F190C9D6B78
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 21:36:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6450BB23A0A
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 20:28:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B0A2B2308C
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 20:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86ADA19DF66;
-	Sat, 23 Nov 2024 20:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C249819CCF4;
+	Sat, 23 Nov 2024 20:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YF5uUcdX"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tvsmohZn"
 X-Original-To: bpf@vger.kernel.org
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB5117BA6;
-	Sat, 23 Nov 2024 20:27:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670D333987;
+	Sat, 23 Nov 2024 20:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732393680; cv=none; b=QNdg1O6pKJ7jg1YFmYu7lZgV8sKHo+sLWcZfpH2wXU3G84ZuTDPCP/s3w8cJ427ADNnxH0+7nlKYH3cg6Ei9grk3oMpIbC2KCq7ERZaMUieuE4IRqEJdM2SO/5uuEB5xP/zDzoqRZSaDQzdWfh1oUMYrXXHlvo/us6mxvbtGtxk=
+	t=1732394157; cv=none; b=h49LucKwUTS7CdZ8TMdTRcVjChiRlRH0r417SePzMVgcQW1cMGxM7/qaTvoCVShOCucInTHmY2W1yzrge0NioQ8J4u4MGfgIt5ziK2NwX0OJ4CE1kAa9QstZcdlNOjCJgrruAdc+CD5yNz5yBMwCQG6UvqtR39AJQvJFDf72nd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732393680; c=relaxed/simple;
-	bh=SEGoX0bHr13Xtp65WJRcTpnLvGjowmoEsWzmlpyXLhY=;
+	s=arc-20240116; t=1732394157; c=relaxed/simple;
+	bh=UPnbEj/wR6IWBl5QwMzrmznuEAtXvgXYessq0ZHlz44=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kJuhdTJvmDRjOJEZ/msAHfYZs3m/i9VNUqqO2fO01RhwfWcEPIaZ+Pni33JGRUeoPQrHwqn4bLDvF/oOW9JnH4TTt1VIhN2oIMn5clCrDrWLRsWQfq2n4vPxysxxkz2166MVQgPQil8RoSYYs2pmpeslT0PYT8QvlLY3GeC0++E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=YF5uUcdX; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:Content-Disposition:In-Reply-To; b=pBYeQBxOFbMN2YctFXv32KtrS8JsTDT4nT+kOIHGLodOMMNrLS9n2MJ5MwKTD4r0VYPmAGTqNHKVasoAMX7g9drw0TL9K0nrA3/ZrKsBeZqqWZ70p0aj4QzDZf44bV4N/BpBTTn3YWVpP+83kX9Iaa9QomJAFAKK/9d5fiZ/tC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=tvsmohZn; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=257ZdKH+aJHSa1dbnLRZzHvINCigQhG1AP2blIFIDRU=; b=YF5uUcdXH9jLpzmqk7mrIr+sj4
-	BGQFq7nVL90ADw+i0YnylVO4Xyslr8X1LE54duXEWUbwMWcqTRvAPMSVvVyifPAuFSSbk2syg2SLh
-	IuSBqje1fLCx6zq4rXUfu6aiS75oD5KeqbNN0u0QqOIDhw3VLxIW7KTSBlrXTJ3IjISVDGER/tDsa
-	cw58bW6gF7p6i4WezVv6mYQK9Xv35xl3RO34vX3Xg5niHLyAQ5xNIkSN35A8/40U/QrID5rbRtS4w
-	5Gg6GsqzjJcGKrBHHepFnso0PtzIBrOu9YsNKWSb1b860OludckAAFG81ytsxAdx6xpmcdCmgA6Ca
-	9cNruIZw==;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=GdVQpQrfD7NNVHIk8DzcTICGaQJm+Hj9wTrUx6w60jg=; b=tvsmohZnvW56+CtucddUOTPfra
+	IiCMRN23sXi1G57fmhetkiR29/2Zw1/oozkQFXRvVMUH4Je5rMu2awV6ODo4psup0ZnJNisW9Xilw
+	Ec3CZ1EKNbdpg4WPyTIzd8dw58d7N3jQy0BA9RQgHIzLWO0mmBh1w53jyGxyHo+JpUn9UVoY5Bsvv
+	RbFjwv/1d3i5Oud44UE1WpXx+wBTxyyYmJ5hqCR8tWTb+nl3GeeVU3CA3oleElzrOkCFD8+U4o8Jw
+	u228ki2F/5pm3gP7zJeuX1f5aHsE4+ey3grxaiPr0tXbANcusa87gkXANh2VW8ELQ5C7unYTJaskE
+	StJdgCtw==;
 Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
 	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tEwjH-00000009bQJ-3RPK;
-	Sat, 23 Nov 2024 20:27:45 +0000
+	id 1tEwr0-00000009boY-2OAo;
+	Sat, 23 Nov 2024 20:35:43 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 358FE300201; Sat, 23 Nov 2024 21:27:44 +0100 (CET)
-Date: Sat, 23 Nov 2024 21:27:44 +0100
+	id 61DE8300201; Sat, 23 Nov 2024 21:35:43 +0100 (CET)
+Date: Sat, 23 Nov 2024 21:35:43 +0100
 From: Peter Zijlstra <peterz@infradead.org>
-To: Ruan Bonan <bonan.ruan@u.nus.edu>
-Cc: "mingo@redhat.com" <mingo@redhat.com>,
-	"will@kernel.org" <will@kernel.org>,
-	"longman@redhat.com" <longman@redhat.com>,
-	"boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"kpsingh@kernel.org" <kpsingh@kernel.org>,
-	"mattbobrowski@google.com" <mattbobrowski@google.com>,
-	"ast@kernel.org" <ast@kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"andrii@kernel.org" <andrii@kernel.org>,
-	"martin.lau@linux.dev" <martin.lau@linux.dev>,
-	"eddyz87@gmail.com" <eddyz87@gmail.com>,
-	"song@kernel.org" <song@kernel.org>,
-	"yonghong.song@linux.dev" <yonghong.song@linux.dev>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"sdf@fomichev.me" <sdf@fomichev.me>,
-	"haoluo@google.com" <haoluo@google.com>,
-	"jolsa@kernel.org" <jolsa@kernel.org>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"mhiramat@kernel.org" <mhiramat@kernel.org>,
-	"mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	Fu Yeqi <e1374359@u.nus.edu>
-Subject: Re: [BUG] possible deadlock in __schedule (with reproducer available)
-Message-ID: <20241123202744.GB20633@noisy.programming.kicks-ass.net>
-References: <24481522-69BF-4CE7-A05D-1E7398400D80@u.nus.edu>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
+	linux-mm@kvack.org, akpm@linux-foundation.org, mingo@kernel.org,
+	torvalds@linux-foundation.org, oleg@redhat.com, rostedt@goodmis.org,
+	mhiramat@kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org,
+	willy@infradead.org, mjguzik@gmail.com, brauner@kernel.org,
+	jannh@google.com, mhocko@kernel.org, vbabka@suse.cz,
+	shakeel.butt@linux.dev, hannes@cmpxchg.org,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+	david@redhat.com, arnd@arndb.de, viro@zeniv.linux.org.uk,
+	hca@linux.ibm.com
+Subject: Re: [PATCH v5 tip/perf/core 0/2] uprobes: speculative lockless
+ VMA-to-uprobe lookup
+Message-ID: <20241123203543.GC20633@noisy.programming.kicks-ass.net>
+References: <20241122035922.3321100-1-andrii@kernel.org>
+ <20241122110737.GP24774@noisy.programming.kicks-ass.net>
+ <CAJuCfpFvHwjMDdFGjCfg+fta2=Ccif7XReTH6TpC+V+PZ1JmAQ@mail.gmail.com>
+ <CAJuCfpFy27B3B=4QvATTzaM44Ferf1scbt0JCdrCdj2gzo52+A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <24481522-69BF-4CE7-A05D-1E7398400D80@u.nus.edu>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJuCfpFy27B3B=4QvATTzaM44Ferf1scbt0JCdrCdj2gzo52+A@mail.gmail.com>
 
-On Sat, Nov 23, 2024 at 03:39:45AM +0000, Ruan Bonan wrote:
+On Fri, Nov 22, 2024 at 09:48:11AM -0800, Suren Baghdasaryan wrote:
+> On Fri, Nov 22, 2024 at 7:04 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > On Fri, Nov 22, 2024 at 3:07 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Thu, Nov 21, 2024 at 07:59:20PM -0800, Andrii Nakryiko wrote:
+> > >
+> > > > Andrii Nakryiko (2):
+> > > >   uprobes: simplify find_active_uprobe_rcu() VMA checks
+> > > >   uprobes: add speculative lockless VMA-to-inode-to-uprobe resolution
+> > >
+> > > Thanks, assuming Suren is okay with me carrying his patches through tip,
+> > > I'll make this land in tip/perf/core after -rc1.
+> >
+> > No objections from me. Thanks!
+> 
+> I just fixed a build issue in one of my patches for an odd config, so
+> please use the latest version of the patchset from here:
+> https://lore.kernel.org/all/20241122174416.1367052-1-surenb@google.com/
 
->  </TASK>
-> FAULT_INJECTION: forcing a failure.
-> name fail_usercopy, interval 1, probability 0, space 0, times 0
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 6.12.0-rc7-00144-g66418447d27b #8 Not tainted
-> ------------------------------------------------------
-> syz-executor144/330 is trying to acquire lock:
-> ffffffffbcd2da38 ((console_sem).lock){....}-{2:2}, at: down_trylock+0x20/0xa0 kernel/locking/semaphore.c:139
-> 
-> but task is already holding lock:
-> ffff888065cbd718 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested kernel/sched/core.c:598 [inline]
-> ffff888065cbd718 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock kernel/sched/sched.h:1506 [inline]
-> ffff888065cbd718 (&rq->__lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1805 [inline]
-> ffff888065cbd718 (&rq->__lock){-.-.}-{2:2}, at: __schedule+0x140/0x1e70 kernel/sched/core.c:6592
-> 
-> which lock already depends on the new lock.
-> 
->        _printk+0x7a/0xa0 kernel/printk/printk.c:2432
->        fail_dump lib/fault-inject.c:46 [inline]
->        should_fail_ex+0x3be/0x570 lib/fault-inject.c:154
->        strncpy_from_user+0x36/0x230 lib/strncpy_from_user.c:118
->        strncpy_from_user_nofault+0x71/0x140 mm/maccess.c:186
->        bpf_probe_read_user_str_common kernel/trace/bpf_trace.c:215 [inline]
->        ____bpf_probe_read_user_str kernel/trace/bpf_trace.c:224 [inline]
->        bpf_probe_read_user_str+0x2a/0x70 kernel/trace/bpf_trace.c:221
->        bpf_prog_bc7c5c6b9645592f+0x3e/0x40
->        bpf_dispatcher_nop_func include/linux/bpf.h:1265 [inline]
->        __bpf_prog_run include/linux/filter.h:701 [inline]
->        bpf_prog_run include/linux/filter.h:708 [inline]
->        __bpf_trace_run kernel/trace/bpf_trace.c:2316 [inline]
->        bpf_trace_run4+0x30b/0x4d0 kernel/trace/bpf_trace.c:2359
->        __bpf_trace_sched_switch+0x1c6/0x2c0 include/trace/events/sched.h:222
->        trace_sched_switch+0x12a/0x190 include/trace/events/sched.h:222
-
--EWONTFIX. Don't do stupid.
+updated, thanks!
 
