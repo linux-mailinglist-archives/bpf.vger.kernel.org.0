@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-45500-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45501-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A4DB9D6951
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 14:34:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B94099D6950
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 14:34:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38CD4B22303
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 13:34:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E5F7281EDA
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 13:34:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C06AB27466;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C06E42746B;
 	Sat, 23 Nov 2024 13:33:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="Oq9aIHEk"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="uFkttppJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231EC195;
-	Sat, 23 Nov 2024 13:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A12B5D530;
+	Sat, 23 Nov 2024 13:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732368827; cv=none; b=b7FaYjDBvAHBX6jY8a5P05a+FajfN1rMXXVHfM/aisa0o9BAnKwVUzWlxRakd92O54v6gz2xiAJeyjXTKuoe+mP05GMZE4owtkM6KMtQ447A5uz0ibxw9wSqJFIK3/N44jbU3SG3wHcV0KwWUprFStbclBjYlbovvLnDobdEE38=
+	t=1732368827; cv=none; b=ZomkbxI0nUsEycqj3W81h8b5IZUugjaQO8RB9h55YJznVQG6GyOtZpW0nReaYUv6tSiKp65Uh0HzKZlYR1V7KcvWnjJn/UY8nhF5M2ugEEUqSALpynNvSN7fgWJemsehSzO5xD7njG55Z+dM5pzQtV7ZUEOA3ZzFCfPJfWcjZAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1732368827; c=relaxed/simple;
-	bh=b2w80aj/337drIii2E6x6QjQqcUkYdT/ByK0kIRLqXE=;
+	bh=/06I1MoPIpkLkreP+KQguVn1tqSQj5oeCpTznnOHjbM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=dqHa2xGdTEYDJQ5cVyp7ZqwwEzI4a4MaD1dphY6BVn5Lck2cQit3Du++fdqFsyeior+gtVh9XT6x9q5gux29rQocY+4p6h238j70w/wzbRSz80xu2PYpy4UD8l4gcLOXVEE/yTx0uefsh0YxI4InndbLSrNpX3MMB5psyvFCmq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=Oq9aIHEk; arc=none smtp.client-ip=159.69.126.157
+	 In-Reply-To:To:Cc; b=IdTKUUWkB3DfTad2ZuylTrNedh+qQYt2MQTAf0+FCoamcleOsXa8Xe9AERiPVJDAzbpsAVAwtjdzl75t253iwLqUYiW+2RUqQ7dghJGcbxW0USOAYbCts1KzpSDw3+otGe+ilvgic1iFGIRu1O0M5nJtpgJfPpKLfblLbVIzkc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=uFkttppJ; arc=none smtp.client-ip=159.69.126.157
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
 	s=mail; t=1732368822;
-	bh=b2w80aj/337drIii2E6x6QjQqcUkYdT/ByK0kIRLqXE=;
+	bh=/06I1MoPIpkLkreP+KQguVn1tqSQj5oeCpTznnOHjbM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Oq9aIHEktYwMJqjdQSAInSwjkc/qEgdDS+PFYTXNpNUL1Oei0x6N/kMmO7kvL9JBP
-	 gUBhFVsGHoVjjR3N98darrrj3nTZnktHQ96DOucH6lz5FJ34kztgVq+DFHlnCjH1I4
-	 FyAT74Yf9GQD4np3nBgXVC3hC7zfQk0EKuzPHy04=
+	b=uFkttppJJwmvrOYW9H2Ach4pr6cGoGtG3/phWY/8ed+Yb1cUS3OIHYRhn4HDXS7FP
+	 RJRNEj8hfr7FrlpdjkjHozQlaVTPTq1c/YXKwZ6uMVsGigBkgKvJdpECpepgYDmGx6
+	 TWtPI/QgDafJLjzNqkDWdAuNu4oAq3gguhqgAj7I=
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Sat, 23 Nov 2024 14:33:38 +0100
-Subject: [PATCH 2/3] tools/resolve_btfids: Add --fatal-warnings option
+Date: Sat, 23 Nov 2024 14:33:39 +0100
+Subject: [PATCH 3/3] kbuild: propagate CONFIG_WERROR to resolve_btfids
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -49,7 +49,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20241123-resolve_btfids-v1-2-927700b641d1@weissschuh.net>
+Message-Id: <20241123-resolve_btfids-v1-3-927700b641d1@weissschuh.net>
 References: <20241123-resolve_btfids-v1-0-927700b641d1@weissschuh.net>
 In-Reply-To: <20241123-resolve_btfids-v1-0-927700b641d1@weissschuh.net>
 To: Masahiro Yamada <masahiroy@kernel.org>, 
@@ -66,79 +66,39 @@ Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
  bpf@vger.kernel.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1732368820; l=2182;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1732368820; l=888;
  i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=b2w80aj/337drIii2E6x6QjQqcUkYdT/ByK0kIRLqXE=;
- b=G0B/rmQnA2tpKvxmlrof8LTfU+EcPwyPnajMu4SUpWefSNYVbb8eTcZKdcbmR/BmI9L2Kr1kJ
- +YCDtia4zbAD0mG7LFGVg+I8LiVPCZMoLMjMl0Hs0GzHAIl6PjfLCuD
+ bh=/06I1MoPIpkLkreP+KQguVn1tqSQj5oeCpTznnOHjbM=;
+ b=/jYbuVCPM0A6oIljCDR4iF1HCMJnWdK2l0duNbTV74jCkkW0qfY3GRz3j7bO9rBomPgYzsrxf
+ DYnks9cVXG7D04vUD+AbSYLD2CYvd1lXm2TEyKfP/BfukoAUV4V97Lc
 X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
  pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-Currently warnings emitted by resolve_btfids are buried in the build log
-and are slipping into mainline frequently.
-Add an option to elevate warnings to hard errors so the CI bots can
-catch any new warnings.
+Use CONFIG_WERROR to also fail on warnings emitted by resolve_btfids.
+Allow the CI bots to prevent the introduction of new warnings.
 
 Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- tools/bpf/resolve_btfids/main.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ scripts/link-vmlinux.sh | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-index bd9f960bce3d5b74dc34159b35af1e0b33524d2d..a6ffd6b5fc3ebe9e0983556bfb178642a1c6639d 100644
---- a/tools/bpf/resolve_btfids/main.c
-+++ b/tools/bpf/resolve_btfids/main.c
-@@ -141,6 +141,7 @@ struct object {
- };
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index a9b3f34a78d2cd4514e73a728f1a784eee891768..61f1f670291351a276221153146d66001eca556c 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -274,7 +274,11 @@ vmlinux_link vmlinux
+ # fill in BTF IDs
+ if is_enabled CONFIG_DEBUG_INFO_BTF; then
+ 	info BTFIDS vmlinux
+-	${RESOLVE_BTFIDS} vmlinux
++	RESOLVE_BTFIDS_ARGS=""
++	if is_enabled CONFIG_WERROR; then
++		RESOLVE_BTFIDS_ARGS=" --fatal-warnings "
++	fi
++	${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_ARGS} vmlinux
+ fi
  
- static int verbose;
-+static int warnings;
- 
- static int eprintf(int level, int var, const char *fmt, ...)
- {
-@@ -604,6 +605,7 @@ static int symbols_resolve(struct object *obj)
- 			if (id->id) {
- 				pr_info("WARN: multiple IDs found for '%s': %d, %d - using %d\n",
- 					str, id->id, type_id, id->id);
-+				warnings++;
- 			} else {
- 				id->id = type_id;
- 				(*nr)--;
-@@ -625,8 +627,10 @@ static int id_patch(struct object *obj, struct btf_id *id)
- 	int i;
- 
- 	/* For set, set8, id->id may be 0 */
--	if (!id->id && !id->is_set && !id->is_set8)
-+	if (!id->id && !id->is_set && !id->is_set8) {
- 		pr_err("WARN: resolve_btfids: unresolved symbol %s\n", id->name);
-+		warnings++;
-+	}
- 
- 	for (i = 0; i < id->addr_cnt; i++) {
- 		unsigned long addr = id->addr[i];
-@@ -782,9 +786,12 @@ int main(int argc, const char **argv)
- 		.funcs    = RB_ROOT,
- 		.sets     = RB_ROOT,
- 	};
-+	int fatal_warnings;
- 	struct option btfid_options[] = {
- 		OPT_INCR('v', "verbose", &verbose,
- 			 "be more verbose (show errors, etc)"),
-+		OPT_INCR(0, "fatal-warnings", &fatal_warnings,
-+			 "turn warnings into errors"),
- 		OPT_STRING(0, "btf", &obj.btf, "BTF data",
- 			   "BTF data"),
- 		OPT_STRING('b', "btf_base", &obj.base_btf_path, "file",
-@@ -823,7 +830,8 @@ int main(int argc, const char **argv)
- 	if (symbols_patch(&obj))
- 		goto out;
- 
--	err = 0;
-+	if (!(fatal_warnings && warnings))
-+		err = 0;
- out:
- 	if (obj.efile.elf) {
- 		elf_end(obj.efile.elf);
+ mksysmap vmlinux System.map
 
 -- 
 2.47.0
