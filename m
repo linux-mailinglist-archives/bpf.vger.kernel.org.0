@@ -1,154 +1,279 @@
-Return-Path: <bpf+bounces-45509-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA9439D69D2
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 16:57:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B24009D6A75
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 18:03:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DA1AB21973
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 15:57:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7192A281F27
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2024 17:03:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41B043AD2;
-	Sat, 23 Nov 2024 15:57:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W0JAxPc8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7927F146588;
+	Sat, 23 Nov 2024 17:03:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3A3444384;
-	Sat, 23 Nov 2024 15:57:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0FC5182C5;
+	Sat, 23 Nov 2024 17:02:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.10.64.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732377460; cv=none; b=hglcRdaxlHXtYCzoZvZiaTSm4Zwhk0sT31WipvD7XtjKN8E6CDrfUxoczZplEpemtsoILRnQLmppFcbzJGKbwkoROvZNuX40TW1vnLXk7LZHwn5dWy47xGAYuLMYwKq6cQbsrBL1V6Dd5mQAuZPchTFtze4mOtsEEFUe7JkpdcM=
+	t=1732381380; cv=none; b=GjwiPsb1GZ+VbcsIAkUfY5tiWUeM7rRPwkJa1tO6Iu5VoFffcs6bUByRxYSSHpNWUZqvhztKAYwF2RIQwNnDokXh/+aB4gK2n+scAA2Nx2ECmO7QIyy2rSsAlOKlZpI5LVOj3W3EVjmp5ElozSIabr64YZR+MCbAs4QTHFTmp6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732377460; c=relaxed/simple;
-	bh=hwWmkgrcAPGWl+ptMm1tghlsH4kqOvd4DTCxLptzDFk=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=jYtBgmoXUvrDLxfCw+O46F9CSZuoAt68jbX5JSV+Lb8batGgsIaLTkWiRuiimQoH4YVP3OcaZ3qxFMFhsXtdhW6yuRrcQG4fxe0C3B+LZhgkrvhXVFhkbz5tP8hYPezW2oM78DWZbPgA9tR3PmEWhXkscsM+FWSlLKFvxul+LwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W0JAxPc8; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-724f41d520cso327734b3a.1;
-        Sat, 23 Nov 2024 07:57:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732377458; x=1732982258; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B7GR/93q8vbl1Y02szPjwXhKCJRJHqZnIo22AIrKeYk=;
-        b=W0JAxPc8jW4/y03ClGxaLgtyeymOx/qCFxQlV3LMRfgvF6oIZn0rfnoEvLLeG4znHz
-         p5XZt9OoBFDM7ktZFbecSkqZgrKvwSw6YrWXCtGEnaYpHjn0SgEJNu5OhMHxj2n9RV7N
-         gJbTgcU0OSbrRLdqaCpjWxWepBZWMkjzHjgRovN/1RzI8J0HBbHMZU6iQZC4ng1SCYhR
-         FWCKporArBWWsmoGwbQmKzjdBo268Oyg7V4oN1yeoKaHxVtfOVAi2ZdXcwokTmYbjj79
-         TDj9nkNV6xRtzgc97AX7g4Dd2fPIqAj7vOo1ZD8Ly1WKTsy1tknbI1Xr+hSe9ZGDaKHF
-         jyIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732377458; x=1732982258;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=B7GR/93q8vbl1Y02szPjwXhKCJRJHqZnIo22AIrKeYk=;
-        b=tc2GUTjoej6uo+PQpsfdgBcHol+dLI2/P7xNMkxfJocxFglXGxjxmQBweaZ+/T7YrA
-         3yaWxSu6Rn/5fpL22KRIvPtObLTBGkWC/PX8QdWBbytIEcZHI4BrxXnnAU4IRKIXlKOl
-         X4N5Sp19dIQPlxqqLydcLClkRQnbfasJFJT3wOdRt9ADfQtGiqdLHz8NqWjikt/4Q1ZP
-         6+/hCD+JLW6iB81zwLib9NiEvRHq7WdhdpCdxOwmz6pL5/byNLcwGpK/APmOxMuQJ4vZ
-         ba3wvQ4TJHKsGtmiwDbxwB/28Fdojb0HWTuFLUJsN6eM0rOSuIE+0HMa8Up23B9w5SKP
-         Ugbg==
-X-Forwarded-Encrypted: i=1; AJvYcCV8JeC8F0oqzI5o5XOPq5tDeaceXlMysF9i/BwQ6n9BD/SeW3QtVYZOzbkaho3HAjbRkhStKWzZFYdq53K8@vger.kernel.org, AJvYcCVzbxMmr95F35fsLC5JyODeYD52Q8JdUQKOn0+N0NHkYCtiOBKmZVyLN0kyQXlYCkm0aNo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxm14QlX0Vv32RJOUtuaeq4LCScnKbLxne4sC9qyEgd4ysa7tVK
-	CI5nPH6+wY0izp9FTQZcj8gKTS8si55r6JrqxESdYi8b/Bi/7314WSje1g==
-X-Gm-Gg: ASbGncvwwh6g2DlyvNHM5WAUBu8Ur+zAZwBDxD+Nkh3ccHfbqYkE0eJZVLZG5re0QJQ
-	ErR3+XsNOeC4F3fFIZE+w7Tk4Pm8wJg6HRB4ox/tF6Pel1bZxv+QC3BExrj5YXIf4/4pVHJYKTw
-	54TLrH/YnAJSB2KbsWWgWz/lF+uCl+E7J+Fh3cW/WQVeq/lL1Eh5dFumZzEkERgX9+p4gcYzcEZ
-	S1vMw3YabL42M5Zi0lQ2Z5Ji/WD4iZeT+8LokHkjrSUFm+LKbE=
-X-Google-Smtp-Source: AGHT+IFMJCfOvYOEF4yxWvSC12dnHHtF5pdzV67OyIXKQZXcx/OHeGlHJ4q3kn0LfBDukmlj77ZR/Q==
-X-Received: by 2002:a05:6a00:10c8:b0:71e:47a2:676 with SMTP id d2e1a72fcca58-724df5d58ffmr9258267b3a.6.1732377456687;
-        Sat, 23 Nov 2024 07:57:36 -0800 (PST)
-Received: from localhost ([98.97.42.159])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724de5762bfsm3505538b3a.184.2024.11.23.07.57.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Nov 2024 07:57:35 -0800 (PST)
-Date: Sat, 23 Nov 2024 07:57:32 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Tiezhu Yang <yangtiezhu@loongson.cn>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Huacai Chen <chenhuacai@kernel.org>
-Cc: loongarch@lists.linux.dev, 
- bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Message-ID: <6741fb6c516cc_c6be20839@john.notmuch>
-In-Reply-To: <4f6c74e0-dd22-8460-96fa-f408291a3ef8@loongson.cn>
-References: <20241119065230.19157-1-yangtiezhu@loongson.cn>
- <673fd322ce3ac_1118208b3@john.notmuch>
- <4f6c74e0-dd22-8460-96fa-f408291a3ef8@loongson.cn>
-Subject: Re: [PATCH] LoongArch: BPF: Sign-extend return values
+	s=arc-20240116; t=1732381380; c=relaxed/simple;
+	bh=qYV6ojSzaiLvDcHiuvU53HQJ0j3I4z89aMoHzcBSAFg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=erQI+aDmjXgn+9xfVl4DU093nNVywbtzRH2hwV1QHvUuAmkDkG78gcBlAqLzt/1eLgHyjCz0fjOepqL+WMkPUimkQOwEJfx2SQWH6aj6FZ8IT2pZz0hj81CwqXZZCKuEjhG1iI8vtlMAm0tJR3rJu3UTU5bz5HldSEZhHZ3l4xQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com; spf=pass smtp.mailfrom=wind.enjellic.com; arc=none smtp.client-ip=76.10.64.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 4ANH1ekl027103;
+	Sat, 23 Nov 2024 11:01:40 -0600
+Received: (from greg@localhost)
+	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 4ANH1bR9027102;
+	Sat, 23 Nov 2024 11:01:37 -0600
+Date: Sat, 23 Nov 2024 11:01:37 -0600
+From: "Dr. Greg" <greg@enjellic.com>
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: Song Liu <songliubraving@meta.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "brauner@kernel.org" <brauner@kernel.org>, Song Liu <song@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>,
+        Kernel Team <kernel-team@meta.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "eddyz87@gmail.com" <eddyz87@gmail.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "mattbobrowski@google.com" <mattbobrowski@google.com>,
+        "amir73il@gmail.com" <amir73il@gmail.com>,
+        "repnop@google.com" <repnop@google.com>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "mic@digikod.net" <mic@digikod.net>,
+        "gnoack@google.com" <gnoack@google.com>
+Subject: Re: [PATCH bpf-next 0/4] Make inode storage available to tracing prog
+Message-ID: <20241123170137.GA26831@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <53a3601e-0999-4603-b69f-7bed39d4d89a@schaufler-ca.com> <4BF6D271-51D5-4768-A460-0853ABC5602D@fb.com> <b1e82da8daa1c372e4678b1984ac942c98db998d.camel@HansenPartnership.com> <A7017094-1A0C-42C8-BE9D-7352D2200ECC@fb.com> <20241119122706.GA19220@wind.enjellic.com> <561687f7-b7f3-4d56-a54c-944c52ed18b7@schaufler-ca.com> <20241120165425.GA1723@wind.enjellic.com> <28FEFAE6-ABEE-454C-AF59-8491FAB08E77@fb.com> <20241121160259.GA9933@wind.enjellic.com> <d0b61238-735b-478c-9e18-c94e4dde4d88@schaufler-ca.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d0b61238-735b-478c-9e18-c94e4dde4d88@schaufler-ca.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Sat, 23 Nov 2024 11:01:40 -0600 (CST)
 
-Tiezhu Yang wrote:
-> On 11/22/2024 08:41 AM, John Fastabend wrote:
-> > Tiezhu Yang wrote:
-> >> (1) Description of Problem:
-> >>
-> >> When testing BPF JIT with the latest compiler toolchains on LoongArch,
-> >> there exist some strange failed test cases, dmesg shows something like
-> >> this:
-> >>
-> >>   # dmesg -t | grep FAIL | head -1
-> >>   ... ret -3 != -3 (0xfffffffd != 0xfffffffd)FAIL ...
-> 
-> ...
-> 
-> >>
-> >> (5) Final Solution:
-> >>
-> >> Keep a5 zero-extended, but explicitly sign-extend a0 (which is used
-> >> outside BPF land). Because libbpf currently defines the return value
-> >> of an ebpf program as a 32-bit unsigned integer, just use addi.w to
-> >> extend bit 31 into bits 63 through 32 of a5 to a0. This is similar
-> >> with commit 2f1b0d3d7331 ("riscv, bpf: Sign-extend return values").
-> >>
-> >> Fixes: 5dc615520c4d ("LoongArch: Add BPF JIT support")
-> >> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> >> ---
-> >>  arch/loongarch/net/bpf_jit.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> >> index 7dbefd4ba210..dd350cba1252 100644
-> >> --- a/arch/loongarch/net/bpf_jit.c
-> >> +++ b/arch/loongarch/net/bpf_jit.c
-> >> @@ -179,7 +179,7 @@ static void __build_epilogue(struct jit_ctx *ctx, bool is_tail_call)
-> >>
-> >>  	if (!is_tail_call) {
-> >>  		/* Set return value */
-> >> -		move_reg(ctx, LOONGARCH_GPR_A0, regmap[BPF_REG_0]);
-> >> +		emit_insn(ctx, addiw, LOONGARCH_GPR_A0, regmap[BPF_REG_0], 0);
+On Thu, Nov 21, 2024 at 10:11:16AM -0800, Casey Schaufler wrote:
+
+Good morning, I hope the weekend is going well for everyone.
+
+> On 11/21/2024 8:02 AM, Dr. Greg wrote:
+> > On Thu, Nov 21, 2024 at 08:28:05AM +0000, Song Liu wrote:
 > >
-> > Not overly familiar with this JIT but just to check this wont be used
-> > for BPF 2 BPF calls correct?
-> 
-> I am not sure I understand your comment correctly, but with and without
-> this patch, the LoongArch JIT uses a5 as a dedicated register for BPF
-> return values, a5 is kept as zero-extended for bpf2bpf, just make a0
-> (which is used outside BPF land) as sign-extend, all of the test cases
-> in test_bpf.ko passed with "echo 1 > /proc/sys/net/core/bpf_jit_enable".
-> 
-> Thanks,
-> Tiezhu
-> 
+> >> Hi Dr. Greg,
+> >>
+> >> Thanks for your input!
+> > Good morning, I hope everyone's day is going well.
+> >
+> >>> On Nov 20, 2024, at 8:54???AM, Dr. Greg <greg@enjellic.com> wrote:
+> >>>
+> >>> On Tue, Nov 19, 2024 at 10:14:29AM -0800, Casey Schaufler wrote:
+> >> [...]
+> >>
+> >>>>> 2.) Implement key/value mapping for inode specific storage.
+> >>>>>
+> >>>>> The key would be a sub-system specific numeric value that returns a
+> >>>>> pointer the sub-system uses to manage its inode specific memory for a
+> >>>>> particular inode.
+> >>>>>
+> >>>>> A participating sub-system in turn uses its identifier to register an
+> >>>>> inode specific pointer for its sub-system.
+> >>>>>
+> >>>>> This strategy loses O(1) lookup complexity but reduces total memory
+> >>>>> consumption and only imposes memory costs for inodes when a sub-system
+> >>>>> desires to use inode specific storage.
 
-Got it.
+> >>>> SELinux and Smack use an inode blob for every inode. The performance
+> >>>> regression boggles the mind. Not to mention the additional
+> >>>> complexity of managing the memory.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+> >>> I guess we would have to measure the performance impacts to understand
+> >>> their level of mind boggliness.
+> >>>
+> >>> My first thought is that we hear a huge amount of fanfare about BPF
+> >>> being a game changer for tracing and network monitoring.  Given
+> >>> current networking speeds, if its ability to manage storage needed for
+> >>> it purposes are truely abysmal the industry wouldn't be finding the
+> >>> technology useful.
+> >>>
+> >>> Beyond that.
+> >>>
+> >>> As I noted above, the LSM could be an independent subscriber.  The
+> >>> pointer to register would come from the the kmem_cache allocator as it
+> >>> does now, so that cost is idempotent with the current implementation.
+> >>> The pointer registration would also be a single instance cost.
+> >>>
+> >>> So the primary cost differential over the common arena model will be
+> >>> the complexity costs associated with lookups in a red/black tree, if
+> >>> we used the old IMA integrity cache as an example implementation.
+> >>>
+> >>> As I noted above, these per inode local storage structures are complex
+> >>> in of themselves, including lists and locks.  If touching an inode
+> >>> involves locking and walking lists and the like it would seem that
+> >>> those performance impacts would quickly swamp an r/b lookup cost.
+
+> >> bpf local storage is designed to be an arena like solution that
+> >> works for multiple bpf maps (and we don't know how many of maps we
+> >> need ahead of time). Therefore, we may end up doing what you
+> >> suggested earlier: every LSM should use bpf inode storage. ;) I am
+> >> only 90% kidding.
+
+> > I will let you thrash that out with the LSM folks, we have enough on
+> > our hands just with TSEM.... :-)
+> >
+> > I think the most important issue in all of this is to get solid
+> > performance measurements and let those speak to how we move forward.
+> >
+> > As LSM authors ourself, we don't see an off-putting reason to not have
+> > a common arena storage architecture that builds on what the LSM is
+> > doing.  If sub-systems with sparse usage would agree that they need to
+> > restrict themselves to a single pointer slot in the arena, it would
+> > seem that memory consumption, in this day and age, would be tolerable.
+> >
+> > See below for another idea.
+
+> >>>>> Approach 2 requires the introduction of generic infrastructure that
+> >>>>> allows an inode's key/value mappings to be located, presumably based
+> >>>>> on the inode's pointer value.  We could probably just resurrect the
+> >>>>> old IMA iint code for this purpose.
+> >>>>>
+> >>>>> In the end it comes down to a rather standard trade-off in this
+> >>>>> business, memory vs. execution cost.
+> >>>>>
+> >>>>> We would posit that option 2 is the only viable scheme if the design
+> >>>>> metric is overall good for the Linux kernel eco-system.
+
+> >>>> No. Really, no. You need look no further than secmarks to understand
+> >>>> how a key based blob allocation scheme leads to tears. Keys are fine
+> >>>> in the case where use of data is sparse. They have no place when data
+> >>>> use is the norm.
+
+> >>> Then it would seem that we need to get everyone to agree that we can
+> >>> get by with using two pointers in struct inode.  One for uses best
+> >>> served by common arena allocation and one for a key/pointer mapping,
+> >>> and then convert the sub-systems accordingly.
+> >>>
+> >>> Or alternately, getting everyone to agree that allocating a mininum of
+> >>> eight additional bytes for every subscriber to private inode data
+> >>> isn't the end of the world, even if use of the resource is sparse.
+
+> >> Christian suggested we can use an inode_addon structure, which is 
+> >> similar to this idea. It won't work well in all contexts, though. 
+> >> So it is not as good as other bpf local storage (task, sock,
+> >> cgroup). 
+
+> > Here is another thought in all of this.
+> >
+> > I've mentioned the old IMA integrity inode cache a couple of times in
+> > this thread.  The most peacable path forward may be to look at
+> > generalizing that architecture so that a sub-system that wanted inode
+> > local storage could request that an inode local storage cache manager
+> > be implemented for it.
+> >
+> > That infrastructure was based on a red/black tree that used the inode
+> > pointer as a key to locate a pointer to a structure that contained
+> > local information for the inode.  That takes away the need to embed
+> > something in the inode structure proper.
+> >
+> > Since insertion and lookup times have complexity functions that scale
+> > with tree height it would seem to be a good fit for sparse utilization
+> > scenarios.
+> >
+> > An extra optimization that may be possible would be to maintain an
+> > indicator flag tied the filesystem superblock that would provide a
+> > simple binary answer as to whether any local inode cache managers have
+> > been registered for inodes on a filesystem.  That would allow the
+> > lookup to be completely skipped with a simple conditional test.
+> >
+> > If the infrastructure was generalized to request and release cache
+> > managers it would be suitable for systems, implemented as modules,
+> > that have a need for local inode storage.
+
+> Do you think that over the past 20 years no one has thought of this?
+> We're working to make the LSM infrastructure cleaner and more
+> robust.  Adding the burden of memory management to each LSM is a
+> horrible idea.
+
+No, I cannot ascribe to the notion that I, personally, know what
+everyone has thought about in the last 20 years.
+
+I do know, personally, that very talented individuals who are involved
+with large security sensitive operations question the trajectory of
+the LSM.  That, however, is a debate for another venue.
+
+For the lore record and everyone reading along at home, you
+misinterpreted or did not read closely my e-mail.
+
+We were not proposing adding memory management to each LSM, we were
+suggesting to Song Liu that generalizing, what was the old IMA inode
+integrity infrastructure, may be a path forward for sub-systems that
+need inode local storage, particularly systems that have sparse
+occupancy requirements.
+
+Everyone has their britches in a knicker about performance.
+
+Note that we called out a possible optimization for this architecture
+so that there would be no need to even hit the r/b tree if a
+filesystem had no sub-systems that had requested sparse inode local
+storage for that filesystem.
+
+> > It also offers the ability for implementation independence, which is
+> > always a good thing in the Linux community.
+
+> Generality for the sake of generality is seriously overrated.
+> File systems have to be done so as to fit into the VFS infrastructure,
+> network protocols have to work with sockets without impacting the
+> performance of others and so forth.
+
+We were not advocating generality for the sake of generality, we were
+suggesting a generalized architecture, that does not require expansion
+of struct inode, because Christian has publically indicated there is
+no appetite by the VFS maintainers for consuming additional space in
+struct inode for infrastructure requiring local inode storage.
+
+You talk about cooperation, yet you object to any consideration that
+the LSM should participate in a shared arena environment where
+sub-systems wanting local inode storage could just request a block in
+a common arena.  The LSM, in this case, is just like a filesystem
+since it is a consumer of infrastructure supplied by the VFS and
+should thus cooperate with other consumers of VFS infrastructure.
+
+If people go back and read our last paragraph you replied to we were
+not speaking to the advantages of generality, we were speaking to the
+advantage of independent implementations that did unnecessarily cross
+sub-system lines.  Casual observation of Linux development, and this
+thread, would suggest the importance of that.
+
+I need to get a bunch of firewood under cover so I will leave things
+at that.
+
+Have a good weekend.
+
+As always,
+Dr. Greg
+
+The Quixote Project - Flailing at the Travails of Cybersecurity
+              https://github.com/Quixote-Project
 
