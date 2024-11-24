@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-45526-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45527-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DBAC9D74C0
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 16:18:10 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 478A39D6FFE
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 14:24:23 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B37CAB360DC
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 13:22:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C83C1162B03
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 13:24:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA9391B0F21;
-	Sun, 24 Nov 2024 12:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D181B6D0C;
+	Sun, 24 Nov 2024 12:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dxsUatkg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BmmWUEnS"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5457C18FC83;
-	Sun, 24 Nov 2024 12:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A5A71B6CED;
+	Sun, 24 Nov 2024 12:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732452948; cv=none; b=JJi08B4YbIG4vi8iuahi23DjLSlZBJ/LjTAznkOJDAfzaGHcpXu5JxITdq+E+iB6MA7dvIjfb/aQoZ32ZDBb2GOP4NDCcCQ2Wlcdn8GtBAi5EzSLRtxmxTn3E+zcsrXnke9wBt0lAAd4Q48rAZFb8foZySw7Wg7PtkiwF7vxfH4=
+	t=1732453025; cv=none; b=cseOQtnj+dEqbKKLDrgWPaOOBW+WHwjUierpmDzsVkOMuWcfV18/Ygd5zOABY87IdvoTi2zCQIHfXbNLbIq2AvL+EesPDo+GgYIavM8EAsL741CLNNbz7ZefmbYN+JqHNuxNZr2gATew8sNqREVXppS4+jIoK55hPnr4wfvqbfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732452948; c=relaxed/simple;
+	s=arc-20240116; t=1732453025; c=relaxed/simple;
 	bh=rlXomFu5qGiZb/ofgdWpVidsWgeKhD/JGHu9T92/iwY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eyTt+m9nuxeUfXmMF5gqvB+HPVvITGN+cGrpRU7H7yo+ngMQ0KRcudxmx48qRwQ226aQkjqCWTEqQ197L8uCzDpJXR2ATcG74NBuQmICRp+Jq9f/Ih7yn709BoYcCqE+RfS4nSN1UND24LvcGE7SS6mkc9BsCSju2gu8raR7wwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dxsUatkg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 051C9C4CECC;
-	Sun, 24 Nov 2024 12:55:46 +0000 (UTC)
+	 MIME-Version; b=iEnvOedPngji923GgYe28tCHLd0Mtq1LYPhOR06VQ9F+inRRSY6n5X9O3ZCAP+areTn9ug2TuANakLFAFQK8oW78+zsZkZEtoaXykYT2CmUic/ttBCbC3Mu/j+lzyzxX0MgR2Lxof6RAk5dB21RzReIeWHZrb3GYnn14TmUN+qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BmmWUEnS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B73CC4CECC;
+	Sun, 24 Nov 2024 12:57:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732452948;
+	s=k20201202; t=1732453025;
 	bh=rlXomFu5qGiZb/ofgdWpVidsWgeKhD/JGHu9T92/iwY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dxsUatkgovSTFjxnyjnlNyVVsG+OJ2ofrsYtNzzAkO6TO/zupxpEIc4NMh7NqCdwk
-	 ipluOUdM1aEsCDXGvg7QIWRT8RReBN5cAKFk6lqfWNrNKlebZs9WlL3DeqTDLhK+h5
-	 4z5MgrFBH0+LZJoQPWz36OzMQn6OTLG4T8Gel3Z3ZSznKZtIGpomf7RLVWUxcl2FKh
-	 VpBxNsF8TXpbow4WGaNoJpiCiEXwHgPu5Q/lTbFEr+1ZHiWTMRAcX4df8ETw75Igcl
-	 cTXuZvbfuWWeo4K6kJrLwfm1la7VkMB8mlcbB78WzN9b+wPWK6UlyaOtj0c2MGZrfg
-	 oarjsltFnNMXw==
+	b=BmmWUEnS7NZ8MD0VdIjDaGjuFbUjFy3X/tMJx23RUG+0hJqET8Ss0tB1ACyfJStpS
+	 T4jPgs+WXLghhxElX0Y05cbBJMfui+sf9vamIk0ePGHCEGDDAGvE4KywNTFA3XSjPx
+	 YNqzOmHGguhP+1eazsQbcMA85KfUTGADNP/dXAzvlT/MkfMnd6FWMc42XUgSTbxJPe
+	 DaDaes9s52msq0FhTqH1MY7bC92aNDnq5AclvtBrGLstDAG3bzkjLyaQWUfH7So/Mi
+	 m+GMtNXb/59bSAl6hd+VC8d6prFPBKjn/zgoitRIgCgVCXP6GNuBk1H/1Tc+YZfSuu
+	 dlDrRK8b4W1hA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,12 +51,12 @@ Cc: Benjamin Tissoires <bentiss@kernel.org>,
 	jikos@kernel.org,
 	linux-input@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 7/9] HID: bpf: Fix NKRO on Mistel MD770
-Date: Sun, 24 Nov 2024 07:54:21 -0500
-Message-ID: <20241124125515.3340625-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 6/7] HID: bpf: Fix NKRO on Mistel MD770
+Date: Sun, 24 Nov 2024 07:55:51 -0500
+Message-ID: <20241124125636.3340867-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241124125515.3340625-1-sashal@kernel.org>
-References: <20241124125515.3340625-1-sashal@kernel.org>
+In-Reply-To: <20241124125636.3340867-1-sashal@kernel.org>
+References: <20241124125636.3340867-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.119
+X-stable-base: Linux 5.15.173
 Content-Transfer-Encoding: 8bit
 
 From: Benjamin Tissoires <bentiss@kernel.org>
