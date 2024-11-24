@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-45539-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45540-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 196EE9D73C9
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 15:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 327789D7429
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 16:01:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D21D12884A1
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 14:49:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC41B28582E
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 15:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674D8231A98;
-	Sun, 24 Nov 2024 13:50:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0F6C23AF91;
+	Sun, 24 Nov 2024 13:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dJn8MMXx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UeO1lZne"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A3E231A83;
-	Sun, 24 Nov 2024 13:50:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F652235BE6;
+	Sun, 24 Nov 2024 13:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732456212; cv=none; b=r1bOUU9FNO8E/9eCwDtaFzKuyZG/14XZipKdnlESVz/Grji8lI6E4+zc8eAm7thleb0w4OSSAM4Nt0KIdP8mOuCKNL7jgTZ5bURUQG7/i2JPIc+tOvlAL9INLlJ6WQtO5AhLDQbgynt6t1rlPyxE/iQ7+KOpkG6mTDLudfyS3Dk=
+	t=1732456350; cv=none; b=Fp8aooB8aiGI6h5gCM2IzUP+SXQ8OS2vdDK294kjHciMal6Yw2czHyl60na82SBmDM2MdNbfHhP+HilrYNdXud8d2FfXKMmSZnD/EFfLlf978wtm+M3ZgYzuzpIewzRCuPjxy9lPzxTp86DD4BuPTGd00mtVJ/RDwSG1kZx/hPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732456212; c=relaxed/simple;
-	bh=OkdHnYr9vJDGPA31YXzAqACcCEq8L7JmmfF00fkHucc=;
+	s=arc-20240116; t=1732456350; c=relaxed/simple;
+	bh=UfvA3jp7HA7D1xdiFW8nzCh+DbA83drGo8aRe/3mfk8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=V9WelU+WF2owbh8j5QyAEUoubrBTh5PnZkg613eBPMKReEVC9wFJjcK1MAXR5YMtzhamMIcGoxr0nYw6bVVVt1pARWfNRm+5dSFxWeDaGjYaMrKTnkOk6HXR1tEgVlavGS/e6pd+/ajCE0cH+XJPPIaRKUNsJBerpGkXaierLjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dJn8MMXx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76A60C4CECC;
-	Sun, 24 Nov 2024 13:50:11 +0000 (UTC)
+	 MIME-Version; b=mzhRIPJeatvD4OKLZOkVMTFwZzLN+S3e7q6fsWLsjTQ+4ZG3ZIvR95+TQQu80PorQbATDoUogFjZzEsSClQJZvq8ECB5uTwkji2KwvYbmpO4UR9CigwGtdmU7QPviUFZfsLmxCsSJMV7c9n2hwI/Hy60cJvcaqtjrO7tbFk3upo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UeO1lZne; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5664CC4CED3;
+	Sun, 24 Nov 2024 13:52:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732456212;
-	bh=OkdHnYr9vJDGPA31YXzAqACcCEq8L7JmmfF00fkHucc=;
+	s=k20201202; t=1732456350;
+	bh=UfvA3jp7HA7D1xdiFW8nzCh+DbA83drGo8aRe/3mfk8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dJn8MMXxbBLjO2KiLEbqzdqjKR5kHJzaZgFuy+67i5EN+6f5Kalp7AeMD5ozJTyCi
-	 EJF/G0EVZYGLPsBDM5W8NQZw0XKz75pGH3OwH9Jmqqut3AKG4ITgp+nOIBdgOHvBcI
-	 7S/jr151yvDVPWbYjsrWnT/I287bHmRn65SSBJY4FeimG1HIpsaMeHEZ69eTf2lf/o
-	 E9XFQwF1TzzETMS0FuJ/IOVBcU2zuZHtkx96B2r8R89fC+qjpgP4zqpCJXXUW4pRQv
-	 I6fEIOo512EEC5pzgeer72hQaDgBIlzuwm8IEPP5anvnOg8UaJSbaCEAnhI0NOgPSR
-	 7qOI3Hy0otR+A==
+	b=UeO1lZneg+8mHKTQJUttuksRHa7wceKhseSr2aWveuWT/U+j5NUm9cBbg2NBr7bqH
+	 9BfiM9VW2i9lL5P7C6L39N4CA8AZGbUaZkUfEgkOvLo1LbrXDXKSr1Sy8tAf+5ztKx
+	 nPKu1T1l9PhBjZlVgJBhifoXtAbkmeJpa3gFAP2nUcS5QrrAQY40CYxl2ACGNMV+7V
+	 Wpg9eyQgjH2vmoJZNhBAx0nffuQ03cxAw35j9vfHR82OKnFORLJTpn7Noy4Yhlc1y5
+	 +iun+9RYL6CzTxHw3P6SEBMrD6xePR9eSbo2D8ogIKaEbQrvY9utDwvLm4CtIpWdw0
+	 QP2ymza2OdjUg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,12 +50,12 @@ Cc: Zhu Jun <zhujun2@cmss.chinamobile.com>,
 	ast@kernel.org,
 	daniel@iogearbox.net,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 11/48] samples/bpf: Fix a resource leak
-Date: Sun, 24 Nov 2024 08:48:34 -0500
-Message-ID: <20241124134950.3348099-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 06/36] samples/bpf: Fix a resource leak
+Date: Sun, 24 Nov 2024 08:51:20 -0500
+Message-ID: <20241124135219.3349183-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241124134950.3348099-1-sashal@kernel.org>
-References: <20241124134950.3348099-1-sashal@kernel.org>
+In-Reply-To: <20241124135219.3349183-1-sashal@kernel.org>
+References: <20241124135219.3349183-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,7 +64,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.119
+X-stable-base: Linux 5.15.173
 Content-Transfer-Encoding: 8bit
 
 From: Zhu Jun <zhujun2@cmss.chinamobile.com>
@@ -83,10 +83,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/samples/bpf/test_cgrp2_sock.c b/samples/bpf/test_cgrp2_sock.c
-index a0811df888f45..8ca2a445ffa15 100644
+index b0811da5a00f3..3f56519a1ccd7 100644
 --- a/samples/bpf/test_cgrp2_sock.c
 +++ b/samples/bpf/test_cgrp2_sock.c
-@@ -178,8 +178,10 @@ static int show_sockopts(int family)
+@@ -174,8 +174,10 @@ static int show_sockopts(int family)
  		return 1;
  	}
  
