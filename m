@@ -1,58 +1,59 @@
-Return-Path: <bpf+bounces-45520-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45521-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2A7F9D6F45
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 14:05:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 116839D7016
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 14:27:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86FB7280EA5
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 13:05:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77D09B2A1D2
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 13:09:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B060C1D3566;
-	Sun, 24 Nov 2024 12:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DCAF1D86ED;
+	Sun, 24 Nov 2024 12:50:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R+aX0PId"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f/2iqPvJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D1ED19D089;
-	Sun, 24 Nov 2024 12:49:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAF871A01C3;
+	Sun, 24 Nov 2024 12:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732452568; cv=none; b=tsE1AX8nv4bH2deg3E8l/D8b3QZi5a06ok+upCB8mazdIboye3lXoi8mu06SFAhLxJw1OGtoI+UPePFrZqAv2n/CdeAw7jY8y1obtpfNCUKYnKCjHSREZ/fs2ppKWLLsxWZXPZsRSj5OJHX2Nt4dGe3SUpxhPAa2OVxkjPOBI0E=
+	t=1732452642; cv=none; b=cQnrkjgUCUvXNNOjbBx+kk6uuSBp5cn3m9JFu5SeZzrJQdXpuNvIolRJts6m3gClqAFDFdEPtXpDZ+2WDxfcmQas088i4yE1dTn41EUWn45a/wTKf7tP88yg/1e9s+C24z5nPjg6oCTajkPBIGhCEC/Lr08Yvop64JX0pcdpcq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732452568; c=relaxed/simple;
-	bh=XyTJIgl/CdCWyIRGBODczdwowRviB1LScjxqhMcCsng=;
+	s=arc-20240116; t=1732452642; c=relaxed/simple;
+	bh=rlXomFu5qGiZb/ofgdWpVidsWgeKhD/JGHu9T92/iwY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dVFduUZ/SWtHnLPSclcqAl1A+9juFTG/czPwrWjNmoe03p4hF2HMGA5aMoK49jC5tAHjgc+g0QsXTFGLFlZIiTbIK1z+i06bR6Zbt0wxgLmPas4xmQFHEZxocyYxLYC7CUufW4uoEn0CpGemgmeQciZB9T2V8ihv7gzOHS6wjgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R+aX0PId; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFF83C4CEDB;
-	Sun, 24 Nov 2024 12:49:25 +0000 (UTC)
+	 MIME-Version; b=KF+TyVzMty6gmaw8zIxr4ChdcviasPbu/DfaXJ9EukmXxobrJsytXSNwaI0CZ0w+FEZxuITUEj3kpt9oud1K+k/6Zpb2KBf2DK0WCuRSjPrP0sEWkGjjc0Z934gBhtclSEoiV6eQS3XzW2N/9BQ/9XUqoe+ldFFHiHnQ4O383AA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f/2iqPvJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF900C4CECC;
+	Sun, 24 Nov 2024 12:50:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732452566;
-	bh=XyTJIgl/CdCWyIRGBODczdwowRviB1LScjxqhMcCsng=;
+	s=k20201202; t=1732452641;
+	bh=rlXomFu5qGiZb/ofgdWpVidsWgeKhD/JGHu9T92/iwY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=R+aX0PId57z9i4vyZXOqjvXY1A2YVlp/nwRAjDuv1aTxHl+pAzUzAUEwiV3jaLMtO
-	 GGC/yCWssd2hVI/3T1Ej392Y72VT+PSBwWcctEDwK+fZYyuKuxf4HFJq1QRJITxnvV
-	 PueRYxkJWtblJLXPpSpwPxtoiXZFk/WHuLo/Q3prUOVopU2jzXl4LtRm9r1V4IxLoU
-	 oufWjdEGYVZfulRenQOvT+bsedz0PTZU6lJp2rq24NqzpSY+5jG6g2ohQ10gxRILCt
-	 3lu35WmrByITktsZ2yhoW6QL7cfrpTNR4pofw40D3U5w0384HbgOtydo+4bP5yecn4
-	 kKW5Po6/MpB0w==
+	b=f/2iqPvJFDOiID7SRquVgSFIzLulT6173Dr629Ig6+z/AbwA9tvr8aRaU0Ld54Dp1
+	 mEEd/OiWpPQBJ9PgmfeEbqpxm528DDE5M8NUP5YocUbmWl9y70wPrnyWXpzOtZ9izz
+	 KCEzI8onpz8MQ5Shl/A+MGyxZt1i+QH5KbOeiese/tITSts4Ym2x1E/1q0FKUAzeVh
+	 YfNFaeweMXp6qpGvXQZiPq0/PqkBimif0/6tMC55Ou0O6VWkF2cRpI/koPSyAK+I2W
+	 PYj16qsjEmd7Ppk4m1OUoaLf/OAcUk+H3wFQCYi4rN5phoiCkmXnEV+dTeY35Ibgxl
+	 mKiD4G2WZQU/g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Benjamin Tissoires <bentiss@kernel.org>,
-	Peter Hutterer <peter.hutterer@who-t.net>,
+	Tatsuyuki Ishi <ishitatsuyuki@gmail.com>,
+	Jiri Kosina <jkosina@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	jikos@kernel.org,
 	linux-input@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 04/23] HID: add per device quirk to force bind to hid-generic
-Date: Sun, 24 Nov 2024 07:48:15 -0500
-Message-ID: <20241124124919.3338752-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 18/23] HID: bpf: Fix NKRO on Mistel MD770
+Date: Sun, 24 Nov 2024 07:48:29 -0500
+Message-ID: <20241124124919.3338752-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241124124919.3338752-1-sashal@kernel.org>
 References: <20241124124919.3338752-1-sashal@kernel.org>
@@ -69,76 +70,187 @@ Content-Transfer-Encoding: 8bit
 
 From: Benjamin Tissoires <bentiss@kernel.org>
 
-[ Upstream commit 645c224ac5f6e0013931c342ea707b398d24d410 ]
+[ Upstream commit 9bc089307e8dff7797233308372b4a90ce8f79be ]
 
-We already have the possibility to force not binding to hid-generic and
-rely on a dedicated driver, but we couldn't do the other way around.
+Mistel MD770 keyboard (using Holtek Semiconductor, Inc. controller) has
+a quirk in report descriptor in one of its interfaces (more detail in
+the source file). Fix up the descriptor to allow NKRO to work again.
 
-This is useful for BPF programs where we are fixing the report descriptor
-and the events, but want to avoid a specialized driver to come after BPF
-which would unwind everything that is done there.
+Tested by loading the BPF program and confirming that 8 simultaneous
+keypresses work.
 
-Reviewed-by: Peter Hutterer <peter.hutterer@who-t.net>
-Link: https://patch.msgid.link/20241001-hid-bpf-hid-generic-v3-8-2ef1019468df@kernel.org
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218495
+Link: https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests/122
+Signed-off-by: Tatsuyuki Ishi <ishitatsuyuki@gmail.com>
+Acked-by: Jiri Kosina <jkosina@suse.com>
+Link: https://patch.msgid.link/20241017-import_bpf_6-13-v2-1-6a7acb89a97f@kernel.org
 Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-core.c    | 5 +++--
- drivers/hid/hid-generic.c | 3 +++
- include/linux/hid.h       | 2 ++
- 3 files changed, 8 insertions(+), 2 deletions(-)
+ drivers/hid/bpf/progs/Mistel__MD770.bpf.c | 154 ++++++++++++++++++++++
+ 1 file changed, 154 insertions(+)
+ create mode 100644 drivers/hid/bpf/progs/Mistel__MD770.bpf.c
 
-diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 582fd234eec78..935ccc38d1295 100644
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -2674,9 +2674,10 @@ static bool hid_check_device_match(struct hid_device *hdev,
- 	/*
- 	 * hid-generic implements .match(), so we must be dealing with a
- 	 * different HID driver here, and can simply check if
--	 * hid_ignore_special_drivers is set or not.
-+	 * hid_ignore_special_drivers or HID_QUIRK_IGNORE_SPECIAL_DRIVER
-+	 * are set or not.
- 	 */
--	return !hid_ignore_special_drivers;
-+	return !hid_ignore_special_drivers && !(hdev->quirks & HID_QUIRK_IGNORE_SPECIAL_DRIVER);
- }
- 
- static int __hid_device_probe(struct hid_device *hdev, struct hid_driver *hdrv)
-diff --git a/drivers/hid/hid-generic.c b/drivers/hid/hid-generic.c
-index d2439399fb357..9e04c6d0fcc87 100644
---- a/drivers/hid/hid-generic.c
-+++ b/drivers/hid/hid-generic.c
-@@ -40,6 +40,9 @@ static bool hid_generic_match(struct hid_device *hdev,
- 	if (ignore_special_driver)
- 		return true;
- 
-+	if (hdev->quirks & HID_QUIRK_IGNORE_SPECIAL_DRIVER)
-+		return true;
+diff --git a/drivers/hid/bpf/progs/Mistel__MD770.bpf.c b/drivers/hid/bpf/progs/Mistel__MD770.bpf.c
+new file mode 100644
+index 0000000000000..fb8b5a6968b12
+--- /dev/null
++++ b/drivers/hid/bpf/progs/Mistel__MD770.bpf.c
+@@ -0,0 +1,154 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Tatsuyuki Ishi
++ */
 +
- 	if (hdev->quirks & HID_QUIRK_HAVE_SPECIAL_DRIVER)
- 		return false;
- 
-diff --git a/include/linux/hid.h b/include/linux/hid.h
-index 121d5b8bc8675..a7d60a1c72a09 100644
---- a/include/linux/hid.h
-+++ b/include/linux/hid.h
-@@ -359,6 +359,7 @@ struct hid_item {
-  * | @HID_QUIRK_NO_OUTPUT_REPORTS_ON_INTR_EP:
-  * | @HID_QUIRK_HAVE_SPECIAL_DRIVER:
-  * | @HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE:
-+ * | @HID_QUIRK_IGNORE_SPECIAL_DRIVER
-  * | @HID_QUIRK_FULLSPEED_INTERVAL:
-  * | @HID_QUIRK_NO_INIT_REPORTS:
-  * | @HID_QUIRK_NO_IGNORE:
-@@ -384,6 +385,7 @@ struct hid_item {
- #define HID_QUIRK_HAVE_SPECIAL_DRIVER		BIT(19)
- #define HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE	BIT(20)
- #define HID_QUIRK_NOINVERT			BIT(21)
-+#define HID_QUIRK_IGNORE_SPECIAL_DRIVER		BIT(22)
- #define HID_QUIRK_FULLSPEED_INTERVAL		BIT(28)
- #define HID_QUIRK_NO_INIT_REPORTS		BIT(29)
- #define HID_QUIRK_NO_IGNORE			BIT(30)
++#include "vmlinux.h"
++#include "hid_bpf.h"
++#include "hid_bpf_helpers.h"
++#include <bpf/bpf_tracing.h>
++
++#define VID_HOLTEK	0x04D9
++#define PID_MD770	0x0339
++#define RDESC_SIZE	203
++
++HID_BPF_CONFIG(
++	HID_DEVICE(BUS_USB, HID_GROUP_GENERIC, VID_HOLTEK, PID_MD770)
++);
++
++/*
++ * The Mistel MD770 keyboard reports the first 6 simultaneous key presses
++ * through the first interface, and anything beyond that through a second
++ * interface. Unfortunately, the second interface's report descriptor has an
++ * error, causing events to be malformed and ignored. This HID-BPF driver
++ * fixes the descriptor to allow NKRO to work again.
++ *
++ * For reference, this is the original report descriptor:
++ *
++ * 0x05, 0x01,        // Usage Page (Generic Desktop)        0
++ * 0x09, 0x80,        // Usage (System Control)              2
++ * 0xa1, 0x01,        // Collection (Application)            4
++ * 0x85, 0x01,        //  Report ID (1)                      6
++ * 0x19, 0x81,        //  Usage Minimum (129)                8
++ * 0x29, 0x83,        //  Usage Maximum (131)                10
++ * 0x15, 0x00,        //  Logical Minimum (0)                12
++ * 0x25, 0x01,        //  Logical Maximum (1)                14
++ * 0x95, 0x03,        //  Report Count (3)                   16
++ * 0x75, 0x01,        //  Report Size (1)                    18
++ * 0x81, 0x02,        //  Input (Data,Var,Abs)               20
++ * 0x95, 0x01,        //  Report Count (1)                   22
++ * 0x75, 0x05,        //  Report Size (5)                    24
++ * 0x81, 0x01,        //  Input (Cnst,Arr,Abs)               26
++ * 0xc0,              // End Collection                      28
++ * 0x05, 0x0c,        // Usage Page (Consumer Devices)       29
++ * 0x09, 0x01,        // Usage (Consumer Control)            31
++ * 0xa1, 0x01,        // Collection (Application)            33
++ * 0x85, 0x02,        //  Report ID (2)                      35
++ * 0x15, 0x00,        //  Logical Minimum (0)                37
++ * 0x25, 0x01,        //  Logical Maximum (1)                39
++ * 0x95, 0x12,        //  Report Count (18)                  41
++ * 0x75, 0x01,        //  Report Size (1)                    43
++ * 0x0a, 0x83, 0x01,  //  Usage (AL Consumer Control Config) 45
++ * 0x0a, 0x8a, 0x01,  //  Usage (AL Email Reader)            48
++ * 0x0a, 0x92, 0x01,  //  Usage (AL Calculator)              51
++ * 0x0a, 0x94, 0x01,  //  Usage (AL Local Machine Browser)   54
++ * 0x09, 0xcd,        //  Usage (Play/Pause)                 57
++ * 0x09, 0xb7,        //  Usage (Stop)                       59
++ * 0x09, 0xb6,        //  Usage (Scan Previous Track)        61
++ * 0x09, 0xb5,        //  Usage (Scan Next Track)            63
++ * 0x09, 0xe2,        //  Usage (Mute)                       65
++ * 0x09, 0xea,        //  Usage (Volume Down)                67
++ * 0x09, 0xe9,        //  Usage (Volume Up)                  69
++ * 0x0a, 0x21, 0x02,  //  Usage (AC Search)                  71
++ * 0x0a, 0x23, 0x02,  //  Usage (AC Home)                    74
++ * 0x0a, 0x24, 0x02,  //  Usage (AC Back)                    77
++ * 0x0a, 0x25, 0x02,  //  Usage (AC Forward)                 80
++ * 0x0a, 0x26, 0x02,  //  Usage (AC Stop)                    83
++ * 0x0a, 0x27, 0x02,  //  Usage (AC Refresh)                 86
++ * 0x0a, 0x2a, 0x02,  //  Usage (AC Bookmarks)               89
++ * 0x81, 0x02,        //  Input (Data,Var,Abs)               92
++ * 0x95, 0x01,        //  Report Count (1)                   94
++ * 0x75, 0x0e,        //  Report Size (14)                   96
++ * 0x81, 0x01,        //  Input (Cnst,Arr,Abs)               98
++ * 0xc0,              // End Collection                      100
++ * 0x05, 0x01,        // Usage Page (Generic Desktop)        101
++ * 0x09, 0x02,        // Usage (Mouse)                       103
++ * 0xa1, 0x01,        // Collection (Application)            105
++ * 0x09, 0x01,        //  Usage (Pointer)                    107
++ * 0xa1, 0x00,        //  Collection (Physical)              109
++ * 0x85, 0x03,        //   Report ID (3)                     111
++ * 0x05, 0x09,        //   Usage Page (Button)               113
++ * 0x19, 0x01,        //   Usage Minimum (1)                 115
++ * 0x29, 0x08,        //   Usage Maximum (8)                 117
++ * 0x15, 0x00,        //   Logical Minimum (0)               119
++ * 0x25, 0x01,        //   Logical Maximum (1)               121
++ * 0x75, 0x01,        //   Report Size (1)                   123
++ * 0x95, 0x08,        //   Report Count (8)                  125
++ * 0x81, 0x02,        //   Input (Data,Var,Abs)              127
++ * 0x05, 0x01,        //   Usage Page (Generic Desktop)      129
++ * 0x09, 0x30,        //   Usage (X)                         131
++ * 0x09, 0x31,        //   Usage (Y)                         133
++ * 0x16, 0x01, 0x80,  //   Logical Minimum (-32767)          135
++ * 0x26, 0xff, 0x7f,  //   Logical Maximum (32767)           138
++ * 0x75, 0x10,        //   Report Size (16)                  141
++ * 0x95, 0x02,        //   Report Count (2)                  143
++ * 0x81, 0x06,        //   Input (Data,Var,Rel)              145
++ * 0x09, 0x38,        //   Usage (Wheel)                     147
++ * 0x15, 0x81,        //   Logical Minimum (-127)            149
++ * 0x25, 0x7f,        //   Logical Maximum (127)             151
++ * 0x75, 0x08,        //   Report Size (8)                   153
++ * 0x95, 0x01,        //   Report Count (1)                  155
++ * 0x81, 0x06,        //   Input (Data,Var,Rel)              157
++ * 0x05, 0x0c,        //   Usage Page (Consumer Devices)     159
++ * 0x0a, 0x38, 0x02,  //   Usage (AC Pan)                    161
++ * 0x95, 0x01,        //   Report Count (1)                  164
++ * 0x81, 0x06,        //   Input (Data,Var,Rel)              166
++ * 0xc0,              //  End Collection                     168
++ * 0xc0,              // End Collection                      169
++ * 0x05, 0x01,        // Usage Page (Generic Desktop)        170
++ * 0x09, 0x06,        // Usage (Keyboard)                    172
++ * 0xa1, 0x01,        // Collection (Application)            174
++ * 0x85, 0x04,        //  Report ID (4)                      176
++ * 0x05, 0x07,        //  Usage Page (Keyboard)              178
++ * 0x95, 0x01,        //  Report Count (1)                   180
++ * 0x75, 0x08,        //  Report Size (8)                    182
++ * 0x81, 0x03,        //  Input (Cnst,Var,Abs)               184
++ * 0x95, 0xe8,        //  Report Count (232)                 186
++ * 0x75, 0x01,        //  Report Size (1)                    188
++ * 0x15, 0x00,        //  Logical Minimum (0)                190
++ * 0x25, 0x01,        //  Logical Maximum (1)                192
++ * 0x05, 0x07,        //  Usage Page (Keyboard)              194
++ * 0x19, 0x00,        //  Usage Minimum (0)                  196
++ * 0x29, 0xe7,        //  Usage Maximum (231)                198
++ * 0x81, 0x00,        //  Input (Data,Arr,Abs)               200  <- change to 0x81, 0x02 (Data,Var,Abs)
++ * 0xc0,              // End Collection                      202
++ */
++
++SEC(HID_BPF_RDESC_FIXUP)
++int BPF_PROG(hid_rdesc_fixup_mistel_md770, struct hid_bpf_ctx *hctx)
++{
++	__u8 *data = hid_bpf_get_data(hctx, 0, HID_MAX_DESCRIPTOR_SIZE);
++
++	if (!data)
++		return 0; /* EPERM check */
++
++	if (data[201] == 0x00)
++		data[201] = 0x02;
++
++	return 0;
++}
++
++HID_BPF_OPS(mistel_md770) = {
++	.hid_rdesc_fixup = (void *)hid_rdesc_fixup_mistel_md770,
++};
++
++SEC("syscall")
++int probe(struct hid_bpf_probe_args *ctx)
++{
++	ctx->retval = ctx->rdesc_size != RDESC_SIZE;
++	if (ctx->retval)
++		ctx->retval = -EINVAL;
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.43.0
 
