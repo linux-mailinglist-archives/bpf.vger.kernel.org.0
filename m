@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-45533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45534-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 365BC9D71EC
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 14:56:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75F9C9D7620
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 17:50:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA19328368E
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 13:56:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EF48B34308
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 14:07:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9622E1E8829;
-	Sun, 24 Nov 2024 13:38:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD051F9405;
+	Sun, 24 Nov 2024 13:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TuHBDMSM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jo0pzrCQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EC11E7C31;
-	Sun, 24 Nov 2024 13:38:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F9E11F8F12;
+	Sun, 24 Nov 2024 13:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732455507; cv=none; b=tN84VO54cz3dPgi7dbE7ZOtsdxpxuGYVyfGuUw2TrYpPF4PviPNFlEb+sFzsy4F5R0dgGYl+6SchxNkji8HUkIHsPCXuxsVGR3BbIZ+0MF+d1kDNsbq6nsii9ThpVvLg1FKHcKjweKiNUBVwaMieW4YjVSo8egSNCrot2XZHvxY=
+	t=1732455759; cv=none; b=dVp54rj2WLZ8EPnbKNBo1ZZnBwaiEOUmjdhrahYOJcz5fq11M1SFxEQFWhAJNRcWfELbA5KmjzfyryC0FyXZfiMn7tht0r8FdVaHuZ2kps5Xvu4tmjteG3VJatKbpJpDIvleguhmylneW49I4CLaEbEAKiCtSDlNhzXOBWdIir0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732455507; c=relaxed/simple;
-	bh=fnmW3+FlKUkEb178sTIkXUljV3il+Q+Oak1bRXOfC2E=;
+	s=arc-20240116; t=1732455759; c=relaxed/simple;
+	bh=OkdHnYr9vJDGPA31YXzAqACcCEq8L7JmmfF00fkHucc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XHunOBuUnuV2+OI0co+ZjndDHXqrwzgMzEMP45ItVASCmUXR0qTuS9Fw1IUWN41xu3rdaYS1iWLUOpdkivparuOvjsGbxxvPKK7b71bmkMrGOdNurYw5hMHhT27sj3u4lz1cba16oLIt6m/W1oW+x1od9m40Jh+wr0bjPAo2gfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TuHBDMSM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E168BC4CED1;
-	Sun, 24 Nov 2024 13:38:25 +0000 (UTC)
+	 MIME-Version; b=W1lZlp08TOOzO/RCj7ujjVkA24pBuzUKkM+jCf2yUEN25MHW9gr0m21Sa5qiNwLNW894ky+dl2zvjLxC2Khe+ri1qodSo9YHVjT2de9CoYwBpJdUf+1aE3X4gk/pAS6E4plIqt+EIJqgBfjhF2WIh1PIBOPDQNiECO5D4NppDJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jo0pzrCQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D834C4CECC;
+	Sun, 24 Nov 2024 13:42:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732455506;
-	bh=fnmW3+FlKUkEb178sTIkXUljV3il+Q+Oak1bRXOfC2E=;
+	s=k20201202; t=1732455759;
+	bh=OkdHnYr9vJDGPA31YXzAqACcCEq8L7JmmfF00fkHucc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TuHBDMSMXxld5zIYv4gCMbnXCPj0c4KmA7lp8IyECDvA3eJ/sKuoLkS4IghsYCPRT
-	 u0DDHljm1tXzZ1C4cuFx/IOZZa7jiWS9KWLQO/cTn6MkSUxwEcbkHri+aJPxR665g/
-	 TRz4aLae5sLiAqG7vDrbgfbcyoeNEpN/2y/0iUL4+kScU1hP2ePYZ2dX5nbnkfsn3Q
-	 GhGk6x6oE0IfhHXtMl5xhQlg++xNV6YBhmmd88Lt2NFkPsEruzM+n9KuPgRr+FZbfh
-	 zlK/1+LNFMJUO9/2CoGDeamWRUOzOv8LvSbz+saD6TR/WS9B0jePbPr/Bl+ov2QexG
-	 tMLPS9s6x/VXQ==
+	b=jo0pzrCQhRS/zUcbZKN+tcRYGD38FIR20EF951phrrNP9KgbES51HGc1GDDxCFjBv
+	 5WfBzvMti6+cBbr0+TRTCA/trdOcP7xpFEe0qLC9C+0HDJSlZPBdCictNErYPopHQ5
+	 12CQXsz8xBHwRGjADQMx7ILKTDZYSGeiAcae4e+Vi7PUvtOC4hTv9XdNuAGEHqwGvt
+	 jDSNbjVjUS7v1vzMFpFZPRjs6HaeN21tED1cVv+mkQSA8akI4HbD8GY+p1leQVNasq
+	 CakD4B/6ayj1IHHA2/MveMw5VFL44Az1saD3lU1x1rfVYkTH44qSFc+g7Vt99ymq4+
+	 dSHOHBAi9pdCA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hou Tao <houtao1@huawei.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Zhu Jun <zhujun2@cmss.chinamobile.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	ast@kernel.org,
 	daniel@iogearbox.net,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 089/107] bpf: Call free_htab_elem() after htab_unlock_bucket()
-Date: Sun, 24 Nov 2024 08:29:49 -0500
-Message-ID: <20241124133301.3341829-89-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.11 26/87] samples/bpf: Fix a resource leak
+Date: Sun, 24 Nov 2024 08:38:04 -0500
+Message-ID: <20241124134102.3344326-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241124133301.3341829-1-sashal@kernel.org>
-References: <20241124133301.3341829-1-sashal@kernel.org>
+In-Reply-To: <20241124134102.3344326-1-sashal@kernel.org>
+References: <20241124134102.3344326-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,245 +64,40 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.1
+X-stable-base: Linux 6.11.10
 Content-Transfer-Encoding: 8bit
 
-From: Hou Tao <houtao1@huawei.com>
+From: Zhu Jun <zhujun2@cmss.chinamobile.com>
 
-[ Upstream commit b9e9ed90b10c82a4e9d4d70a2890f06bfcdd3b78 ]
+[ Upstream commit f3ef53174b23246fe9bc2bbc2542f3a3856fa1e2 ]
 
-For htab of maps, when the map is removed from the htab, it may hold the
-last reference of the map. bpf_map_fd_put_ptr() will invoke
-bpf_map_free_id() to free the id of the removed map element. However,
-bpf_map_fd_put_ptr() is invoked while holding a bucket lock
-(raw_spin_lock_t), and bpf_map_free_id() attempts to acquire map_idr_lock
-(spinlock_t), triggering the following lockdep warning:
+The opened file should be closed in show_sockopts(), otherwise resource
+leak will occur that this problem was discovered by reading code
 
-  =============================
-  [ BUG: Invalid wait context ]
-  6.11.0-rc4+ #49 Not tainted
-  -----------------------------
-  test_maps/4881 is trying to lock:
-  ffffffff84884578 (map_idr_lock){+...}-{3:3}, at: bpf_map_free_id.part.0+0x21/0x70
-  other info that might help us debug this:
-  context-{5:5}
-  2 locks held by test_maps/4881:
-   #0: ffffffff846caf60 (rcu_read_lock){....}-{1:3}, at: bpf_fd_htab_map_update_elem+0xf9/0x270
-   #1: ffff888149ced148 (&htab->lockdep_key#2){....}-{2:2}, at: htab_map_update_elem+0x178/0xa80
-  stack backtrace:
-  CPU: 0 UID: 0 PID: 4881 Comm: test_maps Not tainted 6.11.0-rc4+ #49
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ...
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x6e/0xb0
-   dump_stack+0x10/0x20
-   __lock_acquire+0x73e/0x36c0
-   lock_acquire+0x182/0x450
-   _raw_spin_lock_irqsave+0x43/0x70
-   bpf_map_free_id.part.0+0x21/0x70
-   bpf_map_put+0xcf/0x110
-   bpf_map_fd_put_ptr+0x9a/0xb0
-   free_htab_elem+0x69/0xe0
-   htab_map_update_elem+0x50f/0xa80
-   bpf_fd_htab_map_update_elem+0x131/0x270
-   htab_map_update_elem+0x50f/0xa80
-   bpf_fd_htab_map_update_elem+0x131/0x270
-   bpf_map_update_value+0x266/0x380
-   __sys_bpf+0x21bb/0x36b0
-   __x64_sys_bpf+0x45/0x60
-   x64_sys_call+0x1b2a/0x20d0
-   do_syscall_64+0x5d/0x100
-   entry_SYSCALL_64_after_hwframe+0x76/0x7e
-
-One way to fix the lockdep warning is using raw_spinlock_t for
-map_idr_lock as well. However, bpf_map_alloc_id() invokes
-idr_alloc_cyclic() after acquiring map_idr_lock, it will trigger a
-similar lockdep warning because the slab's lock (s->cpu_slab->lock) is
-still a spinlock.
-
-Instead of changing map_idr_lock's type, fix the issue by invoking
-htab_put_fd_value() after htab_unlock_bucket(). However, only deferring
-the invocation of htab_put_fd_value() is not enough, because the old map
-pointers in htab of maps can not be saved during batched deletion.
-Therefore, also defer the invocation of free_htab_elem(), so these
-to-be-freed elements could be linked together similar to lru map.
-
-There are four callers for ->map_fd_put_ptr:
-
-(1) alloc_htab_elem() (through htab_put_fd_value())
-It invokes ->map_fd_put_ptr() under a raw_spinlock_t. The invocation of
-htab_put_fd_value() can not simply move after htab_unlock_bucket(),
-because the old element has already been stashed in htab->extra_elems.
-It may be reused immediately after htab_unlock_bucket() and the
-invocation of htab_put_fd_value() after htab_unlock_bucket() may release
-the newly-added element incorrectly. Therefore, saving the map pointer
-of the old element for htab of maps before unlocking the bucket and
-releasing the map_ptr after unlock. Beside the map pointer in the old
-element, should do the same thing for the special fields in the old
-element as well.
-
-(2) free_htab_elem() (through htab_put_fd_value())
-Its caller includes __htab_map_lookup_and_delete_elem(),
-htab_map_delete_elem() and __htab_map_lookup_and_delete_batch().
-
-For htab_map_delete_elem(), simply invoke free_htab_elem() after
-htab_unlock_bucket(). For __htab_map_lookup_and_delete_batch(), just
-like lru map, linking the to-be-freed element into node_to_free list
-and invoking free_htab_elem() for these element after unlock. It is safe
-to reuse batch_flink as the link for node_to_free, because these
-elements have been removed from the hash llist.
-
-Because htab of maps doesn't support lookup_and_delete operation,
-__htab_map_lookup_and_delete_elem() doesn't have the problem, so kept
-it as is.
-
-(3) fd_htab_map_free()
-It invokes ->map_fd_put_ptr without raw_spinlock_t.
-
-(4) bpf_fd_htab_map_update_elem()
-It invokes ->map_fd_put_ptr without raw_spinlock_t.
-
-After moving free_htab_elem() outside htab bucket lock scope, using
-pcpu_freelist_push() instead of __pcpu_freelist_push() to disable
-the irq before freeing elements, and protecting the invocations of
-bpf_mem_cache_free() with migrate_{disable|enable} pair.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Link: https://lore.kernel.org/r/20241106063542.357743-2-houtao@huaweicloud.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20241010014126.2573-1-zhujun2@cmss.chinamobile.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/hashtab.c | 56 ++++++++++++++++++++++++++++++--------------
- 1 file changed, 39 insertions(+), 17 deletions(-)
+ samples/bpf/test_cgrp2_sock.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index b14b87463ee04..3ec941a0ea41c 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -896,9 +896,12 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
- static void htab_elem_free(struct bpf_htab *htab, struct htab_elem *l)
- {
- 	check_and_free_fields(htab, l);
-+
-+	migrate_disable();
- 	if (htab->map.map_type == BPF_MAP_TYPE_PERCPU_HASH)
- 		bpf_mem_cache_free(&htab->pcpu_ma, l->ptr_to_pptr);
- 	bpf_mem_cache_free(&htab->ma, l);
-+	migrate_enable();
- }
+diff --git a/samples/bpf/test_cgrp2_sock.c b/samples/bpf/test_cgrp2_sock.c
+index a0811df888f45..8ca2a445ffa15 100644
+--- a/samples/bpf/test_cgrp2_sock.c
++++ b/samples/bpf/test_cgrp2_sock.c
+@@ -178,8 +178,10 @@ static int show_sockopts(int family)
+ 		return 1;
+ 	}
  
- static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
-@@ -948,7 +951,7 @@ static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
- 	if (htab_is_prealloc(htab)) {
- 		bpf_map_dec_elem_count(&htab->map);
- 		check_and_free_fields(htab, l);
--		__pcpu_freelist_push(&htab->freelist, &l->fnode);
-+		pcpu_freelist_push(&htab->freelist, &l->fnode);
- 	} else {
- 		dec_elem_count(htab);
- 		htab_elem_free(htab, l);
-@@ -1018,7 +1021,6 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
- 			 */
- 			pl_new = this_cpu_ptr(htab->extra_elems);
- 			l_new = *pl_new;
--			htab_put_fd_value(htab, old_elem);
- 			*pl_new = old_elem;
- 		} else {
- 			struct pcpu_freelist_node *l;
-@@ -1105,6 +1107,7 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
- 	struct htab_elem *l_new = NULL, *l_old;
- 	struct hlist_nulls_head *head;
- 	unsigned long flags;
-+	void *old_map_ptr;
- 	struct bucket *b;
- 	u32 key_size, hash;
- 	int ret;
-@@ -1183,12 +1186,27 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
- 	hlist_nulls_add_head_rcu(&l_new->hash_node, head);
- 	if (l_old) {
- 		hlist_nulls_del_rcu(&l_old->hash_node);
-+
-+		/* l_old has already been stashed in htab->extra_elems, free
-+		 * its special fields before it is available for reuse. Also
-+		 * save the old map pointer in htab of maps before unlock
-+		 * and release it after unlock.
-+		 */
-+		old_map_ptr = NULL;
-+		if (htab_is_prealloc(htab)) {
-+			if (map->ops->map_fd_put_ptr)
-+				old_map_ptr = fd_htab_map_get_ptr(map, l_old);
-+			check_and_free_fields(htab, l_old);
-+		}
+-	if (get_bind_to_device(sd, name, sizeof(name)) < 0)
++	if (get_bind_to_device(sd, name, sizeof(name)) < 0) {
++		close(sd);
+ 		return 1;
 +	}
-+	htab_unlock_bucket(htab, b, hash, flags);
-+	if (l_old) {
-+		if (old_map_ptr)
-+			map->ops->map_fd_put_ptr(map, old_map_ptr, true);
- 		if (!htab_is_prealloc(htab))
- 			free_htab_elem(htab, l_old);
--		else
--			check_and_free_fields(htab, l_old);
- 	}
--	ret = 0;
-+	return 0;
- err:
- 	htab_unlock_bucket(htab, b, hash, flags);
- 	return ret;
-@@ -1432,15 +1450,15 @@ static long htab_map_delete_elem(struct bpf_map *map, void *key)
- 		return ret;
  
- 	l = lookup_elem_raw(head, hash, key, key_size);
--
--	if (l) {
-+	if (l)
- 		hlist_nulls_del_rcu(&l->hash_node);
--		free_htab_elem(htab, l);
--	} else {
-+	else
- 		ret = -ENOENT;
--	}
- 
- 	htab_unlock_bucket(htab, b, hash, flags);
-+
-+	if (l)
-+		free_htab_elem(htab, l);
- 	return ret;
- }
- 
-@@ -1853,13 +1871,14 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 			 * may cause deadlock. See comments in function
- 			 * prealloc_lru_pop(). Let us do bpf_lru_push_free()
- 			 * after releasing the bucket lock.
-+			 *
-+			 * For htab of maps, htab_put_fd_value() in
-+			 * free_htab_elem() may acquire a spinlock with bucket
-+			 * lock being held and it violates the lock rule, so
-+			 * invoke free_htab_elem() after unlock as well.
- 			 */
--			if (is_lru_map) {
--				l->batch_flink = node_to_free;
--				node_to_free = l;
--			} else {
--				free_htab_elem(htab, l);
--			}
-+			l->batch_flink = node_to_free;
-+			node_to_free = l;
- 		}
- 		dst_key += key_size;
- 		dst_val += value_size;
-@@ -1871,7 +1890,10 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 	while (node_to_free) {
- 		l = node_to_free;
- 		node_to_free = node_to_free->batch_flink;
--		htab_lru_push_free(htab, l);
-+		if (is_lru_map)
-+			htab_lru_push_free(htab, l);
-+		else
-+			free_htab_elem(htab, l);
- 	}
- 
- next_batch:
+ 	mark = get_somark(sd);
+ 	prio = get_priority(sd);
 -- 
 2.43.0
 
