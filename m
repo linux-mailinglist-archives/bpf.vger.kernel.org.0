@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-45528-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45529-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 294A49D7277
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 15:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E6EB9D7428
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 16:00:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB8A0B29C3A
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 13:26:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44CC0B38E4E
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 13:27:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 049A31E0DF9;
-	Sun, 24 Nov 2024 12:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910FB1E1A33;
+	Sun, 24 Nov 2024 12:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="idUKZ5FP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mqTLW0Y/"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6775A1BCA0D;
-	Sun, 24 Nov 2024 12:58:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE571BD517;
+	Sun, 24 Nov 2024 12:58:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732453082; cv=none; b=K/IeX1zaUTEoa6QMQdDlZ5l5cJCYtyWo+I/g4M0hM0gziDyj4xkO9zoqoFovbCmC1cCjoBXHKAeINyTQmcuDjP5g7YOQmExlB72RB7RP2Y7Aa5EOE8ZpmR9tn/iSAYwS/tKOQ1vZhlEZexOZUhaEQwLFNU7wQsUz9WUEg1Qtrlo=
+	t=1732453120; cv=none; b=ZdmBMkv4E90VQRqShIpXQp1wd6G+gANeBmd6Y+oIYZyUAb5x36rcTPzMJXQJsZRiIh5drWroenzeeOjRDqyapT+E0JLbIOFwZCtQGf8uBvZY9cj3S5oepyKHEAFw4Je44WdVfQtWVe1K0xjR/yBr5CjQMwzv5a+Y1UZaRrYbqBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732453082; c=relaxed/simple;
+	s=arc-20240116; t=1732453120; c=relaxed/simple;
 	bh=rlXomFu5qGiZb/ofgdWpVidsWgeKhD/JGHu9T92/iwY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iWXL+Brqjhq9tbach5Vv8WySXTb7owC7JkTzNe9EgQFMLABEnssFNybOHSBcMG0A8TXiXZ1vzmhx4Nb/weUAeR85Dl1hg7jM/hQvhtmCC2qj8qsKU1y9vggr4te5+4FUMBScP/tVhLlHwShOj/58CQxM3wlueNBvYkLRRxtFc0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=idUKZ5FP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F61CC4CED3;
-	Sun, 24 Nov 2024 12:58:01 +0000 (UTC)
+	 MIME-Version; b=GQUvJynxHXCkpX2YgHAcfTurMsz4Ti4LO2lf2CXlL46rHCL6qLcF2uoo8P5/b/iOVtjvV97miq/Mx4zNUGzOW3P0sQ+wJVmS6Fh4rXgwVxtIhgzuA3slwSvAYXfAGJTm3VH/T+heghid1hmp8dckmlcHPcLmDd1WFo1Ip+bWut8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mqTLW0Y/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 749EEC4CECC;
+	Sun, 24 Nov 2024 12:58:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732453082;
+	s=k20201202; t=1732453119;
 	bh=rlXomFu5qGiZb/ofgdWpVidsWgeKhD/JGHu9T92/iwY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=idUKZ5FPU7ugRRrU7CXWvC/megBWGj9efC9N4MHlmAhophyIjx55HZfAotY/i48Ky
-	 tY80XJy9UMSXlsmSfW5gFiUpX+nn/G3EA7tgpq3LHI70h281n3rKfpvQIpHrV/BlZ5
-	 LMk3khHkOIYovtzT8DEZ3UlC9UK/ZBfV+KA8xTNbxAVUmCgD2B0tDbW1HF6Ks6KNLW
-	 t20bczaK2JfC1Zw5k4tAfimlUVvK5EaX6sXLV7YqSQM6ypnTLrVGPsLRyIVjN3yEjw
-	 FEq+95gMzqzaqBjBjBCuOGIKYmK6wg/DJ2wVaIo/GRMvHcgg2pOAskTCioHxwjtW2q
-	 FJZDlt+C1t/rQ==
+	b=mqTLW0Y/IywwUIMlcskA9P8vlM+vaw3o09dlD/grX8E3MPQv7Huqo6iAVGWL/3i/u
+	 TtZ2PBZ2turPkNB0M4FKhLlWprlvd13rZBRhQy94XcL/E0b7x6Sl//w8biVaDkwTze
+	 Lu33h1eiDEvrMh3d4tBGjI1ednpcd80yhmIu2zJJ56kotwabSUEMjSJLaO7xVSGu12
+	 ARJ72c5IY8P1QhDWr8TaT6N96+cLKgzdwy8gcykscNei+vB/+q6453xUcRiB9UnS6e
+	 xvQcysnduJirXH2cHL7YzrI3qzCBjngTEr79HOyRrHofPjul0hvfz9oKHTlOTuAdHk
+	 pK2hL5USKKw1A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,12 +51,12 @@ Cc: Benjamin Tissoires <bentiss@kernel.org>,
 	jikos@kernel.org,
 	linux-input@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 5/6] HID: bpf: Fix NKRO on Mistel MD770
-Date: Sun, 24 Nov 2024 07:57:07 -0500
-Message-ID: <20241124125742.3341086-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 4/5] HID: bpf: Fix NKRO on Mistel MD770
+Date: Sun, 24 Nov 2024 07:58:04 -0500
+Message-ID: <20241124125817.3341248-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241124125742.3341086-1-sashal@kernel.org>
-References: <20241124125742.3341086-1-sashal@kernel.org>
+In-Reply-To: <20241124125817.3341248-1-sashal@kernel.org>
+References: <20241124125817.3341248-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.230
+X-stable-base: Linux 5.4.286
 Content-Transfer-Encoding: 8bit
 
 From: Benjamin Tissoires <bentiss@kernel.org>
