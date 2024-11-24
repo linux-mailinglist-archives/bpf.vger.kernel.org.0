@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-45554-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED4B99D7936
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 00:49:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F094A9D7932
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 00:49:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B7E9B22E80
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 23:49:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B67BF2825E2
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 23:49:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9B3918C92F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82CFE18BC26;
 	Sun, 24 Nov 2024 23:49:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5301718873F;
-	Sun, 24 Nov 2024 23:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DBF21607A4;
+	Sun, 24 Nov 2024 23:49:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732492173; cv=none; b=hU25NrVNWiobV0hltE4uhiWxr8fbwFhgqa5m0A29mYFxT/ScbjSqR87mHEGBPArCMkLWvmuC0dQAlUQqdslC4g3qwWkIkz+w/WSkesCG3vxrYDjB7hHMU+f4fQrPkFSjwLuanXjFEpNwqUJj0QoNt4/6b43Sg/hOqHNc26Yo/NI=
+	t=1732492173; cv=none; b=TP7GonF3cLvSDGk0n+Hg6Bb0j3GvTQ3kWc7wWpdgYHntMWNjvOpVCuKVyqvS3Eh2w7vA66wOMYfLv5XQrbxwXxYRiA8qbfUKi8z8cDc3CmyypqQS5Oy737hTpGgyKmJ3SbkZ474PhFmMxrhW81brL5+7kaEANQJDFR9A/+cY6dM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1732492173; c=relaxed/simple;
-	bh=uvmRKB6hMrxNIblTFCPkCu7S+gNjAWEdtf0pOA/AyAY=;
+	bh=yCUNkk6yShU8TZGlAY96O7m0lA5Zg/DBQJ7E8YVPT4w=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=ar4ptmeO0rl0sQ0oDvRVPJBkVu1tqDU6ZB1DSJZS+BrNlIQ/2wUZR5gawtI8vuARYF8dqoBCh1FS6HVc6i5J/xr1Tw2n4WC9Q36Ye2fCT+tBvZrzhz3UlgbVLAQFfRMBrJEbxYb4UiX0WB4MAaITOtn7JvmhuCBFLb3vWJmZeyE=
+	 Content-Type; b=kObRDymY3cxIfjPz4RSQ/f1nSpajimhmP0aiHcjM6ICu1uY7nPO9Dpb39A2W6YYEZM6byA5gv2SXTwIqbWUqaU6QFpqUHGRChh918pxUrsxMSpsLc+FzM74qh/ZJ1KvNmL+jKcIBlBjt9Kdd2YzVjFxvnND247xaH4JVLg8uweQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2463C4CEDD;
-	Sun, 24 Nov 2024 23:49:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BB8CC4CED3;
+	Sun, 24 Nov 2024 23:49:33 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1tFMMt-00000006vk9-0MAP;
+	id 1tFMMt-00000006vke-140A;
 	Sun, 24 Nov 2024 18:50:19 -0500
-Message-ID: <20241124235018.937057267@goodmis.org>
+Message-ID: <20241124235019.106333158@goodmis.org>
 User-Agent: quilt/0.68
-Date: Sun, 24 Nov 2024 18:49:43 -0500
+Date: Sun, 24 Nov 2024 18:49:44 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
@@ -56,8 +56,9 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Andrii Nakryiko <andrii.nakryiko@gmail.com>,
  bpf@vger.kernel.org,
  Joel Fernandes <joel@joelfernandes.org>,
- Jordan Rife <jrife@google.com>
-Subject: [for-next][PATCH 3/6] tracing: Remove __idx variable from __DO_TRACE
+ Jordan Rife <jrife@google.com>,
+ linux-trace-kernel@vger.kernel.org
+Subject: [for-next][PATCH 4/6] rcupdate_trace: Define rcu_tasks_trace lock guard
 References: <20241124234940.017394686@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -69,10 +70,9 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-Since the removal of SRCU-protected tracepoints, the __idx variable in
-__DO_TRACE is unused. Remove this variable.
+Define a rcu_tasks_trace lock guard for use by the syscall enter/exit
+tracepoints.
 
-Fixes: 48bcda684823 ("tracing: Remove definition of trace_*_rcuidle()")
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Michael Jeanson <mjeanson@efficios.com>
@@ -90,26 +90,35 @@ Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: bpf@vger.kernel.org
 Cc: Joel Fernandes <joel@joelfernandes.org>
 Cc: Jordan Rife <jrife@google.com>
-Link: https://lore.kernel.org/20241123153031.2884933-3-mathieu.desnoyers@efficios.com
+Cc: linux-trace-kernel@vger.kernel.org
+Link: https://lore.kernel.org/20241123153031.2884933-4-mathieu.desnoyers@efficios.com
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/tracepoint.h | 2 --
- 1 file changed, 2 deletions(-)
+ include/linux/rcupdate_trace.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index d390e8cabf02..867f3c1ac7dc 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -218,8 +218,6 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
-  */
- #define __DO_TRACE(name, args, cond, syscall)				\
- 	do {								\
--		int __maybe_unused __idx = 0;				\
--									\
- 		if (!(cond))						\
- 			return;						\
- 									\
+diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+index eda493200663..e6c44eb428ab 100644
+--- a/include/linux/rcupdate_trace.h
++++ b/include/linux/rcupdate_trace.h
+@@ -10,6 +10,7 @@
+ 
+ #include <linux/sched.h>
+ #include <linux/rcupdate.h>
++#include <linux/cleanup.h>
+ 
+ extern struct lockdep_map rcu_trace_lock_map;
+ 
+@@ -98,4 +99,8 @@ static inline void rcu_read_lock_trace(void) { BUG(); }
+ static inline void rcu_read_unlock_trace(void) { BUG(); }
+ #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+ 
++DEFINE_LOCK_GUARD_0(rcu_tasks_trace,
++	rcu_read_lock_trace(),
++	rcu_read_unlock_trace())
++
+ #endif /* __LINUX_RCUPDATE_TRACE_H */
 -- 
 2.45.2
 
