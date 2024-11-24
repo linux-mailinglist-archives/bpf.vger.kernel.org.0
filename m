@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-45541-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45542-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62E099D7591
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 16:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E07E49D770A
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 19:01:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7A46B3A9DD
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 15:10:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1204AB84447
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 15:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D71D241A6B;
-	Sun, 24 Nov 2024 13:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6AEE2471B2;
+	Sun, 24 Nov 2024 13:55:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gKSy2tbg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Th5U6q4W"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDCC1B3F3D;
-	Sun, 24 Nov 2024 13:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4172A2471A0;
+	Sun, 24 Nov 2024 13:55:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732456461; cv=none; b=ufmeRCc24dEPGp4zXC1ye192ZZcZ27Kxz4z5k40uabjzC7yC/wlFGR2ZXo1YAupvLL5InSG4SYFWjPQyJKlv0+EzFSQmHKNV9XNmsrDhLLAOVo9QgcKX8MJg4DP/rJg+/Q+9nMHYLzoXVQW8MZ5uqsP0L2RtRtNXUgrRtPnJvD4=
+	t=1732456557; cv=none; b=Y+yL04BulKRT57LT6279LHmy3YuyHJciLAa5hSXzpXkUJRgiHaQH+8rD2dSWFxl594u5kn+P1hMU+3sZf/lb0mStcRIUKHEUeTUOJvcSy2sU6aCt71OIjo9gSsg0gj69Pbyr0/3aHNxwD5uutOUu3b1g454BQm46QwmB1mwgaWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732456461; c=relaxed/simple;
+	s=arc-20240116; t=1732456557; c=relaxed/simple;
 	bh=UfvA3jp7HA7D1xdiFW8nzCh+DbA83drGo8aRe/3mfk8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LPjlcb303WlFlo8fgSGzX8GCIW2TTR5m53rdT9SWzjG8AtoRt9pkJRKri7olsSlzkEd4A/V5k4YQ8StAmpXsIH9YzRbc8XSIjgLXhdRpHvNCZbqH0giTZZafhpnTi1FDNW3Ld4G8zg4bKJpMx4Tcq+LC2cfRIj5lBTepJvMAh8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gKSy2tbg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E9A0C4CED3;
-	Sun, 24 Nov 2024 13:54:20 +0000 (UTC)
+	 MIME-Version; b=onnIdIFIH0cRcN56zCwW3H8qpJZGnB1SyW54qYRL2zhMB0dGsltPc2cjQxpdHKOVdYN1nqrykCsXkjwMZBWuzB/Ok0iPYoCzrodQgKV/zU4z+rv2MB3nnsIfPkdheHc+kwcahjsHshM7E2v2H4BuObhG8G6qh1NUjNdn9VaIm98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Th5U6q4W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06CB1C4CED8;
+	Sun, 24 Nov 2024 13:55:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732456461;
+	s=k20201202; t=1732456556;
 	bh=UfvA3jp7HA7D1xdiFW8nzCh+DbA83drGo8aRe/3mfk8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gKSy2tbg73kKQOovr7yYv7xa2wwcN3ymrNhBJmkh1n6qytPaOh1tGNMk00dhWS/UF
-	 zDTSB5dykgG6G2dkQMllMv7kozhGxIeQ2YDtsutL8jVzdgCLCD1K93tg78+HmfYNMp
-	 Uw0f991ACLjWBzBjxYdCfhsI/k4lcByi9DZwX4+iWiwcriwYN7tB7QT1dQO/zNC3Hm
-	 bYsiHpEGhIbpOJbUssMB2nc03Kvu049lWoay52Yx8toDwPvzhzrAUeRXc5I3lmtDDt
-	 ideyTgNHIysHPFPtbENlcgbQXQLOGXW/H9JGTanqF0C8KCoEQrUvmQTOc2joPy24kw
-	 de7sodxVI0ULA==
+	b=Th5U6q4WERHrS/jXGuR4PhpuHKNx7EhvXXfXYPbRJAr86MNs1lVbgJo95/rRmnrds
+	 Qx3JAfipky4bMd38/P9fGs3UyDN+VfBYgmOyLoug+1rbT+RSUoV/LPlWDGMbRfhoZG
+	 0NNZbei6kp8EBrcWXvffu6Rzu8uNTKLyhZqqDOz+Q2Kd7ZUyAzIIOJ7nMucHjbK0sO
+	 Ja74bLZWfLVGsdLWltaTI6LtRsEzXLbv0fpfOh+YBmIwlB1hE8dB/m+o3+1qJoIOr/
+	 QHpfN+sWFx9BT6yjhwR5McjUhYtCryl4EVUIpEowUvXCesjz0Ci9PosOz7o9iVQD58
+	 +sMJll2E2JOeQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,12 +50,12 @@ Cc: Zhu Jun <zhujun2@cmss.chinamobile.com>,
 	ast@kernel.org,
 	daniel@iogearbox.net,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 06/33] samples/bpf: Fix a resource leak
-Date: Sun, 24 Nov 2024 08:53:18 -0500
-Message-ID: <20241124135410.3349976-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 04/28] samples/bpf: Fix a resource leak
+Date: Sun, 24 Nov 2024 08:55:04 -0500
+Message-ID: <20241124135549.3350700-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241124135410.3349976-1-sashal@kernel.org>
-References: <20241124135410.3349976-1-sashal@kernel.org>
+In-Reply-To: <20241124135549.3350700-1-sashal@kernel.org>
+References: <20241124135549.3350700-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,7 +64,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.230
+X-stable-base: Linux 5.4.286
 Content-Transfer-Encoding: 8bit
 
 From: Zhu Jun <zhujun2@cmss.chinamobile.com>
