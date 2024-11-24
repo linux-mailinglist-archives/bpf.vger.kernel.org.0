@@ -1,59 +1,58 @@
-Return-Path: <bpf+bounces-45532-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45533-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C7A79D713A
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 14:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 365BC9D71EC
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 14:56:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CF26283759
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 13:46:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA19328368E
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2024 13:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD451DE891;
-	Sun, 24 Nov 2024 13:35:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9622E1E8829;
+	Sun, 24 Nov 2024 13:38:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eLJqtuQO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TuHBDMSM"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5CB1DE4C0;
-	Sun, 24 Nov 2024 13:35:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EC11E7C31;
+	Sun, 24 Nov 2024 13:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732455336; cv=none; b=rEkp50/8jff5+JnVUK27+yzN/i5o/ONNyN6GNZ9/6RkOoHVwBmvVATVMMwR60Uyd4yvvbm/XDegiNgQ6jw/qr7WccSFkEj6ONi5PjqQLumxg6rlVPFS2sz/qvVL190/Z8mw0Hdddko+6kbvUAG0msb3GRC6rz72IyihNalSs0F0=
+	t=1732455507; cv=none; b=tN84VO54cz3dPgi7dbE7ZOtsdxpxuGYVyfGuUw2TrYpPF4PviPNFlEb+sFzsy4F5R0dgGYl+6SchxNkji8HUkIHsPCXuxsVGR3BbIZ+0MF+d1kDNsbq6nsii9ThpVvLg1FKHcKjweKiNUBVwaMieW4YjVSo8egSNCrot2XZHvxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732455336; c=relaxed/simple;
-	bh=zFgYFYFZosuqyQj/8vP1sOtkNx4x7uC1VXsls9VHvIA=;
+	s=arc-20240116; t=1732455507; c=relaxed/simple;
+	bh=fnmW3+FlKUkEb178sTIkXUljV3il+Q+Oak1bRXOfC2E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mPmZIrfMPK4X9pP6A/ySoRxR2ek5BOSdPYscrrmkwEFvpI50lcFueOrWZU9ISHf+a820F54WaV6NR/kKIKbhmBP7xZmzDACvjkbFsHG28AH8sosG5kSwUHXHWbgAotzdib6pQedgZXKcqnDcs5TaPXCjPpFUbCUivdkIgyIFPgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eLJqtuQO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3E01C4CED1;
-	Sun, 24 Nov 2024 13:35:34 +0000 (UTC)
+	 MIME-Version; b=XHunOBuUnuV2+OI0co+ZjndDHXqrwzgMzEMP45ItVASCmUXR0qTuS9Fw1IUWN41xu3rdaYS1iWLUOpdkivparuOvjsGbxxvPKK7b71bmkMrGOdNurYw5hMHhT27sj3u4lz1cba16oLIt6m/W1oW+x1od9m40Jh+wr0bjPAo2gfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TuHBDMSM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E168BC4CED1;
+	Sun, 24 Nov 2024 13:38:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732455336;
-	bh=zFgYFYFZosuqyQj/8vP1sOtkNx4x7uC1VXsls9VHvIA=;
+	s=k20201202; t=1732455506;
+	bh=fnmW3+FlKUkEb178sTIkXUljV3il+Q+Oak1bRXOfC2E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eLJqtuQOzYFjnDrxGuz9pRtlkfTbdGFff4fn6hqe0r2NDVLgszkCL15BuRuV/qZeL
-	 kwfwekJZZhZY3NXRWLpsoIn/r/bJbgRKvjcdlQOn3/Tx6aV/fp6YOOF0a89eJp21LJ
-	 qJI3jw+iCAdDd6Ta3lLv12Kb4dN1QPfiCtXbw3e1VbAn+imjvZNyiGh2KtUFt2HjeP
-	 7+S17X3R4+ZsuG89MOihfOaZ7CObiCe7iw1f34+rT0zM+JQB3eQ2N9O8ehRNMOlMHD
-	 nqTQfilOg5MPSX1sefHFv7pAxE5hRmPa9aV5fZWjSXv35JDjQ88Q1EE4RH9NhZylyI
-	 r42DSLYTFPp0g==
+	b=TuHBDMSMXxld5zIYv4gCMbnXCPj0c4KmA7lp8IyECDvA3eJ/sKuoLkS4IghsYCPRT
+	 u0DDHljm1tXzZ1C4cuFx/IOZZa7jiWS9KWLQO/cTn6MkSUxwEcbkHri+aJPxR665g/
+	 TRz4aLae5sLiAqG7vDrbgfbcyoeNEpN/2y/0iUL4+kScU1hP2ePYZ2dX5nbnkfsn3Q
+	 GhGk6x6oE0IfhHXtMl5xhQlg++xNV6YBhmmd88Lt2NFkPsEruzM+n9KuPgRr+FZbfh
+	 zlK/1+LNFMJUO9/2CoGDeamWRUOzOv8LvSbz+saD6TR/WS9B0jePbPr/Bl+ov2QexG
+	 tMLPS9s6x/VXQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Leon Hwang <leon.hwang@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
+Cc: Hou Tao <houtao1@huawei.com>,
 	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 049/107] bpf: Prevent tailcall infinite loop caused by freplace
-Date: Sun, 24 Nov 2024 08:29:09 -0500
-Message-ID: <20241124133301.3341829-49-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 089/107] bpf: Call free_htab_elem() after htab_unlock_bucket()
+Date: Sun, 24 Nov 2024 08:29:49 -0500
+Message-ID: <20241124133301.3341829-89-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241124133301.3341829-1-sashal@kernel.org>
 References: <20241124133301.3341829-1-sashal@kernel.org>
@@ -68,310 +67,242 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.12.1
 Content-Transfer-Encoding: 8bit
 
-From: Leon Hwang <leon.hwang@linux.dev>
+From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit d6083f040d5d8f8d748462c77e90547097df936e ]
+[ Upstream commit b9e9ed90b10c82a4e9d4d70a2890f06bfcdd3b78 ]
 
-There is a potential infinite loop issue that can occur when using a
-combination of tail calls and freplace.
+For htab of maps, when the map is removed from the htab, it may hold the
+last reference of the map. bpf_map_fd_put_ptr() will invoke
+bpf_map_free_id() to free the id of the removed map element. However,
+bpf_map_fd_put_ptr() is invoked while holding a bucket lock
+(raw_spin_lock_t), and bpf_map_free_id() attempts to acquire map_idr_lock
+(spinlock_t), triggering the following lockdep warning:
 
-In an upcoming selftest, the attach target for entry_freplace of
-tailcall_freplace.c is subprog_tc of tc_bpf2bpf.c, while the tail call in
-entry_freplace leads to entry_tc. This results in an infinite loop:
+  =============================
+  [ BUG: Invalid wait context ]
+  6.11.0-rc4+ #49 Not tainted
+  -----------------------------
+  test_maps/4881 is trying to lock:
+  ffffffff84884578 (map_idr_lock){+...}-{3:3}, at: bpf_map_free_id.part.0+0x21/0x70
+  other info that might help us debug this:
+  context-{5:5}
+  2 locks held by test_maps/4881:
+   #0: ffffffff846caf60 (rcu_read_lock){....}-{1:3}, at: bpf_fd_htab_map_update_elem+0xf9/0x270
+   #1: ffff888149ced148 (&htab->lockdep_key#2){....}-{2:2}, at: htab_map_update_elem+0x178/0xa80
+  stack backtrace:
+  CPU: 0 UID: 0 PID: 4881 Comm: test_maps Not tainted 6.11.0-rc4+ #49
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ...
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0x6e/0xb0
+   dump_stack+0x10/0x20
+   __lock_acquire+0x73e/0x36c0
+   lock_acquire+0x182/0x450
+   _raw_spin_lock_irqsave+0x43/0x70
+   bpf_map_free_id.part.0+0x21/0x70
+   bpf_map_put+0xcf/0x110
+   bpf_map_fd_put_ptr+0x9a/0xb0
+   free_htab_elem+0x69/0xe0
+   htab_map_update_elem+0x50f/0xa80
+   bpf_fd_htab_map_update_elem+0x131/0x270
+   htab_map_update_elem+0x50f/0xa80
+   bpf_fd_htab_map_update_elem+0x131/0x270
+   bpf_map_update_value+0x266/0x380
+   __sys_bpf+0x21bb/0x36b0
+   __x64_sys_bpf+0x45/0x60
+   x64_sys_call+0x1b2a/0x20d0
+   do_syscall_64+0x5d/0x100
+   entry_SYSCALL_64_after_hwframe+0x76/0x7e
 
-entry_tc -> subprog_tc -> entry_freplace --tailcall-> entry_tc.
+One way to fix the lockdep warning is using raw_spinlock_t for
+map_idr_lock as well. However, bpf_map_alloc_id() invokes
+idr_alloc_cyclic() after acquiring map_idr_lock, it will trigger a
+similar lockdep warning because the slab's lock (s->cpu_slab->lock) is
+still a spinlock.
 
-The problem arises because the tail_call_cnt in entry_freplace resets to
-zero each time entry_freplace is executed, causing the tail call mechanism
-to never terminate, eventually leading to a kernel panic.
+Instead of changing map_idr_lock's type, fix the issue by invoking
+htab_put_fd_value() after htab_unlock_bucket(). However, only deferring
+the invocation of htab_put_fd_value() is not enough, because the old map
+pointers in htab of maps can not be saved during batched deletion.
+Therefore, also defer the invocation of free_htab_elem(), so these
+to-be-freed elements could be linked together similar to lru map.
 
-To fix this issue, the solution is twofold:
+There are four callers for ->map_fd_put_ptr:
 
-1. Prevent updating a program extended by an freplace program to a
-   prog_array map.
-2. Prevent extending a program that is already part of a prog_array map
-   with an freplace program.
+(1) alloc_htab_elem() (through htab_put_fd_value())
+It invokes ->map_fd_put_ptr() under a raw_spinlock_t. The invocation of
+htab_put_fd_value() can not simply move after htab_unlock_bucket(),
+because the old element has already been stashed in htab->extra_elems.
+It may be reused immediately after htab_unlock_bucket() and the
+invocation of htab_put_fd_value() after htab_unlock_bucket() may release
+the newly-added element incorrectly. Therefore, saving the map pointer
+of the old element for htab of maps before unlocking the bucket and
+releasing the map_ptr after unlock. Beside the map pointer in the old
+element, should do the same thing for the special fields in the old
+element as well.
 
-This ensures that:
+(2) free_htab_elem() (through htab_put_fd_value())
+Its caller includes __htab_map_lookup_and_delete_elem(),
+htab_map_delete_elem() and __htab_map_lookup_and_delete_batch().
 
-* If a program or its subprogram has been extended by an freplace program,
-  it can no longer be updated to a prog_array map.
-* If a program has been added to a prog_array map, neither it nor its
-  subprograms can be extended by an freplace program.
+For htab_map_delete_elem(), simply invoke free_htab_elem() after
+htab_unlock_bucket(). For __htab_map_lookup_and_delete_batch(), just
+like lru map, linking the to-be-freed element into node_to_free list
+and invoking free_htab_elem() for these element after unlock. It is safe
+to reuse batch_flink as the link for node_to_free, because these
+elements have been removed from the hash llist.
 
-Moreover, an extension program should not be tailcalled. As such, return
--EINVAL if the program has a type of BPF_PROG_TYPE_EXT when adding it to a
-prog_array map.
+Because htab of maps doesn't support lookup_and_delete operation,
+__htab_map_lookup_and_delete_elem() doesn't have the problem, so kept
+it as is.
 
-Additionally, fix a minor code style issue by replacing eight spaces with a
-tab for proper formatting.
+(3) fd_htab_map_free()
+It invokes ->map_fd_put_ptr without raw_spinlock_t.
 
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-Link: https://lore.kernel.org/r/20241015150207.70264-2-leon.hwang@linux.dev
+(4) bpf_fd_htab_map_update_elem()
+It invokes ->map_fd_put_ptr without raw_spinlock_t.
+
+After moving free_htab_elem() outside htab bucket lock scope, using
+pcpu_freelist_push() instead of __pcpu_freelist_push() to disable
+the irq before freeing elements, and protecting the invocations of
+bpf_mem_cache_free() with migrate_{disable|enable} pair.
+
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Link: https://lore.kernel.org/r/20241106063542.357743-2-houtao@huaweicloud.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bpf.h     | 17 +++++++++++----
- kernel/bpf/arraymap.c   | 26 +++++++++++++++++++++--
- kernel/bpf/core.c       |  1 +
- kernel/bpf/syscall.c    |  7 +++---
- kernel/bpf/trampoline.c | 47 ++++++++++++++++++++++++++++++++++-------
- 5 files changed, 81 insertions(+), 17 deletions(-)
+ kernel/bpf/hashtab.c | 56 ++++++++++++++++++++++++++++++--------------
+ 1 file changed, 39 insertions(+), 17 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index bdadb0bb6cecd..06fe5f79deb4c 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1300,8 +1300,12 @@ void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len);
- bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr);
- 
- #ifdef CONFIG_BPF_JIT
--int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
--int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
-+int bpf_trampoline_link_prog(struct bpf_tramp_link *link,
-+			     struct bpf_trampoline *tr,
-+			     struct bpf_prog *tgt_prog);
-+int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
-+			       struct bpf_trampoline *tr,
-+			       struct bpf_prog *tgt_prog);
- struct bpf_trampoline *bpf_trampoline_get(u64 key,
- 					  struct bpf_attach_target_info *tgt_info);
- void bpf_trampoline_put(struct bpf_trampoline *tr);
-@@ -1382,12 +1386,14 @@ void bpf_jit_uncharge_modmem(u32 size);
- bool bpf_prog_has_trampoline(const struct bpf_prog *prog);
- #else
- static inline int bpf_trampoline_link_prog(struct bpf_tramp_link *link,
--					   struct bpf_trampoline *tr)
-+					   struct bpf_trampoline *tr,
-+					   struct bpf_prog *tgt_prog)
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index b14b87463ee04..3ec941a0ea41c 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -896,9 +896,12 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+ static void htab_elem_free(struct bpf_htab *htab, struct htab_elem *l)
  {
- 	return -ENOTSUPP;
+ 	check_and_free_fields(htab, l);
++
++	migrate_disable();
+ 	if (htab->map.map_type == BPF_MAP_TYPE_PERCPU_HASH)
+ 		bpf_mem_cache_free(&htab->pcpu_ma, l->ptr_to_pptr);
+ 	bpf_mem_cache_free(&htab->ma, l);
++	migrate_enable();
  }
- static inline int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
--					     struct bpf_trampoline *tr)
-+					     struct bpf_trampoline *tr,
-+					     struct bpf_prog *tgt_prog)
- {
- 	return -ENOTSUPP;
- }
-@@ -1491,6 +1497,9 @@ struct bpf_prog_aux {
- 	bool xdp_has_frags;
- 	bool exception_cb;
- 	bool exception_boundary;
-+	bool is_extended; /* true if extended by freplace program */
-+	u64 prog_array_member_cnt; /* counts how many times as member of prog_array */
-+	struct mutex ext_mutex; /* mutex for is_extended and prog_array_member_cnt */
- 	struct bpf_arena *arena;
- 	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
- 	const struct btf_type *attach_func_proto;
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 79660e3fca4c1..6cdbb4c33d31d 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -947,22 +947,44 @@ static void *prog_fd_array_get_ptr(struct bpf_map *map,
- 				   struct file *map_file, int fd)
- {
- 	struct bpf_prog *prog = bpf_prog_get(fd);
-+	bool is_extended;
  
- 	if (IS_ERR(prog))
- 		return prog;
- 
--	if (!bpf_prog_map_compatible(map, prog)) {
-+	if (prog->type == BPF_PROG_TYPE_EXT ||
-+	    !bpf_prog_map_compatible(map, prog)) {
- 		bpf_prog_put(prog);
- 		return ERR_PTR(-EINVAL);
- 	}
- 
-+	mutex_lock(&prog->aux->ext_mutex);
-+	is_extended = prog->aux->is_extended;
-+	if (!is_extended)
-+		prog->aux->prog_array_member_cnt++;
-+	mutex_unlock(&prog->aux->ext_mutex);
-+	if (is_extended) {
-+		/* Extended prog can not be tail callee. It's to prevent a
-+		 * potential infinite loop like:
-+		 * tail callee prog entry -> tail callee prog subprog ->
-+		 * freplace prog entry --tailcall-> tail callee prog entry.
+ static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
+@@ -948,7 +951,7 @@ static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
+ 	if (htab_is_prealloc(htab)) {
+ 		bpf_map_dec_elem_count(&htab->map);
+ 		check_and_free_fields(htab, l);
+-		__pcpu_freelist_push(&htab->freelist, &l->fnode);
++		pcpu_freelist_push(&htab->freelist, &l->fnode);
+ 	} else {
+ 		dec_elem_count(htab);
+ 		htab_elem_free(htab, l);
+@@ -1018,7 +1021,6 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
+ 			 */
+ 			pl_new = this_cpu_ptr(htab->extra_elems);
+ 			l_new = *pl_new;
+-			htab_put_fd_value(htab, old_elem);
+ 			*pl_new = old_elem;
+ 		} else {
+ 			struct pcpu_freelist_node *l;
+@@ -1105,6 +1107,7 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+ 	struct htab_elem *l_new = NULL, *l_old;
+ 	struct hlist_nulls_head *head;
+ 	unsigned long flags;
++	void *old_map_ptr;
+ 	struct bucket *b;
+ 	u32 key_size, hash;
+ 	int ret;
+@@ -1183,12 +1186,27 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+ 	hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+ 	if (l_old) {
+ 		hlist_nulls_del_rcu(&l_old->hash_node);
++
++		/* l_old has already been stashed in htab->extra_elems, free
++		 * its special fields before it is available for reuse. Also
++		 * save the old map pointer in htab of maps before unlock
++		 * and release it after unlock.
 +		 */
-+		bpf_prog_put(prog);
-+		return ERR_PTR(-EBUSY);
++		old_map_ptr = NULL;
++		if (htab_is_prealloc(htab)) {
++			if (map->ops->map_fd_put_ptr)
++				old_map_ptr = fd_htab_map_get_ptr(map, l_old);
++			check_and_free_fields(htab, l_old);
++		}
 +	}
-+
- 	return prog;
- }
- 
- static void prog_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
- {
-+	struct bpf_prog *prog = ptr;
-+
-+	mutex_lock(&prog->aux->ext_mutex);
-+	prog->aux->prog_array_member_cnt--;
-+	mutex_unlock(&prog->aux->ext_mutex);
- 	/* bpf_prog is freed after one RCU or tasks trace grace period */
--	bpf_prog_put(ptr);
-+	bpf_prog_put(prog);
- }
- 
- static u32 prog_fd_array_sys_lookup_elem(void *ptr)
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 5e77c58e06010..233ea78f8f1bd 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -131,6 +131,7 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
- 	INIT_LIST_HEAD_RCU(&fp->aux->ksym_prefix.lnode);
- #endif
- 	mutex_init(&fp->aux->used_maps_mutex);
-+	mutex_init(&fp->aux->ext_mutex);
- 	mutex_init(&fp->aux->dst_mutex);
- 
- 	return fp;
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index c5aa127ed4cc0..8405a95e066cf 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3218,7 +3218,8 @@ static void bpf_tracing_link_release(struct bpf_link *link)
- 		container_of(link, struct bpf_tracing_link, link.link);
- 
- 	WARN_ON_ONCE(bpf_trampoline_unlink_prog(&tr_link->link,
--						tr_link->trampoline));
-+						tr_link->trampoline,
-+						tr_link->tgt_prog));
- 
- 	bpf_trampoline_put(tr_link->trampoline);
- 
-@@ -3358,7 +3359,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
- 	 *   in prog->aux
- 	 *
- 	 * - if prog->aux->dst_trampoline is NULL, the program has already been
--         *   attached to a target and its initial target was cleared (below)
-+	 *   attached to a target and its initial target was cleared (below)
- 	 *
- 	 * - if tgt_prog != NULL, the caller specified tgt_prog_fd +
- 	 *   target_btf_id using the link_create API.
-@@ -3433,7 +3434,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
- 	if (err)
- 		goto out_unlock;
- 
--	err = bpf_trampoline_link_prog(&link->link, tr);
-+	err = bpf_trampoline_link_prog(&link->link, tr, tgt_prog);
- 	if (err) {
- 		bpf_link_cleanup(&link_primer);
- 		link = NULL;
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index f8302a5ca400d..9f36c049f4c28 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -523,7 +523,27 @@ static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(struct bpf_prog *prog)
++	htab_unlock_bucket(htab, b, hash, flags);
++	if (l_old) {
++		if (old_map_ptr)
++			map->ops->map_fd_put_ptr(map, old_map_ptr, true);
+ 		if (!htab_is_prealloc(htab))
+ 			free_htab_elem(htab, l_old);
+-		else
+-			check_and_free_fields(htab, l_old);
  	}
- }
- 
--static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
-+static int bpf_freplace_check_tgt_prog(struct bpf_prog *tgt_prog)
-+{
-+	struct bpf_prog_aux *aux = tgt_prog->aux;
-+
-+	guard(mutex)(&aux->ext_mutex);
-+	if (aux->prog_array_member_cnt)
-+		/* Program extensions can not extend target prog when the target
-+		 * prog has been updated to any prog_array map as tail callee.
-+		 * It's to prevent a potential infinite loop like:
-+		 * tgt prog entry -> tgt prog subprog -> freplace prog entry
-+		 * --tailcall-> tgt prog entry.
-+		 */
-+		return -EBUSY;
-+
-+	aux->is_extended = true;
+-	ret = 0;
 +	return 0;
-+}
+ err:
+ 	htab_unlock_bucket(htab, b, hash, flags);
+ 	return ret;
+@@ -1432,15 +1450,15 @@ static long htab_map_delete_elem(struct bpf_map *map, void *key)
+ 		return ret;
+ 
+ 	l = lookup_elem_raw(head, hash, key, key_size);
+-
+-	if (l) {
++	if (l)
+ 		hlist_nulls_del_rcu(&l->hash_node);
+-		free_htab_elem(htab, l);
+-	} else {
++	else
+ 		ret = -ENOENT;
+-	}
+ 
+ 	htab_unlock_bucket(htab, b, hash, flags);
 +
-+static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link,
-+				      struct bpf_trampoline *tr,
-+				      struct bpf_prog *tgt_prog)
- {
- 	enum bpf_tramp_prog_type kind;
- 	struct bpf_tramp_link *link_exiting;
-@@ -544,6 +564,9 @@ static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_tr
- 		/* Cannot attach extension if fentry/fexit are in use. */
- 		if (cnt)
- 			return -EBUSY;
-+		err = bpf_freplace_check_tgt_prog(tgt_prog);
-+		if (err)
-+			return err;
- 		tr->extension_prog = link->link.prog;
- 		return bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP, NULL,
- 					  link->link.prog->bpf_func);
-@@ -570,17 +593,21 @@ static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_tr
- 	return err;
++	if (l)
++		free_htab_elem(htab, l);
+ 	return ret;
  }
  
--int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
-+int bpf_trampoline_link_prog(struct bpf_tramp_link *link,
-+			     struct bpf_trampoline *tr,
-+			     struct bpf_prog *tgt_prog)
- {
- 	int err;
- 
- 	mutex_lock(&tr->mutex);
--	err = __bpf_trampoline_link_prog(link, tr);
-+	err = __bpf_trampoline_link_prog(link, tr, tgt_prog);
- 	mutex_unlock(&tr->mutex);
- 	return err;
- }
- 
--static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
-+static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
-+					struct bpf_trampoline *tr,
-+					struct bpf_prog *tgt_prog)
- {
- 	enum bpf_tramp_prog_type kind;
- 	int err;
-@@ -591,6 +618,8 @@ static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_
- 		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP,
- 					 tr->extension_prog->bpf_func, NULL);
- 		tr->extension_prog = NULL;
-+		guard(mutex)(&tgt_prog->aux->ext_mutex);
-+		tgt_prog->aux->is_extended = false;
- 		return err;
- 	}
- 	hlist_del_init(&link->tramp_hlist);
-@@ -599,12 +628,14 @@ static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_
- }
- 
- /* bpf_trampoline_unlink_prog() should never fail. */
--int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
-+int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
-+			       struct bpf_trampoline *tr,
-+			       struct bpf_prog *tgt_prog)
- {
- 	int err;
- 
- 	mutex_lock(&tr->mutex);
--	err = __bpf_trampoline_unlink_prog(link, tr);
-+	err = __bpf_trampoline_unlink_prog(link, tr, tgt_prog);
- 	mutex_unlock(&tr->mutex);
- 	return err;
- }
-@@ -619,7 +650,7 @@ static void bpf_shim_tramp_link_release(struct bpf_link *link)
- 	if (!shim_link->trampoline)
- 		return;
- 
--	WARN_ON_ONCE(bpf_trampoline_unlink_prog(&shim_link->link, shim_link->trampoline));
-+	WARN_ON_ONCE(bpf_trampoline_unlink_prog(&shim_link->link, shim_link->trampoline, NULL));
- 	bpf_trampoline_put(shim_link->trampoline);
- }
- 
-@@ -733,7 +764,7 @@ int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
- 		goto err;
+@@ -1853,13 +1871,14 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 			 * may cause deadlock. See comments in function
+ 			 * prealloc_lru_pop(). Let us do bpf_lru_push_free()
+ 			 * after releasing the bucket lock.
++			 *
++			 * For htab of maps, htab_put_fd_value() in
++			 * free_htab_elem() may acquire a spinlock with bucket
++			 * lock being held and it violates the lock rule, so
++			 * invoke free_htab_elem() after unlock as well.
+ 			 */
+-			if (is_lru_map) {
+-				l->batch_flink = node_to_free;
+-				node_to_free = l;
+-			} else {
+-				free_htab_elem(htab, l);
+-			}
++			l->batch_flink = node_to_free;
++			node_to_free = l;
+ 		}
+ 		dst_key += key_size;
+ 		dst_val += value_size;
+@@ -1871,7 +1890,10 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 	while (node_to_free) {
+ 		l = node_to_free;
+ 		node_to_free = node_to_free->batch_flink;
+-		htab_lru_push_free(htab, l);
++		if (is_lru_map)
++			htab_lru_push_free(htab, l);
++		else
++			free_htab_elem(htab, l);
  	}
  
--	err = __bpf_trampoline_link_prog(&shim_link->link, tr);
-+	err = __bpf_trampoline_link_prog(&shim_link->link, tr, NULL);
- 	if (err)
- 		goto err;
- 
+ next_batch:
 -- 
 2.43.0
 
