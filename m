@@ -1,153 +1,169 @@
-Return-Path: <bpf+bounces-45566-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45567-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46BB99D7CFE
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 09:35:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 638059D825A
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 10:34:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C6CE281DF3
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 08:35:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 227B4282127
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 09:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B82A18B475;
-	Mon, 25 Nov 2024 08:35:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55249192B69;
+	Mon, 25 Nov 2024 09:33:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WdooRpbQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="edZZUv3u"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C31376;
-	Mon, 25 Nov 2024 08:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176611922F5;
+	Mon, 25 Nov 2024 09:33:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732523749; cv=none; b=nl8egGGg1Fsk/KHdIaKFQLbBJpPYlP2mwNHauds0bGI1VxB7BnCXYpDddf26oNZ7vpGunT5kUuEPVn20XDRuQwIS+HHOdaN9Kpkoedh2Hl6Qthh8rGQFKr/RhheF5XL6yVJR/bLSm3ryeaugOtRuvKi7K7ZrAgC8J//sGajSYSw=
+	t=1732527211; cv=none; b=EjuYirpUcz9kewLnVM8NOMGWeK6s3r/MeDJMBdSYML21PiXOPjdmwZJ2x62H5ukfXXGMm3vw0q6NGMyzvFCipI59GOUSHUlXpU24eLPXTtvPOCbraM7veYE6DCE8ZC4OhIBPe4u42R6r8nUfrrtZklQ0VGmwGib+HhHQ5bQTexs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732523749; c=relaxed/simple;
-	bh=giqjuR8SayINfQRMvdKC45TjKx+/gcQKWZAhbM6pN6g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fGalBSOrtuS5oPiAziC0eK+SGjbXU970APf/GpAWCfewYOArqp8Aq9fnbYx/4zS0y635uQ9PYVNnMR+5clzUyjjuVRKMKiELfCQhn3MpoveBz6IfSpHcUI7Lyqa3xEJTfkXlQUSbT4n5OKC4tRzdKo5PcKEFvFYdmTl2teMd2+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WdooRpbQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92E04C4CECE;
-	Mon, 25 Nov 2024 08:35:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732523748;
-	bh=giqjuR8SayINfQRMvdKC45TjKx+/gcQKWZAhbM6pN6g=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=WdooRpbQ5u6eHCnM9Ej4riSSEeaFmHBi7Db444box+szJzgzdapMMH6GZAbrnH2xB
-	 sqr4k2kHzpaE1OdphrsR9izJmdStKqo9AiThGJ7T6gDaKM8fssTCtZYrVZz7amT+zc
-	 hO5yUeHXDJ857s4LbyLmjJTlPaQ4J2Qe91uhQkwWvcV8ZTdSTqaYDYPJ15L6eFHa8v
-	 hnSmmgYvJgID8XBMcjzk8S4hiJmniyJq/tTGVLQdDE4CLpWd6YWS6Heppblvj9PleV
-	 rlM2nSvhr5mXoJrZ9WgS0jpEDDH1rUCHruQ9DX34ZVETxU13AlaDS3j3TMTI+Nt1yD
-	 d5VJ+yzigvTtw==
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2ffa8df8850so28759481fa.3;
-        Mon, 25 Nov 2024 00:35:48 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV7kN2IKSQj8bc91QuM5f5/Z/l39/wAU0qNf+204IJaVfno0X3qKq1c7yZmctxtX3g+ZPGyPl6etdBZ4bB5@vger.kernel.org, AJvYcCW3+T1SZWPaSEd8a17wBiFBk1xnpJK1ooCzelubMRDrvHw93JjKvK6y1GoE+X9LQecs237o/s48tfmXIBXC@vger.kernel.org, AJvYcCXDocWxBjQBhTQvzMiymEjQ2Wn4JFicF+LfNG4lKvLH54o6f5KBHyM3TTtV5Z7qzhyI/J0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPyTY44oFRMs5UMR4Kzm9D9J+ytNdczecI5ZSCCX5KBS6kct8h
-	cyjFDy+RCfBzUjB9RyKkrv1EfiXz/DO8aH4a517Jik7LxQUXXK9ijqw5sesSSWETVlR3dHWncSJ
-	Plado8MeO/qIzitABS7081L6BByc=
-X-Google-Smtp-Source: AGHT+IE3pYY4SyydxATz2K5n+Wei67MO86RDjcb//k8TvfxZ3L/3zJNbxC7jzwmA+XU84NJpz/HlxAZNDIhvOYStDes=
-X-Received: by 2002:a05:651c:19a2:b0:2ff:c741:db92 with SMTP id
- 38308e7fff4ca-2ffc741de13mr4309141fa.17.1732523747252; Mon, 25 Nov 2024
- 00:35:47 -0800 (PST)
+	s=arc-20240116; t=1732527211; c=relaxed/simple;
+	bh=X81NZt9qx3DE0gbvEotrk8pcmoWkcatWmTjsILlbnbI=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uYJUSXGNJEXojpjgBCvtqHiUUp0z46NO4oDLX0uVci1sKXIuN9d/MGtzqf2tk6bW8VC7f6+mdDJx0P/sGYSVgWXTiwqZmVMWmq/A5SC7JnHjsnlibWg/51sjbf49WOapqXFsijNVnlH3AxXziu/YglzK8ufBmD4rGAFJLloLmwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=edZZUv3u; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2ffb0bbe9c8so20462561fa.0;
+        Mon, 25 Nov 2024 01:33:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732527208; x=1733132008; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=CJd7YmDRIf/qZZRuIn1RRwsg87hhLA4wTR2jmGGoM0I=;
+        b=edZZUv3u7CuTJxhvRxwEwMA1jdaaD94Gafw/mM/pTJaiZR3H0AL547Uh48NTgITxej
+         R1OYhaoM37VOLFczBNQor8xXrlaS09PQD8Q0B3ErRMBBTdbaq40bxkeSV3U1sPd/Dsx5
+         PVUx9I7cxBcGaElQRcthKEUI+wJoj9GioNjBYFeNsFAgi1jYZ7AsuE/WLkKRw1RTsKhP
+         788k/QqI5/x2uKzyk1L7ZkWNCLYSr7rtjPevHQfQmof42TdDm5JR+mzDn7BZEOljV5Sa
+         N+dHg939o1u6+y434V3TQwyqMQdE5EYNN/f2PLS27iBs25/C9JYyURhmX8S5sBE/lGB/
+         qddw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732527208; x=1733132008;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CJd7YmDRIf/qZZRuIn1RRwsg87hhLA4wTR2jmGGoM0I=;
+        b=kxcmQM7Hd5x5wo8iPYC57eP3lDIIvyCJ/KWEZ8XuoGdfgVOOpyVL6fjpy2Dkx3IwwB
+         VKFEP8PvT3nC2NHlrrojur2uZSZZowr8zfE1t1e8FAJObMOdCaRcftk5BkS6MWs3y3qo
+         P1lp2+YYN50yAsVwkcL/QiQZxjTp3sniem4Jftol4h03v2Ige5WoI+DOn3KcD4LApVmg
+         IHQn2QdxDtFkT3WzPEeQXIJ1Ej32IivfTFTIzGAaMdUYNb2j4r8d7O/c5PlCXCR7nZal
+         f5tW/A1brRvQ/Rid32uQFB88uvUERkHt3lDxstct5WjDnuis8TSYqAzB/YbhzmRxFNgH
+         tAeA==
+X-Forwarded-Encrypted: i=1; AJvYcCUnHSQQGTfuOXTvvOkLzLjSA5mqG2M9/DqolI7YRf75u0D3Jrafgn69FDkmflW8PLb821Y=@vger.kernel.org, AJvYcCUwJIoaLcFosdUS0zjvC9BEX1B9ThPhkN2rYiNSahE1CM3aUnvwzQTk3OugC3Lq8vqGIJ4J4FuC/QqgdV/X@vger.kernel.org, AJvYcCVcJc7Pp4RdIxgcf2rTcfxodOU183Jw5MoGAhIyxEfSiuYeABdr8Hu3QMzNoqi+3dYHTy0MPXWynCQl2JSZ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz0ydYdXt+bCq86ETyAxLpkRh7tvhy+tMeaDFD/51PQI94GPlte
+	DYC8WfKnY1HjxQUbFtQtBD/KtrDKbYpPvND04FwkJsKiq7nJNkHn
+X-Gm-Gg: ASbGncscHW0a1Q+1l3fysxeqFyqpcCbSL/2cVrrfRchxDecZu1+JkkUtEVcGliiNMiN
+	ikGQ5+9Oj2buCUlq5KAfl3aEWlydU8gn7EmFBrdRc1FG6jdla/q2vmxdtOqGBUEzvi2Cfc+4PmV
+	MU8dt6BzcZDqnhDKjK1+BS6ODo67ihftm4zoarOSk49s5FjFgSry5k0a34rXvk7XT5gSy6gccj6
+	ev88qjkr1jAw7Hedpufp6vQr3e/XKYn/36k2VlKzLfwO18VG+kkbRWki8PXdwW8NTrPnrVN/gZI
+	yS6zZBzHAzJ9UpfgXd6ZAL8=
+X-Google-Smtp-Source: AGHT+IFmsgLuuEjHvCGS6xK+KSUkxEbyq3M3cWUJah1M0laeKP1YjZJc3hl5ShQC/nZ44R6jc79QJg==
+X-Received: by 2002:a2e:b8d4:0:b0:2ff:557e:b418 with SMTP id 38308e7fff4ca-2ffa71bc397mr57943991fa.36.1732527207876;
+        Mon, 25 Nov 2024 01:33:27 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4349e80e51esm40436105e9.33.2024.11.25.01.33.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Nov 2024 01:33:27 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 25 Nov 2024 10:33:25 +0100
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH 3/3] kbuild: propagate CONFIG_WERROR to resolve_btfids
+Message-ID: <Z0REZczFIfGHtjsQ@krava>
+References: <20241123-resolve_btfids-v1-0-927700b641d1@weissschuh.net>
+ <20241123-resolve_btfids-v1-3-927700b641d1@weissschuh.net>
+ <CAADnVQL4_8-Y0O3Gar-+q7XKMU6_tY8atEddWB2KsR+DCUZ7WQ@mail.gmail.com>
+ <f7764e9b-6254-42af-94b8-41562a18b58b@t-8ch.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241123-resolve_btfids-v1-0-927700b641d1@weissschuh.net>
- <20241123-resolve_btfids-v1-1-927700b641d1@weissschuh.net>
- <Z0ONnhIVK1Sj9J09@krava> <fa77c47c-b9c7-4013-8ccf-7ee7773c0c2d@t-8ch.de>
-In-Reply-To: <fa77c47c-b9c7-4013-8ccf-7ee7773c0c2d@t-8ch.de>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 25 Nov 2024 17:35:11 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQw9Ra8p6PtkGqhGvDZoWudsxHGW005ZotcpdqXuAMCRg@mail.gmail.com>
-Message-ID: <CAK7LNAQw9Ra8p6PtkGqhGvDZoWudsxHGW005ZotcpdqXuAMCRg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] kbuild: add dependency from vmlinux to resolve_btfids
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f7764e9b-6254-42af-94b8-41562a18b58b@t-8ch.de>
 
-On Mon, Nov 25, 2024 at 5:58=E2=80=AFAM Thomas Wei=C3=9Fschuh <linux@weisss=
-chuh.net> wrote:
->
-> On 2024-11-24 21:33:34+0100, Jiri Olsa wrote:
-> > On Sat, Nov 23, 2024 at 02:33:37PM +0100, Thomas Wei=C3=9Fschuh wrote:
-> > > resolve_btfids is used by link-vmlinux.sh.
-> > > In contrast to other configuration options and targets no transitive
-> > > dependency between resolve_btfids and vmlinux.
-> > > Add an explicit one.
-> >
-> > hi,
-> > there's prepare dependency in root Makefile, isn't it enough?
->
-> It doesn't seem for me.
-> If the source of resolve_btfids is changed, it itself is recompiled as
-> per the current Makefile, but vmlinux is not relinked/BTFID'd.
-
-
-If we need rebuilding vmlinux, this seems correct
-
-Acked-by: Masahiro Yamada <masahiroy@kernel.org>
-
-
-I can pick up this during the current MW.
-
-
-
-
-
-
-> > ifdef CONFIG_BPF
-> > ifdef CONFIG_DEBUG_INFO_BTF
-> > prepare: tools/bpf/resolve_btfids
-> > endif
-> > endif
-> >
-> > thanks,
-> > jirka
-> >
+On Mon, Nov 25, 2024 at 09:20:37AM +0100, Thomas Weißschuh wrote:
+> On 2024-11-24 15:38:40-0800, Alexei Starovoitov wrote:
+> > On Sat, Nov 23, 2024 at 5:33 AM Thomas Weißschuh <linux@weissschuh.net> wrote:
 > > >
-> > > Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+> > > Use CONFIG_WERROR to also fail on warnings emitted by resolve_btfids.
+> > > Allow the CI bots to prevent the introduction of new warnings.
+> > >
+> > > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 > > > ---
-> > >  scripts/Makefile.vmlinux | 3 +++
-> > >  1 file changed, 3 insertions(+)
+> > >  scripts/link-vmlinux.sh | 6 +++++-
+> > >  1 file changed, 5 insertions(+), 1 deletion(-)
 > > >
-> > > diff --git a/scripts/Makefile.vmlinux b/scripts/Makefile.vmlinux
-> > > index 1284f05555b97f726c6d167a09f6b92f20e120a2..599b486adb31cfb653e54=
-707b7d77052d372b7c1 100644
-> > > --- a/scripts/Makefile.vmlinux
-> > > +++ b/scripts/Makefile.vmlinux
-> > > @@ -32,6 +32,9 @@ cmd_link_vmlinux =3D                               =
-                         \
-> > >  targets +=3D vmlinux
-> > >  vmlinux: scripts/link-vmlinux.sh vmlinux.o $(KBUILD_LDS) FORCE
-> > >     +$(call if_changed_dep,link_vmlinux)
-> > > +ifdef CONFIG_DEBUG_INFO_BTF
-> > > +vmlinux: $(RESOLVE_BTFIDS)
-> > > +endif
-> > >
-> > >  # module.builtin.ranges
-> > >  # ------------------------------------------------------------------=
----------
-> > >
-> > > --
-> > > 2.47.0
-> > >
+> > > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> > > index a9b3f34a78d2cd4514e73a728f1a784eee891768..61f1f670291351a276221153146d66001eca556c 100755
+> > > --- a/scripts/link-vmlinux.sh
+> > > +++ b/scripts/link-vmlinux.sh
+> > > @@ -274,7 +274,11 @@ vmlinux_link vmlinux
+> > >  # fill in BTF IDs
+> > >  if is_enabled CONFIG_DEBUG_INFO_BTF; then
+> > >         info BTFIDS vmlinux
+> > > -       ${RESOLVE_BTFIDS} vmlinux
+> > > +       RESOLVE_BTFIDS_ARGS=""
+> > > +       if is_enabled CONFIG_WERROR; then
+> > > +               RESOLVE_BTFIDS_ARGS=" --fatal-warnings "
+> > > +       fi
+> > > +       ${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_ARGS} vmlinux
+> > 
+> > I'm not convinced we need to fail the build when functions are renamed.
+> > These warns are eventually found and fixed.
+> 
+> The same could be said for most other build warnings.
+> CONFIG_WERROR is a well-known opt-in switch for exactly this behavior.
+> 
+> Fixing these warnings before they hit mainline has various
+> advantages. The author introducing the warning knows about the full
+> impact of their change, discussions can be had when everybody still
+> has the topic fresh on their mind and other unrelated people don't get
+> confused, like me or [0].
+> 
+> The "eventually fixed" part seems to have been me the last two times :-)
+> 
+> Given the fairly simple implementation, in my opinion this is worth doing.
+> 
+> Please note that I have two fairly trivial changes for a v2 and would
+> also like to get some feedback from Masahiro, especially for patch 1.
 
+ok, I think it's fine to fail for CONFIG_WERROR option, for patchset:
 
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
---=20
-Best Regards
-Masahiro Yamada
+thanks,
+jirka
+
+> 
+> 
+> Thomas
+> 
+> [0] https://lore.kernel.org/lkml/20241113093703.9936-1-laura.nao@collabora.com/
 
