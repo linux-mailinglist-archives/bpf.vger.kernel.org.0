@@ -1,154 +1,218 @@
-Return-Path: <bpf+bounces-45582-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45583-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA7749D8BA5
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 18:52:09 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B0459D8C74
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 19:50:55 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4974016342F
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 17:52:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF552285368
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 18:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DA41B4F24;
-	Mon, 25 Nov 2024 17:52:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A8711B983E;
+	Mon, 25 Nov 2024 18:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="QKZdhA/i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YMaRpC00"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FC441C92
-	for <bpf@vger.kernel.org>; Mon, 25 Nov 2024 17:52:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D108F1AF0CB;
+	Mon, 25 Nov 2024 18:50:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732557125; cv=none; b=Xi8bKeyWbLi+uf8zeNUKfJT+1K74d1Zh5LvC764iH+hSoFEYVEl0z56F2Kw8vZkZUPPkBpQpo93CCawsOI3dx6eA6/uq2rVF8/WOTaAFWsW5C95S0papVOegDi3Y6fbDcDXlDooUk3DTM02imbeSLMjK5xwxXtJoZTeqCFeJErM=
+	t=1732560647; cv=none; b=RGS3VIl1/WL3yO0DwjlZKnlZAjG94PKjY6JlLbjL5SFyDU6y5c9gi+PBTGCZjaL6SeqrWZkj8nDaicu6gKSs5NDtI6V1A/CSED6cr6oiibuajUaeOsKedVG3ylCQuo0K2Hzr+xTU2GfNes4Vpvtg2VCJoRYjcFD0kkimqz+mo00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732557125; c=relaxed/simple;
-	bh=iqPKUKL9ELh3ItkoROVJPLFbP84xRrkUj8+Scx+N17c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E5XNAroO1GTOrIrgjSOXMyjQTmAiGq1sqSCOkbJM9CCuyw1Yu0aseHNMqDV2cC+2d+Vltk4Pk1Xk0RPcd0fZwoq5VzXxI/ZR7NDRae9SEaZn5Ou1wsmtA6Gka9x/R/aTC8QI4l7XeHPaBQaK8lPMp8dCQa8gS/8Zt6HUdXg8Ppc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=QKZdhA/i; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-aa53a971480so285648166b.1
-        for <bpf@vger.kernel.org>; Mon, 25 Nov 2024 09:52:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1732557122; x=1733161922; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xXLqvBkzwwQHV9WjuiXet8nTMU/3s9BgOxGDDiZ4odc=;
-        b=QKZdhA/illhBsNRN8UzfrZ8A0LE+Qub8twEonry7Dtbr0sLQnm7nm3v6FVRjlapwYs
-         Qel8970mEzQy2N2XBFd9PKfJmcO3DTU3cwskLgzCS6Bf3wmm3LQN3PnhXttgeV4PfHim
-         oFWUVLrStsJtWM2iUYr0u5eG9tszxLa/00UoA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732557122; x=1733161922;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xXLqvBkzwwQHV9WjuiXet8nTMU/3s9BgOxGDDiZ4odc=;
-        b=TDclBaef5mdJ0uVizXyOzgX6kWWUI6V8pBqVXEXHrndA6yjec3oUT5h9MXZLhuMmUa
-         fyXcMBrMhNV8Fi83HJ7s92TjlF5GMaLD2Tn2JuQBwwrb/PdJnrtgLGOhmeABGDyEtt5I
-         +oq4qpIR4GWlw1r7MZASJpt9aXLolcI50LBCqvsXLBVH3J3PlNIjGIOqOBYA//l1kfvA
-         tKNtmjHDWYRuzJYBigG3gwMY8udt3L5bLLpFQ82wlNO1BZ2fRt8S4Y+fY3gTnm7Hvnwj
-         PvcanbSdLJt6tAQi2+3i0gv5xY34HTB6sUZBqxMQCEXxoKGIiRezbruNzDaHwmXceEdv
-         BQRg==
-X-Forwarded-Encrypted: i=1; AJvYcCW6pSVdrSjknjIeKADaFW/fZcTd5TvnMm85mQ/UAA4aV0fItAypRDwm3n9bqTx6UD67+3s=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6NDx4QjVOe/RaiX8e+mAkwBaUA9M4FF0qMjKvDAJiXoQ3Rp01
-	0fg9agYtlmnVype2BE5YuS8CDgHDXSorjVhUBoYU2q9BaCMShQePS1e7xQTukYokUJzotmg4hd+
-	pLtSu7w==
-X-Gm-Gg: ASbGncthGwDTs6kPOjazhrxX8ffMRBVGPtgFbM6YG/wUbhOlAfoNxogp94b2uw3JDOP
-	IcM6gSucMEmONOCT1L/Aq2IYdg5TZ7CLC1KY1wZYPthM3uRjP2Rt2S784nmOLKDn0s+/cJ2ZLnm
-	5l7JK4V/4XZ/WBu43IFv+7GTmbfVxNTxcZ+299bdQ4kVcYkorv4axiHrdIGpRe0beokOgmFhMcb
-	TBEDBQYT2Rk9ciQ9po2mCZtnBYS2FwaWpfcq9VWFnpltmlYwUEc3hVKQbt5ONdYkHDjlSuyYZm+
-	8Xe7rQkU5k/glYczoJWsix8W
-X-Google-Smtp-Source: AGHT+IHS5F60F6rsPdqG3mubNnOHKbn2Ks3IbRDKvB2TE5YRYs3mPHth6gZvGD0GT5saWg2BGKmD4g==
-X-Received: by 2002:a17:906:cc1:b0:aa5:27d4:980a with SMTP id a640c23a62f3a-aa527d49829mr825988766b.49.1732557121938;
-        Mon, 25 Nov 2024 09:52:01 -0800 (PST)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa50b28f88bsm490355166b.2.2024.11.25.09.52.00
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Nov 2024 09:52:00 -0800 (PST)
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5ceca0ec4e7so5872247a12.0
-        for <bpf@vger.kernel.org>; Mon, 25 Nov 2024 09:52:00 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWIhv7JCgt09t61zzNAAY/1MuombNCK0I4LJpSCX4d3L8RshZpHIjPIHnBpJJlEZoaMxR4=@vger.kernel.org
-X-Received: by 2002:a17:906:18a2:b0:aa5:3b5c:f640 with SMTP id
- a640c23a62f3a-aa53b5cffafmr703474466b.54.1732557119666; Mon, 25 Nov 2024
- 09:51:59 -0800 (PST)
+	s=arc-20240116; t=1732560647; c=relaxed/simple;
+	bh=T3BifNSxIQLht5pOam5kqaF6/zJkRYG7joZ7EyNthPw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TTwXTpSqOmgsz4JpvHuGgYdT3MoEIw0yj7OGAdUiMpkLmsSFfbK5I8GknSCyZj+0/A0B+5FQi69Yj6eF/EvyElI4ljs1ihsNhOoLcCKWisci4ed9mURvOtq0tc1QATcxmtCHcxGmeXFsJWApxB6klYaiNsPPJGg/yC4ofkOmiSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YMaRpC00; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8707FC4CECE;
+	Mon, 25 Nov 2024 18:50:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732560647;
+	bh=T3BifNSxIQLht5pOam5kqaF6/zJkRYG7joZ7EyNthPw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=YMaRpC00WJIZyiZ3KJV0MVBO/FwuNOzagC4Y/A+szWcfgYvsQcuU2cPwkVblUpoLh
+	 dFrGvMszAlc2yYhdxl04gR0lQg9rHKmcnpzREkLoY5lTGElZE/REVIkjZ/9elbx+5O
+	 dT18EK4MwK8h3lT0chQ3o42Of0Pm3pJvR/E6iuEF90Q25pris8BJeqaNOGTYG/5QX6
+	 x9GyMWtQjB1nt+1pgZ+O7R2NvIPgmhX/8h/XuQ07q0NCRp4lKUe2z4QP83l4B+M4yK
+	 rG6Y6/fKq1ilP7Z9JIMpt0dtiDdVnznV5/W6sGkfpVSHw55n5NyLiHoHzfcul6/pRQ
+	 hwWlFKeVfHD1A==
+Message-ID: <fcaae4c8-4083-4eef-8cfe-3d1f7e340079@kernel.org>
+Date: Mon, 25 Nov 2024 19:50:41 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241123153031.2884933-1-mathieu.desnoyers@efficios.com>
- <20241123153031.2884933-5-mathieu.desnoyers@efficios.com> <CAHk-=whTjKsV5jYyq5yAxn7msQuyFdr9LB1vXcF6dOw2tubkWA@mail.gmail.com>
- <d36281ef-bb8f-4b87-9867-8ac1752ebc1c@efficios.com> <20241125142606.GG38837@noisy.programming.kicks-ass.net>
- <c70b4864-737b-4604-a32e-38e0b087917d@intel.com>
-In-Reply-To: <c70b4864-737b-4604-a32e-38e0b087917d@intel.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 25 Nov 2024 09:51:43 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjcCQ4-0f68bWMLuFnj9r9Hwg4YnXDBg8-K7z6ygq=iEQ@mail.gmail.com>
-Message-ID: <CAHk-=wjcCQ4-0f68bWMLuFnj9r9Hwg4YnXDBg8-K7z6ygq=iEQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/5] tracing: Remove conditional locking from __DO_TRACE()
-To: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
-	Michael Jeanson <mjeanson@efficios.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org, 
-	Joel Fernandes <joel@joelfernandes.org>, Jordan Rife <jrife@google.com>, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC/RFT v2 0/3] Introduce GRO support to cpumap codebase
+To: Alexander Lobakin <aleksander.lobakin@intel.com>,
+ Daniel Xu <dxu@dxuuu.xyz>
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, Jakub Kicinski
+ <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, David Miller <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+ kernel-team <kernel-team@cloudflare.com>, mfleming@cloudflare.com
+References: <cover.1726480607.git.lorenzo@kernel.org>
+ <amx5t3imrrh56m7vtsmlhdzlggtv2mlhywk6266syjmijpgs2o@s2z7dollcf7l>
+ <ZwZe6Bg5ZrXLkDGW@lore-desk> <55d2ac1c-0619-4b24-b8ab-6eb5f553c1dd@intel.com>
+ <ZwZ7fr_STZStsnln@lore-desk> <c3e20036-2bb3-4bca-932c-33fd3801f138@intel.com>
+ <c21dc62c-f03e-4b26-b097-562d45407618@intel.com>
+ <01dcfecc-ab8e-43b8-b20c-96cc476a826d@intel.com>
+ <b319014e-519c-4c2d-8b6d-1632357e66cd@app.fastmail.com>
+ <rntmnecd6w7ntnazqloxo44dub2snqf73zn2jqwuur6io2xdv7@4iqbg5odgmfq>
+ <05991551-415c-49d0-8f14-f99cb84fc5cb@intel.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <05991551-415c-49d0-8f14-f99cb84fc5cb@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, 25 Nov 2024 at 07:35, Przemek Kitszel
-<przemyslaw.kitszel@intel.com> wrote:
+
+
+On 25/11/2024 16.12, Alexander Lobakin wrote:
+> From: Daniel Xu <dxu@dxuuu.xyz>
+> Date: Fri, 22 Nov 2024 17:10:06 -0700
+> 
+>> Hi Olek,
+>>
+>> Here are the results.
+>>
+>> On Wed, Nov 13, 2024 at 03:39:13PM GMT, Daniel Xu wrote:
+>>>
+>>>
+>>> On Tue, Nov 12, 2024, at 9:43 AM, Alexander Lobakin wrote:
+> 
+> [...]
+> 
+>> Baseline (again)
+>>
+>> 	Transactions	Latency P50 (s)	Latency P90 (s)	Latency P99 (s)			Throughput (Mbit/s)
+>> Run 1	3169917	        0.00007295	0.00007871	0.00009343		Run 1	21749.43
+>> Run 2	3228290	        0.00007103	0.00007679	0.00009215		Run 2	21897.17
+>> Run 3	3226746	        0.00007231	0.00007871	0.00009087		Run 3	21906.82
+>> Run 4	3191258	        0.00007231	0.00007743	0.00009087		Run 4	21155.15
+>> Run 5	3235653	        0.00007231	0.00007743	0.00008703		Run 5	21397.06
+>> Average	3210372.8	0.000072182	0.000077814	0.00009087		Average	21621.126
+>>
+
+We need to talk about what we are measuring, and how to control the
+experiment setup to get reproducible results.
+Especially controlling on what CPU cores our code paths are executing.
+
+In above "baseline" case, we have two processes/tasks executing:
+  (1) RX-napi softirq/thread (until napi_gro_receive deliver to socket)
+  (2) Userspace netserver process TCP receiving data from socket.
+
+My experience is that you will see two noticeable different
+throughput performance results depending on whether (1) and (2) is
+executing on the *same* CPU (multi-tasking context-switching),
+or executing in parallel (e.g. pinned) on two different CPU cores.
+
+The netperf command have an option
+
+  -T lcpu,remcpu
+       Request that netperf be bound to local CPU lcpu and/or netserver 
+be bound to remote CPU rcpu.
+
+Verify setting by listing pinning like this:
+   for PID in $(pidof netserver); do taskset -pc $PID ; done
+
+You can also set pinning runtime like this:
+  export CPU=2; for PID in $(pidof netserver); do sudo taskset -pc $CPU 
+$PID; done
+
+For troubleshooting, I like to use the periodic 1 sec (netperf -D1)
+output and adjust pinning runtime to observe the effect quickly.
+
+My experience is unfortunately that TCP results have a lot of variation
+(thanks for incliding 5 runs in your benchmarks), as it depends on tasks
+timing, that can get affected by CPU sleep states. The systems CPU
+latency setting can be seen in /dev/cpu_dma_latency, which can be read
+like this:
+
+  sudo hexdump --format '"%d\n"' /dev/cpu_dma_latency
+
+For playing with changing /dev/cpu_dma_latency I choose to use tuned-adm
+as it requires holding the file open. E.g I play with these profiles:
+
+  sudo tuned-adm profile throughput-performance
+  sudo tuned-adm profile latency-performance
+  sudo tuned-adm profile network-latency
+
+
+>> cpumap v2 Olek
+>>
+>> 	Transactions	Latency P50 (s)	Latency P90 (s)	Latency P99 (s)			Throughput (Mbit/s)
+>> Run 1	3253651	        0.00007167	0.00007807	0.00009343		Run 1	13497.57
+>> Run 2	3221492	        0.00007231	0.00007743	0.00009087		Run 2	12115.53
+>> Run 3	3296453	        0.00007039	0.00007807	0.00009087		Run 3	12323.38
+>> Run 4	3254460	        0.00007167	0.00007807	0.00009087		Run 4	12901.88
+>> Run 5	3173327	        0.00007295	0.00007871	0.00009215		Run 5	12593.22
+>> Average	3239876.6	0.000071798	0.00007807	0.000091638		Average	12686.316
+>> Delta	0.92%	        -0.53%	        0.33%	        0.85%			        -41.32%
+>>
+>>
+
+
+We now three processes/tasks executing:
+  (1) RX-napi softirq/thread (doing XDP_REDIRECT into cpumap)
+  (2) CPUmap kthread (until gro_receive_skb/gro_flush deliver to socket)
+  (3) Userspace netserver process TCP receiving data from socket.
+
+Again, now the performance is going to depend on depending on which CPU
+cores the processes/tasks are running and whether some are sharing the
+same CPU. (There are both wakeup timing and cache-line effects).
+
+There are now more combinations to test...
+
+CPUmap is a CPU scaling facility, and you will likely also see different
+CPU utilization on the difference cores one you start to pin these to
+control the scenarios.
+
+>> It's very interesting that we see -40% tput w/ the patches. I went back
+> 
+
+Sad that we see -40% throughput...  but do we know what CPU cores the
+now three different tasks/processes run on(?)
+
+
+> Oh no, I messed up something =\
+>  > Could you please also test not the whole series, but patches 1-3 (up to
+> "bpf:cpumap: switch to GRO...") and 1-4 (up to "bpf: cpumap: reuse skb
+> array...")? Would be great to see whether this implementation works
+> worse right from the start or I just broke something later on.
+> 
+>> and double checked and it seems the numbers are right. Here's the
+>> some output from some profiles I took with:
+>>
+>>      perf record -e cycles:k -a -- sleep 10
+>>      perf --no-pager diff perf.data.baseline perf.data.withpatches > ...
+>>
+>>      # Event 'cycles:k'
+>>      # Baseline  Delta Abs  Shared Object                                                    Symbol
+>>           6.13%     -3.60%  [kernel.kallsyms]                                                [k] _copy_to_iter
 >
-> At one point I had a version that did:
->         if (0)
-> label: ;
->         else
->                 for (....)
 
-Well, that is impressively ugly.
+I really appreciate that you provide perf data and perf diff, but as
+described above, we need data and information on what CPU cores are
+running which workload.
 
-> but it is goto-jumping back in the code
+Fortunately perf diff (and perf report) support doing like this:
+  perf diff --sort=cpu,symbol
 
-I'm not sure why you think *that* is a problem. It does look like it
-avoids the dangling else issue, which seems to be the more immediate
-problem.
+But then you also need to control the CPUs used in experiment for the
+diff to work.
 
-(Of course, "immediate" is all very relative - the use-case that
-triggered this is going away anyway and being replaced by a regular
-'guard()').
-
-That said, I have a "lovely" suggestion. Instead of the "if(0)+goto"
-games, I think you can just do this:
-
-  #define scoped_guard(_name, args...)                                   \
-         for (CLASS(_name, scope)(args), *_once = (void *)1; _once &&    \
-              (__guard_ptr(_name)(&scope) || !__is_cond_ptr(_name));     \
-              _once = NULL)
-
-which avoids the whole UNIQUE_NAME on the label too.
-
-Yeah, yeah, if somebody has nested uses of scoped_guard(), they will
-have shadowing of the "_once" variable and extrawarn enables -Wshadow.
-
-But dammit, that isn't actually an error, and I think -Wshadow is bad
-for these situations. Nested temporary variables in macros shouldn't
-warn. Oh well.
-
-Is there a way to shut up -Wshadow on a per-variable basis? My
-google-fu is too weak.
-
-Did I test the above macro? Don't be silly. All my code works on first
-try. Except when it doesn't.
-
-          Linus
+I hope I made sense as these kind of CPU scaling benchmarks are tricky,
+--Jesper
 
