@@ -1,120 +1,215 @@
-Return-Path: <bpf+bounces-45586-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45587-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D4F19D8D20
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 21:01:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBD639D8D8E
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 21:49:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB0EEB23C7A
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 19:54:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A52E4286755
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 20:49:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E222A1C3023;
-	Mon, 25 Nov 2024 19:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BA6B1C878A;
+	Mon, 25 Nov 2024 20:49:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="UuA1zlJe"
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="TTGmKGdc"
 X-Original-To: bpf@vger.kernel.org
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sonic307-15.consmr.mail.ne1.yahoo.com (sonic307-15.consmr.mail.ne1.yahoo.com [66.163.190.38])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59E8A17E00F;
-	Mon, 25 Nov 2024 19:53:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E7F1BB6B3
+	for <bpf@vger.kernel.org>; Mon, 25 Nov 2024 20:49:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.190.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732564402; cv=none; b=OH05U1M5f1JoRqMzqtC7lSZGExyaVdGTEqbFKvQ8FdbIr7TZ8zpgx65x/ObytAT1ATs+SxjakCaLf5Aj7GlSvv0MM8cy1XwE3q5onPhCQl1SLN5Sy5sTKTVgBWPJDIHqB0Oyx+3SgdkTmRK6s/rkyX62GSznG1Ykl5IX/YgxaFQ=
+	t=1732567782; cv=none; b=s+QItRZKfkw0MI7U/jbR/Nhsu8zpaZh+kL9HjQzglWqA76fTpC8Bs/Imu+VKLTfasd+54Lqm9IPLSMl1k8p6cu6LtdBD8eZWETqgdGOF5NBccoeD8Xi7Q1oqddy0zAugaFNazVG6ys1ZXdPlkagpJdG6weICeDUb/6RmrtI532c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732564402; c=relaxed/simple;
-	bh=Y0vjkXNOQv7YsvMpTIFbCFA7jpQwJmNBV/1YYA4wS0I=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=c7ke7V0YQxcWe74EzJVfMyGo34h/RJ030mlybIv2HmDerL9BRcFJYHWyMeo2rd2EovUUD2gWBPToZr7YWwbGYA7nrGChdKlswnumUPhYKtknyCqRjpzZy8s2bcMhAgeita6ZXJK+WX1R0JYJ3ZCMy2w0IN52bg6gCDeN8mkDt0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=UuA1zlJe; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1732564389;
-	bh=Y0vjkXNOQv7YsvMpTIFbCFA7jpQwJmNBV/1YYA4wS0I=;
-	h=From:Date:Subject:To:Cc:From;
-	b=UuA1zlJeyH4Vz50/z4sp/zwLGeteUG0yUztELMOyWVJAvEqQSNoKT7l408zGDiikw
-	 k4iYGlQh9CX3iIz9zK+t81FFEKBmOHYVR2D+T/e+8PMoGq/ihEfCfNLcatbffKnQ51
-	 sPQrOKscRZKPGeJwyhWxEIWghE1UzaYy8OIrE64Y=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Mon, 25 Nov 2024 20:53:07 +0100
-Subject: [PATCH v2] bpf, lsm: Remove getlsmprop hooks BTF IDs
+	s=arc-20240116; t=1732567782; c=relaxed/simple;
+	bh=4Il62etn+pYD+YTeEf3cE1jJltd7AiCQuutxIUEmGFg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HUxxVB8MDXPLLlX0QyK/qfWzIhOmziIjONxnBk/IpTNBY8gLQKlY7VpZ7tmGDVk99Im+VFNpWuLFBsIVLUssnY0F0IOGwnsl7AX7mdPHlMLQKQH3nqyrmSOE5eBhdoY0xqBhl4KVgMiVIpEjKJWpzlM/9PH/1KF6wf4f+aYQUBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=TTGmKGdc; arc=none smtp.client-ip=66.163.190.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1732567780; bh=H8Sa1TULrzTuhcjK1jbbH5OG+hYmMAcdXRi2XceZ80I=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=TTGmKGdcUrm1hbKJQNfdILB6rqx+qWk5i5JFI/zaM2m2Aa0IBG3eY01d5WJvOjB+AHp+UQbFTtGCZceUweXSjaS1To0s84Cpl2IhwLccswrbbQVKsLpIbTEL84AfAkoRRJgRcrWN4kCckZN570eBRkItqiCnLR1oERbCE/12j36dKAIO0NsymqhM2lsxB8G4Yd0W7a3fUbYIh9eBe6dVzSsWr1cMUTKO7w1oOR4O7L/78qzv7Qb9TpaE+1WkSI+JJ0z6P7D2exDlMJwEvS2c97pdGKARiAsxltUMuTravhvBf2TQSTa1mKbDy824oHhrBxUCcML9GOILpIqHOkOIsw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1732567780; bh=A1+QJCBvUp/LHWc4XhyHAhglPy2boFkGz/MPIOHz57/=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=tr/2KnszOJQ9eBFRRc3GgIfJcX0hMD2opb7QyWsYIqZ/+kymBweb+Ij/7CcOXjr+KwFl3y9LRNcBvX0pd+jCPdK2oQB1WSX2tqDz1BzJWF/eyGBgDgoDfHvbW2YpNy9IOF7YvLd1NoSF9iUr0jHNqWTssTfEMSlpRI8GeApVnBGsB945VbajALnkouWq4GZJlhASsBe6FKgmFOvPrDsgSotigNd+OTZZ+MpisoFyoSxzTKv7aYcituWo92iefhRnW8nDj6Wifn64Ox1qIQ4OrdEpFe68swYqiDfuy5P1v2zwEBtjtOxev9BBXFyXOyx02OWVO8jPo772XcmoIVwJeA==
+X-YMail-OSG: LvzJCG8VM1m82OkF6zUVAt7KApxqYG3_VIY9v_bCvaxUrFagJOOD4idfV20Y0MZ
+ diBc8q9dIx_shO5z6Q0ldkiCqBqlAOoGmTz5ht89OLxsq_SuEMrJZc99FDQPUl7R9kQiMttqHl40
+ 8i_vjPwosMPyFgefpa4wg0vetyW59kumcY6bRV4HrbPEo2vxo_XfMo_fvkmK6930re4sNqROdrjU
+ f6f14o3nzZyGN4.S1vQGFLT7ogOFHNtQWvNeYkiJ5cfxssyazo.gi7rPZQEm3KzUAQxYVZjRFHUA
+ pFXm_tcRbept1aMIu9H_mXGeLPbCP5nNKEkO5Lb6NhXK6Aad132DIwuLioZUg2Hd8LdKuQwMMj23
+ EQ62S9Q03AN3rzqxYCyvW51XQPZcQVJ9nMwDR6YzII5NFEoBeJNeLPgewVY7sZFXx.PuW81v1iel
+ RsOONgSOVm_nTd64A4QToG42xIZMuqRC_IicA0ZBg94XyNnmk6n73dRATgpl.iLjgi1RCEWUxMX1
+ ild8PlkK42PbAstxWJ3sSmJBfNjW1rfj3jyCVmCKWKKoMVwW37i3pM9rX0YQ741gcUnC.Cs2fC0T
+ I_A..i6V6zNThXl4HwTZpDVpFUQlSm7VBPEegGycPLk1T6kGEPwSt05SSbLX_A.FwQRcfr0xkedP
+ vH4j9tVB313Fx1te5lXcQ0Q8zzGBhCak.rOfrL158EgEAvH96WVkLrhwqY0HB25VS1E6ACfkTf9G
+ K2pA_.FHotc2kYak.luVU4.TeMP8.N6G5XNhOrFeyRpgyWD.gOuPU8sqU3xwasf26FsE3BWKQBGf
+ eKXJC5HP3XKVoSgd2Pt7VDMR3M3n0PoM3eFXAxwpwy1K5S9IGRMQwK.5pazatmtPMU2N3QMCO6si
+ 3QogyTPC9iiqw0HAs6.J3BcI9jS9AFpvsVvEDtbqfLFVQUTA9krkNuKPqrFDa7Y2xzdItATuBaXO
+ N8FEvMMEy5GtAffIv.PXAEoZ_wsLkg2zgIcwk9SFarNJyvTenQ1b1_uiGpqbMD5h6k0PPLrykWC5
+ nANSV2HLjAI6.rmOGYDz9BKANDvIYCZ3FSFbuK94s1pGk06DPU4a2wJF9blh5dyqA8UHfrJHsHqz
+ 2stIIdbdtumO0tB0JT9mtJTujhthJ8rsKWw1aPT5Bmi7hc68UMKivLKGdT.mEdPnqCGHd93A3l55
+ VXvSLUAqd3aDeDYie5G5_1btw_5nftdgZWn1sm6FskmdABudNZn8mu_jmK2I4WNK6Z.GVsRhLChm
+ 1e._9OSrXFTzeg3Vmk4XWnL6BEwkcfDso2YGM455oK8_Ldnq1VHpbXOR0Tt1BP1XII0HXkHncJ4K
+ D_otiCM1FCjzZmH20R01Sd2zJJvZIjsEG7BTjwyXI54CY5JYwmZVnaxuNBwqvcailhygp1xkoznl
+ kyVR9ckk6pKhXCW7StqzbcVD85lK2PdB647a8F2AljSEthoXKzk0L_pDw89hok3lWjxsaxHGaKrw
+ PJGkqYCSH6hHj0Dk2VEzcaRoukN8VxxoYlnGAfcEY0VYjtMOz2d92thrabLCEq8XQCLRPlumwJAo
+ u.ePQj__v9ufUiOT38siY.k1OoIA3vcHb4Oi7mufyhOBRpBJ9Y1pTyIa.kEQB6ER8Ww.tEUDoqXE
+ EgqKsTFZZmMAKqT6Iu4GjctwsURHgA6MBgZ614FIJCeCq7EMks0gev7_L42kicFUxUdCSHxxs5Bm
+ 6cojp1mobKzdjDTVaB22GHdBK6PB2vLxW8jEIcU3o3RgqSsvqbY1F5FAppPYQk3wuONIk9LB5wP_
+ WRlPn_nQqnP4bDv6zNXNnjZa62Xf7_3zHFVjuwQ3LHAzPwPbSKQTzB8fG._3mfQDWeSg3rXNSYPE
+ lxsmASpmy_SSa36xp0THO3hEY0jYsJvsyfXmkZhfWwY3EOPb1cnnBED_uOD2P5fRecnFcFWickrE
+ _cIeSyoBHX9ylPx_nDCxjxWT36Pi8djEp0NOdVOy27yyEs3N3g43jdz7b5VUXKgmtRH3Ehk3Ww2s
+ RBfswk1HR09asnk5EZHJQYMCSl2e71gu6sjCKmVbUWIFasQLnuBKBy.8kerLHasSLAmKdnY4hf7L
+ TC.tWC9gysgIEJQzUtxO8PqZNuiVZ25MrfnvAUYnCswN53LKNTHHlwqSHoV1RVUATz54xO2QuLWh
+ Uguj4Ddr7l_TpCcLVQQFb7B5wMNfISN2MUDoTvy6SdN.d3jfNC1uPcZCeGIogdz9feMmcXBXK5Wc
+ LqQSS_vSNgIrdrp1g1a43zDTWBmYlNrbL9pI2ror1V4uq0_jBVyeCPP18svelO6XbjZ6N__hc9aU
+ -
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: b73f9055-2660-471e-8023-1a97f25f2ff4
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Mon, 25 Nov 2024 20:49:40 +0000
+Received: by hermes--production-gq1-5dd4b47f46-wrqn7 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID c2d774a1ca76b77014037fd5941ab78b;
+          Mon, 25 Nov 2024 20:49:34 +0000 (UTC)
+Message-ID: <93e2744a-6220-4c44-b7a8-a709c84bd788@schaufler-ca.com>
+Date: Mon, 25 Nov 2024 12:49:31 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20241125-bpf_lsm_task_getsecid_obj-v2-1-c8395bde84e0@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAKPVRGcC/42NWw6CMBBFt0L6bU1bq4hf7sOQBtopHR9AOhU1h
- L1bWYGf5yT33JkRRARip2JmESYkHPoMalMwG5q+A44uM1NCaSnVjrejN3d6mNTQzXSQCCw6M7R
- X3njndOmP2pae5f0YweN7bV/qzAEpDfGzXk3yZ/+pTpJLLpzwlT7oCsT+/AIkIhueYdtDYvWyL
- F+hKMGYxwAAAA==
-X-Change-ID: 20241123-bpf_lsm_task_getsecid_obj-afdd47f84c7f
-To: KP Singh <kpsingh@kernel.org>, 
- Matt Bobrowski <mattbobrowski@google.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Paul Moore <paul@paul-moore.com>, 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 0/4] Make inode storage available to tracing prog
+To: "Dr. Greg" <greg@enjellic.com>
+Cc: Song Liu <songliubraving@meta.com>,
+ James Bottomley <James.Bottomley@HansenPartnership.com>,
+ "jack@suse.cz" <jack@suse.cz>, "brauner@kernel.org" <brauner@kernel.org>,
+ Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-security-module@vger.kernel.org"
+ <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>,
+ "andrii@kernel.org" <andrii@kernel.org>,
+ "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "martin.lau@linux.dev" <martin.lau@linux.dev>,
+ "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+ "kpsingh@kernel.org" <kpsingh@kernel.org>,
+ "mattbobrowski@google.com" <mattbobrowski@google.com>,
+ "amir73il@gmail.com" <amir73il@gmail.com>,
+ "repnop@google.com" <repnop@google.com>,
+ "jlayton@kernel.org" <jlayton@kernel.org>, Josef Bacik
+ <josef@toxicpanda.com>, "mic@digikod.net" <mic@digikod.net>,
+ "gnoack@google.com" <gnoack@google.com>,
  Casey Schaufler <casey@schaufler-ca.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- audit@vger.kernel.org, selinux@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1732564389; l=1466;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=Y0vjkXNOQv7YsvMpTIFbCFA7jpQwJmNBV/1YYA4wS0I=;
- b=77nafeHPanYmoDeW/PSaELnfqM9DdY9hTwYLD98U9+4FmIavtKdBEqf7yzHRkgkcRENc+BKMx
- uwFhZv8VZHTDlnvJNbJfQlVELM+8elCA6WpQNUEBUn8lMAJqQtA2/wR
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+References: <53a3601e-0999-4603-b69f-7bed39d4d89a@schaufler-ca.com>
+ <4BF6D271-51D5-4768-A460-0853ABC5602D@fb.com>
+ <b1e82da8daa1c372e4678b1984ac942c98db998d.camel@HansenPartnership.com>
+ <A7017094-1A0C-42C8-BE9D-7352D2200ECC@fb.com>
+ <20241119122706.GA19220@wind.enjellic.com>
+ <561687f7-b7f3-4d56-a54c-944c52ed18b7@schaufler-ca.com>
+ <20241120165425.GA1723@wind.enjellic.com>
+ <28FEFAE6-ABEE-454C-AF59-8491FAB08E77@fb.com>
+ <20241121160259.GA9933@wind.enjellic.com>
+ <d0b61238-735b-478c-9e18-c94e4dde4d88@schaufler-ca.com>
+ <20241123170137.GA26831@wind.enjellic.com>
+Content-Language: en-US
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20241123170137.GA26831@wind.enjellic.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.22941 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-These hooks are not useful for BPF LSM currently.
-Furthermore a recent renaming introduced build warnings:
+On 11/23/2024 9:01 AM, Dr. Greg wrote:
+>>> Here is another thought in all of this.
+>>>
+>>> I've mentioned the old IMA integrity inode cache a couple of times in
+>>> this thread.  The most peacable path forward may be to look at
+>>> generalizing that architecture so that a sub-system that wanted inode
+>>> local storage could request that an inode local storage cache manager
+>>> be implemented for it.
+>>>
+>>> That infrastructure was based on a red/black tree that used the inode
+>>> pointer as a key to locate a pointer to a structure that contained
+>>> local information for the inode.  That takes away the need to embed
+>>> something in the inode structure proper.
+>>>
+>>> Since insertion and lookup times have complexity functions that scale
+>>> with tree height it would seem to be a good fit for sparse utilization
+>>> scenarios.
+>>>
+>>> An extra optimization that may be possible would be to maintain an
+>>> indicator flag tied the filesystem superblock that would provide a
+>>> simple binary answer as to whether any local inode cache managers have
+>>> been registered for inodes on a filesystem.  That would allow the
+>>> lookup to be completely skipped with a simple conditional test.
+>>>
+>>> If the infrastructure was generalized to request and release cache
+>>> managers it would be suitable for systems, implemented as modules,
+>>> that have a need for local inode storage.
+>> Do you think that over the past 20 years no one has thought of this?
+>> We're working to make the LSM infrastructure cleaner and more
+>> robust.  Adding the burden of memory management to each LSM is a
+>> horrible idea.
+> No, I cannot ascribe to the notion that I, personally, know what
+> everyone has thought about in the last 20 years.
+>
+> I do know, personally, that very talented individuals who are involved
+> with large security sensitive operations question the trajectory of
+> the LSM.  That, however, is a debate for another venue.
 
-  BTFIDS  vmlinux
-WARN: resolve_btfids: unresolved symbol bpf_lsm_task_getsecid_obj
-WARN: resolve_btfids: unresolved symbol bpf_lsm_current_getsecid_subj
+I invite anyone who would "question the trajectory" of the LSM to
+step up and do so publicly. I don't claim to be the most talented
+individual working in the security community, but I am busting my
+butt to get the work done. Occasionally I've had corporate backing,
+but generally I've been doing it as a hobbyist on my own time. You
+can threaten the LSM developers with the wrath of "large security
+sensitive operations", but in the absence of participation in the
+process you can't expect much to change.
 
-Link: https://lore.kernel.org/lkml/20241123-bpf_lsm_task_getsecid_obj-v1-1-0d0f94649e05@weissschuh.net/
-Fixes: 37f670aacd48 ("lsm: use lsm_prop in security_current_getsecid")
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
-Changes in v2:
-- Delete instead of rename IDs
-- Link to v1: https://lore.kernel.org/r/20241123-bpf_lsm_task_getsecid_obj-v1-1-0d0f94649e05@weissschuh.net
----
- kernel/bpf/bpf_lsm.c | 2 --
- 1 file changed, 2 deletions(-)
+> For the lore record and everyone reading along at home, you
+> misinterpreted or did not read closely my e-mail.
+>
+> We were not proposing adding memory management to each LSM, we were
+> suggesting to Song Liu that generalizing, what was the old IMA inode
+> integrity infrastructure, may be a path forward for sub-systems that
+> need inode local storage, particularly systems that have sparse
+> occupancy requirements.
+>
+> Everyone has their britches in a knicker about performance.
 
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index 3bc61628ab251e05d7837eb27dabc3b62bcc4783..967492b65185fac5333fc22f4d2ad49cf59a6573 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -375,8 +375,6 @@ BTF_ID(func, bpf_lsm_socket_socketpair)
- 
- BTF_ID(func, bpf_lsm_syslog)
- BTF_ID(func, bpf_lsm_task_alloc)
--BTF_ID(func, bpf_lsm_current_getsecid_subj)
--BTF_ID(func, bpf_lsm_task_getsecid_obj)
- BTF_ID(func, bpf_lsm_task_prctl)
- BTF_ID(func, bpf_lsm_task_setscheduler)
- BTF_ID(func, bpf_lsm_task_to_inode)
+Darn Toot'n! You can't work in security for very long before you
+run up against those who hate security because of the real or
+perceived performance impact. To be successful in security development
+it is essential to have a good grasp of the impact on other aspects
+of the system. It is vital to understand how the implementation
+affects others and why it is the best way to accomplish the goals. 
 
----
-base-commit: 9f16d5e6f220661f73b36a4be1b21575651d8833
-change-id: 20241123-bpf_lsm_task_getsecid_obj-afdd47f84c7f
+> Note that we called out a possible optimization for this architecture
+> so that there would be no need to even hit the r/b tree if a
+> filesystem had no sub-systems that had requested sparse inode local
+> storage for that filesystem.
+>
+>>> It also offers the ability for implementation independence, which is
+>>> always a good thing in the Linux community.
+>> Generality for the sake of generality is seriously overrated.
+>> File systems have to be done so as to fit into the VFS infrastructure,
+>> network protocols have to work with sockets without impacting the
+>> performance of others and so forth.
+> We were not advocating generality for the sake of generality, we were
+> suggesting a generalized architecture, that does not require expansion
+> of struct inode, because Christian has publically indicated there is
+> no appetite by the VFS maintainers for consuming additional space in
+> struct inode for infrastructure requiring local inode storage.
+>
+> You talk about cooperation, yet you object to any consideration that
+> the LSM should participate in a shared arena environment where
+> sub-systems wanting local inode storage could just request a block in
+> a common arena.  The LSM, in this case, is just like a filesystem
+> since it is a consumer of infrastructure supplied by the VFS and
+> should thus cooperate with other consumers of VFS infrastructure.
 
-Best regards,
--- 
-Thomas Weißschuh <linux@weissschuh.net>
+I am perfectly open to a change that improves LSM performance.
+This would not be the case with this proposal.
 
 
