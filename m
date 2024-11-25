@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-45594-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45595-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 488E09D8E82
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 23:30:30 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E81079D8E84
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 23:30:38 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FF941692EA
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 22:30:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD0F5285126
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2024 22:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94FEF1CD21C;
-	Mon, 25 Nov 2024 22:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CEBF1CDFC2;
+	Mon, 25 Nov 2024 22:30:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QftwmXqy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ugVDIVrt"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F39169AE6;
-	Mon, 25 Nov 2024 22:30:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F1751CDA1E;
+	Mon, 25 Nov 2024 22:30:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732573822; cv=none; b=s11cvEInaEakDEqDo6iOScPraMK9fQAShPx30XxmzpBiO+/4RWDxmGHyXiLYNh1/t5lkREtvWHSQYav0uH4zrnxz5wcxldsAjvX9X69kniZ3LDeXTIbTZblY36p0S/EFwpJVohCk+H8HgOe3GNMIv+eF3OPcHPGOOtBxq5TYxGU=
+	t=1732573823; cv=none; b=i9t0BrDqgVgmeOI1GTu/Pw8+GpnFKD/rKFubMwmXP+6UfbvtIfkik2N/tPv8SdCDLRN93WXgLwjnJS7e8zTHKEOa/GeaIlMBzfF3OiILYmTANhTNsSE7awMSMTqt8hxRijoNusRC3e8IZn0BbnYv2mtmTY636K8jROBOfxLs3n4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732573822; c=relaxed/simple;
-	bh=/IHQU9V83haS+dLeo/M3KvhHm1OXVPaSyKfv79beuW8=;
+	s=arc-20240116; t=1732573823; c=relaxed/simple;
+	bh=fHvnGdZ50/nq2t1zezbGmwAW7qZpIAi7AAjhKDn3FUo=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=aGYGZydrF0VGYxYKtbN58ja5Bqz/4fEkS0Nq1rn9CXnI7rc9RGde0P121Sxou/Z8yzaOFcu1+sIvRhfYb+PDnEWDqPcjRQ6Njg58dbycre3I8N5lgZrsDcD3LWFg3HEwroZLaVW+2IfCiyH3j6jf+F9vXM396UZO5haA2F50vM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QftwmXqy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88099C4CECE;
-	Mon, 25 Nov 2024 22:30:21 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=l+zkkMsrEioeWKTgmM2fiXOXasPa5gUIZhpzyEJrWHSKiXmjkSoQVf0ZLfTEmjPUqBHDFJUoxfVyi+souWrVXfSGnKvRdXzmGlSCknL1HE6dsrrRNhwBvyCwp/RZ9YdSFBB9vYffOYAxi93YaKO63+yBpiRJyqZ5K2w9DdbpL2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ugVDIVrt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0240AC4CECE;
+	Mon, 25 Nov 2024 22:30:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732573821;
-	bh=/IHQU9V83haS+dLeo/M3KvhHm1OXVPaSyKfv79beuW8=;
+	s=k20201202; t=1732573823;
+	bh=fHvnGdZ50/nq2t1zezbGmwAW7qZpIAi7AAjhKDn3FUo=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=QftwmXqynAIOWflUOwUFGdV7H2GSMpX7aDm2l5GSfPOzP6OQecKBjZU0CbDS5G3VK
-	 wCkSf7c+CwX3S7shmai+9DiEEgWz63BLmGHfH/zEz3nh0Iodswol71lgWpYsuJD/Uw
-	 CuAVlB9TSD6QM1wOGjzzZ8jZr+8srgthc0OOSijUZyW5y+GCbSnHF7DST/gZ9sI0aN
-	 reYNZjeOr2N6WscFKb3qxBpICm4Rb+kjyV5c67CRJhFxDb5eyXrEglRFStwFp61Su6
-	 SBTnVtKToqgSsgYbGOj2gdtjJU6zYa/QdmF7KUrK9JB38zzHDC0MtzYRVfmnPGkJDq
-	 XcMsw9wkHpJCA==
+	b=ugVDIVrtAzyUmYxUy+qBQWrC+rtnv8uZnqZUDidRAqhXGryg/1dfgTU6wiQQEBzDD
+	 Ll+eZp0NcGFE7XoTBrs22vqDefpYgyEYWNLhiTfPi8SJ/1oTOTYDEKWk27bXPFegtb
+	 3zSDbtbq5CqynZheg20pvse87O/H3DzSAtNhKBt6goagVit0nOGUmyeFqeagqRcuUB
+	 iWjF84+L2HK6yV7hP9cLQccwuOkdifG+h37nFjbJ1WBbulvEhyNzmESPmYpcySP/G3
+	 nyGZcCnG5XTV6q31yBfG3AH/F2Rrs9leC+W2KF6ocA9EnUiUDP+Tmur0Do9gue2wcr
+	 yjkaamL/chHaQ==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 710AE3809A00;
-	Mon, 25 Nov 2024 22:30:35 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EADCD3809A00;
+	Mon, 25 Nov 2024 22:30:36 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,51 +52,41 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf 0/4] bpf, vsock: Fix poll() and close()
+Subject: Re: [PATCH bpf] xsk: always clear DMA mapping information when unmapping
+ the pool
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <173257383428.4058254.14371728667735100521.git-patchwork-notify@kernel.org>
-Date: Mon, 25 Nov 2024 22:30:34 +0000
-References: <20241118-vsock-bpf-poll-close-v1-0-f1b9669cacdc@rbox.co>
-In-Reply-To: <20241118-vsock-bpf-poll-close-v1-0-f1b9669cacdc@rbox.co>
-To: Michal Luczaj <mhal@rbox.co>
-Cc: sgarzare@redhat.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
- bobby.eshleman@bytedance.com, mst@redhat.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+ <173257383550.4058254.12806548531670345328.git-patchwork-notify@kernel.org>
+Date: Mon, 25 Nov 2024 22:30:35 +0000
+References: <20241122112912.89881-1-larysa.zaremba@intel.com>
+In-Reply-To: <20241122112912.89881-1-larysa.zaremba@intel.com>
+To: Larysa Zaremba <larysa.zaremba@intel.com>
+Cc: bpf@vger.kernel.org, bjorn@kernel.org, magnus.karlsson@intel.com,
+ maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ horms@kernel.org, przemyslaw.kitszel@intel.com, jacob.e.keller@intel.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alasdair.mcwilliam@outlook.com
 
 Hello:
 
-This series was applied to bpf/bpf.git (master)
+This patch was applied to bpf/bpf.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Mon, 18 Nov 2024 22:03:40 +0100 you wrote:
-> Two small fixes for vsock: poll() missing a queue check, and close() not
-> invoking sockmap cleanup.
-> 
-> Signed-off-by: Michal Luczaj <mhal@rbox.co>
-> ---
-> Michal Luczaj (4):
->       bpf, vsock: Fix poll() missing a queue
->       selftest/bpf: Add test for af_vsock poll()
->       bpf, vsock: Invoke proto::close on close()
->       selftest/bpf: Add test for vsock removal from sockmap on close()
+On Fri, 22 Nov 2024 12:29:09 +0100 you wrote:
+> When the umem is shared, the DMA mapping is also shared between the xsk
+> pools, therefore it should stay valid as long as at least 1 user remains.
+> However, the pool also keeps the copies of DMA-related information that are
+> initialized in the same way in xp_init_dma_info(), but cleared by
+> xp_dma_unmap() only for the last remaining pool, this causes the problems
+> below.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf,1/4] bpf, vsock: Fix poll() missing a queue
-    https://git.kernel.org/bpf/bpf/c/9f0fc9814521
-  - [bpf,2/4] selftest/bpf: Add test for af_vsock poll()
-    https://git.kernel.org/bpf/bpf/c/9c2a2a45136d
-  - [bpf,3/4] bpf, vsock: Invoke proto::close on close()
-    https://git.kernel.org/bpf/bpf/c/135ffc7becc8
-  - [bpf,4/4] selftest/bpf: Add test for vsock removal from sockmap on close()
-    https://git.kernel.org/bpf/bpf/c/515745445e92
+  - [bpf] xsk: always clear DMA mapping information when unmapping the pool
+    https://git.kernel.org/bpf/bpf/c/ac9a48a6f161
 
 You are awesome, thank you!
 -- 
