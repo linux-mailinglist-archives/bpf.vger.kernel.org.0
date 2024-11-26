@@ -1,126 +1,138 @@
-Return-Path: <bpf+bounces-45650-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45651-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4010B9D9E7B
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 21:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F2EC9D9E7C
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 21:47:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8153F283E2B
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 20:47:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96500281A7A
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 20:47:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C28A41DE894;
-	Tue, 26 Nov 2024 20:47:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE0B1DF27C;
+	Tue, 26 Nov 2024 20:47:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G5owxmzd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P1tZ6HHP"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B237946C
-	for <bpf@vger.kernel.org>; Tue, 26 Nov 2024 20:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728B3946C;
+	Tue, 26 Nov 2024 20:47:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732654045; cv=none; b=F3/BkOhuBd0DSxwNXlr9EGN2F09zEf02h/yo0bXvJ1727f71QFkBJ2Am50nOaPcvePz9fvcoZ0NwRLj0NbaITZqhyqRxPr3xuE9Yjf+aq+gVeu20F+XseyBWUP5aOGxSRzJwDPYVQnZTqYDnd9g1WTc0aMwyzkhUiNmlpaCIGYI=
+	t=1732654065; cv=none; b=guLlJsutemi31AERSxd6ligIe++tXMsTAG3I5osGE2/ow6RZQuDoybst82OCphGN7WEgsUFTntqOgBt/g0QI1PCNBDKLRzpOrYjfWI7UNd5Fk8fCrXASYQyZ3fArR36WnIHZx947lfVIPo/fgpKgNLbh69KePp6n9fgeePtQmaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732654045; c=relaxed/simple;
-	bh=FIia/oFgoYgTPmWJEwc2RG/vMD107Mo/Xpj8VQpALKY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Eesca2BlvbM4pMKi8z7/cHJc+udITz+hjlb5g10JnTepoMsm7mp69cljKLNNBQY6xToTb53G0rwU3Uyy5LD2+3OEjVzvfq7n29nSa08luqoir7WbVnJ2TUeCgY+0G/FQgbALBJe/lMIfbkCLy9Y5nnLbEOqzlJRA3UaiuAVXMTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G5owxmzd; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d854688a-9d2d-4fed-9cb8-3e5c4498f165@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1732654037;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ny763s+VIVujHWlzTNtT0/Iu+N9U6biECa5OkIrTiJs=;
-	b=G5owxmzdXjcLZM1J2ekI35mWD4wFyHgV64w8CQVjGe7kLuxBtUySt56sp5LZU7gFYraCnP
-	jVRcuC0g8fg3MjSxhb6thLS5+Eupd6ZE+Vqch7XK+69Ptc+ItIAaKHn7HZPveE0e7lKEd+
-	7RlEQCai2/wE2tKzCbEkISkXNdfNBq0=
-Date: Tue, 26 Nov 2024 12:47:09 -0800
+	s=arc-20240116; t=1732654065; c=relaxed/simple;
+	bh=faBfcmymGPSFibu9nkUfQwNarQQpruvPOzB3wGv4z0c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qwZ1RGSWnYMPVsKONy79csuDmqmZqNrVgtdMO7ty/3hxAKjkvWZYjJtXaB0Z6A0drEvSnRw6IU1BoNKKd2djCl6xlg9D9ZWVuZiVowNdH3DBKuPXd//3+sr2VMGFg6TT2GaLQbUET8AsAa+AGFC7olWAVTksHFJKFk0jBbBNjaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P1tZ6HHP; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-7ee020ec76dso5222753a12.3;
+        Tue, 26 Nov 2024 12:47:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732654064; x=1733258864; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BrfGITBt+MpPudeTvWz/BGOrTPxjx+M/EOPqV0lY91c=;
+        b=P1tZ6HHPc9pZS2/sbMYn0rQf6XNuaskRE1jCzy4sx9SEMcwkGeiInFAeV07GEQOLNr
+         FQyD3xABBH49QTxTzhJ5I7fWP5nxkHXAATyP6tXnS0jdBrb+0SRLPt6mDBrPA64YxRBn
+         6y0lbb6nDIoUGFQnnJNBfDixY4XTSFmq2bBpu2DpaSS+Z7M21Is+RHZmWovfPKkV3zpx
+         qrzxOi9cbcPEv/fvfUauloi6mI751CRB4IRe6ghthFxWiI587TPTBNTqV6JNYE1LukHP
+         5a+aTbKC1V8UZ7+b8GiorkZcp1ZFQOjKa0vaPqF4QFsjW0B/pWlooc8uvcLtK9DURgjD
+         Mtsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732654064; x=1733258864;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BrfGITBt+MpPudeTvWz/BGOrTPxjx+M/EOPqV0lY91c=;
+        b=wOAu4gyxj2LYbZmpYjvG65UWoy2tftwcChtNoke18eHMzQBhFS/QgX2TDyrj5vf3Tc
+         P6o8BbYUlM15RZ9x6xmjpHXYFakXXUqOz8a6FgdllICo376t54RQ4k2xZgkti+eCs+IG
+         BQ54ZHDa26zJF8bi9N9vGJxIknLfy617KRGjjSsjBjwStDay+blz1gqZsMcOA8AbzjGb
+         sqE/GDJgKOpBtzLrCfV0+N31RS+BqPwcnKcB2r/IENbDsjmK3MbsgYQEmC5SznLbDEDQ
+         b/RhcWSKmxsIskyUS/mGjZ8jnSTbJKkfbXYjDXWz74n7cQw6CBu5981K/imLPCNHTS1Q
+         wseg==
+X-Forwarded-Encrypted: i=1; AJvYcCUm1xK2nl9jd++1csBOEG+0e8SUOpek1Q29HmtVEvJK1GyQgpO23GoQQVAxOO/mHUGHZ9dh9U50OA0BklK4vH51F4MK@vger.kernel.org, AJvYcCVYCsngNxz8IFlaL/XWG663LH2eFP9cEAg8r8FBQI/35bN/8KjlR3x1VV2TINeB5MTaff4=@vger.kernel.org, AJvYcCWgt1dK2v2G9yhYzE268JOh8lo2W07D2OaNo7DPuSHR8T48oUUwZyDQ/EQGTmoUa2d/kbrRLGShA8A+nwBu@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzu2be70I3FEkI2kyRiGJ16awWImOSXUlJteNVH4LWIeN0/LqjH
+	phpUqqvl1pJqb4JfBNxTlOyHYOulL7/8OEZhAf8FYhTpcY1qE1ts
+X-Gm-Gg: ASbGncuei2z+SfyYUqDkVIeZWEWJci6MDLWHrwbqHlqEg8Zjl/d+Xs9rL0Qq3ezs5s7
+	qym7L1viU7ALebve1E6F1DBK0Ga//EFkzd1lIaIox/K/yR8u8M+8CNtGttydu71pPb6g/sBhxJu
+	/7fg5/AuYm2jf2ne84PAWvwQROWM3n+n3pb0dKeFzwp1z6PfPDAwGjGZ9Dv4O1QDr3nf/zn20+Q
+	anc4aJ0ixCHuLxi8kyIqLDwQBEK5FpEx0rAwmvLQk7Bm7RvA2k=
+X-Google-Smtp-Source: AGHT+IHZkU5tXESbsQSufn4K2TA1C1VRT8pQfJ+DevuvUAtbNf2cvrlWnN7YFd0lhrglkU4YceNZQg==
+X-Received: by 2002:a05:6a21:78b:b0:1e0:df27:10b9 with SMTP id adf61e73a8af0-1e0e0b004c3mr1123625637.18.1732654063605;
+        Tue, 26 Nov 2024 12:47:43 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:5155:e4b9:67db:7078])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724de47e941sm8824806b3a.78.2024.11.26.12.47.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Nov 2024 12:47:43 -0800 (PST)
+Date: Tue, 26 Nov 2024 12:47:39 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Michael Jeanson <mjeanson@efficios.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Jordan Rife <jrife@google.com>, linux-trace-kernel@vger.kernel.org,
+	Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [RFC PATCH 4/5] tracing: Remove conditional locking from
+ __DO_TRACE()
+Message-ID: <Z0Yz6xffDjL6m_KZ@google.com>
+References: <20241123153031.2884933-1-mathieu.desnoyers@efficios.com>
+ <20241123153031.2884933-5-mathieu.desnoyers@efficios.com>
+ <CAHk-=whTjKsV5jYyq5yAxn7msQuyFdr9LB1vXcF6dOw2tubkWA@mail.gmail.com>
+ <d36281ef-bb8f-4b87-9867-8ac1752ebc1c@efficios.com>
+ <20241125142606.GG38837@noisy.programming.kicks-ass.net>
+ <c70b4864-737b-4604-a32e-38e0b087917d@intel.com>
+ <CAHk-=wjcCQ4-0f68bWMLuFnj9r9Hwg4YnXDBg8-K7z6ygq=iEQ@mail.gmail.com>
+ <20241126084556.GI38837@noisy.programming.kicks-ass.net>
+ <CAHk-=wg9yCQeGK+1MdSd3RydYApkPuVnoXa0TOGiaO388Nhg0g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [External] Storing sk_buffs as kptrs in map
-To: Amery Hung <amery.hung@bytedance.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: bpf@vger.kernel.org, magnus.karlsson@intel.com, sreedevi.joshi@intel.com,
- ast@kernel.org
-References: <Z0X/9PhIhvQwsgfW@boxer>
- <CAONe225n=HosL1vBOOkzaOnG9jTYpQwDH6hwyQRAu0Cb=NBymA@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAONe225n=HosL1vBOOkzaOnG9jTYpQwDH6hwyQRAu0Cb=NBymA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg9yCQeGK+1MdSd3RydYApkPuVnoXa0TOGiaO388Nhg0g@mail.gmail.com>
 
-On 11/26/24 11:56 AM, Amery Hung wrote:
->> I have a use case where I would like to store sk_buff pointers as kptrs in
->> eBPF map. To do so, I am borrowing skb kfuncs for acquire/release/destroy
->> from Amery Hung's bpf qdisc set [0], but they are registered for
->> BPF_PROG_TYPE_SCHED_CLS programs.
->>
->> TL;DR - due to following callstack:
->>
->> do_check()
->>    check_kfunc_call()
->>      check_kfunc_args()
->>        get_kfunc_ptr_arg_type()
->>            btf_is_prog_ctx_type()
->>                btf_is_projection_of() -- return true
->>
->> sk_buff argument is being interpreted as KF_ARG_PTR_TO_CTX, but what we
->> have there is KF_ARG_PTR_TO_BTF_ID. Verifier is unhappy about it. Should
+On Tue, Nov 26, 2024 at 10:13:43AM -0800, Linus Torvalds wrote:
+> On Tue, 26 Nov 2024 at 00:46, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > Using that (old) form results in:
+> >
+> >     error: control reaches end of non-void function [-Werror=return-type]
+> 
+> Ahh. Annoying, but yeah.
+> 
+> > Except of course, now we get that dangling-else warning, there is no
+> > winning this :-/
+> 
+> Well, was there any actual problem with the "jump backwards" version?
+> Przemek implied some problem, but ..
 
-I don't think I fully understand "what we have there is KF_ARG_PTR_TO_BTF_ID". I 
-am trying to guess you meant what we have there in the reg->type is in 
-(PTR_TO_BTF_ID | PTR_TRUSTED).
+No, it was based on my feedback with "jump backwards" looking confusing
+to me.  But if it gets rid of a warning then we should use it instead.
 
-It makes sense to have "struct sk_buff __kptr *" instead of "struct __sk_buff 
-__kptr *". However, the get_kfunc_ptr_arg_type() is expecting KF_ARG_PTR_TO_CTX 
-because the prog type is BPF_PROG_TYPE_SCHED_CLS.
+Thanks.
 
- From a very quick look, under the "case KF_ARG_PTR_TO_CTX:" in 
-check_kfunc_args(), I think it needs to teach the verifier that the reg->type 
-with a trusted PTR_TO_BTF_ID ("struct sk_buff *") can be used as the PTR_TO_CTX.
-
->> this be workarounded via some typedef or adding mentioned kfuncs to
->> special_kfunc_list ? If the latter, then what else needs to be handled?
->>
->> Commenting out sk_buff part from btf_is_projection_of() makes it work, but
->> that probably is not a solution:)
->>
->> Another question is in case bpf qdisc set lands, could we have these
->> kfuncs not being limited to BPF_PROG_TYPE_STRUCT_OPS ?
-
-Similar to Amery's comment. Please share the patch and user case. It will be 
-easier to discuss.
-
-> In bpf qdisc case, we are still working on
-> releasing skb kptrs in maps or graphs automatically when .reset is
-> called so that we don't hold the resources forever.
-
-Regarding specifically the bpf qdisc case, the .reset should do the right thing 
-to release the queued skb. imo, after sleeping on it, if the bpf prog missed 
-releasing the skb, it is fine to depend on the map destruction to finally 
-release them. It is the same as other kptrs type stored in the map which will 
-also be finally released during map_free.
-
-In the future, for the struct_ops case, it can be improved by allowing to define 
-the sch->privdata. May be allow to define the layout of this privdata, e.g. the 
-whole privdata is a one element map backed by a btf id. The implementation will 
-need to be generic enough for any bpf_struct_ops instead of something specific 
-to the bpf-qdisc. This can be a follow up improvement as a more seamless per sch 
-instance cleanup after the core bpf-qdisc pieces landed.
-
+-- 
+Dmitry
 
