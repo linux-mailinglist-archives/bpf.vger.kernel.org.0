@@ -1,266 +1,154 @@
-Return-Path: <bpf+bounces-45621-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45624-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 791A69D9BD7
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 17:51:46 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 042449D9BE6
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 17:54:37 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 840D6B25798
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 16:39:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 641A4162410
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 16:54:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CA31D90C5;
-	Tue, 26 Nov 2024 16:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D378E1D9A7E;
+	Tue, 26 Nov 2024 16:54:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GVK1tosO"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dzLhhl+f"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f73.google.com (mail-ej1-f73.google.com [209.85.218.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F671D63CA;
-	Tue, 26 Nov 2024 16:39:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732639178; cv=fail; b=iFPQBDs6K75ZQSfxuw+4NUxWsyBGgT/lSpAwThCE7jOf1T8HBxe30mA/LOxdPHwHQCmdJp9NDgbBTdL5bcB+aSudqKE7pDfzUU1C0IT0Aj/5b2i2m9e5mjJ8ACaeRl82osamWi5hwLNEUB8Xua/g2KoOdLyMUXesf8WRU+KTZq0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732639178; c=relaxed/simple;
-	bh=Hi2SnnOLsRT4grBbzTswGPq83POrdqI5mKneHeOgmAU=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=tqgjaHtcVd52iQ/kcueTEgXMVqCGK5MxryLEOnkw42FavMeo0R0HZn6+8+gh0xI79ilEJuz0W9vomtE3/Ev6F18akgmosbbfa+EujJs8R2zUf2FDGJDa00mMZbtYTEJPLOtTF/z//lxT6JFypsjsRjEPZdqpsK9+ZqOiHv1dxAs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GVK1tosO; arc=fail smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1732639176; x=1764175176;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Hi2SnnOLsRT4grBbzTswGPq83POrdqI5mKneHeOgmAU=;
-  b=GVK1tosOcj9Ot6rS/vuxA4r8Q3yOxxLO1x89GN12kdhg/hzvZYZ/pKDi
-   3lt6iE0ty7Z1yFcuPYvdCy22u6b7SpWUqjH3Ez6nVjJa/Y+51GrBpW/Oe
-   ckSe/xDiMx/6ZMGojotFack0gICgxsj4nqlYK4EENb5XIo/GWTfi/8uvf
-   fu5uCC8Vnp9oF1ibEIAXJ4JUmXPPd8ekHuDJp5Nd3hYpwSMqx+V5aVWoW
-   myWoJiuhCjsSAFA5WtdjNbgbUBLii1QKxmItcH/ozf3PuKSIg0/sOauXI
-   Y/7ARetwTgx1rJg1n+Q8KP7Y/Kmc3jshRtzceH1fwG5jx7W71uHtJyitB
-   Q==;
-X-CSE-ConnectionGUID: QRgIy9mDQNqGxt8KgTxj3g==
-X-CSE-MsgGUID: 45bED9uPT8qKaUbPgfQmOQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11268"; a="32940756"
-X-IronPort-AV: E=Sophos;i="6.12,186,1728975600"; 
-   d="scan'208";a="32940756"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2024 08:39:04 -0800
-X-CSE-ConnectionGUID: Oh4P0+qbT8icwaxj5HkN1A==
-X-CSE-MsgGUID: uO+xXtEuRzOCImjp2NaQLg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,186,1728975600"; 
-   d="scan'208";a="91830141"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Nov 2024 08:39:04 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 26 Nov 2024 08:39:03 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Tue, 26 Nov 2024 08:39:03 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.41) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 26 Nov 2024 08:39:03 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=rS0Ap7GkQSWc6++taXYqNHJ/iVhrvdqth3ZkZucPv3qt116pfbKdAc30vLMaYheCbqAb869CL02V3jvN6tqEBEXYCue+FV806UBTqBpMgaVV+rkUr8EMpSQdd1g1Hstzc15THo5hklJIJeuiRhuQx4SfIbKme4KnK76wwfezHYDOEWfkPtYJ3IjQcvxGZ8mTHkaGAoBPnjtX3y9xLYf8r1Gez6DRZ2Ag27gxCdgHHuo2WXq+mJ8+HfoVdp1wBbZQwGmN2tTt2XrCdCw8D30h5PkSFIX2nXQnnxuhHtwuyNhLtSzQFKTEQfy2lyrjMxr1Kdb26ddoy8E88HZPi6UsCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Mr8FDqMX0jNQlSw2aMlkaRD7hznOz6hJhJowPTwynlI=;
- b=cKy4UXfihfrWZ75mpD/jtuAcAK97d8/yVdNcj0uEAYeOdjYjITlRl4cbns/qo8JP5Fb+KpmQWcM7stQZ+1mbXCiiI0tbdTldnKb2WZTZ0djXs+pM/mEcwrMOA9QWQhpU2GDX9VzejVlUcq7pBi1+ND98TlajHUvlbgevVXsRC6XfahA4f6kyod23hgUEG+snqr7HW8rt77jy13/EQBdBwLTWZU+4Da3Yxcqx0YyLnejYC3x4vbaZh51Y53bkOG+GOnZUFm85NHXLCU/y5URw8xMbHh4iMKSXYlydTngVNjJTuizuggwwbtd31ez2P8py5RpQeh43pwUwE7qq9fujww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
- by PH8PR11MB8016.namprd11.prod.outlook.com (2603:10b6:510:250::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.22; Tue, 26 Nov
- 2024 16:39:00 +0000
-Received: from DS0PR11MB8718.namprd11.prod.outlook.com
- ([fe80::4b3b:9dbe:f68c:d808]) by DS0PR11MB8718.namprd11.prod.outlook.com
- ([fe80::4b3b:9dbe:f68c:d808%7]) with mapi id 15.20.8182.019; Tue, 26 Nov 2024
- 16:39:00 +0000
-Message-ID: <624840f7-423a-44cd-a2c0-9b7e3b3f8555@intel.com>
-Date: Tue, 26 Nov 2024 17:38:38 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 12/19] xdp: add generic
- xdp_build_skb_from_buff()
-To: Amit Cohen <amcohen@nvidia.com>
-CC: Ido Schimmel <idosch@idosch.org>, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, "Paolo
- Abeni" <pabeni@redhat.com>, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
-	<toke@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, "Andrii
- Nakryiko" <andrii@kernel.org>, Maciej Fijalkowski
-	<maciej.fijalkowski@intel.com>, Stanislav Fomichev <sdf@fomichev.me>, "Magnus
- Karlsson" <magnus.karlsson@intel.com>,
-	"nex.sw.ncis.osdt.itp.upstreaming@intel.com"
-	<nex.sw.ncis.osdt.itp.upstreaming@intel.com>, "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20241113152442.4000468-1-aleksander.lobakin@intel.com>
- <20241113152442.4000468-13-aleksander.lobakin@intel.com>
- <ZzYR2ZJ1mGRq12VL@shredder> <ZzYUXPq_KtjpNffW@shredder>
- <59d1cb78-8323-426a-b1b5-e5163b29569c@intel.com>
- <LV2PR12MB59435D8F548C8DA2E317DC6FCB262@LV2PR12MB5943.namprd12.prod.outlook.com>
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-Content-Language: en-US
-In-Reply-To: <LV2PR12MB59435D8F548C8DA2E317DC6FCB262@LV2PR12MB5943.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: ZR0P278CA0205.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:6a::12) To DS0PR11MB8718.namprd11.prod.outlook.com
- (2603:10b6:8:1b9::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2541D8E16
+	for <bpf@vger.kernel.org>; Tue, 26 Nov 2024 16:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.73
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1732640070; cv=none; b=BvId9oKzcR2ZKTvl+aKWTotSafSkHKe5kBF65jg4zYFwImPV9gBb64gqmPkfbpMFJCw1vyZzvh2LHQ3OOT2q7qe9lqI1q1ovFTGb2qUvYpCtKH635afSiC6uR2l2PRUzgY80i3+AP9XnmupZcWsxTFfgmshO7bjVO7P6RMUurDE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1732640070; c=relaxed/simple;
+	bh=DIp+sKw/YUR5DOvPGmLkXi+5hSkr25LLRbjXxJw9Sww=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=EmkvSn6n6AlcO8oHayFSzqHqfrHPVNfFHU04y0M9ztKzU9e4CWk+pt8N3BTmIEkg0piWcvJVYJVsc+GW6xg3fMxhKLuh7+W5opRKAd7v/sYIkvsX9m8MvQo5c69Ew2iFp21pKW5cz5VDe471J8uz8JXsXkJV3jN8JaICQvgPWQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dzLhhl+f; arc=none smtp.client-ip=209.85.218.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
+Received: by mail-ej1-f73.google.com with SMTP id a640c23a62f3a-aa53914509eso173464666b.0
+        for <bpf@vger.kernel.org>; Tue, 26 Nov 2024 08:54:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1732640066; x=1733244866; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FVWAMpSCzHg3fGvJUBSfxRuCq7EFAuyV0JzFHGbmGlM=;
+        b=dzLhhl+fcO+4h2td232vfisI8ogmKMBrkGUcsB3l/+wydHxr23LGzaeKxsv9SGyGSI
+         T7oZjMBUPMDnsCxJjLi6nZECBIcQlL3pkJLYjHduZlNmJRg40qp6cv9OGDlFwYh+0ccU
+         Q+Cyq1CaczL3FRLgnohbwX7rwqvxOtZ5SeMOx/Bpz9hn3/itQnfTKYJGhyObQ0H2xD3G
+         NCZ4WSSB5N251y38GDYWEUTe8JZBRd+JaDX4wyvk0LCCdysYip/Pr6LTd1grv/c0ShXU
+         KcLbplBEqVbxTTrOPgOzYrTuhTplRX+xThj0TkyYDNCXf9QqGJ3rtVjfGg5lwIBMrTcK
+         +12w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732640066; x=1733244866;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FVWAMpSCzHg3fGvJUBSfxRuCq7EFAuyV0JzFHGbmGlM=;
+        b=lx2j6jT1f9R89Alt2dTwQPVm783exZgbgw9C1MQfWsdpI1ZEO+3sei6jNoKdoeKWO1
+         dQtZwwBWi3CDMRglWiWhIslXR79/uY7MZ56kMnOieB9stXQRT2DYVZr5Y4sHCci1rdk3
+         AV1VWQv479op5vpBPRfuagUBphhM2cYm+s8uLO41TkwuSFqQ+BWkGPu/f8DHlyixtnRH
+         xrOa1F58gHKHUnF0LExgbREwzVzwlEu92cuXHTD/fZnCsVX0McxPYheblLtRRxEEnehK
+         6K2pnjVwYnRV4qN97O7KQbwWd+sMcrjOrKlKwp6LsVELUNBJ6GPorMfLOKSxfLA+UmFD
+         b56Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVY23YlAOZOsnvH7y3E+DxgSf5fkkHXnrImWvFwlXnfCKPVHpf29nmbD5+AHJqmy/Qs254=@vger.kernel.org
+X-Gm-Message-State: AOJu0YztLQeDdSEPzxt2zGVAPbw6hur4IcRD7T/Q1PmKlSMd42Kbe3LE
+	MpqeyOgLRu24MoaI+r5cVavlKKMSZuqhChp+HOBHI0mH3cY/JiST31VFDPd264oDGLz328ealA=
+	=
+X-Google-Smtp-Source: AGHT+IGnQ1RVPZpYNr4V2vsGwSrr1TfgOgeHTUES9Lyk5V8C/M8niDnuj/9jgzaUoqUes4SWLxjdrGEpAg==
+X-Received: from ejkk23.prod.google.com ([2002:a17:906:32d7:b0:aa5:1a39:9444])
+ (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a17:906:30c9:b0:a9a:1739:91e9
+ with SMTP id a640c23a62f3a-aa521fdce0emr1032268766b.24.1732640065788; Tue, 26
+ Nov 2024 08:54:25 -0800 (PST)
+Date: Tue, 26 Nov 2024 17:52:33 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|PH8PR11MB8016:EE_
-X-MS-Office365-Filtering-Correlation-Id: 09cfe407-6b8a-45f0-0481-08dd0e38d4a4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|366016|1800799024|376014|7053199007;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?QXAvRmRkckl0Zk56RGZXdENySHduUEJxNTlTL2p1dVNUY2p0ME1wZlNaR3Bi?=
- =?utf-8?B?eHdEaDRKWGpGQkI4TWVYZjhTcW1Sbkxra2oxNTVnM3ZrWGM3QmpIeWhYekhv?=
- =?utf-8?B?OElERjk1MjBuSUdHeHBIa3pqTDlCNGQ3TXVmV1BxWDZxRGN0eXZENFN1ZGN0?=
- =?utf-8?B?N2xqdU4zS1UzQUZkSnkvaVJXdDg5UzhXWFU1dHBIMW4yVjFKemdpQ1JnZlVl?=
- =?utf-8?B?YXBOZzBQNzdtK2tPUk92RkthSjZIbDl6Unk0Z1NmQ3ozMUJKRFVPa083azJq?=
- =?utf-8?B?OGhQMkNUWkdWWkJ3OC80RUNjbFpWdnBpNGRmSytrdDBTUWpWaHY1aDY2R1Z3?=
- =?utf-8?B?RFljYTEzVTRKMy9vNFBWV2hVWkR2ZS8yVlBhcFdFVWRSSmJxc1J3RzN3Q0Rv?=
- =?utf-8?B?TmRFYzRDNDRDSGY5dFk0Vm80aTJzdjFGRzQ3SUxqdFRwZWc3b25QeHM0dlRP?=
- =?utf-8?B?bHkybkdmT04yektYRXFhTm5CL28rN2tzQ2JxODMzOTV3WGxGSjN2bzI4d3pL?=
- =?utf-8?B?VFhaSVFIc1pYV3pFZ2pSbXZjdlpuSExOTVBBWjQ2ZHprd1lKOU1mdmoraStp?=
- =?utf-8?B?VThwVTNDV0kxaFE0R01OeG1FZEc4ODdWYWJPYnhEcG93eWpVVFlRdTlQbUU4?=
- =?utf-8?B?TDFNaDMySm5HN0xOMW84dm5KTFpTYnUreVBkNWNSdkpwaFBKZDlTTGVLSUtW?=
- =?utf-8?B?MElqc0hzUzhaYkNHRG1tTmNoR0pia2RlbjNGTlZLSk1PbWFWSjhqcjErSzBn?=
- =?utf-8?B?T3dud3dZNEVhdisvTGRXUFRCdVM4SVpMU0wrNUdXOE5QNTE5cnUxbThzOUVZ?=
- =?utf-8?B?dFlodEtaOUR5N08xekFET3lJRE9hTEhtYlM3aGdTTlJ1R09RcTNSR3cwYmM5?=
- =?utf-8?B?cnFNbUJyUkR1bk45eW9pZDVvb3JoK0VKcVZUTy92R2lQZ0pXMGdMTWVxd2hz?=
- =?utf-8?B?alhTbVhTR1BMQVlHM1o1ajlUaGpyendHQnBVeTBvUFdxdlVuczJmaDhlSUpP?=
- =?utf-8?B?S01pamRUdk9tejZ6WlpKNENnZmsxQ0VOYlM3bTF2c1BOR3J3R0hyQ0tWUFBa?=
- =?utf-8?B?bTk2V0FESHpqb0UzZWhDYldIak0rMTQrOFd1YlpHTzZ4Sm9saFZzbHArdFlK?=
- =?utf-8?B?RTZRR3l2MytOalFFVnY0Ulc0emNoWHNqK0t5S1FKZnQ5SGxEa2ZUT0I2MHNG?=
- =?utf-8?B?dGtacDZONWd6cG5hS1JBeDBXQkY4SmlGcDljcnM2VFh6WFJCNkEzbEVwOFM1?=
- =?utf-8?B?N3lNMWlrOEFVZHBMdW54VDZzQlcvbXA5b21jNGZtVnFTdlBBMlpqYjhQNUs2?=
- =?utf-8?B?SkYrcUZEMkpvai9qMG5kcFkyZzVWZzJCQlBjU1dBU2NFQTNPVllzOWx2cXcw?=
- =?utf-8?B?dHluRWtWdWlGZ2IwYStHY1o1MTV2a0RLYU9qdnpZNFI0RzVjejRndW54eC83?=
- =?utf-8?B?RkpJZFpPemxkY0huOHR0QzMwYTNpYndlUHZlaFIvdlg3T2w3ME1UU1hma1o5?=
- =?utf-8?B?dHZiczFTY0liOGhtZWR6YW45Wk5GTE4yd2JSMWpwSU4zLzc3ZGljemd0VDQz?=
- =?utf-8?B?eldpUWdkTWRYYWkzY01GM2s0U1JHdExpeVFHV3RISGxESUhkbVQ2bEd1Zm9q?=
- =?utf-8?B?bXcxSFB1S2tpN1JMeXF3MUM0WlNGQ1k2Y0hnSTlJb01waDJaMkFLcHlNZC80?=
- =?utf-8?B?K1lYYzBjUTFreDBMc2t1SDZNNDljd2cxSFppV3BZWWNPcUQ3SmN5SWpVY2ZZ?=
- =?utf-8?B?b3psdUUrSXhlck5MY25ERTFOdENra3NEMkIxZ0E3Wlg0RVRIR0NqcnZKOHY0?=
- =?utf-8?B?c3Y3VE1BdXlkMkNPb0dYZz09?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(1800799024)(376014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVk0WVppamIzZFdtOVliVFA3MkxyancrUEx6MkN2R1BLMno5RjdFY2wrbGZz?=
- =?utf-8?B?N1FSQy9CVXgycU5yN2JwOFlqMU5ua2oxVkRIMTJORUNvclFkcDhWSmRubWIw?=
- =?utf-8?B?U1FsS0V5V25rQXRIbGVJSkdld0NOQ2hIUmR5UGF5M05vZGJFUjgxUnNhSVpL?=
- =?utf-8?B?d0lHekRCVFVJV2N6VGVSNXRCdytOaHJWU0NIbEZ0bmpQZFRyU053bS9FYW05?=
- =?utf-8?B?TWhlUDBITmgxOEhTeE5XNFZDSGZMMEduZWQ2TlBlcSs3VmJkMVR3b0NKN3Jl?=
- =?utf-8?B?L05mVTgrRDBkQW9hN0czNGwxZjV1WlQ1eVFTMDNTbk40MVY1RFErN0pSTDAx?=
- =?utf-8?B?TlRlbVlWRmxwY2k0Q0lSVjNDKzNTajhXUFZLTml2aWFTSHBpZUo5WVNIODVB?=
- =?utf-8?B?MytxaFZiL01sbnFSbWl0ekpSL25naTVhUng2c1hNR3oxVitpNXZUVjk1OFFK?=
- =?utf-8?B?ZzZFN0RyekdXbnkwbGVJcEl2aFIwaC9PaEpQNzBLVkZKbHBMOFF4VXVWWDFO?=
- =?utf-8?B?VDlEdVFYWFFTSnEwUDhtNjFXWnUzZXE0M25QanpkL0RFMVNwNDlPTThWVU9l?=
- =?utf-8?B?SFFlMFdwUDRBVFZROHlaMlp0V09qVmNyTnlwa3lXOWdvdEZ3d1RqQXFwUGpm?=
- =?utf-8?B?eUdVY3VkalRiV1p3MWxYUVI1SkZYaFJGblpqRTRHYnh0N0tHN05ERWpmTXBG?=
- =?utf-8?B?YmR2Qllmczh2TkNvbEpXTXlsNTM2VnB1TElKRFkrSXhkd1h2VkN4TGYrS1VJ?=
- =?utf-8?B?Ly9ibk9zZTF0aGdzOVBaakFsdUVHODVyK2hsbG9yNmczK3kyeGVqY0F4Qmhy?=
- =?utf-8?B?Y2tlcE4yRkl4VHVUYWEyV2h4ZUFiVk53dllnSFo5ZzdYdDNlWGhUeGhPOWpw?=
- =?utf-8?B?ei8wR1I0NEVJcVBaZGVyYkxlZmYvTjlnNnRjL1Mrc0dQMVRYRnV3bGR3cm1m?=
- =?utf-8?B?L08ydzNJSHNuUk91NGF6cThKbkhZdFdBZGVLNTJlTFFmOXJKcjRMcURWaGln?=
- =?utf-8?B?Z2F2R0J4WUNjOXdweFk4OHR3TjMxMkw4K0FVak9uZFBGdyttdWpPb0FTZUpY?=
- =?utf-8?B?ODdOcEFMYm0yaXlZL3ZTazdPNTN3UTVTeUNjUk9NbWYyaHI1VVArTndTWUEy?=
- =?utf-8?B?ZlJ6VC9Gdmx4RlpiNGwyaGJla1lwNkhrUmtPaHVGdmVJaXU0RmF0d0ZhRVNk?=
- =?utf-8?B?T0FpZkl3Mk4yTitQcUlTWUdvYjBNU0dYRExhNzhDK3pyYzdLRHhzSm1ORXRI?=
- =?utf-8?B?anhndzk3cXdCcXJkeGJkekplb3JmMmtWTmRiWk5Kd0dmZkxJdURpOHlqcUdw?=
- =?utf-8?B?Mk5DR3BtQ1NEelY2WXhySE9KclhCeThkRmFablF3OEFHbWpYZlNXa3lQYS9v?=
- =?utf-8?B?OVowS1NmR1h1UDQyTDhoT1c4djJMZ0RlSUhGT0prKyt2cTNhc1JVTXAzaU85?=
- =?utf-8?B?eU8weC9PdEVDSXRCWUo3cEJKYTRuellLR2U5Z3lwRHIzK3IvMnE2Q1JHbi9L?=
- =?utf-8?B?WS9KOUdRTTFDN0FsaWNLYlRmTkJsT0JTa05ObllKak5FUlpTNGIvTFFraEZB?=
- =?utf-8?B?VGR6eDdWZWpxQkZESlh4RWZxVFA0ZDRWT25OSkw4dmVBd05sUWFjckhraU9p?=
- =?utf-8?B?R2lLL2lTRThWR3M4OVA4azJ5cUlZcDJZK0VhcDd3KzlRY2RocVI3YitUdkVi?=
- =?utf-8?B?UytWOWhUVzVEUnZORXNneUVZUXVmYVFpcWwwVDFMZXJ1SDM2WXJXSnBNaGtV?=
- =?utf-8?B?Y0hmNDl1WVNNdjRnTVZCZlFsbHRyVk9wYjR1NmdHOGpJTFc0dWxNOTEzejg1?=
- =?utf-8?B?TlZudmJwUllna1B2bVp2cFdub1Rvd3g0UFFuUTlWQXRxQ0tQYzNHL1l2c0VV?=
- =?utf-8?B?dS82YUJHbXFmSFFDTks1MTM5eElURmFnaXUxRDlJN1Zmd3orSFV4VmNBcHF0?=
- =?utf-8?B?aEVwWjhpQVJzY2I4dmJjVUZkQ3p6U1E1U3BmUUUrcHdwZHgzaWJqM1dsbUx2?=
- =?utf-8?B?QXBGd1pKZEZJSmJHSGpBT2R0eVBEZXI3WC8wemp5YnJYU0xvdldZemlzdmQv?=
- =?utf-8?B?UUNhQ01OaVhCZnhCMnl1UHI2cFIzY1BzZGd6ejZxZVdPYkhYcjdMSXc2Tkxr?=
- =?utf-8?B?ZVI5dlBRa1RjakNTSyttZmkvY2xxc1ZYRko4NVVMTzZxb3hWWExwV01tRFR1?=
- =?utf-8?B?Z0E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 09cfe407-6b8a-45f0-0481-08dd0e38d4a4
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2024 16:39:00.7913
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VlvrcXKMJeelYLaHq0fea6ipj6SEeKR5cgoNizAktV0SdNZ+b0mhYAy4dshOe3qEaVPjL4eJQLVjAD4Uyxl9TOKazl5g9ZMSa3R+L9iDCEU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB8016
-X-OriginatorOrg: intel.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.47.0.338.g60cca15819-goog
+Message-ID: <20241126165414.1378338-1-elver@google.com>
+Subject: [PATCH bpf-next] bpf: Improve bpf_probe_write_user() warning message
+From: Marco Elver <elver@google.com>
+To: elver@google.com, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Nikola Grcevski <nikola.grcevski@grafana.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Amit Cohen <amcohen@nvidia.com>
-Date: Sun, 17 Nov 2024 12:42:11 +0000
+The warning message for bpf_probe_write_user() was introduced in
+96ae52279594 ("bpf: Add bpf_probe_write_user BPF helper to be called in
+tracers"), with the following in the commit message:
 
-> 
-> 
->> -----Original Message-----
->> From: Alexander Lobakin <aleksander.lobakin@intel.com>
->> Sent: Friday, 15 November 2024 16:35
->> To: Ido Schimmel <idosch@idosch.org>
+    Given this feature is meant for experiments, and it has a risk of
+    crashing the system, and running programs, we print a warning on
+    when a proglet that attempts to use this helper is installed,
+    along with the pid and process name.
 
-[...]
+After 8 years since 96ae52279594, bpf_probe_write_user() has found
+successful applications beyond experiments [1, 2], with no other good
+alternatives. Despite its intended purpose for "experiments", that
+doesn't stop Hyrum's law, and there are likely many more users depending
+on this helper: "[..] it does not matter what you promise [..] all
+observable behaviors of your system will be depended on by somebody."
 
->> Regarding your usecase -- after calling this function, you are free to
->> overwrite any skb fields as this helper doesn't pass it up the stack.
->> For example, in ice driver we have port reps and sometimes we need to
->> pass a different net_device, not the one saved in rxq_info. So when
->> switching to this function, we'll do eth_type_trans() once again (it's
->> either way under unlikely() in our code as it's swichdev slowpath).
->> Same for the queue number in rxq_info.
-> 
-> With this series, maintaining 'struct xdp_mem_allocator' in hash-table looks unnecessary.
-> If so, xdp_reg_mem_model() does not need 'allocator' when mem_type is Page-Pool.
-> 
-> Is there a reason for not removing 'mem_id_ht'? With this patch, the nodes are no longer used.
+As such, the warning message can be improved:
 
-They actually are. xdp_unreg_mem_model() performs lookup and calls
-page_pool_destroy() basing on what id you have in rxq_info.mem.
-__xdp_reg_mem_model() calls page_pool_use_xdp_mem() which increments
-pool's refcount, so that the pool can't be destroyed until the
-xdp_rxq_info it's connected to is unregistered.
-xdp_rxq_info is 64 bytes on x86_64, meaning replacing xdp_mem_info there
-with direct PP pointer will blow it up to 128 bytes (64-byte CL) (don't
-forget that xdp_rxq_info still needs to have mem.type set).
+1. The ominous "helper that may corrupt user memory!" offers no real
+   benefit, and has been found to lead to confusion where the system
+   administrator is loading programs with valid use cases.  Remove it.
+   No information is lost, and administrators who know their system
+   should not load eBPF programs that use bpf_probe_write_user() know
+   what they are looking for.
 
-> 
->>
->>>
->>>>
->>>> To be clear, I understand it is not a common use case.
->>>>
->>>> Thanks
->>
->> Thanks,
->> Olek
+2. If multiple programs with bpf_probe_write_user() are loaded by the
+   same task/PID consecutively, only print the message once. If another
+   task loads a program with the helper, the message is printed once
+   more, and so on. This also makes the need for rate limiting
+   redundant.
 
-Thanks,
-Olek
+3. Every printk line needs to be concluded with "\n" to be flushed. With
+   the old version the warning message only appeared after any following
+   printk. Fix this.
+
+Link: https://lore.kernel.org/lkml/20240404190146.1898103-1-elver@google.com/ [1]
+Link: https://lore.kernel.org/r/lkml/CAAn3qOUMD81-vxLLfep0H6rRd74ho2VaekdL4HjKq+Y1t9KdXQ@mail.gmail.com/ [2]
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ kernel/trace/bpf_trace.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 630b763e5240..0ead3d66f8db 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -359,11 +359,16 @@ static const struct bpf_func_proto bpf_probe_write_user_proto = {
+ 
+ static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
+ {
++	static pid_t last_warn_pid = -1;
++
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return NULL;
+ 
+-	pr_warn_ratelimited("%s[%d] is installing a program with bpf_probe_write_user helper that may corrupt user memory!",
+-			    current->comm, task_pid_nr(current));
++	if (READ_ONCE(last_warn_pid) != task_pid_nr(current)) {
++		pr_warn("%s[%d] is installing a program with bpf_probe_write_user\n",
++			current->comm, task_pid_nr(current));
++		WRITE_ONCE(last_warn_pid, task_pid_nr(current));
++	}
+ 
+ 	return &bpf_probe_write_user_proto;
+ }
+-- 
+2.47.0.338.g60cca15819-goog
+
 
