@@ -1,154 +1,146 @@
-Return-Path: <bpf+bounces-45639-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45640-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E22B79D9DD6
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 20:08:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59C7C9D9DE4
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 20:13:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A18A4281F94
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 19:08:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19973283120
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 19:13:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 739561DE3C6;
-	Tue, 26 Nov 2024 19:08:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BAC1DE3D9;
+	Tue, 26 Nov 2024 19:13:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZSebjkfF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KxItrClj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A58F16F0E8;
-	Tue, 26 Nov 2024 19:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264D11DAC8A;
+	Tue, 26 Nov 2024 19:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732648131; cv=none; b=NQKgnaCkfWwgf0lfEDvkpdFqk4Xfr3QA6ba0CXqtvHpodmAEzj4urMEVVqedUyiHQPculIfgwV6Bvp3/RwO53dAZG9tomY/9i/HU9wGkQnDaZVXiIZBrpaoo7T2mXqcYxrc6D7rDb7bj1Ud9HYrOHljWPSvg/Mq/cwOGCcjcApE=
+	t=1732648417; cv=none; b=uGh6Ur+cMrlaK65yFWMFJmN1n9Q2yFL/O5Ex5ZIuR8SJGmnhMxtbEy+B7RcF/WSk03L/FLn/0sTtuXK5WeziSG4mduc0Sg1J9f8l1afklGOv+Hxl/m8ou2cSCNcyLx8+3nKeOqS/xuJlAXyYqdyBlzKlARkupldWqWw/BCy7x3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732648131; c=relaxed/simple;
-	bh=LSTgT6yRel7vE8iaS/Hr0rILSHO34VaIaO8GTSOQEvE=;
+	s=arc-20240116; t=1732648417; c=relaxed/simple;
+	bh=QCR/Vp+Xml9sdSSp1Q61LSN07q3Va3I/wbUhG9WAoZY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gsN+4JgCWI93m49T+J4Qy0JDr3sdB0ggA1YfVpHlp85StRukf0MOJj0V0GVnBA1RYvlqqFzWdwHKI1Z+pZn5WcTok9nZfAcAGqS2NTsFnJVXjpfl7oB0oNiBzCFOSqGNzbFieddzYEB7OnKR28U4HHCti7xhpOA1YzCVCaGaGos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZSebjkfF; arc=none smtp.client-ip=209.85.215.171
+	 To:Cc:Content-Type; b=p3zU/U2jqIWlWO07AskNWYvO6JGpp0IZg+INniNkmlAcxrXSuKOZ+OmaNA5pL4LLtvJqPy+dPWVPmnubGFtY09uYTF1laIB9z5md9Fiv2yzoMd9exwku2lFAFcerDg38uN4qmwDFxyiwQBTDnw32g+gF2hzul6kNT0zzfSvxN3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KxItrClj; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7eae96e6624so4706389a12.2;
-        Tue, 26 Nov 2024 11:08:49 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-212a3067b11so51269875ad.3;
+        Tue, 26 Nov 2024 11:13:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732648129; x=1733252929; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1732648415; x=1733253215; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AzpJHFBf+UwrpTd1/ASOxsImqCiQ35Pf7i1O4FF/kBw=;
-        b=ZSebjkfF0HP97kFuj/FczGfsHpmDXyC1Byv4KUqq3/Cba8/ODrMxUXBkn/d79+KTIE
-         SdvQQsBhP0MyxaKEe+lhsWrR+mvbYAJUfDutTvQ2jKqWyPpd9qj3gMN4iazHLqTX4W5K
-         MGc8P4pwmb4YYzGwJK8j1LqlAcAw+yklKEWOYke+8HNShc90BxYo/hHXK+b8TMZsWnq6
-         wLXGfVt6wzDNt+MxJrO4eynMjS7mNY2+aNJV2yWU/iucW25j6T5wzMcd3CvnmbumZYv5
-         /MoV1S25HyEXlEnI0Bu4RdBM4eetUJ3qDjx8Vw7R9LX+nBkBczKz+wsqkIX+noa5mXA8
-         hRfg==
+        bh=+DVAOLhrbGi8jum3karNef7IcoBGxiL98ArEHqKf4PM=;
+        b=KxItrCljDYSF15ZVeXlApSeij8tbaFsswj/A2fN3VwAKteEf6QwyZyHsS8V9z2STdr
+         W1EBIf/6UqgNRUfd6hnctTtLAH0HTg8LbXqvkPw2t8qt6JIeKsxekrRA8ZOXTgQ87qRt
+         R0yzoxA0d7qWptfHx64ml7Ca78JU4IGFt8Gr40Znequn2K8NcdaSG/cnB9DrsmBsaBfA
+         jL44Vm4yKAMqfqph1G6H1Me4WFk2fbxHB7QX20uz8/BwdB/J/ym0L296eiuBzEeh2QDm
+         gkO4ojdRRpYFuOlZ9zOUEOzVSndyw7wbeLkMh5bn+L8UcVfgNVXSpF62xiS7IL7q2Yol
+         TMfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732648129; x=1733252929;
+        d=1e100.net; s=20230601; t=1732648415; x=1733253215;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AzpJHFBf+UwrpTd1/ASOxsImqCiQ35Pf7i1O4FF/kBw=;
-        b=km7ioMz1V6Jz4dXVDNY+mD1UoYkHLQ159/MKgWZvbVYDriEFVuPylM1r6oE8ztJQpj
-         ujNdH7rmUFJ9ChJv3/sSRzk97sY0t6wpV2e8Igx52fQ1XrmMPJfayDKG6uNNuAHcm7WA
-         lmZFAVSW/bClJoROHVrsSqWe2YqxOb47lexixJlXMbrGoDsZHg3vB56wpPylQdzurSeJ
-         0zk8NxE8NPizcEXNfnsEqKlqqJ7RmanG2b7YDB95JeVH+vjd57eyn7BuaDYy+bOR35Gy
-         nEdO8J/2Dwcpbl3ePmovAXgq757RdoI2d6jvVG30X31fshtVzq12Nkr7R6cNzmjzQvCr
-         wXXw==
-X-Forwarded-Encrypted: i=1; AJvYcCW0swR+04viKYbXyp5jMmQoxcn76PIofAD7ebslMfSsT2sWRuCjqvWP2xBsSCvJZpqA7cM=@vger.kernel.org, AJvYcCWolrubydxM2NYAjRiqJ+FUJh+4uVYxrvBlVdhpNU3i7eSVz48PTpdoyA3mV2wYN+LzIJ6QsocqN4RdLQ1raPax2A==@vger.kernel.org, AJvYcCXv6bcKTqqEYPjaoKGPTpUtKT8moWJ3Q3i2f0LK2AYow1ppUtj5dVz3IBFsx5rjsrLC+SovIXrRDklQBdIO@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCc0BiNZldE/BGoO9MBXVJqxUiq71KQjfQEF4GE+i5oJau/6t1
-	dYrCJbEan80fV/n2QZUyzPjOQpsJ1sTxD/WFs7PZb8wEmfSsbvNW63x/yO7+2BQOoK2PHavWclm
-	U/xC+/pc2LuseWDko2ORNoi+depY=
-X-Gm-Gg: ASbGncv7jk8HHAdboy3aenNmla2W/U/nBPRZWi1bnVlEprEbAQe8U1eWuHifpQkHtni
-	gXjvzhv+LeDdxhsk0Qr/tr0cVmOvNBvliNVXzYZjeZvW0nak=
-X-Google-Smtp-Source: AGHT+IHcYrRCh6RNI0uiagGqqkaq3FZL8c+Kw3Z8YZqY6vK95MlFLapo/aFhwibPheHhsonc+9ZqeeDqk3LMLFpN7X0=
-X-Received: by 2002:a05:6a21:670f:b0:1e0:d5fb:6fa9 with SMTP id
- adf61e73a8af0-1e0e0baf8b9mr790086637.31.1732648128845; Tue, 26 Nov 2024
- 11:08:48 -0800 (PST)
+        bh=+DVAOLhrbGi8jum3karNef7IcoBGxiL98ArEHqKf4PM=;
+        b=tPfWz1mEAYaGC9OM3nGKX005ZW58EoA5LWu88i5Ygny+eiGo1Njc8LuDBQxd6HkVyO
+         g4d09cVZrN3NmmlnvaIf6oWHewblPXJONJD7Z6xC29vR8aBb6/TiU26kr61uit3UJujM
+         1+OcX1S7QcizHHZqVVzJz2mMU68Rm8vJjzOE7xbFkQm+uyLRIVzdVDp9mI9+UNrWyV5Z
+         STHd5QMyMvmngTa+6ryynZj0cRLBIcF7p3ui4k5e3Ra7BWWsi5KqYHI/pcVIRCtU/tUJ
+         W4ky5EuIyNKnq0t934HMjg6MF0u/bRgRXRetvW/GoJMaBEJTwupvfWWIRT+ok9gNKTm+
+         ofqw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhMz4aubBjHxKVOBAtfTtEYAr0O+rk3Rdyq7yY0gvBNH3A9ApQh88UQu+QJGQxcJYS+gc=@vger.kernel.org, AJvYcCW06lZOmOpO1Esg4ofS7luA7ud0vfedKqwI7JIIpMgd8e2Hc4uaIY0DHFmqNhQzf9u9BXB3Nq1pF8RioGGA@vger.kernel.org, AJvYcCWeZqEQI2IjA7bHNodZSHbPSNzX44Xd3pmY1fleBHPluyGrh/RUu3UrQ7/TUMb8EITJMPgiKCFVmFcM93/hkXEt7fgt@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyz+PQwQwkz5U95blknxsJTzuCrHuMpFe3cCqYsbbKlp/vgvDaq
+	BBPWUNWdVv4m5Z3sfuyuYPBu7IOvEF1PqCmvrtE/wrL3RBPb5UC2g1QFjZ77JP/36SQyJdtzTjE
+	Qf2YS0lPOqBUoFsIyxYgyGLKW21ThfA==
+X-Gm-Gg: ASbGncvalYZDNozb4XLUIzBnZxcgzQj+HB3fdJiDE2viVw/XhUkxwiH+4ATm261Mmpz
+	LjC52h2wzvEcPkNrEFD/nvoGL0XxKvpFq2UOB4FaG74C0Mkw=
+X-Google-Smtp-Source: AGHT+IHfu+fT5zfF3DAnsl3ePjUgszCAqr2LVqByX7g1cOz4bYKIk1DFvz9urAi7eP5+0pFn014qIVRK/I1V0X28dj8=
+X-Received: by 2002:a17:90b:4a11:b0:2ea:61de:3903 with SMTP id
+ 98e67ed59e1d1-2ee097bf2cfmr451311a91.27.1732648415376; Tue, 26 Nov 2024
+ 11:13:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241106193208.290067-1-bjorn@kernel.org> <87r076nikd.fsf@all.your.base.are.belong.to.us>
- <Zz7Ng9CzrF_ciAz-@google.com> <6a960374-0cd2-4de9-8fc6-c8fe21097b6b@kernel.org>
-In-Reply-To: <6a960374-0cd2-4de9-8fc6-c8fe21097b6b@kernel.org>
+References: <20241105133405.2703607-1-jolsa@kernel.org> <20241117114946.GD27667@noisy.programming.kicks-ass.net>
+ <ZzsRfhGSYXVK0mst@J2N7QTR9R3> <CAEf4BzbXYrZLF+WGBvkSmKDCvVLuos-Ywx1xKqksdaYKySB-OQ@mail.gmail.com>
+ <Zz95aiWM5cN6MDED@J2N7QTR9R3.cambridge.arm.com>
+In-Reply-To: <Zz95aiWM5cN6MDED@J2N7QTR9R3.cambridge.arm.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 26 Nov 2024 11:08:36 -0800
-Message-ID: <CAEf4BzbY6E4cfFKvnjjXYX=03yGdMa6oLAAca8JXSh9e6b-6iw@mail.gmail.com>
-Subject: Re: [PATCH] tools: Override makefile ARCH variable if defined, but empty
-To: Quentin Monnet <qmo@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Arnaldo Carvalho de Melo <acme@redhat.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	David Abdurachmanov <davidlt@rivosinc.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>
+Date: Tue, 26 Nov 2024 11:13:22 -0800
+Message-ID: <CAEf4BzZS_2w42Vxy6Cj89OXQqAOYdm+kbTX_VEjF-zL0HrZU9Q@mail.gmail.com>
+Subject: Re: [RFC 00/11] uprobes: Add support to optimize usdt probes on x86_64
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Oleg Nesterov <oleg@redhat.com>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, Will Deacon <will@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 21, 2024 at 3:30=E2=80=AFAM Quentin Monnet <qmo@kernel.org> wro=
-te:
+On Thu, Nov 21, 2024 at 10:18=E2=80=AFAM Mark Rutland <mark.rutland@arm.com=
+> wrote:
 >
-> 2024-11-20 22:04 UTC-0800 ~ Namhyung Kim <namhyung@kernel.org>
-> > On Wed, Nov 20, 2024 at 02:25:22PM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
-> >> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
-> >>
-> >>> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
-> >>>
-> >>> There are a number of tools (bpftool, selftests), that require a
-> >>> "bootstrap" build. Here, a bootstrap build is a build host variant of
-> >>> a target. E.g., assume that you're performing a bpftool cross-build o=
-n
-> >>> x86 to riscv, a bootstrap build would then be an x86 variant of
-> >>> bpftool. The typical way to perform the host build variant, is to pas=
-s
-> >>> "ARCH=3D" in a sub-make. However, if a variable has been set with a
-> >>> command argument, then ordinary assignments in the makefile are
-> >>> ignored.
-> >>>
-> >>> This side-effect results in that ARCH, and variables depending on ARC=
-H
-> >>> are not set.
-> >>>
-> >>> Workaround by overriding ARCH to the host arch, if ARCH is empty.
-> >>>
-> >>> Fixes: 8859b0da5aac ("tools/bpftool: Fix cross-build")
-> >>> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+> On Mon, Nov 18, 2024 at 10:13:04PM -0800, Andrii Nakryiko wrote:
+> > On Mon, Nov 18, 2024 at 2:06=E2=80=AFAM Mark Rutland <mark.rutland@arm.=
+com> wrote:
+> > > Yep, on arm64 we definitely can't patch in branches reliably; using B=
+RK
+> > > (as we do today) is the only reliable option, and it *shouldn't* be
+> > > slower than a syscall.
+> > >
+> > > Looking around, we have a different latent issue with uprobes on arm6=
+4
+> > > in that only certain instructions can be modified while being
+> > > concurrently executed (in addition to the atomictiy of updating the
 > >
-> > Reviewed-by: Namhyung Kim <namhyung@kernel.org>
+> > What does this mean for the application in practical terms? Will it
+> > crash? Or will there be some corruption? Just curious how this can
+> > manifest.
 >
+> It can result in a variety of effects including crashes, corruption of
+> memory, registers, issuing random syscalls, etc.
 >
-> Acked-by: Quentin Monnet <qmo@kernel.org>
+> The ARM ARM (ARM DDI 0487K.a [1]) says in section B2.2.5:
 >
+>   Concurrent modification and execution of instructions can lead to the
+>   resulting instruction performing any behavior that can be achieved by
+>   executing any sequence of instructions that can be executed from the
+>   same Exception level [...]
 >
-> >> Arnaldo/Palmer/Quentin:
-> >>
-> >> A bit unsure what tree this patch should go. It's very important for t=
-he
-> >> RISC-V builds, so maybe via Palmer's RISC-V tree?
-> >
-> > I think it'd be best to route this through the bpf tree as it seems the
-> > main target is bpftool.  But given the size and the scope of the change=
-,
-> > it should be fine with perf-tools or RISC-V tree.
+> Which is to say basically anything might happen, except that this can't
+> corrupt any state userspace cannot access, and cannot provide a
+> mechanism to escalate privilege to a higher exception level.
 >
+> So that's potentially *very bad*, and we're just getting lucky that most
+> implementations don't happen to do that for most instructions, though
+> I'm fairly certain there are implementations out there which do exhibit
+> this behaviour (and it gets more likely as implementations get more
+> aggressive).
 >
-> The bpf tree would make sense to me as well (but I don't merge patches
-> myself; let me Cc BPF maintainers).
 
-Doesn't seem like this file is owned by anyone specific, I guess it's
-fine to route it through BPF due to bpftool? Should this be bpf or
-bpf-next? Also, please resend targeting the right tree, so BPF CI can
-test this.
+I see. I wonder if the fact that we do __replace_page() saves us here?
+Either way, if that's a problem, it would be good for someone familiar
+with ARM64 to try to address it. Ideally in a way that won't ruin the
+multi-uprobe attachment speeds (i.e., not doing stop-the-world for
+each of many uprobe locations to be attached, but rather do that once
+for all uprobes).
 
+> Mark.
 >
-> Quentin
+> [1] https://developer.arm.com/documentation/ddi0487/ka/?lang=3Den
 
