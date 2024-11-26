@@ -1,288 +1,142 @@
-Return-Path: <bpf+bounces-45618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53F779D9B6E
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 17:28:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDEE49D9B75
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 17:31:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FFE8B32D5D
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 16:25:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83E25283D9A
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 16:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110B61D86F6;
-	Tue, 26 Nov 2024 16:25:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA021D8A0B;
+	Tue, 26 Nov 2024 16:30:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dS8OxSMC"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="cNKQrHiL"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7D5BE46;
-	Tue, 26 Nov 2024 16:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E47C1CEAD0
+	for <bpf@vger.kernel.org>; Tue, 26 Nov 2024 16:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732638309; cv=none; b=pTmuCsu8pF8aLmp9vp3kpQ6iXOtoInnJeU30wg7vv+wE7jGyE7ceRRipBfbcris2aw9kfB0FkoNH2Ea9biomaOgvVlPUMBPmAUqK/sZ2LOxNVwLW36QV0tNkjHpPzGolImkbeEV2v4w0tb1de2+b1tRelAvhoViJcx1g4ofdyNU=
+	t=1732638656; cv=none; b=QxAI/UolvvwudKPDmPdtCYSIJmUxhDbNSXkNNekvRDhLsyAfaD+6t5pAND1Dr0lUDb4IF2GYou3qhoHiB1WZr9hQwHGBhk1C6+2ZJonMN7w/7F225eqODNSYbWeiVx0ygCy3/T3li2Lh/KvxOxi8RpUClOlTFC0AKbl8iXPcuW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732638309; c=relaxed/simple;
-	bh=EWEkaPmPduTOn44sUuTXFT8o9D5hYhQYL3cJzzlC4Q4=;
+	s=arc-20240116; t=1732638656; c=relaxed/simple;
+	bh=6SCq1l6xPiuKi9BEa5WMdd7lRuZGGOXVrNLtrLO+FT8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h8B/WPbnqkqVRq1n6Y5fU8RsJZ9Hddoz5P4o8yVGUX4CjuXrOaozaYk0TpUHvF2B2Pg/nKHGZdbZKdCOEBZ98E2a/hg9naEQW9tG1CEVBAyuPcK0BXnxv1IWQupVnkgAq6kVKxO4aLN8OD91A9qc29t+3a5+qLU6IjZtfpd27nY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dS8OxSMC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91EF0C4CED0;
-	Tue, 26 Nov 2024 16:25:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732638309;
-	bh=EWEkaPmPduTOn44sUuTXFT8o9D5hYhQYL3cJzzlC4Q4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dS8OxSMCr3TmlAWfG5Es4oSV+QUErurUmo/Wmi43axAPIftPdHSjeDyTEI9PmeLhU
-	 ik79pAkPyzmABvrBNnrBq2j26rhCZl79okdtO7rTbUGbiMbng4lPirItFsbqPYrI5M
-	 9SGZYdh80j667kxk3utdbTCEJ5U2lYjCEYr+e74XypF34NnaKiidFWU4Rlmx2+Rjv1
-	 Hi60cq9R8inGPFJf9+47lCJp7T8W5TmsXa3ph5OBKMeUilMwmNVnvgeryJOo8fDpi1
-	 96MgN8xvtZmBeUMGl12BPv+oMtiaGVwBZZRqILp2kPMxwZzhu87AjZkKi1j/8RRnRK
-	 c2euPqthi7kzA==
-Date: Tue, 26 Nov 2024 13:25:06 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, dwarves@vger.kernel.org,
-	arnaldo.melo@gmail.com, bpf@vger.kernel.org, kernel-team@fb.com,
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	yonghong.song@linux.dev, Alan Maguire <alan.maguire@oracle.com>,
-	Daniel Xu <dxu@dxuuu.xyz>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Vadim Fedorenko <vadfed@meta.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Subject: Re: [PATCH dwarves v2 1/1] btf_encoder: handle .BTF_ids section
- endianness
-Message-ID: <Z0X2YnMyzNlZyQtP@x1>
-References: <20241122214431.292196-1-eddyz87@gmail.com>
- <20241122214431.292196-2-eddyz87@gmail.com>
- <Z0HXqLswziDAjNrk@krava>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SnrCG0+EAa8ushtX19sJT2/vvfv+iGVt8PeqWq6JDPzgDs3R5RUEplt8MubOorTCL4TYe5SqH9ppjQC+r7slCxWHLy1GByX5jm6S1vHJgUEe511Fr1/qXPsYBrdokRSugsWbQmTHRY//n8JB6FHGsSSlxnVtSjukcoJuT9Kb/4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=cNKQrHiL; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-aa53a971480so430065166b.1
+        for <bpf@vger.kernel.org>; Tue, 26 Nov 2024 08:30:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1732638653; x=1733243453; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=q6KPRo7vFpnP+9rfEZN9EUFzvorPjEIxX5AsTLymFPc=;
+        b=cNKQrHiLvNRFNyGfRGXVHLUGYP3Rk+YpQag5F6GAA37BHPPtpCUvcIdkWbLXXUaZFB
+         CyZCUxyUQkEUTBRPfPvof1a+76aPE9LNml1++vAq+xJh2X/CgexKQohQ9XXPQUgbIZmG
+         rHeL08DmSWHM0ApefZENv7XJybUlzbfVtH/L0SW1f7Aw1ecabhmAPJWRKMNwMpcAxQmX
+         kj83KUYeUBokMsLJ64dVtF5KC6gHhrICdHi4mYooY1lFGSyP2Dq3we1e+5R6x68+w/WB
+         64Mv7/uE56gLqZcbpOtbYouY6+8kNOHPB4maGobcwAtpDHiyPAFVrqJTQjtb5MXMxyPJ
+         L40A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732638653; x=1733243453;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q6KPRo7vFpnP+9rfEZN9EUFzvorPjEIxX5AsTLymFPc=;
+        b=Hd3PMUtU9+cYf3lOfOvvS000twEgXJOnL2dxJOrzrqGtpQhtNZIy/rgRZhdWRfmopU
+         RB7KROe019HMeuiHZ7B6PmHIZSKfhlAeSHx1y5aU1jKIK9VTHI5Kv7+y1Utev4L8cffH
+         usUCLbKw3thClboAHEadUMclpG7Ro8x7ipSVbwnAevd4mXcvikODdoZNPvNZndaek8iU
+         JaDphIBIad3g8X8CljWD3ubXIuOBogyJYxdDgRBKU1F9gofEYoM9yEv/h5bLm+JAyBK8
+         sE9hyjBHiGjwH4KLguV96yurQy4ZMnqMTTFdvAsM22TMUsfCMAvfXQiqRzo5xQlIDmN8
+         sXgA==
+X-Gm-Message-State: AOJu0YxW/pWb1FjHB/wHyb12GcAnqDtmtjwZpymeX8D/vXj/Ng+eTL1V
+	uUNOnezZxEih34T33X1ZWWcgO20S1PJhwDcN+vdmwyCU8TYvQJb7PUajZz1Cgl6tjQXWEV1gYjH
+	f
+X-Gm-Gg: ASbGncuAzSibs8XwWp3ZQajH6MCJ++WvXvO1m3MnLlCPdkuK0XMdBAmTUwhy9Q7bOBE
+	6snqyr7cz5YCpDai5JNW/ysj4xjCDnYPyrGR2LxkNcJcYK5YTbCNoyM1flKfEOCzke2vMLk97hP
+	yeGEzOc+zRCA+pvO/tlB/LdJe/+kaR2DEeHVTn9e65t3Vg6juOAq/dGEqxbJDzONYGsZUVDiV3Y
+	rWvSn1VDkV6oQ1KA5u1maFRE6Py0oSSTNMHH7s=
+X-Google-Smtp-Source: AGHT+IE0qJwhEK7ZSQy2qPrCzK7pE+akI+FOTBLfqLS+OpZ/++RdnV0ZWbIooEo00ErCpkuJniZA8Q==
+X-Received: by 2002:a17:906:3196:b0:aa1:f9dc:f9bf with SMTP id a640c23a62f3a-aa5099065bamr1374600566b.10.1732638652387;
+        Tue, 26 Nov 2024 08:30:52 -0800 (PST)
+Received: from eis ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa54a23545dsm331322366b.152.2024.11.26.08.30.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Nov 2024 08:30:51 -0800 (PST)
+Date: Tue, 26 Nov 2024 16:33:26 +0000
+From: Anton Protopopov <aspsk@isovalent.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 1/6] bpf: add a __btf_get_by_fd helper
+Message-ID: <Z0X4VqTxbT8+NAuW@eis>
+References: <20241119101552.505650-1-aspsk@isovalent.com>
+ <20241119101552.505650-2-aspsk@isovalent.com>
+ <CAADnVQ+MdboMD8SGyx2xSbJ3+YL2HgwKAZvj+S49G3x0gqKLXw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Z0HXqLswziDAjNrk@krava>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ+MdboMD8SGyx2xSbJ3+YL2HgwKAZvj+S49G3x0gqKLXw@mail.gmail.com>
 
-On Sat, Nov 23, 2024 at 02:24:56PM +0100, Jiri Olsa wrote:
-> On Fri, Nov 22, 2024 at 01:44:31PM -0800, Eduard Zingerman wrote:
-> > btf_encoder__tag_kfuncs() reads .BTF_ids section to identify a set of
-> > kfuncs present in the ELF file being processed.
-> > This section consists of:
-> > - arrays of uint32_t elements;
-> > - arrays of records with the following structure:
-> >   struct btf_id_and_flag {
-> >       uint32_t id;
-> >       uint32_t flags;
-> >   };
-> > 
-> > When endianness of a binary operated by pahole differs from the host
-> > system's endianness, these fields require byte-swapping before use.
-> > Currently, this byte-swapping does not occur, resulting in kfuncs not
-> > being marked with declaration tags.
-> > 
-> > This commit resolves the issue by introducing an endianness conversion
-> > step for the .BTF_ids section data before the main processing stage.
-> > Since the ELF file is opened in O_RDONLY mode, gelf_xlatetom()
-> > cannot be used for endianness conversion.
-> > Instead, a new type is introduced:
-> > 
-> >   struct local_elf_data {
-> > 	void *d_buf;
-> > 	size_t d_size;
-> > 	int64_t d_off;
-> > 	bool owns_buf;
-> >   };
-> > 
-> > This structure is populated from the Elf_Data object representing
-> > the .BTF_ids section. When byte-swapping is required, a local copy
-> > of d_buf is created.
-> > 
-> > Cc: Alan Maguire <alan.maguire@oracle.com>
-> > Cc: Daniel Xu <dxu@dxuuu.xyz>
-> > Cc: Jiri Olsa <olsajiri@gmail.com>
-> > Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > Cc: Vadim Fedorenko <vadfed@meta.com>
-> > Fixes: 72e88f29c6f7 ("pahole: Inject kfunc decl tags into BTF")
-> > Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> 
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-Looks ok to me as well, only byte swaps when needed, so affects only
-cross BTF encoding.
-
-Alan, have you looked at this as well?
-
-I think I saw instructions in one of the messages in this thread to get
-hold of a vmlinux for s390 and test it. Right?
-
-One extra question: this solves the BTF encoder case, the loader already
-supported loading BTF from a different endianness, right? Lemme
-check.
-
-cus__load_btf()
-  cu->little_endian = btf__endianness(btf) == BTF_LITTLE_ENDIAN;
-
-enum btf_endianness btf__endianness(const struct btf *btf)
-{
-        if (is_host_big_endian())
-                return btf->swapped_endian ? BTF_LITTLE_ENDIAN : BTF_BIG_ENDIAN;
-        else
-                return btf->swapped_endian ? BTF_BIG_ENDIAN : BTF_LITTLE_ENDIAN;
-}
-
-So we have parts of BTF byte swapping happening in libbpf and with this
-patch, parts of it done in pahole, have you tought about doing this in
-libbpf instead?
-
-- Arnaldo
- 
+On 24/11/25 05:31PM, Alexei Starovoitov wrote:
+> On Tue, Nov 19, 2024 at 2:17 AM Anton Protopopov <aspsk@isovalent.com> wrote:
+> >
+> > Add a new helper to get a pointer to a struct btf from a file
+> > descriptor which doesn't increase a refcount.
+> >
+> > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
 > > ---
-> >  btf_encoder.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 59 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/btf_encoder.c b/btf_encoder.c
-> > index e1adddf..06d4a61 100644
-> > --- a/btf_encoder.c
-> > +++ b/btf_encoder.c
-> > @@ -33,6 +33,7 @@
-> >  #include <stdint.h>
-> >  #include <search.h> /* for tsearch(), tfind() and tdestroy() */
-> >  #include <pthread.h>
-> > +#include <byteswap.h>
-> >  
-> >  #define BTF_IDS_SECTION		".BTF_ids"
-> >  #define BTF_ID_FUNC_PFX		"__BTF_ID__func__"
-> > @@ -145,6 +146,14 @@ struct btf_kfunc_set_range {
-> >  	uint64_t end;
-> >  };
-> >  
-> > +/* Like Elf_Data, but when there is a need to change the data read from ELF */
-> > +struct local_elf_data {
-> > +	void *d_buf;
-> > +	size_t d_size;
-> > +	int64_t d_off;
-> > +	bool owns_buf;
-> > +};
+> >  include/linux/btf.h | 13 +++++++++++++
+> >  kernel/bpf/btf.c    | 13 ++++---------
+> >  2 files changed, 17 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > index 4214e76c9168..050051a578a8 100644
+> > --- a/include/linux/btf.h
+> > +++ b/include/linux/btf.h
+> > @@ -4,6 +4,7 @@
+> >  #ifndef _LINUX_BTF_H
+> >  #define _LINUX_BTF_H 1
+> >
+> > +#include <linux/file.h>
+> >  #include <linux/types.h>
+> >  #include <linux/bpfptr.h>
+> >  #include <linux/bsearch.h>
+> > @@ -143,6 +144,18 @@ void btf_get(struct btf *btf);
+> >  void btf_put(struct btf *btf);
+> >  const struct btf_header *btf_header(const struct btf *btf);
+> >  int btf_new_fd(const union bpf_attr *attr, bpfptr_t uattr, u32 uattr_sz);
 > > +
-> >  static LIST_HEAD(encoders);
-> >  static pthread_mutex_t encoders__lock = PTHREAD_MUTEX_INITIALIZER;
-> >  
-> > @@ -1681,7 +1690,8 @@ out:
-> >  }
-> >  
-> >  /* Returns if `sym` points to a kfunc set */
-> > -static int is_sym_kfunc_set(GElf_Sym *sym, const char *name, Elf_Data *idlist, size_t idlist_addr)
-> > +static int is_sym_kfunc_set(GElf_Sym *sym, const char *name, struct local_elf_data *idlist,
-> > +			    size_t idlist_addr)
-> >  {
-> >  	void *ptr = idlist->d_buf;
-> >  	struct btf_id_set8 *set;
-> > @@ -1847,13 +1857,52 @@ static int btf_encoder__tag_kfunc(struct btf_encoder *encoder, struct gobuffer *
-> >  	return 0;
-> >  }
-> >  
-> > +/* If byte order of 'elf' differs from current byte order, convert the data->d_buf.
-> > + * ELF file is opened in a readonly mode, so data->d_buf cannot be modified in place.
-> > + * Instead, allocate a new buffer if modification is necessary.
-> > + */
-> > +static int convert_idlist_endianness(Elf *elf, Elf_Data *src, struct local_elf_data *dst)
+> > +static inline struct btf *__btf_get_by_fd(struct fd f)
 > > +{
-> > +	int byteorder, i;
-> > +	char *elf_ident;
-> > +	uint32_t *tmp;
+> > +       if (fd_empty(f))
+> > +               return ERR_PTR(-EBADF);
 > > +
-> > +	dst->d_size = src->d_size;
-> > +	dst->d_off = src->d_off;
-> > +	elf_ident = elf_getident(elf, NULL);
-> > +	if (elf_ident == NULL) {
-> > +		fprintf(stderr, "Cannot get ELF identification from header\n");
-> > +		return -EINVAL;
-> > +	}
-> > +	byteorder = elf_ident[EI_DATA];
-> > +	if ((BYTE_ORDER == LITTLE_ENDIAN && byteorder == ELFDATA2LSB)
-> > +	    || (BYTE_ORDER == BIG_ENDIAN && byteorder == ELFDATA2MSB)) {
-> > +		dst->d_buf = src->d_buf;
-> > +		dst->owns_buf = false;
-> > +		return 0;
-> > +	}
-> > +	tmp = malloc(src->d_size);
-> > +	if (tmp == NULL) {
-> > +		fprintf(stderr, "Cannot allocate %lu bytes of memory\n", src->d_size);
-> > +		return -ENOMEM;
-> > +	}
-> > +	memcpy(tmp, src->d_buf, src->d_size);
-> > +	dst->d_buf = tmp;
-> > +	dst->owns_buf = true;
+> > +       if (unlikely(fd_file(f)->f_op != &btf_fops))
+> > +               return ERR_PTR(-EINVAL);
 > > +
-> > +	/* .BTF_ids sections consist of u32 objects */
-> > +	for (i = 0; i < dst->d_size / sizeof(uint32_t); i++)
-> > +		tmp[i] = bswap_32(tmp[i]);
-> > +	return 0;
+> > +       return fd_file(f)->private_data;
 > > +}
-> > +
-> >  static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
-> >  {
-> >  	const char *filename = encoder->source_filename;
-> >  	struct gobuffer btf_kfunc_ranges = {};
-> > +	struct local_elf_data idlist = {};
-> >  	struct gobuffer btf_funcs = {};
-> >  	Elf_Data *symbols = NULL;
-> > -	Elf_Data *idlist = NULL;
-> >  	Elf_Scn *symscn = NULL;
-> >  	int symbols_shndx = -1;
-> >  	size_t idlist_addr = 0;
-> > @@ -1918,7 +1967,9 @@ static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
-> >  		} else if (!strcmp(secname, BTF_IDS_SECTION)) {
-> >  			idlist_shndx = i;
-> >  			idlist_addr = shdr.sh_addr;
-> > -			idlist = data;
-> > +			err = convert_idlist_endianness(elf, data, &idlist);
-> > +			if (err < 0)
-> > +				goto out;
-> >  		}
-> >  	}
-> >  
-> > @@ -1960,7 +2011,7 @@ static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
-> >  			continue;
-> >  
-> >  		name = elf_strptr(elf, strtabidx, sym.st_name);
-> > -		if (!is_sym_kfunc_set(&sym, name, idlist, idlist_addr))
-> > +		if (!is_sym_kfunc_set(&sym, name, &idlist, idlist_addr))
-> >  			continue;
-> >  
-> >  		range.start = sym.st_value;
-> > @@ -2003,13 +2054,13 @@ static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
-> >  			if (ranges[j].start <= addr && addr < ranges[j].end) {
-> >  				found = true;
-> >  				off = addr - idlist_addr;
-> > -				if (off < 0 || off + sizeof(*pair) > idlist->d_size) {
-> > +				if (off < 0 || off + sizeof(*pair) > idlist.d_size) {
-> >  					fprintf(stderr, "%s: kfunc '%s' offset outside section '%s'\n",
-> >  						__func__, func, BTF_IDS_SECTION);
-> >  					free(func);
-> >  					goto out;
-> >  				}
-> > -				pair = idlist->d_buf + off;
-> > +				pair = idlist.d_buf + off;
-> >  				break;
-> >  			}
-> >  		}
-> > @@ -2031,6 +2082,8 @@ static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
-> >  out:
-> >  	__gobuffer__delete(&btf_funcs);
-> >  	__gobuffer__delete(&btf_kfunc_ranges);
-> > +	if (idlist.owns_buf)
-> > +		free(idlist.d_buf);
-> >  	if (elf)
-> >  		elf_end(elf);
-> >  	if (fd != -1)
-> > -- 
-> > 2.47.0
-> > 
+> 
+> Maybe let's call it __btf_get() and place it next to __bpf_map_get() ?
+> So names and function bodies are directly comparable?
+
+I named it so because the corresponding helper which is taking a ref is named
+btf_get_by_fd(). And btf_get() is actually increasing a refcnt. In the bpf_map
+case naming is a bit different (and also not super-consistent,
+bpf_map_inc/bpf_map_put to +- refcnt). Do you want me to make names more
+consistent, globally?
 
