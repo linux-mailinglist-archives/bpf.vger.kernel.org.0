@@ -1,85 +1,85 @@
-Return-Path: <bpf+bounces-45619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDEE49D9B75
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 17:31:01 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 931EB9D9B7E
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 17:33:47 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83E25283D9A
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 16:31:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BA32168A8A
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 16:33:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA021D8A0B;
-	Tue, 26 Nov 2024 16:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828471D8DE4;
+	Tue, 26 Nov 2024 16:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="cNKQrHiL"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="FNq1DI5U"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E47C1CEAD0
-	for <bpf@vger.kernel.org>; Tue, 26 Nov 2024 16:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404701D5CF2
+	for <bpf@vger.kernel.org>; Tue, 26 Nov 2024 16:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732638656; cv=none; b=QxAI/UolvvwudKPDmPdtCYSIJmUxhDbNSXkNNekvRDhLsyAfaD+6t5pAND1Dr0lUDb4IF2GYou3qhoHiB1WZr9hQwHGBhk1C6+2ZJonMN7w/7F225eqODNSYbWeiVx0ygCy3/T3li2Lh/KvxOxi8RpUClOlTFC0AKbl8iXPcuW0=
+	t=1732638823; cv=none; b=i7v9HU2nU44NVMRkZxrA5GlTjsC7fFftcSmQcmSarSvHPaR0K3Bhs0i22KXPVa3LpbAwOkUzANUVPtg1NCLhu36+P8zWX0xjE8Xhbss3uEvobi6XDyTMjYMhSSglgqOuVMZ9hl3ceRRInjduilQRja4DhBV1F0pNkpLwtrCA8SM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732638656; c=relaxed/simple;
-	bh=6SCq1l6xPiuKi9BEa5WMdd7lRuZGGOXVrNLtrLO+FT8=;
+	s=arc-20240116; t=1732638823; c=relaxed/simple;
+	bh=huKLtzAgcf0W4NNakAR7dEpy8buSsn6BMMKoHGRv6QA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SnrCG0+EAa8ushtX19sJT2/vvfv+iGVt8PeqWq6JDPzgDs3R5RUEplt8MubOorTCL4TYe5SqH9ppjQC+r7slCxWHLy1GByX5jm6S1vHJgUEe511Fr1/qXPsYBrdokRSugsWbQmTHRY//n8JB6FHGsSSlxnVtSjukcoJuT9Kb/4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=cNKQrHiL; arc=none smtp.client-ip=209.85.218.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=YjFZPopcNTw49tJNhxxlrdlfQD0DWdwL7g2/AIX2hPO8mFFbwM5lSLbCnB/GZqnsvAUyVxLNsajm7CLFD/67llmuuXpxBSrNVsBsSx3FZYl1SD093qqkCMB5Ur9oemMah1n5zzG2HFpCG25Fw0ZYo2D+hIMOPorzivooT5U/wiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=FNq1DI5U; arc=none smtp.client-ip=209.85.208.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-aa53a971480so430065166b.1
-        for <bpf@vger.kernel.org>; Tue, 26 Nov 2024 08:30:54 -0800 (PST)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2ffa8092e34so53969321fa.1
+        for <bpf@vger.kernel.org>; Tue, 26 Nov 2024 08:33:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1732638653; x=1733243453; darn=vger.kernel.org;
+        d=isovalent.com; s=google; t=1732638819; x=1733243619; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=q6KPRo7vFpnP+9rfEZN9EUFzvorPjEIxX5AsTLymFPc=;
-        b=cNKQrHiLvNRFNyGfRGXVHLUGYP3Rk+YpQag5F6GAA37BHPPtpCUvcIdkWbLXXUaZFB
-         CyZCUxyUQkEUTBRPfPvof1a+76aPE9LNml1++vAq+xJh2X/CgexKQohQ9XXPQUgbIZmG
-         rHeL08DmSWHM0ApefZENv7XJybUlzbfVtH/L0SW1f7Aw1ecabhmAPJWRKMNwMpcAxQmX
-         kj83KUYeUBokMsLJ64dVtF5KC6gHhrICdHi4mYooY1lFGSyP2Dq3we1e+5R6x68+w/WB
-         64Mv7/uE56gLqZcbpOtbYouY6+8kNOHPB4maGobcwAtpDHiyPAFVrqJTQjtb5MXMxyPJ
-         L40A==
+        bh=watqJiNoqlNmoPI76PupjfXhCNy9l3HeaIBiI62dpGY=;
+        b=FNq1DI5U+xpBay34j2Hfeo989vs5gJ6jC49ZaqOARilkk9QdOFvYY/Yn6wt0Ccc3Lp
+         w+fpoI3FdD0l1plpmjH2pc7qvzvNByPwnVcwodswMpPwt1KGHfMZnDYHJ/PWI4rOA0mx
+         EgoGuG6f7AEhEmsTX7q+yrdz8J5CjH80wAg7Tgvp+R6tbl4wvx0nA5X1teKQHUzFREcG
+         PA4npdyphjndzai1nNENZTW12gcRhe49icjCDSpU6yLaEOOXIXm2cr70AK0gHwBDgFKj
+         MNWmmpMvaxfGmrY7Zov4w5ES35gJTTlf+0E2qTZBwqJU0e767pLeqeRGFrJb+dgj09m+
+         6y2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732638653; x=1733243453;
+        d=1e100.net; s=20230601; t=1732638819; x=1733243619;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q6KPRo7vFpnP+9rfEZN9EUFzvorPjEIxX5AsTLymFPc=;
-        b=Hd3PMUtU9+cYf3lOfOvvS000twEgXJOnL2dxJOrzrqGtpQhtNZIy/rgRZhdWRfmopU
-         RB7KROe019HMeuiHZ7B6PmHIZSKfhlAeSHx1y5aU1jKIK9VTHI5Kv7+y1Utev4L8cffH
-         usUCLbKw3thClboAHEadUMclpG7Ro8x7ipSVbwnAevd4mXcvikODdoZNPvNZndaek8iU
-         JaDphIBIad3g8X8CljWD3ubXIuOBogyJYxdDgRBKU1F9gofEYoM9yEv/h5bLm+JAyBK8
-         sE9hyjBHiGjwH4KLguV96yurQy4ZMnqMTTFdvAsM22TMUsfCMAvfXQiqRzo5xQlIDmN8
-         sXgA==
-X-Gm-Message-State: AOJu0YxW/pWb1FjHB/wHyb12GcAnqDtmtjwZpymeX8D/vXj/Ng+eTL1V
-	uUNOnezZxEih34T33X1ZWWcgO20S1PJhwDcN+vdmwyCU8TYvQJb7PUajZz1Cgl6tjQXWEV1gYjH
-	f
-X-Gm-Gg: ASbGncuAzSibs8XwWp3ZQajH6MCJ++WvXvO1m3MnLlCPdkuK0XMdBAmTUwhy9Q7bOBE
-	6snqyr7cz5YCpDai5JNW/ysj4xjCDnYPyrGR2LxkNcJcYK5YTbCNoyM1flKfEOCzke2vMLk97hP
-	yeGEzOc+zRCA+pvO/tlB/LdJe/+kaR2DEeHVTn9e65t3Vg6juOAq/dGEqxbJDzONYGsZUVDiV3Y
-	rWvSn1VDkV6oQ1KA5u1maFRE6Py0oSSTNMHH7s=
-X-Google-Smtp-Source: AGHT+IE0qJwhEK7ZSQy2qPrCzK7pE+akI+FOTBLfqLS+OpZ/++RdnV0ZWbIooEo00ErCpkuJniZA8Q==
-X-Received: by 2002:a17:906:3196:b0:aa1:f9dc:f9bf with SMTP id a640c23a62f3a-aa5099065bamr1374600566b.10.1732638652387;
-        Tue, 26 Nov 2024 08:30:52 -0800 (PST)
+        bh=watqJiNoqlNmoPI76PupjfXhCNy9l3HeaIBiI62dpGY=;
+        b=Hpv6IWD0+ZXaysWPN0LMoDjHjOSC/sas+UathCm4Hzvql32DL2mZnXrhE8i++BeSEZ
+         kDCUUpc7wTUUf40hHhyX55BA9FkVjtueWoHboRwtjn5O+NmszW27pwnAzuVPDD4QlyKa
+         thChs5gwT5H1jiNupCzneosAUPKgYHP5jN8XUwZuV8gpz1WDXk1QozV3R/b/DjTs32ME
+         tVnghlB5u+6uzSaFajmqm7Ss57fBY3I2MhhhUzTCa4ZL+4+mHJVbB9slSOnm66Nl9oO+
+         KMYYmypGCgzDg1Y4ck9Cz9abW7Xm1YXtJzKfo4RIQEClUPyOlQ+cClvWzObPhdwv1E3x
+         JM5w==
+X-Gm-Message-State: AOJu0YyID1dD9IDNY2Ti22V5LGMQKy2iSrp1oQGz1iUlW+LP9U0ebykV
+	heroYX6TevFw0TdLesAanGANnI+uRNFnUamdnv9JfO1mkcQuwxxbqGfdNCNi9hzxsZ7qWrOR3Dd
+	l
+X-Gm-Gg: ASbGnctfDHd5TECgjwasjdcKnT4A0hjESH4dkZWk8JaOWOFOLwusKdtdOGpqaDeikTb
+	jyg2MfvzhE/SAv4ToBOnFTUvb3BbLGj2+SNEZygqK2i0CHBIh9LoPshI+cX+TbkwSf5Maj/aw8y
+	YrtWEQW76mXshyis1cTK0tLdG84/16RDF9RvkaVepQWmA6VWWGn5n0rOayyJ/FpZhEH21OqpZT/
+	UT5HgIlZZSgoPYwihcPukr+2LVq4xZcwYPRNT0=
+X-Google-Smtp-Source: AGHT+IG8Ye04DtwYrA4Xmr/Gu1QYapkichYakYXadUq5ZV4wUKKkDPmrfQbB1NYC536selaQSncMIg==
+X-Received: by 2002:a05:651c:555:b0:2fb:6181:8ca1 with SMTP id 38308e7fff4ca-2ffa70f6cd3mr82345791fa.6.1732638819336;
+        Tue, 26 Nov 2024 08:33:39 -0800 (PST)
 Received: from eis ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa54a23545dsm331322366b.152.2024.11.26.08.30.51
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d01d3fcf86sm5261423a12.63.2024.11.26.08.33.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Nov 2024 08:30:51 -0800 (PST)
-Date: Tue, 26 Nov 2024 16:33:26 +0000
+        Tue, 26 Nov 2024 08:33:38 -0800 (PST)
+Date: Tue, 26 Nov 2024 16:36:13 +0000
 From: Anton Protopopov <aspsk@isovalent.com>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf-next 1/6] bpf: add a __btf_get_by_fd helper
-Message-ID: <Z0X4VqTxbT8+NAuW@eis>
+Cc: bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH v2 bpf-next 5/6] bpf: fix potential error return
+Message-ID: <Z0X4/SIJ7ZkL86o3@eis>
 References: <20241119101552.505650-1-aspsk@isovalent.com>
- <20241119101552.505650-2-aspsk@isovalent.com>
- <CAADnVQ+MdboMD8SGyx2xSbJ3+YL2HgwKAZvj+S49G3x0gqKLXw@mail.gmail.com>
+ <20241119101552.505650-6-aspsk@isovalent.com>
+ <CAADnVQ+=R-ai4wpBuGkDa9GeARYGeG3oXBjoQSXP06BN6TPdpg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,54 +89,51 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+MdboMD8SGyx2xSbJ3+YL2HgwKAZvj+S49G3x0gqKLXw@mail.gmail.com>
+In-Reply-To: <CAADnVQ+=R-ai4wpBuGkDa9GeARYGeG3oXBjoQSXP06BN6TPdpg@mail.gmail.com>
 
-On 24/11/25 05:31PM, Alexei Starovoitov wrote:
+On 24/11/25 05:43PM, Alexei Starovoitov wrote:
 > On Tue, Nov 19, 2024 at 2:17 AM Anton Protopopov <aspsk@isovalent.com> wrote:
 > >
-> > Add a new helper to get a pointer to a struct btf from a file
-> > descriptor which doesn't increase a refcount.
+> > The bpf_remove_insns() function returns WARN_ON_ONCE(error), where
+> > error is a result of bpf_adj_branches(), and thus should be always 0
+> > However, if for any reason it is not 0, then it will be converted to
+> > boolean by WARN_ON_ONCE and returned to user space as 1, not an actual
+> > error value. Fix this by returning the original err after the WARN check.
 > >
 > > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> > Acked-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  include/linux/btf.h | 13 +++++++++++++
-> >  kernel/bpf/btf.c    | 13 ++++---------
-> >  2 files changed, 17 insertions(+), 9 deletions(-)
+> >  kernel/bpf/core.c | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/include/linux/btf.h b/include/linux/btf.h
-> > index 4214e76c9168..050051a578a8 100644
-> > --- a/include/linux/btf.h
-> > +++ b/include/linux/btf.h
-> > @@ -4,6 +4,7 @@
-> >  #ifndef _LINUX_BTF_H
-> >  #define _LINUX_BTF_H 1
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index 14d9288441f2..a15059918768 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -539,6 +539,8 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
 > >
-> > +#include <linux/file.h>
-> >  #include <linux/types.h>
-> >  #include <linux/bpfptr.h>
-> >  #include <linux/bsearch.h>
-> > @@ -143,6 +144,18 @@ void btf_get(struct btf *btf);
-> >  void btf_put(struct btf *btf);
-> >  const struct btf_header *btf_header(const struct btf *btf);
-> >  int btf_new_fd(const union bpf_attr *attr, bpfptr_t uattr, u32 uattr_sz);
+> >  int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
+> >  {
+> > +       int err;
 > > +
-> > +static inline struct btf *__btf_get_by_fd(struct fd f)
-> > +{
-> > +       if (fd_empty(f))
-> > +               return ERR_PTR(-EBADF);
+> >         /* Branch offsets can't overflow when program is shrinking, no need
+> >          * to call bpf_adj_branches(..., true) here
+> >          */
+> > @@ -546,7 +548,12 @@ int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
+> >                 sizeof(struct bpf_insn) * (prog->len - off - cnt));
+> >         prog->len -= cnt;
+> >
+> > -       return WARN_ON_ONCE(bpf_adj_branches(prog, off, off + cnt, off, false));
+> > +       err = bpf_adj_branches(prog, off, off + cnt, off, false);
+> > +       WARN_ON_ONCE(err);
+> > +       if (err)
+> > +               return err;
 > > +
-> > +       if (unlikely(fd_file(f)->f_op != &btf_fops))
-> > +               return ERR_PTR(-EINVAL);
-> > +
-> > +       return fd_file(f)->private_data;
-> > +}
+> > +       return 0;
 > 
-> Maybe let's call it __btf_get() and place it next to __bpf_map_get() ?
-> So names and function bodies are directly comparable?
+> That looks very odd. Just return err ?
 
-I named it so because the corresponding helper which is taking a ref is named
-btf_get_by_fd(). And btf_get() is actually increasing a refcnt. In the bpf_map
-case naming is a bit different (and also not super-consistent,
-bpf_map_inc/bpf_map_put to +- refcnt). Do you want me to make names more
-consistent, globally?
+Ah, yes, thanks. This was supposed to be followed up by a patch which
+adds code in between, but as this patch is out of scope of this set,
+I will just return err here.
 
