@@ -1,124 +1,151 @@
-Return-Path: <bpf+bounces-45623-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45622-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23F419D9BED
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 17:57:55 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FDB79D9BDD
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 17:53:07 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 263D0B2BB20
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 16:53:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD4C21626A2
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2024 16:53:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D311D9595;
-	Tue, 26 Nov 2024 16:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F941D90A2;
+	Tue, 26 Nov 2024 16:53:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H97K3Dck"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hynjgtro"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED3F1D90A2;
-	Tue, 26 Nov 2024 16:53:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B0431D7E42
+	for <bpf@vger.kernel.org>; Tue, 26 Nov 2024 16:53:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732640005; cv=none; b=jM/ACrWpKxTpv7Rx2rgLtL5eCOfQPGjvb5J1FecEPhvCJkAokaNzdOpr/b3RDl0i0LDVcvSLY5SsAmzoljn0BahlvcSE0mtqlcvxqbIU7N68zzZT+leCj/x8BI99etcOwEYbe17sJjSMWxL4tAb04QAwf/0tCbi7yKV2C1/10vY=
+	t=1732639982; cv=none; b=pWx0cRep9wR7wQgt1jDuXRspQOwXXYFWnL6IYhNvKMlN7IAboWMuoF+RZhqABWXFcWFteMgd2CgD1Y91aiqQA+DuamRhu72h9tKDO2qhW1Qo90WfBs8hQqK+rkkx3lf1GfH4Y3X2feTkmTZQjDGK63C2qPOdU9jAFIhF6dBeTWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732640005; c=relaxed/simple;
-	bh=TProXUc2cef7s+Tfv01wc8JY97dEecVWI7am/mjvVdo=;
+	s=arc-20240116; t=1732639982; c=relaxed/simple;
+	bh=Xd7VW0c0UvpPE9YJ+np+yiKN7fKN0VSSMrbc8aFupKA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nW9J2PQs1LfR0KTLP4wnokQMQkwPCFygcl/VnqqOU7hJxp6cIUrLIfFKVmZ546/5zan/4YER28zLlI8M9CwBrnHfhLJjmt4TJEiRBpDBtLAvXBMn9Z9WjraRi8RP+on7FKXU7caQXi7Lv+ujYOrmCqkx/TwtRb1N0McjzkcI55M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H97K3Dck; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7B2DC4CED2;
-	Tue, 26 Nov 2024 16:53:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732640004;
-	bh=TProXUc2cef7s+Tfv01wc8JY97dEecVWI7am/mjvVdo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=H97K3Dckppujj6dQOMKJT/RgaFa2DIJTfCR5xAgNpRNF/KIv3chi/HoQP4MgpRGJS
-	 dFPklHAlZ6UbBb6/lgjA9/86zwSkr/QwLssDNuekow/6/3OvPgi2K4SUiUtBxD5YUj
-	 tTa/1pk4Ku/mHqrfCTQNbo/XOlw1yemLhkdymIwMFoQDgdtZBB7EaAmprsnmIATUe7
-	 oL5WwlQuwNXamRbGBPSqyWbAWPtrgJrJ8r/ESh28EbBKTYIdf4j9+Ttw86ceErqVcc
-	 PfEqe1ol43nGu74+l8zUN9EA1K2Oc5CGHUcS/bceVOvEI8AhEPGQk+KO8tNtRzoAmn
-	 DVmcb5Ix+lp8A==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2ffa974b2b0so45524681fa.3;
-        Tue, 26 Nov 2024 08:53:24 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV+xu6RkBca3Zl09fEa3Jpm0LoCaC5k56yU1CEqeevGOwVpuAaeXBaJnSRjdBW3iSCFw7E=@vger.kernel.org, AJvYcCXixtAcBCAxsB5uuW6Q/zgiYVvuCmyHz3W6+hgXKhEIcouG/9LnmTMWTYDHAiUabVcL5VeE/4XILykrUVyW@vger.kernel.org, AJvYcCXvolcWim6hFXQWtDfp7xqISWzloTavDf9V630fheXfu5G46iNKrcMKUBkMRF8n+w1jai2aptL7t3qTDAg+@vger.kernel.org
-X-Gm-Message-State: AOJu0YzjZEgECqkjE6L6XAKGl0pmXat/0TWsxoXSkI+6TxqnH347BIZW
-	OY9dJkDR8ZY9Vo2eRuHkLtF78NK1frjKdHXEY4LPm9nJ9F0QLLhZI8OcTlG0cxHn45rOs465yKp
-	7CKkX7+MotB/nqaJ1xHAdI3x91AE=
-X-Google-Smtp-Source: AGHT+IEGiLHjHaiotTfC+APlGxKx5+rpU2lFE0q+DgXzHbHHwBkHGTqVERol2MBqDsj6bFUcXkaPovoRWfuOPiHgvW0=
-X-Received: by 2002:ac2:510d:0:b0:53d:d58a:cb67 with SMTP id
- 2adb3069b0e04-53dd58acb96mr7543101e87.35.1732640003625; Tue, 26 Nov 2024
- 08:53:23 -0800 (PST)
+	 To:Cc:Content-Type; b=dsx1qIi2ids3xIZgrSd6d6Fayn0o449HbtsbuV7SRCngJZWEQBd06Gr81/oPXMs7d9RZ/h6wV3PEIV+nqsnAuKwC0ihyS3TDHlOyqpCzYoto2iudt+q2LivCGLkMzuSZXyfMYhdxZvRbxx8g+XkzE8jIJfscvA7w979IdIcedns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hynjgtro; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3824aef833bso4235689f8f.0
+        for <bpf@vger.kernel.org>; Tue, 26 Nov 2024 08:53:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732639979; x=1733244779; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Yn0cRt1BIxcZdB4ocTOP13lXDlEvZqXsjfogUbFkJ+4=;
+        b=hynjgtros9iHIABm7QWMJXB284Rl/iIvX3CmS91TmjrSDiprJFv1RjWwykXXCodZNT
+         Bqth4EQFSIEjGTPbjK0yswrCvBLnOLIigtqevXqbju94/UlUHxAIpXe6Zobl9VfZC3fs
+         IUOYGPlHB8II6jPcWuyGWsv02/MLVdvQTLiD7K9r5R1+necifi1Rt3u5kPrskfunitVD
+         al05BOxWZbodQTDuSANtepRYui7qoPaVNbk7u8X3G8RXVyp21wc+S3DmATRS+w7yo0e6
+         vogW8TECWzxhG8aoHLn2ZJ16TaVbQTA1SB3oivANgfHWq2fdmG7YHp1oCTyrDmpyt5do
+         POWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732639979; x=1733244779;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Yn0cRt1BIxcZdB4ocTOP13lXDlEvZqXsjfogUbFkJ+4=;
+        b=RSoCunfIdG6hhzIXQyNXCDE/egbwg9+rw6AbOPU1k3bnr1RWuOKahFTzFSlduvVNG3
+         t8A9XSA4TuOOis02mhwlTRv2JH3mVa/2uC4zXUj9lNMSi+D5JBH3Kyb9ShbLfSbTHZAx
+         lRaXPbgN1nepmKaYr3LskrDSpQ+DZe4DZi7+zAWcyjinjst8CNuRIAT5DEDwNEa+Lue4
+         6SOXwy4thKPSw6FUIH4oxwQYZ1EM2uPKlCUYfmhBpTFgTesiFXIj2o2D7fcexpc0Z3Wk
+         E5NhMkn+FHAB3xsYmVeJsm/Vmohj75YJWWjmzCFxw3szLrJWPrY/hOwHGVYhSikHuyzG
+         A91Q==
+X-Gm-Message-State: AOJu0YztahnyCvkUg7ldIYtkHBElFPlge7nu0T7ap2MLC4sTkhq4eNr1
+	TlzVrHDF8trwySj8CIVq7EoqflH3k8oUyW/c+LoCM9bgSGlll1GQqVWQMwaMxEIbQ4p9BmOCcEg
+	W2J+kIA7fPgeExPwKMP+TiIK5rN+fuVuM
+X-Gm-Gg: ASbGncucEAuRRZteu7mzmZzFetthQbc4iq7Xkr3ieoFI6m5enkioPTpxGhQPG7xvy8E
+	qZtZAym577I9qNomm/C6YBp3Row0KraeT6Vgm6wpRm2hXsCY=
+X-Google-Smtp-Source: AGHT+IGhjtLdhZ4FzunF5aUgPwkRKadjtyVPSklGr2jBruYXF44xd5E5FYUT/+3rhrOKoTixfU1nd/X9E1RSBra+v10=
+X-Received: by 2002:a05:6000:178e:b0:37d:3650:fae5 with SMTP id
+ ffacd0b85a97d-38260be4129mr13062597f8f.52.1732639979028; Tue, 26 Nov 2024
+ 08:52:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241123-resolve_btfids-v1-0-927700b641d1@weissschuh.net> <20241123-resolve_btfids-v1-1-927700b641d1@weissschuh.net>
-In-Reply-To: <20241123-resolve_btfids-v1-1-927700b641d1@weissschuh.net>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Wed, 27 Nov 2024 01:52:47 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARy_EFaAFC__LH2W6eZPOtF6WVg7osNe1i+o5aauENcHw@mail.gmail.com>
-Message-ID: <CAK7LNARy_EFaAFC__LH2W6eZPOtF6WVg7osNe1i+o5aauENcHw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] kbuild: add dependency from vmlinux to resolve_btfids
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20241119101552.505650-1-aspsk@isovalent.com> <20241119101552.505650-2-aspsk@isovalent.com>
+ <CAADnVQ+MdboMD8SGyx2xSbJ3+YL2HgwKAZvj+S49G3x0gqKLXw@mail.gmail.com> <Z0X4VqTxbT8+NAuW@eis>
+In-Reply-To: <Z0X4VqTxbT8+NAuW@eis>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 26 Nov 2024 08:52:47 -0800
+Message-ID: <CAADnVQJNixZnDmujV7x--aDfN3cE02hWrqTJfRkb5NS-=pjnkw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/6] bpf: add a __btf_get_by_fd helper
+To: Anton Protopopov <aspsk@isovalent.com>
+Cc: bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Nov 23, 2024 at 10:33=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weiss=
-schuh.net> wrote:
+On Tue, Nov 26, 2024 at 8:30=E2=80=AFAM Anton Protopopov <aspsk@isovalent.c=
+om> wrote:
 >
-> resolve_btfids is used by link-vmlinux.sh.
-> In contrast to other configuration options and targets no transitive
-> dependency between resolve_btfids and vmlinux.
-> Add an explicit one.
+> On 24/11/25 05:31PM, Alexei Starovoitov wrote:
+> > On Tue, Nov 19, 2024 at 2:17=E2=80=AFAM Anton Protopopov <aspsk@isovale=
+nt.com> wrote:
+> > >
+> > > Add a new helper to get a pointer to a struct btf from a file
+> > > descriptor which doesn't increase a refcount.
+> > >
+> > > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> > > ---
+> > >  include/linux/btf.h | 13 +++++++++++++
+> > >  kernel/bpf/btf.c    | 13 ++++---------
+> > >  2 files changed, 17 insertions(+), 9 deletions(-)
+> > >
+> > > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > > index 4214e76c9168..050051a578a8 100644
+> > > --- a/include/linux/btf.h
+> > > +++ b/include/linux/btf.h
+> > > @@ -4,6 +4,7 @@
+> > >  #ifndef _LINUX_BTF_H
+> > >  #define _LINUX_BTF_H 1
+> > >
+> > > +#include <linux/file.h>
+> > >  #include <linux/types.h>
+> > >  #include <linux/bpfptr.h>
+> > >  #include <linux/bsearch.h>
+> > > @@ -143,6 +144,18 @@ void btf_get(struct btf *btf);
+> > >  void btf_put(struct btf *btf);
+> > >  const struct btf_header *btf_header(const struct btf *btf);
+> > >  int btf_new_fd(const union bpf_attr *attr, bpfptr_t uattr, u32 uattr=
+_sz);
+> > > +
+> > > +static inline struct btf *__btf_get_by_fd(struct fd f)
+> > > +{
+> > > +       if (fd_empty(f))
+> > > +               return ERR_PTR(-EBADF);
+> > > +
+> > > +       if (unlikely(fd_file(f)->f_op !=3D &btf_fops))
+> > > +               return ERR_PTR(-EINVAL);
+> > > +
+> > > +       return fd_file(f)->private_data;
+> > > +}
+> >
+> > Maybe let's call it __btf_get() and place it next to __bpf_map_get() ?
+> > So names and function bodies are directly comparable?
 >
-> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
-> ---
+> I named it so because the corresponding helper which is taking a ref is n=
+amed
+> btf_get_by_fd(). And btf_get() is actually increasing a refcnt. In the bp=
+f_map
+> case naming is a bit different (and also not super-consistent,
+> bpf_map_inc/bpf_map_put to +- refcnt).
 
-1/3, applied to linux-kbuild.
-Thanks.
+I see. __btf_get_by_fd() is fine then.
+Only place it next to __bpf_map_get() and add a comment that
+double underscore helpers don't inc refcnt while correspoing bpf_map_get()
+and btf_get_by_fd().
 
+> Do you want me to make names more
+> consistent, globally?
 
-
->  scripts/Makefile.vmlinux | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/scripts/Makefile.vmlinux b/scripts/Makefile.vmlinux
-> index 1284f05555b97f726c6d167a09f6b92f20e120a2..599b486adb31cfb653e54707b=
-7d77052d372b7c1 100644
-> --- a/scripts/Makefile.vmlinux
-> +++ b/scripts/Makefile.vmlinux
-> @@ -32,6 +32,9 @@ cmd_link_vmlinux =3D                                   =
-                 \
->  targets +=3D vmlinux
->  vmlinux: scripts/link-vmlinux.sh vmlinux.o $(KBUILD_LDS) FORCE
->         +$(call if_changed_dep,link_vmlinux)
-> +ifdef CONFIG_DEBUG_INFO_BTF
-> +vmlinux: $(RESOLVE_BTFIDS)
-> +endif
->
->  # module.builtin.ranges
->  # ----------------------------------------------------------------------=
------
->
-> --
-> 2.47.0
->
-
-
---=20
-Best Regards
-Masahiro Yamada
+No. let's avoid the churn.
 
