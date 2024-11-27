@@ -1,258 +1,330 @@
-Return-Path: <bpf+bounces-45693-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45694-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 763D59DA326
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 08:34:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B08199DA33F
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 08:42:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD7E0284CE8
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 07:34:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71125283C03
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 07:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 237EF153BE8;
-	Wed, 27 Nov 2024 07:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D09801547E7;
+	Wed, 27 Nov 2024 07:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FiHwVcvK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JJVT7awu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD1E14F102;
-	Wed, 27 Nov 2024 07:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9595A146A87;
+	Wed, 27 Nov 2024 07:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732692869; cv=none; b=EmAQSPkRkYbNGFczTMxE93S14FjK6JYZg9hhwlR7fLfhlPyxDWUA6V/vvE6P33ijoaNxcWGkQ7jpBXAekkne8QYP0NaamKkVxWXApXdK/UabOHOS7ftJ5PaoUTej/aM7kmpkSAsgWEsePhF1tVM7dP388J6yOYpeEloAs657OnQ=
+	t=1732693329; cv=none; b=OVAH4my5cejUbujoE2Y0rM33Ygawc6ADC3H59PInIkpI8i+GELOs8UYaSyPVfByJkzjCQQWVSSF1mLM/agwKaOkmQTIOX4zHlu//iuN6a/2RpxLNGWvMGm+5yp5piWlEKL7JSh3cZG7elkumPrRsRL4003jHjli2IqZeVFSv+ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732692869; c=relaxed/simple;
-	bh=4WO2JdXA2564p2SZr8+iXkDfVAsxsKAbuhj/98J0eJI=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=V+kgBlaWUz3erhan/rnlWFGSBp08eKLbY0TNna1Fu6AP68r1kqbNXjcYKfuxUBVZeCikvVYhaqn1oBJRWJwgf06yHa7un64sIykHDvNs84GDF7kh9CvYYmhe3B0O+edJNh4A3wXqoGLgkPkEBjtvsO7WEphX8R0+hDZZvDcLE1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FiHwVcvK; arc=none smtp.client-ip=209.85.216.47
+	s=arc-20240116; t=1732693329; c=relaxed/simple;
+	bh=n2ttvNoV1XL707it2hYYq89Nyv4j83JCIIFJHKcj4VE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=IaVKAAxlrpb/V7cbxLgnFJI6WZ8rZcPIn7Pv9baRRrIF0aSxfDDl6OKWsCC1Ia8DLt5vHWrXINfqC2gnoVrDVUxGeEl40uZi+4//4rYmRa7TefRGbuxBrJl4ZvGyP0fj2KtsXEpnhQBKe0MnunLSc73KLFjypA3KY/iQjYuJRgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JJVT7awu; arc=none smtp.client-ip=209.85.219.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2ea8b039ddcso5113099a91.0;
-        Tue, 26 Nov 2024 23:34:27 -0800 (PST)
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6d41f721047so46796146d6.1;
+        Tue, 26 Nov 2024 23:42:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732692867; x=1733297667; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uLhtbTcEA7lxOzC9Mcl9ifDLK0DyGtZjy01VuSanglg=;
-        b=FiHwVcvKmqOsW4y1Utvack7oWpd4u26g7v/dCMg2YTwcXpUxRlT06DrPFE3kH3m2Lw
-         SoppJx8JRM53/qq9iNY7HM4G6gbSNi9t3TDJ1kUXIKKlQivVZ0cMdDaoKgCPx21qU6y+
-         Xh/fFrgN65fpGSgc8ZpfZDmKIiaHREVRxLJEPReOtWaJjloTchvh6oT9VuzGeGGIU74C
-         rai4CzVgNzupXGav/XLBwiXDGP+aWiIPfvSUpElywYqQ95bRwB42F3B7QCvwuojW0WJm
-         RvbyE7KSkDexzDQ3COmKaheU7n0AJSd9aKh4foRT6cs6NL66yQouHHo8YghhBufyz/fc
-         sXkQ==
+        d=gmail.com; s=20230601; t=1732693326; x=1733298126; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pUeFWqsXwpt4WTXkPzNXsf4Gi9tVXueAa/I+0CZw2Bo=;
+        b=JJVT7awuD8jCpy4jlIJtqfusJqo9NdDrpLub92Z5LHh7VWpm7RWSwgkbqzIvsXedZC
+         0wFRi9EK7AaW1vyKxSB91FWbNXJ/qW9lpw52kbxh7c0NQiy4DzbjhgnB6gMUUINbgstX
+         cfkZk44rlm+RNGSSjjNgsB9Sh3Ldp1dXI0cmZkfR3kbb0Qt8+lskEQKIEEwiLhx2HXZv
+         DQeAffe/FBSjR+6AOAIi4gQN7CzlfT9flJX0zBvX7+8na5ctUNqdB0flTbON3NCOPZuh
+         XnvQQA+j0qxDFI3TjW5awheqQYUVbZqSkYPPS2GuCGeSRPh+SlDQLS4kLUGHiQKOnHFO
+         WhzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732692867; x=1733297667;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uLhtbTcEA7lxOzC9Mcl9ifDLK0DyGtZjy01VuSanglg=;
-        b=Be2a0M/ccytFgM0SkmDpGFEm5gf1aqBZtq+NCEUEKhm7eNMtYy3EcG8ZolY98Apfc3
-         KsvH3tu8iaftvc+8SyPaRD+ZwWYUHpp/98yEdnVVeJSgwH0xA4CYgawTNip+J98r72Sh
-         5xg9cLR0nMo9pqeJOraPh5bn/X2QOFIyUO4SUiWTdPhV+PGZwYwW4RuYuf/fSOKsOUKs
-         Sd9R3tvLS+eenWHoDjAKamef51pdYAtOJbRyUDbRV0vcCCJWNJ/B0MWJ/b/BiK3DtIN2
-         0U1NGGYCyqWmcsh+HwBOVRSbNXZTMTzTdDBYGskt5+61/NLQWW8tYBFBECSOwhfZhgSC
-         v7YA==
-X-Forwarded-Encrypted: i=1; AJvYcCUAuX4ah0DDTNBwQ5HijoK7sCZHfKIWDYHoX7iIlLVgBgGV17SjDD36J6fBI3zrClK9CdfQFT8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzqv6HSHTYsIzu+OR4Aj3s3kNHoM4zBgFLkYkwtp6leiVux06wS
-	4Z218QrdrEac8f6L5SkKmYmRh9vNUrgxG4OJX0fQOul44RnoLY4ggcg+9A==
-X-Gm-Gg: ASbGncsA5noJyc05JkwJozo6OB7y4gCO6krtgV7cojiRpaH03zubtKg/GTTSoDeYSY3
-	1ugYAwSt38AfBLdL2nSCDLmoyjVJF9XD1xCuuV3VR2fdsnyiBYjHN4G6vHs216sab/mjZoZa7d8
-	cAVTevIOzDZ5L1+DbCVcj3hClQ+whEh/5VOxrJvFqNuiLOIkmZ4RezeSMRffT/Pdf6JO3Dj90Ns
-	9OivXDBKYDA3uFxJKzJSEJBSTF0kGxpSAgO4335aHPiOJ99A3g=
-X-Google-Smtp-Source: AGHT+IEsnSzmDH4Rd5E/576eqAaqH5g5sLVhF6VkNsoCtYvu9MgO+J2ldear+DY1YxIFrsHiZzWTFg==
-X-Received: by 2002:a17:90b:1a8e:b0:2ea:4290:7274 with SMTP id 98e67ed59e1d1-2ee08e9fe02mr2806521a91.10.1732692867158;
-        Tue, 26 Nov 2024 23:34:27 -0800 (PST)
-Received: from localhost ([98.97.45.174])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ee0fa30fcesm806046a91.8.2024.11.26.23.34.26
+        d=1e100.net; s=20230601; t=1732693326; x=1733298126;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pUeFWqsXwpt4WTXkPzNXsf4Gi9tVXueAa/I+0CZw2Bo=;
+        b=eyTc3Ge9fB/sC9KhBNQfI8QvOcaIQ+jNZqeF/IUAqQr1/LADr3yDXInD4gIym+ej59
+         ZI3UvcCzMW4Z5bHV9Bs3l1ctzJOtiIRM28TQRgwSlkcSln4IRnVmQ39WsrasToINtZCs
+         dox7JXQ837vh3XRCkTuQmkIO55hlQ4Zu3qBAg/QH9TNcU5cB8PUHQ6DQePFnxcWDA/Dc
+         r4jVQwpDkNYDGeuTuIaQryHvAHyFjdSgaqyzIs3k8B9C3XcLHZzrswR7AwAVsehS4649
+         J2V/DuCfhGI7GquOn/Vr+TkZH7rO1X9ymkybGKJ2i/3TaYXKO7M1GboL5wfOMShrUVZB
+         9rNA==
+X-Forwarded-Encrypted: i=1; AJvYcCWrNOr7mkRhcxrMsdHf1vQceEg1392Ai50er2We7RVDGq93USC4PSICndcguW+yX2kw2QvuwR9Ze5kRdvd2@vger.kernel.org, AJvYcCXBVuim0bKJnHxgKw3aB82j1Sa5Tp5TKnS9qwu5VnihVvHEVLlAlrsWxubhEL5devrqlzc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywp8iJXMZdD/8MWfKfjFp3Izb4WhIXt0s2spogbuXbeKnXGynZG
+	LtnIv00qcmTJp6NVA75r2E++C1wH/yJp2bA7k7wF/5/i8vGCgetV
+X-Gm-Gg: ASbGncsuJuYl7VVud++SxqdFMEfyxf27MD6XoesirJI6hD8mZ3Q0DWtvsavb/LOm9Un
+	rZzJoDr3axtbHRq3kgAJYSHmdzH5Q2syQvb1/e5yC/VoajQZvlR7/8iQRq7G5d1xl4lMeIwDgVU
+	5MkjNBDf9rpAwZM9+7d4e2ax7NQF8H0oh+N+eLo1Vpv5RCisAfJRHAq1xTK4QmKhYO4L0p36Rgm
+	HEjU7RnCHuVsEPC77Ez/ZfMhpi+8HHChEE47ZvZKS06VmEeDKQOsOAtR466VXFJT0MJm6RYIULX
+	kkjgxYRyPEK4kD74IS1Q/CzZ
+X-Google-Smtp-Source: AGHT+IEq2gw3b+WLjB/Mh1kpHvZvn5Y0StozzJBewkPMWhxJt8+Y+qhqDWkoXtDvVsq8bPB+0zGnHg==
+X-Received: by 2002:a05:6214:2405:b0:6d4:2806:1764 with SMTP id 6a1803df08f44-6d864e02367mr29558286d6.43.1732693326289;
+        Tue, 26 Nov 2024 23:42:06 -0800 (PST)
+Received: from Matan-Desktop.localdomain (ool-457a37de.dyn.optonline.net. [69.122.55.222])
+        by smtp.googlemail.com with ESMTPSA id 6a1803df08f44-6d451ab42cdsm63119906d6.55.2024.11.26.23.42.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Nov 2024 23:34:26 -0800 (PST)
-Date: Tue, 26 Nov 2024 23:34:25 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Zijian Zhang <zijianzhang@bytedance.com>, 
- Cong Wang <xiyou.wangcong@gmail.com>, 
- netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org, 
- Cong Wang <cong.wang@bytedance.com>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <6746cb81870d7_f422208e@john.notmuch>
-In-Reply-To: <67a0fb14-f791-4499-8751-01bbbd1cafcb@bytedance.com>
-References: <20241107034141.250815-1-xiyou.wangcong@gmail.com>
- <20241107034141.250815-2-xiyou.wangcong@gmail.com>
- <67a0fb14-f791-4499-8751-01bbbd1cafcb@bytedance.com>
-Subject: Re: [External] [Patch bpf 2/2] selftests/bpf: Add a BPF selftest for
- bpf_skb_change_tail()
+        Tue, 26 Nov 2024 23:42:05 -0800 (PST)
+From: Matan Shachnai <m.shachnai@gmail.com>
+To: ast@kernel.org
+Cc: Matan Shachnai <m.shachnai@gmail.com>,
+	Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>,
+	Srinivas Narayana <srinivas.narayana@rutgers.edu>,
+	Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] bpf, verifier: Improve precision of BPF_MUL
+Date: Wed, 27 Nov 2024 02:41:56 -0500
+Message-Id: <20241127074156.17567-1-m.shachnai@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Zijian Zhang wrote:
-> On 11/6/24 7:41 PM, Cong Wang wrote:
-> > From: Cong Wang <cong.wang@bytedance.com>
-> > 
-> > As requested by Daniel, we need to add a selftest to cover
-> > bpf_skb_change_tail() cases in skb_verdict. Here we test trimming,
-> > growing and error cases, and validate its expected return values.
-> > 
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Zijian Zhang <zijianzhang@bytedance.com>
-> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> > ---
-> >   .../selftests/bpf/prog_tests/sockmap_basic.c  | 51 +++++++++++++++++++
-> >   .../bpf/progs/test_sockmap_change_tail.c      | 40 +++++++++++++++
-> >   2 files changed, 91 insertions(+)
-> >   create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c
-> > 
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> > index 82bfb266741c..fe735fced836 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> > @@ -12,6 +12,7 @@
-> >   #include "test_sockmap_progs_query.skel.h"
-> >   #include "test_sockmap_pass_prog.skel.h"
-> >   #include "test_sockmap_drop_prog.skel.h"
-> > +#include "test_sockmap_change_tail.skel.h"
-> >   #include "bpf_iter_sockmap.skel.h"
-> >   
-> >   #include "sockmap_helpers.h"
-> > @@ -562,6 +563,54 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
-> >   		test_sockmap_drop_prog__destroy(drop);
-> >   }
-> >   
-> > +static void test_sockmap_skb_verdict_change_tail(void)
-> > +{
-> > +	struct test_sockmap_change_tail *skel;
-> > +	int err, map, verdict;
-> > +	int c1, p1, sent, recvd;
-> > +	int zero = 0;
-> > +	char b[3];
-> > +
-> > +	skel = test_sockmap_change_tail__open_and_load();
-> > +	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-> > +		return;
-> > +	verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-> > +	map = bpf_map__fd(skel->maps.sock_map_rx);
-> > +
-> > +	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
-> > +	if (!ASSERT_OK(err, "bpf_prog_attach"))
-> > +		goto out;
-> > +	err = create_pair(AF_INET, SOCK_STREAM, &c1, &p1);
-> > +	if (!ASSERT_OK(err, "create_pair()"))
-> > +		goto out;
-> > +	err = bpf_map_update_elem(map, &zero, &c1, BPF_NOEXIST);
-> > +	if (!ASSERT_OK(err, "bpf_map_update_elem(c1)"))
-> > +		goto out_close;
-> > +	sent = xsend(p1, "Tr", 2, 0);
-> > +	ASSERT_EQ(sent, 2, "xsend(p1)");
-> > +	recvd = recv(c1, b, 2, 0);
-> > +	ASSERT_EQ(recvd, 1, "recv(c1)");
-> > +	ASSERT_EQ(skel->data->change_tail_ret, 0, "change_tail_ret");
-> > +
-> > +	sent = xsend(p1, "G", 1, 0);
-> > +	ASSERT_EQ(sent, 1, "xsend(p1)");
-> > +	recvd = recv(c1, b, 2, 0);
-> > +	ASSERT_EQ(recvd, 2, "recv(c1)");
-> > +	ASSERT_EQ(skel->data->change_tail_ret, 0, "change_tail_ret");
-> > +
-> > +	sent = xsend(p1, "E", 1, 0);
-> > +	ASSERT_EQ(sent, 1, "xsend(p1)");
-> > +	recvd = recv(c1, b, 1, 0);
-> > +	ASSERT_EQ(recvd, 1, "recv(c1)");
-> > +	ASSERT_EQ(skel->data->change_tail_ret, -EINVAL, "change_tail_ret");
-> > +
-> > +out_close:
-> > +	close(c1);
-> > +	close(p1);
-> > +out:
-> > +	test_sockmap_change_tail__destroy(skel);
-> > +}
-> > +
-> >   static void test_sockmap_skb_verdict_peek_helper(int map)
-> >   {
-> >   	int err, c1, p1, zero = 0, sent, recvd, avail;
-> > @@ -927,6 +976,8 @@ void test_sockmap_basic(void)
-> >   		test_sockmap_skb_verdict_fionread(true);
-> >   	if (test__start_subtest("sockmap skb_verdict fionread on drop"))
-> >   		test_sockmap_skb_verdict_fionread(false);
-> > +	if (test__start_subtest("sockmap skb_verdict change tail"))
-> > +		test_sockmap_skb_verdict_change_tail();
-> >   	if (test__start_subtest("sockmap skb_verdict msg_f_peek"))
-> >   		test_sockmap_skb_verdict_peek();
-> >   	if (test__start_subtest("sockmap skb_verdict msg_f_peek with link"))
-> > diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c b/tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c
-> > new file mode 100644
-> > index 000000000000..2796dd8545eb
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c
-> > @@ -0,0 +1,40 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2024 ByteDance */
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +
-> > +struct {
-> > +	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-> > +	__uint(max_entries, 1);
-> > +	__type(key, int);
-> > +	__type(value, int);
-> > +} sock_map_rx SEC(".maps");
-> > +
-> > +long change_tail_ret = 1;
-> > +
-> > +SEC("sk_skb")
-> > +int prog_skb_verdict(struct __sk_buff *skb)
-> > +{
-> > +	char *data, *data_end;
-> > +
-> > +	bpf_skb_pull_data(skb, 1);
-> > +	data = (char *)(unsigned long)skb->data;
-> > +	data_end = (char *)(unsigned long)skb->data_end;
-> > +
-> > +	if (data + 1 > data_end)
-> > +		return SK_PASS;
-> > +
-> > +	if (data[0] == 'T') { /* Trim the packet */
-> > +		change_tail_ret = bpf_skb_change_tail(skb, skb->len - 1, 0);
-> > +		return SK_PASS;
-> > +	} else if (data[0] == 'G') { /* Grow the packet */
-> > +		change_tail_ret = bpf_skb_change_tail(skb, skb->len + 1, 0);
-> > +		return SK_PASS;
-> > +	} else if (data[0] == 'E') { /* Error */
-> > +		change_tail_ret = bpf_skb_change_tail(skb, 65535, 0);
-> > +		return SK_PASS;
-> > +	}
-> > +	return SK_PASS;
-> > +}
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> 
-> LGTM!
-> 
-> I think it will be better if the test could also cover the case you
-> indicated in the first patch, where skb_transport_offset is a negative
-> value.
-> 
-> Thanks,
-> Zijian
-> 
+This patch improves (or maintains) the precision of register value tracking
+in BPF_MUL across all possible inputs. It also simplifies
+scalar32_min_max_mul() and scalar_min_max_mul().
 
-Hi Cong,
+As it stands, BPF_MUL is composed of three functions:
 
-I agree it would be great to see the skb_transport_offset is
-negative pattern. Could we add it?
+case BPF_MUL:
+  tnum_mul();
+  scalar32_min_max_mul();
+  scalar_min_max_mul();
 
-Thanks,
-John
+The current implementation of scalar_min_max_mul() restricts the u64 input
+ranges of dst_reg and src_reg to be within [0, U32_MAX]:
+
+    /* Both values are positive, so we can work with unsigned and
+     * copy the result to signed (unless it exceeds S64_MAX).
+     */
+    if (umax_val > U32_MAX || dst_reg->umax_value > U32_MAX) {
+        /* Potential overflow, we know nothing */
+        __mark_reg64_unbounded(dst_reg);
+        return;
+    }
+
+This restriction is done to avoid unsigned overflow, which could otherwise
+wrap the result around 0, and leave an unsound output where umin > umax. We
+also observe that limiting these u64 input ranges to [0, U32_MAX] leads to
+a loss of precision. Consider the case where the u64 bounds of dst_reg are
+[0, 2^34] and the u64 bounds of src_reg are [0, 2^2]. While the
+multiplication of these two bounds doesn't overflow and is sound [0, 2^36],
+the current scalar_min_max_mul() would set the entire register state to
+unbounded.
+
+The key idea of our patch is that if there’s no possibility of overflow, we
+can multiply the unsigned bounds; otherwise, we set the 64-bit bounds to
+[0, U64_MAX], marking them as unbounded.
+
+if (check_mul_overflow(*dst_umax, src_reg->umax_value, dst_umax) ||
+       (check_mul_overflow(*dst_umin, src_reg->umin_value, dst_umin))) {
+        /* Overflow possible, we know nothing */
+        dst_reg->umin_value = 0;
+        dst_reg->umax_value = U64_MAX;
+    }
+  ...
+
+Now, to update the signed bounds based on the unsigned bounds, we need to
+ensure that the unsigned bounds don't cross the signed boundary (i.e., if
+((s64)reg->umin_value <= (s64)reg->umax_value)). We observe that this is
+done anyway by __reg_deduce_bounds later, so we can just set signed bounds
+to unbounded [S64_MIN, S64_MAX]. Deferring the assignment of s64 bounds to
+reg_bounds_sync removes the current redundancy in scalar_min_max_mul(),
+which currently sets the s64 bounds based on the u64 bounds only in the
+case where umin <= umax <= 2^(63)-1.
+
+Below, we provide an example BPF program (below) that exhibits the
+imprecision in the current BPF_MUL, where the outputs are all unbounded. In
+contrast, the updated BPF_MUL produces a bounded register state:
+
+BPF_LD_IMM64(BPF_REG_1, 11),
+BPF_LD_IMM64(BPF_REG_2, 4503599627370624),
+BPF_ALU64_IMM(BPF_NEG, BPF_REG_2, 0),
+BPF_ALU64_IMM(BPF_NEG, BPF_REG_2, 0),
+BPF_ALU64_REG(BPF_AND, BPF_REG_1, BPF_REG_2),
+BPF_LD_IMM64(BPF_REG_3, 809591906117232263),
+BPF_ALU64_REG(BPF_MUL, BPF_REG_3, BPF_REG_1),
+BPF_MOV64_IMM(BPF_REG_0, 1),
+BPF_EXIT_INSN(),
+
+Verifier log using the old BPF_MUL:
+
+func#0 @0
+0: R1=ctx() R10=fp0
+0: (18) r1 = 0xb                      ; R1_w=11
+2: (18) r2 = 0x10000000000080         ; R2_w=0x10000000000080
+4: (87) r2 = -r2                      ; R2_w=scalar()
+5: (87) r2 = -r2                      ; R2_w=scalar()
+6: (5f) r1 &= r2                      ; R1_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=11,var_off=(0x0; 0xb)) R2_w=scalar()
+7: (18) r3 = 0xb3c3f8c99262687        ; R3_w=0xb3c3f8c99262687
+9: (2f) r3 *= r1                      ; R1_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=11,var_off=(0x0; 0xb)) R3_w=scalar()
+...
+
+Verifier using the new updated BPF_MUL (more precise bounds at label 9)
+
+func#0 @0
+0: R1=ctx() R10=fp0
+0: (18) r1 = 0xb                      ; R1_w=11
+2: (18) r2 = 0x10000000000080         ; R2_w=0x10000000000080
+4: (87) r2 = -r2                      ; R2_w=scalar()
+5: (87) r2 = -r2                      ; R2_w=scalar()
+6: (5f) r1 &= r2                      ; R1_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=11,var_off=(0x0; 0xb)) R2_w=scalar()
+7: (18) r3 = 0xb3c3f8c99262687        ; R3_w=0xb3c3f8c99262687
+9: (2f) r3 *= r1                      ; R1_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=11,var_off=(0x0; 0xb)) R3_w=scalar(smin=0,smax=umax=0x7b96bb0a94a3a7cd,var_off=(0x0; 0x7fffffffffffffff))
+...
+
+Finally, we proved the soundness of the new scalar_min_max_mul() and
+scalar32_min_max_mul() functions. Typically, multiplication operations are
+expensive to check with bitvector-based solvers. We were able to prove the
+soundness of these functions using Non-Linear Integer Arithmetic (NIA)
+theory. Additionally, using Agni [2,3], we obtained the encodings for
+scalar32_min_max_mul() and scalar_min_max_mul() in bitvector theory, and
+were able to prove their soundness using 16-bit bitvectors (instead of
+64-bit bitvectors that the functions actually use).
+
+In conclusion, with this patch,
+
+1. We were able to show that we can improve the overall precision of
+   BPF_MUL. We proved (using an SMT solver) that this new version of
+   BPF_MUL is at least as precise as the current version for all inputs.
+
+2. We are able to prove the soundness of the new scalar_min_max_mul() and
+   scalar32_min_max_mul(). By leveraging the existing proof of tnum_mul
+   [1], we can say that the composition of these three functions within
+   BPF_MUL is sound.
+
+[1] https://ieeexplore.ieee.org/abstract/document/9741267
+[2] https://link.springer.com/chapter/10.1007/978-3-031-37709-9_12
+[3] https://people.cs.rutgers.edu/~sn349/papers/sas24-preprint.pdf
+
+Co-developed-by: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+Signed-off-by: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+Co-developed-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
+Signed-off-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
+Co-developed-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
+Signed-off-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
+Signed-off-by: Matan Shachnai <m.shachnai@gmail.com>
+---
+ kernel/bpf/verifier.c | 72 +++++++++++++++----------------------------
+ 1 file changed, 24 insertions(+), 48 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1c4ebb326785..4785f3fac70a 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -13827,65 +13827,41 @@ static void scalar_min_max_sub(struct bpf_reg_state *dst_reg,
+ static void scalar32_min_max_mul(struct bpf_reg_state *dst_reg,
+ 				 struct bpf_reg_state *src_reg)
+ {
+-	s32 smin_val = src_reg->s32_min_value;
+-	u32 umin_val = src_reg->u32_min_value;
+-	u32 umax_val = src_reg->u32_max_value;
++	u32 *dst_umin = &dst_reg->u32_min_value;
++	u32 *dst_umax = &dst_reg->u32_max_value;
+ 
+-	if (smin_val < 0 || dst_reg->s32_min_value < 0) {
+-		/* Ain't nobody got time to multiply that sign */
+-		__mark_reg32_unbounded(dst_reg);
+-		return;
+-	}
+-	/* Both values are positive, so we can work with unsigned and
+-	 * copy the result to signed (unless it exceeds S32_MAX).
+-	 */
+-	if (umax_val > U16_MAX || dst_reg->u32_max_value > U16_MAX) {
+-		/* Potential overflow, we know nothing */
+-		__mark_reg32_unbounded(dst_reg);
+-		return;
+-	}
+-	dst_reg->u32_min_value *= umin_val;
+-	dst_reg->u32_max_value *= umax_val;
+-	if (dst_reg->u32_max_value > S32_MAX) {
++	if (check_mul_overflow(*dst_umax, src_reg->u32_max_value, dst_umax) ||
++	    check_mul_overflow(*dst_umin, src_reg->u32_min_value, dst_umin)) {
+ 		/* Overflow possible, we know nothing */
+-		dst_reg->s32_min_value = S32_MIN;
+-		dst_reg->s32_max_value = S32_MAX;
+-	} else {
+-		dst_reg->s32_min_value = dst_reg->u32_min_value;
+-		dst_reg->s32_max_value = dst_reg->u32_max_value;
++		dst_reg->u32_min_value = 0;
++		dst_reg->u32_max_value = U32_MAX;
+ 	}
++
++	/* Set signed bounds to unbounded and improve precision in
++	 * reg_bounds_sync()
++	 */
++	dst_reg->s32_min_value = S32_MIN;
++	dst_reg->s32_max_value = S32_MAX;
+ }
+ 
+ static void scalar_min_max_mul(struct bpf_reg_state *dst_reg,
+ 			       struct bpf_reg_state *src_reg)
+ {
+-	s64 smin_val = src_reg->smin_value;
+-	u64 umin_val = src_reg->umin_value;
+-	u64 umax_val = src_reg->umax_value;
++	u64 *dst_umin = &dst_reg->umin_value;
++	u64 *dst_umax = &dst_reg->umax_value;
+ 
+-	if (smin_val < 0 || dst_reg->smin_value < 0) {
+-		/* Ain't nobody got time to multiply that sign */
+-		__mark_reg64_unbounded(dst_reg);
+-		return;
+-	}
+-	/* Both values are positive, so we can work with unsigned and
+-	 * copy the result to signed (unless it exceeds S64_MAX).
+-	 */
+-	if (umax_val > U32_MAX || dst_reg->umax_value > U32_MAX) {
+-		/* Potential overflow, we know nothing */
+-		__mark_reg64_unbounded(dst_reg);
+-		return;
+-	}
+-	dst_reg->umin_value *= umin_val;
+-	dst_reg->umax_value *= umax_val;
+-	if (dst_reg->umax_value > S64_MAX) {
++	if (check_mul_overflow(*dst_umax, src_reg->umax_value, dst_umax) ||
++	    check_mul_overflow(*dst_umin, src_reg->umin_value, dst_umin)) {
+ 		/* Overflow possible, we know nothing */
+-		dst_reg->smin_value = S64_MIN;
+-		dst_reg->smax_value = S64_MAX;
+-	} else {
+-		dst_reg->smin_value = dst_reg->umin_value;
+-		dst_reg->smax_value = dst_reg->umax_value;
++		dst_reg->umin_value = 0;
++		dst_reg->umax_value = U64_MAX;
+ 	}
++
++	/* Set signed bounds to unbounded and improve precision in
++	 * reg_bounds_sync()
++	 */
++	dst_reg->smin_value = S64_MIN;
++	dst_reg->smax_value = S64_MAX;
+ }
+ 
+ static void scalar32_min_max_and(struct bpf_reg_state *dst_reg,
+-- 
+2.25.1
+
 
