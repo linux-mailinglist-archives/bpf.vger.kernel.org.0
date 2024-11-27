@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-45670-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45675-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A5399DA007
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 01:34:53 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43D349DA00C
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 01:35:07 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B2DA284BA1
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 00:34:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 305AA168E05
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 00:35:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD4B8F49;
-	Wed, 27 Nov 2024 00:34:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF04717BBF;
+	Wed, 27 Nov 2024 00:34:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ABC12581
-	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 00:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07AAFC8CE
+	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 00:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732667686; cv=none; b=ADQtERikqzC84r2dnCasO6Cu/Fw05PTPTA/OFWrFJuv4LsWe89tdVrbT6ueFHzMxkB5LodQhOfDyYgGMp2NBMYUE61hiMUe41adf5scNQ0s25T7zxjDmD+BUf3fBa0d1UDnNGOzYbY3h6sHKsLVcSqVq37XZp87I/7lNZNkE0II=
+	t=1732667688; cv=none; b=RegNVl0J0qdFV9a/e2qCxMQWIT5GOHoZSQp7ivCT0Uz71s0k9Bmd2QDz2ODIeoQHY9hSiP0MEm30hk4MTgEb+dTbIjlaNMDwSe1q2pQXFRHIbZx0utdqObCGlMBFG6BbDEHAGBQEd1BbLv3hlHRGOZll3H+55Qlk5ONJp1g7k1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732667686; c=relaxed/simple;
-	bh=99Yhd187pRH50R+6Z1qc0DAzDeX5oNDoOD++KskOg9s=;
+	s=arc-20240116; t=1732667688; c=relaxed/simple;
+	bh=ltrP14JRv+3tRC7TZy8PBwQdG4nwrI6aUjvggLQNrzE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kY5WwFqwS9UUST0rg5388fHTG+8H2cxFsa5G1RCQ1hMRDXNCilffsUJezCV49BSBIa5MTMKaMCQjXew5x48YNCUhvxrPvA+zhPT1muncuUs7v+wtcPDNhINgyDA888Vf6Cy5DnGm3iG8c1ueoafe8V6GRLE/wEWzaVSgpOT8d/U=
+	 MIME-Version; b=ut+9fesEDHWk4AYCLQHZbJEHUfA1U6b7VmeyhQGk3mIY1wvPB2q2uUexuCiSSsX5VGbn5zGztaC3ct/l7Hv31spoGl3IKX4pLXESMW9LDod7Ek47qJxsUanObgBGFH9lnkfb0TZMkmtGCjLWJDqeu/w2gk+b3sin0Qzs88wOYjM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XygRx20xpz4f3jXg
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XygRx74QMz4f3kFF
 	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 08:34:21 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 0C90F1A0568
+	by mail.maildlp.com (Postfix) with ESMTP id BC3171A0359
 	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 08:34:40 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgBHI4cVaUZn5pO9Cw--.38194S10;
-	Wed, 27 Nov 2024 08:34:37 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgBHI4cVaUZn5pO9Cw--.38194S11;
+	Wed, 27 Nov 2024 08:34:40 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -58,9 +58,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	houtao1@huawei.com,
 	xukuohai@huawei.com
-Subject: [PATCH bpf v2 6/9] bpf: Switch to bpf mem allocator for LPM trie
-Date: Wed, 27 Nov 2024 08:46:38 +0800
-Message-Id: <20241127004641.1118269-7-houtao@huaweicloud.com>
+Subject: [PATCH bpf v2 7/9] bpf: Use raw_spinlock_t for LPM trie
+Date: Wed, 27 Nov 2024 08:46:39 +0800
+Message-Id: <20241127004641.1118269-8-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20241127004641.1118269-1-houtao@huaweicloud.com>
 References: <20241127004641.1118269-1-houtao@huaweicloud.com>
@@ -71,10 +71,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBHI4cVaUZn5pO9Cw--.38194S10
-X-Coremail-Antispam: 1UD129KBjvJXoWxtF4kCrWfCw1kZF47urWxWFg_yoW3XFy5pF
-	ZIg34fAr4DXr4Uur4vqr4DZryUAw48Kw4UGas5WayrZF90vr9rJF18ZF40vFyYkFZ7Crs8
-	tF1UtrW0vw4DC3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgBHI4cVaUZn5pO9Cw--.38194S11
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw48JF1fuFW7Ary7AFyDAwb_yoW5Ww47pF
+	WxGFy5ta18Zr4Yqw48trZ5WrZ8Zws5Ww4UGFWkXryxAr9IqasrJr18AFy0vayrAFWIyrs8
+	tF1YqrWFvFWruFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -93,249 +93,80 @@ X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-Multiple syzbot warnings have been reported. These warnings are mainly
-about the lock order between trie->lock and kmalloc()'s internal lock.
-See report [1] as an example:
+After switching from kmalloc() to the bpf memory allocator, there will be
+no blocking operation during the update of LPM trie. Therefore, change
+trie->lock from spinlock_t to raw_spinlock_t to make LPM trie usable in
+atomic context, even on RT kernels.
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.10.0-rc7-syzkaller-00003-g4376e966ecb7 #0 Not tainted
-------------------------------------------------------
-syz.3.2069/15008 is trying to acquire lock:
-ffff88801544e6d8 (&n->list_lock){-.-.}-{2:2}, at: get_partial_node ...
-
-but task is already holding lock:
-ffff88802dcc89f8 (&trie->lock){-.-.}-{2:2}, at: trie_update_elem ...
-
-which lock already depends on the new lock.
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&trie->lock){-.-.}-{2:2}:
-       __raw_spin_lock_irqsave
-       _raw_spin_lock_irqsave+0x3a/0x60
-       trie_delete_elem+0xb0/0x820
-       ___bpf_prog_run+0x3e51/0xabd0
-       __bpf_prog_run32+0xc1/0x100
-       bpf_dispatcher_nop_func
-       ......
-       bpf_trace_run2+0x231/0x590
-       __bpf_trace_contention_end+0xca/0x110
-       trace_contention_end.constprop.0+0xea/0x170
-       __pv_queued_spin_lock_slowpath+0x28e/0xcc0
-       pv_queued_spin_lock_slowpath
-       queued_spin_lock_slowpath
-       queued_spin_lock
-       do_raw_spin_lock+0x210/0x2c0
-       __raw_spin_lock_irqsave
-       _raw_spin_lock_irqsave+0x42/0x60
-       __put_partials+0xc3/0x170
-       qlink_free
-       qlist_free_all+0x4e/0x140
-       kasan_quarantine_reduce+0x192/0x1e0
-       __kasan_slab_alloc+0x69/0x90
-       kasan_slab_alloc
-       slab_post_alloc_hook
-       slab_alloc_node
-       kmem_cache_alloc_node_noprof+0x153/0x310
-       __alloc_skb+0x2b1/0x380
-       ......
-
--> #0 (&n->list_lock){-.-.}-{2:2}:
-       check_prev_add
-       check_prevs_add
-       validate_chain
-       __lock_acquire+0x2478/0x3b30
-       lock_acquire
-       lock_acquire+0x1b1/0x560
-       __raw_spin_lock_irqsave
-       _raw_spin_lock_irqsave+0x3a/0x60
-       get_partial_node.part.0+0x20/0x350
-       get_partial_node
-       get_partial
-       ___slab_alloc+0x65b/0x1870
-       __slab_alloc.constprop.0+0x56/0xb0
-       __slab_alloc_node
-       slab_alloc_node
-       __do_kmalloc_node
-       __kmalloc_node_noprof+0x35c/0x440
-       kmalloc_node_noprof
-       bpf_map_kmalloc_node+0x98/0x4a0
-       lpm_trie_node_alloc
-       trie_update_elem+0x1ef/0xe00
-       bpf_map_update_value+0x2c1/0x6c0
-       map_update_elem+0x623/0x910
-       __sys_bpf+0x90c/0x49a0
-       ...
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&trie->lock);
-                               lock(&n->list_lock);
-                               lock(&trie->lock);
-  lock(&n->list_lock);
-
- *** DEADLOCK ***
-
-[1]: https://syzkaller.appspot.com/bug?extid=9045c0a3d5a7f1b119f7
-
-A bpf program attached to trace_contention_end() triggers after
-acquiring &n->list_lock. The program invokes trie_delete_elem(), which
-then acquires trie->lock. However, it is possible that another
-process is invoking trie_update_elem(). trie_update_elem() will acquire
-trie->lock first, then invoke kmalloc_node(). kmalloc_node() may invoke
-get_partial_node() and try to acquire &n->list_lock (not necessarily the
-same lock object). Therefore, lockdep warns about the circular locking
-dependency.
-
-Invoking kmalloc() before acquiring trie->lock could fix the warning.
-However, since BPF programs call be invoked from any context (e.g.,
-through kprobe/tracepoint/fentry), there may still be lock ordering
-problems for internal locks in kmalloc() or trie->lock itself.
-
-To eliminate these potential lock ordering problems with kmalloc()'s
-internal locks, replacing kmalloc()/kfree()/kfree_rcu() with equivalent
-BPF memory allocator APIs that can be invoked in any context. The lock
-ordering problems with trie->lock (e.g., reentrance) will be handled
-separately.
-
-Two aspects of this change require explanation:
-
-1. Intermediate and leaf nodes are allocated from the same allocator.
-The value size of LPM trie is usually small and only use one allocator
-reduces the memory overhead of BPF memory allocator.
-
-2. nodes are freed before invoking spin_unlock_irqrestore(). Therefore,
-there is no need to add paired migrate_{disable|enable}() calls for
-these free operations.
+The max value of prefixlen is 2048. Therefore, update or deletion
+operations will find the target after at most 2048 comparisons.
+Constructing a test case which updates an element after 2048 comparisons
+under a 8 CPU VM, and the average time and the maximal time for such
+update operation is about 210us and 900us.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/lpm_trie.c | 38 +++++++++++++++++++++++++-------------
- 1 file changed, 25 insertions(+), 13 deletions(-)
+ kernel/bpf/lpm_trie.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-index a1d72d2ec22f..4a3d837e9c9a 100644
+index 4a3d837e9c9a..81b3554754ae 100644
 --- a/kernel/bpf/lpm_trie.c
 +++ b/kernel/bpf/lpm_trie.c
-@@ -15,6 +15,7 @@
- #include <net/ipv6.h>
- #include <uapi/linux/btf.h>
- #include <linux/btf_ids.h>
-+#include <linux/bpf_mem_alloc.h>
- 
- /* Intermediate node */
- #define LPM_TREE_NODE_FLAG_IM BIT(0)
-@@ -22,7 +23,6 @@
- struct lpm_trie_node;
- 
- struct lpm_trie_node {
--	struct rcu_head rcu;
- 	struct lpm_trie_node __rcu	*child[2];
- 	u32				prefixlen;
- 	u32				flags;
-@@ -32,6 +32,7 @@ struct lpm_trie_node {
- struct lpm_trie {
- 	struct bpf_map			map;
- 	struct lpm_trie_node __rcu	*root;
-+	struct bpf_mem_alloc		ma;
+@@ -36,7 +36,7 @@ struct lpm_trie {
  	size_t				n_entries;
  	size_t				max_prefixlen;
  	size_t				data_size;
-@@ -287,17 +288,12 @@ static void *trie_lookup_elem(struct bpf_map *map, void *_key)
- 	return found->data + trie->data_size;
- }
+-	spinlock_t			lock;
++	raw_spinlock_t			lock;
+ };
  
--static struct lpm_trie_node *lpm_trie_node_alloc(const struct lpm_trie *trie,
-+static struct lpm_trie_node *lpm_trie_node_alloc(struct lpm_trie *trie,
- 						 const void *value)
- {
- 	struct lpm_trie_node *node;
--	size_t size = sizeof(struct lpm_trie_node) + trie->data_size;
+ /* This trie implements a longest prefix match algorithm that can be used to
+@@ -336,7 +336,7 @@ static long trie_update_elem(struct bpf_map *map,
+ 	if (key->prefixlen > trie->max_prefixlen)
+ 		return -EINVAL;
  
--	if (value)
--		size += trie->map.value_size;
--
--	node = bpf_map_kmalloc_node(&trie->map, size, GFP_NOWAIT | __GFP_NOWARN,
--				    trie->map.numa_node);
-+	node = bpf_mem_cache_alloc(&trie->ma);
- 	if (!node)
- 		return NULL;
+-	spin_lock_irqsave(&trie->lock, irq_flags);
++	raw_spin_lock_irqsave(&trie->lock, irq_flags);
  
-@@ -448,9 +444,9 @@ static long trie_update_elem(struct bpf_map *map,
- 
- out:
+ 	/* Allocate and fill a new node */
+ 	new_node = lpm_trie_node_alloc(trie, value);
+@@ -446,7 +446,7 @@ static long trie_update_elem(struct bpf_map *map,
  	if (ret)
--		kfree(new_node);
-+		bpf_mem_cache_free(&trie->ma, new_node);
-+	bpf_mem_cache_free_rcu(&trie->ma, free_node);
- 	spin_unlock_irqrestore(&trie->lock, irq_flags);
--	kfree_rcu(free_node, rcu);
+ 		bpf_mem_cache_free(&trie->ma, new_node);
+ 	bpf_mem_cache_free_rcu(&trie->ma, free_node);
+-	spin_unlock_irqrestore(&trie->lock, irq_flags);
++	raw_spin_unlock_irqrestore(&trie->lock, irq_flags);
  
  	return ret;
  }
-@@ -547,9 +543,9 @@ static long trie_delete_elem(struct bpf_map *map, void *_key)
- 	free_node = node;
+@@ -467,7 +467,7 @@ static long trie_delete_elem(struct bpf_map *map, void *_key)
+ 	if (key->prefixlen > trie->max_prefixlen)
+ 		return -EINVAL;
  
+-	spin_lock_irqsave(&trie->lock, irq_flags);
++	raw_spin_lock_irqsave(&trie->lock, irq_flags);
+ 
+ 	/* Walk the tree looking for an exact key/length match and keeping
+ 	 * track of the path we traverse.  We will need to know the node
+@@ -545,7 +545,7 @@ static long trie_delete_elem(struct bpf_map *map, void *_key)
  out:
-+	bpf_mem_cache_free_rcu(&trie->ma, free_parent);
-+	bpf_mem_cache_free_rcu(&trie->ma, free_node);
- 	spin_unlock_irqrestore(&trie->lock, irq_flags);
--	kfree_rcu(free_parent, rcu);
--	kfree_rcu(free_node, rcu);
+ 	bpf_mem_cache_free_rcu(&trie->ma, free_parent);
+ 	bpf_mem_cache_free_rcu(&trie->ma, free_node);
+-	spin_unlock_irqrestore(&trie->lock, irq_flags);
++	raw_spin_unlock_irqrestore(&trie->lock, irq_flags);
  
  	return ret;
  }
-@@ -571,6 +567,8 @@ static long trie_delete_elem(struct bpf_map *map, void *_key)
- static struct bpf_map *trie_alloc(union bpf_attr *attr)
- {
- 	struct lpm_trie *trie;
-+	size_t leaf_size;
-+	int err;
+@@ -591,7 +591,7 @@ static struct bpf_map *trie_alloc(union bpf_attr *attr)
+ 			  offsetof(struct bpf_lpm_trie_key_u8, data);
+ 	trie->max_prefixlen = trie->data_size * 8;
  
- 	/* check sanity of attributes */
- 	if (attr->max_entries == 0 ||
-@@ -595,7 +593,17 @@ static struct bpf_map *trie_alloc(union bpf_attr *attr)
+-	spin_lock_init(&trie->lock);
++	raw_spin_lock_init(&trie->lock);
  
- 	spin_lock_init(&trie->lock);
- 
-+	/* Allocate intermediate and leaf nodes from the same allocator */
-+	leaf_size = sizeof(struct lpm_trie_node) + trie->data_size +
-+		    trie->map.value_size;
-+	err = bpf_mem_alloc_init(&trie->ma, leaf_size, false);
-+	if (err)
-+		goto free_out;
- 	return &trie->map;
-+
-+free_out:
-+	bpf_map_area_free(trie);
-+	return ERR_PTR(err);
- }
- 
- static void trie_free(struct bpf_map *map)
-@@ -627,13 +635,17 @@ static void trie_free(struct bpf_map *map)
- 				continue;
- 			}
- 
--			kfree(node);
-+			/* No bpf program may access the map, so freeing the
-+			 * node without waiting for the extra RCU GP.
-+			 */
-+			bpf_mem_cache_raw_free(node);
- 			RCU_INIT_POINTER(*slot, NULL);
- 			break;
- 		}
- 	}
- 
- out:
-+	bpf_mem_alloc_destroy(&trie->ma);
- 	bpf_map_area_free(trie);
- }
- 
+ 	/* Allocate intermediate and leaf nodes from the same allocator */
+ 	leaf_size = sizeof(struct lpm_trie_node) + trie->data_size +
 -- 
 2.29.2
 
