@@ -1,192 +1,202 @@
-Return-Path: <bpf+bounces-45710-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45711-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D90CA9DA7DC
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 13:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B0FC9DA7FD
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 13:39:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B286B2317C
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 12:27:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49575B21765
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 12:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABDE677F10;
-	Wed, 27 Nov 2024 12:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F631FC7E5;
+	Wed, 27 Nov 2024 12:35:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="nUxy08bn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CJOPbS9E"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDCD91FAC34;
-	Wed, 27 Nov 2024 12:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD09E1FC118;
+	Wed, 27 Nov 2024 12:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732710455; cv=none; b=bcBTCedIhKFrJfzXv7bEpOW4/Y7Yfsy/xft7rVY4P5BRvogiw21LrPYM1NGmSJ/xS/yIt7hhkQ93t8wudGb8QMPA43z6jAFjj0SbuDHGm0yVUhCTIEPkduOli3y3lQZjya27/ktsQqDgNODHv9p7SsFneJERiTgcT7jQTBI7nJQ=
+	t=1732710930; cv=none; b=rD6hBtSHCx6yuh/hfJ1wtLf6jhscgi39lOmqu85Sl35opxJt8t0rLCKYOfmuPG1eC3eh42oLREcTdk1i3Zp0zRBF9qwgTX3mc7CkEq6CBDFJmrgn7KlRjn3YCEg1HJO0U1IyZwfkyBuSWaQstodWQoe2tLQ68EejLnG0XJhN8jQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732710455; c=relaxed/simple;
-	bh=5jL9pSGW+0e3tCClAnOiw1ya7EZSAqE8PQ9+Mzm8FY8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nEPcR6kRzx69qASIxpGEY1uMwzWTaAhS+raZeUIs5GMFi/QBFxBkKCFD56kF4Wt4gebSilIGqj9FFbIGAG9R69GVWfW7Cke3BILaeQj8Rs/HpSC+wSoka7yoOwk4azN4nNxNcHvB8+EXa4J6g+ZOH0zDmTwlt6l/V/X3ep5JE2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=nUxy08bn; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=8vlJ1pjBGzcn+AL0yBTVRFoarBGpeS4cMZH9vYOVej4=; b=nUxy08bnkRZu2dvpaDjUBvM2DS
-	g5Ce41jz6JgSZ51bLseqKPih9WHoPFVD4gLOZ/tKMg7jriLnHMVCPYU4+beaHg46v9OBEBLYkmC8Q
-	qbyKXRlhP/IUZ3Sdl9gXePIwbbFm49pQkyNDCKlsT4Vtoq4dziQ8StHHrJmlEpnAT7LpKXgrFXIK5
-	5s5akJEq35nWxi5iNlrCJNrGUjZh5ZkoTlk3D/9xKCMFYlaDjGWx7oxTWyu7vu5Z2dvI6I9RRfj9x
-	2OrZbV6LhwGDlpJgo8PIW90RGfBgatL8UVu8Lhb/aaL7vCoun6kUyhPH0WY+rGqFaFCJ+HHXEKNIU
-	L1SoY7qw==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tGGt9-000Mwl-HP; Wed, 27 Nov 2024 13:11:23 +0100
-Received: from [178.197.249.57] (helo=[192.168.1.114])
-	by sslproxy05.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tGGt8-0008RM-20;
-	Wed, 27 Nov 2024 13:11:22 +0100
-Message-ID: <2221d8d3-353e-4403-8675-fadc323b5885@iogearbox.net>
-Date: Wed, 27 Nov 2024 13:11:21 +0100
+	s=arc-20240116; t=1732710930; c=relaxed/simple;
+	bh=JCruzxJQcHFn58dzlxpPtK9xqqWhHBkGIsbynbD3frM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=poyW0bseXqpCEDHFg8EfJMmBOGJFNxKDvdaA0mbFuFcuZRKkW3Gb9DpiuA0KXAX3LNQJO16QBVLKdDJb2KJxbKxlswLXKSe94bUuTkMrbsImOSCoY5+BrsWpeKc70ovuMNZje0rZWZUKTSf1xul7eriiebSMFTOSUkXB2td8CnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CJOPbS9E; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-434a2033562so22773875e9.1;
+        Wed, 27 Nov 2024 04:35:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732710927; x=1733315727; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wVqFD2qlbgxa7zjbWjVe9YXyPQ7C74Polpf8ZerrY+Q=;
+        b=CJOPbS9ErX72X82+/pHJyT4hKWTJlrHX5jlyhzvZ3iQShYDnREqEgSzQbBf9yzZLSg
+         XZB8nNO+cPQxuyXkAqTwdXNfH+Y0/DxHHiI0ACuGi40ToA1zFw3rZPfUm+w3HOenXe4/
+         62BGrrFicUd1N2ZM2gMqwSNKJFkznv/dbhyJJy/bELZXK7ddrijbjfGbJu/xhSHr/5WC
+         C/gVioUsYxMxSG5dRAKOA8LWr2EjV5wO4n9JqIzGPZ2LbJ01+FoIS8sx5xWla6AcrUCh
+         KYlXsyVyp/YaWxvF2cZBoDwJebacweJ7aSRbaS89FfepU53Q/r0ILOfLD0a+M6/bSAnG
+         Z8BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732710927; x=1733315727;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wVqFD2qlbgxa7zjbWjVe9YXyPQ7C74Polpf8ZerrY+Q=;
+        b=ixcOL5Yi+TP9wu2fCYLgeE6jdHv63pUqVoNk5G7h1VpmMqSvj5QFFxi6pN9Qx7AX9r
+         ga89N2t/rBlk1BO7rFA1Q8wz0vPE1+bxXavXsfSys1B9RQTcFYWemsGioPD8dBNzwM25
+         C+OYko5K5LJOtKfSeWpJkxBjGw0ckCBZ9kSJhkaAE1yZr/R3aEHXabeBVHboKinjmygY
+         FRvzz4jTcVg7tNOgRb90ksA2aVUAG+3Uufmmw+tqDWkqyjK64S4bgpTmYX167iNrRqVU
+         qMAIFLRR9FiQ0MnvCHHmr4y4GYayWc3mYxNF95nSwYTvczBat4PxrSuBAlyCUUUom8J4
+         716w==
+X-Forwarded-Encrypted: i=1; AJvYcCXmgPPuVphDsLkS6f0ukYj55xUoCbyxl2jfUJ19LsCJn8rNF4UFXSLDSucCcbHdQyvOgC0/b6GQiA==@vger.kernel.org, AJvYcCXnEQkAwfQ6l44MWOWeZ0zOcjep4hmyPkVhX6lvvZl2SzVXOq7n0YEtFuZMrldB8OoUbbQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWW911Yv6ImIM0OisVLmEuL2p5HlbIoOyvTlW/YKBKEjXK0V11
+	GHYYGq7mTSzyhc1fPnh3mWY9HQJiR5a5S305+3nNoZeWTOa5J5rE
+X-Gm-Gg: ASbGncuAAQl2ueAZKP7pHdECz9gdZ+d9Oix24G6fe1YQKe42ilAZKpZ4nuEqrOV3+HQ
+	ZapzszwbADKyejUpV/SGxcolNy3bJrZl10cxeZwWpntYb8IyDF2xJCTMCPTr3oeUNkNBcUZ0msB
+	DNUGcOPuuBQYgAPfAUJBOpp1xJbZ1gc5h9jD+bNb065u83O3+Lzu1ksdYmm7CgiT4cM+eXCubYB
+	wsYGDMicnvy7byZa0BZLwDhxfzq6xb3olyGRh8IWAZ0acRl0WptUaaarI2d+/dQ5B9F04YXLuRI
+	9xovaunCUX61KI8su1R351Q=
+X-Google-Smtp-Source: AGHT+IFRs80rR0ESjWxGxHhi5gIt7TNyvi9oRYWf05rIKr2lXDTDSHuX/5FrIdL/aVqxBfz/yuMEFA==
+X-Received: by 2002:a05:600c:3146:b0:434:9fac:b158 with SMTP id 5b1f17b1804b1-434a9dbbc0bmr21886165e9.1.1732710926916;
+        Wed, 27 Nov 2024 04:35:26 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434aa7b84e2sm19705035e9.14.2024.11.27.04.35.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Nov 2024 04:35:26 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 27 Nov 2024 13:35:24 +0100
+To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>,
+	dwarves@vger.kernel.org, arnaldo.melo@gmail.com,
+	bpf@vger.kernel.org, kernel-team@fb.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, yonghong.song@linux.dev,
+	Alan Maguire <alan.maguire@oracle.com>, Daniel Xu <dxu@dxuuu.xyz>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH dwarves v3 1/1] btf_encoder: handle .BTF_ids section
+ endianness
+Message-ID: <Z0cSDOtxLeqxbuzM@krava>
+References: <20241127015006.2013050-1-eddyz87@gmail.com>
+ <20241127015006.2013050-2-eddyz87@gmail.com>
+ <Z0b7zLfaoodeWF6J@krava>
+ <6187706f-5c7f-4c22-9854-b3225b841385@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 2/2] bpf: Refactor bpf_tracing_func_proto()
- and remove bpf_get_probe_write_proto()
-To: Marco Elver <elver@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Nikola Grcevski <nikola.grcevski@grafana.com>,
- bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20241127111020.1738105-1-elver@google.com>
- <20241127111020.1738105-2-elver@google.com>
- <CANpmjNOpY0zjpVJe8zUYZR2oJ--=OtWdHnEp70SxmAnb5ubwbQ@mail.gmail.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <CANpmjNOpY0zjpVJe8zUYZR2oJ--=OtWdHnEp70SxmAnb5ubwbQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27470/Wed Nov 27 10:59:44 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6187706f-5c7f-4c22-9854-b3225b841385@linux.dev>
 
-On 11/27/24 1:06 PM, Marco Elver wrote:
-> On Wed, 27 Nov 2024 at 12:10, Marco Elver <elver@google.com> wrote:
->>
->> With bpf_get_probe_write_proto() no longer printing a message, we can
->> avoid it being a special case with its own permission check.
->>
->> Refactor bpf_tracing_func_proto() similar to bpf_base_func_proto() to
->> have a section conditional on bpf_token_capable(CAP_SYS_ADMIN), where
->> the proto for bpf_probe_write_user() is returned. Finally, remove the
->> unnecessary bpf_get_probe_write_proto().
->>
->> This simplifies the code, and adding additional CAP_SYS_ADMIN-only
->> helpers in future avoids duplicating the same CAP_SYS_ADMIN check.
->>
->> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
->> Signed-off-by: Marco Elver <elver@google.com>
->> ---
->> v2:
->> * New patch.
->> ---
->>   kernel/trace/bpf_trace.c | 30 ++++++++++++++++++------------
->>   1 file changed, 18 insertions(+), 12 deletions(-)
->>
->> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->> index 0ab56af2e298..d312b77993dc 100644
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -357,14 +357,6 @@ static const struct bpf_func_proto bpf_probe_write_user_proto = {
->>          .arg3_type      = ARG_CONST_SIZE,
->>   };
->>
->> -static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
->> -{
->> -       if (!capable(CAP_SYS_ADMIN))
->> -               return NULL;
->> -
->> -       return &bpf_probe_write_user_proto;
->> -}
->> -
->>   #define MAX_TRACE_PRINTK_VARARGS       3
->>   #define BPF_TRACE_PRINTK_SIZE          1024
->>
->> @@ -1417,6 +1409,12 @@ late_initcall(bpf_key_sig_kfuncs_init);
->>   static const struct bpf_func_proto *
->>   bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->>   {
->> +       const struct bpf_func_proto *func_proto;
->> +
->> +       func_proto = bpf_base_func_proto(func_id, prog);
->> +       if (func_proto)
->> +               return func_proto;
+On Wed, Nov 27, 2024 at 12:03:59PM +0000, Vadim Fedorenko wrote:
+> On 27/11/2024 11:00, Jiri Olsa wrote:
+> > On Tue, Nov 26, 2024 at 05:50:06PM -0800, Eduard Zingerman wrote:
+> > > btf_encoder__tag_kfuncs() reads .BTF_ids section to identify a set of
+> > > kfuncs present in the ELF file being processed.
+> > > This section consists of:
+> > > - arrays of uint32_t elements;
+> > > - arrays of records with the following structure:
+> > >    struct btf_id_and_flag {
+> > >        uint32_t id;
+> > >        uint32_t flags;
+> > >    };
+> > > 
+> > > When endianness of a binary operated by pahole differs from the host
+> > > system's endianness, these fields require byte-swapping before use.
+> > > Currently, this byte-swapping does not occur, resulting in kfuncs not
+> > > being marked with declaration tags.
+> > > 
+> > > This commit resolves the issue by using elf_getdata_rawchunk()
+> > > function to read .BTF_ids section data. When called with ELF_T_WORD as
+> > > 'type' parameter it does necessary byte order conversion
+> > > (only if host and elf endianness do not match).
+> > > 
+> > > Cc: Alan Maguire <alan.maguire@oracle.com>
+> > > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > > Cc: Daniel Xu <dxu@dxuuu.xyz>
+> > > Cc: Jiri Olsa <olsajiri@gmail.com>
+> > > Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > Cc: Vadim Fedorenko <vadfed@meta.com>
+> > > Fixes: 72e88f29c6f7 ("pahole: Inject kfunc decl tags into BTF")
+> > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > > ---
+> > >   btf_encoder.c | 26 ++++++++++++++++++++------
+> > >   1 file changed, 20 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/btf_encoder.c b/btf_encoder.c
+> > > index e1adddf..3754884 100644
+> > > --- a/btf_encoder.c
+> > > +++ b/btf_encoder.c
+> > > @@ -1904,18 +1904,32 @@ static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
+> > >   			goto out;
+> > >   		}
+> > > -		data = elf_getdata(scn, 0);
+> > > -		if (!data) {
+> > > -			elf_error("Failed to get ELF section(%d) data", i);
+> > > -			goto out;
+> > > -		}
+> > > -
+> > >   		if (shdr.sh_type == SHT_SYMTAB) {
+> > > +			data = elf_getdata(scn, 0);
+> > > +			if (!data) {
+> > > +				elf_error("Failed to get ELF section(%d) data", i);
+> > > +				goto out;
+> > > +			}
+> > > +
+> > >   			symbols_shndx = i;
+> > >   			symscn = scn;
+> > >   			symbols = data;
+> > >   			strtabidx = shdr.sh_link;
+> > >   		} else if (!strcmp(secname, BTF_IDS_SECTION)) {
+> > > +			/* .BTF_ids section consists of uint32_t elements,
+> > > +			 * and thus might need byte order conversion.
+> > > +			 * However, it has type PROGBITS, hence elf_getdata()
+> > > +			 * won't automatically do the conversion.
+> > > +			 * Use elf_getdata_rawchunk() instead,
+> > > +			 * ELF_T_WORD tells it to do the necessary conversion.
+> > > +			 */
+> > > +			data = elf_getdata_rawchunk(elf, shdr.sh_offset, shdr.sh_size, ELF_T_WORD);
+> > 
+> > looks good, I'm just curious about one thing..
+> > 
+> > so ELF_T_WORD enum has this comment: /* Elf32_Word, Elf64_Word, ... */
+> > 
+> > I did just quick check, ***so I might be easily wrong***, but I wonder the
+> > code in __elf_xfctstom (which I assume is the one called for conversion)
+> > chooses to swap 32/64 bits values based on elf->class .. so for 64bit ELF
+> > class we swap 64bit values? ... while .BTF_ids has always 32 bit values
 > 
-> As indicated by the patch robot failure, we can't move this call up
-> and needs to remain the last call after all others because we may
-> override a function proto in bpf_base_func_proto here (like done for
-> BPF_FUNC_get_smp_processor_id).
+> Well according to the doc:
 > 
-> Let me fix that.
+>        ELF_T_WORD     Unsigned 32-bit words.
+>        ELF_T_XWORD    Unsigned 64-bit words.
+> 
+> It shouldn't use 64 bits swap:
+> 
+> const xfct_t __elf_xfctstom[EV_NUM - 1][EV_NUM - 1][ELFCLASSNUM -
+> 1][ELF_T_NUM] =
+> ....
+> 	[ELF_T_WORD]	= ElfW2(Bits, cvt_Word),			
+> 	[ELF_T_XWORD]	= ElfW2(Bits, cvt_Xword),			
+> ...
+> 
+> Are you looking somewhere else?
 
-I was about to comment on that, I would leave this as it was before,
-otherwise rest lgtm.
+nah I guess I got confused with Elf64_Word, which is still 32bits,
+seems fine, sorry for noise 
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+thanks,
+jirka
 
