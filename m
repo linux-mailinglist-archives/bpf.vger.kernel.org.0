@@ -1,115 +1,153 @@
-Return-Path: <bpf+bounces-45677-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45669-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF8C69DA00E
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 01:35:21 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B600D9DA006
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 01:34:51 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F19A168E09
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 00:34:47 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E5D68831;
+	Wed, 27 Nov 2024 00:34:45 +0000 (UTC)
+X-Original-To: bpf@vger.kernel.org
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 814E9B22E66
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 00:35:19 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86B362F32;
-	Wed, 27 Nov 2024 00:35:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FZHbC8aI"
-X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD2DA23;
-	Wed, 27 Nov 2024 00:35:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF112F30
+	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 00:34:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732667714; cv=none; b=gV7E7W5mAUkOP5PxtbL+v91ZRSZMYXh+QpqhHB7wXHmbO+NNrD2+zS/ZNwtVPZ9QxaKBlxG/CEF7hDhFJJpU5OdyqgK8A/iyOh+nCIg2LNfiwoD8aHvRFU8NA0ZceMI3UMLOF7etvU6SMLrG8AYokpHxV0Haj90ZXpqoixLxNyE=
+	t=1732667685; cv=none; b=QALITuAS/okvjVymgxhBJu7ZhxbqWadxcbvIUBhFcK99xoQ5O2s6wXhC/0n//JRBsBmIYVNCYul+tqKN0FAewO6awM8jPiZs50qsGydminXSzKGtTrOJeq9bEljsElhtsFHOuQIBqhQF3xamBJcFa224a8yjDWiAndA8nlfZaDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732667714; c=relaxed/simple;
-	bh=wwEHHjeePOFS8sifKhXNpJZ8wSDgwVbUUuXuwR9Q1ZM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VGxFZ/rv0WTzBxl97IOTwzlXG4a/Sd7bpgQZpgLUe5TNx96S9s3e+9HJm9/9RoqQoonIazsdV6unHE+f6K6jJqWXTHVNofDNj+FhPTshR7D4gne6NcYNjH3mzB/1AZNDQ/cnomOXvL2yBzjVLhl+pMa2AGP2LMcOfcWp7sJsD7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FZHbC8aI; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7250844b0ecso2868229b3a.1;
-        Tue, 26 Nov 2024 16:35:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732667712; x=1733272512; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wwEHHjeePOFS8sifKhXNpJZ8wSDgwVbUUuXuwR9Q1ZM=;
-        b=FZHbC8aIYCryoOUFjEqIWpXFUXfMAeROiari77/ePPd+ZUP/cTlzihAwbqW8eA/Es6
-         npcl3MwxK44uHghbw/ZhqqvEEzt7DUZ5G9ltmEh3bkpunoieSigjuxTnNJkNMRVJYO/c
-         FIJW6qEOo69OoHsvRsHA4MRskUo+nGefWNyY6znk+HUDwmP7whuMGvbeSEO19Uc/5Wts
-         Kn0JtlZPlx+ZMj+7STOGU5gEiGU9ZOFfCRpHvRc2LytHAvF0tEhleG8DTn31fJeIR4k7
-         2AMKyjWVgOteMPaAW+n7DpbQKzNBPUiiHEoUkKzPHYozACEHYhLRBP5SYuN1BxjryYnK
-         MPgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732667712; x=1733272512;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wwEHHjeePOFS8sifKhXNpJZ8wSDgwVbUUuXuwR9Q1ZM=;
-        b=Rz8hXUTF3y0SIM7Xx9tcs2/czaZICMwA0WZdyismnhKgH+9jOcbmNfHt17awSmH1Av
-         oiQILjvI11N8fqib0FG6iqxvRAVoVfCPJV1mcLUjxyenoRRycv8Z/frmtShMTaVvgdVw
-         68pxHDzUv07x2P7hU/2oFwQ1wwZsB1SCvObormPVrjjyw/39E0tQdOw/TKIQnzxejT9B
-         ur2xUcbERFeglJ5KP2dEXgPZETpuTUYsY1/8We92YCDY1OXn6lYZ2OZQjR99Wy6BbyQE
-         rb8tUkZte2kWaMce7/e2wjfjWJ0c33wta7OSkUS3zgeeVHzDsE0b6ZnnmftpNBRrQ/DB
-         nxiA==
-X-Forwarded-Encrypted: i=1; AJvYcCUAAsoprjH7Yb0FfC0WEbnYkC4XCAe4HB5UP5cqVvEON0qTiZ7i2i6/8T2h5OSvqZ1mWqQ=@vger.kernel.org, AJvYcCUSxPNJsttHQIPFL2ojJfZ7OOoP6QxnWyenEloicvUaqzHksgYGGdgL9c4IUrPgsaH5hXU6WCNMXw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/lKqvSWuFfkVLqDNl9CBKJQo01epW76S7zOA7Kqn761i0UlNr
-	Ch1ZOyC/Q+5JKKgAsT02K3STbwGORU5Xy7unwXXgTxt0RpJa9d/X
-X-Gm-Gg: ASbGnctlYIUCOFlsOCawhcl3bzRuXAke74d9ae7VH0sRUsO5UIZL4jZBVOgtSKmci1w
-	4A1+TONCtPhlTWaVUkSzQABtR2G3eNnNcsS89xT+ee170L2IJOfPE/kMfp8HnxrwsEmVwCH2qTY
-	DpBi1xU9XjnUhVszfjIQMrMmb5srS3t9xRZ21T8+0q6Ek3/CDiF/PH3RGGH+1/jAKel8ynae5e9
-	eJB034ItFq7he+QSDcObfN6d8FsZQcneE6HlPNaLbL6xAM=
-X-Google-Smtp-Source: AGHT+IHD1XuN8URbcGc6l2ZUECnAebfDlrucXcXvHYpCgKIL6IvV6a9BgOMV68Tu5uvyT0d+4xPENA==
-X-Received: by 2002:a17:90b:5483:b0:2ea:5823:c13d with SMTP id 98e67ed59e1d1-2ee08ecf50emr1603912a91.18.1732667712058;
-        Tue, 26 Nov 2024 16:35:12 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ee0fa33374sm175760a91.4.2024.11.26.16.35.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Nov 2024 16:35:11 -0800 (PST)
-Message-ID: <ba62f39bf3670008a6e1a2af114b14dd7fdc1c96.camel@gmail.com>
-Subject: Re: [PATCH dwarves v2 1/1] btf_encoder: handle .BTF_ids section
- endianness
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, dwarves@vger.kernel.org, 
-	arnaldo.melo@gmail.com, bpf@vger.kernel.org, kernel-team@fb.com,
- ast@kernel.org, 	daniel@iogearbox.net, andrii@kernel.org,
- yonghong.song@linux.dev, Alan Maguire	 <alan.maguire@oracle.com>, Daniel Xu
- <dxu@dxuuu.xyz>, Kumar Kartikeya Dwivedi	 <memxor@gmail.com>, Vadim
- Fedorenko <vadfed@meta.com>, Vadim Fedorenko	 <vadim.fedorenko@linux.dev>
-Date: Tue, 26 Nov 2024 16:35:06 -0800
-In-Reply-To: <Z0YbQr_QTNrfNqAE@x1>
-References: <20241122214431.292196-1-eddyz87@gmail.com>
-	 <20241122214431.292196-2-eddyz87@gmail.com> <Z0HXqLswziDAjNrk@krava>
-	 <Z0X2YnMyzNlZyQtP@x1>
-	 <b2e5cb3b1478d6900f126d4de223500d6be4c97d.camel@gmail.com>
-	 <Z0YbQr_QTNrfNqAE@x1>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1732667685; c=relaxed/simple;
+	bh=tBYXgHpQwU8XEzgKLkrKXqTqtMacj9tIYDybuzEmb0Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ef1M4/FGoFZaBghzVbnqNrdtY2McF217etF8trPK91DtwvAyRKgYhcmr1tL0XmYKznfQWjE68Yudcv2AQMVcV5WPeOK0EkcVbN/ZkhOXN0PaPluxmfSCwn62FUffNrzk7DtYnAOHhfa4MQTkyOgx1Zv9G5woQMxIRQU0NI8FawU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XygRq0pvCz4f3jdg
+	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 08:34:15 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id D60971A0568
+	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 08:34:33 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP4 (Coremail) with SMTP id gCh0CgBHI4cVaUZn5pO9Cw--.38194S4;
+	Wed, 27 Nov 2024 08:34:31 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	houtao1@huawei.com,
+	xukuohai@huawei.com
+Subject: [PATCH bpf v2 0/9] Fixes for LPM trie
+Date: Wed, 27 Nov 2024 08:46:32 +0800
+Message-Id: <20241127004641.1118269-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgBHI4cVaUZn5pO9Cw--.38194S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXrWDuw13JFWfXrW7JFW3GFg_yoW5Gry5pa
+	yftrn8Ar15KF9xXw42ka10q3Wrua1fG3W2ga15G34qvFy7ZFy3Jr4I9F1UZa45AF4fJ3Wa
+	yF4SyF1kW3WvvaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
+	w2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+	xUIa0PDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi Arnaldo,
+From: Hou Tao <houtao1@huawei.com>
 
-Please note a message [0] from Andrii,
-where he suggests using elf_getdata_rawchunk() libelf function.
-I tried it, it works, makes the patch much smaller.
-I'll send a v3 shortly.
+Hi,
 
-[0] https://lore.kernel.org/dwarves/8744c86ba355245f7ecc14d00351c82285fbf64=
-4.camel@gmail.com/T/#me4c02e4a4e7fdd0e69dd52b2a6bf598966dc2145
+This patch set fixes several issues for LPM trie. These issues were
+found during adding new test cases or were reported by syzbot.
 
-Thanks,
-Eduard
+The patch set is structured as follows:
+
+Patch #1~#2 are clean-ups for lpm_trie_update_elem().
+Patch #3 handles BPF_EXIST and BPF_NOEXIST correctly for LPM trie.
+Patch #4 fixes the accounting of n_entries when doing in-place update.
+Patch #5 fixes the exact match condition in trie_get_next_key() and it
+may skip keys when the passed key is not found in the map.
+Patch #6~#7 switch from kmalloc() to bpf memory allocator for LPM trie
+to fix several lock order warnings reported by syzbot. It also enables
+raw_spinlock_t for LPM trie again. After these changes, the LPM trie will
+be closer to being usable in any context (though the reentrance check of
+trie->lock is still missing, but it is on my todo list).
+Patch #8: move test_lpm_map to map_tests to make it run regularly.
+Patch #9: add test cases for the issues fixed by patch #3~#5.
+
+Please see individual patches for more details. Comments are always
+welcome.
+
+Change Log:
+v2:
+  * collect review tags (Thanks for Toke)
+  * drop "Add bpf_mem_cache_is_mergeable() helper" patch
+  * patch #3~#4: add fix tag
+  * patch #4: rename the helper to trie_check_add_elem() and increase
+    n_entries in it.
+  * patch #6: use one bpf mem allocator and update commit message to
+    clarify that using bpf mem allocator is more appropriate.
+  * patch #7: update commit message to add the possible max running time
+    for update operation.
+  * patch #9: update commit message to specify the purpose of these test
+    cases.
+
+v1: https://lore.kernel.org/bpf/20241118010808.2243555-1-houtao@huaweicloud.com/
+
+Hou Tao (9):
+  bpf: Remove unnecessary check when updating LPM trie
+  bpf: Remove unnecessary kfree(im_node) in lpm_trie_update_elem
+  bpf: Handle BPF_EXIST and BPF_NOEXIST for LPM trie
+  bpf: Handle in-place update for full LPM trie correctly
+  bpf: Fix exact match conditions in trie_get_next_key()
+  bpf: Switch to bpf mem allocator for LPM trie
+  bpf: Use raw_spinlock_t for LPM trie
+  selftests/bpf: Move test_lpm_map.c to map_tests
+  selftests/bpf: Add more test cases for LPM trie
+
+ kernel/bpf/lpm_trie.c                         | 106 +++--
+ tools/testing/selftests/bpf/.gitignore        |   1 -
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ .../lpm_trie_map_basic_ops.c}                 | 405 +++++++++++++++++-
+ 4 files changed, 464 insertions(+), 50 deletions(-)
+ rename tools/testing/selftests/bpf/{test_lpm_map.c => map_tests/lpm_trie_map_basic_ops.c} (65%)
+
+-- 
+2.29.2
 
 
