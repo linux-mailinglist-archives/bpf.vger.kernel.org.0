@@ -1,180 +1,146 @@
-Return-Path: <bpf+bounces-45681-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45682-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8690C9DA073
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 02:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 543879DA078
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 02:52:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02D09B21C53
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 01:50:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2C0BB24080
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 01:52:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C19311C6B8;
-	Wed, 27 Nov 2024 01:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29DD71BDE6;
+	Wed, 27 Nov 2024 01:52:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QOtF1uca"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HfPGSc08"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17ADC8CE;
-	Wed, 27 Nov 2024 01:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF131802B;
+	Wed, 27 Nov 2024 01:52:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732672222; cv=none; b=RnqGztJAB+p3zFenzST8vI4jNRH+XYyYu/XQrZ6FVCSXZHd+H4ZN7fv0JFiCo8MJBgzp7Fbz14+z+vHPg7MvWu1nieoT8Hpk53ckbpxS1M1xUs8ugvV2wgx985G73SnAYisHUpEnMyEMBhIq5aq5HSfD9aqRBxZVlwFoXHtUjJM=
+	t=1732672364; cv=none; b=Sp1bSjRcmITiOYhTmPC/nKqw80I8d0pRWkn3h0Hzw4qNliYrN8BnoQ3cQBCZycXX3mcA0xpLTQUGOTLU7idedQOKUuUCBTMZV8KQqr94MGDeHKDouNrLS7O7rR8uSzSTfW5cSxe2wFNtl22YUOpxZhiKNlIoApcRMiMMRsdmxfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732672222; c=relaxed/simple;
-	bh=xGmuB/AwKdNL1dmYV8vXlvuOB2qgbEiT3WS2hh/AiBk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oC0vOtvoocNhpfjkcRFoJRcIk4JxrmEIYQUqXQgXO9le5qeyugHbhZN+6reokhMbWe0ErBpydSHzf3esKvO5J529NNXjMVZebZd9pqSrs8O/4ZN7PAujz85YvBktdaneHM2n1Ka4/0Hpt3Hzs4rQd3H8xaECSMzhxyhJWH9feGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QOtF1uca; arc=none smtp.client-ip=209.85.215.175
+	s=arc-20240116; t=1732672364; c=relaxed/simple;
+	bh=7mOuOkpZZoXqHcUjeXr1wrFqOPZ8xCDvpX0PP+8Lo+I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VmCY3QZFpPBlO04brc7Y6JaMVEmk++DrMUTk1uslo00DCOJjCV++BlpMLvIrbRTOfH84HGtQVb7OyVtuP+hvXD33j2uv5gQXgib1+MxYosUsW7fXWk2q/9dl1SMtRymkYZUDtQhmR7Y/xdI8eVuRPk+6r6dLfIZv7/MxmU4RTic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HfPGSc08; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-7fc2b84bc60so2157111a12.1;
-        Tue, 26 Nov 2024 17:50:20 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43497839b80so27760515e9.2;
+        Tue, 26 Nov 2024 17:52:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732672220; x=1733277020; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1732672361; x=1733277161; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0NoYEwnt+GsMotgkEfml4R7jCL4w/LVlKCF08jFy8QI=;
-        b=QOtF1ucaYYX/CaYdWtPyL5P3aFQ1QhPKLhF0iZu+2OiCgXi+upGOc7Q12PpFRj1E89
-         uVI5W+kXcxtO8mZ2ox7yiD0KQEpkMqf/fqEdWG/1kXxD1BmhU0N/oNzW2dbVuMqh4ROV
-         waIIeTNPyCY7yHYvYFLEyWAEkhS13HirFvZEAfOLE++ywQ8tE4NAAnZ2zouPQ+KFudqC
-         lcC/qVLz6Vyu2arbObKbozT7Fpa88DYHg3PqLq99YrhN1tbX1IG1SOwGmPArp7aT2I1m
-         aDzb0lfdNoqCejlwsokGLnLZ4GZhrUBtVj5lysucZoj6b1DHmJR5KV0lEGz82fOUhFRJ
-         SGIQ==
+        bh=DwQP6BBV5a5jKpJfwwMjvCqRQHR2gtIdPjXFDlvb0fY=;
+        b=HfPGSc080c0tAUk/OjMdtyD6txDJqZtd9od72Ud9hQLVq92xEBna5Y5B82vX7JHXk1
+         A9RTPVxAs67/dcsIEcSDgTXNNT3CQsmnsuU0WVxxh5BG9Rrbz9vh+kOGVO0SxV0tmM25
+         AmswmKWLJ7JGhUXM/hih268pGYkC3nT7VMf/b7S1qdGcn48SuOCmL+U7pP8ru9NtjzYN
+         Fajvy343yDw+j2XIJXgYDwBifLSbdjUydIthN77VVddUT7hz4MU2NIe8KEIm6Kg3nxA/
+         gLPSQju+t+9c+o2WunfUcToG/+JXLUr8847LT2A2ceac05BqrA0FMYXaoApBQHG7hf9g
+         RhQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732672220; x=1733277020;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1732672361; x=1733277161;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0NoYEwnt+GsMotgkEfml4R7jCL4w/LVlKCF08jFy8QI=;
-        b=t4S6BnL1AVjfQPeI64yh6eQXqznH5txXeS9jva/cgqWfTsJ576RXDQvweKlkiyeJhw
-         snrTb+FG+WCrL+R13Jcnju798mLS/F4FRowrj/jgVE9teWat2NmwTFDSDGK1OfvaQPOU
-         Ac6tTioll5bvL6mDdjWZnsLmErTOdtHNlPuyRrI9E0enRTDbZ3HK+y/5VFTg6ncl0Att
-         gZwJKYioF/bvM1LOKiMytirwg2Am0rN2mOZgn6e/jXWd84ZL4J3ncen76LdiXq7ogCZ1
-         13Vnyr7mN06icJ8SmX7qHNT7ZY0TjnjHIcn+nYk8uAgJG8YwojoecC5Sbzy/OMVscI6j
-         99ww==
-X-Gm-Message-State: AOJu0YyQOZ+W2b5ZDdlzFVLzhnU0b/AxRmS3vuvHmMn5W12/hjKj0lxS
-	H1ILXdoXCHEg2oUVzF5zvI/rGzkL67HfphZ/t/NjkL3cqVA1J9G1RNdIaw==
-X-Gm-Gg: ASbGncuT5jYl/DgFeYhmRdB09RK7wYJt7FMZNE84m7Earvo5C6TGIZ8VCIANzZPFF9m
-	RpvoHYCW2yHrjbKm15gfBySxXpEh6fkFMUjX0xXE7z51/OnksMV2jzbPH/xE4nO+LB4rUNDUwil
-	AZoCKDoNoNelV7O5iMcl0OfNgQZePB8H1fKj+VCWX/zqAsOa9h2vIZJpfQZQTijeDJJ/Uw7E3zz
-	QsG3gaMIZ5VLXstDq4J5Ah8UbLYEesSKdjQn1av6HaTVg==
-X-Google-Smtp-Source: AGHT+IEuv0RnrfLsAAfdemrVjKuW7d2yr55T0mo/2CM/z0UkDD5EpWcIDN7BHqDI8yVo6Xv+AVpXYA==
-X-Received: by 2002:a05:6a20:2449:b0:1db:eb56:be7c with SMTP id adf61e73a8af0-1e0e0b5377cmr2386587637.35.1732672219857;
-        Tue, 26 Nov 2024 17:50:19 -0800 (PST)
-Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724fcdec956sm6312435b3a.25.2024.11.26.17.50.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Nov 2024 17:50:19 -0800 (PST)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: dwarves@vger.kernel.org,
-	arnaldo.melo@gmail.com
-Cc: bpf@vger.kernel.org,
-	kernel-team@fb.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	yonghong.song@linux.dev,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Daniel Xu <dxu@dxuuu.xyz>,
-	Jiri Olsa <olsajiri@gmail.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Vadim Fedorenko <vadfed@meta.com>
-Subject: [PATCH dwarves v3 1/1] btf_encoder: handle .BTF_ids section endianness
-Date: Tue, 26 Nov 2024 17:50:06 -0800
-Message-ID: <20241127015006.2013050-2-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241127015006.2013050-1-eddyz87@gmail.com>
-References: <20241127015006.2013050-1-eddyz87@gmail.com>
+        bh=DwQP6BBV5a5jKpJfwwMjvCqRQHR2gtIdPjXFDlvb0fY=;
+        b=UMkHfMVvJjArHOhsW3kTFF+ux04DCYkiHA2zDpT8DwVnzcwwrSaIqj8jl+/8ZdNiVC
+         nfSg5T7WZ4WcZR6ZigIZVWw45Er5V5I8H10/mk9s31LZCGQpHOCIUCSv2MJpdr6KihqO
+         IH2JgkA7KhMpbt8WbYxfwG1dIj3mK4m409zfJ1p4qq+Qt84rSckIw8ZcLiRxDmR+kCG2
+         uvL7wSD8269j/xqfupS9+oRFMWegTwFYDmJCM+VwS4RgxI9t2aB+MwL9j5E4nShWVWRb
+         BPrVa0BQvx9qjXUqrgoJCwozPUS1O49IdyRCx0eZdbZc1iOubGuEZVjZFtPsag+PG0+d
+         xgNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVCwtWxUCcE4PWwtnIDzGlIOFTtFMB0K/aGOSxjpqDC9RMAGjhdIXo7/MQ/ozHd5AwcoIg=@vger.kernel.org, AJvYcCWy3UMos5D2AdTvbaswNuEF3GFPokbW7e9bXFEGy+nV9g+777YErrkpY7y23NOLT/5wNJP/MDIgIc5QYaMU@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxd9pjkqAlp3HVvGQ5hYtk9rVcbKYg1xsBwQ52tbZBtyTQGjaCd
+	yHlmBbNDahe7jOQCwsMfysFTHg8/wTmznkrziCZGrJ0RytVeBOK8wMTi2Za6lyLMeSS/x8oN5zN
+	6sb/WgjHLJP9Aa5U38Xslf5mf+Uk=
+X-Gm-Gg: ASbGncvztzIUt4AP6aN8zJFXLHLTkoMk2k4/9OJCkoaf+In+GOhcf5EzxstiNO+60+Y
+	XqmYzPa3muFSLT0irbp7Me4PRiE0SxtexeQbOjHNd6esS7es=
+X-Google-Smtp-Source: AGHT+IF8UkQJQxSDvoJgYjizGcLaObXjLdJzwah5c49XNp8MW8hRc/r4pm5Wh5Rub9xTUG2rtNVOoM0PQhuqNfYQGEk=
+X-Received: by 2002:a05:600c:5102:b0:434:932b:a44c with SMTP id
+ 5b1f17b1804b1-434a9df6b06mr10041105e9.27.1732672360612; Tue, 26 Nov 2024
+ 17:52:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241122-sysfs-const-bin_attr-bpf-v1-1-823aea399b53@weissschuh.net>
+In-Reply-To: <20241122-sysfs-const-bin_attr-bpf-v1-1-823aea399b53@weissschuh.net>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 26 Nov 2024 17:52:29 -0800
+Message-ID: <CAADnVQLV=7Mt+DTX84u_4kP_pVNhbyHMvL29BPcFQjOj7RpM7A@mail.gmail.com>
+Subject: Re: [PATCH] btf: Use BIN_ATTR_SIMPLE_RO() to define vmlinux attribute
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Christian Brauner <brauner@kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-btf_encoder__tag_kfuncs() reads .BTF_ids section to identify a set of
-kfuncs present in the ELF file being processed.
-This section consists of:
-- arrays of uint32_t elements;
-- arrays of records with the following structure:
-  struct btf_id_and_flag {
-      uint32_t id;
-      uint32_t flags;
-  };
+On Fri, Nov 22, 2024 at 4:57=E2=80=AFAM Thomas Wei=C3=9Fschuh <linux@weisss=
+chuh.net> wrote:
+>
+> The usage of the macro allows to remove the custom handler function,
+> saving some memory. Additionally the code is easier to read.
+>
+> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+> ---
+> Something similar can be done to btf_module_read() in kernel/bpf/btf.c.
+> But doing it here and now would lead to some conflicts with some other
+> sysfs refactorings I'm doing. It will be part of a future series.
+> ---
+>  kernel/bpf/sysfs_btf.c | 21 +++++----------------
+>  1 file changed, 5 insertions(+), 16 deletions(-)
+>
+> diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
+> index fedb54c94cdb830a4890d33677dcc5a6e236c13f..a24381f933d0b80b11116d054=
+63c35e9fa66acb1 100644
+> --- a/kernel/bpf/sysfs_btf.c
+> +++ b/kernel/bpf/sysfs_btf.c
+> @@ -12,34 +12,23 @@
+>  extern char __start_BTF[];
+>  extern char __stop_BTF[];
+>
+> -static ssize_t
+> -btf_vmlinux_read(struct file *file, struct kobject *kobj,
+> -                struct bin_attribute *bin_attr,
+> -                char *buf, loff_t off, size_t len)
+> -{
+> -       memcpy(buf, __start_BTF + off, len);
+> -       return len;
+> -}
+> -
+> -static struct bin_attribute bin_attr_btf_vmlinux __ro_after_init =3D {
+> -       .attr =3D { .name =3D "vmlinux", .mode =3D 0444, },
+> -       .read =3D btf_vmlinux_read,
+> -};
+> +static __ro_after_init BIN_ATTR_SIMPLE_RO(vmlinux);
 
-When endianness of a binary operated by pahole differs from the host
-system's endianness, these fields require byte-swapping before use.
-Currently, this byte-swapping does not occur, resulting in kfuncs not
-being marked with declaration tags.
+To be honest I really don't like when code is hidden by macros like this.
+Looks like you guys already managed to sprinkle it in a few places.
 
-This commit resolves the issue by using elf_getdata_rawchunk()
-function to read .BTF_ids section data. When called with ELF_T_WORD as
-'type' parameter it does necessary byte order conversion
-(only if host and elf endianness do not match).
+btf_vmlinux_read() can be replaced with sysfs_bin_attr_simple_read().
+This part is fine, but macro pls dont.
+It doesn't help readability.
+imo mode =3D 0444 vs mode =3D 0400 is easier to understand
+instead of _RO vs _ADMIN_RO suffix.
+__ro_after_init should be a part of it, at least.
 
-Cc: Alan Maguire <alan.maguire@oracle.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Daniel Xu <dxu@dxuuu.xyz>
-Cc: Jiri Olsa <olsajiri@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Vadim Fedorenko <vadfed@meta.com>
-Fixes: 72e88f29c6f7 ("pahole: Inject kfunc decl tags into BTF")
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- btf_encoder.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
-
-diff --git a/btf_encoder.c b/btf_encoder.c
-index e1adddf..3754884 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -1904,18 +1904,32 @@ static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
- 			goto out;
- 		}
- 
--		data = elf_getdata(scn, 0);
--		if (!data) {
--			elf_error("Failed to get ELF section(%d) data", i);
--			goto out;
--		}
--
- 		if (shdr.sh_type == SHT_SYMTAB) {
-+			data = elf_getdata(scn, 0);
-+			if (!data) {
-+				elf_error("Failed to get ELF section(%d) data", i);
-+				goto out;
-+			}
-+
- 			symbols_shndx = i;
- 			symscn = scn;
- 			symbols = data;
- 			strtabidx = shdr.sh_link;
- 		} else if (!strcmp(secname, BTF_IDS_SECTION)) {
-+			/* .BTF_ids section consists of uint32_t elements,
-+			 * and thus might need byte order conversion.
-+			 * However, it has type PROGBITS, hence elf_getdata()
-+			 * won't automatically do the conversion.
-+			 * Use elf_getdata_rawchunk() instead,
-+			 * ELF_T_WORD tells it to do the necessary conversion.
-+			 */
-+			data = elf_getdata_rawchunk(elf, shdr.sh_offset, shdr.sh_size, ELF_T_WORD);
-+			if (!data) {
-+				elf_error("Failed to get %s ELF section(%d) data",
-+					  BTF_IDS_SECTION, i);
-+				goto out;
-+			}
-+
- 			idlist_shndx = i;
- 			idlist_addr = shdr.sh_addr;
- 			idlist = data;
--- 
-2.47.0
-
+I'd like to hear what other maintainers think about
+such obfuscation.
 
