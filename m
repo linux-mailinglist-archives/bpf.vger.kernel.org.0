@@ -1,118 +1,171 @@
-Return-Path: <bpf+bounces-45725-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45726-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75BDE9DAB3B
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 16:58:24 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 875EF165FFF
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 15:58:09 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C558820013C;
-	Wed, 27 Nov 2024 15:58:02 +0000 (UTC)
-X-Original-To: bpf@vger.kernel.org
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44F329DABE9
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 17:39:59 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07110200127;
-	Wed, 27 Nov 2024 15:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 051ED2814E7
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 16:39:58 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78262200BAA;
+	Wed, 27 Nov 2024 16:39:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f9qjZEVt"
+X-Original-To: bpf@vger.kernel.org
+Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ECF1200132
+	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 16:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732723082; cv=none; b=KFnKAMg3kgReQvKx5Shxd74K2ktw2DVN+wx+GqZG1cY8vvYMPbLocTjJseBW0kxFIifo1tzPEfCtWgAPWZ0FaZ+o2vYV0zTDCZ5sDGqLh3IHqY9U4XQOCS4/4faF55aBCQ0gV3zEkat5nmficimlfHKp+9uBrrE5CGiSGGSGtr0=
+	t=1732725594; cv=none; b=Tc5c/P79FbjLrhL9PPmAvaygYjZS+tjpXzaOMa1qo3x9QbBKYJpSgcoHRQy+h8+E3PaVAxoM3XlBzR0Btljv8hTv0FmjGqud4dIoZGwhTFDWffQ3PdgA0loXQX2KKs/41pfe+Kv0rhzo64JmBE+uniAd3QsqcR9yDDWeuS1QGaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732723082; c=relaxed/simple;
-	bh=WLaj8Mili5XLkily00vB+aPjJXbRsughMjY1++2Z0e0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=KqQqQLRH17ltvlG5S66kvUeRCP63xRUzzMszyMWxsu8c0rdoCjviVgUdj99sYpRWadkxRyWOMpCtKoZJ3ChNw/hlK84NDUGC8vqJrBsFtFHbtXx32PvFuvQR4K18UqRCE7htA8FkibjRbNZpnmA45YNadhb3raQmJZD390wRkh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4Xz3TD0Bs1z9v7J5;
-	Wed, 27 Nov 2024 23:36:48 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id A7C9E1403D2;
-	Wed, 27 Nov 2024 23:57:42 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwB36TlsQUdnTGRlAg--.61578S2;
-	Wed, 27 Nov 2024 16:57:42 +0100 (CET)
-Message-ID: <9c8979adb9b575d2f938043f61e2be82c898632a.camel@huaweicloud.com>
-Subject: Re: [PATCH 1/3] ima: Remove inode lock
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Shu Han <ebpqwerty472123@gmail.com>
-Cc: zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
- eric.snowberg@oracle.com,  paul@paul-moore.com, jmorris@namei.org,
- serge@hallyn.com,  linux-integrity@vger.kernel.org,
- linux-security-module@vger.kernel.org,  linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date: Wed, 27 Nov 2024 16:57:27 +0100
-In-Reply-To: <CAHQche-W2VxB+EJQRHUAWr4=850sX1ZfzzZUFJChUx8j6dW9Hw@mail.gmail.com>
-References: <20241008165732.2603647-1-roberto.sassu@huaweicloud.com>
-	 <CAHQche-W2VxB+EJQRHUAWr4=850sX1ZfzzZUFJChUx8j6dW9Hw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1732725594; c=relaxed/simple;
+	bh=pg6axA3tlwjWkGQeT2gGN+QqsWd0popS/0n/EKpJJj0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FA3yVCI0RGJVU9ZXGMgHogyhsMeOPbxy8DwDRFcc1IQbjPmjlrLXrjuVJ6kJ5xgSgYSLJ5kCgDdX5PNWbxC0D2VzqsPjstOoKzBMFWkqJlL+gNQS4v/6/t22+EgEMMkNfnebEHQHr5sswwNpFFwOy4N538uqpgCGMHfZn/aiGUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f9qjZEVt; arc=none smtp.client-ip=209.85.208.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-5cf6f804233so8107980a12.2
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 08:39:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732725590; x=1733330390; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RjCKfzD5wv80V7qzr1EeW1MHrkqIpg75ZIN5g2E9FUM=;
+        b=f9qjZEVtZzb73odQZmPHkaR6oX9HZAyDrkXSrocwWy+9Ner0WF/aVueKr1eXmUP3qL
+         2B1QhoAIIixrrwzrP8RR9Dj6CHr7cZmK/q2Z8V+WtWwvjaOt/tclvY4b40MibWHOImr4
+         RP2mYKz2cDMWBDH/i+eUG9vEdJP0zGIOFlCUzV5I5474kqWZH5aAsUfZ+EtJ0anGeYMg
+         /omRh8+ze7liX4yoqhvS7WXsLVKdH+OReWCGG6khczIjcHfFZLtxpHh0V5tdCZQaRY2y
+         BTLIXYWDmVfCh28uR0W7TnVwQRrVpEguCRrhPKPTtnWgCfyO0N4ysgbRoMyu/GIEKcY3
+         OtSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732725590; x=1733330390;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RjCKfzD5wv80V7qzr1EeW1MHrkqIpg75ZIN5g2E9FUM=;
+        b=DHTL3+De+vp7tmvPxFtTGTcKOHXM5RpxUnBYaHEBm1QlXnOEx6r3jIa9AJefQy1K9j
+         BiHyZIgW+7cyq06yzd9EVlwr/tvM8TNpCgkpktRz3068++pnt8fv3xSf4H7PHW2PbIsK
+         Z5dySkgkNb++RKrGOWfqeN2ZWR0maIkw45btXzWcNNDNuAqTjRIA2i+xeQMvTRqwPwQo
+         oh5pHKv1quErZPq6BhMNTCpbF8WAqoavP2sBYi4/AXYl4TJZoMokjwmjrAGCMGPW+yke
+         pKlZWtiuSN5W1tmJXu+a00ggV3Nc3nIHzuzCLPOx44TyrPVYcYUHxrFGxAA6Ux1+bU69
+         igzA==
+X-Gm-Message-State: AOJu0YwNGVHeMRZ3kNkjNi5ll9AMWcD9WlxdNpKWbS+sZFqDAVJbiTFf
+	8kSoNyvdFmV0d3lcvFH4vJ/p4ZdqqisVYiTWb7M9x0/A85reJa+kpd0+U/Pq5qv1rpUqpGcufXX
+	DFh6FBR/F+CgmjpZIYU2sZlyybULpo7PzW78=
+X-Gm-Gg: ASbGnculKqwUjQnBrjheO/C8o165VROydN1TWNNtU6VBmwSb0aDNZb7fIP6BBCzgI5J
+	2kOddoV//6VJLjhTx8LBR32Hj1BCQBb/j
+X-Google-Smtp-Source: AGHT+IE5HYZiJw6TpSy9W894naS+8LCF3QjbB7pfaEJf+UXhrKAuMimbJdSywFu2IQd7+5nT6VHdeBSilYSGQU++MX0=
+X-Received: by 2002:a05:6402:2353:b0:5cf:f1fd:c687 with SMTP id
+ 4fb4d7f45d1cf-5d080c97f34mr3301391a12.24.1732725589676; Wed, 27 Nov 2024
+ 08:39:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:LxC2BwB36TlsQUdnTGRlAg--.61578S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jr1xur1UGw15Gw18Aw43Wrg_yoWDtwbEgF
-	90v34vyw18Xan5Wa1vkrs3GFZ3ta1rWw18CFZrArW0vw15Jrs8XFWruryfZrWrJasxtrs0
-	kFWSg348K34q9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbx8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267
-	AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AK
-	xVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAwI
-	DUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAABGdGg7UGkwAAsH
+References: <20241127153306.1484562-1-memxor@gmail.com> <20241127153306.1484562-5-memxor@gmail.com>
+In-Reply-To: <20241127153306.1484562-5-memxor@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 27 Nov 2024 17:39:13 +0100
+Message-ID: <CAP01T77e+OvrkayPr70MoantyCiaUe-HoRbSdSRzeRS+Vbaq0Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/7] bpf: Introduce support for bpf_local_irq_{save,restore}
+To: bpf@vger.kernel.org
+Cc: kkd@meta.com, Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 2024-10-09 at 23:59 +0800, Shu Han wrote:
-> > Finally, expand the critical region in process_measurement()
-> > guarded by
-> > iint->mutex up to where the inode was locked, use only one iint
-> > lock in
-> > __ima_inode_hash(), since the mutex is now in the inode security
-> > blob, and
-> > replace the inode_lock()/inode_unlock() calls in
-> > ima_check_last_writer().
->=20
-> I am not familiar with this, so the following statement may be
-> inaccurate:
->=20
-> I suspect that modifying the `i_flags` field through
-> `inode->i_flags |=3D S_IMA;` in `ima_inode_get` may cause a
-> race, as this patch removes the write lock for inodes in
-> process_measurement().
->=20
-> For example, swapon() adds the S_SWAPFILE tag under inode write
-> lock's
-> protection.
->=20
-> Perhaps this initialization tag(`S_IMA`) can also be moved into
-> inode's
-> security blob.
+On Wed, 27 Nov 2024 at 16:33, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>
+> Teach the verifier about IRQ-disabled sections through the introduction
+> of two new kfuncs, bpf_local_irq_save, to save IRQ state and disable
+> them, and bpf_local_irq_restore, to restore IRQ state and enable them
+> back again.
+>
+> For the purposes of tracking the saved IRQ state, the verifier is taught
+> about a new special object on the stack of type STACK_IRQ_FLAG. This is
+> a 8 byte value which saves the IRQ flags which are to be passed back to
+> the IRQ restore kfunc.
+>
+> To track a dynamic number of IRQ-disabled regions and their associated
+> saved states, a new resource type RES_TYPE_IRQ is introduced, which its
+> state management functions: acquire_irq_state and release_irq_state,
+> taking advantage of the refactoring and clean ups made in earlier
+> commits.
+>
+> One notable requirement of the kernel's IRQ save and restore API is that
+> they cannot happen out of order. For this purpose, when releasing reference
+> we keep track of the prev_id we saw with REF_TYPE_IRQ. Since reference
+> states are inserted in increasing order of the index, this is used to
+> remember the ordering of acquisitions of IRQ saved states, so that we
+> maintain a logical stack in acquisition order of resource identities,
+> and can enforce LIFO ordering when restoring IRQ state. The top of the
+> stack is maintained using bpf_verifier_state's active_irq_id.
+>
+> The logic to detect initialized and unitialized irq flag slots, marking
+> and unmarking is similar to how it's done for iterators. No additional
+> checks are needed in refsafe for REF_TYPE_IRQ, apart from the usual
+> check_id satisfiability check on the ref[i].id. We have to perform the
+> same check_ids check on state->active_irq_id as well.
+>
+> The kfuncs themselves are plain wrappers over local_irq_save and
+> local_irq_restore macros.
+>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf_verifier.h |   9 +-
+>  kernel/bpf/helpers.c         |  17 +++
+>  kernel/bpf/log.c             |   1 +
+>  kernel/bpf/verifier.c        | 279 ++++++++++++++++++++++++++++++++++-
+>  4 files changed, 303 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index af64b5415df8..81eebe449e6c 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -233,6 +233,7 @@ enum bpf_stack_slot_type {
+>          */
+>         STACK_DYNPTR,
+>         STACK_ITER,
+> +       STACK_IRQ_FLAG,
+>  };
+>
+>  #define BPF_REG_SIZE 8 /* size of eBPF register in bytes */
+> @@ -254,8 +255,11 @@ struct bpf_reference_state {
+>          * default to pointer reference on zero initialization of a state.
+>          */
+>         enum ref_state_type {
+> -               REF_TYPE_PTR = 0,
+> -               REF_TYPE_LOCK,
+> +               REF_TYPE_PTR    = 0,
+> +               REF_TYPE_IRQ    = (1 << 0),
+> +
+> +               REF_TYPE_LOCK   = (1 << 1),
+> +               REF_TYPE_LOCK_MASK = REF_TYPE_LOCK,
 
-It would not even be necessary, since after making IMA as a regular LSM
-the S_IMA check can be replaced by testing whether or not the pointer
-of inode integrity metadata in the security blob is NULL.
+I'm thinking of reconsidering the bit above and below. When rebasing
+other patches on top of this series, I sort of realized it might be
+unnecessary to keep the mask, and just make REF_TYPE_PTR non-zero, and
+always do s->type & type (which is needed by later patches for spin
+locks).
 
-Will remove S_IMA.
-
-Thanks
-
-Roberto
-
+ -               if (s->type == REF_TYPE_PTR || s->type != type)
+> +               if (!(s->type & REF_TYPE_LOCK_MASK) || s->type != type)
+>                         continue;
+>
+>                 if (s->id == id && s->ptr == ptr)
+> @@ -3236,6 +3395,16 @@ static int mark_iter_read(struct bpf_verifier_env *env, struct bpf_reg_state *re
+>         return mark_stack_slot_obj_read(env, reg, spi, nr_slots);
+>  }
+>
+> [...]
 
