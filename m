@@ -1,105 +1,128 @@
-Return-Path: <bpf+bounces-45755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52A269DAEA8
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 21:55:06 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 208B29DAED2
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 22:20:37 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B6C8282088
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 20:55:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCA03166157
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 21:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B752202F6A;
-	Wed, 27 Nov 2024 20:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50687202F8A;
+	Wed, 27 Nov 2024 21:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UPIrU8yd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ctmej+df"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E03219885D
-	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 20:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE5E7DA81
+	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 21:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732740901; cv=none; b=YKxkg1/jbTHilabBoGcZrLR2YCfj+OqIpoExFNuBCou8V5oqkLMmnICLNKp2Tmjii6GcKvUCMrBZKsdAR5JP2zuKYuSsUjOqjEz+lzSYHYdT9zYCrW0PkZO1uoAyOBYmIgBL5ipozleAz7kJYcVgvfEQ8+1aC/i3mG/SBe9CS48=
+	t=1732742431; cv=none; b=hvvBnDoQbM1bV2zJz/lSAh9eCZT4wba9WoKYZZDJeOA2Yfp2Xvl8dJ+eWtkRVTGmzTB2sH8cc9/vr3l8x30+u7/gc2HS4E4BMRP1QcrC/ox+xOdmK28WG5mrk+a6tWAPu8Y9ZBLhcx+0YPDHJFwXafPc6J6i6pqN8bMAJnJqsWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732740901; c=relaxed/simple;
-	bh=4skVQellwOqYGRiovGbCtZVr/T7fMA9BSRqxnWFOgxE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AV4gAjclFGjxgw7o52LjNmRhUyZSI1jxcnfk+/iZE17Vknp3iQAzZ3O9bYsQLJz4+daLodQ7pyQWDR1VuS2iVQDGQ254STvAoeWrI14mBBU1hqhGr+ayDPOzLxAPkuGXCUqY/q0Pl7KZaj4/PeKUWxR9v0vENg6T5Vdh19dIjW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UPIrU8yd; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d1e95498-4613-43e0-bc6b-6f6157802649@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1732740897;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GbHhYQdAxtCG5GrYaKwcMXOAfucu73yI0Yldf1hEGZM=;
-	b=UPIrU8ydnJWg5ioc3r6kGmVgNcMp/9Z33Jv2Lk6wdAn6VGgZgEM0Q9O52Gr1j1K9gHO4hj
-	0gkc9a/24CU0u5nhCswAB8gc6uBgTkuKzHKcvy3zNf9ud5ye8G+AZtN6dmaEuITL3ldCzO
-	oaLYoXNvkJLn4yQDEdKzxg6+EmpKj0U=
-Date: Wed, 27 Nov 2024 12:54:41 -0800
+	s=arc-20240116; t=1732742431; c=relaxed/simple;
+	bh=QKz+Pi/jdQVtzNhZQXkUzzYKq9ZFXCmxu1u7+WglZZI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ewtAIuV333C7YHRzgDrkmALA4JXPw+xHZ+NRQ6MZc6TW01Yc1IQOBKaPjI3UFdruJH+Wt2ErV6+bq2L4fx73XCSkW8ibAeUXuyzYkiLfRPSeExpbgwKAQ+P3E1jhpwvFDdM7rqhYrxrYEu/GsBIWznIi+S2mj3dnCgA2iu7sK88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ctmej+df; arc=none smtp.client-ip=209.85.221.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-3824a089b2cso110827f8f.1
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 13:20:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732742428; x=1733347228; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tRd2XjzVlIE2JZXbWQjzuUnJ1MdCDwZUNxTUMZKuCDA=;
+        b=ctmej+df/wnZ0FDuPHLdUZdT0K+bJi1x8R8aZOZL7veG5YuGlL/BI7Gf5roTjfoZF0
+         RkIMgsDNDf4hHZfE4tLcD79aLJxI/dNK7oyOjQv+06a85xsbhzszJZp8iZkPEtOZKYxz
+         N6V2Fg7Jc0jTj/4JKrpjRabDYOzl/v0jAJc2CoV0T/bI9EmkG6Wq11cO88QbaTxuPSVi
+         IeZ7GFNazyu+ppmZewxzlI1EANGHQ9WHIjkpcDja4uCWVhaCqSWizNrOmNluapZ51fli
+         DeAo/Qjy2tIrbtx/01ovBf+IBcIJcBYfGrq33h6qDvBSw5g76n5srIuZ3Sw/tjccXJcb
+         gf3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732742428; x=1733347228;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tRd2XjzVlIE2JZXbWQjzuUnJ1MdCDwZUNxTUMZKuCDA=;
+        b=BDw4ovII9wKKT2JUBwlAdqEGtEDZFnFmrk/I9ccPjAHrKgbW+fTPj6BYAvUiHU+EhN
+         +fYbhdOf5B94uXwR+5uw1+bdeyjOaAiVttT+RMUFC0AzCkGRNXCnXf3X9BZ6x1rEcGiU
+         fsOa14EH+RvALDPrf2yMYvaQzjPVXqNlDTrz/slNQurssTTdwDaGN/eLnLvVQZx8LcOI
+         cuYKezZTPweeKqe6V0/yAcuJ1GqyduIlAHoPscEvsrZ/MDJXlTQYe/BYDpXG3df8mczW
+         qUKOGEFGlyLAscO2YFhcZS/9/dDClMnBDpfyMUza7dVP/tz+Bdfwu7ZHBPqU6aYUnA7P
+         CxLQ==
+X-Gm-Message-State: AOJu0YygUq6h5yKioPmunzQIFMfTYv4FC121n9b+YEMMQMGhKB4kQMO7
+	3mVxgDXDxP+Ztb+m89QaHtImT1FnE/9rDVzkRnwPfjaVtF9Vza2b2dZn/6GbRNc=
+X-Gm-Gg: ASbGncsNnnMlKEQfu39DtlN9pUg3oXlpGf8VSFq/KwdL/JehVTWcH21BMC/XWJcG2jC
+	d/vSEukYpFq5yGRmDS4qz7FGIcpo4J6qUI0xIvp9ejv04gSkoL9bN11K/VOj1ihJ9T4FIzpDK+4
+	zr8bMEJTpafQy/gN7Hx9H+Ust/Y72yZ+sZF/UmIWCp765N4Y8LGLXWaeomznCFdGLb/zax/1zqO
+	bErrQPPLzqqo9WKJV0vxDX+DjePDAzUTqGzC+9QJbVNh7RHk+7wLffq41uoNXuz8QyyT03WypUQ
+	jQ==
+X-Google-Smtp-Source: AGHT+IHzcQ2Lgcx/KC0dr86Rv8OL0zBIVGhha3dhDhdkZRKJ+cRUDZqU/qbTEi+9kND5aH/Ro8lHkg==
+X-Received: by 2002:a05:6000:1ac9:b0:382:3527:a147 with SMTP id ffacd0b85a97d-385c6eb6625mr4120601f8f.1.1732742427492;
+        Wed, 27 Nov 2024 13:20:27 -0800 (PST)
+Received: from localhost (fwdproxy-cln-024.fbsv.net. [2a03:2880:31ff:18::face:b00c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3825fbc4130sm17122396f8f.65.2024.11.27.13.20.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Nov 2024 13:20:27 -0800 (PST)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Tao Lyu <tao.lyu@epfl.ch>,
+	Mathias Payer <mathias.payer@nebelwelt.net>,
+	Meng Xu <meng.xu.cs@uwaterloo.ca>,
+	Sanidhya Kashyap <sanidhya.kashyap@epfl.ch>
+Subject: [PATCH bpf-next v2 0/4] Fixes for stack with allow_ptr_leaks
+Date: Wed, 27 Nov 2024 13:20:22 -0800
+Message-ID: <20241127212026.3580542-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [External] Storing sk_buffs as kptrs in map
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: Amery Hung <amery.hung@bytedance.com>, bpf@vger.kernel.org,
- magnus.karlsson@intel.com, sreedevi.joshi@intel.com, ast@kernel.org
-References: <Z0X/9PhIhvQwsgfW@boxer>
- <CAONe225n=HosL1vBOOkzaOnG9jTYpQwDH6hwyQRAu0Cb=NBymA@mail.gmail.com>
- <d854688a-9d2d-4fed-9cb8-3e5c4498f165@linux.dev> <Z0dt/wZZhigcgGPI@boxer>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <Z0dt/wZZhigcgGPI@boxer>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1191; h=from:subject; bh=QKz+Pi/jdQVtzNhZQXkUzzYKq9ZFXCmxu1u7+WglZZI=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnR40BOIvpquZrLWg3td9o7HCSIFlilI2+7t04tgaf P8J8Vw+JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ0eNAQAKCRBM4MiGSL8RyqDSEA DBgivBHAeW0YmModnCI32xkb4SIRQQ+JBO46Ya2F7T0ytY3ClXV4L1GbWO2zMDO00f7R5SbVMfjvIr xyrwBDlHTWsoJVKIV+cy1PHWguZfLBYJ3OGKBk1hvEipTlI+TfV7/iRJoOMhbjAHqzYVoZ/pWMiQ7n e6hk46T7zU6aPHDc44rJYKyLQqn9W2ZrgheAi7HeOEDP7O7GFz0SOrOUGXemYVRSmYDB6O5AJH31DS mPHbvcqw1SDqrb3AqPavZ30HfyQ61OSIi3r3tHVgOgVlKxyqpe+tp9b4IbuJv+Oe7DZD3Q3Koifta4 tMIv+ZRudDkXGbtlqZv/fIGJo+KpLa9Smz8DwSQDpe2s8z7n90VRudnlYOL/1dX5ukcjx7erzcldeC Xro9R7t9ZbzdvSUEmWGGYYhYeMHCQaUgF0u3ihkHtSNxCaDE7UJCAqgl0ngDtxAlIqb7snBuEEXLOR AOG5WAY5J1L9n8aVahMEoHbMRWWOKJ/yXuyZSYQX5FYUiXnxgTSts5kvtMfGz07ADvU5SOnGBLhDUL ptulVbVRjyzylbust4uura2HtXnrbft2PREtjW6wIJ+M8LzOzFOfMitSM+/riZtZ26ssQe4Tf2IMyi XOYMz+oGn6ZPfyaxGaIXm2XT0a3UPZzAzuKtHUMMwfiTUlB8YEa17kam83mA==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 
-On 11/27/24 11:07 AM, Maciej Fijalkowski wrote:
-> But kfunc does not work on PTR_TO_CTX - it takes in directly sk_buff, not
-> __sk_buff. As I mention above we use bpf_cast_to_kern_ctx() and per my
-> current limited understanding it overwrites the reg->type to
-> PTR_TO_BTF_ID | PTR_TRUSTED.
+Two fixes for usability/correctness gaps when interacting with the stack
+without CAP_PERFMON (i.e. with allow_ptr_leaks = false). See the commits
+for details. I've verified that the tests fail when run without the fixes.
 
-Can you try skip calling the bpf_cast_to_kern_ctx and directly pass the "struct 
-__sk_buff *skb" to the "struct sk_buff *bpf_skb_acquire(struct __sk_buff *skb).
+Changelog:
+----------
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20241127185135.2753982-1-memxor@gmail.com
 
-> I tried to simplify the use case that customer has, but I am a bit worried
-> that it might only confuse people more :/ however, here it is:
+ * Fix CI errors in selftest by removing dependence on BPF_ST
 
-No. not at all. I suspect the use case has some similarity to the net-timestamp 
-patches 
-(https://lore.kernel.org/bpf/20241028110535.82999-1-kerneljasonxing@gmail.com/) 
-which uses a skb tskey to associate/co-relate different timestamp.
+Kumar Kartikeya Dwivedi (3):
+  bpf: Don't relax STACK_INVALID to STACK_MISC when not allow_ptr_leaks
+  selftests/bpf: Add test for reading from STACK_INVALID slots
+  selftests/bpf: Add test for narrow spill into 64-bit spilled scalar
 
-Please share the patch and the test case. It will be easier for others to help.
+Tao Lyu (1):
+  bpf: Fix narrow scalar spill onto 64-bit spilled scalar slots
 
-> On TC egress hook skb is stored in a map - reason for picking it over the
-> linked list or rbtree is that we want to be able to access skbs via some index,
-> say a hash. This is where we bump the skb's refcount via acquire kfunc.
-> 
-> During TC ingress hook on the same interface, the skb that was previously
-> stored in map is retrieved, current skb that resides in the context of
-> hook carries the timestamp via metadata. We then use the retrieved skb and
-> tstamp from metadata on skb_tstamp_tx() (another kfunc) and finally
-> decrement skb's refcount via release kfunc.
-> 
-> 
-> Anyways, since we are able to do similar operations on task_struct
-> (holding it in map via kptr), I don't see a reason why wouldn't we allow
-> ourselves to do it on sk_buffs, no?
+ kernel/bpf/verifier.c                         |  3 +-
+ .../selftests/bpf/prog_tests/verifier.c       | 41 ++++++++++++++++---
+ .../selftests/bpf/progs/verifier_spill_fill.c | 18 ++++----
+ .../bpf/progs/verifier_stack_noperfmon.c      | 36 ++++++++++++++++
+ 4 files changed, 82 insertions(+), 16 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_stack_noperfmon.c
 
-skb holds other things like dev and dst, like someone may be trying to remove 
-the netdevice and route...etc. Overall, yes, the skb refcnt will eventually be 
-decremented when the map is freed like other kptr (e.g. task) do.
+
+base-commit: c8d02b547363880d996f80c38cc8b997c7b90725
+-- 
+2.43.5
 
 
