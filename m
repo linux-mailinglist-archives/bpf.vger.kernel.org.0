@@ -1,121 +1,105 @@
-Return-Path: <bpf+bounces-45751-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45755-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0ADA9DADB7
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 20:22:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52A269DAEA8
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 21:55:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 263B5B2586F
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 19:22:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B6C8282088
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 20:55:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE67205AB6;
-	Wed, 27 Nov 2024 19:20:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B752202F6A;
+	Wed, 27 Nov 2024 20:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="tLcqbmWn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UPIrU8yd"
 X-Original-To: bpf@vger.kernel.org
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0364204084;
-	Wed, 27 Nov 2024 19:20:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E03219885D
+	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 20:54:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732735254; cv=none; b=I8Lpma6sES8xhVaGodOWaEVMpa/V425gMaV3ieZ7qM+OJrStVKHXZ64YwepygeuOOEQ+I8bkEckXhCMxwygbK6eLP/E6KHBV5ee3V4yzb59BkSl9P7rAET8Au8EHByfH5E6ZaYr/S9WEkcYCg4SiyRtNEVD4IDMI3cIu2ZXJ8L4=
+	t=1732740901; cv=none; b=YKxkg1/jbTHilabBoGcZrLR2YCfj+OqIpoExFNuBCou8V5oqkLMmnICLNKp2Tmjii6GcKvUCMrBZKsdAR5JP2zuKYuSsUjOqjEz+lzSYHYdT9zYCrW0PkZO1uoAyOBYmIgBL5ipozleAz7kJYcVgvfEQ8+1aC/i3mG/SBe9CS48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732735254; c=relaxed/simple;
-	bh=nbtK+ExfnhyZ5gIuDVa+ktGgkDaweYMcUS0HqG+YpRw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=RNsmI0FNTCSTyceNkRHtJN2LTQrnnXvNIJMV9HLb17rvGsWC2vFtDMsc3TV9ycANtODNj/vQpZrVVkhgAi2z3UjvzDGJPVb7tLHA3SCMg4y9xSmcj0dkZusXSywn5t+kfBd/rAfGgMpO77QaS5XZTRCwas0G0hP9cQXE/XPP5kQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=tLcqbmWn; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1732735246;
-	bh=nbtK+ExfnhyZ5gIuDVa+ktGgkDaweYMcUS0HqG+YpRw=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=tLcqbmWncVQtNYbVmUS4nz2f9F8Sx7+sQ72Vs2nHeofqor4aTS3Il377VCKRGDT7Q
-	 dKW3SknUt3I14pxhEcaF/reEIcmCbarycyi41v4gBcbJ2FACOmrnB4Gf0+y+eNVCDM
-	 88W4vgzgoW0v+q70nDmi49oCKF5tVMYU1tx/pbMI=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Wed, 27 Nov 2024 20:15:28 +0100
-Subject: [PATCH bpf-next 9/9] sched_ext: Constify BPF ops
+	s=arc-20240116; t=1732740901; c=relaxed/simple;
+	bh=4skVQellwOqYGRiovGbCtZVr/T7fMA9BSRqxnWFOgxE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AV4gAjclFGjxgw7o52LjNmRhUyZSI1jxcnfk+/iZE17Vknp3iQAzZ3O9bYsQLJz4+daLodQ7pyQWDR1VuS2iVQDGQ254STvAoeWrI14mBBU1hqhGr+ayDPOzLxAPkuGXCUqY/q0Pl7KZaj4/PeKUWxR9v0vENg6T5Vdh19dIjW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UPIrU8yd; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d1e95498-4613-43e0-bc6b-6f6157802649@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1732740897;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GbHhYQdAxtCG5GrYaKwcMXOAfucu73yI0Yldf1hEGZM=;
+	b=UPIrU8ydnJWg5ioc3r6kGmVgNcMp/9Z33Jv2Lk6wdAn6VGgZgEM0Q9O52Gr1j1K9gHO4hj
+	0gkc9a/24CU0u5nhCswAB8gc6uBgTkuKzHKcvy3zNf9ud5ye8G+AZtN6dmaEuITL3ldCzO
+	oaLYoXNvkJLn4yQDEdKzxg6+EmpKj0U=
+Date: Wed, 27 Nov 2024 12:54:41 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20241127-bpf-const-ops-v1-9-a698b8d58680@weissschuh.net>
-References: <20241127-bpf-const-ops-v1-0-a698b8d58680@weissschuh.net>
-In-Reply-To: <20241127-bpf-const-ops-v1-0-a698b8d58680@weissschuh.net>
-To: "David S. Miller" <davem@davemloft.net>, 
- David Ahern <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
- Kui-Feng Lee <thinker.li@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Jiri Kosina <jikos@kernel.org>, 
- Benjamin Tissoires <bentiss@kernel.org>, Tejun Heo <tj@kernel.org>, 
- David Vernet <void@manifault.com>, Ingo Molnar <mingo@redhat.com>, 
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
- Vincent Guittot <vincent.guittot@linaro.org>, 
- Dietmar Eggemann <dietmar.eggemann@arm.com>, 
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, linux-input@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1732735245; l=1292;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=nbtK+ExfnhyZ5gIuDVa+ktGgkDaweYMcUS0HqG+YpRw=;
- b=5zWiiR7OeqVtKBCAJqaHUdaXLiAsRczQ+k3xFIAeIbrkbMHLGvOzyXVhTwQ3uzOF+d0gwO38M
- 3MftYCnHb5cDCybqRyCLbxCaiQaluJkIYv+kFJkBeG3IpjA8QsuHTkB
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+Subject: Re: [External] Storing sk_buffs as kptrs in map
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: Amery Hung <amery.hung@bytedance.com>, bpf@vger.kernel.org,
+ magnus.karlsson@intel.com, sreedevi.joshi@intel.com, ast@kernel.org
+References: <Z0X/9PhIhvQwsgfW@boxer>
+ <CAONe225n=HosL1vBOOkzaOnG9jTYpQwDH6hwyQRAu0Cb=NBymA@mail.gmail.com>
+ <d854688a-9d2d-4fed-9cb8-3e5c4498f165@linux.dev> <Z0dt/wZZhigcgGPI@boxer>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <Z0dt/wZZhigcgGPI@boxer>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-The BPF core now allows the registration of read-only ops tables,
-make use of it.
+On 11/27/24 11:07 AM, Maciej Fijalkowski wrote:
+> But kfunc does not work on PTR_TO_CTX - it takes in directly sk_buff, not
+> __sk_buff. As I mention above we use bpf_cast_to_kern_ctx() and per my
+> current limited understanding it overwrites the reg->type to
+> PTR_TO_BTF_ID | PTR_TRUSTED.
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- kernel/sched/ext.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Can you try skip calling the bpf_cast_to_kern_ctx and directly pass the "struct 
+__sk_buff *skb" to the "struct sk_buff *bpf_skb_acquire(struct __sk_buff *skb).
 
-diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 7fff1d0454770f5fab3e13708816d56653637ee9..6d3cced2951f61b73e6779edfb62b63c1ab62093 100644
---- a/kernel/sched/ext.c
-+++ b/kernel/sched/ext.c
-@@ -5914,7 +5914,7 @@ static void sched_ext_ops__dump(struct scx_dump_ctx *ctx) {}
- static void sched_ext_ops__dump_cpu(struct scx_dump_ctx *ctx, s32 cpu, bool idle) {}
- static void sched_ext_ops__dump_task(struct scx_dump_ctx *ctx, struct task_struct *p) {}
- 
--static struct sched_ext_ops __bpf_ops_sched_ext_ops = {
-+static const struct sched_ext_ops __bpf_ops_sched_ext_ops = {
- 	.select_cpu		= sched_ext_ops__select_cpu,
- 	.enqueue		= sched_ext_ops__enqueue,
- 	.dequeue		= sched_ext_ops__dequeue,
-@@ -5952,7 +5952,7 @@ static struct sched_ext_ops __bpf_ops_sched_ext_ops = {
- 	.dump_task		= sched_ext_ops__dump_task,
- };
- 
--static struct bpf_struct_ops bpf_sched_ext_ops = {
-+static const struct bpf_struct_ops bpf_sched_ext_ops = {
- 	.verifier_ops = &bpf_scx_verifier_ops,
- 	.reg = bpf_scx_reg,
- 	.unreg = bpf_scx_unreg,
+> I tried to simplify the use case that customer has, but I am a bit worried
+> that it might only confuse people more :/ however, here it is:
 
--- 
-2.47.1
+No. not at all. I suspect the use case has some similarity to the net-timestamp 
+patches 
+(https://lore.kernel.org/bpf/20241028110535.82999-1-kerneljasonxing@gmail.com/) 
+which uses a skb tskey to associate/co-relate different timestamp.
+
+Please share the patch and the test case. It will be easier for others to help.
+
+> On TC egress hook skb is stored in a map - reason for picking it over the
+> linked list or rbtree is that we want to be able to access skbs via some index,
+> say a hash. This is where we bump the skb's refcount via acquire kfunc.
+> 
+> During TC ingress hook on the same interface, the skb that was previously
+> stored in map is retrieved, current skb that resides in the context of
+> hook carries the timestamp via metadata. We then use the retrieved skb and
+> tstamp from metadata on skb_tstamp_tx() (another kfunc) and finally
+> decrement skb's refcount via release kfunc.
+> 
+> 
+> Anyways, since we are able to do similar operations on task_struct
+> (holding it in map via kptr), I don't see a reason why wouldn't we allow
+> ourselves to do it on sk_buffs, no?
+
+skb holds other things like dev and dst, like someone may be trying to remove 
+the netdevice and route...etc. Overall, yes, the skb refcnt will eventually be 
+decremented when the map is freed like other kptr (e.g. task) do.
 
 
