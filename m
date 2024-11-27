@@ -1,170 +1,133 @@
-Return-Path: <bpf+bounces-45715-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45716-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE8799DA9B9
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 15:10:35 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B7DF9DAAB1
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 16:22:27 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FA0F166B7D
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 15:22:23 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C34781FF7D8;
+	Wed, 27 Nov 2024 15:22:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="mjJ2AMfo"
+X-Original-To: bpf@vger.kernel.org
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34922B21A2F
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 14:10:33 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08E421FDE19;
-	Wed, 27 Nov 2024 14:10:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dVgvVJYB"
-X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f73.google.com (mail-lf1-f73.google.com [209.85.167.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B6E1FCFF4
-	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 14:10:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5E11FF7C2;
+	Wed, 27 Nov 2024 15:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732716617; cv=none; b=AsRhhFJwlOi2UIUOlZtKXf0hIPjhcMY+6nY6OUmDOtUQqYCj5LjcrVDqVcFpcoKaLraJUfhpDgLxRuCDozYmhjDfXmRN/4bfhNhKLz9Icrrl09HXtTL/NgW/s0gYWUlA2yyk34LpcsStP6aZKJ43rA/SQb/5GJfbZ0VDnjlOmj0=
+	t=1732720940; cv=none; b=gqpgWazjsh1QLBLbuS+WrYb6Mm2skxkLvYnK+76tyQIJ+A2ZLCLZc3RPQUmdikHveB6jbAF8AX8sWiIpP9EQnJk8lbJz/lbgi/yQ3EcLP51RFucfrd35WyFIBqrflj2xEWhHh/8QxyNThXUTY3TD4kSDDc8CFm/CXf3VMzeGarI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732716617; c=relaxed/simple;
-	bh=sGujSkfOje6q3rhHE4tIYkiqfs33OKNxgBeAjusNinA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=LVo/MA9J/Df071AXhmuVQXxkeF89tUtk5vM6vOqkRp0iyy0AW/sGj3F8OOA2FFauMiJ61zFAEDcYndLxRj66KCQ7YkYV1FiT9IMGMo2XhtEQKZNEQW6fAZJ8Ck+OIUeGPPz8vsSjzBBcOSuEAwppBkGaw8iBGkH1/ZvbBtIqatw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dVgvVJYB; arc=none smtp.client-ip=209.85.167.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
-Received: by mail-lf1-f73.google.com with SMTP id 2adb3069b0e04-53dd663d73dso3596675e87.0
-        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 06:10:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1732716613; x=1733321413; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9HKz8SHPsTiWdyPzN3tC8YsJEJ+U8IfvZzPBvdLUPXY=;
-        b=dVgvVJYBbOx51B6a4HyhfdUr2qtY5X6V3UeSxbQVc4ay9cUplxdeefruqBV3aLSdzj
-         z8H5eowlyhNwPzYr2IgoLNtMd3+vb8/qjHPwJaRZRaYCaeG5Ksi9MNamY2Ng7HVMt/h2
-         i7xi09YskBXaesyZFvbWx30h4+8WPmrySue1G235wGop43oXNiQmf1zklLtq1kEhriEy
-         V40OIFbqhminsf7IKB8clkbQskseupY0ZQhxhItmzAbzoLaaHAz8SJ1h5lvi9pfE6qQv
-         Au0znA8+6oaGMKKwZw5+sFVFgk2JVEmKhVeNP9MlTmoAVatgWk774IHrlKYiTJgpKXJe
-         +42g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732716613; x=1733321413;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9HKz8SHPsTiWdyPzN3tC8YsJEJ+U8IfvZzPBvdLUPXY=;
-        b=Ye2gu7FIZGgTefpbwb/Ci3eh95a2kW9ELlYa4382ipy8VBNGQ9IopE9kJwFWANFi70
-         oV/J+tR6QBSsnJB7lVP66dKiXrxnKChhOQtlbOyvzknckb8VrapN5PmXEA95WpHILvBA
-         immFueNzq3UkXzNeiTL6oem0pfNbbcjK0ovrqQ9PeQoQ5WC3mUJmgNtN4i8fJVUcLmrV
-         oh2mTpjquvMcZQ201bHUBmK2+rKYOOChMLYjyFU/8BBrDhtSzLWK3jOoPhydFM4SP+rb
-         PLrD/yG1eovr0fsv4a5AMVmuc/cAF0GJvAT+JB6tvonEK08GO/3/vuKWao+4GMpjh5KC
-         VNDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXV86mA9g+1Qb3EZ66EXsn+GH97VZkzlSFFoBOXNwWOIlbqVKIbJzefnym1Pilt+8BqdfU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyjpbAKwHwPfpQdyPk9xWeiQUXrDBPoieh9BpK8zkHCUrEPyBF9
-	7zRuDuE8hEUWOw5HI5oXhwcB03QJvmWhjg4gW8qApo6c08eBy+O3MAxduudtKjp02y7w/qqVdA=
-	=
-X-Google-Smtp-Source: AGHT+IGi/7aTXmyQZ5xDW/bdnyQbVTiKVhfU9+rw9t4S3CgNTD13Tt0NOWPvtx8xXNuCQvdoJx73CMyzmQ==
-X-Received: from edsf19.prod.google.com ([2002:aa7:d853:0:b0:5d0:36d0:ad4a])
- (user=elver job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6512:124a:b0:53d:e568:ac95
- with SMTP id 2adb3069b0e04-53df00de101mr1532948e87.25.1732716613445; Wed, 27
- Nov 2024 06:10:13 -0800 (PST)
-Date: Wed, 27 Nov 2024 15:09:36 +0100
-In-Reply-To: <20241127140958.1828012-1-elver@google.com>
+	s=arc-20240116; t=1732720940; c=relaxed/simple;
+	bh=+3InKqe2qAdjjp6xq492AfyD2EpLQw09TtoBCofPou0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CVGVKkyOSKlMaXlrv6PrKLEiJr5C542zMGvAipF27RaFO4DGsbKfxCcPHyj/eoJlM4EcPfcv3xrt9HfJPIa+jTSwnx6H34uUI/OeduyawrYq+mAocuWW3Isw6dwv3JZyuCYGJLhaplKxZHL/OG0dIzxqfSAQrxnDlgCYHV01Ka4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=mjJ2AMfo; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1732720932;
+	bh=+3InKqe2qAdjjp6xq492AfyD2EpLQw09TtoBCofPou0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mjJ2AMfow3qyyyaZ/euCqvl1CQvjDkdHeH5in1HTXovuhc542WrBmfTYCthwS0yFX
+	 5bSfgK9R2COTMCNVET3k5q2K06tVUFzmP8p1Z+iAZfHL35wPD7ruvT/Q4ltjdsIbNV
+	 KjXPlAFu8XtjB7vEOo9k+9VytTil06sXOcaT5kiE=
+Date: Wed, 27 Nov 2024 16:22:12 +0100
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Christian Brauner <brauner@kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] btf: Use BIN_ATTR_SIMPLE_RO() to define vmlinux attribute
+Message-ID: <998be751-3e7d-46e7-896e-6fd089f5dfa5@t-8ch.de>
+References: <20241122-sysfs-const-bin_attr-bpf-v1-1-823aea399b53@weissschuh.net>
+ <CAADnVQLV=7Mt+DTX84u_4kP_pVNhbyHMvL29BPcFQjOj7RpM7A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20241127140958.1828012-1-elver@google.com>
-X-Mailer: git-send-email 2.47.0.338.g60cca15819-goog
-Message-ID: <20241127140958.1828012-2-elver@google.com>
-Subject: [PATCH bpf-next v3 2/2] bpf: Refactor bpf_tracing_func_proto() and
- remove bpf_get_probe_write_proto()
-From: Marco Elver <elver@google.com>
-To: elver@google.com, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Nikola Grcevski <nikola.grcevski@grafana.com>, bpf@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLV=7Mt+DTX84u_4kP_pVNhbyHMvL29BPcFQjOj7RpM7A@mail.gmail.com>
 
-With bpf_get_probe_write_proto() no longer printing a message, we can
-avoid it being a special case with its own permission check.
+On 2024-11-26 17:52:29-0800, Alexei Starovoitov wrote:
+> On Fri, Nov 22, 2024 at 4:57 AM Thomas Weißschuh <linux@weissschuh.net> wrote:
+> >
+> > The usage of the macro allows to remove the custom handler function,
+> > saving some memory. Additionally the code is easier to read.
+> >
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > ---
+> > Something similar can be done to btf_module_read() in kernel/bpf/btf.c.
+> > But doing it here and now would lead to some conflicts with some other
+> > sysfs refactorings I'm doing. It will be part of a future series.
+> > ---
+> >  kernel/bpf/sysfs_btf.c | 21 +++++----------------
+> >  1 file changed, 5 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
+> > index fedb54c94cdb830a4890d33677dcc5a6e236c13f..a24381f933d0b80b11116d05463c35e9fa66acb1 100644
+> > --- a/kernel/bpf/sysfs_btf.c
+> > +++ b/kernel/bpf/sysfs_btf.c
+> > @@ -12,34 +12,23 @@
+> >  extern char __start_BTF[];
+> >  extern char __stop_BTF[];
+> >
+> > -static ssize_t
+> > -btf_vmlinux_read(struct file *file, struct kobject *kobj,
+> > -                struct bin_attribute *bin_attr,
+> > -                char *buf, loff_t off, size_t len)
+> > -{
+> > -       memcpy(buf, __start_BTF + off, len);
+> > -       return len;
+> > -}
+> > -
+> > -static struct bin_attribute bin_attr_btf_vmlinux __ro_after_init = {
+> > -       .attr = { .name = "vmlinux", .mode = 0444, },
+> > -       .read = btf_vmlinux_read,
+> > -};
+> > +static __ro_after_init BIN_ATTR_SIMPLE_RO(vmlinux);
+> 
+> To be honest I really don't like when code is hidden by macros like this.
+> Looks like you guys already managed to sprinkle it in a few places.
+> 
+> btf_vmlinux_read() can be replaced with sysfs_bin_attr_simple_read().
+> This part is fine, but macro pls dont.
+> It doesn't help readability.
+> imo mode = 0444 vs mode = 0400 is easier to understand
+> instead of _RO vs _ADMIN_RO suffix.
 
-Refactor bpf_tracing_func_proto() similar to bpf_base_func_proto() to
-have a section conditional on bpf_token_capable(CAP_SYS_ADMIN), where
-the proto for bpf_probe_write_user() is returned. Finally, remove the
-unnecessary bpf_get_probe_write_proto().
+I'm fine with either solution.
 
-This simplifies the code, and adding additional CAP_SYS_ADMIN-only
-helpers in future avoids duplicating the same CAP_SYS_ADMIN check.
+My patch is motivated by my current effort to constify 'struct
+bin_attribute' throughout the kernel.
+With the macro I only have to touch this location once,
+without it twice.
 
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Marco Elver <elver@google.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
----
-v3:
-* Fix where bpf_base_func_proto() is called - it needs to be last,
-  because we may override protos (as is e.g. done for
-  BPF_FUNC_get_smp_processor_id).
+If we go with a plain sysfs_bin_attr_simple_read() please let me do the
+patch in another series I have prepared, to be submitted after 6.13-rc1.
 
-v2:
-* New patch.
----
- kernel/trace/bpf_trace.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+> __ro_after_init should be a part of it, at least.
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 0ab56af2e298..9b1d1fa4c06c 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -357,14 +357,6 @@ static const struct bpf_func_proto bpf_probe_write_user_proto = {
- 	.arg3_type	= ARG_CONST_SIZE,
- };
- 
--static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
--{
--	if (!capable(CAP_SYS_ADMIN))
--		return NULL;
--
--	return &bpf_probe_write_user_proto;
--}
--
- #define MAX_TRACE_PRINTK_VARARGS	3
- #define BPF_TRACE_PRINTK_SIZE		1024
- 
-@@ -1458,9 +1450,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_perf_event_read_proto;
- 	case BPF_FUNC_get_prandom_u32:
- 		return &bpf_get_prandom_u32_proto;
--	case BPF_FUNC_probe_write_user:
--		return security_locked_down(LOCKDOWN_BPF_WRITE_USER) < 0 ?
--		       NULL : bpf_get_probe_write_proto();
- 	case BPF_FUNC_probe_read_user:
- 		return &bpf_probe_read_user_proto;
- 	case BPF_FUNC_probe_read_kernel:
-@@ -1539,8 +1528,20 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	case BPF_FUNC_trace_vprintk:
- 		return bpf_get_trace_vprintk_proto();
- 	default:
--		return bpf_base_func_proto(func_id, prog);
-+		break;
- 	}
-+
-+	if (bpf_token_capable(prog->aux->token, CAP_SYS_ADMIN)) {
-+		switch (func_id) {
-+		case BPF_FUNC_probe_write_user:
-+			return security_locked_down(LOCKDOWN_BPF_WRITE_USER) < 0 ?
-+			       NULL : &bpf_probe_write_user_proto;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	return bpf_base_func_proto(func_id, prog);
- }
- 
- static bool is_kprobe_multi(const struct bpf_prog *prog)
--- 
-2.47.0.338.g60cca15819-goog
+I see where you are coming from, it would break the pattern with all the
+other attribute macros however.
 
+> I'd like to hear what other maintainers think about
+> such obfuscation.
+
+Ack.
 
