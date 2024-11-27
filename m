@@ -1,555 +1,209 @@
-Return-Path: <bpf+bounces-45676-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45678-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66E6E9DA00D
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 01:35:08 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94DA89DA018
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 01:50:47 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0FB6B22E9A
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 00:35:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3273E168D99
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 00:50:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C351803A;
-	Wed, 27 Nov 2024 00:34:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3008BE5;
+	Wed, 27 Nov 2024 00:50:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QPkJ7nTO"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07AE3C8FE
-	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 00:34:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47283360;
+	Wed, 27 Nov 2024 00:50:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732667689; cv=none; b=GkPdyBO1klgDj+ZLUmTSTBku4bu5qFzOWcku+XnePiRC1XHgLSkYaiHvca6+AiDh7xB0Yr2V+Qp+OpA5Y7ugn9CkiAKG+8DwaZFWX9Qm/TIOp929xp5NQA5cSNLNUWvFr4n01qOmE2mJzVorQTuuDk1eWEK3+wHIAEzoS9cUesE=
+	t=1732668638; cv=none; b=aE/SLPM1teykufm3iEyV7m6tYwqA3oJvwRbTRs/gFcV2FenKUATdU3me4WCijsd+xbx489ZuTMSrQ3tj879EKstAiX/+SZQ3FLIA3fFDID21G7KXeo6oTecNe9PZx0wiB60ZAUXJPMEBrvvSE0nk27l7LqGunMBLY2zZcNakNGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732667689; c=relaxed/simple;
-	bh=C7PZgk0sl82ft7tjZgtYnmU2fLZrowN+fBuA2UymH8Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jBLda9wTsHcC/xlzfECsA52DACEVY3alPXNOhhK+fcJaTLkNvqL4tP6BLBKUGgeLjRwHg2oojB/j7GBGre7GUc0hBnlYV6bOSPnbssOhFU6yFy8lGx9ekh9Ja/C0i87G6OYf1Jr8jhGLTZ/M7kR4Ygm3K5U5JDW/qaGwOF4WpGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XygRz3PBpz4f3jRG
-	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 08:34:23 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 3C9661A07B6
-	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 08:34:42 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgBHI4cVaUZn5pO9Cw--.38194S13;
-	Wed, 27 Nov 2024 08:34:41 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	houtao1@huawei.com,
-	xukuohai@huawei.com
-Subject: [PATCH bpf v2 9/9] selftests/bpf: Add more test cases for LPM trie
-Date: Wed, 27 Nov 2024 08:46:41 +0800
-Message-Id: <20241127004641.1118269-10-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20241127004641.1118269-1-houtao@huaweicloud.com>
-References: <20241127004641.1118269-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1732668638; c=relaxed/simple;
+	bh=t1hVwwhncVAUj/Lm9r7LI34ioqQ7kMq0x+fo0u4M8Q0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pyoyJFf9vDBNBwidywUODSbgMQa/DytmVIp4AApJXcJTiq5j61nXolfOuUFhMspKmcQcNssk1Vx7dXwylPYk0liAExZTgQwUTJVgWryPUQintj0Tby9WDW8gOvGO4ubTFz0naiSwjsayfob1MKIbvTx7/ci2xEf/OesN2oxf8Hk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QPkJ7nTO; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43497839b80so27619645e9.2;
+        Tue, 26 Nov 2024 16:50:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732668634; x=1733273434; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j3EkoerGTLMLe4OrsMDgak1/GJweiL9MEJTp4Bxm4Oc=;
+        b=QPkJ7nTOAqL7nwYQZbew6Jcz+9wC6VCi1AJtWi0Eyp5d5CnDpTQ+9voWMZpJkzt+yC
+         RTb5h+v74CF1YKDVw6atVKGg9qcI3Pezl3ZRJJscESDOa4fFO95izCqb4qDLYqI8HDG7
+         Nv5+DzJheds/FLqrleTKPqOXRCkpXeCtIoGf+/hLt7+A+ZhLpdzBSrqBBsuF6PB92Odn
+         6wXOC1A0qmDQsEIsZyOkoCQ8jLn7hlfUTUoT79RQRcQ60COGqfWKe5L+fI0JayxAWwE4
+         oPIwjFSqpBqs6T94EA6kFxBfNSiXALj8IOZDkeXgRryDPMXNuLMQldxmPiUiU/UZDBRK
+         6cLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732668634; x=1733273434;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j3EkoerGTLMLe4OrsMDgak1/GJweiL9MEJTp4Bxm4Oc=;
+        b=wV1joy3pFX7CFyQKMnr6RcojZdFOrmCOM1VeJtkiybeLPWf7eTr1Ml0k2Fv5CJDB+y
+         EFiBCSLwTYu7Nx1zvYJl5FUglfeP4/23QIlzZWUf76XVvjPvL4iUwF7k+4okOXI2uumj
+         jmPX1QgCSLt03Y9buIl9FbJjadVoYNrU1FeSZcKyGiLeYWAevi76BR0666I/5Kz5YRlv
+         znZe96IzRyO26V4Rn0MWR5x4X6NdEQq1CAcPt6Lw1186U7CgZcnkmeWpHxGu+8evZSnf
+         RT+R2T5REI3AZlpCQvohYja45HbOlfLdpFRkHUvM5iGTpQIVkKDy5AmW1skNLepXaP8Q
+         978w==
+X-Forwarded-Encrypted: i=1; AJvYcCV5txyAorvv3Ewd8gcRmWwULuuW26thTaFlRQt16qkRslAtMjUhqrR0HG2+gfnKFHi6plPCx0VNMmwsRPAL@vger.kernel.org, AJvYcCVvHLKb/Pm9Iyg+aDukr/drsYgmCxBAvmGnQjZva/fk2M0v8wCVo3ZTzCvntiZ+hcgQwWy/f9WpumXywPM0mQ==@vger.kernel.org, AJvYcCWUev8K6l1iM8mlO9a9NCk6tNenu1vDneLdw1dAFkn/+soVOCzisfTThBxpZtxJhnmDfFo=@vger.kernel.org, AJvYcCWzEpW0vng2fSzHMNferCARPcCh3pABmWVq/9JevUD9SRgYciS53SUOlcxE65YOtL2waxMAMAJZfGeLvNgCy3Ty9TEyjUVM@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw54rS6hGxSPE51KBQLnxCb0+tsq/pXQNesjTM0CSOLOYhzcx1B
+	V0kAZk3rxSFsaGq5mWDTY1WU+2N0YJwer4/7/x3Oa6jJz4hZf+9pFH+ET1qZp3Cy3PhfMI9dvbQ
+	xcIk6siAAVuP1VAXeuIlixAjP4QA=
+X-Gm-Gg: ASbGncsZ5AiWUiihJdGK3ye3Wt7UIg0ovju+mbmtUajwfUN5VSt9wjaqYJqEO1ZU91X
+	weIciTThg1YEGTPqcKKt9uz9NW/Q9PXhdU59mgDwat7cqQeA=
+X-Google-Smtp-Source: AGHT+IFylzibwq1l1tgeIghi7zw0a98fwkBarp9Liyrr2JP3fgWDlTpjUXEBRNTykRpSKDm4u8WaYRM6y926pb50xhI=
+X-Received: by 2002:a05:6000:18ab:b0:381:f08b:71a4 with SMTP id
+ ffacd0b85a97d-385c6edd52dmr635501f8f.45.1732668634501; Tue, 26 Nov 2024
+ 16:50:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBHI4cVaUZn5pO9Cw--.38194S13
-X-Coremail-Antispam: 1UD129KBjvAXoWfGw47Kw48Kr1fKF4xXr4fKrg_yoW8XF1xXo
-	WfWwsxKw1FgryUZ348Wa4kuw15GF45W34kJr9aqws8tw4Utr1kAa1UGFW5Ga18WF17Kryq
-	v3sFvr93Kr9YkrWfn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUOY7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
-	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF
-	0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
-	j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxV
-	AFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x02
-	67AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I
-	80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCj
-	c4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4
-	kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E
-	5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZV
-	WrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY
-	1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67
-	AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZE
-	Xa7IU0sqXPUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20241122225958.1775625-1-song@kernel.org> <20241122225958.1775625-3-song@kernel.org>
+ <CAOQ4uxhfd8ryQ6ua5u60yN5sh06fyiieS3XgfR9jvkAOeDSZUg@mail.gmail.com>
+In-Reply-To: <CAOQ4uxhfd8ryQ6ua5u60yN5sh06fyiieS3XgfR9jvkAOeDSZUg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 26 Nov 2024 16:50:23 -0800
+Message-ID: <CAADnVQK-6MFdwD_0j-3x2-t8VUjbNJUuGrTXEWJ0ttdpHvtLOA@mail.gmail.com>
+Subject: Re: [PATCH v3 fanotify 2/2] samples/fanotify: Add a sample fanotify fiter
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, KP Singh <kpsingh@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, repnop@google.com, 
+	Jeff Layton <jlayton@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, gnoack@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Hou Tao <houtao1@huawei.com>
+On Sat, Nov 23, 2024 at 9:07=E2=80=AFPM Amir Goldstein <amir73il@gmail.com>=
+ wrote:
+> > +++ b/samples/fanotify/filter-mod.c
+> > @@ -0,0 +1,105 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
+> > +
+> > +#include <linux/fsnotify.h>
+> > +#include <linux/fanotify.h>
+> > +#include <linux/module.h>
+> > +#include <linux/path.h>
+> > +#include <linux/file.h>
+> > +#include "filter.h"
+> > +
+> > +struct fan_filter_sample_data {
+> > +       struct path subtree_path;
+> > +       enum fan_filter_sample_mode mode;
+> > +};
+> > +
+> > +static int sample_filter(struct fsnotify_group *group,
+> > +                        struct fanotify_filter_hook *filter_hook,
+> > +                        struct fanotify_filter_event *filter_event)
+> > +{
+> > +       struct fan_filter_sample_data *data;
+> > +       struct dentry *dentry;
+> > +
+> > +       dentry =3D fsnotify_data_dentry(filter_event->data, filter_even=
+t->data_type);
+> > +       if (!dentry)
+> > +               return FAN_FILTER_RET_SEND_TO_USERSPACE;
+> > +
+> > +       data =3D filter_hook->data;
+> > +
+> > +       if (is_subdir(dentry, data->subtree_path.dentry)) {
+> > +               if (data->mode =3D=3D FAN_FILTER_SAMPLE_MODE_BLOCK)
+> > +                       return -EPERM;
+> > +               return FAN_FILTER_RET_SEND_TO_USERSPACE;
+> > +       }
+> > +       return FAN_FILTER_RET_SKIP_EVENT;
+> > +}
+> > +
+> > +static int sample_filter_init(struct fsnotify_group *group,
+> > +                             struct fanotify_filter_hook *filter_hook,
+> > +                             void *argp)
+> > +{
+> > +       struct fan_filter_sample_args *args;
+> > +       struct fan_filter_sample_data *data;
+> > +       struct file *file;
+> > +       int fd;
+> > +
+> > +       args =3D (struct fan_filter_sample_args *)argp;
+> > +       fd =3D args->subtree_fd;
+> > +
+> > +       file =3D fget(fd);
+> > +       if (!file)
+> > +               return -EBADF;
+> > +       data =3D kzalloc(sizeof(struct fan_filter_sample_data), GFP_KER=
+NEL);
+> > +       if (!data) {
+> > +               fput(file);
+> > +               return -ENOMEM;
+> > +       }
+> > +       path_get(&file->f_path);
+> > +       data->subtree_path =3D file->f_path;
+> > +       fput(file);
+> > +       data->mode =3D args->mode;
+> > +       filter_hook->data =3D data;
+> > +       return 0;
+> > +}
+> > +
+> > +static void sample_filter_free(struct fanotify_filter_hook *filter_hoo=
+k)
+> > +{
+> > +       struct fan_filter_sample_data *data =3D filter_hook->data;
+> > +
+> > +       path_put(&data->subtree_path);
+> > +       kfree(data);
+> > +}
+> > +
+>
+> Hi Song,
+>
+> This example looks fine but it raises a question.
+> This filter will keep the mount of subtree_path busy until the group is c=
+losed
+> or the filter is detached.
+> This is probably fine for many services that keep the mount busy anyway.
+>
+> But what if this wasn't the intention?
+> What if an Anti-malware engine that watches all mounts wanted to use that
+> for configuring some ignore/block subtree filters?
+>
+> One way would be to use a is_subtree() variant that looks for a
+> subtree root inode
+> number and then verifies it with a subtree root fid.
+> A production subtree filter will need to use a variant of is_subtree()
+> anyway that
+> looks for a set of subtree root inodes, because doing a loop of is_subtre=
+e() for
+> multiple paths is a no go.
+>
+> Don't need to change anything in the example, unless other people
+> think that we do need to set a better example to begin with...
 
-Add more test cases for LPM trie in test_maps:
-
-1) test_lpm_trie_update_flags
-It constructs various use cases for BPF_EXIST and BPF_NOEXIST and check
-whether the return value of update operation is expected.
-
-2) test_lpm_trie_update_full_maps
-It tests the update operations on a full LPM trie map. Adding new node
-will fail and overwriting the value of existed node will succeed.
-
-3) test_lpm_trie_iterate_strs and test_lpm_trie_iterate_ints
-There two test cases test whether the iteration through get_next_key is
-sorted and expected. These two test cases delete the minimal key after
-each iteration and check whether next iteration returns the second
-minimal key. The only difference between these two test cases is the
-former one saves strings in the LPM trie and the latter saves integers.
-Without the fix of get_next_key, these two cases will fail as shown
-below:
-  test_lpm_trie_iterate_strs(1091):FAIL:iterate #2 got abc exp abS
-  test_lpm_trie_iterate_ints(1142):FAIL:iterate #1 got 0x2 exp 0x1
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../bpf/map_tests/lpm_trie_map_basic_ops.c    | 395 ++++++++++++++++++
- 1 file changed, 395 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_basic_ops.c b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_basic_ops.c
-index f375c89d78a4..d32e4edac930 100644
---- a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_basic_ops.c
-+++ b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_basic_ops.c
-@@ -20,10 +20,12 @@
- #include <string.h>
- #include <time.h>
- #include <unistd.h>
-+#include <endian.h>
- #include <arpa/inet.h>
- #include <sys/time.h>
- 
- #include <bpf/bpf.h>
-+#include <test_maps.h>
- 
- #include "bpf_util.h"
- 
-@@ -33,6 +35,22 @@ struct tlpm_node {
- 	uint8_t key[];
- };
- 
-+struct lpm_trie_bytes_key {
-+	union {
-+		struct bpf_lpm_trie_key_hdr hdr;
-+		__u32 prefixlen;
-+	};
-+	unsigned char data[8];
-+};
-+
-+struct lpm_trie_int_key {
-+	union {
-+		struct bpf_lpm_trie_key_hdr hdr;
-+		__u32 prefixlen;
-+	};
-+	unsigned int data;
-+};
-+
- static struct tlpm_node *tlpm_match(struct tlpm_node *list,
- 				    const uint8_t *key,
- 				    size_t n_bits);
-@@ -770,6 +788,378 @@ static void test_lpm_multi_thread(void)
- 	close(map_fd);
- }
- 
-+static int lpm_trie_create(unsigned int key_size, unsigned int value_size, unsigned int max_entries)
-+{
-+	LIBBPF_OPTS(bpf_map_create_opts, opts);
-+	int fd;
-+
-+	opts.map_flags = BPF_F_NO_PREALLOC;
-+	fd = bpf_map_create(BPF_MAP_TYPE_LPM_TRIE, "lpm_trie", key_size, value_size, max_entries,
-+			    &opts);
-+	CHECK(fd < 0, "bpf_map_create", "error %d\n", errno);
-+
-+	return fd;
-+}
-+
-+static void test_lpm_trie_update_flags(void)
-+{
-+	struct lpm_trie_int_key key;
-+	unsigned int value, got;
-+	int fd, err;
-+
-+	fd = lpm_trie_create(sizeof(key), sizeof(value), 3);
-+
-+	/* invalid flags (Error) */
-+	key.prefixlen = 32;
-+	key.data = 0;
-+	value = 0;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_F_LOCK);
-+	CHECK(err != -EINVAL, "invalid update flag", "error %d\n", err);
-+
-+	/* invalid flags (Error) */
-+	key.prefixlen = 32;
-+	key.data = 0;
-+	value = 0;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_NOEXIST | BPF_EXIST);
-+	CHECK(err != -EINVAL, "invalid update flag", "error %d\n", err);
-+
-+	/* overwrite an empty qp-trie (Error) */
-+	key.prefixlen = 32;
-+	key.data = 0;
-+	value = 2;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_EXIST);
-+	CHECK(err != -ENOENT, "overwrite empty qp-trie", "error %d\n", err);
-+
-+	/* add a new node */
-+	key.prefixlen = 16;
-+	key.data = 0;
-+	value = 1;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_NOEXIST);
-+	CHECK(err, "add new elem", "error %d\n", err);
-+	got = 0;
-+	err = bpf_map_lookup_elem(fd, &key, &got);
-+	CHECK(err, "lookup elem", "error %d\n", err);
-+	CHECK(got != value, "check value", "got %d exp %d\n", got, value);
-+
-+	/* add the same node as new node (Error) */
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_NOEXIST);
-+	CHECK(err != -EEXIST, "add new elem again", "error %d\n", err);
-+
-+	/* overwrite the existed node */
-+	value = 4;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_EXIST);
-+	CHECK(err, "overwrite elem", "error %d\n", err);
-+	got = 0;
-+	err = bpf_map_lookup_elem(fd, &key, &got);
-+	CHECK(err, "lookup elem", "error %d\n", err);
-+	CHECK(got != value, "check value", "got %d exp %d\n", got, value);
-+
-+	/* overwrite the node */
-+	value = 1;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_ANY);
-+	CHECK(err, "update elem", "error %d\n", err);
-+	got = 0;
-+	err = bpf_map_lookup_elem(fd, &key, &got);
-+	CHECK(err, "lookup elem", "error %d\n", err);
-+	CHECK(got != value, "check value", "got %d exp %d\n", got, value);
-+
-+	/* overwrite a non-existent node which is the prefix of the first
-+	 * node (Error).
-+	 */
-+	key.prefixlen = 8;
-+	key.data = 0;
-+	value = 2;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_EXIST);
-+	CHECK(err != -ENOENT, "overwrite nonexistent elem", "error %d\n", err);
-+
-+	/* add a new node which is the prefix of the first node */
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_NOEXIST);
-+	CHECK(err, "add new elem", "error %d\n", err);
-+	got = 0;
-+	err = bpf_map_lookup_elem(fd, &key, &got);
-+	CHECK(err, "lookup key", "error %d\n", err);
-+	CHECK(got != value, "check value", "got %d exp %d\n", got, value);
-+
-+	/* add another new node which will be the sibling of the first node */
-+	key.prefixlen = 9;
-+	key.data = htobe32(1 << 23);
-+	value = 5;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_NOEXIST);
-+	CHECK(err, "add new elem", "error %d\n", err);
-+	got = 0;
-+	err = bpf_map_lookup_elem(fd, &key, &got);
-+	CHECK(err, "lookup key", "error %d\n", err);
-+	CHECK(got != value, "check value", "got %d exp %d\n", got, value);
-+
-+	/* overwrite the third node */
-+	value = 3;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_ANY);
-+	CHECK(err, "overwrite elem", "error %d\n", err);
-+	got = 0;
-+	err = bpf_map_lookup_elem(fd, &key, &got);
-+	CHECK(err, "lookup key", "error %d\n", err);
-+	CHECK(got != value, "check value", "got %d exp %d\n", got, value);
-+
-+	/* delete the second node to make it an intermediate node */
-+	key.prefixlen = 8;
-+	key.data = 0;
-+	err = bpf_map_delete_elem(fd, &key);
-+	CHECK(err, "del elem", "error %d\n", err);
-+
-+	/* overwrite the intermediate node (Error) */
-+	value = 2;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_EXIST);
-+	CHECK(err != -ENOENT, "overwrite nonexistent elem", "error %d\n", err);
-+
-+	close(fd);
-+}
-+
-+static void test_lpm_trie_update_full_map(void)
-+{
-+	struct lpm_trie_int_key key;
-+	int value, got;
-+	int fd, err;
-+
-+	fd = lpm_trie_create(sizeof(key), sizeof(value), 3);
-+
-+	/* add a new node */
-+	key.prefixlen = 16;
-+	key.data = 0;
-+	value = 0;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_NOEXIST);
-+	CHECK(err, "add new elem", "error %d\n", err);
-+	got = 0;
-+	err = bpf_map_lookup_elem(fd, &key, &got);
-+	CHECK(err, "lookup elem", "error %d\n", err);
-+	CHECK(got != value, "check value", "got %d exp %d\n", got, value);
-+
-+	/* add new node */
-+	key.prefixlen = 8;
-+	key.data = 0;
-+	value = 1;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_NOEXIST);
-+	CHECK(err, "add new elem", "error %d\n", err);
-+	got = 0;
-+	err = bpf_map_lookup_elem(fd, &key, &got);
-+	CHECK(err, "lookup elem", "error %d\n", err);
-+	CHECK(got != value, "check value", "got %d exp %d\n", got, value);
-+
-+	/* add new node */
-+	key.prefixlen = 9;
-+	key.data = htobe32(1 << 23);
-+	value = 2;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_NOEXIST);
-+	CHECK(err, "add new elem", "error %d\n", err);
-+	got = 0;
-+	err = bpf_map_lookup_elem(fd, &key, &got);
-+	CHECK(err, "lookup elem", "error %d\n", err);
-+	CHECK(got != value, "check value", "got %d exp %d\n", got, value);
-+
-+	/* try to add more node (Error) */
-+	key.prefixlen = 32;
-+	key.data = 0;
-+	value = 3;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_ANY);
-+	CHECK(err != -ENOSPC, "add to full trie", "error %d\n", err);
-+
-+	/* update the value of an existed node with BPF_EXIST */
-+	key.prefixlen = 16;
-+	key.data = 0;
-+	value = 4;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_EXIST);
-+	CHECK(err, "overwrite elem", "error %d\n", err);
-+	got = 0;
-+	err = bpf_map_lookup_elem(fd, &key, &got);
-+	CHECK(err, "lookup elem", "error %d\n", err);
-+	CHECK(got != value, "check value", "got %d exp %d\n", got, value);
-+
-+	/* update the value of an existed node with BPF_ANY */
-+	key.prefixlen = 9;
-+	key.data = htobe32(1 << 23);
-+	value = 5;
-+	err = bpf_map_update_elem(fd, &key, &value, BPF_ANY);
-+	CHECK(err, "overwrite elem", "error %d\n", err);
-+	got = 0;
-+	err = bpf_map_lookup_elem(fd, &key, &got);
-+	CHECK(err, "lookup elem", "error %d\n", err);
-+	CHECK(got != value, "check value", "got %d exp %d\n", got, value);
-+
-+	close(fd);
-+}
-+
-+static int cmp_str(const void *a, const void *b)
-+{
-+	const char *str_a = *(const char **)a, *str_b = *(const char **)b;
-+
-+	return strcmp(str_a, str_b);
-+}
-+
-+/* Save strings in LPM trie. The trailing '\0' for each string will be
-+ * accounted in the prefixlen. The strings returned during the iteration
-+ * should be sorted as expected.
-+ */
-+static void test_lpm_trie_iterate_strs(void)
-+{
-+	static const char * const keys[] = {
-+		"ab", "abO", "abc", "abo", "abS", "abcd",
-+	};
-+	const char *sorted_keys[ARRAY_SIZE(keys)];
-+	struct lpm_trie_bytes_key key, next_key;
-+	unsigned int value, got, i, j, len;
-+	struct lpm_trie_bytes_key *cur;
-+	int fd, err;
-+
-+	fd = lpm_trie_create(sizeof(key), sizeof(value), ARRAY_SIZE(keys));
-+
-+	for (i = 0; i < ARRAY_SIZE(keys); i++) {
-+		unsigned int flags;
-+
-+		/* add i-th element */
-+		flags = i % 2 ? BPF_NOEXIST : 0;
-+		len = strlen(keys[i]);
-+		/* include the trailing '\0' */
-+		key.prefixlen = (len + 1) * 8;
-+		memset(key.data, 0, sizeof(key.data));
-+		memcpy(key.data, keys[i], len);
-+		value = i + 100;
-+		err = bpf_map_update_elem(fd, &key, &value, flags);
-+		CHECK(err, "add elem", "#%u error %d\n", i, err);
-+
-+		err = bpf_map_lookup_elem(fd, &key, &got);
-+		CHECK(err, "lookup elem", "#%u error %d\n", i, err);
-+		CHECK(got != value, "lookup elem", "#%u expect %u got %u\n", i, value, got);
-+
-+		/* re-add i-th element (Error) */
-+		err = bpf_map_update_elem(fd, &key, &value, BPF_NOEXIST);
-+		CHECK(err != -EEXIST, "re-add elem", "#%u error %d\n", i, err);
-+
-+		/* Overwrite i-th element */
-+		flags = i % 2 ? 0 : BPF_EXIST;
-+		value = i;
-+		err = bpf_map_update_elem(fd, &key, &value, flags);
-+		CHECK(err, "update elem", "error %d\n", err);
-+
-+		/* Lookup #[0~i] elements */
-+		for (j = 0; j <= i; j++) {
-+			len = strlen(keys[j]);
-+			key.prefixlen = (len + 1) * 8;
-+			memset(key.data, 0, sizeof(key.data));
-+			memcpy(key.data, keys[j], len);
-+			err = bpf_map_lookup_elem(fd, &key, &got);
-+			CHECK(err, "lookup elem", "#%u/%u error %d\n", i, j, err);
-+			CHECK(got != j, "lookup elem", "#%u/%u expect %u got %u\n",
-+			      i, j, value, got);
-+		}
-+	}
-+
-+	/* Add element to a full qp-trie (Error) */
-+	key.prefixlen = sizeof(key.data) * 8;
-+	memset(key.data, 0, sizeof(key.data));
-+	value = 0;
-+	err = bpf_map_update_elem(fd, &key, &value, 0);
-+	CHECK(err != -ENOSPC, "add to full qp-trie", "error %d\n", err);
-+
-+	/* Iterate sorted elements: no deletion */
-+	memcpy(sorted_keys, keys, sizeof(keys));
-+	qsort(sorted_keys, ARRAY_SIZE(sorted_keys), sizeof(sorted_keys[0]), cmp_str);
-+	cur = NULL;
-+	for (i = 0; i < ARRAY_SIZE(sorted_keys); i++) {
-+		len = strlen(sorted_keys[i]);
-+		err = bpf_map_get_next_key(fd, cur, &next_key);
-+		CHECK(err, "iterate", "#%u error %d\n", i, err);
-+		CHECK(next_key.prefixlen != (len + 1) * 8, "iterate",
-+		      "#%u invalid len %u expect %u\n",
-+		      i, next_key.prefixlen, (len + 1) * 8);
-+		CHECK(memcmp(sorted_keys[i], next_key.data, len + 1), "iterate",
-+		      "#%u got %.*s exp %.*s\n", i, len, next_key.data, len, sorted_keys[i]);
-+
-+		cur = &next_key;
-+	}
-+	err = bpf_map_get_next_key(fd, cur, &next_key);
-+	CHECK(err != -ENOENT, "more element", "error %d\n", err);
-+
-+	/* Iterate sorted elements: delete the found key after each iteration */
-+	cur = NULL;
-+	for (i = 0; i < ARRAY_SIZE(sorted_keys); i++) {
-+		len = strlen(sorted_keys[i]);
-+		err = bpf_map_get_next_key(fd, cur, &next_key);
-+		CHECK(err, "iterate", "#%u error %d\n", i, err);
-+		CHECK(next_key.prefixlen != (len + 1) * 8, "iterate",
-+		      "#%u invalid len %u expect %u\n",
-+		      i, next_key.prefixlen, (len + 1) * 8);
-+		CHECK(memcmp(sorted_keys[i], next_key.data, len + 1), "iterate",
-+		      "#%u got %.*s exp %.*s\n", i, len, next_key.data, len, sorted_keys[i]);
-+
-+		cur = &next_key;
-+
-+		err = bpf_map_delete_elem(fd, cur);
-+		CHECK(err, "delete", "#%u error %d\n", i, err);
-+	}
-+	err = bpf_map_get_next_key(fd, cur, &next_key);
-+	CHECK(err != -ENOENT, "non-empty qp-trie", "error %d\n", err);
-+
-+	close(fd);
-+}
-+
-+/* Use the fixed prefixlen (32) and save integers in LPM trie. The iteration of
-+ * LPM trie will return these integers in big-endian order, therefore, convert
-+ * these integers to big-endian before update. After each iteration, delete the
-+ * found key (the smallest integer) and expect the next iteration will return
-+ * the second smallest number.
-+ */
-+static void test_lpm_trie_iterate_ints(void)
-+{
-+	struct lpm_trie_int_key key, next_key;
-+	unsigned int i, max_entries;
-+	struct lpm_trie_int_key *cur;
-+	unsigned int *data_set;
-+	int fd, err;
-+	bool value;
-+
-+	max_entries = 4096;
-+	data_set = calloc(max_entries, sizeof(*data_set));
-+	CHECK(!data_set, "malloc", "no mem\n");
-+	for (i = 0; i < max_entries; i++)
-+		data_set[i] = i;
-+
-+	fd = lpm_trie_create(sizeof(key), sizeof(value), max_entries);
-+	value = true;
-+	for (i = 0; i < max_entries; i++) {
-+		key.prefixlen = 32;
-+		key.data = htobe32(data_set[i]);
-+
-+		err = bpf_map_update_elem(fd, &key, &value, BPF_NOEXIST);
-+		CHECK(err, "add elem", "#%u error %d\n", i, err);
-+	}
-+
-+	cur = NULL;
-+	for (i = 0; i < max_entries; i++) {
-+		err = bpf_map_get_next_key(fd, cur, &next_key);
-+		CHECK(err, "iterate", "#%u error %d\n", i, err);
-+		CHECK(next_key.prefixlen != 32, "iterate", "#%u invalid len %u\n",
-+		      i, next_key.prefixlen);
-+		CHECK(be32toh(next_key.data) != data_set[i], "iterate", "#%u got 0x%x exp 0x%x\n",
-+		      i, be32toh(next_key.data), data_set[i]);
-+		cur = &next_key;
-+
-+		/*
-+		 * Delete the minimal key, the next call of bpf_get_next_key()
-+		 * will return the second minimal key.
-+		 */
-+		err = bpf_map_delete_elem(fd, &next_key);
-+		CHECK(err, "del elem", "#%u elem error %d\n", i, err);
-+	}
-+	err = bpf_map_get_next_key(fd, cur, &next_key);
-+	CHECK(err != -ENOENT, "more element", "error %d\n", err);
-+
-+	err = bpf_map_get_next_key(fd, NULL, &next_key);
-+	CHECK(err != -ENOENT, "no-empty qp-trie", "error %d\n", err);
-+
-+	free(data_set);
-+
-+	close(fd);
-+}
-+
- void test_lpm_trie_map_basic_ops(void)
- {
- 	int i;
-@@ -789,5 +1179,10 @@ void test_lpm_trie_map_basic_ops(void)
- 	test_lpm_get_next_key();
- 	test_lpm_multi_thread();
- 
-+	test_lpm_trie_update_flags();
-+	test_lpm_trie_update_full_map();
-+	test_lpm_trie_iterate_strs();
-+	test_lpm_trie_iterate_ints();
-+
- 	printf("%s: PASS\n", __func__);
- }
--- 
-2.29.2
-
+I think we have to treat this patch as a real filter and not as an example
+to make sure that the whole approach is workable end to end.
+The point about not holding path/dentry is very valid.
+The algorithm needs to support that.
+It may very well turn out that the logic of handling many filters
+without a loop and not grabbing a path refcnt is too complex for bpf.
+Then this subtree filtering would have to stay as a kernel module
+or extra flag/feature for fanotify.
 
