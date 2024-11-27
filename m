@@ -1,209 +1,126 @@
-Return-Path: <bpf+bounces-45769-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45770-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 480609DAF5A
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 23:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC8039DAFA2
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 00:01:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CCFEB21C0D
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 22:53:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29F4AB21E86
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 23:01:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AE932036FF;
-	Wed, 27 Nov 2024 22:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30D92036F6;
+	Wed, 27 Nov 2024 23:01:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TS4Z8JP5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E6aZ3lci"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B0313BC35;
-	Wed, 27 Nov 2024 22:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D589E149C41
+	for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 23:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732747995; cv=none; b=kpbCslYV0xqSMqeliGs+4vlbv9wpC7DPqUx2fpHjgbEOATPDr/Cbr5dstZmptuMioZ/HPanL7MohQ/XtMgDGRxuEjV/6a//ux6Gql0SddbRmxnI06CdSockE0bFDzowjMMvVRpoECyXZ2xVTnhXtBgJAjJh6bY12mdZMUH3F3nI=
+	t=1732748512; cv=none; b=ij5PT2DXqYcPkodDDsmqOZzVos3r4XrIUXjTmJfwDGNhjm5ozJVmkPBaPdKhIwcRLE8NA5kBRIHQVFjAXe2Bai188iXkq9Z2QlUKNPUW3V6c2AAaSqGpa3Z/+RTb/KnxinFBqo/rBYGZQ+S8xlSrjvBfoZOj8yHCX+yrqd5L9JQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732747995; c=relaxed/simple;
-	bh=KhwCd3IKHfen4pEV3oZ77ru65g6TB8/ZX48UXCDfP60=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=U+ijNHqfx5Ompd224BxaoCwy3DKFrPtqZqdUmsJHf9oNXWNLCFRVnIzw0TANY6UgVTfyTs6oQ+WPl9VNp/gSBl9EgLTb5RpLGrBcgngxhjaBmpg34HHsNuVLrL+Pr2uRtGlFCbZyA+AZJBSM6nK9M69kxI7UqPWchITH0qohUMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TS4Z8JP5; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1732748512; c=relaxed/simple;
+	bh=ZgvncyX9bsRCBDkRYpBXd1yDaTNlLk2191xj27RiN1A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TskCZb3j8aJBhUcnJmHiOLNaXwJI9obeW9t8r7COyFlgHFq6oBXIdtCOgfGEUr91X3Ig5LXt2ScAhyTYEWi4584uuD4BGUE5Fxe+QsB0LU9R1L+cYTV2nCMswuphzgOGrBYBTzbuO/HypG1SmYpDIIyr6sdf/JWk0bNpMCcPDoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E6aZ3lci; arc=none smtp.client-ip=209.85.221.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-212008b0d6eso1411725ad.3;
-        Wed, 27 Nov 2024 14:53:13 -0800 (PST)
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-382610c7116so176796f8f.0
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 15:01:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732747993; x=1733352793; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=U9rV1Gt6plqmR74C5PRsPjYQOCf8xGzWD3B8ZT/AbzY=;
-        b=TS4Z8JP5NDHHW9FUrd6g/7ejSwdYmMbvdZOXsIk0DnvTYyplD9gjHiJjo9u2U4soL3
-         yOD4eVMtbN3DGUbZRjklSonDUZyMqn9q4HUWg/UiFH4CxOPcn/4eweaay9Ze0gNWS7nU
-         FGniqf39LRA/dSkt15I/b0fQZzzuxOWeFEZzH1FNN5JXEPo005qahgGFInFAnFzDlsSP
-         QFnXRpfg+UKnwrVo69Ar7l7tvARGSz4X43nhPjZMZpBdNlUao6u8PbslaPuHmhDPj+rq
-         hTy0srkbWEmaBx802sF0fEbdpC/HLWIomzImp1gC/rgmdqI7l+GyX9MWZA8nZjUagHL4
-         vAtw==
+        d=gmail.com; s=20230601; t=1732748509; x=1733353309; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ADMYy9sTIBT24tEjtEKYDp0B9M8a1Q4OWD1W7Ej2Z6c=;
+        b=E6aZ3lci/IsyLSQVnzEgOxWXy264OT+Q9fiyVHaSjIdOnDvl3oEGfo8tPtIxOqdoQo
+         hlxEQStdorGXtb5x5RYq+6ujVXKQ1kZxr89TAB7pXRUOE4HTv6EzY6p/0F68DU92oC3O
+         ce0bLzp1na5gqZF6M3Q9u6zvTkC3MKch0sD1UPER4YwK6TYHVhaO4nPXAD/ZFjSdzFct
+         xd8EqSLWFF/qxjW76j7i5gZ9hfJMb/qFFAWjILbSv7rWUAIH/bB1JpxGL3OwD8MwrCrf
+         0FjqN6R4sCxkqxHNG715f52ALUByzg5d6lRr3W23ChOh6nUaUHqzIpY4g8tzJhDo7cJI
+         hcDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732747993; x=1733352793;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U9rV1Gt6plqmR74C5PRsPjYQOCf8xGzWD3B8ZT/AbzY=;
-        b=hTNctsI70yERiRCqdc6ATkKWnDvntPPPc5R5LcGAysDOR6mlKEKEaiIaBglKzWdFWg
-         Re3LiKbynCtvdqs+tcecvpAA9Qm09QLoUd0NwKgggm+HiMgLTm5Z8MmOkSeypqIcCchi
-         HoksmOWCGjEVFWOOmB25kneE1C+APFHRXI3AQ2biim3mYFA/haCG9mminUHqzrQMl9rL
-         MFERo+1UO5pdrVAQU6xWN0ihm5bWvdJuHldmGq4KSToSYk6+xYsABWXWMMix/dQVylq0
-         ePWw/VVid4hwHU3KXeRcuBEVPaxzEeDBeB9gdQiK4i0qG2ntu7SWnaeceR45n2X4XuPG
-         /GWg==
-X-Forwarded-Encrypted: i=1; AJvYcCV26BCQ/VUR5JRyAAlmDuMVpPAXZBqWkqGVtvaCm4gsWaKGYPb/uKCvpRGNx5+CmaCHLfo=@vger.kernel.org, AJvYcCX+TKMk/fdQeNvqb8W4+TcOhuTt5Au9IlNV6CLAbBhUSpm2q+WkqyyKB+xdOkT1pYFjSKDSqPIdsK+Tj9Df@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTYpLt3MWp2HHS1qRIt80xsc1V1ChgeO6HbRpJNvR63kIwL2Zq
-	tx2fNp1+Mf62jR+C2nDVy135FKadnYisvv4zb1D/uNOubqU3Z/5S
-X-Gm-Gg: ASbGncsdPO2yTi+H9bKBAE1DixseIHoeFu8KCGa5DCQpe/I6MsD2vmluOUBhPFIcQql
-	ScLa/gAEu8HSQarV6t8UqUDe1BsiOXisMi8t5GgVTWHbZxTvTPWAfcXhR8DNqUgE3tqr8Mmd/Fw
-	ut1AuQ2TWIs7BT6U0H/5Z7p7XR2Gi2Tw0paBd3kBHwmJ5S4qF9SM0B4ge7pAzy1yd2qGylb9bNr
-	gFNqOgAf3/XxVw8seShc37x/PyrqjBr7EGmrNPZYeq7+F8=
-X-Google-Smtp-Source: AGHT+IFyPFxcETgDyHI0Y1gQB3FUFLe3LPkscJBvYyFQtJK2eeZExiTDHHEEUteFfn/RMa5pPDLQqA==
-X-Received: by 2002:a17:902:f681:b0:20c:b485:eda3 with SMTP id d9443c01a7336-2150128c646mr47273085ad.20.1732747991601;
-        Wed, 27 Nov 2024 14:53:11 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215218f52bfsm841105ad.51.2024.11.27.14.53.10
+        d=1e100.net; s=20230601; t=1732748509; x=1733353309;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ADMYy9sTIBT24tEjtEKYDp0B9M8a1Q4OWD1W7Ej2Z6c=;
+        b=I4KAn6nOK+UL2gMJcy24KK8Ay56l0TdyJlBCfHycBcvgySv21fl9hBdORqW2hX6VOx
+         yJwp3JgbwZr5WwtjtrlzZB9fZ3UNDAr9DDhKWhTyON6Na/CRE+SZYw/vgcObYGDWb0ZJ
+         VOaenPNRKQUVzAycHai1ZAYQCAW3FL10li9KOHln/Owz9H8U5aiYHoIvD7Um4b+jFEgJ
+         tO6K29DsW8C9NdDxM7QBczDx9aqlm0TKWGAUdaYoRpKV/4pwizY1DgH3bmGPYbeenZ3Y
+         f2nbueMiAOHw8YKAWMOahfQrdchxYM0zJMXHxFAWoUxXK7MY0G6aPT9PKHsM80Lersn7
+         uwlw==
+X-Gm-Message-State: AOJu0Yx1RPqJBkfK1sI3V/ugxL0bmHA5baxS80r22cvQYN4Oh9GuvSXN
+	T4iQgrSjwA6tRqo7fezoVh4vodMEMrTh20/mwfGrXB5ix2F3elGYhqiWzQgTAqc=
+X-Gm-Gg: ASbGncsfs6l+9TK2IIaQ3fpqtndgZ2KLXBCv3S9/WocsGqZoEAoKUR818abrWh6vqB0
+	SnCNFskOovWpycOyC0PatZnNyXFJA96EXkFBozKlBUfQHlMlpWgC8ODRFcLjO0orfhcGphiknJh
+	YK15bjMV+RGxAib9xwq0SL/+J9OuazA9OsCGJ92qIfV6VKkb0ySoZq2tY1x1VdQWQ59TE5KRDAM
+	2Gr1OCu3jtNGAEiSA9JGO8UPP4Azyh5cXUOpwwCfZj5bwa+e7yANHJbvRmyQOEsoH3NTkcA25gb
+	HQ==
+X-Google-Smtp-Source: AGHT+IG0tW7ET0wGHDVLvUXN5GToydw5wvN0XLDJBSzoGajCMsIPWQi4N5rs24Ygen4oCd9gJHO5Dg==
+X-Received: by 2002:a05:6000:1a8c:b0:382:5077:afe8 with SMTP id ffacd0b85a97d-385c6ed7599mr4410771f8f.44.1732748508486;
+        Wed, 27 Nov 2024 15:01:48 -0800 (PST)
+Received: from localhost (fwdproxy-cln-033.fbsv.net. [2a03:2880:31ff:21::face:b00c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-385ccd7fec1sm60634f8f.97.2024.11.27.15.01.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2024 14:53:10 -0800 (PST)
-Message-ID: <bada6a6b9ab67da9a51a73d3cae36f650c2d48e0.camel@gmail.com>
-Subject: Re: [PATCH v2] bpf, verifier: Improve precision of BPF_MUL
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Matan Shachnai <m.shachnai@gmail.com>, ast@kernel.org
-Cc: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>,  Srinivas
- Narayana <srinivas.narayana@rutgers.edu>, Santosh Nagarakatte
- <santosh.nagarakatte@rutgers.edu>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko	
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu	
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh	
- <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo	
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Date: Wed, 27 Nov 2024 14:53:06 -0800
-In-Reply-To: <20241127074156.17567-1-m.shachnai@gmail.com>
-References: <20241127074156.17567-1-m.shachnai@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+        Wed, 27 Nov 2024 15:01:47 -0800 (PST)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Tao Lyu <tao.lyu@epfl.ch>,
+	Mathias Payer <mathias.payer@nebelwelt.net>,
+	Meng Xu <meng.xu.cs@uwaterloo.ca>,
+	Sanidhya Kashyap <sanidhya.kashyap@epfl.ch>
+Subject: [PATCH bpf-next v1 0/3] Fix missing process_iter_arg type check
+Date: Wed, 27 Nov 2024 15:01:44 -0800
+Message-ID: <20241127230147.4158201-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1199; h=from:subject; bh=ZgvncyX9bsRCBDkRYpBXd1yDaTNlLk2191xj27RiN1A=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnR6TVgQsbGOZUiFV7XA0I+2CXZt5dOpBUYToECwrW ZJq3KwaJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ0ek1QAKCRBM4MiGSL8Ryl8dD/ 9VlpFNFCnvwilAwO6bHqYZ9a1YMhkm7rp/tSdned2/G8s1jIY/WXx+G1f7KIEDYYzXBuGLTaLD8N1+ O+HPdt7nq7ECTKh94G1OOnJyKXdK0zJnLcICh4g0F2NORmecnWokt+9A8EQj9kZX9AyTdSyO3MyOmu RChXEisOvL3mnorjXLXlWV8YsqKeqiU6GizbcTznOvVo4R4wEzFxws4PWWB411rfxMaIL8a3tAKFJ7 oykeYmFPqDVmGe9ap+Txp8yiKWVSNpPz3CTINahoPfC1R84ocLlF/b+zlxAsHyX5Hz+xjjlRd+FvQ8 nUF8wtT1zB52gStahEPNyAoWPP32YU/Zs1rUrPdJtSDBaKWy/AeKRKOxHUCP+kbwi9+QzX6ePNMywF U5kS5mlsulLjuXmBa2FjZtUx9waKFHYn6e0QqZi3oljJHJ9aqUOCNjicG9XTK2FYIHI86plzFwfJUy Qle3XLCEYa/02rqFDIaQWp41+0QPB2i9GclaHO9vNd0GvBR9hWjlIZuDXVtRNDj1avn+8neOmlbRbF ww7CZavEPtUrcVcYbFY216AS/pP5XnFMV+yM354IZhfriojjuT+hVqSaR293zZWJ4AA26eKAG7ZdJs +KBpOA1Ww5h7WnQJgek/u5Wjg11Mxq5qaZQmOVphQ5nVg7YFiEcZOZIYEdwg==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 
-On Wed, 2024-11-27 at 02:41 -0500, Matan Shachnai wrote:
+I am taking over Tao's earlier patch set that can be found at [0], after
+an offline discussion. The bug reported in that thread is that
+process_iter_arg missed a reg->type == PTR_TO_STACK check. Fix this by
+adding it in, and also address comments from Andrii on the earlier
+attempt. Include more selftests to ensure the error is caught.
 
-[...]
+  [0]: https://lore.kernel.org/bpf/20241107214736.347630-1-tao.lyu@epfl.ch
 
-> In conclusion, with this patch,
->=20
-> 1. We were able to show that we can improve the overall precision of
->    BPF_MUL. We proved (using an SMT solver) that this new version of
->    BPF_MUL is at least as precise as the current version for all inputs.
->=20
-> 2. We are able to prove the soundness of the new scalar_min_max_mul() and
->    scalar32_min_max_mul(). By leveraging the existing proof of tnum_mul
->    [1], we can say that the composition of these three functions within
->    BPF_MUL is sound.
+Kumar Kartikeya Dwivedi (2):
+  bpf: Zero index arg error string for dynptr and iter
+  selftests/bpf: Add tests for iter arg check
 
-Hi Matan,
+Tao Lyu (1):
+  bpf: Ensure reg is PTR_TO_STACK in process_iter_arg
 
-I think this is a nice simplification of the existing code.
-Could you please also add a few canary tests in the
-tools/testing/selftests/bpf/progs/verifier_bounds.c ?
-(e.g. simple case plus possible edge cases).
-Something like:
+ kernel/bpf/verifier.c                         | 17 +++++++-----
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 22 ++++++++--------
+ tools/testing/selftests/bpf/progs/iters.c     | 26 +++++++++++++++++++
+ .../selftests/bpf/progs/iters_state_safety.c  | 14 +++++-----
+ .../selftests/bpf/progs/iters_testmod_seq.c   |  4 +--
+ .../bpf/progs/test_kfunc_dynptr_param.c       |  2 +-
+ .../selftests/bpf/progs/verifier_bits_iter.c  |  8 +++---
+ 7 files changed, 62 insertions(+), 31 deletions(-)
 
-    SEC("tc")
-    __success __log_level(2)
-    __msg("r6 *=3D r7 {{.*}}; R6_w=3Dsome-range-here")
-    __naked void mult_mixed_sign(void)
-    {
-    	asm volatile (
-    	"call %[bpf_get_prandom_u32];"
-    	"r6 =3D r0;"
-    	"call %[bpf_get_prandom_u32];"
-    	"r7 =3D r0;"
-    	"r6 &=3D 0xf;"
-    	"r6 -=3D 1000000000;"
-    	"r7 &=3D 0xf;"
-    	"r7 -=3D 2000000000;"
-    	"r6 *=3D r7;"
-    	"exit"
-    	:
-    	: __imm(bpf_get_prandom_u32),
-    	  __imm(bpf_skb_store_bytes)
-    	: __clobber_all);
-    }
 
-We usually do this as a separate patch in a patch-set.
-
-Also, it looks like this has limited applicability in practice,
-because small negative values denote huge unsigned values,
-hence overflow check kicks in for such values.
-E.g. no range inferred for [-10,5] * [-20,-5]:
-
-  0: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
-  1: (bf) r6 =3D r0                       ; R0_w=3Dscalar(id=3D1) R6_w=3Dsc=
-alar(id=3D1)
-  2: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
-  3: (bf) r7 =3D r0                       ; R0_w=3Dscalar(id=3D2) R7_w=3Dsc=
-alar(id=3D2)
-  4: (57) r6 &=3D 15                      ; R6_w=3Dscalar(smin=3Dsmin32=3D0=
-,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_off=3D(0x0; 0xf))
-  5: (17) r6 -=3D 10                      ; R6_w=3Dscalar(smin=3Dsmin32=3D-=
-10,smax=3Dsmax32=3D5)
-  6: (57) r7 &=3D 15                      ; R7_w=3Dscalar(smin=3Dsmin32=3D0=
-,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_off=3D(0x0; 0xf))
-  7: (17) r7 -=3D 20                      ; R7_w=3Dscalar(smin=3Dsmin32=3D-=
-20,smax=3Dsmax32=3D-5,umin=3D0xffffffffffffffec,umax=3D0xfffffffffffffffb,u=
-min32=3D0xffffffec,umax32=3D0xfffffffb,var_off=3D(0xffffffffffffffe0; 0x1f)=
-)
-  8: (2f) r6 *=3D r7                      ; R6_w=3Dscalar() R7_w=3Dscalar(s=
-min=3Dsmin32=3D-20,smax=3Dsmax32=3D-5,umin=3D0xffffffffffffffec,umax=3D0xff=
-fffffffffffffb,umin32=3D0xffffffec,umax32=3D0xfffffffb,var_off=3D(0xfffffff=
-fffffffe0; 0x1f))
-  9: (95) exit
-
-Compared to:
-
-  0: R1=3Dctx() R10=3Dfp0
-  ; asm volatile ( @ verifier_bounds.c:1208
-  0: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
-  1: (bf) r6 =3D r0                       ; R0_w=3Dscalar(id=3D1) R6_w=3Dsc=
-alar(id=3D1)
-  2: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
-  3: (bf) r7 =3D r0                       ; R0_w=3Dscalar(id=3D2) R7_w=3Dsc=
-alar(id=3D2)
-  4: (57) r6 &=3D 15                      ; R6_w=3Dscalar(smin=3Dsmin32=3D0=
-,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_off=3D(0x0; 0xf))
-  5: (17) r6 -=3D 1000000000              ; R6_w=3Dscalar(smin=3D0xffffffff=
-c4653600,smax=3D0xffffffffc465360f,umin=3D0xffffffffc4653600,umax=3D0xfffff=
-fffc465360f,smin32=3Dumin32=3D0xc4653600,smax32=3Dumax32=3D0xc465360f,var_o=
-ff=3D(0xffffffffc4653600; 0xf))
-  6: (57) r7 &=3D 15                      ; R7_w=3Dscalar(smin=3Dsmin32=3D0=
-,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_off=3D(0x0; 0xf))
-  7: (17) r7 -=3D 2000000000              ; R7_w=3Dscalar(smin=3D0xffffffff=
-88ca6c00,smax=3D0xffffffff88ca6c0f,umin=3D0xffffffff88ca6c00,umax=3D0xfffff=
-fff88ca6c0f,smin32=3Dumin32=3D0x88ca6c00,smax32=3Dumax32=3D0x88ca6c0f,var_o=
-ff=3D(0xffffffff88ca6c00; 0xf))
-  8: (2f) r6 *=3D r7                      ; R6_w=3Dscalar(smax=3D0x7fffffff=
-fffffeff,umax=3D0xfffffffffffffeff,smax32=3D0x7ffffeff,umax32=3D0xfffffeff,=
-var_off=3D(0x0; 0xfffffffffffffeff)) R7_w=3Dscalar(smin=3D0xffffffff88ca6c0=
-0,smax=3D0xffffffff88ca6c0f,umin=3D0xffffffff88ca6c00,umax=3D0xffffffff88ca=
-6c0f,smin32=3Dumin32=3D0x88ca6c00,smax32=3Dumax32=3D0x88ca6c0f,var_off=3D(0=
-xffffffff88ca6c00; 0xf))
-  9: (95) exit
-
-Is it possible to do check_mul_overflow() for signed bounds and
-rely on reg_bounds_sync() for unsigned?
-
-[...]
+base-commit: c8d02b547363880d996f80c38cc8b997c7b90725
+-- 
+2.43.5
 
 
