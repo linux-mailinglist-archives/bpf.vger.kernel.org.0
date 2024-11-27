@@ -1,46 +1,47 @@
-Return-Path: <bpf+bounces-45746-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45745-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9FC89DADA4
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 20:21:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31FDE9DADA3
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 20:21:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48E29165EA5
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 19:21:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F5E0165DFF
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 19:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4059202F76;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A2E202F6F;
 	Wed, 27 Nov 2024 19:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="gfoR/ncG"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="ffDLLbXM"
 X-Original-To: bpf@vger.kernel.org
 Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 193E1200100;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAADE83A17;
 	Wed, 27 Nov 2024 19:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732735251; cv=none; b=BGvOxYV/0od+0GsEbyIZcjvb4RGJWuMpdzl1pzkML8CCF96p6aXKm3pvKl2bvIXJWIm5GC57uk9XEppKoWpx6hYEvBqwqQ/Bgyp/qxlesB92dqarpzmNjbO2A+BmdmOlUWYZ27lUfToExl1wkvkUH5fvtvdSKNCtJoWtA0lX3Gs=
+	t=1732735251; cv=none; b=vCNEG5j1ZCkpZVSJI2U4C3hYTlDf0vo9SZ5LrmybKyQdl1ZrJcDOs9oiJzNneYVu7kBf0k84jFEtiqSQK04/v8yyCWv8FPF41x1YsE1bJnz2clAgBlw28OgyOVonzBLHOq9Tl943vGj9ZwZyE21B6fbmNRivvq68Y0TZzJQH3WY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1732735251; c=relaxed/simple;
-	bh=zC0ViIiYdKsbVqeJfJUG3RgY2nrR+ULONrnm6jK1PYA=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=HisSkWGu2ZHU2YJoTuzuSvfSv28Y66KLL2AvO6OmXet1YO5fyCb6Js7Sh/rfMIaZVfywPJFQPITnApY36cTLb3bJ1wqmhtQ5OwFLQaizMfIlZQAWT32eJtYVVDzVvflyMpCjCqDEEcdeViCEiDXkX8RjBGtihIDIsYVUYLcGZFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=gfoR/ncG; arc=none smtp.client-ip=159.69.126.157
+	bh=SPP5A1FLuqjp7YWIjzGFzkMuvaLaozdDJfexWQfvdfA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=iK42B7hDoBhSwD/4dVu9zDsXUUZcrA+Eu7N64Kusto1bvBfYpVoZEgrQMListnNJAtG8+fNQOm220EDfqV4pHGn7VK88oNBckHIJe5inGA2CpWXkjn7EP9flzJIaleeP2xsdD9+DJP+k+V2XNA2MZKWfDmfUXXhQf0is0ZqSyTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=ffDLLbXM; arc=none smtp.client-ip=159.69.126.157
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
 	s=mail; t=1732735245;
-	bh=zC0ViIiYdKsbVqeJfJUG3RgY2nrR+ULONrnm6jK1PYA=;
-	h=From:Subject:Date:To:Cc:From;
-	b=gfoR/ncGvuCTb4B+50mjWOUOjuwdb1/ZJZKr03VqAgL0hjj+TqOI642/ypapPq21m
-	 Zvcpj0QZIHXlLk/krWIam+wUKWSBimMsG9JD00ccfepk+e46w68YjV9vwBGwCsFMe9
-	 1LsDiTPAGvitIbTNaTbFXxPcyTB0F21+54rQ5hAQ=
+	bh=SPP5A1FLuqjp7YWIjzGFzkMuvaLaozdDJfexWQfvdfA=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=ffDLLbXMINI3aaTSl45JsazDmUpbn4W+EfqQTkrzumTBybsKHHwAYup9HVu8d6SX0
+	 3icCN2XAHfFFuw//q6SzsoiyxOrocRnMORBXvb09SarMlo+qK2kJ1FS5DxSp3MCsHP
+	 vzVJI4FwQY/6wQTXt2w6ldnRHEweHPd3IrxUuA58=
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH bpf-next 0/9] bpf: Constify BPF ops
-Date: Wed, 27 Nov 2024 20:15:19 +0100
-Message-Id: <20241127-bpf-const-ops-v1-0-a698b8d58680@weissschuh.net>
+Date: Wed, 27 Nov 2024 20:15:20 +0100
+Subject: [PATCH bpf-next 1/9] bpf: tcp: Remove inaccurate comment about
+ extern
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -49,10 +50,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAMdvR2cC/x2MywqAIBAAfyX23ELak34lOlSutRcVN0KI/j3rO
- DAzNwhFJoGxuCHSxcLeZVBlAduxuJ2QTWbQlW6U0j2uweLmnZzog+BijB66bq1V20NuQiTL6f9
- N8KmO0gnz87zgjR7DaQAAAA==
-X-Change-ID: 20241127-bpf-const-ops-add2866b3157
+Message-Id: <20241127-bpf-const-ops-v1-1-a698b8d58680@weissschuh.net>
+References: <20241127-bpf-const-ops-v1-0-a698b8d58680@weissschuh.net>
+In-Reply-To: <20241127-bpf-const-ops-v1-0-a698b8d58680@weissschuh.net>
 To: "David S. Miller" <davem@davemloft.net>, 
  David Ahern <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, 
  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
@@ -77,46 +77,37 @@ Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
  bpf@vger.kernel.org, linux-input@vger.kernel.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1732735245; l=1323;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1732735245; l=782;
  i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=zC0ViIiYdKsbVqeJfJUG3RgY2nrR+ULONrnm6jK1PYA=;
- b=ySK54si6Ag6rcojkx7OIsS9WP8sr4LPXu+9XrODrxc3Uh2Zl4ToNUwiMWlcOTa/vu12B06OvE
- rvFYs2UjQD/CX5F/kTcWJT6XRTzsOhms6mKqG3GaGYQhAgdudk4kn/7
+ bh=SPP5A1FLuqjp7YWIjzGFzkMuvaLaozdDJfexWQfvdfA=;
+ b=KN/aWxe/VChXuEDXwVRvceUnWWLhuyTogCfxgTBGVFF0Y/k72S+3+6FI1HX5L6DeNfT3TvlK5
+ Zx+f01lMb9QBRVgzGOkguEDk+x7e0ZuqvNuEpWW66CBHCe0oOJBWMwH
 X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
  pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-Move struct bpf_struct_ops into read-only memory to protect against
-accidental and malicious modifications.
+The "extern" qualifier which the comment refers to was removed.
+Also remove the comment.
 
+Fixes: f6be98d19985 ("bpf, net: switch to dynamic registration")
 Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
-Thomas Weißschuh (9):
-      bpf: tcp: Remove inaccurate comment about extern
-      bpf: Move func_models from bpf_struct_ops to bpf_struct_ops_desc
-      bpf: Allow registration of const struct bpf_struct_ops
-      const_structs.checkpatch: add bpf_struct_ops
-      bpf: Allow registration of const cfi_stubs
-      bpf, net: tcp: Constify BPF ops
-      bpf, net: dummy_ops: Constify BPF ops
-      HID: bpf: constify BPF ops
-      sched_ext: Constify BPF ops
+ net/ipv4/bpf_tcp_ca.c | 1 -
+ 1 file changed, 1 deletion(-)
 
- drivers/hid/bpf/hid_bpf_struct_ops.c |  4 ++--
- include/linux/bpf.h                  |  8 ++++----
- include/linux/btf.h                  |  2 +-
- kernel/bpf/bpf_struct_ops.c          |  8 ++++----
- kernel/bpf/btf.c                     |  4 ++--
- kernel/sched/ext.c                   |  4 ++--
- net/bpf/bpf_dummy_struct_ops.c       | 10 +++++-----
- net/ipv4/bpf_tcp_ca.c                |  7 +++----
- scripts/const_structs.checkpatch     |  1 +
- 9 files changed, 24 insertions(+), 24 deletions(-)
----
-base-commit: fc39fb56917bb3cb53e99560ca3612a84456ada2
-change-id: 20241127-bpf-const-ops-add2866b3157
+diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+index 554804774628e4b3d03bc3b19b96d717a581439e..ce5012f6821d543541b13275aff87bef0abf4677 100644
+--- a/net/ipv4/bpf_tcp_ca.c
++++ b/net/ipv4/bpf_tcp_ca.c
+@@ -11,7 +11,6 @@
+ #include <net/tcp.h>
+ #include <net/bpf_sk_storage.h>
+ 
+-/* "extern" is to avoid sparse warning.  It is only used in bpf_struct_ops.c. */
+ static struct bpf_struct_ops bpf_tcp_congestion_ops;
+ 
+ static const struct btf_type *tcp_sock_type;
 
-Best regards,
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
+2.47.1
 
 
