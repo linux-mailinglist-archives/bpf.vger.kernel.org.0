@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-45747-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45748-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE04A9DADA5
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 20:21:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A0849DADAD
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 20:21:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CC57B232EA
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 19:21:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34C3828477A
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 19:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5196202F7F;
-	Wed, 27 Nov 2024 19:20:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139032036EE;
+	Wed, 27 Nov 2024 19:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="mXXNK4Bp"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="I6pQFHuR"
 X-Original-To: bpf@vger.kernel.org
 Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 682791FF7AA;
-	Wed, 27 Nov 2024 19:20:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB1016A8D2;
+	Wed, 27 Nov 2024 19:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732735251; cv=none; b=cj+K0zZmbZ//hzLz7QeRET3kEoVzY3C62V2zvWSUDH4Af7d6Ce2G8CXOG8PoH/Xno27rnJIptRYpZn5h/0XvWIQCjyqsqSr834wQGLbHG4hTQqVZdJI9KkI0XdU6AnUgJm3kOCbbecr4FHrud5t77zuCagvB1jR64fsT2pLfB7Y=
+	t=1732735251; cv=none; b=Wg7yWmwtQ0QaZEE8vRYmKMcgsnJh0C7V+zsaDu0bKg/nVLkrKlmyaxHgm4QtbY2WrAzEI2KtP8YOalBVvfSITZJo4KaURFZ6VhF50kvRlQ4TCpF0YNOzhT4WaJupHyRqh1mfCZV+E55XAafvbx+R4ITIMyazvLkxfUUsKxDnSWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1732735251; c=relaxed/simple;
-	bh=j+Y13MSIpYC9IMfunH7OOKMb4F7xuB+1KU8yNntWscA=;
+	bh=FSIdOPI7G71E81SlPJ31/CYJakCYciP1NuGPqiBf6ns=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=VE5DANU24Td1vMToxK3cwNsNcJBor5r6uBA/LwlZ8/8HrerBbKAT26BX/kCMhwz/04C2uBZ8i6rYJM+HBQrQMbl4XJ5fGL06SK4ylqmcbhxabxLzdWbA0zWi3wA/z1/ZW+sYvcJMi1s3y5eELrbG2OmJlqpjVInzz45tT4JSPwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=mXXNK4Bp; arc=none smtp.client-ip=159.69.126.157
+	 In-Reply-To:To:Cc; b=u+f94P8mnIkTxT1mw1WA0cnF2gjZEBR15rshp21LkSKVJUgWsOu4/ERKqary3A1L8xp1anFOUWcALo2qkFo4Clve/swdYlMcakPSU8zDEakMlgol6q8C91RGOsO8OM+7fnQv+ZxNeADAwQYZfCzS0YyDrBA8PrVHOoBb3FVuJgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=I6pQFHuR; arc=none smtp.client-ip=159.69.126.157
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
 	s=mail; t=1732735245;
-	bh=j+Y13MSIpYC9IMfunH7OOKMb4F7xuB+1KU8yNntWscA=;
+	bh=FSIdOPI7G71E81SlPJ31/CYJakCYciP1NuGPqiBf6ns=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=mXXNK4BpTRDyul0Yyyh+2TgWb4YZnsqvI4bGeVRlCnmUAJWZOJzL0kB2MV7Ci7N+W
-	 WSPiB4tzpKZySb+VCjTXh6L4ty3V99gzGECWZvrqEl1V4JRsQR7ntFYGcgPw0iDC0G
-	 1MGQF58Isit24zn0O4WkBqsnQ/G6Qt5MHtYuUArQ=
+	b=I6pQFHuRsMWz+nzxgY5drDkP68HgKXd+aWd9/pBgEYyRyX/ErDpqsU8wUnzr6cq/r
+	 YDisRnXWXx7Le2sDwQJeAJDFVde/P5a5CwLLnZ18+j9M9rzkrLKR4Tct84bcYsHw9y
+	 /is+W8VI3svs8i089MDIHSVyE8ACTL2U9XvyFru8=
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Wed, 27 Nov 2024 20:15:21 +0100
-Subject: [PATCH bpf-next 2/9] bpf: Move func_models from bpf_struct_ops to
- bpf_struct_ops_desc
+Date: Wed, 27 Nov 2024 20:15:22 +0100
+Subject: [PATCH bpf-next 3/9] bpf: Allow registration of const struct
+ bpf_struct_ops
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,7 +50,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20241127-bpf-const-ops-v1-2-a698b8d58680@weissschuh.net>
+Message-Id: <20241127-bpf-const-ops-v1-3-a698b8d58680@weissschuh.net>
 References: <20241127-bpf-const-ops-v1-0-a698b8d58680@weissschuh.net>
 In-Reply-To: <20241127-bpf-const-ops-v1-0-a698b8d58680@weissschuh.net>
 To: "David S. Miller" <davem@davemloft.net>, 
@@ -77,102 +77,87 @@ Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
  bpf@vger.kernel.org, linux-input@vger.kernel.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1732735245; l=3668;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1732735245; l=3024;
  i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=j+Y13MSIpYC9IMfunH7OOKMb4F7xuB+1KU8yNntWscA=;
- b=qf3rhqnd/jR5IPIOWFkhYUOSIKFWy2kJxY+Qsb9QXA8GibI1+LPwRaJaQxEPBo2c297pFfmw/
- sxd7IMK0WK/A4U7ARq4JdXzG/LGlLeLLiboLL7G2qtyT3UgMNP61EY/
+ bh=FSIdOPI7G71E81SlPJ31/CYJakCYciP1NuGPqiBf6ns=;
+ b=BJolLI/HSp5zIdyovEjzP9haUQNeQtMfAuKZzuqRexsJKhlQLDcJESuCetrloLZ+5ElnmmXOI
+ tGmg7p3EYXDBjnLfzFE4MviBreoiQuz8G6K9/esh2CoF3PeFLkRrbXu
 X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
  pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-The func_models are the only member of struct bpf_struct_ops which are
-modified by the BPF core.
-Moving it into bpf_struct_ops_desc allows the static definitions of
-bpf_struct_ops throughout the tree being moved into read-only memory.
-
-The dummy ops don't have access to a bpf_struct_ops_desc.
-For them declare a dedicated static variable for the func_members.
+The BPF core does not need to modify instances of struct bpf_struct_ops
+anymore. Reflect this in the API so users can move their instances into
+read-only memory.
 
 Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- include/linux/bpf.h            | 4 ++--
- kernel/bpf/bpf_struct_ops.c    | 4 ++--
- net/bpf/bpf_dummy_struct_ops.c | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ include/linux/bpf.h         | 2 +-
+ include/linux/btf.h         | 2 +-
+ kernel/bpf/bpf_struct_ops.c | 2 +-
+ kernel/bpf/btf.c            | 4 ++--
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3ace0d6227e3cb70dd75bdc6afa52870dee250f1..b734543b7a2b48e717d4f1be765e0198114b4f0a 100644
+index b734543b7a2b48e717d4f1be765e0198114b4f0a..a9267af9671b2bc8961cde24d2f79f473ab227d7 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -1779,7 +1779,6 @@ struct btf_member;
-  * @type: BTF type.
-  * @value_type: Value type.
-  * @name: The name of the struct bpf_struct_ops object.
-- * @func_models: Func models
-  * @type_id: BTF type id.
-  * @value_id: BTF value id.
-  */
-@@ -1799,7 +1798,6 @@ struct bpf_struct_ops {
- 	void *cfi_stubs;
- 	struct module *owner;
- 	const char *name;
--	struct btf_func_model func_models[BPF_STRUCT_OPS_MAX_NR_MEMBERS];
+@@ -1814,7 +1814,7 @@ struct bpf_struct_ops_arg_info {
  };
  
- /* Every member of a struct_ops type has an instance even a member is not
-@@ -1825,6 +1823,8 @@ struct bpf_struct_ops_desc {
+ struct bpf_struct_ops_desc {
+-	struct bpf_struct_ops *st_ops;
++	const struct bpf_struct_ops *st_ops;
  
- 	/* Collection of argument information for each member */
- 	struct bpf_struct_ops_arg_info *arg_info;
-+
-+	struct btf_func_model func_models[BPF_STRUCT_OPS_MAX_NR_MEMBERS];
- };
+ 	const struct btf_type *type;
+ 	const struct btf_type *value_type;
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 4214e76c916861462e45e98690fcf461c05ca737..87a5ddef9fdc4b7f09d375ec5959abd6d07533a9 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -519,7 +519,7 @@ struct bpf_verifier_log;
  
- enum bpf_struct_ops_state {
+ #if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL)
+ struct bpf_struct_ops;
+-int __register_bpf_struct_ops(struct bpf_struct_ops *st_ops);
++int __register_bpf_struct_ops(const struct bpf_struct_ops *st_ops);
+ const struct bpf_struct_ops_desc *bpf_struct_ops_find_value(struct btf *btf, u32 value_id);
+ const struct bpf_struct_ops_desc *bpf_struct_ops_find(struct btf *btf, u32 type_id);
+ #else
 diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 606efe32485a985b854aa7e96e1a7f7cfd5057d3..7ee7c25d21d480d46b40b23ff8aec9d12ea81f68 100644
+index 7ee7c25d21d480d46b40b23ff8aec9d12ea81f68..967f0914d473fcde4a6ce3bb6ac976345daf8e88 100644
 --- a/kernel/bpf/bpf_struct_ops.c
 +++ b/kernel/bpf/bpf_struct_ops.c
-@@ -397,7 +397,7 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
- 
- 		if (btf_distill_func_proto(log, btf,
- 					   func_proto, mname,
--					   &st_ops->func_models[i])) {
-+					   &st_ops_desc->func_models[i])) {
- 			pr_warn("Error in parsing func ptr %s in struct %s\n",
- 				mname, st_ops->name);
- 			err = -EINVAL;
-@@ -777,7 +777,7 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 
- 		trampoline_start = image_off;
- 		err = bpf_struct_ops_prepare_trampoline(tlinks, link,
--						&st_ops->func_models[i],
-+						&st_ops_desc->func_models[i],
- 						*(void **)(st_ops->cfi_stubs + moff),
- 						&image, &image_off,
- 						st_map->image_pages_cnt < MAX_TRAMP_IMAGE_PAGES);
-diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
-index f71f67c6896b3de862a556d6f1e959a378cbda96..3a675227074e546e6a02e80db3841ed72d5bbff8 100644
---- a/net/bpf/bpf_dummy_struct_ops.c
-+++ b/net/bpf/bpf_dummy_struct_ops.c
-@@ -129,7 +129,7 @@ extern const struct bpf_link_ops bpf_struct_ops_link_lops;
- int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
- 			    union bpf_attr __user *uattr)
+@@ -314,7 +314,7 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+ 			     struct btf *btf,
+ 			     struct bpf_verifier_log *log)
  {
--	const struct bpf_struct_ops *st_ops = &bpf_bpf_dummy_ops;
-+	static typeof_member(struct bpf_struct_ops_desc, func_models) func_models;
- 	const struct btf_type *func_proto;
- 	struct bpf_dummy_ops_test_args *args;
- 	struct bpf_tramp_links *tlinks = NULL;
-@@ -175,7 +175,7 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
+-	struct bpf_struct_ops *st_ops = st_ops_desc->st_ops;
++	const struct bpf_struct_ops *st_ops = st_ops_desc->st_ops;
+ 	struct bpf_struct_ops_arg_info *arg_info;
+ 	const struct btf_member *member;
+ 	const struct btf_type *t;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index e7a59e6462a9331d0acb17a88a4ebf641509c050..e3be8b7d6cbb268cf389bac9d3f889dbfd664a2e 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -9155,7 +9155,7 @@ bool btf_type_ids_nocast_alias(struct bpf_verifier_log *log,
  
- 	op_idx = prog->expected_attach_type;
- 	err = bpf_struct_ops_prepare_trampoline(tlinks, link,
--						&st_ops->func_models[op_idx],
-+						&func_models[op_idx],
- 						&dummy_ops_test_ret_function,
- 						&image, &image_off,
- 						true);
+ #ifdef CONFIG_BPF_JIT
+ static int
+-btf_add_struct_ops(struct btf *btf, struct bpf_struct_ops *st_ops,
++btf_add_struct_ops(struct btf *btf, const struct bpf_struct_ops *st_ops,
+ 		   struct bpf_verifier_log *log)
+ {
+ 	struct btf_struct_ops_tab *tab, *new_tab;
+@@ -9242,7 +9242,7 @@ bpf_struct_ops_find(struct btf *btf, u32 type_id)
+ 	return NULL;
+ }
+ 
+-int __register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
++int __register_bpf_struct_ops(const struct bpf_struct_ops *st_ops)
+ {
+ 	struct bpf_verifier_log *log;
+ 	struct btf *btf;
 
 -- 
 2.47.1
