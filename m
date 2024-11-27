@@ -1,209 +1,183 @@
-Return-Path: <bpf+bounces-45678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94DA89DA018
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 01:50:47 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA1959DA01C
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 01:52:45 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3273E168D99
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 00:50:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B238283118
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2024 00:52:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3008BE5;
-	Wed, 27 Nov 2024 00:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94AE379CF;
+	Wed, 27 Nov 2024 00:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QPkJ7nTO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PnIY1usE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47283360;
-	Wed, 27 Nov 2024 00:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D4908F49;
+	Wed, 27 Nov 2024 00:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732668638; cv=none; b=aE/SLPM1teykufm3iEyV7m6tYwqA3oJvwRbTRs/gFcV2FenKUATdU3me4WCijsd+xbx489ZuTMSrQ3tj879EKstAiX/+SZQ3FLIA3fFDID21G7KXeo6oTecNe9PZx0wiB60ZAUXJPMEBrvvSE0nk27l7LqGunMBLY2zZcNakNGw=
+	t=1732668759; cv=none; b=Cg2clysKT5l58nKCpAqnzKhcsFGXug89eecUk1JK2TImIIMqj+PUPtmMEM5ukfSaNFags28SSb3mAjhnKca/PhhPacxmVHn9nSvfx/E0169MglH8pvs1XfuA3ZCd1g/Nmq4Ls5VXkOx3hxHWbU5pLsxo3YWGzHNwAVsOhqn7/68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732668638; c=relaxed/simple;
-	bh=t1hVwwhncVAUj/Lm9r7LI34ioqQ7kMq0x+fo0u4M8Q0=;
+	s=arc-20240116; t=1732668759; c=relaxed/simple;
+	bh=4PsApXP8sXU7gF8b0yzHPzWru0EeL0tGYpYvBWNvyzQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pyoyJFf9vDBNBwidywUODSbgMQa/DytmVIp4AApJXcJTiq5j61nXolfOuUFhMspKmcQcNssk1Vx7dXwylPYk0liAExZTgQwUTJVgWryPUQintj0Tby9WDW8gOvGO4ubTFz0naiSwjsayfob1MKIbvTx7/ci2xEf/OesN2oxf8Hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QPkJ7nTO; arc=none smtp.client-ip=209.85.128.51
+	 To:Cc:Content-Type; b=oW/AV3nIFAwuFYjFOIM8SDFrBM9IOc2XrdSrQW3wtAwDZctpqwFMtsbH/+R//R08Y8CkWVT5cNGBLUhfIBB9rsmIpQ33Y8KAlsX8kqIZY4t6XubE5UpveexjiXLpIis6lYh2Qp4LAJDV/+ssPp3omb2TDWbA79mEDiUN+utOlBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PnIY1usE; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43497839b80so27619645e9.2;
-        Tue, 26 Nov 2024 16:50:35 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3825a721ae5so170652f8f.1;
+        Tue, 26 Nov 2024 16:52:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732668634; x=1733273434; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1732668756; x=1733273556; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j3EkoerGTLMLe4OrsMDgak1/GJweiL9MEJTp4Bxm4Oc=;
-        b=QPkJ7nTOAqL7nwYQZbew6Jcz+9wC6VCi1AJtWi0Eyp5d5CnDpTQ+9voWMZpJkzt+yC
-         RTb5h+v74CF1YKDVw6atVKGg9qcI3Pezl3ZRJJscESDOa4fFO95izCqb4qDLYqI8HDG7
-         Nv5+DzJheds/FLqrleTKPqOXRCkpXeCtIoGf+/hLt7+A+ZhLpdzBSrqBBsuF6PB92Odn
-         6wXOC1A0qmDQsEIsZyOkoCQ8jLn7hlfUTUoT79RQRcQ60COGqfWKe5L+fI0JayxAWwE4
-         oPIwjFSqpBqs6T94EA6kFxBfNSiXALj8IOZDkeXgRryDPMXNuLMQldxmPiUiU/UZDBRK
-         6cLA==
+        bh=xjRRCxwGmW1KZp8fE5HVHe1CX+qRVInoZebEpE8YP/k=;
+        b=PnIY1usEWw4WsAZiQWF5yLfiO5ThGBkYQ8KEqsx0KMU1EperXC5bdUyI5R9IBu4xvm
+         5hQSRoB+MEaAa2xPMDxf/4CnGNJE0iNIVBnscYBzFqJY/HS0m2AHCnFrPBt5W1m/xgAg
+         NU1HqeGztmGE2iFUqHYORuXKGdzBWR+5chmr+pWZ5d7g0DVdbltfFO4YWqqWvQwjT0xl
+         1EDpJ3MoHb8HNTPZLhY0PQ0Znf7zPWZbxGwmqunEdCvSRA1FH9W4fAUpjtvoBwaRf9pp
+         m0TKNN+33bJHZLPOpLea8o8SOOZvg0y1YoXaM5ANHK3IJA+138Nt1W0mEF1NXqTf9+yb
+         /Qmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732668634; x=1733273434;
+        d=1e100.net; s=20230601; t=1732668756; x=1733273556;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=j3EkoerGTLMLe4OrsMDgak1/GJweiL9MEJTp4Bxm4Oc=;
-        b=wV1joy3pFX7CFyQKMnr6RcojZdFOrmCOM1VeJtkiybeLPWf7eTr1Ml0k2Fv5CJDB+y
-         EFiBCSLwTYu7Nx1zvYJl5FUglfeP4/23QIlzZWUf76XVvjPvL4iUwF7k+4okOXI2uumj
-         jmPX1QgCSLt03Y9buIl9FbJjadVoYNrU1FeSZcKyGiLeYWAevi76BR0666I/5Kz5YRlv
-         znZe96IzRyO26V4Rn0MWR5x4X6NdEQq1CAcPt6Lw1186U7CgZcnkmeWpHxGu+8evZSnf
-         RT+R2T5REI3AZlpCQvohYja45HbOlfLdpFRkHUvM5iGTpQIVkKDy5AmW1skNLepXaP8Q
-         978w==
-X-Forwarded-Encrypted: i=1; AJvYcCV5txyAorvv3Ewd8gcRmWwULuuW26thTaFlRQt16qkRslAtMjUhqrR0HG2+gfnKFHi6plPCx0VNMmwsRPAL@vger.kernel.org, AJvYcCVvHLKb/Pm9Iyg+aDukr/drsYgmCxBAvmGnQjZva/fk2M0v8wCVo3ZTzCvntiZ+hcgQwWy/f9WpumXywPM0mQ==@vger.kernel.org, AJvYcCWUev8K6l1iM8mlO9a9NCk6tNenu1vDneLdw1dAFkn/+soVOCzisfTThBxpZtxJhnmDfFo=@vger.kernel.org, AJvYcCWzEpW0vng2fSzHMNferCARPcCh3pABmWVq/9JevUD9SRgYciS53SUOlcxE65YOtL2waxMAMAJZfGeLvNgCy3Ty9TEyjUVM@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw54rS6hGxSPE51KBQLnxCb0+tsq/pXQNesjTM0CSOLOYhzcx1B
-	V0kAZk3rxSFsaGq5mWDTY1WU+2N0YJwer4/7/x3Oa6jJz4hZf+9pFH+ET1qZp3Cy3PhfMI9dvbQ
-	xcIk6siAAVuP1VAXeuIlixAjP4QA=
-X-Gm-Gg: ASbGncsZ5AiWUiihJdGK3ye3Wt7UIg0ovju+mbmtUajwfUN5VSt9wjaqYJqEO1ZU91X
-	weIciTThg1YEGTPqcKKt9uz9NW/Q9PXhdU59mgDwat7cqQeA=
-X-Google-Smtp-Source: AGHT+IFylzibwq1l1tgeIghi7zw0a98fwkBarp9Liyrr2JP3fgWDlTpjUXEBRNTykRpSKDm4u8WaYRM6y926pb50xhI=
-X-Received: by 2002:a05:6000:18ab:b0:381:f08b:71a4 with SMTP id
- ffacd0b85a97d-385c6edd52dmr635501f8f.45.1732668634501; Tue, 26 Nov 2024
- 16:50:34 -0800 (PST)
+        bh=xjRRCxwGmW1KZp8fE5HVHe1CX+qRVInoZebEpE8YP/k=;
+        b=cLkBqezqwDR2P4J4OY5GhcgD3LdNDAbSvMu8Zi50cY13DALxAKXiALrLiyDg3Td3GO
+         iiQXNpOR7ATr+OHEC/nhKhnXOgkK3rjSlpCRR7tiXa6ymfdZes+rilUhjFAL4Gi1G42X
+         QMEwYdyHEqtdHV7dcuuqIALgI0JlvkSwHyd6RBE5y0DVwuPyw8TClg0Z+W6smULq7/Gi
+         IOaObh89XwfQpFvaFRkfgiNTs7yrxsTaB+bDXHVmIoai6XNUsi8CC1XmYbvqVlv0gjFW
+         mMV6H8SRS6mcKQe7x5OZP0vjHMY4fFiVz4ETF4RsSIANluKV7/gObX65PogpsBQn5ufv
+         AINw==
+X-Forwarded-Encrypted: i=1; AJvYcCVxvJoDbkg/1Ug3ZB8PXlGmF8OKzXWPWsvi72yIJQQBQitLF4uGk2Wk5mRMoCz5+9UcrUI=@vger.kernel.org, AJvYcCWarC2A8c+gRtc1CF9r1Q4n7tRi0+kzVjHSRS0jCnA7Iols+/40Qx4YvrfzSWVQAeM76HLjamgaosJCFcYZ@vger.kernel.org, AJvYcCXWTzTUzY5r+3vcy2KTkSUNkezSNpUC2N0SHz5OCSjVSYqzE9nfUJXOdMoSvngKJL2JSIIy7JUlsfDl8avAiOrGB/Rx@vger.kernel.org
+X-Gm-Message-State: AOJu0YzSddwrmYOfBCk3mNELNsmzazI1ckkxxIu2OZT7iX/u4cjSMbUO
+	MlzggapFDPwaSxozuMDGLfbWR5NTWsOpPFA3COoogPx5OE3WIJOypYhaKj4Hf1c54pjkA7/+cP+
+	JEXJO3lPUxGsbAUEMev3l2kowDAM=
+X-Gm-Gg: ASbGncskCcuww7NbLLFU9HE4k8tetaVWFMMOlJn5O38B5o8jvA3T2wfrFY8j5gnypUo
+	aRwKVrkYsqBwP43uzcw9vq1niNw+HDQ3iG2ZlfLNUEh3bflI=
+X-Google-Smtp-Source: AGHT+IEFnl7xbWyoK0kDCJ0s5pAWZKU6d9diZFfAyXhbRqgI/Td34XdMrFu68OmDsdJi/cvzUi8DIMI4Nb6vJc/O/O8=
+X-Received: by 2002:a5d:64c7:0:b0:382:4a92:7943 with SMTP id
+ ffacd0b85a97d-385bfb14b71mr4837851f8f.20.1732668755332; Tue, 26 Nov 2024
+ 16:52:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241122225958.1775625-1-song@kernel.org> <20241122225958.1775625-3-song@kernel.org>
- <CAOQ4uxhfd8ryQ6ua5u60yN5sh06fyiieS3XgfR9jvkAOeDSZUg@mail.gmail.com>
-In-Reply-To: <CAOQ4uxhfd8ryQ6ua5u60yN5sh06fyiieS3XgfR9jvkAOeDSZUg@mail.gmail.com>
+References: <20241126165414.1378338-1-elver@google.com> <CAEf4Bzb4D_=zuJrg3PawMOW3KqF8JvJm9SwF81_XHR2+u5hkUg@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb4D_=zuJrg3PawMOW3KqF8JvJm9SwF81_XHR2+u5hkUg@mail.gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 26 Nov 2024 16:50:23 -0800
-Message-ID: <CAADnVQK-6MFdwD_0j-3x2-t8VUjbNJUuGrTXEWJ0ttdpHvtLOA@mail.gmail.com>
-Subject: Re: [PATCH v3 fanotify 2/2] samples/fanotify: Add a sample fanotify fiter
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, KP Singh <kpsingh@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, repnop@google.com, 
-	Jeff Layton <jlayton@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, gnoack@google.com
+Date: Tue, 26 Nov 2024 16:52:24 -0800
+Message-ID: <CAADnVQLv+iDgH9bAFrEMUCxVBnRGJq1si0W7xsjrd6DZmNkxxA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Improve bpf_probe_write_user() warning message
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Marco Elver <elver@google.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Nikola Grcevski <nikola.grcevski@grafana.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Nov 23, 2024 at 9:07=E2=80=AFPM Amir Goldstein <amir73il@gmail.com>=
- wrote:
-> > +++ b/samples/fanotify/filter-mod.c
-> > @@ -0,0 +1,105 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
+On Tue, Nov 26, 2024 at 1:32=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Nov 26, 2024 at 8:54=E2=80=AFAM Marco Elver <elver@google.com> wr=
+ote:
+> >
+> > The warning message for bpf_probe_write_user() was introduced in
+> > 96ae52279594 ("bpf: Add bpf_probe_write_user BPF helper to be called in
+> > tracers"), with the following in the commit message:
+> >
+> >     Given this feature is meant for experiments, and it has a risk of
+> >     crashing the system, and running programs, we print a warning on
+> >     when a proglet that attempts to use this helper is installed,
+> >     along with the pid and process name.
+> >
+> > After 8 years since 96ae52279594, bpf_probe_write_user() has found
+> > successful applications beyond experiments [1, 2], with no other good
+> > alternatives. Despite its intended purpose for "experiments", that
+> > doesn't stop Hyrum's law, and there are likely many more users dependin=
+g
+> > on this helper: "[..] it does not matter what you promise [..] all
+> > observable behaviors of your system will be depended on by somebody."
+> >
+> > As such, the warning message can be improved:
+> >
+> > 1. The ominous "helper that may corrupt user memory!" offers no real
+> >    benefit, and has been found to lead to confusion where the system
+> >    administrator is loading programs with valid use cases.  Remove it.
+> >    No information is lost, and administrators who know their system
+> >    should not load eBPF programs that use bpf_probe_write_user() know
+> >    what they are looking for.
+> >
+> > 2. If multiple programs with bpf_probe_write_user() are loaded by the
+> >    same task/PID consecutively, only print the message once. If another
+> >    task loads a program with the helper, the message is printed once
+> >    more, and so on. This also makes the need for rate limiting
+> >    redundant.
+> >
+> > 3. Every printk line needs to be concluded with "\n" to be flushed. Wit=
+h
+> >    the old version the warning message only appeared after any followin=
+g
+> >    printk. Fix this.
+> >
+> > Link: https://lore.kernel.org/lkml/20240404190146.1898103-1-elver@googl=
+e.com/ [1]
+> > Link: https://lore.kernel.org/r/lkml/CAAn3qOUMD81-vxLLfep0H6rRd74ho2Vae=
+kdL4HjKq+Y1t9KdXQ@mail.gmail.com/ [2]
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > ---
+> >  kernel/trace/bpf_trace.c | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 630b763e5240..0ead3d66f8db 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -359,11 +359,16 @@ static const struct bpf_func_proto bpf_probe_writ=
+e_user_proto =3D {
+> >
+> >  static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
+> >  {
+> > +       static pid_t last_warn_pid =3D -1;
 > > +
-> > +#include <linux/fsnotify.h>
-> > +#include <linux/fanotify.h>
-> > +#include <linux/module.h>
-> > +#include <linux/path.h>
-> > +#include <linux/file.h>
-> > +#include "filter.h"
-> > +
-> > +struct fan_filter_sample_data {
-> > +       struct path subtree_path;
-> > +       enum fan_filter_sample_mode mode;
-> > +};
-> > +
-> > +static int sample_filter(struct fsnotify_group *group,
-> > +                        struct fanotify_filter_hook *filter_hook,
-> > +                        struct fanotify_filter_event *filter_event)
-> > +{
-> > +       struct fan_filter_sample_data *data;
-> > +       struct dentry *dentry;
-> > +
-> > +       dentry =3D fsnotify_data_dentry(filter_event->data, filter_even=
-t->data_type);
-> > +       if (!dentry)
-> > +               return FAN_FILTER_RET_SEND_TO_USERSPACE;
-> > +
-> > +       data =3D filter_hook->data;
-> > +
-> > +       if (is_subdir(dentry, data->subtree_path.dentry)) {
-> > +               if (data->mode =3D=3D FAN_FILTER_SAMPLE_MODE_BLOCK)
-> > +                       return -EPERM;
-> > +               return FAN_FILTER_RET_SEND_TO_USERSPACE;
+> >         if (!capable(CAP_SYS_ADMIN))
+> >                 return NULL;
+> >
+> > -       pr_warn_ratelimited("%s[%d] is installing a program with bpf_pr=
+obe_write_user helper that may corrupt user memory!",
+> > -                           current->comm, task_pid_nr(current));
+> > +       if (READ_ONCE(last_warn_pid) !=3D task_pid_nr(current)) {
+> > +               pr_warn("%s[%d] is installing a program with bpf_probe_=
+write_user\n",
+> > +                       current->comm, task_pid_nr(current));
+> > +               WRITE_ONCE(last_warn_pid, task_pid_nr(current));
 > > +       }
-> > +       return FAN_FILTER_RET_SKIP_EVENT;
-> > +}
-> > +
-> > +static int sample_filter_init(struct fsnotify_group *group,
-> > +                             struct fanotify_filter_hook *filter_hook,
-> > +                             void *argp)
-> > +{
-> > +       struct fan_filter_sample_args *args;
-> > +       struct fan_filter_sample_data *data;
-> > +       struct file *file;
-> > +       int fd;
-> > +
-> > +       args =3D (struct fan_filter_sample_args *)argp;
-> > +       fd =3D args->subtree_fd;
-> > +
-> > +       file =3D fget(fd);
-> > +       if (!file)
-> > +               return -EBADF;
-> > +       data =3D kzalloc(sizeof(struct fan_filter_sample_data), GFP_KER=
-NEL);
-> > +       if (!data) {
-> > +               fput(file);
-> > +               return -ENOMEM;
-> > +       }
-> > +       path_get(&file->f_path);
-> > +       data->subtree_path =3D file->f_path;
-> > +       fput(file);
-> > +       data->mode =3D args->mode;
-> > +       filter_hook->data =3D data;
-> > +       return 0;
-> > +}
-> > +
-> > +static void sample_filter_free(struct fanotify_filter_hook *filter_hoo=
-k)
-> > +{
-> > +       struct fan_filter_sample_data *data =3D filter_hook->data;
-> > +
-> > +       path_put(&data->subtree_path);
-> > +       kfree(data);
-> > +}
-> > +
 >
-> Hi Song,
->
-> This example looks fine but it raises a question.
-> This filter will keep the mount of subtree_path busy until the group is c=
-losed
-> or the filter is detached.
-> This is probably fine for many services that keep the mount busy anyway.
->
-> But what if this wasn't the intention?
-> What if an Anti-malware engine that watches all mounts wanted to use that
-> for configuring some ignore/block subtree filters?
->
-> One way would be to use a is_subtree() variant that looks for a
-> subtree root inode
-> number and then verifies it with a subtree root fid.
-> A production subtree filter will need to use a variant of is_subtree()
-> anyway that
-> looks for a set of subtree root inodes, because doing a loop of is_subtre=
-e() for
-> multiple paths is a no go.
->
-> Don't need to change anything in the example, unless other people
-> think that we do need to set a better example to begin with...
+> should we just drop this warning altogether? After all, we can call
+> crash_kexec() without any warnings, if we have the right capabilities.
+> bpf_probe_write_user() is much less destructive and at worst will
+> cause memory corruption within a single process (assuming
+> CAP_SYS_ADMIN, of course). If yes, I think we should drop
+> bpf_get_probe_write_proto() function altogether and refactor
+> bpf_tracing_func_proto() to have
+> bpf_token_capable(CAP_SYS_ADMIN)-guarded section, just like
+> bpf_base_func_proto() has.
 
-I think we have to treat this patch as a real filter and not as an example
-to make sure that the whole approach is workable end to end.
-The point about not holding path/dentry is very valid.
-The algorithm needs to support that.
-It may very well turn out that the logic of handling many filters
-without a loop and not grabbing a path refcnt is too complex for bpf.
-Then this subtree filtering would have to stay as a kernel module
-or extra flag/feature for fanotify.
++1
+Let's just remove this warn. It didn't stop anyone from using it so far.
 
