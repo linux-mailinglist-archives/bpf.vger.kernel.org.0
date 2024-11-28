@@ -1,141 +1,135 @@
-Return-Path: <bpf+bounces-45804-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45805-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A53BA9DB1CE
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:22:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C17BC9DB1ED
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:32:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C1A3282277
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 03:22:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 264A7B20CE3
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 03:32:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD3B84A5E;
-	Thu, 28 Nov 2024 03:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24E2154652;
+	Thu, 28 Nov 2024 03:32:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gEMI3vwI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g5G3Ee0y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40BFC13211A
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 03:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B9832CAB
+	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 03:32:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732764161; cv=none; b=Ffykq3l7/dmKYs5BWedNqXo5e2Cm2SkILUClXuWnETVWtrJj+NgCjHfxz0/RRvM+jeNxNtDKPrgGOalkX6WPp8rg9Uyvfy1A0hziC2uDMBzXRA17NSqeHf2rjlLQBPvO+oskFDyNXsygt9cWiw4suuyZa0FgnGrbkkr5KlR/Z4A=
+	t=1732764763; cv=none; b=AItC14HgSPXRuZ5bQGS2rFllUdQBzzMVAK/GQC8h30qAtHJEvyNK9w0UMOfn9WEvGZR7wP4K8NBsQg4Ntx0Y0HvZCi6AoADbVUSA76ZlkvJ6O47++y8myT/JzTlyHBgh9DryzOr8OJ1RA9tvxS9tP0THT9vcnFuhQ3IOamZjRt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732764161; c=relaxed/simple;
-	bh=MFyvZRt3atypgKGDq2MxJV5NXueYC/84XcyU2oKfc0A=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ICtPpMW5j9mftp8mz887Z2a9BTWGA3dZGYkk03LFQECA2qm3Obij9g0qRTFzAra5MzhrgbSjZ2ro4f/xzD2Rz3sD+TnJl3z3iRxFeTNp09PI8+7BQgr4MsGR7R40z8lzfnVoWoyMt3KYObjwRpB462aWR6xnticjZdIJG76qsj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gEMI3vwI; arc=none smtp.client-ip=209.85.215.171
+	s=arc-20240116; t=1732764763; c=relaxed/simple;
+	bh=zx2x008TigOin6aWAgkMPa8mCgayg1ACYsOs1ZGf8WI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q1g0hmvFPVWAsMVjqHX+RAmEtBsVrAzh2yoFJM6Z30VJr2mz6tqoB2WRoF0/YCupvQOOn8CV2UQjpEsq7U8QGsVc6DvTbgYvqaeUUxad7v3mvyI89Xr55qn16x/o82Eb8bzJhSnym10ouGXVbm7pWB5dR97Yg/dIXP4f/DcyIrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g5G3Ee0y; arc=none smtp.client-ip=209.85.218.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7f71f2b136eso237398a12.1
-        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 19:22:40 -0800 (PST)
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-a9f1c590ecdso48262266b.1
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 19:32:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732764159; x=1733368959; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=X1RGiMvpZ/F0OwoPRR39wRWcKJEu/Cw7WVb9WIwDfL8=;
-        b=gEMI3vwIASWOQVRX7rR3sjWFMoKZxdYj4sbn40AImYu/vCNrgLjjHjD67Zdu+4H7wP
-         KiD94QJBmz75iBDVOcm6JhE42Vjy3QEIU6mIb33niFr3w8sIiItjWqpQ6HFhw5Yvk5lB
-         pa8dfCNNjpYQf9u9vYJoFMCNXRrw+44WaLfoWXatsYVcg8GmCip9J1dsraJb/tC0Pv7O
-         Puhr8cfBbFitCjW/2n5YNb82sMepijYG48eJo3VXlMqtJdmEA5JesnaIcivmVRYsD4Oc
-         XZc9p1anv7kbaJeG9DquQUat5DIj/gAORjoPHkHxcQnY3GgIHbeZKvr25VB3gH/fPa8t
-         DOMQ==
+        d=gmail.com; s=20230601; t=1732764760; x=1733369560; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BgwWPlGV7qr7k42vUzpaN0+X1MRbtjayj5WPlmUXbVU=;
+        b=g5G3Ee0yRlTV/99kr5bxWG7HLkKuGDxyiNRGy92if7x5wnGcDOBxvDPOpXz28T5Hss
+         3ixfFIUMicoRSyTjIoBB5/4G4rx0PEorUUYmKWSGTUtgOTB+vDau9taHeItjPKKbucJo
+         C9he0sj7DVIQXNITSdAftGSJNYV1vZEny6uW1oa6jKcXLWQrunqraM6D61Ud5KBA2TiD
+         QxfJGEBBAv28tLt7hIwDNPYtb0RDRUB5Bw2qCLojML7R8bzkmebNX+Qr9u3W33QhwPNG
+         tiVn2Ray15USSOnLYfw6hu1576Lv+SgaS25JBD1DlIuEQwj+Cm2Usc3Vijem2sEcO9YW
+         c81w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732764159; x=1733368959;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=X1RGiMvpZ/F0OwoPRR39wRWcKJEu/Cw7WVb9WIwDfL8=;
-        b=qfAhzvJbW4YPLK+C3Kpbjk4ICVXM6TeP0rL3nuptisSVegmjHoJ4nXwUyWA1VAX0sh
-         /2OwPOh8lGmZ+4iPkV7tPAbbFoQM380G4/WcrbA4VRXgO//hWHW96pFJZkdigw9OCVCH
-         RZCELitzfPA/QLH13TkcHonmhN6r5WIF3ZAuxxv8nY1SoI7b5NRZvzVndgPcQmwE2JM4
-         oEY21Ew7kP38dSjNpv9L+T16lykFsvfFm40XqbbdmxkxW7EHbPjOnOSYbjzkMExL6/jB
-         10G9UXoNtVLQZfEUjJISCIZnZauoumL1HxN/b56oGzrNZRxLcS6bSX/AyFJzKCwMaoW9
-         dncw==
-X-Gm-Message-State: AOJu0YzIecbtM2vEPr9IObMj6SmoLOAWTGBp+8DuyoMXjusVhNHSRbUQ
-	V5hFv/OfKazmFPfT6GFdN+zvr9i+cmBdIj5ES9zhl6O85uznPkSt
-X-Gm-Gg: ASbGncu2w6FWUlNkYBK9wQ/M+grXJSXYn5Cd3BCqon5AbCT06gh665TGrY7/j3KAJ/x
-	7bqBvhqSNXTD6As8aQaKAgdwbNNdMVqbOWhXjQfuSSKqTMh/ujIQCZ8ttOPPZ8e1TvuQMICIz7x
-	MqXhLi2kmoUjMiwKBIVEytgy5lDOxqpAOo2KI0My6Y19pmDtlcyDFvZ2RyPHNyfaDDj9D3mOUos
-	o+KLSnKzgTCqg18Jn3sK/gkl9MJa+FKPJQffMv/OUQaUUg=
-X-Google-Smtp-Source: AGHT+IE7F5/bA7dogGD5FkH9jOKBdHKf4PAZ+3nhgb/RkGaq0e4tPihX42qa0qcMSvXcT7hLnY5Szw==
-X-Received: by 2002:a05:6a20:3944:b0:1e0:d2f5:6eca with SMTP id adf61e73a8af0-1e0e0c67e7dmr9727727637.46.1732764159572;
-        Wed, 27 Nov 2024 19:22:39 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fc9c388ea6sm285128a12.57.2024.11.27.19.22.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2024 19:22:38 -0800 (PST)
-Message-ID: <68eadb6b1c51707be249af9bacc7afcbfa16df0f.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/7] bpf: Consolidate locks and reference
- state in verifier state
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, 
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@kernel.org>,
- kernel-team@fb.com
-Date: Wed, 27 Nov 2024 19:22:34 -0800
-In-Reply-To: <CAP01T76RCf1oHmWhhE8MzUYgJhkxkkqW7gRFCAPGiAgv8v7WkA@mail.gmail.com>
-References: <20241127165846.2001009-1-memxor@gmail.com>
-	 <20241127165846.2001009-2-memxor@gmail.com>
-	 <a4690c29ca3b5f34945cd507def7e0c6ecdec9e1.camel@gmail.com>
-	 <CAP01T77t=FmvzyeCJ_3Bp+8D0-Z4GGUHNeGbNBmSY6xFXi-ZgA@mail.gmail.com>
-	 <3cc26b1923426203b3d0df91ebb1638c0e492696.camel@gmail.com>
-	 <CAP01T76RCf1oHmWhhE8MzUYgJhkxkkqW7gRFCAPGiAgv8v7WkA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+        d=1e100.net; s=20230601; t=1732764760; x=1733369560;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BgwWPlGV7qr7k42vUzpaN0+X1MRbtjayj5WPlmUXbVU=;
+        b=EaZxsB7hvYB1bXulduMtdZkcdFT7X3TNC33WExS5Y36qvAuncoAfVC82GB+JcM70a4
+         ye4tdcUwR6d2GjfAtw0LbRJdW84u9t82vIWYHiwusrOGvz1Eys7doFnqlqWZg/uwFDIX
+         gZYCPxQn9y+DF4M/G2PM1Z2QW2X05oK0/BsoSbY7HgUP9gbTj7NitiJM5xmNog8ebkd+
+         rdPwLz9+8+r8rGMeRv6s/vsdq77rOh6nORMSiiiDjr4uvsGlQHhnrGAp8z++KxFHospn
+         zZjofbjx4rbeH2jBjh1eoAD0xF73p91WzQ3shmXVvl/maoT4m5qAnvktp3m+saUq+NHX
+         gQDA==
+X-Gm-Message-State: AOJu0YzCF6brsiBYY3Rrya28j52Rwqr0IYg4b4hV6Ec6D84Pu1mZqb5W
+	t/fJ6Nfzq/FTFhK2KqHigR5Av0gvu8oFhuln0qHb5d8UP6Hoipdsq4k5tTCjApYsp2PxCT5kv89
+	GU6Oy4hC0zKZ+YdjzMsbTuCgyh+k=
+X-Gm-Gg: ASbGncuP61FjtXVWQjmh9LaNK/RlkPABjJdw8h6EfNonlatFEUD+wQJ+lNhAu8ozktG
+	/Vtrf2EoeVdFzUyi8BiXzIU/adfSB3GcX
+X-Google-Smtp-Source: AGHT+IHuv5VIZT3GqgrZW3Vzf5MVukb/dYWG4Buj9EgLRmVqnB0yGjk9pBUDlnofX3K+y54VTi4R+ZXxuYbnLj0tNZs=
+X-Received: by 2002:a17:907:7781:b0:aa5:451c:ce22 with SMTP id
+ a640c23a62f3a-aa580f4c958mr406384166b.31.1732764760197; Wed, 27 Nov 2024
+ 19:32:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20241127165846.2001009-1-memxor@gmail.com> <20241127165846.2001009-2-memxor@gmail.com>
+ <a4690c29ca3b5f34945cd507def7e0c6ecdec9e1.camel@gmail.com>
+ <CAP01T77t=FmvzyeCJ_3Bp+8D0-Z4GGUHNeGbNBmSY6xFXi-ZgA@mail.gmail.com>
+ <3cc26b1923426203b3d0df91ebb1638c0e492696.camel@gmail.com>
+ <CAP01T76RCf1oHmWhhE8MzUYgJhkxkkqW7gRFCAPGiAgv8v7WkA@mail.gmail.com> <68eadb6b1c51707be249af9bacc7afcbfa16df0f.camel@gmail.com>
+In-Reply-To: <68eadb6b1c51707be249af9bacc7afcbfa16df0f.camel@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 28 Nov 2024 04:32:04 +0100
+Message-ID: <CAP01T74EUr6aiLSfFn0kzvfjTPgZMLYXo-jpChdwtZyaM3tkgg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/7] bpf: Consolidate locks and reference
+ state in verifier state
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 2024-11-28 at 04:18 +0100, Kumar Kartikeya Dwivedi wrote:
-> On Thu, 28 Nov 2024 at 04:03, Eduard Zingerman <eddyz87@gmail.com> wrote:
-> >=20
-> > On Thu, 2024-11-28 at 03:54 +0100, Kumar Kartikeya Dwivedi wrote:
-> >=20
-> > [...]
-> >=20
-> > > > > --- a/kernel/bpf/log.c
-> > > > > +++ b/kernel/bpf/log.c
-> > > > > @@ -756,6 +756,7 @@ static void print_reg_state(struct bpf_verifi=
-er_env *env,
-> > > > >  void print_verifier_state(struct bpf_verifier_env *env, const st=
-ruct bpf_func_state *state,
-> > > > >                         bool print_all)
-> > > > >  {
-> > > > > +     struct bpf_verifier_state *vstate =3D env->cur_state;
-> > > >=20
-> > > > This is not always true.
-> > > > For example, __mark_chain_precision does 'print_verifier_state(env,=
- func, true)'
-> > > > for func obtained as 'func =3D st->frame[fr];' where 'st' iterates =
-over parents
-> > > > of env->cur_state.
-> > >=20
-> > > Looking through the code, I'm thinking the only proper fix is
-> > > explicitly passing in the verifier state, I was hoping there would be
-> > > a link from func_state -> verifier_state but it is not the case.
-> > > Regardless, explicitly passing in the verifier state is probably clea=
-ner. WDYT?
-> >=20
-> > Seems like it is (I'd also pass the frame number, instead of function
-> > state pointer, just to make it clear where the function state comes fro=
-m,
-> > but feel free to ignore this suggestion).
->=20
-> I made this change, but not passing the frame number: while most call
-> sites have the frame number (or pass curframe), it needs to be
-> obtained explicitly for some, so I think it won't be worth it.
+On Thu, 28 Nov 2024 at 04:22, Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> On Thu, 2024-11-28 at 04:18 +0100, Kumar Kartikeya Dwivedi wrote:
+> > On Thu, 28 Nov 2024 at 04:03, Eduard Zingerman <eddyz87@gmail.com> wrote:
+> > >
+> > > On Thu, 2024-11-28 at 03:54 +0100, Kumar Kartikeya Dwivedi wrote:
+> > >
+> > > [...]
+> > >
+> > > > > > --- a/kernel/bpf/log.c
+> > > > > > +++ b/kernel/bpf/log.c
+> > > > > > @@ -756,6 +756,7 @@ static void print_reg_state(struct bpf_verifier_env *env,
+> > > > > >  void print_verifier_state(struct bpf_verifier_env *env, const struct bpf_func_state *state,
+> > > > > >                         bool print_all)
+> > > > > >  {
+> > > > > > +     struct bpf_verifier_state *vstate = env->cur_state;
+> > > > >
+> > > > > This is not always true.
+> > > > > For example, __mark_chain_precision does 'print_verifier_state(env, func, true)'
+> > > > > for func obtained as 'func = st->frame[fr];' where 'st' iterates over parents
+> > > > > of env->cur_state.
+> > > >
+> > > > Looking through the code, I'm thinking the only proper fix is
+> > > > explicitly passing in the verifier state, I was hoping there would be
+> > > > a link from func_state -> verifier_state but it is not the case.
+> > > > Regardless, explicitly passing in the verifier state is probably cleaner. WDYT?
+> > >
+> > > Seems like it is (I'd also pass the frame number, instead of function
+> > > state pointer, just to make it clear where the function state comes from,
+> > > but feel free to ignore this suggestion).
+> >
+> > I made this change, but not passing the frame number: while most call
+> > sites have the frame number (or pass curframe), it needs to be
+> > obtained explicitly for some, so I think it won't be worth it.
+>
+> Understood, thank you.
+>
 
-Understood, thank you.
-
+Ok, scratch the previous reply, I forgot you can actually do
+func->frameno to get it, I was trying dumb things (like func -
+st->frame).
+I do agree it's better to pass the frameno, just for the off chance
+that you end up passing vstate and funcs that mismatch.
+So I ended up making the change in the end. Sorry for the confusion.
 
