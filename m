@@ -1,102 +1,167 @@
-Return-Path: <bpf+bounces-45814-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45815-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2D519DB248
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 05:49:07 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 737DD9DB2B7
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 07:11:28 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75683282B1F
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:49:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10BAE166F9B
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 06:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E5E13B58E;
-	Thu, 28 Nov 2024 04:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE0D145348;
+	Thu, 28 Nov 2024 06:11:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail78-36.sinamail.sina.com.cn (mail78-36.sinamail.sina.com.cn [219.142.78.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CBD1360
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 04:48:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=219.142.78.36
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DF13FD4;
+	Thu, 28 Nov 2024 06:11:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732769342; cv=none; b=ZF1hfFSYKdUszRRWJOt0F5kk/o6ve1hVDHlCA/mftesnZTTqhYsyg/++OUyhk9aUF+HWXQzczPSF/JNDUR8aGlZ+3tE98/xfQVvu5dpvA8XQzYruIoyK++cdROm0iSSqt5a8fwptmDhzKpcIgsUuNRJq0FUAbMaDINrqvSlfcGU=
+	t=1732774280; cv=none; b=vDGfiecLEUqOX/yd1mciFK8EpF/Q7CaFMmZ8ac+90o1IhR3YrfSfqL1SysuUlTsOI3cXWf8zSIWa6APUdpjGLUGt2KbO2tvAeqxuRVnnYENGHTGO9K4mGWLvZ/JWc5BNR62qJuGHup9tkgTV2jzvxOvfd8cFFi/6sunMN1trTo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732769342; c=relaxed/simple;
-	bh=lYovyC6bUDmK5k8H62++FJhBXcWWLQTq/0mw0zvZCDQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=M5cFOKl7klVpbfyyBEOFruEK6li2gEaQDg3KHv/8nhFnJQxlc6//ZkUXxiCBh/z5ZpCJ7gOyaFzW6OwbsJJB94dvfTo8zJq7l6rOGM/HW55vJAucuJRMa+VWVxOdnbjIwCSDXkdoV/CIl0x11/IfSwdETsElWYqflFQL3QxLUN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=219.142.78.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([116.24.9.49])
-	by sina.com (10.185.250.24) with ESMTP
-	id 6747F62800003F5D; Thu, 28 Nov 2024 12:48:45 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 67710610748452
-X-SMAIL-UIID: 43821B7CE5254581A666726971154BD0-20241128-124845-1
-From: Hillf Danton <hdanton@sina.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ruan Bonan <bonan.ruan@u.nus.edu>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-	Aleksandr Nogikh <nogikh@google.com>,
-	BPF <bpf@vger.kernel.org>
-Subject: Re: [BUG] possible deadlock in __schedule (with reproducer available)
-Date: Thu, 28 Nov 2024 12:48:31 +0800
-Message-Id: <20241128044831.1672-1-hdanton@sina.com>
-In-Reply-To: <CAADnVQJ+eoczS6JK7aUZSWzUFggEyXW+w4oMiB4iY4F9FpMVRA@mail.gmail.com>
-References: <CAEf4BzYHeh_=iHOYL88pXXdHGZuAmQNM0jM+9iPUou+7+YLjjQ@mail.gmail.com> <20241127230349.1619-1-hdanton@sina.com>
+	s=arc-20240116; t=1732774280; c=relaxed/simple;
+	bh=I2CXWTjsvZTyCr81KW+aP5rn44bPx8jzUM9/VIJgLUA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dB8SOohdwSqLN0c1gWJIyvtHYwpUHEyI2Wuzqla+Q2rlNAPby5j0FhppFjaKuFx9tn3JpB6eqoABNpk6TVWu2l709YAv62nfbort/MOXPHIUK/crlorO9zI/j/FcYb1gdkmgvJtWspbxomGMfnzBKXeFJ1pB18+VUDjhmmHKy5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8Bx++GBCUhnSXFKAA--.13840S3;
+	Thu, 28 Nov 2024 14:11:13 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+	by front1 (Coremail) with SMTP id qMiowMCxfcJ_CUhnJw9rAA--.8752S2;
+	Thu, 28 Nov 2024 14:11:11 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: loongarch@lists.linux.dev,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] LoongArch: BPF: Adjust the parameter of emit_jirl()
+Date: Thu, 28 Nov 2024 14:11:10 +0800
+Message-ID: <20241128061110.5204-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qMiowMCxfcJ_CUhnJw9rAA--.8752S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxZw4rGr18tF4fKrWxKFWDJrc_yoW5tw43pr
+	ZFyrs5GrW0gryfGFyDJrW5ur13Jan3GrWagasrArZ7Cr1Yq34Fq3WkKrnxWFs8Xan5XFsY
+	9F1Fyw12vF1UJ3gCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ36c02F40EFcxC0VAKzVAqx4xG6I80ewCIccxYrVCFb4Uv73VFW2AGmfu7
+	bjvjm3AaLaJ3UjIYCTnIWjp_UUUYw7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4
+	CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0
+	c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2
+	IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2
+	jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
+	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWU
+	XwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+	8JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
+	Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIccxYrV
+	CFb41lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvE
+	c7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
+	v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x
+	07b2ID7UUUUU=
 
-On Wed, 27 Nov 2024 18:27:57 -0800 Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> On Wed, Nov 27, 2024 at 3:04 PM Hillf Danton <hdanton@sina.com> wrote:
-> > On Tue, 26 Nov 2024 13:15:48 -0800 Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > On Mon, Nov 25, 2024 at 1:44 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > > On Mon, Nov 25, 2024 at 05:24:05AM +0000, Ruan Bonan wrote:
-> > > >
-> > > > > From the discussion, it appears that the root cause might involve
-> > > > > specific printk or BPF operations in the given context. To clarify and
-> > > > > possibly avoid similar issues in the future, are there guidelines or
-> > > > > best practices for writing BPF programs/hooks that interact with
-> > > > > tracepoints, especially those related to scheduler events, to prevent
-> > > > > such deadlocks?
-> > > >
-> > > > The general guideline and recommendation for all tracepoints is to be
-> > > > wait-free. Typically all tracer code should be.
-> > > >
-> > > > Now, BPF (users) (ab)uses tracepoints to do all sorts and takes certain
-> > > > liberties with them, but it is very much at the discretion of the BPF
-> > > > user.
-> > >
-> > > We do assume that tracepoints are just like kprobes and can run in
-> > > NMI. And in this case BPF is just a vehicle to trigger a
-> > > promised-to-be-wait-free strncpy_from_user_nofault(). That's as far as
-> > > BPF involvement goes, we should stop discussing BPF in this context,
-> > > it's misleading.
-> > >
-> > Given known issue, syzbot should run without bpf enabled before it is fixed
-> > to avoid more useless discussing and misleading.
-> 
-> If you cared to read the thread it would have been obvious
-> that printk is the culprit. Tell syzbot to run without printk?
->
-Printk is innocent, and it makes no sense to put the gun vendor into
-jail simply because bpf shoot a sheriff in the cafeteira.
+The branch instructions beq, bne, blt, bge, bltu, bgeu and jirl belong
+to the format reg2i16, but the sequence of oprand is different for the
+instruction jirl, adjust the parameter of emit_jirl() to make it more
+readable correspond with the Instruction Set Architecture manual.
+
+Here are the instruction formats:
+
+  beq     rj, rd, offs16
+  bne     rj, rd, offs16
+  blt     rj, rd, offs16
+  bge     rj, rd, offs16
+  bltu    rj, rd, offs16
+  bgeu    rj, rd, offs16
+  jirl    rd, rj, offs16
+
+Link: https://loongson.github.io/LoongArch-Documentation/LoongArch-Vol1-EN.html#branch-instructions
+Suggested-by: Huacai Chen <chenhuacai@loongson.cn>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+
+This patch is based on the following commit:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=73c359d1d356
+
+ arch/loongarch/include/asm/inst.h | 12 +++++++++++-
+ arch/loongarch/kernel/inst.c      |  2 +-
+ arch/loongarch/net/bpf_jit.c      |  6 +++---
+ 3 files changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/asm/inst.h
+index 944482063f14..3089785ca97e 100644
+--- a/arch/loongarch/include/asm/inst.h
++++ b/arch/loongarch/include/asm/inst.h
+@@ -683,7 +683,17 @@ DEF_EMIT_REG2I16_FORMAT(blt, blt_op)
+ DEF_EMIT_REG2I16_FORMAT(bge, bge_op)
+ DEF_EMIT_REG2I16_FORMAT(bltu, bltu_op)
+ DEF_EMIT_REG2I16_FORMAT(bgeu, bgeu_op)
+-DEF_EMIT_REG2I16_FORMAT(jirl, jirl_op)
++
++static inline void emit_jirl(union loongarch_instruction *insn,
++			     enum loongarch_gpr rd,
++			     enum loongarch_gpr rj,
++			     int offset)
++{
++	insn->reg2i16_format.opcode = jirl_op;
++	insn->reg2i16_format.immediate = offset;
++	insn->reg2i16_format.rd = rd;
++	insn->reg2i16_format.rj = rj;
++}
+ 
+ #define DEF_EMIT_REG2BSTRD_FORMAT(NAME, OP)				\
+ static inline void emit_##NAME(union loongarch_instruction *insn,	\
+diff --git a/arch/loongarch/kernel/inst.c b/arch/loongarch/kernel/inst.c
+index 3050329556d1..14d7d700bcb9 100644
+--- a/arch/loongarch/kernel/inst.c
++++ b/arch/loongarch/kernel/inst.c
+@@ -332,7 +332,7 @@ u32 larch_insn_gen_jirl(enum loongarch_gpr rd, enum loongarch_gpr rj, int imm)
+ 		return INSN_BREAK;
+ 	}
+ 
+-	emit_jirl(&insn, rj, rd, imm >> 2);
++	emit_jirl(&insn, rd, rj, imm >> 2);
+ 
+ 	return insn.word;
+ }
+diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+index dd350cba1252..ea357a3edc09 100644
+--- a/arch/loongarch/net/bpf_jit.c
++++ b/arch/loongarch/net/bpf_jit.c
+@@ -181,13 +181,13 @@ static void __build_epilogue(struct jit_ctx *ctx, bool is_tail_call)
+ 		/* Set return value */
+ 		emit_insn(ctx, addiw, LOONGARCH_GPR_A0, regmap[BPF_REG_0], 0);
+ 		/* Return to the caller */
+-		emit_insn(ctx, jirl, LOONGARCH_GPR_RA, LOONGARCH_GPR_ZERO, 0);
++		emit_insn(ctx, jirl, LOONGARCH_GPR_ZERO, LOONGARCH_GPR_RA, 0);
+ 	} else {
+ 		/*
+ 		 * Call the next bpf prog and skip the first instruction
+ 		 * of TCC initialization.
+ 		 */
+-		emit_insn(ctx, jirl, LOONGARCH_GPR_T3, LOONGARCH_GPR_ZERO, 1);
++		emit_insn(ctx, jirl, LOONGARCH_GPR_ZERO, LOONGARCH_GPR_T3, 1);
+ 	}
+ }
+ 
+@@ -904,7 +904,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx, bool ext
+ 			return ret;
+ 
+ 		move_addr(ctx, t1, func_addr);
+-		emit_insn(ctx, jirl, t1, LOONGARCH_GPR_RA, 0);
++		emit_insn(ctx, jirl, LOONGARCH_GPR_RA, t1, 0);
+ 		move_reg(ctx, regmap[BPF_REG_0], LOONGARCH_GPR_A0);
+ 		break;
+ 
+-- 
+2.42.0
+
 
