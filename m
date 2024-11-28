@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-45789-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45790-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A76F49DB141
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 02:51:30 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 201409DB14A
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 02:56:56 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6849C282647
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 01:51:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6192164227
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 01:56:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AE1C38DFC;
-	Thu, 28 Nov 2024 01:50:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25555335C0;
+	Thu, 28 Nov 2024 01:56:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ezSaZGb0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mvwDCB80"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61AD31DA23
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 01:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599848467
+	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 01:56:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732758657; cv=none; b=pZSndDJzFXO0HPoqF8Mj+FNmRNltLJDFtCqNhEPrxr8KSoSSYG12OR+T/Z1h7fwxCLipwa8MdH/qwo7fZ3A6Rk5Tw78DY44layg7zMlvcj7lAEkqUSEnS4LO5mXKcYh3RO9YyTiFJ4rD9dztZrOBy3gY5mOG/HOTezRd0hREdP0=
+	t=1732759011; cv=none; b=Ms9MNFhU+lP/Wj2aE7o6zNb+3AD+zMr0XddovwTR05yP/0q27pQPSqv7fq1DWh4qAyqJHLwCZjeNpTYFuqhzW2XEjX4GjYd2kEV8I35EspUvANGxHyJEVrw71cponku3lCxRqKuyiLKqkOrffZeZUMGeADIgZUXNMAqce2QGy+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732758657; c=relaxed/simple;
-	bh=zaRHvRfgz/OMypexrAd21z1eueaXIfOV60XOnghTOsI=;
+	s=arc-20240116; t=1732759011; c=relaxed/simple;
+	bh=NjPS6Vr07uzuPLMQyCOGOpu0Ghr4bBf3DcN8qzVB2F8=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Frorpg1qOa+QPvani0Xd9UTjYPkDLnqTuqAMwXnKYE+KA3XCTKVoC/1RunkCZ0MeiJJy/aTDyLa3Ax0yVxlwanPrN8QtunISd8LcEIgKsdjuHB1B/FHs4VZWykYWiUllbqOAT/xXTrvmJeN33lWZSXHWhPKu90L8myaJg/CPe8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ezSaZGb0; arc=none smtp.client-ip=209.85.215.175
+	 Content-Type:MIME-Version; b=evdLxolb05uGfMEDj0gsCeGBZXpPQKzDzPppRBlpdXQ5XY4+f1+Mm/gDf6SrITXyGmNhpAh1+A2mjCIQoNW1jb34mIaWAEmfle35GXz3g9OyQg2YF2+q8xjXopTC8O+bDeISPYnf+923utOAS5we28Yk18Dj1HS45BZUb9OMtdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mvwDCB80; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-7f43259d220so185461a12.3
-        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 17:50:56 -0800 (PST)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7fc2b80c845so146823a12.3
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 17:56:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732758655; x=1733363455; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1732759009; x=1733363809; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=4J/HTWJ8YpekbthN/ijIKs3Ge6f0iWfNZJ9lCjJC+i8=;
-        b=ezSaZGb0JK998elUC+9Kzf0rWL1zCk8Myv0bAQsGLqn1KZZ2rw9X3Kb2EDtEd9NOeH
-         yDUQdIPqbV6N77xQSOh5lVpWObOEyD6SchgWGP6XUHfdYMrDfIO4r9aGLN2xEneMMyLF
-         H8ZO5PAlpIep/ecPMdyDHvx14kAvVq6GLpzRZJtlckIMv5xYBxRuo/RrnDaof40MxzIY
-         ycH3D9eGu3uxGNqKMnJgMnpdg77vzLLM2GgqPkMv5wMzkoVN82/NOb9ZfiqSNyPkEnjO
-         YtsP08saDvlPrTXoCokFl601r1cLK/jMTWybiv8jcg7z8L7LUVsY3CgYR3PZzPFEaz87
-         Imng==
+        bh=NjPS6Vr07uzuPLMQyCOGOpu0Ghr4bBf3DcN8qzVB2F8=;
+        b=mvwDCB80Zz98iYqTCkQxMbEevPu3/l/XJSMGNNptwOGlLp/akKFeOvNQqu6Eow9Rd+
+         PKQPgGTyIMt7xj2SHWjcn+z6VlXZeWdHEVuoHvRrzbPxqGv+Z+00Db5FxOUwhtTJ19kl
+         z1XcnSpdFR65Q9Q97S52B8YBVYDxYTpotNOUd41kBsPrHmbM+tTwSGrdfV6dWhq/V9I+
+         SZ0MyAwCDgXZybsMWFbfEwFrKerk3lcXM37zYxcDhFrcbXrM5fL1Izl4zXTyPffxNF5t
+         KaCCCCbsb4jr3Xk9Q+HRRgZZJ1Co7FZrmlrqBhLfm8WK/keBf8MQDe4EtX8QfOOJKblp
+         E5OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732758655; x=1733363455;
+        d=1e100.net; s=20230601; t=1732759009; x=1733363809;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4J/HTWJ8YpekbthN/ijIKs3Ge6f0iWfNZJ9lCjJC+i8=;
-        b=DNla0vRhPzrK5i14hdRJP3Q19F9Cvwh/kPKVKWrpFdC+0T0ouXUU8TmzdrQe34yyML
-         SLP+1Gya9lOWrLXsMUSe8WBMoQ8zLYDSJvRw/zfeBUl2ovPWGEYIEVgYhNvPzH5uHwAJ
-         uoGey0OAOdm5Wc67OTr4bZH4FNJg31i0Vll56b+fXQxDJNR2BSVVkFW/79ZmFY7kJkjX
-         xcPgTDS2b3kA4fZ04g+ZpGndGQIkcRKBS/E+V+LrG6ydQ8auxZ/FYs+dnb/6tBRj/08h
-         snc83eg84FV9ER/TjWdBjhzibPEvU758qMuVoHVomhuhb1Y6XZXbHtAFvNeQSgyLH/7l
-         jXmg==
-X-Forwarded-Encrypted: i=1; AJvYcCXjsklMa8BJS1SB8wwb9BwkBir5EJiU78rtCcjryTWoxtBXViyFGRDlGywEx40D3mUixaA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxbYV+mzqMCYAO4IevVguNohQb5UA0L0uQ6lIUmDTjb/2PisHbn
-	NEwk6BGLs+IRuTLnQPt97QcIVvil2701HnpTCH/Meayg0ygY8Uir
-X-Gm-Gg: ASbGnctflZyTkCnn5xbY/6ggAQcchUdR/+UVnjQU2vG/JrQciuREIT2rhYk+2cTAv3R
-	kbbGS8CfaOYUzbi9TdOlhQYJxKKtQ6v4s5xZGdmNuo6prpgLswIlyoum6thLVOs0QW2RjupKN1H
-	vkl9AbQ/WEzWPtl/8NtPouQOjsivnToKkj9Q85rBbZokM/MoySIJpbtni4TbkaL6lx316nTTnvQ
-	+BTAbRZccQa45xy6JRHKNZ8GDWhi9RcZodKxrrO1MXP6ZI=
-X-Google-Smtp-Source: AGHT+IHRLYFk6WKGMUGFdRLWCDPlF0uDv1KuXLuA9IOGHI3/eMtB1HfikEv38UOm5MtUeLpxK2RCcw==
-X-Received: by 2002:a05:6a20:7491:b0:1d8:fdf8:973c with SMTP id adf61e73a8af0-1e0e0b535e5mr8229365637.29.1732758654537;
-        Wed, 27 Nov 2024 17:50:54 -0800 (PST)
+        bh=NjPS6Vr07uzuPLMQyCOGOpu0Ghr4bBf3DcN8qzVB2F8=;
+        b=ou4pUEiXkamh8h/P+xo8Gl2ZiIVWElMIsZfkwTgxn6wBXf3iR3uxjTm7qATxoEJ91J
+         PHk9tzR8DtX5JT9KhUKYLo8lRXUnmcFent52K1k8mDM36CPnxHlIfumBbw+8QHkdL4hu
+         EeNIfl34NrieSrVpbCx6hnXyAlhaWii/iAVAr5oQLCo2Fjy2jkv42r7PMFyvyLiqUstR
+         9Z86aQqtVsJ4VUXOWSPVk8S0IDepyYpqRZLYhP/yrOuFjUZfUJg6KkbAqD9I6NY4ba0P
+         bk9sTf9IPBz58ETzUL/jdQ6+Fbwl4v0lWIei+ev0NXJCOIOkb+AlJpRtcjaDu4vZSfqr
+         qbcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVZWSDcthr/7bbV5E3GAVy7rBcBFAptEjiqazXGFIjWmTAuMGjJgZw7sdkG4R2z/igq9JE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwOWtiF2L9QTps2Z0K0MHdy7OPNmbA4FBYkhKblCYy4Wh4qrYMH
+	kQoV0h2gyYmHVreWlKPDTMYKFyscp0ETQP0qXFu372ks3uwO3l91
+X-Gm-Gg: ASbGncu8foCxKgIhh7hzHjLDpwHxsGN+tzWkop2NGUOEjwDb4QFsxqznMNMV3Ys5y/L
+	CC4VNZlNHj5uCEn5gJtnm20DMzFLe9r/L/jQ7PKVXQ+ty/mJiO/KZmqOh39VqfX+/C/Ra/bxGs9
+	y53pkRK7xfKxd7+ZStqtH/D8yGCKJSWy+CASXjeIkdUdG1axKP6LlvIEDvj6JWBOHznDyADomc6
+	Beb/uz8T/Szq+DTmr13S9lIJs/0VS5ggstkzmx569HpcKE=
+X-Google-Smtp-Source: AGHT+IFHfUKdbyUHt2RWDWt29o+rPW2k/14O2buFE/4yn+undljY0xs5lo9OwJZXFhcI2+SLzV+Bzg==
+X-Received: by 2002:a05:6a20:7349:b0:1e0:d1dc:753d with SMTP id adf61e73a8af0-1e0e0b3fa1bmr8345894637.27.1732759009645;
+        Wed, 27 Nov 2024 17:56:49 -0800 (PST)
 Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72541814657sm257544b3a.156.2024.11.27.17.50.53
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725417fbac2sm263862b3a.96.2024.11.27.17.56.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2024 17:50:53 -0800 (PST)
-Message-ID: <f0fbf1268f34b3eb7b74359dc11ec4299f5d77ad.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/4] selftests/bpf: Add test for reading
- from STACK_INVALID slots
+        Wed, 27 Nov 2024 17:56:49 -0800 (PST)
+Message-ID: <49bd3d5572da81c487d028d7aab79c847b2af998.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/4] selftests/bpf: Add test for narrow
+ spill into 64-bit spilled scalar
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
@@ -81,10 +81,10 @@ Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
  Lau <martin.lau@kernel.org>, Tao Lyu <tao.lyu@epfl.ch>,  Mathias Payer
  <mathias.payer@nebelwelt.net>, Meng Xu <meng.xu.cs@uwaterloo.ca>, Sanidhya
  Kashyap	 <sanidhya.kashyap@epfl.ch>
-Date: Wed, 27 Nov 2024 17:50:48 -0800
-In-Reply-To: <20241127212026.3580542-4-memxor@gmail.com>
+Date: Wed, 27 Nov 2024 17:56:44 -0800
+In-Reply-To: <20241127212026.3580542-5-memxor@gmail.com>
 References: <20241127212026.3580542-1-memxor@gmail.com>
-	 <20241127212026.3580542-4-memxor@gmail.com>
+	 <20241127212026.3580542-5-memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
@@ -96,70 +96,12 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 On Wed, 2024-11-27 at 13:20 -0800, Kumar Kartikeya Dwivedi wrote:
-> Ensure that when CAP_PERFMON is dropped, and the verifier sees
-> allow_ptr_leaks as false, we are not permitted to read from a
-> STACK_INVALID slot. Without the fix, the test will report unexpected
-> success in loading.
->=20
-> Since we need to control the capabilities when loading this test to only
-> retain CAP_BPF, refactor support added to do the same for
-> test_verifier_mtu and reuse it for this selftest to avoid copy-paste.
+> Add a test case to verify that without CAP_PERFMON, the test now
+> succeeds instead of failing due to a verification error.
 >=20
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  .../selftests/bpf/prog_tests/verifier.c       | 41 ++++++++++++++++---
->  .../bpf/progs/verifier_stack_noperfmon.c      | 21 ++++++++++
->  2 files changed, 56 insertions(+), 6 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/verifier_stack_nope=
-rfmon.c
->=20
-> diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
-sting/selftests/bpf/prog_tests/verifier.c
-> index d9f65adb456b..aaf4324e8ef0 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-> @@ -63,6 +63,7 @@
->  #include "verifier_prevent_map_lookup.skel.h"
->  #include "verifier_private_stack.skel.h"
->  #include "verifier_raw_stack.skel.h"
-> +#include "verifier_stack_noperfmon.skel.h"
->  #include "verifier_raw_tp_writable.skel.h"
->  #include "verifier_reg_equal.skel.h"
->  #include "verifier_ref_tracking.skel.h"
-> @@ -226,22 +227,50 @@ void test_verifier_xdp_direct_packet_access(void) {=
- RUN(verifier_xdp_direct_pack
->  void test_verifier_bits_iter(void) { RUN(verifier_bits_iter); }
->  void test_verifier_lsm(void)                  { RUN(verifier_lsm); }
-> =20
-> -void test_verifier_mtu(void)
-> +static int test_verifier_disable_caps(__u64 *caps)
 
-The original thread [0] discusses __caps_unpriv macro.
-I'd prefer such macro over these changes to prog_tests/verifier.c,
-were there any technical problems with code suggested in [0]?
-
-[0] https://lore.kernel.org/bpf/a1e48f5d9ae133e19adc6adf27e19d585e06bab4.ca=
-mel@gmail.com/#t
-
->  {
-> -	__u64 caps =3D 0;
->  	int ret;
-> =20
->  	/* In case CAP_BPF and CAP_PERFMON is not set */
-> -	ret =3D cap_enable_effective(1ULL << CAP_BPF | 1ULL << CAP_NET_ADMIN, &=
-caps);
-> +	ret =3D cap_enable_effective(1ULL << CAP_BPF | 1ULL << CAP_NET_ADMIN, c=
-aps);
->  	if (!ASSERT_OK(ret, "set_cap_bpf_cap_net_admin"))
-> -		return;
-> +		return -EINVAL;
->  	ret =3D cap_disable_effective(1ULL << CAP_SYS_ADMIN | 1ULL << CAP_PERFM=
-ON, NULL);
->  	if (!ASSERT_OK(ret, "disable_cap_sys_admin"))
-> +		return -EINVAL;
-> +	return 0;
-> +}
-
-[...]
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
 
