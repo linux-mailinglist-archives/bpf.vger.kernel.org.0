@@ -1,143 +1,230 @@
-Return-Path: <bpf+bounces-45806-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45807-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EC5E9DB210
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 05:12:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A76ED9DB211
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 05:13:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37111B21A8E
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:12:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6867728278B
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B0A813665A;
-	Thu, 28 Nov 2024 04:12:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8757D1369AE;
+	Thu, 28 Nov 2024 04:13:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W7UWdXCz"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11AC0134BD
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 04:12:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A038134BD
+	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 04:13:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732767155; cv=none; b=WCAz0b5usrA9ndwAolPWb23AyXPJUf/i4CQFp5vglkkxXO1Xr/hK7RA6wJ5OTLaYa+X9Fkaoge7NvbCNgnTVgZ0wdCmdi095+i22eYzcEUUi1gFo3+znphemBCwJ9jhdJM5IRJIc2+u39mfYjQlp4CYuUuUM7laLC0SOQZEi++w=
+	t=1732767214; cv=none; b=rLJ4btu0K9FYIBAiWXQgxsMY6Xj5v2hktNtYIbzvXIDwctPicGf6WZFWH4MEgobvlmXN1irChUlOsrjR7na5fzHoh/Z4oh/J3w6RrxQDfiM+cMePBQlRcNMNYNVLbFSQTObnBouYh21dGv6i4kDKwTVuWRVOgq6Rr0j1b6HRmKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732767155; c=relaxed/simple;
-	bh=eJzpk5d1JMvHW2fvLToYDw7hINzg53RZCNHFOBscJLw=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=TQ+XaH+s+Y1VaZujHzNolL7hQAuTdTvO6GU8zJI8eMn2eK7sMteJK7xHZ3TmiUmYLgi0Px3/bIAhjAdD85ohxPPTAQR9jnnuJ5U3rtzqooq9ELw8EOXnB43mda6OfQ7NepthS544IOlQh74wr00lE0Rw3wLuAZpx8Uw3gjROmSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XzNDm55SBz4f3jsx
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 12:12:08 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 74CD51A058E
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 12:12:22 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgDHbrCi7UdngxHjCw--.1022S2;
-	Thu, 28 Nov 2024 12:12:22 +0800 (CST)
-Subject: Re: [PATCH bpf v2 6/9] bpf: Switch to bpf mem allocator for LPM trie
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?Q?Thomas_Wei=c3=9fschuh?=
- <linux@weissschuh.net>, Hou Tao <houtao1@huawei.com>,
- Xu Kuohai <xukuohai@huawei.com>
-References: <20241127004641.1118269-1-houtao@huaweicloud.com>
- <20241127004641.1118269-7-houtao@huaweicloud.com>
- <CAADnVQKZ3=F0L7_R_pYqu7ePzpXRwQEN8tCzmFoxjdJHamMOUQ@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <98ff0c5e-e2ed-3d5e-08a2-7d320372bc7e@huaweicloud.com>
-Date: Thu, 28 Nov 2024 12:12:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1732767214; c=relaxed/simple;
+	bh=HcbKp7BBFPYS9Qniu0p6mWDzmi6ea/Povn2qqiEcVGA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=EYpkiGUuhqi0L34okFS3q7fmiR5mv750Z+Fa3AZcXLRknlTfect5mJMoRGtVB6UG8sKCX+ieKEDG1uTWmC1l4JAnFdnj/65RkqfvtC7X3YLT1or6pJRplKUHhDM2mBw0ZZRxsdzMSYXMDEHBK2STGpL5BtA0dbvGAhg3r+YvPCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W7UWdXCz; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-724ffe64923so478783b3a.2
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 20:13:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732767212; x=1733372012; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hGvbgDTyoAL6tiw35sKSH1L6USmsKhStuFzk1pO8Wgc=;
+        b=W7UWdXCz7LLpBW48j/h7eXZUQYe868HYx2wciLWA4iQ3+XyHkyuu+TrFUy785vSKMx
+         L8dgDOnan/Q9BRjlKv32ulq0AEq6jeu+poRp0fQHjWMxUWB7A5RGjA4v6XeZ/bzirGwp
+         b3VO0fip3EnAEM4anwP66hlW1esoti97CvipSe8qoFusIB1PWNjX+0Btcb5ms0HQlsA1
+         CQnn4nOq6J+q6gjZsWBrKWQ29qEOI76fL3dCUnpgy9lcUbCVckZCmAV3q+eSt9XUR/8m
+         iPE7IdgO8rFml6xSK6b+pheZOTGeW4WMidT8HHBJy8w9J8eOURweZgNDKbjNpDfY0FBd
+         BNLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732767212; x=1733372012;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hGvbgDTyoAL6tiw35sKSH1L6USmsKhStuFzk1pO8Wgc=;
+        b=H/5jbKXi73dNxpjtQkm6zE/yPX7NaWth6JEn4hJJhM97GqedSbDf5npdzskA7lq4qX
+         xLMn9qepSJGq0mKAbDsC7UtoV6zRBD7QjR9k28Xd1yIJ38MNtU5l28x2t3nHwkpbKFRN
+         wNJyyI3Rlc+FvTVob64PG8VNWDLt9eUJHZNWu5XEwD8Q203rxVCdyOCNKnvF67IQXVFC
+         HR1PVd+lNXxnJrCF9ODCEPp5L7YVtxMEg6CEXuMtwgfRjL7YHUvQ9z8DyHjt3e/NTxGZ
+         fVpaxM4hFygSoXAKbRrgJzskd6UcH6NTHfyK5Sr/jFHwmKtwoJa++R0rsR8JxBtogpvN
+         L8og==
+X-Forwarded-Encrypted: i=1; AJvYcCUAiULogBKuEfcyiG7aWmu85Smim7qhc7dCcsII8XlJzVEiojwgY93m49GKdn9ij8ehzPA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwE3sy+h5ofoX+oeWtDPptu4690B5OepIO5OvfEQxnXneUtF+ew
+	3Dgl1DsPMmw542E/u0Pael7h0kCdI90Jen5pS30rCLdiwm1KdKW0
+X-Gm-Gg: ASbGnctS9RhnzqfaxVe/ZD3CMCxl7gwgv5lYyMgtRh4/bUZeRjpqbjTO8EEC4DJp6mh
+	lePXholcuh/3NpDAtlNAgn/J1g9+bL5qaaBGhZp+zQzyVv5rragblHvCJLmok/ioOVYidh4kUYK
+	ziGIX932NG7GCjb3vXquAzKXJQzFpMKY9slLQpxFfAd4OZu2yrXJkkL1nn+MHfylmmJYhCbyJzT
+	h3/p5mGeaHMgiUOAo8wMdAgTOurZHSeTfii/ySCdVnUJGM=
+X-Google-Smtp-Source: AGHT+IHcoiVQylQ152hFQJIvF+Jps+a0dJvC+xcYZfkH7J9XCWh71fPscBmpHgsmC+R4NR95Q5DL1A==
+X-Received: by 2002:a17:902:ea02:b0:20c:e8df:251a with SMTP id d9443c01a7336-21501d65b31mr55790335ad.45.1732767211770;
+        Wed, 27 Nov 2024 20:13:31 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215219afd1asm3632155ad.228.2024.11.27.20.13.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Nov 2024 20:13:31 -0800 (PST)
+Message-ID: <0b2e84f96227c62ef4da7eda44ee31d42800fccd.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/7] bpf: Refactor
+ {acquire,release}_reference_state
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko	
+ <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
+ Lau	 <martin.lau@kernel.org>, kernel-team@fb.com
+Date: Wed, 27 Nov 2024 20:13:26 -0800
+In-Reply-To: <20241127165846.2001009-3-memxor@gmail.com>
+References: <20241127165846.2001009-1-memxor@gmail.com>
+	 <20241127165846.2001009-3-memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQKZ3=F0L7_R_pYqu7ePzpXRwQEN8tCzmFoxjdJHamMOUQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgDHbrCi7UdngxHjCw--.1022S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww4xGw1rWrWxKr4ktr1UWrg_yoW8CF1kpF
-	Z7GFyrtr4kZr1qqr1xXws7Wa48ZrsxKFs8Wa4kWF4jk3sxuF9aqrW8ZFWYgFW5Wrs3K3yS
-	vr1UK3s5Wr4UZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU92b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCY1x0262kKe7AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
-	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
-	MI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
-	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
-	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
-	BIdaVFxhVjvjDU0xZFpf9x07jIksgUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi,
+On Wed, 2024-11-27 at 08:58 -0800, Kumar Kartikeya Dwivedi wrote:
 
-On 11/27/2024 1:51 PM, Alexei Starovoitov wrote:
-> On Tue, Nov 26, 2024 at 4:34 PM Hou Tao <houtao@huaweicloud.com> wrote:
->> 2. nodes are freed before invoking spin_unlock_irqrestore(). Therefore,
->> there is no need to add paired migrate_{disable|enable}() calls for
->> these free operations.
-> ...
->
->>         if (ret)
->> -               kfree(new_node);
->> +               bpf_mem_cache_free(&trie->ma, new_node);
->> +       bpf_mem_cache_free_rcu(&trie->ma, free_node);
->>         spin_unlock_irqrestore(&trie->lock, irq_flags);
->> -       kfree_rcu(free_node, rcu);
-> ...
->
->> +       bpf_mem_cache_free_rcu(&trie->ma, free_parent);
->> +       bpf_mem_cache_free_rcu(&trie->ma, free_node);
->>         spin_unlock_irqrestore(&trie->lock, irq_flags);
->> -       kfree_rcu(free_parent, rcu);
->> -       kfree_rcu(free_node, rcu);
-> going back to under lock wasn't obvious.
-> I only understood after reading the commit log for the 2nd time.
->
-> Probably a code comment would be good.
+Overall looks good, but please take a look at a few notes below.
 
-Missed that. Will be alert next time.
->
-> Though I wonder whether we should add migrate_disable/enable
-> in the syscall path of these callbacks.
-> We already wrapped them with rcu_read_lock().
-> Extra migrate_disable() won't hurt.
+[...]
 
-It seems that bpf program has already been running with migration
-disabled. I think we could also do the similar thing for the syscall path.
->
-> And it will help this patch. bpf_mem_cache_free_rcu() can be
-> done outside of bucket lock.
-> bpf_ma can easily exhaust the free list in irq disabled region,
-> so the more operations outside of the known irq region the better.
->
-> Also it will help remove migrate_disable/enable from a bunch
-> of places in kernel/bpf where we added them due to syscall path
-> or map free path.
->
-> It's certainly a follow up, if you agree.
-> This patch set will go through bpf tree
-> (after hopefully few more acks from reviewers)
-Thanks for the suggestion. Will try it.
+> @@ -1349,77 +1350,69 @@ static int grow_stack_state(struct bpf_verifier_e=
+nv *env, struct bpf_func_state
+>   * On success, returns a valid pointer id to associate with the register
+>   * On failure, returns a negative errno.
+>   */
+> -static int acquire_reference_state(struct bpf_verifier_env *env, int ins=
+n_idx)
+> +static struct bpf_reference_state *acquire_reference_state(struct bpf_ve=
+rifier_env *env, int insn_idx, bool gen_id)
+>  {
+>  	struct bpf_verifier_state *state =3D env->cur_state;
+>  	int new_ofs =3D state->acquired_refs;
+> -	int id, err;
+> +	int err;
+> =20
+>  	err =3D resize_reference_state(state, state->acquired_refs + 1);
+>  	if (err)
+> -		return err;
+> -	id =3D ++env->id_gen;
+> -	state->refs[new_ofs].type =3D REF_TYPE_PTR;
+> -	state->refs[new_ofs].id =3D id;
+> +		return NULL;
+> +	if (gen_id)
+> +		state->refs[new_ofs].id =3D ++env->id_gen;
+
+Nit: state->refs[new_ods].id might end up with garbage value if 'gen_id' is=
+ false.
+     The resize_reference_state() uses realloc_array(),
+     which allocates memory with GFP_KERNEL, but without __GFP_ZERO flag.
+     This is not a problem with current patch, as you always check
+     reference type before checking id, but most of the data strucures
+     in verifier are zero initialized just in case.
+
+>  	state->refs[new_ofs].insn_idx =3D insn_idx;
+> =20
+> -	return id;
+> +	return &state->refs[new_ofs];
+> +}
+
+[...]
+
+> -/* release function corresponding to acquire_reference_state(). Idempote=
+nt. */
+> -static int release_reference_state(struct bpf_verifier_state *state, int=
+ ptr_id)
+> +static void release_reference_state(struct bpf_verifier_state *state, in=
+t idx)
+>  {
+> -	int i, last_idx;
+> +	int last_idx;
+> =20
+>  	last_idx =3D state->acquired_refs - 1;
+> -	for (i =3D 0; i < state->acquired_refs; i++) {
+> -		if (state->refs[i].type !=3D REF_TYPE_PTR)
+> -			continue;
+> -		if (state->refs[i].id =3D=3D ptr_id) {
+> -			if (last_idx && i !=3D last_idx)
+> -				memcpy(&state->refs[i], &state->refs[last_idx],
+> -				       sizeof(*state->refs));
+> -			memset(&state->refs[last_idx], 0, sizeof(*state->refs));
+> -			state->acquired_refs--;
+> -			return 0;
+> -		}
+> -	}
+> -	return -EINVAL;
+> +	if (last_idx && idx !=3D last_idx)
+> +		memcpy(&state->refs[idx], &state->refs[last_idx], sizeof(*state->refs)=
+);
+> +	memset(&state->refs[last_idx], 0, sizeof(*state->refs));
+> +	state->acquired_refs--;
+> +	return;
+>  }
+
+Such implementation replaces element at 'idx' with element at 'last_idx'.
+If the intention is to use 'state->refs' as a stack of acquired irq flags,
+the stack property would be broken by this trick.
+E.g. consider array [a, b, c, d] where 'idx' points to 'b',
+after release_reference_state() the array would become [a, d, c].
+You need to do 'memmove' instead.
+
+[...]
+
+> @@ -9666,21 +9659,41 @@ static void mark_pkt_end(struct bpf_verifier_stat=
+e *vstate, int regn, bool range
+>  		reg->range =3D AT_PKT_END;
+>  }
+> =20
+> +static int release_reference_nomark(struct bpf_verifier_state *state, in=
+t ref_obj_id)
+> +{
+> +	int i;
+> +
+> +	for (i =3D 0; i < state->acquired_refs; i++) {
+> +		if (state->refs[i].type !=3D REF_TYPE_PTR)
+> +			continue;
+> +		if (state->refs[i].id =3D=3D ref_obj_id) {
+> +			release_reference_state(state, i);
+> +			return 0;
+> +		}
+> +	}
+> +	return -EINVAL;
+> +}
+> +
+>  /* The pointer with the specified id has released its reference to kerne=
+l
+>   * resources. Identify all copies of the same pointer and clear the refe=
+rence.
+> + *
+> + * This is the release function corresponding to acquire_reference(). Id=
+empotent.
+> + * The 'mark' boolean is used to optionally skip scrubbing registers mat=
+ching
+          ^^^^^^
+Nit: this is probably a remnant of some older patch revision,
+     function no longer takes 'mark' parameter.
+
+> + * the ref_obj_id, in case they need to be switched to some other type i=
+nstead
+> + * of havoc scalar value.
+>   */
+> -static int release_reference(struct bpf_verifier_env *env,
+> -			     int ref_obj_id)
+> +static int release_reference(struct bpf_verifier_env *env, int ref_obj_i=
+d)
+>  {
+
+[...]
 
 
