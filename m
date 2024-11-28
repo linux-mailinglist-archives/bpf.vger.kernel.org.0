@@ -1,88 +1,88 @@
-Return-Path: <bpf+bounces-45810-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45811-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0D229DB22F
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 05:32:02 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A2F89DB234
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 05:34:42 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 652681673E3
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:31:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19B44282710
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:34:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E8213777E;
-	Thu, 28 Nov 2024 04:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BDC9126C08;
+	Thu, 28 Nov 2024 04:34:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BxuIYt0Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y8r8zTYg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9317C322B
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 04:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE016130499
+	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 04:34:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732768317; cv=none; b=L1hGzvyAfmkI/HI22Xu7+34DIQjXWaGcYLg8LPVBXm8JDK1ZUQiIMknDFBpC7NCKhf+yvlI/92Fzkb0kjoowWONQ0b/fJt4X7R+10wL959SDEMrFhHCjkKxTzhxVPQDkByMPiTBCmqjvp7nqK5YHKBdbegQCGKSv2JpUxypb7gU=
+	t=1732768477; cv=none; b=qBC0X/+S86WUtugWC+JGBM1cZZdfBMFfm7cvhTMDf4z5vFOSfZ35FDJGvU2tEJQRZ0EzLzXJ/ZGS80jVbGC+93k9gm+7qjxyyBKf1pmezxyyRPNuTJBkq4Apop7czhT46wz/DGrFKcGC1kNxgSb1o89C/D7ZFAi6uILjLPIi++0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732768317; c=relaxed/simple;
-	bh=P8Bjb6lbm5aOCSAIt6H35G2xFVyku0vpmgKytuKKz6E=;
+	s=arc-20240116; t=1732768477; c=relaxed/simple;
+	bh=20pP+eh8s7POfgUe2p5N2AyVVCAImYGYFxRRQA/7AsA=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Tk4fVQ6sBM3esBmvzJCNjiMsW4RQUUtmiaQe0RnS5rBIaQVno73DQbSbozuHOET6RTk/Oqhk3q87v/TNZPXoJV6BJdbCoP1xA4c98Umdzsb01xN7t9nbQo4s7+SsYU4PGP7UuQ2bG/pBAFG4d1LOdsBKbOvbkMGZ/npd/Dfldvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BxuIYt0Q; arc=none smtp.client-ip=209.85.214.172
+	 Content-Type:MIME-Version; b=tglldz0C30a/G3bWugQGh12sQ6wqVPvE7i1Gf/Ga/GS7mem3NPICKd+H51YsTYUm6xt75vB4vB0S3+OKapiMIKxbEWUDtcR5JnQ98OV880sa2Zx2VbFiWazfx2nC/gM7CD3V6Yn5JIHL2GqxhZvZsVvVP0hnhuVHWvKUuJI2AdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y8r8zTYg; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2129fd7b1a5so3249875ad.1
-        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 20:31:55 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-212776d6449so3833445ad.1
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 20:34:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732768315; x=1733373115; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1732768475; x=1733373275; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=BJKFYMbw7iCB1oS4WEMpdB9mEcFKyoKK6thPetpaPnY=;
-        b=BxuIYt0Qy4XtZITURuBGubiHLll82qhcaz6K57xp/VI7ypS4ixEk67v5GXig2CA0DK
-         RUOjXwUdZ33FL054Y7bTPcnpAxFGbSfMQMe1D0DKIDXBNV/OVrecPfdgCO4u5q8nTlqN
-         t5qwg0vAxwyLdPay2eHMVFMbyzbK0pVFfKXqlndH7QIc8Rc6zUiF6kgX55wQaKziWBul
-         SE0NZBr+E4Z5DfLn+YMIdUav9dTTWWIwkQ88jOVkUdQELALpZDufXHi+Dw4QmsX+hMRu
-         jbJtf7hynmCfLWeuEpatRvqLnsJuRg53XYB2CMYjFHRqQ12aYLq6ugBC6khc09Juxwjk
-         GjRQ==
+        bh=20pP+eh8s7POfgUe2p5N2AyVVCAImYGYFxRRQA/7AsA=;
+        b=Y8r8zTYgDGLFUq5Psv3bLqQIubI2BiZXXaC3Q5CPd0RfiSkMNbqfuqcMv926rtey9p
+         KYbYUX+wN5ejbm47TyZg2dLIimuNgJE7m6RQQLovuu9fDe7Bh8BJHODp9Q1MILZTELj9
+         40LU5583qi16KDsQauCt6dZPlgsQynfp7zxEWhP92MzqWzz39CqJM3u0Yn08Hj006lWw
+         c7PXF0LdgQwoWxKvGerSe+lITFZouHhVQbBNesg+wTxnB5kdXSH7VleulQCvnDq09I+9
+         FoNHMmdBkVKzh/pb4zOZrRj8YI8o1vAAQ6IsoSUWWAj9+WaomvukxG7ihKLJaSNauXOw
+         F0dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732768315; x=1733373115;
+        d=1e100.net; s=20230601; t=1732768475; x=1733373275;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=BJKFYMbw7iCB1oS4WEMpdB9mEcFKyoKK6thPetpaPnY=;
-        b=Aom9li716VBTm1q2jxKW9f62r52UbT0OExZxfNaBsp4APhHpuoOd5Vkzx5JmWxrlLT
-         kGJ1ZkDiYzJ+5vhAzOljcfzls9NPLf+Vf/kZ7As7w9KxqoncVftt49ncIUTpZnle5Mqn
-         WNYQqG0LxxZaFQcaJjrOgk2ExGiakluNhrXr+yG1BRqPNfiz10zgF+b9OOSIBHAPm/mA
-         bGjFcLOFds7DAZORPGJwgkjOVWr8VfoDbrYwfbC2bkMgIcvUpMFPV/x3cl8YQrpo9bWu
-         2Buz9Ow+hZEwN9YRPycpGEMjY94300hQPDOt3olA97j3ds03jDyKfC3r/enoHcOOS+ml
-         kMMg==
-X-Forwarded-Encrypted: i=1; AJvYcCXlM8fZCMjfAd2vaMDtZS1xui1SPeNAkpJLK9GxVYojenoD/9LiInzSqTXz4o8gsL8ACCs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxZiwPZ+deiiTl9DWFbtuS1JsOFK/Tdqt0rep0iAj38AY6f6nEv
-	7aiD1uZJMZ4sX+jHrzqdRS4CPZRAZKnzS0Fynm8bQ+biMey1VJME
-X-Gm-Gg: ASbGnctA/lZg8Lg1+4e63d3I4wXkqnom9WEslQy0snR1sEJbifCndJOj0d15SUUhqlv
-	cpFY8V15mLCsioZAFM2wcgvwNECAMZJqcBJWym/n7I732J3NJnKFcPNnvr9wXMrQzrC3e+v848w
-	v24W0nOBFXrg7E+XJmrWhYqIVzuBQap4bJWz9nZRyz9b5almwqp4B0d6TLDNXckzrVowq84k9ku
-	N3LPaoBgPBtkBNv7OZs1Si6vjtOWMCq1ztaMfo4jIYjToY=
-X-Google-Smtp-Source: AGHT+IEmBNYhPwpMUgSQWJ3nctPKCzL2960sLKzbJd3mJG46IUcKBe7XkQf1vvOBMJHVf24/OxUk5A==
-X-Received: by 2002:a17:902:c945:b0:20c:5bf8:bd6e with SMTP id d9443c01a7336-21501f68618mr71147315ad.48.1732768314675;
-        Wed, 27 Nov 2024 20:31:54 -0800 (PST)
+        bh=20pP+eh8s7POfgUe2p5N2AyVVCAImYGYFxRRQA/7AsA=;
+        b=cRfsAQabv6fJLHDJR+0PCkl1JKzbqjSuIfQOCLn9PNw0H+JboTcJ7YRRaQuPUbzlg1
+         wc6vn5bjWbmsOj+CjhlJk/GiMEPTqWMzUTfSu0tXRcEC6GIuQycY42/O/aNeaIgJRYvw
+         Idf9eLQU3qMJ9odRdo/uzqfoSDUXZCkse2S32LpvZVFijIrZcbpfK7NCm1eS45C2Yn9+
+         s2Cnh81AY6yNkiD/mexzHZmkKQ7ByqTUk8fVVb93wXwz54ETo+1MyKvGuLPstRuGoD6l
+         Qyxd86aDS1RRTd+pUm00r0NceSsnHwgKWvSGE0/4lAYuy4BBVqw7Us49krS5qYS1udKn
+         AlpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWeOcXKHuiEKg+bu1t6MYgWU3+ObqjP68WAfx344uUqUG7qBAALFl2judvja0u09lC8krY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+Kw17otk1iEDZCmvTO78YxIXLOdZqdUT5r6bIgLDPcmOJ6WWM
+	k6K/CaL45f63qJbpdklZ5n7pCWNzQiFTSjrd3obvjwC21fG1C23L
+X-Gm-Gg: ASbGncsmasMJSI2w079go8vTK/0xZI4pUysdK0+hCeWg8L8WNz4GxytEjm5C4XFvF00
+	SrvAvHoXYK4ab0W6fzXMYL97pZv5lQ7Tf66RtOrLsk1wNF/yiHa4PVC6bRztElaMkQHOqvSAUd6
+	VSxT/lxSpvvUIm541rHIu7ts6QaSApROdtKNeM0HUH4jumSHBiWjoz0ib3h/WqFO5+4c6E+//yA
+	jmMCTipGvYtSEcYy4bMpRibG/jSxhDaIsTeaAswB3cJYa4=
+X-Google-Smtp-Source: AGHT+IF1EV1R6de86ccIc8MNcipckN2TxZLkSDBbAS5mS/VOAf9gispEvKkjdf+6F7CDCb06Wcl+AA==
+X-Received: by 2002:a17:902:ea12:b0:20b:b40b:3454 with SMTP id d9443c01a7336-21500fe71f9mr65143235ad.0.1732768474999;
+        Wed, 27 Nov 2024 20:34:34 -0800 (PST)
 Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21521985773sm3927385ad.199.2024.11.27.20.31.53
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215219063afsm4047625ad.87.2024.11.27.20.34.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2024 20:31:54 -0800 (PST)
-Message-ID: <8559a9a9892311772778268eb9cee7c533a576d0.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/7] bpf: Introduce support for
- bpf_local_irq_{save,restore}
+        Wed, 27 Nov 2024 20:34:34 -0800 (PST)
+Message-ID: <0f52741bab36a5f2c4d1dc9963014a7b9d1dc0f5.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 5/7] bpf: Improve verifier log for resource
+ leak on exit
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
 Cc: kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko	
  <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
  Lau	 <martin.lau@kernel.org>, kernel-team@fb.com
-Date: Wed, 27 Nov 2024 20:31:49 -0800
-In-Reply-To: <20241127165846.2001009-5-memxor@gmail.com>
+Date: Wed, 27 Nov 2024 20:34:29 -0800
+In-Reply-To: <20241127165846.2001009-6-memxor@gmail.com>
 References: <20241127165846.2001009-1-memxor@gmail.com>
-	 <20241127165846.2001009-5-memxor@gmail.com>
+	 <20241127165846.2001009-6-memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
@@ -94,119 +94,15 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 On Wed, 2024-11-27 at 08:58 -0800, Kumar Kartikeya Dwivedi wrote:
-> Teach the verifier about IRQ-disabled sections through the introduction
-> of two new kfuncs, bpf_local_irq_save, to save IRQ state and disable
-> them, and bpf_local_irq_restore, to restore IRQ state and enable them
-> back again.
+> The verifier log when leaking resources on BPF_EXIT may be a bit
+> confusing, as it's a problem only when finally existing from the main
+> prog, not from any of the subprogs. Hence, update the verifier error
+> string and the corresponding selftests matching on it.
 >=20
-> For the purposes of tracking the saved IRQ state, the verifier is taught
-> about a new special object on the stack of type STACK_IRQ_FLAG. This is
-> a 8 byte value which saves the IRQ flags which are to be passed back to
-> the IRQ restore kfunc.
->=20
-> Renumber the enums for REF_TYPE_* to simplify the check in
-> find_lock_state, filtering out non-lock types as they grow will become
-> cumbersome and is unecessary.
->=20
-> To track a dynamic number of IRQ-disabled regions and their associated
-> saved states, a new resource type RES_TYPE_IRQ is introduced, which its
-> state management functions: acquire_irq_state and release_irq_state,
-> taking advantage of the refactoring and clean ups made in earlier
-> commits.
->=20
-> One notable requirement of the kernel's IRQ save and restore API is that
-> they cannot happen out of order. For this purpose, when releasing referen=
-ce
-> we keep track of the prev_id we saw with REF_TYPE_IRQ. Since reference
-> states are inserted in increasing order of the index, this is used to
-> remember the ordering of acquisitions of IRQ saved states, so that we
-> maintain a logical stack in acquisition order of resource identities,
-> and can enforce LIFO ordering when restoring IRQ state. The top of the
-> stack is maintained using bpf_verifier_state's active_irq_id.
->=20
-> The logic to detect initialized and unitialized irq flag slots, marking
-> and unmarking is similar to how it's done for iterators. No additional
-> checks are needed in refsafe for REF_TYPE_IRQ, apart from the usual
-> check_id satisfiability check on the ref[i].id. We have to perform the
-> same check_ids check on state->active_irq_id as well.
->=20
-> The kfuncs themselves are plain wrappers over local_irq_save and
-> local_irq_restore macros.
->=20
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-Sorry, two more nits below.
-
-[...]
-
-> +static int unmark_stack_slot_irq_flag(struct bpf_verifier_env *env, stru=
-ct bpf_reg_state *reg)
-> +{
-> +	struct bpf_func_state *state =3D func(env, reg);
-> +	struct bpf_stack_state *slot;
-> +	struct bpf_reg_state *st;
-> +	int spi, i, err;
-> +
-> +	spi =3D irq_flag_get_spi(env, reg);
-> +	if (spi < 0)
-> +		return spi;
-> +
-> +	slot =3D &state->stack[spi];
-> +	st =3D &slot->spilled_ptr;
-> +
-> +	err =3D release_irq_state(env->cur_state, st->ref_obj_id);
-> +	WARN_ON_ONCE(err && err !=3D -EACCES);
-> +	if (err) {
-> +		verbose(env, "cannot restore irq state out of order\n");
-
-Nit: maybe also print acquire_irq_id and an instruction where it was acquir=
-ed?
-
-> +		return err;
-> +	}
-> +
-> +	__mark_reg_not_init(env, st);
-> +
-> +	/* see unmark_stack_slots_dynptr() for why we need to set REG_LIVE_WRIT=
-TEN */
-> +	st->live |=3D REG_LIVE_WRITTEN;
-> +
-> +	for (i =3D 0; i < BPF_REG_SIZE; i++)
-> +		slot->slot_type[i] =3D STACK_INVALID;
-> +
-> +	mark_stack_slot_scratched(env, spi);
-> +	return 0;
-> +}
-> +
-> +static bool is_irq_flag_reg_valid_uninit(struct bpf_verifier_env *env, s=
-truct bpf_reg_state *reg)
-> +{
-> +	struct bpf_func_state *state =3D func(env, reg);
-> +	struct bpf_stack_state *slot;
-> +	int spi, i;
-> +
-> +	/* For -ERANGE (i.e. spi not falling into allocated stack slots), we
-> +	 * will do check_mem_access to check and update stack bounds later, so
-> +	 * return true for that case.
-> +	 */
-> +	spi =3D irq_flag_get_spi(env, reg);
-> +	if (spi =3D=3D -ERANGE)
-> +		return true;
-
-Nit: is it possible to swap is_irq_flag_reg_valid_uninit() and
-     check_mem_access(), so that ERANGE special case would be not needed?
-
-> +	if (spi < 0)
-> +		return false;
-> +
-> +	slot =3D &state->stack[spi];
-> +
-> +	for (i =3D 0; i < BPF_REG_SIZE; i++)
-> +		if (slot->slot_type[i] =3D=3D STACK_IRQ_FLAG)
-> +			return false;
-> +	return true;
-> +}
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
 [...]
 
