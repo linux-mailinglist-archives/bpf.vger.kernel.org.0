@@ -1,128 +1,122 @@
-Return-Path: <bpf+bounces-45840-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45841-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC54C9DBC37
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 19:38:13 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 823A79DBC5A
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 20:05:33 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 720C6282019
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 18:38:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247E1163B14
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 19:05:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8D81C1F08;
-	Thu, 28 Nov 2024 18:38:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FAE1C1ADB;
+	Thu, 28 Nov 2024 19:05:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sd1ohPme"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hLTiLmCC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B0D19EED3;
-	Thu, 28 Nov 2024 18:38:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9262CAB;
+	Thu, 28 Nov 2024 19:05:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732819086; cv=none; b=pbClY0ga1erx2WH/6eLpOoe9UeGFIaCWLCFj0tzBgKH8Kaki4yyUecvhkB/0Z91SChMBIIS2JBEjF6M+WlPYIKEk3O3Z2ur8kKT0cJ6SCEqh1VsQCwBKKUTMXeaOuNuDB5RazhoUZBGAXJdaG4pFmn5kbsGFNIoBSPJm1v6128o=
+	t=1732820727; cv=none; b=R59iTxXAegltICiH9VwzdW4GJRCyzqvYOdF4mMq0eIzDfhd+PEokVMD9pzarJacEPZv3kN8H8kVTDx4RHuokK2n1i7D2hNvYl+dNWyJagTAJaxw9gqOl6JT+VvQx82DXB7UQ+38AsyoJnS0Q/jml4mW+yh+ndTLO9Ecbush4EX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732819086; c=relaxed/simple;
-	bh=5kHFSIgUt75t6zTwBLU8YLk/bo3MvEHaMsy1SVdn1xA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jlmrzPZSaQuDKExaSN4rCm4xJz+LK5pr8bJB+/43Nh++6Mbk7vlUEJO2OulBo3+KmAAvIkUK8pw5ABbEWvo13LKYTc0m+P4lAb9E/u5xqUOyhQOKttg/0ZuGW6tHH/xB1+hZmxX1EcnJ/QUGBskZFz3RtYT5nVB5JUnVFFDTuvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sd1ohPme; arc=none smtp.client-ip=209.85.215.181
+	s=arc-20240116; t=1732820727; c=relaxed/simple;
+	bh=TGz/gRp6g/hAX+W8VpDqafS+O5d3xzNQzd0Hcui57FY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ly6Rc7lrriFIzH/fxMnR6l3v2CTKBBs4ET2ITTW1NnRSddBuOLmWo5qdfXYLdfXy9fHHRkgdqfGVBtfwlcu30UqxzXlIjiJYd1dBZPWUgZPVldrsCSFK/LO53m2SJ0TAcimjxKX03piekDSz2usbmDn+3/rwpwn47oZnlRHs/u0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hLTiLmCC; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7ee51d9ae30so699539a12.1;
-        Thu, 28 Nov 2024 10:38:05 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-434a099ba95so10304355e9.0;
+        Thu, 28 Nov 2024 11:05:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732819085; x=1733423885; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o+tE7Xp6FcgLMBVi5JpUkzbSQKbNu8pSIDauMkrQaJw=;
-        b=Sd1ohPme+zP0ABo8c3I53CT/jjKR6xv+Zwaev35pDdwZBTN91mQ/Xl8hhTldcWAPBi
-         vrmtvyoGfGfEX9oFXoCCAbu95fws8aQGk/n9wW79Sf4U5/6N4WGqCf9TBZvOBjwG4YVr
-         mU64FBUW+z+TyWEGHWsw4nsY6vBQMMXEjwxKeBEe9tE4R0m9YAcl9OjQmjfPVsCR2VJn
-         sffXCZmynX7QUrUUirFh360MeIy/vy6X0eZvYR5PBtUW8zTb1ZYOBmRJY4CXIeP9xXUQ
-         Of+A+B60rSKg931vKI7dABhOPK1OyRkTF/Nsw8BtEtN20mASF1OrLBjR398IhMC+fA9A
-         NEyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732819085; x=1733423885;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1732820723; x=1733425523; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o+tE7Xp6FcgLMBVi5JpUkzbSQKbNu8pSIDauMkrQaJw=;
-        b=DU16x27zmydehRBwHeGrnLHM/XMARvgwOQdA5BPvcjJM/bVogEHELwpOgxOeeOzieI
-         BlEVdt6HSISIBZPaRJLJgScoou5R3E3keQ/Yap0IjPtTYVE32DDoHmRDnX/QvUTwW8Ja
-         W4JcaVdd1OmU+krEPlniILW3NWfTWSXhJY4xV6o/XafbqhP6Wft3W+SM6GRoA/Vc7Arr
-         UzViAMPnqvLwYKZ7ynmbv3jS8e3ZBTyJ5hrM5qPCJA1cUMO5IgHxW4ND/OYPorI4xige
-         v2TCCWPJ9iNR7Fn7kshSgIdaDMd8L5mUYIEHTb9ngSIY1iX+v+AoRHM1KHpMFomaL4/P
-         k4tw==
-X-Forwarded-Encrypted: i=1; AJvYcCUqcyh2/htv1BwyxEJylrkDGlnV5tK/HpBlBqkclOzt707zGQlkrp0cOcz2Uu1WW6wZgo4=@vger.kernel.org, AJvYcCXlBWH6c4xmeDid6bCl1QFoozR0IQqHmeY4zA89X41NCO1iUbzr04OLEU3YvSDr8d0y6Ev6sYVC@vger.kernel.org
-X-Gm-Message-State: AOJu0YzwPo/7zebPFLw8XId1JGSpSD2HSdC4ggIc4Urd7YrS8fniSbh9
-	I5yuOUMJoEjqh7PpnPvf45hSuA9TENMYnQlEfqos8RFSEyHjn4WtlMI2CQ==
-X-Gm-Gg: ASbGncuGnB2FGODo3U6IlL/K3/eUKHZvJb+aUy/2sXN2FG3ZuFMCdqXk+IUSpBrTD5S
-	zzFDOEpzLaMpm2IiqmfSa6ZIAJMdITyJZ1LB56j9yMMLVQ08XaEr6dhu3fVctlJWjBUCxTUY56I
-	SkgXH0n0w4GFGlTGhMxqBvxozDSmp//aqoX6IeR9sVZwOogO1h+Ye6mZ/SmCN/9A52C92Hs49Zw
-	K5EBUikT4C7VCs0FXRTGdNoKHLSQWcMOz/LyO1WlKv9RBqPyYlMXvnd
-X-Google-Smtp-Source: AGHT+IHxAgsakWZpaMi/QTj+rwkOiNDU/j/x4CnaTAbnzdeHmOYAfVvEkWxmeXse+hh3jr4pfVnqxw==
-X-Received: by 2002:a17:90b:4a4e:b0:2ea:752c:3c2 with SMTP id 98e67ed59e1d1-2ee08eb2f0fmr9640255a91.13.1732819084630;
-        Thu, 28 Nov 2024 10:38:04 -0800 (PST)
-Received: from localhost ([2601:647:6881:9060:c1c1:c76b:dac2:9d68])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ee2aff1f28sm1803743a91.7.2024.11.28.10.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Nov 2024 10:38:04 -0800 (PST)
-Date: Thu, 28 Nov 2024 10:38:03 -0800
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: Zijian Zhang <zijianzhang@bytedance.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-	Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [External] [Patch bpf 2/2] selftests/bpf: Add a BPF selftest for
- bpf_skb_change_tail()
-Message-ID: <Z0i4i0Db8EnRjzZJ@pop-os.localdomain>
-References: <20241107034141.250815-1-xiyou.wangcong@gmail.com>
- <20241107034141.250815-2-xiyou.wangcong@gmail.com>
- <67a0fb14-f791-4499-8751-01bbbd1cafcb@bytedance.com>
- <6746cb81870d7_f422208e@john.notmuch>
+        bh=x030wcXN3XejZGrsIlbUm8x1eM2wwwHskSKWwVcxZj0=;
+        b=hLTiLmCCP0H1gVVcLbJy3njRed63kGceF7fdo7VOyQadv/nOozBW/L12oa7dS33dua
+         itpC58wHzZMcPX4dz7qtVrmn/8vpZVeeHOPK0DVWlKm+bWQk0ew4Kk9XEFu+sX+uPBF1
+         M11wztaUqVN2lS2Lwv8+TQNjIbdqKPOiiL4Jmx9hkfb0KxqzBSmToQ+OqU+AbsKJ6cgj
+         opkc2GW5GGKsKic+qpzGvgeBEFfa6ElZFv682Q839FO2tMSInpg0ulik+ipRbZJSTE8C
+         f0Zo1PQ4ODPvkc7vvQZuBMd4aolN7l0FoXt4qh6MHGF5YBxrrMHzmtvoCQDw/bhfM1Zh
+         TWKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732820723; x=1733425523;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x030wcXN3XejZGrsIlbUm8x1eM2wwwHskSKWwVcxZj0=;
+        b=UY4yWCIUk4SDnYmZ1Qc2GTl52DGKrTa3L+IvXuO442WArFN++6Dz7CB2HCn052jWQp
+         UVQ/fGkOyyoaBa7uIqMJzMPuidP9MQHSr1EjSFBB7Us7hD21UNuK/epGFjZh+whn0NF4
+         Iph5rkG8EmUAuvK2Jd1VL86w7y9q/BA1EW+TBAvd0YK40WRTRprPQ6JEK1TMlLxNj4Bs
+         oXNMomLk1DhlYqVIkY6Y/uR+rONWP3bqhj22M1sm1n3eXsSN9tnhkZ4EfwLStSbft/aB
+         mXTDz4kUin5lUdv25mwyjhBcpickGxKBylgaNBVSHzcOTAWFFtWIyLSoTkk4KODVqUz2
+         FZWA==
+X-Forwarded-Encrypted: i=1; AJvYcCUmzDxfo0G+f4m5a1qubxBzYungsvbTwUFTkKzFHR6H/QYPBTc5YHyTuH6zWriGAqIveYw=@vger.kernel.org, AJvYcCVn6beULSkbe9EH5mVkdPKhzIc82OeushOMOpMO/srNCzCtEUFS/MAjhQhvE9SNivWeYFu+nU9LTqOPe6gOn4BQaLVI@vger.kernel.org, AJvYcCW4oImqA33TvprS6vyO4JIOBgNlplN/0VSgQhKZfSLoLJQ+ptBZ1viFWT/Pi0iirP11n9mIM3F6X0CD2k1i@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyar2wBeNMjx0dLTs0+4KxVmkxlRi1jvgdEu+3AfnL6eY9nIbiv
+	/Od0WpZ5oj4HkAgIUIVUWlXQb2jqzGXb0m91vLACrbD5IKPQ2Wt/dd8WsTz3c7NpG/YoPyBBdla
+	uLqHlWkZPy2WP2UTmygw3anQ2Ikw=
+X-Gm-Gg: ASbGnctKrOvr+d/UN6Csdwop0VVhX7cj8+NS/B0XRG7ZD293E6gVUjbkxDTP+oixR26
+	aLgK1QbAo5D5c6xdG0FPk6UJshnPCkA==
+X-Google-Smtp-Source: AGHT+IH3fCX0e0rFd+HZh7RVQbxnXMzu7+VAlZVC6COpEQrXCJNtNJZ/3frl9kz/JjCu3qKF3LVnN61Q6eq9MFXzQ04=
+X-Received: by 2002:a05:600c:4f85:b0:426:647b:1bfc with SMTP id
+ 5b1f17b1804b1-434a9df22c0mr88230425e9.30.1732820723418; Thu, 28 Nov 2024
+ 11:05:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6746cb81870d7_f422208e@john.notmuch>
+References: <20241127140958.1828012-1-elver@google.com> <20241127140958.1828012-2-elver@google.com>
+ <CAADnVQL6yyRRUc1Xee4HOQ0QXEiqQ7M-xJ109w9aztYH4ZWHmA@mail.gmail.com> <Z0i4DFnqRxTPOUfJ@elver.google.com>
+In-Reply-To: <Z0i4DFnqRxTPOUfJ@elver.google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 28 Nov 2024 11:05:12 -0800
+Message-ID: <CAADnVQK0y_moywsFDsHLPsNZXnZQVJig7dN7J9khVv2gNq414g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/2] bpf: Refactor bpf_tracing_func_proto()
+ and remove bpf_get_probe_write_proto()
+To: Marco Elver <elver@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Nikola Grcevski <nikola.grcevski@grafana.com>, 
+	bpf <bpf@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 26, 2024 at 11:34:25PM -0800, John Fastabend wrote:
-> Zijian Zhang wrote:
-> > 
-> > LGTM!
-> > 
-> > I think it will be better if the test could also cover the case you
-> > indicated in the first patch, where skb_transport_offset is a negative
-> > value.
-> > 
-> > Thanks,
-> > Zijian
-> > 
-> 
-> Hi Cong,
-> 
-> I agree it would be great to see the skb_transport_offset is
-> negative pattern. Could we add it?
+On Thu, Nov 28, 2024 at 10:36=E2=80=AFAM Marco Elver <elver@google.com> wro=
+te:
+>
+> On Thu, Nov 28, 2024 at 10:22AM -0800, Alexei Starovoitov wrote:
+> [..]
+> > Moving bpf_base_func_proto() all the way to the top was incorrect,
+> > but here we can move it just above this bpf_token_capable() check
+> > and remove extra indent like:
+> >
+> > func_proto =3D bpf_base_func_proto();
+> > if (func_proto)
+> >    return func_proto;
+> > if (!bpf_token_capable(prog->aux->token, CAP_SYS_ADMIN))
+> >    return NULL;
+> > switch (func_id) {
+> > case BPF_FUNC_probe_write_user:
+> >
+> > that will align it with the style of bpf_base_func_proto().
+> >
+> > pw-bot: cr
+>
+> Ack, let me change that.
+>
+> Below is preview of v4 for this bit.
 
-Hmm? It is already negative for sockmap, as I already mentioned in patch
-1/1:
-
-"skb_transport_offset() and skb_transport_offset() can be negative when
-they are called after we pull the transport header, for example, when
-we use eBPF sockmap (aka at the point of ->sk_data_ready())."
-
-My test case uses skb verdict, which is one of the sockmap hooks.
-
-Or I guess you mean positive? In that case, we would need hook different
-locations, like TC. I can certainly add it, but once again, it would
-make backporting this patchset even harder.
-
-Thanks!
+lgtm
 
