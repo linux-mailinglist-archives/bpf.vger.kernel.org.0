@@ -1,199 +1,219 @@
-Return-Path: <bpf+bounces-45808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 525809DB213
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 05:15:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D95969DB22E
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 05:31:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13B34281056
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:15:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20940B22D05
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:31:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 149501369BB;
-	Thu, 28 Nov 2024 04:15:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C74C137742;
+	Thu, 28 Nov 2024 04:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gjnGnabA"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2979C20E6
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 04:15:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 492702745C
+	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 04:31:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732767315; cv=none; b=Y58mur3OkAtr0aYp2g9xJKoU34h1K8eo57p/HFC1QbSndOFcLdysOrEzqYVaI57Rgc5lzdrGrF90vNeqzg/RN+VwpVC2rRH8TEo25CVFZB88hYc89dZw8KwPj+EJs52p/tZK6xXjxETq2stpdr4oFZX7vsHmlO6/N4kYSlsPHvU=
+	t=1732768267; cv=none; b=UykLflNVJ99xWh54WLO1xPGr7Eg9oOPTISYnCFRLH94kvTufkxWt3AqpIzvfXQfE390tUIER4BbarFvV844GL86I6gyfT5qJk19jD8Kw1WhfGZ5jkXZyutzOFBGvTe1/2c13IQ98SwaUmn6hciPGD56+04UMZZ7WEH1J1YzeWDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732767315; c=relaxed/simple;
-	bh=XsYd7AawQTKdZsHyBLgDucmjoLfriXFIv0t+8jLu19k=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=J4W5EtYJD4pZKqNar9VrLvR1CtN0HcGCc1c5YPN6hpGmhlwMyutprGavYXgccuphiMJY3O2HDur5fhsTbd5fupq1sLsUfR58bvDNcgPn5YZkmzIFZFZbFfEN5NsxTjY0XliFRRoEsY4NqhbbT2iKpn0axl5NpCu3kvfj2ywY5Kw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XzNHy0lFwz4f3jt6
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 12:14:54 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id D4E311A058E
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 12:15:07 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgBH8bJJ7kdn6D7jCw--.1091S2;
-	Thu, 28 Nov 2024 12:15:07 +0800 (CST)
-Subject: Re: [PATCH v2 bpf-next 3/6] bpf: add fd_array_cnt attribute for
- prog_load
-To: Anton Protopopov <aspsk@isovalent.com>
-Cc: bpf@vger.kernel.org
-References: <20241119101552.505650-1-aspsk@isovalent.com>
- <20241119101552.505650-4-aspsk@isovalent.com>
- <1b5f9aba-d7de-a677-0a5f-89237c8f62a4@huaweicloud.com> <Z0a/vaxyp4Gnk3TE@eis>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <fea424d2-7a5e-3653-e6f3-c656198b7a29@huaweicloud.com>
-Date: Thu, 28 Nov 2024 12:15:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1732768267; c=relaxed/simple;
+	bh=CK53KRHG+2Mlkxo0cFwkdOIqW1mSgBfUu/3qnSsI+sI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CzJkz5TBTEcGhCc0YNFie2gyqblxUGrAgLCEzYai6CB8AtVKChXM2XD1wNer+L9H7pZhOzD6TD6+5npMZGCKz/zlJbTS3BfRk4bzemMfB2PPX3C/10V7cfegVp/Mh7x2YDtJxkMiGyBdWx4+pyjKLveQ0a5P7o58TiXqBu8qiVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gjnGnabA; arc=none smtp.client-ip=209.85.208.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-5ceb03aaddeso517424a12.2
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 20:31:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732768264; x=1733373064; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wiH81K4MmG1H6/XcGqxD8VR/2uhnDXx4rJbwp8slP+g=;
+        b=gjnGnabAEk46XekqB7KifGiW7VJjH55MTRdlvLYKL8GHiVBduOuhWFmBeSVrtLIMs2
+         QNtBZjN3svroZLZXypaQHLAudBoB1BiOy31HQn390cvyeNoFLrNN09hEjQPUNG/TQM2Y
+         k70yl0Nzo8NuCVnQBni0MKl5mJtMw32FZca+qTUcRp0n7Q67qQ86dBeE/EdSBmuG3ajs
+         Prdz0meKuaQq/s1++daYCDmPAQMnf2YGT9eOC1Dz3WZVghxnanhQSgYaGqLDw1HH7the
+         UyfyOhuoLf+78AdhWUUPa9xPVkHx29u2Cg6g3GRFtk60eJ9HqqVBOm+sNnGRU8OhN/ES
+         nbsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732768264; x=1733373064;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wiH81K4MmG1H6/XcGqxD8VR/2uhnDXx4rJbwp8slP+g=;
+        b=F8j+RgiL3JqmfCHOePJjWtgs+MNNe008IpSb8TJBXttidiVnB/xeLK+qF0bw+HS305
+         ODdNVLCTTpmJs6pkD143BHuLqERuMDPnGOe9gIgVrTMJ4Sr4/WAwzD7J1iEU/Y9pPGMQ
+         vXoMlm3crZ97XjTKSbftjHRXzjC+guqApxDwUUY1oiGzAgyl0WPS0dilnuXRhhiapYVM
+         C0KV5/1dTDmLeqnFbxd5YgRhliMUxos5BatVOS1Bi1H2rnoNMr0yIuYvdjjZdQFIdoF+
+         CXC6Fni1xp/hgCbA2pXnl5nZLn5OOhhom+HHE+nxWwGhleDOaoBLhfiGrn7QaFIjkI9C
+         JJZw==
+X-Gm-Message-State: AOJu0YxPCeRJXd1nZZ+c2Db18rBxs6gGH3mepHhzQHKPGRSNQ49ETrHb
+	CE2FEJ7XJ5p5t4zbYkXI3qe5i7Af4PgWaTpB5BETgRibEv4mjH9fMEzZe0LIVbI6ernEQdpaBGc
+	0HKYa5Tl3b9zXWAvDuVkWgslx4Is=
+X-Gm-Gg: ASbGncty+XQlqekL+QL1psSdmBmBpc/u/lAUGgT3zMaVZIODFNoz+0r7qKr+x9M83gq
+	YRbTl0PIGznGJ3faNCJ/f/uk2Z+/FQyPQsVy9iB1wZG5fUkqOgHIG
+X-Google-Smtp-Source: AGHT+IG1Bd/oe9pSqwUhNxwEMFXHEByOuQWoh00awFJ75VGQnCucntsLH7L1TIzjXXajmdb/0DQcOWvj5ELPd9Ey98c=
+X-Received: by 2002:a05:6402:2116:b0:5cf:e3cf:38af with SMTP id
+ 4fb4d7f45d1cf-5d080b8d46fmr5143721a12.2.1732768263503; Wed, 27 Nov 2024
+ 20:31:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Z0a/vaxyp4Gnk3TE@eis>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgBH8bJJ7kdn6D7jCw--.1091S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFyrtF1UZr48WrWkXw45GFg_yoWrJrWrpF
-	WkJF1jyF4UJr17G34jq3Z8Wa12vrWrJw1Uu3sxJa4Y9r9Ivrn3Cry5Kw4j9r9Ykr48CF1I
-	vF4jkrZxuF95tFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
-	k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
-	xVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWHqcUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20241127165846.2001009-1-memxor@gmail.com> <20241127165846.2001009-3-memxor@gmail.com>
+ <0b2e84f96227c62ef4da7eda44ee31d42800fccd.camel@gmail.com>
+In-Reply-To: <0b2e84f96227c62ef4da7eda44ee31d42800fccd.camel@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 28 Nov 2024 05:30:27 +0100
+Message-ID: <CAP01T779EKX=GCPYUyihey=1Sw+1ht4f6C07PnzVEko+JgYk5g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/7] bpf: Refactor {acquire,release}_reference_state
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 
-H,
-
-On 11/27/2024 2:44 PM, Anton Protopopov wrote:
-> On 24/11/26 10:11AM, Hou Tao wrote:
->> Hi,
->>
->> On 11/19/2024 6:15 PM, Anton Protopopov wrote:
->>> The fd_array attribute of the BPF_PROG_LOAD syscall may contain a set
->>> of file descriptors: maps or btfs. This field was introduced as a
->>> sparse array. Introduce a new attribute, fd_array_cnt, which, if
->>> present, indicates that the fd_array is a continuous array of the
->>> corresponding length.
->>>
->>> If fd_array_cnt is non-zero, then every map in the fd_array will be
->>> bound to the program, as if it was used by the program. This
->>> functionality is similar to the BPF_PROG_BIND_MAP syscall, but such
->>> maps can be used by the verifier during the program load.
->>>
->>> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
->>> ---
-
-SNIP
->>> +static int add_fd_from_fd_array(struct bpf_verifier_env *env, int fd)
->>> +{
->>> +	struct bpf_map *map;
->>> +	CLASS(fd, f)(fd);
->>> +	int ret;
->>> +
->>> +	map = __bpf_map_get(f);
->>> +	if (!IS_ERR(map)) {
->>> +		ret = add_used_map(env, map);
->>> +		if (ret < 0)
->>> +			return ret;
->>> +		return 0;
->>> +	}
->>> +
->>> +	if (!IS_ERR(__btf_get_by_fd(f)))
->>> +		return 0;
->> For fd_array_cnt > 0 case, does it need to handle BTF fd case ? If it
->> does, these returned BTFs should be saved in somewhere, otherewise,
->> these BTFs will be leaked.
-> ATM we don't actually store BTFs here. The __btf_get_by_fd doesn't
-> increase the refcnt, so no leaks.
-
-Yes. You are right, I just mis-read the implementation of
-__btf_get_by_fd().
+On Thu, 28 Nov 2024 at 05:13, Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
->>> +	if (!fd)
->>> +		return 0;
->>> +
->>> +	verbose(env, "fd %d is not pointing to valid bpf_map or btf\n", fd);
->>> +	return PTR_ERR(map);
->>> +}
->>> +
->>> +static int env_init_fd_array(struct bpf_verifier_env *env, union bpf_attr *attr, bpfptr_t uattr)
->>> +{
->>> +	int size = sizeof(int) * attr->fd_array_cnt;
->>> +	int *copy;
->>> +	int ret;
->>> +	int i;
->>> +
->>> +	if (attr->fd_array_cnt >= MAX_USED_MAPS)
->>> +		return -E2BIG;
->>> +
->>> +	env->fd_array = make_bpfptr(attr->fd_array, uattr.is_kernel);
->>> +
->>> +	/*
->>> +	 * The only difference between old (no fd_array_cnt is given) and new
->>> +	 * APIs is that in the latter case the fd_array is expected to be
->>> +	 * continuous and is scanned for map fds right away
->>> +	 */
->>> +	if (!size)
->>> +		return 0;
->>> +
->>> +	copy = kzalloc(size, GFP_KERNEL);
->>> +	if (!copy)
->>> +		return -ENOMEM;
->>> +
->>> +	if (copy_from_bpfptr_offset(copy, env->fd_array, 0, size)) {
->>> +		ret = -EFAULT;
->>> +		goto free_copy;
->>> +	}
->> It is better to use kvmemdup_bpfptr() instead.
-> Thanks for the hint. As suggested by Alexei, I will remove the memory
-> allocation here altogether.
-
-I see.
+> On Wed, 2024-11-27 at 08:58 -0800, Kumar Kartikeya Dwivedi wrote:
 >
->>> +
->>> +	for (i = 0; i < attr->fd_array_cnt; i++) {
->>> +		ret = add_fd_from_fd_array(env, copy[i]);
->>> +		if (ret)
->>> +			goto free_copy;
->>> +	}
->>> +
->>> +free_copy:
->>> +	kfree(copy);
->>> +	return ret;
->>> +}
->>> +
->>>  int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u32 uattr_size)
->>>  {
->>>  	u64 start_time = ktime_get_ns();
->>> @@ -22557,7 +22632,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
->>>  		env->insn_aux_data[i].orig_idx = i;
->>>  	env->prog = *prog;
->>>  	env->ops = bpf_verifier_ops[env->prog->type];
->>> -	env->fd_array = make_bpfptr(attr->fd_array, uattr.is_kernel);
->>> +	ret = env_init_fd_array(env, attr, uattr);
->>> +	if (ret)
->>> +		goto err_free_aux_data;
->> These maps saved in env->used_map will also be leaked.
-> Yeah, thanks, actually, env->used_map contents will be leaked (if
-> error occurs here or until we get to after `goto err_unlock`), so
-> I will rewrite the init/error path.
+> Overall looks good, but please take a look at a few notes below.
+>
+> [...]
+>
+> > @@ -1349,77 +1350,69 @@ static int grow_stack_state(struct bpf_verifier_env *env, struct bpf_func_state
+> >   * On success, returns a valid pointer id to associate with the register
+> >   * On failure, returns a negative errno.
+> >   */
+> > -static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx)
+> > +static struct bpf_reference_state *acquire_reference_state(struct bpf_verifier_env *env, int insn_idx, bool gen_id)
+> >  {
+> >       struct bpf_verifier_state *state = env->cur_state;
+> >       int new_ofs = state->acquired_refs;
+> > -     int id, err;
+> > +     int err;
+> >
+> >       err = resize_reference_state(state, state->acquired_refs + 1);
+> >       if (err)
+> > -             return err;
+> > -     id = ++env->id_gen;
+> > -     state->refs[new_ofs].type = REF_TYPE_PTR;
+> > -     state->refs[new_ofs].id = id;
+> > +             return NULL;
+> > +     if (gen_id)
+> > +             state->refs[new_ofs].id = ++env->id_gen;
+>
+> Nit: state->refs[new_ods].id might end up with garbage value if 'gen_id' is false.
+>      The resize_reference_state() uses realloc_array(),
+>      which allocates memory with GFP_KERNEL, but without __GFP_ZERO flag.
+>      This is not a problem with current patch, as you always check
+>      reference type before checking id, but most of the data strucures
+>      in verifier are zero initialized just in case.
 
-Glad to hear that。
+We end up assigning to s->id if gen_id is false, e.g.
+acquire_lock_state, so I think we'll be fine without __GFP_ZERO.
 
+>
+> >       state->refs[new_ofs].insn_idx = insn_idx;
+> >
+> > -     return id;
+> > +     return &state->refs[new_ofs];
+> > +}
+>
+> [...]
+>
+> > -/* release function corresponding to acquire_reference_state(). Idempotent. */
+> > -static int release_reference_state(struct bpf_verifier_state *state, int ptr_id)
+> > +static void release_reference_state(struct bpf_verifier_state *state, int idx)
+> >  {
+> > -     int i, last_idx;
+> > +     int last_idx;
+> >
+> >       last_idx = state->acquired_refs - 1;
+> > -     for (i = 0; i < state->acquired_refs; i++) {
+> > -             if (state->refs[i].type != REF_TYPE_PTR)
+> > -                     continue;
+> > -             if (state->refs[i].id == ptr_id) {
+> > -                     if (last_idx && i != last_idx)
+> > -                             memcpy(&state->refs[i], &state->refs[last_idx],
+> > -                                    sizeof(*state->refs));
+> > -                     memset(&state->refs[last_idx], 0, sizeof(*state->refs));
+> > -                     state->acquired_refs--;
+> > -                     return 0;
+> > -             }
+> > -     }
+> > -     return -EINVAL;
+> > +     if (last_idx && idx != last_idx)
+> > +             memcpy(&state->refs[idx], &state->refs[last_idx], sizeof(*state->refs));
+> > +     memset(&state->refs[last_idx], 0, sizeof(*state->refs));
+> > +     state->acquired_refs--;
+> > +     return;
+> >  }
+>
+> Such implementation replaces element at 'idx' with element at 'last_idx'.
+> If the intention is to use 'state->refs' as a stack of acquired irq flags,
+> the stack property would be broken by this trick.
+> E.g. consider array [a, b, c, d] where 'idx' points to 'b',
+> after release_reference_state() the array would become [a, d, c].
+> You need to do 'memmove' instead.
+>
+
+Wow, great catch. Thanks for spotting this. I'll fix this and let me
+see if I can add a selftest that would've triggered this particular
+pattern.
+
+> [...]
+>
+> > @@ -9666,21 +9659,41 @@ static void mark_pkt_end(struct bpf_verifier_state *vstate, int regn, bool range
+> >               reg->range = AT_PKT_END;
+> >  }
+> >
+> > +static int release_reference_nomark(struct bpf_verifier_state *state, int ref_obj_id)
+> > +{
+> > +     int i;
+> > +
+> > +     for (i = 0; i < state->acquired_refs; i++) {
+> > +             if (state->refs[i].type != REF_TYPE_PTR)
+> > +                     continue;
+> > +             if (state->refs[i].id == ref_obj_id) {
+> > +                     release_reference_state(state, i);
+> > +                     return 0;
+> > +             }
+> > +     }
+> > +     return -EINVAL;
+> > +}
+> > +
+> >  /* The pointer with the specified id has released its reference to kernel
+> >   * resources. Identify all copies of the same pointer and clear the reference.
+> > + *
+> > + * This is the release function corresponding to acquire_reference(). Idempotent.
+> > + * The 'mark' boolean is used to optionally skip scrubbing registers matching
+>           ^^^^^^
+> Nit: this is probably a remnant of some older patch revision,
+>      function no longer takes 'mark' parameter.
+
+Yeah, this is a leftover. Sorry about that. Will fix.
+
+>
+> > + * the ref_obj_id, in case they need to be switched to some other type instead
+> > + * of havoc scalar value.
+> >   */
+> > -static int release_reference(struct bpf_verifier_env *env,
+> > -                          int ref_obj_id)
+> > +static int release_reference(struct bpf_verifier_env *env, int ref_obj_id)
+> >  {
+>
+> [...]
+>
 
