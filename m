@@ -1,52 +1,56 @@
-Return-Path: <bpf+bounces-45833-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45834-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2614A9DB9C5
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 15:39:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FAAA9DBAC0
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 16:41:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 883D1B20F4D
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 14:39:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D978A2820B2
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 15:41:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E491B2190;
-	Thu, 28 Nov 2024 14:39:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B2F1C07E4;
+	Thu, 28 Nov 2024 15:40:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WgbJvPMX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fa+UNnZ2"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D0451AF0A3;
-	Thu, 28 Nov 2024 14:39:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7B91C07D6;
+	Thu, 28 Nov 2024 15:40:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732804756; cv=none; b=i8IaXZ4mZ08i5S3ueCizoIjkgfTw+RA5lGtI6w1wglBPTSwmIu56wsOe8qkw6V/Uae3eKLX9fO1vwyew9hmni9tttbCAUBZ5Jp8D+DF/gojrCm7R7pmzN1j2EheStj4E7SV5utWwjIDuucejvr913EbIp4uWDIj2B99eZsmkMFg=
+	t=1732808452; cv=none; b=L9jgvW0V47iSXbWNQOmLqQxilM9nXHGyCF0UstkQ37cZ6lkYwv+jY/uaa3tsyivXReXw+cYoePlw952YCN1debTT5ZznZCnsTBcfI+MsJSEqdUAjrEjwRLM/XRMgtpWp7nm8Z7F0lIZ5dNtQaacskExNyCUFmcqfd9Zje1yMqSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732804756; c=relaxed/simple;
-	bh=lICUD5U4v1tYDpWpths86briaf8ss1zHzJxQmZLPJBs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Y2tTT7VY5UN5TYMmTdscCc4DwnFhWn5WiWmPvGoao8uBsMoHBbZUSwFfRVWiYrRCVwKVTae5GSpxUtap73j76guEcFUIFUXaFAZ2UXVYCsrSRORr8QR9CpRH5JSQ5F0/R0ww+l/9pQMdVky5Okkbv6kkg+1MsMioPnEBEdvwkx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WgbJvPMX; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 26666FF802;
-	Thu, 28 Nov 2024 14:39:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1732804750;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=uVb9JEDc4YM1KllmCbqlKsdo3gFEbpEVba/VTnbtCyY=;
-	b=WgbJvPMXIPkDqIrVsF7QcTxZmwjN9VWhqe4FLAqKVLwKx/Jhmv7b721BTVlphPGAr8I/rh
-	DdgyAVP6wf4U8c9n8mcdi8+1M1efj/ia0mWI3+Q4UHmL4rhH/U8ix43cZgnqtD69pCSOa0
-	gwl1gfhNgcrh4RQaWPvsIOIvj/AD0UEPqW7d20nYy+mDnIBsfE6BogF78+Ik4xhPSuaN06
-	0OwS95oTGNyCgVxauy91MqnSNKf/gRD7NlBLHP6q159kNw+zzz7yzDYH0LLXPaMqkLLZ3H
-	OmcP4UHm67dmZpGvIO+folLZB0voWjUeE4lSMg0ZfYKY1T010Rp9ho4lsCwaIA==
-From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Thu, 28 Nov 2024 15:38:43 +0100
-Subject: [PATCH bpf-next] selftests/bpf: ensure proper root namespace
- cleanup when test fail
+	s=arc-20240116; t=1732808452; c=relaxed/simple;
+	bh=RfU2BrNtVdE+B4PWzfkq5wiw0Y6hxjt2mh7JwGaBDeE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=pEv2mWTcuzq35uXyHBgQ2/jy1Ks4ibbmQXloxYWSgjopvgCd7qUDvnxIlwS4o6xrlLH1Ea+/8HnwAIkPFxomVpRAH/X6djvaq4+xORbrjd8HbH5Z7EiZIwFPbrEBa1/XKu9JCaCJ199cAgfDEKSZDWpv64voYKx2yHIjhxGNcKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fa+UNnZ2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C41B9C4CECE;
+	Thu, 28 Nov 2024 15:40:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732808451;
+	bh=RfU2BrNtVdE+B4PWzfkq5wiw0Y6hxjt2mh7JwGaBDeE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Fa+UNnZ2cgWObGLncp8jdSv7rTwuMxqu5ewM++dctQkrBy6cP16KbKku7kM1KoR5q
+	 fcohCCtfqQ30Cx2aX/yZniA3UKguXqgHIoB46sXCpY2WvZy1e6295EgnCb7ycg/2xt
+	 HzwzspATopwfwJbqsRl4LVhpTegqlGHD0JY/m8lWzil7Q90micOFVT2WBR5t+YtoVa
+	 GmpCW5ROzZpIDEOEnxGKvrQ6xkLUFfvs9haNrJxi40h0S180RgrXo/0ceP9iqefw68
+	 TmX/DIbl7hemvpnviu4u6ekyepYgnwhEgdeyRsZO/Rqbgr6IPh+pg00WJHUiDfIDJt
+	 j1HLcUIZQOU1w==
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Jiri Kosina <jikos@kernel.org>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org
+In-Reply-To: <20241127-hid-bpf-ops-v1-1-f9e41bfa3afd@weissschuh.net>
+References: <20241127-hid-bpf-ops-v1-1-f9e41bfa3afd@weissschuh.net>
+Subject: Re: [PATCH] HID: bpf: constify hid_ops
+Message-Id: <173280845054.2348538.3045601083967746197.b4-ty@kernel.org>
+Date: Thu, 28 Nov 2024 16:40:50 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -55,93 +59,20 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20241128-small_flow_test_fix-v1-1-c12d45c98c59@bootlin.com>
-X-B4-Tracking: v=1; b=H4sIAHKASGcC/x2M0QqEIBAAfyX2OSHNi+hXIsTz1lowC1cqiP79p
- McZmLmBMREyDNUNCQ9i2mIBWVfgFhtnFPQrDKpRWkrVC15tCMaH7TQZORtPl2jcp+2Utq3TDkq
- 5Jyz6vY7w3b2IeGWYnucPp+oLoG8AAAA=
-X-Change-ID: 20241128-small_flow_test_fix-0c53624a3c4c
-To: Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Bastien Curutchet <bastien.curutchet@bootlin.com>, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.14.2
-X-GND-Sasl: alexis.lothore@bootlin.com
+X-Mailer: b4 0.14.1
 
-serial_test_flow_dissector_namespace manipulates both the root net
-namespace and a dedicated non-root net namespace. If for some reason a
-program attach on root namespace succeeds while it was expected to
-fail, the unexpected program will remain attached to the root namespace,
-possibly affecting other runs or even other tests in the same run.
+On Wed, 27 Nov 2024 17:41:56 +0100, Thomas Weißschuh wrote:
+> The hid_ops struct is never modified. Mark it as const.
+> 
+> 
 
-Fix undesired test failure side effect by explicitly detaching programs
-on failing tests expecting attach to fail. As a side effect of this
-change, do not test errno value if the tested operation do not fail.
+Applied to hid/hid.git (for-6.13/upstream-fixes), thanks!
 
-Fixes: 284ed00a59dd ("selftests/bpf: migrate flow_dissector namespace exclusivity test")
-Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
----
-This small fix addresses an issue discovered while trying to add a new
-test in my recently merged work on flow_dissector migration. This new
-test is still only present in bpf-next, hence this fix does not target
-the bpf tree but the bpf-next tree.
----
- tools/testing/selftests/bpf/prog_tests/flow_dissector.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+[1/1] HID: bpf: constify hid_ops
+      https://git.kernel.org/hid/hid/c/f9a11da1d92f
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-index 8e6e483fead3f71f21e2223c707c6d4fb548a61e..08bae13248c4a8ab0bfa356a34b2738964d97f4c 100644
---- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-+++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-@@ -525,11 +525,14 @@ void serial_test_flow_dissector_namespace(void)
- 	ns = open_netns(TEST_NS);
- 	if (!ASSERT_OK_PTR(ns, "enter non-root net namespace"))
- 		goto out_clean_ns;
--
- 	err = bpf_prog_attach(prog_fd, 0, BPF_FLOW_DISSECTOR, 0);
-+	if (!ASSERT_ERR(err,
-+			"refuse new flow dissector in non-root net namespace"))
-+		bpf_prog_detach2(prog_fd, 0, BPF_FLOW_DISSECTOR);
-+	else
-+		ASSERT_EQ(errno, EEXIST,
-+			  "refused because of already attached prog");
- 	close_netns(ns);
--	ASSERT_ERR(err, "refuse new flow dissector in non-root net namespace");
--	ASSERT_EQ(errno, EEXIST, "refused because of already attached prog");
- 
- 	/* If no flow dissector is attached to the root namespace, we must
- 	 * be able to attach one to a non-root net namespace
-@@ -545,8 +548,11 @@ void serial_test_flow_dissector_namespace(void)
- 	 * a flow dissector to root namespace must fail
- 	 */
- 	err = bpf_prog_attach(prog_fd, 0, BPF_FLOW_DISSECTOR, 0);
--	ASSERT_ERR(err, "refuse new flow dissector on root namespace");
--	ASSERT_EQ(errno, EEXIST, "refused because of already attached prog");
-+	if (!ASSERT_ERR(err, "refuse new flow dissector on root namespace"))
-+		bpf_prog_detach2(prog_fd, 0, BPF_FLOW_DISSECTOR);
-+	else
-+		ASSERT_EQ(errno, EEXIST,
-+			  "refused because of already attached prog");
- 
- 	ns = open_netns(TEST_NS);
- 	bpf_prog_detach2(prog_fd, 0, BPF_FLOW_DISSECTOR);
-
----
-base-commit: 04e7b00083a120d60511443d900a5cc10dbed263
-change-id: 20241128-small_flow_test_fix-0c53624a3c4c
-
-Best regards,
+Cheers,
 -- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Benjamin Tissoires <bentiss@kernel.org>
 
 
