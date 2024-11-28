@@ -1,138 +1,238 @@
-Return-Path: <bpf+bounces-45778-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 848169DB0AB
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 02:21:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 490EE9DB0AD
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 02:24:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 292DB163E2D
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 01:21:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA5581664A0
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 01:24:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C821CA81;
-	Thu, 28 Nov 2024 01:21:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6FE31DDEA;
+	Thu, 28 Nov 2024 01:24:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CKAZ9mhP"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="qxP3KDex"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C710717753
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 01:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47EE6DDD9;
+	Thu, 28 Nov 2024 01:23:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732756899; cv=none; b=EscOYf6mDf1yoDEr/UCEUNMWY4H8fFXCLVNfUpFnESO69u04i6hyhQkbyL9Xbftn1/dNihdAMahpQMxVk12Z/b9Nyk5iZZKg9uVqUEkzZGpNurITVAxR/1I4yQxZ4/X2rq0I0RAkeDSFWDm5x8KqBCJ/qEC0OpOWO+Xq/b56nEQ=
+	t=1732757040; cv=none; b=sDXFHu20LGubJdnewpFsbbTWFwjHqjHv3Cpki7skxmDRhZh++UOT5Fx6+p52T6fZ9zvnRVRRFk0wRvWaf8qAxdde+j3h7+E1zzf59+SlYyJuFfOL2y3ll5lCH6WBldG4tb35IAG3e5zmLVjg4bufil/RivwTcTcZhKpbZYx0gvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732756899; c=relaxed/simple;
-	bh=LHCttBKVmGiEFkDuvVyh6qvB1fy9K0/NgDEKYG5fDPg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=R73qe2MkchtzVmobThMaKdF4l+l/35RdmstlrW7VyYaWgasTgS2zh7GMfY2uG7pciSCNNbO1vlRyzNWrydTokp5ef2tLxibNa/hz2teF2bS7wctgXChO4n8O+E0029NlbMdm3DlQF8DSEaMMAbl/ZrIIErEb1KgSL6uVPIdNVdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CKAZ9mhP; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-7fbc29b3145so1101660a12.0
-        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 17:21:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732756897; x=1733361697; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VNxkVZ+Q09hml3KpYdRFKKixrbV7shjxA5HH7/nIg9c=;
-        b=CKAZ9mhP2XwLMTvKFsoXZjyOm7CwteY1WbBGZXGpcZmLOKgQkhHu0sD3/6zeXoeqE5
-         9Nimw6UEuzfB9nYM1gkym0njmByPwmfoGgN9HqKWLi5hG2MdqDr1foRLtXp7VnT8b3nE
-         2Hma1lOudmk+PN1EBtoxE0YOL8ZSXm4xspLXh0R/kb0DTFOEF2gNLZyLRb73vA65HE7j
-         T55M8+zAReNj8GWW/KCKthJDfrmcGZ5Q8OnwzNZbIx2BkdXpD5a/3og4LRmAJR0fvxh6
-         mWCuU0lAU0cNu1PLqxsDTBN/OG3easp5r8lz5Q1uO2yQ3rus7YHt28t4kR2lOqvRl8GL
-         WzEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732756897; x=1733361697;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VNxkVZ+Q09hml3KpYdRFKKixrbV7shjxA5HH7/nIg9c=;
-        b=lyVznzrY/k7J5BBj/gdqOadA+Ynp47M0gtsrcLjy/FkOVzxXVNquwJ5oDfqFTv+dcc
-         zEI9S0/knKPzIPHVqzWhjN3Qf34mmeQUfAMUGcAeK6Tq4tT0wABQ+ThBOBIUfPWW44QM
-         4/wjDJWVUtWki5HZHsb3s9qw4zBnVMeCY9GEbyXvvQuVC6iYxZsHNqlsPzKsOnpJNRSm
-         Z/+E2tA+/HYMOVV23km9pC/vz6pDM9QiyHh0GfWujRGeZWGDJINFbhEbCuZxA56UTx5S
-         AJJZ+aAIO1VUo/mKwqxJcS0pmZpTxElZsXfY9eAxvrscSc3x+yb54aTv2vyPmkIOAPwM
-         dfdw==
-X-Forwarded-Encrypted: i=1; AJvYcCVfiyOmyYnk/Y47AeKatGgjhlqNcYsZxHhv2x7DFKH2XoTrDxRr+MfFqqn3B/ZRY9C3K0w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVt2OXFW6IhD2NieNie29A1jsaSNbleCCRQvC+2flBG5+uiXpa
-	Sx/v1Dcnrt7p8NZ9HTKob0DxIZS3hAo1/M0dqA0tD8EKlchCjC6Z
-X-Gm-Gg: ASbGnctbuxr9bunCzHY379E6M7dtSFPpXJoNsbvwjJ5xLyVNdxz/SQJUDPdVAfy+XMQ
-	L4Mstl0aCXznZbsk24czqWttNJnYxwqy3p7DhQEGrNFwsy+BW7bWT4Xt35vAbKdM6e+xVr5B1pm
-	S/O9/9oaxVmey0IGxahR8pfhuWryFl+1WkxgL9dggX87vFh1TMzPhHz7gZl1xVR2CVAWyzT+dxr
-	qaA5av9ITvwlB0+l/qfSTNZlXZldwKk6bZQ1PJcYVkPw0k=
-X-Google-Smtp-Source: AGHT+IGkAIrj4OTnCyiXGwz8Ndgl/ntv9MrAVNEG/hiB+b2x1fKmDlOWxLvoDEpDts2L0DVQGnOVFA==
-X-Received: by 2002:a05:6a20:2590:b0:1e0:c99e:1f41 with SMTP id adf61e73a8af0-1e0ec80bc72mr2328093637.8.1732756897036;
-        Wed, 27 Nov 2024 17:21:37 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fc9c3a320asm171943a12.83.2024.11.27.17.21.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2024 17:21:36 -0800 (PST)
-Message-ID: <e7d21c0bf31f8e45ca5c80749ad1b417c96e4ada.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/4] bpf: Fix narrow scalar spill onto
- 64-bit spilled scalar slots
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc: Tao Lyu <tao.lyu@epfl.ch>, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau	 <martin.lau@kernel.org>, Mathias Payer
- <mathias.payer@nebelwelt.net>, Meng Xu	 <meng.xu.cs@uwaterloo.ca>, Sanidhya
- Kashyap <sanidhya.kashyap@epfl.ch>
-Date: Wed, 27 Nov 2024 17:21:31 -0800
-In-Reply-To: <20241127212026.3580542-3-memxor@gmail.com>
-References: <20241127212026.3580542-1-memxor@gmail.com>
-	 <20241127212026.3580542-3-memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1732757040; c=relaxed/simple;
+	bh=zLWzejo63QUNWiygCd/llN3slI6FPYyHryU6r7izp6k=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ESQzEjxrPIyhClNGuRHxUsM4hH6dtnas98TeVeHG7v9OKjFXsS/LCEJ4VUnrv8AxDIDs5QAervsjaeUe0/lUOt/+vKJvOIKQIwZ0KDBJLWvUfOJ8lwjBFz0MBAj0pHpxzwTFTvQQFARzkm5S1PKnfhE5S2LkLGK7qJEJNE0WwKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=qxP3KDex; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1732757031; x=1733016231;
+	bh=kfdmaAQHBnQWhxAihMNl3e35fN8kbJs6gkC0S3jHTdQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
+	 List-Unsubscribe:List-Unsubscribe-Post;
+	b=qxP3KDexcUcnmpSDHFmiPjHwDgnoAn63r10zR0wFcqjXWZcaSjFA4YFbFtKgvVF8H
+	 jjJruvKtyaNgPbFF7KPnNk6VdEwLsa6XPdb1NdWW7mNO5Xm9oyM8wBoKAu6TAjFras
+	 3OjKWSsVAJnTtMbYmYOuGNYCLRiOTjct62yiob76ThrtSADsrtteTuPgQanLxnAAzy
+	 BuonkTFmXG9n5k6Gfy9eoJUKB1qs78r//Cp1i+wb5lIVAqsLywIL1TrsZmDcMNEt4+
+	 EUks5maZ3zXiEaEJqRVzCSjAcEYxNZMFUSYPCczu5qDERqYUTy986HOGg4hRJEPgl9
+	 N6UuVTZBpsOSg==
+Date: Thu, 28 Nov 2024 01:23:44 +0000
+To: dwarves@vger.kernel.org, acme@kernel.org
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: bpf@vger.kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com, andrii@kernel.org, mykolal@fb.com
+Subject: [RFC PATCH 0/9] pahole: shared ELF and faster reproducible BTF encoding
+Message-ID: <20241128012341.4081072-1-ihor.solodrai@pm.me>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 698b05844297b78856dd0dbaa2c3ef844e22cf19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-11-27 at 13:20 -0800, Kumar Kartikeya Dwivedi wrote:
-> From: Tao Lyu <tao.lyu@epfl.ch>
->=20
-> When CAP_PERFMON and CAP_SYS_ADMIN (allow_ptr_leaks) are disabled, the
-> verifier aims to reject partial overwrite on an 8-byte stack slot that
-> contains a spilled pointer.
->=20
-> However, in such a scenario, it rejects all partial stack overwrites as
-> long as the targeted stack slot is a spilled register, because it does
-> not check if the stack slot is a spilled pointer.
->=20
-> Incomplete checks will result in the rejection of valid programs, which
-> spill narrower scalar values onto scalar slots, as shown below.
->=20
-> 0: R1=3Dctx() R10=3Dfp0
-> ; asm volatile ( @ repro.bpf.c:679
-> 0: (7a) *(u64 *)(r10 -8) =3D 1          ; R10=3Dfp0 fp-8_w=3D1
-> 1: (62) *(u32 *)(r10 -8) =3D 1
-> attempt to corrupt spilled pointer on stack
-> processed 2 insns (limit 1000000) max_states_per_insn 0 total_states 0 pe=
-ak_states 0 mark_read 0.
->=20
-> Fix this by expanding the check to not consider spilled scalar registers
-> when rejecting the write into the stack.
->=20
-> Previous discussion on this patch is at link [0].
->=20
->   [0]: https://lore.kernel.org/bpf/20240403202409.2615469-1-tao.lyu@epfl.=
-ch
->=20
-> Fixes: ab125ed3ec1c ("bpf: fix check for attempt to corrupt spilled point=
-er")
-> Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
+This patch series continues the work previously focused on sharing of
+the ELF functions table between BTF encoders [1].
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+A recap:
+* I've been looking into ways to improve the performance of
+  reproducible (--btf_features=3Dreproducible_build) DWARF->BTF
+  encoding in pahole [2].
+* Originally, Eduard Zingerman suggested to me an approach of creating
+  btf_encoder for each compilation unit, and then merging resulting
+  BTFs in a particular order.
+* This idea required significant changes in how BTF encoders access
+  ELF information, which led to the "shared elf_functions" patch
+  series [1].
+* During review Alan Maguire (and Eduard too, off-list) pointed out
+  [3] that shared elf_functions implementation can be simplified, if
+  infividual function information is split into immutable (ELF part)
+  and mutable (BTF encoding part). Alan also shared a draft of this
+  change [4]. Three commits from that draft are included in this patch
+  series unchanged.
 
-[...]
+At that point I had all the pre-requisites to try "btf_encoder per CU"
+idea, and so I did [5]. Unfortunately, it turned out that this
+approach significantly slows down the encoding, although it reduces
+memory usage for parallel reproducible encoding.
+
+Simple measurement script (courtesy of Eduard):
+
+    #!/bin/bash
+    for j in 1 4 16 64; do
+        /usr/bin/time -f "jobs ${j}, mem %M Kb, time %e sec" \
+                      ./build/pahole -J -j$j \
+                             --btf_features=3Dencode_force,var,float,enum64=
+,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs,reproduci=
+ble_build \
+                             --btf_encode_detached=3D/dev/null \
+                             --lang_exclude=3Drust \
+                             $vmlinux > /dev/null
+    done
+
+Output for [5]:
+    jobs 1, mem 1225652 Kb, time 10.37 sec
+    jobs 4, mem 1242000 Kb, time 5.44 sec
+    jobs 16, mem 1271692 Kb, time 4.33 sec
+    jobs 64, mem 1410928 Kb, time 4.32 sec
+
+Output for pahole/next (98d1f01):
+    jobs 1, mem 3378104 Kb, time 8.76 sec
+    jobs 4, mem 3378716 Kb, time 4.17 sec
+    jobs 16, mem 3378144 Kb, time 4.03 sec
+    jobs 64, mem 3378628 Kb, time 4.05 sec
+
+The main reason for this, as far as I understand, is that each
+individual encoder now needs to do more work. And on top of that,
+there are more encoders to merge, which increases load on the
+sequential part of a pahole run.
+
+For example, mutable BTF maintains a string set to avoid string
+duplication, but when an encoder is only concerned with a single CU
+out of 2k+, this optimization becomes moot.
+
+While disappointing, these observations prompted me to look closer on
+how exacly is pahole spending the time when BTF encoding in parallel
+[6]. I looked at the version with shared elf_functions table [7] on
+the assumption that it will land eventually.
+
+Here is a very rough high level breakdown (for vmlinux as input):
+  * 81% multithreaded part
+    * 64% loading DWARF
+    * 17% encoding BTF
+  * 20% sequential part
+    * 14% BTF dedup
+    *  6% BTF merge and everything else
+
+The current encoding algorithm of each thread goes roughly like this:
+    * each thread has it's own btf_encoder object
+    * a thread reads a CU from DWARF and converts it into the internal
+      representation (struct cu), this is what takes 60%+ of time
+    * created CU is then passed to btf_encoder__encode_cu
+    * when the encoding is complete, CU is deleted (this is important
+      for reducing memory footprint)
+    * when all CUs are processed, exit and proceed to single-threaded
+      BTF merge and dedup
+
+Overall, this is pretty fast. Except, when we need the resulting BTF
+to be deterministic (aka reproducible).
+
+Parallel reproducible encoding is implemented by enforcing the order
+of CU processing between threads. How? Well, a thread is only allowed
+to encode a CU in CU__LOADED state, and BTF encoding happens under a
+lock. Which means that the 17% part in the breakdown above is not
+actually multithreaded with reproducible_build flag.
+
+To summarize the observations:
+ * BTF encoding is actually a minor part of the multithreaded work
+   (DWARF loading is about 4x bigger)
+ * BTF encoding requires sequential post-processing (merge and dedup)
+ * BTF processing in libbpf is kinda faster when it's one huge BTF
+ * BTF encoding is sequential with reproducible_build anyway
+
+So why try so hard making BTF encoding multithreaded?..
+
+This led me to an idea: what if we leave BTF encoding part sequential,
+but implement it in a way that does not stall DWARF loading? In other
+words: let's have a single CU consumer and N-1 CU producers.
+
+Producers are slower anyway, and we can also now get rid of the BTF
+merge almost entirely (except for "add saved functions").
+
+This is implemented by the last patch in this series, and the
+measurements look promising (see the patch commit message).
+
+Test results for this patch series:
+
+  1: Validation of BTF encoding of functions; this may take some time: Ok
+  2: Default BTF on a system without BTF: Ok
+  3: Flexible arrays accounting: WARNING: still unsuported BTF_KIND_DECL_TA=
+G(bpf_fastcall) for bpf_cast_to_kern_ctx already with attribute (bpf_kfunc)=
+, ignoring
+WARNING: still unsuported BTF_KIND_DECL_TAG(bpf_fastcall) for bpf_rdonly_ca=
+st already with attribute (bpf_kfunc), ignoring
+pahole: type 'nft_pipapo_elem' not found
+pahole: type 'ip6t_standard' not found
+pahole: type 'ip6t_error' not found
+pahole: type 'nft_rbtree_elem' not found
+pahole: type 'nft_rule_dp_last' not found
+pahole: type 'nft_bitmap_elem' not found
+pahole: type 'fuse_direntplus' not found
+pahole: type 'ipt_standard' not found
+pahole: type 'ipt_error' not found
+pahole: type 'tls_rec' not found
+pahole: type 'nft_rhash_elem' not found
+pahole: type 'nft_hash_elem' not found
+Ok
+  4: Pretty printing of files using DWARF type information: Ok
+  5: Parallel reproducible DWARF Loading/Serial BTF encoding: Ok
+
+
+[1]: https://lore.kernel.org/dwarves/20241016001025.857970-1-ihor.solodrai@=
+pm.me/
+[2]: https://github.com/theihor/dwarves/pull/3
+[3]: https://lore.kernel.org/dwarves/8678ce40-3ce2-4ece-985b-a40427386d57@o=
+racle.com/
+[4]: https://github.com/acmel/dwarves/compare/master...alan-maguire:dwarves=
+:elf-prep
+[5]: https://github.com/theihor/dwarves/pull/8
+[6]: https://gist.github.com/theihor/f000ce89427828e61fdaa567b332649b
+[7]: https://github.com/theihor/dwarves/pull/8/commits/a7bc67d79d90f98776c6=
+dc5fdaf9f088eb09909d
+
+
+Alan Maguire (3):
+  btf_encoder: simplify function encoding
+  btf_encoder: store,use section-relative addresses in ELF function
+    representation
+  btf_encoder: separate elf function, saved function representations
+
+Ihor Solodrai (6):
+  dwarf_loader: introduce pre_load_module hook to conf_load
+  btf_encoder: introduce elf_functions struct type
+  btf_encoder: collect elf_functions in btf_encoder__pre_load_module
+  btf_encoder: switch to shared elf_functions table
+  btf_encoder: introduce btf_encoding_context
+  pahole: faster reproducible BTF encoding
+
+ btf_encoder.c  | 661 ++++++++++++++++++++++++++++++-------------------
+ btf_encoder.h  |   6 +
+ dwarf_loader.c |  18 +-
+ dwarves.c      |  47 ++--
+ dwarves.h      |  16 +-
+ pahole.c       | 265 +++++++++-----------
+ 6 files changed, 567 insertions(+), 446 deletions(-)
+
+--=20
+2.47.0
+
 
 
