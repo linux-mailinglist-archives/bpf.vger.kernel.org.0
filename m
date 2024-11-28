@@ -1,220 +1,138 @@
-Return-Path: <bpf+bounces-45795-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45796-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8468F9DB187
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 03:40:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B69DF9DB18D
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 03:43:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA39AB20EC5
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 02:40:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 512F2B20EA5
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 02:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AE5355896;
-	Thu, 28 Nov 2024 02:39:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8171976025;
+	Thu, 28 Nov 2024 02:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NPBgGebI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BhlVeTAr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 730EE45005
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 02:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB51433B1;
+	Thu, 28 Nov 2024 02:43:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732761597; cv=none; b=AdPgBpgGsRGvQ0Ip2R15ZIyqYOMTjLi+wXMzRv//kk4SMkhpFpAHIDXSUWr9Bpmhnu3C0SMwnF9AJwfW2RSRALw5F4NaeRZffPBTThd20f5zHuWVOF7bx+yf/iaNEHSU6rc6FJCnGF2qOZqFCChcJQ+gD9ZgCRUffNZkY6JknEs=
+	t=1732761825; cv=none; b=fjP2FdgwdfFtBn32pNy77S7ctP2xHXnBjUf2VIMzErJHYanPIH14NbIQ9XPL6v67OtV3hFcyV9l6MP8zzjBeXCT0H+GwPBp4QZllYCfqcRPnek9c9jZCQ9gxZkSZMgxiqtVKr4f4guHCfiG/nCq0jUNobYDF1tTjdfTcSMN6k2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732761597; c=relaxed/simple;
-	bh=DFCudm523iusx1QHTER2EWnEB0X06KH3REsTlYTb5cY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Atu/TkAgQ7ekQcFXGHNkspDuq4DX6z19F1NSY+6KqGSYLiNUAz7rF7tlbVfcTuHjYxu3jMGw5jWsjlqPNE7sPp6yP8nXm69/luqPviydw+6dj6piNb+kkWl6SkvrS/vjnLlPjy04AlRvdoYzLkGo39IMSWHhb/AVCnA4lUuAO1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NPBgGebI; arc=none smtp.client-ip=209.85.215.176
+	s=arc-20240116; t=1732761825; c=relaxed/simple;
+	bh=B2VUcb3Tmrx1La4HxceUCEyC1e9wB4j5rPnZnNSD+Iw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a3OrvNry0QRrwYTAb1J1GPeavWbI74SuoX4F/Hn210o18uIWe6hGFvYz4PhciQo+16GoxludU1X2ijoDdVObUdDm9VH5uwh+yfn7sk6+xU4JWD9NGqeI/ANws3xwFRDvV2n37xEPhNKJMICoJwA5G2xbrc9i+ofrVUzoEF47xRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BhlVeTAr; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-7fc2dbee20fso209305a12.3
-        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 18:39:56 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-434a099ba95so2885855e9.0;
+        Wed, 27 Nov 2024 18:43:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732761596; x=1733366396; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mCFZa9WUQ9QubxDOrtPS1I0Rlra1N0kmhT5+GEbobDU=;
-        b=NPBgGebIogaFeXssq/XyZrtgDk/b96r7erNjTRkpeGGI46umaxDlg5RrH7kOZi9FYv
-         GanyeSPQ2ioFVoexJjOqfSMXFSCZawsKJw+s07MDTsmnIu9rhbHJmHDRapptvSmWz9w8
-         q/XFuPIX+oFVD8Hk5Ged27vH1GcFCPs3aq2tQQO71GvE5VBzHY95tyzOkebPfa8rRSpu
-         C7JoazD/kVjJslkVU1WaYLWuwuQu+kCrOp9MI8VcbA8C7IXNQdTWRzUjTGjsCtpbMiZ0
-         Z6SbqU/rrZulqVN6TtuVF8Guvf4Xw5qi/TvkzeyrlZJ3LC4Kp10YuNFHnF8LsQOSDA10
-         CuiA==
+        d=gmail.com; s=20230601; t=1732761821; x=1733366621; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Owa14ZCDoNgQ06uVhcHXrxie/5XbfMeHw34tNIT+blY=;
+        b=BhlVeTArOV4zXFRy+9hRR75YR5vNXRZosRRaHnPXFQJO0z1rvIY28lHzOydHT5HMYq
+         gfqXQxTf+HbyRtZV/+n7dc0iPKYUC5kUdjMjY4gx/N01SctDCrQ9rlW3JaZazT2H+jfc
+         Rd4EPK3mMzOFXKddpW+yngobn/Ld8s4PYvLiM+tzcg7ObHKRt+hGgW4OzLO5O4Xl2K6w
+         xbyx6zEyBO1AVB3kfw2OWhR5GK9EHfX2QawoayrkoBG22TU/uHoEh+T/AyrBxmLBbiCW
+         LW9IfTFWeHwTdPR9dGwHONRYGxFmDZV1efieyY4bIdFgq//8Mg46aYhecNwl1izCji0R
+         o4Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732761596; x=1733366396;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mCFZa9WUQ9QubxDOrtPS1I0Rlra1N0kmhT5+GEbobDU=;
-        b=P0xYzhB8/AcpIEvZg22pDLl7P6Vmgf/gz1T1TszpCZFBa32Hc/4wq9jc/qq0gO4JYZ
-         rmoDUVBSyS8Ts4GSf6H6gfjdJHHOEDdP7jxrUY6t73iBJZG0Jhy4/L++K+32qgStDHG0
-         6m1QUmFSU32kVJal/Ale3j2/eusGwWZz5MvxuC5/LzS9wx4ShC46NzlPZTLWJ6TdGt6p
-         LpbCdt7vyDOOmh7ANMi7JNpkm5Ucxmw7cznF99dkpLn1d+B3+XULNSo43rLnjqJ94z4I
-         qQMlFTbZNkXzWKI/dhMS+3v6ewV7GxIJHFnqhsIxM0ZBWJg4WGlx16rmyPwYIBTZyI6G
-         K5zA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFNXptWBuZZyzEAkZng6FeDI4LhjbqYUA0r4gHkWFPbbcP/egummgb0wImWgt2qye7riM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwgsG3ZJ+ARd/JHxwLFyvj7gsWrqEpIpXJEpQXZngYldOg7QoOr
-	/r2HT80Dkg390l8gTxQ7+3PjjXrTVqx4qtwjaGhCqiKX7sd4w5Yt
-X-Gm-Gg: ASbGnct6J0xOuxGVER+1LtOryNUWPMULUhYa+dUvlpC3qxTwc+Os4IdsCmsU56eGk+L
-	IXo1IFEvqFu7se8Nv+Q6GEzIpWY72CzHlWQOZA2epMSPaQgj7IDCyNaGOx93cZ2nMNtgOe2G1F3
-	bIWc2RLFoVVCsbVxc2EgGCmPw7UNZWdZ4ovpPv7+6TUI3+JKVT/hTJDb4mXvDu0LBuKKPB4rpwv
-	Txq1+6lR1MrG3l8X+KgryAo9FD+HnBTpY51q5tY6qrYW7U=
-X-Google-Smtp-Source: AGHT+IEbxwb5ZJRW8DdA4AgNvZmbZ07rbu9axnzIC06jCTuSZllIvY8yFQDDCvy6BQ41k16mfodadQ==
-X-Received: by 2002:a05:6a20:a120:b0:1e0:cfc0:df39 with SMTP id adf61e73a8af0-1e0e0afa682mr6992440637.3.1732761595738;
-        Wed, 27 Nov 2024 18:39:55 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725417614basm316350b3a.11.2024.11.27.18.39.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2024 18:39:55 -0800 (PST)
-Message-ID: <a4690c29ca3b5f34945cd507def7e0c6ecdec9e1.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/7] bpf: Consolidate locks and reference
- state in verifier state
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc: kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko	
- <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
- Lau	 <martin.lau@kernel.org>, kernel-team@fb.com
-Date: Wed, 27 Nov 2024 18:39:50 -0800
-In-Reply-To: <20241127165846.2001009-2-memxor@gmail.com>
-References: <20241127165846.2001009-1-memxor@gmail.com>
-	 <20241127165846.2001009-2-memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+        d=1e100.net; s=20230601; t=1732761821; x=1733366621;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Owa14ZCDoNgQ06uVhcHXrxie/5XbfMeHw34tNIT+blY=;
+        b=F9ArfOkYigotVYXxdVm9BY1S77Cha0ysaldfGSamTpDYivorJs+0fJOqB4e3ZcZIxv
+         Tmitq9oUVscP/8DTHhCUdjnYRY33NQxg+SM+MCGMVkgvZEuzU/108av66NEoYuJXV8A3
+         WYWijpPaa7qPUzDqrGB2JUowOxocX47JZZd66gTugsorlroTR67lVu6Ok1BuUCnjNvPE
+         9PtZCj/9GYoHdTUiS1tfOAh8pVtDtPzfoDRc1bWxLEHCW9GGGm4lOFEoNfPxRxFMv7eD
+         8Fb1D9r/jTlaJyqhc5en/oIauLiGWwt5/B/oKuDpLb6k8gejoqPZU4tzhRkpt8RqxzRO
+         w7UQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUU58KKYeLmODeNP9+wKujJFXef0UewaZ/x9p9oej8Bfg2MueuDuIdgBcHDy1h3O+BCEIZq18LuxJan+gM4@vger.kernel.org, AJvYcCUcqTvkqRwB07SMSdm6NxYhPi+8m+2HzxR17rJ7DuWUDKbo21phGExHH4GpiOqEMKi3H/mCSyth@vger.kernel.org, AJvYcCUoWBKPP7Op5ragXOGhIrhiWBeRH0SAoqM/Jzm42ueRXMP1fC1kRAFQ8U021Owh86l8o8Y=@vger.kernel.org, AJvYcCVxj0Y7CTBhLLC/KHkECfBgR5cdm/z2uX9wzMiEJz+F8qMFex8EFAUbS+Afq2+vfQbAGCYW2VIVsQ/H6aw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyXNLyYoLrCi5VvJprvSL1SWhN0iNfrXAToaa194oxpM8W+V0LP
+	BGuSr2aZDpPWFW8iiq1K3RWKJLStGBE3JQanzJAfEagn4vPMtP9lNWe01OGi5fyIcdGCzhI4/kg
+	RmQPJqEzhVz03MLemNGrmmqVa03Y=
+X-Gm-Gg: ASbGncuo5dzrTxi5cjclOUFNwp0GEVcMkzsWsem/QSRZfX4kiF3AUp5EXRYay+4HQXs
+	95WkdIPJftmq28wtuc2iNsPge7MSUhw==
+X-Google-Smtp-Source: AGHT+IGL7KlI85w+FpUF5vt3IezZ2f7SZDQWHC1gXz+5gsMJi6fPNdnBTHJG5WwEXnUVsABNq6hffhwecd6FoqZ0SRc=
+X-Received: by 2002:a05:6000:1ac9:b0:382:3527:a147 with SMTP id
+ ffacd0b85a97d-385c6eb6625mr4763206f8f.1.1732761820964; Wed, 27 Nov 2024
+ 18:43:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20241127-bpf-const-ops-v1-0-a698b8d58680@weissschuh.net> <20241127-bpf-const-ops-v1-2-a698b8d58680@weissschuh.net>
+In-Reply-To: <20241127-bpf-const-ops-v1-2-a698b8d58680@weissschuh.net>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 27 Nov 2024 18:43:30 -0800
+Message-ID: <CAADnVQ+yTZkfC=6Vw3+P9OA2iqzB02OhYTwWWCBGKLy_EfvQKA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/9] bpf: Move func_models from bpf_struct_ops to bpf_struct_ops_desc
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc: "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Simon Horman <horms@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kui-Feng Lee <thinker.li@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, Tejun Heo <tj@kernel.org>, 
+	David Vernet <void@manifault.com>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Network Development <netdev@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-11-27 at 08:58 -0800, Kumar Kartikeya Dwivedi wrote:
-> Currently, state for RCU read locks and preemption is in
-> bpf_verifier_state, while locks and pointer reference state remains in
-> bpf_func_state. There is no particular reason to keep the latter in
-> bpf_func_state. Additionally, it is copied into a new frame's state and
-> copied back to the caller frame's state everytime the verifier processes
-> a pseudo call instruction. This is a bit wasteful, given this state is
-> global for a given verification state / path.
->=20
-> Move all resource and reference related state in bpf_verifier_state
-> structure in this patch, in preparation for introducing new reference
-> state types in the future.
->=20
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-
-lgtm, but please fix the 'print_verifier_state' note below.
-
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-
-> ---
->  include/linux/bpf_verifier.h |  11 ++--
->  kernel/bpf/log.c             |  11 ++--
->  kernel/bpf/verifier.c        | 112 ++++++++++++++++-------------------
->  3 files changed, 64 insertions(+), 70 deletions(-)
->=20
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index f4290c179bee..af64b5415df8 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -315,9 +315,6 @@ struct bpf_func_state {
->  	u32 callback_depth;
-> =20
->  	/* The following fields should be last. See copy_func_state() */
-> -	int acquired_refs;
-> -	int active_locks;
-> -	struct bpf_reference_state *refs;
->  	/* The state of the stack. Each element of the array describes BPF_REG_=
-SIZE
->  	 * (i.e. 8) bytes worth of stack memory.
->  	 * stack[0] represents bytes [*(r10-8)..*(r10-1)]
-> @@ -419,9 +416,13 @@ struct bpf_verifier_state {
->  	u32 insn_idx;
->  	u32 curframe;
-> =20
-> -	bool speculative;
-> +	struct bpf_reference_state *refs;
-> +	u32 acquired_refs;
-> +	u32 active_locks;
-> +	u32 active_preempt_locks;
->  	bool active_rcu_lock;
-> -	u32 active_preempt_lock;
-> +
-> +	bool speculative;
-
-Nit: pahole says there are two holes here:
-
-     $ pahole kernel/bpf/verifier.o
-     ...
-     struct bpf_verifier_state {
-        struct bpf_func_state *    frame[8];             /*     0    64 */
-        /* --- cacheline 1 boundary (64 bytes) --- */
-        struct bpf_verifier_state * parent;              /*    64     8 */
-        u32                        branches;             /*    72     4 */
-        u32                        insn_idx;             /*    76     4 */
-        u32                        curframe;             /*    80     4 */
-
-        /* XXX 4 bytes hole, try to pack */
-
-        struct bpf_reference_state * refs;               /*    88     8 */
-        u32                        acquired_refs;        /*    96     4 */
-        u32                        active_locks;         /*   100     4 */
-        u32                        active_preempt_locks; /*   104     4 */
-        u32                        active_irq_id;        /*   108     4 */
-        bool                       active_rcu_lock;      /*   112     1 */
-        bool                       speculative;          /*   113     1 */
-        bool                       used_as_loop_entry;   /*   114     1 */
-        bool                       in_sleepable;         /*   115     1 */
-        u32                        first_insn_idx;       /*   116     4 */
-        u32                        last_insn_idx;        /*   120     4 */
-
-        /* XXX 4 bytes hole, try to pack */
-
-        /* --- cacheline 2 boundary (128 bytes) --- */
-        struct bpf_verifier_state * loop_entry;          /*   128     8 */
-        u32                        insn_hist_start;      /*   136     4 */
-        u32                        insn_hist_end;        /*   140     4 */
-        u32                        dfs_depth;            /*   144     4 */
-        u32                        callback_unroll_depth; /*   148     4 */
-        u32                        may_goto_depth;       /*   152     4 */
-
-        /* size: 160, cachelines: 3, members: 22 */
-        /* sum members: 148, holes: 2, sum holes: 8 */
-
-    maybe move the 'refs' pointer?
-    e.g. moving it after 'parent' makes both holes disappear.
-
->  	/* If this state was ever pointed-to by other state's loop_entry field
->  	 * this flag would be set to true. Used to avoid freeing such states
->  	 * while they are still in use.
-> diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
-> index 4a858fdb6476..8b52e5b7504c 100644
-> --- a/kernel/bpf/log.c
-> +++ b/kernel/bpf/log.c
-> @@ -756,6 +756,7 @@ static void print_reg_state(struct bpf_verifier_env *=
-env,
->  void print_verifier_state(struct bpf_verifier_env *env, const struct bpf=
-_func_state *state,
->  			  bool print_all)
+On Wed, Nov 27, 2024 at 11:20=E2=80=AFAM Thomas Wei=C3=9Fschuh <linux@weiss=
+schuh.net> wrote:
+>
+> --- a/net/bpf/bpf_dummy_struct_ops.c
+> +++ b/net/bpf/bpf_dummy_struct_ops.c
+> @@ -129,7 +129,7 @@ extern const struct bpf_link_ops bpf_struct_ops_link_=
+lops;
+>  int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr =
+*kattr,
+>                             union bpf_attr __user *uattr)
 >  {
-> +	struct bpf_verifier_state *vstate =3D env->cur_state;
+> -       const struct bpf_struct_ops *st_ops =3D &bpf_bpf_dummy_ops;
+> +       static typeof_member(struct bpf_struct_ops_desc, func_models) fun=
+c_models;
+>         const struct btf_type *func_proto;
+>         struct bpf_dummy_ops_test_args *args;
+>         struct bpf_tramp_links *tlinks =3D NULL;
+> @@ -175,7 +175,7 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, co=
+nst union bpf_attr *kattr,
+>
+>         op_idx =3D prog->expected_attach_type;
+>         err =3D bpf_struct_ops_prepare_trampoline(tlinks, link,
+> -                                               &st_ops->func_models[op_i=
+dx],
+> +                                               &func_models[op_idx],
 
-This is not always true.
-For example, __mark_chain_precision does 'print_verifier_state(env, func, t=
-rue)'
-for func obtained as 'func =3D st->frame[fr];' where 'st' iterates over par=
-ents
-of env->cur_state.
+This is sad. You didn't bother running the tests.
+Above is producing garbage.
+That's why so many BPF CI tests are failing.
 
->  	const struct bpf_reg_state *reg;
->  	int i;
-> =20
+Overall I think it's a minimal positive value to constify struct_ops.
+Unless other bpf developers see a huge value
+I'd prefer to keep the code as-is.
 
-[...]
-
+pw-bot: cr
 
