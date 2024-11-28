@@ -1,88 +1,90 @@
-Return-Path: <bpf+bounces-45811-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45812-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A2F89DB234
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 05:34:42 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 164819DB236
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 05:37:10 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19B44282710
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:34:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64AF166821
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:37:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BDC9126C08;
-	Thu, 28 Nov 2024 04:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8613B139566;
+	Thu, 28 Nov 2024 04:37:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y8r8zTYg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dd6Dsno/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE016130499
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 04:34:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4313322B
+	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 04:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732768477; cv=none; b=qBC0X/+S86WUtugWC+JGBM1cZZdfBMFfm7cvhTMDf4z5vFOSfZ35FDJGvU2tEJQRZ0EzLzXJ/ZGS80jVbGC+93k9gm+7qjxyyBKf1pmezxyyRPNuTJBkq4Apop7czhT46wz/DGrFKcGC1kNxgSb1o89C/D7ZFAi6uILjLPIi++0=
+	t=1732768625; cv=none; b=H/X9NZd54snCfH0nndQtz2RtXWSwwX0AwdFs05tZjqntE+CHgMv1y68t8F9F1o8tHTOX0Kmamk716eIaowL7JEYn9NTGaubdzuKawbsRRgHkEexgCUB3KvQ7UTvPeaddo9atWn1nEQyBR/U/vWUKcMwHaUXOzF0Xg3lFyv7jQ1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732768477; c=relaxed/simple;
-	bh=20pP+eh8s7POfgUe2p5N2AyVVCAImYGYFxRRQA/7AsA=;
+	s=arc-20240116; t=1732768625; c=relaxed/simple;
+	bh=rgGuABirzAojH45Nh5L/KO5Ru/1MaW/EYghcJUopYpE=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=tglldz0C30a/G3bWugQGh12sQ6wqVPvE7i1Gf/Ga/GS7mem3NPICKd+H51YsTYUm6xt75vB4vB0S3+OKapiMIKxbEWUDtcR5JnQ98OV880sa2Zx2VbFiWazfx2nC/gM7CD3V6Yn5JIHL2GqxhZvZsVvVP0hnhuVHWvKUuJI2AdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y8r8zTYg; arc=none smtp.client-ip=209.85.214.177
+	 Content-Type:MIME-Version; b=pdhllN/6sx4MRzmLrylLZBYf/C5lEAoiC9ei/UIbvrZE5cssayOF4MfKzEfPOmehgyGT9NixFLubKitTfzeNm0B5+f4yxpnyJPMSGN1L3bLEOQ/vEERjfI9FFEd7xQld90H5PbXZXOtlzP7OEcIMfuHDlPFvfe6xLr1VEBNKrXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dd6Dsno/; arc=none smtp.client-ip=209.85.167.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-212776d6449so3833445ad.1
-        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 20:34:35 -0800 (PST)
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3ea47651a10so249502b6e.0
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 20:37:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732768475; x=1733373275; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1732768622; x=1733373422; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=20pP+eh8s7POfgUe2p5N2AyVVCAImYGYFxRRQA/7AsA=;
-        b=Y8r8zTYgDGLFUq5Psv3bLqQIubI2BiZXXaC3Q5CPd0RfiSkMNbqfuqcMv926rtey9p
-         KYbYUX+wN5ejbm47TyZg2dLIimuNgJE7m6RQQLovuu9fDe7Bh8BJHODp9Q1MILZTELj9
-         40LU5583qi16KDsQauCt6dZPlgsQynfp7zxEWhP92MzqWzz39CqJM3u0Yn08Hj006lWw
-         c7PXF0LdgQwoWxKvGerSe+lITFZouHhVQbBNesg+wTxnB5kdXSH7VleulQCvnDq09I+9
-         FoNHMmdBkVKzh/pb4zOZrRj8YI8o1vAAQ6IsoSUWWAj9+WaomvukxG7ihKLJaSNauXOw
-         F0dw==
+        bh=VCcbrUMuFu/IiRYM3gDJJjmJHWHp8vPpOVGLKarqlG8=;
+        b=Dd6Dsno/ZzG+x71DtfOt7gO9PbJHWMpIdVkn2n4wiYEb2Cy767nM/CBgPbEgyBwWXF
+         aGOYzfG8YKaebOVUaR8i5KMc/g+nH0InrtXuVlutcGb7tCfyxmXols6A0AaXsdmooLNW
+         OIFOz5RKo9RaZQgmHYeICMtEUSclN/cC0SE/tlYCcSeuWohLLfUTV8fmulQBIfsulZJl
+         b78Ga5Wfkhqcr2l3eOGh5UIgIPiZvdYizUAERLF1DEwAaClmqvPD6wAiilM/znEd7Snc
+         rA6sMNLxyh0uk2OzX5z1OCMy1LnsGc1VB3Y5jdqo0NLCOg4MvqDz8x5I7G7xvLmYDOCb
+         PP9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732768475; x=1733373275;
+        d=1e100.net; s=20230601; t=1732768622; x=1733373422;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=20pP+eh8s7POfgUe2p5N2AyVVCAImYGYFxRRQA/7AsA=;
-        b=cRfsAQabv6fJLHDJR+0PCkl1JKzbqjSuIfQOCLn9PNw0H+JboTcJ7YRRaQuPUbzlg1
-         wc6vn5bjWbmsOj+CjhlJk/GiMEPTqWMzUTfSu0tXRcEC6GIuQycY42/O/aNeaIgJRYvw
-         Idf9eLQU3qMJ9odRdo/uzqfoSDUXZCkse2S32LpvZVFijIrZcbpfK7NCm1eS45C2Yn9+
-         s2Cnh81AY6yNkiD/mexzHZmkKQ7ByqTUk8fVVb93wXwz54ETo+1MyKvGuLPstRuGoD6l
-         Qyxd86aDS1RRTd+pUm00r0NceSsnHwgKWvSGE0/4lAYuy4BBVqw7Us49krS5qYS1udKn
-         AlpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWeOcXKHuiEKg+bu1t6MYgWU3+ObqjP68WAfx344uUqUG7qBAALFl2judvja0u09lC8krY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy+Kw17otk1iEDZCmvTO78YxIXLOdZqdUT5r6bIgLDPcmOJ6WWM
-	k6K/CaL45f63qJbpdklZ5n7pCWNzQiFTSjrd3obvjwC21fG1C23L
-X-Gm-Gg: ASbGncsmasMJSI2w079go8vTK/0xZI4pUysdK0+hCeWg8L8WNz4GxytEjm5C4XFvF00
-	SrvAvHoXYK4ab0W6fzXMYL97pZv5lQ7Tf66RtOrLsk1wNF/yiHa4PVC6bRztElaMkQHOqvSAUd6
-	VSxT/lxSpvvUIm541rHIu7ts6QaSApROdtKNeM0HUH4jumSHBiWjoz0ib3h/WqFO5+4c6E+//yA
-	jmMCTipGvYtSEcYy4bMpRibG/jSxhDaIsTeaAswB3cJYa4=
-X-Google-Smtp-Source: AGHT+IF1EV1R6de86ccIc8MNcipckN2TxZLkSDBbAS5mS/VOAf9gispEvKkjdf+6F7CDCb06Wcl+AA==
-X-Received: by 2002:a17:902:ea12:b0:20b:b40b:3454 with SMTP id d9443c01a7336-21500fe71f9mr65143235ad.0.1732768474999;
-        Wed, 27 Nov 2024 20:34:34 -0800 (PST)
+        bh=VCcbrUMuFu/IiRYM3gDJJjmJHWHp8vPpOVGLKarqlG8=;
+        b=RZ95Xoo2tksjzCZivpyQJIBXt4zDdoCA7wl+FBDuAhjSMYbfSZhhqQfavE1Lihye8B
+         7hRh297PivWq8RB9yfy8/+unMM7rshOMQPigtorw7/xZopC7gv42i18xR3x8cksSK0E3
+         Za5FtHgBPm574WCruF59as5fwFRyT55s06tjr9CjMpVPE/GHNSpeSOXPW6isC/QJdkJC
+         nEb7lO57rdwD/jlL+Gwi2cR1RfX5ndVzgd9BrnigGRvGxxSUgkp5BbrGpcJKozPZPSw8
+         USzQzp7aMCHwt++VSSEw7JffHhaAcBq+5E2NZbSZt8va8rQSB8y0Ql0ic5w0+eO48Kht
+         nK3Q==
+X-Gm-Message-State: AOJu0YyU0Nq/GVNowRZHDLAq3aiTU69KO29olUC7R5vCexfIlVlfG1+T
+	SrkYjvHiP/7Od8yq4iuUo70QxaVsOj5o9+9tTp+29uW9jH9MV2Wy
+X-Gm-Gg: ASbGncuYXb0gjWLdXCEFugeqRZqOPGP7HCc7Kqa0xBLzrGUrIGqQ9ZJ2U3VU+hlMaMa
+	Fk+xUyAGkPLgCTIW0rONQsrXOYe5k7hLBOhpNi7iq3Ih8gMEb0REx0nIJTZKXbGEnxgo3edGJFZ
+	AEmoOAdAVDgn+LidtBowTXFx1CGj7GZEz+kYBn5mp70sPOXoVlSZ+HzxiN4z82+lzxW5qh8tOSy
+	MQ5dbxRjCmz4Wp5yo0Yp6k4btlYqSmUkD/n+qywaEJtlMY=
+X-Google-Smtp-Source: AGHT+IFdriVSUl3X30dTW9mypGuzEmAizPRXjrDjNYvTy76882wTPMq+hKGP1oS+J++5Ag00hIk0Lg==
+X-Received: by 2002:a05:6808:6414:b0:3ea:5ef1:c95 with SMTP id 5614622812f47-3ea6dc2c5e9mr5782361b6e.25.1732768622539;
+        Wed, 27 Nov 2024 20:37:02 -0800 (PST)
 Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215219063afsm4047625ad.87.2024.11.27.20.34.34
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7254181479dsm457052b3a.159.2024.11.27.20.37.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2024 20:34:34 -0800 (PST)
-Message-ID: <0f52741bab36a5f2c4d1dc9963014a7b9d1dc0f5.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 5/7] bpf: Improve verifier log for resource
- leak on exit
+        Wed, 27 Nov 2024 20:37:02 -0800 (PST)
+Message-ID: <21df66492832c16c7456dc0e458b3af68649f233.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/7] bpf: Refactor
+ {acquire,release}_reference_state
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc: kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko	
- <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
- Lau	 <martin.lau@kernel.org>, kernel-team@fb.com
-Date: Wed, 27 Nov 2024 20:34:29 -0800
-In-Reply-To: <20241127165846.2001009-6-memxor@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@kernel.org>,
+ kernel-team@fb.com
+Date: Wed, 27 Nov 2024 20:36:57 -0800
+In-Reply-To: <CAP01T779EKX=GCPYUyihey=1Sw+1ht4f6C07PnzVEko+JgYk5g@mail.gmail.com>
 References: <20241127165846.2001009-1-memxor@gmail.com>
-	 <20241127165846.2001009-6-memxor@gmail.com>
+	 <20241127165846.2001009-3-memxor@gmail.com>
+	 <0b2e84f96227c62ef4da7eda44ee31d42800fccd.camel@gmail.com>
+	 <CAP01T779EKX=GCPYUyihey=1Sw+1ht4f6C07PnzVEko+JgYk5g@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
@@ -93,16 +95,55 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Wed, 2024-11-27 at 08:58 -0800, Kumar Kartikeya Dwivedi wrote:
-> The verifier log when leaking resources on BPF_EXIT may be a bit
-> confusing, as it's a problem only when finally existing from the main
-> prog, not from any of the subprogs. Hence, update the verifier error
-> string and the corresponding selftests matching on it.
+On Thu, 2024-11-28 at 05:30 +0100, Kumar Kartikeya Dwivedi wrote:
+> On Thu, 28 Nov 2024 at 05:13, Eduard Zingerman <eddyz87@gmail.com> wrote:
+> >=20
+> > On Wed, 2024-11-27 at 08:58 -0800, Kumar Kartikeya Dwivedi wrote:
+> >=20
+> > Overall looks good, but please take a look at a few notes below.
+> >=20
+> > [...]
+> >=20
+> > > @@ -1349,77 +1350,69 @@ static int grow_stack_state(struct bpf_verifi=
+er_env *env, struct bpf_func_state
+> > >   * On success, returns a valid pointer id to associate with the regi=
+ster
+> > >   * On failure, returns a negative errno.
+> > >   */
+> > > -static int acquire_reference_state(struct bpf_verifier_env *env, int=
+ insn_idx)
+> > > +static struct bpf_reference_state *acquire_reference_state(struct bp=
+f_verifier_env *env, int insn_idx, bool gen_id)
+> > >  {
+> > >       struct bpf_verifier_state *state =3D env->cur_state;
+> > >       int new_ofs =3D state->acquired_refs;
+> > > -     int id, err;
+> > > +     int err;
+> > >=20
+> > >       err =3D resize_reference_state(state, state->acquired_refs + 1)=
+;
+> > >       if (err)
+> > > -             return err;
+> > > -     id =3D ++env->id_gen;
+> > > -     state->refs[new_ofs].type =3D REF_TYPE_PTR;
+> > > -     state->refs[new_ofs].id =3D id;
+> > > +             return NULL;
+> > > +     if (gen_id)
+> > > +             state->refs[new_ofs].id =3D ++env->id_gen;
+> >=20
+> > Nit: state->refs[new_ods].id might end up with garbage value if 'gen_id=
+' is false.
+> >      The resize_reference_state() uses realloc_array(),
+> >      which allocates memory with GFP_KERNEL, but without __GFP_ZERO fla=
+g.
+> >      This is not a problem with current patch, as you always check
+> >      reference type before checking id, but most of the data strucures
+> >      in verifier are zero initialized just in case.
 >=20
-> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> We end up assigning to s->id if gen_id is false, e.g.
+> acquire_lock_state, so I think we'll be fine without __GFP_ZERO.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Oh, I see, thank you for explaining.
 
 [...]
 
