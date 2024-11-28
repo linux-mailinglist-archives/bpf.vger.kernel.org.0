@@ -1,265 +1,193 @@
-Return-Path: <bpf+bounces-45837-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45838-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D08309DBBA4
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 18:10:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 827BA9DBC23
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 19:23:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91066281B1C
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 17:10:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02039B21363
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 18:23:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C0C1C07E5;
-	Thu, 28 Nov 2024 17:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF581BD9D2;
+	Thu, 28 Nov 2024 18:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rNT7+kf+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LmQcOHXA";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rNT7+kf+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LmQcOHXA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RXwlaard"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3113C9463;
-	Thu, 28 Nov 2024 17:10:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9160537F8;
+	Thu, 28 Nov 2024 18:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732813810; cv=none; b=s6Qb9bkDiK6TjX7Y5rCQy3v074mbdM+5fybZ/P7hCjS8H3t4o6oakiZeBCYUJuzHWmypk9g/9feW4hAG3EwuC2QOdw55ZRVhOq4WpIm2TV0SafDWvd9ZcZ8fmLVrQdQQx3XrNCt3XHbpJrmwp1x2rbXIE24j+ybsqAjpS78TuFw=
+	t=1732818177; cv=none; b=h97KST78OtWADB7q8Ap1i/TSSC9lh0/IhAy48aTzrblFBTaWtREpWt4pqzibeBqailombKp+DDENFxR5N9ADGMUVahFCoYS2jZz+pLHqEV7MS7ffKLF/bLIJH547Bcqpb3LJzafxZm22qCaCSRrUmePaoDwNhYcGPVrXJ2IUrx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732813810; c=relaxed/simple;
-	bh=KUzfRDAw+eKIdbSDnrFEicUiHLYpy+wYbsQCTwmp2Vw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ch4mYjcnuPu3sUK6NdIFqqO4rrC4AFt92izkIHv+jv8+7+hvRQbPXJeBPKZObKWfloMMPSqmQqAcPYu/2SazofYsxO2ngifySJLUro4BCz1h92Pm55TytH9tg0jiErptxLi7EklmqtKXifNghXv/ABFaA5DAd3cbtURmW/ghJSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rNT7+kf+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LmQcOHXA; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rNT7+kf+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LmQcOHXA; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5E9F31F79F;
-	Thu, 28 Nov 2024 17:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732813806; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eumxKd+aZ1ilHfhhp/xj0zyfdCtmWTUoslPwSRI+7lk=;
-	b=rNT7+kf+c4whS7Ersp6pzCq5sH1bNKadavpZ7JcdPSX/T2nGBrfakfdd/36moybua5Mc8t
-	nlQx64ILVXBAx37kGDgvmoH469kyjWI24Z5smG7Wo6iS5BTUfn8DYR64uROJ7JCDadlOmD
-	unfkT+mOQyfKnHrrfxx9kdvL+RjJc60=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732813806;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eumxKd+aZ1ilHfhhp/xj0zyfdCtmWTUoslPwSRI+7lk=;
-	b=LmQcOHXAEYLMJR6vdXY3s14HZb+8txfTm7o4gPaUnHVf1nz1LUghV5dKbECIA20tvb4MMw
-	oFmG6J8CKf4nIfBg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732813806; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eumxKd+aZ1ilHfhhp/xj0zyfdCtmWTUoslPwSRI+7lk=;
-	b=rNT7+kf+c4whS7Ersp6pzCq5sH1bNKadavpZ7JcdPSX/T2nGBrfakfdd/36moybua5Mc8t
-	nlQx64ILVXBAx37kGDgvmoH469kyjWI24Z5smG7Wo6iS5BTUfn8DYR64uROJ7JCDadlOmD
-	unfkT+mOQyfKnHrrfxx9kdvL+RjJc60=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732813806;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eumxKd+aZ1ilHfhhp/xj0zyfdCtmWTUoslPwSRI+7lk=;
-	b=LmQcOHXAEYLMJR6vdXY3s14HZb+8txfTm7o4gPaUnHVf1nz1LUghV5dKbECIA20tvb4MMw
-	oFmG6J8CKf4nIfBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3AC1C13690;
-	Thu, 28 Nov 2024 17:10:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id TcNNDu6jSGc2SgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 28 Nov 2024 17:10:06 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id DFCCDA075D; Thu, 28 Nov 2024 18:10:01 +0100 (CET)
-Date: Thu, 28 Nov 2024 18:10:01 +0100
-From: Jan Kara <jack@suse.cz>
-To: Song Liu <songliubraving@meta.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Amir Goldstein <amir73il@gmail.com>, Song Liu <song@kernel.org>,
-	bpf <bpf@vger.kernel.org>,
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	LSM List <linux-security-module@vger.kernel.org>,
-	Kernel Team <kernel-team@meta.com>,
-	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	KP Singh <kpsingh@kernel.org>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	"repnop@google.com" <repnop@google.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-	"gnoack@google.com" <gnoack@google.com>
-Subject: Re: [PATCH v3 fanotify 2/2] samples/fanotify: Add a sample fanotify
- fiter
-Message-ID: <20241128171001.xamzdpqlumqdqdkl@quack3>
-References: <20241122225958.1775625-1-song@kernel.org>
- <20241122225958.1775625-3-song@kernel.org>
- <CAOQ4uxhfd8ryQ6ua5u60yN5sh06fyiieS3XgfR9jvkAOeDSZUg@mail.gmail.com>
- <CAADnVQK-6MFdwD_0j-3x2-t8VUjbNJUuGrTXEWJ0ttdpHvtLOA@mail.gmail.com>
- <21A94434-5519-4659-83FA-3AB782F064E2@fb.com>
+	s=arc-20240116; t=1732818177; c=relaxed/simple;
+	bh=GfLASxZo+Yf2trxqcYfmDbxASqnTbjdg8oOvia43HxE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KnpqHojJr/tGLZNJNPb20LKiRVs06ArgXLTefF817zXRlZ1kcAstgyUJyVX+dg1Me0g95h+PCqyt5FBIV0xOM6vGXLNtAdksE0yzBbMVtnoF6kEldjKmjO1dPpHWNEqHnww6Foy95byOK2Rgky4lSdEfO7Ypv+bIBa+nw6TZJcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RXwlaard; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3822ba3cdbcso747565f8f.0;
+        Thu, 28 Nov 2024 10:22:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732818174; x=1733422974; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=maEchboAXGaRsP4y4IkvMG/7KoHmadrlFmb4Cbg4uYE=;
+        b=RXwlaardgrRqz2OH+r4+4+fec3LmzH0MYzE3mIMYQ8tyCnl847X79kuBc3jbY7+8JE
+         /RRV7QvGhPPNEzOwuTtABOh2P3t8FVapbffP8QyqPJ2CGFZeTS2bbCnfzA42jVULrOf8
+         tc15dqwKNafMjgtl7cMx3GbbZD/DyhJO+9PMI6cznW6+j+4Vhll7wE547wQzQ4YRUJmU
+         nSqO6bfIKWiMKi2J0C2Sw2lDr1mO8GcLm1JWcHsJ+zg553PaSIWeS8Zl+hhKwa3AZFLC
+         I7nbPwmHLfdEk6+aL0ds0JCQ1WZNE+7sudkqs2nG7dpSq3TeXXS0jyjXssNmwRip97V4
+         MkKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732818174; x=1733422974;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=maEchboAXGaRsP4y4IkvMG/7KoHmadrlFmb4Cbg4uYE=;
+        b=FVAbMUoQ6NCYdBOtALrZisR58Bpd0+Fbc5PLBYysTx7UzB2bO31UBiXcX4e/Ymda6D
+         FX+8mfSzOH0d+5uTa3cResVgAOo0BF+hi1pmX76E4i7CJ8uHh/wlMFmLCOqRsbRM3pPu
+         rnux1jeiqmc8WJrw2MArQVnajiigbrGW9Mj2j+G+Lajj0a7jIrdDbRzVIJ/XqFWQ3sRJ
+         TPvhNnJ7MwFQmgheDy0f9QH0xtuTMqzTRGJkRrAmbB1dUSeRUsgAdjxrgBaVl3yMuahP
+         +8bI2ShllZkW6bWfOcQIPFJOAOAza8+a5q5BQWTDbE/sYCe4fpodFLB2OUS/a9Qr5cte
+         M5aA==
+X-Forwarded-Encrypted: i=1; AJvYcCVIXmSiqQeTqORg2/L1pc6XqYh8sEBlDJII6Q4njNcHBp1ou6LfPQmN+MBi5ADy+kUhtSA=@vger.kernel.org, AJvYcCWpdFmDIdQCW7B+H4Xrb+c5Aycqt9M2Z6OluWsTQ6vDR1p+M4w2R72DLKiJiLZ71w8/Blr1SFSG03SnUML0x3GDyuxP@vger.kernel.org, AJvYcCXSHNB9Wa1lhOg+Qulo3I84uUlJ+p/mn+APkenGyXLX0eZUuKxkUMAg2SNxw+NxGc2XYkALV+qUGwoUy1+D@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxvde5P/NQZ1pkI8ZNBlPqIq2r6vvDodzYjYIMjIm0sy5q+bKjh
+	0fVYSwe0e6qZMScQMMtUTKPVLV9wT1d3R1FS9ZKHzOQqkZAdc91bo7Ylm33db+KPn68J3wPjly6
+	Avh+hfi2jZjoJdi0wBwZPWThcoF0=
+X-Gm-Gg: ASbGncsT0vk4JjycakPuQWJLRmTkr3mQMwoRGbRxZ7qfhW7RWw5xFWKPzEWBz6BDLl6
+	GKkjUO/IttMCrLczkNCFshuL8sEmEgA==
+X-Google-Smtp-Source: AGHT+IFQcrLbnyRgCcLqsekhnhaN3SnuQlLNnXaFjPNbl7jpWMPnFg8Ptl0HnUnIVs70QLjwPVv76zvUlkttufPZkzY=
+X-Received: by 2002:a5d:5f8f:0:b0:382:4503:728a with SMTP id
+ ffacd0b85a97d-385c6ef3cd6mr7076347f8f.53.1732818173852; Thu, 28 Nov 2024
+ 10:22:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <21A94434-5519-4659-83FA-3AB782F064E2@fb.com>
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	TAGGED_RCPT(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,kernel.org,vger.kernel.org,meta.com,iogearbox.net,linux.dev,zeniv.linux.org.uk,suse.cz,google.com,toxicpanda.com,digikod.net];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <20241127140958.1828012-1-elver@google.com> <20241127140958.1828012-2-elver@google.com>
+In-Reply-To: <20241127140958.1828012-2-elver@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 28 Nov 2024 10:22:42 -0800
+Message-ID: <CAADnVQL6yyRRUc1Xee4HOQ0QXEiqQ7M-xJ109w9aztYH4ZWHmA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/2] bpf: Refactor bpf_tracing_func_proto()
+ and remove bpf_get_probe_write_proto()
+To: Marco Elver <elver@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Nikola Grcevski <nikola.grcevski@grafana.com>, 
+	bpf <bpf@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed 27-11-24 02:16:09, Song Liu wrote:
-> > On Nov 26, 2024, at 4:50 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > 
-> 
-> [...]
-> 
-> >>> +
-> >>> +static void sample_filter_free(struct fanotify_filter_hook *filter_hook)
-> >>> +{
-> >>> +       struct fan_filter_sample_data *data = filter_hook->data;
-> >>> +
-> >>> +       path_put(&data->subtree_path);
-> >>> +       kfree(data);
-> >>> +}
-> >>> +
-> >> 
-> >> Hi Song,
-> >> 
-> >> This example looks fine but it raises a question.
-> >> This filter will keep the mount of subtree_path busy until the group is closed
-> >> or the filter is detached.
-> >> This is probably fine for many services that keep the mount busy anyway.
-> >> 
-> >> But what if this wasn't the intention?
-> >> What if an Anti-malware engine that watches all mounts wanted to use that
-> >> for configuring some ignore/block subtree filters?
-> >> 
-> >> One way would be to use a is_subtree() variant that looks for a
-> >> subtree root inode
-> >> number and then verifies it with a subtree root fid.
-> >> A production subtree filter will need to use a variant of is_subtree()
-> >> anyway that
-> >> looks for a set of subtree root inodes, because doing a loop of is_subtree() for
-> >> multiple paths is a no go.
-> >> 
-> >> Don't need to change anything in the example, unless other people
-> >> think that we do need to set a better example to begin with...
-> > 
-> > I think we have to treat this patch as a real filter and not as an example
-> > to make sure that the whole approach is workable end to end.
-> > The point about not holding path/dentry is very valid.
-> > The algorithm needs to support that.
-> 
-> Hmm.. I am not sure whether we cannot hold a refcount. If that is a 
-> requirement, the algorithm will be more complex. 
+On Wed, Nov 27, 2024 at 6:10=E2=80=AFAM Marco Elver <elver@google.com> wrot=
+e:
+>
+> With bpf_get_probe_write_proto() no longer printing a message, we can
+> avoid it being a special case with its own permission check.
+>
+> Refactor bpf_tracing_func_proto() similar to bpf_base_func_proto() to
+> have a section conditional on bpf_token_capable(CAP_SYS_ADMIN), where
+> the proto for bpf_probe_write_user() is returned. Finally, remove the
+> unnecessary bpf_get_probe_write_proto().
+>
+> This simplifies the code, and adding additional CAP_SYS_ADMIN-only
+> helpers in future avoids duplicating the same CAP_SYS_ADMIN check.
+>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Marco Elver <elver@google.com>
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+> v3:
+> * Fix where bpf_base_func_proto() is called - it needs to be last,
+>   because we may override protos (as is e.g. done for
+>   BPF_FUNC_get_smp_processor_id).
+>
+> v2:
+> * New patch.
+> ---
+>  kernel/trace/bpf_trace.c | 25 +++++++++++++------------
+>  1 file changed, 13 insertions(+), 12 deletions(-)
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 0ab56af2e298..9b1d1fa4c06c 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -357,14 +357,6 @@ static const struct bpf_func_proto bpf_probe_write_u=
+ser_proto =3D {
+>         .arg3_type      =3D ARG_CONST_SIZE,
+>  };
+>
+> -static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
+> -{
+> -       if (!capable(CAP_SYS_ADMIN))
+> -               return NULL;
+> -
+> -       return &bpf_probe_write_user_proto;
+> -}
+> -
+>  #define MAX_TRACE_PRINTK_VARARGS       3
+>  #define BPF_TRACE_PRINTK_SIZE          1024
+>
+> @@ -1458,9 +1450,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, co=
+nst struct bpf_prog *prog)
+>                 return &bpf_perf_event_read_proto;
+>         case BPF_FUNC_get_prandom_u32:
+>                 return &bpf_get_prandom_u32_proto;
+> -       case BPF_FUNC_probe_write_user:
+> -               return security_locked_down(LOCKDOWN_BPF_WRITE_USER) < 0 =
+?
+> -                      NULL : bpf_get_probe_write_proto();
+>         case BPF_FUNC_probe_read_user:
+>                 return &bpf_probe_read_user_proto;
+>         case BPF_FUNC_probe_read_kernel:
+> @@ -1539,8 +1528,20 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, c=
+onst struct bpf_prog *prog)
+>         case BPF_FUNC_trace_vprintk:
+>                 return bpf_get_trace_vprintk_proto();
+>         default:
+> -               return bpf_base_func_proto(func_id, prog);
+> +               break;
+>         }
+> +
+> +       if (bpf_token_capable(prog->aux->token, CAP_SYS_ADMIN)) {
+> +               switch (func_id) {
+> +               case BPF_FUNC_probe_write_user:
+> +                       return security_locked_down(LOCKDOWN_BPF_WRITE_US=
+ER) < 0 ?
+> +                              NULL : &bpf_probe_write_user_proto;
+> +               default:
+> +                       break;
+> +               }
+> +       }
+> +
+> +       return bpf_base_func_proto(func_id, prog);
 
-Well, for production use that would certainly be a requirement. Many years
-ago dnotify (the first fs notification subsystem) was preventing
-filesystems from being unmounted because it required open file and it was a
-pain.
+Moving bpf_base_func_proto() all the way to the top was incorrect,
+but here we can move it just above this bpf_token_capable() check
+and remove extra indent like:
 
-> IIUC, fsnotify_mark on a inode does not hold a refcount to inode. 
+func_proto =3D bpf_base_func_proto();
+if (func_proto)
+   return func_proto;
+if (!bpf_token_capable(prog->aux->token, CAP_SYS_ADMIN))
+   return NULL;
+switch (func_id) {
+case BPF_FUNC_probe_write_user:
 
-The connector (head of the mark list) does hold inode reference. But we
-have a hook in the unmount path (fsnotify_unmount_inodes()) which drops all
-the marks and connectors for the filesystem.
+that will align it with the style of bpf_base_func_proto().
 
-> And when the inode is evicted, the mark is freed. I guess this 
-> requires the user space, the AntiVirus scanner for example, to 
-> hold a reference to the inode? If this is the case, I think it 
-> is OK for the filter, either bpf or kernel module, to hold a 
-> reference to the subtree root.
-
-No, fsnotify pins the inodes in memory (which if fine) but releases them
-when unmount should happen. Userspace doesn't need to pin anything.
-
-> > It may very well turn out that the logic of handling many filters
-> > without a loop and not grabbing a path refcnt is too complex for bpf.
-> > Then this subtree filtering would have to stay as a kernel module
-> > or extra flag/feature for fanotify.
-> 
-> Handling multiple subtrees is indeed an issue. Since we rely on 
-> the mark in the SB, multiple subtrees under the same SB will share
-> that mark. Unless we use some cache, accessing a file will 
-> trigger multiple is_subdir() calls. 
-> 
-> One possible solution is that have a new helper that checks
-> is_subdir() for a list of parent subtrees with a single series
-> of dentry walk. IOW, something like:
-> 
-> bool is_subdir_of_any(struct dentry *new_dentry, 
->                       struct list_head *list_of_dentry).
-> 
-> For BPF, one possible solution is to walk the dentry tree 
-> up to the root, under bpf_rcu_read_lock().
-
-I can see two possible issues with this. Firstly, you don't have list_head
-in a dentry you could easily use to pass dentries to a function like this.
-Probably you'll need an external array with dentry pointers or something
-like that.
-
-Second issue is more inherent in the BPF filter approach - if there would
-be more notification groups each watching for some subtree (like users
-watching their home dirs, apps watching their subtrees with data etc.), then
-we'd still end up traversing the directory tree for each such notification
-group. That seems suboptimal but I have to think how much we care how we
-could possibly avoid that.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+pw-bot: cr
 
