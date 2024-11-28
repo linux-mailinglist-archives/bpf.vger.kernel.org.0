@@ -1,150 +1,222 @@
-Return-Path: <bpf+bounces-45812-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45813-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 164819DB236
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 05:37:10 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49E1B9DB23D
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 05:39:52 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64AF166821
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:37:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B127282849
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2024 04:39:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8613B139566;
-	Thu, 28 Nov 2024 04:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6683E13A24D;
+	Thu, 28 Nov 2024 04:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dd6Dsno/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VOg+Mjnq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com [209.85.208.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4313322B
-	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 04:37:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4EE13D891
+	for <bpf@vger.kernel.org>; Thu, 28 Nov 2024 04:39:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732768625; cv=none; b=H/X9NZd54snCfH0nndQtz2RtXWSwwX0AwdFs05tZjqntE+CHgMv1y68t8F9F1o8tHTOX0Kmamk716eIaowL7JEYn9NTGaubdzuKawbsRRgHkEexgCUB3KvQ7UTvPeaddo9atWn1nEQyBR/U/vWUKcMwHaUXOzF0Xg3lFyv7jQ1o=
+	t=1732768787; cv=none; b=roWjlT9AK0RGu2WrIwG+Dn1srgoLqa4zDvjIHJqRfDkQFae4Vi4ej+d647PwbhPW+2mbGQxQUA8M/6ougXGPKYWHncNAmnCXQVXjNXa/0GkzSfPjXg2BncHV6fdEvARCkCQZ5H8zb7r/NFdBXuWELz5k9MPVxNrMxFeOY4zBBuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732768625; c=relaxed/simple;
-	bh=rgGuABirzAojH45Nh5L/KO5Ru/1MaW/EYghcJUopYpE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pdhllN/6sx4MRzmLrylLZBYf/C5lEAoiC9ei/UIbvrZE5cssayOF4MfKzEfPOmehgyGT9NixFLubKitTfzeNm0B5+f4yxpnyJPMSGN1L3bLEOQ/vEERjfI9FFEd7xQld90H5PbXZXOtlzP7OEcIMfuHDlPFvfe6xLr1VEBNKrXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dd6Dsno/; arc=none smtp.client-ip=209.85.167.172
+	s=arc-20240116; t=1732768787; c=relaxed/simple;
+	bh=u2rrDWmtwgB69JXD3aUyzvYXhUyyQ8Qxj7DoT4YhCb0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N1XoxYFhaWQL6rm04SRjqF/Hc91LJAGIHXNvamIvS3wSufBD9nkI6BWuv0WMTS8kZjlnZkcL9109NYLCOlZboGFYMj2OEk5bXH70giiUO+WQbAcHPXXirbIQKFDXUGDVlKBJJ0/XKtgW9pZ0ice9zoZEjBJsNO9ZRIRcgg33d/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VOg+Mjnq; arc=none smtp.client-ip=209.85.208.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3ea47651a10so249502b6e.0
-        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 20:37:03 -0800 (PST)
+Received: by mail-ed1-f65.google.com with SMTP id 4fb4d7f45d1cf-5cece886771so836475a12.0
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2024 20:39:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732768622; x=1733373422; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VCcbrUMuFu/IiRYM3gDJJjmJHWHp8vPpOVGLKarqlG8=;
-        b=Dd6Dsno/ZzG+x71DtfOt7gO9PbJHWMpIdVkn2n4wiYEb2Cy767nM/CBgPbEgyBwWXF
-         aGOYzfG8YKaebOVUaR8i5KMc/g+nH0InrtXuVlutcGb7tCfyxmXols6A0AaXsdmooLNW
-         OIFOz5RKo9RaZQgmHYeICMtEUSclN/cC0SE/tlYCcSeuWohLLfUTV8fmulQBIfsulZJl
-         b78Ga5Wfkhqcr2l3eOGh5UIgIPiZvdYizUAERLF1DEwAaClmqvPD6wAiilM/znEd7Snc
-         rA6sMNLxyh0uk2OzX5z1OCMy1LnsGc1VB3Y5jdqo0NLCOg4MvqDz8x5I7G7xvLmYDOCb
-         PP9A==
+        d=gmail.com; s=20230601; t=1732768783; x=1733373583; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PKaXhonmEqlC20xjjv/K6Quz7bX3O199fw6F7Nkn+4s=;
+        b=VOg+MjnqKi3u/575PEybCrud/GPo1Aw3DkORoJygmej20JtHR7VRRu+Pkgljj85WZQ
+         bI281efUwt/6E8EnOn6ZWDiAsB21omhbr3BKaaqVV/HyXxbhpeWixNNqge41Mq/af02d
+         ke8je42B8TCKEHeYEefdJMWB8MwUS5jnlI+iMZzXwaBGP+q+mRN90LlW4EvLg8PMPN6N
+         IBPZTnsufWnko6Yr7i65tZhy41usByIafSWDc4avL5UbYiS/e3AhjRSEwGqavhCT8Whz
+         d4k5PuN5EIZU1hqGJYds004k8orEYmSHGwmcmyvNjjDVbF3kfRbJ78++c+rSUkaVuXjt
+         fbqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732768622; x=1733373422;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VCcbrUMuFu/IiRYM3gDJJjmJHWHp8vPpOVGLKarqlG8=;
-        b=RZ95Xoo2tksjzCZivpyQJIBXt4zDdoCA7wl+FBDuAhjSMYbfSZhhqQfavE1Lihye8B
-         7hRh297PivWq8RB9yfy8/+unMM7rshOMQPigtorw7/xZopC7gv42i18xR3x8cksSK0E3
-         Za5FtHgBPm574WCruF59as5fwFRyT55s06tjr9CjMpVPE/GHNSpeSOXPW6isC/QJdkJC
-         nEb7lO57rdwD/jlL+Gwi2cR1RfX5ndVzgd9BrnigGRvGxxSUgkp5BbrGpcJKozPZPSw8
-         USzQzp7aMCHwt++VSSEw7JffHhaAcBq+5E2NZbSZt8va8rQSB8y0Ql0ic5w0+eO48Kht
-         nK3Q==
-X-Gm-Message-State: AOJu0YyU0Nq/GVNowRZHDLAq3aiTU69KO29olUC7R5vCexfIlVlfG1+T
-	SrkYjvHiP/7Od8yq4iuUo70QxaVsOj5o9+9tTp+29uW9jH9MV2Wy
-X-Gm-Gg: ASbGncuYXb0gjWLdXCEFugeqRZqOPGP7HCc7Kqa0xBLzrGUrIGqQ9ZJ2U3VU+hlMaMa
-	Fk+xUyAGkPLgCTIW0rONQsrXOYe5k7hLBOhpNi7iq3Ih8gMEb0REx0nIJTZKXbGEnxgo3edGJFZ
-	AEmoOAdAVDgn+LidtBowTXFx1CGj7GZEz+kYBn5mp70sPOXoVlSZ+HzxiN4z82+lzxW5qh8tOSy
-	MQ5dbxRjCmz4Wp5yo0Yp6k4btlYqSmUkD/n+qywaEJtlMY=
-X-Google-Smtp-Source: AGHT+IFdriVSUl3X30dTW9mypGuzEmAizPRXjrDjNYvTy76882wTPMq+hKGP1oS+J++5Ag00hIk0Lg==
-X-Received: by 2002:a05:6808:6414:b0:3ea:5ef1:c95 with SMTP id 5614622812f47-3ea6dc2c5e9mr5782361b6e.25.1732768622539;
-        Wed, 27 Nov 2024 20:37:02 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7254181479dsm457052b3a.159.2024.11.27.20.37.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2024 20:37:02 -0800 (PST)
-Message-ID: <21df66492832c16c7456dc0e458b3af68649f233.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/7] bpf: Refactor
- {acquire,release}_reference_state
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, 
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@kernel.org>,
- kernel-team@fb.com
-Date: Wed, 27 Nov 2024 20:36:57 -0800
-In-Reply-To: <CAP01T779EKX=GCPYUyihey=1Sw+1ht4f6C07PnzVEko+JgYk5g@mail.gmail.com>
-References: <20241127165846.2001009-1-memxor@gmail.com>
-	 <20241127165846.2001009-3-memxor@gmail.com>
-	 <0b2e84f96227c62ef4da7eda44ee31d42800fccd.camel@gmail.com>
-	 <CAP01T779EKX=GCPYUyihey=1Sw+1ht4f6C07PnzVEko+JgYk5g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+        d=1e100.net; s=20230601; t=1732768783; x=1733373583;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PKaXhonmEqlC20xjjv/K6Quz7bX3O199fw6F7Nkn+4s=;
+        b=KxEZRTvl0U6AnTOvq4y7ZnIlZRc4tetna7hqn7l0eC250GvWZBLDgNPceoWu9B0q1s
+         zY20QWIoqIcIaYsxtt8WD9FSXcpy/D7MZ5xEweYkkAMs5WMZufb3wfuy5XWOa3qQrSEa
+         iMPCpkMaSdDSMy1uQx9KVQjUjvjLQDufDiXq03Zvs20PtzCLjTiwq7SKs6rv9wb/FGoa
+         5S1bNistP/1LCBz/DASLnP9A++dg61TJ0J7ZHNOsbTu4xC0qdCjUnrxJ/aC3XUCpVNlC
+         BtWxDNVLhEJ6Xv6L2TLSp9Cjl4b5aMz7cI9CeyiRvCYSv+E5Mka1v2Kz0RnHmYLXm7Ts
+         CC6Q==
+X-Gm-Message-State: AOJu0YxDAkJpfDTGzwqnL2mTWfgixtH8Jdhkh6Zad0H9dcfiHiuYbhiS
+	dRV+etkKTfyiBw6+zEiXjl5dPmjt0TKtkHzDA5lRUPEaMkCcgVJZAOYao48ZdgFte46Wmd2+r6s
+	hK3w0/+Egtikn2HWOycKj7mW3pzk=
+X-Gm-Gg: ASbGncuc5MeLVWJhTEf15c/KLKK62Wn4mxGQbbUhbzCVEQGndeelqvDfsbaPlqvdNxv
+	+OQt7pWtSIGo8aGUmKHfUsCTG+klY7WGkX1ezunE3o1f9gPXuGD08
+X-Google-Smtp-Source: AGHT+IEVefjACMKEbo3j5pHHAkT2+GZ7ZO4DiYcrATE6DROjFy1ilcWf9nd6gUgy7t84xWXYbp4KcXjG7hBWcAjYMy0=
+X-Received: by 2002:a05:6402:2348:b0:5d0:9ac3:deba with SMTP id
+ 4fb4d7f45d1cf-5d09ac3e0d1mr311286a12.16.1732768783405; Wed, 27 Nov 2024
+ 20:39:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20241127165846.2001009-1-memxor@gmail.com> <20241127165846.2001009-5-memxor@gmail.com>
+ <8559a9a9892311772778268eb9cee7c533a576d0.camel@gmail.com>
+In-Reply-To: <8559a9a9892311772778268eb9cee7c533a576d0.camel@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 28 Nov 2024 05:39:07 +0100
+Message-ID: <CAP01T75nGn+sXDoa6N8yj_prtaYZemdCZtm_sNOzE7KvZzzpOQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 4/7] bpf: Introduce support for bpf_local_irq_{save,restore}
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 2024-11-28 at 05:30 +0100, Kumar Kartikeya Dwivedi wrote:
-> On Thu, 28 Nov 2024 at 05:13, Eduard Zingerman <eddyz87@gmail.com> wrote:
-> >=20
-> > On Wed, 2024-11-27 at 08:58 -0800, Kumar Kartikeya Dwivedi wrote:
-> >=20
-> > Overall looks good, but please take a look at a few notes below.
-> >=20
-> > [...]
-> >=20
-> > > @@ -1349,77 +1350,69 @@ static int grow_stack_state(struct bpf_verifi=
-er_env *env, struct bpf_func_state
-> > >   * On success, returns a valid pointer id to associate with the regi=
-ster
-> > >   * On failure, returns a negative errno.
-> > >   */
-> > > -static int acquire_reference_state(struct bpf_verifier_env *env, int=
- insn_idx)
-> > > +static struct bpf_reference_state *acquire_reference_state(struct bp=
-f_verifier_env *env, int insn_idx, bool gen_id)
-> > >  {
-> > >       struct bpf_verifier_state *state =3D env->cur_state;
-> > >       int new_ofs =3D state->acquired_refs;
-> > > -     int id, err;
-> > > +     int err;
-> > >=20
-> > >       err =3D resize_reference_state(state, state->acquired_refs + 1)=
-;
-> > >       if (err)
-> > > -             return err;
-> > > -     id =3D ++env->id_gen;
-> > > -     state->refs[new_ofs].type =3D REF_TYPE_PTR;
-> > > -     state->refs[new_ofs].id =3D id;
-> > > +             return NULL;
-> > > +     if (gen_id)
-> > > +             state->refs[new_ofs].id =3D ++env->id_gen;
-> >=20
-> > Nit: state->refs[new_ods].id might end up with garbage value if 'gen_id=
-' is false.
-> >      The resize_reference_state() uses realloc_array(),
-> >      which allocates memory with GFP_KERNEL, but without __GFP_ZERO fla=
-g.
-> >      This is not a problem with current patch, as you always check
-> >      reference type before checking id, but most of the data strucures
-> >      in verifier are zero initialized just in case.
->=20
-> We end up assigning to s->id if gen_id is false, e.g.
-> acquire_lock_state, so I think we'll be fine without __GFP_ZERO.
+On Thu, 28 Nov 2024 at 05:31, Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> On Wed, 2024-11-27 at 08:58 -0800, Kumar Kartikeya Dwivedi wrote:
+> > Teach the verifier about IRQ-disabled sections through the introduction
+> > of two new kfuncs, bpf_local_irq_save, to save IRQ state and disable
+> > them, and bpf_local_irq_restore, to restore IRQ state and enable them
+> > back again.
+> >
+> > For the purposes of tracking the saved IRQ state, the verifier is taught
+> > about a new special object on the stack of type STACK_IRQ_FLAG. This is
+> > a 8 byte value which saves the IRQ flags which are to be passed back to
+> > the IRQ restore kfunc.
+> >
+> > Renumber the enums for REF_TYPE_* to simplify the check in
+> > find_lock_state, filtering out non-lock types as they grow will become
+> > cumbersome and is unecessary.
+> >
+> > To track a dynamic number of IRQ-disabled regions and their associated
+> > saved states, a new resource type RES_TYPE_IRQ is introduced, which its
+> > state management functions: acquire_irq_state and release_irq_state,
+> > taking advantage of the refactoring and clean ups made in earlier
+> > commits.
+> >
+> > One notable requirement of the kernel's IRQ save and restore API is that
+> > they cannot happen out of order. For this purpose, when releasing reference
+> > we keep track of the prev_id we saw with REF_TYPE_IRQ. Since reference
+> > states are inserted in increasing order of the index, this is used to
+> > remember the ordering of acquisitions of IRQ saved states, so that we
+> > maintain a logical stack in acquisition order of resource identities,
+> > and can enforce LIFO ordering when restoring IRQ state. The top of the
+> > stack is maintained using bpf_verifier_state's active_irq_id.
+> >
+> > The logic to detect initialized and unitialized irq flag slots, marking
+> > and unmarking is similar to how it's done for iterators. No additional
+> > checks are needed in refsafe for REF_TYPE_IRQ, apart from the usual
+> > check_id satisfiability check on the ref[i].id. We have to perform the
+> > same check_ids check on state->active_irq_id as well.
+> >
+> > The kfuncs themselves are plain wrappers over local_irq_save and
+> > local_irq_restore macros.
+> >
+> > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+>
+> Sorry, two more nits below.
+>
+> [...]
+>
+> > +static int unmark_stack_slot_irq_flag(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> > +{
+> > +     struct bpf_func_state *state = func(env, reg);
+> > +     struct bpf_stack_state *slot;
+> > +     struct bpf_reg_state *st;
+> > +     int spi, i, err;
+> > +
+> > +     spi = irq_flag_get_spi(env, reg);
+> > +     if (spi < 0)
+> > +             return spi;
+> > +
+> > +     slot = &state->stack[spi];
+> > +     st = &slot->spilled_ptr;
+> > +
+> > +     err = release_irq_state(env->cur_state, st->ref_obj_id);
+> > +     WARN_ON_ONCE(err && err != -EACCES);
+> > +     if (err) {
+> > +             verbose(env, "cannot restore irq state out of order\n");
+>
+> Nit: maybe also print acquire_irq_id and an instruction where it was acquired?
 
-Oh, I see, thank you for explaining.
+Ack. For printing the insn_idx, I guess just search in the refs array?
 
-[...]
+>
+> > +             return err;
+> > +     }
+> > +
+> > +     __mark_reg_not_init(env, st);
+> > +
+> > +     /* see unmark_stack_slots_dynptr() for why we need to set REG_LIVE_WRITTEN */
+> > +     st->live |= REG_LIVE_WRITTEN;
+> > +
+> > +     for (i = 0; i < BPF_REG_SIZE; i++)
+> > +             slot->slot_type[i] = STACK_INVALID;
+> > +
+> > +     mark_stack_slot_scratched(env, spi);
+> > +     return 0;
+> > +}
+> > +
+> > +static bool is_irq_flag_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> > +{
+> > +     struct bpf_func_state *state = func(env, reg);
+> > +     struct bpf_stack_state *slot;
+> > +     int spi, i;
+> > +
+> > +     /* For -ERANGE (i.e. spi not falling into allocated stack slots), we
+> > +      * will do check_mem_access to check and update stack bounds later, so
+> > +      * return true for that case.
+> > +      */
+> > +     spi = irq_flag_get_spi(env, reg);
+> > +     if (spi == -ERANGE)
+> > +             return true;
+>
+> Nit: is it possible to swap is_irq_flag_reg_valid_uninit() and
+>      check_mem_access(), so that ERANGE special case would be not needed?
+>
 
+I don't think so. For dynptr, iter, irq, ERANGE indicates stack needs
+to be grown, so check_mem_access will naturally do that when writing.
+When not ERANGE, we need to catch cases where we have a bad slot_type.
+If we overwrote it with check_mem_access, then it would scrub the slot
+type as well.
+
+When I fixed this stuff for dynptr, we had to additionally
+destroy_if_dynptr_stack_slot because it wasn't required to 'release' a
+dynptr when overwriting it.
+Andrii made sure this was necessary for iters so now slot_type ==
+STACK_ITER is just rejected instead of overwrite without a destroy
+operation.
+Similar idea is followed for irq flag.
+
+Just paging in context for all this, but I may be missing if you have
+something in mind.
+
+> > +     if (spi < 0)
+> > +             return false;
+> > +
+> > +     slot = &state->stack[spi];
+> > +
+> > +     for (i = 0; i < BPF_REG_SIZE; i++)
+> > +             if (slot->slot_type[i] == STACK_IRQ_FLAG)
+> > +                     return false;
+> > +     return true;
+> > +}
+>
+> [...]
+>
 
