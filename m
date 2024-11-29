@@ -1,129 +1,129 @@
-Return-Path: <bpf+bounces-45866-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45867-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B87AA9DC187
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 10:30:00 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E9459DC314
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 12:45:47 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60EA4163ABF
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 11:45:37 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 001D5158A09;
+	Fri, 29 Nov 2024 11:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hT7YvaYD"
+X-Original-To: bpf@vger.kernel.org
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43894B20C29
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 09:29:58 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA143176FB4;
-	Fri, 29 Nov 2024 09:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SoKwyjfG"
-X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E0714F135
-	for <bpf@vger.kernel.org>; Fri, 29 Nov 2024 09:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA69819A28D
+	for <bpf@vger.kernel.org>; Fri, 29 Nov 2024 11:45:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732872593; cv=none; b=cjMCdFHEciqm2vYW2v8t4aWVx+wDeZlPEVT1f3JIrNpLOo/qFMJIGbipXFwywB+kS/5HMIq4Lo7X5pWCCoLhdoE/R/GPi/6TxpDJV4ZFq6pYE9eKYHiqscSH6Aqhcb0w5XCBPbiPrEbFQ/c7yWvaFPoZmdMjXxxmrxzlXDwZFsQ=
+	t=1732880720; cv=none; b=f5khViiqN1o6S8thH3n8xrcp8ssTlk9DvckhN6crO5mIfGUR2PVF3WklJS9deg8m0SmC0uVH5kwicsGy6vwp3rUzHFUDfCXolKKgGyZ/7LWVaSqkOL0dHj+4GG9KRGEtR8pp8jmwW4a4ug00uiyvD0uc98k2HSh9IVHhy+JsEf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732872593; c=relaxed/simple;
-	bh=LPfcs7pBWanXJ1yN2+JeDSnyCulkOfNyq5bwKGomm4M=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=g9LkFvqhAsGDW36D1RuLSm5tIf1wKN9mHmhRweacMONhg9QdAgeRqNfBDtGrOOeF9vWl9NllV8c8GSlR4oznE9UDc5aZWG4DnIW35J0WCfb4o+IhubgJeCrvOjScFwKHkE+GWGbHXfypTkgge6GXCmH80icDeSXWaFC0lMqN2qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SoKwyjfG; arc=none smtp.client-ip=209.85.167.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3ea411ef5a9so736651b6e.0
-        for <bpf@vger.kernel.org>; Fri, 29 Nov 2024 01:29:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732872591; x=1733477391; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LPfcs7pBWanXJ1yN2+JeDSnyCulkOfNyq5bwKGomm4M=;
-        b=SoKwyjfGfthSVrSitjIIeEBiv7HnssSADC9LsyITp06QDjy/JJ49DrPS9UR4n/bcZD
-         a9wThOanQo+oejqngLVpSr5fxQzw4n40l1NDO2MuZaDlv3CTwpFcPI1t0hcFH/admcts
-         yJ6UtwfJttl66qa4iOntcgWxACRus1ivt+GM5esVH+OqitU8thO5b6xcdAz9n6ga76EB
-         fyk46JuYiSKjmx4lSx1aQp0E+YeNVJ782AWuwXryYSc92t2qAnfCLH9ns9xNHzs12VJA
-         Kqznzg8VG/+hCFesXBHg87fie0g6V8kWtyp6MHlv+/4Il3E2O1RRd7khNVYZGpLGhZdu
-         17Qw==
+	s=arc-20240116; t=1732880720; c=relaxed/simple;
+	bh=ABYjhwN7BHJUWZ4KqQa58izg2zdT8EnMgwYZwgL7M4c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=XXg6KDpg7fIlIlN2uQgLSDuvrPtEilnmO9zPcSJ9MsNrNa6i1ELuyhSJ6PZHFyBpODv/FH7aMWlfX+24NFJumWCxcWrSeJR1OR5YB5SAoVHE2eqXPIlneH4Mycw85A99Y9lXfzctJ3HIDH4CJ4Bn8pJp/9wOKPsiPB0iiH7CB6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hT7YvaYD; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1732880715;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ABYjhwN7BHJUWZ4KqQa58izg2zdT8EnMgwYZwgL7M4c=;
+	b=hT7YvaYDTIpf0Gx7Kcws69wF1iDv7uN0JqHnmodMdh8YqbngtJ3QMCqMUQ7t4SgHdD0gQ8
+	G+9PzV2rNsG8+lcpWyC+lslkUBg1Fj/LdP3sRxlyqsUpEdJk2oJqFfMRKgif9derkDAASy
+	IXyRhbVGsfIekfYoFgEv8T6YCAVwbkg=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-534-tw6-HNmePUOf9ybbweg78w-1; Fri, 29 Nov 2024 06:45:14 -0500
+X-MC-Unique: tw6-HNmePUOf9ybbweg78w-1
+X-Mimecast-MFC-AGG-ID: tw6-HNmePUOf9ybbweg78w
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5cfc26d02e6so2805605a12.0
+        for <bpf@vger.kernel.org>; Fri, 29 Nov 2024 03:45:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732872591; x=1733477391;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LPfcs7pBWanXJ1yN2+JeDSnyCulkOfNyq5bwKGomm4M=;
-        b=Ha7f7DxVdLQQu/UYKD8VcoEXtQZ76L2a6K23tPrlllUK6opsJFNOklPbYz5eRcLFlz
-         a6yuMRvuDVjvFO3hDnT7Mzi8JoMmj4SPDYVOtlnuFrS/lww0v6NyycQX35v5A4QGxU7u
-         U27xb0TGdcbHoJaSkL+KOMzcvFFe5ncuYGZJwQLrYg8DGAG727GLO3j3EF0zzwistzQq
-         0YkJrwfBkgsS6VU5q0tAqnfA4OmfiCn4hiH+CkBc6Xm7Njc2uexanbB1cTDLfU2/fbiZ
-         RQfgA8BTQ6p1ek6wG4t0uddfJT14glEA3rGqiHbIpqWsovxz8L7ektzXau1Zgr2ZYg/g
-         kIqw==
-X-Forwarded-Encrypted: i=1; AJvYcCXttNyCbQ6rBdxYB01SmW+Zj/vuwdukSpnf/FNAGvB+YmACMpf6L6yvn5UtCOz6HATSaXI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHKPAyCXpJaZfnAx3Df82DZ3QAHamzh5ruHv7AyHA0NgMadub9
-	37VwpkorhRjgze60mXBhJRImIhw9THgbnZ1UrbWY2j4vCfwYrSlU
-X-Gm-Gg: ASbGnctOH7Ohy83Mdz9Eei85CJkon7zyxbGRnG677D/rLnU+2Qhs3IOzKjFXa89hcwV
-	tHK174LslquKgXN5TrdNsls/sAb1CAxC86K5kIjJ4ctHPkaSiBOYepqDmZe8mJjY/WAX21QWk1W
-	l2ciLeu7d98Z7L17LBY8cQNhyEZDLQZSEZtcOUyKFFLP1HCmpNtZpCZwyBIYNMNor+quSQWHTFf
-	kC08bGTsOZJxB8utLhMEIxzZeiAENri8UeVzVbM/eHfFVM=
-X-Google-Smtp-Source: AGHT+IFt3xKzaonN+PMYPQ4R7rXIA38B8c5FFLkpWrz0PikSRXUQQ5sTnHGtQPa0+chs0se3BG0nKw==
-X-Received: by 2002:a05:6808:1496:b0:3ea:6708:51c4 with SMTP id 5614622812f47-3ea6dbc49eamr7374477b6e.15.1732872590932;
-        Fri, 29 Nov 2024 01:29:50 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7254176f3f6sm3010506b3a.50.2024.11.29.01.29.49
+        d=1e100.net; s=20230601; t=1732880713; x=1733485513;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ABYjhwN7BHJUWZ4KqQa58izg2zdT8EnMgwYZwgL7M4c=;
+        b=sD5gbJ57ApzSnp8fmcY7oJh8tJJ0Rbru4Cft1CqRUrUTTGWWOqp9WzoqQmpk15D0dU
+         8hcIpp2YReLHoxtMtIm1HWPsn4p+P1RGvQeu5fw0axVToMedMsjvgE/ihOUZRfYrXjMI
+         1ZPKCKz988M0RlkSmg2LezHmsBLPVVJWgx0zg6Ou990tQbHW9DArnofL0k/k2YhlKOXi
+         kijFfv7bl6jjHtR9ASsA6Rtx6gr2gwGdMi6kDkFyeN1u/hPmhJP9CwyKckquQR6Vcy5p
+         KXDqDXueyXvnbISorhFJlYHyU5kHDWeLlNYYA2adt08NDVhlyf2uV9sknEe17mn2LpzS
+         irJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXa8Zyw1XFCXEncCh2T2fKpSj2xWETrCiFr4SGHCGQahr7gmKLj077BNrs3WVH78NJ6W5w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrdYYp+2fgtwSEbzNkpRdYzkINDBXNHECsffxlYFHlWvEd07SQ
+	knxyYE/wa+HwclVvGc29zslqsRFNu/zJ1YX51pbvtlRNCneF2EKMNW4JNMvTA1oT9zaBIeIpIRd
+	Yp9oy/EQaCCfl+jiCYCVxzpyb/EKZIfkpPg+N+hJXxXWG2qtceA==
+X-Gm-Gg: ASbGncvWt19S42PetOKPfxofbE6Pd+5s3yhMXkquARsP5x1UPo7jqxLRi06aYsXl8Wn
+	YVdbRl7GpYnrnctx2attL2NA0VOPqu/Z44XeFByoTU27Fa2NiLX1kWNCynt9LSVWt0vL7qVh8Cs
+	3Fg74CyEQGEDCVtJbXpw+U5382QbgUDn2Oez1qdvAY/qX9JJQ6629ym+3TrNCNcJdhCN2uBgFe8
+	wxhaam3faf5ggbMVsgvJohkIAdZAmYSZLh7QH52GbVhOvg=
+X-Received: by 2002:a17:906:794c:b0:a9e:c440:2c9f with SMTP id a640c23a62f3a-aa594709494mr777786066b.19.1732880713163;
+        Fri, 29 Nov 2024 03:45:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHafFtIh6h6bcrCQemnJaslLKz5bYS/l4CpLUAmC8TStXur9m29l9cRn7Y6i6rYYEQhWBPgYQ==
+X-Received: by 2002:a17:906:794c:b0:a9e:c440:2c9f with SMTP id a640c23a62f3a-aa594709494mr777783766b.19.1732880712800;
+        Fri, 29 Nov 2024 03:45:12 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa5996c2471sm165294166b.13.2024.11.29.03.45.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Nov 2024 01:29:50 -0800 (PST)
-Message-ID: <50d2626e382ed7a6f1f07f0e259fc923dcc167a2.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/7] bpf: Refactor
- {acquire,release}_reference_state
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc: kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko	
- <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
- Lau	 <martin.lau@kernel.org>, kernel-team@fb.com
-Date: Fri, 29 Nov 2024 01:29:45 -0800
-In-Reply-To: <20241129001632.3828611-3-memxor@gmail.com>
-References: <20241129001632.3828611-1-memxor@gmail.com>
-	 <20241129001632.3828611-3-memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+        Fri, 29 Nov 2024 03:45:12 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 4E5CB164E385; Fri, 29 Nov 2024 12:45:11 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Hao Luo
+ <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, Daniel
+ Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, Thomas
+ =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>, houtao1@huawei.com,
+ xukuohai@huawei.com
+Subject: Re: [PATCH bpf v2 4/9] bpf: Handle in-place update for full LPM
+ trie correctly
+In-Reply-To: <20241127004641.1118269-5-houtao@huaweicloud.com>
+References: <20241127004641.1118269-1-houtao@huaweicloud.com>
+ <20241127004641.1118269-5-houtao@huaweicloud.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Fri, 29 Nov 2024 12:45:11 +0100
+Message-ID: <87ldx2i7qw.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2024-11-28 at 16:16 -0800, Kumar Kartikeya Dwivedi wrote:
-> In preparation for introducing support for more reference types which
-> have to add and remove reference state, refactor the
-> acquire_reference_state and release_reference_state functions to share
-> common logic.
->=20
-> The acquire_reference_state function simply handles growing the acquired
-> refs and returning the pointer to the new uninitialized element, which
-> can be filled in by the caller.
->=20
-> The release_reference_state function simply erases a reference state
-> entry in the acquired_refs array and shrinks it. The callers are
-> responsible for finding the suitable element by matching on various
-> fields of the reference state and requesting deletion through this
-> function. It is not supposed to be called directly.
->=20
-> Existing callers of release_reference_state were using it to find and
-> remove state for a given ref_obj_id without scrubbing the associated
-> registers in the verifier state. Introduce release_reference_nomark to
-> provide this functionality and convert callers. We now use this new
-> release_reference_nomark function within release_reference as well.
-> It needs to operate on a verifier state instead of taking verifier env
-> as mark_ptr_or_null_regs requires operating on verifier state of the
-> two branches of a NULL condition check, therefore env->cur_state cannot
-> be used directly.
->=20
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
+Hou Tao <houtao@huaweicloud.com> writes:
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> From: Hou Tao <houtao1@huawei.com>
+>
+> When a LPM trie is full, in-place updates of existing elements
+> incorrectly return -ENOSPC.
+>
+> Fix this by deferring the check of trie->n_entries. For new insertions,
+> n_entries must not exceed max_entries. However, in-place updates are
+> allowed even when the trie is full.
+>
+> Fixes: b95a5c4db09b ("bpf: add a longest prefix match trie map implementa=
+tion")
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 
-[...]
+Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
 
