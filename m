@@ -1,234 +1,211 @@
-Return-Path: <bpf+bounces-45890-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45891-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA02C9DED0E
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 22:50:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B40A9DED3A
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 23:20:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D46BAB21B0C
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 21:50:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE9A628218E
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 22:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B9D1A0BE0;
-	Fri, 29 Nov 2024 21:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B62D1A4F19;
+	Fri, 29 Nov 2024 22:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JpX5diq2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o5p0Hl5t"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC0EB176FB4;
-	Fri, 29 Nov 2024 21:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A3B454279;
+	Fri, 29 Nov 2024 22:19:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732917026; cv=none; b=PhAJ88whNrPo7iymfwY4gynZdDMTB+cs9n6oU7cRFlbX0SEw00t4BNCf3cgVXEU3Dh97kQK+t2Uk825PZiv42WHiAbP9qHH7j7we07WdG8FUWEPOxIoPnkxjmdu+LERYTjmdtgL4ZmnR78akxBXDfGcPlxYPXgySkZz7+ZGwZlo=
+	t=1732918794; cv=none; b=ElKjYT6ihijsR7xeFMNgBKlX6N+4LnxQ7V463x0N21dtiag40lu2YUTnMC0cZd0kp82lgjocDhfqlv/lpAUt7Cyt2PJ63H/FKeCCv5dEjE8xClywL1AQcpyE24NIfB4064JaYiaW8vWVPYW9M+KXRHRx5+JOXdjy94Zk/iCWLYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732917026; c=relaxed/simple;
-	bh=AM848ys1g7IyhQYE4MA0Tdnkg3TjnNg6GhEOUNn6NQc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TpJ7Z9t73teGh5ZFNBTVfQfJOt7NsCFFkEQmUnxfmAi/WwKgHwBIPLTYd4y0V90xPlTxYC8XC+jd1rgw18CgaUNeJ2cJG1ob01Bp9LUhL5+MVMLXROqrSl3m7MAIXEh+xyuPBEId3YHgVG1PfvZoWDMNKg64OB/gv7jMx6ZvMe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JpX5diq2; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2128383b86eso21995485ad.2;
-        Fri, 29 Nov 2024 13:50:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732917024; x=1733521824; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HIodyhiD6UOinbKHhvLMloGzV8x9o6B6YnMkFkiRuBY=;
-        b=JpX5diq2AlK/Fq/ebreVZWYSLw0FbqPMBFxw9bvymvtB4eXkr8i6DCXlUQQXi1C4n7
-         fAhjnu3S4b+gHePJiyyooh216gp9kioWujgAge3cSw49fOQWh9PX4X59TGHVx/EjnS8J
-         oKF3kH4ZtCv9NTITpTq2AHRaDTmt8wgmp4WjF3tsLI6xxS59Mo2jU4/NB7ZhpYIa/Pq6
-         e5OgUcrbdIywxM7tcbk0SLdANJE3OLAj3KJC2M7wX0Yw82hUOdztNbaRrcrClPBPRZ82
-         snpJNIVtbHW6ADc5HK2N/xghBIWoDBR780adDh+WLQIpG39OEwr+Da8xIFmsgFZ1oBR4
-         BiHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732917024; x=1733521824;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HIodyhiD6UOinbKHhvLMloGzV8x9o6B6YnMkFkiRuBY=;
-        b=tRFhqpQxKpM+zRRDJKVU8eHD3qFpe/8HqhZdZLYUUQH/aSVtRITUSZ+9JlGSmBfIhJ
-         Hf1vdCKfC1NisN9apux0S9KiTS2Nt9UcRyJGLCSWqB47Xw5lpx8RPhqiSbGaG9KiHE8+
-         SwTkNIFO0HaQOJos4AVfqafVwFIVWWtXRMmvWccJBj3/T1tyzhMoOk/ePp2GgUl5LV6j
-         XjcZk0BvqNHdkQygD1LUBFt0yIAUM2DQvrSlT5xEHQS+fGlnrs1Yu7b0OeiETn5qYG+1
-         EWLW62nR0EDOOD8wmmTuaIymb73NL1VH/5ESW+f0554sUyIBG/WVtBHqwMxj2NJQczmo
-         XIlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXxpUe2cZvt6obUG9GPDX+kGVJDLm/6pMsQURksHcPZ5oMJvv/decRfvQft5hc+90OZSZ+Qd6b2@vger.kernel.org
-X-Gm-Message-State: AOJu0YwerjjMxQA5cH/I3T9notMSbjlwvoVewp2okkBhtJql4bAyVTBF
-	5vA342x+uzcYrIGPy5LzY7eG0DJy4wE6UdqUFvgnEitaq9c/1KV9Xp5dYwzP
-X-Gm-Gg: ASbGncudQLlhKxHlIWUqpaqsrfBt6I5jxVvi4b4d+XNsdAleAxaD6JXcxtFPCxreWcr
-	mHWBpw24oHpOGDJpql+1MwbvRTrpIbdsG//dOOYxGHk9ydKvAVYVKrBkCQ3m7hdwoWICiNMUgsa
-	vihvlW53pZ5bXtFwyu7ia/eRlzPxhLA/CGOLuw7QcxjYYi1ctia1Ps3dOsjUvALtl1vP6xsxo+B
-	mQ84agymOkcR9MGGpo9WlkY3gK/H5UjQCNEi1htiQr5NkY=
-X-Google-Smtp-Source: AGHT+IF5CctYGKDYd6a4VPlBJjD0x/WYLGYicqJxHDHrjVeiXCG5b+SSvfo9YKKWPtFeSQzHi6u25w==
-X-Received: by 2002:a17:903:298e:b0:215:352c:af5d with SMTP id d9443c01a7336-215352cb18bmr95569775ad.25.1732917024005;
-        Fri, 29 Nov 2024 13:50:24 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215219063ddsm35315705ad.100.2024.11.29.13.50.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Nov 2024 13:50:23 -0800 (PST)
-Message-ID: <0ea54d31ef9c473ee99f191bf00e451bb941710d.camel@gmail.com>
-Subject: Re: [RFC PATCH 5/9] btf_encoder: introduce elf_functions struct type
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@pm.me>, dwarves@vger.kernel.org, 
-	acme@kernel.org
-Cc: bpf@vger.kernel.org, alan.maguire@oracle.com, andrii@kernel.org, 
-	mykolal@fb.com
-Date: Fri, 29 Nov 2024 13:50:18 -0800
-In-Reply-To: <20241128012341.4081072-6-ihor.solodrai@pm.me>
-References: <20241128012341.4081072-1-ihor.solodrai@pm.me>
-	 <20241128012341.4081072-6-ihor.solodrai@pm.me>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1732918794; c=relaxed/simple;
+	bh=OJvU5bLoYGZXh8qACQ/T6IEV8oDjNatqYL+CeW3HsJg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i6J+y4trG6gaP981SbMfKlABk0A+efDzgh2pSzsX4f2H5OVWBI+A+eLx/O0G9lnsKR0kdOK4WeFSIDRs5Iy7DE32Hy3TwL9zQxTf6mmSqqtklFQRdGDL7weOpHUjJzfdf5YN9hI+7nEYJ7PLJV4SkVAOHiijyaZUHriuaHgpkrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o5p0Hl5t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C894C4CECF;
+	Fri, 29 Nov 2024 22:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732918794;
+	bh=OJvU5bLoYGZXh8qACQ/T6IEV8oDjNatqYL+CeW3HsJg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=o5p0Hl5t68sOGrNrYENKMovE5NztdhOpEAFABibzPZGUoqz1AXXaCH53QUmqJu9yj
+	 4Ymv5lTSZbEsDt+NPkbGOI0BMOSI/hhFnrmJFW+/qqVN7darYuDK67nomYfyn1WTZW
+	 BFRJMR/Fl9FeauFwTeTH3phw520rl/KLfJopadlpHQUp+IZrgAicwA5DrSA19U8kSy
+	 DpTFETeRTKi33P/1gcVkoaLTCtVby2dZtM0i0fCZSI8+UVXXGJuKWkaLG6dG9bq/8l
+	 w9ueF6Q3rudD7ZWIlpxFt0GwISNHkjcxLh8drdyWqw8+a9ohium7+Z6XshqrmZWZxx
+	 DWCgNchAqIpvQ==
+Date: Fri, 29 Nov 2024 23:19:51 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+	x86@kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Juerg Haefliger <juerg.haefliger@canonical.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
+	Chuang Wang <nashuiliang@gmail.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Petr Mladek <pmladek@suse.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+	Julian Pidancet <julian.pidancet@oracle.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>,
+	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
+Subject: Re: [RFC PATCH v3 11/15] context-tracking: Introduce work deferral
+ infrastructure
+Message-ID: <Z0o-B1ONq4wL1RHc@pavilion.home>
+References: <20241119153502.41361-1-vschneid@redhat.com>
+ <20241119153502.41361-12-vschneid@redhat.com>
+ <Zz2_7MbxvfjKsz08@pavilion.home>
+ <Zz3w0o_3wZDgJn0K@localhost.localdomain>
+ <xhsmho729hlv0.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Zz4cqfVfyb1enxql@localhost.localdomain>
+ <xhsmh1pz39v0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Z0Oeme2yhxF_ArX0@pavilion.home>
+ <xhsmhttbqm1s2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <xhsmhttbqm1s2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 
-On Thu, 2024-11-28 at 01:24 +0000, Ihor Solodrai wrote:
-> Extract elf_functions struct type from btf_encoder.
->=20
-> Replace methods operating functions table in btf_encoder by methods
-> operating on elf_functions:
-> - btf_encoder__collect_function -> elf_functions__collect_function
-> - btf_encoder__collect_symbols -> elf_functions__collect
->=20
-> Now these functions do not depend on btf_encoder being passed to them
-> as a parameter.
->=20
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
-> ---
+Le Fri, Nov 29, 2024 at 05:40:29PM +0100, Valentin Schneider a écrit :
+> On 24/11/24 22:46, Frederic Weisbecker wrote:
+> > Le Fri, Nov 22, 2024 at 03:56:59PM +0100, Valentin Schneider a écrit :
+> >> On 20/11/24 18:30, Frederic Weisbecker wrote:
+> >> > Le Wed, Nov 20, 2024 at 06:10:43PM +0100, Valentin Schneider a écrit :
+> >> >> On 20/11/24 15:23, Frederic Weisbecker wrote:
+> >> >>
+> >> >> > Ah but there is CT_STATE_GUEST and I see the last patch also applies that to
+> >> >> > CT_STATE_IDLE.
+> >> >> >
+> >> >> > So that could be:
+> >> >> >
+> >> >> > bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
+> >> >> > {
+> >> >> >    struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
+> >> >> >    unsigned int old;
+> >> >> >    bool ret = false;
+> >> >> >
+> >> >> >    preempt_disable();
+> >> >> >
+> >> >> >    old = atomic_read(&ct->state);
+> >> >> >
+> >> >> >    /* CT_STATE_IDLE can be added to last patch here */
+> >> >> >    if (!(old & (CT_STATE_USER | CT_STATE_GUEST))) {
+> >> >> >            old &= ~CT_STATE_MASK;
+> >> >> >            old |= CT_STATE_USER;
+> >> >> >    }
+> >> >>
+> >> >> Hmph, so that lets us leverage the cmpxchg for a !CT_STATE_KERNEL check,
+> >> >> but we get an extra loop if the target CPU exits kernelspace not to
+> >> >> userspace (e.g. vcpu or idle) in the meantime - not great, not terrible.
+> >> >
+> >> > The thing is, what you read with atomic_read() should be close to reality.
+> >> > If it already is != CT_STATE_KERNEL then you're good (minus racy changes).
+> >> > If it is CT_STATE_KERNEL then you still must do a failing cmpxchg() in any case,
+> >> > at least to make sure you didn't miss a context tracking change. So the best
+> >> > you can do is a bet.
+> >> >
+> >> >>
+> >> >> At the cost of one extra bit for the CT_STATE area, with CT_STATE_KERNEL=1
+> >> >> we could do:
+> >> >>
+> >> >>   old = atomic_read(&ct->state);
+> >> >>   old &= ~CT_STATE_KERNEL;
+> >> >
+> >> > And perhaps also old |= CT_STATE_IDLE (I'm seeing the last patch now),
+> >> > so you at least get a chance of making it right (only ~CT_STATE_KERNEL
+> >> > will always fail) and CPUs usually spend most of their time idle.
+> >> >
+> >> 
+> >> I'm thinking with:
+> >> 
+> >>         CT_STATE_IDLE		= 0,
+> >>         CT_STATE_USER		= 1,
+> >>         CT_STATE_GUEST		= 2,
+> >>         CT_STATE_KERNEL		= 4, /* Keep that as a standalone bit */
+> >
+> > Right!
+> >
+> >> 
+> >> we can stick with old &= ~CT_STATE_KERNEL; and that'll let the cmpxchg
+> >> succeed for any of IDLE/USER/GUEST.
+> >
+> > Sure but if (old & CT_STATE_KERNEL), cmpxchg() will consistently fail.
+> > But you can make a bet that it has switched to CT_STATE_IDLE between
+> > the atomic_read() and the first atomic_cmpxchg(). This way you still have
+> > a tiny chance to succeed.
+> >
+> > That is:
+> >
+> >    old = atomic_read(&ct->state);
+> >    if (old & CT_STATE_KERNEl)
+> >       old |= CT_STATE_IDLE;
+> >    old &= ~CT_STATE_KERNEL;
+> >
+> >
+> >    do {
+> >       atomic_try_cmpxchg(...)
+> >
+> > Hmm?
+> 
+> But it could equally be CT_STATE_{USER, GUEST}, right? That is, if we have
+> all of this enabled them we assume the isolated CPUs spend the least amount
+> of time in the kernel, if they don't we get to blame the user.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Unless CONTEXT_TRACKING_WORK_IDLE=y yes.
 
-[...]
+Anyway that's just a detail that can be refined in the future. I'm fine with
+just clearing CT_STATE_KERNEL and go with that.
 
-> @@ -2132,31 +2110,59 @@ int btf_encoder__encode(struct btf_encoder *encod=
-er)
->  	return err;
->  }
-> =20
-> -
-> -static int btf_encoder__collect_symbols(struct btf_encoder *encoder)
-> +static int elf_functions__collect(struct elf_functions *functions)
->  {
-> -	bool base_addr_set =3D false;
-> -	uint32_t sym_sec_idx;
-> +	uint32_t nr_symbols =3D elf_symtab__nr_symbols(functions->symtab);
-> +	struct elf_function *tmp;
-> +	Elf32_Word sym_sec_idx;
->  	uint32_t core_id;
->  	GElf_Sym sym;
-> +	int err;
-> +
-> +	/* We know that number of functions is less than number of symbols,
-> +	 * so we can overallocate temporarily.
-> +	 */
-> +	functions->entries =3D calloc(nr_symbols, sizeof(struct elf_function));
-
-Nit: use sizeof(*functions->entries) instead of sizeof(struct elf_function)
-     here and elsewhere.
-
-> +	if (!functions->entries) {
-> +		err =3D -ENOMEM;
-> +		goto out_free;
-> +	}
-> =20
-> -	elf_symtab__for_each_symbol_index(encoder->symtab, core_id, sym, sym_se=
-c_idx) {
-> -		if (!base_addr_set && sym_sec_idx && sym_sec_idx < encoder->seccnt) {
-> -			encoder->functions.base_addr =3D encoder->secinfo[sym_sec_idx].addr;
-> -			base_addr_set =3D true;
-> +	functions->cnt =3D 0;
-> +	elf_symtab__for_each_symbol_index(functions->symtab, core_id, sym, sym_=
-sec_idx) {
-> +		if (elf_functions__collect_function(functions, &sym)) {
-> +			err =3D -1;
-> +			goto out_free;
-
-Nit: elf_functions__collect_function() never fails now (make it void?).
-
->  		}
-> -		if (btf_encoder__collect_function(encoder, &sym))
-> -			return -1;
->  	}
-> =20
-> -	if (encoder->functions.cnt) {
-> -		qsort(encoder->functions.entries, encoder->functions.cnt, sizeof(encod=
-er->functions.entries[0]),
-> +	if (functions->cnt) {
-> +		qsort(functions->entries,
-> +		      functions->cnt,
-> +		      sizeof(functions->entries[0]),
->  		      functions_cmp);
-> -		if (encoder->verbose)
-> -			printf("Found %d functions!\n", encoder->functions.cnt);
-> +	} else {
-> +		err =3D 0;
-> +		goto out_free;
-> +	}
-> +
-> +	/* Reallocate to the exact size */
-> +	tmp =3D realloc(functions->entries, functions->cnt * sizeof(struct elf_=
-function));
-> +	if (tmp) {
-> +		functions->entries =3D tmp;
-> +	} else {
-> +		fprintf(stderr, "could not reallocate memory for elf_functions table\n=
-");
-> +		err =3D -ENOMEM;
-> +		goto out_free;
->  	}
-> =20
->  	return 0;
-> +
-> +out_free:
-> +	free(functions->entries);
-> +	functions->entries =3D NULL;
-> +	functions->cnt =3D 0;
-> +	return err;
->  }
-> =20
->  static bool ftype__has_arg_names(const struct ftype *ftype)
-> @@ -2417,6 +2423,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu,=
- const char *detached_filenam
->  				printf("%s: '%s' doesn't have symtab.\n", __func__, cu->filename);
->  			goto out;
->  		}
-> +		encoder->functions.symtab =3D encoder->symtab;
-> =20
->  		/* index the ELF sections for later lookup */
-> =20
-> @@ -2455,7 +2462,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu,=
- const char *detached_filenam
->  		if (!found_percpu && encoder->verbose)
->  			printf("%s: '%s' doesn't have '%s' section\n", __func__, cu->filename=
-, PERCPU_SECTION);
-> =20
-> -		if (btf_encoder__collect_symbols(encoder))
-> +		if (elf_functions__collect(&encoder->functions))
->  			goto out_delete;
-> =20
->  		if (encoder->verbose)
-> @@ -2486,7 +2493,7 @@ void btf_encoder__delete(struct btf_encoder *encode=
-r)
->  	encoder->btf =3D NULL;
->  	elf_symtab__delete(encoder->symtab);
-> =20
-> -	encoder->functions.allocated =3D encoder->functions.cnt =3D 0;
-> +	encoder->functions.cnt =3D 0;
->  	free(encoder->functions.entries);
->  	encoder->functions.entries =3D NULL;
-
-Nit: this cleanup code is repeated two times.
-
-
-
+Thanks.
 
