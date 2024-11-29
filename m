@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-45896-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45897-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6846B9DED7C
-	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 00:11:45 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5C379DED7F
+	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 00:11:59 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DC16281815
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 23:11:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 741E9163F54
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 23:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F28B41A7066;
-	Fri, 29 Nov 2024 23:11:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE4A41A76AE;
+	Fri, 29 Nov 2024 23:11:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MxLY6IV0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eRB8og5K"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72B3215667B;
-	Fri, 29 Nov 2024 23:11:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E8C15667B;
+	Fri, 29 Nov 2024 23:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732921892; cv=none; b=oGAIEFLOyiY41G7cJ5Di+aPmgZyzYklH+/z2BAMKa1jCL3v8E3MRPXJ1z7QtLygRpCWAiZaje+f3+sp6VJUuXBcpng8dNtQ+ia7ebr8KqNeO4QUSNPyRaV9ywmh62N/UuNg0gsEdybLRXyc9la9327i8cOslK7Z1hlJ5hhgnZCQ=
+	t=1732921895; cv=none; b=TiEHiNn5K89Nb3eibl+glzvMk378bn9QifP3fbiX3c1qjNw2sYhs4NgozuUpxTVGvPH8USJ+6x6vbRpQsVR78muluu6u/Dn86Bseun036T1Tbs86TT9Z057RxVUUjSwvu8s/TASAbGyT5BIpk37rUmnbv9TIl0besBX+n58tWaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732921892; c=relaxed/simple;
-	bh=o3emxOzM9BnKEYBobtqwMlUS5phwWmEom+xa8+ajkQc=;
+	s=arc-20240116; t=1732921895; c=relaxed/simple;
+	bh=L20h7E62CgEbW7RQsxNKHFFP3uRELCvfC8cFWBGyit4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Rw5pw7PTXXN+ZE2eJlKxOqC2hdVcDytdemc1iDsE0FBMyybhuRduJMvJRhrO0zJIhQS8900NCCXVdxoN+fBfampy36IAdez6Txl9dSJtSUFpaRsrZ2Iwl+CCPffNnaJXYyLKCUVPJOECNKaN2GvA1zXIrStTg0vBHCiLVPD/2rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MxLY6IV0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CC9DC4CECF;
-	Fri, 29 Nov 2024 23:11:31 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=nl2H5Xh1VQQk/rayNp9FFbShUVmOIFo23OStZ+So65ofL3EqQUnVd1SNKf1ULNmhTD/hiipn2D8LU0jW/agXVTb0+gyTV8dvDdeyGKriOGQdI9MmqbWgRM82iQH5DdeQQVXVj//Ko76uTZzRjGJ7ForQCH55BVeImseHBMAqxbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eRB8og5K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46704C4CECF;
+	Fri, 29 Nov 2024 23:11:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732921891;
-	bh=o3emxOzM9BnKEYBobtqwMlUS5phwWmEom+xa8+ajkQc=;
+	s=k20201202; t=1732921894;
+	bh=L20h7E62CgEbW7RQsxNKHFFP3uRELCvfC8cFWBGyit4=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=MxLY6IV08Qyldx0ksXBGC1XaPVb/2tSswZPA96so6HH68Pr4IYBB9p+pPaDyzgitH
-	 xqPcGPfgpjxdIxnwgp/DayWIyNxa8lVbOjQNoYR+9VCE5bX/mmaTOjco6wrJemyrFc
-	 tUamiFPoVFKCZG6JDuYbkHyxCg7doAx/iCG+vtnHl5r7p5kld/WDXPVGmdAKHtbFdI
-	 hNvH5Mp7l4xYdeIt2mtkoayVXZZ6SP1iQc8LC5pm0R4dlxkHLN4hFD/g0Y2Tq9XsNY
-	 9BcBDF0tCEdrppt+ODRtMXHiD0iWF0LQjnbshX33XM59MhdTcCHHOvv39Te7CYRjGX
-	 OM1zCEF/oLipA==
+	b=eRB8og5Kx8LJVbaFNxXXvT3pAZWmxdcVUomPekcUeeCOrAFurU2pF64QsP0L+oRSP
+	 8N0rO1gEiUFZWUfDxigVOot53d+Z2rMaGCgSWSZpzd1oCj5hHYfndaf9afN/co2BuD
+	 bEdryct5AuHUWqsf9AinQKF9fJZI4pOVasI6l2/tmKXNWM4QpikUpPTOFy/EhYTfV1
+	 AktFSf83Jqmp8y3VK8+20Zk7EWoL09T+yf5Oz/syywOY9G5E9G+r+x6WOUwSZlRQFp
+	 tEcVXMVG43rVaGJrZT/TOKfN2KXFpiVXOqFCoV7QhSMneNpQw8+1SpB5GA7gtMf7Q/
+	 jfZ1ruZZhg0bA==
 From: Lorenzo Bianconi <lorenzo@kernel.org>
-Date: Sat, 30 Nov 2024 00:10:59 +0100
-Subject: [PATCH bpf-next 2/3] net: add napi_threaded_poll to netdevice.h
+Date: Sat, 30 Nov 2024 00:11:00 +0100
+Subject: [PATCH bpf-next 3/3] bpf: cpumap: Add gro support
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,7 +52,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20241130-cpumap-gro-v1-2-c1180b1b5758@kernel.org>
+Message-Id: <20241130-cpumap-gro-v1-3-c1180b1b5758@kernel.org>
 References: <20241130-cpumap-gro-v1-0-c1180b1b5758@kernel.org>
 In-Reply-To: <20241130-cpumap-gro-v1-0-c1180b1b5758@kernel.org>
 To: Andrew Lunn <andrew+netdev@lunn.ch>, 
@@ -73,49 +73,247 @@ Cc: Daniel Xu <dxu@dxuuu.xyz>, aleksander.lobakin@intel.com,
  Lorenzo Bianconi <lorenzo@kernel.org>
 X-Mailer: b4 0.14.2
 
-Move napi_threaded_poll routine declaration in netdevice.h and remove
-static keyword in order to reuse it in cpumap codebase.
+Introduce GRO support to cpumap codebase moving the cpu_map_entry
+kthread to a NAPI-kthread pinned on the selected cpu.
 
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- include/linux/netdevice.h | 1 +
- net/core/dev.c            | 4 +---
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ kernel/bpf/cpumap.c | 125 ++++++++++++++++++++++------------------------------
+ 1 file changed, 52 insertions(+), 73 deletions(-)
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 9f083314fc4bc97059b02c6ee6d919bedb4e046d..a73315c0f2849aee141f11e4c970b233590a0dfa 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -2677,6 +2677,7 @@ static inline void netif_napi_set_irq(struct napi_struct *napi, int irq)
-  */
- #define NAPI_POLL_WEIGHT 64
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index a2f46785ac3b3c54a69b19641cc463055c2978d9..3ec6739aec5aeb545b417cb62e4cbcb82bfa6db4 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -62,9 +62,11 @@ struct bpf_cpu_map_entry {
+ 	/* XDP can run multiple RX-ring queues, need __percpu enqueue store */
+ 	struct xdp_bulk_queue __percpu *bulkq;
  
-+int napi_threaded_poll(void *data);
- int napi_init_for_gro(struct net_device *dev, struct napi_struct *napi,
- 		      int (*poll)(struct napi_struct *, int), int weight);
- void netif_napi_add_weight(struct net_device *dev, struct napi_struct *napi,
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 20d531a54214e9ecf1128a668cf3763433e1989b..cf09a0c6abe50ebb95b22fe06705be95f46a7c6d 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -1419,8 +1419,6 @@ void netdev_notify_peers(struct net_device *dev)
+-	/* Queue with potential multi-producers, and single-consumer kthread */
++	/* Queue with potential multi-producers, and single-consumer
++	 * NAPI-kthread
++	 */
+ 	struct ptr_ring *queue;
+-	struct task_struct *kthread;
++	struct napi_struct napi;
+ 
+ 	struct bpf_cpumap_val value;
+ 	struct bpf_prog *prog;
+@@ -261,58 +263,42 @@ static int cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
+ 	return nframes;
  }
- EXPORT_SYMBOL(netdev_notify_peers);
  
--static int napi_threaded_poll(void *data);
--
- static int napi_kthread_create(struct napi_struct *n)
+-static int cpu_map_kthread_run(void *data)
++static int cpu_map_poll(struct napi_struct *napi, int budget)
  {
- 	int err = 0;
-@@ -7027,7 +7025,7 @@ static void napi_threaded_poll_loop(struct napi_struct *napi)
+-	struct bpf_cpu_map_entry *rcpu = data;
+-	unsigned long last_qs = jiffies;
++	struct xdp_cpumap_stats stats = {}; /* zero stats */
++	unsigned int kmem_alloc_drops = 0;
++	struct bpf_cpu_map_entry *rcpu;
++	int done = 0;
+ 
++	rcu_read_lock();
++	rcpu = container_of(napi, struct bpf_cpu_map_entry, napi);
+ 	complete(&rcpu->kthread_running);
+-	set_current_state(TASK_INTERRUPTIBLE);
+ 
+-	/* When kthread gives stop order, then rcpu have been disconnected
+-	 * from map, thus no new packets can enter. Remaining in-flight
+-	 * per CPU stored packets are flushed to this queue.  Wait honoring
+-	 * kthread_stop signal until queue is empty.
+-	 */
+-	while (!kthread_should_stop() || !__ptr_ring_empty(rcpu->queue)) {
+-		struct xdp_cpumap_stats stats = {}; /* zero stats */
+-		unsigned int kmem_alloc_drops = 0, sched = 0;
++	while (done < budget) {
+ 		gfp_t gfp = __GFP_ZERO | GFP_ATOMIC;
+-		int i, n, m, nframes, xdp_n;
++		int n, i, m, xdp_n = 0, nframes;
+ 		void *frames[CPUMAP_BATCH];
++		struct sk_buff *skb, *tmp;
+ 		void *skbs[CPUMAP_BATCH];
+ 		LIST_HEAD(list);
+ 
+-		/* Release CPU reschedule checks */
+-		if (__ptr_ring_empty(rcpu->queue)) {
+-			set_current_state(TASK_INTERRUPTIBLE);
+-			/* Recheck to avoid lost wake-up */
+-			if (__ptr_ring_empty(rcpu->queue)) {
+-				schedule();
+-				sched = 1;
+-				last_qs = jiffies;
+-			} else {
+-				__set_current_state(TASK_RUNNING);
+-			}
+-		} else {
+-			rcu_softirq_qs_periodic(last_qs);
+-			sched = cond_resched();
+-		}
+-
++		if (__ptr_ring_empty(rcpu->queue))
++			break;
+ 		/*
+ 		 * The bpf_cpu_map_entry is single consumer, with this
+ 		 * kthread CPU pinned. Lockless access to ptr_ring
+ 		 * consume side valid as no-resize allowed of queue.
+ 		 */
+-		n = __ptr_ring_consume_batched(rcpu->queue, frames,
+-					       CPUMAP_BATCH);
+-		for (i = 0, xdp_n = 0; i < n; i++) {
++		n = min(budget -  done, CPUMAP_BATCH);
++		n = __ptr_ring_consume_batched(rcpu->queue, frames, n);
++		done += n;
++
++		for (i = 0; i < n; i++) {
+ 			void *f = frames[i];
+ 			struct page *page;
+ 
+ 			if (unlikely(__ptr_test_bit(0, &f))) {
+-				struct sk_buff *skb = f;
+-
++				skb = f;
+ 				__ptr_clear_bit(0, &skb);
+ 				list_add_tail(&skb->list, &list);
+ 				continue;
+@@ -340,12 +326,10 @@ static int cpu_map_kthread_run(void *data)
+ 			}
+ 		}
+ 
+-		local_bh_disable();
+ 		for (i = 0; i < nframes; i++) {
+ 			struct xdp_frame *xdpf = frames[i];
+-			struct sk_buff *skb = skbs[i];
+ 
+-			skb = __xdp_build_skb_from_frame(xdpf, skb,
++			skb = __xdp_build_skb_from_frame(xdpf, skbs[i],
+ 							 xdpf->dev_rx);
+ 			if (!skb) {
+ 				xdp_return_frame(xdpf);
+@@ -355,18 +339,20 @@ static int cpu_map_kthread_run(void *data)
+ 			list_add_tail(&skb->list, &list);
+ 		}
+ 
+-		/* Feedback loop via tracepoint.
+-		 * NB: keep before recv to allow measuring enqueue/dequeue latency.
+-		 */
+-		trace_xdp_cpumap_kthread(rcpu->map_id, n, kmem_alloc_drops,
+-					 sched, &stats);
+-
+-		netif_receive_skb_list(&list);
+-		local_bh_enable(); /* resched point, may call do_softirq() */
++		list_for_each_entry_safe(skb, tmp, &list, list) {
++			skb_list_del_init(skb);
++			napi_gro_receive(napi, skb);
++		}
+ 	}
+-	__set_current_state(TASK_RUNNING);
+ 
+-	return 0;
++	rcu_read_unlock();
++	/* Feedback loop via tracepoint */
++	trace_xdp_cpumap_kthread(rcpu->map_id, done, kmem_alloc_drops, 0,
++				 &stats);
++	if (done < budget)
++		napi_complete(napi);
++
++	return done;
+ }
+ 
+ static int __cpu_map_load_bpf_program(struct bpf_cpu_map_entry *rcpu,
+@@ -434,18 +420,19 @@ __cpu_map_entry_alloc(struct bpf_map *map, struct bpf_cpumap_val *value,
+ 	if (fd > 0 && __cpu_map_load_bpf_program(rcpu, map, fd))
+ 		goto free_ptr_ring;
+ 
++	napi_init_for_gro(NULL, &rcpu->napi, cpu_map_poll,
++			  NAPI_POLL_WEIGHT);
++	set_bit(NAPI_STATE_THREADED, &rcpu->napi.state);
++
+ 	/* Setup kthread */
+ 	init_completion(&rcpu->kthread_running);
+-	rcpu->kthread = kthread_create_on_node(cpu_map_kthread_run, rcpu, numa,
+-					       "cpumap/%d/map:%d", cpu,
+-					       map->id);
+-	if (IS_ERR(rcpu->kthread))
++	rcpu->napi.thread = kthread_run_on_cpu(napi_threaded_poll,
++					       &rcpu->napi, cpu,
++					       "cpumap-napi/%d");
++	if (IS_ERR(rcpu->napi.thread))
+ 		goto free_prog;
+ 
+-	/* Make sure kthread runs on a single CPU */
+-	kthread_bind(rcpu->kthread, cpu);
+-	wake_up_process(rcpu->kthread);
+-
++	napi_schedule(&rcpu->napi);
+ 	/* Make sure kthread has been running, so kthread_stop() will not
+ 	 * stop the kthread prematurely and all pending frames or skbs
+ 	 * will be handled by the kthread before kthread_stop() returns.
+@@ -479,12 +466,8 @@ static void __cpu_map_entry_free(struct work_struct *work)
+ 	 */
+ 	rcpu = container_of(to_rcu_work(work), struct bpf_cpu_map_entry, free_work);
+ 
+-	/* kthread_stop will wake_up_process and wait for it to complete.
+-	 * cpu_map_kthread_run() makes sure the pointer ring is empty
+-	 * before exiting.
+-	 */
+-	kthread_stop(rcpu->kthread);
+-
++	napi_disable(&rcpu->napi);
++	__netif_napi_del(&rcpu->napi);
+ 	if (rcpu->prog)
+ 		bpf_prog_put(rcpu->prog);
+ 	/* The queue should be empty at this point */
+@@ -500,8 +483,8 @@ static void __cpu_map_entry_free(struct work_struct *work)
+  * __cpu_map_entry_free() in a separate workqueue after waiting for an RCU grace
+  * period. This means that (a) all pending enqueue and flush operations have
+  * completed (because of the RCU callback), and (b) we are in a workqueue
+- * context where we can stop the kthread and wait for it to exit before freeing
+- * everything.
++ * context where we can stop the NAPI-kthread and wait for it to exit before
++ * freeing everything.
+  */
+ static void __cpu_map_entry_replace(struct bpf_cpu_map *cmap,
+ 				    u32 key_cpu, struct bpf_cpu_map_entry *rcpu)
+@@ -581,9 +564,7 @@ static void cpu_map_free(struct bpf_map *map)
+ 	 */
+ 	synchronize_rcu();
+ 
+-	/* The only possible user of bpf_cpu_map_entry is
+-	 * cpu_map_kthread_run().
+-	 */
++	/* The only possible user of bpf_cpu_map_entry is the NAPI-kthread. */
+ 	for (i = 0; i < cmap->map.max_entries; i++) {
+ 		struct bpf_cpu_map_entry *rcpu;
+ 
+@@ -591,7 +572,7 @@ static void cpu_map_free(struct bpf_map *map)
+ 		if (!rcpu)
+ 			continue;
+ 
+-		/* Stop kthread and cleanup entry directly */
++		/* Stop NAPI-kthread and cleanup entry directly */
+ 		__cpu_map_entry_free(&rcpu->free_work.work);
+ 	}
+ 	bpf_map_area_free(cmap->cpu_map);
+@@ -755,7 +736,7 @@ int cpu_map_generic_redirect(struct bpf_cpu_map_entry *rcpu,
+ 	if (ret < 0)
+ 		goto trace;
+ 
+-	wake_up_process(rcpu->kthread);
++	napi_schedule(&rcpu->napi);
+ trace:
+ 	trace_xdp_cpumap_enqueue(rcpu->map_id, !ret, !!ret, rcpu->cpu);
+ 	return ret;
+@@ -767,8 +748,6 @@ void __cpu_map_flush(struct list_head *flush_list)
+ 
+ 	list_for_each_entry_safe(bq, tmp, flush_list, flush_node) {
+ 		bq_flush_to_queue(bq);
+-
+-		/* If already running, costs spin_lock_irqsave + smb_mb */
+-		wake_up_process(bq->obj->kthread);
++		napi_schedule(&bq->obj->napi);
  	}
  }
- 
--static int napi_threaded_poll(void *data)
-+int napi_threaded_poll(void *data)
- {
- 	struct napi_struct *napi = data;
- 
 
 -- 
 2.47.0
