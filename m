@@ -1,121 +1,84 @@
-Return-Path: <bpf+bounces-45878-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45879-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F8C69DE77C
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 14:26:29 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 528F59DE883
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 15:28:03 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6864B161726
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 13:26:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B97F2B223D5
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 14:28:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A9919E806;
-	Fri, 29 Nov 2024 13:26:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 302F53A1BA;
+	Fri, 29 Nov 2024 14:27:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="D2yAPRvC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uAmUp7JU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A8719E826
-	for <bpf@vger.kernel.org>; Fri, 29 Nov 2024 13:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E91956446;
+	Fri, 29 Nov 2024 14:27:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732886768; cv=none; b=C2IXEP6KJOVaL6ue2z3uEaRk4inXmjMjiRfp0FLE1kO0QKkrbBKHalpc5ZAvmXR9QLTFQkIm6fveom6I73qoAqjegkMls/veDe+I2lmNnfFPFjjjSadhV5i7L4KBy+CJDNxLMH0/ow878ZqjRXSwVs+VKRqfDMnAjj54PoKP1OY=
+	t=1732890467; cv=none; b=ow2dyqC0FMs6Uu5gK/ArcKVEWWisfac/eBxiQqB2LRuNC9uAkhOojWVwCamIiFdb2yyVp/D28IBtRrbr9fTLJmr07MFbW85d2eNceAoaG5FkfjDPBGBmIT4i/r8khtpRj4uONt3FLFe5fSpaa2o0h5Df9UX7IF4DjGVdYnF9vh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732886768; c=relaxed/simple;
-	bh=5M+9sZ2uOISCSb6KW/FXzpjBYHwIs149KFBIoWPdbV4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kdB2sBAMkdKiXYaeZiJLZj/D92DXMbd6VhD5rmnPs1EYw/ShjOoatsVTCk/hdPcs9lbpQp9bYeoM85X7zmr0cDXFF69OWpiA4C/viJl31RQeIKNQZ7OkoBymizM24dl/U/1KDcghG0lS5rBPcFMN+QKpWB3/qnu5LWbzlap8lrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=D2yAPRvC; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-aa5325af6a0so244147266b.2
-        for <bpf@vger.kernel.org>; Fri, 29 Nov 2024 05:26:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1732886762; x=1733491562; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=95uLp76JDqCGAntKfWwQIWRGb8VQc95vaaCgVutyp08=;
-        b=D2yAPRvCkt2QQuKEXD+sbXp9pDr51lpMALL5co40Uz4srVdJhUjdgUMECgVB0tjPYu
-         0qnUAWJAdejUv0zXNvvn4owC2qFMrQURsKR89YcR9bipKVSxyit+4hHHI4oPiQIuNl8u
-         F6qxHYWPfDF4N1lfZgnNQXPbcEgccSqecqUNS1BlwT7uazWzZsZ91reQ+5P2OjBmnw2p
-         BwJm9EwVlc8YcOyxNuOCZ805beYtnqzsnzqk5YSDkdAkHfaA5EYZdes2uH+8xEuD4TgC
-         mQHAL08mTZJgAqQKUrdHnbqoXEr+f/w8prQk+B8qPkb6oHW8/Ims5S4hns87yzjjRKaO
-         KLnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732886762; x=1733491562;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=95uLp76JDqCGAntKfWwQIWRGb8VQc95vaaCgVutyp08=;
-        b=DrnJrwV9E0jmiZlvuV1y7pfpTnpfdksRDFUNCW8sQk6wDTzC+2HL0nmAEXVBVnrhZz
-         +45HYy+w1YkOaiGu+qn/IOgMsG62rIMCSw/0DzQ/SOATuZNKbLBgaLQtxpDQYQ6Z9aRn
-         9XOMwEfGbV31GXcqcf5qIKSli++9aAB63Run0EiN9KuDUk+1HIzNnK5lo7am5YosVODo
-         89uFaYFRQbyf0WqCcBOj8ye61Okti4A8TDW+P+TPstUqYRkmkcWIImCuGxUZW48qOd1I
-         ToXAbCtnRT3VopBeG+4VP/IyOnD8Km/FEMqqArlRSkwfJ+jAt2OlRYga1jSMPAbhDl9G
-         IxTw==
-X-Gm-Message-State: AOJu0YzkXuy1PelXyCxdeFsj/JBGhHdfz79ygArzgjmdSuNVN9cWy6fO
-	OMq/KDHJlfHm4kgfnfuYcuZ7D/IfqbC6dUeDjfnw3F1CiXSPWdas82Pn1jxmUohcs7ObCSHkQYi
-	u
-X-Gm-Gg: ASbGncsucpOqG9ohg39C8CC3yriLNtUlde5s1HlenU6GAGL9LfbgQm2R1Bnd2uJYBbP
-	MtUBURu/gY71mGBzAVODYe/XaqHq3IaInkvU1E6tQeKMH5hQcBephw0TqLXu1qZp1VD7WoaNNUk
-	28T9r4f8u40ygnErloSebq0Ym2RygN2KpK0odTlMsqYOI+nXogoCWlEmL2JLsC+0z0oYa4giCWi
-	zRJxo4OVnriKeky4mO69y0JeEN+/bnnRGW4f8GnmaCJ80oV3KSE9EtLCP2GMu4=
-X-Google-Smtp-Source: AGHT+IHHyk6HIjbwNkEK6rJ0FdHykw43HV1JWlx9lFXBP+TsV3R5Jj1b02ZX/w2auWD4b9NkL9k2DA==
-X-Received: by 2002:a17:907:7809:b0:aa5:2b4b:616a with SMTP id a640c23a62f3a-aa580f1b29cmr867150666b.17.1732886760255;
-        Fri, 29 Nov 2024 05:26:00 -0800 (PST)
-Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa599904f33sm173295066b.135.2024.11.29.05.25.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Nov 2024 05:25:59 -0800 (PST)
-From: Anton Protopopov <aspsk@isovalent.com>
-To: bpf@vger.kernel.org
-Cc: Anton Protopopov <aspsk@isovalent.com>,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH v3 bpf-next 7/7] selftest/bpf: replace magic constants by macros
-Date: Fri, 29 Nov 2024 13:28:13 +0000
-Message-Id: <20241129132813.1452294-8-aspsk@isovalent.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241129132813.1452294-1-aspsk@isovalent.com>
-References: <20241129132813.1452294-1-aspsk@isovalent.com>
+	s=arc-20240116; t=1732890467; c=relaxed/simple;
+	bh=+vgPJHybP12C8neovOe11buOLbgLCn81+/KHl0rFaXE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=IDJtOXRYkqeSKASenbbxui4GZc3FoUzoW0DLilynvUSZwUyjDglb+AtM8MV8UH4NwYzxsAYLft7JUbx8db9TWMSsW0Mc+OSccM56gizsjTwybvzLruxtsOOuD3jlLjVrt7T89FN/ceHZYiGk2BHoG1m7/d4aHttgKXSV8AomYpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uAmUp7JU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF830C4CED9;
+	Fri, 29 Nov 2024 14:27:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732890467;
+	bh=+vgPJHybP12C8neovOe11buOLbgLCn81+/KHl0rFaXE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=uAmUp7JU3Wi6DpNkeFilNifVBjYqQTtbHadzNwmxp63oKbDV9oCI1LMMlwo2K5X0G
+	 RLQvIatVVK8GiVl6tSqMOmNHf9JmWXwgW13tHDEWKtDUFKEtLsXPhH62OjdtiCREP1
+	 Ei6I9EQyMsTxWI9FnnV84RzXtshrA8CI4Yhj845V4x0lWLYfxxZW6PziuuTNirf9sZ
+	 /Zbt+aIR7LhtJnC11Fg6WO/GnrzbbsV+pHBWNEiGfY+T3ZHPhpr3anFEwf/DNXst4O
+	 9R5IAxT3QFnAXafTA5iPgViV5SDSA4KAITpIxTDDPKdUNlVFbsJOcknrnvPre3uGdn
+	 fEe1MHZxq9/XA==
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Jiri Kosina <jikos@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+ Benjamin Tissoires <bentiss@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+In-Reply-To: <20241128-fix-new-bpftool-v1-1-c9abdf94a719@kernel.org>
+References: <20241128-fix-new-bpftool-v1-1-c9abdf94a719@kernel.org>
+Subject: Re: [PATCH HID] selftests/hid: fix kfunc inclusions with newer
+ bpftool
+Message-Id: <173289046549.2537695.13447881314458341345.b4-ty@kernel.org>
+Date: Fri, 29 Nov 2024 15:27:45 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.1
 
-Replace magic constants in a BTF structure initialization code by
-proper macros, as is done in other similar selftests.
+On Thu, 28 Nov 2024 14:27:16 +0100, Benjamin Tissoires wrote:
+> bpftool now embeds the kfuncs definitions directly in the generated
+> vmlinux.h
+> 
+> This is great, but because the selftests dir might be compiled with
+> HID_BPF disabled, we have no guarantees to be able to compile the
+> sources with the generated kfuncs.
+> 
+> [...]
 
-Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
----
- tools/testing/selftests/bpf/progs/syscall.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Applied to hid/hid.git (for-6.13/upstream-fixes), thanks!
 
-diff --git a/tools/testing/selftests/bpf/progs/syscall.c b/tools/testing/selftests/bpf/progs/syscall.c
-index 0f4dfb770c32..b698cc62a371 100644
---- a/tools/testing/selftests/bpf/progs/syscall.c
-+++ b/tools/testing/selftests/bpf/progs/syscall.c
-@@ -76,9 +76,9 @@ static int btf_load(void)
- 			.magic = BTF_MAGIC,
- 			.version = BTF_VERSION,
- 			.hdr_len = sizeof(struct btf_header),
--			.type_len = sizeof(__u32) * 8,
--			.str_off = sizeof(__u32) * 8,
--			.str_len = sizeof(__u32),
-+			.type_len = sizeof(raw_btf.types),
-+			.str_off = offsetof(struct btf_blob, str) - offsetof(struct btf_blob, types),
-+			.str_len = sizeof(raw_btf.str),
- 		},
- 		.types = {
- 			/* long */
+[1/1] selftests/hid: fix kfunc inclusions with newer bpftool
+      https://git.kernel.org/hid/hid/c/8d355b56f295
+
+Cheers,
 -- 
-2.34.1
+Benjamin Tissoires <bentiss@kernel.org>
 
 
