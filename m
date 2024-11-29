@@ -1,234 +1,230 @@
-Return-Path: <bpf+bounces-45884-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45885-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 131D69DEB36
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 17:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42D4D9DEB47
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 17:48:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A407161030
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 16:40:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 788AA1632AB
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 16:48:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E60AD19C552;
-	Fri, 29 Nov 2024 16:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960BC19E7D0;
+	Fri, 29 Nov 2024 16:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HLcHSN0f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FtrZV5wI"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3FE014E2E6
-	for <bpf@vger.kernel.org>; Fri, 29 Nov 2024 16:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477E613BAEE;
+	Fri, 29 Nov 2024 16:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732898446; cv=none; b=XwSP5QU0DDkeLWfJpfzElUgXis90RHNvX2mJWze/qZAhh+oIEn4E1mCHdFL4GbCirZ8GeDuoDpHYyYNnWhoFDNy9TCFIgO3ROj05zisLk+aPVrKFzcsL6teGI7+7rIHQCfdvljW5die/mu/erD93Ns3LSYSdqmdeZnQtlftcuHo=
+	t=1732898875; cv=none; b=Tug41jAbBLi+vlPtO9gfNmzDoikdtgrkM67mWrkpgeaERwBgyZvA9Ycox1+ZTNJhxqvyQsciJoRZCJ2z9VkIP+VyOFPxO71eu1pmAuea4miLnG609d2CcKWMuHTvpMn/c1aMoXUNPqscV6Zr6lIRWCyFfzqhbs5xjjPjGzaT3uo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732898446; c=relaxed/simple;
-	bh=az39fDf+MhRZMw9gFTdPNqw5XUR3nQ20B8N3wHXK3SY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ub2B9/fUim6y7TZDsoCT/Fkxmf4XRdqaIf+AEhlI+hh2do9Y5ptubN+RFwQG8VX60HVAj8S0ikxtLgC8elWx2/UwC9uHRkQWIJo8i9iaV9dBWVAZWjcNPzFuDGK0HIEjslES+Mq2sabTbx1M8dxR8RyLGmkti+dz/fKfF7wse5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HLcHSN0f; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1732898443;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2oxQ2EopQjYunks2eIxH2qb+BPEjEvokj+yvCZveiP0=;
-	b=HLcHSN0fqRsvoYLqKz7fg/gLlrP6cRc2KBHRkF3VNk7yE75efKv4ol64zvgZmSAvYUfjgG
-	ALaA2Gf5rIs0wNHGD4Nj/70UF3QZwf9RzM0UkamRTQ7fpwFup/ck7sQOGIc4VzBUooSFqo
-	YtmaaA5wkUzhdGK3Dh+vPfhOUTviWSM=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-9-RpQ0mlaWOD2K5fsERC4OTg-1; Fri, 29 Nov 2024 11:40:42 -0500
-X-MC-Unique: RpQ0mlaWOD2K5fsERC4OTg-1
-X-Mimecast-MFC-AGG-ID: RpQ0mlaWOD2K5fsERC4OTg
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-6d3729a555dso28321606d6.3
-        for <bpf@vger.kernel.org>; Fri, 29 Nov 2024 08:40:42 -0800 (PST)
+	s=arc-20240116; t=1732898875; c=relaxed/simple;
+	bh=myi8u3L0S2X9u2wt6lQz/yzhSURCuPbYSNCaK+PFc+c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Tv9n3jCPwjWw30hTJqp4QO0lQdh3Ra2MwoHBYmdmp/SBgYT8/2+iPoDOEvPPPmcCWDyZWqPSUkpZ5+ALq9z3zOkIgATsM6xlw20MUe3o0WSF+1Ruw83zpnhBGn6A1qU5WiXZZfxEl+/hSVog7OLkM/79XG2XlZ/877Qp9AJdehU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FtrZV5wI; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-434acf1f9abso18853585e9.2;
+        Fri, 29 Nov 2024 08:47:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732898871; x=1733503671; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=njiWLUqhzSqEsvpT1b5ZOQ0Wocbv4YgfWcfu80dicKM=;
+        b=FtrZV5wIv0wIQ2yb5hhUWHvf7rP3nhvejDg6hiJF5quAgl/9QJsvyrhhUZdrOErx/u
+         1AQtwhrgbKs3TTOpRnb8Iprh+vm/PINKXYvYpYN+AxUWpB0LfJPtG/87yZzByquEi+28
+         Be7j9lqEVHSibFIREjKAo/DQl13+AdpvPP3jIopCk77I090SpEcm1VDBmWejGv6w9b5K
+         LKOlxKYVwvzd/fJCc/FHQAAG/KD9RuR13i3FEGdY+bmSL/jQWxeeO7MwNCHwsBnTnYmI
+         iZ8lYJ6Dzj2Cfg76BlkDomHMs5MOGupcxTBBw/BSXbDoULHRvVdMTpWJk9FP1/yAaoxV
+         NfxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732898442; x=1733503242;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1732898871; x=1733503671;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2oxQ2EopQjYunks2eIxH2qb+BPEjEvokj+yvCZveiP0=;
-        b=Ctaup6/RSasz4//PIcySbImkAseXIOTh0Lx8JFCyN1t1n5ymibYSPL0fPxMXvf5Jnc
-         HmXjCbq51iBmaDyHX6Q2nd6xXHcR/eEH17zhRZeA0dfjtXEh+cu91x+LAE80rL1QrDln
-         +acbJksC/aVSMOVu+fFMgsJk7lWBcCWH5lSQEWuBM6D4ok2rJ8LzhjCvy/+ixwt2zeSa
-         fyzzGM6A6trrR4UC8GS4/yzNs6RHNChvWSG/EhrQgxG0ZLtO900C6EyQ4hFbfQ+nNUD8
-         Ov29ANJdzphtwvt36kbbk64ve3yxgHEkdRM+T6uz8AUNFckXJf28QFxS8r5QWHyO8/pD
-         NgMA==
-X-Forwarded-Encrypted: i=1; AJvYcCWJmkbAmNVmR+UoWnHNPKsD0vLZ4lJ2UzH1/GVGRrPQRDRuamV+tx3LdUSoLRih+DXhN2Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwEuiw8ir1ncoDHeLpFkqHyhinZmZ70SAfC3Py12pFnWnkycuEo
-	FRbLbuh7QJwdMa8X8i0SiJvskeLBrj56ZL14qRKt7IHDgDbDj/kI6OeLDXhI6NWxapd9KFHyWzU
-	SCi35+tvj8/9/mHSOsx3ORXClRb6HFXrIWWi58L3ZxzTDaBtQOw==
-X-Gm-Gg: ASbGncvClTdew9J4bcvgcQPuNkZGepvyuVWwR9TuzlKoVbC71UYbya7gK2nFUpS/PFX
-	uzSSsK2hV8Lb6zLUNnuN/KSDZfsQHyddqJEtgKm1f4qoN1Xefbz6eQHjKRS87umJCEZrnmShVWO
-	KGi3o/xfSWEUUjx2fyYPOIZijI51i1cUiMdn/iakV7HWL31ALW1fo6XKjJKsq1Z7BHx/+AxUr2C
-	TDPiZCuF2zkJPFT0NweLiVTNKyvsHinilp4DHQv2HvADSTouvSpOfho785t0CQR7vT9FeRIM0j7
-	mCnHv8kAyXseM5EASlYASsa5R05GAiEqMg0=
-X-Received: by 2002:a05:6214:c62:b0:6d4:1a99:427b with SMTP id 6a1803df08f44-6d864d8e4famr151983746d6.30.1732898442040;
-        Fri, 29 Nov 2024 08:40:42 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG9RcRtBRvnIDfzr2/iRL96o9fRk4J92A47PIoCtseLUfNoii93tfgZQ/3Nm/m06TGA/XDcKA==
-X-Received: by 2002:a05:6214:c62:b0:6d4:1a99:427b with SMTP id 6a1803df08f44-6d864d8e4famr151982836d6.30.1732898441562;
-        Fri, 29 Nov 2024 08:40:41 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d8752064besm18111326d6.71.2024.11.29.08.40.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Nov 2024 08:40:40 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
- x86@kernel.org, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Nicolas Saenz Julienne <nsaenzju@redhat.com>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Jonathan
- Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, Paolo
- Bonzini <pbonzini@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, Vitaly
- Kuznetsov <vkuznets@redhat.com>, Andy Lutomirski <luto@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes
- <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun
- Feng <boqun.feng@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, Andrew Morton
- <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>,
- Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes
- <lstoakes@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Jason Baron
- <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>, Sami Tolvanen
- <samitolvanen@google.com>, Ard Biesheuvel <ardb@kernel.org>, Nicholas
- Piggin <npiggin@gmail.com>, Juerg Haefliger
- <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
- <nsaenz@kernel.org>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, Nadav Amit <namit@vmware.com>, Dan
- Carpenter <error27@gmail.com>, Chuang Wang <nashuiliang@gmail.com>, Yang
- Jihong <yangjihong1@huawei.com>, Petr Mladek <pmladek@suse.com>, "Jason A.
- Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>, Julian Pidancet
- <julian.pidancet@oracle.com>, Tom Lendacky <thomas.lendacky@amd.com>,
- Dionna Glaze <dionnaglaze@google.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?=
- <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>, Marcelo
- Tosatti <mtosatti@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, Daniel
- Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
-Subject: Re: [RFC PATCH v3 11/15] context-tracking: Introduce work deferral
- infrastructure
-In-Reply-To: <Z0Oeme2yhxF_ArX0@pavilion.home>
-References: <20241119153502.41361-1-vschneid@redhat.com>
- <20241119153502.41361-12-vschneid@redhat.com>
- <Zz2_7MbxvfjKsz08@pavilion.home> <Zz3w0o_3wZDgJn0K@localhost.localdomain>
- <xhsmho729hlv0.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <Zz4cqfVfyb1enxql@localhost.localdomain>
- <xhsmh1pz39v0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <Z0Oeme2yhxF_ArX0@pavilion.home>
-Date: Fri, 29 Nov 2024 17:40:29 +0100
-Message-ID: <xhsmhttbqm1s2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        bh=njiWLUqhzSqEsvpT1b5ZOQ0Wocbv4YgfWcfu80dicKM=;
+        b=wstqMQEsjP5MVavlvjXyqeXCSOdGaxPkcNojNFqJD0VKe6COVYI4J+JWKGNCCTfn5v
+         WWO8JgG9LNwM0XxM1ktwztHgAqYWkNyF3EOxaoVGDCeeDjwpjDk0TjYupvZEFpxwuRBF
+         vGp0EeAodoOBL2ZZYooaVJ5SY0uAyKgHlrUB+F1IDyF/9/0sidmn1BMpN5LQmMXdh7ng
+         ki/bQmeY4UNb6pcppLqe3bCT8DLWMImacdWj5aSVl/MiQpaVoQbdAJe4UFgmrMVDokj/
+         /t0djZlezq1GbMk0GsujMkFacyj+8/KSXvUTkRvOPqspAM3B3aTxbUfTP9yOtmknYmnr
+         LJeA==
+X-Forwarded-Encrypted: i=1; AJvYcCU3BVy6cWTs3Twq8sNLx7OEZWgaXH2O1xW78TC6fPP+Gl8Vc3ozkBbG4vG1iU5XSL+DwZ7JrzYhSpWZaSk5ZkCyYbjJ@vger.kernel.org, AJvYcCUyXg6eQ7VrjiozmsbbA663amS80uyn3uZs9bKOrhBM4d4uDwWGu04W6rvbkz8YdWrghBw=@vger.kernel.org, AJvYcCWNczCeMXSPdwpiNE54Q5z5r34SvdbNYITkFNp0yzyrRIUL9JTK8TxuMHiN5Xdt2h+BrvERCDMCP9GuTIxh@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzo+Hbj44hnT1J+DYfMalxJZ9UL0EJoo6v3kKDWCjstHhDk50I2
+	hbV2oxnyEDB+wOQug62GOti6HpAJGWyK7lQe5xVbE33V+exN3SCrnKEXCCkDpeeUCpt+xTyt1yI
+	9UwfqucfW3kzOe5mWnKG21FeAp/w=
+X-Gm-Gg: ASbGncsqJGzxsSMySiPl0wVu+vYe+IN/udBrNj2RH5RRRaRh+Gb5ovBL/mEoTzevoAv
+	7ru/avL/hOOd42QT5bfkb9svoWKAutg==
+X-Google-Smtp-Source: AGHT+IEugmqdzq7u8eYGM7hj4mgchAkSwFwnEcPqAc1HS4LqPwRfGqwVsbF1x49xPBKCghubzcj8NXM0ZqNlvrMndS0=
+X-Received: by 2002:a05:600c:4f08:b0:434:a179:71b8 with SMTP id
+ 5b1f17b1804b1-434a9dbbc2cmr97208355e9.1.1732898871158; Fri, 29 Nov 2024
+ 08:47:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <67486b09.050a0220.253251.0084.GAE@google.com>
+In-Reply-To: <67486b09.050a0220.253251.0084.GAE@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 29 Nov 2024 08:47:40 -0800
+Message-ID: <CAADnVQKdRWA1zG6X4XNwOWtKiUHN-SRREYN_DCNU59LsK8S5LA@mail.gmail.com>
+Subject: Re: [syzbot] [bpf?] [trace?] WARNING: locking bug in __lock_task_sighand
+To: syzbot <syzbot+97da3d7e0112d59971de@syzkaller.appspotmail.com>, 
+	Puranjay Mohan <puranjay@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Stanislav Fomichev <sdf@fomichev.me>, Song Liu <song@kernel.org>, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On 24/11/24 22:46, Frederic Weisbecker wrote:
-> Le Fri, Nov 22, 2024 at 03:56:59PM +0100, Valentin Schneider a =C3=A9crit=
- :
->> On 20/11/24 18:30, Frederic Weisbecker wrote:
->> > Le Wed, Nov 20, 2024 at 06:10:43PM +0100, Valentin Schneider a =C3=A9c=
-rit :
->> >> On 20/11/24 15:23, Frederic Weisbecker wrote:
->> >>
->> >> > Ah but there is CT_STATE_GUEST and I see the last patch also applie=
-s that to
->> >> > CT_STATE_IDLE.
->> >> >
->> >> > So that could be:
->> >> >
->> >> > bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
->> >> > {
->> >> >    struct context_tracking *ct =3D per_cpu_ptr(&context_tracking, c=
-pu);
->> >> >    unsigned int old;
->> >> >    bool ret =3D false;
->> >> >
->> >> >    preempt_disable();
->> >> >
->> >> >    old =3D atomic_read(&ct->state);
->> >> >
->> >> >    /* CT_STATE_IDLE can be added to last patch here */
->> >> >    if (!(old & (CT_STATE_USER | CT_STATE_GUEST))) {
->> >> >            old &=3D ~CT_STATE_MASK;
->> >> >            old |=3D CT_STATE_USER;
->> >> >    }
->> >>
->> >> Hmph, so that lets us leverage the cmpxchg for a !CT_STATE_KERNEL che=
-ck,
->> >> but we get an extra loop if the target CPU exits kernelspace not to
->> >> userspace (e.g. vcpu or idle) in the meantime - not great, not terrib=
-le.
->> >
->> > The thing is, what you read with atomic_read() should be close to real=
-ity.
->> > If it already is !=3D CT_STATE_KERNEL then you're good (minus racy cha=
-nges).
->> > If it is CT_STATE_KERNEL then you still must do a failing cmpxchg() in=
- any case,
->> > at least to make sure you didn't miss a context tracking change. So th=
-e best
->> > you can do is a bet.
->> >
->> >>
->> >> At the cost of one extra bit for the CT_STATE area, with CT_STATE_KER=
-NEL=3D1
->> >> we could do:
->> >>
->> >>   old =3D atomic_read(&ct->state);
->> >>   old &=3D ~CT_STATE_KERNEL;
->> >
->> > And perhaps also old |=3D CT_STATE_IDLE (I'm seeing the last patch now=
-),
->> > so you at least get a chance of making it right (only ~CT_STATE_KERNEL
->> > will always fail) and CPUs usually spend most of their time idle.
->> >
->>=20
->> I'm thinking with:
->>=20
->>         CT_STATE_IDLE		=3D 0,
->>         CT_STATE_USER		=3D 1,
->>         CT_STATE_GUEST		=3D 2,
->>         CT_STATE_KERNEL		=3D 4, /* Keep that as a standalone bit */
->
-> Right!
->
->>=20
->> we can stick with old &=3D ~CT_STATE_KERNEL; and that'll let the cmpxchg
->> succeed for any of IDLE/USER/GUEST.
->
-> Sure but if (old & CT_STATE_KERNEL), cmpxchg() will consistently fail.
-> But you can make a bet that it has switched to CT_STATE_IDLE between
-> the atomic_read() and the first atomic_cmpxchg(). This way you still have
-> a tiny chance to succeed.
->
-> That is:
->
->    old =3D atomic_read(&ct->state);
->    if (old & CT_STATE_KERNEl)
->       old |=3D CT_STATE_IDLE;
->    old &=3D ~CT_STATE_KERNEL;
->
->
->    do {
->       atomic_try_cmpxchg(...)
->
-> Hmm?
+Puranjay, Andrii and All,
 
-But it could equally be CT_STATE_{USER, GUEST}, right? That is, if we have
-all of this enabled them we assume the isolated CPUs spend the least amount
-of time in the kernel, if they don't we get to blame the user.
+looks like if (irqs_disabled()) is not enough.
+Should we change it to preemptible() ?
 
+It will likely make it async all the time,
+but in this it's an ok trade off?
+
+
+On Thu, Nov 28, 2024 at 5:07=E2=80=AFAM syzbot
+<syzbot+97da3d7e0112d59971de@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    2c22dc1ee3a1 Merge tag 'mailbox-v6.13' of git://git.kerne=
+l..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D17f2bee858000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D8df9bf3383f59=
+70
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D97da3d7e0112d59=
+971de
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
+ian) 2.40
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/9137c3e19e21/dis=
+k-2c22dc1e.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/1aad80837d89/vmlinu=
+x-2c22dc1e.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/d7979d71d6d2/b=
+zImage-2c22dc1e.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+97da3d7e0112d59971de@syzkaller.appspotmail.com
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> [ BUG: Invalid wait context ]
+> 6.12.0-syzkaller-09435-g2c22dc1ee3a1 #0 Not tainted
+> -----------------------------
+> iou-wrk-9958/9967 is trying to lock:
+> ffff88802744ae58 (&sighand->siglock){-.-.}-{3:3}, at: __lock_task_sighand=
++0x149/0x2d0 kernel/signal.c:1379
+> other info that might help us debug this:
+> context-{5:5}
+> 3 locks held by iou-wrk-9958/9967:
+>  #0: ffff88814d2870c0 (&acct->lock){+.+.}-{2:2}, at: io_acct_run_queue io=
+_uring/io-wq.c:260 [inline]
+>  #0: ffff88814d2870c0 (&acct->lock){+.+.}-{2:2}, at: io_wq_worker+0x44b/0=
+xed0 io_uring/io-wq.c:654
+>  #1: ffffffff8e93c520 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire i=
+nclude/linux/rcupdate.h:337 [inline]
+>  #1: ffffffff8e93c520 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock incl=
+ude/linux/rcupdate.h:849 [inline]
+>  #1: ffffffff8e93c520 (rcu_read_lock){....}-{1:3}, at: __bpf_trace_run ke=
+rnel/trace/bpf_trace.c:2350 [inline]
+>  #1: ffffffff8e93c520 (rcu_read_lock){....}-{1:3}, at: bpf_trace_run2+0x1=
+fc/0x540 kernel/trace/bpf_trace.c:2392
+>  #2: ffffffff8e93c520 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire i=
+nclude/linux/rcupdate.h:337 [inline]
+>  #2: ffffffff8e93c520 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock incl=
+ude/linux/rcupdate.h:849 [inline]
+>  #2: ffffffff8e93c520 (rcu_read_lock){....}-{1:3}, at: __lock_task_sighan=
+d+0x29/0x2d0 kernel/signal.c:1362
+> stack backtrace:
+> CPU: 1 UID: 0 PID: 9967 Comm: iou-wrk-9958 Not tainted 6.12.0-syzkaller-0=
+9435-g2c22dc1ee3a1 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 09/13/2024
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:94 [inline]
+>  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+>  print_lock_invalid_wait_context kernel/locking/lockdep.c:4826 [inline]
+>  check_wait_context kernel/locking/lockdep.c:4898 [inline]
+>  __lock_acquire+0x15a8/0x2100 kernel/locking/lockdep.c:5176
+>  lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+>  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+>  _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+>  __lock_task_sighand+0x149/0x2d0 kernel/signal.c:1379
+>  lock_task_sighand include/linux/sched/signal.h:743 [inline]
+>  do_send_sig_info kernel/signal.c:1267 [inline]
+>  group_send_sig_info+0x274/0x310 kernel/signal.c:1418
+>  bpf_send_signal_common+0x3c4/0x630 kernel/trace/bpf_trace.c:881
+>  ____bpf_send_signal kernel/trace/bpf_trace.c:886 [inline]
+>  bpf_send_signal+0x1d/0x30 kernel/trace/bpf_trace.c:884
+>  bpf_prog_631417f49dd64198+0x25/0x48
+>  bpf_dispatcher_nop_func include/linux/bpf.h:1290 [inline]
+>  __bpf_prog_run include/linux/filter.h:701 [inline]
+>  bpf_prog_run include/linux/filter.h:708 [inline]
+>  __bpf_trace_run kernel/trace/bpf_trace.c:2351 [inline]
+>  bpf_trace_run2+0x2ec/0x540 kernel/trace/bpf_trace.c:2392
+>  trace_contention_end+0x114/0x140 include/trace/events/lock.h:122
+>  __pv_queued_spin_lock_slowpath+0xb7e/0xdb0 kernel/locking/qspinlock.c:55=
+7
+>  pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [inline=
+]
+>  queued_spin_lock_slowpath+0x42/0x50 arch/x86/include/asm/qspinlock.h:51
+>  queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
+>  do_raw_spin_lock+0x272/0x370 kernel/locking/spinlock_debug.c:116
+>  io_acct_run_queue io_uring/io-wq.c:260 [inline]
+>  io_wq_worker+0x44b/0xed0 io_uring/io-wq.c:654
+>  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+>  </TASK>
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
 
