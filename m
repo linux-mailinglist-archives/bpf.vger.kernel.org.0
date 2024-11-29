@@ -1,82 +1,88 @@
-Return-Path: <bpf+bounces-45854-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45855-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DDB49DBE5D
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 02:22:42 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCE439DBE5F
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 02:22:50 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04E5D282484
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 01:22:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C8F5164B9C
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2024 01:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACAFB168DA;
-	Fri, 29 Nov 2024 01:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4711F92A;
+	Fri, 29 Nov 2024 01:22:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JRAfjc/1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kj179ClF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C33B117C69;
-	Fri, 29 Nov 2024 01:22:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4AD17C77;
+	Fri, 29 Nov 2024 01:22:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732843356; cv=none; b=ISIco7Km8RzN1Nh1XApl4MFNSQxuxXwccGWbW+q1Q1AS4yKrXoXhwOYdavSyJBH0o7KGVYGNRbtRvway1/TqQRkGoi/IAsDZtK4Utp4W5JJNhPEhi1vwTD235hYo84Cp7AjyLyUtnGsQrADsMtzdwYdmJRMJJkaib2I/JzrfQLs=
+	t=1732843357; cv=none; b=BzK3EgXMkSiZbbClIuVtAQBsphSSYe/ZcSGGxBN4a6jnzw1TI/7up9PJSJWfkUSinJwnivMEFudNtIyHrIiRg6xxcEKUubJ/mSjPUIHs2ofUpabx20mV/+pBHl/2B8xKGgs7xyPwpta2MoY0yuGDG4LVT/sZzFCELlcyNT7/jrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732843356; c=relaxed/simple;
-	bh=ku0TcMbKv4FpUT2iFVlGDk7q+Mvm7FdRUhJy3mXMCJQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t5kKkHc1hwVnbRqCSXAQRk3y+EMgtH7gtp0ARW2XDySYFb8CNUjezUKvzCixdvTMkD8EbWJJ2HuG8tRYN5iPbomVnJmdLS83t5O+hZBt9kuU5pH1LFSEqITToQWW/cOPrO7003rWJeQ5UnzGLxjA7EfkX97Y1W/KTXP3QgXNWJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JRAfjc/1; arc=none smtp.client-ip=209.85.214.171
+	s=arc-20240116; t=1732843357; c=relaxed/simple;
+	bh=fJ789znw+pfGIHXh87akZzviWRl3wPB+lGevWQgv08o=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=PdwWVJWgunWTpFMQkMOrYue3aqV9lAyWURi2sNgzB+ckJl61HDrNJ9wyTkG+Z7s6aCwAOAIyOXCPlg27UlJOh1swjSMyqulkysb+THYI9WGg5is/pJ3KsweyFClw0Q3mQ5dJOrIU58hi3yi0kVHNh0vtERz8grvVcqlrZQ2T6CQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kj179ClF; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-212581a0b33so10833175ad.0;
-        Thu, 28 Nov 2024 17:22:34 -0800 (PST)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2ea1c453f0eso962868a91.1;
+        Thu, 28 Nov 2024 17:22:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732843354; x=1733448154; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SOM7mo05xMT3m4k+Q+ep9u+QSSlwZ80ja21NRlm2Jo0=;
-        b=JRAfjc/1N/Dk6bPCo5AQSSs15OZLIySGFqYuxtSbiKA5052qMvhP7nyj2wyPVKUG8F
-         smksOGouiGfYdGxCdF4pOGwSpluz0bUgS3a1kqZiJW4XkW08VaKOHIGwLJ/idEIfVE/J
-         m2Ufc4u+jHetN8zaBh4EUyp/TuzKa4c4jZO10mz2WClFZfrmA2TuhPMdJwrLuYJborKq
-         SbWx69EoHCCpRthE7mXiWtEifh/ibWxxiv+s/4gU6UKzsHl8c20Gi5aJx3BDC/cdaIZP
-         DJfmZPX/4c+21byj67pHC3sHl5ET9MCmm/0RqNPB7taeOp/gkTbozWNmCMazd5CMajXh
-         dJcA==
+        d=gmail.com; s=20230601; t=1732843355; x=1733448155; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DPc3Co4ldVHrMRzPOt+DOWF0B/8XpbePcgDN8Gbz8Ns=;
+        b=kj179ClFvLghaIYCkZ5Upz9wbglfd6E1PjPWT52XRjStStbgb7Uq5bwiYICgvyhgI9
+         hN2aSy4hFOsb2vuC4jZzI3HxAvVfRvPBtlj2pTqm/X7GdO7b0SZ48Zc2owfukzMypKvf
+         QQXT0XrNFBZc5NHfIGfhx7LhELfJlHjgP2BXKuoHoNv12FjPo/I0K327qkd6UMoN80Up
+         ijoKlCkhWwQSkp0ghH/VUbJxdFJ4BjsYKO5dIMBHmAJNleXa/C6NgncnXZITOWn42L5R
+         mBrlQ+V0TbIUSezd9nhDY8SJH5R/fCYrKjftwpp0tLphV7XHnTQgWHlyCFSi9MxAxepz
+         bOlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732843354; x=1733448154;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SOM7mo05xMT3m4k+Q+ep9u+QSSlwZ80ja21NRlm2Jo0=;
-        b=r6kTE6UKBimxQmw1kmcxjoiUtI7e+QP32BtNj3tBVJTh34fn84/G/WMQv3JIEnw2Vl
-         7pEKWkjnwVsvLI8IUjLu8Pm4o4rudYNDexayEyGgBx4WgyzuYDlM9uJvZ1YvZB5ewNvi
-         4KjL0AEo+Ha03Y6SmnzLabuBxyHri63p6CLIDEhYmkqokB5euE9j9ID0zDzjz11NaLHS
-         XcwgUQlqzO577wa52jbHIluUT+0okGiHmde/2GEhrVT7xtCo//8fT1qrGBk+c21us531
-         9rIw/OcTOv0qMO0LTZb+mMKEyva7KdAHGolipFJC22VB6MLgG3BJlWR3feBZRMDOB2zg
-         MA6g==
-X-Gm-Message-State: AOJu0Yxd2ASOJ0O4T/SSGEMVvwBAS3Wo8zoOtF7VZbDSs3lsMuvrhhMj
-	Lnd7oy3fE6B0Rv4dZUVDx60+CIj+2fg7GPRo09A8R0spmsOAa6DV1CdDcA==
-X-Gm-Gg: ASbGncsqyQV+70VZzIQS3JMWiTwFsagBFI9BtsTYAGChmH7dX1cO+b/WgAHtC3CrvNf
-	Ew9PnjsZMCvcZHTanl5dmDqOxPCWLq9qv98bl8KPk3wbNOKoBRtst43nr1NoFll9I38cJG6zMAU
-	Bu4/EbidtzQytNrtNdFmzulpBqxs9cRgcqLO/LenIsVD8J4Yc2dXOB+yHe+/8X1KlmU7zPp5z8p
-	yZlXPw7qCZN/bidBwiy4TLXKI9S4UZA0HhAwPjzwdCwf5Glxkzq0l599jJySB1gz40evmYEjw2w
-	5vo=
-X-Google-Smtp-Source: AGHT+IFUiDBCWZiSUK1OGkOK5wZWj05vUZDqXC2vV1bSGcFASLr5822wscQVNcx3TfE0TIqIoKQQLQ==
-X-Received: by 2002:a17:903:244a:b0:20c:9ec9:9a77 with SMTP id d9443c01a7336-21501c5ff2cmr103371205ad.37.1732843353574;
-        Thu, 28 Nov 2024 17:22:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1732843355; x=1733448155;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DPc3Co4ldVHrMRzPOt+DOWF0B/8XpbePcgDN8Gbz8Ns=;
+        b=VfU7k/MlzvXJFBo451RrvSEZJ/bpCfQ3IxRgYwfhXg3A63+RA9YtZsSCZ6dD+PeIxa
+         cNFp0hc0fl88mHrjd5A0NxjBSoAqmOgcaSXgD4vEnUXbnSgfRFmAItPK6KahvhenRiID
+         DsE3Wy9/BvZ6Kk4pp/Ju9gRUYID3fZIHiboGhlaDqixSvJaEMfUKQR0IsEGJ5yXl3IB5
+         H2fL8YRNscZ1OHsEpw76t4STgbCyx4FvmRRXxnhjpZRhGWTcR1u6Gl7ZWvcQkUtBUBZJ
+         Bd4ujSaHOl22F/nyleRK0fT86eyvuoEyVT2kAzNP9fafHc8c3xAAaBMPmblOc+BjTnol
+         mIAg==
+X-Gm-Message-State: AOJu0Yz373ROChEBuzNioxwyW9vTRkMuCDJD7HSo/IuJG6l4F0Hg/nVv
+	erZfy8Z206aQLMMiLBmb+GPQEtCwvN5jyiDkNt+N/n2wRvidnSaPDaV42g==
+X-Gm-Gg: ASbGncttlwHrw51zLXiH3WXG7c7ujn6abmGYhiZJTOmOyKTM81xErh3eSWxPlfuEHLS
+	DIB5njzgT5ONI3RP0nzRpEC1IFsFOrTyGOB0eHcWTWuxc12z0us5PYNSwM9AAZL8fEcEPGzK5xb
+	Sr56t4dsi6yC65gddKRC5QVEolKqnzYOiyEsJiBwS9sqjChVgVLaEJL78QEVa/moIZryQsi5aZ3
+	I6CNx0dZGnrHI+K+0JEYT/0EsZ5QZwRIKaDcAnrxJ5Q1m9dAsnd1bwh55OeGsZwQFIu62Rj1hMC
+	VlE=
+X-Google-Smtp-Source: AGHT+IH++R4xCW/SfLd24apZitcHNtouIQ4ZNnCnpffi14NpDw+5gW2WPqfFp3D1vQJlGRJke9wnwQ==
+X-Received: by 2002:a17:90b:4d0d:b0:2ea:853b:2761 with SMTP id 98e67ed59e1d1-2ee097e3d26mr12213057a91.37.1732843354698;
+        Thu, 28 Nov 2024 17:22:34 -0800 (PST)
 Received: from pop-os.hsd1.ca.comcast.net ([2601:647:6881:9060:7990:ba58:c520:e7e8])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21521905120sm20010215ad.80.2024.11.28.17.22.32
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21521905120sm20010215ad.80.2024.11.28.17.22.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Nov 2024 17:22:33 -0800 (PST)
+        Thu, 28 Nov 2024 17:22:34 -0800 (PST)
 From: Cong Wang <xiyou.wangcong@gmail.com>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
-	Cong Wang <cong.wang@bytedance.com>
-Subject: [Patch bpf v2 0/4] bpf: a bug fix and test cases for bpf_skb_change_tail()
-Date: Thu, 28 Nov 2024 17:22:17 -0800
-Message-Id: <20241129012221.739069-1-xiyou.wangcong@gmail.com>
+	Cong Wang <cong.wang@bytedance.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Daniel Borkmann <daniel@iogearbox.net>
+Subject: [Patch bpf v2 1/4] bpf: Check negative offsets in __bpf_skb_min_len()
+Date: Thu, 28 Nov 2024 17:22:18 -0800
+Message-Id: <20241129012221.739069-2-xiyou.wangcong@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20241129012221.739069-1-xiyou.wangcong@gmail.com>
+References: <20241129012221.739069-1-xiyou.wangcong@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,33 +93,58 @@ Content-Transfer-Encoding: 8bit
 
 From: Cong Wang <cong.wang@bytedance.com>
 
-This patchset fixes a bug in bpf_skb_change_tail() helper and adds test
-cases for it, as requested by Daniel and John.
+skb_network_offset() and skb_transport_offset() can be negative when
+they are called after we pull the transport header, for example, when
+we use eBPF sockmap at the point of ->sk_data_ready().
 
+__bpf_skb_min_len() uses an unsigned int to get these offsets, this
+leads to a very large number which then causes bpf_skb_change_tail()
+failed unexpectedly.
+
+Fix this by using a signed int to get these offsets and ensure the
+minimum is at least zero.
+
+Fixes: 5293efe62df8 ("bpf: add bpf_skb_change_tail helper")
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 ---
-v2: added a test case for TC where offsets are positive
-    fixed a typo in 1/4 patch description
-    reduced buffer size in the sockmap test case
+ net/core/filter.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-Cong Wang (4):
-  bpf: Check negative offsets in __bpf_skb_min_len()
-  selftests/bpf: Add a BPF selftest for bpf_skb_change_tail()
-  selftests/bpf: Introduce socket_helpers.h for TC tests
-  selftests/bpf: Test bpf_skb_change_tail() in TC ingress
-
- net/core/filter.c                             |  21 +-
- .../selftests/bpf/prog_tests/socket_helpers.h | 394 ++++++++++++++++++
- .../selftests/bpf/prog_tests/sockmap_basic.c  |  51 +++
- .../bpf/prog_tests/sockmap_helpers.h          | 385 +----------------
- .../selftests/bpf/prog_tests/tc_change_tail.c |  78 ++++
- .../bpf/progs/test_sockmap_change_tail.c      |  40 ++
- .../selftests/bpf/progs/test_tc_change_tail.c | 114 +++++
- 7 files changed, 693 insertions(+), 390 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/socket_helpers.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_change_tail.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_change_tail.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_tc_change_tail.c
-
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 6625b3f563a4..c1982fd04b25 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3734,13 +3734,22 @@ static const struct bpf_func_proto bpf_skb_adjust_room_proto = {
+ 
+ static u32 __bpf_skb_min_len(const struct sk_buff *skb)
+ {
+-	u32 min_len = skb_network_offset(skb);
++	int offset = skb_network_offset(skb);
++	u32 min_len = 0;
+ 
+-	if (skb_transport_header_was_set(skb))
+-		min_len = skb_transport_offset(skb);
+-	if (skb->ip_summed == CHECKSUM_PARTIAL)
+-		min_len = skb_checksum_start_offset(skb) +
+-			  skb->csum_offset + sizeof(__sum16);
++	if (offset > 0)
++		min_len = offset;
++	if (skb_transport_header_was_set(skb)) {
++		offset = skb_transport_offset(skb);
++		if (offset > 0)
++			min_len = offset;
++	}
++	if (skb->ip_summed == CHECKSUM_PARTIAL) {
++		offset = skb_checksum_start_offset(skb) +
++			 skb->csum_offset + sizeof(__sum16);
++		if (offset > 0)
++			min_len = offset;
++	}
+ 	return min_len;
+ }
+ 
 -- 
 2.34.1
 
