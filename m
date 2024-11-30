@@ -1,111 +1,153 @@
-Return-Path: <bpf+bounces-45900-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45901-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9BDA9DEDE3
-	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 01:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E61B29DF091
+	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 14:39:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22327B21E32
-	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 00:43:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65FA9B20C03
+	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 13:39:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 984783B796;
-	Sat, 30 Nov 2024 00:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3558119CC29;
+	Sat, 30 Nov 2024 13:39:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GG5/8gWe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FtWhyN5S"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD3C228EA;
-	Sat, 30 Nov 2024 00:43:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DA5D1990C0;
+	Sat, 30 Nov 2024 13:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732927413; cv=none; b=J1JatFVz3a+j7Cen0Lt2B2w+vEeCjTfrZEuX2ir+NCytncO7A6xqkCm1+P0aWFIyzZEoopflKDT0rTuEFV5FerKrEvlYG//uNSpFyC58AJobq5+B6qE1d3SpTEslHNMZeNq8c5pqsGRFGfQiWrHkerVJlfzgSA4qbBAMaTUA0uo=
+	t=1732973954; cv=none; b=XzHuedE8GWYTBVfnsGT2piSPC/RHZJUugXrZpTxJWjsViZT6rMbRmo16Oy7lk/OPgbVU7x8cD+XMs6j5BXSf2SI42BTI77PHeEr+jcOADrSmUi137iS35HqDGBthYL4amXSZIY69B8yZWz4Gok0okLlqB4ZlOocZk09Kg03tf4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732927413; c=relaxed/simple;
-	bh=KuRo4uCbWKz+FqYQncpemBAEXoi2K2b0kXIOuq1XSNg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ew9fRgiZAfG/O86m041ofTM1qHIbPe7zueFbtEO/3E+C2s69UlZmlmlTj/GHatZZUdCpyQMlPSpbP1HeJcMX9Gc/+ddKDsV8UOWezMxKVOpcrbSNWDZ/Va8nXJGXrnWBjCHiL11t9hrg5FlhA4Cyhai7JGipdEnFePZkNnTIals=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GG5/8gWe; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2155157c58cso4753835ad.0;
-        Fri, 29 Nov 2024 16:43:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732927411; x=1733532211; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=csgRMHYFsJTvCVxa5kFhLp6akKuS7lLHkAJW6CKOQI0=;
-        b=GG5/8gWevn9q9DCMM5KuaIfudwZ32G0hQ1/eg3WsHzAyEDwakPlS4yGwgaURKrLqtp
-         xGIX2tWIBhDnxjZC6r6W/0HyS1RunKl2U7Gy9Eh/c8BwPZeu8eFfjQh584Mkcbv1t4jS
-         MBl97Db8KsZZZd6lxH3OLNhvIIPhiQC3uIaUcLBlgKBuF3lsHrb2v5uZLkxfYsJnOPWs
-         yuvvBU+95f0i8tzf+VGuYBqtZIAAAQfYFCjZxnjBpL6IrPa0KK7hVVwqJGGSkt99d2fj
-         jUNLEyUaGjGZoWadjracI/18VuTTq4xrxFURKWfWKSlr1F6Ol4SvZ1RU2aJxtrV2oHbX
-         DB6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732927411; x=1733532211;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=csgRMHYFsJTvCVxa5kFhLp6akKuS7lLHkAJW6CKOQI0=;
-        b=MEwlNPB71MppkN5+9cYjxlmelAQoRx5XnqynScYkf4xRf/EL7r6vyQTlKOjFHDdk3i
-         g8TXSilkBKPe9ZKfRm2e+lcuRus1ossj6OqoJzmLMwh+dH1WY3CffeP4dYcIyaG/Vuwg
-         ni2z7c+5Kul6iJkUPq+/R4UfOLA3neCzqifpABEbi4SoddSueJX3uM44LkHkMQq+D3lY
-         PTpi4DXm9IYS8Ed0/ov+fDARLljxfSRA9AeHMdTjPq9JreclISuSjFsrXmsZst/+8vbY
-         IHfsMnC2rM4GTfGddihViI2X+tUQ3Dz0U1jbzR3tvFO6VwiJxYY/IoG+cDtKK9881Pux
-         93qQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWhTyI6B7Z1Syz4Epx+ilkn98N9bsPyz17yjJWm9wis1Pfkz2g4Ezikd5Ti680qe5YSmIX6HGY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwwmybKBSxbAyTVKiOYweeFVVysYzPm41JP0NNPqmOu3LkZXhBT
-	9YahqWSJDgvCJG4R9m57zUprEA8GmqSAC5zr89YmVLEoWmGFmUw0
-X-Gm-Gg: ASbGnctu8MMzOvhxQDzZQ7iD/NHxiVVq4QMNk1/VsmvAM5WcquDmpWK11+BUX4zJ0Cg
-	oJ1gqQw9JKX0W3CjwKcx1nlZqfkCBxBXbwz6AFE7y/1PCubyymY+K80q8eyJv9wcn9AMACS/UYS
-	YOH933a1k5Xep19OiGy4XrOJrbnncMdgiKOCc6BUSSc1Mf4mmBPpt0prYd3AP+nEBtGrpLSYkIg
-	VlsVK/G/oN1xte4kq2EbqSE0FV/K5ZmBnjTxC0gTcPaAWMoYTEqVsxW
-X-Google-Smtp-Source: AGHT+IGzLM51VCB9JAOMQCXu5eLjeIT5mzuFUlXm1DhA/gitN8lpuED5VPyZTOh1DhJ9NdBuLVL3Kg==
-X-Received: by 2002:a17:902:f604:b0:215:5ea2:6543 with SMTP id d9443c01a7336-2155ea26658mr7277605ad.28.1732927411230;
-        Fri, 29 Nov 2024 16:43:31 -0800 (PST)
-Received: from localhost ([2601:647:6881:9060:22e0:3259:eab0:7dee])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21521989750sm35776205ad.202.2024.11.29.16.43.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Nov 2024 16:43:30 -0800 (PST)
-Date: Fri, 29 Nov 2024 16:43:29 -0800
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, netdev@vger.kernel.org,
-	magnus.karlsson@intel.com, bjorn@kernel.org, jordyzomer@google.com,
-	security@kernel.org
-Subject: Re: [PATCH v2 bpf 0/2] bpf: fix OOB accesses in map_delete_elem
- callbacks
-Message-ID: <Z0pfsWqRoxaTTC2t@pop-os.localdomain>
-References: <20241122121030.716788-1-maciej.fijalkowski@intel.com>
+	s=arc-20240116; t=1732973954; c=relaxed/simple;
+	bh=AtoMv+qZEg3Jrjb92TD+QP+vPH9tNZ1fEkpRkBwkvCs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=iEuMX3UjzHHjwsUepWWxIWbQlhe6yuiebjI6JoNJHKZvlxP19/qeKmCVZHKklgTgIw+OryTiWzS2q1QxuzX3F18mGORJlSb3E4Ftu9ywOM3v5bJSXchuAFMmcd4ueKU6RXia78zLxT/a4G60XNFOel9phI01GCyroDNWBpKXg7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FtWhyN5S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2D313C4CECC;
+	Sat, 30 Nov 2024 13:39:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732973954;
+	bh=AtoMv+qZEg3Jrjb92TD+QP+vPH9tNZ1fEkpRkBwkvCs=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=FtWhyN5SGodUWhs/LCaXDVaYgeAgHu957ETyuDh+cqKsAiU/Y/y7ZddQgta4Fr3Kn
+	 dFWIT5SwX4Pku9jXBJNqZxzmXAUgu0NzHThNgvek0RVG9thWnhZ5+rj8FjOcxiIr3R
+	 hI0ReOZV4veZIAaWmlgz6uh05Fg4gNODOm3BzeaVbzq5W/xUEK/dVLDXwmCA2bGYZw
+	 X9QEs+kU0Lz25wJg8ftS7eFe2ukS3CCzWbaI7GPvbc/9uF6Sa6fSFUhfBr7fn3BMaj
+	 bCxb8SGx0iNmIAxhg0nuLFG15QqudtXD4JSwNBuncuQ3iE4ABRQTIOJAKsQ2EZOtyJ
+	 hq4byjdPNRUTA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 116ABD73607;
+	Sat, 30 Nov 2024 13:39:14 +0000 (UTC)
+From: Levi Zim via B4 Relay <devnull+rsworktech.outlook.com@kernel.org>
+Subject: [PATCH net 0/2] Fix NPE discovered by running bpf kselftest
+Date: Sat, 30 Nov 2024 21:38:21 +0800
+Message-Id: <20241130-tcp-bpf-sendmsg-v1-0-bae583d014f3@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241122121030.716788-1-maciej.fijalkowski@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAE0VS2cC/x3MQQqAIBBA0avErBvQjMiuEi1Kx5pFJk5EEN09a
+ fkW/z8glJkEhuqBTBcLH7FA1xW4bY4rIftiaFTTam0Uni7hkgIKRb/LiiEYZ33fUmcNlCplCnz
+ /xxEinTC97wd7UFMuZgAAAA==
+X-Change-ID: 20241130-tcp-bpf-sendmsg-ff3c9d84e693
+To: John Fastabend <john.fastabend@gmail.com>, 
+ Jakub Sitnicki <jakub@cloudflare.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Simon Horman <horms@kernel.org>, David Ahern <dsahern@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Levi Zim <rsworktech@outlook.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1994;
+ i=rsworktech@outlook.com; h=from:subject:message-id;
+ bh=AtoMv+qZEg3Jrjb92TD+QP+vPH9tNZ1fEkpRkBwkvCs=;
+ b=owEBbQKS/ZANAwAIAW87mNQvxsnYAcsmYgBnSxV3VGLEL49AHZ7R/d7EbVg6R8VkrJZM9QKxj
+ wCbxoE/uROJAjMEAAEIAB0WIQQolnD5HDY18KF0JEVvO5jUL8bJ2AUCZ0sVdwAKCRBvO5jUL8bJ
+ 2HlIEACiRItsYjOk5RJI2/JZUvDi3jlt5j1sj93UCDJRXYAm7dQQpxq38P+uHO3Iyxuz3kgIYfi
+ uZmFtrsoU8/kikiFo+JFV7iMebGXZWugkcZFrZ2TpCWXvpKHd7bU/vwo9KhaeC0gQ2e0wsLI8Ee
+ Y3DRi7EZyxX/mKIWzLxogiHDpT6esl6AslnH+sbdkIgeK9dpBtB1Ni+ligxBduKwgQDAKqM0MqX
+ T1iQoTEAucGQXrAum66ejeeJ81quXXUKl1S/U+rJ0V1Yz2O3m6KZxy8Igz5nxcjbbe5hOHG3xm1
+ JCgRW//D/ixRf4fy75vATRQp9tdQsSD/qp4AYBysk5LeBkvz88im03z2W7INhtzMwoONTwfG9ia
+ rFQRjDvjfnXuTQ6v1P/3DGiXxPSK/VxAeScG5YTuUA62DcC1lZ38ToiL2wEdWfeSQmCd4lIBk8T
+ aBZnwb3dlzy8eXrx/u6CNGIi8N9MWHuTvrdaEHwnXTZat2oLitWCc7ZT5Nmjw/IX7xWnVGKP/R9
+ RmxOW/Xb5tBj2vpmViC61p3JFxeqvVVp4CWp0/3fJ2+pF+5MqusfPNAz17qLUifRFRWvdWFhR5J
+ OG69JQPI8jYZnBJk3hqGtAgAo/OVeDy0Jl5TEiwte8qdOrbAwV9xptooTrXljidJ3iIs8FQNU4W
+ +SqowYYutsCwnIg==
+X-Developer-Key: i=rsworktech@outlook.com; a=openpgp;
+ fpr=17AADD6726DDC58B8EE5881757670CCFA42CCF0A
+X-Endpoint-Received: by B4 Relay for rsworktech@outlook.com/default with
+ auth_id=219
+X-Original-From: Levi Zim <rsworktech@outlook.com>
+Reply-To: rsworktech@outlook.com
 
-On Fri, Nov 22, 2024 at 01:10:28PM +0100, Maciej Fijalkowski wrote:
-> v1->v2:
-> - CC stable and collect tags from Toke & John
-> 
-> Hi,
-> 
-> Jordy reported that for big enough XSKMAPs and DEVMAPs, when deleting
-> elements, OOB writes occur.
-> 
-> Reproducer below:
-> 
+I found that bpf kselftest sockhash::test_txmsg_cork_hangs in
+test_sockmap.c triggers a kernel NULL pointer dereference:
 
-Please consider adding it to tools/testing/selftests/bpf/, since it is
-pretty small and self-contained. (A follow up patch is definitely
-welcome.)
+BUG: kernel NULL pointer dereference, address: 0000000000000008
+ ? __die_body+0x6e/0xb0
+ ? __die+0x8b/0xa0
+ ? page_fault_oops+0x358/0x3c0
+ ? local_clock+0x19/0x30
+ ? lock_release+0x11b/0x440
+ ? kernelmode_fixup_or_oops+0x54/0x60
+ ? __bad_area_nosemaphore+0x4f/0x210
+ ? mmap_read_unlock+0x13/0x30
+ ? bad_area_nosemaphore+0x16/0x20
+ ? do_user_addr_fault+0x6fd/0x740
+ ? prb_read_valid+0x1d/0x30
+ ? exc_page_fault+0x55/0xd0
+ ? asm_exc_page_fault+0x2b/0x30
+ ? splice_to_socket+0x52e/0x630
+ ? shmem_file_splice_read+0x2b1/0x310
+ direct_splice_actor+0x47/0x70
+ splice_direct_to_actor+0x133/0x300
+ ? do_splice_direct+0x90/0x90
+ do_splice_direct+0x64/0x90
+ ? __ia32_sys_tee+0x30/0x30
+ do_sendfile+0x214/0x300
+ __se_sys_sendfile64+0x8e/0xb0
+ __x64_sys_sendfile64+0x25/0x30
+ x64_sys_call+0xb82/0x2840
+ do_syscall_64+0x75/0x110
+ entry_SYSCALL_64_after_hwframe+0x4b/0x53
 
-Thanks.
+This is caused by tcp_bpf_sendmsg() returning a larger value(12289) than
+size(8192), which causes the while loop in splice_to_socket() to release
+an uninitialized pipe buf.
+
+The underlying cause is that this code assumes sk_msg_memcopy_from_iter()
+will copy all bytes upon success but it actually might only copy part of
+it.
+
+This series change sk_msg_memcopy_from_iter() to return copied bytes on
+success and tcp_bpf_sendmsg() to use the real copied bytes instead of
+assuming all bytes gets copied.
+
+Signed-off-by: Levi Zim <rsworktech@outlook.com>
+---
+Levi Zim (2):
+      skmsg: return copied bytes in sk_msg_memcopy_from_iter
+      tcp_bpf: fix copied value in tcp_bpf_sendmsg
+
+ net/core/skmsg.c   | 5 +++--
+ net/ipv4/tcp_bpf.c | 8 ++++----
+ 2 files changed, 7 insertions(+), 6 deletions(-)
+---
+base-commit: f1cd565ce57760923d5e0fbd9e9914b415c0620a
+change-id: 20241130-tcp-bpf-sendmsg-ff3c9d84e693
+
+Best regards,
+-- 
+Levi Zim <rsworktech@outlook.com>
+
+
 
