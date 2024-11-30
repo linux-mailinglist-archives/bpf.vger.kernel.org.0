@@ -1,139 +1,186 @@
-Return-Path: <bpf+bounces-45906-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45907-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E0EF9DF266
-	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 18:54:39 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DDBC9DF272
+	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 19:05:39 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F31C7B20A77
-	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 17:54:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F5A5162EF8
+	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 18:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846901A76B4;
-	Sat, 30 Nov 2024 17:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y9YJN6nE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E561A9B38;
+	Sat, 30 Nov 2024 18:05:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505CA43AA1
-	for <bpf@vger.kernel.org>; Sat, 30 Nov 2024 17:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB5619EEA1
+	for <bpf@vger.kernel.org>; Sat, 30 Nov 2024 18:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732989272; cv=none; b=bK/wI4BQxzSXcDryjCBPUSKKy+vr/42PzyFYRu9WCxVESr/VhAg848kXG7zTW4n1c2K4tPrtVB5I1h0Ccr6bKHdzppoXoa9Tk9WrSvlNqUE1DgxFQvR1boGOtXkzwKoislhh/bjFzK0pvZXd/vGdfzdYRxNEpnGgoXiQCWfixMI=
+	t=1732989930; cv=none; b=ZIFSYpryfHGU6ONMDvzfifp2nOcRn16hRHExWVlq4hfa4MptBix2dsA5NLuvPV5KluCm9DxXw5F7eT0o4uoASjgLmHEFJ9JJtqu8jkZb5rVqOWAIQQGXfc+u8iOromuQGU7sfrr785eQtjKgtcBos+mnTUS7kwpGSHqEYcc5XVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732989272; c=relaxed/simple;
-	bh=rbXYpOJKDPeAlSh9kRAlmXC6swlI1qy+eiAxmzaRgj0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=el/1akoWVpCGwQ8n7K0IS0jJ7iHNklo5xV3+SqAI5gV/ySZ6Z4mlBpnbQmUw7Q1Dv04bCy3w2PcKGnXHpMQXz7G6IDM/lAe7hGxWY9b6VhKR7kQ1M+UgTj6UI8lmwODhhjc1sDUfaWH/Cf5yMZVsujEmwI9tOynrdy8FxjVG7p4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y9YJN6nE; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1732989271; x=1764525271;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rbXYpOJKDPeAlSh9kRAlmXC6swlI1qy+eiAxmzaRgj0=;
-  b=Y9YJN6nE74t1i0sS5+e0tMWfaE3LmFp9cO4gKExDL0fDjNKlUXtQQnZs
-   lscj+7gPaU1WpjNLgco4KL/dGyGHUKsDsXQSCCRa6u4iBe2YNiS9bz8Fj
-   Eqt0BhCdYG24DpU6K6CsqQJ2m9pj4Er12FLT1JRnhwWlhiIgxKcsG1mhy
-   U9fG8dJrvcZbKxfNzDK2tSg0BwJmShoRq35EnkcHaSkKr/pPnspo3Ty3c
-   6M7zCFnzJJay4AeuNjJ3gJJnuNPv9o+Pt61TNkEhCzS5udWjNRH71XzR/
-   FKuskR6M1DrHEFgLxEkLOh+Q9iZ++RGhC79TE3SeRsZdO035xpLiPKDO4
-   w==;
-X-CSE-ConnectionGUID: U/GtimScREudOD/NadmEUQ==
-X-CSE-MsgGUID: YtZRpXsfTYyja3jDgLVc0w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11272"; a="33118785"
-X-IronPort-AV: E=Sophos;i="6.12,198,1728975600"; 
-   d="scan'208";a="33118785"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2024 09:54:30 -0800
-X-CSE-ConnectionGUID: K+xZ/KcSSESxdxTmID9zQA==
-X-CSE-MsgGUID: tCBA+8bqSLiCd8Es4kVyRw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,198,1728975600"; 
-   d="scan'208";a="93547383"
-Received: from lkp-server02.sh.intel.com (HELO 36a1563c48ff) ([10.239.97.151])
-  by orviesa008.jf.intel.com with ESMTP; 30 Nov 2024 09:54:28 -0800
-Received: from kbuild by 36a1563c48ff with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tHRfl-0000sZ-1U;
-	Sat, 30 Nov 2024 17:54:25 +0000
-Date: Sun, 1 Dec 2024 01:54:05 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ryan Wilson <ryantimwilson@gmail.com>, bpf@vger.kernel.org,
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net
-Cc: oe-kbuild-all@lists.linux.dev, ryantimwilson@meta.com
-Subject: Re: [PATCH bpf-next] bpf: Add multi-prog support for XDP BPF programs
-Message-ID: <202412010119.qyfY5hLk-lkp@intel.com>
-References: <20241114170721.3939099-1-ryantimwilson@gmail.com>
+	s=arc-20240116; t=1732989930; c=relaxed/simple;
+	bh=2C4d7UEKbKI1mAkzDFtYC51rOUqkJDdUDhD2OKE+FbY=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=h+LLAle2iR1j8CFKrfIulNKvLJkL5QpquH0NyvIIAO6IsZfUzM5S3mOkNTpjmj9VvT2CW3W6h5vVKE9t3SJoKtJ9RI73sIEnSRSaGFb9yyz6oboIrPedvfqGt5AfQ0Yo99OrayqMu/CHhFuM7i7nZgfJ7q9rSza1VBm9FaPZq54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a79afe7a0bso34691275ab.3
+        for <bpf@vger.kernel.org>; Sat, 30 Nov 2024 10:05:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732989928; x=1733594728;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VRHMMbOM9jVJYYNqroswi5u/gwQteibRbzcIjAytvhM=;
+        b=pPxIyvJUjJ7q7c3ZSD4Wq2kthgsSqhbxyLygjHALe68mS1PCt0Px/+pxM3AwFBQhjm
+         55p9ejt3gRbRec/N/eCx8VjIbs6w/eUQpYre+hHCviSR+FT3Cx8Is/FXZxVBKhpOieYQ
+         mvaUiiQTyw67JzsUwxpsySgx1NrHj1WdTYUS3HLF8BWLOfkflSZnibZDu2AK5rnIQ5JJ
+         +TJC9VkZIDE/UgWmslISA7hoc96SzOmUwYU9lzcvPFNgsUHe5arTobF20ENMhRJFOMuv
+         6zWnACEkRBQFLsX9xAIBjAQ/lYdjgPedKIedxYChsRZ2sKxLLislDl7yU7yn+9lGHBWU
+         PQ1A==
+X-Forwarded-Encrypted: i=1; AJvYcCU80ld43WWXO2CpEqJrwPg4rZClKwLi8MOWMa5N8XwPqEP5aqgzH/+EZ5+gYNfiZgMUVj4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwHqDcIBjP5vVkA4JxaZT1V9T0K3T3PNt+vn6ruJaBSR+lb/igg
+	iSW9ZzhcVen0WDvC4oOc4cXg8HY3T2osGAqjW3yCfrf2AII/kqsOErGd6v4ynb77qTZNLS+m5Av
+	0nE6CtwvDkjfjSdsO0Sk+QnEBpn4Dt8g449mE77s1noJVp6SazToKxTk=
+X-Google-Smtp-Source: AGHT+IEv6YmrCOe0vSZf00GEMUS/16hEGNr7prLtk9Itu6MSY1XWR6kc8bNn8216SRdyU83X52rWfu30sjWxoil4Suf9kjb036JK
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241114170721.3939099-1-ryantimwilson@gmail.com>
+X-Received: by 2002:a05:6e02:1569:b0:3a7:c072:c69a with SMTP id
+ e9e14a558f8ab-3a7c5524090mr206778105ab.3.1732989928071; Sat, 30 Nov 2024
+ 10:05:28 -0800 (PST)
+Date: Sat, 30 Nov 2024 10:05:28 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <674b53e8.050a0220.253251.00e0.GAE@google.com>
+Subject: [syzbot] [bpf?] [netfilter?] INFO: rcu detected stall in sys_sendmmsg (7)
+From: syzbot <syzbot+53e660acb94e444b9d63@syzkaller.appspotmail.com>
+To: andrii@kernel.org, anna-maria@linutronix.de, ast@kernel.org, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, frederic@kernel.org, 
+	kadlec@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	netfilter-devel@vger.kernel.org, pablo@netfilter.org, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Ryan,
+Hello,
 
-kernel test robot noticed the following build warnings:
+syzbot found the following issue on:
 
-[auto build test WARNING on bpf-next/master]
+HEAD commit:    b86545e02e8c Merge tag 'acpi-6.13-rc1-2' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12cd4f78580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f8e5d0648de624aa
+dashboard link: https://syzkaller.appspot.com/bug?extid=53e660acb94e444b9d63
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ryan-Wilson/bpf-Add-multi-prog-support-for-XDP-BPF-programs/20241115-015104
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20241114170721.3939099-1-ryantimwilson%40gmail.com
-patch subject: [PATCH bpf-next] bpf: Add multi-prog support for XDP BPF programs
-config: x86_64-randconfig-122-20241117 (https://download.01.org/0day-ci/archive/20241201/202412010119.qyfY5hLk-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241201/202412010119.qyfY5hLk-lkp@intel.com/reproduce)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202412010119.qyfY5hLk-lkp@intel.com/
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7afd648f7c25/disk-b86545e0.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/40e3ee6c8cc8/vmlinux-b86545e0.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/53bc5977cfb0/bzImage-b86545e0.xz
 
-sparse warnings: (new ones prefixed by >>)
-   net/core/dev.c:3387:23: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected restricted __wsum [usertype] csum @@     got unsigned int @@
-   net/core/dev.c:3387:23: sparse:     expected restricted __wsum [usertype] csum
-   net/core/dev.c:3387:23: sparse:     got unsigned int
-   net/core/dev.c:3387:23: sparse: sparse: cast from restricted __wsum
->> net/core/dev.c:9416:76: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct bpf_mprog_entry *entry @@     got struct bpf_mprog_entry [noderef] __rcu * @@
-   net/core/dev.c:9416:76: sparse:     expected struct bpf_mprog_entry *entry
-   net/core/dev.c:9416:76: sparse:     got struct bpf_mprog_entry [noderef] __rcu *
-   net/core/dev.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
-   include/linux/page-flags.h:237:46: sparse: sparse: self-comparison always evaluates to false
-   include/linux/page-flags.h:237:46: sparse: sparse: self-comparison always evaluates to false
-   net/core/dev.c:3837:17: sparse: sparse: context imbalance in '__dev_queue_xmit' - different lock contexts for basic block
-   net/core/dev.c:4800:9: sparse: sparse: context imbalance in 'kick_defer_list_purge' - different lock contexts for basic block
-   net/core/dev.c:4901:19: sparse: sparse: context imbalance in 'enqueue_to_backlog' - different lock contexts for basic block
-   net/core/dev.c:5315:17: sparse: sparse: context imbalance in 'net_tx_action' - different lock contexts for basic block
-   net/core/dev.c:5996:9: sparse: sparse: context imbalance in 'flush_backlog' - different lock contexts for basic block
-   net/core/dev.c:6123:9: sparse: sparse: context imbalance in 'process_backlog' - different lock contexts for basic block
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+53e660acb94e444b9d63@syzkaller.appspotmail.com
 
-vim +9416 net/core/dev.c
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu: 	1-...0: (6 ticks this GP) idle=545c/1/0x4000000000000000 softirq=161841/161847 fqs=2100
+rcu: 	         hardirqs   softirqs   csw/system
+rcu: 	 number:        0          0            0
+rcu: 	cputime:        0          0            0   ==> 52500(ms)
+rcu: 	(detected by 0, t=10505 jiffies, g=202837, q=172 ncpus=2)
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 UID: 0 PID: 1553 Comm: syz.8.7708 Not tainted 6.12.0-syzkaller-10553-gb86545e02e8c #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+RIP: 0010:advance_sched+0x36/0xca0 net/sched/sch_taprio.c:916
+Code: 54 53 48 81 ec 98 00 00 00 49 89 fe 48 bd 00 00 00 00 00 fc ff df e8 79 e7 c8 f7 49 8d 5e 88 48 89 d8 48 c1 e8 03 80 3c 28 00 <74> 08 48 89 df e8 50 a3 30 f8 48 8b 03 48 89 84 24 88 00 00 00 48
+RSP: 0018:ffffc90000a18c70 EFLAGS: 00000046
+RAX: 1ffff1100c0f9259 RBX: ffff8880607c92c8 RCX: ffff88802d349e00
+RDX: 0000000000010000 RSI: 0000000000000000 RDI: ffff8880607c9340
+RBP: dffffc0000000000 R08: ffffffff8183463f R09: 1ffffffff203a606
+R10: dffffc0000000000 R11: ffffffff89ccfc90 R12: dffffc0000000000
+R13: ffffffff89ccfc90 R14: ffff8880607c9340 R15: ffff88802d34a8c8
+FS:  00007f7bb35f66c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000110c32f64a CR3: 0000000070470000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <IRQ>
+ __run_hrtimer kernel/time/hrtimer.c:1739 [inline]
+ __hrtimer_run_queues+0x59b/0xd50 kernel/time/hrtimer.c:1803
+ hrtimer_interrupt+0x403/0xa40 kernel/time/hrtimer.c:1865
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1038 [inline]
+ __sysvec_apic_timer_interrupt+0x110/0x420 arch/x86/kernel/apic/apic.c:1055
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 [inline]
+ sysvec_apic_timer_interrupt+0xa1/0xc0 arch/x86/kernel/apic/apic.c:1049
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:finish_task_switch+0x1ea/0x870 kernel/sched/core.c:5243
+Code: c9 50 e8 79 07 0c 00 48 83 c4 08 4c 89 f7 e8 9d 39 00 00 e9 de 04 00 00 4c 89 f7 e8 70 2f 6f 0a e8 2b 9a 38 00 fb 48 8b 5d c0 <48> 8d bb f8 15 00 00 48 89 f8 48 c1 e8 03 49 be 00 00 00 00 00 fc
+RSP: 0018:ffffc900033771a8 EFLAGS: 00000286
+RAX: a5530211a14c0a00 RBX: ffff88802d349e00 RCX: ffffffff9a3f7903
+RDX: dffffc0000000000 RSI: ffffffff8c0ad980 RDI: ffffffff8c6083a0
+RBP: ffffc900033771f0 R08: ffffffff901d3037 R09: 1ffffffff203a606
+R10: dffffc0000000000 R11: fffffbfff203a607 R12: 1ffff110170e7eac
+R13: dffffc0000000000 R14: ffff8880b863e740 R15: ffff8880b873f560
+ context_switch kernel/sched/core.c:5372 [inline]
+ __schedule+0x1803/0x4be0 kernel/sched/core.c:6756
+ __schedule_loop kernel/sched/core.c:6833 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6848
+ schedule_timeout+0xb0/0x290 kernel/time/sleep_timeout.c:75
+ unix_wait_for_peer+0x250/0x340 net/unix/af_unix.c:1529
+ unix_dgram_sendmsg+0x127f/0x1f80 net/unix/af_unix.c:2131
+ sock_sendmsg_nosec net/socket.c:711 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:726
+ ____sys_sendmsg+0x52a/0x7e0 net/socket.c:2583
+ ___sys_sendmsg net/socket.c:2637 [inline]
+ __sys_sendmmsg+0x36a/0x720 net/socket.c:2726
+ __do_sys_sendmmsg net/socket.c:2753 [inline]
+ __se_sys_sendmmsg net/socket.c:2750 [inline]
+ __x64_sys_sendmmsg+0xa0/0xb0 net/socket.c:2750
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f7bb5780809
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f7bb35f6058 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007f7bb5945fa0 RCX: 00007f7bb5780809
+RDX: 0000000000000651 RSI: 0000000020000000 RDI: 0000000000000007
+RBP: 00007f7bb57f393e R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f7bb5945fa0 R15: 00007ffe8b8d0818
+ </TASK>
 
-  9409	
-  9410	u8 dev_xdp_prog_count(struct net_device *dev)
-  9411	{
-  9412		u8 count = 0;
-  9413		int i;
-  9414	
-  9415		for (i = 0; i < __MAX_XDP_MODE; i++)
-> 9416			if (dev->xdp_state[i] && xdp_entry_is_active(dev->xdp_state[i]))
-  9417				count++;
-  9418		return count;
-  9419	}
-  9420	EXPORT_SYMBOL_GPL(dev_xdp_prog_count);
-  9421	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
