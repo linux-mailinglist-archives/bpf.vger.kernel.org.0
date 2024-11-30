@@ -1,202 +1,139 @@
-Return-Path: <bpf+bounces-45905-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45906-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88E709DF262
-	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 18:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E0EF9DF266
+	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 18:54:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F05B1B21548
-	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 17:50:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F31C7B20A77
+	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2024 17:54:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DED21A7261;
-	Sat, 30 Nov 2024 17:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846901A76B4;
+	Sat, 30 Nov 2024 17:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eBsojZUS"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y9YJN6nE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3CCD43AA1
-	for <bpf@vger.kernel.org>; Sat, 30 Nov 2024 17:50:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505CA43AA1
+	for <bpf@vger.kernel.org>; Sat, 30 Nov 2024 17:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732989030; cv=none; b=RcIeM8PEb/QOIU5lIAH/f5maoUuhEK7+2oCGfo9u/iq461YMaogmR88Q2EWIFV7kekhJs6pr1FiRwoix25HV7fcctC9xdgeAcCC7dDOfq8ORL/m9fAQ1IsexAkl115jJMcmYXAwVZhItL3vDU+xrjrcnAMbT7JtT6SUgkjqxf2c=
+	t=1732989272; cv=none; b=bK/wI4BQxzSXcDryjCBPUSKKy+vr/42PzyFYRu9WCxVESr/VhAg848kXG7zTW4n1c2K4tPrtVB5I1h0Ccr6bKHdzppoXoa9Tk9WrSvlNqUE1DgxFQvR1boGOtXkzwKoislhh/bjFzK0pvZXd/vGdfzdYRxNEpnGgoXiQCWfixMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732989030; c=relaxed/simple;
-	bh=EQ9TZKt6FwbZf2WuonS0Lh/do9XhBXhf1sX+D/K/33Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DgaN/HQpQqgsDAYLmHX0hCFOWw+vf5g9BDzI1QdzgdcY1dfFWGso4yOou1RLEmCc82uCGDuL9BtifVFGVaDO0G0yoc5fdola9DvW1golcJFBiT4+p1I3KwHOvnYW6B2gAV1Ce71ixqEY8VxC1ZHyfEtcS+w2vC2zzHSAKO1ByjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eBsojZUS; arc=none smtp.client-ip=209.85.218.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-aa54adcb894so364033866b.0
-        for <bpf@vger.kernel.org>; Sat, 30 Nov 2024 09:50:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732989025; x=1733593825; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3FMWYSOnZt30o+m8GN41SnaPJZ4ZgchB6VAT5N7zQMU=;
-        b=eBsojZUS0KqW9dM3vRtqK2nAdS6Isgo3Oem61oGuzgYU5bBoF6L7hbsf/M1/vaODOS
-         qQ+CgaSerfKn3ZZsvWuKeaqyRWJP0pa19ljBzoB4Qd6OdWjrbk4wRGCG7JNK3iZBhDS5
-         RAU366B6FJvGJ0FCdppOx3oM1Wmau/99ssdrmZo+dmS2ruYxLUA5qdOEgh3QNMUpqJRP
-         jAXZBkqCv8qaf4rR07YBeU2wE4L7NJ0nFcLHFNawpKrfsaT4kna+Vbx3uICHZON/FQ80
-         6iXzSNOJ8Qs7jNXeRfD1Qwu1xyXdfiieEt7ND9wILPgFhg4qYI25H1m6CsO2dOKbiBpx
-         SBFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732989025; x=1733593825;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3FMWYSOnZt30o+m8GN41SnaPJZ4ZgchB6VAT5N7zQMU=;
-        b=jWXivtWSEJ3ObIu8l4OEqM/xJzRI6Y63VC1Dy5IAucMJ3lCMsX5VyPIpdFrqt8Ut5r
-         HJwBkDZGZQYoZt2uycwMckUfcCxkvpGZeSd5YFLwsheIvYngXG+bCAlCIWuJBhnFYqh+
-         3OXKSKrwJcEDLdxrljAZwpXetVfVQMbskA2CFD1vUlmRkO150dBrrNc9qZQt5OkjbaJg
-         rP2JQLe++V7nx4liD3vrV8yicI7UIaQgs5iFAmy37f6WUeksepK883YKQBYIlQGa4boR
-         ad/pzmBonDu1ny4H0r/Czx6Aubj1UphWQmS43mDSNZfk79FN1YOIaChSppAdxEoNsmN8
-         bNPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX3rfEzgpOF7vv6MmzXqsWzMN/x/hc6TybVgabnh0WfhSMRTp0e3V3DrQkFETE0MegWuss=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwV3CNuX4YUSaiSUQ9o6nWFrCyeRqQlYLfGofCaSUQXJvR3YujN
-	3mHPc5huH7wm6+Re74M15+ii3p+wa+XKWLo9QfQYVVfb9Au0A1UtAtZqf5ydtdrjdZkf98AC0vu
-	uM/ErVB4vBoF3kMoQpe1OZq6XvrQ=
-X-Gm-Gg: ASbGncvl5QKJbNzuqUIvJbmCoMJdQTWAiKehg9jIgKU29xBySgTktQrqLDXjKxiQ9//
-	OzrLYegsY8mF3LSfV/2vYEpCYK6l0ysAozfWGvmv7ExUIU+LP0r6J6WPpQbPD5Rfr
-X-Google-Smtp-Source: AGHT+IGf7tbezrlNV5UoXee8Mdkg0KSKlM3UaHPb6oC17dJzVKzwqFGhEjq9qNsd4mWbb7GHFjIwrAtNa7Mb+MTsNUY=
-X-Received: by 2002:a17:906:bfea:b0:a9a:7f84:940b with SMTP id
- a640c23a62f3a-aa580ee2f7dmr1243400566b.10.1732989024732; Sat, 30 Nov 2024
- 09:50:24 -0800 (PST)
+	s=arc-20240116; t=1732989272; c=relaxed/simple;
+	bh=rbXYpOJKDPeAlSh9kRAlmXC6swlI1qy+eiAxmzaRgj0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=el/1akoWVpCGwQ8n7K0IS0jJ7iHNklo5xV3+SqAI5gV/ySZ6Z4mlBpnbQmUw7Q1Dv04bCy3w2PcKGnXHpMQXz7G6IDM/lAe7hGxWY9b6VhKR7kQ1M+UgTj6UI8lmwODhhjc1sDUfaWH/Cf5yMZVsujEmwI9tOynrdy8FxjVG7p4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y9YJN6nE; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1732989271; x=1764525271;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rbXYpOJKDPeAlSh9kRAlmXC6swlI1qy+eiAxmzaRgj0=;
+  b=Y9YJN6nE74t1i0sS5+e0tMWfaE3LmFp9cO4gKExDL0fDjNKlUXtQQnZs
+   lscj+7gPaU1WpjNLgco4KL/dGyGHUKsDsXQSCCRa6u4iBe2YNiS9bz8Fj
+   Eqt0BhCdYG24DpU6K6CsqQJ2m9pj4Er12FLT1JRnhwWlhiIgxKcsG1mhy
+   U9fG8dJrvcZbKxfNzDK2tSg0BwJmShoRq35EnkcHaSkKr/pPnspo3Ty3c
+   6M7zCFnzJJay4AeuNjJ3gJJnuNPv9o+Pt61TNkEhCzS5udWjNRH71XzR/
+   FKuskR6M1DrHEFgLxEkLOh+Q9iZ++RGhC79TE3SeRsZdO035xpLiPKDO4
+   w==;
+X-CSE-ConnectionGUID: U/GtimScREudOD/NadmEUQ==
+X-CSE-MsgGUID: YtZRpXsfTYyja3jDgLVc0w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11272"; a="33118785"
+X-IronPort-AV: E=Sophos;i="6.12,198,1728975600"; 
+   d="scan'208";a="33118785"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2024 09:54:30 -0800
+X-CSE-ConnectionGUID: K+xZ/KcSSESxdxTmID9zQA==
+X-CSE-MsgGUID: tCBA+8bqSLiCd8Es4kVyRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,198,1728975600"; 
+   d="scan'208";a="93547383"
+Received: from lkp-server02.sh.intel.com (HELO 36a1563c48ff) ([10.239.97.151])
+  by orviesa008.jf.intel.com with ESMTP; 30 Nov 2024 09:54:28 -0800
+Received: from kbuild by 36a1563c48ff with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tHRfl-0000sZ-1U;
+	Sat, 30 Nov 2024 17:54:25 +0000
+Date: Sun, 1 Dec 2024 01:54:05 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ryan Wilson <ryantimwilson@gmail.com>, bpf@vger.kernel.org,
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net
+Cc: oe-kbuild-all@lists.linux.dev, ryantimwilson@meta.com
+Subject: Re: [PATCH bpf-next] bpf: Add multi-prog support for XDP BPF programs
+Message-ID: <202412010119.qyfY5hLk-lkp@intel.com>
+References: <20241114170721.3939099-1-ryantimwilson@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <51338.1732985814@localhost>
-In-Reply-To: <51338.1732985814@localhost>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Sat, 30 Nov 2024 18:49:48 +0100
-Message-ID: <CAP01T762EPrCFd2XPFqPk5y6n99C4g7nQUsXwMkdEDjUq03_qg@mail.gmail.com>
-Subject: Re: ebpf can allow sub-word load results to be used as 64-bit pointers
-To: rtm@csail.mit.edu
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241114170721.3939099-1-ryantimwilson@gmail.com>
 
-On Sat, 30 Nov 2024 at 18:10, <rtm@csail.mit.edu> wrote:
->
-> When I modify the bpf_cubic_init() function from
->
->   https://github.com/aroodgar/bpf-tcp-congestion-control-algorithm
->
-> to read:
->
-> SEC("struct_ops/bpf_cubic_init")
-> void BPF_PROG(bpf_cubic_init, struct sock *sk)
-> {
->   asm volatile("r2 = *(u16*)(r1 + 0)");     // verifier should demand u64
->   asm volatile("*(u32 *)(r2 +1504) = 0");   // 1280 in some configs
-> }
->
-> the verifier accepts it, but the second line crashes when it runs during
-> a TCP connect() because the "*(u16*)" in the load from context yields
-> only the low bits of the pointer.
+Hi Ryan,
 
-Thanks for the bug report.
+kernel test robot noticed the following build warnings:
 
-It is a missing check on "size" of the access in btf_ctx_access in
-kernel/bpf/btf.c.
-It is probably not seen in practice as desugaring of such arguments is
-done by libbpf macros etc.
-This won't just be limited to struct_ops, but many other program types
-(tracing, etc.) which use this code.
+[auto build test WARNING on bpf-next/master]
 
-I have prepared a fix here: https://github.com/kkdwivedi/linux/commits/sops
+url:    https://github.com/intel-lab-lkp/linux/commits/Ryan-Wilson/bpf-Add-multi-prog-support-for-XDP-BPF-programs/20241115-015104
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20241114170721.3939099-1-ryantimwilson%40gmail.com
+patch subject: [PATCH bpf-next] bpf: Add multi-prog support for XDP BPF programs
+config: x86_64-randconfig-122-20241117 (https://download.01.org/0day-ci/archive/20241201/202412010119.qyfY5hLk-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241201/202412010119.qyfY5hLk-lkp@intel.com/reproduce)
 
-The relevant diff is:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202412010119.qyfY5hLk-lkp@intel.com/
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index e7a59e6462a9..f590cb792cf3 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6458,6 +6458,11 @@ bool btf_ctx_access(int off, int size, enum
-bpf_access_type type,
-                        tname, off);
-                return false;
-        }
-+       if (size != sizeof(u64)) {
-+               bpf_log(log, "func '%s' size %d is not multiple of 8\n",
-+                       tname, size);
-+               return false;
-+       }
-        arg = get_ctx_arg_idx(btf, t, off);
-        args = (const struct btf_param *)(t + 1);
-        /* if (t == NULL) Fall back to default BPF prog with
+sparse warnings: (new ones prefixed by >>)
+   net/core/dev.c:3387:23: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected restricted __wsum [usertype] csum @@     got unsigned int @@
+   net/core/dev.c:3387:23: sparse:     expected restricted __wsum [usertype] csum
+   net/core/dev.c:3387:23: sparse:     got unsigned int
+   net/core/dev.c:3387:23: sparse: sparse: cast from restricted __wsum
+>> net/core/dev.c:9416:76: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct bpf_mprog_entry *entry @@     got struct bpf_mprog_entry [noderef] __rcu * @@
+   net/core/dev.c:9416:76: sparse:     expected struct bpf_mprog_entry *entry
+   net/core/dev.c:9416:76: sparse:     got struct bpf_mprog_entry [noderef] __rcu *
+   net/core/dev.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
+   include/linux/page-flags.h:237:46: sparse: sparse: self-comparison always evaluates to false
+   include/linux/page-flags.h:237:46: sparse: sparse: self-comparison always evaluates to false
+   net/core/dev.c:3837:17: sparse: sparse: context imbalance in '__dev_queue_xmit' - different lock contexts for basic block
+   net/core/dev.c:4800:9: sparse: sparse: context imbalance in 'kick_defer_list_purge' - different lock contexts for basic block
+   net/core/dev.c:4901:19: sparse: sparse: context imbalance in 'enqueue_to_backlog' - different lock contexts for basic block
+   net/core/dev.c:5315:17: sparse: sparse: context imbalance in 'net_tx_action' - different lock contexts for basic block
+   net/core/dev.c:5996:9: sparse: sparse: context imbalance in 'flush_backlog' - different lock contexts for basic block
+   net/core/dev.c:6123:9: sparse: sparse: context imbalance in 'process_backlog' - different lock contexts for basic block
 
+vim +9416 net/core/dev.c
 
-This is not the right 100% fix though, as fields may be u32 scalars
-etc. so size needs to be checked against the member's type.
-Right now this will reject some valid programs. But you get the idea.
-The size of access needs to be checked.
-Will test out in our CI before posting to the list.
+  9409	
+  9410	u8 dev_xdp_prog_count(struct net_device *dev)
+  9411	{
+  9412		u8 count = 0;
+  9413		int i;
+  9414	
+  9415		for (i = 0; i < __MAX_XDP_MODE; i++)
+> 9416			if (dev->xdp_state[i] && xdp_entry_is_active(dev->xdp_state[i]))
+  9417				count++;
+  9418		return count;
+  9419	}
+  9420	EXPORT_SYMBOL_GPL(dev_xdp_prog_count);
+  9421	
 
-May I ask how you happened to stumble upon this?
-
->
-> Linux ubuntu66 6.12.0-11677-g2ba9f676d0a2 #10 SMP Sat Nov 30 11:28:09 EST 2024 x86_64 x86_64 x86_64 GNU/Linux
->
-> BUG: unable to handle page fault for address: 0000000000001020
-> #PF: supervisor write access in kernel mode
-> #PF: error_code(0x0002) - not-present page
-> PGD 0 P4D 0
-> Oops: Oops: 0002 [#1] SMP PTI
-> CPU: 6 UID: 0 PID: 1546 Comm: a.out Not tainted 6.12.0-11677-g2ba9f676d0a2 #10
-> Hardware name: FreeBSD BHYVE/BHYVE, BIOS 14.0 10/17/2021
-> RIP: 0010:bpf_prog_0e20ff5294b59096_bpf_cubic_init+0x19/0x25
-> Code: 00 cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc f3 0f 1e fa 0f 1f 44 00
->  00 0f 1f 00 55 48 89 e5 f3 0f 1e fa 48 0f b7 77 00 <c7> 86 e0 05 00 00 00 00 00
->  00 c9 c3 cc cc cc cc cc cc cc cc cc cc
-> RSP: 0018:ffffc9000076bc58 EFLAGS: 00010202
-> RAX: 0000000000000001 RBX: 0000000000000001 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: 0000000000000a40 RDI: ffffc9000076bc88
-> RBP: ffffc9000076bc58 R08: ffffc9000076bc40 R09: ffffc9000076bc20
-> R10: ffffffff842f3200 R11: ffffffff827659c0 R12: 0000000000000004
-> R13: ffff888105493098 R14: 0000000000000000 R15: 00000000ffffff8d
-> FS:  00007fa5348d1740(0000) GS:ffff88842fb80000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000001020 CR3: 000000010bbfa003 CR4: 00000000003706f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  ? __die+0x1e/0x60
->  ? page_fault_oops+0x157/0x450
->  ? eth_header+0x25/0xb0
->  ? exc_page_fault+0x66/0x140
->  ? asm_exc_page_fault+0x26/0x30
->  ? bpf_prog_0e20ff5294b59096_bpf_cubic_init+0x19/0x25
->  ? __bpf_prog_enter+0x14/0x60
->  bpf__tcp_congestion_ops_init+0x47/0xa3
->  tcp_init_congestion_control+0x2a/0xe0
->  tcp_init_transfer+0x2b2/0x2d0
->  tcp_finish_connect+0x82/0x130
->  tcp_rcv_state_process+0x352/0xf20
->  tcp_v4_do_rcv+0xca/0x240
->  __release_sock+0xc6/0xd0
->  release_sock+0x2a/0x90
->  __inet_stream_connect+0x208/0x3c0
->  ? __pfx_woken_wake_function+0x10/0x10
->  inet_stream_connect+0x35/0x50
->  __sys_connect+0x93/0xb0
->  ? ksys_write+0x67/0xe0
->  __x64_sys_connect+0x13/0x20
->  ? ksys_write+0x67/0xe0
->  __x64_sys_connect+0x13/0x20
->  do_syscall_64+0x3f/0xd0
->  entry_SYSCALL_64_after_hwframe+0x76/0x7e
->
-> Robert Morris
-> rtm@mit.edu
->
->
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
