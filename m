@@ -1,140 +1,176 @@
-Return-Path: <bpf+bounces-45910-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45911-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C5089DF592
-	for <lists+bpf@lfdr.de>; Sun,  1 Dec 2024 13:46:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20CB29DF599
+	for <lists+bpf@lfdr.de>; Sun,  1 Dec 2024 13:53:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F2032816FC
-	for <lists+bpf@lfdr.de>; Sun,  1 Dec 2024 12:46:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81193281561
+	for <lists+bpf@lfdr.de>; Sun,  1 Dec 2024 12:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2968F1BC091;
-	Sun,  1 Dec 2024 12:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4051C2441;
+	Sun,  1 Dec 2024 12:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BHJkhLWI";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gK353R/G"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NtpV4EV7"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FDDC1BC06E
-	for <bpf@vger.kernel.org>; Sun,  1 Dec 2024 12:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D0011C1F32;
+	Sun,  1 Dec 2024 12:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733057187; cv=none; b=K0LSrSAIpFeR2KCMBX+/6La1cU2QY+wu+Xs8mgBQIHS8Dhs/ElNVxDvUrUbk37KWPOlTHw4WfVHosF2F8kD2g5xKECFw1UtMgHuM+XM8wDb5RaOUtVkn/QT7Ju+Rs2p5D6wQWUNQOuDMwZ4aT28TY30MBKUvs0eoexGMtxcjOmM=
+	t=1733057628; cv=none; b=aaW0fnZC2fpwUzFnhVExLcZYjUfc/kKhrdlBYBp71+A1Za7QrPFJSVMB/3CoIzyHuGxAyQTfJGllTwkRx4UWANgaK/qiFE7g4eRWlOr5+w6I6a0ibQKXXPSrR7bPrH/e4FAZK+ldGP+rs500ctqCII9xinHzelSKwy+nYVLH7bM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733057187; c=relaxed/simple;
-	bh=FSAdue1Jh1ZGvW6J+zoGVe9yDPX8zvm1XziVk60JEeQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=LTLFDPvK8IuiUFAovz38h6Cw87YdV4KYBvvIFiLa/zjQqB+gNqkHwlExoLJqj82mELARyszTSYdV45hakP6RM7Istw/KDu2RZ6PrdMcmxKdAY59DJMWBJjnfgOytE3kIIL1pIeUKJNtEUDEqb9CqOpax+BiekZOUkkYrEkmqaUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BHJkhLWI; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gK353R/G; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1733057184;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8vqKe2nJ+vDx8Qtvez5NmVHWX94c8WEQvkghCaRLB+A=;
-	b=BHJkhLWIH6kbs7/c4h72ijTd3Li3sHcHH9/qQ/+xLV7kNi2ir1f1bsEfVpB9Zdehff3U6t
-	ne+89wlLh234dMe3NEyaAQlX3jQ4fKfInSe2wf+XZfF8QVN8rbYQueiIXOxwgMt6DQfR34
-	UEdHznDMp+HvKkULXOBHNoiwnaoNQf2BLOpvYn+Vg2PNI7iaC9lI6GQAXW+L9silSEhJ03
-	lRNSFp0LkaRVopwq9zFxuSejhupXO7/dhyKPMW4k7Xq8SIpjcm3WGaaiNGVBQWuV3JBtxt
-	PfMID46rDE4hjUvHeSnhmD47UZFNYH6uqX7TnyPoVI1pU1/q1FSiwm71EYsa9A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1733057184;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8vqKe2nJ+vDx8Qtvez5NmVHWX94c8WEQvkghCaRLB+A=;
-	b=gK353R/GLiChZgjsacGgtu5W/RAZFaCVRQJcXsyTr27nP4PNvV/1ki5g5EjM14iVwKs7Ua
-	+p3ppuGc9ihBSCAw==
-To: Vadim Fedorenko <vadfed@meta.com>, Borislav Petkov <bp@alien8.de>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Eduard
- Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>,
- Vadim Fedorenko <vadim.fedorenko@linux.dev>, Mykola Lysenko
- <mykolal@fb.com>
-Cc: x86@kernel.org, bpf@vger.kernel.org, Peter Zijlstra
- <peterz@infradead.org>, Vadim Fedorenko <vadfed@meta.com>, Martin KaFai
- Lau <martin.lau@linux.dev>
-Subject: Re: [PATCH bpf-next v9 1/4] bpf: add bpf_get_cpu_time_counter kfunc
-In-Reply-To: <20241123005833.810044-2-vadfed@meta.com>
-References: <20241123005833.810044-1-vadfed@meta.com>
- <20241123005833.810044-2-vadfed@meta.com>
-Date: Sun, 01 Dec 2024 13:46:23 +0100
-Message-ID: <87a5dfwoyo.ffs@tglx>
+	s=arc-20240116; t=1733057628; c=relaxed/simple;
+	bh=swYWVztl7R/XV5vyzXdHShiqPYgMrpHNocMOXVqEngI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HpDecCcrsEi8hY8j0bxUez3PDpJVKMQ9RxJzaon/UZ+ZczPaSPhxwEQxffQCksTwVrO9rFbWiGkWqOVyZchPVgMZmsJslxMlBdMhX/SsCyt9NR/DfLyiFZ8orTgEGdu4U19SpBLGWqwBfPRPpVemlf6RJCUjjbZEynqO274mjgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NtpV4EV7; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6d87e0082b8so21274556d6.2;
+        Sun, 01 Dec 2024 04:53:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733057626; x=1733662426; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+GVWtIbIAnpeYXqJoSnTz1UiTRNCVUNdZXjZbPFhtMg=;
+        b=NtpV4EV7UqZYjkAXlT8Hm+LGh0+e1Adf0CNlhjuahZXhU1+VXv5sZyl+VmQur2YuRi
+         iMTRjY+DMHgoXUEjATI1np1LYb30Og4sCPBrY0HiINkut7zMdFXzlcR+SO8yjJ2cwnhg
+         yNSYK4dk9zYS1DGdqHX0Be1DiKSndUbOkOWe3ma7gFdOQxvTucwwhmZOceUDryfrHmlV
+         ojuprmEJMs4SV+EFz53d1him3muJ3Vc5AdAniTBJA1EPWdW2XIK6NHfxDeJpDdHGtpOW
+         U9FqUoX6vF0EihE/JgT3ysfX10gFEthluBZt8oTd6xCyT/VCygr5E61nv5Sa0lXRn+94
+         p8Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733057626; x=1733662426;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+GVWtIbIAnpeYXqJoSnTz1UiTRNCVUNdZXjZbPFhtMg=;
+        b=i3bfBCPO/eRP3FAwscwXlk1Uynl6LuFG1CGTw4AstDwPRUbn9Ic+WpZojGrDLaBeoP
+         Ng78k7FxzxcXA835mKzo/GfS020jWBLZmou4Iw+vbVmzUdxd7xaKScYYB8uC4WHjl0qF
+         QtlzV5y4Txw/OVY4Bhg14S6Vzhksmeq7qal7vO3bJpjX2gu+K0xbIhAkaHs+b5n6yldP
+         NNMo0CD/zNKc54RnfeDNT5erePGu/97+UbH7rr6Duj4+A+cHygWUTcmqsd9UmBVwnne4
+         5W+8/vIENJRVzoqsZlyGiBjh/o5wxKteXPkWExAwBHPr+LZXIoAr1Oi+Eh6KzjOHQ4vk
+         T7wA==
+X-Forwarded-Encrypted: i=1; AJvYcCVKGYE6KsI0Siqx/cH1LS3Lgr8y7bcnUAso9cv8Dsf2iqaK5mm/TkRpkvVmQvhSNeoZYB6g8rWl@vger.kernel.org, AJvYcCVze4+m6MQhHZkn70F2HXQpbktsW+W8h8xDrDmVK2RgW+FqU2QadC81wRWCbdmE2ZyksC3ldEpkLEKUf5ir2kfjtOk9@vger.kernel.org, AJvYcCWs2A0JI08UQn6sOP8iniAOA1d0FyeP64AyF0+P3dR4CVrg0wAR83oTYVbwnv9eP1JYSTq7u3yx/4SlhVg6@vger.kernel.org, AJvYcCXj25gsphJ3sez9tfawtbIp7qrtGkaNfrHnWrqqSI886ZvlDCb8wgDD8/3P/E+/SntnHGs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwyoYzR64IzDma4WRs2h91jKWjhkQsrGS3oPkG364GbPpmHrnwr
+	Pbqws2qkaDXvUgX7y4+NlttlYL+ro8JSaCCbGuO56WPPU2flcYmy3RNc3OxwIJY6GE+JZc/rQFk
+	uv0pRp2h/SjxfKpH+e2Azo8BCVr4=
+X-Gm-Gg: ASbGncuRUzt9KUQwGtT9GcFinJZmto0R94i4EqxT2CReCKeMH9pyx4MeBptoHLRdkx3
+	abUk0GqYrQ1gNX0SKEcfRFZSdti+jEygoBIz7F41s3ER+MJ+1YWBpVJGAXQ==
+X-Google-Smtp-Source: AGHT+IGgwtwOP6tqXQqLQyPFg+9HwWnvlYrKm6Wd3xlS9AEmYhzmzUm0uqeInm+oHP92XrlHvZzF0UtwHtdZBi62qTQ=
+X-Received: by 2002:a05:6214:21e8:b0:6d4:1fbc:2f88 with SMTP id
+ 6a1803df08f44-6d864dac355mr310468856d6.39.1733057625664; Sun, 01 Dec 2024
+ 04:53:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <24481522-69BF-4CE7-A05D-1E7398400D80@u.nus.edu>
+ <20241129173554.11e3b2b2f5126c2b72c6a78e@kernel.org> <20241129120939.GG35539@noisy.programming.kicks-ass.net>
+In-Reply-To: <20241129120939.GG35539@noisy.programming.kicks-ass.net>
+From: Akinobu Mita <akinobu.mita@gmail.com>
+Date: Sun, 1 Dec 2024 21:53:34 +0900
+Message-ID: <CAC5umyh49maikh0E4pUB_28=rqG1k9rvtQ70XOJNDMxNsu03sg@mail.gmail.com>
+Subject: Re: [BUG] possible deadlock in __schedule (with reproducer available)
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Ruan Bonan <bonan.ruan@u.nus.edu>, 
+	"mingo@redhat.com" <mingo@redhat.com>, "will@kernel.org" <will@kernel.org>, 
+	"longman@redhat.com" <longman@redhat.com>, "boqun.feng@gmail.com" <boqun.feng@gmail.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
+	"mattbobrowski@google.com" <mattbobrowski@google.com>, "ast@kernel.org" <ast@kernel.org>, 
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org" <andrii@kernel.org>, 
+	"martin.lau@linux.dev" <martin.lau@linux.dev>, "eddyz87@gmail.com" <eddyz87@gmail.com>, 
+	"song@kernel.org" <song@kernel.org>, "yonghong.song@linux.dev" <yonghong.song@linux.dev>, 
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "sdf@fomichev.me" <sdf@fomichev.me>, 
+	"haoluo@google.com" <haoluo@google.com>, "jolsa@kernel.org" <jolsa@kernel.org>, 
+	"rostedt@goodmis.org" <rostedt@goodmis.org>, 
+	"mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>, 
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, Fu Yeqi <e1374359@u.nus.edu>, tytso@mit.edu, 
+	Jason@zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 22 2024 at 16:58, Vadim Fedorenko wrote:
-> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-> index de0f9e5f9f73..a549aea25f5f 100644
-> --- a/arch/x86/net/bpf_jit_comp32.c
-> +++ b/arch/x86/net/bpf_jit_comp32.c
-> @@ -2094,6 +2094,13 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
->  			if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
->  				int err;
->  
-> +				if (imm32 == BPF_CALL_IMM(bpf_get_cpu_time_counter)) {
-> +					if (cpu_feature_enabled(X86_FEATURE_LFENCE_RDTSC))
-> +						EMIT3(0x0F, 0xAE, 0xE8);
-> +					EMIT2(0x0F, 0x31);
+2024=E5=B9=B411=E6=9C=8829=E6=97=A5(=E9=87=91) 21:09 Peter Zijlstra <peterz=
+@infradead.org>:
+>
+> On Fri, Nov 29, 2024 at 05:35:54PM +0900, Masami Hiramatsu wrote:
+> > On Sat, 23 Nov 2024 03:39:45 +0000
+> > Ruan Bonan <bonan.ruan@u.nus.edu> wrote:
+> >
+> > >
+> > >        vprintk_emit+0x414/0xb90 kernel/printk/printk.c:2406
+> > >        _printk+0x7a/0xa0 kernel/printk/printk.c:2432
+> > >        fail_dump lib/fault-inject.c:46 [inline]
+> > >        should_fail_ex+0x3be/0x570 lib/fault-inject.c:154
+> > >        strncpy_from_user+0x36/0x230 lib/strncpy_from_user.c:118
+> > >        strncpy_from_user_nofault+0x71/0x140 mm/maccess.c:186
+> > >        bpf_probe_read_user_str_common kernel/trace/bpf_trace.c:215 [i=
+nline]
+> > >        ____bpf_probe_read_user_str kernel/trace/bpf_trace.c:224 [inli=
+ne]
+> >
+> > Hmm, this is a combination issue of BPF and fault injection.
+> >
+> > static void fail_dump(struct fault_attr *attr)
+> > {
+> >         if (attr->verbose > 0 && __ratelimit(&attr->ratelimit_state)) {
+> >                 printk(KERN_NOTICE "FAULT_INJECTION: forcing a failure.=
+\n"
+> >                        "name %pd, interval %lu, probability %lu, "
+> >                        "space %d, times %d\n", attr->dname,
+> >                        attr->interval, attr->probability,
+> >                        atomic_read(&attr->space),
+> >                        atomic_read(&attr->times));
+> >
+> > This printk() acquires console lock under rq->lock has been acquired.
+> >
+> > This can happen if we use fault injection and trace event too because
+> > the fault injection caused printk warning.
+>
+> Ah indeed. Same difference though, if you don't know the context, most
+> things are unsafe to do.
+>
+> > I think this should be a bug of the fault injection, not tracing/BPF.
+> > And to solve this issue, we may be able to check the context and if
+> > it is tracing/NMI etc, fault injection should NOT make it failure.
+>
+> Well, it should be okay to cause the failure, but it must be very
+> careful how it goes about doing that. Tripping printk() definitely is
+> out.
+>
+> But there's a much bigger problem there, get_random*() is not wait-free,
+> in fact it takes a spinlock_t which makes that it is unusable from most
+> context, and it's definitely out for tracing.
+>
+> Notably, this spinlock_t makes that it is unsafe to use from anything
+> that holds a raw_spinlock_t or is from hardirq context, or has
+> preempt_disable() -- which is a TON of code.
+>
+> On this alone I would currently label the whole of fault-injection
+> broken. The should_fail() call itself is unsafe where many of its
+> callsites are otherwise perfectly fine -- eg. usercopy per the above.
+>
+> Perhaps it should use a simple PRNG, a simple LFSR should be plenty good
+> enough to provide failure conditions.
 
-What guarantees that RDTSC is supported by the CPU?
+Sounds good.
 
-Aside of that, if you want the read to be ordered, then you need to take
-RDTSCP into account too.
+> And yeah, I would just completely rip out the printk. Trying to figure
+> out where and when it's safe to call printk() is non-trivial and just
+> not worth the effort imo.
 
-> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
-> +__bpf_kfunc u64 bpf_get_cpu_time_counter(void)
-> +{
-> +	const struct vdso_data *vd = __arch_get_k_vdso_data();
-> +
-> +	vd = &vd[CS_RAW];
-> +
-> +	/* CS_RAW clock_mode translates to VDSO_CLOCKMODE_TSC on x86 and
-
-How so?
-
-vd->clock_mode is not guaranteed to be VDSO_CLOCKMODE_TSC or
-VDSO_CLOCKMODE_ARCHTIMER. CS_RAW is the access to the raw (uncorrected)
-time of the current clocksource. If the clock mode is not matching, then
-you cannot access it.
-
-> +	 * to VDSO_CLOCKMODE_ARCHTIMER on aarch64/risc-v. We cannot use
-> +	 * vd->clock_mode directly because it brings possible access to
-> +	 * pages visible by user-space only via vDSO.
-
-How so? vd->clock_mode is kernel visible.
-
->        * But the constant value
-> +	 * of 1 is exactly what we need - it works for any architecture and
-> +	 * translates to reading of HW timecounter regardles of architecture.
-
-It does not. Care to look at MIPS?
-
-> +	 * We still have to provide vdso_data for some architectures to avoid
-> +	 * NULL pointer dereference.
-> +	 */
-> +	return __arch_get_hw_counter(1, vd);
-
-This is outright dangerous. __arch_get_hw_counter() is for VDSO usage
-and not for in kernel usage. What guarantees you that the architecture
-specific implementation does not need access to user only mappings.
-
-Aside of that what guarantees that '1' is what you want and stays that
-way forever? It's already broken on MIPS.
-
-Thanks,
-
-        tglx
+Instead of removing the printk completely, How about setting the default va=
+lue
+of the verbose option to zero so it doesn't call printk and gives a loud
+warning when changing the verbose option?
 
