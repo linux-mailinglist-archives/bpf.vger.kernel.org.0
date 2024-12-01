@@ -1,187 +1,170 @@
-Return-Path: <bpf+bounces-45912-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45913-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA37F9DF63E
-	for <lists+bpf@lfdr.de>; Sun,  1 Dec 2024 16:28:02 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88EE516304B
-	for <lists+bpf@lfdr.de>; Sun,  1 Dec 2024 15:27:58 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C54E1D618A;
-	Sun,  1 Dec 2024 15:27:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="T+gBr7Th"
-X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 832219DF6A8
+	for <lists+bpf@lfdr.de>; Sun,  1 Dec 2024 18:46:02 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC443B1A1
-	for <bpf@vger.kernel.org>; Sun,  1 Dec 2024 15:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2805F2815FE
+	for <lists+bpf@lfdr.de>; Sun,  1 Dec 2024 17:46:01 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65731D61B9;
+	Sun,  1 Dec 2024 17:45:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K5K+Hc7Q"
+X-Original-To: bpf@vger.kernel.org
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAEFE273FE
+	for <bpf@vger.kernel.org>; Sun,  1 Dec 2024 17:45:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733066873; cv=none; b=J6rt3aBLhhNZlVPvX93W17c4TxwCjAxB4yNimLST7zZlbR32t97FQyVKOU4cR7ViKygHEluMbgLf8XMCsDo3UJxLhcYThQYqqtCbp+TsZr7OgovRWCykFkgQCZTAwrRfgQWfg8xUEpC+nOwhDmNYOQ4ErfEy5RPIViAfvv0YRWA=
+	t=1733075156; cv=none; b=e7YHAPktFyZF5Kjv5ssX0woUETcHAJ71kmm/x/d7/GhX2VwmeD9LA5jzmEEyccy/736DUiI++ZvAbTQcfwJQ2QvuxLPZq4b5k5zIzjTYghWtSOIVc3Wysz+sMHWTNiniEgBgYp+0599L5aYCFFagE8J6eYnXjXkUi0OJrXQsN5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733066873; c=relaxed/simple;
-	bh=6fxTzoJc3Y99/0hpVgtuy6LFCnnyAcslax14xACw2lw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Tiz0iJhTXloCuZ092DIfbzL2g5+QH9scJx87xkRg2nzapmsoBHSJdZwUJHpmtgvTEZI8IHOpiMkJR+sJkIqhO2uSIFWuOrN/H1CfILDl0k6+Ve+YpR5DjX1A73rr7TK1Xjy4GC6QYynNnX4uiJaqJKx1gY/9fPyJDNU8ZTT5hGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=T+gBr7Th; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1733066870;
+	s=arc-20240116; t=1733075156; c=relaxed/simple;
+	bh=htDMiYgy0FS4JB2WguWe4tfCbd2zZp8cG/RNeVuQYIE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qnUM8QIjyyYg3z+cyg0PElU6EYkOeV3W6rg7HpZHbdKoX3Qs1Rase4/pVNzyPBpAnqeO1SF3idedRHve75ZyBXiQFSqx2wHTRxb/hMMech7uj+fQPdCgzBJgjEsxCw0y1VDTJDtCCN9BHaMbL9YN3tPe2dEHCfQp6gVGGUfo+eU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K5K+Hc7Q; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <aec0acb2-9232-43da-856d-3ba88d0461e2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1733075151;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=aR5us1W0Gn65QtQ/cPL2gnl8br+TunRBxT3qGj01h1Y=;
-	b=T+gBr7Th9srd9IXgJLuQxdIw+yoe+e/bkypKTeBBKYbtYMz0x0Y23b6Wz9eJXFImVUYUYu
-	I/xfhBkZoctc/U08C0nKFfsAIBcYAvpMbRmWfnz8bYzBep1qENeQaHnurlLZDUGXUtOq+l
-	+eI3KeTr6Jl+aahJRQrxWYgATPsL9D4=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-204-sSwSr4KHPrWSgZnX9YgXrA-1; Sun, 01 Dec 2024 10:27:49 -0500
-X-MC-Unique: sSwSr4KHPrWSgZnX9YgXrA-1
-X-Mimecast-MFC-AGG-ID: sSwSr4KHPrWSgZnX9YgXrA
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-725038968b9so3131375b3a.1
-        for <bpf@vger.kernel.org>; Sun, 01 Dec 2024 07:27:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733066868; x=1733671668;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aR5us1W0Gn65QtQ/cPL2gnl8br+TunRBxT3qGj01h1Y=;
-        b=uGSFfkywx4kLDW5MY3og3E/MiW6mRflbTiwy3dNZ4dIqwzFc4z2DGtMkRBI52yLuwC
-         cAO6ug6vV2VjnnYZixUrU6ZJKFs8eNe4nIaVJ6Zgj3PZ2BrETlE6ssJtLfEyhmKMWRHr
-         XbtQLFjybf7zNj/tYUvIvscbZoXrGA/dIYsx8tnztVb2Nq6R04E4hZ7bxzmFdTWBnF8y
-         38AO/W9ji1akrvJn1XfKWJr2ONijKj0KJ+fpU49E2gGRIHG39oEbguqnzcX+4oItXxLA
-         JOR+Wxpza2ZMQ1CI+KG6x0N76VfqcZkFJy0KOcUGZiDIzqwnQnCJZOgemP9dZmTOiRl8
-         fa0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVJb/nCMNE7bIYYoEI3hkZgMA8TU0lTb6BD9ijvkmf+k3GbVapAttkV3+aMaCoIAedghfU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwypyIm9BfnJCks5M8nhQUxLGZujX54RGmmm54k/wXR3qI6KJlW
-	2UHE9W1pfNnCGjMfRHKhXWtFpxTd2HQZVaXh1nXwuHLpEzoCpKJkKDsIxKx/pheLF9s7PA1fuHa
-	j32Xu7iqYF5fTjMAYUBcP1+hb/eoqwNC61uH2G2A7vFT7df41NA==
-X-Gm-Gg: ASbGncs4dKejcanc27rnddPXmTUj5PQkHBrVsta+svqH5sONVoiE+W/T6HMbwwAnyMz
-	iFEN6/u00KNV82HsSpLTUOek3f01ZHSieLCKfhCJ8TPt29hXj4WeJs9/jeyh93YpN4Avx6Q/HmP
-	N4dwfyQpUxHT98b70si/p6kUT2amLfzAcdNXYW1G6D1TxZh65YFbHRmXUGVijH9j3nqumszjPDe
-	HH2XBgahI7hIaU3Lsqf3WnV55SlbNhFUYQeGmYxOKLmMGGgUQFib7eJENupl8Tva/Q7nEHgR14S
-	Iv1v9QQMnJmELaM=
-X-Received: by 2002:a05:6a00:1a8b:b0:720:2e44:8781 with SMTP id d2e1a72fcca58-72530074279mr24407109b3a.11.1733066868151;
-        Sun, 01 Dec 2024 07:27:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFW6MWlVfLoHpajZ/LFzE0lA9yOz+rG4Bd2MPD94OOZEk1R1Joia7M7IqxEthR7RYSJzoRuqQ==
-X-Received: by 2002:a05:6a00:1a8b:b0:720:2e44:8781 with SMTP id d2e1a72fcca58-72530074279mr24407065b3a.11.1733066867811;
-        Sun, 01 Dec 2024 07:27:47 -0800 (PST)
-Received: from kernel-devel.local (fp6fd8f7a1.knge301.ap.nuro.jp. [111.216.247.161])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72541762411sm6975447b3a.20.2024.12.01.07.27.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Dec 2024 07:27:47 -0800 (PST)
-From: Shigeru Yoshida <syoshida@redhat.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	hawk@kernel.org,
-	lorenzo@kernel.org,
-	toke@redhat.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Shigeru Yoshida <syoshida@redhat.com>,
-	syzkaller <syzkaller@googlegroups.com>
-Subject: [PATCH bpf] bpf, test_run: Fix use-after-free issue in eth_skb_pkt_type()
-Date: Mon,  2 Dec 2024 00:27:35 +0900
-Message-ID: <20241201152735.106681-1-syoshida@redhat.com>
-X-Mailer: git-send-email 2.47.0
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZNFUERzK0aDTHv8QCI8eSyoNRxacBL6csBVETg8Kjpc=;
+	b=K5K+Hc7Q/sGO+kUYEOxBiCBY9zbUxwEhLVE7z7Gwuyx/mCV7XR4MTNotp/PqnW1wD6XbuQ
+	Bx+KRpxDSGSoBy/EQ/UHONd9PpcAP6jnkrJ3uQbWh+g454JHLjZU5+Lcjr2LUf3izk3Y2M
+	jgc98eUYbi77nz5GTm2MvpF4xihSeF0=
+Date: Sun, 1 Dec 2024 17:45:43 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v9 1/4] bpf: add bpf_get_cpu_time_counter kfunc
+To: Thomas Gleixner <tglx@linutronix.de>, Vadim Fedorenko <vadfed@meta.com>,
+ Borislav Petkov <bp@alien8.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song
+ <yonghong.song@linux.dev>, Mykola Lysenko <mykolal@fb.com>
+Cc: x86@kernel.org, bpf@vger.kernel.org, Peter Zijlstra
+ <peterz@infradead.org>, Martin KaFai Lau <martin.lau@linux.dev>
+References: <20241123005833.810044-1-vadfed@meta.com>
+ <20241123005833.810044-2-vadfed@meta.com> <87a5dfwoyo.ffs@tglx>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <87a5dfwoyo.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-KMSAN reported a use-after-free issue in eth_skb_pkt_type()[1]. The
-cause of the issue was that eth_skb_pkt_type() accessed skb's data
-that didn't contain an Ethernet header. This occurs when
-bpf_prog_test_run_xdp() passes an invalid value as the user_data
-argument to bpf_test_init().
+On 01.12.2024 12:46, Thomas Gleixner wrote:
+> On Fri, Nov 22 2024 at 16:58, Vadim Fedorenko wrote:
+>> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+>> index de0f9e5f9f73..a549aea25f5f 100644
+>> --- a/arch/x86/net/bpf_jit_comp32.c
+>> +++ b/arch/x86/net/bpf_jit_comp32.c
+>> @@ -2094,6 +2094,13 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>>   			if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+>>   				int err;
+>>   
+>> +				if (imm32 == BPF_CALL_IMM(bpf_get_cpu_time_counter)) {
+>> +					if (cpu_feature_enabled(X86_FEATURE_LFENCE_RDTSC))
+>> +						EMIT3(0x0F, 0xAE, 0xE8);
+>> +					EMIT2(0x0F, 0x31);
+> 
+> What guarantees that RDTSC is supported by the CPU?
 
-Fix this by returning an error when user_data is less than ETH_HLEN in
-bpf_test_init().
+Well, technically it may be a problem on x86_32 because there are x86 compatible
+platforms which don't have RDTSC, but they are almost 16+ years old, and I'm not
+quite sure we expose vDSO on such platforms.
 
-[1]
-BUG: KMSAN: use-after-free in eth_skb_pkt_type include/linux/etherdevice.h:627 [inline]
-BUG: KMSAN: use-after-free in eth_type_trans+0x4ee/0x980 net/ethernet/eth.c:165
- eth_skb_pkt_type include/linux/etherdevice.h:627 [inline]
- eth_type_trans+0x4ee/0x980 net/ethernet/eth.c:165
- __xdp_build_skb_from_frame+0x5a8/0xa50 net/core/xdp.c:635
- xdp_recv_frames net/bpf/test_run.c:272 [inline]
- xdp_test_run_batch net/bpf/test_run.c:361 [inline]
- bpf_test_run_xdp_live+0x2954/0x3330 net/bpf/test_run.c:390
- bpf_prog_test_run_xdp+0x148e/0x1b10 net/bpf/test_run.c:1318
- bpf_prog_test_run+0x5b7/0xa30 kernel/bpf/syscall.c:4371
- __sys_bpf+0x6a6/0xe20 kernel/bpf/syscall.c:5777
- __do_sys_bpf kernel/bpf/syscall.c:5866 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5864 [inline]
- __x64_sys_bpf+0xa4/0xf0 kernel/bpf/syscall.c:5864
- x64_sys_call+0x2ea0/0x3d90 arch/x86/include/generated/asm/syscalls_64.h:322
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd9/0x1d0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> 
+> Aside of that, if you want the read to be ordered, then you need to take
+> RDTSCP into account too.
 
-Uninit was created at:
- free_pages_prepare mm/page_alloc.c:1056 [inline]
- free_unref_page+0x156/0x1320 mm/page_alloc.c:2657
- __free_pages+0xa3/0x1b0 mm/page_alloc.c:4838
- bpf_ringbuf_free kernel/bpf/ringbuf.c:226 [inline]
- ringbuf_map_free+0xff/0x1e0 kernel/bpf/ringbuf.c:235
- bpf_map_free kernel/bpf/syscall.c:838 [inline]
- bpf_map_free_deferred+0x17c/0x310 kernel/bpf/syscall.c:862
- process_one_work kernel/workqueue.c:3229 [inline]
- process_scheduled_works+0xa2b/0x1b60 kernel/workqueue.c:3310
- worker_thread+0xedf/0x1550 kernel/workqueue.c:3391
- kthread+0x535/0x6b0 kernel/kthread.c:389
- ret_from_fork+0x6e/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+Yes, we have already had this discussion. RDTSCP has the same ordering
+guaranties as "LFENCE; RDTSC" according to the programming manuals. But it also
+provides "cookie" value, which is not used in this case and just trashes the
+value of ECX. To avoid additional register manipulation, I used lfence option.
 
-CPU: 1 UID: 0 PID: 17276 Comm: syz.1.16450 Not tainted 6.12.0-05490-g9bb88c659673 #8
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-3.fc41 04/01/2014
+>> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
+>> +__bpf_kfunc u64 bpf_get_cpu_time_counter(void)
+>> +{
+>> +	const struct vdso_data *vd = __arch_get_k_vdso_data();
+>> +
+>> +	vd = &vd[CS_RAW];
+>> +
+>> +	/* CS_RAW clock_mode translates to VDSO_CLOCKMODE_TSC on x86 and
+> 
+> How so?
+> 
+> vd->clock_mode is not guaranteed to be VDSO_CLOCKMODE_TSC or
+> VDSO_CLOCKMODE_ARCHTIMER. CS_RAW is the access to the raw (uncorrected)
+> time of the current clocksource. If the clock mode is not matching, then
+> you cannot access it.
 
-Fixes: be3d72a2896c ("bpf: move user_size out of bpf_test_init")
-Reported-by: syzkaller <syzkaller@googlegroups.com>
-Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
----
- net/bpf/test_run.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That's more about x86 and virtualization options. But in the end all this ends
+up in reading tsc value. And we do JIT anyway, so this function call will never
+be executed on x86. Other architectures (well, apart from MIPS) don't care about
+vd->clock_mode at all. And we don't provide kfuncs for architectures without JIT
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 501ec4249fed..756250aa890f 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -663,7 +663,7 @@ static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
- 	if (size < ETH_HLEN || size > PAGE_SIZE - headroom - tailroom)
- 		return ERR_PTR(-EINVAL);
- 
--	if (user_size > size)
-+	if (user_size < ETH_HLEN || user_size > size)
- 		return ERR_PTR(-EMSGSIZE);
- 
- 	size = SKB_DATA_ALIGN(size);
--- 
-2.47.0
+For MIPS I think I can ifdef these new kfuncs to the case when CONFIG_CSRC_R4K
+is not defined.
+
+I'm going to create a patchset to implement arch-specific replacements for all
+architectures supported by BPF JIT, so in the end this call will be effectively
+not executed.
+
+> 
+>> +	 * to VDSO_CLOCKMODE_ARCHTIMER on aarch64/risc-v. We cannot use
+>> +	 * vd->clock_mode directly because it brings possible access to
+>> +	 * pages visible by user-space only via vDSO.
+> 
+> How so? vd->clock_mode is kernel visible.
+
+vd->clock_mode is kernel visible, but compiler cannot optimize out code which
+accesses user-space pages if I don't provide constant value here.
+
+> 
+>>         * But the constant value
+>> +	 * of 1 is exactly what we need - it works for any architecture and
+>> +	 * translates to reading of HW timecounter regardles of architecture.
+> 
+> It does not. Care to look at MIPS?
+
+Yes, this is pretty much specific. But again, the goal is to have JIT
+implementation for all architectures and this func will actually be never called
+this way.
+
+> 
+>> +	 * We still have to provide vdso_data for some architectures to avoid
+>> +	 * NULL pointer dereference.
+>> +	 */
+>> +	return __arch_get_hw_counter(1, vd);
+> 
+> This is outright dangerous. __arch_get_hw_counter() is for VDSO usage
+> and not for in kernel usage. What guarantees you that the architecture
+> specific implementation does not need access to user only mappings.
+> 
+> Aside of that what guarantees that '1' is what you want and stays that
+> way forever? It's already broken on MIPS.
+
+I can ifdef MIPS case until we have JIT for it (which has pretty much 
+straightforward implementation for HW counter)
+
+> 
+> Thanks,
+> 
+>          tglx
 
 
