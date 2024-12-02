@@ -1,162 +1,141 @@
-Return-Path: <bpf+bounces-45950-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45951-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFE359E0CBB
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 21:03:36 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72D609E0D23
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 21:40:28 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8049F165571
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 20:03:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 392D8281F41
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 20:40:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467B91DE893;
-	Mon,  2 Dec 2024 20:03:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA591DED7B;
+	Mon,  2 Dec 2024 20:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c7xjkTCv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mr3WGCxi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DDFB1DD863
-	for <bpf@vger.kernel.org>; Mon,  2 Dec 2024 20:03:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508651DED4E;
+	Mon,  2 Dec 2024 20:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733169811; cv=none; b=nD1drMhW9w6vyAQqMfMR93qNMd7Ma80oCwIcv+ZkhSQmQKjQpgRuufU3opU7tfwDaRrj39BbPnvu5CacLvRQIRb+Nxzl+3BJMe+BYpcHzQ1Si299cRTMNSO9dni1vmjVWBjrMtXvN5k4EJl/dHKQCFhVHNbDhTFhdskrCT55Yxo=
+	t=1733172003; cv=none; b=ikcEnk3s+uzJWawjtz8+5eLIWo2ZRgQvha+Vg7ksT24oDJpRsR19ZaI1RMxgEgtUO60jdMgFCmxRFP0dQePRooZF4j4JThKlYsSFWAHPAQrpeQoCRb0oEHJmMOOVvoiaskgER3jgdwGPwR5G48f8yZs54h2YVqrSE9czxmepXTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733169811; c=relaxed/simple;
-	bh=R3sLE2paJtfoSpmD5nxVmPBCiuxP10ehZXz0alPlZ8U=;
+	s=arc-20240116; t=1733172003; c=relaxed/simple;
+	bh=cyxcPd52gACP8SxGjZ4luSPaose5u0/LNbMFAm5Cf7A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WS19Ew8s6PvSZUiNoTgqypaBTjgY6uCFfiXIbXJnWbt9c46K4Zh2IgnUjkjnQyRxRQjma2W2WSjVn7OhyKYQqhPyodEatSqJS4CDXn1H/96D2n4D33g+XqEporoZbOVC8s/ELUuIRVe05ibj7P0w0YxAbgz1qCWX0kpRyoTOpwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c7xjkTCv; arc=none smtp.client-ip=209.85.221.41
+	 To:Cc:Content-Type; b=Md2AMMajTU93qI06RBfy/ItT4ByijZyi7ydGm/RjfXCm5ACBuQGGLpChPDzoh89J78DAZ6cy8Ymp/WyiXsiqSMr8it/gknqbkM1ZOsoU59CtyJeh1OuOOT29PvFdMz9Seh+qFXIzKSBCW4cG4OOtp26nMle/VM0hykBH+71XXO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mr3WGCxi; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-385de59c1a0so3325053f8f.2
-        for <bpf@vger.kernel.org>; Mon, 02 Dec 2024 12:03:29 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2ee6abf124aso2606397a91.3;
+        Mon, 02 Dec 2024 12:40:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733169808; x=1733774608; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733172001; x=1733776801; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pu5fku6yZw1mhfm6TGAL7GjUFYumCDdtrRSQVcItkGA=;
-        b=c7xjkTCvErNCQZoFjFxFT/zZfk3aZ9sy2UDoVE3irhE1gyNK2xbX+QdYSsLiP0Dthm
-         Nsmh+1uI1PVh8aIv4amCdOXzoxHlBRfz3ILb57BOBxP+fd2dafgR76t4W8x+JiUvTBNX
-         bqfJY10F/xpdKnDf5is9h911Tu9eiZfaNlCz660vz4pGllVfbCZZK+gSgDh0Ato0QOWD
-         vRLZifsYO5+xK52EudH/7N/LEzbeb5Jxc5JZlzMGhxaZf9bGLDwowuIdngsqy418wzNu
-         vlR0/NaSy72motEKHnLrm1sb0yDzhacos8zXwF4og793Rfu3Kc9xbLsYhoDY7k/MvYVA
-         kAlg==
+        bh=bLRpz1Zk+hfN1AHa7tmG/5rj2S8mobqC+RuZhy+4X2I=;
+        b=mr3WGCxiPWlALVF/GglKzjFGx8BTRMlH28HIsD3AWb+pcmVadn1IN9o0ohPziHNncx
+         qsIkmWveC73wnJBWdcUbd6LO1KFy+PoHhgTtl8IGSv8hLqpq5Xfj9uktTqbpvPKiiK7m
+         3X0eWHvfNB2TxwahYMouVUWlTvAJqtpQG0BvVTy1UdfvcYE1/EfD2IiLENNpWICIs7Gq
+         QvlIxJ5SivFBlgbFjloqY4FHMwM+1MN5e90/iNlMrrWDdPzLveiORGTa7EVynMyovewn
+         O4UX71uNciN0Uf2yi30eoZaJPvoo7ddnORxAxERtf1JGawkslxKteMMoXf3iMsr8wnxQ
+         dfhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733169808; x=1733774608;
+        d=1e100.net; s=20230601; t=1733172001; x=1733776801;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pu5fku6yZw1mhfm6TGAL7GjUFYumCDdtrRSQVcItkGA=;
-        b=TLx1yEh932WHreR+YT6TJalHYlysMJmkfv5WwYOEEus0SGCGqjmvXQXfK6D2kJ6MYy
-         lmYOIe1qRrrj8WZntfsOTFM3uX85TcYpq50s9PMqsAUWeJk0mlRg9SStGOHDM/05YI9Q
-         f4OoAwI/qOFoyBu5svNRlH4RM279q+OF5FPNyAy8Gr8IDqnTptc2xW7pXn5pyG2NLlmo
-         rsxGvBSL/lRhI76bpa0hG9D9baJEVSHrZCEMyypp+HD2YiKFX8q++GtXlTqtL1NAR4ar
-         /9cqzCPMbSoK6uBv/LxGMDmhOJdBblhucFEFjWx/u2vzCsNS0KFfYEG04Iq1cMkGAPd5
-         AMIw==
-X-Gm-Message-State: AOJu0YxOQOAZcjMZg6xE1VUhA+HREXbwf4dpMUpoHxVXudetdcWN6mm9
-	mJ5CEldnI3i3xYPqCZFFSXnHMVt51tpoyLTbl77mM2iUvwvQ9hPqTIAO/CYh5fM68S/t1RYk0PI
-	e/irJs6YbVQU4JxG1NagpX64H5d/xGkLw
-X-Gm-Gg: ASbGncsi9LHCrqi+BIropMd8qD1IdRBYBBdhoaJS22cK7RogOPPb/pxZAi4C0rQnN1X
-	nQsmGkjXXCfDyDffAeIA13qrMu8U+GKnjob7VJUkHldu9+0M=
-X-Google-Smtp-Source: AGHT+IHB/DqwqP6DCE8areHI5CKFvjwew+/Zts6Ln7pxC2BrEf3gKnpxE22NOEdWAw3ZCOhNr+SSf2rqcH+1ebDaWkE=
-X-Received: by 2002:a05:6000:2a1:b0:385:e3c1:50d5 with SMTP id
- ffacd0b85a97d-385e3c15410mr7419831f8f.48.1733169808100; Mon, 02 Dec 2024
- 12:03:28 -0800 (PST)
+        bh=bLRpz1Zk+hfN1AHa7tmG/5rj2S8mobqC+RuZhy+4X2I=;
+        b=O86qA9fSdeWnRYBnBQo/D2jqDGnerMheZwkdwjvpnmtmyWEyifkSMmjhR5aGBlOnrC
+         Hw7DVPQWnoCnIbw9e222egubkPKEp9c4GaCs3EWm41mMcL2gu3g9nyEEQ1RXRQOwjaZ6
+         zMlJ+rWx2Q5jDRCYcyIQENT80Vb4OEkjJp1PF9j12ogWQeDIW51LWKRed01VJMCHhdYM
+         2AvwuMQQ57H+evGNLbmIxPE/etCv5GrKIwi1DnGPI/+qsdwcS1oClBPP+a0aTrDETuin
+         CBsStSU0A1POG4p7nDPJy2g6hlQnayMyj5osP+PAA+DHhK1B0M7SQ/crRDIYY7kNR0ff
+         RV1A==
+X-Forwarded-Encrypted: i=1; AJvYcCU4rKc15/8n42sFg9EPvSwNRHunzj9VmRQLD7FL9FM8xHYzh6XKm94YTPqMr4pDzhU6zVg=@vger.kernel.org, AJvYcCUGP2XQ4TutWJzeNTOu26lix4hIvV7JW+A2HEiFoKlTGhGXAwM9K/YvK69woluQ3inGrqTVIYSdBMcwLR+3@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLfe579LaaS4BbrMDVXmJOkES62Aa9jYaoIQUAA2JUCf+l3Rbm
+	JkdrdsEJYDZFcf6B+mIBa9ZOJdh29t4z/sowQgnih7fMBZKZT0KJF7B/xk+w4q4vMgnGZyzlxLN
+	0uRQsECe9h6BflzDISmyzEq3LFm4=
+X-Gm-Gg: ASbGncsCif1PlAPXTUwWKjG5l1V7/dPfsB9r4lDtez+R09BNtgawyYKbOeJOFfwOdfn
+	3/uixOqQCjgH445OMJNfzMzQCAE3k
+X-Google-Smtp-Source: AGHT+IHmtqRzaVmAlDgjKyNEPsGkR13thUm6uPwrECK1jcapO0NEnL6jvuXlh2uXpxWOxWfIFYP5kAQjGVrojGvK4z0=
+X-Received: by 2002:a17:90b:1d0f:b0:2ee:d433:7c54 with SMTP id
+ 98e67ed59e1d1-2eed4337dbfmr6055343a91.19.1733172001590; Mon, 02 Dec 2024
+ 12:40:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAP01T768+4FkNC=nw6qnUP3NqQ3+0G_O+LLbMnyWQpkW100RNg@mail.gmail.com>
-In-Reply-To: <CAP01T768+4FkNC=nw6qnUP3NqQ3+0G_O+LLbMnyWQpkW100RNg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 2 Dec 2024 12:03:16 -0800
-Message-ID: <CAADnVQLY7Vy8SrF-cWzY0bG3zQ-DWsncghwb08nOOahbaFJMmw@mail.gmail.com>
-Subject: Re: Improve precision loss when doing <8-bytes spill to stack slot?
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Mathias Payer <mathias.payer@nebelwelt.net>, Meng Xu <meng.xu.cs@uwaterloo.ca>, 
-	Kashyap Sanidhya <sanidhya.kashyap@epfl.ch>, Lyu Tao <tao.lyu@epfl.ch>
+References: <20241129091003.87716-1-jameshongleiwang@126.com>
+In-Reply-To: <20241129091003.87716-1-jameshongleiwang@126.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 2 Dec 2024 12:39:49 -0800
+Message-ID: <CAEf4BzYAG320uwJrtehe-7j1vsta1JwHT9JJs_DcmX892W736A@mail.gmail.com>
+Subject: Re: [PATCH] sched_ext: Add __weak to fix the build errors
+To: Honglei Wang <jameshongleiwang@126.com>
+Cc: tj@kernel.org, void@manifault.com, nathan@kernel.org, 
+	ndesaulniers@google.com, morbo@google.com, justinstitt@google.com, 
+	haoluo@google.com, brho@google.com, joshdon@google.com, vishalc@linux.ibm.com, 
+	hongyan.xia2@arm.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 2, 2024 at 12:32=E2=80=AFAM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Fri, Nov 29, 2024 at 1:36=E2=80=AFAM Honglei Wang <jameshongleiwang@126.=
+com> wrote:
 >
-> Hello,
-> For the following program,
+> commit 5cbb302880f5 ("sched_ext: Rename
+> scx_bpf_dispatch[_vtime]_from_dsq*() -> scx_bpf_dsq_move[_vtime]*()")
+> introduced several new functions which caused compilation errors when
+> compiled with clang.
 >
-> 0: R1=3Dctx() R10=3Dfp0
-> ; asm volatile ("                                       \ @
-> verifier_spill_fill.c:19
-> 0: (b7) r1 =3D 1024                     ; R1_w=3D1024
-> 1: (63) *(u32 *)(r10 -12) =3D r1        ; R1_w=3D1024 R10=3Dfp0 fp-16=3Dm=
-mmm????
-> 2: (61) r1 =3D *(u32 *)(r10 -12)        ;
-> R1_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xfffffff=
-f))
-> R10=3Dfp0 fp-16=3Dmmmm????
-> 3: (95) exit
-> R0 !read_ok
-> processed 4 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> peak_states 0 mark_read 0
+> Let's fix this by adding __weak markers.
 >
-> This is a reduced test case from a real world sched-ext scheduler when
-> a 32-byte array was maintained on the stack to store some values,
-> whose values were then used in bounds checking. A known constant was
-> stored in the array and later refilled into a reg to perform a bounds
-> check, similar to the example above.
+> Signed-off-by: Honglei Wang <jameshongleiwang@126.com>
+> ---
+>  tools/sched_ext/include/scx/common.bpf.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> Like in the example, the verifier loses precision for the value r1,
-> i.e. when it is loaded back from the 4-byte aligned stack slot, the
-> precise value is lost.
-> For the actual program, this meant that bounds check produced an
-> error, as after the fill of the u32 from the u32[N] array, the
-> verifier didn't see the exact value.
+> diff --git a/tools/sched_ext/include/scx/common.bpf.h b/tools/sched_ext/i=
+nclude/scx/common.bpf.h
+> index 2f36b7b6418d..625f5b046776 100644
+> --- a/tools/sched_ext/include/scx/common.bpf.h
+> +++ b/tools/sched_ext/include/scx/common.bpf.h
+> @@ -40,9 +40,9 @@ void scx_bpf_dsq_insert(struct task_struct *p, u64 dsq_=
+id, u64 slice, u64 enq_fl
+>  void scx_bpf_dsq_insert_vtime(struct task_struct *p, u64 dsq_id, u64 sli=
+ce, u64 vtime, u64 enq_flags) __ksym __weak;
+>  u32 scx_bpf_dispatch_nr_slots(void) __ksym;
+>  void scx_bpf_dispatch_cancel(void) __ksym;
+> -bool scx_bpf_dsq_move_to_local(u64 dsq_id) __ksym;
+> -void scx_bpf_dsq_move_set_slice(struct bpf_iter_scx_dsq *it__iter, u64 s=
+lice) __ksym;
+> -void scx_bpf_dsq_move_set_vtime(struct bpf_iter_scx_dsq *it__iter, u64 v=
+time) __ksym;
+> +bool scx_bpf_dsq_move_to_local(u64 dsq_id) __ksym __weak;
+> +void scx_bpf_dsq_move_set_slice(struct bpf_iter_scx_dsq *it__iter, u64 s=
+lice) __ksym __weak;
+> +void scx_bpf_dsq_move_set_vtime(struct bpf_iter_scx_dsq *it__iter, u64 v=
+time) __ksym __weak;
+
+Ack, this is the way!
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  bool scx_bpf_dsq_move(struct bpf_iter_scx_dsq *it__iter, struct task_str=
+uct *p, u64 dsq_id, u64 enq_flags) __ksym __weak;
+>  bool scx_bpf_dsq_move_vtime(struct bpf_iter_scx_dsq *it__iter, struct ta=
+sk_struct *p, u64 dsq_id, u64 enq_flags) __ksym __weak;
+>  u32 scx_bpf_reenqueue_local(void) __ksym;
+> --
+> 2.45.2
 >
-> I understand why the verifier has to behave this way, since each
-> spilled bpf_reg_state maps to one stack slot, and the stack slot maps
-> to an 8-byte region.
-> My question is whether this is something that people are interested in
-> improving longer term, or is it better to suggest people to workaround
-> such cases?
-
-I think we need to consider improving the verifier if we can
-come up with a reasonable path to implement it.
-
-The stack_state memory consumption can be mitigated as:
- struct bpf_stack_state {
-        struct bpf_reg_state spilled_ptr;
-+       struct bpf_reg_state *spilled_ptr_off4;
-        u8 slot_type[BPF_REG_SIZE];
- };
-
-but I suspect plenty of code would need to be touched to support
-such spill/fill.
-
-And then the next question is whether support for u16 is needed too.
-
-Without seeing an actual code it's hard to judge whether full bpf_reg_state
-is needed with tnum and ranges.
-It may be the case that only constants are needed to be tracked.
-Then we can approach it from the angle of generalizing STACK_ZERO.
-Like replace STACK_ZERO with STACK_CONST_VAL and let every byte
-remember the actual value written.
- 0: (b7) r1 =3D 1024                     ; R1_w=3D1024
- 1: (63) *(u32 *)(r10 -12) =3D r1        ; R1_w=3D1024 R10=3Dfp0 fp-16=3Dmm=
-mm????
-
-will populate four constants 00 00 04 00
-
-and *(u32 *)(r10 -12) will read it back as 1024.
-
-Pretty much what mark_reg_stack_read() is doing today
-with a special case of zero, but for all u8 consts.
+>
 
