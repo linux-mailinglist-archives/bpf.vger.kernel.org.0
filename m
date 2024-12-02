@@ -1,189 +1,188 @@
-Return-Path: <bpf+bounces-45953-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45954-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C7319E0DDD
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 22:28:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 302AE9E0DB0
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 22:22:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0202FB3BA14
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 20:53:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B910D28283E
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 21:22:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 697EE1DEFE9;
-	Mon,  2 Dec 2024 20:53:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2C81DF26D;
+	Mon,  2 Dec 2024 21:22:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IOeWk2Vs";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eE98/WBq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fOdUxjTQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91F8B1D9A6D
-	for <bpf@vger.kernel.org>; Mon,  2 Dec 2024 20:52:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523691632E6
+	for <bpf@vger.kernel.org>; Mon,  2 Dec 2024 21:22:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733172780; cv=none; b=XpKnBM2n/EDwKWBm1v4JxpAy5UH27Ww9FjtwwxH/FasADz8LuYVVu9dWBEBcwQWXFMQWKWNczN72gH9qnUrqCNqXQXzYl2lPB3T5CxJ8el14FB4tXsdTZDQV2g7d0be8awJUDNk4iA1EF0BS+zpud5Gp/U2LDkotLdhXIv4EIGM=
+	t=1733174531; cv=none; b=JbdeILO27ORI72nYaGH6emRBWwoBePLLmbgaM4tzNJzwzQmaD7eVsqtwJcN3vbOHw74rr2Sdc5ud5rpBd9yy3/mm7BPNTZlUCVhzDR5iXiZRhA/dwdB2ABKxIaXvxkuvqhitkcbe+UWagg9GC8OMPNl/gntbW0xqDzeB4O1Dqt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733172780; c=relaxed/simple;
-	bh=pecplru8HVjVuhiaQQrovG46P6CLeD8vZiys4kzG/bU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=GYCmId340aoAywJJ0jcrJl0VQ3Mh+wiEGP0YMDEB34q2GQXRLrKSrRG8Pf/psFN3sgjbNQ/PWrbMcN+0AEZ96wMEP3N+vrUTmlfg8YNN3KvEQ0DC3+NLntIwDMQOC9uLMczHLF+IktkECK3bHH7ovUTz27CB4Dm1xEdw/2N+qdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IOeWk2Vs; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eE98/WBq; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1733172776;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RSxVdwK4qyw5ZYoDrvyubWZh/aQQ6pPK2M5Bb6c88gc=;
-	b=IOeWk2VsoBXb4Zx1nxopxC91yHtJ2d5mZQ8GACqTi1oglDaPKOKrfJ0sswB5JcxrQIvBk6
-	5egal+rTjZ3upH9PrcwwoXqWHt/skLJRdDq0rp/Yf6QlNU1HT+27AD/jlISv7zmPW2aETS
-	V3Otw6IXprZKRNgPWSeJdE0MV81thholWkzfm+5ofRcxhpWHeXDzSyWBK3wPl14vLuKMS9
-	keTAdmvmwxhmLKnGB9xVVMMnBmKJ1/encBmECrMhWjPBRWPRg4ATA/AbAvFXYe4YuXASD4
-	emv0SjwknyIVzIWDRCEpQ5pTKM6Y5xwNRlVMYZo57AdE56N7Ti2OzoUo9fFQQg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1733172776;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RSxVdwK4qyw5ZYoDrvyubWZh/aQQ6pPK2M5Bb6c88gc=;
-	b=eE98/WBqGH2L8MsMb+qHBo/T6GWDMWPFpg3mhVfYkd6VQOCg1aX5lvLdr4OX7GKV5dUE3m
-	Ic3finNLBv/F5yAg==
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>, Vadim Fedorenko
- <vadfed@meta.com>, Borislav Petkov <bp@alien8.de>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song
- <yonghong.song@linux.dev>, Mykola Lysenko <mykolal@fb.com>
-Cc: x86@kernel.org, bpf@vger.kernel.org, Peter Zijlstra
- <peterz@infradead.org>, Martin KaFai Lau <martin.lau@linux.dev>
-Subject: Re: [PATCH bpf-next v9 1/4] bpf: add bpf_get_cpu_time_counter kfunc
-In-Reply-To: <aec0acb2-9232-43da-856d-3ba88d0461e2@linux.dev>
-References: <20241123005833.810044-1-vadfed@meta.com>
- <20241123005833.810044-2-vadfed@meta.com> <87a5dfwoyo.ffs@tglx>
- <aec0acb2-9232-43da-856d-3ba88d0461e2@linux.dev>
-Date: Mon, 02 Dec 2024 21:52:55 +0100
-Message-ID: <87ldwxvmc8.ffs@tglx>
+	s=arc-20240116; t=1733174531; c=relaxed/simple;
+	bh=seqFRE9F0US+jXU21JwkoDvUPyV7SgmOqSk6lf7AcKk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cIgG88q9xjT3/ool9cif9AoWF2CN9IKM/oiRx8mEf+qF7780vULbLcOAygEY2CAPFtXfFuwon+QAouL+djTpztnxXnZs5nM/wPC9UlZfssGbwiIanDFcDr4bGG0etC9aOlvsSQ73eiPzeuq730SSQayS+w6GVFFBcSZ7Mm1hbCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fOdUxjTQ; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-215348d1977so37587705ad.3
+        for <bpf@vger.kernel.org>; Mon, 02 Dec 2024 13:22:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733174529; x=1733779329; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+VqImhnldQSP/pWdoPgR8o/s0E2cYjxhFdcW7Ss76Mo=;
+        b=fOdUxjTQWbBemoOTMSFlLdw8KCOd2qcJQ8lJs1yseglrrTcTz5UbBybsvAL/NdZMXc
+         DtTcGRAMCyE2oQNMSsnrT2IpgoKTIKoLNx3jWhAFXRDxQ8PXqg4QuczGJX1I8gsPt9+U
+         iLmlp6L3k7UmwJ4+HnHW5DdaNfm7lWNeqNwGAlFLMeTtwvJ2p52VeMffPZUeT1bHPiO1
+         UI9fiMKdwPMkGazFOB8XZzFA3YJj0OZq/5BLbjoKotftpZeRtKA+isMVSHR3eTpYCnMG
+         ocbbeK0mh51n1dH13OnJYhjETaJv1Qq/isODe3b3ZOTAJfihenTQi2nVulJNxMSvToZx
+         x9SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733174529; x=1733779329;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+VqImhnldQSP/pWdoPgR8o/s0E2cYjxhFdcW7Ss76Mo=;
+        b=n95mg9ADyHRcENzLZkFB2tMWP33smpjI6L2IenIiFtzTYq/bZaD9wcoy2c/0Q6wTOU
+         nOTx9tVKpIfZBnWViGWnHhy+kdcEt77pgdSIZP9bHf/P4Qtdu7ThTXIozPTHqg9tApuX
+         Db96s++bC4CrCi9fzroMldStRzIPpW0/oCGPCICnoPm4+ZVgHaMOEPplBTfu0XV0kF8w
+         1r+HdiBWqVf7bGYo/P6mCxBExvS6q2x1aue/jWOMkWLyJM4lXLNtp+vOqsoJeAt5RWJ1
+         6IQ0WElgQHUG7sUsacpEpuiI7n4tT8ohcxFePUALuq20pCdTOXn4bMsuYvc3YhpjUGl/
+         2JGg==
+X-Gm-Message-State: AOJu0YyIGUjoNvPc2HONYitW8NlaSks0Z1WgiffiOHBkqhzz/aZh4d2+
+	Gc88c4Qg7C9BNPvu5YymhteqMxeVzJa+YE7Ht6e9M+R5uMThvlC/yeoXIQ==
+X-Gm-Gg: ASbGncu4fg3Zk3Gw7aKDHemnq6IcOcN1smzJDndKGlhibjE7aOdF8GXKly/C9JYzSPo
+	JSKa5qltK1oBzIS+pmpBOx8VgnNMdWyubb4ErBumW1RrvWJ6d0z5PmkVntleeDtSnClwP12c52H
+	sWMHoSsk15M89cRXaiF7Wrfp9oNgiKrqJ98l6STqIFK44U+EDuAV+gHfz2P27hHLnD3FAAu1Etv
+	aJJqd9dlveIyB+CN34fagRmRIQ7FuRotuyBkMieGHUOYw==
+X-Google-Smtp-Source: AGHT+IFCI/SHguixz5n85SROFGiHsExZgaTxGERkJqARYDTCXUYXs04XbTZnzOPusQnBK9pQd/tiPw==
+X-Received: by 2002:a17:902:f64e:b0:215:aece:ed63 with SMTP id d9443c01a7336-215bd169072mr370235ad.44.1733174529107;
+        Mon, 02 Dec 2024 13:22:09 -0800 (PST)
+Received: from honey-badger.. ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215413d3408sm64395145ad.159.2024.12.02.13.22.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Dec 2024 13:22:08 -0800 (PST)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	masahiroy@kernel.org,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next] samples/bpf: remove unnecessary -I flags from libbpf EXTRA_CFLAGS
+Date: Mon,  2 Dec 2024 13:21:54 -0800
+Message-ID: <20241202212154.3174402-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Sun, Dec 01 2024 at 17:45, Vadim Fedorenko wrote:
-> On 01.12.2024 12:46, Thomas Gleixner wrote:
->> On Fri, Nov 22 2024 at 16:58, Vadim Fedorenko wrote:
->>> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
->>> index de0f9e5f9f73..a549aea25f5f 100644
->>> --- a/arch/x86/net/bpf_jit_comp32.c
->>> +++ b/arch/x86/net/bpf_jit_comp32.c
->>> @@ -2094,6 +2094,13 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
->>>   			if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
->>>   				int err;
->>>   
->>> +				if (imm32 == BPF_CALL_IMM(bpf_get_cpu_time_counter)) {
->>> +					if (cpu_feature_enabled(X86_FEATURE_LFENCE_RDTSC))
->>> +						EMIT3(0x0F, 0xAE, 0xE8);
->>> +					EMIT2(0x0F, 0x31);
->> 
->> What guarantees that RDTSC is supported by the CPU?
->
-> Well, technically it may be a problem on x86_32 because there are x86 compatible
-> platforms which don't have RDTSC, but they are almost 16+ years old, and I'm not
-> quite sure we expose vDSO on such platforms.
+Commit [0] breaks samples/bpf build:
 
-Care to look at the VDSO related config symbols? They are
-unconditionally selected independent of 16+ year old platforms.
+    $ make M=samples/bpf
+    ...
+    make -C /path/to/kernel/samples/bpf/../../tools/lib/bpf \
+     ...
+     EXTRA_CFLAGS=" \
+     ...
+     -fsanitize=bounds \
+     -I/path/to/kernel/usr/include \
+     ...
+    	/path/to/kernel/samples/bpf/libbpf/libbpf.a install_headers
+      CC      /path/to/kernel/samples/bpf/libbpf/staticobjs/libbpf.o
+    In file included from libbpf.c:29:
+    /path/to/kernel/tools/include/linux/err.h:35:8: error: 'inline' can only appear on functions
+       35 | static inline void * __must_check ERR_PTR(long error_)
+          |        ^
 
-Also TSC can be disabled at boot time by a particular platform because
-it's implementation is buggy.
+The error is caused by `objtree` variable changing definition from `.`
+(dot) to an absolute path:
+- The variable TPROGS_CFLAGS is constructed as follows:
+  ...
+  TPROGS_CFLAGS += -I$(objtree)/usr/include
+- It is passed as EXTRA_CFLAGS for libbpf compilation:
+  $(LIBBPF): ...
+    ...
+	$(MAKE) -C $(LIBBPF_SRC) RM='rm -rf' EXTRA_CFLAGS="$(TPROGS_CFLAGS)"
+- Before commit [0], the line passed to libbpf makefile was
+  '-I./usr/include', where '.' referred to LIBBPF_SRC due to -C flag.
+  The directory $(LIBBPF_SRC)/usr/include does not exist and thus
+  was never resolved by C compiler.
+- After commit [0], the line passed to libbpf makefile became:
+  '<output-dir>/usr/include', this directory exists and is resolved by
+  C compiler.
+- Both 'tools/include' and 'usr/include' define files err.h and types.h.
+- libbpf expects headers like 'linux/err.h' and 'linux/types.h'
+  defined in 'tools/include', not 'usr/include', hence the compilation
+  error.
 
-It does not matter at all whether those platforms are old or not. What
-matters is that the code which tries to access the TSC has to be correct
-under all circumstances and not under magic assumptions.
+This commit removes unnecessary -I flags from libbpf compilation.
+(libbpf sets up the necessary includes at lib/bpf/Makefile:63).
 
->> Aside of that, if you want the read to be ordered, then you need to take
->> RDTSCP into account too.
->
-> Yes, we have already had this discussion. RDTSCP has the same ordering
-> guaranties as "LFENCE; RDTSC" according to the programming manuals. But it also
-> provides "cookie" value, which is not used in this case and just trashes the
-> value of ECX. To avoid additional register manipulation, I used lfence option.
+[0] commit 13b25489b6f8 ("kbuild: change working directory to external module directory with M=")
 
-With zero comment and zero explanation in the change log.
+Fixes: 13b25489b6f8 ("kbuild: change working directory to external module directory with M=")
 
->>> +#if IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY)
->>> +__bpf_kfunc u64 bpf_get_cpu_time_counter(void)
->>> +{
->>> +	const struct vdso_data *vd = __arch_get_k_vdso_data();
->>> +
->>> +	vd = &vd[CS_RAW];
->>> +
->>> +	/* CS_RAW clock_mode translates to VDSO_CLOCKMODE_TSC on x86 and
->> 
->> How so?
->> 
->> vd->clock_mode is not guaranteed to be VDSO_CLOCKMODE_TSC or
->> VDSO_CLOCKMODE_ARCHTIMER. CS_RAW is the access to the raw (uncorrected)
->> time of the current clocksource. If the clock mode is not matching, then
->> you cannot access it.
->
-> That's more about x86 and virtualization options. But in the end all this ends
-> up in reading tsc value.
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ samples/bpf/Makefile | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-As long as VDSO_CLOCKMODE_TSC == 1. There is no guarantee for this.
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index bcf103a4c14f..ee10dbf1b471 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -146,13 +146,14 @@ ifeq ($(ARCH), x86)
+ BPF_EXTRA_CFLAGS += -fcf-protection
+ endif
+ 
+-TPROGS_CFLAGS += -Wall -O2
+-TPROGS_CFLAGS += -Wmissing-prototypes
+-TPROGS_CFLAGS += -Wstrict-prototypes
+-TPROGS_CFLAGS += $(call try-run,\
++COMMON_CFLAGS += -Wall -O2
++COMMON_CFLAGS += -Wmissing-prototypes
++COMMON_CFLAGS += -Wstrict-prototypes
++COMMON_CFLAGS += $(call try-run,\
+ 	printf "int main() { return 0; }" |\
+ 	$(CC) -Werror -fsanitize=bounds -x c - -o "$$TMP",-fsanitize=bounds,)
+ 
++TPROGS_CFLAGS += $(COMMON_CFLAGS)
+ TPROGS_CFLAGS += -I$(objtree)/usr/include
+ TPROGS_CFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
+ TPROGS_CFLAGS += -I$(LIBBPF_INCLUDE)
+@@ -229,7 +230,7 @@ clean:
+ 
+ $(LIBBPF): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OUTPUT)
+ # Fix up variables inherited from Kbuild that tools/ build system won't like
+-	$(MAKE) -C $(LIBBPF_SRC) RM='rm -rf' EXTRA_CFLAGS="$(TPROGS_CFLAGS)" \
++	$(MAKE) -C $(LIBBPF_SRC) RM='rm -rf' EXTRA_CFLAGS="$(COMMON_CFLAGS)" \
+ 		LDFLAGS="$(TPROGS_LDFLAGS)" srctree=$(BPF_SAMPLES_PATH)/../../ \
+ 		O= OUTPUT=$(LIBBPF_OUTPUT)/ DESTDIR=$(LIBBPF_DESTDIR) prefix= \
+ 		$@ install_headers
+@@ -305,7 +306,7 @@ $(obj)/$(TRACE_HELPERS): TPROGS_CFLAGS := $(TPROGS_CFLAGS) -D__must_check=
+ -include $(BPF_SAMPLES_PATH)/Makefile.target
+ 
+ VMLINUX_BTF_PATHS ?= $(abspath $(if $(O),$(O)/vmlinux))				\
+-		     $(abspath $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux))	\
++		     $(abspath $(if $(objtree),$(objtree)/vmlinux))		\
+ 		     $(abspath ./vmlinux)
+ VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
+ 
+-- 
+2.47.0
 
-> And we do JIT anyway, so this function call will never be executed on
-> x86. Other architectures (well, apart from MIPS) don't care about
-> vd->clock_mode at all. And we don't provide kfuncs for architectures
-> without JIT
-
-They care. Because all of them can set VDSO_CLOCKMODE_NONE, which forces
-the fallback into the syscall. And they do so for good reasons. Either
-because the clocksource is not functional or has other limitiations
-which prevent VDSO usage or even usage in the kernel.
-
-> For MIPS I think I can ifdef these new kfuncs to the case when CONFIG_CSRC_R4K
-> is not defined.
-
-Which excludes VDSO_CLOCKMODE_GIC, which is the most common clock source
-on modern MIPS systems.
-
-Aside of that a config symbol does not guarantee at all that the
-clocksource exists on the actual hardware or is properly configured and
-enabled.
-
->>> +	 * We still have to provide vdso_data for some architectures to avoid
->>> +	 * NULL pointer dereference.
->>> +	 */
->>> +	return __arch_get_hw_counter(1, vd);
->> 
->> This is outright dangerous. __arch_get_hw_counter() is for VDSO usage
->> and not for in kernel usage. What guarantees you that the architecture
->> specific implementation does not need access to user only mappings.
->> 
->> Aside of that what guarantees that '1' is what you want and stays that
->> way forever? It's already broken on MIPS.
->
-> I can ifdef MIPS case until we have JIT for it (which has pretty much 
-> straightforward implementation for HW counter)
-
-Again. You cannot make any assumptions about any implementation detail
-of __arch_get_hw_counter().
-
-It is a function solely designed for user space VDSO usage and in kernel
-usage is simply bogus.
-
-Just because it "works" today, does not guarantee that it works tomorrow
-and there is no justification for BPF to enforce compatibility with
-magic number '1' and a constraint that the code has to work in the
-kernel.
-
-Thanks,
-
-        tglx
 
