@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-45943-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45944-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C30CB9E0872
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 17:27:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A8879E0AE5
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 19:22:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83E05281F58
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 16:27:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21B2CB33950
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 16:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB03199E8D;
-	Mon,  2 Dec 2024 16:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF5CB19AA58;
+	Mon,  2 Dec 2024 16:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="IEjXEs8K"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="LA96w7nm"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B8A0AD51
-	for <bpf@vger.kernel.org>; Mon,  2 Dec 2024 16:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23302165F01
+	for <bpf@vger.kernel.org>; Mon,  2 Dec 2024 16:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733156858; cv=none; b=mfmB6K/OoV2S38jJK056YMk8yCkuZVIgyG+m20JVlEOSq2GpsHMSp9/EgsOiiPWAs7U6thzz1KvO5FBsCOuStiBOpfYnlpBGUjLlyZPAjN4C07b/QAg2F6tAFp0ejQyeayV8iS1HtwAf4+G3drf9tUVv+sqzt0Nh444WgRLZGBg=
+	t=1733156882; cv=none; b=OXjvJMJwNcGDjHvXxfMBARe+SRXr3marUpAu9iQOWTfHpLNuJnMNF7Gq0c/lSPesiIt+w+qM3cu7sw6Ml1vIzXH43b8uWBqKS0+8a2YZRBFy8IM88BODCPkcm67Ac+iMlWVg+pqVyVZUV42zbfnB60Hzk7FcHQXzQD05XxKCUEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733156858; c=relaxed/simple;
-	bh=nA4kd9dRpu1WcDFrz+xE5Ye4ML4GuGy+2BZI4TrosMo=;
+	s=arc-20240116; t=1733156882; c=relaxed/simple;
+	bh=hHKUNOtNAJRUTMIPfNjKj2+x7M/SzAqkqVuuf1jT3m4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rEESojyqNJdllqPZnl9S7+kUyf7P5cvAj4vk5Wzy2xfvU7jgenkJM83LyGkSinVEo3tKJb5nb+ArQjEE93oLLsjYOUmUkj50D0rF40GxlruyytDXIW0Z8GpO5VbYiYQUcap9kAsyvQh0MvpAMvM2nNFL/Th41tmFpzMcuHwSu9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=IEjXEs8K; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=pOWb8RV6wYQC3tr+EZROledOi3cG8Jc09/ufO4TJoCRm5u0McFx2zt4k4pJ9ySQRPE7m8WnbvTHXQ4tEq4YDeeVbP2i3frpAtARYdLTw1GdMsTdwgRMSrPGpaQD0mJb+kKeC5nvxKEp83Fweyr7Ue98KazTI9npp+Cdx3Vf+V6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=LA96w7nm; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,25 +36,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=gr5HXcYDiLUcWfWjv2vmbfpV3pf+oZI2zEz9hbo403M=; b=IEjXEs8Kwc9bhtOW3OPUOTQXaZ
-	0oz4cNNzEwAEHxwVTeONglXh7zQ9NMGtjN+l9T8O8I1y9yKf65vCbwR3vk5GDRwoXU8K2HKlV9vZc
-	4A6pXJbjjnlX2RxBk5tHkPhF7i+0s6VVLIw4q9Oj4QAyOhUaG+irEeJkvvW6QEsBXBRoNNHM4moMX
-	UokYIHHWK0Bs5d2WtMIhKe4dfo2D6/eIqmzlY7bLPo2UfZyRYPFE70G9eA3DU8xlYn4pW04VAGTF0
-	mk2GJzIr5eXt6WrULqbi04ZEGuVNcAnapcZO/jS9Qo3FRiIeAxceYVkF2eI2KDuQdi78CIDyXLMDB
-	M22Rykyg==;
+	bh=fsAhx5amYRAC8qiWRpM9ii3vebmDLkKZRYWQFXijKqg=; b=LA96w7nmuQoMngkfbvWl69SjYF
+	qcahW/807qhfBQtRCZ18AA0vYOj2r8iqEN+enNrgMvaY2UL1gOCozWAa1l3zlfd2szLpYTEBzyAjZ
+	11Bg1lEoQ5N6CEDZ+tZ+5YvCt6zUV2g2nvYHtOpVtP/88NP9KfOKg/o2vxuU0Rg6V0WsZDVcUfJUE
+	YVOIqIT5NnYyKoEorCqRl8fksiVMsI3wrr4TE/HJ1sEnqfKJ5Haqqdjdh1OL/8pu9PdUpfUyEa4q9
+	qL5Z3V5MiZVnt0h+gqBHlvfErjmisMyHFxffmgEX1c5fgDuahRCEPGhDR+fPsKZaaOQ+YNfDGM72N
+	cVNv6jCw==;
 Received: from sslproxy04.your-server.de ([78.46.152.42])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1tI90U-000Ivu-C3; Mon, 02 Dec 2024 17:10:42 +0100
+	id 1tI8y6-000IhY-Gk; Mon, 02 Dec 2024 17:08:14 +0100
 Received: from [178.197.248.17] (helo=[192.168.1.114])
 	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1tI90T-000FXS-0c;
-	Mon, 02 Dec 2024 17:10:41 +0100
-Message-ID: <a0d44807-5cf7-4ba7-a7ea-e59448d28bd9@iogearbox.net>
-Date: Mon, 2 Dec 2024 17:10:40 +0100
+	id 1tI8y5-0001F2-1J;
+	Mon, 02 Dec 2024 17:08:13 +0100
+Message-ID: <1b9e7d6b-f04c-49cc-81f6-e8e95e676868@iogearbox.net>
+Date: Mon, 2 Dec 2024 17:08:12 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,8 +62,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf v2 2/9] bpf: Remove unnecessary kfree(im_node) in
- lpm_trie_update_elem
+Subject: Re: [PATCH bpf v2 1/9] bpf: Remove unnecessary check when updating
+ LPM trie
 To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
  Alexei Starovoitov <alexei.starovoitov@gmail.com>,
@@ -77,7 +77,7 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
  Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
  <linux@weissschuh.net>, houtao1@huawei.com, xukuohai@huawei.com
 References: <20241127004641.1118269-1-houtao@huaweicloud.com>
- <20241127004641.1118269-3-houtao@huaweicloud.com>
+ <20241127004641.1118269-2-houtao@huaweicloud.com>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -123,7 +123,7 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20241127004641.1118269-3-houtao@huaweicloud.com>
+In-Reply-To: <20241127004641.1118269-2-houtao@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
@@ -132,15 +132,19 @@ X-Virus-Scanned: Clear (ClamAV 0.103.10/27475/Mon Dec  2 10:41:11 2024)
 On 11/27/24 1:46 AM, Hou Tao wrote:
 > From: Hou Tao <houtao1@huawei.com>
 > 
-> There is no need to call kfree(im_node) when updating element fails,
-> because im_node must be NULL. Remove the unnecessary kfree() for
-> im_node.
+> When "node->prefixlen == matchlen" is true, it means that the node is
+> fully matched. If "node->prefixlen == key->prefixlen" is false, it means
+> the prefix length of key is greater than the prefix length of node,
+> otherwise, matchlen will not be equal with node->prefixlen. However, it
+> also implies that the prefix length of node must be less than
+> max_prefixlen.
+> 
+> Therefore, "node->prefixlen == trie->max_prefixlen" will always be false
+> when the check of "node->prefixlen == key->prefixlen" returns false.
+> Remove this unnecessary comparison.
 > 
 > Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
 > Signed-off-by: Hou Tao <houtao1@huawei.com>
 
 Acked-by: Daniel Borkmann <daniel@iogearbox.net>
-
-Small nit if you respin, or follow-up: Given we remove this, the im_node = NULL
-init is then also not needed anymore.
 
