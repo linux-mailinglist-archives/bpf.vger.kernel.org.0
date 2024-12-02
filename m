@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-45940-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45943-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0F5E9E07E4
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 17:05:25 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C30CB9E0872
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 17:27:43 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D04541762D8
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 15:34:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83E05281F58
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 16:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64479209671;
-	Mon,  2 Dec 2024 15:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB03199E8D;
+	Mon,  2 Dec 2024 16:27:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="I2m1BK44"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="IEjXEs8K"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8EC209665;
-	Mon,  2 Dec 2024 15:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B8A0AD51
+	for <bpf@vger.kernel.org>; Mon,  2 Dec 2024 16:27:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733153672; cv=none; b=m1gBSL8vs3o8kT0aYk+Gnf11wIpY3baAcIGxQzLuZYb0Ekbcy5tzpUQKBm8ozv2hfOXRRxW348ygczQpWElHA4x0F7brBXcu+QsBq3vsKpoSWdtROOH/cMYyFKM8+7ZxDML2FJTUV1/xuceNpyYoNY7h+/YsodHqyaplAQ8G3vs=
+	t=1733156858; cv=none; b=mfmB6K/OoV2S38jJK056YMk8yCkuZVIgyG+m20JVlEOSq2GpsHMSp9/EgsOiiPWAs7U6thzz1KvO5FBsCOuStiBOpfYnlpBGUjLlyZPAjN4C07b/QAg2F6tAFp0ejQyeayV8iS1HtwAf4+G3drf9tUVv+sqzt0Nh444WgRLZGBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733153672; c=relaxed/simple;
-	bh=SCy2pkEu/+ybYbDeTUI8ZHS5hfEUNXxihnZ7bvoAtSc=;
+	s=arc-20240116; t=1733156858; c=relaxed/simple;
+	bh=nA4kd9dRpu1WcDFrz+xE5Ye4ML4GuGy+2BZI4TrosMo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qtx+SbpwkMd9z9kr24uH0Yxxne4ygOy4JybvPU4iA/vHEVe0qCVL+UQdWc4xgVdJw2FDjvGh1/nH9U/3fuL2NmfKQpxPzppuJtGwgpSpbIqgco/67U1zVJnhnanivZWgaRjzLUwx9pjwCH7ir0ELzUxsTaObz13NuMnw4BD+0hg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=I2m1BK44; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=rEESojyqNJdllqPZnl9S7+kUyf7P5cvAj4vk5Wzy2xfvU7jgenkJM83LyGkSinVEo3tKJb5nb+ArQjEE93oLLsjYOUmUkj50D0rF40GxlruyytDXIW0Z8GpO5VbYiYQUcap9kAsyvQh0MvpAMvM2nNFL/Th41tmFpzMcuHwSu9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=IEjXEs8K; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,25 +36,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=dYOFzkdiXB0Hna3UWi1Qmgm4kVdDKfwii/vdkDQ0dd0=; b=I2m1BK44JwW3LJC2J29y+/Gxit
-	UODyTJGN0VILidfSCPwE8sbtDUGuruJLaZr6jFRjPRXncAEzR5lANGjCBUsOA0DgtFa0F7yxVkZmx
-	gi85k0HSaWXLio3RHUFnmXIiUSqudsjlRwpbR73s5L3AP/WSkwVRsOMeMBxDYeec/0OGTSXNF+Gp8
-	5qybofVPB0G4rnVcWPjaYCBT5mkS4MLHoItsYIIhsd9E9OijSb7aKV2hT1Icf+QzaCjTI6swsNHKs
-	Gsr4XVGRpRQ8PdR7qg+yntMkWJCXo9a9cUvF6q48s/wReYHCg+PbQ3dvXluNOfb+M8aWbRPMarkHc
-	8ye/np9g==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
+	bh=gr5HXcYDiLUcWfWjv2vmbfpV3pf+oZI2zEz9hbo403M=; b=IEjXEs8Kwc9bhtOW3OPUOTQXaZ
+	0oz4cNNzEwAEHxwVTeONglXh7zQ9NMGtjN+l9T8O8I1y9yKf65vCbwR3vk5GDRwoXU8K2HKlV9vZc
+	4A6pXJbjjnlX2RxBk5tHkPhF7i+0s6VVLIw4q9Oj4QAyOhUaG+irEeJkvvW6QEsBXBRoNNHM4moMX
+	UokYIHHWK0Bs5d2WtMIhKe4dfo2D6/eIqmzlY7bLPo2UfZyRYPFE70G9eA3DU8xlYn4pW04VAGTF0
+	mk2GJzIr5eXt6WrULqbi04ZEGuVNcAnapcZO/jS9Qo3FRiIeAxceYVkF2eI2KDuQdi78CIDyXLMDB
+	M22Rykyg==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1tI8RQ-000FFI-3t; Mon, 02 Dec 2024 16:34:28 +0100
+	id 1tI90U-000Ivu-C3; Mon, 02 Dec 2024 17:10:42 +0100
 Received: from [178.197.248.17] (helo=[192.168.1.114])
-	by sslproxy05.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1tI8RO-000OtF-1W;
-	Mon, 02 Dec 2024 16:34:27 +0100
-Message-ID: <e0a51f8c-9d09-4e99-b6f6-6a3b0a3363eb@iogearbox.net>
-Date: Mon, 2 Dec 2024 16:34:26 +0100
+	id 1tI90T-000FXS-0c;
+	Mon, 02 Dec 2024 17:10:41 +0100
+Message-ID: <a0d44807-5cf7-4ba7-a7ea-e59448d28bd9@iogearbox.net>
+Date: Mon, 2 Dec 2024 17:10:40 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,21 +62,22 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] kbuild: propagate CONFIG_WERROR to resolve_btfids
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: Masahiro Yamada <masahiroy@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20241126-resolve_btfids-v2-0-288c37cb89ee@weissschuh.net>
- <7dfd3085-f433-41d9-a697-6b2433e27e3b@iogearbox.net>
- <0a5cd9a8-46c6-44d3-9d76-a0191613f694@t-8ch.de>
+Subject: Re: [PATCH bpf v2 2/9] bpf: Remove unnecessary kfree(im_node) in
+ lpm_trie_update_elem
+To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
+ <linux@weissschuh.net>, houtao1@huawei.com, xukuohai@huawei.com
+References: <20241127004641.1118269-1-houtao@huaweicloud.com>
+ <20241127004641.1118269-3-houtao@huaweicloud.com>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -122,30 +123,24 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <0a5cd9a8-46c6-44d3-9d76-a0191613f694@t-8ch.de>
+In-Reply-To: <20241127004641.1118269-3-houtao@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27475/Mon Dec  2 10:41:11 2024)
 
-On 12/2/24 4:32 PM, Thomas Weißschuh wrote:
-> On 2024-12-02 16:28:07+0100, Daniel Borkmann wrote:
->> On 11/26/24 10:17 PM, Thomas Weißschuh wrote:
->>> Use CONFIG_WERROR to also fail on warnings emitted by resolve_btfids.
->>> Allow the CI bots to prevent the introduction of new warnings.
->>>
->>> This series currently depends on
->>> "[PATCH] bpf, lsm: Fix getlsmprop hooks BTF IDs" [0]
->>>
->>> [0] https://lore.kernel.org/lkml/20241123-bpf_lsm_task_getsecid_obj-v1-1-0d0f94649e05@weissschuh.net/
->>
->> Given this is a dependency, do you plan to follow up on [1]?
+On 11/27/24 1:46 AM, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
 > 
->>    [1] https://lore.kernel.org/lkml/Z0TRc0A6Q8QUxNAe@google.com/
+> There is no need to call kfree(im_node) when updating element fails,
+> because im_node must be NULL. Remove the unnecessary kfree() for
+> im_node.
 > 
-> I did so in [2], which is already part of the BPF tree.
-> 
-> [2] https://lore.kernel.org/lkml/20241125-bpf_lsm_task_getsecid_obj-v2-1-c8395bde84e0@weissschuh.net/
+> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 
-Perfect, nevermind then!
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+
+Small nit if you respin, or follow-up: Given we remove this, the im_node = NULL
+init is then also not needed anymore.
 
