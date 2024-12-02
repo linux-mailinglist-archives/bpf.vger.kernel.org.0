@@ -1,161 +1,161 @@
-Return-Path: <bpf+bounces-45955-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45956-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42F3D9E0E00
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 22:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F5939E0EA0
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 23:09:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9CB2B27C92
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 21:38:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01DCCB2736C
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 22:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B1441DF24D;
-	Mon,  2 Dec 2024 21:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953AC1DF725;
+	Mon,  2 Dec 2024 22:02:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n6g7sZ4H"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SwZqFONQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44AD8163A97
-	for <bpf@vger.kernel.org>; Mon,  2 Dec 2024 21:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C03541DA103
+	for <bpf@vger.kernel.org>; Mon,  2 Dec 2024 22:01:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733175515; cv=none; b=LyIOwXLdwKltCm9Efu3hfeFpavX6kwZdqJEmnaskW2gUtWa7bjiNGNydqAHm0GPQRd8WnSmvJoWszEvrbUPbkt4mmhavoYZnEn0Ty93ZpXddsK7kad/nCGdc/InXK6nQ5ZUHxLDbdvNjbjwU4gcWHZo7dDZe/cE+ZI23geO1kJk=
+	t=1733176920; cv=none; b=bAAbonGWCAJza/2nu14IlicfpHOlvwgCt8MGpCIMzSetDsnSCxXbL4KA3yy1zTdkwVosu5YgGpIjn7Sc9rS+ehKegW1TS3WOKWnruHRaHOqfbCnkJFZaGrv+UqYzZMGw5HIaij9/Bho6DK6LX7VwOVFiNiTZuxRjdLhTZAv/I9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733175515; c=relaxed/simple;
-	bh=7xGM2Zv6VPSBGOYslwq6dEwS0xy0nR+0XcW8sM2oLII=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qE5m/XP5+BaOjC73ImV4CxKPG31VwsHy4W7WA7zNg9Oq9g8DFY1AZ1BIALUbEqENexMGuOy7ZSoEyNryHdB/CGA55PUGs4RtBnjEHYlcBM9ULMMksVaKGLvk1s8XDCOa9+rBNShGv5s5aigR6KaUuK0iB41lRuPdCVieJyhwU04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n6g7sZ4H; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <80d8c4cf-2897-4385-b849-2dbac863ee39@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1733175511;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NmXr80EokHOIDy9EV+L8W5kREfs/44BiSNhckzGGbdQ=;
-	b=n6g7sZ4HAoxcYG1osI6uKNyWpD1HeG1S633MfEzmIhCjorSSHmOxnp/v+wfHtH3JfSReEh
-	Gn9y3qm8M/2O1oS+huWYiDdzdS9i6SQP5CZeaeTSaW+F3mtuM8QPoixx2FaYnPZCoAyZUq
-	4in5gIQcmdRm0zpkTdW7/sRAUhy7AfA=
-Date: Mon, 2 Dec 2024 13:38:17 -0800
+	s=arc-20240116; t=1733176920; c=relaxed/simple;
+	bh=5WSLZrr4cpLHjqKkEm/8R1dIuaRitNV7ET5lnzqj/Qg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=dEQvC3zTm+qDlq9y6Gz0Uhgn5SHt4RxoPpJvSynaGkRc2mcTsYpsJBgdWRJgNLMbeK2EZgXx6IC4iY8a4H2uLKoI2XipmCvGFmOp2tD5MW8QYeWnTYcAKcdyY4l2TIN4/22qKCv1OCkljs4TmqRwBZaVaLtmBDdJ9UKl9Q6ETmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SwZqFONQ; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-7256a7a3d98so1801252b3a.3
+        for <bpf@vger.kernel.org>; Mon, 02 Dec 2024 14:01:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733176918; x=1733781718; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bBjd2zRNRMMstlgkddP8oAZB6nmjCmlmjYPHCEIfM4M=;
+        b=SwZqFONQtm+bPDft+8LysN4RgUtXCgrohs5uRRif12lRqz+QxjgP8FaAsZMt8/qgw2
+         AdIhGtQUlWuIc7slE/iLDb/h6Se+qyPKdaBx1uGh+pCR/39q6czuWvvOhMH5ODuIwnr/
+         qzdFDtSy/uRzWkM4I/pyXP2mrvLeI4oOKsNP0lm2vJPjUDs5RmPu0m+Njn1TSb/AsuPJ
+         TRytqYGHYHO37mJgyO1FBdYdp/5QpVBV9IiC7W1dLcw48EMLltqQwk6i1gSOW2RaQOHE
+         KcIuKsEhw9D9QCZq22cEOpgrZtN+XItJN8NUmNzB7oBUFcG4FfKdKm78xQEBl/N+ypRY
+         uY1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733176918; x=1733781718;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bBjd2zRNRMMstlgkddP8oAZB6nmjCmlmjYPHCEIfM4M=;
+        b=n4CN9LyYZRFWXr7tF6LfGwoknTNL5TW/69DAldJXiaffrTZB7oNpsmyArufQsSoLCs
+         BiC/HNZq1SiewYHnu4HxbZ2czFiTcdaLJmo8UOoNgWiCFW6E7XFf9a0xACj8NpaNIV3N
+         f88K+VGqjT2k+s9aemQN35EZVqVj0w0KubpAq0ourXIdlQmLkFKV1b3X0nvtcAOOjBWB
+         85NnwUHRlkBtsEQE2cukUMRIhMvuWysw6JbhU7HY8tsznwixynMkdZ/y+ZtYpZ6b2OQD
+         GwWqIod0QBdhGdSSsyTcm/dyzagTY7Gl9N99B69zb9c7oYMz+xHWRdgrTXJxPA+MfG+S
+         ZtGw==
+X-Forwarded-Encrypted: i=1; AJvYcCU4KI8UDQWeyddTbgwaINcfO0U+9AMy/BhPDaMSYIkDBPSi1PaU+fObgT7fF8/chL9yIxE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzglwY30fvVgNxeCxwvL4JCB2izZG/7CCL9s6/z5moEahMfMeEM
+	78dpP2m4Ub5vGa6yEPrUQUGwHehMs4qsDfJwAFA7t0rkPAzcGhZn
+X-Gm-Gg: ASbGncvS79j/Ff/xyG0PhYLo2He2iwVjz8D00JCl0N/p5YB+HuMi/eP0nyyujS6jq5a
+	AlA7k0MaE5PJYVPPfJQMTK3AAYB42VvgGKt9BoQvs26QRRo9D0LdtL9hfgAHEFzjmBwcHNlQksb
+	OCYNB5nMp0dq8WY0TmwkbDuar//XmJkPw+ycAIcNm7iIbwo29+OM3xlcuvvz1FHKsRX7KES/XhA
+	4uo+el+vAeOdhFBZRvTLWSv6St66zORhJEM1ltWF//hHpk=
+X-Google-Smtp-Source: AGHT+IErf8a9cxGtm9r58XfvFL6ffLeK85wxFG38/uu+HLBf9E8nx4+oXXjLiRp4Jm8/W1k2EZGcxw==
+X-Received: by 2002:aa7:88c3:0:b0:71e:db72:3c87 with SMTP id d2e1a72fcca58-72530103f57mr38769146b3a.20.1733176917088;
+        Mon, 02 Dec 2024 14:01:57 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725418149absm9318467b3a.146.2024.12.02.14.01.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Dec 2024 14:01:56 -0800 (PST)
+Message-ID: <86da73e3700275da6f3fa845baf83c52bd46508c.camel@gmail.com>
+Subject: Re: Improve precision loss when doing <8-bytes spill to stack slot?
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
+ Lau <martin.lau@kernel.org>, Mathias Payer	 <mathias.payer@nebelwelt.net>,
+ Meng Xu <meng.xu.cs@uwaterloo.ca>, Kashyap Sanidhya
+ <sanidhya.kashyap@epfl.ch>, Lyu Tao <tao.lyu@epfl.ch>
+Date: Mon, 02 Dec 2024 14:01:51 -0800
+In-Reply-To: <CAP01T768+4FkNC=nw6qnUP3NqQ3+0G_O+LLbMnyWQpkW100RNg@mail.gmail.com>
+References: 
+	<CAP01T768+4FkNC=nw6qnUP3NqQ3+0G_O+LLbMnyWQpkW100RNg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf] bpf, test_run: Fix use-after-free issue in
- eth_skb_pkt_type()
-To: Stanislav Fomichev <stfomichev@gmail.com>,
- Shigeru Yoshida <syoshida@redhat.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
- hawk@kernel.org, lorenzo@kernel.org, toke@redhat.com, bpf@vger.kernel.org,
- netdev@vger.kernel.org, syzkaller <syzkaller@googlegroups.com>
-References: <20241201152735.106681-1-syoshida@redhat.com>
- <Z03dL0zxEnmzZUN7@mini-arch>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <Z03dL0zxEnmzZUN7@mini-arch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 12/2/24 8:15 AM, Stanislav Fomichev wrote:
-> On 12/02, Shigeru Yoshida wrote:
->> KMSAN reported a use-after-free issue in eth_skb_pkt_type()[1]. The
->> cause of the issue was that eth_skb_pkt_type() accessed skb's data
->> that didn't contain an Ethernet header. This occurs when
->> bpf_prog_test_run_xdp() passes an invalid value as the user_data
->> argument to bpf_test_init().
->>
->> Fix this by returning an error when user_data is less than ETH_HLEN in
->> bpf_test_init().
->>
->> [1]
->> BUG: KMSAN: use-after-free in eth_skb_pkt_type include/linux/etherdevice.h:627 [inline]
->> BUG: KMSAN: use-after-free in eth_type_trans+0x4ee/0x980 net/ethernet/eth.c:165
->>   eth_skb_pkt_type include/linux/etherdevice.h:627 [inline]
->>   eth_type_trans+0x4ee/0x980 net/ethernet/eth.c:165
->>   __xdp_build_skb_from_frame+0x5a8/0xa50 net/core/xdp.c:635
->>   xdp_recv_frames net/bpf/test_run.c:272 [inline]
->>   xdp_test_run_batch net/bpf/test_run.c:361 [inline]
->>   bpf_test_run_xdp_live+0x2954/0x3330 net/bpf/test_run.c:390
->>   bpf_prog_test_run_xdp+0x148e/0x1b10 net/bpf/test_run.c:1318
->>   bpf_prog_test_run+0x5b7/0xa30 kernel/bpf/syscall.c:4371
->>   __sys_bpf+0x6a6/0xe20 kernel/bpf/syscall.c:5777
->>   __do_sys_bpf kernel/bpf/syscall.c:5866 [inline]
->>   __se_sys_bpf kernel/bpf/syscall.c:5864 [inline]
->>   __x64_sys_bpf+0xa4/0xf0 kernel/bpf/syscall.c:5864
->>   x64_sys_call+0x2ea0/0x3d90 arch/x86/include/generated/asm/syscalls_64.h:322
->>   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->>   do_syscall_64+0xd9/0x1d0 arch/x86/entry/common.c:83
->>   entry_SYSCALL_64_after_hwframe+0x77/0x7f
->>
->> Uninit was created at:
->>   free_pages_prepare mm/page_alloc.c:1056 [inline]
->>   free_unref_page+0x156/0x1320 mm/page_alloc.c:2657
->>   __free_pages+0xa3/0x1b0 mm/page_alloc.c:4838
->>   bpf_ringbuf_free kernel/bpf/ringbuf.c:226 [inline]
->>   ringbuf_map_free+0xff/0x1e0 kernel/bpf/ringbuf.c:235
->>   bpf_map_free kernel/bpf/syscall.c:838 [inline]
->>   bpf_map_free_deferred+0x17c/0x310 kernel/bpf/syscall.c:862
->>   process_one_work kernel/workqueue.c:3229 [inline]
->>   process_scheduled_works+0xa2b/0x1b60 kernel/workqueue.c:3310
->>   worker_thread+0xedf/0x1550 kernel/workqueue.c:3391
->>   kthread+0x535/0x6b0 kernel/kthread.c:389
->>   ret_from_fork+0x6e/0x90 arch/x86/kernel/process.c:147
->>   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->>
->> CPU: 1 UID: 0 PID: 17276 Comm: syz.1.16450 Not tainted 6.12.0-05490-g9bb88c659673 #8
->> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-3.fc41 04/01/2014
->>
->> Fixes: be3d72a2896c ("bpf: move user_size out of bpf_test_init")
->> Reported-by: syzkaller <syzkaller@googlegroups.com>
->> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
->> ---
->>   net/bpf/test_run.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
->> index 501ec4249fed..756250aa890f 100644
->> --- a/net/bpf/test_run.c
->> +++ b/net/bpf/test_run.c
->> @@ -663,7 +663,7 @@ static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
->>   	if (size < ETH_HLEN || size > PAGE_SIZE - headroom - tailroom)
->>   		return ERR_PTR(-EINVAL);
->>   
->> -	if (user_size > size)
->> +	if (user_size < ETH_HLEN || user_size > size)
->>   		return ERR_PTR(-EMSGSIZE);
->>   
->>   	size = SKB_DATA_ALIGN(size);
->> -- 
->> 2.47.0
->>
-> 
-> I wonder whether 'size < ETH_HLEN' above is needed after your patch.
-> Feels like 'user_size < ETH_HLEN' supersedes it.
+On Mon, 2024-12-02 at 09:32 +0100, Kumar Kartikeya Dwivedi wrote:
+> Hello,
+> For the following program,
+>=20
+> 0: R1=3Dctx() R10=3Dfp0
+> ; asm volatile ("                                       \ @
+> verifier_spill_fill.c:19
+> 0: (b7) r1 =3D 1024                     ; R1_w=3D1024
+> 1: (63) *(u32 *)(r10 -12) =3D r1        ; R1_w=3D1024 R10=3Dfp0 fp-16=3Dm=
+mmm????
+> 2: (61) r1 =3D *(u32 *)(r10 -12)        ;
+> R1_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xfffffff=
+f))
+> R10=3Dfp0 fp-16=3Dmmmm????
+> 3: (95) exit
+> R0 !read_ok
+> processed 4 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> peak_states 0 mark_read 0
+>=20
+> This is a reduced test case from a real world sched-ext scheduler when
+> a 32-byte array was maintained on the stack to store some values,
+> whose values were then used in bounds checking. A known constant was
+> stored in the array and later refilled into a reg to perform a bounds
+> check, similar to the example above.
+>=20
+> Like in the example, the verifier loses precision for the value r1,
+> i.e. when it is loaded back from the 4-byte aligned stack slot, the
+> precise value is lost.
+> For the actual program, this meant that bounds check produced an
+> error, as after the fill of the u32 from the u32[N] array, the
+> verifier didn't see the exact value.
+>=20
+> I understand why the verifier has to behave this way, since each
+> spilled bpf_reg_state maps to one stack slot, and the stack slot maps
+> to an 8-byte region.
+> My question is whether this is something that people are interested in
+> improving longer term, or is it better to suggest people to workaround
+> such cases?
 
-May be fixing it by replacing the existing "size" check with "user_size" check? 
-Seems more intuitive that checking is needed on the "user_"size instead of the 
-"size". The "if (user_size > size)" check looks useless also. Something like this?
+I'd start by trying to measure how much precision we leave on the table.
+E.g. modify fixed offset stack read/write routines to count the number
+of aligned u8/u16/u32 reads/writes, expose this information in
+verifier statistics, aggregate it in varistat, and then run on the selftest=
+s.
+Of-course, the test cases are tuned to be verifiable, so the signal
+would be biased, but still, u32 is pretty common in the source tree.
 
--	if (size < ETH_HLEN || size > PAGE_SIZE - headroom - tailroom)
-+	if (user_size < ETH_HLEN || user_size > PAGE_SIZE - headroom - tailroom)
-		return ERR_PTR(-EINVAL);
+As Alexei says in the sibling thread, there are multiple ways to
+integrate u32 spill/fill tracking, e.g.:
+- treat bpf_stack_state->spilled_ptr as a union of 64-bit register
+  or two 32-bit registers;
+- treat u32 writes as 64-bit writes that don't change tnum
+  representation of the other spilled_ptr half (but invalidate the
+  range information).
 
--	if (user_size > size)
--		return ERR_PTR(-EMSGSIZE);
--
+The former seems to be a cleaner approach, but would need more work
+(and might benefit from [0] to save some space). The latter seems
+easier to implement but might frustrate end user by having different
+tracking power for u32 and u64 values.
+
+Do you have some specific implementation in mind?
+
+[0] https://lore.kernel.org/bpf/ZTZxoDJJbX9mrQ9w@u94a/
 
 
