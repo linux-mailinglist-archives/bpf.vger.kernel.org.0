@@ -1,328 +1,136 @@
-Return-Path: <bpf+bounces-45924-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45927-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98B639E00AB
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 12:36:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8646A9E012B
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 13:00:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE5C5161A03
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 11:35:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9691A1626AA
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 12:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C83ED2010F5;
-	Mon,  2 Dec 2024 11:30:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E3341FE478;
+	Mon,  2 Dec 2024 12:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="Jed/pMdz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mOLX9a97"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 799FC1C6F56;
-	Mon,  2 Dec 2024 11:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5488A1FC0FA;
+	Mon,  2 Dec 2024 12:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733139044; cv=none; b=uZxuQysL/Oz/BaUmuWjKfwzQUN3ncBMJmGzj8HkJI3VNzjKKcNfYMp7R40R5ILV3XtRPxLmNjI9ggJG/1Dkx6wLTNA9BEwtu5LSyirTXBeX0WBqN5HoiVJuIbhHMXdcIxb/rp+DUbVKUzwnPAhO1buehv0YNGIE11VdlU73+Vrg=
+	t=1733140845; cv=none; b=Ik18wg8w8njrUuMYOxN8LpWcyVrlwZS9BWUOEHvs5ffphzhB/xHQ5IfjbTYIIj/XGBzJXuZzoZLIdOKi1wVtv5a0+bSqOYDsUZZl1rFIRu//d6F1mwFtp1/o5lYIMrri3puezlqHtIFbj738LjeT7FO6nhXMj1kH/dz8PJKC+q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733139044; c=relaxed/simple;
-	bh=R3raTy+TsyNhkfIZ0aBPxt6o5618wybYnhAizrUINhk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=fdzmRxQ8e6/3MrHMR+ebMe8FNo5rcyIjepp+EV3tAgJQ4d1aQ2rhUlmY1IE9FRpz1PVJt2DF9tkVeF3ZU8x55s16nAKXKViIe0MMocchxkaOoe4mePCC3v+aeH/Qrx8eS4wl7iu7f+QLDPe9Xr8o9T33btdxssYk1gnWiBUagIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=Jed/pMdz; arc=none smtp.client-ip=185.226.149.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
-	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1tI4dM-0080q5-SF; Mon, 02 Dec 2024 12:30:32 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector2; h=Cc:To:In-Reply-To:References:Message-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From;
-	bh=uNFEdS5uGm6Njo4yZYOGUhFLFGeSEmwBt49zd9lx61Q=; b=Jed/pMdzlOGtkIN4p5WMj0koWh
-	Jr4Dz7IjcTqcFFGqvHBDjfWaWgEHpnA8778fzJetjpItXtKThzhErt2R4SD0mINszmbnRV4JLRZCp
-	deEnWeotcGQ+pcFU9WF9vcVusI72hwjIhRBAXN/s//tDKw9OvUt9Ly0lrnwsBZykHDA0jyP4m3Jd4
-	lLm5mdRwLLUD9ZqSmctfhL4UyWpvSxWLYIXIlLyyJJP9AtTSJzsMNwPuoqu4UJ9v0SQYiqQnz1z++
-	uq0TuHMsQKvvMvRQ+nV7IJMLt97uG7InrYLBbfj0wytbQaqeyhjeKzdLtjMKecuL5GH17MNQ6NelK
-	wnO8NXdQ==;
-Received: from [10.9.9.73] (helo=submission02.runbox)
-	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1tI4dK-0005e5-Ul; Mon, 02 Dec 2024 12:30:32 +0100
-Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1tI4d5-007H5a-3p; Mon, 02 Dec 2024 12:30:15 +0100
-From: Michal Luczaj <mhal@rbox.co>
-Date: Mon, 02 Dec 2024 12:29:25 +0100
-Subject: [PATCH bpf 3/3] bpf, sockmap: Fix race between element replace and
- close()
+	s=arc-20240116; t=1733140845; c=relaxed/simple;
+	bh=JGYBHesYIbhC7aBl5yCYh/PzDEWQVUhlwalGax3dWiY=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WMGIK8MY0iAACYzwIYeXW9WZsMs2Jqy2RmoZ2R7+0aAREllUBRcghHQqf+wcLVpTZfluKwZDdPyxKUDtR13Q5uqmSdOwdA+m6shCpPrHNOO1NWKJyG033NxSb9080P0oBCs9NTfQKpg/Hh68Jtf4Tap2bEoOuq9iWytXUuJQQds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mOLX9a97; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-434a1fe2b43so37390325e9.2;
+        Mon, 02 Dec 2024 04:00:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733140843; x=1733745643; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MQnantWxCB7aLJu1F0kD476uJFD2vd0GkTEQYnGy5wg=;
+        b=mOLX9a97jirvY0sKTqzVtRymLx1fTYgt9+YkTqzvTjFMjR63I2xYxHFiJuiP7vHy7C
+         dneq35YaF51dbSlDwiPrVOUEwwb0WqcUkDHxT8CITApoQXr+OvUQCAhZ31y9z+VyFXqM
+         +kLUyjul6LuFpZnSfxb7SXymLfxp/LqhgOJ2ggxnU4zyyJrAjxX6k52mDqPgdnVhXyQ/
+         GJpCTqhkzMXpW0bMrv4gxLGft1hYf7OyuwteS2oHVm56XnzyBlw8FhZ+Dqs4OE+PMu4F
+         Sbg6DvyphFhNjB7A68f3zH8MdNMocCeAAMYyutN5OdVu0OhFq1k4b3HKPAKhAwwpP4JQ
+         4XWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733140843; x=1733745643;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MQnantWxCB7aLJu1F0kD476uJFD2vd0GkTEQYnGy5wg=;
+        b=mI9buOci5Fu0hLR1SQnFGclByTHmC7bpuDtwlLMFYWCMRaoBBvUJm1ptpQ7EeclX2o
+         GSKaqW9L7bQf8Zg8OVkUS5UmrZ4y0p09t5YMOFJjV7wwzo8YrUXy9kxGML83JwONjiIw
+         35gvnImWbd9RKBzXHH1YQby4exF9DTSHEfkLBtQBgU4a6uJEzinR3wSKg/zNFX1UWP2T
+         3b6j+LbfrAQVPIVGLzvpZzYk2VluaLciaJnU+vNF01bVrZCYi5VXSwZwUBfFST7NADMX
+         WaGaNwWrssWg0plENQ1bl40lbd5QFjAey6Y1s2DVADIqGJjt9miFLh4D7AteI3JqajH+
+         GX3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWS9Q0l86ihNPtaCHIu7xsqfpPIdHuxrTE1/Zp5C6VAkiWdquXOnlPqCy6dQlnLUr1RwBg=@vger.kernel.org, AJvYcCWkXjM9Nc7FscYOB2ROIqXgOvQNSMakhzP5Bit4eiX+zB2ThsUDFVjMrZpM5mi/Vr2Xgrvlnfbr6kHI0wFy@vger.kernel.org, AJvYcCX3xzK+dE/iCMv6z3Vszmtj9ytR/F/KP2hvlNbEnuKtoarwVQ6Ye7ZFD5ECe3qm3ArL6zluV26PTg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxB23XR6UF0Tffaxnjd+VPeLXX3PhoFfzgRGaJVWF64yHtRF1tx
+	Hfx7v427DdiCvC2ixYQz3hr2H5pqcmcoZZm6hQPKR2G6Ih/JZK66
+X-Gm-Gg: ASbGncvVbbLoVnVlfkirQ7USU6P33FPHSGa48Zx3PlSXxO6reqGc8ZP+149H+TyzuDx
+	oqWKfGHYOe5YRBcQl4K/L7xxuIYu/5MIso80WsG8/exuhs8k0j2sK/zPMQnvQovry2dbMa7NFA4
+	igVUWF2P518oS3V9eIpqLKy7aXUsovEhemCjaG9H5oN+ElVgjZolnSy7M8caf4MLDJiksIO983Z
+	ZBWe2fjzcN4YRJHfpcY9e9vIIGbjWDIb9OAR02kJikI/lU/5o33MvMBCs2nLGpc+NvaAtLvkDcd
+	iIxpc9n9iHAVCldN+QkAjjE=
+X-Google-Smtp-Source: AGHT+IFUnVztOxsIywsf2K4G+S+p56Y2jH9xH9k5ei+h2anBWbIlAMqqxZ0Jl6BPHhhsppFFnIdtUg==
+X-Received: by 2002:a05:600c:314a:b0:434:9de2:b101 with SMTP id 5b1f17b1804b1-434a9dbae1amr200448405e9.2.1733140842328;
+        Mon, 02 Dec 2024 04:00:42 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434aa7d29fbsm182935605e9.29.2024.12.02.04.00.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Dec 2024 04:00:41 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 2 Dec 2024 13:00:40 +0100
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Alan Maguire <alan.maguire@oracle.com>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Xu <dxu@dxuuu.xyz>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Jan Alexander Steffens <heftig@archlinux.org>,
+	Domenico Andreoli <cavok@debian.org>,
+	Matthias Schwarzott <zzam@gentoo.org>,
+	Dominique Leuenberger <dimstar@opensuse.org>,
+	Dominique Martinet <asmadeus@codewreck.org>, bpf@vger.kernel.org,
+	kernel-team@fb.com, dwarves@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: RFT: Testing pahole for the release of v1.28
+Message-ID: <Z02haBRcetTCNK7A@krava>
+References: <Z0jVLcpgyENlGg6E@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241202-sockmap-replace-v1-3-1e88579e7bd5@rbox.co>
-References: <20241202-sockmap-replace-v1-0-1e88579e7bd5@rbox.co>
-In-Reply-To: <20241202-sockmap-replace-v1-0-1e88579e7bd5@rbox.co>
-To: Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
- Jakub Sitnicki <jakub@cloudflare.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- netdev@vger.kernel.org, Michal Luczaj <mhal@rbox.co>
-X-Mailer: b4 0.14.2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z0jVLcpgyENlGg6E@x1>
 
-Element replace (with a socket different from the one stored) may race with
-socket's close() link popping & unlinking. __sock_map_delete()
-unconditionally unrefs the (wrong) element:
+On Thu, Nov 28, 2024 at 05:40:13PM -0300, Arnaldo Carvalho de Melo wrote:
+> Hi,
+> 
+> 	Please consider testing what is in the master branch both in
+> kernel.org as in github:
+> 
+> https://git.kernel.org/pub/scm/devel/pahole/pahole.git
+> https://github.com/acmel/dwarves.git
+> 
+> 	So that we can release v1.28, we want to follow the cadence of
+> the kernel, i.e. since the kernel was recently released, we should
+> release a new version of pahole, and this one is long overdue.
+> 
+> 	We'll then try to release v1.29 shortly after Linus releases
+> v6.13, and so on.
+> 
+> 	Alan Maguire accepted to co-maintain pahole and as soon as he
+> gets a kernel.org account he'll be able to help me in processing
+> patches, that we expect to continue with the current fashion of being
+> tested and reviewed by as many developers as possible, its greatly
+> appreciated and a good way for us to keep this codebase in shape.
+> 
+> Thanks a lot for all the help,
 
-// set map[0] = s0
-map_update_elem(map, 0, s0)
+hi,
+works fine on my setup
 
-// drop fd of s0
-close(s0)
-  sock_map_close()
-    lock_sock(sk)               (s0!)
-    sock_map_remove_links(sk)
-      link = sk_psock_link_pop()
-      sock_map_unlink(sk, link)
-        sock_map_delete_from_link
-                                        // replace map[0] with s1
-                                        map_update_elem(map, 0, s1)
-                                          sock_map_update_elem
-                                (s1!)       lock_sock(sk)
-                                            sock_map_update_common
-                                              psock = sk_psock(sk)
-                                              spin_lock(&stab->lock)
-                                              osk = stab->sks[idx]
-                                              sock_map_add_link(..., &stab->sks[idx])
-                                              sock_map_unref(osk, &stab->sks[idx])
-                                                psock = sk_psock(osk)
-                                                sk_psock_put(sk, psock)
-                                                  if (refcount_dec_and_test(&psock))
-                                                    sk_psock_drop(sk, psock)
-                                              spin_unlock(&stab->lock)
-                                            unlock_sock(sk)
-          __sock_map_delete
-            spin_lock(&stab->lock)
-            sk = *psk                        // s1 replaced s0; sk == s1
-            if (!sk_test || sk_test == sk)   // sk_test (s0) != sk (s1); no branch
-              sk = xchg(psk, NULL)
-            if (sk)
-              sock_map_unref(sk, psk)        // unref s1; sks[idx] will dangle
-                psock = sk_psock(sk)
-                sk_psock_put(sk, psock)
-                  if (refcount_dec_and_test())
-                    sk_psock_drop(sk, psock)
-            spin_unlock(&stab->lock)
-    release_sock(sk)
+Tested-by: Jiri Olsa <jolsa@kernel.org>
 
-Then close(map) enqueues bpf_map_free_deferred, which finally calls
-sock_map_free(). This results in some refcount_t warnings along with a
-KASAN splat[1].
-
-Fix __sock_map_delete(), do not allow sock_map_unref() on elements that may
-have been replaced.
-
-[1]:
-BUG: KASAN: slab-use-after-free in sock_map_free+0x10e/0x330
-Write of size 4 at addr ffff88811f5b9100 by task kworker/u64:12/1063
-
-CPU: 14 UID: 0 PID: 1063 Comm: kworker/u64:12 Not tainted 6.12.0+ #125
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
-Workqueue: events_unbound bpf_map_free_deferred
-Call Trace:
- <TASK>
- dump_stack_lvl+0x68/0x90
- print_report+0x174/0x4f6
- kasan_report+0xb9/0x190
- kasan_check_range+0x10f/0x1e0
- sock_map_free+0x10e/0x330
- bpf_map_free_deferred+0x173/0x320
- process_one_work+0x846/0x1420
- worker_thread+0x5b3/0xf80
- kthread+0x29e/0x360
- ret_from_fork+0x2d/0x70
- ret_from_fork_asm+0x1a/0x30
- </TASK>
-
-Allocated by task 1202:
- kasan_save_stack+0x1e/0x40
- kasan_save_track+0x10/0x30
- __kasan_slab_alloc+0x85/0x90
- kmem_cache_alloc_noprof+0x131/0x450
- sk_prot_alloc+0x5b/0x220
- sk_alloc+0x2c/0x870
- unix_create1+0x88/0x8a0
- unix_create+0xc5/0x180
- __sock_create+0x241/0x650
- __sys_socketpair+0x1ce/0x420
- __x64_sys_socketpair+0x92/0x100
- do_syscall_64+0x93/0x180
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
-
-Freed by task 46:
- kasan_save_stack+0x1e/0x40
- kasan_save_track+0x10/0x30
- kasan_save_free_info+0x37/0x60
- __kasan_slab_free+0x4b/0x70
- kmem_cache_free+0x1a1/0x590
- __sk_destruct+0x388/0x5a0
- sk_psock_destroy+0x73e/0xa50
- process_one_work+0x846/0x1420
- worker_thread+0x5b3/0xf80
- kthread+0x29e/0x360
- ret_from_fork+0x2d/0x70
- ret_from_fork_asm+0x1a/0x30
-
-The buggy address belongs to the object at ffff88811f5b9080
- which belongs to the cache UNIX-STREAM of size 1984
-The buggy address is located 128 bytes inside of
- freed 1984-byte region [ffff88811f5b9080, ffff88811f5b9840)
-
-The buggy address belongs to the physical page:
-page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11f5b8
-head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-memcg:ffff888127d49401
-flags: 0x17ffffc0000040(head|node=0|zone=2|lastcpupid=0x1fffff)
-page_type: f5(slab)
-raw: 0017ffffc0000040 ffff8881042e4500 dead000000000122 0000000000000000
-raw: 0000000000000000 00000000800f000f 00000001f5000000 ffff888127d49401
-head: 0017ffffc0000040 ffff8881042e4500 dead000000000122 0000000000000000
-head: 0000000000000000 00000000800f000f 00000001f5000000 ffff888127d49401
-head: 0017ffffc0000003 ffffea00047d6e01 ffffffffffffffff 0000000000000000
-head: 0000000000000008 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88811f5b9000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88811f5b9080: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88811f5b9100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff88811f5b9180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88811f5b9200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-Disabling lock debugging due to kernel taint
-
-refcount_t: addition on 0; use-after-free.
-WARNING: CPU: 14 PID: 1063 at lib/refcount.c:25 refcount_warn_saturate+0xce/0x150
-CPU: 14 UID: 0 PID: 1063 Comm: kworker/u64:12 Tainted: G    B              6.12.0+ #125
-Tainted: [B]=BAD_PAGE
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
-Workqueue: events_unbound bpf_map_free_deferred
-RIP: 0010:refcount_warn_saturate+0xce/0x150
-Code: 34 73 eb 03 01 e8 82 53 ad fe 0f 0b eb b1 80 3d 27 73 eb 03 00 75 a8 48 c7 c7 80 bd 95 84 c6 05 17 73 eb 03 01 e8 62 53 ad fe <0f> 0b eb 91 80 3d 06 73 eb 03 00 75 88 48 c7 c7 e0 bd 95 84 c6 05
-RSP: 0018:ffff88815c49fc70 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff88811f5b9100 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000001
-RBP: 0000000000000002 R08: 0000000000000001 R09: ffffed10bcde6349
-R10: ffff8885e6f31a4b R11: 0000000000000000 R12: ffff88813be0b000
-R13: ffff88811f5b9100 R14: ffff88811f5b9080 R15: ffff88813be0b024
-FS:  0000000000000000(0000) GS:ffff8885e6f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055dda99b0250 CR3: 000000015dbac000 CR4: 0000000000752ef0
-PKRU: 55555554
-Call Trace:
- <TASK>
- ? __warn.cold+0x5f/0x1ff
- ? refcount_warn_saturate+0xce/0x150
- ? report_bug+0x1ec/0x390
- ? handle_bug+0x58/0x90
- ? exc_invalid_op+0x13/0x40
- ? asm_exc_invalid_op+0x16/0x20
- ? refcount_warn_saturate+0xce/0x150
- sock_map_free+0x2e5/0x330
- bpf_map_free_deferred+0x173/0x320
- process_one_work+0x846/0x1420
- worker_thread+0x5b3/0xf80
- kthread+0x29e/0x360
- ret_from_fork+0x2d/0x70
- ret_from_fork_asm+0x1a/0x30
- </TASK>
-irq event stamp: 10741
-hardirqs last  enabled at (10741): [<ffffffff84400ec6>] asm_sysvec_apic_timer_interrupt+0x16/0x20
-hardirqs last disabled at (10740): [<ffffffff811e532d>] handle_softirqs+0x60d/0x770
-softirqs last  enabled at (10506): [<ffffffff811e55a9>] __irq_exit_rcu+0x109/0x210
-softirqs last disabled at (10301): [<ffffffff811e55a9>] __irq_exit_rcu+0x109/0x210
-
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 14 PID: 1063 at lib/refcount.c:28 refcount_warn_saturate+0xee/0x150
-CPU: 14 UID: 0 PID: 1063 Comm: kworker/u64:12 Tainted: G    B   W          6.12.0+ #125
-Tainted: [B]=BAD_PAGE, [W]=WARN
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
-Workqueue: events_unbound bpf_map_free_deferred
-RIP: 0010:refcount_warn_saturate+0xee/0x150
-Code: 17 73 eb 03 01 e8 62 53 ad fe 0f 0b eb 91 80 3d 06 73 eb 03 00 75 88 48 c7 c7 e0 bd 95 84 c6 05 f6 72 eb 03 01 e8 42 53 ad fe <0f> 0b e9 6e ff ff ff 80 3d e6 72 eb 03 00 0f 85 61 ff ff ff 48 c7
-RSP: 0018:ffff88815c49fc70 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff88811f5b9100 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000001
-RBP: 0000000000000003 R08: 0000000000000001 R09: ffffed10bcde6349
-R10: ffff8885e6f31a4b R11: 0000000000000000 R12: ffff88813be0b000
-R13: ffff88811f5b9100 R14: ffff88811f5b9080 R15: ffff88813be0b024
-FS:  0000000000000000(0000) GS:ffff8885e6f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055dda99b0250 CR3: 000000015dbac000 CR4: 0000000000752ef0
-PKRU: 55555554
-Call Trace:
- <TASK>
- ? __warn.cold+0x5f/0x1ff
- ? refcount_warn_saturate+0xee/0x150
- ? report_bug+0x1ec/0x390
- ? handle_bug+0x58/0x90
- ? exc_invalid_op+0x13/0x40
- ? asm_exc_invalid_op+0x16/0x20
- ? refcount_warn_saturate+0xee/0x150
- sock_map_free+0x2d3/0x330
- bpf_map_free_deferred+0x173/0x320
- process_one_work+0x846/0x1420
- worker_thread+0x5b3/0xf80
- kthread+0x29e/0x360
- ret_from_fork+0x2d/0x70
- ret_from_fork_asm+0x1a/0x30
- </TASK>
-irq event stamp: 10741
-hardirqs last  enabled at (10741): [<ffffffff84400ec6>] asm_sysvec_apic_timer_interrupt+0x16/0x20
-hardirqs last disabled at (10740): [<ffffffff811e532d>] handle_softirqs+0x60d/0x770
-softirqs last  enabled at (10506): [<ffffffff811e55a9>] __irq_exit_rcu+0x109/0x210
-softirqs last disabled at (10301): [<ffffffff811e55a9>] __irq_exit_rcu+0x109/0x210
-
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Michal Luczaj <mhal@rbox.co>
----
- net/core/sock_map.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 20b348b1964a10a1b0bfbe1a90a4a4cd99715b81..f1b9b3958792cd599efcb591742874e9b3f4a76b 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -412,12 +412,11 @@ static void *sock_map_lookup_sys(struct bpf_map *map, void *key)
- static int __sock_map_delete(struct bpf_stab *stab, struct sock *sk_test,
- 			     struct sock **psk)
- {
--	struct sock *sk;
-+	struct sock *sk = NULL;
- 	int err = 0;
- 
- 	spin_lock_bh(&stab->lock);
--	sk = *psk;
--	if (!sk_test || sk_test == sk)
-+	if (!sk_test || sk_test == *psk)
- 		sk = xchg(psk, NULL);
- 
- 	if (likely(sk))
-
--- 
-2.46.2
-
+thanks,
+jirka
 
