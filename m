@@ -1,233 +1,183 @@
-Return-Path: <bpf+bounces-45965-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45966-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0E439E0F56
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 00:31:34 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D7859E0F63
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 00:48:04 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5B98281F32
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 23:31:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0F6A1653F5
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2024 23:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2454B1DFD82;
-	Mon,  2 Dec 2024 23:31:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86DE11DF988;
+	Mon,  2 Dec 2024 23:47:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hPijlskg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N8lf2kfy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4E902C18C;
-	Mon,  2 Dec 2024 23:31:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F6961FD7
+	for <bpf@vger.kernel.org>; Mon,  2 Dec 2024 23:47:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733182287; cv=none; b=EJnDhGsVWa02JNDxy6zqBDmmve8w5rEztKs2GStoxTvKhjamxBvoGqpJr7xu05wrG8eahK6ZTo0CPVGGqROucG1DnDHjEFubbxukgIjN8TugtoIdnx8HEdliI3yRFWz3GaFl8fINWshU94lcDpyDSzgdl+Nesp6+X0va59iPLok=
+	t=1733183279; cv=none; b=lbc6l1yM2yt/6Vq6s+7ckm7qSu1ej57HdXDvezla+J25agp5QeLjQjGVmwh58ME8nlzCqWlAwEV8yXpfrMCtj48m2lTv+93TtU3zv5fSIDB9GfrT5yoZnh3G1SGh56S0dGyVezDwNds1irDrGwT1aceqOABnFsHA2D/coukXmyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733182287; c=relaxed/simple;
-	bh=stsqt+IAyvdgQbjBQMS9SdtlQGFWzhw2XwobQdJXe5M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RrTWByo8LUsJAy47QfqPXKp36Oh7uSLp7X+JLxwGFc86Yglz/oKE5qtTc6C1SdUDVzB/wSrp2oB9o2C5NIecf5Ae+B+9GZY+x974ir+MVffwlKWDd6lcJwfLBkuO3RO8I8/rejdn4QIWIwasgHBbR8IpYISe03U7fglCvuRmmwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hPijlskg; arc=none smtp.client-ip=209.85.208.173
+	s=arc-20240116; t=1733183279; c=relaxed/simple;
+	bh=4JkzxpxVfqo1s5Yn+5tMpq6g0tW/iFWTP/ocQw1bWBU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AOtww7cmtAiI1yDCgit+64tvBcAcKLutV9fsg7/ESiLyiYJT/sGaXhtmN0pyQ4ztKQdGXyt9tbGPUGz3lRKy0iTXwB0+pG9UqAKBEPIaC2QcFupV7+EVZ0IhBti9K/t8/JTGm+GBYmiz/bnEOI4ge2uwDeaCuxBRxT8YcYF6baU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N8lf2kfy; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2ffc1f72a5bso49731061fa.1;
-        Mon, 02 Dec 2024 15:31:25 -0800 (PST)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7252b7326f4so4181087b3a.2
+        for <bpf@vger.kernel.org>; Mon, 02 Dec 2024 15:47:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733182284; x=1733787084; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7FpbSqOOJ7PMriOQtVywjd65Cd51GKP6Qcuj0IVCIhY=;
-        b=hPijlskgpoPOkSLEMKbUJ+DZsLNyAEQNiGJHdbog/AF80t0qokl4YLvdqs3rLei50o
-         BlPQri6hQnuqVcSr1DxsvtAem4DpBOZFPqvTd78pEgKgq8MvgQeD5zYjom1HsIgZpztt
-         t2uSa8n8MBEwcWv3D34kqJtAi7EVw2I0U9DMF3P3ZqAyw5XZRAN0+eY2B9OY3YX38Hii
-         TOUWGPDoekN3jt7wdkDrlUuHgL3UgQyx7Q73Xb5n8R4ld9nwobc91fh6KD2MdyTKY9g0
-         EMrqASqpHgBgmh7WJV8V1QgOJJRNKbXZpwy/oeraI3mSEcrB3L9zUNsuy3JO4qv1dGje
-         EWiA==
+        d=gmail.com; s=20230601; t=1733183277; x=1733788077; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KVOCARIRMCSzq70Ikj0pF5UOZuvB0RdoBkFHsBdFKHA=;
+        b=N8lf2kfyJLAh7tA3ESMQufyyKHyFzSbcqs6jrus2AjlCc3SEXCud3Xa+iyrXco31vv
+         CpaJuW5yA7EbRR086bEH6flVzY2NogvC7JwGTf870fVkJ81vBNoepsPDxd3Q++zFkaxz
+         3vdsHzokfOvxme4a6+UkRvZfVkx+/vRWYGhuZjwBv8Asdzorn7LoOL/oyskfF0lq5KWa
+         l1uKiRAT8xPyL5YWnfcZwc4mnp+4vGQIG9DseFJbyIlp/wOWoFVp2Z9xI/o3XpEuSA/U
+         gg0m8secSrvDkCBFjw2E1jWEoqDnBoDaUSQ1CMLf1n23pVOp8H3X1ycLIZ848mEthllx
+         xYzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733182284; x=1733787084;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7FpbSqOOJ7PMriOQtVywjd65Cd51GKP6Qcuj0IVCIhY=;
-        b=bxGaI9DKL5oTwrzFezbnedUJi8Sl248lJ5Y010QpScXUCBDxMUyvKHIDkq4XLDajLf
-         kxUgTbXSQeTNKJ21KMLgPlxURelQF+ySwkLPTJ7s3zauvisWTG78XeO3fwzhAVf6ETsv
-         NEnAPgT/y0eZ9Uuebc/MuaQMRMqHQ6pSSgECDMOVh67UmA2u8zzoKGNzBNQo3et/lkI+
-         xoDARAznfRyLCASvGS1hNfaEV9N6/7p1TbJUuut3UkQiZDBj85Xx540rujolZMazF5uS
-         13er97Q7zwEfPNcaeBw6QKIV1pXbYbmaX4rkjdevfpfFCNDh6fuonZOER4RcT7nIg7ff
-         7+Yg==
-X-Forwarded-Encrypted: i=1; AJvYcCULV87UUCiJ2OIFk+gxFjJd7H83oky+/Ay5nucrVpGaO//Yz7AcctgUE1lu5Y2wrtLquNE=@vger.kernel.org, AJvYcCUYGteKBroNSGT8PEOnQRjN2TFGwSbH/eB4BB6cuJXESCVCFDBcSU4NL6+EbhGGYemAO6I2GBe+sPYM/GZx@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUX3FVzNN5vSPADejeClvALscrVe7RAjDllZt5pG5N2xv9l8vM
-	xFZNaS0SGJjoujq6oSjS84vFzprM+i6Xrv5SiHlmwKtiaCo5BIPeuKjP02lc69vH+wKIVkRYUcQ
-	cUsNbfrRLdKd1FAsdFqMWBnA58SM=
-X-Gm-Gg: ASbGncvor8/isMiV2z7YDi4aFlwyEKrx8PrneO/J4ow7+dLPZwKR6YAtySNGOg2pdIG
-	lzYFrZY3pv7nDivVkRtPEwwI70AO1W1A=
-X-Google-Smtp-Source: AGHT+IEsoybb8WxQPdlIg0Mtq2P261xRypFmnMMGaqXQE4CBATrjFjLPK9qV8u5oP3l63m3T+D9hDtu+3BZPwi6ND2o=
-X-Received: by 2002:a05:651c:b11:b0:2ff:d2d7:ef91 with SMTP id
- 38308e7fff4ca-3000a274ed3mr533431fa.11.1733182283693; Mon, 02 Dec 2024
- 15:31:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1733183277; x=1733788077;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KVOCARIRMCSzq70Ikj0pF5UOZuvB0RdoBkFHsBdFKHA=;
+        b=YTb1D1IFnuDE2w9XcozxotXVgUXMN4rKDkId07N7+8/dhEPxpQ4JZ3qL7jqWOYIBqm
+         7uuWJAB9hCwOCXjsNe3cvgSm5CaLmgRPm4iZDOH7AM1Hqq3JW+Fd2lgYdPNOAYjhVJZK
+         jfDhXZmp0DaB1advg01yM/qj/chfouWkEyoePxxUZZ4TBUvDB4eGNscuM9/iv7q1yXt2
+         CCyWUJ1yO/ML0zx+dhpcMt5ZqVcMA82gnSD8IJZ48ehwmm/xTFbSGuIu7jZIZY95FSCN
+         ehn0ZnZjiORbc7IYV3x7OTo/QZe52+y8Ot8Gp1AOqMJ+lEQ+eHh0qh6ZedsRKuveaAfv
+         V1tQ==
+X-Gm-Message-State: AOJu0Yw+6cGLfW0J0W1LApcj8rzq3QmQzlUOZIC5EUuWPVTq6bAz1a7G
+	Ho6lcP1N0nVXgGTMvCwvVqT5grQ/CYlOZMmjwEIWY+Xl+osoUhkg5SynUw==
+X-Gm-Gg: ASbGncv13V54q3RsEqkflZYlCQ9OmHUhdxZGBNd2MroRhPBgZjq9uhDWuL4k5kM2nFm
+	8O9S1UoR/R8hAM+BCx4xcIDuDjq9Rxn/BhMufZ/qzj5H09F+afIl39bDpNMuqczrf7wvQ9Vsvgl
+	K89aV5IKNT01cGrDZJReD1yt+CG6/ojVziUhDWOO+PmqwEPZCoUoTGSz8qEojTIitzMabEZjGMG
+	OXru0EtOYsj/rPDbQPFUNCgcoN6oQOSHFQ8yXCtSq2Lsw==
+X-Google-Smtp-Source: AGHT+IEa6L/YudwrWBDbH2t6O1b/GbZR89DCZ+AS/0i9afAlbDeMgA1GP0d6h4YmWWXenJ9uiumsjQ==
+X-Received: by 2002:a17:90b:52c4:b0:2ee:8e75:4aeb with SMTP id 98e67ed59e1d1-2ef0121357amr775801a91.17.1733183276146;
+        Mon, 02 Dec 2024 15:47:56 -0800 (PST)
+Received: from honey-badger.. ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ee2b2a2d05sm8803964a91.36.2024.12.02.15.47.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Dec 2024 15:47:55 -0800 (PST)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	masahiroy@kernel.org,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf v2] samples/bpf: remove unnecessary -I flags from libbpf EXTRA_CFLAGS
+Date: Mon,  2 Dec 2024 15:47:41 -0800
+Message-ID: <20241202234741.3492084-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241127074156.17567-1-m.shachnai@gmail.com> <bada6a6b9ab67da9a51a73d3cae36f650c2d48e0.camel@gmail.com>
-In-Reply-To: <bada6a6b9ab67da9a51a73d3cae36f650c2d48e0.camel@gmail.com>
-From: M Shachnai <m.shachnai@gmail.com>
-Date: Mon, 2 Dec 2024 18:31:11 -0500
-Message-ID: <CACGhDH2wN4FOc38aPvX5SFx_bWTH23v07s5C+qKdFnjhVHUC9Q@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf, verifier: Improve precision of BPF_MUL
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: ast@kernel.org, 
-	Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>, 
-	Srinivas Narayana <srinivas.narayana@rutgers.edu>, 
-	Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Nov 27, 2024 at 5:53=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Wed, 2024-11-27 at 02:41 -0500, Matan Shachnai wrote:
->
-> [...]
->
-> > In conclusion, with this patch,
-> >
-> > 1. We were able to show that we can improve the overall precision of
-> >    BPF_MUL. We proved (using an SMT solver) that this new version of
-> >    BPF_MUL is at least as precise as the current version for all inputs=
-.
-> >
-> > 2. We are able to prove the soundness of the new scalar_min_max_mul() a=
-nd
-> >    scalar32_min_max_mul(). By leveraging the existing proof of tnum_mul
-> >    [1], we can say that the composition of these three functions within
-> >    BPF_MUL is sound.
->
-> Hi Matan,
->
-> I think this is a nice simplification of the existing code.
-> Could you please also add a few canary tests in the
-> tools/testing/selftests/bpf/progs/verifier_bounds.c ?
-> (e.g. simple case plus possible edge cases).
+Commit [0] breaks samples/bpf build:
 
-Thanks for your feedback, Eduard! We'll be happy to add test-cases to
-exercise BPF_MUL.
+    $ make M=samples/bpf
+    ...
+    make -C /path/to/kernel/samples/bpf/../../tools/lib/bpf \
+     ...
+     EXTRA_CFLAGS=" \
+     ...
+     -fsanitize=bounds \
+     -I/path/to/kernel/usr/include \
+     ...
+    	/path/to/kernel/samples/bpf/libbpf/libbpf.a install_headers
+      CC      /path/to/kernel/samples/bpf/libbpf/staticobjs/libbpf.o
+    In file included from libbpf.c:29:
+    /path/to/kernel/tools/include/linux/err.h:35:8: error: 'inline' can only appear on functions
+       35 | static inline void * __must_check ERR_PTR(long error_)
+          |        ^
 
-> Something like:
->
->     SEC("tc")
->     __success __log_level(2)
->     __msg("r6 *=3D r7 {{.*}}; R6_w=3Dsome-range-here")
->     __naked void mult_mixed_sign(void)
->     {
->         asm volatile (
->         "call %[bpf_get_prandom_u32];"
->         "r6 =3D r0;"
->         "call %[bpf_get_prandom_u32];"
->         "r7 =3D r0;"
->         "r6 &=3D 0xf;"
->         "r6 -=3D 1000000000;"
->         "r7 &=3D 0xf;"
->         "r7 -=3D 2000000000;"
->         "r6 *=3D r7;"
->         "exit"
->         :
->         : __imm(bpf_get_prandom_u32),
->           __imm(bpf_skb_store_bytes)
->         : __clobber_all);
->     }
->
-> We usually do this as a separate patch in a patch-set.
->
-> Also, it looks like this has limited applicability in practice,
-> because small negative values denote huge unsigned values,
-> hence overflow check kicks in for such values.
-> E.g. no range inferred for [-10,5] * [-20,-5]:
->
->   0: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
->   1: (bf) r6 =3D r0                       ; R0_w=3Dscalar(id=3D1) R6_w=3D=
-scalar(id=3D1)
->   2: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
->   3: (bf) r7 =3D r0                       ; R0_w=3Dscalar(id=3D2) R7_w=3D=
-scalar(id=3D2)
->   4: (57) r6 &=3D 15                      ; R6_w=3Dscalar(smin=3Dsmin32=
-=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_off=3D(0x0; 0xf))
->   5: (17) r6 -=3D 10                      ; R6_w=3Dscalar(smin=3Dsmin32=
-=3D-10,smax=3Dsmax32=3D5)
->   6: (57) r7 &=3D 15                      ; R7_w=3Dscalar(smin=3Dsmin32=
-=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_off=3D(0x0; 0xf))
->   7: (17) r7 -=3D 20                      ; R7_w=3Dscalar(smin=3Dsmin32=
-=3D-20,smax=3Dsmax32=3D-5,umin=3D0xffffffffffffffec,umax=3D0xffffffffffffff=
-fb,umin32=3D0xffffffec,umax32=3D0xfffffffb,var_off=3D(0xffffffffffffffe0; 0=
-x1f))
->   8: (2f) r6 *=3D r7                      ; R6_w=3Dscalar() R7_w=3Dscalar=
-(smin=3Dsmin32=3D-20,smax=3Dsmax32=3D-5,umin=3D0xffffffffffffffec,umax=3D0x=
-fffffffffffffffb,umin32=3D0xffffffec,umax32=3D0xfffffffb,var_off=3D(0xfffff=
-fffffffffe0; 0x1f))
->   9: (95) exit
->
-> Compared to:
->
->   0: R1=3Dctx() R10=3Dfp0
->   ; asm volatile ( @ verifier_bounds.c:1208
->   0: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
->   1: (bf) r6 =3D r0                       ; R0_w=3Dscalar(id=3D1) R6_w=3D=
-scalar(id=3D1)
->   2: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
->   3: (bf) r7 =3D r0                       ; R0_w=3Dscalar(id=3D2) R7_w=3D=
-scalar(id=3D2)
->   4: (57) r6 &=3D 15                      ; R6_w=3Dscalar(smin=3Dsmin32=
-=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_off=3D(0x0; 0xf))
->   5: (17) r6 -=3D 1000000000              ; R6_w=3Dscalar(smin=3D0xffffff=
-ffc4653600,smax=3D0xffffffffc465360f,umin=3D0xffffffffc4653600,umax=3D0xfff=
-fffffc465360f,smin32=3Dumin32=3D0xc4653600,smax32=3Dumax32=3D0xc465360f,var=
-_off=3D(0xffffffffc4653600; 0xf))
->   6: (57) r7 &=3D 15                      ; R7_w=3Dscalar(smin=3Dsmin32=
-=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_off=3D(0x0; 0xf))
->   7: (17) r7 -=3D 2000000000              ; R7_w=3Dscalar(smin=3D0xffffff=
-ff88ca6c00,smax=3D0xffffffff88ca6c0f,umin=3D0xffffffff88ca6c00,umax=3D0xfff=
-fffff88ca6c0f,smin32=3Dumin32=3D0x88ca6c00,smax32=3Dumax32=3D0x88ca6c0f,var=
-_off=3D(0xffffffff88ca6c00; 0xf))
->   8: (2f) r6 *=3D r7                      ; R6_w=3Dscalar(smax=3D0x7fffff=
-fffffffeff,umax=3D0xfffffffffffffeff,smax32=3D0x7ffffeff,umax32=3D0xfffffef=
-f,var_off=3D(0x0; 0xfffffffffffffeff)) R7_w=3Dscalar(smin=3D0xffffffff88ca6=
-c00,smax=3D0xffffffff88ca6c0f,umin=3D0xffffffff88ca6c00,umax=3D0xffffffff88=
-ca6c0f,smin32=3Dumin32=3D0x88ca6c00,smax32=3Dumax32=3D0x88ca6c0f,var_off=3D=
-(0xffffffff88ca6c00; 0xf))
->   9: (95) exit
->
-> Is it possible to do check_mul_overflow() for signed bounds and
-> rely on reg_bounds_sync() for unsigned?
->
+The error is caused by `objtree` variable changing definition from `.`
+(dot) to an absolute path:
+- The variable TPROGS_CFLAGS is constructed as follows:
+  ...
+  TPROGS_CFLAGS += -I$(objtree)/usr/include
+- It is passed as EXTRA_CFLAGS for libbpf compilation:
+  $(LIBBPF): ...
+    ...
+	$(MAKE) -C $(LIBBPF_SRC) RM='rm -rf' EXTRA_CFLAGS="$(TPROGS_CFLAGS)"
+- Before commit [0], the line passed to libbpf makefile was
+  '-I./usr/include', where '.' referred to LIBBPF_SRC due to -C flag.
+  The directory $(LIBBPF_SRC)/usr/include does not exist and thus
+  was never resolved by C compiler.
+- After commit [0], the line passed to libbpf makefile became:
+  '<output-dir>/usr/include', this directory exists and is resolved by
+  C compiler.
+- Both 'tools/include' and 'usr/include' define files err.h and types.h.
+- libbpf expects headers like 'linux/err.h' and 'linux/types.h'
+  defined in 'tools/include', not 'usr/include', hence the compilation
+  error.
 
-The patch in its current form (and the existing BPF_MUL version in the
-verifier) doesn't handle negative values well, as the example you gave
-here illustrates. The initial goal of this patch was to improve
-precision of unsigned multiplication. However, there is a canonical
-way to perform signed multiplication which is sound and is able to
-handle negative values. Specifically, signed multiplication can be
-performed soundly by [min(a, b, c, d), max(a, b, c, d)], where a, b,
-c, d correspond to the four products obtained by multiplying all the
-bounds (these products are checked for overflows). For better
-precision, we propose having both unsigned multiplication as well as
-signed multiplication. The resulting bounds can then be refined in
-reg_bounds_sync().
+This commit removes unnecessary -I flags from libbpf compilation.
+(libbpf sets up the necessary includes at lib/bpf/Makefile:63).
 
-We will update our patch with both signed and unsigned multiplication,
-add test-cases, and send it all as a patch-set soon.
+Changes v1 [1] -> v2:
+- dropped unnecessary replacement of KBUILD_OUTPUT with $(objtree)
 
-Best,
-Matan
+[0] commit 13b25489b6f8 ("kbuild: change working directory to external module directory with M=")
+[1] https://lore.kernel.org/bpf/20241202212154.3174402-1-eddyz87@gmail.com/
 
-> [...]
->
+Fixes: 13b25489b6f8 ("kbuild: change working directory to external module directory with M=")
+
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ samples/bpf/Makefile | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index bcf103a4c14f..44f7e05973de 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -146,13 +146,14 @@ ifeq ($(ARCH), x86)
+ BPF_EXTRA_CFLAGS += -fcf-protection
+ endif
+ 
+-TPROGS_CFLAGS += -Wall -O2
+-TPROGS_CFLAGS += -Wmissing-prototypes
+-TPROGS_CFLAGS += -Wstrict-prototypes
+-TPROGS_CFLAGS += $(call try-run,\
++COMMON_CFLAGS += -Wall -O2
++COMMON_CFLAGS += -Wmissing-prototypes
++COMMON_CFLAGS += -Wstrict-prototypes
++COMMON_CFLAGS += $(call try-run,\
+ 	printf "int main() { return 0; }" |\
+ 	$(CC) -Werror -fsanitize=bounds -x c - -o "$$TMP",-fsanitize=bounds,)
+ 
++TPROGS_CFLAGS += $(COMMON_CFLAGS)
+ TPROGS_CFLAGS += -I$(objtree)/usr/include
+ TPROGS_CFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
+ TPROGS_CFLAGS += -I$(LIBBPF_INCLUDE)
+@@ -229,7 +230,7 @@ clean:
+ 
+ $(LIBBPF): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OUTPUT)
+ # Fix up variables inherited from Kbuild that tools/ build system won't like
+-	$(MAKE) -C $(LIBBPF_SRC) RM='rm -rf' EXTRA_CFLAGS="$(TPROGS_CFLAGS)" \
++	$(MAKE) -C $(LIBBPF_SRC) RM='rm -rf' EXTRA_CFLAGS="$(COMMON_CFLAGS)" \
+ 		LDFLAGS="$(TPROGS_LDFLAGS)" srctree=$(BPF_SAMPLES_PATH)/../../ \
+ 		O= OUTPUT=$(LIBBPF_OUTPUT)/ DESTDIR=$(LIBBPF_DESTDIR) prefix= \
+ 		$@ install_headers
+-- 
+2.47.0
+
 
