@@ -1,352 +1,197 @@
-Return-Path: <bpf+bounces-46021-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46023-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7565E9E29B2
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 18:44:19 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22DC29E2AB5
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 19:22:51 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AF0F285741
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 17:44:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF4B1166ABF
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 18:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620BE20ADEC;
-	Tue,  3 Dec 2024 17:41:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01801FCCE0;
+	Tue,  3 Dec 2024 18:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m+oGVyHD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AwvyDXcy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA3220ADC7;
-	Tue,  3 Dec 2024 17:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 610661FA16E
+	for <bpf@vger.kernel.org>; Tue,  3 Dec 2024 18:22:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733247687; cv=none; b=JN0JOvB45t1qgQKKZm8AiWCNplgcSaDTH7+FDjAu/qqPh8ouNTDCwJDD2wjP1ME6+SkiltqxBDN9qd3s3TGa9J9fGArgG0WNNcy8+b/ItNEWpwfFYRruz68WAKaBpfDDSBpTq7rNSnwaUxxA3V5eSbVIO/7igDcW+LEhHRmm+zE=
+	t=1733250165; cv=none; b=arKdgB/FHznVuEG560wLQBSQv0sr4ixkd+x85P5iP3fsNj0b8ReUZnFB7AlsqiArpmv3FikyDiWIVR8FOVgKkiqR8c3TK3Q+RKlWylFXLC/6xgHO5zn6CGSlMdldIgMDgTAfL9nwG/iUHGORxE12WK5lKYS6FwYmuJS5p1NvYHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733247687; c=relaxed/simple;
-	bh=EWj+eSqqv9vkBNcbHcZd0XKt/9Lfn/yqLyteSTZyC68=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XmfXkhsqr8yNtfdrWHSl/9R+iTsdT3sbYh9zC/uis/4O/Aue9TPWKM+muD2BMmUKfGAEC1oVJ4F4iGte8Q0aTmpih+UlUt+HsVzBiNne6RHlWlsn7DoUpurDGBJ4nze3nUOGqqZ+jSWKswprQpRwwRUlVaz0JjQUJdZY18GiOOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m+oGVyHD; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1733247687; x=1764783687;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=EWj+eSqqv9vkBNcbHcZd0XKt/9Lfn/yqLyteSTZyC68=;
-  b=m+oGVyHDP9J1jaZQRmDECR1MsGux46+TVxYxAKMMP7yoh5QsqIAuyFz3
-   Z9dRKhIn+sj9wx2e6niZFle4Dpd5895Dy65uUxHPr4QKFB36R1j5F6k59
-   m8KO46m8Omm3C6mYcU3iLq6y3uLcWuRFlK5BQ/d+TGoC4vKpE8hv8T0UW
-   qF5Ekl2Foln58ZkyImBKKcuSimKWFWK6r4WcsjH0Hu7noSXFuZdsfGWCY
-   IIvCAkZs5BZBJXm+WCXq3jrMlVUSKojB1LLJaWzM9AORHsv/wlKELhc0D
-   qlyhV3reCcnByM/Tk0wDYL7Muzx1lrcJz0ny3ipzIEV1GBFxo12VLUHdL
-   Q==;
-X-CSE-ConnectionGUID: WkFyrUikRjirP4LCK8SeeQ==
-X-CSE-MsgGUID: +54azD4cSPiLLzGSU7M8Eg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11275"; a="37135429"
-X-IronPort-AV: E=Sophos;i="6.12,205,1728975600"; 
-   d="scan'208";a="37135429"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2024 09:41:26 -0800
-X-CSE-ConnectionGUID: ypKAqCwBTjmCi/rw8a5GMg==
-X-CSE-MsgGUID: FXTSM9maTWmreoaPP+aYnA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,205,1728975600"; 
-   d="scan'208";a="124337044"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa002.jf.intel.com with ESMTP; 03 Dec 2024 09:41:22 -0800
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v6 09/10] page_pool: allow mixing PPs within one bulk
-Date: Tue,  3 Dec 2024 18:37:32 +0100
-Message-ID: <20241203173733.3181246-10-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1733250165; c=relaxed/simple;
+	bh=oPlfCwv7dFgg5nfzz3sCeEFTDYmqgtTKzCZhiUaPBUI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dmQWleTQLmR5aOp4prhj/WtCiY0tSEqHzwb4mbD62DenEm+bT+5qPL8/ladrX9wjqaw0Q79gjBhTtawvzsU/XZNXS+lnLc5AybOj4Nh9D4FMlrzWTvrGRVo1jp1tJ2yHUWv4mPdruglVnnKeoDm1/c3TbMfjlxW6LZvRh1TINUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AwvyDXcy; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-215770613dbso23179205ad.2
+        for <bpf@vger.kernel.org>; Tue, 03 Dec 2024 10:22:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733250162; x=1733854962; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nt7EgOueeZPP9i7HIXoMixPag6gc+rZDJdNn0ad5OtU=;
+        b=AwvyDXcySILkOwt/gDYT4GH079bI7X5UPPEhlUCHhwGvG/5s+rUnt0pqIK5vQmBYwP
+         QpN4L2I+Bzhx/tNDxITJNCon5lLRnvOP5Mnw0d/FAOxQa1pf/dcIBuatyM/UBEEmiQML
+         rIooNj0KKDf2CSqZKni+DYbfbsCb0z3zi3qpmbp/KWfryHLmAKO3Lv2kxz7EfuOIl0CQ
+         PoMSIjaPWam/Dl9m6wF+aGGfhWT/d1uY9quT72opyWeb7+4iyqfkvw+Jn6VinM8MptMf
+         XsXB5sl5TuOPGWUII2G779NvycTuDwejg04o6mkYx+nyRP8wvEq6tgM5Fq2yL8J02kox
+         PDYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733250162; x=1733854962;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Nt7EgOueeZPP9i7HIXoMixPag6gc+rZDJdNn0ad5OtU=;
+        b=nqnp6I60WTC3IaXO2s0WiapcILjbXxG5VmoiLyIbeWTEKoyukqIQuwrkkbQZYF+PzZ
+         LJ7SiWHHzHY4HZCY8DfUHjmlxnf4AfYRApETsxqGL6oHncu3aHGRjMrDkEWFwpHwkZJ6
+         t//c/0htyWWLOPqpvfY/OWF3oul7HlBFHM2jlECWaJL4+FanBUn8QQ7Dk0eMw438WLFx
+         3mUB13LdiZW1COjYFup05NC+N9vGxlXLSG7mZFoLVqxZsRm7OhxeG8EWZXVCwVGOpaMZ
+         bWAHqDIFBvBnolW0fqdlPkOmq37YSLLo3lMV86qZldEe+Koedar8R0ZmgTjr05Z00qVG
+         kaXA==
+X-Gm-Message-State: AOJu0YyEcE51eXFv6CbZpDZdAEw7EqgsFTZOV+TODmMy0Z+cgcaSaSAV
+	E2jsP0PDvMhzirG1B8L+/nkFwRN9b9oppDeojJtYrrc5Vp5HuxmhLgp8Fw==
+X-Gm-Gg: ASbGnctTrT5OiNOZ2inIHAVogVmpN/goDiQ3SA/r0krjPG9M30uQZxGS6dFN7qKx7yv
+	be7+0TFhGVUnNbniw9HnoEWTDTPbw+4nIFyu9Oot8dq0EhslZjkG+tBflZq/z0YAGMIdTyKGCW0
+	0QInwlaXHPpV1hsSbr6lP3z16UVGhxvZA8cBHC49RTwGifwoNpsHVIsPrN6vcWJqse7kCpuM5sE
+	RnEQdW3KMrSPTi5M9G5pn+OicynCb2i3MC0XBp/JAc4Gg==
+X-Google-Smtp-Source: AGHT+IEFF6mZDK0JiwE0zPEFuNnXNYM/7GqPcWW8zIAnjsJH2W/6lfeKovtvY1lEQwLt7fBSsD3vqA==
+X-Received: by 2002:a17:902:ccd2:b0:215:8ca3:3bac with SMTP id d9443c01a7336-215bd0d7646mr49679015ad.16.1733250162348;
+        Tue, 03 Dec 2024 10:22:42 -0800 (PST)
+Received: from honey-badger.. ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2153bad2480sm83772285ad.75.2024.12.03.10.22.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Dec 2024 10:22:41 -0800 (PST)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	masahiroy@kernel.org,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>
+Subject: [PATCH bpf v3] samples/bpf: remove unnecessary -I flags from libbpf EXTRA_CFLAGS
+Date: Tue,  3 Dec 2024 10:22:22 -0800
+Message-ID: <20241203182222.3915763-1-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241203173733.3181246-1-aleksander.lobakin@intel.com>
-References: <20241203173733.3181246-1-aleksander.lobakin@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The main reason for this change was to allow mixing pages from different
-&page_pools within one &xdp_buff/&xdp_frame. Why not? With stuff like
-devmem and io_uring zerocopy Rx, it's required to have separate PPs for
-header buffers and payload buffers.
-Adjust xdp_return_frame_bulk() and page_pool_put_netmem_bulk(), so that
-they won't be tied to a particular pool. Let the latter create a
-separate bulk of pages which's PP is different from the first netmem of
-the bulk and process it after the main loop.
-This greatly optimizes xdp_return_frame_bulk(): no more hashtable
-lookups and forced flushes on PP mismatch. Also make
-xdp_flush_frame_bulk() inline, as it's just one if + function call + one
-u32 read, not worth extending the call ladder.
+Commit [0] breaks samples/bpf build:
 
-Co-developed-by: Toke Høiland-Jørgensen <toke@redhat.com> # iterative
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+    $ make M=samples/bpf
+    ...
+    make -C /path/to/kernel/samples/bpf/../../tools/lib/bpf \
+     ...
+     EXTRA_CFLAGS=" \
+     ...
+     -fsanitize=bounds \
+     -I/path/to/kernel/usr/include \
+     ...
+    	/path/to/kernel/samples/bpf/libbpf/libbpf.a install_headers
+      CC      /path/to/kernel/samples/bpf/libbpf/staticobjs/libbpf.o
+    In file included from libbpf.c:29:
+    /path/to/kernel/tools/include/linux/err.h:35:8: error: 'inline' can only appear on functions
+       35 | static inline void * __must_check ERR_PTR(long error_)
+          |        ^
+
+The error is caused by `objtree` variable changing definition from `.`
+(dot) to an absolute path:
+- The variable TPROGS_CFLAGS is constructed as follows:
+  ...
+  TPROGS_CFLAGS += -I$(objtree)/usr/include
+- It is passed as EXTRA_CFLAGS for libbpf compilation:
+  $(LIBBPF): ...
+    ...
+	$(MAKE) -C $(LIBBPF_SRC) RM='rm -rf' EXTRA_CFLAGS="$(TPROGS_CFLAGS)"
+- Before commit [0], the line passed to libbpf makefile was
+  '-I./usr/include', where '.' referred to LIBBPF_SRC due to -C flag.
+  The directory $(LIBBPF_SRC)/usr/include does not exist and thus
+  was never resolved by C compiler.
+- After commit [0], the line passed to libbpf makefile became:
+  '<output-dir>/usr/include', this directory exists and is resolved by
+  C compiler.
+- Both 'tools/include' and 'usr/include' define files err.h and types.h.
+- libbpf expects headers like 'linux/err.h' and 'linux/types.h'
+  defined in 'tools/include', not 'usr/include', hence the compilation
+  error.
+
+This commit removes unnecessary -I flags from libbpf compilation.
+(libbpf sets up the necessary includes at lib/bpf/Makefile:63).
+
+Changes v1 [1] -> v2:
+- dropped unnecessary replacement of KBUILD_OUTPUT with $(objtree)
+  (Andrii)
+Changes v2 [2] -> v3:
+- make sure --sysroot option is set for libbpf's EXTRA_CFLAGS,
+  if $(SYSROOT) is set (Stanislav)
+
+[0] commit 13b25489b6f8 ("kbuild: change working directory to external module directory with M=")
+[1] https://lore.kernel.org/bpf/20241202212154.3174402-1-eddyz87@gmail.com/
+[2] https://lore.kernel.org/bpf/20241202234741.3492084-1-eddyz87@gmail.com/
+
+Fixes: 13b25489b6f8 ("kbuild: change working directory to external module directory with M=")
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- include/net/page_pool/types.h |  6 ++--
- include/net/xdp.h             | 16 ++++++---
- net/core/page_pool.c          | 61 ++++++++++++++++++++++++++---------
- net/core/xdp.c                | 29 +----------------
- 4 files changed, 61 insertions(+), 51 deletions(-)
+ samples/bpf/Makefile | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-index 1ea16b0e9c79..05a864031271 100644
---- a/include/net/page_pool/types.h
-+++ b/include/net/page_pool/types.h
-@@ -259,8 +259,7 @@ void page_pool_disable_direct_recycling(struct page_pool *pool);
- void page_pool_destroy(struct page_pool *pool);
- void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *),
- 			   const struct xdp_mem_info *mem);
--void page_pool_put_netmem_bulk(struct page_pool *pool, netmem_ref *data,
--			       u32 count);
-+void page_pool_put_netmem_bulk(netmem_ref *data, u32 count);
- #else
- static inline void page_pool_destroy(struct page_pool *pool)
- {
-@@ -272,8 +271,7 @@ static inline void page_pool_use_xdp_mem(struct page_pool *pool,
- {
- }
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index bcf103a4c14f..96a05e70ace3 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -146,13 +146,14 @@ ifeq ($(ARCH), x86)
+ BPF_EXTRA_CFLAGS += -fcf-protection
+ endif
  
--static inline void page_pool_put_netmem_bulk(struct page_pool *pool,
--					     netmem_ref *data, u32 count)
-+static inline void page_pool_put_netmem_bulk(netmem_ref *data, u32 count)
- {
- }
- #endif
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index f4020b29122f..9e7eb8223513 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -11,6 +11,8 @@
- #include <linux/netdevice.h>
- #include <linux/skbuff.h> /* skb_shared_info */
+-TPROGS_CFLAGS += -Wall -O2
+-TPROGS_CFLAGS += -Wmissing-prototypes
+-TPROGS_CFLAGS += -Wstrict-prototypes
+-TPROGS_CFLAGS += $(call try-run,\
++COMMON_CFLAGS += -Wall -O2
++COMMON_CFLAGS += -Wmissing-prototypes
++COMMON_CFLAGS += -Wstrict-prototypes
++COMMON_CFLAGS += $(call try-run,\
+ 	printf "int main() { return 0; }" |\
+ 	$(CC) -Werror -fsanitize=bounds -x c - -o "$$TMP",-fsanitize=bounds,)
  
-+#include <net/page_pool/types.h>
-+
- /**
-  * DOC: XDP RX-queue information
-  *
-@@ -193,14 +195,12 @@ xdp_frame_is_frag_pfmemalloc(const struct xdp_frame *frame)
- #define XDP_BULK_QUEUE_SIZE	16
- struct xdp_frame_bulk {
- 	int count;
--	void *xa;
- 	netmem_ref q[XDP_BULK_QUEUE_SIZE];
- };
++TPROGS_CFLAGS += $(COMMON_CFLAGS)
+ TPROGS_CFLAGS += -I$(objtree)/usr/include
+ TPROGS_CFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
+ TPROGS_CFLAGS += -I$(LIBBPF_INCLUDE)
+@@ -162,7 +163,7 @@ TPROGS_CFLAGS += -I$(srctree)/tools/lib
+ TPROGS_CFLAGS += -DHAVE_ATTR_TEST=0
  
- static __always_inline void xdp_frame_bulk_init(struct xdp_frame_bulk *bq)
- {
--	/* bq->count will be zero'ed when bq->xa gets updated */
--	bq->xa = NULL;
-+	bq->count = 0;
- }
+ ifdef SYSROOT
+-TPROGS_CFLAGS += --sysroot=$(SYSROOT)
++COMMON_CFLAGS += --sysroot=$(SYSROOT)
+ TPROGS_LDFLAGS := -L$(SYSROOT)/usr/lib
+ endif
  
- static inline struct skb_shared_info *
-@@ -317,10 +317,18 @@ void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
- void xdp_return_frame(struct xdp_frame *xdpf);
- void xdp_return_frame_rx_napi(struct xdp_frame *xdpf);
- void xdp_return_buff(struct xdp_buff *xdp);
--void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq);
- void xdp_return_frame_bulk(struct xdp_frame *xdpf,
- 			   struct xdp_frame_bulk *bq);
+@@ -229,7 +230,7 @@ clean:
  
-+static inline void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq)
-+{
-+	if (unlikely(!bq->count))
-+		return;
-+
-+	page_pool_put_netmem_bulk(bq->q, bq->count);
-+	bq->count = 0;
-+}
-+
- static __always_inline unsigned int
- xdp_get_frame_len(const struct xdp_frame *xdpf)
- {
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 4c85b77cfdac..62cd1fcb9e97 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -841,7 +841,6 @@ EXPORT_SYMBOL(page_pool_put_unrefed_page);
- 
- /**
-  * page_pool_put_netmem_bulk() - release references on multiple netmems
-- * @pool:	pool from which pages were allocated
-  * @data:	array holding netmem references
-  * @count:	number of entries in @data
-  *
-@@ -854,35 +853,58 @@ EXPORT_SYMBOL(page_pool_put_unrefed_page);
-  * Please note the caller must not use data area after running
-  * page_pool_put_netmem_bulk(), as this function overwrites it.
-  */
--void page_pool_put_netmem_bulk(struct page_pool *pool, netmem_ref *data,
--			       u32 count)
-+void page_pool_put_netmem_bulk(netmem_ref *data, u32 count)
- {
--	int i, bulk_len = 0;
--	bool allow_direct;
--	bool in_softirq;
-+	bool allow_direct, in_softirq, again = false;
-+	netmem_ref bulk[XDP_BULK_QUEUE_SIZE];
-+	u32 i, bulk_len, foreign;
-+	struct page_pool *pool;
- 
--	allow_direct = page_pool_napi_local(pool);
-+again:
-+	pool = NULL;
-+	bulk_len = 0;
-+	foreign = 0;
- 
- 	for (i = 0; i < count; i++) {
--		netmem_ref netmem = netmem_compound_head(data[i]);
-+		struct page_pool *netmem_pp;
-+		netmem_ref netmem;
-+
-+		if (!again) {
-+			netmem = netmem_compound_head(data[i]);
- 
--		/* It is not the last user for the page frag case */
--		if (!page_pool_is_last_ref(netmem))
-+			/* It is not the last user for the page frag case */
-+			if (!page_pool_is_last_ref(netmem))
-+				continue;
-+		} else {
-+			netmem = data[i];
-+		}
-+
-+		netmem_pp = netmem_get_pp(netmem);
-+		if (unlikely(!pool)) {
-+			pool = netmem_pp;
-+			allow_direct = page_pool_napi_local(pool);
-+		} else if (netmem_pp != pool) {
-+			/*
-+			 * If the netmem belongs to a different page_pool, save
-+			 * it for another round after the main loop.
-+			 */
-+			data[foreign++] = netmem;
- 			continue;
-+		}
- 
- 		netmem = __page_pool_put_page(pool, netmem, -1, allow_direct);
- 		/* Approved for bulk recycling in ptr_ring cache */
- 		if (netmem)
--			data[bulk_len++] = netmem;
-+			bulk[bulk_len++] = netmem;
- 	}
- 
- 	if (!bulk_len)
--		return;
-+		goto out;
- 
- 	/* Bulk producer into ptr_ring page_pool cache */
- 	in_softirq = page_pool_producer_lock(pool);
- 	for (i = 0; i < bulk_len; i++) {
--		if (__ptr_ring_produce(&pool->ring, (__force void *)data[i])) {
-+		if (__ptr_ring_produce(&pool->ring, (__force void *)bulk[i])) {
- 			/* ring full */
- 			recycle_stat_inc(pool, ring_full);
- 			break;
-@@ -893,13 +915,22 @@ void page_pool_put_netmem_bulk(struct page_pool *pool, netmem_ref *data,
- 
- 	/* Hopefully all pages was return into ptr_ring */
- 	if (likely(i == bulk_len))
--		return;
-+		goto out;
- 
- 	/* ptr_ring cache full, free remaining pages outside producer lock
- 	 * since put_page() with refcnt == 1 can be an expensive operation
- 	 */
- 	for (; i < bulk_len; i++)
--		page_pool_return_page(pool, data[i]);
-+		page_pool_return_page(pool, bulk[i]);
-+
-+out:
-+	if (!foreign)
-+		return;
-+
-+	count = foreign;
-+	again = true;
-+
-+	goto again;
- }
- EXPORT_SYMBOL(page_pool_put_netmem_bulk);
- 
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 938ad15c9857..56127e8ec85f 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -511,46 +511,19 @@ EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
-  * xdp_frame_bulk is usually stored/allocated on the function
-  * call-stack to avoid locking penalties.
-  */
--void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq)
--{
--	struct xdp_mem_allocator *xa = bq->xa;
--
--	if (unlikely(!xa || !bq->count))
--		return;
--
--	page_pool_put_netmem_bulk(xa->page_pool, bq->q, bq->count);
--	/* bq->xa is not cleared to save lookup, if mem.id same in next bulk */
--	bq->count = 0;
--}
--EXPORT_SYMBOL_GPL(xdp_flush_frame_bulk);
- 
- /* Must be called with rcu_read_lock held */
- void xdp_return_frame_bulk(struct xdp_frame *xdpf,
- 			   struct xdp_frame_bulk *bq)
- {
--	struct xdp_mem_info *mem = &xdpf->mem;
--	struct xdp_mem_allocator *xa;
--
--	if (mem->type != MEM_TYPE_PAGE_POOL) {
-+	if (xdpf->mem.type != MEM_TYPE_PAGE_POOL) {
- 		xdp_return_frame(xdpf);
- 		return;
- 	}
- 
--	xa = bq->xa;
--	if (unlikely(!xa)) {
--		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
--		bq->count = 0;
--		bq->xa = xa;
--	}
--
- 	if (bq->count == XDP_BULK_QUEUE_SIZE)
- 		xdp_flush_frame_bulk(bq);
- 
--	if (unlikely(mem->id != xa->mem.id)) {
--		xdp_flush_frame_bulk(bq);
--		bq->xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
--	}
--
- 	if (unlikely(xdp_frame_has_frags(xdpf))) {
- 		struct skb_shared_info *sinfo;
- 		int i;
+ $(LIBBPF): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OUTPUT)
+ # Fix up variables inherited from Kbuild that tools/ build system won't like
+-	$(MAKE) -C $(LIBBPF_SRC) RM='rm -rf' EXTRA_CFLAGS="$(TPROGS_CFLAGS)" \
++	$(MAKE) -C $(LIBBPF_SRC) RM='rm -rf' EXTRA_CFLAGS="$(COMMON_CFLAGS)" \
+ 		LDFLAGS="$(TPROGS_LDFLAGS)" srctree=$(BPF_SAMPLES_PATH)/../../ \
+ 		O= OUTPUT=$(LIBBPF_OUTPUT)/ DESTDIR=$(LIBBPF_DESTDIR) prefix= \
+ 		$@ install_headers
 -- 
 2.47.0
 
