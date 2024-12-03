@@ -1,272 +1,173 @@
-Return-Path: <bpf+bounces-45986-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45987-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8CEE9E113C
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 03:26:29 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AB039E1161
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 03:34:59 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C7C91631C2
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 02:26:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8C14B22735
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 02:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD1D6BFC0;
-	Tue,  3 Dec 2024 02:26:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C1701442F4;
+	Tue,  3 Dec 2024 02:34:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XEnLsVL6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GG/68Zc3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3668A8460
-	for <bpf@vger.kernel.org>; Tue,  3 Dec 2024 02:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2031D5A7AA
+	for <bpf@vger.kernel.org>; Tue,  3 Dec 2024 02:34:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733192784; cv=none; b=PAeeLyz/81E07rM6isuRYU6+5BRBblVrUhdQrm71AlxGuQ7Cmho2ujky4VlV0VFtChB4offG4WzVEDydSwva1mbZfqtfR2Jum2LaRcLcHqWQpMxd3OMzjb75ciL4Qz11XrxOWCuwKu52HdSK68z+CenqNA9eKRdTx/t5xd+fj+I=
+	t=1733193290; cv=none; b=NfQzQt+0vGsymTWGydwihR7KZeiyjeW8rT+X9wPb7iyBsAOjX82C18CLpD28olWzJ8p1hg2cKgcFHhuqk3zu6g3dZKprxLjeldqQ2XUofYF+LSpHYJa7CfNoVIquroN49FhOZXY/QPebGtyrZS7El1yVngCtPXtH5+cLINOWkU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733192784; c=relaxed/simple;
-	bh=LyfTJufADcTOKCow6nEJXwMVLzHtIl0YwEmhfUmvWY0=;
+	s=arc-20240116; t=1733193290; c=relaxed/simple;
+	bh=9Kkzk4MOipH5nDH8PY29alsZgQk5hHP6dDW5lL1nFH0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sA8t6/380XFFjTes25yI532RKgLY6WHwKsk2APO8uWcQ6E0IyEcXhQOxCvO+lGdIkQdPmzoDb9ElksJcAUc26WC0A2Rr38VvZiDeU44CmYBTL18gWOti3YdvXAU/zbSqvwLKlzTXuRzwa0q+w0bqvfgUiuO8LpZYYJDDJQVWEo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XEnLsVL6; arc=none smtp.client-ip=209.85.221.46
+	 To:Cc:Content-Type; b=ipw9z09Ni8OKpNQX3xiSkbqpb3OxF2jBYuaZaFeIFC3E/fNxZf8PbuAA0ZwcPYluHOXqIdMyhLaguT8gJSqqEBvxK4d1T+Svn7rngSsymHFbBHndTbPetp7raf/bfnDKRdiqHsuUOSIDggnYDV/1YrA7bDOEKPNDikCjO/xe5D8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GG/68Zc3; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-385df8815fcso2287085f8f.1
-        for <bpf@vger.kernel.org>; Mon, 02 Dec 2024 18:26:21 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-385de9f789cso2665399f8f.2
+        for <bpf@vger.kernel.org>; Mon, 02 Dec 2024 18:34:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733192780; x=1733797580; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733193287; x=1733798087; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tEy7Q7AXUuvq+Rmunh+4YUZRpCHgypg32Urn94wJBhQ=;
-        b=XEnLsVL6PGvnV5K9RNeunuzeUkYTpZd8Dx+H2AOhFS8gQgIxsV2ChE3ZPLRPoUugkt
-         YV4Rc+HAhdoT+9XyIw9syl/GxdMNPqpbj55cE2bw7Ad4VcdfzfQOJKjrZlVKC6J5bQVu
-         IQ2isjOkrRziblgcdoT8dtBo0izEK3TgxA7eV8vS1F8y9zAzCRMfFBXger1NZjdXyFZs
-         /Fs85Nfjgs++64wWZl+hI5I/sNkG1Q1t+EKEO174pnnaM3dVyx/AER5s+aMUQrmdDQF/
-         QUok2SSnKVi8IAsEGDAnfd9lZPUE92Ez7guHto5j+5/Ro0HcJ0zzuXAAR8P4aXG7YVR2
-         9oCg==
+        bh=Z7NDmMk8xSt/lpqNGt/4V08+c+zNqad+A5DegSvRxb4=;
+        b=GG/68Zc3Llq8ADRE7M9Q8Pq4Uj8kMCLJYVkuKWjydjm6y91pZ1XWPdcKfUg/49tDAL
+         ueR55G9K8Xn0K6dtpvYd6TiioZEnuU+eT06/ueGqbvOJys9MhC69vOG1FoaHZDSGoi6S
+         kpEIzrv1Buj8nQdwLFrad6l2/XXAXI+JoKz0mSCXL/yRuNQRFYRuBHKs5n+e22KoBUMY
+         JLyvSvxikRfMLmm0B5Xf/kUSK5JxMowdBv7RLa/a/Ai5F9OgH9jQNNsLUeziXmJanMBW
+         oAOpOj8beS8Lud8qVUtEIXiPGtfuQF1tPPenYjBhyXP+PoYKHcw0XS8+ZDI8DHgpUZPh
+         5iXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733192780; x=1733797580;
+        d=1e100.net; s=20230601; t=1733193287; x=1733798087;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tEy7Q7AXUuvq+Rmunh+4YUZRpCHgypg32Urn94wJBhQ=;
-        b=ou2dODY41MW6eIu5eeanpEo2hocixkJbZtlyPPJlvETYpgrDQqjpzb63rfyoDert2w
-         ASVCahFBdhCQNJG3uOAS6z+MlV6e3TRZuRQFI/QTq8sQXk3MWs0/xgGJc1nwzvcPFgYN
-         r0+IDGzmMXnI5upLmyCAExw9HuTKB1xt5zAUbidPOm2/vPF12nPwjyZzL3iLDCM0dmgN
-         GCNE/LrMXPakPhjKwGWGHutnbxUjAvTKOgYUs0b0zdBURmzrLf1EaVwdjVq267qYzfB7
-         Rg4f0IhSZ1+X3qt3ptN/2FPk9kyVKWMUbyINCpjRrJN1HEHjBKlJiWxfLl46uAr4FvIh
-         kR4w==
-X-Gm-Message-State: AOJu0Yzx3cxIj/LqcU7EkrGS3wxU72ALhourFOgmaxJn7MWPn4SJMdtx
-	NqsBexi/yrUHohX1RI71rWaTCQ65en4FJhLsOtzmDS8oYLlJCopg5jjS+GUzJNUZNM0DsPV/teP
-	yFrtXW8uu7SlH7TMLNndko8i7aew=
-X-Gm-Gg: ASbGncuzaYHQLixUzcSBuhyanjm5kQfSiqKXsSsL96Me0CV+dODqKABSixE4pNE3pLj
-	aY06sXTcafNBaHjnYBJoQwE139lKOlETVox3FP/DEeYL1pbs=
-X-Google-Smtp-Source: AGHT+IGjeXwp7O/zcBv0D5sSECWpa/osgkQQvu93pGVqp13KlhrKHzoP1WANdokxCP6076JdWsJhmrYOhTjfaOLP/l4=
-X-Received: by 2002:a05:6000:2cf:b0:385:f195:26f with SMTP id
- ffacd0b85a97d-385fd3ebe55mr536308f8f.19.1733192780198; Mon, 02 Dec 2024
- 18:26:20 -0800 (PST)
+        bh=Z7NDmMk8xSt/lpqNGt/4V08+c+zNqad+A5DegSvRxb4=;
+        b=snkSvlfRPvEd07fDdmJ18YZOihod/cvTTCYPHb5zMmpiMhFjFr5EZHwqi7+YudEEeY
+         Z+r4w22ac9AryCw2FilyYVY+MvQFatscHhT4qX9LN+m5z3ht/Olbhwvc4jBatC0gmHA+
+         WWlXaX3ge8yRBnJJhFhplIQ1VlTByttxpO+BBQEo3fGhOj6VNb9/8KdjMlWZQi7g6FA9
+         VaoKkvskp5y1KmaT1IR+MqWzpzdb0azv9aHwZ6Luy36x5bjZ3gVNnvcr7rtV6k9W5tr3
+         fUyMpjGe1f96MRDpf678yTVIKSxb6IuVN/AnkCQ6Z8ewvfFNqWHXT0loq2HAFUn9xKP/
+         7xDQ==
+X-Gm-Message-State: AOJu0YyTUtiP91E9L1lbfPXbu8Bn9GVqJPi1JvqT7J1gmEzpA58XSBxP
+	BaRSaREBawzL1lbZiYZLxUzubjeOXtkCReazvcNObpWLj8pIMjIrE5as9YwrB/c6WovRKrueXrA
+	QBe9YN49CLrgcMIBkEQWxraW770iRI/3f
+X-Gm-Gg: ASbGncu+gSrB9Q6LzLtuAw8XMUTB2VqQYWJfqqotMI/wKs+jwAZyj409uexAZfgilB0
+	ekNZOEor515dd+gennxrT/Bvut/KQ8hHvXRJ0TRf/4T1YSYU=
+X-Google-Smtp-Source: AGHT+IHn7nMU/dBUdNvdmC0ngIjmE2mQOtDU37La+iDkzHo3LGI9JGBnJXxgII+2L8v1lnaIuPiZPYWwiwXreoXXboc=
+X-Received: by 2002:a05:6000:2c5:b0:385:ddd2:6ab7 with SMTP id
+ ffacd0b85a97d-385fd433581mr572807f8f.52.1733193287320; Mon, 02 Dec 2024
+ 18:34:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241129132813.1452294-1-aspsk@isovalent.com> <20241129132813.1452294-4-aspsk@isovalent.com>
-In-Reply-To: <20241129132813.1452294-4-aspsk@isovalent.com>
+References: <20241129132813.1452294-1-aspsk@isovalent.com> <20241129132813.1452294-5-aspsk@isovalent.com>
+In-Reply-To: <20241129132813.1452294-5-aspsk@isovalent.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 2 Dec 2024 18:26:09 -0800
-Message-ID: <CAADnVQLezUADcW5gJopCyfdYaNSiA+9Zk2n5Mf2EovzCv0AnvQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 3/7] bpf: add fd_array_cnt attribute for prog_load
+Date: Mon, 2 Dec 2024 18:34:35 -0800
+Message-ID: <CAADnVQJgYEiMbtPStOwGJLV4Dt1yj98Hy73-FEnDVh6a2be++w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 4/7] libbpf: prog load: allow to use fd_array_cnt
 To: Anton Protopopov <aspsk@isovalent.com>
 Cc: bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 29, 2024 at 5:26=E2=80=AFAM Anton Protopopov <aspsk@isovalent.c=
+On Fri, Nov 29, 2024 at 5:29=E2=80=AFAM Anton Protopopov <aspsk@isovalent.c=
 om> wrote:
 >
-> The fd_array attribute of the BPF_PROG_LOAD syscall may contain a set
-> of file descriptors: maps or btfs. This field was introduced as a
-> sparse array. Introduce a new attribute, fd_array_cnt, which, if
-> present, indicates that the fd_array is a continuous array of the
-> corresponding length.
->
-> If fd_array_cnt is non-zero, then every map in the fd_array will be
-> bound to the program, as if it was used by the program. This
-> functionality is similar to the BPF_PROG_BIND_MAP syscall, but such
-> maps can be used by the verifier during the program load.
+> Add new fd_array_cnt field to bpf_prog_load_opts
+> and pass it in bpf_attr, if set.
 >
 > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
 > ---
->  include/uapi/linux/bpf.h       | 10 ++++
->  kernel/bpf/syscall.c           |  2 +-
->  kernel/bpf/verifier.c          | 94 ++++++++++++++++++++++++++++------
->  tools/include/uapi/linux/bpf.h | 10 ++++
->  4 files changed, 100 insertions(+), 16 deletions(-)
+>  tools/lib/bpf/bpf.c      | 5 +++--
+>  tools/lib/bpf/bpf.h      | 5 ++++-
+>  tools/lib/bpf/features.c | 2 +-
+>  3 files changed, 8 insertions(+), 4 deletions(-)
 >
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 4162afc6b5d0..2acf9b336371 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1573,6 +1573,16 @@ union bpf_attr {
->                  * If provided, prog_flags should have BPF_F_TOKEN_FD fla=
-g set.
->                  */
->                 __s32           prog_token_fd;
-> +               /* The fd_array_cnt can be used to pass the length of the
-> +                * fd_array array. In this case all the [map] file descri=
-ptors
-> +                * passed in this array will be bound to the program, eve=
-n if
-> +                * the maps are not referenced directly. The functionalit=
-y is
-> +                * similar to the BPF_PROG_BIND_MAP syscall, but maps can=
- be
-> +                * used by the verifier during the program load. If provi=
-ded,
-> +                * then the fd_array[0,...,fd_array_cnt-1] is expected to=
- be
-> +                * continuous.
-> +                */
-> +               __u32           fd_array_cnt;
->         };
->
->         struct { /* anonymous struct used by BPF_OBJ_* commands */
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 58190ca724a2..7e3fbc23c742 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2729,7 +2729,7 @@ static bool is_perfmon_prog_type(enum bpf_prog_type=
- prog_type)
->  }
->
->  /* last field in 'union bpf_attr' used by this command */
-> -#define BPF_PROG_LOAD_LAST_FIELD prog_token_fd
-> +#define BPF_PROG_LOAD_LAST_FIELD fd_array_cnt
->
->  static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr=
-_size)
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index becdfa701c75..0e7f59224936 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -105,7 +105,7 @@ int sys_bpf_prog_load(union bpf_attr *attr, unsigned =
+int size, int attempts)
+>   */
+>  int probe_memcg_account(int token_fd)
 >  {
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 8e034a22aa2a..d172f6974fd7 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -19181,22 +19181,10 @@ static int check_map_prog_compatibility(struct =
-bpf_verifier_env *env,
->         return 0;
->  }
->
-> -/* Add map behind fd to used maps list, if it's not already there, and r=
-eturn
-> - * its index.
-> - * Returns <0 on error, or >=3D 0 index, on success.
-> - */
-> -static int add_used_map_from_fd(struct bpf_verifier_env *env, int fd)
-> +static int __add_used_map(struct bpf_verifier_env *env, struct bpf_map *=
-map)
->  {
-> -       CLASS(fd, f)(fd);
-> -       struct bpf_map *map;
->         int i, err;
->
-> -       map =3D __bpf_map_get(f);
-> -       if (IS_ERR(map)) {
-> -               verbose(env, "fd %d is not pointing to valid bpf_map\n", =
-fd);
-> -               return PTR_ERR(map);
-> -       }
-> -
->         /* check whether we recorded this map already */
->         for (i =3D 0; i < env->used_map_cnt; i++)
->                 if (env->used_maps[i] =3D=3D map)
-> @@ -19227,6 +19215,24 @@ static int add_used_map_from_fd(struct bpf_verif=
-ier_env *env, int fd)
->         return env->used_map_cnt - 1;
->  }
->
-> +/* Add map behind fd to used maps list, if it's not already there, and r=
-eturn
-> + * its index.
-> + * Returns <0 on error, or >=3D 0 index, on success.
-> + */
-> +static int add_used_map(struct bpf_verifier_env *env, int fd)
-> +{
-> +       struct bpf_map *map;
-> +       CLASS(fd, f)(fd);
-> +
-> +       map =3D __bpf_map_get(f);
-> +       if (IS_ERR(map)) {
-> +               verbose(env, "fd %d is not pointing to valid bpf_map\n", =
-fd);
-> +               return PTR_ERR(map);
-> +       }
-> +
-> +       return __add_used_map(env, map);
-> +}
-> +
->  /* find and rewrite pseudo imm in ld_imm64 instructions:
->   *
->   * 1. if it accesses map FD, replace it with actual map pointer.
-> @@ -19318,7 +19324,7 @@ static int resolve_pseudo_ldimm64(struct bpf_veri=
-fier_env *env)
->                                 break;
->                         }
->
-> -                       map_idx =3D add_used_map_from_fd(env, fd);
-> +                       map_idx =3D add_used_map(env, fd);
->                         if (map_idx < 0)
->                                 return map_idx;
->                         map =3D env->used_maps[map_idx];
-> @@ -22526,6 +22532,61 @@ struct btf *bpf_get_btf_vmlinux(void)
->         return btf_vmlinux;
->  }
->
-> +/*
-> + * The add_fd_from_fd_array() is executed only if fd_array_cnt is given.=
-  In
-> + * this case expect that every file descriptor in the array is either a =
-map or
-> + * a BTF, or a hole (0). Everything else is considered to be trash.
-> + */
-
-The comment is now incorrect. 0 is not a valid hole.
-No holes are allowed. And no trash.
-
-> +static int add_fd_from_fd_array(struct bpf_verifier_env *env, int fd)
-> +{
-> +       struct bpf_map *map;
-> +       CLASS(fd, f)(fd);
-> +       int ret;
-> +
-> +       map =3D __bpf_map_get(f);
-> +       if (!IS_ERR(map)) {
-> +               ret =3D __add_used_map(env, map);
-> +               if (ret < 0)
-> +                       return ret;
-> +               return 0;
-> +       }
-> +
-> +       if (!IS_ERR(__btf_get_by_fd(f)))
-> +               return 0;
-
-It is quite asymmetrical that maps get refcnted and saved
-while BTFs just checked for existence and not refcnted.
-A comment is necessary.
-
-> +
-> +       verbose(env, "fd %d is not pointing to valid bpf_map or btf\n", f=
+> -       const size_t attr_sz =3D offsetofend(union bpf_attr, prog_token_f=
 d);
-> +       return PTR_ERR(map);
-> +}
+> +       const size_t attr_sz =3D offsetofend(union bpf_attr, fd_array_cnt=
+);
+
+Thankfully this function doesn't set fd_array_cnt below.
+Otherwise the detection of memcg would fail on older kernels.
+Let's avoid people mindlessly adding init of fd_array_cnt here by accident.
+Simply keep this line as-is.
+offsetofend(.., prog_token_fd) is fine.
+
+>         struct bpf_insn insns[] =3D {
+>                 BPF_EMIT_CALL(BPF_FUNC_ktime_get_coarse_ns),
+>                 BPF_EXIT_INSN(),
+> @@ -238,7 +238,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
+>                   const struct bpf_insn *insns, size_t insn_cnt,
+>                   struct bpf_prog_load_opts *opts)
+>  {
+> -       const size_t attr_sz =3D offsetofend(union bpf_attr, prog_token_f=
+d);
+> +       const size_t attr_sz =3D offsetofend(union bpf_attr, fd_array_cnt=
+);
+>         void *finfo =3D NULL, *linfo =3D NULL;
+>         const char *func_info, *line_info;
+>         __u32 log_size, log_level, attach_prog_fd, attach_btf_obj_fd;
+> @@ -311,6 +311,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
+>         attr.line_info_cnt =3D OPTS_GET(opts, line_info_cnt, 0);
+>
+>         attr.fd_array =3D ptr_to_u64(OPTS_GET(opts, fd_array, NULL));
+> +       attr.fd_array_cnt =3D OPTS_GET(opts, fd_array_cnt, 0);
+>
+>         if (log_level) {
+>                 attr.log_buf =3D ptr_to_u64(log_buf);
+> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> index a4a7b1ad1b63..435da95d2058 100644
+> --- a/tools/lib/bpf/bpf.h
+> +++ b/tools/lib/bpf/bpf.h
+> @@ -107,9 +107,12 @@ struct bpf_prog_load_opts {
+>          */
+>         __u32 log_true_size;
+>         __u32 token_fd;
 > +
-> +static int init_fd_array(struct bpf_verifier_env *env, union bpf_attr *a=
-ttr, bpfptr_t uattr)
+> +       /* if set, provides the length of fd_array */
+> +       __u32 fd_array_cnt;
+>         size_t :0;
+>  };
+> -#define bpf_prog_load_opts__last_field token_fd
+> +#define bpf_prog_load_opts__last_field fd_array_cnt
+>
+>  LIBBPF_API int bpf_prog_load(enum bpf_prog_type prog_type,
+>                              const char *prog_name, const char *license,
+> diff --git a/tools/lib/bpf/features.c b/tools/lib/bpf/features.c
+> index 760657f5224c..5afc9555d9ac 100644
+> --- a/tools/lib/bpf/features.c
+> +++ b/tools/lib/bpf/features.c
+> @@ -22,7 +22,7 @@ int probe_fd(int fd)
+>
+>  static int probe_kern_prog_name(int token_fd)
+>  {
+> -       const size_t attr_sz =3D offsetofend(union bpf_attr, prog_token_f=
+d);
+> +       const size_t attr_sz =3D offsetofend(union bpf_attr, fd_array_cnt=
+);
 
-The name still bothers me.
-The fd_array in the env and in uattr is not initialized.
-
-Maybe process_fd_array() ?
-
-pw-bot: cr
+Same here. Don't change it.
 
