@@ -1,70 +1,72 @@
-Return-Path: <bpf+bounces-46000-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46001-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B4C29E1F1B
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 15:28:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 599329E204D
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 15:56:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7CE5B333FD
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 13:48:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38D01B427A3
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 13:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF2512AD02;
-	Tue,  3 Dec 2024 13:48:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 169441F12F2;
+	Tue,  3 Dec 2024 13:48:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="HvTxL66Z"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="WW0VRdnX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7411B395E
-	for <bpf@vger.kernel.org>; Tue,  3 Dec 2024 13:48:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37911DF736
+	for <bpf@vger.kernel.org>; Tue,  3 Dec 2024 13:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733233722; cv=none; b=AIdLl6HTFu1Sfh6byTaOIKf/x1OPd6WM/8tRClAYWOsLI6I5uTcyXDu71wCVSOH76ycjZwRo6T0Fk8EgCoBZPYp2wj/EEpCG+Map2Zy+gQZs8oAxn+hcrIGzmc+rd1HCxdl+13hzUmKNo/3AhiVa9Y8Ngk4bATAd3utDfJ8mvJk=
+	t=1733233723; cv=none; b=btT4tNlaaEcsuW0eb12H/6PO+7O44v3u41JJgoZSEmVtBiXV/TR/82nC5mgX62ZL6N0uGxl0OI1LecU6zNirkfeMlrRMQOJDiAhVbqZR3shbumlEIX6zNRnrRuB0c9Xo5Wo5pifSqNQzyR4O93smWBztJ8Jx+cAMOTr2gy50YqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733233722; c=relaxed/simple;
-	bh=hhQ2XO9rTwHLewLsocshrgC7DLcLE29xIfhvLBkuPNY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bLArmlNkKKw7FgMSdeoPg+UGjsGQfpRpoYnnHIk0bctScewLcjkp7xp+8HkiEtaYssRjIbGs31DgZLfalUmkKVOxtOzB7tWO8hTz5lx2YTe5EA+WnDLidCjjfbnbqkdJJe5zpNeMEs0oj3BC5pIYu76W58jqrGKS9PieKURLFl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=HvTxL66Z; arc=none smtp.client-ip=209.85.208.53
+	s=arc-20240116; t=1733233723; c=relaxed/simple;
+	bh=ABC2JinWNRiYAUq/CXOh/OLgohJEP7+NA7nwm8xGSZY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=QOWAkHtYvIZjdghMIGk2+eUZoxF3SqqoQtyzCUaQmzbEadi7fddQDVjSXMrOkdJF6fDGrhVxzwu8FLi6jDqzxWruxZJUAGMQ4Qn6aUY/AsIoPXjpLYO5+Pv+cX19N4RUxMjzs1mJY/57zmYMSN20Fohj4o0L5UTTOkX5nQHjdMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=WW0VRdnX; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5d0d71d7f00so4884066a12.3
-        for <bpf@vger.kernel.org>; Tue, 03 Dec 2024 05:48:40 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5cfddb70965so7006531a12.0
+        for <bpf@vger.kernel.org>; Tue, 03 Dec 2024 05:48:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1733233719; x=1733838519; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eCeLtmKTjgwrImMMogOVWvtYxxbEbk+9kOpyESOcPcM=;
-        b=HvTxL66Zzabonwtt3M2woWX0rg7OW7VP+XQIE83IBsjOd/K+1nycqcq4Dt27Ddltrk
-         rNALj6qLleh+RoECj9o78eEcEiuRIPYxqX5yb1S+CmJTKtf27G03EE99kk/gzrLsJ1sF
-         /iveX4htC/XysSUvPKX2wwGjastn1Llthz1oksl2plIVwKJzeA82QqsZBw/1NqMaM5q7
-         vXMWxLjDz99Pzk5RxlleinQEHfBqr01+R9FctYhGtibzgYU6XZY2Bjq030wzvUlJCfKM
-         1egRbtu4WoyX0/9+XCyovlT5A2NU27mBAA8sSyae9WnSsXhxWS/53yxUJJKmfvtF6FLp
-         OnxQ==
+        d=isovalent.com; s=google; t=1733233720; x=1733838520; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8POyoFbCcEjSQD4RN/xYZaFrBV0KG5Ys0zmlrQNRb2c=;
+        b=WW0VRdnXCmaDlBhGcRi86/K2B3zVQJGRYNCGJuHbTAe7DtxKUgxHq/IOFdarG40KnR
+         kuH9ruRuvMqmzZiePW9tIuN8JKLPl5fxAhJfjoEPTKghERvYyKPLHZDE87S04mQy+XAG
+         7f5EffMwRLKDMC3UWu05Vu8sM5SLggwzpHMenq8Qd6wmi25GSDBNpZ8jd3jeVywoJ851
+         S0MI7Pkm0j1QV9WpyiVob6EDALCqrboDvGxzXzC2sJQYqXNpkOzIOu3YmZRUtkhlNO7E
+         4JKm6ulIjDHsD9xNtlLou9Q1HKY8AGCreTDk1/zq5tWAHnM/8VyGl7/k2I99r333QrFb
+         ciEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733233719; x=1733838519;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eCeLtmKTjgwrImMMogOVWvtYxxbEbk+9kOpyESOcPcM=;
-        b=dxOnQ0/Lfhx9R16CoMaUgVbFgggZt6LGl5fhBM1XvhsBK+yY5Zda4R327oyTTyD9Vf
-         9BG8YaChFOPgoALsdhXd/MLj91MJsLRrv3z/q6GshsZ8gtIPu4k9dnFLFF7/xDT2woGb
-         hqooN9qllrgASFiU0EuVctz4Rjje5Umd7V6Fq+PKTIusUOaWwoaDHwxdt1LhJDq1mL+H
-         XbawfzDMlAKy29rLmXIBDOZHZz3ixQu/Q9SF9DYZ9b142Sl4F2x6pTvs9kvCnGV1mIER
-         UFV3tONKeUGnHOBqscn/8DyIunDMcfzyZmBbrD5Itx422brM4Pp/QtGr0vZ/SN3htT1J
-         0MgA==
-X-Gm-Message-State: AOJu0YzTosuzy1rzWJU0FQqmNezh4+a5nbGOd6lrENRKXIhlvLXsfXKk
-	Db1BkyzY8Rd1CZDmOFcv0Z4An1dqHuxzVEFsEca/noOF2SLFYhdZayJhKdZXpAPjsY+6vt0hNVo
-	X
-X-Gm-Gg: ASbGnct0ZsJNY584d4x7JDOSi1LrMraVvu9tHJQ4uaSzk6xBTVWEW2plt+jC9wYHgoQ
-	sgU2nHVM72nCX2HMGZtpmDEOIMm5LAlGXMmr04iAQpVSNKIUEXULvOOM1hNbM+X3UJgu7p9CyUt
-	t/UxEk1plBsLWQBW7N56B8/MFzcqf82zBdwczsaohrVkUPEonXk22DvBbpQViI22F7BNYRp6B+H
-	PGF3fNUypNN3nFaelXoW9bLvkmu7Boe/KKXnGOR7yz9Vdkt9bjVQo+gJ3zBURU=
-X-Google-Smtp-Source: AGHT+IFLIFjBIezedt1ESyvy3OiANsv6mu2KffcgMEvg7IcC6aEILx84wMsV22TQTYpy8l5gQCniqw==
-X-Received: by 2002:a05:6402:35d4:b0:5d0:bcdd:ff97 with SMTP id 4fb4d7f45d1cf-5d113ca96a4mr193495a12.5.1733233718726;
-        Tue, 03 Dec 2024 05:48:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1733233720; x=1733838520;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8POyoFbCcEjSQD4RN/xYZaFrBV0KG5Ys0zmlrQNRb2c=;
+        b=T3kOefAUpmYuuYHOf2gkh1d1oir0laazNNgmFo4fUarR/5xuFQslSliR5xnYEN76sj
+         pGQOy+cFc/5URBjHavb73FoAZrfxyXPPC3/S82me4ZEyPVgUbcmmQiaEdRuVoktplONP
+         s/miHTKeQemr5t6qSmvDBHWVKW71HuvSqquLdKMPg4yrvMwtX5cS7Z9GQRKajhSWBtzY
+         N5NPiwSUhkj619bsAojXwbe4k4H+J8knkmajE8sCjt1LjWSt+ojalm5hjECLPfpalQwj
+         WAw0rf/pu6CjdnXedAtIEhNu5sCr5LMobuzg+L1S96KLn8TpwhEz8oGf2+9cL3oIH90w
+         conA==
+X-Gm-Message-State: AOJu0YxtvcQvS0miJ6nrnJtWdB+168LyIuGwJDiZswArA4+DJZOKu7np
+	nJ/cAKKFwwlmZBardPjZe+mnm+3rLWFq4BrXNNGV1t7Zm4cOMOeYRnEpVUeB3sDOnC+XdRct+p8
+	3
+X-Gm-Gg: ASbGncvW4nl2eb2hTKmng4+TGGexkKKTOgUfFDiQ7eV95RmoSDnP5gb6vIuwWt9XId5
+	MOaxZT7RTB6BX6PibgCC6ySDa7/0Bf0esBeLaUULaC263WxMf163i4FThZGrokxJuAc4ffPFjNq
+	bDcPIC96f0zw92DbtI+Uc3UBrzK3c11/HAWjqcoCraWC+LtIjQIdlLNYBOcOUqRySr6HlpTJtDJ
+	NM9UqitgrZUI+egG0PJLHTclquzGvTGyh06VXHkD4RkOITUMs2XxkXjMFTHW1Q=
+X-Google-Smtp-Source: AGHT+IFrjh7MHle/eL72xN9s5rky90fLVur4AOblU8wYrLCMguRg+0nMba4Vxloe+XDXPO1xPZvryQ==
+X-Received: by 2002:a05:6402:13d0:b0:5d0:c098:5b with SMTP id 4fb4d7f45d1cf-5d10cb5bf42mr1984947a12.19.1733233719547;
+        Tue, 03 Dec 2024 05:48:39 -0800 (PST)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
         by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d098330dd2sm6243394a12.14.2024.12.03.05.48.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -72,10 +74,12 @@ Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
 From: Anton Protopopov <aspsk@isovalent.com>
 To: bpf@vger.kernel.org
 Cc: Anton Protopopov <aspsk@isovalent.com>
-Subject: [PATCH v4 bpf-next 0/7] Add fd_array_cnt attribute for BPF_PROG_LOAD
-Date: Tue,  3 Dec 2024 13:50:45 +0000
-Message-Id: <20241203135052.3380721-1-aspsk@isovalent.com>
+Subject: [PATCH v4 bpf-next 1/7] bpf: add a __btf_get_by_fd helper
+Date: Tue,  3 Dec 2024 13:50:46 +0000
+Message-Id: <20241203135052.3380721-2-aspsk@isovalent.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20241203135052.3380721-1-aspsk@isovalent.com>
+References: <20241203135052.3380721-1-aspsk@isovalent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,66 +88,99 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a new attribute to the bpf(BPF_PROG_LOAD) system call. If this
-new attribute is non-zero, then the fd_array is considered to be a
-continuous array of the fd_array_cnt length and to contain only
-proper map file descriptors or btf file descriptors.
+Add a new helper to get a pointer to a struct btf from a file
+descriptor. This helper doesn't increase a refcnt. Add a comment
+explaining this and pointing to a corresponding function which
+does take a reference.
 
-This change allows maps, which aren't referenced directly by a BPF
-program, to be bound to the program _and_ also to be present during
-the program verification (so BPF_PROG_BIND_MAP is not enough for this
-use case).
+Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+---
+ include/linux/bpf.h | 17 +++++++++++++++++
+ include/linux/btf.h |  2 ++
+ kernel/bpf/btf.c    | 13 ++++---------
+ 3 files changed, 23 insertions(+), 9 deletions(-)
 
-The primary reason for this change is that it is a prerequisite for
-adding "instruction set" maps, which are both non-referenced by the
-program and must be present during the program verification.
-
-The first four commits add the new functionality, the fifth adds
-corresponding self-tests, and the last two are small additional fixes.
-
-v1 -> v2:
-  * rewrite the add_fd_from_fd_array() function (Eduard)
-  * a few cleanups in selftests (Eduard)
-
-v2 -> v3:
-  * various renamings (Alexei)
-  * "0 is not special" (Alexei, Andrii)
-  * do not alloc memory on fd_array init (Alexei)
-  * fix leaking maps for error path (Hou Tao)
-  * use libbpf helpers vs. raw syscalls (Andrii)
-  * add comments on __btf_get_by_fd/__bpf_map_get (Alexei)
-  * remove extra code (Alexei)
-
-v3 -> v4:
-  * simplify error path when parsing fd_array
-  * libbpf: pass fd_array_cnt only in prog_load (Alexei)
-  * selftests patch contained extra code (Alexei)
-  * renames, fix comments (Alexei)
-
-Anton Protopopov (7):
-  bpf: add a __btf_get_by_fd helper
-  bpf: move map/prog compatibility checks
-  bpf: add fd_array_cnt attribute for prog_load
-  libbpf: prog load: allow to use fd_array_cnt
-  selftests/bpf: Add tests for fd_array_cnt
-  bpf: fix potential error return
-  selftest/bpf: replace magic constants by macros
-
- include/linux/bpf.h                           |  17 +
- include/linux/btf.h                           |   2 +
- include/uapi/linux/bpf.h                      |  10 +
- kernel/bpf/btf.c                              |  13 +-
- kernel/bpf/core.c                             |   6 +-
- kernel/bpf/syscall.c                          |   2 +-
- kernel/bpf/verifier.c                         | 193 ++++++----
- tools/include/uapi/linux/bpf.h                |  10 +
- tools/lib/bpf/bpf.c                           |   3 +-
- tools/lib/bpf/bpf.h                           |   5 +-
- .../selftests/bpf/prog_tests/fd_array.c       | 340 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/syscall.c   |   6 +-
- 12 files changed, 524 insertions(+), 83 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/fd_array.c
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index eaee2a819f4c..ac44b857b2f9 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2301,6 +2301,14 @@ void __bpf_obj_drop_impl(void *p, const struct btf_record *rec, bool percpu);
+ struct bpf_map *bpf_map_get(u32 ufd);
+ struct bpf_map *bpf_map_get_with_uref(u32 ufd);
+ 
++/*
++ * The __bpf_map_get() and __btf_get_by_fd() functions parse a file
++ * descriptor and return a corresponding map or btf object.
++ * Their names are double underscored to emphasize the fact that they
++ * do not increase refcnt. To also increase refcnt use corresponding
++ * bpf_map_get() and btf_get_by_fd() functions.
++ */
++
+ static inline struct bpf_map *__bpf_map_get(struct fd f)
+ {
+ 	if (fd_empty(f))
+@@ -2310,6 +2318,15 @@ static inline struct bpf_map *__bpf_map_get(struct fd f)
+ 	return fd_file(f)->private_data;
+ }
+ 
++static inline struct btf *__btf_get_by_fd(struct fd f)
++{
++	if (fd_empty(f))
++		return ERR_PTR(-EBADF);
++	if (unlikely(fd_file(f)->f_op != &btf_fops))
++		return ERR_PTR(-EINVAL);
++	return fd_file(f)->private_data;
++}
++
+ void bpf_map_inc(struct bpf_map *map);
+ void bpf_map_inc_with_uref(struct bpf_map *map);
+ struct bpf_map *__bpf_map_inc_not_zero(struct bpf_map *map, bool uref);
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 4214e76c9168..69159e649675 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -4,6 +4,7 @@
+ #ifndef _LINUX_BTF_H
+ #define _LINUX_BTF_H 1
+ 
++#include <linux/file.h>
+ #include <linux/types.h>
+ #include <linux/bpfptr.h>
+ #include <linux/bsearch.h>
+@@ -143,6 +144,7 @@ void btf_get(struct btf *btf);
+ void btf_put(struct btf *btf);
+ const struct btf_header *btf_header(const struct btf *btf);
+ int btf_new_fd(const union bpf_attr *attr, bpfptr_t uattr, u32 uattr_sz);
++
+ struct btf *btf_get_by_fd(int fd);
+ int btf_get_info_by_fd(const struct btf *btf,
+ 		       const union bpf_attr *attr,
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index e7a59e6462a9..ad5310fa1d3b 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -7743,17 +7743,12 @@ int btf_new_fd(const union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+ 
+ struct btf *btf_get_by_fd(int fd)
+ {
+-	struct btf *btf;
+ 	CLASS(fd, f)(fd);
++	struct btf *btf;
+ 
+-	if (fd_empty(f))
+-		return ERR_PTR(-EBADF);
+-
+-	if (fd_file(f)->f_op != &btf_fops)
+-		return ERR_PTR(-EINVAL);
+-
+-	btf = fd_file(f)->private_data;
+-	refcount_inc(&btf->refcnt);
++	btf = __btf_get_by_fd(f);
++	if (!IS_ERR(btf))
++		refcount_inc(&btf->refcnt);
+ 
+ 	return btf;
+ }
 -- 
 2.34.1
 
