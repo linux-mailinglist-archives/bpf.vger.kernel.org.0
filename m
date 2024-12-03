@@ -1,378 +1,136 @@
-Return-Path: <bpf+bounces-46022-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46024-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7FC19E2C96
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 21:02:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38F549E2CEB
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 21:19:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A60E4B80B3C
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 17:44:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3CA9281A76
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 20:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCFD20B215;
-	Tue,  3 Dec 2024 17:41:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA85204F8E;
+	Tue,  3 Dec 2024 20:19:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ay3xKC5D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YOEBYBHD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F36520B1ED;
-	Tue,  3 Dec 2024 17:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE412500D3
+	for <bpf@vger.kernel.org>; Tue,  3 Dec 2024 20:19:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733247692; cv=none; b=oCfBOWRkok8fQbTXOI09tJXmW8SvoYxICA3RvZYaEWd3KiGtKAUY9q5r2ZKX//Ji1X4n5cPl7aAyVFYYx06IdhNE+Ov6GKXJ27RoN1j3E8RRlRrIsz6aHtzMGLuVWzpdYRk9Wjc2kNSEw6yFwPraGpOIIt9SnxnFOk62eOQnlU4=
+	t=1733257168; cv=none; b=UbutgLuBRO6t43r982lEZia07/F5Aqrp2X8EbodOQz0CKdo6Bdu74zyIZ1xcrJoDmhk0v+VaTH+9DxMwzQwvxB82+B/9XygtvaBddsydLgBcKbMIWTOBed8BRQiqHArYEXaQlQk56D6NX7J7qUK3qBB9jLT9ZEF3rb2ypx0rGTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733247692; c=relaxed/simple;
-	bh=1LdcmxtUc/nROEDfRAn9MubgF+bGqxg/vqcrOfN8RO8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MsdmHOkctKkwQySTxVaUD5TEagi3fFS8g8cwdxm5a2DOrRysErocOzphmyqtjAqWQ1vBXPUEWuTkE9XEfeEb8BsOcbo+3Al0dhnCo/20rdBye2LD9kRHCW4EhkDl0fL9D+GB2TpnK5VfxsY9BCzNfxgyTYBt3YDSWwhxVcy84PE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ay3xKC5D; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1733247691; x=1764783691;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=1LdcmxtUc/nROEDfRAn9MubgF+bGqxg/vqcrOfN8RO8=;
-  b=ay3xKC5DTzPsxGhEx10cGBpBYJIxEOgcH6Xw4bGd8cmBpbCsb4LP0fDZ
-   8ENWz8fUCpw+NxFK94a/IhD7GZdI4jwI8X9DKslgq4EmCKyRcCwK4r1Ga
-   /O8TWAnExe3Fva42ZwQroS2F5o1L8pi1L32KVLLYzYhViwjgM5fnd3ebW
-   m58MutZClhAvpZrIOShoe1lmn8IGFVxCYWbeNzgjqawa5vgupxM8MTedI
-   dhyPe7nbh7vHQUkce8iALKU+/Qx45fCvEIUMTzVx4JWnKWW7CEOPvviXL
-   OcHK2gYMvXpyL1JlBXxiU4B/IzYSnW3LKaJA/oz4WDJWAaIWP67e1nruJ
-   A==;
-X-CSE-ConnectionGUID: YeZAnXlySpetUkz/oeFeHg==
-X-CSE-MsgGUID: jAgOtDgPTeWveB9YI0H2Tw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11275"; a="37135447"
-X-IronPort-AV: E=Sophos;i="6.12,205,1728975600"; 
-   d="scan'208";a="37135447"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2024 09:41:30 -0800
-X-CSE-ConnectionGUID: mBcDJkEDT+mfCggAgnMsrQ==
-X-CSE-MsgGUID: gryDdEVTSo63662jvBFDwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,205,1728975600"; 
-   d="scan'208";a="124337047"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa002.jf.intel.com with ESMTP; 03 Dec 2024 09:41:26 -0800
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v6 10/10] xdp: get rid of xdp_frame::mem.id
-Date: Tue,  3 Dec 2024 18:37:33 +0100
-Message-ID: <20241203173733.3181246-11-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241203173733.3181246-1-aleksander.lobakin@intel.com>
-References: <20241203173733.3181246-1-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1733257168; c=relaxed/simple;
+	bh=bAFxSx/q5gm/0wSygIG0DxQZ3HmxNstyvjSWiUJ0ulA=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=RTRo2iSOCsUkjRZdF4g4Nv14cNgIjLRVeWNqW/g1295Yx7ToNGJ/dirnayZO/ngRmCbG0z46BYqyU+yZ1MZkRvdUIpVmkuIwmXWs0MqXJFDGqD7mZOMc1LCtL5Lf7sU+OVfQE07QXGhGc8k89bDQN40Yrx/OWniETJjD1fMFEoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YOEBYBHD; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-7fc41dab8e3so4100168a12.3
+        for <bpf@vger.kernel.org>; Tue, 03 Dec 2024 12:19:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733257166; x=1733861966; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wKnYgaX8MkaMjdhIbc+5cvkLu65UodV/R01j6NvY5vw=;
+        b=YOEBYBHDHTXHtq8jzb9twysIM/zMPIbYm2++IwufKHD2rCr1XZ/86Y8wsqQoySaEp0
+         5uE0oMzTkeI6VfbaffoMav0PoFFDrhrX5bixRb6f7zpFFqSNij69f62ZlJjLHGChdY9B
+         IHTrzTaK2GnZdOjnN6D61nUXiDfeuBthVjGQPh0Ee7I60M18iDbXuaLSjLruCbk+slsQ
+         6n32BhHBBawAdLmWp33wBIxuxPa8DITid9kww+vvf49kwZMqnU7QdwLW7r6TkH98i0Uv
+         +TL64+JThMQ+zYqBGjik+w88yZh4Cwqcnd2kpezkvOoXfM9+tjai0RbDAl1phkT3/FVT
+         VunQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733257166; x=1733861966;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=wKnYgaX8MkaMjdhIbc+5cvkLu65UodV/R01j6NvY5vw=;
+        b=Centx7lOx3CLrwQDee1NjrES3C2W1GGy2OJ58C5XBf9Fl7lgekCEKbi+w+a8hXiJEK
+         StJP+y7YKL2TAN2Cug9EbhuT1Yh6KQOno3FItOXHgTgtgLpH+eqDbmNot0Qk9bn7BPRM
+         XQCm2NVTa+F6aQIevEoCxHIStsSgXsIHJNV5DzJ5+H0oHn4G4iysGKpiCvg42G9Nk8EX
+         JWoLTZSPS58PPd6ED/hPS8jGU2RC20ezKqQsrAs/5ikqiEg2qcqrArR+oBa+xaSQC8pE
+         14v07qLD1Ol9AcqnsqynsLnYdzvxMpm8d9Zbxg+URtJnlpIrAVik2yde7EZTUXRMVslg
+         6m0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX7+AAapiGXlPFLqRXY7BCN8pxkZO5OzAYZRQ+fcGYoAP0092mNAXpPgU3LB4LIyeklLmo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwsbpQr588A3kTGh0hyz21DLuSFvLeBHp7n9q0rIDhNooVbV8Ce
+	quH8v8CrOnB1ZYzZ3MyeW/1U6XRqu6ZZK4SUv56G4sLmsC4Ce3ZZ/Rq37A==
+X-Gm-Gg: ASbGncvXXMvj2YA0WQJuPK8Hb3Mel5m6oMnoSN7V2Q2GK8mZnRepbmP0Lay9tn0qZi5
+	inCFLiqne4nXl20ZqbREryppiGkF0AjF9avVT6c75iN9a+zOJ2CeTEVpxM4o2pdeXnXMQqrswIb
+	KM0gCwEhPvyKZ0kGEMDCooy7W528AXF8USbfCiE1sSZw5lElFy6gyfFgtKyikVStuoN2HdkNeHg
+	0EPdzuSCed8xUX9OdFf8eLfCckwi5Vn0nwW/2yB+hMhYko=
+X-Google-Smtp-Source: AGHT+IHaqmqJfjbNCLQxiA9TL9O2l2cHzsOt8FBKuEln4bp/zmlzVijbamtLjpRHyIw/IHp7zANTNg==
+X-Received: by 2002:a05:6a21:339c:b0:1e0:d2f5:6ed3 with SMTP id adf61e73a8af0-1e1653a2a94mr4949982637.3.1733257165864;
+        Tue, 03 Dec 2024 12:19:25 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725417fbae3sm11196735b3a.102.2024.12.03.12.19.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Dec 2024 12:19:25 -0800 (PST)
+Message-ID: <1b8e139bd6983045c747f1b6d703aa6eabab2c82.camel@gmail.com>
+Subject: Re: Packet pointer invalidation and subprograms
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Nick Zavaritsky <mejedi@gmail.com>, bpf@vger.kernel.org
+Date: Tue, 03 Dec 2024 12:19:20 -0800
+In-Reply-To: <0498CA22-5779-4767-9C0C-A9515CEA711F@gmail.com>
+References: <0498CA22-5779-4767-9C0C-A9515CEA711F@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-Initially, xdp_frame::mem.id was used to search for the corresponding
-&page_pool to return the page correctly.
-However, after that struct page was extended to have a direct pointer
-to its PP (netmem has it as well), further keeping of this field makes
-no sense. xdp_return_frame_bulk() still used it to do a lookup, and
-this leftover is now removed.
-Remove xdp_frame::mem and replace it with ::mem_type, as only memory
-type still matters and we need to know it to be able to free the frame
-correctly.
-As a cute side effect, we can now make every scalar field in &xdp_frame
-of 4 byte width, speeding up accesses to them.
+On Tue, 2024-12-03 at 17:26 +0100, Nick Zavaritsky wrote:
+> Hi,
+>=20
+> Calls to helpers such as bpf_skb_pull_data, are supposed to invalidate
+> all prior checks on packet pointers.
+>=20
+> I noticed that if I wrap a call to bpf_skb_pull_data in a function with
+> global linkage, pointers checked prior to the call are still considered
+> valid after the call. The program is accepted on 6.8 and 6.13-rc1.
+>=20
+> I'm curious if it is by design and if not, if it is a known issue.
+> Please find the program below.
+>=20
+> #include <linux/bpf.h>
+> #include <bpf/bpf_helpers.h>
+>=20
+> __attribute__((__noinline__))
+> long skb_pull_data(struct __sk_buff *sk, __u32 len)
+> {
+>     return bpf_skb_pull_data(sk, len);
+> }
+>=20
+> SEC("tc")
+> int test_invalidate_checks(struct __sk_buff *sk)
+> {
+>     int *p =3D (void *)(long)sk->data;
+>     if ((void *)(p + 1) > (void *)(long)sk->data_end) return TCX_DROP;
+>     skb_pull_data(sk, 0);
+>     *p =3D 42;
+>     return TCX_PASS;
+> }
+>=20
+> If I remove noinline or add static, the program is rejected as expected.
+>=20
 
-Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- include/net/xdp.h                             | 14 +++++-----
- .../net/ethernet/freescale/dpaa/dpaa_eth.c    |  2 +-
- drivers/net/veth.c                            |  4 +--
- kernel/bpf/cpumap.c                           |  2 +-
- net/bpf/test_run.c                            |  4 +--
- net/core/filter.c                             | 12 ++++----
- net/core/xdp.c                                | 28 +++++++++----------
- 7 files changed, 33 insertions(+), 33 deletions(-)
+Hi Nick,
 
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index 9e7eb8223513..1c260869a353 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -169,13 +169,13 @@ xdp_get_buff_len(const struct xdp_buff *xdp)
- 
- struct xdp_frame {
- 	void *data;
--	u16 len;
--	u16 headroom;
-+	u32 len;
-+	u32 headroom;
- 	u32 metasize; /* uses lower 8-bits */
- 	/* Lifetime of xdp_rxq_info is limited to NAPI/enqueue time,
--	 * while mem info is valid on remote CPU.
-+	 * while mem_type is valid on remote CPU.
- 	 */
--	struct xdp_mem_info mem;
-+	enum xdp_mem_type mem_type:32;
- 	struct net_device *dev_rx; /* used by cpumap */
- 	u32 frame_sz;
- 	u32 flags; /* supported values defined in xdp_buff_flags */
-@@ -306,13 +306,13 @@ struct xdp_frame *xdp_convert_buff_to_frame(struct xdp_buff *xdp)
- 	if (unlikely(xdp_update_frame_from_buff(xdp, xdp_frame) < 0))
- 		return NULL;
- 
--	/* rxq only valid until napi_schedule ends, convert to xdp_mem_info */
--	xdp_frame->mem = xdp->rxq->mem;
-+	/* rxq only valid until napi_schedule ends, convert to xdp_mem_type */
-+	xdp_frame->mem_type = xdp->rxq->mem.type;
- 
- 	return xdp_frame;
- }
- 
--void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
-+void __xdp_return(void *data, enum xdp_mem_type mem_type, bool napi_direct,
- 		  struct xdp_buff *xdp);
- void xdp_return_frame(struct xdp_frame *xdpf);
- void xdp_return_frame_rx_napi(struct xdp_frame *xdpf);
-diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-index bf5baef5c3e0..4948b4906584 100644
---- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-@@ -2281,7 +2281,7 @@ static int dpaa_a050385_wa_xdpf(struct dpaa_priv *priv,
- 	new_xdpf->len = xdpf->len;
- 	new_xdpf->headroom = priv->tx_headroom;
- 	new_xdpf->frame_sz = DPAA_BP_RAW_SIZE;
--	new_xdpf->mem.type = MEM_TYPE_PAGE_ORDER0;
-+	new_xdpf->mem_type = MEM_TYPE_PAGE_ORDER0;
- 
- 	/* Release the initial buffer */
- 	xdp_return_frame_rx_napi(xdpf);
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 0d6d0d749d44..048eb599a95a 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -634,7 +634,7 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
- 			break;
- 		case XDP_TX:
- 			orig_frame = *frame;
--			xdp->rxq->mem = frame->mem;
-+			xdp->rxq->mem.type = frame->mem_type;
- 			if (unlikely(veth_xdp_tx(rq, xdp, bq) < 0)) {
- 				trace_xdp_exception(rq->dev, xdp_prog, act);
- 				frame = &orig_frame;
-@@ -646,7 +646,7 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
- 			goto xdp_xmit;
- 		case XDP_REDIRECT:
- 			orig_frame = *frame;
--			xdp->rxq->mem = frame->mem;
-+			xdp->rxq->mem.type = frame->mem_type;
- 			if (xdp_do_redirect(rq->dev, xdp, xdp_prog)) {
- 				frame = &orig_frame;
- 				stats->rx_drops++;
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index a2f46785ac3b..774accbd4a22 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -190,7 +190,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
- 		int err;
- 
- 		rxq.dev = xdpf->dev_rx;
--		rxq.mem = xdpf->mem;
-+		rxq.mem.type = xdpf->mem_type;
- 		/* TODO: report queue_index to xdp_rxq_info */
- 
- 		xdp_convert_frame_to_buff(xdpf, &xdp);
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 501ec4249fed..9ae2a7f1738b 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -153,7 +153,7 @@ static void xdp_test_run_init_page(netmem_ref netmem, void *arg)
- 	new_ctx->data = new_ctx->data_meta + meta_len;
- 
- 	xdp_update_frame_from_buff(new_ctx, frm);
--	frm->mem = new_ctx->rxq->mem;
-+	frm->mem_type = new_ctx->rxq->mem.type;
- 
- 	memcpy(&head->orig_ctx, new_ctx, sizeof(head->orig_ctx));
- }
-@@ -246,7 +246,7 @@ static void reset_ctx(struct xdp_page_head *head)
- 	head->ctx.data_meta = head->orig_ctx.data_meta;
- 	head->ctx.data_end = head->orig_ctx.data_end;
- 	xdp_update_frame_from_buff(&head->ctx, head->frame);
--	head->frame->mem = head->orig_ctx.rxq->mem;
-+	head->frame->mem_type = head->orig_ctx.rxq->mem.type;
- }
- 
- static int xdp_recv_frames(struct xdp_frame **frames, int nframes,
-diff --git a/net/core/filter.c b/net/core/filter.c
-index fac245065b0a..6c036708634b 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4119,13 +4119,13 @@ static int bpf_xdp_frags_increase_tail(struct xdp_buff *xdp, int offset)
- }
- 
- static void bpf_xdp_shrink_data_zc(struct xdp_buff *xdp, int shrink,
--				   struct xdp_mem_info *mem_info, bool release)
-+				   enum xdp_mem_type mem_type, bool release)
- {
- 	struct xdp_buff *zc_frag = xsk_buff_get_tail(xdp);
- 
- 	if (release) {
- 		xsk_buff_del_tail(zc_frag);
--		__xdp_return(NULL, mem_info, false, zc_frag);
-+		__xdp_return(NULL, mem_type, false, zc_frag);
- 	} else {
- 		zc_frag->data_end -= shrink;
- 	}
-@@ -4134,18 +4134,18 @@ static void bpf_xdp_shrink_data_zc(struct xdp_buff *xdp, int shrink,
- static bool bpf_xdp_shrink_data(struct xdp_buff *xdp, skb_frag_t *frag,
- 				int shrink)
- {
--	struct xdp_mem_info *mem_info = &xdp->rxq->mem;
-+	enum xdp_mem_type mem_type = xdp->rxq->mem.type;
- 	bool release = skb_frag_size(frag) == shrink;
- 
--	if (mem_info->type == MEM_TYPE_XSK_BUFF_POOL) {
--		bpf_xdp_shrink_data_zc(xdp, shrink, mem_info, release);
-+	if (mem_type == MEM_TYPE_XSK_BUFF_POOL) {
-+		bpf_xdp_shrink_data_zc(xdp, shrink, mem_type, release);
- 		goto out;
- 	}
- 
- 	if (release) {
- 		struct page *page = skb_frag_page(frag);
- 
--		__xdp_return(page_address(page), mem_info, false, NULL);
-+		__xdp_return(page_address(page), mem_type, false, NULL);
- 	}
- 
- out:
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 56127e8ec85f..d367571c5838 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -430,12 +430,12 @@ EXPORT_SYMBOL_GPL(xdp_rxq_info_attach_page_pool);
-  * is used for those calls sites.  Thus, allowing for faster recycling
-  * of xdp_frames/pages in those cases.
-  */
--void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
-+void __xdp_return(void *data, enum xdp_mem_type mem_type, bool napi_direct,
- 		  struct xdp_buff *xdp)
- {
- 	struct page *page;
- 
--	switch (mem->type) {
-+	switch (mem_type) {
- 	case MEM_TYPE_PAGE_POOL:
- 		page = virt_to_head_page(data);
- 		if (napi_direct && xdp_return_frame_no_direct())
-@@ -458,7 +458,7 @@ void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
- 		break;
- 	default:
- 		/* Not possible, checked in xdp_rxq_info_reg_mem_model() */
--		WARN(1, "Incorrect XDP memory type (%d) usage", mem->type);
-+		WARN(1, "Incorrect XDP memory type (%d) usage", mem_type);
- 		break;
- 	}
- }
-@@ -475,10 +475,10 @@ void xdp_return_frame(struct xdp_frame *xdpf)
- 	for (i = 0; i < sinfo->nr_frags; i++) {
- 		struct page *page = skb_frag_page(&sinfo->frags[i]);
- 
--		__xdp_return(page_address(page), &xdpf->mem, false, NULL);
-+		__xdp_return(page_address(page), xdpf->mem_type, false, NULL);
- 	}
- out:
--	__xdp_return(xdpf->data, &xdpf->mem, false, NULL);
-+	__xdp_return(xdpf->data, xdpf->mem_type, false, NULL);
- }
- EXPORT_SYMBOL_GPL(xdp_return_frame);
- 
-@@ -494,10 +494,10 @@ void xdp_return_frame_rx_napi(struct xdp_frame *xdpf)
- 	for (i = 0; i < sinfo->nr_frags; i++) {
- 		struct page *page = skb_frag_page(&sinfo->frags[i]);
- 
--		__xdp_return(page_address(page), &xdpf->mem, true, NULL);
-+		__xdp_return(page_address(page), xdpf->mem_type, true, NULL);
- 	}
- out:
--	__xdp_return(xdpf->data, &xdpf->mem, true, NULL);
-+	__xdp_return(xdpf->data, xdpf->mem_type, true, NULL);
- }
- EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
- 
-@@ -516,7 +516,7 @@ EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
- void xdp_return_frame_bulk(struct xdp_frame *xdpf,
- 			   struct xdp_frame_bulk *bq)
- {
--	if (xdpf->mem.type != MEM_TYPE_PAGE_POOL) {
-+	if (xdpf->mem_type != MEM_TYPE_PAGE_POOL) {
- 		xdp_return_frame(xdpf);
- 		return;
- 	}
-@@ -553,10 +553,11 @@ void xdp_return_buff(struct xdp_buff *xdp)
- 	for (i = 0; i < sinfo->nr_frags; i++) {
- 		struct page *page = skb_frag_page(&sinfo->frags[i]);
- 
--		__xdp_return(page_address(page), &xdp->rxq->mem, true, xdp);
-+		__xdp_return(page_address(page), xdp->rxq->mem.type, true,
-+			     xdp);
- 	}
- out:
--	__xdp_return(xdp->data, &xdp->rxq->mem, true, xdp);
-+	__xdp_return(xdp->data, xdp->rxq->mem.type, true, xdp);
- }
- EXPORT_SYMBOL_GPL(xdp_return_buff);
- 
-@@ -602,7 +603,7 @@ struct xdp_frame *xdp_convert_zc_to_xdp_frame(struct xdp_buff *xdp)
- 	xdpf->headroom = 0;
- 	xdpf->metasize = metasize;
- 	xdpf->frame_sz = PAGE_SIZE;
--	xdpf->mem.type = MEM_TYPE_PAGE_ORDER0;
-+	xdpf->mem_type = MEM_TYPE_PAGE_ORDER0;
- 
- 	xsk_buff_free(xdp);
- 	return xdpf;
-@@ -672,7 +673,7 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 	 * - RX ring dev queue index	(skb_record_rx_queue)
- 	 */
- 
--	if (xdpf->mem.type == MEM_TYPE_PAGE_POOL)
-+	if (xdpf->mem_type == MEM_TYPE_PAGE_POOL)
- 		skb_mark_for_recycle(skb);
- 
- 	/* Allow SKB to reuse area used by xdp_frame */
-@@ -719,8 +720,7 @@ struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf)
- 	nxdpf = addr;
- 	nxdpf->data = addr + headroom;
- 	nxdpf->frame_sz = PAGE_SIZE;
--	nxdpf->mem.type = MEM_TYPE_PAGE_ORDER0;
--	nxdpf->mem.id = 0;
-+	nxdpf->mem_type = MEM_TYPE_PAGE_ORDER0;
- 
- 	return nxdpf;
- }
--- 
-2.47.0
+Thank you for the report. This is a bug. Technically, packet pointers
+are invalidated by clear_all_pkt_pointers() called from check_helper_callf(=
+).
+This functions looks through all packets in current verifier state.
+However, global functions are verified independent of call sites,
+so pointer 'p' does not exist in verifier state when 'skb_pull_data'
+is verified, and thus is not invalidated.
 
 
