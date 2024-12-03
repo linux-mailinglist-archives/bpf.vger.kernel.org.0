@@ -1,141 +1,147 @@
-Return-Path: <bpf+bounces-45975-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-45977-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 599E39E0F8B
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 01:15:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C6139E0F90
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 01:16:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 317AF163647
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 00:15:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33D551643B6
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 00:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4BAD2500BC;
-	Tue,  3 Dec 2024 00:15:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1D1136E;
+	Tue,  3 Dec 2024 00:16:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QSTXGLGH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YelpreuN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD26163B9;
-	Tue,  3 Dec 2024 00:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894D710E3
+	for <bpf@vger.kernel.org>; Tue,  3 Dec 2024 00:16:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733184906; cv=none; b=e6yBAlirAQUc0EYYGN9Kao8RqqD4I3z++FKAhpPpOwSuzLbukEuP1dVRuo9UuvPESkyckv/IoNpmK8I96xW6ulefrhS9bUh9Jv8nJ8REcmJzepH/L6wz9pHcPbS1eClaNKmVbdAzArch31litP82gW+N2USV61PKbK6bFghdvag=
+	t=1733185011; cv=none; b=lMblhkQRrWAWaqsUZs8DV9/6+Kwkz9xJkVksiR5R6gZXOc1lm1kYQrSZEOWoW2vv3tcfA6tqTgqSPhf16mMfhuPmlrVPTUK8ja1kusExCqnaIhlUUjK9YtWTt0dGa07Y8+m4z9eFd6vO2XwfTpJOlMSyZCt/8+4LjEmYWIKh00Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733184906; c=relaxed/simple;
-	bh=sFpARMD5DEnpcvy3BKqI9LW6BSUs9SACQXTXuoBRu7s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i4W2l6M5SB31GoPIOb5gyYYJ+oJc450bSCez9qTUOvHy8Ft5A6DUSElsFtXeb+ZHtbyn2q6zkinE92sPGUxT64Z+Lz/wyPaIRpOfU5tmpIqXTpESrn2MjJftVMNF7mFN6YrLuU+mkUzlqxr6UfnZokbcXggpw0za1pNrs7b+kps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QSTXGLGH; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1733185011; c=relaxed/simple;
+	bh=usNjXRvb2HxUxzCKsabiW++EkhasmHU313+FLIwbkUs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZSV5+BsRgU3DWAAVnJOg5uqbh1SV+7uiFsaQN+/XqezirgKacp+MojgmJFupbps9GFeBymcclpuV5KbEfJ1yr8ySo/nf4jevSxYD9JrlOBXQnkhbKlzPdASyp6e0qfmWHNj9TFDAvHct43cgWvC8Ux6XWLcp2MCnOQK2NQygZjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YelpreuN; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-211fb27cc6bso38952515ad.0;
-        Mon, 02 Dec 2024 16:15:04 -0800 (PST)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-724d57a9f7cso4161318b3a.3
+        for <bpf@vger.kernel.org>; Mon, 02 Dec 2024 16:16:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733184904; x=1733789704; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=P799PVpPLal4v1SIHjVIekWVJppU4272KgWygSJqrNM=;
-        b=QSTXGLGHz8Ee17aOddBZ2hLPZK24HVPs1QBthZ4G9ny5atfcW7i3/AggD3q+qt0XrU
-         23r5acjwr84brC5OZwtJliryUFRLoZsdF4Wt5qmgiH3IG9sAkdz6rUBFD6sfzPHc//9W
-         jjF10iXJKcmLzCX1sQNFLMRpuX+gtt8uZb4WyQsDnZxWRCGgCCmScIgdw/A2BU+7xIGO
-         T1/sUU9HF/4CdpcPBy1SOfTU4dyP5mG1fUcpPC8oxmszIoVqoQq3Cw9riI6GV6QR8FWx
-         O875TN2hDspZlVSWs0SVdx/EKAIU0cYDfFsVZy92RbsOvz/Vdo30TbnraaJFzlkHRF5k
-         Ho0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733184904; x=1733789704;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1733185010; x=1733789810; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=P799PVpPLal4v1SIHjVIekWVJppU4272KgWygSJqrNM=;
-        b=ZJJCZ5/r2xFuJsLcs4eP5O3NkZblu1VtVi2ZJ3RMcHyICxFeraKQy3v1CrzaDwUYOt
-         aaPXjySjZf5w/C0RVM4FfDd16wrWrv7UhD/tAWz4GdXBfehX9hvKiFCXsUrSbCtl0LZy
-         t5LRE90adHIwhfgf8qnYLHl1F6+JBPC0GizvAiqgqGpjDZUx3J4Usy+8q2IuEb+hOZ7H
-         QjtBeOPpsak0yxIE/t08RvAY5Ljm+EiYjS86OsUxkySHrSEe1Vj4FYN1802rqRYMR2nx
-         2ohz9cA+Xt+ZPTBf7/SxeKIBV5qWkTDXWYx1mQwIEKhXqBWskqHpX+C7t9X4+SUCYqCm
-         GijA==
-X-Forwarded-Encrypted: i=1; AJvYcCUL3DUlDYY+ki6pE+9rltwDAHDNkErt425J3Ed9hb8JcxLtlPIy6bSuO8LBpw4gHJR7caI=@vger.kernel.org, AJvYcCVb4dwqKm6Ips12gg7Ad9YCvlNUClrYKUpOzG6U4UpmsNT/U1VrIt+kPt6z9APdDeG0NHpvlAhAB29tggMr5GQj@vger.kernel.org, AJvYcCWKV1yU1B1mjEPlRoWiVom7Hw5CIXvAscTa0urWR3KquW+5Emto1Kj9DNdCJYdZG0LlXAvEDgs62fj1+lhF@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8m00GuowvgFMizVvnz3WRIGWtkMRQ6BcjaNCNO2/pzokpRr5p
-	rV7TJZcGqbXR2QjDnZXMP8lR/3crwY9tHUf0z5BMlDk7cmTltjM=
-X-Gm-Gg: ASbGncsDyOpMQWBzSbRAhV4mO1P0DN6mqLYsofeEzmFNMAESVicZVa1js3Ql6pMZWz2
-	erdS21kuB3c51/td+uMdRIpM4clBF0FSRhbQNo/zfEqvkUUDXCIwc2UGrvi1sdbtKg8XMkWh58z
-	JpcjKnHBazt/OJEgNOpligotJpTKQBEF0ZWYQXMPypdHUYcEbv5/BlPC9RQVuu++Fd+AU6QqDQ0
-	S+vdZ2yT9zSJ4ALcaLxKVjNdVhMWV85XN+PKIe9mjtgwVazbQ==
-X-Google-Smtp-Source: AGHT+IEE13VgAHt+B51vFr1A06FMBG0kR2b3nUwpxvlGKx/VNPWE5tC0MM+Effxm7wknS84m3P5qMA==
-X-Received: by 2002:a17:902:ecc4:b0:215:a028:4ed with SMTP id d9443c01a7336-215bceb3e5amr7595615ad.20.1733184904014;
-        Mon, 02 Dec 2024 16:15:04 -0800 (PST)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725417611dcsm9160425b3a.3.2024.12.02.16.15.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Dec 2024 16:15:03 -0800 (PST)
-Date: Mon, 2 Dec 2024 16:15:02 -0800
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Marco Leogrande <leogrande@google.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	"Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>,
-	willemb@google.com, zhuyifei@google.com, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next] tools/testing/selftests/bpf/test_tc_tunnel.sh:
- Fix wait for server bind
-Message-ID: <Z05NhvyagBbHs8Gq@mini-arch>
-References: <20241202204530.1143448-1-leogrande@google.com>
+        bh=VNP8ibJx5byLbM9/7twO8R1FhJfQOzQIrJyb2SOsZ1s=;
+        b=YelpreuNjh2iaPajX7AwpsEHQNfQg3KXAsiTriXf8Z2Xi3fNnwcn6SgqmSJw2T3tiS
+         /KLQiPwpUzLRgpBa6Gwq7lrAuI83CwFuq/wtczBSZ2bxKVHITuYVaeq2cWxjOiD5mm1Y
+         9HEkWyu3qlga78TLgMr9Qxzid3tOtwSDOVlO6XKGwiLeI3JXpohK1KDVNe5Ipi4Qj/cX
+         rN9GNi9oU29dl0rToQPIMDCjgMzzuXNdgQ7JALvhLzod2C87JKOKLSWTHMP24KZsx/ED
+         y8gWO9NmaN3yRX5gFjIFMi9mSC0GKPs9sFDI9a3zpd1TfL71jPrnXLsZR4hIrFMHoQoo
+         QXsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733185010; x=1733789810;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VNP8ibJx5byLbM9/7twO8R1FhJfQOzQIrJyb2SOsZ1s=;
+        b=dbMzOO0RBYdkkVWhFPd6hkt5ppHJQSre0XVFgvaUAYPoLSSS3bkGFgFVgpJJ7wr4g6
+         VV8H3+cX1+snlnaQv55vaOWL0kTPtL51x9lqCBOiTIf1Z4n+S7kcY1GzugKIQQjFOWD9
+         XHpZiv456fvE3vWjsemIyVDNF3f6q9OwJ7SGb3NMSFeQhImOGQtgOwdFNJ7M0XbVP3FN
+         iaLHmARin4YKZBiJUZ44D+EA9Y5UQQxKFzdInIZgAA10tKRZP9LM3cjUtFhjOWLxTtOY
+         VYzdJnlmQje2uQFPpkaBzv0rnexaVhY9MkjrFCxWFcakxqjrn1EIkePdQpJ8A2l0TaqO
+         E86g==
+X-Gm-Message-State: AOJu0YyLYGl6LIU+22SILJXscLQfvX0IweRro0oiaojmk+DiIGcWCaw4
+	AjYyIzdPNr2O60ANjlhrTwTrc8mdmvvhiY5RuoEvpKAQlVFRNSZaaEvR3i1FEq2SauNnopT4i3V
+	/hr7ybpNssRCHPy3lwjKlO6IHdxU=
+X-Gm-Gg: ASbGnctHcPhXQ+xP7THOyxMK/DwGkGDIw1rSy/H9nkx5EXgcNjuGxVPNHDZGWg8y+He
+	X2avJY80aiyVYHlZ8fp9l8IRGOkIJmIGDY81A60Nzr70eNlQ=
+X-Google-Smtp-Source: AGHT+IGL1GA9yHU/bycSJymdFlIWXqIF7ex5uEKHvLpMyv+bbt0tflf3Nu5kIWbopAkyPuOrqW4tlTUdvtRhJIZn/SM=
+X-Received: by 2002:a17:90b:1b06:b0:2ee:eb5b:6e06 with SMTP id
+ 98e67ed59e1d1-2ef0127f3cdmr677422a91.36.1733185009793; Mon, 02 Dec 2024
+ 16:16:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20241202204530.1143448-1-leogrande@google.com>
+References: <20241202083814.1888784-1-memxor@gmail.com> <20241202083814.1888784-5-memxor@gmail.com>
+In-Reply-To: <20241202083814.1888784-5-memxor@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 2 Dec 2024 16:16:35 -0800
+Message-ID: <CAEf4BzZpU0MXf1DWjHLfQNOEiFJ3JNmhYJQPzvVHxqfrX36F4Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 4/5] selftests/bpf: Add test for reading from
+ STACK_INVALID slots
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Tao Lyu <tao.lyu@epfl.ch>, 
+	Mathias Payer <mathias.payer@nebelwelt.net>, Meng Xu <meng.xu.cs@uwaterloo.ca>, 
+	Sanidhya Kashyap <sanidhya.kashyap@epfl.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/02, Marco Leogrande wrote:
-> Commit f803bcf9208a ("selftests/bpf: Prevent client connect before
-> server bind in test_tc_tunnel.sh") added code that waits for the
-> netcat server to start before the netcat client attempts to connect to
-> it. However, not all calls to 'server_listen' were guarded.
-> 
-> This patch adds the existing 'wait_for_port' guard after the remaining
-> call to 'server_listen'.
-> 
-> Fixes: f803bcf9208a ("selftests/bpf: Prevent client connect before server bind in test_tc_tunnel.sh")
-> Signed-off-by: Marco Leogrande <leogrande@google.com>
+On Mon, Dec 2, 2024 at 12:38=E2=80=AFAM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> Ensure that when CAP_PERFMON is dropped, and the verifier sees
+> allow_ptr_leaks as false, we are not permitted to read from a
+> STACK_INVALID slot. Without the fix, the test will report unexpected
+> success in loading.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  tools/testing/selftests/bpf/test_tc_tunnel.sh | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/test_tc_tunnel.sh b/tools/testing/selftests/bpf/test_tc_tunnel.sh
-> index 7989ec6084545..cb55a908bb0d7 100755
-> --- a/tools/testing/selftests/bpf/test_tc_tunnel.sh
-> +++ b/tools/testing/selftests/bpf/test_tc_tunnel.sh
-> @@ -305,6 +305,7 @@ else
->  	client_connect
->  	verify_data
->  	server_listen
-> +	wait_for_port ${port} ${netcat_opt}
->  fi
->  
->  # serverside, use BPF for decap
-> -- 
-> 2.47.0.338.g60cca15819-goog
-> 
+>  .../selftests/bpf/progs/verifier_spill_fill.c   | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c b/to=
+ols/testing/selftests/bpf/progs/verifier_spill_fill.c
+> index 671d9f415dbf..f5cd21326811 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> @@ -1244,4 +1244,21 @@ __naked void old_stack_misc_vs_cur_ctx_ptr(void)
+>         : __clobber_all);
+>  }
+>
+> +SEC("tc")
+> +__description("stack_noperfmon: reject read of invalid slots")
+> +__success __failure_unpriv __msg_unpriv("invalid read from stack off -8+=
+1 size 8")
+> +__caps_unpriv(CAP_BPF)
 
-Do you see this failing in your CI or in the BPF CI? It seems ok
-to add wait_for_port here, but the likelihood of the issue seems
-minuscule. There is a bunch of ip/tc/etc calls between this
-server_listen and the next client_connect (and I'd be surprised to hear
-that netcat is still not listening by the time we reach next
-client_connect).
+same styling nit about __success staying on a separate line
+
+I'd actually do it this way to make it a bit more explicit that we
+have custom unpriv caps:
+
+__success
+__caps_unpriv(CAP_BPF)
+__failure_unpriv __msg_unpriv("...")
+
+but it's minor
+
+> +__naked void stack_noperfmon_reject_invalid_read(void)
+> +{
+> +       asm volatile ("                                 \
+> +       r2 =3D 1;                                         \
+> +       r6 =3D r10;                                       \
+> +       r6 +=3D -8;                                       \
+> +       *(u8 *)(r6 + 0) =3D r2;                           \
+> +       r2 =3D *(u64 *)(r6 + 0);                          \
+> +       r0 =3D 0;                                         \
+> +       exit;                                           \
+> +"      ::: __clobber_all);
+> +}
+> +
+>  char _license[] SEC("license") =3D "GPL";
+> --
+> 2.43.5
+>
 
