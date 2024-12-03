@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-46014-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46016-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DD0F9E2995
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 18:41:45 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5069E299A
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 18:42:48 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ECF6282B24
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 17:41:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2760916A059
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2024 17:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 485141FF5F9;
-	Tue,  3 Dec 2024 17:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB16205ACE;
+	Tue,  3 Dec 2024 17:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lEpdqXxZ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZGQagoQA"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F1B1FECB7;
-	Tue,  3 Dec 2024 17:40:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E961FBCA6;
+	Tue,  3 Dec 2024 17:41:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733247659; cv=none; b=jFSTWCn1r0ISQG3v6j1gkMoueEBvtMUssFEYjpx3PeujJEhpXOLK3ch1eyNeziojyVDn7T4BIT0KN6KqH6HdUtGfn/NckZ0dinRdO6i9W8fUN3jYuEKu/VW2GyKW/h3FFnLDy0OUkmGMszAcJQTPBDgbGT7OrZ/WTOyaCstPubk=
+	t=1733247667; cv=none; b=UAJuMolt+DYJGgtD7gWdpvt03PY7bz1yyCBw7Goys2W5AwoEqbZcu0QR8/FKmkgQ+QkDxsVvFDhyLURzDj48o4ES+v+gQcSOcrQIT7Fx1s7b09fK74i9fU6ut4i4YuS4W4Tp3AQPvVm7TXF0K9XnnIXBrEUQa9+v5+W7HOfzNPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733247659; c=relaxed/simple;
-	bh=kYn9AyHBSwB7oIBOvWjG225lsU328pBtrLgYNOgDou8=;
+	s=arc-20240116; t=1733247667; c=relaxed/simple;
+	bh=3c41IRkjPOaR9fEmfzmj9EQuR4gItonRDZ/BRla3cTU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dajLP66i11NzOkcGP4Tb+dST5eqSu1UB4I0VCpVFE1HQpePzVqFI63ldYNGpkhjrWfqo4G11KDnJzEpsjPo4QzTPQxTPPxbBpQ7i+eK5l13dHpU6FNC+nygKoM/kUl9JjStKRzp98hwfYCAA5B1ZowMuIsPjaC+LiBIioyPK0pU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lEpdqXxZ; arc=none smtp.client-ip=198.175.65.15
+	 MIME-Version:Content-Type; b=rYpc08xT1yr5Lk3y5fXcvE/jqpjWZZLNrAm4ay5JVJB6WRp80nqYkA9FByTujR4I02KTmD7Hs2mpNVF0VIX0ZTb3YnzfXBk9a2Jne2Wlu5EsdOgwYXdUlpXzGH9nlxHMRyqGjmT2xMLDoBzQYpeTTJHO8AiP45tAb59OQnHr05w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZGQagoQA; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1733247658; x=1764783658;
+  t=1733247666; x=1764783666;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=kYn9AyHBSwB7oIBOvWjG225lsU328pBtrLgYNOgDou8=;
-  b=lEpdqXxZ9YccxQxsmbV1pCD197AQdX/cTuUiNBtOivXhhe50Hk6xV4Z1
-   pIVvUjhl2UnCXGfOzAQmKDfBu+ZrU/e+Qkpvy+d4sRL/Tl7mHWy32JmGK
-   JR+WjPBCmb0bBz4jzgaZhMz/kXK3Nf7syAMRyJgvWzB2ltTLrf6hVdKgL
-   enIHY59XrF0nzgWX/A95UKci7MnOMjmDXx0P/EvIql1NCNjOWOG4DRIlF
-   cEEv12serJJnTknN3TF30X4xP0cyfhWEwXD10EhJjjTVKEBt3rr/aW4sz
-   5B7O0njWAM5/DfU3d9QBQ+WSJ+e6ci+sdW/t9UiX4NBOf4o7mquj3Zdw1
-   g==;
-X-CSE-ConnectionGUID: Ti/flmsJTnGM3IVx+NGdzg==
-X-CSE-MsgGUID: sQD7CSo7QjOuiXqIlQZpaw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11275"; a="37135295"
+  bh=3c41IRkjPOaR9fEmfzmj9EQuR4gItonRDZ/BRla3cTU=;
+  b=ZGQagoQAF7yaU1z42+7tmVXAN+WrKDKqaC4CqX6fT64aJJa6ibIq9/88
+   SfphZgtLJElLH9sFfIhYWbJgc1nx8zx5voDgahmhYzQ4ofED6PUamtVZs
+   z++mCViCuOGuTUxD+g9KbUy7iDvO+EuwFJQUC67kIJj1ToBptGqeuX0IW
+   es7vRMQoPUOW8ckNx4ilRfTThAUhnFSDrSkeDHtub168mkwIvgz+5Vj/V
+   wQ01akM53IiIbIuF5CpjDdUxQd3eJAqrIKO9MclUbpkTU2rQgJeiQwwLd
+   hhOol4aENXzc9o3SvLmhNfKbhDnsksMpIU+yJ/f97kGYKtd9m/8wX2KdN
+   w==;
+X-CSE-ConnectionGUID: 8+KCo0TDSKOoSLfThUOdjA==
+X-CSE-MsgGUID: dS4A18pPS66iyJUXURr4xw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11275"; a="37135325"
 X-IronPort-AV: E=Sophos;i="6.12,205,1728975600"; 
-   d="scan'208";a="37135295"
+   d="scan'208";a="37135325"
 Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2024 09:40:58 -0800
-X-CSE-ConnectionGUID: LZ63EKiPRgGWf0l3nUSScA==
-X-CSE-MsgGUID: W/1HGeM+Rl26U1J9716bCw==
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2024 09:41:06 -0800
+X-CSE-ConnectionGUID: lBiZ3s+ASXCt+jqr1Ci4Yg==
+X-CSE-MsgGUID: qDLHyB09RMqN6l/1YxKIZQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,205,1728975600"; 
-   d="scan'208";a="124337007"
+   d="scan'208";a="124337023"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa002.jf.intel.com with ESMTP; 03 Dec 2024 09:40:54 -0800
+  by orviesa002.jf.intel.com with ESMTP; 03 Dec 2024 09:41:02 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -76,9 +76,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v6 02/10] bpf, xdp: constify some bpf_prog * function arguments
-Date: Tue,  3 Dec 2024 18:37:25 +0100
-Message-ID: <20241203173733.3181246-3-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v6 04/10] xdp: allow attaching already registered memory model to xdp_rxq_info
+Date: Tue,  3 Dec 2024 18:37:27 +0100
+Message-ID: <20241203173733.3181246-5-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241203173733.3181246-1-aleksander.lobakin@intel.com>
 References: <20241203173733.3181246-1-aleksander.lobakin@intel.com>
@@ -91,297 +91,132 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-In lots of places, bpf_prog pointer is used only for tracing or other
-stuff that doesn't modify the structure itself. Same for net_device.
-Address at least some of them and add `const` attributes there. The
-object code didn't change, but that may prevent unwanted data
-modifications and also allow more helpers to have const arguments.
+One may need to register memory model separately from xdp_rxq_info. One
+simple example may be XDP test run code, but in general, it might be
+useful when memory model registering is managed by one layer and then
+XDP RxQ info by a different one.
+Allow such scenarios by adding a simple helper which "attaches"
+already registered memory model to the desired xdp_rxq_info. As this
+is mostly needed for Page Pool, add a special function to do that for
+a &page_pool pointer.
 
 Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/linux/bpf.h       | 12 ++++++------
- include/linux/filter.h    |  9 +++++----
- include/linux/netdevice.h |  6 +++---
- include/linux/skbuff.h    |  2 +-
- kernel/bpf/devmap.c       |  8 ++++----
- net/core/dev.c            | 10 +++++-----
- net/core/filter.c         | 29 ++++++++++++++++-------------
- net/core/skbuff.c         |  2 +-
- 8 files changed, 41 insertions(+), 37 deletions(-)
+ include/net/xdp.h | 32 +++++++++++++++++++++++++++
+ net/core/xdp.c    | 56 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 88 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index eaee2a819f4c..ec3acb16359e 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2591,10 +2591,10 @@ int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_frame *xdpf,
- int dev_map_enqueue_multi(struct xdp_frame *xdpf, struct net_device *dev_rx,
- 			  struct bpf_map *map, bool exclude_ingress);
- int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff *skb,
--			     struct bpf_prog *xdp_prog);
-+			     const struct bpf_prog *xdp_prog);
- int dev_map_redirect_multi(struct net_device *dev, struct sk_buff *skb,
--			   struct bpf_prog *xdp_prog, struct bpf_map *map,
--			   bool exclude_ingress);
-+			   const struct bpf_prog *xdp_prog,
-+			   struct bpf_map *map, bool exclude_ingress);
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 197808df1ee1..1253fe21ede7 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -356,6 +356,38 @@ void xdp_rxq_info_unreg_mem_model(struct xdp_rxq_info *xdp_rxq);
+ int xdp_reg_mem_model(struct xdp_mem_info *mem,
+ 		      enum xdp_mem_type type, void *allocator);
+ void xdp_unreg_mem_model(struct xdp_mem_info *mem);
++int xdp_reg_page_pool(struct page_pool *pool);
++void xdp_unreg_page_pool(const struct page_pool *pool);
++void xdp_rxq_info_attach_page_pool(struct xdp_rxq_info *xdp_rxq,
++				   const struct page_pool *pool);
++
++/**
++ * xdp_rxq_info_attach_mem_model - attach registered mem info to RxQ info
++ * @xdp_rxq: XDP RxQ info to attach the memory info to
++ * @mem: already registered memory info
++ *
++ * If the driver registers its memory providers manually, it must use this
++ * function instead of xdp_rxq_info_reg_mem_model().
++ */
++static inline void
++xdp_rxq_info_attach_mem_model(struct xdp_rxq_info *xdp_rxq,
++			      const struct xdp_mem_info *mem)
++{
++	xdp_rxq->mem = *mem;
++}
++
++/**
++ * xdp_rxq_info_detach_mem_model - detach registered mem info from RxQ info
++ * @xdp_rxq: XDP RxQ info to detach the memory info from
++ *
++ * If the driver registers its memory providers manually and then attaches it
++ * via xdp_rxq_info_attach_mem_model(), it must call this function before
++ * xdp_rxq_info_unreg().
++ */
++static inline void xdp_rxq_info_detach_mem_model(struct xdp_rxq_info *xdp_rxq)
++{
++	xdp_rxq->mem = (struct xdp_mem_info){ };
++}
  
- void __cpu_map_flush(struct list_head *flush_list);
- int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *xdpf,
-@@ -2864,15 +2864,15 @@ struct sk_buff;
+ /* Drivers not supporting XDP metadata can use this helper, which
+  * rejects any room expansion for metadata as a result.
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index bcc5551c6424..885a2a664bce 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -365,6 +365,62 @@ int xdp_rxq_info_reg_mem_model(struct xdp_rxq_info *xdp_rxq,
  
- static inline int dev_map_generic_redirect(struct bpf_dtab_netdev *dst,
- 					   struct sk_buff *skb,
--					   struct bpf_prog *xdp_prog)
-+					   const struct bpf_prog *xdp_prog)
- {
- 	return 0;
- }
+ EXPORT_SYMBOL_GPL(xdp_rxq_info_reg_mem_model);
  
- static inline
- int dev_map_redirect_multi(struct net_device *dev, struct sk_buff *skb,
--			   struct bpf_prog *xdp_prog, struct bpf_map *map,
--			   bool exclude_ingress)
-+			   const struct bpf_prog *xdp_prog,
-+			   struct bpf_map *map, bool exclude_ingress)
- {
- 	return 0;
- }
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 3a21947f2fd4..9a5d23ae3855 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1179,17 +1179,18 @@ static inline int xdp_ok_fwd_dev(const struct net_device *fwd,
-  * This does not appear to be a real limitation for existing software.
-  */
- int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
--			    struct xdp_buff *xdp, struct bpf_prog *prog);
-+			    struct xdp_buff *xdp, const struct bpf_prog *prog);
- int xdp_do_redirect(struct net_device *dev,
- 		    struct xdp_buff *xdp,
--		    struct bpf_prog *prog);
-+		    const struct bpf_prog *prog);
- int xdp_do_redirect_frame(struct net_device *dev,
- 			  struct xdp_buff *xdp,
- 			  struct xdp_frame *xdpf,
--			  struct bpf_prog *prog);
-+			  const struct bpf_prog *prog);
- void xdp_do_flush(void);
- 
--void bpf_warn_invalid_xdp_action(struct net_device *dev, struct bpf_prog *prog, u32 act);
-+void bpf_warn_invalid_xdp_action(const struct net_device *dev,
-+				 const struct bpf_prog *prog, u32 act);
- 
- #ifdef CONFIG_INET
- struct sock *bpf_run_sk_reuseport(struct sock_reuseport *reuse, struct sock *sk,
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index ecc686409161..ecca21387a68 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -3958,9 +3958,9 @@ static inline void dev_consume_skb_any(struct sk_buff *skb)
- }
- 
- u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
--			     struct bpf_prog *xdp_prog);
--void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog);
--int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff **pskb);
-+			     const struct bpf_prog *xdp_prog);
-+void generic_xdp_tx(struct sk_buff *skb, const struct bpf_prog *xdp_prog);
-+int do_xdp_generic(const struct bpf_prog *xdp_prog, struct sk_buff **pskb);
- int netif_rx(struct sk_buff *skb);
- int __netif_rx(struct sk_buff *skb);
- 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 58009fa66102..95452d1a07fc 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -3627,7 +3627,7 @@ static inline netmem_ref skb_frag_netmem(const skb_frag_t *frag)
- int skb_pp_cow_data(struct page_pool *pool, struct sk_buff **pskb,
- 		    unsigned int headroom);
- int skb_cow_data_for_xdp(struct page_pool *pool, struct sk_buff **pskb,
--			 struct bpf_prog *prog);
-+			 const struct bpf_prog *prog);
- 
- /**
-  * skb_frag_address - gets the address of the data contained in a paged fragment
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 7878be18e9d2..effde52bc857 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -678,7 +678,7 @@ int dev_map_enqueue_multi(struct xdp_frame *xdpf, struct net_device *dev_rx,
- }
- 
- int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff *skb,
--			     struct bpf_prog *xdp_prog)
-+			     const struct bpf_prog *xdp_prog)
- {
- 	int err;
- 
-@@ -701,7 +701,7 @@ int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff *skb,
- 
- static int dev_map_redirect_clone(struct bpf_dtab_netdev *dst,
- 				  struct sk_buff *skb,
--				  struct bpf_prog *xdp_prog)
-+				  const struct bpf_prog *xdp_prog)
- {
- 	struct sk_buff *nskb;
- 	int err;
-@@ -720,8 +720,8 @@ static int dev_map_redirect_clone(struct bpf_dtab_netdev *dst,
- }
- 
- int dev_map_redirect_multi(struct net_device *dev, struct sk_buff *skb,
--			   struct bpf_prog *xdp_prog, struct bpf_map *map,
--			   bool exclude_ingress)
-+			   const struct bpf_prog *xdp_prog,
-+			   struct bpf_map *map, bool exclude_ingress)
- {
- 	struct bpf_dtab *dtab = container_of(map, struct bpf_dtab, map);
- 	struct bpf_dtab_netdev *dst, *last_dst = NULL;
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 13d00fc10f55..bbb456b86e8b 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4931,7 +4931,7 @@ static struct netdev_rx_queue *netif_get_rxqueue(struct sk_buff *skb)
- }
- 
- u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
--			     struct bpf_prog *xdp_prog)
-+			     const struct bpf_prog *xdp_prog)
- {
- 	void *orig_data, *orig_data_end, *hard_start;
- 	struct netdev_rx_queue *rxqueue;
-@@ -5033,7 +5033,7 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
- }
- 
- static int
--netif_skb_check_for_xdp(struct sk_buff **pskb, struct bpf_prog *prog)
-+netif_skb_check_for_xdp(struct sk_buff **pskb, const struct bpf_prog *prog)
- {
- 	struct sk_buff *skb = *pskb;
- 	int err, hroom, troom;
-@@ -5057,7 +5057,7 @@ netif_skb_check_for_xdp(struct sk_buff **pskb, struct bpf_prog *prog)
- 
- static u32 netif_receive_generic_xdp(struct sk_buff **pskb,
- 				     struct xdp_buff *xdp,
--				     struct bpf_prog *xdp_prog)
-+				     const struct bpf_prog *xdp_prog)
- {
- 	struct sk_buff *skb = *pskb;
- 	u32 mac_len, act = XDP_DROP;
-@@ -5110,7 +5110,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff **pskb,
-  * and DDOS attacks will be more effective. In-driver-XDP use dedicated TX
-  * queues, so they do not have this starvation issue.
-  */
--void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
-+void generic_xdp_tx(struct sk_buff *skb, const struct bpf_prog *xdp_prog)
- {
- 	struct net_device *dev = skb->dev;
- 	struct netdev_queue *txq;
-@@ -5135,7 +5135,7 @@ void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
- 
- static DEFINE_STATIC_KEY_FALSE(generic_xdp_needed_key);
- 
--int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff **pskb)
-+int do_xdp_generic(const struct bpf_prog *xdp_prog, struct sk_buff **pskb)
- {
- 	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
- 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 6625b3f563a4..fac245065b0a 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4348,9 +4348,9 @@ u32 xdp_master_redirect(struct xdp_buff *xdp)
- EXPORT_SYMBOL_GPL(xdp_master_redirect);
- 
- static inline int __xdp_do_redirect_xsk(struct bpf_redirect_info *ri,
--					struct net_device *dev,
-+					const struct net_device *dev,
- 					struct xdp_buff *xdp,
--					struct bpf_prog *xdp_prog)
-+					const struct bpf_prog *xdp_prog)
- {
- 	enum bpf_map_type map_type = ri->map_type;
- 	void *fwd = ri->tgt_value;
-@@ -4371,10 +4371,10 @@ static inline int __xdp_do_redirect_xsk(struct bpf_redirect_info *ri,
- 	return err;
- }
- 
--static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
--						   struct net_device *dev,
--						   struct xdp_frame *xdpf,
--						   struct bpf_prog *xdp_prog)
-+static __always_inline int
-+__xdp_do_redirect_frame(struct bpf_redirect_info *ri, struct net_device *dev,
-+			struct xdp_frame *xdpf,
-+			const struct bpf_prog *xdp_prog)
- {
- 	enum bpf_map_type map_type = ri->map_type;
- 	void *fwd = ri->tgt_value;
-@@ -4443,7 +4443,7 @@ static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
- }
- 
- int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
--		    struct bpf_prog *xdp_prog)
-+		    const struct bpf_prog *xdp_prog)
- {
- 	struct bpf_redirect_info *ri = bpf_net_ctx_get_ri();
- 	enum bpf_map_type map_type = ri->map_type;
-@@ -4457,7 +4457,8 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
- EXPORT_SYMBOL_GPL(xdp_do_redirect);
- 
- int xdp_do_redirect_frame(struct net_device *dev, struct xdp_buff *xdp,
--			  struct xdp_frame *xdpf, struct bpf_prog *xdp_prog)
-+			  struct xdp_frame *xdpf,
-+			  const struct bpf_prog *xdp_prog)
- {
- 	struct bpf_redirect_info *ri = bpf_net_ctx_get_ri();
- 	enum bpf_map_type map_type = ri->map_type;
-@@ -4472,9 +4473,9 @@ EXPORT_SYMBOL_GPL(xdp_do_redirect_frame);
- static int xdp_do_generic_redirect_map(struct net_device *dev,
- 				       struct sk_buff *skb,
- 				       struct xdp_buff *xdp,
--				       struct bpf_prog *xdp_prog, void *fwd,
--				       enum bpf_map_type map_type, u32 map_id,
--				       u32 flags)
-+				       const struct bpf_prog *xdp_prog,
-+				       void *fwd, enum bpf_map_type map_type,
-+				       u32 map_id, u32 flags)
- {
- 	struct bpf_redirect_info *ri = bpf_net_ctx_get_ri();
- 	struct bpf_map *map;
-@@ -4528,7 +4529,8 @@ static int xdp_do_generic_redirect_map(struct net_device *dev,
- }
- 
- int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
--			    struct xdp_buff *xdp, struct bpf_prog *xdp_prog)
-+			    struct xdp_buff *xdp,
-+			    const struct bpf_prog *xdp_prog)
- {
- 	struct bpf_redirect_info *ri = bpf_net_ctx_get_ri();
- 	enum bpf_map_type map_type = ri->map_type;
-@@ -9075,7 +9077,8 @@ static bool xdp_is_valid_access(int off, int size,
- 	return __is_valid_xdp_access(off, size);
- }
- 
--void bpf_warn_invalid_xdp_action(struct net_device *dev, struct bpf_prog *prog, u32 act)
-+void bpf_warn_invalid_xdp_action(const struct net_device *dev,
-+				 const struct bpf_prog *prog, u32 act)
- {
- 	const u32 act_max = XDP_REDIRECT;
- 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 6841e61a6bd0..a441613a1e6c 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -1009,7 +1009,7 @@ int skb_pp_cow_data(struct page_pool *pool, struct sk_buff **pskb,
- EXPORT_SYMBOL(skb_pp_cow_data);
- 
- int skb_cow_data_for_xdp(struct page_pool *pool, struct sk_buff **pskb,
--			 struct bpf_prog *prog)
-+			 const struct bpf_prog *prog)
- {
- 	if (!prog->aux->xdp_has_frags)
- 		return -EINVAL;
++/**
++ * xdp_reg_page_pool - register &page_pool as a memory provider for XDP
++ * @pool: &page_pool to register
++ *
++ * Can be used to register pools manually without connecting to any XDP RxQ
++ * info, so that the XDP layer will be aware of them. Then, they can be
++ * attached to an RxQ info manually via xdp_rxq_info_attach_page_pool().
++ *
++ * Return: %0 on success, -errno on error.
++ */
++int xdp_reg_page_pool(struct page_pool *pool)
++{
++	struct xdp_mem_info mem;
++
++	return xdp_reg_mem_model(&mem, MEM_TYPE_PAGE_POOL, pool);
++}
++EXPORT_SYMBOL_GPL(xdp_reg_page_pool);
++
++/**
++ * xdp_unreg_page_pool - unregister &page_pool from the memory providers list
++ * @pool: &page_pool to unregister
++ *
++ * A shorthand for manual unregistering page pools. If the pool was previously
++ * attached to an RxQ info, it must be detached first.
++ */
++void xdp_unreg_page_pool(const struct page_pool *pool)
++{
++	struct xdp_mem_info mem = {
++		.type	= MEM_TYPE_PAGE_POOL,
++		.id	= pool->xdp_mem_id,
++	};
++
++	xdp_unreg_mem_model(&mem);
++}
++EXPORT_SYMBOL_GPL(xdp_unreg_page_pool);
++
++/**
++ * xdp_rxq_info_attach_page_pool - attach registered pool to RxQ info
++ * @xdp_rxq: XDP RxQ info to attach the pool to
++ * @pool: pool to attach
++ *
++ * If the pool was registered manually, this function must be called instead
++ * of xdp_rxq_info_reg_mem_model() to connect it to the RxQ info.
++ */
++void xdp_rxq_info_attach_page_pool(struct xdp_rxq_info *xdp_rxq,
++				   const struct page_pool *pool)
++{
++	struct xdp_mem_info mem = {
++		.type	= MEM_TYPE_PAGE_POOL,
++		.id	= pool->xdp_mem_id,
++	};
++
++	xdp_rxq_info_attach_mem_model(xdp_rxq, &mem);
++}
++EXPORT_SYMBOL_GPL(xdp_rxq_info_attach_page_pool);
++
+ /* XDP RX runs under NAPI protection, and in different delivery error
+  * scenarios (e.g. queue full), it is possible to return the xdp_frame
+  * while still leveraging this protection.  The @napi_direct boolean
 -- 
 2.47.0
 
