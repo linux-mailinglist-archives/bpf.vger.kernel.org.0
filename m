@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-46090-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46092-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 150439E4107
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 18:16:41 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2CDC9E429D
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 18:58:22 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B15201660A8
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 17:16:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EEB03B8625B
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 17:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE442144CB;
-	Wed,  4 Dec 2024 17:01:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83DE921766C;
+	Wed,  4 Dec 2024 17:02:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rKyF9JyN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lPYcXkIv"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C299B2144B7;
-	Wed,  4 Dec 2024 17:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDCC217660;
+	Wed,  4 Dec 2024 17:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733331686; cv=none; b=QWNuRMAtrC6shHQ7ADk5k03oxNF7RkDzEp+MCRmYjiYSI5SoW5BWDw0U+/pdWivJ9WBewscMa+Q3co7nry0bwIC3ihM76wePLZhvDvIXdUccLfm91loQGbkvUeBvS+dCP606XAM3/3bXpI50NcXmaK/JCZGPjDGcW8DQRHFK5F4=
+	t=1733331749; cv=none; b=G0zhWwDTfHvl1bGl87YXYITiLX1F/nUVWIl0LBJ3+6JiLOdTstMaOYyZ6fsVaSJBNXhV4Zf608S3wWbzjWELSMTt7TDhWLVq9NwpHOwHoi92bJ7V6GrU/PiyYjLScgCseiMjf5pxzwyEI4C5I9QxPVXGZ7Aiu39vzn0hA0aRjTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733331686; c=relaxed/simple;
-	bh=sqBdNa8t5nLUyQ3KChbLy9m2qJB438JQ/Fx3k/AoHU4=;
+	s=arc-20240116; t=1733331749; c=relaxed/simple;
+	bh=M8u1x8f0D/+eUI2lQz/WEZewQjvuESEihTZT0YW/4tk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LIbrHq2fBDWPiogA4hqU9OlNj4HSaLe3uod3kggEt8WDQYmCLL4+iu7DFg4RJlXg9+AT5yLRL667lx3JvVF1Fs7KbXWsWi4YK9c3w2EJhm8r57t6dpABpiWL2QqxeAUaEACRy0g5CD6/VZyDSgQiwpcSDnqeQSHwG/EZQ/fxRV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rKyF9JyN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 901FBC4CEDF;
-	Wed,  4 Dec 2024 17:01:24 +0000 (UTC)
+	 MIME-Version; b=fEPnCZEii0tbpH5CBpQ1eGNj+rUqreAdpKIl2VMebHKNgH2BOz9fxRivTDZ/rV5zC7yfDoKbPjBCZcM8Kf96OBSSq1sDv8GoWHMyY5quSLf2LXy+Wjb8aIa49oXrhSqiOfPtXZazbHRPaHsQWZ8j1TTEYBKA2Dz04mV+Vy4CEHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lPYcXkIv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55ABBC4CECD;
+	Wed,  4 Dec 2024 17:02:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733331686;
-	bh=sqBdNa8t5nLUyQ3KChbLy9m2qJB438JQ/Fx3k/AoHU4=;
+	s=k20201202; t=1733331748;
+	bh=M8u1x8f0D/+eUI2lQz/WEZewQjvuESEihTZT0YW/4tk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rKyF9JyNp6R9gh/p56GPXopNoJb/XHnUIn5smQ6zjsv/H5oSB1d169XfCsfbL3Nkw
-	 OyXZTvUa3clfIuI/crbGTF4GFzCQVh5i+15ZR3CEgd2kcEQ73pKMb3ieuuSU/XDMXf
-	 bfu4dsgx4+bu7SEVwJLbCanB9aUlPRWYmqGKeX6Hv6rqy5626dHotUDlwgfilQGM0Z
-	 lNjHjHWNi75mjO7EWgWVU5CvGPRUeDfsC8g26X1F52lXgPzQqSn+FAYTzLojEHT4Dj
-	 JBX7qFrCflBrCWDgvN8zQCjmJV47pSIPaVyJ1K7WJqOj+fQWfI/gFu3mL0Y7/2i9+C
-	 TqSFlOwS3Sjhg==
+	b=lPYcXkIvpkWHIXB4CSZtQIVmSNl7rGzPAp/GMT5DRY3pg7QJNEe20bnnByXEs353T
+	 LmIJ2sMxoT7acXprY1r1a//ckESYSFO+075KFl4F+1/H83r6GKnySR5ITfcIE2Ovlx
+	 aXRV3DtGWYdL06u2v1RRvSF5qCkDDeyQSwbmv31BghAkIe/8S2QvfoC8gOucu8jFox
+	 +N6JtHn2K4OmrGQlu2koArAmtEcGFPIPGRiz02IFL8hIlDEhbBIL2mQhemPfUuulmH
+	 PDKWIMpi83gyrdHLiTC0/CSKh3sj+AdcDwL0mEGygPLo868emjxAmfuTDy9dzs7PDD
+	 osbKXEtB8EyYw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -62,12 +62,12 @@ Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Sasha Levin <sashal@kernel.org>,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 02/24] tracing/ftrace: disable preemption in syscall probe
-Date: Wed,  4 Dec 2024 10:49:22 -0500
-Message-ID: <20241204155003.2213733-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 02/15] tracing/ftrace: disable preemption in syscall probe
+Date: Wed,  4 Dec 2024 10:50:41 -0500
+Message-ID: <20241204155105.2214350-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241204155003.2213733-1-sashal@kernel.org>
-References: <20241204155003.2213733-1-sashal@kernel.org>
+In-Reply-To: <20241204155105.2214350-1-sashal@kernel.org>
+References: <20241204155105.2214350-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,7 +76,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.63
+X-stable-base: Linux 6.1.119
 Content-Transfer-Encoding: 8bit
 
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
@@ -187,7 +187,7 @@ index c2f9cabf154d1..fa0d51cad57a8 100644
  
  #undef DECLARE_EVENT_CLASS
 diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
-index de753403cdafb..9508d9022940f 100644
+index 942ddbdace4a4..e39c5ca76eabb 100644
 --- a/kernel/trace/trace_syscalls.c
 +++ b/kernel/trace/trace_syscalls.c
 @@ -299,6 +299,12 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
