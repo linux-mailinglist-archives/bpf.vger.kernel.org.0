@@ -1,245 +1,225 @@
-Return-Path: <bpf+bounces-46097-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46098-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E7F09E42E4
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 19:07:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 881479E42E7
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 19:07:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44BA9169E0B
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 18:06:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7D1E16A556
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 18:07:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3B120E6E5;
-	Wed,  4 Dec 2024 17:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262BF20E71A;
+	Wed,  4 Dec 2024 17:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U8T5nPtm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hMwdJPDi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1356B205AB3;
-	Wed,  4 Dec 2024 17:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBAC820E6FD
+	for <bpf@vger.kernel.org>; Wed,  4 Dec 2024 17:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733335071; cv=none; b=ZYOFbgU/mVHw8PXHVv0VfOFdmWxxRhKtWlEKWEwVDLTSeM9/KlaaCHdwCKRjhXRcp8b8uxtA16pgylRBbfIVeH2kGorjeH9pa0gVCzYmuOg/vZEhqH8yZhwMBKd7Z1J0ETy+Uhpoptn8yyhfCQtVaEhpd/EUgR3HbUBpNMTz4X8=
+	t=1733335151; cv=none; b=kfk8F+WtCWYAD/c1XK1OFMwa1syKJf270eeW54shb9slsCQRgSqfzApGOACSg+MZRQfdn9ey7W/G33g+cdO0dlNyXmdxYMSh/Xm/3cY98Yyt4hkMBqlDV5Rjo+MQcUmKt+dsV9ej2eBDrbhL10k8rxazsnY3hMbeIyRhJtfGE14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733335071; c=relaxed/simple;
-	bh=X1InaroIQM2uf/1jpiGdU6NNyYPfyZraxWsbFwr+Bcw=;
+	s=arc-20240116; t=1733335151; c=relaxed/simple;
+	bh=CI1temIejEQBxloQCdyLp5K1cB4i1AHXIiWKiunVnSg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mLMqN8t+Y1bFwtvxSqw3wjUKp9KdQQ3NHGSqGeexAJN3Jrcr+rgnIHmBQOgHUeDwL+bDAfLrkcRnkiyxcs8jnISHNXCY8mTPsfBKS+I3+vjhnfLYWkLMcvlldeCkqjtSadGzOJKqZlFbCiJopznw4HYRn/n6GQoFeHha6+helZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U8T5nPtm; arc=none smtp.client-ip=209.85.218.47
+	 To:Cc:Content-Type; b=DVqxccjMBMYoZ0KaLlDMmUOcz//jjf5LzgjxvQI5MJu2182JZv0Rp109Jj2XTsAPFv0qXHeQPXvifM94Fc5nyUd6/IzD6yPf/2w+xrrEKDzx6VA/TV70TjkWos+i8bBgqC+6WymeOcSLKLhyyuMG6g5WRMIdrd+qt/qJztb4IbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hMwdJPDi; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-aa51bf95ce1so562043566b.3;
-        Wed, 04 Dec 2024 09:57:48 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5d0bd12374cso3656208a12.3
+        for <bpf@vger.kernel.org>; Wed, 04 Dec 2024 09:59:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733335067; x=1733939867; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733335148; x=1733939948; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wwvLjmbQdkYwGPG8ZtaFfGORqko28S8AxolG82mkgsk=;
-        b=U8T5nPtmsj2P0pHhazwnxmHErRH3QabF4jxjLhh8MbF4Uve9duoaxyUIQkWOVTSAnr
-         8Q78Hrz746rOMB73QdBcg/6tE2or2yyvKrLGkWd3ZEWJnnSdoc8W2LnPV6fnniEP03+V
-         QIYV/c3NTshoipMonlLbVu2O963GzfQG2RiP15Fb8KOd5BEy9TC5tFmrRjpwJEzNKC/t
-         WxCvuffuHNEXCesMMFDqU+VL+kc1rIUTDGEdthDDHG6xPGEbV+j63oDekm7qBjpXISwc
-         kQggRhBq6sj8u4CpQGkzREja/3JU2Mfl2pWvRuHSO+h9uvX7ON+f5C5YEaXCrkLaouQ+
-         LyTw==
+        bh=FG8I0CeU69+wwfKNtJdrt/AaxfvsY/1jfEuwl5e309A=;
+        b=hMwdJPDiHE6F5bhWEXKhi/sKtDbCFzSjQXczEFkLZJbVh3pL/4RGeF7zSo8xnIn0FU
+         TMLmHl2aH9E22ojuKGBubfOMWH2d5tBZSAPiMYJSp6AdXU6/kgYbgRMUwhPFLgWCKFYd
+         55KqWFGnv/IPsuL99nA6cCIEH/tDHTBiQYHWPkaYxmDCbMRShW9LrLJJVkKBSIArpHg8
+         WjrjLLrW36imdQntciZV8aNPA2WfiljlZVRD5/joBpRDX0vmsqHmi9YXZsIl7T3IMk5N
+         QxNQqyHnBLjQnQVoBS+HVeP1wMOmEzMV8RWyJ8KBhK/an9aq1Cw0IqiUa/5/xEHOLVhT
+         ASFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733335067; x=1733939867;
+        d=1e100.net; s=20230601; t=1733335148; x=1733939948;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wwvLjmbQdkYwGPG8ZtaFfGORqko28S8AxolG82mkgsk=;
-        b=eNmM8y2rqPo7kRBI0gLAhWZ1rzveHdP6x8+GL19I06Do1Alb1RLzzCzmf0nvn8Dm2c
-         Hy4qv7RfM8ucGriwkcocfjgCwQbYAnGRwBw+49VRUySEyOHZ8TIqXIbiJzFCy9Y8mIOn
-         ILVSHnjCmj6/9IIk9ngO90E6NESs015eE6sWcLI2sl6MPbl32TATXwH66v3Ew2EylGU9
-         iSggzLXd6sAlxHIPdO+3mSBfktP/s9Z0cI2IzRrdQOF/vyLXW1g3G3Z90TlcxIWYNjO+
-         5spnUBpqUu02GLBFszIXjxMM678oy00JJqI3XNvlLcuPi8+UuVYJt+wAnEpItIiTg4gk
-         lZvg==
-X-Forwarded-Encrypted: i=1; AJvYcCVF8TrJhU8nvDYNzYcjDUc0Yz+UZm7RFr35AADNFtI/lt5lEEeDmef3nqiZOMkUf1cHmF699xCiU30sQWFI@vger.kernel.org, AJvYcCX83gXjQMXtwWyAm7spKBa3ax8PfvBKrT7/1eoSXQ9mIShVFCRaKDpvNW5KJ/clqMp/R8gyTqw6p4FLfIei@vger.kernel.org, AJvYcCXjLYBtX1zsQklYEmL6nFewqAJDWWcQTzPIy5DlR6GhOGEwHRpgB2lXK3o8IABFSHgfCA4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzszcY7MNxqQYkwWFs43KJSnQQoRgWeC5p6kOClc/RPW2j7htQl
-	PXz2obFn67KF0x4jz/fIdppAdI53NUki67YXFAhj1OVHEhs2MPnyds2dBU3yzU/ufk2yE+wjk4L
-	ia2PvYBT7N2eccr2VpALeMym2PhQ=
-X-Gm-Gg: ASbGncun7O/+Cz33Zo9CxDqr6LZhvJmrwS7EVmeVKqAO+T8gzjfIHJ9H9PlLdVnTmPv
-	Kxak1ReEGwXjGaov+lDnVtlWbiuTAEvL0K3f/F7Zi4XWYZeQ=
-X-Google-Smtp-Source: AGHT+IHtLhnUeXu2EkaEBs8dhojWXWD57YcrckBE5FnscUms54qFw7VbLXuxb1jFZe0p1Q1AVyR9dHToGmSCml8uohA=
-X-Received: by 2002:a17:907:aa2:b0:aa5:4ea6:fcae with SMTP id
- a640c23a62f3a-aa60181a7c3mr581948566b.28.1733335066688; Wed, 04 Dec 2024
- 09:57:46 -0800 (PST)
+        bh=FG8I0CeU69+wwfKNtJdrt/AaxfvsY/1jfEuwl5e309A=;
+        b=myuEeZCC7rTziIDjpknvQIdJMJHG2NZKHSSwggdB9G3K7RnUZO6rEB+yQBCnwkqg0H
+         DvT45lfjhTj1CBP5djAAJNWIMsItV+w34tyPepkd8oieX4bXpFB5AtKquLQeskq09dGt
+         eOHnpCUXZqUrv7MSLyWW+i0K2J2E+TkfVNgjiKDOnRq1TcHtRFlbQeYLi3w0wNGV41Ul
+         hY/DP3A9kIHjexUCNFsrgdkXFCE4vuTBT0GrG589cXQ/ceGpDaKuQAsGeH4dbCMMNldV
+         s5O7R55MqnkvfV5s0UY4he/fN4a0S48qayMPIf3nEbgR27kAWdx1SPoymxeEiG5n36iS
+         hirA==
+X-Gm-Message-State: AOJu0Yzw01QQ6xTxw/ZWK1ncwBhSfttRLNCHLVCDpix9W8Sr44rrRSL2
+	Le42bXHv2M8SOUgk8HHGQmRo3hNwSeh82Ec4f2uE+r7tYIrIseCycyiPrBXPwFh+3J+LsDlPTTR
+	9LI3eGR/N2Brca3fWd1YASN9jM5DElw==
+X-Gm-Gg: ASbGnctSbweZprYaYE9Hv13V54UWGDyXB9xS1lhF0C6U6m44rKLNvC1wG/Qqb9+KK8P
+	o3rz0whHgf/0neosLD5jzO9K507eXhbyx99oZ5HjxPLjvox4=
+X-Google-Smtp-Source: AGHT+IEFXyzaaayI1Ql40Asrw1IMLF+jIz7AGoRM9wft2BDyILXfuIb5M8xkudjr/9+oOkPDTcw4DVdmDM+m6lYqV2Q=
+X-Received: by 2002:a05:6402:2787:b0:5d0:cfad:f71 with SMTP id
+ 4fb4d7f45d1cf-5d10cb9a3f6mr7607501a12.32.1733335148089; Wed, 04 Dec 2024
+ 09:59:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241126-resolve_btfids-v2-0-288c37cb89ee@weissschuh.net>
- <20241126-resolve_btfids-v2-1-288c37cb89ee@weissschuh.net>
- <CAEf4BzahMQWVH0Gaub-tWjH9GweG8Kt7OBU-f+PBhmmRDCKfrA@mail.gmail.com>
- <9a11cf2f-ddca-4a50-817f-74183d31dcaf@t-8ch.de> <CAEf4BzZqeo00C5a9QO6Ah3i-doWRbg7v_2y=y9Kfg3=JyrA=zQ@mail.gmail.com>
- <d556fc2a-c4be-4f9e-bf13-bdf418265eb3@t-8ch.de>
-In-Reply-To: <d556fc2a-c4be-4f9e-bf13-bdf418265eb3@t-8ch.de>
+References: <20241203135052.3380721-1-aspsk@isovalent.com> <20241203135052.3380721-2-aspsk@isovalent.com>
+ <CAEf4BzZogXRtHgDLa1nm4neOEbd+b2+UX_fog2hpgYJ5vr-X9A@mail.gmail.com> <Z1Ax+woX0zjYH+Qo@eis>
+In-Reply-To: <Z1Ax+woX0zjYH+Qo@eis>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 4 Dec 2024 09:57:31 -0800
-Message-ID: <CAEf4Bzbxz2Bh2OkoTFA-bV5gejHD5msww9JaNt885GJMTqdwAg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] tools/resolve_btfids: Add --fatal-warnings option
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Date: Wed, 4 Dec 2024 09:58:51 -0800
+Message-ID: <CAEf4BzYMNtr3dYvsU8jbqkDos9jg6a-FRmBcW8dkMi3zrE+8LQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 1/7] bpf: add a __btf_get_by_fd helper
+To: Anton Protopopov <aspsk@isovalent.com>
+Cc: bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 3, 2024 at 10:19=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weisss=
-chuh.net> wrote:
+On Wed, Dec 4, 2024 at 2:39=E2=80=AFAM Anton Protopopov <aspsk@isovalent.co=
+m> wrote:
 >
-> On 2024-12-03 18:06:26-0800, Andrii Nakryiko wrote:
-> > On Tue, Dec 3, 2024 at 3:09=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@wei=
-ssschuh.net> wrote:
+> On 24/12/03 01:25PM, Andrii Nakryiko wrote:
+> > On Tue, Dec 3, 2024 at 5:48=E2=80=AFAM Anton Protopopov <aspsk@isovalen=
+t.com> wrote:
 > > >
-> > > On 2024-12-03 14:31:01-0800, Andrii Nakryiko wrote:
-> > > > On Tue, Nov 26, 2024 at 1:17=E2=80=AFPM Thomas Wei=C3=9Fschuh <linu=
-x@weissschuh.net> wrote:
-> > > > >
-> > > > > Currently warnings emitted by resolve_btfids are buried in the bu=
-ild log
-> > > > > and are slipping into mainline frequently.
-> > > > > Add an option to elevate warnings to hard errors so the CI bots c=
-an
-> > > > > catch any new warnings.
-> > > > >
-> > > > > Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
-> > > > > Acked-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > ---
-> > > > >  tools/bpf/resolve_btfids/main.c | 12 ++++++++++--
-> > > > >  1 file changed, 10 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_=
-btfids/main.c
-> > > > > index bd9f960bce3d5b74dc34159b35af1e0b33524d2d..571d29d2da97fea75=
-e5f9c544a95b9ac65f9e579 100644
-> > > > > --- a/tools/bpf/resolve_btfids/main.c
-> > > > > +++ b/tools/bpf/resolve_btfids/main.c
-> > > > > @@ -141,6 +141,7 @@ struct object {
-> > > > >  };
-> > > > >
-> > > > >  static int verbose;
-> > > > > +static int warnings;
-> > > > >
-> > > > >  static int eprintf(int level, int var, const char *fmt, ...)
-> > > > >  {
-> > > > > @@ -604,6 +605,7 @@ static int symbols_resolve(struct object *obj=
-)
-> > > > >                         if (id->id) {
-> > > > >                                 pr_info("WARN: multiple IDs found=
- for '%s': %d, %d - using %d\n",
-> > > > >                                         str, id->id, type_id, id-=
->id);
-> > > > > +                               warnings++;
-> > > > >                         } else {
-> > > > >                                 id->id =3D type_id;
-> > > > >                                 (*nr)--;
-> > > > > @@ -625,8 +627,10 @@ static int id_patch(struct object *obj, stru=
-ct btf_id *id)
-> > > > >         int i;
-> > > > >
-> > > > >         /* For set, set8, id->id may be 0 */
-> > > > > -       if (!id->id && !id->is_set && !id->is_set8)
-> > > > > +       if (!id->id && !id->is_set && !id->is_set8) {
-> > > > >                 pr_err("WARN: resolve_btfids: unresolved symbol %=
-s\n", id->name);
-> > > > > +               warnings++;
-> > > > > +       }
-> > > > >
-> > > > >         for (i =3D 0; i < id->addr_cnt; i++) {
-> > > > >                 unsigned long addr =3D id->addr[i];
-> > > > > @@ -782,6 +786,7 @@ int main(int argc, const char **argv)
-> > > > >                 .funcs    =3D RB_ROOT,
-> > > > >                 .sets     =3D RB_ROOT,
-> > > > >         };
-> > > > > +       bool fatal_warnings =3D false;
-> > > > >         struct option btfid_options[] =3D {
-> > > > >                 OPT_INCR('v', "verbose", &verbose,
-> > > > >                          "be more verbose (show errors, etc)"),
-> > > > > @@ -789,6 +794,8 @@ int main(int argc, const char **argv)
-> > > > >                            "BTF data"),
-> > > > >                 OPT_STRING('b', "btf_base", &obj.base_btf_path, "=
-file",
-> > > > >                            "path of file providing base BTF"),
-> > > > > +               OPT_BOOLEAN(0, "fatal-warnings", &fatal_warnings,
-> > > > > +                           "turn warnings into errors"),
-> > > >
-> > > > We are mixing naming styles here: we have "btf_base" with underscor=
-e
-> > > > separator, and you are adding "fatal-warnings" with dash separator.=
- I
-> > > > personally like dashes, but whichever way we should stay consistent=
-.
-> > > > So let's fix it, otherwise it looks a bit sloppy.
+> > > Add a new helper to get a pointer to a struct btf from a file
+> > > descriptor. This helper doesn't increase a refcnt. Add a comment
+> > > explaining this and pointing to a corresponding function which
+> > > does take a reference.
 > > >
-> > > Ack.
+> > > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> > > ---
+> > >  include/linux/bpf.h | 17 +++++++++++++++++
+> > >  include/linux/btf.h |  2 ++
+> > >  kernel/bpf/btf.c    | 13 ++++---------
+> > >  3 files changed, 23 insertions(+), 9 deletions(-)
 > > >
-> > > >
-> > > > Please also use [PATCH bpf-next v3] subject prefix to make it expli=
-cit
-> > > > that this should go through bpf-next tree.
-> > >
-> > > Ack.
-> > >
-> > > >
-> > > > pw-bot: cr
-> > > >
-> > > > >                 OPT_END()
-> > > > >         };
-> > > > >         int err =3D -1;
-> > > > > @@ -823,7 +830,8 @@ int main(int argc, const char **argv)
-> > > > >         if (symbols_patch(&obj))
-> > > > >                 goto out;
-> > > > >
-> > > > > -       err =3D 0;
-> > > > > +       if (!(fatal_warnings && warnings))
-> > > > > +               err =3D 0;
-> > > >
-> > > > nit: just
-> > > >
-> > > > if (!fatal_warnings)
-> > > >     err =3D 0;
-> > > >
-> > > > ?
-> > >
-> > > This seems wrong. Now the actual warning counter is never evaluated.
-> > > And --fatal_warnings will always lead to an error exit code.
 > >
-> > Ah, I missed that you are using default -1 value here. I wonder if we
-> > should make it a bit more explicit?
+> > Minor (but unexplained and/or unnecessary) things I pointed out below,
+> > but overall looks good
 > >
-> > if (fatal_warnings)
-> >     err =3D warnings ? -1 : 0;
-> > else
-> >     err =3D 0;
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > >
-> > Something like that?
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index eaee2a819f4c..ac44b857b2f9 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -2301,6 +2301,14 @@ void __bpf_obj_drop_impl(void *p, const struct=
+ btf_record *rec, bool percpu);
+> > >  struct bpf_map *bpf_map_get(u32 ufd);
+> > >  struct bpf_map *bpf_map_get_with_uref(u32 ufd);
+> > >
+> > > +/*
+> > > + * The __bpf_map_get() and __btf_get_by_fd() functions parse a file
+> > > + * descriptor and return a corresponding map or btf object.
+> > > + * Their names are double underscored to emphasize the fact that the=
+y
+> > > + * do not increase refcnt. To also increase refcnt use corresponding
+> > > + * bpf_map_get() and btf_get_by_fd() functions.
+> > > + */
+> > > +
+> > >  static inline struct bpf_map *__bpf_map_get(struct fd f)
+> > >  {
+> > >         if (fd_empty(f))
+> > > @@ -2310,6 +2318,15 @@ static inline struct bpf_map *__bpf_map_get(st=
+ruct fd f)
+> > >         return fd_file(f)->private_data;
+> > >  }
+> > >
+> > > +static inline struct btf *__btf_get_by_fd(struct fd f)
+> > > +{
+> > > +       if (fd_empty(f))
+> > > +               return ERR_PTR(-EBADF);
+> > > +       if (unlikely(fd_file(f)->f_op !=3D &btf_fops))
+> > > +               return ERR_PTR(-EINVAL);
+> > > +       return fd_file(f)->private_data;
+> > > +}
+> > > +
+> > >  void bpf_map_inc(struct bpf_map *map);
+> > >  void bpf_map_inc_with_uref(struct bpf_map *map);
+> > >  struct bpf_map *__bpf_map_inc_not_zero(struct bpf_map *map, bool ure=
+f);
+> > > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > > index 4214e76c9168..69159e649675 100644
+> > > --- a/include/linux/btf.h
+> > > +++ b/include/linux/btf.h
+> > > @@ -4,6 +4,7 @@
+> > >  #ifndef _LINUX_BTF_H
+> > >  #define _LINUX_BTF_H 1
+> > >
+> > > +#include <linux/file.h>
+> >
+> > do we need this in linux/btf.h header?
 >
-> The existing code was the same. Also the rest of the function
-> relies on this. IMO the pattern is clear when looking at the resulting
-> code and not the diff.
-> But if you prefer I can change it of course.
+> Thanks, removed.
+>
+> > >  #include <linux/types.h>
+> > >  #include <linux/bpfptr.h>
+> > >  #include <linux/bsearch.h>
+> > > @@ -143,6 +144,7 @@ void btf_get(struct btf *btf);
+> > >  void btf_put(struct btf *btf);
+> > >  const struct btf_header *btf_header(const struct btf *btf);
+> > >  int btf_new_fd(const union bpf_attr *attr, bpfptr_t uattr, u32 uattr=
+_sz);
+> > > +
+> >
+> > ?
+>
+> Thanks, removed.
+>
+> > >  struct btf *btf_get_by_fd(int fd);
+> > >  int btf_get_info_by_fd(const struct btf *btf,
+> > >                        const union bpf_attr *attr,
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index e7a59e6462a9..ad5310fa1d3b 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -7743,17 +7743,12 @@ int btf_new_fd(const union bpf_attr *attr, bp=
+fptr_t uattr, u32 uattr_size)
+> > >
+> > >  struct btf *btf_get_by_fd(int fd)
+> > >  {
+> > > -       struct btf *btf;
+> > >         CLASS(fd, f)(fd);
+> > > +       struct btf *btf;
+> >
+> > nit: no need to just move this around
+>
+> Ok, I can remove it. I moved it to form a reverse xmas tree,
+> as I was already editing this function.
 
-That new condition breaks my brain, but luckily I don't have to look
-at it often, so I don't care all that much. Feel free to leave it as
-is.
+we don't enforce the, or adjust to, reverse xmas tree styling, so please do=
+n't
 
 >
-> > > > >  out:
-> > > > >         if (obj.efile.elf) {
-> > > > >                 elf_end(obj.efile.elf);
-> > > > >
-> > > > > --
-> > > > > 2.47.1
-> > > > >
+> >
+> >
+> > >
+> > > -       if (fd_empty(f))
+> > > -               return ERR_PTR(-EBADF);
+> > > -
+> > > -       if (fd_file(f)->f_op !=3D &btf_fops)
+> > > -               return ERR_PTR(-EINVAL);
+> > > -
+> > > -       btf =3D fd_file(f)->private_data;
+> > > -       refcount_inc(&btf->refcnt);
+> > > +       btf =3D __btf_get_by_fd(f);
+> > > +       if (!IS_ERR(btf))
+> > > +               refcount_inc(&btf->refcnt);
+> > >
+> > >         return btf;
+> > >  }
+> > > --
+> > > 2.34.1
+> > >
+> > >
 
