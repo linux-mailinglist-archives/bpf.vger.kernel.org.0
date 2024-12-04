@@ -1,158 +1,224 @@
-Return-Path: <bpf+bounces-46042-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46043-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86A579E309E
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 02:02:07 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 199BC9E311A
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 03:06:50 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51E041615A2
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 01:02:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F9FDB25423
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 02:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93CC579D0;
-	Wed,  4 Dec 2024 01:01:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F791A296;
+	Wed,  4 Dec 2024 02:06:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="io0b02hF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EsYW2yYy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFAF933D1;
-	Wed,  4 Dec 2024 01:01:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AFFEEB5;
+	Wed,  4 Dec 2024 02:06:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733274119; cv=none; b=MIQL3pv6GaFQQ5s6lHEK4JoX8xeLoACNtrpJCPelcTJ3aIDwFUS7C/C5fAzf9GXj/w43rPauu/jSm5ZN23J/EPj3JBZbUp94gGxbHuusHN77zFZvPdOjo6sxmP4AuBbltaDyUOP4FAbhYjBs9rnFmPwmvbMiPhKkZZjxCumLfjg=
+	t=1733278000; cv=none; b=N21UosNnLJQDGYZRBTLop1tSlOgwvFHyeKJYeJuTUK36y95qeMylhkzAoPcPLxG6pIcNd9PIOa9xtk3rsxXQZ9CGlWnDhHdqSDDvMzn4wsMAfsFtz3X6m/h+SCxWfdO2IRW2NsYDUl15aJ0rdr3uMPjVfw0fTnVOj/eFaN8/8yk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733274119; c=relaxed/simple;
-	bh=Q/hE6vafS8AK9DXxlgN7oJoBBfn5dM/iZsb7tKqHl08=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oe2ePS9jwV3Jh9jMTgilqa2Tg61Sflg2kboSJOjta9rMDhn1mIE6wZgsJnb3P7yQAx2CwDZZoSloehhHSdfTbqAMeYhyDewMwDAEsEpZ2aqLtkvgyuV3OANM/PJ/ZW63E7rXHZ/FMk3ktihnb28T/s9sB2+SVfwJr2CFkW0b5yM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=io0b02hF; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1733278000; c=relaxed/simple;
+	bh=gD2jR3gXRirsqS/R6OmNKsgKA+ejRcqc/CQiI+0Vy5g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fIUpzXVLQx+gPchTSYFY/FyVkNuWHlmxnurB7p1Gku/8TTi1TRL50iSHpJb5q7nT9DxIzb8wrJAWs2tYJoqaisJCrTey+NNS0Gb2QsZGAa4u2GT/57cxSR4WKGAVV56Q33Qm7oneIlSfmHFtPvgeeHP+8XzcojgGdJK2e4GWytA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EsYW2yYy; arc=none smtp.client-ip=209.85.216.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2155157c58cso30727985ad.0;
-        Tue, 03 Dec 2024 17:01:57 -0800 (PST)
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2ee51c5f000so3470953a91.0;
+        Tue, 03 Dec 2024 18:06:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733274117; x=1733878917; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WwZUXExGPKhAMcqBJ8vWwXOyG5Enp2SY9gQFDpob96I=;
-        b=io0b02hF8bgk6xZnqZPnPQMPjxH8TpaHtONfV9rlqZJxrLJ9i/08DyaWJ29tD15BU6
-         eXANYKZIB42dkPOpA1RwZqJNQZNnk14mUk2SFQECMQQgLPVitXd9cr0Qaebz6jYA1CPW
-         2WA+EE8EskwrOrPEV655+Bq37P5rbKWKI0qQD1/tFU7qh7jFSq8ZYrs7yx1049azeVIV
-         e0xC5rYpxAET/vxgnHKtur/j9QXx5bQ6/fMZZ2OjEsqx3c/GWDgcPZ7HsQzA2NDRo+rW
-         mlecIDmqTSN1SBBqxmeeXvQTDkvEgpOMlKRgBZ2HXo2tKYw648WTBbLYc9NsHBXsbvF/
-         jxHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733274117; x=1733878917;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1733277998; x=1733882798; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WwZUXExGPKhAMcqBJ8vWwXOyG5Enp2SY9gQFDpob96I=;
-        b=LaWxHRx/yASyxPY8ihKBWn39ucQFm9ge866N7Pbb2hIG2UkE5flItY/qkEjqNND66C
-         QAe3L9HWQTKjm0cp7mtKZmY6skYspeFrDG5kKTYUgfiqQV8WDkWv0oHfaZT9QXmOm4AQ
-         o1lJnMk+XqYtqbyGyHidXLU71Gil/Ii2HB9QaKnsfjePCWM91mWJW0ycJRN4mdmFpYq+
-         Sft9pasumZMbdfsgo7tjRpqcXLK7Vbu/IUcuh1GNTr2RSVPZw/3DFxKum3UPb2m/qJVJ
-         KWzL0vI9umSSArR+YCuQ4dnB4VLRUk1DJ8OemHG7TXrxfJF2BqjqEHzJUxa0A9agi1Ly
-         gwfg==
-X-Forwarded-Encrypted: i=1; AJvYcCU59lKX97mZJHPuFuhLVm3moYDGtF8HJvqGcGXDofmpn3lkxkH5XFvjANCGe3yrR7KL3CI=@vger.kernel.org, AJvYcCVKRthlYPg4Tzr/5zLp92Iz4UP8Qbe62/TV1wmTgpkIFQI+QypUOijuPLMZu4tsbQzcT6bpmDGxzTFyxnkA@vger.kernel.org, AJvYcCW3l6lVWRRFH45NxD6gtiyQgL2vrsQSyQOhzqc3aydbEXH94MbRX8OyfDL8M0EXzelyba9HhOc+@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2mCGQrcKHiuPPuM+JOXBotKzfR5Mp7k8VShocD5IiVu0IHc8U
-	eh08R2Jp/LWIPD+IGZ7OPlRcVsDCwIAZw3Hcn/XqIVFHuoo5SG5z
-X-Gm-Gg: ASbGncsZD2t/HgIr24Eu26wQEPCE6LoeliHppovTsNcgwrRrxHyEeLRnAQbqEfsZ+WN
-	Qj4Gl0DDYLxnMlHABvm+AMoMF1J/mrwH0WpzBwHVt1Bf/HRLZM3KxVueDgoMQNkxSANOR//e46W
-	DnV2Hx4wr/cxpT+Q2CRp7fsn8W27eH/ES+mrgmPiRX1E3iEHu/3tBogXsO8PgEUwF6DKNyZj/7c
-	IZ1hUVv4cNTkj/et309M6fGEJ3rl+hPafFQXBexDSozVYUaCWjZt4B8
-X-Google-Smtp-Source: AGHT+IG8NXj6SK5e+9gYKjJFpUbhvuBG5Y8EpnYjjYRQzPOKD43zqUoo13ElslwuS4fLvattED1nDQ==
-X-Received: by 2002:a17:902:e846:b0:215:ba2b:cd51 with SMTP id d9443c01a7336-215bd0d71e4mr52971975ad.15.1733274116866;
-        Tue, 03 Dec 2024 17:01:56 -0800 (PST)
-Received: from localhost ([2601:647:6881:9060:32d6:f9ea:3b48:6054])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2157597c2f6sm53000185ad.204.2024.12.03.17.01.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Dec 2024 17:01:56 -0800 (PST)
-Date: Tue, 3 Dec 2024 17:01:55 -0800
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Levi Zim <rsworktech@outlook.com>
-Cc: John Fastabend <john.fastabend@gmail.com>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, David Ahern <dsahern@kernel.org>,
-	netdev@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 0/2] Fix NPE discovered by running bpf kselftest
-Message-ID: <Z0+qA4Lym/TWOoSh@pop-os.localdomain>
-References: <20241130-tcp-bpf-sendmsg-v1-0-bae583d014f3@outlook.com>
- <MEYP282MB23129373641D74DE831E07E9C6342@MEYP282MB2312.AUSP282.PROD.OUTLOOK.COM>
+        bh=rNCW5mumtIow08xaMZzjbFZ1Q4xmmpxfquO0jRDWfzQ=;
+        b=EsYW2yYyJzrvZF9NM8Capt1aTbBsHxzyVjrCXEHVrH3wARGPwVijlSpgg3DMSR8vHk
+         1IazqgHWCZxo13xO8hbIo7ic3WAEGaDYdG7hiY/HSoFUl0pFmEj4ITOCtE61K2BF0iMw
+         KVFkc4TqRSQ6DyJuNGJeBoRi1KIh+UupTZYBB/4VhSn+wtkjnKV2N1XCNwIA7B7lL0ct
+         1hO/GraqsySnxVD2mT42md8Qywl521izk8w6kBzHJu3hfQs3K/1QWqPOKaoJCy1gDWt1
+         6G+BsPTkIOmahj5PwgWcWFpIRMhSh2EKzOtcBj41WzUljYbgQ0W1LZsyKndzbrJauIN5
+         wCWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733277998; x=1733882798;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rNCW5mumtIow08xaMZzjbFZ1Q4xmmpxfquO0jRDWfzQ=;
+        b=Umn4CI7xK8ElTkRIc9I24a3oUI5m13PFDecUL0G82auAAQSM3RRVHEIsX9FbqKaTLQ
+         Rmgtgrbac5h5y0GKmia0qZSFVM8voGf2hbIzX0AOyLUaelofBD9pUDK/+W5To7dn17DU
+         skuPfZY9eSIlhjlq+D54qprg9KZeaMTyxphFUKsuJIps/WE0Lb/Qr4ZNo6swhR79EC5g
+         JBVyB9xrQP7RoPWf8eLzpIDEaMARNxvoXIqNiT8wORWmDJakRjEf0QGaECkVkyMAGrPp
+         HDNZoGTfaf8+AyI2QtrZOvSsiJ5sdEIe1JKO/twkbe6UrM3TPEAH7p+0Ib3Lgi1USjlT
+         1FBA==
+X-Forwarded-Encrypted: i=1; AJvYcCVe8iXLFtEJK7g92h1SCOPHANYUF87MHpq3joqyMSk9aKAYbUx9exF9ewhm/+d9ImOHY01am1jO5Qp7knF0@vger.kernel.org, AJvYcCWTqBnxmG4JprjfKq/P1WDcesn6is+O4SD++rxBHwHV5+NSYbGXP+EkE6+yH0fxWNjCSfjOeWTx1EcRI0Tr@vger.kernel.org, AJvYcCWYV3q0q4lDzKgapFBbQfdDRR0j3GHOwc+boxx0XS9KXPb1HoHB36R1Vo4IZeXryTEvSRg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqDREwQZP+dna/97Sdo0tL2rmmNNu+zJGV29f366XXVD9dCTsH
+	J44Kxa+J7MiCicABEHrP7JtybeGxQVnvFEzm5xx2lHhYWKQstzWJrZYEJiMpxIr0ny3GJo1MUNZ
+	jXmLxRAGuF210PDBQE6qYQZslGBg=
+X-Gm-Gg: ASbGncvQwUdhNIXF0n6xA3DpQIf3R7mqjOxmNHoUah/GkUEGRou+i7HJMqPdkG2yyJe
+	5mgK70+iA7Pol0BLimfpXT2GgM3V0yP5ay6Bu3HpHLEjSn7Q=
+X-Google-Smtp-Source: AGHT+IH2RY4OtNaizvVDGMW2S6a5vJRlmNNDi0za4gLjjCEup5LAwkD/Uszkr76IGY9+R8uVdlGu5VDpGwem4ZkrUvQ=
+X-Received: by 2002:a17:90a:fc4b:b0:2ee:e961:3052 with SMTP id
+ 98e67ed59e1d1-2ef1ce834e4mr3668779a91.14.1733277998018; Tue, 03 Dec 2024
+ 18:06:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MEYP282MB23129373641D74DE831E07E9C6342@MEYP282MB2312.AUSP282.PROD.OUTLOOK.COM>
+References: <20241126-resolve_btfids-v2-0-288c37cb89ee@weissschuh.net>
+ <20241126-resolve_btfids-v2-1-288c37cb89ee@weissschuh.net>
+ <CAEf4BzahMQWVH0Gaub-tWjH9GweG8Kt7OBU-f+PBhmmRDCKfrA@mail.gmail.com> <9a11cf2f-ddca-4a50-817f-74183d31dcaf@t-8ch.de>
+In-Reply-To: <9a11cf2f-ddca-4a50-817f-74183d31dcaf@t-8ch.de>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 3 Dec 2024 18:06:26 -0800
+Message-ID: <CAEf4BzZqeo00C5a9QO6Ah3i-doWRbg7v_2y=y9Kfg3=JyrA=zQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] tools/resolve_btfids: Add --fatal-warnings option
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Dec 01, 2024 at 09:42:08AM +0800, Levi Zim wrote:
-> On 2024-11-30 21:38, Levi Zim via B4 Relay wrote:
-> > I found that bpf kselftest sockhash::test_txmsg_cork_hangs in
-> > test_sockmap.c triggers a kernel NULL pointer dereference:
+On Tue, Dec 3, 2024 at 3:09=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weisssc=
+huh.net> wrote:
+>
+> On 2024-12-03 14:31:01-0800, Andrii Nakryiko wrote:
+> > On Tue, Nov 26, 2024 at 1:17=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@we=
+issschuh.net> wrote:
+> > >
+> > > Currently warnings emitted by resolve_btfids are buried in the build =
+log
+> > > and are slipping into mainline frequently.
+> > > Add an option to elevate warnings to hard errors so the CI bots can
+> > > catch any new warnings.
+> > >
+> > > Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+> > > Acked-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/bpf/resolve_btfids/main.c | 12 ++++++++++--
+> > >  1 file changed, 10 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfi=
+ds/main.c
+> > > index bd9f960bce3d5b74dc34159b35af1e0b33524d2d..571d29d2da97fea75e5f9=
+c544a95b9ac65f9e579 100644
+> > > --- a/tools/bpf/resolve_btfids/main.c
+> > > +++ b/tools/bpf/resolve_btfids/main.c
+> > > @@ -141,6 +141,7 @@ struct object {
+> > >  };
+> > >
+> > >  static int verbose;
+> > > +static int warnings;
+> > >
+> > >  static int eprintf(int level, int var, const char *fmt, ...)
+> > >  {
+> > > @@ -604,6 +605,7 @@ static int symbols_resolve(struct object *obj)
+> > >                         if (id->id) {
+> > >                                 pr_info("WARN: multiple IDs found for=
+ '%s': %d, %d - using %d\n",
+> > >                                         str, id->id, type_id, id->id)=
+;
+> > > +                               warnings++;
+> > >                         } else {
+> > >                                 id->id =3D type_id;
+> > >                                 (*nr)--;
+> > > @@ -625,8 +627,10 @@ static int id_patch(struct object *obj, struct b=
+tf_id *id)
+> > >         int i;
+> > >
+> > >         /* For set, set8, id->id may be 0 */
+> > > -       if (!id->id && !id->is_set && !id->is_set8)
+> > > +       if (!id->id && !id->is_set && !id->is_set8) {
+> > >                 pr_err("WARN: resolve_btfids: unresolved symbol %s\n"=
+, id->name);
+> > > +               warnings++;
+> > > +       }
+> > >
+> > >         for (i =3D 0; i < id->addr_cnt; i++) {
+> > >                 unsigned long addr =3D id->addr[i];
+> > > @@ -782,6 +786,7 @@ int main(int argc, const char **argv)
+> > >                 .funcs    =3D RB_ROOT,
+> > >                 .sets     =3D RB_ROOT,
+> > >         };
+> > > +       bool fatal_warnings =3D false;
+> > >         struct option btfid_options[] =3D {
+> > >                 OPT_INCR('v', "verbose", &verbose,
+> > >                          "be more verbose (show errors, etc)"),
+> > > @@ -789,6 +794,8 @@ int main(int argc, const char **argv)
+> > >                            "BTF data"),
+> > >                 OPT_STRING('b', "btf_base", &obj.base_btf_path, "file=
+",
+> > >                            "path of file providing base BTF"),
+> > > +               OPT_BOOLEAN(0, "fatal-warnings", &fatal_warnings,
+> > > +                           "turn warnings into errors"),
+> >
+> > We are mixing naming styles here: we have "btf_base" with underscore
+> > separator, and you are adding "fatal-warnings" with dash separator. I
+> > personally like dashes, but whichever way we should stay consistent.
+> > So let's fix it, otherwise it looks a bit sloppy.
+>
+> Ack.
+>
+> >
+> > Please also use [PATCH bpf-next v3] subject prefix to make it explicit
+> > that this should go through bpf-next tree.
+>
+> Ack.
+>
+> >
+> > pw-bot: cr
+> >
+> > >                 OPT_END()
+> > >         };
+> > >         int err =3D -1;
+> > > @@ -823,7 +830,8 @@ int main(int argc, const char **argv)
+> > >         if (symbols_patch(&obj))
+> > >                 goto out;
+> > >
+> > > -       err =3D 0;
+> > > +       if (!(fatal_warnings && warnings))
+> > > +               err =3D 0;
+> >
+> > nit: just
+> >
+> > if (!fatal_warnings)
+> >     err =3D 0;
+> >
+> > ?
+>
+> This seems wrong. Now the actual warning counter is never evaluated.
+> And --fatal_warnings will always lead to an error exit code.
 
-Interesting, I also ran this test recently and I didn't see such a
-crash.
+Ah, I missed that you are using default -1 value here. I wonder if we
+should make it a bit more explicit?
 
-> > 
-> > BUG: kernel NULL pointer dereference, address: 0000000000000008
-> >   ? __die_body+0x6e/0xb0
-> >   ? __die+0x8b/0xa0
-> >   ? page_fault_oops+0x358/0x3c0
-> >   ? local_clock+0x19/0x30
-> >   ? lock_release+0x11b/0x440
-> >   ? kernelmode_fixup_or_oops+0x54/0x60
-> >   ? __bad_area_nosemaphore+0x4f/0x210
-> >   ? mmap_read_unlock+0x13/0x30
-> >   ? bad_area_nosemaphore+0x16/0x20
-> >   ? do_user_addr_fault+0x6fd/0x740
-> >   ? prb_read_valid+0x1d/0x30
-> >   ? exc_page_fault+0x55/0xd0
-> >   ? asm_exc_page_fault+0x2b/0x30
-> >   ? splice_to_socket+0x52e/0x630
-> >   ? shmem_file_splice_read+0x2b1/0x310
-> >   direct_splice_actor+0x47/0x70
-> >   splice_direct_to_actor+0x133/0x300
-> >   ? do_splice_direct+0x90/0x90
-> >   do_splice_direct+0x64/0x90
-> >   ? __ia32_sys_tee+0x30/0x30
-> >   do_sendfile+0x214/0x300
-> >   __se_sys_sendfile64+0x8e/0xb0
-> >   __x64_sys_sendfile64+0x25/0x30
-> >   x64_sys_call+0xb82/0x2840
-> >   do_syscall_64+0x75/0x110
-> >   entry_SYSCALL_64_after_hwframe+0x4b/0x53
-> > 
-> > This is caused by tcp_bpf_sendmsg() returning a larger value(12289) than
-> > size(8192), which causes the while loop in splice_to_socket() to release
-> > an uninitialized pipe buf.
-> > 
-> > The underlying cause is that this code assumes sk_msg_memcopy_from_iter()
-> > will copy all bytes upon success but it actually might only copy part of
-> > it.
-> I am not sure what Fixes tag I should put. Git blame leads me to a refactor
-> commit
-> and I am not familiar with this part of code base. Any suggestions?
+if (fatal_warnings)
+    err =3D warnings ? -1 : 0;
+else
+    err =3D 0;
 
-I think it is the following commit which introduced memcopy_from_iter()
-(which was renamed to sk_msg_memcopy_from_iter() later):
+Something like that?
 
-commit 4f738adba30a7cfc006f605707e7aee847ffefa0
-Author: John Fastabend <john.fastabend@gmail.com>
-Date:   Sun Mar 18 12:57:10 2018 -0700
-
-    bpf: create tcp_bpf_ulp allowing BPF to monitor socket TX/RX data
-
-Please double check.
-
-Thanks.
+>
+> > >  out:
+> > >         if (obj.efile.elf) {
+> > >                 elf_end(obj.efile.elf);
+> > >
+> > > --
+> > > 2.47.1
+> > >
 
