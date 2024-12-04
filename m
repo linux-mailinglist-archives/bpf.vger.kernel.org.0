@@ -1,104 +1,85 @@
-Return-Path: <bpf+bounces-46067-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46066-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80BDC9E3834
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 12:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 15A319E37F7
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 11:54:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 732E3B2A9D9
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 10:49:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E13CB268BB
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 10:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C991B0F04;
-	Wed,  4 Dec 2024 10:49:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 072341AB507;
+	Wed,  4 Dec 2024 10:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QlBqhEPm"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="FzeEJGNr"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E7E187555
-	for <bpf@vger.kernel.org>; Wed,  4 Dec 2024 10:49:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6CB63D
+	for <bpf@vger.kernel.org>; Wed,  4 Dec 2024 10:47:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733309353; cv=none; b=J1Wv8M9CodK/1uyuwkVTQI5T4S/KZmCnKB4MsXtk01RfJvthk972jb7VI+ZVakU/c4vjxohrQPljx/um0vF75haR9LHJc2gTRWVogLbXRBEqNhJMGlFIyXrdzNQgeNDObTaBw1xbiPNX6M71q7bl6hyaRVTFizFTb0YuNVI2u/w=
+	t=1733309263; cv=none; b=NnP60x7KMCs1GsYu+oj1Gk8gO7gd9LOPGHnewD/ehXjdsWFDEx7BSaXlQxH1FEj2Y/kZ2JqMDgf9oluWFOvTr+tq5prxtOJnjYh3wsNxgxrEWVZvr75lANUduxOFGV3E5FR8WAqhMIh/YinGtIrv3AqX+CcEskC+xoUWhvFIuIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733309353; c=relaxed/simple;
-	bh=bGyB4438J81jRH4x6gWKO6BpBH8blrXI02fUkyoMcgo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=E/zW5YLKORmQIQDKeYy1wbUwi3IkSEPjwMask4tLR9BuAx35Ww6z1CmxhjN64ko90UZ3BBlVFmUPYxHUAcw7gTstq9Dm7ZOZgFoRpmr2N9Btl1QZFksFehQFdhvwXdkihhSTsSLxRtm57Nhp07rY3ICqdhLzKOMWMU8mUH4aebU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QlBqhEPm; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1733309350;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gTz3waxgahN3oOX83LVGcoQz1BmDfZdx8p5FTeZL4LM=;
-	b=QlBqhEPm0NUTb3yckpTh8NGoPILe9/EHp7w+EavenDMF6sElumwUSso6EMTJxqliq59ug4
-	YZmWkxqrsyzRfBb3nvTO5JRjwC5PbUvF1EH/+VKGfJppdDUr8NqC9M20S42guOQ0Q+eSOb
-	LrkfRezmv4LdlAV0CtJ+BuH9VzBMea8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-556-Nm9ADa1qNFatIVVXEcF6yw-1; Wed, 04 Dec 2024 05:49:09 -0500
-X-MC-Unique: Nm9ADa1qNFatIVVXEcF6yw-1
-X-Mimecast-MFC-AGG-ID: Nm9ADa1qNFatIVVXEcF6yw
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-385d52591d6so336491f8f.1
-        for <bpf@vger.kernel.org>; Wed, 04 Dec 2024 02:49:09 -0800 (PST)
+	s=arc-20240116; t=1733309263; c=relaxed/simple;
+	bh=rMSvgsSUsz8czV6T6l8LpiBwRyphmI6ZNZt5Kgxx0N0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qrjo2uVLQj/h7sqSDZHy97mszReceyGPE7+M+3up5qDE5A8cVHT1sjdPHviKW0ZkiztgPOf1cBjqC7GXVtIjzrhRA8+XMl1VDxOyX2wZAdQMvpZSCWtxS/Crj/cM+p4hH3jqgHSCFfWrzB+kJwjjE5HwU477AB3XhfgalEGV1AA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=FzeEJGNr; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-434a14d6bf4so59872865e9.1
+        for <bpf@vger.kernel.org>; Wed, 04 Dec 2024 02:47:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1733309260; x=1733914060; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=diZPYTprocSq4BVat0JzeqSWsTejuM3edUNZvLixG94=;
+        b=FzeEJGNrY3b7DZ6Sf+uGgs53qPtTko3zR1yvylGK4blEXCh7Kw+0AjenzckCi37JV+
+         x1HMo1+Y7JBxcW745LWkfv49Mg85aoc8gVYCyDIUwcpqrU1vkM+QZYcsBNxcqaRWB+V2
+         cXBmE0LmCo50RjgjqGbr1D0B/kRY4Zla93XyCJSYmrcj3wMKmoZ66SFNBgz+U0kyrbmc
+         N5cKNO7pZAG0P+/RYx2ELhPLNCPz+1tMr9KlIoHBOXmrba8CFb8W7vzHHfRgNltTSDck
+         SGwvq2ZMqRHXOx8NpViWNYpiBRCwBVX89iMv2ERppQ2vM5qUwEFqu+fPpq4buoPPo1yZ
+         T6IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733309348; x=1733914148;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gTz3waxgahN3oOX83LVGcoQz1BmDfZdx8p5FTeZL4LM=;
-        b=Lw6l1fb8l54kifU481dkDJ+knFTTerlwD3BulUBDbZI1VZR0CvjRL9uJPflL82sUw6
-         lnl9xMxMHm+CAg71vr37zhn3n8LoFdDAlU/jMgdwydVK5nqvAkqwR28+0MzXA35Ue6mW
-         rxM3bEbjJPpehZveOqsp2alDL79Dp/XIP8lbA0UzuaynNVOn14/Suar++/YiJsjbOJhN
-         1OWgBrcPQsT+gPO2o31hZNj00tZcZFjCwaLP/A38h59/Q1gUb77yAIgXHOLnJVICn0Dp
-         A0YH+5NmWVCifXEo+5yb7lZ0HH12zu1e4xQveYVr1LQ0l9eHfi6ifBFgDGU7zCN9bp8U
-         96bw==
-X-Forwarded-Encrypted: i=1; AJvYcCXEqK9ItF2VAMgG+W3lDjdPl95huldMO5TWijCTZmEAbdSqHaEwAj/dYHk5gPecdMbLcr0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzUk4sx68rAE7VCBMEULpj/o10DbJPg6vRxvTU6Pfgc7To+k1/u
-	tDySDCXx8UBjpwjLNLnOzxI99QMz4VMRGBem/s/CoHhbkMQqo+PHz6aGJbLV8MNrMIqZvr/TDLg
-	CRYrY/ih5ZEMKsm+xrjeQD7v6tmCaBHOOhjqqbeoyszNg7glSwQ==
-X-Gm-Gg: ASbGncs7xoQ7ceyfy9xk5b2TETZgNqZ0j3dY2ysMcA8EFdv5gXUzNKdkqrqq5tAo6I7
-	WwtnzT9hUx64htQ+sQs/nIKGsdYLv3pe6i9fiQbVCKFSiF8O+FPBa1QAnh7X3V4KxPIniJOZbp6
-	gMhESmji5uuBBvkoRTHJKSpLPZe9cDwsMhW46/+5IXIRUcK8xfhVRUsomgVSaetJRF6WqRwWhUS
-	hjfMo5AYKSxegFxxPaqClHyHMCUm5j4mZADB2vEiECCpKI=
-X-Received: by 2002:a05:6000:401f:b0:385:ef14:3b55 with SMTP id ffacd0b85a97d-385fd9abb87mr4384226f8f.19.1733309348365;
-        Wed, 04 Dec 2024 02:49:08 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHcEgMypYhXM56G/nD3wm0gwci3A8/obXgJv7EiRTyM21DWn6RxvvWTZKFaMDEAHFySbGhZ5A==
-X-Received: by 2002:a05:6000:401f:b0:385:ef14:3b55 with SMTP id ffacd0b85a97d-385fd9abb87mr4384198f8f.19.1733309348033;
-        Wed, 04 Dec 2024 02:49:08 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-385ccd36b80sm17799002f8f.29.2024.12.04.02.49.07
+        d=1e100.net; s=20230601; t=1733309260; x=1733914060;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=diZPYTprocSq4BVat0JzeqSWsTejuM3edUNZvLixG94=;
+        b=quFNq4KZKpeB8BjU/i1keUis1ZB4Ib1couT+EtIomsJvvK1AJ7z1o+Nc6r+JZ7ibrv
+         rfAI/g9ZdQxVMJoGpq+m6Y2rlAT5A7D6wPFtk3Kfe2DzpOj6pkmAS/L3RuWFI3Nchqm2
+         OugeFwFpealN/VwZstfUoEv4/72C+O3t4zA4kRz0lP3Y1akI8ExMtw06gjECxoAhI6y4
+         JZLelCTqQkkHARpznS5uC4rQHwPcFMxMQpSaa+tGGY9Ti3i/qxG1oQpEjb+O/auJbAGc
+         AGz1AQCVlROk1vk6AR3n8/7ZCZTaLlQutU6XymJ59mpqRMDwlmrfNGDNHjRPOVVRxOMJ
+         aA/g==
+X-Gm-Message-State: AOJu0Yzy/DenUL3/Iyl4cfs+uvC9vfV0htSoR5p9nxfHPF1cMiP0WYyN
+	RTHnWnWJtXvrrVHn+xCR5G5KhSzx+u/k4qNcFSTWA65U8PvcJJjKr5Kp7Dk98mK06L+1OC+l2ET
+	Q
+X-Gm-Gg: ASbGnctTi+37sf/m2yMxYEtRBjjrA3mGXaunUj+icqbH2d/2t9KlcSwnAX+K4IiOHG7
+	F36aNR8lYiydrJVA2RBJiWekjlG/6yQgvj/ye2oPqvZmGqsca5dGfawvnbXaVIZaQepCsHluVtP
+	H4L/QXbB3DK1DzGB68zLQ+R06fyP3TpyRDIxV6j1G8FeXU51QDZZ8h6Y4yYI3w9AMZpviT16/RI
+	2u2829jRBmVTvhtBga8Ot7TCnSkglCy/nh04GM=
+X-Google-Smtp-Source: AGHT+IHflaJ1KNNcIwGv1Swm818E6HOBJzZQDWq9Iz4BP+bx90+sixju7urFNbsQEjIaMCXlMephtg==
+X-Received: by 2002:a05:600c:4ecf:b0:426:647b:1bfc with SMTP id 5b1f17b1804b1-434d0a14eb7mr59474215e9.30.1733309259979;
+        Wed, 04 Dec 2024 02:47:39 -0800 (PST)
+Received: from eis ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434d5288264sm19818605e9.19.2024.12.04.02.47.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Dec 2024 02:49:07 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 8C43016BD10C; Wed, 04 Dec 2024 11:49:06 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>, Stanislav Fomichev <sdf@fomichev.me>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- nex.sw.ncis.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v6 07/10] netmem: add a couple of page helper
- wrappers
-In-Reply-To: <20241203173733.3181246-8-aleksander.lobakin@intel.com>
-References: <20241203173733.3181246-1-aleksander.lobakin@intel.com>
- <20241203173733.3181246-8-aleksander.lobakin@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 04 Dec 2024 11:49:06 +0100
-Message-ID: <87ttbjafkt.fsf@toke.dk>
+        Wed, 04 Dec 2024 02:47:39 -0800 (PST)
+Date: Wed, 4 Dec 2024 10:49:53 +0000
+From: Anton Protopopov <aspsk@isovalent.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH v4 bpf-next 6/7] bpf: fix potential error return
+Message-ID: <Z1Az0SDbjnGDO+mB@eis>
+References: <20241203135052.3380721-1-aspsk@isovalent.com>
+ <20241203135052.3380721-7-aspsk@isovalent.com>
+ <CAEf4BzZmNK6FXj9aUnqUj3fVYyp=ne2X3uodZHnarrP_CbJMKw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -106,34 +87,60 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZmNK6FXj9aUnqUj3fVYyp=ne2X3uodZHnarrP_CbJMKw@mail.gmail.com>
 
-Alexander Lobakin <aleksander.lobakin@intel.com> writes:
+On 24/12/03 01:26PM, Andrii Nakryiko wrote:
+> On Tue, Dec 3, 2024 at 5:49 AM Anton Protopopov <aspsk@isovalent.com> wrote:
+> >
+> > The bpf_remove_insns() function returns WARN_ON_ONCE(error), where
+> > error is a result of bpf_adj_branches(), and thus should be always 0
+> > However, if for any reason it is not 0, then it will be converted to
+> > boolean by WARN_ON_ONCE and returned to user space as 1, not an actual
+> > error value. Fix this by returning the original err after the WARN check.
+> >
+> > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> > Acked-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/bpf/core.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> 
+> Looks irrelevant to the patch set and probably should go through the
+> bpf tree? I'll leave it up to Alexei to decide, though.
 
-> Add the following netmem counterparts:
->
-> * virt_to_netmem() -- simple page_to_netmem(virt_to_page()) wrapper;
-> * netmem_is_pfmemalloc() -- page_is_pfmemalloc() for page-backed
-> 			    netmems, false otherwise;
->
-> and the following "unsafe" versions:
->
-> * __netmem_to_page()
-> * __netmem_get_pp()
-> * __netmem_address()
->
-> They do the same as their non-underscored buddies, but assume the netmem
-> is always page-backed. When working with header &page_pools, you don't
-> need to check whether netmem belongs to the host memory and you can
-> never get NULL instead of &page. Checks for the LSB, clearing the LSB,
-> branches take cycles and increase object code size, sometimes
-> significantly. When you're sure your PP is always host, you can avoid
-> this by using the underscored counterparts.
->
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+Sure, I can send it separately, if needed.
 
-Makes sense to have these as helpers, spelling out the constraints
-
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> 
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index a2327c4fdc8b..8b9711e6da6c 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -539,6 +539,8 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
+> >
+> >  int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
+> >  {
+> > +       int err;
+> > +
+> >         /* Branch offsets can't overflow when program is shrinking, no need
+> >          * to call bpf_adj_branches(..., true) here
+> >          */
+> > @@ -546,7 +548,9 @@ int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
+> >                 sizeof(struct bpf_insn) * (prog->len - off - cnt));
+> >         prog->len -= cnt;
+> >
+> > -       return WARN_ON_ONCE(bpf_adj_branches(prog, off, off + cnt, off, false));
+> > +       err = bpf_adj_branches(prog, off, off + cnt, off, false);
+> > +       WARN_ON_ONCE(err);
+> > +       return err;
+> >  }
+> >
+> >  static void bpf_prog_kallsyms_del_subprogs(struct bpf_prog *fp)
+> > --
+> > 2.34.1
+> >
+> >
 
