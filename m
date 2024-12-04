@@ -1,224 +1,133 @@
-Return-Path: <bpf+bounces-46043-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46044-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 199BC9E311A
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 03:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC7B29E3183
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 03:42:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F9FDB25423
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 02:06:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7569EB2640D
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 02:42:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F791A296;
-	Wed,  4 Dec 2024 02:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 580F744C94;
+	Wed,  4 Dec 2024 02:42:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EsYW2yYy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PrSEiR30"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AFFEEB5;
-	Wed,  4 Dec 2024 02:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F7127715
+	for <bpf@vger.kernel.org>; Wed,  4 Dec 2024 02:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733278000; cv=none; b=N21UosNnLJQDGYZRBTLop1tSlOgwvFHyeKJYeJuTUK36y95qeMylhkzAoPcPLxG6pIcNd9PIOa9xtk3rsxXQZ9CGlWnDhHdqSDDvMzn4wsMAfsFtz3X6m/h+SCxWfdO2IRW2NsYDUl15aJ0rdr3uMPjVfw0fTnVOj/eFaN8/8yk=
+	t=1733280119; cv=none; b=Thu3D05Pic2xZeVeV6yozXozA37Fv6gEsY92G1DnsXFXKfxRnxI1DPOkpQSIugHqTjtMmOyDIVyAkMYQOyzJLB4ylYnBWarIBBTCyQlvCix3yZZR+l8OGXT4Z/0kBd8zWVA9a+DyCanphZzQmq4U92IzeU8RFGp1iFTE3WrcFNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733278000; c=relaxed/simple;
-	bh=gD2jR3gXRirsqS/R6OmNKsgKA+ejRcqc/CQiI+0Vy5g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fIUpzXVLQx+gPchTSYFY/FyVkNuWHlmxnurB7p1Gku/8TTi1TRL50iSHpJb5q7nT9DxIzb8wrJAWs2tYJoqaisJCrTey+NNS0Gb2QsZGAa4u2GT/57cxSR4WKGAVV56Q33Qm7oneIlSfmHFtPvgeeHP+8XzcojgGdJK2e4GWytA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EsYW2yYy; arc=none smtp.client-ip=209.85.216.42
+	s=arc-20240116; t=1733280119; c=relaxed/simple;
+	bh=ULoSHOerlTsGTXmZbN4tEM6h3CTPv6KPWo+ak7IXo8U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tq2pdhO8GGq9CqTQYoLI8+ZzRlh+98dkl+b3F9SzhL7rLsgMwK6T6osBEjeqhMkOKkjroRRqN2HsbReDRs0WZ/+iPHrZG3w4H2omXKh3X06pZLedS/q3DXMOJQAaVniwPBW25w+GT2g1c/OpIvmkeeopys1mI06iRM2ALS9bii8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PrSEiR30; arc=none smtp.client-ip=209.85.221.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2ee51c5f000so3470953a91.0;
-        Tue, 03 Dec 2024 18:06:38 -0800 (PST)
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-385e35912f1so3052212f8f.3
+        for <bpf@vger.kernel.org>; Tue, 03 Dec 2024 18:41:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733277998; x=1733882798; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rNCW5mumtIow08xaMZzjbFZ1Q4xmmpxfquO0jRDWfzQ=;
-        b=EsYW2yYyJzrvZF9NM8Capt1aTbBsHxzyVjrCXEHVrH3wARGPwVijlSpgg3DMSR8vHk
-         1IazqgHWCZxo13xO8hbIo7ic3WAEGaDYdG7hiY/HSoFUl0pFmEj4ITOCtE61K2BF0iMw
-         KVFkc4TqRSQ6DyJuNGJeBoRi1KIh+UupTZYBB/4VhSn+wtkjnKV2N1XCNwIA7B7lL0ct
-         1hO/GraqsySnxVD2mT42md8Qywl521izk8w6kBzHJu3hfQs3K/1QWqPOKaoJCy1gDWt1
-         6G+BsPTkIOmahj5PwgWcWFpIRMhSh2EKzOtcBj41WzUljYbgQ0W1LZsyKndzbrJauIN5
-         wCWg==
+        d=gmail.com; s=20230601; t=1733280116; x=1733884916; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=r34zyuCvbxBXjY42mabehAudome2dXk+3nLxXretxsM=;
+        b=PrSEiR307l4D2ETPf3Dl3I3Z/xoqUSH6W2KTs/TAK+lPV2YUgHl2sImw7Bx3Hydt8B
+         vWXlQ3k4w6cg7s8ley1nwOYEudRt+MKZ6TBOq8kEiC+BVsSiTo3QFjbvjWXCWWefAIrG
+         QhHhB6OEjWTbCvwxy11iC38P4sWw42aW409ptc7uT55ePa0R8gT6XPln728PcfnV+08g
+         xv7eIzf+ywHtuWqhSBSOhjwL92JDKqvFmFktXSPc0vhO6SKuL/COdVm2w0xb/rYuifKr
+         WAXW2yLyfqo5vO0TEENDcdw4JCt0acS0LUoU+GLaH8zLBMcgZzHSIoL3Q0/5FrKgPYxX
+         effw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733277998; x=1733882798;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rNCW5mumtIow08xaMZzjbFZ1Q4xmmpxfquO0jRDWfzQ=;
-        b=Umn4CI7xK8ElTkRIc9I24a3oUI5m13PFDecUL0G82auAAQSM3RRVHEIsX9FbqKaTLQ
-         Rmgtgrbac5h5y0GKmia0qZSFVM8voGf2hbIzX0AOyLUaelofBD9pUDK/+W5To7dn17DU
-         skuPfZY9eSIlhjlq+D54qprg9KZeaMTyxphFUKsuJIps/WE0Lb/Qr4ZNo6swhR79EC5g
-         JBVyB9xrQP7RoPWf8eLzpIDEaMARNxvoXIqNiT8wORWmDJakRjEf0QGaECkVkyMAGrPp
-         HDNZoGTfaf8+AyI2QtrZOvSsiJ5sdEIe1JKO/twkbe6UrM3TPEAH7p+0Ib3Lgi1USjlT
-         1FBA==
-X-Forwarded-Encrypted: i=1; AJvYcCVe8iXLFtEJK7g92h1SCOPHANYUF87MHpq3joqyMSk9aKAYbUx9exF9ewhm/+d9ImOHY01am1jO5Qp7knF0@vger.kernel.org, AJvYcCWTqBnxmG4JprjfKq/P1WDcesn6is+O4SD++rxBHwHV5+NSYbGXP+EkE6+yH0fxWNjCSfjOeWTx1EcRI0Tr@vger.kernel.org, AJvYcCWYV3q0q4lDzKgapFBbQfdDRR0j3GHOwc+boxx0XS9KXPb1HoHB36R1Vo4IZeXryTEvSRg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyqDREwQZP+dna/97Sdo0tL2rmmNNu+zJGV29f366XXVD9dCTsH
-	J44Kxa+J7MiCicABEHrP7JtybeGxQVnvFEzm5xx2lHhYWKQstzWJrZYEJiMpxIr0ny3GJo1MUNZ
-	jXmLxRAGuF210PDBQE6qYQZslGBg=
-X-Gm-Gg: ASbGncvQwUdhNIXF0n6xA3DpQIf3R7mqjOxmNHoUah/GkUEGRou+i7HJMqPdkG2yyJe
-	5mgK70+iA7Pol0BLimfpXT2GgM3V0yP5ay6Bu3HpHLEjSn7Q=
-X-Google-Smtp-Source: AGHT+IH2RY4OtNaizvVDGMW2S6a5vJRlmNNDi0za4gLjjCEup5LAwkD/Uszkr76IGY9+R8uVdlGu5VDpGwem4ZkrUvQ=
-X-Received: by 2002:a17:90a:fc4b:b0:2ee:e961:3052 with SMTP id
- 98e67ed59e1d1-2ef1ce834e4mr3668779a91.14.1733277998018; Tue, 03 Dec 2024
- 18:06:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1733280116; x=1733884916;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=r34zyuCvbxBXjY42mabehAudome2dXk+3nLxXretxsM=;
+        b=blBTrPMTlM5dUX4BmBYEHSWzl2cldp2ZWQmWB6bezYOpw7GFQrQ2Rn6yjFkO7d1SLO
+         C9IXwO/BEVilw7+l4YhVYpu9yyLZyTCEolYZ+smDg4Ktd63bNChAtz/y7HpVBIGHevNA
+         7I4EYS+/NRSlLoJ0pUiUy6m5h+5VUruUoxzoUkFTldVWIrZodZMFUWS28iV774ux2qIX
+         Cd9NytzgI5iJr/Sp7yZ4HQrFSDDtLY2FMEaU2aM4SfcA31R89kNNyhumEwTa1OYbsTA4
+         Zl0TBng0i/ZDWZenMhxBN70zrFCGdCoMg08GS7D1MQRxhOiBLj5g9/+Shub/u/kYsVsP
+         RIjA==
+X-Gm-Message-State: AOJu0YxvsN8ZvCP6VIR9ckYte+CwxfGtD7IEyUN12pbDy5Oxwc/V7nsk
+	iz4Uv0gTDCcDs/RCX2IeAMVmOUBiAAx8NoMMQc/89UBbrp4RfeLcTnziapzbmO8=
+X-Gm-Gg: ASbGnctn8/mOg2Vefw7hGP1k8PbpBBv5tKsOfyeadDk+L0EA8PWIEQ3nl4JTJoCf27O
+	YwZNGMrfd955duuyKKFSH+9ok33ISfWfPuEQQSZ3zzF7CyfXgoQFE3ecCf0n6QlFxX+y8GdpoVI
+	AzocM4FIFd1hbN23a8JP7U6gvmfCPmsINE9z7vv4xJq+BLI+Thf7BIoWLz9B6Wqto+mrsJV+yhS
+	UV60vlto4nW4Tius5flM1V/H1aX+8iVqKLjgDD7q3GoQ1bgG7rnCjpGrRiAsdwAFvSCV5vRaTBr
+	2Q==
+X-Google-Smtp-Source: AGHT+IF5V5DFbEDOROnCaKlXJUGaPUKrLPcWxipMIkG6MIQkkb9AHYTA5fG3RMfKxBsRbLVsAyEf8w==
+X-Received: by 2002:a05:6000:1882:b0:385:f409:b4c with SMTP id ffacd0b85a97d-385fd42d0d5mr3928393f8f.54.1733280116021;
+        Tue, 03 Dec 2024 18:41:56 -0800 (PST)
+Received: from localhost (fwdproxy-cln-036.fbsv.net. [2a03:2880:31ff:24::face:b00c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-385e13e8eadsm12810252f8f.28.2024.12.03.18.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Dec 2024 18:41:55 -0800 (PST)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: kkd@meta.com,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Manu Bretelle <chantra@meta.com>,
+	kernel-team@fb.com
+Subject: [PATCH bpf v1 0/2] Fix for raw_tp PTR_MAYBE_NULL unmarking
+Date: Tue,  3 Dec 2024 18:41:52 -0800
+Message-ID: <20241204024154.21386-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241126-resolve_btfids-v2-0-288c37cb89ee@weissschuh.net>
- <20241126-resolve_btfids-v2-1-288c37cb89ee@weissschuh.net>
- <CAEf4BzahMQWVH0Gaub-tWjH9GweG8Kt7OBU-f+PBhmmRDCKfrA@mail.gmail.com> <9a11cf2f-ddca-4a50-817f-74183d31dcaf@t-8ch.de>
-In-Reply-To: <9a11cf2f-ddca-4a50-817f-74183d31dcaf@t-8ch.de>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 3 Dec 2024 18:06:26 -0800
-Message-ID: <CAEf4BzZqeo00C5a9QO6Ah3i-doWRbg7v_2y=y9Kfg3=JyrA=zQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] tools/resolve_btfids: Add --fatal-warnings option
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1600; h=from:subject; bh=ULoSHOerlTsGTXmZbN4tEM6h3CTPv6KPWo+ak7IXo8U=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnT8CA/AgJuqEGAs0l5BaW+DM/Iej9IbACuhy8CxOs rTgWUiKJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ0/AgAAKCRBM4MiGSL8Rym92D/ 46QgKxreCpvpxfGPYKjoftOZqjvVlX5Y/75OUxff/T3+k02FRq4sebmm7K7yaorx4gwWSFwmzQ/dVu wlnHEHzJUcZeAuqn5csxfVc+IlLgoh4Q0n1WvuqeMmILtB+38IgegrqDffSm7mWY7+y2cgnfuLDo3a 6lCBmUzq/atQMYJ9S7CvVy50Vt7VuVc5q1vtfxPnAXQ5vG1pgZbMXc8KDQthblJblDXpffVrHjgZsl mK4BO+bI29YGkB67jJVfFRoc4BDkxx9tChGt0doAZNMyNdr9OblQwLRWJLKkRESl1gTvXuVCkEOjfp 0NvJ9rCXCkNgHGHGw8S+F16/hczeQqFS3/GUV9b9ICjKB75TZmHHgxI4X+PC9GE2k/rYsoUzEz9Ibi W2+9fLs+oahDxHBDfqNOF4VSR08YUaYDoyqA67oLp/vqyQAvMrg3cEY5KAzZnR1FB9oEoSTuaKkLBs EZMnDg6EuOegEuzTQ/MlS4YluOjHx9gAjOucR/h+O6gv9z8sE/XiQNF3r5v/BENW0/ZbzkumNVrmq1 lGdISxXAeQN+li7GhaI4/aws++rNRQ1VEA+fTYck2prX5QQvjuuO2+VUCPBtsnQNa4mCda7na2Ot2Q nMlTwXBQ4rHZB9mt5GFDQOjnWCOm28zghbjqvnE0hVoip3ay9VZReyVnQpcw==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 3, 2024 at 3:09=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weisssc=
-huh.net> wrote:
->
-> On 2024-12-03 14:31:01-0800, Andrii Nakryiko wrote:
-> > On Tue, Nov 26, 2024 at 1:17=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@we=
-issschuh.net> wrote:
-> > >
-> > > Currently warnings emitted by resolve_btfids are buried in the build =
-log
-> > > and are slipping into mainline frequently.
-> > > Add an option to elevate warnings to hard errors so the CI bots can
-> > > catch any new warnings.
-> > >
-> > > Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
-> > > Acked-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/bpf/resolve_btfids/main.c | 12 ++++++++++--
-> > >  1 file changed, 10 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfi=
-ds/main.c
-> > > index bd9f960bce3d5b74dc34159b35af1e0b33524d2d..571d29d2da97fea75e5f9=
-c544a95b9ac65f9e579 100644
-> > > --- a/tools/bpf/resolve_btfids/main.c
-> > > +++ b/tools/bpf/resolve_btfids/main.c
-> > > @@ -141,6 +141,7 @@ struct object {
-> > >  };
-> > >
-> > >  static int verbose;
-> > > +static int warnings;
-> > >
-> > >  static int eprintf(int level, int var, const char *fmt, ...)
-> > >  {
-> > > @@ -604,6 +605,7 @@ static int symbols_resolve(struct object *obj)
-> > >                         if (id->id) {
-> > >                                 pr_info("WARN: multiple IDs found for=
- '%s': %d, %d - using %d\n",
-> > >                                         str, id->id, type_id, id->id)=
-;
-> > > +                               warnings++;
-> > >                         } else {
-> > >                                 id->id =3D type_id;
-> > >                                 (*nr)--;
-> > > @@ -625,8 +627,10 @@ static int id_patch(struct object *obj, struct b=
-tf_id *id)
-> > >         int i;
-> > >
-> > >         /* For set, set8, id->id may be 0 */
-> > > -       if (!id->id && !id->is_set && !id->is_set8)
-> > > +       if (!id->id && !id->is_set && !id->is_set8) {
-> > >                 pr_err("WARN: resolve_btfids: unresolved symbol %s\n"=
-, id->name);
-> > > +               warnings++;
-> > > +       }
-> > >
-> > >         for (i =3D 0; i < id->addr_cnt; i++) {
-> > >                 unsigned long addr =3D id->addr[i];
-> > > @@ -782,6 +786,7 @@ int main(int argc, const char **argv)
-> > >                 .funcs    =3D RB_ROOT,
-> > >                 .sets     =3D RB_ROOT,
-> > >         };
-> > > +       bool fatal_warnings =3D false;
-> > >         struct option btfid_options[] =3D {
-> > >                 OPT_INCR('v', "verbose", &verbose,
-> > >                          "be more verbose (show errors, etc)"),
-> > > @@ -789,6 +794,8 @@ int main(int argc, const char **argv)
-> > >                            "BTF data"),
-> > >                 OPT_STRING('b', "btf_base", &obj.base_btf_path, "file=
-",
-> > >                            "path of file providing base BTF"),
-> > > +               OPT_BOOLEAN(0, "fatal-warnings", &fatal_warnings,
-> > > +                           "turn warnings into errors"),
-> >
-> > We are mixing naming styles here: we have "btf_base" with underscore
-> > separator, and you are adding "fatal-warnings" with dash separator. I
-> > personally like dashes, but whichever way we should stay consistent.
-> > So let's fix it, otherwise it looks a bit sloppy.
->
-> Ack.
->
-> >
-> > Please also use [PATCH bpf-next v3] subject prefix to make it explicit
-> > that this should go through bpf-next tree.
->
-> Ack.
->
-> >
-> > pw-bot: cr
-> >
-> > >                 OPT_END()
-> > >         };
-> > >         int err =3D -1;
-> > > @@ -823,7 +830,8 @@ int main(int argc, const char **argv)
-> > >         if (symbols_patch(&obj))
-> > >                 goto out;
-> > >
-> > > -       err =3D 0;
-> > > +       if (!(fatal_warnings && warnings))
-> > > +               err =3D 0;
-> >
-> > nit: just
-> >
-> > if (!fatal_warnings)
-> >     err =3D 0;
-> >
-> > ?
->
-> This seems wrong. Now the actual warning counter is never evaluated.
-> And --fatal_warnings will always lead to an error exit code.
+A production BPF program had the following code produced by LLVM.
 
-Ah, I missed that you are using default -1 value here. I wonder if we
-should make it a bit more explicit?
+r0 = 1024;
+r1 = ...; // r1 = trusted_or_null_(id=1)
+r3 = r1;  // r3 = trusted_or_null_(id=1) r1 = trusted_or_null_(id=1)
+r3 += r0; // r3 = trusted_or_null_(id=1, off=1024)
+if r1 == 0 goto pc+X;
 
-if (fatal_warnings)
-    err =3D warnings ? -1 : 0;
-else
-    err =3D 0;
+After cb4158ce8ec8 ("bpf: Mark raw_tp arguments with PTR_MAYBE_NULL"),
+the production BPF program began throwing a warning in the verifier
+because for the code above, when unmarking null mark from r1, the
+verifier will notice another register r3 with same id but off != 0,
+which is unexpected, since offset modification on PTR_MAYBE_NULL is not
+permitted, but the aforementioned commit relaxed that restriction to
+preserve compatibility with non-NULL raw_tp args.
 
-Something like that?
+Provide a fix to suppress the warning for raw_tp args. We will follow up
+with a more generic fix to handle such patterns for all pointer types in
+the verifier, which currently involves playing whack-a-mole with
+suppressing such LLVM optimizations and reworking BPF programs to avoid
+verifier errors.
 
->
-> > >  out:
-> > >         if (obj.efile.elf) {
-> > >                 elf_end(obj.efile.elf);
-> > >
-> > > --
-> > > 2.47.1
-> > >
+Kumar Kartikeya Dwivedi (2):
+  bpf: Suppress warning for non-zero off raw_tp arg NULL check
+  selftests/bpf: Add raw_tp tests for PTR_MAYBE_NULL marking
+
+ kernel/bpf/verifier.c                         | 44 ++++++++--
+ .../selftests/bpf/prog_tests/raw_tp_null.c    |  6 ++
+ .../selftests/bpf/progs/raw_tp_null_fail.c    | 81 +++++++++++++++++++
+ 3 files changed, 126 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/raw_tp_null_fail.c
+
+
+base-commit: 45e04eb4d9d85603539984bc9ca930c380c93b15
+-- 
+2.43.5
+
 
