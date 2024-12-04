@@ -1,75 +1,73 @@
-Return-Path: <bpf+bounces-46046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46047-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C1699E3184
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 03:42:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49AF99E31C3
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 04:04:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB8EB168264
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 02:42:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15C46166704
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 03:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A3178C75;
-	Wed,  4 Dec 2024 02:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11A4E757F3;
+	Wed,  4 Dec 2024 03:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mdbszBNP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nDo7nK4Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
+Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 716E527715
-	for <bpf@vger.kernel.org>; Wed,  4 Dec 2024 02:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F0BFC1D
+	for <bpf@vger.kernel.org>; Wed,  4 Dec 2024 03:04:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733280123; cv=none; b=SrVQ1syMx2qVghq7vbk6RVEMc7b48URALGIhzXuZLtMtFLOkSVCnWYEKhVo2vMV+ipqG1gKSzDKw6LBS2n6DR5wIKKn2j5bYYQqojOBYGLP6KrtdHMMAfdyufQj7k43nA7+UpczsXq+UfydSsWwTKjyZW/6oRJ23fUVlIL0+QYo=
+	t=1733281449; cv=none; b=b00lBADZ16PSlZd9y13Iu17QjA9tVUe5uzmMPgT1AOmDreWRsjXECAyG9Zul/iQGCCYaDg0lZDEdumJmV2iHAW2Y4XFs2+WGDhfS51raHG1X9Kxmf/Jjt1l46z6nzR18MKWQCnmYCq7ls1spQvn0MvryVUBsMv7ZEldrlaJqdMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733280123; c=relaxed/simple;
-	bh=GR4SqSfDa0L/6ZPFyKuaEdnvN+gm4aY9iaeV6W4XSDo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jbRoBtC0QREtPrknFDbG4nBDfHq/WsQ7+rqoiaBtf8ojz5kruxdVmtRAGQOP5R8yNSpJdwL80IJc+oXF+48eKaJukQFaOAXeKMUDFyOstJSRdHABcsI3d/R8N1yWuMG8jWIWRpazkwzS8oPpDKhdRaWhkIT7t0RKe0iatU/L34U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mdbszBNP; arc=none smtp.client-ip=209.85.128.65
+	s=arc-20240116; t=1733281449; c=relaxed/simple;
+	bh=CDFs4LP1dVQhlYKmJ1TYZzm06LgtB934CTTYD3hJua8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i4kXY8PL4lK+7EoO8cy1wQtY3CQ5dV4uqCfmYCRYmGOriFi2WZmZLEPAa1VmGIS24PVs1l63LF/UFnsVqnOqIxLZKsQOVQP0jZmkTtcL6p9aIN/6CLoEVK6W4ti5cem8k++th2td2tlC8KukFKJrgWk6tXciidtre/0biIMjuyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nDo7nK4Y; arc=none smtp.client-ip=209.85.221.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-434a1fe2b43so56375485e9.2
-        for <bpf@vger.kernel.org>; Tue, 03 Dec 2024 18:42:01 -0800 (PST)
+Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-385f4a4093eso1972241f8f.1
+        for <bpf@vger.kernel.org>; Tue, 03 Dec 2024 19:04:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733280119; x=1733884919; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o4d3mN0BuOSsoMkdYNxjchoayjyUz4nDXno21TpF1rY=;
-        b=mdbszBNPCCQbr/vf+ft/obkiRzzfDvxfD48v1PWuOJUEjtcVk41BwXETaR/6MJmHFd
-         2ArzjX6146X+75pQfu7qVntaTtGYVbbPfqTq/JDRu2IG+nQCtaaA5mytKZow0duwouK5
-         rgs4gyoqE21tW2TXeDzZl/IQGt35jWO6oOAEGX4a85VLJWpKKUFNqimAwqgooStSPTA1
-         sMWyj5Yj7GX7C0oP48csZf+5nHqBFbae4CvsPBLCtLYV0iHfz+hCVdt8qUV6ea5WTOsP
-         ooFGmEPzaiZv0yzoURCVcVzY8pYjlF1zYgDGbPGFvju6ZJAMjorP6ormavSSNSHN4X8C
-         nTwQ==
+        d=gmail.com; s=20230601; t=1733281445; x=1733886245; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=E4jr5l6GNfwEXSpJaEKY6fhLISzfpVncSjvUxPx++VQ=;
+        b=nDo7nK4YPJ8U9EDUHrayiTBYlZcXH3AxkOGFWMjGlyYtsvieIo/kTPRdY9Pe8iQcxW
+         4LyLZgl8tDhllIfhQFb9zQxrtJQdSqRPqWR6hzrpsMGkI/cYYruhnj66Ir6T709E5ou5
+         +cHMQo3T0gmEG8uDGN3rIxBE9011ChioPFBdZ/zCEKttsLmAlOZUY4zROvKL79GLJvXb
+         lAIl4iSQN1IP/bNeUrErwqXOQu3sC88hd3xfa2958R35pCLTtO6EpiDhFcjKNuABzBhg
+         qqGlQn76FCaVs7GMUYQ5TpDgWyIbKG0gP2ZuGFYW8BoSDnk0KlwB44FN5TSLsoZtB5Bv
+         i7yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733280119; x=1733884919;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o4d3mN0BuOSsoMkdYNxjchoayjyUz4nDXno21TpF1rY=;
-        b=KdBdU5XoIWwEcGKtGPRYJY1msmlsTM4BMdFqVYWqhDQ7jX6YCkfejwm4Y0hdIyWiJG
-         05L29y9sfve+4oPkmy8+TzDj/snuDswVonV2wR2pOGpzm5ei86Cz+GPV0de9Sa6lqK/h
-         QUKIgdenMdjsBdrdFgZYfEtQHRphDhCR9w6YsvubZDpq+akSpSRB93xRHC0gQ5Yb7WXo
-         /0vMAUsCm0fsMp5dV6mvKuRBvN3POadTQNM3mEFjIQbnYpmUrjy0sx4uDb2T1FNJdACv
-         KBphK9q70m8wKPkQkwD6ffxMNzzLsKljPLW2xfqjW1UZT/UCWoYN2SDvkjWwyliPzhFO
-         4FZw==
-X-Gm-Message-State: AOJu0YxuzrXgFnn9ZfEe9XcIIEoYrncy5xq6cphzOTDjcF/GJucnVOQp
-	5svobmRsTxF5xizNU6MOSHW/RKeVwUiGCVnGqsuAW3+O0xd7nquEHXsLhFwkPJw=
-X-Gm-Gg: ASbGnctBolIJuCUMbUqU7XEr0+UF3d3prh3epNYahDd7cpnh8/jwFlFkbVyLbHw8yiq
-	WResmDGleIVFSm+wXHnoUNe7iTecl0XF6Zr4w4+7wlFBgUGsflBRyE6OIwUVsInmokKzQKCfFAn
-	L11xYGh5oJ/G3GVlisgcaxLnCQO+oB6XXFnNTqhf+SpnetYvhlwCCo1F60TTr/5tP7GCf94hcKH
-	iMf2I4Gn6CBDlrVfdaIQE+3PItbU3QRRrY83uhdXZiZqjjd//U70B7BFaqJvUWZzu/xbyqgjPdJ
-X-Google-Smtp-Source: AGHT+IGlIRD4EHevk9oopnW6Nt9t75Ei7CXGkyELI1JLobfFYrA9GNPAmZGEHwUK8bFWaWR4DN4keg==
-X-Received: by 2002:a05:600c:4ecf:b0:426:647b:1bfc with SMTP id 5b1f17b1804b1-434d0a14eb7mr47317085e9.30.1733280118866;
-        Tue, 03 Dec 2024 18:41:58 -0800 (PST)
-Received: from localhost (fwdproxy-cln-003.fbsv.net. [2a03:2880:31ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434d5273440sm7350535e9.18.2024.12.03.18.41.58
+        d=1e100.net; s=20230601; t=1733281445; x=1733886245;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E4jr5l6GNfwEXSpJaEKY6fhLISzfpVncSjvUxPx++VQ=;
+        b=SgKhAoF6MgKo57KjDbWCqSm/fPXexyI+UNYboGAnNnGNKSxs24cEux1a32NTXPmkxw
+         vHnthHdh+Mvjp0g1/n484+iiNPBSsLhFjGidZ95swQiA3RDpKNy/ZhQY65wXch9jnRrN
+         n18PKOZ0faVQrDPytpBUjZOVPuExbVe2VvB++vBxynXdWLJ03Pp3RfiMgZCUSoAASvao
+         rF3qKIZ40i0PCcaAgjlgM1eDGDX1kM+S6ApWyR94OcvQfefdnV4mEuCu7cbrFthaB/O9
+         1Sg5s9xQVx9fgVWkh5876LzfB8mCNc1nKf/c7+r4W1rn3RCqP1e6FNEUuBQH0giNOgUu
+         fJQA==
+X-Gm-Message-State: AOJu0YwuOIQLir2nDVLjoOj79URJjME2bIWFV6fHM40x2b43qCXVnxNQ
+	4tA7BtHe1v+GiMTsWErjn/p1HfGFILsyoKQP+hwW50n81gZ1kDQ7cCtvuY5WdKY=
+X-Gm-Gg: ASbGnctyNpAO7wFblMzDFPjYcHgyfJotQGtJ+7nSL3As2Sdwwuljj0w2DL+rI8OwKZC
+	fXObm1RiXHcXeWxjevur5+CplW/NGKz4QM/ntZ2pMic851I0KLmKqD691OPZXiqgPs4DDf5ny4W
+	D5vnqSJ6DeylMcLephUzB3G/zunffaO0N6ryPfP7OJqWY6m97S1DCFeo/VfyGqxMfUXOH0xhlk2
+	SZQGNERuMqEhIrkQlZs9sIPET91wyizpyMX7ASGsS5L3RbEQ2EBTlxYx2DSOS7nlxHeQ4wHj8xw
+X-Google-Smtp-Source: AGHT+IHvoKlf22KZIBcnWklfwQffAepO44D/RxhTpe9gxjZykQYS9MpuNwYTsIsEvUfHJt4srvDDYw==
+X-Received: by 2002:a5d:64a8:0:b0:386:8ff:d20b with SMTP id ffacd0b85a97d-38608ffd369mr1702915f8f.27.1733281445398;
+        Tue, 03 Dec 2024 19:04:05 -0800 (PST)
+Received: from localhost (fwdproxy-cln-010.fbsv.net. [2a03:2880:31ff:a::face:b00c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-385ccd36b80sm16858308f8f.29.2024.12.03.19.04.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Dec 2024 18:41:58 -0800 (PST)
+        Tue, 03 Dec 2024 19:04:04 -0800 (PST)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: kkd@meta.com,
@@ -78,141 +76,121 @@ Cc: kkd@meta.com,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
-	Manu Bretelle <chantra@meta.com>,
 	kernel-team@fb.com
-Subject: [PATCH bpf v1 2/2] selftests/bpf: Add raw_tp tests for PTR_MAYBE_NULL marking
-Date: Tue,  3 Dec 2024 18:41:54 -0800
-Message-ID: <20241204024154.21386-3-memxor@gmail.com>
+Subject: [PATCH bpf-next v6 0/7] IRQ save/restore
+Date: Tue,  3 Dec 2024 19:03:53 -0800
+Message-ID: <20241204030400.208005-1-memxor@gmail.com>
 X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241204024154.21386-1-memxor@gmail.com>
-References: <20241204024154.21386-1-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4160; h=from:subject; bh=GR4SqSfDa0L/6ZPFyKuaEdnvN+gm4aY9iaeV6W4XSDo=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnT8CACeAztdDTrIuipP1NQ9au77EqAjkJfWW7NVj4 FnlDHWqJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ0/AgAAKCRBM4MiGSL8RykkED/ 4yDbKf7Yht/GgxKa37kSeT+RfQViRXTCPMzAh+mYh56AdPu2yyfy1P9WzBwdj2jmhPvm+PCViRnEHV a+H6yw05SSLuUlvsPvBsAMUUG2mOWEm0XP6wkVTE/MBAcDIUJUWacfVK9IuH2kZOAPR54+zR1OA0Eh wlY42f5I+zxK3BjCCRmDFozpgehwA7eYe3VDsm2UZqgFCqbrvfnSVE9/BLnIwYzknaGAdWakRPahnb YRYfcBTLZTQPDicCA5OLwd/6yfOONYkmiW/stfewNXChmKF6SR/8215SdN24wDsPr1q2ApG5bwuhYP lJDn/qY2bj9JemoJe0Czctb8Z3Y6lvfRfxRSjyVpNsVsqVDp3aJMB/HMuPXR0wuD1o3JH7svy3Mvom xmFSsFBJdTwCOBw3/z7Zm2HtVeShGdpoMuJ393jqQA1oakCoXH1HtQtR1WMJ+7JzbW7spc76s6W3xs yRFTs7e3mLdRTliL3J+H8L+2hqjv2jPZ5oeq5CeHz5WBT0m8hRCaZG0/ea7r5apeGj8EAZxqtUIeUw TZMsg+cb6/tuCXzAt9MKgrvjfTTRLvrLMgtylSQzfoDTQvM7rELJEE7rMwH8SkJJmgqxQGX3kEedi0 tHJ+ptNwP1LVWjZQkIHm2o6avfuUjq+2D+aOk/U0vslZUb0WBLXzCGhPMIUQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4400; h=from:subject; bh=CDFs4LP1dVQhlYKmJ1TYZzm06LgtB934CTTYD3hJua8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnT8Q+WvqRJWhtKtW3EhsXm/UF5L/IUWyLXdnFEmxR dNhdWK+JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ0/EPgAKCRBM4MiGSL8RyvShD/ wJgHRZffkukWr6PMvW078yTLJIkKRCpp2M9GKtunJDS9/YdrHiSmFDuEepE5UIUnPRS0Aeb8TWqDWG 0S74V7UzN+OZmbISkHakgonCbggqYlzI5/N3tqu1hKdNAviQnkLE14r7ZWdJULfdDQre68j8HZbgBV B9hPkMeXvu31jCTyi9ulipUKX63xihnBALN4Fhik5zyK96QMED1aBvLOQCMCT/QQm3+cz+OPjCpWqA ZsYKXzuP2kT8L4FlzMyEMlVgmI8SHKA82FEDTur75YLubSlRzlbfughrKF5Dv0Jd3OWnuxCEphhf/d GK/WBE8dapNjXX+/Jy3UpqmDHlbqXh0lTKHrRbg3AR9WdjzHP51Styw0j/b/DHrIIKy7cBVeq3xuKH mqqJ7dj7DrcA7WTJTZa+L9kGume44Nkrubb1RirPHymuhKwOrPulQERb3YID2dlHkilKHC/xVL8quy eEFWEZirjqhNZeytCrrxOQI6vStrg3NSQusFe/h+eIn6VMM/OWBp0J8qY64ctaxR9Rg83szKKMsSUM pwfNHwIn9XvGGhvrNaZbuS6A+92RWN0xW6j0xUNiNbng0lux73K4wbee7Cth3B5v76tGUvASrEGiMM fXO7Fp0IWwEXwRIaBYja/vVFbUB95yQE7tsc0EYz9m1q7pIFtOrerfoBSzfQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Ensure that pointers with off != 0 are never unmarked as PTR_MAYBE_NULL,
-pointers that have off == 0 continue getting unmarked, and pointers that
-don't get unmarked acquire a new id instead of resetting it to zero, so
-as to identify themselves uniquely and not hit other warnings where id
-== 0 is not expected with PTR_MAYBE_NULL.
+This set introduces support for managing IRQ state from BPF programs.
+Two new kfuncs, bpf_local_irq_save, and bpf_local_irq_restore are
+introduced to enable this functionality.
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/raw_tp_null.c    |  6 ++
- .../selftests/bpf/progs/raw_tp_null_fail.c    | 81 +++++++++++++++++++
- 2 files changed, 87 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/raw_tp_null_fail.c
+Intended use cases are writing IRQ safe data structures (e.g. memory
+allocator) in BPF programs natively, and use in new spin locking
+primitives intended to be introduced in the next few weeks.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/raw_tp_null.c b/tools/testing/selftests/bpf/prog_tests/raw_tp_null.c
-index 6fa19449297e..13fcd4c31034 100644
---- a/tools/testing/selftests/bpf/prog_tests/raw_tp_null.c
-+++ b/tools/testing/selftests/bpf/prog_tests/raw_tp_null.c
-@@ -3,6 +3,12 @@
- 
- #include <test_progs.h>
- #include "raw_tp_null.skel.h"
-+#include "raw_tp_null_fail.skel.h"
-+
-+void test_raw_tp_null_fail(void)
-+{
-+	RUN_TESTS(raw_tp_null_fail);
-+}
- 
- void test_raw_tp_null(void)
- {
-diff --git a/tools/testing/selftests/bpf/progs/raw_tp_null_fail.c b/tools/testing/selftests/bpf/progs/raw_tp_null_fail.c
-new file mode 100644
-index 000000000000..12096150a48c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/raw_tp_null_fail.c
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+
-+/* r1 with off = 0 is checked, which marks new id for r0 with off=8 */
-+SEC("tp_btf/bpf_testmod_test_raw_tp_null")
-+__failure
-+__msg("2: (b7) r2 = 0                        ; R2_w=0")
-+__msg("3: (07) r0 += 8                       ; R0_w=trusted_ptr_or_null_sk_buff(id=1,off=8)")
-+__msg("4: (15) if r1 == 0x0 goto pc+2        ; R1_w=trusted_ptr_sk_buff()")
-+__msg("5: (bf) r2 = r0                       ; R0_w=trusted_ptr_or_null_sk_buff(id=2,off=8)")
-+int BPF_PROG(test_raw_tp_null_check_zero_off, struct sk_buff *skb)
-+{
-+	asm volatile (
-+		"r1 = *(u64 *)(r1 +0);			\
-+		 r0 = r1;				\
-+		 r2 = 0;				\
-+		 r0 += 8;				\
-+		 if r1 == 0 goto jmp;			\
-+		 r2 = r0;				\
-+		 *(u64 *)(r2 +0) = r2;			\
-+		 jmp:					"
-+		::
-+		: __clobber_all
-+	);
-+	return 0;
-+}
-+
-+/* r2 with offset is checked, which marks r1 with off=0 as non-NULL */
-+SEC("tp_btf/bpf_testmod_test_raw_tp_null")
-+__failure
-+__msg("3: (07) r2 += 8                       ; R2_w=trusted_ptr_or_null_sk_buff(id=1,off=8)")
-+__msg("4: (15) if r2 == 0x0 goto pc+2        ; R2_w=trusted_ptr_or_null_sk_buff(id=2,off=8)")
-+__msg("5: (bf) r1 = r1                       ; R1_w=trusted_ptr_sk_buff()")
-+int BPF_PROG(test_raw_tp_null_copy_check_with_off, struct sk_buff *skb)
-+{
-+	asm volatile (
-+		"r1 = *(u64 *)(r1 +0);			\
-+		 r2 = r1;				\
-+		 r3 = 0;				\
-+		 r2 += 8;				\
-+		 if r2 == 0 goto jmp2;			\
-+		 r1 = r1;				\
-+		 *(u64 *)(r3 +0) = r3;			\
-+		 jmp2:					"
-+		::
-+		: __clobber_all
-+	);
-+	return 0;
-+}
-+
-+/* Ensure id's are incremented everytime things are checked.. */
-+SEC("tp_btf/bpf_testmod_test_raw_tp_null")
-+__failure
-+__msg("2: (07) r0 += 8                       ; R0_w=trusted_ptr_or_null_sk_buff(id=1,off=8)")
-+__msg("3: (15) if r0 == 0x0 goto pc+4        ; R0_w=trusted_ptr_or_null_sk_buff(id=2,off=8)")
-+__msg("4: (15) if r0 == 0x0 goto pc+3        ; R0_w=trusted_ptr_or_null_sk_buff(id=4,off=8)")
-+__msg("5: (15) if r0 == 0x0 goto pc+2        ; R0_w=trusted_ptr_or_null_sk_buff(id=6,off=8)")
-+__msg("6: (bf) r2 = r0                       ; R0_w=trusted_ptr_or_null_sk_buff(id=6,off=8)")
-+int BPF_PROG(test_raw_tp_check_with_off, struct sk_buff *skb)
-+{
-+	asm volatile (
-+		"r1 = *(u64 *)(r1 +0);			\
-+		 r0 = r1;				\
-+		 r0 += 8;				\
-+		 if r0 == 0 goto jmp3;			\
-+		 if r0 == 0 goto jmp3;			\
-+		 if r0 == 0 goto jmp3;			\
-+		 r2 = r0;				\
-+		 *(u64 *)(r2 +0) = r2;			\
-+		 jmp3:					"
-+		::
-+		: __clobber_all
-+	);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+The set begins with some refactoring patches before the actual
+functionality is introduced. Patch 1 consolidates all resource related
+state in bpf_verifier_state, and moves it out from bpf_func_state.
+
+Patch 2 refactor acquire and release functions for reference state to
+make them reusable without duplication for other resource types.
+
+After this, patch 3 refactors stack slot liveness marking logic to be
+shared between dynptr, and iterators, in preparation for introducing
+same logic for irq flag object on stack.
+
+Finally, patch 4 and 7 introduce the new kfuncs and their selftests. For
+more details, please inspect the patch commit logs. Patch 5 makes the
+error message in case of resource leaks under BPF_EXIT a bit clearer.
+Patch 6 expands coverage of existing preempt-disable selftest to cover
+sleepable kfuncs.
+
+See individual patches for more details.
+
+Changelog:
+----------
+v5 -> v6
+v5: https://lore.kernel.org/bpf/20241129001632.3828611-1-memxor@gmail.com
+
+ * Add Eduard's Acked-by on patch 2
+ * Remove gen_id parameter to acquire_reference_state (Alexei)
+ * Remove space before REF_TYPE_LOCK (Alexei)
+ * Fix link to v4 in changelog
+
+v4 -> v5
+v4: https://lore.kernel.org/bpf/20241127213535.3657472-1-memxor@gmail.com
+
+ * Do regno - 1 when printing argument
+ * Pass verifier state explicitly into print_{insn,verifier}_state (Eduard)
+ * Pass frameno instead of bpf_func_state (Eduard)
+ * Move bpf_reference_state *refs after parent to fill two holes in
+   bpf_verifier_state (Eduard). The hunk fixing that bug is in the
+   commit adding IRQ save/restore kfuncs, as it is only needed then.
+ * Fix bug in release_reference_state breaking stack property (Eduard)
+ * Add selftest for triggering and reproducing bug found by Eduard
+   irq_ooo_refs_array in final patch
+ * Print insn_idx and active_irq_id on error (Eduard)
+ * Add more acks
+
+v3 -> v4
+v3: https://lore.kernel.org/bpf/20241127165846.2001009-1-memxor@gmail.com
+
+ * Add yet another missing kfunc declaration to silence s390 CI
+
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20241127153306.1484562-1-memxor@gmail.com
+
+ * Drop REF_TYPE_LOCK_MASK
+ * Add kfunc declarations to selftest to silence s390 CI errors
+
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20241121005329.408873-1-memxor@gmail.com
+
+ * Drop reference -> resource renaming in the verifier (Eduard, Alexei)
+ * Change verifier log for check_resource_leak for BPF_EXIT (Eduard)
+ * Remove id parameter from acquire_resource_state, read s->id (Eduard)
+ * Rename erase to release for reference state (Eduard)
+ * Move resource state to bpf_verifier_state (Eduard, Alexei)
+ * Drop unnecessary casting to/from u64 in helpers (Eduard)
+ * Add test for arg != PTR_TO_STACK (Eduard)
+ * Drop now redundant tests (Eduard)
+ * Address some other misc nits
+ * Add Reviewed-by and Acked-by from Eduard
+
+Kumar Kartikeya Dwivedi (7):
+  bpf: Consolidate locks and reference state in verifier state
+  bpf: Refactor {acquire,release}_reference_state
+  bpf: Refactor mark_{dynptr,iter}_read
+  bpf: Introduce support for bpf_local_irq_{save,restore}
+  bpf: Improve verifier log for resource leak on exit
+  selftests/bpf: Expand coverage of preempt tests to sleepable kfunc
+  selftests/bpf: Add IRQ save/restore tests
+
+ include/linux/bpf_verifier.h                  |  26 +-
+ kernel/bpf/helpers.c                          |  17 +
+ kernel/bpf/log.c                              |  21 +-
+ kernel/bpf/verifier.c                         | 573 +++++++++++++-----
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/exceptions_fail.c     |   4 +-
+ tools/testing/selftests/bpf/progs/irq.c       | 444 ++++++++++++++
+ .../selftests/bpf/progs/preempt_lock.c        |  28 +-
+ .../selftests/bpf/progs/verifier_spin_lock.c  |   2 +-
+ 9 files changed, 949 insertions(+), 168 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/irq.c
+
+
+base-commit: c721d8f8b196285a59ed5c940e856bce9890523f
 -- 
 2.43.5
 
