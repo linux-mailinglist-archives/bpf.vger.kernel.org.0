@@ -1,203 +1,201 @@
-Return-Path: <bpf+bounces-46119-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46121-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B65D9E4741
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 22:51:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12BE29E4784
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 23:09:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52D5E18803C1
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 21:51:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEC35163EB5
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 22:08:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235B51925B8;
-	Wed,  4 Dec 2024 21:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDA819EED0;
+	Wed,  4 Dec 2024 22:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="p+pGhvgX";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Hv68a2qi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SZqqdANI"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA0923919F;
-	Wed,  4 Dec 2024 21:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC0BA19048D
+	for <bpf@vger.kernel.org>; Wed,  4 Dec 2024 22:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733349108; cv=none; b=m/XEHb0J/tjNxpzdXKVAw+Tjzte/ZRmL8/PA3GJY/g4Is4D4ntI5iz5t7TTrM/c9jo3PY/ZIFQTOpvuMHh1vK90qNPWJ4gF3SPFZVPz4OKHe7878sSFUz4V+ZzsnJlYPED4zBzb1QJ/UZHXKtZ5ZqTaU6kwebSu1BzBAm2nAVJg=
+	t=1733350130; cv=none; b=SW4gT90/II2dr705rn3XwqHeSC2A8uFhUBKeuIEjggoKmRHx64W4scTLvoEGCSaF8eiOp9W94903FpCJu+IJIj+5hI+Ax6mV+Cp8dcwY7aY7+sz44XEPIlhI3T3i4dBQOTRIM1FPCs5x9K3wXCYPEOBk0pA+l8viFO2DV2UA9mQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733349108; c=relaxed/simple;
-	bh=/HKw8fVOd9hxl8YjiMKFb/5bYW2ramI7WzJsThdTDx0=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=FOadCxN5+tvgUFAC/sxaTrAD7gNmYorroiccH5idZNklLDGU9a2bepLfwCQxdEzGi4JQD+ga/K4PjUSHOA/L5jWeI7IOJZZqGmXXJoo5RUw1KwpsGth2s/zwtVyv5us2EehOibPEDzDZhmOb1bU1MVVeaciw8pBRzAzkW0O5XaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=p+pGhvgX; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Hv68a2qi; arc=none smtp.client-ip=103.168.172.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 535AE114010D;
-	Wed,  4 Dec 2024 16:51:44 -0500 (EST)
-Received: from phl-imap-08 ([10.202.2.84])
-  by phl-compute-03.internal (MEProxy); Wed, 04 Dec 2024 16:51:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1733349104;
-	 x=1733435504; bh=TE15c1mpZH7CypQLn1ar+nihRkaQdamdfMzIXkoHuG4=; b=
-	p+pGhvgXHAsirYusuAwwvCUKogVt1Bnl0Ax2aBRXCuqKM8JFWXvPfJqBm8SIXDxf
-	WA8uhdrIMQjK7sqi/DSHYakcPBkbijr3Pokob2Gg7ptriEin/Dt0iqh2mznJ9zun
-	B3Z+Oxzl16quAEzsll5kOmZkSi82oAZMzs5CAsNMmgBkCvIDbNcqepEORYA4Dqw8
-	ClTchY+PR053mhAN0iYi3cEXH7fkoYNldhebusJJGqVO+478phlZFIEkt7CLUAOo
-	8vXHVFOmprNmepZ1frmsuqLTOKlDpPSaJR+iz85I1LQllD2o8Goaaqo/ngz+CXa+
-	VwJ+9NfOpJVabDxBR6PNrw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1733349104; x=
-	1733435504; bh=TE15c1mpZH7CypQLn1ar+nihRkaQdamdfMzIXkoHuG4=; b=H
-	v68a2qiovpvri1Gvnsp/jI4ao72O/CXjCUIV9Y26kYU8KTUXu/mIwDXunO0lmB7B
-	WbzHWY7UlWrL8p+qc7kyBCuYOWQnsdYPaGaXWFd30BxDvmq5aQhtVe0mpe9vpsw7
-	oevgEmrC7def13K35J9z/iAGpVbdr2XwhTQ7gdiuOgyrofRshtAaM8+j+0n6GpaP
-	NF7yNwtBW+uwJicniSEqbFLSI/SKNb6UBK6mxv5ZMSANg47O0nSIbet/9fOkK2CF
-	jF1BAWZUQarORzoPeFrXSY+mDzUaajf0Qjtnx4Hco37uqLF0WFFr861swIBxsLF7
-	4mV2g5ZbSSqQhP7ZCoBJA==
-X-ME-Sender: <xms:785QZ-xWbahP2uFDkK5KXajVcWSU3Vp1RqEhA-t8vNJKeY1xB3t8zQ>
-    <xme:785QZ6QmLAQQTVqrEVsXdDpIcgwn1lgBXTYcgmJs7GJ3MOXDX3gWkFUasgsImHkxi
-    oPPzW96zx2ymxWRxg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrieehgdduhedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnegfrhhlucfvnfffucdlfeehmdenucfjughrpefoggffhffvvefk
-    jghfufgtgfesthejredtredttdenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugi
-    husegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeegleeifffhudduueekhfei
-    fefgffegudelveejfeffueekgfdtledvvdeffeeiudenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhnsggp
-    rhgtphhtthhopeduhedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepuggrvhgvmh
-    esuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghn
-    ugesghhmrghilhdrtghomhdprhgtphhtthhopegvughumhgriigvthesghhoohhglhgvrd
-    gtohhmpdhrtghpthhtoheprghlvghkshgrnhguvghrrdhlohgsrghkihhnsehinhhtvghl
-    rdgtohhmpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrdhnvghtpdhrtg
-    hpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrshhtsehk
-    vghrnhgvlhdrohhrghdprhgtphhtthhopehhrgifkheskhgvrhhnvghlrdhorhhgpdhrtg
-    hpthhtohepkhhusggrsehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:785QZwUkFEDF_3Zpm5cMM4lsR1T1ToptQ1hleRr8xUn6YXKzyPBNJw>
-    <xmx:785QZ0hAbzDWB9EMMzFWJu_f_tLaofTRt4T1fNZ_afh5Tu2jZZRVPA>
-    <xmx:785QZwDTwoEj_wEmAmRtyKvIke7eBTecruoyZrhiIaTqq7H5qYE3dw>
-    <xmx:785QZ1JzbE5gCxnHtSjM-UTC5_HKTBOCkZ63BfIZ017rgv805pR3nw>
-    <xmx:8M5QZ4YPOXyi42i8Hv-AVl9TkhxeUxHERO06-2ARaIZh077oFmkWl9IY>
-Feedback-ID: i6a694271:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 7D97E18A0068; Wed,  4 Dec 2024 16:51:43 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1733350130; c=relaxed/simple;
+	bh=BE9hL1J3ikmMYpo/naTfxbiyrVjNf2b+FeCzAapsoVE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=APxsZhe1XfVqrtiH+xSTrVTPoQ10cL7eYnwfVzGh0N/iYXVbLYdx/KUw68phXQcwYsbqYeie7BlXdT0SmDhNxGNZlwLiH9gaKUqBaPXXOjOawbqiZoCR0IQj37AHeJ5/OqZKk8bIpf91USCX6ZeGGuG0HjlySEvhEWGpgGmittM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SZqqdANI; arc=none smtp.client-ip=209.85.218.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-aa549d9dffdso26609066b.2
+        for <bpf@vger.kernel.org>; Wed, 04 Dec 2024 14:08:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733350127; x=1733954927; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PIoz8vo9INqg3KZPOecwkjm61xnKXhIqMqCEo71UuT4=;
+        b=SZqqdANIAw1Ez73QBS+KDfO0D7WAAwJ7ZHLT78uF/PXYl/50RfLIPw4Sygd/raC2O3
+         KKEj1E7LTT0xVoXfNh2CG2Y8mvl/f8H5tme17OdkjR07YZKoh2bUSUBPWCsrajQv/zdG
+         5emSzV5S3WL5FLJGtOpQsaQhUxtwUwReFt1UpocgoeKlbhLHzS/JdRldjss14bhyNT6n
+         5jw32/f9EZVjLKLIAIgssFsEGQwcKhhBTeU6wDZ7CSIYZNfIKPH3rV6PnJj0lDmwYMd/
+         wjIdkSMYBfLl5Qomn7PSRQzg3XW2FCP9Fea1rvLisNDZNfgtVJkBHE2DrPbG+2m5D7V0
+         Uj6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733350127; x=1733954927;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PIoz8vo9INqg3KZPOecwkjm61xnKXhIqMqCEo71UuT4=;
+        b=Pf7fSetJsO7rHM7broYMo35QDxkGNaF+72ZEd3HA3z+5Fc5vvJ55pwaOGfPtfZ5zwn
+         vEQ7PIuYnRRlVum6hIOaXq1CWOsiShckrG9X1qQkURpilhOgQ0jePs1tQ6ZyPlYyNnc+
+         0+jQecVUaX6vriXEmnXhabViVNynJ6TyRVQmPGNps7mFZMu74r2PlHoH5UvY9/qDyB3C
+         Qez0GA7uS5woIHJK1l2ZjHfU+4gbF02IrxQlUfP7ff34iWRKlugXEm9TFWr24OhiXNrr
+         aaWme2u3U7WrfDZ/7LUY7QsNUtMizM6O/tgLOrl5emkAMqYdh3buqlo5q6OzKEzv08KY
+         yR/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUY5wT+vim9rXgdC5juvFHyFWkxv5PPATqKH0+6+ePAz4VQME72K9TdIMCa4mQE/ocYiAY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw1vxCesoXT7ouYO0ZuJCfKXdTxSqEzbZfS8jTfwFl3Vf6VeVS4
+	7lEhCbzXJnkS5FkwpLRD4o1tKClXFV8oZwahQg05gAIX2kiaFtqPbhyRcsKz0q1CHUfuK4bWJNB
+	CZnQIKsTbMTq/LbqaB5S8gu/lku0=
+X-Gm-Gg: ASbGncu4gdjTcKQU9kTTAxE0DFCxVOX6rau/burjDKs0VASjy1E6WFIMsh0SxTdkHT9
+	YFURpabYhqkII6LlxRimYmlSaqnrgdnL51reVArhaUYe04vs7ooJJw9wQpM4AyJus
+X-Google-Smtp-Source: AGHT+IE3q3sutyKIg/HDtQjOl4lFIhU/lv/93QmYM08VNUbRSS9kVv3FhwyYxYGZbytlqejCndU0RNzzjZp1RLr6PNw=
+X-Received: by 2002:a17:906:318d:b0:aa4:fc7c:ea6d with SMTP id
+ a640c23a62f3a-aa5f7d15a96mr702114966b.17.1733350127072; Wed, 04 Dec 2024
+ 14:08:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 04 Dec 2024 13:51:08 -0800
-From: "Daniel Xu" <dxu@dxuuu.xyz>
-To: "Alexander Lobakin" <aleksander.lobakin@intel.com>,
- "Jakub Kicinski" <kuba@kernel.org>
-Cc: "Lorenzo Bianconi" <lorenzo.bianconi@redhat.com>,
- "Lorenzo Bianconi" <lorenzo@kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "Alexei Starovoitov" <ast@kernel.org>,
- "Daniel Borkmann" <daniel@iogearbox.net>,
- "Andrii Nakryiko" <andrii@kernel.org>,
- "John Fastabend" <john.fastabend@gmail.com>,
- "Jesper Dangaard Brouer" <hawk@kernel.org>,
- "Martin KaFai Lau" <martin.lau@linux.dev>,
- "David Miller" <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>,
- "Paolo Abeni" <pabeni@redhat.com>, netdev@vger.kernel.org
-Message-Id: <ad43f37e-6e39-4443-9d42-61ebe8f78c54@app.fastmail.com>
-In-Reply-To: <a0f4d9d8-86da-41f1-848d-32e53c092b34@intel.com>
-References: <cover.1726480607.git.lorenzo@kernel.org>
- <amx5t3imrrh56m7vtsmlhdzlggtv2mlhywk6266syjmijpgs2o@s2z7dollcf7l>
- <ZwZe6Bg5ZrXLkDGW@lore-desk> <55d2ac1c-0619-4b24-b8ab-6eb5f553c1dd@intel.com>
- <ZwZ7fr_STZStsnln@lore-desk> <c3e20036-2bb3-4bca-932c-33fd3801f138@intel.com>
- <c21dc62c-f03e-4b26-b097-562d45407618@intel.com>
- <01dcfecc-ab8e-43b8-b20c-96cc476a826d@intel.com>
- <b319014e-519c-4c2d-8b6d-1632357e66cd@app.fastmail.com>
- <rntmnecd6w7ntnazqloxo44dub2snqf73zn2jqwuur6io2xdv7@4iqbg5odgmfq>
- <05991551-415c-49d0-8f14-f99cb84fc5cb@intel.com>
- <a2ebba59-bf19-4bb9-9952-c2f63123b7cd@app.fastmail.com>
- <6db67537-6b7b-4700-9801-72b6640fc609@intel.com>
- <20241202144739.7314172d@kernel.org>
- <4f49d319-bd12-4e81-9516-afd1f1a1d345@intel.com>
- <20241203165157.19a85915@kernel.org>
- <a0f4d9d8-86da-41f1-848d-32e53c092b34@intel.com>
-Subject: Re: [RFC/RFT v2 0/3] Introduce GRO support to cpumap codebase
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+References: <20241204024154.21386-1-memxor@gmail.com> <20241204024154.21386-3-memxor@gmail.com>
+ <f844604cb8f85688c9faf4bf0c6d5566eba5dcdb.camel@gmail.com>
+ <CAP01T77v3ctFfT37iOfMm0XOqOD_bzfYuLcjnvT=JeokCZ=2BQ@mail.gmail.com>
+ <CAP01T770rUveB4Toj_gU7Fy-SyyTr0EvaCBDTxdkGBz2bBBAzw@mail.gmail.com>
+ <CAADnVQLa7ArR0ZSi_zERZxWCCvi6u6TdmOpfkveuRo_EwGqsQA@mail.gmail.com>
+ <CAP01T77F4yoJYJ3CZ-zypGUSCCApsS2iGQ-EZiO2Pk0sw2e0Mg@mail.gmail.com>
+ <ce15b00ac30c6cfba16f63e6c03018a59af8acb1.camel@gmail.com>
+ <CAADnVQ+ObWEF4g_FVrwFJF4gnkmBB=4UcnGZV5jaJ3SffyG0HQ@mail.gmail.com> <4d96bbb0433d4fdd285b9fe12cdfe9259d8b929f.camel@gmail.com>
+In-Reply-To: <4d96bbb0433d4fdd285b9fe12cdfe9259d8b929f.camel@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 4 Dec 2024 23:08:10 +0100
+Message-ID: <CAP01T761t46kRus1F6T75ORG53_rVJDmSurxXspO0bek1QK2YA@mail.gmail.com>
+Subject: Re: [PATCH bpf v1 2/2] selftests/bpf: Add raw_tp tests for
+ PTR_MAYBE_NULL marking
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, kkd@meta.com, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Manu Bretelle <chantra@meta.com>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On Wed, Dec 4, 2024, at 8:42 AM, Alexander Lobakin wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> Date: Tue, 3 Dec 2024 16:51:57 -0800
+On Wed, 4 Dec 2024 at 22:37, Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
->> On Tue, 3 Dec 2024 12:01:16 +0100 Alexander Lobakin wrote:
->>>>> @ Jakub,  
->>>>
->>>> Context? What doesn't work and why?  
->>>
->>> My tests show the same perf as on Lorenzo's series, but I test with UDP
->>> trafficgen. Daniel tests TCP and the results are much worse than with
->>> Lorenzo's implementation.
->>> I suspect this is related to that how NAPI performs flushes / decides
->>> whether to repoll again or exit vs how kthread does that (even though I
->>> also try to flush only every 64 frames or when the ring is empty). Or
->>> maybe to that part of the kthread happens in process context outside any
->>> softirq, while when using NAPI, the whole loop is inside RX softirq.
->>>
->>> Jesper said that he'd like to see cpumap still using own kthread, so
->>> that its priority can be boosted separately from the backlog. That's why
->>> we asked you whether it would be fine to have cpumap as threaded NAPI in
->>> regards to all this :D
->> 
->> Certainly not without a clear understanding what the problem with 
->> a kthread is.
+> On Wed, 2024-12-04 at 13:13 -0800, Alexei Starovoitov wrote:
+> > On Wed, Dec 4, 2024 at 1:08=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.=
+com> wrote:
+> > >
+> > > On Wed, 2024-12-04 at 21:48 +0100, Kumar Kartikeya Dwivedi wrote:
+> > >
+> > > [...[
+> > >
+> > > (A) ----.
+> > >         |
+> > >         v
+> > > > > > What this will do in both cases::
+> > > > > > First, avoid walking states when off !=3D 0, and reset id.
+> > > > > > If off =3D=3D 0, go inside mark_ptr_or_null_reg and walk all re=
+gs, and
+> > > > > > remove marks for those with off !=3D 0.
+> > >
+> > > (B) ----.
+> > >         |
+> > >         v
+> > > > > That's getting intrusive.
+> > > > > How about we reset id=3D0 in adjust_ptr_min_max_vals()
+> > > > > right after we suppressed "null-check it first" message for raw_t=
+p-s.
+> > > > >
+> > > > > That will address the issue as well, right?
+> > > >
+> > > > Yes (minor detail, it needs to be reset to a new id, otherwise we h=
+ave
+> > > > warn on maybe_null set but !reg->id, but the idea is the same).
+> > > > Let's see what Eduard thinks and then I can give it a go.
+> > >
+> > > Sorry for delay.
+> > >
+> > > I like what Kumar is proposing in (A) because it could be generalized=
+:
+> > > there is no real harm in doing 'r2 =3D r1; r2 +=3D 8; r1 !=3D 0; ...'
+> > > and what Kumar suggests could be used to lift the "null-check it firs=
+t ..."
+> > > restriction.
+> >
+> > I don't see how it can be generalized.
+> > Also 'avoid walking states when off !=3D 0' is far from simple.
+> > We call into mark_ptr_or_null_regs() with id =3D=3D 0 already
+> > and with reg->off !=3D 0 for RCU and alloc_obj.
 >
-> Yes, sure thing.
+> I did not try to implement this, so there might be a devil in the details=
+.
+> The naive approach looks as below.
 >
-> Bad thing's that I can't reproduce Daniel's problem >_< Previously, I
-> was testing with the UDP trafficgen and got up to 80% improvement over
-> the baseline. Now I tested TCP and got up to 70% improvement, no
-> regressions whatsoever =\
->
-> I don't know where this regression on Daniel's setup comes from. Is it
-> multi-thread or single-thread test? 
+> Suppose we want to allow 'rX +=3D K' when rX is PTR_MAYBE_NULL.
+> Such operations generate a set of pointers with different .off values
+> but same .id .
+> For a regular (non raw_tp) case:
+> - dereferencing PTR_MAYBE_NULL is disallowed;
+> - if there is a check 'if rY !=3D 0' and rY.off =3D=3D 0,
+>   the non-null status could be propagated to each
+>   register in a set (and PTR_MAYBE_NULL mark removed);
+> - if there is a check 'if rY !=3D 0' and rY.off !=3D 0,
+>   nothing happens, no marks are changed.
 
-8 threads with 16 flows over them (-T8 -F16)
-
-> What app do you use: iperf, netperf,
-> neper, Microsoft's app (forgot the name)?
-
-neper, tcp_stream.
-
-> Do you have multiple NUMA
-> nodes on your system, are you sure you didn't cross the node when
-> redirecting with the GRO patches / no other NUMA mismatches happened?
-
-Single node. Technically EPYC NPS=1. So there are some numa characteristics
-but I think the interconnect is supposed to hide it fairly efficiently.
-
-> Some other random stuff like RSS hash key, which affects flow steering?
-
-Whatever the default is - I'd be willing to be Kuba set up the configuration
-at one point or another so it's probably sane. And with 5 runs it seems
-unlikely the hashing would get unlucky and cause an imbalance.
+Yes, also I realized after some thinking that when rY with off !=3D 0 is
+checked, it just needs to be a no-op (in context of this solution), we
+don't need to remove it from the set. Later if rX with off =3D=3D 0
+sharing the same id is checked rY should be marked not null.
 
 >
-> Thanks,
-> Olek
+> For a raw_tp case:
+> - dereferencing PTR_MAYBE_NULL is allowed (as it is already);
+> - the mechanics for 'if rY !=3D 0' and rY.off =3D=3D/!=3D 0 can remain th=
+e same,
+>   nothing is wrong with removing PTR_MAYBE_NULL marks from such pointers.
 
-Since I've got the setup handy and am motivated to see this work land,
-do you have any other pointers for things I should look for? I'll spend some
-time looking at profiles to see if I can identify any hot spots compared to
-softirq based GRO.
+Yes, it can be generalized, this solution to generalize to all types
+does not require the state forking approach, which is different.
 
-Thanks,
-Daniel
+It is getting late for me here so I will continue looking at this
+tomorrow, but I can do this for raw_tp in this patch as a fix for the
+warning.
+Then, I can send a follow up doing it for all pointer types against
+bpf-next where can continue discussion based on concrete code.
+
+Alexei said he was giving the state forking a go in parallel (which is
+much more involved and impact on veristat needs to be analyzed).
+
+Anyhow, I will continue tomorrow. Let me know what you think.
+
+>
+> > 'avoid walking with off !=3D 0' doesn't look trivial.
+> > It would need to be special cased to raw_tp and some other
+> > conditions.
+> > I could be missing something.
+> >
+> > Let's see how patches look.
+> >
+> > > However, as far as I understand, the plan is to fix this by generatin=
+g
+> > > two entry tracepoint states: one with parameter as null, another with
+> > > parameter not-null (all combinations for every parameter).
+> > > If that is the plan, what Alexei suggests in (B) is simpler.
+>
 
