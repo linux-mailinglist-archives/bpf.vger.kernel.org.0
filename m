@@ -1,128 +1,107 @@
-Return-Path: <bpf+bounces-46120-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46122-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF6989E477C
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 23:08:29 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59936163949
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 22:08:26 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 742F019DF98;
-	Wed,  4 Dec 2024 22:08:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cusyRzWA"
-X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82BE99E47B3
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 23:19:08 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A31194C94;
-	Wed,  4 Dec 2024 22:08:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 429292855C0
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2024 22:19:07 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9351D190471;
+	Wed,  4 Dec 2024 22:19:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KeIXYDID"
+X-Original-To: bpf@vger.kernel.org
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2C6171CD;
+	Wed,  4 Dec 2024 22:19:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733350102; cv=none; b=mVnXHnGSo5MpOHgrgBro3P2LWznKztMHSgSN6pql1aN+L32i+n70v3j26Q1xhpbG8x6rpOFpL97U5MxCMExdg9QRkKLgYquHG2ZlXe1KeQKW6Xet82vctJNaRk1pAMhvgmqEv7O8X5q7qRROPqFuMYowUMIZbeG5AvWDJnAOPzY=
+	t=1733350742; cv=none; b=lNK6E7uIgXUq0yZrlZ4wjxb5ifTl4BY2QHp1Q6UVoaYXX/y7esmjZHNz8XTkS9ej/zMHO/0p4xEuShTIgjFpiyzaIKR4r53SLx9EX9OZl5lfnJWj+B1ShxjEkBd1lP0E4ieUVyxu5PJeplGQwbygydf4pu51FOSjzN/t3FkbVY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733350102; c=relaxed/simple;
-	bh=dDeGdNCjF74KwY0MX07HSBQzSKPMdTi2G/auzevOK+I=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=rZS1bUPIRRCbkdzP7QvAZ0AHQDVEfWXUqsiIr0yQPLaMgHK2cVimPmSCcl+YOqQHev7XFAON7QWdOEK0IqMbWrga5za89b860w5Im/E7kfyp0nRwlfCr1rHrd0dP36Ly25ZEQN1c37hbd+zaiVM4OCjaJ9NXub81MeHF8+GC67U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cusyRzWA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99EA5C4CECD;
-	Wed,  4 Dec 2024 22:08:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733350101;
-	bh=dDeGdNCjF74KwY0MX07HSBQzSKPMdTi2G/auzevOK+I=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-	b=cusyRzWAIEmcpZ0qfrqMrrm1qz6iXPcNDcbx73p+i6CtBHrI4DDRGy1/3gG4zXL5Q
-	 vsmIpPlXA8BLXIQ7PcYu4+bJqpvR8tAy49YlL7Zvfec0PPEYiBWIjpfe4Kk7D0Ekeq
-	 PB87JtdeC8/vbWFfuAo0N2SNzLz5BHCW4H35QtRoKqB5Kr3OPeipbkDdZT55X43Mdd
-	 IP/viasKusOA8tVgh48TfLJp/VUHgOwg8dJFo8wjW8uKBVfM+YUbDoQv2ZI+UjhkGS
-	 piq2q0Op1SsG96oGaM3wN4Odq8hQRGJTlE/Dh3ldECmrCrk/CapdHH8shup78eV9D0
-	 mEBKVj1MJcHtg==
-Message-ID: <bf5da4d3-c317-4616-ac68-0d49bb5815c2@kernel.org>
-Date: Wed, 4 Dec 2024 22:08:15 +0000
+	s=arc-20240116; t=1733350742; c=relaxed/simple;
+	bh=Wp0PTle/BHGhcTvLa7B8zRmlNzq3MdHFa2kOSeQrpHk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gMNCYbBh5x1QH5ltxaQQu+2UlmSDSzKcsKqat0+DbejxaDsd31jbhc7g86eWfLf+6XoUpEdt4imkyVVUqHm0jzHzbEGKwtQLu3aFZX6cD21iowEdSNWZvebZBsqVXn03XCbOV1qW14V1yewjxkKjHOigdV98hpjFp8oYt8iueJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KeIXYDID; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4349f160d62so1893205e9.2;
+        Wed, 04 Dec 2024 14:19:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733350739; x=1733955539; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wp0PTle/BHGhcTvLa7B8zRmlNzq3MdHFa2kOSeQrpHk=;
+        b=KeIXYDIDGODtp0kuRh5iOF1/F3V9sg+0+v6ESlm5EeeccfuMdrJUL2pQROKL8EGkfr
+         gIgsWMoisRsMKDoGthBlwND3h+gbUQz3+/IeHhPyPDqzUzlTIBOYr8icHHmytIkLwAGH
+         f+hMwAemQeYfQcDDsgM9vs1rMwCaTiqdqa2EnMqdH878mEEay7GNk8ZG9qm672fk9rlr
+         5Uzur3R2FlE5jszkz3uysfpax31LV9BGxCMQJOPh0OULu4WN2VtfZuCndHO389KX8Emt
+         i4gqF118dQWHXztKTvcEGI1Xyc21Pp/7N3yMqvqoatzZVK5hey47VXsURoS0dzCzHdlH
+         JZ1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733350739; x=1733955539;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wp0PTle/BHGhcTvLa7B8zRmlNzq3MdHFa2kOSeQrpHk=;
+        b=QtUpaylJUgJ+durv3fE3A3ALQ9wi/nK909kQqn56YvRMHEtb6M0mx4ieKZ0wJMgTBc
+         RpESo6e+a2f+0Mf/Vjf5AhSY2GAxqn/ZplXCFJhxSWTKvOai4YJpQd9dbBNF8BXWsXTu
+         UyBt8oM4uu0YAoXjMULchR+toRUo2tM7PisS/MPQ9J4IFCC7ivQ7HK8M3NEzdzk1E+kz
+         BghdY+/82QHT4JIU2e6w/NpH+yKok9UnXCdKSb6hrT8OVsukck/c70Tj6uoaG0t60KnP
+         d7+PGUM57qbsbT3QrIifzTKl2Vg7BhzZ9O0y38uagxRe/BXAMe8g46zIZhNxsAG9LNzK
+         DBrg==
+X-Forwarded-Encrypted: i=1; AJvYcCWSsvyEy6ERCjVZdecH3pwhDKj1RtZdncntYmEeZXWLB9CYxPKriPiLchMkkH57RSfAatw=@vger.kernel.org, AJvYcCX+DPQzWXRXIRNwbU3o8zRN+23J4umUm0/ooqqsDgxXTxeVVfv4AgfvfDGVmFTw5enfQ8kZwoU/JR+qUNZd@vger.kernel.org
+X-Gm-Message-State: AOJu0YwnjA3I9LK4TK/dwEmnLE+XyMEVnuGEa2a4+hg+6vmPNSiHzAR6
+	AiIHS6t4+UHBzeExZsHEc2wfMWXB2GzrxJePnXoWJ7WL9TP2wnN48mcOOFlmX0MaCuvIvcLc/Ga
+	10sM2e0fynQISIErzZokeNswmoQ8=
+X-Gm-Gg: ASbGncsbK6WtQuhjkN01ZO3h18/YntCh6RNRLsbEQ8tvVig057wMqC94P8c3+8h95/c
+	XCVkFXVjuRlVR49HwtDgKewHeuoW2vv/9Opwx/EF0dULKaCs=
+X-Google-Smtp-Source: AGHT+IGG3kuqd8+aNV0WyDqWWtmf3emAnGN83yWGfcoTC/lmN/+vTDtaSB/HNlFawpm394bKEBIg9HzwYvyEd5IXUwc=
+X-Received: by 2002:a05:600c:1c0e:b0:434:a802:e99a with SMTP id
+ 5b1f17b1804b1-434d09b1590mr73836775e9.4.1733350738500; Wed, 04 Dec 2024
+ 14:18:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Quentin Monnet <qmo@kernel.org>
-Subject: Re: [PATCH] bpftool: Fix failure with static linkage
-To: Namhyung Kim <namhyung@kernel.org>, Leo Yan <leo.yan@arm.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Nick Terrell <terrelln@fb.com>,
- bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, Mahe Tardy <mahe.tardy@gmail.com>
-References: <20241204213059.2792453-1-leo.yan@arm.com>
- <Z1DLYCha0-o1RWkF@google.com>
-Content-Language: en-GB
-In-Reply-To: <Z1DLYCha0-o1RWkF@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20241126005206.3457974-1-andrii@kernel.org> <20241127165848.42331fd7078565c0f4e0a7e9@linux-foundation.org>
+ <CAEf4BzZF8Gt_H=7J9SYXGorcjukQAqPJoX-a8vqBFdo73ZnXFA@mail.gmail.com>
+ <CAADnVQKwZqajMd04Fp2CMmNbSAkfSKkUZiBwzoo4Dno1AzX7zQ@mail.gmail.com> <20241204135038.1fa7e7803e14c41050584fc2@linux-foundation.org>
+In-Reply-To: <20241204135038.1fa7e7803e14c41050584fc2@linux-foundation.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 4 Dec 2024 14:18:47 -0800
+Message-ID: <CAADnVQ+ZtUWOUheHYriAwSRAqyrt5YOtRveWeV-Usae2FLnKKA@mail.gmail.com>
+Subject: Re: [PATCH mm/stable] mm: fix vrealloc()'s KASAN poisoning logic
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, dakr@kernel.org, 
+	Michal Hocko <mhocko@suse.com>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-2024-12-04 13:36 UTC-0800 ~ Namhyung Kim <namhyung@kernel.org>
-> Hi Leo,
-> 
-> On Wed, Dec 04, 2024 at 09:30:59PM +0000, Leo Yan wrote:
->> When building perf with static linkage:
->>
->>   make O=/build LDFLAGS="-static" -C tools/perf VF=1 DEBUG=1
->>   ...
->>   LINK    /build/util/bpf_skel/.tmp/bootstrap/bpftool
->>   /usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libelf.a(elf_compress.o): in function `__libelf_compress':
->>   (.text+0x113): undefined reference to `ZSTD_createCCtx'
->>   /usr/bin/ld: (.text+0x2a9): undefined reference to `ZSTD_compressStream2'
->>   /usr/bin/ld: (.text+0x2b4): undefined reference to `ZSTD_isError'
->>   /usr/bin/ld: (.text+0x2db): undefined reference to `ZSTD_freeCCtx'
->>   /usr/bin/ld: (.text+0x5a0): undefined reference to `ZSTD_compressStream2'
->>   /usr/bin/ld: (.text+0x5ab): undefined reference to `ZSTD_isError'
->>   /usr/bin/ld: (.text+0x6b9): undefined reference to `ZSTD_freeCCtx'
->>   /usr/bin/ld: (.text+0x835): undefined reference to `ZSTD_freeCCtx'
->>   /usr/bin/ld: (.text+0x86f): undefined reference to `ZSTD_freeCCtx'
->>   /usr/bin/ld: (.text+0x91b): undefined reference to `ZSTD_freeCCtx'
->>   /usr/bin/ld: (.text+0xa12): undefined reference to `ZSTD_freeCCtx'
->>   /usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libelf.a(elf_compress.o): in function `__libelf_decompress':
->>   (.text+0xbfc): undefined reference to `ZSTD_decompress'
->>   /usr/bin/ld: (.text+0xc04): undefined reference to `ZSTD_isError'
->>   /usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libelf.a(elf_compress.o): in function `__libelf_decompress_elf':
->>   (.text+0xd45): undefined reference to `ZSTD_decompress'
->>   /usr/bin/ld: (.text+0xd4d): undefined reference to `ZSTD_isError'
->>   collect2: error: ld returned 1 exit status
->>
->> Building bpftool with static linkage also fails with the same errors:
->>
->>   make O=/build -C tools/bpf/bpftool/ V=1
->>
->> To fix the issue, explicitly link libzstd.
-> 
-> I was about to report exactly the same. :)
+On Wed, Dec 4, 2024 at 1:50=E2=80=AFPM Andrew Morton <akpm@linux-foundation=
+.org> wrote:
+>
+> On Wed, 4 Dec 2024 09:01:06 -0800 Alexei Starovoitov <alexei.starovoitov@=
+gmail.com> wrote:
+>
+> > Andrew,
+> >
+> > What is the status of this urgent fix ?
+> >
+>
+> In mm-hotfixes for an upstream maerge later this week.
 
-Thank you both. This has been reported before [0] but I didn't find the
-time to look into a proper fix.
-
-The tricky part is that static linkage works well without libzstd for
-older versions of elfutils [1], but newer versions now require this
-library. Which means that we don't want to link against libzstd
-unconditionally, or users trying to build bpftool may have to install
-unnecessary dependencies. Instead we should add a new probe under
-tools/build/feature (Note that we already have several combinations in
-there, libbfd, libbfd-liberty, libbfd-liberty-z, and I'm not sure what's
-the best approach in terms of new combinations).
-
-Thanks,
-Quentin
-
-
-[0] https://github.com/libbpf/bpftool/issues/152
-[1] https://github.com/libbpf/bpftool/issues/152#issuecomment-2343131810
+Awesome. Thanks!
 
