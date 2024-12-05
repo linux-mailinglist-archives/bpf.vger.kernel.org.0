@@ -1,244 +1,132 @@
-Return-Path: <bpf+bounces-46178-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46179-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F8EE9E5ECE
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 20:34:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 295349E602B
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 22:35:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 384771689D0
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 19:34:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C6841884DB1
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 21:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1785522577B;
-	Thu,  5 Dec 2024 19:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D83E1CCEED;
+	Thu,  5 Dec 2024 21:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MJ9tFfzM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JkHC75IA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB2921E492
-	for <bpf@vger.kernel.org>; Thu,  5 Dec 2024 19:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 249E71B87C8;
+	Thu,  5 Dec 2024 21:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733427254; cv=none; b=EXgXeucN5pwZDriYmBUSzw2q2VkwxIciH0gx6qKMs/og1lBZrDcsNwRRySShE7eKW6mGVDOIUYioe5w1s+VgGGiMSWYFqJMo39viRcHiPgxuUxVxzgw2kuvTkhtbH1Gagf+mZyb99hzSUuhAJXI7e2lGXprzQE5yFhNBPHfTF9s=
+	t=1733434513; cv=none; b=FVGpVAoTBxCvc7LgVw0cIIrG7Anu42+QeMU+Nd0jNCnLMev6WDjp4exRtVLOny8DvM+yl1UcDDVJCo8tTlA5/3Pm69OwxeebJ057rUzBmGjNvcUDzfnJ7IrRQnKEz+r0IZBUUzaZDH+olt74hO0JnsJ+1zAsDK7qvdf5PSGMr3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733427254; c=relaxed/simple;
-	bh=dvQu9oAf+NEofjCok/8IinkRcqBbBsazLiD9NSRtZx4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Wzy/lZwiTieS8eQBIOi49bW843Q9H6XX6N7YjlU2vutQQpKMpYfPguQKOBJ7imuqEGMMN9lySdjPq5eu3tR4teqqIdounLj5GoA+G1pS8yCmVcmS94OwmkUtkY+KroW30bIhu1PvTNoAl/Q2vk1eTQHYbVajYx+uoLzCRnS7WCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MJ9tFfzM; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1733434513; c=relaxed/simple;
+	bh=9osjdTBG4Gc+WKDe1rMs5RM1vpWafc/vIF99UIfgr6o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KzhkXcBkMSQTFWDPWCz00Szy2cMRjWMBl/uyOSadXU5YfNjCE2bi83X52lvvrDJnoCcz022wT/owQL9mpLN3MOH8h6mgbSwvc/zaEM43A4Tf1Zpo6ulqMspKGWoTpphlMTw1OiLvph+IxVX4QLrssFDUSjh6zq1eg688rogWdWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JkHC75IA; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-aa629402b53so148570466b.3
-        for <bpf@vger.kernel.org>; Thu, 05 Dec 2024 11:34:12 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2ee9a780de4so1206146a91.3;
+        Thu, 05 Dec 2024 13:35:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733427251; x=1734032051; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0x6D2qcCTwYQDAwRUTeJ9zBzcUX0GmIopK74pO3ReAo=;
-        b=MJ9tFfzMpeCyZQHW1yLfD+5aLXcTutIER3/UhcUI6Z6zKuMZX2r/SHGoCGfA4IK/Aq
-         3G6ihANxyIejSIJDYAnGCaqlG8RVul+EazqoN+OxKEdOkS55aUX5I5Xbf8eQYZZGBfCw
-         /hONwQx6DHp1G9lo4p5sVQmwYLX+c9AMB0dpN5cB8nJ70qHrF1v74thKeMd6XRP36IG4
-         LZoBTPMOqVvXzzaCEDvan1VBkorz55eNMUpgcUXKC+vqnNPF93LJCRZhnD5LUdf47jd9
-         OyLODCgzlzKOzzc/9mCvOwGtV1+cjj/oR3z7F+0KnU2Mhis75+wVXw1r28O0DoLREgti
-         p89Q==
+        d=gmail.com; s=20230601; t=1733434511; x=1734039311; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vDz3RwgDohqSZCfDPmKODxZpbSK/BAgqhtU7Mdsf4XY=;
+        b=JkHC75IA8HCXcREvtPQem9z4SwWx3nY1LJNkU2dlA1AC8sabc2yBf0/6+o82zBJ1kt
+         TWfcEKk7vohappctrQC8ioHpwgDkGpJ8FwVAmUjL7MgwLd/G9XBe8enVmXJHRcHmkT5w
+         31nY+PRwWFDfHvWPHnBbuolvFTR/I12w1NZKX9U1SX/Dp6g+Z46OqCpkJzCAyY1iVGvY
+         XL5oPRI72jgkGsS9udfQjtGaDFPNEO27Rm+bhc6YYnt+mUvHoW84nT0Oipn9OhJHmWJr
+         b9BcbY+rvSiRhIN/7VgDrCqq8Zbk3ZhARxK4dMoVG/Xdt5ynVU3fVSjhyH54Rc2Aa0Fx
+         nG4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733427251; x=1734032051;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0x6D2qcCTwYQDAwRUTeJ9zBzcUX0GmIopK74pO3ReAo=;
-        b=Z8ziR0LOfXapzliLPOWrNjAascmZcX829VphwTOliJKpRpnjhDbkBjwA9CoGl9DQ4W
-         d09TeaRay2aBXp8v5mZwF9Ch0DAVitDLRUJiJAG/uSAZjKFrDAAlUxaPXQxKsIrEVtEn
-         8ucGDYRvlcKa9dz79lFswgKe9zacRQI4lcVNCVsZOZJZHLsilUil8e4l4AnYOSU6KP18
-         KCj1b76F2b/vQ4YLjdrksLTEiKnarZmc3m7eWi3SBQdOZW4jVd7tRLzGTBh2sBGBQ+ql
-         3oJiaML77SZ7eDxhxVpEZFAHVA6RK9dsZvT+l0kwNY5HHSfBx/t808vB+RHFKOI22sYD
-         IeiQ==
-X-Gm-Message-State: AOJu0YxcYd68aV0iBD4O2M198q3eEToLJwD0mCuUOoUGlsEqKikGoLsM
-	B5SSdaMEWuC0AUiLqll6JQIIzS5R0rteyHCvljbKi5CNI0ZCfOaAqL/igQ==
-X-Gm-Gg: ASbGncvzjmb+sOLiB/M3LDxaCOjixB29aPPYYlZEiixoudNKu5ymgbtqwLxpmZu9ePD
-	sZAY3Rw6Ipz3TaRJY24Q7cO7/k6sCn4mYBhnkrlOUrm/O5MEaykwYgK/Mpesrb9K6ZialPiVhJr
-	+G2D0zY0Q/8z9XoyTAmxt4ynY2xRDH0PoyS9ZDmQb1Fz8vvju6br/IIzgtgvXj8+sAX8voVCxZD
-	ybCpgnODRj/vpYghq1fsg1e8+veIiwEqf4kSvujalTIl9VKOyKJlr/3iRWWG/ONAl6z+1ObyEi5
-X-Google-Smtp-Source: AGHT+IEFicZjluUN+GhShrLT1Nx6ftjsa/2jGCZvL98MyEuMLPL+A1SjGraXui+Yf0m2OH1aYm9eNQ==
-X-Received: by 2002:a17:906:3291:b0:aa6:25c8:e75a with SMTP id a640c23a62f3a-aa63a088c55mr4657766b.27.1733427250941;
-        Thu, 05 Dec 2024 11:34:10 -0800 (PST)
-Received: from localhost.localdomain ([2a02:8109:a302:ae00:6eb3:da82:a6be:6559])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa625e92a9asm132465566b.56.2024.12.05.11.34.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Dec 2024 11:34:10 -0800 (PST)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next] selftests/bpf: add more stats into veristat
-Date: Thu,  5 Dec 2024 19:34:04 +0000
-Message-ID: <20241205193404.629861-1-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.47.1
+        d=1e100.net; s=20230601; t=1733434511; x=1734039311;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vDz3RwgDohqSZCfDPmKODxZpbSK/BAgqhtU7Mdsf4XY=;
+        b=ZrWUSaLCpWYJSl1SoTgasAMriwAMAmJjgmCSdhaPm5gxAAqgglJGvvQhx5E/54fQbL
+         b+nyfl1xZZ/17ulONwVFzwSTu7pdaNtcxhm14IiN7cMSP3voA1BQ+lHYK7jW2Wb7h6Pw
+         iursPT7KDVbI1A4ks4ejI94xrqPaGKSSGvrw1LxW+QyPMXpCJP+d7anGPjdu3Qor+yrM
+         UadNk6uEyFCJWZMt46g6vicWlCEI6sNF+483iA7VmA2wEHdZ78THcvmErwvBUGnncieX
+         p1F9KF0lQMNMwPlMwebQSkggGmaQg3R7zcDeKJ7eyZS+981FC4IV11wkojVllNXg/g3w
+         FUWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVIddneruKTvXjA0eert61pUgh1Z29NfSBdxKaQ9tTHR3uc7oBDjZZdAazRbIKCOJ1K/Hk=@vger.kernel.org, AJvYcCWgA+g7OzML8eDpHOEOdsAdyqVpQX9tSumGdUC31pSaD0TR7YFKI4+2KGCrchuAejbY6VHRTuxeyIHTJg8a@vger.kernel.org
+X-Gm-Message-State: AOJu0YysCJS1BYyyMVtt9EhH9Hg3pbZ/GbmTXEw8vDkKKhfPtCCFLirr
+	G/1Z7ZVLFYYcudommvDB21zDaWCYAOZKK3jr2inlIKpac9NX5km1i///ZZkxn34frLvRvydGWxe
+	Q5fcc3zk/Gey+NpZNULSu7CAJC3s=
+X-Gm-Gg: ASbGncsq5fG1Jxe2hqDgwQUD3kQkycScLbFagHru0YVrS00bdK0WTP9kggmeo6yLyP0
+	LWOXBrQbAX6RO94NTql/97lsC4VxwX8KJqPyjkSBZTQNq7bA=
+X-Google-Smtp-Source: AGHT+IHONkoY0V+Q0vXwFujZNPsgCK47RBbuS5Gc9ubEOlpAo0tr/fZX5XDrQ9DqvsOA4ysEOeok7xgw7By9fBNnE1s=
+X-Received: by 2002:a17:90b:1a8e:b0:2ee:bbe0:98c6 with SMTP id
+ 98e67ed59e1d1-2ef6965469cmr1007629a91.8.1733434511113; Thu, 05 Dec 2024
+ 13:35:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <tencent_A7A870BF168D6A21BA193408D5645D5D920A@qq.com> <0b96aa24-13ca-4e0a-8e80-f2586fbe2b57@kernel.org>
+In-Reply-To: <0b96aa24-13ca-4e0a-8e80-f2586fbe2b57@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 5 Dec 2024 13:34:59 -0800
+Message-ID: <CAEf4BzbLmXF9XB=fBvL7NLMoPmfD=DFFvuM8Fw5h6T7vfFXUFg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] bpftool: Fix gen object segfault
+To: Quentin Monnet <qmo@kernel.org>
+Cc: Rong Tao <rtoax@foxmail.com>, ast@kernel.org, daniel@iogearbox.net, 
+	rongtao@cestc.cn, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, 
+	"open list:BPF [TOOLING] (bpftool)" <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+On Thu, Dec 5, 2024 at 4:22=E2=80=AFAM Quentin Monnet <qmo@kernel.org> wrot=
+e:
+>
+> On 05/12/2024 12:09, Rong Tao wrote:
+> > From: Rong Tao <rongtao@cestc.cn>
+> >
+> > If the input file and output file are the same, the input file is clear=
+ed
+> > due to opening, resulting in a NULL pointer access by libbpf.
+> >
+> >     $ bpftool gen object prog.o prog.o
+> >     libbpf: failed to get ELF header for prog.o: invalid `Elf' handle
+> >     Segmentation fault
+> >
+> >     (gdb) bt
+> >     #0  0x0000000000450285 in linker_append_elf_syms (linker=3D0x4feda0=
+, obj=3D0x7fffffffe100) at linker.c:1296
+> >     #1  bpf_linker__add_file (linker=3D0x4feda0, filename=3D<optimized =
+out>, opts=3D<optimized out>) at linker.c:453
+> >     #2  0x000000000040c235 in do_object ()
+> >     #3  0x00000000004021d7 in main ()
+> >     (gdb) frame 0
+> >     #0  0x0000000000450285 in linker_append_elf_syms (linker=3D0x4feda0=
+, obj=3D0x7fffffffe100) at linker.c:1296
+> >     1296              Elf64_Sym *sym =3D symtab->data->d_buf;
+> >
+> > Signed-off-by: Rong Tao <rongtao@cestc.cn>
+>
+> Tested-by: Quentin Monnet <qmo@kernel.org>
+> Reviewed-by: Quentin Monnet <qmo@kernel.org>
 
-Extend veristat to collect and print more stats, namely:
-- program size in instructions
-- jited program size
-- program type
-- attach type
-- stack depth
+Isn't this papering over a deeper underlying issue? Why do we get
+SIGSEGV inside the linker at all instead of just erroring out?
+Comparison based on file path isn't a reliable way to check if input
+and output are both the same file, so this fixes the most obvious
+case, but not the actual issue.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- tools/testing/selftests/bpf/veristat.c | 51 +++++++++++++++++++++++---
- 1 file changed, 46 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index e12ef953fba8..0d7fb00175e8 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -38,8 +38,14 @@ enum stat_id {
- 	FILE_NAME,
- 	PROG_NAME,
- 
-+	SIZE,
-+	JITED_SIZE,
-+	STACK,
-+	PROG_TYPE,
-+	ATTACH_TYPE,
-+
- 	ALL_STATS_CNT,
--	NUM_STATS_CNT = FILE_NAME - VERDICT,
-+	NUM_STATS_CNT = ATTACH_TYPE - VERDICT + 1,
- };
- 
- /* In comparison mode each stat can specify up to four different values:
-@@ -640,19 +646,22 @@ static int append_filter_file(const char *path)
- }
- 
- static const struct stat_specs default_output_spec = {
--	.spec_cnt = 7,
-+	.spec_cnt = 12,
- 	.ids = {
- 		FILE_NAME, PROG_NAME, VERDICT, DURATION,
--		TOTAL_INSNS, TOTAL_STATES, PEAK_STATES,
-+		TOTAL_INSNS, TOTAL_STATES, PEAK_STATES, SIZE,
-+		JITED_SIZE, PROG_TYPE, ATTACH_TYPE, STACK,
- 	},
- };
- 
- static const struct stat_specs default_csv_output_spec = {
--	.spec_cnt = 9,
-+	.spec_cnt = 14,
- 	.ids = {
- 		FILE_NAME, PROG_NAME, VERDICT, DURATION,
- 		TOTAL_INSNS, TOTAL_STATES, PEAK_STATES,
- 		MAX_STATES_PER_INSN, MARK_READ_MAX_LEN,
-+		SIZE, JITED_SIZE, PROG_TYPE, ATTACH_TYPE,
-+		STACK,
- 	},
- };
- 
-@@ -688,6 +697,11 @@ static struct stat_def {
- 	[PEAK_STATES] = { "Peak states", {"peak_states"}, },
- 	[MAX_STATES_PER_INSN] = { "Max states per insn", {"max_states_per_insn"}, },
- 	[MARK_READ_MAX_LEN] = { "Max mark read length", {"max_mark_read_len", "mark_read"}, },
-+	[SIZE] = { "Prog size", {"prog_size", "size"}, },
-+	[JITED_SIZE] = { "Jited size", {"jited_size"}, },
-+	[STACK] = {"Stack depth", {"stack_depth", "stack"}, },
-+	[PROG_TYPE] = { "Program type", {"program_type", "prog_type"}, },
-+	[ATTACH_TYPE] = { "Attach type", {"attach_type", }, },
- };
- 
- static bool parse_stat_id_var(const char *name, size_t len, int *id,
-@@ -853,13 +867,16 @@ static int parse_verif_log(char * const buf, size_t buf_sz, struct verif_stats *
- 
- 		if (1 == sscanf(cur, "verification time %ld usec\n", &s->stats[DURATION]))
- 			continue;
--		if (6 == sscanf(cur, "processed %ld insns (limit %*d) max_states_per_insn %ld total_states %ld peak_states %ld mark_read %ld",
-+		if (5 == sscanf(cur, "processed %ld insns (limit %*d) max_states_per_insn %ld total_states %ld peak_states %ld mark_read %ld",
- 				&s->stats[TOTAL_INSNS],
- 				&s->stats[MAX_STATES_PER_INSN],
- 				&s->stats[TOTAL_STATES],
- 				&s->stats[PEAK_STATES],
- 				&s->stats[MARK_READ_MAX_LEN]))
- 			continue;
-+
-+		if (1 == sscanf(cur, "stack depth %ld", &s->stats[STACK]))
-+			continue;
- 	}
- 
- 	return 0;
-@@ -1146,8 +1163,11 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
- 	char *buf;
- 	int buf_sz, log_level;
- 	struct verif_stats *stats;
-+	struct bpf_prog_info info = {};
-+	__u32 info_len = sizeof(info);
- 	int err = 0;
- 	void *tmp;
-+	int fd;
- 
- 	if (!should_process_file_prog(base_filename, bpf_program__name(prog))) {
- 		env.progs_skipped++;
-@@ -1196,6 +1216,13 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
- 	stats->file_name = strdup(base_filename);
- 	stats->prog_name = strdup(bpf_program__name(prog));
- 	stats->stats[VERDICT] = err == 0; /* 1 - success, 0 - failure */
-+	stats->stats[SIZE] = bpf_program__insn_cnt(prog);
-+	stats->stats[PROG_TYPE] = bpf_program__type(prog);
-+	stats->stats[ATTACH_TYPE] = bpf_program__expected_attach_type(prog);
-+	fd = bpf_program__fd(prog);
-+	if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) == 0)
-+		stats->stats[JITED_SIZE] = info.jited_prog_len;
-+
- 	parse_verif_log(buf, buf_sz, stats);
- 
- 	if (env.verbose) {
-@@ -1309,6 +1336,11 @@ static int cmp_stat(const struct verif_stats *s1, const struct verif_stats *s2,
- 	case PROG_NAME:
- 		cmp = strcmp(s1->prog_name, s2->prog_name);
- 		break;
-+	case ATTACH_TYPE:
-+	case PROG_TYPE:
-+	case SIZE:
-+	case JITED_SIZE:
-+	case STACK:
- 	case VERDICT:
- 	case DURATION:
- 	case TOTAL_INSNS:
-@@ -1523,12 +1555,21 @@ static void prepare_value(const struct verif_stats *s, enum stat_id id,
- 		else
- 			*str = s->stats[VERDICT] ? "success" : "failure";
- 		break;
-+	case ATTACH_TYPE:
-+		*str = s ? libbpf_bpf_attach_type_str(s->stats[ATTACH_TYPE]) ? : "N/A" : "N/A";
-+		break;
-+	case PROG_TYPE:
-+		*str = s ? libbpf_bpf_prog_type_str(s->stats[PROG_TYPE]) ? : "N/A" : "N/A";
-+		break;
- 	case DURATION:
- 	case TOTAL_INSNS:
- 	case TOTAL_STATES:
- 	case PEAK_STATES:
- 	case MAX_STATES_PER_INSN:
- 	case MARK_READ_MAX_LEN:
-+	case STACK:
-+	case SIZE:
-+	case JITED_SIZE:
- 		*val = s ? s->stats[id] : 0;
- 		break;
- 	default:
--- 
-2.47.1
-
+>
+> Thank you!
 
