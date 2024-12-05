@@ -1,127 +1,144 @@
-Return-Path: <bpf+bounces-46181-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46182-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26E279E6048
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 22:57:09 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0E2F169E30
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 21:57:05 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3641CD1E1;
-	Thu,  5 Dec 2024 21:57:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fuGGf8+N"
-X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D4A89E60A7
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 23:32:28 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546D919DF66
-	for <bpf@vger.kernel.org>; Thu,  5 Dec 2024 21:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16B952836D9
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 22:32:27 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C7F1CDFAE;
+	Thu,  5 Dec 2024 22:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MdffC2By"
+X-Original-To: bpf@vger.kernel.org
+Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 648431A76A4
+	for <bpf@vger.kernel.org>; Thu,  5 Dec 2024 22:31:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733435824; cv=none; b=ofzSErglAkjxPVQOOZxGdJTv0Hs1A6fJYsOdqWTTfP9JcrAG1RYDWO5cVVoU3RRcAnWqBJuxBpsl85z/tjmRV3fQKBUs5SsZbII2f1rEtfw+aCZGRsU/sfcnLOzPero5geLrcFdWtmT7z4hPJPafdGBO8N2gNYb1TiTm71RiyHE=
+	t=1733437918; cv=none; b=ob2CAHJ5hEbcQ3pUuD68l3LJvYpdd3pqT3z5eYEUzQ1as3KKJ9Rciq/T5/uVXhtLGIge3GdnOmzw2y94bWhE9XiCNEMr/w8TWBiLhtFHxnuimKplKcqBzvVZhvB07PeE2RMmx2JW4DTCe01xuGROvt6ICnN/CuvOR10iOfQvnfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733435824; c=relaxed/simple;
-	bh=UC3f3Uo2McWA/Cs0E9DJEtAM557ORigkXu8tbmZSV9A=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=tu2bjW1jGOiPrCR8wFzmX0lYfBM5x7FiloRJxsHsuHplRzD+neV+FKlfvQhNatNNgp18hjk7rRfmTus9KIUhu6lH491+hQXcXegL+6JmLlvIscquZSjKmDGBDvZrgptGpyLYaLhG+2Gtl/US6m2r5CXBJxwf0zHiI7YKMsTjcvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fuGGf8+N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ED67C4CED1;
-	Thu,  5 Dec 2024 21:57:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733435823;
-	bh=UC3f3Uo2McWA/Cs0E9DJEtAM557ORigkXu8tbmZSV9A=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-	b=fuGGf8+NBzZkB1vyN2gLIsffNEGN3OfmTPpYVZ+B69LHbbteJExCgbjaCJSg4a1Ci
-	 yQMDvA+2L826pHIJPPlld3n2lM3BHd6CgzY8OoXWfn84HP+ai8meQS0evgHYrJ5Oqo
-	 D04mUwxBR6EOoQZUiR99Jtfcx1fJSLZ4SiaawQV64hwZGk0BnVNb8hcO6HlsPlaHNS
-	 kGWdrvglq07U1q5025W/1lbRgWV8JbO46y6cvwDiiaKTqkZnGri6bV6KUw7Dg5TQ9i
-	 eXEWk7xhBZ8ThiKtm7zkcucUeBZolTBKbVh7hm2O06M+cdTTxgIekY0f5UXIxNSq2i
-	 zHu7QYPIUsyzQ==
-Message-ID: <e82fc551-752d-4596-9ab4-135a3720ecbd@kernel.org>
-Date: Thu, 5 Dec 2024 21:56:58 +0000
+	s=arc-20240116; t=1733437918; c=relaxed/simple;
+	bh=w05KthImMab2AQ9C4vfI09FyaM0iKZ5qqEIgYfWgw/0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MxNFPjJa+kjsySga/8vhtttbqjOlV23DY8z5h6LzFG0kfBKLCD3EdZIDr9jXXDogBY3/NqCgs5FJukWK2c7SDmHqLIjP5Z2ZkspC7h3oi7cFOpU2zSkpkD/tXmRJmWma/fTcfFvQMWTUZ2HqI7433VP80PvzhDZX82P7X+sP9y8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MdffC2By; arc=none smtp.client-ip=209.85.128.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-434a8640763so10661765e9.1
+        for <bpf@vger.kernel.org>; Thu, 05 Dec 2024 14:31:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733437914; x=1734042714; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9X7x0uqR40njalUaCCLr8cmtT8nnkXUlmS7o9ek2B/g=;
+        b=MdffC2ByoxY3hiCyMWsW/N6c72V7RrQRA6j+to/tgr03rJ8p1tz8UHiVNqyvSBGOoN
+         FfQ81jUwUGu3UGTlIl/VCB0LlAZW16JeC70qdSNcgrJvno2HdlZUxIRa29YGwd1v7NCv
+         jU+QmHlWxZkGYW7r1zBbfX4NRJc8JfePDZBTZYBudiIg/dP044//jTCHNYkhHgX3eViJ
+         KLm3RYWhdM9b3e2UGc1e3SZQ/MakpCYX0qEDDBwJaGIwgegbB25l4pPxz3T7s0Xk/vie
+         thJW4DDlx+YQtV9aXL8TQEZVVtSOGzZcFdS76KQJ0aoHWajKcSwYFm2cpzWPHUtj8m28
+         6aQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733437914; x=1734042714;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9X7x0uqR40njalUaCCLr8cmtT8nnkXUlmS7o9ek2B/g=;
+        b=Ca2a7xaiaFG+t9FXgmxnwn2sxAc7aUZ2QMR+nuwS0RrccIYKNWPydVOgN/daiSMFPE
+         abVaNtcQHPmplKgyNJOXkryl7vVFdCmNUwUji4pb10jjqzphzajS/AqWs8FlIpGXSSdH
+         cduRqDCU4W8Aa0vxTgBi0qIYhrHAbuCcv5/SGbGIcJRl9vrMo0+I+bzrZDaN5cuLk2eA
+         9fX1ZM9693Sw9dt6RPNg4SAOmqaBQ36dK5JzU+Nna551BZWLNYitqw4kZIVUNtT8Ycuk
+         MVjNqSzTDCF3/mIlq8noRRmybmL25foBIWtVmufQ3af0ZHV/WNWOuBfwyAEGUJLjEA/7
+         4imA==
+X-Gm-Message-State: AOJu0YyPmQjsZk0F+3dDdwxwSsIyOPQbw405tHUQTf+4XfzABLMXm7mF
+	f3ft0DeyrieuxcZBOqiJUx56aLbRbr+gCSlMrnCRlstvf2oiw7SeNv5YGoQmv8A=
+X-Gm-Gg: ASbGncuTAswr+OCWZT5s0mm3V4V3HfeOaPnPoyEYoU0iQ57YAIz2G2NeP4mbgONNEOP
+	hGJrp7WfRCfCIv+Dz1hN6q65L3TOU+9+MwDZ/59BEfcFFMVdq0vRMgkbwLqOYtbHoLMxtdUGloX
+	LgJZxxvUR5L0WU7F2FjTAOGmJ4S8k+Cpm7WKkQcdoo/sKFGWrzohaHN3iAD9t9qIgpJCVN3ylF6
+	ANhR0BuQiRpvjzE9ay9JLPb69s9PhhmFj0vYjBSmsjjgjpcJfYO7ESx09x61/Witc7zMYsW/oC+
+X-Google-Smtp-Source: AGHT+IHxP6OfEcY4mEBZnegDjgxDkk1urdKMidj90rvgA2YLbExqX3WsCxj2RGLl1+3Tqsy6/SAdbA==
+X-Received: by 2002:a05:600d:8:b0:434:a5d1:9917 with SMTP id 5b1f17b1804b1-434dded69b3mr6332655e9.21.1733437914185;
+        Thu, 05 Dec 2024 14:31:54 -0800 (PST)
+Received: from localhost (fwdproxy-cln-006.fbsv.net. [2a03:2880:31ff:6::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434d5273b1dsm73843665e9.15.2024.12.05.14.31.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Dec 2024 14:31:53 -0800 (PST)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: kkd@meta.com,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Manu Bretelle <chantra@meta.com>,
+	kernel-team@fb.com
+Subject: [PATCH bpf v2 0/2] Fix for raw_tp PTR_MAYBE_NULL unmarking
+Date: Thu,  5 Dec 2024 14:31:50 -0800
+Message-ID: <20241205223152.2434683-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Quentin Monnet <qmo@kernel.org>
-Subject: Re: [PATCH bpf-next] libbpf: Fix segfault due to libelf functions not
- setting errno
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
- Rong Tao <rtoax@foxmail.com>
-References: <20241205135942.65262-1-qmo@kernel.org>
- <CAEf4BzazrH+QrzJP+honiLWACSheQVuJpj7asdKFvx-rcQB+1w@mail.gmail.com>
-Content-Language: en-GB
-In-Reply-To: <CAEf4BzazrH+QrzJP+honiLWACSheQVuJpj7asdKFvx-rcQB+1w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1954; h=from:subject; bh=w05KthImMab2AQ9C4vfI09FyaM0iKZ5qqEIgYfWgw/0=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnUii03YIg0/oJ4DqD4b6pRcvb7Jb2D7c31hP02Pkv xEjoA5aJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ1IotAAKCRBM4MiGSL8RykHvD/ 9T+cqE7agZyoj4JO5ujGK2JR04r/W4qmGVulhxW1Yw+A7yd8HUaOuIyrR3+cfwM2Xmrcx1DOe0eOFB i3UfNek7W5IxBkPn8+nG5F7PgwwlQmqmHdHmBvx8saATB1JIZkmkF22psQlWZTb1dQRXBHAdOSxUjU xFuompl4eop6krFYiggtZUKh4XGl4T2gP5YdDLtFPCKXUxAgGaJ40LolDL1/viZWEgMh9byduJTKZ/ AIcJdlXhs56C1MhQTtwglbQuxEPwZ6W7lJ0REYcQE3+jt0Q/Yh+vbIGRsQggQmQ0bhdnNlyBHpMx32 SwHEy2TTI+Ru+PgyQb0SbRfxEtafJN4mM/hy/7oHhqGeJIxunfJhCJ+ynXwaMWtoB7vEf6xi0f8GgJ 4rZR8N0oiK0X57ODzuTanWtQI0l8Yh2PnfpSEMEh8Q8HMeSTEJMgqtm1CEWfwhhq70M+qfRtK5MV6J pVTTJjIVCVnzXcjMVhLEMVQx3H6GaFN8tdPjv6qOQ3+88neb734J3WRyqH1FdAHCAUOZCwRfn8JgME wCmVYZL5tN22SEKn8WoGs+49LP4dUowHqF5YkSSySEsG8pfLAT+rOvSLZji8u6bGNavpNVhsDqsr05 MRD0pnsAUg2ojmH2Y3ndHUHYsZAV2VAanlqeTtHlqdV5hIf661+imj0I62tg==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-2024-12-05 13:46 UTC-0800 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> On Thu, Dec 5, 2024 at 5:59 AM Quentin Monnet <qmo@kernel.org> wrote:
->>
->> Libelf functions do not set errno on failure. Instead, it relies on its
->> internal _elf_errno value, that can be retrieved via elf_errno (or the
->> corresponding message via elf_errmsg()). From "man libelf":
->>
->>     If a libelf function encounters an error it will set an internal
->>     error code that can be retrieved with elf_errno. Each thread
->>     maintains its own separate error code. The meaning of each error
->>     code can be determined with elf_errmsg, which returns a string
->>     describing the error.
->>
->> As a consequence, libbpf should not return -errno when a function from
->> libelf fails, because an empty value will not be interpreted as an error
->> and won't prevent the program to stop. This is visible in
->> bpf_linker__add_file(), for example, where we call a succession of
->> functions that rely on libelf:
->>
->>     err = err ?: linker_load_obj_file(linker, filename, opts, &obj);
->>     err = err ?: linker_append_sec_data(linker, &obj);
->>     err = err ?: linker_append_elf_syms(linker, &obj);
->>     err = err ?: linker_append_elf_relos(linker, &obj);
->>     err = err ?: linker_append_btf(linker, &obj);
->>     err = err ?: linker_append_btf_ext(linker, &obj);
->>
->> If the object file that we try to process is not, in fact, a correct
->> object file, linker_load_obj_file() may fail with errno not being set,
->> and return 0. In this case we attempt to run linker_append_elf_sysms()
->> and may segfault.
->>
->> This can happen (and was discovered) with bpftool:
->>
->>     $ bpftool gen object output.o sample_ret0.bpf.c
->>     libbpf: failed to get ELF header for sample_ret0.bpf.c: invalid `Elf' handle
->>     zsh: segmentation fault (core dumped)  bpftool gen object output.o sample_ret0.bpf.c
->>
->> Fix the issue by returning a non-null error code (-EINVAL) when libelf
->> functions fail.
->>
->> Fixes: faf6ed321cf6 ("libbpf: Add BPF static linker APIs")
->> Signed-off-by: Quentin Monnet <qmo@kernel.org>
->> ---
->>  tools/lib/bpf/linker.c | 22 ++++++++--------------
->>  1 file changed, 8 insertions(+), 14 deletions(-)
->>
-> 
-> Ok, so *this* is the real issue with SIGSEGV that we were trying to
-> "prevent" by file path comparison in that bpftool-specific patch,
-> right? LGTM, I'll apply to bpf-next.
+A production BPF program had the following code produced by LLVM.
+
+r0 = 1024;
+r1 = ...; // r1 = trusted_or_null_(id=1)
+r3 = r1;  // r3 = trusted_or_null_(id=1) r1 = trusted_or_null_(id=1)
+r3 += r0; // r3 = trusted_or_null_(id=1, off=1024)
+if r1 == 0 goto pc+X;
+
+After cb4158ce8ec8 ("bpf: Mark raw_tp arguments with PTR_MAYBE_NULL"),
+the production BPF program began throwing a warning in the verifier
+because for the code above, when unmarking null mark from r1, the
+verifier will notice another register r3 with same id but off != 0,
+which is unexpected, since offset modification on PTR_MAYBE_NULL is not
+permitted, but the aforementioned commit relaxed that restriction to
+preserve compatibility with non-NULL raw_tp args.
+
+Provide a fix to suppress the warning for raw_tp args. We will follow up
+with a more generic fix to handle such patterns for all pointer types in
+the verifier, which currently involves playing whack-a-mole with
+suppressing such LLVM optimizations and reworking BPF programs to avoid
+verifier errors.
+
+Changelog:
+----------
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20241204024154.21386-1-memxor@gmail.com
+
+ * Fix eager unmarking bug (Eduard)
+ * Generalize approach, always unmark NULL when off == 0 is checked
+ * Make NULL check noop if operand has off != 0
+ * Do not reset id when treating as noop
+ * Trim comment (Alexei)
+ * Adjust selftests
+
+Kumar Kartikeya Dwivedi (2):
+  bpf: Suppress warning for non-zero off raw_tp arg NULL check
+  selftests/bpf: Add raw_tp tests for PTR_MAYBE_NULL marking
+
+ kernel/bpf/verifier.c                         | 38 +++++++--
+ .../selftests/bpf/prog_tests/raw_tp_null.c    |  6 ++
+ .../selftests/bpf/progs/raw_tp_null_fail.c    | 80 +++++++++++++++++++
+ 3 files changed, 116 insertions(+), 8 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/raw_tp_null_fail.c
 
 
-Correct, I wanted to find where that segfault was coming from, too :).
-Thanks!
+base-commit: 5a6ea7022ff4d2a65ae328619c586d6a8909b48b
+-- 
+2.43.5
+
 
