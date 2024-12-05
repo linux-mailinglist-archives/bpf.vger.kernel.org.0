@@ -1,132 +1,138 @@
-Return-Path: <bpf+bounces-46130-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46131-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A8659E4D3D
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 06:20:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CFC09E4DF7
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 08:07:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32B0818811D9
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 05:20:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4E621680D6
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 07:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C43F8195985;
-	Thu,  5 Dec 2024 05:20:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F06D1A8F77;
+	Thu,  5 Dec 2024 07:07:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gcZbSuxP"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F0hwx7CZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EBDC11187;
-	Thu,  5 Dec 2024 05:20:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 654A519D062
+	for <bpf@vger.kernel.org>; Thu,  5 Dec 2024 07:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733376007; cv=none; b=mCAzETT9YP09bO4EQNVgpUmsGYHxX7Anyiq6C7aIWZh17GaE+56RZi3rK7eXqETXBgXaGpMfkxq+Vt1rCkWaBni2txWg0t1vYOFIcZgph4AtittKQDvgdttdHqjC4EWtMCp1mVfFPetHQTtTpKltmJ5oICk+yIdKFM+0oXi2KDA=
+	t=1733382437; cv=none; b=rZKb1+F5Ru7kuBX5eAtcAsvAj5mutJ5L4lzUf2xIEEe5ScFdwe9882NmrW+XvdOp0JcL4O1lX6ZPQ2v4G04XeM28MXEbnRJ+W6EIfabmdjf7uqEuNuFoZuC4pohauQ8Mbziwkbvyp3GHY2U/dx63b5asbk0GiXR45Qwmw5eNpIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733376007; c=relaxed/simple;
-	bh=HQb7j+/16kk489X/223nxBvP8Rc4zUskXGT8RCaT5Ds=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=B36eDlQgEQVFag+38L4RsOhSmiN9s7Cga3ZjlyUH7IvZqrkDG7GfwmaJ/S3j7TasEbk0oHO3PQ8rcGogHE5pP57wdmd7GZOikFHBIeOkgvaNU2UWQbgW0OjmU6OaN6nB8FKwkBTaSCt8XsJbE7J7tEhAOa3nDXL91TJE/B2Lhi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gcZbSuxP; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1733376005; x=1764912005;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=HQb7j+/16kk489X/223nxBvP8Rc4zUskXGT8RCaT5Ds=;
-  b=gcZbSuxPULu6z9AKPo0FwJGKH931r407v3GT81t2+RO+KGxDPgX+vm5o
-   irvU8ZKSrkfJAUz0JINy/pF9yWrHOg1cC6h3IY+GKidW6hUBi9Egy0vkc
-   FY88ss1TkUBWZfA4r2kveEyi6Nv36/r3DKU0U3dL9hzRA17e2RvqYteFN
-   1xrl4UvM2wDD5kccIWJyGMdW8LkbuHJ07JTOVGu2Pet0dnczkCxfeWHYq
-   f4isH9bsOkhw6yI/kRKZt4f1Kcf1AnlXFzaox1XJ14i/8qFSkbxFiD/jE
-   pHuBCuwkC2VgrCAhUarLVQfd4p3s7uA0yNcsPK0UujEfMT78e54+lCzeT
-   w==;
-X-CSE-ConnectionGUID: Vdy3xPWIRBW1xp5/NjGdSg==
-X-CSE-MsgGUID: TpH85J4MS6yUKKHAdrLE7A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11276"; a="33552350"
-X-IronPort-AV: E=Sophos;i="6.12,209,1728975600"; 
-   d="scan'208";a="33552350"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2024 21:20:04 -0800
-X-CSE-ConnectionGUID: +dqvxwhLQ3Gvv0O2KLAyeg==
-X-CSE-MsgGUID: j4mmzRkpQkao/L9oJ5oDsA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,209,1728975600"; 
-   d="scan'208";a="94170928"
-Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
-  by fmviesa008.fm.intel.com with ESMTP; 04 Dec 2024 21:20:00 -0800
-From: Song Yoong Siang <yoong.siang.song@intel.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S . Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 1/1] selftests/bpf: Enable Tx hwtstamp in xdp_hw_metadata
-Date: Thu,  5 Dec 2024 13:19:36 +0800
-Message-Id: <20241205051936.3156307-1-yoong.siang.song@intel.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1733382437; c=relaxed/simple;
+	bh=Kl6HsgQctyt2rdur8ZJtX/2K/egEmXkE4LXfmhmDlGo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=agh25g2ruiGMt7OayQ/+2Iw7EDc/7T9w2TwViFx3ioHiUusgCe1x0sTvFIDGiA/gbeInE567OwB44jm/SU9k+Pwa1TzJJpo3K/z4HZaN5ntQVcVCfdnHv6zfzfVxhXW+jPSpLn6uUJJAXehsqyDzS4SGUoL6rHTnO/KFADQLz98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=F0hwx7CZ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1733382434;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nIlUHOSRKSIeBx1KVH3cLJABAeJijyq34BeBAY+BX6k=;
+	b=F0hwx7CZQGjCkAo/yzpuhgPc6/xb5c2Ebi3eKUAwbvqdndolVlgcVsgBbBl9dIbZ4MfhsX
+	ei+UY1xkCdedEWtayrc4rc5N/lxacu8bEp/Giy3Sc6mzc39JkRqS77PjAzKtMCSLnVyKq2
+	1QByYTesb0F2BXUkRBSYkJPChHrqF8M=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-107-Gw7QW1_BORmNaTNMKf_mnw-1; Thu, 05 Dec 2024 02:07:12 -0500
+X-MC-Unique: Gw7QW1_BORmNaTNMKf_mnw-1
+X-Mimecast-MFC-AGG-ID: Gw7QW1_BORmNaTNMKf_mnw
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-aa525192412so54082266b.0
+        for <bpf@vger.kernel.org>; Wed, 04 Dec 2024 23:07:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733382431; x=1733987231;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nIlUHOSRKSIeBx1KVH3cLJABAeJijyq34BeBAY+BX6k=;
+        b=bqPJvehMmYJv/dCAQkXbDaI0i5TKlWS2EHUX/hDSzASiboVdlvgS3nc5312ITwlT2c
+         5C3F4WPsBsTY5g1tHCa0pKp4jAC+JntNddGU+iRdb11yWCiv4VT4zJCP6K5S8t0exM4V
+         b0JUb9s9XgrHrODevldSXuR/4Cl95P5gqN5CdxiXEK77mwahCiBOZngJntKBzDhJ2HmQ
+         9uz/TES4oZX9ym3H9ADaqlnvjDb+CXOIgeOQhfTTmBZ4eh3IPnAJvo2Hs4TTnAPvYnWx
+         XwEomJxy1WY8djzV49NdR25Qyi3ofkGfpERqrdYU3if8DOlvJEWqFYBJWPeP4nWgyJsY
+         sglA==
+X-Forwarded-Encrypted: i=1; AJvYcCVc5sJiSCOj/dTdLVU1czfU4/zztLi0tktMqvhn3vyz34wmuka3iN/vmoUkUy5H3vJITDY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzTu7dWHBuoVsoHv40F4AdVIy3FJA26a3jxBUhEL3XGmtnZAFgA
+	n7fSge9D7O199WJyMFiB1QRBELIKXSKJAllYAOJ73QzqOOlhh/pxjq1WpZ0QJiTvei3YbOCZwnr
+	oQzdnlci0a3AX+8PtvR4NmpKceLfXIHyUIr+l0aQWl6OLdCOC
+X-Gm-Gg: ASbGnctrEp0PW1G5rsRnLnekhpIreUmDUhEndWl1eL3cFq3yf+u3s6B8mwCGano7tjn
+	Qj8n8AHPnmfOTh2U3l9CCwAP2deqbfmJwZN7PluEqVcu+fMRk0CgYPUvSDNc8upEY8kK+TZ5IFk
+	ahkvJ/QUme6q9BM5OXhQOTBk6LI+gqz8cF2JnNhWlJdBHzjE8JNOVhBL6HCU7ihXP1VrHBxkjXK
+	KEhV2s76nPF/hZscawJcH1AGMKEwbU9mbIwUfsaBI5z8V8oYOZMx5ul0ME1EgmYwZPXqjzyDQwe
+	GetdNLmp
+X-Received: by 2002:a17:906:2931:b0:aa5:b54:7549 with SMTP id a640c23a62f3a-aa5f7dc9013mr618994666b.34.1733382431162;
+        Wed, 04 Dec 2024 23:07:11 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEDfSYvrco8iFPmdIa5N0bPaEVYtA3msRfhL4TfzhO0Kwo5KXHZgxXAzBdIpgETp61pc4TMVA==
+X-Received: by 2002:a17:906:2931:b0:aa5:b54:7549 with SMTP id a640c23a62f3a-aa5f7dc9013mr618992766b.34.1733382430807;
+        Wed, 04 Dec 2024 23:07:10 -0800 (PST)
+Received: from [192.168.0.101] (185-219-167-205-static.vivo.cz. [185.219.167.205])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa62601c22dsm50951466b.132.2024.12.04.23.07.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Dec 2024 23:07:10 -0800 (PST)
+Message-ID: <239dadcd-30d5-46a2-a80d-ef184add6b11@redhat.com>
+Date: Thu, 5 Dec 2024 08:07:09 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf] samples/bpf: pass TPROGS_USER_CFLAGS to libbpf
+ makefile
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ kernel-team@fb.com, yonghong.song@linux.dev
+References: <20241204173416.142240-1-eddyz87@gmail.com>
+From: Viktor Malik <vmalik@redhat.com>
+Content-Language: en-US
+In-Reply-To: <20241204173416.142240-1-eddyz87@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Currently, user needs to manually enable transmit hardware timestamp
-feature of certain Ethernet drivers, e.g. stmmac and igc drivers, through
-following command after running the xdp_hw_metadata app.
+On 12/4/24 18:34, Eduard Zingerman wrote:
+> Before commit [1], the value of a variable TPROGS_USER_CFLAGS was
+> passed to libbpf make command as a part of EXTRA_CFLAGS.
+> This commit makes sure that the value of TPROGS_USER_CFLAGS is still
+> passed to libbpf make command, in order to maintain backwards build
+> scripts compatibility.
+> 
+> [1] commit 5a6ea7022ff4 ("samples/bpf: Remove unnecessary -I flags from libbpf EXTRA_CFLAGS")
+> 
+> Fixes: 5a6ea7022ff4 ("samples/bpf: Remove unnecessary -I flags from libbpf EXTRA_CFLAGS")
+> Suggested-by: Viktor Malik <vmalik@redhat.com>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 
-sudo hwstamp_ctl -i eth0 -t 1
+Thanks! Works as expected.
 
-To simplify the step test of xdp_hw_metadata, set tx_type to HWTSTAMP_TX_ON
-to enable hardware timestamping for all outgoing packets, so that user no
-longer need to execute hwstamp_ctl command.
+Acked-by: Viktor Malik <vmalik@redhat.com>
 
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
----
-v1: https://patchwork.kernel.org/project/netdevbpf/patch/20241204115715.3148412-1-yoong.siang.song@intel.com/
-
-v1->v2 changelog:
- - Add detail in commit msg on why HWTSTAMP_TX_ON is needed (Stanislav).
- - Separate the patch into two, current one submit to bpf-next,
-   another one submit to bpf.
----
- tools/testing/selftests/bpf/xdp_hw_metadata.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-index 06266aad2f99..96c65500f4b4 100644
---- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -551,6 +551,7 @@ static void hwtstamp_enable(const char *ifname)
- {
- 	struct hwtstamp_config cfg = {
- 		.rx_filter = HWTSTAMP_FILTER_ALL,
-+		.tx_type = HWTSTAMP_TX_ON,
- 	};
- 
- 	hwtstamp_ioctl(SIOCGHWTSTAMP, ifname, &saved_hwtstamp_cfg);
--- 
-2.34.1
+> ---
+>  samples/bpf/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> index 96a05e70ace3..dd9944a97b7e 100644
+> --- a/samples/bpf/Makefile
+> +++ b/samples/bpf/Makefile
+> @@ -123,7 +123,7 @@ always-y += ibumad_kern.o
+>  always-y += hbm_out_kern.o
+>  always-y += hbm_edt_kern.o
+>  
+> -TPROGS_CFLAGS = $(TPROGS_USER_CFLAGS)
+> +COMMON_CFLAGS = $(TPROGS_USER_CFLAGS)
+>  TPROGS_LDFLAGS = $(TPROGS_USER_LDFLAGS)
+>  
+>  ifeq ($(ARCH), arm)
 
 
