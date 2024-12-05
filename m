@@ -1,107 +1,93 @@
-Return-Path: <bpf+bounces-46174-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46175-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B7E09E5E55
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 19:34:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A48569E5E5C
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 19:40:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1D8E1885152
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 18:34:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6740916BAA2
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 18:40:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5966922D4C5;
-	Thu,  5 Dec 2024 18:34:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91ED022B8C0;
+	Thu,  5 Dec 2024 18:40:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SdRqcwGp"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF81E225797;
-	Thu,  5 Dec 2024 18:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 158C2229B15
+	for <bpf@vger.kernel.org>; Thu,  5 Dec 2024 18:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733423664; cv=none; b=mAtaohFU6j1PA7UubjtaDJHcjrA5Y8gH9VlGJ5X9Vgz06/5f25vk6b0LtRIXvlarBPFm1xtX5CRRb1qHkuptLzSCClILQ7SWTzIEtufFmnPRQxZId8phFQIUbhS1j9rJ7GLNGIbgfJPy/m9maszFTMfhqjoWBh09r5lhpaWPTks=
+	t=1733424021; cv=none; b=VGrrmVQGpj9nZeY8zkLErTYT8Hel40lpGASYMcLy4uCHFtiS0Vc8de5trmx7Ji9jwignAAkxPff2YqwRS+GtBcNkaNqaAtikK5pkI75OchrY/UhBm/gRE/UFrEM8WWaYoUuZz7AfMf0skBK3WbutuBAowfwKromSm9LXWRYr03M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733423664; c=relaxed/simple;
-	bh=OUcxjilhRSUSD0E/yADisJZ2/8AfJns0Sv0memb8dWQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BGJcHzzr5xQQl1dIDxNE6KF7YvS6ctsLOmB6Wkm9v4NB5y3A8qRYUbb1ivYnsSSIOeYIE1FgKN7sM4Ino5PzWcGtNrx1qET0ELEtTXZ6q0Mm1vNfZDMpR0n3rvpaeXFJJSASp9JryZtYLkzZLTWC/wFP5YIQhuHw7TN0Sgw//iM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73FB1C4CED1;
-	Thu,  5 Dec 2024 18:34:19 +0000 (UTC)
-Date: Thu, 5 Dec 2024 13:34:24 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
- <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, linux-arch@vger.kernel.org, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Huacai Chen
- <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Michael Ellerman
- <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, Madhavan
- Srinivasan <maddy@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger
- <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Thomas
- Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav
- Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v19 12/19] fprobe: Rewrite fprobe on function-graph
- tracer
-Message-ID: <20241205133424.37877ad5@gandalf.local.home>
-In-Reply-To: <173125386944.172790.10278368602020246931.stgit@devnote2>
-References: <173125372214.172790.6929368952404083802.stgit@devnote2>
-	<173125386944.172790.10278368602020246931.stgit@devnote2>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1733424021; c=relaxed/simple;
+	bh=Nav4nLSgBuNPzVPdi0wjwnZ+SCP8FiIYJX03i6oYL7U=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ltAeCObAcRjMEdqD1pohTBBKdC08O03VrXW1wyIFkIXGL0JniOAuZWB1qeoerxhcN399eavBPqUshjDOIoISDxCKqYpQ0D9YtzS9rNhih7gTIv4AmJmRIX7SoLo/JQx7a8i7lTym3lo417nN1Zg12BBf1LwOIFomtbTiG0vNqhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SdRqcwGp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 026B6C4CEDC;
+	Thu,  5 Dec 2024 18:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733424018;
+	bh=Nav4nLSgBuNPzVPdi0wjwnZ+SCP8FiIYJX03i6oYL7U=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=SdRqcwGptjTVdTW0uJKSNVsPwe4fImevqH+k6dYEIveHujxxRt90iLBaCwhpUqOv4
+	 D8mP+gdVhn8QZ645baVYWcTZDlWw4quE0deLGgPA824BrYPxa69MWnRuo99vnoRB0k
+	 oIF4ZfAFfwSuKkI+3vmxwUldCzqiCQfqqT5rDbUUjQwT/bMK71eTns2t5z1AuJqM7j
+	 hehv3emmzEljxNrcWvDXZV0i1PB62wkna61MH+apHSgaSMdJTxguTvz1d4VmOtmkvo
+	 lIu6sHgYTjco77WTn8iTmNFzlat4Cm+RtMqiUZUIV4r8C9cawbXjzhYsZVFQPFw1Ay
+	 yopDYZULsBHZA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB003380A951;
+	Thu,  5 Dec 2024 18:40:33 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] samples/bpf: pass TPROGS_USER_CFLAGS to libbpf makefile
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173342403279.2023970.1966197574456555770.git-patchwork-notify@kernel.org>
+Date: Thu, 05 Dec 2024 18:40:32 +0000
+References: <20241204173416.142240-1-eddyz87@gmail.com>
+In-Reply-To: <20241204173416.142240-1-eddyz87@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev, vmalik@redhat.com
 
-On Mon, 11 Nov 2024 00:51:09 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+Hello:
 
-> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-> index 2fc55a1a88aa..91a6382c04bd 100644
-> --- a/kernel/trace/Kconfig
-> +++ b/kernel/trace/Kconfig
-> @@ -307,12 +307,10 @@ config DYNAMIC_FTRACE_WITH_ARGS
->  
->  config FPROBE
->  	bool "Kernel Function Probe (fprobe)"
-> -	depends on FUNCTION_TRACER
-> -	depends on DYNAMIC_FTRACE_WITH_REGS || DYNAMIC_FTRACE_WITH_ARGS
-> -	depends on HAVE_FTRACE_REGS_HAVING_PT_REGS || !HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> -	depends on HAVE_RETHOOK
-> -	select RETHOOK
-> -	default n
-> +	depends on HAVE_FUNCTION_GRAPH_FREGS && HAVE_FTRACE_GRAPH_FUNC
-> +	depends on DYNAMIC_FTRACE_WITH_ARGS
-> +	select FUNCTION_GRAPH_TRACER
-> +	default y
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Please remove the "default y". This will select function graph tracer and
-will not let you to disable it without disabling this.
+On Wed,  4 Dec 2024 09:34:16 -0800 you wrote:
+> Before commit [1], the value of a variable TPROGS_USER_CFLAGS was
+> passed to libbpf make command as a part of EXTRA_CFLAGS.
+> This commit makes sure that the value of TPROGS_USER_CFLAGS is still
+> passed to libbpf make command, in order to maintain backwards build
+> scripts compatibility.
+> 
+> [1] commit 5a6ea7022ff4 ("samples/bpf: Remove unnecessary -I flags from libbpf EXTRA_CFLAGS")
+> 
+> [...]
 
-If you really want to tick off Linus, then make an option that selects other
-options "default y" ;-)
+Here is the summary with links:
+  - [bpf] samples/bpf: pass TPROGS_USER_CFLAGS to libbpf makefile
+    https://git.kernel.org/bpf/bpf-next/c/dff8470b99da
 
-Can you rebase the series off of v6.13-rc1? There's a minor conflict with
-the riscv Kconfig.
-
--- Steve
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
->  	help
->  	  This option enables kernel function probe (fprobe) based on ftrace.
->  	  The fprobe is similar to kprobes, but probes only for kernel function
 
