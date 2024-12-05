@@ -1,92 +1,102 @@
-Return-Path: <bpf+bounces-46176-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46177-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C3E69E5EBA
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 20:24:56 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E519E5EBE
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 20:25:45 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9763316BE9B
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 19:24:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9587D281446
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 19:25:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FBCA22D4E7;
-	Thu,  5 Dec 2024 19:24:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3C5922D4FA;
+	Thu,  5 Dec 2024 19:25:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LCavIfJc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HWG5Ftnz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B27B2224B0F;
-	Thu,  5 Dec 2024 19:24:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E16E582C60;
+	Thu,  5 Dec 2024 19:25:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733426688; cv=none; b=E6176EEotUks7rQ0VNs3D9WpvcAFW4+RP9RFKkOukjDvkb9o/ECXycG8digBypwnRfoXhk4I/LfefnDGIZOqLcZPc2NOf4pRr8ysQm4Ph50e/TMucChryqeQXEP6oGOKJNZPObeXxtMAQb1FZd+Vya/hyV5QzqvbIDZ9rdd6vFA=
+	t=1733426738; cv=none; b=eCgqlfKSiQ7+ttQ447n+LbrWgwM08QXNRPA4t6eVf3fSUJHWFE2yxEFJrP2SJrtV7ye2yw2B0zgYn+sap9dUXBAHh6Oi6XBH9mR/A6ozuYstHNXChoxdY6hlGcrt4klIj5o4tnSdKDX294UfaPhhL4Rwc8MxqGsOXDwUc7EoJSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733426688; c=relaxed/simple;
-	bh=l+RkMx/mt1XUfqn55LLYS4opSUma14BDXGFBSwLsUBQ=;
+	s=arc-20240116; t=1733426738; c=relaxed/simple;
+	bh=lzRObk1OQda7uwxIVMTX2lnVJNKKZqxd7bc76bx7fwM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CwivJ/QK0glYAJOjr2yCF2Mic9z3DGW0kAR7kPV+y4X1jQPJzFQ1mdL/uuBZiWp4R6ianhfCiiBZxt7aFwGrTbEPCcxjkAixO3Wt0mJ4ZGu1pZzyjQZERkoP4YzKIv74rJUFfsJCZlEJEMMw/LW2cbLAF2D2H8qJ18v4mel+LNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LCavIfJc; arc=none smtp.client-ip=209.85.210.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=np7DK+yWuLkdQGecoGoTc3wzItkafztoP2w8YOTYMzIVAyLfkRKLzhbQ+HsoSLOhBzwSRwfhbjp4aAS65ucAF4oxjwSA2HDwu1lleY4CecKJFKH99PLDf0LlR1NVoxKA5ZnOWPAcbRn3W0vHIyqTbQmrfbBqtP6eS4tiMlV8VVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HWG5Ftnz; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-7258ed68cedso1291474b3a.1;
-        Thu, 05 Dec 2024 11:24:45 -0800 (PST)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-215c54e5f24so12124245ad.2;
+        Thu, 05 Dec 2024 11:25:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733426685; x=1734031485; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733426736; x=1734031536; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mRE/vWdS/sITcvJvFYmfWqYzfyCATymJHAuKTqgkqno=;
-        b=LCavIfJca+fIq+GpC7K//992yhxVmnS8wYIq9sqY59zbpo5CC+NPXzFEG44UPk1uEB
-         ZbwIpinAixqaF9w+ddZ1F2XahrkyrTZ9Rw2AiPp2xwVvKhkNKNWVWd4MBCYOQalnPZMG
-         E3zP/R8aPAwu+XnuiAH9jSwwxW8BPMXTERIlAgfMHgD6cuMhljRZrm7yUpPZmrFO6w7J
-         TuBQ5+ds2L2rFYK8xnI0aZMMmmNXWyY/+dLN2Xz/COx8jD49LxewJqIb9vtQIgPRbSce
-         l3L++uIDaemKbd4wjWWLSH1N4oX9l4qMqyXYGmffyqllJYz6kFL+nt0fgiYyGPmVnT9j
-         nadw==
+        bh=K9jjQW8IdRZWXe/1Rghl+cVLFwOuY8dBG/5fqWQmio8=;
+        b=HWG5FtnzKePLGWU5vl5gwIqaCBw+zz540iZrjCC9Sq8XeqnwZ1gkk+mfTExIbevMMV
+         WvaDOcvxr96GnFXQZHTne8dFhmuvcwcPTu0E+MYEqY8Opqdc7hgB+Xfp/FMCxg94NSL0
+         kysKj9C6sD4wWfK8O5/WeV6zZMZrsDPsFY533sKIMlXHQBc8IY5eGtpXmI7674N3SpY4
+         1x/4M/KSkXBcAz9LfZxS74Ksqa6x2WhlMm4xWzMNc/Pw4Zt3C2eQHrMJ2GUsYbXrUvlY
+         RNo76Vk73yYkZX4wAP4ONWqCqPxOjYwArASK0AhCgNdRpxZ9RQM1tl6sMYc+TjNcWnq7
+         mzXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733426685; x=1734031485;
+        d=1e100.net; s=20230601; t=1733426736; x=1734031536;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mRE/vWdS/sITcvJvFYmfWqYzfyCATymJHAuKTqgkqno=;
-        b=EfB3Qp/OsLV4PFJnKIHU3JJ5pMGQHY4nxP9CyW+BCcwwX2yJK82V2OkpJTikFq0SL2
-         nsPARfzAEVw7Y17EywVoYu8lBi+jph0KzJ0MBmfnnHDUBZ59s5bGYhATdT0TiO0Upkzm
-         ODwmy0DeGpigZ3jc1WU/zlHv8IphL3buniau+8iysgh5+24J6mGNiY8b4Dh6K75RkWVj
-         DVszeojK39UrN63axJn2isUhLnUyXbhVhrtaVx7wBP8CDkmfE//Mu4pEcnJROMF7SZmY
-         yWRj3Q/KVTugvVpjjiU1kuvYXcpJ82+CTs8sp0/by8D2Ul2CzgDqmnuo2AGRqfkuh5Du
-         mL+w==
-X-Forwarded-Encrypted: i=1; AJvYcCVqJO4BpyCmvxwaEYxZhxft88OVqF21IOuc24WlIIlK+imWDc5LF26Gz/cBMW6XS9YWJ+k=@vger.kernel.org, AJvYcCWToTTAcf5OZ6HRW0Qt+TcnMarDDnzD4R+y9TTI43pw5T4R0/HbKAQ52BmTdS/pvikNxoW8ymGIBVmvAs4g@vger.kernel.org, AJvYcCXXwnyWArx6GksqawCLq4kDE7qOpwl5b74RzUYcbfJ8QozWnt/DbolxYjreqimmxxZMkCfnTSYUDqbcHI0A7FHiHg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyddBcR9j1o8YMenhn7w0uIaPfEjl9+Q/FtPVZBNYTU6OhPfns4
-	N1h+a6c4qNMBgqWavzXwNP5xqKKNwL++09gqfxhh/it05qAum+4=
-X-Gm-Gg: ASbGnctN3DntD5HgbXIeVVshHtOu7AekcTSd3ot17GMaadKzP5BjsuspgVxxLCb852d
-	32iA0FVkFECKMYe5PmiS+u8TjLoVs1D8l+7R04lxxPnX23QK3aDs7mXGAPUoMY8zHtoeQmI+iyw
-	C5uEwEUeKpKFSI4tU9WxGPNclxmijyj6GiDBw5JBeswzyoHdzkm8DoC22QxBC2dqsb5scxN/H+k
-	GJkeljCWNYOkfh5jKpTLVlqGE6MeDYrSPbicuy9vPFe9kQCFA==
-X-Google-Smtp-Source: AGHT+IEzCAH8rLJ0RnV8vk4K1vZD/GPkH620EnuCRv2+8uXr1ofdsYqkiy80sCazZwd6Gwc+d/9pvw==
-X-Received: by 2002:a05:6a00:189c:b0:725:8c57:5969 with SMTP id d2e1a72fcca58-725b8178a9emr589258b3a.19.1733426684801;
-        Thu, 05 Dec 2024 11:24:44 -0800 (PST)
+        bh=K9jjQW8IdRZWXe/1Rghl+cVLFwOuY8dBG/5fqWQmio8=;
+        b=IXSn4GlDPP3fd7t3yzj7PkjqpVc9X7LbyJwStWe7mVFT2EgRVXbr4X32Qnwc8QsRBT
+         yZlpe5CIgJaB6QOkfNbuSg0Etg2q6LQ9nDUg7UU2oSL5PO2GyP98j2+4FL05OTlCnXHW
+         8LQ0sBg+m5uZtsu6XPGXxQZMuP4iXH9JAsFo3AZsBfPi6IYig6iXwwkJ0WmWe7P3clQc
+         sVrgqmLhjVz5PiKmGfC42S3ZjJtYDDxe9Q7BNaiWrt8ASkbWwZiWH9fO+9pzekoX+Ggq
+         +oY9C0mIW0bt6eLaYt7fsNK62yx5pvWAByBw1w5jRFazWiVMOqi4k+DjGbgYSoC+YniQ
+         vfsA==
+X-Forwarded-Encrypted: i=1; AJvYcCUWwfdw9I4Rf+y3Zoj2wKA8W2xZaRoUqbHUvgUhF0y8zt85zdOUKsAM4ZSzQvTGhInJOZAHhiqcJXNSSvsnxWCn@vger.kernel.org, AJvYcCUkNvyca9M71vqd9MDDIfa4AM3e74TxB4ozzqU+nupCJmeKb/UsJxQdt7uOGmPXRdbpAi8=@vger.kernel.org, AJvYcCV+bwuslJ7yBbVFId3PkPsFH6vJyU5pFWiV8MGJku0UwsPOs8i9rSzMlnxvY9Ihyhd5qHlnJMGj@vger.kernel.org, AJvYcCWNR5h/Vr5Yq2DU2IqBiNH7VmcRWc1jcDxZ5qQMI/mfcOs7dBonFCmju2s21uUx6i74xmN9FMimRCgEaTy6@vger.kernel.org
+X-Gm-Message-State: AOJu0YxSs0mChE6Mr9UK77ud2T/VWXaMBZioL8X0wPYAyMBuOfmHNT7C
+	it/Pwi2IT969jI+S8ETdFpJeCQJt3f0UUwkeugGR6v+tZlVJ+YE=
+X-Gm-Gg: ASbGncvGlGPgwTfQD9S4B+gVXapo1RuMRiAL+PadMA2TpAoqjUfevOh6MrsQ1dFtTbu
+	GSd5+816giNz6q8eEmP46j1NnXYFkzff/8NrZgi1K8YMFJFW4adS8sv4+XMc31kLPRPWJloYbOX
+	xXmjk5ZiAaKpLsLnhRkgCo7pr3xToMyf4ZFyZWaneqhgw+2aNmxcSo4qzUdOkov4Z/32r6DKWCw
+	lU+lAmoHRuwJ2OMqk2aCUWz2KhKRGNZgaHB9blo10bCKBJnqw==
+X-Google-Smtp-Source: AGHT+IEPVDXET7pdSwy1/WJhUkp6RadfluLFGLOsExuVjvgUir+tZD5xuakR6jagV/Zw7Ox1Fdi4JQ==
+X-Received: by 2002:a17:902:cecc:b0:215:b468:1a33 with SMTP id d9443c01a7336-21614d1ed2fmr924575ad.4.1733426736147;
+        Thu, 05 Dec 2024 11:25:36 -0800 (PST)
 Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725a29c5719sm1648755b3a.27.2024.12.05.11.24.44
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215f8ef9485sm15926125ad.157.2024.12.05.11.25.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Dec 2024 11:24:44 -0800 (PST)
-Date: Thu, 5 Dec 2024 11:24:43 -0800
+        Thu, 05 Dec 2024 11:25:35 -0800 (PST)
+Date: Thu, 5 Dec 2024 11:25:35 -0800
 From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Leo Yan <leo.yan@arm.com>
-Cc: Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+To: "Song, Yoong Siang" <yoong.siang.song@intel.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
+	"David S . Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Nick Terrell <terrelln@fb.com>, bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpftool: Fix failure with static linkage
-Message-ID: <Z1H9-9xrWM4FBbNI@mini-arch>
-References: <20241204213059.2792453-1-leo.yan@arm.com>
+	Shuah Khan <shuah@kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/1] selftests/bpf: Enable Tx hwtstamp in
+ xdp_hw_metadata
+Message-ID: <Z1H-L3BkxnjVr5Qy@mini-arch>
+References: <20241204115715.3148412-1-yoong.siang.song@intel.com>
+ <Z1B50w1jzHFt-LuA@mini-arch>
+ <PH0PR11MB58309455A6E72493687D0515D8302@PH0PR11MB5830.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,66 +105,46 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241204213059.2792453-1-leo.yan@arm.com>
+In-Reply-To: <PH0PR11MB58309455A6E72493687D0515D8302@PH0PR11MB5830.namprd11.prod.outlook.com>
 
-On 12/04, Leo Yan wrote:
-> When building perf with static linkage:
+On 12/05, Song, Yoong Siang wrote:
+> On Wednesday, December 4, 2024 11:49 PM, Stanislav Fomichev <stfomichev@gmail.com> wrote:
+> >On 12/04, Song Yoong Siang wrote:
+> >> Set tx_type to HWTSTAMP_TX_ON to enable hardware timestamping for all
+> >> outgoing packets.
+> >>
+> >> Besides, set XDP_UMEM_TX_METADATA_LEN flag to reserve tx_metadata_len bytes
+> >> of per-chunk metadata.
+> >
+> >XDP_UMEM_TX_METADATA_LEN is missing after d5e726d9143c ("xsk: Require
+> >XDP_UMEM_TX_METADATA_LEN to actuate tx_metadata_len"), so that make
+> >sense. Maybe add a fixes tag?
+> >
 > 
->   make O=/build LDFLAGS="-static" -C tools/perf VF=1 DEBUG=1
->   ...
->   LINK    /build/util/bpf_skel/.tmp/bootstrap/bpftool
->   /usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libelf.a(elf_compress.o): in function `__libelf_compress':
->   (.text+0x113): undefined reference to `ZSTD_createCCtx'
->   /usr/bin/ld: (.text+0x2a9): undefined reference to `ZSTD_compressStream2'
->   /usr/bin/ld: (.text+0x2b4): undefined reference to `ZSTD_isError'
->   /usr/bin/ld: (.text+0x2db): undefined reference to `ZSTD_freeCCtx'
->   /usr/bin/ld: (.text+0x5a0): undefined reference to `ZSTD_compressStream2'
->   /usr/bin/ld: (.text+0x5ab): undefined reference to `ZSTD_isError'
->   /usr/bin/ld: (.text+0x6b9): undefined reference to `ZSTD_freeCCtx'
->   /usr/bin/ld: (.text+0x835): undefined reference to `ZSTD_freeCCtx'
->   /usr/bin/ld: (.text+0x86f): undefined reference to `ZSTD_freeCCtx'
->   /usr/bin/ld: (.text+0x91b): undefined reference to `ZSTD_freeCCtx'
->   /usr/bin/ld: (.text+0xa12): undefined reference to `ZSTD_freeCCtx'
->   /usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libelf.a(elf_compress.o): in function `__libelf_decompress':
->   (.text+0xbfc): undefined reference to `ZSTD_decompress'
->   /usr/bin/ld: (.text+0xc04): undefined reference to `ZSTD_isError'
->   /usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libelf.a(elf_compress.o): in function `__libelf_decompress_elf':
->   (.text+0xd45): undefined reference to `ZSTD_decompress'
->   /usr/bin/ld: (.text+0xd4d): undefined reference to `ZSTD_isError'
->   collect2: error: ld returned 1 exit status
+> Sure. I will add the fixes tag and submit with "PATCH bpf" prefix
+> in next version.
 > 
-> Building bpftool with static linkage also fails with the same errors:
+> >And I don't see mlx5 looking at HWTSTAMP_TX anywhere in the drivers,
+> >so I'm assuming that's why I didn't need HWTSTAMP_TX_ON during my tests..
+> >Which device are you testing against? I do see some hwts_tx_en
+> >checks in the stfmmac at least... Can you add these details to the
+> >commit message and respin?
+> >
 > 
->   make O=/build -C tools/bpf/bpftool/ V=1
+> I am testing on stmmac and igc drivers.
+> You are right, stmmac needs it for hwts_tx_en check.
+> Besides, igc needs it to set IGC_RING_FLAG_TX_HWTSTAMP flag.
 > 
-> To fix the issue, explicitly link libzstd.
+> Without this patch, user will need to manually enable tx hwts using
+> command: sudo hwstamp_ctl -i eth0 -t 1 -r 1
+> after start xdp_hw_metadata.
 > 
-> Signed-off-by: Leo Yan <leo.yan@arm.com>
-> ---
->  tools/bpf/bpftool/Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Therefore, adding HWTSTAMP_TX_ON is not a bug fix solution.
+> I will separate this as another new patch to "PATCH bpf-next"
+> and provide detail in commit message.
 > 
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index a4263dfb5e03..65b2671941e0 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -130,8 +130,8 @@ include $(FEATURES_DUMP)
->  endif
->  endif
->  
-> -LIBS = $(LIBBPF) -lelf -lz
-> -LIBS_BOOTSTRAP = $(LIBBPF_BOOTSTRAP) -lelf -lz
-> +LIBS = $(LIBBPF) -lelf -lz -lzstd
-> +LIBS_BOOTSTRAP = $(LIBBPF_BOOTSTRAP) -lelf -lz -lzstd
->  ifeq ($(feature-libcap), 1)
->  CFLAGS += -DUSE_LIBCAP
->  LIBS += -lcap
-> -- 
-> 2.34.1
-> 
+> Btw, is mlx5 driver always enable Tx HWTS?
 
-I'm not sure we 'offically' support -static builds, but this seems to be
-ok. Tangential: maybe time to switch to pkg-config for bpftool? IIRC,
-there is some flag to query for static lib dependencies... Will leave
-it up to Quentin.
+I don't remember doing anything special to enable it. And looking at
+the code I also don't see any conditionals on HWTSTAMP_TX_ON.
 
