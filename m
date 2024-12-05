@@ -1,179 +1,132 @@
-Return-Path: <bpf+bounces-46137-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03CC09E501D
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 09:46:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35F519E5049
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 09:53:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D783A1699F0
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 08:46:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EF861882673
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 08:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D44A1D3194;
-	Thu,  5 Dec 2024 08:45:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LVqBCr2m"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A361D515B;
+	Thu,  5 Dec 2024 08:53:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642601C3C1B;
-	Thu,  5 Dec 2024 08:45:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D241D4342
+	for <bpf@vger.kernel.org>; Thu,  5 Dec 2024 08:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733388351; cv=none; b=qK34THNsZd6AyYFzMsJb4+v3iOx72ROKHA7P1IdLNHvV253vhopjkAVD2/iI5bVKTtvY38vBTlaljTtIuRvDOnf/9h3mStM6oUCVmThwX90UUIptWP3Jz9J8GKFOLtVF1oCqk2Gm9QjqUZCb6K2m1W3xcjtkBaXo++YSd+jIBb0=
+	t=1733388782; cv=none; b=J2YbzXH878IuigCaV3/Eap3pYYIiwdgpA3zUsnSqMh6Pi4iFucoV4iYaVIDLGNk6qGcRHI9kSLZWLgybK7drHN565BEqxQ2p+QSmnv96j4X6UQhQYAonNd9J0UL7fv6Eihz77fJVtMQwVQEe1vHrWqZqFfXxVAotvPEB7iSzaYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733388351; c=relaxed/simple;
-	bh=yBxMDzLUQ+UUqEGx4gccp27vhPftyCQVLW4rYP1jVdM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bufkvKm47C9Ia2dLOYD9V4dyU2w4SliHCA6Fxk19GgZKvVtfqqmGEgMKRIvdeenC7IkGI3rezqlZ6MDl5f7oyqrsGiYOfdV+xQcYa+fsblKnBgCgNvIxPsSkFAfUvbdyJPtjegwXSy62WQspKSYflXiV8TotCMU4M7sQ2Ygliv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=LVqBCr2m; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4B55iRSX032114;
-	Thu, 5 Dec 2024 08:45:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	bKfgrYa/QFrkOV0zx4Ss0Pk/DtiPxo2P5UZjLA/HY/g=; b=LVqBCr2m70ZUx1eF
-	Pp5pB77RvZPgV15WB5i+7OX7uL6wy90AD8GzKGZei5vGJJdmS7VGzi0dYTlP5Stt
-	Ty4tAgVKK8Ep+Nehf/827/eS1+kMCBByezripwrluGhKxW0CnfjZpVI9bl66z+c2
-	apIltRM5QRE7x+ILPIyHfYVgJ2oFvhIr8g3iKg7FUsKZO9ssEIU9Q9t5CjvSH9cy
-	eWlWY2Rb6VtT0VzQ37pkSd313so9PlhKXJE6jF/0LOOO7x/C1UNuFiU2aTi7+a/q
-	9znam1RdGYwg0PxQBH/pjrvIazFFXFjZ+heYg0NlBcjbPL3wPjXeGeA8HnXYmp3v
-	dwS29g==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 43a3fawtvt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 05 Dec 2024 08:45:32 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 4B58jWnd012553
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 5 Dec 2024 08:45:32 GMT
-Received: from zhonhan-gv.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 5 Dec 2024 00:45:28 -0800
-From: Zhongqiu Han <quic_zhonhan@quicinc.com>
-To: <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <namhyung@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-        <irogers@google.com>, <adrian.hunter@intel.com>,
-        <kan.liang@linux.intel.com>, <song@kernel.org>,
-        <james.clark@linaro.org>, <yangyicong@hisilicon.com>
-CC: <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <quic_zhonhan@quicinc.com>
-Subject: [PATCH v2 3/3] perf bpf: Fix two memory leakages when calling perf_env__insert_bpf_prog_info()
-Date: Thu, 5 Dec 2024 16:45:00 +0800
-Message-ID: <20241205084500.823660-4-quic_zhonhan@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20241205084500.823660-1-quic_zhonhan@quicinc.com>
-References: <20241205084500.823660-1-quic_zhonhan@quicinc.com>
+	s=arc-20240116; t=1733388782; c=relaxed/simple;
+	bh=R+vE3YUz5ddq9eeRj9eq60pYN+Njpoy1bn02S1tDpQk=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=XRNrT3NoMow01ynEEvUwlOgIQraD4SlNKx30ACtBG15GtsWEzIgeLYghdISqXkPiUkM9waAn66iFJxbyZpoageoMGbpSXL7UFx8B17VA3BbgyJOa0bybuWMxwQL2RqA5RbVIiYOViGZvjG0RSuR5RJiT42Bt6miJCiVMjInpL2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Y3p733mHgz4f3js0
+	for <bpf@vger.kernel.org>; Thu,  5 Dec 2024 16:52:31 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 8E8971A07B6
+	for <bpf@vger.kernel.org>; Thu,  5 Dec 2024 16:52:50 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgCXjK7eaVFnVz2EDg--.6614S2;
+	Thu, 05 Dec 2024 16:52:50 +0800 (CST)
+Subject: Re: [PATCH bpf v2 7/9] bpf: Use raw_spinlock_t for LPM trie
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?Q?Thomas_Wei=c3=9fschuh?=
+ <linux@weissschuh.net>, Hou Tao <houtao1@huawei.com>,
+ Xu Kuohai <xukuohai@huawei.com>
+References: <20241127004641.1118269-1-houtao@huaweicloud.com>
+ <20241127004641.1118269-8-houtao@huaweicloud.com> <87frnai67q.fsf@toke.dk>
+ <CAADnVQLD+m_L-K0GiFsZ3SO94o3vvdi6dT3cWM=HPuTQ2_AUAQ@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <fede4cf9-60df-ce3a-9290-18d371622d3b@huaweicloud.com>
+Date: Thu, 5 Dec 2024 16:52:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CAADnVQLD+m_L-K0GiFsZ3SO94o3vvdi6dT3cWM=HPuTQ2_AUAQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: -GyyUAnOy5XPi3guRMJW6aOqz-G5-Zmv
-X-Proofpoint-GUID: -GyyUAnOy5XPi3guRMJW6aOqz-G5-Zmv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- spamscore=0 mlxscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- lowpriorityscore=0 clxscore=1015 priorityscore=1501 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2412050062
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgCXjK7eaVFnVz2EDg--.6614S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZrW3WF17KF17WFWxZry3XFb_yoW8CFW7pF
+	W8t3WrKa1kGr1rAwnFk397u34UAw1fK34ayF4rJr97u3s0gryfKr1Iqr45ua1rZr48KF4a
+	qw40qa47A3sYya7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUIa0PDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-If perf_env__insert_bpf_prog_info() returns false due to a duplicate bpf
-prog info node insertion, the temporary info_node and info_linear memory
-will leak. Add a check to ensure the memory is freed if the function
-returns false.
+Hi,
 
-Fixes: e4378f0cb90b ("perf bpf: Save bpf_prog_info in a rbtree in perf_env")
-Fixes: d56354dc4909 ("perf tools: Save bpf_prog_info and BTF of new BPF programs")
-Signed-off-by: Zhongqiu Han <quic_zhonhan@quicinc.com>
-Reviewed-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/bpf-event.c | 10 ++++++++--
- tools/perf/util/env.c       |  8 ++++++--
- tools/perf/util/env.h       |  2 +-
- 3 files changed, 15 insertions(+), 5 deletions(-)
+On 12/3/2024 9:42 AM, Alexei Starovoitov wrote:
+> On Fri, Nov 29, 2024 at 4:18 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>> Hou Tao <houtao@huaweicloud.com> writes:
+>>
+>>> From: Hou Tao <houtao1@huawei.com>
+>>>
+>>> After switching from kmalloc() to the bpf memory allocator, there will be
+>>> no blocking operation during the update of LPM trie. Therefore, change
+>>> trie->lock from spinlock_t to raw_spinlock_t to make LPM trie usable in
+>>> atomic context, even on RT kernels.
+>>>
+>>> The max value of prefixlen is 2048. Therefore, update or deletion
+>>> operations will find the target after at most 2048 comparisons.
+>>> Constructing a test case which updates an element after 2048 comparisons
+>>> under a 8 CPU VM, and the average time and the maximal time for such
+>>> update operation is about 210us and 900us.
+>> That is... quite a long time? I'm not sure we have any guidance on what
+>> the maximum acceptable time is (perhaps the RT folks can weigh in
+>> here?), but stalling for almost a millisecond seems long.
+>>
+>> Especially doing this unconditionally seems a bit risky; this means that
+>> even a networking program using the lpm map in the data path can stall
+>> the system for that long, even if it would have been perfectly happy to
+>> be preempted.
+> I don't share this concern.
+> 2048 comparisons is an extreme case.
+> I'm sure there are a million other ways to stall bpf prog for that long.
 
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index 13608237c50e..c81444059ad0 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -289,7 +289,10 @@ static int perf_event__synthesize_one_bpf_prog(struct perf_session *session,
- 		}
- 
- 		info_node->info_linear = info_linear;
--		perf_env__insert_bpf_prog_info(env, info_node);
-+		if (!perf_env__insert_bpf_prog_info(env, info_node)) {
-+			free(info_linear);
-+			free(info_node);
-+		}
- 		info_linear = NULL;
- 
- 		/*
-@@ -480,7 +483,10 @@ static void perf_env__add_bpf_info(struct perf_env *env, u32 id)
- 	info_node = malloc(sizeof(struct bpf_prog_info_node));
- 	if (info_node) {
- 		info_node->info_linear = info_linear;
--		perf_env__insert_bpf_prog_info(env, info_node);
-+		if (!perf_env__insert_bpf_prog_info(env, info_node)) {
-+			free(info_linear);
-+			free(info_node);
-+		}
- 	} else
- 		free(info_linear);
- 
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index d7865ae5f8f5..a6321e7f0633 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -24,12 +24,16 @@ struct perf_env perf_env;
- #include "bpf-utils.h"
- #include <bpf/libbpf.h>
- 
--void perf_env__insert_bpf_prog_info(struct perf_env *env,
-+bool perf_env__insert_bpf_prog_info(struct perf_env *env,
- 				    struct bpf_prog_info_node *info_node)
- {
-+	bool ret;
-+
- 	down_write(&env->bpf_progs.lock);
--	__perf_env__insert_bpf_prog_info(env, info_node);
-+	ret = __perf_env__insert_bpf_prog_info(env, info_node);
- 	up_write(&env->bpf_progs.lock);
-+
-+	return ret;
- }
- 
- bool __perf_env__insert_bpf_prog_info(struct perf_env *env, struct bpf_prog_info_node *info_node)
-diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
-index 9db2e5a625ed..da11add761d0 100644
---- a/tools/perf/util/env.h
-+++ b/tools/perf/util/env.h
-@@ -178,7 +178,7 @@ int perf_env__nr_cpus_avail(struct perf_env *env);
- void perf_env__init(struct perf_env *env);
- bool __perf_env__insert_bpf_prog_info(struct perf_env *env,
- 				      struct bpf_prog_info_node *info_node);
--void perf_env__insert_bpf_prog_info(struct perf_env *env,
-+bool perf_env__insert_bpf_prog_info(struct perf_env *env,
- 				    struct bpf_prog_info_node *info_node);
- struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
- 							__u32 prog_id);
--- 
-2.25.1
+2048 is indeed an extreme case. I would do some test to check how much
+time is used for the normal cases with prefixlen=32 or prefixlen=128.
+>
+>> So one option here could be to make it conditional? As in, have a map
+>> flag (on creation) that switches to raw_spinlock usage, and reject using
+>> the map from atomic context if that flag is not set?
+> No. Let's not complicate the LPM map unnecessarily.
+> I'd rather see it's being rewritten into faster and more efficient
+> algorithm.
 
 
