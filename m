@@ -1,136 +1,150 @@
-Return-Path: <bpf+bounces-46153-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46157-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBD789E53BE
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 12:24:08 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A0DD9E54EA
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 13:05:23 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D54A285C20
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 11:24:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9056B18828A2
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2024 12:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407581F4290;
-	Thu,  5 Dec 2024 11:20:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FCC6217723;
+	Thu,  5 Dec 2024 12:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kTTGgsHA"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="p8XzPql1"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2BF81E0E16;
-	Thu,  5 Dec 2024 11:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F030D21767D;
+	Thu,  5 Dec 2024 12:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733397649; cv=none; b=oUbJCeEFGyC2dwsLAZdp6JINnezhsamqxdNSeO4sY7oJdQdYUW3wQye5+xhGOxOuyhWj66w/GryjfLKHb0xgDHeR7UTob1//6OtXpGZTHl0hF5av22Gw23U0xqfr2cmtIYcMNO+5QIOq77722R8Hu8Af3iZo7+KatQgF/lFdFu4=
+	t=1733400314; cv=none; b=W5Q/iVJfkY3a/kUGG3cbUV7qMD9R7IEdchuYZL9RpJipdWaEwyT90p1G3oaFrz7xxTc0q1oZUlIm03hqQcbIwFFGfG1ne3daFy1UGz7/4Ur4nsA7wGU7GvBQNI5voaNg8FQRzpIV36qZzACtXaqSRaNWv9Sw/Zq80EPRm0/iP7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733397649; c=relaxed/simple;
-	bh=kShquW8D173tygDwcvyWix8E3OST3cSYanottycigGs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ukYsOI8cYWZvy419TRKXKBPMze4Peap1aAmKaB0kR4cmJiSwnnrtIcY/Vj4MYxY/GdZhE0HG4ZeIOmXeegHYwip+qj5uY/npHjk4edL/WnVteAemxvrX/YZ2D7hzBXzwf2MEqI2ZXTxQ8OgnUnWxThhH17a/VhwWc3iaYhWlgsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kTTGgsHA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A81CFC4CED1;
-	Thu,  5 Dec 2024 11:20:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733397649;
-	bh=kShquW8D173tygDwcvyWix8E3OST3cSYanottycigGs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=kTTGgsHAbzh3Xe5owtwUPIK8iGPD7RWdE3mZox/dCEdbM7mkFzqNjYiZkXaUizOor
-	 A7ywSV+6BbyjntXdy2Mj6BLBPx//DV//ryrGqRdKN4bGyVqYC7PY8LQTNnkSPTHnXf
-	 dKhyE3PCHTkqXRSukTXXDO8rlO1t46RZS5OBgZqLQ+y+wSm5uM3S3jDEzi77bF6KLi
-	 +5D2kBT3EW15FZsJjZtAvHEq9AcXK8AyUZUFvB/q5j0lIT7ZjW11xUrh/ds21KIo5w
-	 97DazKXF0HVGF6nSomE3DSXL3VdLys6Hdtp+4ymZucOGRHG2EWwDB8bej3Zs7BqSZM
-	 hUEK0wstxto1g==
-Message-ID: <e8d94128-ea41-4e72-83b4-9a6020aaca10@kernel.org>
-Date: Thu, 5 Dec 2024 11:20:45 +0000
+	s=arc-20240116; t=1733400314; c=relaxed/simple;
+	bh=cpBM2mHDOk8ghk0zarIdMmXK6Uy4RCjaekgr+BJriak=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JvFarl9yfD8wwF8b0q+sjn+gYa0bA6Feh7qTcWbHnZHDLeNAM4RMypaIahDwfeTCq4oKmPy/mMOVZ4wrZ3s1Jbd359HgxQDbbZHGc/HuSkmaUp5iw3Z2DeWHMjzRigKIXikdtkpmi3IjlokXB1aPaZlkEZKFfJtckhU41Lwd7tA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=p8XzPql1; arc=none smtp.client-ip=117.135.210.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=uOnIC
+	0uuIhcqnFHtdax/VPuxtdeWTkpS66gXN6eM3hg=; b=p8XzPql1BtP0RomjTZmJK
+	IpqRQyoeQkggqGnFuHuxvTcdQivRtbNmRH04lI9JcXdrn4rMKh7iIwdtXZPGP0UQ
+	Y5xvNw6dUVEAxskpMu+MrM30S+fOVET37Ctzua8lUxGxwgE6lOVEjmbFlcxpECGk
+	75ODRe75FoNLc+5LQatj8Q=
+Received: from localhost.localdomain (unknown [])
+	by gzsmtp4 (Coremail) with SMTP id PygvCgA347I+llFnx_IkAQ--.41744S2;
+	Thu, 05 Dec 2024 20:02:15 +0800 (CST)
+From: Jiayuan Chen <mrpre@163.com>
+To: bpf@vger.kernel.org
+Cc: martin.lau@linux.dev,
+	ast@kernel.org,
+	edumazet@google.com,
+	jakub@cloudflare.com,
+	davem@davemloft.net,
+	dsahern@kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	song@kernel.org,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	mhal@rbox.co,
+	yonghong.song@linux.dev,
+	daniel@iogearbox.net,
+	xiyou.wangcong@gmail.com,
+	Jiayuan Chen <mrpre@163.com>
+Subject: [PATCH bpf 0/2] bpf: fix wrong copied_seq calculation and add tests
+Date: Thu,  5 Dec 2024 20:02:02 +0800
+Message-ID: <20241205120204.229737-1-mrpre@163.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2] bpftool: Fix gen object segfault
-To: Rong Tao <rtoax@foxmail.com>, ast@kernel.org, daniel@iogearbox.net,
- rongtao@cestc.cn
-Cc: Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>,
- "open list:BPF [TOOLING] (bpftool)" <bpf@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <tencent_F62A51AFF6A38188D70664421F5934974008@qq.com>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <tencent_F62A51AFF6A38188D70664421F5934974008@qq.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:PygvCgA347I+llFnx_IkAQ--.41744S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWr4fZw4rtw4UZr4xXr1rtFb_yoW5CrWfpF
+	WkC3yFgrnrtFyIvr1kAa4Iqr4rGw4ruay5Jr1Fqay3A398Kr93Zrn7KF43Zr95GrWrZF15
+	Zr1jqrsY9w1DZa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0ziU73PUUUUU=
+X-CM-SenderInfo: xpus2vi6rwjhhfrp/1tbiWw6sp2dRlGM-sQAAsR
 
-On 05/12/2024 11:10, Rong Tao wrote:
-> From: Rong Tao <rongtao@cestc.cn>
-> 
-> If the input file and output file are the same, the input file is cleared
-> due to opening, resulting in a NULL pointer access by libbpf.
-> 
->     $ bpftool gen object prog.o prog.o
->     libbpf: failed to get ELF header for prog.o: invalid `Elf' handle
->     Segmentation fault
-> 
->     (gdb) bt
->     #0  0x0000000000450285 in linker_append_elf_syms (linker=0x4feda0, obj=0x7fffffffe100) at linker.c:1296
->     #1  bpf_linker__add_file (linker=0x4feda0, filename=<optimized out>, opts=<optimized out>) at linker.c:453
->     #2  0x000000000040c235 in do_object ()
->     #3  0x00000000004021d7 in main ()
->     (gdb) frame 0
->     #0  0x0000000000450285 in linker_append_elf_syms (linker=0x4feda0, obj=0x7fffffffe100) at linker.c:1296
->     1296		Elf64_Sym *sym = symtab->data->d_buf;
-> 
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
-> v1: https://lore.kernel.org/lkml/tencent_410B8166C55CD2AB64BDEA8E92204619180A@qq.com/
-> ---
->  tools/bpf/bpftool/gen.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index 5a4d3240689e..506d205138db 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -1879,6 +1879,8 @@ static int do_object(int argc, char **argv)
->  	struct bpf_linker *linker;
->  	const char *output_file, *file;
->  	int err = 0;
-> +	int argc_cpy = argc;
-> +	char **argv_cpy = argv;
+bpf: fix wrong copied_seq calculation and add tests
+
+A previous commit described in this topic
+https://lore.kernel.org/bpf/20230523025618.113937-9-john.fastabend@gmail.com
+directly updated 'sk->copied_seq' in the tcp_eat_skb() function when the
+action of a BPF program was SK_REDIRECT. For other actions, like SK_PASS,
+the update logic for 'sk->copied_seq' was moved to
+tcp_bpf_recvmsg_parser() to ensure the accuracy of the 'fionread' feature.
+
+That commit works for a single stream_verdict scenario, as it also
+modified 'sk_data_ready->sk_psock_verdict_data_ready->tcp_read_skb'
+to remove updating 'sk->copied_seq'.
+
+However, for programs where both stream_parser and stream_verdict are
+active(strparser purpose), tcp_read_sock() was used instead of
+tcp_read_skb() (sk_data_ready->strp_data_ready->tcp_read_sock)
+tcp_read_sock() now still update 'sk->copied_seq', leading to duplicated
+updates.
+
+In summary, for strparser + SK_PASS, copied_seq is redundantly calculated
+in both tcp_read_sock() and tcp_bpf_recvmsg_parser().
+
+The issue causes incorrect copied_seq calculations, which prevent
+correct data reads from the recv() interface in user-land.
+
+Modifying tcp_read_sock() or strparser implementation directly is
+unreasonable, as it is widely used in other modules.
+
+Here, we introduce a method tcp_bpf_read_sock() to replace 
+'sk->sk_socket->ops->read_sock' (like 'tls_build_proto()' does in
+tls_main.c). Such replacement action was also used in updating
+tcp_bpf_prots in tcp_bpf.c, so it's not weird.
+(Note that checkpatch.pl may complain missing 'const' qualifier when we
+define the bpf-specified 'proto_ops', but we have to do because we need
+update it).
+
+Also we remove strparser check in tcp_eat_skb() since we implement custom
+function tcp_bpf_read_sock() without copied_seq updating.
+
+Since strparser currently supports only TCP, it's sufficient for 'ops' to
+inherit inet_stream_ops.
+
+In strparser's implementation, regardless of partial or full reads,
+it completely clones the entire skb, allowing us to unconditionally
+free skb in tcp_bpf_read_sock().
+
+We added test cases for bpf + strparser and separated them from
+sockmap_basic. This is because we need to add more test cases for
+strparser in the future.
+
+---
+Jiayuan Chen (2):
+  bpf: fix wrong copied_seq calculation
+  selftests/bpf: add strparser test for bpf
+
+ include/linux/skmsg.h                         |   1 +
+ include/net/tcp.h                             |   1 +
+ net/core/skmsg.c                              |   3 +
+ net/ipv4/tcp.c                                |   2 +-
+ net/ipv4/tcp_bpf.c                            |  77 +++++-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  |  53 ----
+ .../selftests/bpf/prog_tests/sockmap_strp.c   | 255 ++++++++++++++++++
+ .../selftests/bpf/progs/test_sockmap_strp.c   |  51 ++++
+ 8 files changed, 386 insertions(+), 57 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_strp.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_strp.c
 
 
-Oops sorry, argc_cpy and argv_cpy need to be initialised _after_ the
-call to GET_ARG() below, otherwise we always start comparing output_file
-with itself. Please test this code on your side, too :)
-
-pw-bot: cr
-
-
->  
->  	if (!REQ_ARGS(2)) {
->  		usage();
-> @@ -1887,6 +1889,14 @@ static int do_object(int argc, char **argv)
->  
->  	output_file = GET_ARG();
->  
-> +	/* Ensure we don't overwrite any input file */
-> +	while (argc_cpy--) {
-> +		if (!strcmp(output_file, *argv_cpy++)) {
-> +			p_err("Input and output files cannot be the same");
-> +			goto out;
-> +		}
-> +	}
-> +
->  	linker = bpf_linker__new(output_file, NULL);
->  	if (!linker) {
->  		p_err("failed to create BPF linker instance");
+base-commit: 5a6ea7022ff4d2a65ae328619c586d6a8909b48b
+-- 
+2.43.5
 
 
