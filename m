@@ -1,145 +1,133 @@
-Return-Path: <bpf+bounces-46327-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46328-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B23219E7B0E
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 22:35:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A21979E7B12
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 22:36:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AD70282CE2
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 21:35:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62279282CB1
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 21:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 975381946DA;
-	Fri,  6 Dec 2024 21:35:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 264E01AAA24;
+	Fri,  6 Dec 2024 21:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="OkZnyH8D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZQYoEGPm"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8484622C6C0;
-	Fri,  6 Dec 2024 21:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C0B22C6C0
+	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 21:35:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733520935; cv=none; b=gBmQVix6vdzXG+6V+Rk6Hcr7Gd5FRWmJlTCvD4dBSxgbtKVnrHiQu27M/q1yu+3mt8aQOQzU0LUsQJmBSKbTuq9c76bgmHrXeDYT50EM+w4sYQYIf1o81AGfsdNgUoByu4gm7yn8kyZScimDNG9AeUp97WCZT4EqLlAiaXaWlF4=
+	t=1733520957; cv=none; b=UD9YeomaLdtfV4KS9EOgPmpjkcbyeTCvqmwRmWpKtk9+cH21/bVXe2fYhnmRTXKUsJs+OVbK140BlErz/zdEivV3AsZoF8Yl/amR3PfCHpIltQubGnnRaXtdNnbbvYFPBG7T4iFN75Oj0+8NQM+nGLhJXHKcZe9sbV8i8QdyAYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733520935; c=relaxed/simple;
-	bh=5NrQIXAq0YZzdb+aRNI3A3yn/SR1BkmWiImxTr1UXv0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a1rCw/qVmMPfAK2Ls3nAlYYkgomek36lQmgj4l6915BUivX3K1gsRpAI9BivEGDaZ++kRj8dmzzAccNIM94dlf+EwqCrUp+FEEQsXxjCubUSC5iEXDYVZ3k/vPru4a+LZiW/yon4vmEYNnFF3w7iXS/j9tdayc2Jc3rXofEtJDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=OkZnyH8D; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=KkQnZDVAexBMVD079s5zEMS2B1vvW82O9CzbnlJZIl0=; b=OkZnyH8DmT0rqv5arpt54VxEPP
-	jaVi9la0RN7rdhZ4QF/VJr5Uo71yrmnuh5wzZKU73KvsAkRojtkFNZB7Zp9b+k+NeFPSd85Y/G25f
-	zSCn5cgz1aSPl2Eo/1hvoYk3QskLWZ8Nm35EgMXFKjVhAvqR1rds/XHeewFERvV3HEmgg2psEMDiD
-	NKCAabtcKcX04z1fLDFGgC2JItEDZqu39wO/Ama93dExDc9E6NAEChNtlLacXRLzL+CpjOTNdueQX
-	DBchLCgW5oBC9jyzsqLUSBYNu50NS0qwvM33lWMDlDDraQT2zOpq5yvulLEp4EQhxETKcpnCq42/l
-	np6I8u1Q==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tJfyz-00012e-Ui; Fri, 06 Dec 2024 22:35:30 +0100
-Received: from [85.1.206.226] (helo=[192.168.1.114])
-	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tJfyy-000M2j-38;
-	Fri, 06 Dec 2024 22:35:29 +0100
-Message-ID: <fac7e933-a1cc-4863-9610-f5429da0d849@iogearbox.net>
-Date: Fri, 6 Dec 2024 22:35:28 +0100
+	s=arc-20240116; t=1733520957; c=relaxed/simple;
+	bh=g3CaoPxq2xrEC7tZ6bslU+5cHtGN3PTozZiPXZK4HYg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=o9pzoov2kVv982c131H2N0Z7QWvujlOfY1WJ3rdbOuMK7UPrFlQY+Di/xXRdPyzgKzrt6/e3ootzYx2s8tU1k5y4YkN7MrVsY7ihVDGATGKGYIDKNdMG9wyhpnAjkcODIRieSa/GOXJruO5v5EE9y+YF5+NpJFdtdFAZuCea8U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZQYoEGPm; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2ef28f07dbaso1873408a91.2
+        for <bpf@vger.kernel.org>; Fri, 06 Dec 2024 13:35:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733520955; x=1734125755; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wFT7/2fYjhKbUoW933UAiLDDFWCMe4e/GFL9fbz9oAk=;
+        b=ZQYoEGPmgF+GYjiSdJTLtWwF2AYCxXM6vTKYHsb5p3XSbqaQNJDKciRLZePGPiOKx0
+         m0SjvmmTN0GByYGipxpQc3dlHX14F1gIRt7zHTyQScH2UN0Q0VeMwx8aqCdR4LM/gjvn
+         PdOj0FWcEnjAJl+M8zrfduBdTp6wMqG4PlbG7Iwx88tcjjRjE1UpHSkMuEVtUzDuILAV
+         uN5LLbgZjvszhPduXfB/YhOpufCYkcF9TDHSFsgDfKgosSGkMnC/50Zgq5i1hXeOEVBb
+         FoxZbsUm+ruscUiTRA0wp66l4wyfdABzWEvjLp7JbfPMh9ZqNov9bkxN78v9QeEiaukR
+         Hm/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733520955; x=1734125755;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wFT7/2fYjhKbUoW933UAiLDDFWCMe4e/GFL9fbz9oAk=;
+        b=IATAG/0VGs8DYmMjsMSKOtIhyAQ0pX7OtTZwHL4I91eSzQh6BZW9W4XUTgA2/P5sAf
+         6OBySJ9xfGfe2/qBeaCkQvVrD20RpFIHZRB6I2Wu8fmsGNDwX/So6ELxTVnIuXY1EcV8
+         vDb+APOCB26d9GEeW6UJvyYKPGWIUpiDmIHZZzbhV0tnmFHQDgoIIFAkvtvEV48nIU25
+         SppYsJDWgDeY3gdMVj4c9I+3XSz3N3o1exDznY6w79xGSUpT1kl5vh3H5lagXeAV+r2J
+         rt53ifS1YIdDSS7Ydi/oNT3FBsK3fsVS2U5L5mNxmx5SKtlzTBPYp7c15hUyXs4hYJea
+         sAjQ==
+X-Gm-Message-State: AOJu0YyeVAek7PR2SEwd2cu5JWDGewNI1PJqIDm3l/UODgfovT2Jm3C7
+	Co9ce5jiCgLA2YZlHPiGFbdaXfxVf/xgRrywkFGLf5uaMYV2jEd6
+X-Gm-Gg: ASbGnctsN4vhkw2bS+2zhzY15ZZhd3Bj0gdQ42i4A6Fj077VK1azsPhS1CHnw7MhdUB
+	9wcA2sOHut+TluzLjs5kRY1ni/h02XZ3NpFCuqm49rfXXRRUgxB6A9XEIqsPOd+MqfiWDUbcwv5
+	7T0ElooUWhQApTn8kHtcHLUC0marhQdFdrLqQL3LI5LNwCikE/2U9odKU4io6lGZqeSTnWfP0cU
+	VZlgcySO3zTwStI1CRxnOXwxF+/R8P0/eeNQzGY1MXzo24=
+X-Google-Smtp-Source: AGHT+IEdRSJtl26VgXMR5yD8dQI7Bs24AxoxdbRNj8NjS8eJkGXSOLWbc8a/eRGlUS0JvRUDg4M32g==
+X-Received: by 2002:a17:90a:da8f:b0:2ea:3f34:f194 with SMTP id 98e67ed59e1d1-2ef69e15289mr6949582a91.10.1733520955478;
+        Fri, 06 Dec 2024 13:35:55 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ef1e920587sm4567547a91.1.2024.12.06.13.35.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Dec 2024 13:35:54 -0800 (PST)
+Message-ID: <13bc5814f88e2b3d5a39c4a71263202df397b65a.camel@gmail.com>
+Subject: Re: [PATCH bpf 3/4] bpf: track changes_pkt_data property for global
+ functions
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau	 <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>,
+ Yonghong Song	 <yonghong.song@linux.dev>, Nick Zavaritsky <mejedi@gmail.com>
+Date: Fri, 06 Dec 2024 13:35:50 -0800
+In-Reply-To: <CAADnVQJgLj6qPUtujg0a0fj7Rifv3L3LL3F5abs6auf6hAhKGQ@mail.gmail.com>
+References: <20241206040307.568065-1-eddyz87@gmail.com>
+	 <20241206040307.568065-4-eddyz87@gmail.com>
+	 <CAADnVQJgLj6qPUtujg0a0fj7Rifv3L3LL3F5abs6auf6hAhKGQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch bpf v2 0/4] bpf: a bug fix and test cases for
- bpf_skb_change_tail()
-To: Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>
-References: <20241129012221.739069-1-xiyou.wangcong@gmail.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <20241129012221.739069-1-xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27479/Fri Dec  6 10:40:14 2024)
 
-Hi Cong,
+On Fri, 2024-12-06 at 12:43 -0800, Alexei Starovoitov wrote:
+> On Thu, Dec 5, 2024 at 8:03=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+> >=20
+> > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.=
+h
+> > index f4290c179bee..48b7b2eeb7e2 100644
+> > --- a/include/linux/bpf_verifier.h
+> > +++ b/include/linux/bpf_verifier.h
+> > @@ -659,6 +659,7 @@ struct bpf_subprog_info {
+> >         bool args_cached: 1;
+> >         /* true if bpf_fastcall stack region is used by functions that =
+can't be inlined */
+> >         bool keep_fastcall_stack: 1;
+> > +       bool changes_pkt_data: 1;
+>=20
+> since freplace was brought up in the other thread.
+> Let's fix it all in one patch.
+> I think propagating changes_pkt_data flag into prog_aux and
+> into map->owner should do it.
+> The handling will be similar to existing xdp_has_frags.
+>=20
+> Otherwise tail_call from static subprog will have the same issue.
+> xdp_has_frags compatibility requires equality. All progs either
+> have it or don't.
+> changes_pkt_data flag doesn't need to be that strict:
+> A prog with changes_pkt_data can be freplaced by prog without
+> and tailcall into prog without it.
+> But not the other way around.
 
-On 11/29/24 2:22 AM, Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> This patchset fixes a bug in bpf_skb_change_tail() helper and adds test
-> cases for it, as requested by Daniel and John.
-> 
-> ---
-> v2: added a test case for TC where offsets are positive
->      fixed a typo in 1/4 patch description
->      reduced buffer size in the sockmap test case
+Ack, will do.
 
-I ran the selftest several times but it's repeatedly failing whereas
-without the series bpf tree CI seems fine. The CI fails on tc tests,
-so potentially patch 4 is causing this.
+(Note: the change Andrii suggested with change to global subprogram
+       visit order looks plausible and not hard to implement,
+       after I though about it a bit more).
 
-Switching over to tcx APIs from libbpf might automatically address
-this given the failures seem to be in 'revision unexpected' which is
-likely due to legacy libbpf tc APIs detaching but not deleting the
-underlying qdisc.
-
-Thanks,
-Daniel
 
