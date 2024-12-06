@@ -1,184 +1,196 @@
-Return-Path: <bpf+bounces-46299-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 601E29E77C5
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 19:00:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFF109E77D4
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 19:10:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 078231886DC4
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 18:00:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0C6A167420
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 18:10:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8852A1FD7B1;
-	Fri,  6 Dec 2024 18:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE001FFC64;
+	Fri,  6 Dec 2024 18:10:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TveFug1/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ea5oPDXs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94DF62206A5;
-	Fri,  6 Dec 2024 18:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326182206A5
+	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 18:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733508031; cv=none; b=KEwNXUSb5gxnISRuSNIxbTWDCTp1kbLkXA5uaT8qaWKfwyBFQh/CA0Ul2v7nL9s6K4wjFudOPhKSRWR3yyH7kg2lLM7cBNf2tykfnHTwjaHxfLDoq3vaFYPgqKP703QMks6UtpyA3CxwdbIvjStD1cvRJ2JmPzFvb7fltcDnUd0=
+	t=1733508643; cv=none; b=NlJ9flvMoM4yPt27YZJw982EDRaea9pwHNUztVn/4k4SDdHYZ0hzYon69sNgIOu0lJyLOGRKFy4mrwTDaxSrplnhBGb/4cY4ZhwhlHOLuXjsAPmPLMpe8RmpeG1sQzkvRXmSCAo4vd6W6UAFObRN+tuFMughZ7qqFwKx5xwhzOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733508031; c=relaxed/simple;
-	bh=H8+ijCMiA6ukFvtvHgi/sIc/1ThgkN6eZOLvjTyrHao=;
+	s=arc-20240116; t=1733508643; c=relaxed/simple;
+	bh=kd3hdc87rVgATmji+Lp2eTw7AeuAGNSUgRGJP+Gc5dg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eExobWL5w5ohCPgvsZCo2+6RY7I5ZlsThmskO5i6BhfTh1Tkc9+cOGgt2ao+FPjx3BQm/ElIcEJlqiTwTpTHY0pNw+rFk2z+RtB1hILiBihXeE7YGRkZFQy/TSYlh5kPzr2sbG3Ozz5/e4W9cxkVG8BYVDYmvgdpx7hdC+9wk8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TveFug1/; arc=none smtp.client-ip=209.85.216.45
+	 To:Cc:Content-Type; b=n9QbDsWzu9Lz4E4yW6GdSD/8o4wMwRyWizx4jpMPexI0O3vqqGTBZS/Zav9TcDAg8/zb9ap+XfgAhEL7ZkO+r7Mfdhz1Wkte1uT6UG8xsXmaoJDXSe27HgY4INXuNRLiH1ub2qYZINq3KESY757/S82XpHt/QlNWELJGJdu2Hmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ea5oPDXs; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2ef6c56032eso846175a91.2;
-        Fri, 06 Dec 2024 10:00:29 -0800 (PST)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2ef6af22ea8so996602a91.0
+        for <bpf@vger.kernel.org>; Fri, 06 Dec 2024 10:10:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733508029; x=1734112829; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733508641; x=1734113441; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=34RpqiH9mb1FjMoXjg/XFvDnF3uQltArdmOLNrd2+ic=;
-        b=TveFug1/KLRCFee/7Jl8qNP2dXRD3IZiudPRz9OwvHkgDp6eANBqp1wwy3ZcsvI6c3
-         cR+BLDdAjtFlNsPp/Zu9FNEjLYQCxRdnOt0fyMpYQ1FRZN03PlDeALwbLna7rPOVhhW5
-         vgOV0wsttPPal/3acF89kDG5NqItTnTpgOo0lcxaNfvqaEtlIzZzcY61UZRSZy1ZGZB0
-         lB/1p4bUoPjQVPdYSqEl+r22IIfQmBecDPjku7fqU3eZtPxdnkx2c75D5R1fBggA4n9a
-         5nK5xxcjfS9YSIq0PgwQjdNbj3mijpBlNr84RjQLWoPxowrarfu7GuI40TY61qktk40f
-         cToQ==
+        bh=gGl0wgJOUHMI3X+KPzbqVUTQ/V6KKqJ9cW5u2uWbTcg=;
+        b=ea5oPDXsDljpwb2e4PPisAm79zGiCVkYES5QGG7WR9ceNA5DwCRB/UcelicV5s7bPg
+         xm03rkuB1Xn6jVR9pa8EfF9Lc9TpMB6nEFmmYlwq52/lwNeuRJ8tfZVZmCxrOidO3I4R
+         qybRsVghEMJ6FekiGUQeKN6VjTTxI8KpU7jDVwl3KxXensx40QUToFHYjDC2R0cW6bQ2
+         X4Iz8LFl2/YBEbaI5jUimKsw7Za0XU+dDq8bMCWNmZ8xO7AiemjH3sfFrui9IPD5p9fm
+         ue5kgBATRVSH8Ej7z+PlnGlQbvr0mCoBVWMYa6DiZbHZIlLo1y9cAtfBD8xkOkHcWxx3
+         stJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733508029; x=1734112829;
+        d=1e100.net; s=20230601; t=1733508641; x=1734113441;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=34RpqiH9mb1FjMoXjg/XFvDnF3uQltArdmOLNrd2+ic=;
-        b=VajDTg681XMf9hQyerteA0qaBPnbZCNMQ8OhqBup7ILuawhpiHkRddxZBFDQzRQzKE
-         Cju/Jq1SvXYFxq/e6r/d/p3W7WLQY4yGikhzTwizR4QUZNmqOhohJ1G8JscwjI1tGCfo
-         54QK8sTqzNfJXNoRG3kuVBQ9JgZwxCpNnOcHZRIT3Iq9FJdfVLg0WIp0tQCRDaMiXQFA
-         KaRgl93qfpnWX12qs/JYrTHT2TWg0vN5YVEVatGvxWl8AFMP0GkbYU+UxqTyMleQ7OTf
-         j8RTxmQmR6u8s8EFJiUQMv+onzbsq4fLILjTCm9qWfJId3iBPmpa4xOM1u5H2LLl5w8E
-         k7kw==
-X-Forwarded-Encrypted: i=1; AJvYcCUlfgUq5bGpXu08gpn341iO0PQlh2BUg2oH6YiuG2hv3zyKECokzBrNg1dM7r0UAONgq2zt5rzDK8o+x5p1@vger.kernel.org, AJvYcCW5mT9N0jE887QXxinDjMl5xQwB1MjcK5J4L2R2GolHY4/z/JTIpQPZ3RbKM8D1GdY3ilw=@vger.kernel.org, AJvYcCXwr3qrjqIHdc6YeYKdpUcVkLF4PW70jp2Ju5sMatrDqfVwRlUpD/tFaopWlYx1rlwklKK4BfouDf7fteYtev8p1EyD@vger.kernel.org
-X-Gm-Message-State: AOJu0YyROJ1zekL9r4zsG+7ybejfVEUMZEj8UrZKDQoSgQQnDaVFJtya
-	flZTIfb/HmGd2i34sZZrqQnu+P2q92b3U+/60+zFlk+OviSjeYR1rouTGtMWlsjGzPy6IT4lMGF
-	K4K6dJDt9sr9JhlwTNwE6rG478AU=
-X-Gm-Gg: ASbGncsl0Kis83BuStPeoXWoPCaj2mUeVXD4w1PgUrVk36v0qgFJv8RThmPiLbVoUhA
-	eVg2tfXa/ZU2lEsca8AXQeoKFa9dA8+ydyxCWIZAyOAH755E=
-X-Google-Smtp-Source: AGHT+IHCNWhxq7so09pbzCCKHYLOVnFH/73MSxeGbWicpEb+f1NdFQzOJpUKEvhEDi5mDeEJAuKV7y0BazV2xTlwol0=
-X-Received: by 2002:a17:90b:3dcb:b0:2ef:114d:7bf8 with SMTP id
- 98e67ed59e1d1-2ef6965464amr5173915a91.6.1733508028565; Fri, 06 Dec 2024
- 10:00:28 -0800 (PST)
+        bh=gGl0wgJOUHMI3X+KPzbqVUTQ/V6KKqJ9cW5u2uWbTcg=;
+        b=TX98w9XsURfxBWuqNLsTdH1Mmu+9IpRpFV+E5J3jD218A7rssA6G1b3rl+EUHT/jNO
+         nushc0DD6HCCcN2u3/hrHfNWzECSN/M+amf75DNj7PloyHezGg+Xdo8KY7LFw8dzvhFF
+         gqg0SUL8Aat4DzWxYygBMfGSFDrctffG0YKlUIYqeO3Q+y8xwvAYytJHbU2e8nAeQVWj
+         MVIjkWicw9fpAw48+WIDAofi6SEKv/LM4LtIPbFKhh+s0lWa5xYMgirTIJkoijKeP4+L
+         EvQPLHgpZst3WitKyqPm+QMqAAHd48z27F4TW5uoZIQx9IGkcol15zqfOVcGdMU6ZRuP
+         oIEw==
+X-Forwarded-Encrypted: i=1; AJvYcCVBWY3Uv5LgHrVDt5LfZ0CoOCu6RkugNYBZbmcV9yCWnBGyc6CjLOiHSp1L7gxB14wi4fg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy77hGq/wNX9WFASzg9s7HRVKqFGQw5XmMlv1O1fFOwNPusLRad
+	8ZkT1MvUYDmoZycD21pb7WpIZ88V58+91ZOKvO6KBvmaxUbgzAHHTimSgkteCdlGl3azmHyNiZC
+	S8XlHOdHXbiR8CoG+Af2bPHWbKxs=
+X-Gm-Gg: ASbGncuP0cuMOj5duwRlDJqrN1e8qG4kUkIe0gJeHH7c1DQVDHUgwAzBGPkGYxSDnyK
+	NSMaBynReUxCWDXzxeEWkVPa1BpSycCWzqviRBYXQAKE0OOg=
+X-Google-Smtp-Source: AGHT+IG3gDpvLY/IJJ1hk3ts05DolTpGTZ2b6hio7vVTw8nvw0UOQEMsywAzbaGoB/6APhsYyTui2wtgFN1pGfjfCpw=
+X-Received: by 2002:a17:90b:1a86:b0:2ee:c291:7674 with SMTP id
+ 98e67ed59e1d1-2ef69b3594amr6656487a91.14.1733508641432; Fri, 06 Dec 2024
+ 10:10:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241206002417.3295533-1-andrii@kernel.org> <20241206002417.3295533-5-andrii@kernel.org>
- <Z1MFBVRuUnuYKo8c@krava>
-In-Reply-To: <Z1MFBVRuUnuYKo8c@krava>
+References: <0498CA22-5779-4767-9C0C-A9515CEA711F@gmail.com>
+ <1b8e139bd6983045c747f1b6d703aa6eabab2c82.camel@gmail.com>
+ <47f2a827d4946208e984110541e4324e653338e0.camel@gmail.com>
+ <CAEf4BzZBPp40E-_itj1jFT2_+VSL9QcqjK4OQvt6sy5=iJx8Yw@mail.gmail.com>
+ <4bbdf595be6afbe52f44c362be6d7e4f22b8b00f.camel@gmail.com>
+ <CAADnVQKscY7UC-5nAYxaEM4FQZGiFdLUv-27O+-qvQqQX0To5A@mail.gmail.com>
+ <1f77772b8c8775b922ae577a6c3877f6ada4a0a1.camel@gmail.com>
+ <CAEf4BzZybLU0bmYJqH2XJYG_g8Pvm+STRdHBtE1c5zbhHvtrcg@mail.gmail.com>
+ <1f49e00de4e5a17740e4e04ddb77b60e5ff46526.camel@gmail.com>
+ <CAEf4BzZ1239ec_J33jZj3Ji6-6W_PspVeKu05L6S729-_g6GMw@mail.gmail.com>
+ <17abfd2c6dfc74fa4c1c2a45bf0c7b793963d5a1.camel@gmail.com>
+ <CAEf4BzZJOxnm7z6QaxRr9PsfD_DTV5nSPP9TjiEMQxNMxzLFRA@mail.gmail.com> <fca94f90badf43ee16e2773faf35e136d551ec28.camel@gmail.com>
+In-Reply-To: <fca94f90badf43ee16e2773faf35e136d551ec28.camel@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 6 Dec 2024 10:00:16 -0800
-Message-ID: <CAEf4BzaESrHfAXZrN0VbjQvxLJ0ij0ujKpsp2T6iQtbisYPa=A@mail.gmail.com>
-Subject: Re: [PATCH perf/core 4/4] uprobes: reuse return_instances between
- multiple uretprobes within task
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	peterz@infradead.org, mingo@kernel.org, oleg@redhat.com, rostedt@goodmis.org, 
-	mhiramat@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	liaochang1@huawei.com, kernel-team@meta.com
+Date: Fri, 6 Dec 2024 10:10:29 -0800
+Message-ID: <CAEf4BzZCv+6H2bn_nrOFxw-rZcuO+rX+eXxw+qPCJBy7fDrDqA@mail.gmail.com>
+Subject: Re: Packet pointer invalidation and subprograms
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	andrii <andrii@kernel.org>, Nick Zavaritsky <mejedi@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 6, 2024 at 6:07=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
+On Fri, Dec 6, 2024 at 9:58=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Fri, 2024-12-06 at 09:46 -0800, Andrii Nakryiko wrote:
+> > On Fri, Dec 6, 2024 at 9:29=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.=
+com> wrote:
+> > >
+> > > On Fri, 2024-12-06 at 08:08 -0800, Andrii Nakryiko wrote:
+> > >
+> > > [...]
+> > >
+> > > > The tags would be that generalizable side effect declaration approa=
+ch,
+> > > > so seems worth it to set a uniform approach.
+> > > >
+> > > > > Please take a look at the patch, the change for check_cfg() is 32=
+ lines.
+> > > >
+> > > > I did, actually. And I already explained what I don't like about it=
 :
->
-> On Thu, Dec 05, 2024 at 04:24:17PM -0800, Andrii Nakryiko wrote:
->
-> SNIP
->
-> > +static void free_ret_instance(struct uprobe_task *utask,
-> > +                           struct return_instance *ri, bool cleanup_hp=
-robe)
-> > +{
-> > +     unsigned seq;
-> > +
-> >       if (cleanup_hprobe) {
-> >               enum hprobe_state hstate;
+> > > > eagerness. check_cfg() is not the right place for this, if we want =
+to
+> > > > support dead code elimination and BPF CO-RE-based feature gating.
+> > > > Which your patches clearly violate, so I don't like them, sorry.
+> > > >
+> > > > We made this eagerness mistake with global subprogs verification
+> > > > previously, and had to switch it to lazy on-demand global subprog
+> > > > validation. I think we should preserve this lazy approach going
+> > > > forward.
+> > >
+> > > In this context tags have same detection power as current changes for=
+ check_cfg(),
 > >
-> > @@ -1897,8 +1923,22 @@ static void free_ret_instance(struct return_inst=
-ance *ri, bool cleanup_hprobe)
-> >               hprobe_finalize(&ri->hprobe, hstate);
-> >       }
+> > You keep ignoring the eagerness issue. I can't decide whether you
+> > think *it makes no difference* (I disagree, but whatever), or you *see
+> > no difference* (in which case let me know and I can explain with some
+> > simple example).
+>
+> In the context of the packet pointer invalidation I see no difference.
+> Tags are as eager as check_cfg() traversal.
+
+Goodness, Eduard...
+
+static __noinline void maybe_trigger_pkt_invalidation(bool do_trigger)
+{
+    if (do_trigger)
+       bpf_whatever_helper_triggers_pkt_invalidation();
+    /* presumably do something useful here */
+}
+
+__weak /*global*/ int global_no_pkt_invalidation(void)
+{
+    maybe_trigger_pkt_invalidation(false); /* DO NOT trigger */
+    return 0;
+}
+
+__weak /*global*/  __subprog_triggers_pkt_invalidation_and_I_mean_it
+int global_make_pkt_invalidation_great(void)
+{
+    maybe_trigger_pkt_invalidation(true); /* DO trigger */
+    return 0;
+}
+
+What does your check_cfg() say about global_no_pkt_invalidation()? Can
+it trigger pkt invalidation or not?
+
+>
+> > > it is not possible to remove tag using dead code elimination.
 > >
-> > -     kfree(ri->extra_consumers);
-> > -     kfree_rcu(ri, rcu);
-> > +     /*
-> > +      * At this point return_instance is unlinked from utask's
-> > +      * return_instances list and this has become visible to ri_timer(=
-).
-> > +      * If seqcount now indicates that ri_timer's return instance
-> > +      * processing loop isn't active, we can return ri into the pool o=
-f
-> > +      * to-be-reused return instances for future uretprobes. If ri_tim=
-er()
-> > +      * happens to be running right now, though, we fallback to safety=
- and
-> > +      * just perform RCU-delated freeing of ri.
-> > +      */
-> > +     if (raw_seqcount_try_begin(&utask->ri_seqcount, seq)) {
-> > +             /* immediate reuse of ri without RCU GP is OK */
-> > +             ri_pool_push(utask, ri);
->
-> should the push be limitted somehow? I wonder you could make uprobes/cons=
-umers
-> setup that would allocate/push many of ri instances that would not be fre=
-ed
-> until the process exits?
-
-So I'm just relying on the existing MAX_URETPROBE_DEPTH limit that is
-enforced by prepare_uretprobe anyways. But yes, we can have up to 64
-instances in ri_pool.
-
-I did consider cleaning this up from ri_timer() (that would be a nice
-properly, because ri_timer fires after 100ms of inactivity), and my
-initial version did use lockless llist for that, but there is a bit of
-a problem: llist doesn't support popping single iter from the list
-(you can only atomically take *all* of the items) in lockless way. So
-my implementation had to swap the entire list, take one element out of
-it, and then put N - 1 items back. Which, when there are deep chains
-of uretprobes, would be quite an unnecessary CPU overhead. And I
-clearly didn't want to add locking anywhere in this hot path, of
-course.
-
-So I figured that at the absolute worst case we'll just keep
-MAX_URETPROBE_DEPTH items in ri_pool until the task dies. That's not
-that much memory for a small subset of tasks on the system.
-
-One more idea I explored and rejected was to limit the size of ri_pool
-to something smaller than MAX_URETPROBE_DEPTH, say just 16. But then
-there is a corner case of high-frequency long chain of uretprobes up
-to 64 depth, then returning through all of them, and then going into
-the same set of functions again, up to 64. So depth oscillates between
-0 and full 64. In this case this ri_pool will be causing allocation
-for the majority of those invocations, completely defeating the
-purpose.
-
-So, in the end, it felt like 64 cached instances (worst case, if we
-actually ever reached such a deep chain) would be acceptable.
-Especially that commonly I wouldn't expect more than 3-4, actually.
-
-WDYT?
-
->
-> jirka
->
-> > +     } else {
-> > +             /* we might be racing with ri_timer(), so play it safe */
-> > +             ri_free(ri);
-> > +     }
-> >  }
+> > That's not the point of the tag to be dynamically adjustable. It's the
+> > opposite. It's something that the user declares upfront, and this is
+> > being enforced by the verifier (to prevent user errors, for example).
+> > If the user wants to have a "dynamic tag", they can have two global
+> > subprogs, one with and one without the tag, and pick which one should
+> > be called through, e.g., .rodata feature flag variable. I.e., make
+> > this decision outside of global subprog itself.
 > >
-> >  /*
+> > > So I really don't see any advantages in the context of this particula=
+r issue.
+> >
+> > See also my reply to Alexei, and keep in mind freplace scenario, as
+> > one of the things your approach can't support.
+>
+> Some freplace related mark will have to be present after program verifica=
+tion.
+> It might be in a form of a tag, or in a form of an additional bit in
+> an auxiliary structure. There would be code to check this with both appro=
+aches.
+>
 
-[...]
+tag vs check_cfg() is not about that aspect, in both cases we need to
+recod whether subprog can trigger pkt invalidation or not.
+
+It's about whether we derive this (and then where, in check_cfg() or
+in proper verification pass), or whether the user declares it and we
+enforce that in the verifier.
 
