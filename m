@@ -1,313 +1,370 @@
-Return-Path: <bpf+bounces-46277-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46278-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5033D9E724C
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 16:07:18 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B461E9E7482
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 16:39:12 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BB6B2830F8
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 15:07:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA8E7166B05
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 15:38:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9E3B1FCF5B;
-	Fri,  6 Dec 2024 15:07:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C814C20E037;
+	Fri,  6 Dec 2024 15:34:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CUEggeI3"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Gev/swZd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950EA53A7;
-	Fri,  6 Dec 2024 15:07:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733497632; cv=fail; b=SLSLC8KTGothPouoijmgW0Vhn1MAe7otl6LZRpA/2CV7K+jUY96oCnEvrFtJ6XBoC5punLPjoHqYu3KoRqXLkSOFPNOmg9prH1RPf+EP2uRUrBaEbbSsZku8oW89RtFgANmEuFiIm+0MB7SPc1MZ4Vsk8xl4Isex8JP68usQwds=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733497632; c=relaxed/simple;
-	bh=/QAPEApep7/02D99Jq3R5EvKMqORYZETQ/FRTvY5Kig=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=bOxfYdQAy0tjCLB6N+ntxympLyHG7TWUJGVeu71vR6dv7cUrdcKKnf7oSei1lD+HRhX0A9bSQB5I5OG49Tmdk1iYcUOHF/6GiER9lvYJBL2Yih3Ml9xWiguLATa9G+TxH++otCsCrZ8UNAZUY+vUhJbZ9Jpbgo967FLPMb0JaJM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CUEggeI3; arc=fail smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1733497630; x=1765033630;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=/QAPEApep7/02D99Jq3R5EvKMqORYZETQ/FRTvY5Kig=;
-  b=CUEggeI38REezfZ8Oi7GwcKBK1klcFyLiYQcKp/ljTMIv7SJfDevcHOT
-   DtxHqDzcDYHa26e9yre1TN+BWpYpL33PkFUM5iYcdctL6Q2ctJ0s3sw1Q
-   6NTy9cXOWY0ePQlAUruQicbj1vIHHzKcOdvmC6NwlercWa2dvooigBWq+
-   tc7DYYbVaR6JBr7+Ae0hb0aPbNapwDzZW39/V/OOEmV5deeA68QuMx9Mq
-   h/iU35WqzkwOr8Bg73MYrxtZmeyD44zq3xqlLTMy+dwA0c2bsMGTwq+Vi
-   H5evvPpao68Nnl/DExymBD0ghpDqXC7H1RKUzXyAhhCg3yhkWff0Lz88R
-   A==;
-X-CSE-ConnectionGUID: +zTLvNavQbqXSTSnyBAsPw==
-X-CSE-MsgGUID: J30qr7W2Qc+T0GxJ/bUZpw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11278"; a="37529289"
-X-IronPort-AV: E=Sophos;i="6.12,213,1728975600"; 
-   d="scan'208";a="37529289"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2024 07:07:08 -0800
-X-CSE-ConnectionGUID: LyDo7EpxT3Gvg0cds7Q77w==
-X-CSE-MsgGUID: ZelAO6cDQli2qgWT6VH07Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,213,1728975600"; 
-   d="scan'208";a="99379711"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Dec 2024 07:07:08 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Fri, 6 Dec 2024 07:07:07 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Fri, 6 Dec 2024 07:07:07 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.44) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Fri, 6 Dec 2024 07:07:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=wFinI9aWOor9URvCvbJbwOwrAYaUgukf3FzHQscLoOcsWHZu0Lk21e3KyEAJlwJCEe8hEry/i6BCuryJhystXIbzBuyBCaMZRfpoUkbZy3dJlo26rtOSyw4A/hvysfO3bZlv2kJJjYa/fxGlPB72ppPHLp2fvDkqVJmyJDuCw45ejXRz/XQzHSEwSUKtHyljsHQOn9FLS2gxrdVDbNIiu0XFaaH4UOpqK715Di3qpeFU1vkJsV0Rv7FB2dRDqa6AZXJnam5D2VGLS4C/ggwcmzexr8gaXAG4ymxix5oaS0bD/ZPsKykURBbRkRQTiEDsMRFRNl7OQQEGlfqvS+4rXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eReHBG2ce6kSU0mUiSg1QTOJ1XY3xrdl50I+0o71xAs=;
- b=DLevorQjPZj8Yg41D+N5jSEUj+q1cvmjpknxjmNL0mG8ZfiwTTa2GAvvi7/4skrtyMTLFRnzgmqzPgPlPoGyfSFVdW1tUcr9XNhE4a0E5UeJ67KfmxEv5ThLQVDgBiwLxMRzgdPnXVfH27qpTUgqr210cwZHVmM1H7bppkoQp1Ud+ybIs/GvT73c01rdSzqaFKlB7uXp4WO4/fBfvpB7dUj9Lvf2PnNx2soif8PhSrbzZrIOIo9mNkum0qUXiDXVhNiwqjjmP307RDQMzJHUYv1GUpffrqOy4Qv8bCkBnU2ltbZ4FSECvA4NrDG+CTik9z65WUsVYtGXO9By8LOTZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
- by DS7PR11MB8807.namprd11.prod.outlook.com (2603:10b6:8:255::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8207.18; Fri, 6 Dec
- 2024 15:07:04 +0000
-Received: from DS0PR11MB8718.namprd11.prod.outlook.com
- ([fe80::4b3b:9dbe:f68c:d808]) by DS0PR11MB8718.namprd11.prod.outlook.com
- ([fe80::4b3b:9dbe:f68c:d808%7]) with mapi id 15.20.8230.010; Fri, 6 Dec 2024
- 15:07:04 +0000
-Message-ID: <012d8975-13a4-4056-a6bf-f9140878cbdb@intel.com>
-Date: Fri, 6 Dec 2024 16:06:48 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC/RFT v2 0/3] Introduce GRO support to cpumap codebase
-To: Daniel Xu <dxu@dxuuu.xyz>
-CC: Jakub Kicinski <kuba@kernel.org>, Lorenzo Bianconi
-	<lorenzo.bianconi@redhat.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
-	<andrii@kernel.org>, John Fastabend <john.fastabend@gmail.com>, "Jesper
- Dangaard Brouer" <hawk@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-	David Miller <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
-	"Paolo Abeni" <pabeni@redhat.com>, <netdev@vger.kernel.org>
-References: <05991551-415c-49d0-8f14-f99cb84fc5cb@intel.com>
- <a2ebba59-bf19-4bb9-9952-c2f63123b7cd@app.fastmail.com>
- <6db67537-6b7b-4700-9801-72b6640fc609@intel.com>
- <20241202144739.7314172d@kernel.org>
- <4f49d319-bd12-4e81-9516-afd1f1a1d345@intel.com>
- <20241203165157.19a85915@kernel.org>
- <a0f4d9d8-86da-41f1-848d-32e53c092b34@intel.com>
- <ad43f37e-6e39-4443-9d42-61ebe8f78c54@app.fastmail.com>
- <51c6e099-b915-4597-9f5a-3c51b1a4e2c6@intel.com>
- <27b2c3d4-c866-471c-ab33-e132370751e3@intel.com>
- <yzda66wro5twmzpmjoxvy4si5zvkehlmgtpi6brheek3sj73tj@o7kd6nurr3o6>
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-Content-Language: en-US
-In-Reply-To: <yzda66wro5twmzpmjoxvy4si5zvkehlmgtpi6brheek3sj73tj@o7kd6nurr3o6>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MI1P293CA0010.ITAP293.PROD.OUTLOOK.COM (2603:10a6:290:2::7)
- To DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC10320E003;
+	Fri,  6 Dec 2024 15:34:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1733499283; cv=none; b=FgksSSOaJV+wbmh7EF0DplVCfbpHgTg8m3BICWJQak5sC7kAJslV/ntwvhd1gpDbC+fsO1ML2aQeQ4yAa5sNbH1knhldI5AMAhxU+oaysSLs5C7gD0flqVGB6HN7B8TE6YCD+qP8K2pLCBxj5wJ5L92GhUPe7Uju8Zc4tL5FBcQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1733499283; c=relaxed/simple;
+	bh=bmPoN0dz5Erv+oTPTYgXxJqjTEvypkK40KNFeBvHyg0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CK3/vTC2X2slxCP8e3utMCWtpF2UKU5D8GXEyshiA5rwUo7G1IztZ7COI44TZKy9wSAzsf4qXsyd8cDTYm2vagDmwza1TFysbrXgDcTtVyWNdn8QTGJKioa6avbV3B0pA/s30evsNNAOEFa+FCOyqlYTyRPDS+zJ+E3Q61PanUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Gev/swZd; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=jJUCC0+zAfm/qgdYfQUvLg3e720QEXlqqaYJAFyzHLE=; b=Gev/swZdu/HBwPXh5jeWxwy8T8
+	WbNtuah/1OnbbvcV9RgSMhch7KxfTDfuql51lq9CVw2QtmQSSBb0GFZ3fJuNl4zCVuGNRsXxJ+AMg
+	8eNNYCh53UAi+YC3Vk3QSDjTq8O6PkyfP635AcAaaZoAQAANEwyWxl4iBTafM9AnGsmGasY43fBBQ
+	KUW0CDaJfFk1Jf6jhe5yvVOoI3t/jlUjBli1FzysbqXvvU5hyd8bnC855WsI/rEU9bHmzdfzyxruy
+	BFEFlyHW6AlRu/UoV0ito1Ut+rLUucAVjfbZCuXpbwO6VOQ33XqmGml9l3fVYnzGHUbXE+gTfM9mM
+	+ToDvi0Q==;
+Received: from 226.206.1.85.dynamic.cust.swisscom.net ([85.1.206.226] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1tJaLS-000EQw-3H; Fri, 06 Dec 2024 16:34:18 +0100
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: gregkh@linuxfoundation.org
+Cc: stable@vger.kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	leitao@debian.org,
+	martin.lau@linux.dev,
+	peilin.ye@bytedance.com,
+	kuba@kernel.org,
+	Nikolay Aleksandrov <razor@blackwall.org>,
+	David Ahern <dsahern@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH stable 6.1 1/3] net: Move {l,t,d}stats allocation to core and convert veth & vrf
+Date: Fri,  6 Dec 2024 16:34:01 +0100
+Message-ID: <20241206153403.273068-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|DS7PR11MB8807:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9d2e4a0a-e2dd-4568-c12c-08dd1607a496
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|7416014|1800799024|7053199007;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?WFRkWkx2S1hrRVJCSFQyTjRQb3J2eTZVNWkzcmxwM3dpWi8ydmhVRC9JRldQ?=
- =?utf-8?B?QWYvMnNYSzFPTmNmaGN6ZlpvVWN4RDA0OUNiOVJYb1JRdzlvTUJXa3poSEpD?=
- =?utf-8?B?S2JxcHM3MmtTRFVHQnRYbzV0aXZObjkvbVlQb0JhMzM4Q2M3RmpWY1dxN2lJ?=
- =?utf-8?B?akI5NHVCbmdNN0xnRnRQajRKT1lMcURYYWs2c01TYmNEQ0V0UUJLWHMzc0Rx?=
- =?utf-8?B?YjB4T0paN3hISDBrenhnRC84RFExQXh4YnhBRGUyMU5QNVU3OW5KNTNnTjhm?=
- =?utf-8?B?R3B6UnZvTEZhTGRiTldIUlFYS2FXdFBBaFMycXNhdFpXdjZQRDl2WC84ajNr?=
- =?utf-8?B?WUpocGRQYzhyNkxmNnVwOEYwNmRrLzB2NkpzU09keFRSRDdRY3NwV3RraWpN?=
- =?utf-8?B?WXRQOXpJWkFiQlcyVGJZbjFGajliVFQxRlozdU00WkloSnpjRjF5SHNBbG90?=
- =?utf-8?B?WEZhM3R2SnYwVVI1cm41VHV6bytCWW05RnJscVE2OXJaZlkvQU9xZ2pDcnVq?=
- =?utf-8?B?SkpHN3dRVkpWNDJvVE5sK1VNZjYvVFhnNkpSY0V0b2x0K09zRHBHNis1QTRN?=
- =?utf-8?B?OVp2QTFPSzZkYzVZNit0ci9McDVlUnBPMDhJVThPczlQYWhHeEtFY2Fmc09r?=
- =?utf-8?B?d3IyQ052TW5kTE9UbkQxT1FJY2hXc1lia0w5OEVCZG03WGlabzAwQ2Y1WFhV?=
- =?utf-8?B?aFl1T01kbitIWkFnYjUvK296NFNJWnRCZWQrVHlrYzBIZHF2eHZyQmZhNVZa?=
- =?utf-8?B?QkpIbGJ0NzZscVIzTGluOW5Yak1EcnZmcDhXMmtxL0twLzdwdnByRHJKSHBC?=
- =?utf-8?B?WUQyWGsrcUNWRkV0UWE4TnBpakRWWjBBUmY0N2JRRGliazhHZ3BkVUpLR2FL?=
- =?utf-8?B?QlJsaXo5TmFwZ1lSeThFVW5uR3IzMnlpMnA2YzdSUkNkSXM2dUxHM3hRVlU5?=
- =?utf-8?B?SDlSV0pvbHR6SGFGNUNVWFJWeTZONEVyTVJlRFhKTVZSR3VUcGNtYm1WL2Qy?=
- =?utf-8?B?MXVaVDh3cUJJb2RPeENwM2c5SERQajI1LzdwcHRLVUI3OVdtczZKQVpJbFpB?=
- =?utf-8?B?WVNpR2FYYkJrMUtkVXpuWEZ4cjdtUFQyVmp3cUg1bHFSRlBOTHVocmxCVFpa?=
- =?utf-8?B?d3l4eGtCaWpRWnF3ZFZCMVlzQ3F4QjhXSStHMnptV3dwQkhFY05NbDg3VzZS?=
- =?utf-8?B?bjErZWFWSFNUUGpnenlhalFRQ2VSbFpJeS9BZ1QrWEZKS2RjUllYSGxIUUMr?=
- =?utf-8?B?L3dxNDFBN0NoQU9ham5VMG91RGt5bEhqSkFqOHdTVS9ybktkaG0vVTQwNVBZ?=
- =?utf-8?B?R1M4RmFKeUJYYnhtNkVBc3M0N2dtU2x4bnVnMmdCY0JvWjdHT2IwcmNzM2pM?=
- =?utf-8?B?cmFSbGIza1JkUE55aFUvcTd3ZjBlZWo5TmZyR3dVWkN2MGYyMXVIU3ZZL0hV?=
- =?utf-8?B?dU50bE1PQlNaWVNqMDdxelZaVmR5b1EzckxiSHA2T0Z0TVFXRTlBWVpDVmht?=
- =?utf-8?B?YmFqK3RuSHJxMERna2htTGNJOEJPS2RrengyU0FVNUNRSnk4UkRvNFdJem5V?=
- =?utf-8?B?cnlwOU1hcHhCSUUvSE1UT280WmZFdTVtckJUc2dZMnRmaU9pMFRXaFBuc25o?=
- =?utf-8?B?a05ScG1FVy93d0JBYWJLbUwxdlQ5MG8vRkw0YXhzbVJQdkllZC9aY2d3Qm54?=
- =?utf-8?B?RmNTZk5oVUc1enllN2wrdmRvWm5SMGtoM3h5OUg3bVgzVmZrYkJzVVVtQ3JL?=
- =?utf-8?B?eE5OTWUzUkNTMkM0UHRMK1hzTmdDSWthZFAxVWNDbHNkemNtZlVKYkxJMzNk?=
- =?utf-8?B?MEFBT053YVdLRGE5ZnZXdz09?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(7416014)(1800799024)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SVNsN0tqcTVVeGZsWWhFclNhZ0N2UjlqRWNZVUJWd2NaNmdjR1hJQlRob0tT?=
- =?utf-8?B?dDNiWVlYYzZndVJYVW4rZzlKZXJPdUNLV1d1bkx3UklHTFJKbjUrajZMU29m?=
- =?utf-8?B?NDVpT2xCdVhYWVVwblphckdERHB6MHdzVTVESm5vZWZWVGI4Q2pUNWNxblVl?=
- =?utf-8?B?WmlBOFAwMWthYUhJUWh4SzFxMFRwOTN4RmFPQlBVOVZ4QlFMU0tKMXJiRWxC?=
- =?utf-8?B?TEw4T3k1dEpXdVVBOHJhcldKWW9kbm9XcmVEWEFzVG5iTDI0UFpKN1h1UmxS?=
- =?utf-8?B?UTVSN0ZqdUc2cVRUNkpWTVFmMW15NzBTUjI4SUdLZHhlOUtYVHRZKzVaK2FW?=
- =?utf-8?B?K3Biams5VUJJZTUyVjM0VTFhVm5iT1dnWHpVYno4bk1CaXdIcVBuNkxDOXJZ?=
- =?utf-8?B?bWp2ZUxmUWNscExPdXFWTGs4YnZLekg4OXNWakFhQWVROXQ4UWQ1dm5raGY0?=
- =?utf-8?B?VEh2Q0MyQWVHNVNlRC85UzVqNWlCWGY5Yzc4TWQrQiswUHg4cDVaT1VKRnlx?=
- =?utf-8?B?Zll3Mk1QQ1JpMGZkTFB1enc3R2VhcmN4dWhMOWM3U2g1L01iVTlMS25DOFdE?=
- =?utf-8?B?YTYrejVFbE1IRHpEd0Z3ZDhnTGtMK1FZWUJxRDU3bzlBcGVzQXB1VmZrcDIx?=
- =?utf-8?B?UGdzTGNyZ3Y0VlR5dWxpTU1udXRZbm4wOXlXZkwzR0F1TEkzbXFwZVJ3ZjJs?=
- =?utf-8?B?ZGlLcVVRTzhUN3lMZ0pBbExrbDhyWmcwQUMvTG1na1phc1dyUExwZ29DZGs5?=
- =?utf-8?B?MHdaRGdKZitWd25lcHZiTjB4dFdCN3kybWJ2UGN4K2gzTEdtTTBYeUZOL2h0?=
- =?utf-8?B?Tmlua1h1QTk4Mys0K0NjSzFBemo3S2lvbE94NTlnZUlTZlR0Q2ZGdVViTVFM?=
- =?utf-8?B?MDVzNTV3a2lDTVUwUHRTZkVrVGZWakZxbzZJbG1GRUlPbFdLbFVhTHZjdGx4?=
- =?utf-8?B?ZmRhSzNyczNPaCtZbThDeXZVd3EvV1U0Zi9QZDBLZXpCakgvc1hiMFA3dVR2?=
- =?utf-8?B?VkR4TDJWRU1nMVo2VTR5c1JYRzM2Y2tiL1BHcjFJRmR1YjZuMDAvd1NuOWMy?=
- =?utf-8?B?UzVsdWg3NG95T0lNV3hkWldtb1BPaFVTSWhCTE83RHJhNzB5ekt4ZmZLZG9j?=
- =?utf-8?B?UHE2U2xXOTZSQTNZU2FKRHdlZXJQRU5qMkZZM0YwY3RKLzhqOGNQbXJEbmxW?=
- =?utf-8?B?aHQ5QXdBMVRESGI1RUsvMDZUc1hxMndKWTRJaFlKaWZVMERXbjcwd0VHb0Vp?=
- =?utf-8?B?OHYxSXBHV3paUGhnTUpBa20zRzlZY1AxYVhKUzd3NDlCTzRZKzhNOXNBWGIv?=
- =?utf-8?B?VnJodkwxZ0orMWExOFlVOXlTL0xkcEhJaERKV081ek1OOXRPdVlkRHVlK0FN?=
- =?utf-8?B?aHlacGl4a3BUVjBMOVBmYXJEbnVuSHlxczljek03OUw5OHZuRWd3bWJGVWtu?=
- =?utf-8?B?QnJJR1ZwWEEzOTc5TlVVdDlQcnZZb0JpTDRyRGN0TElvSEtMRVE4Q1A1OWdn?=
- =?utf-8?B?SzdoZHBCVkFrNmxqODhSMTV6T241ZkZUM3JRS2hmTGZ2bjgxYWF2YklETmJ6?=
- =?utf-8?B?WGZaZW85Z1hiT3hNcnpjbmw1czNBR085WFdqY0dpeU1sdFdWYnY1c2czaG1q?=
- =?utf-8?B?UUhnbTJhOTJYUk1NWEJ1SVNtMENlZDYydkxYTXZTWjAzU3dsWXU5dEx6Qkx6?=
- =?utf-8?B?MGdrQ1ovQ1VRYlFUN1ZYNm42UGV1RDBReGNBUEF1a01rSTBiT1JXZWtGbG9J?=
- =?utf-8?B?YlpHMWpkRy9OdElaa1BvYWZuNjF3YzNha0drOVVLaFlnZld5N09jUlhEUlVC?=
- =?utf-8?B?MHRac21LUE9wWGlnWWRUVTVaU1VXdko2MEpGdGV3VWpwUng1ZGVTTUlFcmhr?=
- =?utf-8?B?U2VzQnBoVTJ0SFJ3QWErS29lcTFmM2t1ZG5yNVdCYTFROHp6a3lNTDVxMFIr?=
- =?utf-8?B?bXljUHc2OTdmQmh3emJ0aWJ4ampkclVqNTAxdlJLNDdHL2dKdVM2cnYvTHNP?=
- =?utf-8?B?bDBjSnFIRkVka2cwZ1ptSXlKaWxIL0dvMXRyQmFzUjRJYzczOUVFOTMyNXI1?=
- =?utf-8?B?TGVwTCtlV1BhU1AvN3dBa0wxb0VvZytPL2ZaSkdxV3dwY254ajVxQm80NXRh?=
- =?utf-8?B?RjRuNXFxRHFOWVFSUktMMXU3TCtsbkswMjJvOHR1SnhBZUJuSXYrUUxHSkQ3?=
- =?utf-8?B?TUE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d2e4a0a-e2dd-4568-c12c-08dd1607a496
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2024 15:07:04.2117
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QIBiaVOGN9YTrjbvUqewcCvOmpv3rqUS1BKsAgzJv7dnT340QhuYW45YWVZY29U0B3BJUpqKmNg+i9m5D3LCGQoOHIYa+Zc3mqL6OOlzAqc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB8807
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27479/Fri Dec  6 10:40:14 2024)
 
-From: Daniel Xu <dxu@dxuuu.xyz>
-Date: Thu, 5 Dec 2024 17:41:27 -0700
+[ Upstream commit 34d21de99cea9cb17967874313e5b0262527833c ]
+[ Note: Simplified vrf bits to reduce patch given unrelated to the fix ]
 
-> On Thu, Dec 05, 2024 at 12:06:29PM GMT, Alexander Lobakin wrote:
->> From: Alexander Lobakin <aleksander.lobakin@intel.com>
->> Date: Thu, 5 Dec 2024 11:38:11 +0100
->>
->>> From: Daniel Xu <dxu@dxuuu.xyz>
->>> Date: Wed, 04 Dec 2024 13:51:08 -0800
->>>
->>>>
->>>>
->>>> On Wed, Dec 4, 2024, at 8:42 AM, Alexander Lobakin wrote:
->>>>> From: Jakub Kicinski <kuba@kernel.org>
->>>>> Date: Tue, 3 Dec 2024 16:51:57 -0800
->>>>>
->>>>>> On Tue, 3 Dec 2024 12:01:16 +0100 Alexander Lobakin wrote:
->>>>>>>>> @ Jakub,  
->>>>>>>>
->>>>>>>> Context? What doesn't work and why?  
->>>>>>>
->>>>>>> My tests show the same perf as on Lorenzo's series, but I test with UDP
->>>>>>> trafficgen. Daniel tests TCP and the results are much worse than with
->>>>>>> Lorenzo's implementation.
->>>>>>> I suspect this is related to that how NAPI performs flushes / decides
->>>>>>> whether to repoll again or exit vs how kthread does that (even though I
->>>>>>> also try to flush only every 64 frames or when the ring is empty). Or
->>>>>>> maybe to that part of the kthread happens in process context outside any
->>>>>>> softirq, while when using NAPI, the whole loop is inside RX softirq.
->>>>>>>
->>>>>>> Jesper said that he'd like to see cpumap still using own kthread, so
->>>>>>> that its priority can be boosted separately from the backlog. That's why
->>>>>>> we asked you whether it would be fine to have cpumap as threaded NAPI in
->>>>>>> regards to all this :D
->>>>>>
->>>>>> Certainly not without a clear understanding what the problem with 
->>>>>> a kthread is.
->>>>>
->>>>> Yes, sure thing.
->>>>>
->>>>> Bad thing's that I can't reproduce Daniel's problem >_< Previously, I
->>>>> was testing with the UDP trafficgen and got up to 80% improvement over
->>>>> the baseline. Now I tested TCP and got up to 70% improvement, no
->>>>> regressions whatsoever =\
->>>>>
->>>>> I don't know where this regression on Daniel's setup comes from. Is it
->>>>> multi-thread or single-thread test? 
->>>>
->>>> 8 threads with 16 flows over them (-T8 -F16)
->>>>
->>>>> What app do you use: iperf, netperf,
->>>>> neper, Microsoft's app (forgot the name)?
->>>>
->>>> neper, tcp_stream.
->>>
->>> Let me recheck with neper -T8 -F16, I'll post my results soon.
->>
->> kernel     direct T1    direct T8F16    cpumap    cpumap T8F16
->> clean      28           51              13        9               Gbps
->> GRO        28           51              26        18              Gbps
->>
->> 100% gain, no regressions =\
->>
->> My XDP prog is simple (upstream xdp-tools repo with no changes):
->>
->> numactl -N 0 xdp-tools/xdp-bench/xdp-bench redirect-cpu -c 23 -s -p
->> no-touch ens802f0np0
->>
->> IOW it simply redirects everything to CPU 23 (same NUMA node) from any
->> Rx queue without looking into headers or packet.
->> Do you test with more sophisticated XDP prog?
-> 
-> Great reminder... my prog is a bit more sophisticated. I forgot we were
-> doing latency tracking by inserting a timestamp into frame metadata. But
-> not clearing it after it was read on remote CPU, which disables GRO. So
-> previous test was paying the penalty of fixed GRO overhead without
-> getting any packet merges.
-> 
-> Once I fixed up prog to reset metadata pointer I could see the wins.
-> Went from 21621.126 Mbps -> 25546.47 Mbps for a ~18% win in tput. No
-> latency changes.
-> 
-> Sorry about the churn.
+Move {l,t,d}stats allocation to the core and let netdevs pick the stats
+type they need. That way the driver doesn't have to bother with error
+handling (allocation failure checking, making sure free happens in the
+right spot, etc) - all happening in the core.
 
-No problem, crap happens sometimes :)
+Co-developed-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
+Cc: David Ahern <dsahern@kernel.org>
+Link: https://lore.kernel.org/r/20231114004220.6495-3-daniel@iogearbox.net
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Stable-dep-of: 024ee930cb3c ("bpf: Fix dev's rx stats for bpf_redirect_peer traffic")
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+---
+ drivers/net/veth.c        | 16 ++----------
+ drivers/net/vrf.c         | 24 ++++++------------
+ include/linux/netdevice.h | 30 +++++++++++++++++++---
+ net/core/dev.c            | 53 ++++++++++++++++++++++++++++++++++++---
+ 4 files changed, 85 insertions(+), 38 deletions(-)
 
-Let me send my implementation on Monday-Wednesday. I'll include my UDP
-and TCP test results, as well as yours (+18%).
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 8dcd3b6e143b..0a8154611d7f 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -1381,25 +1381,12 @@ static void veth_free_queues(struct net_device *dev)
+ 
+ static int veth_dev_init(struct net_device *dev)
+ {
+-	int err;
+-
+-	dev->lstats = netdev_alloc_pcpu_stats(struct pcpu_lstats);
+-	if (!dev->lstats)
+-		return -ENOMEM;
+-
+-	err = veth_alloc_queues(dev);
+-	if (err) {
+-		free_percpu(dev->lstats);
+-		return err;
+-	}
+-
+-	return 0;
++	return veth_alloc_queues(dev);
+ }
+ 
+ static void veth_dev_free(struct net_device *dev)
+ {
+ 	veth_free_queues(dev);
+-	free_percpu(dev->lstats);
+ }
+ 
+ #ifdef CONFIG_NET_POLL_CONTROLLER
+@@ -1625,6 +1612,7 @@ static void veth_setup(struct net_device *dev)
+ 			       NETIF_F_HW_VLAN_STAG_RX);
+ 	dev->needs_free_netdev = true;
+ 	dev->priv_destructor = veth_dev_free;
++	dev->pcpu_stat_type = NETDEV_PCPU_STAT_LSTATS;
+ 	dev->max_mtu = ETH_MAX_MTU;
+ 
+ 	dev->hw_features = VETH_FEATURES;
+diff --git a/drivers/net/vrf.c b/drivers/net/vrf.c
+index 208df4d41939..c8a1009d659e 100644
+--- a/drivers/net/vrf.c
++++ b/drivers/net/vrf.c
+@@ -121,22 +121,12 @@ struct net_vrf {
+ 	int			ifindex;
+ };
+ 
+-struct pcpu_dstats {
+-	u64			tx_pkts;
+-	u64			tx_bytes;
+-	u64			tx_drps;
+-	u64			rx_pkts;
+-	u64			rx_bytes;
+-	u64			rx_drps;
+-	struct u64_stats_sync	syncp;
+-};
+-
+ static void vrf_rx_stats(struct net_device *dev, int len)
+ {
+ 	struct pcpu_dstats *dstats = this_cpu_ptr(dev->dstats);
+ 
+ 	u64_stats_update_begin(&dstats->syncp);
+-	dstats->rx_pkts++;
++	dstats->rx_packets++;
+ 	dstats->rx_bytes += len;
+ 	u64_stats_update_end(&dstats->syncp);
+ }
+@@ -161,10 +151,10 @@ static void vrf_get_stats64(struct net_device *dev,
+ 		do {
+ 			start = u64_stats_fetch_begin_irq(&dstats->syncp);
+ 			tbytes = dstats->tx_bytes;
+-			tpkts = dstats->tx_pkts;
+-			tdrops = dstats->tx_drps;
++			tpkts = dstats->tx_packets;
++			tdrops = dstats->tx_drops;
+ 			rbytes = dstats->rx_bytes;
+-			rpkts = dstats->rx_pkts;
++			rpkts = dstats->rx_packets;
+ 		} while (u64_stats_fetch_retry_irq(&dstats->syncp, start));
+ 		stats->tx_bytes += tbytes;
+ 		stats->tx_packets += tpkts;
+@@ -421,7 +411,7 @@ static int vrf_local_xmit(struct sk_buff *skb, struct net_device *dev,
+ 	if (likely(__netif_rx(skb) == NET_RX_SUCCESS))
+ 		vrf_rx_stats(dev, len);
+ 	else
+-		this_cpu_inc(dev->dstats->rx_drps);
++		this_cpu_inc(dev->dstats->rx_drops);
+ 
+ 	return NETDEV_TX_OK;
+ }
+@@ -616,11 +606,11 @@ static netdev_tx_t vrf_xmit(struct sk_buff *skb, struct net_device *dev)
+ 		struct pcpu_dstats *dstats = this_cpu_ptr(dev->dstats);
+ 
+ 		u64_stats_update_begin(&dstats->syncp);
+-		dstats->tx_pkts++;
++		dstats->tx_packets++;
+ 		dstats->tx_bytes += len;
+ 		u64_stats_update_end(&dstats->syncp);
+ 	} else {
+-		this_cpu_inc(dev->dstats->tx_drps);
++		this_cpu_inc(dev->dstats->tx_drops);
+ 	}
+ 
+ 	return ret;
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index fbbd0df1106b..662183994e88 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -1747,6 +1747,13 @@ enum netdev_ml_priv_type {
+ 	ML_PRIV_CAN,
+ };
+ 
++enum netdev_stat_type {
++	NETDEV_PCPU_STAT_NONE,
++	NETDEV_PCPU_STAT_LSTATS, /* struct pcpu_lstats */
++	NETDEV_PCPU_STAT_TSTATS, /* struct pcpu_sw_netstats */
++	NETDEV_PCPU_STAT_DSTATS, /* struct pcpu_dstats */
++};
++
+ /**
+  *	struct net_device - The DEVICE structure.
+  *
+@@ -1941,10 +1948,14 @@ enum netdev_ml_priv_type {
+  *
+  * 	@ml_priv:	Mid-layer private
+  *	@ml_priv_type:  Mid-layer private type
+- * 	@lstats:	Loopback statistics
+- * 	@tstats:	Tunnel statistics
+- * 	@dstats:	Dummy statistics
+- * 	@vstats:	Virtual ethernet statistics
++ *
++ *	@pcpu_stat_type:	Type of device statistics which the core should
++ *				allocate/free: none, lstats, tstats, dstats. none
++ *				means the driver is handling statistics allocation/
++ *				freeing internally.
++ *	@lstats:		Loopback statistics: packets, bytes
++ *	@tstats:		Tunnel statistics: RX/TX packets, RX/TX bytes
++ *	@dstats:		Dummy statistics: RX/TX/drop packets, RX/TX bytes
+  *
+  *	@garp_port:	GARP
+  *	@mrp_port:	MRP
+@@ -2287,6 +2298,7 @@ struct net_device {
+ 	void				*ml_priv;
+ 	enum netdev_ml_priv_type	ml_priv_type;
+ 
++	enum netdev_stat_type		pcpu_stat_type:8;
+ 	union {
+ 		struct pcpu_lstats __percpu		*lstats;
+ 		struct pcpu_sw_netstats __percpu	*tstats;
+@@ -2670,6 +2682,16 @@ struct pcpu_sw_netstats {
+ 	struct u64_stats_sync   syncp;
+ } __aligned(4 * sizeof(u64));
+ 
++struct pcpu_dstats {
++	u64			rx_packets;
++	u64			rx_bytes;
++	u64			rx_drops;
++	u64			tx_packets;
++	u64			tx_bytes;
++	u64			tx_drops;
++	struct u64_stats_sync	syncp;
++} __aligned(8 * sizeof(u64));
++
+ struct pcpu_lstats {
+ 	u64_stats_t packets;
+ 	u64_stats_t bytes;
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 42c16b3e86b9..5151f69dd724 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9991,6 +9991,46 @@ void netif_tx_stop_all_queues(struct net_device *dev)
+ }
+ EXPORT_SYMBOL(netif_tx_stop_all_queues);
+ 
++static int netdev_do_alloc_pcpu_stats(struct net_device *dev)
++{
++	void __percpu *v;
++
++	switch (dev->pcpu_stat_type) {
++	case NETDEV_PCPU_STAT_NONE:
++		return 0;
++	case NETDEV_PCPU_STAT_LSTATS:
++		v = dev->lstats = netdev_alloc_pcpu_stats(struct pcpu_lstats);
++		break;
++	case NETDEV_PCPU_STAT_TSTATS:
++		v = dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
++		break;
++	case NETDEV_PCPU_STAT_DSTATS:
++		v = dev->dstats = netdev_alloc_pcpu_stats(struct pcpu_dstats);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return v ? 0 : -ENOMEM;
++}
++
++static void netdev_do_free_pcpu_stats(struct net_device *dev)
++{
++	switch (dev->pcpu_stat_type) {
++	case NETDEV_PCPU_STAT_NONE:
++		return;
++	case NETDEV_PCPU_STAT_LSTATS:
++		free_percpu(dev->lstats);
++		break;
++	case NETDEV_PCPU_STAT_TSTATS:
++		free_percpu(dev->tstats);
++		break;
++	case NETDEV_PCPU_STAT_DSTATS:
++		free_percpu(dev->dstats);
++		break;
++	}
++}
++
+ /**
+  * register_netdevice() - register a network device
+  * @dev: device to register
+@@ -10051,11 +10091,15 @@ int register_netdevice(struct net_device *dev)
+ 		goto err_uninit;
+ 	}
+ 
++	ret = netdev_do_alloc_pcpu_stats(dev);
++	if (ret)
++		goto err_uninit;
++
+ 	ret = -EBUSY;
+ 	if (!dev->ifindex)
+ 		dev->ifindex = dev_new_index(net);
+ 	else if (__dev_get_by_index(net, dev->ifindex))
+-		goto err_uninit;
++		goto err_free_pcpu;
+ 
+ 	/* Transfer changeable features to wanted_features and enable
+ 	 * software offloads (GSO and GRO).
+@@ -10102,14 +10146,14 @@ int register_netdevice(struct net_device *dev)
+ 	ret = call_netdevice_notifiers(NETDEV_POST_INIT, dev);
+ 	ret = notifier_to_errno(ret);
+ 	if (ret)
+-		goto err_uninit;
++		goto err_free_pcpu;
+ 
+ 	ret = netdev_register_kobject(dev);
+ 	write_lock(&dev_base_lock);
+ 	dev->reg_state = ret ? NETREG_UNREGISTERED : NETREG_REGISTERED;
+ 	write_unlock(&dev_base_lock);
+ 	if (ret)
+-		goto err_uninit;
++		goto err_free_pcpu;
+ 
+ 	__netdev_update_features(dev);
+ 
+@@ -10156,6 +10200,8 @@ int register_netdevice(struct net_device *dev)
+ out:
+ 	return ret;
+ 
++err_free_pcpu:
++	netdev_do_free_pcpu_stats(dev);
+ err_uninit:
+ 	if (dev->netdev_ops->ndo_uninit)
+ 		dev->netdev_ops->ndo_uninit(dev);
+@@ -10409,6 +10455,7 @@ void netdev_run_todo(void)
+ 		WARN_ON(rcu_access_pointer(dev->ip_ptr));
+ 		WARN_ON(rcu_access_pointer(dev->ip6_ptr));
+ 
++		netdev_do_free_pcpu_stats(dev);
+ 		if (dev->priv_destructor)
+ 			dev->priv_destructor(dev);
+ 		if (dev->needs_free_netdev)
+-- 
+2.43.0
 
-BTW would be great if you could give me a Tested-by tag, as I assume the
-tests were fine and it works for you?
-
-Thanks,
-Olek
 
