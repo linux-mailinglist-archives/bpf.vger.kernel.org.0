@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-46255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31EAE9E6C9C
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 11:54:25 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E8C69E6C9D
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 11:54:28 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E79D0280C98
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 10:54:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 185C716573B
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 10:54:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146A21FAC5F;
-	Fri,  6 Dec 2024 10:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712FC1FBE90;
+	Fri,  6 Dec 2024 10:54:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 891661DE2C7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 891171BA86C
 	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 10:54:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733482460; cv=none; b=RVJ6mw+Cs8ULoq4VmxK64JcB3yzs2+NYjkdg5uOhpI4AVKJd9HC071IjVt0usnCNL0RxLJzq3bFiAc+8yd7B42Qen7n+/9VU5HQ3hZB1JkcrrRbjoCDhl3OpADy9CrkTKpLqVfLjVcAJ0YM+2hYao7nFQ8a0rXWII797iTC0Ims=
+	t=1733482462; cv=none; b=elTWciDlFqudqHlKYmwNEZKlLTjBVa600eqHCstijXduxgkQfrlD2qUMf1DSZhT7PGfNSZj2XTjpyb4uFUd9phZvMTwzoJWQfBKSt8/HmdwMGL1Wqx2WmfERN0e0yiP06iEOizjE3AeDkBJTfqjIf8BnXH5WJ6SlxUjORks+CJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733482460; c=relaxed/simple;
-	bh=FBq76GqPXQtED86XuZdmC7v6or+wJrzk12H4Pn9puz0=;
+	s=arc-20240116; t=1733482462; c=relaxed/simple;
+	bh=HPtZP1Cy5Y7R5JlxG7hEZsrlqahg6lYSgQHvMEUvOSE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fQriguh2gI+pxvjhk3+rKKTR6/xD4RP3Rfeybqvt432tvbs8tdzU3mJg6Hrnb6/+Alwr00Hou2MtQ/LnogjznKuTW3NwRxXDwbGcw2H56Vvdzqhao0S79WuCkOhfjOxlD2u1yd8d/ZoVFyISXZ15jvTgHpnRWSJy3DvLrk5LtoY=
+	 MIME-Version:Content-Type; b=tggdEtrDIXuZSG0+Lh97ppGpkh4E1QMyrO/iZuc1Z1jJXszesttFtnAu0Dn+n8ghW/mRboIQB7Xlefirm9bALCoMISyi/w1q1S110Hz+URD91AQzLh8ek6MnxHIVZFBIjKtU3r+yMSxzvzUBncGUduIvB9nQozaibRMcmjnENeo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Y4Smn06nxz4f3jkt
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Y4Smn51P8z4f3jqF
 	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 18:54:01 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 169A61A0568
+	by mail.maildlp.com (Postfix) with ESMTP id BF0E91A018D
 	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 18:54:15 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgBHI4fS11JnmMhIDw--.40874S5;
-	Fri, 06 Dec 2024 18:54:14 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgBHI4fS11JnmMhIDw--.40874S6;
+	Fri, 06 Dec 2024 18:54:15 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -58,9 +58,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	houtao1@huawei.com,
 	xukuohai@huawei.com
-Subject: [PATCH bpf v3 1/9] bpf: Remove unnecessary check when updating LPM trie
-Date: Fri,  6 Dec 2024 19:06:14 +0800
-Message-Id: <20241206110622.1161752-2-houtao@huaweicloud.com>
+Subject: [PATCH bpf v3 2/9] bpf: Remove unnecessary kfree(im_node) in lpm_trie_update_elem
+Date: Fri,  6 Dec 2024 19:06:15 +0800
+Message-Id: <20241206110622.1161752-3-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20241206110622.1161752-1-houtao@huaweicloud.com>
 References: <20241206110622.1161752-1-houtao@huaweicloud.com>
@@ -72,13 +72,13 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBHI4fS11JnmMhIDw--.40874S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw17GF43XFWfKF1DGw1rJFb_yoW8GF1rpF
-	4rt345ta1rJF1xCwnayw4fGr98Jw48Ww42qa4kWryYkryUXr93tr1rur4Sga18Jr4xAFnx
-	JrWjqryfKw1DXFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+X-CM-TRANSID:gCh0CgBHI4fS11JnmMhIDw--.40874S6
+X-Coremail-Antispam: 1UD129KBjvJXoW7Xw48ZF18XF45CFW3KrWkCrg_yoW8JF1xpF
+	48K3s0yr4rJr45Ww4vvFWrZr98Xw13Gw47Wa4kGayftFy5Kr93WF18ZFyj9F45JFW0yrs8
+	AF1Ygryvvw4kurJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
 	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
@@ -87,45 +87,47 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7Kw17GF43XFWfKF1DGw1rJFb_yoW8GF1rpF
 	0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG
 	67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MI
 	IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
-	14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-	W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU3cTm
-	DUUUU
+	14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
+	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0I3
+	85UUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-When "node->prefixlen == matchlen" is true, it means that the node is
-fully matched. If "node->prefixlen == key->prefixlen" is false, it means
-the prefix length of key is greater than the prefix length of node,
-otherwise, matchlen will not be equal with node->prefixlen. However, it
-also implies that the prefix length of node must be less than
-max_prefixlen.
-
-Therefore, "node->prefixlen == trie->max_prefixlen" will always be false
-when the check of "node->prefixlen == key->prefixlen" returns false.
-Remove this unnecessary comparison.
+There is no need to call kfree(im_node) when updating element fails,
+because im_node must be NULL. Remove the unnecessary kfree() for
+im_node.
 
 Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
 Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/lpm_trie.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/bpf/lpm_trie.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-index 9b60eda0f727..73fd593d3745 100644
+index 73fd593d3745..b5e281a55760 100644
 --- a/kernel/bpf/lpm_trie.c
 +++ b/kernel/bpf/lpm_trie.c
-@@ -364,8 +364,7 @@ static long trie_update_elem(struct bpf_map *map,
- 		matchlen = longest_prefix_match(trie, node, key);
+@@ -315,7 +315,7 @@ static long trie_update_elem(struct bpf_map *map,
+ 			     void *_key, void *value, u64 flags)
+ {
+ 	struct lpm_trie *trie = container_of(map, struct lpm_trie, map);
+-	struct lpm_trie_node *node, *im_node = NULL, *new_node = NULL;
++	struct lpm_trie_node *node, *im_node, *new_node = NULL;
+ 	struct lpm_trie_node *free_node = NULL;
+ 	struct lpm_trie_node __rcu **slot;
+ 	struct bpf_lpm_trie_key_u8 *key = _key;
+@@ -431,9 +431,7 @@ static long trie_update_elem(struct bpf_map *map,
+ 	if (ret) {
+ 		if (new_node)
+ 			trie->n_entries--;
+-
+ 		kfree(new_node);
+-		kfree(im_node);
+ 	}
  
- 		if (node->prefixlen != matchlen ||
--		    node->prefixlen == key->prefixlen ||
--		    node->prefixlen == trie->max_prefixlen)
-+		    node->prefixlen == key->prefixlen)
- 			break;
- 
- 		next_bit = extract_bit(key->data, node->prefixlen);
+ 	spin_unlock_irqrestore(&trie->lock, irq_flags);
 -- 
 2.29.2
 
