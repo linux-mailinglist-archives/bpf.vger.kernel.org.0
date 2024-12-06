@@ -1,132 +1,111 @@
-Return-Path: <bpf+bounces-46292-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46293-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C5869E7751
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 18:30:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 824AB9E779B
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 18:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5131016B369
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 17:30:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F04118823CB
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 17:40:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9166E220687;
-	Fri,  6 Dec 2024 17:29:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCB262206B1;
+	Fri,  6 Dec 2024 17:40:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V3YwfMMW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fXSXKxRJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B435B2206AB
-	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 17:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5618C220683
+	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 17:40:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733506151; cv=none; b=ARmNrYt1YkGEYj/61fta18QAycjUyXwTkWSR5JB8kMWvef/DiKoB+8HyYQ28TocKNMlxdkr6VpfDP0vgsbgIUMmU8MxrkKoLS+I8rezpdeHImu+IrJrB1ukSuOPO0qs99rSyNcSu4RDdc92HYH9ZwKmElIe4ha6IiehnsHkMhro=
+	t=1733506817; cv=none; b=swTBycpey7Ypq3psVfUx9Dtsy1QiD8hklKRkonfVFGnkcXPuKKEyM2FmDWCpOlOqaZSRyvolbkx9YDluSb58VSbWIoL2rWHTcIKYpAaY69DsgfCnW+6LITlvURT+wsvHQeNhkVqyJChSMEhxbRzgQ1J87lqNLUXSnxrR8kY8oCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733506151; c=relaxed/simple;
-	bh=MMIxiRedv4yz+wy++oKBaD1Cs3rZ0rd+8Zj3/N6Dlcw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=M20eScBRKVVlnpWL38ZlLMvu6mOLc677zEFZ/XZE28Swz8f2W42EIohRUhd56vEqqpKj/zK6xzyqxP2RYdKjRX0j3FcPEj1IQCiqlk/n9TuGTdwuaZCruns/IBzYY7PnydLognlSd0T9kS5cmFK8VUPZPUAPiZdE/zaEuEsG5Yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V3YwfMMW; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-215b45a40d8so20390075ad.1
-        for <bpf@vger.kernel.org>; Fri, 06 Dec 2024 09:29:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733506149; x=1734110949; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=MMIxiRedv4yz+wy++oKBaD1Cs3rZ0rd+8Zj3/N6Dlcw=;
-        b=V3YwfMMWS27u+6UoWHeGDeSvu2dTUs3+xZKrYwlEZZnnyzzJ/8A5t7P4Y8I0gHsd4t
-         kEvQSonx4fDPZ0orXti/IwzRaDbbMPl1/2vJ6koOiNoLuefYNYf2CXVvAt1gNN0vWXbz
-         EcOECv797QYmg0FhN8bZ7o2ST9l+Q3EEow+AE38vjrRoTlikIwW4bjeJmobZ45FxxO1c
-         KmunV7vmHtUic3haRXf05/Np9lWYOYG3wIOSNnZW7qK3HrBh1AFG8MRZF7datUE67Soo
-         s01p9XaI6hDEOSMPmtR4W8ePxWOmlmRgsqtR12GwIyY8kMZcE+ceoZRIPOJxhIKMHToA
-         b3aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733506149; x=1734110949;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MMIxiRedv4yz+wy++oKBaD1Cs3rZ0rd+8Zj3/N6Dlcw=;
-        b=QkdImL9wkYusAwIDJNPbejTecw2964fiqNQvVkDnsOETgeBNIWe/eaJswp5BVQq+Qs
-         zKJM35stYH4xGjR2EZtUVpIZZNdJUSMAB08zpJ/1Mj9x49VsoXqi3LzNsea5w4Csua1G
-         nGeJ51LeLZV9NRrR87RqhXQZWSeoB0gQnc3R1iQZkrltAA3hw8IHeVbl8if8vHDssxmc
-         nENhAqXEoySVn9uBpFt4K8vJwYE2/Z5E7jTdYmtg2ctiDKtj6q5p3skNoYBr8Ddd9kFU
-         5pubQvPt09Sqd8l99uKwBhuSVx0DGQq2axdD+GU4tDi8Jx+8UHyVZS78s5OS+RpuG5ku
-         m4DA==
-X-Forwarded-Encrypted: i=1; AJvYcCWnuuJGhCqntIpNEbA61nCSB+0rtrrt4iS0nMGVYOiIFjJ0pA3gLMTFKfjtYvUE0k373xA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZGIT2JpT1v9RRChk08U7jVjXgVecZKCUcRM3duY794Fy5kiLJ
-	X2seDXUkMHxHH3WqX/2/TFig6kbsFyis3ctX19idoXVGYFMIwRQFQxTXGg==
-X-Gm-Gg: ASbGncvficEKKj2WwnwNWJtxcWPy9hmnITAW/5LtYmL+Pj+/t9/qsdmuVpXPTrbOZJM
-	3p11KoMXt3f1ayTa/jxNcxHrKW4wJtwNRi2ddVD4ziSNTDX5kroi8IpC65gc7x10RPT99XzcgDz
-	EEOXyJO3Qic04yyBvdDW6GGv81REfxtdB/6ecYo9aFYnfV2ZPeERT82YKw2gHkPjWZwlFQYOdut
-	G7F/uD62GeQzJzZE8KrpuDbd1TsElpzD8crjil4R6zDkuc=
-X-Google-Smtp-Source: AGHT+IFqQjObwZsYKlsypRLaEmRyOT/o0B0UuxCYEI4+2ovWc7LSAWM8XoHo2MfF6f/En+lXAzI5Pg==
-X-Received: by 2002:a17:902:f542:b0:215:e76d:debe with SMTP id d9443c01a7336-21614d1f258mr53055595ad.10.1733506148882;
-        Fri, 06 Dec 2024 09:29:08 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-216268c36c8sm2963605ad.253.2024.12.06.09.29.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Dec 2024 09:29:08 -0800 (PST)
-Message-ID: <17abfd2c6dfc74fa4c1c2a45bf0c7b793963d5a1.camel@gmail.com>
-Subject: Re: Packet pointer invalidation and subprograms
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Alexei Starovoitov	
- <ast@kernel.org>, andrii <andrii@kernel.org>, Nick Zavaritsky
- <mejedi@gmail.com>,  bpf <bpf@vger.kernel.org>, Kumar Kartikeya Dwivedi
- <memxor@gmail.com>
-Date: Fri, 06 Dec 2024 09:29:03 -0800
-In-Reply-To: <CAEf4BzZ1239ec_J33jZj3Ji6-6W_PspVeKu05L6S729-_g6GMw@mail.gmail.com>
-References: <0498CA22-5779-4767-9C0C-A9515CEA711F@gmail.com>
-	 <1b8e139bd6983045c747f1b6d703aa6eabab2c82.camel@gmail.com>
-	 <47f2a827d4946208e984110541e4324e653338e0.camel@gmail.com>
-	 <CAEf4BzZBPp40E-_itj1jFT2_+VSL9QcqjK4OQvt6sy5=iJx8Yw@mail.gmail.com>
-	 <4bbdf595be6afbe52f44c362be6d7e4f22b8b00f.camel@gmail.com>
-	 <CAADnVQKscY7UC-5nAYxaEM4FQZGiFdLUv-27O+-qvQqQX0To5A@mail.gmail.com>
-	 <1f77772b8c8775b922ae577a6c3877f6ada4a0a1.camel@gmail.com>
-	 <CAEf4BzZybLU0bmYJqH2XJYG_g8Pvm+STRdHBtE1c5zbhHvtrcg@mail.gmail.com>
-	 <1f49e00de4e5a17740e4e04ddb77b60e5ff46526.camel@gmail.com>
-	 <CAEf4BzZ1239ec_J33jZj3Ji6-6W_PspVeKu05L6S729-_g6GMw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1733506817; c=relaxed/simple;
+	bh=xXEka//hkP4wJgoEn5EbobGFHmPZpz9/swfZy3O3dT0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=icwNEWSpU91HQcizM09Qy+ShPdYlNiA/lFhoHN8VzI2NIYNV9/vhVgqILc98wPVAJkZh4oqbh2okPSoIL3lJ6HPNjPALJAckXUUg2Cob1D5FpEGxhVZjwvNGw51aA4PcOjkVMbIXkwEZO/+c8c/DaCN/438WxVFup2Vo7dr7YWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fXSXKxRJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFC1CC4CED1;
+	Fri,  6 Dec 2024 17:40:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733506816;
+	bh=xXEka//hkP4wJgoEn5EbobGFHmPZpz9/swfZy3O3dT0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=fXSXKxRJ1NibkiQ5ZhvhdrliCGBHZsruJRMu0figmqELN7bQX+1VYRDZzdMwK74Q9
+	 jzLByeR+lrsia2Wb2wqXUFR1VBf7uKfkktwFbw2iGF4wYEFtidMZIFd8zDG6kistEU
+	 ezuO842ywiVGFAHhP6PqyWhqFbrKXnj+Njw5CqH8g46C4zmS4Dv2bcmeaKGwh5Obbq
+	 pfCbFJR7ybtfytdIDW1Rm62q/IK/AB5VUe/c28GVmM4+8+jT5MKrkpd2jI1oqcyEtA
+	 JpaydA9dLEf5edaKChScN84FWA2e+YotiM22Qp9pUUAnY7084Il2nHHBypI2j770PH
+	 /eTuOH9g9/0ig==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAF81380A95C;
+	Fri,  6 Dec 2024 17:40:32 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v3 0/9] Fixes for LPM trie
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173350683178.2738959.6443569959137524250.git-patchwork-notify@kernel.org>
+Date: Fri, 06 Dec 2024 17:40:31 +0000
+References: <20241206110622.1161752-1-houtao@huaweicloud.com>
+In-Reply-To: <20241206110622.1161752-1-houtao@huaweicloud.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, martin.lau@linux.dev, alexei.starovoitov@gmail.com,
+ andrii@kernel.org, eddyz87@gmail.com, song@kernel.org, haoluo@google.com,
+ yonghong.song@linux.dev, daniel@iogearbox.net, kpsingh@kernel.org,
+ sdf@fomichev.me, jolsa@kernel.org, john.fastabend@gmail.com, toke@redhat.com,
+ bigeasy@linutronix.de, tglx@linutronix.de, linux@weissschuh.net,
+ houtao1@huawei.com, xukuohai@huawei.com
 
-On Fri, 2024-12-06 at 08:08 -0800, Andrii Nakryiko wrote:
+Hello:
 
-[...]
+This series was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-> The tags would be that generalizable side effect declaration approach,
-> so seems worth it to set a uniform approach.
->=20
-> > Please take a look at the patch, the change for check_cfg() is 32 lines=
-.
->=20
-> I did, actually. And I already explained what I don't like about it:
-> eagerness. check_cfg() is not the right place for this, if we want to
-> support dead code elimination and BPF CO-RE-based feature gating.
-> Which your patches clearly violate, so I don't like them, sorry.
->=20
-> We made this eagerness mistake with global subprogs verification
-> previously, and had to switch it to lazy on-demand global subprog
-> validation. I think we should preserve this lazy approach going
-> forward.
+On Fri,  6 Dec 2024 19:06:13 +0800 you wrote:
+> From: Hou Tao <houtao1@huawei.com>
+> 
+> Hi,
+> 
+> This patch set fixes several issues for LPM trie. These issues were
+> found during adding new test cases or were reported by syzbot.
+> 
+> [...]
 
-In this context tags have same detection power as current changes for check=
-_cfg(),
-it is not possible to remove tag using dead code elimination.
-So I really don't see any advantages in the context of this particular issu=
-e.
+Here is the summary with links:
+  - [bpf,v3,1/9] bpf: Remove unnecessary check when updating LPM trie
+    https://git.kernel.org/bpf/bpf/c/156c977c539e
+  - [bpf,v3,2/9] bpf: Remove unnecessary kfree(im_node) in lpm_trie_update_elem
+    https://git.kernel.org/bpf/bpf/c/3d5611b4d7ef
+  - [bpf,v3,3/9] bpf: Handle BPF_EXIST and BPF_NOEXIST for LPM trie
+    https://git.kernel.org/bpf/bpf/c/eae6a075e953
+  - [bpf,v3,4/9] bpf: Handle in-place update for full LPM trie correctly
+    https://git.kernel.org/bpf/bpf/c/532d6b36b2bf
+  - [bpf,v3,5/9] bpf: Fix exact match conditions in trie_get_next_key()
+    https://git.kernel.org/bpf/bpf/c/27abc7b3fa2e
+  - [bpf,v3,6/9] bpf: Switch to bpf mem allocator for LPM trie
+    https://git.kernel.org/bpf/bpf/c/3d8dc43eb2a3
+  - [bpf,v3,7/9] bpf: Use raw_spinlock_t for LPM trie
+    https://git.kernel.org/bpf/bpf/c/6a5c63d43c02
+  - [bpf,v3,8/9] selftests/bpf: Move test_lpm_map.c to map_tests
+    https://git.kernel.org/bpf/bpf/c/3e18f5f1e5a1
+  - [bpf,v3,9/9] selftests/bpf: Add more test cases for LPM trie
+    https://git.kernel.org/bpf/bpf/c/04d4ce91b0be
 
-[...]
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
