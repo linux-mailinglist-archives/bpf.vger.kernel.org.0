@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-46280-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46279-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8A519E748A
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 16:39:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECE449E7485
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 16:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98F1916D281
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 15:38:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66DBF188229B
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 15:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0373720E337;
-	Fri,  6 Dec 2024 15:34:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED97320E003;
+	Fri,  6 Dec 2024 15:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="QTgt0pxR"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="hzbUznQC"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A1D20E326;
-	Fri,  6 Dec 2024 15:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5019820E016;
+	Fri,  6 Dec 2024 15:34:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733499287; cv=none; b=EJpo4fgwuvQLX209zMpeVDKtnZK/XFWlcjhSxPdmuJDzxdBjTDppWRsLI/Sak+RK5NNs8qXiUzHZBNhJX73w66qr7oIJCJ8yjQbzDGxsY7+IXIyuboT6Iz+Ijm7TpnYMl1ysayuAUXecKrCj+3NntW/onjDxGgym/Z7UIUkmfC8=
+	t=1733499284; cv=none; b=kw5HAOqMR7VRSx8RogFYKdne8e4iOqEU+zqDrOx2STr7BZbbuVv++kZ3Dz+iOGk3HEx/ur9MCES2E81HLWqbXvCW6XM4RcFo6mhGRUxIkuxsyiD0RiIDOFC4sVyX8urQ0d5UJrs5YEtKNJIFdh9EbTxARIsWCHxt4V/qLn7qUOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733499287; c=relaxed/simple;
-	bh=Ml9fPtqpS2jX04AGKx5b27f6hYa1vg7okrZl7lM86Dc=;
+	s=arc-20240116; t=1733499284; c=relaxed/simple;
+	bh=1ITbAn22++Ob7kA1nEk7YQEuphiXTzhZj2P7KDqtLQY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I07JVsqmD7+Hljyx7VcoglQ5RSm49Ah6H+A0Ss1qr1dFjmVonXJQgg+KvnWBAGSa3z4qfXI2MM9ziIJ+DrtpFIQE+ie0d8plZsVQn7YnM3lLbhVyVbZ2lEFSXzFZyKrdhUa72/eYbxAumA1N35mccCXeLCAu/m5Ysg0Z89epNZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=QTgt0pxR; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=Fkeqhu1HsgVZVOEwmc8N4dYJm5a0Xvgd+X5B0WwfyzA8xe7CwG3fWBXFDm9XQ8Ft4vgUEb55Gxwb6D6HG94oW2DeUIdS/fxlr/Hr3zhoAH2NDKbZSr1fjBTAaR9LMasElSon0ECZ2Wh17DTh/jDlkiNCL3ZgXQRXwKQm71YuchI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=hzbUznQC; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,17 +36,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=M4rJE/PwlxUmiB0Axf+gy2W+JpmH655/hsr3pi3m+rE=; b=QTgt0pxRQq3FzppCfrTov62nvV
-	N1LumNrb/jlNeZOHRaZmZKI74eOzC63W2itwmixXU7YkaNawqyOxuSCI4OSVk7mRUrDkCxGRQp5Do
-	oepCtLTFh0V7Mh8TfZPAvM6W1qQbivmSZmPVPsNmTeVPjE/zbHvmWDU3I6FWY36fC9L1U0FKpcAaL
-	MAW4HLoWassiMn8Ue0j3jUUFrzGISCz3iksDGasq82ePy7dFlzkaDerDyxnXNe6C3KU7nrDZcBbdJ
-	2eme5UxGJhW9MkUsRs1E6MkESGHqJGiIJRt6J0YHPRKcxboY/HySSKl8i3IWePRN1N9PkGkPhe/tT
-	w2S1RQPA==;
+	bh=yDvV13jrwvg/8LFAnBn/yTTKslVhcmcZpdcecddhnVw=; b=hzbUznQC2tNOQ2Oolvrlp6bH4J
+	72/NVj7vTywifcs8H7GO74W/4l6j/sCtHNmQgf5Gtog7wZRDWGxXcFy9NIq3+lcJXXckTqI/kLNPF
+	+T8df0sFfVilfwzWjbfKhA3ZtKTYL/M0gSHmWB0pCco0xWGjzev84qhyM34kqV3R6CQBTSbQxJyjD
+	CUJ2X2J7KOIBMcyuRJnF8+/v8Rj4QmaYRw149VKRLeqtsnD5KJFnm+iiRCUSU3TgIeurX+iRVH51l
+	GkIfi+6+lJSaId2vo/2nQI8cHK4pHd7ygPfECyU4fP65qczV5ns1Yckj5hxAtsHFRU1tlh0/+5Z2x
+	jxXVMM9g==;
 Received: from 226.206.1.85.dynamic.cust.swisscom.net ([85.1.206.226] helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1tJaLY-000ERv-7Y; Fri, 06 Dec 2024 16:34:24 +0100
+	id 1tJaLZ-000ESD-0q; Fri, 06 Dec 2024 16:34:25 +0100
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: gregkh@linuxfoundation.org
 Cc: stable@vger.kernel.org,
@@ -56,12 +56,11 @@ Cc: stable@vger.kernel.org,
 	martin.lau@linux.dev,
 	peilin.ye@bytedance.com,
 	kuba@kernel.org,
-	Youlun Zhang <zhangyoulun@bytedance.com>,
 	Nikolay Aleksandrov <razor@blackwall.org>,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH stable 6.1 2/3] bpf: Fix dev's rx stats for bpf_redirect_peer traffic
-Date: Fri,  6 Dec 2024 16:34:02 +0100
-Message-ID: <20241206153403.273068-2-daniel@iogearbox.net>
+Subject: [PATCH stable 6.1 3/3] veth: Use tstats per-CPU traffic counters
+Date: Fri,  6 Dec 2024 16:34:03 +0100
+Message-ID: <20241206153403.273068-3-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241206153403.273068-1-daniel@iogearbox.net>
 References: <20241206153403.273068-1-daniel@iogearbox.net>
@@ -77,68 +76,111 @@ X-Virus-Scanned: Clear (ClamAV 1.0.7/27479/Fri Dec  6 10:40:14 2024)
 
 From: Peilin Ye <peilin.ye@bytedance.com>
 
-[ Upstream commit 024ee930cb3c9ae49e4266aee89cfde0ebb407e1 ]
+[ Upstream commit 6f2684bf2b4460c84d0d34612a939f78b96b03fc ]
 
-Traffic redirected by bpf_redirect_peer() (used by recent CNIs like Cilium)
-is not accounted for in the RX stats of supported devices (that is, veth
-and netkit), confusing user space metrics collectors such as cAdvisor [0],
-as reported by Youlun.
+Currently veth devices use the lstats per-CPU traffic counters, which only
+cover TX traffic. veth_get_stats64() actually populates RX stats of a veth
+device from its peer's TX counters, based on the assumption that a veth
+device can _only_ receive packets from its peer, which is no longer true:
 
-Fix it by calling dev_sw_netstats_rx_add() in skb_do_redirect(), to update
-RX traffic counters. Devices that support ndo_get_peer_dev _must_ use the
-@tstats per-CPU counters (instead of @lstats, or @dstats).
+For example, recent CNIs (like Cilium) can use the bpf_redirect_peer() BPF
+helper to redirect traffic from NIC's tc ingress to veth's tc ingress (in
+a different netns), skipping veth's peer device. Unfortunately, this kind
+of traffic isn't currently accounted for in veth's RX stats.
 
-To make this more fool-proof, error out when ndo_get_peer_dev is set but
-@tstats are not selected.
+In preparation for the fix, use tstats (instead of lstats) to maintain
+both RX and TX counters for each veth device. We'll use RX counters for
+bpf_redirect_peer() traffic, and keep using TX counters for the usual
+"peer-to-peer" traffic. In veth_get_stats64(), calculate RX stats by
+_adding_ RX count to peer's TX count, in order to cover both kinds of
+traffic.
 
-  [0] Specifically, the "container_network_receive_{byte,packet}s_total"
-      counters are affected.
+veth_stats_rx() might need a name change (perhaps to "veth_stats_xdp()")
+for less confusion, but let's leave it to another patch to keep the fix
+minimal.
 
-Fixes: 9aa1206e8f48 ("bpf: Add redirect_peer helper")
-Reported-by: Youlun Zhang <zhangyoulun@bytedance.com>
 Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
 Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
-Link: https://lore.kernel.org/r/20231114004220.6495-6-daniel@iogearbox.net
+Link: https://lore.kernel.org/r/20231114004220.6495-5-daniel@iogearbox.net
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 ---
- net/core/dev.c    | 8 ++++++++
- net/core/filter.c | 1 +
- 2 files changed, 9 insertions(+)
+ drivers/net/veth.c | 30 +++++++++++-------------------
+ 1 file changed, 11 insertions(+), 19 deletions(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 5151f69dd724..2ee1a535b3cb 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -9995,6 +9995,14 @@ static int netdev_do_alloc_pcpu_stats(struct net_device *dev)
- {
- 	void __percpu *v;
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 0a8154611d7f..e1e7df00e85c 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -342,7 +342,7 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	skb_tx_timestamp(skb);
+ 	if (likely(veth_forward_skb(rcv, skb, rq, use_napi) == NET_RX_SUCCESS)) {
+ 		if (!use_napi)
+-			dev_lstats_add(dev, length);
++			dev_sw_netstats_tx_add(dev, 1, length);
+ 	} else {
+ drop:
+ 		atomic64_inc(&priv->dropped);
+@@ -357,14 +357,6 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	return ret;
+ }
  
-+	/* Drivers implementing ndo_get_peer_dev must support tstat
-+	 * accounting, so that skb_do_redirect() can bump the dev's
-+	 * RX stats upon network namespace switch.
-+	 */
-+	if (dev->netdev_ops->ndo_get_peer_dev &&
-+	    dev->pcpu_stat_type != NETDEV_PCPU_STAT_TSTATS)
-+		return -EOPNOTSUPP;
+-static u64 veth_stats_tx(struct net_device *dev, u64 *packets, u64 *bytes)
+-{
+-	struct veth_priv *priv = netdev_priv(dev);
+-
+-	dev_lstats_read(dev, packets, bytes);
+-	return atomic64_read(&priv->dropped);
+-}
+-
+ static void veth_stats_rx(struct veth_stats *result, struct net_device *dev)
+ {
+ 	struct veth_priv *priv = netdev_priv(dev);
+@@ -402,24 +394,24 @@ static void veth_get_stats64(struct net_device *dev,
+ 	struct veth_priv *priv = netdev_priv(dev);
+ 	struct net_device *peer;
+ 	struct veth_stats rx;
+-	u64 packets, bytes;
+ 
+-	tot->tx_dropped = veth_stats_tx(dev, &packets, &bytes);
+-	tot->tx_bytes = bytes;
+-	tot->tx_packets = packets;
++	tot->tx_dropped = atomic64_read(&priv->dropped);
++	dev_fetch_sw_netstats(tot, dev->tstats);
+ 
+ 	veth_stats_rx(&rx, dev);
+ 	tot->tx_dropped += rx.xdp_tx_err;
+ 	tot->rx_dropped = rx.rx_drops + rx.peer_tq_xdp_xmit_err;
+-	tot->rx_bytes = rx.xdp_bytes;
+-	tot->rx_packets = rx.xdp_packets;
++	tot->rx_bytes += rx.xdp_bytes;
++	tot->rx_packets += rx.xdp_packets;
+ 
+ 	rcu_read_lock();
+ 	peer = rcu_dereference(priv->peer);
+ 	if (peer) {
+-		veth_stats_tx(peer, &packets, &bytes);
+-		tot->rx_bytes += bytes;
+-		tot->rx_packets += packets;
++		struct rtnl_link_stats64 tot_peer = {};
 +
- 	switch (dev->pcpu_stat_type) {
- 	case NETDEV_PCPU_STAT_NONE:
- 		return 0;
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 2f6fef5f5864..e766e66ef62a 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2491,6 +2491,7 @@ int skb_do_redirect(struct sk_buff *skb)
- 			     net_eq(net, dev_net(dev))))
- 			goto out_drop;
- 		skb->dev = dev;
-+		dev_sw_netstats_rx_add(dev, skb->len);
- 		return -EAGAIN;
- 	}
- 	return flags & BPF_F_NEIGH ?
++		dev_fetch_sw_netstats(&tot_peer, peer->tstats);
++		tot->rx_bytes += tot_peer.tx_bytes;
++		tot->rx_packets += tot_peer.tx_packets;
+ 
+ 		veth_stats_rx(&rx, peer);
+ 		tot->tx_dropped += rx.peer_tq_xdp_xmit_err;
+@@ -1612,7 +1604,7 @@ static void veth_setup(struct net_device *dev)
+ 			       NETIF_F_HW_VLAN_STAG_RX);
+ 	dev->needs_free_netdev = true;
+ 	dev->priv_destructor = veth_dev_free;
+-	dev->pcpu_stat_type = NETDEV_PCPU_STAT_LSTATS;
++	dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
+ 	dev->max_mtu = ETH_MAX_MTU;
+ 
+ 	dev->hw_features = VETH_FEATURES;
 -- 
 2.43.0
 
