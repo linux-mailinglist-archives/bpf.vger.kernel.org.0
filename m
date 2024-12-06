@@ -1,194 +1,144 @@
-Return-Path: <bpf+bounces-46321-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46322-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B341F9E78BA
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 20:19:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C1519E7900
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 20:32:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CD611885E45
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 19:19:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33C261626E8
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 19:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC5051D61A3;
-	Fri,  6 Dec 2024 19:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFE641D9359;
+	Fri,  6 Dec 2024 19:32:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cbdYORL1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bCfCJiQ9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7922E14B08C
-	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 19:19:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C048194A63
+	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 19:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733512750; cv=none; b=riLds1SlTx8miNS7VOSTkhZqe79wuxJYJ/1fb8BfO3nlM0Zk+uuQ3HGkn2YbABC/zOne8YO/CN9GnpakEkrZ6f85u6OEmH70rN+62KeRNIGrMMQTwejGv1OuCW1agqsnVm2XYNmtU/Un96erPbJD6zehXJwQ3uA43ec9vClcAfE=
+	t=1733513543; cv=none; b=OyBGiRVxz7/2OObKLr1R11g++CbrALwalqlS5RzyiblblYR0bElb1P2nS0M+Sa9BHPLCqSQHPQkyFdWHNjwWQKiw2qjZz3YSmBpPE8aQnsoa9OJpEWq9Me12jpXjiUhgsYo6RpulZeDo+JEB4dfJAFIlR3LFdFz2rKjuBxVW5xQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733512750; c=relaxed/simple;
-	bh=LgEXUFcPyPZD6g721QbhJO/eIH15TrqnDIh7ECBlBdQ=;
+	s=arc-20240116; t=1733513543; c=relaxed/simple;
+	bh=phCSCRABnfSx/yjf7O7DAkEaux2BhWAvVCxqeifLdDk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UMYIEQYs682kPTfSRnZaQVsGaOh/0mEKUbu9zXWRFKnmxsGWhcq53fGW6t2NhJI1KsRswVskAHmZSW6nxe9K8+/Iic01VgmwUH5DFUO75VOrUiNv3qJ8ap3VrIL5tpeDMA54UUbkenPXKrgBfIyhOY7QW2lOWJsKCd4SWbk9Q+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cbdYORL1; arc=none smtp.client-ip=209.85.128.51
+	 To:Cc:Content-Type; b=e0H5aoW1oDMrdBnmmGarfyA0drt2PeleiSF6zQjDu6k57ZckW0qModURmkuzGd1F4SAo4J35ISvcun4HKrFE1rR4vA9TmOksWDKI7Kf5GykEp9MoofBYXD8VvoLnyybOldm01na23g6VjtYFHUB/NNh+LI3bElMOo0pVwTfsHxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bCfCJiQ9; arc=none smtp.client-ip=209.85.208.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-434e84b65e7so159945e9.3
-        for <bpf@vger.kernel.org>; Fri, 06 Dec 2024 11:19:08 -0800 (PST)
+Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-5d3cf094768so1243089a12.0
+        for <bpf@vger.kernel.org>; Fri, 06 Dec 2024 11:32:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733512747; x=1734117547; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733513540; x=1734118340; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xgbW5smThpWfH0K/YXGpa1Hh31/k5vjnLV5q42WtnW4=;
-        b=cbdYORL1WbzRBLdXzTATbZ9oHVY5YBpjH//vZXIWdyRTEOHbWI1jLf7IuJxdnqeDae
-         WEhXqi7iHjehA1PJP8+T2bqbISmjN86Imx7Zz9PHfXavsICmmZeilK4gkGuQ8uH1DyFI
-         ZetvvephyOZTTylYLtIoiNdyiwsTo5SZpuGGUt2kqQ0e27j3aogs2fulSrbBcHQXWSCd
-         Y7kdufipMBDK72RntZSgDAbrT7/yeZ7s+Sa8+F4U5ZDxABhXWrL/EetOIC+mByV0eIZr
-         VCXcJrfjG+Yk4zGzP8w3JIU9YRNfsRUA9C+U5l/ZtFaUlWiDPVFhyzBXnLj0dYi8VOD5
-         GeBw==
+        bh=phCSCRABnfSx/yjf7O7DAkEaux2BhWAvVCxqeifLdDk=;
+        b=bCfCJiQ9dtT/Q6SqKMjzRAPo+w7fTMvrs45jv5UrN479kWLS1eVYJt9ic4IGGCJkmH
+         5j6ZWBUF9oQ7w2YliXuZkVuruKTSP0sKAKKf2jIAYSK+rm9Jgm/El3SfdcUzceFJoFYo
+         p231YpewbhMwrh8IpBSf9pUidBxatw6945AWsSCU7bnGPtmQWrf8caif5PdBvT57bwnJ
+         bMGL7xSpEa3YoLiB5ccWXh53W1TpsMSyxctRdHFcFJm8ScQD8+vnNkR0Xbqr3hpdKfgb
+         Tya0X+nERZHqeRVTtu9VFZOWCrTSoA13fqOIbdvWz/E1TUuXIgmoY2/K0a6AlDO8Vsp3
+         4CRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733512747; x=1734117547;
+        d=1e100.net; s=20230601; t=1733513540; x=1734118340;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xgbW5smThpWfH0K/YXGpa1Hh31/k5vjnLV5q42WtnW4=;
-        b=GsgOtudluWYpM+3uKIqp9Tgvaq1Cn4WxYWreCv3F1CKIrPC/A7iSQwlFwxrx4Yzvtu
-         VLO1Ti1hSvmVbbhhEPu4PmdAV0FXp+OI3VJJ0UvdWYI77CgDIaWVUfQpE5wdeAhXlP/e
-         YN5N7rcS6LdYwtVuVYHJNlmr25oMCNgidSsOTb/CDmX3Lx6wpLEEmzu07fQ++dUVbwpM
-         hGPXEttwrJziNB++lj5QQXrzth90trPmEvhLpz1az4N25NOedSLuwlpjS2A6SPVh7Zb4
-         VXaD/vsjw2b3OioUAmSNMwOlUQWDMMOCCo+OhxvfhI+EO3/zXIK0kYg3gfYA2dj7dbGY
-         vfxA==
-X-Forwarded-Encrypted: i=1; AJvYcCU3WPssqSVT5QbRskDHLfGLcqifEpV0utxqIduY5vK6qAJGelJCctu0tIncP5dAFfzGBoY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxqPLfOFm/sAxpRIMJQlpnxe/PHbm/4sFbiI8zzfoVX18xh6McN
-	qWDVSZXLLw2vtxWdyix7yCBT5c+1A+tx96bKoE32X372W0phgEmpqI2Q74mB4A0PTOIOVsszUv8
-	YtJvrgNiSga28Kq8k6scMwvBq1qU=
-X-Gm-Gg: ASbGnctdAosS1CarUbzGxbdsEhAUucHk1zXUhJStSyEEMRpZNPtwE6kotwGHQ8fJLP1
-	OIx4T50eSdkZnGEizB8YutVsdh03/C6WLkG4NPQSauj16Crk=
-X-Google-Smtp-Source: AGHT+IFrD90rfU3J/vyRoecp9M2l8EJa0mW4Q71w9Zimsdu0e59tG5TZsjp/DcZ9RNBKBfDrlISuvoKA0Af3os8dy+0=
-X-Received: by 2002:a5d:5886:0:b0:385:f092:e02 with SMTP id
- ffacd0b85a97d-3862b372e18mr3208361f8f.31.1733512746685; Fri, 06 Dec 2024
- 11:19:06 -0800 (PST)
+        bh=phCSCRABnfSx/yjf7O7DAkEaux2BhWAvVCxqeifLdDk=;
+        b=vinTwXnYX0/mxxkePQVUhw7oBMsOlHcXCq9RADcfx/6iRDGTkglsb7Uee5XRKi9Duc
+         7Y1twzi9ewzxhjJ40Z0JqLfAtKAvj3CsIcgevIZO0M3lukZBIqFSgTllE4e3FkrE8YXJ
+         wkRUpCd633RjJ0IpfgtOFAdPJxi909FLyPlE8jytUVUlw9uPb1DMyXOMwSIiUe59BDeV
+         /5sjCrmnRjiMMa/L+GFU3VpZPjUnvn/NsJ37eemv0MdkeEZSDPXMMtudGnVGhlqou/zD
+         FfgJxibpyXQbk3OL0ZyW3qMuNxBIh7vUkIp8rwHraj+wZn8A5qDs101pMrw3CrQ5JK/+
+         YXnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXJGDNvaLgwQk7QEPGt8E0kAytjKJ1ZsULzDAUkoGz7tJUsDL4ERc0fvBvrSQSpFW8zbA8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVSAP+2HFtv16c3McJ3GYaUPSk5r5Tg4B8/B0itsZmbRh1ExOd
+	stPe7/T9R9Gmv7jp2MG1jc1unqzgVtc5VID+7yUkba6MwdQGcLS5cHBP7wh5PG6AdlblWteufj8
+	vDdxmQLY86bpt1wGjv5Ji/gZQHy4=
+X-Gm-Gg: ASbGncsPFFOkcBCqK++IQc+qz8FvTT/7FDEZNb3IYeDKZi6DAe5WQCjGNHzu+mW6JBt
+	r7fG72YG7PAozwzxTWOBfalovzSX8Xmx+lNMhUeMRg63/JjLsCsfshjDPa6B9EXVR
+X-Google-Smtp-Source: AGHT+IF7UYHyyMaEjk7QbE8kiFEL1+cXB4gCrwtfDcY9tOpJR6No47IQZljnFN9FLZSEf0QapKUi67nVW/Wc3ygAv6E=
+X-Received: by 2002:a05:6402:3717:b0:5d0:fe7d:41cf with SMTP id
+ 4fb4d7f45d1cf-5d3be6be0ebmr4585056a12.5.1733513539708; Fri, 06 Dec 2024
+ 11:32:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241206161053.809580-1-memxor@gmail.com> <20241206161053.809580-3-memxor@gmail.com>
- <CAADnVQ+_XGVsxYji3WYNj1-KhYZwKaFCgQ6aN=yFB3YWpRT78A@mail.gmail.com>
- <6ef10614dfdf281663f62315247c4bb33c2609bc.camel@gmail.com>
- <CAADnVQLKROxDbx8ehfbCNvKPnrWQpGeqzdy_AipCVbwEW9Bcow@mail.gmail.com> <CAP01T75j=4A2t2pngMg_A3+NyEG3OmO2gMk3NKX4UjYj4gcR-w@mail.gmail.com>
-In-Reply-To: <CAP01T75j=4A2t2pngMg_A3+NyEG3OmO2gMk3NKX4UjYj4gcR-w@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 6 Dec 2024 11:18:55 -0800
-Message-ID: <CAADnVQJ_KQAKueNMqg0SjCB4A42eyYeH0M3nkoz8Eo4NZ4kC0Q@mail.gmail.com>
-Subject: Re: [PATCH bpf v3 2/3] bpf: Do not mark NULL-checked raw_tp arg as scalar
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	kkd@meta.com, Manu Bretelle <chantra@meta.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
+References: <0498CA22-5779-4767-9C0C-A9515CEA711F@gmail.com>
+ <1b8e139bd6983045c747f1b6d703aa6eabab2c82.camel@gmail.com>
+ <47f2a827d4946208e984110541e4324e653338e0.camel@gmail.com>
+ <CAEf4BzZBPp40E-_itj1jFT2_+VSL9QcqjK4OQvt6sy5=iJx8Yw@mail.gmail.com>
+ <4bbdf595be6afbe52f44c362be6d7e4f22b8b00f.camel@gmail.com>
+ <CAADnVQKscY7UC-5nAYxaEM4FQZGiFdLUv-27O+-qvQqQX0To5A@mail.gmail.com>
+ <1f77772b8c8775b922ae577a6c3877f6ada4a0a1.camel@gmail.com>
+ <CAEf4BzZybLU0bmYJqH2XJYG_g8Pvm+STRdHBtE1c5zbhHvtrcg@mail.gmail.com>
+ <CAADnVQJ7WuFge8YZ-g07VK6XhmMCf1RHa0B64O0_S4TLzu0yUg@mail.gmail.com>
+ <CAEf4BzZPFy1XXf=2mXVpdVw70rJjgUfPnDOzWb5ZXrJF1=XqUA@mail.gmail.com>
+ <CAADnVQL-0SAvibeS45arBoZcwYjQjVnsrMeny=xzptOdUOwdjQ@mail.gmail.com>
+ <CAEf4BzZF3ZrVC0j=s2SpCyRWzfxS8Gcmh1vXomX4X=VS-COxJw@mail.gmail.com>
+ <CAP01T77rBvM9sTQMbJBk2Ku5SRYHzQgvGaNf36v=BA7=nHTmeA@mail.gmail.com> <CAADnVQK+-5oGLF15iuZ9_ckOZQ7QjR0ax0VL_R=tP_831Fa9yg@mail.gmail.com>
+In-Reply-To: <CAADnVQK+-5oGLF15iuZ9_ckOZQ7QjR0ax0VL_R=tP_831Fa9yg@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Fri, 6 Dec 2024 20:31:43 +0100
+Message-ID: <CAP01T75gAsxnmLthFBYkMOr3iw4R8xB=sp0yOHgv2KVXTcvQmg@mail.gmail.com>
+Subject: Re: Packet pointer invalidation and subprograms
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, andrii <andrii@kernel.org>, Nick Zavaritsky <mejedi@gmail.com>, 
+	bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 6, 2024 at 11:10=E2=80=AFAM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Fri, 6 Dec 2024 at 19:30, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Fri, 6 Dec 2024 at 19:37, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+> On Fri, Dec 6, 2024 at 10:24=E2=80=AFAM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
 > >
-> > On Fri, Dec 6, 2024 at 10:15=E2=80=AFAM Eduard Zingerman <eddyz87@gmail=
-.com> wrote:
-> > >
-> > > On Fri, 2024-12-06 at 09:59 -0800, Alexei Starovoitov wrote:
-> > > > On Fri, Dec 6, 2024 at 8:11=E2=80=AFAM Kumar Kartikeya Dwivedi <mem=
-xor@gmail.com> wrote:
-> > > > >
-> > > > > An implication of this fix, which follows from the way the raw_tp=
- fixes
-> > > > > were implemented, is that all PTR_MAYBE_NULL trusted PTR_TO_BTF_I=
-D are
-> > > > > engulfed by these checks, and PROBE_MEM will apply to all of them=
-, incl.
-> > > > > those coming from helpers with KF_ACQUIRE returning maybe null tr=
-usted
-> > > > > pointers. This NULL tagging after this commit will be sticky. Com=
-pared
-> > > > > to a solution which only specially tagged raw_tp args with a diff=
-erent
-> > > > > special maybe null tag (like PTR_SOFT_NULL), it's a consequence o=
-f
-> > > > > overloading PTR_MAYBE_NULL with this meaning.
-> > > > >
-> > > > > Fixes: cb4158ce8ec8 ("bpf: Mark raw_tp arguments with PTR_MAYBE_N=
-ULL")
-> > > > > Reported-by: Manu Bretelle <chantra@meta.com>
-> > > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > > ---
-> > > > >  kernel/bpf/verifier.c | 6 ++++++
-> > > > >  1 file changed, 6 insertions(+)
-> > > > >
-> > > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > > index 82f40d63ad7b..556fb609d4a4 100644
-> > > > > --- a/kernel/bpf/verifier.c
-> > > > > +++ b/kernel/bpf/verifier.c
-> > > > > @@ -15365,6 +15365,12 @@ static void mark_ptr_or_null_reg(struct =
-bpf_verifier_env *env,
-> > > > >                         return;
-> > > > >
-> > > > >                 if (is_null) {
-> > > > > +                       /* We never mark a raw_tp trusted pointer=
- as scalar, to
-> > > > > +                        * preserve backwards compatibility, inst=
-ead just leave
-> > > > > +                        * it as is.
-> > > > > +                        */
-> > > > > +                       if (mask_raw_tp_reg_cond(env, reg))
-> > > > > +                               return;
-> > > >
-> > > > The blast radius is getting too big.
-> > > > Patch 1 is ok, but here we're doubling down on
-> > > > the hack in commit
-> > > > cb4158ce8ec8 ("bpf: Mark raw_tp arguments with PTR_MAYBE_NULL")
-> > > >
-> > > > I think we need to revert the raw_tp masking hack and
-> > > > go with denylist the way Jiri proposed:
-> > > > https://lore.kernel.org/bpf/ZrIj9jkXqpKXRuS7@krava/
-> > > >
-> > > > denylist is certainly less safer and it's a whack-a-mole
-> > > > comparing to allowlist, but it's much much shorter
-> > > > according to Jiri's analysis:
-> > > > https://lore.kernel.org/bpf/Zr3q8ihbe8cUdpfp@krava/
-> > > >
-> > > > Eduard had an idea how to auto generate such allow/denylist
-> > > > during the build.
-> > > > That could be a follow up.
-> > >
-> > > If the sole goal is to avoid dead code elimination for tracepoint
-> > > parameter null check, there might be another hack. Not sure if it was
-> > > discussed:
-> > > - don't add PTR_MAYBE_NULL (but maybe add a new tag, PTR_SOFT_NULL
-> > >   from Kumar's original RFC);
-> > > - in is_branch_taken() don't predict anything when tracepoint
-> > >   parameters are compared;
-> >
-> > this part was discussed, but we didn't realize we need below bit...
-> >
-> > > - in mark_ptr_or_null_regs() don't propagate null for pointers to
-> > >   tracepoint parameters (as in this patch).
-> >
-> > ... and here the 'for tp args' filter is hard to do.
-> > mark_ptr_or_null_regs() is generic. arg vs non-arg is lost long ago.
+> > I think Andrii has a good point here, this would be an entirely
+> > plausible scenario,
+> > and with summarization alone we would reject such freplace. Then, the u=
+ser,
+> > due to the lack of explicit tagging, will insert an extra helper call
+> > that does nothing
+> > just to indicate "invalidates all packets" side effect when it could
+> > have been done explicitly.
+> > So in effect they just explicitly declared their intent, not through a
+> > tag, but through code.
 >
-> It is not lost. If only args are marked PTR_SOFT_NULL or
-> reg->btf.is_raw_tp_arg (or w/e else), it can still be seen when we are
-> in that function, and all its copies will have the same information.
+> Exactly and that's how it should be done. Through the code.
+> C is the language to do that. Magic tag is an extra language hack
+> that people need to learn, remember, teach others, etc.
 
-ok. fair. still such PTR_SOFT_NULL can only be a temporary workaround.
-We still need to revert cb4158ce8ec8.
-And if we're reverting and adding soft_null knowingly to revert
-later that's just too much.
-The cb4158ce8ec8 approach felt ok-ish initially, but two issues
-were found. soft_null looks ok-ish today, but it may have issues too.
-revert plus denylist is a better way long term.
-Especially with automation of allow/deny lists.
+I agree that ascertaining stuff from C itself is friendlier with no
+extra burden,
+but that is only as long as the C expression itself has a clear meaning.
+
+When you need to write extra stuff to tell the verifier something, C
+or not C doesn't really matter.
+Like your example, people will still need to remember and tell others
+that to ensure they can freplace
+with a pkt invalidating global prog, they need this dummy
+bpf_skb_pull_data trick.
+
+The medium used to express the intent at that point matters less,
+the bigger picture is that the user still needs to communicate it somehow.
+
+We can agree or disagree whether tags are the better or worse way to
+do it, but you're doing the same thing in both cases.
+
+>
+> We've introduced __arg_ctx and so far the only adopters were
+> the programs where Andrii added it by himself.
+> Anyone reading it has no idea what __arg* do.
+> It's all magic. While C has clear meaning.
 
