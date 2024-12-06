@@ -1,285 +1,270 @@
-Return-Path: <bpf+bounces-46332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46333-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4B8F9E7BC0
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 23:26:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C4209E7BD1
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 23:30:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65BDF16B0B1
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 22:26:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B0B01887BC6
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 22:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D2CD213E9F;
-	Fri,  6 Dec 2024 22:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF9461F543E;
+	Fri,  6 Dec 2024 22:30:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RhX0nqKM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ab/7eHE9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5167E1F9F4C
-	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 22:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5A9F22C6D9;
+	Fri,  6 Dec 2024 22:30:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733523970; cv=none; b=ro5yHReDAL3+BRvILoh/ZkhI6ZAUzfPMrHT9TxoBkMQZ0V1qdCI8GP/QtIiAR/7vj3axlMwd6+FeAuKvLN5dJtcIQwyG9eVRj9olvjJiebCZb0jdk1z+/QMXrPpWXJo/m/rl11KsBvYek3QBkiBxoSxlcVufvcBRCsRRdIKvQ6c=
+	t=1733524238; cv=none; b=Dqa2igtjZA68ijd5Mrm3+Nm9MeOxalyLxlOS+72BwRYJrG0xZElIzoLekyiVUxWNOglEDDHMMA/5zYJZJQOqgnwReadRhaE6UGZcEZvHxybhCDRuS2lW7dTv3cIn9pDLf6IxfS5sZNiwgqu9homRSsMFGTrUUnPLgdQYBSjya5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733523970; c=relaxed/simple;
-	bh=wx5DyUfp8gFzCO0B8kvdPRezfvVlAjuCKBU9xcV5PcY=;
+	s=arc-20240116; t=1733524238; c=relaxed/simple;
+	bh=M9oXkYncjye5rqyZTh6Fj1B9bteBE/P+h1Y/jrE/iKU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nmpReWunugxPeRNb5lAUenH0Fgp6cVEYJ9hIcSu0HdEnC6YJvESA4AQV1o2Taq8M+pEpDktjUwdG1osx7V/mHFPEXgCrMde/pqVc9Pa1FqIVdVvwLSTJCJJx9pmFZ72uDvQezJ7Tc1hGRVWVO7VNeKveW5iErrza8Aihe35yEMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RhX0nqKM; arc=none smtp.client-ip=209.85.216.51
+	 To:Cc:Content-Type; b=bJaWyPZpfigXI5o6UND3yQ6cxsVnaGkwqqctI3ZNWAtR9hIBhE6hGcbL9rBqs+ARJG+HLRQqMdA1rMQuJyzwjHTC990D/PEFRsyFpxwfwS/rmGRqN/CjLNEo5PnY8r2+9MBo0OQY0ycQV4cGn3IeVuhw6M4vLu0nerwwZlSDvGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ab/7eHE9; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2ef748105deso750450a91.1
-        for <bpf@vger.kernel.org>; Fri, 06 Dec 2024 14:26:09 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2e9ff7a778cso3042291a91.1;
+        Fri, 06 Dec 2024 14:30:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733523968; x=1734128768; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733524236; x=1734129036; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=n4ZFsahDylvXlMTP275LKbeb1NR2ehMQaLe3EMEb6gM=;
-        b=RhX0nqKMqhGHUVhDqHPiXH+IPRfv/d9kyUeRhlAv4Na25M7LQzTFhjIzrE1iwkp2Y6
-         JjLDqLEenlXvyD+kI1r0IAYV7JZlD+oIvR+Py8xXAjWp1UQ9MUFiAFXI7LoXkKkybLp/
-         K90lRsxkJg3jGHZ8HFHunHLerFVvFbwWjInPlmAYhVK1Hzd7hhfAZVMjqhPPM+oArCGJ
-         hd2VALD1EAIqn+fJx4X99kJ/2U8/Uxe3dPOSxqJalok9QcVvbua58BdWXhfmgJnhB596
-         q39NbunoFkz2MwffgAnPz0kX9WoMFerSc97NvR/G+ah5dpt+KJa6dOmM/O+rgyoiufQF
-         CZjA==
+        bh=Zd7p5nCc9B3SIz2MhjIlf+HXUuYkWnzYDNg0nc2RF0U=;
+        b=Ab/7eHE9ecVZofY9EHcPwt0pSw4SdZuuGpYYEM8r8VFj+lRw/ZaX/B7q6GkTXg2ifO
+         ZgYyHJjkDONPSMbL/h9d0nQBscX1cKfaW8uUWp/mgrsegamNpcBgqzijGNm5ew9o9B4Q
+         +VIdwS8cVzHi1s59FUjTJQ0NHPoVcRtNgbku20ysmfNlLlCpEv6eqoB4Q7kjti/Mn2QA
+         +4LT7h3u4Vv5Dp0yeMz9JwGYuvraxpNZrJAYl9Z9lgSu88CEHZONJJfhNX/qYrVLbAeS
+         uFpdk1EvhfiNRprq9rW7uAdEC4odDcfEF/GmFogmz52FnN9E8BRiScDHkjQqWwLZlCJp
+         0tbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733523968; x=1734128768;
+        d=1e100.net; s=20230601; t=1733524236; x=1734129036;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n4ZFsahDylvXlMTP275LKbeb1NR2ehMQaLe3EMEb6gM=;
-        b=qJ5BhQptqLJlI+qD6e1EqUAZw6wDSIT3U1/Fkku7oS4Uhcxnkzz3sHyK4phR9I2zW+
-         g4AcT9pJn0rD2FTSNUxf8h1RhVIlm4OAaEEkngTz970UvEAnPwr74j0cshh8o6eLxqRO
-         iRA0Dio7hmyEvK34lCwfFBo6daqEnHk4KtSH/UqTruJdlDPjBM9Wbkmwn9zqICGkB0yw
-         5gRZeqGQpjzo0gfmXrrSnCRMzDP8qFCIXlyz0WDqq8Tp/uCMnWWT92y89Rrf0OQc8Ouh
-         tQ0O1QMNBIjquxeN0Anu4bIgPIxL2oIYfXIXLTn0rGsVtFROxmLiDSqQq4TPUb+y5d5y
-         03eg==
-X-Gm-Message-State: AOJu0YwCvnEPtavngdaKlpGUWdSSvJtRaUoHQJ3ldU9O1SBvFhrDbYPT
-	TWRT+bgBUurLFZ1q7kmTnNeayTv6QDaNtciLBCcys8awGsvHpQRnP+ZBKyhWWvB/aeAEd9PvPQU
-	xxg7ptfIcmSU57sX8slZniLcz/Vc=
-X-Gm-Gg: ASbGncsTX2AIP56FtJ43VmCyMhc7eD/E2i17ZAydCWr+WJVcYEcIwBa8z6gMBk3HXcz
-	YkIdiFeN7pwqfRrApSgZp9/opgNTg30Z5gus0mRzfGti2nu8=
-X-Google-Smtp-Source: AGHT+IHajEUz57FEEBx7k7iab0bXbpTkMudl4S/oRjBlzuoJBMlWfiy/Ikfd0ezAzNetee6zQq8LDhyvT+28vt4KZu8=
-X-Received: by 2002:a17:90a:c88f:b0:2ee:dd9b:e402 with SMTP id
- 98e67ed59e1d1-2ef69f0b077mr7135071a91.12.1733523968536; Fri, 06 Dec 2024
- 14:26:08 -0800 (PST)
+        bh=Zd7p5nCc9B3SIz2MhjIlf+HXUuYkWnzYDNg0nc2RF0U=;
+        b=TL6MHpwoEsHA5mt5Myc/zFIwLHnpOMtuf5aP+zUb8G2Iyp3KWUKrIkpdAY9TrfU120
+         0N32nji2RWTJS5jj6OUSaQvMYR/5X0pxcu8bA/ETLsOhO50uPUAVi412Zfd7vxjcF/D9
+         47dkAu8CR9lmYuJeK7Os6YPxgt1SmohUqofzrIC/TD/viF/H81ZR5GsTKWAgRNVEl3XG
+         +rgjIuObIbgk6mzPhOxWq9A48lG849atydVhvWAIkRlSeyJiau0TVXJ8r3FMcy4wv1Bo
+         DoIAnAt5KxGvBgoVZv5MEmmxcGHk23ciWCqlX/KSdiWLLx2o4xVada3jxzuH0ItRE/mS
+         2GvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU9LPFr/Oj1L9D5nqwckBZH0eyClf3a0Kc7HK7C0f3BG3/AOUCkiIXJcK6+dcKXc+XRSqwMb4i8b4EOti2R@vger.kernel.org, AJvYcCVMz4lsR5ZNjODdlXL9CJfukA23RNxLyuW2WJVd1uhpD+P/ldKQHqBp0S7uyE3s5dsbHGU=@vger.kernel.org, AJvYcCVY1ccxDs4f6W4PnDuUMrRIkqt/B9pO1yVkaEk+JPXspvOIpd/qRuu1xJ9QogqByWlCqjS10/chv4FjLFCKskNGoTPi@vger.kernel.org, AJvYcCXZzMyvhPeAzhco5gPYzFvtCRnAzd7zkrppDEHnFM+sHEblXPg8SJQWnT9p18HvA2yz74Wbku/R@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKsdK9nn8dVAgSXJKbH2AKkXx9BC76BMmgOjZoVrsolHbRZBs0
+	AAvgmAbIU5cbQhQ9Fw9inQiurQcwmY34kZ+xkFpkgH7sRYbgWbsVQtziy22v3V8MBZO3Hby5x+X
+	OvHi2Im6T15AkLnJmzK1JFZppPrk=
+X-Gm-Gg: ASbGncsiPrLM9gVLknzcb47h5ZfYZMElaf8ZvRtfkcZTbLCGUnRiOs9f85bY841Ksyk
+	eqM3bwsAMpnzupRw4MZc6A+rpyDuvIcmNdF8AtWx3wBIJrzA=
+X-Google-Smtp-Source: AGHT+IHuFiWE8Z1e33Jfgv2XwP/oL9fWbs1UT7k34APrZVI8qwR088/WkGYlYsnOv1I2m923Z82u0H6SbdNKwpYHh/w=
+X-Received: by 2002:a17:90b:3a86:b0:2ee:c30f:33c9 with SMTP id
+ 98e67ed59e1d1-2ef68e13ed3mr7811076a91.14.1733524236218; Fri, 06 Dec 2024
+ 14:30:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241206134929.89997-1-mykyta.yatsenko5@gmail.com>
-In-Reply-To: <20241206134929.89997-1-mykyta.yatsenko5@gmail.com>
+References: <20241206-bpf-fix-uprobe-uaf-v2-1-4c75c54fe424@google.com>
+ <CAEf4BzYxaKd8Gv5g8PBY6zaQukYKSjjtaSgYMjJxL-PZ0dLrbQ@mail.gmail.com> <CAG48ez3i5haHCc8EQMVNjKnd9xYwMcp4sbW_Y8DRpJCidJotjw@mail.gmail.com>
+In-Reply-To: <CAG48ez3i5haHCc8EQMVNjKnd9xYwMcp4sbW_Y8DRpJCidJotjw@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 6 Dec 2024 14:25:56 -0800
-Message-ID: <CAEf4Bzb+D9W31gE=fQ3Pk+7k__Xec00N45wip_hA-GmwUv=vTA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: add more stats into veristat
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
-	Mykyta Yatsenko <yatsenko@meta.com>
+Date: Fri, 6 Dec 2024 14:30:24 -0800
+Message-ID: <CAEf4BzYkGQ0sw9JEeAMLAfcQbzxwg46c487kBD_LcbZSaTKD5Q@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] bpf: Fix prog_array UAF in __uprobe_perf_func()
+To: Jann Horn <jannh@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Delyan Kratunov <delyank@fb.com>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 6, 2024 at 5:51=E2=80=AFAM Mykyta Yatsenko
-<mykyta.yatsenko5@gmail.com> wrote:
+On Fri, Dec 6, 2024 at 2:25=E2=80=AFPM Jann Horn <jannh@google.com> wrote:
 >
-> From: Mykyta Yatsenko <yatsenko@meta.com>
+> On Fri, Dec 6, 2024 at 11:15=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > On Fri, Dec 6, 2024 at 12:45=E2=80=AFPM Jann Horn <jannh@google.com> wr=
+ote:
+> > >
+> > > Currently, the pointer stored in call->prog_array is loaded in
+> > > __uprobe_perf_func(), with no RCU annotation and no RCU protection, s=
+o the
+> > > loaded pointer can immediately be dangling. Later,
+> > > bpf_prog_run_array_uprobe() starts a RCU-trace read-side critical sec=
+tion,
+> > > but this is too late. It then uses rcu_dereference_check(), but this =
+use of
+> > > rcu_dereference_check() does not actually dereference anything.
+> > >
+> > > It looks like the intention was to pass a pointer to the member
+> > > call->prog_array into bpf_prog_run_array_uprobe() and actually derefe=
+rence
+> > > the pointer in there. Fix the issue by actually doing that.
+> > >
+> > > Fixes: 8c7dcb84e3b7 ("bpf: implement sleepable uprobes by chaining gp=
+s")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Jann Horn <jannh@google.com>
+> > > ---
+> > > To reproduce, in include/linux/bpf.h, patch in a mdelay(10000) direct=
+ly
+> > > before the might_fault() in bpf_prog_run_array_uprobe() and add an
+> > > include of linux/delay.h.
+> > >
+> > > Build this userspace program:
+> > >
+> > > ```
+> > > $ cat dummy.c
+> > > #include <stdio.h>
+> > > int main(void) {
+> > >   printf("hello world\n");
+> > > }
+> > > $ gcc -o dummy dummy.c
+> > > ```
+> > >
+> > > Then build this BPF program and load it (change the path to point to
+> > > the "dummy" binary you built):
+> > >
+> > > ```
+> > > $ cat bpf-uprobe-kern.c
+> > > #include <linux/bpf.h>
+> > > #include <bpf/bpf_helpers.h>
+> > > #include <bpf/bpf_tracing.h>
+> > > char _license[] SEC("license") =3D "GPL";
+> > >
+> > > SEC("uprobe//home/user/bpf-uprobe-uaf/dummy:main")
+> > > int BPF_UPROBE(main_uprobe) {
+> > >   bpf_printk("main uprobe triggered\n");
+> > >   return 0;
+> > > }
+> > > $ clang -O2 -g -target bpf -c -o bpf-uprobe-kern.o bpf-uprobe-kern.c
+> > > $ sudo bpftool prog loadall bpf-uprobe-kern.o uprobe-test autoattach
+> > > ```
+> > >
+> > > Then run ./dummy in one terminal, and after launching it, run
+> > > `sudo umount uprobe-test` in another terminal. Once the 10-second
+> > > mdelay() is over, a use-after-free should occur, which may or may
+> > > not crash your kernel at the `prog->sleepable` check in
+> > > bpf_prog_run_array_uprobe() depending on your luck.
+> > > ---
+> > > Changes in v2:
+> > > - remove diff chunk in patch notes that confuses git
+> > > - Link to v1: https://lore.kernel.org/r/20241206-bpf-fix-uprobe-uaf-v=
+1-1-6869c8a17258@google.com
+> > > ---
+> > >  include/linux/bpf.h         | 4 ++--
+> > >  kernel/trace/trace_uprobe.c | 2 +-
+> > >  2 files changed, 3 insertions(+), 3 deletions(-)
+> > >
+> >
+> > Looking at how similar in spirit bpf_prog_run_array() is meant to be
+> > used, it seems like it is the caller's responsibility to
+> > RCU-dereference array and keep RCU critical section before calling
+> > into bpf_prog_run_array(). So I wonder if it's best to do this instead
+> > (Gmail will butcher the diff, but it's about the idea):
 >
-> Extend veristat to collect and print more stats, namely:
->   - program size in instructions
->   - jited program size in bytes
->   - program type
->   - attach type
->   - stack depth
->
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> ---
->  tools/testing/selftests/bpf/veristat.c | 68 +++++++++++++++++++++++---
->  1 file changed, 62 insertions(+), 6 deletions(-)
->
+> Yeah, that's the other option I was considering. That would be more
+> consistent with the existing bpf_prog_run_array(), but has the
+> downside of unnecessarily pushing responsibility up to the caller...
+> I'm fine with either.
 
-looks good besides the PATH_MAX use, let's fix that (plus a few
-nitpicks with style).
-
-pw-bot: cr
-
-> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selft=
-ests/bpf/veristat.c
-> index e12ef953fba8..cda8c83ebf24 100644
-> --- a/tools/testing/selftests/bpf/veristat.c
-> +++ b/tools/testing/selftests/bpf/veristat.c
-
-[...]
-
-> @@ -688,6 +698,11 @@ static struct stat_def {
->         [PEAK_STATES] =3D { "Peak states", {"peak_states"}, },
->         [MAX_STATES_PER_INSN] =3D { "Max states per insn", {"max_states_p=
-er_insn"}, },
->         [MARK_READ_MAX_LEN] =3D { "Max mark read length", {"max_mark_read=
-_len", "mark_read"}, },
-> +       [SIZE] =3D { "Prog size", {"prog_size"}, },
-
-nit: "Prog size" -> "Program size", this is UI ;)
-
-> +       [JITED_SIZE] =3D { "Jited size", {"prog_size_jited"}, },
-> +       [STACK] =3D {"Stack depth", {"stack_depth", "stack"}, },
-> +       [PROG_TYPE] =3D { "Program type", {"prog_type"}, },
-> +       [ATTACH_TYPE] =3D { "Attach type", {"attach_type", }, },
->  };
->
->  static bool parse_stat_id_var(const char *name, size_t len, int *id,
-> @@ -835,7 +850,8 @@ static char verif_log_buf[64 * 1024];
->  static int parse_verif_log(char * const buf, size_t buf_sz, struct verif=
-_stats *s)
->  {
->         const char *cur;
-> -       int pos, lines;
-> +       int pos, lines, sub_stack;
-> +       char *save_ptr, *token, stack[PATH_MAX + 1] =3D {'\0'};
-
-PATH_MAX is both an overkill and is unrelated to stack depth string.
-Let's just hard-code it to something like 256 or 512, and drop the
-STR/_STR stuff
+there is really just one caller ("legacy" singular uprobe handler), so
+I think this should be fine. Unless someone objects I'd keep it
+consistent with other "prog_array_run" helpers
 
 >
->         buf[buf_sz - 1] =3D '\0';
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index eaee2a819f4c..4b8a9edd3727 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -2193,26 +2193,25 @@ bpf_prog_run_array(const struct bpf_prog_array =
+*array,
+> >   * rcu-protected dynamically sized maps.
+> >   */
+> >  static __always_inline u32
+> > -bpf_prog_run_array_uprobe(const struct bpf_prog_array __rcu *array_rcu=
+,
+> > +bpf_prog_run_array_uprobe(const struct bpf_prog_array *array,
+> >                           const void *ctx, bpf_prog_run_fn run_prog)
+> >  {
+> >         const struct bpf_prog_array_item *item;
+> >         const struct bpf_prog *prog;
+> > -       const struct bpf_prog_array *array;
+> >         struct bpf_run_ctx *old_run_ctx;
+> >         struct bpf_trace_run_ctx run_ctx;
+> >         u32 ret =3D 1;
+> >
+> >         might_fault();
+> > +       RCU_LOCKDEP_WARN(!rcu_read_lock_trace_held(), "no rcu lock held=
+");
+> > +
+> > +       if (unlikely(!array))
+> > +               goto out;
+> >
+> > -       rcu_read_lock_trace();
+> >         migrate_disable();
+> >
+> >         run_ctx.is_uprobe =3D true;
+> >
+> > -       array =3D rcu_dereference_check(array_rcu, rcu_read_lock_trace_=
+held());
+> > -       if (unlikely(!array))
+> > -               goto out;
+> >         old_run_ctx =3D bpf_set_run_ctx(&run_ctx.run_ctx);
+> >         item =3D &array->items[0];
+> >         while ((prog =3D READ_ONCE(item->prog))) {
+> > @@ -2229,7 +2228,6 @@ bpf_prog_run_array_uprobe(const struct
+> > bpf_prog_array __rcu *array_rcu,
+> >         bpf_reset_run_ctx(old_run_ctx);
+> >  out:
+> >         migrate_enable();
+> > -       rcu_read_unlock_trace();
+> >         return ret;
+> >  }
+> >
+> > diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> > index fed382b7881b..87a2b8fefa90 100644
+> > --- a/kernel/trace/trace_uprobe.c
+> > +++ b/kernel/trace/trace_uprobe.c
+> > @@ -1404,7 +1404,9 @@ static void __uprobe_perf_func(struct trace_uprob=
+e *tu,
+> >         if (bpf_prog_array_valid(call)) {
+> >                 u32 ret;
+> >
+> > +               rcu_read_lock_trace();
+> >                 ret =3D bpf_prog_run_array_uprobe(call->prog_array,
+> > regs, bpf_prog_run);
 >
-> @@ -853,15 +869,24 @@ static int parse_verif_log(char * const buf, size_t=
- buf_sz, struct verif_stats *
+> But then this should be something like this (possibly split across
+> multiple lines with a helper variable or such):
 >
->                 if (1 =3D=3D sscanf(cur, "verification time %ld usec\n", =
-&s->stats[DURATION]))
->                         continue;
-> -               if (6 =3D=3D sscanf(cur, "processed %ld insns (limit %*d)=
- max_states_per_insn %ld total_states %ld peak_states %ld mark_read %ld",
-> +               if (5 =3D=3D sscanf(cur, "processed %ld insns (limit %*d)=
- max_states_per_insn %ld total_states %ld peak_states %ld mark_read %ld",
->                                 &s->stats[TOTAL_INSNS],
->                                 &s->stats[MAX_STATES_PER_INSN],
->                                 &s->stats[TOTAL_STATES],
->                                 &s->stats[PEAK_STATES],
->                                 &s->stats[MARK_READ_MAX_LEN]))
->                         continue;
-> -       }
+> ret =3D bpf_prog_run_array_uprobe(rcu_dereference_check(call->prog_array,
+> rcu_read_lock_trace_held()), regs, bpf_prog_run);
+
+Yeah, absolutely, forgot to move the RCU dereference part, good catch!
+But I wouldn't do the _check() variant here, literally the previous
+line does rcu_read_trace_lock(), so this check part seems like just
+unnecessary verboseness, I'd go with a simple rcu_dereference().
+
 >
-> +               if (1 =3D=3D sscanf(cur, "stack depth %" STR(PATH_MAX) "s=
-", stack))
-> +                       continue;
-> +       }
-> +       token =3D strtok_r(stack, "+", &save_ptr);
-> +       while (token && token - stack < PATH_MAX) {
-
-why this PATH_MAX condition? I'm not following what we are guarding
-against here, tbh
-
-> +               if (sscanf(token, "%d", &sub_stack) =3D=3D 0)
-> +                       break;
-> +               s->stats[STACK] +=3D sub_stack;
-> +               token =3D strtok_r(NULL, "+", &save_ptr);
-> +       }
-
-for the strtok_r() loop, see parse_stats(), I think it's nicer than
-having to separate strtok_r() calls
-
->         return 0;
->  }
->
-> @@ -1146,8 +1171,11 @@ static int process_prog(const char *filename, stru=
-ct bpf_object *obj, struct bpf
->         char *buf;
->         int buf_sz, log_level;
->         struct verif_stats *stats;
-> +       struct bpf_prog_info info;
-> +       __u32 info_len =3D sizeof(info);
->         int err =3D 0;
->         void *tmp;
-> +       int fd;
->
->         if (!should_process_file_prog(base_filename, bpf_program__name(pr=
-og))) {
->                 env.progs_skipped++;
-> @@ -1196,6 +1224,14 @@ static int process_prog(const char *filename, stru=
-ct bpf_object *obj, struct bpf
->         stats->file_name =3D strdup(base_filename);
->         stats->prog_name =3D strdup(bpf_program__name(prog));
->         stats->stats[VERDICT] =3D err =3D=3D 0; /* 1 - success, 0 - failu=
-re */
-> +       stats->stats[SIZE] =3D bpf_program__insn_cnt(prog);
-> +       stats->stats[PROG_TYPE] =3D bpf_program__type(prog);
-> +       stats->stats[ATTACH_TYPE] =3D bpf_program__expected_attach_type(p=
-rog);
-
-styling nit: I'd add an empty line here to separate multi-line
-jited_size logic a bit
-
-> +       fd =3D bpf_program__fd(prog);
-> +       memset(&info, 0, info_len);
-
-styling nit: and I'd invert here to keep fd > 0 check right next to fd
-=3D assignment
-
-> +       if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) =3D=
-=3D 0)
-> +               stats->stats[JITED_SIZE] =3D info.jited_prog_len;
-> +
->         parse_verif_log(buf, buf_sz, stats);
->
->         if (env.verbose) {
-> @@ -1309,6 +1345,11 @@ static int cmp_stat(const struct verif_stats *s1, =
-const struct verif_stats *s2,
->         case PROG_NAME:
->                 cmp =3D strcmp(s1->prog_name, s2->prog_name);
->                 break;
-> +       case ATTACH_TYPE:
-> +       case PROG_TYPE:
-> +       case SIZE:
-> +       case JITED_SIZE:
-> +       case STACK:
->         case VERDICT:
->         case DURATION:
->         case TOTAL_INSNS:
-> @@ -1523,12 +1564,27 @@ static void prepare_value(const struct verif_stat=
-s *s, enum stat_id id,
->                 else
->                         *str =3D s->stats[VERDICT] ? "success" : "failure=
-";
->                 break;
-> +       case ATTACH_TYPE:
-> +               if (!s)
-> +                       *str =3D "N/A";
-> +               else
-> +                       *str =3D libbpf_bpf_attach_type_str(s->stats[ATTA=
-CH_TYPE]) ? : "N/A";
-> +               break;
-> +       case PROG_TYPE:
-> +               if (!s)
-> +                       *str =3D "N/A";
-> +               else
-> +                       *str =3D libbpf_bpf_prog_type_str(s->stats[PROG_T=
-YPE]) ? : "N/A";
-
-another nitpick: we normally have "?:" together without a space
-between those characters
-
-> +               break;
->         case DURATION:
->         case TOTAL_INSNS:
->         case TOTAL_STATES:
->         case PEAK_STATES:
->         case MAX_STATES_PER_INSN:
->         case MARK_READ_MAX_LEN:
-> +       case STACK:
-> +       case SIZE:
-> +       case JITED_SIZE:
->                 *val =3D s ? s->stats[id] : 0;
->                 break;
->         default:
-> --
-> 2.47.1
->
+> > +               rcu_read_unlock_trace();
+> >                 if (!ret)
+> >                         return;
+> >         }
+> >
+> >
 
