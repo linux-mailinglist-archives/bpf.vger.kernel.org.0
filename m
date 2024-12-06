@@ -1,90 +1,89 @@
-Return-Path: <bpf+bounces-46272-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46273-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81D899E6FCE
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 15:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D16739E6FD0
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 15:07:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B5FC169B2D
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 14:07:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0263F166C3A
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 14:07:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F255820764A;
-	Fri,  6 Dec 2024 14:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B71C207DE7;
+	Fri,  6 Dec 2024 14:07:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HrR8dMCx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jd9yycqw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB5722E859;
-	Fri,  6 Dec 2024 14:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 537A92E859;
+	Fri,  6 Dec 2024 14:07:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733494027; cv=none; b=czkriDslhnhIbzNoXZbeSxkyQdP1Ns8fucQymIjfaj7BDgquVfFfmRzTbP7XFkZf2lK43I62ceMJx6nVoE2UsIUsj8SS6ZG5D6vcwsh1Z5EoWl+tZVCnIRpf7d8F4eGYufCEgWxF5aFa8/+0h/F5Rp/8R0PIKkqTDIfyUsjZztI=
+	t=1733494051; cv=none; b=f4Fqi+fmsYIVqFIkRfXQ/W3q7G4SHJJfP9vjF4PVVRDZMq9Vdb9QT9TQXmhqxNrwYImylKsmiaXsXSgSgm+7FDYX8Mp+mJFyLQc2CoFK8CAjr3U2Cz+WrC7uvAUsgBUhy5aA0b0cCF16lR98qxDPwvKByUrCBEQgsp8u2FRH9Ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733494027; c=relaxed/simple;
-	bh=/T9n9l8yPptrZ8rQNOWy7/kjAYWgocwtitvgqsY4m14=;
+	s=arc-20240116; t=1733494051; c=relaxed/simple;
+	bh=sx/jta+Wb9ZwVoNEHk1hSDdJmw4dUwOZD7UQQFZ5RCU=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bF3bTl90AT4NgEzCkInexhhmCY3cY1n59of68zI+jEVsXmn2P9Mv/1eIdjTJtFz8owItrMOunDSOi9giJZxDnolRl6minzvakabgFFD3fV3E5gstCwu6BFvdQUbiKGjh5wIiiS73ymxvuVLNFdQZtAmJkAW86NkUiKlQp4Wzt+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HrR8dMCx; arc=none smtp.client-ip=209.85.128.49
+	 Content-Type:Content-Disposition:In-Reply-To; b=iG5MB/ZWRgLTh9XlQCXIk6fzPXw50Lx58b9p9+YFwGhe0bgcicb3GcPp5aL9As60iBFuCeIrTkM5N3a2jSmenW0i+eh0a89Z7pH2BvLuNgFfAnjuNbr6I6XPqhIGEBJHPz6LXFbT8RbFtrAe4EVWva1Zw1Rf2XUNoYBMxPayBag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jd9yycqw; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-434a099ba95so21403665e9.0;
-        Fri, 06 Dec 2024 06:07:05 -0800 (PST)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4349fd77b33so20193905e9.2;
+        Fri, 06 Dec 2024 06:07:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733494024; x=1734098824; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733494049; x=1734098849; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=z1NqJIFUc2rfcnKJ/ZOj3FWC+O+PqLGFEM848kkhk2U=;
-        b=HrR8dMCxbbbDqCp9hmhqxW8nNUJQ1Vj5h9fxJgKUkLsxNxBUyjrG/Zg88xVvL5pIxg
-         zYLg40yLNCFAbFjkY2a2/zrBMh1ZNa5AsKir6pquHA1TZTNG29xsx8HICIsnw3OhBI3w
-         KUt+AuSGo6vldg5HrFaL86MNlMCw+852Tqt87E0WmSZjs6+IMywTTv3fPYiqF3k8G+de
-         1nFgPO+5+G8eNT3+cGIcWtGhgCPqrbzW1T0Ou7JNZ4Ad9VZHdmZeMgJKDlAwtDk5SWjn
-         kYuZIwVj/hRTd12woCq6Li1EzkIpn1dvAcfG8id/y6iiPIfkLkhgiSp1RZU0BI8q6B9+
-         fQEg==
+        bh=qq2WzUXKXlrtbb9UpnZyt97wp4kPSMya0YHZAW+Hdhs=;
+        b=Jd9yycqwn7CtHC9bDGdWev1VatOCCP2PXlHUMvRg6GAlZIsRNjgpC3wLu+2JJ58bYz
+         JA5M+bpwsZH+kkYm8Myk/9MU0zeZuGA39DgNvZ69A18T8RSdIW4+EAReBwYmZH+sJsEh
+         n4j6gI9tATTUYjLsIoVb91GoIkQD8ACQFpb2WLFJlkmTcfhQlzLd8NOhB3cW5gFACLZY
+         j2xao+Jlsqmy+i47jY8zLyYKhYsVeijHyYA2dtSh9nchT3vLOEiCCS5ptVY0EOX9eG3q
+         M+bdbq8iPRPY56mFGZHJSQdlt4i0QmCtQGjMvrJu/QudtbeTm/DCa7KJ7f7PyKdLRumm
+         2ayw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733494024; x=1734098824;
+        d=1e100.net; s=20230601; t=1733494049; x=1734098849;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z1NqJIFUc2rfcnKJ/ZOj3FWC+O+PqLGFEM848kkhk2U=;
-        b=pAxVFYt/TsPFCHCQdFdE9mVah3wguXXGwdyedv6XKKfSljZy51NZIGZ+J+8HefVBp1
-         hnk8NAVlz1VTbAjIhA63tAuc+UwlDCMc7Sg76Vfl4+LaoW5sEGeAvXz+6/rSNkYCkloW
-         9rZXuP0W4pdemubPDypFmNP6T1HDOZsJ/WtVSLEoPIFrGknFSpTxoKyXkOy6C6lZ68cq
-         J29O/HgO+wCgm30E8rCqN49yp7V0WSqcREJwzCxQHMs22fLJEyfxXALPmoX3HUxEu3kk
-         wsNdHCNjBhqC8SsigJ1OyHTutZbyYOOtVLRbftQ1/DvpQcqJjfn9N0XbZ5GBnhpXt5Fw
-         vekA==
-X-Forwarded-Encrypted: i=1; AJvYcCUS3y4BMNXJhqbfaHuEYBd2d3+BpRkitCgchLvjDT+biQFO46KH0BLZIxerZ1jeWdC2UCRt4yShLK7J2tPK@vger.kernel.org, AJvYcCWZIk3AIjmmBkeaq/Anh40qPbdOH+jkDE37UlyEEH+Tx3sEid8Z/+bevKRlzuqNiMGfdfg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNsquVVR4aLighHRUhQ1FY6w4xxLOHvAOfY3g9nGEBXXGzVOP1
-	BlDoxCAlQ574bb8ERScE9iixMxoPgbcHwzq31A3988dFBsntf887el9bLw==
-X-Gm-Gg: ASbGncv7C1uiI85nOr/Q7VfMp6+Kfrh5192iAkiyj10YZdIxheiMTI7pTKBKTAGV+Zk
-	lyY8LQ5ajmySqKbtuhoKrR1MbFQV2uMcH7TwDtUc8xBuzAhrsOX0WxCGard4slzblJDGtTx5HvU
-	fJvg2IWY3VhtmMwHTvXXQD9ZdJkIPkrbck/IP9SDK15+K9HWhj3W5LGk1WEFKaIFNarthl/i8ZG
-	J8NBWS+D23/fKpckU10Go7f9NV6ikcz4cVNqaqlD6VW98Fqf3iEdpfR7nHQNWYUnSWJjftSrSVM
-	QUw8OxwtRqKskUoI6ZKb3z0=
-X-Google-Smtp-Source: AGHT+IGw4IMPWXq1GrzcXg2SDSvRxwj1VocovuEZuiK4iMC8QvR2HIXwgj55cindn7/QdDi3ipSdew==
-X-Received: by 2002:a05:600c:1911:b0:434:a923:9313 with SMTP id 5b1f17b1804b1-434ddecac75mr25534475e9.25.1733494023668;
-        Fri, 06 Dec 2024 06:07:03 -0800 (PST)
+        bh=qq2WzUXKXlrtbb9UpnZyt97wp4kPSMya0YHZAW+Hdhs=;
+        b=qTmZjV3npXWv4mmzpWH2zCEcQ4up+b9NlF7i8rVxqfo6M2yGopQIMEz8uZ/vQDxPdS
+         xJJKP55OGTf39tXT1clQ9oc27j+Z0s1n1DsVhfrtN5BfhB1+chLwGVm1dhmygTcsofZV
+         EaOFf0G7EOdbm8zKSmL6OZSnUA8BujGwpk3basEV01Q3zSHYTFxpjypglOA+DwfLk9Qa
+         wbgIkr913cYyd1L5iXZJKkjXQZ/y/CcuyxlqkNnjqQPZsaanko3SXyQTgASCrnEsit+G
+         NSLZOCOhuf67Oa37n2XWZBrm5Uu5t/ikIteZ1d5wScVmt9mn1eZeSz3UwHKF9ymssttO
+         3ZNg==
+X-Forwarded-Encrypted: i=1; AJvYcCX2pb1/8YAbzXLJ0MsWGAtJy++oTD7XKkaGX4KIdZ3GwFuzZIXAXTHN4RQOkM3vBm9JtOp211W5tZa/EF7H@vger.kernel.org, AJvYcCXq42PWTyGnzff1VnBuABcE6DpwTExgiT0ToDNO35rY2KpWZVnKQ5esEZ6RNBDTUNbF/Ec=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzz4ndO6l0fPYqnxdVVDdqtpRGorWBP8MMu1tAxg1T6Rxxlo9rw
+	FZ9xMhUMblpLjJUY30Fmi+f+/L76lBtvAADm3lI3m6jM8qwmnaEt
+X-Gm-Gg: ASbGncvIrFEfF8I3vYoz/MjpQl30TDF2ihBwvqKa775uZumSMpHTgo9FNPNYgRJoVV7
+	CUWkbKrpYRhEyZRvhyhReXCMGAgIDW1HH6FenKDIAHuhWrjVNT1R5F3lrO6ISOfQEAR8W3x4OGM
+	3Qm1LZgjNLoh97N0mvqcFhyd9fn48w5OxEB2eVZATaTAGTO+TqA0y4pvgSmnmkjW3ybfg+y04fX
+	CKUcAWOoV5R7Qxmv0yFm4vFYQO+rt8FMZ5jDxDMS4yOs6FAgS2Z9ClbCn//Ma3ActRfyIkUdF53
+	OdqbSwLgwRSSSfM6d6zLEj4=
+X-Google-Smtp-Source: AGHT+IEvon1h3M6dJjb6WyrmhEJfYeu2W7XnzmfBThOVPZi0P+Y1DvwmCAYtq90UtDADu3/HfoTEGQ==
+X-Received: by 2002:a05:600c:3488:b0:434:da26:e2e2 with SMTP id 5b1f17b1804b1-434ddeddc0cmr24827855e9.32.1733494048406;
+        Fri, 06 Dec 2024 06:07:28 -0800 (PST)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434d52cb6e1sm93071595e9.37.2024.12.06.06.07.02
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38621909748sm4563813f8f.67.2024.12.06.06.07.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Dec 2024 06:07:03 -0800 (PST)
+        Fri, 06 Dec 2024 06:07:27 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 6 Dec 2024 15:07:01 +0100
+Date: Fri, 6 Dec 2024 15:07:26 +0100
 To: Andrii Nakryiko <andrii@kernel.org>
 Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
 	mingo@kernel.org, oleg@redhat.com, rostedt@goodmis.org,
 	mhiramat@kernel.org, bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org, liaochang1@huawei.com,
 	kernel-team@meta.com
-Subject: Re: [PATCH perf/core 4/4] uprobes: reuse return_instances between
- multiple uretprobes within task
-Message-ID: <Z1MFBVRuUnuYKo8c@krava>
+Subject: Re: [PATCH perf/core 1/4] uprobes: simplify session consumer tracking
+Message-ID: <Z1MFHg3fd_BMQtve@krava>
 References: <20241206002417.3295533-1-andrii@kernel.org>
- <20241206002417.3295533-5-andrii@kernel.org>
+ <20241206002417.3295533-2-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,170 +92,57 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241206002417.3295533-5-andrii@kernel.org>
+In-Reply-To: <20241206002417.3295533-2-andrii@kernel.org>
 
-On Thu, Dec 05, 2024 at 04:24:17PM -0800, Andrii Nakryiko wrote:
+On Thu, Dec 05, 2024 at 04:24:14PM -0800, Andrii Nakryiko wrote:
 
 SNIP
 
-> +static void free_ret_instance(struct uprobe_task *utask,
-> +			      struct return_instance *ri, bool cleanup_hprobe)
-> +{
-> +	unsigned seq;
-> +
->  	if (cleanup_hprobe) {
->  		enum hprobe_state hstate;
->  
-> @@ -1897,8 +1923,22 @@ static void free_ret_instance(struct return_instance *ri, bool cleanup_hprobe)
->  		hprobe_finalize(&ri->hprobe, hstate);
->  	}
->  
-> -	kfree(ri->extra_consumers);
-> -	kfree_rcu(ri, rcu);
-> +	/*
-> +	 * At this point return_instance is unlinked from utask's
-> +	 * return_instances list and this has become visible to ri_timer().
-> +	 * If seqcount now indicates that ri_timer's return instance
-> +	 * processing loop isn't active, we can return ri into the pool of
-> +	 * to-be-reused return instances for future uretprobes. If ri_timer()
-> +	 * happens to be running right now, though, we fallback to safety and
-> +	 * just perform RCU-delated freeing of ri.
-> +	 */
-> +	if (raw_seqcount_try_begin(&utask->ri_seqcount, seq)) {
-> +		/* immediate reuse of ri without RCU GP is OK */
-> +		ri_pool_push(utask, ri);
-
-should the push be limitted somehow? I wonder you could make uprobes/consumers
-setup that would allocate/push many of ri instances that would not be freed
-until the process exits?
-
-jirka
-
-> +	} else {
-> +		/* we might be racing with ri_timer(), so play it safe */
-> +		ri_free(ri);
-> +	}
->  }
->  
->  /*
-> @@ -1920,7 +1960,15 @@ void uprobe_free_utask(struct task_struct *t)
->  	ri = utask->return_instances;
->  	while (ri) {
->  		ri_next = ri->next;
-> -		free_ret_instance(ri, true /* cleanup_hprobe */);
-> +		free_ret_instance(utask, ri, true /* cleanup_hprobe */);
-> +		ri = ri_next;
-> +	}
-> +
-> +	/* free_ret_instance() above might add to ri_pool, so this loop should come last */
-> +	ri = utask->ri_pool;
-> +	while (ri) {
-> +		ri_next = ri->next;
-> +		ri_free(ri);
->  		ri = ri_next;
->  	}
->  
-> @@ -1943,8 +1991,12 @@ static void ri_timer(struct timer_list *timer)
->  	/* RCU protects return_instance from freeing. */
->  	guard(rcu)();
->  
-> +	write_seqcount_begin(&utask->ri_seqcount);
-> +
->  	for_each_ret_instance_rcu(ri, utask->return_instances)
->  		hprobe_expire(&ri->hprobe, false);
-> +
-> +	write_seqcount_end(&utask->ri_seqcount);
->  }
->  
->  static struct uprobe_task *alloc_utask(void)
-> @@ -1956,6 +2008,7 @@ static struct uprobe_task *alloc_utask(void)
->  		return NULL;
->  
->  	timer_setup(&utask->ri_timer, ri_timer, 0);
-> +	seqcount_init(&utask->ri_seqcount);
->  
->  	return utask;
->  }
-> @@ -1975,10 +2028,14 @@ static struct uprobe_task *get_utask(void)
->  	return current->utask;
->  }
->  
-> -static struct return_instance *alloc_return_instance(void)
-> +static struct return_instance *alloc_return_instance(struct uprobe_task *utask)
+>  static struct return_instance *alloc_return_instance(void)
 >  {
 >  	struct return_instance *ri;
 >  
-> +	ri = ri_pool_pop(utask);
-> +	if (ri)
-> +		return ri;
-> +
->  	ri = kzalloc(sizeof(*ri), GFP_KERNEL);
+> -	ri = kzalloc(ri_size(DEF_CNT), GFP_KERNEL);
+> +	ri = kzalloc(sizeof(*ri), GFP_KERNEL);
 >  	if (!ri)
 >  		return ZERO_SIZE_PTR;
-> @@ -2119,7 +2176,7 @@ static void cleanup_return_instances(struct uprobe_task *utask, bool chained,
->  		rcu_assign_pointer(utask->return_instances, ri_next);
->  		utask->depth--;
 >  
-> -		free_ret_instance(ri, true /* cleanup_hprobe */);
-> +		free_ret_instance(utask, ri, true /* cleanup_hprobe */);
->  		ri = ri_next;
->  	}
->  }
-> @@ -2186,7 +2243,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs,
->  
->  	return;
->  free:
-> -	kfree(ri);
-> +	ri_free(ri);
+> -	ri->consumers_cnt = DEF_CNT;
+>  	return ri;
 >  }
 >  
->  /* Prepare to single-step probed instruction out of line. */
-> @@ -2385,8 +2442,7 @@ static struct return_instance *push_consumer(struct return_instance *ri, __u64 i
->  	if (unlikely(ri->cons_cnt > 0)) {
->  		ric = krealloc(ri->extra_consumers, sizeof(*ric) * ri->cons_cnt, GFP_KERNEL);
->  		if (!ric) {
-> -			kfree(ri->extra_consumers);
-> -			kfree_rcu(ri, rcu);
-> +			ri_free(ri);
->  			return ZERO_SIZE_PTR;
->  		}
->  		ri->extra_consumers = ric;
-> @@ -2428,8 +2484,9 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
->  	struct uprobe_consumer *uc;
->  	bool has_consumers = false, remove = true;
->  	struct return_instance *ri = NULL;
-> +	struct uprobe_task *utask = current->utask;
+>  static struct return_instance *dup_return_instance(struct return_instance *old)
+>  {
+> -	size_t size = ri_size(old->consumers_cnt);
+> +	struct return_instance *ri;
+> +
+> +	ri = kmemdup(old, sizeof(*ri), GFP_KERNEL);
+
+missing ri == NULL check
+
+jirka
+
+> +
+> +	if (unlikely(old->cons_cnt > 1)) {
+> +		ri->extra_consumers = kmemdup(old->extra_consumers,
+> +					      sizeof(ri->extra_consumers[0]) * (old->cons_cnt - 1),
+> +					      GFP_KERNEL);
+> +		if (!ri->extra_consumers) {
+> +			kfree(ri);
+> +			return NULL;
+> +		}
+> +	}
 >  
-> -	current->utask->auprobe = &uprobe->arch;
-> +	utask->auprobe = &uprobe->arch;
+> -	return kmemdup(old, size, GFP_KERNEL);
+> +	return ri;
+>  }
 >  
->  	list_for_each_entry_rcu(uc, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
->  		bool session = uc->handler && uc->ret_handler;
-> @@ -2449,12 +2506,12 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
->  			continue;
+>  static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
+> @@ -2369,25 +2372,28 @@ static struct uprobe *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_swb
+>  	return uprobe;
+>  }
 >  
->  		if (!ri)
-> -			ri = alloc_return_instance();
-> +			ri = alloc_return_instance(utask);
->  
->  		if (session)
->  			ri = push_consumer(ri, uc->id, cookie);
->  	}
-> -	current->utask->auprobe = NULL;
-> +	utask->auprobe = NULL;
->  
->  	if (!ZERO_OR_NULL_PTR(ri))
->  		prepare_uretprobe(uprobe, regs, ri);
-> @@ -2554,7 +2611,7 @@ void uprobe_handle_trampoline(struct pt_regs *regs)
->  			hprobe_finalize(&ri->hprobe, hstate);
->  
->  			/* We already took care of hprobe, no need to waste more time on that. */
-> -			free_ret_instance(ri, false /* !cleanup_hprobe */);
-> +			free_ret_instance(utask, ri, false /* !cleanup_hprobe */);
->  			ri = ri_next;
->  		} while (ri != next_chain);
->  	} while (!valid);
-> -- 
-> 2.43.5
-> 
+> -static struct return_instance*
+
+SNIP
 
