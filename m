@@ -1,221 +1,111 @@
-Return-Path: <bpf+bounces-46335-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A36F9E7BE6
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 23:45:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C2CB9E7CDE
+	for <lists+bpf@lfdr.de>; Sat,  7 Dec 2024 00:46:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC71D16D863
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 22:45:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23AFA1887B39
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 23:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9A51FFC7C;
-	Fri,  6 Dec 2024 22:45:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98B731FC0F5;
+	Fri,  6 Dec 2024 23:46:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="AUoYZ9QL"
+	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="cYP7pG0m"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7ADC22C6D5;
-	Fri,  6 Dec 2024 22:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86FE01F3D3D
+	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 23:46:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733525141; cv=none; b=mlrYWyP+u8wBrTW3baO6futUS3qsk7fthPZBzkSR2/NofQtuERQCHz4ExIabM1ruO0/PIXCAZcF9wCBHEhSLTU3w/X5vwQWdpRcdPTQdMkz6ukghZ0XP3b1/YDyhp5SQqT6lk2hN0w/XMbMtNl+8JJpIAdpyH2gHN3cXnLYTJnw=
+	t=1733528801; cv=none; b=iVR9DpV16wuijKvSFc9GKDfpd6zztAKTrYX42ROjJDZKm7GI/wwfE7QVHjoE6KTKkKKqqroU1V6JrRXW4NhC1zYHxfCrqhkDHUhx894dK4mjT5jd8jYribiOc4wU58N050l4Bl2ZPUdK9TVH/6NpFuzyDxkKTBQCfDNVmSOafIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733525141; c=relaxed/simple;
-	bh=SPq6ru6KeEu7S/DJ3r40M5+WSJlUxaW6SpmQGfhX2YQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Sts0j9uB8BL/xI8GyAMolsRo9hM4sh8KSjrosdqwqX857TXzKPc8UQL2YG90KcHX7R09ps+yShzmqh3x5RXgDGgZ+zN5NGIJVv7yEmKomIb2Or2m5TLnHiBAwOW512ILglCcJtUixF4MttlvmZlmeBibugmcR45HlL0ESvY7+E8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=AUoYZ9QL; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=EDv7b+GrDXjsRKtyYoIJaRrs2yTN4GiCq+PXW32/j2Y=; b=AUoYZ9QLJ9NvvzMDdANLL2Dg7S
-	yUps5jChAvRfa++KcL43tsdgZCxl6ShEJflCMZfgBejPSodAClvJ1aG3QV9XpTjfqEPnlwfD7hzOd
-	3LEIk6AAmYuuyvmghsY1+py0zdH5KHC5Dj1E2qmGIiAdpIwK5KlzHB431zoKaZRTszYVnpD1JT4mT
-	c0HN0hH9JJT00PaCpe3ilcpoGQdu0wozVcL4wN8Q7ok2bQWDlG9NwdXEJ28vQnSjHvAhNDevIKY/d
-	Rkl5eBIp026UdOV2roqctIKqCFMT2vGapc38mzmWnMCzY0nURBreSmTd+BRK6MPlBIAvLI4iP9YFr
-	cPk/DdkQ==;
-Received: from 226.206.1.85.dynamic.cust.swisscom.net ([85.1.206.226] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tJh4q-0008Du-54; Fri, 06 Dec 2024 23:45:36 +0100
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: torvalds@linux-foundation.org
-Cc: bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	alexei.starovoitov@gmail.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org
-Subject: [GIT PULL] bpf for v6.13-rc2
-Date: Fri,  6 Dec 2024 23:45:34 +0100
-Message-ID: <20241206224535.279796-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1733528801; c=relaxed/simple;
+	bh=AXHfSVA6sbYMyx7llheqO3Xp8HnB4ejP0MUnZrbHevs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=SdxqBC6j6gD2RXK/7oLShpIQhfZA5okP9NEtjEpcm15b3csFmFNhFQGn6Blvnlu0yjRboY67iKJ8h9q0BMFrn5ivKeqECn0V7Mv7QoF7YFSmIJMfdtDx6zWcVFyiSog8RfnStS+fez+S1H6TsWhz16OGeVyh5INiYf6KNgn0PBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=cYP7pG0m; arc=none smtp.client-ip=148.163.148.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
+Received: from pps.filterd (m0354650.ppops.net [127.0.0.1])
+	by mx0a-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4B6MYcuZ002284;
+	Fri, 6 Dec 2024 23:08:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
+	 h=cc:content-id:content-transfer-encoding:content-type:date
+	:from:in-reply-to:message-id:mime-version:references:subject:to;
+	 s=default; bh=AXHfSVA6sbYMyx7llheqO3Xp8HnB4ejP0MUnZrbHevs=; b=c
+	YP7pG0mzUp6eS+QEQdtllcBphoA9bw5ejnQXXXMxrZxwjGhPPm0zv36aqeY3ausl
+	IHVnPeJnbfVTqEzGHmtVTMTBJwWZbYp3N4JMIhzTcPxCcngK+L7UPMVek5Y2Wvzd
+	OCSsyGGEVjjJgcGoyPchLAOoqXbnDE4OH3E5XEyrtzb5WhbM7SryTmrXSaaXznr4
+	CRejgYhOqlppxZPObMtVNvWZSPrQMTOgryc+GOvL8hZAbGi8hpeI7PbCemEL4+F3
+	njXYIGQRU1LmyLeAp4CT9UxsOgcOsCCzV6r5cvfhbsqIVNNX/pSO/IVT1862hx6+
+	WwzeZcUdkXO1Tki8ObKhA==
+Received: from mail.crowdstrike.com (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
+	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 43ca6er1w1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 06 Dec 2024 23:08:26 +0000 (GMT)
+Received: from 04wpexch06.crowdstrike.sys (10.100.11.99) by
+ 04wpexch06.crowdstrike.sys (10.100.11.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Fri, 6 Dec 2024 23:08:25 +0000
+Received: from 04wpexch06.crowdstrike.sys ([fe80::9386:41e4:ec25:9fd5]) by
+ 04wpexch06.crowdstrike.sys ([fe80::9386:41e4:ec25:9fd5%9]) with mapi id
+ 15.02.1544.009; Fri, 6 Dec 2024 23:08:25 +0000
+From: Martin Kelly <martin.kelly@crowdstrike.com>
+To: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC: "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org"
+	<ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>
+Subject: Re: CONFIG_X86_X32_ABI silently breaks some fentry hooks
+Thread-Topic: CONFIG_X86_X32_ABI silently breaks some fentry hooks
+Thread-Index: AQHbGn1IBv6Qgmi38kyuqgRRJU67tLLaMoUA
+Date: Fri, 6 Dec 2024 23:08:25 +0000
+Message-ID: <ddedd6fdd8865d885ee141c33ebb03d83fc3d897.camel@crowdstrike.com>
+References: <7136605d24de9b1fc62d02a355ef11c950a94153.camel@crowdstrike.com>
+In-Reply-To: <7136605d24de9b1fc62d02a355ef11c950a94153.camel@crowdstrike.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-disclaimer: USA
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FF404C5D5E110747AD40E6FD393EB567@crowdstrike.sys>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27479/Fri Dec  6 10:40:14 2024)
+X-Proofpoint-GUID: mnSm_AWXgwXwrZJT_mTIz1-DJH_bUAih
+X-Authority-Analysis: v=2.4 cv=Ft///3rq c=1 sm=1 tr=0 ts=675383ea cx=c_pps a=1d8vc5iZWYKGYgMGCdbIRA==:117 a=1d8vc5iZWYKGYgMGCdbIRA==:17 a=xqWC_Br6kY4A:10 a=EjBHVkixTFsA:10 a=IkcTkHD0fZMA:10 a=RZcAm9yDv7YA:10 a=VwQbUJbxAAAA:8 a=AiHppB-aAAAA:8
+ a=snVGZ65Z-9Dwo9w7mA8A:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: mnSm_AWXgwXwrZJT_mTIz1-DJH_bUAih
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ adultscore=0 spamscore=0 mlxlogscore=579 mlxscore=0 phishscore=0
+ clxscore=1011 impostorscore=0 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 classifier=spam authscore=0 adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2411120000 definitions=main-2412060176
 
-Hi Linus,
-
-The following changes since commit 9f16d5e6f220661f73b36a4be1b21575651d8833:
-
-  Merge tag 'for-linus' of git://git.kernel.org/pub/scm/virt/kvm/kvm (2024-11-23 16:00:50 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
-
-for you to fetch changes up to 509df676c2d79c985ec2eaa3e3a3bbe557645861:
-
-  Merge branch 'fixes-for-lpm-trie' (2024-12-06 09:14:35 -0800)
-
-----------------------------------------------------------------
-BPF fixes:
-
-- Fix several issues for BPF LPM trie map which were found by
-  syzbot and during addition of new test cases (Hou Tao)
-
-- Fix a missing process_iter_arg register type check in the
-  BPF verifier (Kumar Kartikeya Dwivedi, Tao Lyu)
-
-- Fix several correctness gaps in the BPF verifier when
-  interacting with the BPF stack without CAP_PERFMON
-  (Kumar Kartikeya Dwivedi, Eduard Zingerman, Tao Lyu)
-
-- Fix OOB BPF map writes when deleting elements for the case of
-  xsk map as well as devmap (Maciej Fijalkowski)
-
-- Fix xsk sockets to always clear DMA mapping information when
-  unmapping the pool (Larysa Zaremba)
-
-- Fix sk_mem_uncharge logic in tcp_bpf_sendmsg to only uncharge
-  after sent bytes have been finalized (Zijian Zhang)
-
-- Fix BPF sockmap with vsocks which was missing a queue check
-  in poll and sockmap cleanup on close (Michal Luczaj)
-
-- Fix tools infra to override makefile ARCH variable if defined
-  but empty, which addresses cross-building tools. (Björn Töpel)
-
-- Fix two resolve_btfids build warnings on unresolved bpf_lsm
-  symbols (Thomas Weißschuh)
-
-- Fix a NULL pointer dereference in bpftool (Amir Mohammadi)
-
-- Fix BPF selftests to check for CONFIG_PREEMPTION instead of
-  CONFIG_PREEMPT (Sebastian Andrzej Siewior)
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-
-----------------------------------------------------------------
-Alexei Starovoitov (5):
-      Merge branch 'bpf-vsock-fix-poll-and-close'
-      Merge branch 'bpf-fix-oob-accesses-in-map_delete_elem-callbacks'
-      Merge branch 'fix-missing-process_iter_arg-type-check'
-      Merge branch 'fixes-for-stack-with-allow_ptr_leaks'
-      Merge branch 'fixes-for-lpm-trie'
-
-Amir Mohammadi (1):
-      bpftool: fix potential NULL pointer dereferencing in prog_dump()
-
-Björn Töpel (1):
-      tools: Override makefile ARCH variable if defined, but empty
-
-Eduard Zingerman (2):
-      samples/bpf: Remove unnecessary -I flags from libbpf EXTRA_CFLAGS
-      selftests/bpf: Introduce __caps_unpriv annotation for tests
-
-Hou Tao (9):
-      bpf: Remove unnecessary check when updating LPM trie
-      bpf: Remove unnecessary kfree(im_node) in lpm_trie_update_elem
-      bpf: Handle BPF_EXIST and BPF_NOEXIST for LPM trie
-      bpf: Handle in-place update for full LPM trie correctly
-      bpf: Fix exact match conditions in trie_get_next_key()
-      bpf: Switch to bpf mem allocator for LPM trie
-      bpf: Use raw_spinlock_t for LPM trie
-      selftests/bpf: Move test_lpm_map.c to map_tests
-      selftests/bpf: Add more test cases for LPM trie
-
-Kumar Kartikeya Dwivedi (5):
-      selftests/bpf: Add tests for iter arg check
-      bpf: Zero index arg error string for dynptr and iter
-      bpf: Don't mark STACK_INVALID as STACK_MISC in mark_stack_slot_misc
-      selftests/bpf: Add test for reading from STACK_INVALID slots
-      selftests/bpf: Add test for narrow spill into 64-bit spilled scalar
-
-Larysa Zaremba (1):
-      xsk: always clear DMA mapping information when unmapping the pool
-
-Maciej Fijalkowski (2):
-      xsk: fix OOB map writes when deleting elements
-      bpf: fix OOB devmap writes when deleting elements
-
-Michal Luczaj (4):
-      bpf, vsock: Fix poll() missing a queue
-      selftest/bpf: Add test for af_vsock poll()
-      bpf, vsock: Invoke proto::close on close()
-      selftest/bpf: Add test for vsock removal from sockmap on close()
-
-Sebastian Andrzej Siewior (1):
-      selftests/bpf: Check for PREEMPTION instead of PREEMPT
-
-Tao Lyu (2):
-      bpf: Ensure reg is PTR_TO_STACK in process_iter_arg
-      bpf: Fix narrow scalar spill onto 64-bit spilled scalar slots
-
-Thomas Weißschuh (1):
-      bpf, lsm: Remove getlsmprop hooks BTF IDs
-
-Zijian Zhang (2):
-      tcp_bpf: Fix the sk_mem_uncharge logic in tcp_bpf_sendmsg
-      selftests/bpf: Add apply_bytes test to test_txmsg_redir_wait_sndmem in test_sockmap
-
- kernel/bpf/bpf_lsm.c                               |   2 -
- kernel/bpf/devmap.c                                |   6 +-
- kernel/bpf/lpm_trie.c                              | 133 ++++---
- kernel/bpf/verifier.c                              |  27 +-
- net/ipv4/tcp_bpf.c                                 |  11 +-
- net/vmw_vsock/af_vsock.c                           |  70 ++--
- net/xdp/xsk_buff_pool.c                            |   5 +-
- net/xdp/xskmap.c                                   |   2 +-
- samples/bpf/Makefile                               |  13 +-
- tools/bpf/bpftool/prog.c                           |  17 +-
- tools/scripts/Makefile.arch                        |   4 +-
- tools/testing/selftests/bpf/.gitignore             |   1 -
- tools/testing/selftests/bpf/Makefile               |   2 +-
- .../lpm_trie_map_basic_ops.c}                      | 405 ++++++++++++++++++++-
- .../selftests/bpf/map_tests/task_storage_map.c     |   4 +-
- .../selftests/bpf/prog_tests/sockmap_basic.c       |  77 ++++
- .../selftests/bpf/prog_tests/task_local_storage.c  |   2 +-
- tools/testing/selftests/bpf/prog_tests/verifier.c  |  19 +-
- tools/testing/selftests/bpf/progs/bpf_misc.h       |  12 +
- tools/testing/selftests/bpf/progs/dynptr_fail.c    |  22 +-
- tools/testing/selftests/bpf/progs/iters.c          |  26 ++
- .../selftests/bpf/progs/iters_state_safety.c       |  14 +-
- .../selftests/bpf/progs/iters_testmod_seq.c        |   4 +-
- .../bpf/progs/read_bpf_task_storage_busy.c         |   4 +-
- .../selftests/bpf/progs/task_storage_nodeadlock.c  |   4 +-
- .../selftests/bpf/progs/test_kfunc_dynptr_param.c  |   2 +-
- .../selftests/bpf/progs/verifier_bits_iter.c       |   8 +-
- tools/testing/selftests/bpf/progs/verifier_mtu.c   |   4 +-
- .../selftests/bpf/progs/verifier_spill_fill.c      |  35 ++
- tools/testing/selftests/bpf/test_loader.c          |  46 +++
- tools/testing/selftests/bpf/test_sockmap.c         |   6 +-
- 31 files changed, 813 insertions(+), 174 deletions(-)
- rename tools/testing/selftests/bpf/{test_lpm_map.c => map_tests/lpm_trie_map_basic_ops.c} (65%)
+T24gV2VkLCAyMDI0LTEwLTA5IGF0IDExOjU4IC0wNzAwLCBNYXJ0aW4gS2VsbHkgd3JvdGU6DQo+
+IEhpIGFsbCwgSSB3YW50IHRvIHJlcG9ydCBhIHZlcnkgc3RyYW5nZSBpc3N1ZXMgSSBmb3VuZC4g
+U3BlY2lmaWNhbGx5LA0KPiBvbiBsYXRlc3QgbWFzdGVyLCBJIGZvdW5kIHRoYXQgc2V0dGluZyBD
+T05GSUdfWDg2X1gzMl9BQkk9eSBjYXVzZXMNCj4gc29tZQ0KPiBmZW50cnkgQlBGIGhvb2tzIHRv
+IGJlIHNpbGVudGx5IGlnbm9yZWQuIE1vc3QgaG9va3Mgc3RpbGwgd29yayBmaW5lLA0KPiBidXQg
+c29tZSBkbyBub3QsIGFuZCB0aGUgc2FtZSBmdW5jdGlvbiB3b3JrcyBmaW5lIGFzIGEga3Byb2Jl
+LiBUaGUNCj4gaXNzdWUgYXBwZWFycyB0byBiZSAxMDAlIHJlcHJvZHVjaWJsZSBmb3IgYSBnaXZl
+biBmdW5jdGlvbiBob29rLg0KPiANCg0KVGhpcyB3YXMgcm9vdC1jYXVzZWQgdG8gYmUgdGhlIHNh
+bWUgaXNzdWUgYXMgdGhlIG9uZSBhZGRyZXNzZWQgaW4gdGhpcw0KKHVubWVyZ2VkKSBwYXRjaCBz
+ZXJpZXM6DQpodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzIwMjQwNzIzMDYzMjU4LjIyNDA2
+MTAtMS16aGVuZ3llamlhbkBodWF3ZWljbG91ZC5jb20vDQoNCkVzc2VudGlhbGx5IHRoaXMgaGFz
+IHRvIGRvIHdpdGggZnRyYWNlIGFuZCB3ZWFrIGZ1bmN0aW9ucy4NCg==
 
