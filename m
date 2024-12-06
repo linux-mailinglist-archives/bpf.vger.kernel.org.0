@@ -1,122 +1,93 @@
-Return-Path: <bpf+bounces-46212-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46214-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 595899E6209
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 01:14:32 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 708989E6220
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 01:24:29 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE34E1885E84
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 00:14:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F9CB28293A
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 00:24:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93D531DDF5;
-	Fri,  6 Dec 2024 00:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5946A17991;
+	Fri,  6 Dec 2024 00:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sACSumgP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a+PBY2p0"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F0F48F5B;
-	Fri,  6 Dec 2024 00:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F757464;
+	Fri,  6 Dec 2024 00:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733443977; cv=none; b=Er7Bmct+jSWhPhIQEaw2SrSCQIzY7Z9k7Z6mgGncvPBfdNtG5YEnQSXsbrYOq1/oAoVAEr/c8Brlbsfdl6qZBRwRGJR1ENTkdUAfWDLlgwAZtr9AgBDUmi2UnKSlqPn4VkrYPjHpm9wRM2RrZey4WWV+YX+3RH93sSUCc6JD2Y0=
+	t=1733444662; cv=none; b=Eakc/DV7QUEgTCuVAkgqSrxi0I/5B2hyy+c/zdWXatVKEhBkOtZJ01wSZYIM2L0AUdckHZlr8jFqPbAvWt4TmCygg5ySCHvJ32wgdFBGbhyxGIIAQD5WAJYohOkaIeeR1ipaCEHsWccA33P8nL+e+Mws53DIZ5idDUTvLsa7pTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733443977; c=relaxed/simple;
-	bh=BiJkgFbyZWGN3QrnPaBVi1FBGF19OgW996tdjHYY+MQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=st9Gl5E3J4M1b3Ie8G1x2sI5/WChRE0Njczq7AQgb6gj0bqmaHJPNOSlV8M5yLB9NJhvhGo7KzLlevuzsKUgLvTemKPjEzlay4yx4LlW/wCL2HG/8YSAOR6LKEEhZaWG3fE+B8ldewDcfUGiqJCZSQPpfXHRWvd3R90DInyAAKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sACSumgP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9E25C4CEDD;
-	Fri,  6 Dec 2024 00:12:53 +0000 (UTC)
+	s=arc-20240116; t=1733444662; c=relaxed/simple;
+	bh=L7eKHfc4jfLcy6/TN60q/oxblg8UHLvSmhvoV8Od6iw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PkPNZ7NQXMAQAbevarjYDJOxPeDA+8au3Uh16umdX9jB+z+igvM3DfNtb6R82KdlBr5mi6KiGgyxnMtNL5VFxkM52XAtVBU5mCNg9dNroOQuDGlJ463gpVH3mT1JhntaQ/zK11Va1lGkc40NE9zTFDnAqeAAOAN+2El2kLS0MP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a+PBY2p0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31F22C4CED1;
+	Fri,  6 Dec 2024 00:24:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733443976;
-	bh=BiJkgFbyZWGN3QrnPaBVi1FBGF19OgW996tdjHYY+MQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sACSumgPzbAOgh0aP9gzhIO0B9vUC05c0X+eMvZjd4AgdFR4AxnD09+99uUUa4A2P
-	 feA/J7wuFXgtkKuVioxoJTBGPSlu072DKPdSTBQRK+ZH+Ab5X12AvxTvc0vTbNvmvh
-	 KjNn+8+ZsrqeVQxIgMQyFf4qAHJnDJDWXks5St1rLAqEsMFVDN/5uCnwc2uJ49UOVD
-	 sZxEqypde6H2eB52eYrDihGV7vD6XNbuIVxVRE/hF2suTvPit2taJutt6UM7jY9CLT
-	 /EsEj7YePnu+PuormAWPYZBh/Ar/woX5wBt4bYVGmY+RppR6RRIKkXGh3jatYVIYCE
-	 GecWstR9txfeA==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-arch@vger.kernel.org
-Subject: [PATCH v20 19/19] bpf: Use ftrace_get_symaddr() in get_entry_ip()
-Date: Fri,  6 Dec 2024 09:12:51 +0900
-Message-ID: <173344397142.50709.1389323884732382919.stgit@devnote2>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <173344373580.50709.5332611753907139634.stgit@devnote2>
-References: <173344373580.50709.5332611753907139634.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=k20201202; t=1733444662;
+	bh=L7eKHfc4jfLcy6/TN60q/oxblg8UHLvSmhvoV8Od6iw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=a+PBY2p02gxBJfElfcR6RNS5YdwtGc7ltdN1PEI/XqTt1m5SRhnM7Yfspe4SutEax
+	 vjyhd0Aw9tzCg+O5UE0kceceYN4CjduNhk8LEBCVgbBkCPeHUQnktJeBcjfgnqizRY
+	 sSI1gDSx03g/LH45+caEulKM2aJL6g6nsUeRl1kblFbTrRuPMDbRO/mFwQPA3MOTJs
+	 aF2zeJax3zAzhPRAcQ62O+EZJHJtrYdv5jv4SgIqPfepyor/NMx/n/fYIM33XGtgTE
+	 DaCPCcQmnYHAv4XRNbJLzDnJFkVlD8WP3I82mIprR4A+y8Z6wVrs9ZIU7JGjqWxZGy
+	 R8clHdw0qmFrQ==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: linux-trace-kernel@vger.kernel.org,
+	peterz@infradead.org,
+	mingo@kernel.org
+Cc: oleg@redhat.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jolsa@kernel.org,
+	liaochang1@huawei.com,
+	kernel-team@meta.com,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH perf/core 0/4] Improve performance and scalability of uretprobes
+Date: Thu,  5 Dec 2024 16:24:13 -0800
+Message-ID: <20241206002417.3295533-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Include performance and multi-CPU scalability of uretprobes by avoiding
+a rather expensive (and somewhat limiting in terms of multi-CPU scalability)
+use of kmalloc()+kfree() combo for short-lived struct return_instance, used
+for keeping track of pending return uprobes.
 
-Rewrite get_entry_ip() to use ftrace_get_symaddr() macro.
+First few patches are preparatory doing some internal refactoring and setting
+things up for the actual struct return_instance reuse done in the last patch
+of the series.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v19:
-  - Use ftrace_get_symaddr() instead of introducing new arch dependent code.
-  - Also, replace x86 code with ftrace_get_symaddr(), which does the same
-   thing.
----
- kernel/trace/bpf_trace.c |   19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+Andrii Nakryiko (4):
+  uprobes: simplify session consumer tracking
+  uprobes: decouple return_instance list traversal and freeing
+  uprobes: ensure return_instance is detached from the list before
+    freeing
+  uprobes: reuse return_instances between multiple uretprobes within
+    task
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 852400170c5c..9f9a0d666020 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1048,27 +1048,12 @@ static const struct bpf_func_proto bpf_get_func_ip_proto_tracing = {
- 	.arg1_type	= ARG_PTR_TO_CTX,
- };
- 
--#ifdef CONFIG_X86_KERNEL_IBT
- static unsigned long get_entry_ip(unsigned long fentry_ip)
- {
--	u32 instr;
-+	unsigned long ret = ftrace_get_symaddr(fentry_ip);
- 
--	/* We want to be extra safe in case entry ip is on the page edge,
--	 * but otherwise we need to avoid get_kernel_nofault()'s overhead.
--	 */
--	if ((fentry_ip & ~PAGE_MASK) < ENDBR_INSN_SIZE) {
--		if (get_kernel_nofault(instr, (u32 *)(fentry_ip - ENDBR_INSN_SIZE)))
--			return fentry_ip;
--	} else {
--		instr = *(u32 *)(fentry_ip - ENDBR_INSN_SIZE);
--	}
--	if (is_endbr(instr))
--		fentry_ip -= ENDBR_INSN_SIZE;
--	return fentry_ip;
-+	return ret ? : fentry_ip;
- }
--#else
--#define get_entry_ip(fentry_ip) fentry_ip
--#endif
- 
- BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
- {
+ include/linux/uprobes.h |  16 +++-
+ kernel/events/uprobes.c | 176 +++++++++++++++++++++++++++-------------
+ 2 files changed, 133 insertions(+), 59 deletions(-)
+
+-- 
+2.43.5
 
 
