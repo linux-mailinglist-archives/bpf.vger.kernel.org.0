@@ -1,156 +1,121 @@
-Return-Path: <bpf+bounces-46227-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46228-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E0729E63CB
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 02:56:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7008B9E63D0
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 02:58:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1C991881BE9
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 01:56:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54E1F164CE7
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 01:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E3213C8FF;
-	Fri,  6 Dec 2024 01:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 214BA13D502;
+	Fri,  6 Dec 2024 01:58:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="In5wXmi5"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="zKEoLoRx"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B92136C;
-	Fri,  6 Dec 2024 01:56:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902C423918D;
+	Fri,  6 Dec 2024 01:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733450211; cv=none; b=r6oKvzHwNLshhZW1pyNRNKUI/Pv/VFHW8XorVjxC/T37ryrSI5M9kU+qo9n3TcZ3f3RMgsOSRXIEIvznliuf85Szr4qbcY9xoIy5GPiXLGNH6QLYjywOrIJ+XjBxRtZmgQysZQ38QjgkPyKtQgXr2EDCnt7njKVDA5/vD9Robkk=
+	t=1733450317; cv=none; b=OV3bbB4hkt4+PS7ydle8efY9QNU/25zgS1dVUQ0TIkElsCPtbItEgUU+LXpaVSfqowGp8aQTRDvhTHS92rd7PhQWcdlt/MrSTUyeig5mzssENTA/3eTqCDFSupj3WOging522zoGQbMt1To9PInVJlkJg/ujIVI3EM6WRQaqpjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733450211; c=relaxed/simple;
-	bh=oGgLnkXY+peMs1hL9SBaKITe7y+CwdhfVSTf6KVgEo8=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=t6POndql6l0eGr63g6KGqh2HNJ2imC9g0GUmNj1TzvuRm8bqxy2WwQ54aXr2AjzUQ1LOYmSK0ft2EYBT+ebAep/lQ/09+ButeNBmqVWmYVwv53xsa0yJmu7XjK3VN7gz7Hkrl+rT9APOeUY9i098R3yV58RxO6XopLpWypcT0Bk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=In5wXmi5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D853C4CED1;
-	Fri,  6 Dec 2024 01:56:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733450210;
-	bh=oGgLnkXY+peMs1hL9SBaKITe7y+CwdhfVSTf6KVgEo8=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-	b=In5wXmi5fCYgE1/k9wh5ooRCK3rYMTt5wKJAROOx26i0J1gzJ4PxXu5MHG2p/+3OH
-	 qjlK3ZTeerUWdlO1sNle9klq+/qZN3TGElzTn3nFnaE1O74YdnanBHWMmy9rEHrEdJ
-	 tkbcGFRjoce70kfNRp4zL/hRDnbFG5xjlek6sBz3UDiQF5fHe2eMgGVVyUoQ0DSvPe
-	 QXbC7BB1kbSZDwpmByN+XbPcPcJEbhv1ubeK6voQdijAZgMjvMw8ZOXv+IF19Ksgsr
-	 egFPXYyXPBGYWvudpZgU8z1RNJh2FIfJaRpt22QSllhSfKzsGx+/+msSk/icfKBGfB
-	 cNItnScmFfPbQ==
-Message-ID: <77c9f13e-0162-4e92-b0b8-531122ab0f5e@kernel.org>
-Date: Fri, 6 Dec 2024 01:56:45 +0000
+	s=arc-20240116; t=1733450317; c=relaxed/simple;
+	bh=Y9AiBMnxtpUG/TK1YBNEdULHbDh2U87JHQkF8IMPzwU=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=buD/Dru58NNIgbp3D0nWEHDBMQ6T04uj5BZKI2BGCAEU5mYtL4ylhArR+0hA8Uth9oG3euscfSDrelTviOWjP+2nVbxJotMUsQBOKuBHsyyzLKoGhbWW47+bO+9EbeuxbnJ2D3OnLj9T3hVya9whcoP2zzTD3e9xKY5Um3HrtEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=zKEoLoRx; arc=none smtp.client-ip=203.205.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1733450310;
+	bh=bB8WAB9G+piz6HTkybFdlzxxWQ5GS4zDBm/VeNYftMA=;
+	h=From:To:Cc:Subject:Date;
+	b=zKEoLoRxwm6ioHAuYpvddll7Cjv3zMs/CVEAeA3TU+8i66jPkkFxFZ6YSubmNvahO
+	 KRLhXpwX1WW3FqvzVxj085IEZb6V+eMJGXT5hZjfmmXY9c57YJytD/o2mMh/n8U50n
+	 s3NH/rjt9wLN7b56bprWbumyvyeiQFd/KxCOBTD4=
+Received: from NUC11-F41.. ([39.156.73.10])
+	by newxmesmtplogicsvrszc13-0.qq.com (NewEsmtp) with SMTP
+	id E9B21C71; Fri, 06 Dec 2024 09:58:27 +0800
+X-QQ-mid: xmsmtpt1733450307t9wnhl06z
+Message-ID: <tencent_44BC4B6295D557A6D10D444A032D219CAC07@qq.com>
+X-QQ-XMAILINFO: NsQAXnLInl5225mKSS2IeyEO1BfWeJ2zEKj+Zr1a5qzq76nwzOwRGVHN8reqTw
+	 tFe09T2oKHGrAoTwBBL7eh+vVbUQzHsv2BXyDDgtTqOt94POLBH7v0XFeRFaudbxCNdInrbfYCdL
+	 /aDNAVWq/N0daH+/fB82OunRJfddLkLkrAmxcbagE2nb69ccuezkir4MlogiBffeLU3AE6SW7dwx
+	 t3Kj66FGRvFbRs0Hayqnoxbeh4cyTdXZ/scC48UeSbfCfsasLIkPEbE32WbvpOvYSszdK5LKOjxs
+	 66xLICQxm3QjY2MtBJ4iFdUzWUN1TEFCzdWYYuUlOp723drOpbWcsvYLuy9hnGrOc8UWV/a0aDL+
+	 2dl3PQE36kjbUwNuz+yInwDeOodd4ril3q4TfzblnmVJ+hcNv1Yd4QTtzmuRJD0gpCw6c7VNSgnx
+	 qg+sh9++PBJn8DOPDS7WrUnMb18O7g2z0erumw5R/TGUO+syuutGYEAH1AfHwnkThrDNJ5Zf4gra
+	 q0+TcCWP9ccdNJaRBRHOHiBYQ8V2Feo8u7k7jx1UE4/iq7S9gEM0VywOu4NhH8SSl8d20TMlEwnq
+	 DJuDwD2QYdPoj4YmE6pEiIiyDNiv8FLLjk2N9HvCb/we333EG6pI5pun4MznCWkCv4FOk6Yp9bkN
+	 +Xs5SrM0i29+hbNZ6NKMFi0P+VBHKVd8XNCvBIbKXaReuXQmjQWsM/0U1RhtaCPv65kQaAB8C2RD
+	 zvD6gB3kWyxCcgT6kLayIC6e5O5Pn0exylzqSPsOD2o+a/g8lGhy8toDxLImQzuws4nvE3LqFnVf
+	 pu5ejZQGrN5LZsLr7onvu5V6lpmcQgpawDltodCMFr0yU2X2TP5d6C0McNErWp4YzCNerWbbZNUL
+	 8g+aO9G+L3giULkpWqmAe3KabdA2ixyZ07gX8iKLSuNdZBuAZCsoZELYsExQksRyrxbtUU8/1+d2
+	 eQrTZ9VIOUZx05H6ixUg==
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+From: Rong Tao <rtoax@foxmail.com>
+To: andrii.nakryiko@gmail.com,
+	qmo@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	rongtao@cestc.cn
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org (open list:BPF [TOOLING] (bpftool)),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next v4 0/2] libbpf: Fix bpftool gen object segfault
+Date: Fri,  6 Dec 2024 09:58:17 +0800
+X-OQ-MSGID: <cover.1733449395.git.rongtao@cestc.cn>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Quentin Monnet <qmo@kernel.org>
-Subject: Re: [PATCH bpf-next v3] bpftool: Fix gen object segfault
-To: Rong Tao <rtoax@foxmail.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, rongtao@cestc.cn,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <tencent_A7A870BF168D6A21BA193408D5645D5D920A@qq.com>
- <0b96aa24-13ca-4e0a-8e80-f2586fbe2b57@kernel.org>
- <CAEf4BzbLmXF9XB=fBvL7NLMoPmfD=DFFvuM8Fw5h6T7vfFXUFg@mail.gmail.com>
- <tencent_0F0D028440B2BE2E37547C5EFF467511FD09@qq.com>
-Content-Language: en-GB
-In-Reply-To: <tencent_0F0D028440B2BE2E37547C5EFF467511FD09@qq.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-2024-12-06 09:11 UTC+0800 ~ Rong Tao <rtoax@foxmail.com>
-> 
-> On 12/6/24 05:34, Andrii Nakryiko wrote:
->> On Thu, Dec 5, 2024 at 4:22 AM Quentin Monnet <qmo@kernel.org> wrote:
->>> On 05/12/2024 12:09, Rong Tao wrote:
->>>> From: Rong Tao <rongtao@cestc.cn>
->>>>
->>>> If the input file and output file are the same, the input file is
->>>> cleared
->>>> due to opening, resulting in a NULL pointer access by libbpf.
->>>>
->>>>      $ bpftool gen object prog.o prog.o
->>>>      libbpf: failed to get ELF header for prog.o: invalid `Elf' handle
->>>>      Segmentation fault
->>>>
->>>>      (gdb) bt
->>>>      #0  0x0000000000450285 in linker_append_elf_syms
->>>> (linker=0x4feda0, obj=0x7fffffffe100) at linker.c:1296
->>>>      #1  bpf_linker__add_file (linker=0x4feda0, filename=<optimized
->>>> out>, opts=<optimized out>) at linker.c:453
->>>>      #2  0x000000000040c235 in do_object ()
->>>>      #3  0x00000000004021d7 in main ()
->>>>      (gdb) frame 0
->>>>      #0  0x0000000000450285 in linker_append_elf_syms
->>>> (linker=0x4feda0, obj=0x7fffffffe100) at linker.c:1296
->>>>      1296              Elf64_Sym *sym = symtab->data->d_buf;
->>>>
->>>> Signed-off-by: Rong Tao <rongtao@cestc.cn>
->>> Tested-by: Quentin Monnet <qmo@kernel.org>
->>> Reviewed-by: Quentin Monnet <qmo@kernel.org>
->> Isn't this papering over a deeper underlying issue? Why do we get
->> SIGSEGV inside the linker at all instead of just erroring out?
->> Comparison based on file path isn't a reliable way to check if input
->> and output are both the same file, so this fixes the most obvious
->> case, but not the actual issue.
-> Thanks for your replay! The current scenario is similar to the following
-> code.
-> After a.txt is opened in read mode, it is opened in write mode again, which
-> causes the contents of a.txt file to be cleared, resulting in no data
-> being read,
-> 
-> 
->     fpr = fopen("a.txt", "r");
->     fpw = fopen("a.txt", "w");
-> 
->     /* fgets() will get nothing, It's not glibc's fault. */
->     while (fgets(buff, sizeof(buff), fpr))
->         printf("%s", buff);
-> 
->     fprintf(fpw, "....");
-> 
->     fclose(fpr);
->     fclose(fpw);
-> 
-> corresponding to the SEGV of bpftool. Perhaps we can add the following
-> warning
-> 
->     if (x == NULL) {
->         fprintf(stderr, "Maybe the file was opened for writing after
-> opened for read\n");
->         return -EINVAL;
->     }
-> 
-> Whether this warning can be added may depend on libelf's processing. I will
-> try to fix this SEGV in libbpf, hopefully it can be fixed.
+From: Rong Tao <rongtao@cestc.cn>
 
-Thank you Rong, I'm not sure I followed your explanation (the above is
-not bpftool code, is it?), but I think we just addressed the issue in
-libbpf with:
+When the target file is used as input and output at the same time, the
+input file will read a null value, resulting in a segmentation fault.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=e10500b69c3f3378f3dcfc8c2fe4cdb74fc844f5
+Add judgment conditions in bpftool and libbpf to prevent segmentation
+error.
 
-We can drop the patch with the check on the names (sorry!). As Andrii
-mentioned, it's not very reliable to compare filenames. It's true that
-users can truncate files if they pass the same input and output file,
-but then that's the case with many command-line tools if you don't use
-them properly.
+ChangeLog v2 -> v3:
+  - argc_cpy and argv_cpy need to be initialised _after_ the call to
+    GET_ARG()
 
-So, no action required. Feel free to test with the patch above, the
-segfault should not longer occur.
+ChangeLog v1 -> v2:
+  - Compare each output file.
 
-Thanks,
-Quentin
+v4: This patchset, double check and fix in libbpf.
+v3: https://lore.kernel.org/lkml/tencent_A7A870BF168D6A21BA193408D5645D5D920A@qq.com/
+v2: https://lore.kernel.org/lkml/tencent_F62A51AFF6A38188D70664421F5934974008@qq.com/
+v1: https://lore.kernel.org/lkml/tencent_410B8166C55CD2AB64BDEA8E92204619180A@qq.com/
+
+Rong Tao (2):
+  bpftool: Fix gen object segfault
+  libbpf: linker: Avoid using object file as both input and output
+
+ tools/bpf/bpftool/gen.c | 13 +++++++++++++
+ tools/lib/bpf/linker.c  |  5 +++++
+ 2 files changed, 18 insertions(+)
+
+-- 
+2.47.1
+
 
