@@ -1,156 +1,170 @@
-Return-Path: <bpf+bounces-46224-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46225-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A76D9E6319
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 02:13:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 481E29E637B
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 02:41:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E469918848A4
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 01:12:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A62B91655CD
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 01:41:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B926814A099;
-	Fri,  6 Dec 2024 01:12:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E4713C8F4;
+	Fri,  6 Dec 2024 01:40:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="xcuoTw9j"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nKWBgwvh"
 X-Original-To: bpf@vger.kernel.org
-Received: from out203-205-221-202.mail.qq.com (out203-205-221-202.mail.qq.com [203.205.221.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF8751411C8;
-	Fri,  6 Dec 2024 01:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6008576048
+	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 01:40:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733447521; cv=none; b=ucpmOar5w+s8eZoazNnChunnk0EimcSoT6/f9Im1P1jRepfgFbB0QepIiIILQlf8WlmZ6csRSZTzQkevPB5dw7bp5OdMmFQkSz+GiPR5J7eyOslyXw4BABvoraRl1MN0Xpn3dBX6D6QWbKQGHmFUaqECHlDY5iXLwCCTih82gHU=
+	t=1733449256; cv=none; b=nRCtYGj2QlYvDH4+sDsXo0u5coowxT826oTq0gBPt8A1VtlCAKAcit1AIh1zcGG7y9bXkKeKdPET/trweqkqFvAjeMmRQUAj3m0vz092npGBwIt7THcU1EYYxXzwFHpA/4QhyzDWuxh/UtuHBNCxwYSCDDyVSXsYcOv1lnoNCL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733447521; c=relaxed/simple;
-	bh=fcP4qZk6nabIDUkPnVvFVYsoocR+VsAXZVzU64BGtzA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iwG3f7sDuWDZJ7Ne5YjPQ0880qVyigZQT9NjqhqVbelgdGvyDnChO+LgOHNdh1SiOdskj5rNExq7Tp89ECLbLna6RhYeeGFDhNodaUm8l91VqgrN9BQ0yN3xSyZNrub4MwBKFc6vtcEn5fgeQgA+ZoItz1C2q1PnR6wFLL6OFH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=xcuoTw9j; arc=none smtp.client-ip=203.205.221.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1733447508;
-	bh=lGNVgTWKnAmXQ720+QkWvitJc7cq4QaoaY6WqsdA1FE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=xcuoTw9ja2W07qNhUSslBHOlxpqqlz6o5fabwn2pq+BqjRaaMYmZ4/5XeSVPedY94
-	 R9dpePAs/gfGq74e1Bk8S1lC8BSOPdSB9qJ3UoruwBO4upoS8kYtL4th2GLiesXHi9
-	 DncW5BIdw2LX2My1RKxXJhjvjP5NOp1utJ1IA2vM=
-Received: from [10.56.52.9] ([39.156.73.10])
-	by newxmesmtplogicsvrszb20-0.qq.com (NewEsmtp) with SMTP
-	id 2ED15C15; Fri, 06 Dec 2024 09:11:45 +0800
-X-QQ-mid: xmsmtpt1733447505tja5xslbz
-Message-ID: <tencent_0F0D028440B2BE2E37547C5EFF467511FD09@qq.com>
-X-QQ-XMAILINFO: MFdGPHhuqhNoenT7vtHyF/zEcnozbjhR9bTAu7UWjTAH1UAMPTz2cbuM1RB5cK
-	 tcnognY2NyXzEnm5R8yuRf75TXByZ25XvigXRihSDOqiH3j/C9KYa9KdKAb46foGyGK9HP+SXrvv
-	 j663ItAyC2Ii6IDwNLticMic531bFv1n55jt4xUoO71KnJcO7f36e/wBw4S/EQGe6auNlEgi3hGR
-	 NXq9J8u/F6SsE0XZsH/jT4fkGvKdwlwzLPhh46ZUQuWv7XVwqO8etirC5rE7SYwo9nJkm15gVx8M
-	 ApsWEbPnPQ5EFnZ5SB3Q4utzpi1PswLgB9rMoMp9gHTO422V3c9TnSz3CH4yR1FyNhsYAnb1D4+r
-	 ilYmF9mwNn03zkrIsghHkktANe3CacNcxJIE7CVcssfp0RwZUNPeEhIpuN36Ln3jdzR3XrXEbK86
-	 fskiTjjmX8HTVXBoOLf5fv3K222ChTilgoduqZSLr2tcQyyxTiEpoqEIJzqIiKHcKLQOUVmNFV2D
-	 E9KkKnIv551WgvS5QYFZgcQA5GPiFeKoHwcikdj8a34TtIjyKoWRg5HpH4kxjyR2KQRkk9A0JwL1
-	 nw845WRAFViL+JO7MnABRPmvQm7ZB2wPyRU4ZMA+oS/jGZ5MRmLCk0TF7zCmvexFcCXiyQzR2YpO
-	 Eoy6dTvggjhAgLup5InjzBphOy5SZrBIznilyS/H4qyidMoLRTb1ln8noFuSAljDXAQEuwDh+18N
-	 5L82NiG9WZjYkBPhJmEi/JuRgpFbUteKiJdZDyELF5pxB1W4MYK6rIk42GaTFdNx7AKDD6zhVTuz
-	 fC1XkLksri/ewjTtBCneuuLQqhfe2XCbwGIpVzJZFgIsZ6kgJF+DVQ7OfhMBdwXD4mbBPedM4Ccz
-	 ML65yhRhSbWot09l7zIJPNvxc8Ep7oW6cCxsSFYlsYQ1whsWx6kss/hkcmfMY95m+fjAIdLebOg3
-	 ehmzONOYz5OymdtMHCNQ9YoMSgPTS5aUE8i+FpLfpOmYmrWJOdSg==
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-X-OQ-MSGID: <f3b76844-f23d-4c78-ac76-528fb841df6b@foxmail.com>
-Date: Fri, 6 Dec 2024 09:11:44 +0800
+	s=arc-20240116; t=1733449256; c=relaxed/simple;
+	bh=9RSQKui+PEJIoP2yPcwXFD6HDVIiSGfhrNG1hUL1bUQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SNPo2eJnaXu96pVg1veQSlZiMBncLI+R4IKt19ZWaZNoQXAreVEddRsErv60vTLRSxvKJVDYwXO9hTm0sJUOB+S6fDzwu3nxCiak/ExBBK4Pxvf08aVrlVfLJ2+CA5Rd74VMrZgfJ4npgedyUlQeyJNJRezfBa2IstFSXQgDFhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nKWBgwvh; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3862b40a6e0so161333f8f.0
+        for <bpf@vger.kernel.org>; Thu, 05 Dec 2024 17:40:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733449252; x=1734054052; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cSYGXlTsKKdQHk1Dayk9GwQPi+OMsAHKuztQbCJ+Ym8=;
+        b=nKWBgwvhB84w2VqiiYAQzcUq6xvF2PgWrUvlxiH1CAQVi4TZkgruMpJtYybkDtw5Io
+         6nfnCgVgbALYxKy7g69x7V3gAKMbHAsF2lDGes0UncRhHZGbLU06z2F5zwQU+ZExmrcN
+         Smjc8CXQddYXK4sbvs8g4ldWL7F1x8dexmCDT/ETXiNILB+4IsmlRdYxdbXJAZ3ukG2b
+         XVAkWkikn1PKQTAMyVgDPezDRIYICWow9AJkcbPC9AqljUukubh5KZR154HQrTC5LQI5
+         XroSNJj7VyrACFMzl3REengy+lA0XDH69Kkr2HUokqep5kRTil+6x/MTlS5AABwuNTGB
+         APbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733449252; x=1734054052;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cSYGXlTsKKdQHk1Dayk9GwQPi+OMsAHKuztQbCJ+Ym8=;
+        b=QuW84bKylli37/P+jpFpbKUnznpJoS9BoBo1ECqIhWGhFuBlerPYqAh41UCaWRsnLC
+         DoH2QjyVCqglAyb3vr8wR+wUvffOwh9Ld3ePjr1ZdO21VRMTC1m3e03quB7GwPWOkErd
+         TLKsaSKnDh64AXOJPK7ljHc+Lk6NPpwGuwzAC1Km5GgL85oXsfRwEKOfbKfE0bOjw9Uo
+         KV8AOz7GvPzD4H5epv8UDoK/M6vm4srcKS66QxhRboeaOgvE2UvgvWhXwlFCUdckiSGC
+         hax46zpkoBa2Ai3rxQIhH3UkHMgj1ohE5zZAPC+TYdkvnYZpQrmudVMzPENgcjt+EJqD
+         siAw==
+X-Forwarded-Encrypted: i=1; AJvYcCXS11CCG5ZkbuZmM5wJHVO4vilOvNIbxiq1d0xmSjbZ2OsRrpvXh4YaJ7HBzxkFHo0F7GI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwTyVLnqEgFi7ORGfsmKlxQb8RpbYsXmFmZIS8tVMGfEcS5oFvE
+	tVEaTrMCXpVYuo+Sqg+OjQvlTYg2/W424nnbwKweLqptSTGXtqpkQDIWxM8UJirmY2b/JGqmISu
+	HAcnHValR6IGQxGsY13DJ/jtfCPo=
+X-Gm-Gg: ASbGncuIC1t1AHMMDGzVMPlArjqt7vH2AOiy27iyYUG2oHBlTJWwowhjZ5tjWDlHKew
+	6j8WgUyT6nVi4avDSFfd2YhoWHL7fexwg6jpLezBauIA76PU=
+X-Google-Smtp-Source: AGHT+IG3KZdBxbPiJLR3rUkfTSJs+UvU+dTKtxInE8gAmqiT0uo9EskI9cEYCEGCX8KeNZ3qkAwDwpCDh0eeFuFRtDU=
+X-Received: by 2002:a05:6000:184d:b0:385:f47b:1501 with SMTP id
+ ffacd0b85a97d-3862b379eacmr733295f8f.32.1733449252336; Thu, 05 Dec 2024
+ 17:40:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3] bpftool: Fix gen object segfault
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Quentin Monnet <qmo@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, rongtao@cestc.cn,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>,
- "open list:BPF [TOOLING] (bpftool)" <bpf@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <tencent_A7A870BF168D6A21BA193408D5645D5D920A@qq.com>
- <0b96aa24-13ca-4e0a-8e80-f2586fbe2b57@kernel.org>
- <CAEf4BzbLmXF9XB=fBvL7NLMoPmfD=DFFvuM8Fw5h6T7vfFXUFg@mail.gmail.com>
-Content-Language: en-US
-From: Rong Tao <rtoax@foxmail.com>
-In-Reply-To: <CAEf4BzbLmXF9XB=fBvL7NLMoPmfD=DFFvuM8Fw5h6T7vfFXUFg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20241127004641.1118269-1-houtao@huaweicloud.com>
+ <20241127004641.1118269-8-houtao@huaweicloud.com> <87frnai67q.fsf@toke.dk>
+ <CAADnVQLD+m_L-K0GiFsZ3SO94o3vvdi6dT3cWM=HPuTQ2_AUAQ@mail.gmail.com>
+ <fede4cf9-60df-ce3a-9290-18d371622d3b@huaweicloud.com> <CAADnVQLab0+JfMUy9RzU27hNsFfON1eu7Ta3VvzBAQp9R1m55w@mail.gmail.com>
+ <1cddf09f-5da6-63e6-7317-33907e196767@huaweicloud.com>
+In-Reply-To: <1cddf09f-5da6-63e6-7317-33907e196767@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 5 Dec 2024 17:40:41 -0800
+Message-ID: <CAADnVQJcemLLK5MQgT6gtChqL6Hocuz+ez_QGedNnw0nBvVZKQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 7/9] bpf: Use raw_spinlock_t for LPM trie
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, 
+	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
+	Hou Tao <houtao1@huawei.com>, Xu Kuohai <xukuohai@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Dec 5, 2024 at 4:48=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
+te:
+>
+> Hi,
+>
+> On 12/6/2024 1:06 AM, Alexei Starovoitov wrote:
+> > On Thu, Dec 5, 2024 at 12:53=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
+> wrote:
+> >> Hi,
+> >>
+> >> On 12/3/2024 9:42 AM, Alexei Starovoitov wrote:
+> >>> On Fri, Nov 29, 2024 at 4:18=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgen=
+sen <toke@redhat.com> wrote:
+> >>>> Hou Tao <houtao@huaweicloud.com> writes:
+> >>>>
+> >>>>> From: Hou Tao <houtao1@huawei.com>
+> >>>>>
+> >>>>> After switching from kmalloc() to the bpf memory allocator, there w=
+ill be
+> >>>>> no blocking operation during the update of LPM trie. Therefore, cha=
+nge
+> >>>>> trie->lock from spinlock_t to raw_spinlock_t to make LPM trie usabl=
+e in
+> >>>>> atomic context, even on RT kernels.
+> >>>>>
+> >>>>> The max value of prefixlen is 2048. Therefore, update or deletion
+> >>>>> operations will find the target after at most 2048 comparisons.
+> >>>>> Constructing a test case which updates an element after 2048 compar=
+isons
+> >>>>> under a 8 CPU VM, and the average time and the maximal time for suc=
+h
+> >>>>> update operation is about 210us and 900us.
+> >>>> That is... quite a long time? I'm not sure we have any guidance on w=
+hat
+> >>>> the maximum acceptable time is (perhaps the RT folks can weigh in
+> >>>> here?), but stalling for almost a millisecond seems long.
+> >>>>
+> >>>> Especially doing this unconditionally seems a bit risky; this means =
+that
+> >>>> even a networking program using the lpm map in the data path can sta=
+ll
+> >>>> the system for that long, even if it would have been perfectly happy=
+ to
+> >>>> be preempted.
+> >>> I don't share this concern.
+> >>> 2048 comparisons is an extreme case.
+> >>> I'm sure there are a million other ways to stall bpf prog for that lo=
+ng.
+> >> 2048 is indeed an extreme case. I would do some test to check how much
+> >> time is used for the normal cases with prefixlen=3D32 or prefixlen=3D1=
+28.
+> > Before you do that please respin with comments addressed, so we can
+> > land the fixes asap.
+>
+> OK. Original I thought there was no need for respin. Before posting the
+> v3, I want to confirm the comments which need to be addressed in the new
+> revision:
+>
+> 1) [PATCH bpf v2 6/9] bpf: Switch to bpf mem allocator for LPM trie
+> Move  bpf_mem_cache_free_rcu outside of the locked scope (From Alexei)
+> Move the first lpm_trie_node_alloc() outside of the locked scope (There
+> will be no refill under irq disabled region)
+>
+> 2)  [PATCH bpf v2 2/9] bpf: Remove unnecessary kfree(im_node) in
+> lpm_trie_update_elem
+> Remove the NULL init of im_node (From Daniel)
 
-On 12/6/24 05:34, Andrii Nakryiko wrote:
-> On Thu, Dec 5, 2024 at 4:22 AM Quentin Monnet <qmo@kernel.org> wrote:
->> On 05/12/2024 12:09, Rong Tao wrote:
->>> From: Rong Tao <rongtao@cestc.cn>
->>>
->>> If the input file and output file are the same, the input file is cleared
->>> due to opening, resulting in a NULL pointer access by libbpf.
->>>
->>>      $ bpftool gen object prog.o prog.o
->>>      libbpf: failed to get ELF header for prog.o: invalid `Elf' handle
->>>      Segmentation fault
->>>
->>>      (gdb) bt
->>>      #0  0x0000000000450285 in linker_append_elf_syms (linker=0x4feda0, obj=0x7fffffffe100) at linker.c:1296
->>>      #1  bpf_linker__add_file (linker=0x4feda0, filename=<optimized out>, opts=<optimized out>) at linker.c:453
->>>      #2  0x000000000040c235 in do_object ()
->>>      #3  0x00000000004021d7 in main ()
->>>      (gdb) frame 0
->>>      #0  0x0000000000450285 in linker_append_elf_syms (linker=0x4feda0, obj=0x7fffffffe100) at linker.c:1296
->>>      1296              Elf64_Sym *sym = symtab->data->d_buf;
->>>
->>> Signed-off-by: Rong Tao <rongtao@cestc.cn>
->> Tested-by: Quentin Monnet <qmo@kernel.org>
->> Reviewed-by: Quentin Monnet <qmo@kernel.org>
-> Isn't this papering over a deeper underlying issue? Why do we get
-> SIGSEGV inside the linker at all instead of just erroring out?
-> Comparison based on file path isn't a reliable way to check if input
-> and output are both the same file, so this fixes the most obvious
-> case, but not the actual issue.
-Thanks for your replay! The current scenario is similar to the following 
-code.
-After a.txt is opened in read mode, it is opened in write mode again, which
-causes the contents of a.txt file to be cleared, resulting in no data 
-being read,
-
-
-     fpr = fopen("a.txt", "r");
-     fpw = fopen("a.txt", "w");
-
-     /* fgets() will get nothing, It's not glibc's fault. */
-     while (fgets(buff, sizeof(buff), fpr))
-         printf("%s", buff);
-
-     fprintf(fpw, "....");
-
-     fclose(fpr);
-     fclose(fpw);
-
-corresponding to the SEGV of bpftool. Perhaps we can add the following 
-warning
-
-     if (x == NULL) {
-         fprintf(stderr, "Maybe the file was opened for writing after 
-opened for read\n");
-         return -EINVAL;
-     }
-
-Whether this warning can be added may depend on libelf's processing. I will
-try to fix this SEGV in libbpf, hopefully it can be fixed.
-
-Thanks,
-Rong Tao
->> Thank you!
-
+Looks about right. That was 9 days ago. I cannot keep ctx for so long.
+Re-read the threads just in case. If you miss something it's not a big
+deal either.
 
