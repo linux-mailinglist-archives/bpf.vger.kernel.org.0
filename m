@@ -1,78 +1,48 @@
-Return-Path: <bpf+bounces-46252-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46253-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 496D69E6B21
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 10:54:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95BBF9E6C2B
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 11:29:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2337116AC24
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 09:54:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55B311885EE2
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 10:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D03731F472F;
-	Fri,  6 Dec 2024 09:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C8F1FF7B0;
+	Fri,  6 Dec 2024 10:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ay6IaAYV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QgNKkgPN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647E41F03F6
-	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 09:54:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD5E1FCF6C;
+	Fri,  6 Dec 2024 10:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733478873; cv=none; b=UbI0xWBFra6fLLzdBYxFZHD9irBlspbWOOAeGloRf78MgZU5o/iX75jxRP7zbZZ+u/TIRix6v0ppFa6AFi+HIW0xRWg2RvuzItfx9t6GnE0hGVBvpgKAlq46eueDDKvksUEs3EH9OenAOA/85OVFMyVJBUqsV0FjkJpIY6QosOs=
+	t=1733480608; cv=none; b=dAJsWHhpBuARxxAu0aeSB6QthUQB0GChL4RTELWQgoGZLwNU7avb/OIWCMXjiZ5Le1ulIAqII/o17j4dFYhKFPQQw8AyGt/poGbL3merZLd3Ijn8YYG4FsmUSEMkrOPtbUJbgwOqNVFrXXm+BPZu2Oq6E+8737xEISbViUJ2+HI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733478873; c=relaxed/simple;
-	bh=AYCOp8q3qFsOzansaenIvZft+I/IVvrPBF29nRSP6KI=;
+	s=arc-20240116; t=1733480608; c=relaxed/simple;
+	bh=F/jXH7kKA5jvf6NRT4P2cfIO7UZfrKllBmaBbhxhwis=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=abP8QhjbKYvbBSPm1pz6sDc3IrrSUoKaV9OFJo3P0+2XbkB/OssMYWiwNJCKwBZvzLhZewQ3HZsbqbmaJkR2t2Z/AGBf3xZGzS4d2MMptgd3SjdsdHBzkvnAvP0eJGCkCwAppBjY4pao2DycjR5T+Ch9R68Msdm23uoxKzCu6ZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ay6IaAYV; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5d3bbb0f09dso932822a12.2
-        for <bpf@vger.kernel.org>; Fri, 06 Dec 2024 01:54:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733478870; x=1734083670; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VkJCkLiqEwvdKuW/WlBJzLxtlOAiRycTFIk7A5r+Y4U=;
-        b=ay6IaAYVdvIxmr0jtlO/QkWOvU5lZeuwWyxotvNPd8+JePo3i6QiSllCPrIJL3Y9EW
-         h6joB+/9rMVRGNBFX9PNIM76WM0cG1ntG8tcZI4h1H55XZHwu7Um+m6ZJsMp+I9u8E4k
-         ALUo65lRs5l4IUMBU16JBzQEcYpBxZ4Jv58lSkoG2cojgYA6latrQY1bg7iuwhvJ1Q+d
-         QnZB6j91JMEQXtmPjIBGZpLj+PAGLXO7bVvaI6BQB0lmcpqR/cO151X8raDxPMIV9rKs
-         +cpBWUx6AGTEFYE6Rjsgx8OYG0kjN0I1c3QlFScR2AiC6eB5jga0uipdJ8T1IWyGL8JC
-         +C5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733478870; x=1734083670;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VkJCkLiqEwvdKuW/WlBJzLxtlOAiRycTFIk7A5r+Y4U=;
-        b=j5xZXV5WJ8vIvFl6fBEFW3yf+K1FwSn5VfTOzJjdV4n9P4tJUc5YxhAQmsM8zDtSpY
-         RLZu4y3o7wgtJmU0rlBJdgaBHUUtzrA8V2XLp8ullhwOGBc2lepzFSDM3/tBea8HwRE5
-         rBb7PvpN32JB+OzF5uR7omQKEdSq7zkuGp5QWlys1P6u61Lu/eBS93SFr/tQq5faUtsn
-         PKivNfjdGQupgEguOqWPr7yIWVW/xb8NDmFoE7OExG/iz5WyNuIaO4zRfg+YpXUdvkfg
-         zyaE8ZNSIUklghIQngheOfb6nMu6ttpDcfE+uObdKTU2zkeNiu9ZCPa7IyhNMhRdA3T5
-         JeLw==
-X-Gm-Message-State: AOJu0YyUM+pgahFPyu1OCMsOqePHJ3f+tPtU0pjMupM2rMXPO0R/bR8C
-	uwaeDJcgqlO4CxRP0vTz31JGIohoYC+pKUK2o8xvFr/AJ1st+DNk
-X-Gm-Gg: ASbGnct5tlrjDuOYFDpkGUJmVJlvfignAqxft/28VPiF+QfJfWQhmVW4Uk7IInjzsVn
-	u1drZKtONtMpGtrmszuJDsgEm/eCjGbh+cYekrmTO2n34CcPcnz5uIY+yuB5MMXFt5mgSbuk+9h
-	orFyEKb53ydjtq1kHuSlFGWBg9slHqVUvR1hbnQ+7SCqRDJmtkbCKJ92430Tv+KJmLnwM4y3j1J
-	QHpKtCpF1c0woxTrInlpfw5BtdiEhjmT26nFl90HPTTN7F2eat1zvUodFiNqReDhcWultzZVW3i
-	HQuVgJQD/fjbubr4tRoUfk3piVMrC3Jt7Q==
-X-Google-Smtp-Source: AGHT+IFvXBx3i4IO2P20TgnCjFEYa33n7KI1AWRhfQAXSUDUxGht+SgnKGFyFxHw75wf4gE03HE8nw==
-X-Received: by 2002:a05:6402:4307:b0:5d2:723c:a568 with SMTP id 4fb4d7f45d1cf-5d3be67ce20mr1591467a12.10.1733478869536;
-        Fri, 06 Dec 2024 01:54:29 -0800 (PST)
-Received: from ?IPV6:2a02:8109:a302:ae00:6eb3:da82:a6be:6559? ([2a02:8109:a302:ae00:6eb3:da82:a6be:6559])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa62608f57fsm215179766b.146.2024.12.06.01.54.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Dec 2024 01:54:28 -0800 (PST)
-Message-ID: <ddab9633-3a62-4cf6-84fc-fcdec9b9d64b@gmail.com>
-Date: Fri, 6 Dec 2024 09:54:24 +0000
+	 In-Reply-To:Content-Type; b=irsj+S2XrnImN8k6HuF3wuxD/7JP4vlB/F2W5Lk8p2oSG8nwYmFRagbKuzTkjexFgtDgTs5yYiZW2AtXV15LUvJEG8lfHebjPP3iA/0kjg9e+R7rfesNGhmvME5M4nvImFRLzUnej7kj4z2AyPGZegvqYzmtpr/7D3jr+ZKEWl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QgNKkgPN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 313C7C4CEDE;
+	Fri,  6 Dec 2024 10:23:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733480607;
+	bh=F/jXH7kKA5jvf6NRT4P2cfIO7UZfrKllBmaBbhxhwis=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=QgNKkgPNyOSBMvthDEYv9PaeVu7w20++VFlGSN5i7eJg+vLvD5pq5C1rEhinUBBPJ
+	 pLZgb/nHZHKty0MAoQjYeRM+HG7zilGMjR9Yzn7yiNY3IAnTseCuoQKxd8G9nziozY
+	 LPIMU6EH0eOW80lDIzQ7f3ENovHWzdTMiz3k8U8faUpizYBg2WUEKQIXuRgLuVYDhs
+	 o/Y0qf2HMTLetAuHNyiPpsOcJJsk1Qi4oJgXJuDdlv+4+Bj7iykrjwAxd7Hn9kBZko
+	 2TLbHBDqMpdNGfXT47k4UF4eV4kVeQ3A2iELEqTpU+1YbrlBACrQ96imbF4ts9/N2o
+	 7XIfJEqFW/90w==
+Message-ID: <e61b6151-43fd-4282-8440-dfee2aad3c1c@kernel.org>
+Date: Fri, 6 Dec 2024 10:23:22 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -80,223 +50,137 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] selftests/bpf: add more stats into veristat
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
- Mykyta Yatsenko <yatsenko@meta.com>
-References: <20241205193404.629861-1-mykyta.yatsenko5@gmail.com>
- <CAEf4BzbV-dt7vEmQ3yCdiVw5qBWE1WekY_Stoo+vf_3QUXOOgw@mail.gmail.com>
-Content-Language: en-US
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-In-Reply-To: <CAEf4BzbV-dt7vEmQ3yCdiVw5qBWE1WekY_Stoo+vf_3QUXOOgw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH bpf-next v3] bpftool: Fix gen object segfault
+To: Rong Tao <rtoax@foxmail.com>, Andrii Nakryiko
+ <andrii.nakryiko@gmail.com>, alexei.starovoitov@gmail.com
+Cc: ast@kernel.org, daniel@iogearbox.net, rongtao@cestc.cn,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <tencent_A7A870BF168D6A21BA193408D5645D5D920A@qq.com>
+ <0b96aa24-13ca-4e0a-8e80-f2586fbe2b57@kernel.org>
+ <CAEf4BzbLmXF9XB=fBvL7NLMoPmfD=DFFvuM8Fw5h6T7vfFXUFg@mail.gmail.com>
+ <tencent_0F0D028440B2BE2E37547C5EFF467511FD09@qq.com>
+ <77c9f13e-0162-4e92-b0b8-531122ab0f5e@kernel.org>
+ <tencent_2AC9A80622AF8180D05996E4E58A4AE6EB06@qq.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <tencent_2AC9A80622AF8180D05996E4E58A4AE6EB06@qq.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 05/12/2024 23:50, Andrii Nakryiko wrote:
-> On Thu, Dec 5, 2024 at 11:34 AM Mykyta Yatsenko
-> <mykyta.yatsenko5@gmail.com> wrote:
->> From: Mykyta Yatsenko <yatsenko@meta.com>
+2024-12-06 10:22 UTC+0800 ~ Rong Tao <rtoax@foxmail.com>
+> 
+> On 12/6/24 09:56, Quentin Monnet wrote:
+>> 2024-12-06 09:11 UTC+0800 ~ Rong Tao <rtoax@foxmail.com>
+>>> On 12/6/24 05:34, Andrii Nakryiko wrote:
+>>>> On Thu, Dec 5, 2024 at 4:22 AM Quentin Monnet <qmo@kernel.org> wrote:
+>>>>> On 05/12/2024 12:09, Rong Tao wrote:
+>>>>>> From: Rong Tao <rongtao@cestc.cn>
+>>>>>>
+>>>>>> If the input file and output file are the same, the input file is
+>>>>>> cleared
+>>>>>> due to opening, resulting in a NULL pointer access by libbpf.
+>>>>>>
+>>>>>>       $ bpftool gen object prog.o prog.o
+>>>>>>       libbpf: failed to get ELF header for prog.o: invalid `Elf'
+>>>>>> handle
+>>>>>>       Segmentation fault
+>>>>>>
+>>>>>>       (gdb) bt
+>>>>>>       #0  0x0000000000450285 in linker_append_elf_syms
+>>>>>> (linker=0x4feda0, obj=0x7fffffffe100) at linker.c:1296
+>>>>>>       #1  bpf_linker__add_file (linker=0x4feda0, filename=<optimized
+>>>>>> out>, opts=<optimized out>) at linker.c:453
+>>>>>>       #2  0x000000000040c235 in do_object ()
+>>>>>>       #3  0x00000000004021d7 in main ()
+>>>>>>       (gdb) frame 0
+>>>>>>       #0  0x0000000000450285 in linker_append_elf_syms
+>>>>>> (linker=0x4feda0, obj=0x7fffffffe100) at linker.c:1296
+>>>>>>       1296              Elf64_Sym *sym = symtab->data->d_buf;
+>>>>>>
+>>>>>> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+>>>>> Tested-by: Quentin Monnet <qmo@kernel.org>
+>>>>> Reviewed-by: Quentin Monnet <qmo@kernel.org>
+>>>> Isn't this papering over a deeper underlying issue? Why do we get
+>>>> SIGSEGV inside the linker at all instead of just erroring out?
+>>>> Comparison based on file path isn't a reliable way to check if input
+>>>> and output are both the same file, so this fixes the most obvious
+>>>> case, but not the actual issue.
+>>> Thanks for your replay! The current scenario is similar to the following
+>>> code.
+>>> After a.txt is opened in read mode, it is opened in write mode again,
+>>> which
+>>> causes the contents of a.txt file to be cleared, resulting in no data
+>>> being read,
+>>>
+>>>
+>>>      fpr = fopen("a.txt", "r");
+>>>      fpw = fopen("a.txt", "w");
+>>>
+>>>      /* fgets() will get nothing, It's not glibc's fault. */
+>>>      while (fgets(buff, sizeof(buff), fpr))
+>>>          printf("%s", buff);
+>>>
+>>>      fprintf(fpw, "....");
+>>>
+>>>      fclose(fpr);
+>>>      fclose(fpw);
+>>>
+>>> corresponding to the SEGV of bpftool. Perhaps we can add the following
+>>> warning
+>>>
+>>>      if (x == NULL) {
+>>>          fprintf(stderr, "Maybe the file was opened for writing after
+>>> opened for read\n");
+>>>          return -EINVAL;
+>>>      }
+>>>
+>>> Whether this warning can be added may depend on libelf's processing.
+>>> I will
+>>> try to fix this SEGV in libbpf, hopefully it can be fixed.
+>> Thank you Rong, I'm not sure I followed your explanation (the above is
+>> not bpftool code, is it?), but I think we just addressed the issue in
+>> libbpf with:
 >>
->> Extend veristat to collect and print more stats, namely:
->> - program size in instructions
->> - jited program size
->> - program type
->> - attach type
->> - stack depth
->>
->> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
->> ---
->>   tools/testing/selftests/bpf/veristat.c | 51 +++++++++++++++++++++++---
->>   1 file changed, 46 insertions(+), 5 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
->> index e12ef953fba8..0d7fb00175e8 100644
->> --- a/tools/testing/selftests/bpf/veristat.c
->> +++ b/tools/testing/selftests/bpf/veristat.c
->> @@ -38,8 +38,14 @@ enum stat_id {
->>          FILE_NAME,
->>          PROG_NAME,
->>
->> +       SIZE,
->> +       JITED_SIZE,
->> +       STACK,
->> +       PROG_TYPE,
->> +       ATTACH_TYPE,
->> +
->>          ALL_STATS_CNT,
->> -       NUM_STATS_CNT = FILE_NAME - VERDICT,
->> +       NUM_STATS_CNT = ATTACH_TYPE - VERDICT + 1,
-> this doesn't sound right, because PROG_NAME isn't a number statistics
-I did not realize NUM_STATS_CNT means count of number statistics, now 
-this makes sense, thanks.
->>   };
->>
->>   /* In comparison mode each stat can specify up to four different values:
->> @@ -640,19 +646,22 @@ static int append_filter_file(const char *path)
->>   }
->>
->>   static const struct stat_specs default_output_spec = {
->> -       .spec_cnt = 7,
->> +       .spec_cnt = 12,
->>          .ids = {
->>                  FILE_NAME, PROG_NAME, VERDICT, DURATION,
->> -               TOTAL_INSNS, TOTAL_STATES, PEAK_STATES,
->> +               TOTAL_INSNS, TOTAL_STATES, PEAK_STATES, SIZE,
->> +               JITED_SIZE, PROG_TYPE, ATTACH_TYPE, STACK,
-> I think SIZE or JITED_SIZE might be good candidates for default view,
-> but not all of the above. I think we can also drop PEAK_STATES from
-> default, btw.
->
->>          },
->>   };
->>
->>   static const struct stat_specs default_csv_output_spec = {
->> -       .spec_cnt = 9,
->> +       .spec_cnt = 14,
->>          .ids = {
->>                  FILE_NAME, PROG_NAME, VERDICT, DURATION,
->>                  TOTAL_INSNS, TOTAL_STATES, PEAK_STATES,
->>                  MAX_STATES_PER_INSN, MARK_READ_MAX_LEN,
->> +               SIZE, JITED_SIZE, PROG_TYPE, ATTACH_TYPE,
->> +               STACK,
-> this is fine, we want everything in CSV, yep
->
->>          },
->>   };
->>
->> @@ -688,6 +697,11 @@ static struct stat_def {
->>          [PEAK_STATES] = { "Peak states", {"peak_states"}, },
->>          [MAX_STATES_PER_INSN] = { "Max states per insn", {"max_states_per_insn"}, },
->>          [MARK_READ_MAX_LEN] = { "Max mark read length", {"max_mark_read_len", "mark_read"}, },
->> +       [SIZE] = { "Prog size", {"prog_size", "size"}, },
-> drop "size" alias, it's too ambiguous?
->
->> +       [JITED_SIZE] = { "Jited size", {"jited_size"}, },
-> this probably should be prog_size_jited or something like that (I
-> know, verbose, but unambiguous)
->
->> +       [STACK] = {"Stack depth", {"stack_depth", "stack"}, },
->> +       [PROG_TYPE] = { "Program type", {"program_type", "prog_type"}, },
-> let's drop "program_type", verbose
->
->> +       [ATTACH_TYPE] = { "Attach type", {"attach_type", }, },
->>   };
->>
->>   static bool parse_stat_id_var(const char *name, size_t len, int *id,
->> @@ -853,13 +867,16 @@ static int parse_verif_log(char * const buf, size_t buf_sz, struct verif_stats *
->>
->>                  if (1 == sscanf(cur, "verification time %ld usec\n", &s->stats[DURATION]))
->>                          continue;
->> -               if (6 == sscanf(cur, "processed %ld insns (limit %*d) max_states_per_insn %ld total_states %ld peak_states %ld mark_read %ld",
->> +               if (5 == sscanf(cur, "processed %ld insns (limit %*d) max_states_per_insn %ld total_states %ld peak_states %ld mark_read %ld",
-> is this a preexisting bug? why we didn't catch it before?
-Nothing is broken because of this, sscanf sets all 5 variables either 
-way. Currently we continue ongoing iteration of the loop, instead of jumping
-to the next immediately. We can drop these checks at all, it's not going 
-to change correctness of this code.
->>                                  &s->stats[TOTAL_INSNS],
->>                                  &s->stats[MAX_STATES_PER_INSN],
->>                                  &s->stats[TOTAL_STATES],
->>                                  &s->stats[PEAK_STATES],
->>                                  &s->stats[MARK_READ_MAX_LEN]))
->>                          continue;
->> +
->> +               if (1 == sscanf(cur, "stack depth %ld", &s->stats[STACK]))
-> heh, not so simple, actually. stack depth is actually a list of stack
-> sizes for main program and each subprogram. Try
->
-> sudo ./veristat test_subprogs.bpf.o -v
->
-> stack depth 8+8+0+0+8+0
->
-> so we have to make some choices here, actually... we either parse that
-> and add up, and/or we parse all that and associate it with individual
-> subprograms.
->
-> I think we can start with the former, but the latter is actually
-> useful and quite tricky for humans to figure out because that order
-> depends on libbpf-controlled order of subprograms (which veristat can
-> get from btf_ext, I believe). Not sure if we need/want to record
-> by-subprog breakdown into CSV, but it would be useful to have a more
-> detailed breakdown by subprog in some verbose mode. Let's think about
-> that.
->
->> +                       continue;
->>          }
->>
->>          return 0;
->> @@ -1146,8 +1163,11 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
->>          char *buf;
->>          int buf_sz, log_level;
->>          struct verif_stats *stats;
->> +       struct bpf_prog_info info = {};
-> this should be initialized with memset(0)
->
->> +       __u32 info_len = sizeof(info);
->>          int err = 0;
->>          void *tmp;
->> +       int fd;
->>
->>          if (!should_process_file_prog(base_filename, bpf_program__name(prog))) {
->>                  env.progs_skipped++;
->> @@ -1196,6 +1216,13 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
->>          stats->file_name = strdup(base_filename);
->>          stats->prog_name = strdup(bpf_program__name(prog));
->>          stats->stats[VERDICT] = err == 0; /* 1 - success, 0 - failure */
->> +       stats->stats[SIZE] = bpf_program__insn_cnt(prog);
->> +       stats->stats[PROG_TYPE] = bpf_program__type(prog);
->> +       stats->stats[ATTACH_TYPE] = bpf_program__expected_attach_type(prog);
->> +       fd = bpf_program__fd(prog);
->> +       if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) == 0)
->> +               stats->stats[JITED_SIZE] = info.jited_prog_len;
->> +
-> please check that this is total length including all the subprogs
->
->>          parse_verif_log(buf, buf_sz, stats);
->>
->>          if (env.verbose) {
->> @@ -1309,6 +1336,11 @@ static int cmp_stat(const struct verif_stats *s1, const struct verif_stats *s2,
->>          case PROG_NAME:
->>                  cmp = strcmp(s1->prog_name, s2->prog_name);
->>                  break;
->> +       case ATTACH_TYPE:
->> +       case PROG_TYPE:
->> +       case SIZE:
->> +       case JITED_SIZE:
->> +       case STACK:
->>          case VERDICT:
->>          case DURATION:
->>          case TOTAL_INSNS:
->> @@ -1523,12 +1555,21 @@ static void prepare_value(const struct verif_stats *s, enum stat_id id,
->>                  else
->>                          *str = s->stats[VERDICT] ? "success" : "failure";
->>                  break;
->> +       case ATTACH_TYPE:
->> +               *str = s ? libbpf_bpf_attach_type_str(s->stats[ATTACH_TYPE]) ? : "N/A" : "N/A";
->> +               break;
->> +       case PROG_TYPE:
->> +               *str = s ? libbpf_bpf_prog_type_str(s->stats[PROG_TYPE]) ? : "N/A" : "N/A";
-> let's not have x ? y ? z pattern, please do explicit outer if like we
-> do for VERDICT
->
-> pw-bot: cr
->
->> +               break;
->>          case DURATION:
->>          case TOTAL_INSNS:
->>          case TOTAL_STATES:
->>          case PEAK_STATES:
->>          case MAX_STATES_PER_INSN:
->>          case MARK_READ_MAX_LEN:
->> +       case STACK:
->> +       case SIZE:
->> +       case JITED_SIZE:
->>                  *val = s ? s->stats[id] : 0;
->>                  break;
->>          default:
->> --
->> 2.47.1
->>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/
+>> commit/?id=e10500b69c3f3378f3dcfc8c2fe4cdb74fc844f5
+> Thanks for this, i just try this patch, there is still one problem as
+> follows:
+> 
+>    $ cd tools/bpf/bpftool
+>    $ make -j8
+>    $ ls -l prog.o
+>    -rw-r--r--. 1 rongtao rongtao 78408 Dec  6 10:18 prog.o
+>    $ ./bpftool gen object prog.o prog.o
+>    libbpf: failed to get ELF header for prog.o: invalid `Elf' handle
+>    Error: failed to link 'prog.o': Invalid argument (22)
+>    $ ls -l prog.o
+>    -rw-r--r--. 1 rongtao rongtao 0 Dec  6 10:18 prog.o
+> 
+> The input file is cleared (size=0), which is not what the user expected.
 
+
+And what would the user expect in this case, exactly?
+
+	$ bpftool gen help
+	Usage: bpftool gen object OUTPUT_FILE INPUT_FILE [INPUT_FILE...]
+
+Bpftool clearly states that the first argument is an _output_ file. So
+yes, if an existing file is passed as the first argument, whether or not
+it's the same as one of the input files, it gets truncated. Same thing
+happens if you run "dd if=prog.o of=prog.o". If the user expects
+otherwise, they are mistaken: I don't see a valid use case for passing
+twice the same argument as both input and output, nor should we focus on
+detecting this particular case. If users do get mistaken, then we likely
+need to do a better work on the docs or the help commands instead.
+
+Apologies for the misleading review earlier on your patch, as Andrii and
+Alexei have highlighted as well, this is the wrong approach.
+
+Quentin
 
