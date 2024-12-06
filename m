@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-46294-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46295-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 283E19E779F
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 18:42:34 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D5769E77AF
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 18:47:07 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADAFF286AE5
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 17:42:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C3FF16D169
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 17:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11EEC2206B5;
-	Fri,  6 Dec 2024 17:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90384197A7C;
+	Fri,  6 Dec 2024 17:47:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cZE6lxxm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pj7Js3F9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C1922068A
-	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 17:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6FB322068F
+	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 17:47:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733506948; cv=none; b=OKZ6oiYOdWwnctGj6h9wbsNHnbK36JfX5BWLvLNN2Cl8uReEKv5i9rWODux437SMzo7I6LVzP0JAXc3HsuZOherwJem4w8NWt5QUGusoi7PubwwKQ2cFcEZExtIKow4Kxa6tcKFDOkTcRZKYkBeGdHmPUBJFsMFg3xwxpn6wD94=
+	t=1733507222; cv=none; b=Atp3/CSbeaGp9+3HDdynq2I/Pua26xB8dKJTQDKqALg5mZt8Nh5reNUzYbcBh4ZjqG+892FqU8u1Py0P/AgX8JC3tL04XuSXoGJg8dNEKqxu1KpH6IqClbTOmAvJk5P/GOSHvzJse3559dvDaeVIjfCfQ7zBMrC1O1lZmgGY10A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733506948; c=relaxed/simple;
-	bh=xeXnSh2ms0wdjjeFtnHtjD7mMjFMP2LrKAC25fK7/tU=;
+	s=arc-20240116; t=1733507222; c=relaxed/simple;
+	bh=1ItHI7nZhg5DcxFxAOxLJ81BjK9yCdQOZCkFcx4kCqk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JXzO3ssyBugftRHpx7Y7vSfirhygPdyYqXluSlnxtwLDhtjrG8NwmS7AiHRkBjv0w81cJz3tWuSNIdO1YWu96+krYJdUzuTzkO+tn0SaeTh9uklSvHWcfZZTNIDX7z2vt9Ua/tC0aEgHTXfEZd8ywv0sE4rbICGfmJ6Bprg+HqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cZE6lxxm; arc=none smtp.client-ip=209.85.210.178
+	 To:Cc:Content-Type; b=Rqv4OT02LV+R7MpwjruOXssf2/LIj6zTa9xbOfE7C4OehjuFQKRgtHymOTVPHXU3jwK1nqEt0JfHSDvNtNjTnJprmoMDl5e8QE+ITmEOq5Ue2269GWQTwQM0cWIoLtAjz0Zo3G+LENAmeyJkUq/1QttHgkRvDIDk26S7XYLYaAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pj7Js3F9; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-724e1742d0dso2225515b3a.0
-        for <bpf@vger.kernel.org>; Fri, 06 Dec 2024 09:42:26 -0800 (PST)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-7fc93152edcso2054700a12.0
+        for <bpf@vger.kernel.org>; Fri, 06 Dec 2024 09:47:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733506946; x=1734111746; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733507220; x=1734112020; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xeXnSh2ms0wdjjeFtnHtjD7mMjFMP2LrKAC25fK7/tU=;
-        b=cZE6lxxmaVM6SfD9fM58BOaRRonAhBNyANwdR6Oit8Z4RvKJgIKZOfc2h93xuo8Mzy
-         s9+o1B9bBkS31cFqSCC1xFkJPVbYvGkHhbuxeJznTnIoDrt/iPsgkCbruz0tggk/9RNg
-         b9fVOx3JoXHze1FpBtoEhDHHsDsT54tRdy5lU3jico51kPQlDFl5EJqu/VvrF94l0o5y
-         GkgG2gPRoeXact+ONRslbOUqNsXxnspvh+EkmjOyr/WBjBKZqKEIWgvg8z6OHj4QiPpH
-         ssddWnMFBbXag0E4jRfhI8lzTO7Gwcn3oBDx7OiTT5TaJE1JLcdy/NrYuvAZUU1CDs9u
-         KmCQ==
+        bh=1ItHI7nZhg5DcxFxAOxLJ81BjK9yCdQOZCkFcx4kCqk=;
+        b=Pj7Js3F9sNkTePvQR6g6qCppKRv1zuTscybgH96OQxYf9WXzC6MgzEKc6vXiOmG98u
+         tjZt3z9iRIngfOgkv8ADZaYSexDONyCEGUNSeqs2T92Rjax/VA4qcAqORNUazZE/Ft1b
+         WovuYWkSZ7ynygUGOgoVhSxiXR2AumFSCplaCUsCr/b7W1ApuJ2XMb0x1B6Ss/Ji+LUw
+         zeAqfv6a2QQBA8VAgubJsIqG31q0emzYL0XF2Mt0LAelhkzWA7GBHeFMtzqyPg+LBak1
+         lNN/aLqio4lT9Cgrt7UbhPfY945IS6tME3jccXPBs4WE4zaUrxeauerALBeuZ8foAlPc
+         tBAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733506946; x=1734111746;
+        d=1e100.net; s=20230601; t=1733507220; x=1734112020;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xeXnSh2ms0wdjjeFtnHtjD7mMjFMP2LrKAC25fK7/tU=;
-        b=e2w5nA4AuTG+Cd1OXVncTZFpUIWRIn6xmInCnZZgm0OfAtESryQHwIzAe89m2xlV+b
-         9bDg1hGpHDXV5ooHOX32J5+KgyV5NspAPbu3KY715iUHnAqjLagIF2Z8LbjrxiyWpsub
-         0wXHBUKnCDPGteOJxtOdt6ao45tMjemF0w357Lap5Sw/Ggy2QD3KiPN6GI0/moKgeeqM
-         FpqUXH/IvjD4CUm93er8Hh/z9BuR3NsnhdHAeBggtJBkgpVPg/JK/9DqOQstihOfKcy7
-         txjNPWsWXTff4E+sG5aSn4Y+M/cqPilGxTt2ot9qlUHL4IghBm2293C9LgU2inhVVq/9
-         jU3g==
-X-Forwarded-Encrypted: i=1; AJvYcCWNIqkDwSFV1cYkc8wpMv/V92yVWiKcOFawQK3WWnRxV5ov/mhGQgI28HbZ++GVQYz/OgI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyia68HNvo2ElvGJjAT1spjlMaXsGVjjBtEgCrgOtK0s+F/0Huw
-	u+loypd3oj8D6vWV8xKokOXicc1HPO/V9Kh6JDOqGqxgdqlaHFwqefOJFbE2tJeRCwmzXOAYLFO
-	qbBDh71g0Uc3RwhsZPL72tW/o4us=
-X-Gm-Gg: ASbGncvSzH4KduwX5sFLRm0qugaFLiyRWUtl7hst8FmCxc8UQOGtrPQIkr2+uCOoTRH
-	4yON1RgB3YqH1HhOVW0lJaWSn1ksTwnt5JPNspYFKEouaY04=
-X-Google-Smtp-Source: AGHT+IHjbRmle4POSpbKAePRwUB2Vd4ckoZvkOeveKFlJYZIi+7R0BDz/97tEUnCedd/mRAFQH3PapqRYeMKodU5qcM=
-X-Received: by 2002:a17:90a:d88e:b0:2ee:f687:6ad3 with SMTP id
- 98e67ed59e1d1-2ef6ab0c2aamr5523931a91.28.1733506945005; Fri, 06 Dec 2024
- 09:42:25 -0800 (PST)
+        bh=1ItHI7nZhg5DcxFxAOxLJ81BjK9yCdQOZCkFcx4kCqk=;
+        b=V2Q/WOFCywdeRs74UtfvRRZOYbvTdgu4+CzwLrc3sDhAdMi4nUSxmSAHuw+Q9RaZbB
+         y0H+Ne4Jx47BZBgcUwMcGCOSNA/0mO5rvuRmTap7eDPhoFCianetxuFYlmYxPFYeUbGs
+         LBUNjBCeKge99Kly1l/LIY41x2tMdbOnCbXym5raDEF8whG/q6KgAkKKuVxjGxsBxc8N
+         BLJLqEFJ2LT+VGNipPU3FiFzB9Pl57gZHNI0Dy37q+AurmDX81dX4CTgqzP4WmT7GkPx
+         Cf3w3p1DqxFvOdZL01tSGnBoY0/XTXnkwou1u7FUiE2F+4XWeQF4ODo6d2RApy5Gq2Na
+         msXA==
+X-Forwarded-Encrypted: i=1; AJvYcCVgWnO/pWcos1e6Jhivmu9Uj2W/yx3pxg/PXHbUOaN6BGw/QZKYy/ewNns3H3eUDEj4k2Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwUJH0EgvTz+dbJpiP+gG27sLlNAkXtxp2F9XNTsaI8hXNJ0/Ws
+	rivD8UlkGVkbmBSMfJrHFlNfUNcqJ3tSozBKobhCpFzMm0LNfb4F0+/0SL0XJm0M3IfgW2siCnS
+	3hGJG7Z8rEpB4FPFdmMcEmUIwGZ0Yqw==
+X-Gm-Gg: ASbGncuLuAwgoFd8FoQSe/v4aYpX7p7hFtoHi6KQ4KJxdLhs1PUCV6/TTMZ5ZT2Xqkg
+	v0IJa4djRGvptFqkrZgshVEzHyo0AbxVuvlXZBwTa3WlTOsg=
+X-Google-Smtp-Source: AGHT+IFzxoz33qjw1E8mXGjreC8+rge8edQHDQSZTXF1MZW6Wk1AeqXUWOjdkzwaPOuWE2MWpWRv+wariV/TMuJNSwQ=
+X-Received: by 2002:a17:90b:4b82:b0:2ee:7c22:6e7c with SMTP id
+ 98e67ed59e1d1-2ef41c73dffmr13291226a91.13.1733507220038; Fri, 06 Dec 2024
+ 09:47:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -81,147 +81,68 @@ References: <0498CA22-5779-4767-9C0C-A9515CEA711F@gmail.com>
  <CAADnVQKscY7UC-5nAYxaEM4FQZGiFdLUv-27O+-qvQqQX0To5A@mail.gmail.com>
  <1f77772b8c8775b922ae577a6c3877f6ada4a0a1.camel@gmail.com>
  <CAEf4BzZybLU0bmYJqH2XJYG_g8Pvm+STRdHBtE1c5zbhHvtrcg@mail.gmail.com>
- <CAADnVQJ7WuFge8YZ-g07VK6XhmMCf1RHa0B64O0_S4TLzu0yUg@mail.gmail.com>
- <CAEf4BzZPFy1XXf=2mXVpdVw70rJjgUfPnDOzWb5ZXrJF1=XqUA@mail.gmail.com> <CAADnVQL-0SAvibeS45arBoZcwYjQjVnsrMeny=xzptOdUOwdjQ@mail.gmail.com>
-In-Reply-To: <CAADnVQL-0SAvibeS45arBoZcwYjQjVnsrMeny=xzptOdUOwdjQ@mail.gmail.com>
+ <1f49e00de4e5a17740e4e04ddb77b60e5ff46526.camel@gmail.com>
+ <CAEf4BzZ1239ec_J33jZj3Ji6-6W_PspVeKu05L6S729-_g6GMw@mail.gmail.com> <17abfd2c6dfc74fa4c1c2a45bf0c7b793963d5a1.camel@gmail.com>
+In-Reply-To: <17abfd2c6dfc74fa4c1c2a45bf0c7b793963d5a1.camel@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 6 Dec 2024 09:42:12 -0800
-Message-ID: <CAEf4BzZF3ZrVC0j=s2SpCyRWzfxS8Gcmh1vXomX4X=VS-COxJw@mail.gmail.com>
+Date: Fri, 6 Dec 2024 09:46:47 -0800
+Message-ID: <CAEf4BzZJOxnm7z6QaxRr9PsfD_DTV5nSPP9TjiEMQxNMxzLFRA@mail.gmail.com>
 Subject: Re: Packet pointer invalidation and subprograms
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, andrii <andrii@kernel.org>, 
-	Nick Zavaritsky <mejedi@gmail.com>, bpf <bpf@vger.kernel.org>, 
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	andrii <andrii@kernel.org>, Nick Zavaritsky <mejedi@gmail.com>, bpf <bpf@vger.kernel.org>, 
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 6, 2024 at 8:20=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Fri, Dec 6, 2024 at 9:29=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
 >
-> On Fri, Dec 6, 2024 at 8:13=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Fri, Dec 6, 2024 at 8:08=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Thu, Dec 5, 2024 at 10:23=E2=80=AFPM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Thu, Dec 5, 2024 at 8:07=E2=80=AFPM Eduard Zingerman <eddyz87@gm=
-ail.com> wrote:
-> > > > >
-> > > > > On Thu, 2024-12-05 at 17:44 -0800, Alexei Starovoitov wrote:
-> > > > > > On Thu, Dec 5, 2024 at 4:29=E2=80=AFPM Eduard Zingerman <eddyz8=
-7@gmail.com> wrote:
-> > > > > > >
-> > > > > > > so I went ahead and the fix does look simple:
-> > > > > > > https://github.com/eddyz87/bpf/tree/skb-pull-data-global-func=
--bug
-> > > > > >
-> > > > > > Looks simple enough to me.
-> > > > > > Ship it for bpf tree.
-> > > > > > If we can come up with something better we can do it later in b=
-pf-next.
-> > > > > >
-> > > > > > I very much prefer to avoid complexity as much as possible.
-> > > > >
-> > > > > Sent the patch-set for "simple".
-> > > > > It is better then "dumb" by any metric anyways.
-> > > > > Will try what Andrii suggests, as allowing calling global sub-pro=
-grams
-> > > > > from non-sleepable context sounds interesting.
-> > > > >
-> > > >
-> > > > I haven't looked at your patches yet, but keep in mind another gotc=
-ha
-> > > > with subprograms: they can be freplace'd by another BPF program
-> > > > (clearly freplace programs were a successful reduction of
-> > > > complexity... ;)
-> > > >
-> > > > What this means in practice is whatever deductions you get out of
-> > > > analyzing any specific original subprogram might be violated by
-> > > > freplace program if we don't enforce them during freplace attachmen=
-t.
-> > > >
-> > > >
-> > > > Anyways, I came here to say that I think I have a much simpler
-> > > > solution that won't require big changes to the BPF verifier: tags. =
-We
-> > > > can shift the burden to the user having to declare the intent upfro=
-nt
-> > > > through subprog tags. And then, during verification of that global
-> > > > subprog, the verifier can enforce that only explicitly declared sid=
-e
-> > > > effects can be enacted by the subprogram's code (taking into accoun=
-t
-> > > > lazy dead code detection logic).
-> > > >
-> > > > We already take advantage of declarative tags for global subprog ar=
-gs
-> > > > (__arg_trusted, etc), we can do the same for the function itself. W=
-e
-> > > > can have __subprog_invalidates_all_pkt_pointers tag (and yes, I do
-> > > > insist on this laconic name, of course), and during verification of
-> > > > subprogram we just make sure that subprog was annotated as such, if
-> > > > one of those fancy helpers is called directly in subprog itself or
-> > > > transitively through any of *actually* called subprogs.
-> > >
-> > > tags for args was an aid to the verifier. Nothing is broken without t=
-hem.
-> > > Here it's about correctness.
-> > > So we cannot use tags to solve this case.
-> >
-> > Hm.. Just like without an arg tag, verifier would conservatively
-> > assume that `struct task_struct *task` global subprog argument is just
-> > some opaque memory, not really a task, and would verify that argument
-> > and code working with it as such. If a user did something that
-> > required extra task_struct semantics, then that would be a
-> > verification error. Unless the user added __arg_trusted, of course.
-> >
-> > Same thing here. We *assume* that global subprog doesn't have this
-> > packet pointers side effect. If later during verification it turns out
-> > it does have this effect -- this is an error and subprog gets
-> > rejected. Unless the user provided
-> > __subprog_invalidates_all_pkt_pointers, of course. Same thing.
+> On Fri, 2024-12-06 at 08:08 -0800, Andrii Nakryiko wrote:
 >
-> So depending on the order of walking the progs, compiler layout,
-> static vs global the extra tag is either mandatory or not.
+> [...]
+>
+> > The tags would be that generalizable side effect declaration approach,
+> > so seems worth it to set a uniform approach.
+> >
+> > > Please take a look at the patch, the change for check_cfg() is 32 lin=
+es.
+> >
+> > I did, actually. And I already explained what I don't like about it:
+> > eagerness. check_cfg() is not the right place for this, if we want to
+> > support dead code elimination and BPF CO-RE-based feature gating.
+> > Which your patches clearly violate, so I don't like them, sorry.
+> >
+> > We made this eagerness mistake with global subprogs verification
+> > previously, and had to switch it to lazy on-demand global subprog
+> > validation. I think we should preserve this lazy approach going
+> > forward.
+>
+> In this context tags have same detection power as current changes for che=
+ck_cfg(),
 
-How so? If the verifier can *reach* one of those special helpers
-during verification, then this tag would be required *for global
-subprog*.
+You keep ignoring the eagerness issue. I can't decide whether you
+think *it makes no difference* (I disagree, but whatever), or you *see
+no difference* (in which case let me know and I can explain with some
+simple example).
 
-Or, *importantly*, if user anticipates that "freplace-ment" BPF
-program for such subprog might need to invalidate packet pointers, but
-the default subprog implementation doesn't actually call any of those
-special helpers, user can just explicitly say that "yes, this subprog
-should be treated as such that invalidates pkt pointers". With your
-approach there is no way to even express this, unless you hack default
-subprog implementation to intentionally have reachable
-pkt-invalidating helper, but not really call it at runtime.
+> it is not possible to remove tag using dead code elimination.
 
-Think about some more advanced XDP chainer approach, where replacement
-slots would need this pkt invalidation capabilities (but default
-subprogs just are no-ops).
+That's not the point of the tag to be dynamically adjustable. It's the
+opposite. It's something that the user declares upfront, and this is
+being enforced by the verifier (to prevent user errors, for example).
+If the user wants to have a "dynamic tag", they can have two global
+subprogs, one with and one without the tag, and pick which one should
+be called through, e.g., .rodata feature flag variable. I.e., make
+this decision outside of global subprog itself.
 
-> That is horrible UX. I really don't like moving the burden to the user
-> when the verifier can see it all.
+> So I really don't see any advantages in the context of this particular is=
+sue.
 
-I disagree, but it doesn't matter. It's being clear and explicit about
-functionality that global subprog (verified in isolation) needs right
-now or might need later (e.g., due to freplace-ment)
+See also my reply to Alexei, and keep in mind freplace scenario, as
+one of the things your approach can't support.
 
-> arg_ctx is different. The verifier just doesn't have the knowledge.
-
-No, it's not. It's conceptually absolutely the same. Verifier can
-derive that global subprog arg has to be a trusted pointer. It's just
-that with pkt invalidation it's trivial enough to detect (crudely and
-eagerly, but still) in check_cfg(), while for trusted pointers you
-can't take this shortcut.
-
-I don't like the check_cfg()-based approach, it's hacky and subpar
-workaround, and goes against all the lazy verification philosophy we
-pursued with BPF CO-RE. I'm happy to discuss this offline if that will
-be easier to get through all the nuance, but if you guys insist, so be
-it.
+>
+> [...]
+>
 
