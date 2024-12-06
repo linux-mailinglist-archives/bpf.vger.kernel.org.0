@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-46319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 115CA9E789A
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 20:10:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 022569E78AA
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 20:15:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC4F718866EC
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 19:10:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6290D167C18
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 19:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 351821DA0E0;
-	Fri,  6 Dec 2024 19:10:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAEC01F3D44;
+	Fri,  6 Dec 2024 19:15:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JO8Igt53"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZKJAfUTE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E8B22069F
-	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 19:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 951191FFC7F
+	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 19:15:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733512248; cv=none; b=Dlvovb2GRVPYoJbPneNi2MH0HiCs5S7T1c0XU2Memv1LFNAG8FzlUqbfQ9tEL2TNqUU940/T0qKaCvHw10uD4YEmT2x61Z4EHw22ZKNY3ES2uP5Z0j8u1h65Cmuc/KpyZ/UpT0nQGEUPCOQH64rm0VK0Bxom8z4Lwunm2ULPQxA=
+	t=1733512510; cv=none; b=n6+OhyKhzm0aog+X1bU28vwI/RHf2NAuWhJ9ueB75OEDb6GpTebXXSbF8EHvEijbyZpjOP9ltphphe4nLDEyyQ9855pzKebmUEaW2iXyBD2QmEbuO9RDKewKGNjpFxGPTY+HMz7GTQfPfJ7WQfbk617ulUZStbMAOMjCWbxj1As=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733512248; c=relaxed/simple;
-	bh=kUqN9TK3vMg8mQQj7bkiXtAiPuCiW92G9hWcGl6hJsk=;
+	s=arc-20240116; t=1733512510; c=relaxed/simple;
+	bh=14nMBdJVCUNb0gGd2MRfT1wSZeyVv2jhnnqQBxm6YcI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Yk/5zbIhG4HPQRpXtUmaSqAOuulml85SNftw5GQTN6HLkQ3OS4c3rZ8i5cYXzRBs8d6RdQk+RbLP/AKBmOltA5Lj4VNh9yyPmM/MvrzzD/BIBGbYhsKzb5GL3p0yo/P8NTq//H77Whz4Q4Rheuc6KUF5Pl0p5gjxMG4hyNIuPOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JO8Igt53; arc=none smtp.client-ip=209.85.208.67
+	 To:Cc:Content-Type; b=QsAyr41UT1cjume6h6sI6tUUxjk4mQhH0xyeK+65BAohHFgpQHRFuvGhajFUKuEIPQnI39cg1wUvfVG3zH0AkSnuyT+/Rz9QZOxACY9tC+4pgMGi1XY10gCprM+Ay7rvWI0y+MdWD5We89qbBXkj0IZkUEy8w7KUgWAtos6DDdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZKJAfUTE; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-5d3d74363cbso564174a12.2
-        for <bpf@vger.kernel.org>; Fri, 06 Dec 2024 11:10:46 -0800 (PST)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-38632b8ae71so222614f8f.0
+        for <bpf@vger.kernel.org>; Fri, 06 Dec 2024 11:15:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733512245; x=1734117045; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733512507; x=1734117307; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pclT6wuumay2QJtBD4CwLSNKiJBllTaOYB5ClO8XhJ0=;
-        b=JO8Igt53n3HOUEj8XED3FKTBM7C6bubyAked1do0WpKEjbwFI7PZqcl5RA8NgwqwOD
-         lHeFd4tq2e+KbcfkrACt1oionUX71y4qyNDXyFo00GhYSgSm9vbL/GlQE89KKppOv8wA
-         vgx3Tz7Odi4eVcFuQabEmw+VH5MV+SHtPjR/4iui2bYVmdn9UWO5LiAGZTiPWjWKS5wg
-         KfMzJ7MlqplRegjvQ4EIG8LCYeE4Q+htLc+ygblh49MdrEVrkoT7+KI1MXl6/bzeyLkI
-         EjoS3+wq0SlhS8SJK3OhERQiVD4RV1JhKc2tTYVpfjNAzfYldP6eFnNHGfbU8+JigCCz
-         nLow==
+        bh=14nMBdJVCUNb0gGd2MRfT1wSZeyVv2jhnnqQBxm6YcI=;
+        b=ZKJAfUTEU2skYWqq16clQ8XQPkrL0EUwkJhYE1L7LAjY6zEvtWIo97JWsqQfxRn0fe
+         WHnWAJtXdJpi+njypuIODbk7kLbR7C+VJgtcwa8SeUFRAdWo3HbeX0lcZ3evoM+5GjVF
+         aphwBDFxDIdys8gWYbYmstaiE6mJUDOFkVd6akJyfjqnLSHkp963ePPwWtOPDl8qqVBL
+         VlYHY4JRpHV0QjbT5jl4rtzye0h7y1H0c0hqgbDZvpmAxHwIPRzgzUiXPgo2F+0cQmQw
+         rQSuSatx9S+k/S/y8eNdTLva885UuOwCXQFuynOQrIWBhrkhVIUqNgs5NkvMSJDhHY/g
+         nkAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733512245; x=1734117045;
+        d=1e100.net; s=20230601; t=1733512507; x=1734117307;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pclT6wuumay2QJtBD4CwLSNKiJBllTaOYB5ClO8XhJ0=;
-        b=VP937qfd5ANHHhCKgA/ACzrWqKBrcTJCWhRkas879mSiz8YvXo9Zvy7NlzhcNgibPA
-         JGQJ7u58CPW6EaxZMNRV9o8DR1PAj/iOhh1GioBleLm6ajEpxJjWqDgr/lKwitUQNAT/
-         i7xs3kdfBR8y9o89/nPppYWgpdk/tFfr8WYFy7ZrHDjthFguowfo2mjYtG/r31pU20a4
-         vXTpwfvtuBuEBu1qis2CElI/lRxYD8kY+FFFz15OvCWkCarAI9rIB+qnnom6J99BlFT6
-         Tx7TYm+epmnkIaxbfZ7aNAgp7IXm64NC/mw9+Hbly9DYfdw2upXoWz+YnaPK8CqgVLoe
-         3Evw==
-X-Forwarded-Encrypted: i=1; AJvYcCXjkCPnulsRCU7kYDGqWspFbqdewjBMSCTWd+gcI3vYE5owY8mq+6GLi5ZFyys/TFuzLvE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz6XYmC4pMUWIrH7EdAxr/YMmKi63Dz35Tvd/fqypgvieoYPGL9
-	65fyuI276A0Pb8h5Fe4LTscpp7vzHWxHN+mLNUoZh/X/jYdl6EPmmYCr3Bz6YSIocnQV3E6aXEO
-	tNsS5b+1ub08/fbI42ymEJJygYYs=
-X-Gm-Gg: ASbGncvPGI6IhgALqdSY3ur/JTgdWScKioX+k7zsuXeceJ3p3z8gd6VNohy1tlLNMyH
-	3tJFxzLcUPUnOfnfOjq/PnhKTwkjlBEvLu13xEm2OMx8HZ4ruaL94NcqkGpPMpbIs
-X-Google-Smtp-Source: AGHT+IFxUDpvQwQcAv4hB1iibf2NU1dOiz63Qx10qtKcH2IaNT1ovh2+xGw9IrZKeLLdzA2/4mYQ/kDS7GtkiuVD5CE=
-X-Received: by 2002:aa7:d1cb:0:b0:5d3:cff2:71a3 with SMTP id
- 4fb4d7f45d1cf-5d3cff294f2mr2504341a12.33.1733512245196; Fri, 06 Dec 2024
- 11:10:45 -0800 (PST)
+        bh=14nMBdJVCUNb0gGd2MRfT1wSZeyVv2jhnnqQBxm6YcI=;
+        b=l9eMFNE7K00yZWrjV0jVnDO0ZC0kVPRh5UZq632d4KuQD1oCx6fPFnyJk+fxfOewvX
+         SjT+doaudsXm8XM/uT2oZ0P9Cm8eyh53Kg4Wx67T8/IopcY5YzuTdtmNn4Ly2hAwqeVB
+         gTi3IcsFr3HB2ak56Ezn8LJTDsPfJXM6/SFxoTwwJor9D5VeqW/fMxPebMv8xlTXyBgz
+         CFpDlFj/6x4ySDvuV6NzpMz/9TGd8S8yZ4Fkt/jweIEaN8vySHuBCw0BlW7dn1/OkMN0
+         3ia6ptdeshDdGZHdTXhldQMaua3ubRxNqwvREVzIvklWkuBYrdl4b+teDJ+Ie/BzTR/g
+         jv4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXPM+HoHEXgWZFH7BIV5+DatXIV7ISF7MzrpZ2/6AEKFNF4EcHB4CUJnD84+a4WTk2ogxk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWeOtFjLZkC1Io/V6ltsv5WKbZ78XCUr9gPyUwAR6MFvoA/AEk
+	Ci5buE92i8vRZtzHoO9dx5RRNULvO45NRo4vniCAw8obnLHEBwIAtLlN0hhDMlKJxNt6qPq/H5A
+	NSSKs5UPm4AjTs6Ik2V6vV7g0Ao4=
+X-Gm-Gg: ASbGncsojm42WGGJiPmmv/Kg9Sm6cQ98SrTo3Ztc7YtYANHbzYIx7w34y+bcw1At8CC
+	pNwoFJXqmDUcTWYHfLqc9GJpa9i7Vm1zgNj7kTivhkd8kY7k=
+X-Google-Smtp-Source: AGHT+IF9/9Ie1l+fIZ3kuAqPZTI6mXLj8PYWGr2R+gB63Suvq5xw4HEJ+JRcZx6mPk8HYu6CEX1Ew02NMIM3tnOoR6g=
+X-Received: by 2002:a5d:6c6a:0:b0:385:e176:4420 with SMTP id
+ ffacd0b85a97d-3862b33d313mr3421859f8f.10.1733512506710; Fri, 06 Dec 2024
+ 11:15:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,106 +75,50 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20241206161053.809580-1-memxor@gmail.com> <20241206161053.809580-3-memxor@gmail.com>
  <CAADnVQ+_XGVsxYji3WYNj1-KhYZwKaFCgQ6aN=yFB3YWpRT78A@mail.gmail.com>
- <6ef10614dfdf281663f62315247c4bb33c2609bc.camel@gmail.com> <CAADnVQLKROxDbx8ehfbCNvKPnrWQpGeqzdy_AipCVbwEW9Bcow@mail.gmail.com>
-In-Reply-To: <CAADnVQLKROxDbx8ehfbCNvKPnrWQpGeqzdy_AipCVbwEW9Bcow@mail.gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 6 Dec 2024 20:10:09 +0100
-Message-ID: <CAP01T75j=4A2t2pngMg_A3+NyEG3OmO2gMk3NKX4UjYj4gcR-w@mail.gmail.com>
+ <CAP01T75PQ3RENtQMD+JkB9DZcsUYp+AH6VJURGO730DkuLUMmA@mail.gmail.com>
+ <CAADnVQLrPWQe__jPWN3SPvJkOQc=7LxfesB74XH8Er052_wixA@mail.gmail.com> <CAP01T76fOtcpif8m81KrX7VTCM-tecAcDWHrhH3ipfOmiuHhKA@mail.gmail.com>
+In-Reply-To: <CAP01T76fOtcpif8m81KrX7VTCM-tecAcDWHrhH3ipfOmiuHhKA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 6 Dec 2024 11:14:55 -0800
+Message-ID: <CAADnVQJhDPtJ_yO6Qxx5ovTTC5R+jFiebTK0WHSUqrJhyj3NFQ@mail.gmail.com>
 Subject: Re: [PATCH bpf v3 2/3] bpf: Do not mark NULL-checked raw_tp arg as scalar
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	kkd@meta.com, Manu Bretelle <chantra@meta.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, kkd@meta.com, 
+	Manu Bretelle <chantra@meta.com>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 6 Dec 2024 at 19:37, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Fri, Dec 6, 2024 at 11:09=E2=80=AFAM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> On Fri, Dec 6, 2024 at 10:15=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
+> On Fri, 6 Dec 2024 at 19:37, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > On Fri, 2024-12-06 at 09:59 -0800, Alexei Starovoitov wrote:
-> > > On Fri, Dec 6, 2024 at 8:11=E2=80=AFAM Kumar Kartikeya Dwivedi <memxo=
-r@gmail.com> wrote:
-> > > >
-> > > > An implication of this fix, which follows from the way the raw_tp f=
-ixes
-> > > > were implemented, is that all PTR_MAYBE_NULL trusted PTR_TO_BTF_ID =
-are
-> > > > engulfed by these checks, and PROBE_MEM will apply to all of them, =
-incl.
-> > > > those coming from helpers with KF_ACQUIRE returning maybe null trus=
-ted
-> > > > pointers. This NULL tagging after this commit will be sticky. Compa=
-red
-> > > > to a solution which only specially tagged raw_tp args with a differ=
-ent
-> > > > special maybe null tag (like PTR_SOFT_NULL), it's a consequence of
-> > > > overloading PTR_MAYBE_NULL with this meaning.
-> > > >
-> > > > Fixes: cb4158ce8ec8 ("bpf: Mark raw_tp arguments with PTR_MAYBE_NUL=
-L")
-> > > > Reported-by: Manu Bretelle <chantra@meta.com>
-> > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > ---
-> > > >  kernel/bpf/verifier.c | 6 ++++++
-> > > >  1 file changed, 6 insertions(+)
-> > > >
-> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > index 82f40d63ad7b..556fb609d4a4 100644
-> > > > --- a/kernel/bpf/verifier.c
-> > > > +++ b/kernel/bpf/verifier.c
-> > > > @@ -15365,6 +15365,12 @@ static void mark_ptr_or_null_reg(struct bp=
-f_verifier_env *env,
-> > > >                         return;
-> > > >
-> > > >                 if (is_null) {
-> > > > +                       /* We never mark a raw_tp trusted pointer a=
-s scalar, to
-> > > > +                        * preserve backwards compatibility, instea=
-d just leave
-> > > > +                        * it as is.
-> > > > +                        */
-> > > > +                       if (mask_raw_tp_reg_cond(env, reg))
-> > > > +                               return;
-> > >
-> > > The blast radius is getting too big.
-> > > Patch 1 is ok, but here we're doubling down on
-> > > the hack in commit
-> > > cb4158ce8ec8 ("bpf: Mark raw_tp arguments with PTR_MAYBE_NULL")
-> > >
-> > > I think we need to revert the raw_tp masking hack and
-> > > go with denylist the way Jiri proposed:
-> > > https://lore.kernel.org/bpf/ZrIj9jkXqpKXRuS7@krava/
-> > >
-> > > denylist is certainly less safer and it's a whack-a-mole
-> > > comparing to allowlist, but it's much much shorter
-> > > according to Jiri's analysis:
-> > > https://lore.kernel.org/bpf/Zr3q8ihbe8cUdpfp@krava/
-> > >
-> > > Eduard had an idea how to auto generate such allow/denylist
-> > > during the build.
-> > > That could be a follow up.
+> > On Fri, Dec 6, 2024 at 10:11=E2=80=AFAM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > > > I think we need to revert the raw_tp masking hack and
+> > > > go with denylist the way Jiri proposed:
+> > > > https://lore.kernel.org/bpf/ZrIj9jkXqpKXRuS7@krava/
 > >
-> > If the sole goal is to avoid dead code elimination for tracepoint
-> > parameter null check, there might be another hack. Not sure if it was
-> > discussed:
-> > - don't add PTR_MAYBE_NULL (but maybe add a new tag, PTR_SOFT_NULL
-> >   from Kumar's original RFC);
-> > - in is_branch_taken() don't predict anything when tracepoint
-> >   parameters are compared;
+> > ...
+> >
+> > > Jiri, do you have the diff around for that attempt? Could you post a
+> > > revert of the patches and then the diff you shared?
+> >
+> > the link above.
 >
-> this part was discussed, but we didn't realize we need below bit...
->
-> > - in mark_ptr_or_null_regs() don't propagate null for pointers to
-> >   tracepoint parameters (as in this patch).
->
-> ... and here the 'for tp args' filter is hard to do.
-> mark_ptr_or_null_regs() is generic. arg vs non-arg is lost long ago.
+> The link only has information about one tracepoint, but further down
+> the thread Jiri found more examples and the case of IS_ERR.
+> https://lore.kernel.org/bpf/Zr3q8ihbe8cUdpfp@krava
+> It would probably be good to add all of them? Or did I misunderstand
+> and you just add PTR_MAYBE_NULL for the scheduler tracepoint in the
+> report?
 
-It is not lost. If only args are marked PTR_SOFT_NULL or
-reg->btf.is_raw_tp_arg (or w/e else), it can still be seen when we are
-in that function, and all its copies will have the same information.
+I mean Jiri's patch fixes one tracepoint, but the same approach
+can be used for the rest of tp-s Jiri found in his 2nd link.
+IS_ERR can be handled as well as info->reg_type =3D SCALAR;
+
+So revert plus one patch to fix them all.
 
