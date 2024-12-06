@@ -1,170 +1,103 @@
-Return-Path: <bpf+bounces-46225-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46226-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 481E29E637B
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 02:41:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BBC69E6381
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 02:44:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A62B91655CD
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 01:41:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13B9816A2A0
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2024 01:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E4713C8F4;
-	Fri,  6 Dec 2024 01:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D202813D28F;
+	Fri,  6 Dec 2024 01:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nKWBgwvh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nLjRe1wj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6008576048
-	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 01:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE462BE46
+	for <bpf@vger.kernel.org>; Fri,  6 Dec 2024 01:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733449256; cv=none; b=nRCtYGj2QlYvDH4+sDsXo0u5coowxT826oTq0gBPt8A1VtlCAKAcit1AIh1zcGG7y9bXkKeKdPET/trweqkqFvAjeMmRQUAj3m0vz092npGBwIt7THcU1EYYxXzwFHpA/4QhyzDWuxh/UtuHBNCxwYSCDDyVSXsYcOv1lnoNCL8=
+	t=1733449479; cv=none; b=qkLuSvXgr2RrGqaEju4X89syDEUgGVLOAcN0syrTPB9N9bE5LYQejh6D3n+2gwibrQBDynf1C2JKhTt8tOSWZHJLN/0pMrHegh8WWl8t6kj3nF0W1rGRwQjkBbBQHbiD2OtWLQwCscDfhcjHJSznJvOYIE7oFme1PKooebRxa6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733449256; c=relaxed/simple;
-	bh=9RSQKui+PEJIoP2yPcwXFD6HDVIiSGfhrNG1hUL1bUQ=;
+	s=arc-20240116; t=1733449479; c=relaxed/simple;
+	bh=i7boByzzS1vJXIP+6xyDGF5Fv8Sh6Y90stCj3gXxlpA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SNPo2eJnaXu96pVg1veQSlZiMBncLI+R4IKt19ZWaZNoQXAreVEddRsErv60vTLRSxvKJVDYwXO9hTm0sJUOB+S6fDzwu3nxCiak/ExBBK4Pxvf08aVrlVfLJ2+CA5Rd74VMrZgfJ4npgedyUlQeyJNJRezfBa2IstFSXQgDFhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nKWBgwvh; arc=none smtp.client-ip=209.85.221.52
+	 To:Cc:Content-Type; b=qiA/cEyyjy4jB+oNufX3pJYnpssoFe8AJ078if2jyuyTINiySNgLeJsmtrqrWrDsWR53Crry2uukI1utLWkvjoBatRwLrSmxTfYxbP+JdXgmnYtsiJnzu04pEeD8K1ou/uRE6h6bRZ2u/SAH3FBKodlcfLUsFfgtY9BN1Aquzpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nLjRe1wj; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3862b40a6e0so161333f8f.0
-        for <bpf@vger.kernel.org>; Thu, 05 Dec 2024 17:40:54 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-434aa222d96so17799935e9.0
+        for <bpf@vger.kernel.org>; Thu, 05 Dec 2024 17:44:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733449252; x=1734054052; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733449476; x=1734054276; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cSYGXlTsKKdQHk1Dayk9GwQPi+OMsAHKuztQbCJ+Ym8=;
-        b=nKWBgwvhB84w2VqiiYAQzcUq6xvF2PgWrUvlxiH1CAQVi4TZkgruMpJtYybkDtw5Io
-         6nfnCgVgbALYxKy7g69x7V3gAKMbHAsF2lDGes0UncRhHZGbLU06z2F5zwQU+ZExmrcN
-         Smjc8CXQddYXK4sbvs8g4ldWL7F1x8dexmCDT/ETXiNILB+4IsmlRdYxdbXJAZ3ukG2b
-         XVAkWkikn1PKQTAMyVgDPezDRIYICWow9AJkcbPC9AqljUukubh5KZR154HQrTC5LQI5
-         XroSNJj7VyrACFMzl3REengy+lA0XDH69Kkr2HUokqep5kRTil+6x/MTlS5AABwuNTGB
-         APbw==
+        bh=i7boByzzS1vJXIP+6xyDGF5Fv8Sh6Y90stCj3gXxlpA=;
+        b=nLjRe1wjZYs8M16V5+aBzKEqYpuQ+ZSRSmHWsy0VsE5bkMFPlMKZzAziOj506CzuFv
+         JjcvnykvQgH/CdK7+Q+uoI92mPWDw/SRVnUvLDr5xm83BEvd+QN9FAvwFEtCMNT5YwHL
+         VrCVHcQLIA4axc4khKR8bYGk4J62z3Dt1A+L0QPMzej30JVyV2je28YaNr2I94xM/ITk
+         4zgKW5MLoqPEkK8qUY3AkJaJdaZ034G6dRUwt9kiCz3/uiiylc9F6c/aSeYSsQ0LDNxe
+         5b6LVGmg70zffnInD/99AIqmjDIkSMwjyEjjPYSNnIVQ/IRq4G9gmeLHIj/YN9ZhhIUc
+         axTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733449252; x=1734054052;
+        d=1e100.net; s=20230601; t=1733449476; x=1734054276;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cSYGXlTsKKdQHk1Dayk9GwQPi+OMsAHKuztQbCJ+Ym8=;
-        b=QuW84bKylli37/P+jpFpbKUnznpJoS9BoBo1ECqIhWGhFuBlerPYqAh41UCaWRsnLC
-         DoH2QjyVCqglAyb3vr8wR+wUvffOwh9Ld3ePjr1ZdO21VRMTC1m3e03quB7GwPWOkErd
-         TLKsaSKnDh64AXOJPK7ljHc+Lk6NPpwGuwzAC1Km5GgL85oXsfRwEKOfbKfE0bOjw9Uo
-         KV8AOz7GvPzD4H5epv8UDoK/M6vm4srcKS66QxhRboeaOgvE2UvgvWhXwlFCUdckiSGC
-         hax46zpkoBa2Ai3rxQIhH3UkHMgj1ohE5zZAPC+TYdkvnYZpQrmudVMzPENgcjt+EJqD
-         siAw==
-X-Forwarded-Encrypted: i=1; AJvYcCXS11CCG5ZkbuZmM5wJHVO4vilOvNIbxiq1d0xmSjbZ2OsRrpvXh4YaJ7HBzxkFHo0F7GI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwTyVLnqEgFi7ORGfsmKlxQb8RpbYsXmFmZIS8tVMGfEcS5oFvE
-	tVEaTrMCXpVYuo+Sqg+OjQvlTYg2/W424nnbwKweLqptSTGXtqpkQDIWxM8UJirmY2b/JGqmISu
-	HAcnHValR6IGQxGsY13DJ/jtfCPo=
-X-Gm-Gg: ASbGncuIC1t1AHMMDGzVMPlArjqt7vH2AOiy27iyYUG2oHBlTJWwowhjZ5tjWDlHKew
-	6j8WgUyT6nVi4avDSFfd2YhoWHL7fexwg6jpLezBauIA76PU=
-X-Google-Smtp-Source: AGHT+IG3KZdBxbPiJLR3rUkfTSJs+UvU+dTKtxInE8gAmqiT0uo9EskI9cEYCEGCX8KeNZ3qkAwDwpCDh0eeFuFRtDU=
-X-Received: by 2002:a05:6000:184d:b0:385:f47b:1501 with SMTP id
- ffacd0b85a97d-3862b379eacmr733295f8f.32.1733449252336; Thu, 05 Dec 2024
- 17:40:52 -0800 (PST)
+        bh=i7boByzzS1vJXIP+6xyDGF5Fv8Sh6Y90stCj3gXxlpA=;
+        b=o9EX3syYkqLjs/T6nZb4OaWB+jbCiEM7tncOUM8Ka7qMCqK0JDd4iCCVBxSDnLoy+f
+         DzMDEbdETcvBVZ6C1IZmCvDSTLrBkhVigVyCRToA8JlZ0v6Br2kkPEsn6Fj0adPZc5dY
+         IepBY/W+AXOg8EXXFA+Cvd+E1MuNQ4ri4jJ+efybDjOIeMd5yBRHOrrNmM+fRGRuUMhj
+         FNO+pBLAXwX+04wIXaraaFC0FlNfHZzCPcOBj7nTe5lyr6YASh3WNsi0wlBj3E++Wr8a
+         cAAfdyeJKwuQ7REieldC5wZrTtO1Uae/A+/okyiWNAEN2K9VQDy9srwpsWXbGnj9faM4
+         Shbw==
+X-Forwarded-Encrypted: i=1; AJvYcCVtqqWLEuQWvKSaFJmlpr/VEBC6ejwiZY/9NAODuBXuyksn/5WTzHA2gQROMPsP9FZUTK0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxs22zGqJAXIuiTxPdW4NHz3wS3t05hI6CnI5GKQdndPbs5fQDw
+	QeBE6Es/sa2QLPLHfEhnOzsnxFi3PWsj+Ll4UFrfapHlm5XE7MhjbO6UHOagYabSSL39m6RO0wJ
+	772P/e909QkOtbjlHh66PUaBwkRw/gA==
+X-Gm-Gg: ASbGncu00yKcXJwsG939y99JFAy4P5vR4OHE8hBoq/7HQpYgQR8vxbIAHQDsZR+9scK
+	69YNf7Ppa5PLZGgrUjL025C2rwIWsDivspoFn9NJu8PDI4kA=
+X-Google-Smtp-Source: AGHT+IFuaQW9E+MkoGFGy54BYBCXj7134ayA7AZOrVsF5IcZP4Bomsgrm/8EWmRXptuejAc9FL3F6DA3i0+qltR/apU=
+X-Received: by 2002:a05:6000:4601:b0:385:ee3f:5cbf with SMTP id
+ ffacd0b85a97d-3862b363658mr810273f8f.20.1733449475900; Thu, 05 Dec 2024
+ 17:44:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241127004641.1118269-1-houtao@huaweicloud.com>
- <20241127004641.1118269-8-houtao@huaweicloud.com> <87frnai67q.fsf@toke.dk>
- <CAADnVQLD+m_L-K0GiFsZ3SO94o3vvdi6dT3cWM=HPuTQ2_AUAQ@mail.gmail.com>
- <fede4cf9-60df-ce3a-9290-18d371622d3b@huaweicloud.com> <CAADnVQLab0+JfMUy9RzU27hNsFfON1eu7Ta3VvzBAQp9R1m55w@mail.gmail.com>
- <1cddf09f-5da6-63e6-7317-33907e196767@huaweicloud.com>
-In-Reply-To: <1cddf09f-5da6-63e6-7317-33907e196767@huaweicloud.com>
+References: <0498CA22-5779-4767-9C0C-A9515CEA711F@gmail.com>
+ <1b8e139bd6983045c747f1b6d703aa6eabab2c82.camel@gmail.com>
+ <47f2a827d4946208e984110541e4324e653338e0.camel@gmail.com>
+ <CAEf4BzZBPp40E-_itj1jFT2_+VSL9QcqjK4OQvt6sy5=iJx8Yw@mail.gmail.com> <4bbdf595be6afbe52f44c362be6d7e4f22b8b00f.camel@gmail.com>
+In-Reply-To: <4bbdf595be6afbe52f44c362be6d7e4f22b8b00f.camel@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 5 Dec 2024 17:40:41 -0800
-Message-ID: <CAADnVQJcemLLK5MQgT6gtChqL6Hocuz+ez_QGedNnw0nBvVZKQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 7/9] bpf: Use raw_spinlock_t for LPM trie
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
-	Hou Tao <houtao1@huawei.com>, Xu Kuohai <xukuohai@huawei.com>
+Date: Thu, 5 Dec 2024 17:44:24 -0800
+Message-ID: <CAADnVQKscY7UC-5nAYxaEM4FQZGiFdLUv-27O+-qvQqQX0To5A@mail.gmail.com>
+Subject: Re: Packet pointer invalidation and subprograms
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	andrii <andrii@kernel.org>, Nick Zavaritsky <mejedi@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 5, 2024 at 4:48=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
-te:
+On Thu, Dec 5, 2024 at 4:29=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
 >
-> Hi,
->
-> On 12/6/2024 1:06 AM, Alexei Starovoitov wrote:
-> > On Thu, Dec 5, 2024 at 12:53=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
-> wrote:
-> >> Hi,
-> >>
-> >> On 12/3/2024 9:42 AM, Alexei Starovoitov wrote:
-> >>> On Fri, Nov 29, 2024 at 4:18=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgen=
-sen <toke@redhat.com> wrote:
-> >>>> Hou Tao <houtao@huaweicloud.com> writes:
-> >>>>
-> >>>>> From: Hou Tao <houtao1@huawei.com>
-> >>>>>
-> >>>>> After switching from kmalloc() to the bpf memory allocator, there w=
-ill be
-> >>>>> no blocking operation during the update of LPM trie. Therefore, cha=
-nge
-> >>>>> trie->lock from spinlock_t to raw_spinlock_t to make LPM trie usabl=
-e in
-> >>>>> atomic context, even on RT kernels.
-> >>>>>
-> >>>>> The max value of prefixlen is 2048. Therefore, update or deletion
-> >>>>> operations will find the target after at most 2048 comparisons.
-> >>>>> Constructing a test case which updates an element after 2048 compar=
-isons
-> >>>>> under a 8 CPU VM, and the average time and the maximal time for suc=
-h
-> >>>>> update operation is about 210us and 900us.
-> >>>> That is... quite a long time? I'm not sure we have any guidance on w=
-hat
-> >>>> the maximum acceptable time is (perhaps the RT folks can weigh in
-> >>>> here?), but stalling for almost a millisecond seems long.
-> >>>>
-> >>>> Especially doing this unconditionally seems a bit risky; this means =
-that
-> >>>> even a networking program using the lpm map in the data path can sta=
-ll
-> >>>> the system for that long, even if it would have been perfectly happy=
- to
-> >>>> be preempted.
-> >>> I don't share this concern.
-> >>> 2048 comparisons is an extreme case.
-> >>> I'm sure there are a million other ways to stall bpf prog for that lo=
-ng.
-> >> 2048 is indeed an extreme case. I would do some test to check how much
-> >> time is used for the normal cases with prefixlen=3D32 or prefixlen=3D1=
-28.
-> > Before you do that please respin with comments addressed, so we can
-> > land the fixes asap.
->
-> OK. Original I thought there was no need for respin. Before posting the
-> v3, I want to confirm the comments which need to be addressed in the new
-> revision:
->
-> 1) [PATCH bpf v2 6/9] bpf: Switch to bpf mem allocator for LPM trie
-> Move  bpf_mem_cache_free_rcu outside of the locked scope (From Alexei)
-> Move the first lpm_trie_node_alloc() outside of the locked scope (There
-> will be no refill under irq disabled region)
->
-> 2)  [PATCH bpf v2 2/9] bpf: Remove unnecessary kfree(im_node) in
-> lpm_trie_update_elem
-> Remove the NULL init of im_node (From Daniel)
+> so I went ahead and the fix does look simple:
+> https://github.com/eddyz87/bpf/tree/skb-pull-data-global-func-bug
 
-Looks about right. That was 9 days ago. I cannot keep ctx for so long.
-Re-read the threads just in case. If you miss something it's not a big
-deal either.
+Looks simple enough to me.
+Ship it for bpf tree.
+If we can come up with something better we can do it later in bpf-next.
+
+I very much prefer to avoid complexity as much as possible.
 
