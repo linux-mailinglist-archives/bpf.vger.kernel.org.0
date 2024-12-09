@@ -1,200 +1,264 @@
-Return-Path: <bpf+bounces-46389-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46390-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D6949E9441
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 13:35:33 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06C959E95E9
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 14:11:38 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 739F5284347
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 12:35:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEFCB166351
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 13:09:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9518622F39D;
-	Mon,  9 Dec 2024 12:33:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C0E22B5A7;
+	Mon,  9 Dec 2024 13:05:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BPBsh1k4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2qRppsK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90B5022F38B
-	for <bpf@vger.kernel.org>; Mon,  9 Dec 2024 12:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89170229B3A
+	for <bpf@vger.kernel.org>; Mon,  9 Dec 2024 13:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733747598; cv=none; b=GpVUnstjXNSLFZy83/zNrM2uUhG5IFXEuJLAOkpQoRBXFcId1Y/SLWxtSn5Oi+tlKxNNM/KLEazZ1FqO+H8hHVg66Vok2q9RHuSusqFtg8h8GXET8YOwjt0kkTxphf7jrCeVmmotv54zaLfylhOL/fOwp4eJGtWCVJczVwJZu2k=
+	t=1733749526; cv=none; b=iTtFK/tDoicwrwJudSLTRRyqPFrnbhv718pk5ZZvL8r8RqIxjEYGDxhfcx5iEaMGEigrjCgpJ6ZVkBiilF/tEJM0DKf/GwZl63JTXYBlNbGMquYJzbPWOfv7uglc6CmbUm+P1tj4K/ZLQZO7+6G/gZEYolLLJduE9DJfL/3vg3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733747598; c=relaxed/simple;
-	bh=ek6JnJryzS8nkolvdBO+WcL7txRzhCqyp5AS4yQyerY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nY8oBbL3i3XgEnJZWo6t/mFTCsDk88fAsVM0n+1o24fBHUC001Lzde6Cmh70X/VJJxS8cWlJPSFC0VDt26A2e7ieM/OdWnkuXjwPn/P1FQ66w8k2OK4sYfOLAT9rouNqRQvKYs1jCvt/8dwtqwsdNMqqCuavepWO6RMJh3XfSDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BPBsh1k4; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-aa551d5dd72so78364366b.3
-        for <bpf@vger.kernel.org>; Mon, 09 Dec 2024 04:33:15 -0800 (PST)
+	s=arc-20240116; t=1733749526; c=relaxed/simple;
+	bh=l0u88IU1D1mEB24tMzYOFijsnSd5NBAPSrQeXv5IAYU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bvGGQwftHh6DIKP9f0rfCGs6aK/isdlVCDkXk1wPj/Z0E1e4oTG4YJQY7SIY25RLW9IG+B6kSwmeD6wC0v6g+G48Nj0EgcpNUXQvX33xZfLW5G0DTZe1Us9/x/msx0M2HEHjMm5FSweY1h5CspSLa6fibvCxrdhAkS91DKg2PcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F2qRppsK; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-aa69251292dso121118066b.2
+        for <bpf@vger.kernel.org>; Mon, 09 Dec 2024 05:05:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1733747594; x=1734352394; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nt1cndHZ8pbXtiRxeB+O52iETLBujQEcUgkGHWv3lYM=;
-        b=BPBsh1k44sW9Uvtngsyo0Z/4E0JbXC/ebAX7UVqfON71LrRfKh6Lhw20HWcf/+WQ0g
-         KRFyY8FarxwJfNT9qAg2a51N+oG9jQ937eE/V1hN9T4vzfp9lAxVKm99v99uz+y8SPei
-         dBmo/qRSHSf6ZOOtlyNkhPryyggxkF2m9D7kPaiVJfC2M+mw/eUtGRJA00FyxW7vPwwn
-         kh/puyj7+ad1J9Rusn+HgTvKlhjaVP1rwu7s8YzubkrDhvwGI70oIOTebzCGUWKlftaf
-         Qavzuhg618riQvM8cV8BBJBuyutVbnqPshwOTI5SCUJNXsGPHpyaQDoa3TlbFTJ32QGg
-         RTRw==
+        d=gmail.com; s=20230601; t=1733749523; x=1734354323; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gpk7Wf4ECMJtSn7weUyp295VgiJ+vAYQMXjGP+etwrs=;
+        b=F2qRppsKvVi/MNgLSMiGK7fDashcPLVnfTVZKpaJcihjTbBwpojHiPNioJSOxTUChG
+         U49vZc0cAfLXujBUn8LpxJpJ7sSGQSkpMzvjx1V34V2Ln1wt2mDsZa0XXSUPNQSV/hMO
+         EZAtqd0/H1CfbFDZFBCuo8k4crNtYFs3NFPb5anXFYn7u6FX326vszbD6d//m7UvQxs1
+         RdwtZW55XJgmZ3Rwmzc2zVCwNjtKGhnzcbnoaE/tRAqA5BSBKN734CFaywsmnRYR6Z+o
+         awuu/PoPaPtEHBdQ+fXy8vnPefjHvuSiXKoCYY/ZAoUxpEfXf4ayunsmuYX6jsYsBiZg
+         DDIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733747594; x=1734352394;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nt1cndHZ8pbXtiRxeB+O52iETLBujQEcUgkGHWv3lYM=;
-        b=UhSkaU0exH2AiHKWnxnQbyKXrwllNqMI7zbWb55AUHSYO9C4AnHLDKOU7nxKYBGGOH
-         w7T/4eW70nqXWGfaz5kwY3rxagZXdXdsgMg7TeVvNMyY3VpjsrgjWsY8xFNZH9k/NksM
-         WxEY/hQF+tmKVqe/wZ1wBZqQUpOdn65yHFLqzmOcgvhXNwjvfcIFNFnlfNgtRoKVPcX5
-         j7gQCDpgiRUZlo6YYj/8CD3F6hZltIJpf6hIHdsbMTzlhd3YpsK7rEySDUnOPilzHr7E
-         J5Iw77HeoI/1Kh5mXGRmi8J4rvoGuEWtVWAtVbUJHmbtu1M8G//7YxVmAmqemdWYD5pT
-         KMfg==
-X-Forwarded-Encrypted: i=1; AJvYcCWuas6ZLqTsIUZPUKBL3/1uZ6FZMVXq+xooxvFq2TPAfqtcNPbA85hjVFxaGQrFaTnINSo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwvxpM/fABgBFdldndEcGABz7ss2pRfRTGxCdGUrpK579Yki0Aa
-	7NlJt/bzl9Pp+Zo9khCBY7KR9S3JdcJdMOPOr/vKUzLF8iWxjzGAPK1obkBDOXo=
-X-Gm-Gg: ASbGncu29qa0/Ev6S/aEjfeZP5+rGr3gsCR4EprxjVrrjw7dmpddN4+RTbzAVBqTEYt
-	gadWb6dOPwNB7vdHpIZ05COScobZLoyBybBtUZZA/7g7bHJ+akmY93b+8pM8ucTdaK0MWCZnbIj
-	lG/VUVQquUhAReUHsSrteH6U0tIifb4095C1nw1djNEFPzmofmgLgKshlIamL8gMYbw9IlM76Aw
-	IO2hQRNLxJNGYWmEIvzw97t9Q+ubUMYky4DBI2dkIC3VjY5KiQN4AR4eyYseO+pdEuFN/CPhumM
-	APdZOC0muCpr7QbbwZqQyhdt/5sGpFB3CsD6zxEjmrGyICf8o1CmO5I=
-X-Google-Smtp-Source: AGHT+IHhdX0FdatIb0ng+WxBrxtwY6KW2ibAnH43Vj2dTr2Rwd6wvnDl6sDEJjcdHu0Fke7nx/YjOQ==
-X-Received: by 2002:a17:907:3fa8:b0:a9a:8216:2f4d with SMTP id a640c23a62f3a-aa639fa5dfamr461325766b.3.1733747593866;
-        Mon, 09 Dec 2024 04:33:13 -0800 (PST)
-Received: from mordecai.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-3010-3bd6-8521-caf1.ipv6.o2.cz. [2a00:1028:83b8:1e7a:3010:3bd6:8521:caf1])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa62601b5fesm672536266b.117.2024.12.09.04.33.11
+        d=1e100.net; s=20230601; t=1733749523; x=1734354323;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Gpk7Wf4ECMJtSn7weUyp295VgiJ+vAYQMXjGP+etwrs=;
+        b=nq/Jiy8WY4AJevdxJFkSlBLoMdBbhwKFh5hrSC3kz0Z6oC26vwiGvmbTajuMkYludu
+         /hn9/swJtYUlTO352kG363xeahUAYuLlxqn/IM4z/wLRgLZ4VE8uSQkj2sMKod9dNhmJ
+         Hniz2Knh4RIds16OxO2QWuOl+NpiKlJWWBM1uJtvFQM3gmGBa9k81WcedIWEwX94V7em
+         75EZDmBt2A4WNZcChW9Swkwxz/ZZEbgdvU/PIZNk/+HP95rzzP8ehC6QLaqBxwsu3ipr
+         BJbnXRALwRpHmcP3iE1jnmljtr+vQB9uy6g9bOWiH3SvHQPy1y2lG3thHRYjFtIv8UOv
+         RWGA==
+X-Gm-Message-State: AOJu0YyBV4iEYS9LPaTFSFvNJPORwC5YuRgn+l6NtnrHcozQYRaZLdm0
+	SXV30Nh2YucOGRkS9tgHsPqmY5KVwv6FzBRSd31OMHzfsop9cKaqIXq63Q==
+X-Gm-Gg: ASbGncuqeXABKPDzbg+Yp+VTfW9Y1ZL+XsZlLOOiWwaupgad9PTFFD0n6H/YwrGorsL
+	VkBXvrh2Ml+zOO3WfnaNkY6Bph8WOTt2MruZDcXHep0kzswZn3oeTwGSlru9LqtnUdpo2h52wkc
+	q3OYgYJU4kQ5cxtBICXpd6r1imm6c6xfzs4GIIpsuEIlEObndIop7jEXv6Ts8952bHsK1UkIaHT
+	m7/rG3KXQJf0iyZ3ghizUInnuWBFm7Hgu6BBPBJvXH2bVmBHwXnaDXkS4RYT6Voi3AqpwVKney0
+X-Google-Smtp-Source: AGHT+IFuStn6i5wynpR3K9VWsybYjHlC3mHyhVambVZrfGHHEZhHp+My9fbmITbQK7yYEvpVa94MQQ==
+X-Received: by 2002:a17:906:3292:b0:aa5:199f:2bf2 with SMTP id a640c23a62f3a-aa63a073670mr1271240466b.29.1733749522512;
+        Mon, 09 Dec 2024 05:05:22 -0800 (PST)
+Received: from localhost.localdomain ([2a02:8109:a302:ae00:6eb3:da82:a6be:6559])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa68c4b52b8sm124741466b.52.2024.12.09.05.05.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Dec 2024 04:33:13 -0800 (PST)
-Date: Mon, 9 Dec 2024 13:33:09 +0100
-From: Petr Tesarik <ptesarik@suse.com>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Dave Hansen
- <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
- bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Wanpeng Li <wanpengli@tencent.com>, Vitaly Kuznetsov <vkuznets@redhat.com>,
- Andy Lutomirski <luto@kernel.org>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Neeraj
- Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes
- <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun Feng
- <boqun.feng@gmail.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki
- <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes
- <lstoakes@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Jason Baron
- <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>, Sami Tolvanen
- <samitolvanen@google.com>, Ard Biesheuvel <ardb@kernel.org>, Nicholas
- Piggin <npiggin@gmail.com>, Juerg Haefliger
- <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
- <nsaenz@kernel.org>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, Nadav Amit <namit@vmware.com>, Dan
- Carpenter <error27@gmail.com>, Chuang Wang <nashuiliang@gmail.com>, Yang
- Jihong <yangjihong1@huawei.com>, Petr Mladek <pmladek@suse.com>, "Jason A.
- Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>, Julian Pidancet
- <julian.pidancet@oracle.com>, Tom Lendacky <thomas.lendacky@amd.com>,
- Dionna Glaze <dionnaglaze@google.com>, Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?=
- <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>, Marcelo Tosatti
- <mtosatti@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, Daniel Wagner
- <dwagner@suse.de>
-Subject: Re: [RFC PATCH v3 13/15] context_tracking,x86: Add infrastructure
- to defer kernel TLBI
-Message-ID: <20241209133309.794439ca@mordecai.tesarici.cz>
-In-Reply-To: <xhsmh1pyh6p0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-References: <20241119153502.41361-1-vschneid@redhat.com>
-	<20241119153502.41361-14-vschneid@redhat.com>
-	<20241120152216.GM19989@noisy.programming.kicks-ass.net>
-	<20241120153221.GM38972@noisy.programming.kicks-ass.net>
-	<xhsmhldxdhl7b.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-	<20241121111221.GE24774@noisy.programming.kicks-ass.net>
-	<4b562cd0-7500-4b3a-8f5c-e6acfea2896e@intel.com>
-	<20241121153016.GL39245@noisy.programming.kicks-ass.net>
-	<20241205183111.12dc16b3@mordecai.tesarici.cz>
-	<xhsmh1pyh6p0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-suse-linux-gnu)
+        Mon, 09 Dec 2024 05:05:22 -0800 (PST)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next v3] selftests/bpf: add more stats into veristat
+Date: Mon,  9 Dec 2024 13:04:55 +0000
+Message-ID: <20241209130455.94592-1-mykyta.yatsenko5@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Mon, 09 Dec 2024 13:04:43 +0100
-Valentin Schneider <vschneid@redhat.com> wrote:
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
-> On 05/12/24 18:31, Petr Tesarik wrote:
-> > On Thu, 21 Nov 2024 16:30:16 +0100
-> > Peter Zijlstra <peterz@infradead.org> wrote:
-> >  
-> >> On Thu, Nov 21, 2024 at 07:07:44AM -0800, Dave Hansen wrote:  
-> >> > On 11/21/24 03:12, Peter Zijlstra wrote:  
-> >> > >> I see e.g. ds_clear_cea() clears PTEs that can have the _PAGE_GLOBAL flag,
-> >> > >> and it correctly uses the non-deferrable flush_tlb_kernel_range().  
-> >> > >
-> >> > > I always forget what we use global pages for, dhansen might know, but
-> >> > > let me try and have a look.
-> >> > >
-> >> > > I *think* we only have GLOBAL on kernel text, and that only sometimes.  
-> >> >
-> >> > I think you're remembering how _PAGE_GLOBAL gets used when KPTI is in play.  
-> >>
-> >> Yah, I suppose I am. That was the last time I had a good look at this
-> >> stuff :-)
-> >>  
-> >> > Ignoring KPTI for a sec... We use _PAGE_GLOBAL for all kernel mappings.
-> >> > Before PCIDs, global mappings let the kernel TLB entries live across CR3
-> >> > writes. When PCIDs are in play, global mappings let two different ASIDs
-> >> > share TLB entries.  
-> >>
-> >> Hurmph.. bah. That means we do need that horrible CR4 dance :/  
-> >
-> > In general, yes.
-> >
-> > But I wonder what exactly was the original scenario encountered by
-> > Valentin. I mean, if TLB entry invalidations were necessary to sync
-> > changes to kernel text after flipping a static branch, then it might be
-> > less overhead to make a list of affected pages and call INVLPG on them.
-> >
-> > AFAIK there is currently no such IPI function for doing that, but if we
-> > could add one. If the list of invalidated global pages is reasonably
-> > short, of course.
-> >
-> > Valentin, do you happen to know?
-> >  
-> 
-> So from my experimentation (hackbench + kernel compilation on housekeeping
-> CPUs, dummy while(1) userspace loop on isolated CPUs), the TLB flushes only
-> occurred from vunmap() - mainly from all the hackbench threads coming and
-> going.
-> 
-> Static branch updates only seem to trigger the sync_core() IPI, at least on
-> x86.
+Extend veristat to collect and print more stats, namely:
+  - program size in instructions
+  - jited program size in bytes
+  - program type
+  - attach type
+  - stack depth
 
-Thank you, this is helpful.
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+---
+ tools/testing/selftests/bpf/veristat.c | 64 +++++++++++++++++++++++---
+ 1 file changed, 58 insertions(+), 6 deletions(-)
 
-So, these allocations span more than tlb_single_page_flush_ceiling
-pages (default 33). Is THP enabled? If yes, we could possibly get below
-that threshold by improving flushing of huge pages (cf. footnote [1] in
-Documentation/arch/x86/tlb.rst).
+diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+index e12ef953fba8..162fe27d06f8 100644
+--- a/tools/testing/selftests/bpf/veristat.c
++++ b/tools/testing/selftests/bpf/veristat.c
+@@ -34,6 +34,11 @@ enum stat_id {
+ 	PEAK_STATES,
+ 	MAX_STATES_PER_INSN,
+ 	MARK_READ_MAX_LEN,
++	SIZE,
++	JITED_SIZE,
++	STACK,
++	PROG_TYPE,
++	ATTACH_TYPE,
+ 
+ 	FILE_NAME,
+ 	PROG_NAME,
+@@ -640,19 +645,21 @@ static int append_filter_file(const char *path)
+ }
+ 
+ static const struct stat_specs default_output_spec = {
+-	.spec_cnt = 7,
++	.spec_cnt = 8,
+ 	.ids = {
+ 		FILE_NAME, PROG_NAME, VERDICT, DURATION,
+-		TOTAL_INSNS, TOTAL_STATES, PEAK_STATES,
++		TOTAL_INSNS, TOTAL_STATES, SIZE, JITED_SIZE
+ 	},
+ };
+ 
+ static const struct stat_specs default_csv_output_spec = {
+-	.spec_cnt = 9,
++	.spec_cnt = 14,
+ 	.ids = {
+ 		FILE_NAME, PROG_NAME, VERDICT, DURATION,
+ 		TOTAL_INSNS, TOTAL_STATES, PEAK_STATES,
+ 		MAX_STATES_PER_INSN, MARK_READ_MAX_LEN,
++		SIZE, JITED_SIZE, PROG_TYPE, ATTACH_TYPE,
++		STACK,
+ 	},
+ };
+ 
+@@ -688,6 +695,11 @@ static struct stat_def {
+ 	[PEAK_STATES] = { "Peak states", {"peak_states"}, },
+ 	[MAX_STATES_PER_INSN] = { "Max states per insn", {"max_states_per_insn"}, },
+ 	[MARK_READ_MAX_LEN] = { "Max mark read length", {"max_mark_read_len", "mark_read"}, },
++	[SIZE] = { "Program size", {"prog_size"}, },
++	[JITED_SIZE] = { "Jited size", {"prog_size_jited"}, },
++	[STACK] = {"Stack depth", {"stack_depth", "stack"}, },
++	[PROG_TYPE] = { "Program type", {"prog_type"}, },
++	[ATTACH_TYPE] = { "Attach type", {"attach_type", }, },
+ };
+ 
+ static bool parse_stat_id_var(const char *name, size_t len, int *id,
+@@ -835,7 +847,8 @@ static char verif_log_buf[64 * 1024];
+ static int parse_verif_log(char * const buf, size_t buf_sz, struct verif_stats *s)
+ {
+ 	const char *cur;
+-	int pos, lines;
++	int pos, lines, sub_stack, cnt = 0;
++	char *state = NULL, *token, stack[512];
+ 
+ 	buf[buf_sz - 1] = '\0';
+ 
+@@ -853,15 +866,22 @@ static int parse_verif_log(char * const buf, size_t buf_sz, struct verif_stats *
+ 
+ 		if (1 == sscanf(cur, "verification time %ld usec\n", &s->stats[DURATION]))
+ 			continue;
+-		if (6 == sscanf(cur, "processed %ld insns (limit %*d) max_states_per_insn %ld total_states %ld peak_states %ld mark_read %ld",
++		if (5 == sscanf(cur, "processed %ld insns (limit %*d) max_states_per_insn %ld total_states %ld peak_states %ld mark_read %ld",
+ 				&s->stats[TOTAL_INSNS],
+ 				&s->stats[MAX_STATES_PER_INSN],
+ 				&s->stats[TOTAL_STATES],
+ 				&s->stats[PEAK_STATES],
+ 				&s->stats[MARK_READ_MAX_LEN]))
+ 			continue;
+-	}
+ 
++		if (1 == sscanf(cur, "stack depth %511s", stack))
++			continue;
++	}
++	while ((token = strtok_r(cnt++ ? NULL : stack, "+", &state))) {
++		if (sscanf(token, "%d", &sub_stack) == 0)
++			break;
++		s->stats[STACK] += sub_stack;
++	}
+ 	return 0;
+ }
+ 
+@@ -1146,8 +1166,11 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
+ 	char *buf;
+ 	int buf_sz, log_level;
+ 	struct verif_stats *stats;
++	struct bpf_prog_info info;
++	__u32 info_len = sizeof(info);
+ 	int err = 0;
+ 	void *tmp;
++	int fd;
+ 
+ 	if (!should_process_file_prog(base_filename, bpf_program__name(prog))) {
+ 		env.progs_skipped++;
+@@ -1196,6 +1219,15 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
+ 	stats->file_name = strdup(base_filename);
+ 	stats->prog_name = strdup(bpf_program__name(prog));
+ 	stats->stats[VERDICT] = err == 0; /* 1 - success, 0 - failure */
++	stats->stats[SIZE] = bpf_program__insn_cnt(prog);
++	stats->stats[PROG_TYPE] = bpf_program__type(prog);
++	stats->stats[ATTACH_TYPE] = bpf_program__expected_attach_type(prog);
++
++	memset(&info, 0, info_len);
++	fd = bpf_program__fd(prog);
++	if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) == 0)
++		stats->stats[JITED_SIZE] = info.jited_prog_len;
++
+ 	parse_verif_log(buf, buf_sz, stats);
+ 
+ 	if (env.verbose) {
+@@ -1309,6 +1341,11 @@ static int cmp_stat(const struct verif_stats *s1, const struct verif_stats *s2,
+ 	case PROG_NAME:
+ 		cmp = strcmp(s1->prog_name, s2->prog_name);
+ 		break;
++	case ATTACH_TYPE:
++	case PROG_TYPE:
++	case SIZE:
++	case JITED_SIZE:
++	case STACK:
+ 	case VERDICT:
+ 	case DURATION:
+ 	case TOTAL_INSNS:
+@@ -1523,12 +1560,27 @@ static void prepare_value(const struct verif_stats *s, enum stat_id id,
+ 		else
+ 			*str = s->stats[VERDICT] ? "success" : "failure";
+ 		break;
++	case ATTACH_TYPE:
++		if (!s)
++			*str = "N/A";
++		else
++			*str = libbpf_bpf_attach_type_str(s->stats[ATTACH_TYPE]) ?: "N/A";
++		break;
++	case PROG_TYPE:
++		if (!s)
++			*str = "N/A";
++		else
++			*str = libbpf_bpf_prog_type_str(s->stats[PROG_TYPE]) ?: "N/A";
++		break;
+ 	case DURATION:
+ 	case TOTAL_INSNS:
+ 	case TOTAL_STATES:
+ 	case PEAK_STATES:
+ 	case MAX_STATES_PER_INSN:
+ 	case MARK_READ_MAX_LEN:
++	case STACK:
++	case SIZE:
++	case JITED_SIZE:
+ 		*val = s ? s->stats[id] : 0;
+ 		break;
+ 	default:
+-- 
+2.47.1
 
-OTOH even though a series of INVLPG may reduce subsequent TLB misses,
-it will not exactly improve latency, so it would go against the main
-goal of this whole patch series.
-
-Hmmm... I see, the CR4 dance is the best solution after all. :-|
-
-Petr T
 
