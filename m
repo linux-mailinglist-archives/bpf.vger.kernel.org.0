@@ -1,143 +1,245 @@
-Return-Path: <bpf+bounces-46387-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46388-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC4259E93A2
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 13:15:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01F2E9E93DE
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 13:27:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D63661887495
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 12:14:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FABC162B0A
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 12:27:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83FD9229B26;
-	Mon,  9 Dec 2024 12:12:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E238A223711;
+	Mon,  9 Dec 2024 12:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KDB6uYED"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qfvzxyNh"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A6F02236FA;
-	Mon,  9 Dec 2024 12:12:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568732236E5;
+	Mon,  9 Dec 2024 12:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733746375; cv=none; b=A9xrwAUxvI95FnlHAmcInFMJvR5Oeg+6drRyaHoVX36r1vR6TGMhXTavmyj9L2oj9JD9l+dIsg9k1dFC1sATZOQFe1h3VS44gSNh5buDxztTvhpvee/gWuaJ2hFnP4MXsj0erhUdCviYT94Q060vE4VONWkTUePwKnF2vVl4z3k=
+	t=1733747216; cv=none; b=Ahf5qLqzvDuToi9rEbwyD0cDSd9h3ESs0BWfrM18kFoBp7dmnFBmD94j7GxN2igF0AbemTd8tF1Iq3yorplmv8yE3J/BkSEOJPZ1WKjDYM5aNhl7JuTSsCyvl6xuUTVB8mJYy3Q5YI8sReLmSAylEIdPcQ+RAr6/4VQxSIXZO5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733746375; c=relaxed/simple;
-	bh=VmJgxY8JyHe4LPcKfR3zGqif4VDPc4khkHgSpIUKuLQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h0RnniCFnX+VM2XmA8/PXlFNXrBH+lVe6nYIMeyZX5SufKK/V8gb2OZ3Y05MiL7h/EvIFm+nPkGYpdfF6QOWVzoDA7BiW+6U98B5BAzs5iRAlPB8vsguQMF3temQLYZ+BkcmHC0+2iFXH/4eCQgMNgP7rgURLkRtgOsFLCYB7GA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=KDB6uYED; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=uVT5Gi2KQmMoQpuKPHzUhOIG+qt0YGmH2vT/S1/cY9s=; b=KDB6uYEDfLPVKzKPUOzo8eD3z6
-	oLNbK1X3DwOjgnTiEsJ930xFhE1kUwiAEEcdqt5KaAZ4d7H45sMOZ72GVD2kljqEiOxunf3ZeaHBA
-	oKPYPvUg3/H8lMDYDTwXM6Rjzo3HpJjJ0LrgUUuVQB8k2p0qQeVolxYqooGEDzVuPKTWy3wi+Y+e8
-	zGvxiKlH+29kd/OONbtvefEtZpw66LBUJXc18/7GTsMi18v14Ast8dL4bsGmw+GEOO4agRu7V+tPi
-	zhPLoXmG2VJvw23vIYnpHN0wraWDrv/HsDqCWDieYP8tz+T1YhZLA2DBIJbu9ICkjU56I2dedVPx/
-	TnlD5zcA==;
-Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKcd8-00000003X9M-3OPg;
-	Mon, 09 Dec 2024 12:12:51 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 6352330040C; Mon,  9 Dec 2024 13:12:49 +0100 (CET)
-Date: Mon, 9 Dec 2024 13:12:49 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: Petr Tesarik <ptesarik@suse.com>, Dave Hansen <dave.hansen@intel.com>,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
-	x86@kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Juerg Haefliger <juerg.haefliger@canonical.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
-	Chuang Wang <nashuiliang@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Petr Mladek <pmladek@suse.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-	Julian Pidancet <julian.pidancet@oracle.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>,
-	Daniel Wagner <dwagner@suse.de>
-Subject: Re: [RFC PATCH v3 13/15] context_tracking,x86: Add infrastructure to
- defer kernel TLBI
-Message-ID: <20241209121249.GN35539@noisy.programming.kicks-ass.net>
-References: <20241119153502.41361-1-vschneid@redhat.com>
- <20241119153502.41361-14-vschneid@redhat.com>
- <20241120152216.GM19989@noisy.programming.kicks-ass.net>
- <20241120153221.GM38972@noisy.programming.kicks-ass.net>
- <xhsmhldxdhl7b.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <20241121111221.GE24774@noisy.programming.kicks-ass.net>
- <4b562cd0-7500-4b3a-8f5c-e6acfea2896e@intel.com>
- <20241121153016.GL39245@noisy.programming.kicks-ass.net>
- <20241205183111.12dc16b3@mordecai.tesarici.cz>
- <xhsmh1pyh6p0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	s=arc-20240116; t=1733747216; c=relaxed/simple;
+	bh=4JauUlaauwuNUBq73sXeBrsFuFTH+ZeTne9Ec2pQWyo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=R8exUGFLLtC7QN0EMWKk9950FltM48eyK5y0eiAG2mClaNkXBgoHCklppOu8bqWjd+j5SEGGQX7OyI+YMN4Zv9KZrHyw4FRGbnrhX6ADBL3U/D3xd05xEzPrr8k90aC9ERN51W00KWJDJBX7+TL1Bp3RxBsEgLzIvoRh06f+1Qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qfvzxyNh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44A5FC4CED1;
+	Mon,  9 Dec 2024 12:26:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733747215;
+	bh=4JauUlaauwuNUBq73sXeBrsFuFTH+ZeTne9Ec2pQWyo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=qfvzxyNhhMJx0OVwZWoYDm3WmhapNfBdVuE+T3rGNKsfJcFcrrOycdEneT32x/IWz
+	 8d5ik0ZcJuSV7buBdgpCH6rxM9xtKheobH+2uPbJt0X/GHABXptgAjAPiTVwACL9iQ
+	 d4Zi0G9KKy+QtuM4bOLnNQHRUitRjQDaz/TyBKtgqWCPF18bfmi3k0ZVUro1nYn7ze
+	 yCi6xlefH5ImyiR6EMvLjuds7kpRLGaB75odXniY04SiT87bxJaIbaD8iWJplEWUaB
+	 HcEDj2/70fD9zPno9Edx1ngQcfmW0RSIVBc4nYXwmLucFPBjKUg+Sc6FKbqBZQJRXC
+	 Jz3xmpAkdFOTw==
+Message-ID: <92b28250-acd8-4ca7-8a0e-09e1338113f0@kernel.org>
+Date: Mon, 9 Dec 2024 12:26:50 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xhsmh1pyh6p0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2] bpftool: btf: Support dumping a single type
+ from file
+To: Daniel Xu <dxu@dxuuu.xyz>, hawk@kernel.org, john.fastabend@gmail.com,
+ kuba@kernel.org, ast@kernel.org, davem@davemloft.net, daniel@iogearbox.net,
+ andrii@kernel.org
+Cc: martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, antony@phenome.org,
+ toke@kernel.org
+References: <c8e6a2dfb64d76e61a20b1e2470fccbddf167499.1733613798.git.dxu@dxuuu.xyz>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <c8e6a2dfb64d76e61a20b1e2470fccbddf167499.1733613798.git.dxu@dxuuu.xyz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Dec 09, 2024 at 01:04:43PM +0100, Valentin Schneider wrote:
-
-> > But I wonder what exactly was the original scenario encountered by
-> > Valentin. I mean, if TLB entry invalidations were necessary to sync
-> > changes to kernel text after flipping a static branch, then it might be
-> > less overhead to make a list of affected pages and call INVLPG on them.
-
-No; TLB is not involved with text patching (on x86).
-
-> > Valentin, do you happen to know?
+On 07/12/2024 23:24, Daniel Xu wrote:
+> Some projects, for example xdp-tools [0], prefer to check in a minimized
+> vmlinux.h rather than the complete file which can get rather large.
 > 
-> So from my experimentation (hackbench + kernel compilation on housekeeping
-> CPUs, dummy while(1) userspace loop on isolated CPUs), the TLB flushes only
-> occurred from vunmap() - mainly from all the hackbench threads coming and
-> going.
+> However, when you try to add a minimized version of a complex struct (eg
+> struct xfrm_state), things can get quite complex if you're trying to
+> manually untangle and deduplicate the dependencies.
+> 
+> This commit teaches bpftool to do a minimized dump of a single type by
+> providing an optional root_id argument.
+> 
+> Example usage:
+> 
+>     $ ./bpftool btf dump file ~/dev/linux/vmlinux | rg "STRUCT 'xfrm_state'"
+>     [12643] STRUCT 'xfrm_state' size=912 vlen=58
+> 
+>     $ ./bpftool btf dump file ~/dev/linux/vmlinux root_id 12643 format c
+>     #ifndef __VMLINUX_H__
+>     #define __VMLINUX_H__
+> 
+>     [..]
+> 
+>     struct xfrm_type_offload;
+> 
+>     struct xfrm_sec_ctx;
+> 
+>     struct xfrm_state {
+>             possible_net_t xs_net;
+>             union {
+>                     struct hlist_node gclist;
+>                     struct hlist_node bydst;
+>             };
+>             union {
+>                     struct hlist_node dev_gclist;
+>                     struct hlist_node bysrc;
+>             };
+>             struct hlist_node byspi;
+>     [..]
+> 
+> [0]: https://github.com/xdp-project/xdp-tools/blob/master/headers/bpf/vmlinux.h
+> 
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+> Changes in v2:
+> * Add early error check for invalid BTF ID
+> 
+>  .../bpf/bpftool/Documentation/bpftool-btf.rst |  5 +++--
+>  tools/bpf/bpftool/btf.c                       | 19 +++++++++++++++++++
+>  2 files changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
+> index 3f6bca03ad2e..5abd0e99022f 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
+> @@ -27,7 +27,7 @@ BTF COMMANDS
+>  | **bpftool** **btf dump** *BTF_SRC* [**format** *FORMAT*]
+>  | **bpftool** **btf help**
+>  |
+> -| *BTF_SRC* := { **id** *BTF_ID* | **prog** *PROG* | **map** *MAP* [{**key** | **value** | **kv** | **all**}] | **file** *FILE* }
+> +| *BTF_SRC* := { **id** *BTF_ID* | **prog** *PROG* | **map** *MAP* [{**key** | **value** | **kv** | **all**}] | **file** *FILE* [**root_id** *ROOT_ID*] }
 
-Right, we have virtually mapped stacks.
+
+Thanks for this!
+
+root_id is not part of the BTF_SRC, I think it should be an option on
+the command line itself (3 lines above), after "format". And the change
+should also be repeated below in the description (the "format" option is
+missing, by the way, let's fix it too).
+
+Can you please also update the interactive help message at the end of
+btf.c?
+
+Can you please also update the bash completion file? I think it should
+look like this:
+
+
+------
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 0c541498c301..097d406ee21f 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -930,6 +930,9 @@ _bpftool()
+                         format)
+                             COMPREPLY=( $( compgen -W "c raw" -- "$cur" ) )
+                             ;;
++                        root_id)
++                            return 0;
++                            ;;
+                         c)
+                             COMPREPLY=( $( compgen -W "unsorted" -- "$cur" ) )
+                             ;;
+@@ -937,13 +940,13 @@ _bpftool()
+                             # emit extra options
+                             case ${words[3]} in
+                                 id|file)
+-                                    _bpftool_once_attr 'format'
++                                    _bpftool_once_attr 'format root_id'
+                                     ;;
+                                 map|prog)
+                                     if [[ ${words[3]} == "map" ]] && [[ $cword == 6 ]]; then
+                                         COMPREPLY+=( $( compgen -W "key value kv all" -- "$cur" ) )
+                                     fi
+-                                    _bpftool_once_attr 'format'
++                                    _bpftool_once_attr 'format root_id'
+                                     ;;
+                                 *)
+                                     ;;
+------
+
+
+>  | *FORMAT* := { **raw** | **c** [**unsorted**] }
+>  | *MAP* := { **id** *MAP_ID* | **pinned** *FILE* }
+>  | *PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* | **name** *PROG_NAME* }
+> @@ -60,7 +60,8 @@ bpftool btf dump *BTF_SRC*
+>  
+>      When specifying *FILE*, an ELF file is expected, containing .BTF section
+>      with well-defined BTF binary format data, typically produced by clang or
+> -    pahole.
+> +    pahole. You can choose to dump a single type and all its dependent types
+> +    by providing an optional *ROOT_ID*.
+>  
+>      **format** option can be used to override default (raw) output format. Raw
+>      (**raw**) or C-syntax (**c**) output formats are supported. With C-style
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index d005e4fd6128..a75e17efaf5e 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -953,6 +953,8 @@ static int do_dump(int argc, char **argv)
+>  		NEXT_ARG();
+>  	} else if (is_prefix(src, "file")) {
+>  		const char sysfs_prefix[] = "/sys/kernel/btf/";
+> +		__u32 root_id;
+> +		char *end;
+
+
+I think we could move these declarations to a lower scope, under your
+"if (argc && is_prefix(...))".
+
+
+>  
+>  		if (!base_btf &&
+>  		    strncmp(*argv, sysfs_prefix, sizeof(sysfs_prefix) - 1) == 0 &&
+> @@ -967,6 +969,23 @@ static int do_dump(int argc, char **argv)
+>  			goto done;
+>  		}
+>  		NEXT_ARG();
+> +
+> +		if (argc && is_prefix(*argv, "root_id")) {
+> +			NEXT_ARG();
+> +			root_id = strtoul(*argv, &end, 0);
+> +			if (*end) {
+> +				err = -1;
+> +				p_err("can't parse %s as root ID", *argv);
+> +				goto done;
+> +			}
+> +			if (root_id >= btf__type_cnt(btf)) {
+> +				err = -EINVAL;
+> +				p_err("invalid root ID: %u", root_id);
+> +				goto done;
+> +			}
+> +			root_type_ids[root_type_cnt++] = root_id;
+> +			NEXT_ARG();
+> +		}
+>  	} else {
+>  		err = -1;
+>  		p_err("unrecognized BTF source specifier: '%s'", src);
+
+
+Same comment as above, it seems to be that the root_id controls the
+output for the command rather than the source, and I'd rather move this
+to the "while (argc)" loop where we process the "format" option rather
+than when parsing the source.
+
+
+pw-bot: cr
 
