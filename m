@@ -1,241 +1,180 @@
-Return-Path: <bpf+bounces-46431-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46432-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7100F9EA243
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 00:01:00 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D10F49EA2DE
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 00:35:23 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13725164BFC
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 23:00:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65DFE282926
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 23:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4FE19E82A;
-	Mon,  9 Dec 2024 23:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C2622488B;
+	Mon,  9 Dec 2024 23:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZxGuMlfB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MewChY+n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C644919884C;
-	Mon,  9 Dec 2024 23:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA0119B3EE
+	for <bpf@vger.kernel.org>; Mon,  9 Dec 2024 23:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733785251; cv=none; b=LImioLvBHoBSwxOyGGSaiw9JkYA2RmetmU14x5ILS1hH2nhe3QNB7tbMxS7FkB9QABcsq+ckPuNLgFxBJQC37Es/EVx1jG6OP/Jh66QxdEU3teEiJE1CZxWw0O/EUnz1vFnJt2lsvvApDH2R878O545b1awcrp5ZSbXyPoEcgWk=
+	t=1733787313; cv=none; b=OR2jeGEh0qev9WpWPGANIS2mBxm7PswJoyIWYl9bfJVdSGgqAZD5V6azsYW9Sbui+/MwGnhYLryeSmV2ls1uHvsfF8MxL4rRvyo4O/rFDbQsRrcTWUOQuYs4hFaIwyrJmu8jnCPJq7DH5tif3S6oB9F1kRIhMDQKhx8yULpq41o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733785251; c=relaxed/simple;
-	bh=elYk55NDhAKqhse8FxLZo1SmGQ8M2MoLwtBE/+Rkzpw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KOdQCM8MKFYVV+dEl2o/vO4KjXjIBhULwtsmME0f8E/KD+W+OobrwCIEU0l6inEckNwXUpQNH8KTLi2JW7LTfKYy6vcWCb0LqYJ+kp6Db3CzbBrgzsNr41Ox+pZmE24Cvksg7edh+JZz6Sbi4ZiE7a8ZxOqVkitMyau3+qccw5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZxGuMlfB; arc=none smtp.client-ip=209.85.215.172
+	s=arc-20240116; t=1733787313; c=relaxed/simple;
+	bh=JN7EQT0Mthw7Oga4n+IAssHnuIq/QLIEyXqz0jw/0Pk=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kBlPEDAKl7TYoKLZDiTFQf2lvlK92Iw2plZePexwnDlq4GUrmc6yoKn+F2WMSdSajh1wffUsl4bRqmp6oitXPH/jyZPx2RIqMG1pICaYNXWH+5ZfGTV/TSAhGV8nY/WjuB3GmvPPvM83wSjtFZ2MzPs72661+3cwoFK89sVMyuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MewChY+n; arc=none smtp.client-ip=209.85.221.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-7e9e38dd5f1so3966167a12.0;
-        Mon, 09 Dec 2024 15:00:49 -0800 (PST)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-385ed7f6605so2204609f8f.3
+        for <bpf@vger.kernel.org>; Mon, 09 Dec 2024 15:35:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733785249; x=1734390049; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yVwcZR0vEQf+lGLOIYoDvUdbgkf3uRnNWAqEvhym4Zo=;
-        b=ZxGuMlfBg5tXrfDWPPVAfWzJlFsC6DtXQ0/17ui7cwWhBvuvSHuJdGlW4/qiljAv63
-         rm2EjvxjgVwwMkE9W03nsfBpOT+GlEYVwzfnstLVECcDvPpUT4S/sRMguQtT5ayVpUjb
-         PT8pVe/3EBOrsjFcm0WANnTJNAqWxueB14UF63QH/OJp4ir/Y6UC9sCvUUqol1jyumEG
-         3h384duAtNCHhLeAMIGHHToPJQPEcP5JG+ej9NeSD/VTf20skMsgextlirhW7/N5Q1I4
-         FjXTwZe637L1udabDvUlv13l4uJ+2kyFC23+ytRiXV0pQdUL9SUgAUlDikAZovsk1o+2
-         CwcA==
+        d=gmail.com; s=20230601; t=1733787309; x=1734392109; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=13GeoEKWgDJmL8HGpvtdBM7JrqVpe1ZXGZGoTYzhGwg=;
+        b=MewChY+nmGD2L+DYSjLe8zlc50Qvy8PNAjBNeA+ge7e8ijKFB0h06h1HZA7P/mghCY
+         MIopqaZKvcc97/nGrjRloaJKAu/4nGEhvW5CPMBOfiHpbCOAOL7NKAGmpNJ4OB3N/UnU
+         ldrzZIi5ro100rnqGT4PKzjmPHL/7nAUo+zF4hPuV/ULDM1nAa8uoxn2qajxYVectVoB
+         XxrqwsA9eu1dK7RFo0kDFIuVFfVSItRwYsgWAHazdcjuBP1m5hNX8FzfBzyaWOCHjDRs
+         +os+S66ErvhaD6p4NIKE7Z1vo4nJbfHUNozSMsagbLkbIZZxwAdvFtDU5ifuqm8FC9nf
+         +OgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733785249; x=1734390049;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yVwcZR0vEQf+lGLOIYoDvUdbgkf3uRnNWAqEvhym4Zo=;
-        b=C6fY+468Y4Yo18ww/llsxeeHeeyfySfyJonmggp5vxORGSPvwMd4jfBayFIWe2G9KH
-         gFniCtaA88PE2hwSjzxEU7auxh9NmrrLOHI21wYiO1ozjIxa6YD9H0nfU8z4+AqvoiHx
-         sv2vogT4qO/D6iqkat+b3QtmOOwZ4TMIkzs2fTtvZHHpMnEBOCJBmFKKZrYFf2LhvLjM
-         FjVOkMJiAaVPIfVDemixHbzFFqL3fj8P8PuzxdsX4Wifo4ABH81Aq/EHlCsxgvh4TMhV
-         khF6lrYatxrN6WONxK6L/D6SO2iilWcnAaYWZ/i3pgPvLbhYytfCo7pVzJcWnyLRrr7J
-         yJhw==
-X-Forwarded-Encrypted: i=1; AJvYcCVKBV77UJzUCB4kQsFZpE1BQ6wKOHy47g5cJVKNQCxoRGFO6cBjKqiVXWRcvEWScFYR57uGULGARVwvBBF9iKjr6g==@vger.kernel.org, AJvYcCVNCjaz9kmTdpm9XZdD9LJXFdxqpfL4hiUuVLp9Npb1JCq+NIKOWuAdP1CPEmArYMhrOzESfApBb+NW22f/@vger.kernel.org, AJvYcCXjp2T51euIsf4EstNuGIEaKVbaHVM4Grh6bT/XDh6JXvAmd4mveHggDygdtapqzu5M7EU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxpSWxrlf+3GsVpPWAl6JRkbnppDRfC85CAk/mMVvpkcB22C8MK
-	Rq4M8KEfeEeiWSQZacLMLlTAiY5H03iJih2V8JwTSNQ9lECQDvt5slR1eCHT1dFTfkZgV+NyJfI
-	pD13P1VXvJMDbduUOADF/+Pi0yrQ=
-X-Gm-Gg: ASbGnct9/YwtRFrW8JWEGxa7m72i6o78eIohBrcpn6uF+BJZJ5ex+UCDrWFAz3q3x4E
-	aDWKZTYvfSmgiHrlqETClpOK1GbR/PcOpI6NskylChZSPAWUOEnc=
-X-Google-Smtp-Source: AGHT+IFCLud9Tl/llTWYjfJbJI8At2PeiwsxUEH2EXyTvY2DsuqR+rP2NvVtJCxzQroYZBAKgUM4v2nqzLuP/R7sFzk=
-X-Received: by 2002:a05:6a20:7348:b0:1e0:c50c:9842 with SMTP id
- adf61e73a8af0-1e1871291d0mr25062081637.31.1733785248824; Mon, 09 Dec 2024
- 15:00:48 -0800 (PST)
+        d=1e100.net; s=20230601; t=1733787309; x=1734392109;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=13GeoEKWgDJmL8HGpvtdBM7JrqVpe1ZXGZGoTYzhGwg=;
+        b=DPsEbmceqgfZXYBGbG9SYiwylHZ4iJWQuxWW4lyvgtYZin27a60qM8XCjR0yHgOvCa
+         h0HUhDNdKmA3zvRHYs+NHaa1THS1OrDno0o1NgvDsBxaQtAxgBqagZBiBfnmE0EqMCed
+         UMf5Z8wTGkL6R47LoGK31pgehea4Zbn0yOKoH3zAT4E+ct+vJdqGNMhlD19hsvVntYco
+         oJ9K2aaeGfpvGwStrMGfZuFgKw9Qiotj59Ibfr8VBeUDsXUAZc8Kkw3JKbkVPyIOtI0y
+         hz2mYEfEtLAkASvhxYw+dm/EUsFOzeIyoKYa3tHUU4zvXc7CKaI4/W0zbSEYUFrtMlyt
+         gwRA==
+X-Forwarded-Encrypted: i=1; AJvYcCVAypm/YKFhQTJUyyWdZ0vw0yJT1d/kooTm8rWe/aOAUhBCA/b/E/VzrvhsJn+yHLBNHJA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzddCYdFDpSt3LP2jvO4aZeFMLlX/P95ykXs6T6wwVgct5sVXeJ
+	Jrw3uU14cPjjhtbdCixSZcMfrsX+YaUqdOqJg9HVCrCInuVEayoi
+X-Gm-Gg: ASbGncs0Xk4SyJJCYv6zYqZJsA0xJu8SJMTufg6/mE5V+I8J1/3EvrqsCZgDbZZIr/G
+	OL9j1M8kHqDbbWREq/1feFu8rBysIk71vP4xIZDUDwT49ccMjuWAm6nuUs295RQnDIigrnanmLc
+	mA5jDASGsmjELaslLW+CPCugdIwzBlRNROd3wMIvs0ZyOcHAJeV6wdb+OOvoobeNcjyUuXFzCWI
+	MT+ubYOVGOU1ch3UY6oMgxNB11vwfrUsDFjD5zU7XGYL9Yy6/Pw2mEGhnm3KFs=
+X-Google-Smtp-Source: AGHT+IG5RehCD2kprub3yUaWn6JSzbSn/PpawyCRTrlNuhO5C8ad8oaxPStjhvDlTvTtgVmRZNH2jw==
+X-Received: by 2002:a05:6000:1868:b0:385:e38f:8dd with SMTP id ffacd0b85a97d-386453f9d18mr1783382f8f.46.1733787308790;
+        Mon, 09 Dec 2024 15:35:08 -0800 (PST)
+Received: from krava (85-193-35-130.rib.o2.cz. [85.193.35.130])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3861f59cc26sm14182445f8f.38.2024.12.09.15.35.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Dec 2024 15:35:08 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 10 Dec 2024 00:35:05 +0100
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	bpf <bpf@vger.kernel.org>, kkd@meta.com,
+	Manu Bretelle <chantra@meta.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf v3 2/3] bpf: Do not mark NULL-checked raw_tp arg as
+ scalar
+Message-ID: <Z1d-qbCdtJqg6Er4@krava>
+References: <20241206161053.809580-1-memxor@gmail.com>
+ <20241206161053.809580-3-memxor@gmail.com>
+ <CAADnVQ+_XGVsxYji3WYNj1-KhYZwKaFCgQ6aN=yFB3YWpRT78A@mail.gmail.com>
+ <CAP01T75PQ3RENtQMD+JkB9DZcsUYp+AH6VJURGO730DkuLUMmA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241108061500.2698340-1-namhyung@kernel.org> <20241108061500.2698340-3-namhyung@kernel.org>
- <Z1ccoNOl4Z8c5DCz@x1> <Z1cdDzXe4QNJe8jL@x1> <Z1dRyiruUl1Xo45O@x1>
-In-Reply-To: <Z1dRyiruUl1Xo45O@x1>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 9 Dec 2024 15:00:36 -0800
-Message-ID: <CAEf4Bza5B9rSX7cw4K0iC-gW+OeEATLCcQ=6KGfmuxfJ2XOhvA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] perf lock contention: Run BPF slab cache iterator
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>, 
-	Song Liu <song@kernel.org>, bpf@vger.kernel.org, 
-	Stephane Eranian <eranian@google.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	Kees Cook <kees@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP01T75PQ3RENtQMD+JkB9DZcsUYp+AH6VJURGO730DkuLUMmA@mail.gmail.com>
 
-On Mon, Dec 9, 2024 at 12:23=E2=80=AFPM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> On Mon, Dec 09, 2024 at 01:38:39PM -0300, Arnaldo Carvalho de Melo wrote:
-> > On Mon, Dec 09, 2024 at 01:36:52PM -0300, Arnaldo Carvalho de Melo wrot=
-e:
-> > > On Thu, Nov 07, 2024 at 10:14:57PM -0800, Namhyung Kim wrote:
-> > > > Recently the kernel got the kmem_cache iterator to traverse metadat=
-a of
-> > > > slab objects.  This can be used to symbolize dynamic locks in a sla=
-b.
->
-> > > > The new slab_caches hash map will have the pointer of the kmem_cach=
-e as
-> > > > a key and save the name and a id.  The id will be saved in the flag=
-s
-> > > > part of the lock.
->
-> > > Trying to fix this
+On Fri, Dec 06, 2024 at 07:10:48PM +0100, Kumar Kartikeya Dwivedi wrote:
+> On Fri, 6 Dec 2024 at 18:59, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > So you have that struct in tools/perf/util/bpf_skel/vmlinux/vmlinux.h,
-> > but then, this kernel is old and doesn't have the kmem_cache iterator,
-> > so using the generated vmlinux.h will fail the build.
->
-> I tried passing the right offset to the iterator so as not to try to use
-> a type that isn't in vmlinux.h generated from the old kernel BTF:
->
-> +++ b/tools/perf/util/bpf_lock_contention.c
-> @@ -52,7 +52,7 @@ static void check_slab_cache_iter(struct lock_contentio=
-n *con)
->                 pr_debug("slab cache iterator is not available: %d\n", re=
-t);
->                 goto out;
->         } else {
-> -               const struct btf_member *s =3D __btf_type__find_member_by=
-_name(btf, ret, "s");
-> +               const struct btf_member *s =3D __btf_type__find_unnamed_u=
-nion_with_member_by_name(btf, ret, "s");
->
->                 if (s =3D=3D NULL) {
->                         skel->rodata->slab_cache_iter_member_offset =3D -=
-1;
-> @@ -60,7 +60,9 @@ static void check_slab_cache_iter(struct lock_contentio=
-n *con)
->                         goto out;
->                 }
->
->                 skel->rodata->slab_cache_iter_member_offset =3D s->offset=
- / 8; // bits -> bytes
-> +               pr_debug("slab cache iterator kmem_cache pointer offset: =
-%d\n",
-> +                        skel->rodata->slab_cache_iter_member_offset);
->         }
->
->
-> but the verifier doesn't like that:
->
-> ; struct kmem_cache *s =3D slab_cache_iter_member_offset < 0 ? NULL : @ l=
-ock_contention.bpf.c:615
-> 12: (7b) *(u64 *)(r10 -8) =3D r2        ; R2_w=3Dctx(off=3D8) R10=3Dfp0 f=
-p-8_w=3Dctx(off=3D8)
-> ; if (s =3D=3D NULL) @ lock_contention.bpf.c:619
-> 13: (15) if r1 =3D=3D 0x0 goto pc+22      ; R1=3Dctx()
-> ; d.id =3D ++slab_cache_id << LCB_F_SLAB_ID_SHIFT; @ lock_contention.bpf.=
-c:622
-> 14: (18) r1 =3D 0xffffc14bcde3a014      ; R1_w=3Dmap_value(map=3Dlock_con=
-.bss,ks=3D4,vs=3D40,off=3D20)
-> 16: (61) r3 =3D *(u32 *)(r1 +0)         ; R1_w=3Dmap_value(map=3Dlock_con=
-.bss,ks=3D4,vs=3D40,off=3D20) R3_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffff=
-ff,var_off=3D(0x0; 0xffffffff))
-> 17: (07) r3 +=3D 1                      ; R3_w=3Dscalar(smin=3Dumin=3D1,s=
-max=3Dumax=3D0x100000000,var_off=3D(0x0; 0x1ffffffff))
-> 18: (63) *(u32 *)(r1 +0) =3D r3         ; R1_w=3Dmap_value(map=3Dlock_con=
-.bss,ks=3D4,vs=3D40,off=3D20) R3_w=3Dscalar(smin=3Dumin=3D1,smax=3Dumax=3D0=
-x100000000,var_off=3D(0x0; 0x1ffffffff))
-> 19: (67) r3 <<=3D 16                    ; R3_w=3Dscalar(smin=3Dumin=3D0x1=
-0000,smax=3Dumax=3D0x1000000000000,smax32=3D0x7fff0000,umax32=3D0xffff0000,=
-var_off=3D(0x0; 0x1ffffffff0000))
-> 20: (63) *(u32 *)(r10 -40) =3D r3       ; R3_w=3Dscalar(smin=3Dumin=3D0x1=
-0000,smax=3Dumax=3D0x1000000000000,smax32=3D0x7fff0000,umax32=3D0xffff0000,=
-var_off=3D(0x0; 0x1ffffffff0000)) R10=3Dfp0 fp-40=3D????scalar(smin=3Dumin=
-=3D0x10000,smax=3Dumax=3D0x1000000000000,smax32=3D0x7fff0000,umax32=3D0xfff=
-f0000,var_off=3D(0x0; 0x1ffffffff0000))
-> ; bpf_probe_read_kernel_str(d.name, sizeof(d.name), s->name); @ lock_cont=
-ention.bpf.c:623
-> 21: (79) r3 =3D *(u64 *)(r2 +96)
-> dereference of modified ctx ptr R2 off=3D8 disallowed
-> processed 19 insns (limit 1000000) max_states_per_insn 0 total_states 0 p=
-eak_states 0 mark_read 0
-> -- END PROG LOAD LOG --
-> libbpf: prog 'slab_cache_iter': failed to load: -EACCES
-> libbpf: failed to load object 'lock_contention_bpf'
-> libbpf: failed to load BPF skeleton 'lock_contention_bpf': -EACCES
-> Failed to load lock-contention BPF skeleton
-> lock contention BPF setup failed
-> root@number:~#
->
-> and additionally the type is not like the one you added to the barebones
-> vmlinux.h:
->
-> =E2=AC=A2 [acme@toolbox perf-tools-next]$ git show d82e2e170d1c756b | gre=
-p 'struct bpf_iter__kmem_cache {' -A3
-> +struct bpf_iter__kmem_cache {
-> +       struct kmem_cache *s;
-> +} __attribute__((preserve_access_index));
-> +
-> =E2=AC=A2 [acme@toolbox perf-tools-next]$
->
-> But:
->
-> =E2=AC=A2 [acme@toolbox perf-tools-next]$ uname -a
-> Linux toolbox 6.13.0-rc2 #1 SMP PREEMPT_DYNAMIC Mon Dec  9 12:33:35 -03 2=
-024 x86_64 GNU/Linux
-> =E2=AC=A2 [acme@toolbox perf-tools-next]$ pahole bpf_iter__kmem_cache
-> struct bpf_iter__kmem_cache {
->         union {
->                 struct bpf_iter_meta * meta;             /*     0     8 *=
-/
->         };                                               /*     0     8 *=
-/
->         union {
->                 struct kmem_cache * s;                   /*     8     8 *=
-/
->         };                                               /*     8     8 *=
-/
->
->         /* size: 16, cachelines: 1, members: 2 */
->         /* last cacheline: 16 bytes */
-> };
->
-> =E2=AC=A2 [acme@toolbox perf-tools-next]$
->
-> Do CO-RE handle this?
->
+> > On Fri, Dec 6, 2024 at 8:11 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> > >
+> > > An implication of this fix, which follows from the way the raw_tp fixes
+> > > were implemented, is that all PTR_MAYBE_NULL trusted PTR_TO_BTF_ID are
+> > > engulfed by these checks, and PROBE_MEM will apply to all of them, incl.
+> > > those coming from helpers with KF_ACQUIRE returning maybe null trusted
+> > > pointers. This NULL tagging after this commit will be sticky. Compared
+> > > to a solution which only specially tagged raw_tp args with a different
+> > > special maybe null tag (like PTR_SOFT_NULL), it's a consequence of
+> > > overloading PTR_MAYBE_NULL with this meaning.
+> > >
+> > > Fixes: cb4158ce8ec8 ("bpf: Mark raw_tp arguments with PTR_MAYBE_NULL")
+> > > Reported-by: Manu Bretelle <chantra@meta.com>
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > ---
+> > >  kernel/bpf/verifier.c | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 82f40d63ad7b..556fb609d4a4 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -15365,6 +15365,12 @@ static void mark_ptr_or_null_reg(struct bpf_verifier_env *env,
+> > >                         return;
+> > >
+> > >                 if (is_null) {
+> > > +                       /* We never mark a raw_tp trusted pointer as scalar, to
+> > > +                        * preserve backwards compatibility, instead just leave
+> > > +                        * it as is.
+> > > +                        */
+> > > +                       if (mask_raw_tp_reg_cond(env, reg))
+> > > +                               return;
+> >
+> > The blast radius is getting too big.
+> > Patch 1 is ok, but here we're doubling down on
+> > the hack in commit
+> > cb4158ce8ec8 ("bpf: Mark raw_tp arguments with PTR_MAYBE_NULL")
+> 
+> There are two concerns:
+> First, it applies whether or not a register is a raw_tp arg. There is
+> a way to detect that (with some register state, instead of using a
+> separate tag).
+> Second, we treat the program in the == NULL branch as if the pointer
+> _maybe_ null, and in the != NULL as definitively not NULL.
+> I don't really see how that's too different, given we already allow direct
+> access etc. when the pointer is _unchecked_ after entry, and the state
+> is same as
+> the case where == NULL branch is explored.
+> 
+> >
+> > I think we need to revert the raw_tp masking hack and
+> > go with denylist the way Jiri proposed:
+> > https://lore.kernel.org/bpf/ZrIj9jkXqpKXRuS7@krava/
+> >
+> > denylist is certainly less safer and it's a whack-a-mole
+> > comparing to allowlist, but it's much much shorter
+> > according to Jiri's analysis:
+> > https://lore.kernel.org/bpf/Zr3q8ihbe8cUdpfp@krava/
+> 
+> Ok, let's revert.
+> Jiri, do you have the diff around for that attempt? Could you post a
+> revert of the patches and then the diff you shared?
+> If not, I can carry it as well with the revert, if you share it with
+> me (keeping the attribution etc.). Either is fine, lmk.
 
-I don't know exactly what the problem you are running into is, but
-yes, BPF CO-RE allows handling missing fields, incompatible field type
-changes, field renames, etc. All without having to break a
-compilation. See [0] (and one subsection after that) for
-"documentation" and examples.
+hi,
+sorry for late reply.. I rebased it, there were some conflicts, it's compile tested,
+and perhaps not up2date:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/log/?h=bpf/tp_fix
 
-  [0] https://nakryiko.com/posts/bpf-core-reference-guide/#defining-own-co-=
-re-relocatable-type-definitions
-
-> - Arnaldo
+jirka
 
