@@ -1,129 +1,181 @@
-Return-Path: <bpf+bounces-46381-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46382-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24AA99E8F75
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 10:56:35 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8479E9E901E
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 11:27:47 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C97E628274E
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 09:56:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E6B718867C4
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 10:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466BA216E37;
-	Mon,  9 Dec 2024 09:54:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4DE8216E18;
+	Mon,  9 Dec 2024 10:27:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="ejwH2zdS"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="NCVlobjx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E04216E11;
-	Mon,  9 Dec 2024 09:54:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 676FD2165E2
+	for <bpf@vger.kernel.org>; Mon,  9 Dec 2024 10:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733738090; cv=none; b=jrk6iLxPtEtpjky7STY8dITaFcX8DANiH+ptGsO4EgBG6TwYlF4nI+bIhIcxQAtinAh79zNlzuPg3oc0gH90NJ57v+yy0Z+nUPtji1fieGCB3t35y6/Tfi5Q3DV2iz18yc1EoEEaTLmATauyDdkCJuGZxTS+DBwIGPUvPKiQ9eM=
+	t=1733740064; cv=none; b=F3NvAGln4ge0EEOjBK5XNnJpsD1lzPrU+lmYDz+JZzd2P9zx36tQc1Q5ef35a9n9xWWzPMmSe/mOOV0fWp5rPIblxpIZrqxsUZrklvl6OHh6itCOtHIiCNkuZ2VHzNeIkyVckWvnFo8YCD/rFX6vg3SDWSAbyYdisJN0iQy/6eQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733738090; c=relaxed/simple;
-	bh=clkDD/hFzOpTf+A8bULiJOQ+kAJSyG2C2ULzsTu2MA0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jdqKzYTNi3l2J+BqX8dzPVOgz1t2MpijBHuriD5CDiXbZnohL4rusafo88Mm/cB2O5mVMw2meQ//m5jrmdWOwYTR6NOv3fWDPyHmJvR+IMiPv8u/J9CHFCb0Bqy3a3DOb8l1QXv7nO2/hOfpdiR0yIlr4Lrjnb+odactuUMqKHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=ejwH2zdS; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1tKaT6-00C3iJ-A6; Mon, 09 Dec 2024 10:54:20 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=tK3XrgO4rJBXU+NGoXT2L1GQ41DfzfPq/M0ZOmM/Iww=; b=ejwH2zdSIHvMkdk9KzA+Cp4fqP
-	Qd/Hb8hwU52NFWjBiF7pRozGKEyOQxt2FEEqq28K+r2lFYdK0YzJQezePdh5pqzkP6LSo/huGbMnF
-	JDHDA/XrchTB4VtZ7WpGJ5wWHs18u+fH/EJqlN56QUaFVfew8xh6Ao5Gpa/wPAXpjqdTmNE9sCFbd
-	rYhcy+tlUTjZD268Ul14wsCtMXxU9yJA8bCRn8HXZ4tNpKQPLleJ25WEn+s92dqsKf7Rex6wvBf5I
-	GSZSvDKWdJi2wSdek35OOl17/8rF3OlZGwPAOn29derjNboFBF9aHT/FBqN1IshXUo9mFK1pmTL7J
-	PwLZ3CMw==;
-Received: from [10.9.9.74] (helo=submission03.runbox)
-	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1tKaT5-0000ju-6b; Mon, 09 Dec 2024 10:54:19 +0100
-Received: by submission03.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1tKaSr-005Bsn-Fk; Mon, 09 Dec 2024 10:54:05 +0100
-Message-ID: <046f2c47-53c7-461e-a5b0-8fe4ae0faacc@rbox.co>
-Date: Mon, 9 Dec 2024 10:54:03 +0100
+	s=arc-20240116; t=1733740064; c=relaxed/simple;
+	bh=00Uk25wg3i/5m/wChr5F0tQBpW3hRxacXEYnxuYIlas=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fSa8OmJ0XdoRrvD3qsfM+2y6C4vS48jd015x5m8fOQ+M39TOKRwh8GEEOka5gMWwUZPgWPR2q++IcueAiDr7GH4BlmvQENucogM6F4EyHVCW0yqpHwyRVZkxPhPCwcTkUCZKPeIG9j8Urwqa3TkY+MlgZik1gPRw1NviOcIa5hE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=NCVlobjx; arc=none smtp.client-ip=209.85.218.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-aa692211331so78444166b.1
+        for <bpf@vger.kernel.org>; Mon, 09 Dec 2024 02:27:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1733740060; x=1734344860; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QlbmGQfq5G0Ubrvzqhqf2rrKqpF4uuetJtxlL0wc5KU=;
+        b=NCVlobjxWeoK5/MGu7N8YOzaWiLNkdtZM0w/vTX9TtOqg5VylY9w7EBLvQnJIrcaD4
+         GS64m6X7wlCTbKh0rdVWhodznrAVY1FW+eiB9ZTYiNu9NFz8QOEzD5hCvdz4bNHVTN2R
+         agKygfvfzUHG1GGhP1aZZwezLSnHpxYLZlyOnWNAKu2zEPgYtWCkx3t6XYrSrMCCFk9Z
+         XNexYcdzfutIfKBU1Nk5QgG1K82aCCJkB1TrWuM4AKHTPfagllapJOruGgTH3LilsMmD
+         +x6cSY37GGGKqqUL73Bz0595kYa6oS/4c+jVDjgM+4CqHhqqHlwck+4OIrZP+o7Z6Agp
+         tp8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733740060; x=1734344860;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QlbmGQfq5G0Ubrvzqhqf2rrKqpF4uuetJtxlL0wc5KU=;
+        b=vFHWt4qphFgXZ/DvpsH7S92jBHQtOBKRuu1U4zCHJqXri7dPiM80SRzGDaBn3+V7QU
+         EATeAjCOOen1+EQ/sc4p/c5maYMso/s8cNEuwhARvTtu50iuBgLbnre1VWfH7MOhP+2K
+         fdxKH7HdT7/HHFrKRJkfTWx8fo2jMs9jTDtOkyEaRrrEA/EdRB+iwcvT42PxRsHkaPPJ
+         My0LkW7dMwL/Wl590TOPT6500rRYp2AIs6MHJNRDFLpY4fwX803ahOW7+tbL5ECSK5u3
+         Emr8m0usxyxwJWZRH2fSonNR4K+ngLARbInNp5Mj8n1QCp8oK4QRyasy8a/Q2YL9hegA
+         DQkQ==
+X-Gm-Message-State: AOJu0YyogqeG7twXgy0CI7ko92/DtQbiktypuc5uSdH4KqoC/nwKfdhM
+	nL3/XI82o5EAiHtpgocXiLpz9YWs6FkhRGE5UVbwMquBD/Xq1JSGr3N+lYK+62OuJ8yxyzCozdy
+	lUEgqBg==
+X-Gm-Gg: ASbGncvzJlKpUBtHlG87HvOC+l4LEfiYIyNh/TqQTgUNLhPE5eBeRXn+30VudSS5R9P
+	DttqZy9Fs1D+FOOXw9+BKF4k/0xsL8COo1oDlo5BktBtFMn3Jb32AOoV4Ao67WbONkSgUo/t8vg
+	0SbDMkSbGYO6E4qJBip7lh9RVtNRqVzT3gRCx94xpXhWGwLmOAvRomzoozkjdl9Jye2a2QBxLaL
+	SfHpxcoERCJPURO3Wf8GB1Tp76ttS42cpO8h1O35dZoRw1/SMZUASDhkmqRFGv/ThzXksMuh8Er
+	p0bdB8W6IxICa7ygBQ==
+X-Google-Smtp-Source: AGHT+IHcLHiW+i3C4vfdNuvKS+CP4hGPAHH5qHxTGtBKQQYaHHQCG09yfEgJph3hMLJevcgwyxZYFw==
+X-Received: by 2002:a17:907:d86:b0:aa5:340a:fb48 with SMTP id a640c23a62f3a-aa6202e0911mr1605911666b.6.1733740060554;
+        Mon, 09 Dec 2024 02:27:40 -0800 (PST)
+Received: from simagnan-ThinkPad-X1-Carbon-Gen-10.. ([87.13.127.164])
+        by smtp.googlemail.com with ESMTPSA id a640c23a62f3a-aa6873814d4sm134849566b.54.2024.12.09.02.27.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Dec 2024 02:27:40 -0800 (PST)
+From: Simone Magnani <simone.magnani@isovalent.com>
+To: bpf@vger.kernel.org
+Cc: qmo@kernel.org,
+	Simone Magnani <simone.magnani@isovalent.com>
+Subject: [PATCH bpf-next] bpftool: Probe for ISA v4 instruction set extension
+Date: Mon,  9 Dec 2024 11:26:44 +0100
+Message-ID: <20241209102644.29880-1-simone.magnani@isovalent.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf 1/3] bpf, sockmap: Fix update element with same
-To: John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Jakub Sitnicki <jakub@cloudflare.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20241202-sockmap-replace-v1-0-1e88579e7bd5@rbox.co>
- <20241202-sockmap-replace-v1-1-1e88579e7bd5@rbox.co>
- <675684786d66c_1abf208ea@john.notmuch>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <675684786d66c_1abf208ea@john.notmuch>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 12/9/24 06:47, John Fastabend wrote:
-> Michal Luczaj wrote:
->> Consider a sockmap entry being updated with the same socket:
->>
->> 	osk = stab->sks[idx];
->> 	sock_map_add_link(psock, link, map, &stab->sks[idx]);
->> 	stab->sks[idx] = sk;
->> 	if (osk)
->> 		sock_map_unref(osk, &stab->sks[idx]);
->>
->> Due to sock_map_unref(), which invokes sock_map_del_link(), all the psock's
->> links for stab->sks[idx] are torn:
->>
->> 	list_for_each_entry_safe(link, tmp, &psock->link, list) {
->> 		if (link->link_raw == link_raw) {
->> 			...
->> 			list_del(&link->list);
->> 			sk_psock_free_link(link);
->> 		}
->> 	}
->>
->> And that includes the new link sock_map_add_link() added just before the
->> unref.
->>
->> This results in a sockmap holding a socket, but without the respective
->> link. This in turn means that close(sock) won't trigger the cleanup, i.e. a
->> closed socket will not be automatically removed from the sockmap.
->>
->> Stop tearing the links when a matching link_raw is found.
->>
->> Signed-off-by: Michal Luczaj <mhal@rbox.co>
->> ---
-> 
-> Thanks. LGTM.
-> 
-> Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+This patch introduces a new probe to check whether the kernel supports
+instruction set extensions v4. The v4 extension comprises several new
+instructions: BPF_{SDIV,SMOD} (signed div and mod), BPF_{LD,LDX,ST,STX,MOV}
+(sign-extended load/store/move), 32-bit BPF_JA (unconditional jump),
+target-independent BPF_ALU64 BSWAP (byte-swapping 16/32/64). These have
+been introduced in the following commits respectively:
 
-Thanks, and sorry for a missing tag:
+* ec0e2da ("bpf: Support new signed div/mod instructions.")
+* 1f9a1ea ("bpf: Support new sign-extension load insns")
+* 8100928 ("bpf: Support new sign-extension mov insns")
+* 4cd58e9 ("bpf: Support new 32bit offset jmp instruction")
+* 0845c3d ("bpf: Support new unconditional bswap instruction")
 
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Support in bpftool for previous ISA extensions were added in commit
+0fd800b2 ("bpftool: Probe for instruction set extensions"). These probes
+are useful for userspace BPF projects that want to use newer
+instruction set extensions on newer kernels, to reduce the programs'
+sizes or their complexity. LLVM provides the mcpu=v4 option since commit
+"[BPF] support for BPF_ST instruction in codegen"
+(https://github.com/llvm/llvm-project/commit/8f28e8069c4ba1110daee8bddc4d5049b6d4646e).
+
+Signed-off-by: Simone Magnani <simone.magnani@isovalent.com>
+---
+ tools/bpf/bpftool/feature.c  | 23 +++++++++++++++++++++++
+ tools/include/linux/filter.h | 10 ++++++++++
+ 2 files changed, 33 insertions(+)
+
+diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+index 4dbc4fcdf473..24fecdf8e430 100644
+--- a/tools/bpf/bpftool/feature.c
++++ b/tools/bpf/bpftool/feature.c
+@@ -885,6 +885,28 @@ probe_v3_isa_extension(const char *define_prefix, __u32 ifindex)
+ 			   "V3_ISA_EXTENSION");
+ }
+
++/*
++ * Probe for the v4 instruction set extension introduced in commit 1f9a1ea821ff
++ * ("bpf: Support new sign-extension load insns").
++ */
++static void
++probe_v4_isa_extension(const char *define_prefix, __u32 ifindex)
++{
++	struct bpf_insn insns[5] = {
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_JMP32_IMM(BPF_JEQ, BPF_REG_0, 1, 1),
++		BPF_JMP32_A(1),
++		BPF_MOV64_IMM(BPF_REG_0, 1),
++		BPF_EXIT_INSN()
++	};
++
++	probe_misc_feature(insns, ARRAY_SIZE(insns),
++			   define_prefix, ifindex,
++			   "have_v4_isa_extension",
++			   "ISA extension v4",
++			   "V4_ISA_EXTENSION");
++}
++
+ static void
+ section_system_config(enum probe_component target, const char *define_prefix)
+ {
+@@ -1029,6 +1051,7 @@ static void section_misc(const char *define_prefix, __u32 ifindex)
+ 	probe_bounded_loops(define_prefix, ifindex);
+ 	probe_v2_isa_extension(define_prefix, ifindex);
+ 	probe_v3_isa_extension(define_prefix, ifindex);
++	probe_v4_isa_extension(define_prefix, ifindex);
+ 	print_end_section();
+ }
+
+diff --git a/tools/include/linux/filter.h b/tools/include/linux/filter.h
+index 65aa8ce142e5..a2962fc56f27 100644
+--- a/tools/include/linux/filter.h
++++ b/tools/include/linux/filter.h
+@@ -75,6 +75,16 @@
+ 		.off   = 0,					\
+ 		.imm   = LEN })
+
++/* Unconditional jumps, gotol pc + imm32 */
++
++#define BPF_JMP32_A(IMM)					\
++	((struct bpf_insn) {					\
++		.code  = BPF_JMP32 | BPF_JA,			\
++		.dst_reg = 0,					\
++		.src_reg = 0,					\
++		.off   = 0,					\
++		.imm   = IMM })
++
+ /* Short form of mov, dst_reg = src_reg */
+
+ #define BPF_MOV64_REG(DST, SRC)					\
+--
+2.43.0
 
 
