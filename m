@@ -1,209 +1,244 @@
-Return-Path: <bpf+bounces-46397-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46398-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B2AA9E985E
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 15:07:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FB899E9920
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 15:37:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 109BC162EE6
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 14:07:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A82F166E21
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 14:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B207F1BEF88;
-	Mon,  9 Dec 2024 14:06:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF5D11B4230;
+	Mon,  9 Dec 2024 14:37:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UZAZfv+B"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ECSQJAVS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C33B1B4257;
-	Mon,  9 Dec 2024 14:06:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A069D1ACEC9;
+	Mon,  9 Dec 2024 14:37:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733753177; cv=none; b=MiEDnPLrNko2vVqtJaKFYu+7KBRjqrjs1yxoxpx8PYqHoLkL0+7RJr6T174hQKLqUyB5Zkpb0GmywWvZgZvkSRJ7fjxq+5NkAT8l+WVk05wmj5Yw5bZZg/kh7RGcDDIUGaJeuw3K/Fx2oqc2ipT2mWJa94uLn0RNMKWj7+GGAtQ=
+	t=1733755039; cv=none; b=aV5g2AgUZjdJ6rUtQJ2muVKw4PIlaX5KMBViTxm/710A17moeg+1NvE2S7dnzZr9Eb9VXEFvZValCuPwYJlTVwYR92z7kK3+DN9bSYeCErG0EsrXzb774EYYgoL5MuEoUhoQGc1HeUjgdm41w6KuHPYsayDpXSHbu7wpx/L7HFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733753177; c=relaxed/simple;
-	bh=x8YNUdGfzz0Gow2dLZx6X+qGjYOm2eRI9DodjQo7NU8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U7bJ97cbxJpdcfHzt15MBCws/G81NcZZ2u+clZ48iI7A2bAHOn10yHpoEt4dUjkDRfAAdzKS3JB75KWUkMdhrho14GrtvUjhxqoGVU+RspDH7Tyz62zLMNbk/D7rmXoQbu3JN8UnoojQVGT7mpomdsoJvMP0RZggQJYrEgEUu+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UZAZfv+B; arc=none smtp.client-ip=209.85.214.171
+	s=arc-20240116; t=1733755039; c=relaxed/simple;
+	bh=rvJ3c/1uK84Nv79rCi0I1ftRfklw7bWC0zyeI7Bfx2E=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=i7HuU7x7ZSHU+Jh8jY9DJcToytpyuSuvU/tIe+m3o1gPKOFC0RchEPu/YYB0TeHuYFeKNnjdR/luUNkYc6eT2LtHLxPXUpKqdUdcU14CC2zHj3guwl8laR6L0wg5MWSzWeNpQMARYv7yJbiEgUf9oYFRYyQ3+C/fYuW3kkpA3jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ECSQJAVS; arc=none smtp.client-ip=209.85.219.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2165448243fso9518935ad.1;
-        Mon, 09 Dec 2024 06:06:15 -0800 (PST)
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6d900c27af7so17742096d6.2;
+        Mon, 09 Dec 2024 06:37:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733753174; x=1734357974; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1733755036; x=1734359836; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IZacjWdb8RyenSpXv6Caz5kcIhA6mwKRd5G/S3r2hOU=;
-        b=UZAZfv+BRLl/Shtic2L4VBsSRsZmYRwmhJ1j0Xnwb7fJw9/ABUzo79nmLO4z+TGNyS
-         EHxjADxk4lsz30Uy5ZFZtQqfF/bLc/2ROEE/Vbajw/wxhQRy11wDQtjkhUWvq1Q2NyTU
-         eYweIU691CgjovnKYPUe2JnF7D/QFOMeH9Oq3m/l+wWBi874BXrIwLyvcvjQBk9fgMyD
-         +4WLhqA59w4Ka9ryxj/nvYWwldCJ1jqBxRTtISaIujKFAcLsNFu2cvbDr+X0bi5Kg8cK
-         Cv6dDPr3TFCpw33ZL805f9CMCZTMMLT6uUBHI4SmRbenSwWeHHsoG6UwBnTtJPH+1I3X
-         HuMQ==
+        bh=23nKt9SwqWfOqPbejNVOg27k3iS3cWj+8lpmLIHCM54=;
+        b=ECSQJAVSTs2qDr8AjOqak9mNS+RhD6ZAx3mHdmKSCfUnGdzqAle0Xhzm3/pMvTZbNP
+         YD1zS1/cnWi+XB/ljjozuVeBOBZUnCRNwotUJ67GoVk1+insHFFoP0NKm2bqWf8xFqAl
+         6zxYkuIelG6cOd140gWEtt3LePtuQYpo94OCbJDsQiHZryQCyhFMlPWU64liUTuO559b
+         vtXgF38Av1qhRKuK3Gkzo/vA4E+q1hRBukBSD+ZRzgcmCC0u7OX7W6DmrXo2zLXGii4e
+         JngV5HM/RuoMpbfF9R2kWoSg9bvokAu5dZsOxuYa7V6L3y5sIaMmVX68STHtsySaVYru
+         vG7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733753174; x=1734357974;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IZacjWdb8RyenSpXv6Caz5kcIhA6mwKRd5G/S3r2hOU=;
-        b=DHem4pmSO4aCKrwY+1uBxIu4tRkbz5mAhqUShWsozzik4lsXZQwmfr4KNxFUYwRNZA
-         8cCpkgIOX6u7e6t2yZvOswXQDlqxfrXiO/SpSTx2qpZ50T7NjTuBKVZOOFFgM9N+jhby
-         q6zzuGC8ADCYiZj5XVs8uuILuBgfj2duB3dlMV4v1Sn5AkPU5Rouc7sOs/kJZzWtLMLz
-         4+Ib4c0s8SvXFMMnSS5kDm7Jqb6iW5D4lSitp/1DfTHUYcO/osY82EXeZTIwn2qrBhXp
-         1dPr0i93zcN0naDtCtbAtjmtFjUIP7mqtL3jQZBi6RfOO9SHl0zeRZ5bn4yRMc47hgVU
-         /MVA==
-X-Forwarded-Encrypted: i=1; AJvYcCUAx0ZS8vbxLada1xpQ6jvUbYv/WlK5YjswwZWX8LIJTxHpGKQWAPH7vzPACZ8dWwQvjlqzvVhXGQAe@vger.kernel.org, AJvYcCUJ1nDG2k0Xy0ESnsGPeihybrlBHdYwTyxCGAppPGmjLrzd29+YNf1CdpHcLJNM2FlxNNs=@vger.kernel.org, AJvYcCUaDZPMRd/38Zfeh9P3kB//x2o3/7TeK3BD0vYoaAONG+tRhYxmnBGV3XN4dLICNes8MG4nWdYF0KFgvNfn@vger.kernel.org, AJvYcCVF6IOYmj+kpLdp7ctzmCz5egJeCBSbBp54hl7gWE2T5AH2OPdKLsMwySWs3X1Z8M8VG05NlSpdeTIYcQ==@vger.kernel.org, AJvYcCWWLNNPTp8zAr0oVLahBhsnZrdeV/FvIHBldEcNGLztTFSxJxMgwXlADfH9nn3f/UIYoLLeyH7JsEefqQ==@vger.kernel.org, AJvYcCWrKbxHD3826G9bfWdg36KnRWwG9HYQMbMtH0i/VpUWAgBh2Dh94mGgYaIsArkwfihpqICfd7ukMreMQueQWHw=@vger.kernel.org, AJvYcCXbW3jvUGIp5R+w7ZmNCFY8zilMiNBy+tDwVZOwSh4jqL7MHaEc7NfZkyicM/WRQ0ORyuR/8E3A1zFFDlvYcvyP@vger.kernel.org, AJvYcCXlOD3uQoTOoef613wqQBUyQR7Ro0sNd8BXzHos/r7lWQ7gp5WYJYp7EINTSHNcQZXKYl+vjJv1DC68@vger.kernel.org
-X-Gm-Message-State: AOJu0YxRYbiq9KS6tdcBXnKTgURZ5kzyetV5Z0KLyepJ2nTdgbXoZLKu
-	PR4qofKhZT9G2nvhyOmKcgEG48wMM0R11SJbMpjRf/kmNxLCZp8Tlbu4bqtkCQc=
-X-Gm-Gg: ASbGncs8Ratplb/QAj24KurcWvfroPQiRMhrVKLGZml+AZyeEZtgefB0GOSIoRGEBOa
-	9SCufkIf16NHIN31aKP4NYRdzKFtTLCUiG31f/rvPzmmLFi7BMNjzZ1GlNkpJTZFT6Z91szM8K0
-	02uixKuoDlaePQzlxZrqvVrHZbTe0EVan5eYz4yvApF91NkSMQXrfjBebcpFVtPvGqSWqDDpXMi
-	pG7PnI6bful7v8madW/dSrAnsOraGiOvxQUJIoe2YzuX4g=
-X-Google-Smtp-Source: AGHT+IHmgSwYi0f3YPXZUnipKY4/LE+6y74m5MtL3Oj9+h7tdAHjZEgR2L+TFdRwx2htNJ1fIiOnow==
-X-Received: by 2002:a17:902:ce8d:b0:215:a2af:44ca with SMTP id d9443c01a7336-21614dd2374mr177498285ad.37.1733753174431;
-        Mon, 09 Dec 2024 06:06:14 -0800 (PST)
-Received: from nova-ws.. ([103.167.140.11])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-216221db645sm49605645ad.46.2024.12.09.06.06.06
+        d=1e100.net; s=20230601; t=1733755036; x=1734359836;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=23nKt9SwqWfOqPbejNVOg27k3iS3cWj+8lpmLIHCM54=;
+        b=klrZUXTa61s6z/2PPut4oatSzwc4FpAtpFpiAYTobNCxPauXHn2/C6o9FK1ErYQgW+
+         wfZMFAB1LEwrA3HDR2PLpxyz78jhfrK2Jybu7NjXRBnwURXIZLweI7mWAjzEfiaKUwje
+         feoNKa7k3oopPzK5H+2I/iL3WZt8+SqF79C/hsJy6hn7weCFfLpbBnznQ01dZvdKQLDG
+         FtpZC3nmcW1yJnOBWvY0EzVEzLv+sFyyb9Msa5m04PsfJ67otW4ri0l6PA+xci1OuUu1
+         58VkK6AU6hM2sysXI9rDw41r0w3Nsp9QXNXpXimLE6mgksXgq2q3VZuwP1/ZFCBy2f5C
+         E/IQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVV7J9gVydA64Wmhrpu5isJAGJ38cXrLQEqGimKwbX6jX3eVrIYE7XFjCY2AsK8XCZT5QxiOgI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWEE6myN6pmvO7KGZxNcENgvu06Jrg7TiETc988kKP4SqwGF7X
+	SIG/D7/lDOXFqx3iGnDsRsPsJHfRTQ6gqVab2dC5RKqZt2/RUgp8
+X-Gm-Gg: ASbGncsCYc8mEj5sNY86vlZIOzhMgioA4gUDoXxIr35m2fNhuazaXTp1cUfLTKdC2KN
+	EMg3DKqs8OstnrJVtLGjulcEDPD+o8w4lVt0EWowVpt7KadJpE0Oj0iOFlN5i8OPkpFoJtZehr5
+	LF+wEodluE4cF2m00T/9ipBxbwRbMBhMkEELxXBZGKe9VuIMn2O7mcogfsJtbU19bxGWgw1INA7
+	aBpODD97uNG6vtO06Ol3KmmqjnIAUWd/++D2cCrej+M6gQuCJvfTFkRCFpX4Kw+W8xLprPDY7qk
+	zgB6EpjJQ6RE/3hiPWWRwA==
+X-Google-Smtp-Source: AGHT+IH2XmPfFVTHLXiw20Wihr2Oq8p6h9GWJmLDn0cE4rTAO0kIQmXezMZTlHoqA8ElEv6M2kWbjQ==
+X-Received: by 2002:ad4:5c69:0:b0:6d8:7f8a:73f5 with SMTP id 6a1803df08f44-6d8e71729abmr158823026d6.24.1733755036473;
+        Mon, 09 Dec 2024 06:37:16 -0800 (PST)
+Received: from localhost (250.4.48.34.bc.googleusercontent.com. [34.48.4.250])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d8da66da32sm49656106d6.2.2024.12.09.06.37.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Dec 2024 06:06:13 -0800 (PST)
-From: Xiao Liang <shaw.leon@gmail.com>
-To: netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Donald Hunter <donald.hunter@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Simon Horman <horms@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Hangbin Liu <liuhangbin@gmail.com>,
-	linux-rdma@vger.kernel.org,
-	linux-can@vger.kernel.org,
-	osmocom-net-gprs@lists.osmocom.org,
-	bpf@vger.kernel.org,
-	linux-ppp@vger.kernel.org,
-	wireguard@lists.zx2c4.com,
-	linux-wireless@vger.kernel.org,
-	b.a.t.m.a.n@lists.open-mesh.org,
-	bridge@lists.linux.dev,
-	linux-wpan@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v5 5/5] selftests: net: Add two test cases for link netns
-Date: Mon,  9 Dec 2024 22:01:51 +0800
-Message-ID: <20241209140151.231257-6-shaw.leon@gmail.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20241209140151.231257-1-shaw.leon@gmail.com>
-References: <20241209140151.231257-1-shaw.leon@gmail.com>
+        Mon, 09 Dec 2024 06:37:15 -0800 (PST)
+Date: Mon, 09 Dec 2024 09:37:15 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Jason Xing <kerneljasonxing@gmail.com>, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ willemdebruijn.kernel@gmail.com, 
+ willemb@google.com, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ andrii@kernel.org, 
+ martin.lau@linux.dev, 
+ eddyz87@gmail.com, 
+ song@kernel.org, 
+ yonghong.song@linux.dev, 
+ john.fastabend@gmail.com, 
+ kpsingh@kernel.org, 
+ sdf@fomichev.me, 
+ haoluo@google.com, 
+ jolsa@kernel.org
+Cc: bpf@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ Jason Xing <kernelxing@tencent.com>
+Message-ID: <6757009b87461_31657c294d6@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20241207173803.90744-4-kerneljasonxing@gmail.com>
+References: <20241207173803.90744-1-kerneljasonxing@gmail.com>
+ <20241207173803.90744-4-kerneljasonxing@gmail.com>
+Subject: Re: [PATCH net-next v4 03/11] net-timestamp: reorganize in
+ skb_tstamp_tx_output()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
- - Add test for creating link in another netns when a link of the same
-   name and ifindex exists in current netns.
- - Add test for link netns atomicity - create link directly in target
-   netns, and no notifications should be generated in current netns.
+Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
+> 
+> It's a prep for bpf print function later. This patch only puts the
+> original generating logic into one function, so that we integrate
+> bpf print easily. No functional changes here.
+> 
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> ---
+>  include/linux/skbuff.h |  4 ++--
+>  net/core/dev.c         |  3 +--
+>  net/core/skbuff.c      | 41 +++++++++++++++++++++++++++++++++++------
+>  3 files changed, 38 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index 58009fa66102..53c6913560e4 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -39,6 +39,7 @@
+>  #include <net/net_debug.h>
+>  #include <net/dropreason-core.h>
+>  #include <net/netmem.h>
+> +#include <uapi/linux/errqueue.h>
+>  
+>  /**
+>   * DOC: skb checksums
+> @@ -4535,8 +4536,7 @@ void skb_tstamp_tx(struct sk_buff *orig_skb,
+>  static inline void skb_tx_timestamp(struct sk_buff *skb)
+>  {
+>  	skb_clone_tx_timestamp(skb);
+> -	if (skb_shinfo(skb)->tx_flags & SKBTX_SW_TSTAMP)
+> -		skb_tstamp_tx(skb, NULL);
+> +	__skb_tstamp_tx(skb, NULL, NULL, skb->sk, SCM_TSTAMP_SND);
+>  }
+>  
+>  /**
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 45a8c3dd4a64..5d584950564b 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -4350,8 +4350,7 @@ int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
+>  	skb_reset_mac_header(skb);
+>  	skb_assert_len(skb);
+>  
+> -	if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_SCHED_TSTAMP))
+> -		__skb_tstamp_tx(skb, NULL, NULL, skb->sk, SCM_TSTAMP_SCHED);
+> +	__skb_tstamp_tx(skb, NULL, NULL, skb->sk, SCM_TSTAMP_SCHED);
 
-Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
----
- tools/testing/selftests/net/Makefile        |  1 +
- tools/testing/selftests/net/netns-name.sh   | 10 ++++++
- tools/testing/selftests/net/netns_atomic.py | 39 +++++++++++++++++++++
- 3 files changed, 50 insertions(+)
- create mode 100755 tools/testing/selftests/net/netns_atomic.py
+This adds a function call in the hot path, as __skb_tstamp_tx is
+defined in a .c file.
 
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index cb2fc601de66..f9f7a765d645 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -34,6 +34,7 @@ TEST_PROGS += gre_gso.sh
- TEST_PROGS += cmsg_so_mark.sh
- TEST_PROGS += cmsg_time.sh cmsg_ipv6.sh
- TEST_PROGS += netns-name.sh
-+TEST_PROGS += netns_atomic.py
- TEST_PROGS += nl_netdev.py
- TEST_PROGS += srv6_end_dt46_l3vpn_test.sh
- TEST_PROGS += srv6_end_dt4_l3vpn_test.sh
-diff --git a/tools/testing/selftests/net/netns-name.sh b/tools/testing/selftests/net/netns-name.sh
-index 6974474c26f3..0be1905d1f2f 100755
---- a/tools/testing/selftests/net/netns-name.sh
-+++ b/tools/testing/selftests/net/netns-name.sh
-@@ -78,6 +78,16 @@ ip -netns $NS link show dev $ALT_NAME 2> /dev/null &&
-     fail "Can still find alt-name after move"
- ip -netns $test_ns link del $DEV || fail
- 
-+#
-+# Test no conflict of the same name/ifindex in different netns
-+#
-+ip -netns $NS link add name $DEV index 100 type dummy || fail
-+ip -netns $NS link add netns $test_ns name $DEV index 100 type dummy ||
-+    fail "Can create in netns without moving"
-+ip -netns $test_ns link show dev $DEV >> /dev/null || fail "Device not found"
-+ip -netns $NS link del $DEV || fail
-+ip -netns $test_ns link del $DEV || fail
-+
- echo -ne "$(basename $0) \t\t\t\t"
- if [ $RET_CODE -eq 0 ]; then
-     echo "[  OK  ]"
-diff --git a/tools/testing/selftests/net/netns_atomic.py b/tools/testing/selftests/net/netns_atomic.py
-new file mode 100755
-index 000000000000..d350a3fc0a91
---- /dev/null
-+++ b/tools/testing/selftests/net/netns_atomic.py
-@@ -0,0 +1,39 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+import time
-+
-+from lib.py import ksft_run, ksft_exit, ksft_true
-+from lib.py import ip
-+from lib.py import NetNS, NetNSEnter
-+from lib.py import RtnlFamily
-+
-+
-+def test_event(ns1, ns2) -> None:
-+    with NetNSEnter(str(ns1)):
-+        rtnl = RtnlFamily()
-+
-+    rtnl.ntf_subscribe("rtnlgrp-link")
-+
-+    ip(f"netns set {ns1} 0", ns=str(ns2))
-+
-+    ip(f"link add netns {ns2} link-netnsid 0 dummy1 type dummy")
-+    ip(f"link add netns {ns2} dummy2 type dummy", ns=str(ns1))
-+
-+    ip("link del dummy1", ns=str(ns2))
-+    ip("link del dummy2", ns=str(ns2))
-+
-+    time.sleep(1)
-+    rtnl.check_ntf()
-+    ksft_true(rtnl.async_msg_queue.empty(),
-+              "Received unexpected link notification")
-+
-+
-+def main() -> None:
-+    with NetNS() as ns1, NetNS() as ns2:
-+        ksft_run([test_event], args=(ns1, ns2))
-+    ksft_exit()
-+
-+
-+if __name__ == "__main__":
-+    main()
--- 
-2.47.1
+Currently this is only well predicted branch on a likely cache hot
+variable.
+>  
+>  	/* Disable soft irqs for various locks below. Also
+>  	 * stops preemption for RCU.
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 6841e61a6bd0..74b840ffaf94 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -5539,10 +5539,10 @@ void skb_complete_tx_timestamp(struct sk_buff *skb,
+>  }
+>  EXPORT_SYMBOL_GPL(skb_complete_tx_timestamp);
+>  
+> -void __skb_tstamp_tx(struct sk_buff *orig_skb,
+> -		     const struct sk_buff *ack_skb,
+> -		     struct skb_shared_hwtstamps *hwtstamps,
+> -		     struct sock *sk, int tstype)
+> +static void skb_tstamp_tx_output(struct sk_buff *orig_skb,
+> +				 const struct sk_buff *ack_skb,
+> +				 struct skb_shared_hwtstamps *hwtstamps,
+> +				 struct sock *sk, int tstype)
+>  {
+>  	struct sk_buff *skb;
+>  	bool tsonly, opt_stats = false;
+> @@ -5594,13 +5594,42 @@ void __skb_tstamp_tx(struct sk_buff *orig_skb,
+>  
+>  	__skb_complete_tx_timestamp(skb, sk, tstype, opt_stats);
+>  }
+> +
+> +static bool skb_tstamp_is_set(const struct sk_buff *skb, int tstype)
+> +{
+> +	switch (tstype) {
+> +	case SCM_TSTAMP_SCHED:
+> +		if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_SCHED_TSTAMP))
+> +			return true;
+> +		return false;
+> +	case SCM_TSTAMP_SND:
+> +		if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_SW_TSTAMP))
+> +			return true;
+
+Also true for SKBTX_HW_TSTAMP
+
+> +		return false;
+> +	case SCM_TSTAMP_ACK:
+> +		if (TCP_SKB_CB(skb)->txstamp_ack)
+> +			return true;
+> +		return false;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +void __skb_tstamp_tx(struct sk_buff *orig_skb,
+> +		     const struct sk_buff *ack_skb,
+> +		     struct skb_shared_hwtstamps *hwtstamps,
+> +		     struct sock *sk, int tstype)
+> +{
+> +	if (unlikely(skb_tstamp_is_set(orig_skb, tstype)))
+> +		skb_tstamp_tx_output(orig_skb, ack_skb, hwtstamps, sk, tstype);
+> +}
+>  EXPORT_SYMBOL_GPL(__skb_tstamp_tx);
+>  
+>  void skb_tstamp_tx(struct sk_buff *orig_skb,
+>  		   struct skb_shared_hwtstamps *hwtstamps)
+>  {
+> -	return __skb_tstamp_tx(orig_skb, NULL, hwtstamps, orig_skb->sk,
+> -			       SCM_TSTAMP_SND);
+> +	return skb_tstamp_tx_output(orig_skb, NULL, hwtstamps, orig_skb->sk,
+> +				    SCM_TSTAMP_SND);
+>  }
+>  EXPORT_SYMBOL_GPL(skb_tstamp_tx);
+>  
+> -- 
+> 2.37.3
+> 
+
 
 
