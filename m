@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-46414-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46415-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E01309E9D3F
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 18:44:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 995319E9D62
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 18:47:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52C531887745
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 17:43:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6399164F2F
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 17:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5C715535A;
-	Mon,  9 Dec 2024 17:43:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A24131F2C43;
+	Mon,  9 Dec 2024 17:45:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X8a6vMbo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dwzuwR0X"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A00233151;
-	Mon,  9 Dec 2024 17:43:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31AB61F0E56;
+	Mon,  9 Dec 2024 17:45:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733766230; cv=none; b=rW+uAg2hN5QfJmywqOYYt3deEwBdkqoX5jrleJ+Zgq/jv3au7icmCtjnz+4k1sLWjQP65WJn1SRXSn3cicD39QIvyu70jXIioNp1xCNG2OvzGrTTUeEYVUfH7Oj7MXxoNPVuxdYnsqbc+TAtMcUHIHkJKGrZsbqQ++yhqQ14p/g=
+	t=1733766341; cv=none; b=hkYBmH6sFxLh4Ht1w/n4tUbYfkTklfEe8TJ+ZQIUxZDWb5DiOb5RSsJ8HbGGUy9Zx45IxnQ08UG3LFQ5k7pzyRsGXcikfgnVZFuiJnOF185FO+hxZWeaXVjtG3ngeE1TXAHHwaK4aMMf8VBFeP5hvzjrkEO32c6grM++jAacAC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733766230; c=relaxed/simple;
-	bh=q/rcTOvcDwZyPaQTo31tJDbxBrL528rUIEpQq1SvPmA=;
+	s=arc-20240116; t=1733766341; c=relaxed/simple;
+	bh=CcuwSq1SxtQMhtHuhAR5Boa6Ar8NA6RwQBru1LJ34o8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cce/PolS2l6k8LoGtACOPb/ueQ7g6+7WHSdqzQjrd6hnbGjektgOay1E7fmuxf2of2/uuKjrhUh6pLRS+/7p8mfF/OA8xmm4hr1SmAQ4BdJExBZhNoN2+cYOBXuy+l4VV52zXYumJ6uRlFwICeg9YtkhnVsjsi+CwE0kF8JAcfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X8a6vMbo; arc=none smtp.client-ip=209.85.214.169
+	 To:Cc:Content-Type; b=KDPVVCovw8lxm074x0N+KJOVL4GDzC1NuWQbLbsGTfG/ZPaDwStAXmpOKM6wTWogsUpx2baPcdMawHwevxN7B8hUX4qIfl54l9i2zlg3/8BCn85Oto4ke4N4BEEAft7VdfXeUxMlH9TceT8iDo1k91zBACTHbYzn2by6U8YL5Ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dwzuwR0X; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-216395e151bso10978065ad.0;
-        Mon, 09 Dec 2024 09:43:48 -0800 (PST)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-725ee6f56b4so1097455b3a.3;
+        Mon, 09 Dec 2024 09:45:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733766228; x=1734371028; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733766338; x=1734371138; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=d8t4rQo4GlIJNr1Ck0WNYMLnLZ4WaSFJXClmAi03iA4=;
-        b=X8a6vMboh2cUShWYAaWIOBjShJUqoXjqBHvg3+Wa48to13PGN9jN/w90FigY4jd+Sn
-         y1ffQdrm8Tbn24PbsDal4ANtFXOO7BXzHp8/8ExTYtSzUyTYaPlgebk/Dq7aX9xf1qWo
-         +JPiNBhuCfJXoV/tX4Hfpk0+E0wf6n5EXAKMDWeU3r4khiKNZdMTDza56xqw8PyOhWIc
-         R/weVnjTJxx+pQ2LBCcO0mqxtGsTkGxs2DHy52FdbhXfhJJWBCOKAMPgDcRb218W0or5
-         TgNZwVY+oSnRkDHb10G95JPQy2qAu3E3NSPzsbDn60U9sWt20RoLhTEbw303DTqWb3Zv
-         hVoA==
+        bh=hLL+hTR2erfFMDNeV90V786XCRfTp97LfoiOqBvZZGc=;
+        b=dwzuwR0XUZanDwpP+mKZfcSxP2FkoLZHfHU5yRxQahIESEsNNsA3jLjXta+RghyAzB
+         LDaXRg6BFwdKKIOCKd58YG8rgFwhf3iBiOmUwM5r14FuGJh96SamYlXOm5nciMhoWYa/
+         k2NEAPBNTv6rhkoueuekyh6n/KnUyzNVf1nd9mfy91gMWqYqHpByhhjb/27/4liFwkW6
+         ybbLU3bvTF0jL2HeytZ2oqud/QupKgGuJgTL5LmAvYJf2lrTLA47wpNxQrLW7vH6f+5c
+         TtAnPTLcjvwx10Q2QxsoIn7dl4ubi7hkHZdQOwKikM3vIllvhCLDmj2s+K6MWRW7/Wqi
+         C6zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733766228; x=1734371028;
+        d=1e100.net; s=20230601; t=1733766338; x=1734371138;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=d8t4rQo4GlIJNr1Ck0WNYMLnLZ4WaSFJXClmAi03iA4=;
-        b=bwy+srWYnLEFTheT1XaAseTBw67bx/BLg60tmbY3QX86G0OVlHzbOvBrPAy91We764
-         D+SqN+QQroc8kLUkY9bmbYi/X49WiOqdFbcoHHmHY+ORsmjw+9DPnN5aPqrSs0Oyn2/Y
-         1FivyC7XYb4jQgHZrkIedWMXiPOVic5tHLH1VqTANSoMeZLZ6sWAYOvncZIZUHMr4C3l
-         h9tyuoORlJ20J0YjPs63L0sp5OJ3c3Vov8U8wAcPZw00smJ3NPxAG2SqCWz0rdrLMaTB
-         rERAtLAz7HhRLpuDgIGt1n3DQXjrBS4FFPEYglxYYoPhI1n9apBioduzIQ5nNnt7fHXz
-         xknw==
-X-Forwarded-Encrypted: i=1; AJvYcCU0vB5jILUzVyCxEsqCQAdyzwuapEl9z4YulSXFfT3QyU8bKjsngwoyh0H9X+9PMuwzmYna8z7Sod45UDay+Q==@vger.kernel.org, AJvYcCU882Sks7zUUX5ewXg+isnnu0ehwt3K35aXqwSqlPHdSNcsbcaSN3LUxhsf3lbHT7hOSUbEPSsc8XvBh2SybguPMRAdUw==@vger.kernel.org, AJvYcCUSRBSuK27MY8aF5R9UyMlDZ3tcyo2bJCVfKW7IUvgJiyzc2ZPV6bmMEw9mapPM2qYyDQI=@vger.kernel.org, AJvYcCUpBvvCWFlAXG6ucN02R6Cporu0YJarlIqEpmCeZTRMip38iGlwrTXAV6O3e5jV6+6Clrg3hUlp5dSj82Mq@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhcJJsZR3lWOm2BB4CzocMnnYJXXMW5x6BOsfBNVwGOzZjX1EL
-	VcWPn8PzbksqWS4M5MKcsZjyR2QHVd61UNLwu7jTzgq0AvrUMwN+YnNeTp9AFJSM93vCmsDSgxk
-	DCawmfUK+He0FAzE9hqbZ8YPMMc4=
-X-Gm-Gg: ASbGncsReDRqo2qJCXZuLFhSsG2Ff88ngF7s3+ZWajQJwc0KPX1JnYrmvxVRUEGD7Fz
-	VNV90aOsu5BPV3YCyv37L3LRDIyE5mC8BeHSPvAKA2N7PeKs=
-X-Google-Smtp-Source: AGHT+IF0BTr20MkxNzRSFNpph/h8vHNhmBKsOAPeY6Y0QdSHKlV0GxM2a08SVsbCGBad04gFH5w/DXOJoS3+X7u/Wjg=
-X-Received: by 2002:a17:902:f541:b0:216:4676:dfb5 with SMTP id
- d9443c01a7336-21670a3f62cmr3456875ad.21.1733766228322; Mon, 09 Dec 2024
- 09:43:48 -0800 (PST)
+        bh=hLL+hTR2erfFMDNeV90V786XCRfTp97LfoiOqBvZZGc=;
+        b=pW9cUAlp+3epNZ1KcYggTnhwpzxhaeiEQ/AwnSP99Y/bFmo+ly8f6zrnE+Tey646Jc
+         5OU2NRkvlL7kxl+KnoOtqnKVw8btnB7bH4L9QfW0p2VS6VPSX7edWJmi93eyxaL0QMNI
+         TAalMhmYDbZsITnef+5/jfnLYFQ+1S/0EvbCn6t6Qjs162onhjaG7+C2KlM0Tkqmi8wh
+         lzYV/WSSvS/Fi0UtIe/RJXpndClzs73XZlUhfZqvx+fHeSqzeNr3fXSjl5EAfU5s2uwh
+         vZiKvdHZvtkcWxAscOF/7mk7V/dwyVsMLEIV1uudMQz+nFzV8zKGNTHLdYxSaoGBk2oh
+         TMXw==
+X-Forwarded-Encrypted: i=1; AJvYcCWBhqEpRJkmTFiNB74zldZx2C+nlLO2y3LJ28Abt4W0C911vC3xO4gFLodLswCgsYTWXI7mykJJKphoZdOfZnpg9wMibw==@vger.kernel.org, AJvYcCWkD/+wlh7Ccv/Y8a4EGp6iX2bFr00Wp5EP6p8fpm9bWaYERPwArKWQT7kjEGVeK19VFiwjjL3T1D+YAz4R@vger.kernel.org, AJvYcCWpgjI9vnEE0VjBAfF8CuCLNkyar/2lx6Gb2Z+1TITMJn13G2FqORG7JlEze+gK/7o6mYs06ucmAN1AeEoPbA==@vger.kernel.org, AJvYcCWt7lsVFYbU5ZqECDcut0TlVTrKU3WyjWetnwzsfkjOJSC+kRyordpZjT+ScU7WnMHytMw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwkGoBMYHNQ9zI3EpcmJLDtOlSJ6LKwYFJEHjH4jd62pdLlbtp5
+	+Uky6pByhLfadKX7eD+ICYcRDPiEyXtG6cOQphqBMijmMUEdez+uxt8wuZSYqns8YW3xEq3QZZT
+	cxlZks8EZvHjMNv9KyoQjYXs/y0Y=
+X-Gm-Gg: ASbGncviDw3zN5fPGPl3wvwi3CC6P84TZM7C3VXpXovlSQ/lSP680qqMrts56zZd+Gd
+	9JKhWh1xMFCdw/Zhz5L2iTDNoCdu0SWY7hrzxoeW2Xvd5mKWqINk=
+X-Google-Smtp-Source: AGHT+IF6C1kyOIzspL8FJ6lY6T2B7S0Ong/QRjtBPIeAUZMab/0JVUfow4OcO3JdX8i8lSSqgjFzDc6Dn626X5R/OrY=
+X-Received: by 2002:a05:6a20:9f9b:b0:1e0:d1db:4d8a with SMTP id
+ adf61e73a8af0-1e1870bd5e1mr20198567637.10.1733766338437; Mon, 09 Dec 2024
+ 09:45:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,12 +74,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20241205-sysfs-const-bin_attr-simple-v1-0-4a4e4ced71e3@weissschuh.net>
- <20241205-sysfs-const-bin_attr-simple-v1-3-4a4e4ced71e3@weissschuh.net>
-In-Reply-To: <20241205-sysfs-const-bin_attr-simple-v1-3-4a4e4ced71e3@weissschuh.net>
+ <20241205-sysfs-const-bin_attr-simple-v1-4-4a4e4ced71e3@weissschuh.net>
+In-Reply-To: <20241205-sysfs-const-bin_attr-simple-v1-4-4a4e4ced71e3@weissschuh.net>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 9 Dec 2024 09:43:36 -0800
-Message-ID: <CAEf4BzYtD-njaaSr8zHK3ay0hzWFHamJ+DEqoXOcjM9LDdY4Zw@mail.gmail.com>
-Subject: Re: [PATCH 3/4] btf: Switch vmlinux BTF attribute to sysfs_bin_attr_simple_read()
+Date: Mon, 9 Dec 2024 09:45:26 -0800
+Message-ID: <CAEf4BzasK+pV69CMcy-pMk1cMf+LhKnXKPm8q6s7gioXnebRNQ@mail.gmail.com>
+Subject: Re: [PATCH 4/4] btf: Switch module BTF attribute to sysfs_bin_attr_simple_read()
 To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 Cc: Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
 	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
@@ -105,52 +105,51 @@ huh.net> wrote:
 > The generic function from the sysfs core can replace the custom one.
 >
 > Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
->
 > ---
-> This is a replacement for [0], as Alexei was not happy about BIN_ATTR_SIM=
-PLE_RO()
+>  kernel/bpf/btf.c | 15 ++-------------
+>  1 file changed, 2 insertions(+), 13 deletions(-)
 >
-> [0] https://lore.kernel.org/lkml/20241122-sysfs-const-bin_attr-bpf-v1-1-8=
-23aea399b53@weissschuh.net/
-> ---
->  kernel/bpf/sysfs_btf.c | 12 ++----------
->  1 file changed, 2 insertions(+), 10 deletions(-)
->
+
+LGTM
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-> diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
-> index fedb54c94cdb830a4890d33677dcc5a6e236c13f..81d6cf90584a7157929c50f62=
-a5c6862e7a3d081 100644
-> --- a/kernel/bpf/sysfs_btf.c
-> +++ b/kernel/bpf/sysfs_btf.c
-> @@ -12,24 +12,16 @@
->  extern char __start_BTF[];
->  extern char __stop_BTF[];
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index e7a59e6462a9331d0acb17a88a4ebf641509c050..69caa86ae6085dce17e95107c=
+4497d2d8cf81544 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -7870,17 +7870,6 @@ struct btf_module {
+>  static LIST_HEAD(btf_modules);
+>  static DEFINE_MUTEX(btf_module_mutex);
 >
 > -static ssize_t
-> -btf_vmlinux_read(struct file *file, struct kobject *kobj,
-> -                struct bin_attribute *bin_attr,
-> -                char *buf, loff_t off, size_t len)
+> -btf_module_read(struct file *file, struct kobject *kobj,
+> -               struct bin_attribute *bin_attr,
+> -               char *buf, loff_t off, size_t len)
 > -{
-> -       memcpy(buf, __start_BTF + off, len);
+> -       const struct btf *btf =3D bin_attr->private;
+> -
+> -       memcpy(buf, btf->data + off, len);
 > -       return len;
 > -}
 > -
->  static struct bin_attribute bin_attr_btf_vmlinux __ro_after_init =3D {
->         .attr =3D { .name =3D "vmlinux", .mode =3D 0444, },
-> -       .read =3D btf_vmlinux_read,
-> +       .read_new =3D sysfs_bin_attr_simple_read,
->  };
+>  static void purge_cand_cache(struct btf *btf);
 >
->  struct kobject *btf_kobj;
+>  static int btf_module_notify(struct notifier_block *nb, unsigned long op=
+,
+> @@ -7941,8 +7930,8 @@ static int btf_module_notify(struct notifier_block =
+*nb, unsigned long op,
+>                         attr->attr.name =3D btf->name;
+>                         attr->attr.mode =3D 0444;
+>                         attr->size =3D btf->data_size;
+> -                       attr->private =3D btf;
+> -                       attr->read =3D btf_module_read;
+> +                       attr->private =3D btf->data;
+> +                       attr->read_new =3D sysfs_bin_attr_simple_read;
 >
->  static int __init btf_vmlinux_init(void)
->  {
-> +       bin_attr_btf_vmlinux.private =3D __start_BTF;
->         bin_attr_btf_vmlinux.size =3D __stop_BTF - __start_BTF;
->
->         if (bin_attr_btf_vmlinux.size =3D=3D 0)
+>                         err =3D sysfs_create_bin_file(btf_kobj, attr);
+>                         if (err) {
 >
 > --
 > 2.47.1
