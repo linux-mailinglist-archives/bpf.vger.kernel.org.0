@@ -1,201 +1,114 @@
-Return-Path: <bpf+bounces-46372-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46373-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A214A9E8B5C
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 07:11:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F67F9E8B8E
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 07:36:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECD112814E4
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 06:11:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FEB9281415
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 06:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B3492144CA;
-	Mon,  9 Dec 2024 06:11:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B80214801;
+	Mon,  9 Dec 2024 06:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hr4ihsZ2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n7DyDlww"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8695616DEB5;
-	Mon,  9 Dec 2024 06:11:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FCB14E2CF;
+	Mon,  9 Dec 2024 06:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733724691; cv=none; b=XlKJYIqaSWfyV+r4qE7rUG5m0wXIBGWxrhLTitKn1vmsmqmI8Xlh3ZGwp7mOHA198Fjx0YBI5RycaOTGm68UG8heEpIN10tqqHTY59UsDg+P+diGaOkqjGwziMhDGoLHYPsWXXe31MCVTXzkISL7yuOZlZwhey2fD47udi5Qiv8=
+	t=1733726185; cv=none; b=tme4Z6uxbggMrQgDrpnkpu3Wh736vDSX0ZjZXp3+10Ue4mITkfZEz5hP8Ba3k6yFsOOwQof4VzQL02HdiFk/AwfNpxWmSxpQamNliBFWvRUaVV1xzyr5S2UpsvnwV2aqdT9cNszhJbP26o5Ci6wgq1xTHWKKvN4P6F9fEThYFBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733724691; c=relaxed/simple;
-	bh=uWhiM+/cVZ+gZtMPzxGcN6fFIQWwYSzJU8wU6/NrLM4=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=XFFxe6NAB+FK6lMBng7MWm9T31K4+wfM8IUDTPt/SH9+AnhnJwz1wl4I6dMJf+P7GWSD8fEnkTv2U4sAQ+yznhD5U9a1ntEdlum9tA1k1SNdJ292yqNQ3GjMu8aaiUvAtFr1QuDBJMoXJbMHvpcrmXoSvnAg7PmS/BGPud00eOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hr4ihsZ2; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-725abf74334so3336778b3a.3;
-        Sun, 08 Dec 2024 22:11:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733724689; x=1734329489; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U0Dr18ok2Bwr1dMchDb8ArapEa4jmdw3PhKJpSV2ky8=;
-        b=Hr4ihsZ24sMHXs4+qJsfYkG1SmnZSSagiHafDeth6ahrleft7MErLw2vwxrNIeDZHf
-         PBDthx8ol4Mgj9cjhvXmDxnN1VcYuwZiWQ/+H5b99okXVD0JI2vHNLzWtXM+pBHlltHN
-         QyuvfUgcwe62H/YbLylEly5rk7zfO6CqFTN9Szw4PusFgvxi35jB9IX+C1TvnNk6x9tE
-         j/yl0jqgnpaw6QLOzyicJE4UrxR3JdG2a4vbwBhvLPcPyt5fd+JUptlntf4N3MTvXP8N
-         wijicivmhD+jPzrOeo4FZf85WRFByjY2tjlM5KjpRO0jKid/E4KFmbrc7jONZjjgaA0S
-         RO+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733724689; x=1734329489;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=U0Dr18ok2Bwr1dMchDb8ArapEa4jmdw3PhKJpSV2ky8=;
-        b=esSc5nKfP+QNeC/lpuzReWIlFiABjOcx0PoCZZcfEIVZT0BnQD1IAmOY0S6RD84qYP
-         Uq3AndS+S8rmuyayqdOf1D7YJuj9I5SNGovU7hPbXpanN6qTebLeIuj9YpKdrO/fZnVY
-         kAXVC0vqCdLPev+VOXTv6UViDPQMI7URUuUuFk0rZ5RCd5ADC3qWA+imYRmp3SPNnhxw
-         iKYDn7Pbq6EnC4zfXtvlPT3H/rGOuGBQVvaL5dhsXmhV1cXnMW/602iMyadSoEipz50T
-         QkBhCOyChahXttsMYqcWkOex/bJIPZ7wFlyNXbLaVYjDLeZkK/bCn7nULrsogb9nsnF1
-         dWBA==
-X-Forwarded-Encrypted: i=1; AJvYcCV9rZaOgHjxNAtN45mMcwohlAaSZw74sns+cLPFd1piEFqFeVMeY7LI+2NdG3rRGI9hoZrl032d@vger.kernel.org, AJvYcCVHWVirEjGhzMrYeZdFNkSXRHACSQYPqE6+jDJ3F6bI874ECD804/VTOnO/A4uBGuVT1G2zjUKAgmbN9xE5fbs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxbuWyQXDN4jNY01n3B9aGCybky/MdGOvcnf48+2RS8ZgMVdvqn
-	inlN0nOlDG0iwtm2TOnc8tQaigLNI8m5oLIE4GCugGvCchL0wjNC
-X-Gm-Gg: ASbGncsnUtxOQbnv01o5BIubqhhDUJL4PB26/vmSqCJLSarNXS1fVA9vAyp4jyrn89a
-	YcOtrmKtfdTOw76B9ipBNU6op7NCXEXINdTp98ufW3QYuLM9pK8r/PzPjwPLZ1bsgl258omNU1H
-	7oLnEQexllFTkoRvUHPjLmT8rJOtFlbmvu9Es1vIWNJlEuJtQ1kxWOPg0QQgNZ0HfE02SgcFoMD
-	xkJE4ja6M6rihyUcDS+5qiJUIuCJd6djMJBiackgdQuKvV6s48=
-X-Google-Smtp-Source: AGHT+IFMQfjWG8+hq0DsREnI77EtruDQsGNSS2eOzaYid2+5l3TTbMj5s/XqTwPKfy6itOzuf3pr4w==
-X-Received: by 2002:a05:6a00:a90:b0:725:f153:22d5 with SMTP id d2e1a72fcca58-725f1532457mr1897792b3a.18.1733724688664;
-        Sun, 08 Dec 2024 22:11:28 -0800 (PST)
-Received: from localhost ([98.97.37.114])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725c9ec7217sm3888129b3a.60.2024.12.08.22.11.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Dec 2024 22:11:27 -0800 (PST)
-Date: Sun, 08 Dec 2024 22:11:26 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Michal Luczaj <mhal@rbox.co>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, 
- Mykola Lysenko <mykolal@fb.com>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, 
- KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, 
- Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, 
- Shuah Khan <shuah@kernel.org>, 
- Jakub Sitnicki <jakub@cloudflare.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>
-Cc: bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, 
- netdev@vger.kernel.org, 
- Michal Luczaj <mhal@rbox.co>
-Message-ID: <67568a0ed36d3_1abf20818@john.notmuch>
-In-Reply-To: <20241202-sockmap-replace-v1-3-1e88579e7bd5@rbox.co>
-References: <20241202-sockmap-replace-v1-0-1e88579e7bd5@rbox.co>
- <20241202-sockmap-replace-v1-3-1e88579e7bd5@rbox.co>
-Subject: RE: [PATCH bpf 3/3] bpf, sockmap: Fix race between element replace
- and close()
+	s=arc-20240116; t=1733726185; c=relaxed/simple;
+	bh=DgtaHPJQKdaLwwTG+7hCBSPnG+BYqh2b1JN3OIxNq34=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=SoBisfQO7c8hkYEAgw/cwLlyja+AfgWfvQwWQpH5mV6LPfoS+h22oOToAZ+m0X9Tgx3hGmrrteMGyraOKqZWsYhdYnYuqXljLoIF7+0Y3J/Gyz8Odp7/4h41FM1DF17mCGJI1QANtdjBLK3wSswX4PXTDhftz9zzbOwwfdzCbWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n7DyDlww; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B01D3C4CED1;
+	Mon,  9 Dec 2024 06:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733726184;
+	bh=DgtaHPJQKdaLwwTG+7hCBSPnG+BYqh2b1JN3OIxNq34=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=n7DyDlwwaHxO6CVJPdsWtlP6a4BUw7JEbzbWQNU0tmjMuMUVkzKtWnMtj7Fx4bTHK
+	 wi67RsBH1Tt9I7jO1Cf1AFgeOjOFLg/SLo2hyljF/xTa8eZoOZM78KYTeoUndzwRhC
+	 gNm9QP/8704G0MnbCUAGpTLwJlMZLEYkAQunLuNM/TVmnq3ie9H78depXhV0X660/w
+	 61sMfbaWU/oueU0hqVXie/zarq5zn4EgHei27D/t3ZUJZA6xcqU+L0MfIYlEeahTbu
+	 rRb+hRweRmNR4BkF1qa2NzC6mlwniVnTJwZvYw+KMm0E7Qwqgf8KfOTP20L8fZo9/I
+	 qXwyLCEbCwVUA==
+Date: Mon, 9 Dec 2024 15:36:18 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>, "Masami Hiramatsu (Google)"
+ <mhiramat@kernel.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Florent Revest <revest@chromium.org>, linux-trace-kernel@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Alan Maguire
+ <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>,
+ linux-arch@vger.kernel.org
+Subject: Re: [PATCH v20 00/19] tracing: fprobe: function_graph:
+ Multi-function graph and fprobe on fgraph
+Message-Id: <20241209153618.87e9a6084898575ac06d81c0@kernel.org>
+In-Reply-To: <20241206095247.798c6917@gandalf.local.home>
+References: <173344373580.50709.5332611753907139634.stgit@devnote2>
+	<20241206093556.9026-B-hca@linux.ibm.com>
+	<20241206095247.798c6917@gandalf.local.home>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-Michal Luczaj wrote:
-> Element replace (with a socket different from the one stored) may race with
-> socket's close() link popping & unlinking. __sock_map_delete()
-> unconditionally unrefs the (wrong) element:
-> 
-> // set map[0] = s0
-> map_update_elem(map, 0, s0)
-> 
-> // drop fd of s0
-> close(s0)
->   sock_map_close()
->     lock_sock(sk)               (s0!)
->     sock_map_remove_links(sk)
->       link = sk_psock_link_pop()
->       sock_map_unlink(sk, link)
->         sock_map_delete_from_link
->                                         // replace map[0] with s1
->                                         map_update_elem(map, 0, s1)
->                                           sock_map_update_elem
->                                 (s1!)       lock_sock(sk)
->                                             sock_map_update_common
->                                               psock = sk_psock(sk)
->                                               spin_lock(&stab->lock)
->                                               osk = stab->sks[idx]
->                                               sock_map_add_link(..., &stab->sks[idx])
->                                               sock_map_unref(osk, &stab->sks[idx])
->                                                 psock = sk_psock(osk)
->                                                 sk_psock_put(sk, psock)
->                                                   if (refcount_dec_and_test(&psock))
->                                                     sk_psock_drop(sk, psock)
->                                               spin_unlock(&stab->lock)
->                                             unlock_sock(sk)
->           __sock_map_delete
->             spin_lock(&stab->lock)
->             sk = *psk                        // s1 replaced s0; sk == s1
->             if (!sk_test || sk_test == sk)   // sk_test (s0) != sk (s1); no branch
->               sk = xchg(psk, NULL)
->             if (sk)
->               sock_map_unref(sk, psk)        // unref s1; sks[idx] will dangle
->                 psock = sk_psock(sk)
->                 sk_psock_put(sk, psock)
->                   if (refcount_dec_and_test())
->                     sk_psock_drop(sk, psock)
->             spin_unlock(&stab->lock)
->     release_sock(sk)
-> 
-> Then close(map) enqueues bpf_map_free_deferred, which finally calls
-> sock_map_free(). This results in some refcount_t warnings along with a
-> KASAN splat[1].
-> 
+On Fri, 6 Dec 2024 09:52:47 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-[...]
- 
-> Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-> Signed-off-by: Michal Luczaj <mhal@rbox.co>
-> ---
->  net/core/sock_map.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> On Fri, 6 Dec 2024 10:35:56 +0100
+> Heiko Carstens <hca@linux.ibm.com> wrote:
 > 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 20b348b1964a10a1b0bfbe1a90a4a4cd99715b81..f1b9b3958792cd599efcb591742874e9b3f4a76b 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -412,12 +412,11 @@ static void *sock_map_lookup_sys(struct bpf_map *map, void *key)
->  static int __sock_map_delete(struct bpf_stab *stab, struct sock *sk_test,
->  			     struct sock **psk)
->  {
-> -	struct sock *sk;
-> +	struct sock *sk = NULL;
->  	int err = 0;
->  
->  	spin_lock_bh(&stab->lock);
-> -	sk = *psk;
-> -	if (!sk_test || sk_test == sk)
-> +	if (!sk_test || sk_test == *psk)
->  		sk = xchg(psk, NULL);
->  
->  	if (likely(sk))
+> > On Fri, Dec 06, 2024 at 09:08:56AM +0900, Masami Hiramatsu (Google) wrote:
+> > > Hi,
+> > > 
+> > > Here is the 20th version of the series to re-implement the fprobe on
+> > > function-graph tracer. The previous version is;
+> > > 
+> > > https://lore.kernel.org/all/173125372214.172790.6929368952404083802.stgit@devnote2/
+> > > 
+> > > This version is rebased on v6.13-rc1 and fixes to make CONFIG_FPROBE
+> > > "n" by default, so that it does not enable function graph tracer by
+> > > default.  
+> > 
+> > Is there a reason why you didn't add the ACKs I provided for s390
+> > related patches for v19 of this series?
 > 
-> -- 
-> 2.46.2
+> Probably just missed it.
 > 
+> Masami,
+> 
+> One thing I usually do when I rebase to a new series is to take my older
+> patch series from Patchwork and reapply them. Because patchwork will pick
+> up any acks, reviewed-bys or tested-bys. I then only drop the tags if the
+> patch needs significant changes.
 
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Oops, sorry, I missed those tags on v19. Let me fix that.
+
+Thanks.
+
+> 
+> You can also use b4 to do the same.
+> 
+> -- Steve
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
