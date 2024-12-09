@@ -1,320 +1,179 @@
-Return-Path: <bpf+bounces-46416-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46417-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 537789E9D7B
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 18:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 471BB9E9DA6
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 18:57:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32DE4161F66
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 17:50:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 145B91635DA
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 17:57:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE5871F2C33;
-	Mon,  9 Dec 2024 17:49:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5956A1B395A;
+	Mon,  9 Dec 2024 17:57:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H15uL/Ju"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A3JhlLHl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B31311C5CB8;
-	Mon,  9 Dec 2024 17:49:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 767201ACECC
+	for <bpf@vger.kernel.org>; Mon,  9 Dec 2024 17:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733766556; cv=none; b=ImfkA1zQlaj11fUzlnJ3dkfZbtO1x9ToopjXrHVuiCF53NVa8pymhvJOtxiwSBZyEuYhwgykcoEE95LUkR1JoSPpEbM6yagnMRRSPBvz1YgkiBNq2MAsk7d+Xxh8nQ87L4RCzuPCZ5WLrR/lTSk/NqNbc+AfsB2ThSSAb/EgdP4=
+	t=1733767039; cv=none; b=cSUsq3taEXupiJEJ0mdg/k2yKAZlUVOb73sn68JUlyCHjJVUlaCngA4LVT1Y+JH144EemGy1Xc6wSF5q1hOygb3IAT3Nx1VqANps32YvO8ESpgrtA1BrJqg7KK8vNaSATHTMcr3yVuj8wLL6kn4hLzJvnHGugWtLRsVp84f7oS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733766556; c=relaxed/simple;
-	bh=4YuvxkDx+/G2+aUC84wcLqNebJJLuZeEuLlObDhq52A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QQcoGvybvki1utBKRrNUnxXzcsYJzogDDj8a0paVxmacQirALYUNDUtKf9WomrpCWr5ti4Bk+JNGYpUUJLPjm/YYowElXfjVbYnKyAled2ObrZ7TovW8SlHdLOxMNhbuy9CgUw//eTeKT2kT10CVYkknBGbHOHyqhiLXo/Xw6EA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H15uL/Ju; arc=none smtp.client-ip=209.85.214.174
+	s=arc-20240116; t=1733767039; c=relaxed/simple;
+	bh=kLu8zhBKrjQeEw6PT/9EU40QfusMkYT50h+gb47rLB8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GmCgAYWIjMYllm22AqHOLYQZCHaXt01OFJa9JrppFEN1ggYaUaR+sAyd15WYrIRma9zRzo0m/aiobfKK4Y/lcRBbtZqcXAh//ssUvYbS717QOPrhHs7d3s6GwqB+zlIi0fyuodpfO7i4dkzRLiVmCpx0bPcwrxiqGPhYWoc7+1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A3JhlLHl; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-215ac560292so46252025ad.2;
-        Mon, 09 Dec 2024 09:49:14 -0800 (PST)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-725abf74334so3897815b3a.3
+        for <bpf@vger.kernel.org>; Mon, 09 Dec 2024 09:57:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733766554; x=1734371354; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YZu1+urGVcud0ou0n5g4exjSVK3H5pW4MRBDK0t68Fg=;
-        b=H15uL/JuUobZwrpAvKp0VwgeoS9xo9EOl0jle5qai6w4fII4NjIPDEa6jo8xCSX662
-         jieb/srXdC4vNHtRtpe5d/ewt2BPWQR9Rn/C3+mWo5/N4TGxfvIsGQ2GgpEVquNyYmvE
-         qAO70CAKlvIarlW7W8LEDJYQjDiUYAEtnDu6CQdHQiTEuBgwcY5PEDb+WLvIm5fKR4yB
-         JiASLBwkBxJ8JjzBtFUhs4GM62tpBESCF27Sg8ct1+ert4cMYEQLZ0JGeHKHNNEFDOPG
-         UUG62z4+NQeliBoiw0cv9h4jUgwoOPpDsrFzKfz0pLXTTCSouZ54ExRg9tWxQwuh1h0y
-         g9uQ==
+        d=gmail.com; s=20230601; t=1733767038; x=1734371838; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=F5n/GJUP8u32IG793f+vPd5jdHzCsfPeiMmS0fDeebs=;
+        b=A3JhlLHl+qi7u06M3pI5zJrXvHn+pq1xLjNhVfMJWjn2h3rKlW39Xog34N2ck5SSz9
+         KXQrldfI8CacDKuAMxqGpSh3Eg6S8TmpgPxb1cHudtGDM80CmPlWi//C08rUTDJxYnKF
+         mpeP3rZ2Q8A/PMv0KraXjl9zNOl0qYdJli+SIBhVgI5n+mvFAxdk4YX1ijwnJl+uT0hM
+         wLcd9jBLFuEuhYZCai2Oq+4uz1ekUx1ElFzF58jI/46gMUCkLjzNYxldGQcbJVTDruA7
+         R6456KvWEtwAsRuPctLfvIF3ENDyBE3CBo6TheS5eZJJ2h5LXLMMfIVIAiF3HDk7Uclz
+         9LGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733766554; x=1734371354;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YZu1+urGVcud0ou0n5g4exjSVK3H5pW4MRBDK0t68Fg=;
-        b=Q15krN+Srcm4F1+fPmM7SgWiZnIBMbXinkvszqJUTf62JGCpSjB+Yhq9dWY8NsNMvW
-         WZp7IRsHWinFxHotVhfWUcjovPJF1SqEF5W6UzvEC+X1h0VE8Oh6/sSY3IZhUEoRVoGU
-         aciHAoIEaVXE6DlFoDpvlXSDe94Bm+RvaIwkp7z67HfcmfpJqgp9Mh+hFTb+BvdWl5ii
-         G7I/SoGJFEbzFz5NN4zqrADACOFcTDqwoeVfnJZnQY+lMWmAoG+rD82viOpUQTJeHF2G
-         bdwH3kNsyMbPMYloCQ70fTwcxikPm90cggNJ6x/lQNYmUGi2aNBhEwo4iZDKSnwfQA+k
-         dgcw==
-X-Forwarded-Encrypted: i=1; AJvYcCWfJ9NBK6Z82PUWn8z30TgAo3ck1cFTUW3Y0kFY/bw9kxM99PYEUPl4FofpEw9NW9cl6N0=@vger.kernel.org, AJvYcCX7ywL4D5VkmEUGRaiSm7j5BSG3TjYuktgFjIKUHdDd/e8Cl9LEBI0bHMA/olKzDMNIDkskIPGgb7EalsUByciHLQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzrfxgzzGpWsIzLCz13wtQs5aEX+BHWoKc5QRIleI8F6oHFzIoC
-	5jWDF8m4ZsYMt7ffw/mG1Yezl/kD4jiij5EA+sBCHbdDmTvkvC2XoB/qF2L9NhiMZJdvSFC3fCV
-	JyF3S66Sj/i+aZXhAL5FV1d6sGKI=
-X-Gm-Gg: ASbGncvMYJ3UITOf2Asja1+0yuXx7wnBWQc8z2heb/gop/VV64ijuOCuyO4Ocmbu2Si
-	44+HEFPGoM0ZjG8VtGgFXjq/Il4Z6+FVBS/MR0VrZoetO+Vamuf8=
-X-Google-Smtp-Source: AGHT+IGqM+ReE5VyKbANy3zDiiYzzNQAVE78b6BcN0Tun/D5xEEgTs6j32rJzdpGN4ynTfVrxkFN82gTE1xq56LedjM=
-X-Received: by 2002:a17:902:ec92:b0:215:a172:5fb9 with SMTP id
- d9443c01a7336-2166a05562cmr20190715ad.48.1733766553869; Mon, 09 Dec 2024
- 09:49:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1733767038; x=1734371838;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=F5n/GJUP8u32IG793f+vPd5jdHzCsfPeiMmS0fDeebs=;
+        b=FsKy3wp6PrkoOqu1s0mqPmygm4iy5bGD5HAizMAgxnsulF7yg8Y5bu87B2hEpzXS/E
+         eY/9Cux0aQu9Y5KndkOqVf9FdgkARTV3VE7K8H0wzN5pcRrGdS/Byf9zZbZJ2LQZn84z
+         MSMYpD8HhEz7Ot40LonvXSJsFpsD7WxhQW4UAK98Hm2kyjyuAsPx7HS7e/YAJDylPGUR
+         /hqOKJv9R+19OXbhoLM4X06I02QdPhEhqUvfHIFMlaiyRzhUoLET+uVeJ7KHg25db9ea
+         OiKhE93xIMyrRlS48fQjwYy+k5hcVVeaW7dNezKmfgOR+SbLvt1pGiOumgc4C7ooyiiO
+         iZLQ==
+X-Gm-Message-State: AOJu0YwB+7Bej5N8zgDXO/P1NtB75q+pJYHS36V1wJrpHxALDKsbEuNz
+	+RkJdxXYdRkAvwveL5icHw27VPQ+O8/2J58v1R1sTz7UKb5WDbQp09VP+A==
+X-Gm-Gg: ASbGnctUhTVhQblBzn9OhGcDyYb0p0ixNSA/2rbdwzXbeWBkmo7Z64ZipEeY6T6DcIH
+	WXqCymRr/a1sQTnBE+HID0gstbnV2XQpgdXD46FOom7wtDdNTqbshIEg2Znq8a2FOjobXQ9LWNn
+	tClmLynhxiR/FsSRx/onEyHgIzgaeJz3SA43BduAels2OHLiw+oGZ5+Ee8FGyfgsodX+lmm303b
+	n2Q5b8flkVuTgPs55QRQ0VI04tRt+2xznq5MGQHYDnaBpE=
+X-Google-Smtp-Source: AGHT+IG/d7yRdlm6CcdQ50iTRiPwB4ws7QiQCNTFwHPLV7DE0dkhD8ccTFWbuwiLuaSTIKFwR0IXLw==
+X-Received: by 2002:a05:6a00:b47:b0:725:f4c6:6b72 with SMTP id d2e1a72fcca58-725f4c66eaemr3688380b3a.25.1733767037406;
+        Mon, 09 Dec 2024 09:57:17 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725eafb9ea1sm2550929b3a.78.2024.12.09.09.57.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Dec 2024 09:57:16 -0800 (PST)
+Message-ID: <58dbb0671ad59507e45c3f5ff50da66b0f8bd36e.camel@gmail.com>
+Subject: Re: [PATCH bpf 3/4] bpf: track changes_pkt_data property for global
+ functions
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau	 <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>,
+ Yonghong Song	 <yonghong.song@linux.dev>, Nick Zavaritsky <mejedi@gmail.com>
+Date: Mon, 09 Dec 2024 09:57:12 -0800
+In-Reply-To: <CAADnVQKDDpFFkaR21o5cBU5Q0dqBgP_0c9KWt1t5ADLV1yX=HQ@mail.gmail.com>
+References: <20241206040307.568065-1-eddyz87@gmail.com>
+	 <20241206040307.568065-4-eddyz87@gmail.com>
+	 <CAADnVQJgLj6qPUtujg0a0fj7Rifv3L3LL3F5abs6auf6hAhKGQ@mail.gmail.com>
+	 <6546c0418c00ab378ed8b6a0d8da1b22778d88df.camel@gmail.com>
+	 <CAADnVQKDDpFFkaR21o5cBU5Q0dqBgP_0c9KWt1t5ADLV1yX=HQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241023100131.3400274-1-jolsa@kernel.org> <CAEf4BzbZdaPaspRAVP7=UcfpFzR4qhksJTRiEwiZ9RDQtdg0bQ@mail.gmail.com>
- <Z1Mv3wjtonrX_ptM@krava> <CAEf4BzZ4nzqWcn9iNPhRY4dfhNWrMp+D8Gxs7eTBqie=g55o5Q@mail.gmail.com>
- <Z1OVRwKCZ-ciWlAy@krava>
-In-Reply-To: <Z1OVRwKCZ-ciWlAy@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 9 Dec 2024 09:49:01 -0800
-Message-ID: <CAEf4BzbGnAAihFg8FYB-yKVLn4D6iHoL98r+PhiBEeJHRYT3sg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf,perf: Fix perf_event_detach_bpf_prog error handling
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Sean Young <sean@mess.org>, Peter Zijlstra <peterz@infradead.org>, 
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 6, 2024 at 4:22=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrote=
-:
->
-> On Fri, Dec 06, 2024 at 10:21:18AM -0800, Andrii Nakryiko wrote:
-> > On Fri, Dec 6, 2024 at 9:09=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> w=
-rote:
-> > >
-> > > On Wed, Oct 23, 2024 at 09:01:02AM -0700, Andrii Nakryiko wrote:
-> > > > On Wed, Oct 23, 2024 at 3:01=E2=80=AFAM Jiri Olsa <jolsa@kernel.org=
-> wrote:
-> > > > >
-> > > > > Peter reported that perf_event_detach_bpf_prog might skip to rele=
-ase
-> > > > > the bpf program for -ENOENT error from bpf_prog_array_copy.
-> > > > >
-> > > > > This can't happen because bpf program is stored in perf event and=
- is
-> > > > > detached and released only when perf event is freed.
-> > > > >
-> > > > > Let's make it obvious and add WARN_ON_ONCE on the -ENOENT check a=
-nd
-> > > > > make sure the bpf program is released in any case.
-> > > > >
-> > > > > Cc: Sean Young <sean@mess.org>
-> > > > > Fixes: 170a7e3ea070 ("bpf: bpf_prog_array_copy() should return -E=
-NOENT if exclude_prog not found")
-> > > > > Closes: https://lore.kernel.org/lkml/20241022111638.GC16066@noisy=
-.programming.kicks-ass.net/
-> > > > > Reported-by: Peter Zijlstra <peterz@infradead.org>
-> > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > ---
-> > > > >  kernel/trace/bpf_trace.c | 5 +++--
-> > > > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > > > > index 95b6b3b16bac..2c064ba7b0bd 100644
-> > > > > --- a/kernel/trace/bpf_trace.c
-> > > > > +++ b/kernel/trace/bpf_trace.c
-> > > > > @@ -2216,8 +2216,8 @@ void perf_event_detach_bpf_prog(struct perf=
-_event *event)
-> > > > >
-> > > > >         old_array =3D bpf_event_rcu_dereference(event->tp_event->=
-prog_array);
-> > > > >         ret =3D bpf_prog_array_copy(old_array, event->prog, NULL,=
- 0, &new_array);
-> > > > > -       if (ret =3D=3D -ENOENT)
-> > > > > -               goto unlock;
-> > > > > +       if (WARN_ON_ONCE(ret =3D=3D -ENOENT))
-> > > > > +               goto put;
-> > > > >         if (ret < 0) {
-> > > > >                 bpf_prog_array_delete_safe(old_array, event->prog=
-);
-> > > >
-> > > > seeing
-> > > >
-> > > > if (ret < 0)
-> > > >     bpf_prog_array_delete_safe(old_array, event->prog);
-> > > >
-> > > > I think neither ret =3D=3D -ENOENT nor WARN_ON_ONCE is necessary,  =
-tbh. So
-> > > > now I feel like just dropping WARN_ON_ONCE() is better.
-> > >
-> > > hi,
-> > > there's syzbot report [1] where we could end up with following
-> > >
-> > >   - create perf event and set bpf program to it
-> > >   - clone process -> create inherited event
-> > >   - exit -> release both events
-> > >   - first perf_event_detach_bpf_prog call will release tp_event->prog=
-_array
-> > >     and second perf_event_detach_bpf_prog will crash because
-> > >     tp_event->prog_array is NULL
-> > >
-> > > we can fix that quicly with change below, I guess we could add refcou=
-nt
-> > > to bpf_prog_array_item and allow one of the parent/inherited events t=
-o
-> > > work while the other is gone.. but that might be too much, will check
-> > >
-> > > jirka
-> > >
-> > >
-> > > [1] https://lore.kernel.org/bpf/Z1MR6dCIKajNS6nU@krava/T/#m91dbf06882=
-21ec7a7fc95e896a7ef9ff93b0b8ad
-> > > ---
-> > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > > index fe57dfbf2a86..d4b45543ebc2 100644
-> > > --- a/kernel/trace/bpf_trace.c
-> > > +++ b/kernel/trace/bpf_trace.c
-> > > @@ -2251,6 +2251,8 @@ void perf_event_detach_bpf_prog(struct perf_eve=
-nt *event)
-> > >                 goto unlock;
-> > >
-> > >         old_array =3D bpf_event_rcu_dereference(event->tp_event->prog=
-_array);
-> > > +       if (!old_array)
-> > > +               goto put;
-> >
-> > How does this inherited event stuff work? You can have two separate
-> > events sharing the same prog_array? What if we attach different
-> > programs to each of those events, will both of them be called for
-> > either of two events? That sounds broken, if that's true.
->
-> so perf event with attr.inherit=3D1 attached on task will get inherited
-> by child process.. the new child event shares the parent's bpf program
-> and tp_event (hence prog_array) which is global for tracepoint
->
-> AFAICS when child process exits the inherited event is destroyed and it
-> removes related tp_event->prog_array, so the parent event won't trigger
-> ever again, the test below shows that
->
+On Mon, 2024-12-09 at 08:53 -0800, Alexei Starovoitov wrote:
 
-Doesn't this sound broken? Either event inheritance has to copy
-prog_array and make them completely independent. Or inherited event
-shouldn't remove the parent's program. Or something else, but the way
-it is right now seems wrong, no?
+[...]
 
-I'm not sure what's the most appropriate behavior that would match
-overall perf_event inheritance, but we should probably think about
-this and fix it, instead of patching up the symptom with that NULL
-check, no?
+> >=20
+> >     // tc_bpf2bpf.c
+> >     __noinline                             freplace
+> >     int subprog_tc(struct __sk_buff *skb) <--------.
+> >     {                                              |
+> >         int ret =3D 1;                               |
+> >                                                    |
+> >         __sink(skb);                               |
+> >         __sink(ret);                               |
+> >         return ret;                                |
+> >     }                                              |
+> >                                                    |
+> >     SEC("tc")                                      |
+> >     int entry_tc(struct __sk_buff *skb)            |
+> >     {                                              |
+> >         return subprog_tc(skb);                    |
+> >     }                                              |
+> >                                                    |
+> >     // tailcall_freplace.c                         |
+> >     struct {                                       |
+> >         __uint(type, BPF_MAP_TYPE_PROG_ARRAY);     |
+> >         __uint(max_entries, 1);                    |
+> >         __uint(key_size, sizeof(__u32));           |
+> >         __uint(value_size, sizeof(__u32));         |
+> >     } jmp_table SEC(".maps");                      |
+> >                                                    |
+> >     int count =3D 0;                                 |
+> >                                                    |
+> >     SEC("freplace")                                |
+> >     int entry_freplace(struct __sk_buff *skb) -----'
+> >     {
+> >         count++;
+> >         bpf_tail_call_static(skb, &jmp_table, 0);
+> >         return count;
+> >     }
+>=20
+> hmm. none of the above changes pkt_data, so it should be allowed.
+> The prog doesn't read skb->data either.
+> So I don't quite see the problem.
 
->   test_tp_attach:FAIL:executed unexpected executed: actual 1 !=3D expecte=
-d 2
->
-> I'm not sure this is problem in practise, because nobody complained
-> about that ;-)
+The problem is when I use simplified rule: "every tail call changes packet =
+data",
+as a substitute for proper map content effects tracking.
 
-That's... not really a distinction of what is a problem or not ;)
+If map content effects are tracked, there should be no problems
+verifying this program. However, that can't be done in check_cfg(),
+as it does not track register values, and register value is needed to
+identify the map. Hence, mechanics with "in-line" global sub-program
+traversal is needed (as described by Andrii):
+- during a regular verification pass get to a global sub-program call:
+  - if sub-program had not been visited yet, verify it completely
+    and compute changes_pkt_data effect;
+  - continue from the call-site using the computed effect;
+- during a regular verification pass get to a tail call:
+  - check the map pointed to by R1 to see whether it has
+    changes_pkt_data effect.
 
->
-> libbpf does not set attr.inherit=3D1 and creates system wide perf event,
-> so no problem there
+> > Here 'entry_freplace' is assumed to invalidate packet data because of
+> > the bpf_tail_call_static(), and thus it can't replace 'subprog_tc'.
+> > There is an option to add a dummy call to bpf_skb_pull_data(),
+> > but this operation is not a noop, as far as I can tell.
+>=20
+> skb_pull is not, but there are plenty that are practically nop helpers.
+> bpf_helper_changes_pkt_data() lists them all.
+> Like bpf_xdp_adjust_meta(xdp, 0)
+>=20
+> > Same situation was discussed in the sub-thread regarding use of tags.
+> > (Note: because of the tail calls, some form of changes_pkt_data effect
+> >  propagation similar to one done in check_cfg() would be needed with
+> >  tags as well. That, or tags would be needed not only for global
+> >  sub-programs but also for BPF_MAP_TYPE_PROG_ARRAY maps).
+>=20
+> nack to tags approach.
 
-you can use all this outside of libbpf and lead to wrong behavior, so
-worth thinking about this and fixing, IMO
+Understood.
 
->
-> jirka
->
->
-> ---
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 66173ddb5a2d..2e96241b5030 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -12430,8 +12430,9 @@ static int perf_event_open_tracepoint(const char =
-*tp_category,
->         attr.type =3D PERF_TYPE_TRACEPOINT;
->         attr.size =3D attr_sz;
->         attr.config =3D tp_id;
-> +       attr.inherit =3D 1;
->
-> -       pfd =3D syscall(__NR_perf_event_open, &attr, -1 /* pid */, 0 /* c=
-pu */,
-> +       pfd =3D syscall(__NR_perf_event_open, &attr, 0 /* pid */, 0 /* cp=
-u */,
->                       -1 /* group_fd */, PERF_FLAG_FD_CLOEXEC);
->         if (pfd < 0) {
->                 err =3D -errno;
-> diff --git a/tools/testing/selftests/bpf/prog_tests/tp_attach.c b/tools/t=
-esting/selftests/bpf/prog_tests/tp_attach.c
-> new file mode 100644
-> index 000000000000..01bbf1d1ab52
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/tp_attach.c
-> @@ -0,0 +1,35 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <test_progs.h>
-> +#include "tp_attach.skel.h"
-> +
-> +void test_tp_attach(void)
-> +{
-> +       struct tp_attach *skel;
-> +       int pid;
-> +
-> +       skel =3D tp_attach__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "tp_attach__open_and_load"))
-> +               return;
-> +
-> +       skel->bss->pid =3D getpid();
-> +
-> +       if (!ASSERT_OK(tp_attach__attach(skel), "tp_attach__attach"))
-> +               goto out;
-> +
-> +       getpid();
-> +
-> +       pid =3D fork();
-> +       if (!ASSERT_GE(pid, 0, "fork"))
-> +               goto out;
-> +       if (pid =3D=3D 0)
-> +               _exit(0);
-> +       waitpid(pid, NULL, 0);
-> +
-> +       getpid();
-> +
-> +       ASSERT_EQ(skel->bss->executed, 2, "executed");
-> +
-> +out:
-> +       tp_attach__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/tp_attach.c b/tools/testin=
-g/selftests/bpf/progs/tp_attach.c
-> new file mode 100644
-> index 000000000000..d9450d2eac17
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/tp_attach.c
-> @@ -0,0 +1,17 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> +
-> +int pid;
-> +int executed;
-> +
-> +SEC("tp/syscalls/sys_enter_getpid")
-> +int test(void *ctx)
-> +{
-> +       if (pid =3D=3D (bpf_get_current_pid_tgid() >> 32))
-> +               executed++;
-> +       return 0;
-> +}
 
