@@ -1,192 +1,247 @@
-Return-Path: <bpf+bounces-46378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A1709E8C55
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 08:40:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E88F99E8D03
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 09:05:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 013E12818CE
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 07:40:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3EBA281CCD
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2024 08:05:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C7721516A;
-	Mon,  9 Dec 2024 07:40:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B633215177;
+	Mon,  9 Dec 2024 08:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f5tuTC2K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wrzrwvrs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27838215074
-	for <bpf@vger.kernel.org>; Mon,  9 Dec 2024 07:40:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4CEB21507B;
+	Mon,  9 Dec 2024 08:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733730020; cv=none; b=PhCDE0hhY9sWzkr+zzkJoMU5/16eKmheKyzejgR9+1vrapug30iIA7kNbWcrDcPpdXvdD0wXFuoKwxRWwHOCVxf35grprVjJAPS+E2WhNOq4TmZ2ZiZZcS2i/udxolo8AL7VqjIpsICUatR9SiyjdZOfKF3OropFFci8AlVnKd8=
+	t=1733731511; cv=none; b=CT1WtT8uPYUUHHJiVLpqA1yyr0W6bxq6RNil0vNUyz1XalYOvcbrvyPUZgBYKULrZ+n2aXL/fn6jOJ2S6nMON2Rt1PniOOBv4YYlnQsV2VhAGUvB38e2qH53lFYxYq4jjVVMvlgm4A602WFqdvqSZUJkEXZCvYTrbiJrovcHv4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733730020; c=relaxed/simple;
-	bh=7OEimS525jP5rBN3jsu3eq+HxHtnoyyruw311a16oPQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=d+t+4zyo8boSDcNmbMbMyLo8ZHYqPkJnVJ2o+8adFkwButfePWdGLOm7F8go1y443JkWLR6FKoxRFWqHqRMxExcymwDAbehV3WVnGS7XjQJwwsYp/e/O/fIE/FakBCqHYByXJc5OZU+L20EHg3NJaMhqo1sq3p3RIUSOf8G1we4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f5tuTC2K; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2164b662090so5492865ad.1
-        for <bpf@vger.kernel.org>; Sun, 08 Dec 2024 23:40:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733730018; x=1734334818; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=bRKGs+11xz3XeCBOPUrewhfBJnkIjIpqfLWL7cHIFwY=;
-        b=f5tuTC2KgJ6Q/alo9W0N0VWOg4iVuQg3NbRBMdgArFL/stHd14WDHQ1ZGjaJaE9eY3
-         Oo8YpIWAnwrNViobr5ORcdzUB43NND2y6L1/bRb6PDZIwA8iTY5jyJjpETDn7Yn4hBe3
-         Q3F+1YqvivHLi+TAGshkntdt+iedi/Z9Yo1DwnV23+62E+aa/OxzOgkbpHqvlvEcLXkm
-         zIAp9v1cGLITez1HA4vpHyoCoAEEIVTF9S7DIjvzcs2JqfteIJq+Gd42rwe6ONyODuu3
-         /jSzJdW9v9doB4k3xOY3EQIZO2nKXtxiki4bxwxAM0goYuYJw1ccBRBw5rrP8tF98SgY
-         HDJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733730018; x=1734334818;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bRKGs+11xz3XeCBOPUrewhfBJnkIjIpqfLWL7cHIFwY=;
-        b=rHmbFzJx/Pbp44yEC7t5OHv2HdGtW7s2QmgylZAaPpWZL8hCNUMJCz2nE79FMBXknC
-         JbbgWieND4d/BA1IzzUF+lloBtXu9QOPtgt7mJs9hwPAa8gbQKmgPz+NXfVwA9BFRG0h
-         PG7rLML0pTDjIdjiTAdIRWrsctwYbouIOVaCIrqalpyWkVoRJ7mFEYTlgGmmN5Qpk3xC
-         ZQ4gfDoZtiamcw0o7v7Ut74leOzitPthCZ0E4TXBALQnuwl7hsFQwfa7AnKI8paMVjSK
-         WZNdSumwIt0DTKMiURvj/7Z3MyWp7iQ5bmNegyJk0IioV/2bHQZHmVWU1aEkqf/GiHwH
-         T4GQ==
-X-Gm-Message-State: AOJu0YzB9hF4ZJ2swnSa8L6lPZUY0obPcbaO9rOEtTcS+Wc+AJPqUREo
-	Zvdom+KTPswNgCM5/mzI5sLNWQrtQmCnrtNu1OTvr+1nHAjPWvPD
-X-Gm-Gg: ASbGncsaYjaffP7ma+tvxHrTp9dM9P6Xr+kgXciLIZh6zc9hiS4wdMLx53rA0KQTooN
-	1Ehql09pnophCMyv7/VEYcUcSXxg+hHEUY6+e1+tAFDDR7yNPSvKkvDBEKps4uM64T/A7/VTKxQ
-	++KA0s6EcXMuF4kongPd6x5jQiygiyLDkk96UYOuQ76H+pX057BBYxClLeUXz+Y913/JAeJmAVd
-	k6U0GgnJpXB+U1ZoIOw5zx4hP5vX5h3b6khZX2gM2l1ciY=
-X-Google-Smtp-Source: AGHT+IFNVKrEG07Oh4aKq0trG+lkeIbzm5glw8K4NXky40kSpLNrt9VEHcDoqOSvCd4367LWrZjCyw==
-X-Received: by 2002:a17:902:dad2:b0:216:3466:7414 with SMTP id d9443c01a7336-21634667ae2mr105834045ad.44.1733730018357;
-        Sun, 08 Dec 2024 23:40:18 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-216360ef920sm26183355ad.71.2024.12.08.23.40.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Dec 2024 23:40:17 -0800 (PST)
-Message-ID: <6546c0418c00ab378ed8b6a0d8da1b22778d88df.camel@gmail.com>
-Subject: Re: [PATCH bpf 3/4] bpf: track changes_pkt_data property for global
- functions
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau	 <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>,
- Yonghong Song	 <yonghong.song@linux.dev>, Nick Zavaritsky <mejedi@gmail.com>
-Date: Sun, 08 Dec 2024 23:40:13 -0800
-In-Reply-To: <CAADnVQJgLj6qPUtujg0a0fj7Rifv3L3LL3F5abs6auf6hAhKGQ@mail.gmail.com>
-References: <20241206040307.568065-1-eddyz87@gmail.com>
-	 <20241206040307.568065-4-eddyz87@gmail.com>
-	 <CAADnVQJgLj6qPUtujg0a0fj7Rifv3L3LL3F5abs6auf6hAhKGQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1733731511; c=relaxed/simple;
+	bh=2LZ3wsSpA8YzRW7n+6GiEfPgfijojETpmsFsSU29S1E=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Lqo4ccPombcigHr1lpmVnCa6Zy5Gfeb+BMItEjA4ALtdHRjSfYNULBZ+ayXTRj0QuFWmSKG5DE/Do2A4gINzlxnMkbCcE7wXGQTXM5twMVOArmjuWjb2z48X+tir9jnHgoOOAClvHAsEJ1cJnHkwIDUsS1eCzAHJbXoVMNA4vQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wrzrwvrs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66E83C4CED1;
+	Mon,  9 Dec 2024 08:05:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733731510;
+	bh=2LZ3wsSpA8YzRW7n+6GiEfPgfijojETpmsFsSU29S1E=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=WrzrwvrsXRofRczT48p4XsnPaaqWJIU4DNPhXuxGVoOutuZzmaNUxRhUnxBqpM5T9
+	 abTn0XZBEfhH+odjXB2kMd2aG5gNxcDEx73elHJTNAK7/zfEVIRJkFJ0a2i164V4/b
+	 PHbfiCxq17J5FdBzvPXuBx2ea8bFyFPIgQwwYOie2pUt91qgJJtXK1FDq3viKGO93U
+	 oE4AGQzyi50zoXSEfuD50R0w3CQB2rpIe/+vzbOQykU3xtekRRadWkIiC846XXmo1V
+	 LRqcYpcCmonJ7E0hf1vPXDl7PUya+6xbUlVgpUnE4sQBMKvQZR+1WSWCPCr92qujrB
+	 tdMGgDhW4PU4A==
+Date: Mon, 9 Dec 2024 17:05:05 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Alan Maguire
+ <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>,
+ linux-arch@vger.kernel.org
+Subject: Re: [PATCH v19 18/19] ftrace: Add ftrace_get_symaddr to convert
+ fentry_ip to symaddr
+Message-Id: <20241209170505.61d4a585c2b0282190f29954@kernel.org>
+In-Reply-To: <173125394102.172790.7669548166614384865.stgit@devnote2>
+References: <173125372214.172790.6929368952404083802.stgit@devnote2>
+	<173125394102.172790.7669548166614384865.stgit@devnote2>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2024-12-06 at 12:43 -0800, Alexei Starovoitov wrote:
-> On Thu, Dec 5, 2024 at 8:03=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
-> >
-> > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.=
-h
-> > index f4290c179bee..48b7b2eeb7e2 100644
-> > --- a/include/linux/bpf_verifier.h
-> > +++ b/include/linux/bpf_verifier.h
-> > @@ -659,6 +659,7 @@ struct bpf_subprog_info {
-> >         bool args_cached: 1;
-> >         /* true if bpf_fastcall stack region is used by functions that =
-can't be inlined */
-> >         bool keep_fastcall_stack: 1;
-> > +       bool changes_pkt_data: 1;
->
-> since freplace was brought up in the other thread.
-> Let's fix it all in one patch.
-> I think propagating changes_pkt_data flag into prog_aux and
-> into map->owner should do it.
-> The handling will be similar to existing xdp_has_frags.
->
-> Otherwise tail_call from static subprog will have the same issue.
-> xdp_has_frags compatibility requires equality. All progs either
-> have it or don't.
-> changes_pkt_data flag doesn't need to be that strict:
-> A prog with changes_pkt_data can be freplaced by prog without
-> and tailcall into prog without it.
-> But not the other way around.
+On Mon, 11 Nov 2024 00:52:21 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-I tried implementing this in:
-https://github.com/eddyz87/bpf/tree/skb-pull-data-global-func-bug
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> This introduces ftrace_get_symaddr() which tries to convert fentry_ip
+> passed by ftrace or fgraph callback to symaddr without calling
+> kallsyms API. It returns the symbol address or 0 if it fails to
+> convert it.
+> 
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  Changes in v19:
+>   - Newly added.
+> ---
+>  arch/arm64/include/asm/ftrace.h |    2 +
+>  arch/arm64/kernel/ftrace.c      |   63 +++++++++++++++++++++++++++++++++++++++
+>  arch/x86/include/asm/ftrace.h   |   21 +++++++++++++
+>  include/linux/ftrace.h          |   13 ++++++++
+>  4 files changed, 99 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
+> index 876e88ad4119..f08e70bf09ea 100644
+> --- a/arch/arm64/include/asm/ftrace.h
+> +++ b/arch/arm64/include/asm/ftrace.h
+> @@ -52,6 +52,8 @@ extern unsigned long ftrace_graph_call;
+>  extern void return_to_handler(void);
+>  
+>  unsigned long ftrace_call_adjust(unsigned long addr);
+> +unsigned long arch_ftrace_call_adjust(unsigned long fentry_ip);
+> +#define ftrace_call_adjust(fentry_ip) arch_ftrace_call_adjust(fentry_ip)
 
-The freplace part is simple and works as intended.
+Oops, this is arch_ftrace_get_symaddr()!
 
-The tail call part won't work with check_cfg() based approach and
-needs global functions traversal reordering Andrii talked about.
-This is so, because of the need to inspect the value of register R1,
-passed to the tail call helper, in order to check map owner's properties.
+It needs to be fixed.
 
-If the rules are simplified to consider each tail call such that
-packet pointers are invalidated, the test case
-tailcalls/tailcall_freplace fails. Here is how it looks:
+Thanks,
 
-    // tc_bpf2bpf.c
-    __noinline                             freplace
-    int subprog_tc(struct __sk_buff *skb) <--------.
-    {                                              |
-    	int ret =3D 1;                               |
-                                                   |
-    	__sink(skb);                               |
-    	__sink(ret);                               |
-    	return ret;                                |
-    }                                              |
-                                                   |
-    SEC("tc")                                      |
-    int entry_tc(struct __sk_buff *skb)            |
-    {                                              |
-    	return subprog_tc(skb);                    |
-    }                                              |
-                                                   |
-    // tailcall_freplace.c                         |
-    struct {                                       |
-    	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);     |
-    	__uint(max_entries, 1);                    |
-    	__uint(key_size, sizeof(__u32));           |
-    	__uint(value_size, sizeof(__u32));         |
-    } jmp_table SEC(".maps");                      |
-                                                   |
-    int count =3D 0;                                 |
-                                                   |
-    SEC("freplace")                                |
-    int entry_freplace(struct __sk_buff *skb) -----'
-    {
-    	count++;
-    	bpf_tail_call_static(skb, &jmp_table, 0);
-    	return count;
-    }
+>  
+>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+>  #define HAVE_ARCH_FTRACE_REGS
+> diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
+> index 606fd6994578..de1223669758 100644
+> --- a/arch/arm64/kernel/ftrace.c
+> +++ b/arch/arm64/kernel/ftrace.c
+> @@ -143,6 +143,69 @@ unsigned long ftrace_call_adjust(unsigned long addr)
+>  	return addr;
+>  }
+>  
+> +/* Convert fentry_ip to the symbol address without kallsyms */
+> +unsigned long arch_ftrace_get_symaddr(unsigned long fentry_ip)
+> +{
+> +	u32 insn;
+> +
+> +	/*
+> +	 * When using patchable-function-entry without pre-function NOPS, ftrace
+> +	 * entry is the address of the first NOP after the function entry point.
+> +	 *
+> +	 * The compiler has either generated:
+> +	 *
+> +	 * func+00:	func:	NOP		// To be patched to MOV X9, LR
+> +	 * func+04:		NOP		// To be patched to BL <caller>
+> +	 *
+> +	 * Or:
+> +	 *
+> +	 * func-04:		BTI	C
+> +	 * func+00:	func:	NOP		// To be patched to MOV X9, LR
+> +	 * func+04:		NOP		// To be patched to BL <caller>
+> +	 *
+> +	 * The fentry_ip is the address of `BL <caller>` which is at `func + 4`
+> +	 * bytes in either case.
+> +	 */
+> +	if (!IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_CALL_OPS))
+> +		return fentry_ip - AARCH64_INSN_SIZE;
+> +
+> +	/*
+> +	 * When using patchable-function-entry with pre-function NOPs, BTI is
+> +	 * a bit different.
+> +	 *
+> +	 * func+00:	func:	NOP		// To be patched to MOV X9, LR
+> +	 * func+04:		NOP		// To be patched to BL <caller>
+> +	 *
+> +	 * Or:
+> +	 *
+> +	 * func+00:	func:	BTI	C
+> +	 * func+04:		NOP		// To be patched to MOV X9, LR
+> +	 * func+08:		NOP		// To be patched to BL <caller>
+> +	 *
+> +	 * The fentry_ip is the address of `BL <caller>` which is at either
+> +	 * `func + 4` or `func + 8` depends on whether there is a BTI.
+> +	 */
+> +
+> +	/* If there is no BTI, the func address should be one instruction before. */
+> +	if (!IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
+> +		return fentry_ip - AARCH64_INSN_SIZE;
+> +
+> +	/* We want to be extra safe in case entry ip is on the page edge,
+> +	 * but otherwise we need to avoid get_kernel_nofault()'s overhead.
+> +	 */
+> +	if ((fentry_ip & ~PAGE_MASK) < AARCH64_INSN_SIZE * 2) {
+> +		if (get_kernel_nofault(insn, (u32 *)(fentry_ip - AARCH64_INSN_SIZE * 2)))
+> +			return 0;
+> +	} else {
+> +		insn = *(u32 *)(fentry_ip - AARCH64_INSN_SIZE * 2);
+> +	}
+> +
+> +	if (aarch64_insn_is_bti(le32_to_cpu((__le32)insn)))
+> +		return fentry_ip - AARCH64_INSN_SIZE * 2;
+> +
+> +	return fentry_ip - AARCH64_INSN_SIZE;
+> +}
+> +
+>  /*
+>   * Replace a single instruction, which may be a branch or NOP.
+>   * If @validate == true, a replaced instruction is checked against 'old'.
+> diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
+> index cc92c99ef276..f9cb4d07df58 100644
+> --- a/arch/x86/include/asm/ftrace.h
+> +++ b/arch/x86/include/asm/ftrace.h
+> @@ -34,6 +34,27 @@ static inline unsigned long ftrace_call_adjust(unsigned long addr)
+>  	return addr;
+>  }
+>  
+> +static inline unsigned long arch_ftrace_get_symaddr(unsigned long fentry_ip)
+> +{
+> +#ifdef CONFIG_X86_KERNEL_IBT
+> +	u32 instr;
+> +
+> +	/* We want to be extra safe in case entry ip is on the page edge,
+> +	 * but otherwise we need to avoid get_kernel_nofault()'s overhead.
+> +	 */
+> +	if ((fentry_ip & ~PAGE_MASK) < ENDBR_INSN_SIZE) {
+> +		if (get_kernel_nofault(instr, (u32 *)(fentry_ip - ENDBR_INSN_SIZE)))
+> +			return fentry_ip;
+> +	} else {
+> +		instr = *(u32 *)(fentry_ip - ENDBR_INSN_SIZE);
+> +	}
+> +	if (is_endbr(instr))
+> +		fentry_ip -= ENDBR_INSN_SIZE;
+> +#endif
+> +	return fentry_ip;
+> +}
+> +#define ftrace_get_symaddr(fentry_ip)	arch_ftrace_get_symaddr(fentry_ip)
+> +
+>  #ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
+>  
+>  #include <linux/ftrace_regs.h>
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index 4c553fe9c026..9659bb2cd76c 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -652,6 +652,19 @@ struct ftrace_ops *ftrace_ops_trampoline(unsigned long addr);
+>  
+>  bool is_ftrace_trampoline(unsigned long addr);
+>  
+> +/* Arches can override ftrace_get_symaddr() to convert fentry_ip to symaddr. */
+> +#ifndef ftrace_get_symaddr
+> +/**
+> + * ftrace_get_symaddr - return the symbol address from fentry_ip
+> + * @fentry_ip: the address of ftrace location
+> + *
+> + * Get the symbol address from @fentry_ip (fast path). If there is no fast
+> + * search path, this returns 0.
+> + * User may need to use kallsyms API to find the symbol address.
+> + */
+> +#define ftrace_get_symaddr(fentry_ip) (0)
+> +#endif
+> +
+>  /*
+>   * The dyn_ftrace record's flags field is split into two parts.
+>   * the first part which is '0-FTRACE_REF_MAX' is a counter of
+> 
+> 
 
-Here 'entry_freplace' is assumed to invalidate packet data because of
-the bpf_tail_call_static(), and thus it can't replace 'subprog_tc'.
-There is an option to add a dummy call to bpf_skb_pull_data(),
-but this operation is not a noop, as far as I can tell.
 
-Same situation was discussed in the sub-thread regarding use of tags.
-(Note: because of the tail calls, some form of changes_pkt_data effect
- propagation similar to one done in check_cfg() would be needed with
- tags as well. That, or tags would be needed not only for global
- sub-programs but also for BPF_MAP_TYPE_PROG_ARRAY maps).
-
----
-
-I'll continue with global sub-programs traversal reordering and share
-the implementation on Monday, to facilitate further discussion.
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
