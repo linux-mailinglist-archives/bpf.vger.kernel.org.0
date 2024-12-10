@@ -1,171 +1,134 @@
-Return-Path: <bpf+bounces-46493-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46494-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1CB49EA898
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 07:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 728949EAAC9
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 09:35:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96FE118828C1
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 06:15:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A53E188A131
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 08:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD1C22ACF5;
-	Tue, 10 Dec 2024 06:14:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5A4230998;
+	Tue, 10 Dec 2024 08:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fc0wNKPd"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mwu/6blq";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="+3uj5BQL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469191D0E28;
-	Tue, 10 Dec 2024 06:14:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCEA01D0F7D
+	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 08:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733811287; cv=none; b=UmCLRmzDiG6vrRjg+KzJ8HmgRms9/fLBLX8xiTkuxK8oVkUmaXQ2sVbUYIu3rtKe4owVmU2d1S/nkKHjVvCGoBUpKBPuOnR8q5RhgPXt9o45eo/cUG215qngvDreIC6eCNmHNQZfwsx4NlCJ0zFY3oWp0zq8qBsZMA7ibPoncyc=
+	t=1733819709; cv=none; b=KKMOn4Vv6LjeZeovhcv13M8uD2zt6AeGq2hShVhF4j9acCDS36TW3/DNMXutlWHpVIV4LjuHNPW8PHM7/NAhAVHRvfNjb0ssLcAwBo7YEFra3lKYgufBvC4buw4UvlF0N1564Nq4F/Ili2c5ry1XF9NGVMhaQL4JqXHbx5Pa6jM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733811287; c=relaxed/simple;
-	bh=AR06kwg4ea8BP6tJ/A64fwSQitfvxzNemx5F1/7aBsg=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=fOUmuoGwGN2bg/CjAWj53stScmNlj5rbRfaolShrrHUJmG4UtGyMrqhNKMhul6EkwusGRvlgACsQ8KNTgcM1LlAjnxEntSjIUvaXmwBw1TsRCYoo6ybT/QZJEb7XD8gAP2L5YZ3bLcEE/IT9byIuA7x6UrhOT1HLOD+m3laxYPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fc0wNKPd; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2ef28f07dbaso3792458a91.2;
-        Mon, 09 Dec 2024 22:14:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733811285; x=1734416085; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eWcV6G4iTKswN4OQdoEZk/UPaUce620jWqio98BeEhk=;
-        b=fc0wNKPdT7JuEOk5u838p/kOIg7uzWchAs6nUtT2lDLCGMSfTVQMeB8IXTvYLuWiZ0
-         PxwOV5MkGelIuGX7LcPnxBJywhLWevD2uQFGcLA8Bp941zqHHHpWPaPzgX8xwFUV2ubl
-         slnVxmIc5mCf/9vtp9rVNAHeu+WK1pakhq2okc+Er2sqg0cFrWHvWatH9aKgz764HGhw
-         bUQ9qskL9lAqA0g/vOQ0qKvQ0/0a4HUuv45PoATDaZHme1AU+yTDgqiVLOm4vRcRp4lV
-         /h25zofWIoz5668s/4QZYOOL7GnSL2WheJORz7foq+ns4TNcBfHZQGexdsZcYcfjAQRd
-         8wpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733811285; x=1734416085;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eWcV6G4iTKswN4OQdoEZk/UPaUce620jWqio98BeEhk=;
-        b=QN6klolZg6GJa+/j91MzVd7xgNuiNzJ2hWYEAuD3OJ9hdfkalbHmEbUEEHtzv2ZzTD
-         CExtvg2JrPyC5z/+BARXqI9295Qiv2b3OUCogIgxKVQH8aKCxZ0lKhuqpUxL8o8sj96I
-         ZhcYUQ7kuR5YAMaFFtieRm0Ruhxwn4/SwJThNEY4JaV4WbcPaYka2H+SINB1WZDHciH2
-         pm98QG6jneMENQxGUvGDSt7cFtq8MJdNpXwPiCMbxTpW4fCDlVZJeQd5nZ4jbDVlvd0N
-         1Fu0gHHAHVKv2HXF5IvU+ZV19dae5+2DY62n/wsLQrvy+CtMrPq8ST62zS5jNpxFay8O
-         xKwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWon0suM1Oysg38Q0rGFqzDJTKbil/PfI1iKxoO5W0MTcMJg3yAYhbK0dLNFJAI3mFyYOY=@vger.kernel.org, AJvYcCXdi8JZye7YvpRXTJu4SztvUJWYsrCrHdkCITHnzyALRdwnE7eEBB5prKO11El/T6O+t5cCxkAlgpq8KO04@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMSvlDBaQWDYJsGuv7Ubjd6rlAZKyQiFajbfdEEqQ/IlvRwd7/
-	F0i8xNbVX6dnuNkp6GhgEEW8zz5Qm41zC8tQFvl34L6uvGpeu2Al
-X-Gm-Gg: ASbGncu0ZgBdfn9xjzy9YLkxzUSpXTBRf2FgYY1oUgpKcL7FL3oQ3ujslwIi2uLlksL
-	zQ6HnjtrzKJnzni31SSrtZNV1Nr+ge3wqoIdG7Spqx6+qf0Ex3PN2v6dpYUNpXZBXOM9AVgsiGP
-	AivnGLDiJrI/t1DQFm3wyuJkSA8RFKNaZduTneVAqQUNt2qfT5kv6Vb1DUYlOeRS2cAhEErIa2z
-	M3SkuTMbMM/mQvWbMecs5Dr6e0cZhvAuA0TP8+1hOnuwnOSM0U4T/o=
-X-Google-Smtp-Source: AGHT+IFgfvh+QHowslIBqZJc21vdMHIl3ls4qtIxXIvIlZiFqGdsq4XAvXi4sA+rcyQiQnHxK7ApEg==
-X-Received: by 2002:a17:90b:3b8c:b0:2ee:b666:d14a with SMTP id 98e67ed59e1d1-2efcf1693a4mr5667249a91.17.1733811285439;
-        Mon, 09 Dec 2024 22:14:45 -0800 (PST)
-Received: from localhost ([98.97.37.114])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ef270790b9sm10859140a91.40.2024.12.09.22.14.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Dec 2024 22:14:44 -0800 (PST)
-Date: Mon, 09 Dec 2024 22:14:42 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Levi Zim <rsworktech@outlook.com>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Levi Zim via B4 Relay <devnull+rsworktech.outlook.com@kernel.org>, 
- Jakub Sitnicki <jakub@cloudflare.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, 
- David Ahern <dsahern@kernel.org>
-Cc: netdev@vger.kernel.org, 
- bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Message-ID: <6757dc5255b71_404920841@john.notmuch>
-In-Reply-To: <MEYP282MB23125E657B3605921535987AC63C2@MEYP282MB2312.AUSP282.PROD.OUTLOOK.COM>
-References: <20241130-tcp-bpf-sendmsg-v1-0-bae583d014f3@outlook.com>
- <20241130-tcp-bpf-sendmsg-v1-2-bae583d014f3@outlook.com>
- <675695f1265b2_1abf20862@john.notmuch>
- <MEYP282MB23125E657B3605921535987AC63C2@MEYP282MB2312.AUSP282.PROD.OUTLOOK.COM>
-Subject: Re: [PATCH net 2/2] tcp_bpf: fix copied value in tcp_bpf_sendmsg
+	s=arc-20240116; t=1733819709; c=relaxed/simple;
+	bh=x7+oY+fANuPmWBA9cafe1ykREEj23DCDOzpPURApH7s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Imu0YekTM7e6lJbSa87SsRlN2hCVp9vZWHJKXMKBhpoxiRTL1x6X1cWyNvoCkD+jm8d41ghpLSazjY6eFTMwBVnjas7XH2Pr4AXMwDAygwmDLPTjEpGTdCdCuZnlLAdicARw/LfeYHKwLLjFCcoKPTfy/u5cjKDhSx82pYxenwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mwu/6blq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=+3uj5BQL; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 10 Dec 2024 09:35:03 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1733819705;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vTfFEA3zLze3dY8TnsP8XmhHkHHlADbqk1HHeOcTcMA=;
+	b=mwu/6blqI6oQwyXfSLfhKGZUGvssGHl9+Yyv0gi9OTfWDP/zTM57MK3EsXZNOseebk7Gcl
+	qMAsVkSE5hcG1a2+Ry3TkFmYV4vZL+Djd0M8oDf9eHkez3PMvFMoVptXXOOPCShlcSJckO
+	TbmkNw+id3sf3EHcs2dO2iLnaYptHdwXSNzBYsjPB+DSsFUcwUN7TCb0U836A+yU42v3YN
+	WQz0fAfQlJI6BLfHBlpvAuYfb8sxQqgQo3V2qKc/fEgcvoG6KeJj9MWSBTM3LivaEf7N6u
+	jBfLdesdW6PuetMJHZ2MFV7aPfB9FhdPGOvsXwHa1lmo8JcfaDRFSrIQGK+Gig==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1733819705;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vTfFEA3zLze3dY8TnsP8XmhHkHHlADbqk1HHeOcTcMA=;
+	b=+3uj5BQLJR+XsLt5R521gJHScEIH4M9Ffn4Hy1iCAxBRApt++y5m+sozNLZO+WfH5V2CTn
+	jjev0lMzlbdL9MAA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, memxor@gmail.com,
+	akpm@linux-foundation.org, peterz@infradead.org, vbabka@suse.cz,
+	rostedt@goodmis.org, houtao1@huawei.com, hannes@cmpxchg.org,
+	shakeel.butt@linux.dev, mhocko@suse.com, willy@infradead.org,
+	tglx@linutronix.de, tj@kernel.org, linux-mm@kvack.org,
+	kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v2 2/6] mm, bpf: Introduce free_pages_nolock()
+Message-ID: <20241210083503.zJdPI8s5@linutronix.de>
+References: <20241210023936.46871-1-alexei.starovoitov@gmail.com>
+ <20241210023936.46871-3-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241210023936.46871-3-alexei.starovoitov@gmail.com>
 
-Levi Zim wrote:
-> On 2024-12-09 15:02, John Fastabend wrote:
-> > Levi Zim via B4 Relay wrote:
-> >> From: Levi Zim <rsworktech@outlook.com>
-> >>
-> >> bpf kselftest sockhash::test_txmsg_cork_hangs in test_sockmap.c triggers a
-> >> kernel NULL pointer dereference:
-> > Is it just the cork test that causes issue?
-> Yes. More specifically only "sockhash::test_txmsg_cork_hangs" but not 
-> "sockmap::test_txmsg_cork_hangs"
-> >
-> >> BUG: kernel NULL pointer dereference, address: 0000000000000008
-> >>   ? __die_body+0x6e/0xb0
-> >>   ? __die+0x8b/0xa0
-> >>   ? page_fault_oops+0x358/0x3c0
-> >>   ? local_clock+0x19/0x30
-> >>   ? lock_release+0x11b/0x440
-> >>   ? kernelmode_fixup_or_oops+0x54/0x60
-> >>   ? __bad_area_nosemaphore+0x4f/0x210
-> >>   ? mmap_read_unlock+0x13/0x30
-> >>   ? bad_area_nosemaphore+0x16/0x20
-> >>   ? do_user_addr_fault+0x6fd/0x740
-> >>   ? prb_read_valid+0x1d/0x30
-> >>   ? exc_page_fault+0x55/0xd0
-> >>   ? asm_exc_page_fault+0x2b/0x30
-> >>   ? splice_to_socket+0x52e/0x630
-> >>   ? shmem_file_splice_read+0x2b1/0x310
-> >>   direct_splice_actor+0x47/0x70
-> >>   splice_direct_to_actor+0x133/0x300
-> >>   ? do_splice_direct+0x90/0x90
-> >>   do_splice_direct+0x64/0x90
-> >>   ? __ia32_sys_tee+0x30/0x30
-> >>   do_sendfile+0x214/0x300
-> >>   __se_sys_sendfile64+0x8e/0xb0
-> >>   __x64_sys_sendfile64+0x25/0x30
-> >>   x64_sys_call+0xb82/0x2840
-> >>   do_syscall_64+0x75/0x110
-> >>   entry_SYSCALL_64_after_hwframe+0x4b/0x53
-> >>
-> >> This is caused by tcp_bpf_sendmsg() returning a larger value(12289) than
-> >> size (8192), which causes the while loop in splice_to_socket() to release
-> >> an uninitialized pipe buf.
-> >>
-> >> The underlying cause is that this code assumes sk_msg_memcopy_from_iter()
-> >> will copy all bytes upon success but it actually might only copy part of
-> >> it.
-> > The intent was to ensure we allocate a buffer large enough to fit the
-> > data. I guess the cork + send here is not allocating enough bytes?
-> I am not familiar enough with neither this part of code nor tcp with bpf 
-> in general and just
-> hit this bug when trying to run the bpf kselftests. Then I decided to 
-> debug it.
-> 
-> In my perspective the buffer(8192) is large enough to hold the data(8192),
-> but tcp_bpf_sendmsg returns 12289 which is a little surprising for me.
-> 
-> Could you further elaborate why 8192 bytes are not enough? Thanks!
-> 
+On 2024-12-09 18:39:32 [-0800], Alexei Starovoitov wrote:
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index d511e68903c6..a969a62ec0c3 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -1251,9 +1254,33 @@ static void free_one_page(struct zone *zone, struct page *page,
+>  			  unsigned long pfn, unsigned int order,
+>  			  fpi_t fpi_flags)
+>  {
+> +	struct llist_head *llhead;
+>  	unsigned long flags;
+>  
+> -	spin_lock_irqsave(&zone->lock, flags);
+> +	if (!spin_trylock_irqsave(&zone->lock, flags)) {
+> +		if (unlikely(fpi_flags & FPI_TRYLOCK)) {
+> +			/* Remember the order */
+> +			page->order = order;
+> +			/* Add the page to the free list */
+> +			llist_add(&page->pcp_llist, &zone->trylock_free_pages);
+> +			return;
+> +		}
+> +		spin_lock_irqsave(&zone->lock, flags);
+> +	}
+> +
+> +	/* The lock succeeded. Process deferred pages. */
+> +	llhead = &zone->trylock_free_pages;
+> +	if (unlikely(!llist_empty(llhead))) {
+> +		struct llist_node *llnode;
+> +		struct page *p, *tmp;
+> +
+> +		llnode = llist_del_all(llhead);
 
-There is some bug in the buffer allocation sizing that is happening
-because of cork'd data. The cork logic is used to hold extra bytes
-in buffer until N bytes have been received.
+Do you really need to turn the list around?
 
-I'm not really opposed to the fix here, but would be good to understand
-how it got here. I have some time tommorrow I can look a bit more.
+> +		llist_for_each_entry_safe(p, tmp, llnode, pcp_llist) {
+> +			unsigned int p_order = p->order;
+> +			split_large_buddy(zone, p, page_to_pfn(p), p_order, fpi_flags);
+> +			__count_vm_events(PGFREE, 1 << p_order);
+> +		}
+
+We had something like that (returning memory in IRQ/ irq-off) in RT tree
+and we got rid of it before posting the needed bits to mm.
+
+If we really intend to do something like this, could we please process
+this list in an explicitly locked section? I mean not in a try-lock
+fashion which might have originated in an IRQ-off region on PREEMPT_RT
+but in an explicit locked section which would remain preemptible. This
+would also avoid the locking problem down the road when
+shuffle_pick_tail() invokes get_random_u64() which in turn acquires a
+spinlock_t.
+
+> +	}
+>  	split_large_buddy(zone, page, pfn, order, fpi_flags);
+>  	spin_unlock_irqrestore(&zone->lock, flags);
+>  
+
+Sebastian
 
