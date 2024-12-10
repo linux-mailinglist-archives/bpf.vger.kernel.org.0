@@ -1,68 +1,67 @@
-Return-Path: <bpf+bounces-46577-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46579-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9695B9EBE13
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 23:49:40 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D72F9EBE17
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 23:50:00 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4052283AC5
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 22:49:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDC28167F07
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 22:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B44211268;
-	Tue, 10 Dec 2024 22:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B86211295;
+	Tue, 10 Dec 2024 22:49:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="bVZGUtQB"
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="ijzIVV4N"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2063.outbound.protection.outlook.com [40.107.22.63])
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2069.outbound.protection.outlook.com [40.107.20.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99051EE7DA;
-	Tue, 10 Dec 2024 22:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.63
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5851EE7BC;
+	Tue, 10 Dec 2024 22:49:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.69
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733870963; cv=fail; b=mAfbohdc3/z560FtDawdaVq2qZzTryH1/4i47/hBToP3qngUGQgwkLD2rnU1lqsrgl1XTI264OOJCM6WIkY9+G9Xld7UWS6MSdJgVePrFN95PIHQglL5Xa4DhJmblQIvnB6iK81kdNcgkGbAseTsdM2GqmQLcWWyTru2cELpLS0=
+	t=1733870972; cv=fail; b=gQrl6n/PsoXcCu2w5g2eMveCGCEMryKUTvfxpZjG7l0v3aZnLJZ1HibBMtdB3QwWjdqv7v1ef3Vh7B//mzIqvD/4DPHlD6RtZQTYFgXzeseVWMdvn3RkQQf1twsxVb6sz93JUmNHxfM3P/w84Q8niXVsTF82QMA3Ncnskskd+yU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733870963; c=relaxed/simple;
-	bh=HRvECFQA7StWB7pWk/IGaoQ4Bvx9a2u8BEJbLRBEmYc=;
+	s=arc-20240116; t=1733870972; c=relaxed/simple;
+	bh=oP5DdB3yQAs0Hi/+MK6Xu7LeBmLWMIOx7WxcBiJ3W20=;
 	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=HG6A3qyWhJua1SuTnSCLKmAdDImnZgQRe1aj4mDNjKjrkJBfhZh4b+Bo8O9ONJ/z/zoA+NoyERqeyIk/57y67rq9rgRb73X90zfpLoBg9fE55kx+uVTavhR7kaBugaWoWSQwsWbTsItB/ITDpIuFuzJjCdM2WAOEY3DvINjxI2k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=bVZGUtQB; arc=fail smtp.client-ip=40.107.22.63
+	 To:Cc:MIME-Version; b=ecI9eV38+l6yKVQ2hnE88s2qNk5onV2me1Lwg4J9WWkhZh+JYSDKZvRJK7btlplmFTVpenzTo9rIvZKH0QKoL2veKtFe5ZgOjzrJT+fSYPeOMrGvururqUnqAivHGvCAOwvvMdE1ThclX+s9kzUc9KI1aCf8XEt+kBW1eCYHXtE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=ijzIVV4N; arc=fail smtp.client-ip=40.107.20.69
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=AcJyiUXoh2kymg2rHe6b5Y7lX5gbiIZiqh4CsG9lhpCEx4ow3x/uPafBzuZ/vi/93BM6AIZL4ngtxYAG9jaCQ7fqHFKvoZSqZRLLUQ98ePv8aJICbhxtR0tmtv7rK1VRVM9ryGxF2+21ecll4qneArGTztls+YESRZsTCJUSNyZ6PnI/46JSW05A1Y7a3eyC/lUsnnambCtuZq1Slzu3E01+YhSKmHvf0QYzA1xz4xdouOwV5mHskrb1fVEz83jce4RU+fsqAt17bMtPDC2KvB38uRyAVI2t3ZubHVTmFu762JW3ZIZvkgSxnPsvJcmhXEbsO20VLmrEfeyrQ0CdDw==
+ b=wkFXqKuQS9XMQo0AF04lCXRveEcyLX+YGafKZ2O56MkGyBwk0vXK6WiFuI0v8J+jApW+S+JErRLWSJYnf2PrM4YBCioN9UV0aFo+2UMhPOgJqRl/yFzxswK6vYcTaEXq17ib7vtv85weJYZMOAbJewaduScVMKnweCquWdlPk4hci6nm8R54iE22zad6QZ19CxUjct1DmlS5QFrif+0yq3JvK/rVXUxrrnMmflWzk8Y8hwh7kxkqVZmZzsfANWiIhqX3Ce1p03krjmdLPtmpgURQiFKfndMoDUym+nrxl8BSY0TgSqLnTVX12G/SWQnKcx8AbDBbPfnBz0h5doPu7g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=E7IKGdrjwj1RdTdGQ56GK0ia4qm/q9umJDVy+Eznp6A=;
- b=A/YuIIYjjnXX9NKbt3FjFt46jN1AGU3hmjPm64JihzP0XsxWqenimhJGgmCyfk9woJWune6bm2sZ83LuwGvU4tm8tmtyIesnsa2iTzAESJWaMfljv73SoHMXc54qSJVY/iBdYIFQ3EKPJQJAxJhLS+sumCicAMyQB65cUkGbXmosXCRyXBizYiM5xBQiB3UsUmvgmq9m7itkHNoLTS5ENWLij/JdvMiF6yKSZ4do/a61UqLH82K44ZBaMrup/ysmjv4uA+OTUIcLFXhEhEniOcjM6IYcZD0pau2bw2jv697pTSVmuPZp4bZ4ePLBtpXSnGnQjjcnWsa8TswrRR1vSA==
+ bh=XREZuEFyeTssP2HW1zZetavLYUnAQmEZryNOkuxfpb8=;
+ b=OtccVUFHkEwIIrtrRcCNddFCzvUy6zoWap8sqrdi1ncNoWRum1HeYnE68pz+VAIYw9HQ5+I4g8YLrkBt1L6ztzOgzWesgfDvs7W+MbcXxZEDxtDnwocV4hBd1psusrU89Qr+TS1D3wNr9X5RT1KdLqURSanWmk8AdWZUlEFhhJTW3SjVuqSIFSe6TdWp8qVlTTuSSuAh52DuuDXKxPIlnse8/61xRhu9n+C10yJHiQrqaKkJ8te/9ALJqI0KeM66kzz4lk59qPQtUjlwlR21UjADtgNcFJobQqrs/M8nWi/zoSlostU70uENx/goUn4yaaRbiuKxjwv7DZ+LY2zxwQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E7IKGdrjwj1RdTdGQ56GK0ia4qm/q9umJDVy+Eznp6A=;
- b=bVZGUtQBg/NIvr7/uWR0hc68DSRjMQA+RKZ9oyc3UG4RnfXeX1GU5pHkBCU/DAeGEtX3INsOYc57hN//z+2i8G1vSRgKJKAD8A3fFuRE5dl1nwBJsf3ooO+czUNItrjG8heqiNR8Vd+0KiLYse2YjcIcNlJYXe3vLxmInaS5lic3ivJI8+H7rf8H5gdxN4xDEsoQZv8NPyLTtMeg7pHsg7yFuFSHwV/dToI8jOaHnDbW6mTkEwYwGLm3QPuaJamh+tAeML4/tkXpAwXiJe9mtQOHG5DVvL1B32Nts+poxXcx3WO9Ehjd3Q4yerYILrgjRW3gvTrKjzJbTKrF9mY05A==
+ bh=XREZuEFyeTssP2HW1zZetavLYUnAQmEZryNOkuxfpb8=;
+ b=ijzIVV4NgxvKacNwxCVKi/9uqX6hZD3l53AW5hVBa/vw9MUfIhgtHVLRIJe9p8QRSVkghRCt9p6I/hin7U4nTN9HUwgUAVclVQTpUIH5lkIuwmMzX1f+3tnIvJ6lB1t7MwpEYSchCeMS88fZVOppqAfJbKc/ED//PbfSfEuhsK7QL0iWiG7IrfCgu+TfrakxVEAHHSbedH1fvm3cD7UxzV31Bn3ilywuPfVP22aZeTfCaNdxtqHvI7VzgGhgTl4qz6ojzFT6+p6l5/yl5Y7wOhVIS3xPcnYhO4JUKwsDHwBifOhZJzUbI0D6pEEBhz4sI8+O7yZK9PNWBjbiPk+CDQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
  by VI1PR04MB6784.eurprd04.prod.outlook.com (2603:10a6:803:13e::24) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8230.18; Tue, 10 Dec
- 2024 22:49:19 +0000
+ 2024 22:49:25 +0000
 Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
  ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
  ([fe80::9126:a61e:341d:4b06%5]) with mapi id 15.20.8230.010; Tue, 10 Dec 2024
- 22:49:19 +0000
+ 22:49:25 +0000
 From: Frank Li <Frank.Li@nxp.com>
-Date: Tue, 10 Dec 2024 17:48:58 -0500
-Subject: [PATCH v8 1/2] PCI: Add enable_device() and disable_device()
- callbacks for bridges
+Date: Tue, 10 Dec 2024 17:48:59 -0500
+Subject: [PATCH v8 2/2] PCI: imx6: Add IOMMU and ITS MSI support for i.MX95
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20241210-imx95_lut-v8-1-2e730b2e5fde@nxp.com>
+Message-Id: <20241210-imx95_lut-v8-2-2e730b2e5fde@nxp.com>
 References: <20241210-imx95_lut-v8-0-2e730b2e5fde@nxp.com>
 In-Reply-To: <20241210-imx95_lut-v8-0-2e730b2e5fde@nxp.com>
 To: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>, 
@@ -82,11 +81,11 @@ Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
  will@kernel.org, Robin Murphy <robin.murphy@arm.com>, 
  Marc Zyngier <maz@kernel.org>, Frank Li <Frank.Li@nxp.com>
 X-Mailer: b4 0.13-dev-e586c
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1733870948; l=4347;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1733870948; l=9334;
  i=Frank.Li@nxp.com; s=20240130; h=from:subject:message-id;
- bh=HRvECFQA7StWB7pWk/IGaoQ4Bvx9a2u8BEJbLRBEmYc=;
- b=2dHOhD6AYxIFhpI9rhrCSVylul64jHTTKVtwVlC1m1h8Riy5dVxCbEzVSJo6NEKzplISAyhxh
- crS4db/POyBCV2ybZLILuQwkKEiGHayzmVm1Do9ZfXLpjLj6M5INhdD
+ bh=oP5DdB3yQAs0Hi/+MK6Xu7LeBmLWMIOx7WxcBiJ3W20=;
+ b=BaD46AC8ONfzMIhJjsmXkrTYQA+WUdUPz65eXylBMxPZuMSUygZXzCz+oIiiydFuv8tlr219/
+ F2hESt2VqivC7CQX247XT04G8Jf4/P89maRqUZQ4Mc0rnxkXbmdVkRz
 X-Developer-Key: i=Frank.Li@nxp.com; a=ed25519;
  pk=I0L1sDUfPxpAkRvPKy7MdauTuSENRq+DnA+G4qcS94Q=
 X-ClientProxiedBy: BYAPR05CA0020.namprd05.prod.outlook.com
@@ -100,233 +99,389 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VI1PR04MB6784:EE_
-X-MS-Office365-Filtering-Correlation-Id: 014e3707-9ed1-4644-0f7e-08dd196ce22a
+X-MS-Office365-Filtering-Correlation-Id: b6f20d62-c18a-46f0-9cbd-08dd196ce5b8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|366016|376014|1800799024|7416014|52116014|921020|38350700014;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?WDF1MHdNbDFRb3BIS0Jld2IyeWtkakY5b2ZuS2FQOW1mSmVENTlpbEFKN3RL?=
- =?utf-8?B?cm1jNnBKZk1mNXpCMjFxd2xjeDhHY2ZZaGh0TW1IQ2tXNCtaZi85SExSTkxW?=
- =?utf-8?B?eU1QdE1sdld6aEpSMkp6bmZoNkMyMDAxdEE1eHYyZWJLNCtGaVFoVk1Qb3ZU?=
- =?utf-8?B?NzNkUXFPSk9iS3hsYVZqSThBTEY0N25UUkVWQWxKZWJ5aUxkTFVQZlZzUmFs?=
- =?utf-8?B?c3RDUFJCS0xYajFEdnIxU2xmYVk4R0crVENWRmJ2Yys3aFhzdUNNMWo5NUdj?=
- =?utf-8?B?MlEvMW1rbHgzanYzblRKVXlod3dPQUJmWTMzWXpSOGRON2dRYXNIRUhBR1Br?=
- =?utf-8?B?VzNVeThRa0pQbmZ4YWRjL2VqdTFsMTVxbDZUeENQQnFiSWZNV0xEOG55K1Zo?=
- =?utf-8?B?bStUam5raDVhYUdRT21KR2k5L0l2cUxvRG5hQTlnS2ErcDl6RkliZDVRQmRw?=
- =?utf-8?B?b2VEYm1PZ09odzBhYXBXMFNYLzBxcXovU3crUXhGM0Z1OFJ1dUEwQnh2U0Iy?=
- =?utf-8?B?S3ZSeXJwOW1NeXFoRGlIQXhpWCtYQjY2eXF0Y0dDcWJWeGtXRWxDS0d6Zk41?=
- =?utf-8?B?WUllK3dwU1dwL2tSQXkycEhRQ1A1LzRtdFlDKzFEUndlRDJqQkRIRUJwS2xk?=
- =?utf-8?B?S1B0eERIb1Y5TjdmQlFXbEpvT3A3VVdqdjlLYkIwdXlaVTM2eFBhM3pZbzdm?=
- =?utf-8?B?bWVnSjVzYjk4bVhCK3dOWlM5Nm1hL2hGbXRJRWJlUTNZOUs3aFU0TGhyVVpw?=
- =?utf-8?B?VUViVVdZNlhrY2g5RnNhUzBUcjAxQ2pkNEFycnFmZXp1QmF1OE1xMFo5ODE5?=
- =?utf-8?B?QVREaWZDVVd4WTQvMzRxOHpmRFNOWUc3SnlxcWVwa1MrNHNwUlE4dit1cjNY?=
- =?utf-8?B?N2M3R3d2aEpYb3l5OXRhcHhpS2FpOEt4OXd2ZlZmU0pSQm91eStnbjJlZi9m?=
- =?utf-8?B?SDRtVFlPczQvdE44NkNvTXo3YUY1eHluTUlyOXJZaWhldDdneTY0YVArbVZ6?=
- =?utf-8?B?cE9UTmVmTXVmdkUvMVlOaC9pNFJ5QVJGUXFyMk9OeVhFeUVRU2E5OC9xUmZj?=
- =?utf-8?B?MEFCSG5zN1FhTk8zdzRoc1ZUWjVzVnBTNTN2RDhReVdNTWlwbDFRckwzWkg5?=
- =?utf-8?B?Q090djJzaC95SEF2Q2d1WklNaEY0MXNZRTdqRWpOTFlObjBuRGx1MERJU0pX?=
- =?utf-8?B?QnIxaGs3cnE4SDRiSmVYcGFmdGN3S3ZaQi9saUxRQzJoUWc0ZjBuWk5KWXlF?=
- =?utf-8?B?amd0MjJOeFBVMWNBQkJaR0t2dUxuQUxncGUraGsrN2JqYkFXcFZ1SFJ3d0J5?=
- =?utf-8?B?VEFOWlY4bklZVUE5UXFUaENDbnNNV1VNM0paYk5KT0Y4Y1R2eUxJT2lNYTM4?=
- =?utf-8?B?N0w3Wmx2WTJjeXlYdENsdjY2VkVOVU5kTklHcFJ0TUVxWFJVVHdhRmZhUmpi?=
- =?utf-8?B?b2Q1dzhZb1AvWklzY0FOUnZySUczTjB4a3E4OTBBM2s1UTRQU0Jjd1VJUEs3?=
- =?utf-8?B?eEhHRWhDQzJlQitQdGxtR0t1RTFhbm10SWx3YnptYnM3SExubHNpYjY3bkQ1?=
- =?utf-8?B?ZERjcVRkc2o4bU9JeTN4M3c3ZUwwampTRHJYMEVPNXpqek45U2lLT1RaakFJ?=
- =?utf-8?B?TFA0dlFxUzRLUURBcStUMXl2aFRBNGVxb0svTnp5OFhnb3FZcjduSlBsL0hp?=
- =?utf-8?B?bmx0ZmNHWDdDUlRRQ2NVSkpVbE4yMzR0ZzFMRWM2UWFmZjNvSXVJV1FobmJ3?=
- =?utf-8?B?dFZuYnNQVGg4K2RaWHVsd0RtcWZ5SzdnRytxN0dqMXdKVUVQT29NMm5BdW9t?=
- =?utf-8?B?OW5kVjVidXM4RGE0NURDRmw2TFNkckIrTlkwQkRGc2V1OVJ6UHlpVHBuUXVm?=
- =?utf-8?B?SktVM2VrdjdKSjA3ai81ZDBUOGczSWlubkZtQW42bG9Kd0tHSEN3eGtMcnBx?=
- =?utf-8?Q?LUQyTB6b8i0=3D?=
+	=?utf-8?B?UFJhUkZiOW5ybkU2Tmd4SVB2TU1Xa0JaZ1ZyTlUyWGR3ZmxmMkN4eW10S3Zx?=
+ =?utf-8?B?ekFENEJMMG9heTBaMU0yOW04aURkd1l1cXBuOWZvL1FMRHpXVGdLUWJXNzBE?=
+ =?utf-8?B?V2IraG9PSmlnUmxYNHBGaUhvZC83UmdYRUxRQkpvTXNMUEJ3ejFCd3NKcjVQ?=
+ =?utf-8?B?SExzVkVpZXl0TjFBVGhRRFQrN25XUENrUmozMDJSM25NbWFJeDE3cFdQYTdL?=
+ =?utf-8?B?UzRzc3R3aFBwRUJXNDZKMGtyWk5QcGtTVCtrOGpGaFpHNTV2QVhicG1rRW1n?=
+ =?utf-8?B?OEt6dU16aDJPaFZjQlZ2S1AvS0ErMGNKRHZ4RGV2bHd3dGtNamhTQzVBZ01M?=
+ =?utf-8?B?cjVUUjQwSE9JRGQ3RDFIcmdleFN6SFpvSzhuazRVNDZDN3A1RW1adnE3bFRO?=
+ =?utf-8?B?ZWhlbEcrVHVSU2FkZ1ZFL2FtQjdpSkpVMUxsbDM5V0R6L2tVanZIR1Z3d1FF?=
+ =?utf-8?B?eTdmS3JtdkhBRk0rVC9KSzRLRDBVVXRIUWVXZ3EwYUQweGJ5SE1hUnp2NUky?=
+ =?utf-8?B?SzN1SWN4UWJBZkNVZVo2QW5kWFh3N3R3T1hDbHJhZlQ1dGdublZ0OFZ6TDYy?=
+ =?utf-8?B?cWlhYzUxWWhwVXhFUDE2VGE4OGNWZ3E4ejJLZGhoUUNKQVlrYWpLajMzYUNB?=
+ =?utf-8?B?ZDRZQ0JGZ0Vyb3hGNGQxQUpYdWViSFZ5VlRQRDcwSmNWbldTQWhXS3ZqVnBK?=
+ =?utf-8?B?dWo3empLRXJnN2RObEtIc0x5dXFNMXFNUnMwVHZNaENHZWZDQ1RsTTEvZTRh?=
+ =?utf-8?B?MzBFWkVmQ3RVT0dua2JjNzM1eVIrQjVtNFBhQm80eW9nUzZsUnF1WUN0cVFS?=
+ =?utf-8?B?Mk11T3d6anBMUGlCOE1sODdWeFBiUjF4OUZxR1lwVlN1eDRObEFrZ1dSU21C?=
+ =?utf-8?B?RGVYOGROdlFFZjl4ZzVhZUM2d3N4TlNEZDlsMFdUYld1NnVudndhNjdyNW16?=
+ =?utf-8?B?a21KTGRQRml5MUNWVGtPekdMemgzNldXUko0SEhIdEZSRCtUZ0J6UTU2dnVy?=
+ =?utf-8?B?R2c1bDIyeGVtTW52dEhNT0VkQmFYaVZIVVdESVhRcktsdkcveFEzNmZtSS9G?=
+ =?utf-8?B?SXdPdENaY211a1grL1FkNlhlWW9XcjlnMEswYzZVUVJnNklxS3Q3NllydWRo?=
+ =?utf-8?B?QitqcnU2Wng0bFptTW5aeFJTNndicEFpaUtyYnJ6RVBjWWFYekdBQS9uRVE1?=
+ =?utf-8?B?Qnp0Y0pveXZwMm1nZlB5RVBmNnN2alRLVm5MZVNyZWpDeGVTZGtIRU9MSnZU?=
+ =?utf-8?B?eHppbEZnN1h4aTI2UEZnMTBackdrckkzYnJocmM1bkhyNVlyeUEyb2thZGpY?=
+ =?utf-8?B?V25RVU11WGwvWVFxNVZhVVdSVkdVdEhHR0NTenFPSFR2VXVJcTBKMFV2NTVL?=
+ =?utf-8?B?bHpCTUdxSHc3QkF5QUhleU44cGVKcko1dEdQRkRaU0ZxczVCYkx1dHNLVHJy?=
+ =?utf-8?B?N2dCTWp3bVNwdUxHbDgreWQvYmI5eEdLenF3TkZhYkFDTi9hUEV6NVp5d29B?=
+ =?utf-8?B?cFpnR1NOMjFkTFg0VVNCak1mU3RGWWs4RzhxS1dUMjJpUnpud2tjMkRYNVFG?=
+ =?utf-8?B?WHR2eVhHRUxSa2I1by92NjZSVVVDMlBtZ3UvN2d5MzdMY2Q5THlJaWhLeXBZ?=
+ =?utf-8?B?Q0N6R1hQL1lOcHhhWGsyZktVWVJVQUZYNWRoUWtScUgva28yWVZSMkh2dWtr?=
+ =?utf-8?B?SnozVDA0WUZwSVRKSit4eUJMOGV4M2ZZako1M3JEVy8wcVFneWFvbWxzaERv?=
+ =?utf-8?B?WDRuTjVmNzZYMHcxdnUxS3BrS3B3M3NNMUJVZVJ2c1V6b21xcUhuZGI1YnZl?=
+ =?utf-8?B?YThLb2RvL1RCNXp3QjhvK0NkRHVlVkk0TG5zblhFMTBCdFFSNm1RQzZJQ2ho?=
+ =?utf-8?B?eHJRQnJySDdPTGtHek5jU3c4OUU1NzNlNXE2RW9md0hrOUFTWDZocVBTdW9P?=
+ =?utf-8?Q?rEFQOYkQnRg=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7416014)(52116014)(921020)(38350700014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?eFFJN1grVVVIaUJXYjNhSlAxcnFOS2dnNmhDbzhIQUg0VkpqSjNicG55NGZ0?=
- =?utf-8?B?SEJtSDRkQnNaQ3pSZGNwWnloT2VjSjAyL0NuUkJUcWhocXdYWFZ6d3VTVU4x?=
- =?utf-8?B?VXVQVS9jOUsxYzRlQVZtaW5tNGptTytmbXZ3ZkQ4Y3lwamdwQzhRS1BDeUVo?=
- =?utf-8?B?eFI5cUhwYkNTaDVZbkF6emp1R2M4eUh0OGsxS3hFejJJaXFHM2tkK1VtNFRp?=
- =?utf-8?B?VmhRT0hFZHJVQ3M2ZlJPN3hocVo0RmNRcDVPc1FTOE4rSEdBclBPbTQrOUor?=
- =?utf-8?B?ZkVrNzYwYmxWWXlxZnkrSTFxYU9HdktBRDMrOVpTbWhaOFlaQW1RSW5EcU1Z?=
- =?utf-8?B?U2FJcFYzOUMrVTh1c2VudlFxYmxyejZncGM5Q3NLZVB2bkFUL3JoNkF2cnVm?=
- =?utf-8?B?VkNUcXRoRkh2aXdOd0dLZnJpUVpwb05Mc0JHNW5KVkl2anh6QzlvU2l5VjNt?=
- =?utf-8?B?dzY4d1Z0YUVYZ3JPUlVDSVNsVjBOQUZ5R29BWTJWdUl4UnkzMDFyWDlDR2RN?=
- =?utf-8?B?dnZNOTdtdC92WnJKWjhjYlA4S1pQMjEyNFp4ZVVHYTUwR0xXbzIzT2xodE4v?=
- =?utf-8?B?Wm8wWmQ0ZjBYWE45azhsSUlucEVDZjJXZURBQ1BDakhvLzF0azNFTURUQXZP?=
- =?utf-8?B?MGI3VGRTazVMVmt0RlYwTGJXRGFRamYxc3VKMVk3RHZZZ25TWS9PV21oWVAr?=
- =?utf-8?B?SS9tWUlEUmZUTWE1REkrbHNhM3o4RHlUZGQvblNDSTFHUThoZHRmRXNSdnFT?=
- =?utf-8?B?a3g0ODFINW9DV1VTQk82Mkw1REVHbWd5cktkYzVDNlZLa3crVm04OWc3Yzhq?=
- =?utf-8?B?V2M2bVh4RzhkSm9FeHgxbk4xSThFVDNtSmYxcXlmWndrek5JSkg1R2dXcWx4?=
- =?utf-8?B?OTVwdkJtcXphaWs1c0RtU0s1QWdtczhHZjB0b083L2c1QWMzSEdhOWs3M2pw?=
- =?utf-8?B?U0ZvVExveGY5QmxRVklwRzNMc1hnbXdjcXo3QU1seU0wa0hrRnhMQ1ZQMmZI?=
- =?utf-8?B?Q1VNYVYxbEg3enBkTHRuSFc2MmdyZ0xGL215M0Q0ekhRZDMwamJ4MWcyTmJG?=
- =?utf-8?B?RmR3bXBwcHdJZUdJaGU4MU9QUGJQTjdUcHh6K3YzOGpXcmIyUUU0ZVVNdWVs?=
- =?utf-8?B?aytoUFFqMllYRXkzUHNaRGNmcG1WdjBKSHA5YUxmUUh5MkRFcXVPV3lodEp2?=
- =?utf-8?B?ZUVSeWJaV1BpSTUweUdZbFJPTEh1UVRSS0F6dE9ZZGtGN0EyWkszc2x2Q0xs?=
- =?utf-8?B?UmgvY1I5cWRJNDdLclNDTGVrdU8yZlFYOVhTRUsrelcvYmxXUmZ0TlpyUEhF?=
- =?utf-8?B?bGFYVTJ1QUVSalhRdzBhaE5wdU1pdGU4bkdYYmErNHljN3NySnlyaTdDOXBS?=
- =?utf-8?B?ZkJOVTVVaEtqYXc2WGxwR0hJaGtOaGhpWGxBWS9mYXZjYTRHRExTWWJ4VWxk?=
- =?utf-8?B?MURoZXZnbjFOVUQyK0g3RWQ4ZWtGZDAvdEZUbDlKOUhvTEY1TjlTdjRqSG1y?=
- =?utf-8?B?RTZqMm9jY0JvVnZVazRiSDBTMGdSSWliZ0xuc2JqN3ZLcUJNSWZtTDFxd0RF?=
- =?utf-8?B?LytvbzZ3RzZQeXRZS2x4bTBzSWVQSGozdEFXSSsraU0wTE9FZTQxZ2JXeURo?=
- =?utf-8?B?V2pDcG9SRXI1SjFweE1LemZxekFaSmFCUFJpOVRRUUFrQTZTT2E1dURNR2xD?=
- =?utf-8?B?M2IwQkYwdzdmMUJPQ1VZMjBteHpOcjREdklXSkl2dWdDN1hveWFFT1FEUVly?=
- =?utf-8?B?Q2NJSDlKVzBPL01KR0hIbHg0MVdRNVZrb01OOGlIN2xYRFhFZHp3VXRzUFVG?=
- =?utf-8?B?RjhSZ09Zd2ZlTHZUd0ZkbXdrYS9mamZIdUp1V1lFMjRwM29NR3lGK1hIMEJi?=
- =?utf-8?B?c2gxZUI3d3RudWlmM3NJZ3VxbGVNdjhOTE1oUTBpbEN5TGtQaERIcHBwa1hp?=
- =?utf-8?B?TGw2S1l1SHE1NnpxNHA2NDI0MUUxN1p0dTNveFQxVzI3VytCUXdLM2dUaCta?=
- =?utf-8?B?QTNHOHJ0MlltRzRYQ1JPUDZQUFRlb09SOGJOeWFNSU5LMWVLUi85ZXV6VlpY?=
- =?utf-8?B?U3p4WFFWWWNOYkxnZFZtdWVXOForM1RzL0xyVVFKc2lIVUJZZW8zQlFQMDc0?=
- =?utf-8?Q?lxpFfUJo33hA5yPtiK6S3TG88?=
+	=?utf-8?B?Y08xZDcvTzBlRUZ5QmIydDdpZDB6aGg5VlY0VTJybWNubWEyc3d3d2g2V0pm?=
+ =?utf-8?B?Z1MxR0pGYWErL1RTZXNMUDd1a0RreXU4UDJvTjdFclg0Sk0wUXhBYlVXZ0hm?=
+ =?utf-8?B?bnRDelk1TCsvcmsxYnFhUUJKZ011VVRMd2JSL09uZ08vVE16bStNM3k0M2Vj?=
+ =?utf-8?B?STJ6RUNWR0ptV0xSZEhXRi8yb1hTQ1lsRWgxaW1FbHhJQmR4Yno1QkUyNnlQ?=
+ =?utf-8?B?N3Z4dGk4MC8rMVV3d1I4eUR1N1ZtbUJQejNpcFI5cWU1NFFHN3oyb2ZhOEUr?=
+ =?utf-8?B?MFlhMEJrVHY3b1NHejI1S1llVVFQYTRlcTlxV3ZqY3pHWlBteUptVVNuYk0z?=
+ =?utf-8?B?LzhuVlRHcWZYQ1kycHlsdUdkUjlSN0pyc2QyMVR3VkM2UWJ5SjFpeXBLbE9T?=
+ =?utf-8?B?L244YkJjYjIrdUFObFNsbDA2T2VpaWlTTjkxS3Q3VkZVT3NIS3MzTVdpdnFE?=
+ =?utf-8?B?N0djS0VvNTBmN3d2Mm9oMGdFVGJxRUVVMzA4endBQml2ak1JMXRMQk9oZUtu?=
+ =?utf-8?B?aTk5QmNOcHY2ZWZFTmc1ME1aWjE1YStyaC9RYmQwckxib013cDVRK0o2K2Nu?=
+ =?utf-8?B?dGcxemx0NFR6bXVyTEEybnc3aVhSbGUyWnJhWHE4UDdkVXlFclIwblVLUzVn?=
+ =?utf-8?B?UmRkcUJQaTZJK0JEaG9DSjkvakVobGc0TWxLK2llbXY4QkZOTnZlVGREU00y?=
+ =?utf-8?B?S1A0SkVnRFhVR3JZQnZ4ajUzVkZCeG9UakljWlN1SGl5d0w4MytlZlJSTVFz?=
+ =?utf-8?B?b0VXck1NenVGZ1RSUk9Pa2diRitCdnV1bnJUR3ZHSzFCSGhUbTkxeGJkT0xz?=
+ =?utf-8?B?ODJ6NGZyNk9BS3VxR0k2ZVlGNTlaYUw2Z05hL1dSQ0lOdUw0VzEyZHhRRVRw?=
+ =?utf-8?B?L2l1U0UyR2YvRkQ1ZDhFd1RrYUVlU3dtM3BOSjZYL3JFUGo5cnNOcW1SSnpL?=
+ =?utf-8?B?b2thN3ZTcGxiUWRqNnZ6RyswU3hEenZUZWlCVmd3T2FHQ3lLbGZ3bERIS0FX?=
+ =?utf-8?B?c25pQUtrWlI1L1hEVmRxbUNtQk0xNEZkZ3M3Vms1eFpxb2UyWTlrSVNSNlBo?=
+ =?utf-8?B?T1YwbmVxYWorNkRBZDRTcjArMzc2S0FMWjFkZnNLS3lOaE5xaFEvcnBBbzhX?=
+ =?utf-8?B?R0owNjM4QzEvUmx4UHFuVFpDYnA1U2hyZHcySTFXMS90d3ZZeFVwRlhtV3dI?=
+ =?utf-8?B?aW1mZHZsWjZ5OW9Oa3FhRnRTb3NtcjNocHdaUFhZRlkwRnVENXlOdnNNR0x5?=
+ =?utf-8?B?cFJnQjJpSUFJdEg3dlFEdDYrUWY2MkkzcFpSVWtBNDhzN0pCL2RHL1lFMXdt?=
+ =?utf-8?B?eDBDa0dVZ2VVRVVyQVFSODhMUjIyVEk1bHFWNFBEcWhYSldmbTExb3VKRVJ6?=
+ =?utf-8?B?VC9RL2ZuQ0EwNnRrb0tKNXcyemFYd2E4cVp3U0Y4eUZOZEJjNkpsZGZnR3Nr?=
+ =?utf-8?B?MHQ2a21TcTJQR3VVNEREMk9Ra3VSM2hjU0lHOUV2dU5vcmltbk5YVEE5NklC?=
+ =?utf-8?B?RDZwWkxjUFRmNExCY2Y2WFFjb3p1Nko3b0UvOWF2QW9tSGpiNmFYVVBCeEd1?=
+ =?utf-8?B?aXZ4SDYydTlaYkRmbmwxNFRWUGEydm9Ha3dvOHpPWnhmeDRaUzVsWkZGcTNX?=
+ =?utf-8?B?U1FEbjdSQmZ1WFhKZ0ZLeUU2dFdXS2dtT21PY2ZmaE5Rbnc4NVFybFBxZFk5?=
+ =?utf-8?B?VTQ3cC9QVXFldEY0ekRuSTJKNll0U2NidFU2aXhvMFE1dDk3TmNwVXR4QzVw?=
+ =?utf-8?B?Q0dueENjcnZEci83TG4raWtNVE1zQTROclkvMFRzUEhFamluNVJ0b3kreHcw?=
+ =?utf-8?B?QnplMmpCU2RJeHR0Tm1hWTlmTGk4NHBKMnRSSFdZdDJGOUU5ZG5qR0hha3ds?=
+ =?utf-8?B?QWc5U2xmdk1ZVHRIVWJmSUJ0S3NUU1AxKzIxZHdwUWtuQUZSaE41NG9STUF0?=
+ =?utf-8?B?Wk91Sm9VRDRvbzhyWnluRURQVlZWdUs3L29lUEhjc3FvU1M2NU5BT0N0dzh3?=
+ =?utf-8?B?c2dyTnphQ0pDQWZRYVJQMm9Ya1lsM0lLS3NIdEtyNkZ0S3E1K2JjM25pU3Bk?=
+ =?utf-8?B?Vm1Raklza05xK2VHWTVJZ0xnMlNDSjB1eWZTdnIvR3ZSREZXeGJ5UmYxUVZI?=
+ =?utf-8?Q?0AyjzQkon6j3SBzxIMAxtmkfl?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 014e3707-9ed1-4644-0f7e-08dd196ce22a
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6f20d62-c18a-46f0-9cbd-08dd196ce5b8
 X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2024 22:49:19.8889
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2024 22:49:25.8744
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AerULrSAY7tx0TBvFSli0gPM7aisS5C5s9+rwZ9ylpIh+eQxo76oDJtck5CrosmBbcnS1eT+Z/Updfa+EsapSQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: XhVq3J7XOX2R9pYQY0JqmGUyuo09f/No3o+gVXhNF1LnaFFYXOkedLeSRq+QpgQbOfDJwuOKFwbQJIVFuheTKA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6784
 
-Some PCIe host bridges require special handling when enabling or disabling
-PCIe Endpoints. For example, the i.MX95 platform has a lookup table to map
-Requester IDs to StreamIDs, which are used by the SMMU and MSI controller
-to identify the source of DMA accesses.
+For the i.MX95, configuration of a LUT is necessary to convert Bus Device
+Function (BDF) to stream IDs, which are utilized by both IOMMU and ITS.
+This involves checking msi-map and iommu-map device tree properties to
+ensure consistent mapping of PCI BDF to the same stream IDs. Subsequently,
+LUT-related registers are configured. In the absence of an msi-map, the
+built-in MSI controller is utilized as a fallback.
 
-Without this mapping, DMA accesses may target unintended memory, which
-would corrupt memory or read the wrong data.
+Register a PCI bus callback function to handle enable_device() and
+disable_device() operations, setting up the LUT whenever a new PCI device
+is enabled.
 
-Add a host bridge .enable_device() hook the imx6 driver can use to
-configure the Requester ID to StreamID mapping. The hardware table isn't
-big enough to map all possible Requester IDs, so this hook may fail if no
-table space is available. In that case, return failure from
-pci_enable_device().
-
-It might make more sense to make pci_set_master() decline to enable bus
-mastering and return failure, but it currently doesn't have a way to return
-failure.
-
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Tested-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Acked-by: Richard Zhu <hongxing.zhu@nxp.com>
 Signed-off-by: Frank Li <Frank.Li@nxp.com>
 ---
-Change from v6 to v8
-- none
+Change from v7 to v8
+- update comment message according to Lorenzo Pieralisi's suggestion.
+- rework err target table
+- improve err==0 && target ==NULL description, use 1:1 map RID to
+stream ID.
+- invalidate case -> unexisted case, never happen
+- sid_i will not do mask, add comments said only MSI glue layer add
+controller id.
+- rework iommu map and msi map return value check logic according to
+Lorenzo Pieralisi's suggestion
 
-Change from v5 to v6
-- Add Marc testedby and Reviewed-by tag
-- Add Mani's acked tag
+Change from v5 to v7
+- change comment rid to RID
+- some mini change according to mani's feedback
 
 Change from v4 to v5
-- Add two static help functions
-int pci_host_bridge_enable_device(dev);
-void pci_host_bridge_disable_device(dev);
-- remove tags because big change
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Tested-by: Marc Zyngier <maz@kernel.org>
+- rework commt message
+- add comment for mutex
+- s/reqid/rid/
+- keep only one loop when enable lut
+- add warning when try to add duplicate rid
+- Replace hardcode 0xffff with IMX95_PE0_LUT_MASK
+- Fix some error message
 
 Change from v3 to v4
-- Add Bjorn's ack tag
+- Check target value at of_map_id().
+- of_node_put() for target.
+- add case for msi-map exist, but rid entry is not exist.
 
 Change from v2 to v3
-- use Bjorn suggest's commit message.
-- call disable_device() when error happen.
+- Use the "target" argument of of_map_id()
+- Check if rid already in lut table when enable device
 
-Change from v1 to v2
-- move enable(disable)device ops to pci_host_bridge
+change from v1 to v2
+- set callback to pci_host_bridge instead pci->ops.
 ---
- drivers/pci/pci.c   | 36 +++++++++++++++++++++++++++++++++++-
- include/linux/pci.h |  2 ++
- 2 files changed, 37 insertions(+), 1 deletion(-)
+ drivers/pci/controller/dwc/pci-imx6.c | 186 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 185 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 0b29ec6e8e5e2..773ca3cbd3221 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -2059,6 +2059,28 @@ int __weak pcibios_enable_device(struct pci_dev *dev, int bars)
- 	return pci_enable_resources(dev, bars);
+diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+index c8d5c90aa4d45..d325f4fb279c8 100644
+--- a/drivers/pci/controller/dwc/pci-imx6.c
++++ b/drivers/pci/controller/dwc/pci-imx6.c
+@@ -55,6 +55,22 @@
+ #define IMX95_PE0_GEN_CTRL_3			0x1058
+ #define IMX95_PCIE_LTSSM_EN			BIT(0)
+ 
++#define IMX95_PE0_LUT_ACSCTRL			0x1008
++#define IMX95_PEO_LUT_RWA			BIT(16)
++#define IMX95_PE0_LUT_ENLOC			GENMASK(4, 0)
++
++#define IMX95_PE0_LUT_DATA1			0x100c
++#define IMX95_PE0_LUT_VLD			BIT(31)
++#define IMX95_PE0_LUT_DAC_ID			GENMASK(10, 8)
++#define IMX95_PE0_LUT_STREAM_ID			GENMASK(5, 0)
++
++#define IMX95_PE0_LUT_DATA2			0x1010
++#define IMX95_PE0_LUT_REQID			GENMASK(31, 16)
++#define IMX95_PE0_LUT_MASK			GENMASK(15, 0)
++
++#define IMX95_SID_MASK				GENMASK(5, 0)
++#define IMX95_MAX_LUT				32
++
+ #define to_imx_pcie(x)	dev_get_drvdata((x)->dev)
+ 
+ enum imx_pcie_variants {
+@@ -87,6 +103,7 @@ enum imx_pcie_variants {
+  * workaround suspend resume on some devices which are affected by this errata.
+  */
+ #define IMX_PCIE_FLAG_BROKEN_SUSPEND		BIT(9)
++#define IMX_PCIE_FLAG_HAS_LUT			BIT(10)
+ 
+ #define imx_check_flag(pci, val)	(pci->drvdata->flags & val)
+ 
+@@ -139,6 +156,9 @@ struct imx_pcie {
+ 	struct device		*pd_pcie_phy;
+ 	struct phy		*phy;
+ 	const struct imx_pcie_drvdata *drvdata;
++
++	/* Ensure that only one device's LUT is configured at any given time */
++	struct mutex		lock;
+ };
+ 
+ /* Parameters for the waiting for PCIe PHY PLL to lock on i.MX7 */
+@@ -930,6 +950,162 @@ static void imx_pcie_stop_link(struct dw_pcie *pci)
+ 	imx_pcie_ltssm_disable(dev);
  }
  
-+static int pci_host_bridge_enable_device(struct pci_dev *dev)
++static int imx_pcie_add_lut(struct imx_pcie *imx_pcie, u16 rid, u8 sid)
 +{
-+	struct pci_host_bridge *host_bridge = pci_find_host_bridge(dev->bus);
-+	int err;
++	struct dw_pcie *pci = imx_pcie->pci;
++	struct device *dev = pci->dev;
++	u32 data1, data2;
++	int free = -1;
++	int i;
 +
-+	if (host_bridge && host_bridge->enable_device) {
-+		err = host_bridge->enable_device(host_bridge, dev);
-+		if (err)
-+			return err;
++	if (sid >= 64) {
++		dev_err(dev, "Invalid SID for index %d\n", sid);
++		return -EINVAL;
 +	}
++
++	guard(mutex)(&imx_pcie->lock);
++
++	/*
++	 * Iterate through all LUT entries to check for duplicate RID and
++	 * identify the first available entry. Configure this available entry
++	 * immediately after verification to avoid rescanning it.
++	 */
++	for (i = 0; i < IMX95_MAX_LUT; i++) {
++		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, IMX95_PEO_LUT_RWA | i);
++		regmap_read(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA1, &data1);
++
++		if (!(data1 & IMX95_PE0_LUT_VLD)) {
++			if (free < 0)
++				free = i;
++			continue;
++		}
++
++		regmap_read(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA2, &data2);
++
++		/* Do not add duplicate RID */
++		if (rid == FIELD_GET(IMX95_PE0_LUT_REQID, data2)) {
++			dev_warn(dev, "Existing LUT entry available for RID (%d)", rid);
++			return 0;
++		}
++	}
++
++	if (free < 0) {
++		dev_err(dev, "LUT entry is not available\n");
++		return -ENOSPC;
++	}
++
++	data1 = FIELD_PREP(IMX95_PE0_LUT_DAC_ID, 0);
++	data1 |= FIELD_PREP(IMX95_PE0_LUT_STREAM_ID, sid);
++	data1 |= IMX95_PE0_LUT_VLD;
++	regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA1, data1);
++
++	data2 = IMX95_PE0_LUT_MASK; /* Match all bits of RID */
++	data2 |= FIELD_PREP(IMX95_PE0_LUT_REQID, rid);
++	regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA2, data2);
++
++	regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, free);
 +
 +	return 0;
 +}
 +
-+static void pci_host_bridge_disable_device(struct pci_dev *dev)
++static void imx_pcie_remove_lut(struct imx_pcie *imx_pcie, u16 rid)
 +{
-+	struct pci_host_bridge *host_bridge = pci_find_host_bridge(dev->bus);
++	u32 data2;
++	int i;
 +
-+	if (host_bridge && host_bridge->disable_device)
-+		host_bridge->disable_device(host_bridge, dev);
++	guard(mutex)(&imx_pcie->lock);
++
++	for (i = 0; i < IMX95_MAX_LUT; i++) {
++		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, IMX95_PEO_LUT_RWA | i);
++		regmap_read(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA2, &data2);
++		if (FIELD_GET(IMX95_PE0_LUT_REQID, data2) == rid) {
++			regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA1, 0);
++			regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA2, 0);
++			regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, i);
++
++			break;
++		}
++	}
 +}
 +
- static int do_pci_enable_device(struct pci_dev *dev, int bars)
- {
- 	int err;
-@@ -2074,9 +2096,13 @@ static int do_pci_enable_device(struct pci_dev *dev, int bars)
- 	if (bridge)
- 		pcie_aspm_powersave_config_link(bridge);
- 
-+	err = pci_host_bridge_enable_device(dev);
-+	if (err)
-+		return err;
++static int imx_pcie_enable_device(struct pci_host_bridge *bridge, struct pci_dev *pdev)
++{
++	struct imx_pcie *imx_pcie = to_imx_pcie(to_dw_pcie_from_pp(bridge->sysdata));
++	u32 sid_i, sid_m, rid = pci_dev_id(pdev);
++	struct device_node *target;
++	struct device *dev;
++	int err_i, err_m;
++	u32 sid;
 +
- 	err = pcibios_enable_device(dev, bars);
- 	if (err < 0)
--		return err;
-+		goto err_enable;
- 	pci_fixup_device(pci_fixup_enable, dev);
- 
- 	if (dev->msi_enabled || dev->msix_enabled)
-@@ -2091,6 +2117,12 @@ static int do_pci_enable_device(struct pci_dev *dev, int bars)
++	dev = imx_pcie->pci->dev;
++
++	target = NULL;
++	err_i = of_map_id(dev->of_node, rid, "iommu-map", "iommu-map-mask", &target, &sid_i);
++	if (target) {
++		of_node_put(target);
++	} else {
++		/*
++		 * "target == NULL && err_i == 0" means use 1:1 map RID to
++		 * stream ID. Hardware can't support this because stream ID
++		 * only 5bits
++		 */
++		err_i = -EINVAL;
++	}
++
++	target = NULL;
++	err_m = of_map_id(dev->of_node, rid, "msi-map", "msi-map-mask", &target, &sid_m);
++
++	/*
++	 *   err_m      target
++	 *	0	NULL		Use 1:1 map RID to stream ID,
++	 *				Current hardware can't support it,
++	 *				So return -EINVAL.
++	 *      != 0    NULL		msi-map not exist, use built-in MSI.
++	 *	0	!= NULL		Get correct streamID from RID.
++	 *	!= 0	!= NULL		Unexisted case, never happen.
++	 */
++	if (!err_m && !target)
++		return -EINVAL;
++	else if (target)
++		of_node_put(target); /* Find stream ID map entry for RID in msi-map */
++
++	/*
++	 * msi-map        iommu-map
++	 *   N                N            DWC MSI Ctrl
++	 *   Y                Y            ITS + SMMU, require the same sid
++	 *   Y                N            ITS
++	 *   N                Y            DWC MSI Ctrl + SMMU
++	 */
++	if (err_i && err_m)
++		return 0;
++
++	if (!err_i && !err_m) {
++		/*
++		 * MSI glue layer auto add 2 bits controller ID ahead of stream
++		 * ID, so mask this 2bits to get stream ID.
++		 * But IOMMU glue layer doesn't do that.
++		 */
++		if (sid_i != (sid_m & IMX95_SID_MASK)) {
++			dev_err(dev, "iommu-map and msi-map entries mismatch!\n");
++			return -EINVAL;
++		}
++	}
++
++	sid = sid_i;
++	if (!err_m)
++		sid = sid_m & IMX95_SID_MASK;
++
++	return imx_pcie_add_lut(imx_pcie, rid, sid);
++}
++
++static void imx_pcie_disable_device(struct pci_host_bridge *bridge, struct pci_dev *pdev)
++{
++	struct imx_pcie *imx_pcie;
++
++	imx_pcie = to_imx_pcie(to_dw_pcie_from_pp(bridge->sysdata));
++	imx_pcie_remove_lut(imx_pcie, pci_dev_id(pdev));
++}
++
+ static int imx_pcie_host_init(struct dw_pcie_rp *pp)
+ {
+ 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+@@ -946,6 +1122,11 @@ static int imx_pcie_host_init(struct dw_pcie_rp *pp)
+ 		}
  	}
  
- 	return 0;
++	if (pp->bridge && imx_check_flag(imx_pcie, IMX_PCIE_FLAG_HAS_LUT)) {
++		pp->bridge->enable_device = imx_pcie_enable_device;
++		pp->bridge->disable_device = imx_pcie_disable_device;
++	}
 +
-+err_enable:
-+	pci_host_bridge_disable_device(dev);
-+
-+	return err;
-+
- }
+ 	imx_pcie_assert_core_reset(imx_pcie);
  
- /**
-@@ -2274,6 +2306,8 @@ void pci_disable_device(struct pci_dev *dev)
- 	if (atomic_dec_return(&dev->enable_cnt) != 0)
- 		return;
+ 	if (imx_pcie->drvdata->init_phy)
+@@ -1330,6 +1511,8 @@ static int imx_pcie_probe(struct platform_device *pdev)
+ 	imx_pcie->pci = pci;
+ 	imx_pcie->drvdata = of_device_get_match_data(dev);
  
-+	pci_host_bridge_disable_device(dev);
++	mutex_init(&imx_pcie->lock);
 +
- 	do_pci_disable_device(dev);
- 
- 	dev->is_busmaster = 0;
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index db9b47ce3eefd..bcbef004dd561 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -595,6 +595,8 @@ struct pci_host_bridge {
- 	u8 (*swizzle_irq)(struct pci_dev *, u8 *); /* Platform IRQ swizzler */
- 	int (*map_irq)(const struct pci_dev *, u8, u8);
- 	void (*release_fn)(struct pci_host_bridge *);
-+	int (*enable_device)(struct pci_host_bridge *bridge, struct pci_dev *dev);
-+	void (*disable_device)(struct pci_host_bridge *bridge, struct pci_dev *dev);
- 	void		*release_data;
- 	unsigned int	ignore_reset_delay:1;	/* For entire hierarchy */
- 	unsigned int	no_ext_tags:1;		/* No Extended Tags */
+ 	/* Find the PHY if one is defined, only imx7d uses it */
+ 	np = of_parse_phandle(node, "fsl,imx7d-pcie-phy", 0);
+ 	if (np) {
+@@ -1627,7 +1810,8 @@ static const struct imx_pcie_drvdata drvdata[] = {
+ 	},
+ 	[IMX95] = {
+ 		.variant = IMX95,
+-		.flags = IMX_PCIE_FLAG_HAS_SERDES,
++		.flags = IMX_PCIE_FLAG_HAS_SERDES |
++			 IMX_PCIE_FLAG_HAS_LUT,
+ 		.clk_names = imx8mq_clks,
+ 		.clks_cnt = ARRAY_SIZE(imx8mq_clks),
+ 		.ltssm_off = IMX95_PE0_GEN_CTRL_3,
 
 -- 
 2.34.1
