@@ -1,146 +1,126 @@
-Return-Path: <bpf+bounces-46543-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46544-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64A0A9EB9A2
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 19:51:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ACA29EB9A8
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 19:52:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0633B282A7A
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 18:51:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CC0F282C3B
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 18:52:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946932046BE;
-	Tue, 10 Dec 2024 18:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB4723ED41;
+	Tue, 10 Dec 2024 18:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gYlrywhH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FJ0eDZsB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89BB223ED41;
-	Tue, 10 Dec 2024 18:51:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A808E1D6DD1
+	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 18:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733856692; cv=none; b=kLZmi2cO8GtZyrZRf7KOIJLCSfKVWBj4WyfFDak6DFYKYLljjhmVkcI9oz10nIXI7Qj8A4rjqp55OnEirP+2LLThTI/VdgXl3rOsspsMAIlsEBrrezGbeg928ivh1usoauCrBtdNHDnmBFCcC+3lzZJZaO4a2THIhymKhnZX4AA=
+	t=1733856758; cv=none; b=U91CePBtgMKTDDmkttw7rdyab4xWTwYZkDcb0+pAmbfrNlWvq+dh+oTEbM75SViJcq3cKBTGkchNzgiS2HU2IulYOMIxJLctqnPwHxFEal/imsQlyibz1zvWXyOMJkEi8s2NYhN1shWIfzVfqoS1JHmDAuls7+sw7JXJJ/bPJ0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733856692; c=relaxed/simple;
-	bh=lAZTB+5AUs87Gv5Bp400EFKF06lTy9auqfzLDlXibt0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iJu4pRSVGNr0Zu16VBQUl6C6PxKtkRoRLxi8q0RSz3tL0X5hlcKWvMqkWwJk9tHqVDL7FT9dacMzLTiPLgJInOvOOWHsIBq42Pfi86gvims/ND31W+rEJuxHduZJmOCnXik993aHuC7Q/0nQiOllfrd7vSN4ZfWs5atqbcaetMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gYlrywhH; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1733856758; c=relaxed/simple;
+	bh=vnpngQV7LHuHUEBLDI+WyRB+WELelpkmvUL+As5vGXI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=TKu4mExBrux/0thEaP4YGIfJCxPEEdYp7C5oagHtIuxJw6l/OGumGEghWduiq0ha8sGLpNf19DBFfkDr8YR4xA2hacJnM5bjTilUOM2Bef5zfhTyb/d+wge84Z5bIQpdsjWqPYQVpEKbnmUcvjSAxOJMoM3u5vMt1qSPY8TqQ4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FJ0eDZsB; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-385e1fcb0e1so3314010f8f.2;
-        Tue, 10 Dec 2024 10:51:30 -0800 (PST)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-725ee27e905so2749284b3a.2
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 10:52:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733856689; x=1734461489; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sbWcTejsLTu/yfEmnZUJI7lrVRDEyeRIYi0sBNJufoA=;
-        b=gYlrywhH9uGWkWgkYvdFwD4QndXqKseDOfAXgabNgA7wbW17nvK2xgqtpjVfGEq+oE
-         z74YVld32l9aNhdT7wcvQ0bnsJj/84IP6A37wsF0m8HpzJTW9gDTJmQOrCZ5R5uabR0r
-         tLSoZ1Kb4nlQrhu4NthRQFwYeik1VQnB6ErcJDNPjcx4IagARABKT3m7htZyQL+SeLtg
-         hn+EVXoMpN6CXTBrK7nRqqWKTmaenxvMY76ZHsJQq+1y16dqV8CYEoQiyzp0DJFevRCi
-         n7ON8YqFuofi2WYYz8nci9Luj/VXRdn17Bw1kQnTRNoNAxXjPf3dLCzLhC60eHDl1V5+
-         tCiQ==
+        d=gmail.com; s=20230601; t=1733856756; x=1734461556; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vnpngQV7LHuHUEBLDI+WyRB+WELelpkmvUL+As5vGXI=;
+        b=FJ0eDZsBpgwbqANnaZPBONSk0G7RDwuwvsfMMIQ2YNNZJHXLlpqHgexOg7MqU9ZrDB
+         kFUPcJ07nbAOntdAs9/61pnACzRoBZfpCoHan+6VHPkqLPLG4MODtu2ktSNUgIxRc7Vh
+         e0KUSPn2z8gtclo6kfl6q/EMTXbODokQubwtRW8F1IAgszH9nhnhnYnh35LPZmtlp9bm
+         8GpXzbQ+f9tvc1UvPFhUiU1k1AJkFcfvJGn7xb0R8P4pcXAaZRQZ5GfArVi8sBTjGt43
+         eVDUam4+U+MfbW/9dCikhPJT/1ZMSC/jVqQeksdfl+WAGfFoJ2cyDgDEzRdKV3dJjF21
+         D7UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733856689; x=1734461489;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sbWcTejsLTu/yfEmnZUJI7lrVRDEyeRIYi0sBNJufoA=;
-        b=TqX5uiZBPk3D7goagN63sqUwQpPixYMgq38MPrHXUb+/+65ANn1IT4PUAX9gJHb7ET
-         oF2pLA85jct6etL3kORaoLtKn0lGUPqoGZRQdac0k2JgqgcZ8V6ZYFvZ/YWaXJ1fD5W3
-         1NvYsMXhjUvaQAr4atizFSZJmKFnexoEaHhQ9yLHXY0mQLLjLyXRgAL/5/5QkfkqvVFS
-         kCreCk34JhKrpVBmAtjp6oQPF6TnsD/+KMTikoNlmoUIM9ly9ofOzC9rKap0d+YIGRJi
-         fi9ziq1sHDz75JKTRzrJBS7mIbeYidFDYJjEqCzYDkdEcyhJ5pb1T4mUDXdabzi36pOU
-         0r9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU2RTZsK6H4DmCgJwlxMiby8MOplZSEUGSr2N0rcPmKG+fDien30SjETIFBuPpmnx+F92M=@vger.kernel.org, AJvYcCUeTIBRyjHOU33/jqlXRW2HHiAaIvHezMSnfCp7A84vFxoGctuCfTXYYZa5cgVQbbmVCIWbHQD1YTLvIs0x5w==@vger.kernel.org, AJvYcCXIEgARs8NZYEgB1Bi1ZIQoulw8qY3508ukrOxeXyg0K17pbHMuwmYHR7E6AtlnBE+z0UbgVTOg/ZyyDLkX@vger.kernel.org
-X-Gm-Message-State: AOJu0YzaYPsWlYepUyTwt0GOXn2WDa6SQrkzkw2axsm2a0naTeT9wpeM
-	DP+FKxqhfU7Ww7OiYrL2MbFaWbW5t+YJBVyZf4nJctiFNcKv7i6umluvB55uAdXeJEzzB5uORtf
-	tTb+uYSg+zwK/AuKa8j297j4zric=
-X-Gm-Gg: ASbGnctg/xa3n5OYGNmyrgVT2oGFXmnsPR9Ofii1JHc0DBUJ9NFT2wYNG9oW3DURIy3
-	qKobOPPTwlrker+KGqtnZ+B4wCH5xwMcAykxL4gQjoVa+M8iiDUw=
-X-Google-Smtp-Source: AGHT+IEL/YKXKf4bDl5tUFIznsup7O7nfZD38kP19L0CXIrXpOLmVvLwja0xemsUWoCwI3noI6ez88l42gRf8OLITTQ=
-X-Received: by 2002:a05:6000:1a86:b0:385:e8f9:e839 with SMTP id
- ffacd0b85a97d-3864ced38a4mr149857f8f.56.1733856688725; Tue, 10 Dec 2024
- 10:51:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1733856756; x=1734461556;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vnpngQV7LHuHUEBLDI+WyRB+WELelpkmvUL+As5vGXI=;
+        b=r6ikE/JZ8uTKorOOIdNvi5NU6ATgukp7FQHX2JaQLNm+fAve7gUj+FiOMQEiISQZwT
+         27WUKHsoKuFDLlRxaAN4FmyWsuj18RQTbkrty2ElKTNHdGhnSKdzCig+Gx++bFcstgO7
+         3EKR5f398s7iF7cDCCfYbVppvL/FgD6Fm1ENkINmH7W2DttCJDlZpTQgnASsU2FriENU
+         Z9dqNDKYl6xLZZ/d54gDSCxLgM0w34JKNDLDeIrgAxqKShJrHYB5CDmq23EmmiFlY2L1
+         MECA73IHdEy/SLYrwilkjbj6UGhAl2M/lsQXTypSHlJgIJ1u4WxRvApmFCQHnvdkw5p9
+         QLrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUgfAf2+/vlmLqN0DiIhsiItMdnRk/6GSUzlZxgtM+VUzBK5JKj2Zrxd3Lc/dwGqhTLGcU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy7a1TXoaH84G7UjqSfF2pmjXO04utDjACrrCGlm2+Hc5sUuzke
+	IByB9OKVAW+0RLbNbT0h8HgyqgTLMIXkgNcY/+9JciL2XiyNm64r
+X-Gm-Gg: ASbGncs1Y2FvcbfUbyyFcttIKnwbMea15s7dga8WhDNnBwDnkUEWm8vRzaCU7rKHP3E
+	o7lJ6BcODCr3TvH1ct4bzadGIK5YJRmKQUj1ydvydx/IJw20zcKU8oNkBT8QIeFXrc7avdz7OSe
+	0Bj2JdE/TE2EZRt2b52xbBKWu80Di0wcYPTLXNLWKMGyD4AII0rTA12PF5ZvqcX+fSj2BGYymGx
+	VdXzQctQ0mFths6evZH9jqxeBH/Sdmu0WgYYOUNHLYyxNNh49c=
+X-Google-Smtp-Source: AGHT+IFnrsAg4YFpCTytgM6fjok4A53kQuntY+yu5jYq+AGjkdkzF7iK4UA6Mjh7Y8fapglYXw941Q==
+X-Received: by 2002:a05:6a00:1895:b0:725:d1d5:6d86 with SMTP id d2e1a72fcca58-728ed48b9f0mr63409b3a.19.1733856756234;
+        Tue, 10 Dec 2024 10:52:36 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725e39882d2sm5051104b3a.79.2024.12.10.10.52.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Dec 2024 10:52:35 -0800 (PST)
+Message-ID: <7bc3b90bc810df379f9463ebc62210c3819725bd.camel@gmail.com>
+Subject: Re: [PATCH bpf v2 7/8] bpf: consider that tail calls invalidate
+ packet pointers
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Nick Zavaritsky <mejedi@gmail.com>, bpf <bpf@vger.kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>,  Martin KaFai Lau <martin.lau@linux.dev>,
+ Kernel Team <kernel-team@fb.com>, Yonghong Song <yonghong.song@linux.dev>
+Date: Tue, 10 Dec 2024 10:52:30 -0800
+In-Reply-To: <CAADnVQ+hsXZirUYJ6Dshn+K6XNJB7LC=cS5ZzHXiMQbot+SJ3w@mail.gmail.com>
+References: <20241210041100.1898468-1-eddyz87@gmail.com>
+	 <20241210041100.1898468-8-eddyz87@gmail.com>
+	 <EC7AA65F-13D1-4CA2-A575-44DA02332A4E@gmail.com>
+	 <CAADnVQKBmQrvnEYqqSpUL6xjmccBW9vnyzQKDktd3uvZUyY83A@mail.gmail.com>
+	 <82110da58b8ee834798791039155074a9aaba7a0.camel@gmail.com>
+	 <CAADnVQ+hsXZirUYJ6Dshn+K6XNJB7LC=cS5ZzHXiMQbot+SJ3w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <AM6PR03MB508010982C37DF735B1EAA0E993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB5080756ABBCCCBF664B374EB993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <20241210-zustehen-skilift-44ba2f53ceca@brauner> <AM6PR03MB50808A2F7DEBB5825473B38F993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB50808A2F7DEBB5825473B38F993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 10 Dec 2024 10:51:17 -0800
-Message-ID: <CAADnVQKK3vmfPmRxLuh6ad94FeioN2JV=v+L-93ZvwdYqR_Kcg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/5] selftests/bpf: Add tests for open-coded
- style process file iterator
-To: Juntong Deng <juntong.deng@outlook.com>
-Cc: Christian Brauner <brauner@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 10, 2024 at 8:23=E2=80=AFAM Juntong Deng <juntong.deng@outlook.=
-com> wrote:
->
-> >> +SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-> >> +int test_bpf_iter_task_file(void *ctx)
-> >> +{
-> >> +    struct bpf_iter_task_file task_file_it;
-> >> +    struct bpf_iter_task_file_item *item;
-> >> +    struct task_struct *task;
-> >> +
-> >> +    task =3D bpf_get_current_task_btf();
-> >> +    if (task->parent->pid !=3D parent_pid)
-> >> +            return 0;
-> >> +
-> >> +    count++;
-> >> +
-> >> +    bpf_rcu_read_lock();
-> >
-> > What does the RCU read lock do here exactly?
-> >
->
-> Thanks for your reply.
->
-> This is used to solve the problem previously discussed in v3 [0].
->
-> Task ref may be released during iteration.
->
-> [0]:
-> https://lore.kernel.org/bpf/CAADnVQ+0LUXxmfm1YgyGDz=3Dcciy3+dGGM-Zysq84fp=
-AdaB74Qw@mail.gmail.com/
+On Tue, 2024-12-10 at 10:31 -0800, Alexei Starovoitov wrote:
 
-I think you misunderstood my comment.
+[...]
 
-"If this object _was_ RCU protected ..."
+> > > > From an end-user perspective, the presented solution makes debuggin=
+g
+> > > > verifier errors harder. An error message doesn't tell which call
+> > > > invalidated pointers. Whether verifier considers a particular sub
+> > > > program as pointer-invalidating is not revealed. I foresee exciting
+> > > > debugging sessions.
+> > >=20
+> > > There is such a risk.
+> >=20
+> > I can do a v4 and add a line in the log each time the packet pointers
+> > are invalidated. Such lines would be presented in verification failure
+> > logs. (Can also print every register/stack slot where packet pointer
+> > is invalidated, but this may be too verbose).
+>=20
+> This is something to consider for bpf-next.
+> For bpf we need a minimal fix. So I applied as-is.
 
-Adding rcu_read_lock doesn't make 'task' pointer RCU protected.
-That's not how RCU works.
+I must admit, I'm not familiar with the way bpf/bpf-next interact.
+Should I wait for certain merges to happen before posting a patch
+to bpf-next?
 
-So patch 1 doing:
-
-item->task =3D task;
-
-is not correct.
-
-See bpf_iter_task_vma_new(). It's doing:
-kit->data->task =3D get_task_struct(task);
-to make sure task stays valid while iterating.
-
-pw-bot: cr
 
