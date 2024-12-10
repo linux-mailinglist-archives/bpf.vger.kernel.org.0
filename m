@@ -1,203 +1,150 @@
-Return-Path: <bpf+bounces-46520-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46521-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48BAC9EB3C0
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 15:44:59 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5A6916783B
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 14:44:49 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4BE1B6539;
-	Tue, 10 Dec 2024 14:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dko6LHmG"
-X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 146C29EB3E1
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 15:48:54 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88321B2195;
-	Tue, 10 Dec 2024 14:44:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C97F28448C
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 14:48:51 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88511ACDE7;
+	Tue, 10 Dec 2024 14:48:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=datadoghq.com header.i=@datadoghq.com header.b="H2db/sAI"
+X-Original-To: bpf@vger.kernel.org
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41C51AA786
+	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 14:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733841882; cv=none; b=ONww7PadaafP5QDat766YEXl/4fP77nEJchTRLPJ+fw3MbF/lezhk6uGdYthLtNgXq59wh48LdQ5v2d/kgcS1Gh5lDnmNggoFgyCun6OK3xNXXfrKAaMQpi2eevnV7HE9bQVjOnwvfGiNmtD1W6GhHyr15afHbo4G+ICVtv1DCo=
+	t=1733842125; cv=none; b=Ljwm+nKEURn5JvIZLHB0M0m/5ApAj9wmaw+fCur1KuiwXbzGdvOyiKCnESTNTwfBNmQwZiyC4+0ILcM0Kb1fkS2uKQ+l4Eiilzk5zAgRp9/E64jBbzZtPB6Tvs0nMdCD2a/2wqS2XpfcyrO3Im6TkuAUziFXp5FvlRDfddvUIC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733841882; c=relaxed/simple;
-	bh=p92MSmrg16W+AvmipmOqXkEVwVKuNWKW3EymIxk3aYA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ugFVeVI5HH4L2fMjYos0dMhONHe/vKxli8qX24aD5lEvLaM8aIysiYueGGt8MzQ/8aF6KvSMcjzBqd+fJkv29l5iX4Jjjpbm330YMpVJTZZn9KD/fcvkjF/fRjbIdTV2WlJT58WiXjA4+LN2IIMxi6RgWv4Y2xbHpp1yaSieKZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dko6LHmG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4006EC4CED6;
-	Tue, 10 Dec 2024 14:44:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733841882;
-	bh=p92MSmrg16W+AvmipmOqXkEVwVKuNWKW3EymIxk3aYA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Dko6LHmGKFs3oBZQ4HJ3a6GbYW3z7hfjfLQRNqS0+yJWfNCQHgyvuTgpqHV6JSYRZ
-	 cxwCAfpzvZ1Vx5ClH+tc0Mkxeh0UGFoCCu81tDhcfpKoyo6/Qgsjz7/DQoVFJb2JR3
-	 hR+H0d7z0BXhOEEwv7SdOPbxAiY1bH1bE3t4EXHcIYVrMtPhtXj4IxoT4r6SlLW03+
-	 RJYwPdJ+Hg5JZ7WfkmLso4WLqhjDOY7ezgmkHn6wLQ396sNLtb+5HoHuMCvZ2VYQI/
-	 iFOiImcEPB7wrskOfym5Yub/YOAaoXUwqh0rh5Y0EBAF3wHEWtHTtYj5D/IRw4fWV4
-	 qaoB1U5qROEpA==
-Date: Tue, 10 Dec 2024 15:44:35 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Juntong Deng <juntong.deng@outlook.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, 
-	jolsa@kernel.org, memxor@gmail.com, snorcht@gmail.com, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 0/5] bpf: Add open-coded style process file
- iterator and bpf_fget_task() kfunc
-Message-ID: <20241210-geholfen-aufheben-b4b57524c00f@brauner>
-References: <AM6PR03MB508010982C37DF735B1EAA0E993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+	s=arc-20240116; t=1733842125; c=relaxed/simple;
+	bh=eyagzlzKEMUIVHUT+Qslao0xKnVUeABf/usE1LRuwPA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JqFOfF9SpCFIl7tBPLIzanG8rhuofqWx+XZLrTzkw5THu3ov7JvTpCgUfV8kmQdnajbd0AxJ7+R1W+7C3qZbEfmpLhFxKN6Q+o7sgwdIK/6IQA7XNpyuaOePrMQPx2v0DFeycqzzR4rlOaMNQQNbIaSSjBtesqDtbfLA282OLuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=datadoghq.com; spf=pass smtp.mailfrom=datadoghq.com; dkim=pass (1024-bit key) header.d=datadoghq.com header.i=@datadoghq.com header.b=H2db/sAI; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=datadoghq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=datadoghq.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21680814d42so3447105ad.2
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 06:48:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=datadoghq.com; s=google; t=1733842123; x=1734446923; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xBkCOO0fiYIkMHvPj/3gNOQvzv5Nqvaw29CcZoMM5Kg=;
+        b=H2db/sAIHcllcufOeGhhxkUL3d4EIyihbB1iUsvkiDKXkfAt9E9Vljxevk7oO4w3nG
+         vrp6xAAAuXy6A2k0ebqifBfFKGByb+2s7UjyrhHg5l8rv10FbZWrTraw8YpaeoASG4YT
+         BxKobt/vYEGHYRCv2jmhmJOYjEAbW86G+T3p8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733842123; x=1734446923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xBkCOO0fiYIkMHvPj/3gNOQvzv5Nqvaw29CcZoMM5Kg=;
+        b=XGARZrAfChYeLJuJvmgptz+J67I2hYXnFTR56SfTyXXs2FVndIMTWLXSXBe6YhZryy
+         zm4QNSNgIUqKxLtKKG+/xtrtGzJyXdm0s5jP/Rvp0fwiwfMcGK8LN1nkYs26tkoDifjI
+         U8Xo7RKTVFZlQ5FnuzqYmf79vgcaiOYJDwRwvs1sTzhzFsfYesL3CgGiBwf5uNevNxAM
+         eJhzDj/SaU+0LIWarDniGW0PbGTHwKT+dtzNg2LjXB1bsIAu8T+6PvcekYVj6lBm/HQJ
+         VSwJQsspcCHGIxG2n55dfYPUvWV2Cd9+fSAF0iEke6y7CcA0ovunnAbChiXIGHre+e1S
+         IPHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW7zgiKadm1LHFOZUv3yT0HT0zh3tWCVqhby93frecA039Blgx5ALmfQCbZPBN4q0vBy8M=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3fPP5HtRIerj1/kuHhy69QqIV6GCQYm8SeuWkUi79cVlysFzu
+	FJPlPlPYWIBMmZfCie1dEpfnQ0cs+0qcZxTA8aCL5QIFL4WG7oUb4WKEJBdpU1N9WIf0EuGIGUA
+	3TFEJfVjAnJylryX3//Hmu9RLZs/k4q2duMKtvw==
+X-Gm-Gg: ASbGncv1HbMY0e4T8ap7xS8gWzHAD+NnqP7YMm7Eq2DkmeTo2ZYHch2GYQa3B0qtiFD
+	+kykxzGpdv77ck+KprXCAkrcGCkSExzQ29AU=
+X-Google-Smtp-Source: AGHT+IGzn42hpfkfa1+or3/ThJbPXQE9D3kuSAxfNj1vjKXla97qHcJJ3vkBTGM2cb/3ZDMT/PhWuq8S+RJ8i5qroZs=
+X-Received: by 2002:a17:902:ccc1:b0:216:4e8d:4803 with SMTP id
+ d9443c01a7336-2166a03c862mr64659195ad.42.1733842122998; Tue, 10 Dec 2024
+ 06:48:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <AM6PR03MB508010982C37DF735B1EAA0E993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+References: <CAOzX8ixn1d4ja+LOJq_S_WDq=ZqtUTcV0RZzKpyJ2Yd0pBMx2g@mail.gmail.com>
+ <CAOzX8iyS6ODErbnkyZO7RyVfXBCL5CFX5ydoKcvzc9LZf425Vw@mail.gmail.com> <20241210141413.GT35539@noisy.programming.kicks-ass.net>
+In-Reply-To: <20241210141413.GT35539@noisy.programming.kicks-ass.net>
+From: Usama Saqib <usama.saqib@datadoghq.com>
+Date: Tue, 10 Dec 2024 15:48:32 +0100
+Message-ID: <CAOzX8iy=hELHmPAeMxQ3on_6dqJmJryGgvAXRxMOijqr+Jj62w@mail.gmail.com>
+Subject: Re: BPF and lazy preemption.
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	bigeasy@linutronix.de, torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 10, 2024 at 02:01:53PM +0000, Juntong Deng wrote:
-> This patch series adds open-coded style process file iterator
-> bpf_iter_task_file and bpf_fget_task() kfunc, and corresponding
-> selftests test cases.
-> 
-> In addition, since fs kfuncs is generic and useful for scenarios
-> other than LSM, this patch makes fs kfuncs available for SYSCALL
-> and TRACING program types [0].
-> 
-> [0]: https://lore.kernel.org/bpf/CAPhsuW6ud21v2xz8iSXf=CiDL+R_zpQ+p8isSTMTw=EiJQtRSw@mail.gmail.com/
-> 
-> Although iter/task_file already exists, for CRIB we still need the
+Thanks for your reply. It is correct that the problem I shared is
+already present under PREEMPT_FULL, and as such there is no new issue
+being introduced by PREEMPT_LAZY.
 
-What is CRIB?
+My main concern is that if PREEMPT_LAZY is intended to become the
+default mode (please correct me if I am wrong here) before this
+problem is addressed in the BPF subsystem, then this would result in a
+big regression for us. This is especially true if distros pick up the
+changes in the intervening period. I wanted to draw attention to this
+issue so this situation does not happen.
 
-> open-coded iterator style process file iterator, and the same is true
-> for other bpf iterators such as iter/tcp, iter/udp, etc.
-> 
-> The traditional bpf iterator is more like a bpf version of procfs, but
-> similar to procfs, it is not suitable for CRIB scenarios that need to
-> obtain large amounts of complex, multi-level in-kernel information.
-> 
-> The following is from previous discussions [2].
-> 
-> [2]: https://lore.kernel.org/bpf/AM6PR03MB5848CA34B5B68C90F210285E99B12@AM6PR03MB5848.eurprd03.prod.outlook.com/
-> 
-> This is because the context of bpf iterators is fixed and bpf iterators
-> cannot be nested. This means that a bpf iterator program can only
-> complete a specific small iterative dump task, and cannot dump
-> multi-level data.
-> 
-> An example, when we need to dump all the sockets of a process, we need
-> to iterate over all the files (sockets) of the process, and iterate over
-> the all packets in the queue of each socket, and iterate over all data
-> in each packet.
-> 
-> If we use bpf iterator, since the iterator can not be nested, we need to
-> use socket iterator program to get all the basic information of all
-> sockets (pass pid as filter), and then use packet iterator program to
-> get the basic information of all packets of a specific socket (pass pid,
-> fd as filter), and then use packet data iterator program to get all the
-> data of a specific packet (pass pid, fd, packet index as filter).
-> 
-> This would be complicated and require a lot of (each iteration)
-> bpf program startup and exit (leading to poor performance).
-> 
-> By comparison, open coded iterator is much more flexible, we can iterate
-> in any context, at any time, and iteration can be nested, so we can
-> achieve more flexible and more elegant dumping through open coded
-> iterators.
-> 
-> With open coded iterators, all of the above can be done in a single
-> bpf program, and with nested iterators, everything becomes compact
-> and simple.
-> 
-> Also, bpf iterators transmit data to user space through seq_file,
-> which involves a lot of open (bpf_iter_create), read, close syscalls,
-> context switching, memory copying, and cannot achieve the performance
-> of using ringbuf.
-> 
-> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-> ---
-> v4 -> v5:
-> * Add file type checks in test cases for process file iterator
->   and bpf_fget_task().
-> 
-> * Use fentry to synchronize tests instead of waiting in a loop.
-> 
-> * Remove path_d_path_kfunc_non_lsm test case.
-> 
-> * Replace task_lookup_next_fdget_rcu() with fget_task_next().
-> 
-> * Remove future merge conflict section in cover letter (resolved).
-> 
-> v3 -> v4:
-> * Make all kfuncs generic, not CRIB specific.
-> 
-> * Move bpf_fget_task to fs/bpf_fs_kfuncs.c.
-> 
-> * Remove bpf_iter_task_file_get_fd and bpf_get_file_ops_type.
-> 
-> * Use struct bpf_iter_task_file_item * as the return value of
->   bpf_iter_task_file_next.
-> 
-> * Change fd to unsigned int type and add next_fd.
-> 
-> * Add KF_RCU_PROTECTED to bpf_iter_task_file_new.
-> 
-> * Make fs kfuncs available to SYSCALL and TRACING program types.
-> 
-> * Update all relevant test cases.
-> 
-> * Remove the discussion section from cover letter.
-> 
-> v2 -> v3:
-> * Move task_file open-coded iterator to kernel/bpf/helpers.c.
-> 
-> * Fix duplicate error code 7 in test_bpf_iter_task_file().
-> 
-> * Add comment for case when bpf_iter_task_file_get_fd() returns -1.
-> 
-> * Add future plans in commit message of "Add struct file related
->   CRIB kfuncs".
-> 
-> * Add Discussion section to cover letter.
-> 
-> v1 -> v2:
-> * Fix a type definition error in the fd parameter of
->   bpf_fget_task() at crib_common.h.
-> 
-> Juntong Deng (5):
->   bpf: Introduce task_file open-coded iterator kfuncs
->   selftests/bpf: Add tests for open-coded style process file iterator
->   bpf: Add bpf_fget_task() kfunc
->   bpf: Make fs kfuncs available for SYSCALL and TRACING program types
->   selftests/bpf: Add tests for bpf_fget_task() kfunc
-> 
->  fs/bpf_fs_kfuncs.c                            |  42 ++++---
->  kernel/bpf/helpers.c                          |   3 +
->  kernel/bpf/task_iter.c                        |  92 ++++++++++++++
->  .../testing/selftests/bpf/bpf_experimental.h  |  15 +++
->  .../selftests/bpf/prog_tests/fs_kfuncs.c      |  46 +++++++
->  .../testing/selftests/bpf/prog_tests/iters.c  |  79 ++++++++++++
->  .../selftests/bpf/progs/fs_kfuncs_failure.c   |  33 +++++
->  .../selftests/bpf/progs/iters_task_file.c     |  88 ++++++++++++++
->  .../bpf/progs/iters_task_file_failure.c       | 114 ++++++++++++++++++
->  .../selftests/bpf/progs/test_fget_task.c      |  63 ++++++++++
->  .../selftests/bpf/progs/verifier_vfs_reject.c |  10 --
->  11 files changed, 559 insertions(+), 26 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/fs_kfuncs_failure.c
->  create mode 100644 tools/testing/selftests/bpf/progs/iters_task_file.c
->  create mode 100644 tools/testing/selftests/bpf/progs/iters_task_file_failure.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_fget_task.c
-> 
-> -- 
-> 2.39.5
-> 
+
+
+
+
+On Tue, Dec 10, 2024 at 3:14=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Tue, Dec 10, 2024 at 02:25:20PM +0100, Usama Saqib wrote:
+> > [ Adding x86 / scheduler folks to Cc given PREEMPT_LAZY as-is would cau=
+se
+> >   serious regressions for us. ]
+> >
+> > On 11/18/24 10:14 AM, Usama Saqib wrote:
+> > > Hello,
+> > >
+> > > I hope everyone is doing well. It seems that work has started to
+> > > introduce a new preemption model in the linux kernel PREEMPT_LAZY [1]=
+.
+> > > According to the mailing list, the maintainers intend for this to
+> > > replace PREEMPT_NONE and PREEMPT_VOLUTARY as the default preemption
+> > > model.
+> > >
+> > >  From the changeset, it looks like PREEMPT_LAZY allows
+> > > irqentry_exit_cond_resched() to get called on IRQ exit. This change,
+> > > similar to PREEMPT_FULL, can get two bpf programs attached to a kprob=
+e
+> > > or tracepoint running in user context, to nest. This currently causes
+> > > the nesting program to miss. I have been able to get these misses to
+> > > happen on top of this new patch.
+> > >
+> > > This behavior is currently not possible with the default preemption
+> > > model used in most distributions, PREEMPT_VOLUNTARY. For many product=
+s
+> > > using BPF for tracing/security, this would constitute a regression in
+> > > terms of reliability.
+> > >
+> > > My question is whether there is any ongoing work to fix this behavior
+> > > of kprobes and tracepoints, so they do not miss on nesting. I have
+> > > previously been told that there is ongoing work related to
+> > > bpf-specific spinlocks to resolve this problem [2]. Will that be
+> > > available by the time this is merged into the mainline, and the
+> > > current defaults deprecated?
+>
+> I have no idea about the whole BPF thing, but if behaviour is as
+> PREEMPT_FULL, then there is nothing to fix from a scheduler PoV.
+>
+> Note that most distros already build with PREEMPT_DYNAMIC, which allows
+> users/admins to dynamically select the preemption model (either at boot
+> or at runtime through debugfs).
+>
+> If certain BPF stuff cannot deal with full preemption, then I would have
+> to call it broken.
 
