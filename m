@@ -1,440 +1,201 @@
-Return-Path: <bpf+bounces-46517-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46518-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70F9F9EB386
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 15:37:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C43E9EB3AE
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 15:43:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 937BD160748
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 14:37:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17CB0162E39
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 14:43:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405C31B0433;
-	Tue, 10 Dec 2024 14:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A6321B0F28;
+	Tue, 10 Dec 2024 14:43:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z+kfIN9f"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bFueAjGe"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5D291A704C;
-	Tue, 10 Dec 2024 14:37:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE581AA1E5
+	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 14:43:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733841456; cv=none; b=hLiG4w17I52nc9TYG1FP3e2p1GZ4M9kr7igtK1/D0d2t3hc655j4HbQrVEzQH0tyLdq6wdjC1UzdLDJoQx408fntA+8UgbkhLSRaLktsF7Yo0OKf3s9meUc07n5+AF9hGezl5+msOjuuVfNBkHsSI2aNx4j/Qofh5dmEnZzac6Q=
+	t=1733841782; cv=none; b=NVjJpZNPZ5Y++CX7wtNsdzIdbtdF/xKOCiLFUEivM65Sstdt5d6k6vKWNWv2Np3oJWt/VsWdnDHGZ/eZGNd5KtR+VaLffbvNfRm89HVODTDLwTkT0dI080Ec8uALzyggWMoIGNccKF/a+Z3MgT4ujoJx0nwBB5IE5upyG4FLPy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733841456; c=relaxed/simple;
-	bh=FWcePg+GluBvZ898xyCFwEYhWE6m0NH3BK+Gv6nnVrs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EBKGpCUrBqWYrj9j8Af7KtMcjA+rZI+0lAl079DTkG+tw1bcgoLCSXKWJuJEfg+6egsv+4ZieYQHI+nc7gDcsImtmTIeRxMDj0ZnNPznOYnfc+CvxQTvstcJjTnTAWbclHvvU/59BetpYW7/2TCIruEEFOVHw8Pn1sQuG+JwYbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z+kfIN9f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B460BC4CED6;
-	Tue, 10 Dec 2024 14:37:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733841456;
-	bh=FWcePg+GluBvZ898xyCFwEYhWE6m0NH3BK+Gv6nnVrs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Z+kfIN9fKGsk6iD9RaeSr967r8KqlMYqMYpLr7K6ihvn41ALkpw55iJnIfrD3dG4u
-	 53rCJTchn4qqt2ZgLdqG9+8V9ys0c704sJJYEBm2LhCi/yIhrN+TTw1I942/y1PqQD
-	 KQKp9+ePJ9YRb4iJTpA+qaeR9bsloGIwfHur03isFwqoeDotWxHLKwjvjpI8Ihbafz
-	 0Eo98Y25lSanLSFLN4j+4BTlqeAc6exdqtMfg2/0ah/sp0kGGRTBDkOZMqksLE9JaI
-	 7w6nZ5JOUfDZM5CLL/WJzIxDJJdGggRmK9wTNTpbgeYajmPV3ZipHZAA1r9AX6fhv/
-	 Y5DelZKv718mA==
-Date: Tue, 10 Dec 2024 15:37:28 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Juntong Deng <juntong.deng@outlook.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, 
-	jolsa@kernel.org, memxor@gmail.com, snorcht@gmail.com, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 2/5] selftests/bpf: Add tests for open-coded
- style process file iterator
-Message-ID: <20241210-zustehen-skilift-44ba2f53ceca@brauner>
-References: <AM6PR03MB508010982C37DF735B1EAA0E993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB5080756ABBCCCBF664B374EB993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+	s=arc-20240116; t=1733841782; c=relaxed/simple;
+	bh=EqQrouXcz1X/4/zm7JkycQVkH+G/URDYjt1sE40V2dg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uPD7WDNqPSfuYH+fKL2PqjBdi8OT8Sty7O4h3bIPxBOvbQgLABR9E27OsFYJnUEfg+URqGKLoTiqyONiHDCmi0Ft1FAjTsw8z2ep6AEbMULUlrqFhc4zAl0khu1xAk0+lRb6JktUVN+1StQA7XnT4W+Lfc4WPPv3zNNjYuwGiVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bFueAjGe; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-aa680fafb3eso30441366b.3
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 06:43:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1733841779; x=1734446579; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FDMYkDLMWfYBtP7XGNsvPP0tBQfKbCsqwMG2oWCcg18=;
+        b=bFueAjGeLwYVi2pkcEcb2T10U1NZQX/1GPWbmA6opZNnxof/M9WXS7MYFHbnRJSYEY
+         mnoPX6Yq1AIkcH7ynzF2sQHCkNZHg5QMHwnupXW27OwghPdVdLsBdCYpktq1quTFi1Kz
+         gzO2+pT+VdgfaG1rznmhZI1xn4++SD8jCHEDGmZ/7VUv5PtEoXEG88vDDO4JHa670nDC
+         +bThP1bXw4+cy4qjsvRwVJ01HP/6S2QKabbJ/T9u17uOn2147VJKweQHPVgADFF37eKc
+         LFyfWFAvEeCLmIJfOROhgWrWpU0sHArNPUCXjie9Z+36Bdqc5Ke+jk3aGKtWcl16+2xf
+         8Jbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733841779; x=1734446579;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FDMYkDLMWfYBtP7XGNsvPP0tBQfKbCsqwMG2oWCcg18=;
+        b=cz8vqm3mYBuBjLpWfA37eGLLYa6v56lD9XU1Xxg2YUfP55yX0TwwX7iukBo1YXtF7t
+         5B9bwuJRD97zQuhbncWK1tr+3rKc6hGR6p9xezvFWJ8DdO44X0wX9SWUuPou1uKxEOJJ
+         vEZI9/GegJnvioIKkKfybC/RLHCjE21xXK4VqSQOUv1kNcqw1KAwZ8grHeSdBkLUxbdj
+         8iFBcYeDKOtWhwJHPuXhLlw16dGsIv8uQwGELRKzrCyM2N6qoaApigtsyyxcom3vUnqb
+         xVaE2uhUs9RFccadxkfBN58c0kbUxAGu73HbhhCnlo0Y8igyOfSQlXuC0KZM1W3SolTb
+         wr2w==
+X-Forwarded-Encrypted: i=1; AJvYcCWeYkRUlx9MIGxnpdd4UlXhWMr1OjWgCpSzm/zuWaAC1ipmH1EFD7SdPWHJgW95njc6uTg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQ1gRFh+1EICpn5iC5PRl0Wq80lCB+cuSwMKE1pVP8tharF4sJ
+	yR4I8+AkszssmQ5M6o6wrgYK5fqdzCgX32RkcKAcs7GCwetPzYcchMHCzQ9Zbuw=
+X-Gm-Gg: ASbGncvVpt0tn3gM2bjw3+/YsTPiKpmcGfDs7kvpvk7pLCeGYUarkYm2QaAOLzMHyEq
+	8/9uy8P/zT32W1HD0yymVt/sGHLi1UBfj4luEGr/MjK4wSOsN/FNhJHUHGhiBRUMEfCg4oOx0DS
+	D7pyG52JMrmVOqlXl2MBher6EkYLuafTrAEtWOr1wDgOCWXX86Tla1+gjD6NjeLuVXxLDIeNzVa
+	HFlN3iMUctoLReRwyPqxudq/fgfh3ng2t/V8HU5583BASh0igiBJtOfna4oVG5pz9nfy8RxTF+n
+	RA4gWaevLELzSu1k3QDwYB4Y8qC0pmoJSTmpsNCSJavWWQ6sO29+Lt2t/W8=
+X-Google-Smtp-Source: AGHT+IF+BVSl+ovmy5z/z2cOrnSCU4r6DIF0pijy9YMcMwFTwuXECASsWN0wVhsf39b1va2dJNeN6Q==
+X-Received: by 2002:a17:907:d24:b0:a99:a6e0:fa0b with SMTP id a640c23a62f3a-aa69f176cf2mr159635866b.5.1733841779120;
+        Tue, 10 Dec 2024 06:42:59 -0800 (PST)
+Received: from mordecai.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-3010-3bd6-8521-caf1.ipv6.o2.cz. [2a00:1028:83b8:1e7a:3010:3bd6:8521:caf1])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa6749d08efsm443993566b.29.2024.12.10.06.42.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Dec 2024 06:42:58 -0800 (PST)
+Date: Tue, 10 Dec 2024 15:42:49 +0100
+From: Petr Tesarik <ptesarik@suse.com>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Dave Hansen
+ <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+ bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Wanpeng Li <wanpengli@tencent.com>, Vitaly Kuznetsov <vkuznets@redhat.com>,
+ Andy Lutomirski <luto@kernel.org>, Frederic Weisbecker
+ <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Neeraj
+ Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes
+ <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun Feng
+ <boqun.feng@gmail.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki
+ <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes
+ <lstoakes@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Jason Baron
+ <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>, Sami Tolvanen
+ <samitolvanen@google.com>, Ard Biesheuvel <ardb@kernel.org>, Nicholas
+ Piggin <npiggin@gmail.com>, Juerg Haefliger
+ <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
+ <nsaenz@kernel.org>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, Nadav Amit <namit@vmware.com>, Dan
+ Carpenter <error27@gmail.com>, Chuang Wang <nashuiliang@gmail.com>, Yang
+ Jihong <yangjihong1@huawei.com>, Petr Mladek <pmladek@suse.com>, "Jason A.
+ Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>, Julian Pidancet
+ <julian.pidancet@oracle.com>, Tom Lendacky <thomas.lendacky@amd.com>,
+ Dionna Glaze <dionnaglaze@google.com>, Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?=
+ <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>, Marcelo Tosatti
+ <mtosatti@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, Daniel Wagner
+ <dwagner@suse.de>
+Subject: Re: [RFC PATCH v3 13/15] context_tracking,x86: Add infrastructure
+ to defer kernel TLBI
+Message-ID: <20241210154249.1260046a@mordecai.tesarici.cz>
+In-Reply-To: <xhsmhv7vr63vj.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+References: <20241119153502.41361-1-vschneid@redhat.com>
+	<20241119153502.41361-14-vschneid@redhat.com>
+	<20241120152216.GM19989@noisy.programming.kicks-ass.net>
+	<20241120153221.GM38972@noisy.programming.kicks-ass.net>
+	<xhsmhldxdhl7b.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	<20241121111221.GE24774@noisy.programming.kicks-ass.net>
+	<4b562cd0-7500-4b3a-8f5c-e6acfea2896e@intel.com>
+	<20241121153016.GL39245@noisy.programming.kicks-ass.net>
+	<20241205183111.12dc16b3@mordecai.tesarici.cz>
+	<xhsmh1pyh6p0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	<20241209121249.GN35539@noisy.programming.kicks-ass.net>
+	<20241209154252.4f8fa5a8@mordecai.tesarici.cz>
+	<xhsmhv7vr63vj.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <AM6PR03MB5080756ABBCCCBF664B374EB993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Dec 10, 2024 at 02:03:51PM +0000, Juntong Deng wrote:
-> This patch adds test cases for open-coded style process file iterator.
-> 
-> Test cases related to process files are run in the newly created child
-> process. Close all opened files inherited from the parent process in
-> the child process to avoid the files opened by the parent process
-> affecting the test results.
-> 
-> In addition, this patch adds failure test cases where bpf programs
-> cannot pass the verifier due to uninitialized or untrusted
-> arguments, or not in RCU CS, etc.
-> 
-> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-> ---
->  .../testing/selftests/bpf/bpf_experimental.h  |   7 ++
->  .../testing/selftests/bpf/prog_tests/iters.c  |  79 ++++++++++++
->  .../selftests/bpf/progs/iters_task_file.c     |  88 ++++++++++++++
->  .../bpf/progs/iters_task_file_failure.c       | 114 ++++++++++++++++++
->  4 files changed, 288 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/iters_task_file.c
->  create mode 100644 tools/testing/selftests/bpf/progs/iters_task_file_failure.c
-> 
-> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-> index cd8ecd39c3f3..ce1520c56b55 100644
-> --- a/tools/testing/selftests/bpf/bpf_experimental.h
-> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
-> @@ -588,4 +588,11 @@ extern int bpf_iter_kmem_cache_new(struct bpf_iter_kmem_cache *it) __weak __ksym
->  extern struct kmem_cache *bpf_iter_kmem_cache_next(struct bpf_iter_kmem_cache *it) __weak __ksym;
->  extern void bpf_iter_kmem_cache_destroy(struct bpf_iter_kmem_cache *it) __weak __ksym;
->  
-> +struct bpf_iter_task_file;
-> +struct bpf_iter_task_file_item;
-> +extern int bpf_iter_task_file_new(struct bpf_iter_task_file *it, struct task_struct *task) __ksym;
-> +extern struct bpf_iter_task_file_item *
-> +bpf_iter_task_file_next(struct bpf_iter_task_file *it) __ksym;
-> +extern void bpf_iter_task_file_destroy(struct bpf_iter_task_file *it) __ksym;
-> +
->  #endif
-> diff --git a/tools/testing/selftests/bpf/prog_tests/iters.c b/tools/testing/selftests/bpf/prog_tests/iters.c
-> index 3cea71f9c500..cfe5b56cc027 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/iters.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/iters.c
-> @@ -1,6 +1,8 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
->  
-> +#define _GNU_SOURCE
-> +#include <sys/socket.h>
->  #include <sys/syscall.h>
->  #include <sys/mman.h>
->  #include <sys/wait.h>
-> @@ -16,11 +18,13 @@
->  #include "iters_num.skel.h"
->  #include "iters_testmod.skel.h"
->  #include "iters_testmod_seq.skel.h"
-> +#include "iters_task_file.skel.h"
->  #include "iters_task_vma.skel.h"
->  #include "iters_task.skel.h"
->  #include "iters_css_task.skel.h"
->  #include "iters_css.skel.h"
->  #include "iters_task_failure.skel.h"
-> +#include "iters_task_file_failure.skel.h"
->  
->  static void subtest_num_iters(void)
->  {
-> @@ -291,6 +295,78 @@ static void subtest_css_iters(void)
->  	iters_css__destroy(skel);
->  }
->  
-> +static int task_file_test_process(void *args)
-> +{
-> +	int pipefd[2], sockfd, err = 0;
-> +
-> +	/* Create a clean file descriptor table for the test process */
-> +	close_range(0, ~0U, 0);
-> +
-> +	if (pipe(pipefd) < 0)
-> +		return 1;
-> +
-> +	sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-> +	if (sockfd < 0) {
-> +		err = 2;
-> +		goto cleanup_pipe;
-> +	}
-> +
-> +	usleep(1);
-> +
-> +	close(sockfd);
-> +cleanup_pipe:
-> +	close(pipefd[0]);
-> +	close(pipefd[1]);
-> +	return err;
-> +}
-> +
-> +static void subtest_task_file_iters(void)
-> +{
-> +	const int stack_size = 1024 * 1024;
-> +	struct iters_task_file *skel;
-> +	int child_pid, wstatus, err;
-> +	char *stack;
-> +
-> +	skel = iters_task_file__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-> +		return;
-> +
-> +	if (!ASSERT_OK(skel->bss->err, "pre_test_err"))
-> +		goto cleanup_skel;
-> +
-> +	skel->bss->parent_pid = getpid();
-> +	skel->bss->count = 0;
-> +
-> +	err = iters_task_file__attach(skel);
-> +	if (!ASSERT_OK(err, "skel_attach"))
-> +		goto cleanup_skel;
-> +
-> +	stack = (char *)malloc(stack_size);
-> +	if (!ASSERT_OK_PTR(stack, "clone_stack"))
-> +		goto cleanup_attach;
-> +
-> +	/* Note that there is no CLONE_FILES */
-> +	child_pid = clone(task_file_test_process, stack + stack_size, CLONE_VM | SIGCHLD, NULL);
-> +	if (!ASSERT_GT(child_pid, -1, "child_pid"))
-> +		goto cleanup_stack;
-> +
-> +	if (!ASSERT_GT(waitpid(child_pid, &wstatus, 0), -1, "waitpid"))
-> +		goto cleanup_stack;
-> +
-> +	if (!ASSERT_OK(WEXITSTATUS(wstatus), "run_task_file_iters_test_err"))
-> +		goto cleanup_stack;
-> +
-> +	ASSERT_EQ(skel->bss->count, 1, "run_task_file_iters_test_count_err");
-> +	ASSERT_OK(skel->bss->err, "run_task_file_iters_test_failure");
-> +
-> +cleanup_stack:
-> +	free(stack);
-> +cleanup_attach:
-> +	iters_task_file__detach(skel);
-> +cleanup_skel:
-> +	iters_task_file__destroy(skel);
-> +}
-> +
->  void test_iters(void)
->  {
->  	RUN_TESTS(iters_state_safety);
-> @@ -315,5 +391,8 @@ void test_iters(void)
->  		subtest_css_task_iters();
->  	if (test__start_subtest("css"))
->  		subtest_css_iters();
-> +	if (test__start_subtest("task_file"))
-> +		subtest_task_file_iters();
->  	RUN_TESTS(iters_task_failure);
-> +	RUN_TESTS(iters_task_file_failure);
->  }
-> diff --git a/tools/testing/selftests/bpf/progs/iters_task_file.c b/tools/testing/selftests/bpf/progs/iters_task_file.c
-> new file mode 100644
-> index 000000000000..81bcd20041d8
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/iters_task_file.c
-> @@ -0,0 +1,88 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_misc.h"
-> +#include "bpf_experimental.h"
-> +#include "task_kfunc_common.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +int err, parent_pid, count;
-> +
-> +extern const void pipefifo_fops __ksym;
-> +extern const void socket_file_ops __ksym;
-> +
-> +SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-> +int test_bpf_iter_task_file(void *ctx)
-> +{
-> +	struct bpf_iter_task_file task_file_it;
-> +	struct bpf_iter_task_file_item *item;
-> +	struct task_struct *task;
-> +
-> +	task = bpf_get_current_task_btf();
-> +	if (task->parent->pid != parent_pid)
-> +		return 0;
-> +
-> +	count++;
-> +
-> +	bpf_rcu_read_lock();
+On Tue, 10 Dec 2024 14:53:36 +0100
+Valentin Schneider <vschneid@redhat.com> wrote:
 
-What does the RCU read lock do here exactly?
-
-> +	bpf_iter_task_file_new(&task_file_it, task);
-> +
-> +	item = bpf_iter_task_file_next(&task_file_it);
-> +	if (item == NULL) {
-> +		err = 1;
-> +		goto cleanup;
-> +	}
-> +
-> +	if (item->fd != 0) {
-> +		err = 2;
-> +		goto cleanup;
-> +	}
-> +
-> +	if (item->file->f_op != &pipefifo_fops) {
-> +		err = 3;
-> +		goto cleanup;
-> +	}
-> +
-> +	item = bpf_iter_task_file_next(&task_file_it);
-> +	if (item == NULL) {
-> +		err = 4;
-> +		goto cleanup;
-> +	}
-> +
-> +	if (item->fd != 1) {
-> +		err = 5;
-> +		goto cleanup;
-> +	}
-> +
-> +	if (item->file->f_op != &pipefifo_fops) {
-> +		err = 6;
-> +		goto cleanup;
-> +	}
-> +
-> +	item = bpf_iter_task_file_next(&task_file_it);
-> +	if (item == NULL) {
-> +		err = 7;
-> +		goto cleanup;
-> +	}
-> +
-> +	if (item->fd != 2) {
-> +		err = 8;
-> +		goto cleanup;
-> +	}
-> +
-> +	if (item->file->f_op != &socket_file_ops) {
-> +		err = 9;
-> +		goto cleanup;
-> +	}
-> +
-> +	item = bpf_iter_task_file_next(&task_file_it);
-> +	if (item != NULL)
-> +		err = 10;
-> +cleanup:
-> +	bpf_iter_task_file_destroy(&task_file_it);
-> +	bpf_rcu_read_unlock();
-> +	return 0;
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/iters_task_file_failure.c b/tools/testing/selftests/bpf/progs/iters_task_file_failure.c
-> new file mode 100644
-> index 000000000000..c3de9235b888
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/iters_task_file_failure.c
-> @@ -0,0 +1,114 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_misc.h"
-> +#include "bpf_experimental.h"
-> +#include "task_kfunc_common.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +SEC("syscall")
-> +__failure __msg("expected an RCU CS when using bpf_iter_task_file")
-> +int bpf_iter_task_file_new_without_rcu_lock(void *ctx)
-> +{
-> +	struct bpf_iter_task_file task_file_it;
-> +	struct task_struct *task;
-> +
-> +	task = bpf_get_current_task_btf();
-> +
-> +	bpf_iter_task_file_new(&task_file_it, task);
-> +
-> +	bpf_iter_task_file_destroy(&task_file_it);
-> +	return 0;
-> +}
-> +
-> +SEC("syscall")
-> +__failure __msg("expected uninitialized iter_task_file as arg #1")
-> +int bpf_iter_task_file_new_inited_iter(void *ctx)
-> +{
-> +	struct bpf_iter_task_file task_file_it;
-> +	struct task_struct *task;
-> +
-> +	task = bpf_get_current_task_btf();
-> +
-> +	bpf_rcu_read_lock();
-> +	bpf_iter_task_file_new(&task_file_it, task);
-> +
-> +	bpf_iter_task_file_new(&task_file_it, task);
-> +
-> +	bpf_iter_task_file_destroy(&task_file_it);
-> +	bpf_rcu_read_unlock();
-> +	return 0;
-> +}
-> +
-> +SEC("syscall")
-> +__failure __msg("Possibly NULL pointer passed to trusted arg1")
-> +int bpf_iter_task_file_new_null_task(void *ctx)
-> +{
-> +	struct bpf_iter_task_file task_file_it;
-> +	struct task_struct *task = NULL;
-> +
-> +	bpf_rcu_read_lock();
-> +	bpf_iter_task_file_new(&task_file_it, task);
-> +
-> +	bpf_iter_task_file_destroy(&task_file_it);
-> +	bpf_rcu_read_unlock();
-> +	return 0;
-> +}
-> +
-> +SEC("syscall")
-> +__failure __msg("R2 must be referenced or trusted")
-> +int bpf_iter_task_file_new_untrusted_task(void *ctx)
-> +{
-> +	struct bpf_iter_task_file task_file_it;
-> +	struct task_struct *task;
-> +
-> +	task = bpf_get_current_task_btf()->parent;
-> +
-> +	bpf_rcu_read_lock();
-> +	bpf_iter_task_file_new(&task_file_it, task);
-> +
-> +	bpf_iter_task_file_destroy(&task_file_it);
-> +	bpf_rcu_read_unlock();
-> +	return 0;
-> +}
-> +
-> +SEC("syscall")
-> +__failure __msg("Unreleased reference")
-> +int bpf_iter_task_file_no_destory(void *ctx)
-> +{
-> +	struct bpf_iter_task_file task_file_it;
-> +	struct task_struct *task;
-> +
-> +	task = bpf_get_current_task_btf();
-> +
-> +	bpf_rcu_read_lock();
-> +	bpf_iter_task_file_new(&task_file_it, task);
-> +
-> +	bpf_rcu_read_unlock();
-> +	return 0;
-> +}
-> +
-> +SEC("syscall")
-> +__failure __msg("expected an initialized iter_task_file as arg #1")
-> +int bpf_iter_task_file_next_uninit_iter(void *ctx)
-> +{
-> +	struct bpf_iter_task_file task_file_it;
-> +
-> +	bpf_iter_task_file_next(&task_file_it);
-> +
-> +	return 0;
-> +}
-> +
-> +SEC("syscall")
-> +__failure __msg("expected an initialized iter_task_file as arg #1")
-> +int bpf_iter_task_file_destroy_uninit_iter(void *ctx)
-> +{
-> +	struct bpf_iter_task_file task_file_it;
-> +
-> +	bpf_iter_task_file_destroy(&task_file_it);
-> +
-> +	return 0;
-> +}
-> -- 
-> 2.39.5
+> On 09/12/24 15:42, Petr Tesarik wrote:
+> > On Mon, 9 Dec 2024 13:12:49 +0100
+> > Peter Zijlstra <peterz@infradead.org> wrote:
+> >  
+> >> On Mon, Dec 09, 2024 at 01:04:43PM +0100, Valentin Schneider wrote:
+> >>  
+> >> > > But I wonder what exactly was the original scenario encountered by
+> >> > > Valentin. I mean, if TLB entry invalidations were necessary to sync
+> >> > > changes to kernel text after flipping a static branch, then it might be
+> >> > > less overhead to make a list of affected pages and call INVLPG on them.  
+> >>
+> >> No; TLB is not involved with text patching (on x86).
+> >>  
+> >> > > Valentin, do you happen to know?  
+> >> >
+> >> > So from my experimentation (hackbench + kernel compilation on housekeeping
+> >> > CPUs, dummy while(1) userspace loop on isolated CPUs), the TLB flushes only
+> >> > occurred from vunmap() - mainly from all the hackbench threads coming and
+> >> > going.  
+> >>
+> >> Right, we have virtually mapped stacks.  
+> >
+> > Wait... Are you talking about the kernel stac? But that's only 4 pages
+> > (or 8 pages with KASAN), so that should be easily handled with INVLPG.
+> > No CR4 dances are needed for that.
+> >
+> > What am I missing?
+> >  
 > 
+> So the gist of the IPI deferral thing is to coalesce IPI callbacks into a
+> single flag value that is read & acted on upon kernel entry. Freeing a
+> task's kernel stack is not the only thing that can issue a vunmap(), so
+
+Thank you for confirming it's not the kernel stack. Peter's remark left
+me a little confused.
+
+> instead of tracking all the pages affected by the unmap (which is
+> potentially an ever-growing memory leak as long as no kernel entry happens
+> on the isolated CPUs), we just flush everything.
+
+Yes, this makes some sense. Of course, there is no way to avoid the
+cost; we can only defer it to a "more suitable" point in time, and
+current low-latency requirements make kernel entry better than IPI. It
+is at least more predictable (as long as device interrupts are routed
+to other CPUs).
+
+I have looked into ways to reduce the number of page faults _after_
+flushing the TLB. FWIW if we decide to track to-be-flushed pages, we
+only need an array of tlb_single_page_flush_ceiling pages. If there are
+more, flushing the entire TLB is believed to be cheaper. That is, I
+merely suggest to use the same logic which is already implemented by
+flush_tlb_kernel_range().
+
+Anyway, since there is no easy trick, let's leave the discussion for a
+later optimization. I definitely do not want to block progress on this
+patch series.
+
+Thanks for all your input!
+
+Petr T
 
