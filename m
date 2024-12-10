@@ -1,103 +1,113 @@
-Return-Path: <bpf+bounces-46513-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46514-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7776B9EB2E1
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 15:14:18 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE909188246A
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 14:13:30 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E50EF1B3940;
-	Tue, 10 Dec 2024 14:13:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="GmlNZvty"
-X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5B209EB2E2
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 15:14:28 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF681AAA28;
-	Tue, 10 Dec 2024 14:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42F49281774
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 14:14:23 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35D461AAA38;
+	Tue, 10 Dec 2024 14:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SxPCTBLi"
+X-Original-To: bpf@vger.kernel.org
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B7D71AA1D9
+	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 14:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733839982; cv=none; b=KKNBu4kpEkagZvaq6a0xdz8NZSx1K51kFdyKBBZ4jzAqRXmiJ7eQX6VDiF7zMRht6y+R1iEaBeWWkJGkpmMGWfBIuPjnMuPbkEugUSBDjueuiIMt8G4MAkEHEcgPOlAKBRdGDAk7HKSt6LSxiDALZGb9u5IUesTz11c5iISP/NA=
+	t=1733840059; cv=none; b=mZtiK6+t+T5hxi5DuLtJMR9SnCfSP+4PzL6ybRL75NmliGLDP8e78KD7YMgLLdUR1MrNOL9xu+dLmWcMOaw9Zlr+8Lxbz5XsJZ2UCPsiyOMeAsg9elUdQzhD7GlkaqRPlYuRjkhIcZj7veKfnPwRQR5ui8LRPKs0e+mEmcxX+4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733839982; c=relaxed/simple;
-	bh=1EL0iOX9z299d9g1AXg7Po7x/SmaYN3U5tpAeRyXgcA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KCusogbz0+YV726TVySxulfNuwyPlFijP59qDDQNPE3AeGrQxZYfF4eSdv1xhKan91aiZa7QNDPYwVI+5f6yRSn22f+4Eo6BX6hY3XyFy5annHLYBAdejjlG1ZqOcW/yvM+PTzryJSukvN80U1sv1wcW7h3SQeCtXwBBoONuZ8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=GmlNZvty; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+	s=arc-20240116; t=1733840059; c=relaxed/simple;
+	bh=UrSPzPHHDB9v9w7hpzXGmoVMLtkLyKlzUMarigCagdg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bD8T3VmpFOpvGrmcXXdanu1KfNHo5QzSDSekmsA3meHQEmo7xovA2vTpdWOIu1PDlyd/nXOp7jH6wKyLLyba9eYwJD0xcvFtUl4wZQEhwgVjgYB8jHwBcABLLztruKmdoRzLqEed0oWffY0QgqTmA4J0usfJ+AK5UJe4G/HnXXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=SxPCTBLi; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=w7R2RpmAicgOmiJ/9kqO9DMW80VXog3hrYYgYAvbmzs=; b=GmlNZvtySufPUfIHw6S+moU3L6
-	vgDir2yglOSCnN3DUM6n6Ro5DrAKzRqY9KUnQrTaw2Oef0egr2WPtP6Bu7SP0OuFVBX6fcONkxNnJ
-	mGRkidLAkSMREjmfUT/IyzTsjztTcVKo1HHegw8UQ3crGEW8NQN38L/6eHom/C6QRk3x5rE0H9DiQ
-	ywR1IlxN7v9+Xj0T2c5I6OpSUCDqJSGRo6tVUGMYRRyyGqt4S1DGxC3S5n2b2ZO6xCXHj6pCYNEYc
-	BZXCvTERgfu3v+ajZJjFkf1qm11dZsxbFXXmMJjGFrG1DHEfrQis6EdhyhknUv0PmFtiyDYo89KKQ
-	E2ytnr3Q==;
-Received: from 35.248.197.178.dynamic.cust.swisscom.net ([178.197.248.35] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1tL0ym-000Jgg-KD; Tue, 10 Dec 2024 15:12:48 +0100
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org,
-	mkubecek@suse.cz,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Ido Schimmel <idosch@idosch.org>,
-	Jiri Pirko <jiri@nvidia.com>
-Subject: [PATCH net 5/5] team: Fix feature propagation of NETIF_F_GSO_ENCAP_ALL
-Date: Tue, 10 Dec 2024 15:12:45 +0100
-Message-ID: <20241210141245.327886-5-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241210141245.327886-1-daniel@iogearbox.net>
-References: <20241210141245.327886-1-daniel@iogearbox.net>
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ASWkrN0/ze08wbmgUD4WHloG48XWx6MGaMC09Q1fcxg=; b=SxPCTBLiL6ViF2SvLOluHbKNMF
+	jIAeISBt+86vL79NiDCDWKtsDod+ARvkj0r6SsrryYaXjhvQN7bxT4ubSsos9ZpVagVN4mXLVdzhr
+	GKicxnh+J+Ys+FhZHVY+339KYE6GV7qemy+eAkVXuzjSMnmxdAZuKpEaxFwrGKF1a3v0zoiFryZZc
+	0AcqXCsfY6ZXZ236okIFO3MeGD6mwujWFGa4tSL3kmt8zAZE7ThYbocJJny2SWjjDDgglmBZXrulG
+	gLe5UnqFgeSpyHx9rWNMy0KmkSbLXMU9/6eng+/EF8q1e/aYUht8cmDAme4REO4DT1n/Mm5mcV7Xz
+	VQ8P7aig==;
+Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tL109-00000003h13-37aB;
+	Tue, 10 Dec 2024 14:14:14 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 4ED7E30035F; Tue, 10 Dec 2024 15:14:13 +0100 (CET)
+Date: Tue, 10 Dec 2024 15:14:13 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Usama Saqib <usama.saqib@datadoghq.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+	bigeasy@linutronix.de, torvalds@linux-foundation.org
+Subject: Re: BPF and lazy preemption.
+Message-ID: <20241210141413.GT35539@noisy.programming.kicks-ass.net>
+References: <CAOzX8ixn1d4ja+LOJq_S_WDq=ZqtUTcV0RZzKpyJ2Yd0pBMx2g@mail.gmail.com>
+ <CAOzX8iyS6ODErbnkyZO7RyVfXBCL5CFX5ydoKcvzc9LZf425Vw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27483/Tue Dec 10 10:38:50 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOzX8iyS6ODErbnkyZO7RyVfXBCL5CFX5ydoKcvzc9LZf425Vw@mail.gmail.com>
 
-Similar to bonding driver, add NETIF_F_GSO_ENCAP_ALL to TEAM_VLAN_FEATURES
-in order to support slave devices which propagate NETIF_F_GSO_UDP_TUNNEL &
-NETIF_F_GSO_UDP_TUNNEL_CSUM as vlan_features.
+On Tue, Dec 10, 2024 at 02:25:20PM +0100, Usama Saqib wrote:
+> [ Adding x86 / scheduler folks to Cc given PREEMPT_LAZY as-is would cause
+>   serious regressions for us. ]
+> 
+> On 11/18/24 10:14 AM, Usama Saqib wrote:
+> > Hello,
+> >
+> > I hope everyone is doing well. It seems that work has started to
+> > introduce a new preemption model in the linux kernel PREEMPT_LAZY [1].
+> > According to the mailing list, the maintainers intend for this to
+> > replace PREEMPT_NONE and PREEMPT_VOLUTARY as the default preemption
+> > model.
+> >
+> >  From the changeset, it looks like PREEMPT_LAZY allows
+> > irqentry_exit_cond_resched() to get called on IRQ exit. This change,
+> > similar to PREEMPT_FULL, can get two bpf programs attached to a kprobe
+> > or tracepoint running in user context, to nest. This currently causes
+> > the nesting program to miss. I have been able to get these misses to
+> > happen on top of this new patch.
+> >
+> > This behavior is currently not possible with the default preemption
+> > model used in most distributions, PREEMPT_VOLUNTARY. For many products
+> > using BPF for tracing/security, this would constitute a regression in
+> > terms of reliability.
+> >
+> > My question is whether there is any ongoing work to fix this behavior
+> > of kprobes and tracepoints, so they do not miss on nesting. I have
+> > previously been told that there is ongoing work related to
+> > bpf-specific spinlocks to resolve this problem [2]. Will that be
+> > available by the time this is merged into the mainline, and the
+> > current defaults deprecated?
 
-Fixes: 3625920b62c3 ("teaming: fix vlan_features computing")
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Nikolay Aleksandrov <razor@blackwall.org>
-Cc: Ido Schimmel <idosch@idosch.org>
-Cc: Jiri Pirko <jiri@nvidia.com>
----
- drivers/net/team/team_core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I have no idea about the whole BPF thing, but if behaviour is as
+PREEMPT_FULL, then there is nothing to fix from a scheduler PoV.
 
-diff --git a/drivers/net/team/team_core.c b/drivers/net/team/team_core.c
-index 306416fc1db0..69ea2c3c76bf 100644
---- a/drivers/net/team/team_core.c
-+++ b/drivers/net/team/team_core.c
-@@ -983,7 +983,8 @@ static void team_port_disable(struct team *team,
- 
- #define TEAM_VLAN_FEATURES (NETIF_F_HW_CSUM | NETIF_F_SG | \
- 			    NETIF_F_FRAGLIST | NETIF_F_GSO_SOFTWARE | \
--			    NETIF_F_HIGHDMA | NETIF_F_LRO)
-+			    NETIF_F_HIGHDMA | NETIF_F_LRO | \
-+			    NETIF_F_GSO_ENCAP_ALL)
- 
- #define TEAM_ENC_FEATURES	(NETIF_F_HW_CSUM | NETIF_F_SG | \
- 				 NETIF_F_RXCSUM | NETIF_F_GSO_SOFTWARE)
--- 
-2.43.0
+Note that most distros already build with PREEMPT_DYNAMIC, which allows
+users/admins to dynamically select the preemption model (either at boot
+or at runtime through debugfs).
 
+If certain BPF stuff cannot deal with full preemption, then I would have
+to call it broken.
 
