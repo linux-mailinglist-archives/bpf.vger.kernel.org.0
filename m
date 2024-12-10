@@ -1,219 +1,135 @@
-Return-Path: <bpf+bounces-46523-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46524-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F19C9EB51B
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 16:34:40 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04BC39EB57C
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 16:57:21 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D871618875C7
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 15:34:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE134283696
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 15:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65D361BB6A0;
-	Tue, 10 Dec 2024 15:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A335E22FDFC;
+	Tue, 10 Dec 2024 15:57:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="O02w0W70"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LxNtStWp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808A223DE87
-	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 15:34:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 844D419ADA2
+	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 15:57:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733844872; cv=none; b=q/fdTc4fDPRuKT99hMqejvz0d0XZRmg8EHk0Co1FHMl2HcDQaa2bdSnTUKs1Um+fDB7vfZ3y+aAvk2r/c1UBltALsM5Bg/Pvr0pzUbbN3ayD+a4hWGZrepiRK4AIILvlqeZvdnn8EVlHXTotiP3kBusQjW00ysqEe9uwTSDXhrA=
+	t=1733846235; cv=none; b=V+cgwm2RYkg3LEvTRpZAIpc9QY7tfA3D3dX2Fcx8eK2GXubMhm23SO5Foj3MamY6bfC12EENYF0kMOBDFKPhOcK587BI02pSx9+e8d8YSO/ACzZysMYpmz41B7b/F8lsXPP4+dK970H2z/9YxVTF5e6h6HEis5WGdxTjVWDWyHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733844872; c=relaxed/simple;
-	bh=D4EPrZ1KlCJrj+YiSAnr4IIWbtdz8oQu+zYxqHKFgUs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=N9PIOe3vFRi0UzU1dx9O1qQ9EwlE9gstQo9CfmTP2jgJLgd7y3YKYw9OKd/Qd/2FIEtZUM+WVSur8c0qGo/E3lfSHfLxKW6++mnRhhcr0h3AX9Rk3mRxZVuJmTcEgDTA5mKbc5jsfm1Aq/DFg3J1qNgFBFEBwUinO9vb/kxJlvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=O02w0W70; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-434e5e71a08so46325e9.1
-        for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 07:34:29 -0800 (PST)
+	s=arc-20240116; t=1733846235; c=relaxed/simple;
+	bh=oitWE5XaqMG7OdMPVDRBlfpg3bpR3YYHHGeSzCo5u1o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=InGWU7qpTCUmx8ys63ncqz9eZl6Ii3IfIpIT4rNjU28X8vk5qsHgHCDmIMAykSmS86BTW1sxt2DiV6uLlptOaHTjNff6Vh90nPVaJGro5ntCXM3F4C7HXnyWLkXw4tA+qOxqf65yhdYHfpSffqit7pSqVpAWRZ9TYsoElLqApY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LxNtStWp; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-385e3621518so3798614f8f.1
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 07:57:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1733844868; x=1734449668; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=e7oKn8SfeOYu43ner6bNalQq2+eOUuwHIvOMLrZ7fjg=;
-        b=O02w0W70FuVOT8i4NVJ0fKUczVrmKJQpgCfMRM5BnF/MDkuupXA4XnaZLCvPhaV/Gm
-         FbvaoLdsmjpdvwMqpbBH4G9tjhE8TojAHseHTLBXb1ojKVo3NkBH9ZiGayPlQ4h7E9WA
-         N3Nh9wNgL/pg3GgOWf0bQKW+ilDEZMcnljzLAgoMcIMVzPnfFvLaZm0ke/8hkaCJGU+p
-         jB9oJLSQarLtg2+zLwP4jImxbXmwpDoDzDIpIeLcBNRReMBUmuTjqzW4l0hqqUE4hpMB
-         FruaV8A4NzcbFMm1nOQJp8QRll59jp76rmu1sMVqnR+mofaCfaQTXR0dOJiiOdzVw9jw
-         bn6Q==
+        d=gmail.com; s=20230601; t=1733846232; x=1734451032; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7xgJC/roxJR0iyE0LEc3IYZ4dUxnZ3ApZCDyQMQSyBw=;
+        b=LxNtStWpHqATE2DFWE1gqsEhJf2MWK4ePzGj+XXtVNm+/+7e5tKjWyDYegjFZJFqzg
+         xi4pZ8FNmv6BNvNgW5If1/8ZvXHonQdGPt/sgw9gzdHqhxnrBtWqyQ2yKp0w1QgHBda0
+         ZTI1nPPyLIF4ha7r0N77Yqq24lMFqDDhlIOSyx0AsPgdDMC0EvDRa1i1LkaEhG6YCmq1
+         0fJ83ndyRv9lftOwomxcEU9lh5xN3SVe75cFXaJYDBnSX/ChI/P83SpttYyfIA1FuL9D
+         nRbll2mthgzG2UGTEVGlttGNNawuY128kklkBt+jpULnUJ3dyy1rD7NXL5NRuw9sgBz5
+         5d2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733844868; x=1734449668;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e7oKn8SfeOYu43ner6bNalQq2+eOUuwHIvOMLrZ7fjg=;
-        b=cRSyxYIjbJVIOUNXWF6MX4CX7a33pfIEmwsKoNvVniMj/bDeEqbs+BZ3a4Y9cejE4z
-         FZGqGJ3Wz7gHtcxIc/9fVpckm2T+BhFOx5QObDfYXY3fWUubREz2kkkDv/uYiHL1k5Rg
-         AqlrD0tUhXuFcEgk3AJ2PPu3p5PHaOuA7BjHzwEV05PXJ0g5rukSMXt2sW9bGRD4W5KU
-         moiB81bAH3yfAcXX9Xz8rmD2Qt1jLTPzKklPBER5I8oiJBjWmTK0ES0JputNuGZI3kwk
-         gwQy9E5euP35d1PsuIKkchMG14PQIkHjYpOYv2KWLV3mSFbmw/1vETc8XyNEYCOmTnrv
-         Hg8A==
-X-Gm-Message-State: AOJu0YyG9ww2z4G7O7XfhnkwN83xE8yU1h+Mbkr8EYgZOph0P9y5/JKn
-	pyi5P6DSRGFfUHomeBbXmpa8WH4pU/C+6JW5QULUHjgaysfDW+gnWEeGHloZDw==
-X-Gm-Gg: ASbGncsgemXAEF08vTvQxbE5DuhnWCNGnC8qHuP8QFC3A7atIyiMxnLNWW1O/chNIjq
-	9vwpt9bHlxiJiKkQiLNEF6jz4mgdH5UORIOhUUZoYMg8FE/TPm3JixFf6ZvbGBDjU66EvcWhNoE
-	cMsRKMGENlsEkRST12oyyaUchSc2q7kaKdISFIpjoTSIzM3X+LiS8014KtWtSznMc4KRvCbYCIg
-	m3qOdfn+FWwqj45bNcTphWDekt+DPr5CJDOIoYFXB0=
-X-Google-Smtp-Source: AGHT+IEBipaGZmUxyH+9ZM7xyHO/CFA1s88GF5PM0VfgA8u/bXFdvNqD/XiKoIz1xDNwuIeIsZQPCA==
-X-Received: by 2002:a05:600c:4907:b0:434:f7fc:1b18 with SMTP id 5b1f17b1804b1-435028ac13amr1382405e9.4.1733844867378;
-        Tue, 10 Dec 2024 07:34:27 -0800 (PST)
-Received: from localhost ([2a00:79e0:9d:4:deb9:87dc:18b2:3f1c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434f5774454sm87113235e9.13.2024.12.10.07.34.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Dec 2024 07:34:26 -0800 (PST)
-From: Jann Horn <jannh@google.com>
-Date: Tue, 10 Dec 2024 16:34:18 +0100
-Subject: [PATCH bpf v3] bpf: Fix theoretical prog_array UAF in
- __uprobe_perf_func()
+        d=1e100.net; s=20230601; t=1733846232; x=1734451032;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7xgJC/roxJR0iyE0LEc3IYZ4dUxnZ3ApZCDyQMQSyBw=;
+        b=ZcbyZeyH5uqTJxHXsB/Qoa8QDegAhgZV+jefDhooawbb9+QkJevftgzQg0+o2O6Sqj
+         vRos4x5k7J89ryEEFrvTucqWJNbf+zEo5TjYY2A3sMzB4TfiMGp98KCw8NCVBJWwFcax
+         dH1+miU61MHnWm4YdsRc5BA7naOHnxKywdlJdhtlGKte528Ut639MQ+7l6RiQX6tmqM4
+         aNWFgC30+6eBLgJs7MUc/rh4FfQOcrBwKlgDief3x/tujC85Rk9bn7MSmcvv8Xj3voKN
+         AlS56QBc1Bmhz5tjP+NcwjA3k+k0jaybOx2zqt2OT8tlLbCxYU+r18HFUuKB38QgHsCx
+         TYVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVuROoSA3sWUby4abFEXCYmaWtqAHhav5Lo8UcZE44qXuUZpw1pU+pzNC5iEIOXDeSDkTc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKpyCK/z03Cf7OlpioTEp9KQciu/yeWeOIEBGcEAw5sOcbHFgt
+	J/+lkNuYbkxr7LfOq9ZM7XimiVYDUycmO9qfUzBBdXd0DukR/n9L/Qeo0zFGlVIAj9dFyzt5GJP
+	YHyTBSD1sKFK5Rk3Xms+2vv/QHNE=
+X-Gm-Gg: ASbGnctVv4hlKEtrQc09Hnv9URiFjeoo9BFhsFtppAv+2euOR7XtL6RSvc2EakEfNra
+	N1c9nHYSZXFw8N6/y1mYyClP9uJiyNjOLgrLjQKrZxvJOpGnwCoo=
+X-Google-Smtp-Source: AGHT+IH2KxcFywAJCiNtnbp4s+Faag3Q5hDg5/Vpf6ogzwb1Ot89J/Sk2P4SwatE9oao99N3efaNTcRq1avEBsR3UgM=
+X-Received: by 2002:a5d:59a9:0:b0:385:fb59:8358 with SMTP id
+ ffacd0b85a97d-3862b3e3196mr12389345f8f.53.1733846231446; Tue, 10 Dec 2024
+ 07:57:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241210-bpf-fix-uprobe-uaf-v3-1-ce50ae2a2f0f@google.com>
-X-B4-Tracking: v=1; b=H4sIAHlfWGcC/4XNTQ7CIBAF4Ks0rB1TptAfV97DuAA6tCQqDViia
- Xp3CTs3unwzb77ZWKTgKLJTtbFAyUXnHzk0h4qZWT0mAjfmzLBGwbFuQS8WrHvBugSvCVZlQTb
- jgL1Wuhlrlg+XQLlR0AvLfXbNw9nFpw/v8ijxsvplJg4c2r4dTK94h7I/T95PNzoafy9ewv8GZ
- kOYThopLAkUX8a+7x+UKE0C/gAAAA==
-X-Change-ID: 20241206-bpf-fix-uprobe-uaf-53d928bab3d0
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Delyan Kratunov <delyank@fb.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-trace-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-X-Mailer: b4 0.15-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1733844863; l=3983;
- i=jannh@google.com; s=20240730; h=from:subject:message-id;
- bh=D4EPrZ1KlCJrj+YiSAnr4IIWbtdz8oQu+zYxqHKFgUs=;
- b=YSLxoLODDEklujQg5BUuocln7Wu7g1Q2qyVqqEYI8R/sFpAgizW5+17PAauI5LlhDHyYaXmsw
- W8+IwulIzpyBm+Hc1bCaKBP5vLFPL2W1EMagiEREaBmtwnXRUzi2N/n
-X-Developer-Key: i=jannh@google.com; a=ed25519;
- pk=AljNtGOzXeF6khBXDJVVvwSEkVDGnnZZYqfWhP1V+C8=
+References: <20241203135052.3380721-1-aspsk@isovalent.com> <20241203135052.3380721-4-aspsk@isovalent.com>
+ <CAEf4BzZiD_iYpBkf5q5U9VoSUAFJN8dxOBWNJdT5y9DxAe=_UQ@mail.gmail.com>
+ <Z1BJc/iK3ecPKTUx@eis> <CAEf4BzZVkNRV+8ROMMM-oGdHd1HUSx3WVv77TK+H4Fr8PhHHBQ@mail.gmail.com>
+ <Z1FnPIuBiJFMRrLP@eis> <Z1gCmV3Z62HXjAtK@eis>
+In-Reply-To: <Z1gCmV3Z62HXjAtK@eis>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 10 Dec 2024 07:57:00 -0800
+Message-ID: <CAADnVQJyCiAdMODV3eVxk-m6C3xAR0mKCJYgYqUzcXypKcWwcQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 3/7] bpf: add fd_array_cnt attribute for prog_load
+To: Anton Protopopov <aspsk@isovalent.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently, the pointer stored in call->prog_array is loaded in
-__uprobe_perf_func(), with no RCU annotation and no immediately visible
-RCU protection, so it looks as if the loaded pointer can immediately be
-dangling.
-Later, bpf_prog_run_array_uprobe() starts a RCU-trace read-side critical
-section, but this is too late. It then uses rcu_dereference_check(), but
-this use of rcu_dereference_check() does not actually dereference anything.
+On Tue, Dec 10, 2024 at 12:56=E2=80=AFAM Anton Protopopov <aspsk@isovalent.=
+com> wrote:
+>
+> >
+> > This makes total sense to treat all BPF objects in fd_array the same
+> > way. With BTFs the problem is that, currently, a btf fd can end up
+> > either in used_btfs or kfunc_btf_tab. I will take a look at how easy
+> > it is to merge those two.
+>
+> So, currently during program load BTFs are parsed from file
+> descriptors and are stored in two places: env->used_btfs and
+> env->prog->aux->kfunc_btf_tab:
+>
+>   1) env->used_btfs populated only when a DW load with the
+>      (src_reg =3D=3D BPF_PSEUDO_BTF_ID) flag set is performed
+>
+>   2) kfunc_btf_tab is populated by __find_kfunc_desc_btf(),
+>      and the source is attr->fd_array[offset]. The kfunc_btf_tab is
+>      sorted by offset to allow faster search
+>
+> So, to merge them something like this might be done:
+>
+>   1) If fd_array_cnt !=3D 0, then on load create a [sorted by offset]
+>      table "used_btfs", formatted similar to kfunc_btf_tab in (2)
+>      above.
+>
+>   2) On program load change (1) to add a btf to this new sorted
+>      used_btfs. As there is no corresponding offset, just use
+>      offset=3D-1 (not literally like this, as bsearch() wants unique
+>      keys, so by offset=3D-1 an array of btfs, aka, old used_maps,
+>      should be stored)
+>
+> Looks like this, conceptually, doesn't change things too much: kfuncs
+> btfs will still be searchable in log(n) time, the "normal" btfs will
+> still be searched in used_btfs in linear time.
+>
+> (The other way is to just allow kfunc btfs to be loaded from fd_array
+> if fd_array_cnt !=3D 0, as it is done now, but as you've mentioned
+> before, you had other use cases in mind, so this won't work.)
 
-Fix it by aligning the semantics to bpf_prog_run_array(): Let the caller
-provide rcu_read_lock_trace() protection and then load call->prog_array
-with rcu_dereference_check().
-
-This issue seems to be theoretical: I don't know of any way to reach this
-code without having handle_swbp() further up the stack, which is already
-holding a rcu_read_lock_trace() lock, so where we take
-rcu_read_lock_trace() in __uprobe_perf_func()/bpf_prog_run_array_uprobe()
-doesn't actually have any effect.
-
-Fixes: 8c7dcb84e3b7 ("bpf: implement sleepable uprobes by chaining gps")
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Jann Horn <jannh@google.com>
----
-Changes in v3:
-- align semantics with bpf_prog_run_array()
-- correct commit message: the issue is theoretical
-- remove stable CC
-- Link to v2: https://lore.kernel.org/r/20241206-bpf-fix-uprobe-uaf-v2-1-4c75c54fe424@google.com
-
-Changes in v2:
-- remove diff chunk in patch notes that confuses git
-- Link to v1: https://lore.kernel.org/r/20241206-bpf-fix-uprobe-uaf-v1-1-6869c8a17258@google.com
----
- include/linux/bpf.h         | 11 +++--------
- kernel/trace/trace_uprobe.c |  6 +++++-
- 2 files changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index eaee2a819f4c150a34a7b1075584711609682e4c..7fe5cf181511d543b1b100028db94ebb2a44da5d 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2193,26 +2193,22 @@ bpf_prog_run_array(const struct bpf_prog_array *array,
-  * rcu-protected dynamically sized maps.
-  */
- static __always_inline u32
--bpf_prog_run_array_uprobe(const struct bpf_prog_array __rcu *array_rcu,
-+bpf_prog_run_array_uprobe(const struct bpf_prog_array *array,
- 			  const void *ctx, bpf_prog_run_fn run_prog)
- {
- 	const struct bpf_prog_array_item *item;
- 	const struct bpf_prog *prog;
--	const struct bpf_prog_array *array;
- 	struct bpf_run_ctx *old_run_ctx;
- 	struct bpf_trace_run_ctx run_ctx;
- 	u32 ret = 1;
- 
- 	might_fault();
-+	RCU_LOCKDEP_WARN(!rcu_read_lock_trace_held(), "no rcu lock held");
- 
--	rcu_read_lock_trace();
- 	migrate_disable();
- 
- 	run_ctx.is_uprobe = true;
- 
--	array = rcu_dereference_check(array_rcu, rcu_read_lock_trace_held());
--	if (unlikely(!array))
--		goto out;
- 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
- 	item = &array->items[0];
- 	while ((prog = READ_ONCE(item->prog))) {
-@@ -2227,9 +2223,8 @@ bpf_prog_run_array_uprobe(const struct bpf_prog_array __rcu *array_rcu,
- 			rcu_read_unlock();
- 	}
- 	bpf_reset_run_ctx(old_run_ctx);
--out:
-+
- 	migrate_enable();
--	rcu_read_unlock_trace();
- 	return ret;
- }
- 
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index fed382b7881b82ee3c334ea77860cce77581a74d..4875e7f5de3db249af34c539c079fbedd38f4107 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -1402,9 +1402,13 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
- 
- #ifdef CONFIG_BPF_EVENTS
- 	if (bpf_prog_array_valid(call)) {
-+		const struct bpf_prog_array *array;
- 		u32 ret;
- 
--		ret = bpf_prog_run_array_uprobe(call->prog_array, regs, bpf_prog_run);
-+		rcu_read_lock_trace();
-+		array = rcu_dereference_check(call->prog_array, rcu_read_lock_trace_held());
-+		ret = bpf_prog_run_array_uprobe(array, regs, bpf_prog_run);
-+		rcu_read_unlock_trace();
- 		if (!ret)
- 			return;
- 	}
-
----
-base-commit: 509df676c2d79c985ec2eaa3e3a3bbe557645861
-change-id: 20241206-bpf-fix-uprobe-uaf-53d928bab3d0
-
--- 
-Jann Horn <jannh@google.com>
-
+This is getting a bit too complex.
+I think Andrii is asking to keep BTFs if they are in fd_array.
+No need to combine kfunc_btf_tab and used_btfs.
+I think adding BTFs from fd_array to prog->aux->used_btfs
+should do it.
 
