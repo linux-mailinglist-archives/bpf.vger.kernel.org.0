@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-46487-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46489-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A147B9EA718
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 05:11:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46B2F9EA71A
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 05:11:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DAA1188AE39
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 04:11:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D506188AEA1
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 04:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17EBF226181;
-	Tue, 10 Dec 2024 04:11:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D20E226191;
+	Tue, 10 Dec 2024 04:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="by8qyGAY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fA91Gccm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2585622578E
-	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 04:11:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 346AD22617A
+	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 04:11:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733803881; cv=none; b=PZ0TVR6zKSCTW246aSAxtXj09T6Rp+U6yqxg3zleOOQD57JsatyAMS2gW2pmHDboAvRqzcTzZhMaXYNLygWsGj9JxoVVOv/t/0zgi1KfljJtKKG66qiT4uFLE9S0+WZrgjOH2ZqC2onRcQDXCFQPr9vljX92iorH1iMxp2NK4e0=
+	t=1733803882; cv=none; b=Gz5VsCeVsUSwIxpMJVRb8YE0xACeXpR3H4SBSVofS3r/6hCOCj5fbpuLcQfHUheakRmlyiouB+OlS5m7DoXGtEQrZB3PW/1xYA4OIJVzZOgLxW38RBK5MFThiXn59Ceij2/4Qvy5XZ/k5oobmBm/9umisLt4hqdA82NHSfe+asg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733803881; c=relaxed/simple;
-	bh=Hcc9UsySMTbXqeCveyrKB76fa3d50tQ5MKht1qHx3RI=;
+	s=arc-20240116; t=1733803882; c=relaxed/simple;
+	bh=E9rK5VVgu1vb5HOv5GNksct/4EVn1xjQhk0AlLIH0XQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kt/rpsT+zbyV0sv7BJ0VE31lqXfztSbCClpmfLj5fwS3dI6s/mT0b46143KBBfXC6uTS94kk/PxbichrHf+G4jPKONogBR5CYGimFTDtcNpqp3RPfAx6yXdQmAuMRvubVuhS+Yern8VqbRkPB1vVFoPPFE6JhKiVpLwGBoyq2U4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=by8qyGAY; arc=none smtp.client-ip=209.85.214.174
+	 MIME-Version; b=ctaCsUnoF32BmLpp4c6wMUi+pKYsa9Defw1x1Dd0L0IOtcZeSvTG+wzBEpHHXYvHA89BCzARtYSqLKG0OeWl6/EZBnN1UGRu/awUuRi/hENof+iuI3MDT4Unxp73FCFirxJvU00hUZBHWnDHkhK5l5JEIaL+UI2IXN49yuUINQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fA91Gccm; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21631789fcdso14783495ad.1
-        for <bpf@vger.kernel.org>; Mon, 09 Dec 2024 20:11:18 -0800 (PST)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-21649a7bcdcso17892175ad.1
+        for <bpf@vger.kernel.org>; Mon, 09 Dec 2024 20:11:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733803878; x=1734408678; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733803879; x=1734408679; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CwPZMQhI00m6ciQ91kVp9l5KLtSM+iYorvVb0YUw0d0=;
-        b=by8qyGAYQOH9mwBOUT/hgxiwSDyA1gGilp0u2pGojyrXEgAsOVZ1HETlU+DnvzTrmt
-         B+nyhNRyqSnoInJEwmQ7QFhr5PafgWtACZdnhX9UFt1MIyOJVHFojHbLpCJ1kzor8z79
-         bYOWq+jdF3QjUK/qtVQ7ip/DHpXIwxM7O3LnqSZ6SFFrzYZmshZVBFYKpm1Mk3RWNrOZ
-         X2C7k0wLmUuDC17eiSQMHIOPNx5ae42jmOVTS/WxVC6+HU3IN/LkQ/gUj8ozqrhZFpdH
-         iSs/kVzlBbD9yVPr8zlFJWciiiThdQBYcCg2kg8GE9KftOQIFUJXY1yjGF7/BxVzg5V5
-         fUVQ==
+        bh=E4A/mi4KeRBODXu6ZbToqrKIC6qUwYXkLsbt0ypD+mc=;
+        b=fA91GccmNZi0Q7MHEILq9sTxIZwEzVR9KEh4lRnjYRJDXOjU8aYhi8ylkqUtGKpfKe
+         DanqxkRl8L3bX2LHAD1YQa7Ihbyl/0Ye1WHNwKrCpVXXFH33qU6nCK8vbEg20sEnANCb
+         W+OCkUTrq6qt0byyN39cD6Y/cAMwSE4aziZfu3CxhiiEviYTlM8zvJ5hbSwZt35ReQfI
+         YVHpemQgLDANgPP1ewNufwxtbZv80S3aQu+m0qqY5K5paZ1gILZspAspSbb8Jcf7zbZ2
+         Yj5/mrKs6rr82grucyhyyjYAhtp+xDKrSzS0adrRwYPpyLr9EeSN21AgDnrCLLueCSQn
+         OJYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733803878; x=1734408678;
+        d=1e100.net; s=20230601; t=1733803879; x=1734408679;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CwPZMQhI00m6ciQ91kVp9l5KLtSM+iYorvVb0YUw0d0=;
-        b=WOKCppKd8IMsYyIW1iaj2l3T3K3x8+hCES+2SxcGfSk+hxON/ZAYUQYbHhmUPfeyW/
-         bvO2+5WXBvHmv3FbOK3ejAOUvfwpqU3x2IuO5y99TnXPEVgm4SllN//dorP7oyUFFy1c
-         uvX8frTMsaVa8Rmi6MKIa66t5fzq/BgFl6uHr+wAoxiDZSBvBI1tJ5DdbDLx4tu3lxDI
-         nE9wH2B8W+cKdxfrjIRUTfSV1zRWnb8aMDbEvuSVzCQlYIyoJbbk2I5JOLvI0YIKG454
-         odIksrUBqJ0XeRONnN+5lhr9RbVknUhP6pxoKWc8W36qf4Ms0XsJ88fp93TT33ulk7Af
-         0r9A==
-X-Gm-Message-State: AOJu0Yyl7gZx/ZFFFzLW9YItqbmhDgqGMy6V3ylaCJJm8s+it7mucGgc
-	5dPRvnzldNjcvcSBnyDczD8GPcW0mn4DqRqC+d6xYrLjKj2nRWd+n+McxQ==
-X-Gm-Gg: ASbGncuI7kdNvppoQUl+jFVuzTBg4rNYcqS4WlZStC2nv45em+ow5oGzOoIPKQSrByH
-	h66I9zGfIRXHV3w7O2+9pYko8rFLjd2GlSmIgUQ5mQJEULCp+IisMFV08lQvyn1igXqet3T3yuT
-	VbZWsP/niwqmV8lu0ojRh2rDn/y7Q0ZNZ7i9uRHfXvhoATZEjSvFS/ALMC825c7JOqEsnNOm6C2
-	LdJpMd90qs/RFobbnToS6U6xyYgx3HOITcPLk21k1PsVCSt2Q==
-X-Google-Smtp-Source: AGHT+IGCXcBBeSpxglu8urOHhS1eJ7Ytj9Lss1hk8e3k7SEfxvu8sDPpSo8eNTV/M55SEzfS3od06w==
-X-Received: by 2002:a17:903:22ca:b0:215:7e49:8202 with SMTP id d9443c01a7336-21670a19629mr35934575ad.13.1733803878162;
-        Mon, 09 Dec 2024 20:11:18 -0800 (PST)
+        bh=E4A/mi4KeRBODXu6ZbToqrKIC6qUwYXkLsbt0ypD+mc=;
+        b=XqwBVcElaumD7BC+4LHisftFKnZi7epBrpy3Sv6KRIjA6N0SuStAw7hp9L2Xhf7iJZ
+         BysKFh3GL/tbvOqqkM8wpu6icf/vbWBxP0UGo3jcWgNauJPol5CPr538L+tQQ7pY8NNZ
+         2aeGoxHw+ttihd8ZU5qdb6d/yasbhk3W0dmFntIyq0t4QHcDN7161sMYubUVeAKajzan
+         6BsZqzVk4nhiiSK0Q+9HjwV/GtEQAcZ4F3Dxhp4Cu5uFImdGJbGQntLhhsGUR3SvUhYB
+         IVIpRRsxRMuwjVONHYbdjFHqgvw/5u9uFn32J9yHK9oUQ+le7CWVKVwGssJmnOmQciFF
+         LRjw==
+X-Gm-Message-State: AOJu0YxwXtZeZnOnehIvaE2oeu4+xB4RaKjzYyIuo++kZxRFmExZwhhV
+	3cR6+pW8RqpCdb88LieEwHrISw26hi0TEr2cVOOOXB1eW4ts3b0J+oew4A==
+X-Gm-Gg: ASbGncsX2Ad+qR7OSYz53U5eWdNrnTxS3IWYwYdiT6qJHSqNy/Ilc0N538JoO+n4X5Z
+	0z9ClHrpdWX7lRM/yew7bcR4T4IjI0rFnGzh78EzODMQEiUpmGoC2uirgSFSXVoSyfXxW/iWGTs
+	LfqMcB9kuSYy2/g5qg3n7RbrcCxDWxvDtd1z5fXOyNUSezawYveeGnJwkwN0Whe7wT0NZW33pDT
+	XXA2mIv5MDvX/bFr2XKTy6Pu+cs0ssIrkVpDAGnAOKLOh5IJw==
+X-Google-Smtp-Source: AGHT+IHXDw86qbq4Tq5IJbHxhUSu3P8sUMyTVcx4Gz24ob0VHADtt/a9ZL+jQ6zkNtXy1l6Fw/M+Bg==
+X-Received: by 2002:a17:902:ec92:b0:215:a172:5fb9 with SMTP id d9443c01a7336-2166a05562cmr45498535ad.48.1733803879162;
+        Mon, 09 Dec 2024 20:11:19 -0800 (PST)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21631d6b3b8sm44296265ad.136.2024.12.09.20.11.17
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21631d6b3b8sm44296265ad.136.2024.12.09.20.11.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Dec 2024 20:11:17 -0800 (PST)
+        Mon, 09 Dec 2024 20:11:18 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -79,11 +79,10 @@ Cc: andrii@kernel.org,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
 	mejedi@gmail.com,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: [PATCH bpf v2 5/8] bpf: check changes_pkt_data property for extension programs
-Date: Mon,  9 Dec 2024 20:10:57 -0800
-Message-ID: <20241210041100.1898468-6-eddyz87@gmail.com>
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf v2 6/8] selftests/bpf: freplace tests for tracking of changes_packet_data
+Date: Mon,  9 Dec 2024 20:10:58 -0800
+Message-ID: <20241210041100.1898468-7-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241210041100.1898468-1-eddyz87@gmail.com>
 References: <20241210041100.1898468-1-eddyz87@gmail.com>
@@ -95,119 +94,160 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When processing calls to global sub-programs, verifier decides whether
-to invalidate all packet pointers in current state depending on the
-changes_pkt_data property of the global sub-program.
+Try different combinations of global functions replacement:
+- replace function that changes packet data with one that doesn't;
+- replace function that changes packet data with one that does;
+- replace function that doesn't change packet data with one that does;
+- replace function that doesn't change packet data with one that doesn't;
 
-Because of this, an extension program replacing a global sub-program
-must be compatible with changes_pkt_data property of the sub-program
-being replaced.
-
-This commit:
-- adds changes_pkt_data flag to struct bpf_prog_aux:
-  - this flag is set in check_cfg() for main sub-program;
-  - in jit_subprogs() for other sub-programs;
-- modifies bpf_check_attach_btf_id() to check changes_pkt_data flag;
-- moves call to check_attach_btf_id() after the call to check_cfg(),
-  because it needs changes_pkt_data flag to be set:
-
-    bpf_check:
-      ...                             ...
-    - check_attach_btf_id             resolve_pseudo_ldimm64
-      resolve_pseudo_ldimm64   -->    bpf_prog_is_offloaded
-      bpf_prog_is_offloaded           check_cfg
-      check_cfg                     + check_attach_btf_id
-      ...                             ...
-
-The following fields are set by check_attach_btf_id():
-- env->ops
-- prog->aux->attach_btf_trace
-- prog->aux->attach_func_name
-- prog->aux->attach_func_proto
-- prog->aux->dst_trampoline
-- prog->aux->mod
-- prog->aux->saved_dst_attach_type
-- prog->aux->saved_dst_prog_type
-- prog->expected_attach_type
-
-Neither of these fields are used by resolve_pseudo_ldimm64() or
-bpf_prog_offload_verifier_prep() (for netronome and netdevsim
-drivers), so the reordering is safe.
-
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- include/linux/bpf.h   |  1 +
- kernel/bpf/verifier.c | 16 ++++++++++++----
- 2 files changed, 13 insertions(+), 4 deletions(-)
+ .../bpf/prog_tests/changes_pkt_data.c         | 76 +++++++++++++++++++
+ .../selftests/bpf/progs/changes_pkt_data.c    | 26 +++++++
+ .../bpf/progs/changes_pkt_data_freplace.c     | 18 +++++
+ 3 files changed, 120 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/changes_pkt_data.c
+ create mode 100644 tools/testing/selftests/bpf/progs/changes_pkt_data.c
+ create mode 100644 tools/testing/selftests/bpf/progs/changes_pkt_data_freplace.c
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index eaee2a819f4c..fe392d074973 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1527,6 +1527,7 @@ struct bpf_prog_aux {
- 	bool is_extended; /* true if extended by freplace program */
- 	bool jits_use_priv_stack;
- 	bool priv_stack_requested;
-+	bool changes_pkt_data;
- 	u64 prog_array_member_cnt; /* counts how many times as member of prog_array */
- 	struct mutex ext_mutex; /* mutex for is_extended and prog_array_member_cnt */
- 	struct bpf_arena *arena;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 6a29b68cebd6..c2e5d0e6e3d0 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -16872,6 +16872,7 @@ static int check_cfg(struct bpf_verifier_env *env)
- 		}
- 	}
- 	ret = 0; /* cfg looks good */
-+	env->prog->aux->changes_pkt_data = env->subprog_info[0].changes_pkt_data;
- 
- err_free:
- 	kvfree(insn_state);
-@@ -20361,6 +20362,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
- 		func[i]->aux->num_exentries = num_exentries;
- 		func[i]->aux->tail_call_reachable = env->subprog_info[i].tail_call_reachable;
- 		func[i]->aux->exception_cb = env->subprog_info[i].is_exception_cb;
-+		func[i]->aux->changes_pkt_data = env->subprog_info[i].changes_pkt_data;
- 		if (!i)
- 			func[i]->aux->exception_boundary = env->seen_exception;
- 		func[i] = bpf_int_jit_compile(func[i]);
-@@ -22225,6 +22227,12 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
- 					"Extension programs should be JITed\n");
- 				return -EINVAL;
- 			}
-+			if (prog->aux->changes_pkt_data &&
-+			    !aux->func[subprog]->aux->changes_pkt_data) {
-+				bpf_log(log,
-+					"Extension program changes packet data, while original does not\n");
-+				return -EINVAL;
-+			}
- 		}
- 		if (!tgt_prog->jited) {
- 			bpf_log(log, "Can attach to only JITed progs\n");
-@@ -22690,10 +22698,6 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 	if (ret < 0)
- 		goto skip_full_check;
- 
--	ret = check_attach_btf_id(env);
--	if (ret)
--		goto skip_full_check;
--
- 	ret = resolve_pseudo_ldimm64(env);
- 	if (ret < 0)
- 		goto skip_full_check;
-@@ -22708,6 +22712,10 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 	if (ret < 0)
- 		goto skip_full_check;
- 
-+	ret = check_attach_btf_id(env);
-+	if (ret)
-+		goto skip_full_check;
+diff --git a/tools/testing/selftests/bpf/prog_tests/changes_pkt_data.c b/tools/testing/selftests/bpf/prog_tests/changes_pkt_data.c
+new file mode 100644
+index 000000000000..c0c7202f6c5c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/changes_pkt_data.c
+@@ -0,0 +1,76 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "bpf/libbpf.h"
++#include "changes_pkt_data_freplace.skel.h"
++#include "changes_pkt_data.skel.h"
++#include <test_progs.h>
 +
- 	ret = mark_fastcall_patterns(env);
- 	if (ret < 0)
- 		goto skip_full_check;
++static void print_verifier_log(const char *log)
++{
++	if (env.verbosity >= VERBOSE_VERY)
++		fprintf(stdout, "VERIFIER LOG:\n=============\n%s=============\n", log);
++}
++
++static void test_aux(const char *main_prog_name, const char *freplace_prog_name, bool expect_load)
++{
++	struct changes_pkt_data_freplace *freplace = NULL;
++	struct bpf_program *freplace_prog = NULL;
++	LIBBPF_OPTS(bpf_object_open_opts, opts);
++	struct changes_pkt_data *main = NULL;
++	char log[16*1024];
++	int err;
++
++	opts.kernel_log_buf = log;
++	opts.kernel_log_size = sizeof(log);
++	if (env.verbosity >= VERBOSE_SUPER)
++		opts.kernel_log_level = 1 | 2 | 4;
++	main = changes_pkt_data__open_opts(&opts);
++	if (!ASSERT_OK_PTR(main, "changes_pkt_data__open"))
++		goto out;
++	err = changes_pkt_data__load(main);
++	print_verifier_log(log);
++	if (!ASSERT_OK(err, "changes_pkt_data__load"))
++		goto out;
++	freplace = changes_pkt_data_freplace__open_opts(&opts);
++	if (!ASSERT_OK_PTR(freplace, "changes_pkt_data_freplace__open"))
++		goto out;
++	freplace_prog = bpf_object__find_program_by_name(freplace->obj, freplace_prog_name);
++	if (!ASSERT_OK_PTR(freplace_prog, "freplace_prog"))
++		goto out;
++	bpf_program__set_autoload(freplace_prog, true);
++	bpf_program__set_autoattach(freplace_prog, true);
++	bpf_program__set_attach_target(freplace_prog,
++				       bpf_program__fd(main->progs.dummy),
++				       main_prog_name);
++	err = changes_pkt_data_freplace__load(freplace);
++	print_verifier_log(log);
++	if (expect_load) {
++		ASSERT_OK(err, "changes_pkt_data_freplace__load");
++	} else {
++		ASSERT_ERR(err, "changes_pkt_data_freplace__load");
++		ASSERT_HAS_SUBSTR(log, "Extension program changes packet data", "error log");
++	}
++
++out:
++	changes_pkt_data_freplace__destroy(freplace);
++	changes_pkt_data__destroy(main);
++}
++
++/* There are two global subprograms in both changes_pkt_data.skel.h:
++ * - one changes packet data;
++ * - another does not.
++ * It is ok to freplace subprograms that change packet data with those
++ * that either do or do not. It is only ok to freplace subprograms
++ * that do not change packet data with those that do not as well.
++ * The below tests check outcomes for each combination of such freplace.
++ */
++void test_changes_pkt_data_freplace(void)
++{
++	if (test__start_subtest("changes_with_changes"))
++		test_aux("changes_pkt_data", "changes_pkt_data", true);
++	if (test__start_subtest("changes_with_doesnt_change"))
++		test_aux("changes_pkt_data", "does_not_change_pkt_data", true);
++	if (test__start_subtest("doesnt_change_with_changes"))
++		test_aux("does_not_change_pkt_data", "changes_pkt_data", false);
++	if (test__start_subtest("doesnt_change_with_doesnt_change"))
++		test_aux("does_not_change_pkt_data", "does_not_change_pkt_data", true);
++}
+diff --git a/tools/testing/selftests/bpf/progs/changes_pkt_data.c b/tools/testing/selftests/bpf/progs/changes_pkt_data.c
+new file mode 100644
+index 000000000000..f87da8e9d6b3
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/changes_pkt_data.c
+@@ -0,0 +1,26 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++__noinline
++long changes_pkt_data(struct __sk_buff *sk, __u32 len)
++{
++	return bpf_skb_pull_data(sk, len);
++}
++
++__noinline __weak
++long does_not_change_pkt_data(struct __sk_buff *sk, __u32 len)
++{
++	return 0;
++}
++
++SEC("tc")
++int dummy(struct __sk_buff *sk)
++{
++	changes_pkt_data(sk, 0);
++	does_not_change_pkt_data(sk, 0);
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/changes_pkt_data_freplace.c b/tools/testing/selftests/bpf/progs/changes_pkt_data_freplace.c
+new file mode 100644
+index 000000000000..0e525beb8603
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/changes_pkt_data_freplace.c
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++SEC("?freplace")
++long changes_pkt_data(struct __sk_buff *sk, __u32 len)
++{
++	return bpf_skb_pull_data(sk, len);
++}
++
++SEC("?freplace")
++long does_not_change_pkt_data(struct __sk_buff *sk, __u32 len)
++{
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.47.0
 
