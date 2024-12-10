@@ -1,129 +1,159 @@
-Return-Path: <bpf+bounces-46499-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46500-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBB919EB00B
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 12:41:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B90D9EB1CF
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 14:25:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2FBA162B17
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 11:40:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A40C71889AC3
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 13:25:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F432080D2;
-	Tue, 10 Dec 2024 11:40:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317F61A3BC0;
+	Tue, 10 Dec 2024 13:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="MHQ9SKnH"
+	dkim=pass (1024-bit key) header.d=datadoghq.com header.i=@datadoghq.com header.b="fg6uaHki"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6598823DEA1
-	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 11:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A671A0B15
+	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 13:25:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733830858; cv=none; b=b/HxNiqX/yaqsPbXJv+xln8BZfWpnDZD8YGc4Fq18+AqSDko7MUeYDotkNJm//TGRBhN2z7s9iY1lFbTCTjGHkKstyMIPX7xFw/pGbmXKXMc0YoxTW2aMOI1ZbU1yCiCoJwrpcGebohCdCPyDswgFm65CpDH7X3nCm+s0jkMva8=
+	t=1733837133; cv=none; b=Ayvk4luSzuJKgYFXvOaeqHSQx34qqmo5uFrO/vHvjckDeHuXxsvl9jIboSaBZSt14XCIP+0qWxEaKXdZucY2n1K26TqdQJ1ErHr0HdAR2vnjAPNMtg45pGlCt9unmAQ276rmu2MgptC598HEw3BshkkNTpuIj6YlBfldxP5e42k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733830858; c=relaxed/simple;
-	bh=Ss6LSDSI3HUgkt46RXSiQ36I5KWmMAj1lyp/E3yUBkQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mEpqzh9Bjy1vJCUmcxWacTqTeZeosrApeYwveWxXw997tCSsMlFsaXmLRVN0noDStmNDgb8ScHwQ7hRKgoiznBboIEEv9cehSsgyUx8cznf2O+MjGvTQ8L6H95JXHRmhQGzs5VQgfzIhtKY+cXPkZKM0A0WH91mnWwl4U2vVLq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=MHQ9SKnH; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-385de59c1a0so3400315f8f.2
-        for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 03:40:56 -0800 (PST)
+	s=arc-20240116; t=1733837133; c=relaxed/simple;
+	bh=2F+U3KpCyFGgxMTffy5RfIns90C/geYxyDAnYBYncrQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VN4c+JhaiQVJwDfBBXRawQ1mNhpEDNQLU8rUGfXIFOwCLamEOsPng+EQwTXR7fAUtWuk/uJ7ctLfsIuinApqpMSuA06L5KUFQNYf9gPaRecAZ2dcrLfBBN475A867SdYBKvpEnKVxPU+RGsneP9tUMr02MP7gSxNzMjDLKO64HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=datadoghq.com; spf=pass smtp.mailfrom=datadoghq.com; dkim=pass (1024-bit key) header.d=datadoghq.com header.i=@datadoghq.com header.b=fg6uaHki; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=datadoghq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=datadoghq.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-21654fdd5daso18919475ad.1
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 05:25:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1733830854; x=1734435654; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RN/WyHIUArALpl7qsdgPWxpsRM2L0MSejGpbRBuKuw4=;
-        b=MHQ9SKnH6M7E2IuErZnBOqIP3QZ7Hj078D7lv/x8Gu+8YnPP4pFmUj9Bs6Cj8NrCpr
-         eqTVc5zomMnpsoL/1efhwDJHKQ093okiBy14+0AnF/MJtIfSce7NpKIbUr/igCk2fOh7
-         udRpq8x2J8ZtT09QIVqfhKn+rgU17L0n3g6dVHTnE0IlZJAQX0WCBA89H0a0N1KP0Ewj
-         ocjxB9RV6iC5JgWRr8yFDzRMy0XhEFcEzCBSyspUOgs8s7DvEbYh+FoAX/Jbajyz0VJ+
-         LH87lnhniNHK4+CAV8RGDI02K9bubVoYlWdEWk6spIIO/RsaHmW0G63ZuCpBI2H6ExtW
-         PTZg==
+        d=datadoghq.com; s=google; t=1733837131; x=1734441931; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Kove9NVUba4GYCR0rE2iJen7tVwV979R+DkeBgZ2aGM=;
+        b=fg6uaHkiu32DqqREv6RAxx6ivRvx3Gcm7o2uqTvZkRBSr4PaaR7b2zEuHX8NlxVxMk
+         krmEyylrN3/1biHJ4N9uRxZTWNuBYDycabE4+wUGOH6ZWNwjDeb+ikhadhohlOosbzdi
+         PquqNjOWgfckcmP708kwclBSPha0ex2Ktstrk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733830854; x=1734435654;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RN/WyHIUArALpl7qsdgPWxpsRM2L0MSejGpbRBuKuw4=;
-        b=OCVx5hK9KH4I6yFZb2sTdsxAa9LHgwbVCu82PKb2/5ZiBxkDw1/IIIUWXDr48nRA+f
-         Xh6IHpw9VwlfyIA/bNP5aWSNJ/lB8Sqd9wKjfJ3IbT5IHa9wuyHhd2ZgLPwO3ov4fMDy
-         pP7k32szSuSrUJYlqxNRfbz9tRhLHGwg6jkdwDStFbbD2gtOd1ICqBu8THpw20d3c/Mi
-         4cHtzq870TVuPMO7/mELNJrhPrIdfLYtq8S1//WLUvcnSDpRAAeBPzvYRjG1jXQEcj9Y
-         TTYqDC+m99Ks8EWR3IUXaN6pE2HQjunCKyE/rYmettqJO+2fa7nudjAqLp0S/vviBwfm
-         VwuQ==
-X-Gm-Message-State: AOJu0YzxZSeQTzJuJTIcNwBfpNpBUqr27p253r6E3VsxuDqYqg865suP
-	yBb0AfCJOPfeXI8CFtidfXx2slGBPmZQPMI6qZd6eC4Q9lpjFNlj/vVl0AkJcdKBPnBbRs7oznc
-	l
-X-Gm-Gg: ASbGncs3MvJowzKj5N2QT//fPgM8xyPx/ZazFYIO7bx+CUkQPTsVopVws8xGCnCMKHi
-	w/1ZtYHXQDo/1VyAREAJOzRBiCyk0M8Qg9JLxzzpdp58a8c3eY71BnfEb4dFHhhOpKCYPfjwwj/
-	0MMN4HNajzOWZO2mzyoQ/vvfvvUEoxE4ta1RCUIgJ2sfmFJDdFrzcSd/3Rv9U9THANNFTNEOF5P
-	+9LvqYvbu1JlnCcMFV9r66zm6fW+7BSakDUYYP2Xmo5FoZkvjIYBvrMLwOSvRSgOGc=
-X-Google-Smtp-Source: AGHT+IHlRTU0cepLr/wD0CPh2AZv3wFK5CyvHu5qVzEAiOidzdW1dawDaoPaowP0zmFHz/bmP/pFVQ==
-X-Received: by 2002:a5d:5f48:0:b0:386:459f:67e0 with SMTP id ffacd0b85a97d-386459f687dmr2558816f8f.21.1733830854332;
-        Tue, 10 Dec 2024 03:40:54 -0800 (PST)
-Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434da119a96sm190903535e9.40.2024.12.10.03.40.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Dec 2024 03:40:53 -0800 (PST)
-From: Anton Protopopov <aspsk@isovalent.com>
-To: bpf@vger.kernel.org
-Cc: Anton Protopopov <aspsk@isovalent.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf] bpf: fix potential error return
-Date: Tue, 10 Dec 2024 11:42:45 +0000
-Message-Id: <20241210114245.836164-1-aspsk@isovalent.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1733837131; x=1734441931;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Kove9NVUba4GYCR0rE2iJen7tVwV979R+DkeBgZ2aGM=;
+        b=JxE7ypP6eJsAb6uGYBBb71v77u1mpCksZDlY0vtYHsZPMUjTzHpTVK957REtRVnqKN
+         060lSG63azgyGmQR26YJYi4OARzzV0LiFWcEYLtiM9Gj4YkxZv5VUYnMwE1ywxV+afbu
+         nNXGNjzgFNJMgwVTwfBlM4Ky/Wk3zXfp/I1C0N8iWmJzaWt/1ErAwj5BxvF8Cf2ZJDeH
+         gG2b+oXI4dkFGaTI8o69JtRGdzVUN8pydF7//h9gR9zRd2xNcl/SjJVGnRQSZKVuA0R9
+         zqhpw5EzqkU55IqgfWPc+PUawCZmV8fUwrm1UdmGLTvA41g2C9LWe2cyVZ6wbZu2aVRt
+         ih2g==
+X-Gm-Message-State: AOJu0YxboaC24Rxo3781V2QlLOry1b5hBek6HKLNCtzxNtQVzlafPXi6
+	fmGFz8JIYykEuyXP0US7N+e647nOpqXU8/1+7dPuTZknt6613/6XYi5LQBOAkq7wrYLA9SeTgPd
+	OPgYQiVeoGXj6tkS31eMDA19p7vBvAbOpLzlqfQ==
+X-Gm-Gg: ASbGncvIrsiJudsksamNxPKPnEVSNGTC6vmLTr28fFui08X4GJwzYU7IqzlciSDaXOG
+	vS3vW02Uy8PrWI6XEZh0Z4mCyNaFMoSSsLgo=
+X-Google-Smtp-Source: AGHT+IGpZ8mHzT2GGNEe7mVvvtk6LLpWmQvnbjp5Gjr9QW3DMXVcLQ/aNBYeS3yHYJu1u2zlG7LR2+iV6UQ+8Fo6rQE=
+X-Received: by 2002:a17:903:2305:b0:216:3eaf:3781 with SMTP id
+ d9443c01a7336-2163eaf3fa4mr143114235ad.43.1733837131224; Tue, 10 Dec 2024
+ 05:25:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAOzX8ixn1d4ja+LOJq_S_WDq=ZqtUTcV0RZzKpyJ2Yd0pBMx2g@mail.gmail.com>
+In-Reply-To: <CAOzX8ixn1d4ja+LOJq_S_WDq=ZqtUTcV0RZzKpyJ2Yd0pBMx2g@mail.gmail.com>
+From: Usama Saqib <usama.saqib@datadoghq.com>
+Date: Tue, 10 Dec 2024 14:25:20 +0100
+Message-ID: <CAOzX8iyS6ODErbnkyZO7RyVfXBCL5CFX5ydoKcvzc9LZf425Vw@mail.gmail.com>
+Subject: Re: BPF and lazy preemption.
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, bigeasy@linutronix.de, peterz@infradead.org, 
+	torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The bpf_remove_insns() function returns WARN_ON_ONCE(error), where
-error is a result of bpf_adj_branches(), and thus should be always 0
-However, if for any reason it is not 0, then it will be converted to
-boolean by WARN_ON_ONCE and returned to user space as 1, not an actual
-error value. Fix this by returning the original err after the WARN check.
+[ Adding x86 / scheduler folks to Cc given PREEMPT_LAZY as-is would cause
+  serious regressions for us. ]
 
-Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/bpf/core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On 11/18/24 10:14 AM, Usama Saqib wrote:
+> Hello,
+>
+> I hope everyone is doing well. It seems that work has started to
+> introduce a new preemption model in the linux kernel PREEMPT_LAZY [1].
+> According to the mailing list, the maintainers intend for this to
+> replace PREEMPT_NONE and PREEMPT_VOLUTARY as the default preemption
+> model.
+>
+>  From the changeset, it looks like PREEMPT_LAZY allows
+> irqentry_exit_cond_resched() to get called on IRQ exit. This change,
+> similar to PREEMPT_FULL, can get two bpf programs attached to a kprobe
+> or tracepoint running in user context, to nest. This currently causes
+> the nesting program to miss. I have been able to get these misses to
+> happen on top of this new patch.
+>
+> This behavior is currently not possible with the default preemption
+> model used in most distributions, PREEMPT_VOLUNTARY. For many products
+> using BPF for tracing/security, this would constitute a regression in
+> terms of reliability.
+>
+> My question is whether there is any ongoing work to fix this behavior
+> of kprobes and tracepoints, so they do not miss on nesting. I have
+> previously been told that there is ongoing work related to
+> bpf-specific spinlocks to resolve this problem [2]. Will that be
+> available by the time this is merged into the mainline, and the
+> current defaults deprecated?
+>
+> Thanks,
+> Usama Saqib.
+>
+> 1. https://lwn.net/ml/all/20241007074609.447006177@infradead.org/
+> 2. https://lore.kernel.org/bpf/CAOzX8ixsxPbw1ke=3DDsDd_b38k1TE+JRG3LvJfh4=
+wD60mhHvAqA@mail.gmail.com/T/#m206e33e5a0a0d9d3d498480a53aa9c87c81d91ff
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index a2327c4fdc8b..8b9711e6da6c 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -539,6 +539,8 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
- 
- int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
- {
-+	int err;
-+
- 	/* Branch offsets can't overflow when program is shrinking, no need
- 	 * to call bpf_adj_branches(..., true) here
- 	 */
-@@ -546,7 +548,9 @@ int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
- 		sizeof(struct bpf_insn) * (prog->len - off - cnt));
- 	prog->len -= cnt;
- 
--	return WARN_ON_ONCE(bpf_adj_branches(prog, off, off + cnt, off, false));
-+	err = bpf_adj_branches(prog, off, off + cnt, off, false);
-+	WARN_ON_ONCE(err);
-+	return err;
- }
- 
- static void bpf_prog_kallsyms_del_subprogs(struct bpf_prog *fp)
--- 
-2.34.1
-
+On Mon, Nov 18, 2024 at 10:14=E2=80=AFAM Usama Saqib <usama.saqib@datadoghq=
+.com> wrote:
+>
+> Hello,
+>
+> I hope everyone is doing well. It seems that work has started to
+> introduce a new preemption model in the linux kernel PREEMPT_LAZY [1].
+> According to the mailing list, the maintainers intend for this to
+> replace PREEMPT_NONE and PREEMPT_VOLUTARY as the default preemption
+> model.
+>
+> From the changeset, it looks like PREEMPT_LAZY allows
+> irqentry_exit_cond_resched() to get called on IRQ exit. This change,
+> similar to PREEMPT_FULL, can get two bpf programs attached to a kprobe
+> or tracepoint running in user context, to nest. This currently causes
+> the nesting program to miss. I have been able to get these misses to
+> happen on top of this new patch.
+>
+> This behavior is currently not possible with the default preemption
+> model used in most distributions, PREEMPT_VOLUNTARY. For many products
+> using BPF for tracing/security, this would constitute a regression in
+> terms of reliability.
+>
+> My question is whether there is any ongoing work to fix this behavior
+> of kprobes and tracepoints, so they do not miss on nesting. I have
+> previously been told that there is ongoing work related to
+> bpf-specific spinlocks to resolve this problem [2]. Will that be
+> available by the time this is merged into the mainline, and the
+> current defaults deprecated?
+>
+> Thanks,
+> Usama Saqib.
+>
+> 1. https://lwn.net/ml/all/20241007074609.447006177@infradead.org/
+> 2. https://lore.kernel.org/bpf/CAOzX8ixsxPbw1ke=3DDsDd_b38k1TE+JRG3LvJfh4=
+wD60mhHvAqA@mail.gmail.com/T/#m206e33e5a0a0d9d3d498480a53aa9c87c81d91ff
 
