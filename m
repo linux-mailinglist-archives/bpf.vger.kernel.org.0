@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-46472-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46473-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 033289EA53F
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 03:40:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC56F9EA541
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 03:40:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A799F188B0AE
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 02:40:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A1FF161FB7
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 02:40:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0473519FA64;
-	Tue, 10 Dec 2024 02:39:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4969419E980;
+	Tue, 10 Dec 2024 02:40:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QJv1fdgK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S2YGs4Im"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A73B27456
-	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 02:39:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5D670816
+	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 02:40:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733798397; cv=none; b=aRrt7Z21C0mfb7aWhFakkfmQpMTqZEkzGF6UvM/aAoPYCXb39aGlJQC/oJ0U/uqxjXLHzUm/rlxiPt7MNBXydjnCjrECQ+jvRnuv6octyHLovCKoIlDb1VjumUGeX1VO2tKXFGrSZ6QbKP0RNQXV1lAeYvCtWakoCg30bszHWc8=
+	t=1733798402; cv=none; b=L6dfmUzcSyx9COcsr7Qr2/0DsxRv3ne4x0KuUOoAtS+JF89P/JxPFywvpGYAJXhG5nE8DCPtqEbIRdxA92cjeT+FWZipJyKf4q+f+1dHooUzLc38mfw8KDpctOU5aNtQfvJuYTSQxYjWU2007ECe+looNfnj4ExvX3Xi2ilmsSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733798397; c=relaxed/simple;
-	bh=KYyuDO6Ahs01hjYzBDC8IjaST0acLjXnJda3FVGwIv4=;
+	s=arc-20240116; t=1733798402; c=relaxed/simple;
+	bh=eeArVuRQjLMkKnmW3cNtegLJbfRg67rqk55sMUQzZ/8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DTGbL+ORl3dSYxCvCdhH8TFpgMA1p+yHaRsW4eWP+DUSeDOjwyoOolxblueZCMMNhsMvTrGUgYIFr56We4IUex9YKTa9r3LHi04gtC+Mgiw1BDC+nonPFAJ6C5d+30m2y1L6IAjNZ5r63qVNCz18YcyWpAc0MJRsqredKxXVuDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QJv1fdgK; arc=none smtp.client-ip=209.85.214.177
+	 MIME-Version; b=PeD2AbuaNh/9618bB0YSAC98IXRR3PMFrbiHhl7kcXVJ4wv0HRI+o9euwiHuSw47AfYXBeZbxFThR2ZWiR75XL8ZkAMw6UXKgQKY3FLodKZo3UK0PpIFN0bEXhtihuul5YO+aVdcQxRubexbqbUiCTDz3A5HI+FtW2R8zpdXwGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S2YGs4Im; arc=none smtp.client-ip=209.85.215.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-216426b0865so16316905ad.0
-        for <bpf@vger.kernel.org>; Mon, 09 Dec 2024 18:39:55 -0800 (PST)
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-7ee51d9ae30so3335275a12.1
+        for <bpf@vger.kernel.org>; Mon, 09 Dec 2024 18:40:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733798394; x=1734403194; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733798399; x=1734403199; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MT/DPo97yF9oIvPtZgU314ePao/rByOm5QF7hTFkWYs=;
-        b=QJv1fdgKXn/2RhJSh1x8ajX87Hn2Na/ZZS31Rbg6VchynMN/sSbhIaOOedFR/xpsgm
-         I7S1mHrDPS8V5S+/wa+r5VLQmMn5dvBjkrxPpckqDgsk7EdyGLCcqAPQoCWUsn6Z/WTQ
-         DeWpRPN1mx5i8lJ8n0PcmNI1ATKiqPpGYJndu319edyB7of4Vhh9niRlvwOpMB4AE8kE
-         B1QbkfMLu6/ObifX99iu72aUlB3dU45zNwv0JxaPUymJj2p69fa+9jbIZg/66wea2Si2
-         qjr/tmRdo27WhgM5l5J7qD9weFe5ljfJG4anr9xlDIh94Hh+8XjhMJx9l9DbraBdYJsh
-         rlkQ==
+        bh=wo7sUpYgRQrXUd48YB6NzK0xhu80+vJLM/DolMWSp9w=;
+        b=S2YGs4ImZobTOFiXGnByqwV+eDWhJ8AInKpMkPQyfBJYgFd6iUTcqkN6gIP6rXXkqJ
+         R4wiJ3oAqszUBmvSxNQ6pbhazFEVq6bzFlFkUAz0RbFVkvQk1eZWZciyu45LDlj4mh/O
+         qwGiDKzDQrevQNVlAxUHABtIDWoBPudvEPkwhXPxEmyCXwBEVFcIDnW3dQS4JRhcolJD
+         DKGl3X+gGCQKCqzh+fLiGtlWZF+tuH7O7bzi09NLWMKW1s0KItCjgowlgPPZ3MLIgFY9
+         aRVYSgAZG0kCifZ7gchg+hBT5RfgKXA/VMF6sQls/NhWFCNu1hD3PHmyYraCZwww1luk
+         hC3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733798394; x=1734403194;
+        d=1e100.net; s=20230601; t=1733798399; x=1734403199;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MT/DPo97yF9oIvPtZgU314ePao/rByOm5QF7hTFkWYs=;
-        b=PZt7da0RWUuO4/kDmpCR8mU2kkq8PTc6/uOcoP+iWMzROuOao70sa1pBBikIPcHKwv
-         h75jb4fAFeQropx1oEuXTappEgyV1PtGPrQr/4KKNb65SiWqr/BBufwWLR0PtjKL0FBw
-         PLBYYOXrCE5ZJECRDzd2GmWt18xud/3pI1y4w59TWrddL5Lm2vNsOc1ENvX12pK5AGQW
-         lIilhiW5D6jIwXPTRNaW0eC8ayieDcsFheKRr7lx9J672wmEgQP4HBwpGmT4jFGnLQxZ
-         yemYZDEPoYSqvqtj20eGgeMs7/aMxiuj+hlsTn73qjkGu7oBBlleQzqQZLsFV9WtRm1/
-         ITAg==
-X-Gm-Message-State: AOJu0YyrVjplVK5YchI4cNBe0Mi9Cey4hb3w6cd/oXHJS4E+0/uMJ3bk
-	/+MY2mVa/Va8+D427poYHgss2D1x8Sb7WnYzuUvAbxIfzCmc+uK71VgTgg==
-X-Gm-Gg: ASbGncuA2JJZWsk3survv4tr5IXEVmfHRYAwO4eSsV43JZuGkot+ul0rvk1s/vcbngy
-	+oOoIfoCuYp4+2Fegy4ay6f6KbOh7lPSuuZ6iUTM6DdUAg4C7ixCeLggx64lBd32SexU9dze2uC
-	0H29sfmWBvr5NJy4az7b5tg6OG7ASi8/0wRpjos6Xx6oeuzcFI3JQ5JOrMvO6WijJZucrSRYkxl
-	oOf4tIHlowNy67Qa+PjFut08/BnenV6odt5VNL8GaW99/eBHIihJIzoEsKG1pf6IIWTAuhiLI6b
-	q6tBZA==
-X-Google-Smtp-Source: AGHT+IGKLmePoGcXe+HAKRjlAgf3YSGz9J3cPaKQKdSbicAELPOmItuHpzzqliawMg0yEsYXj3ExxQ==
-X-Received: by 2002:a17:902:ecc5:b0:215:4fbf:11da with SMTP id d9443c01a7336-21669fc28d6mr43610845ad.21.1733798394490;
-        Mon, 09 Dec 2024 18:39:54 -0800 (PST)
+        bh=wo7sUpYgRQrXUd48YB6NzK0xhu80+vJLM/DolMWSp9w=;
+        b=G190Xp0jYu0zJbx43/8rY8dfY2QYj2P2ebYLEZdRV7w0X4a6ZMwyecG7pU+EGKaE7z
+         x9ogmI96HBDCx9Nq4Iikki/zccDvwUMCL5F5xtdrJRBJh6baOrNGLGPBmiQ/dZUaBD9X
+         ATpnGbVqfJGX42O8N6ZREwMtJEL7N+VF1Tqh5DPJVdM+JuNhE9ZHHjNbqV95Dev9Mx00
+         xuvdz4CUjDYjzylgMYViLn4yoD8Udo1MeoZAXPk9d0Tp+Usm5Dw3dXL6H0lAHg193Ros
+         i1+3UlaszM1d0s8QV5piEsHVHYV39EX2BdRv2b4TWukMxCFmhMtvi+qcutmUKEPqKfKW
+         WPJQ==
+X-Gm-Message-State: AOJu0YwYakJMhtSB1xT2F4bY0MNFfHw9oJlF4nxGsg67Ib+8sQNhu8Nz
+	WO8YY9F5UTLFK00MO/IdNxq9+DB6zEjh9u66GqmNT3cjkmdha4NidiDP5A==
+X-Gm-Gg: ASbGnctgjin+Vgw4fGpEGa7RhWMk1Z6ggU4m085+Cqz3A61F2TC8WvDAaND4eH9vwPf
+	X5oOUCE9a69GTmwstSRYG2bEzTa5T4WL4AEihWD9Xj/umVXbZ0Koc63r7npddxibEZhsRgT2Ofi
+	tYXvyRtAng8agGEkwKHNvo/1nOhUkbmp5TEZHLGaOis7YDWB5acgn+T6nTLhBxqZKnw62LyvCaB
+	uebRUWklwmVtuDJHQ0pocnJJoC0YpY5krjIaQexNbO5516eELEgPIAxfTJCLlePoK2vZ7jugvZI
+	9JVKIg==
+X-Google-Smtp-Source: AGHT+IFtiAsGhIVFD64KUeuc/HqOnxB2YRGY24DKyXhrRpv8mSEuSX8pUEmuRY3vKJ8avlYCY8VlLQ==
+X-Received: by 2002:a05:6a21:890d:b0:1e1:9fef:e96a with SMTP id adf61e73a8af0-1e1b1a79c40mr3694721637.6.1733798399161;
+        Mon, 09 Dec 2024 18:39:59 -0800 (PST)
 Received: from localhost.localdomain ([2620:10d:c090:400::5:83b0])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215f8e5f031sm79221425ad.82.2024.12.09.18.39.52
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fd560985e0sm1471732a12.79.2024.12.09.18.39.57
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 09 Dec 2024 18:39:54 -0800 (PST)
+        Mon, 09 Dec 2024 18:39:58 -0800 (PST)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: andrii@kernel.org,
@@ -89,9 +89,9 @@ Cc: andrii@kernel.org,
 	tj@kernel.org,
 	linux-mm@kvack.org,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next v2 3/6] locking/local_lock: Introduce local_trylock_irqsave()
-Date: Mon,  9 Dec 2024 18:39:33 -0800
-Message-Id: <20241210023936.46871-4-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next v2 4/6] memcg: Add __GFP_TRYLOCK support.
+Date: Mon,  9 Dec 2024 18:39:34 -0800
+Message-Id: <20241210023936.46871-5-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20241210023936.46871-1-alexei.starovoitov@gmail.com>
 References: <20241210023936.46871-1-alexei.starovoitov@gmail.com>
@@ -105,90 +105,69 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Similar to local_lock_irqsave() introduce local_trylock_irqsave().
-It uses spin_trylock in PREEMPT_RT and always succeeds when !RT.
+Teach memcg to operate under __GFP_TRYLOCK conditions when
+spinning locks cannot be used.
+The end result is __memcg_kmem_charge_page() and
+__memcg_kmem_uncharge_page() become lockless.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- include/linux/local_lock.h          |  9 +++++++++
- include/linux/local_lock_internal.h | 23 +++++++++++++++++++++++
- 2 files changed, 32 insertions(+)
+ mm/memcontrol.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/local_lock.h b/include/linux/local_lock.h
-index 091dc0b6bdfb..6880c29b8b98 100644
---- a/include/linux/local_lock.h
-+++ b/include/linux/local_lock.h
-@@ -30,6 +30,15 @@
- #define local_lock_irqsave(lock, flags)				\
- 	__local_lock_irqsave(lock, flags)
- 
-+/**
-+ * local_trylock_irqsave - Try to acquire a per CPU local lock, save and disable
-+ *			   interrupts. Always succeeds in !PREEMPT_RT.
-+ * @lock:	The lock variable
-+ * @flags:	Storage for interrupt flags
-+ */
-+#define local_trylock_irqsave(lock, flags)			\
-+	__local_trylock_irqsave(lock, flags)
-+
- /**
-  * local_unlock - Release a per CPU local lock
-  * @lock:	The lock variable
-diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
-index 8dd71fbbb6d2..2c0f8a49c2d0 100644
---- a/include/linux/local_lock_internal.h
-+++ b/include/linux/local_lock_internal.h
-@@ -31,6 +31,13 @@ static inline void local_lock_acquire(local_lock_t *l)
- 	l->owner = current;
- }
- 
-+static inline void local_trylock_acquire(local_lock_t *l)
-+{
-+	lock_map_acquire_try(&l->dep_map);
-+	DEBUG_LOCKS_WARN_ON(l->owner);
-+	l->owner = current;
-+}
-+
- static inline void local_lock_release(local_lock_t *l)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7b3503d12aaf..459f35f15819 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1756,7 +1756,8 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+  *
+  * returns true if successful, false otherwise.
+  */
+-static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
++static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages,
++			  gfp_t gfp_mask)
  {
- 	DEBUG_LOCKS_WARN_ON(l->owner != current);
-@@ -45,6 +52,7 @@ static inline void local_lock_debug_init(local_lock_t *l)
- #else /* CONFIG_DEBUG_LOCK_ALLOC */
- # define LOCAL_LOCK_DEBUG_INIT(lockname)
- static inline void local_lock_acquire(local_lock_t *l) { }
-+static inline void local_trylock_acquire(local_lock_t *l) { }
- static inline void local_lock_release(local_lock_t *l) { }
- static inline void local_lock_debug_init(local_lock_t *l) { }
- #endif /* !CONFIG_DEBUG_LOCK_ALLOC */
-@@ -91,6 +99,13 @@ do {								\
- 		local_lock_acquire(this_cpu_ptr(lock));		\
- 	} while (0)
+ 	struct memcg_stock_pcp *stock;
+ 	unsigned int stock_pages;
+@@ -1766,7 +1767,11 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 	if (nr_pages > MEMCG_CHARGE_BATCH)
+ 		return ret;
  
-+#define __local_trylock_irqsave(lock, flags)			\
-+	({							\
-+		local_irq_save(flags);				\
-+		local_trylock_acquire(this_cpu_ptr(lock));	\
-+		1;						\
-+	})
-+
- #define __local_unlock(lock)					\
- 	do {							\
- 		local_lock_release(this_cpu_ptr(lock));		\
-@@ -148,6 +163,14 @@ typedef spinlock_t local_lock_t;
- 		__local_lock(lock);				\
- 	} while (0)
+-	local_lock_irqsave(&memcg_stock.stock_lock, flags);
++	if (!local_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
++		if (gfp_mask & __GFP_TRYLOCK)
++			return ret;
++		local_lock_irqsave(&memcg_stock.stock_lock, flags);
++	}
  
-+#define __local_trylock_irqsave(lock, flags)			\
-+	({							\
-+		typecheck(unsigned long, flags);		\
-+		flags = 0;					\
-+		migrate_disable();				\
-+		spin_trylock(this_cpu_ptr((__lock)));		\
-+	})
-+
- #define __local_unlock(__lock)					\
- 	do {							\
- 		spin_unlock(this_cpu_ptr((__lock)));		\
+ 	stock = this_cpu_ptr(&memcg_stock);
+ 	stock_pages = READ_ONCE(stock->nr_pages);
+@@ -1851,7 +1856,15 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+ {
+ 	unsigned long flags;
+ 
+-	local_lock_irqsave(&memcg_stock.stock_lock, flags);
++	if (!local_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
++		/*
++		 * In !RT local_trylock_irqsave() always succeeds.
++		 * In case of unlikely failure to lock percpu stock_lock in RT
++		 * uncharge memcg directly.
++		 */
++		mem_cgroup_cancel_charge(memcg, nr_pages);
++		return;
++	}
+ 	__refill_stock(memcg, nr_pages);
+ 	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+ }
+@@ -2196,7 +2209,7 @@ int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	unsigned long pflags;
+ 
+ retry:
+-	if (consume_stock(memcg, nr_pages))
++	if (consume_stock(memcg, nr_pages, gfp_mask))
+ 		return 0;
+ 
+ 	if (!do_memsw_account() ||
 -- 
 2.43.5
 
