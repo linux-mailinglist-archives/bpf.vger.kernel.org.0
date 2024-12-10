@@ -1,124 +1,120 @@
-Return-Path: <bpf+bounces-46545-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46546-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 130E59EB9AB
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 19:53:50 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10EEC9EB9B4
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 19:59:16 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4045728347A
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 18:53:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54A33166C97
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 18:59:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ACDD214205;
-	Tue, 10 Dec 2024 18:53:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D9A214200;
+	Tue, 10 Dec 2024 18:59:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZDATLtdn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nwn7KQLM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C75198A02;
-	Tue, 10 Dec 2024 18:53:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E0886321;
+	Tue, 10 Dec 2024 18:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733856820; cv=none; b=tBmQfKjrX7yAQEFU4ALa70ynS/GX/USO6xhDkm2XLl/fJEDLu6xGqvtPat89LmKib29+ndaH9pPlEkBrVR1N8gdaUMHAEG2R13SuIxTuSZHgkePj6yzFzrwmv43fGQu5JRJIxQnhgX3zutwjUpIL2sIHRYYdGrA8dwbleXtAPgA=
+	t=1733857146; cv=none; b=u5L9dACzGj71+qlLxriiFWRCO+ROeCVqkjNEQDQSkjWDgqNxDcJSmwGIx+UWlp4GeAxRevU6Ty6unD72JArYmHSq+F5beHktqJGOyeLupm7Hx6JgH0CQ48cUz+hMuN9jWUjKnQ9FwwfCF/WCZHK5plygTPc/JBaAbcMi8zX1r0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733856820; c=relaxed/simple;
-	bh=TzF94QgXzQpaPKyt9mrR4VL7WfvLEsI7X97HOrLI4uo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ngR5fokwy6m1XDDfVMHv+/1WaFmKIY51P/VxhHLixbLQqxIwcvtfyqGM8Qe4QX4pwZLIRubDpDNC9R2kpNlqzkO2+p+kwIeHADaBXXml7BZmgCWC0QwnYn7fqfO56hYLjFvXe+Qlqe3VOIEgSZlDF54iDuf2x+aYmbLyqBH3ISM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZDATLtdn; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1733857146; c=relaxed/simple;
+	bh=6GDkXPNSXjUHcYvqBEdRjcYpKp1W111gqk3lUxV6vCc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CzAV/mB28o2f/aJ+AbLducP+N2rei72XP0cLvZe7bz7b7CwBJmuTHBpYiYsz2VWIvRnvYfMSy/Avaav4lXjZeXEiy8iOZ0F6AV8RKqj6BZJLQojOmYrUm3mDzn7dAZ76QnAt/oHy1tirxnpjna5N6JOHGp4kBqc9dpSPn/aVMOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nwn7KQLM; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-21675fd60feso12871205ad.2;
-        Tue, 10 Dec 2024 10:53:38 -0800 (PST)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-386329da1d9so2017868f8f.1;
+        Tue, 10 Dec 2024 10:59:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733856818; x=1734461618; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rNsyydIwl66sSjjl3CYkU8GYTKtrGgErrtD8xsFywJQ=;
-        b=ZDATLtdn6d27FApQ+7gVz6YLFE8mxGKuCzeMnXY5kO6C5zQMccrbUTa0PhYFRZD9bR
-         h80h+iBniSENtNFcNeHPPaZZGo6K/N92pooK33G3kRrYsCvqulQthhA9oRPhJG0AP9rv
-         NRgIhKAQfQvkkWyU1C5wDZHJWw3p7YOJNSEunSgWF7X3drncWSpW4Jpg0QfP1ZhQXbEP
-         cGr+cXLUHfnx7zo0BJBWiH6rdKBCAJYITzX3W27f1SOUQyCy1mOhtb7ERJguTkOibpYO
-         szx2Spk8n0ZplagtLPeyN5xoGXOcE5NWyASWiPzIXTx2rwlseMVueeav+QlYolVeubyi
-         lBQA==
+        d=gmail.com; s=20230601; t=1733857143; x=1734461943; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6GDkXPNSXjUHcYvqBEdRjcYpKp1W111gqk3lUxV6vCc=;
+        b=Nwn7KQLMJ3fAWDbKMOtOHagEXhpcAC7wosnwOmu6CuvTFKl4vDtdoSW4RWqYjaXM09
+         zrVgEmMf8VHyP2gsuINqbLOE+bubcgYgduHzPLFsrfoIbG+XLsEjsNZy6zUlXqcyhyz/
+         iRzGelajQDuRGrt8n2/IONeINr+GF3cfJFipfIqtbHMAdPUnDuNrAHFIDL+oQWLpdxVv
+         8fjK7R8z0H4HkPCMuynILoVF3yhK8W3l9MrHPSuo07efPKLCf/WbBTTj6ms3yEEl4hCo
+         8nuTQjOVoPiZvGhwODoPNiVXzhxnFvq7BGnpA4d+cHxZn9NPTr6nJFNplf1jDBF8/jwI
+         8ccw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733856818; x=1734461618;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rNsyydIwl66sSjjl3CYkU8GYTKtrGgErrtD8xsFywJQ=;
-        b=eRUBulG/n8/4mXuHmgiyeLwlptcB5lLoMdsBTbVa8eJzG1TXeSCHgIevCbwXcMBD+D
-         MymjmSlDLseLamU4tWsoXhj49c5aaiVSlTgsjC3JG6N3Q16L7q30sMG/k6+8QlWMCeLW
-         EOoxlrtz+wunpbrerXHc1je5fXPXrGypmY5XTvaIghMMyVaIA+ja9JtdEZoj69UaqHpt
-         J5CsrY+6OvLZ43pK3ZfYSzXPXKPRqzxEy6Ac72tghzLapr7rabz+Wx2DXy+D3oxvSFBp
-         /rgtrvdRcXu3345zI8eVwdyXxwWroBGJluiOiRYfe6ZpskZMsD1W5eUlvGKsNUTPBi/Z
-         zA0w==
-X-Forwarded-Encrypted: i=1; AJvYcCV3ZYGKkRvQatLao/Fy/WhHLFmfBbQMmAnIB3wX5BKWNEpnPAmRX5qtuHabWUJDW/GwTTX1iyMaBp4XYmSp@vger.kernel.org, AJvYcCXAE+yGJiIlcyKVzBfqkO3j8Qf7hcRAbDmrrkTNLkqwduFFHqblsv3u2ghiWN8bLMugrps=@vger.kernel.org
-X-Gm-Message-State: AOJu0YywDPk+SUiEtAPorG8bdbq2Kvyrimuly+QyJOcNqFmMpOOruadW
-	z6NUS4PMzYGIc56N6420xg6yweDxvt++1bpKZWfpY1pJARF8mVB+
-X-Gm-Gg: ASbGncsyVTyt7opV2Sv2le4F8r4cwBQdzUhxkfzYP1U7I4sAZLTpDXe7NET+dXbi8tR
-	vpmaHsF46o+stR8zWKp86Yd1Xr+vz1UFiKHlq7pORIdT8FQeHGkYitY53O7te0pl839Q4RqRY79
-	hMuDuPnTFjjUqYXChYXHjUoJzpvJcu5W9mkpWP5ksYvTe7JDkEfIsgNj6sD3/t2/ESt4+AXrm6m
-	1YyWphZk49eg8DMipENbNdzIAGaWsl4/JASbAUuJYT/ZyCE1V3Zmatn5B+zWQ==
-X-Google-Smtp-Source: AGHT+IHM+cOqdFD9AUuJcFTyaadANWzTfxErpO9cPW/f/2GLdOnzOxQGcRxuhOxQyri87pGE7nX6Og==
-X-Received: by 2002:a17:903:32ca:b0:215:e98c:c5bc with SMTP id d9443c01a7336-217786973f7mr3343045ad.48.1733856818321;
-        Tue, 10 Dec 2024 10:53:38 -0800 (PST)
-Received: from prabhav.. ([2401:4900:883c:fe07:6a22:81d1:4779:d894])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215f8e41e52sm92675955ad.3.2024.12.10.10.53.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Dec 2024 10:53:37 -0800 (PST)
-From: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] BPF-Helpers : Correct spelling mistake
-Date: Wed, 11 Dec 2024 00:23:21 +0530
-Message-Id: <20241210185321.23144-1-pvkumar5749404@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1733857143; x=1734461943;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6GDkXPNSXjUHcYvqBEdRjcYpKp1W111gqk3lUxV6vCc=;
+        b=vN7oB9LL0GEHbaKuiNjI4m5lTGewwl8OTcrr/1WSLmdFesuwtUe7pLvo1dIClPPq2F
+         yhISuB+mA7/ZPlLT4lMcXT3D6zlBDRvz3DoZuSINGpdDxHxwyCMIxM/Wg09UdC3oP3oj
+         I2PxIYlHeWFBWH9ZX7Kg0ZwBwDj8R5DWhPhYHcSzJXyMFPGJ+XG+hkDfJr8WrQflb15t
+         EHw/1f/0IMEVI687yqcQ2suqS7ulS7fVSPbC3ySRIJiuj8EKI6qd8MeI13HW/ePPpXnK
+         Ymx0L8lAM+lW0SX2hdHlWno1IJirFAkTgyISlyjO6Lw75SGubm2t04P6lLNXF+dGitu9
+         WYcA==
+X-Forwarded-Encrypted: i=1; AJvYcCUDcIBwwfdEOMp8bWDFMycqH0Y3PtFgBZDpq64OvAnAJoZudk4Q92FDt6B94K3CLeWc6yIIIyDJOML5A+YF@vger.kernel.org, AJvYcCUe1HoJ1kiich+P2I8qLWosvWFSouOiKXI/PCGlrCqBfzuigx62ThNbYovPB8VScd74Bdw=@vger.kernel.org, AJvYcCVJrqt8DhI7+5jrcYKbS9pkUw5enegw8ucNero8mHyFzSj9Exanb2T4tGHpDKXMPwjv2VRPlLMRIlQUurJQsQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZqRyxUC7hvzEMAifkr9EjR3hfUZ4jtOdMuupOjao4h8rFX2ou
+	zdkLPSFxOWICIEi272g29CUTMVLwg5sAHU57d20B14sMbFn1AeQnZILHmR3eayVqAcSRCWyy98z
+	BqCe/x6mIz/JJVaWl3NPfBK38kL8=
+X-Gm-Gg: ASbGncuuyrxkZLwcItPjKZsUyZxg0VlvcibdA8RuauUtuetFXWBZgs+2kNWphgisGm7
+	3+6/czdi5JKbxqDpDv5JvCxoQpDD755AiF3ZqjzYdkHlFZzT3hBg=
+X-Google-Smtp-Source: AGHT+IFnNHuIpD8rR77vf+oW8W5FNiYiAGRWby5lFgTpK2HxN2hD4FuiT9cxsYlQAbJq6RjI08PCypuGH4LCQzHLAC4=
+X-Received: by 2002:a05:6000:2d06:b0:386:36e7:f44f with SMTP id
+ ffacd0b85a97d-3864ce54e99mr110651f8f.18.1733857143335; Tue, 10 Dec 2024
+ 10:59:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <AM6PR03MB508010982C37DF735B1EAA0E993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB50804FA149F08D34A095BA28993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <20241210-eckig-april-9ffc098f193b@brauner>
+In-Reply-To: <20241210-eckig-april-9ffc098f193b@brauner>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 10 Dec 2024 10:58:52 -0800
+Message-ID: <CAADnVQKdBrX6pSJrgBY0SvFZQLpu+CMSshwD=21NdFaoAwW_eg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/5] bpf: Make fs kfuncs available for SYSCALL
+ and TRACING program types
+To: Christian Brauner <brauner@kernel.org>
+Cc: Juntong Deng <juntong.deng@outlook.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Changes :
-	- "unsinged" is spelled correctly to "unsigned"
+On Tue, Dec 10, 2024 at 6:43=E2=80=AFAM Christian Brauner <brauner@kernel.o=
+rg> wrote:
+>
+> On Tue, Dec 10, 2024 at 02:03:53PM +0000, Juntong Deng wrote:
+> > Currently fs kfuncs are only available for LSM program type, but fs
+> > kfuncs are generic and useful for scenarios other than LSM.
+> >
+> > This patch makes fs kfuncs available for SYSCALL and TRACING
+> > program types.
+>
+> I would like a detailed explanation from the maintainers what it means
+> to make this available to SYSCALL program types, please.
 
-Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
----
- kernel/bpf/helpers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sigh.
+This is obviously not safe from tracing progs.
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 532ea74d4850..1493f1daecaa 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -3057,7 +3057,7 @@ __bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__sz, const void __user
- 	return ret + 1;
- }
- 
--/* Keep unsinged long in prototype so that kfunc is usable when emitted to
-+/* Keep unsigned long in prototype so that kfunc is usable when emitted to
-  * vmlinux.h in BPF programs directly, but note that while in BPF prog, the
-  * unsigned long always points to 8-byte region on stack, the kernel may only
-  * read and write the 4-bytes on 32-bit.
--- 
-2.34.1
+From BPF_PROG_TYPE_SYSCALL these kfuncs should be safe to use,
+since those progs are not attached to anything.
+Such progs can only be executed via sys_bpf syscall prog_run command.
+They're sleepable, preemptable, faultable, in task ctx.
 
+But I'm not sure what's the value of enabling these kfuncs for
+BPF_PROG_TYPE_SYSCALL.
 
