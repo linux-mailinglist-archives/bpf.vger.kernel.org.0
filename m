@@ -1,162 +1,117 @@
-Return-Path: <bpf+bounces-46578-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46580-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EABA99EBE15
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 23:49:55 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46BBE9EBF3A
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 00:24:13 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4691B165283
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 23:24:09 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14BDA21126D;
+	Tue, 10 Dec 2024 23:24:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="tAIKk3I+"
+X-Original-To: bpf@vger.kernel.org
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6836B28365E
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 22:49:54 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77621F1929;
-	Tue, 10 Dec 2024 22:49:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BIyF0IpZ"
-X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A89AD211287
-	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 22:49:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7492186324;
+	Tue, 10 Dec 2024 23:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733870970; cv=none; b=XBipB1lxVdt6kD6GUQHi/VRqgvcYxvFidP2JRc2by9BL7Q5mcYuHn4CgGX0sVhx0XCyik0o1/TaUW3CGcri/jcOtyegm3zxOEwlb3D2g/jlzmYaRy9KR4t/M9gzTIOODYuJS/advFecdpflIRIm61JXBNFNYuSD2ZMcaguw4gaQ=
+	t=1733873046; cv=none; b=ZDAbGJeqRLXhiZt5gt+pqHXamjwygjdPQcBgL6YwmHWdm2sNKtmVvOS1+oWbcniAyKP7kXGppZzju00Fvk2pjqomX4on+Oc7ESGD1SLx4HpKqESJo9rFevZdNJuOIdNWIezs/Nefc93bNbq6xeZRJp4iCxHAcy8V11yEhujBRbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733870970; c=relaxed/simple;
-	bh=OjYMfVbzJKRLFDbxdyOMBxsGjVluYJR8NLyt97uwhPU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BVs/19DsCrvWRWu5LoI0pLjjYnrM4U5jEvfe7rJCG/PGXfZx42yK3qgms1RgMUCBCgg0bFKdswez2T8WoKbt22s00G7k8Jg7vUkIHm1nWUJ5+OEma3to9DujPiCY5ylATJk5VVjwpaXxqaxawE/MOMGiMbe4lL+RXO5hR5hVb3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BIyF0IpZ; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-43618283dedso8968905e9.3
-        for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 14:49:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733870966; x=1734475766; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+3SmH96rZdAmxXm/LtFzOTj0/FSlJY104Q51DFmlAfw=;
-        b=BIyF0IpZUbO+dXV3w8dIULFW7YjX/QYE3cP4dzbTPP0OwLJxyoXFgEo8WMy6fT0gZr
-         9VnHd0jZnNIhDQkq7WvJU8phz4Ud2Gy+iZrtXD7MYdpdr2mM6QQoyEgB86PYzCqBSKxM
-         vU05uqQhhQMDEomqlGBqYqgR42tmJeQm7V7jjC91+JIQH0h74PTsYlkW+AxbMqQeCi9X
-         sT7JFck4039BzWaty1w2HqT7dWMMCON3VgYrIK9FzOU/XislWqHS/xfmwdiqgtgmvbnT
-         r42jesFDj0Q89H9/PyanLiI7+/gor5N8kPmO2aN91KTC1JcEWhRnUENO3mswlqVQ11T0
-         +0Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733870966; x=1734475766;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+3SmH96rZdAmxXm/LtFzOTj0/FSlJY104Q51DFmlAfw=;
-        b=M1/KFToBXYR4/38obD6IskLvP1XWbyEPnIo3sCaxzVfEAkB2jIYNbByD6Odm2sgoUw
-         ILtORrDv8RLddfcWsOh4ysv+8k2aaAMwD7v3izgcA9ruJ0sT0DPLxPqukdSX/B96JtPy
-         FB4jd4jOZBn25yM7+ayTVtJ4LPS8TP7vbY2ZNoOaACJV2YTpt3/wQbbabINcvPDWJZKN
-         nbw+THQXHJDEe6HSI6iFYGHA527z/eSknY40aSYXhQiQMbfomiun2Eup67KA9r+Qf0zo
-         hR6E28lvv0V5W3S0XcUYm9krcEiyiOC/LdaBs/c40MEFVpLUqnKl7w1SNW3cIyY5WUcg
-         JtDw==
-X-Gm-Message-State: AOJu0Yy/Yn9ri6ltwMdqcj28EyLGSXkbjuOzb563xbEMqQ6OCRWC2fIY
-	kOqiSfucTtd8VdRIjIvgWvxRU2NEFGxZ/QSXX6JXTv/RDhQSwZnOYSqD2TNatob4/z+rLOqOnrl
-	RwpcNkkjxO78HX3wrF0eeai51D1A=
-X-Gm-Gg: ASbGnctVkdDwll6Fq0S7Y5kZc5L8ZpRwIRjiKt72QZ5LvGEfKwQ4sNGsNprzcis66rB
-	BDB0k+8aTTwrBY2FjCSfrLxJ0q4Qt4WTfX3xkl81COIW2/2JEcDQ=
-X-Google-Smtp-Source: AGHT+IGj6D9A1VwFS0CULfUzd94ydRp3gIEuxsI0eI+elw2hof/SD0900ib3R/UplLbD13SBkGMK3x8lGNh63gTolfY=
-X-Received: by 2002:a05:6000:2a7:b0:385:ddd2:6ab7 with SMTP id
- ffacd0b85a97d-3864ced2f4dmr641758f8f.52.1733870966112; Tue, 10 Dec 2024
- 14:49:26 -0800 (PST)
+	s=arc-20240116; t=1733873046; c=relaxed/simple;
+	bh=uRN07EVZGn1ySGZv5iCrZP2k3eDPDlir8l8cG+/nBNg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=djVFawKNe3h8O09yj+dsQqCxJiZ3urOFUviHHFBHjjARJH1MtmhJO1nGwnrO/r62lAcQxPZ5MPCWkCZ3m7OUthgaAXSLx3uwdkNIAZ63JJltxMiQen45cxtKyxMoNzZS33UtJdNMj506X9MvVFYlKsZMM5k6dNxl3WBV5exPUK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=tAIKk3I+; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1733873039;
+	bh=uRN07EVZGn1ySGZv5iCrZP2k3eDPDlir8l8cG+/nBNg=;
+	h=From:Date:Subject:To:Cc:From;
+	b=tAIKk3I+YW3bATNqVJ0HOahk0dHpNyEmUl/XAnNV2d1K9+Rnfqwbv9EkHB/9FS8Kf
+	 iljXflny+OcKhx5xwZNC/GQAwsgo3zE+Royibl8Kg/hkXsAdoORvu3RkS825Fss4uj
+	 Jrze6upuoWOVNRo4WrkCfZYNcEJrIchHlmdGD888=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Wed, 11 Dec 2024 00:23:50 +0100
+Subject: [PATCH bpf-next] kbuild, bpf: Enable reproducible BTF generation
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241210023936.46871-1-alexei.starovoitov@gmail.com>
- <20241210023936.46871-3-alexei.starovoitov@gmail.com> <20241210083503.zJdPI8s5@linutronix.de>
-In-Reply-To: <20241210083503.zJdPI8s5@linutronix.de>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 10 Dec 2024 14:49:14 -0800
-Message-ID: <CAADnVQJ6c6R5wr1qpQBKnYh2WOC6SjiuZg9K=3ULePOh=5T8_Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/6] mm, bpf: Introduce free_pages_nolock()
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, 
-	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev, Michal Hocko <mhocko@suse.com>, 
-	Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Tejun Heo <tj@kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20241211-pahole-reproducible-v1-1-22feae19bad9@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAIXNWGcC/x3MTQqAIBBA4avErBNSgn6uEi0cnWogVMaKILp70
+ vJbvPdAJmHKMFYPCF2cOYYCXVfgNhtWUuyLwTSm1dq0Ktkt7qSEkkR/OsYCg303WNejtwilTEI
+ L3/91AkyLCnQfML/vB8Sjn3FvAAAA
+X-Change-ID: 20241124-pahole-reproducible-2b879ac8bdab
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
+ Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
+ Kui-Feng Lee <kuifeng@fb.com>, Alan Maguire <alan.maguire@oracle.com>, 
+ Martin Rodriguez Reboredo <yakoyoku@gmail.com>, 
+ Miguel Ojeda <ojeda@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1733873038; l=1632;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=uRN07EVZGn1ySGZv5iCrZP2k3eDPDlir8l8cG+/nBNg=;
+ b=/K5by3KiAguNYUyBxdbON2ym8wXtDZA5r1rYnu1i+YNRs8mopxH+WoCM6tKFjMPPByj6lVsUw
+ jkPJPbm5x6PBNY00W47hd982/eRvPPKNVhI11w3Y82iNHI0M3Mpptyl
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-On Tue, Dec 10, 2024 at 12:35=E2=80=AFAM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> On 2024-12-09 18:39:32 [-0800], Alexei Starovoitov wrote:
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index d511e68903c6..a969a62ec0c3 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -1251,9 +1254,33 @@ static void free_one_page(struct zone *zone, str=
-uct page *page,
-> >                         unsigned long pfn, unsigned int order,
-> >                         fpi_t fpi_flags)
-> >  {
-> > +     struct llist_head *llhead;
-> >       unsigned long flags;
-> >
-> > -     spin_lock_irqsave(&zone->lock, flags);
-> > +     if (!spin_trylock_irqsave(&zone->lock, flags)) {
-> > +             if (unlikely(fpi_flags & FPI_TRYLOCK)) {
-> > +                     /* Remember the order */
-> > +                     page->order =3D order;
-> > +                     /* Add the page to the free list */
-> > +                     llist_add(&page->pcp_llist, &zone->trylock_free_p=
-ages);
-> > +                     return;
-> > +             }
-> > +             spin_lock_irqsave(&zone->lock, flags);
-> > +     }
-> > +
-> > +     /* The lock succeeded. Process deferred pages. */
-> > +     llhead =3D &zone->trylock_free_pages;
-> > +     if (unlikely(!llist_empty(llhead))) {
-> > +             struct llist_node *llnode;
-> > +             struct page *p, *tmp;
-> > +
-> > +             llnode =3D llist_del_all(llhead);
->
-> Do you really need to turn the list around?
+Pahole v1.27 added a new BTF generation feature to support
+reproducibility in the face of multithreading.
+Enable it if supported and reproducible builds are requested.
 
-I didn't think LIFO vs FIFO would make a difference.
-Why spend time rotating it?
+As unknown --btf_features are ignored, avoid the test for the pahole
+version to keep the line readable.
 
-> > +             llist_for_each_entry_safe(p, tmp, llnode, pcp_llist) {
-> > +                     unsigned int p_order =3D p->order;
-> > +                     split_large_buddy(zone, p, page_to_pfn(p), p_orde=
-r, fpi_flags);
-> > +                     __count_vm_events(PGFREE, 1 << p_order);
-> > +             }
->
-> We had something like that (returning memory in IRQ/ irq-off) in RT tree
-> and we got rid of it before posting the needed bits to mm.
->
-> If we really intend to do something like this, could we please process
-> this list in an explicitly locked section? I mean not in a try-lock
-> fashion which might have originated in an IRQ-off region on PREEMPT_RT
-> but in an explicit locked section which would remain preemptible. This
-> would also avoid the locking problem down the road when
-> shuffle_pick_tail() invokes get_random_u64() which in turn acquires a
-> spinlock_t.
+Fixes: b4f72786429c ("scripts/pahole-flags.sh: Parse DWARF and generate BTF with multithreading.")
+Fixes: 72d091846de9 ("kbuild: avoid too many execution of scripts/pahole-flags.sh")
+Link: https://lore.kernel.org/lkml/4154d202-5c72-493e-bf3f-bce882a296c6@gentoo.org/
+Link: https://lore.kernel.org/lkml/20240322-pahole-reprodicible-v1-1-3eaafb1842da@weissschuh.net/
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ scripts/Makefile.btf | 1 +
+ 1 file changed, 1 insertion(+)
 
-I see. So the concern is though spin_lock_irqsave(&zone->lock)
-is sleepable in RT, bpf prog might have been called in the context
-where preemption is disabled and do split_large_buddy() for many
-pages might take too much time?
-How about kicking irq_work then? The callback is in kthread in RT.
-We can irq_work_queue() right after llist_add().
+diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
+index c3cbeb13de503555adcf00029a0b328e74381f13..da23265bc8b3cf43c0a1c89fbc4f53815a290e13 100644
+--- a/scripts/Makefile.btf
++++ b/scripts/Makefile.btf
+@@ -22,6 +22,7 @@ else
+ 
+ # Switch to using --btf_features for v1.26 and later.
+ pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j$(JOBS) --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs
++pahole-flags-$(if $(KBUILD_BUILD_TIMESTAMP),y) += --btf_features=reproducible_build
+ 
+ ifneq ($(KBUILD_EXTMOD),)
+ module-pahole-flags-$(call test-ge, $(pahole-ver), 126) += --btf_features=distilled_base
 
-Or we can process only N pages at a time in this loop and
-llist_add() leftover back into zone->trylock_free_pages.
+---
+base-commit: 7cb1b466315004af98f6ba6c2546bb713ca3c237
+change-id: 20241124-pahole-reproducible-2b879ac8bdab
+
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
+
 
