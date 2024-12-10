@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-46480-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46479-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CFA79EA6F7
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 05:05:09 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8779418893D0
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 04:05:08 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0679227588;
-	Tue, 10 Dec 2024 04:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="FfwWb/l7"
-X-Original-To: bpf@vger.kernel.org
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8326D9EA6F3
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 05:04:56 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCB7F22619A;
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43A1C282E82
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 04:04:55 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1F222619E;
 	Tue, 10 Dec 2024 04:04:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Mui6jyZx"
+X-Original-To: bpf@vger.kernel.org
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950DF2248B2;
+	Tue, 10 Dec 2024 04:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733803463; cv=none; b=AVlJZwaMmKcjpbEEH7tqOzZfaMdOmMck7KB+lpT+8k9PIxOz2WkDK7rgNwBRcVX2dmRAkty4eLTUjQBpoLDYKvSzJqFjRhXXf0fGChA+IZGaakIKpj/NQbYoooQnrC27kkenysAa17nqWp9HAwhyGds2b9vecWnBlW8sfPaKKfk=
+	t=1733803460; cv=none; b=h1/ywEyqXVEXNy5lmMRR5SS/q/j33o2hIaUloG1S1LA3cp/OcbSz9iuIQ7PpuL24v7AEwhIbABJ/hXhqtOKrSNXHDbtrfi/iVPNe71w2x2imStt7FllOwSN2+lzzWC2s9WsFQsmWZIimxCpQxGx4lrvxBcE9Vv4b6xSqIDO198Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733803463; c=relaxed/simple;
-	bh=57OmKpCVaV9+6+Gxh8YTWvBSSvQ36c0/+xPMzPoYskQ=;
+	s=arc-20240116; t=1733803460; c=relaxed/simple;
+	bh=AZOdek+RUNNOrIdFnpTnEdTFyhO7MNA3UCr2W4Qo4WY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MyHhDeNVxSB14rDoLI8AKlJ1wThHjqqRTbUEgXwFSYAXRa33WQ3y4PqgBVzFMiIh6F58Y8ZWc272BP5LM18NJ3tTy7PjFWwMlcxYlalo9z3FK3kC4LfzEsRRame52O23UuA8ms2ZouvDNh+uqZ2bz4Z0PmXtgeaG9E6Lxaz8GKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=FfwWb/l7; arc=none smtp.client-ip=115.124.30.112
+	 MIME-Version; b=Ysf5ngO4DaSOybnIh0jvDes+Ow2gHjEKA1vPrtxurWNVlVOObzlG6IW26pYSr4HKz5lQ7v0M75tyBfJrcag8o0VdtnyN54CwGsrokU+XwUu9zAp9B1aFTqWvZV/1yRNdVz1ToXpBKSXXEUwIsA2x5zSgFow06RkxaghZt4kg73o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Mui6jyZx; arc=none smtp.client-ip=115.124.30.119
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1733803453; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=bVfMYczw64bHkwD9YBUFT8bRGuZT+R6Ml3/2tolKU4c=;
-	b=FfwWb/l7kE9gv70B+A1BVVJPG0Q7AOfgHRZgC1KVn3dxhhgcd6f726kKvpNkSfmgEd8UmY4J4IqYcAcDZjJxKCM77+KSfXzJvtsB5t+eO3/NvGzkZCNnxRa71XREGfE+SY9kYCjItojcSdQb0oSSRiomv2UXLF8tpn8FGAEhmW4=
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WLDSEYJ_1733803451 cluster:ay36)
+	t=1733803454; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=3m/Oe9SBWSoTllrI9BCOOJJsHqYj/BHA8hL2sssyCyE=;
+	b=Mui6jyZxjGczQf4SA10vYMxtcpEMGR/irecKq207IL/HHqJiFs6FkiRqazLJvAIosupyj9IQUW2zDh9u533FLcx1aTLTSnb47l/SlSU6Ie9ehJHeCW+O8Rw7sukLN6ySuSu+2mqsd3U6aVw+KFoWMUvLXGB05GED6CgnuCzZ5cg=
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WLDSEYV_1733803452 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Tue, 10 Dec 2024 12:04:11 +0800
+          Tue, 10 Dec 2024 12:04:12 +0800
 From: "D. Wythe" <alibuda@linux.alibaba.com>
 To: kgraul@linux.ibm.com,
 	wenjia@linux.ibm.com,
@@ -63,9 +63,9 @@ Cc: kuba@kernel.org,
 	linux-s390@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/5] net/smc: bpf: register smc_ops info struct_ops
-Date: Tue, 10 Dec 2024 12:04:02 +0800
-Message-ID: <20241210040404.10606-4-alibuda@linux.alibaba.com>
+Subject: [PATCH bpf-next v2 4/5] libbpf: fix error when st-prefix_ops and ops from differ btf
+Date: Tue, 10 Dec 2024 12:04:03 +0800
+Message-ID: <20241210040404.10606-5-alibuda@linux.alibaba.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20241210040404.10606-1-alibuda@linux.alibaba.com>
 References: <20241210040404.10606-1-alibuda@linux.alibaba.com>
@@ -77,179 +77,96 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-To implement injection capability for smc via struct_ops, so that
-user can make their own smc_ops to modify the behavior of smc stack.
+When a struct_ops named xxx_ops was registered by a module, and
+it will be used in both built-in modules and the module itself,
+so that the btf_type of xxx_ops will be present in btf_vmlinux
+instead of in btf_mod, which means that the btf_type of
+bpf_struct_ops_xxx_ops and xxx_ops will not be in the same btf.
 
-Currently, user can write their own implememtion to choose whether to
-use SMC or not before TCP 3rd handshake to be comleted. In the future,
-users can implement more complex functions on smc by expanding it.
+Here are four possible case:
 
++--------+-------------+-------------+---------------------------------+
+|        | st_opx_xxx  | xxx         |                                 |
++--------+-------------+-------------+---------------------------------+
+| case 0 | btf_vmlinux | bft_vmlinux | be used and reg only in vmlinux |
++--------+-------------+-------------+---------------------------------+
+| case 1 | btf_vmlinux | bpf_mod     | INVALID			       |
++--------+-------------+-------------+---------------------------------+
+| case 2 | btf_mod     | btf_vmlinux | reg in mod but be used both in  |
+|        |             |             | vmlinux and mod.		       |
++--------+-------------+-------------+---------------------------------+
+| case 3 | btf_mod     | btf_mod     | be used and reg only in mod     |
++--------+-------------+-------------+---------------------------------+
+
+At present, cases 0, 1, and 3 can be correctly identified, because
+st_ops_xxx is searched from the same btf with xxx. In order to
+handle case 2 correctly without affecting other cases, we cannot simply
+change the search method for st_ops_xxx from find_btf_by_prefix_kind()
+to find_ksym_btf_id(), because in this way, case 1 will not be
+recognized anymore.
+
+To address this issue, if st_ops_xxx cannot be found in the btf with xxx
+and mod_btf does not exist, do find_ksym_btf_id() again to
+avoid such issue.
+
+Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
 Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 ---
- net/smc/af_smc.c  | 10 +++++
- net/smc/smc_ops.c | 99 +++++++++++++++++++++++++++++++++++++++++++++++
- net/smc/smc_ops.h |  2 +
- 3 files changed, 111 insertions(+)
+ tools/lib/bpf/libbpf.c | 34 +++++++++++++++++++++++++++++++---
+ 1 file changed, 31 insertions(+), 3 deletions(-)
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 9d76e902fd77..6adedae2986d 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -55,6 +55,7 @@
- #include "smc_sysctl.h"
- #include "smc_loopback.h"
- #include "smc_inet.h"
-+#include "smc_ops.h"
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 66173ddb5a2d..046feab4ec36 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -994,6 +994,27 @@ static int find_ksym_btf_id(struct bpf_object *obj, const char *ksym_name,
+ static int find_btf_by_prefix_kind(const struct btf *btf, const char *prefix,
+ 				   const char *name, __u32 kind);
  
- static DEFINE_MUTEX(smc_server_lgr_pending);	/* serialize link group
- 						 * creation on server
-@@ -3576,8 +3577,17 @@ static int __init smc_init(void)
- 		pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
- 		goto out_ulp;
++static int
++find_ksym_btf_id_by_prefix_kind(struct bpf_object *obj, const char *prefix,
++				const char *name,
++				__u16 kind, struct btf **res_btf,
++				struct module_btf **res_mod_btf)
++{
++	char btf_type_name[128];
++	int ret;
++
++	ret = snprintf(btf_type_name, sizeof(btf_type_name),
++		       "%s%s", prefix, name);
++	/* snprintf returns the number of characters written excluding the
++	 * terminating null. So, if >= BTF_MAX_NAME_SIZE are written, it
++	 * indicates truncation.
++	 */
++	if (ret < 0 || ret >= sizeof(btf_type_name))
++		return -ENAMETOOLONG;
++
++	return find_ksym_btf_id(obj, btf_type_name, kind, res_btf, res_mod_btf);
++}
++
+ static int
+ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
+ 			   struct module_btf **mod_btf,
+@@ -1028,9 +1049,16 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
+ 	kern_vtype_id = find_btf_by_prefix_kind(btf, STRUCT_OPS_VALUE_PREFIX,
+ 						tname, BTF_KIND_STRUCT);
+ 	if (kern_vtype_id < 0) {
+-		pr_warn("struct_ops init_kern: struct %s%s is not found in kernel BTF\n",
+-			STRUCT_OPS_VALUE_PREFIX, tname);
+-		return kern_vtype_id;
++		if (kern_vtype_id == -ENOENT && !*mod_btf)
++			kern_vtype_id =
++				find_ksym_btf_id_by_prefix_kind(obj, STRUCT_OPS_VALUE_PREFIX,
++								tname, BTF_KIND_STRUCT, &btf,
++								mod_btf);
++		if (kern_vtype_id < 0) {
++			pr_warn("struct_ops init_kern: struct %s%s is not found in kernel BTF\n",
++				STRUCT_OPS_VALUE_PREFIX, tname);
++			return kern_vtype_id;
++		}
  	}
-+
-+	rc = smc_bpf_struct_ops_init();
-+	if (rc) {
-+		pr_err("%s: smc_bpf_struct_ops_init fails with %d\n", __func__, rc);
-+		goto out_inet;
-+	}
-+
- 	static_branch_enable(&tcp_have_smc);
- 	return 0;
-+out_inet:
-+	smc_inet_exit();
- out_ulp:
- 	tcp_unregister_ulp(&smc_ulp_ops);
- out_lo:
-diff --git a/net/smc/smc_ops.c b/net/smc/smc_ops.c
-index 0fc19cadd760..0f07652f4837 100644
---- a/net/smc/smc_ops.c
-+++ b/net/smc/smc_ops.c
-@@ -10,6 +10,10 @@
-  *  Author: D. Wythe <alibuda@linux.alibaba.com>
-  */
+ 	kern_vtype = btf__type_by_id(btf, kern_vtype_id);
  
-+#include <linux/bpf_verifier.h>
-+#include <linux/bpf.h>
-+#include <linux/btf.h>
-+
- #include "smc_ops.h"
- 
- static DEFINE_SPINLOCK(smc_ops_list_lock);
-@@ -49,3 +53,98 @@ struct smc_ops *smc_ops_find_by_name(const char *name)
- 	}
- 	return NULL;
- }
-+
-+static int __bpf_smc_stub_set_tcp_option(struct tcp_sock *tp) { return 1; }
-+static int __bpf_smc_stub_set_tcp_option_cond(const struct tcp_sock *tp,
-+					      struct inet_request_sock *ireq)
-+{
-+	return 1;
-+}
-+
-+static struct smc_ops __bpf_smc_bpf_ops = {
-+	.set_option		= __bpf_smc_stub_set_tcp_option,
-+	.set_option_cond	= __bpf_smc_stub_set_tcp_option_cond,
-+};
-+
-+static int smc_bpf_ops_init(struct btf *btf) { return 0; }
-+
-+static int smc_bpf_ops_reg(void *kdata, struct bpf_link *link)
-+{
-+	return smc_ops_reg(kdata);
-+}
-+
-+static void smc_bpf_ops_unreg(void *kdata, struct bpf_link *link)
-+{
-+	smc_ops_unreg(kdata);
-+}
-+
-+static int smc_bpf_ops_init_member(const struct btf_type *t,
-+				   const struct btf_member *member,
-+				   void *kdata, const void *udata)
-+{
-+	const struct smc_ops *u_ops;
-+	struct smc_ops *k_ops;
-+	u32 moff;
-+
-+	u_ops = (const struct smc_ops *)udata;
-+	k_ops = (struct smc_ops *)kdata;
-+
-+	moff = __btf_member_bit_offset(t, member) / 8;
-+	switch (moff) {
-+	case offsetof(struct smc_ops, name):
-+		if (bpf_obj_name_cpy(k_ops->name, u_ops->name,
-+				     sizeof(u_ops->name)) <= 0)
-+			return -EINVAL;
-+		return 1;
-+	case offsetof(struct smc_ops, flags):
-+		if (u_ops->flags & ~SMC_OPS_ALL_FLAGS)
-+			return -EINVAL;
-+		k_ops->flags = u_ops->flags;
-+		return 1;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int smc_bpf_ops_check_member(const struct btf_type *t,
-+				    const struct btf_member *member,
-+				    const struct bpf_prog *prog)
-+{
-+	u32 moff = __btf_member_bit_offset(t, member) / 8;
-+
-+	switch (moff) {
-+	case offsetof(struct smc_ops, name):
-+	case offsetof(struct smc_ops, flags):
-+	case offsetof(struct smc_ops, set_option):
-+	case offsetof(struct smc_ops, set_option_cond):
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct bpf_verifier_ops smc_bpf_verifier_ops = {
-+	.get_func_proto		= bpf_base_func_proto,
-+	.is_valid_access	= bpf_tracing_btf_ctx_access,
-+};
-+
-+static struct bpf_struct_ops bpf_smc_bpf_ops = {
-+	.name		= "smc_ops",
-+	.init		= smc_bpf_ops_init,
-+	.reg		= smc_bpf_ops_reg,
-+	.unreg		= smc_bpf_ops_unreg,
-+	.cfi_stubs	= &__bpf_smc_bpf_ops,
-+	.verifier_ops	= &smc_bpf_verifier_ops,
-+	.init_member	= smc_bpf_ops_init_member,
-+	.check_member	= smc_bpf_ops_check_member,
-+	.owner		= THIS_MODULE,
-+};
-+
-+int smc_bpf_struct_ops_init(void)
-+{
-+	return register_bpf_struct_ops(&bpf_smc_bpf_ops, smc_ops);
-+}
-diff --git a/net/smc/smc_ops.h b/net/smc/smc_ops.h
-index 214f4c99efd4..f4e50eae13f6 100644
---- a/net/smc/smc_ops.h
-+++ b/net/smc/smc_ops.h
-@@ -22,8 +22,10 @@
-  * Note: Caller MUST ensure it's was invoked under rcu_read_lock.
-  */
- struct smc_ops *smc_ops_find_by_name(const char *name);
-+int smc_bpf_struct_ops_init(void);
- #else
- static inline struct smc_ops *smc_ops_find_by_name(const char *name) { return NULL; }
-+static inline int smc_bpf_struct_ops_init(void) { return 0; }
- #endif /* CONFIG_SMC_OPS*/
- 
- #endif /* __SMC_OPS */
 -- 
 2.45.0
 
