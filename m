@@ -1,218 +1,325 @@
-Return-Path: <bpf+bounces-46575-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46576-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E06A39EBDF5
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 23:42:35 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41C409EBE10
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 23:49:29 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E94F31687DC
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 22:49:25 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1172451F1;
+	Tue, 10 Dec 2024 22:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="HpAEA4OL"
+X-Original-To: bpf@vger.kernel.org
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2063.outbound.protection.outlook.com [40.107.22.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A04E6283FE4
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2024 22:42:34 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E67951F1936;
-	Tue, 10 Dec 2024 22:42:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MDP+jfhG"
-X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FAAE1D014E
-	for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 22:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733870544; cv=none; b=i6qMUjChL8UT/QgDqDT6LBBDeWx9fqw5E8Y+q48rpYyfft8McKylZbCvhR2z9QJbXaeClydvdm8rlD+7Na1kYMpXfX7T0uu9IXPWvowPPqcURoMkzM9ioolnRok1bAlvzUAeFiimlzmKi8ykN1/2FYDIzfuxCsJhGrMmLPYXP5U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733870544; c=relaxed/simple;
-	bh=eAR55BMT3tm1hod1H8QH9auL3F5QCe1VipF4snxPGJI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u9SGi3tNM6Al3QgYK2sYH0cNG8CW8KnwtjMBBWLEo/kUXyIUMdmjD6PQruZVtJ+pEc53dKx7BSYbRyTNVE4UEYKDusj1xGgmbM6uWI6zAxwBNKGr9jTnDPLW9sgZNgcClv9bT+z//VpXNh4wCvJe33tkR5rBYz5DXL1I8eGHbGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MDP+jfhG; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-434f7f6179aso21422305e9.0
-        for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 14:42:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733870541; x=1734475341; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5V8YDQEXdiG8e/cO5xVij7n6RmOLAOSXEgElRYuLPvY=;
-        b=MDP+jfhGD8Ik/bXNZ6fT3ZVSMO1nId363pMpk8BAdlThEHvrn9+TrDdtF4HjbkGatU
-         y3ilFnSM7PStx85641M9ly67armlpTvQa1a4t2VydMbiDMX0ysxfEAyAxmVzyjdfEtnE
-         zTJXXqdlV7BMDwiHDtsQ7+0e8DlUYg2XEPuaDwYK3l+rDoJ1lp+arrpfdrCrRgYnh/dn
-         e5xTUBv1IT7EfdWXch4kQsaBgKJSCLfb5E7kk1Qtrkt5l77fp/FZutE6h3Ior74FieKG
-         KjxQIPDsjOzbBX8lDGgOt7oYaLx0uz2PbT9tgmz9D/dHd1vDOC20jEBYOR8oLpRgYfuT
-         FGEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733870541; x=1734475341;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5V8YDQEXdiG8e/cO5xVij7n6RmOLAOSXEgElRYuLPvY=;
-        b=i8JMYxqMgPd8Ap2+wb4qxN3dupXQO9yvHnW7BM0B4BoBgM4YeAN7nV1nv0W+RmKWo2
-         kyP0p6BkCp6aIgFkq5rbmjpSmKiO+gXhx1sWtMIO2+KOAtR4Vyv2kUM/w7OnxCED68Es
-         2FBNEN9JsJnBmuw92U2c73NvUtLpb8pz+mNPQKW5+Grc6HLU/9W9koAzrUH5+p6SfDcs
-         P1Cn0q+YO4Cr+2oqTPNSp9gu5mJ2lrEnpZw4w5rQwZsFAVdt+H9chO4qf7wnnCmIsXAu
-         nZeVEXRbYaqu+BIQlFREj8mxd85Pe2Mw/4xjZIKjWiuR2saHTONsuro0j4O62mUiE3yH
-         2zlg==
-X-Gm-Message-State: AOJu0Yz48bl3C8B0culDD3iqJMHUMdS+EPxSmBfvAJApaqmv3Uyq55n5
-	fSnl2BOZEs5oNfK0LhKEKiE0PL8N7afoOYL1B7bZFWRQzGl0YunjgnIpr+9I7AmbXN/CDtt+xF8
-	5IwR6mLy8ZWhrFvjg52FsK+C6Du8=
-X-Gm-Gg: ASbGncs01mtPVSAfZGbUbmSzbPM5AxQARdrmdso67LphMHLpvdUnZfjFFJyPyjx+9+v
-	98dYUu/Q9AFQ9MevKYdXQ03C0KrnPKS/TcIO3i7eVDaYgg0JoTrA=
-X-Google-Smtp-Source: AGHT+IHj/62BMYkIgVRaz93McxZ59M/qHEEAKX+T9xDTcRjD+6EtSJzUAmuKClFVK3RHpFbHxAW80PDJV2pw1ISUMAU=
-X-Received: by 2002:a05:6000:1542:b0:385:f470:c2e1 with SMTP id
- ffacd0b85a97d-3864ce4b014mr572733f8f.2.1733870540616; Tue, 10 Dec 2024
- 14:42:20 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58612451E1;
+	Tue, 10 Dec 2024 22:49:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.63
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1733870961; cv=fail; b=Z3U9KKFeWQIKUDYJYA5S7WdE11vqerIUmI04hqYjq8xdoCpLSiaW0E/CQdGy9E8jgx8yv7EHoacpLeI+IIVs8+KKC9re71xgD0BKbHnpcXz/p+HLB9pgUCYqtw9ESDQ6rmlt2CDJuFI2yr+VrWvuF0rNjxSzqxJeqyCj8aA46gs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1733870961; c=relaxed/simple;
+	bh=r8B7Tc1ehj+CKF3MlXflpe12lppNftec6wtwsw/WefA=;
+	h=From:Subject:Date:Message-Id:Content-Type:To:Cc:MIME-Version; b=TDxLkl3Zo5yd7ce3u+Qo92o95xCl5skHwSiAmRoVV+yOHFod9mLwY52ZXgD2LlYtgMwpCTAcAN6AStbNXVruzu4Dban2iETFwDoVf4zdcfdt8tewXNc9e1aQf4L1YD5oiIzkAKUif07tHEfM7BGHKKc/gRLzkVUcxF/XMYr6szk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=HpAEA4OL; arc=fail smtp.client-ip=40.107.22.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=B6tPhDNLtNiGgzUDNVxWwSaBp4lr9dZhVej6l2m+inEUFuzkdO9dd4CcPDCzLP0UkmgWbvQb6mQPxUID0RjSMX9Hz5qUKjfcR+Mj/562b1KyVpdidr9nM5hFJjEsl5WPfvGryLh+Bujct7A6Dg728BzER8KkN6IRNOShWGrEniBd/TT10bM4mxp3sa0D+R0oUr8Idf7K/3uS81/FapdB4TJ0eKBj2E6j9uoorl4Myj5e0jkueOVCbbWCrhpMlrNAnUqnynNrTHDQAlaB8J/YfNyqNvVOIIGM6baYHeYBwqcIDB2cdtwBgADEGDLDdxhI6WvuEA4+WDXcA5d9rLRRbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MUPf9JNxqpyt2sjlc2k/yXvL0Tv4zYS3R7hLyi6TQF8=;
+ b=jrULXOnw1SQT575MlrP42/S1AZDV8bQIy4Vq2rp5Z6+JDXQ7T0snJjcm/waz7T5cZTVjyoQzCOPs1nWRMNylSU0/G92iJXqqqcxrSFwQkNfXDFXkzPCj98alMc3NCR9Pza2ieXTZKerwm9BvxIS8vOU8lQaQqT10UjG0d86hO9KFQE+RIoNdagCsDftgyStG6Diy//6phgoEnZu+JYsmXSlFYej794k7OclfD6z0nW9Yx1UX1QhrWb2jMQ+9scaFFXZajsXcilUeL++uT/hV2M+ZUlZwTtWrCMVnd8RNroPl0MkGkepXo/tFj+2kdBoitAnLLP48M6YXs3Omu2rm2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MUPf9JNxqpyt2sjlc2k/yXvL0Tv4zYS3R7hLyi6TQF8=;
+ b=HpAEA4OLKYn55jxaXeLN5LXVd2T5cCELQeUsdoTdEvg9VwcxVxdIoEXTfoYSTal7ubdWmglItElwkjB2tyw2Qaou/qV+3uTj1gmSlf0Cl/Tf93dtK3/hXcDs7GYy7THcrYKVuykvTlyocm1fv+GjZ0O5wHiqLTEDz05Q7zow7Xuh9cMgFkdzMpHDv1mIbehTKbOcR34rwwwxzQa4OJZS8wC57l9WZ6luVDLRXXMe7pCag4J1I1h2OLvaJuWXYYzBYfigfDsfAyFmz5LGXCIyhi7viVbjpOpUzyHNCM1gS7ljHedR0P4jqjTTlsLFnMND0mSjpB8kJlbBWXFIepCbvQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by VI1PR04MB6784.eurprd04.prod.outlook.com (2603:10a6:803:13e::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8230.18; Tue, 10 Dec
+ 2024 22:49:14 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06%5]) with mapi id 15.20.8230.010; Tue, 10 Dec 2024
+ 22:49:14 +0000
+From: Frank Li <Frank.Li@nxp.com>
+Subject: [PATCH v8 0/2] PCI: add enabe(disable)_device() hook for bridge
+Date: Tue, 10 Dec 2024 17:48:57 -0500
+Message-Id: <20241210-imx95_lut-v8-0-2e730b2e5fde@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAFnFWGcC/23Q3UrEMBAF4FdZcm1kMpOfxivfQ0SSNnEDbru0a
+ 6ksfXdnV7CpeJGLE/KdYXIVUxpLmsTT4SrGNJepDD2H5uEg2mPo35MsHWeBgBo8WllOizdvH58
+ XqVrbIGICr7Xg9+cx5bLcu15eOR/LdBnGr3v1rG63/7XMSoLsoLUIjetiiM/9cn5sh5O4dcxYO
+ YLaITuKVlsXgyEf9o5+neJTO2LnDPjWR57W2L3Tm1OgaqfZQe6yD5iTM3rvTO128wy7nKJ3mCk
+ r+rOfrZxqamfZBfRGxaCItNs7tzkEqp37+c/OoidEkza3rus3fxT7R/ABAAA=
+To: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>, 
+ Lucas Stach <l.stach@pengutronix.de>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev, Frank.li@nxp.com, 
+ alyssa@rosenzweig.io, bpf@vger.kernel.org, broonie@kernel.org, jgg@ziepe.ca, 
+ joro@8bytes.org, l.stach@pengutronix.de, lgirdwood@gmail.com, 
+ maz@kernel.org, p.zabel@pengutronix.de, robin.murphy@arm.com, 
+ will@kernel.org, Robin Murphy <robin.murphy@arm.com>, 
+ Marc Zyngier <maz@kernel.org>, Frank Li <Frank.Li@nxp.com>
+X-Mailer: b4 0.13-dev-e586c
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1733870948; l=5050;
+ i=Frank.Li@nxp.com; s=20240130; h=from:subject:message-id;
+ bh=r8B7Tc1ehj+CKF3MlXflpe12lppNftec6wtwsw/WefA=;
+ b=y+IX8aI4/B3sOnNwv8/vIQYu2cgYYA9aIR3OUlBWjGtXUya278ZKW+LQC2k7yZXrMg/TG8a8h
+ p20BJ5hWvyEDe0ASQ2VNlpaTkh5wSEnnRozko0IFaILyDtq2fpeesZD
+X-Developer-Key: i=Frank.Li@nxp.com; a=ed25519;
+ pk=I0L1sDUfPxpAkRvPKy7MdauTuSENRq+DnA+G4qcS94Q=
+X-ClientProxiedBy: BYAPR05CA0020.namprd05.prod.outlook.com
+ (2603:10b6:a03:c0::33) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241210023936.46871-1-alexei.starovoitov@gmail.com>
- <20241210023936.46871-2-alexei.starovoitov@gmail.com> <c5e2138c-f1a8-4091-bd60-ac7f704c6d13@suse.cz>
-In-Reply-To: <c5e2138c-f1a8-4091-bd60-ac7f704c6d13@suse.cz>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 10 Dec 2024 14:42:09 -0800
-Message-ID: <CAADnVQJ4814Bq3bZXdgqSQ9kuJ7EohxaBBdfs+YxsYUqmCQsBg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/6] mm, bpf: Introduce __GFP_TRYLOCK for
- opportunistic page allocation
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Sebastian Sewior <bigeasy@linutronix.de>, 
-	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev, Michal Hocko <mhocko@suse.com>, 
-	Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Tejun Heo <tj@kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VI1PR04MB6784:EE_
+X-MS-Office365-Filtering-Correlation-Id: e54d64d3-4def-4f7c-0be1-08dd196cde91
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|376014|1800799024|7416014|52116014|921020|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?TXZ2eitKSitZK2lBa3F4VGZ3Q1FMNk9iUDB0RTJJZW0yRHJ0dUFvZUJTTi8x?=
+ =?utf-8?B?M2pubzZBNTlrZG9ldE5naGJ4ZkNRRkJQY0tuVW5GbXBVUU9LV1RtT1hOQUdD?=
+ =?utf-8?B?Y01MeWgxTmpqU0dISzhCRU5TQk9lSTM5OWhZVUhQc04vTEtWTExxR1Nybmpp?=
+ =?utf-8?B?Yy9TNU8rY2lVSXFOT09qYnRLdk9ER05RWFdWMmsvS1NMTnF1a2JDNURnZTFD?=
+ =?utf-8?B?cVpXMTh4NFcvZzJmTHBKT0VQN2p1MG5CVGxjZmJFeEhwYmcxa3owQXJURk5B?=
+ =?utf-8?B?aUQxY2VpSnlicWcrMnJOZ0pld0Nuc1p3Nnl5dkFiK1Zsdml1QS9ONDcvYzlO?=
+ =?utf-8?B?emJ1Z0VwWWk0cUVMMmEwQkt5aXBWUjJRaDZzcVdmV1RZUnhJV3BMS3FEVkFM?=
+ =?utf-8?B?RHM1NEpQS2JSSU9sVmd6SlhBTEpqeURlQXJhd2FpQmtCT3dUQlFYc0RieXMv?=
+ =?utf-8?B?d3RFclg1ZHBEZUFaWFVpanJTQ29sQUxEalVkM2xhOTVkUnoyMGtJaFBIWXRw?=
+ =?utf-8?B?bVNSOHFUOVV6YUNsczJNZkxXZTVueWtqWTd6N2FxRXJsWmlIeXk5elYvc2U3?=
+ =?utf-8?B?bHdnbmdxcnN4VkhJZEtkN01sQjhYTjBMcjZNdVZacXlMWDdnNWw4UlZ4WTlS?=
+ =?utf-8?B?VGU1K0hXaEJicnpmNXJ3YmgwSDhxK0prd1FYbkdUUk9XWmMwNElkK0V1MjhE?=
+ =?utf-8?B?Nmo3cDlybnpMdUhOTHhpNW9ubng2S2xjWmJTdmpWZ1E5Vm1XSmxZR2JWVDcr?=
+ =?utf-8?B?T0JlYTlzaWkzcnV1WEU5eTR5cmlJODRYRkhjQ2NrNVVRMHZ3TWp5Sll3MUp4?=
+ =?utf-8?B?dXJBVlRFUDM5SEZrdG40ZlpkWFVCNGJTKy9xc3dCY0tXNEo5dzRvUGswclc5?=
+ =?utf-8?B?bWRpSnJmZDkrVmNxRkV1QzQ4Tmt4WkkzbUhGWkV5RzRxRFF0dmFtMldJdU55?=
+ =?utf-8?B?cFZLVTloOW9NeU43ZXgzK1hrTVlOakJJbkhkQnZ2NGZ3VXljdjNvZllnRnVs?=
+ =?utf-8?B?SXRPNGluQWNsR0tIcmR6K0Y4RVdsTktTcElQWXA1MENUS2dLTTBWK0tVaXNa?=
+ =?utf-8?B?eW5uZ2lxK0ZwK3FHS1kzY0ZTZXJHRkNPclE0TkVlTThPZXd0YTZrcHIrQlRm?=
+ =?utf-8?B?TEV6dWdGSkNzQnBja3pvdEpkNmV3K05RMVpQbGQ4NEZXanVITkUwcDBXdVEr?=
+ =?utf-8?B?Sko0UFhYRnk0N2RrMEE4SjZ3N0JWSnJOTG0zakhCK2hsMit6U3lnbHJBQWxN?=
+ =?utf-8?B?YmpnRUNKV054aXZkcktyM2ZjaUhHSGpvNi9BQTJJSzlMTFBwZTAvWFBFekRM?=
+ =?utf-8?B?Z0xZU292bzF5YVhRamVMcTA5QjhiY2hYTEFQeFFTWDEvTkFSQURwT0ZrR3I2?=
+ =?utf-8?B?Wnh5UTJQakNiYUw4V1c5NjVCeTc4UVpUQjN2RDIzak5MT2V4eTRuWWxPZ3lp?=
+ =?utf-8?B?emZiUVBBQUpJSHE5TjBlQmZ6MVZGV3Jza2JBZ09TVndIcE9uNGtIRTFhTkxi?=
+ =?utf-8?B?TVhMekpyamlwQWg4ZHFQMG50MEx5YWFoeTBMcmh5V2JkOEtSb0RZQnVqdDhk?=
+ =?utf-8?B?bXVHb2JiZStSU2FrdnZzYjRLeWlDMGNPYnowSlVXWGZLWjB5VzcrS2NtOTZ5?=
+ =?utf-8?B?U0RVZGE0SVlhUVpuaDd6bWwrYUMwRWR5bzd3VTRocURnVWNhU2NjZDk1cE84?=
+ =?utf-8?B?ajk3NmoyWkVLNkYzZ1FvSWZYeTI5cTg3eDdYVlo0RExEblQ5aDhtclJBcE9T?=
+ =?utf-8?B?Y3oxS1g2TTBGQ0loTXAvR2ZyMTVNSmNBV3lEMG9oR1drNFZkaFhrbFZDZHhG?=
+ =?utf-8?B?cENEd0NlZ3FVSmZEVWd6M3dHVjdnWmtmVmtLanVZU2ticlFqbFVYakt6VVp2?=
+ =?utf-8?B?MHpxSys1dkxPYWZvdFFPVHl2TDNhS3RqQnpldXdIQlRoU0pQNW1rMDRTc3hJ?=
+ =?utf-8?Q?rshzE4SBVms=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7416014)(52116014)(921020)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RjJ1enpNRXE2MHdwUXo0RmNoWlNQK0ZiWmZOQy8yb1hTKzRUc1hJaXRXWHlX?=
+ =?utf-8?B?bkc2cy8vNEFTNld3QUdUT2I0UGp3dk02QkRKWlhDbGhFWlJhd1dqaEJXQ0k3?=
+ =?utf-8?B?Wk5SS1ErQXNzYUkxTEVIdGNxdXBkWHAwQ0I5cThacWxmbjkvMkRyQmhMTksz?=
+ =?utf-8?B?Q0FiS0xid2txU2Y4MTJScit4UGhpbCsrN09iVHJLYmZIcWpkOVJhU2NoSS84?=
+ =?utf-8?B?TlM0MUIvd0VWVEczQnVnRXlNNEgyeHF3enlHSlRnY09jbjBGYzhyQW1vR1Y1?=
+ =?utf-8?B?OU9FV2ZzYmczSi9kQ3NjaXRwY2FHcnlScnllMDY0eXlwVWZremJMQ0hsTjM5?=
+ =?utf-8?B?ekp0Q1NURFFuNDE1VlFLZFluV29HeVNENXRsOWRMVXlXTTBtNFZ0MWtzSHN1?=
+ =?utf-8?B?QWI2am52aDdtQWIvTy8wdXRQK1NxYzUvOUo3UzM0bzNYcUxzdWFQNkEzVGJ5?=
+ =?utf-8?B?b01sM0ZQQnFpeGxvWEdzdHZBTHpaeUhWczZaQnZ0bWtLZW1hMHRsM3ZPNEU4?=
+ =?utf-8?B?SzNlK1RhblBrNitwQmlyNTJtYW5zZFJkMGR0WHhvZERURDBianFMUTFRQ1Yz?=
+ =?utf-8?B?YllLQmEraXRCRVBkNmFZUlgybTAvSjRTb2VzRjdDNUxLZ3dJem50TW9saDUz?=
+ =?utf-8?B?dFE2QnFnS1p1aTdabm51ekZMdHQxMStudDVoNGFQaUxoeU1lMjVMbmNURWIr?=
+ =?utf-8?B?R1NTeXNXbHpPRDdlMFNNYXBMR1JIR0VaL09uUGFRZmMvTDAyOWR5MzdlNFdH?=
+ =?utf-8?B?bnRrQkRSRTVWWVF4ZmxlSHlDSUltZ0k3ZDhKRXhlalh0MEM2ZlpFMGdNdjg0?=
+ =?utf-8?B?cERuWks0WFlUL29YLzZDdUxza3NxR1lqcEJqKzBVK0NYUlZSS29IdGlwaEpm?=
+ =?utf-8?B?QWZSUXpQTnJqYitxV0tVRHZtQTVwUnYxUlJtdGJ6eW4rQ2VwcEd4THAyNnVK?=
+ =?utf-8?B?RnpmTUt2WEt6OEtXclZwUXcxWG55SXloajBOQURLbUVQcVJCeVRqWGFqQ3RO?=
+ =?utf-8?B?Y0pzWng0OXdoMkpqNUFJOU5RcU9wbGRrTnQrOGFYV0p6WmtjcWZ5K0FsdnB4?=
+ =?utf-8?B?ZnRBTUZXWmpDV0RQdmNaS0ZhUHVxQm5LQ3hKa05qR1VBYkZRRmQ1enc0cGhE?=
+ =?utf-8?B?NlZrODBhd3hOTS85b01uQUdBTWdlajNUbWVSUFU2RkZoMVhjUi9yczl4d2tE?=
+ =?utf-8?B?bmNSYVAvc2NpOTBGR1pNZm5hS0JXS1NNZlZiODlKV2N2cUJ0S0lPU3B3blg5?=
+ =?utf-8?B?UW1uM3RWMzN3QU02WXJYZm9EenNvMENuVCtLQVZwTWp2NEJEK2F2akhhaEdP?=
+ =?utf-8?B?QmtFeVIwRGlXUXdDZE9RMUlRZXF6QkltZGVXQ1NlUFN5eFYzNHEzdnBEbXpU?=
+ =?utf-8?B?WGpYd1JqYTE5eVg4MllCbEZxd3hKWS9WOGQyTThVcS9oR3FNK0d0VGlKa1F3?=
+ =?utf-8?B?TnFVK0k5V3VPMzlvSXNqVlg5RXYvWkNPMkl2RnFqMWxmUCtzcHdGQ3YzaDFa?=
+ =?utf-8?B?cG5FUDIrZDdCU01EdnZnQm5xNC8ydWNDZmI5Tlk4eXNzbWhaYlhRUmllUUlQ?=
+ =?utf-8?B?T3RQUUdlNmtlQWFhWGZFVy9tc3pDcGxPOE43RWdJTEtzN1FmNW9qWW1pY2xv?=
+ =?utf-8?B?WDFwSlJyM1JrSmN2Q21Md1ZLelVpQTYwTmJkME15Y1ljZ1dncitkRlVwZWtQ?=
+ =?utf-8?B?bHkzSU9ITXp5OFdsaWJjRi9uNnl4UklLU0srb1NHTEtMS1F0QVV2d1lRT1JE?=
+ =?utf-8?B?dzA2cmJidkt2WTgzRzhvZUgreHZBR3VRMjI2YjA1dFhiRHVENjYrL1lOVW0y?=
+ =?utf-8?B?aTN2V0NNU2ViYXg5cWRpclMxVHlsOXBpc3dqcjZSOVpRV1V5WFAwbE8zNzdL?=
+ =?utf-8?B?dFNFbVJ6RkF4dHBEa3gxNDV1bVNRNFZ2cFpXNXZNU21YMmQ2bjlxemRVRlM5?=
+ =?utf-8?B?cFVleEJpQ21IOS8vd0UrT2RWRWhlSlJjb2pnRnk0OWV5b010cGw1ZE9ncDVT?=
+ =?utf-8?B?UCtDUHZIdm05TFExUnJ3bHJrSjM3WHFuVnhqTENmS041dG03TXUreTUzS0VH?=
+ =?utf-8?B?bWRzclRaSmxka0s3d0hKcVdZSGtGY2lXeG04TzRWTEJBTVp5Q2NWeUJqejMx?=
+ =?utf-8?Q?UD4+SujbIrVQ3bwN+g2RJeftF?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e54d64d3-4def-4f7c-0be1-08dd196cde91
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2024 22:49:13.9073
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uIYj2m/1J2PWhH8Wb2DgMdh0O2qcluJ3Bzld13EOn7di7wH4b9EYZqRbDwJVYWnOh8ee5k0c7/JvBtreiRmRVA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6784
 
-On Tue, Dec 10, 2024 at 10:39=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
->
-> On 12/10/24 03:39, Alexei Starovoitov wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > Tracing BPF programs execute from tracepoints and kprobes where running
-> > context is unknown, but they need to request additional memory.
-> > The prior workarounds were using pre-allocated memory and BPF specific
-> > freelists to satisfy such allocation requests. Instead, introduce
-> > __GFP_TRYLOCK flag that makes page allocator accessible from any contex=
-t.
-> > It relies on percpu free list of pages that rmqueue_pcplist() should be
-> > able to pop the page from. If it fails (due to IRQ re-entrancy or list
-> > being empty) then try_alloc_pages() attempts to spin_trylock zone->lock
-> > and refill percpu freelist as normal.
-> > BPF program may execute with IRQs disabled and zone->lock is sleeping i=
-n RT,
-> > so trylock is the only option.
-> > In theory we can introduce percpu reentrance counter and increment it
-> > every time spin_lock_irqsave(&zone->lock, flags) is used,
-> > but we cannot rely on it. Even if this cpu is not in page_alloc path
-> > the spin_lock_irqsave() is not safe, since BPF prog might be called
-> > from tracepoint where preemption is disabled. So trylock only.
-> >
-> > Note, free_page and memcg are not taught about __GFP_TRYLOCK yet.
-> > The support comes in the next patches.
-> >
-> > This is a first step towards supporting BPF requirements in SLUB
-> > and getting rid of bpf_mem_alloc.
-> > That goal was discussed at LSFMM: https://lwn.net/Articles/974138/
-> >
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
->
-> I think there might be more non-try spin_locks reachable from page alloca=
-tions:
->
-> - in reserve_highatomic_pageblock() which I think is reachable unless thi=
-s
-> is limited to order-0
+Some system's IOMMU stream(master) ID bits(such as 6bits) less than
+pci_device_id (16bit). It needs add hardware configuration to enable
+pci_device_id to stream ID convert.
 
-Good point. I missed this bit:
-   if (order > 0)
-     alloc_flags |=3D ALLOC_HIGHATOMIC;
+https://lore.kernel.org/imx/20240622173849.GA1432357@bhelgaas/
+This ways use pcie bus notifier (like apple pci controller), when new PCIe
+device added, bus notifier will call register specific callback to handle
+look up table (LUT) configuration.
 
-In bpf use case it will be called with order =3D=3D 0 only,
-but it's better to fool proof it.
-I will switch to:
-__GFP_NOMEMALLOC | __GFP_TRYLOCK | __GFP_NOWARN | __GFP_ZERO | __GFP_ACCOUN=
-T
+https://lore.kernel.org/imx/20240429150842.GC1709920-robh@kernel.org/
+which parse dt's 'msi-map' and 'iommu-map' property to static config LUT
+table (qcom use this way). This way is rejected by DT maintainer Rob.
 
+Above ways can resolve LUT take or stream id out of usage the problem. If
+there are not enough stream id resource, not error return, EP hardware
+still issue DMA to do transfer, which may transfer to wrong possition.
 
-> - try_to_accept_memory_one()
+Add enable(disable)_device() hook for bridge can return error when not
+enough resource, and PCI device can't enabled.
 
-when I studied the code it looked to me that there should be no
-unaccepted_pages.
-I think you're saying that there could be unaccepted memory
-from the previous allocation and trylock attempt just got unlucky
-to reach that path?
-What do you think of the following:
--               cond_accept_memory(zone, order);
-+               cond_accept_memory(zone, order, alloc_flags);
+Basicallly this version can match Bjorn's requirement:
+1: simple, because it is rare that there are no LUT resource.
+2: EP driver probe failure when no LUT, but lspci can see such device.
 
-                /*
-                 * Detect whether the number of free pages is below high
-@@ -7024,7 +7024,8 @@ static inline bool has_unaccepted_memory(void)
-        return static_branch_unlikely(&zones_with_unaccepted_pages);
- }
+[    2.164415] nvme nvme0: pci function 0000:01:00.0
+[    2.169142] pci 0000:00:00.0: Error enabling bridge (-1), continuing
+[    2.175654] nvme 0000:01:00.0: probe with driver nvme failed with error -12
 
--static bool cond_accept_memory(struct zone *zone, unsigned int order)
-+static bool cond_accept_memory(struct zone *zone, unsigned int order,
-+                              unsigned int alloc_flags)
- {
-        long to_accept;
-        bool ret =3D false;
-@@ -7032,6 +7033,9 @@ static bool cond_accept_memory(struct zone
-*zone, unsigned int order)
-        if (!has_unaccepted_memory())
-                return false;
+> lspci
+0000:00:00.0 PCI bridge: Philips Semiconductors Device 0000
+0000:01:00.0 Non-Volatile memory controller: Micron Technology Inc 2100AI NVMe SSD [Nitro] (rev 03)
 
-+       if (unlikely(alloc_flags & ALLOC_TRYLOCK))
-+               return false;
-+
+To: Bjorn Helgaas <bhelgaas@google.com>
+To: Richard Zhu <hongxing.zhu@nxp.com>
+To: Lucas Stach <l.stach@pengutronix.de>
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+To: Krzysztof Wilczyński <kw@linux.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Rob Herring <robh@kernel.org>
+To: Shawn Guo <shawnguo@kernel.org>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+To: Pengutronix Kernel Team <kernel@pengutronix.de>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: linux-pci@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: imx@lists.linux.dev
+Cc: Frank.li@nxp.com \
+Cc: alyssa@rosenzweig.io \
+Cc: bpf@vger.kernel.org \
+Cc: broonie@kernel.org \
+Cc: jgg@ziepe.ca \
+Cc: joro@8bytes.org \
+Cc: l.stach@pengutronix.de \
+Cc: lgirdwood@gmail.com \
+Cc: maz@kernel.org \
+Cc: p.zabel@pengutronix.de \
+Cc: robin.murphy@arm.com \
+Cc: will@kernel.org \
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
 
-or is there a better approach?
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+Changes in v8:
+- update comment message according to Lorenzo Pieralisi's suggestion.
+- rework err target table
+- improve err==0 && target ==NULL description, use 1:1 map RID to
+stream ID.
+- invalidate case -> unexisted case, never happen
+- sid_i will not do mask, add comments said only MSI glue layer add
+controller id.
+- rework iommu map and msi map return value check logic according to
+Lorenzo Pieralisi's suggestion
+- Link to v7: https://lore.kernel.org/r/20241203-imx95_lut-v7-0-d0cd6293225e@nxp.com
 
-Reading from current->flags the way Matthew proposed?
+Changes in v7:
+- Rebase v6.13-rc1
+- Update patch 2 according to mani's feedback
+- Link to v6: https://lore.kernel.org/r/20241118-imx95_lut-v6-0-a2951ba13347@nxp.com
 
-> - as part of post_alloc_hook() in set_page_owner(), stack depot might do
-> raw_spin_lock_irqsave(), is that one ok?
+Changes in v6:
+- Bjorn give review tags at v4, but v5 have big change, drop Bjorn's review
+tag.
+- Add back Marc Zyngier't review and test tags
+- Add mani's ack at first patch
+- Mini change for patch 2 according to mani's feedback
+- Link to v5: https://lore.kernel.org/r/20241104-imx95_lut-v5-0-feb972f3f13b@nxp.com
 
-Well, I looked at the stack depot and was tempted to add trylock
-handling there, but it looked to be a bit dodgy in general and
-I figured it should be done separately from this set.
-Like:
-        if (unlikely(can_alloc && !READ_ONCE(new_pool))) {
-                page =3D alloc_pages(gfp_nested_mask(alloc_flags),
-followed by:
-        if (in_nmi()) {
-                /* We can never allocate in NMI context. */
-                WARN_ON_ONCE(can_alloc);
+Changes in v5:
+- Add help function of pci_bridge_enable(disable)_device
+- Because big change, removed Bjorn's review tags and have not
+added
+Marc Zyngier't review and test tags
+- Fix pci-imx6.c according to Mani's feedback
+- Link to v4: https://lore.kernel.org/r/20241101-imx95_lut-v4-0-0fdf9a2fe754@nxp.com
 
-that warn is too late. If we were in_nmi and called alloc_pages
-the kernel might be misbehaving already.
+Changes in v4:
+- Add Bjorn Helgaas review tag for patch1
+- check 'target' value for patch2
+- detail see each patches
+- Link to v3: https://lore.kernel.org/r/20241024-imx95_lut-v3-0-7509c9bbab86@nxp.com
 
->
-> hope I didn't miss anything else especially in those other debugging hook=
-s
-> (KASAN etc)
+Changes in v3:
+- disable_device when error happen
+- use target for of_map_id
+- Check if rid already in lut table when enable deviced
+- Link to v2: https://lore.kernel.org/r/20240930-imx95_lut-v2-0-3b6467ba539a@nxp.com
 
-I looked through them and could be missing something, of course.
-kasan usage in alloc_page path seems fine.
-But for slab I found kasan_quarantine logic which needs a special treatment=
-.
-Other slab debugging bits pose issues too.
-The rough idea is to do kmalloc_nolock() / kfree_nolock() that
-don't call into any pre/post hooks (including slab_free_hook,
-slab_pre_alloc_hook).
-kmalloc_nolock() will pretty much call __slab_alloc_node() directly
-and do basic kasan poison stuff that needs no locks.
+Changes in v2:
+- see each patch
+- Link to v1: https://lore.kernel.org/r/20240926-imx95_lut-v1-0-d0c62087dbab@nxp.com
 
-I will be going over all the paths again, of course.
+---
+Frank Li (2):
+      PCI: Add enable_device() and disable_device() callbacks for bridges
+      PCI: imx6: Add IOMMU and ITS MSI support for i.MX95
 
-Thanks for the reviews so far!
+ drivers/pci/controller/dwc/pci-imx6.c | 186 +++++++++++++++++++++++++++++++++-
+ drivers/pci/pci.c                     |  36 ++++++-
+ include/linux/pci.h                   |   2 +
+ 3 files changed, 222 insertions(+), 2 deletions(-)
+---
+base-commit: 40384c840ea1944d7c5a392e8975ed088ecf0b37
+change-id: 20240926-imx95_lut-1c68222e0944
+
+Best regards,
+---
+Frank Li <Frank.Li@nxp.com>
+
 
