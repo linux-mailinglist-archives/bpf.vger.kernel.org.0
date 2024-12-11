@@ -1,140 +1,100 @@
-Return-Path: <bpf+bounces-46643-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2908E9ED0AE
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 17:03:13 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CF469ED244
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 17:40:56 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 729C41889A50
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 16:40:54 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E002D1DDC09;
+	Wed, 11 Dec 2024 16:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="SIUFWaIB"
+X-Original-To: bpf@vger.kernel.org
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A756A28D1CD
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 16:03:11 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63ED1DBB21;
-	Wed, 11 Dec 2024 16:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FCunltOl"
-X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B0F1D9A42
-	for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 16:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE31246340
+	for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 16:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733932972; cv=none; b=YfX2cSoMrnN7kILGlsTz4lvt/ltz+NAEu1BOcsUv0ZMzc09ZXgxPYgxkkJsc0UWhHGXYPcvExSRQcMuAw3t6DZufQ4FV7fcdxPYoQpIlDfKHPLyVRi7yWUenqrRL+q7gPLSTjKzlMYPm/k86p0II/x4rgdh/QaBpJq1S5qJupuo=
+	t=1733935249; cv=none; b=KKj+Q4p2isHIeeszTxp29bB8I8UtwYYUepaEH3uLRsqkMDJTzcUZQIphV/EzF+ZAFPk5t9fcREH39veydgD7upI+ly4LTmA9/SRAIh76n/UtiY7HuTK/R/1fUylLYC01orKT16jbBmdaLKjRMYBQSzejEmKxHcTIwv+I2ibDwlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733932972; c=relaxed/simple;
-	bh=FM6G14G0yZlnNX/ewVyp0jfMUNgYVlickrHiCTeJjSM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cgL1yIrqCSf/YuwRay5aLBxvbTSkkhoegt5bmI0rIwsIy800mCgsMBLV3ssMmshdQPJiYgfXggsOGhRmF9vmE7KYtENxZQwz4lLG0SDSr5pKlgGHcNqJ+ib+V/6YHXAgLMhbJpTEUapX4ij62VzOdiD0e81eEW2NryJtwb5b6kU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FCunltOl; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-434a7ee3d60so5076485e9.1
-        for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 08:02:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733932969; x=1734537769; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PfZKiy4SwN6SPC0K8ZTm97hCEmo7EceRbwYp1ch7+wM=;
-        b=FCunltOlnwSJ0XpLGzsT9iA/k9TgMUNP/Pv7Pi1iySVr4RzjhCnwYfAUb373UICZVG
-         dsewqHwr/veraUhFszhPpEBnl2cSK46kWxK+TMTnXrF1xs0CFUTiGn+rjA/FYDf32299
-         B7+3wJVoWWxe86s871Gf5+XyL70btWF/+Cuvs9QnZhtcLWl4l/9woqdqZxwwZMzdiGVi
-         O/jm7+wGp/6mh2LnI/clyEYtfPdxdfBrCmurclpdr9agMBqfaIZFbSLyaoMomaboUFcp
-         x1bY3u6sOvaTW86iHll/RvnLjPEEgJFFDrKnY5nM6Jy+OYX8sM76Rp8KBxzipMDQtaz+
-         4Ifg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733932969; x=1734537769;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PfZKiy4SwN6SPC0K8ZTm97hCEmo7EceRbwYp1ch7+wM=;
-        b=XzYffX80gRv6WmUpyHizdtu8UEH1ijJPOICz1jDC0jumlEYUmkdE5CHHV9Gn1+9XQ9
-         ZpVJXfZpYPsqYs6RmXGbPUHkZpxMHtue6vF23avSSX0p3iObJBhv5rrqYLcplgcya3OO
-         bKpJk7DwoFgpsgXdtFGmBEJV9AMQV41Gd0q1s2yy/mLHwhqpLVOSC0dFW436z20qL7Gf
-         S7OfOpXzQLbFJyvgosMZHLO3rimsCiOviXRHfbQ9RxrcLP8Pf09VPlcs6A4iXZ8vDikM
-         Rc+kmkeNcnJW43c1g9VL2cjLWm7Plb+m5E0OUe6HfhYexdk0tqWJNDJfeKhc5XeHO6nt
-         9clQ==
-X-Gm-Message-State: AOJu0YzSZCsZ4HLZayeMzt50foud8uNQzty5jpvxJH0nE69inFOWex3B
-	fGBgsr7+r48sqflLE8BO1fFJkGNe142RfpDoxtV/C6GdTPJd3urxaJCo7PsWNPhpzGwTbJpZN0z
-	ZvRB7xxM6e4YCVX+ZYacEppeKuaw=
-X-Gm-Gg: ASbGncu9Hw3wz+dv+xhgi1zixr05ZTaGHhcUfLmbs7yDLu0HEEgv3DrSTTYBnZecLJs
-	fHo2zukLWP9x/ZH8DratkMgW3CTtF+MluW0eR4rxicrSH5dWBwRM=
-X-Google-Smtp-Source: AGHT+IG15DV/Pdnkwz9jk3PDGLDi0ScFVOD7+BECC49VtRtcTBbH172cJEGR+XkkwW18F6ZndajjC2brkI75pz+7gV8=
-X-Received: by 2002:a7b:cd15:0:b0:434:ea1a:e30c with SMTP id
- 5b1f17b1804b1-4361c80b03fmr26331885e9.13.1733932968558; Wed, 11 Dec 2024
- 08:02:48 -0800 (PST)
+	s=arc-20240116; t=1733935249; c=relaxed/simple;
+	bh=yDvDnDpnFgs/2yKkDcq8a+Gv16FOxI2GOSyu92awndU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=aA6P3VF06bguIMHldl1vNWX6+LtWldUJZLLoaU8uzh4UtTChQYjmaKtvIHuTrdRY/9cmJhUif5G6GINiA8Kk5BECp2RPZnWjqkEZF9LKeWLnbIzpUa3cf/Xboo6MoKJ5cNoSwT7RkTnXqKAys+y5qwxXnb/fMWVperI2K1O/g6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=SIUFWaIB; arc=none smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BBFHmAF020765
+	for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 08:40:47 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=s2048-2021-q4; bh=aBin0LCVvfodmsouR5
+	cAVhvEFqKsF24ZxjhpbwsNkyk=; b=SIUFWaIB1nuOTLDS67VD0bn6yArW65/DNR
+	X+KDa+t0va/aPMA7QNgyNSQpnCGSYDxpIsdfxTP7B9lAiOwguVaKavlNYGgcyo+G
+	WsFRm2QCmCVRwxxhH6dujLJN064n/7vxVpYyNONTNY7hBOloNd4DHKKH0hfnXQfX
+	EB5lr+LxdK3Bp/Y4t1sh/M/pRT07dEHZpKdrp3KKd5cs37e/SIcp+3GTXi71tuXr
+	GB79IDBlojw9wjC5PKKRuDFOeJe2eyq0iHBTI1dRPK2Ke/33NXoE3qvdsMbV8hGC
+	eaQA7P6pVBWhkMkEbP5RYeU1tr1qO7lKi7fz2W6X0Jyzme8b+2Tw==
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 43fbt59cma-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 08:40:46 -0800 (PST)
+Received: from twshared11082.06.ash8.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1544.11; Wed, 11 Dec 2024 16:40:45 +0000
+Received: by devbig020.cln3.facebook.com (Postfix, from userid 546475)
+	id 82D4ED41CD2B; Wed, 11 Dec 2024 08:40:33 -0800 (PST)
+From: Alastair Robertson <ajor@meta.com>
+To: <bpf@vger.kernel.org>, <andrii@kernel.org>
+CC: Alastair Robertson <ajor@meta.com>
+Subject: [PATCH bpf-next v3 0/2] libbpf: Extend linker API to support in-memory ELF files
+Date: Wed, 11 Dec 2024 08:40:28 -0800
+Message-ID: <20241211164030.573042-1-ajor@meta.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241211020156.18966-1-memxor@gmail.com> <20241211020156.18966-5-memxor@gmail.com>
-In-Reply-To: <20241211020156.18966-5-memxor@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 11 Dec 2024 08:02:37 -0800
-Message-ID: <CAADnVQ+8N0zzRpnejeT5ew+T0KwrEbjEdw6wgJW5aweYbiO7Gw@mail.gmail.com>
-Subject: Re: [PATCH bpf v1 4/4] selftests/bpf: Add autogenerated tests for
- raw_tp NULL args
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, kkd@meta.com, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Manu Bretelle <chantra@meta.com>, Jiri Olsa <jolsa@kernel.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: mQFhVU_QHeDYi86nv0QyIEQwfodyijzh
+X-Proofpoint-ORIG-GUID: mQFhVU_QHeDYi86nv0QyIEQwfodyijzh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-On Tue, Dec 10, 2024 at 6:02=E2=80=AFPM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
-> +cat ../../../../kernel/bpf/btf.c  | grep RAW_TP_NULL_ARGS | grep -v "def=
-ine RAW_TP" | ./gen_raw_tp_null.py | tee progs/raw_tp_null.c
+This gives API consumers the option of using anonymous files/memfds to
+avoid writing temporary ELFs to disk, which will be useful for performing
+linking as part of bpftrace's JIT compilation.
 
-This is a serious overkill for something that will be removed soon
-when automation to analyse TP_fast_assign() is ready.
+v3:
+- Removed "filename" option. Now always generate our own filename for
+  passed-in FDs and buffers.
+- Use a common function (bpf_linker_add_file) for shared
+  implementation of bpf_linker__add_file, bpf_linker__add_fd and
+  bpf_linker__add_buf.
 
-> +++ b/tools/testing/selftests/bpf/progs/raw_tp_null.c
-> @@ -0,0 +1,417 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-> +
-> +/* WARNING: This file is automatically generated, run gen_raw_tp_null.sh=
- to update! */
+Alastair Robertson (2):
+  libbpf: Pull file-opening logic up to top-level functions
+  libbpf: Extend linker API to support in-memory ELF files
 
-let's not.
+ tools/lib/bpf/libbpf.h   |   5 +
+ tools/lib/bpf/libbpf.map |   4 +
+ tools/lib/bpf/linker.c   | 228 ++++++++++++++++++++++++++++++---------
+ 3 files changed, 184 insertions(+), 53 deletions(-)
 
-> +
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include "bpf_misc.h"
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> +
-> +SEC("tp_btf/sched_pi_setprio")
-> +__failure __msg("R1 invalid mem access 'trusted_ptr_or_null_'")
-> +int test_raw_tp_null_sched_pi_setprio_arg_2(void *ctx) {
-> +    asm volatile("r1 =3D *(u64 *)(r1 +8); r1 =3D *(u64 *)(r1 +0);" ::: _=
-_clobber_all);
-> +    return 0;
-> +}
+--=20
+2.43.5
 
-This one is enough to test it.
-
-Drop all below. They don't add value. Copy paste doesn't improve coverage.
-
-> +
-> +SEC("tp_btf/sched_stick_numa")
-> +__failure __msg("R1 invalid mem access 'trusted_ptr_or_null_'")
-> +int test_raw_tp_null_sched_stick_numa_arg_3(void *ctx) {
-> +    asm volatile("r1 =3D *(u64 *)(r1 +16); r1 =3D *(u64 *)(r1 +0);" ::: =
-__clobber_all);
-> +    return 0;
-> +}
-
-...
-
-pw-bot: cr
 
