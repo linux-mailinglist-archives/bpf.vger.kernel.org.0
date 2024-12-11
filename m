@@ -1,38 +1,38 @@
-Return-Path: <bpf+bounces-46608-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46609-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 842339EC920
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 10:32:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D8229EC922
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 10:32:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDDC31886906
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 09:31:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0B6218872B4
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 09:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F6A31EC4D1;
-	Wed, 11 Dec 2024 09:31:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03668211A05;
+	Wed, 11 Dec 2024 09:31:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BB581A83F2;
-	Wed, 11 Dec 2024 09:31:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA42E1DFE26;
+	Wed, 11 Dec 2024 09:31:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733909493; cv=none; b=uSvyGO6uBG+ls3WxXM6DD7eqYvlZW9CvHaMOFLhOMIPihCscwIg/aMubO7u/cuoIwHHW1s6YNzX7DQ14x/pxcUh58vLrcCMo4VYbBPfPB391I66v1yJzdbaTRbImHlehq/PcKNYsWsOHcmuTMFyUfQbKiaoeHjwFoAk8MdMA0uw=
+	t=1733909495; cv=none; b=b663YQXN3op/a1gzd6I6XwUiokv2Iwr0yH1hU0dEZtP6NhODukXcAQFOWBZQXZ/HZ04j7s5O7SUSDOTV+6N7s3STpnI1+PWUXJCZo90GNH+Mo5/pa7g1Ifih35SsNCNXM6kXvsCc7mpcQO8D9GZSA14qK4MlHypxZ5jMsemjuy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733909493; c=relaxed/simple;
-	bh=+2hNpiRkDq+lYivHIxOhw1agZtenBpaN92VHsvs+U3U=;
+	s=arc-20240116; t=1733909495; c=relaxed/simple;
+	bh=X9+Xj3FxZhc2xOgYA2XMpUSAuIEXmIqjePznJEy0+fI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=q7YbloAg1zfSj0sBEMbF3V80Pro5ptziHnwu5HDrama2b8XvxsUhQ/6yFVrw1LiDBJ5GnUJOBkgbDysrwpqQsbhXy90C8BxtDovHqO3XJH8AsPouxBzFeG/dnVmxJWWM8FB6deSvzSYvmRWn4t3MZdCRyk18qigW2yFDLXpq3KQ=
+	 MIME-Version; b=KA6cqfuEkWAhabqddzUMi0ArmsMQabWIqBB009KswHgt1vsCA7BbqDZWqm6U6iNYhii/hbqYVQ/Z2wZvjogGweXsk1lOjmfXpsEU9EIgFGmB62nTcVubjdqd5vNL4BKnn4686qA/5Zu5hcx1sIt99qPy6R5QoNxka71Aqouu6vI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7BE131692;
-	Wed, 11 Dec 2024 01:31:57 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2AFFC16F2;
+	Wed, 11 Dec 2024 01:32:01 -0800 (PST)
 Received: from e132581.cambridge.arm.com (e132581.arm.com [10.2.76.71])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 126E83F5A1;
-	Wed, 11 Dec 2024 01:31:25 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B48153F5A1;
+	Wed, 11 Dec 2024 01:31:29 -0800 (PST)
 From: Leo Yan <leo.yan@arm.com>
 To: Quentin Monnet <qmo@kernel.org>,
 	Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -59,9 +59,9 @@ To: Quentin Monnet <qmo@kernel.org>,
 	bpf@vger.kernel.org,
 	linux-perf-users@vger.kernel.org
 Cc: Leo Yan <leo.yan@arm.com>
-Subject: [PATCH v2 1/3] tools build: Add feature test for libelf with ZSTD
-Date: Wed, 11 Dec 2024 09:31:12 +0000
-Message-Id: <20241211093114.263742-2-leo.yan@arm.com>
+Subject: [PATCH v2 2/3] perf: build: Minor improvement for linking libzstd
+Date: Wed, 11 Dec 2024 09:31:13 +0000
+Message-Id: <20241211093114.263742-3-leo.yan@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241211093114.263742-1-leo.yan@arm.com>
 References: <20241211093114.263742-1-leo.yan@arm.com>
@@ -73,85 +73,45 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a test for checking if libelf supports ZSTD compress algorithm.
+The zstd library will be automatically linked automatically by detecting
+the feature-libzstd.  It is no need to explicitly link it for static
+builds, so remove the redundant linkage.
 
-The macro ELFCOMPRESS_ZSTD is defined for the algorithm, pass it as an
-argument to the elf_compress() function.  If the build succeeds, it
-means the feature is supported.
+It is contradictory to detect the feature-libelf-zstd while the build
+configuration NO_LIBZSTD is set.  Report an error for reminding users
+not to set NO_LIBZSTD.
 
 Signed-off-by: Leo Yan <leo.yan@arm.com>
 ---
- tools/build/Makefile.feature           | 1 +
- tools/build/feature/Makefile           | 4 ++++
- tools/build/feature/test-all.c         | 4 ++++
- tools/build/feature/test-libelf-zstd.c | 9 +++++++++
- 4 files changed, 18 insertions(+)
- create mode 100644 tools/build/feature/test-libelf-zstd.c
+ tools/perf/Makefile.config | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-index bca47d136f05..b2884bc23775 100644
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -43,6 +43,7 @@ FEATURE_TESTS_BASIC :=                  \
-         libelf-getphdrnum               \
-         libelf-gelf_getnote             \
-         libelf-getshdrstrndx            \
-+        libelf-zstd                     \
-         libnuma                         \
-         numa_num_possible_cpus          \
-         libperl                         \
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index 043dfd00fce7..f12b89103d7a 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -28,6 +28,7 @@ FILES=                                          \
-          test-libelf-getphdrnum.bin             \
-          test-libelf-gelf_getnote.bin           \
-          test-libelf-getshdrstrndx.bin          \
-+         test-libelf-zstd.bin                   \
-          test-libdebuginfod.bin                 \
-          test-libnuma.bin                       \
-          test-numa_num_possible_cpus.bin        \
-@@ -196,6 +197,9 @@ $(OUTPUT)test-libelf-gelf_getnote.bin:
- $(OUTPUT)test-libelf-getshdrstrndx.bin:
- 	$(BUILD) -lelf
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 0e4f6a860ae2..155cb9d20011 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -171,7 +171,7 @@ ifdef LIBDW_DIR
+ endif
+ DWARFLIBS := -ldw
+ ifeq ($(findstring -static,${LDFLAGS}),-static)
+-  DWARFLIBS += -lelf -lz -llzma -lbz2 -lzstd
++  DWARFLIBS += -lelf -lz -llzma -lbz2
  
-+$(OUTPUT)test-libelf-zstd.bin:
-+	$(BUILD) -lelf -lz -lzstd
-+
- $(OUTPUT)test-libdebuginfod.bin:
- 	$(BUILD) -ldebuginfod
+   LIBDW_VERSION := $(shell $(PKG_CONFIG) --modversion libdw).0.0
+   LIBDW_VERSION_1 := $(word 1, $(subst ., ,$(LIBDW_VERSION)))
+@@ -566,6 +566,12 @@ ifndef NO_LIBELF
+     CFLAGS += -DHAVE_ELF_GETSHDRSTRNDX_SUPPORT
+   endif
  
-diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
-index 80ac297f8196..67125f967860 100644
---- a/tools/build/feature/test-all.c
-+++ b/tools/build/feature/test-all.c
-@@ -58,6 +58,10 @@
- # include "test-libelf-getshdrstrndx.c"
- #undef main
- 
-+#define main main_test_libelf_zstd
-+# include "test-libelf-zstd.c"
-+#undef main
++  ifeq ($(feature-libelf-zstd), 1)
++    ifdef NO_LIBZSTD
++      $(error Error: libzstd is required by libelf, please do not set NO_LIBZSTD)
++    endif
++  endif
 +
- #define main main_test_libslang
- # include "test-libslang.c"
- #undef main
-diff --git a/tools/build/feature/test-libelf-zstd.c b/tools/build/feature/test-libelf-zstd.c
-new file mode 100644
-index 000000000000..a1324a1db3bb
---- /dev/null
-+++ b/tools/build/feature/test-libelf-zstd.c
-@@ -0,0 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stddef.h>
-+#include <libelf.h>
-+
-+int main(void)
-+{
-+	elf_compress(NULL, ELFCOMPRESS_ZSTD, 0);
-+	return 0;
-+}
+   ifndef NO_LIBDEBUGINFOD
+     $(call feature_check,libdebuginfod)
+     ifeq ($(feature-libdebuginfod), 1)
 -- 
 2.34.1
 
