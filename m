@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-46626-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46627-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97B2E9ECD46
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 14:34:44 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 640F49ECD48
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 14:35:05 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A48F22811F9
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 13:34:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23251188B90B
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 13:34:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8355F2336B7;
-	Wed, 11 Dec 2024 13:34:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F287230270;
+	Wed, 11 Dec 2024 13:34:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qWd7yEfV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sf/Z1ow7"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0396223FD1E;
-	Wed, 11 Dec 2024 13:34:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BB622B598;
+	Wed, 11 Dec 2024 13:34:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733924061; cv=none; b=AKPf1P6gkk8HdujHPz0l3CbLU7pJAIZ0JtzGpiJv3YfAbjxgu/L7p9dhOwygeTh8g3IztON5SqAJxsfdsG8Pv87WV/IEwAzloZZdUV5b8RR04zapjrNoTdeVIyyfmVV6GyPFDWmBkfVFxhqMru8p5SjvEtOJvi4+xoQzC7kjIH0=
+	t=1733924071; cv=none; b=JeOwi4oAUVNl8p3Du9LvTYQWmG1pycxqCGQCpS5fLBl5UrNzVbIYpwsuu6eQOOuE3YQsD+iGq7dQpDv/oRIQiGb6LaZXtEfBuZBU40VDmn2/JhZIglOz+i/zyDf2S8RTlwQHs3ncESlMdeGeZ6JbEfpZD0pLnHExttRp3Gpjw4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733924061; c=relaxed/simple;
-	bh=Z7IK1SBqeAl5DybsxkEFcQSaPfCG+Bu6/uH1+f3Yn5Y=;
+	s=arc-20240116; t=1733924071; c=relaxed/simple;
+	bh=XwvKn2JFR+eGxw1oc/+JL9gG50JFxNqYNkVyrcynD94=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X+LHo3IoG0kyZNdSqITopwzOmVkxYOx4N6UGkWo4rnwQospZYu7MKaG57zmYoBpF/D5dPSZT+mdk732JKBJKBQHSi30hB2Pt5zF+dVqihK4iKJqskDT+12sOV+3cWNTJ5q9wr46PDpU1TUTZUBJIi7JIurTnSaXVD019GYovBAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qWd7yEfV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 330CCC4CED2;
-	Wed, 11 Dec 2024 13:34:17 +0000 (UTC)
+	 MIME-Version; b=FZwmq02+1dEm4q1GQec1CXZFasguzYsSS9MCfTup3FdpbnTDaY++uY5iiYNLppBZ0742+56upHUD55yGlCN0vycSIdMCekR0Ehm6W1ayxN7RJdauQBYGiABee7taZoV/tx+R3rA03vG3+9yYLStEvPR+rB+xNwRD63YbP/K5mJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sf/Z1ow7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08B5CC4CED2;
+	Wed, 11 Dec 2024 13:34:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733924060;
-	bh=Z7IK1SBqeAl5DybsxkEFcQSaPfCG+Bu6/uH1+f3Yn5Y=;
+	s=k20201202; t=1733924071;
+	bh=XwvKn2JFR+eGxw1oc/+JL9gG50JFxNqYNkVyrcynD94=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qWd7yEfVgO54c8ga+ehSoBNk5mZe1KzZ4jRcRou0UuTHfdK8eap9TWXL0hppYq0BC
-	 XS/v/UqiOt+nDTXoxG17NnhVoTQno9NQGPJ5RrHvAwmshr3ePLt/WOYfhzt63wNAEc
-	 MZnetHnLk5zTYWT2/ffY3vaz+l1k1CkBEKX+8K3jMETfQYQ7FAwfDRMNubR0UlaBsM
-	 R7BmyTvr7JCcUBvY4e6o3vJ9bpR/V0XlcFgTFhAgYmCApiXP7fBsidi5XA1K0ounUv
-	 FFkz4gpMQpKkEmb6XwBcEiZIKhLz3AJSuhpY8ZL71UyQoqjr5Yeb/eHZfueBxPf7A8
-	 SyklJ+hNN37Bw==
+	b=sf/Z1ow7e05oJ0nWRVHerNcefybnvDi5tQyCZ0A/d2ecGKoLClnKJAWeAvTHBYFC9
+	 4fNkaLbIVXua9XJ6RPn8aJPeQda64DYoLHkSiYDU5BT3fck39YmLfqpPDMc+uXA5Tv
+	 Q3kCs9ttB/Q8p8dnNMYka/2GBcB+HDAX2q9FdeyIb8QJ6VszmusOPbzWdanObwSYXg
+	 KRkm/z4kQ1dWjYJUcdYQPasGCo/4p/0TQRhvWTnnIxUvP/Db+sPU3u75usIM0+OP0K
+	 5BjkyzykBq2XjudgCrl6Lt1FZkYDig7eI1OlH8PatbbqbRWub3YX9HfpH55jrhsplD
+	 Pu+GYnpNGs+Bg==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -55,9 +55,9 @@ Cc: bpf@vger.kernel.org,
 	Alan Maguire <alan.maguire@oracle.com>,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 01/13] uprobes: Rename arch_uretprobe_trampoline function
-Date: Wed, 11 Dec 2024 14:33:50 +0100
-Message-ID: <20241211133403.208920-2-jolsa@kernel.org>
+Subject: [PATCH bpf-next 02/13] uprobes: Make copy_from_page global
+Date: Wed, 11 Dec 2024 14:33:51 +0100
+Message-ID: <20241211133403.208920-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241211133403.208920-1-jolsa@kernel.org>
 References: <20241211133403.208920-1-jolsa@kernel.org>
@@ -69,63 +69,102 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We are about to add uprobe trampoline, so cleaning up the namespace.
+Making copy_from_page global and adding uprobe prefix.
+Adding the uprobe prefix to copy_to_page as well for symmetry.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/kernel/uprobes.c | 2 +-
- include/linux/uprobes.h   | 2 +-
- kernel/events/uprobes.c   | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ include/linux/uprobes.h |  1 +
+ kernel/events/uprobes.c | 16 ++++++++--------
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 5a952c5ea66b..22a17c149a55 100644
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -338,7 +338,7 @@ extern u8 uretprobe_trampoline_entry[];
- extern u8 uretprobe_trampoline_end[];
- extern u8 uretprobe_syscall_check[];
- 
--void *arch_uprobe_trampoline(unsigned long *psize)
-+void *arch_uretprobe_trampoline(unsigned long *psize)
- {
- 	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
- 	struct pt_regs *regs = task_pt_regs(current);
 diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index e0a4c2082245..09a298e416a8 100644
+index 09a298e416a8..e24fbe496efb 100644
 --- a/include/linux/uprobes.h
 +++ b/include/linux/uprobes.h
-@@ -211,7 +211,7 @@ extern bool arch_uprobe_ignore(struct arch_uprobe *aup, struct pt_regs *regs);
- extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
- 					 void *src, unsigned long len);
+@@ -213,6 +213,7 @@ extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
  extern void uprobe_handle_trampoline(struct pt_regs *regs);
--extern void *arch_uprobe_trampoline(unsigned long *psize);
-+extern void *arch_uretprobe_trampoline(unsigned long *psize);
+ extern void *arch_uretprobe_trampoline(unsigned long *psize);
  extern unsigned long uprobe_get_trampoline_vaddr(void);
++extern void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len);
  #else /* !CONFIG_UPROBES */
  struct uprobes_state {
+ };
 diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index fa04b14a7d72..e0e3ebb4c0a1 100644
+index e0e3ebb4c0a1..61ec91f635dc 100644
 --- a/kernel/events/uprobes.c
 +++ b/kernel/events/uprobes.c
-@@ -1695,7 +1695,7 @@ static int xol_add_vma(struct mm_struct *mm, struct xol_area *area)
- 	return ret;
+@@ -249,14 +249,14 @@ bool __weak is_trap_insn(uprobe_opcode_t *insn)
+ 	return is_swbp_insn(insn);
  }
  
--void * __weak arch_uprobe_trampoline(unsigned long *psize)
-+void * __weak arch_uretprobe_trampoline(unsigned long *psize)
+-static void copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len)
++void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len)
  {
- 	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
+ 	void *kaddr = kmap_atomic(page);
+ 	memcpy(dst, kaddr + (vaddr & ~PAGE_MASK), len);
+ 	kunmap_atomic(kaddr);
+ }
  
-@@ -1727,7 +1727,7 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
- 	init_waitqueue_head(&area->wq);
- 	/* Reserve the 1st slot for get_trampoline_vaddr() */
- 	set_bit(0, area->bitmap);
--	insns = arch_uprobe_trampoline(&insns_size);
-+	insns = arch_uretprobe_trampoline(&insns_size);
- 	arch_uprobe_copy_ixol(area->page, 0, insns, insns_size);
+-static void copy_to_page(struct page *page, unsigned long vaddr, const void *src, int len)
++static void uprobe_copy_to_page(struct page *page, unsigned long vaddr, const void *src, int len)
+ {
+ 	void *kaddr = kmap_atomic(page);
+ 	memcpy(kaddr + (vaddr & ~PAGE_MASK), src, len);
+@@ -277,7 +277,7 @@ static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t
+ 	 * is a trap variant; uprobes always wins over any other (gdb)
+ 	 * breakpoint.
+ 	 */
+-	copy_from_page(page, vaddr, &old_opcode, UPROBE_SWBP_INSN_SIZE);
++	uprobe_copy_from_page(page, vaddr, &old_opcode, UPROBE_SWBP_INSN_SIZE);
+ 	is_swbp = is_swbp_insn(&old_opcode);
  
- 	if (!xol_add_vma(mm, area))
+ 	if (is_swbp_insn(new_opcode)) {
+@@ -524,7 +524,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm,
+ 
+ 	__SetPageUptodate(new_page);
+ 	copy_highpage(new_page, old_page);
+-	copy_to_page(new_page, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE);
++	uprobe_copy_to_page(new_page, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE);
+ 
+ 	if (!is_register) {
+ 		struct page *orig_page;
+@@ -1026,7 +1026,7 @@ static int __copy_insn(struct address_space *mapping, struct file *filp,
+ 	if (IS_ERR(page))
+ 		return PTR_ERR(page);
+ 
+-	copy_from_page(page, offset, insn, nbytes);
++	uprobe_copy_from_page(page, offset, insn, nbytes);
+ 	put_page(page);
+ 
+ 	return 0;
+@@ -1367,7 +1367,7 @@ struct uprobe *uprobe_register(struct inode *inode,
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	/*
+-	 * This ensures that copy_from_page(), copy_to_page() and
++	 * This ensures that uprobe_copy_from_page(), uprobe_copy_to_page() and
+ 	 * __update_ref_ctr() can't cross page boundary.
+ 	 */
+ 	if (!IS_ALIGNED(offset, UPROBE_SWBP_INSN_SIZE))
+@@ -1856,7 +1856,7 @@ void __weak arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
+ 				  void *src, unsigned long len)
+ {
+ 	/* Initialize the slot */
+-	copy_to_page(page, vaddr, src, len);
++	uprobe_copy_to_page(page, vaddr, src, len);
+ 
+ 	/*
+ 	 * We probably need flush_icache_user_page() but it needs vma.
+@@ -2287,7 +2287,7 @@ static int is_trap_at_addr(struct mm_struct *mm, unsigned long vaddr)
+ 	if (result < 0)
+ 		return result;
+ 
+-	copy_from_page(page, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE);
++	uprobe_copy_from_page(page, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE);
+ 	put_page(page);
+  out:
+ 	/* This needs to return true for any variant of the trap insn */
 -- 
 2.47.0
 
