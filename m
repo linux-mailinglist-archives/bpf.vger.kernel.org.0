@@ -1,156 +1,209 @@
-Return-Path: <bpf+bounces-46588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46589-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96C2D9EC1E7
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 03:02:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D0CA9EC1FF
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 03:11:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55D64188B99D
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 02:02:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D839B1673CC
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 02:11:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87E6D1FBCA8;
-	Wed, 11 Dec 2024 02:02:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76771FBCBC;
+	Wed, 11 Dec 2024 02:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tBfLw1u3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="clWa2OK8"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133A613C8E8
-	for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 02:02:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF7A44384;
+	Wed, 11 Dec 2024 02:11:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733882565; cv=none; b=DP/0kWH1xuLbu6HuL/KY9uVA18dk9RlIUpW4mL5mjW9XX4Sne9QJybjUZbXzUj0dYQl+B8LbJnjlTmbxaJn2lyT+o6i4bntFgZ5WApChOA9x2W1y68euS91Y1QXmjWtpAgTn5+HB1Ol100/+DbAdnzc3QLvwsfEEi4nU11JbqBc=
+	t=1733883091; cv=none; b=o361BXNfmDsdECp98ejJmeyjfMkqMBDiuuf8RG4SDm1MLBy1f6UPHnasByGFq8wOq6uCDI0l93EHxXs/36nCcyyhcRBfCCxr5jkSzveQ/0qC6qAPVhJBqFKsu3LI0l5Cl7tiTxFJ/MlaXb++Lr7hOBEsWnbf1RI9v2STosy4zgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733882565; c=relaxed/simple;
-	bh=ubXllK2pLReEjaBlDelkGycxR1NgCutC4e1A8MgvOjE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LwfcnT4+n4Q4WNKqQs54gr8NZWSEJiWmlXoynagr/oXtdkc4H1s0qjbxELpCj6FHELjuSWNtjuMD4qaMc6IvExnZSJmbRfMQr06yOHR3tugA8FhvIMqRUthST1ROEQ1vSJAFTRrEgdWyLzA7rTDrhhTMT/jQHNaz+ObhG1ksod8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tBfLw1u3; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f8e9ab4a-38b9-43a5-aaf4-15f95a3463d0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1733882560;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WZo1N6zH9M6mCoSFsoCT/bk8JFhrIX+nr0NyRMLv+t8=;
-	b=tBfLw1u3+NotL66uvKQdnfMSjqjC6GORwSCrKGSGoCZJXJyDs48P2lgPxUnl2Wh7xWNW50
-	hMQ8XItHrYJd2eNGv3Pm7JqvSusd8KqGgBi97qSsftz65wra3r9GCGwl9cBjTCI6RaN8iT
-	HPCW0xOCat2CgXJUzqoY7GaDfNkYPmQ=
-Date: Tue, 10 Dec 2024 18:02:31 -0800
+	s=arc-20240116; t=1733883091; c=relaxed/simple;
+	bh=A5Ova/lwWOPJ/MbkngISMFhMWPWBBdzeCWK0wUhKOTI=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=u6ywS/KT8LeiH7xbNWkQTLSnCFbvG5M0HAqLqNncWX+AAoUL7L1Y3junMZTV870sCk3CdkOrjkaGKt9L3SZu+p/J1a/TsbcLrRKmQDO2C+pPL+YwKWWApleqYEBeJbyAPEWpRCrRJywSwUGU0zf9unc0wmw98n4tAaHvSb0h1Kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=clWa2OK8; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-21649a7bcdcso29043815ad.1;
+        Tue, 10 Dec 2024 18:11:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733883089; x=1734487889; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZQ1DWkHzxFbmz7MOTsa2Rn30WXI+xi9D9OGX6d1SiaY=;
+        b=clWa2OK8JgKJPuoliAfFb857Kh2aPD0lClyw3D0qySj13gKHxJl06cE18SHW8zu56A
+         FLmazy3zOwx2tHz4X24e+dfeKM5LhpOxoGhuTa7RvS/hYvxhOYjYCM6BSiUe/f7fgVwg
+         a7il93h17h9d2F+KovSGyqivys8Mi9FRfcbXfRyX3zBJRW3+cTvJz0wp4dFQ7E32hj81
+         ND/NSficmTEnTQggTWT6AFu67+7TzedzBiQnAYwIxaYrakmPpkKCb++vhX7xQkSgsQ9q
+         KWfX3duqcf8DyqtAtPI6EbfBROWYHbFw29IjpIf94yifuZLDRROKGakKMKbfbQWa0GHe
+         AFyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733883089; x=1734487889;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZQ1DWkHzxFbmz7MOTsa2Rn30WXI+xi9D9OGX6d1SiaY=;
+        b=pYdOKep33bhXXJ63RywGEQGHWNOQP8O1nCFxs88Scr/rS0pMBuz3U3QKljwyvmb5x6
+         tBKDtF5IClnhsaiK89RxMVnWJoxbH3xyvGR7lpmnFZlWQnraa8TCAZybVp+v+LNzuGHi
+         9PK4j/Mr6sbXp4J12iEqVUK4RiBEdlfkLcf16WbONGg94zqaoxBTAygRT4534tqKjgmY
+         zPhx5FJCuPxU7hs1jVsUsUhfopduey72tYVk7OstxFJRvkURLqAgkhqqTrj6+PrQK39d
+         XoLKofiSIEOt4kNKwUJc4Nh36ORmO/nsSGQUnmpN9GoN0kIFk9NT900gJ0fMIcVGLAMn
+         n9ug==
+X-Forwarded-Encrypted: i=1; AJvYcCUNR3KFhk0a5vz/yW8owAwHWpRvsIGzlsNFV2FAZnZeYSc+2DAdTZ/uG2BOd0Y0Q76kPZx2n1TRDhfEgFGl@vger.kernel.org, AJvYcCVpVgBhyQujnVFmtsuzhRiIXbhmUe7Co1cdel1ibQo9LJQfy950LqihOxt5JkUNuaul9cI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOfQRK8SCdt9yRPNwtjzBOAdCZ2dAcJkiGTI6Jc+0XAqQk6nBA
+	B1SbYgVQx87mvLwhnuqTJmNy3zJ/+el6GwbM5KJPkargY/Es58QNm4EUkA==
+X-Gm-Gg: ASbGncub5vhyEWOJVLEQCtWGY+r7+8/J7djJTh0+auHUXcB4q+YY02eY0KzgyHBPeQQ
+	hxb/5tn3+CBusmxmph6rpNFiooaVPWLWCcGXTDeyeK/evFzzPNkSpTp8g8S7ddwxK9T1Pkbxw+t
+	4NEVrYinHtCxvxZ3CeH1ZhZVL94plBVFgFIFvmqlq567NsvzCCtiNn9C9lyouBPKRWX8diuTEW8
+	wceEVhwA2To8LZ7SsDIf3ta4YNmtMp/mbDT0UZLcYg9WicG7klN2xg=
+X-Google-Smtp-Source: AGHT+IF+UKdYygc7fF7WFY9ucLIkh1eYls4XFPGPwUbfQC4yx2CEDQr7hplAFTVDGvfdDQX4VNNHcw==
+X-Received: by 2002:a17:902:f551:b0:216:5b8b:9062 with SMTP id d9443c01a7336-217786a22c1mr18877405ad.54.1733883088241;
+        Tue, 10 Dec 2024 18:11:28 -0800 (PST)
+Received: from localhost ([98.97.37.114])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2163562a838sm56449465ad.29.2024.12.10.18.11.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Dec 2024 18:11:27 -0800 (PST)
+Date: Tue, 10 Dec 2024 18:11:26 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Jiayuan Chen <mrpre@163.com>, 
+ bpf@vger.kernel.org
+Cc: martin.lau@linux.dev, 
+ ast@kernel.org, 
+ edumazet@google.com, 
+ jakub@cloudflare.com, 
+ davem@davemloft.net, 
+ dsahern@kernel.org, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ linux-kernel@vger.kernel.org, 
+ song@kernel.org, 
+ john.fastabend@gmail.com, 
+ andrii@kernel.org, 
+ mhal@rbox.co, 
+ yonghong.song@linux.dev, 
+ daniel@iogearbox.net, 
+ xiyou.wangcong@gmail.com, 
+ horms@kernel.org, 
+ Jiayuan Chen <mrpre@163.com>
+Message-ID: <6758f4ce604d5_4e1720871@john.notmuch>
+In-Reply-To: <20241209152740.281125-2-mrpre@163.com>
+References: <20241209152740.281125-1-mrpre@163.com>
+ <20241209152740.281125-2-mrpre@163.com>
+Subject: RE: [PATCH bpf v2 1/2] bpf: fix wrong copied_seq calculation
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH net-next v4 02/11] net-timestamp: prepare for bpf prog use
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
- willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-References: <20241207173803.90744-1-kerneljasonxing@gmail.com>
- <20241207173803.90744-3-kerneljasonxing@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20241207173803.90744-3-kerneljasonxing@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 12/7/24 9:37 AM, Jason Xing wrote:
-> From: Jason Xing <kernelxing@tencent.com>
+Jiayuan Chen wrote:
+> 'sk->copied_seq' was updated in the tcp_eat_skb() function when the
+> action of a BPF program was SK_REDIRECT. For other actions, like SK_PASS,
+> the update logic for 'sk->copied_seq' was moved to
+> tcp_bpf_recvmsg_parser() to ensure the accuracy of the 'fionread' feature.
 > 
-> Later, I would introduce three points to report some information
-> to user space based on this.
+> It works for a single stream_verdict scenario, as it also modified
+> 'sk_data_ready->sk_psock_verdict_data_ready->tcp_read_skb'
+> to remove updating 'sk->copied_seq'.
 > 
-> Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> ---
->   include/net/sock.h |  7 +++++++
->   net/core/sock.c    | 15 +++++++++++++++
->   2 files changed, 22 insertions(+)
+> However, for programs where both stream_parser and stream_verdict are
+> active(strparser purpose), tcp_read_sock() was used instead of
+> tcp_read_skb() (sk_data_ready->strp_data_ready->tcp_read_sock)
+> tcp_read_sock() now still update 'sk->copied_seq', leading to duplicated
+> updates.
 > 
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 0dd464ba9e46..f88a00108a2f 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -2920,6 +2920,13 @@ int sock_set_timestamping(struct sock *sk, int optname,
->   			  struct so_timestamping timestamping);
->   
->   void sock_enable_timestamps(struct sock *sk);
-> +#if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_SYSCALL)
-> +void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op);
-> +#else
-> +static inline void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op)
+> In summary, for strparser + SK_PASS, copied_seq is redundantly calculated
+> in both tcp_read_sock() and tcp_bpf_recvmsg_parser().
+> 
+> The issue causes incorrect copied_seq calculations, which prevent
+> correct data reads from the recv() interface in user-land.
+> 
+> Modifying tcp_read_sock() or strparser implementation directly is
+> unreasonable, as it is widely used in other modules.
+> 
+> Here, we introduce a method tcp_bpf_read_sock() to replace
+> 'sk->sk_socket->ops->read_sock' (like 'tls_build_proto()' does in
+> tls_main.c). Such replacement action was also used in updating
+> tcp_bpf_prots in tcp_bpf.c, so it's not weird.
+> (Note that checkpatch.pl may complain missing 'const' qualifier when we
+> define the bpf-specified 'proto_ops', but we have to do because we need
+> update it).
+> 
+> Also we remove strparser check in tcp_eat_skb() since we implement custom
+> function tcp_bpf_read_sock() without copied_seq updating.
+> 
+> Since strparser currently supports only TCP, it's sufficient for 'ops' to
+> inherit inet_stream_ops.
+> 
+> In strparser's implementation, regardless of partial or full reads,
+> it completely clones the entire skb, allowing us to unconditionally
+> free skb in tcp_bpf_read_sock().
+> 
+> Fixes: e5c6de5fa025 ("bpf, sockmap: Incorrectly handling copied_seq")
+> Signed-off-by: Jiayuan Chen <mrpre@163.com>
+
+[...]
+
+> +/* The tcp_bpf_read_sock() is an alternative implementation
+> + * of tcp_read_sock(), except that it does not update copied_seq.
+> + */
+> +static int tcp_bpf_read_sock(struct sock *sk, read_descriptor_t *desc,
+> +			     sk_read_actor_t recv_actor)
 > +{
+> +	struct sk_buff *skb;
+> +	int copied = 0;
+> +
+> +	if (sk->sk_state == TCP_LISTEN)
+> +		return -ENOTCONN;
+> +
+> +	while ((skb = skb_peek(&sk->sk_receive_queue)) != NULL) {
+> +		u8 tcp_flags;
+> +		int used;
+> +
+> +		WARN_ON_ONCE(!skb_set_owner_sk_safe(skb, sk));
+> +		tcp_flags = TCP_SKB_CB(skb)->tcp_flags;
+> +		used = recv_actor(desc, skb, 0, skb->len);
+
+Here the skb is still on the receive_queue how does this work with
+tcp_try_coalesce()? So I believe you need to unlink before you
+call the actor which creates a bit of trouble if recv_actor
+doesn't want the entire skb.  
+
+I think easier is to do similar logic to read_sock and track
+offset and len? Did I miss something.
+
+> +		/* strparser clone and consume all input skb
+> +		 * even in waiting head or body status
+> +		 */
+> +		tcp_eat_recv_skb(sk, skb);
+> +		if (used <= 0) {
+> +			if (!copied)
+> +				copied = used;
+> +			break;
+> +		}
+> +		copied += used;
+> +		if (!desc->count)
+> +			break;
+> +		if (tcp_flags & TCPHDR_FIN)
+> +			break;
+> +	}
+> +	return copied;
 > +}
-> +#endif
->   void sock_no_linger(struct sock *sk);
->   void sock_set_keepalive(struct sock *sk);
->   void sock_set_priority(struct sock *sk, u32 priority);
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 74729d20cd00..79cb5c74c76c 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -941,6 +941,21 @@ int sock_set_timestamping(struct sock *sk, int optname,
->   	return 0;
->   }
->   
-> +#if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_SYSCALL)
-> +void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op)
-> +{
-> +	struct bpf_sock_ops_kern sock_ops;
 > +
-> +	sock_owned_by_me(sk);
-
-I don't think this can be assumed in the time stamping callback.
-
-To remove this assumption for sockops, I believe it needs to stop the bpf prog 
-from calling a few bpf helpers. In particular, the bpf_sock_ops_cb_flags_set and 
-bpf_sock_ops_setsockopt. This should be easy by asking the helpers to check the 
-"u8 op" in "struct bpf_sock_ops_kern *".
-
-I just noticed a trickier one, sockops bpf prog can write to sk->sk_txhash. The 
-same should go for reading from sk. Also, sockops prog assumes a fullsock sk is 
-a tcp_sock which also won't work for the udp case. A quick thought is to do 
-something similar to is_fullsock. May be repurpose the is_fullsock somehow or a 
-new u8 is needed. Take a look at SOCK_OPS_{GET,SET}_FIELD. It avoids 
-writing/reading the sk when is_fullsock is false.
-
-This is a signal that the existing sockops interface has already seen better 
-days. I hope not too many fixes like these are needed to get tcp/udp 
-timestamping to work.
-
-> +
-> +	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
-> +	sock_ops.op = op;
-> +	sock_ops.is_fullsock = 1;
-
-I don't think we can assume it is always is_fullsock either.
-
-> +	sock_ops.sk = sk;
-> +	__cgroup_bpf_run_filter_sock_ops(sk, &sock_ops, CGROUP_SOCK_OPS);
-
-Same here. sk may not be fullsock. BPF_CGROUP_RUN_PROG_SOCK_OPS(&sock_ops) is 
-needed.
-
-[ I will continue the rest of the set later. ]
-
-> +}
-> +#endif
-> +
->   void sock_set_keepalive(struct sock *sk)
->   {
->   	lock_sock(sk);
-
+>  enum {
+>  	TCP_BPF_IPV4,
+>  	TCP_BPF_IPV6,
+> @@ -595,6 +636,10 @@ enum {
 
