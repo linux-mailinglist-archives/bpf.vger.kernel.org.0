@@ -1,131 +1,100 @@
-Return-Path: <bpf+bounces-46675-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46676-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6705A9ED95A
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 23:06:57 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 956C39ED9CB
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 23:33:12 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31D331882B30
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 22:06:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10D67281371
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 22:33:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241C41F237D;
-	Wed, 11 Dec 2024 22:06:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6071F37D5;
+	Wed, 11 Dec 2024 22:32:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LoVU9NgK"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bEl/CjW1"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D071EBFF9;
-	Wed, 11 Dec 2024 22:06:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F212D1F0E3D;
+	Wed, 11 Dec 2024 22:32:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733954785; cv=none; b=fJmQzoOBUqhkzEHNt3vKdL2AlBbnXHAUdSJ6d+uY6lNhwt819yqo6gdU0io6kjUmvX6qH5Er1LB5fiy9oIz25DJuVwXhpO8TmPuMjB5bOpuz/2L+8jP5LoQdLrtd220iQNCOkEsKIbBKJ6BY+sQxvREoxPaKCFaPpRE9ehsDHUg=
+	t=1733956339; cv=none; b=nAzr3ZPrz87SMP+qBY6lfz5fK84yqrLg1hAf2XmcDeuDBttgBK6R87Eq+JsTPyhz4Aq8Q+05qzVW/MmIwGhKh4xleqsNB1+zipUYS0Y2hxvgOdV7+gVlD+zUp9L6G/hTiQWSsZFd/Jz3Rkjtf93xe+/yQYP0z15BIXm7IZdk8GI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733954785; c=relaxed/simple;
-	bh=X4EAtAS1OhfURbSQQzDqxSCgSCBbt3AFd+kJZ8cZ/3A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Txk0HUhUVUNmcXMpHbWUg6B46NuX3n5ebT+dZxFYRkF3kZn2Rk5eZnhYkM1j3Sk5u8Tg1vmoIszrv+jTV1zhH5R4uVsAW3+pUXv0ktdKFuTdGaMY5c3cZf6+ikVp4Ud7ozS639H5Zh+ecprU7SaxFLjzarDgVH8Eq3JS92PBMMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LoVU9NgK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06607C4CEDD;
-	Wed, 11 Dec 2024 22:06:25 +0000 (UTC)
+	s=arc-20240116; t=1733956339; c=relaxed/simple;
+	bh=DPm05kHltpEewW4iDgoVf8//KAwPkxNr3T75XSMhm5s=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Mu8ed/5LxODIBOgx1CVCsQhqujHKd0T6uTRZzJX573Q5+yqinFb9GWZC3G9jZO/KfiwtJlnZavetJ3RPZI87NcbwbAIE7sgJZTX4WPL1BJUOx4wos3LyRqg1rIVxmsGeCZBcjyLB/BovCF5IHugxQ+uOd23pz1ZzMr/fELSKruk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bEl/CjW1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BF6BC4CEE0;
+	Wed, 11 Dec 2024 22:32:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733954785;
-	bh=X4EAtAS1OhfURbSQQzDqxSCgSCBbt3AFd+kJZ8cZ/3A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=LoVU9NgKsi7cXEjDOhpJ6k3JTcNUGDLZ2U+w8Mv9E096MrZMxbWUpu/5FrsTHs1Pj
-	 Y5Xgi4gSwshUDLao9Iu3/AeksqB6Kxfa+a1NzHWE6I4Xn7zRCcWHKrGLMSkiwHPPm+
-	 9vidJrytVUaTc4zj8JybO21Oig81n+5Mvn7oHxtnRibwOkeSfGR11RfJhcOzw6CiOf
-	 pOxKiJI6HQ6FZFLXExeSH5GOhqsIKANZ8hU8fxYkxzfKV0uPHQc8v+2dULNOOQjuOi
-	 atNlkzOOWpIe30ihdzd11PBQisYfGzFUqlwRwurnsdYZoGb4igBuxpWiYdd890oJma
-	 bflRm7chrPYsA==
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-3a7750318a2so49229515ab.2;
-        Wed, 11 Dec 2024 14:06:24 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW05+biaN49R9M9a22i15LMEkgDXZV3dGjIn7l3dR9TyiyO98f16P3chF9RodhvwTRuF61lpO8TRcMpmAHv@vger.kernel.org, AJvYcCWSo8Spqu9t/0hAFACqC/3pJWQuz6oI2ZCdxwr8L9h9BncYL5yd9QJu3/5KLuwrPiVfEuSrCyebO9uwp2WZeg==@vger.kernel.org, AJvYcCXd07WXeO2lFKRtT87sGG/YQxwfi6uwfI6vXLDvgQBjDZHcyiFkaSObZ3DBMpL1DC5eBWo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzce0CjsG/nSsNX+JgO2m0TnCri3jlLQRW+M5H9lIvWDjeG7zWj
-	cju/F3KHhJne19zoHkXKWT8YLoNX/wEo/dLZ1Ek2HawNSqzlwKYa0jJCBiPu4hpO1PAGZg1BkxR
-	VKBkFMlQcAW/lBexhaHor1u5mDpY=
-X-Google-Smtp-Source: AGHT+IHcWmShjsdK3EuqFjW+nJ/cJcTka/NlBTJUCBn8D2V4rX44id9mnYO0/aPgX+UeM8VEnscOLz//8NTC0Ad7KKo=
-X-Received: by 2002:a05:6e02:1806:b0:3a3:4175:79da with SMTP id
- e9e14a558f8ab-3ac48d9eccamr11079115ab.13.1733954784384; Wed, 11 Dec 2024
- 14:06:24 -0800 (PST)
+	s=k20201202; t=1733956337;
+	bh=DPm05kHltpEewW4iDgoVf8//KAwPkxNr3T75XSMhm5s=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=bEl/CjW12x/WoIvT0JWZgDNgZNOG4yAoYC8fL0DTwLdezKSKaxNahz4l0MkfpU6HI
+	 4Z0awS0oUbkFLA5ytXctWKXdm3FkV96b+lGzdV4QrBP8Q9gi7rF+xoGEn1cqPjCTbD
+	 4ixH9fVSOk9M8hjH27Bln24p7sFWBPpRCxEQJvBLtfDS9OGgON02gn+P8QQsc/x3cC
+	 l97z+90OA+7W+njKtuF8JBUHW++MAr7TIeNMXwTJfnOiNHSVxqJRIaf0iDMRLSG+7q
+	 u45yKS67+kWXugIhvUjZwdWZu0K6kYYq4nAhlRYOdXqYEcePS137K6ylmvKn1X1i0J
+	 Keb6S45Y+tHPw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADF29380A965;
+	Wed, 11 Dec 2024 22:32:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <AM6PR03MB508010982C37DF735B1EAA0E993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB50804FA149F08D34A095BA28993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <20241210-eckig-april-9ffc098f193b@brauner> <CAADnVQKdBrX6pSJrgBY0SvFZQLpu+CMSshwD=21NdFaoAwW_eg@mail.gmail.com>
- <AM6PR03MB508072B5D29C8BD433AD186E993E2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB508072B5D29C8BD433AD186E993E2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-From: Song Liu <song@kernel.org>
-Date: Wed, 11 Dec 2024 14:06:13 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7zZuHf6dgDpYnibONoKt0p=zb0wCta1R1MtLv=Q=4FfA@mail.gmail.com>
-Message-ID: <CAPhsuW7zZuHf6dgDpYnibONoKt0p=zb0wCta1R1MtLv=Q=4FfA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/5] bpf: Make fs kfuncs available for SYSCALL
- and TRACING program types
-To: Juntong Deng <juntong.deng@outlook.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Christian Brauner <brauner@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v2] tools: Override makefile ARCH variable if defined,
+ but empty
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id: 
+ <173395635324.1729195.17131106959498810013.git-patchwork-notify@kernel.org>
+Date: Wed, 11 Dec 2024 22:32:33 +0000
+References: <20241127101748.165693-1-bjorn@kernel.org>
+In-Reply-To: <20241127101748.165693-1-bjorn@kernel.org>
+To: =?utf-8?b?QmrDtnJuIFTDtnBlbCA8Ympvcm5Aa2VybmVsLm9yZz4=?=@codeaurora.org
+Cc: linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, alexghiti@rivosinc.com, acme@redhat.com,
+ jean-philippe@linaro.org, qmo@kernel.org, andrii.nakryiko@gmail.com,
+ bjorn@rivosinc.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
+ aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org, davidlt@rivosinc.com,
+ namhyung@kernel.org
 
-On Wed, Dec 11, 2024 at 1:29=E2=80=AFPM Juntong Deng <juntong.deng@outlook.=
-com> wrote:
->
-> On 2024/12/10 18:58, Alexei Starovoitov wrote:
-> > On Tue, Dec 10, 2024 at 6:43=E2=80=AFAM Christian Brauner <brauner@kern=
-el.org> wrote:
-> >>
-> >> On Tue, Dec 10, 2024 at 02:03:53PM +0000, Juntong Deng wrote:
-> >>> Currently fs kfuncs are only available for LSM program type, but fs
-> >>> kfuncs are generic and useful for scenarios other than LSM.
-> >>>
-> >>> This patch makes fs kfuncs available for SYSCALL and TRACING
-> >>> program types.
-> >>
-> >> I would like a detailed explanation from the maintainers what it means
-> >> to make this available to SYSCALL program types, please.
-> >
-> > Sigh.
-> > This is obviously not safe from tracing progs.
-> >
-> >  From BPF_PROG_TYPE_SYSCALL these kfuncs should be safe to use,
-> > since those progs are not attached to anything.
-> > Such progs can only be executed via sys_bpf syscall prog_run command.
-> > They're sleepable, preemptable, faultable, in task ctx.
-> >
-> > But I'm not sure what's the value of enabling these kfuncs for
-> > BPF_PROG_TYPE_SYSCALL.
->
-> Thanks for your reply.
->
-> Song said here that we need some of these kfuncs to be available for
-> tracing functions [0].
+Hello:
 
-I meant we can put the new kfuncs, such as bpf_get_file_ops_type, in
-bpf_fs_kfuncs.c, and make it available to tracing programs. But we
-cannot blindly make all of these kfuncs available to tracing programs.
-Instead, we need to review each kfunc and check whether it is safe
-for tracing programs.
+This patch was applied to riscv/linux.git (fixes)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Thanks,
-Song
+On Wed, 27 Nov 2024 11:17:46 +0100 you wrote:
+> From: Björn Töpel <bjorn@rivosinc.com>
+> 
+> There are a number of tools (bpftool, selftests), that require a
+> "bootstrap" build. Here, a bootstrap build is a build host variant of
+> a target. E.g., assume that you're performing a bpftool cross-build on
+> x86 to riscv, a bootstrap build would then be an x86 variant of
+> bpftool. The typical way to perform the host build variant, is to pass
+> "ARCH=" in a sub-make. However, if a variable has been set with a
+> command argument, then ordinary assignments in the makefile are
+> ignored.
+> 
+> [...]
 
-> If Song saw this email, could you please join the discussion?
->
-> [0]:
-> https://lore.kernel.org/bpf/CAPhsuW6ud21v2xz8iSXf=3DCiDL+R_zpQ+p8isSTMTw=
-=3DEiJQtRSw@mail.gmail.com/
+Here is the summary with links:
+  - [bpf,v2] tools: Override makefile ARCH variable if defined, but empty
+    https://git.kernel.org/riscv/c/537a2525eaf7
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
