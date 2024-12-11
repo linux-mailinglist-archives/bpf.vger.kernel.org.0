@@ -1,86 +1,86 @@
-Return-Path: <bpf+bounces-46602-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46603-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 379A59EC879
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 10:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A6C989EC87F
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 10:10:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BF73163E2A
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 09:09:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A86B81648B6
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 09:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2DD2210ED;
-	Wed, 11 Dec 2024 09:09:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B056E2210D2;
+	Wed, 11 Dec 2024 09:10:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JZo3c9wo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="llCT5XEs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62AA2210C6;
-	Wed, 11 Dec 2024 09:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC45C2210C0;
+	Wed, 11 Dec 2024 09:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733908172; cv=none; b=n+1lDzZ1SUQygIgXRXuh8Y9bcmOAEvEP4KcYSpCeMLJx9bK1bEsTsiONlWMgqBgHOM07R5Rw8Z+2LLH7vlSmEUvf4PybNzWE3xfnU12hD7tRjmEHgqc0dVMlq8al74gSGFiV2hXfGrnIgOLDSbqB0pNgxf6FwyLKUkhPnNm+zfI=
+	t=1733908209; cv=none; b=BBkjlaXbvW+1E+S98CJ7hhOSHpsz+se66y5XGCWXpEXrgIGEu5RwFA495e8UNip45epfiXyRJLjwJn/xF/0YyKbSas0mCN8NCTa2jF0Oa/AUvMr4Z0E+n4vzbk8VbVEt1o8EHlnWsZn8kQ/3beM5GZ/h63lDe8QcjV/917a6YxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733908172; c=relaxed/simple;
-	bh=xIaQXFskKCgp5A/NEx71Hx314rVTXuATxS4qKYmDeLI=;
+	s=arc-20240116; t=1733908209; c=relaxed/simple;
+	bh=lnLjvSQoyITD4fyiygfWRicJaqtlbsesWonfZxvC0/Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UIZUsmEvRoutquXUJ1rbPY5ps1eKHvrH5CEqjww90r87yhIcZxqDVSdIY/A3ycA2WHBJttFBG2tTvq1IHPLNfJjtonui2BI5mcTnfZT5BZ/FmIiBS5BmO+8hv2Y80YtX083H8OokRJf6TUQPARebqMiyncDqd4/yLhFuopV9vB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JZo3c9wo; arc=none smtp.client-ip=209.85.210.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rfx6Vn22jtOTrQc/LtA7l9zedbqok/BEtxhoqo+keKxiI9JUfrwcfhgJFULPDC4vzHbS4i/BrKbMiez2epwIG4MuHvjOdEfd1oqAiWLOIcmJZsUgZP8fl/rv8ZzN2nHR5sNTBR8Zz0rQb8g+ddv8qa0JRg8uhBoupLIBe+0wUNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=llCT5XEs; arc=none smtp.client-ip=209.85.210.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-725e71a11f7so365134b3a.1;
-        Wed, 11 Dec 2024 01:09:30 -0800 (PST)
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-728eedfca37so415887b3a.2;
+        Wed, 11 Dec 2024 01:10:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733908170; x=1734512970; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733908207; x=1734513007; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1RMe/+7kIy4SbIRyalwwTZ03nL2wZipPR7y509ZPy4c=;
-        b=JZo3c9wonO2bgSwY4c6GlK7Uq9T/5g0MisNZsqMbp93b244QwHIXnt6HYmfwh2qQMJ
-         dkmOesRgp5DaCQK79vWDOqZVpBGCsH/5WiATiGafwJQiGvlThM3qM/ZSH6NQmrEgiPAY
-         1yEV1R1WkNUeTCG7gurDbBIz/SCNvT+Lde9cv5IhYMoS+WL+ELbpOlsPQat80fvM4Cmd
-         fccQlGPoYX8jmGdut7OkSGGsKTHq/cvra6611+wxzS0wD0kFbxbDO879P37hdMl/aR75
-         PhP3Ua4Y41bRN/adfKMK+/beTITuKDqG5UE42Y775T/BOoL4glx6rFSTKguzfccLaB/j
-         2Row==
+        bh=95VNZTlSV0GmtcT1rkj1rSMJXseSIfnM0Z5wuTWOkUo=;
+        b=llCT5XEsgGfpqjIw3mKSgJyBWMuEQJuCuEmWaHI52t51ur0AZqxvIuxRflM9WdRkOj
+         bMaGClz+ol1IeVzNsy7APzsdxHGPLVXEkvVx4UJgkEsglxD3ja++VkHhrmXMCl6MZJO5
+         EvlT1mdAflijZaU0XJYIQtKGt9c9le03wE+N7jbHsGHHy4dEk29vHJ2IE2T6TV2CnTVh
+         9uG8aYsR6Grewp3Jlvh5pyJGUj8KYB5GUXUI58fgbs6FpRELs7oT4wr/thrpvtaanpzM
+         cC5mATxV6pbZsqFJ+OrK8vr8jIc+vb6mf2GtS2g+ItybfWimm4aZo4d59ny+mPzRvGuP
+         Mg+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733908170; x=1734512970;
+        d=1e100.net; s=20230601; t=1733908207; x=1734513007;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1RMe/+7kIy4SbIRyalwwTZ03nL2wZipPR7y509ZPy4c=;
-        b=haFvFTX4V8Rjjy/vrD2tnVIy0pXRqJyPGIEUNxG36jJj8sj4g+u0N0D4d6NwCcdsA1
-         LjNC8zEbWa+/vBbzL795lXvgsEVCL5ke6ijeUaI+omCLxQVJTDe6praajcH/aOYy5DEK
-         Kvr8SSAaRnhFOcZgMywAYpa37zIjzuJkisJK4o2umdEudX4apUL2DX8+eu9GCXqPwWvB
-         i0EqQW/tNAhOPX7o+HfaTaotXeRvCUqIx8ULzs380t4h+J3V0h2BW+3A3JatNM4vRoyG
-         bpeEm2/UGPq7rkXco6pAhfJ7+2ugiLD/QMwtGhr3Yg0V+Ec/GA6X5XlUMNskhjwLkVma
-         VlEg==
-X-Forwarded-Encrypted: i=1; AJvYcCVPzR6A3OTb2886XpDc0aBqghuXz4A5ltx9Cko4/izidA2tlCTErsYrBmmFxWGG5/76aCE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YySTMl17Cc7BDiYpctNQyy0SWMu2JuaEKSwA4ty7zyE7FcsysuO
-	3mX5gfhZ6fjHqeUuk+6HYwtua5svLXg4kTNSHEM1xPRbGLUzguTV
-X-Gm-Gg: ASbGncsiaL1FaAcLO5im/MgCkNeHUoW7ai2CiiaRwfJ/jLgVlnf6zZlh2D/ublklqXv
-	5+8lSDb6Xo0VnotUt/4isHA6y+aV+fkl6LDpOUP0Rsc3yxxOKhiXh+yldzbbkRZl8niDB1fPYCG
-	xGlj65Prmfi7tr49Lgzs1LnThJIcZUiQzQIukBODwTMZTkzYH1OPFqgGJBZ4rO4NaNtpDLoPQy5
-	wgKmehKV6nzj0RAUjkNvko8AqbZE/B7mQ9oD9/q/QTBT2h5zgJmRsLNsRw=
-X-Google-Smtp-Source: AGHT+IHbBIG2jkSmgeOa0zNVx6HrbC60xE8IDHv2oBq3+JdwoA6FDnuCXUx8LX4D4UbLraJUB7ulLQ==
-X-Received: by 2002:a05:6a00:1817:b0:725:e386:3c5b with SMTP id d2e1a72fcca58-728edb790bfmr3134095b3a.5.1733908170117;
-        Wed, 11 Dec 2024 01:09:30 -0800 (PST)
+        bh=95VNZTlSV0GmtcT1rkj1rSMJXseSIfnM0Z5wuTWOkUo=;
+        b=wJBb/eeSwhCEZs5IYmt3BKaeDPqpFNVEGO6oaOBeiEqFTUyEwMKcf+Mlz6ERdfCC0U
+         9e7dzhZp0C0vwSbfjhmmuWuqP1+eo7g72MzznYhEeJwGdFi9PxqlojANFUomBIe4HwXo
+         KuAsKOPhyOZEzviMOWssPGMwTyu/Fc8yA7TH2vuLqNWWdp4id/rF5gmFscaX9pjuLNA5
+         Y/q6BmKsiDoG8IKhuOKaRASO8+ImnsHWXHslyTMCOg5l0VrdjUocRRsoRh1+0lNODkYg
+         YCes6pFUu5axolz7LhewuSZ0ozNGMiKj3l4D36SQnulxDhSHdE6MO/qkKbtzW7ILlYdK
+         bxaA==
+X-Forwarded-Encrypted: i=1; AJvYcCU1Hxvo4G5AFYRW31pDfN90X6wbLMvo1mSuAxE/ve4RIpmb24SZ7p9Pr7T+I/gUJovi/1U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyOhlgudl4/F64ZA/GjxXvYuV5Pp0Q89AAdWEMNvbv4qQNCa1Xu
+	wJ++G8kCHFl4MDocdvQAVvLvqnzbGxYjDnXSXg3Rh6plRXVnxjKbnYl4YJR1
+X-Gm-Gg: ASbGncupb4srjPCU27fMdUF91DRl6cXd+S6FSQ9qoruxYL59ZvUXNerMUhi853KvmPK
+	jM2iGJ17t/cWGv/+MGEcyg8UetLr2Uhyz8G9h1oEY9zlxIB9DMJPns/lV4NOma6lu7hRFh0OcKv
+	fLYwdaEp6vrEdZ/UwJCWgiIXxsIkJNpI1mwWmSj7JeYl9LaVzq+QO7SRgC6jp3LPHiwxWvl9l51
+	SAo8CvaYD17/qhr7Q/eAf8EDA+jclEziUmG1GA2LOK1CG2WCD7n2dnrYDc=
+X-Google-Smtp-Source: AGHT+IFW6Naz+OTWa/PYPIVfYv/UxUumZZr6ce4hkxERUdlxOtW0YvjX8sA1l02cG6NHn2APItX04g==
+X-Received: by 2002:a05:6a20:7fa2:b0:1e1:bee3:50ea with SMTP id adf61e73a8af0-1e1c12834d8mr4241911637.11.1733908207197;
+        Wed, 11 Dec 2024 01:10:07 -0800 (PST)
 Received: from fedora ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-727ba09a13bsm3185774b3a.46.2024.12.11.01.09.26
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fd430cec7bsm5868062a12.67.2024.12.11.01.10.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Dec 2024 01:09:29 -0800 (PST)
-Date: Wed, 11 Dec 2024 09:09:23 +0000
+        Wed, 11 Dec 2024 01:10:06 -0800 (PST)
+Date: Wed, 11 Dec 2024 09:10:01 +0000
 From: Hangbin Liu <liuhangbin@gmail.com>
 To: Daniel Borkmann <daniel@iogearbox.net>
 Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, mkubecek@suse.cz,
 	Nikolay Aleksandrov <razor@blackwall.org>,
 	Ido Schimmel <idosch@idosch.org>, Jiri Pirko <jiri@nvidia.com>
-Subject: Re: [PATCH net 2/5] bonding: Fix initial {vlan,mpls}_feature set in
- bond_compute_features
-Message-ID: <Z1lWw5qM-AGPCjuZ@fedora>
+Subject: Re: [PATCH net 4/5] team: Fix initial vlan_feature set in
+ __team_compute_features
+Message-ID: <Z1lW6R0yhxxvYdrz@fedora>
 References: <20241210141245.327886-1-daniel@iogearbox.net>
- <20241210141245.327886-2-daniel@iogearbox.net>
+ <20241210141245.327886-4-daniel@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,44 +89,43 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241210141245.327886-2-daniel@iogearbox.net>
+In-Reply-To: <20241210141245.327886-4-daniel@iogearbox.net>
 
-On Tue, Dec 10, 2024 at 03:12:42PM +0100, Daniel Borkmann wrote:
-> If a bonding device has slave devices, then the current logic to derive
-> the feature set for the master bond device is limited in that flags which
-> are fully supported by the underlying slave devices cannot be propagated
-> up to vlan devices which sit on top of bond devices. Instead, these get
-> blindly masked out via current NETIF_F_ALL_FOR_ALL logic.
+On Tue, Dec 10, 2024 at 03:12:44PM +0100, Daniel Borkmann wrote:
+> Similarly as with bonding, fix the calculation of vlan_features to reuse
+> netdev_base_features() in order derive the set in the same way as
+> ndo_fix_features before iterating through the slave devices to refine the
+> feature set.
 > 
-> vlan_features and mpls_features should reuse netdev_base_features() in
-> order derive the set in the same way as ndo_fix_features before iterating
-> through the slave devices to refine the feature set.
-> 
-> Fixes: a9b3ace44c7d ("bonding: fix vlan_features computing")
-> Fixes: 2e770b507ccd ("net: bonding: Inherit MPLS features from slave devices")
+> Fixes: 3625920b62c3 ("teaming: fix vlan_features computing")
 > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 > Cc: Nikolay Aleksandrov <razor@blackwall.org>
 > Cc: Ido Schimmel <idosch@idosch.org>
 > Cc: Jiri Pirko <jiri@nvidia.com>
 > ---
->  drivers/net/bonding/bond_main.c | 5 +++--
+>  drivers/net/team/team_core.c | 5 +++--
 >  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> index 42c835c60cd8..320dd71392ef 100644
-> --- a/drivers/net/bonding/bond_main.c
-> +++ b/drivers/net/bonding/bond_main.c
-> @@ -1563,8 +1563,9 @@ static void bond_compute_features(struct bonding *bond)
+> diff --git a/drivers/net/team/team_core.c b/drivers/net/team/team_core.c
+> index 1df062c67640..306416fc1db0 100644
+> --- a/drivers/net/team/team_core.c
+> +++ b/drivers/net/team/team_core.c
+> @@ -991,13 +991,14 @@ static void team_port_disable(struct team *team,
+>  static void __team_compute_features(struct team *team)
+>  {
+>  	struct team_port *port;
+> -	netdev_features_t vlan_features = TEAM_VLAN_FEATURES &
+> -					  NETIF_F_ALL_FOR_ALL;
+> +	netdev_features_t vlan_features = TEAM_VLAN_FEATURES;
+>  	netdev_features_t enc_features  = TEAM_ENC_FEATURES;
+>  	unsigned short max_hard_header_len = ETH_HLEN;
+>  	unsigned int dst_release_flag = IFF_XMIT_DST_RELEASE |
+>  					IFF_XMIT_DST_RELEASE_PERM;
 >  
->  	if (!bond_has_slaves(bond))
->  		goto done;
-> -	vlan_features &= NETIF_F_ALL_FOR_ALL;
-> -	mpls_features &= NETIF_F_ALL_FOR_ALL;
-> +
 > +	vlan_features = netdev_base_features(vlan_features);
-> +	mpls_features = netdev_base_features(mpls_features);
->  
->  	bond_for_each_slave(bond, slave, iter) {
+> +
+>  	rcu_read_lock();
+>  	list_for_each_entry_rcu(port, &team->port_list, list) {
 >  		vlan_features = netdev_increment_features(vlan_features,
 > -- 
 > 2.43.0
