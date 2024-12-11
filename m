@@ -1,152 +1,150 @@
-Return-Path: <bpf+bounces-46624-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46625-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 334879ECD13
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 14:20:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DBD19ECD40
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 14:34:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77C7218830F8
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 13:20:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FF2F162C7C
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 13:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F3E229142;
-	Wed, 11 Dec 2024 13:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C4122C34A;
+	Wed, 11 Dec 2024 13:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S5tcyrcO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AZWSIuCN"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 976A123FD05
-	for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 13:20:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44B9F23FD1E;
+	Wed, 11 Dec 2024 13:34:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733923230; cv=none; b=a94gESnu7T2qjFN01KxiD7P1f2JArFxgZCeqCTRw8mVYlZD72+eb146SQOTVnHubk1ChDyD5T7MEOx/7Oxf64Y9Z7MmGKAiWI36IPE0FnduHIcS0mgwDK1LAZgJDuXwerSttL686ndY3OlnRAo4XGxuWyYBMam3OsiUIob81M8c=
+	t=1733924049; cv=none; b=mcgB30uk9M1Y8F0gv7WkBDlrC120ZzMt6koyGJ4Zry8Uth8S75KHouLpuofj1XIpghmuz9A5XfhXkcC+6F7Q/iDmpoOPHm8bd9lN5LyCGgBq7hYMcvH4qFHCukKXxTjGr/BxHXTRmf4150yhgEx8ZM0bvkde4J1n29HLzPeuNXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733923230; c=relaxed/simple;
-	bh=czuEY77JCZPstMaLM63oJZzbj6XrhHUBcn36oBhySws=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gKLTRiEsb9d7kOmFXLtP2c4BqqXKWpBG605SUI5rkNVv69zWm9L94/T0htTNhaiu+8OwFHnRaW2wHi9EU+9z1QYXl0aal5l0Hd7ZTxj7lSnTbSJ0b9cpRLf3NH/EcupxAkcFVs7Okw76y5RvBrs5kT+S3l2Oy85Neu2ZEwmt9iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S5tcyrcO; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1733923227;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=czuEY77JCZPstMaLM63oJZzbj6XrhHUBcn36oBhySws=;
-	b=S5tcyrcOOQAPXePxPYGZGaMGNdVPMRlaqXUSc/fhP6mRUuWwFxflbKRkWicIZLKC+b7H/M
-	U2UVEjff4WpT5w6KyHZI+E29UdUeUlFalH4VCIdpzF/GCBtJh+dcfxyGz7xN4KrPZ+hZWS
-	Qg2oLbhNm/RzQkPQrHQ6TcVLZPgclm0=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-422--hTBHbg-Mwy9kmgDr47SrA-1; Wed, 11 Dec 2024 08:20:26 -0500
-X-MC-Unique: -hTBHbg-Mwy9kmgDr47SrA-1
-X-Mimecast-MFC-AGG-ID: -hTBHbg-Mwy9kmgDr47SrA
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6d88833dffcso108177596d6.0
-        for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 05:20:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733923225; x=1734528025;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=czuEY77JCZPstMaLM63oJZzbj6XrhHUBcn36oBhySws=;
-        b=T+rx4Z19GAseS6+sQjQXHJgwuZC+DMHfivSirZqjRa41yUqwgu1qdZNNa6anMorT6g
-         vGCMeDBP8Fy8hslhSnU+JBUYll2kDn2v8AAM8+2E5Sn4iT/6sDBcHQxAhgVSKOMsI4MN
-         3ba3YmU5036BNE/gU8uLum/UUmWvDuOL/uHCVy8/AjoV67ybaV/4zgck/MK5FgAGOU2Q
-         LH7KJaEESA0L+FjHCtERgS+3RVB3rEPJLXtw3vyaEFBR9gHCBVDxiazDCEMx7nD8IEU6
-         L/qFkWrLYAn3LhnzfnwvC4gsiriADXPOXYi4s5y7owvmPJO+hoGL74tQA9InIIQQRPtc
-         8irw==
-X-Forwarded-Encrypted: i=1; AJvYcCUelAdwqS+ooPtBnXu+Jn8C+vpjOle0uKbxsZvUPdCH6wav+waZhQlcmwKRHU/S4Q4JiK4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhpGFNzBnwkqa3bbEgbpuIS8HI7HLFWhoB7PjoOEdF77Q1yg0N
-	tbb+9lWwt8XntFm610CoBcG6pDPgOizrtKLQqaknE11F6o2CowEpkTAP7ej8H7Icrsgtd9QHTD4
-	Laqyq/PE/e4DPjvbXTlb61wthuMMi86BoY6eMAGY9gIh+2GXA++jK2NddeNJWmyhsUi0JREyp6L
-	2dz0Hy6hM0ibehX6T9cOQgOeqh
-X-Gm-Gg: ASbGncsIzdR2WfXVaDNmrbykwgH1Wq6tqLWu+vD0kCRHIkVANDA/qpHw5G5YzLGOUTR
-	2fTdOTNzFuBYAjbaTpO1x1txkWjwW0LO8HYXIIulZknageX2fmcCMLtV2U8FB69LBxWfuKw==
-X-Received: by 2002:a05:6214:ca5:b0:6d8:aa04:9a5d with SMTP id 6a1803df08f44-6d9348d2142mr46799266d6.4.1733923225597;
-        Wed, 11 Dec 2024 05:20:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG883jmPVlNDMql0MfElEuVFNmIdnEfS+mjFs8E85duJCJ5UK2bNaU7F3/+T5MmFm/rBUpyG4I3beqd4Jy2Wno=
-X-Received: by 2002:a05:6214:ca5:b0:6d8:aa04:9a5d with SMTP id
- 6a1803df08f44-6d9348d2142mr46798926d6.4.1733923225372; Wed, 11 Dec 2024
- 05:20:25 -0800 (PST)
+	s=arc-20240116; t=1733924049; c=relaxed/simple;
+	bh=OyO4NuOOCEs49xUCD/A5hVrJ7mLsH/26AW6mnDtM+bc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ts/s0fJ/zz9bs7FKOCbTcrfMn04t2cFwWfngnSRqTmcWNpsgV0vq1QgqBJdFEDzi1R25wIV43ntdDcqn4ntfpveEU3dmcMSuxqAXgQfisx61QyFsbdT++3yBWuB5FRZke92+DKvbP5Rt09/R4PsfOmrP//b4JXRqVkRinx/F3SA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AZWSIuCN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9844BC4CED2;
+	Wed, 11 Dec 2024 13:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733924048;
+	bh=OyO4NuOOCEs49xUCD/A5hVrJ7mLsH/26AW6mnDtM+bc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=AZWSIuCNzFpazFCK8tGOMBldSANFbgWIRsk1LSN9E2z2NjvruZRCLgA6wF/AEBaIU
+	 /8R2Kc0KRBpQvB+wz6Rsvb70LzZQY9kDipT5sTeVtj0lYwQj0WG5N1qijwXMQRmOjN
+	 t4+bt6o407X2KIrly0dQGDKbSYdSuD7p/rGEhlH9AYRiDgqP8MjytBldpU8cxpnxEa
+	 Ks72JTlxE1/ciwAtDDaS4VvThv9UnrooxNgdwSaUyJRe1+LQn8KNk1xi4l0K3n7KeY
+	 PDcDUvBO3t5lZbf1noc706eSeCQqVREINauSUOKQFJ4tr6LL/VCSWW84pQ723ZcDTN
+	 6/aDOTruRzYTw==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 00/13] uprobes: Add support to optimize usdt probes on x86_64
+Date: Wed, 11 Dec 2024 14:33:49 +0100
+Message-ID: <20241211133403.208920-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMENy5pb8ea+piKLg5q5yRTMZacQqYWAoVLE1FE9WhQPq92E0g@mail.gmail.com>
- <5b64c89f-4127-4e8f-b795-3cec8e7350b4@kernel.org> <87wmmkn3mq.fsf@toke.dk>
- <ff571dcf-0375-6684-b188-5c1278cd50ce@iogearbox.net> <CA+h3auMq5vnoyRLvJainG-AFA6f=ivRmu6RjKU4cBv_go975tw@mail.gmail.com>
- <c97e0085-be67-415c-ae06-7ef38992fab1@nvidia.com> <2f8dfd0a25279f18f8f86867233f6d3ba0921f47.camel@nvidia.com>
- <b1148fab-ecf3-46c1-9039-597cc80f3d28@nvidia.com> <03c24731-e56f-44b2-b0a3-6afd7f14f77b@redhat.com>
-In-Reply-To: <03c24731-e56f-44b2-b0a3-6afd7f14f77b@redhat.com>
-From: Samuel Dobron <sdobron@redhat.com>
-Date: Wed, 11 Dec 2024 14:20:14 +0100
-Message-ID: <CA+h3auPydMVmWRKPKQJ75Gg5c8uhttVik4seCtmPXduQxQSjMQ@mail.gmail.com>
-Subject: Re: XDP Performance Regression in recent kernel versions
-To: Carolina Jubran <cjubran@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, 
-	Tariq Toukan <tariqt@nvidia.com>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
-	"hawk@kernel.org" <hawk@kernel.org>, "mianosebastiano@gmail.com" <mianosebastiano@gmail.com>
-Cc: "toke@redhat.com" <toke@redhat.com>, "pabeni@redhat.com" <pabeni@redhat.com>, 
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "edumazet@google.com" <edumazet@google.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"kuba@kernel.org" <kuba@kernel.org>, Benjamin Poirier <bpoirier@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hey all,
+hi,
+this patchset adds support to optimize usdt probes on top of 5-byte
+nop instruction.
 
-We recently enabled tests for XDP TX, so I was able to test
-xdp tx as well.
+The generic approach (optimize all uprobes) is hard due to emulating
+possible multiple original instructions and its related issues. The
+usdt case, which stores 5-byte nop seems much easier, so starting
+with that.
 
-XDP_DROP performance regression is the same as I reported
-a while ago. There is about 20% regression in
-kernel-6.4.0-0.rc6.20230616git40f71e7cd3c6.50.eln126 (baseline)
-compared to previous kernel
-kernel-6.4.0-0.rc6.20230614gitb6dad5178cea.49.eln126 (broken).
-We don't see such regression for other drivers.
+The basic idea is to replace breakpoint exception with syscall which
+is faster on x86_64. For more details please see changelog of patch 8.
 
-The regression was partially fixed somewhere between eln126 and
-kernel-6.10.0-0.rc2.20240606git2df0193e62cf.27.eln137 (partially
-fixed) and the performance since then is -7 to -15% compared to
-baseline. So, nothing new.
+The run_bench_uprobes.sh benchmark triggers uprobe (on top of different
+original instructions) in a loop and counts how many of those happened
+per second (the unit below is million loops).
 
-XDP_TX is however, more interesting.
-When comparing baseline with broken kernel there is 20 - 25%
-performance drop (cpu utilizations remains the same) on mlx driver.
-There is also 10% drop on other drivers as well. HOWEVER, it got
-fixed somewhere between broken and partially fixed kernel. On most
-recent kernels, we don't see that regressions on other drivers. But
-2-10% (depends if using dpa/load-bytes) regression remains on mlx5.
+There's big speed up if you consider current usdt implementation
+(uprobe-nop) compared to proposed usdt (uprobe-nop5):
 
-The numbers look a bit similar to regression with enabled spectre/meltdown
-mitigations but based on my experiments, there is no difference with
-enabled/disabled mitigations.
+  # ./benchs/run_bench_uprobes.sh 
 
-Hope this will help,
-Sam.
+      usermode-count :  233.831 ± 0.257M/s
+      syscall-count  :   12.107 ± 0.038M/s
+  --> uprobe-nop     :    3.246 ± 0.004M/s
+      uprobe-push    :    3.057 ± 0.000M/s
+      uprobe-ret     :    1.113 ± 0.003M/s
+  --> uprobe-nop5    :    6.751 ± 0.037M/s
+      uretprobe-nop  :    1.740 ± 0.015M/s
+      uretprobe-push :    1.677 ± 0.018M/s
+      uretprobe-ret  :    0.852 ± 0.005M/s
+      uretprobe-nop5 :    6.769 ± 0.040M/s
 
-On Tue, Jul 30, 2024 at 1:04=E2=80=AFPM Samuel Dobron <sdobron@redhat.com> =
-wrote:
->
-> > Could you try adding the mentioned parameters to your kernel arguments
-> > and check if you still see the degradation?
->
-> Hey,
-> So i tried multiple kernels around v5.15 as well as couple of previous
-> v6.xx and there is no difference with spectre v2 mitigations enabled
-> or disabled.
->
-> No difference on other drivers as well.
->
->
-> Sam.
->
 
+v1 changes:
+- rebased on top of bpf-next/master
+- couple of function/variable renames [Andrii]
+- added nop5 emulation [Andrii]
+- added checks to arch_uprobe_verify_opcode [Andrii]
+- fixed arch_uprobe_is_callable/find_nearest_page [Andrii]
+- used CALL_INSN_OPCODE [Masami]
+- added uprobe-nop5 benchmark [Andrii]
+- using atomic64_t in tramp_area [Andri]
+- using single page for all uprobe trampoline mappings
+
+thanks,
+jirka
+
+
+---
+Jiri Olsa (13):
+      uprobes: Rename arch_uretprobe_trampoline function
+      uprobes: Make copy_from_page global
+      uprobes: Add nbytes argument to uprobe_write_opcode
+      uprobes: Add arch_uprobe_verify_opcode function
+      uprobes: Add mapping for optimized uprobe trampolines
+      uprobes/x86: Add uprobe syscall to speed up uprobe
+      uprobes/x86: Add support to emulate nop5 instruction
+      uprobes/x86: Add support to optimize uprobes
+      selftests/bpf: Use 5-byte nop for x86 usdt probes
+      selftests/bpf: Add uprobe/usdt optimized test
+      selftests/bpf: Add hit/attach/detach race optimized uprobe test
+      selftests/bpf: Add uprobe syscall sigill signal test
+      selftests/bpf: Add 5-byte nop uprobe trigger bench
+
+ arch/x86/entry/syscalls/syscall_64.tbl                  |   1 +
+ arch/x86/include/asm/uprobes.h                          |   7 +++
+ arch/x86/kernel/uprobes.c                               | 255 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ include/linux/syscalls.h                                |   2 +
+ include/linux/uprobes.h                                 |  25 +++++++-
+ kernel/events/uprobes.c                                 | 191 +++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ kernel/fork.c                                           |   1 +
+ kernel/sys_ni.c                                         |   1 +
+ tools/testing/selftests/bpf/bench.c                     |  12 ++++
+ tools/testing/selftests/bpf/benchs/bench_trigger.c      |  42 +++++++++++++
+ tools/testing/selftests/bpf/benchs/run_bench_uprobes.sh |   2 +-
+ tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c | 326 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/uprobe_optimized.c    |  29 +++++++++
+ tools/testing/selftests/bpf/sdt.h                       |   9 ++-
+ 14 files changed, 880 insertions(+), 23 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_optimized.c
 
