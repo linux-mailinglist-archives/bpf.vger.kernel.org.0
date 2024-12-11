@@ -1,227 +1,131 @@
-Return-Path: <bpf+bounces-46674-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46675-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 571F99ED938
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 23:02:19 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6705A9ED95A
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 23:06:57 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2500283290
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 22:02:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31D331882B30
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 22:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363C51F4E27;
-	Wed, 11 Dec 2024 22:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241C41F237D;
+	Wed, 11 Dec 2024 22:06:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=eurecom.fr header.i=@eurecom.fr header.b="ednvdieJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LoVU9NgK"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.eurecom.fr (smtp.eurecom.fr [193.55.113.210])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C311F37DA
-	for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 22:00:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.55.113.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D071EBFF9;
+	Wed, 11 Dec 2024 22:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733954441; cv=none; b=SWGU0beRZC0swbQy8I2Z4jwCQ7IQRwhqFa3EduYHaMwNXr6cpR/b7/mjR4zBRX7jksisOcZESkGi7clTUzPOVcLUIcNoLxOKdGDHHBqbxn03r1TIfU5Ysr8yJWNzQoW789hEl8qd1So7/Nis/P86KCftpxGS+sTMEPf53rItcL4=
+	t=1733954785; cv=none; b=fJmQzoOBUqhkzEHNt3vKdL2AlBbnXHAUdSJ6d+uY6lNhwt819yqo6gdU0io6kjUmvX6qH5Er1LB5fiy9oIz25DJuVwXhpO8TmPuMjB5bOpuz/2L+8jP5LoQdLrtd220iQNCOkEsKIbBKJ6BY+sQxvREoxPaKCFaPpRE9ehsDHUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733954441; c=relaxed/simple;
-	bh=QJRHSw6dNPAboHyNiN3LIsxg+Synrw002yRBaiHEkoE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JM/VXasE5FzY3u0WGKxL3zUHAqoeEXDHb2wt9kM8eF/uqBA8li4w18G5FdN1gB0MruP+jNZrNOI1704WwJ8LRjd7ONZqC4/67tCQEw8GIjqCyrt4HTe6HNaZGoY+Tpd2Fcy+voS/PnVhCiPn6VbjOTe7qrv4/FUBAclZpNAW+LU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=eurecom.fr; spf=pass smtp.mailfrom=eurecom.fr; dkim=pass (1024-bit key) header.d=eurecom.fr header.i=@eurecom.fr header.b=ednvdieJ; arc=none smtp.client-ip=193.55.113.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=eurecom.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eurecom.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=eurecom.fr; i=@eurecom.fr; q=dns/txt; s=default;
-  t=1733954439; x=1765490439;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=QJRHSw6dNPAboHyNiN3LIsxg+Synrw002yRBaiHEkoE=;
-  b=ednvdieJcCiMzqDjyUecttNBZDw3H5iTBUkO6EvXrleEVm9+9DdZfZ6A
-   qzZTK74YVBBfjpGybll+d4vcjmsPhzQ5sbcmkA52IxOxGTTurez5YoJd4
-   5b2nAIm4/Id/zZor0XbjtM7oPomeXXWznRESG8nY3NKauJStxSPchyJZv
-   Y=;
-X-CSE-ConnectionGUID: Ni1Oit79TcqyyQnUml0NPA==
-X-CSE-MsgGUID: qHrAH95BQMGhTLWghIw3+g==
-X-IronPort-AV: E=Sophos;i="6.12,226,1728943200"; 
-   d="scan'208";a="28138456"
-Received: from waha.eurecom.fr (HELO smtps.eurecom.fr) ([10.3.2.236])
-  by drago1i.eurecom.fr with ESMTP; 11 Dec 2024 23:00:37 +0100
-Received: from localhost.localdomain (88-183-119-157.subs.proxad.net [88.183.119.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtps.eurecom.fr (Postfix) with ESMTPSA id 6B02B27BA;
-	Wed, 11 Dec 2024 23:00:36 +0100 (CET)
-From: Ariel Otilibili <ariel.otilibili-anieli@eurecom.fr>
-To: bpf@vger.kernel.org
-Cc: Ariel Otilibili <ariel.otilibili-anieli@eurecom.fr>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Subject: [PATCH 1/1] selftests/bpf: clear out Python syntax warnings
-Date: Wed, 11 Dec 2024 22:57:29 +0100
-Message-ID: <20241211220012.714055-2-ariel.otilibili-anieli@eurecom.fr>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20241211220012.714055-1-ariel.otilibili-anieli@eurecom.fr>
-References: <20241211220012.714055-1-ariel.otilibili-anieli@eurecom.fr>
+	s=arc-20240116; t=1733954785; c=relaxed/simple;
+	bh=X4EAtAS1OhfURbSQQzDqxSCgSCBbt3AFd+kJZ8cZ/3A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Txk0HUhUVUNmcXMpHbWUg6B46NuX3n5ebT+dZxFYRkF3kZn2Rk5eZnhYkM1j3Sk5u8Tg1vmoIszrv+jTV1zhH5R4uVsAW3+pUXv0ktdKFuTdGaMY5c3cZf6+ikVp4Ud7ozS639H5Zh+ecprU7SaxFLjzarDgVH8Eq3JS92PBMMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LoVU9NgK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06607C4CEDD;
+	Wed, 11 Dec 2024 22:06:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733954785;
+	bh=X4EAtAS1OhfURbSQQzDqxSCgSCBbt3AFd+kJZ8cZ/3A=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=LoVU9NgKsi7cXEjDOhpJ6k3JTcNUGDLZ2U+w8Mv9E096MrZMxbWUpu/5FrsTHs1Pj
+	 Y5Xgi4gSwshUDLao9Iu3/AeksqB6Kxfa+a1NzHWE6I4Xn7zRCcWHKrGLMSkiwHPPm+
+	 9vidJrytVUaTc4zj8JybO21Oig81n+5Mvn7oHxtnRibwOkeSfGR11RfJhcOzw6CiOf
+	 pOxKiJI6HQ6FZFLXExeSH5GOhqsIKANZ8hU8fxYkxzfKV0uPHQc8v+2dULNOOQjuOi
+	 atNlkzOOWpIe30ihdzd11PBQisYfGzFUqlwRwurnsdYZoGb4igBuxpWiYdd890oJma
+	 bflRm7chrPYsA==
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-3a7750318a2so49229515ab.2;
+        Wed, 11 Dec 2024 14:06:24 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW05+biaN49R9M9a22i15LMEkgDXZV3dGjIn7l3dR9TyiyO98f16P3chF9RodhvwTRuF61lpO8TRcMpmAHv@vger.kernel.org, AJvYcCWSo8Spqu9t/0hAFACqC/3pJWQuz6oI2ZCdxwr8L9h9BncYL5yd9QJu3/5KLuwrPiVfEuSrCyebO9uwp2WZeg==@vger.kernel.org, AJvYcCXd07WXeO2lFKRtT87sGG/YQxwfi6uwfI6vXLDvgQBjDZHcyiFkaSObZ3DBMpL1DC5eBWo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzce0CjsG/nSsNX+JgO2m0TnCri3jlLQRW+M5H9lIvWDjeG7zWj
+	cju/F3KHhJne19zoHkXKWT8YLoNX/wEo/dLZ1Ek2HawNSqzlwKYa0jJCBiPu4hpO1PAGZg1BkxR
+	VKBkFMlQcAW/lBexhaHor1u5mDpY=
+X-Google-Smtp-Source: AGHT+IHcWmShjsdK3EuqFjW+nJ/cJcTka/NlBTJUCBn8D2V4rX44id9mnYO0/aPgX+UeM8VEnscOLz//8NTC0Ad7KKo=
+X-Received: by 2002:a05:6e02:1806:b0:3a3:4175:79da with SMTP id
+ e9e14a558f8ab-3ac48d9eccamr11079115ab.13.1733954784384; Wed, 11 Dec 2024
+ 14:06:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <AM6PR03MB508010982C37DF735B1EAA0E993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB50804FA149F08D34A095BA28993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <20241210-eckig-april-9ffc098f193b@brauner> <CAADnVQKdBrX6pSJrgBY0SvFZQLpu+CMSshwD=21NdFaoAwW_eg@mail.gmail.com>
+ <AM6PR03MB508072B5D29C8BD433AD186E993E2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB508072B5D29C8BD433AD186E993E2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+From: Song Liu <song@kernel.org>
+Date: Wed, 11 Dec 2024 14:06:13 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7zZuHf6dgDpYnibONoKt0p=zb0wCta1R1MtLv=Q=4FfA@mail.gmail.com>
+Message-ID: <CAPhsuW7zZuHf6dgDpYnibONoKt0p=zb0wCta1R1MtLv=Q=4FfA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/5] bpf: Make fs kfuncs available for SYSCALL
+ and TRACING program types
+To: Juntong Deng <juntong.deng@outlook.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Christian Brauner <brauner@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Invalid escape sequences are used, and produced syntax warnings:
+On Wed, Dec 11, 2024 at 1:29=E2=80=AFPM Juntong Deng <juntong.deng@outlook.=
+com> wrote:
+>
+> On 2024/12/10 18:58, Alexei Starovoitov wrote:
+> > On Tue, Dec 10, 2024 at 6:43=E2=80=AFAM Christian Brauner <brauner@kern=
+el.org> wrote:
+> >>
+> >> On Tue, Dec 10, 2024 at 02:03:53PM +0000, Juntong Deng wrote:
+> >>> Currently fs kfuncs are only available for LSM program type, but fs
+> >>> kfuncs are generic and useful for scenarios other than LSM.
+> >>>
+> >>> This patch makes fs kfuncs available for SYSCALL and TRACING
+> >>> program types.
+> >>
+> >> I would like a detailed explanation from the maintainers what it means
+> >> to make this available to SYSCALL program types, please.
+> >
+> > Sigh.
+> > This is obviously not safe from tracing progs.
+> >
+> >  From BPF_PROG_TYPE_SYSCALL these kfuncs should be safe to use,
+> > since those progs are not attached to anything.
+> > Such progs can only be executed via sys_bpf syscall prog_run command.
+> > They're sleepable, preemptable, faultable, in task ctx.
+> >
+> > But I'm not sure what's the value of enabling these kfuncs for
+> > BPF_PROG_TYPE_SYSCALL.
+>
+> Thanks for your reply.
+>
+> Song said here that we need some of these kfuncs to be available for
+> tracing functions [0].
 
-```
-$ test_bpftool_synctypes.py
-test_bpftool_synctypes.py:69: SyntaxWarning: invalid escape sequence '\['
-  self.start_marker = re.compile(f'(static )?const bool {self.array_name}\[.*\] = {{\n')
-test_bpftool_synctypes.py:83: SyntaxWarning: invalid escape sequence '\['
-  pattern = re.compile('\[(BPF_\w*)\]\s*= (true|false),?$')
-test_bpftool_synctypes.py:181: SyntaxWarning: invalid escape sequence '\s'
-  pattern = re.compile('^\s*(BPF_\w+),?(\s+/\*.*\*/)?$')
-test_bpftool_synctypes.py:229: SyntaxWarning: invalid escape sequence '\*'
-  start_marker = re.compile(f'\*{block_name}\* := {{')
-test_bpftool_synctypes.py:229: SyntaxWarning: invalid escape sequence '\*'
-  start_marker = re.compile(f'\*{block_name}\* := {{')
-test_bpftool_synctypes.py:230: SyntaxWarning: invalid escape sequence '\*'
-  pattern = re.compile('\*\*([\w/-]+)\*\*')
-test_bpftool_synctypes.py:248: SyntaxWarning: invalid escape sequence '\s'
-  start_marker = re.compile(f'"\s*{block_name} := {{')
-test_bpftool_synctypes.py:249: SyntaxWarning: invalid escape sequence '\w'
-  pattern = re.compile('([\w/]+) [|}]')
-test_bpftool_synctypes.py:267: SyntaxWarning: invalid escape sequence '\s'
-  start_marker = re.compile(f'"\s*{macro}\s*" [|}}]')
-test_bpftool_synctypes.py:267: SyntaxWarning: invalid escape sequence '\s'
-  start_marker = re.compile(f'"\s*{macro}\s*" [|}}]')
-test_bpftool_synctypes.py:268: SyntaxWarning: invalid escape sequence '\w'
-  pattern = re.compile('([\w-]+) ?(?:\||}[ }\]])')
-test_bpftool_synctypes.py:287: SyntaxWarning: invalid escape sequence '\w'
-  pattern = re.compile('(?:.*=\')?([\w/]+)')
-test_bpftool_synctypes.py:319: SyntaxWarning: invalid escape sequence '\w'
-  pattern = re.compile('([\w-]+) ?(?:\||}[ }\]"])')
-test_bpftool_synctypes.py:341: SyntaxWarning: invalid escape sequence '\|'
-  start_marker = re.compile('\|COMMON_OPTIONS\| replace:: {')
-test_bpftool_synctypes.py:342: SyntaxWarning: invalid escape sequence '\*'
-  pattern = re.compile('\*\*([\w/-]+)\*\*')
-```
+I meant we can put the new kfuncs, such as bpf_get_file_ops_type, in
+bpf_fs_kfuncs.c, and make it available to tracing programs. But we
+cannot blindly make all of these kfuncs available to tracing programs.
+Instead, we need to review each kfunc and check whether it is safe
+for tracing programs.
 
-Escaping them clears out the warnings.
+Thanks,
+Song
 
-```
-$ tools/testing/selftests/bpf/test_bpftool_synctypes.py; echo $?
-0
-```
-
-Link: https://docs.python.org/fr/3/library/re.html
-CC: Alexei Starovoitov <ast@kernel.org>
-CC: Daniel Borkmann <daniel@iogearbox.net>
-CC: Andrii Nakryiko <andrii@kernel.org>
-CC: Shuah Khan <shuah@kernel.org>
-Signed-off-by: Ariel Otilibili <ariel.otilibili-anieli@eurecom.fr>
----
- .../selftests/bpf/test_bpftool_synctypes.py   | 28 +++++++++----------
- 1 file changed, 14 insertions(+), 14 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-index 0ed67b6b31dd..238121fda5b6 100755
---- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-+++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-@@ -66,7 +66,7 @@ class ArrayParser(BlockParser):
- 
-     def __init__(self, reader, array_name):
-         self.array_name = array_name
--        self.start_marker = re.compile(f'(static )?const bool {self.array_name}\[.*\] = {{\n')
-+        self.start_marker = re.compile(fr'(static )?const bool {self.array_name}\[.*\] = {{\n')
-         super().__init__(reader)
- 
-     def search_block(self):
-@@ -80,7 +80,7 @@ class ArrayParser(BlockParser):
-         Parse a block and return data as a dictionary. Items to extract must be
-         on separate lines in the file.
-         """
--        pattern = re.compile('\[(BPF_\w*)\]\s*= (true|false),?$')
-+        pattern = re.compile(r'\[(BPF_\w*)\]\s*= (true|false),?$')
-         entries = set()
-         while True:
-             line = self.reader.readline()
-@@ -178,7 +178,7 @@ class FileExtractor(object):
-         @enum_name: name of the enum to parse
-         """
-         start_marker = re.compile(f'enum {enum_name} {{\n')
--        pattern = re.compile('^\s*(BPF_\w+),?(\s+/\*.*\*/)?$')
-+        pattern = re.compile(r'^\s*(BPF_\w+),?(\s+/\*.*\*/)?$')
-         end_marker = re.compile('^};')
-         parser = BlockParser(self.reader)
-         parser.search_block(start_marker)
-@@ -226,8 +226,8 @@ class FileExtractor(object):
- 
-         @block_name: name of the blog to parse, 'TYPE' in the example
-         """
--        start_marker = re.compile(f'\*{block_name}\* := {{')
--        pattern = re.compile('\*\*([\w/-]+)\*\*')
-+        start_marker = re.compile(fr'\*{block_name}\* := {{')
-+        pattern = re.compile(r'\*\*([\w/-]+)\*\*')
-         end_marker = re.compile('}\n')
-         return self.__get_description_list(start_marker, pattern, end_marker)
- 
-@@ -245,8 +245,8 @@ class FileExtractor(object):
- 
-         @block_name: name of the blog to parse, 'TYPE' in the example
-         """
--        start_marker = re.compile(f'"\s*{block_name} := {{')
--        pattern = re.compile('([\w/]+) [|}]')
-+        start_marker = re.compile(fr'"\s*{block_name} := {{')
-+        pattern = re.compile(r'([\w/]+) [|}]')
-         end_marker = re.compile('}')
-         return self.__get_description_list(start_marker, pattern, end_marker)
- 
-@@ -264,8 +264,8 @@ class FileExtractor(object):
- 
-         @macro: macro starting the block, 'HELP_SPEC_OPTIONS' in the example
-         """
--        start_marker = re.compile(f'"\s*{macro}\s*" [|}}]')
--        pattern = re.compile('([\w-]+) ?(?:\||}[ }\]])')
-+        start_marker = re.compile(fr'"\s*{macro}\s*" [|}}]')
-+        pattern = re.compile(r'([\w-]+) ?(?:\||}[ }\]])')
-         end_marker = re.compile('}\\\\n')
-         return self.__get_description_list(start_marker, pattern, end_marker)
- 
-@@ -283,8 +283,8 @@ class FileExtractor(object):
- 
-         @block_name: name of the blog to parse, 'TYPE' in the example
-         """
--        start_marker = re.compile(f'local {block_name}=\'')
--        pattern = re.compile('(?:.*=\')?([\w/]+)')
-+        start_marker = re.compile(fr'local {block_name}=\'')
-+        pattern = re.compile(r'(?:.*=\')?([\w/]+)')
-         end_marker = re.compile('\'$')
-         return self.__get_description_list(start_marker, pattern, end_marker)
- 
-@@ -316,7 +316,7 @@ class MainHeaderFileExtractor(SourceFileExtractor):
-             {'-p', '-d', '--pretty', '--debug', '--json', '-j'}
-         """
-         start_marker = re.compile(f'"OPTIONS :=')
--        pattern = re.compile('([\w-]+) ?(?:\||}[ }\]"])')
-+        pattern = re.compile(r'([\w-]+) ?(?:\||}[ }\]"])')
-         end_marker = re.compile('#define')
- 
-         parser = InlineListParser(self.reader)
-@@ -338,8 +338,8 @@ class ManSubstitutionsExtractor(SourceFileExtractor):
- 
-             {'-p', '-d', '--pretty', '--debug', '--json', '-j'}
-         """
--        start_marker = re.compile('\|COMMON_OPTIONS\| replace:: {')
--        pattern = re.compile('\*\*([\w/-]+)\*\*')
-+        start_marker = re.compile(r'\|COMMON_OPTIONS\| replace:: {')
-+        pattern = re.compile(r'\*\*([\w/-]+)\*\*')
-         end_marker = re.compile('}$')
- 
-         parser = InlineListParser(self.reader)
--- 
-2.47.1
-
+> If Song saw this email, could you please join the discussion?
+>
+> [0]:
+> https://lore.kernel.org/bpf/CAPhsuW6ud21v2xz8iSXf=3DCiDL+R_zpQ+p8isSTMTw=
+=3DEiJQtRSw@mail.gmail.com/
 
