@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-46634-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46635-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DA379ECD59
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 14:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 146509ECD5C
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 14:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D8601652F2
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 13:36:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04790169B1B
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 13:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5A482368E4;
-	Wed, 11 Dec 2024 13:35:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9502C236FA8;
+	Wed, 11 Dec 2024 13:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dvWAeSTG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WjXePPr6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6746822913C;
-	Wed, 11 Dec 2024 13:35:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1718A236914;
+	Wed, 11 Dec 2024 13:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733924147; cv=none; b=Vi5bgtcJEQ+7Dyb+n/CBJi8zs1LG5OrMgH+DAHKYkHZCjxI433PgpAOSU4QK0djDGwmR9nQw6OfD34z08xibx+7FbrTidcvn/HIr95/JO0qjzYsorVgbbJoSUf5eqT8Hg8sX1KYmRk/Le3mVuhyuPRCC5+Ck/6nunpkLmPXHK60=
+	t=1733924158; cv=none; b=eFnOVUElFswc4mblDTvmORfkQU8jeruJuu2cLk1QLJw4DJ9IG6wQpJxZzeDqBFITU76cXG4xTL5Oid+VI26rb5Zufe0Z1ieIhkkeDFRlypLe0ZZDkLx6uSy/d6SN+lTbEgFqz4gQjicbMDUVD7sWJtNoatiVzcFvBSQQnd9YkGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733924147; c=relaxed/simple;
-	bh=eVJp2tvqlAvwi3XNY+zHgNGDY+OQsQBQRyY5w45290U=;
+	s=arc-20240116; t=1733924158; c=relaxed/simple;
+	bh=09gvuS1npBvqynFZ+ZH4cs0xqN26Ic6eEPXMk6Tzgac=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oZc35ffCp1VLkAD44THJ85Oa+XeYuNElw8mvEkABEtAfoKzTH4oiFbQbktsAUMnz9AkRs/coArOkrq5JK1jW+LyCcI2EocYqojxKwYCl+iHHhAxrgJqHLpk8fXMVEmzmXolQDjvVyvo90jAdG/6U3AJlinCWw1ARNyQvV7+RKdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dvWAeSTG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94E29C4CED2;
-	Wed, 11 Dec 2024 13:35:43 +0000 (UTC)
+	 MIME-Version; b=IabclwVbdT+K8owWOQizsjYI2tDvMcPPPWCAb9+VmLKYPJnrpr/lYNcxz3j4v+yN9L5Y6w8gQc5d82D7I9w3xuMhzA/MwaO6nrClUFkCIq0T6dqzo3Hztk9gb2w1RWFSz6Ou6YWAzHxN/+QzqPZHzRZUl2ZoihAJeOh7TB60uVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WjXePPr6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 460F7C4CEDD;
+	Wed, 11 Dec 2024 13:35:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733924146;
-	bh=eVJp2tvqlAvwi3XNY+zHgNGDY+OQsQBQRyY5w45290U=;
+	s=k20201202; t=1733924157;
+	bh=09gvuS1npBvqynFZ+ZH4cs0xqN26Ic6eEPXMk6Tzgac=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dvWAeSTG946LLwT9po0SC0DUVCIt8caT7gTXeIdVfjKyuwPEXw3VAWVo3lAz3Da73
-	 I9ri6F8h1I28t+YGBXcMMY3OzxvTD7mapawbthafwpURjX5BkSPfVMXgAMoOoJVpcS
-	 AK9qQxUSYUZNQjuUZvBLb0veNWOvhSR0qU7jYC2baYhIhTTQOhaXFAu/v4CifrA/LM
-	 0wr9SKPLuSSC5JlVRl3yuBiRy19pBEOQF6iY4M004A2SJTWfTT2VcLR4SepovLaCm9
-	 YRJgNMzQCvxh3Nm2+lkiDOrwExuGFCnZks+P8prvYGsmIvFa6tGhHuiGrVoOERlmXj
-	 MX2w1f/ltJZpg==
+	b=WjXePPr6DnNkDJZfFBXKvwY2oipuKFfQ9LpMmyKuZWERQvEpxpCbQbkUQ2hsh7Wvc
+	 fBWGjRAqDjx6kPYlIVjbK8qwD7PRch5r4fNJY12DxxF+mksY+lk7+n6qZp9gXL6Uwx
+	 vtJBsWu3LrVZIETG/+/eXN9Ojq+92dE4YQ4k25wsgQ27u5bG3AElvOTZ3N83XPegP+
+	 x9tQ9kYZDcdL7YwgAcFBnoyAUwbLnqwwUdL9oWfnefyhHisd3WVOOPRYp4kIScErHM
+	 a/QRo/uIx2umuO7A9XD0K9BCx5UOr57erT43bz1o0waDW+PKEYTTmm3/64VA1UP05E
+	 rCuKj9rLXZK4A==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -55,9 +55,9 @@ Cc: bpf@vger.kernel.org,
 	Alan Maguire <alan.maguire@oracle.com>,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 09/13] selftests/bpf: Use 5-byte nop for x86 usdt probes
-Date: Wed, 11 Dec 2024 14:33:58 +0100
-Message-ID: <20241211133403.208920-10-jolsa@kernel.org>
+Subject: [PATCH bpf-next 10/13] selftests/bpf: Add uprobe/usdt optimized test
+Date: Wed, 11 Dec 2024 14:33:59 +0100
+Message-ID: <20241211133403.208920-11-jolsa@kernel.org>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241211133403.208920-1-jolsa@kernel.org>
 References: <20241211133403.208920-1-jolsa@kernel.org>
@@ -69,41 +69,286 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Using 5-byte nop for x86 usdt probes so we can switch
-to optimized uprobe them.
+Adding tests for optimized uprobe/usdt probes.
+
+Checking that we get expected trampoline and attached bpf programs
+get executed properly.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/testing/selftests/bpf/sdt.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/uprobe_syscall.c | 203 ++++++++++++++++++
+ .../selftests/bpf/progs/uprobe_optimized.c    |  29 +++
+ 2 files changed, 232 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_optimized.c
 
-diff --git a/tools/testing/selftests/bpf/sdt.h b/tools/testing/selftests/bpf/sdt.h
-index ca0162b4dc57..7ac9291f45f1 100644
---- a/tools/testing/selftests/bpf/sdt.h
-+++ b/tools/testing/selftests/bpf/sdt.h
-@@ -234,6 +234,13 @@ __extension__ extern unsigned long long __sdt_unsp;
- #define _SDT_NOP	nop
+diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+index c397336fe1ed..1dbc26a1130c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
++++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+@@ -14,6 +14,8 @@
+ #include <asm/prctl.h>
+ #include "uprobe_syscall.skel.h"
+ #include "uprobe_syscall_executed.skel.h"
++#include "uprobe_optimized.skel.h"
++#include "sdt.h"
+ 
+ __naked unsigned long uretprobe_regs_trigger(void)
+ {
+@@ -350,6 +352,186 @@ static void test_uretprobe_shadow_stack(void)
+ 
+ 	ARCH_PRCTL(ARCH_SHSTK_DISABLE, ARCH_SHSTK_SHSTK);
+ }
++
++#define TRAMP "[uprobes-trampoline]"
++
++static unsigned char nop5[5] = { 0x0f, 0x1f, 0x44, 0x00, 0x00 };
++
++noinline void uprobe_test(void)
++{
++	asm volatile ("					\n"
++		".global uprobe_test_nop5		\n"
++		".type uprobe_test_nop5, STT_FUNC	\n"
++		"uprobe_test_nop5:			\n"
++		".byte 0x0f, 0x1f, 0x44, 0x00, 0x00	\n"
++	);
++}
++
++extern u8 uprobe_test_nop5[];
++
++noinline void usdt_test(void)
++{
++	STAP_PROBE(optimized_uprobe, usdt);
++}
++
++static void *find_nop5(void *fn)
++{
++	int i;
++
++	for (i = 0; i < 10; i++) {
++		if (!memcmp(nop5, fn + i, 5))
++			return fn + i;
++	}
++	return NULL;
++}
++
++static int find_uprobes_trampoline(void **start, void **end)
++{
++	char line[128];
++	int ret = -1;
++	FILE *maps;
++
++	maps = fopen("/proc/self/maps", "r");
++	if (!maps) {
++		fprintf(stderr, "cannot open maps\n");
++		return -1;
++	}
++
++	while (fgets(line, sizeof(line), maps)) {
++		int m = -1;
++
++		/* We care only about private r-x mappings. */
++		if (sscanf(line, "%p-%p r-xp %*x %*x:%*x %*u %n", start, end, &m) != 2)
++			continue;
++		if (m < 0)
++			continue;
++		if (!strncmp(&line[m], TRAMP, sizeof(TRAMP)-1)) {
++			ret = 0;
++			break;
++		}
++	}
++
++	fclose(maps);
++	return ret;
++}
++
++static void check_attach(struct uprobe_optimized *skel, void (*trigger)(void), void *addr)
++{
++	void *tramp_start, *tramp_end;
++	struct __arch_relative_insn {
++		u8 op;
++		s32 raddr;
++	} __packed *call;
++
++	s32 delta;
++
++	/* Uprobe gets optimized after first trigger, so let's press twice. */
++	trigger();
++	trigger();
++
++	if (!ASSERT_OK(find_uprobes_trampoline(&tramp_start, &tramp_end), "uprobes_trampoline"))
++		return;
++
++	/* Make sure bpf program got executed.. */
++	ASSERT_EQ(skel->bss->executed, 2, "executed");
++
++	/* .. and check the trampoline is as expected. */
++	call = (struct __arch_relative_insn *) addr;
++	delta = (unsigned long) tramp_start - ((unsigned long) addr + 5);
++
++	ASSERT_EQ(call->op, 0xe8, "call");
++	ASSERT_EQ(call->raddr, delta, "delta");
++	ASSERT_EQ(tramp_end - tramp_start, 4096, "size");
++}
++
++static void check_detach(struct uprobe_optimized *skel, void (*trigger)(void), void *addr)
++{
++	void *tramp_start, *tramp_end;
++
++	/* [uprobes_trampoline] stays after detach */
++	ASSERT_OK(find_uprobes_trampoline(&tramp_start, &tramp_end), "uprobes_trampoline");
++	ASSERT_OK(memcmp(addr, nop5, 5), "nop5");
++}
++
++static void check(struct uprobe_optimized *skel, struct bpf_link *link,
++		  void (*trigger)(void), void *addr)
++{
++	check_attach(skel, trigger, addr);
++	bpf_link__destroy(link);
++	check_detach(skel, trigger, addr);
++}
++
++static void test_uprobe_legacy(void)
++{
++	struct uprobe_optimized *skel;
++	struct bpf_link *link;
++	unsigned long offset;
++
++	skel = uprobe_optimized__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "uprobe_optimized__open_and_load"))
++		return;
++
++	offset = get_uprobe_offset(&uprobe_test_nop5);
++	if (!ASSERT_GE(offset, 0, "get_uprobe_offset"))
++		goto cleanup;
++
++	link = bpf_program__attach_uprobe_opts(skel->progs.test_1,
++				0, "/proc/self/exe", offset, NULL);
++	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_opts"))
++		goto cleanup;
++
++	check(skel, link, uprobe_test, uprobe_test_nop5);
++
++cleanup:
++	uprobe_optimized__destroy(skel);
++}
++
++static void test_uprobe_multi(void)
++{
++	struct uprobe_optimized *skel;
++	struct bpf_link *link;
++
++	skel = uprobe_optimized__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "uprobe_optimized__open_and_load"))
++		return;
++
++	link = bpf_program__attach_uprobe_multi(skel->progs.test_2,
++				0, "/proc/self/exe", "uprobe_test_nop5", NULL);
++	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_multi"))
++		goto cleanup;
++
++	check(skel, link, uprobe_test, uprobe_test_nop5);
++
++cleanup:
++	uprobe_optimized__destroy(skel);
++}
++
++static void test_uprobe_usdt(void)
++{
++	struct uprobe_optimized *skel;
++	struct bpf_link *link;
++	void *addr;
++
++	errno = 0;
++	addr = find_nop5(usdt_test);
++	if (!ASSERT_OK_PTR(addr, "find_nop5"))
++		return;
++
++	skel = uprobe_optimized__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "uprobe_optimized__open_and_load"))
++		return;
++
++	link = bpf_program__attach_usdt(skel->progs.test_3,
++				-1 /* all PIDs */, "/proc/self/exe",
++				"optimized_uprobe", "usdt", NULL);
++	if (!ASSERT_OK_PTR(link, "bpf_program__attach_usdt"))
++		goto cleanup;
++
++	check(skel, link, usdt_test, addr);
++
++cleanup:
++	uprobe_optimized__destroy(skel);
++}
+ #else
+ static void test_uretprobe_regs_equal(void)
+ {
+@@ -370,6 +552,21 @@ static void test_uretprobe_shadow_stack(void)
+ {
+ 	test__skip();
+ }
++
++static void test_uprobe_legacy(void)
++{
++	test__skip();
++}
++
++static void test_uprobe_multi(void)
++{
++	test__skip();
++}
++
++static void test_uprobe_usdt(void)
++{
++	test__skip();
++}
  #endif
  
-+/* Use 5 byte nop for x86_64 to allow optimizing uprobes. */
-+#if defined(__x86_64__)
-+# define _SDT_DEF_NOP _SDT_ASM_5(990:	.byte 0x0f, 0x1f, 0x44, 0x00, 0x00)
-+#else
-+# define _SDT_DEF_NOP _SDT_ASM_1(990:	_SDT_NOP)
-+#endif
+ void test_uprobe_syscall(void)
+@@ -382,4 +579,10 @@ void test_uprobe_syscall(void)
+ 		test_uretprobe_syscall_call();
+ 	if (test__start_subtest("uretprobe_shadow_stack"))
+ 		test_uretprobe_shadow_stack();
++	if (test__start_subtest("uprobe_legacy"))
++		test_uprobe_legacy();
++	if (test__start_subtest("uprobe_multi"))
++		test_uprobe_multi();
++	if (test__start_subtest("uprobe_usdt"))
++		test_uprobe_usdt();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/uprobe_optimized.c b/tools/testing/selftests/bpf/progs/uprobe_optimized.c
+new file mode 100644
+index 000000000000..2441d59960a6
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/uprobe_optimized.c
+@@ -0,0 +1,29 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- #define _SDT_NOTE_NAME	"stapsdt"
- #define _SDT_NOTE_TYPE	3
- 
-@@ -286,7 +293,7 @@ __extension__ extern unsigned long long __sdt_unsp;
- 
- #define _SDT_ASM_BODY(provider, name, pack_args, args, ...)		      \
-   _SDT_DEF_MACROS							      \
--  _SDT_ASM_1(990:	_SDT_NOP)					      \
-+  _SDT_DEF_NOP								      \
-   _SDT_ASM_3(		.pushsection .note.stapsdt,_SDT_ASM_AUTOGROUP,"note") \
-   _SDT_ASM_1(		.balign 4)					      \
-   _SDT_ASM_3(		.4byte 992f-991f, 994f-993f, _SDT_NOTE_TYPE)	      \
++#include "vmlinux.h"
++#include <bpf/bpf_tracing.h>
++#include <bpf/usdt.bpf.h>
++
++char _license[] SEC("license") = "GPL";
++unsigned long executed = 0;
++
++SEC("uprobe")
++int BPF_UPROBE(test_1)
++{
++	executed++;
++	return 0;
++}
++
++SEC("uprobe.multi")
++int BPF_UPROBE(test_2)
++{
++	executed++;
++	return 0;
++}
++
++SEC("usdt")
++int test_3(struct pt_regs *ctx)
++{
++	executed++;
++	return 0;
++}
 -- 
 2.47.0
 
