@@ -1,136 +1,132 @@
-Return-Path: <bpf+bounces-46592-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46593-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D735D9EC2BA
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 04:03:52 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC21C9EC430
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 06:17:45 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0A4416382C
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 03:03:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62B7728578A
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 05:17:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03521FC7D5;
-	Wed, 11 Dec 2024 03:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 370D41C1AB1;
+	Wed, 11 Dec 2024 05:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hiHxx3U3"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="D8LakECd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D92983CDA
-	for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 03:03:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8E81514F8;
+	Wed, 11 Dec 2024 05:17:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733886226; cv=none; b=cWjiyRBxypS4J5HWJxF6HH+g3xTAxvXURe4ANNTYTPPFiBK48fkADJW8uN0cVij0AXkAA2rTbQHoW8gzPpzmUc5Gy3ITPxdmyRPp5OC+rDKwFZognkgaYFFMNqoWhT4OhKkQdmaOPBTyqpbvQrTJWbTQ9vXPp8BWFzCOh7ZeJD4=
+	t=1733894255; cv=none; b=fwvhpZN8By7ophuyPLdkaJxXsnllnv5VAUrM7JWRB2h9tGt3Dom6GHJcK8pMrg1+aRMKxqfR+GT/JCVmKwjFaZ25yj+DcWFPZlQhc5kWxsoi8d6IFupIRNl6/Ml6TtKLNO9SHLDYvMAdhTYpS0amFPFsxuLli4XW7nEi0BN32Mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733886226; c=relaxed/simple;
-	bh=Ol6auOUI0Cw/nRAelRs39bmd8extpxCxSC8IkwKUefQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OlStYTK9nJnamyd3Vk6qCdvbZdCnFaUILTxDYa/BvVXSUyZprOdldUXey/pb99BH5uP4bpLA3snnHJX+iO6csoyceLHOwKbBAK+CGe1TDTYDFxL16ENhHByb1qaU1riJkRfRB9PML6ijICIBAr6mz71dW9hD+ZYbudbypWqDGNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hiHxx3U3; arc=none smtp.client-ip=209.85.218.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-aa6aad76beeso158196466b.2
-        for <bpf@vger.kernel.org>; Tue, 10 Dec 2024 19:03:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733886223; x=1734491023; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z2BemVfBiAszmj2T5A8/RyrpxZEVGbTD59STbwku5S8=;
-        b=hiHxx3U3INf5/XWz/ihUuOtlQUpRms9tnCasadgXWsi8+rjKRYdTZ5ggEPRNJMHnqE
-         f3WaJIaYrE0oHkU6haAi4NSbXqAW3xTuWbUibv5TTHimDJa1lmAc5MBvCKxXLzVAJqvv
-         eQ2daKQjd1xewo1o3kUI0ZhOjmLUoUABgchY1fGVaFK5ji5oUHF+lVJcQYkNFJrcmUn0
-         VwwB+jLeE3jnsQl39KkL66J0PkP6ivggvR+0VVujK3mSgMyIJu1eLbJtSD1sh3IarbN6
-         F63ExahllLtKonQMaGQUZQ1szxnbPl/Co/hIupUlMJ3YLeYZ7wRRDeRSqoE3uTa9UQiz
-         iTgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733886223; x=1734491023;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z2BemVfBiAszmj2T5A8/RyrpxZEVGbTD59STbwku5S8=;
-        b=KNTQXC2iUokjj1KpmU81pPoeRHYfsUu6Ou3xNs84rY9vQp5O1kWwDmpvnYTU0N2c7P
-         9elSW/AsBvPj8ANnxuEOA8f4t42Aq7BiMTV442Z77ujvYs18qJ8GrpkppbRbDqMGVWOl
-         JLeonviFAkKQbZALl1mBvOLtSTza1ggRnIdPficFKHTHKwmmUSiSLOgKTSt57EvsSKKh
-         lj4GH/5fVRdHAY33xNntjRuZJJcFDGY5xuIlZkflX/j9ook0z6uAThKsz1YmzygH8Xln
-         wi2jfDYqrrKBA24MDd81EgYPZde6lUMBKpTK5dt6l01AJ8jH0o4xZt06sjkHftVGLfNT
-         eLpw==
-X-Forwarded-Encrypted: i=1; AJvYcCWoucBUT+zaUGDbmLxpG8ew0jmNiJ8mIhrSBF14yc2yD/mj/+bm4g65QJomSw7ySgVhwqg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyV4lCkc5Ic2421YeM3sRuPenY3JyWrMaYt0yHXGSWVjPq0JnBM
-	e5MrKhA8WELM2qSUN2DpKFN+X+2tOyw7rROgARSaFdkH6gfV/Unc+qWSwB/TCuAq4657+eTKhbK
-	B8KR6BnVT454oBfgwolvRn37qxtk=
-X-Gm-Gg: ASbGncssWlQ5cxKieeR0SWTeegG3E2h0lZK/T14ahGShP+nHNu91o5810Kg20avcgCf
-	8A2+rDpcqbktN+WI8tggmlKtKK1vZHAfBp9Jy31fUP4EDchS7ZOwbTkJyXDTFI+H+ydbF
-X-Google-Smtp-Source: AGHT+IHYg70jBkbiPuqOypSrJtfQtC8IefgHT/fh1fkVigcZH7GAmbr8btshuU4jUgt+Z6VjkjTFHXJoFhLpiE0ZWFo=
-X-Received: by 2002:a17:907:72cd:b0:aa6:b5e0:8c59 with SMTP id
- a640c23a62f3a-aa6b5e095bbmr31006466b.35.1733886222741; Tue, 10 Dec 2024
- 19:03:42 -0800 (PST)
+	s=arc-20240116; t=1733894255; c=relaxed/simple;
+	bh=RPWCoG4RhG6ryjnD0ys4kpDDuDXeC7eMtJBFDhrGKLo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RVMp0odaEvkrtqfZdTABe84Mv0KQl/7RF0BwBC+OIWgzzm0hd66Py8Cp9JbV8z+OsacILVA2iY+VatycdIjx7D40j+yolrsP4C195Y1KaSOxiZHssFWmeFY8gTmMQhYVamPb3iBGoqI5Ayc6uSZTPDGboJdi439A+CS31wSM3Ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=D8LakECd; arc=none smtp.client-ip=115.124.30.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1733894248; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=nQcLfV2xZwKTL2O3SG540LsNxNtq3k+Lv38jppzlJyg=;
+	b=D8LakECdV6PtHFpA4aH2HxB7yZRpxlFj5nHsy5nsCH4VFPiPgSBCb5IQq9lGQqoYk28AEKwslYMaETNTDqPCltk3syqkJM97KVGQAo9utHBOd5v327lEJ3Kftprb8p5Cx/7BM5AGHLIMZcmW+jZAKwGjphWfKyw/l/T9PLkYCro=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WLH6tub_1733894245 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 11 Dec 2024 13:17:26 +0800
+Date: Wed, 11 Dec 2024 13:17:25 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com, jaka@linux.ibm.com,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Paolo Abeni <pabeni@redhat.com>, Song Liu <song@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Yonghong Song <yhs@fb.com>, Eric Dumazet <edumazet@google.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	guwen@linux.alibaba.com, Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Network Development <netdev@vger.kernel.org>,
+	linux-s390 <linux-s390@vger.kernel.org>, linux-rdma@vger.kernel.org,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v2 5/5] bpf/selftests: add simple selftest for
+ bpf_smc_ops
+Message-ID: <20241211051725.GA97570@j66a10360.sqa.eu95>
+References: <20241210040404.10606-1-alibuda@linux.alibaba.com>
+ <20241210040404.10606-6-alibuda@linux.alibaba.com>
+ <CAADnVQJisbHFpS2==pw4aOAmKsbo6m6EDvOBntF_ATMrbp0G=w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241204-bpf-selftests-mod-compile-v5-1-b96231134a49@redhat.com> <173352303103.2814043.17875547914996700881.git-patchwork-notify@kernel.org>
-In-Reply-To: <173352303103.2814043.17875547914996700881.git-patchwork-notify@kernel.org>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 11 Dec 2024 04:03:06 +0100
-Message-ID: <CAP01T744hWcg5i6eShqCUnxVV4F+GJ5cwYN8qVkDVEhzs7ybOg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5] selftests/bpf: Consolidate kernel modules
- into common directory
-To: patchwork-bot+netdevbpf@kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, vmalik@redhat.com, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJisbHFpS2==pw4aOAmKsbo6m6EDvOBntF_ATMrbp0G=w@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Fri, 6 Dec 2024 at 23:10, <patchwork-bot+netdevbpf@kernel.org> wrote:
->
-> Hello:
->
-> This patch was applied to bpf/bpf-next.git (master)
-> by Andrii Nakryiko <andrii@kernel.org>:
->
-> On Wed, 04 Dec 2024 14:28:26 +0100 you wrote:
-> > The selftests build four kernel modules which use copy-pasted Makefile
-> > targets. This is a bit messy, and doesn't scale so well when we add more
-> > modules, so let's consolidate these rules into a single rule generated
-> > for each module name, and move the module sources into a single
-> > directory.
+On Tue, Dec 10, 2024 at 10:01:38AM -0800, Alexei Starovoitov wrote:
+> On Mon, Dec 9, 2024 at 8:04 PM D. Wythe <alibuda@linux.alibaba.com> wrote:
 > >
-> > To avoid parallel builds of the different modules stepping on each
-> > other's toes during the 'modpost' phase of the Kbuild 'make modules',
-> > the module files should really be a grouped target. However, make only
-> > added explicit support for grouped targets in version 4.3, which is
-> > newer than the minimum version supported by the kernel. However, make
-> > implicitly treats pattern matching rules with multiple targets as a
-> > grouped target, so we can work around this by turning the rule into a
-> > pattern matching target. We do this by replacing '.ko' with '%ko' in the
-> > targets with subst().
-> >
-> > [...]
+> > +SEC("struct_ops/bpf_smc_set_tcp_option_cond")
+> > +int BPF_PROG(bpf_smc_set_tcp_option_cond, const struct tcp_sock *tp, struct inet_request_sock *ireq)
+> > +{
+> > +       return 0;
+> > +}
+> > +
+> > +SEC("struct_ops/bpf_smc_set_tcp_option")
+> > +int BPF_PROG(bpf_smc_set_tcp_option, struct tcp_sock *tp)
+> > +{
+> > +       return 1;
+> > +}
+> > +
+> > +SEC(".struct_ops.link")
+> > +struct smc_ops  sample_smc_ops = {
+> > +       .name                   = "sample",
+> > +       .set_option             = (void *) bpf_smc_set_tcp_option,
+> > +       .set_option_cond        = (void *) bpf_smc_set_tcp_option_cond,
+> > +};
+> 
+> These stubs don't inspire confidence that smc_ops api
+> will be sufficient.
+> Please implement a real bpf prog that demonstrates the actual use case.
+> 
+> See how bpf_cubic was done. On the day one it was implemented
+> as a parity to builtin cubic cong control.
+> And over years we didn't need to touch tcp_congestion_ops.
+> To be fair that api was already solid due to in-kernel cc modules,
+> but bpf comes with its own limitations, so it wasn't a guarantee
+> that tcp_congestion_ops would be enough.
+> Here you're proposing a brand new smc_ops api while bpf progs
+> are nothing but stubs. That's not sufficient to prove that api
+> is viable long term.
 
-I don't have a good way to reproduce this yet, but I'm seeing
-intermittent failures after this patch when running vmtest.sh:
-make: *** No rule to make target 'test_kmods/bpf_testmod.h', needed by
-'/home/kkd/Projects/linux/tools/testing/selftests/bpf/core_reloc.test.o'.
-Stop.
+Hi Alexei,
 
-I haven't been able to root cause today, but I will probably try tomorrow.
+Thanks a lot for your advices. I will add actual cases in the
+next version to prove why we need it.
 
->
-> Here is the summary with links:
->   - [bpf-next,v5] selftests/bpf: Consolidate kernel modules into common directory
->     https://git.kernel.org/bpf/bpf-next/c/d6212d82bf26
->
-> You are awesome, thank you!
-> --
-> Deet-doot-dot, I am a bot.
-> https://korg.docs.kernel.org/patchwork/pwbot.html
->
->
->
+> 
+> In terms of look and feel the smc_ops look ok.
+> The change from v1 to v2 was a good step.
+
+I'm glad that you feel it looks okay. If you have any questions,
+please let me know.
+
+Thanks,
+D. Wythe
+
+> 
+> pw-bot: cr
 
