@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-46651-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46652-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97C559ED388
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 18:29:58 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 879E99ED38B
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 18:30:08 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 957091884EF5
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 17:29:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CFDA283608
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 17:30:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1503E201266;
-	Wed, 11 Dec 2024 17:28:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67446203707;
+	Wed, 11 Dec 2024 17:28:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KK7lEU8N"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D7KdBl1W"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFEAA200BB7;
-	Wed, 11 Dec 2024 17:28:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F1E202F96;
+	Wed, 11 Dec 2024 17:28:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733938132; cv=none; b=NhCVvj9gHVOBRXIPfyathY2u6uy1AOjpoC73jv7Acm1TwWoitZ83D11zAHpZ620JMw6VhosXpnh+UH4C485SrbKIPrP7WNOLuJYACXbP+ZmcgQ9VXF3QJhWVaYTutWVa1lWbKa5z3hceo9jcyH6LEY5nCJOQgcYnuNXKBrEFpow=
+	t=1733938138; cv=none; b=HBYs5iTsA0rgYRVQbVhxgQYIHcQTPnXbBWzI2ujR0N9sWPqfrtlr+y5zsYsFiUKDFgiyb7xEYVsg56TQcGYtVNRg4uZd8sX5FSiLo6jX0qcckotqGbXmAlK21pHuTRpKRt/1fAzAC9aRtTibf5bjIYbM225FzjtUouzAgQNDvW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733938132; c=relaxed/simple;
-	bh=hTiIfVzdQAzN245gpoI2ewyExpDiWN8oZxf82j9mqk0=;
+	s=arc-20240116; t=1733938138; c=relaxed/simple;
+	bh=M9Ciy3tkJShPPbC2RKdcmdtYSeXJngDCkPUGImKkRFw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=f0R/aUkNpA0zZqB6/XILvKKB85UtHvqtWpTL4JUk+GWFRhrzKGbJYKVz/L94ZRBJG59GdJBGTMdWEr1DmkyXxM8K4f/zWJ1gKBDL5qGq7q1tXQDxgzMKviWOqX67b1P9C3xqJDP17T08IkyAEwBuR3yFl0YfVIb396h38BplIkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KK7lEU8N; arc=none smtp.client-ip=192.198.163.8
+	 MIME-Version; b=Ze+mzc6N3PmoVZaLIx8SlAezPsAnFKLbSFImD3pUb6VkrfV7vI7iJ6OtpNUORrCxvYV5GJHeayBk4mC1RX7icZlr70P77FGQ8tt/SKSuPaSs1SBdU30fL+Hu/xRzdhIGQ8hDjY/w5EDV4NOfVHVI/hxwCbUGYf6n5ItyWV7Kmmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D7KdBl1W; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1733938131; x=1765474131;
+  t=1733938136; x=1765474136;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=hTiIfVzdQAzN245gpoI2ewyExpDiWN8oZxf82j9mqk0=;
-  b=KK7lEU8N8Gn1gGLhqhwGEb/Mgk1webETEtz9xBd6nQYsTFtLS7pwQMl1
-   2cVN63Y1WN2tB8WjdoIfU2HhSMptwJhOdEUu5P1ZSrAf4QQYe+tJhpn3t
-   uTY2UG7giBGGMVGaoBlu2j1lZwg4ZnMFm4DXL7iR2WTtajEddBsjZ/nAE
-   wZiH8Wv9jZat6Xv5Z3Ru1ahwFytlTxdoS/+I9uALtYdJEwjlZ3EFqX1/p
-   vBq5Y0wSZ3OpwuSzHmsJxcIPbqgtoqK4zMJrolP30TmI1AMYTF7EK2uNW
-   zsOyfHTTloZlDtwUcoyrRKV1evEO+mfYfdqvbwfQjnu0lqZY3853VBsWn
+  bh=M9Ciy3tkJShPPbC2RKdcmdtYSeXJngDCkPUGImKkRFw=;
+  b=D7KdBl1Wn2VeWW0vCMmKsDpcX8Bu6d1zsldisnUXkvsh7M2zuRMwQOgR
+   gwmMM12KmfN2uoXlb7nq5Cp3vx4A3UGzi/F+Yi74q/y9Z87clm0hCTmMs
+   vim//z3BPnLf2510yezDKouaomi+gBEFgb8n3CKDEhmbn9tJKzvyxXzwS
+   IPxSj4EX8mkUvqdQS7Ja9sJ9WBHTQrm2nUQkaaGC2cqs8Ze+8me1uBLIZ
+   7sGIpfp1lbDtAp9tfujix1pR2E105DkQ4Dedewz5r0dv5Dy9Bjc/cOQBJ
+   PmrilSwZ0Z+LeEIKA3iGt2pCR8bPLnvrMsPWlzCPjJK1wjbMvRj15Tdo8
    g==;
-X-CSE-ConnectionGUID: dkhO6uXVTum+9NnNlA9eXA==
-X-CSE-MsgGUID: YdqoXONfQHGvdM6w4zPlfg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11283"; a="51859498"
+X-CSE-ConnectionGUID: 4UK6RYS4RbK+MPutg13NXA==
+X-CSE-MsgGUID: 6JbKwcWvSFmCd6dWeBLx1Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11283"; a="51859521"
 X-IronPort-AV: E=Sophos;i="6.12,226,1728975600"; 
-   d="scan'208";a="51859498"
+   d="scan'208";a="51859521"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2024 09:28:51 -0800
-X-CSE-ConnectionGUID: +jF23o3NTgai6nnEomDi/g==
-X-CSE-MsgGUID: zQf8JWCKS+maBHJgmCNvwQ==
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2024 09:28:56 -0800
+X-CSE-ConnectionGUID: rnJl5QmMRiqZAwxtTn8rNw==
+X-CSE-MsgGUID: VB1Tt8HkSF6OHDZHjvTjyQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="119122125"
+   d="scan'208";a="119122164"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa002.fm.intel.com with ESMTP; 11 Dec 2024 09:28:45 -0800
+  by fmviesa002.fm.intel.com with ESMTP; 11 Dec 2024 09:28:50 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: Andrew Lunn <andrew+netdev@lunn.ch>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -83,9 +83,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 03/12] xdp: make __xdp_return() MP-agnostic
-Date: Wed, 11 Dec 2024 18:26:40 +0100
-Message-ID: <20241211172649.761483-4-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next 04/12] xdp: add generic xdp_buff_add_frag()
+Date: Wed, 11 Dec 2024 18:26:41 +0100
+Message-ID: <20241211172649.761483-5-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20241211172649.761483-1-aleksander.lobakin@intel.com>
 References: <20241211172649.761483-1-aleksander.lobakin@intel.com>
@@ -97,181 +97,190 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, __xdp_return() takes pointer to the virtual memory to free
-a buffer. Apart from that this sometimes provokes redundant
-data <--> page conversions, taking data pointer effectively prevents
-lots of XDP code to support non-page-backed buffers, as there's no
-mapping for the non-host memory (data is always NULL).
-Just convert it to always take netmem reference. For
-xdp_return_{buff,frame*}(), this chops off one page_address() per each
-frag and adds one virt_to_netmem() (same as virt_to_page()) per header
-buffer. For __xdp_return() itself, it removes one virt_to_page() for
-MEM_TYPE_PAGE_POOL and another one for MEM_TYPE_PAGE_ORDER0, adding
-one page_address() for [not really common nowadays]
-MEM_TYPE_PAGE_SHARED, but the main effect is that the abovementioned
-functions won't die or memleak anymore if the frame has non-host memory
-attached and will correctly free those.
+The code piece which would attach a frag to &xdp_buff is almost
+identical across the drivers supporting XDP multi-buffer on Rx.
+Make it a generic elegant "oneliner".
+Also, I see lots of drivers calculating frags_truesize as
+`xdp->frame_sz * nr_frags`. I can't say this is fully correct, since
+frags might be backed by chunks of different sizes, especially with
+stuff like the header split. Even page_pool_alloc() can give you two
+different truesizes on two subsequent requests to allocate the same
+buffer size. Add a field to &skb_shared_info (unionized as there's no
+free slot currently on x86_64) to track the "true" truesize. It can
+be used later when updating an skb.
 
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/net/xdp.h |  4 ++--
- net/core/filter.c |  9 +++------
- net/core/xdp.c    | 47 +++++++++++++++++++----------------------------
- 3 files changed, 24 insertions(+), 36 deletions(-)
+ include/linux/skbuff.h | 16 +++++--
+ include/net/xdp.h      | 96 +++++++++++++++++++++++++++++++++++++++++-
+ net/core/xdp.c         | 11 +++++
+ 3 files changed, 118 insertions(+), 5 deletions(-)
 
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 69624b394cd9..8bcf14ae6789 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -608,11 +608,19 @@ struct skb_shared_info {
+ 	 * Warning : all fields before dataref are cleared in __alloc_skb()
+ 	 */
+ 	atomic_t	dataref;
+-	unsigned int	xdp_frags_size;
+ 
+-	/* Intermediate layers must ensure that destructor_arg
+-	 * remains valid until skb destructor */
+-	void *		destructor_arg;
++	union {
++		struct {
++			u32		xdp_frags_size;
++			u32		xdp_frags_truesize;
++		};
++
++		/*
++		 * Intermediate layers must ensure that destructor_arg
++		 * remains valid until skb destructor.
++		 */
++		void		*destructor_arg;
++	};
+ 
+ 	/* must be last field, see pskb_expand_head() */
+ 	skb_frag_t	frags[MAX_SKB_FRAGS];
 diff --git a/include/net/xdp.h b/include/net/xdp.h
-index 1c260869a353..d2089cfecefd 100644
+index d2089cfecefd..11139c210b49 100644
 --- a/include/net/xdp.h
 +++ b/include/net/xdp.h
-@@ -312,8 +312,8 @@ struct xdp_frame *xdp_convert_buff_to_frame(struct xdp_buff *xdp)
- 	return xdp_frame;
+@@ -167,6 +167,93 @@ xdp_get_buff_len(const struct xdp_buff *xdp)
+ 	return len;
  }
  
--void __xdp_return(void *data, enum xdp_mem_type mem_type, bool napi_direct,
--		  struct xdp_buff *xdp);
-+void __xdp_return(netmem_ref netmem, enum xdp_mem_type mem_type,
-+		  bool napi_direct, struct xdp_buff *xdp);
- void xdp_return_frame(struct xdp_frame *xdpf);
- void xdp_return_frame_rx_napi(struct xdp_frame *xdpf);
- void xdp_return_buff(struct xdp_buff *xdp);
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 6c036708634b..5fea874025d3 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4125,7 +4125,7 @@ static void bpf_xdp_shrink_data_zc(struct xdp_buff *xdp, int shrink,
++void xdp_return_frag(netmem_ref netmem, const struct xdp_buff *xdp);
++
++/**
++ * __xdp_buff_add_frag - attach frag to &xdp_buff
++ * @xdp: XDP buffer to attach the frag to
++ * @netmem: network memory containing the frag
++ * @offset: offset at which the frag starts
++ * @size: size of the frag
++ * @truesize: total memory size occupied by the frag
++ * @try_coalesce: whether to try coalescing the frags (not valid for XSk)
++ *
++ * Attach frag to the XDP buffer. If it currently has no frags attached,
++ * initialize the related fields, otherwise check that the frag number
++ * didn't reach the limit of ``MAX_SKB_FRAGS``. If possible, try coalescing
++ * the frag with the previous one.
++ * The function doesn't check/update the pfmemalloc bit. Please use the
++ * non-underscored wrapper in drivers.
++ *
++ * Return: true on success, false if there's no space for the frag in
++ * the shared info struct.
++ */
++static inline bool __xdp_buff_add_frag(struct xdp_buff *xdp, netmem_ref netmem,
++				       u32 offset, u32 size, u32 truesize,
++				       bool try_coalesce)
++{
++	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
++	skb_frag_t *prev;
++	u32 nr_frags;
++
++	if (!xdp_buff_has_frags(xdp)) {
++		xdp_buff_set_frags_flag(xdp);
++
++		nr_frags = 0;
++		sinfo->xdp_frags_size = 0;
++		sinfo->xdp_frags_truesize = 0;
++
++		goto fill;
++	}
++
++	nr_frags = sinfo->nr_frags;
++	prev = &sinfo->frags[nr_frags - 1];
++
++	if (try_coalesce && netmem == skb_frag_netmem(prev) &&
++	    offset == skb_frag_off(prev) + skb_frag_size(prev)) {
++		skb_frag_size_add(prev, size);
++		/* Guaranteed to only decrement the refcount */
++		xdp_return_frag(netmem, xdp);
++	} else if (unlikely(nr_frags == MAX_SKB_FRAGS)) {
++		return false;
++	} else {
++fill:
++		__skb_fill_netmem_desc_noacc(sinfo, nr_frags++, netmem,
++					     offset, size);
++	}
++
++	sinfo->nr_frags = nr_frags;
++	sinfo->xdp_frags_size += size;
++	sinfo->xdp_frags_truesize += truesize;
++
++	return true;
++}
++
++/**
++ * xdp_buff_add_frag - attach frag to &xdp_buff
++ * @xdp: XDP buffer to attach the frag to
++ * @netmem: network memory containing the frag
++ * @offset: offset at which the frag starts
++ * @size: size of the frag
++ * @truesize: total memory size occupied by the frag
++ *
++ * Version of __xdp_buff_add_frag() which takes care of the pfmemalloc bit.
++ *
++ * Return: true on success, false if there's no space for the frag in
++ * the shared info struct.
++ */
++static inline bool xdp_buff_add_frag(struct xdp_buff *xdp, netmem_ref netmem,
++				     u32 offset, u32 size, u32 truesize)
++{
++	if (!__xdp_buff_add_frag(xdp, netmem, offset, size, truesize, true))
++		return false;
++
++	if (unlikely(netmem_is_pfmemalloc(netmem)))
++		xdp_buff_set_frag_pfmemalloc(xdp);
++
++	return true;
++}
++
+ struct xdp_frame {
+ 	void *data;
+ 	u32 len;
+@@ -230,7 +317,14 @@ xdp_update_skb_shared_info(struct sk_buff *skb, u8 nr_frags,
+ 			   unsigned int size, unsigned int truesize,
+ 			   bool pfmemalloc)
+ {
+-	skb_shinfo(skb)->nr_frags = nr_frags;
++	struct skb_shared_info *sinfo = skb_shinfo(skb);
++
++	sinfo->nr_frags = nr_frags;
++	/*
++	 * ``destructor_arg`` is unionized with ``xdp_frags_{,true}size``,
++	 * reset it after that these fields aren't used anymore.
++	 */
++	sinfo->destructor_arg = NULL;
  
- 	if (release) {
- 		xsk_buff_del_tail(zc_frag);
--		__xdp_return(NULL, mem_type, false, zc_frag);
-+		__xdp_return(0, mem_type, false, zc_frag);
- 	} else {
- 		zc_frag->data_end -= shrink;
- 	}
-@@ -4142,11 +4142,8 @@ static bool bpf_xdp_shrink_data(struct xdp_buff *xdp, skb_frag_t *frag,
- 		goto out;
- 	}
- 
--	if (release) {
--		struct page *page = skb_frag_page(frag);
--
--		__xdp_return(page_address(page), mem_type, false, NULL);
--	}
-+	if (release)
-+		__xdp_return(skb_frag_netmem(frag), mem_type, false, NULL);
- 
- out:
- 	return release;
+ 	skb->len += size;
+ 	skb->data_len += size;
 diff --git a/net/core/xdp.c b/net/core/xdp.c
-index d367571c5838..f1165a35411b 100644
+index f1165a35411b..a66a4e036f53 100644
 --- a/net/core/xdp.c
 +++ b/net/core/xdp.c
-@@ -430,27 +430,25 @@ EXPORT_SYMBOL_GPL(xdp_rxq_info_attach_page_pool);
-  * is used for those calls sites.  Thus, allowing for faster recycling
-  * of xdp_frames/pages in those cases.
-  */
--void __xdp_return(void *data, enum xdp_mem_type mem_type, bool napi_direct,
--		  struct xdp_buff *xdp)
-+void __xdp_return(netmem_ref netmem, enum xdp_mem_type mem_type,
-+		  bool napi_direct, struct xdp_buff *xdp)
- {
--	struct page *page;
--
- 	switch (mem_type) {
- 	case MEM_TYPE_PAGE_POOL:
--		page = virt_to_head_page(data);
-+		netmem = netmem_compound_head(netmem);
- 		if (napi_direct && xdp_return_frame_no_direct())
- 			napi_direct = false;
- 		/* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
- 		 * as mem->type knows this a page_pool page
- 		 */
--		page_pool_put_full_page(page->pp, page, napi_direct);
-+		page_pool_put_full_netmem(netmem_get_pp(netmem), netmem,
-+					  napi_direct);
- 		break;
- 	case MEM_TYPE_PAGE_SHARED:
--		page_frag_free(data);
-+		page_frag_free(__netmem_address(netmem));
- 		break;
- 	case MEM_TYPE_PAGE_ORDER0:
--		page = virt_to_page(data); /* Assumes order0 page*/
--		put_page(page);
-+		put_page(__netmem_to_page(netmem));
- 		break;
- 	case MEM_TYPE_XSK_BUFF_POOL:
- 		/* NB! Only valid from an xdp_buff! */
-@@ -466,38 +464,34 @@ void __xdp_return(void *data, enum xdp_mem_type mem_type, bool napi_direct,
- void xdp_return_frame(struct xdp_frame *xdpf)
- {
- 	struct skb_shared_info *sinfo;
--	int i;
- 
- 	if (likely(!xdp_frame_has_frags(xdpf)))
- 		goto out;
- 
- 	sinfo = xdp_get_shared_info_from_frame(xdpf);
--	for (i = 0; i < sinfo->nr_frags; i++) {
--		struct page *page = skb_frag_page(&sinfo->frags[i]);
-+	for (u32 i = 0; i < sinfo->nr_frags; i++)
-+		__xdp_return(skb_frag_netmem(&sinfo->frags[i]), xdpf->mem_type,
-+			     false, NULL);
- 
--		__xdp_return(page_address(page), xdpf->mem_type, false, NULL);
--	}
- out:
--	__xdp_return(xdpf->data, xdpf->mem_type, false, NULL);
-+	__xdp_return(virt_to_netmem(xdpf->data), xdpf->mem_type, false, NULL);
+@@ -535,6 +535,17 @@ void xdp_return_frame_bulk(struct xdp_frame *xdpf,
  }
- EXPORT_SYMBOL_GPL(xdp_return_frame);
+ EXPORT_SYMBOL_GPL(xdp_return_frame_bulk);
  
- void xdp_return_frame_rx_napi(struct xdp_frame *xdpf)
- {
- 	struct skb_shared_info *sinfo;
--	int i;
- 
- 	if (likely(!xdp_frame_has_frags(xdpf)))
- 		goto out;
- 
- 	sinfo = xdp_get_shared_info_from_frame(xdpf);
--	for (i = 0; i < sinfo->nr_frags; i++) {
--		struct page *page = skb_frag_page(&sinfo->frags[i]);
-+	for (u32 i = 0; i < sinfo->nr_frags; i++)
-+		__xdp_return(skb_frag_netmem(&sinfo->frags[i]), xdpf->mem_type,
-+			     true, NULL);
- 
--		__xdp_return(page_address(page), xdpf->mem_type, true, NULL);
--	}
- out:
--	__xdp_return(xdpf->data, xdpf->mem_type, true, NULL);
-+	__xdp_return(virt_to_netmem(xdpf->data), xdpf->mem_type, true, NULL);
- }
- EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
- 
-@@ -544,20 +538,17 @@ EXPORT_SYMBOL_GPL(xdp_return_frame_bulk);
++/**
++ * xdp_return_frag -- free one XDP frag or decrement its refcount
++ * @netmem: network memory reference to release
++ * @xdp: &xdp_buff to release the frag for
++ */
++void xdp_return_frag(netmem_ref netmem, const struct xdp_buff *xdp)
++{
++	__xdp_return(netmem, xdp->rxq->mem.type, true, NULL);
++}
++EXPORT_SYMBOL_GPL(xdp_return_frag);
++
  void xdp_return_buff(struct xdp_buff *xdp)
  {
  	struct skb_shared_info *sinfo;
--	int i;
- 
- 	if (likely(!xdp_buff_has_frags(xdp)))
- 		goto out;
- 
- 	sinfo = xdp_get_shared_info_from_buff(xdp);
--	for (i = 0; i < sinfo->nr_frags; i++) {
--		struct page *page = skb_frag_page(&sinfo->frags[i]);
-+	for (u32 i = 0; i < sinfo->nr_frags; i++)
-+		__xdp_return(skb_frag_netmem(&sinfo->frags[i]),
-+			     xdp->rxq->mem.type, true, xdp);
- 
--		__xdp_return(page_address(page), xdp->rxq->mem.type, true,
--			     xdp);
--	}
- out:
--	__xdp_return(xdp->data, xdp->rxq->mem.type, true, xdp);
-+	__xdp_return(virt_to_netmem(xdp->data), xdp->rxq->mem.type, true, xdp);
- }
- EXPORT_SYMBOL_GPL(xdp_return_buff);
- 
 -- 
 2.47.1
 
