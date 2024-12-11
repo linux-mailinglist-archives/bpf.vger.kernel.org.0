@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-46657-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46658-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 383A99ED39E
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 18:32:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FB619ED3A5
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 18:32:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B40A91884F0D
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 17:31:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D529188C38A
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 17:31:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30EEC209668;
-	Wed, 11 Dec 2024 17:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2C5B20B812;
+	Wed, 11 Dec 2024 17:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W36KrReO"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Z4ccC4Nz"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC0A1FF611;
-	Wed, 11 Dec 2024 17:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9861207A39;
+	Wed, 11 Dec 2024 17:29:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733938165; cv=none; b=AzBS7uLT5Jdf/dpHZYenU4z1KoUjsFENejnheC+DdG1pqHJBB3d/QJvd7WdhXQxx3ApJgsel1yMuR26uma+p3pvyQyWCJrlR/HacB0UjigQ5l3fm84XQe6lBOVHjDvlXyDdlh4vnkNMo6vDf2PXXm5Sg0a7n+AA3hx/OGeA/auU=
+	t=1733938167; cv=none; b=g8ccGwgXaTPhQnsWQWQZKIZPdETQj8kMh4mDSSaRjZ0LUtkxfQUSX0FxZ7s/5sbRn1jMfs5CfEdSxJ7aVSK8CAMPeFNz+owsoDiqbftcKbTVIuCTqXRuzDe1VhgXp3r5q84nGRQJr2KsHfB/aoUsk9bDWFw1+4wgtdNkC+C7H4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733938165; c=relaxed/simple;
-	bh=Mzh5PvWdAWrhD20G+Z/0QHFjHx3XB3ES4Wu24RLMMF8=;
+	s=arc-20240116; t=1733938167; c=relaxed/simple;
+	bh=WYUMYW1SB8Xt0LN/LVRR3OBaayXs3+auaJsIGlgXPRk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d31yM+MNm3/RKjIUj4mp4Vk8J9eA+tuXM+dCMlsHhmscc1pYMy2jGNmIOeCVdAfi8S90MHHJwc9zKS/5p9FzyAU1Oma7EnpksXFs9Kv+aIt0AAY+gnW34LgUq1s0OI3O3uUbToSuOXF/nEt7ol2aIIfFJcw1YF+ydJAj/bLP3y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W36KrReO; arc=none smtp.client-ip=192.198.163.8
+	 MIME-Version; b=NmYMe0nKISE1qD2AkLW//eVvsKe7QZ0UHIozfGSTcI6+SgGquz1Wi8aBQrDkiu+MOz+nxYAiIGWzLzwJNoNUoVXLmXTzSPjzJ2R6KlQsoPMAm0xxfkM5D8XLss3ehmo2LSwnpKTjXFicbM9RLDyk/+KoRSNqY3Op7Uw0697+zfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Z4ccC4Nz; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1733938164; x=1765474164;
+  t=1733938166; x=1765474166;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Mzh5PvWdAWrhD20G+Z/0QHFjHx3XB3ES4Wu24RLMMF8=;
-  b=W36KrReOsfqcDgHkYLjVyTyXEcnUBBNvdeVSE+Cns9RXLiGV1zkEWcBG
-   h9r5cBx/KASHlgPRXsdXVCVCbE3U/AQPJqqAHbwgdPEbELqaiqTnFeAu+
-   HOuLjm4Zt2/yGukIvo0wSjL4lSC1zYucDb5m5jwb0bVqxm6YQKCR30HVT
-   /er3vafmm/4ncTQVgVog9/aEuGe3zRUoOVdNbG84V31nkjeiuvl9R2Fs0
-   JAg8Y9Cc0z83jpFEl0vQf+O1aUAJNLkoB7VLTDUoiKyIWUfthA+IsPXMu
-   e//dz5fENPjMNDTl9DP6+/saTJbYzbETSlYiRtB9xNyzxwSGkOMDtBtrq
-   g==;
-X-CSE-ConnectionGUID: VpDTzVl1SV+ESU0/loOpkA==
-X-CSE-MsgGUID: BmC8msgNRcaTW0XFhi6fQw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11283"; a="51859655"
+  bh=WYUMYW1SB8Xt0LN/LVRR3OBaayXs3+auaJsIGlgXPRk=;
+  b=Z4ccC4Nzuc+icGIlYJNnsQD/aSXvxO4dQYSqYJMQObLTsByA5I3qcHQt
+   +5dwk9h7ru60aUn5bggeLm1yqcOCjYjS0zjIBhoRw2WOb2yspdViI/QQb
+   mqTMcB2IEikXd6isu4jQgkswlGH6PlzGnjIOYR5ycII1PKZZbHrMIGytM
+   87QdR13Mc2Iz1rOqdUMnWRqoVVyt8HwG7cby7QHq6ifP0VDh5QhuilD5e
+   WQkFdqarrWXwLhj+dtMyvbfiVqFRQB4z+lozSkzyM7tniC96tNEdU38ll
+   pOC8RX4kV5w9bB3MD57trujg+QlN+2BgBQx+iQbMbjCxLNfz7zaf0dKmM
+   Q==;
+X-CSE-ConnectionGUID: ZsOi6dfLRE2GkcUDSd8uuQ==
+X-CSE-MsgGUID: cQlKKoS9RZqGxdEh6jiWNQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11283"; a="51859681"
 X-IronPort-AV: E=Sophos;i="6.12,226,1728975600"; 
-   d="scan'208";a="51859655"
+   d="scan'208";a="51859681"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2024 09:29:21 -0800
-X-CSE-ConnectionGUID: myHfyw3uSAOPluvrbhRfIg==
-X-CSE-MsgGUID: TDOizA4FTKqhh9ve6cEVdA==
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2024 09:29:26 -0800
+X-CSE-ConnectionGUID: XX/qovBlTdGDKj6EhB1Seg==
+X-CSE-MsgGUID: ve/RU88CQDuYSF1lRAXDRA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="119122363"
+   d="scan'208";a="119122386"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa002.fm.intel.com with ESMTP; 11 Dec 2024 09:29:15 -0800
+  by fmviesa002.fm.intel.com with ESMTP; 11 Dec 2024 09:29:20 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: Andrew Lunn <andrew+netdev@lunn.ch>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -83,9 +83,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 09/12] page_pool: add a couple of netmem counterparts
-Date: Wed, 11 Dec 2024 18:26:46 +0100
-Message-ID: <20241211172649.761483-10-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next 10/12] skbuff: allow 2-4-argument skb_frag_dma_map()
+Date: Wed, 11 Dec 2024 18:26:47 +0100
+Message-ID: <20241211172649.761483-11-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20241211172649.761483-1-aleksander.lobakin@intel.com>
 References: <20241211172649.761483-1-aleksander.lobakin@intel.com>
@@ -97,105 +97,87 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add the following Page Pool netmem wrappers to be able to implement
-an MP-agnostic driver:
+skb_frag_dma_map(dev, frag, 0, skb_frag_size(frag), DMA_TO_DEVICE)
+is repeated across dozens of drivers and really wants a shorthand.
+Add a macro which will count args and handle all possible number
+from 2 to 5. Semantics:
 
-* page_pool{,_dev}_alloc_best_fit_netmem()
+skb_frag_dma_map(dev, frag) ->
+__skb_frag_dma_map(dev, frag, 0, skb_frag_size(frag), DMA_TO_DEVICE)
 
-Same as page_pool{,_dev}_alloc(). Make the latter a wrapper around
-the new helper (as a page is always a netmem, but not vice versa).
-'page_pool_alloc_netmem' is already busy, hence '_best_fit' (which
-also says what the helper tries to do).
+skb_frag_dma_map(dev, frag, offset) ->
+__skb_frag_dma_map(dev, frag, offset, skb_frag_size(frag) - offset,
+		   DMA_TO_DEVICE)
 
-* page_pool_dma_sync_for_cpu_netmem()
+skb_frag_dma_map(dev, frag, offset, size) ->
+__skb_frag_dma_map(dev, frag, offset, size, DMA_TO_DEVICE)
 
-Same as page_pool_dma_sync_for_cpu(). Performs DMA sync only if
-the netmem comes from the host.
+skb_frag_dma_map(dev, frag, offset, size, dir) ->
+__skb_frag_dma_map(dev, frag, offset, size, dir)
+
+No object code size changes for the existing callers. Users passing
+less arguments also won't have bigger size comparing to the full
+equivalent call.
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/net/page_pool/helpers.h | 46 ++++++++++++++++++++++++++-------
- 1 file changed, 37 insertions(+), 9 deletions(-)
+ include/linux/skbuff.h | 31 ++++++++++++++++++++++++++-----
+ 1 file changed, 26 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-index 26caa2c20912..d75d10678958 100644
---- a/include/net/page_pool/helpers.h
-+++ b/include/net/page_pool/helpers.h
-@@ -115,22 +115,22 @@ static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
- 	return page_pool_alloc_frag(pool, offset, size, gfp);
- }
- 
--static inline struct page *page_pool_alloc(struct page_pool *pool,
--					   unsigned int *offset,
--					   unsigned int *size, gfp_t gfp)
-+static inline netmem_ref
-+page_pool_alloc_best_fit_netmem(struct page_pool *pool, unsigned int *offset,
-+				unsigned int *size, gfp_t gfp)
- {
- 	unsigned int max_size = PAGE_SIZE << pool->p.order;
--	struct page *page;
-+	netmem_ref netmem;
- 
- 	if ((*size << 1) > max_size) {
- 		*size = max_size;
- 		*offset = 0;
--		return page_pool_alloc_pages(pool, gfp);
-+		return page_pool_alloc_netmem(pool, gfp);
- 	}
- 
--	page = page_pool_alloc_frag(pool, offset, *size, gfp);
--	if (unlikely(!page))
--		return NULL;
-+	netmem = page_pool_alloc_frag_netmem(pool, offset, *size, gfp);
-+	if (unlikely(!netmem))
-+		return 0;
- 
- 	/* There is very likely not enough space for another fragment, so append
- 	 * the remaining size to the current fragment to avoid truesize
-@@ -141,7 +141,25 @@ static inline struct page *page_pool_alloc(struct page_pool *pool,
- 		pool->frag_offset = max_size;
- 	}
- 
--	return page;
-+	return netmem;
-+}
-+
-+static inline netmem_ref
-+page_pool_dev_alloc_best_fit_netmem(struct page_pool *pool,
-+				    unsigned int *offset,
-+				    unsigned int *size)
-+{
-+	gfp_t gfp = GFP_ATOMIC | __GFP_NOWARN;
-+
-+	return page_pool_alloc_best_fit_netmem(pool, offset, size, gfp);
-+}
-+
-+static inline struct page *page_pool_alloc(struct page_pool *pool,
-+					   unsigned int *offset,
-+					   unsigned int *size, gfp_t gfp)
-+{
-+	return netmem_to_page(page_pool_alloc_best_fit_netmem(pool, offset,
-+							      size, gfp));
- }
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 8bcf14ae6789..bb2b751d274a 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -3682,7 +3682,7 @@ static inline void skb_frag_page_copy(skb_frag_t *fragto,
+ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t prio);
  
  /**
-@@ -440,6 +458,16 @@ static inline void page_pool_dma_sync_for_cpu(const struct page_pool *pool,
- 				      page_pool_get_dma_dir(pool));
+- * skb_frag_dma_map - maps a paged fragment via the DMA API
++ * __skb_frag_dma_map - maps a paged fragment via the DMA API
+  * @dev: the device to map the fragment to
+  * @frag: the paged fragment to map
+  * @offset: the offset within the fragment (starting at the
+@@ -3692,15 +3692,36 @@ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t prio);
+  *
+  * Maps the page associated with @frag to @device.
+  */
+-static inline dma_addr_t skb_frag_dma_map(struct device *dev,
+-					  const skb_frag_t *frag,
+-					  size_t offset, size_t size,
+-					  enum dma_data_direction dir)
++static inline dma_addr_t __skb_frag_dma_map(struct device *dev,
++					    const skb_frag_t *frag,
++					    size_t offset, size_t size,
++					    enum dma_data_direction dir)
+ {
+ 	return dma_map_page(dev, skb_frag_page(frag),
+ 			    skb_frag_off(frag) + offset, size, dir);
  }
  
-+static inline void
-+page_pool_dma_sync_for_cpu_netmem(const struct page_pool *pool,
-+				  netmem_ref netmem, u32 offset,
-+				  u32 dma_sync_size)
-+{
-+	if (!netmem_is_net_iov(netmem))
-+		page_pool_dma_sync_for_cpu(pool, netmem_to_page(netmem),
-+					   offset, dma_sync_size);
-+}
++#define skb_frag_dma_map(dev, frag, ...)				\
++	CONCATENATE(_skb_frag_dma_map,					\
++		    COUNT_ARGS(__VA_ARGS__))(dev, frag, ##__VA_ARGS__)
 +
- static inline bool page_pool_put(struct page_pool *pool)
++#define __skb_frag_dma_map1(dev, frag, offset, uf, uo) ({		\
++	const skb_frag_t *uf = (frag);					\
++	size_t uo = (offset);						\
++									\
++	__skb_frag_dma_map(dev, uf, uo, skb_frag_size(uf) - uo,		\
++			   DMA_TO_DEVICE);				\
++})
++#define _skb_frag_dma_map1(dev, frag, offset)				\
++	__skb_frag_dma_map1(dev, frag, offset, __UNIQUE_ID(frag_),	\
++			    __UNIQUE_ID(offset_))
++#define _skb_frag_dma_map0(dev, frag)					\
++	_skb_frag_dma_map1(dev, frag, 0)
++#define _skb_frag_dma_map2(dev, frag, offset, size)			\
++	__skb_frag_dma_map(dev, frag, offset, size, DMA_TO_DEVICE)
++#define _skb_frag_dma_map3(dev, frag, offset, size, dir)		\
++	__skb_frag_dma_map(dev, frag, offset, size, dir)
++
+ static inline struct sk_buff *pskb_copy(struct sk_buff *skb,
+ 					gfp_t gfp_mask)
  {
- 	return refcount_dec_and_test(&pool->user_cnt);
 -- 
 2.47.1
 
