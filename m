@@ -1,91 +1,102 @@
-Return-Path: <bpf+bounces-46640-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46641-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D569F9ECF30
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 15:57:12 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 599429ECF55
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 16:06:05 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 795151884D8A
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 14:57:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AE27281BB8
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 15:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441731A0726;
-	Wed, 11 Dec 2024 14:57:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F431AA1C4;
+	Wed, 11 Dec 2024 15:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dH6Eghs9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YkKLyBHz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7CAB19F116
-	for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 14:57:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F3771D63C8;
+	Wed, 11 Dec 2024 15:05:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733929023; cv=none; b=ad1vaVUIqxhPYE5/G/RsCwpRPvd3H14AF4hCQDqvBrpgz5HzFzjRMacsBjyagff3JEohzI78jFEAfTwCMRcpgPD3in+APE2q2W/BjnfZ99fdES6QPo5BcokFxM7gZrFHnc4XUPUzNX5NbfA9kTabJIi7jaqUYplGYsJ32h9Ka1s=
+	t=1733929524; cv=none; b=tcgJLy6rSyv/RBkVXqd6224W3obP4TYB1ZSQLYQyYXlTdhxGpNDfwModSDzIW1Kn/pKuewfkdhTC3VQzJwk85aFDp1anjD+G/yEnXB4+AV4V7eBYHSaK48DIxEL2U+4sWFd7ODucVedwydTzcJ84psKPI6W3U+iw7e2GTjgNmp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733929023; c=relaxed/simple;
-	bh=Q7PAVTvKlR6GBsKQzqzdV4tzOnc6vE85i44dToX8ILI=;
+	s=arc-20240116; t=1733929524; c=relaxed/simple;
+	bh=zBAP9mh8OPUKcmyV9VNqiPkVz3ps9OJpez4j8qjPT2A=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sy4PoX4pNZjCFnhmnYWwf1vq2Pxnuu4TZVm8dwOnGGIXte1X0fBL+cWbQIRWROFf9jEaVPNPx90xTOYo4HmXYru0y9Y/RGNITlne42vaw2BlYyhCTNgiToCIrwnbIpLGNHk9HfceKIo/L43GqD9ZHAdqnsbXLN7z5tecMhCansg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dH6Eghs9; arc=none smtp.client-ip=209.85.218.45
+	 Content-Type:Content-Disposition:In-Reply-To; b=cONqVQ0lmjB+9c2xHDEY9BpQ6kDggleOZrJGXU39lX1iNkXpSgzmDJIYHYXV43nc75MaGSEGi54obcnA9+jNAnb7synqWbzAJ/gIOdNcxgsmxhtF+BMOxyaAgOyX7BZqZ+OwJPXe1NiyBnZdgMUzc1wivnbRrFTUajQNSpP4URY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YkKLyBHz; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-aa69077b93fso481568166b.0
-        for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 06:57:01 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aa6a92f863cso332853266b.1;
+        Wed, 11 Dec 2024 07:05:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733929020; x=1734533820; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733929519; x=1734534319; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SogCzOv7sBUjOa9IZupmUG7D3xzftxqdhxZbsTv4vtY=;
-        b=dH6Eghs98OMTC/8bBOjJPtfZdAKNGFg617jrdmRiANG04faTKUKc5Jo4xHdoZyuRvR
-         JV+uaCFlA42AGWQOmLDa+7gTB97pPjOLWifdlBau8Dw/4tU+zAwAYhiYbkRVD9AHDRn2
-         88aBIbO1jjBTXrqgzlMf0M7tpM9xHnLZY5bUgBsX4MQBXPpMzVs6a6OCFxiOgDDnxwVH
-         MfezkTrHMXWb/PP15zjeCBlLSSr0IIqjQuJMYTkmuIGHwzN8JBxYBsT5UC666M6k24uF
-         rtgFLDR8dEXhesgsXRAHnvbn4yen6Gqsb8vV9YZEOHGTKC15Hp2KC6xDGq5k7GSc4yzb
-         HsQA==
+        bh=fmuSRYRsN+CVodQCjU4cJzoXt2OifyhdBUg+LTTXX5I=;
+        b=YkKLyBHzwIIjh1ID1+J7E3MIvvgO96Aq+MemS2iP1KZhSLIcFNvK7lI0q1+t082izp
+         7AePbFVCdFkawO3c690HdLLGzmUNQS+xSeDjCOr5YJ4pU/SkpOj2guuqr+VAiRPicftH
+         uRIAwMTlkeogxyo+AftkKrubTLnxLDKGDgGMk0bUbaBCi2q1wL8Zjiyuamq9xdj5xs96
+         /fiAXZZgq2NvsAaLxLQIX3v8xL+7X/hUnRQPrjCdPx0rZIIcPLN4yFc73aBl+XTsQZhf
+         K6WDwDAQ80Z7CSopyj1uKAd7+sguUFlX32z+Difqqvbt5306GzQmmN7D8dEVi6mh1AH3
+         gigA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733929020; x=1734533820;
+        d=1e100.net; s=20230601; t=1733929519; x=1734534319;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SogCzOv7sBUjOa9IZupmUG7D3xzftxqdhxZbsTv4vtY=;
-        b=KPswkNbkH6k1JhMwcHhVCHe+t1j71Ybd5E+srB1XUM5LjJLnZDJ6E7uazAttolh2od
-         nt1E8d++9li/61Kw8i0wzaIPFgn3lqiPWI3Ya3Ug5pCmJWdhF7fpHusEYgP633BUyeQQ
-         Ys7MvTJ74/fIBtAcAxuuzR42lZH1cqD5DsvGguORwaI1kJNW5F3Wstx6gAWuAcUr1w43
-         7lr28jqbPKdrJIPQxa6zG4wzY4AjPS2OuRi5/sMCyvHt9dRMTDwsxsNxlTLx6j80xgWT
-         8okZ25wTnOIGkuw7lZR02C+O53B8CQRDRAs5AbfsOrRuYdduaUCNU2n5dFD5u8tVa1yk
-         B2JQ==
-X-Gm-Message-State: AOJu0YwHSeFRzVswmlo/WUdRxF9wtAWhunIsaXD9AqHMQem3ligmQPEX
-	XqmJfk0F/+6Fw1BE8BhTv3Sj3t3q8n38iCv4sU7gbKhl/BLlv+n+
-X-Gm-Gg: ASbGncv86Ho/2gI00716fd/SIRLy7bQWYnehFxlm9mdbGzQvDjgcRIskY/tVWr3DUEc
-	tTlxjfokrnTN+IFzygCMYii63GELGHtVlHrhDSBfLDprpNi3MHsBogKqhkZmsJv/nIDMqPvKiWx
-	jGV6Vvpk2/+n3OJsKUYESgt2w/bvAUslLBnuE8u+8zQRxuW3SxQ9BkTIpB6Em3mn4L9TslhQIbb
-	6mzMFOT/xkw0lNlHDmLwIWSIBcH0ejCZaxnjxy/EH30JvxJG2PbXy4MTeH5PEYuV7s0qSKDdP7N
-	ZGCiC5jEHKEDH9VzvG3M7yV2FiA=
-X-Google-Smtp-Source: AGHT+IFnGiX9s+EgUWjWv6UfLsTcBakG4OYxdOoAyizm+WjAEVtg824QsQ4ztjEF0ZdrWLzhiNMqcQ==
-X-Received: by 2002:a17:906:32d6:b0:aa6:9372:cac7 with SMTP id a640c23a62f3a-aa6c1b101e9mr10653866b.31.1733929019795;
-        Wed, 11 Dec 2024 06:56:59 -0800 (PST)
+        bh=fmuSRYRsN+CVodQCjU4cJzoXt2OifyhdBUg+LTTXX5I=;
+        b=pFEVzNDrp1OsI8L+Iq22kJ6PIfmP8ElWJOEGZblD8fL7tfy6blNm1zvLocAq7E3rqu
+         gnoZZVGT9nOPVvKmoE6E6QmDtRL8NDSQK5uWsXJEk9ScJx6mentwUan1K9I/JdmkrYam
+         uaoonPB7tmPISjPlYugBPxJzZCh47QazPDtYE/Voljz3aKXO7ks04X+RVqb4mfDdkbFO
+         2KrjsNgRhxUZlNODcoDLqwa5dOXeW8S9jpjTaleGYMU+oYgKLzp+6JH5evOH0mhuwQxy
+         jEO1yd5c8V1N1kel0Sk8zzFiHSVaL0PkDv4yx4MHAoK7+cKDhruZzCN7LusJ+Who0sTg
+         wJHw==
+X-Forwarded-Encrypted: i=1; AJvYcCWVCH4barhEG5FzVA/96mJCehF4M2LiX5vx52aqtQqtEt3//Kk0srgS43tfKfvlIwrAn+8GZbTq8WZsbpnn@vger.kernel.org, AJvYcCXnyZ41EQQaZY1EsDDmsf7ha8YsW+OsRGyqQmud/nvE6mNF539de3qGsMIh4zOe2n6G5hsQzVHJU/dQm+oRG0DVHQ==@vger.kernel.org, AJvYcCXrIyz9PhELvU9TLnwnuOinFP1Fq2buOmtLMj6QC3YLU73hfQ20Bx6JpkLTEoqRxhG6rNw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxq9Cmef8dHYeEFpbRycTqhbrUDfkY7NNKQkSql0kxtDh9ulCi/
+	D8dpUef8hIozDVzjojT9BFmYBkRyzd/ohBNKnW9nrFkX1TCmEy2y
+X-Gm-Gg: ASbGncsqBnb2IvivxbFzC94f7RYrbhohA1nn/59dcabdw6ehqNUS23xtc96iqeNnMJk
+	HUb6CBMFmwUDjZrWzIRxjdzRksT1OjCnKkEmHP/tdeCCdOM8oj9HLewEwUafbOwEp0bbr6wWnbQ
+	1xTa/LKriTiCjt52ckt9K/o6pWVlph52pCa1RmLYv3fLStoYcdh9es3lPFJGrDblmPDtHH+QWee
+	XoGa22FXQ7cP2RPnXR7k3n8OBuBPAs1y78mcsb2ZIIA7ErR46oNSHLy1qpHgfINK6zXQ0m/09Tc
+	DZcz8N1+GCiYqI8N3hG9sMZYRjc=
+X-Google-Smtp-Source: AGHT+IFLqy5ye4iT4eGtn9cgCHM7T7Xqhx1toNYhHYc9h0YsfMhXBP1rDtSH6hw3JVfTojL6m1mg1A==
+X-Received: by 2002:a17:907:3a18:b0:aa6:6e10:61f1 with SMTP id a640c23a62f3a-aa6b10f56d7mr267950166b.1.1733929516706;
+        Wed, 11 Dec 2024 07:05:16 -0800 (PST)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa68bae18cfsm446394866b.115.2024.12.11.06.56.58
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa6a3dcbcc2sm260913266b.117.2024.12.11.07.05.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Dec 2024 06:56:59 -0800 (PST)
+        Wed, 11 Dec 2024 07:05:16 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 11 Dec 2024 15:56:57 +0100
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, kkd@meta.com, Juri Lelli <juri.lelli@redhat.com>,
-	Manu Bretelle <chantra@meta.com>,
+Date: Wed, 11 Dec 2024 16:05:14 +0100
+To: Leo Yan <leo.yan@arm.com>
+Cc: Quentin Monnet <qmo@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, kernel-team@fb.com
-Subject: Re: [PATCH bpf v1 3/4] bpf: Augment raw_tp arguments with
- PTR_MAYBE_NULL
-Message-ID: <Z1moOcGsbWmn6XhU@krava>
-References: <20241211020156.18966-1-memxor@gmail.com>
- <20241211020156.18966-4-memxor@gmail.com>
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Nick Terrell <terrelln@fb.com>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>,
+	James Clark <james.clark@linaro.org>,
+	Guilherme Amadio <amadio@gentoo.org>, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] tools build: Add feature test for libelf with ZSTD
+Message-ID: <Z1mqKpXBcl303IDY@krava>
+References: <20241211093114.263742-1-leo.yan@arm.com>
+ <20241211093114.263742-2-leo.yan@arm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,162 +105,96 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241211020156.18966-4-memxor@gmail.com>
+In-Reply-To: <20241211093114.263742-2-leo.yan@arm.com>
 
-On Tue, Dec 10, 2024 at 06:01:55PM -0800, Kumar Kartikeya Dwivedi wrote:
+On Wed, Dec 11, 2024 at 09:31:12AM +0000, Leo Yan wrote:
+> Add a test for checking if libelf supports ZSTD compress algorithm.
+> 
+> The macro ELFCOMPRESS_ZSTD is defined for the algorithm, pass it as an
+> argument to the elf_compress() function.  If the build succeeds, it
+> means the feature is supported.
+> 
+> Signed-off-by: Leo Yan <leo.yan@arm.com>
 
-SNIP
+lgtm
 
-> +struct bpf_raw_tp_null_args raw_tp_null_args[] = {
-> +	/* sched */
-> +	RAW_TP_NULL_ARGS(sched_pi_setprio, NULL_ARG(2)),
-> +	/* ... from sched_numa_pair_template event class */
-> +	RAW_TP_NULL_ARGS(sched_stick_numa, NULL_ARG(3)),
-> +	RAW_TP_NULL_ARGS(sched_swap_numa, NULL_ARG(3)),
-> +	/* afs */
-> +	RAW_TP_NULL_ARGS(afs_make_fs_call, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(afs_make_fs_calli, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(afs_make_fs_call1, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(afs_make_fs_call2, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(afs_protocol_error, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(afs_flock_ev, NULL_ARG(2)),
-> +	/* cachefiles */
-> +	RAW_TP_NULL_ARGS(cachefiles_lookup, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_unlink, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_rename, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_prep_read, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_mark_active, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_mark_failed, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_mark_inactive, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_vfs_error, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_io_error, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_ondemand_open, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_ondemand_copen, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_ondemand_close, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_ondemand_read, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_ondemand_cread, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_ondemand_fd_write, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(cachefiles_ondemand_fd_release, NULL_ARG(1)),
-> +	/* ext4, from ext4__mballoc event class */
-> +	RAW_TP_NULL_ARGS(ext4_mballoc_discard, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(ext4_mballoc_free, NULL_ARG(2)),
-> +	/* fib */
-> +	RAW_TP_NULL_ARGS(fib_table_lookup, NULL_ARG(3)),
-> +	/* filelock */
-> +	/* ... from filelock_lock event class */
-> +	RAW_TP_NULL_ARGS(posix_lock_inode, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(fcntl_setlk, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(locks_remove_posix, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(flock_lock_inode, NULL_ARG(2)),
-> +	/* ... from filelock_lease event class */
-> +	RAW_TP_NULL_ARGS(break_lease_noblock, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(break_lease_block, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(break_lease_unblock, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(generic_delete_lease, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(time_out_leases, NULL_ARG(2)),
-> +	/* host1x */
-> +	RAW_TP_NULL_ARGS(host1x_cdma_push_gather, NULL_ARG(5)),
-> +	/* huge_memory */
-> +	RAW_TP_NULL_ARGS(mm_khugepaged_scan_pmd, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(mm_collapse_huge_page_isolate, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(mm_khugepaged_scan_file, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(mm_khugepaged_collapse_file, NULL_ARG(2)),
-> +	/* kmem */
-> +	RAW_TP_NULL_ARGS(mm_page_alloc, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(mm_page_pcpu_drain, NULL_ARG(1)),
-> +	/* .. from mm_page event class */
-> +	RAW_TP_NULL_ARGS(mm_page_alloc_zone_locked, NULL_ARG(1)),
-> +	/* netfs */
-> +	RAW_TP_NULL_ARGS(netfs_failure, NULL_ARG(2)),
-> +	/* power */
-> +	RAW_TP_NULL_ARGS(device_pm_callback_start, NULL_ARG(2)),
-> +	/* qdisc */
-> +	RAW_TP_NULL_ARGS(qdisc_dequeue, NULL_ARG(4)),
-> +	/* rxrpc */
-> +	RAW_TP_NULL_ARGS(rxrpc_recvdata, NULL_ARG(1)),
-> +	RAW_TP_NULL_ARGS(rxrpc_resend, NULL_ARG(2)),
-> +	/* sunrpc */
-> +	RAW_TP_NULL_ARGS(xs_stream_read_data, NULL_ARG(1)),
-
-I missed one more in sunrpc: xprt_cong_event class
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
 jirka
 
-> +	/* tcp */
-> +	RAW_TP_NULL_ARGS(tcp_send_reset, NULL_ARG(1) | NULL_ARG(2)),
-> +	/* tegra_apb_dma */
-> +	RAW_TP_NULL_ARGS(tegra_dma_tx_status, NULL_ARG(3)),
-> +	/* timer_migration */
-> +	RAW_TP_NULL_ARGS(tmigr_update_events, NULL_ARG(1)),
-> +	/* writeback, from writeback_folio_template event class */
-> +	RAW_TP_NULL_ARGS(writeback_dirty_folio, NULL_ARG(2)),
-> +	RAW_TP_NULL_ARGS(folio_wait_writeback, NULL_ARG(2)),
-> +};
-> +
->  bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->  		    const struct bpf_prog *prog,
->  		    struct bpf_insn_access_aux *info)
-> @@ -6449,6 +6539,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->  	const char *tname = prog->aux->attach_func_name;
->  	struct bpf_verifier_log *log = info->log;
->  	const struct btf_param *args;
-> +	bool ptr_err_raw_tp = false;
->  	const char *tag_value;
->  	u32 nr_args, arg;
->  	int i, ret;
-> @@ -6591,6 +6682,36 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->  	if (btf_param_match_suffix(btf, &args[arg], "__nullable"))
->  		info->reg_type |= PTR_MAYBE_NULL;
+> ---
+>  tools/build/Makefile.feature           | 1 +
+>  tools/build/feature/Makefile           | 4 ++++
+>  tools/build/feature/test-all.c         | 4 ++++
+>  tools/build/feature/test-libelf-zstd.c | 9 +++++++++
+>  4 files changed, 18 insertions(+)
+>  create mode 100644 tools/build/feature/test-libelf-zstd.c
+> 
+> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+> index bca47d136f05..b2884bc23775 100644
+> --- a/tools/build/Makefile.feature
+> +++ b/tools/build/Makefile.feature
+> @@ -43,6 +43,7 @@ FEATURE_TESTS_BASIC :=                  \
+>          libelf-getphdrnum               \
+>          libelf-gelf_getnote             \
+>          libelf-getshdrstrndx            \
+> +        libelf-zstd                     \
+>          libnuma                         \
+>          numa_num_possible_cpus          \
+>          libperl                         \
+> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+> index 043dfd00fce7..f12b89103d7a 100644
+> --- a/tools/build/feature/Makefile
+> +++ b/tools/build/feature/Makefile
+> @@ -28,6 +28,7 @@ FILES=                                          \
+>           test-libelf-getphdrnum.bin             \
+>           test-libelf-gelf_getnote.bin           \
+>           test-libelf-getshdrstrndx.bin          \
+> +         test-libelf-zstd.bin                   \
+>           test-libdebuginfod.bin                 \
+>           test-libnuma.bin                       \
+>           test-numa_num_possible_cpus.bin        \
+> @@ -196,6 +197,9 @@ $(OUTPUT)test-libelf-gelf_getnote.bin:
+>  $(OUTPUT)test-libelf-getshdrstrndx.bin:
+>  	$(BUILD) -lelf
 >  
-> +	if (prog->expected_attach_type == BPF_TRACE_RAW_TP) {
-> +		struct btf *btf = prog->aux->attach_btf;
-> +		const struct btf_type *t;
-> +		const char *tname;
+> +$(OUTPUT)test-libelf-zstd.bin:
+> +	$(BUILD) -lelf -lz -lzstd
 > +
-> +		t = btf_type_by_id(btf, prog->aux->attach_btf_id);
-> +		if (!t)
-> +			goto done;
-> +		tname = btf_name_by_offset(btf, t->name_off);
-> +		if (!tname)
-> +			goto done;
-> +		for (int i = 0; i < ARRAY_SIZE(raw_tp_null_args); i++) {
-> +			/* Is this a func with potential NULL args? */
-> +			if (strcmp(tname, raw_tp_null_args[i].func))
-> +				continue;
-> +			/* Is the current arg NULL? */
-> +			if (raw_tp_null_args[i].mask & NULL_ARG(arg + 1))
-> +				info->reg_type |= PTR_MAYBE_NULL;
-> +			break;
-> +		}
-> +		/* Hardcode the only cases which has a IS_ERR pointer, i.e.
-> +		 * mr_integ_alloc's 4th argument (mr), and
-> +		 * cachefiles_lookup's 3rd argument (de).
-> +		 */
-> +		if (!strcmp(tname, "btf_trace_mr_integ_alloc") && (arg + 1) == 4)
-> +			ptr_err_raw_tp = true;
-> +		if (!strcmp(tname, "btf_trace_cachefiles_lookup") && (arg + 1) == 3)
-> +			ptr_err_raw_tp = true;
-> +	}
-> +done:
->  	if (tgt_prog) {
->  		enum bpf_prog_type tgt_type;
+>  $(OUTPUT)test-libdebuginfod.bin:
+>  	$(BUILD) -ldebuginfod
 >  
-> @@ -6635,6 +6756,14 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->  	bpf_log(log, "func '%s' arg%d has btf_id %d type %s '%s'\n",
->  		tname, arg, info->btf_id, btf_type_str(t),
->  		__btf_name_by_offset(btf, t->name_off));
+> diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
+> index 80ac297f8196..67125f967860 100644
+> --- a/tools/build/feature/test-all.c
+> +++ b/tools/build/feature/test-all.c
+> @@ -58,6 +58,10 @@
+>  # include "test-libelf-getshdrstrndx.c"
+>  #undef main
+>  
+> +#define main main_test_libelf_zstd
+> +# include "test-libelf-zstd.c"
+> +#undef main
 > +
-> +	/* Perform all checks on the validity of type for this argument, but if
-> +	 * we know it can be IS_ERR at runtime, scrub pointer type and mark as
-> +	 * scalar. We do not handle is_retval case as we hardcode ptr_err_raw_tp
-> +	 * handling for known tps.
-> +	 */
-> +	if (ptr_err_raw_tp)
-> +		info->reg_type = SCALAR_VALUE;
->  	return true;
->  }
->  EXPORT_SYMBOL_GPL(btf_ctx_access);
+>  #define main main_test_libslang
+>  # include "test-libslang.c"
+>  #undef main
+> diff --git a/tools/build/feature/test-libelf-zstd.c b/tools/build/feature/test-libelf-zstd.c
+> new file mode 100644
+> index 000000000000..a1324a1db3bb
+> --- /dev/null
+> +++ b/tools/build/feature/test-libelf-zstd.c
+> @@ -0,0 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <stddef.h>
+> +#include <libelf.h>
+> +
+> +int main(void)
+> +{
+> +	elf_compress(NULL, ELFCOMPRESS_ZSTD, 0);
+> +	return 0;
+> +}
 > -- 
-> 2.43.5
+> 2.34.1
 > 
 
