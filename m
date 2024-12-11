@@ -1,127 +1,88 @@
-Return-Path: <bpf+bounces-46621-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EEED9ECC8A
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 13:49:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E236D9ECD10
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 14:19:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B9151634E2
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 12:49:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCDF218840A0
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 13:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A506233682;
-	Wed, 11 Dec 2024 12:48:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E978229126;
+	Wed, 11 Dec 2024 13:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aZv0hZKc"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="PLZOYcKq"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC2171EA6F;
-	Wed, 11 Dec 2024 12:48:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F12E211A26
+	for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 13:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733921322; cv=none; b=OunoVobOzfSzt70JbstYGNw5AeqZvhTBvHreElitC4Arc7wVAoHziDQ3XC9hqzFoa2zQoaovlJORMnMnAP7k/4zsXDGA45Pp9VeptinYZAG4vF7PKcSXL3q/CiTUqzcWc/gS/yEzCx8wAaXxJJKpYY+u4vS/ltYxIW51L/2aaSA=
+	t=1733923140; cv=none; b=dPdCLUPolZ3SR4XrrcND3ri8D5S7BGD2DLBBMY7mhrjzCdYP+fNJx47BTHt/u1m9BGqhVi7Sb2nhYu8hja5BtQ7rxrdBc3j3MOaSpMidnLh7NFlISvx1sG3SLPT6fVeq1lvm/kyMlOu/46F9SlF2sjaBElTp1fa770mjHRyYy8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733921322; c=relaxed/simple;
-	bh=q7AL29J4p6NG4lXcJwqdyKDnOw/+E2JcQFmUdbqKZYQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=k6tbO2Bbh4N7bhBdNKJPPuyXGKaJP1lLwX3mZdtRNronHoZ2H+/yepVPdgHMeLvfvXh9m3kHdqvngxlTpKVRaLv2CbpaDImpduxeKGRy+xO+65w2prvymQdg0CP1Bj3bK/gRWzmBJIG9MGeqqlVbW64A/HxexcCkqxuNmWUdZ0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aZv0hZKc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74CFBC4CEDE;
-	Wed, 11 Dec 2024 12:48:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733921322;
-	bh=q7AL29J4p6NG4lXcJwqdyKDnOw/+E2JcQFmUdbqKZYQ=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=aZv0hZKc9VvDW9/i4njbAeb5HOeviBRCJWvaeoT3sS3yMLog8+5dIzYV+2kd3QaQW
-	 aqrKSv2HD4EUuJZ/F0zP7eNTYPPP1wgDAOvjkocRu+LtS1JEMLi3hjFKKyHNHA0PP5
-	 U+jqzEGlFsmrSb5dIh6mZD1HrbTu+S0jIVl1wpI0JviKPbE4TbTOPkBbEPguXYGDq7
-	 A1JrmxtS9qXmJHBge6RUOAwUK5g9l+kUiasgLWrtizdB57xz+71pTGYn7iKIu0rBmu
-	 QYYUFBTsyQ3txm29FURoNEVF0r5zrfWWnLWIuPUy8pVfgvQ6F2Ru/q+G9EfW4Jzhlh
-	 6IGvAAGpfUigg==
-Message-ID: <5d4dde77-b50b-4160-ad2f-f7ddcbe9feb2@kernel.org>
-Date: Wed, 11 Dec 2024 12:48:38 +0000
+	s=arc-20240116; t=1733923140; c=relaxed/simple;
+	bh=0BAVGXNmr29gyNAiZphZQqT7iy671vFWmAbgfaRCCNg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Eu0D8pWTnU8JUi0ilFO62RaOzH9mTVR+3ZsyTvJNtO6qGTBYHYaJYt6bHrgy5167LnQFMkDrcvIAMWyeDnu8QOKlNLJwbnnDHO/EgCn7LtoZNTD7jQeC0YpQJ3Lds9GktVyENmIRwhlIYsnrT5ubrpPjhuOZKYcTyMSvmMML5kI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=PLZOYcKq; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-102-3.bstnma.fios.verizon.net [173.48.102.3])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4BBDI4h6018729
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 11 Dec 2024 08:18:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1733923090; bh=gi4bqeC1xRqwvT/VF8q1VhKSDS3m7sf4PVUwbny9KIA=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=PLZOYcKq8FoBjvOrAvFvTv+oXACy+CGaLNIbiA4Lo0ND1dVkIh4kwBg/TSTJgCnFU
+	 /h6yP+xlNj43cqFrSFG0+c/ABitPdbmutfPk4FTb0yRPVGs+6t081qxjDQItuOQn6j
+	 jaXlF91pcsAS26Ou8Edu5EPIZhIj/onZFbBZ+KVMfYRS3rNoBCeBF+impAQZgrdT7o
+	 ZHdtsv27acQidbUYAJ3j4Yy53KOXfmhKvBsUIedf02VYaiquliiA9dgqoH9kjk5UrD
+	 stcADOvEAGBegY4nf8fXfxVyqwr/H3NPzkRFPE6Zh3sQI/Ib9jp7t0r5Sd+a4cjZek
+	 l5Zf9vg6GVWiA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 7ABDB15C6796; Wed, 11 Dec 2024 08:18:04 -0500 (EST)
+Date: Wed, 11 Dec 2024 08:18:04 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
+        kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com,
+        ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+        kpsingh@kernel.org, mattbobrowski@google.com, liamwisehart@meta.com,
+        shankaran@meta.com
+Subject: Re: [PATCH v3 bpf-next 0/6] Enable writing xattr from BPF programs
+Message-ID: <20241211131804.GA1912640@mit.edu>
+References: <20241210220627.2800362-1-song@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] bpftool: Link zstd lib required by libelf
-To: Leo Yan <leo.yan@arm.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Nick Terrell <terrelln@fb.com>,
- Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>,
- James Clark <james.clark@linaro.org>, Guilherme Amadio <amadio@gentoo.org>,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-perf-users@vger.kernel.org
-References: <20241211093114.263742-1-leo.yan@arm.com>
- <20241211093114.263742-4-leo.yan@arm.com>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <20241211093114.263742-4-leo.yan@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241210220627.2800362-1-song@kernel.org>
 
-2024-12-11 09:31 UTC+0000 ~ Leo Yan <leo.yan@arm.com>
-> When the feature-libelf-zstd is detected, the zstd lib is required by
-> libelf.  Link the zstd lib in this case.
-> 
-> Signed-off-by: Leo Yan <leo.yan@arm.com>
-> ---
->  tools/bpf/bpftool/Makefile | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index a4263dfb5e03..469f841abaff 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -106,6 +106,7 @@ FEATURE_TESTS += libbfd-liberty
->  FEATURE_TESTS += libbfd-liberty-z
->  FEATURE_TESTS += disassembler-four-args
->  FEATURE_TESTS += disassembler-init-styled
-> +FEATURE_TESTS += libelf-zstd
->  
->  FEATURE_DISPLAY := clang-bpf-co-re
->  FEATURE_DISPLAY += llvm
-> @@ -113,6 +114,7 @@ FEATURE_DISPLAY += libcap
->  FEATURE_DISPLAY += libbfd
->  FEATURE_DISPLAY += libbfd-liberty
->  FEATURE_DISPLAY += libbfd-liberty-z
-> +FEATURE_DISPLAY += libelf-zstd
+On Tue, Dec 10, 2024 at 02:06:21PM -0800, Song Liu wrote:
+> Add support to set and remove xattr from BPF program. Also add
+> security.bpf. xattr name prefix.
 
+If the system allows for the execution of unprivileged BPF programs
+(e.g., ones where a random user can load their own BPF programs), will
+they have hte ability to set and remove security.bpf.* xattrs?  If the
+answer is yes, should this be disallowed?
 
-Let's not display this one, please, it brings no information to the user
-about what features bpftool will support.
+I note that one of the use cases seems to be BPF-based LSM's, so we
+may want to have something even more restrictive since otherwise any
+BPF program could potentially have the same power as the LSM?
 
-Looks good otherwise, thank you!
-
-
->  
->  check_feat := 1
->  NON_CHECK_FEAT_TARGETS := clean uninstall doc doc-clean doc-install doc-uninstall
-> @@ -132,6 +134,12 @@ endif
->  
->  LIBS = $(LIBBPF) -lelf -lz
->  LIBS_BOOTSTRAP = $(LIBBPF_BOOTSTRAP) -lelf -lz
-> +
-> +ifeq ($(feature-libelf-zstd),1)
-> +LIBS += -lzstd
-> +LIBS_BOOTSTRAP += -lzstd
-> +endif
-> +
->  ifeq ($(feature-libcap), 1)
->  CFLAGS += -DUSE_LIBCAP
->  LIBS += -lcap
-
+    	    	  	      	       	    - Ted
 
