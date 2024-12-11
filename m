@@ -1,210 +1,178 @@
-Return-Path: <bpf+bounces-46619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4478C9ECC04
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 13:25:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A59719ECC86
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 13:48:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50CDF161E32
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 12:25:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F63C18895A3
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2024 12:48:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4A6225A43;
-	Wed, 11 Dec 2024 12:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1E323FD3B;
+	Wed, 11 Dec 2024 12:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B+RxgVB6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nlgPlvnv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4C3238E38
-	for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 12:24:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD3B23FD0F;
+	Wed, 11 Dec 2024 12:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733919891; cv=none; b=T7F8KMPr4F7WpD3hz5f5i0Bhx80FxXZZQPsMLKbCkVNU9rfQe9khPJm/KlnbkSrRlppptnQoKPTR8jJ/sgmjczahWYZPycnoCbImgZ+iAiWcTehMtGGuMk3W0xQ6aBI9HwbYmRWx1S+Xb3lCBVpHna9cA1Dl82fu37iSVdQdTbc=
+	t=1733921317; cv=none; b=kokvZqyN8hVo8KM8nn9SyRLmVe1QMLNN0pH7XtW+aLec03aZp3p4i8riC6xtpM95qSmDdHhBv/nKQRcD8KHFknl7/IkYyC7zPGT3UV/SbH2edJdwdpKAy2Yn5QnBzceGWCChk7fissa3endFv787KIgb7uB1o9SudOAZOnp1EO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733919891; c=relaxed/simple;
-	bh=IIQWc63lACKFObEnwgjTKVsH/rDg8iq1jrHHpAweYGQ=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aWyrEcC1JEnSOjvb5G0cw+iPNF9H3f3HSvY26S1pWcltKlweNLVR1FWhaog8qJTibTzPNHdrDpEfA/78/lsSQGv4+X1K5Ljc8YpyELQ0HBfwGQmBvLPmzlNoSFFvr3Ofa02IccV0DayAaI95lrQj26H+YfHfHC/kHuCP1jjW1dQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B+RxgVB6; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a9f1c590ecdso1282981966b.1
-        for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 04:24:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733919888; x=1734524688; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DK2LHoW+E8D7/pULzigi23ehWNjRiBBcvv18ggm2lUI=;
-        b=B+RxgVB6eDNxlSHSUv/QyE5AVgZcE8Hv4bWbF6XrcSdUlOMuFNG9qyYI8XLrwtGeSA
-         stOCdo51f38deGns9+vZp0bThrbvaAH9/a6W6bfC+d9uyJFE8dEfRWLRpKMnUkVFZ0IZ
-         U1q+vwFlezVu/uZ7s9+9B6jDZUeIqzEE7fJERQz30Zr5mPPCgGteQl5KgDzEGFGH7OIU
-         He5K7txKlnCSdhy2sGZoYbda1/ddGUufUm0QBWeuxiNB/FPFUZPLlYHMDpWs581bCq45
-         cuRywFgPe/0wqkwJxUfJBjZvViWhlTGMU9Qpo1FBmBN0YGiNDVN+iQTEIEyOxZHJZLcK
-         PIEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733919888; x=1734524688;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DK2LHoW+E8D7/pULzigi23ehWNjRiBBcvv18ggm2lUI=;
-        b=mKGx4fqvD94tNwPcMBQMOCFWEpzBbhaBUu+NLdalO70UWUSr15Mzg5hZb4hEDldukK
-         RF5HhXJ8xkiMoRflDjU78MGo+PJLCaWurQ2yGFdfroI211SRwOrOrZN6V8Z7eDs73zD1
-         CVCZmkCU5OrDOUivu0m8hrcRuuTRSfAJSy4DX0PxOYn745gYNBn6rQuip/nYyHqpJsSm
-         M0+qe9xiCGa9ca3RISctJJC2VAnlfAYHSyXQOOWViXwbLM4QG6it3R/i/d0n5BNsmDfv
-         TqKxUS4QuCxSkst8ewkIPzerGB16mXiGYd+5wIzjHQ8GDHexjS7iUPURUUxLe13Ui+or
-         Fd6g==
-X-Gm-Message-State: AOJu0YxVrdqkGFmtUSSm89U45HskBfndRVF9c1ycWd/Hk3kdf449YyuP
-	7TiU35YtiwMNEk1cqGlVAXuYcDv3HOHolM5AiW6VVnS7bvbFBWUn
-X-Gm-Gg: ASbGncsV6B5ZPjU5HJ7UV3iRkAnDg8KD0ydF+UvIdrfPUJ+YuX9i97WAychDg5mwHI+
-	H6xH7un9rRXxTc/8/y6nE3LKVzoWsBjOobsq5hdx/Pqwh7LI/VytS8k3lFiu54qyubq/s06Yvna
-	8buta4i89fqDw8CRrYgX11ylFmAj1lmLIQCh/KDM0jIXhjpDLdBE0SycGy1n4Z/PmTdt/3Q4zgE
-	wGFjuSZwO22BhItFMhqLb3QZxqpWryrx4dOnD4eD5+RVhkQsYRAqwf9R7PLkp5bV1bGtw6tT0fn
-	OspIvuUW7mS2WlZVDRqTIXLtkEU=
-X-Google-Smtp-Source: AGHT+IEARe5o/IHjmcIVhwyWJ31V6HM1d0DKrGHu5Ipmeq1jeb1lXJETjqUzy288T0saGqFXcLTpxQ==
-X-Received: by 2002:a17:907:cb02:b0:aa6:6d48:b90e with SMTP id a640c23a62f3a-aa6b13afc33mr199298266b.45.1733919887997;
-        Wed, 11 Dec 2024 04:24:47 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa66e2182f3sm603241266b.156.2024.12.11.04.24.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Dec 2024 04:24:47 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 11 Dec 2024 13:24:45 +0100
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, kkd@meta.com, Juri Lelli <juri.lelli@redhat.com>,
-	Manu Bretelle <chantra@meta.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, kernel-team@fb.com
-Subject: Re: [PATCH bpf v1 3/4] bpf: Augment raw_tp arguments with
- PTR_MAYBE_NULL
-Message-ID: <Z1mEjTtORv4lImyQ@krava>
-References: <20241211020156.18966-1-memxor@gmail.com>
- <20241211020156.18966-4-memxor@gmail.com>
+	s=arc-20240116; t=1733921317; c=relaxed/simple;
+	bh=TjgK9l8h5bZVjMVB089SMe0OnrRxTJz8wjrUeFJG7PY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=fl+8cXusQtjgRDHpfAR51TCeafFCwaEBS18f3WQyIrmyF5enZMXeNsizGypUvFQJgVw8sNlfPSuFbw1ZNU0V7PJFpJEHmo5L90EmCpxyn855c6e46Stk1BqBDH1zqDHRB8pNoyV55EhA4t+WwPJTHztYDB+fXZ4K0kqPMqPa0Fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nlgPlvnv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E4AAC4CED2;
+	Wed, 11 Dec 2024 12:48:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733921317;
+	bh=TjgK9l8h5bZVjMVB089SMe0OnrRxTJz8wjrUeFJG7PY=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=nlgPlvnvibjoyyfH8BnHsiAF8s09lZXIgqTcHulD986JuRuxOCxTQZFrHX3fgvVCJ
+	 7d/HsXiA4chus3+cWb0SLRviXimEPcDpj02wEYenRkenapTqNE8Cq9OQVtiROseUsw
+	 USMHqz39MdnHi6JORL29tgusdgWhr0wLVywp5FalXhMiYaSAkxz9sxhMNokdA+ilEU
+	 K4C1hhYBH9guNAniCdBKfcZORxuVvhn3KkBGeCptB1E9/IJNM2j+2IXRAkxo9WXV37
+	 6iMXPG/qCfg+tx4+Nz0QDeNxiuAoWzcsx+C83x1nUfSPHcoC8WMAzC/+3X49kLQKIM
+	 fReqZZl5I2YZg==
+Message-ID: <36082de5-0cfa-4d43-b175-f9027b819497@kernel.org>
+Date: Wed, 11 Dec 2024 12:48:31 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241211020156.18966-4-memxor@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] tools build: Add feature test for libelf with ZSTD
+To: Leo Yan <leo.yan@arm.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Nick Terrell <terrelln@fb.com>,
+ Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ "Liang, Kan" <kan.liang@linux.intel.com>,
+ James Clark <james.clark@linaro.org>, Guilherme Amadio <amadio@gentoo.org>,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-perf-users@vger.kernel.org
+References: <20241211093114.263742-1-leo.yan@arm.com>
+ <20241211093114.263742-2-leo.yan@arm.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20241211093114.263742-2-leo.yan@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Dec 10, 2024 at 06:01:55PM -0800, Kumar Kartikeya Dwivedi wrote:
-> Arguments to a raw tracepoint are tagged as trusted, which carries the
-> semantics that the pointer will be non-NULL.  However, in certain cases,
-> a raw tracepoint argument may end up being NULL. More context about this
-> issue is available in [0].
+2024-12-11 09:31 UTC+0000 ~ Leo Yan <leo.yan@arm.com>
+> Add a test for checking if libelf supports ZSTD compress algorithm.
 > 
-> Thus, there is a discrepancy between the reality, that raw_tp arguments can
-> actually be NULL, and the verifier's knowledge, that they are never NULL,
-> causing explicit NULL checks to be deleted, and accesses to such pointers
-> potentially crashing the kernel.
+> The macro ELFCOMPRESS_ZSTD is defined for the algorithm, pass it as an
+> argument to the elf_compress() function.  If the build succeeds, it
+> means the feature is supported.
 > 
-> A previous attempt [1], i.e. the second fixed commit, was made to
-> simulate symbolic execution as if in most accesses, the argument is a
-> non-NULL raw_tp, except for conditional jumps.  This tried to suppress
-> branch prediction while preserving compatibility, but surfaced issues
-> with production programs that were difficult to solve without increasing
-> verifier complexity. A more complete discussion of issues and fixes is
-> available at [2].
+> Signed-off-by: Leo Yan <leo.yan@arm.com>
+> ---
+>  tools/build/Makefile.feature           | 1 +
+>  tools/build/feature/Makefile           | 4 ++++
+>  tools/build/feature/test-all.c         | 4 ++++
+>  tools/build/feature/test-libelf-zstd.c | 9 +++++++++
+>  4 files changed, 18 insertions(+)
+>  create mode 100644 tools/build/feature/test-libelf-zstd.c
 > 
-> Fix this by maintaining an explicit, incomplete list of tracepoints
-> where the arguments are known to be NULL, and mark the positional
-> arguments as PTR_MAYBE_NULL. Additionally, capture the tracepoints where
-> arguments are known to be PTR_ERR, and mark these arguments as scalar
-> values to prevent potential dereference.
-> 
-> In the future, an automated pass will be used to produce such a list, or
-> insert __nullable annotations automatically for tracepoints. Anyhow,
-> this is an attempt to close the gap until the automation lands, and
-
-so this won't cover modules with raw tracepoints, but I guess it's fine
-as temporary solution until we have __nullable annotation support
-
-SNIP
-
->  bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->  		    const struct bpf_prog *prog,
->  		    struct bpf_insn_access_aux *info)
-> @@ -6449,6 +6539,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->  	const char *tname = prog->aux->attach_func_name;
->  	struct bpf_verifier_log *log = info->log;
->  	const struct btf_param *args;
-> +	bool ptr_err_raw_tp = false;
->  	const char *tag_value;
->  	u32 nr_args, arg;
->  	int i, ret;
-> @@ -6591,6 +6682,36 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->  	if (btf_param_match_suffix(btf, &args[arg], "__nullable"))
->  		info->reg_type |= PTR_MAYBE_NULL;
+> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+> index bca47d136f05..b2884bc23775 100644
+> --- a/tools/build/Makefile.feature
+> +++ b/tools/build/Makefile.feature
+> @@ -43,6 +43,7 @@ FEATURE_TESTS_BASIC :=                  \
+>          libelf-getphdrnum               \
+>          libelf-gelf_getnote             \
+>          libelf-getshdrstrndx            \
+> +        libelf-zstd                     \
+>          libnuma                         \
+>          numa_num_possible_cpus          \
+>          libperl                         \
+> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+> index 043dfd00fce7..f12b89103d7a 100644
+> --- a/tools/build/feature/Makefile
+> +++ b/tools/build/feature/Makefile
+> @@ -28,6 +28,7 @@ FILES=                                          \
+>           test-libelf-getphdrnum.bin             \
+>           test-libelf-gelf_getnote.bin           \
+>           test-libelf-getshdrstrndx.bin          \
+> +         test-libelf-zstd.bin                   \
+>           test-libdebuginfod.bin                 \
+>           test-libnuma.bin                       \
+>           test-numa_num_possible_cpus.bin        \
+> @@ -196,6 +197,9 @@ $(OUTPUT)test-libelf-gelf_getnote.bin:
+>  $(OUTPUT)test-libelf-getshdrstrndx.bin:
+>  	$(BUILD) -lelf
 >  
-> +	if (prog->expected_attach_type == BPF_TRACE_RAW_TP) {
-> +		struct btf *btf = prog->aux->attach_btf;
-> +		const struct btf_type *t;
-> +		const char *tname;
+> +$(OUTPUT)test-libelf-zstd.bin:
+> +	$(BUILD) -lelf -lz -lzstd
 > +
-> +		t = btf_type_by_id(btf, prog->aux->attach_btf_id);
-> +		if (!t)
-> +			goto done;
-> +		tname = btf_name_by_offset(btf, t->name_off);
-> +		if (!tname)
-> +			goto done;
-
-I think both btf_type_by_id and btf_name_by_offset should succeed for
-BPF_TRACE_RAW_TP .. should be already checked in bpf_check_attach_target
-
-> +		for (int i = 0; i < ARRAY_SIZE(raw_tp_null_args); i++) {
-> +			/* Is this a func with potential NULL args? */
-> +			if (strcmp(tname, raw_tp_null_args[i].func))
-> +				continue;
-> +			/* Is the current arg NULL? */
-> +			if (raw_tp_null_args[i].mask & NULL_ARG(arg + 1))
-> +				info->reg_type |= PTR_MAYBE_NULL;
-> +			break;
-> +		}
-> +		/* Hardcode the only cases which has a IS_ERR pointer, i.e.
-> +		 * mr_integ_alloc's 4th argument (mr), and
-> +		 * cachefiles_lookup's 3rd argument (de).
-> +		 */
-> +		if (!strcmp(tname, "btf_trace_mr_integ_alloc") && (arg + 1) == 4)
-> +			ptr_err_raw_tp = true;
-> +		if (!strcmp(tname, "btf_trace_cachefiles_lookup") && (arg + 1) == 3)
-> +			ptr_err_raw_tp = true;
-
-could we have extra mask value (or split the current one in half) in
-struct bpf_raw_tp_null_args and use it for scalar arguments? so we don't
-have special checks and handle everything in the loop above
-
-jirka
-
-> +	}
-> +done:
->  	if (tgt_prog) {
->  		enum bpf_prog_type tgt_type;
+>  $(OUTPUT)test-libdebuginfod.bin:
+>  	$(BUILD) -ldebuginfod
 >  
-> @@ -6635,6 +6756,14 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->  	bpf_log(log, "func '%s' arg%d has btf_id %d type %s '%s'\n",
->  		tname, arg, info->btf_id, btf_type_str(t),
->  		__btf_name_by_offset(btf, t->name_off));
+> diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
+> index 80ac297f8196..67125f967860 100644
+> --- a/tools/build/feature/test-all.c
+> +++ b/tools/build/feature/test-all.c
+> @@ -58,6 +58,10 @@
+>  # include "test-libelf-getshdrstrndx.c"
+>  #undef main
+>  
+> +#define main main_test_libelf_zstd
+> +# include "test-libelf-zstd.c"
+> +#undef main
 > +
-> +	/* Perform all checks on the validity of type for this argument, but if
-> +	 * we know it can be IS_ERR at runtime, scrub pointer type and mark as
-> +	 * scalar. We do not handle is_retval case as we hardcode ptr_err_raw_tp
-> +	 * handling for known tps.
-> +	 */
-> +	if (ptr_err_raw_tp)
-> +		info->reg_type = SCALAR_VALUE;
->  	return true;
->  }
->  EXPORT_SYMBOL_GPL(btf_ctx_access);
-> -- 
-> 2.43.5
-> 
+>  #define main main_test_libslang
+>  # include "test-libslang.c"
+>  #undef main
+> diff --git a/tools/build/feature/test-libelf-zstd.c b/tools/build/feature/test-libelf-zstd.c
+> new file mode 100644
+> index 000000000000..a1324a1db3bb
+> --- /dev/null
+> +++ b/tools/build/feature/test-libelf-zstd.c
+> @@ -0,0 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <stddef.h>
+> +#include <libelf.h>
+> +
+> +int main(void)
+> +{
+> +	elf_compress(NULL, ELFCOMPRESS_ZSTD, 0);
+> +	return 0;
+> +}
+
+
+It's not obvious that the feature indicates that (in the case of
+bpftool) support for ZSTD _must_ be added when the probe builds, it
+reads more like it _can_ be added if we're after the feature, but that's
+fine by me. I double-checked and ELFCOMPRESS_ZSTD support was introduced
+in libelf 0.189 indeed, which is the version introducing the linkage
+issue for static bpftool builds (maybe this is some info we could
+mention in the commit description, by the way). As expected, the probe
+sample fails to build on Ubuntu 22.04 (libelf 0.186) but passes on
+Ubuntu 24.04 (libelf 0.190). Thanks!
+
+Tested-by: Quentin Monnet <qmo@kernel.org>
+Reviewed-by: Quentin Monnet <qmo@kernel.org>
+
+Note: This being a bpftool fix, I suppose you're targetting the bpf-next
+tree? If so, you've got a conflict on test-all.c given that commit
+176c9d1e6a06 ("tools features: Don't check for libunwind devel files by
+default") has not been synced there yet.
+
+Thanks,
+Quentin
 
