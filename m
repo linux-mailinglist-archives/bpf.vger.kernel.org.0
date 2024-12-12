@@ -1,294 +1,402 @@
-Return-Path: <bpf+bounces-46721-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46722-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CAC69EF7DF
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 18:37:43 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E84309EF6D7
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 18:29:46 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72FCC17E0ED
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 17:24:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B957283815
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 17:29:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90058215762;
-	Thu, 12 Dec 2024 17:24:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 031B5222D70;
+	Thu, 12 Dec 2024 17:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="RAxG2Oqk"
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="N59CW8kO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2075.outbound.protection.outlook.com [40.107.241.75])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD5F2144C4
-	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 17:24:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734024255; cv=none; b=pnSFEkd4C3CYubR0O9tB7/S0OKBqt/gz8d5/u5+FeX3AGiNfgvluM084Ffn6aWihemAknJLLbLWqKlSFu7qIPm0TqDGWdG9bntpTlK1RWHPw0X/xTl5X7uMATiSCCd0Dp3n9x5byWl3eGTPLbFMZRRVsprc4zsmDJwCF3qxYu5E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734024255; c=relaxed/simple;
-	bh=MrYVOnaf6XI3kE+siVv/JLOdRpPtcnNdQXXUgib5LZw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dYqt3z54xoNdF3OtcML9VQ06Swdwg6L3GaCdhqioFnYH3gqSCpVN8UJXBZtrXGznuRHabSwPdmbUKsOBLdyf/n5eY4SJQQYSxmKtnYvm3VZYqdF+gA68M3enUik7v6o/XzpamcPaXjL7BE3Aejckqh+K4rJVlTbDnNJvUlB0SnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=RAxG2Oqk; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-aa67ac42819so141455666b.0
-        for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 09:24:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1734024251; x=1734629051; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dgWU+ChwfeKZYj/qKnCwPMbMjkC+SQM2MEDShvqzZnM=;
-        b=RAxG2OqkGjMXjU+hSS1qet38CDW2QoBlpc1XxEFYmm7Tsy/h7E/OWW6rwwep2+FOFw
-         1pzLUJRawZb6uDfvYt/7xfo9FGmziTBRHEEw8klpZkDXTTH6+aRGiDqGlmjpY5TbZ6ew
-         IdiUcdjamsqUYgxadH6M2hMSZ9bbzISlBdBEeIvtR0jPW5bkTO8Fdz9+cFv1gNq6KFEa
-         8RlJf1v8NuZB2SM7M2A4DSqj+Hq8Wv4o3CRB5lFHZFlWy6gHbts5KZbQRlA64Pzt/seE
-         w75Gx7RgYPWmc4xym2kwCKCCPMZ6Ak2Ip4SARgKx103GXKAjOCFIwQeKSxcy7YItw1Iy
-         MdGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734024251; x=1734629051;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dgWU+ChwfeKZYj/qKnCwPMbMjkC+SQM2MEDShvqzZnM=;
-        b=a9WOm8bQf/bnmDo5O53qZAxk/0/ArrfrQ+1xmZpk5t/MhJjYQ8kXBdFid7wYy4NAWR
-         NyJgXvtrDIAZH6rEUiZTm6RI6hhNwzvPjxLBT4H5UrcGe7PNO3sF0vpfHUwrsmbSLiJw
-         AvZf7cxiVsQnGAhPcfuwGw+sSwR//MtUh16mblPIuDTQ4OXZpEU1m08v4RIDWBJtYziY
-         ocq+tiFmgkylg3TSXpFa+eeKQpWrJlbdDz2hZSfJ6tpPiAXfdzosqrYmCE/Oohsixeyq
-         5+SW6uO3mSAXVId4kYiYupBSoB0vazx/2Gqi+NG2pHtfFfQVrK/qt2YmSq5b8gjL1lJw
-         8SPA==
-X-Gm-Message-State: AOJu0YwuB3aZ6RRhCbQh7jT5K5emb429BnEmVZwLuU+g3ePRBjdb/OuD
-	3E0jfeKuCl1dHYXjSDYo6w2TtsnXd8KOg1HGu7+S1LO5gpZaNZdRQnBhpMxJzFT70SNd9xq/qp1
-	L
-X-Gm-Gg: ASbGncu3GKTrM6UdN28EaEz9EPDF3AsR07UGmLzoScNQ35Ag2k5vYEQl7v6Z5gfaRrD
-	NWAKBWxTP93HbmNQdMeFlmOiSADx4PJzwVpxTy5ZAPixOfCxeOGRiAnypMDY9yWkgZSiPQGfoyf
-	upPdHTshtLlUoRG3vKW03JZdUCdvjCu2GliAoFTrbnjmuAyuD3iZbSa5uJIX3umtg0EH/POKVHC
-	Mg986cFTK7qjnqs8PAO3jcdnFXOsdjSvIIelsiTIASNTw==
-X-Google-Smtp-Source: AGHT+IGbs1GE8DdOnrbS8wUzzfwLhPDAmPW4XUYQx16Hn5AZv0VSItQC4CQwPQmxSfbqEl8l4Q+7uQ==
-X-Received: by 2002:a17:906:9a95:b0:aa6:6276:fe5a with SMTP id a640c23a62f3a-aa6c1ce75f7mr498988966b.43.1734024251002;
-        Thu, 12 Dec 2024 09:24:11 -0800 (PST)
-Received: from eis ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa68b385b1dsm593155966b.21.2024.12.12.09.24.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 09:24:10 -0800 (PST)
-Date: Thu, 12 Dec 2024 17:26:02 +0000
-From: Anton Protopopov <aspsk@isovalent.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org
-Subject: Re: [PATCH v4 bpf-next 3/7] bpf: add fd_array_cnt attribute for
- prog_load
-Message-ID: <Z1scqusq/Rngn1Y9@eis>
-References: <20241203135052.3380721-1-aspsk@isovalent.com>
- <20241203135052.3380721-4-aspsk@isovalent.com>
- <CAEf4BzZiD_iYpBkf5q5U9VoSUAFJN8dxOBWNJdT5y9DxAe=_UQ@mail.gmail.com>
- <Z1BJc/iK3ecPKTUx@eis>
- <CAEf4BzZVkNRV+8ROMMM-oGdHd1HUSx3WVv77TK+H4Fr8PhHHBQ@mail.gmail.com>
- <Z1FnPIuBiJFMRrLP@eis>
- <Z1gCmV3Z62HXjAtK@eis>
- <CAEf4Bzau=UnvGFskeyeBK2y3-O8x887ucUpX0bKhoHS-P-SwSg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C58221660B;
+	Thu, 12 Dec 2024 17:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.75
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1734024574; cv=fail; b=mZuazZ1uy7aWU32o6ROi1dQPH3ojS/jiV/rbS4Kv4PBoISGN0I97Dq/+KlPfmTOj+IeFsXLh5lhg0wYcxoTvLXU7B74IUyfjZpTH09+uy4cZ54WzYsuYURTmnVBCa4ukzvDYe2e10P0+bTDHHw4y+GfRQmBOo6ICcXo5uHs+H0o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1734024574; c=relaxed/simple;
+	bh=DtsqEdmIr4jhGvXxVWmCPKddieI3zy4ItlJNjg/wZtI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=o++FN4D+NwEW2pj9agjeVM1ppgFj34r2iXmomuxIma4Ie/ryQrvvCko7Kdt0dYUQ4fkaAbb7Yg+TjbDwIXmgmaC8xYuF9ojwBVduXSTReR7+I25Wqigo6WQcdiPX7OalAKL01wtTPRakbX2H/4WMsR+xqEZGMM+VqJdFiDoD2BQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=N59CW8kO; arc=fail smtp.client-ip=40.107.241.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=mVCKigI0NPBjxvS3YJaDHL5iMq6cQy5zAdrfiCeSrqvYksX+tA/ip9KHazEUrG4R8DtQccj9lUkvDppuN5ZlOl11afE8tIfiMnUwebr+5bczDObqA1MsXbgvLDf+ExBXHlo11c2jHnK1GMC4hjkT/zhEa1BJD1PM9v65glS3I2GCc5dfSbt+/IHOrH8Q0tN5JR+2gGaZEYnxaAud/AbPJPC2yJCI9zNm/PeMWxJlEAFFbZbSYISa638IVjc0v9PYYotjsOmaqGdxfvTTfL4QTpbC3zFG2x3Mb0FA5N1K4ACn9L3afqNrSdbQH61kZnteeE6H5AWZjIBFp/iLIEcQ5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HdnwnRgncroPhBXROVl1H4zREjKx5YnNuBJ5F+I4D80=;
+ b=VTkojfxW+b+r/zRInVMwovDGY14z4U0apf91McDhTH2eUGIs3HLTyFrT0cn7ExdZr4l50hq8/tSMka7W/BbaW2SefJ5JCVtDGgi/zZZUsl6lnamQXn0r0J2sXVXJMPzLQ5MgADTF7PIS5zZsFJhBnDz8CLwuOyQOS8ktPMABYFOfEkOO7gKIN6quFSaggchyaqIoP1aqesxPkl5mJlksRBoTy0lR10mzfxM8EOR7RfR7xPE3gzHK74+yi9u/4Q+9Vx35y+1qB7wl50SwREgKX4QQAWurVvzCdowncMXW6lulqS1jGsCOex1GW8XHBDRQ5iP+5fmtwMTrcFIxhAszXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HdnwnRgncroPhBXROVl1H4zREjKx5YnNuBJ5F+I4D80=;
+ b=N59CW8kO4BIqlRflwAc5qTgV5DteleA5h0Qf/PqPgCgowkH5/KCk8Qoptdp0xcszzPInOXFDdnaD24wmZDo4pG8/Z7jBuOtYzmY22/pRdg+mxMidp2blER63+HuKyxkztozRs/Bq1SADzP1j7HJH7cvGQmg2k6ak97xVazR4BnCCFGgPQKa17vAmlStE900pWZkekzuE+SKv9atZXLkOhpYfi3d1u6AuB2dazIlhhu9k5R2kq3UE1Ae4UoeQK52gmBKKZFF55/4Sdtj9xxZwoPV1xNgnM+5R9apjhbJtPE54paqRm9hLrVROIcvvxqTNMjlm3MePqTaf4lIphDxcWw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS8PR04MB8386.eurprd04.prod.outlook.com (2603:10a6:20b:3f6::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8251.15; Thu, 12 Dec
+ 2024 17:29:26 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06%5]) with mapi id 15.20.8230.010; Thu, 12 Dec 2024
+ 17:29:26 +0000
+Date: Thu, 12 Dec 2024 12:29:16 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev, alyssa@rosenzweig.io, bpf@vger.kernel.org,
+	broonie@kernel.org, jgg@ziepe.ca, joro@8bytes.org,
+	lgirdwood@gmail.com, maz@kernel.org, p.zabel@pengutronix.de,
+	robin.murphy@arm.com, will@kernel.org
+Subject: Re: [PATCH v8 2/2] PCI: imx6: Add IOMMU and ITS MSI support for
+ i.MX95
+Message-ID: <Z1sdbH7N1Ly9eXc0@lizhi-Precision-Tower-5810>
+References: <20241210-imx95_lut-v8-0-2e730b2e5fde@nxp.com>
+ <20241210-imx95_lut-v8-2-2e730b2e5fde@nxp.com>
+ <Z1sTUaoA5yk9RcIc@lpieralisi>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z1sTUaoA5yk9RcIc@lpieralisi>
+X-ClientProxiedBy: SJ0PR03CA0150.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::35) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bzau=UnvGFskeyeBK2y3-O8x887ucUpX0bKhoHS-P-SwSg@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB8386:EE_
+X-MS-Office365-Filtering-Correlation-Id: 167f9839-f8b2-486b-47f2-08dd1ad286be
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|52116014|1800799024|376014|366016|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?K1AxOW94alNNNGIxcXk5TEh0YlNsQUtmRTV5OUt6V0VneEliUUswZjFGV04v?=
+ =?utf-8?B?SlNkMUxEV0w3RVFON0JaQlRpcFUzNklxWFRhc2dmSTJwelp4ZW43b1NQeUZX?=
+ =?utf-8?B?RHJrTHdIc1NHY2VzVHhVYnlhZGlCbDlzSjVsS2N3MjhFcmpid2RJWVQ0bnFS?=
+ =?utf-8?B?SE5lL3pqakJBYVFKRDBvemQ3N29kYVRMWU5aS2ZHMktnR0ZNZHBTRVQ5SFll?=
+ =?utf-8?B?SFBGR09OdzFGTGlLajFsMVJyeU8ybHkyQ1A2L0hGRDB0MHltdVNpQVljSjZS?=
+ =?utf-8?B?MUlmcGFLUkFqbVZkSTA1NklnN3VWTkVDdUVvYmNqNk9hUWcrZEZMT09Qalcz?=
+ =?utf-8?B?RTBaeUhtS3JXd1RiY0RKR1JRd2FjNGxMb05aTyswdHBMMXpmQXlUT3NySU0x?=
+ =?utf-8?B?bHhRaEZHVVRyajVNQjdqbUpFUVN5OFhsZ3E5M1RHbmZhV0lPRXpmQU5GYVRT?=
+ =?utf-8?B?cTZweDYxMkVrSFFMems4QjBnV0I4clNHTWxXOW1KRnVPTkU0cnYzU09QT3ZJ?=
+ =?utf-8?B?Z05sSXdGSXhQeW5HaFlmc1lTUGNpaTYzVXNMNE5rZVFhWHdsdE1mOGpSRE1z?=
+ =?utf-8?B?NERudjRVcy9rSDVlTW5SMG1oVlVKTUZQVG5zdWY5TXo5dGd4bi9NMmtSQkxV?=
+ =?utf-8?B?bEpKbmRxK0pXVjYwWGhLWkZyR0NESmVFV1VFM0RqbEN5b09oTkxWdDY5TzRB?=
+ =?utf-8?B?c1I1dFNSS2RzdFBVMyt5TVVjeWJEeE5UMURtUlVMcmhQRHdIdDB6ODFtOUNI?=
+ =?utf-8?B?Q1duZnFESmlkWmszL21mekRVa2llOXI4NXFZUTRmTlVjOXFEMUE5TmNITkJU?=
+ =?utf-8?B?M1FtSURHeWlFYnd2TjhsNWNhcjhtaGRJNXl3a3JOYml5Wi9kQjNiRkFidDNH?=
+ =?utf-8?B?SUZVNE5mT0M4SXJKL204Z3dVOXhiYmZvc3FjU0RmenV4Q2k4bWRBTjFBdFIz?=
+ =?utf-8?B?djVDWDZwRGI3eEFManlLb3FZSndRMWx3bVVXM00zTGZTVzF1TWVGcGNUTVN6?=
+ =?utf-8?B?MXZzY3k3ZEhuUVl1QS80WENYS3R6bzBqQWwrWkh2V2pWcEF6dEIyMGcrZml3?=
+ =?utf-8?B?bHhqbEI4Nm5KY1MzNG9RME52elJzcHVNMm9BUW1oRGtWaHR3eWJpbkxvbjlR?=
+ =?utf-8?B?MGpUSmY4YjRLRXIzSlNPajlySkFWb1FjTXNrMTdtZTJpUU9weTlScnluWHNz?=
+ =?utf-8?B?NlRHTEN5UHpEWW9SY1l0N2RjUUlqZlQrcDNYaTVrSmxpclk0aXlJYUMwQ0ZI?=
+ =?utf-8?B?dituaEVkUHBrK3Fnbk5aTHZUbkdIOE5EWUd4K0tDM3NMeGR0RUZQUktDTkpk?=
+ =?utf-8?B?MHF3R2ZmR1JvS3c3OU92NVVZWEJ1MXljZjBkZ2kvUkp1T21lL2p5ZHJBSmpE?=
+ =?utf-8?B?S043bHVUaDVvRlFhMURoWFU5Mmx1Z0x0ZU0zUVJBSEllR0hBc3JacllQRnB1?=
+ =?utf-8?B?SUZNMVRrRVdxUFdPTG5QU2xLZG1YODhxWXpuazFJSzdNTUVrSWF4NVlYZW9W?=
+ =?utf-8?B?eTFERElOVGNQcFZGQ0FGaGFWZThvSXk4c0E1cjJxVXJwQTRSK2FyR1ZTU3FF?=
+ =?utf-8?B?aWVBSjRiYU5zMStEaHhqNGNQUnJhOHI2bVpMVEpWQ1ZuRk94Wm0vaGdMRGpJ?=
+ =?utf-8?B?RTl0bW1wbWVHMjJZTWQzamxZSlNEeW44cVc3a2taS2w0QzBMQjFPbktSbWs5?=
+ =?utf-8?B?Vjg2ZnBuYS91eUtUeW1GbzhRLzA5MGw0REhROTl0VlBsZmhSTnRJSlBZV3R0?=
+ =?utf-8?B?N3ZQalc1dWdPM2dJbkRQUWdhT25haUgyRXBGNUppdTZsUDBhY2IxNXhBZFps?=
+ =?utf-8?B?QUtEZnMrOEF1RlZoNm1BeHBSTTI1VFhUaldZWTlMKytJZWVmY0M1Z0gzSC9z?=
+ =?utf-8?B?M0VKbFFTYU0xVWI5VS9lcHVBWWQrbVNnaU00TWx3T2pCUFE9PQ==?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(52116014)(1800799024)(376014)(366016)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NGk1OEdGcFhQWk5YVU5VU2M4ZFBxZ2RSaUtocjRUMmVNZ2plVk5JQ1pIL0hL?=
+ =?utf-8?B?ZmorcW9KcjNENFAyTmFYOUpDaVlLSDRXQzF2cnVMbUc5Sk9CQmc5VW0veEZz?=
+ =?utf-8?B?djAxUUZ1aitMcGRkRFBUd0w2dGNWSXljVFBzU3VlMjk3TmtzSytWZStINnhR?=
+ =?utf-8?B?dHFTb0RKaThyV1pOcEJoaTU2ZW1FUnZ2VlhjYWZSWXdIWFh0WVZCSkdTdXlm?=
+ =?utf-8?B?cm5vS2JNdmYwWlRuTm9OTGVmMmRpQjM5TmdnTTRvZHpVQXFvb2Uzdll6aDdT?=
+ =?utf-8?B?ZDFvNm1jVWlXeTU4ZUk0T25XQXdOSVZ1dlZvZm5QWGJrNHYvdlNudzE5VzBo?=
+ =?utf-8?B?UFE2MEwzWmI4ckRGYmNHUEpGVkNNd3BzR1JQdG0yT3MwU1NxdXhOa3QxbVRX?=
+ =?utf-8?B?N1k0V2NDQ2xVdk5pOS9aYUphZUFHR29haFlQRnNRTUlGWDN3SzFDNm1HZXJV?=
+ =?utf-8?B?UnBQUElMWW83MHBKSzZmekV0Wmw3cndkR3ZmbVJDekgwNUNOUEZRVVJBekR2?=
+ =?utf-8?B?KzVoU2h4Skx3WndEd2FPekhncHhmMXpvd0h2QjlrZ1pyOE9wK09BVlpkRzFl?=
+ =?utf-8?B?UkJnOUNzOW44RFNud2dtdFNoekh4Zm5haTYxWmdGa29WRFBHaVA5OHdNQWpz?=
+ =?utf-8?B?M2l0Uk0xa20wWnlnZ3VXaEpwdEdldEhqUG9yc2RKeHI2V1FsTHI3clVRVjNQ?=
+ =?utf-8?B?MkVaWnNzZU1teStlcmFmcDVMV0tXbUUvTWRYTTdXM0hpVTI5MWZsRGJKcURO?=
+ =?utf-8?B?UFV2d25jaFR2THlMNVN5WUViN1B5cWdRdFBFaUtlc3QzQUJlWG9iYlAvY0Fj?=
+ =?utf-8?B?elVlRVY1ZnpGMjU4eG9rMkdCQ2xHK0U3bXRTdVdycTFjZDZzSVZ5VkhGY0JM?=
+ =?utf-8?B?dS95VGZROEx6c0RVcXJwMDV4NmdJbHg0YThxYytVMXNTR01ad0hSSTI1L3FC?=
+ =?utf-8?B?RDV4ZVA2eFpPOHlkZEdhYjdpMFhXcFpLZjZhYkh4M3pvWFl6WlAvQW4zRzds?=
+ =?utf-8?B?M2lyMWorN1JZeHVMWFhmYWh0QzZXQ2xaeWZ2anBEeStiOVJGT1dPdXNKQm1Z?=
+ =?utf-8?B?QlZmdjI0eWRTTXd2NjNZU0ExbW13UDRLc2hmSmF5QzFmY3VKWFl6S3Y2TTFh?=
+ =?utf-8?B?NnBLVUw3cU53d2pycEFPcXBXaE1scHhxejU0Nnlhcm5MM01XOEgydjZ5SjZE?=
+ =?utf-8?B?RWc1dXJnUHB1ZXFEOGVGaHd0Snd0SmxrU01kd1p0alpJc1RkblVxUnF6K3gr?=
+ =?utf-8?B?cVM5Z28yQmZSTzFzMG9wMllwZXZWRVhLUVh1UUpTdkQ2enlieXl4aWVDWDkx?=
+ =?utf-8?B?RXF0UXUrU3BJZnZJdFJJSWlqMkJGZGFOMU5LeDBtRjBpK1ZabUN1ejJ3UmE1?=
+ =?utf-8?B?aHZkbVhCSU9lc3NVbDZUbG5DME54N1FEMGlENEJSc0JHbXBEc1J1R0lSWC9D?=
+ =?utf-8?B?MlRkTW9pdHRKQlNBU2VvMmtGekEzUStGMHp4d1Z5VHh6NGltOC9aMDBIMDUv?=
+ =?utf-8?B?amh3YUZGNHVQdWFpTC9GcUJOa21Wa3RKdVF0cExDU1lKNW9zRnBTdTBCNG0v?=
+ =?utf-8?B?V2xoMThjWE5GMTdqYXhtY1M0NmFpbDNWN2dZNjRkR04rRlYzU1FsNktpRUEw?=
+ =?utf-8?B?ajV1dVpHbGJNY2hpVFA1MW4xZ1gybS94Qm9LRHczZk5aT1p1QkVsUlJqUW5J?=
+ =?utf-8?B?b3lLZUlWQ1RoZWwyczNmL1p4OVZlSkJMdWxnbXordVlxSEJHZm13dDhsVE9p?=
+ =?utf-8?B?UjJJVUdtWENOZTF1M2FEY09mUEJwSC92V3F0MnB4QVdPa1pUT3dqdDdzMTBT?=
+ =?utf-8?B?NWVnOEpZV0NmdXd3TUE4aEg0NXBQbm95WjBsYVN5bGFsMjRiUEora3NLMmdS?=
+ =?utf-8?B?dFg2WGNsWm9CVTEvQVoyTStEaWc4ZkR2UnV5YVZZc0llUGV5VE9MSUhNMHVq?=
+ =?utf-8?B?RmcxVElXYkMra2d5NTRHYSt0VVRVOXZPY2JUVGJDU0dCWC9xRGtrTEROZGI2?=
+ =?utf-8?B?d2duL2t3SWlxVlQ4TXlUQ3g2T3luQTdDNG4zVjk3bkRITlJMZm4zR0cxUEJp?=
+ =?utf-8?B?dXFHL29MZ1RTVDJPVW9EMVBnZy9rVjNQcDQ5Rktac0JwTXhQeE1STGhpRC80?=
+ =?utf-8?Q?mI9nnfSDmDX1mEe8WwnvO7Ldm?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 167f9839-f8b2-486b-47f2-08dd1ad286be
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2024 17:29:26.4141
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tvlPdjEJeTgyWGmdfWHmN7dm1jd0CeK4exOo3sCUdfjH9Dbotn36CY+AMGgZtr0QngBprwMR90H52Bt9G4U+9A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8386
 
-On 24/12/10 10:19AM, Andrii Nakryiko wrote:
-> On Tue, Dec 10, 2024 at 12:56 AM Anton Protopopov <aspsk@isovalent.com> wrote:
-> >
-> > On 24/12/05 08:41AM, Anton Protopopov wrote:
-> > > On 24/12/04 10:08AM, Andrii Nakryiko wrote:
-> > > > On Wed, Dec 4, 2024 at 4:19 AM Anton Protopopov <aspsk@isovalent.com> wrote:
-> > > > >
-> > > > > On 24/12/03 01:25PM, Andrii Nakryiko wrote:
-> > > > > > On Tue, Dec 3, 2024 at 5:48 AM Anton Protopopov <aspsk@isovalent.com> wrote:
-> > > > > > >
-> > > > > > > The fd_array attribute of the BPF_PROG_LOAD syscall may contain a set
-> > > > > > > of file descriptors: maps or btfs. This field was introduced as a
-> > > > > > > sparse array. Introduce a new attribute, fd_array_cnt, which, if
-> > > > > > > present, indicates that the fd_array is a continuous array of the
-> > > > > > > corresponding length.
-> > > > > > >
-> > > > > > > If fd_array_cnt is non-zero, then every map in the fd_array will be
-> > > > > > > bound to the program, as if it was used by the program. This
-> > > > > > > functionality is similar to the BPF_PROG_BIND_MAP syscall, but such
-> > > > > > > maps can be used by the verifier during the program load.
-> > > > > > >
-> > > > > > > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> > > > > > > ---
-> > > > > > >  include/uapi/linux/bpf.h       | 10 ++++
-> > > > > > >  kernel/bpf/syscall.c           |  2 +-
-> > > > > > >  kernel/bpf/verifier.c          | 98 ++++++++++++++++++++++++++++------
-> > > > > > >  tools/include/uapi/linux/bpf.h | 10 ++++
-> > > > > > >  4 files changed, 104 insertions(+), 16 deletions(-)
-> > > > > > >
-> > > > > >
-> > > > > > [...]
-> > > > > >
-> > > > > > > +/*
-> > > > > > > + * The add_fd_from_fd_array() is executed only if fd_array_cnt is non-zero. In
-> > > > > > > + * this case expect that every file descriptor in the array is either a map or
-> > > > > > > + * a BTF. Everything else is considered to be trash.
-> > > > > > > + */
-> > > > > > > +static int add_fd_from_fd_array(struct bpf_verifier_env *env, int fd)
-> > > > > > > +{
-> > > > > > > +       struct bpf_map *map;
-> > > > > > > +       CLASS(fd, f)(fd);
-> > > > > > > +       int ret;
-> > > > > > > +
-> > > > > > > +       map = __bpf_map_get(f);
-> > > > > > > +       if (!IS_ERR(map)) {
-> > > > > > > +               ret = __add_used_map(env, map);
-> > > > > > > +               if (ret < 0)
-> > > > > > > +                       return ret;
-> > > > > > > +               return 0;
-> > > > > > > +       }
-> > > > > > > +
-> > > > > > > +       /*
-> > > > > > > +        * Unlike "unused" maps which do not appear in the BPF program,
-> > > > > > > +        * BTFs are visible, so no reason to refcnt them now
-> > > > > >
-> > > > > > What does "BTFs are visible" mean? I find this behavior surprising,
-> > > > > > tbh. Map is added to used_maps, but BTF is *not* added to used_btfs?
-> > > > > > Why?
-> > > > >
-> > > > > This functionality is added to catch maps, and work with them during
-> > > > > verification, which aren't otherwise referenced by program code. The
-> > > > > actual application is those "instructions set" maps for static keys.
-> > > > > All other objects are "visible" during verification.
-> > > >
-> > > > That's your specific intended use case, but API is semantically more
-> > > > generic and shouldn't tailor to your specific interpretation on how it
-> > > > will/should be used. I think this is a landmine to add reference to
-> > > > just BPF maps and not to BTF objects, we won't be able to retrofit the
-> > > > proper and uniform treatment later without extra flags or backwards
-> > > > compatibility breakage.
-> > > >
-> > > > Even though we don't need extra "detached" BTF objects associated with
-> > > > BPF program, right now, I can anticipate some interesting use case
-> > > > where we might want to attach additional BTF objects to BPF programs
-> > > > (for whatever reasons, BTFs are a convenient bag of strings and
-> > > > graph-based types, so could be useful for extra
-> > > > debugging/metadata/whatever information).
-> > > >
-> > > > So I can see only two ways forward. Either we disable BTFs in fd_array
-> > > > if fd_array_cnt>0, which will prevent its usage from light skeleton,
-> > > > so not great. Or we bump refcount both BPF maps and BTFs in fd_array.
-> > > >
-> > > >
-> > > > The latter seems saner and I don't think is a problem at all, we
-> > > > already have used_btfs that function similarly to used_maps.
-> > >
-> > > This makes total sense to treat all BPF objects in fd_array the same
-> > > way. With BTFs the problem is that, currently, a btf fd can end up
-> > > either in used_btfs or kfunc_btf_tab. I will take a look at how easy
-> > > it is to merge those two.
-> >
-> > So, currently during program load BTFs are parsed from file
-> > descriptors and are stored in two places: env->used_btfs and
-> > env->prog->aux->kfunc_btf_tab:
-> >
-> >   1) env->used_btfs populated only when a DW load with the
-> >      (src_reg == BPF_PSEUDO_BTF_ID) flag set is performed
-> >
-> >   2) kfunc_btf_tab is populated by __find_kfunc_desc_btf(),
-> >      and the source is attr->fd_array[offset]. The kfunc_btf_tab is
-> >      sorted by offset to allow faster search
-> >
-> > So, to merge them something like this might be done:
-> >
-> >   1) If fd_array_cnt != 0, then on load create a [sorted by offset]
-> >      table "used_btfs", formatted similar to kfunc_btf_tab in (2)
-> >      above.
-> >
-> >   2) On program load change (1) to add a btf to this new sorted
-> >      used_btfs. As there is no corresponding offset, just use
-> >      offset=-1 (not literally like this, as bsearch() wants unique
-> >      keys, so by offset=-1 an array of btfs, aka, old used_maps,
-> >      should be stored)
-> >
-> > Looks like this, conceptually, doesn't change things too much: kfuncs
-> > btfs will still be searchable in log(n) time, the "normal" btfs will
-> > still be searched in used_btfs in linear time.
-> >
-> > (The other way is to just allow kfunc btfs to be loaded from fd_array
-> > if fd_array_cnt != 0, as it is done now, but as you've mentioned
-> > before, you had other use cases in mind, so this won't work.)
-> >
-> > > > >
-> > > > > > > +        */
-> > > > > > > +       if (!IS_ERR(__btf_get_by_fd(f)))
-> > > > > > > +               return 0;
-> > > > > > > +
-> > > > > > > +       verbose(env, "fd %d is not pointing to valid bpf_map or btf\n", fd);
-> > > > > > > +       return PTR_ERR(map);
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +static int process_fd_array(struct bpf_verifier_env *env, union bpf_attr *attr, bpfptr_t uattr)
-> > > > > > > +{
-> > > > > > > +       size_t size = sizeof(int);
-> > > > > > > +       int ret;
-> > > > > > > +       int fd;
-> > > > > > > +       u32 i;
-> > > > > > > +
-> > > > > > > +       env->fd_array = make_bpfptr(attr->fd_array, uattr.is_kernel);
-> > > > > > > +
-> > > > > > > +       /*
-> > > > > > > +        * The only difference between old (no fd_array_cnt is given) and new
-> > > > > > > +        * APIs is that in the latter case the fd_array is expected to be
-> > > > > > > +        * continuous and is scanned for map fds right away
-> > > > > > > +        */
-> > > > > > > +       if (!attr->fd_array_cnt)
-> > > > > > > +               return 0;
-> > > > > > > +
-> > > > > > > +       for (i = 0; i < attr->fd_array_cnt; i++) {
-> > > > > > > +               if (copy_from_bpfptr_offset(&fd, env->fd_array, i * size, size))
-> > > > > >
-> > > > > > potential overflow in `i * size`? Do we limit fd_array_cnt anywhere to
-> > > > > > less than INT_MAX/4?
-> > > > >
-> > > > > Right. So, probably cap to (UINT_MAX/size)?
-> > > >
-> > > > either that or use check_mul_overflow()
-> > >
-> > > Ok, will fix it, thanks.
-> >
-> > On the second look, there's no overflow here, as (int) * (size_t) is
-> > expanded by C to (size_t), and argument is also (size_t).
-> 
-> What about 32-bit architectures? 64-bit ones are not a problem, of course.
+On Thu, Dec 12, 2024 at 05:46:09PM +0100, Lorenzo Pieralisi wrote:
+> On Tue, Dec 10, 2024 at 05:48:59PM -0500, Frank Li wrote:
+> > For the i.MX95, configuration of a LUT is necessary to convert Bus Device
+> > Function (BDF) to stream IDs, which are utilized by both IOMMU and ITS.
+> > This involves checking msi-map and iommu-map device tree properties to
+> > ensure consistent mapping of PCI BDF to the same stream IDs. Subsequently,
+> > LUT-related registers are configured. In the absence of an msi-map, the
+> > built-in MSI controller is utilized as a fallback.
+>
+> This is wrong information. What you want to say is that if an msi-map
+> isn't detected this means that the platform relies on DWC built-in
+> controller for MSIs (that does not need streamIDs handling).
+>
+> That's quite different from what you are writing here.
 
-Yes, sure, thanks. I added the (U32_MAX/size) limit.
+How about ?
 
-BTW, the resolve_pseudo_ldimm64() also does 
+"If an msi-map isn't detected, platform relies on DWC built-in controller
+for MSIs that does not need streamdIDs"
 
-        if (copy_from_bpfptr_offset(&fd,
-                                    env->fd_array,
-                                    insn[0].imm * sizeof(fd),
-                                    sizeof(fd)))
-
-I don't see that insn[0].imm is checked at any place,
-or am I wrong?
-
-> > However, maybe this is still makes sense to restrict the maximum size
-> > of fd_array to something like (1 << 16). (The number of unique fds in
-> > the end will be ~(MAX_USED_MAPS + MAX_USED_BTFS + MAX_KFUNC_BTFS).)
+>
 > >
-> > > > >
-> > > > > > > +                       return -EFAULT;
-> > > > > > > +
-> > > > > > > +               ret = add_fd_from_fd_array(env, fd);
-> > > > > > > +               if (ret)
-> > > > > > > +                       return ret;
-> > > > > > > +       }
-> > > > > > > +
-> > > > > > > +       return 0;
-> > > > > > > +}
-> > > > > > > +
-> > > > > >
-> > > > > > [...]
+> > Register a PCI bus callback function to handle enable_device() and
+> > disable_device() operations, setting up the LUT whenever a new PCI device
+> > is enabled.
+> >
+> > Acked-by: Richard Zhu <hongxing.zhu@nxp.com>
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+
+[...]
+
+> > +	int err_i, err_m;
+> > +	u32 sid;
+> > +
+> > +	dev = imx_pcie->pci->dev;
+> > +
+> > +	target = NULL;
+> > +	err_i = of_map_id(dev->of_node, rid, "iommu-map", "iommu-map-mask", &target, &sid_i);
+> > +	if (target) {
+> > +		of_node_put(target);
+> > +	} else {
+> > +		/*
+> > +		 * "target == NULL && err_i == 0" means use 1:1 map RID to
+>
+> Is it what it means ? Or does it mean that the iommu-map property was found
+> and RID is out of range ?
+
+yes, if this happen, sid_i will be equal to RID.
+
+>
+> Could you point me at a sample dts for this host bridge please ?
+
+https://github.com/nxp-imx/linux-imx/blob/lf-6.6.y/arch/arm64/boot/dts/freescale/imx95.dtsi
+
+/* 0x10~0x17 stream id for pci0 */
+   iommu-map = <0x000 &smmu 0x10 0x1>,
+               <0x100 &smmu 0x11 0x7>;
+
+/* msi part */
+   msi-map = <0x000 &its 0x10 0x1>,
+             <0x100 &its 0x11 0x7>;
+
+>
+> > +		 * stream ID. Hardware can't support this because stream ID
+> > +		 * only 5bits
+>
+> It is 5 or 6 bits ? From GENMASK(5, 0) above it should be 6.
+
+Sorry for typo. it is 6bits.
+
+>
+> > +		 */
+> > +		err_i = -EINVAL;
+> > +	}
+> > +
+> > +	target = NULL;
+> > +	err_m = of_map_id(dev->of_node, rid, "msi-map", "msi-map-mask", &target, &sid_m);
+> > +
+> > +	/*
+> > +	 *   err_m      target
+> > +	 *	0	NULL		Use 1:1 map RID to stream ID,
+>
+> Again, is that what it really means ?
+>
+> > +	 *				Current hardware can't support it,
+> > +	 *				So return -EINVAL.
+> > +	 *      != 0    NULL		msi-map not exist, use built-in MSI.
+>
+> does not exist.
+>
+> > +	 *	0	!= NULL		Get correct streamID from RID.
+> > +	 *	!= 0	!= NULL		Unexisted case, never happen.
+>
+> "Invalid combination"
+>
+> > +	 */
+> > +	if (!err_m && !target)
+> > +		return -EINVAL;
+> > +	else if (target)
+> > +		of_node_put(target); /* Find stream ID map entry for RID in msi-map */
+> > +
+> > +	/*
+> > +	 * msi-map        iommu-map
+> > +	 *   N                N            DWC MSI Ctrl
+> > +	 *   Y                Y            ITS + SMMU, require the same sid
+> > +	 *   Y                N            ITS
+> > +	 *   N                Y            DWC MSI Ctrl + SMMU
+> > +	 */
+> > +	if (err_i && err_m)
+> > +		return 0;
+> > +
+> > +	if (!err_i && !err_m) {
+> > +		/*
+> > +		 * MSI glue layer auto add 2 bits controller ID ahead of stream
+>
+> What's "MSI glue layer" ?
+
+It is common term for IC desgin, which connect IP's signal to platform with
+some simple logic. Inside chip, when connect LUT output 6bit streamIDs
+to MSI controller, there are 2bits hardcode controller ID information
+append to 6 bits streamID.
+
+           Glue Layer
+          <==========>
+┌─────┐                  ┌──────────┐
+│ LUT │ 6bit stream ID   │          │
+│     ┼─────────────────►│  MSI     │
+└─────┘    2bit ctrl ID  │          │
+            ┌───────────►│          │
+            │            │          │
+ 00 PCIe0   │            │          │
+ 01 ENETC   │            │          │
+ 10 PCIe1   │            │          │
+            │            └──────────┘
+
+>
+> > +		 * ID, so mask this 2bits to get stream ID.
+> > +		 * But IOMMU glue layer doesn't do that.
+>
+> and "IOMMU glue layer" ?
+
+See above.
+
+Frank
+
+>
+> > +		 */
+> > +		if (sid_i != (sid_m & IMX95_SID_MASK)) {
+> > +			dev_err(dev, "iommu-map and msi-map entries mismatch!\n");
+> > +			return -EINVAL;
+> > +		}
+> > +	}
+> > +
+> > +	sid = sid_i;
+>
+> err_i could be != 0 here, I understand that the end result is
+> fine given how the code is written but it is misleading.
+>
+> 	if (!err_i)
+> 	else if (!err_m)
+
+Okay
+
+>
+> > +	if (!err_m)
+> > +		sid = sid_m & IMX95_SID_MASK;
+> > +
+> > +	return imx_pcie_add_lut(imx_pcie, rid, sid);
+> > +}
+> > +
+> > +static void imx_pcie_disable_device(struct pci_host_bridge *bridge, struct pci_dev *pdev)
+> > +{
+> > +	struct imx_pcie *imx_pcie;
+> > +
+> > +	imx_pcie = to_imx_pcie(to_dw_pcie_from_pp(bridge->sysdata));
+> > +	imx_pcie_remove_lut(imx_pcie, pci_dev_id(pdev));
+> > +}
+> > +
+> >  static int imx_pcie_host_init(struct dw_pcie_rp *pp)
+> >  {
+> >  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > @@ -946,6 +1122,11 @@ static int imx_pcie_host_init(struct dw_pcie_rp *pp)
+> >  		}
+> >  	}
+> >
+> > +	if (pp->bridge && imx_check_flag(imx_pcie, IMX_PCIE_FLAG_HAS_LUT)) {
+> > +		pp->bridge->enable_device = imx_pcie_enable_device;
+> > +		pp->bridge->disable_device = imx_pcie_disable_device;
+> > +	}
+> > +
+> >  	imx_pcie_assert_core_reset(imx_pcie);
+> >
+> >  	if (imx_pcie->drvdata->init_phy)
+> > @@ -1330,6 +1511,8 @@ static int imx_pcie_probe(struct platform_device *pdev)
+> >  	imx_pcie->pci = pci;
+> >  	imx_pcie->drvdata = of_device_get_match_data(dev);
+> >
+> > +	mutex_init(&imx_pcie->lock);
+> > +
+> >  	/* Find the PHY if one is defined, only imx7d uses it */
+> >  	np = of_parse_phandle(node, "fsl,imx7d-pcie-phy", 0);
+> >  	if (np) {
+> > @@ -1627,7 +1810,8 @@ static const struct imx_pcie_drvdata drvdata[] = {
+> >  	},
+> >  	[IMX95] = {
+> >  		.variant = IMX95,
+> > -		.flags = IMX_PCIE_FLAG_HAS_SERDES,
+> > +		.flags = IMX_PCIE_FLAG_HAS_SERDES |
+> > +			 IMX_PCIE_FLAG_HAS_LUT,
+> >  		.clk_names = imx8mq_clks,
+> >  		.clks_cnt = ARRAY_SIZE(imx8mq_clks),
+> >  		.ltssm_off = IMX95_PE0_GEN_CTRL_3,
+> >
+> > --
+> > 2.34.1
+> >
 
