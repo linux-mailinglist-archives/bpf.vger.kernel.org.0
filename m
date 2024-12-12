@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-46712-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46714-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 536FF9EEBD3
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 16:29:10 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D3B89EED7A
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 16:47:13 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3364A1881634
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 15:25:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ECF028968B
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 15:47:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8889E215764;
-	Thu, 12 Dec 2024 15:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218EC222D45;
+	Thu, 12 Dec 2024 15:45:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="rbQxJR9Z"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="MmoPJHtc"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 075A313792B;
-	Thu, 12 Dec 2024 15:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9612814A82;
+	Thu, 12 Dec 2024 15:45:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734017146; cv=none; b=KWYLYa7gRO7SG8TbfFgi0rHNXV4TgtmUkJ6ekkpEA06iScyvyW9Pgp6WUdUti1DLU2Jsg1zVCDmqsjgdNrnKCWz+cQ1QT034DqUFsdmg2bChR3bCt9VcRVXuw5TJLtS0T4H7ably0VIKud/p2z19BcsiM9EDS8EFm1bW/RUpbzg=
+	t=1734018339; cv=none; b=I7pZxIHCotbATPOYICE6TbhCb/eVrtF+Au0AFBjIn5+QBUUww4rMK5oTyOsCtc9PJ2Jr3gj//65EGBimIzSFuq89DN2MTe2+LiAlTQI3YMFtNHPLybUn/UY+R6137QKK01AO4LtMzanwhL0UZhgfkjmTemGGbkD9TjBkCleTtWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734017146; c=relaxed/simple;
-	bh=AKDo7YFnQwyQMBe94YUXBK4uoriGyY4O/EJSn1FUVYI=;
+	s=arc-20240116; t=1734018339; c=relaxed/simple;
+	bh=/2N1SQjInvbz4DIky4O9YmfcFq726Z8eYoysWQ+D0GY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VT8Dj4pvuFKHgTOOJDjQq0PPgv7SogCRdeGXneQ5HInXkCfL3rI4TWfB7Q4XGGCLE0qBTcSxnOUEHC5/AY6J/+AolIiSvnLE7AtZtYeSoOx5+LaTmS+sIYBFTw3NyJoAnHdiuWv0tph8nQVHejyJ2VWPPi9B3fhc7HFY2VldwXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=rbQxJR9Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39E88C4CECE;
-	Thu, 12 Dec 2024 15:25:45 +0000 (UTC)
+	 MIME-Version; b=sxHuq1H1Vl4WCgI1izM8aRcY/hWIYOH899kc5++swQiajxDtqyCigpkzaFQgaJ/sLCJLPHYNN7XkMIudIjjIv1Q46CZujkoqrBIw7UIwfoyOff1O6XuFKc8uN6GbgcRxBnwJfPBQDzdhYZvFqo/P1pnhQWHIE/fAKD0EqhRvFSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=MmoPJHtc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C90A8C4CECE;
+	Thu, 12 Dec 2024 15:45:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1734017145;
-	bh=AKDo7YFnQwyQMBe94YUXBK4uoriGyY4O/EJSn1FUVYI=;
+	s=korg; t=1734018339;
+	bh=/2N1SQjInvbz4DIky4O9YmfcFq726Z8eYoysWQ+D0GY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rbQxJR9ZfuUqxKIrGcApRnauFzGDLySoraPNqpB0Rc3O0iyzZkpZIlhWjYS3/RJzB
-	 ohGbSf93S5NysRi0HemRTk6vo3HFnaV1XgdJTDJYY7R0/nBc8Y8LLOkmwDN8tOz61/
-	 k4YVaQKhjI8gh2x/MLINgr5R2Mv3RtasFiXFGLhU=
+	b=MmoPJHtckwRdvMKWJElVT/uBYQks+rUn36aSXxK6scdyaSsRDvOv3QtqlESGtTpem
+	 4LkfV74y2h4AGHEQE1Kos+jee5A5XupjXs2aaYxNE94fuUgr6K/yMFAKAbj7TKJPW/
+	 P2S51U8S6W8p3I8jOwojD/2dB2ckWClyvg188gVk=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -59,12 +59,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.12 356/466] tracing/ftrace: disable preemption in syscall probe
-Date: Thu, 12 Dec 2024 15:58:45 +0100
-Message-ID: <20241212144320.848645313@linuxfoundation.org>
+Subject: [PATCH 6.6 266/356] tracing/ftrace: disable preemption in syscall probe
+Date: Thu, 12 Dec 2024 15:59:45 +0100
+Message-ID: <20241212144255.100642783@linuxfoundation.org>
 X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20241212144306.641051666@linuxfoundation.org>
-References: <20241212144306.641051666@linuxfoundation.org>
+In-Reply-To: <20241212144244.601729511@linuxfoundation.org>
+References: <20241212144244.601729511@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -76,7 +76,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-6.12-stable review patch.  If anyone has any objections, please let me know.
+6.6-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -188,7 +188,7 @@ index c2f9cabf154d1..fa0d51cad57a8 100644
  
  #undef DECLARE_EVENT_CLASS
 diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
-index 785733245eadf..f9b21bac9d45e 100644
+index de753403cdafb..9508d9022940f 100644
 --- a/kernel/trace/trace_syscalls.c
 +++ b/kernel/trace/trace_syscalls.c
 @@ -299,6 +299,12 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
