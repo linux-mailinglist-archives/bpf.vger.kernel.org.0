@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-46734-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46735-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0FC79EFCC3
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 20:50:20 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50D629EFCC4
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 20:50:23 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8B4516A1C9
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 19:50:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11D6C28A257
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 19:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C56A1917E8;
-	Thu, 12 Dec 2024 19:50:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D38E19E971;
+	Thu, 12 Dec 2024 19:50:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tNhMpVwq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aEz7gZ7J"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985D31422D4
-	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 19:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C65731422D4
+	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 19:50:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734033015; cv=none; b=RraCwY3/szewSH/8B0ugFH9qVvjZ6zsQc1LSl6Muu40CeBFHi9ccAX07/v0biVw1jeKbHrjVYkcpkdiagJmjsHBGRpt9PU91jBCR7ywkcMvKIWAoLOz9IJfBYuLMIKlCAGSJTVrUhBEq84y+rezigM3Puq8Uf0Y1GD0KabHm9js=
+	t=1734033017; cv=none; b=KIRjcoEasjE3apynjmf12E1XstpO6Oa2+gH/DilpXYFAo3+yDkIcwaqZjYv/1PUH+EdH8rRNoQw+zC3i8lKbwTRnfYnYoDqmXvHzr910Qz3uJhahnUqCnrenI0AwjoXTcLc402hGQ4sHb0O/2Jiq6EiSou7NkL9EDxnyF1m48+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734033015; c=relaxed/simple;
-	bh=8YOtNuRTj6tGDQUsG7hQASH4PhJSFGGOzccADyFbAkI=;
+	s=arc-20240116; t=1734033017; c=relaxed/simple;
+	bh=i8PcR05BpBIGDsjeIio5Rl0eBkGk/FzkJcotWNtNsCQ=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Co+XGupFMb6UkmN86sPQw0/g1OIMXwDCbL3AWO89UcvbcgTpnOZoz60V425AFY/3HoH1wWV5kPuER0EagJ/F3WkkxJmVVp3cclyMBRamNYmD7oZauSUrrLjj2JF8xAxSCvxUC/eXqqD9T0DG6MafY5S58jyW0qh8OIpvnCDS2sE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tNhMpVwq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BFF3C4CECE;
-	Thu, 12 Dec 2024 19:50:15 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=XfmwLkogdS3CVKfq2hPBzoPgfaX06tx4kwjxaRKu34FzJrc4QT5kNTXjUGVSO29BA86KWiNyFmDaqeg24O6ZErJq3/m+GkAMuQfYQg7MdWjEoGhhMgbDOiBRy7y6Try8vZ23OSpgfuQOouVwUhqg+bZzaYZIOprRBYjQ0G/o6Mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aEz7gZ7J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7076DC4CED0;
+	Thu, 12 Dec 2024 19:50:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734033015;
-	bh=8YOtNuRTj6tGDQUsG7hQASH4PhJSFGGOzccADyFbAkI=;
+	s=k20201202; t=1734033016;
+	bh=i8PcR05BpBIGDsjeIio5Rl0eBkGk/FzkJcotWNtNsCQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=tNhMpVwqdreowVKTPDExsfOtdCkfqEZ3PFnfCfaAJZ1ISFI3DczOoZwGONahKYuyT
-	 ComUC7VummVBNnxmLYJrQDJHN8kxDCE/vHQA6z++NTnib0Q7QwzDTFHXvAo13kd37W
-	 I3J3qEWLjn21xuP2kcR/KhzWejHtRUoEvQoG4NQVAw9lrsUVnUBVb9+zP+pRZgcsYh
-	 k2/mqK+ser/oJc276RxjWH2Q+0No2yqE2/Eltc7mnQFGJx9PiMXYY7M99T6vu2DfuZ
-	 4ngadlU9M7H5CjwtPjhotl9knzfeMXv/Xrl2WTXc0aBWAW2D8UoZChlO8pdGscO/md
-	 BVAsBC4ZnNvgQ==
+	b=aEz7gZ7J8Dx2ebC9UzCDvfauKRQju8r55N1/a6jfMtFO26FMWskwYjwnexnif3e2J
+	 +Ano83vjVTrnrR5psodCE6GDvNQnEpzLQPN4RlDRAnpMVE8KXdE6jKEndJ+J4KJSoJ
+	 G0co7bNwVzJ+n4+eURi1s/k0HvSjuHmICRzGbhrOklnN06/yDUjY4I2dkfkAzW9mPl
+	 GrQho0ySwxddT3JmsM5hNF1K+H4+Is58DctKbQQjQ9Ksh/6KJ+Sx2FGzRopxr1Y1+s
+	 B+XGpMFydTIf4yltgzqQr06tLNZfNlJjo2naNlknw23/zhaYVzVnuQT6aLcS8Bbi1b
+	 HJ2KYlDKMMs9Q==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE29D380A959;
-	Thu, 12 Dec 2024 19:50:32 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id E011F380A959;
+	Thu, 12 Dec 2024 19:50:33 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,40 +52,38 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf 1/2] bpf: fix NPE when computing changes_pkt_data of
- program w/o subprograms
+Subject: Re: [PATCH bpf v1 0/2] Add missing size check for BTF-based ctx access
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <173403303164.2422426.1574242566292619873.git-patchwork-notify@kernel.org>
-Date: Thu, 12 Dec 2024 19:50:31 +0000
-References: <20241212070711.427443-1-eddyz87@gmail.com>
-In-Reply-To: <20241212070711.427443-1-eddyz87@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev, mejedi@gmail.com, lkp@intel.com,
- dan.carpenter@linaro.org
+ <173403303274.2422426.17572912895456567597.git-patchwork-notify@kernel.org>
+Date: Thu, 12 Dec 2024 19:50:32 +0000
+References: <20241212092050.3204165-1-memxor@gmail.com>
+In-Reply-To: <20241212092050.3204165-1-memxor@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, kkd@meta.com, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com, rtm@mit.edu,
+ kernel-team@fb.com
 
 Hello:
 
 This series was applied to bpf/bpf.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Wed, 11 Dec 2024 23:07:10 -0800 you wrote:
-> bpf_prog_aux->func field might be NULL if program does not have
-> subprograms except for main sub-program. The fixed commit does
-> bpf_prog_aux->func access unconditionally, which might lead to null
-> pointer dereference.
+On Thu, 12 Dec 2024 01:20:48 -0800 you wrote:
+> This set fixes a issue reported for tracing and struct ops programs
+> using btf_ctx_access for ctx checks, where loading a pointer argument
+> from the ctx doesn't enforce a BPF_DW access size check. The original
+> report is at link [0]. Also add a regression test along with the fix.
 > 
-> The bug could be triggered by replacing the following BPF program:
+>   [0]: https://lore.kernel.org/bpf/51338.1732985814@localhost
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf,1/2] bpf: fix NPE when computing changes_pkt_data of program w/o subprograms
-    https://git.kernel.org/bpf/bpf/c/ac6542ad9275
-  - [bpf,2/2] selftests/bpf: extend changes_pkt_data with cases w/o subprograms
-    https://git.kernel.org/bpf/bpf/c/04789af756a4
+  - [bpf,v1,1/2] bpf: Check size for BTF-based ctx access of pointer members
+    https://git.kernel.org/bpf/bpf/c/659b9ba7cb2d
+  - [bpf,v1,2/2] selftests/bpf: Add test for narrow ctx load for pointer args
+    https://git.kernel.org/bpf/bpf/c/8025731c28be
 
 You are awesome, thank you!
 -- 
