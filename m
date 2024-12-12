@@ -1,156 +1,195 @@
-Return-Path: <bpf+bounces-46694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46695-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C1DA9EE2C9
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 10:24:45 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D24529EE2CE
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 10:25:01 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8A3216175E
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 09:24:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5882A2811EB
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 09:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ECF421018C;
-	Thu, 12 Dec 2024 09:21:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52782210F6E;
+	Thu, 12 Dec 2024 09:22:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iDy861Qi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eXs4Shio"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E2C720E713
-	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 09:21:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AAD0210F5E;
+	Thu, 12 Dec 2024 09:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733995262; cv=none; b=oSp5Yq4Fif3MGgMu9nay6BswJgz/o+d+MSKJgkQJ/BaR/Uj9LLGBY3eDFRdVCtfXMCrf7LdSUzmD5lKbLch5qwTS2y9hfXsiQTb/4HMC77dIv47zQP1caSLf3+MzrFSwI6vP4oWIR30ZyZHF9CQIENHbzm28wwck+MMtOZaIgdY=
+	t=1733995356; cv=none; b=Em3nDM+pTRd6lxq+Slv5N93SBCTpRu9jPrkyo6/Ylaaumr9JHkKAVwmrpPHyjpqTjpNHi+pWhRQrdSLgsvwSrh239J5rivcqcB/oCmYb8gorIbydElqlK1osscAcjwHoeMWkSTk7uwS8ZDMinQ6j+xdTgRPOoEmUJBr9wRI0YwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733995262; c=relaxed/simple;
-	bh=3FeL+LSAzzUM1JHR35P0Gn+fthZcmBx8DJpr0JAlEM8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ricw+A1UV78W2vsYZOwdwMpBLbD9E01H1rHwt9e6iPKbufHWEgSeR12BGGhIQ1wLzCnsjM+/NvjGKDWSMAf/YlF0+45Deh27FFn4+IHVoLh5jLC5gNhN3qR8vRw8AgTfbTw9jpiMqtqnDhBaSplDXifGrfsyKyCJpG4TmJcA7Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iDy861Qi; arc=none smtp.client-ip=209.85.128.66
+	s=arc-20240116; t=1733995356; c=relaxed/simple;
+	bh=MH76A8RrBVeEauyXdzge4bB1tbBOOSK8hzAcOTLGZu4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DG8jGCoEcdatyAjkOOkBqZOGsWbI3XxH0itP6RDVxoXRdlfaUgIiV2S9Pyl6pRcxkVWfAgaI7qoxKkPvEHQNIMo6+/pby3kK1V/J2cpxz+TWGrXd67Ca1yPwjbEYSNrgBhDY+NSmNPc3SyO3qPloqu4zwdYssKEW7+Xhvmd0/xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eXs4Shio; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-434ab938e37so2379205e9.0
-        for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 01:21:00 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4361fe642ddso3652785e9.2;
+        Thu, 12 Dec 2024 01:22:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733995259; x=1734600059; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z817xWZRfYYjq2ugAx1OeHBpFd1h2d1IdV1qFY+M+OY=;
-        b=iDy861QiXqaO+fdqmuv5BBPStSt9cT/viI5DKfNrC3L2vO15fNLkMjiZRzVuxBgCLI
-         DsMQw4yMxUMJ7wK4nYIM0enKrBEvMyjMMWzxF5hN5VFY4IwrLg0JcO5jxsi5Fqs/Ynv5
-         CHAel22Ew4VGNL+b2VS4PdBoA1S+dSEvu3L1B3RVAbopYNwQW/NORUBXqaw+NIp8bk+Z
-         Xi+GN/T3mTyc6bZGbCRA5yDoH/hHQQ/fc/itEOKe8r0/Z86A+5uV1ynLWd5/1u2aq5mD
-         4NhYV9V5Tq2xZ6LlZX8DJSfihJto3IbLq+RXddN7+C9XHomY55oYg18Gle2zj1zdzsK0
-         NtdA==
+        d=gmail.com; s=20230601; t=1733995353; x=1734600153; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9/8qAprzepzOhI9hq4ABjT0H5BvreqQl8xCmHayUS8c=;
+        b=eXs4Shio6ac1r7QEKWNtJP3FrfXt15FR7EuCHN5XatULVJ33jejdBd628nCkHai8wa
+         JXHISyqGs/QxfRGhnbfzX2PZMz3wq39/Ce2WaMDeIoJeXyQlMHKnVs33U+1NSjmkvupD
+         YbbKZbcmUPX23HRIFS4KLz7ZS7f2iJhpIbhXTorEKAbDnCKLmplxFxYfFc2j1Siakhza
+         Iqu5TB38YJ1baeuMTF5SHWJJbJMyop/N+e/L9uXjyVzNnAk3a14PL8XPIW6VcSuE68M3
+         rWOGpk3arRzs2j4rEzljNmjbK72+PC6hslhJH0F5NG8fwwJAp/lzDFHF7Gix4YqfhF9n
+         gXrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733995259; x=1734600059;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z817xWZRfYYjq2ugAx1OeHBpFd1h2d1IdV1qFY+M+OY=;
-        b=VfCLeZuXt1yy2drkhrd2JDJs5v3bBl3kjXkr9ohdyhHg4rohovHrNhEVpTromyI4LF
-         MsM7koQJtmHrsGkXdWMQr/YawpHGp8HOCRKSnumVwOyg/Hz2XsQF0ZhObEa0EEibBMEt
-         PihH3TiluVNYjaT76gHQqSUB2VkpqlMkIV01syCYphTjiUgyG9OzW3KfWK99JcN3q+FK
-         91Q6C6HLFyc9gk4TW4iUm2u0sB01v2OK1SfbTlJHewkL3RPQJ3gkHXO+qrHzT7KfZI9S
-         1yEMHXZSn8peUCFw6XxgQgp5YcZFgqd2yNWh/MWbgxEtczm439hnQg+7ykg1Wie1M64O
-         sbQQ==
-X-Gm-Message-State: AOJu0YxxNefVQxfoWP3Bm1jQBR5QR++rHYC49aGCo8CIAXWLT9IzNPou
-	XXGbcsqlym6w4q4Uj4CYQfjSPIp2Hm/9q9O/+32ek1tclxWvCOOohTSesHZNJzQ=
-X-Gm-Gg: ASbGncuKguAqTmIIzwq2p7DoB5bREBFJB2TDI2kTJYF4JFRZqD4XLm+y1eu1ZYPgsov
-	5EVeoZ0PJldT2RHuy8rza/Bcxnj5UdvlsGcA3aHFZ7VjVdITtJKhnt+RbYXc7N1qCMQFRgfotJk
-	SNUFLFhV0wwnIHjSQ/T5kJlKb/CW7UBpLKinm8U0v4uWCC1eHj5D+xlKIaGSxmbMUvyeYcsAGlH
-	5sJqwG1fvAfjG6ESltO0YCT+HkLtzN3QrccjA7uPUZ6OWTA/jDCBcRahuEuHOkaYC2fkGf8tw+O
-	3jkHDgg=
-X-Google-Smtp-Source: AGHT+IFXbs5ZHMWQ+/Foo9VBERYYCleNbaoa9CQos6rZ0iIuO/26rg+bZBYYe8hzo6p/rYUp5qmc9g==
-X-Received: by 2002:a05:600c:3541:b0:434:f131:1e64 with SMTP id 5b1f17b1804b1-4361c36f796mr46870885e9.9.1733995258850;
-        Thu, 12 Dec 2024 01:20:58 -0800 (PST)
-Received: from localhost (fwdproxy-cln-007.fbsv.net. [2a03:2880:31ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4361ec88993sm21579975e9.2.2024.12.12.01.20.57
+        d=1e100.net; s=20230601; t=1733995353; x=1734600153;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9/8qAprzepzOhI9hq4ABjT0H5BvreqQl8xCmHayUS8c=;
+        b=BzYUk5qicSOYbyuRZKbzllJIijI/Cv2V3wrfg9v65YgF6thmjXae537/nPS+lRmhu8
+         8Ywlug1N1unNsrw/M270twQPRksZ3evhcwhNDIu1PF/JwoqJJoZ10DibJxwhjiST9s2S
+         Vgpu1ydZLOnL+f6g7FZYKqgVq8tg7IbCgenAh2vkNSf/dPDwODeMXq2qNzUO3OeA0gD1
+         oC7mdoIS0ORqEhNWv14QbCSjwZNUiJb2L20f4+RXxq7jaYGXH2EcbuMvMoxUXxNO4Bb7
+         BkLklyD/Vyj/c4Gxp4qnoTsWAKxyM5CzoQiQXeEhGwGLAnE/rbsrxNGJRQKuHFyQ6wbv
+         WTXw==
+X-Forwarded-Encrypted: i=1; AJvYcCUdueEg13+PTcuxqllZoNoEX29xFrGn+ic2fmJ3Koo0kh4DbUpVFg5N9Nq8nl4jtPVVbGw2yE1TXK4YrTJr@vger.kernel.org, AJvYcCUyFjYgl8gWJgybJJimyep9a8jw9xtykd7Fp6q4Wjkt0ABb38ZRl2IHIZMJKilNbbP3Klc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzjVECAZ4rQepQM7OxjftmveDphCq0KYB6CKtRYhPwnYBSLeNQW
+	1t0g2vtBNkLma+72ZpwvGW6CgNn+FmkQb1Twd1xrI2WpRqZ94LYO
+X-Gm-Gg: ASbGncuFxX7v+FRSGZh8DYzl/LmNFdGUylGc9hIbbDXPbyEsl9hQj16EAAtLHahnIlX
+	aYGdFIRPYSwnmHeTOy20ddHBCxCaqzZjm8u5pHX7BF4gtoBvm0WlQ1Aw5DjPcqsBtIH5dsfm4p8
+	Mw/CaphehA5s7VTxF3tdXiuSffebAYlf2PoRXQAw5oEajChqCS9Ny2MnqzGLq6/hxHWzjMtl+6k
+	zEwpZd1FwWC+WcWtxb0RsK4B61D3NXP4FMiPOtvCHKhrZG1wMDkQIfaUiHRK9RqoiFOrtDtgCOc
+	u3Zl+H8hA9byrK/k7hoyXNnc1AVwGg==
+X-Google-Smtp-Source: AGHT+IF5BcgvSTVBRtoBdBseMDIWG1i+t5YhY/Nf3IWtocZuQeNr3CTNju1EKFip3g+LBHDjf7c81A==
+X-Received: by 2002:a05:600c:4e4b:b0:434:a0bf:98ea with SMTP id 5b1f17b1804b1-4361c35cc4bmr46472845e9.9.1733995353163;
+        Thu, 12 Dec 2024 01:22:33 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43625717c9fsm10563025e9.44.2024.12.12.01.22.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 01:20:57 -0800 (PST)
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To: bpf@vger.kernel.org
-Cc: kkd@meta.com,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Robert Morris <rtm@mit.edu>,
-	kernel-team@fb.com
-Subject: [PATCH bpf v1 2/2] selftests/bpf: Add test for narrow ctx load for pointer args
-Date: Thu, 12 Dec 2024 01:20:50 -0800
-Message-ID: <20241212092050.3204165-3-memxor@gmail.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241212092050.3204165-1-memxor@gmail.com>
-References: <20241212092050.3204165-1-memxor@gmail.com>
+        Thu, 12 Dec 2024 01:22:32 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 12 Dec 2024 10:22:30 +0100
+To: Jiri Olsa <olsajiri@gmail.com>,
+	Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc: Laura Nao <laura.nao@collabora.com>, alan.maguire@oracle.com,
+	bpf@vger.kernel.org, chrome-platform@lists.linux.dev,
+	kernel@collabora.com, linux-kernel@vger.kernel.org,
+	regressions@lists.linux.dev
+Subject: Re: [REGRESSION] module BTF validation failure (Error -22) on
+Message-ID: <Z1qrVu2Pv6qXI9tD@krava>
+References: <Z1LvfndLE1t1v995@krava>
+ <20241210135501.251505-1-laura.nao@collabora.com>
+ <Z1n_wGj0CGjh_gLP@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1787; h=from:subject; bh=3FeL+LSAzzUM1JHR35P0Gn+fthZcmBx8DJpr0JAlEM8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnWqgv6y0jPmvB0hh29ZzQRJfPtqf+bAhkfMSkDHo0 veECkBeJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ1qoLwAKCRBM4MiGSL8RyoXXD/ 9+4+39zAxJalddlCbzU8UuLsWxKVJ5hXKNbIwOM0+xWJRjQ48DDydGNZtO4caY3t0bT3pHjegZB0vv AhCoZudsawIsN4Fnpy3/HKvPr8MsDovityySzs+MpDGlBlZd4kTfIP85gOnyAOMN8W/bplkmNxR0xM Yjf2vddoRhKD7mXbCrMxEaviKKpjZ0QgYIPUiXcL0W/FLtTvm2PG47XFYCbISh5KskyA1pv1+0/E2u lSGTTLVr8DWMhcnX1eDxdI3BO+vVXlJyCi1vD2qYn8BCwSTKRYnEpsVZtURNC1jxq0NImLojJ23lXi yuO7te27uCorX9ygEPzgZwtovyUlR52VcRUJjKn2w176Str8T7Qkd1+go+C2CKTMYxDOFZ/BtrXNSH vC502TQhg3S7DM12DQXmNUbgjN9ZjZVY/bkf2pch0yUlc1c0HhGW8GFLESKSgQWgBu67j07iDa5Ow8 UMZgBvMdPZoFYThtWeeNJ4iLaFAH8mc5RuOBTpDe4jj4yflY75c9QHaGm22QKvJqNSUTFQpMLwAi0O +ZTHi0H0xAvKD7GMSSFlExEJCPqHpZTOA6f5Txpz6PVQjOw3Rgntm023hWCYx/kWLJ15YB9xsMuBpb ps1A+hpcvX1H8tg3h/STTSDzkEdWzvLmFNPsz6Gt0D4eE4QVdID9iHfnT4Zw==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z1n_wGj0CGjh_gLP@krava>
 
-Ensure that performing narrow ctx loads other than size == 8 are
-rejected when the argument is a pointer type.
+On Wed, Dec 11, 2024 at 10:10:24PM +0100, Jiri Olsa wrote:
+> On Tue, Dec 10, 2024 at 02:55:01PM +0100, Laura Nao wrote:
+> > Hi Jiri,
+> > 
+> > Thanks for the feedback!
+> > 
+> > On 12/6/24 13:35, Jiri Olsa wrote:
+> > > On Fri, Nov 15, 2024 at 06:17:12PM +0100, Laura Nao wrote:
+> > >> On 11/13/24 10:37, Laura Nao wrote:
+> > >>>
+> > >>> Currently, KernelCI only retains the bzImage, not the vmlinux
+> > >>> binary. The
+> > >>> bzImage can be downloaded from the same link mentioned above by
+> > >>> selecting
+> > >>> 'kernel' from the dropdown menu (modules can also be downloaded the
+> > >>> same
+> > >>> way). I’ll try to replicate the build on my end and share the
+> > >>> vmlinux
+> > >>> with DWARF data stripped for convenience.
+> > >>>
+> > >>
+> > >> I managed to reproduce the issue locally and I've uploaded the
+> > >> vmlinux[1]
+> > >> (stripped of DWARF data) and vmlinux.raw[2] files, as well as one of
+> > >> the
+> > >> modules[3] and its btf data[4] extracted with:
+> > >>
+> > >> bpftool -B vmlinux btf dump file cros_kbd_led_backlight.ko >
+> > >> cros_kbd_led_backlight.ko.raw
+> > >>
+> > >> Looking again at the logs[5], I've noticed the following is reported:
+> > >>
+> > >> [    0.415885] BPF: 	 type_id=115803 offset=177920 size=1152
+> > >> [    0.416029] BPF:
+> > >> [    0.416083] BPF: Invalid offset
+> > >> [    0.416165] BPF:
+> > >>
+> > >> There are two different definitions of rcu_data in '.data..percpu',
+> > >> one
+> > >> is a struct and the other is an integer:
+> > >>
+> > >> type_id=115801 offset=177920 size=1152 (VAR 'rcu_data')
+> > >> type_id=115803 offset=177920 size=1152 (VAR 'rcu_data')
+> > >>
+> > >> [115801] VAR 'rcu_data' type_id=115572, linkage=static
+> > >> [115803] VAR 'rcu_data' type_id=1, linkage=static
+> > >>
+> > >> [115572] STRUCT 'rcu_data' size=1152 vlen=69
+> > >> [1] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64
+> > >> encoding=(none)
+> > >>
+> > >> I assume that's not expected, correct?
+> > > 
+> > > yes, that seems wrong.. but I can't reproduce with your config
+> > > together with pahole 1.24 .. could you try with latest one?
+> > 
+> > I just tested next-20241210 with the latest pahole version (1.28 from
+> > the master branch[1]), and the issue does not occur with this version
+> > (I can see only one instance of rcu_data in the BTF data, as expected).
+> > 
+> > I can confirm that the same kernel revision still exhibits the issue
+> > with pahole 1.24.
+> > 
+> > If helpful, I can also test versions between 1.24 and 1.28 to identify
+> > which ones work.
+> 
+> I managed to reproduce finally with gcc-12, but had to use pahole 1.25,
+> 1.24 failed with unknown attribute
+> 
+> 	[95096] VAR 'rcu_data' type_id=94868, linkage=static
+> 	[95098] VAR 'rcu_data' type_id=4, linkage=static
+> 	type_id=95096 offset=177088 size=1152 (VAR 'rcu_data')
+> 	type_id=95098 offset=177088 size=1152 (VAR 'rcu_data')
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../bpf/progs/verifier_btf_ctx_access.c       | 36 +++++++++++++++++++
- 1 file changed, 36 insertions(+)
+so for me the difference seems to be using gcc-12 and this commit in linux tree:
+  dabddd687c9e percpu: cast percpu pointer in PERCPU_PTR() via unsigned long
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c b/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-index bfc3bf18fed4..28b939572cda 100644
---- a/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-@@ -29,4 +29,40 @@ __naked void ctx_access_u32_pointer_accept(void)
- "	::: __clobber_all);
- }
- 
-+SEC("fentry/bpf_fentry_test9")
-+__description("btf_ctx_access u32 pointer reject u32")
-+__failure __msg("size 4 must be 8")
-+__naked void ctx_access_u32_pointer_reject_32(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u32 *)(r1 + 0);		/* load 1st argument with narrow load */\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("fentry/bpf_fentry_test9")
-+__description("btf_ctx_access u32 pointer reject u16")
-+__failure __msg("size 2 must be 8")
-+__naked void ctx_access_u32_pointer_reject_16(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u16 *)(r1 + 0);		/* load 1st argument with narrow load */\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("fentry/bpf_fentry_test9")
-+__description("btf_ctx_access u32 pointer reject u8")
-+__failure __msg("size 1 must be 8")
-+__naked void ctx_access_u32_pointer_reject_8(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u8 *)(r1 + 0);		/* load 1st argument with narrow load */\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.43.5
+which adds extra __pcpu_ptr variable into dwarf, and it has the same
+address as the per cpu variable and that confuses pahole
 
+it ends up with adding per cpu variable twice.. one with real type
+(type_id=94868) and the other with unsigned long type (type_id=4)
+
+however this got fixed in pahole 1.28 commit:
+  47dcb534e253 btf_encoder: Stop indexing symbols for VARs
+
+which filters out __pcpu_ptr variable completely, adding Stephen to the loop
+
+with gcc-14 the __pcpu_ptr variable has VSCOPE_OPTIMIZED scope, so it won't
+get into btf even without above pahole fix
+
+I suggest gcc/pahole upgrade ;-)
+
+thanks,
+jirka
 
