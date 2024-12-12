@@ -1,205 +1,157 @@
-Return-Path: <bpf+bounces-46729-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46730-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A349E9EFC57
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 20:23:24 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 993B69EFC6D
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 20:26:48 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5650728B6F7
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 19:23:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E62B16DE8A
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 19:26:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660A1198E9B;
-	Thu, 12 Dec 2024 19:23:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38CF3198E7B;
+	Thu, 12 Dec 2024 19:26:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rlem61Ab"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="js+zoUjd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3482D188713;
-	Thu, 12 Dec 2024 19:23:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460C0168497
+	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 19:26:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734031397; cv=none; b=VI+mRcti6LUpjINZLnsSw9RXsHZEazhXHXzjDFrYW4N/9pYSrz6F0DDY120Msvfwn+XHMdkvMJy7NRswG0HXOfefwQuGukhbGBPwumsSvMzJwPli6df8V9Zqnv37HEFUogWut3DTlOjRyvtcwst8m1u1rT9NfDpnO1V+qlr+4s0=
+	t=1734031592; cv=none; b=hNzP+TiASh4JN5y9ndSCbUa8YvGrU5Ug63oyyXKIRMzFX90XR+UZkN+QSxKRFAqMtLPW1gCuOF6sZp6SZRfEktKZnFcwz8nJMiu9KMrvpJHWn5Q/dd2uQZxn0vZW5MzDLU4iFAjVJtkq8ayY26LV07pjHWSiHk2w/SVwWIlflRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734031397; c=relaxed/simple;
-	bh=VXNk7/xtGwifRt8Bi6IlCKe86qIrMDXhOPvmXZScFbk=;
+	s=arc-20240116; t=1734031592; c=relaxed/simple;
+	bh=kEd2tOIfD5RKkPHXivIBiLmzg5KGCSwDrDKlyRlw+RU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I80Hx8azR24rJ8/TfN617ATf0tRdm9mHAJbTeWDUcHh/kC97od9Vnld60ut7tvzGOELxkLQA93ZlTXgNXFgGwh9fD/uGTXpWItvhER4SPOYdbsKfpyRkinIQFwjmbMxrAF/lbci8Pc9UMRrdtpOXtZnU4QffP0agCixJQchO+78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rlem61Ab; arc=none smtp.client-ip=209.85.215.174
+	 To:Cc:Content-Type; b=J6QG5Lywy5XXfwKbzZylpey0ZXSWHZ0nZodqBl8cUr1WvEuRrFIV/uC2iT/RLRcmibs0K+i4VUbMYhdEzKr5nwRf0QMlAM1zTpfx0AqmrMODMiJD7yAkl6THrTTJGTcDOLWj9YmopBasrQMqak8E2QbXWTolEwrfV0h2f3RzeJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=js+zoUjd; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-7e9e38dd5f1so742424a12.0;
-        Thu, 12 Dec 2024 11:23:15 -0800 (PST)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ef6c56032eso643517a91.2
+        for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 11:26:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734031395; x=1734636195; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734031590; x=1734636390; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VXNk7/xtGwifRt8Bi6IlCKe86qIrMDXhOPvmXZScFbk=;
-        b=Rlem61AbHj4QDjJavRnAJMD1ysLpNBeAKRqC8OQ+5MNfWWM0hzsZhhPTNg/6q1gI2g
-         tMs0+BBVr3631wd+dmmi4QE73v+MRdhK5xZDigxGGGwbl425kKChmSgcoA+D8xSn2JOY
-         ItU8NI+AeFekiorxjib3cRQpQzQxbXVpTxe4WqDVNgdAXR6tABUWwHGHK0iMjviRcKhV
-         mHvdHBxuS1h+hdrNzrezgSWDLU3EnuO/GoRykC/xmyarRjowBOf2YzNXy7xhIVbTzbZE
-         BUezJKsnl7MiMb9aP5FEk2LHTV33G3+U5l3P7oZ8zQ6fIxIIdkSJxPXMp4sE0d5F9QII
-         JFpA==
+        bh=JBCrMyjxmEbmVDxGeE1f4I8UZ46QyNKDTwuYf2auiv8=;
+        b=js+zoUjdrGjXuc/zCPYAq9kzWTZ2dV/8Sx61yAAggvOufY3n4kYOyYmSsiR87oy5L7
+         HACpkfz/GYMm4PrSRQqDJHEobK0Cz1ZS/uUowOfUwLTs5xftDEjVrqK96k1llbUefujC
+         SPegIg3TEyyPI6zaaqGwmq8piCuETagiyGuoOEJQvT2bF3oMZnv5AaAbqs0VheWEgUVn
+         DT9+m5QJx0xYqEzgPv2B2K/Xd8ueyH6/iwU+Q3CBUs8xAl2rxoi0+Ts3ivu06zea3miQ
+         Z5SOWA0S0L+8dh9eFLhgvyVXF1LaqYmt17BXJO8gTuTduvTGeKXNy6pWVGV8avhiGkDE
+         ldFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734031395; x=1734636195;
+        d=1e100.net; s=20230601; t=1734031590; x=1734636390;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VXNk7/xtGwifRt8Bi6IlCKe86qIrMDXhOPvmXZScFbk=;
-        b=S/Hl4Xf3cRxuoyUALsSRowZ73MfdjYL2t8qqY0/yH51pd7P7GD7/vkPJQ/O99u68ge
-         i0wW4Y+0lG9BtMX5ykRc6KI/68z57JLzXwgnh+coLwwmij6PnxySNGZNBJxHyqh9z7D6
-         tUC2JNaNZES3jAMyFJxqCr4Y8Fhsi+6Am7Qb+zUm4Uid+4TyWezRCo4+TBI47HI4Fs9x
-         deTmfbsRUd8Kq0E0pJWy4SKMf+HKLEKoT1Pty73P/cC8zovQTytM4bvntbm49O37eah+
-         OqcwVB5EEtZAU81+JKyu+8anPtHWqhq0f7V4ZHj3jMn1y/4/4MDEjiXaQ7g30Kp7Hxj/
-         cHPg==
-X-Forwarded-Encrypted: i=1; AJvYcCUTbDuqxYxJKSH4mbT9K5BB2/UZia4fwpzoKErlsvZ/ht35arkF9MnEZn0FYFX7Pg9mcmg=@vger.kernel.org, AJvYcCX8C9d7V05ePvUhkACRFjoZxqg+Qozn//1VufZ4OXNac9ve9YCyUsyx7Fi7/Mk8uYrOv8a88+rm4BgxnNuy@vger.kernel.org, AJvYcCXJDo6mzrbYZK/90NEh5VCFSYDL/HO/GmiRZHww8XjLU/FA6+KsjAJl5nrA5xY1P0z8InCOAFnvo8mtiiE7@vger.kernel.org
-X-Gm-Message-State: AOJu0YxxYVz6xbxuHAthH8B1MmLuOZdvYOojZ3mRS4S9D19ExAnXEqJv
-	fRqWWeRLIDSKRuJvYGwZWX7Rybt+4jTer2C0ga5klYBReH8JbjQWquBY666I6+v8sxopMujI3cX
-	bmyxvvMAop1mAAr0uShK0iP9HERM=
-X-Gm-Gg: ASbGncsItBPao3ZhspMlFHX8O00BHliaRIAgIYObnyFFLtv376RBU4mH61nL9UA4Ppd
-	UhTZHiKY+hvPABqizucQvkA76Sya4UjjdNMJBixBvdUntVuK1qUuGvg==
-X-Google-Smtp-Source: AGHT+IHfOOGRR1BbJA47sbpkjDB745PepNneTmU6pDaTNZ2EHuyss1QTb/UEZrv8oCaKIVc3mswu9flC0Dt0inGGitw=
-X-Received: by 2002:a17:90b:3eca:b0:2ee:edae:75e with SMTP id
- 98e67ed59e1d1-2f139293c4amr7399194a91.13.1734031395444; Thu, 12 Dec 2024
- 11:23:15 -0800 (PST)
+        bh=JBCrMyjxmEbmVDxGeE1f4I8UZ46QyNKDTwuYf2auiv8=;
+        b=ok8BfYMtwFg5a0addoiAX47+SVfYFL2XQaPdDeSvs5IjflRui74LjMBsB+Yd4sjUie
+         zLlL8os0SnQXAQlmST4RsvUE2viTjeMwThUzOlPi0x9WraLWspc08GZl+2FCPquiuokj
+         m678BA/8x3UyhlmHj2fMBkQTvudIqvklSVwoITynRyHpRcvNKkKNKdFtqR8qfIqDPhGk
+         ddkJL1bkd33+Y0HGB9sFR4m2LXEWAIQgCxcPKh+dk4Tc8syUke8gNZRtW9KgP6GhSdVf
+         Cb8LUQBmKvhTqH8WH37kRNqnm370I1bVGNYybEPia3chYyAVvCZ/2iX0Y+p5VGxEw7yL
+         aGag==
+X-Forwarded-Encrypted: i=1; AJvYcCWgJzZBipFq8bYusmCQkvlIdFIdgtuCUpuJSjCLTIzwK/q6QReefFNa9KY+qgoDEYlUjs8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwtP+faMHOrvueDK1K1grJB5tXHncb2XVmdyQF/TCyvFSdv0HVh
+	EOkQMcpXTKD78qrI81Epy55XI06QELzw3Ijk+7MOeZBzb8V0g6JlVB7YsxQRD1v2xlluAg3P4Wr
+	v52kC91a6XR1lx5bGNlTqk3CTYCU=
+X-Gm-Gg: ASbGncuSyzB9/zLUMOBKCuNrRGj7HDvlPmTjTVVicQ4HrwZx7UQO4ruR/sR3mKdLEYv
+	3sZaj+/JJDh9C8MwvVdpmpBJhbeiV2+yLPi9sePNszPocicygA2PU4w==
+X-Google-Smtp-Source: AGHT+IEm1uvs3x0eR0QFugMoJCF2HMBDfEFYXvo5VNUXoxkj15mkvxX4hgmQfiKtyGRiS8M0vJMPqx0UwYbAxSjM1vk=
+X-Received: by 2002:a17:90b:3510:b0:2ee:bbe0:98c6 with SMTP id
+ 98e67ed59e1d1-2f13925b1e0mr7684325a91.8.1734031590540; Thu, 12 Dec 2024
+ 11:26:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241211-pahole-reproducible-v1-1-22feae19bad9@weissschuh.net>
- <REDzg-0aL2-Qw7QvYCKTfsLGh6E6Iq8dgWJPo5a94ym2x5DiUkwdHA-naUtaDO7HJgvOr6zd201E5P_WAquOyOFIiUij6Bi183EyxPusDuo=@pm.me>
- <3b834807-9f20-4f04-b788-f45dfac5cb1f@t-8ch.de>
-In-Reply-To: <3b834807-9f20-4f04-b788-f45dfac5cb1f@t-8ch.de>
+References: <20241204-bpf-selftests-mod-compile-v5-1-b96231134a49@redhat.com>
+ <173352303103.2814043.17875547914996700881.git-patchwork-notify@kernel.org> <CAP01T744hWcg5i6eShqCUnxVV4F+GJ5cwYN8qVkDVEhzs7ybOg@mail.gmail.com>
+In-Reply-To: <CAP01T744hWcg5i6eShqCUnxVV4F+GJ5cwYN8qVkDVEhzs7ybOg@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Dec 2024 11:23:03 -0800
-Message-ID: <CAEf4BzZSB2nzhYag_LKACXXJLwqLLfddXMV9_JRGYi+Y48rC-w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] kbuild, bpf: Enable reproducible BTF generation
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: Ihor Solodrai <ihor.solodrai@pm.me>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Kui-Feng Lee <kuifeng@fb.com>, 
-	Alan Maguire <alan.maguire@oracle.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, bpf@vger.kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+Date: Thu, 12 Dec 2024 11:26:18 -0800
+Message-ID: <CAEf4BzY+no6bJN8shgOMH=oVKnT_4eWmBX4i1C38-93XGnpngQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5] selftests/bpf: Consolidate kernel modules
+ into common directory
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: patchwork-bot+netdevbpf@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, vmalik@redhat.com, 
+	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 10, 2024 at 10:24=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weiss=
-schuh.net> wrote:
+On Tue, Dec 10, 2024 at 7:03=E2=80=AFPM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> Hi Ihor,
+> On Fri, 6 Dec 2024 at 23:10, <patchwork-bot+netdevbpf@kernel.org> wrote:
+> >
+> > Hello:
+> >
+> > This patch was applied to bpf/bpf-next.git (master)
+> > by Andrii Nakryiko <andrii@kernel.org>:
+> >
+> > On Wed, 04 Dec 2024 14:28:26 +0100 you wrote:
+> > > The selftests build four kernel modules which use copy-pasted Makefil=
+e
+> > > targets. This is a bit messy, and doesn't scale so well when we add m=
+ore
+> > > modules, so let's consolidate these rules into a single rule generate=
+d
+> > > for each module name, and move the module sources into a single
+> > > directory.
+> > >
+> > > To avoid parallel builds of the different modules stepping on each
+> > > other's toes during the 'modpost' phase of the Kbuild 'make modules',
+> > > the module files should really be a grouped target. However, make onl=
+y
+> > > added explicit support for grouped targets in version 4.3, which is
+> > > newer than the minimum version supported by the kernel. However, make
+> > > implicitly treats pattern matching rules with multiple targets as a
+> > > grouped target, so we can work around this by turning the rule into a
+> > > pattern matching target. We do this by replacing '.ko' with '%ko' in =
+the
+> > > targets with subst().
+> > >
+> > > [...]
 >
-> On 2024-12-11 00:17:02+0000, Ihor Solodrai wrote:
-> > On Tuesday, December 10th, 2024 at 3:23 PM, Thomas Wei=C3=9Fschuh <linu=
-x@weissschuh.net> wrote:
-> >
-> > >
-> > >
-> > > Pahole v1.27 added a new BTF generation feature to support
-> > > reproducibility in the face of multithreading.
-> > > Enable it if supported and reproducible builds are requested.
-> > >
-> > > As unknown --btf_features are ignored, avoid the test for the pahole
-> > > version to keep the line readable.
-> > >
-> > > Fixes: b4f72786429c ("scripts/pahole-flags.sh: Parse DWARF and genera=
-te BTF with multithreading.")
-> > > Fixes: 72d091846de9 ("kbuild: avoid too many execution of scripts/pah=
-ole-flags.sh")
-> > > Link: https://lore.kernel.org/lkml/4154d202-5c72-493e-bf3f-bce882a296=
-c6@gentoo.org/
-> > > Link: https://lore.kernel.org/lkml/20240322-pahole-reprodicible-v1-1-=
-3eaafb1842da@weissschuh.net/
-> > > Signed-off-by: Thomas Wei=C3=9Fschuh linux@weissschuh.net
-> > >
-> > > ---
-> > > scripts/Makefile.btf | 1 +
-> > > 1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-> > > index c3cbeb13de503555adcf00029a0b328e74381f13..da23265bc8b3cf43c0a1c=
-89fbc4f53815a290e13 100644
-> > > --- a/scripts/Makefile.btf
-> > > +++ b/scripts/Makefile.btf
-> > > @@ -22,6 +22,7 @@ else
-> > >
-> > > # Switch to using --btf_features for v1.26 and later.
-> > > pahole-flags-$(call test-ge, $(pahole-ver), 126) =3D -j$(JOBS) --btf_=
-features=3Dencode_force,var,float,enum64,decl_tag,type_tag,optimized_func,c=
-onsistent_func,decl_tag_kfuncs
-> > > +pahole-flags-$(if $(KBUILD_BUILD_TIMESTAMP),y) +=3D --btf_features=
-=3Dreproducible_build
-> >
-> > Hi Thomas,
-> >
-> > There are a couple of issues with reproducible_build flag which I
-> > think are worth mentioning here. I don't know all the reasons behind
-> > adding this now, and it's optional too, so feel free to discard my
-> > comments.
-> >
-> > Currently with this flag, the BTF output is deterministic for a given
-> > order of DWARF compilation units. So the BTF will be the same for the
-> > same vmlinux binary. However, if the vmlinux is rebuilt due to an
-> > incremental change in a source code, my understanding is that there is
-> > no guarantee that DWARF CUs will be in the same order in the binary.
+> I don't have a good way to reproduce this yet, but I'm seeing
+> intermittent failures after this patch when running vmtest.sh:
+> make: *** No rule to make target 'test_kmods/bpf_testmod.h', needed by
+> '/home/kkd/Projects/linux/tools/testing/selftests/bpf/core_reloc.test.o'.
+> Stop.
 >
-> The goal behind reproducible builds is to produce bit-by-bit idential
-> binaries. If the CUs are in a different order then that requirement
-> would have been broken there already.
+> I haven't been able to root cause today, but I will probably try tomorrow=
+.
 
-I'm curious, how do we guarantee that we get bit-by-bit identical
-DWARF? Do we enforce the order of linking of .o files into the final
-vmlinux? Is this described anywhere?
+You need `make clean` in selftests if you are switching between
+versions of the kernel before and after this change. We record header
+dependencies in *.test.d files, and this file changes the location of
+bpf_testmod's header. Our makefile can't invalidate this
+automatically. If you are switching between commits after this commit
+is applied you shouldn't see this problem.
 
 >
-> For an incremental build a full relink with *all* CUs is done, not only
-> the changed once, so the order should always be the same.
-
-The concern here is whether linker guarantees that CUs' DWARF data
-will be appended in exactly the same order in such case?
-
->
-> > At the same time, reproducible_build slows down BTF generation by
-> > 30-50%, maybe more depending on the kernel config.
->
-> If a user explicitly requests reproducibility then they should get it,
-> even if it is slower.
->
-> > Hopefully these problems will be solved in upcoming pahole releases.
->
-> I don't see it as big problem. This is used for release builds, not
-> during development.
->
-> > Question: why KBUILD_BUILD_TIMESTAMP flag? Isn't it more appropriate
-> > to use a separate flag for this particular feature?
->
-> Adding an additional variable would need to be documented and would
-> makes the feature harder to use. KBUILD_BUILD_TIMESTAMP already needs to
-> be set by the user if they are building for reproducibility.
->
-> > > ifneq ($(KBUILD_EXTMOD),)
-> > > module-pahole-flags-$(call test-ge, $(pahole-ver), 126) +=3D --btf_fe=
-atures=3Ddistilled_base
-> > >
-> > > ---
-> > > base-commit: 7cb1b466315004af98f6ba6c2546bb713ca3c237
-> > > change-id: 20241124-pahole-reproducible-2b879ac8bdab
-> > >
-> > > Best regards,
-> > > --
-> > > Thomas Wei=C3=9Fschuh linux@weissschuh.net
-> > >
-> > >
+> >
+> > Here is the summary with links:
+> >   - [bpf-next,v5] selftests/bpf: Consolidate kernel modules into common=
+ directory
+> >     https://git.kernel.org/bpf/bpf-next/c/d6212d82bf26
+> >
+> > You are awesome, thank you!
+> > --
+> > Deet-doot-dot, I am a bot.
+> > https://korg.docs.kernel.org/patchwork/pwbot.html
+> >
+> >
 > >
 
