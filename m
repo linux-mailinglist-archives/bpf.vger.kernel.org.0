@@ -1,114 +1,169 @@
-Return-Path: <bpf+bounces-46732-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46733-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD8D49EFC9B
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 20:39:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5D929EFCC1
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 20:50:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0079E1695A1
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 19:39:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFD2B1882AFD
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 19:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB9219AA58;
-	Thu, 12 Dec 2024 19:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9032B191F85;
+	Thu, 12 Dec 2024 19:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CH1hSBan"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="haoHVZXJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7427E183CD9;
-	Thu, 12 Dec 2024 19:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34131422D4
+	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 19:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734032358; cv=none; b=GVERikrTfpsCAy23Ch3GBJbUD4JKoD74o4xTnPypuZXwaqwDH1guqYh4xeciD4YLj2daDEDUyiM5Aq1ggzQYTDEgtuqT066APzKV0tZD39vWAFuQicxQUTBQWRI+KuENACijNG12PtEfbA9pl2n4Fh5gv+xdMcJWz8jjtyJSUz0=
+	t=1734032993; cv=none; b=eeslxPPYAvKc5k/RAuUIsbWHYePZhBkyFhFeS9V4ZJiqMI7s+3On+Qiftav8sa4DMfK1OOlboR8Z+Tzcrla5zBgjWvpVwN+4pJyGuy75K8BU5YeAABqBpNqleBqB9ed5vAZOW3+hGcsatE3GSa4Hgbuc0UljmD/WUSufUqkBhqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734032358; c=relaxed/simple;
-	bh=Kz3lTnnPV47L/qHM5RGdDtOdAl3uMd0bW/EbShUkRYk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RgNtoipkaI7xbEMXry2FjXYiK+F+b1FQ6HZkfo8DT1T0XAmYOzgAabx3eV6WGH1JOgChTK6QNh+me7ZGwdHUsdRNwWZGEySIMDZ6kIzeonc0TRLN8dItURzwfLXyt6wNbLlRv9j1tiOeKTXtLmAW6TbiiHkyrrGNlCOplNz+mE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CH1hSBan; arc=none smtp.client-ip=209.85.215.171
+	s=arc-20240116; t=1734032993; c=relaxed/simple;
+	bh=usMsuwcdw1bEyyMKuncMVdZljOKtOTyWYZVk0CFtGCs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KtQ4FkJ7ZonaVt3aDWT7ylnx3wlmQVN4S9EJKhuql4A+ooy1oovjrq/qdkBV4LrdsS5WXXCYpRBsXld3BBJaxXp1wX+ShcJieHE29RN7qe4txb9Ylm4BCpImd4ZN18rbZT8BiOEubxhVeTqzqcfdSgcUfhjXQi+D8hzscn+Us5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=haoHVZXJ; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7ee11ff7210so753239a12.1;
-        Thu, 12 Dec 2024 11:39:17 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-21619108a6bso8137955ad.3
+        for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 11:49:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734032357; x=1734637157; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SXUTpPssHcay1QdWG1rkSODw/xMx016p0D9tmsgF2Zo=;
-        b=CH1hSBanYRGfs2Veje3rKGMWfWrazmN0NzvTBQbHDd/u0pk5NRBMXXHCBhDKj60E1a
-         vp5mDRPcY52pAP+ZG+MqPlSzKwbcGzOCvwdrnS+XJMg+4quPQuqN7BAbRZNZoLy7F0pA
-         pPET9rryCGCtcI8oxnbRK+oCEr/MxwnCPzXgR9pbLemeDEnSxSByL8BWocHd7H++htxP
-         Bw0knmPJBNjbm2eXJCHQR6TwhwhynMm4kSqjE/fI5TgrIbwpe3U/BqIlB5UV5yFT+KpE
-         af8ytuvu1sUHPAiuMCIrQaTynJrjnGJA5LSggwcF5AYV2hs/HU11k//8MMLulbmNvt4X
-         AtcA==
+        d=gmail.com; s=20230601; t=1734032991; x=1734637791; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Tg5F0wAIs/4wlzxc+SDrYOCYCP+taL7f2LZJT+TcflM=;
+        b=haoHVZXJRjxFIJcySBkxW7ELRDSRCZp54FzI2DZB8rYFGoRBr0q1aF3LepQMU89A1q
+         HLk4yotAMEKxc3NOTszccbzBmKuzVabTsw/GyKxzqtwzh7CnLP3Jc7TRiImLRD10UH9i
+         Mk7mI+VlnghZGiohaMcJ8N827hzCIl3wKZcStBjn0KEpQVe8hZg/6zr9MHPoBPuiVux7
+         7pXJGaWeezLSMQu2RkDvc+r1W6lc+NpP1NjLOofVMyYEBZ0mAUQ5ovHm9Qii/4HscBey
+         Lf8tbeCLrbuN1VoFVsuivPOf2bmmBgurww40fGi6vNdyV1EX7fIa+ntJiBKY+iHAmKZn
+         IvYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734032357; x=1734637157;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SXUTpPssHcay1QdWG1rkSODw/xMx016p0D9tmsgF2Zo=;
-        b=ctLcURXsKCs3nYJJR64loPmeOmGm+P/t9Vhz2bbEViu+EsYSCPh36gLz0j7hM8g9sl
-         +Ri360y2OwGmqLtHq3IcwQ+uYiju7S7v4KgkXjWurKWz2lqv2/OmlC3kZt91Cd1pdw7Q
-         d8AuX1EPW4zk82e9hHBybNhrTE+VwoUKwZ2UD8ESr1d/TpTjpjRg67hN9W2T2lVAUgRT
-         s+rzg7PW6r2zkXLAsxwOGw8pyx73WBwCAL1r4WwcMYSXaw+nNBSJkT8d9Pdv1orK7T6T
-         wTY1prb8bNSUFiA7nKsTqCAQOPaenFgmUEPqeUt02OvO7XIEfSvlKmKBDGZuTqofo/K+
-         +czw==
-X-Forwarded-Encrypted: i=1; AJvYcCUZVZ03WxiP9u2OluZGaeF4pVIGMfhdgIGfsvKjVZ8mWGR8vNg+KfQhdgC9GE1j9Cf4qvvv2zf1OGSaT3k38A==@vger.kernel.org, AJvYcCUxq6zKYYOj26u+M03R7MOd6bxTpRXnJe82TPiZEk/qwKgsF2MnjeaYnRF1Qz40OMYCMPYMXd6ACaIv3yqmGFV1PaacImvL@vger.kernel.org, AJvYcCVcPgibmXpb1RzBYF2zQptI2NpTETlG9FbBM/PWOLEUoKQuSy+I45Zb8Q/9EqfPrtvbL6Vsf3GdF4QlI+rO@vger.kernel.org, AJvYcCXhMbTWf/evcLvIdYMZHuxX05s/Hkn2CYrmoJ2qnasRDvXV19CbwwdIzLU599yrJjMIWp8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwV4zddmxTLWvvJYlqx7eEMEVpGHL2OKOGvdqDqTGkvXzlHMck3
-	UvjOHpADLD3N3jxXndXQFrhkVhDvBwORT8/WuWdFZUH2uUAjF4Dik4gi/W58pkgpJE0kCeqXnIM
-	Oem7kGLE364EoAd1gxtW6dTfM45E=
-X-Gm-Gg: ASbGncvbqwqruBOG1s183q7yewKPaSPxZPXb46BPgfdW/ZrADBj0kAbq/PSboCfC7ug
-	APtUAcWggbvEV+ZEFzqQ0L/50P2GgIWGYLSwSGyEDBMwwjDbMgThcVA==
-X-Google-Smtp-Source: AGHT+IEuE6sRVYHDo79XRdWminxIlKw78Xt6GJKIrhH1SKjsZYwk9bCf6Z2d8KVqCCTtTxsUwPflkjjForcaRWkBvtk=
-X-Received: by 2002:a17:90a:de98:b0:2ee:b4d4:69 with SMTP id
- 98e67ed59e1d1-2f128048ef7mr12274134a91.35.1734032356691; Thu, 12 Dec 2024
- 11:39:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1734032991; x=1734637791;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Tg5F0wAIs/4wlzxc+SDrYOCYCP+taL7f2LZJT+TcflM=;
+        b=QKvQFPdXNQ9Or7hUDF0QPjnifnoOaFO3hwcD4PD5i3ooKStY9TwIo4f/Q2RaUz+Vzc
+         6WuYMZjMOkIjkOy0XVmGR9AKVGqrxegwfmDKmvZkghxljhLhzLVuE7d8w5qPjse7X4zQ
+         zP3yl9eGL8EBwQWned6KjI5v5I7DwewuCupGF9mcp6rInOXMHi9Wx3yRNYwkCXc2biUW
+         qrT2li1JP5cFtyWEbjVKsdjCsOHoa7agOzTKgx8ubE/lw8NdLBM41JMjfqsRJq8g0fLa
+         6ki72EyW+kcldGJYD3yxm9Bhz5ZBk6u6YMsSUrHpniBL7gA8tQD2Bm7jRiTWeRN938UV
+         AC7w==
+X-Forwarded-Encrypted: i=1; AJvYcCWPkZrz+sopPVFetoCAVffHrGC5PYToPyFHM4kw59kfeN8AvTLW1JgtQGiIHEdzyrqhS6M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxmyhIrIgbznGNzixXKuPUJ5cXGS1zUF+1rpNlifzMW0sToByQB
+	hSFOKrPgK+TcjvLlXJp5QATvKH4El462qgKLafPegUhYD/y8va8S
+X-Gm-Gg: ASbGncv0P2E4KXCiPpQBoVZu6mRBqVZLXyeSLD2Wj3CUvRPpi8tXetmtgzJLMtfN2mP
+	ZTat64lULnjS/VrxR4vU/1cmIzL8/Mmq4mXnJ3FcHZC8Z7nNl275A7X7Afwb5oJ1jynYaO8f6a/
+	s7fAhmEQVFkhOv8KObx6yFTr3frt2Izju+J8JtarDEDf/um/N3coU1yprsV7cbHktg4ovjv9B2I
+	7mp3UDyX825qfmVxhGNEj6HBmDZOM9yx+dLTWL5OxRzxdT/6DPRoA==
+X-Google-Smtp-Source: AGHT+IGEOqFal/1kG++xMEsMnj8NkZQSYLYldNGMicGPHbc4t7j67tvTQ+UAVj4SQ1jeq5gno82JLA==
+X-Received: by 2002:a17:902:ccc6:b0:215:b9a7:5282 with SMTP id d9443c01a7336-21778535458mr130767805ad.26.1734032990856;
+        Thu, 12 Dec 2024 11:49:50 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21630fee27bsm92172595ad.269.2024.12.12.11.49.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Dec 2024 11:49:49 -0800 (PST)
+Message-ID: <ba58df892ddbcf5650db26f46f730d55aa488353.camel@gmail.com>
+Subject: Re: [PATCH bpf v1 1/2] bpf: Check size for BTF-based ctx access of
+ pointer members
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: kkd@meta.com, Robert Morris <rtm@mit.edu>, Alexei Starovoitov
+ <ast@kernel.org>,  Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@kernel.org>,
+ kernel-team@fb.com
+Date: Thu, 12 Dec 2024 11:49:45 -0800
+In-Reply-To: <20241212092050.3204165-2-memxor@gmail.com>
+References: <20241212092050.3204165-1-memxor@gmail.com>
+	 <20241212092050.3204165-2-memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241210220627.2800362-1-song@kernel.org> <20241211131804.GA1912640@mit.edu>
-In-Reply-To: <20241211131804.GA1912640@mit.edu>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Dec 2024 11:39:04 -0800
-Message-ID: <CAEf4BzakJcZr-Kt+09PF-2jQRAHtzaw+YLibof5z=wvfqddq-Q@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 0/6] Enable writing xattr from BPF programs
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Song Liu <song@kernel.org>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, 
-	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
-	mattbobrowski@google.com, liamwisehart@meta.com, shankaran@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 11, 2024 at 5:18=E2=80=AFAM Theodore Ts'o <tytso@mit.edu> wrote=
-:
->
-> On Tue, Dec 10, 2024 at 02:06:21PM -0800, Song Liu wrote:
-> > Add support to set and remove xattr from BPF program. Also add
-> > security.bpf. xattr name prefix.
->
-> If the system allows for the execution of unprivileged BPF programs
-> (e.g., ones where a random user can load their own BPF programs), will
-> they have hte ability to set and remove security.bpf.* xattrs?  If the
-> answer is yes, should this be disallowed?
+On Thu, 2024-12-12 at 01:20 -0800, Kumar Kartikeya Dwivedi wrote:
+> Robert Morris reported the following program type which passes the
+> verifier in [0]:
+>=20
+> SEC("struct_ops/bpf_cubic_init")
+> void BPF_PROG(bpf_cubic_init, struct sock *sk)
+> {
+> 	asm volatile("r2 =3D *(u16*)(r1 + 0)");     // verifier should demand u6=
+4
+> 	asm volatile("*(u32 *)(r2 +1504) =3D 0");   // 1280 in some configs
+> }
+>=20
+> The second line may or may not work, but the first instruction shouldn't
+> pass, as it's a narrow load into the context structure of the struct ops
+> callback. The code falls back to btf_ctx_access to ensure correctness
+> and obtaining the types of pointers. Ensure that the size of the access
+> is correctly checked to be 8 bytes, otherwise the verifier thinks the
+> narrow load obtained a trusted BTF pointer and will permit loads/stores
+> as it sees fit.
+>=20
+> Perform the check on size after we've verified that the load is for a
+> pointer field, as for scalar values narrow loads are fine. Access to
+> structs passed as arguments to a BPF program are also treated as
+> scalars, therefore no adjustment is needed in their case.
+>=20
+> Existing verifier selftests are broken by this change, but because they
+> were incorrect. Verifier tests for d_path were performing narrow load
+> into context to obtain path pointer, had this program actually run it
+> would cause a crash. The same holds for verifier_btf_ctx_access tests.
+>=20
+>   [0]: https://lore.kernel.org/bpf/51338.1732985814@localhost
+>=20
+> Fixes: 9e15db66136a ("bpf: Implement accurate raw_tp context access via B=
+TF")
+> Reported-by: Robert Morris <rtm@mit.edu>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
 
-It's not 100% clear from Song's reply, but the answer is "no". You
-can't use this from unprivileged BPF programs (BPF LSM is privileged
-and requires root, effectively).
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
->
-> I note that one of the use cases seems to be BPF-based LSM's, so we
-> may want to have something even more restrictive since otherwise any
-> BPF program could potentially have the same power as the LSM?
->
->                                             - Ted
+>  kernel/bpf/btf.c                                            | 6 ++++++
+>  tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c | 4 ++--
+>  tools/testing/selftests/bpf/progs/verifier_d_path.c         | 4 ++--
+>  3 files changed, 10 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index e7a59e6462a9..a63a03582f02 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6543,6 +6543,12 @@ bool btf_ctx_access(int off, int size, enum bpf_ac=
+cess_type type,
+>  		return false;
+>  	}
+> =20
+> +	if (size !=3D sizeof(u64)) {
+> +		bpf_log(log, "func '%s' size %d must be 8\n",
+
+Nit: the error message is somewhat confusing.
+     Maybe print something like:
+     "func '%s' param #%d access size should be 8, not %d"?
+
+> +			tname, size);
+> +		return false;
+> +	}
+> +
+>  	/* check for PTR_TO_RDONLY_BUF_OR_NULL or PTR_TO_RDWR_BUF_OR_NULL */
+>  	for (i =3D 0; i < prog->aux->ctx_arg_info_size; i++) {
+>  		const struct bpf_ctx_arg_aux *ctx_arg_info =3D &prog->aux->ctx_arg_inf=
+o[i];
+
+[...]
+
 
