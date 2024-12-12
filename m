@@ -1,195 +1,203 @@
-Return-Path: <bpf+bounces-46695-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46696-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D24529EE2CE
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 10:25:01 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5323A9EE30A
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 10:28:52 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70E671671AB
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 09:28:15 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8373120E315;
+	Thu, 12 Dec 2024 09:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ei3J9H2t"
+X-Original-To: bpf@vger.kernel.org
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5882A2811EB
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 09:25:00 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52782210F6E;
-	Thu, 12 Dec 2024 09:22:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eXs4Shio"
-X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AAD0210F5E;
-	Thu, 12 Dec 2024 09:22:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C5E120E6FD
+	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 09:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733995356; cv=none; b=Em3nDM+pTRd6lxq+Slv5N93SBCTpRu9jPrkyo6/Ylaaumr9JHkKAVwmrpPHyjpqTjpNHi+pWhRQrdSLgsvwSrh239J5rivcqcB/oCmYb8gorIbydElqlK1osscAcjwHoeMWkSTk7uwS8ZDMinQ6j+xdTgRPOoEmUJBr9wRI0YwQ=
+	t=1733995678; cv=none; b=tjsE59aq21+VdVJRdoQx1is38ompwq8MXjezqGsOaaODMPjTy5BwDjtxKaWknHRgXaJ8KZIYpzUlTDwi/lFc3qdJAq1L67hkbpQnLwmJKFr+qcR3ultw+jL8A5zTGO06V2sv7gD/A9PVyvG5P0dCEtmDBxw6D6Ai/XJ4irVa06c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733995356; c=relaxed/simple;
-	bh=MH76A8RrBVeEauyXdzge4bB1tbBOOSK8hzAcOTLGZu4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DG8jGCoEcdatyAjkOOkBqZOGsWbI3XxH0itP6RDVxoXRdlfaUgIiV2S9Pyl6pRcxkVWfAgaI7qoxKkPvEHQNIMo6+/pby3kK1V/J2cpxz+TWGrXd67Ca1yPwjbEYSNrgBhDY+NSmNPc3SyO3qPloqu4zwdYssKEW7+Xhvmd0/xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eXs4Shio; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4361fe642ddso3652785e9.2;
-        Thu, 12 Dec 2024 01:22:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733995353; x=1734600153; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9/8qAprzepzOhI9hq4ABjT0H5BvreqQl8xCmHayUS8c=;
-        b=eXs4Shio6ac1r7QEKWNtJP3FrfXt15FR7EuCHN5XatULVJ33jejdBd628nCkHai8wa
-         JXHISyqGs/QxfRGhnbfzX2PZMz3wq39/Ce2WaMDeIoJeXyQlMHKnVs33U+1NSjmkvupD
-         YbbKZbcmUPX23HRIFS4KLz7ZS7f2iJhpIbhXTorEKAbDnCKLmplxFxYfFc2j1Siakhza
-         Iqu5TB38YJ1baeuMTF5SHWJJbJMyop/N+e/L9uXjyVzNnAk3a14PL8XPIW6VcSuE68M3
-         rWOGpk3arRzs2j4rEzljNmjbK72+PC6hslhJH0F5NG8fwwJAp/lzDFHF7Gix4YqfhF9n
-         gXrA==
+	s=arc-20240116; t=1733995678; c=relaxed/simple;
+	bh=b9cdBCl6i8/Pg9BidsE6MaRf0sy/S53LsQhJ0yDDCcE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=t3kmNDhujN9UexK7dIsw5eFAmhrjLo/tKKHuaxJ2vweG4f0JVzORwXGiQJRtJnOERwbiBeHDg2wRN7OO3niR0lI8HkUDr6Y3hkzbS2NVzNsCwkWRJcBDHOVPj8KCczQwQpb/PBtOYqhGa5uykGOD6zfylx9CJfrU2BOVu5xZhXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ei3J9H2t; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1733995675;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YQDLEldT18Fc0IWLf1h2y9YzeGe3KbZy7EnSjmgH5Ac=;
+	b=Ei3J9H2tLERnQSe2y1h7NePsYsRDSUBUkxj/cX/cK1JNvY0oPvaUFghgxWjeu6bPZHPn9H
+	oUmN130u7YnV+x7OGyMJf19Sp313IjJFw4/jFOffRAAEPGNrZoo0AOYgAKGn4yTnDBg1fx
+	Y31eyXgKHzvswv+QvM+NGGCZnPVvIvE=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-591-LAtFb6P7NvanFSpgSyX04A-1; Thu, 12 Dec 2024 04:27:52 -0500
+X-MC-Unique: LAtFb6P7NvanFSpgSyX04A-1
+X-Mimecast-MFC-AGG-ID: LAtFb6P7NvanFSpgSyX04A
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4361ac8b25fso2288575e9.2
+        for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 01:27:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733995353; x=1734600153;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
+        d=1e100.net; s=20230601; t=1733995671; x=1734600471;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9/8qAprzepzOhI9hq4ABjT0H5BvreqQl8xCmHayUS8c=;
-        b=BzYUk5qicSOYbyuRZKbzllJIijI/Cv2V3wrfg9v65YgF6thmjXae537/nPS+lRmhu8
-         8Ywlug1N1unNsrw/M270twQPRksZ3evhcwhNDIu1PF/JwoqJJoZ10DibJxwhjiST9s2S
-         Vgpu1ydZLOnL+f6g7FZYKqgVq8tg7IbCgenAh2vkNSf/dPDwODeMXq2qNzUO3OeA0gD1
-         oC7mdoIS0ORqEhNWv14QbCSjwZNUiJb2L20f4+RXxq7jaYGXH2EcbuMvMoxUXxNO4Bb7
-         BkLklyD/Vyj/c4Gxp4qnoTsWAKxyM5CzoQiQXeEhGwGLAnE/rbsrxNGJRQKuHFyQ6wbv
-         WTXw==
-X-Forwarded-Encrypted: i=1; AJvYcCUdueEg13+PTcuxqllZoNoEX29xFrGn+ic2fmJ3Koo0kh4DbUpVFg5N9Nq8nl4jtPVVbGw2yE1TXK4YrTJr@vger.kernel.org, AJvYcCUyFjYgl8gWJgybJJimyep9a8jw9xtykd7Fp6q4Wjkt0ABb38ZRl2IHIZMJKilNbbP3Klc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzjVECAZ4rQepQM7OxjftmveDphCq0KYB6CKtRYhPwnYBSLeNQW
-	1t0g2vtBNkLma+72ZpwvGW6CgNn+FmkQb1Twd1xrI2WpRqZ94LYO
-X-Gm-Gg: ASbGncuFxX7v+FRSGZh8DYzl/LmNFdGUylGc9hIbbDXPbyEsl9hQj16EAAtLHahnIlX
-	aYGdFIRPYSwnmHeTOy20ddHBCxCaqzZjm8u5pHX7BF4gtoBvm0WlQ1Aw5DjPcqsBtIH5dsfm4p8
-	Mw/CaphehA5s7VTxF3tdXiuSffebAYlf2PoRXQAw5oEajChqCS9Ny2MnqzGLq6/hxHWzjMtl+6k
-	zEwpZd1FwWC+WcWtxb0RsK4B61D3NXP4FMiPOtvCHKhrZG1wMDkQIfaUiHRK9RqoiFOrtDtgCOc
-	u3Zl+H8hA9byrK/k7hoyXNnc1AVwGg==
-X-Google-Smtp-Source: AGHT+IF5BcgvSTVBRtoBdBseMDIWG1i+t5YhY/Nf3IWtocZuQeNr3CTNju1EKFip3g+LBHDjf7c81A==
-X-Received: by 2002:a05:600c:4e4b:b0:434:a0bf:98ea with SMTP id 5b1f17b1804b1-4361c35cc4bmr46472845e9.9.1733995353163;
-        Thu, 12 Dec 2024 01:22:33 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43625717c9fsm10563025e9.44.2024.12.12.01.22.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 01:22:32 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 12 Dec 2024 10:22:30 +0100
-To: Jiri Olsa <olsajiri@gmail.com>,
-	Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc: Laura Nao <laura.nao@collabora.com>, alan.maguire@oracle.com,
-	bpf@vger.kernel.org, chrome-platform@lists.linux.dev,
-	kernel@collabora.com, linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev
-Subject: Re: [REGRESSION] module BTF validation failure (Error -22) on
-Message-ID: <Z1qrVu2Pv6qXI9tD@krava>
-References: <Z1LvfndLE1t1v995@krava>
- <20241210135501.251505-1-laura.nao@collabora.com>
- <Z1n_wGj0CGjh_gLP@krava>
+        bh=YQDLEldT18Fc0IWLf1h2y9YzeGe3KbZy7EnSjmgH5Ac=;
+        b=NwxN0hJQWwl8VKmac+w996XyScgH4PwKWhYZj+dc1XuNr1Himl1LBn3PqoTq7Vzry6
+         hLynSnCWdRYU20lGzK7HAflfi6kSzBSQ/bHjHPMCcS8G+nN4H/zw1pReLRRh7dbJrjRg
+         k58aWGUz0DRhD3JqkDxNqtN5dQGPi76R9Lw60K81gBFRfYQ2ZOtWq8z+F3R+4VlBkecK
+         IGUnMAdF9x2NIvY+ppJJvwMZQXwlgZUcNfw/OTSxejmXU1ngSQRxhw7iwfHx3O+Mtw3X
+         TJZlMx0UmWV9/qDRM/DZgsqQ7AWLn5bGPDOIBfwo6NnostmkvWiSHdqbcqxe1JdiHgQj
+         BjMg==
+X-Forwarded-Encrypted: i=1; AJvYcCWDIXMp1C5fbM0iUYMlzA8VGYG3pxpWCUAfLWhjmaAtktRta3BtZwR462G8CMjkeWM2CuM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxnPb0Y/HoOkx+uvRkTjC4oRafJLXl8nBvim8TDDh0+qB+85MXP
+	F3PuI7PcnOnpt/gIT9ST2mo8mI9eYfWdFYNkiKY/Dwog0V8YFlpioMX2I5bTvq14uDZEi2m/Vri
+	V2Dj5kc27218iz7u6J3WoYN0ixO9OBL1enGNLQZN7tbIU278t3w==
+X-Gm-Gg: ASbGncug3POUJM/ocwpJMS/pfbhi91xMXhe2awSyzTyvNebyAWf5Ko2OkDVBbH3i92v
+	VpCM2Tbd3cUQyzcEKm/eHVELj0q3ZD4BVwrDJ1P7udi4zAx4joQCOzHu75wEwh7q/DgAwWpAcI+
+	3IkCQRCQ2KbrVE0YGxJdMJzA2y4Il0dSVVHRKEIXUbzf91vnoc1xMawa0LbXagSJ9WrtdrU5LzX
+	2MEKWynFYDBLYBhgbAgpuQdXScL/9ZBvf0ZEbnH1sT/+zmg1QbtaMcjqDBzkEvNDAJfrFJCLQnb
+	0lbPUtA=
+X-Received: by 2002:a05:600c:548a:b0:434:f609:1afa with SMTP id 5b1f17b1804b1-43622823a9bmr23142015e9.4.1733995671085;
+        Thu, 12 Dec 2024 01:27:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGfecq/fvmxWbZmLr9mwKSJq21xM6RVRZ1wSoCEsNQjvNePz0TX5CuMdaiXcW+mTqnLDcuA8w==
+X-Received: by 2002:a05:600c:548a:b0:434:f609:1afa with SMTP id 5b1f17b1804b1-43622823a9bmr23141765e9.4.1733995670687;
+        Thu, 12 Dec 2024 01:27:50 -0800 (PST)
+Received: from [192.168.88.24] (146-241-48-67.dyn.eolo.it. [146.241.48.67])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-436256b42a3sm10746345e9.28.2024.12.12.01.27.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Dec 2024 01:27:50 -0800 (PST)
+Message-ID: <2b89667d-ccd6-40b7-b355-1c71e159d14f@redhat.com>
+Date: Thu, 12 Dec 2024 10:27:48 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z1n_wGj0CGjh_gLP@krava>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v5 3/5] rtnetlink: Decouple net namespaces in
+ rtnl_newlink_create()
+To: Xiao Liang <shaw.leon@gmail.com>, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Kuniyuki Iwashima <kuniyu@amazon.com>,
+ Jakub Kicinski <kuba@kernel.org>, Donald Hunter <donald.hunter@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>, David Ahern
+ <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>,
+ Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Simon Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Jiri Pirko <jiri@resnulli.us>, Hangbin Liu <liuhangbin@gmail.com>,
+ linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
+ osmocom-net-gprs@lists.osmocom.org, bpf@vger.kernel.org,
+ linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+ linux-wireless@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
+ bridge@lists.linux.dev, linux-wpan@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20241209140151.231257-1-shaw.leon@gmail.com>
+ <20241209140151.231257-4-shaw.leon@gmail.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20241209140151.231257-4-shaw.leon@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Dec 11, 2024 at 10:10:24PM +0100, Jiri Olsa wrote:
-> On Tue, Dec 10, 2024 at 02:55:01PM +0100, Laura Nao wrote:
-> > Hi Jiri,
-> > 
-> > Thanks for the feedback!
-> > 
-> > On 12/6/24 13:35, Jiri Olsa wrote:
-> > > On Fri, Nov 15, 2024 at 06:17:12PM +0100, Laura Nao wrote:
-> > >> On 11/13/24 10:37, Laura Nao wrote:
-> > >>>
-> > >>> Currently, KernelCI only retains the bzImage, not the vmlinux
-> > >>> binary. The
-> > >>> bzImage can be downloaded from the same link mentioned above by
-> > >>> selecting
-> > >>> 'kernel' from the dropdown menu (modules can also be downloaded the
-> > >>> same
-> > >>> way). I’ll try to replicate the build on my end and share the
-> > >>> vmlinux
-> > >>> with DWARF data stripped for convenience.
-> > >>>
-> > >>
-> > >> I managed to reproduce the issue locally and I've uploaded the
-> > >> vmlinux[1]
-> > >> (stripped of DWARF data) and vmlinux.raw[2] files, as well as one of
-> > >> the
-> > >> modules[3] and its btf data[4] extracted with:
-> > >>
-> > >> bpftool -B vmlinux btf dump file cros_kbd_led_backlight.ko >
-> > >> cros_kbd_led_backlight.ko.raw
-> > >>
-> > >> Looking again at the logs[5], I've noticed the following is reported:
-> > >>
-> > >> [    0.415885] BPF: 	 type_id=115803 offset=177920 size=1152
-> > >> [    0.416029] BPF:
-> > >> [    0.416083] BPF: Invalid offset
-> > >> [    0.416165] BPF:
-> > >>
-> > >> There are two different definitions of rcu_data in '.data..percpu',
-> > >> one
-> > >> is a struct and the other is an integer:
-> > >>
-> > >> type_id=115801 offset=177920 size=1152 (VAR 'rcu_data')
-> > >> type_id=115803 offset=177920 size=1152 (VAR 'rcu_data')
-> > >>
-> > >> [115801] VAR 'rcu_data' type_id=115572, linkage=static
-> > >> [115803] VAR 'rcu_data' type_id=1, linkage=static
-> > >>
-> > >> [115572] STRUCT 'rcu_data' size=1152 vlen=69
-> > >> [1] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64
-> > >> encoding=(none)
-> > >>
-> > >> I assume that's not expected, correct?
-> > > 
-> > > yes, that seems wrong.. but I can't reproduce with your config
-> > > together with pahole 1.24 .. could you try with latest one?
-> > 
-> > I just tested next-20241210 with the latest pahole version (1.28 from
-> > the master branch[1]), and the issue does not occur with this version
-> > (I can see only one instance of rcu_data in the BTF data, as expected).
-> > 
-> > I can confirm that the same kernel revision still exhibits the issue
-> > with pahole 1.24.
-> > 
-> > If helpful, I can also test versions between 1.24 and 1.28 to identify
-> > which ones work.
+On 12/9/24 15:01, Xiao Liang wrote:
+> There are 4 net namespaces involved when creating links:
 > 
-> I managed to reproduce finally with gcc-12, but had to use pahole 1.25,
-> 1.24 failed with unknown attribute
+>  - source netns - where the netlink socket resides,
+>  - target netns - where to put the device being created,
+>  - link netns - netns associated with the device (backend),
+>  - peer netns - netns of peer device.
 > 
-> 	[95096] VAR 'rcu_data' type_id=94868, linkage=static
-> 	[95098] VAR 'rcu_data' type_id=4, linkage=static
-> 	type_id=95096 offset=177088 size=1152 (VAR 'rcu_data')
-> 	type_id=95098 offset=177088 size=1152 (VAR 'rcu_data')
+> Currently, two nets are passed to newlink() callback - "src_net"
+> parameter and "dev_net" (implicitly in net_device). They are set as
+> follows, depending on netlink attributes.
+> 
+>  +------------+-------------------+---------+---------+
+>  | peer netns | IFLA_LINK_NETNSID | src_net | dev_net |
+>  +------------+-------------------+---------+---------+
+>  |            | absent            | source  | target  |
+>  | absent     +-------------------+---------+---------+
+>  |            | present           | link    | link    |
+>  +------------+-------------------+---------+---------+
+>  |            | absent            | peer    | target  |
+>  | present    +-------------------+---------+---------+
+>  |            | present           | peer    | link    |
+>  +------------+-------------------+---------+---------+
+> 
+> When IFLA_LINK_NETNSID is present, the device is created in link netns
+> first. This has some side effects, including extra ifindex allocation,
+> ifname validation and link notifications. There's also an extra step to
+> move the device to target netns. These could be avoided if we create it
+> in target netns at the beginning.
+> 
+> On the other hand, the meaning of src_net is ambiguous. It varies
+> depending on how parameters are passed. It is the effective link or peer
+> netns by design, but some drivers ignore it and use dev_net instead.
+> 
+> This patch refactors netns handling by packing newlink() parameters into
+> a struct, and passing source, link and peer netns as is through this
+> struct. Fallback logic is implemented in helper functions -
+> rtnl_newlink_link_net() and rtnl_newlink_peer_net(). If is not set, peer
+> netns falls back to link netns, and link netns falls back to source netns.
+> rtnl_newlink_create() now creates devices in target netns directly,
+> so dev_net is always target netns.
+> 
+> For drivers that use dev_net as fallback of link_netns, current behavior
+> is kept for compatibility.
+> 
+> Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
 
-so for me the difference seems to be using gcc-12 and this commit in linux tree:
-  dabddd687c9e percpu: cast percpu pointer in PERCPU_PTR() via unsigned long
+I must admit this patch is way too huge for me to allow any reasonable
+review except that this has the potential of breaking a lot of things.
 
-which adds extra __pcpu_ptr variable into dwarf, and it has the same
-address as the per cpu variable and that confuses pahole
+I think you should be splitted to make it more palatable; i.e.
+- a patch just add the params struct with no semantic changes.
+- a patch making the dev_change_net_namespace() conditional on net !=
+tge_net[1]
+- many per-device patches creating directly the device in the target
+namespace.
+- a patch reverting [1]
 
-it ends up with adding per cpu variable twice.. one with real type
-(type_id=94868) and the other with unsigned long type (type_id=4)
+Other may have different opinions, I'd love to hear them.
 
-however this got fixed in pahole 1.28 commit:
-  47dcb534e253 btf_encoder: Stop indexing symbols for VARs
+> diff --git a/drivers/net/amt.c b/drivers/net/amt.c
+> index 98c6205ed19f..2f7bf50e05d2 100644
+> --- a/drivers/net/amt.c
+> +++ b/drivers/net/amt.c
+> @@ -3161,14 +3161,17 @@ static int amt_validate(struct nlattr *tb[], struct nlattr *data[],
+>  	return 0;
+>  }
+>  
+> -static int amt_newlink(struct net *net, struct net_device *dev,
+> -		       struct nlattr *tb[], struct nlattr *data[],
+> -		       struct netlink_ext_ack *extack)
+> +static int amt_newlink(struct rtnl_newlink_params *params)
+>  {
+> +	struct net_device *dev = params->dev;
+> +	struct nlattr **tb = params->tb;
+> +	struct nlattr **data = params->data;
+> +	struct netlink_ext_ack *extack = params->extack;
+> +	struct net *link_net = rtnl_newlink_link_net(params);
+>  	struct amt_dev *amt = netdev_priv(dev);
+>  	int err = -EINVAL;
 
-which filters out __pcpu_ptr variable completely, adding Stephen to the loop
+Minor nit: here and and many other places, please respect the reverse
+xmas tree order.
 
-with gcc-14 the __pcpu_ptr variable has VSCOPE_OPTIMIZED scope, so it won't
-get into btf even without above pahole fix
+Thanks,
 
-I suggest gcc/pahole upgrade ;-)
+Paolo
 
-thanks,
-jirka
 
