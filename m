@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-46714-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46717-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D3B89EED7A
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 16:47:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C65719EF1E4
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 17:42:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ECF028968B
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 15:47:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61AA028BCB6
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 16:42:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218EC222D45;
-	Thu, 12 Dec 2024 15:45:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B15823694E;
+	Thu, 12 Dec 2024 16:35:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="MmoPJHtc"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="HAUna3Sc"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9612814A82;
-	Thu, 12 Dec 2024 15:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D021E236938;
+	Thu, 12 Dec 2024 16:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734018339; cv=none; b=I7pZxIHCotbATPOYICE6TbhCb/eVrtF+Au0AFBjIn5+QBUUww4rMK5oTyOsCtc9PJ2Jr3gj//65EGBimIzSFuq89DN2MTe2+LiAlTQI3YMFtNHPLybUn/UY+R6137QKK01AO4LtMzanwhL0UZhgfkjmTemGGbkD9TjBkCleTtWI=
+	t=1734021301; cv=none; b=NNJy6ig5Sv9b2uNt2GM3YfNEh4TwdLkOCtCnK0fgMypmWsnoeWVGCqF4VA+HHw3dIiiUcZwIDJNS/HJbN2RTaPH1TNC/M3l+TRFf0jHu4ZbIpwkd+chJnZoQchfE1H1jAqUmLuLOs9x2f3W1iwsnjgoFsjBvSlooWTvOnzdwHGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734018339; c=relaxed/simple;
-	bh=/2N1SQjInvbz4DIky4O9YmfcFq726Z8eYoysWQ+D0GY=;
+	s=arc-20240116; t=1734021301; c=relaxed/simple;
+	bh=8AJBYutqjJjSxaxd7TMxkHTNh8jphu01vcEGtLW7G18=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sxHuq1H1Vl4WCgI1izM8aRcY/hWIYOH899kc5++swQiajxDtqyCigpkzaFQgaJ/sLCJLPHYNN7XkMIudIjjIv1Q46CZujkoqrBIw7UIwfoyOff1O6XuFKc8uN6GbgcRxBnwJfPBQDzdhYZvFqo/P1pnhQWHIE/fAKD0EqhRvFSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=MmoPJHtc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C90A8C4CECE;
-	Thu, 12 Dec 2024 15:45:38 +0000 (UTC)
+	 MIME-Version; b=ZAwwl0iuXRtmPkhguwq5C7BqASzXkg1/uHP7LGa9Qxa8ZkCniHHX7+qwCbeqLPhygI1+lVg40xRM35CpE4f/CeO7Ne4i1HPxCmxvgKdToVoAfnb0nh5l0vhdvLanGO+1/kY7jBYMDW8c/0Lmc0z/+iBa3yrAKeHZ0vFILr/MrTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=HAUna3Sc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5E9DC4CED0;
+	Thu, 12 Dec 2024 16:35:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1734018339;
-	bh=/2N1SQjInvbz4DIky4O9YmfcFq726Z8eYoysWQ+D0GY=;
+	s=korg; t=1734021301;
+	bh=8AJBYutqjJjSxaxd7TMxkHTNh8jphu01vcEGtLW7G18=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MmoPJHtckwRdvMKWJElVT/uBYQks+rUn36aSXxK6scdyaSsRDvOv3QtqlESGtTpem
-	 4LkfV74y2h4AGHEQE1Kos+jee5A5XupjXs2aaYxNE94fuUgr6K/yMFAKAbj7TKJPW/
-	 P2S51U8S6W8p3I8jOwojD/2dB2ckWClyvg188gVk=
+	b=HAUna3ScteVsloypHa2CGca811JzxvcAtWjeaYr+kap+EG3Pm7pSxuS3JNx9RssiJ
+	 bElVMxxIdAHFEHfxnu7Rr2FoRCrnwolGpazP6EMRUHZ6olOJLcs6yZnYR53n4w47HL
+	 lQuwysdVedu5KaGhcFnROsTy4xI0M+iZktJP0+H8=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -59,12 +59,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 266/356] tracing/ftrace: disable preemption in syscall probe
-Date: Thu, 12 Dec 2024 15:59:45 +0100
-Message-ID: <20241212144255.100642783@linuxfoundation.org>
+Subject: [PATCH 6.1 700/772] tracing/ftrace: disable preemption in syscall probe
+Date: Thu, 12 Dec 2024 16:00:45 +0100
+Message-ID: <20241212144418.823537240@linuxfoundation.org>
 X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20241212144244.601729511@linuxfoundation.org>
-References: <20241212144244.601729511@linuxfoundation.org>
+In-Reply-To: <20241212144349.797589255@linuxfoundation.org>
+References: <20241212144349.797589255@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -76,7 +76,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-6.6-stable review patch.  If anyone has any objections, please let me know.
+6.1-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -188,7 +188,7 @@ index c2f9cabf154d1..fa0d51cad57a8 100644
  
  #undef DECLARE_EVENT_CLASS
 diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
-index de753403cdafb..9508d9022940f 100644
+index 942ddbdace4a4..e39c5ca76eabb 100644
 --- a/kernel/trace/trace_syscalls.c
 +++ b/kernel/trace/trace_syscalls.c
 @@ -299,6 +299,12 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
