@@ -1,225 +1,119 @@
-Return-Path: <bpf+bounces-46717-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46708-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C65719EF1E4
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 17:42:35 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 265369EEA45
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 16:11:33 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61AA028BCB6
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 16:42:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D608188D4B0
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 15:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B15823694E;
-	Thu, 12 Dec 2024 16:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFEA5215F48;
+	Thu, 12 Dec 2024 15:07:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="HAUna3Sc"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lGaZYc/e";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="7d6kHi/3"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D021E236938;
-	Thu, 12 Dec 2024 16:35:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA7992156EA
+	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 15:07:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734021301; cv=none; b=NNJy6ig5Sv9b2uNt2GM3YfNEh4TwdLkOCtCnK0fgMypmWsnoeWVGCqF4VA+HHw3dIiiUcZwIDJNS/HJbN2RTaPH1TNC/M3l+TRFf0jHu4ZbIpwkd+chJnZoQchfE1H1jAqUmLuLOs9x2f3W1iwsnjgoFsjBvSlooWTvOnzdwHGc=
+	t=1734016069; cv=none; b=BOKho3Qz5uvikOE3qAIqkPh2XGrv99XWyO5trL2DtwdQAyH98+xEhnUmRszI0rcUrlASWu+jljZWqfpwS6Fc31Y/e/XDvD5sxNf1bRV3QLOYRcKKfYRjWVqyR5v+Z6yo9bgbDAEGb6WwER9RxENAFkzNivjqCoWFywxYxaDqb6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734021301; c=relaxed/simple;
-	bh=8AJBYutqjJjSxaxd7TMxkHTNh8jphu01vcEGtLW7G18=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZAwwl0iuXRtmPkhguwq5C7BqASzXkg1/uHP7LGa9Qxa8ZkCniHHX7+qwCbeqLPhygI1+lVg40xRM35CpE4f/CeO7Ne4i1HPxCmxvgKdToVoAfnb0nh5l0vhdvLanGO+1/kY7jBYMDW8c/0Lmc0z/+iBa3yrAKeHZ0vFILr/MrTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=HAUna3Sc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5E9DC4CED0;
-	Thu, 12 Dec 2024 16:35:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1734021301;
-	bh=8AJBYutqjJjSxaxd7TMxkHTNh8jphu01vcEGtLW7G18=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HAUna3ScteVsloypHa2CGca811JzxvcAtWjeaYr+kap+EG3Pm7pSxuS3JNx9RssiJ
-	 bElVMxxIdAHFEHfxnu7Rr2FoRCrnwolGpazP6EMRUHZ6olOJLcs6yZnYR53n4w47HL
-	 lQuwysdVedu5KaGhcFnROsTy4xI0M+iZktJP0+H8=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Michael Jeanson <mjeanson@efficios.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
+	s=arc-20240116; t=1734016069; c=relaxed/simple;
+	bh=DZby7l1d9k2K1tcVsiNHGreMGm/ww2XeHJ2/aXTVnTc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q9hVbCf4Cdf3ErBtDOBTWL9wDmj0/TA/0+GC/5TKeaSxK62+vYyWMkTFNrApohkA1iPT1k0tsMZpuCLu+uPepuv/jTUHToMk/mzL5lIhDfuovuHs8TUOHql/W4LW1WCASLvVBcEcDEsEkYZY0IjrbC6I13Pe8/2ft8nsqyrroxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lGaZYc/e; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=7d6kHi/3; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 12 Dec 2024 16:07:44 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1734016065;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eY305dc3rE3qvXpFds78ml1gx5qsrQHsdU//zOdN308=;
+	b=lGaZYc/ev1Oxhb+h7Qhy6vhaJHJpEpMIurB9thL6gwpbSvgiHJ+WPjpdWZdHi/u9HYI/ut
+	26I+2rseH5/wHn3VnCYnYWXeaEWX+BbcX33CC8d3uiyaHEF+D6VJfps12VJj32IkvS6MHd
+	UZfiRCuu6x4SbrG38+eBLtXTxMfRT9F6QWbEkSpSTc49gjnfMLfbWhRO/TWUQKA2reqZnF
+	IDJhmjh4K+bM96gdQNgcmugT1mQUbZuu+iNkJyHpMhTCSEXQTLPWQA/+sYrWis//MR5Hrt
+	pSRrSpi/+C7TEI4VhO6qfC9n7X7vj4Kjy2bqFzSIjxt2esHYZCRSvRf8dxU4Vw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1734016065;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eY305dc3rE3qvXpFds78ml1gx5qsrQHsdU//zOdN308=;
+	b=7d6kHi/3PRl0sVZ1/mDjhi0ZH5pVm9hDbqJAoxWDp0wJOp6Fh8kXlNzsaAhsJ9X0GlnsOu
+	GPJJdsE3kiU1ooAw==
+From: Sebastian Sewior <bigeasy@linutronix.de>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Michal Hocko <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>,
+	bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	bpf@vger.kernel.org,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 700/772] tracing/ftrace: disable preemption in syscall probe
-Date: Thu, 12 Dec 2024 16:00:45 +0100
-Message-ID: <20241212144418.823537240@linuxfoundation.org>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20241212144349.797589255@linuxfoundation.org>
-References: <20241212144349.797589255@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+	Vlastimil Babka <vbabka@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev,
+	Thomas Gleixner <tglx@linutronix.de>, Tejun Heo <tj@kernel.org>,
+	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next v2 1/6] mm, bpf: Introduce __GFP_TRYLOCK for
+ opportunistic page allocation
+Message-ID: <20241212150744.dVyycFUJ@linutronix.de>
+References: <20241210023936.46871-1-alexei.starovoitov@gmail.com>
+ <20241210023936.46871-2-alexei.starovoitov@gmail.com>
+ <Z1fSMhHdSTpurYCW@casper.infradead.org>
+ <Z1gEUmHkF1ikgbor@tiehlicka>
+ <CAADnVQKj40zerCcfcLwXOTcL+13rYzrraxWABRSRQcPswz6Brw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKj40zerCcfcLwXOTcL+13rYzrraxWABRSRQcPswz6Brw@mail.gmail.com>
 
-6.1-stable review patch.  If anyone has any objections, please let me know.
+On 2024-12-10 14:06:32 [-0800], Alexei Starovoitov wrote:
+> > Is there any reason why GFP_ATOMIC cannot be extended to support new
+> > contexts? This allocation mode is already documented to be usable from
+> > atomic contexts except from NMI and raw_spinlocks. But is it feasible to
+> > extend the current implementation to use only trylock on zone->lock if
+> > called from in_nmi() to reduce unexpected failures on contention for
+> > existing users?
+> 
+> No. in_nmi() doesn't help. It's the lack of reentrance of slab and page
+> allocator that is an issue.
+> The page alloctor might grab zone lock. In !RT it will disable irqs.
+> In RT will stay sleepable. Both paths will be calling other
+> kernel code including tracepoints, potential kprobes, etc
+> and bpf prog may be attached somewhere.
+> If it calls alloc_page() it may deadlock on zone->lock.
+> pcpu lock is thankfully trylock already.
+> So !irqs_disabled() part of preemptible() guarantees that
+> zone->lock won't deadlock in !RT.
+> And rcu_preempt_depth() case just steers bpf into try lock only path in RT.
+> Since there is no way to tell whether it's safe to call
+> sleepable spin_lock(&zone->lock).
 
-------------------
+Oh. You don't need to check rcu_preempt_depth() for that. On PREEMPT_RT
+rcu_preempt_depth() is incremented with every spin_lock() because we
+need an explicit start of a RCU section (same thing happens with
+preempt_disable() spin_lock()). If there is already a RCU section
+(rcu_preempt_depth() > 0) you can still try to acquire a spinlock_t and
+maybe schedule out/ sleep. That is okay.
 
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+But since I see in_nmi(). You can't trylock from NMI on RT. The trylock
+part is easy but unlock might need to acquire rt_mutex_base::wait_lock
+and worst case is to wake a waiter via wake_up_process().
 
-[ Upstream commit 13d750c2c03e9861e15268574ed2c239cca9c9d5 ]
-
-In preparation for allowing system call enter/exit instrumentation to
-handle page faults, make sure that ftrace can handle this change by
-explicitly disabling preemption within the ftrace system call tracepoint
-probes to respect the current expectations within ftrace ring buffer
-code.
-
-This change does not yet allow ftrace to take page faults per se within
-its probe, but allows its existing probes to adapt to the upcoming
-change.
-
-Cc: Michael Jeanson <mjeanson@efficios.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Link: https://lore.kernel.org/20241009010718.2050182-3-mathieu.desnoyers@efficios.com
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- include/trace/trace_events.h  | 36 +++++++++++++++++++++++++++++++----
- kernel/trace/trace_syscalls.c | 12 ++++++++++++
- 2 files changed, 44 insertions(+), 4 deletions(-)
-
-diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-index c2f9cabf154d1..fa0d51cad57a8 100644
---- a/include/trace/trace_events.h
-+++ b/include/trace/trace_events.h
-@@ -244,6 +244,9 @@ static struct trace_event_fields trace_event_fields_##call[] = {	\
- 	tstruct								\
- 	{} };
- 
-+#undef DECLARE_EVENT_SYSCALL_CLASS
-+#define DECLARE_EVENT_SYSCALL_CLASS DECLARE_EVENT_CLASS
-+
- #undef DEFINE_EVENT_PRINT
- #define DEFINE_EVENT_PRINT(template, name, proto, args, print)
- 
-@@ -374,11 +377,11 @@ static inline notrace int trace_event_get_offsets_##call(		\
- 
- #include "stages/stage6_event_callback.h"
- 
--#undef DECLARE_EVENT_CLASS
--#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
--									\
-+
-+#undef __DECLARE_EVENT_CLASS
-+#define __DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
- static notrace void							\
--trace_event_raw_event_##call(void *__data, proto)			\
-+do_trace_event_raw_event_##call(void *__data, proto)			\
- {									\
- 	struct trace_event_file *trace_file = __data;			\
- 	struct trace_event_data_offsets_##call __maybe_unused __data_offsets;\
-@@ -403,6 +406,29 @@ trace_event_raw_event_##call(void *__data, proto)			\
- 									\
- 	trace_event_buffer_commit(&fbuffer);				\
- }
-+
-+#undef DECLARE_EVENT_CLASS
-+#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
-+__DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
-+		      PARAMS(assign), PARAMS(print))			\
-+static notrace void							\
-+trace_event_raw_event_##call(void *__data, proto)			\
-+{									\
-+	do_trace_event_raw_event_##call(__data, args);			\
-+}
-+
-+#undef DECLARE_EVENT_SYSCALL_CLASS
-+#define DECLARE_EVENT_SYSCALL_CLASS(call, proto, args, tstruct, assign, print) \
-+__DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
-+		      PARAMS(assign), PARAMS(print))			\
-+static notrace void							\
-+trace_event_raw_event_##call(void *__data, proto)			\
-+{									\
-+	preempt_disable_notrace();					\
-+	do_trace_event_raw_event_##call(__data, args);			\
-+	preempt_enable_notrace();					\
-+}
-+
- /*
-  * The ftrace_test_probe is compiled out, it is only here as a build time check
-  * to make sure that if the tracepoint handling changes, the ftrace probe will
-@@ -418,6 +444,8 @@ static inline void ftrace_test_probe_##call(void)			\
- 
- #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
- 
-+#undef __DECLARE_EVENT_CLASS
-+
- #include "stages/stage7_class_define.h"
- 
- #undef DECLARE_EVENT_CLASS
-diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
-index 942ddbdace4a4..e39c5ca76eabb 100644
---- a/kernel/trace/trace_syscalls.c
-+++ b/kernel/trace/trace_syscalls.c
-@@ -299,6 +299,12 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
- 	int syscall_nr;
- 	int size;
- 
-+	/*
-+	 * Syscall probe called with preemption enabled, but the ring
-+	 * buffer and per-cpu data require preemption to be disabled.
-+	 */
-+	guard(preempt_notrace)();
-+
- 	syscall_nr = trace_get_syscall_nr(current, regs);
- 	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
- 		return;
-@@ -338,6 +344,12 @@ static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
- 	struct trace_event_buffer fbuffer;
- 	int syscall_nr;
- 
-+	/*
-+	 * Syscall probe called with preemption enabled, but the ring
-+	 * buffer and per-cpu data require preemption to be disabled.
-+	 */
-+	guard(preempt_notrace)();
-+
- 	syscall_nr = trace_get_syscall_nr(current, regs);
- 	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
- 		return;
--- 
-2.43.0
-
-
-
+Sebastian
 
