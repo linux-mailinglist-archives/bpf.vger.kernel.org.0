@@ -1,249 +1,191 @@
-Return-Path: <bpf+bounces-46752-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46753-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DBAF9EFFFF
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 00:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C34D09F0003
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 00:23:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAA9716270B
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 23:21:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A425163424
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 23:23:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEABD1DE88E;
-	Thu, 12 Dec 2024 23:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D5A1DE8BC;
+	Thu, 12 Dec 2024 23:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DCqQ7wAz"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="cC0mYaWP";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UxsvW09y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a3-smtp.messagingengine.com (fout-a3-smtp.messagingengine.com [103.168.172.146])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20AF1AF4C1;
-	Thu, 12 Dec 2024 23:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB0F1D88C7;
+	Thu, 12 Dec 2024 23:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734045691; cv=none; b=VkR3u/+Fr5H0LwdTEE3HkLMeTvvQo11/RVKP8z5pOrypDwo4GN5XoYHmU3IPCWW2D77CQOadRFpy/HCS5ve2IFnQAhECMvDbBSKO2NrlC3IS4hSeckwoPtMx5UwKfggtD5Ag9SZgkzJIbxhMQ14M17RlPhv/oSNtMZCj1i8QPQU=
+	t=1734045805; cv=none; b=tQrfx0+kazMFFja2WMGhFHGNfS/dDsV7sIKV/6vymDyKMzL/qAyRMiTEB2HabZgR2W0umvTcRsbEMuZMtebyjF9CSLYm379jR+TPPlN/btMyY02HZuRBhDkwZqjED8iNb9FX5QFR9tNH6oRZvFonL8TjmHhP1HrJU4QsjaofUc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734045691; c=relaxed/simple;
-	bh=db6IqzW/PCcT2RK54P7zun3hg9fEOqZrM4C7RbxNKUQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aOzQC+9cA7MhXIxDFFSwv1Pyx+XkkYV8Bk7QKZLnjXHSiZztZ2AMSCRRJ/3MSYSAjFd682dxzHGzPUR/yAU+S6BeAZcbJGCPMITdYIo2mdF5nSoEHehU60nYyuXheFc22KHgRyGVo+8wmBoxRBtF5srC8xrFw65nH/8wtQ9afoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DCqQ7wAz; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-7fd35b301bdso1037966a12.2;
-        Thu, 12 Dec 2024 15:21:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734045689; x=1734650489; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6BC8w9wKaHIvChqadSH7tYokfEB+l8VKfz7d+St7lNE=;
-        b=DCqQ7wAzKZwP2GgRKSG7t88KVmb9U5oM5GjXIXW0ZnVEvXLtVzRgUVYQ/2+BrKMWFk
-         BwkVmyTBd7XJ5j8CWUUyjkDgTLp5wDtpg5fZeBq6UfqhT/9tohLc+cmoLWlEnxecT81N
-         5UYP488eJJssbl1j0b+qwZWOz76iAqMhtbiQnSaAIvpWcIcZUchaB9FKYM3QzEBCIPzw
-         a9xNYKurGa2ieJiaSf4qousdSeD/VPd7okHAo4D+jn5ah0HYdkVCQj5qfTIch7oUbyWy
-         UqvP8auU+Hs8mz5Ms46JvaM2zvv7wFSjoxEdlWeOvpWP0tcgg8EHlBOugdXuV9b6CmSN
-         wqPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734045689; x=1734650489;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6BC8w9wKaHIvChqadSH7tYokfEB+l8VKfz7d+St7lNE=;
-        b=PrTx1LQtyKIWw7hJgEfO489PYnvg45adobtg6tkg0QZPb7qQ5Az1Bc89QmeUA7rH7Y
-         Q4/KJ3A4dN7ZBH3QteEAZHW4TzypBltYI+z7E6NTo9oH3tltvzbv68KZaXuTsNago3gj
-         w+0ZzbccBmfBAmYykmbDUrTm9VubGvhXb3iQXbl3WzXGBfCMRie4XZ3RJDx+ArPWqcU9
-         bdXNNdGR/rocpkfsI4DygpT+5Wzz2v2ZnNp4/M4oTMqR61hEU4IoyKIHo8tSWekQiGUs
-         MgtKmg4vRv5wrCIrUd1FhL2jzTfsY/eenLhQFFMN4cVgDoxyrZVX+V5lq0kRRl/9KBYR
-         703A==
-X-Forwarded-Encrypted: i=1; AJvYcCUkTybv/e8fQI6Gc9uyp6LRQQCZJf9RXaB46Mof9L7SHFbIzB94GzhWNrTGd1bfFc42yuo=@vger.kernel.org, AJvYcCWVIEpyefo5Gjwvqc+F7T5n7SxowQ/ydgwq6GUdw4C5CS/lVWErGJ+NKvqQgZTkqBSevYQkxfiVpaVDO8n5@vger.kernel.org, AJvYcCWyHibUTtVG+O1FzC7q55nge9/I4ir8xN+3J/+SePhOsa4Wep7nBnDL5pur6ov5Tfv7Ki6V0bqj3Quue3U5@vger.kernel.org
-X-Gm-Message-State: AOJu0YwUKeRxITFMOhrBZ9RndGVMxN9pefK9Pc81wQzU4FXe5jJYr9qM
-	tEBngTt0zvgf6uOEbzM5lMQJFwmTAwdI26vTptGz67fyTzkicKXBNcHRlWUGkeHSNxu0hq0hwvq
-	6M+HxHkZiKn5D1ItaczR5BGFehKaAZA==
-X-Gm-Gg: ASbGncswcXJkRWe39HDcVyuMC9lFVYGkH4M4wOOlBiCHG8EbJA/FvjI5H0B+ISRFjOG
-	oCuOi/LJsd4/7PuBwbTm3YdgLb9PrR/LuL7Jl+XzCs98lwv8xNxAzkA==
-X-Google-Smtp-Source: AGHT+IEo6MtIgS5xWsBv1Xvm9+7tHm8aHsi/mIM20/aw4agI2/hGFvesafq00pK/HLE2eHwxEMg+4hBx5EM8qUtKa4g=
-X-Received: by 2002:a17:90b:3891:b0:2ee:8ea0:6b9c with SMTP id
- 98e67ed59e1d1-2f28fc67526mr1059111a91.12.1734045687301; Thu, 12 Dec 2024
- 15:21:27 -0800 (PST)
+	s=arc-20240116; t=1734045805; c=relaxed/simple;
+	bh=/WdJlbdFKhBhBaI8pNkou1RvtXH2M6zc853zjdaiOt0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=us+K+pO1zr4ZHlV8aPi5sa6KOoHHl8p1nQodmFRBZ4O+lXG0NVE4lO3MXxfjYaicwS8Hpb5CjUm2NGOhWrc7ODYNt+5vfEXK7ToOGNvET5Mg5KvUz90jL6YzjXy1rmxCzFt2s4QRx8Xh8B7ukw8fL9M+or/Gh9QPjfI+tx1lxxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=cC0mYaWP; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UxsvW09y; arc=none smtp.client-ip=103.168.172.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfout.phl.internal (Postfix) with ESMTP id A4E36138370B;
+	Thu, 12 Dec 2024 18:23:21 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-11.internal (MEProxy); Thu, 12 Dec 2024 18:23:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1734045801; x=1734132201; bh=u6hB1h+d6p4EJ8BejXkpl
+	SVJZjGQRemDsGbKPqKBy50=; b=cC0mYaWPNkX/W9qzk9bEbNTc9jYgvgUUXLDTb
+	D4vYUO2rCiX1bHh9QG8NbEuA1S2gSuqv09d8bULm/BOFVsM1AYlmnk2gtlxuUT+b
+	Pmp7CKprRw8nUNn0n7Ua9caobdeTl8N8EXJfh4n56+AAzSNSzdmSNA0mG609WXKm
+	SZ6empDjtqgIKHFQ9ZTMHCjnE2Ae0xZ10l48DafHFcffZkyRrs6P8UwofymOoybQ
+	d/Vo3tOxzRGhMR8hK/wo4V5iJH8asTp/HBbMI0VUAEq7ixWGDHlyjh6MfOAGNUzu
+	l4I17jmu7DWGowwQBT6XNoLoWdEuJd8OIv7UbjdUeQyHAYiDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1734045801; x=1734132201; bh=u6hB1h+d6p4EJ8BejXkplSVJZjGQRemDsGb
+	KPqKBy50=; b=UxsvW09ySFdttUyMHc7M7Qjtwdpr0KkfbGsuNO8QqXske8A7duG
+	UoxlYTv2YCHbImL3LUlOCYFFHczU2uXbvhohtsv55mmpXzYrM6KQsvvRXy7GiU61
+	/xjWBoFOBbF2XUl8L88omjhXRruTXfvSW2FYrvuZLu5FaxSiKBddmm8glYyugsM+
+	74CZdTLU6gkzvENG0w/V0Ge9h79pz1rHDNiT4jfuZ4EYqOAKoIP/q78+NcvNvfNK
+	Gu347qcVDLE1MTH0no1JIhuGLtZNy3zT4XKmQ13m/DynPmqIC7cZnJsSY/xnOan2
+	FcqplC/RDMOgQuACz5JAu0//2DiNNlVgTPQ==
+X-ME-Sender: <xms:aXBbZ5a5Io5bvcqF5c293mLqiAK2awPMk-UdQKHEir3RXZFekdtbJQ>
+    <xme:aXBbZwblwylEjZWNQc3xBSD1t41ROoEnvtLoLtGft5NofQY547dw2agiFCzxcW3Z9
+    fD5bBUkluTe2991sA>
+X-ME-Received: <xmr:aXBbZ78_FBXmPqQ-T1sCv1sjMarsfbLUbInu8LDhWQfixHbaTHFRi5VxfRQCNMe4TEj3Qnlw43FUucutSmfSclQ3W98Sg6o8HqgKkP74lxWSa0G_lXWt>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrkeeigddtlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
+    tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtd
+    dmnecujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgv
+    lhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepieffgf
+    elvdffiedtleejvdetfeefiedvfeehieevveejudeiiefgteeiveeiffffnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuh
+    drgiihiidpnhgspghrtghpthhtohepkedpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
+    oheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvg
+    hlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvthguvghvsehvghgv
+    rhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhhsvghlfhhtvghsth
+    esvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmvghmgihorhesghhmrghi
+    lhdrtghomhdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtg
+    hpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtohepvggu
+    ugihiiekjeesghhmrghilhdrtghomh
+X-ME-Proxy: <xmx:aXBbZ3oq3NX2Bm6kzA9ov_JgTysi5sijZsFsBasJ8rElVcaCzKRpfw>
+    <xmx:aXBbZ0p2ow3VKV3CHgg0lyA6I7bZJYEbRL0-8IrZ3wFFkIxYxiB6yw>
+    <xmx:aXBbZ9R1_mPgiPYy6BJk1EBZBisilRGjixiL7lMRFE62T6_3BGGS4w>
+    <xmx:aXBbZ8o0QhsB1F5Tcf2FK5rTgUEVQWSbpzwmncUUtcjR5pbiGYBDtQ>
+    <xmx:aXBbZweW3jzOKAn-kgX-1mAjTrt8NhLFuY7rJy54TXv1heuGctl21qPI>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 12 Dec 2024 18:23:19 -0500 (EST)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: ast@kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	memxor@gmail.com,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com
+Subject: [PATCH bpf-next v5 0/5] Support eliding map lookup nullness
+Date: Thu, 12 Dec 2024 16:22:04 -0700
+Message-ID: <cover.1734045451.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241211-pahole-reproducible-v1-1-22feae19bad9@weissschuh.net>
- <REDzg-0aL2-Qw7QvYCKTfsLGh6E6Iq8dgWJPo5a94ym2x5DiUkwdHA-naUtaDO7HJgvOr6zd201E5P_WAquOyOFIiUij6Bi183EyxPusDuo=@pm.me>
- <3b834807-9f20-4f04-b788-f45dfac5cb1f@t-8ch.de> <CAEf4BzZSB2nzhYag_LKACXXJLwqLLfddXMV9_JRGYi+Y48rC-w@mail.gmail.com>
- <acf36eab-f906-42f7-9299-1473c0451dd1@t-8ch.de> <CAEf4Bzaa+X4K3_NApFYHxWP1P7stnAvZH4to65D1600fie6H3w@mail.gmail.com>
- <29f9911f-38b0-4634-95d4-0a55ef0a61fa@t-8ch.de>
-In-Reply-To: <29f9911f-38b0-4634-95d4-0a55ef0a61fa@t-8ch.de>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Dec 2024 15:21:14 -0800
-Message-ID: <CAEf4BzZ+3_CoNDhpbiXORTw1VYkWDiy-QKp+cai_Mj05vEWsmg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] kbuild, bpf: Enable reproducible BTF generation
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: Ihor Solodrai <ihor.solodrai@pm.me>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Kui-Feng Lee <kuifeng@fb.com>, 
-	Alan Maguire <alan.maguire@oracle.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, bpf@vger.kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 12, 2024 at 3:19=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weisss=
-chuh.net> wrote:
->
-> On 2024-12-12 14:54:36-0800, Andrii Nakryiko wrote:
-> > On Thu, Dec 12, 2024 at 1:07=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@we=
-issschuh.net> wrote:
-> > >
-> > > Hi Andrii,
-> > >
-> > > On 2024-12-12 11:23:03-0800, Andrii Nakryiko wrote:
-> > > > On Tue, Dec 10, 2024 at 10:24=E2=80=AFPM Thomas Wei=C3=9Fschuh <lin=
-ux@weissschuh.net> wrote:
-> > > > > On 2024-12-11 00:17:02+0000, Ihor Solodrai wrote:
-> > > > > > On Tuesday, December 10th, 2024 at 3:23 PM, Thomas Wei=C3=9Fsch=
-uh <linux@weissschuh.net> wrote:
-> > > > > >
-> > > > > > >
-> > > > > > >
-> > > > > > > Pahole v1.27 added a new BTF generation feature to support
-> > > > > > > reproducibility in the face of multithreading.
-> > > > > > > Enable it if supported and reproducible builds are requested.
-> > > > > > >
-> > > > > > > As unknown --btf_features are ignored, avoid the test for the=
- pahole
-> > > > > > > version to keep the line readable.
-> > > > > > >
-> > > > > > > Fixes: b4f72786429c ("scripts/pahole-flags.sh: Parse DWARF an=
-d generate BTF with multithreading.")
-> > > > > > > Fixes: 72d091846de9 ("kbuild: avoid too many execution of scr=
-ipts/pahole-flags.sh")
-> > > > > > > Link: https://lore.kernel.org/lkml/4154d202-5c72-493e-bf3f-bc=
-e882a296c6@gentoo.org/
-> > > > > > > Link: https://lore.kernel.org/lkml/20240322-pahole-reprodicib=
-le-v1-1-3eaafb1842da@weissschuh.net/
-> > > > > > > Signed-off-by: Thomas Wei=C3=9Fschuh linux@weissschuh.net
-> > > > > > >
-> > > > > > > ---
-> > > > > > > scripts/Makefile.btf | 1 +
-> > > > > > > 1 file changed, 1 insertion(+)
-> > > > > > >
-> > > > > > > diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-> > > > > > > index c3cbeb13de503555adcf00029a0b328e74381f13..da23265bc8b3c=
-f43c0a1c89fbc4f53815a290e13 100644
-> > > > > > > --- a/scripts/Makefile.btf
-> > > > > > > +++ b/scripts/Makefile.btf
-> > > > > > > @@ -22,6 +22,7 @@ else
-> > > > > > >
-> > > > > > > # Switch to using --btf_features for v1.26 and later.
-> > > > > > > pahole-flags-$(call test-ge, $(pahole-ver), 126) =3D -j$(JOBS=
-) --btf_features=3Dencode_force,var,float,enum64,decl_tag,type_tag,optimize=
-d_func,consistent_func,decl_tag_kfuncs
-> > > > > > > +pahole-flags-$(if $(KBUILD_BUILD_TIMESTAMP),y) +=3D --btf_fe=
-atures=3Dreproducible_build
-> > > > > >
-> > > > > > Hi Thomas,
-> > > > > >
-> > > > > > There are a couple of issues with reproducible_build flag which=
- I
-> > > > > > think are worth mentioning here. I don't know all the reasons b=
-ehind
-> > > > > > adding this now, and it's optional too, so feel free to discard=
- my
-> > > > > > comments.
-> > > > > >
-> > > > > > Currently with this flag, the BTF output is deterministic for a=
- given
-> > > > > > order of DWARF compilation units. So the BTF will be the same f=
-or the
-> > > > > > same vmlinux binary. However, if the vmlinux is rebuilt due to =
-an
-> > > > > > incremental change in a source code, my understanding is that t=
-here is
-> > > > > > no guarantee that DWARF CUs will be in the same order in the bi=
-nary.
-> > > > >
-> > > > > The goal behind reproducible builds is to produce bit-by-bit iden=
-tial
-> > > > > binaries. If the CUs are in a different order then that requireme=
-nt
-> > > > > would have been broken there already.
-> > > >
-> > > > I'm curious, how do we guarantee that we get bit-by-bit identical
-> > > > DWARF? Do we enforce the order of linking of .o files into the fina=
-l
-> > > > vmlinux? Is this described anywhere?
-> > >
-> > > The CU order has to be fixed, otherwise the non-debugging parts of th=
-e
-> > > binary would not be reproducible either.
-> > > For docs is Documentation/kbuild/reproducible-builds.rst, the linked
-> > > reproducible-builds.org project has much more information.
-> > >
-> > > Also besides reproducible builds, lots of kernel components rely
-> > > (accidentally or intentionally) on a stable initialization order, whi=
-ch
-> > > is also defined by linking order.
-> > >
-> > > From Documentation/kbuild/makefiles.rst:
-> > >
-> > >         Link order is significant, because certain functions
-> > >         (module_init() / __initcall) will be called during boot in th=
-e
-> > >         order they appear. So keep in mind that changing the link
-> > >         order may e.g. change the order in which your SCSI
-> > >         controllers are detected, and thus your disks are renumbered.
-> > >
-> > > > > For an incremental build a full relink with *all* CUs is done, no=
-t only
-> > > > > the changed once, so the order should always be the same.
-> > > >
-> > > > The concern here is whether linker guarantees that CUs' DWARF data
-> > > > will be appended in exactly the same order in such case?
-> > >
-> > > Otherwise it wouldn't be reproducible in general.
-> > > The pahole developers specifically implemented
-> > > --btf_features=3Dreproducible_build for use in the kernel; after I se=
-nt
-> > > a precursor patch to this one (also linked in the patch):
-> > >
-> > > https://lore.kernel.org/lkml/20240322-pahole-reprodicible-v1-1-3eaafb=
-1842da@weissschuh.net/
-> > >
-> > > In general the kernel already supports reproducible builds.
-> >
-> > Great, thanks for all the info!
-> >
-> > I do agree with Ihor that KBUILD_BUILD_TIMESTAMP is a non-obvious and
-> > surprising way to enable this behavior, but if that's what's used for
-> > other aspects of kernel build I guess it's fine by me.
->
-> Agreed. So far KBUILD_BUILD_TIMESTAMP is really only used for timestamp
-> related configuration. While it's not a perfect fit, adding yet another
-> switch that needs to be specified can't be the answer, either.
->
-> Maybe the Kbuild maintainers have some preference?
+This patch allows progs to elide a null check on statically known map
+lookup keys. In other words, if the verifier can statically prove that
+the lookup will be in-bounds, allow the prog to drop the null check.
 
-Wouldn't KBUILD_REPRODUCIBLE_BUILD=3Dy be the logical thing to have for
-all these things that affect exact reproducibility?
+This is useful for two reasons:
 
->
-> > Ihor's work on making BTF generation more deterministic w.r.t. CU
-> > order would automatically benefit --btf_features=3Dreproducible_build i=
-n
-> > the end and might make it unnecessary, but there is no need to block
-> > on a completion of that work.
->
-> Sounds good.
->
-> [..]
+1. Large numbers of nullness checks (especially when they cannot fail)
+   unnecessarily pushes prog towards BPF_COMPLEXITY_LIMIT_JMP_SEQ.
+2. It forms a tighter contract between programmer and verifier.
+
+For (1), bpftrace is starting to make heavier use of percpu scratch
+maps. As a result, for user scripts with large number of unrolled loops,
+we are starting to hit jump complexity verification errors.  These
+percpu lookups cannot fail anyways, as we only use static key values.
+Eliding nullness probably results in less work for verifier as well.
+
+For (2), percpu scratch maps are often used as a larger stack, as the
+currrent stack is limited to 512 bytes. In these situations, it is
+desirable for the programmer to express: "this lookup should never fail,
+and if it does, it means I messed up the code". By omitting the null
+check, the programmer can "ask" the verifier to double check the logic.
+
+Changes in v5:
+* Dropped all acks
+* Use s64 instead of long for const_map_key
+* Ensure stack slot contains spilled reg before accessing spilled_ptr
+* Ensure spilled reg is a scalar before accessing tnum const value
+* Fix verifier selftest for 32-bit write to write at 8 byte alignment
+  to ensure spill is tracked
+* Introduce more precise tracking of helper stack accesses
+* Do constant map key extraction as part of helper argument processing
+  and then remove duplicated stack checks
+* Use ret_flag instead of regs[BPF_REG_0].type
+* Handle STACK_ZERO
+* Fix bug in bpf_load_hdr_opt() arg annotation
+
+Changes in v4:
+* Only allow for CAP_BPF
+* Add test for stack growing upwards
+* Improve comment about stack growing upwards
+
+Changes in v3:
+* Check if stack is (erroneously) growing upwards
+* Mention in commit message why existing tests needed change
+
+Changes in v2:
+* Added a check for when R2 is not a ptr to stack
+* Added a check for when stack is uninitialized (no stack slot yet)
+* Updated existing tests to account for null elision
+* Added test case for when R2 can be both const and non-const
+
+Daniel Xu (5):
+  bpf: verifier: Add missing newline on verbose() call
+  bpf: tcp: Mark bpf_load_hdr_opt() arg2 as read-write
+  bpf: verifier: Refactor helper access type tracking
+  bpf: verifier: Support eliding map lookup nullness
+  bpf: selftests: verifier: Add nullness elision tests
+
+ kernel/bpf/verifier.c                         | 127 ++++++++---
+ net/core/filter.c                             |   2 +-
+ .../testing/selftests/bpf/progs/dynptr_fail.c |   6 +-
+ tools/testing/selftests/bpf/progs/iters.c     |  14 +-
+ .../selftests/bpf/progs/map_kptr_fail.c       |   2 +-
+ .../selftests/bpf/progs/test_global_func10.c  |   2 +-
+ .../selftests/bpf/progs/uninit_stack.c        |  29 ---
+ .../bpf/progs/verifier_array_access.c         | 214 ++++++++++++++++++
+ .../bpf/progs/verifier_basic_stack.c          |   2 +-
+ .../selftests/bpf/progs/verifier_const_or.c   |   4 +-
+ .../progs/verifier_helper_access_var_len.c    |  12 +-
+ .../selftests/bpf/progs/verifier_int_ptr.c    |   2 +-
+ .../selftests/bpf/progs/verifier_map_in_map.c |   2 +-
+ .../selftests/bpf/progs/verifier_mtu.c        |   2 +-
+ .../selftests/bpf/progs/verifier_raw_stack.c  |   4 +-
+ .../selftests/bpf/progs/verifier_unpriv.c     |   2 +-
+ .../selftests/bpf/progs/verifier_var_off.c    |   8 +-
+ tools/testing/selftests/bpf/verifier/calls.c  |   2 +-
+ .../testing/selftests/bpf/verifier/map_kptr.c |   2 +-
+ 19 files changed, 342 insertions(+), 96 deletions(-)
+
+-- 
+2.46.0
+
 
