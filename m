@@ -1,68 +1,60 @@
-Return-Path: <bpf+bounces-46764-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46765-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A1689F0032
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 00:31:38 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1552C9F0042
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 00:38:01 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3663118827AD
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 23:31:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB2FB287DD1
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 23:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7115C1DED40;
-	Thu, 12 Dec 2024 23:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07E01DEFDA;
+	Thu, 12 Dec 2024 23:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="cniv/Rfo"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="VWg9PaCn"
 X-Original-To: bpf@vger.kernel.org
 Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01BE1B4154;
-	Thu, 12 Dec 2024 23:31:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D09A81DE8AA;
+	Thu, 12 Dec 2024 23:37:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734046291; cv=none; b=ZCdGP2+aKqIc/9PZQAxnsi6ajQCxObtVDzi3dZv/Shd63uYBYzkTmf0Y4s5RNs/ygIGFzO77LPnegn1ZQImzuTcz59mj5ZXebgZnjlx+Y+i9PLtyKkDh5CYuriB8UqZjyhUdP51DkpV10dCqzVxQQOK91ut0sJOpUFQhrhGJN+c=
+	t=1734046669; cv=none; b=en870kJJ3SYwhHzOGGIpaIORQ5uywMgOTwgILzwaQthDzfkp7GnhrNz3lCSbBPG1wRWXlg8qKmAFCykJNG1LKADmeK82BwR7s9rP/KSr9Rd1juveem9cWwaD3im8FtBJLFHMSbZ8f9GC7ecgnj+jMrHaGHDV65r8HeXWe4gC/3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734046291; c=relaxed/simple;
-	bh=oOF4p4MHr1ZNzSbOMCjaFepd74L3QQpop/CuaAmcjL0=;
+	s=arc-20240116; t=1734046669; c=relaxed/simple;
+	bh=YTgEMDc0ikMsMdmEEB/QR41m3JqAvO/1aSO2jbjFmKU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g6NaIcHcMGovp9DEfXaEYtmG5XhxP5beXJo0zi0/rykz0bffw4DXSjnDFm/eLE2j+wZqOATSJXpWKaveoP2NAm4WpluL+IKQNmjuAOj8waWXFvhjeEVysNyYrgK84zLoND21CF53iDvQvV4S+xk2PVl/k6oR6/x3lusnsey5Ilc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=cniv/Rfo; arc=none smtp.client-ip=159.69.126.157
+	 Content-Type:Content-Disposition:In-Reply-To; b=ip0wTG4t4/GUBNapKTd8a9w2psaphWk9hm4zsLaXE2VDekT7KK3BAmlKO0aCfkmqS/7mB/QBl04IoBZ7deoXABp6xKi96xM54gAPn/EhFnqFc654P/eBxMe6qHWF0HrmLDPRSkZn9bXlwh4I1YCV96HkakXPpUTUnxPr8eifw7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=VWg9PaCn; arc=none smtp.client-ip=159.69.126.157
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1734046284;
-	bh=oOF4p4MHr1ZNzSbOMCjaFepd74L3QQpop/CuaAmcjL0=;
+	s=mail; t=1734046664;
+	bh=YTgEMDc0ikMsMdmEEB/QR41m3JqAvO/1aSO2jbjFmKU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cniv/RfobymFfKRKjJzZYWL9xAJ04IDOIMY+9BpR62NsP6LEpLCOun7c4s2gATqnN
-	 iB+nDFS0c7mGopuUptagNqO0/3Q0AYuw5HSf9w9tZ9y2M1/DX/6hfRtzAjvMdIZF70
-	 uu6LglAcBeOJXjpwfrXVXmomwgDuj6yz2Bgmtmu4=
-Date: Fri, 13 Dec 2024 00:31:23 +0100
+	b=VWg9PaCnY4j0AOXd7bHrJi6VU59uMT+B1hkIr46eoGwwJSzXHsesuaIzQnH+6zqRZ
+	 l7JhpsEBSppDLM7lugrv9FpVAFJ16V7+dHMIuxPnskyGYUoulc0eE9LyatIiRyUfhc
+	 HkDSHsyZPfy8fkG+39skJUHnXurVfOQc1GitlGGI=
+Date: Fri, 13 Dec 2024 00:37:44 +0100
 From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Ihor Solodrai <ihor.solodrai@pm.me>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
 	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
 	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, Kui-Feng Lee <kuifeng@fb.com>, 
-	Alan Maguire <alan.maguire@oracle.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, bpf@vger.kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next] kbuild, bpf: Enable reproducible BTF generation
-Message-ID: <87305847-5741-4c4e-a806-c8f9bea2345d@t-8ch.de>
-References: <20241211-pahole-reproducible-v1-1-22feae19bad9@weissschuh.net>
- <REDzg-0aL2-Qw7QvYCKTfsLGh6E6Iq8dgWJPo5a94ym2x5DiUkwdHA-naUtaDO7HJgvOr6zd201E5P_WAquOyOFIiUij6Bi183EyxPusDuo=@pm.me>
- <3b834807-9f20-4f04-b788-f45dfac5cb1f@t-8ch.de>
- <CAEf4BzZSB2nzhYag_LKACXXJLwqLLfddXMV9_JRGYi+Y48rC-w@mail.gmail.com>
- <acf36eab-f906-42f7-9299-1473c0451dd1@t-8ch.de>
- <CAEf4Bzaa+X4K3_NApFYHxWP1P7stnAvZH4to65D1600fie6H3w@mail.gmail.com>
- <29f9911f-38b0-4634-95d4-0a55ef0a61fa@t-8ch.de>
- <CAEf4BzZ+3_CoNDhpbiXORTw1VYkWDiy-QKp+cai_Mj05vEWsmg@mail.gmail.com>
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org
+Subject: Re: [PATCH bpf] bpf: fix configuration-dependent BTF function
+ references
+Message-ID: <a19b5fb2-9a82-42f2-81dd-17d96bb6ec9e@t-8ch.de>
+References: <20241213-bpf-cond-ids-v1-1-881849997219@weissschuh.net>
+ <CAEf4BzYTYDcf7J0jhJP3cW5489jWXdfJcw-f-8yuTHcNmQ0cbw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,134 +64,133 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZ+3_CoNDhpbiXORTw1VYkWDiy-QKp+cai_Mj05vEWsmg@mail.gmail.com>
+In-Reply-To: <CAEf4BzYTYDcf7J0jhJP3cW5489jWXdfJcw-f-8yuTHcNmQ0cbw@mail.gmail.com>
 
-On 2024-12-12 15:21:14-0800, Andrii Nakryiko wrote:
-> On Thu, Dec 12, 2024 at 3:19 PM Thomas Weißschuh <linux@weissschuh.net> wrote:
+On 2024-12-12 15:27:12-0800, Andrii Nakryiko wrote:
+> On Thu, Dec 12, 2024 at 3:00 PM Thomas Weißschuh <linux@weissschuh.net> wrote:
 > >
-> > On 2024-12-12 14:54:36-0800, Andrii Nakryiko wrote:
-> > > On Thu, Dec 12, 2024 at 1:07 PM Thomas Weißschuh <linux@weissschuh.net> wrote:
-> > > >
-> > > > Hi Andrii,
-> > > >
-> > > > On 2024-12-12 11:23:03-0800, Andrii Nakryiko wrote:
-> > > > > On Tue, Dec 10, 2024 at 10:24 PM Thomas Weißschuh <linux@weissschuh.net> wrote:
-> > > > > > On 2024-12-11 00:17:02+0000, Ihor Solodrai wrote:
-> > > > > > > On Tuesday, December 10th, 2024 at 3:23 PM, Thomas Weißschuh <linux@weissschuh.net> wrote:
-> > > > > > >
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > Pahole v1.27 added a new BTF generation feature to support
-> > > > > > > > reproducibility in the face of multithreading.
-> > > > > > > > Enable it if supported and reproducible builds are requested.
-> > > > > > > >
-> > > > > > > > As unknown --btf_features are ignored, avoid the test for the pahole
-> > > > > > > > version to keep the line readable.
-> > > > > > > >
-> > > > > > > > Fixes: b4f72786429c ("scripts/pahole-flags.sh: Parse DWARF and generate BTF with multithreading.")
-> > > > > > > > Fixes: 72d091846de9 ("kbuild: avoid too many execution of scripts/pahole-flags.sh")
-> > > > > > > > Link: https://lore.kernel.org/lkml/4154d202-5c72-493e-bf3f-bce882a296c6@gentoo.org/
-> > > > > > > > Link: https://lore.kernel.org/lkml/20240322-pahole-reprodicible-v1-1-3eaafb1842da@weissschuh.net/
-> > > > > > > > Signed-off-by: Thomas Weißschuh linux@weissschuh.net
-> > > > > > > >
-> > > > > > > > ---
-> > > > > > > > scripts/Makefile.btf | 1 +
-> > > > > > > > 1 file changed, 1 insertion(+)
-> > > > > > > >
-> > > > > > > > diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-> > > > > > > > index c3cbeb13de503555adcf00029a0b328e74381f13..da23265bc8b3cf43c0a1c89fbc4f53815a290e13 100644
-> > > > > > > > --- a/scripts/Makefile.btf
-> > > > > > > > +++ b/scripts/Makefile.btf
-> > > > > > > > @@ -22,6 +22,7 @@ else
-> > > > > > > >
-> > > > > > > > # Switch to using --btf_features for v1.26 and later.
-> > > > > > > > pahole-flags-$(call test-ge, $(pahole-ver), 126) = -j$(JOBS) --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs
-> > > > > > > > +pahole-flags-$(if $(KBUILD_BUILD_TIMESTAMP),y) += --btf_features=reproducible_build
-> > > > > > >
-> > > > > > > Hi Thomas,
-> > > > > > >
-> > > > > > > There are a couple of issues with reproducible_build flag which I
-> > > > > > > think are worth mentioning here. I don't know all the reasons behind
-> > > > > > > adding this now, and it's optional too, so feel free to discard my
-> > > > > > > comments.
-> > > > > > >
-> > > > > > > Currently with this flag, the BTF output is deterministic for a given
-> > > > > > > order of DWARF compilation units. So the BTF will be the same for the
-> > > > > > > same vmlinux binary. However, if the vmlinux is rebuilt due to an
-> > > > > > > incremental change in a source code, my understanding is that there is
-> > > > > > > no guarantee that DWARF CUs will be in the same order in the binary.
-> > > > > >
-> > > > > > The goal behind reproducible builds is to produce bit-by-bit idential
-> > > > > > binaries. If the CUs are in a different order then that requirement
-> > > > > > would have been broken there already.
-> > > > >
-> > > > > I'm curious, how do we guarantee that we get bit-by-bit identical
-> > > > > DWARF? Do we enforce the order of linking of .o files into the final
-> > > > > vmlinux? Is this described anywhere?
-> > > >
-> > > > The CU order has to be fixed, otherwise the non-debugging parts of the
-> > > > binary would not be reproducible either.
-> > > > For docs is Documentation/kbuild/reproducible-builds.rst, the linked
-> > > > reproducible-builds.org project has much more information.
-> > > >
-> > > > Also besides reproducible builds, lots of kernel components rely
-> > > > (accidentally or intentionally) on a stable initialization order, which
-> > > > is also defined by linking order.
-> > > >
-> > > > From Documentation/kbuild/makefiles.rst:
-> > > >
-> > > >         Link order is significant, because certain functions
-> > > >         (module_init() / __initcall) will be called during boot in the
-> > > >         order they appear. So keep in mind that changing the link
-> > > >         order may e.g. change the order in which your SCSI
-> > > >         controllers are detected, and thus your disks are renumbered.
-> > > >
-> > > > > > For an incremental build a full relink with *all* CUs is done, not only
-> > > > > > the changed once, so the order should always be the same.
-> > > > >
-> > > > > The concern here is whether linker guarantees that CUs' DWARF data
-> > > > > will be appended in exactly the same order in such case?
-> > > >
-> > > > Otherwise it wouldn't be reproducible in general.
-> > > > The pahole developers specifically implemented
-> > > > --btf_features=reproducible_build for use in the kernel; after I sent
-> > > > a precursor patch to this one (also linked in the patch):
-> > > >
-> > > > https://lore.kernel.org/lkml/20240322-pahole-reprodicible-v1-1-3eaafb1842da@weissschuh.net/
-> > > >
-> > > > In general the kernel already supports reproducible builds.
-> > >
-> > > Great, thanks for all the info!
-> > >
-> > > I do agree with Ihor that KBUILD_BUILD_TIMESTAMP is a non-obvious and
-> > > surprising way to enable this behavior, but if that's what's used for
-> > > other aspects of kernel build I guess it's fine by me.
+> > These BTF functions are not available unconditionally,
+> > only reference them when they are available.
 > >
-> > Agreed. So far KBUILD_BUILD_TIMESTAMP is really only used for timestamp
-> > related configuration. While it's not a perfect fit, adding yet another
-> > switch that needs to be specified can't be the answer, either.
+> > Avoid the following build warnings:
 > >
-> > Maybe the Kbuild maintainers have some preference?
+> >   BTF     .tmp_vmlinux1.btf.o
+> > btf_encoder__tag_kfunc: failed to find kfunc 'bpf_send_signal_task' in BTF
+> > btf_encoder__tag_kfuncs: failed to tag kfunc 'bpf_send_signal_task'
+> >   NM      .tmp_vmlinux1.syms
+> >   KSYMS   .tmp_vmlinux1.kallsyms.S
+> >   AS      .tmp_vmlinux1.kallsyms.o
+> >   LD      .tmp_vmlinux2
+> >   NM      .tmp_vmlinux2.syms
+> >   KSYMS   .tmp_vmlinux2.kallsyms.S
+> >   AS      .tmp_vmlinux2.kallsyms.o
+> >   LD      vmlinux
+> >   BTFIDS  vmlinux
+> > WARN: resolve_btfids: unresolved symbol prog_test_ref_kfunc
+> > WARN: resolve_btfids: unresolved symbol bpf_crypto_ctx
+> > WARN: resolve_btfids: unresolved symbol bpf_send_signal_task
+> > WARN: resolve_btfids: unresolved symbol bpf_modify_return_test_tp
+> > WARN: resolve_btfids: unresolved symbol bpf_dynptr_from_xdp
+> > WARN: resolve_btfids: unresolved symbol bpf_dynptr_from_skb
+> >
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > ---
+> >  kernel/bpf/helpers.c  | 4 ++++
+> >  kernel/bpf/verifier.c | 8 ++++++++
+> >  2 files changed, 12 insertions(+)
+> >
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 751c150f9e1cd7f56e6a2b68a7ebb4ae89a30d2d..5edf5436a7804816b7dcf1bbef2624d71a985f20 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -3089,7 +3089,9 @@ BTF_ID_FLAGS(func, bpf_task_get_cgroup1, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
+> >  BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
+> >  BTF_ID_FLAGS(func, bpf_task_from_vpid, KF_ACQUIRE | KF_RET_NULL)
+> >  BTF_ID_FLAGS(func, bpf_throw)
+> > +#ifdef CONFIG_BPF_EVENTS
+> >  BTF_ID_FLAGS(func, bpf_send_signal_task, KF_TRUSTED_ARGS)
+> > +#endif
+> >  BTF_KFUNCS_END(generic_btf_ids)
+> >
+> >  static const struct btf_kfunc_id_set generic_kfunc_set = {
+> > @@ -3135,7 +3137,9 @@ BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+> >  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+> >  BTF_ID_FLAGS(func, bpf_dynptr_size)
+> >  BTF_ID_FLAGS(func, bpf_dynptr_clone)
+> > +#ifdef CONFIG_NET
+> >  BTF_ID_FLAGS(func, bpf_modify_return_test_tp)
+> > +#endif
 > 
-> Wouldn't KBUILD_REPRODUCIBLE_BUILD=y be the logical thing to have for
-> all these things that affect exact reproducibility?
+> It makes little sense to have bpf_prog_test_run_tracing() and
+> bpf_modify_return_test_tp() depend on CONFIG_NET... It's just
+> historically where BPF_PROG_TEST_RUN functionality was implemented,
+> but it seems like we need to move bpf_prog_test_run_tracing() and
+> other tracing-related testing stuff into kernel/trace/bpf_trace.c or
+> somewhere under kernel/bpf/ (core.c? helpers.c?)
 
-The other settings aren't booleans:
+I agree. But today these are the config values which are in effect.
+When the functions get moved, the config values can be adapted.
+With my commit "kbuild/btf: Propagate CONFIG_WERROR to resolve_btfids"
+in bpf-next the warnings can actually become errors.
+So I'd propose to apply this fix to avoid issues in the near future and
+then do a proper move without any urgency.
 
-KBUILD_BUILD_TIMESTAMP, KBUILD_BUILD_VERSION, KBUILD_BUILD_HOST,
-KBUILD_BUILD_USER.
-
-Out of these not all *need* to be used. They can already be implicitly
-fixed by the general build environment.
-That doesn't work for KBUILD_BUILD_TIMESTAMP, so I used it for the basic
-boolean detection.
-
-> > > Ihor's work on making BTF generation more deterministic w.r.t. CU
-> > > order would automatically benefit --btf_features=reproducible_build in
-> > > the end and might make it unnecessary, but there is no need to block
-> > > on a completion of that work.
+> >  BTF_ID_FLAGS(func, bpf_wq_init)
+> >  BTF_ID_FLAGS(func, bpf_wq_set_callback_impl)
+> >  BTF_ID_FLAGS(func, bpf_wq_start)
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 5e541339b2f6d1870561033fd55cca7144db14bc..77bbf58418fee7533bce539c8e005d2342ee1a48 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -5526,7 +5526,9 @@ static bool in_rcu_cs(struct bpf_verifier_env *env)
 > >
-> > Sounds good.
+> >  /* Once GCC supports btf_type_tag the following mechanism will be replaced with tag check */
+> >  BTF_SET_START(rcu_protected_types)
+> > +#ifdef CONFIG_NET
+> >  BTF_ID(struct, prog_test_ref_kfunc)
+> > +#endif
+> >  #ifdef CONFIG_CGROUPS
+> >  BTF_ID(struct, cgroup)
+> >  #endif
+> > @@ -5534,7 +5536,9 @@ BTF_ID(struct, cgroup)
+> >  BTF_ID(struct, bpf_cpumask)
+> >  #endif
+> >  BTF_ID(struct, task_struct)
+> > +#ifdef CONFIG_CRYPTO
+> >  BTF_ID(struct, bpf_crypto_ctx)
+> > +#endif
+> >  BTF_SET_END(rcu_protected_types)
 > >
-> > [..]
+> >  static bool rcu_protected_object(const struct btf *btf, u32 btf_id)
+> > @@ -11529,8 +11533,10 @@ BTF_ID(func, bpf_rdonly_cast)
+> >  BTF_ID(func, bpf_rbtree_remove)
+> >  BTF_ID(func, bpf_rbtree_add_impl)
+> >  BTF_ID(func, bpf_rbtree_first)
+> > +#ifdef CONFIG_NET
+> >  BTF_ID(func, bpf_dynptr_from_skb)
+> >  BTF_ID(func, bpf_dynptr_from_xdp)
+> > +#endif
+> >  BTF_ID(func, bpf_dynptr_slice)
+> >  BTF_ID(func, bpf_dynptr_slice_rdwr)
+> >  BTF_ID(func, bpf_dynptr_clone)
+> > @@ -11558,8 +11564,10 @@ BTF_ID(func, bpf_rcu_read_unlock)
+> >  BTF_ID(func, bpf_rbtree_remove)
+> >  BTF_ID(func, bpf_rbtree_add_impl)
+> >  BTF_ID(func, bpf_rbtree_first)
+> > +#ifdef CONFIG_NET
+> >  BTF_ID(func, bpf_dynptr_from_skb)
+> >  BTF_ID(func, bpf_dynptr_from_xdp)
+> > +#endif
+> >  BTF_ID(func, bpf_dynptr_slice)
+> >  BTF_ID(func, bpf_dynptr_slice_rdwr)
+> >  BTF_ID(func, bpf_dynptr_clone)
+> >
+> > ---
+> > base-commit: 5d287a7de3c95b78946e71d17d15ec9c87fffe7f
+> > change-id: 20241212-bpf-cond-ids-9bfbc64dd77b
+> >
+> > Best regards,
+> > --
+> > Thomas Weißschuh <linux@weissschuh.net>
+> >
 
