@@ -1,179 +1,306 @@
-Return-Path: <bpf+bounces-46724-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46725-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 630069EF8EC
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 18:46:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 278C09EFA43
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 19:04:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CADF01895787
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 17:39:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C916B188CE24
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 18:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8258A222D70;
-	Thu, 12 Dec 2024 17:39:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BFC92236F0;
+	Thu, 12 Dec 2024 18:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cbc5MT4h"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="ILEmgFrs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900BF20A5EE
-	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 17:39:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734025190; cv=none; b=hPxohveME1IMcVHRWw4PZhINJcx6+EVTKWtzNULZpFvv1Njg1xbxmfcA0a+CydV30oDyt4kdVyXtgcNHOvz1C9lR5H2MbZiym5bPGUjrIOcC2DkPn5WgbD3qwWn8PYDTK6fRbyDqg5kZVTXWrB5I6vRFHR9YDqi73QWBP1oZPlQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734025190; c=relaxed/simple;
-	bh=bTZOSoVCidXecuQaGVbMCgjNjb7EJKlSGgp/+hoRuQk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TJK38nZYooXBRL8SvyYyDZD7IEuorsigZtU4WW+VAPmqzOfIo+rq5ZffxRNbrkVc+29LzZxq62NkSPg8+ONbaN3ZZ3kct/3mE+6kbJD2WvjFfYZF0WTu3KverSWbeQvyqROSD+qncPoydBkbd97pV6K2njAP+j8Mmcks+vX7Xos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cbc5MT4h; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-728ec840a8aso1009813b3a.0
-        for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 09:39:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734025188; x=1734629988; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R7rM4gY/t0TAm13sd7EhwsBGEjPyE7D9W2z1XBteifM=;
-        b=Cbc5MT4haF/h6P3fZuob8YHWZjMvLhNEjyCmZbgg8jPQF4mHG1rTVkPzi87BDL0d2f
-         QfvKrI6ohVDRJGyObicqye1aiF051VMxKRcJjjH+xIrsYk2LbxSbBNdF0Mubhxl466qa
-         rByBlGrL3ADQhfdMKnP1Wn9uEt5FvSJBMPfpeWg29KNE6VrEqjc8S8r2BkB6tiZ7vjVa
-         6ecZ0O+nXGY3NNNgMp3wypgV1dZu2tRbWRccUbtHs5EF4hI0E3ElVaGlNjZk+C4tBosO
-         TsySQb6BLxnTYG5ew4agfb9xw0OQN0ovh37DREanyHwkjAQnSxxHPG6wo14rxYtdPLlM
-         uSpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734025188; x=1734629988;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R7rM4gY/t0TAm13sd7EhwsBGEjPyE7D9W2z1XBteifM=;
-        b=w2uh5l815ZKxj7P18zxBSE1zHTTw25r8SNUVWrDtprP540PksG0iGTSVUEvmPQYyo4
-         OYOmULKba8jk7rBYQU0Tb7E/O3/HvYlkpPhKT4LClw/tUWfBAmliKKlo/biCXuBz8Fxg
-         K5a7OKDyer6BlgtbJ3PG36cW/tTGfazg31e8g/83wed+8zdneEgfPB0bBgsHeA/+Q3Pf
-         +FcBn/Fg3cZEWwB0aUZYEBemmLL2vguKTj1XLak33wIPT0afzRvyooYCCvZYowWdkmKm
-         NNOF25Rm39+A6s9vcFWV3nu7sgei+dmqSjTbXojhpwfc+t6yWSPWY3TLw0M9DrjqDWcx
-         BVng==
-X-Forwarded-Encrypted: i=1; AJvYcCXjokZjcXiP1tpguOX0FXSicnKx+MzgL9rkk/lpD+UtnYEp003jgwFFxi6nv1vydwTajxk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw37nt/vmd7ecTBaCDrASKVzv7dnpBtjWS4LS8dIR81UsNk7uax
-	i0tG64lrzi8kvSxZnt81zWBsLqwHXTPeMMmvyBJjbr3J4SIjCSHSKXDF9nCvQnBlgRwpD70j4Bx
-	MLvBZZgJ3iBvpro/zbm3lNNOWJiU=
-X-Gm-Gg: ASbGncusPesWAxPT3R7WDi4Uxw5QTt0UX5RhDB+/yCDkTfJTUl31qdZ3YPrxKs3lDE6
-	rLhKNgKXZGESY0ag7L2UzhESaeBkpKzalu39qYBzL8WLGk8fR/FNJIw==
-X-Google-Smtp-Source: AGHT+IFedJi/r6g/WOVcwY0eEDkh7I0fWMNx+kJXm5nEeZpEjYE7ZQq869WhveRcxnuZuig+YziN3KlVdL1758o6xGw=
-X-Received: by 2002:a17:90b:278f:b0:2ee:cd83:8fe6 with SMTP id
- 98e67ed59e1d1-2f13932900amr7428403a91.35.1734025187826; Thu, 12 Dec 2024
- 09:39:47 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50B40208992;
+	Thu, 12 Dec 2024 18:01:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.145.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1734026511; cv=fail; b=mBJowkkWpJcPwz4D4NfKNp2jntyMGYublCms7721YP50zEVf93wZvFmsWR6BiTad+IJHljedAUqeZ0HXWtJVS9GegLnoS6ywQRBsTcmlvVsKN+v85F6Uo2VmbZ3f/R3syARxaGFdi/fZZtg2eARVKWtaOEvGWoMuSj4V4tdKEDw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1734026511; c=relaxed/simple;
+	bh=n8TUxcvpf1gfSKfxEuXI7dTLNYNMlbiJHO4CIbneTHA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=G7bdl33mzi3Fe32UEkJzQGpociHcOo6dWdvMFbFsmvnZ4AhkvR3oY4mLwKwDDSmro4VLY9Q6jPlapeBIfYXKjbolPbezmXDRkDfA/gCc2IrpmXsk5lK7PEtHPVvdFRqIKUx369x+8PHbYpKev+qhyoDahnzgIg+NkJd6GvF7Qqs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=ILEmgFrs; arc=fail smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BCDKZKX004641;
+	Thu, 12 Dec 2024 10:01:48 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-id:content-transfer-encoding:content-type:date:from
+	:in-reply-to:message-id:mime-version:references:subject:to; s=
+	s2048-2021-q4; bh=YJtUUit8zqmoDGLk2uZctSYweqOGB02tON+sxcLIoqk=; b=
+	ILEmgFrsSKVlQFt3CfSmYBJU69aSbkmndpqJLqlltyx/Vhno4Fop+HZvzyum7/bm
+	86TH8KI8VywYy5Jf9YMkICKcsV1gN9VQou/fs3gvU/Luqvys02K5iKP00MATGs+H
+	Y6RXBXnPh+5lJuaLlwt+uLdelckSJx7xxMejyXdNlI1R7CbO1/uvSKaUSneTu2yQ
+	ByUnjZzkOUr1Cdvxr4IwuFFnCn7d1/cktJYwxWsvR3FHBx9jKKjP6oWYZW/sETRw
+	gZBjATgYjOR9TZO6lpFYfaEr1y9CDUZ1B70yK5l4m380InKQNXdIJqESNibxUh6X
+	gBOYMNAVuKRuMZYkQbIGJw==
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2042.outbound.protection.outlook.com [104.47.70.42])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 43g0j0a792-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 12 Dec 2024 10:01:48 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=nADQRK5cNtO3sYbQgDXkIbnS+SdZe41zQnuCIPMX9ahlSR7DsmkmB4cD26k0v6PEzSiNmMp4vccZhGox+f7cDrzGI7fHyhow/Z3YZAORF470BqZ2YRIa6bXxUrvX/JLNVqE7kgOg/eDmIZwQenBk54EaS8lW6dUh0XHpzalYzgd1kV5o53GOriAsNm9M6voj2/Fy3YUXB45z/FWO98yzGYOxjSPuxiUdCeWylUdlc2LuJA2GXFP1b0KS6zcLIOC4aWKpY8KHmsGFydIRTBf78jSJQA/E5fVzKgEqD6DFcN43Yvd67NCGRhH0EtzxxkdOmOxIZY8wTRKyYrDsgW4YMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZjWS7AmLulfV1um8wBuiilvm+BuiQ1aoO401SDh28CI=;
+ b=OGeaJ08QQyjWRZWJJxXruhfZhD6kYy0OY+uOIrdgIWxg7CsolrKrkTUlZAk9+RAEDHTerCSNsykogcgrMu2MgV5ZeKqRl5/TgcH2q2K9SNULQKlkVofVAmbtnQzLGFDPAUDpTi2T6IBSJWIaYsEpgwyimYtzXSk5IgtzScpP3+OSapfFoWite8XPE/DZw2PvZsFf6otuE4tVRUvyqH1/mA9zK3hbQUk6nxQXuwPaWqOoDGknFsXmd2cjLEoIujtt40wIxH6m8d2oytY4hbyJFjMAOHR5qKte6vGRwzHb6htxGeObTlIMoDvNIYnMq3HRzrs6uxQn5rMLuSb7ojwUxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by DM4PR15MB5994.namprd15.prod.outlook.com (2603:10b6:8:18c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8251.17; Thu, 12 Dec
+ 2024 18:01:43 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::662b:d7bd:ab1b:2610]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::662b:d7bd:ab1b:2610%7]) with mapi id 15.20.8251.008; Thu, 12 Dec 2024
+ 18:01:43 +0000
+From: Song Liu <songliubraving@meta.com>
+To: Jan Kara <jack@suse.cz>
+CC: Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org"
+	<linux-security-module@vger.kernel.org>,
+        Kernel Team <kernel-team@meta.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "eddyz87@gmail.com"
+	<eddyz87@gmail.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "martin.lau@linux.dev"
+	<martin.lau@linux.dev>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "kpsingh@kernel.org"
+	<kpsingh@kernel.org>,
+        "mattbobrowski@google.com" <mattbobrowski@google.com>,
+        Liam Wisehart <liamwisehart@meta.com>,
+        Shankaran Gnanashanmugam
+	<shankaran@meta.com>
+Subject: Re: [PATCH v3 bpf-next 4/6] bpf: fs/xattr: Add BPF kfuncs to set and
+ remove xattrs
+Thread-Topic: [PATCH v3 bpf-next 4/6] bpf: fs/xattr: Add BPF kfuncs to set and
+ remove xattrs
+Thread-Index: AQHbS0/nWK/c8SbToUKzvecS3uPKVbLiaX6AgAB/ogA=
+Date: Thu, 12 Dec 2024 18:01:43 +0000
+Message-ID: <13A24FFA-F761-41E3-B810-D3F7BA8E2985@fb.com>
+References: <20241210220627.2800362-1-song@kernel.org>
+ <20241210220627.2800362-5-song@kernel.org>
+ <20241212102443.umqdrvthsi6r4ioy@quack3>
+In-Reply-To: <20241212102443.umqdrvthsi6r4ioy@quack3>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-mailer: Apple Mail (2.3826.200.121)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR15MB5109:EE_|DM4PR15MB5994:EE_
+x-ms-office365-filtering-correlation-id: 85588fad-106b-4586-cc89-08dd1ad70977
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|1800799024|10070799003|7416014|376014|366016|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?enFYZ1k1VW11bDBQb1B1eEI0UytGYWhlTU5zSjlUWlZId0pFVUhqZjJYblBm?=
+ =?utf-8?B?V01lNGcxQWhFenhPNE9aQWJCRGpKMFU4V1ZlaFZlTmVxU09NeXErRjVYMnRI?=
+ =?utf-8?B?MUJqcVRCelMwZmlQQjd3UzB6T0VhQzg0MjVpWnlzYW04QnI2K2N3RHVQcGZ2?=
+ =?utf-8?B?a1liMDVMOFJLdXhvNk5aN1pnVFk5NGF2QVNqbVVqSUVScTVldzdjR2lvck9I?=
+ =?utf-8?B?ZVB5dEJtR2Uyd010eGEzcVZ4WUp1cHV2dGlKYmMvaXJyQ1FmZForQUhmaUxa?=
+ =?utf-8?B?bE9sVVFrU2F5ZjlteWpzQXcxQnJwcFFNTHNGRmpST24wTG5CNTRSbmgzRk9L?=
+ =?utf-8?B?QnZjaHpZeWNEU0FQYVY4eFpXOXl0bXpaOWJXWUdVTzRoeDNzYWVwbSt2Vi9B?=
+ =?utf-8?B?WEZXWW51NFJJVlR6dVRrcWNqdGpFcmdxMGZsZFZFZDlwS3lickFFd0p5S1F4?=
+ =?utf-8?B?cEpTYTF4VFZyaXNYRmlRR0EvZS9vaHF4ZFR1QlZDa2VCYzR3eldYaURsRWJJ?=
+ =?utf-8?B?Y0xuYjN6VlhOWnlBcDhOdHZ5OW02cWhHQ0t3a1dKbTJhcnBRdGNSS2p6R2ZH?=
+ =?utf-8?B?N3RRcm85VVZUYU1ETTRoMHNHREJKcFVXM0hIQkRiWEVnVHIwdU03Rk43bmlz?=
+ =?utf-8?B?NUtBcVRQYVN4a3hIZmVVVlBqZ3dtK3JmSCs0S0x3Rm40MXJ3czZEK0R1dXBH?=
+ =?utf-8?B?TWFaYWNGYyt3MGQwUUkvV0R3cDFGQlVlMWZOUFJkK2ZNMlE4WUVLdk4rSDIz?=
+ =?utf-8?B?UjdWM0VqMDVYTzNvOHl0dHIreEFiUzI1NWtyWDdSb1Q0UHdmTkJKS09Qd0FQ?=
+ =?utf-8?B?TUtMeXVwYk9TdmFZWlo2MDJ2ZHU2RGdCL2lHOU9PSHVDZFVRcW5DK0c4WTFT?=
+ =?utf-8?B?Ukk4OVJ5NFo3dEJqam5nVXhRcTFIcWsxVzdaNk1lTHZMd05TUjh5V0dIZVhX?=
+ =?utf-8?B?c1labGt3dmFrU2o5a1QydFM3QVJCOU00M1BnNkJQN01NeXUwcW9qUUJmQ1F4?=
+ =?utf-8?B?a0luTjFOQU44bENCdk9PWTM0YVVMYm9PRTBKd2wzc2MrdHZ2N1BVOWVNbjFF?=
+ =?utf-8?B?dlgzNmFnM2NLOGZ0T3MvK0M5RUdVNUpzd1BTQStmQlM3dCtvdkc2TThjdC9I?=
+ =?utf-8?B?WGZNZm5qOVNIUWszTTV0TVVhR3J4SXVBLzNjaDJiVkJEeUtTbnVWa2pLS0Uv?=
+ =?utf-8?B?N2p3WFJjdUxyWHJyb1NNL244VTU5RSt2YTRpUzdKZUxZbDVCMzNJcy9tblBm?=
+ =?utf-8?B?VEwrQlJmd2EyZ2Q4S3loTkJqQWxZSXc4Q0FHaDZyeVl4WjFOa3JsUDlXcVJz?=
+ =?utf-8?B?OEhkaGZwRVI2QlRJR0RvL0RJSnRNQ1AzRlROZFEyVGN1WlRqTTQvSUpYR01s?=
+ =?utf-8?B?MkRZN0JZUnlrQ093dWJPNVBwbUlVamVwTXowcXQ1dVRSc05FVG02eUo5Nko2?=
+ =?utf-8?B?Mkw4aGhHeExzKzZOWmgvSTZXcm4ySmFvbGx2QVZOYloweTBPN3ZYc3dLZGVX?=
+ =?utf-8?B?b3R2OXlVbDZobGRtM3liek13dXBtdDUrbkxXQnBEWGZkSFJBYzN6Qmk3cFZw?=
+ =?utf-8?B?d2t1VkI4ZWR4cTdySkJvQ25JdENFUS9kY0cvSVR3ZE1ubFhNV2dtdFBnK3JU?=
+ =?utf-8?B?WndBc0F3SEVMZ2FGSGFDMEdDckk5Q2RYOHFoNk9qck5jdVh0a29iRGNnQXUy?=
+ =?utf-8?B?cFh1bnV4Qkt5OFRucVhwdjE5d1VHNW04ZVZTZ2tWVHBUUVpRSjRIaEFsZ3lN?=
+ =?utf-8?B?c1NhaFBVWERlb3lkdWR2ZkU1S3lpdXBkNzkvYWVxTkw4K1pzT1ltbTJGQWwr?=
+ =?utf-8?B?ZWQzYnl5aFh2NHArUmtRbFBjYzFEZzEwR0NLOG9tdDJ2blcwdHpaYmxRMjY5?=
+ =?utf-8?B?NTdmNDU2L3lyaUowc2dUSFREclZYZWJMdTZYdFBGUEVqdkE9PQ==?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(10070799003)(7416014)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?R0V4NCtuempMWmw4bE8reGJodUdrdWdZbk5Lbit5RkRxZ2UwY3puamh5WUNY?=
+ =?utf-8?B?SngvcGdmZUFyM04wMzcvNFk1UWtLSTc3V0plQUh3VjFMUi9PWVBId0lmZWxl?=
+ =?utf-8?B?b0pwZHdLS3BEMXowcit5RkkvdG5oczgvV25YR25XY1lFeENZUGZhK3BOVlNP?=
+ =?utf-8?B?V0FNRkE5eGpmb3pCbVpZZU1JYmpZVzIzWi9Tc2h1UVlTbG5BVmRVM1ZrQ0V3?=
+ =?utf-8?B?TVRJaG1XZFg4U1dueVhQcitvNG5vSEM4TTBXamUya1JhTjZwZlg3RzhEb2Y5?=
+ =?utf-8?B?Ny9TTFg3bDJsL2RUbkY4RWc4dVFVNHVMT2JqZU5QVWU5NjBBbFpqMER3cktQ?=
+ =?utf-8?B?RnFZTENLa3NFQmNkQzFvWWROeno3c3JvNEFBdGNuUktGdkNaNi9qTDRBSVJN?=
+ =?utf-8?B?YjQwZkx5ejBLMUFKRjhwNHE3aEsyMndhRlBLUHQ5N1Nac1dGYnBhZ04yeWtp?=
+ =?utf-8?B?NHpFdFJrNlBUSnE0Qkx3NzJGb09GUW5HVW5EYU1PajA2eFoydUVmdnpoM1dl?=
+ =?utf-8?B?QWpUZEhIRkNqSm9HZ0RsWXRzUzFiY1pnb3pmNmZDRlYxVmdJZjlwTVlvVnhG?=
+ =?utf-8?B?NkZMR2gyUENFb3p5SmNYNWdmR2J0L2tRQUNUaUpKbWpIUE54Y3o1SVlYSnQ0?=
+ =?utf-8?B?ZUx6MEhxUGIwV0RNcVhRcCtFaDBmcDNsS0QrOWhZbDBYYzQ4aG54Ukd0c2U2?=
+ =?utf-8?B?Q3lJMzhpNjlzY2dJU1FFUmZQeldNOXowK1d4OS9Zbmc3MG1OVnB2a1hNbnlp?=
+ =?utf-8?B?eEFFR1lUWjdtM1FzbUFEWkN6UmVUTXJFNjBuOEkza3NQcytUVThwdGR1RjE1?=
+ =?utf-8?B?N1o0VStuZXJialAwUTN3TUVhSW9qVXkzSjM5cnNWaTFNUW5QWHpFQnhBRHg0?=
+ =?utf-8?B?Q2FIc3B4N3FPd3ZLMHFDYUovRXBlUXo3TTFndkNKTzdyZ0oxT1k4dHFQOEFW?=
+ =?utf-8?B?cmhDMUt4VGU1eW9ZSE1JRnA3NFJKZldNL01iNnFyay93bDdQcGFsSnI5dk9x?=
+ =?utf-8?B?WVloMk1PTEppZTV6QVNTU1BLZmxFNXJ6UTRQY1RHQnRhYkEwUzlibkRQUDFk?=
+ =?utf-8?B?b3ZVZ0d6YWNyY1JxZGN4VFUwMThVRzFBWTdlVU9Xb3RydHk0cVFKQkhQZTJi?=
+ =?utf-8?B?QXkrdXo3blhQZldJcVdaUkdlZlM5ZzM4b3VXRFlZMFJRVDRpQ0grMXgvdC91?=
+ =?utf-8?B?QUtVNmFHNHN0T0Q2VHNxeEZBdTlhRzFHQ3ZmVjNhVllsNk5mYUs0cGJBZHUy?=
+ =?utf-8?B?ZHgrY1ZNZjBVVnU5aVcyVUpKVkxab1ExZFNjTGNBMTB5Rmsya0EvNkFaUmdw?=
+ =?utf-8?B?ZUtSYzdvSzJjYlRMa05FN1BOZ3gxZ0U3MFIzOU5VUnNUMncrdGkvb1JSZnlD?=
+ =?utf-8?B?eGtkbjNOQThBRUJjS1cwNUp0eHo1c0h6Z1pNYVRKOTFlMXp5Z1dRMzl5QUUz?=
+ =?utf-8?B?bklEZnZVdG5XcWJjUDZBRW0yenU3ZVk2MUUySjdwYmZwdGlVci9ISWtEQ29B?=
+ =?utf-8?B?bDBjazdtMDIvcDhNY01pcFE4VjJLWFFqRG50cVBsb2pDTEVNUTNmRmxQVTlF?=
+ =?utf-8?B?U0pBWkI5bWFLaDNrYTVibVRuKzJVM09EclcrT1Zya0RreENjVXpjS1lHVzJM?=
+ =?utf-8?B?YWpaSFBSOTA3T1BGSXVqWksyZk00S3Z6dDR5eTRtQzE2ellhQkJvb21XQVZH?=
+ =?utf-8?B?ZVloSFVYMENGN2ZVb2l6TXcweU1kcnJtR2tnQy9Za3FsWDUxZmdNQkVzQzlC?=
+ =?utf-8?B?USt0R3crSFZjWS9yZ2dJL3IrTjFCenJiazVCeDB1YTZnM094bGZNcnRTVmlK?=
+ =?utf-8?B?alArbm5lUDZQN0ZSSUs4UU9kbnJKVHV5SnFzWFFVUmJhaUhmbjhYUy8vbDRU?=
+ =?utf-8?B?NzNYMjc2ekx2Vnpsa1NCdk9QRFFic2g4dHAycW94TVpEOE5QZlpOWitwOWF6?=
+ =?utf-8?B?SUxBREt4QUQ5NGtianRhR0Z3ZEZhd0NnZDliVEVJYlh6bEJCQlJBMVl6TU9Y?=
+ =?utf-8?B?Q0RObTRjc0g0S0dhTXhPK3hIaDY4Y2hySGt4a2tnNEJldnh0am04T3NKT0hJ?=
+ =?utf-8?B?NEtqS1V4a0ZJYjN3bDF2TEVIdE9GN1gvelV5Z3BGaCtYS0dIQ3ZsTWtVQWU5?=
+ =?utf-8?B?OTNEMXo3eXVTaFJIQnE5OHNiRU1EVG1ZcGdaZjVmdXU2eGtKTVdrS1h5Uktt?=
+ =?utf-8?Q?4weCE/AIUZieixZKDD0zjjA=3D?=
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241203135052.3380721-1-aspsk@isovalent.com> <20241203135052.3380721-4-aspsk@isovalent.com>
- <CAEf4BzZiD_iYpBkf5q5U9VoSUAFJN8dxOBWNJdT5y9DxAe=_UQ@mail.gmail.com>
- <Z1BJc/iK3ecPKTUx@eis> <CAEf4BzZVkNRV+8ROMMM-oGdHd1HUSx3WVv77TK+H4Fr8PhHHBQ@mail.gmail.com>
- <Z1FnPIuBiJFMRrLP@eis> <Z1gCmV3Z62HXjAtK@eis> <CAADnVQJyCiAdMODV3eVxk-m6C3xAR0mKCJYgYqUzcXypKcWwcQ@mail.gmail.com>
- <CAEf4Bza6i3nda+7XPcfmVEckwGfmvsvPmakf_VQhFHEWoVTh4A@mail.gmail.com> <Z1saqkRqbAc+bMWp@eis>
-In-Reply-To: <Z1saqkRqbAc+bMWp@eis>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Dec 2024 09:39:35 -0800
-Message-ID: <CAEf4BzZenQDea0yuGiOta8J=OGx_PVSZaOc31oSFMeLw8No-aw@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 3/7] bpf: add fd_array_cnt attribute for prog_load
-To: Anton Protopopov <aspsk@isovalent.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85588fad-106b-4586-cc89-08dd1ad70977
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2024 18:01:43.5520
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OYlynQ9ZAeLH3IxGJvSubFsxbmW9HueA+PWvqsLEZcwuenv8tvSUIpyY97ZV+P9PbVSKoJ9op1UQSduoXHCZsw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR15MB5994
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+Content-ID: <A92C57CAC34EE04E8D18B3A4D8EAAC21@namprd15.prod.outlook.com>
+X-Proofpoint-GUID: TcdufyGd1V6ZQG0Ga1m3pYrcWjOr_jyw
+X-Proofpoint-ORIG-GUID: TcdufyGd1V6ZQG0Ga1m3pYrcWjOr_jyw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-On Thu, Dec 12, 2024 at 9:15=E2=80=AFAM Anton Protopopov <aspsk@isovalent.c=
-om> wrote:
->
-> On 24/12/10 10:18AM, Andrii Nakryiko wrote:
-> > On Tue, Dec 10, 2024 at 7:57=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, Dec 10, 2024 at 12:56=E2=80=AFAM Anton Protopopov <aspsk@isov=
-alent.com> wrote:
-> > > >
-> > > > >
-> > > > > This makes total sense to treat all BPF objects in fd_array the s=
-ame
-> > > > > way. With BTFs the problem is that, currently, a btf fd can end u=
-p
-> > > > > either in used_btfs or kfunc_btf_tab. I will take a look at how e=
-asy
-> > > > > it is to merge those two.
-> > > >
-> > > > So, currently during program load BTFs are parsed from file
-> > > > descriptors and are stored in two places: env->used_btfs and
-> > > > env->prog->aux->kfunc_btf_tab:
-> > > >
-> > > >   1) env->used_btfs populated only when a DW load with the
-> > > >      (src_reg =3D=3D BPF_PSEUDO_BTF_ID) flag set is performed
-> > > >
-> > > >   2) kfunc_btf_tab is populated by __find_kfunc_desc_btf(),
-> > > >      and the source is attr->fd_array[offset]. The kfunc_btf_tab is
-> > > >      sorted by offset to allow faster search
-> > > >
-> > > > So, to merge them something like this might be done:
-> > > >
-> > > >   1) If fd_array_cnt !=3D 0, then on load create a [sorted by offse=
-t]
-> > > >      table "used_btfs", formatted similar to kfunc_btf_tab in (2)
-> > > >      above.
-> > > >
-> > > >   2) On program load change (1) to add a btf to this new sorted
-> > > >      used_btfs. As there is no corresponding offset, just use
-> > > >      offset=3D-1 (not literally like this, as bsearch() wants uniqu=
-e
-> > > >      keys, so by offset=3D-1 an array of btfs, aka, old used_maps,
-> > > >      should be stored)
-> > > >
-> > > > Looks like this, conceptually, doesn't change things too much: kfun=
-cs
-> > > > btfs will still be searchable in log(n) time, the "normal" btfs wil=
-l
-> > > > still be searched in used_btfs in linear time.
-> > > >
-> > > > (The other way is to just allow kfunc btfs to be loaded from fd_arr=
-ay
-> > > > if fd_array_cnt !=3D 0, as it is done now, but as you've mentioned
-> > > > before, you had other use cases in mind, so this won't work.)
-> > >
-> > > This is getting a bit too complex.
-> > > I think Andrii is asking to keep BTFs if they are in fd_array.
-> > > No need to combine kfunc_btf_tab and used_btfs.
-> > > I think adding BTFs from fd_array to prog->aux->used_btfs
-> > > should do it.
-> >
-> > Exactly, no need to do major changes, let's just add those BTFs into
-> > used_btfs, that's all.
->
-> Added. However, I have a question here: how to add proper selftests? The =
-btfs
-> listed in env->used_btfs are later copied to prog->aux->used_btfs, and ar=
-e
-> never actually exposed to user-space in any way. So, one test I can think=
- of is
->
->   * passing a btf fd in fd_array on prog load
->   * closing this btf fd and checking that id exists before closing the pr=
-ogram
->     (requires to wait until rcu sync to be sure that the btf wasn't destr=
-oyed,
->     but still is refcounted)
->
-> Is this enough?
+Hi Jan,
 
-Yeah, I think so, something minimal and simple should do, thanks.
+Thanks for your review!
 
->
-> (I assume exposing used_btfs to user-space is also out of scope of this p=
-atch
-> set, right?)
+> On Dec 12, 2024, at 2:24=E2=80=AFAM, Jan Kara <jack@suse.cz> wrote:
+>=20
+> >=20
+> On Tue 10-12-24 14:06:25, Song Liu wrote:
+>> Add the following kfuncs to set and remove xattrs from BPF programs:
 
-right
+[...]
+
+>> + return -EPERM;
+>> +
+>> + return inode_permission(&nop_mnt_idmap, inode, MAY_WRITE);
+>> +}
+>> +
+>> +static int __bpf_set_dentry_xattr(struct dentry *dentry, const char *na=
+me,
+>> +  const struct bpf_dynptr *value_p, int flags, bool lock_inode)
+>> +{
+>> + struct bpf_dynptr_kern *value_ptr =3D (struct bpf_dynptr_kern *)value_=
+p;
+>> + struct inode *inode =3D d_inode(dentry);
+>> + const void *value;
+>> + u32 value_len;
+>> + int ret;
+>> +
+>> + ret =3D bpf_xattr_write_permission(name, inode);
+>> + if (ret)
+>> + return ret;
+>=20
+> The permission checking should already happen under inode lock. Otherwise
+> you'll have TTCTTU races.
+
+Great catch! I will fix this in the next version.=20
+
+>=20
+>> +
+>> + value_len =3D __bpf_dynptr_size(value_ptr);
+>> + value =3D __bpf_dynptr_data(value_ptr, value_len);
+>> + if (!value)
+>> + return -EINVAL;
+>> +
+>> + if (lock_inode)
+>> + inode_lock(inode);
+>> + ret =3D __vfs_setxattr(&nop_mnt_idmap, dentry, inode, name,
+>> +     value, value_len, flags);
+>> + if (!ret) {
+>> + fsnotify_xattr(dentry);
+>=20
+> Do we really want to generate fsnotify event for this? I expect
+> security.bpf is an internal bookkeeping of a BPF security module and
+> generating fsnotify event for it seems a bit like generating it for
+> filesystem metadata modifications. On the other hand as I'm checking IMA
+> generates fsnotify events when modifying its xattrs as well. So probably
+> this fine. OK.
+
+Both SELinux and smack generate fsnotify events when setting xattrs:
+[selinux|smack]_inode_setsecctx() -> __vfs_setxattr_locked(). So I
+add the same logic here.=20
+
+>=20
+> ...
+>=20
+>> +static int __bpf_remove_dentry_xattr(struct dentry *dentry, const char =
+*name__str,
+>> +     bool lock_inode)
+>> +{
+>> + struct inode *inode =3D d_inode(dentry);
+>> + int ret;
+>> +
+>> + ret =3D bpf_xattr_write_permission(name__str, inode);
+>> + if (ret)
+>> + return ret;
+>> +
+>> + if (lock_inode)
+> + inode_lock(inode);
+>=20
+> The same comment WRT inode lock as above.
+>=20
+>> + ret =3D __vfs_removexattr(&nop_mnt_idmap, dentry, name__str);
+>> + if (!ret) {
+>> + fsnotify_xattr(dentry);
+>> +
+
+Thanks again,=20
+Song
+
 
