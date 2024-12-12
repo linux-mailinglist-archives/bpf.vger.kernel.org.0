@@ -1,129 +1,96 @@
-Return-Path: <bpf+bounces-46716-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 158949EEF44
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 17:13:47 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A92A9EF3E5
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 18:04:07 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C193D294A1E
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 16:13:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FD0517E8DD
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 16:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 432C82288FD;
-	Thu, 12 Dec 2024 16:00:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114A722E9FD;
+	Thu, 12 Dec 2024 16:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zDCmuVT8";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PfpVSuwg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NXXEPQym"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C3221766D
-	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 16:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84833223E8D;
+	Thu, 12 Dec 2024 16:40:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734019214; cv=none; b=Z3EjFud09wM7ig/TZMJYHmrsF/MHzXtV/0W7FMU1a3zoHdq49IDZ7yCOVEfQrYa1TA7Tu5fqWbCzK2Ve5jrXQ+J2C9ck+muwN13/cKQeB8/BM+/P+z53FHlfztRdNxFay7+i0f+5Dyb06Yn2mWoFTEl5HstFZdRafk1eis1OLhM=
+	t=1734021614; cv=none; b=EMhozsxg7Hos1ChwOESbD6lj1Ur+QWulL7Dm365+7RZ/zu8Zy0zet3SBk5COm5NykU0MhvQS+x54Jkq08myycl7L0eo0ILqWXnVthm/4ceo/11K+28UCCWgaCX93ypdak+TCZ37V3GlhXMVibo8hRGUftdCbUnkW1gPVfICaXeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734019214; c=relaxed/simple;
-	bh=ICJ+S+1qM6mvzE1JgOHP9eIvy65HW0ixwHu8nwlDaGw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i/UxIjKJopFPqulRmyHfoxaxYoYdoMkINs2iSi58FIshNhA/JqXaW0bHvRa+IjCQTtVf8/72rn4i+XFURXlQeicP3Wz3ynfK6ZNNW7mXoGGa7LwzBZskZYj23VTSktFu51jLki8AfCqu5JG7TIPCib24GB7WUuFUz/lLyFHxbng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zDCmuVT8; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PfpVSuwg; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 12 Dec 2024 17:00:09 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1734019211;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ICJ+S+1qM6mvzE1JgOHP9eIvy65HW0ixwHu8nwlDaGw=;
-	b=zDCmuVT8/UT/IrU94t9gYBsobMNwPcF2i0hWDsl30ECnZtAxiB7keIuH6AdntoBKkpJz8G
-	zPju/ybt8amr7zrgXNRBMT2jI1zSd0OnafdrfhEGKnLmnRymmJ7xzFxSWJXWXPAmmz9REn
-	ixUGOJav30VMEjYrp81/6siIqJd+bijJq4Z5NHdQfYTh6QNkWXWlaZ+LSBxy/o8v4Uk91y
-	2bnyGCU1pt9PWPtW8B7S8tEpZpxMalpYabzKZSl3InKVlW5imo1jnGpMs7LQHYUdEF0bYd
-	t/iVHGo4osClkantGT0vd6uITBM3b/b39o7W/JLZkmngvgzIi4ohvYzy371NVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1734019211;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ICJ+S+1qM6mvzE1JgOHP9eIvy65HW0ixwHu8nwlDaGw=;
-	b=PfpVSuwgHv1e0r+1UiUxh2mx2ck7r8dlJePxZAhnaplekTYqDrvFB5nI9+7x1t//Ub3UQU
-	k+sh1fPmFK2HwfDw==
-From: Sebastian Sewior <bigeasy@linutronix.de>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Michal Hocko <mhocko@suse.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>, bpf <bpf@vger.kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vlastimil Babka <vbabka@suse.cz>, Hou Tao <houtao1@huawei.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev,
-	Thomas Gleixner <tglx@linutronix.de>, Tejun Heo <tj@kernel.org>,
-	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v2 1/6] mm, bpf: Introduce __GFP_TRYLOCK for
- opportunistic page allocation
-Message-ID: <20241212160009.O3lGzN95@linutronix.de>
-References: <20241210023936.46871-1-alexei.starovoitov@gmail.com>
- <20241210023936.46871-2-alexei.starovoitov@gmail.com>
- <Z1fSMhHdSTpurYCW@casper.infradead.org>
- <Z1gEUmHkF1ikgbor@tiehlicka>
- <CAADnVQKj40zerCcfcLwXOTcL+13rYzrraxWABRSRQcPswz6Brw@mail.gmail.com>
- <20241212150744.dVyycFUJ@linutronix.de>
- <Z1r_eKGkJYMz-uwH@tiehlicka>
- <20241212153506.dT1MvukO@linutronix.de>
- <20241212104809.1c6cb0a1@batman.local.home>
+	s=arc-20240116; t=1734021614; c=relaxed/simple;
+	bh=syLKL8tRQqbY8Yn2GNqk1vlT2Nctq2v4N0rngNhTimU=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=jQcXh8oXIQ0n7VhGEeAZ2eS5xTtlW/oWFs9fkBcvM9RCK8oztpCFkNtX0qbPXVN8SVY6QbhpmeQbg/wgMH5/4mXZLPsqQ/gIoo9IlG3BAwzKKXsV+IIY1ghU+iuRBgx+FbV8QdQVSUk5zlQkAPaAx80seK9dEAh9GzVhRAByGhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NXXEPQym; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34B65C4CECE;
+	Thu, 12 Dec 2024 16:40:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734021614;
+	bh=syLKL8tRQqbY8Yn2GNqk1vlT2Nctq2v4N0rngNhTimU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=NXXEPQym9+64+R5mH0pSAO9MOdiXsTnSpiTTRffdTZL9mIUpjTfg4x/pnohRfjK8o
+	 Tuu/qhSLVJDg4xRVkqEfVg/s+gZxQ1F0EwW02cbp5K60/xc2ImMEjswotV5jHKu8X9
+	 k6KxVrUOltqWNM1ZCXqd+25V1186NxCcwNFaBgygv2aD4byZ7CKQNnHZLf97tXlP+2
+	 b9cbee2kShKit7Ydz6YnD1gyx3lUd3dQnX6Od7TMBnvgGqMI4hCCs36PVUZSNXF1mw
+	 dk64+wsABCrulQlWLqwAB19OMe0glE1zu7XfZ3nofVbBXuGaTahyWwlKocXg1oIr8I
+	 L4AlcRyhZRwfg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 94202380A959;
+	Thu, 12 Dec 2024 16:40:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20241212104809.1c6cb0a1@batman.local.home>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2] bpftool: Probe for ISA v4 instruction set
+ extension
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173402163052.2361877.6606920596911707447.git-patchwork-notify@kernel.org>
+Date: Thu, 12 Dec 2024 16:40:30 +0000
+References: <20241209145439.336362-1-simone.magnani@isovalent.com>
+In-Reply-To: <20241209145439.336362-1-simone.magnani@isovalent.com>
+To: Simone Magnani <simone.magnani@isovalent.com>
+Cc: bpf@vger.kernel.org, qmo@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, nathan@kernel.org,
+ ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev
 
-On 2024-12-12 10:48:09 [-0500], Steven Rostedt wrote:
-> On Thu, 12 Dec 2024 16:35:06 +0100
-> Sebastian Sewior <bigeasy@linutronix.de> wrote:
->=20
-> > If NMI is one of the possible calling contexts, yes.
-> >=20
-> > One thing I am not 100% sure about is how "good" a spinlock_t trylock is
-> > if attempted from hardirq (on PREEMPT_RT). Obtaining the lock und
-> > unlocking is doable. The lock part will assign the "current" task as the
-> > task that owns the lock now. This task is just randomly on the CPU while
-> > the hardirq triggered. The regular spin_lock() will see this random task
-> > as the owner and might PI-boost it. This could work=E2=80=A6
->=20
-> Looking at the unlock code, it and the slowtrylock() appears to use
-> raw_spin_lock_irqsave(). Hence it expects that it can be called from
-> irq disabled context. If it can be used in interrupt disabled context,
-> I don't see why it wouldn't work in actual interrupt context.
+Hello:
 
-trylock records current as owner. This task did not attempt to acquire
-the lock.
-The lock part will might PI-boost it via task_blocks_on_rt_mutex() -
-this random task. That task might already wait on one lock and now this
-gets added to the mix.
-This could be okay since a task can own multiple locks, wait on one and
-get PI boosted on any of those at any time.
-However, we never used that way.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-The lockig of the raw_spinlock_t has irqsave. Correct. But not because
-it expects to be called in interrupt disabled context or an actual
-interrupt. It was _irq() but got changed because it is used in the early
-init code and would unconditionally enable interrupts which should
-remain disabled.
+On Mon,  9 Dec 2024 15:54:39 +0100 you wrote:
+> This patch introduces a new probe to check whether the kernel supports
+> instruction set extensions v4. The v4 extension comprises several new
+> instructions: BPF_{SDIV,SMOD} (signed div and mod), BPF_{LD,LDX,ST,STX,MOV}
+> (sign-extended load/store/move), 32-bit BPF_JA (unconditional jump),
+> target-independent BPF_ALU64 BSWAP (byte-swapping 16/32/64). These have
+> been introduced in the following commits respectively:
+> 
+> [...]
 
-> -- Steve
+Here is the summary with links:
+  - [bpf-next,v2] bpftool: Probe for ISA v4 instruction set extension
+    https://git.kernel.org/bpf/bpf-next/c/b9fee10a52c0
 
-Sebastian
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
