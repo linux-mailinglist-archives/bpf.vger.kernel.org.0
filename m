@@ -1,217 +1,312 @@
-Return-Path: <bpf+bounces-46746-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46747-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9C779EFF3C
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 23:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 55F6A9EFF5C
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 23:30:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFD74165793
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 22:25:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69601161D84
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 22:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A8F1DE2CB;
-	Thu, 12 Dec 2024 22:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 175101DDC37;
+	Thu, 12 Dec 2024 22:30:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gbiRF/Yw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S++HiME5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF8D2F2F;
-	Thu, 12 Dec 2024 22:24:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9023E1A707A
+	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 22:30:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734042300; cv=none; b=g3efoB5QpW39+I1EzvuqPo7AmmEYD7CeadeF/Zn+fkvur+9yjNzQhFkIYa8JK5suCBEox3X+pYj9QH8JnvpYoaT0jnHSwVeY2tBmWvzaX/++dey2U3Fmp3ZlLV5/xnAse2vKjgwTtw/D7JUsdJsCAfg9Uc4l4f9sBseFf+HG1HQ=
+	t=1734042623; cv=none; b=onroNpBlFdI3/BpW/bZx3uEKX2JaWgDqASP2k6uPfxWVZLigqqpbPU5EsJ/UxH0UfrvBYwdDUAq2S+CbKWSjY/SgQwinibpKe9c6IzKhOn9pF1clPzDQLe0PBpB0l0LHeQFo9s3mhvM9ZRbVOhCypLUBTeelX/b/HL7N5z5We2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734042300; c=relaxed/simple;
-	bh=YNFfRhXnSCMoy1cq0GyE9xjMgFb6ScECeniSdt+KuTA=;
+	s=arc-20240116; t=1734042623; c=relaxed/simple;
+	bh=Tyfy35Zot/+Zkd3L0CJ6t9I1m6u5VEjWBjdI7t9sSxU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M5Vvua44pR4RbZ/5SikfupY9ipyy5HlhGtFgsGw3ACCviPbReyv9aNoWWFnCTz8cT/qlA9AcLqMYWUbTgle1L5y63U8MmQoHJA4EFqeLajzRSx0KmdE5enn5mqZff6wHrJzZhELnYAitVnJJ4WS0o+weMMT90bBHBDPS5goiwo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gbiRF/Yw; arc=none smtp.client-ip=209.85.216.44
+	 To:Cc:Content-Type; b=FsiakKUBfiq+MW8JfQXEpqkT5Sm5mkNjK2Y829DlZy6hZmjNpa7IF1yGi2G+aSBUKjAgyEqvh7vpDKS3N7gHrJS9szdy5Qq9Dtm21hD6KDB2+N0xMKMGN4pqhtlTJph5f7BkO/TtZ9Cl30C4wJAToTAlg9hU3VW5ijgl8Oo3GRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S++HiME5; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2efded08c79so816065a91.0;
-        Thu, 12 Dec 2024 14:24:58 -0800 (PST)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3862a921123so825330f8f.3
+        for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 14:30:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734042298; x=1734647098; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734042620; x=1734647420; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/4zgfdFDJ1IUU/4ek2APthZIQtUgvUoq5PaLeafGTto=;
-        b=gbiRF/YwPaYdOLheUPwvuQ7dKo9nFY0pHzJYALF7Jf0ZMM5jmiZsbijB6+5nJBstay
-         Ed/iKrraCYNko1bFdRaP+9b3j9St9QchR/beEKW8AbAkS0WLWR7Az1w3N3MFH4103++V
-         h9oC2sToGnEmtawb1/A32C0yPPb73kTyRKsIYvZHLfU4mq4l459TTOfM/tRI4yQXSw5B
-         B77yyyVHFzeLH2A6NClbM+6h6G4i0KeAYMaKzzDGIzUBFAb1zMDoj5teENwFzu/fxIPJ
-         mCMvU9B2CrmLQgdkKPDV3lHQyJyNPWxFIT9FTqMvtoEsGAyZSzRHV6iBxynLFMvlVIg1
-         IszA==
+        bh=jjd3CcGxrBUolkkxSlkY4AUi3hk7OktEMBqQqoVQDPI=;
+        b=S++HiME50TE2/0+o9GgvaWE+j0JSkVqwCGn3eha2uvPHAQFgEO2a4S1s2sSqJmYUum
+         j04coYEl+5HLnlcEpTIp2vk6AtrKICtPoHMcNg82n8q3LMNKCCvrHzDaTPex4ytUxifL
+         96p36qE1GPNIFvKi/vFmovdwS8UaUsKYllh91wzMrf60ZDX5+V5LwCSKpVlbQtcJjRly
+         CHLLbpXLF2jMjR4xdSTdZhyg+di7Iu87QDSfqw2ZbHP3VcTtZYDuWvcQ4dSHWveRKvYB
+         O8vlJFwRv5MhZjpP/2FINlI3d5wl7dLGmK9HHyoEXu0JEDSMU+y4iCfNqRdszPCU24ix
+         Pacw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734042298; x=1734647098;
+        d=1e100.net; s=20230601; t=1734042620; x=1734647420;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/4zgfdFDJ1IUU/4ek2APthZIQtUgvUoq5PaLeafGTto=;
-        b=Gm5JzbdPecvZubqXIsNYEEfS7860u2Hzpe8FACqSdgG/7ecrN84f3nV/8dX9GHYdEM
-         5VqUI+GtZEmnDYXksxXAvrqK421iFxOsWjkjilGpMjYmKGrlBkycjJWbsMFAvBqunB/G
-         rVhF66XIjAuYBjMAPhNoGlAWvU02Zih9fJYhomR1bBBcfud+fzR90rXlV5Q7Qjj53h9k
-         IWy9Tnpr0yUSQE1so9nsacakqwhd9u1+acYLFud7uMzfW0XsPaRDafsJio3NlsGUQfRm
-         kfsaZmakuogQFtcf6gW6gaM28jQt7fe98Peite+qHLf9tqkH0RUq5YHm9zi6yvr7sV3x
-         cAIg==
-X-Forwarded-Encrypted: i=1; AJvYcCVQ2Xt+J/RFyaSUUcLaV6/KbswJygoYT8Nb3SWuhI1g622pArzkYK7Pl9ps/ZU/RoRTtx0=@vger.kernel.org, AJvYcCVWSx/1UDu2+tqA1M89vCPIoILd7zh/WiJwZQRuO1mxTKFhBZgdoPc7/1qsX4eeURTlopzYDY83dPE0aA==@vger.kernel.org, AJvYcCWQ0eM2+CO8n8Ea190cf8zYdQStXRUvUFI/OWMFoiH/BJqxARSi8EolkzIJ8tJUbXvTvz4DlOjNNdB4Hw==@vger.kernel.org, AJvYcCXJ8rM261R1uRRl4WceoeJyOuOkcGDFXclDzVHHynFjWv/E/LmHE+lFFhlfmw8wJbCPNCqh0YBg@vger.kernel.org
-X-Gm-Message-State: AOJu0YzAAM/3BP/4d4hf6dX4AoYIi7CfPoRhewcLovnskQiKyiEfm4NB
-	i82VyVXlKtp8i4zwju0N3B62kTC+vN/yDMLpO0YIfYR19UAhoVKPD0cJGj/Eem1wsRDSrcAI1F/
-	m1FuTP7/cltD/VyuS9X316aZtciI=
-X-Gm-Gg: ASbGnctEU9pGdlRdGwI1oUyJ52Er4tfFrOif/MjobTxpw11V1/CFtXW3p+f6+vpQh+n
-	Pk7RtD7OmtTfg4lMcv8p2A04Pn2jvVdTCwfCAf6iM8ozQ6KiDs8TF/A==
-X-Google-Smtp-Source: AGHT+IHOB+8hLEKkduBdR3nAqxcFs6LGe5zfSqHYsxR4gPGBKpCzZn4Rzacq6aT9lBZWpmBo4EYOw4uZvJ6MTz51FlQ=
-X-Received: by 2002:a17:90a:e70d:b0:2ee:df57:b194 with SMTP id
- 98e67ed59e1d1-2f28fd6b922mr540057a91.21.1734042298072; Thu, 12 Dec 2024
- 14:24:58 -0800 (PST)
+        bh=jjd3CcGxrBUolkkxSlkY4AUi3hk7OktEMBqQqoVQDPI=;
+        b=QsW/dq1yOvq/7gyJiaYmU8R3NmyEZYpcYyeF1Vd+570Q1vpzrxJGOik0iS64ssCOMt
+         KBrOOT+q3of7Nnif10JQiR6nE/EGpHTC2vvEFUEQewKc7qBe+yzUuje4zR67v2r5YjQu
+         0mvtTAQiGhV55GHIcOg/JwqkYmp0BGlvILd1Ovrnm1GvyObI9tGaC3IvBBz5v7bhgOpO
+         k775mmKGdiAZrDRNkYtBFerFLkTUagj9Z+ryvYGby2tiO6d85ACT8qtrGXHrjgkilxSB
+         TVL4Q9NAOyKr+J3V5lzMd/Kd7iqIXRyi6aFQIn2H6R7TJzhI/meLJbbqgygT4oqqGoeQ
+         pQqg==
+X-Gm-Message-State: AOJu0YwpNAs8+lbVd25P/QeWnm9mWZWLmaiyhm/9aqz9HJLyrW/T7VTP
+	NDKgSDXbN1BuL2BBWTlW3gsOCInY3dUwMu87ZVs0spWcafVjRLbywr9PTmyDa3yVqqoXKcJyWk4
+	IP5MB62TKl9Ctlf8XeCLT3oAZTcc=
+X-Gm-Gg: ASbGncvZV7hpaJtscC8+lohAOgW8QpvOdywD7xkGc3Prs9BIF0yESamkd2XKAEfwFoY
+	YMMmas4MZatuNfMkKaj4xxVIB6hsos3jOh6CUh16H5lgkw2a29Yb/gam/jLkPVVri8hx1oA==
+X-Google-Smtp-Source: AGHT+IE+YUlt2bupD2QPv76gc0NgutAEWrTu+oLgcw4MUTfZSoEGfVTDXZRKsQMgcBgDVKCuJpj7nbOI3hXjK4OCzLc=
+X-Received: by 2002:a05:6000:144d:b0:385:e37a:2a56 with SMTP id
+ ffacd0b85a97d-3888e0bb669mr161617f8f.52.1734042619403; Thu, 12 Dec 2024
+ 14:30:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241210040404.10606-1-alibuda@linux.alibaba.com> <20241210040404.10606-5-alibuda@linux.alibaba.com>
-In-Reply-To: <20241210040404.10606-5-alibuda@linux.alibaba.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Dec 2024 14:24:46 -0800
-Message-ID: <CAEf4BzYMWTTnniPN-2cmjkPOefDFOLgbdo0cHzmMNJiFPL8riQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/5] libbpf: fix error when st-prefix_ops and
- ops from differ btf
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	pabeni@redhat.com, song@kernel.org, sdf@google.com, haoluo@google.com, 
-	yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org, 
-	davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+References: <20241212210748.1305855-1-afabre@cloudflare.com>
+In-Reply-To: <20241212210748.1305855-1-afabre@cloudflare.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 12 Dec 2024 14:30:08 -0800
+Message-ID: <CAADnVQLKFrnt232-WPnA0ZzQXJEhL6APrGNQK_Wu=fNaWsbpFA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Don't trust r0 bounds after BPF to BPF call that tail_calls
+To: Arthur Fabre <afabre@cloudflare.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 9, 2024 at 8:04=E2=80=AFPM D. Wythe <alibuda@linux.alibaba.com>=
- wrote:
+On Thu, Dec 12, 2024 at 1:09=E2=80=AFPM Arthur Fabre <afabre@cloudflare.com=
+> wrote:
 >
-> When a struct_ops named xxx_ops was registered by a module, and
-> it will be used in both built-in modules and the module itself,
-> so that the btf_type of xxx_ops will be present in btf_vmlinux
-> instead of in btf_mod, which means that the btf_type of
-> bpf_struct_ops_xxx_ops and xxx_ops will not be in the same btf.
+> When making BPF to BPF calls, the verifier propagates register bounds
+> info for r0 from the callee to the caller.
 >
-> Here are four possible case:
+> For example loading:
 >
-> +--------+-------------+-------------+---------------------------------+
-> |        | st_opx_xxx  | xxx         |                                 |
-> +--------+-------------+-------------+---------------------------------+
-> | case 0 | btf_vmlinux | bft_vmlinux | be used and reg only in vmlinux |
-> +--------+-------------+-------------+---------------------------------+
-> | case 1 | btf_vmlinux | bpf_mod     | INVALID                         |
-> +--------+-------------+-------------+---------------------------------+
-> | case 2 | btf_mod     | btf_vmlinux | reg in mod but be used both in  |
-> |        |             |             | vmlinux and mod.                |
-> +--------+-------------+-------------+---------------------------------+
-> | case 3 | btf_mod     | btf_mod     | be used and reg only in mod     |
-> +--------+-------------+-------------+---------------------------------+
+>     #include <linux/bpf.h>
+>     #include <bpf/bpf_helpers.h>
 >
-> At present, cases 0, 1, and 3 can be correctly identified, because
-> st_ops_xxx is searched from the same btf with xxx. In order to
-> handle case 2 correctly without affecting other cases, we cannot simply
-> change the search method for st_ops_xxx from find_btf_by_prefix_kind()
-> to find_ksym_btf_id(), because in this way, case 1 will not be
-> recognized anymore.
+>     static __attribute__((noinline)) int callee(struct xdp_md *ctx)
+>     {
+>             int ret;
+>             asm volatile("%0 =3D 23" : "=3Dr"(ret));
+>             return ret;
+>     }
 >
-> To address this issue, if st_ops_xxx cannot be found in the btf with xxx
-> and mod_btf does not exist, do find_ksym_btf_id() again to
-> avoid such issue.
+>     static SEC("xdp") int caller(struct xdp_md *ctx)
+>     {
+>             int res =3D callee(ctx);
+>             if (res =3D=3D 23) {
+>                     return XDP_PASS;
+>             }
+>             return XDP_DROP;
+>     }
 >
-> Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> The verifier logs:
+>
+>     func#0 @0
+>     func#1 @6
+>     0: R1=3Dctx() R10=3Dfp0
+>     ; int res =3D callee(ctx); @ test.c:15
+>     0: (85) call pc+5
+>     caller:
+>      R10=3Dfp0
+>     callee:
+>      frame1: R1=3Dctx() R10=3Dfp0
+>     6: frame1: R1=3Dctx() R10=3Dfp0
+>     ; asm volatile("%0 =3D 23" : "=3Dr"(ret)); @ test.c:9
+>     6: (b7) r0 =3D 23                       ; frame1: R0_w=3D23
+>     ; return ret; @ test.c:10
+>     7: (95) exit
+>     returning from callee:
+>      frame1: R0_w=3D23 R1=3Dctx() R10=3Dfp0
+>     to caller at 1:
+>      R0_w=3D23 R10=3Dfp0
+>
+>     from 7 to 1: R0_w=3D23 R10=3Dfp0
+>     ; int res =3D callee(ctx); @ test.c:15
+>     1: (bc) w1 =3D w0                       ; R0_w=3D23 R1_w=3D23
+>     2: (b4) w0 =3D 2                        ; R0_w=3D2
+>     ;  @ test.c:0
+>     3: (16) if w1 =3D=3D 0x17 goto pc+1
+>     3: R1_w=3D23
+>     ; } @ test.c:20
+>     5: (95) exit
+>     processed 7 insns (limit 1000000) max_states_per_insn 0 total_states =
+0 peak_states 0 mark_read 0
+>
+> And correctly tracks R0_w=3D23 from the callee through to the caller.
+> This lets it completely prune the res !=3D 23 branch, skipping over
+> instruction 4.
+>
+> But this isn't sound if the callee makes a bpf_tail_call(): if the tail
+> call succeeds, callee() will directly return whatever the tail called pro=
+gram returns.
+> We can't know what the bounds of r0 will be.
+>
+> But the verifier still incorrectly tracks the bounds of r0, and assumes
+> it's 23. Loading:
+>
+>     #include <linux/bpf.h>
+>     #include <bpf/bpf_helpers.h>
+>
+>     struct {
+>             __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
+>             __uint(max_entries, 1);
+>             __uint(key_size, sizeof(__u32));
+>             __uint(value_size, sizeof(__u32));
+>     } tail_call_map SEC(".maps");
+>
+>     static __attribute__((noinline)) int callee(struct xdp_md *ctx)
+>     {
+>             bpf_tail_call(ctx, &tail_call_map, 0);
+>
+>             int ret;
+>             asm volatile("%0 =3D 23" : "=3Dr"(ret));
+>             return ret;
+>     }
+>
+>     static SEC("xdp") int caller(struct xdp_md *ctx)
+>     {
+>             int res =3D callee(ctx);
+>             if (res =3D=3D 23) {
+>                     return XDP_PASS;
+>             }
+>             return XDP_DROP;
+>     }
+>
+> The verifier logs:
+>
+>     func#0 @0
+>     func#1 @6
+>     0: R1=3Dctx() R10=3Dfp0
+>     ; int res =3D callee(ctx); @ test.c:24
+>     0: (85) call pc+5
+>     caller:
+>      R10=3Dfp0
+>     callee:
+>      frame1: R1=3Dctx() R10=3Dfp0
+>     6: frame1: R1=3Dctx() R10=3Dfp0
+>     ; bpf_tail_call(ctx, &tail_call_map, 0); @ test.c:15
+>     6: (18) r2 =3D 0xffff8a9c82a75800       ; frame1: R2_w=3Dmap_ptr(map=
+=3Dtail_call_map,ks=3D4,vs=3D4)
+>     8: (b4) w3 =3D 0                        ; frame1: R3_w=3D0
+>     9: (85) call bpf_tail_call#12
+>     10: frame1:
+>     ; asm volatile("%0 =3D 23" : "=3Dr"(ret)); @ test.c:18
+>     10: (b7) r0 =3D 23                      ; frame1: R0_w=3D23
+>     ; return ret; @ test.c:19
+>     11: (95) exit
+>     returning from callee:
+>      frame1: R0_w=3D23 R10=3Dfp0
+>     to caller at 1:
+>      R0_w=3D23 R10=3Dfp0
+>
+>     from 11 to 1: R0_w=3D23 R10=3Dfp0
+>     ; int res =3D callee(ctx); @ test.c:24
+>     1: (bc) w1 =3D w0                       ; R0_w=3D23 R1_w=3D23
+>     2: (b4) w0 =3D 2                        ; R0=3D2
+>     ;  @ test.c:0
+>     3: (16) if w1 =3D=3D 0x17 goto pc+1
+>     3: R1=3D23
+>     ; } @ test.c:29
+>     5: (95) exit
+>     processed 10 insns (limit 1000000) max_states_per_insn 0 total_states=
+ 1 peak_states 1 mark_read 1
+>
+> It still prunes the res !=3D 23 branch, skipping over instruction 4.
+> But the tail called program can return any value.
+>
+> Aside from pruning incorrect branches, this can also be used to read and
+> write arbitrary memory by using r0 as a index.
+>
+> The added selftest fails without the fix:
+>
+>     #187/p calls: call with nested tail_call r0 bounds FAIL
+>     Unexpected success to load
+>
+> Fixes: e411901c0b77 ("bpf: allow for tailcalls in BPF subprograms for x64=
+ JIT")
+> Signed-off-by: Arthur Fabre <afabre@cloudflare.com>
+> Cc: stable@vger.kernel.org
 > ---
->  tools/lib/bpf/libbpf.c | 34 +++++++++++++++++++++++++++++++---
->  1 file changed, 31 insertions(+), 3 deletions(-)
+>  kernel/bpf/verifier.c                        |  3 ++
+>  tools/testing/selftests/bpf/verifier/calls.c | 35 ++++++++++++++++++++
+>  2 files changed, 38 insertions(+)
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 66173ddb5a2d..046feab4ec36 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -994,6 +994,27 @@ static int find_ksym_btf_id(struct bpf_object *obj, =
-const char *ksym_name,
->  static int find_btf_by_prefix_kind(const struct btf *btf, const char *pr=
-efix,
->                                    const char *name, __u32 kind);
->
-> +static int
-> +find_ksym_btf_id_by_prefix_kind(struct bpf_object *obj, const char *pref=
-ix,
-> +                               const char *name,
-> +                               __u16 kind, struct btf **res_btf,
-> +                               struct module_btf **res_mod_btf)
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index c2e5d0e6e3d0..0ef3a3ce695a 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -10359,6 +10359,9 @@ static int prepare_func_exit(struct bpf_verifier_=
+env *env, int *insn_idx)
+>                                 *insn_idx, callee->callsite);
+>                         return -EFAULT;
+>                 }
+> +       } else if (env->subprog_info[state->frame[state->curframe]->subpr=
+ogno].has_tail_call) {
+> +               /* if tailcall succeeds, r0 could hold anything */
+> +               __mark_reg_unknown(env, &caller->regs[BPF_REG_0]);
+
+The fix makes sense.
+The has_ld_abs has the same issue.
+Pls include it as well.
+
+>         } else {
+>                 /* return to the caller whatever r0 had in the callee */
+>                 caller->regs[BPF_REG_0] =3D *r0;
+> diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testing=
+/selftests/bpf/verifier/calls.c
+> index 7afc2619ab14..1c6266deec7a 100644
+> --- a/tools/testing/selftests/bpf/verifier/calls.c
+> +++ b/tools/testing/selftests/bpf/verifier/calls.c
+> @@ -1340,6 +1340,41 @@
+>         .prog_type =3D BPF_PROG_TYPE_XDP,
+>         .result =3D ACCEPT,
+>  },
 > +{
-> +       char btf_type_name[128];
-> +       int ret;
+> +       "calls: call with nested tail_call r0 bounds",
+> +       .insns =3D {
+> +       /* main prog */
+> +       BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
+> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 1, 0, 4),
+> +       /* we shouldn't be able to index packet with r0, it could have an=
+y value */
+> +       BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6, offsetof(struct xdp_md, =
+data)),
+> +       BPF_ALU64_REG(BPF_ADD, BPF_REG_7, BPF_REG_0),
+> +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> +       BPF_EXIT_INSN(),
 > +
-> +       ret =3D snprintf(btf_type_name, sizeof(btf_type_name),
-> +                      "%s%s", prefix, name);
-> +       /* snprintf returns the number of characters written excluding th=
-e
-> +        * terminating null. So, if >=3D BTF_MAX_NAME_SIZE are written, i=
-t
-> +        * indicates truncation.
-> +        */
-> +       if (ret < 0 || ret >=3D sizeof(btf_type_name))
-> +               return -ENAMETOOLONG;
-> +
-> +       return find_ksym_btf_id(obj, btf_type_name, kind, res_btf, res_mo=
-d_btf);
-> +}
+> +       /* subprog */
+> +       BPF_LD_MAP_FD(BPF_REG_2, 0),
+> +       BPF_MOV64_IMM(BPF_REG_3, 1),
+> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
+> +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> +       BPF_EXIT_INSN(),
+> +       },
+> +       .prog_type =3D BPF_PROG_TYPE_XDP,
+> +       .errstr =3D "math between pkt pointer and register with unbounded=
+ min value",
+> +       .result =3D REJECT,
 
-I don't think we need this helper, see below.
+Pls split sefltest into separate patch and use inline asm
+instead of macros.
+See verifier_map_ptr_mixing.c or verifier_unpriv.c
 
-> +
->  static int
->  find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw=
-,
->                            struct module_btf **mod_btf,
-> @@ -1028,9 +1049,16 @@ find_struct_ops_kern_types(struct bpf_object *obj,=
- const char *tname_raw,
->         kern_vtype_id =3D find_btf_by_prefix_kind(btf, STRUCT_OPS_VALUE_P=
-REFIX,
->                                                 tname, BTF_KIND_STRUCT);
-
-instead of using find_btf_by_prefix_kind, let's have:
-
-1) snprintf(STRUCT_OPS_VALUE_PREFIX, tname) right here in this
-function, so we have expected type constructed and ready to be used
-and reused, if necessary
-2) call btf__find_by_name_kind() instead of find_btf_by_prefix_kind()
-3) if (kern_vtype_id < 0 && !*mod_btf)
-      kern_vtype_id =3D find_ksym_btf_id(...)
-4) if (kern_vtype_id < 0) /* now emit error and error out */
-
->         if (kern_vtype_id < 0) {
-> -               pr_warn("struct_ops init_kern: struct %s%s is not found i=
-n kernel BTF\n",
-> -                       STRUCT_OPS_VALUE_PREFIX, tname);
-> -               return kern_vtype_id;
-> +               if (kern_vtype_id =3D=3D -ENOENT && !*mod_btf)
-> +                       kern_vtype_id =3D
-> +                               find_ksym_btf_id_by_prefix_kind(obj, STRU=
-CT_OPS_VALUE_PREFIX,
-> +                                                               tname, BT=
-F_KIND_STRUCT, &btf,
-> +                                                               mod_btf);
-> +               if (kern_vtype_id < 0) {
-> +                       pr_warn("struct_ops init_kern: struct %s%s is not=
- found in kernel BTF\n",
-> +                               STRUCT_OPS_VALUE_PREFIX, tname);
-> +                       return kern_vtype_id;
-> +               }
->         }
->         kern_vtype =3D btf__type_by_id(btf, kern_vtype_id);
->
-> --
-> 2.45.0
->
+pw-bot: cr
 
