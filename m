@@ -1,96 +1,96 @@
-Return-Path: <bpf+bounces-46690-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46691-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C95799EE1FB
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 09:54:33 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AC059EE270
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 10:15:43 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D57C8284037
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 08:54:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DDDD167CA9
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 09:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC00820E02C;
-	Thu, 12 Dec 2024 08:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47EF5204C36;
+	Thu, 12 Dec 2024 09:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aE9JzDgn";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="efzOIyRj";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JOrYy3C5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AbPyUWxb"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SP/h1UKN";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oteZM1W7";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ldSXcSXS";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4rW/o5t9"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E6E20E011
-	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 08:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C012594BA
+	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 09:15:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733993665; cv=none; b=eGzL31XlnUfxp46KbxBJeqKRSmIffRH/PBPwNuY6Se4KLfhOPq84dDaAKGjr33R7HC00Vo7qfrTtoFeH5bSsvt9fLwiFTprdqw9Ijv5vU+1nxgmlKWnhbTcrU2AYLpDxOjMmjgM6yKgLJE/3H9eJknIE/FoFKGu/O5pnl7mVYc0=
+	t=1733994937; cv=none; b=p9iU/6/r+2R5h8mxu0LRVspp+bPRbHjAnAxzH2UCGqfY9zHPd3jnEYL073ttKre0KmbB9U7Tzbr/spuMoC64RasI+ZUhjfr3yxHoXuy/8lYyLOOAOjWmENoFCMIAF/maR/daJcOdFCpLR60nV7Tinlwsp/M4hUjg2L7p4Y3prQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733993665; c=relaxed/simple;
-	bh=Nf03Jv4xS67KCTEg30kM0eX00zD0pCKuYYKu755NEXw=;
+	s=arc-20240116; t=1733994937; c=relaxed/simple;
+	bh=HYZFo58gZ3OM1cYEN0tfoZAufHcJEaU6XcrvLY60QCQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K5qW3RqCwx1cEHjjlEbmee8aS6H2qfUFdrYsUVfJhn+QvFXcPFKunb7b01Den3ZH0hlz3w8ugr/BRkHLjxLG1CeI+XTrR44vbgLiN7GfmvTOlos3qIwL71pZ0mpY/7UBMCstzU3TWOga+1KQjszHlvx+LtDuhWfNh//Yx6nJw68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=aE9JzDgn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=efzOIyRj; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JOrYy3C5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AbPyUWxb; arc=none smtp.client-ip=195.135.223.130
+	 In-Reply-To:Content-Type; b=FkJT+Hz8BdzXU1qllX3JkqxYdWfzjxkUbxC+UewgeLaFk3KfAduTSN9pnZwp8j/V+dkmOWECplwy2mM0JTxTdF5YBrEs3pWLuD+vaFm+McCnBetsuisgWhxCuAfRJajYLddLRjRJ+dufhMeaie90RwEY47ixqiGEQ/WGkrvx0ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SP/h1UKN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oteZM1W7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ldSXcSXS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4rW/o5t9; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 347242115A;
-	Thu, 12 Dec 2024 08:54:20 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AC7F021119;
+	Thu, 12 Dec 2024 09:15:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733993661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1733994933; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=gjPNJSRzK/Ratzm0ZHNDEIOEws4z2LJnQIizC2zS7Y4=;
-	b=aE9JzDgnNgf4j9J9ad8Va7nEduNDzHOg6ouCzeZPc6/Qv6BxSNvNbdfmzaFafm3e+FRpaS
-	SnflCDnOOnVMR90qPOzSzDmyVeSO07HhANxjnh59rn2p7wE2pJdQMx4qBwwG40I7yRbfVt
-	tDJe/Dy9pTttK5nL5C+10f0o0+xZBTY=
+	bh=R7fVrjcp/UTDDfv/utL2sG0J56iJc0yfUCHiiOAS7hk=;
+	b=SP/h1UKNFO2G3e4CYg3KAYpe5TJtbOiW0vw3ugVHdCo6fYSdVTJ4jp7maHKASeR8LJ3onH
+	rI6T++ih/XBiZGO+6kFnv/7qHvMD4n7DgskCBBKQP+bxpnin8XTlS38usphefLPaiB7IBm
+	kigJQKVojktiWAthi6E3SDths4zqXTw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733993661;
+	s=susede2_ed25519; t=1733994933;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=gjPNJSRzK/Ratzm0ZHNDEIOEws4z2LJnQIizC2zS7Y4=;
-	b=efzOIyRji+r/INgyzxdBfbsVTNTrWcOUav8HeHIsWYdab+7h2rlALJFPoididfpUioyzqY
-	6cs9+IpOIZd1laCg==
+	bh=R7fVrjcp/UTDDfv/utL2sG0J56iJc0yfUCHiiOAS7hk=;
+	b=oteZM1W7LjoMROSvuKU6eFxZuOuKt317SaphnOOcifWXP3wJjZ40FCJUoyd/1JX+nQvZ0M
+	741tXn0k+fnM7vDA==
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JOrYy3C5;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=AbPyUWxb
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ldSXcSXS;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="4rW/o5t9"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733993660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1733994932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=gjPNJSRzK/Ratzm0ZHNDEIOEws4z2LJnQIizC2zS7Y4=;
-	b=JOrYy3C5tZDFGuftTbvKZci0+rDeU7RmNChKgVg1S/mdnX52UmgjJqH2toTc3qJXaGOR1O
-	+Ra+h7T/UH0zugKhH29gHl2sRyZlcPNTajeuInyMrYUPSmgjvbgfyHu47E7jfmFpmBaCRa
-	s4tYkrT4LGfal3r2GIr7/27Rz49uWxk=
+	bh=R7fVrjcp/UTDDfv/utL2sG0J56iJc0yfUCHiiOAS7hk=;
+	b=ldSXcSXSCIA7tIh9TDFBv6CTB7UgTuIq9X1tD2XR8I/wmQTNYH40KKuEl8+yiXjxO1U56E
+	lAlTMPCOqju0od3oiNUwhAgeXIPIO0dIsd4Cp1gKkDrZbBzAepC1XL/qWx5Mj9uATYFggH
+	qkOUWWw0BMaZMJtwdB6NOVEfVch22tA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733993660;
+	s=susede2_ed25519; t=1733994932;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=gjPNJSRzK/Ratzm0ZHNDEIOEws4z2LJnQIizC2zS7Y4=;
-	b=AbPyUWxb15yCzQKEoSzKAR+u8LDhXJBKvGlx2OAVDhppPgl6XfmiMRMVWf6yIaTFOWQe4o
-	vP0htlbNhHMsmdDg==
+	bh=R7fVrjcp/UTDDfv/utL2sG0J56iJc0yfUCHiiOAS7hk=;
+	b=4rW/o5t9tXlxIDQ7tYXA3j8TEkC7zk8hwOsaWxf1r675RmumoDhpBsuYLNPI7nUxt+rXuG
+	xn47DLy4nbw/K5Bw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10E7A13508;
-	Thu, 12 Dec 2024 08:54:20 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 86DF013508;
+	Thu, 12 Dec 2024 09:15:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id x4TPA7ykWmcKBAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 12 Dec 2024 08:54:20 +0000
-Message-ID: <95dab49e-52fa-4aa7-a668-5fb95c69d0a1@suse.cz>
-Date: Thu, 12 Dec 2024 09:54:19 +0100
+	id 7yihILSpWmfQCwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 12 Dec 2024 09:15:32 +0000
+Message-ID: <60fadf5a-4c96-43b3-8cc2-baf71eb93e3f@suse.cz>
+Date: Thu, 12 Dec 2024 10:15:32 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,26 +98,26 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 1/6] mm, bpf: Introduce __GFP_TRYLOCK for
- opportunistic page allocation
+Subject: Re: [PATCH bpf-next v2 3/6] locking/local_lock: Introduce
+ local_trylock_irqsave()
 Content-Language: en-US
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
  Kumar Kartikeya Dwivedi <memxor@gmail.com>,
  Andrew Morton <akpm@linux-foundation.org>,
- Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>,
- Hou Tao <houtao1@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>,
- shakeel.butt@linux.dev, Michal Hocko <mhocko@suse.com>,
- Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>,
- Kernel Team <kernel-team@fb.com>
+ Peter Zijlstra <peterz@infradead.org>,
+ Sebastian Sewior <bigeasy@linutronix.de>,
+ Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev,
+ Michal Hocko <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Tejun Heo <tj@kernel.org>,
+ linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>,
+ Jann Horn <jannh@google.com>
 References: <20241210023936.46871-1-alexei.starovoitov@gmail.com>
- <20241210023936.46871-2-alexei.starovoitov@gmail.com>
- <20241210090136.DGfYLmeo@linutronix.de>
- <CAADnVQK_oFD9+HbcEgqy0+JMygje8fB9qdhkJ5uoofQntZoywg@mail.gmail.com>
- <a06c6e51-d242-477b-9f77-d7bad24c299b@suse.cz>
- <CAADnVQKUJcv-YKBnwa_bW-GxoBWGZaZVVy5m1mVHehWN83E6kA@mail.gmail.com>
+ <20241210023936.46871-4-alexei.starovoitov@gmail.com>
+ <1c760bf1-14a4-42e4-a55b-438a29987aef@suse.cz>
+ <9e5bdef1-a692-47d5-82b9-96a4f2c68463@suse.cz>
+ <CAADnVQJtkb3YVM9La_Zo=t_s+DNNrrVhX1gt5KsQUPZTdw_7Eg@mail.gmail.com>
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -158,130 +158,136 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  w9XOLH1IIWh7RURU7G1iOfEfmImFeC3cbbS73LQEFGe1urxvIH5K/7vX+FkNcr9ujwWuPE9b
  1C2o4i/yZPLXIVy387EjA6GZMqvQUFuSTs/GeBcv0NjIQi8867H3uLjz+mQy63fAitsDwLmR
  EP+ylKVEKb0Q2A==
-In-Reply-To: <CAADnVQKUJcv-YKBnwa_bW-GxoBWGZaZVVy5m1mVHehWN83E6kA@mail.gmail.com>
+In-Reply-To: <CAADnVQJtkb3YVM9La_Zo=t_s+DNNrrVhX1gt5KsQUPZTdw_7Eg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 347242115A
+X-Rspamd-Queue-Id: AC7F021119
 X-Spam-Level: 
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_TO(0.00)[gmail.com];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
-	FREEMAIL_CC(0.00)[linutronix.de,vger.kernel.org,kernel.org,gmail.com,linux-foundation.org,infradead.org,goodmis.org,huawei.com,cmpxchg.org,linux.dev,suse.com,kvack.org,fb.com];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,gmail.com,linux-foundation.org,infradead.org,linutronix.de,goodmis.org,huawei.com,cmpxchg.org,linux.dev,suse.com,kvack.org,fb.com,google.com];
 	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
 	RCVD_COUNT_TWO(0.00)[2];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	TO_DN_SOME(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
+	TAGGED_RCPT(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim,suse.cz:mid]
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
 X-Spam-Score: -3.01
 X-Spam-Flag: NO
 
-On 12/12/24 03:14, Alexei Starovoitov wrote:
-> On Wed, Dec 11, 2024 at 12:39 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+On 12/12/24 03:49, Alexei Starovoitov wrote:
+> On Wed, Dec 11, 2024 at 3:55 AM Vlastimil Babka <vbabka@suse.cz> wrote:
 >>
->> On 12/10/24 22:53, Alexei Starovoitov wrote:
->> > On Tue, Dec 10, 2024 at 1:01 AM Sebastian Andrzej Siewior
->> > <bigeasy@linutronix.de> wrote:
+>> On 12/11/24 11:53, Vlastimil Babka wrote:
+>> > On 12/10/24 03:39, Alexei Starovoitov wrote:
+>> >> From: Alexei Starovoitov <ast@kernel.org>
 >> >>
->> >> On 2024-12-09 18:39:31 [-0800], Alexei Starovoitov wrote:
->> >> > From: Alexei Starovoitov <ast@kernel.org>
->> >> >
->> >> > Tracing BPF programs execute from tracepoints and kprobes where running
->> >> > context is unknown, but they need to request additional memory.
->> >> > The prior workarounds were using pre-allocated memory and BPF specific
->> >> > freelists to satisfy such allocation requests. Instead, introduce
->> >> > __GFP_TRYLOCK flag that makes page allocator accessible from any context.
->> >> > It relies on percpu free list of pages that rmqueue_pcplist() should be
->> >> > able to pop the page from. If it fails (due to IRQ re-entrancy or list
->> >> > being empty) then try_alloc_pages() attempts to spin_trylock zone->lock
->> >> > and refill percpu freelist as normal.
->> >> > BPF program may execute with IRQs disabled and zone->lock is sleeping in RT,
->> >> > so trylock is the only option.
->> >>
->> >> The __GFP_TRYLOCK flag looks reasonable given the challenges for BPF
->> >> where it is not known how much memory will be needed and what the
->> >> calling context is.
+>> >> Similar to local_lock_irqsave() introduce local_trylock_irqsave().
+>> >> It uses spin_trylock in PREEMPT_RT and always succeeds when !RT.
 >> >
->> > Exactly.
->> >
->> >> I hope it does not spread across the kernel where
->> >> people do ATOMIC in preempt/ IRQ-off on PREEMPT_RT and then once they
->> >> learn that this does not work, add this flag to the mix to make it work
->> >> without spending some time on reworking it.
->> >
->> > We can call it __GFP_BPF to discourage any other usage,
->> > but that seems like an odd "solution" to code review problem.
+>> > Hmm but is that correct to always succeed? If we're in an nmi, we might be
+>> > preempting an existing local_(try)lock_irqsave() critical section because
+>> > disabling irqs doesn't stop NMI's, right?
 >>
->> Could we perhaps not expose the flag to public headers at all, and keep it
->> only as an internal detail of try_alloc_pages_noprof()?
+>> So unless I'm missing something, it would need to be a new kind of local
+>> lock to support this trylock operation on !RT?
 > 
-> public headers?
-
-I mean it could be (with some work) defined only in e.g. mm/internal.h,
-which the flag printing code would then need to include.
-
-> To pass additional bit via gfp flags into alloc_pages
-> gfp_types.h has to be touched.
-
-Ah right, try_alloc_pages_noprof() would need to move to page_alloc.c
-instead of being static inline in the header.
-
-> If you mean moving try_alloc_pages() into mm/page_alloc.c and
-> adding another argument to __alloc_pages_noprof then it's not pretty.
-> It has 'gfp_t gfp' argument. It should to be used to pass the intent.
-
-__GFP_TRYLOCK could be visible in page_alloc.c to do this, but not ouside mm
-code.
-
-> We don't have to add GFP_TRYLOCK at all if we go with
-> memalloc_nolock_save() approach.
-
-I have doubts about that idea. We recently rejected PF_MEMALLOC_NORECLAIM
-because it could lead to allocations nested in that scope failing and they
-might not expect it. Scoped trylock would have even higher chance of failing.
-
-I think here we need to pass the flag as part of gfp flags only within
-nested allocations (for metadata or debugging) within the slab/page
-allocator itself, which we already mostly do. The harder problem is not
-missing any place where it should affect taking a lock, and a PF_ flag won't
-help with that (as we can't want all locking functions to look at it).
-Maybe it could help with lockdep helping us find locks that we missed, but
-I'm sure lockdep could be made to track the trylock scope even without a PF
-flag?
-
-> So I started looking at it,
-> but immediately hit trouble with bits.
-> There are 5 bits left in PF_ and 3 already used for mm needs.
-> That doesn't look sustainable long term.
-> How about we alias nolock concept with PF_MEMALLOC_PIN ?
+> Ohh. Correct. Forgot about nmi interrupting local_lock_irqsave region in !RT.
 > 
-> As far as I could trace PF_MEMALLOC_PIN clears GFP_MOVABLE and nothing else.
+>> Perhaps based on the same
+>> principle of a simple active/locked flag that I tried in my sheaves RFC? [1]
+>> There could be also the advantage that if all (potentially) irq contexts
+>> (not just nmi) used trylock, it would be sufficient to disable preeemption
+>> and not interrupts, which is cheaper.
 > 
-> The same bit plus lack of __GFP_KSWAPD_RECLAIM in gfp flags
-> would mean nolock mode in alloc_pages,
-> while PF_MEMALLOC_PIN alone would mean nolock in free_pages
-> and deeper inside memcg paths and such.
-> 
-> thoughts? too hacky?
+> I don't think it's the case.
+> pushf was slow on old x86.
+> According to https://www.agner.org/optimize/instruction_tables.pdf
+> it's 3 uops on skylake.
+> That could be faster than preempt_disable (incl %gs:addr)
+> which is 3-4 uops assuming cache hit.
 
+I think the costly ones are not pushf, but cli and popf. I did some
+microbenchmark in the kernel (Ryzen 2700, not really latest thing but
+anyway) and IIRC it was twice slower to do the irqsave/restore than preempt
+only.
+
+>> The RT variant could work as you proposed here, that was wrong in my RFC as
+>> you already pointed out when we discussed v1 of this series.
+>>
+>> [1]
+>> https://lore.kernel.org/all/20241112-slub-percpu-caches-v1-5-ddc0bdc27e05@suse.cz/
+> 
+> I like your
+> +struct local_tryirq_lock
+> approach, but let's put it in local_lock.h ?
+
+Sure, that was a proof of concept so kept it local.
+
+> and it probably needs local_inc_return() instead of READ/WRITE_ONCE.
+> With irq and nmis it's racy.
+
+Hm guess you are right, thanks!
+
+> In the meantime I think I will fix below:
+> 
+>> >> +#define __local_trylock_irqsave(lock, flags)                        \
+>> >> +    ({                                                      \
+>> >> +            local_irq_save(flags);                          \
+>> >> +            local_trylock_acquire(this_cpu_ptr(lock));      \
+>> >> +            1;                                              \
+>> >> +    })
+> 
+> as
+> #define __local_trylock_irqsave(lock, flags)                    \
+>         ({                                                      \
+>                 local_irq_save(flags);                          \
+>                 local_trylock_acquire(this_cpu_ptr(lock));      \
+>                 !in_nmi();                                      \
+>         })
+> 
+> I think that's good enough for memcg patch 4 and
+> doesn't grow local_lock_t on !RT.
+
+But that means you'll never succeed in nmi, doesn't that limit the bpf use case?
+
+> We can introduce
+> 
+> typedef struct {
+>         int count;
+> #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>         struct lockdep_map      dep_map;
+>         struct task_struct      *owner;
+> #endif
+> } local_trylock_t;
+> 
+> and the whole set of local_trylock_lock, local_trylock_unlock,...
+> But that's quite a bit of code. Feels a bit overkill for memcg patch 4.
+
+SLUB also uses local_locks so it would be needed there later too.
+
+> At this point it feels that adding 'int count' to existing local_lock_t
+> is cleaner.
+
+We have Peter and Thomas in Cc let's see what they think :)
 
