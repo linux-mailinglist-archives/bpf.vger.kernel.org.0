@@ -1,234 +1,133 @@
-Return-Path: <bpf+bounces-46766-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46767-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B5879F0052
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 00:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C68E39F008B
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 00:53:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0A4C188D9FC
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 23:42:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 524341881A39
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 23:53:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D73CD1DED7C;
-	Thu, 12 Dec 2024 23:41:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E261DEFC1;
+	Thu, 12 Dec 2024 23:53:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Cr5nd9ba";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="B9K2i4pL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mXNfIm3w"
 X-Original-To: bpf@vger.kernel.org
-Received: from flow-a8-smtp.messagingengine.com (flow-a8-smtp.messagingengine.com [103.168.172.143])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B8D1DED4C;
-	Thu, 12 Dec 2024 23:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.143
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF19E1547F5;
+	Thu, 12 Dec 2024 23:53:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734046912; cv=none; b=Vv9x+bb48kFreiz0UyCEDnmvvr4/naBJVq18ZBdIzfkjRGklhNLiyeSoZN7sZ3vj+0pYIcpISuVIMig+1loLYHYImdOgq+qdHtQehrEXY8GQV5qmGEimDa/Ck348v75yrUtBbOpncavoHneD+BRSy8X3xFpYC773BIVoSUky9RI=
+	t=1734047598; cv=none; b=RrOQ28piP9pQKFA6yv2aO9f5k5wd8kq6JvgqtFwZlL/GvYv8vHXHn6tb6xXF7aGyXooFWYdJk/MHcC5EGLFis+b9wnFdvZlGFhFYjV3geZfHgi2uRkvAp8YI+ieCoArNxTmZnCGNz+Qy9N37ZU46RHWfFigc3C5nzv2MQViDmsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734046912; c=relaxed/simple;
-	bh=0EfcN+Lb8+Gr9/AGepZG/uUIlT7TVkuzGBF+4biIAfQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EdAzTGHm7MP8ISu0LyRF4DWF8taUg5gvHU6JMDcDB0t9LwlxFCYfHo0Yb2ljqQdQHajVBezLhWA6YddrAOY6BQjytugdhnGYi4sBctoQ+Y5Upfu0qyAmlR7cxBwIpJxSm5AwjvFIRuV8sdAL2cId9DJnmJZl1VXNeyUJ+/w7sIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=Cr5nd9ba; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=B9K2i4pL; arc=none smtp.client-ip=103.168.172.143
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailflow.phl.internal (Postfix) with ESMTP id F08A720049B;
-	Thu, 12 Dec 2024 18:41:48 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Thu, 12 Dec 2024 18:41:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1734046908;
-	 x=1734054108; bh=Xsk7X3/UkTfDfA4IJFdI69G+yLRSh7hTw4MpALt07mM=; b=
-	Cr5nd9ba4FXZHzEWTYi+Rh9yBQO6c+qjKDGoJX143moXaA5i2FroQBDP7LHBMFMX
-	YMV9QDVfo5memjolEePbZNIMuNL9iBI14eG/FjpdbDhO6RHoBeD3eYpV1ul0FxAT
-	LmpLGLioF1Eltk0Qub/iYej97T1LduYyG5s7yJbyoQJR4O/QwVSRcKkDWLzxHLwU
-	v/KDKDxVNeGHMjyMDDeUR4ZV9DQ5n/iSeYUwUFCy063GNpOzQNxUGc6ZtzVLjZeU
-	/WAdDj+b7r/MErkk3EUGToWb068Dlvrh3RSKME/lLepAr+gaOK3o/J/B9fqa2fr0
-	qMp6Wn3cjyVyhLfOmUzJJw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1734046908; x=
-	1734054108; bh=Xsk7X3/UkTfDfA4IJFdI69G+yLRSh7hTw4MpALt07mM=; b=B
-	9K2i4pLQ/Mci3TioKT2jryuSH36oJAQAfDvmTCd183UoBbahepNQyf8N9Z0ezpoN
-	wHMFPBvbJamjN+h+ArKA4yUA2pH+xJqIkV8E75s6OYz3CqwfbmYjT5aJLt/V7Jqe
-	fu1LIKKY/Eajb+rJ22Os230DMGHHF33HCmsSXQPAP99bSdjH1dlzz9kdZ1WpC4qu
-	TCySo1UOmrBHmgmzhCBrYnc/ESzUIDElJskNh7lxAbESZy0ntrAMC0q8KrbWMJLL
-	FgUNSKZfIP/bxD8m4cBp0LcomFqeYdwlWoaGjLG/aRe659/5+VhmcAvriLq4Q4t8
-	vCXq7NvZg1I/Jfs/54wZA==
-X-ME-Sender: <xms:vHRbZ-Zou_2if7EFRsBlv6l--FrjL6AiXGmc0vgbCPXg1BKMJvREuQ>
-    <xme:vHRbZxZqCNnVKVSCmS1nJTCLzsZRG75ZGq1Hu4xkrwDDgRFvQqgvl9lgJxwlC8bOa
-    YB96QL6WwjbMNUPow>
-X-ME-Received: <xmr:vHRbZ49Hjc_drZUX76dDuaOiatygbBOlAo5TiEnWTp1KZORd-Q829FNXhWAQ525w9TLCI2KQHyOJne2U1UTGqpfenF3ttn3DOfqtYTSqNBYBCw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrkeeigddufecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
-    tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
-    hsucdlqddutddtmdenfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhgg
-    tggugfgjsehtkefstddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesug
-    iguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepffffgeegkeejvdejgeehteekudfh
-    gfefgeevkeelhfegueeljefhleejtdekveffnecuffhomhgrihhnpehgihhthhhusgdrtg
-    homhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegu
-    gihusegugihuuhhurdighiiipdhnsggprhgtphhtthhopedvvddpmhhouggvpehsmhhtph
-    houhhtpdhrtghpthhtoheprghnughrihhirdhnrghkrhihihhkohesghhmrghilhdrtgho
-    mhdprhgtphhtthhopehhrgifkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhohh
-    hnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghstheskhgv
-    rhhnvghlrdhorhhgpdhrtghpthhtohepqhhmoheskhgvrhhnvghlrdhorhhgpdhrtghpth
-    htohepuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopegurghnihgv
-    lhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvg
-    hlrdhorhhgpdhrtghpthhtohepkhhusggrsehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:vHRbZwpeKYwydy07I0zy8XIwo_giI6SuJwP8hwxI3K15tQT9eU7fVg>
-    <xmx:vHRbZ5rKlXHpj4wzUWbdn5bf4VhgfBOE_jddaIapGpbXB_qKBGKQ1w>
-    <xmx:vHRbZ-Q7rMMrjmyEFzN1XEzTgKZPTB0tnlcprVbMQAknJA0MlkGeRQ>
-    <xmx:vHRbZ5rp8W4v-M0Cu0e3569qasezkBGhTuqT3x7WA4LysOnwLSkVMA>
-    <xmx:vHRbZ4ex_sqDOfLhf14PNui0a5nOLckCg_-JtrCIMKD1W3D-0WbO-zBB>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Dec 2024 18:41:45 -0500 (EST)
-Date: Thu, 12 Dec 2024 16:41:43 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: hawk@kernel.org, john.fastabend@gmail.com, ast@kernel.org, 
-	qmo@kernel.org, davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org, 
-	kuba@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, 
-	jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, antony@phenome.org, toke@kernel.org
-Subject: Re: [PATCH bpf-next v3 3/4] bpftool: btf: Support dumping a single
- type from file
-Message-ID: <zf62rqtgvl63sawxltmpgcnpek5bt3w5pleznby3zqb7ezhvdz@wqlwxy2f43wt>
-References: <cover.1733787798.git.dxu@dxuuu.xyz>
- <3bc17d33161961409dc77a5de29761bf2bed4980.1733787798.git.dxu@dxuuu.xyz>
- <CAEf4BzaA9_up=3npADgJv8pCVg4eVzsWevef69c3PkdyuWNXDQ@mail.gmail.com>
+	s=arc-20240116; t=1734047598; c=relaxed/simple;
+	bh=q/BFDvTD+XNDmTs8p8/kib7zSnWMPGFmxweFAg1eUuo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WY3o0m8sdQ4l/VnCxTEpawQXyS+k0cnLSrT/uw7KYMdgOwACXMkkwqEot7LiVsmi+JC5oBoxo7YHoJwGosDfBcnWkvmmTVb6Z8FuiS2GaMAsePmlI/s30j1tuXQf6e5EfXAf9iE+b0FOKf1t31eTMhyn0MFH5v1NlyEbbgRbTtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mXNfIm3w; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2ee67e9287fso1034174a91.0;
+        Thu, 12 Dec 2024 15:53:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734047596; x=1734652396; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4QXCu0v5SnxIo/0aSLhOo9DU4qZRN1PKMZDr7ioEmoo=;
+        b=mXNfIm3wXu+j+di6DT7QDbrskx/5bIGGOKhPNLZuGzj235F8jeByAF5OPYvjuVIlfy
+         EejwyI5mJyCQnyoTGpnU4Smog82TAlJ8faWmtJJVj6/1UvBgmPXgka2K4fepq7LT7BKj
+         RhpkFhejNLIEohffCT5hBMoOp9vrajNxWIqrY1Fzm9vJdK2vB3SkJ68htVErl4nGnVEf
+         A08+93JWXu+n4ICHqcemI0lTCl2cUvvxkuBOIouAVgTXk9VbCvaHg2beQL82AOWfoTaO
+         5PoVt+Nt5FxCKJFdRbVtgdimvhXl3CdkZXxJrqMP0e+Wp0a80jPc2YXXqBgEdZDVxS5i
+         LqbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734047596; x=1734652396;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4QXCu0v5SnxIo/0aSLhOo9DU4qZRN1PKMZDr7ioEmoo=;
+        b=WYnqBQ0r7hw9Pnl+d7Hg6vvlT25+mKCxPmUwOgh7/PsEB0Xrz7hqXZmSw2Z1F4uEe9
+         fzevWimJVgigj8Khuf1xgvhDn9AcPEPRt8a77yAt+CWb2kROlBVlR7MLdaeg3d80lMne
+         ekZpPTS0qgKc/IuVdN4OivEPVuOoGZj0N1/tbgkscXs8Z+3sfR6bVG2o0UFJ2U+S2lk2
+         bBRN7AwH+l3/49p0y2n5w/zukLpZxZKUP1iKmb9MN7gz+TA5agImArx4Q+HOu3aXOGuI
+         L6NveWYS6CtbQRV3SzbaNBiluPd8iJWMniFU9xjR62d5OLTlFY7hg4h1MnNM2yohm5R9
+         l5/A==
+X-Forwarded-Encrypted: i=1; AJvYcCU1GIaGb8Fo7c1OsI1K+Sa9JvNvkVmkHnsDzNSfH+zoRhUswaHYZ0ejn+es7EDdwQG35L5GOpzpU+TctX14Tgyevg==@vger.kernel.org, AJvYcCUI8thUqF8/cAzZ4jOqNkiH2rF/gSG94JIgbnb5frPLBg+QWLLelCUY342pVzfRKrXV1b8=@vger.kernel.org, AJvYcCWJoEP3+T37ENW335LXbkl6bUX9Ng6MINcUeuRGRGZWaPZ5SjW/2bL/dxNmGRb8r3nvQ6L5C7X9NMfNyU/7@vger.kernel.org
+X-Gm-Message-State: AOJu0YwABFTPDw/k8dgRaC1FHsyxW4rg3HWCDURD146HkFqqR//x2HEj
+	iEJrCDRJARLDlmooJj0yM6TRkWcKZx76KE6KII7oUCeyauh15I59XnMCqNnKHBsCt06vUyBBYKD
+	n1eVLIp/EKLbTYeOybFK6V7VnFa8=
+X-Gm-Gg: ASbGncvJmNQbs3gDG84abtwhCOaIguZks/tjwtQEJvwBV6DNdhLoG6ioK0IiS4eWmcT
+	PqR8aG8097OSNZ3hdbQco6rOhLVjDMacruPyj+Cs/yYQJCD3UnVbLDg==
+X-Google-Smtp-Source: AGHT+IHhbAiFyFvd1Mfo23FPBSYkHdTUphfvtJyTgTXBo8HJBq5GRGK9fuMA3UKGzWz63K+XgLlcQXDkhtdDrlN44qQ=
+X-Received: by 2002:a17:90b:548b:b0:2ee:fb6b:7d7e with SMTP id
+ 98e67ed59e1d1-2f2900a9fe7mr1013356a91.30.1734047595981; Thu, 12 Dec 2024
+ 15:53:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzaA9_up=3npADgJv8pCVg4eVzsWevef69c3PkdyuWNXDQ@mail.gmail.com>
+References: <20241211093114.263742-1-leo.yan@arm.com> <Z1mREhJElE6cSrPT@x1> <20241211202630.GA3169297@e132581.arm.com>
+In-Reply-To: <20241211202630.GA3169297@e132581.arm.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 12 Dec 2024 15:53:03 -0800
+Message-ID: <CAEf4Bzbu_4sgb_cfC0K3fR+AMfAivJyprsENNZf129qieFCitg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] bpftool: Fix the static linkage failure
+To: Leo Yan <leo.yan@arm.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Quentin Monnet <qmo@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Nick Terrell <terrelln@fb.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, "Liang, Kan" <kan.liang@linux.intel.com>, 
+	James Clark <james.clark@linaro.org>, Guilherme Amadio <amadio@gentoo.org>, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 12, 2024 at 11:09:34AM GMT, Andrii Nakryiko wrote:
-> On Mon, Dec 9, 2024 at 3:45 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Wed, Dec 11, 2024 at 12:26=E2=80=AFPM Leo Yan <leo.yan@arm.com> wrote:
+>
+> On Wed, Dec 11, 2024 at 10:18:10AM -0300, Arnaldo Carvalho de Melo wrote:
+> > On Wed, Dec 11, 2024 at 09:31:11AM +0000, Leo Yan wrote:
+> > > This series follows up on the discussion in [1] for fixing the static
+> > > linkage issue in bpftool.
+> > >
+> > > Patch 01 introduces a new feature for libelf-zstd.  If this feature
+> > > is detected, it means the zstd lib is required by libelf.
+> > >
+> > > Patch 02 is a minor improvement for linking the zstd lib in the perf.
+> > >
+> > > Patch 03 fixes the static build failure by linking the zstd lib when
+> > > the feature-libelf-zstd is detected.
 > >
-> > Some projects, for example xdp-tools [0], prefer to check in a minimized
-> > vmlinux.h rather than the complete file which can get rather large.
-> >
-> > However, when you try to add a minimized version of a complex struct (eg
-> > struct xfrm_state), things can get quite complex if you're trying to
-> > manually untangle and deduplicate the dependencies.
-> >
-> > This commit teaches bpftool to do a minimized dump of a single type by
-> > providing an optional root_id argument.
-> >
-> > Example usage:
-> >
-> >     $ ./bpftool btf dump file ~/dev/linux/vmlinux | rg "STRUCT 'xfrm_state'"
-> >     [12643] STRUCT 'xfrm_state' size=912 vlen=58
-> >
-> >     $ ./bpftool btf dump file ~/dev/linux/vmlinux root_id 12643 format c
-> >     #ifndef __VMLINUX_H__
-> >     #define __VMLINUX_H__
-> >
-> >     [..]
-> >
-> >     struct xfrm_type_offload;
-> >
-> >     struct xfrm_sec_ctx;
-> >
-> >     struct xfrm_state {
-> >             possible_net_t xs_net;
-> >             union {
-> >                     struct hlist_node gclist;
-> >                     struct hlist_node bydst;
-> >             };
-> >             union {
-> >                     struct hlist_node dev_gclist;
-> >                     struct hlist_node bysrc;
-> >             };
-> >             struct hlist_node byspi;
-> >     [..]
-> >
-> > [0]: https://github.com/xdp-project/xdp-tools/blob/master/headers/bpf/vmlinux.h
-> >
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > ---
-> >  .../bpf/bpftool/Documentation/bpftool-btf.rst |  7 +++++--
-> >  tools/bpf/bpftool/btf.c                       | 21 ++++++++++++++++++-
-> >  2 files changed, 25 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-> > index 245569f43035..4899b2c10777 100644
-> > --- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-> > +++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-> > @@ -24,7 +24,7 @@ BTF COMMANDS
-> >  =============
-> >
-> >  | **bpftool** **btf** { **show** | **list** } [**id** *BTF_ID*]
-> > -| **bpftool** **btf dump** *BTF_SRC* [**format** *FORMAT*]
-> > +| **bpftool** **btf dump** *BTF_SRC* [**format** *FORMAT*] [**root_id** *ROOT_ID*]
-> >  | **bpftool** **btf help**
-> >  |
-> >  | *BTF_SRC* := { **id** *BTF_ID* | **prog** *PROG* | **map** *MAP* [{**key** | **value** | **kv** | **all**}] | **file** *FILE* }
-> > @@ -43,7 +43,7 @@ bpftool btf { show | list } [id *BTF_ID*]
-> >      that hold open file descriptors (FDs) against BTF objects. On such kernels
-> >      bpftool will automatically emit this information as well.
-> >
-> > -bpftool btf dump *BTF_SRC* [format *FORMAT*]
-> > +bpftool btf dump *BTF_SRC* [format *FORMAT*] [root_id *ROOT_ID*]
-> >      Dump BTF entries from a given *BTF_SRC*.
-> >
-> >      When **id** is specified, BTF object with that ID will be loaded and all
-> > @@ -67,6 +67,9 @@ bpftool btf dump *BTF_SRC* [format *FORMAT*]
-> >      formatting, the output is sorted by default. Use the **unsorted** option
-> >      to avoid sorting the output.
-> >
-> > +    **root_id** option can be used to filter a dump to a single type and all
-> > +    its dependent types. It cannot be used with any other types of filtering.
-> > +
-> >  bpftool btf help
-> >      Print short help message.
-> >
-> > diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-> > index 3e995faf9efa..18b037a1414b 100644
-> > --- a/tools/bpf/bpftool/btf.c
-> > +++ b/tools/bpf/bpftool/btf.c
-> > @@ -993,6 +993,25 @@ static int do_dump(int argc, char **argv)
-> >                                 goto done;
-> >                         }
-> >                         NEXT_ARG();
-> > +               } else if (is_prefix(*argv, "root_id")) {
-> > +                       __u32 root_id;
-> > +                       char *end;
-> > +
-> > +                       if (root_type_cnt) {
-> > +                               p_err("cannot use root_id with other type filtering");
-> 
-> this is a confusing error if the user just wanted to provide two
-> root_id arguments... Also, why don't we allow multiple root_ids?
-> 
-> I'd bump root_type_ids[] to have something like 16 elements or
-> something (though we can always do dynamic realloc as well, probably),
-> and allow multiple types to be specified.
-> 
-> Thoughts?
+> > So, this was originally reported as a perf build failure when trying a
+> > static build, so something not so common, no urgency, I guess, but it
+> > involves a tools/perf/bpftool/Makefile change, I think I can process
+> > this as I'll then test it in the many build containers for old distros =
+I
+> > have, ok?
+>
+> As Quentin said in another reply, there is a delta change between the
+> Linux perf tree and bpf-next tree.  So this series has a conflict on
+> bpf-next tree but it can be applied cleanly on perf tree.
+>
+> Before I respin to update the commit logs based on comments, I need BPF
+> maintainers agreement with Arnaldo on proceeding on which source tree
+> to proceed with.
+>
 
-That's a good point. I added this check b/c I didn't think it would
-make sense to allow `root_id` filtering in combination with map dump
-filtering (which uses same root_type_ids param):
+I think it's fine to route this through a perf tree.
 
-        map MAP [{key | value | kv | all}]
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-But code can easily be tweaked to still block combination but allow
-multiple `root_id`s when used alone. 16 seems sufficient to me.
-
-Do you think it'd be more bpftool-y to require "root_id" each time or to
-just take a comma separated value?
+> Thanks,
+> Leo
 
