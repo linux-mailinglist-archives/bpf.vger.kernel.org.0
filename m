@@ -1,232 +1,219 @@
-Return-Path: <bpf+bounces-46759-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46760-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E18839F001E
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 00:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFADD9F0023
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 00:27:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6EC516329D
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 23:26:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 374CA16405D
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 23:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C6E1DE8BA;
-	Thu, 12 Dec 2024 23:26:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F59C1DF261;
+	Thu, 12 Dec 2024 23:27:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xiPiFSnd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NI6swt1K"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609131DE8BC
-	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 23:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF9C1DED67;
+	Thu, 12 Dec 2024 23:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734045984; cv=none; b=sWy+urKP25miA463KVjN7/lVEvAdt1PvOtLr36AxHjNyZopf2CK1sz3SrD+OKE0+FkZE+3YeRojmVdtr4+YmtGu6/v+5N3you+RZd9BKJBAHyqbG94Nk2Gt2rwWrbnCYrYmJPYTYjJVwfkELZ6SLPwdc/prXMgMyo4sXoApQzq0=
+	t=1734046047; cv=none; b=scVey70TjW8SmD4Y0kB34Sejxb+pySOH21qfaowjibnj0EiCzXbeTZe+YgYxoYjdvC0qCV97qdtzmQoSIb0thAGe911UdYieyFIuZzl7K4pTudyc14PFRNhrwCFdr5Q4+RZNc+CDBYEwfy8TPtTohjQNCHiR9p3il0rRe5QWJ58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734045984; c=relaxed/simple;
-	bh=2QArz9HR0Mn4eH46qUNMNUMzAH9biw3LyfowCZSeyDw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EN9sUW0icnEWYguNrl4Wb6Bmrj4ClsfBfa8ZL3+BZnMhak/ug7Mq+d7Fx/a9nFjp89HiDTQxK+ThkpuKS85VGBcPznQ61CV0d3Ns2RJr+4ToYwzSDkxQE0VAUAhkPmg/AaFDB+zrr6JACLoJ1qFVJ3vSv0vkIdZzwkHkjU76vpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xiPiFSnd; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a3abb0b6-cd94-46f6-b996-f90da7e790b9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734045970;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GtmzuoydkMml2x/nxzE/7XluiqfmaP/qMJmj3Zm1urw=;
-	b=xiPiFSndYUQ2tOUkMMR7XEHrFihDoiPrSbnE2qrSgo4quoCaW03IVXPjhDpkio7jkniub2
-	hy5YqTqTsWaa2q8t+9/qIRe3d/gbsoTkH1qayIx6Ra5Cx4s8cvyMJ1/wVuGyOezhdmBCc2
-	aHezcfRZyI3wqq1fs70Ipr6qWNApyEs=
-Date: Thu, 12 Dec 2024 15:25:58 -0800
+	s=arc-20240116; t=1734046047; c=relaxed/simple;
+	bh=siMGMWAE8Yf88NqZHpeUacjij9uJS2w2C2rhJNA64JI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d1iRXMJ5owXf8Mk5phjpBOLs0jDAxjKrHCSuZknbMvy+wnczGZXFSoq94ALZDH6DqL5NfVhv61Kdri3Vv+IyIhs8FzL/+wI1ztjzYYWTnFLHGLN1PnXKXFCaIW2oA0anq+snqsg3CAeGNUHefbkWwLhbgY05PEV2HvEivFh3cGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NI6swt1K; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2ee786b3277so764444a91.1;
+        Thu, 12 Dec 2024 15:27:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734046045; x=1734650845; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0wIxdZL8VA2ztTsjyWP0G/HNyQ8yWpTpN0liZa/AVYk=;
+        b=NI6swt1KVK3xpX65lxtCU29K+KV3jK2c9ADUcURE0PjJ26YnDLBieuGf9UpnwNO7ga
+         dy473ADerOTOEAaygWe3a3qcTOLEzEn6B2+etkpsbLkMIGDVw6JJ9IJkEqPnnIbOAnwO
+         Rv4QrfVvezzIXuwRRtUDMLSeMvi9IP7RGeU3R5zkWbxBtd0pw6qNOnM21L4pbcAK+/ag
+         U3hjns0A6L9EquWJIPJ0maK/iAVTwZGBy7DwOgshRWkhX7N4jgl5zxlS11DPDZlavO2x
+         THRjcLZ4U05i1KKujE4LhYjjc5e1n5tKHTGeE4NacCyIbqPOY9Xm5aIyIoa04yvy8gb8
+         hvRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734046045; x=1734650845;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0wIxdZL8VA2ztTsjyWP0G/HNyQ8yWpTpN0liZa/AVYk=;
+        b=qu4PfJ5p3uyqjnTxCtQWhxs+GDa+13JiJtStpSNBAaFrdJ1k8bwrmAEslYQeoEKroE
+         JmfQlW1qR4CZ95z5Va/nQf8W/wBphPym3abbDlYsijNekIYip2m04+3XUaiDk3R35nqT
+         uE3by6sNW/ueDph+vOfnVzdeIPdfm6Lu2obz3nOtW3db3oJTQcjNucTDeA+lzgrKYS+n
+         2mSIyv34+XDMXjBAD/FGsRSUKYAxpeZQgNRuKamW9hoXQRPBV8hRvuYdX4XqHosA2n6R
+         HJLkxstu/DUol6ZpRtf+GuT6NVm+i5UjQs74JL3LgJvsMqgh5tIOE9SfzBws5Jtxx0AO
+         7Wig==
+X-Forwarded-Encrypted: i=1; AJvYcCVlz0BafFbdT34e0sd32L1y/STsqF434Qr2fTl8XFC640qWouUxjcimojZU1Shb5q0NESY=@vger.kernel.org, AJvYcCWIbNQqEuyiBvmMvC2PaxqY0h04loCKAsNrHxm3ZC8Qfawai1f6tPNgJJIIyI/e4AY774Vf8PoM@vger.kernel.org, AJvYcCWSxiz3tspKTd4s7xqS2ZY8qj6jaKSUQEaYzbGmq8wYhF357dkrsnr5VQLoWrHk1CZwU3mRCvoBP+Y8pILD@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXhHeAKtCG1nOV7YUexS+M/jpPMc/ds2dJOFTevUvRlcAJnn0c
+	56ipMQV0qnEng5Qwt3TLWRM28oVBKbddhEb0tOsLrkSKz0s99bSBGMQydRxHLa+EhziVNxHtHfe
+	zQZcGC8vBRwTsA+FlepUct8RRQyLpcBfI
+X-Gm-Gg: ASbGnctfjoCKBSZ9Tq6J2Qyp6t464hFPqNLVwQ+Anat4N3rI74HWsM5s9NOdEaS0qIU
+	Fc4U4QF9tbeW5d46MItpglR7KtVinoEKnfxtJ+GviV5AqVEyvh9ikVg==
+X-Google-Smtp-Source: AGHT+IEu8iZm+rKzmRx4CSwSfmZzDyUvwahx9BhW4CNesA7XsXp+wa9U3e8LZjZ3fy8UIZSod/hPcFSzkKj03f1H7Bc=
+X-Received: by 2002:a17:90b:1647:b0:2ee:863e:9ffc with SMTP id
+ 98e67ed59e1d1-2f28fd6a55dmr751214a91.21.1734046045301; Thu, 12 Dec 2024
+ 15:27:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v4 07/11] net-timestamp: support hwtstamp print
- for bpf extension
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
- willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-References: <20241207173803.90744-1-kerneljasonxing@gmail.com>
- <20241207173803.90744-8-kerneljasonxing@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20241207173803.90744-8-kerneljasonxing@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20241213-bpf-cond-ids-v1-1-881849997219@weissschuh.net>
+In-Reply-To: <20241213-bpf-cond-ids-v1-1-881849997219@weissschuh.net>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 12 Dec 2024 15:27:12 -0800
+Message-ID: <CAEf4BzYTYDcf7J0jhJP3cW5489jWXdfJcw-f-8yuTHcNmQ0cbw@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix configuration-dependent BTF function references
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/7/24 9:37 AM, Jason Xing wrote:
-> From: Jason Xing <kernelxing@tencent.com>
-> 
-> Passing the hwtstamp to bpf prog which can print.
-> 
-> Signed-off-by: Jason Xing <kernelxing@tencent.com>
+On Thu, Dec 12, 2024 at 3:00=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weisss=
+chuh.net> wrote:
+>
+> These BTF functions are not available unconditionally,
+> only reference them when they are available.
+>
+> Avoid the following build warnings:
+>
+>   BTF     .tmp_vmlinux1.btf.o
+> btf_encoder__tag_kfunc: failed to find kfunc 'bpf_send_signal_task' in BT=
+F
+> btf_encoder__tag_kfuncs: failed to tag kfunc 'bpf_send_signal_task'
+>   NM      .tmp_vmlinux1.syms
+>   KSYMS   .tmp_vmlinux1.kallsyms.S
+>   AS      .tmp_vmlinux1.kallsyms.o
+>   LD      .tmp_vmlinux2
+>   NM      .tmp_vmlinux2.syms
+>   KSYMS   .tmp_vmlinux2.kallsyms.S
+>   AS      .tmp_vmlinux2.kallsyms.o
+>   LD      vmlinux
+>   BTFIDS  vmlinux
+> WARN: resolve_btfids: unresolved symbol prog_test_ref_kfunc
+> WARN: resolve_btfids: unresolved symbol bpf_crypto_ctx
+> WARN: resolve_btfids: unresolved symbol bpf_send_signal_task
+> WARN: resolve_btfids: unresolved symbol bpf_modify_return_test_tp
+> WARN: resolve_btfids: unresolved symbol bpf_dynptr_from_xdp
+> WARN: resolve_btfids: unresolved symbol bpf_dynptr_from_skb
+>
+> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
 > ---
->   include/net/sock.h |  6 ++++--
->   net/core/skbuff.c  | 17 +++++++++++++----
->   net/core/sock.c    |  4 +++-
->   3 files changed, 20 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index f88a00108a2f..9bc883573208 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -2921,9 +2921,11 @@ int sock_set_timestamping(struct sock *sk, int optname,
->   
->   void sock_enable_timestamps(struct sock *sk);
->   #if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_SYSCALL)
-> -void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op);
-> +void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op,
-> +			       u32 nargs, u32 *args);
->   #else
-> -static inline void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op)
-> +static inline void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op,
-> +					     u32 nargs, u32 *args)
->   {
->   }
->   #endif
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 48b0c71e9522..182a44815630 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -5539,8 +5539,12 @@ void skb_complete_tx_timestamp(struct sk_buff *skb,
->   }
->   EXPORT_SYMBOL_GPL(skb_complete_tx_timestamp);
->   
-> -static void __skb_tstamp_tx_bpf(struct sock *sk, struct sk_buff *skb, int tstype)
-> +static void __skb_tstamp_tx_bpf(struct sock *sk, struct sk_buff *skb,
-> +				struct skb_shared_hwtstamps *hwtstamps,
-> +				int tstype)
->   {
-> +	struct timespec64 tstamp;
-> +	u32 args[2] = {0, 0};
->   	int op;
->   
->   	if (!sk)
-> @@ -5552,6 +5556,11 @@ static void __skb_tstamp_tx_bpf(struct sock *sk, struct sk_buff *skb, int tstype
->   		break;
->   	case SCM_TSTAMP_SND:
->   		op = BPF_SOCK_OPS_TS_SW_OPT_CB;
+>  kernel/bpf/helpers.c  | 4 ++++
+>  kernel/bpf/verifier.c | 8 ++++++++
+>  2 files changed, 12 insertions(+)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 751c150f9e1cd7f56e6a2b68a7ebb4ae89a30d2d..5edf5436a7804816b7dcf1bbe=
+f2624d71a985f20 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -3089,7 +3089,9 @@ BTF_ID_FLAGS(func, bpf_task_get_cgroup1, KF_ACQUIRE=
+ | KF_RCU | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_task_from_vpid, KF_ACQUIRE | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_throw)
+> +#ifdef CONFIG_BPF_EVENTS
+>  BTF_ID_FLAGS(func, bpf_send_signal_task, KF_TRUSTED_ARGS)
+> +#endif
+>  BTF_KFUNCS_END(generic_btf_ids)
+>
+>  static const struct btf_kfunc_id_set generic_kfunc_set =3D {
+> @@ -3135,7 +3137,9 @@ BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+>  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+>  BTF_ID_FLAGS(func, bpf_dynptr_size)
+>  BTF_ID_FLAGS(func, bpf_dynptr_clone)
+> +#ifdef CONFIG_NET
+>  BTF_ID_FLAGS(func, bpf_modify_return_test_tp)
+> +#endif
 
-> +		if (hwtstamps) {
-> +			tstamp = ktime_to_timespec64(hwtstamps->hwtstamp);
+It makes little sense to have bpf_prog_test_run_tracing() and
+bpf_modify_return_test_tp() depend on CONFIG_NET... It's just
+historically where BPF_PROG_TEST_RUN functionality was implemented,
+but it seems like we need to move bpf_prog_test_run_tracing() and
+other tracing-related testing stuff into kernel/trace/bpf_trace.c or
+somewhere under kernel/bpf/ (core.c? helpers.c?)
 
-Avoid this conversion which is likely not useful to the bpf prog. Directly pass 
-hwtstamps->hwtstamp (in ns?) to the bpf prog. Put lower 32bits in args[0] and 
-higher 32bits in args[1].
-
-Also, how about adding a BPF_SOCK_OPS_TS_"HW"_OPT_CB for the "hwtstamps != NULL" 
-case instead of reusing the BPF_SOCK_OPS_TS_"SW"_OPT_CB?
-
-A more subtle thing for the hwtstamps case is, afaik the bpf prog will not be 
-called. All drivers are still only testing SKBTX_HW_TSTAMP instead of testing
-(SKBTX_HW_TSTAMP | SKBTX_BPF).
-
-There are a lot of drivers to change though. A quick thought is to rename the 
-existing SKBTX_HW_TSTAMP (e.g. __SKBTX_HW_TSTAMP = 1 << 0) and define 
-SKBTX_HW_TSTAMP like:
-
-#define SKBTX_HW_TSTAMP (__SKBTX_HW_TSTAMP | SKBTX_BPF)
-
-Then change some of the existing skb_shinfo(skb)->tx_flags "setting" site to use 
-__SKBTX_HW_TSTAMP instead. e.g. in __sock_tx_timestamp(). Not very pretty but 
-may be still better than changing many drivers. May be there is a better way...
-
-While talking about where to test the SKBTX_BPF bit, I wonder if the new 
-skb_tstamp_is_set() is needed. For the non SKBTX_HW_TSTAMP case, the number of 
-tx_flags testing sites should be limited, so should be easy to add the SKBTX_BPF 
-bit test. e.g. at the __dev_queue_xmit, test "if 
-(unlikely(skb_shinfo(skb)->tx_flags & (SKBTX_SCHED_TSTAMP | SKBTX_BPF)))". Patch 
-6 has also tested the bpf specific bit at tcp_ack_tstamp() before calling the 
-__skb_tstamp_tx().
-
-At the beginning of __skb_tstamp_tx(), do something like this:
-
-void __skb_tstamp_tx(struct sk_buff *orig_skb,
-		     const struct sk_buff *ack_skb,
-		     struct skb_shared_hwtstamps *hwtstamps,
-		     struct sock *sk, int tstype)
-{
-	if (cgroup_bpf_enabled(CGROUP_SOCK_OPS) &&
-	    unlikely(skb_shinfo(skb)->tx_flags & SKBTX_BPF))
-		__skb_tstamp_tx_bpf(sk, orig_skb, hwtstamps, tstype);
-
-	if (unlikely(!(skb_shinfo(skb)->tx_flags & ~SKBTX_BPF)))
-		return;
-
-Then the new skb_tstamp_tx_output() shuffle is probably not be needed also.
-
-> +			args[0] = tstamp.tv_sec;
-> +			args[1] = tstamp.tv_nsec;
-> +		}
->   		break;
->   	case SCM_TSTAMP_ACK:
->   		op = BPF_SOCK_OPS_TS_ACK_OPT_CB;
-> @@ -5560,7 +5569,7 @@ static void __skb_tstamp_tx_bpf(struct sock *sk, struct sk_buff *skb, int tstype
->   		return;
->   	}
->   
-> -	bpf_skops_tx_timestamping(sk, skb, op);
-> +	bpf_skops_tx_timestamping(sk, skb, op, 2, args);
->   }
->   
->   static void skb_tstamp_tx_output(struct sk_buff *orig_skb,
-> @@ -5651,7 +5660,7 @@ void __skb_tstamp_tx(struct sk_buff *orig_skb,
->   	if (unlikely(skb_tstamp_is_set(orig_skb, tstype, false)))
->   		skb_tstamp_tx_output(orig_skb, ack_skb, hwtstamps, sk, tstype);
->   	if (unlikely(skb_tstamp_is_set(orig_skb, tstype, true)))
-> -		__skb_tstamp_tx_bpf(sk, orig_skb, tstype);
-> +		__skb_tstamp_tx_bpf(sk, orig_skb, hwtstamps, tstype);
->   }
->   EXPORT_SYMBOL_GPL(__skb_tstamp_tx);
->   
-> @@ -5662,7 +5671,7 @@ void skb_tstamp_tx(struct sk_buff *orig_skb,
->   
->   	skb_tstamp_tx_output(orig_skb, NULL, hwtstamps, orig_skb->sk, tstype);
->   	if (unlikely(skb_tstamp_is_set(orig_skb, tstype, true)))
-> -		__skb_tstamp_tx_bpf(orig_skb->sk, orig_skb, tstype);
-> +		__skb_tstamp_tx_bpf(orig_skb->sk, orig_skb, hwtstamps, tstype);
->   }
->   EXPORT_SYMBOL_GPL(skb_tstamp_tx);
->   
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 79cb5c74c76c..504939bafe0c 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -942,7 +942,8 @@ int sock_set_timestamping(struct sock *sk, int optname,
->   }
->   
->   #if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_SYSCALL)
-> -void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op)
-> +void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op,
-> +			       u32 nargs, u32 *args)
-
-Directly pass hwtstamps->hwtstamp instead of args and nargs. Save a memcpy below.
-
->   {
->   	struct bpf_sock_ops_kern sock_ops;
->   
-> @@ -952,6 +953,7 @@ void bpf_skops_tx_timestamping(struct sock *sk, struct sk_buff *skb, int op)
->   	sock_ops.op = op;
->   	sock_ops.is_fullsock = 1;
->   	sock_ops.sk = sk;
-> +	memcpy(sock_ops.args, args, nargs * sizeof(*args));
->   	__cgroup_bpf_run_filter_sock_ops(sk, &sock_ops, CGROUP_SOCK_OPS);
->   }
->   #endif
-
+>  BTF_ID_FLAGS(func, bpf_wq_init)
+>  BTF_ID_FLAGS(func, bpf_wq_set_callback_impl)
+>  BTF_ID_FLAGS(func, bpf_wq_start)
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 5e541339b2f6d1870561033fd55cca7144db14bc..77bbf58418fee7533bce539c8=
+e005d2342ee1a48 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5526,7 +5526,9 @@ static bool in_rcu_cs(struct bpf_verifier_env *env)
+>
+>  /* Once GCC supports btf_type_tag the following mechanism will be replac=
+ed with tag check */
+>  BTF_SET_START(rcu_protected_types)
+> +#ifdef CONFIG_NET
+>  BTF_ID(struct, prog_test_ref_kfunc)
+> +#endif
+>  #ifdef CONFIG_CGROUPS
+>  BTF_ID(struct, cgroup)
+>  #endif
+> @@ -5534,7 +5536,9 @@ BTF_ID(struct, cgroup)
+>  BTF_ID(struct, bpf_cpumask)
+>  #endif
+>  BTF_ID(struct, task_struct)
+> +#ifdef CONFIG_CRYPTO
+>  BTF_ID(struct, bpf_crypto_ctx)
+> +#endif
+>  BTF_SET_END(rcu_protected_types)
+>
+>  static bool rcu_protected_object(const struct btf *btf, u32 btf_id)
+> @@ -11529,8 +11533,10 @@ BTF_ID(func, bpf_rdonly_cast)
+>  BTF_ID(func, bpf_rbtree_remove)
+>  BTF_ID(func, bpf_rbtree_add_impl)
+>  BTF_ID(func, bpf_rbtree_first)
+> +#ifdef CONFIG_NET
+>  BTF_ID(func, bpf_dynptr_from_skb)
+>  BTF_ID(func, bpf_dynptr_from_xdp)
+> +#endif
+>  BTF_ID(func, bpf_dynptr_slice)
+>  BTF_ID(func, bpf_dynptr_slice_rdwr)
+>  BTF_ID(func, bpf_dynptr_clone)
+> @@ -11558,8 +11564,10 @@ BTF_ID(func, bpf_rcu_read_unlock)
+>  BTF_ID(func, bpf_rbtree_remove)
+>  BTF_ID(func, bpf_rbtree_add_impl)
+>  BTF_ID(func, bpf_rbtree_first)
+> +#ifdef CONFIG_NET
+>  BTF_ID(func, bpf_dynptr_from_skb)
+>  BTF_ID(func, bpf_dynptr_from_xdp)
+> +#endif
+>  BTF_ID(func, bpf_dynptr_slice)
+>  BTF_ID(func, bpf_dynptr_slice_rdwr)
+>  BTF_ID(func, bpf_dynptr_clone)
+>
+> ---
+> base-commit: 5d287a7de3c95b78946e71d17d15ec9c87fffe7f
+> change-id: 20241212-bpf-cond-ids-9bfbc64dd77b
+>
+> Best regards,
+> --
+> Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+>
 
