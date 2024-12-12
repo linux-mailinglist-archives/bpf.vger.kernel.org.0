@@ -1,155 +1,178 @@
-Return-Path: <bpf+bounces-46679-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46681-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C8659EDCDA
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 01:53:49 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE9549EDD2B
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 02:43:22 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9968E1889F34
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 00:53:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34DB72833F9
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 01:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9304118B03;
-	Thu, 12 Dec 2024 00:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25AC757CBE;
+	Thu, 12 Dec 2024 01:43:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cIdJieHL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ugssm1ja"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782A83201;
-	Thu, 12 Dec 2024 00:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF717225A8
+	for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 01:43:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733964819; cv=none; b=hlAh7asY/xPYYGaCUOnsCnpP2sYUvXehXyWtQsIb0eFm+Sfp/O6Hc1J0wtfZi/2jHix1RSE8GhPYXavEYwnKICz1c6zZmB5P66QbvqpQCHDutjbuzn4VN38BkbZ6hQmfG4JkChNwZJQQ/rNcuM/iEUWRFGRyMgYOMui5ZHLGVo0=
+	t=1733967796; cv=none; b=EH9WMivmDPse20Qd5KN86uKzGWQNRaes92bu3n+B36C4BOJmF+wAX9mfvR7VO1Q0EqM/1T6NsT7q+n5CHb/9bPEHldo9x75UuerbrCtlnlJal5jgMEvlixaKVQY23AOAElfvAnmi56cFrLx8mn99hr24aNkvoVD++baajfHXn0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733964819; c=relaxed/simple;
-	bh=byN7WDhdPTMpRrfEUsWe2vdT3nvwPjmqUy7rdxVn538=;
+	s=arc-20240116; t=1733967796; c=relaxed/simple;
+	bh=/xKAJ4llUOqQVbiGYITJf3q4k9JqPx8yLmCSosVD07c=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PRi3/RHhi4GVbFc1DZBljlX3g8ccQMda+b/PWZ2tRwJZXas7j5JSZ0XMhnrUOtTBCr7vCGCU1dmwtdRBPpeaGsWp4rNM6gyD6MWHm6bucIJYCPAPqnrugOdUblKjcGJY1EZU1kz+m6aIM6dnWRmjcju9Kj9WJbqVjVuVIp5ClkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cIdJieHL; arc=none smtp.client-ip=209.85.128.46
+	 To:Cc:Content-Type; b=odaBEetY1hxCV0aYBwX4I7gqslMriLqQf+annJTSc+WLLj0V3heyXCuMdi5gj02hj7PppeGTv1GL98Bste9F47GW27W/R91q6nFGmMhk3n8IiJ9OleLOnL0CwFv8967Iv3HGFNNrsmsPZrlR6rt2qI9/Q5jMRZeHfyIH1AgPJuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ugssm1ja; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-43622354a3eso276955e9.1;
-        Wed, 11 Dec 2024 16:53:37 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3862d6d5765so23519f8f.3
+        for <bpf@vger.kernel.org>; Wed, 11 Dec 2024 17:43:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733964816; x=1734569616; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733967793; x=1734572593; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pKnB4XecQCWi7/usSFJOWTDJcNSr9AZUZeqZRViJV3I=;
-        b=cIdJieHL3UTZUOF0ljKarlyfv9AvfhH9clyYM2A3rtbGwN0tX070Sqm5s5bTStMU2j
-         GFTrRsxO21xhT3430EWQHwglX52tL7DzZn3DRNpQLBufxpVlRm0VYu1U2WMc/+jA55Lr
-         qGXsRv4bF3IZPoqYgUPpxzxRgKWXcZs+HzIzAjzRuZ9DjJLqZE77lgD6hMCcizrbWr8j
-         p5VvV4LR5QP/w6gjPB4r+6L8N3PmW87km/wRr6WZ35FcMpqeVB/QdTndgeU49QSFMPR1
-         isUAU2g2oXPPDLtzsycOTQE8QZ869NrrJZKmP+y0rxJVUDWW07mjrNEUtau9lJf0UKI1
-         Ui0A==
+        bh=IjW0Rmfd8vrE4q76KDpCVdgkurMhEEeT93Mb5OI6eT4=;
+        b=Ugssm1japKlJNXguh1pqBDAgcV+MlTfbraHVfJL0usyKlqS02nVncy7kFeTtYzV+xJ
+         dFOhAlKdDzeAIQA3EP/u1WhbwS35/m2LoevxRnNCZeT+sTEqZRwx3D+7D+XQpBJ7CVVI
+         6kBSNqof2ERN2Xw7E0qobh4m/AoScUW/zH+wgieMaXa6nV2ZLI09tL+ZyX20B/dkzlWV
+         3BNrCMxaJT09W22diCGJbeFS15mqFpnME5lKaj3a8BZYbDkbgjFrEElEPkdURYO4RNG7
+         EILSwPV5MTpHNumViYhW1SKR2dejWYrQE6veP8Gqe//tLy7fqbI1qEddOhcfCXVKbi9O
+         buXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733964816; x=1734569616;
+        d=1e100.net; s=20230601; t=1733967793; x=1734572593;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pKnB4XecQCWi7/usSFJOWTDJcNSr9AZUZeqZRViJV3I=;
-        b=mfLCQM2+LssJy5kxhkKTCktwvchMlpCfkivPiFWTCgSeDiur4NKzQU+dFqufGNWJmE
-         l+kqzTxwltOYDQVSVMMaenCJV7+nHXEkiEz236n5VjGZPSjncV6hqDOLYygAmb4A2vcR
-         g+YZsa9Jz6H3QVx3gA0VExVDcYXleKuf0P4O3ZIczMWlffkZfIprf4GO4MLqFa0yeZcZ
-         oD/PkknkRakz3+qE8OO88lSgTbwU5//sT07stcZ09+JDw9fLmzo2NO34ddbRzorQt/q4
-         Yh3Ep1tyqI3XCJfm1gfaM4L7UqZUL5XrWAbdCmHS8ccOjNBcauU/WrbkeJBWSWNEe4aL
-         vUZA==
-X-Forwarded-Encrypted: i=1; AJvYcCUkKOH9VjlrVYknD2Gn8x6K1wk+jhNt7kB1jqH/hvJPt8lOPH9O/Up//cJLhixrtyJeR2NtvA/A/2EVu58SKg==@vger.kernel.org, AJvYcCWjCOT1fl3uj3sJiH1AbYmdzCnzwXkTfudowIeWKxxnaIbLMInqxNSGks7ABPIusSpZaR4=@vger.kernel.org, AJvYcCWqwL8bgYu4Qpxds3HB92lZfkNv8P638AKeKw/VDVu5iu+oWlnP/UERB5QZkJMzT+wpCe3O6yu6Ft0S7bax@vger.kernel.org
-X-Gm-Message-State: AOJu0YzemwLXR+MjMiJ+nAcoGmDXbJFeeD1zCaf1MAqtL4OtG1SllZAT
-	4/YDVMN/lpxi/PnDEPYOnzKhG7y9q+QcORG7AiuER8pNzIVANexodIxu/3PsrCXLdS1H2tRg4UP
-	RYvqoxQZqJWJ2ISE0gIpDyW/jQsg=
-X-Gm-Gg: ASbGncsqEwU6qhBgYWECMv3RUnM2HAhAYb9HDK2M/pfCfbv5AQ4uNsdSkMiMKIPe3YX
-	3A8D9iSgaemJNBXxRFkYoefjKXed665wNarhMcQSAyssOTAnwKiw=
-X-Google-Smtp-Source: AGHT+IH/mKsp0uN60R/gKzDmnIlqvZmGyvhQfrkTddN+zAT1YjYpi6/NHhpaljgC5NNzO2XrR4KrR4NQ1VhoEo9PuMY=
-X-Received: by 2002:a05:600c:1f0d:b0:434:a923:9310 with SMTP id
- 5b1f17b1804b1-4361c3c5015mr39402995e9.15.1733964815558; Wed, 11 Dec 2024
- 16:53:35 -0800 (PST)
+        bh=IjW0Rmfd8vrE4q76KDpCVdgkurMhEEeT93Mb5OI6eT4=;
+        b=K+5/PI9RE7I1LhapWO07GF/imvZYQ94zT4ejBsWWCbY1fPuY8G6/WbSawnb1tYS2p3
+         ifj0IVindH7aEpijCtkYshxXAGLdfOr7GeVjxbHuTB3sudMXbXn5VkVbbdxNskGxYVy4
+         +n5InDi/qkm2n96B0kSldpoOqnNb8VqdCdJLM2irFi68eWYkjxOyfp/w6xBuV9XQnW29
+         +BzbT8wUqxeK1bjc3yR1R/p0eBWmAFYKCfqrLN7KqE6ihRO9MQCeb92N8BG61ehV2W1p
+         +dZnN9yIiQ7GolChcXFcNAMyld+NaX/TrVHcVZ3JIt3RfnMFimLVINTJY9Uehm5Oz714
+         +7vw==
+X-Gm-Message-State: AOJu0YzVPKQTUDU5YtfhxgdflOqKBfCgHGpn+3wU4mQ/QTC6BhQMuDUX
+	OETe4inyvr7Lvwgup4F513ZW7/lIT4DLXQy6NZEj+yW+Nf02IbaqzGME72wEcDXdYnn0jzue8We
+	WG2fwCVFN+ehpLDdU5j0ks3Omf7I=
+X-Gm-Gg: ASbGncspO+zs5LBcRs0dIFcab1BCtbnluBzP1hJ49BmOUackOJSmemdwv1J7h6bg4sm
+	OD97jQ7XujmIubEdiKJPl55AST/fhrC+dP85f1EJu9fzCWnIVlgvsOw==
+X-Google-Smtp-Source: AGHT+IEtVUyDNZpyi7qkYFygQxdaBBeAVrU1ivg7A1I+f/b5v9TTf5pswGF9uA+NIBR0nYb0rZOzwOMp6Jn5F62JUcs=
+X-Received: by 2002:a05:6000:4405:b0:385:f13c:570f with SMTP id
+ ffacd0b85a97d-3864ce5fbcemr3088012f8f.33.1733967793034; Wed, 11 Dec 2024
+ 17:43:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <AM6PR03MB508010982C37DF735B1EAA0E993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB50804FA149F08D34A095BA28993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <20241210-eckig-april-9ffc098f193b@brauner> <CAADnVQKdBrX6pSJrgBY0SvFZQLpu+CMSshwD=21NdFaoAwW_eg@mail.gmail.com>
- <AM6PR03MB508072B5D29C8BD433AD186E993E2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB508072B5D29C8BD433AD186E993E2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+References: <20241210023936.46871-1-alexei.starovoitov@gmail.com>
+ <20241210023936.46871-3-alexei.starovoitov@gmail.com> <c9433086-04e3-4c58-a7b6-a64d986ab1e2@suse.cz>
+In-Reply-To: <c9433086-04e3-4c58-a7b6-a64d986ab1e2@suse.cz>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 11 Dec 2024 16:53:24 -0800
-Message-ID: <CAADnVQK3toLsVLVYjGVXEuQGWUKF98OG9ogAQbJ4UeER42ZyGg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/5] bpf: Make fs kfuncs available for SYSCALL
- and TRACING program types
-To: Juntong Deng <juntong.deng@outlook.com>
-Cc: Christian Brauner <brauner@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
+Date: Wed, 11 Dec 2024 17:43:01 -0800
+Message-ID: <CAADnVQL2ys3zO2TncNXydC6_fbAQ-GrEJMiH3yx9My0AHr2=sA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/6] mm, bpf: Introduce free_pages_nolock()
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Sebastian Sewior <bigeasy@linutronix.de>, 
+	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev, Michal Hocko <mhocko@suse.com>, 
+	Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Tejun Heo <tj@kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 11, 2024 at 1:29=E2=80=AFPM Juntong Deng <juntong.deng@outlook.=
-com> wrote:
+On Wed, Dec 11, 2024 at 2:11=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
 >
-> On 2024/12/10 18:58, Alexei Starovoitov wrote:
-> > On Tue, Dec 10, 2024 at 6:43=E2=80=AFAM Christian Brauner <brauner@kern=
-el.org> wrote:
-> >>
-> >> On Tue, Dec 10, 2024 at 02:03:53PM +0000, Juntong Deng wrote:
-> >>> Currently fs kfuncs are only available for LSM program type, but fs
-> >>> kfuncs are generic and useful for scenarios other than LSM.
-> >>>
-> >>> This patch makes fs kfuncs available for SYSCALL and TRACING
-> >>> program types.
-> >>
-> >> I would like a detailed explanation from the maintainers what it means
-> >> to make this available to SYSCALL program types, please.
+> On 12/10/24 03:39, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
 > >
-> > Sigh.
-> > This is obviously not safe from tracing progs.
+> > Introduce free_pages_nolock() that can free a page without taking locks=
+.
+> > It relies on trylock only and can be called from any context.
 > >
-> >  From BPF_PROG_TYPE_SYSCALL these kfuncs should be safe to use,
-> > since those progs are not attached to anything.
-> > Such progs can only be executed via sys_bpf syscall prog_run command.
-> > They're sleepable, preemptable, faultable, in task ctx.
-> >
-> > But I'm not sure what's the value of enabling these kfuncs for
-> > BPF_PROG_TYPE_SYSCALL.
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 >
-> Thanks for your reply.
+> <snip>
 >
-> Song said here that we need some of these kfuncs to be available for
-> tracing functions [0].
+> > +/* Can be called while holding raw_spin_lock or from IRQ. RCU must be =
+watching. */
+> > +void free_pages_nolock(struct page *page, unsigned int order)
 >
-> If Song saw this email, could you please join the discussion?
->
-> [0]:
-> https://lore.kernel.org/bpf/CAPhsuW6ud21v2xz8iSXf=3DCiDL+R_zpQ+p8isSTMTw=
-=3DEiJQtRSw@mail.gmail.com/
->
-> For BPF_PROG_TYPE_SYSCALL, I think BPF_PROG_TYPE_SYSCALL has now
-> exceeded its original designed purpose and has become a more general
-> program type.
->
-> Currently BPF_PROG_TYPE_SYSCALL is widely used in HID drivers, and there
-> are some use cases in sched-ext (CRIB is also a use case, although still
-> in infancy).
+> What does "RCU must be watching" mean and why?
 
-hid switched to use struct_ops prog type.
-I believe syscall prog type in hid is a legacy code.
-Those still present might be leftovers for older kernels.
+Meaning that rcu_is_watching() must be true.
+Because pgalloc_tag_get() relies on RCU.
+ree_unref_page() and things it calls doesn't use RCU directly,
+but it calls tracepoints and they need RCU too.
 
-sched-ext is struct_ops only. No syscall progs there.
+Hence the comment to say that free_pages_nolock() cannot be
+called in _any_ context. Some care needs to be taken.
+bpf needs RCU, so we don't allow attach bpf to idle and notrace,
+but, last I heard, notrace attr is not 100% reliable on some odd arch-es.
 
-> As BPF_PROG_TYPE_SYSCALL becomes more general, it would be valuable to
-> make more kfuncs available for BPF_PROG_TYPE_SYSCALL.
+> > +{
+> > +     int head =3D PageHead(page);
+> > +     struct alloc_tag *tag =3D pgalloc_tag_get(page);
+> > +
+> > +     if (put_page_testzero(page)) {
+> > +             __free_unref_page(page, order, FPI_TRYLOCK);
+> > +     } else if (!head) {
+> > +             pgalloc_tag_sub_pages(tag, (1 << order) - 1);
+> > +             while (order-- > 0)
+> > +                     __free_unref_page(page + (1 << order), order, FPI=
+_TRYLOCK);
+>
+> Not your fault for trying to support everything __free_pages did,
+> specifically order > 0 pages that are not compound and thus needing this
+> extra !head branch. We'd love to get rid of that eventually in
+> __free_pages(), but at least I think we don't need to support it in a new
+> API and instead any users switching to it should know it's not supported.
 
-Maybe. I still don't understand how it helps CRIB goal.
+Great. Good to know.
+
+> I suppose BFP doesn't need that, right?
+
+Nope.
+Initially I wrote above bit as:
+
+void free_pages_nolock(struct page *page, unsigned int order)
+{
+         if (put_page_testzero(page))
+                __free_unref_page(page, order, FPI_TRYLOCK);
+}
+
+but then I studied Matthew's commit
+e320d3012d25 ("mm/page_alloc.c: fix freeing non-compound pages")
+
+and couldn't convince myself that the race he described
++               get_page(page);
++               free_pages(addr, 3);
++               put_page(page);
+
+will never happen.
+It won't happen if bpf is the only user of this api,
+but who knows what happens in the future.
+So copy-pasted this part just in case.
+Will be happy to drop it.
+
+> Maybe if the function was taking a folio instead of page, it would be the
+> best as that has to be order-0 or compound by definition. It also wouldn'=
+t
+> need the order parameter. What do you think, Matthew?
+
+For bpf there is no use case for folios.
+All we need is a page order 0 and separately
+later kmalloc_nolock() will call it from new_slab().
+And I think new_slab() might need order >=3D 1.
+So that's the reason to have order parameter.
 
