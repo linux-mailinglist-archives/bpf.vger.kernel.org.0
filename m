@@ -1,140 +1,241 @@
-Return-Path: <bpf+bounces-46727-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46728-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 409E29EFABA
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 19:21:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 451209EFC12
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 20:10:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3D1B172680
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 18:19:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4C541884AC9
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2024 19:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948832288D2;
-	Thu, 12 Dec 2024 18:13:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BAD18FDAB;
+	Thu, 12 Dec 2024 19:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="hVYs6qzJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TzNJWmcv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-10630.protonmail.ch (mail-10630.protonmail.ch [79.135.106.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51877223C69;
-	Thu, 12 Dec 2024 18:13:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36AE8168497;
+	Thu, 12 Dec 2024 19:09:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734027189; cv=none; b=JgiXJiN3c8fMpLAGcCXwzlf6R1JibaVo9tcL6K3b3lVhHHz4FdrFfeOPwoXGGAyYOBGlxL2p1TvWTV8+NdjUXbxhk3z9qSI9HdmgxfRXzHCVNTXd4WedzzbtMvPGPWoc5TsmqJ69zR6SQrHpF0mQ7V8WVGrgblVN7BpH+ODtrGI=
+	t=1734030589; cv=none; b=S46svGTqWunA/38DP6r649xrW9LurrhNcsVd4iq72Lt07bt/9hsuS6+HgFgkIWCuKr8wOjQ4khbSHVrC5R5uJdeh1kT/b5d9vCeCkXWnzyMYLYOsV9T+XzWxkTRjFTFgGG2s2MpaPQ/cMCsHESW3GEVO1zdEAolt2pxRsbs2rvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734027189; c=relaxed/simple;
-	bh=klN8TCjAFsZYl5VMZCaq9NYaAK6GGI+tkrvt8Xgklug=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OzBs0yfGjBh0iT4rZ13PHmFv7/7PlDFw1iOkcU+eXO27+JnKz1HqCR+TMh3sMFps7IWKJYFPl+1ratOFsRFcf9/8XAqT0DSRi01m7i7MaDsV5fpTADg1FfAs8sC8sxCpd74KQeWLm8FI2OxlzohIWXTW9hH28ALYzZ8n/mLsI1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=hVYs6qzJ; arc=none smtp.client-ip=79.135.106.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1734027180; x=1734286380;
-	bh=klN8TCjAFsZYl5VMZCaq9NYaAK6GGI+tkrvt8Xgklug=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=hVYs6qzJEJA34TDi5u2nX3e48/hJeb11/9ZfLDVytOk2XNKnViz09yPDxfDqfg9Km
-	 f0XmYUF1+pZpMJqhYFcL4RlHQCBCMlUEATp6cIkyv93qiQGqwqtzWXVBKl9rCTRGFa
-	 ioLJs98Bmy3VByFZACSkaK9y3fILWGgEnMwk9g65rlI1bgiX4a4mDtzVSoHb9stozv
-	 ZR99mVnWfigIx4M8i/TxnmLImmboguFF/elyvFm91l9otVfqIQnLx5I5MLTeTn7Jcx
-	 JhnBpl7iwZ0RqT8+xCFXoHK4Z3buakt3AeTbmfOfNHu4iqIQzQE+4mTIPdSG3wJr5z
-	 jPclEq+UGfjMA==
-Date: Thu, 12 Dec 2024 18:12:54 +0000
-To: Tejun Heo <tj@kernel.org>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: David Vernet <void@manifault.com>, sched-ext@meta.com, kernel-team@meta.com, linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH sched_ext/for-6.13-fixes] sched_ext: Fix invalid irq restore in scx_ops_bypass()
-Message-ID: <SJEarr1ol1z7N83mqHJjBmpXcXgHNnnuORHfziWINcHBQCJzY0RczexPKxdq_vE5cDYPeO3bx1RdsNhLqw5UYI40HSX9cPZ9rdmebYwwAP8=@pm.me>
-In-Reply-To: <Z1n9v7Z6iNJ-wKmq@slm.duckdns.org>
-References: <20241209152924.4508-1-void@manifault.com> <qC39k3UsonrBYD_SmuxHnZIQLsuuccoCrkiqb_BT7DvH945A1_LZwE4g-5Pu9FcCtqZt4lY1HhIPi0homRuNWxkgo1rgP3bkxa0donw8kV4=@pm.me> <Z1n9v7Z6iNJ-wKmq@slm.duckdns.org>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: dea07f9fab95189ad454ec3ff2fb1b408d182190
+	s=arc-20240116; t=1734030589; c=relaxed/simple;
+	bh=DNKPYA2WFPgRNNOUeAlWNV/mRLGE9d7lM0rvKrJvcqI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZjBLyDdtseEWUSxO7ka0Gjl6HXDXt2+abo26IHWa3DNMJufdted7lONeo4UgfruAqFNdnvRlEo/eXkLQim6EWwjM75IdmHYsatmKGsdC7uVwnUNyLkeYpsXDKzxWT1FVSyj4X3KTtAGaPVUiVmtgbriGa/zru1eyzf/zAVVJvew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TzNJWmcv; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2efa856e4a4so695846a91.0;
+        Thu, 12 Dec 2024 11:09:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734030587; x=1734635387; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1Y1JSw3DoTxWn8SM/qbfxjcr4SEeq3BxYATnSrJCP3c=;
+        b=TzNJWmcvF4Gdt9U3W62IDJsouNoG44+v0HlRSCGCnJUIQtR3N3h1LkIoQ01vM7XmJS
+         d1IkYO7s6/3ATDRQIjyZY+XT9/7i1nM6pDxS0yoejYMfSAwPCE01GW92HQ0GDXl+xnf1
+         1iSbmqR+vmoWaOMe4x7qSt1lJmPbGC0/3GMdotuXySNmPTb9O/GClLYSb0rCFHbRP9O2
+         NX9C1BPkhPczoNT6wASqbw6bs5LQSj95tW9KEazWL0b2izfJtrW4LHQOu0H+EEPNacwS
+         p+sml5Cp+sbhzFvUgYkXHifG+i2i6tMwa8Q83ZE/8k0cExa5nMNUE7mQmD8qvcMdiD8N
+         +UUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734030587; x=1734635387;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1Y1JSw3DoTxWn8SM/qbfxjcr4SEeq3BxYATnSrJCP3c=;
+        b=JD1FJx+eqLaxf8azsM0fpe5jMmwSovwslMm8hJmQIt9Hh6bVwmt+1Ijtc7H8DEtsGA
+         Ct2GHQWLaGeu+QlUz1Yhin1EerPL1aX1KDHCNsN45Fox7Hp3isRVuXu9getQkh11VKJ9
+         6XVWb0pQD2aM4kUQ7B06JETw5ytO/fqIGHy+OPekzOg1/vrVwuwDLb6gYHtUdLoNEFU5
+         xKxZrfSlr9QGRI4XXhDVjrDv7yXBQe4QaIyT4yEAZS5QhsiNE0ni8tb9eQGPslOE3yDk
+         dORbREVy2YTBXBQkw93bK7UR0YwoUIheF20LVhIhq9ecZOWTJPDnjHa1opTuMoo+4iEn
+         csaA==
+X-Forwarded-Encrypted: i=1; AJvYcCU7Jp8zIoyXvSOAHkGe2sVxtcT5I1Y8o1QLt5t6dmQ1/lf0HNn8fi+gc+FEKxamsYMnn4DjuCwW@vger.kernel.org, AJvYcCVfTmq91XSk/CtdOXLQy1hMQ4AvrUf5cioy8+mZd738U3Y4F7/9lEaTCvUpmxP6PK0GsL17Smght7go3cr+@vger.kernel.org, AJvYcCWaw6gCYteYIgi+rGUG9F3ip/dK+yYq5f8n3g4fDlgoNRsdzrz0XSrpCRiIU6BJJx+i+LY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YydtvjoprtkuMZ0TdQ720jWvwxRxUJxo/wDVUwKnAby2hp1OZ88
+	Xkr78hnj33KZNS9IholwQXzqOT03M2tP2UDvtpdCuxWLkRDu/JnTre9xwxpUURayvwKH5UeguyJ
+	QYU/AIayrqDGICtY6vZRJ9dT38bw=
+X-Gm-Gg: ASbGncvzDua8Q3hwxQC/+6h5hNrZsquxsDKv7qJQgz/hKuvViRfZMBWOYk5eiZaMqKI
+	J06TyvQbAUIdxzGP1u/p0WQgFSRWRg91EhUmBAHOK3Fcn9l6jzXpbqw==
+X-Google-Smtp-Source: AGHT+IHaSbU2ygxG/L0zwcsASR2dK+gNnVPGMfE+RuiROXU9+RWhe0nrQc6XD6psPXHVJoeFBze84xZMP1k7ilvzJGY=
+X-Received: by 2002:a17:90b:5110:b0:2ee:bc1d:f98b with SMTP id
+ 98e67ed59e1d1-2f139325d67mr6667254a91.31.1734030585888; Thu, 12 Dec 2024
+ 11:09:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <cover.1733787798.git.dxu@dxuuu.xyz> <3bc17d33161961409dc77a5de29761bf2bed4980.1733787798.git.dxu@dxuuu.xyz>
+In-Reply-To: <3bc17d33161961409dc77a5de29761bf2bed4980.1733787798.git.dxu@dxuuu.xyz>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 12 Dec 2024 11:09:34 -0800
+Message-ID: <CAEf4BzaA9_up=3npADgJv8pCVg4eVzsWevef69c3PkdyuWNXDQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/4] bpftool: btf: Support dumping a single
+ type from file
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: hawk@kernel.org, john.fastabend@gmail.com, ast@kernel.org, qmo@kernel.org, 
+	davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org, kuba@kernel.org, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, antony@phenome.org, 
+	toke@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, December 11th, 2024 at 1:01 PM, Tejun Heo <tj@kernel.org> wro=
-te:
-
->=20
->=20
-> While adding outer irqsave/restore locking, 0e7ffff1b811 ("scx: Fix racin=
-ess
-> in scx_ops_bypass()") forgot to convert an inner rq_unlock_irqrestore() t=
-o
-> rq_unlock() which could re-enable IRQ prematurely leading to the followin=
-g
-> warning:
->=20
-> raw_local_irq_restore() called with IRQs enabled
-> WARNING: CPU: 1 PID: 96 at kernel/locking/irqflag-debug.c:10 warn_bogus_i=
-rq_restore+0x30/0x40
-> ...
-> Sched_ext: create_dsq (enabling)
-> pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
-> pc : warn_bogus_irq_restore+0x30/0x40
-> lr : warn_bogus_irq_restore+0x30/0x40
-> ...
-> Call trace:
-> warn_bogus_irq_restore+0x30/0x40 (P)
-> warn_bogus_irq_restore+0x30/0x40 (L)
-> scx_ops_bypass+0x224/0x3b8
-> scx_ops_enable.isra.0+0x2c8/0xaa8
-> bpf_scx_reg+0x18/0x30
-> ...
-> irq event stamp: 33739
-> hardirqs last enabled at (33739): [<ffff8000800b699c>] scx_ops_bypass+0x1=
-74/0x3b8
->=20
-> hardirqs last disabled at (33738): [<ffff800080d48ad4>] _raw_spin_lock_ir=
-qsave+0xb4/0xd8
->=20
->=20
-> Drop the stray _irqrestore().
->=20
-> Signed-off-by: Tejun Heo tj@kernel.org
->=20
-> Reported-by: Ihor Solodrai ihor.solodrai@pm.me
->=20
-> Link: http://lkml.kernel.org/r/qC39k3UsonrBYD_SmuxHnZIQLsuuccoCrkiqb_BT7D=
-vH945A1_LZwE4g-5Pu9FcCtqZt4lY1HhIPi0homRuNWxkgo1rgP3bkxa0donw8kV4=3D@pm.me
-> Fixes: 0e7ffff1b811 ("scx: Fix raciness in scx_ops_bypass()")
-> Cc: stable@vger.kernel.org # v6.12
+On Mon, Dec 9, 2024 at 3:45=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> Some projects, for example xdp-tools [0], prefer to check in a minimized
+> vmlinux.h rather than the complete file which can get rather large.
+>
+> However, when you try to add a minimized version of a complex struct (eg
+> struct xfrm_state), things can get quite complex if you're trying to
+> manually untangle and deduplicate the dependencies.
+>
+> This commit teaches bpftool to do a minimized dump of a single type by
+> providing an optional root_id argument.
+>
+> Example usage:
+>
+>     $ ./bpftool btf dump file ~/dev/linux/vmlinux | rg "STRUCT 'xfrm_stat=
+e'"
+>     [12643] STRUCT 'xfrm_state' size=3D912 vlen=3D58
+>
+>     $ ./bpftool btf dump file ~/dev/linux/vmlinux root_id 12643 format c
+>     #ifndef __VMLINUX_H__
+>     #define __VMLINUX_H__
+>
+>     [..]
+>
+>     struct xfrm_type_offload;
+>
+>     struct xfrm_sec_ctx;
+>
+>     struct xfrm_state {
+>             possible_net_t xs_net;
+>             union {
+>                     struct hlist_node gclist;
+>                     struct hlist_node bydst;
+>             };
+>             union {
+>                     struct hlist_node dev_gclist;
+>                     struct hlist_node bysrc;
+>             };
+>             struct hlist_node byspi;
+>     [..]
+>
+> [0]: https://github.com/xdp-project/xdp-tools/blob/master/headers/bpf/vml=
+inux.h
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 > ---
-> kernel/sched/ext.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-> index 7fff1d045477..98519e6d0dcd 100644
-> --- a/kernel/sched/ext.c
-> +++ b/kernel/sched/ext.c
-> @@ -4763,7 +4763,7 @@ static void scx_ops_bypass(bool bypass)
-> * sees scx_rq_bypassing() before moving tasks to SCX.
-> */
-> if (!scx_enabled()) {
-> - rq_unlock_irqrestore(rq, &rf);
-> + rq_unlock(rq, &rf);
-> continue;
-> }
+>  .../bpf/bpftool/Documentation/bpftool-btf.rst |  7 +++++--
+>  tools/bpf/bpftool/btf.c                       | 21 ++++++++++++++++++-
+>  2 files changed, 25 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/=
+bpftool/Documentation/bpftool-btf.rst
+> index 245569f43035..4899b2c10777 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
+> @@ -24,7 +24,7 @@ BTF COMMANDS
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>  | **bpftool** **btf** { **show** | **list** } [**id** *BTF_ID*]
+> -| **bpftool** **btf dump** *BTF_SRC* [**format** *FORMAT*]
+> +| **bpftool** **btf dump** *BTF_SRC* [**format** *FORMAT*] [**root_id** =
+*ROOT_ID*]
+>  | **bpftool** **btf help**
+>  |
+>  | *BTF_SRC* :=3D { **id** *BTF_ID* | **prog** *PROG* | **map** *MAP* [{*=
+*key** | **value** | **kv** | **all**}] | **file** *FILE* }
+> @@ -43,7 +43,7 @@ bpftool btf { show | list } [id *BTF_ID*]
+>      that hold open file descriptors (FDs) against BTF objects. On such k=
+ernels
+>      bpftool will automatically emit this information as well.
+>
+> -bpftool btf dump *BTF_SRC* [format *FORMAT*]
+> +bpftool btf dump *BTF_SRC* [format *FORMAT*] [root_id *ROOT_ID*]
+>      Dump BTF entries from a given *BTF_SRC*.
+>
+>      When **id** is specified, BTF object with that ID will be loaded and=
+ all
+> @@ -67,6 +67,9 @@ bpftool btf dump *BTF_SRC* [format *FORMAT*]
+>      formatting, the output is sorted by default. Use the **unsorted** op=
+tion
+>      to avoid sorting the output.
+>
+> +    **root_id** option can be used to filter a dump to a single type and=
+ all
+> +    its dependent types. It cannot be used with any other types of filte=
+ring.
+> +
+>  bpftool btf help
+>      Print short help message.
+>
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index 3e995faf9efa..18b037a1414b 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -993,6 +993,25 @@ static int do_dump(int argc, char **argv)
+>                                 goto done;
+>                         }
+>                         NEXT_ARG();
+> +               } else if (is_prefix(*argv, "root_id")) {
+> +                       __u32 root_id;
+> +                       char *end;
+> +
+> +                       if (root_type_cnt) {
+> +                               p_err("cannot use root_id with other type=
+ filtering");
 
-Hi Tejun,
+this is a confusing error if the user just wanted to provide two
+root_id arguments... Also, why don't we allow multiple root_ids?
+
+I'd bump root_type_ids[] to have something like 16 elements or
+something (though we can always do dynamic realloc as well, probably),
+and allow multiple types to be specified.
+
+Thoughts?
 
 
-I tried this patch on BPF CI: the pipeline ran 3 times
-successfully. That's 12 selftests/sched_ext runs in total.
-
-https://github.com/kernel-patches/vmtest/actions/runs/12301284063
-
-Tested-by: Ihor Solodrai ihor.solodrai@pm.me
-
-Thanks for the fix!
+> +                               err =3D -EINVAL;
+> +                               goto done;
+> +                       }
+> +
+> +                       NEXT_ARG();
+> +                       root_id =3D strtoul(*argv, &end, 0);
+> +                       if (*end) {
+> +                               err =3D -1;
+> +                               p_err("can't parse %s as root ID", *argv)=
+;
+> +                               goto done;
+> +                       }
+> +                       root_type_ids[root_type_cnt++] =3D root_id;
+> +                       NEXT_ARG();
+>                 } else if (is_prefix(*argv, "unsorted")) {
+>                         sort_dump_c =3D false;
+>                         NEXT_ARG();
+> @@ -1403,7 +1422,7 @@ static int do_help(int argc, char **argv)
+>
+>         fprintf(stderr,
+>                 "Usage: %1$s %2$s { show | list } [id BTF_ID]\n"
+> -               "       %1$s %2$s dump BTF_SRC [format FORMAT]\n"
+> +               "       %1$s %2$s dump BTF_SRC [format FORMAT] [root_id R=
+OOT_ID]\n"
+>                 "       %1$s %2$s help\n"
+>                 "\n"
+>                 "       BTF_SRC :=3D { id BTF_ID | prog PROG | map MAP [{=
+key | value | kv | all}] | file FILE }\n"
+> --
+> 2.46.0
+>
 
