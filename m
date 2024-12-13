@@ -1,215 +1,150 @@
-Return-Path: <bpf+bounces-46811-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46812-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F2569F02F2
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 04:09:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC8E79F030C
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 04:27:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A7B3283603
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 03:09:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CE9F284668
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 03:27:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AE841779B8;
-	Fri, 13 Dec 2024 03:08:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6464D13DDAA;
+	Fri, 13 Dec 2024 03:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i1xpMz1C"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DpnjSMOl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3275F16C684;
-	Fri, 13 Dec 2024 03:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4636F22094
+	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 03:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734059328; cv=none; b=MKqyFAzvr7yMcxJWxThMGw9zhaCuaXIIyHgvPn7cRii34pmNlEUALLpoqATrktWaDWALLMW4DlzT0AMFianqo4mEYA2kvnToQ0Gd+qHoIC/qhGmTJR7uO5zolutyPZkRlbH+iDe9whXFuXkljS5Dh/QcUevsGkkLsNMuiLqQd6c=
+	t=1734060415; cv=none; b=JgvtMqTsskIslIbnjT5Y+hos73ud4l04o2XgAXSzeEmZp5+mLPwuZD2yNHoGR9OBIy544dtyrtUB8DAIFPTbnb7MOkf3P9SVoIy8OAcPhxS+uKQUqdo8UygappU0i3+fqnj6AOQc1lKJcWPKJPw9iuKqeqv43R4M6QymaMRUc74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734059328; c=relaxed/simple;
-	bh=8ZUI3Ibtg3ddO05q8gCUWcVBm413XnxCeeXRzbyT5Jc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ASBgowe8hhLdZwoAdw4xJhcblqQCzlQ/D1I+pSsWhDhfRTBuQcMUg6T8oizcPQFprbLyMB7F4h6HMlQvFaNtZc3F5KOsWnatqsa7l4i5nHbho2g4RqYyIFnekZ1+shnP9O4xMhEKJndCyl6Df6Xgs2rLh3TaOPyTCls80rAF0wQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i1xpMz1C; arc=none smtp.client-ip=209.85.210.169
+	s=arc-20240116; t=1734060415; c=relaxed/simple;
+	bh=OgzOyv6t+mXAh1m1kts2kmlN/pNyzHRhohXJrp3PehU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nMnZB41lZLYb31ZLlEd52Vf0UK2jicOuh8B9fyCld9WlARnrhHgwy3205xQkNA+/Z6//W3/2Lv+ZyquKZf21BfUQMHwAttfaPSU3Jtyir8GUlhhX2w7Zv6IosPE8Qbjk4IbCXCf48qx8HuIx0eikVZpwRHyWKpAmpqEW5RnUjJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DpnjSMOl; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7265c18d79bso1472149b3a.3;
-        Thu, 12 Dec 2024 19:08:46 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-385d7b4da2bso1200809f8f.1
+        for <bpf@vger.kernel.org>; Thu, 12 Dec 2024 19:26:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734059326; x=1734664126; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1734060412; x=1734665212; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=luedh3E5fjeOowLern4iwDWN0UhJnMCsLuFyaHGaQ2s=;
-        b=i1xpMz1CZ2qrdjyn9vLcu2anFb7SrLMNYLdwrRnvF7EO9EK/wgqrxJa4dcI9yAd5yz
-         mWk/egGkeWxSv6UaZuIoX7LcQLATPKL9QO870mU72l4F9nvl3bbongBmvU+3HrmCSl3A
-         MJa+FNB3jnDhr45e8SiKvOaqWIdiH5xZj2z55YVpV+AZDP2WbHJNnreYkuDYo7RzGO4O
-         luOX+zi1jSzLpNbAzneLU7/vx1sUhz10crj1CQWdywZyACDai7REN5DswuFXAx+leGs7
-         +GugnmLtEhdaACAp+hhHu4INfOlUbxwRUvLg6Rb3Ts4cVI/zTGlObDi5JtOVKuU+hZhE
-         GWWg==
+        bh=OgzOyv6t+mXAh1m1kts2kmlN/pNyzHRhohXJrp3PehU=;
+        b=DpnjSMOl5g/0Y2u693rMb8OmQcFXv3dq98xElQsOv0CfoE89nHE1gsdyv/7s3IpMDH
+         b8x074jcK1yB7gQO8qrmzeo9VX0VXtggoa2yTFYgPg9NBCLTsTH5f2WkdQlLTBo/e1ch
+         js4PTCXQ/PIA1EE7EQppzAP3sKuxirQ3NW7NqRxx09CqRXV1m2akcZ5Q9SoYmA9RNyEq
+         T6sMgIgHeFgaDGRsJ9dNjXhhfKtFccZZZRendOsHb7TPupIqw3yCOzTTC991+NlPJEuQ
+         2UXq/B6oKF5Et83IXHMrNM0CNuwZchFdtpxgPmfSn54KkNTxkRt8HCtztrkOhhoeO4RX
+         RrkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734059326; x=1734664126;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1734060412; x=1734665212;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=luedh3E5fjeOowLern4iwDWN0UhJnMCsLuFyaHGaQ2s=;
-        b=KmSW+zqAi1jwb6ypmbZGFlD1K9Y0Ie2wXmjVy/tSMDOND3oiaLO5oVJVGHi5+KqPzl
-         R9XScikHNP2ijTCDQce6E4gAPgJkN2Qnp8GTdfouQ2ANtUqwYkGm9VfGRJ+enF/Pl1wj
-         vJ+ZJQFHzfXMGk6ZCQui4U/ryw3o5lIX3l/0ViVbuBIPHFoyySzPE0d8BWx3TwgkwKqQ
-         rdXeMWaKV7W5x9AICoVLSxWbLWfsuQ+PVs+OfWm1TwrpXutEEIYDL0GFQ9zxkiOBUPc7
-         S5W+H+VqVTZsapwI7QH3KQ2UprwuYbOywVgPP5sr0DO9gnZ85+ZIPt9Ujoit4nl8T+oE
-         2tIw==
-X-Forwarded-Encrypted: i=1; AJvYcCUyWQo/Kw/c0G4tHk4Nfb4qBBGVcQSmLQ2ZJbbXbrtG6PDuofBM6mfjCAeKZ+/x3fhgT9M=@vger.kernel.org, AJvYcCVoh01Om43wHj1hzlhnMi9PHTCtb3s6yvgxX0VV/eMDuWI9nRPsuAYIhlQUzKsuj4lMZdBT6lOy/nexA51JEfVZ@vger.kernel.org, AJvYcCWMP9vPsANio+sc6UsFH/sUDp8tB1n4/XbVFXZmrfsd988DAWCl/xBbPQN/64n0xVeYW9/ol4zjcqqJzT93@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5jZzR/naHVBaSxPG+UWQ75Wq+79hf8r04yJvqOx+LxJoCVii5
-	YWFDKn1uUfkgWh2XzBj7wTzmm09ILHqtxrIGr0YRqg3cR8knL3MdUFTJUxn4
-X-Gm-Gg: ASbGnct/5ALVYaEDUklhEJxZUZapQ2leQCLzL2NCtkQDUVQSgbZjYdd7buw8S/pVum/
-	iWxaoPrJwjaZ8Nlr+YozqAIfYc/Rj+RbrrNFR9m9VRaW4TR4vg4tI0P+KgIJkFk1XWFAwR+BIVt
-	1+1z5i2/99eOE9FdlwnaMZoDKqyBpgg5QBdbcjqaJ9nVU9CGulo6Q7uGLz6Q4eqjrCtiKmqF1z1
-	XuOd5+UAawx8SgElFymTQD75KuBmFrbp0iKusjjiDq5eniTHfYSZUrnCvTLIMPO7OiHcGYrZgzt
-X-Google-Smtp-Source: AGHT+IGYK9E6V1ljVwWs41gWcPcHM9MzFn4nVnvgoAVy8bYSHXluPqnbuqIAPcABaWu+rX3CxbRjAA==
-X-Received: by 2002:a05:6a00:2995:b0:725:eacf:cfda with SMTP id d2e1a72fcca58-7290c25ae78mr1402221b3a.17.1734059326079;
-        Thu, 12 Dec 2024 19:08:46 -0800 (PST)
-Received: from fedora.dns.podman ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725e4b13545sm9152783b3a.126.2024.12.12.19.08.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 19:08:45 -0800 (PST)
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: netdev@vger.kernel.org
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Simon Horman <horms@kernel.org>,
-	Phil Sutter <phil@nwl.cc>,
-	Florian Westphal <fw@strlen.de>,
-	Petr Mladek <pmladek@suse.com>,
-	Yoann Congal <yoann.congal@smile.fr>,
-	wireguard@lists.zx2c4.com,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCHv3 net-next 2/2] selftests: wireguard: update to using nft for qemu test
-Date: Fri, 13 Dec 2024 03:08:19 +0000
-Message-ID: <20241213030819.49987-3-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20241213030819.49987-1-liuhangbin@gmail.com>
-References: <20241213030819.49987-1-liuhangbin@gmail.com>
+        bh=OgzOyv6t+mXAh1m1kts2kmlN/pNyzHRhohXJrp3PehU=;
+        b=WeyuZffE75K5LaPvqjmc3uN2rLWYi9OY9naqH7koQjSo+nI55u0cE/BPRKC8bbVUmF
+         rfltaMNZmG42x0wkoTqLopepEQnNMP0JMEmutdFyNOveXg2IWygYkcJ5Fb+WOTW69sk3
+         8LGNBVKtWnl2OoCnGHMO1iHBdtN6HW31WHgNMJRw6Oe5H5vk0E8sywpHIAjXR3tOQBfI
+         cyuSlQjA65deiFVGi7YRYSZ+bpA7/BMFFGM8vWMtOXYJI0MvzBX1ImW4uwr5o3Mx7Vwz
+         fUsLUn37XyilQwjqXFJb6QRJNAqLFVfsK+L+f3lgYo9plY9P7B4w/3O4jfKoV4GFDIQ9
+         O+mA==
+X-Forwarded-Encrypted: i=1; AJvYcCUiMen+odxIRqYa9a3myQmU5rrS8AP83b+HUoDuBS+HS71PalhYoNIcF61U5uuqX+xEUWQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz37Y5+nZgJB/kJFEIrhDlNoKgrII5nvTAUUCfMAITDTlsOBEOn
+	UKa4sVhr9h3zY2c5lffbGgvDvrCQ+l9MdzD2udtkbVTXyfYmEOuN8rFuEhYaoi2U3+sF3Qwucg1
+	rairELzWWTrd65v6iclvdKeImB6w=
+X-Gm-Gg: ASbGncs4dj4b2iV5M2SHAi6ewxKTTlBwP+8C0URoqwyU1I+83FW8BoarCn6NWXrwLzi
+	+sY7560Xaut7QPSwvFEXPH+HTfMpFugmwz6oubn4Z3zEZGtSng91vDEQK59FpqzMZe93pQw==
+X-Google-Smtp-Source: AGHT+IEMi5fN7orRHhbHdcFCyhieC0tqS8JrKe6gQfbxPyZkVjGkBEcnsyb9RwhKO3Y/yS2VKCRwLadMn8IdGL1UzTA=
+X-Received: by 2002:a05:6000:1f82:b0:386:256c:8e59 with SMTP id
+ ffacd0b85a97d-38880ac601dmr503941f8f.3.1734060412224; Thu, 12 Dec 2024
+ 19:26:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAPPBnEYn-CiWVTuRq_Fq=TP0f-W+_hcJVU61xwnxqpFr3jRcyQ@mail.gmail.com>
+ <CAE5sdEjZCDqgtvAFd_MpTyc+68UMLDufbsS9H2wMOLJiHQJQyw@mail.gmail.com>
+In-Reply-To: <CAE5sdEjZCDqgtvAFd_MpTyc+68UMLDufbsS9H2wMOLJiHQJQyw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 12 Dec 2024 19:26:41 -0800
+Message-ID: <CAADnVQKSTqJOU_B7MQ-+Byt4GXLNFVv=ce32Y74F3=8DCWL05Q@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Avoid deadlock caused by nested kprobe and fentry
+ bpf programs
+To: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+Cc: Priya Bala Govindasamy <pgovind2@uci.edu>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Ardalan Amiri Sani <ardalan@uci.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Since we will replace iptables with nft for wireguard netns testing,
-let's also convert the qemu test to use nft at the same time.
+On Thu, Dec 12, 2024 at 4:41=E2=80=AFPM Siddharth Chintamaneni
+<sidchintamaneni@gmail.com> wrote:
+>
+> On Thu, 12 Dec 2024 at 18:58, Priya Bala Govindasamy <pgovind2@uci.edu> w=
+rote:
+> >
+> > BPF program types like kprobe and fentry can cause deadlocks in certain
+> > situations. If a function takes a lock and one of these bpf programs is
+> > hooked to some point in the function's critical section, and if the
+> > bpf program tries to call the same function and take the same lock it w=
+ill
+> > lead to deadlock. These situations have been reported in the following
+> > bug reports.
+> >
+> > In percpu_freelist -
+> > Link: https://lore.kernel.org/bpf/CAADnVQLAHwsa+2C6j9+UC6ScrDaN9Fjqv1Wj=
+B1pP9AzJLhKuLQ@mail.gmail.com/T/
+> > Link: https://lore.kernel.org/bpf/CAPPBnEYm+9zduStsZaDnq93q1jPLqO-PiKX9=
+jy0MuL8LCXmCrQ@mail.gmail.com/T/
+> > In bpf_lru_list -
+> > Link: https://lore.kernel.org/bpf/CAPPBnEajj+DMfiR_WRWU5=3D6A7KKULdB5Ro=
+b_NJopFLWF+i9gCA@mail.gmail.com/T/
+> > Link: https://lore.kernel.org/bpf/CAPPBnEZQDVN6VqnQXvVqGoB+ukOtHGZ9b9U0=
+OLJJYvRoSsMY_g@mail.gmail.com/T/
+> > Link: https://lore.kernel.org/bpf/CAPPBnEaCB1rFAYU7Wf8UxqcqOWKmRPU1Nuzk=
+3_oLk6qXR7LBOA@mail.gmail.com/T/
+> >
+> > Similar bugs have been reported by syzbot.
+> > In queue_stack_maps -
+> > Link: https://lore.kernel.org/lkml/0000000000004c3fc90615f37756@google.=
+com/
+> > Link: https://lore.kernel.org/all/20240418230932.2689-1-hdanton@sina.co=
+m/T/
+> > In lpm_trie -
+> > Link: https://lore.kernel.org/linux-kernel/00000000000035168a061a47fa38=
+@google.com/T/
+> > In ringbuf -
+> > Link: https://lore.kernel.org/bpf/20240313121345.2292-1-hdanton@sina.co=
+m/T/
+> >
+> > Prevent kprobe and fentry bpf programs from attaching to these critical
+> > sections by removing CC_FLAGS_FTRACE for percpu_freelist.o,
+> > bpf_lru_list.o, queue_stack_maps.o, lpm_trie.o, ringbuf.o files.
+> >
+>
+> I think the current solution is to use a per-CPU variable to prevent
+> deadlocks. You can look at the hashmap implementation for reference.
+> However, ABBA deadlocks are still possible, so to avoid these, I think
+> the BPF community is working towards implementing resilient spinlocks.
 
-Co-developed-by: Phil Sutter <phil@nwl.cc>
-Signed-off-by: Phil Sutter <phil@nwl.cc>
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
- .../testing/selftests/wireguard/qemu/Makefile | 40 ++++++++++++++-----
- .../selftests/wireguard/qemu/kernel.config    |  7 ++--
- 2 files changed, 34 insertions(+), 13 deletions(-)
+Right. The resilient spinlocks are wip, but in the meantime
+we need to stop the bleeding.
 
-diff --git a/tools/testing/selftests/wireguard/qemu/Makefile b/tools/testing/selftests/wireguard/qemu/Makefile
-index 35856b11c143..10e79449fefa 100644
---- a/tools/testing/selftests/wireguard/qemu/Makefile
-+++ b/tools/testing/selftests/wireguard/qemu/Makefile
-@@ -40,7 +40,9 @@ endef
- $(eval $(call tar_download,IPERF,iperf,3.11,.tar.gz,https://downloads.es.net/pub/iperf/,de8cb409fad61a0574f4cb07eb19ce1159707403ac2dc01b5d175e91240b7e5f))
- $(eval $(call tar_download,BASH,bash,5.1.16,.tar.gz,https://ftp.gnu.org/gnu/bash/,5bac17218d3911834520dad13cd1f85ab944e1c09ae1aba55906be1f8192f558))
- $(eval $(call tar_download,IPROUTE2,iproute2,5.17.0,.tar.gz,https://www.kernel.org/pub/linux/utils/net/iproute2/,bda331d5c4606138892f23a565d78fca18919b4d508a0b7ca8391c2da2db68b9))
--$(eval $(call tar_download,IPTABLES,iptables,1.8.7,.tar.bz2,https://www.netfilter.org/projects/iptables/files/,c109c96bb04998cd44156622d36f8e04b140701ec60531a10668cfdff5e8d8f0))
-+$(eval $(call tar_download,LIBMNL,libmnl,1.0.5,.tar.bz2,https://www.netfilter.org/projects/libmnl/files/,274b9b919ef3152bfb3da3a13c950dd60d6e2bcd54230ffeca298d03b40d0525))
-+$(eval $(call tar_download,LIBNFTNL,libnftnl,1.2.8,.tar.xz,https://www.netfilter.org/projects/libnftnl/files/,37fea5d6b5c9b08de7920d298de3cdc942e7ae64b1a3e8b880b2d390ae67ad95))
-+$(eval $(call tar_download,NFTABLES,nftables,1.1.1,.tar.xz,https://www.netfilter.org/projects/nftables/files/,6358830f3a64f31e39b0ad421d7dadcd240b72343ded48d8ef13b8faf204865a))
- $(eval $(call tar_download,NMAP,nmap,7.92,.tgz,https://nmap.org/dist/,064183ea642dc4c12b1ab3b5358ce1cef7d2e7e11ffa2849f16d339f5b717117))
- $(eval $(call tar_download,IPUTILS,iputils,s20190709,.tar.gz,https://github.com/iputils/iputils/archive/s20190709.tar.gz/#,a15720dd741d7538dd2645f9f516d193636ae4300ff7dbc8bfca757bf166490a))
- $(eval $(call tar_download,WIREGUARD_TOOLS,wireguard-tools,1.0.20210914,.tar.xz,https://git.zx2c4.com/wireguard-tools/snapshot/,97ff31489217bb265b7ae850d3d0f335ab07d2652ba1feec88b734bc96bd05ac))
-@@ -322,11 +324,12 @@ $(BUILD_PATH)/init-cpio-spec.txt: $(TOOLCHAIN_PATH)/.installed $(BUILD_PATH)/ini
- 	echo "file /bin/ss $(IPROUTE2_PATH)/misc/ss 755 0 0" >> $@
- 	echo "file /bin/ping $(IPUTILS_PATH)/ping 755 0 0" >> $@
- 	echo "file /bin/ncat $(NMAP_PATH)/ncat/ncat 755 0 0" >> $@
--	echo "file /bin/xtables-legacy-multi $(IPTABLES_PATH)/iptables/xtables-legacy-multi 755 0 0" >> $@
--	echo "slink /bin/iptables xtables-legacy-multi 777 0 0" >> $@
-+	echo "file /bin/nft $(NFTABLES_PATH)/src/nft 755 0 0" >> $@
- 	echo "slink /bin/ping6 ping 777 0 0" >> $@
- 	echo "dir /lib 755 0 0" >> $@
- 	echo "file /lib/libc.so $(TOOLCHAIN_PATH)/$(CHOST)/lib/libc.so 755 0 0" >> $@
-+	echo "file /lib/libmnl.so.0 $(TOOLCHAIN_PATH)/lib/libmnl.so.0 755 0 0" >> $@
-+	echo "file /lib/libnftnl.so.11 $(TOOLCHAIN_PATH)/lib/libnftnl.so.11 755 0 0" >> $@
- 	echo "slink $$($(CHOST)-readelf -p .interp '$(BUILD_PATH)/init'| grep -o '/lib/.*') libc.so 777 0 0" >> $@
- 
- $(KERNEL_BUILD_PATH)/.config: $(TOOLCHAIN_PATH)/.installed kernel.config arch/$(ARCH).config
-@@ -338,7 +341,7 @@ $(KERNEL_BUILD_PATH)/.config: $(TOOLCHAIN_PATH)/.installed kernel.config arch/$(
- 	cd $(KERNEL_BUILD_PATH) && ARCH=$(KERNEL_ARCH) $(KERNEL_PATH)/scripts/kconfig/merge_config.sh -n $(KERNEL_BUILD_PATH)/.config $(KERNEL_BUILD_PATH)/minimal.config
- 	$(if $(findstring yes,$(DEBUG_KERNEL)),cp debug.config $(KERNEL_BUILD_PATH) && cd $(KERNEL_BUILD_PATH) && ARCH=$(KERNEL_ARCH) $(KERNEL_PATH)/scripts/kconfig/merge_config.sh -n $(KERNEL_BUILD_PATH)/.config debug.config,)
- 
--$(KERNEL_BZIMAGE): $(TOOLCHAIN_PATH)/.installed $(KERNEL_BUILD_PATH)/.config $(BUILD_PATH)/init-cpio-spec.txt $(IPERF_PATH)/src/iperf3 $(IPUTILS_PATH)/ping $(BASH_PATH)/bash $(IPROUTE2_PATH)/misc/ss $(IPROUTE2_PATH)/ip/ip $(IPTABLES_PATH)/iptables/xtables-legacy-multi $(NMAP_PATH)/ncat/ncat $(WIREGUARD_TOOLS_PATH)/src/wg $(BUILD_PATH)/init
-+$(KERNEL_BZIMAGE): $(TOOLCHAIN_PATH)/.installed $(KERNEL_BUILD_PATH)/.config $(BUILD_PATH)/init-cpio-spec.txt $(IPERF_PATH)/src/iperf3 $(IPUTILS_PATH)/ping $(BASH_PATH)/bash $(IPROUTE2_PATH)/misc/ss $(IPROUTE2_PATH)/ip/ip $(LIBMNL_PATH)/libmnl $(LIBNFTNL_PATH)/libnftnl $(NFTABLES_PATH)/src/nft $(NMAP_PATH)/ncat/ncat $(WIREGUARD_TOOLS_PATH)/src/wg $(BUILD_PATH)/init
- 	$(MAKE) -C $(KERNEL_PATH) O=$(KERNEL_BUILD_PATH) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(CROSS_COMPILE)
- .PHONY: $(KERNEL_BZIMAGE)
- 
-@@ -421,15 +424,34 @@ $(IPROUTE2_PATH)/misc/ss: | $(IPROUTE2_PATH)/.installed $(USERSPACE_DEPS)
- 	$(MAKE) -C $(IPROUTE2_PATH) PREFIX=/ misc/ss
- 	$(STRIP) -s $@
- 
--$(IPTABLES_PATH)/.installed: $(IPTABLES_TAR)
-+$(LIBMNL_PATH)/.installed: $(LIBMNL_TAR)
- 	mkdir -p $(BUILD_PATH)
- 	flock -s $<.lock tar -C $(BUILD_PATH) -xf $<
--	sed -i -e "/nfnetlink=[01]/s:=[01]:=0:" -e "/nfconntrack=[01]/s:=[01]:=0:" $(IPTABLES_PATH)/configure
- 	touch $@
- 
--$(IPTABLES_PATH)/iptables/xtables-legacy-multi: | $(IPTABLES_PATH)/.installed $(USERSPACE_DEPS)
--	cd $(IPTABLES_PATH) && ./configure --prefix=/ $(CROSS_COMPILE_FLAG) --enable-static --disable-shared --disable-nftables --disable-bpf-compiler --disable-nfsynproxy --disable-libipq --disable-connlabel --with-kernel=$(BUILD_PATH)/include
--	$(MAKE) -C $(IPTABLES_PATH)
-+$(LIBMNL_PATH)/libmnl: | $(LIBMNL_PATH)/.installed $(USERSPACE_DEPS)
-+	cd $(LIBMNL_PATH) && ./configure --prefix=$(TOOLCHAIN_PATH) $(CROSS_COMPILE_FLAG)
-+	$(MAKE) -C $(LIBMNL_PATH) install
-+	$(STRIP) -s $(TOOLCHAIN_PATH)/lib/libmnl.so.0
-+
-+$(LIBNFTNL_PATH)/.installed: $(LIBNFTNL_TAR)
-+	mkdir -p $(BUILD_PATH)
-+	flock -s $<.lock tar -C $(BUILD_PATH) -xf $<
-+	touch $@
-+
-+$(LIBNFTNL_PATH)/libnftnl: | $(LIBNFTNL_PATH)/.installed $(USERSPACE_DEPS)
-+	cd $(LIBNFTNL_PATH) && PKG_CONFIG_PATH="$(TOOLCHAIN_PATH)/lib/pkgconfig" ./configure --prefix=$(TOOLCHAIN_PATH) $(CROSS_COMPILE_FLAG)
-+	$(MAKE) -C $(LIBNFTNL_PATH) install
-+	$(STRIP) -s $(TOOLCHAIN_PATH)/lib/libnftnl.so.11
-+
-+$(NFTABLES_PATH)/.installed: $(NFTABLES_TAR)
-+	mkdir -p $(BUILD_PATH)
-+	flock -s $<.lock tar -C $(BUILD_PATH) -xf $<
-+	touch $@
-+
-+$(NFTABLES_PATH)/src/nft: | $(NFTABLES_PATH)/.installed $(USERSPACE_DEPS)
-+	cd $(NFTABLES_PATH) && PKG_CONFIG_PATH="$(TOOLCHAIN_PATH)/lib/pkgconfig" ./configure --prefix=/ $(CROSS_COMPILE_FLAG) --enable-static --disable-shared --disable-debug --disable-man-doc --with-mini-gmp --without-cli
-+	$(MAKE) -C $(NFTABLES_PATH) PREFIX=/
- 	$(STRIP) -s $@
- 
- $(NMAP_PATH)/.installed: $(NMAP_TAR)
-diff --git a/tools/testing/selftests/wireguard/qemu/kernel.config b/tools/testing/selftests/wireguard/qemu/kernel.config
-index f314d3789f17..9930116ecd81 100644
---- a/tools/testing/selftests/wireguard/qemu/kernel.config
-+++ b/tools/testing/selftests/wireguard/qemu/kernel.config
-@@ -19,10 +19,9 @@ CONFIG_NETFILTER_XTABLES=y
- CONFIG_NETFILTER_XT_NAT=y
- CONFIG_NETFILTER_XT_MATCH_LENGTH=y
- CONFIG_NETFILTER_XT_MARK=y
--CONFIG_IP_NF_IPTABLES=y
--CONFIG_IP_NF_FILTER=y
--CONFIG_IP_NF_MANGLE=y
--CONFIG_IP_NF_NAT=y
-+CONFIG_NF_TABLES=m
-+CONFIG_NF_TABLES_INET=y
-+CONFIG_NFT_NAT=y
- CONFIG_IP_ADVANCED_ROUTER=y
- CONFIG_IP_MULTIPLE_TABLES=y
- CONFIG_IPV6_MULTIPLE_TABLES=y
--- 
-2.39.5 (Apple Git-154)
+> I was planning to send patches for some of these bugs earlier. I'm
+> wondering if per-CPU checks would still be valid once resilient
+> spinlocks are introduced?
 
+The wip patches with res_spin_lock remove these per-cpu
+recursion counters from hash map and other places.
 
