@@ -1,160 +1,156 @@
-Return-Path: <bpf+bounces-46963-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46964-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7E189F1B28
-	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 01:09:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA71E9F1B2C
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 01:09:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4675188E289
-	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 00:08:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 329ED16B4A8
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 00:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86D841EF09C;
-	Fri, 13 Dec 2024 23:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3195F1F12E3;
+	Fri, 13 Dec 2024 23:57:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GuLVRiHm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ihbfMvsT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9806F1EE02F
-	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 23:56:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20F911F03CE;
+	Fri, 13 Dec 2024 23:57:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734134166; cv=none; b=TKMPTx5z2hnTcFdKtjC+FohyJKcGORg65SoZnkdroRv9Fk7WMbv79N+iZlFq8+TTrD7VS9jJex0KXHPsADjdWjgU5P5NsY40yCIgVSr+QEdyOg3cvDJNKja0tQgdrvZERNPY7fsvnWOqUt+1N43/72arRhWNd6BAms9CdgpB3b0=
+	t=1734134245; cv=none; b=elJu0mtEzM6Mjw8IzjCR5JKlpQxzuhp8EgCkoL1uKx0lwbOR9JBo+JDnVSVY/OrERaa78m5cuGUGDdhXd8Fj7bfC8FWe7re7iZ+cGZSjgQPXWi0FYDpxGRw29GIEb0RNdlIYZYkR+EZ6wVrUglW6liPYogY562sfAUiPNYVeWGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734134166; c=relaxed/simple;
-	bh=4xx80uhQkTyl7hdwewDmYW9oEb5Rx3sPHR/h2syofwU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=mZd1c3SHe7gH2Y5nqvrrC98LbRSs2In69alHlyjWDy23vWWpIdjz4YH25fJLeFbGvh96GP3X4TYSayUtqwdI5UZRtY7iLX/xy36toRSXE3/Gb+Jf3FZaYvDoGr5GJZg2mNDKMWWvOzZqV2QewCoNwDfVt6UxHYUeGXHKO8ba36s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GuLVRiHm; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1734134245; c=relaxed/simple;
+	bh=+cYwKDRd1fNSYotDWngbQ+3V+4w8Bafou8uCHEvJfKQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uZDUAY40bOMsCfWYeujRs6wY+kcHRrT8BUhfyrvhJ+ki2DoFDPu9pL2m4DO7WGWPhMP4Qv717EKuUoIBP+Zq/yKMq30pAhSqVSZriqHT9JG0wZPGf4iYNi4JR2sbxFOh4p9d7w7Ok7ThN3AbrEIk5ScXA8mCzQHGMt1dShmqae4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ihbfMvsT; arc=none smtp.client-ip=209.85.166.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-21670dce0a7so26261235ad.1
-        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 15:56:04 -0800 (PST)
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-844e9b8b0b9so98761939f.0;
+        Fri, 13 Dec 2024 15:57:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734134164; x=1734738964; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lguBHkMuMw9PvWaUXbOhzfELrVI2XwTW80KxXDOS2D0=;
-        b=GuLVRiHmmJ8jq5oaD8G2zT4T0m5EPGFNo3+8GD7gQAbDXxFWfqe3G1dm1k9NZC/AgC
-         OmrTzKy7fSkhimFbkOXRXAYqnZM656zHKuJ9jRu5AbIU7lhJ+XFEJ7lFRCKbolCMVF2J
-         3jOWeEEaDjFnWadca8hZ2JNd6FZ+RmSHzRY8NGkoxYWNGkVFChbXHQ++zVZ1jnsJlm2L
-         wvgkzLsFBgGHRT8EgTC6ezYGgjb+Lh7Hkr2OEkO6BmwOq6gOnv6yRgstnNEDSCofaRvl
-         y0Xtvxnio9+ulsxB/t+MVIM4S34M4bNgq+laPAwW9s4R0KevKTjg6VQoP0OWqcpCh9CF
-         jSog==
+        d=gmail.com; s=20230601; t=1734134243; x=1734739043; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+cYwKDRd1fNSYotDWngbQ+3V+4w8Bafou8uCHEvJfKQ=;
+        b=ihbfMvsT50cZy9umfqfc7nkG9a3iKU75DEDwzsVp5rbNOSKpTBbqXILr99uU19VxtD
+         V9xTSf2nIHU5IvUhj2YFiGVIfzJPz0oBB2I01t3ILX/kEdHOVB8wXPyKQmeTAqUFJWK6
+         1g4cY2kgSarrrBjJxn/6DcwVHuC7XjcWcK48e/oBR8OVlcnQC3k/c+dS2w33RX5GH60E
+         yX4s6jH63TnNbl77OuOCvWt2J3J/RVz+Y2w2CKhkAbNMMdYo+Vs0ZGwLj9urjWoBTNc4
+         cChwapSTGViKjnsbuatHqe4ip49ORiA6Boz5lJI/J+//c6fUK/EjnxRzw3S30dcYaetR
+         2nIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734134164; x=1734738964;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lguBHkMuMw9PvWaUXbOhzfELrVI2XwTW80KxXDOS2D0=;
-        b=Q0c/QEntlH3eCtUgDtFdRlnMr8PoMhNtGOyCNYNVSZUdm7+rDtx7u+8fE/4nDlopdI
-         kS0MCjnUt5xXErHRiuhqGNghOFvOiVCNSpfSdxsclmhsN4C6+d2wLXt6FIq2x27HG7RZ
-         y2M2EAp1NTFA1d0JAlU2JC5g26tFDqaklusQlsCMQz4lcpHg8aGaR2rjxaO8RQbAY958
-         h1eQftorukgQe6Pt1L9XOmxpiiFpF5cndNttrghFJIVnQGaezSgmkTdVs31pUA1Eg+G9
-         iTLLyjqCvk6tE06ZB38BFm9tGhQTn0AyYdZlH6vZH0w+DWeR/m4kjMvIARSqCt4il+j8
-         qNOA==
-X-Forwarded-Encrypted: i=1; AJvYcCWK9AvttJnW4VNwSpixy+XBNVT/65hPELfdLfbAg1mWYX4ZziVSRUj74HeaDyyXKat56AY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxyTNr9na5/ox5NgRAMjFADD+H0dZV2MYqqB31F1OTshieS51jq
-	hbrcpzFmd765HG5GyYDeHmrNmuHFpG5IhW6NFAH3JRvsJKfQ7aFX
-X-Gm-Gg: ASbGncsD8jwz3tzcyGTPtW/w+SZBpOGJAQnUjfcBe1u7qnOxGXDgc1LgsmhwKrr42ij
-	K5BJlTjiUfejkzny8fq1eVrK5IiOJzhfbJBMrk7LiQ105tvBeeBlztUVvwRrdAXphuA9WkYthTc
-	wwsJVo4ANevBrt9cvgDrgnq/R+5E1sA9ObhgaZ90RDT9fFZ4qWtt4Er7+Z6vsHWiI+MLf2psiiJ
-	zCIrRdDqA/PBu+oBEPEY1WEFBgsxPCAyhJ5Bl1+Wx5Y2rGWsqhypQ==
-X-Google-Smtp-Source: AGHT+IG2ovmJ3Jfam9URwXRppojeJdvMUvABoKMOZQ2+r80p9mBJf4Idg1J1M4TbF+V+1K9bSJJGwg==
-X-Received: by 2002:a17:903:94f:b0:215:94b0:9df4 with SMTP id d9443c01a7336-21892a566f3mr63187165ad.54.1734134163914;
-        Fri, 13 Dec 2024 15:56:03 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-801d5c0fe68sm278403a12.62.2024.12.13.15.56.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Dec 2024 15:56:03 -0800 (PST)
-Message-ID: <76401f4502366c2d9221758f9034aa7bb2d831a3.camel@gmail.com>
-Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Test r0 bounds after BPF to
- BPF call with abnormal return
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Arthur Fabre <afabre@cloudflare.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  John Fastabend <john.fastabend@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Martin KaFai Lau	 <martin.lau@linux.dev>,
- Song Liu <song@kernel.org>, Yonghong Song	 <yonghong.song@linux.dev>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev	 <sdf@fomichev.me>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	kernel-team@cloudflare.com
-Date: Fri, 13 Dec 2024 15:55:58 -0800
-In-Reply-To: <20241213212717.1830565-3-afabre@cloudflare.com>
-References: <20241213212717.1830565-1-afabre@cloudflare.com>
-	 <20241213212717.1830565-3-afabre@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+        d=1e100.net; s=20230601; t=1734134243; x=1734739043;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+cYwKDRd1fNSYotDWngbQ+3V+4w8Bafou8uCHEvJfKQ=;
+        b=LhPEPyQocMT3BAq1NNAryPmNwYEpbTWHV7LSw9cw+JHv+icCHNpT0J1iM5OuXkfLoK
+         jVV2TioxBZvM1NmvSbqI0E+HBf4UzwbCn2vk2BOMkix8u6BV+A9psohDUgxVGqItz4Dd
+         MZpUqJ+W3Lg4bHU122lN++9jQ+n9hNBxOTLSQjXNUrbj425SYKQjCwEnb3Rs2si6wV0H
+         NflE6pA/w1zwV5/oCFdfa22hZZu8bQNhqXSROt0DzCf4+KvP4aLnlqRfW0MQX+ZFHmhR
+         A3MZliu2WwL3Jjy069rutzuPOFm+PV02V+1fB6RhMCvcqpgXHBuOQywNnF3kEbifcO3G
+         bD1A==
+X-Forwarded-Encrypted: i=1; AJvYcCVNpQxDSailXBFKRm+L1ZQIUozhPRqHbLnqjDOsRhIKEqoJEtDjeVbqo9DTQuum5+LwadI=@vger.kernel.org, AJvYcCXbrLxwH6vEPX95HcLkbSy7CVj7sQrVBtmJnyl9Xj4tKz6VSaMbO+x5/d5Pqd9/KKVqDATtIqFx@vger.kernel.org
+X-Gm-Message-State: AOJu0YxV3pGnPFHm76AzsaLGJ7Q4ZZW0sZkb2nAflXXVzyfxB5eoZ4H2
+	dKiHz3AL0aF3IEAVeoYQeZ3rsbER+v+hWfbLfGdmpDBSLGisuGy2yYxHV33tL/Gg48Yx7/F73kR
+	Gpj+QEYwcMm9jFBmFmpvMSIDBrenUIP57
+X-Gm-Gg: ASbGncuFAriXboDG1C6RsdFcEL1VvuZIsL4klO9V8gPfE/qSY0xGWNPZbsBstjGjsWk
+	O60shXc9I8cf4XKoVtCYwmLBiiaMe9jQuoFx3
+X-Google-Smtp-Source: AGHT+IEgefJlfBI5ZIYnLn4EZ3LxcRmFlqOreLcDE1TCcJ3KIjGh9lEUw7ZdJD5491xKgHICfktUqsfQYkLzGGmrb+s=
+X-Received: by 2002:a05:6e02:1846:b0:3a3:4175:79da with SMTP id
+ e9e14a558f8ab-3afeee7924emr59617705ab.13.1734134243128; Fri, 13 Dec 2024
+ 15:57:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20241207173803.90744-1-kerneljasonxing@gmail.com>
+ <20241207173803.90744-3-kerneljasonxing@gmail.com> <f8e9ab4a-38b9-43a5-aaf4-15f95a3463d0@linux.dev>
+ <CAL+tcoDGq8Jih9vwsz=-O8byC1S0R1uojShMvUiTZKQvMDnfTQ@mail.gmail.com>
+ <996cbe46-e2cd-44b6-a53a-13fd6ebfc4c0@linux.dev> <CAL+tcoAxmHj9_d5PUqvSHswavKFspd_D5tOt81fon-UtEf_OMA@mail.gmail.com>
+ <c1701350-236d-4a9e-9c53-4badc0738309@linux.dev>
+In-Reply-To: <c1701350-236d-4a9e-9c53-4badc0738309@linux.dev>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Sat, 14 Dec 2024 07:56:46 +0800
+Message-ID: <CAL+tcoC+cw9MdU089C-dt=E6gLuv720DS3mCcp2RNWH45RjfWA@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 02/11] net-timestamp: prepare for bpf prog use
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
+	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2024-12-13 at 22:27 +0100, Arthur Fabre wrote:
-> Test the bounds of r0 aren't known by the verifier in all three cases
-> where a callee can abnormally return.
->=20
-> Signed-off-by: Arthur Fabre <afabre@cloudflare.com>
-> ---
+On Sat, Dec 14, 2024 at 6:26=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
+>
+> On 12/13/24 6:42 AM, Jason Xing wrote:
+> >>>> I just noticed a trickier one, sockops bpf prog can write to sk->sk_=
+txhash. The
+> >>>> same should go for reading from sk. Also, sockops prog assumes a ful=
+lsock sk is
+> >>>> a tcp_sock which also won't work for the udp case. A quick thought i=
+s to do
+> >>>> something similar to is_fullsock. May be repurpose the is_fullsock s=
+omehow or a
+> >>>> new u8 is needed. Take a look at SOCK_OPS_{GET,SET}_FIELD. It avoids
+> >>>> writing/reading the sk when is_fullsock is false.
+>
+> May be this message buried in the earlier reply or some piece was not cle=
+ar, so
+> worth to highlight here.
+>
+> Take a look at how is_fullsock is used in SOCK_OPS_{GET,SET}_FIELD. I thi=
+nk a
+> similar idea can be borrowed here.
+>
+> >>>
+> >>> Do you mean that if we introduce a new field, then bpf prog can
+> >>> read/write the socket?
+> >>
+> >> The same goes for writing the sk, e.g. writing the sk->sk_txhash. It n=
+eeds the
+> >> sk_lock held. Reading may be ok-ish. The bpf prog can read it anyway b=
+y
+> >> bpf_probe_read...etc.
+> >>
+> >> When adding udp timestamp callback later, it needs to stop reading the=
+ tcp_sock
+> >> through skops from the udp callback for sure. Do take a look at
+> >> SOCK_OPS_GET_TCP_SOCK_FIELD. I think we need to ensure the udp timesta=
+mp
+> >> callback won't break here before moving forward.
+> >
+> > Agreed. Removing the "sock_ops.sk =3D sk;" is simple, but I still want
+> > the bpf prog to be able to read some fields from the socket under
+> > those new callbacks.
+>
+> No need to remove "sock_ops.sk =3D sk;". Try to borrow the is_fullsock id=
+ea.
+>
+> Overall, the new timestamp callback breaks assumptions like, sk_lock is h=
+eld and
+> is_fullsock must be a tcp_sock. This needs to be audited. In particular, =
+please
+> check sock_ops_func_proto() for all accessible bpf helpers. Also check th=
+e
+> sock_ops_is_valid_access() and sock_ops_convert_ctx_access() for directly
+> accessible fields without the helpers. In particular, the BPF_WRITE (able=
+)
+> fields and the tcp_sock fields.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-
-[...]
-
-> +++ b/tools/testing/selftests/bpf/progs/verifier_abnormal_ret.c
-> @@ -0,0 +1,88 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "../../../include/linux/filter.h"
-> +#include "bpf_misc.h"
-> +
-> +#define TEST(NAME, CALLEE) \
-> +	SEC("socket")					\
-> +	__description("abnormal_ret: " #NAME)		\
-> +	__failure __msg("math between ctx pointer and register with unbounded m=
-in value") \
-> +	__naked void check_abnormal_ret_##NAME(void)	\
-> +	{						\
-
-Nit: this one and 'callee_tail_call' could be plain C.
-
-> +		asm volatile("				\
-> +		r6 =3D r1;				\
-> +		call " #CALLEE ";			\
-> +		r6 +=3D r0;				\
-> +		r0 =3D 0;					\
-> +		exit;					\
-> +	"	:					\
-> +		:					\
-> +		: __clobber_all);			\
-> +	}
-
-[...]
-
-> +static __naked __noinline __used
-> +int callee_tail_call(void)
-> +{
-> +	asm volatile("					\
-> +	r2 =3D %[map_prog] ll;				\
-> +	r3 =3D 0;						\
-> +	call %[bpf_tail_call];				\
-> +	r0 =3D 0;						\
-> +	exit;						\
-> +"	:
-> +	: __imm(bpf_tail_call), __imm_addr(map_prog)
-> +	: __clobber_all);
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-
-
+Thanks for the valuable information. I will dig into them.
 
