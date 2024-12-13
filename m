@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-46817-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46818-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11D139F032E
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 04:41:52 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE4909F0332
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 04:42:03 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B85752833D1
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 03:41:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B6751698BC
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 03:42:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44273155C97;
-	Fri, 13 Dec 2024 03:41:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE61185949;
+	Fri, 13 Dec 2024 03:41:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GGL80WH0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ieWDVYOo"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DA5170A23;
-	Fri, 13 Dec 2024 03:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BE817C7B6;
+	Fri, 13 Dec 2024 03:41:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734061286; cv=none; b=C9MU058szt8djJ8esPGTXEKlda2CvWpvTOUScNhfZVVj9mHKcY3GC8Ntz9TtnececcA06ZdcBkd1Z2091xjGy8m20LEbVzUyrP90tHJjYLRkLGbT4zMXvr8dNcgydmQJaJXUzCdZyhieMWPm2SHCaS1+qH6MMMWj4Bkt6UuLzps=
+	t=1734061288; cv=none; b=tp8SJLi8r0dFCarHgG8JHjWp+JvhigtRDFVrICZ3tuuEZ80XmQ8GCVv5bfqZwFcGfLZAPbmIxsQHu9jcPz6koV4uwDDfZiIZul58hbVthOahaDGGn/mKjv7mtlKPLG+YkqEdYcBPmlcxeiY3FyzcjxHj9LXeAoyIHHzBTKCjbMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734061286; c=relaxed/simple;
-	bh=o6+ipYCfyeTJUUzAwSx+HMq7uopLlioUeR7zPrDJfcU=;
+	s=arc-20240116; t=1734061288; c=relaxed/simple;
+	bh=zCPcFgBnPamFfN7DsvHQMVtxIk/seoeTP7ChxI3lvFc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qtKQGNjTIS/XF6VzaEVNKyKRctjDeZI0pbnEMKpL2NxbYIiasBnDyEhUq8awgmocV+B2AtMnNd5BDuIa2lWQ1BbcRlGoCkUfHEkRKWom6nZ6cVw40oRAnrB3JXc+evfDetwDQMoa3kQHDPwRv6jWdzCdlDoU9u974SLHZ9i6axU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GGL80WH0; arc=none smtp.client-ip=209.85.214.181
+	 MIME-Version; b=gnkhOZyO+CtltvBcqN/pIFt6ROFFhPAGBfIQlC3Z6NwovNtqAOFPi42iuTDQMpAbYlTKa6scSFlwKeZ/csgl+PXSV75oyNBBGC3JKSHX5poVJK1fkPPQYoZ6JRVbw5ozjNpcqzRIVDdPI421JCXEAVlppxJ8wLm9MNaaKnYiW90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ieWDVYOo; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-215770613dbso9133475ad.2;
-        Thu, 12 Dec 2024 19:41:24 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2164b662090so11412315ad.1;
+        Thu, 12 Dec 2024 19:41:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734061284; x=1734666084; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734061285; x=1734666085; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EqHj1YtMVxEOHcGbjVYBonaoLEybW60vC4WWr8uTT58=;
-        b=GGL80WH0ruGG8/XKxVsS1Z6VFL0ykIA6McolsP9PHXMssWb2x9QpCIR9HhwKVM4DkI
-         ee0ht8pZwN7Fp1M3gZR04hw2pfN5KmRptC3ggio49RYArq+/Dahjaa+VPzCR5KJ776w4
-         2NvHGbwkDG8TdUOgDEdh2/pCsERSsDV/vsylLpZHyV49zMtElA44S6BMoxWZRMbfgGn6
-         2ZRCpoCeh3obssoh+PskpqH4eI+/SXR/pAuS3t8AoE+tI0uUzWWPV+0UB7fujcWyWsdm
-         b2atB/QsjOukwytYO+bqjwmtLm13UhZAKf+hEpCu0ks70RBdyBkKUDNHG+KCAee67p2J
-         IFXA==
+        bh=XgNdDeabAnBFetUbQgXcB335tM2WwuBxGGqB8IHkehk=;
+        b=ieWDVYOokga5CSqm50wnjuhAEittFkr+xIW2Cxoq5SOT0IMER3CBPzKh+NvcZOFWuB
+         VY6wSIRcJrRsZSiiOBb1JbsPDyG95ZVVZVj3ZwtbW9vSdmL117U+I1guyUYsDU9jpFOu
+         ZtbEELbKq8ZwPlblBjjdEFpaW7z2rJGrDgJsMFBMVBCWyiNGLN8al0E1HM3uLpmJewbc
+         JUolm4rR9ebKreEVuBuGA8I4RZrbAjecXFL97qsLUtNCRegwtTilNzvvsHGNyjX0kSm2
+         NGCF54C+lti9C8A2WymBSqmcbXfAmBYcT5sIDr4j5xydYVZQ/zz4QuGJWZvONpFJr9bI
+         pvzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734061284; x=1734666084;
+        d=1e100.net; s=20230601; t=1734061285; x=1734666085;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EqHj1YtMVxEOHcGbjVYBonaoLEybW60vC4WWr8uTT58=;
-        b=d2GqTxcd0rCmF6SgFHWaERM224GxDrgWGeMTj0kYisa7z1yELNRYXfd4HldIYs0pV4
-         kGpfeYA4hTs+7aHWEuZ6bFFaGC9GrxSiIj+88FbhKOe1s6m0p6nKJBzYxhed073S0ZSe
-         k/UYgD75NVShIGb3LTTlVJypoanuZcuIpHX9VkKFwVNirEhWjduHttPRXRNx+1nqeakc
-         9ohePt4POPdsV9MQOITTJktJnvCLjcDrGyGeXK1McLYlEGBlou0EtfEV5fJXOBiN2nol
-         owF12Q/7pxFpYC7iuDz2Y211NKzVz04RaxClAfy3ewlXxvgeA6u2Q6BCZTOQdeM2kZ7M
-         Xl/A==
-X-Gm-Message-State: AOJu0YzgLHZaEfcfqm2lYkG132gODy5At5qcyv0uNfYt1riY+WymLMIL
-	Yk6EcEd9piUAkoez3rtpbD6+hoSS2W6h+5Y0XNYwrwOeCmojoYxFBnV03g==
-X-Gm-Gg: ASbGnctWiQpOPMm/o6cR6Tue0Gs2Q812fHKsJZSAxEqQwDybLxQjNVJcsaQ+8/5/EJQ
-	+AdtNjfQSr9KcW7nePbCu/opLdLuTvl50CIZLxtpSeZMS/2SvP3Uus56rbbpJGtf96oQpP3uTs/
-	2otJEULcqi1KOk4FabLAF1yn72jWcdxPRDQuro1LAw2wWJVqwFTcsCjR3fEt3+W2+8Raj2c5PH0
-	Dh54cShS16Zq+G0W8fGH+BAhqXTPNFx5SwL1FdgXVkSSjkd6irHIXZGDvK/sbQ4tkq+m1KsxtmV
-	XlIDB2mSsA==
-X-Google-Smtp-Source: AGHT+IGcXUWge0HwAHX3+MJVrlmDEcT/fZJU3YNoblpTFubQ8EgZjspg1l3lcps2eOVKwIDMHUBTCw==
-X-Received: by 2002:a17:903:228c:b0:212:68e2:6c81 with SMTP id d9443c01a7336-218929c3a76mr19229745ad.24.1734061283619;
-        Thu, 12 Dec 2024 19:41:23 -0800 (PST)
+        bh=XgNdDeabAnBFetUbQgXcB335tM2WwuBxGGqB8IHkehk=;
+        b=jkWrX5d/Chc3fjfJRUaoMLNKH4XjNi1zD5ZWfLER8np6f+JVu9varudWVf8qoCcnpj
+         f5C/W7AUUvX7Dq6Gg89o1W8/WA9MI1hJcyFwE9MXVLGXKwRuHxNscsBbrrTJKm8BOs3f
+         /aFPYxAQ559e2Uq6p8PRicMlAMqQJi/+JEDdprLJWMg7wyx1vycOggi03IOtKk5KNBzn
+         a629kG6o5O8ytM+5ZQsenO0HKblEQywmQ9S4hj8Gpl55+rB7QF4nAnnllqs2N+x60/bY
+         HoJQrqeHghRINIre6QmOfishhEGWhdbzTvToE49qrz4jxZI3YUNYoXypKNzY9uIz7YG2
+         IoHA==
+X-Gm-Message-State: AOJu0Yzdz1YP9PCxpXcv18wXpLFeVCsbDf4etK0U8yDkPreLuqsIrOnQ
+	qUMcdbva8XCbSH3k5SIvba9YLEZKMtzQbvQ53u0Gc5uemiS21vYvRi+IYQ==
+X-Gm-Gg: ASbGncuMunaH3+rWhNezBZR744eo7xfUiUbVTXH3lWRd4BLs5L0kY3PE2BWKBnjci5B
+	N4lCSXe2S1ew76JIDEr7JXOdfA25eGDdPNYfX8RDOqcz7fsAziop4w2PhXuo6Cu9maq2vedySnR
+	3KNvzo2vFhnfiFfywUaCsCYfujbI7cCsOqMUgIFEOTzVTKdofNzyNjcWLWEOJPYnYPbs80vOgK8
+	ZjCVzj9dd37lIw0sNRYGUotFSt9DQHYi0vGrAYhW+GYQ/DGbvqIamBiiMrVn4yydfRw6rjzZBRu
+	0l3YCdWARg==
+X-Google-Smtp-Source: AGHT+IH4diViilRBfBpfw/ycMTCUrj5R8k5SWNL36hgK35hnJpw9CMwzYB1c4jnAB/A2JwNCnlzpog==
+X-Received: by 2002:a17:902:fc86:b0:216:31aa:12eb with SMTP id d9443c01a7336-218929fb5camr19907855ad.31.1734061285045;
+        Thu, 12 Dec 2024 19:41:25 -0800 (PST)
 Received: from pop-os.hsd1.ca.comcast.net ([2601:647:6881:9060:a642:75a1:c5bb:c287])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2163725faf4sm89526435ad.196.2024.12.12.19.41.22
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2163725faf4sm89526435ad.196.2024.12.12.19.41.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 19:41:23 -0800 (PST)
+        Thu, 12 Dec 2024 19:41:24 -0800 (PST)
 From: Cong Wang <xiyou.wangcong@gmail.com>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -78,9 +78,9 @@ Cc: bpf@vger.kernel.org,
 	John Fastabend <john.fastabend@gmail.com>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Zijian Zhang <zijianzhang@bytedance.com>
-Subject: [Patch bpf v3 3/4] selftests/bpf: Introduce socket_helpers.h for TC tests
-Date: Thu, 12 Dec 2024 19:40:56 -0800
-Message-Id: <20241213034057.246437-4-xiyou.wangcong@gmail.com>
+Subject: [Patch bpf v3 4/4] selftests/bpf: Test bpf_skb_change_tail() in TC ingress
+Date: Thu, 12 Dec 2024 19:40:57 -0800
+Message-Id: <20241213034057.246437-5-xiyou.wangcong@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241213034057.246437-1-xiyou.wangcong@gmail.com>
 References: <20241213034057.246437-1-xiyou.wangcong@gmail.com>
@@ -94,832 +94,200 @@ Content-Transfer-Encoding: 8bit
 
 From: Cong Wang <cong.wang@bytedance.com>
 
-Pull socket helpers out of sockmap_helpers.h so that they can be reused
-for TC tests as well. This prepares for the next patch.
+Similarly to the previous test, we also need a test case to cover
+positive offsets as well, TC is an excellent hook for this.
 
 Cc: John Fastabend <john.fastabend@gmail.com>
 Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Zijian Zhang <zijianzhang@bytedance.com>
+Tested-by: Zijian Zhang <zijianzhang@bytedance.com>
 Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 ---
- .../selftests/bpf/prog_tests/socket_helpers.h | 394 ++++++++++++++++++
- .../bpf/prog_tests/sockmap_helpers.h          | 385 +----------------
- 2 files changed, 395 insertions(+), 384 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/socket_helpers.h
+ .../selftests/bpf/prog_tests/tc_change_tail.c |  62 ++++++++++
+ .../selftests/bpf/progs/test_tc_change_tail.c | 106 ++++++++++++++++++
+ 2 files changed, 168 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_change_tail.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tc_change_tail.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/socket_helpers.h b/tools/testing/selftests/bpf/prog_tests/socket_helpers.h
+diff --git a/tools/testing/selftests/bpf/prog_tests/tc_change_tail.c b/tools/testing/selftests/bpf/prog_tests/tc_change_tail.c
 new file mode 100644
-index 000000000000..1bdfb79ef009
+index 000000000000..74752233e779
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/socket_helpers.h
-@@ -0,0 +1,394 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __SOCKET_HELPERS__
-+#define __SOCKET_HELPERS__
-+
-+#include <linux/vm_sockets.h>
-+
-+/* include/linux/net.h */
-+#define SOCK_TYPE_MASK 0xf
-+
-+#define IO_TIMEOUT_SEC 30
-+#define MAX_STRERR_LEN 256
-+
-+/* workaround for older vm_sockets.h */
-+#ifndef VMADDR_CID_LOCAL
-+#define VMADDR_CID_LOCAL 1
-+#endif
-+
-+/* include/linux/cleanup.h */
-+#define __get_and_null(p, nullvalue)                                           \
-+	({                                                                     \
-+		__auto_type __ptr = &(p);                                      \
-+		__auto_type __val = *__ptr;                                    \
-+		*__ptr = nullvalue;                                            \
-+		__val;                                                         \
-+	})
-+
-+#define take_fd(fd) __get_and_null(fd, -EBADF)
-+
-+/* Wrappers that fail the test on error and report it. */
-+
-+#define _FAIL(errnum, fmt...)                                                  \
-+	({                                                                     \
-+		error_at_line(0, (errnum), __func__, __LINE__, fmt);           \
-+		CHECK_FAIL(true);                                              \
-+	})
-+#define FAIL(fmt...) _FAIL(0, fmt)
-+#define FAIL_ERRNO(fmt...) _FAIL(errno, fmt)
-+#define FAIL_LIBBPF(err, msg)                                                  \
-+	({                                                                     \
-+		char __buf[MAX_STRERR_LEN];                                    \
-+		libbpf_strerror((err), __buf, sizeof(__buf));                  \
-+		FAIL("%s: %s", (msg), __buf);                                  \
-+	})
-+
-+
-+#define xaccept_nonblock(fd, addr, len)                                        \
-+	({                                                                     \
-+		int __ret =                                                    \
-+			accept_timeout((fd), (addr), (len), IO_TIMEOUT_SEC);   \
-+		if (__ret == -1)                                               \
-+			FAIL_ERRNO("accept");                                  \
-+		__ret;                                                         \
-+	})
-+
-+#define xbind(fd, addr, len)                                                   \
-+	({                                                                     \
-+		int __ret = bind((fd), (addr), (len));                         \
-+		if (__ret == -1)                                               \
-+			FAIL_ERRNO("bind");                                    \
-+		__ret;                                                         \
-+	})
-+
-+#define xclose(fd)                                                             \
-+	({                                                                     \
-+		int __ret = close((fd));                                       \
-+		if (__ret == -1)                                               \
-+			FAIL_ERRNO("close");                                   \
-+		__ret;                                                         \
-+	})
-+
-+#define xconnect(fd, addr, len)                                                \
-+	({                                                                     \
-+		int __ret = connect((fd), (addr), (len));                      \
-+		if (__ret == -1)                                               \
-+			FAIL_ERRNO("connect");                                 \
-+		__ret;                                                         \
-+	})
-+
-+#define xgetsockname(fd, addr, len)                                            \
-+	({                                                                     \
-+		int __ret = getsockname((fd), (addr), (len));                  \
-+		if (__ret == -1)                                               \
-+			FAIL_ERRNO("getsockname");                             \
-+		__ret;                                                         \
-+	})
-+
-+#define xgetsockopt(fd, level, name, val, len)                                 \
-+	({                                                                     \
-+		int __ret = getsockopt((fd), (level), (name), (val), (len));   \
-+		if (__ret == -1)                                               \
-+			FAIL_ERRNO("getsockopt(" #name ")");                   \
-+		__ret;                                                         \
-+	})
-+
-+#define xlisten(fd, backlog)                                                   \
-+	({                                                                     \
-+		int __ret = listen((fd), (backlog));                           \
-+		if (__ret == -1)                                               \
-+			FAIL_ERRNO("listen");                                  \
-+		__ret;                                                         \
-+	})
-+
-+#define xsetsockopt(fd, level, name, val, len)                                 \
-+	({                                                                     \
-+		int __ret = setsockopt((fd), (level), (name), (val), (len));   \
-+		if (__ret == -1)                                               \
-+			FAIL_ERRNO("setsockopt(" #name ")");                   \
-+		__ret;                                                         \
-+	})
-+
-+#define xsend(fd, buf, len, flags)                                             \
-+	({                                                                     \
-+		ssize_t __ret = send((fd), (buf), (len), (flags));             \
-+		if (__ret == -1)                                               \
-+			FAIL_ERRNO("send");                                    \
-+		__ret;                                                         \
-+	})
-+
-+#define xrecv_nonblock(fd, buf, len, flags)                                    \
-+	({                                                                     \
-+		ssize_t __ret = recv_timeout((fd), (buf), (len), (flags),      \
-+					     IO_TIMEOUT_SEC);                  \
-+		if (__ret == -1)                                               \
-+			FAIL_ERRNO("recv");                                    \
-+		__ret;                                                         \
-+	})
-+
-+#define xsocket(family, sotype, flags)                                         \
-+	({                                                                     \
-+		int __ret = socket(family, sotype, flags);                     \
-+		if (__ret == -1)                                               \
-+			FAIL_ERRNO("socket");                                  \
-+		__ret;                                                         \
-+	})
-+
-+static inline void close_fd(int *fd)
-+{
-+	if (*fd >= 0)
-+		xclose(*fd);
-+}
-+
-+#define __close_fd __attribute__((cleanup(close_fd)))
-+
-+static inline struct sockaddr *sockaddr(struct sockaddr_storage *ss)
-+{
-+	return (struct sockaddr *)ss;
-+}
-+
-+static inline void init_addr_loopback4(struct sockaddr_storage *ss,
-+				       socklen_t *len)
-+{
-+	struct sockaddr_in *addr4 = memset(ss, 0, sizeof(*ss));
-+
-+	addr4->sin_family = AF_INET;
-+	addr4->sin_port = 0;
-+	addr4->sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-+	*len = sizeof(*addr4);
-+}
-+
-+static inline void init_addr_loopback6(struct sockaddr_storage *ss,
-+				       socklen_t *len)
-+{
-+	struct sockaddr_in6 *addr6 = memset(ss, 0, sizeof(*ss));
-+
-+	addr6->sin6_family = AF_INET6;
-+	addr6->sin6_port = 0;
-+	addr6->sin6_addr = in6addr_loopback;
-+	*len = sizeof(*addr6);
-+}
-+
-+static inline void init_addr_loopback_vsock(struct sockaddr_storage *ss,
-+					    socklen_t *len)
-+{
-+	struct sockaddr_vm *addr = memset(ss, 0, sizeof(*ss));
-+
-+	addr->svm_family = AF_VSOCK;
-+	addr->svm_port = VMADDR_PORT_ANY;
-+	addr->svm_cid = VMADDR_CID_LOCAL;
-+	*len = sizeof(*addr);
-+}
-+
-+static inline void init_addr_loopback(int family, struct sockaddr_storage *ss,
-+				      socklen_t *len)
-+{
-+	switch (family) {
-+	case AF_INET:
-+		init_addr_loopback4(ss, len);
-+		return;
-+	case AF_INET6:
-+		init_addr_loopback6(ss, len);
-+		return;
-+	case AF_VSOCK:
-+		init_addr_loopback_vsock(ss, len);
-+		return;
-+	default:
-+		FAIL("unsupported address family %d", family);
-+	}
-+}
-+
-+static inline int enable_reuseport(int s, int progfd)
-+{
-+	int err, one = 1;
-+
-+	err = xsetsockopt(s, SOL_SOCKET, SO_REUSEPORT, &one, sizeof(one));
-+	if (err)
-+		return -1;
-+	err = xsetsockopt(s, SOL_SOCKET, SO_ATTACH_REUSEPORT_EBPF, &progfd,
-+			  sizeof(progfd));
-+	if (err)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static inline int socket_loopback_reuseport(int family, int sotype, int progfd)
-+{
-+	struct sockaddr_storage addr;
-+	socklen_t len = 0;
-+	int err, s;
-+
-+	init_addr_loopback(family, &addr, &len);
-+
-+	s = xsocket(family, sotype, 0);
-+	if (s == -1)
-+		return -1;
-+
-+	if (progfd >= 0)
-+		enable_reuseport(s, progfd);
-+
-+	err = xbind(s, sockaddr(&addr), len);
-+	if (err)
-+		goto close;
-+
-+	if (sotype & SOCK_DGRAM)
-+		return s;
-+
-+	err = xlisten(s, SOMAXCONN);
-+	if (err)
-+		goto close;
-+
-+	return s;
-+close:
-+	xclose(s);
-+	return -1;
-+}
-+
-+static inline int socket_loopback(int family, int sotype)
-+{
-+	return socket_loopback_reuseport(family, sotype, -1);
-+}
-+
-+static inline int poll_connect(int fd, unsigned int timeout_sec)
-+{
-+	struct timeval timeout = { .tv_sec = timeout_sec };
-+	fd_set wfds;
-+	int r, eval;
-+	socklen_t esize = sizeof(eval);
-+
-+	FD_ZERO(&wfds);
-+	FD_SET(fd, &wfds);
-+
-+	r = select(fd + 1, NULL, &wfds, NULL, &timeout);
-+	if (r == 0)
-+		errno = ETIME;
-+	if (r != 1)
-+		return -1;
-+
-+	if (getsockopt(fd, SOL_SOCKET, SO_ERROR, &eval, &esize) < 0)
-+		return -1;
-+	if (eval != 0) {
-+		errno = eval;
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static inline int poll_read(int fd, unsigned int timeout_sec)
-+{
-+	struct timeval timeout = { .tv_sec = timeout_sec };
-+	fd_set rfds;
-+	int r;
-+
-+	FD_ZERO(&rfds);
-+	FD_SET(fd, &rfds);
-+
-+	r = select(fd + 1, &rfds, NULL, NULL, &timeout);
-+	if (r == 0)
-+		errno = ETIME;
-+
-+	return r == 1 ? 0 : -1;
-+}
-+
-+static inline int accept_timeout(int fd, struct sockaddr *addr, socklen_t *len,
-+				 unsigned int timeout_sec)
-+{
-+	if (poll_read(fd, timeout_sec))
-+		return -1;
-+
-+	return accept(fd, addr, len);
-+}
-+
-+static inline int recv_timeout(int fd, void *buf, size_t len, int flags,
-+			       unsigned int timeout_sec)
-+{
-+	if (poll_read(fd, timeout_sec))
-+		return -1;
-+
-+	return recv(fd, buf, len, flags);
-+}
-+
-+
-+static inline int create_pair(int family, int sotype, int *p0, int *p1)
-+{
-+	__close_fd int s, c = -1, p = -1;
-+	struct sockaddr_storage addr;
-+	socklen_t len = sizeof(addr);
-+	int err;
-+
-+	s = socket_loopback(family, sotype);
-+	if (s < 0)
-+		return s;
-+
-+	err = xgetsockname(s, sockaddr(&addr), &len);
-+	if (err)
-+		return err;
-+
-+	c = xsocket(family, sotype, 0);
-+	if (c < 0)
-+		return c;
-+
-+	err = connect(c, sockaddr(&addr), len);
-+	if (err) {
-+		if (errno != EINPROGRESS) {
-+			FAIL_ERRNO("connect");
-+			return err;
-+		}
-+
-+		err = poll_connect(c, IO_TIMEOUT_SEC);
-+		if (err) {
-+			FAIL_ERRNO("poll_connect");
-+			return err;
-+		}
-+	}
-+
-+	switch (sotype & SOCK_TYPE_MASK) {
-+	case SOCK_DGRAM:
-+		err = xgetsockname(c, sockaddr(&addr), &len);
-+		if (err)
-+			return err;
-+
-+		err = xconnect(s, sockaddr(&addr), len);
-+		if (err)
-+			return err;
-+
-+		*p0 = take_fd(s);
-+		break;
-+	case SOCK_STREAM:
-+	case SOCK_SEQPACKET:
-+		p = xaccept_nonblock(s, NULL, NULL);
-+		if (p < 0)
-+			return p;
-+
-+		*p0 = take_fd(p);
-+		break;
-+	default:
-+		FAIL("Unsupported socket type %#x", sotype);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	*p1 = take_fd(c);
-+	return 0;
-+}
-+
-+static inline int create_socket_pairs(int family, int sotype, int *c0, int *c1,
-+				      int *p0, int *p1)
-+{
-+	int err;
-+
-+	err = create_pair(family, sotype, c0, p0);
-+	if (err)
-+		return err;
-+
-+	err = create_pair(family, sotype, c1, p1);
-+	if (err) {
-+		close(*c0);
-+		close(*p0);
-+	}
-+
-+	return err;
-+}
-+
-+#endif // __SOCKET_HELPERS__
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h b/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
-index 38e35c72bdaa..3e5571dd578d 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
-@@ -1,139 +1,12 @@
- #ifndef __SOCKMAP_HELPERS__
- #define __SOCKMAP_HELPERS__
- 
--#include <linux/vm_sockets.h>
++++ b/tools/testing/selftests/bpf/prog_tests/tc_change_tail.c
+@@ -0,0 +1,62 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <error.h>
++#include <test_progs.h>
++#include <linux/pkt_cls.h>
++
++#include "test_tc_change_tail.skel.h"
 +#include "socket_helpers.h"
- 
--/* include/linux/net.h */
--#define SOCK_TYPE_MASK 0xf
--
--#define IO_TIMEOUT_SEC 30
--#define MAX_STRERR_LEN 256
- #define MAX_TEST_NAME 80
- 
--/* workaround for older vm_sockets.h */
--#ifndef VMADDR_CID_LOCAL
--#define VMADDR_CID_LOCAL 1
--#endif
--
- #define __always_unused	__attribute__((__unused__))
- 
--/* include/linux/cleanup.h */
--#define __get_and_null(p, nullvalue)                                           \
--	({                                                                     \
--		__auto_type __ptr = &(p);                                      \
--		__auto_type __val = *__ptr;                                    \
--		*__ptr = nullvalue;                                            \
--		__val;                                                         \
--	})
--
--#define take_fd(fd) __get_and_null(fd, -EBADF)
--
--#define _FAIL(errnum, fmt...)                                                  \
--	({                                                                     \
--		error_at_line(0, (errnum), __func__, __LINE__, fmt);           \
--		CHECK_FAIL(true);                                              \
--	})
--#define FAIL(fmt...) _FAIL(0, fmt)
--#define FAIL_ERRNO(fmt...) _FAIL(errno, fmt)
--#define FAIL_LIBBPF(err, msg)                                                  \
--	({                                                                     \
--		char __buf[MAX_STRERR_LEN];                                    \
--		libbpf_strerror((err), __buf, sizeof(__buf));                  \
--		FAIL("%s: %s", (msg), __buf);                                  \
--	})
--
--/* Wrappers that fail the test on error and report it. */
--
--#define xaccept_nonblock(fd, addr, len)                                        \
--	({                                                                     \
--		int __ret =                                                    \
--			accept_timeout((fd), (addr), (len), IO_TIMEOUT_SEC);   \
--		if (__ret == -1)                                               \
--			FAIL_ERRNO("accept");                                  \
--		__ret;                                                         \
--	})
--
--#define xbind(fd, addr, len)                                                   \
--	({                                                                     \
--		int __ret = bind((fd), (addr), (len));                         \
--		if (__ret == -1)                                               \
--			FAIL_ERRNO("bind");                                    \
--		__ret;                                                         \
--	})
--
--#define xclose(fd)                                                             \
--	({                                                                     \
--		int __ret = close((fd));                                       \
--		if (__ret == -1)                                               \
--			FAIL_ERRNO("close");                                   \
--		__ret;                                                         \
--	})
--
--#define xconnect(fd, addr, len)                                                \
--	({                                                                     \
--		int __ret = connect((fd), (addr), (len));                      \
--		if (__ret == -1)                                               \
--			FAIL_ERRNO("connect");                                 \
--		__ret;                                                         \
--	})
--
--#define xgetsockname(fd, addr, len)                                            \
--	({                                                                     \
--		int __ret = getsockname((fd), (addr), (len));                  \
--		if (__ret == -1)                                               \
--			FAIL_ERRNO("getsockname");                             \
--		__ret;                                                         \
--	})
--
--#define xgetsockopt(fd, level, name, val, len)                                 \
--	({                                                                     \
--		int __ret = getsockopt((fd), (level), (name), (val), (len));   \
--		if (__ret == -1)                                               \
--			FAIL_ERRNO("getsockopt(" #name ")");                   \
--		__ret;                                                         \
--	})
--
--#define xlisten(fd, backlog)                                                   \
--	({                                                                     \
--		int __ret = listen((fd), (backlog));                           \
--		if (__ret == -1)                                               \
--			FAIL_ERRNO("listen");                                  \
--		__ret;                                                         \
--	})
--
--#define xsetsockopt(fd, level, name, val, len)                                 \
--	({                                                                     \
--		int __ret = setsockopt((fd), (level), (name), (val), (len));   \
--		if (__ret == -1)                                               \
--			FAIL_ERRNO("setsockopt(" #name ")");                   \
--		__ret;                                                         \
--	})
--
--#define xsend(fd, buf, len, flags)                                             \
--	({                                                                     \
--		ssize_t __ret = send((fd), (buf), (len), (flags));             \
--		if (__ret == -1)                                               \
--			FAIL_ERRNO("send");                                    \
--		__ret;                                                         \
--	})
--
--#define xrecv_nonblock(fd, buf, len, flags)                                    \
--	({                                                                     \
--		ssize_t __ret = recv_timeout((fd), (buf), (len), (flags),      \
--					     IO_TIMEOUT_SEC);                  \
--		if (__ret == -1)                                               \
--			FAIL_ERRNO("recv");                                    \
--		__ret;                                                         \
--	})
--
--#define xsocket(family, sotype, flags)                                         \
--	({                                                                     \
--		int __ret = socket(family, sotype, flags);                     \
--		if (__ret == -1)                                               \
--			FAIL_ERRNO("socket");                                  \
--		__ret;                                                         \
--	})
--
- #define xbpf_map_delete_elem(fd, key)                                          \
- 	({                                                                     \
- 		int __ret = bpf_map_delete_elem((fd), (key));                  \
-@@ -193,130 +66,6 @@
- 		__ret;                                                         \
- 	})
- 
--static inline void close_fd(int *fd)
--{
--	if (*fd >= 0)
--		xclose(*fd);
--}
--
--#define __close_fd __attribute__((cleanup(close_fd)))
--
--static inline int poll_connect(int fd, unsigned int timeout_sec)
--{
--	struct timeval timeout = { .tv_sec = timeout_sec };
--	fd_set wfds;
--	int r, eval;
--	socklen_t esize = sizeof(eval);
--
--	FD_ZERO(&wfds);
--	FD_SET(fd, &wfds);
--
--	r = select(fd + 1, NULL, &wfds, NULL, &timeout);
--	if (r == 0)
--		errno = ETIME;
--	if (r != 1)
--		return -1;
--
--	if (getsockopt(fd, SOL_SOCKET, SO_ERROR, &eval, &esize) < 0)
--		return -1;
--	if (eval != 0) {
--		errno = eval;
--		return -1;
--	}
--
--	return 0;
--}
--
--static inline int poll_read(int fd, unsigned int timeout_sec)
--{
--	struct timeval timeout = { .tv_sec = timeout_sec };
--	fd_set rfds;
--	int r;
--
--	FD_ZERO(&rfds);
--	FD_SET(fd, &rfds);
--
--	r = select(fd + 1, &rfds, NULL, NULL, &timeout);
--	if (r == 0)
--		errno = ETIME;
--
--	return r == 1 ? 0 : -1;
--}
--
--static inline int accept_timeout(int fd, struct sockaddr *addr, socklen_t *len,
--				 unsigned int timeout_sec)
--{
--	if (poll_read(fd, timeout_sec))
--		return -1;
--
--	return accept(fd, addr, len);
--}
--
--static inline int recv_timeout(int fd, void *buf, size_t len, int flags,
--			       unsigned int timeout_sec)
--{
--	if (poll_read(fd, timeout_sec))
--		return -1;
--
--	return recv(fd, buf, len, flags);
--}
--
--static inline void init_addr_loopback4(struct sockaddr_storage *ss,
--				       socklen_t *len)
--{
--	struct sockaddr_in *addr4 = memset(ss, 0, sizeof(*ss));
--
--	addr4->sin_family = AF_INET;
--	addr4->sin_port = 0;
--	addr4->sin_addr.s_addr = htonl(INADDR_LOOPBACK);
--	*len = sizeof(*addr4);
--}
--
--static inline void init_addr_loopback6(struct sockaddr_storage *ss,
--				       socklen_t *len)
--{
--	struct sockaddr_in6 *addr6 = memset(ss, 0, sizeof(*ss));
--
--	addr6->sin6_family = AF_INET6;
--	addr6->sin6_port = 0;
--	addr6->sin6_addr = in6addr_loopback;
--	*len = sizeof(*addr6);
--}
--
--static inline void init_addr_loopback_vsock(struct sockaddr_storage *ss,
--					    socklen_t *len)
--{
--	struct sockaddr_vm *addr = memset(ss, 0, sizeof(*ss));
--
--	addr->svm_family = AF_VSOCK;
--	addr->svm_port = VMADDR_PORT_ANY;
--	addr->svm_cid = VMADDR_CID_LOCAL;
--	*len = sizeof(*addr);
--}
--
--static inline void init_addr_loopback(int family, struct sockaddr_storage *ss,
--				      socklen_t *len)
--{
--	switch (family) {
--	case AF_INET:
--		init_addr_loopback4(ss, len);
--		return;
--	case AF_INET6:
--		init_addr_loopback6(ss, len);
--		return;
--	case AF_VSOCK:
--		init_addr_loopback_vsock(ss, len);
--		return;
--	default:
--		FAIL("unsupported address family %d", family);
--	}
--}
--
--static inline struct sockaddr *sockaddr(struct sockaddr_storage *ss)
--{
--	return (struct sockaddr *)ss;
--}
--
- static inline int add_to_sockmap(int sock_mapfd, int fd1, int fd2)
- {
- 	u64 value;
-@@ -334,136 +83,4 @@ static inline int add_to_sockmap(int sock_mapfd, int fd1, int fd2)
- 	return xbpf_map_update_elem(sock_mapfd, &key, &value, BPF_NOEXIST);
- }
- 
--static inline int enable_reuseport(int s, int progfd)
--{
--	int err, one = 1;
--
--	err = xsetsockopt(s, SOL_SOCKET, SO_REUSEPORT, &one, sizeof(one));
--	if (err)
--		return -1;
--	err = xsetsockopt(s, SOL_SOCKET, SO_ATTACH_REUSEPORT_EBPF, &progfd,
--			  sizeof(progfd));
--	if (err)
--		return -1;
--
--	return 0;
--}
--
--static inline int socket_loopback_reuseport(int family, int sotype, int progfd)
--{
--	struct sockaddr_storage addr;
--	socklen_t len = 0;
--	int err, s;
--
--	init_addr_loopback(family, &addr, &len);
--
--	s = xsocket(family, sotype, 0);
--	if (s == -1)
--		return -1;
--
--	if (progfd >= 0)
--		enable_reuseport(s, progfd);
--
--	err = xbind(s, sockaddr(&addr), len);
--	if (err)
--		goto close;
--
--	if (sotype & SOCK_DGRAM)
--		return s;
--
--	err = xlisten(s, SOMAXCONN);
--	if (err)
--		goto close;
--
--	return s;
--close:
--	xclose(s);
--	return -1;
--}
--
--static inline int socket_loopback(int family, int sotype)
--{
--	return socket_loopback_reuseport(family, sotype, -1);
--}
--
--static inline int create_pair(int family, int sotype, int *p0, int *p1)
--{
--	__close_fd int s, c = -1, p = -1;
--	struct sockaddr_storage addr;
--	socklen_t len = sizeof(addr);
--	int err;
--
--	s = socket_loopback(family, sotype);
--	if (s < 0)
--		return s;
--
--	err = xgetsockname(s, sockaddr(&addr), &len);
--	if (err)
--		return err;
--
--	c = xsocket(family, sotype, 0);
--	if (c < 0)
--		return c;
--
--	err = connect(c, sockaddr(&addr), len);
--	if (err) {
--		if (errno != EINPROGRESS) {
--			FAIL_ERRNO("connect");
--			return err;
--		}
--
--		err = poll_connect(c, IO_TIMEOUT_SEC);
--		if (err) {
--			FAIL_ERRNO("poll_connect");
--			return err;
--		}
--	}
--
--	switch (sotype & SOCK_TYPE_MASK) {
--	case SOCK_DGRAM:
--		err = xgetsockname(c, sockaddr(&addr), &len);
--		if (err)
--			return err;
--
--		err = xconnect(s, sockaddr(&addr), len);
--		if (err)
--			return err;
--
--		*p0 = take_fd(s);
--		break;
--	case SOCK_STREAM:
--	case SOCK_SEQPACKET:
--		p = xaccept_nonblock(s, NULL, NULL);
--		if (p < 0)
--			return p;
--
--		*p0 = take_fd(p);
--		break;
--	default:
--		FAIL("Unsupported socket type %#x", sotype);
--		return -EOPNOTSUPP;
--	}
--
--	*p1 = take_fd(c);
--	return 0;
--}
--
--static inline int create_socket_pairs(int family, int sotype, int *c0, int *c1,
--				      int *p0, int *p1)
--{
--	int err;
--
--	err = create_pair(family, sotype, c0, p0);
--	if (err)
--		return err;
--
--	err = create_pair(family, sotype, c1, p1);
--	if (err) {
--		close(*c0);
--		close(*p0);
--	}
--
--	return err;
--}
--
- #endif // __SOCKMAP_HELPERS__
++
++#define LO_IFINDEX 1
++
++void test_tc_change_tail(void)
++{
++	LIBBPF_OPTS(bpf_tcx_opts, tcx_opts);
++	struct test_tc_change_tail *skel = NULL;
++	struct bpf_link *link;
++	int c1, p1;
++	char buf[2];
++	int ret;
++
++	skel = test_tc_change_tail__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "test_tc_change_tail__open_and_load"))
++		return;
++
++	link = bpf_program__attach_tcx(skel->progs.change_tail, LO_IFINDEX,
++				     &tcx_opts);
++	if (!ASSERT_OK_PTR(link, "bpf_program__attach_tcx"))
++		goto destroy;
++
++	skel->links.change_tail = link;
++	ret = create_pair(AF_INET, SOCK_DGRAM, &c1, &p1);
++	if (!ASSERT_OK(ret, "create_pair"))
++		goto destroy;
++
++	ret = xsend(p1, "Tr", 2, 0);
++	ASSERT_EQ(ret, 2, "xsend(p1)");
++	ret = recv(c1, buf, 2, 0);
++	ASSERT_EQ(ret, 2, "recv(c1)");
++	ASSERT_EQ(skel->data->change_tail_ret, 0, "change_tail_ret");
++
++	ret = xsend(p1, "G", 1, 0);
++	ASSERT_EQ(ret, 1, "xsend(p1)");
++	ret = recv(c1, buf, 2, 0);
++	ASSERT_EQ(ret, 1, "recv(c1)");
++	ASSERT_EQ(skel->data->change_tail_ret, 0, "change_tail_ret");
++
++	ret = xsend(p1, "E", 1, 0);
++	ASSERT_EQ(ret, 1, "xsend(p1)");
++	ret = recv(c1, buf, 1, 0);
++	ASSERT_EQ(ret, 1, "recv(c1)");
++	ASSERT_EQ(skel->data->change_tail_ret, -EINVAL, "change_tail_ret");
++
++	ret = xsend(p1, "Z", 1, 0);
++	ASSERT_EQ(ret, 1, "xsend(p1)");
++	ret = recv(c1, buf, 1, 0);
++	ASSERT_EQ(ret, 1, "recv(c1)");
++	ASSERT_EQ(skel->data->change_tail_ret, -EINVAL, "change_tail_ret");
++
++	close(c1);
++	close(p1);
++destroy:
++	test_tc_change_tail__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_tc_change_tail.c b/tools/testing/selftests/bpf/progs/test_tc_change_tail.c
+new file mode 100644
+index 000000000000..28edafe803f0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_tc_change_tail.c
+@@ -0,0 +1,106 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <linux/if_ether.h>
++#include <linux/in.h>
++#include <linux/ip.h>
++#include <linux/udp.h>
++#include <linux/pkt_cls.h>
++
++long change_tail_ret = 1;
++
++static __always_inline struct iphdr *parse_ip_header(struct __sk_buff *skb, int *ip_proto)
++{
++	void *data_end = (void *)(long)skb->data_end;
++	void *data = (void *)(long)skb->data;
++	struct ethhdr *eth = data;
++	struct iphdr *iph;
++
++	/* Verify Ethernet header */
++	if ((void *)(data + sizeof(*eth)) > data_end)
++		return NULL;
++
++	/* Skip Ethernet header to get to IP header */
++	iph = (void *)(data + sizeof(struct ethhdr));
++
++	/* Verify IP header */
++	if ((void *)(data + sizeof(struct ethhdr) + sizeof(*iph)) > data_end)
++		return NULL;
++
++	/* Basic IP header validation */
++	if (iph->version != 4)  /* Only support IPv4 */
++		return NULL;
++
++	if (iph->ihl < 5)  /* Minimum IP header length */
++		return NULL;
++
++	*ip_proto = iph->protocol;
++	return iph;
++}
++
++static __always_inline struct udphdr *parse_udp_header(struct __sk_buff *skb, struct iphdr *iph)
++{
++	void *data_end = (void *)(long)skb->data_end;
++	void *hdr = (void *)iph;
++	struct udphdr *udp;
++
++	/* Calculate UDP header position */
++	udp = hdr + (iph->ihl * 4);
++	hdr = (void *)udp;
++
++	/* Verify UDP header bounds */
++	if ((void *)(hdr + sizeof(*udp)) > data_end)
++		return NULL;
++
++	return udp;
++}
++
++SEC("tc/ingress")
++int change_tail(struct __sk_buff *skb)
++{
++	int len = skb->len;
++	struct udphdr *udp;
++	struct iphdr *iph;
++	void *data_end;
++	char *payload;
++	int ip_proto;
++
++	bpf_skb_pull_data(skb, len);
++
++	data_end = (void *)(long)skb->data_end;
++	iph = parse_ip_header(skb, &ip_proto);
++	if (!iph)
++		return TCX_PASS;
++
++	if (ip_proto != IPPROTO_UDP)
++		return TCX_PASS;
++
++	udp = parse_udp_header(skb, iph);
++	if (!udp)
++		return TCX_PASS;
++
++	payload = (char *)udp + (sizeof(struct udphdr));
++	if (payload + 1 > (char *)data_end)
++		return TCX_PASS;
++
++	if (payload[0] == 'T') { /* Trim the packet */
++		change_tail_ret = bpf_skb_change_tail(skb, len - 1, 0);
++		if (!change_tail_ret)
++			bpf_skb_change_tail(skb, len, 0);
++		return TCX_PASS;
++	} else if (payload[0] == 'G') { /* Grow the packet */
++		change_tail_ret = bpf_skb_change_tail(skb, len + 1, 0);
++		if (!change_tail_ret)
++			bpf_skb_change_tail(skb, len, 0);
++		return TCX_PASS;
++	} else if (payload[0] == 'E') { /* Error */
++		change_tail_ret = bpf_skb_change_tail(skb, 65535, 0);
++		return TCX_PASS;
++	} else if (payload[0] == 'Z') { /* Zero */
++		change_tail_ret = bpf_skb_change_tail(skb, 0, 0);
++		return TCX_PASS;
++	}
++	return TCX_DROP;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.34.1
 
