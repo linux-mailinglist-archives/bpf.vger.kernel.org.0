@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-46946-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46947-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E06C9F19EF
-	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 00:31:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7F6B9F19F4
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 00:31:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A20BD188D96B
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 23:31:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDB9A16B0F8
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 23:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40AFA1F03C6;
-	Fri, 13 Dec 2024 23:30:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03831F12E2;
+	Fri, 13 Dec 2024 23:30:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="DTxE4J5r"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="T9uV/XWu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E94D1EBFF7
-	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 23:30:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D201EE031
+	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 23:30:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734132604; cv=none; b=c3Hw0J5pdphgB1AfW0HEXKwU0bYP9PwzPEiAX5JFHjZ+bTB9iOHHiCeOb29reXB4rLheGQG/25PD98U/21JGS09iTndm7j9BbHLLORQP+ks24ki6QcfNc1V6enyjW3mk0tuNZhd+RipYU/qfDEkK/HWfF2xllR0/+ewmszgmPKE=
+	t=1734132606; cv=none; b=HhHZPfqb+rF01fGXtdZEEHAkgtH43GtsDvu9ScGWHRIr/6TghcI1hn3op9J0/oOOwmI6Fk3bRWLBBCRyj6GPuT1Nc4o2SmM7HCwd4Vnt32q+k2sfh95DCB8BY1/CmkbQMkx1oWXBRMvb4uXaRsODj1KO2Yi6RonEO1iF1fRKDHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734132604; c=relaxed/simple;
-	bh=Eyr46HBdMzcezTSaJc8Q8hesaHfa7v2OqrjhG9rizno=;
+	s=arc-20240116; t=1734132606; c=relaxed/simple;
+	bh=UROdt2KIRlGXGZhC8MmjrpDHu3slO/reGPSVhfuuSh0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VtFGfT0NKttcAKAcSc32mREnNR3c62VIedLjueqqqOGumf8JpYDXbpoN66zI1HVOq69CMyH7OFvQ7xGHTXi7v4WSQ4cJcGvjI03K+0p/CLphZwwWIq16Qo8u3c6bqnPOMeV4G/c8jsrdR+EJVbbakaRAP+NOA2odrBK+Ghl0Bqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=DTxE4J5r; arc=none smtp.client-ip=209.85.222.177
+	 MIME-Version; b=dhcLcRbWjnr0M3UNm36J2CRS5HcL9edCDAI4m6jVzAtQdvt8zPGHIEm3+6dheF9cEF6gmMQUmYC3UmMhJWysMWzlav8QPpFNuG3oUE1r8q6E+ppQNZANHPn7Xbh9XVYkby0gmSlShQi/Y23kfrX+xyhYLAg7PT2A6sTTVXbrUTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=T9uV/XWu; arc=none smtp.client-ip=209.85.160.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7b6f53c12adso147045285a.1
-        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 15:30:02 -0800 (PST)
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4674f1427deso27318601cf.1
+        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 15:30:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1734132601; x=1734737401; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1734132602; x=1734737402; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Dz258LP6R5huynohPazHs2P5gkDWlbu66HknCOxo5I0=;
-        b=DTxE4J5rBlipiMkr5sXeppmgBRUrWvF1Qmrp77V4NSOImviXsKydQaGm4EnigZm5Iy
-         PxMBnrXzNkPikeYJqQ2bt3z8oQI2ex5xQmnRyxg3O2nofvAmcunFLfABg/g0gyNdN3Oz
-         5SvKs5xfpeQ4LdgwIGh5r02SXroS9SWTpTUhSludv8PoH9+5wPnou1BY4oE4fKq4RlfZ
-         F/4IciUheTMNyOiwQ+73QsUOHnFOzX4ILCqI4agCLpaprNSNMRRtrdvLVR+U5F3AkBS+
-         c+m/sC+yY7NhyqqZxw5F5xb0nHyNYEMjrbK3Qkkc/0eT8AdUpzIUUDVuSh3tQ2jWhgiI
-         r3OQ==
+        bh=4uWgir9hdNGMP/IRXbQNB+3vdHPYt1xWCe9npuxYxzI=;
+        b=T9uV/XWu3LoXyfeS833kHdlHGJkGuqEUpRKAVHgo+PY92x62mdu/twd5GXwvAsVKA6
+         qWDVzh2N2U4fYKyKy99ypdHhtk7xGwJFEhKFArLXHyi9BCjgMasa/QfNcGROhdysixRl
+         K/FrMTzypinlKsqK9ESESphZUx8jVBOWqYL84Qayh63w8nrKS9bo3+fUQGAnvdux66Tl
+         7sgqCCYRZrmWzTn0+LsPjL5CQKM7U80zYKtlLeV5uoQf0nWGGrYjqAB4JeZ0Bz+ts+EG
+         vF6poCZaFYso8mKILd1+eXSxJdomrlI8lhe3ahTth7T6cofOzmkWNpC+DrqvqRKYnOo5
+         L6pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734132601; x=1734737401;
+        d=1e100.net; s=20230601; t=1734132602; x=1734737402;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Dz258LP6R5huynohPazHs2P5gkDWlbu66HknCOxo5I0=;
-        b=f0Zg8XvB2vkPmn4aSqZ6tM5jSdoZvFFa6gf5/nvWIMPRt/fixe7ty6j6fHNeoEI40o
-         SEVOfA1dA6cIhqZlpgiK6NmcbdIuRlQLFSgfF2xf+GJ6EbH/OVPw3X9BKZ4IfUPrUHKZ
-         077Qa+914DaDC8Uk6BEIIWCbBVdU04RyewTnT7i0e/VQZYZ/cVpaHCRXd5gADqMZpE1n
-         R17Kif8xEGXtRDvSwPeE3cXX5I6RA7skqE8XPOg96Tayn9TOC46EIzX2IfYuy39KqVfd
-         zjsZjmZ+WPhDZZrSrQCVSwcDs3cQk6g79hTkws/rsAZOt/4o42cBw7+1mtU49EYY90bq
-         c41Q==
-X-Gm-Message-State: AOJu0Ywsy1djA/Jd1Q/tyknK/SPJoHTqMYAE6/uOIx2U5fylB9863p3v
-	XvZqkzTZ6ITFZmRf9wIMcaHu1P8CghyQGvzYgjD4omzIHxLtUpvkz6XziNvM3LI=
-X-Gm-Gg: ASbGncsC+4sb5UW0IqR9hghRvvs2pslrrlkafX3sPRNU3Q7CHq+4MFuSGvPFaxJWqrX
-	dXyNaOjmzm9UHtdv7l/HlRFeBxNJKr8apt41q8EUNZIMcVxvkxCQ19+cLeJJU1/f7qSgszT4fZ+
-	V8MxJ23WwQEwiQ2YHt7UoqDP3LH2UKgKAVzcxDO+T+teOfSg1ZzCOhxcjv6a4/iizWUhbaec9N5
-	r+wRX+rk4vVIRvANDx70A/4fWazv9O1I/iFvxOZiaMtpRqR02xJc4o06G5uHMfMQY5EKWRqhOVb
-X-Google-Smtp-Source: AGHT+IGHSOZJiCUGotd3t52TlgCH8yY/uNGAugWIBn/Ii2l2ji3HsybQt/7gX1aV1KemSoPeANAr5w==
-X-Received: by 2002:a05:620a:199a:b0:7b6:d089:2757 with SMTP id af79cd13be357-7b6fbf2207bmr632473285a.35.1734132601070;
-        Fri, 13 Dec 2024 15:30:01 -0800 (PST)
+        bh=4uWgir9hdNGMP/IRXbQNB+3vdHPYt1xWCe9npuxYxzI=;
+        b=P/1WvpynWepIgDdHQlVzWKnJgv/gvPRBJH+D54XQhnfAGR9gh/4SvHAMCPOZXUTPTp
+         XxddVaEgBRT96Blogna1gN72KbyyfzQ7/dDjTgu1lfqm/gooCIfF1go/Kb/TF4wnq7Cy
+         cRhsTOs7QKAFAGqVeNh0GkO+H5Bo+tFlMeqMWdZ3s7huCIWAjWkcDSsmGY3tblp5wEFu
+         dPPPt6u++QNWqMu14tFo/ziGis8ygyKfysUrQOr02soLbRvuPmQKPDD+Ey+BYz/4UwID
+         42b/K4Pv0vx+7PHf0srbk6wUJyPUaLk/OtYJ/FVLYsykEiNYLI6Ml3f9iuSLifhy1sIM
+         oqBQ==
+X-Gm-Message-State: AOJu0YyeI323cm/cRwAWO3Md+TO4jca426EiEgOBjGqD4eg9NutI/QyN
+	//Z9FHAJemx0BV41XSgYK29jeAL5Iwvi7mwJMGn8YpLyHQUXq88PeRh2HIVe86o=
+X-Gm-Gg: ASbGncsLJ/AasFzFl7Ym/wAaj4OYxzoANztzt1DEGzDnOiwPwNdm1jGwjE343g+2oWA
+	uaU+S2m2ZM1wvvq9nAKX4YVgG+AvPnrKTWooVcsoxuLPFrG1HvDoWNfVBV5RGJ72ANzMrUvtCPi
+	cW4qTYeXSZkV3izgY+lWwpczz+T1XV7GSxgou4ZE1e1nQLaKmbggczmnxZ7tOfhPOOIdgF84kdr
+	8nBF1f7ca6QyYI0Ws3CTDazh14SvfAIwJPR4zI//2jNFzFUd08mYPN2M2FTYgzjwnA+YGsjarzU
+X-Google-Smtp-Source: AGHT+IHNLiyVdLTQryJ5zl/BlLI0w3IMaaqQp710LjXBU8Kp9kkx4QGyMUZU5Ga/n0POhRU/eSwXDQ==
+X-Received: by 2002:ac8:5741:0:b0:467:6cd9:3093 with SMTP id d75a77b69052e-467a582a976mr89521851cf.46.1734132602601;
+        Fri, 13 Dec 2024 15:30:02 -0800 (PST)
 Received: from n36-183-057.byted.org ([130.44.215.64])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b7047d4a20sm25805085a.39.2024.12.13.15.29.59
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b7047d4a20sm25805085a.39.2024.12.13.15.30.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Dec 2024 15:30:00 -0800 (PST)
+        Fri, 13 Dec 2024 15:30:02 -0800 (PST)
 From: Amery Hung <amery.hung@bytedance.com>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -87,9 +87,9 @@ Cc: bpf@vger.kernel.org,
 	xiyou.wangcong@gmail.com,
 	yepeilin.cs@gmail.com,
 	ameryhung@gmail.com
-Subject: [PATCH bpf-next v1 01/13] bpf: Support getting referenced kptr from struct_ops argument
-Date: Fri, 13 Dec 2024 23:29:46 +0000
-Message-Id: <20241213232958.2388301-2-amery.hung@bytedance.com>
+Subject: [PATCH bpf-next v1 02/13] selftests/bpf: Test referenced kptr arguments of struct_ops programs
+Date: Fri, 13 Dec 2024 23:29:47 +0000
+Message-Id: <20241213232958.2388301-3-amery.hung@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20241213232958.2388301-1-amery.hung@bytedance.com>
 References: <20241213232958.2388301-1-amery.hung@bytedance.com>
@@ -101,233 +101,262 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Allows struct_ops programs to acqurie referenced kptrs from arguments
-by directly reading the argument.
-
-The verifier will acquire a reference for struct_ops a argument tagged
-with "__ref" in the stub function in the beginning of the main program.
-The user will be able to access the referenced kptr directly by reading
-the context as long as it has not been released by the program.
-
-This new mechanism to acquire referenced kptr (compared to the existing
-"kfunc with KF_ACQUIRE") is introduced for ergonomic and semantic reasons.
-In the first use case, Qdisc_ops, an skb is passed to .enqueue in the
-first argument. This mechanism provides a natural way for users to get a
-referenced kptr in the .enqueue struct_ops programs and makes sure that a
-qdisc will always enqueue or drop the skb.
+Test referenced kptr acquired through struct_ops argument tagged with
+"__ref". The success case checks whether 1) a reference to the correct
+type is acquired, and 2) the referenced kptr argument can be accessed in
+multiple paths as long as it hasn't been released. In the fail cases,
+we first confirm that a referenced kptr acquried through a struct_ops
+argument is not allowed to be leaked. Then, we make sure this new
+referenced kptr acquiring mechanism does not accidentally allow referenced
+kptrs to flow into global subprograms through their arguments.
 
 Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 ---
- include/linux/bpf.h         |  3 +++
- kernel/bpf/bpf_struct_ops.c | 26 ++++++++++++++++++++------
- kernel/bpf/btf.c            |  1 +
- kernel/bpf/verifier.c       | 35 ++++++++++++++++++++++++++++++++---
- 4 files changed, 56 insertions(+), 9 deletions(-)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  7 ++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  2 +
+ .../prog_tests/test_struct_ops_refcounted.c   | 58 ++++++++++++++++
+ .../bpf/progs/struct_ops_refcounted.c         | 67 +++++++++++++++++++
+ ...ruct_ops_refcounted_fail__global_subprog.c | 32 +++++++++
+ .../struct_ops_refcounted_fail__ref_leak.c    | 17 +++++
+ 6 files changed, 183 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_refcounted.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_refcounted.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__global_subprog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__ref_leak.c
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 1b84613b10ac..72bf941d1daf 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -968,6 +968,7 @@ struct bpf_insn_access_aux {
- 		struct {
- 			struct btf *btf;
- 			u32 btf_id;
-+			u32 ref_obj_id;
- 		};
- 	};
- 	struct bpf_verifier_log *log; /* for verbose logs */
-@@ -1480,6 +1481,8 @@ struct bpf_ctx_arg_aux {
- 	enum bpf_reg_type reg_type;
- 	struct btf *btf;
- 	u32 btf_id;
-+	u32 ref_obj_id;
-+	bool refcounted;
- };
- 
- struct btf_mod_pair {
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index fda3dd2ee984..6e7795744f6a 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -145,6 +145,7 @@ void bpf_struct_ops_image_free(void *image)
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 987d41af71d2..244234546ae2 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -1135,10 +1135,17 @@ static int bpf_testmod_ops__test_maybe_null(int dummy,
+ 	return 0;
  }
  
- #define MAYBE_NULL_SUFFIX "__nullable"
-+#define REFCOUNTED_SUFFIX "__ref"
- #define MAX_STUB_NAME 128
- 
- /* Return the type info of a stub function, if it exists.
-@@ -206,9 +207,11 @@ static int prepare_arg_info(struct btf *btf,
- 			    struct bpf_struct_ops_arg_info *arg_info)
- {
- 	const struct btf_type *stub_func_proto, *pointed_type;
-+	bool is_nullable = false, is_refcounted = false;
- 	const struct btf_param *stub_args, *args;
- 	struct bpf_ctx_arg_aux *info, *info_buf;
- 	u32 nargs, arg_no, info_cnt = 0;
-+	const char *suffix;
- 	u32 arg_btf_id;
- 	int offset;
- 
-@@ -240,12 +243,19 @@ static int prepare_arg_info(struct btf *btf,
- 	info = info_buf;
- 	for (arg_no = 0; arg_no < nargs; arg_no++) {
- 		/* Skip arguments that is not suffixed with
--		 * "__nullable".
-+		 * "__nullable or __ref".
- 		 */
--		if (!btf_param_match_suffix(btf, &stub_args[arg_no],
--					    MAYBE_NULL_SUFFIX))
-+		is_nullable = btf_param_match_suffix(btf, &stub_args[arg_no],
-+						     MAYBE_NULL_SUFFIX);
-+		is_refcounted = btf_param_match_suffix(btf, &stub_args[arg_no],
-+						       REFCOUNTED_SUFFIX);
-+		if (!is_nullable && !is_refcounted)
- 			continue;
- 
-+		if (is_nullable)
-+			suffix = MAYBE_NULL_SUFFIX;
-+		else if (is_refcounted)
-+			suffix = REFCOUNTED_SUFFIX;
- 		/* Should be a pointer to struct */
- 		pointed_type = btf_type_resolve_ptr(btf,
- 						    args[arg_no].type,
-@@ -253,7 +263,7 @@ static int prepare_arg_info(struct btf *btf,
- 		if (!pointed_type ||
- 		    !btf_type_is_struct(pointed_type)) {
- 			pr_warn("stub function %s__%s has %s tagging to an unsupported type\n",
--				st_ops_name, member_name, MAYBE_NULL_SUFFIX);
-+				st_ops_name, member_name, suffix);
- 			goto err_out;
- 		}
- 
-@@ -271,11 +281,15 @@ static int prepare_arg_info(struct btf *btf,
- 		}
- 
- 		/* Fill the information of the new argument */
--		info->reg_type =
--			PTR_TRUSTED | PTR_TO_BTF_ID | PTR_MAYBE_NULL;
- 		info->btf_id = arg_btf_id;
- 		info->btf = btf;
- 		info->offset = offset;
-+		if (is_nullable) {
-+			info->reg_type = PTR_TRUSTED | PTR_TO_BTF_ID | PTR_MAYBE_NULL;
-+		} else if (is_refcounted) {
-+			info->reg_type = PTR_TRUSTED | PTR_TO_BTF_ID;
-+			info->refcounted = true;
-+		}
- 
- 		info++;
- 		info_cnt++;
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index e7a59e6462a9..a05ccf9ee032 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6580,6 +6580,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 			info->reg_type = ctx_arg_info->reg_type;
- 			info->btf = ctx_arg_info->btf ? : btf_vmlinux;
- 			info->btf_id = ctx_arg_info->btf_id;
-+			info->ref_obj_id = ctx_arg_info->ref_obj_id;
- 			return true;
- 		}
- 	}
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9f5de8d4fbd0..69753096075f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1402,6 +1402,17 @@ static int release_reference_state(struct bpf_func_state *state, int ptr_id)
- 	return -EINVAL;
- }
- 
-+static bool find_reference_state(struct bpf_func_state *state, int ptr_id)
++static int bpf_testmod_ops__test_refcounted(int dummy,
++					    struct task_struct *task__ref)
 +{
-+	int i;
-+
-+	for (i = 0; i < state->acquired_refs; i++)
-+		if (state->refs[i].id == ptr_id)
-+			return true;
-+
-+	return false;
++	return 0;
 +}
 +
- static int release_lock_state(struct bpf_func_state *state, int type, int id, void *ptr)
- {
- 	int i, last_idx;
-@@ -5798,7 +5809,8 @@ static int check_packet_access(struct bpf_verifier_env *env, u32 regno, int off,
- /* check access to 'struct bpf_context' fields.  Supports fixed offsets only */
- static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, int off, int size,
- 			    enum bpf_access_type t, enum bpf_reg_type *reg_type,
--			    struct btf **btf, u32 *btf_id, bool *is_retval, bool is_ldsx)
-+			    struct btf **btf, u32 *btf_id, bool *is_retval, bool is_ldsx,
-+			    u32 *ref_obj_id)
- {
- 	struct bpf_insn_access_aux info = {
- 		.reg_type = *reg_type,
-@@ -5820,8 +5832,16 @@ static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, int off,
- 		*is_retval = info.is_retval;
+ static struct bpf_testmod_ops __bpf_testmod_ops = {
+ 	.test_1 = bpf_testmod_test_1,
+ 	.test_2 = bpf_testmod_test_2,
+ 	.test_maybe_null = bpf_testmod_ops__test_maybe_null,
++	.test_refcounted = bpf_testmod_ops__test_refcounted,
+ };
  
- 		if (base_type(*reg_type) == PTR_TO_BTF_ID) {
-+			if (info.ref_obj_id &&
-+			    !find_reference_state(cur_func(env), info.ref_obj_id)) {
-+				verbose(env, "invalid bpf_context access off=%d. Reference may already be released\n",
-+					off);
-+				return -EACCES;
-+			}
+ struct bpf_struct_ops bpf_bpf_testmod_ops = {
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+index fb7dff47597a..0e31586c1353 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+@@ -36,6 +36,8 @@ struct bpf_testmod_ops {
+ 	/* Used to test nullable arguments. */
+ 	int (*test_maybe_null)(int dummy, struct task_struct *task);
+ 	int (*unsupported_ops)(void);
++	/* Used to test ref_acquired arguments. */
++	int (*test_refcounted)(int dummy, struct task_struct *task);
+ 
+ 	/* The following fields are used to test shadow copies. */
+ 	char onebyte;
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_refcounted.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_refcounted.c
+new file mode 100644
+index 000000000000..976df951b700
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_refcounted.c
+@@ -0,0 +1,58 @@
++#include <test_progs.h>
 +
- 			*btf = info.btf;
- 			*btf_id = info.btf_id;
-+			*ref_obj_id = info.ref_obj_id;
- 		} else {
- 			env->insn_aux_data[insn_idx].ctx_field_size = info.ctx_field_size;
- 		}
-@@ -7135,7 +7155,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 		struct bpf_retval_range range;
- 		enum bpf_reg_type reg_type = SCALAR_VALUE;
- 		struct btf *btf = NULL;
--		u32 btf_id = 0;
-+		u32 btf_id = 0, ref_obj_id = 0;
- 
- 		if (t == BPF_WRITE && value_regno >= 0 &&
- 		    is_pointer_value(env, value_regno)) {
-@@ -7148,7 +7168,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 			return err;
- 
- 		err = check_ctx_access(env, insn_idx, off, size, t, &reg_type, &btf,
--				       &btf_id, &is_retval, is_ldsx);
-+				       &btf_id, &is_retval, is_ldsx, &ref_obj_id);
- 		if (err)
- 			verbose_linfo(env, insn_idx, "; ");
- 		if (!err && t == BPF_READ && value_regno >= 0) {
-@@ -7179,6 +7199,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 				if (base_type(reg_type) == PTR_TO_BTF_ID) {
- 					regs[value_regno].btf = btf;
- 					regs[value_regno].btf_id = btf_id;
-+					regs[value_regno].ref_obj_id = ref_obj_id;
- 				}
- 			}
- 			regs[value_regno].type = reg_type;
-@@ -21662,6 +21683,7 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
- {
- 	bool pop_log = !(env->log.level & BPF_LOG_LEVEL2);
- 	struct bpf_subprog_info *sub = subprog_info(env, subprog);
-+	struct bpf_ctx_arg_aux *ctx_arg_info;
- 	struct bpf_verifier_state *state;
- 	struct bpf_reg_state *regs;
- 	int ret, i;
-@@ -21769,6 +21791,13 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
- 		mark_reg_known_zero(env, regs, BPF_REG_1);
- 	}
- 
-+	if (!subprog && env->prog->type == BPF_PROG_TYPE_STRUCT_OPS) {
-+		ctx_arg_info = (struct bpf_ctx_arg_aux *)env->prog->aux->ctx_arg_info;
-+		for (i = 0; i < env->prog->aux->ctx_arg_info_size; i++)
-+			if (ctx_arg_info[i].refcounted)
-+				ctx_arg_info[i].ref_obj_id = acquire_reference_state(env, 0);
-+	}
++#include "struct_ops_refcounted.skel.h"
++#include "struct_ops_refcounted_fail__ref_leak.skel.h"
++#include "struct_ops_refcounted_fail__global_subprog.skel.h"
 +
- 	ret = do_check(env);
- out:
- 	/* check for NULL is necessary, since cur_state can be freed inside
++/* Test that the verifier accepts a program that first acquires a referenced
++ * kptr through context and then releases the reference
++ */
++static void refcounted(void)
++{
++	struct struct_ops_refcounted *skel;
++
++	skel = struct_ops_refcounted__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "struct_ops_module_open_and_load"))
++		return;
++
++	struct_ops_refcounted__destroy(skel);
++}
++
++/* Test that the verifier rejects a program that acquires a referenced
++ * kptr through context without releasing the reference
++ */
++static void refcounted_fail__ref_leak(void)
++{
++	struct struct_ops_refcounted_fail__ref_leak *skel;
++
++	skel = struct_ops_refcounted_fail__ref_leak__open_and_load();
++	if (ASSERT_ERR_PTR(skel, "struct_ops_module_fail__open_and_load"))
++		return;
++
++	struct_ops_refcounted_fail__ref_leak__destroy(skel);
++}
++
++/* Test that the verifier rejects a program that contains a global
++ * subprogram with referenced kptr arguments
++ */
++static void refcounted_fail__global_subprog(void)
++{
++	struct struct_ops_refcounted_fail__global_subprog *skel;
++
++	skel = struct_ops_refcounted_fail__global_subprog__open_and_load();
++	if (ASSERT_ERR_PTR(skel, "struct_ops_module_fail__open_and_load"))
++		return;
++
++	struct_ops_refcounted_fail__global_subprog__destroy(skel);
++}
++
++void test_struct_ops_refcounted(void)
++{
++	if (test__start_subtest("refcounted"))
++		refcounted();
++	if (test__start_subtest("refcounted_fail__ref_leak"))
++		refcounted_fail__ref_leak();
++	if (test__start_subtest("refcounted_fail__global_subprog"))
++		refcounted_fail__global_subprog();
++}
++
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_refcounted.c b/tools/testing/selftests/bpf/progs/struct_ops_refcounted.c
+new file mode 100644
+index 000000000000..2c1326668b92
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/struct_ops_refcounted.c
+@@ -0,0 +1,67 @@
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include "../bpf_testmod/bpf_testmod.h"
++#include "bpf_misc.h"
++
++char _license[] SEC("license") = "GPL";
++
++extern void bpf_task_release(struct task_struct *p) __ksym;
++
++/* This is a test BPF program that uses struct_ops to access a referenced
++ * kptr argument. This is a test for the verifier to ensure that it
++ * 1) recongnizes the task as a referenced object (i.e., ref_obj_id > 0), and
++ * 2) the same reference can be acquired from multiple paths as long as it
++ *    has not been released.
++ *
++ * test_refcounted() is equivalent to the C code below. It is written in assembly
++ * to avoid reads from task (i.e., getting referenced kptrs to task) being merged
++ * into single path by the compiler.
++ *
++ * int test_refcounted(int dummy, struct task_struct *task)
++ * {
++ *         if (dummy % 2)
++ *                 bpf_task_release(task);
++ *         else
++ *                 bpf_task_release(task);
++ *         return 0;
++ * }
++ */
++SEC("struct_ops/test_refcounted")
++int test_refcounted(unsigned long long *ctx)
++{
++	asm volatile ("					\
++	/* r6 = dummy */				\
++	r6 = *(u64 *)(r1 + 0x0);			\
++	/* if (r6 & 0x1 != 0) */			\
++	r6 &= 0x1;					\
++	if r6 == 0 goto l0_%=;				\
++	/* r1 = task */					\
++	r1 = *(u64 *)(r1 + 0x8);			\
++	call %[bpf_task_release];			\
++	goto l1_%=;					\
++l0_%=:	/* r1 = task */					\
++	r1 = *(u64 *)(r1 + 0x8);			\
++	call %[bpf_task_release];			\
++l1_%=:	/* return 0 */					\
++"	:
++	: __imm(bpf_task_release)
++	: __clobber_all);
++	return 0;
++}
++
++/* BTF FUNC records are not generated for kfuncs referenced
++ * from inline assembly. These records are necessary for
++ * libbpf to link the program. The function below is a hack
++ * to ensure that BTF FUNC records are generated.
++ */
++void __btf_root(void)
++{
++	bpf_task_release(NULL);
++}
++
++SEC(".struct_ops.link")
++struct bpf_testmod_ops testmod_refcounted = {
++	.test_refcounted = (void *)test_refcounted,
++};
++
++
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__global_subprog.c b/tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__global_subprog.c
+new file mode 100644
+index 000000000000..c7e84e63b053
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__global_subprog.c
+@@ -0,0 +1,32 @@
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include "../bpf_testmod/bpf_testmod.h"
++
++char _license[] SEC("license") = "GPL";
++
++extern void bpf_task_release(struct task_struct *p) __ksym;
++
++__noinline int subprog_release(__u64 *ctx __arg_ctx)
++{
++	struct task_struct *task = (struct task_struct *)ctx[1];
++	int dummy = (int)ctx[0];
++
++	bpf_task_release(task);
++
++	return dummy + 1;
++}
++
++SEC("struct_ops/test_refcounted")
++int test_refcounted(unsigned long long *ctx)
++{
++	struct task_struct *task = (struct task_struct *)ctx[1];
++
++	bpf_task_release(task);
++
++	return subprog_release(ctx);
++}
++
++SEC(".struct_ops.link")
++struct bpf_testmod_ops testmod_ref_acquire = {
++	.test_refcounted = (void *)test_refcounted,
++};
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__ref_leak.c b/tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__ref_leak.c
+new file mode 100644
+index 000000000000..6e82859eb187
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__ref_leak.c
+@@ -0,0 +1,17 @@
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include "../bpf_testmod/bpf_testmod.h"
++
++char _license[] SEC("license") = "GPL";
++
++SEC("struct_ops/test_refcounted")
++int BPF_PROG(test_refcounted, int dummy,
++	     struct task_struct *task)
++{
++	return 0;
++}
++
++SEC(".struct_ops.link")
++struct bpf_testmod_ops testmod_ref_acquire = {
++	.test_refcounted = (void *)test_refcounted,
++};
 -- 
 2.20.1
 
