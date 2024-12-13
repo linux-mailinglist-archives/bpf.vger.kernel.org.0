@@ -1,130 +1,107 @@
-Return-Path: <bpf+bounces-46941-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46942-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A656B9F19B9
-	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 00:14:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DF2C9F19C0
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 00:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C820C164943
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 23:14:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1B7A188D0EE
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 23:16:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E16321B6D10;
-	Fri, 13 Dec 2024 23:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE8121A8F88;
+	Fri, 13 Dec 2024 23:16:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ky2aUSRC"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qPSlgqbr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162E11A8F98;
-	Fri, 13 Dec 2024 23:14:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 215F92E62B
+	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 23:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734131660; cv=none; b=AYC4+xkSmlCTclZFtTXN22JsWHVZphQlVUnXrcUMy8fpzvRQ7ZJJfVFurbmggr/6W+q/LPbAHrgfyln5iJ2HCeWVDhLh8kwPwrJviVO1X/Bx2QT4XqyafzqnXk3cZXwSLjB/slFsxdq99QtFYZymh+ndUMbQmWDrW5IDnUFC3MM=
+	t=1734131763; cv=none; b=Bk1n011apmWFQyh7uBJLPRUk9ReF4o4xdcUbY6561uWrxNYsaWE8i4UnsEOZ7nVfJs/8SCCdjkg8fw2CaiV98Iq+Ue8c8+9IDpTAdZyulMCzfRGBkg+J0BzlcN95X4HbhxqyZMuHe3zmTvWnB/T1wW4jrIYJwoyY9nTjC2eJ8Os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734131660; c=relaxed/simple;
-	bh=hKezC6/2ZW5cF63eVPLSBC2xpLBXRK7xHDpxFYYE5ao=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nHc73wTHvSmi7MW/9lrlk0b7ie69q60MA+9zHgKO0YvvGMK7efAQYs1wMwraXNtXoEVnOsKRnl7LdMQjBKAwJ0p4W10uyzeYtdyMZQNBvIzVU6WPnxfHCLHvA82FDlk9/u6g/vIVbf+j5nlaNt4i1iqmjuuDESMnqAQAtcyZL+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ky2aUSRC; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7fd4998b0dbso1949532a12.0;
-        Fri, 13 Dec 2024 15:14:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734131658; x=1734736458; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zCvik0BFfR3REMeSDvH2UBjzyVcZ3NxdX9i+fk5iEQA=;
-        b=ky2aUSRC4KvneoJuX7nDYQf9buitvRnG1O9O3RjNsTay8G0YppSz/t8j6H6Q6zE3qM
-         vSeo3+dY/r/zyxJNUSucDSjRzmOEnO/xuQSW8qwKcPsjIl96h8oH2f5BCGiCok53aYuj
-         atyXDuPgcMEsPwSYNU6jD+9VDxHGjpWBVEKggria93wLEyvja57hpOA3QARZ5plzNW6e
-         8fDP1NUDgdeAdu8r0rzwszajgruZN+zK80Kfp8zWj3CLOBDwQc9jMUo02t/q9NBERled
-         dDdxRO+NVFZTWAWQX8mrr0ns5n+OZamVNklfvDInAXkqMGcjz1g4a1nJocRa3R9QMp3n
-         aVxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734131658; x=1734736458;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zCvik0BFfR3REMeSDvH2UBjzyVcZ3NxdX9i+fk5iEQA=;
-        b=uswULYwehHLAXN7w7KSBpRl4VCC2c8TUq1gvH2J1AMhnVyviAttT4O6JUaLuI3sEql
-         B3AJ+JkwRPBr2a7Zd67M1DUrW86+DrvgCH1cYtHzBDlIE2Vbyvrd6TZFcE/U9A1keHLW
-         P05EBD0Oce3CP7CTx74e68KtHlhXD/Kc/iuP1HJy3ufgwZ9TrWRtaVYu5+adxpSUAgMo
-         lnEz6YIhH81s12LirpbpuVelI1OoQtMG/WYsrTXlaUsxjx/4YTo4weNnQVFKw2OyhzDt
-         qTx8WEXLhuiEZ8qaeFIeq3ndAqXq4tyPhW4t5umQnm4J3pSsd7b9psFAdYEXJviKhOAe
-         tnpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV26jZABjXxxz+We6oXOHffdnJM7+rx2Ui6kDuxVpp3y37JHa3HSF2WMNA1cY3T5+wlZzp4xHrp@vger.kernel.org, AJvYcCVkOJqux3Vs1JlADQesf9c2RlFDK2fFx7KkEeffKX4K9M4MBZZqkiI+NZBkm4IQLGiUQL1SYiXhr62YgaOJ@vger.kernel.org, AJvYcCWPkHTHp9EIFOTziquKvPGBvr93oMnT9M4fIVU/dAMWDd09j4SjS1cB95xTG+kjcoxEd5hJmzyy/rParYfwuI4W@vger.kernel.org, AJvYcCXlRDuuhJju3jK29CkxIPPCmoD1uhKKbL7ueRFNKqGjy7SMt+04IgVzJzV1c9OMhPyj6ic=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxgDxmkn0twnGE/n5tthfbpKeC5RAI+Il1+s0u5LifLn4te145A
-	DfEKl+LM+CLFU4epvdrdeqfrEudXASWRH5IIoIsfd17lvxakTJ0O
-X-Gm-Gg: ASbGnct3X1Ac8c8BLsHxNFtoy0zzCdDkNGTDb6FaOsxa1lL9OZHPr85kH4uVxeNUscO
-	UBkUdWPH/4VkRlLb1siAq18AiJwyWR+fduoH6mi1u/vUJg4AIgt7LC3pX6JVW7SF36SFBN4TMtl
-	1zLAh6CliGBizKMbMFfFl0im5vQPpyEqvcF3jEqx4yxEKTmwbp5pVjrp7KCx5It3692XQDLaoIV
-	dmxsRBxhYYqdeQA2PqNMWUA1BiVIpUJ957AtD7AhKsHP9D6bnjOOg==
-X-Google-Smtp-Source: AGHT+IHjJ0tA7hlbFBWwcdUeow1JGLtUtYIpcg7PJHyofYRIKLhzpNxpSDao8x/5m7VBpr3f9FXyGw==
-X-Received: by 2002:a17:90b:1e05:b0:2ee:f1e3:fd21 with SMTP id 98e67ed59e1d1-2f2900ad7acmr6240686a91.25.1734131658255;
-        Fri, 13 Dec 2024 15:14:18 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-801d5aa8dd2sm258259a12.20.2024.12.13.15.14.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Dec 2024 15:14:17 -0800 (PST)
-Message-ID: <f99a31f62c19262fcad7debf10ede0bb0b970af4.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/5] bpf: verifier: Support eliding map
- lookup nullness
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Daniel Xu <dxu@dxuuu.xyz>
-Cc: andrii@kernel.org, ast@kernel.org, shuah@kernel.org,
- daniel@iogearbox.net, 	john.fastabend@gmail.com, martin.lau@linux.dev,
- song@kernel.org, 	yonghong.song@linux.dev, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, 	jolsa@kernel.org, mykolal@fb.com,
- bpf@vger.kernel.org, 	linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, 	netdev@vger.kernel.org
-Date: Fri, 13 Dec 2024 15:14:12 -0800
-In-Reply-To: <CAP01T76UQgb=Y0kh6bKPABt=p8=JRmDHsFc31rsijXSrK+5+8A@mail.gmail.com>
-References: <cover.1734045451.git.dxu@dxuuu.xyz>
-	 <92065ca054beccd6d0f35efe9715ef965e8d379f.1734045451.git.dxu@dxuuu.xyz>
-	 <CAP01T76UQgb=Y0kh6bKPABt=p8=JRmDHsFc31rsijXSrK+5+8A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1734131763; c=relaxed/simple;
+	bh=KKtL/PsftXCwKV92mSnukQ5R/DtW4ysnRr1ukbBlzkw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SmQWWhjO2dh7OxPZ6CjWcUdLRka5B1/yxdtJElS8NcztZEiX5frkN4HO8HeEweCw61lyGD9A4rboWSVEBAPcP9X3+zRUYBTW18NBejcWiUdUX7zoc70EDqthWm4fktYuaKbIvucaW83DaD0PP6ZPvVqRWsXJ30fcQ58n2BZ8ABo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qPSlgqbr; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <53c3be2f-1d5d-44cb-8c27-18c84bc30c9e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734131759;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LX6/0+0xRBVNtjMps0VhjdxMoYFyXabZfc6NB2DXmV8=;
+	b=qPSlgqbrYKnL2SEVNmYTn+ss6A9f/+27X16fS7eqxZkJ9jdH4p5UUD+I7AL7CW+ZPC391e
+	gRjDHWCUNRiFilA8FPQaWbto8/QRpoQb1LtsIrOW3yyjHUhc6KyV9+KbzqSrqRFhXOJvuV
+	6cq4dnwb5p6ieehk7EmiexRZAHb6ueo=
+Date: Fri, 13 Dec 2024 15:15:48 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH net-next v4 07/11] net-timestamp: support hwtstamp print
+ for bpf extension
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
+ willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+References: <20241207173803.90744-1-kerneljasonxing@gmail.com>
+ <20241207173803.90744-8-kerneljasonxing@gmail.com>
+ <a3abb0b6-cd94-46f6-b996-f90da7e790b9@linux.dev>
+ <CAL+tcoCyu6w=O5y2fRSfrzDVm04SB2ycXB06uYn2+r2jSRhehA@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAL+tcoCyu6w=O5y2fRSfrzDVm04SB2ycXB06uYn2+r2jSRhehA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, 2024-12-14 at 00:10 +0100, Kumar Kartikeya Dwivedi wrote:
+On 12/13/24 7:13 AM, Jason Xing wrote:
+>>> -static void __skb_tstamp_tx_bpf(struct sock *sk, struct sk_buff *skb, int tstype)
+>>> +static void __skb_tstamp_tx_bpf(struct sock *sk, struct sk_buff *skb,
+>>> +                             struct skb_shared_hwtstamps *hwtstamps,
+>>> +                             int tstype)
+>>>    {
+>>> +     struct timespec64 tstamp;
+>>> +     u32 args[2] = {0, 0};
+>>>        int op;
+>>>
+>>>        if (!sk)
+>>> @@ -5552,6 +5556,11 @@ static void __skb_tstamp_tx_bpf(struct sock *sk, struct sk_buff *skb, int tstype
+>>>                break;
+>>>        case SCM_TSTAMP_SND:
+>>>                op = BPF_SOCK_OPS_TS_SW_OPT_CB;
+>>> +             if (hwtstamps) {
+>>> +                     tstamp = ktime_to_timespec64(hwtstamps->hwtstamp);
+>> Avoid this conversion which is likely not useful to the bpf prog. Directly pass
+>> hwtstamps->hwtstamp (in ns?) to the bpf prog. Put lower 32bits in args[0] and
+>> higher 32bits in args[1].
+> It makes sense.
 
-[...]
+When replying the patch 2 thread, I noticed it may not even have to pass the 
+hwtstamps in args here.
 
-> > @@ -11199,10 +11266,17 @@ static int check_helper_call(struct bpf_verif=
-ier_env *env, struct bpf_insn *insn
-> >                                 "kernel subsystem misconfigured verifie=
-r\n");
-> >                         return -EINVAL;
-> >                 }
-> > +
-> > +               if (func_id =3D=3D BPF_FUNC_map_lookup_elem &&
-> > +                   can_elide_value_nullness(meta.map_ptr->map_type) &&
-> > +                   meta.const_map_key >=3D 0 &&
-> > +                   meta.const_map_key < meta.map_ptr->max_entries)
-> > +                       ret_flag &=3D ~PTR_MAYBE_NULL;
->=20
-> I think we probably need mark_chain_precision applied on the constant
-> key since its concrete value is made use of here to prevent pruning on
-> it. If it's already happening and I missed it, I think we should
-> atleast add a comment.
->=20
-> For context of a similar case with tail calls, see commit
-> cc52d9140aa9 ("bpf: Fix record_func_key to perform backtracking on r3")
-> for what happens when it is missed.
-
-Great point, I'm sure this does not happen.
-
-[...]
-
+Can "*skb_hwtstamps(skb) = *hwtstamps;" be done before calling the bpf prog? 
+Then the bpf prog can directly get it from skb_shinfo(skb)->hwtstamps.
+It is like reading other fields in skb_shinfo(skb), e.g. the 
+skb_shinfo(skb)->tskey discussed in patch 10. The bpf prog will have a more 
+consistent experience in reading different fields of the skb_shinfo(skb). 
+skb_shinfo(skb)->hwtstamps is a more intuitive place to obtain the hwtstamp than 
+the broken up args[0] and args[1]. On top of that, there is also an older 
+"skb_hwtstamp" field in "struct bpf_sock_ops".
 
