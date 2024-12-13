@@ -1,270 +1,359 @@
-Return-Path: <bpf+bounces-46797-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46798-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E881D9F0171
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 02:02:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C620C9F01BE
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 02:14:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A40F42858A0
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 01:02:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82B03287701
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 01:14:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1698125D6;
-	Fri, 13 Dec 2024 01:02:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987E522338;
+	Fri, 13 Dec 2024 01:14:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MapgZhGX"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FPvJVffr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01BE4A06;
-	Fri, 13 Dec 2024 01:02:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA8412114
+	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 01:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734051726; cv=none; b=Q4vpFKHh6LtgETKxk+RJoo4xB64FG8CI9h3UYh58v/iJlHmTN9WS+4LAKVc3B1rK4ssSe8NuTUxnWErhtOPYhXhPJwRiN3TeWoP2D+iCN+duvA+PDY2VoZlxWGYsCTQ0qLi+q/HhmRzgPujivjj8Y8Ci2k4UnrsrBnThMWgVdTw=
+	t=1734052472; cv=none; b=O5RDjnRvw1GLaHdzotgnuBV9z3r2+MJ3vTII7pd6SzNkT3WHJ0Z8N2ScPqWwewXawGZWP9ajEuNiHF5YCzhEJ3S6FdIq9cP44aUUewWz/GZukI32uBz5Biig4q5xRiNNko1YSrH0nT67XCvNVGARP40TVcYSZ1FkqPEvUGP/gU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734051726; c=relaxed/simple;
-	bh=Kym6VrYxHrsEryNYEUHq15JGnm+oHt/W/iIQnRQvpSE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CTbXft9nhqGWY6YxFNl3XerSZ7JdnBafB09oWbXhNr2sCyy+Xe1dN0/ALsGnmvoI4cG7roKAPR2HDCrV79emD+gpRbCthhB23QStuuZk/fqYZ7c7rg+cdv8WKB8EFA725esa+HPLQr5cn6q/8T/2oFtL0FO/KFWDBtNDTmLyv9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MapgZhGX; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-7fc93152edcso1040612a12.0;
-        Thu, 12 Dec 2024 17:02:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734051724; x=1734656524; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tRPjkEFYECNCam+aAk3MjBT2kOPT+USpYazr/q3Cmlk=;
-        b=MapgZhGXpsIjtxE7pI45DeZxiMxpZCc957eRZKxaKO7scDobIWPw3/sBG+REbLb5fe
-         z0c/kjU6XPW1x10fF28vuw3hWLpU4luExZVEgTSpOVEfTGL0LKSPFb0RVypeUepp/lXY
-         nvj5hUqYzdTWMK7BV4nkyqLUjx1ye86QI4Y6hBvqAOBcd1Keb5xHEeQ4zmt7oaAblEeg
-         CqCF/hK7M34M9dWdlEZPIAlpr6vyIVTyRAMzjGk8Z+0h8IDKJ+uoTTLJiq8aYThbAWL8
-         8WMWCQb+jAI7yHI3u5dR6Wu6MsKUoF4qxmHU+jNHUtdnC/FMTGADvLC/Wn9DGly6PDdg
-         WjFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734051724; x=1734656524;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tRPjkEFYECNCam+aAk3MjBT2kOPT+USpYazr/q3Cmlk=;
-        b=u+v2JYwIk54nVn1gjkepyIseN1kZ8qdhk/c83sQcuYd4pOvpMqeRHAXAEz3K5QNvw+
-         PPQbmA3faeN8q8uLpl7ONRjJ/ZUwRKsJjPRZKT/XqeqdPy7GC6M8cWRJhLB3r2/wJOmy
-         qVx3VDHm/0obCQ+OXqE78hsgpnYLnQ8mdE0jYueDl5NgT2K/o0CYuo8d+jBTts3wcxdQ
-         OpWX+a4arJf+4KWnVaxNpSFhEtjBpUON2pwY8iFV57CnljBrnCmUdKOp2g9/2frGTFk/
-         NbpQfAleZdNVLC2oqH0vCBkT0XcFY9VLsTlKg6oFOjCJgwt4fOU13mMNvCIDCxJlWPB+
-         8JXw==
-X-Forwarded-Encrypted: i=1; AJvYcCUtdiiCA8h/SkZhSiwHSj4QJEDgIA3m5Keiw8ABEb1bhrqfFlUoC5sDui6bp8IrjDOTCho=@vger.kernel.org, AJvYcCXXyAObnAkK9iRCLM3yUYV/ErwWYjcdEGhQyjUPFaHmQX8VoC0tLjzrBvyKNSVuI9Lf2GMLkqh4kNKOLi9s@vger.kernel.org, AJvYcCXjMMVRATE0oPH7zpkCUW7coh6qRK94QJUX0DbVT9y7vfGM0fvUWllQ30o8WAgMFhtilWYOMtgLeTeGILmXQIC/LBzg@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRmrSAL2EGuVoMd5wMJ6LSMq+XaWQjqm+6O/R0+oPdGbBFLBui
-	yj4a6pyfByEWtrxmnNGyllUe2VhzQQvsoblGWhtIV3dr0R5ZVdfh0I01/u5U8fGAgxrr+WY7wln
-	GiLjF8OrE/1+eqOrODfWemGMC9VM=
-X-Gm-Gg: ASbGnctIthxZzf1hG2zXun5o15z9rnnuLLrp5BfwfQoQQ3MUEEFWSOt0ldL/66KI21w
-	8nzb4XjcKQjcJKLl8unqR5I+ai/CHBxoHOqj4zyS1PaplEkZhcs0FXg==
-X-Google-Smtp-Source: AGHT+IH95GED+20NT/CsLYu+Njap3yr1GP2+NSdRYG1CdE2HycgDJDRSAz7eRwBRpVO9Cc0Hrq+CWLwksAMxDL7GHJo=
-X-Received: by 2002:a17:90b:17c3:b0:2ee:9661:eafb with SMTP id
- 98e67ed59e1d1-2f2919ba2dfmr857330a91.12.1734051723977; Thu, 12 Dec 2024
- 17:02:03 -0800 (PST)
+	s=arc-20240116; t=1734052472; c=relaxed/simple;
+	bh=Z8NZU10lqxCjMNIMYlB4+pTlmXi8SnoozYRhLLasBcI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lwnMN1EhfhjRZqcDquwCk0F8TjqogAjyrYoOqBsnj5vVXyDDICnAeQonmE8V3nq4+/jMtN8FvwJZhRYOCXv8LF4atTKwu/iOJ7tc3HSYOcIzqI5WDNrZYK15uHgEcIqoEMvxRc/YuYGtRNj78N4rt/4mFzMu3WfeaSdXwnR0RF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FPvJVffr; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <65a83b0e-5547-408a-a081-083ffd9d1c91@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734052457;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mnv4HruEQX6MfZNU3lmvh1Od5gfd8xReBtQY46lrXCs=;
+	b=FPvJVffrEUsdZ6D/7AWwFnN1TeBDWsQaZXprKduXuIdZMP0XDkc60cOrQdmJZcLZa6t7s8
+	+ku6hvEamFKdXfLCt30gpX8j2cOqfC09Vr14FWMKJWitEciWYrsKOrtyU6BwzRMxnlaqaA
+	hP1LdifARK/yEUG8QrQlOsLCcbjnAgo=
+Date: Thu, 12 Dec 2024 17:14:06 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241211133403.208920-1-jolsa@kernel.org> <20241211133403.208920-6-jolsa@kernel.org>
-In-Reply-To: <20241211133403.208920-6-jolsa@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Dec 2024 17:01:52 -0800
-Message-ID: <CAEf4BzZEPdGxjHjPGr-4qKFju+roOiAVrMhTuviozmcP1-qojw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 05/13] uprobes: Add mapping for optimized uprobe trampolines
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net-next v4 11/11] bpf: add simple bpf tests in the tx
+ path for so_timstamping feature
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
+ willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+References: <20241207173803.90744-1-kerneljasonxing@gmail.com>
+ <20241207173803.90744-12-kerneljasonxing@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20241207173803.90744-12-kerneljasonxing@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Dec 11, 2024 at 5:35=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding support to add special mapping for for user space trampoline
-
-typo: for for
-
-> with following functions:
->
->   uprobe_trampoline_get - find or add related uprobe_trampoline
->   uprobe_trampoline_put - remove ref or destroy uprobe_trampoline
->
-> The user space trampoline is exported as architecture specific user space
-> special mapping, which is provided by arch_uprobe_trampoline_mapping
-> function.
->
-> The uprobe trampoline needs to be callable/reachable from the probe addre=
-ss,
-> so while searching for available address we use arch_uprobe_is_callable
-> function to decide if the uprobe trampoline is callable from the probe ad=
-dress.
->
-> All uprobe_trampoline objects are stored in uprobes_state object and
-> are cleaned up when the process mm_struct goes down.
->
-> Locking is provided by callers in following changes.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On 12/7/24 9:38 AM, Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
+> 
+> Only check if we pass those three key points after we enable the
+> bpf extension for so_timestamping. During each point, we can choose
+> whether to print the current timestamp.
+> 
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
 > ---
->  include/linux/uprobes.h |  12 +++++
->  kernel/events/uprobes.c | 114 ++++++++++++++++++++++++++++++++++++++++
->  kernel/fork.c           |   1 +
->  3 files changed, 127 insertions(+)
->
-
-Ran out of time for today, will continue tomorrow for the rest of
-patches. Some comments below.
-
-The numbers are really encouraging, though!
-
-> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> index 8843b7f99ed0..c4ee755ca2a1 100644
-> --- a/include/linux/uprobes.h
-> +++ b/include/linux/uprobes.h
-> @@ -16,6 +16,7 @@
->  #include <linux/types.h>
->  #include <linux/wait.h>
->  #include <linux/timer.h>
-> +#include <linux/mutex.h>
->
->  struct uprobe;
->  struct vm_area_struct;
-> @@ -172,6 +173,13 @@ struct xol_area;
->
->  struct uprobes_state {
->         struct xol_area         *xol_area;
-> +       struct hlist_head       tramp_head;
+>   .../bpf/prog_tests/so_timestamping.c          |  97 +++++++++++++
+>   .../selftests/bpf/progs/so_timestamping.c     | 135 ++++++++++++++++++
+>   2 files changed, 232 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/so_timestamping.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/so_timestamping.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/so_timestamping.c b/tools/testing/selftests/bpf/prog_tests/so_timestamping.c
+> new file mode 100644
+> index 000000000000..c5978444f9c8
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/so_timestamping.c
+> @@ -0,0 +1,97 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2024 Tencent */
+> +
+> +#define _GNU_SOURCE
+> +#include <sched.h>
+> +#include <linux/socket.h>
+> +#include <linux/tls.h>
+> +#include <net/if.h>
+> +
+> +#include "test_progs.h"
+> +#include "cgroup_helpers.h"
+> +#include "network_helpers.h"
+> +
+> +#include "so_timestamping.skel.h"
+> +
+> +#define CG_NAME "/so-timestamping-test"
+> +
+> +static const char addr4_str[] = "127.0.0.1";
+> +static const char addr6_str[] = "::1";
+> +static struct so_timestamping *skel;
+> +static int cg_fd;
+> +
+> +static int create_netns(void)
+> +{
+> +	if (!ASSERT_OK(unshare(CLONE_NEWNET), "create netns"))
+> +		return -1;
+> +
+> +	if (!ASSERT_OK(system("ip link set dev lo up"), "set lo up"))
+> +		return -1;
+> +
+> +	return 0;
+> +}
+> +
+> +static void test_tcp(int family)
+> +{
+> +	struct so_timestamping__bss *bss = skel->bss;
+> +	char buf[] = "testing testing";
+> +	int sfd = -1, cfd = -1;
+> +	int n;
+> +
+> +	memset(bss, 0, sizeof(*bss));
+> +
+> +	sfd = start_server(family, SOCK_STREAM,
+> +			   family == AF_INET6 ? addr6_str : addr4_str, 0, 0);
+> +	if (!ASSERT_GE(sfd, 0, "start_server"))
+> +		goto out;
+> +
+> +	cfd = connect_to_fd(sfd, 0);
+> +	if (!ASSERT_GE(cfd, 0, "connect_to_fd_server")) {
+> +		close(sfd);
+> +		goto out;
+> +	}
+> +
+> +	n = write(cfd, buf, sizeof(buf));
+> +	if (!ASSERT_EQ(n, sizeof(buf), "send to server"))
+> +		goto out;
+> +
+> +	ASSERT_EQ(bss->nr_active, 1, "nr_active");
+> +	ASSERT_EQ(bss->nr_sched, 1, "nr_sched");
+> +	ASSERT_EQ(bss->nr_txsw, 1, "nr_txsw");
+> +	ASSERT_EQ(bss->nr_ack, 1, "nr_ack");
+> +
+> +out:
+> +	if (sfd >= 0)
+> +		close(sfd);
+> +	if (cfd >= 0)
+> +		close(cfd);
+> +}
+> +
+> +void test_so_timestamping(void)
+> +{
+> +	cg_fd = test__join_cgroup(CG_NAME);
+> +	if (cg_fd < 0)
+> +		return;
+> +
+> +	if (create_netns())
+> +		goto done;
+> +
+> +	skel = so_timestamping__open();
+> +	if (!ASSERT_OK_PTR(skel, "open skel"))
+> +		goto done;
+> +
+> +	if (!ASSERT_OK(so_timestamping__load(skel), "load skel"))
+> +		goto done;
+> +
+> +	skel->links.skops_sockopt =
+> +		bpf_program__attach_cgroup(skel->progs.skops_sockopt, cg_fd);
+> +	if (!ASSERT_OK_PTR(skel->links.skops_sockopt, "attach cgroup"))
+> +		goto done;
+> +
+> +	test_tcp(AF_INET6);
+> +	test_tcp(AF_INET);
+> +
+> +done:
+> +	so_timestamping__destroy(skel);
+> +	close(cg_fd);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/so_timestamping.c b/tools/testing/selftests/bpf/progs/so_timestamping.c
+> new file mode 100644
+> index 000000000000..f64e94dbd70e
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/so_timestamping.c
+> @@ -0,0 +1,135 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2024 Tencent */
+> +
+> +#include "vmlinux.h"
+> +#include "bpf_tracing_net.h"
+> +#include <bpf/bpf_core_read.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include "bpf_misc.h"
+> +
+> +#define SK_BPF_CB_FLAGS 1009
+> +#define SK_BPF_CB_TX_TIMESTAMPING 1
+> +
+> +int nr_active;
+> +int nr_passive;
+> +int nr_sched;
+> +int nr_txsw;
+> +int nr_ack;
+> +
+> +struct sockopt_test {
+> +	int opt;
+> +	int new;
 > +};
 > +
+> +static const struct sockopt_test sol_socket_tests[] = {
+> +	{ .opt = SK_BPF_CB_FLAGS, .new = SK_BPF_CB_TX_TIMESTAMPING, },
+> +	{ .opt = 0, },
+> +};
+> +
+> +struct loop_ctx {
+> +	void *ctx;
+> +	struct sock *sk;
+> +};
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_HASH);
+> +	__type(key, u32);
+> +	__type(value, u64);
+> +	__uint(max_entries, 1024);
+> +} hash_map SEC(".maps");
+> +
+> +static u64 delay_tolerance_nsec = 5000000;
 
-should we make uprobe_state be linked by a pointer from mm_struct
-instead of increasing mm for each added field? right now it's
-embedded, I don't think it's problematic to allocate it on demand and
-keep it until mm_struct is freed
+If I count right, 5ms may not a lot for the bpf CI and the test could become 
+flaky. Probably good enough to ensure the delay is larger than the previous one.
 
-> +struct uprobe_trampoline {
-> +       struct hlist_node       node;
-> +       unsigned long           vaddr;
-> +       atomic64_t              ref;
->  };
->
->  extern void __init uprobes_init(void);
-> @@ -220,6 +228,10 @@ extern int arch_uprobe_verify_opcode(struct arch_upr=
-obe *auprobe, struct page *p
->                                      unsigned long vaddr, uprobe_opcode_t=
- *new_opcode,
->                                      int nbytes);
->  extern bool arch_uprobe_is_register(uprobe_opcode_t *insn, int nbytes);
-> +extern struct uprobe_trampoline *uprobe_trampoline_get(unsigned long vad=
-dr);
-> +extern void uprobe_trampoline_put(struct uprobe_trampoline *area);
-> +extern bool arch_uprobe_is_callable(unsigned long vtramp, unsigned long =
-vaddr);
-> +extern const struct vm_special_mapping *arch_uprobe_trampoline_mapping(v=
-oid);
->  #else /* !CONFIG_UPROBES */
->  struct uprobes_state {
->  };
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 8068f91de9e3..f57918c624da 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -615,6 +615,118 @@ set_orig_insn(struct arch_uprobe *auprobe, struct m=
-m_struct *mm, unsigned long v
->                         (uprobe_opcode_t *)&auprobe->insn, UPROBE_SWBP_IN=
-SN_SIZE);
->  }
->
-> +bool __weak arch_uprobe_is_callable(unsigned long vtramp, unsigned long =
-vaddr)
-
-bikeshedding some more, I still find "is_callable" confusing. How
-about "is_reachable_by_call"? slightly verbose, but probably more
-meaningful?
-
+> +
+> +static int bpf_test_sockopt_int(void *ctx, struct sock *sk,
+> +				const struct sockopt_test *t,
+> +				int level)
 > +{
-> +       return false;
+> +	int new, opt;
+> +
+> +	opt = t->opt;
+> +	new = t->new;
+> +
+> +	if (bpf_setsockopt(ctx, level, opt, &new, sizeof(new)))
+> +		return 1;
+> +
+> +	return 0;
 > +}
 > +
-> +const struct vm_special_mapping * __weak arch_uprobe_trampoline_mapping(=
-void)
+> +static int bpf_test_socket_sockopt(__u32 i, struct loop_ctx *lc)
 > +{
-> +       return NULL;
+> +	const struct sockopt_test *t;
+> +
+> +	if (i >= ARRAY_SIZE(sol_socket_tests))
+> +		return 1;
+> +
+> +	t = &sol_socket_tests[i];
+> +	if (!t->opt)
+> +		return 1;
+> +
+> +	return bpf_test_sockopt_int(lc->ctx, lc->sk, t, SOL_SOCKET);
 > +}
 > +
-> +static unsigned long find_nearest_page(unsigned long vaddr)
+> +static int bpf_test_sockopt(void *ctx, struct sock *sk)
 > +{
-> +       struct mm_struct *mm =3D current->mm;
-> +       struct vm_area_struct *vma, *prev;
-> +       VMA_ITERATOR(vmi, mm, 0);
+> +	struct loop_ctx lc = { .ctx = ctx, .sk = sk, };
+> +	int n;
 > +
-> +       prev =3D vma_next(&vmi);
-
-minor: we are missing an opportunity to add something between
-[PAGE_SIZE, <first_vma_start>). Probably fine, but why not?
-
-> +       vma =3D vma_next(&vmi);
-> +       while (vma) {
-> +               if (vma->vm_start - prev->vm_end  >=3D PAGE_SIZE) {
-> +                       if (arch_uprobe_is_callable(prev->vm_end, vaddr))
-> +                               return prev->vm_end;
-> +                       if (arch_uprobe_is_callable(vma->vm_start - PAGE_=
-SIZE, vaddr))
-> +                               return vma->vm_start - PAGE_SIZE;
-> +               }
+> +	n = bpf_loop(ARRAY_SIZE(sol_socket_tests), bpf_test_socket_sockopt, &lc, 0);
+> +	if (n != ARRAY_SIZE(sol_socket_tests))
+> +		return -1;
 > +
-> +               prev =3D vma;
-> +               vma =3D vma_next(&vmi);
-> +       }
-> +
-> +       return 0;
+> +	return 0;
 > +}
 > +
-
-[...]
-
-> +struct uprobe_trampoline *uprobe_trampoline_get(unsigned long vaddr)
+> +static bool bpf_test_delay(struct bpf_sock_ops *skops)
 > +{
-> +       struct uprobes_state *state =3D &current->mm->uprobes_state;
-> +       struct uprobe_trampoline *tramp =3D NULL;
+> +	u64 timestamp = bpf_ktime_get_ns();
+> +	u32 seq = skops->args[2];
+> +	u64 *value;
 > +
-> +       hlist_for_each_entry(tramp, &state->tramp_head, node) {
-> +               if (arch_uprobe_is_callable(tramp->vaddr, vaddr)) {
-> +                       atomic64_inc(&tramp->ref);
-> +                       return tramp;
-> +               }
-> +       }
+> +	value = bpf_map_lookup_elem(&hash_map, &seq);
+> +	if (value && (timestamp - *value > delay_tolerance_nsec)) {
+> +		bpf_printk("time delay: %lu", timestamp - *value);
+
+Please try not to printk in selftests. The bpf CI cannot interpret it 
+meaningfully and turn it into a PASS/FAIL signal.
+
+> +		return false;
+> +	}
 > +
-> +       tramp =3D create_uprobe_trampoline(vaddr);
-> +       if (!tramp)
-> +               return NULL;
-> +
-> +       hlist_add_head(&tramp->node, &state->tramp_head);
-> +       return tramp;
+> +	bpf_map_update_elem(&hash_map, &seq, &timestamp, BPF_ANY);
+
+A nit.
+
+	*value = timestamp;
+
+> +	return true;
 > +}
 > +
-> +static void destroy_uprobe_trampoline(struct uprobe_trampoline *tramp)
+> +SEC("sockops")
+> +int skops_sockopt(struct bpf_sock_ops *skops)
 > +{
-> +       hlist_del(&tramp->node);
-> +       kfree(tramp);
+> +	struct bpf_sock *bpf_sk = skops->sk;
+> +	struct sock *sk;
+> +
+> +	if (!bpf_sk)
+> +		return 1;
+> +
+> +	sk = (struct sock *)bpf_skc_to_tcp_sock(bpf_sk);
+> +	if (!sk)
+> +		return 1;
+> +
+> +	switch (skops->op) {
+> +	case BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB:
+> +		nr_active += !bpf_test_sockopt(skops, sk);
+> +		break;
+> +	case BPF_SOCK_OPS_TS_SCHED_OPT_CB:
+> +		if (bpf_test_delay(skops))
+> +			nr_sched += 1;
+> +		break;
+> +	case BPF_SOCK_OPS_TS_SW_OPT_CB:
+> +		if (bpf_test_delay(skops))
+> +			nr_txsw += 1;
+> +		break;
+> +	case BPF_SOCK_OPS_TS_ACK_OPT_CB:
+> +		if (bpf_test_delay(skops))
+> +			nr_ack += 1;
+> +		break;
 
-hmm... shouldn't this be RCU-delayed (RCU Tasks Trace for uprobes),
-otherwise we might have some CPU executing code in that trampoline,
-no?
+The test is a good step forward. Thanks. Instead of one u64 as the map value, I 
+think it can be improved to make the test more real to record the individual 
+delay. e.g. the following map value:
 
+struct delay_info {
+	u64 sendmsg_ns;
+	u32 sched_delay;  /* SCHED_OPT_CB - sendmsg_ns */
+	u32 sw_snd_delay;
+	u32 ack_delay;
+};
+
+and I think a bpf callback during the sendmsg is still needed in the next respin.
+
+> +	}
+> +
+> +	return 1;
 > +}
 > +
+> +char _license[] SEC("license") = "GPL";
 
-[...]
 
