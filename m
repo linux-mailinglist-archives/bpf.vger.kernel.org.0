@@ -1,283 +1,155 @@
-Return-Path: <bpf+bounces-46961-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77A9F9F1A50
-	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 00:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FAF89F1B21
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 01:08:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B984F188C55B
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 23:52:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F184188889B
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 00:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208231B4F1A;
-	Fri, 13 Dec 2024 23:52:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C929A1EBFE1;
+	Fri, 13 Dec 2024 23:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AWczYCLL"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c/Op9mKR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4DD1A4F2F
-	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 23:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A355A1EBA1E
+	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 23:55:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734133940; cv=none; b=QDpKe310oBxdSRmJfAFGu7vHqEebAnFRuchqncK5CoO4AOlfO1eYnIGSs+AQ5FhIgoP6705fsF26zdFc33UFoJfV4aqfSGPFJezSwWiNAeO6lub6eugIdaUexHgSaeK5zOraqAxwkMCyvSUXdnoNb07bH+z42zgBp2TlAhtro1w=
+	t=1734134148; cv=none; b=eU9NkGdxxO1kcW1gzdo8VLOn1Q23QLUcR8KnY4c4qabsqa9BGd4pigqEvOc8sCTZBr3x1YdFMJutiTue+ssC+iPF6/JK9EuZIjunyCdPgqziTMhw3vI8a0jQU953Rp6MDcQ7PzhRaCMAFePE7ypkd+yGuwBk5TS5J4B4BQTYq48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734133940; c=relaxed/simple;
-	bh=q0usWc2dsRHDtNuoDdaGO4tXNX842hH5rUTvxgFl7F4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=j/Z87BoQ4YGSEREAzDB+pzuEKQWL4+gzGVFC+PU7WS7atbFcly6esijIeHoO9PeSw1SSBP/rdawouPWXMllAW3giSpc7YzkCt8UioSIM4wZDo/6zPgBzRVunQRDcD8HFVPVVLL6oYFuwh5TaKhSdubUqsAb8nSl98epHFkLlqUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AWczYCLL; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7265c18d79bso2644921b3a.3
-        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 15:52:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734133936; x=1734738736; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=uUBcCfmI4qqE3jhSY+AvXmpRPPBL4NsehdqWrfiGJwo=;
-        b=AWczYCLLgkQOQNj0nk0S5O7+u6Koqb8XLpKAEHxbzKDFUQRXb5XWuDKkhRetb9btCT
-         meldlw/+owdiSwq17/0KVY8WT3T2aUaFqTu+w2fGaxwB+Cs4sOLcHbgNkAtplqy9Z5FN
-         TdPAGvoMv6RlwoyLrinPJ7wPWqZbFZaVbVcam9s1F7cUfWfp9+hPCZJVVtDRfeXF/LVv
-         ZVF0jjajmNT9NwCtyT5f17d5/NWKdrql3UDnKXCqyqUGe4UNVsYxencalyu/kP6m0h1d
-         rNzUny3A4G4MzY3n+yvKh/nuNyqT1iyM38M1Zs6+/ztY4RcX1RjdBuvBbAfIZINFCOII
-         qwKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734133936; x=1734738736;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uUBcCfmI4qqE3jhSY+AvXmpRPPBL4NsehdqWrfiGJwo=;
-        b=lx0an7F5Z/9SReBnF3Ta02GgcQWHHv+mJJF6AxPudqQqgpSf4QR25b/aZ88cir3M+5
-         WDR8tAu4endOJenEVfVA6AS3qUU14iKM+otKJ81Uqm5nOmiMOFO5JAPb5DuOvbg1XwV8
-         bzV5ZeYE9W2p+C2hqyHHzTwjywhj3xV8LA2BuuKyEgajv0KbjtXz5EFM11s6WRS1zPnG
-         nDlfn+I4thTN1+JAcyKHiKLAtQxjxT9HHcQgRcGHqKYHTCwy7i4HNlttiDvFCfpepYvN
-         MVUTIyVUb+c61T+pODTV6UF4q+zTf9cEcASZ5z1neV5D7sRwYLU1jmfT/shuZ+U31WrB
-         BeUg==
-X-Forwarded-Encrypted: i=1; AJvYcCVxldz/TrKGKejWqBVTL/q/zE1GK7Fx9txRXHWwjEADcGl5/yEE2ssO01hKssbv0JAWTDc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxCcVeTYDp676RRVssoEI3jAjvTxMc59iN8HOxpLzlGan0hYUqE
-	9vOJXrTTWicR6Jbh0r3c7e8w1jnUF9UJsm8OaDQDSKGv/NcO5hYI
-X-Gm-Gg: ASbGnctJv3n6ikFuC5DolJCr848popRT29aPuIRs9YLNi7xhir0EU2MVXUypByuaZ+r
-	rcYCy89ypEiLabys592T5vSL5myLOphXpF7fhY9F40H2yycW1hgFYTAhbgmC6atxBQtdJ/K5ZuQ
-	5wsVzrn8q7hOdbd6dCaEq/Yv0xYPqXGZlHvdvxxfD+FvaBZsFSZzr1DxBoHChydpi83HssOmiz+
-	3u6ZmOqTYqVaGsCN9o3iL1BiKwKmV+tamLcIxqINWgrXGd7QVziRg==
-X-Google-Smtp-Source: AGHT+IE0hlE21JMsYTjIoJUIOwsa1XVqJRhmtqYIhfG/gOM1Rg0NlpHwpj1rtWQFIuLgkD0xXISSdw==
-X-Received: by 2002:a05:6a21:394a:b0:1e1:a671:7116 with SMTP id adf61e73a8af0-1e1dfc18058mr7732123637.4.1734133936280;
-        Fri, 13 Dec 2024 15:52:16 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72918baf6c0sm337861b3a.166.2024.12.13.15.52.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Dec 2024 15:52:15 -0800 (PST)
-Message-ID: <877efce1968381b1918ce5d6fe272c0d83254f14.camel@gmail.com>
-Subject: Re: [PATCH bpf v2 1/2] bpf: Don't trust r0 bounds after BPF to BPF
- calls with abnormal returns
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Arthur Fabre <afabre@cloudflare.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  John Fastabend <john.fastabend@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Martin KaFai Lau	 <martin.lau@linux.dev>,
- Song Liu <song@kernel.org>, Yonghong Song	 <yonghong.song@linux.dev>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev	 <sdf@fomichev.me>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	kernel-team@cloudflare.com
-Date: Fri, 13 Dec 2024 15:52:10 -0800
-In-Reply-To: <20241213212717.1830565-2-afabre@cloudflare.com>
-References: <20241213212717.1830565-1-afabre@cloudflare.com>
-	 <20241213212717.1830565-2-afabre@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1734134148; c=relaxed/simple;
+	bh=XqG2JijYRpxL2/j3DukylYuY6FOBReLBkzB2NTjm1OM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IM4I9N/WkbU9xGG/w2y4h+h8m4xaYK2rEoca7l+YdYujFzF2zzRcbXMT3CH7oc84SvWspnVgckXvPVPKJU/O6hK3t0njcWNxcett4Uhro/oS27+ggIJGjHWS0PpwNScuC8akyV4ju49iTw2Vlk+UuJSQOxnpgDABmEzG0183m9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c/Op9mKR; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <55384b37-005d-48e9-894b-8bbe4f7a6b24@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734134143;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7Wx0ubisvuXuYNQ0Vjor9tnJWsgXG5tKeIY4c7YfW0I=;
+	b=c/Op9mKR5nKAnru1LNVAA0LkoQNk8blbd8PtEgJ22dGt1HlBaR/S774tkeh8sCkpXkgqXZ
+	XV4bAC5TNVMC5VoaX1toJx9ndFTAC/GxGD0Df0zapA/MCwGtYixfB7FZu09C2n043gvMQ6
+	LhVzK6dYN06cIUVrOLkcrzyxvXXOwzU=
+Date: Fri, 13 Dec 2024 15:55:33 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH net-next v4 10/11] net-timestamp: export the tskey for TCP
+ bpf extension
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
+ willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+References: <20241207173803.90744-1-kerneljasonxing@gmail.com>
+ <20241207173803.90744-11-kerneljasonxing@gmail.com>
+ <9f5081bb-ed66-4171-acef-786ae02cf69c@linux.dev>
+ <CAL+tcoCCvKapSQ8N48iKh83YxYskDkPyM+bpT5=m8cE_YrCovg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <CAL+tcoCCvKapSQ8N48iKh83YxYskDkPyM+bpT5=m8cE_YrCovg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 2024-12-13 at 22:27 +0100, Arthur Fabre wrote:
-> When making BPF to BPF calls, the verifier propagates register bounds
-> info for r0 from the callee to the caller.
->=20
-> For example loading:
->=20
->     #include <linux/bpf.h>
->     #include <bpf/bpf_helpers.h>
->=20
->     static __attribute__((noinline)) int callee(struct xdp_md *ctx)
->     {
->             int ret;
->             asm volatile("%0 =3D 23" : "=3Dr"(ret));
->             return ret;
->     }
->=20
->     static SEC("xdp") int caller(struct xdp_md *ctx)
->     {
->             int res =3D callee(ctx);
->             if (res =3D=3D 23) {
->                     return XDP_PASS;
->             }
->             return XDP_DROP;
->     }
->=20
-> The verifier logs:
->=20
->     func#0 @0
->     func#1 @6
->     0: R1=3Dctx() R10=3Dfp0
->     ; int res =3D callee(ctx); @ test.c:15
->     0: (85) call pc+5
->     caller:
->      R10=3Dfp0
->     callee:
->      frame1: R1=3Dctx() R10=3Dfp0
->     6: frame1: R1=3Dctx() R10=3Dfp0
->     ; asm volatile("%0 =3D 23" : "=3Dr"(ret)); @ test.c:9
->     6: (b7) r0 =3D 23                       ; frame1: R0_w=3D23
->     ; return ret; @ test.c:10
->     7: (95) exit
->     returning from callee:
->      frame1: R0_w=3D23 R1=3Dctx() R10=3Dfp0
->     to caller at 1:
->      R0_w=3D23 R10=3Dfp0
->=20
->     from 7 to 1: R0_w=3D23 R10=3Dfp0
->     ; int res =3D callee(ctx); @ test.c:15
->     1: (bc) w1 =3D w0                       ; R0_w=3D23 R1_w=3D23
->     2: (b4) w0 =3D 2                        ; R0_w=3D2
->     ;  @ test.c:0
->     3: (16) if w1 =3D=3D 0x17 goto pc+1
->     3: R1_w=3D23
->     ; } @ test.c:20
->     5: (95) exit
->     processed 7 insns (limit 1000000) max_states_per_insn 0 total_states =
-0 peak_states 0 mark_read 0
->=20
-> And correctly tracks R0_w=3D23 from the callee through to the caller.
-> This lets it completely prune the res !=3D 23 branch, skipping over
-> instruction 4.
->=20
-> But this isn't sound if the callee can return "abnormally" before an
-> exit instruction:
-> - If LD_ABS or LD_IND try to access data beyond the end of the packet,
->   the callee returns 0 directly.
-> - If a tail_call succeeds, the return value of the tail called program
->   will be returned directly.
-> We can't know what the bounds of r0 will be.
->=20
-> The verifier still incorrectly tracks the bounds of r0 in these cases. Lo=
-ading:
->=20
->     #include <linux/bpf.h>
->     #include <bpf/bpf_helpers.h>
->=20
->     struct {
->             __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
->             __uint(max_entries, 1);
->             __uint(key_size, sizeof(__u32));
->             __uint(value_size, sizeof(__u32));
->     } tail_call_map SEC(".maps");
->=20
->     static __attribute__((noinline)) int callee(struct xdp_md *ctx)
->     {
->             bpf_tail_call(ctx, &tail_call_map, 0);
->=20
->             int ret;
->             asm volatile("%0 =3D 23" : "=3Dr"(ret));
->             return ret;
->     }
->=20
->     static SEC("xdp") int caller(struct xdp_md *ctx)
->     {
->             int res =3D callee(ctx);
->             if (res =3D=3D 23) {
->                     return XDP_PASS;
->             }
->             return XDP_DROP;
->     }
->=20
-> The verifier logs:
->=20
->     func#0 @0
->     func#1 @6
->     0: R1=3Dctx() R10=3Dfp0
->     ; int res =3D callee(ctx); @ test.c:24
->     0: (85) call pc+5
->     caller:
->      R10=3Dfp0
->     callee:
->      frame1: R1=3Dctx() R10=3Dfp0
->     6: frame1: R1=3Dctx() R10=3Dfp0
->     ; bpf_tail_call(ctx, &tail_call_map, 0); @ test.c:15
->     6: (18) r2 =3D 0xffff8a9c82a75800       ; frame1: R2_w=3Dmap_ptr(map=
-=3Dtail_call_map,ks=3D4,vs=3D4)
->     8: (b4) w3 =3D 0                        ; frame1: R3_w=3D0
->     9: (85) call bpf_tail_call#12
->     10: frame1:
->     ; asm volatile("%0 =3D 23" : "=3Dr"(ret)); @ test.c:18
->     10: (b7) r0 =3D 23                      ; frame1: R0_w=3D23
->     ; return ret; @ test.c:19
->     11: (95) exit
->     returning from callee:
->      frame1: R0_w=3D23 R10=3Dfp0
->     to caller at 1:
->      R0_w=3D23 R10=3Dfp0
->=20
->     from 11 to 1: R0_w=3D23 R10=3Dfp0
->     ; int res =3D callee(ctx); @ test.c:24
->     1: (bc) w1 =3D w0                       ; R0_w=3D23 R1_w=3D23
->     2: (b4) w0 =3D 2                        ; R0=3D2
->     ;  @ test.c:0
->     3: (16) if w1 =3D=3D 0x17 goto pc+1
->     3: R1=3D23
->     ; } @ test.c:29
->     5: (95) exit
->     processed 10 insns (limit 1000000) max_states_per_insn 0 total_states=
- 1 peak_states 1 mark_read 1
->=20
-> It still prunes the res !=3D 23 branch, skipping over instruction 4.
-> But the tail called program can return any value.
->=20
-> Aside from pruning incorrect branches, this can also be used to read and
-> write arbitrary memory by using r0 as a index.
->=20
-> Fixes: e411901c0b77 ("bpf: allow for tailcalls in BPF subprograms for x64=
- JIT")
-> Signed-off-by: Arthur Fabre <afabre@cloudflare.com>
-> Cc: stable@vger.kernel.org
-> ---
+On 12/13/24 7:44 AM, Jason Xing wrote:
+>>> @@ -5569,7 +5569,10 @@ static void __skb_tstamp_tx_bpf(struct sock *sk, struct sk_buff *skb,
+>>>                return;
+>>>        }
+>>>
+>>> -     bpf_skops_tx_timestamping(sk, skb, op, 2, args);
+>>> +     if (sk_is_tcp(sk))
+>>> +             args[2] = skb_shinfo(skb)->tskey;
+>> Instead of only passing one info "skb_shinfo(skb)->tskey" of a skb, pass the
+>> whole skb ptr to the bpf prog. Take a look at bpf_skops_init_skb. Lets start
+>> with end_offset = 0 for now so that the bpf prog won't use it to read the
+>> skb->data. It can be revisited later.
+>>
+>>          bpf_skops_init_skb(&sock_ops, skb, 0);
+>>
+>> The bpf prog can use bpf_cast_to_kern_ctx() and bpf_core_cast() to get to the
+>> skb_shinfo(skb). Take a look at the md_skb example in type_cast.c.
+> Sorry, I didn't give it much thought on getting to the shinfo. That's
+> why I quickly gave up using bpf_skops_init_skb() after I noticed the
+> seq of skb is always zero 🙁
+> 
+> I will test it tomorrow. Thanks.
+> 
+>> Then it needs to add a bpf_sock->op check to the existing
+>> bpf_sock_ops_{load,store}_hdr_opt() helpers to ensure these helpers can only be
+>> used by the BPF_SOCK_OPS_PARSE_HDR_OPT_CB, BPF_SOCK_OPS_HDR_OPT_LEN_CB, and
+>> BPF_SOCK_OPS_WRITE_HDR_OPT_CB callback.
+> Forgive me. I cannot see how the bpf_sock_ops_load_hdr_opt helper has
+> something to do with the current thread? Could you enlighten me?
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Sure. This is the same discussion as in patch 2, so may be worth to highlight 
+something that I guess may be missing:
 
-[...]
+a bpf prog does not need to use a helper does not mean:
+a bpf prog is not allowed to call a helper because it is not safe.
 
-> @@ -10359,6 +10364,10 @@ static int prepare_func_exit(struct bpf_verifier=
-_env *env, int *insn_idx)
->  				*insn_idx, callee->callsite);
->  			return -EFAULT;
->  		}
-> +	} else if (has_abnormal_return(
-> +		    &env->subprog_info[state->frame[state->curframe]->subprogno])) {
-                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                                       Nit: this is 'callee'
+The sockops prog running at the new timestamp hook does not need to call 
+bpf_setsockopt() but it does not mean the bpf prog is not allowed to call 
+bpf_setsockopt() without holding the sk_lock which is then broken.
 
-> +		/* callee can return before exit instruction, r0 could hold anything *=
-/
-> +		__mark_reg_unknown(env, &caller->regs[BPF_REG_0]);
->  	} else {
->  		/* return to the caller whatever r0 had in the callee */
->  		caller->regs[BPF_REG_0] =3D *r0;
-> @@ -16881,17 +16890,14 @@ static int check_cfg(struct bpf_verifier_env *e=
-nv)
->  	return ret;
->  }
-> =20
-> +
+The sockops timestamp prog does not need to use the 
+bpf_sock_ops_{load,store}_hdr_opt but it does not mean the bpf prog is not 
+allowed to call bpf_sock_ops_{load,store}_hdr_opt to change the skb which is 
+then also broken.
 
-Nit: this empty line is not needed.
+Now, skops->skb is not NULL only when the sockops prog is allowed to read/write 
+the skb.
 
-[...]
+With bpf_skops_init_skb(), skops->skb will not be NULL in the new timestamp 
+callback hook. bpf_sock_ops_{load,store}_hdr_opt() will be able to use the 
+skops->skb and it will be broken.
+
+> 
+>> btw, how is the ack_skb used for the SCM_TSTAMP_ACK by the user space now?
+> To be honest, I hardly use the ack_skb[1] under this circumstance... I
+> think if someone offers a suggestion to use it, then we can support
+> it?
+
+Thanks for the pointer.
+
+Yep, supporting it later is fine. I am curious because the ack_skb is used in 
+the user space time stamping now but not in your patch. I was asking to ensure 
+that we should be able to support it in the future if there is a need.  We 
+should be able to reuse the skops->syn_skb to support that in the future.
+
+> 
+> [1]
+> commit e7ed11ee945438b737e2ae2370e35591e16ec371
+> Author: Yousuk Seung<ysseung@google.com>
+> Date:   Wed Jan 20 12:41:55 2021 -0800
+> 
+>      tcp: add TTL to SCM_TIMESTAMPING_OPT_STATS
+> 
+>      This patch adds TCP_NLA_TTL to SCM_TIMESTAMPING_OPT_STATS that exports
+>      the time-to-live or hop limit of the latest incoming packet with
+>      SCM_TSTAMP_ACK. The value exported may not be from the packet that acks
+>      the sequence when incoming packets are aggregated. Exporting the
+>      time-to-live or hop limit value of incoming packets helps to estimate
+>      the hop count of the path of the flow that may change over time.
+
 
 
