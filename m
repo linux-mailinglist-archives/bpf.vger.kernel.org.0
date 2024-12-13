@@ -1,362 +1,297 @@
-Return-Path: <bpf+bounces-46944-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46945-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDE9B9F19D4
-	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 00:23:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B80589F19EC
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 00:30:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C2DB188D6BA
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 23:23:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10FDB188DDA9
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 23:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3661B87F9;
-	Fri, 13 Dec 2024 23:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 157531EF085;
+	Fri, 13 Dec 2024 23:30:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jubRRjX+"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="XlSYdVyP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9B52E62B;
-	Fri, 13 Dec 2024 23:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BE5D1E8836
+	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 23:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734132176; cv=none; b=jk0hnmWcOqO3dIqv6vsPIFCEtrkAImGv8vg9xehPwoMZlzdvjm2ijbiB4Z76Krf8CSFIG2DI+4bVYhhgnEaTo+75fGMQ/o7nK0XndN6/kHO919LN8W/OTy8jR8yZj3ivG/4AVBuVctTulg+fflXSXuMeUIpb6btb8Du0DRsHA6Q=
+	t=1734132603; cv=none; b=YFPSH8zjn595TYhuX5bQR0IRvZWtbhYCBEPfO1hbVAzulxb1RVQHkIBQpJZ2brOw+eBZc1NyGWrJnsXDTWbNe65ut3MPGbSObQoPMHAx7JYMu8Jj7ho9GOoB2WIYUGF4KneqsiXM7ge2k+Au7wbMG95q39xtsdy+MDb5QnZyqA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734132176; c=relaxed/simple;
-	bh=VGdzHQIi3fVgtagYbzv6Ua/Y+Cdp0udMv+eqeWy9bXk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=As1hBNfEr4Qa24v4N3GbOFDsAzQ8oDQmA6XQvGco/utYwDIMPPgLT1/AEG9T6Hz+6CLQ7XzkeqanvB4OsZ/DAE3ud7fSoxuGEed9GwWyOh+pHnlwKnh6qnNI+P+V2o0jd7ZuMkry6P12QNaXomLJvNQKsCL7iRTCr1DOOyFgr24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jubRRjX+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 353EEC4CED0;
-	Fri, 13 Dec 2024 23:22:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734132176;
-	bh=VGdzHQIi3fVgtagYbzv6Ua/Y+Cdp0udMv+eqeWy9bXk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jubRRjX+AKkzfqbkZzXRkcxswbL+z2aT8lM9vqwYGJhS8OBivPuLZfbQtqWHoMw5+
-	 bXjSKS7gASj0tV738dhDH8ZK7uZC0/eRB/CA6Qpw5bvg5K1bQWc7ARtFPcPTO2rYHU
-	 HA4+OKVlxjHCWOCAvSQn7SKnpXDb5qHg8j2JIA6A0Fq0q+vZG7gRjIjzqcjeaedXQX
-	 zF/I+30UgrdwBOtPv4MlDhB5LOSqbfcauvM53kSSZi6IAhIxtruy9q/jQTNa/XLB4g
-	 iIKtgUyGZsVg9KQ68LZhtqaCkSnkBIqHn5Du5hJ5eYG9d/NfswVAJa0TPE8F7Bnflc
-	 i7aSiujMxgj0A==
-Date: Fri, 13 Dec 2024 15:22:53 -0800
-From: Namhyung Kim <namhyung@kernel.org>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
-	Christian Brauner <brauner@kernel.org>, Guo Ren <guoren@kernel.org>,
-	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
-	James Clark <james.clark@linaro.org>,
-	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linux.dev>,
-	Jonathan Corbet <corbet@lwn.net>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 01/16] perf tools: Create generic syscall table support
-Message-ID: <Z1zBzTgEYXw1DbEL@google.com>
-References: <20241212-perf_syscalltbl-v2-0-f8ca984ffe40@rivosinc.com>
- <20241212-perf_syscalltbl-v2-1-f8ca984ffe40@rivosinc.com>
+	s=arc-20240116; t=1734132603; c=relaxed/simple;
+	bh=cG/JycwS3zQflQlpRYVHzUkgPDc+z9hgfuV97hgVKcs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=JvuIhvw8lPFUTBD3UBgJt1//ke/Ax9vJ96YsMvXWj5PyGzvcRVqh6t0+ZvCNnGvnEJVsy4hNd3L0pd5kkPrY82thf6QurzPuoGKHJlC7tTHTbniMngVKOTzjbLHVADQpb9Uz5bIEWV7/AaJU3DpRzZwoyfm5e0xeiXCP8cKT4jY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=XlSYdVyP; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7b6edac3e6cso148743085a.3
+        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 15:30:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1734132600; x=1734737400; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HUoOwE7tZbDAomkC7fsi/mlJBzVHztERWnTUpGvWsq0=;
+        b=XlSYdVyPip0Ch6fUge90XvQZvddyP+D2guQ7w02W57+7lktsLQUMfMNKtMth6Cg/jk
+         MfMZn6wfj1nCxO8oY11A25RUEXWVHpuXCv1y8Ua0mOvJB9M5am/P0XJ4I+sa+uNlfzm5
+         JnmZnNKbFZXYp9qtHrqUcQ/gemadv3hZXG40mBloqAF4RgtRHWroNn7nTtmMNUx3P03/
+         1AmpIzFuEwZAuZ1sVwUo7d+TRPGhXV2LePA/HINp3q69wpnjAu3Ba2ArX4Hhj8ET3M4m
+         jUzFxdNEi7fnwijMYh5uJeS17/xx393XGSrOwdQdRKB6JulfKrVSUu1U02S5aQgVl2IG
+         8VxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734132600; x=1734737400;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HUoOwE7tZbDAomkC7fsi/mlJBzVHztERWnTUpGvWsq0=;
+        b=Pef+bq7nv6VhzrXcrCx0+o+YSrxm6VTMrNgKKVkGOpZ1dHkuV2kxvkV/riWNuk1CVD
+         BCj6AOMTO8yrr9ZTgwp8wv8QaYJ/msepOxu/e6G2KQhwg3TN8qwp8LDrK5ZDeEV+aLci
+         CRhajS8Cf68DQ+0PzXsnlkB22ZbrkuVFK/4LNd6UaWqgskbwQHDBQs+zWxEm5ULZQQPR
+         S+YswnGLHohU2Gz8jPIGu6ed8FV3UcnWYuF9aoIqUiRDcQnQA+VXmGXkhumiCieFaAP+
+         V8MJK3uLqnvj7l6v8nSLij8IePq7i1Sik4eRKhqJpEB3COnJLt7MX7dTvCQCpQN4ZEAy
+         gsTA==
+X-Gm-Message-State: AOJu0YzqSEskE4p395LUjmoBPCYbsk9LCc2hWfC2pqK0b45wWXvRHYUo
+	dpc3a+v6QRNxB8RdCPjQRyERsP7ruQUCGXFtGB8TDcUZGq8K0VhJyDViP/SG5SQ=
+X-Gm-Gg: ASbGncuoCh2qRPEG93Y9EqNamItO9kqImesEZ5zkZyETeWi5u/qxJlTTiQ+l9GpcgvY
+	/O50Q6aKJbkjQWzwYaHhX6VzqWGbqTHE/G2JDhZ0dcSvnMC8TAiimL73rEG+7MtS5YGHFNiEtJg
+	Tq6iu7H1jQWjl0U0X68bxPO7fi0wni6PEw2a8xGg/Pegn6eXI507CN7YyCtPBqctStnd2mSsvgk
+	0RDYpoMcSHqrtzFV8AxY05b1kiXsFK8FyFvM7c1F//8chW3sqAUHRk9+R6lQ31JzJO+x2COm88Q
+X-Google-Smtp-Source: AGHT+IF+6vRhoRc39hVrmunM8VDgLbfyri9ELaaL8BL8ZoRhNqPJq/Of71BCbILOJNLoENhKeAW2Bg==
+X-Received: by 2002:a05:620a:8807:b0:79d:759d:4016 with SMTP id af79cd13be357-7b6fbeca5aemr672694585a.11.1734132599725;
+        Fri, 13 Dec 2024 15:29:59 -0800 (PST)
+Received: from n36-183-057.byted.org ([130.44.215.64])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b7047d4a20sm25805085a.39.2024.12.13.15.29.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Dec 2024 15:29:59 -0800 (PST)
+From: Amery Hung <amery.hung@bytedance.com>
+To: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	alexei.starovoitov@gmail.com,
+	martin.lau@kernel.org,
+	sinquersw@gmail.com,
+	toke@redhat.com,
+	jhs@mojatatu.com,
+	jiri@resnulli.us,
+	stfomichev@gmail.com,
+	ekarani.silvestre@ccc.ufcg.edu.br,
+	yangpeihao@sjtu.edu.cn,
+	xiyou.wangcong@gmail.com,
+	yepeilin.cs@gmail.com,
+	ameryhung@gmail.com
+Subject: [PATCH bpf-next v1 00/13] bpf qdisc
+Date: Fri, 13 Dec 2024 23:29:45 +0000
+Message-Id: <20241213232958.2388301-1-amery.hung@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241212-perf_syscalltbl-v2-1-f8ca984ffe40@rivosinc.com>
 
-Hello,
+Hi all,
 
-On Thu, Dec 12, 2024 at 04:32:51PM -0800, Charlie Jenkins wrote:
-> Currently each architecture in perf independently generates syscall
-> headers. Adapt the work that has gone into unifying syscall header
-> implementations in the kernel to work with perf tools. Introduce this
-> framework with riscv at first. riscv previously relied on libaudit, but
-> with this change, perf tools for riscv no longer needs this external
-> dependency.
+This patchset aims to support implementing qdisc using bpf struct_ops.
+This version takes a step back and only implements the minimum support
+for bpf qdisc. 1) support of adding skb to bpf_list and bpf_rbtree
+directly and 2) classful qdisc are deferred to future patchsets.
 
-Nice work!
+* Overview *
 
-> 
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  tools/perf/Makefile.config                         |  11 +-
->  tools/perf/Makefile.perf                           |   4 +
->  tools/perf/arch/riscv/Makefile                     |  22 --
->  tools/perf/arch/riscv/entry/syscalls/Kbuild        |   2 +
->  .../arch/riscv/entry/syscalls/Makefile.syscalls    |   4 +
->  tools/perf/arch/riscv/entry/syscalls/mksyscalltbl  |  47 ---
->  tools/perf/arch/riscv/include/syscall_table.h      |   8 +
->  tools/perf/check-headers.sh                        |   1 +
->  tools/perf/scripts/Makefile.syscalls               |  60 +++
->  tools/perf/scripts/syscalltbl.sh                   |  86 +++++
->  tools/perf/util/syscalltbl.c                       |   8 +-
->  tools/scripts/syscall.tbl                          | 409 +++++++++++++++++++++
->  12 files changed, 585 insertions(+), 77 deletions(-)
-> 
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index 2916d59c88cd08b299202a48ddb42fa32aac04a6..a72f25162714f0117a88d94474da336814d4f030 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -35,6 +35,13 @@ ifneq ($(NO_SYSCALL_TABLE),1)
->      NO_SYSCALL_TABLE := 0
->    endif
->  
-> +  # architectures that use the generic syscall table scripts
-> +  ifeq ($(SRCARCH),riscv)
-> +    NO_SYSCALL_TABLE := 0
-> +    CFLAGS += -DGENERIC_SYSCALL_TABLE
-> +    CFLAGS += -I$(OUTPUT)/tools/perf/arch/$(SRCARCH)/include/generated
-> +  endif
-> +
->    ifneq ($(NO_SYSCALL_TABLE),1)
->      CFLAGS += -DHAVE_SYSCALL_TABLE_SUPPORT
->    endif
-> @@ -83,10 +90,6 @@ ifeq ($(ARCH),mips)
->    LIBUNWIND_LIBS = -lunwind -lunwind-mips
->  endif
->  
-> -ifeq ($(ARCH),riscv)
-> -  CFLAGS += -I$(OUTPUT)arch/riscv/include/generated
-> -endif
-> -
->  # So far there's only x86 and arm libdw unwind support merged in perf.
->  # Disable it on all other architectures in case libdw unwind
->  # support is detected in system. Add supported architectures
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index d74241a151313bd09101aabb5d765a5a0a6efc84..f5278ed9f778f928436693a14e016c5c3c5171c1 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -310,6 +310,10 @@ ifeq ($(filter feature-dump,$(MAKECMDGOALS)),feature-dump)
->  FEATURE_TESTS := all
->  endif
->  endif
-> +# architectures that use the generic syscall table
-> +ifeq ($(SRCARCH),riscv)
-> +include $(srctree)/tools/perf/scripts/Makefile.syscalls
-> +endif
->  include Makefile.config
->  endif
->  
-> diff --git a/tools/perf/arch/riscv/Makefile b/tools/perf/arch/riscv/Makefile
-> index 18ad078000e2bba595f92efc5d97a63fdb83ef45..087e099fb453a9236db34878077a51f711881ce0 100644
-> --- a/tools/perf/arch/riscv/Makefile
-> +++ b/tools/perf/arch/riscv/Makefile
-> @@ -1,25 +1,3 @@
->  # SPDX-License-Identifier: GPL-2.0
->  PERF_HAVE_JITDUMP := 1
->  HAVE_KVM_STAT_SUPPORT := 1
-> -
-> -#
-> -# Syscall table generation for perf
-> -#
-> -
-> -out    := $(OUTPUT)arch/riscv/include/generated/asm
-> -header := $(out)/syscalls.c
-> -incpath := $(srctree)/tools
-> -sysdef := $(srctree)/tools/arch/riscv/include/uapi/asm/unistd.h
-> -sysprf := $(srctree)/tools/perf/arch/riscv/entry/syscalls/
-> -systbl := $(sysprf)/mksyscalltbl
-> -
-> -# Create output directory if not already present
-> -$(shell [ -d '$(out)' ] || mkdir -p '$(out)')
-> -
-> -$(header): $(sysdef) $(systbl)
-> -	$(Q)$(SHELL) '$(systbl)' '$(CC)' '$(HOSTCC)' $(incpath) $(sysdef) > $@
-> -
-> -clean::
-> -	$(call QUIET_CLEAN, riscv) $(RM) $(header)
-> -
-> -archheaders: $(header)
-> diff --git a/tools/perf/arch/riscv/entry/syscalls/Kbuild b/tools/perf/arch/riscv/entry/syscalls/Kbuild
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..9a41e3572c3afd4f202321fd9e492714540e8fd3
-> --- /dev/null
-> +++ b/tools/perf/arch/riscv/entry/syscalls/Kbuild
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +syscall-y += syscalls_64.h
-> diff --git a/tools/perf/arch/riscv/entry/syscalls/Makefile.syscalls b/tools/perf/arch/riscv/entry/syscalls/Makefile.syscalls
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..9668fd1faf60e828ed2786c2ee84739ac1f153fc
-> --- /dev/null
-> +++ b/tools/perf/arch/riscv/entry/syscalls/Makefile.syscalls
-> @@ -0,0 +1,4 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +syscall_abis_32 += riscv memfd_secret
-> +syscall_abis_64 += riscv rlimit memfd_secret
-> diff --git a/tools/perf/arch/riscv/entry/syscalls/mksyscalltbl b/tools/perf/arch/riscv/entry/syscalls/mksyscalltbl
-> deleted file mode 100755
-> index c59f5e852b97712a9a879b89e6ef6999ed4b6cd7..0000000000000000000000000000000000000000
-> --- a/tools/perf/arch/riscv/entry/syscalls/mksyscalltbl
-> +++ /dev/null
-> @@ -1,47 +0,0 @@
-> -#!/bin/sh
-> -# SPDX-License-Identifier: GPL-2.0
-> -#
-> -# Generate system call table for perf. Derived from
-> -# powerpc script.
-> -#
-> -# Copyright IBM Corp. 2017
-> -# Author(s):  Hendrik Brueckner <brueckner@linux.vnet.ibm.com>
-> -# Changed by: Ravi Bangoria <ravi.bangoria@linux.vnet.ibm.com>
-> -# Changed by: Kim Phillips <kim.phillips@arm.com>
-> -# Changed by: Björn Töpel <bjorn@rivosinc.com>
-> -
-> -gcc=$1
-> -hostcc=$2
-> -incpath=$3
-> -input=$4
-> -
-> -if ! test -r $input; then
-> -	echo "Could not read input file" >&2
-> -	exit 1
-> -fi
-> -
-> -create_sc_table()
-> -{
-> -	local sc nr max_nr
-> -
-> -	while read sc nr; do
-> -		printf "%s\n" "	[$nr] = \"$sc\","
-> -		max_nr=$nr
-> -	done
-> -
-> -	echo "#define SYSCALLTBL_RISCV_MAX_ID $max_nr"
-> -}
-> -
-> -create_table()
-> -{
-> -	echo "#include \"$input\""
-> -	echo "static const char *const syscalltbl_riscv[] = {"
-> -	create_sc_table
-> -	echo "};"
-> -}
-> -
-> -$gcc -E -dM -x c -I $incpath/include/uapi $input \
-> -	|awk '$2 ~ "__NR" && $3 !~ "__NR3264_" {
-> -		sub("^#define __NR(3264)?_", "");
-> -		print | "sort -k2 -n"}' \
-> -	|create_table
-> diff --git a/tools/perf/arch/riscv/include/syscall_table.h b/tools/perf/arch/riscv/include/syscall_table.h
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..7ff51b783000d727ec48be960730b81ecdb05575
-> --- /dev/null
-> +++ b/tools/perf/arch/riscv/include/syscall_table.h
-> @@ -0,0 +1,8 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#include <asm/bitsperlong.h>
-> +
-> +#if __BITS_PER_LONG == 64
-> +#include <asm/syscalls_64.h>
-> +#else
-> +#include <asm/syscalls_32.h>
-> +#endif
-> diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
-> index a05c1c105c51bf1bd18a59195220894598eb7461..692f48db810ccbef229e240db29261f0c60db632 100755
-> --- a/tools/perf/check-headers.sh
-> +++ b/tools/perf/check-headers.sh
-> @@ -71,6 +71,7 @@ FILES=(
->    "include/uapi/asm-generic/ioctls.h"
->    "include/uapi/asm-generic/mman-common.h"
->    "include/uapi/asm-generic/unistd.h"
-> +  "scripts/syscall.tbl"
->  )
->  
->  declare -a SYNC_CHECK_FILES
-> diff --git a/tools/perf/scripts/Makefile.syscalls b/tools/perf/scripts/Makefile.syscalls
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..e2b0c4b513d5c42c8e9ac51a9ea774c34a1311b7
-> --- /dev/null
-> +++ b/tools/perf/scripts/Makefile.syscalls
-> @@ -0,0 +1,60 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +# This Makefile generates tools/perf/arch/$(SRCARCH)/include/generated/asm from
-> +# the generic syscall table if that is supported by the architecture, otherwise
-> +# from the architecture's defined syscall table.
-> +
-> +PHONY := all
-> +all:
-> +
-> +obj := $(OUTPUT)/tools/perf/arch/$(SRCARCH)/include/generated/asm
-> +
-> +syscall_abis_32  += common,32
-> +syscall_abis_64  += common,64
+This series supports implementing qdisc using bpf struct_ops. bpf qdisc
+aims to be a flexible and easy-to-use infrastructure that allows users to
+quickly experiment with different scheduling algorithms/policies. It only
+requires users to implement core qdisc logic using bpf and implements the
+mundane part for them. In addition, the ability to easily communicate
+between qdisc and other components will also bring new opportunities for
+new applications and optimizations.
 
-Couldn't it be := instead of += ?
+* struct_ops changes *
+
+To make struct_ops works better with bpf qdisc, two new changes are
+introduced to bpf specifically for struct_ops programs. Frist, we
+introduce "ref_acquired" postfix for arguments in stub functions in
+patch 1-2. It will allow Qdisc_ops->enqueue to acquire an referenced kptr
+to an skb just once. Through the reference object tracking mechanism in
+the verifier, we can make sure that the acquired skb will be either
+enqueued or dropped. Besides, no duplicate references can be acquired.
+Then, we allow a reference leak in struct_ops programs so that we can
+return an skb naturally. This is done and tested in patch 3 and 4.
+
+* Performance of bpf qdisc *
+
+We tested several bpf qdiscs included in the selftests and their in-tree
+counterparts to give you a sense of the performance of qdisc implemented
+in bpf.
+
+The implementation of bpf_fq is fairly complex and slightly different from
+fq so later we only compare the two fifo qdiscs. bpf_fq implements the
+same fair queueing algorithm in fq, but without flow hash collision
+avoidance and garbage collection of inactive flows. bpf_fifo uses a single
+bpf_list as a queue instead of three queues for different priorities in
+pfifo_fast. The time complexity of fifo however should be similar since the
+queue selection time is negligible.
+
+Test setup:
+
+    client -> qdisc ------------->  server
+    ~~~~~~~~~~~~~~~                 ~~~~~~
+    nested VM1 @ DC1               VM2 @ DC2
+
+Throghput: iperf3 -t 600, 5 times
+
+      Qdisc        Average (GBits/sec)
+    ----------     -------------------
+    pfifo_fast       12.52 ± 0.26
+    bpf_fifo         11.72 ± 0.32 
+    fq               10.24 ± 0.13
+    bpf_fq           11.92 ± 0.64 
+
+Latency: sockperf pp --tcp -t 600, 5 times
+
+      Qdisc        Average (usec)
+    ----------     --------------
+    pfifo_fast      244.58 ± 7.93
+    bpf_fifo        244.92 ± 15.22
+    fq              234.30 ± 19.25
+    bpf_fq          221.34 ± 10.76
+
+Looking at the two fifo qdiscs, the 6.4% drop in throughput in the bpf
+implementatioin is consistent with previous observation (v8 throughput
+test on a loopback device). This should be able to be mitigated by
+supporting adding skb to bpf_list or bpf_rbtree directly in the future.
+
+* Clean up skb in bpf qdisc during reset *
+
+The current implementation relies on bpf qdisc implementors to correctly
+release skbs in queues (bpf graphs or maps) in .reset, which might not be
+a safe thing to do. The solution as Martin has suggested would be
+supporting private data in struct_ops. This can also help simplifying
+implementation of qdisc that works with mq. For examples, qdiscs in the
+selftest mostly use global data. Therefore, even if user add multiple
+qdisc instances under mq, they would still share the same queue. 
+
+---
+v1:
+    Fix struct_ops referenced kptr acquire/return mechanisms
+    Allow creating dynptr from skb
+    Add bpf qdisc kfunc filter
+    Support updating bstats and qstats
+    Update qdiscs in selftest to update stats
+    Add gc, handle hash collision and fix bugs in fq_bpf
+
+past RFCs
+
+v9: Drop classful qdisc operations and kfuncs
+    Drop support of enqueuing skb directly to bpf_rbtree/list
+    Link: https://lore.kernel.org/bpf/20240714175130.4051012-1-amery.hung@bytedance.com/
+
+v8: Implement support of bpf qdisc using struct_ops
+    Allow struct_ops to acquire referenced kptr via argument
+    Allow struct_ops to release and return referenced kptr
+    Support enqueuing sk_buff to bpf_rbtree/list
+    Move examples from samples to selftests
+    Add a classful qdisc selftest
+    Link: https://lore.kernel.org/netdev/20240510192412.3297104-15-amery.hung@bytedance.com/
+
+v7: Reference skb using kptr to sk_buff instead of __sk_buff
+    Use the new bpf rbtree/link to for skb queues
+    Add reset and init programs
+    Add a bpf fq qdisc sample
+    Add a bpf netem qdisc sample
+    Link: https://lore.kernel.org/netdev/cover.1705432850.git.amery.hung@bytedance.com/
+
+v6: switch to kptr based approach
+
+v5: mv kernel/bpf/skb_map.c net/core/skb_map.c
+    implement flow map as map-in-map
+    rename bpf_skb_tc_classify() and move it to net/sched/cls_api.c
+    clean up eBPF qdisc program context
+
+v4: get rid of PIFO, use rbtree directly
+
+v3: move priority queue from sch_bpf to skb map
+    introduce skb map and its helpers
+    introduce bpf_skb_classify()
+    use netdevice notifier to reset skb's
+    Rebase on latest bpf-next
+
+v2: Rebase on latest net-next
+    Make the code more complete (but still incomplete)
 
 
-> +syscalltbl := $(srctree)/tools/scripts/syscall.tbl
-> +
-> +# let architectures override $(syscall_abis_%) and $(syscalltbl)
-> +-include $(srctree)/tools/perf/arch/$(SRCARCH)/entry/syscalls/Makefile.syscalls
-> +include $(srctree)/scripts/Kbuild.include
-> +-include $(srctree)/tools/perf/arch/$(SRCARCH)/entry/syscalls/Kbuild
-> +
-> +systbl := $(srctree)/tools/perf/scripts/syscalltbl.sh
-> +
-> +syscall-y   := $(addprefix $(obj)/, $(syscall-y))
-> +
-> +# Remove stale wrappers when the corresponding files are removed from generic-y
-> +old-headers := $(wildcard $(obj)/*.c)
-> +unwanted    := $(filter-out $(syscall-y),$(old-headers))
+Amery Hung (13):
+  bpf: Support getting referenced kptr from struct_ops argument
+  selftests/bpf: Test referenced kptr arguments of struct_ops programs
+  bpf: Allow struct_ops prog to return referenced kptr
+  selftests/bpf: Test returning referenced kptr from struct_ops programs
+  bpf: net_sched: Support implementation of Qdisc_ops in bpf
+  bpf: net_sched: Add basic bpf qdisc kfuncs
+  bpf: net_sched: Add a qdisc watchdog timer
+  bpf: net_sched: Support updating bstats
+  bpf: net_sched: Support updating qstats
+  bpf: net_sched: Allow writing to more Qdisc members
+  libbpf: Support creating and destroying qdisc
+  selftests: Add a basic fifo qdisc test
+  selftests: Add a bpf fq qdisc to selftest
 
-Can you elaborate?  What's the stable wrappers?
+ include/linux/bpf.h                           |   3 +
+ include/linux/btf.h                           |   1 +
+ include/net/sch_generic.h                     |   4 +
+ kernel/bpf/bpf_struct_ops.c                   |  26 +-
+ kernel/bpf/btf.c                              |   5 +-
+ kernel/bpf/verifier.c                         |  77 +-
+ net/sched/Kconfig                             |  12 +
+ net/sched/Makefile                            |   1 +
+ net/sched/bpf_qdisc.c                         | 394 ++++++++++
+ net/sched/sch_api.c                           |  18 +-
+ net/sched/sch_generic.c                       |  11 +-
+ tools/lib/bpf/libbpf.h                        |   5 +-
+ tools/lib/bpf/netlink.c                       |  20 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  15 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   6 +
+ tools/testing/selftests/bpf/config            |   1 +
+ .../selftests/bpf/prog_tests/bpf_qdisc.c      | 185 +++++
+ .../prog_tests/test_struct_ops_kptr_return.c  |  87 +++
+ .../prog_tests/test_struct_ops_refcounted.c   |  58 ++
+ .../selftests/bpf/progs/bpf_qdisc_common.h    |  27 +
+ .../selftests/bpf/progs/bpf_qdisc_fifo.c      | 117 +++
+ .../selftests/bpf/progs/bpf_qdisc_fq.c        | 726 ++++++++++++++++++
+ .../bpf/progs/struct_ops_kptr_return.c        |  29 +
+ ...uct_ops_kptr_return_fail__invalid_scalar.c |  24 +
+ .../struct_ops_kptr_return_fail__local_kptr.c |  30 +
+ ...uct_ops_kptr_return_fail__nonzero_offset.c |  23 +
+ .../struct_ops_kptr_return_fail__wrong_type.c |  28 +
+ .../bpf/progs/struct_ops_refcounted.c         |  67 ++
+ ...ruct_ops_refcounted_fail__global_subprog.c |  32 +
+ .../struct_ops_refcounted_fail__ref_leak.c    |  17 +
+ 30 files changed, 2026 insertions(+), 23 deletions(-)
+ create mode 100644 net/sched/bpf_qdisc.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_kptr_return.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_refcounted.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__invalid_scalar.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__local_kptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__nonzero_offset.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_refcounted.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__global_subprog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_refcounted_fail__ref_leak.c
 
-I think syscall-y and old-headers have .h files but the wildcard above
-is called for .c files?
+-- 
+2.20.1
 
-Thanks,
-Namhyung
-
-> +
-> +quiet_cmd_remove = REMOVE  $(unwanted)
-> +      cmd_remove = rm -f $(unwanted)
-> +
-> +quiet_cmd_systbl = SYSTBL  $@
-> +      cmd_systbl = $(CONFIG_SHELL) $(systbl) \
-> +		   $(if $(systbl-args-$*),$(systbl-args-$*),$(systbl-args)) \
-> +		   --abis $(subst $(space),$(comma),$(strip $(syscall_abis_$*))) \
-> +		   $< $@
-> +
-> +all: $(syscall-y)
-> +	$(if $(unwanted),$(call cmd,remove))
-> +	@:
-> +
-> +$(obj)/syscalls_%.h: $(syscalltbl) $(systbl) FORCE
-> +	$(call if_changed,systbl)
-> +
-> +targets := $(syscall-y)
-> +
-> +# Create output directory. Skip it if at least one old header exists
-> +# since we know the output directory already exists.
-> +ifeq ($(old-headers),)
-> +$(shell mkdir -p $(obj))
-> +endif
-> +
-> +PHONY += FORCE
-> +
-> +FORCE:
-> +
-> +existing-targets := $(wildcard $(sort $(targets)))
-> +
-> +-include $(foreach f,$(existing-targets),$(dir $(f)).$(notdir $(f)).cmd)
-> +
-> +.PHONY: $(PHONY)
 
