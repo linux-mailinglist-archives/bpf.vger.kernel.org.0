@@ -1,223 +1,347 @@
-Return-Path: <bpf+bounces-46826-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46827-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDA189F060F
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 09:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B8769F07D5
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 10:26:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7F60283B76
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 08:11:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1F86281DBF
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 09:25:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CAC51A8F75;
-	Fri, 13 Dec 2024 08:10:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B5A1B21A6;
+	Fri, 13 Dec 2024 09:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=collabora.com header.i=laura.nao@collabora.com header.b="PgKYW9tR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783FA1A7270;
-	Fri, 13 Dec 2024 08:10:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734077452; cv=none; b=NalcIp6rwHzKuCfYI5lsPU+GEi+GC5DZkZLHas8snFjFwl+tsZ2ASsCPNwco0KM0XGGEcJcdRBthVD+iRiwiTc1oCTrkZAI/bB1Lh2VtLw8+pLroJx7/Ki4+xhbR09g3NpzpNRL8CnMv7EGvDb77OqZaaR9z+37ishlShyRsDBw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734077452; c=relaxed/simple;
-	bh=2GTcoRXXfhyN/pSs2mlfaCsRHwv13iZ7VA2Q8M1Bfnw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M7pfhTUz+FVUhOiC3m0mM9xkCnq9rvkvC12wkdr3WpevPI5hQ93/2Pq38Zk1r2PIDd7ZkoSbVg4LN1pbAfdQU0WgfEDCBRjQdETZpRca1400b1YSxiOUgNDTnLe0VY/vmyOSAiAT0+9h7JSlphpidRcr1Fb91oOR+smozuaXrGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [192.168.0.2] (ip5f5af5e3.dynamic.kabel-deutschland.de [95.90.245.227])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id D9A7861E64787;
-	Fri, 13 Dec 2024 09:09:43 +0100 (CET)
-Message-ID: <8d65f680-f5b9-411e-b71c-122d48240b6e@molgen.mpg.de>
-Date: Fri, 13 Dec 2024 09:09:43 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5AD11B0F04;
+	Fri, 13 Dec 2024 09:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1734081950; cv=pass; b=Xw8FjeTXKkQxs4gT5X7I2tGBo/DIWpD+P7nCn5ej/T0u6WTS/4EG/2v991zfSAP31hjjABNWap44/SOiQCkr8NAJX19j7QbKOzToEUJbxpxx9FnjDBiMQbb4+As+5EcTNjH/8r9mD3K8jcxXLG0oAtohbdq5vizi1BNeF3VaVzk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1734081950; c=relaxed/simple;
+	bh=wpZWKto3YUjaWLEDbKUz1Yi+7s3Zag5arrGJ3uJk7Aw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aFqoYJF0/DGJDxUU84IbexFTcUDLBD03oRaXm2CpeYHiHMeEHFjtQHZ0ly8/MbW5MjOrt7Gcou3pyUaPuEUImxBBiDMt8d6SCsRWedwuGUSSmsAxpKh4vph31ggVL1Ouy/sYAvFcC5JGGBHtjtkORs8tk1uB1kEEerMH6bjg+X4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=laura.nao@collabora.com header.b=PgKYW9tR; arc=pass smtp.client-ip=136.143.188.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+ARC-Seal: i=1; a=rsa-sha256; t=1734081928; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=HjqkwyGBy8oFpiH2OzBbdgLIjA6J/qJ+Z1tRCrZTgBlKf9fweZBx+lpCzz+ouQURY0eWWu3JaL90KEe68uYm8CwyzJyyYvgiRzMJSSiGzjrUeH9RuI9IACgRKCs1U0UmuBr+3sU0Jj8PTZGoVciWjUboCCD0noHSV8/XVzFpT/s=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1734081928; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=YnSfpiMRcV4J4vXvcSY+ixR1XW0AUmLlpepzk/A6xy0=; 
+	b=SOrr3tKcIvCFh9e4zcoVhw49t0Y8eTXDC+HrYHiwjEH9Dik1C0BBD9zyXfn4vkXrjTskZEbTOW0AI5I/jUYqfLaencplbOlarQlRO+FnO10fBrMsRTbdljr7Il1bijhnf9dohQTWZZMuZYpdKdxpo0uHT8Wp/aj6U8o2FuDuMw0=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=collabora.com;
+	spf=pass  smtp.mailfrom=laura.nao@collabora.com;
+	dmarc=pass header.from=<laura.nao@collabora.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1734081928;
+	s=zohomail; d=collabora.com; i=laura.nao@collabora.com;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding:Reply-To;
+	bh=YnSfpiMRcV4J4vXvcSY+ixR1XW0AUmLlpepzk/A6xy0=;
+	b=PgKYW9tRgcP27jptrUtgW/N7L044UtUVDMmc9SmjC8RI7T+kb16sYU6NEcbRVAVM
+	7+N1lrMDCFr213kX5FwRldujDhgDiMum4wERmccIHfx+o37ewO/JQm46bDnsM28/peK
+	xV4jhmgljik4IjgBh3dLnmfxJ9scQuTlZDUfUEu8=
+Received: by mx.zohomail.com with SMTPS id 1734081926159795.2400700570497;
+	Fri, 13 Dec 2024 01:25:26 -0800 (PST)
+From: Laura Nao <laura.nao@collabora.com>
+To: stephen.s.brennan@oracle.com
+Cc: alan.maguire@oracle.com,
+	bpf@vger.kernel.org,
+	chrome-platform@lists.linux.dev,
+	kernel@collabora.com,
+	laura.nao@collabora.com,
+	linux-kernel@vger.kernel.org,
+	olsajiri@gmail.com,
+	regressions@lists.linux.dev
+Subject: Re: [REGRESSION] module BTF validation failure (Error -22) on
+Date: Fri, 13 Dec 2024 10:26:03 +0100
+Message-Id: <20241213092603.13399-1-laura.nao@collabora.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <87zfl0mv0g.fsf@oracle.com>
+References: <87zfl0mv0g.fsf@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [PATCH iwl-next v2 1/1] igc: Improve
- XDP_SETUP_PROG process
-To: Song Yoong Siang <yoong.siang.song@intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Vinicius Costa Gomes <vinicius.gomes@intel.com>,
- intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20241211134532.3489335-1-yoong.siang.song@intel.com>
-Content-Language: en-US
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20241211134532.3489335-1-yoong.siang.song@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 
-Dear Song,
-
-
-Thank you for your patch. Maybe for the summary/title you could be more 
-specific:
-
-igc: Avoid unnecessary link down event in XDP_SETUP_PROG process
-
-
-Am 11.12.24 um 14:45 schrieb Song Yoong Siang:
-> Improve XDP_SETUP_PROG process by avoiding unnecessary link down event.
+On 12/12/24 22:49, Stephen Brennan wrote:
+> Jiri Olsa <olsajiri@gmail.com> writes:
+>> On Wed, Dec 11, 2024 at 10:10:24PM +0100, Jiri Olsa wrote:
+>>> On Tue, Dec 10, 2024 at 02:55:01PM +0100, Laura Nao wrote:
+>>>> Hi Jiri,
+>>>>
+>>>> Thanks for the feedback!
+>>>>
+>>>> On 12/6/24 13:35, Jiri Olsa wrote:
+>>>>> On Fri, Nov 15, 2024 at 06:17:12PM +0100, Laura Nao wrote:
+>>>>>> On 11/13/24 10:37, Laura Nao wrote:
+>>>>>>>
+>>>>>>> Currently, KernelCI only retains the bzImage, not the vmlinux
+>>>>>>> binary. The
+>>>>>>> bzImage can be downloaded from the same link mentioned above by
+>>>>>>> selecting
+>>>>>>> 'kernel' from the dropdown menu (modules can also be downloaded
+>>>>>>> the
+>>>>>>> same
+>>>>>>> way). I’ll try to replicate the build on my end and share the
+>>>>>>> vmlinux
+>>>>>>> with DWARF data stripped for convenience.
+>>>>>>>
+>>>>>>
+>>>>>> I managed to reproduce the issue locally and I've uploaded the
+>>>>>> vmlinux[1]
+>>>>>> (stripped of DWARF data) and vmlinux.raw[2] files, as well as one
+>>>>>> of
+>>>>>> the
+>>>>>> modules[3] and its btf data[4] extracted with:
+>>>>>>
+>>>>>> bpftool -B vmlinux btf dump file cros_kbd_led_backlight.ko >
+>>>>>> cros_kbd_led_backlight.ko.raw
+>>>>>>
+>>>>>> Looking again at the logs[5], I've noticed the following is
+>>>>>> reported:
+>>>>>>
+>>>>>> [    0.415885] BPF: 	 type_id=115803 offset=177920 size=1152
+>>>>>> [    0.416029] BPF:
+>>>>>> [    0.416083] BPF: Invalid offset
+>>>>>> [    0.416165] BPF:
+>>>>>>
+>>>>>> There are two different definitions of rcu_data in
+>>>>>> '.data..percpu',
+>>>>>> one
+>>>>>> is a struct and the other is an integer:
+>>>>>>
+>>>>>> type_id=115801 offset=177920 size=1152 (VAR 'rcu_data')
+>>>>>> type_id=115803 offset=177920 size=1152 (VAR 'rcu_data')
+>>>>>>
+>>>>>> [115801] VAR 'rcu_data' type_id=115572, linkage=static
+>>>>>> [115803] VAR 'rcu_data' type_id=1, linkage=static
+>>>>>>
+>>>>>> [115572] STRUCT 'rcu_data' size=1152 vlen=69
+>>>>>> [1] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64
+>>>>>> encoding=(none)
+>>>>>>
+>>>>>> I assume that's not expected, correct?
+>>>>>
+>>>>> yes, that seems wrong.. but I can't reproduce with your config
+>>>>> together with pahole 1.24 .. could you try with latest one?
+>>>>
+>>>> I just tested next-20241210 with the latest pahole version (1.28
+>>>> from
+>>>> the master branch[1]), and the issue does not occur with this
+>>>> version
+>>>> (I can see only one instance of rcu_data in the BTF data, as
+>>>> expected).
+>>>>
+>>>> I can confirm that the same kernel revision still exhibits the
+>>>> issue
+>>>> with pahole 1.24.
+>>>>
+>>>> If helpful, I can also test versions between 1.24 and 1.28 to
+>>>> identify
+>>>> which ones work.
+>>>
+>>> I managed to reproduce finally with gcc-12, but had to use pahole
+>>> 1.25,
+>>> 1.24 failed with unknown attribute
+>>>
+>>> 	[95096] VAR 'rcu_data' type_id=94868, linkage=static
+>>> 	[95098] VAR 'rcu_data' type_id=4, linkage=static
+>>> 	type_id=95096 offset=177088 size=1152 (VAR 'rcu_data')
+>>> 	type_id=95098 offset=177088 size=1152 (VAR 'rcu_data')
+>>
+>> so for me the difference seems to be using gcc-12 and this commit in
+>> linux tree:
+>>    dabddd687c9e percpu: cast percpu pointer in PERCPU_PTR() via
+>>    unsigned long
+>>
+>> which adds extra __pcpu_ptr variable into dwarf, and it has the same
+>> address as the per cpu variable and that confuses pahole
+>>
+>> it ends up with adding per cpu variable twice.. one with real type
+>> (type_id=94868) and the other with unsigned long type (type_id=4)
+>>
+>> however this got fixed in pahole 1.28 commit:
+>>    47dcb534e253 btf_encoder: Stop indexing symbols for VARs
+>>
+>> which filters out __pcpu_ptr variable completely, adding Stephen to
+>> the loop
 > 
-> This patch is tested by using ip link set xdpdrv command to attach a simple
-> XDP program which always return XDP_PASS.
-
-return*s*
-
-> Before this patch, attaching xdp program will cause ptp4l to lost sync for
-
-to lose
-
-> few seconds, as shown in ptp4l log below:
->    ptp4l[198.082]: rms    4 max    8 freq   +906 +/-   2 delay    12 +/-   0
->    ptp4l[199.082]: rms    3 max    4 freq   +906 +/-   3 delay    12 +/-   0
->    ptp4l[199.536]: port 1 (enp2s0): link down
->    ptp4l[199.536]: port 1 (enp2s0): SLAVE to FAULTY on FAULT_DETECTED (FT_UNSPECIFIED)
->    ptp4l[199.600]: selected local clock 22abbc.fffe.bb1234 as best master
->    ptp4l[199.600]: port 1 (enp2s0): assuming the grand master role
->    ptp4l[199.600]: port 1 (enp2s0): master state recommended in slave only mode
->    ptp4l[199.600]: port 1 (enp2s0): defaultDS.priority1 probably misconfigured
->    ptp4l[202.266]: port 1 (enp2s0): link up
->    ptp4l[202.300]: port 1 (enp2s0): FAULTY to LISTENING on INIT_COMPLETE
->    ptp4l[205.558]: port 1 (enp2s0): new foreign master 44abbc.fffe.bb2144-1
->    ptp4l[207.558]: selected best master clock 44abbc.fffe.bb2144
->    ptp4l[207.559]: port 1 (enp2s0): LISTENING to UNCALIBRATED on RS_SLAVE
->    ptp4l[208.308]: port 1 (enp2s0): UNCALIBRATED to SLAVE on MASTER_CLOCK_SELECTED
->    ptp4l[208.933]: rms  742 max 1303 freq   -195 +/- 682 delay    12 +/-   0
->    ptp4l[209.933]: rms  178 max  274 freq   +387 +/- 243 delay    12 +/-   0
+> Thanks for sharing this. Your analysis is spot-on, but I can fill in
+> the
+> details a bit. I just grabbed 6.13-rc2 and built it with gcc 11 and
+> pahole 1.27, and observed the same issue:
 > 
-> After this patch, attaching xdp program no longer cause ptp4l to lost sync,
-
-to lose
-
-> as shown on ptp4l log below:
->    ptp4l[201.183]: rms    1 max    3 freq   +959 +/-   1 delay     8 +/-   0
->    ptp4l[202.183]: rms    1 max    3 freq   +961 +/-   2 delay     8 +/-   0
->    ptp4l[203.183]: rms    2 max    3 freq   +958 +/-   2 delay     8 +/-   0
->    ptp4l[204.183]: rms    3 max    5 freq   +961 +/-   3 delay     8 +/-   0
->    ptp4l[205.183]: rms    2 max    4 freq   +964 +/-   3 delay     8 +/-   0
+>    $ bpftool btf dump file vmlinux | grep "VAR 'rcu_data"
+>    [4045] VAR 'rcu_data' type_id=3962, linkage=static
+>    [4047] VAR 'rcu_data' type_id=1, linkage=static
+>            type_id=4045 offset=196608 size=520 (VAR 'rcu_data')
+>            type_id=4047 offset=196608 size=520 (VAR 'rcu_data')
 > 
-> Besides, before this patch, attaching xdp program will cause flood ping to
-> loss 10 packets, as shown in ping statistics below:
-
-to lose
-
->    --- 169.254.1.2 ping statistics ---
->    100000 packets transmitted, 99990 received, +6 errors, 0.01% packet loss, time 34001ms
->    rtt min/avg/max/mdev = 0.028/0.301/3104.360/13.838 ms, pipe 10, ipg/ewma 0.340/0.243 ms
+> In pahole 1.27, the (simplified) process for generating variables for
+> BTF is:
 > 
-> After this patch, attaching xdp program no longer cause flood ping to loss
-
-cause*s*, to lose
-
-> any packets, as shown in ping statistics below:
->    --- 169.254.1.2 ping statistics ---
->    100000 packets transmitted, 100000 received, 0% packet loss, time 32326ms
->    rtt min/avg/max/mdev = 0.027/0.231/19.589/0.155 ms, pipe 2, ipg/ewma 0.323/0.322 ms
+> 1. Look through the ELF symbol table, and find all symbols whose
+> addresses are within the percpu section, and add them to a list.
 > 
-> On the other hand, this patch is also tested with tools/testing/selftests/
-> bpf/xdp_hw_metadata app to make sure XDP zero-copy is working fine with
-> XDP Tx and Rx metadata. Below is the result of last packet after received
-> 10000 UDP packets with interval 1 ms:
->    poll: 1 (0) skip=0 fail=0 redir=10000
->    xsk_ring_cons__peek: 1
->    0x55881c7ef7a8: rx_desc[9999]->addr=8f110 addr=8f110 comp_addr=8f110 EoP
->    rx_hash: 0xFB9BB6A3 with RSS type:0x1
->    HW RX-time:   1733923136269470866 (sec:1733923136.2695) delta to User RX-time sec:0.0000 (43.280 usec)
->    XDP RX-time:   1733923136269482482 (sec:1733923136.2695) delta to User RX-time sec:0.0000 (31.664 usec)
->    No rx_vlan_tci or rx_vlan_proto, err=-95
->    0x55881c7ef7a8: ping-pong with csum=ab19 (want 315b) csum_start=34 csum_offset=6
->    0x55881c7ef7a8: complete tx idx=9999 addr=f010
->    HW TX-complete-time:   1733923136269591637 (sec:1733923136.2696) delta to User TX-complete-time sec:0.0001 (108.571 usec)
->    XDP RX-time:   1733923136269482482 (sec:1733923136.2695) delta to User TX-complete-time sec:0.0002 (217.726 usec)
->    HW RX-time:   1733923136269470866 (sec:1733923136.2695) delta to HW TX-complete-time sec:0.0001 (120.771 usec)
->    0x55881c7ef7a8: complete rx idx=10127 addr=8f110
+> 2. Look through the DWARF: for each tag of type DW_TAG_variable,
+> determine if the variable is "global". If so, and if the address
+> matches
+> one of the symbols found in Step 1, continue.
 > 
-> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-> ---
-> V2 changelog:
->   - show some examples of problem in commit msg. (Vinicius)
->   - igc_close()/igc_open() are too big a hammer for installing a new XDP
->     program. Only do we we really need. (Vinicius)
-
-The first sentence of the second item could go into the commit message 
-with a note, why `igc_close()`/`igc_open()` are not needed.
-
-> ---
->   drivers/net/ethernet/intel/igc/igc_xdp.c | 19 +++++++++++++++----
->   1 file changed, 15 insertions(+), 4 deletions(-)
+> 3. Except for one special case, pahole doesn't check whether the DWARF
+> variable's name matches the symbol name. It simply emits a variable
+> using the name of the symbol from Step 1, and the type information
+> from
+> Step 2.
 > 
-> diff --git a/drivers/net/ethernet/intel/igc/igc_xdp.c b/drivers/net/ethernet/intel/igc/igc_xdp.c
-> index 869815f48ac1..64b04aad614c 100644
-> --- a/drivers/net/ethernet/intel/igc/igc_xdp.c
-> +++ b/drivers/net/ethernet/intel/igc/igc_xdp.c
-> @@ -14,6 +14,7 @@ int igc_xdp_set_prog(struct igc_adapter *adapter, struct bpf_prog *prog,
->   	bool if_running = netif_running(dev);
->   	struct bpf_prog *old_prog;
->   	bool need_update;
-> +	int i;
+> The result of this process, in this case, is:
+> 
+> 1. kernel/rcu/tree.c contains a declaration of "rcu_data". This
+> results
+> in an ELF symbol in vmlinux of the same name. Great!
+> 
+>    $ eu-readelf -s vmlinux | grep '\brcu_data\b'
+>    12319: 0000000000030000    520 OBJECT  LOCAL  DEFAULT       21
+>    rcu_data
+> 
+> 
+> 2. A DWARF entry is emitted for "rcu_data" which has a matching
+> location
+> (DW_AT_location has value DW_OP_addr 0x30000, matching the ELF
+> symbol).
+> So far so good - pahole emits a BTF variable with the expected type.
+> 
+>    $ llvm-dwarfdump --name=rcu_data
+>    ...
+>    0x01af03f1: DW_TAG_variable
+>                  DW_AT_name        ("rcu_data")
+>                  DW_AT_decl_file
+>                  ("/home/stepbren/repos/linux-upstream/kernel/rcu/tree.c")
+>                  DW_AT_decl_line   (80)
+>                  DW_AT_decl_column (8)
+>                  DW_AT_type        (0x01aefb38 "rcu_data")
+>                  DW_AT_alignment   (0x40)
+>                  DW_AT_location    (DW_OP_addr 0x30000)
+> 
+> 3. In kernel/rcu/tree.c, we also have the following declaration at
+> line
+> 5227 which uses per_cpu_ptr() on &rcu_data:
+> 
+> 5222 void rcutree_migrate_callbacks(int cpu)
+> 5223 {
+> 5224 	unsigned long flags;
+> 5225 	struct rcu_data *my_rdp;
+> 5226 	struct rcu_node *my_rnp;
+> 5227 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+>                                 ^^^^^^^^^^^
+> 
+> With the new changes in dabddd687c9e ("percpu: cast percpu pointer in
+> PERCPU_PTR() via unsigned long"), this expands to a lexical block
+> which
+> contains a variable named "__pcpu_ptr", of type unsigned long. The
+> compiler emits the following DW_TAG_variable in the DWARF:
+> 
+> 0x01b05d20:         DW_TAG_variable
+>                        DW_AT_name        ("__pcpu_ptr")
+>                        DW_AT_decl_file
+>                        ("/home/stepbren/repos/linux-upstream/kernel/rcu/tree.c")
+>                        DW_AT_decl_line   (5227)
+>                        DW_AT_decl_column (25)
+>                        DW_AT_type        (0x01adb52e "long unsigned
+>                        int")
+>                        DW_AT_location    (DW_OP_addr 0x30000,
+>                        DW_OP_stack_value)
+> 
+> Since the DW_AT_location has a DW_OP_addr - pahole understands this to
+> mean that the variable is located in global memory, and thus has
+> VSCOPE_GLOBAL. But of course, the actual "scope" of this variable is
+> not
+> global, it is limited to the lexical block, which is completely hidden
+> away by the macro. But pahole 1.27 does not consider this, and since
+> the
+> address matches the "rcu_data" symbol, it emits a variable of type
+> "long
+> unsigned int" under the name "rcu_data" -- despite the fact that the
+> DWARF info has a name of "__pcpu_ptr".
+> 
+> The changes I made in 1.28 address this (unintentionally) by:
+> 
+> 1. Requiring global variables be both "in the global scope" (i.e. in
+> the
+> CU-level, rather than any function or other lexical block.
+> 2. Requiring global variables have global memory (some of them could
+> be
+> register variables, despite having global scope -- e.g.
+> current_stack_pointer).
+> 3. No longer using the ELF symbol table, and instead using the DWARF
+> names for variables.
+> 
+> With #1, we would filter this variable. And with #3, even if the
+> variable were not filtered, we would output (a bunch of) variables
+> with
+> the correct __pcpu_ptr variable name, which is unhelpful but at least
+> helps us understand where these things come from.
+> 
+> Rebuilding with GCC 14, we can see that the "__pcpu_ptr" variable no
+> longer has a DW_AT_location:
+> 
+> 0x01afa82f:         DW_TAG_variable
+>                        DW_AT_name        ("__pcpu_ptr")
+>                        DW_AT_decl_file
+>                        ("/home/stepbren/repos/linux-upstream/kernel/rcu/tree.c")
+>                        DW_AT_decl_line   (5227)
+>                        DW_AT_decl_column (25)
+>                        DW_AT_type        (0x01ad0267 "long unsigned
+>                        int")
+> 
+> This is the reason that pahole 1.27 now recognizes it as
+> VSCOPE_OPTIMIZED. Without a memory location pahole can't do anything
+> to
+> match it against the "rcu_data" variable so nothing is emitted, and we
+> don't get the issue.
+> 
+> I'm not sure if this adds at all to the discussion, since the overall
+> answer is the same, an upgrade of pahole and/or gcc. (Pahole would be
+> recommended; GCC just changed the generated DWARF and I could imagine
+> other situations popping up elsewhere).
+>
 
-I’d use unsigned int as it’s used to access array elements.
+Thank you for the help with debugging and for the detailed explanation!  
+                                                                         
+We'll proceed with updating pahole to v1.28 in the KernelCI build        
+environment.                                                             
+                                                                         
+Best,                                                                    
+                                                                         
+Laura                                                                    
+                                                                         
+#regzbot resolve: fixed by changes in pahole 1.28
+ 
+> 
+> Thanks,
+> Stephen
+> 
+>> with gcc-14 the __pcpu_ptr variable has VSCOPE_OPTIMIZED scope, so it
+>> won't
+>> get into btf even without above pahole fix
+>>
+>> I suggest gcc/pahole upgrade ;-)
+>>
+>> thanks,
+>> jirka
 
->   
->   	if (dev->mtu > ETH_DATA_LEN) {
->   		/* For now, the driver doesn't support XDP functionality with
-> @@ -24,8 +25,13 @@ int igc_xdp_set_prog(struct igc_adapter *adapter, struct bpf_prog *prog,
->   	}
->   
->   	need_update = !!adapter->xdp_prog != !!prog;
-> -	if (if_running && need_update)
-> -		igc_close(dev);
-> +	if (if_running && need_update) {
-> +		for (i = 0; i < adapter->num_rx_queues; i++) {
-> +			igc_disable_rx_ring(adapter->rx_ring[i]);
-> +			igc_disable_tx_ring(adapter->tx_ring[i]);
-> +			napi_disable(&adapter->rx_ring[i]->q_vector->napi);
-> +		}
-> +	}
->   
->   	old_prog = xchg(&adapter->xdp_prog, prog);
->   	if (old_prog)
-> @@ -36,8 +42,13 @@ int igc_xdp_set_prog(struct igc_adapter *adapter, struct bpf_prog *prog,
->   	else
->   		xdp_features_clear_redirect_target(dev);
->   
-> -	if (if_running && need_update)
-> -		igc_open(dev);
-> +	if (if_running && need_update) {
-> +		for (i = 0; i < adapter->num_rx_queues; i++) {
-> +			napi_enable(&adapter->rx_ring[i]->q_vector->napi);
-> +			igc_enable_tx_ring(adapter->tx_ring[i]);
-> +			igc_enable_rx_ring(adapter->rx_ring[i]);
-> +		}
-> +	}
->   
->   	return 0;
->   }
-
-
-Kind regards,
-
-Paul
 
