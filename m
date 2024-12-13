@@ -1,84 +1,85 @@
-Return-Path: <bpf+bounces-46792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70AEA9F0136
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 01:43:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87C459F0138
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 01:43:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97902188D258
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 00:43:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CF39161E07
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 00:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDAE44C6E;
-	Fri, 13 Dec 2024 00:43:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E53A17BA9;
+	Fri, 13 Dec 2024 00:43:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YTrd1rOh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZE6rX4Gk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D96C4523A;
-	Fri, 13 Dec 2024 00:43:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A08DBE40;
+	Fri, 13 Dec 2024 00:43:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734050592; cv=none; b=BXifMsyWq/wxwf04WKUIPmVSZ2zKQDYegu3Onmyw0KBDxHs2FifVKB7m88ZDLcIE+Gs8IWsF7xTnFqw0ncRTlQX0RRRB1Htjyz2f2ckVhLDvCtVW1PnGMfDg/7996l0mTepV8uP/iTibSbZbd3FaQyUAqZ4/NURzZEOFOHMsj00=
+	t=1734050596; cv=none; b=VqRO6cadIkuOToJ1byWAEvyt/ojzc/Mw87lVLavJ8dYsEI1EY86m0tmHRp4GTjyYlWiyd4WoDQwF5lF2Bjv2PA+wFFfrynz59u6//EbCtG6HzLbRiNN7AEejekaYlCf3Lulzv1XWo5Uer5Aou/5xw7l3Qt/n2QGsNcZ2NrHiu2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734050592; c=relaxed/simple;
-	bh=BCdglMHLexZMkCD6JqQlyBWW59OVFpvm4T+m7wx8Ceg=;
+	s=arc-20240116; t=1734050596; c=relaxed/simple;
+	bh=R9HFLUKIYv6P29yDILuNSyl60x0OUXENZJA3KLanVjc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LqB+x/4YA0aEXVCLmD57wKqKzSlSKRLvr4JyLZGzSdnd7bL1zb9frStyI9hstikbcMwMXxj7RSNZ0w7swKrhRNoXsG/pXqirnsNU4+avELKjp6Txp6wsXLgYd3UXFUIFqCUXfRrHttFdqOE8Anh3BGjuZpFigcA2RpnlhzkF6RI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YTrd1rOh; arc=none smtp.client-ip=209.85.215.176
+	 To:Cc:Content-Type; b=HvEKCACX+SEVjknvOGJp3nvxHv5Ocmzc+yoEQ270OKF1K+BOVhLxF/59Gwy43S0MikRdW5tGlLoB8VYsRlxF2GljQISrWo5LgoEQb8X1wpyja0dwjqTTO2a9iezmSEEmHI2pywlWyIxzOF35/x2X8Ra84rMiVTmroEyap3M+We4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZE6rX4Gk; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-7fd526d4d9eso1069928a12.2;
-        Thu, 12 Dec 2024 16:43:10 -0800 (PST)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ef760a1001so1031911a91.0;
+        Thu, 12 Dec 2024 16:43:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734050590; x=1734655390; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734050594; x=1734655394; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QsJbGvzSa9/QB/jMdXB7TBTgWOMJ+LEfE/O1tMVjAS4=;
-        b=YTrd1rOh10VaCSuE9aZXVEdahEX1LRJTrBwjpaSkWiFijfrhQyJ4YPx4Y5+muahGxU
-         3wwDyKwHLJpReeMAGxZFhccZO46J8q8AhBwX3XbEGXMountTXlunri4uBbCZRUHqF2GZ
-         b/6d3uzyftG/WaYtnjgaOa49x57Mf8ot0lt0P8cak8tQ91CToDfZFMZjkNbWeAe6Ab/X
-         mkWQWDSuCDTE0nAFgAQQvlbf0wMEWtu4/i9I50phIRwjrjeOX+zKaeHQnnenTf/vbc1Q
-         3POLhfl9VvGq7f8uKgjYwgWARkRX8NGdm3hEyEDvzaT9CFyGv2A2W0rnUB5/BGTUWdt8
-         LPQg==
+        bh=37uTfzdQ7bSoBbgkpKKgQpyEPhRd4iFhnnS+tLD4cqs=;
+        b=ZE6rX4GkpmaXKWP9qMrDNtIU5h6sbZ7NLTFvR4RuvVYy+GUWlTVRdKR4PuaZMeSjUZ
+         fqYQ8aEIumPPOiPzqQh6LGcBvSTiA7lwYVMO91vrtdqAybCZ6g2ryvI55dr11bOO57ae
+         g5OxJL8oCEwwhNTvXpg249/FRbxL4YPFpxeesyehYaxovqUAM0B9aoSQizk2FQIntaTH
+         7vfONOFHsJD9/ZYjBDqeNWlc3dozn4FVpkjZ9skxVRfLgu07AXpBgXGfz7JbKU1TKldx
+         2InuMZO1J5Ay/ZZg6YPIxYX8GRwI/dqjYUFr0/VVAk8lm0sQ5AXECLfQN4k5d1FV2bEj
+         vwow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734050590; x=1734655390;
+        d=1e100.net; s=20230601; t=1734050594; x=1734655394;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QsJbGvzSa9/QB/jMdXB7TBTgWOMJ+LEfE/O1tMVjAS4=;
-        b=qVCkzv86myXcbN0g7fwNLmK7IbmtPYPFnipsZJ/qKm8LUol3lfedZfifHMVmYD0IVU
-         GOqWFIZjVu9p4KJ78Q1S146POJZlnsJEMD03DhuXnNqaPSxYhPDlS55TYw3eytGcS99a
-         evugRjTNS1iNd/BcVQLgOhN9GlL8Zj7u3FXOxuu2jcyewNc6JYTS2FwioAXo8QUuGRGX
-         7KhasYbGPv/Qzp5XGSxHzEJCO1gkZzNYLuwRpWGWm96X/SpDy15EGx6ZFcs8t7ADF4xV
-         DvAjCT8idfj7EKrb5gM8Ljg+NdeOJJ33rrVuxIHd7jAUWTtCFOIt8/cEBdaJzoMqfxNs
-         8S/g==
-X-Forwarded-Encrypted: i=1; AJvYcCVaS21fX3dg96c+hhgMN8yYXvDXKpL5Hs9snCWZ0dz3Du+0VdJ9S6HHyhVnpl9QIUyIVqInY+YkWMh8NLNZ@vger.kernel.org, AJvYcCWaXH2WCD0siqIt5+POl5qtjf4DcpiB71+4izqat/MdXR7amKrVTEWyUYKT40zFHi1sLIo=@vger.kernel.org, AJvYcCXmC07X62z2CBILi/pvwweA5Oul7KKT4vasAzBvIGimjPqEUmHgXCwkf89s2gAGhxX368RJQICa4yEQrBHK8pYysTf4@vger.kernel.org
-X-Gm-Message-State: AOJu0YxZh7IWiNfRQxWx1toHRSSjcq0i5Ueq+omUUmxsfQnkrlcig59+
-	a9KzhSqDhakFOFXhYAUyRtGxY3jmz/2j/QwrfH1gjGTX3alf29TWCgGXy0E0c8aPO0+zk7AowzY
-	Uv+/z5hkoCFOKaqQh3WTaxMDyXCR2rTuy
-X-Gm-Gg: ASbGncvd05stjHotDVAzJ7Aq3QzKIOANAdlqtJRvakCbQpWvG5Ojur/CgSZZn7HhXDy
-	0k4EV368LkKRoOXA2qcYJk035ls0fmRLzzcefP7yW1D0JKV1eFb10fg==
-X-Google-Smtp-Source: AGHT+IHj/RiYry3pOBJ4XoEf5qEomrF3K4uWEhSaBQ8g6DrZc/Hk/YNBE3Kaadg4kicioH9UXb5SFVbdQs3bOSc+EM0=
-X-Received: by 2002:a17:90b:5105:b0:2ee:cd83:8fe6 with SMTP id
- 98e67ed59e1d1-2f2901b80dcmr1301883a91.35.1734050590152; Thu, 12 Dec 2024
- 16:43:10 -0800 (PST)
+        bh=37uTfzdQ7bSoBbgkpKKgQpyEPhRd4iFhnnS+tLD4cqs=;
+        b=LlHTvFDcqqssTGgYXqoyfZpzqAfA9nbTGLiLU8IWTT6gTR7fapHj38N/rwHwW2jGqI
+         nQU9JtEDNoc3YaUYWZdXZxIRw9igvFsJclzkDa672qbiq/IOLedhMsiYizREbvSG0lhV
+         d8fbWTr2GfYi+rNUQNgPKXkg+i/nYi93kOUkfPMOoaNpmAiJYTjdwzyrj0fiwYrJwNdQ
+         eAxTBW6yaNiCY1IolpgeXCqAGfMaBTfRz2NnZiwTJD1ekskoynI6bxoM1BSaaXFZY2z4
+         OZE6IUffzHZX7USCcW8t3pRyyJVHTXQjENV/lmiOikWjwTeHItwnt7W2CauBpUeKhHmX
+         5r9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUY0q6hzDL1OObFNrCwPZKYbvT2UmXCtc3aEaLCK9pEDm5ewD3HXvJbVLOwDgqi7r/Reqj6p/wSsvTLYd5R@vger.kernel.org, AJvYcCVkkblJhKpOUBauhQbEF5JdCjycVi/7bWzLfYewaBlk2/2DfDX630OwoedmVM6FOd4wUy0CJDHcJ172sruZRbFQUvAT@vger.kernel.org, AJvYcCWGf62dwBegu1zzCIl/ObqJbS1/tgb69s2pXSJQirFWG9TLJSEY6UAmG7xDE/echr1BotI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyZE0HOy9qR3aIj736FUKHhqo+wOku946FoDgTMsDz81mmcqcr3
+	yy+2toqRnQL2o5AYsF22clYQx7l4Kk6Jz2MEfatrx3nJ767o0AVK9vJLDGRfMLGqF4yYOCU6trM
+	CzlKrYLImd3l7AJ3OtJ5TsGztijI=
+X-Gm-Gg: ASbGncv4ppGjQh3akZ6foXF7h01k/nmHuZmhSWae/N4bJp//lNeNdK33oAnY4uih+e1
+	b9F2OdThtklyPNrJPFOTiqZjpakv0zWiOsUsxZnkvT58RqSgeTi6RqA==
+X-Google-Smtp-Source: AGHT+IHfTsTABRvgb8X+xiZ/VVv3zGTxF67Y6nbV1djG/EiP9PeroLoptBjpaK62ZL9LjITpf9oEJJPmPllAAt+5vzE=
+X-Received: by 2002:a17:90b:1d51:b0:2ee:c4f2:a76d with SMTP id
+ 98e67ed59e1d1-2f28fd6cd00mr1021175a91.21.1734050594025; Thu, 12 Dec 2024
+ 16:43:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241211133403.208920-1-jolsa@kernel.org> <20241211133403.208920-2-jolsa@kernel.org>
-In-Reply-To: <20241211133403.208920-2-jolsa@kernel.org>
+References: <20241211133403.208920-1-jolsa@kernel.org>
+In-Reply-To: <20241211133403.208920-1-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Dec 2024 16:42:57 -0800
-Message-ID: <CAEf4BzZEbUpc0CnsJXWvbpSEvhF7hpnScCR7GdmpvMMkSm0W9w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/13] uprobes: Rename arch_uretprobe_trampoline function
+Date: Thu, 12 Dec 2024 16:43:02 -0800
+Message-ID: <CAEf4BzaqFJw5wR5V7HCOf_31k+BXY7_hovNB=S7nurYez2ckcg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 00/13] uprobes: Add support to optimize usdt
+ probes on x86_64
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, 
@@ -91,73 +92,93 @@ Content-Transfer-Encoding: quoted-printable
 
 On Wed, Dec 11, 2024 at 5:34=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> We are about to add uprobe trampoline, so cleaning up the namespace.
+> hi,
+> this patchset adds support to optimize usdt probes on top of 5-byte
+> nop instruction.
 >
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> The generic approach (optimize all uprobes) is hard due to emulating
+> possible multiple original instructions and its related issues. The
+> usdt case, which stores 5-byte nop seems much easier, so starting
+> with that.
+>
+> The basic idea is to replace breakpoint exception with syscall which
+> is faster on x86_64. For more details please see changelog of patch 8.
+>
+> The run_bench_uprobes.sh benchmark triggers uprobe (on top of different
+> original instructions) in a loop and counts how many of those happened
+> per second (the unit below is million loops).
+>
+> There's big speed up if you consider current usdt implementation
+> (uprobe-nop) compared to proposed usdt (uprobe-nop5):
+>
+>   # ./benchs/run_bench_uprobes.sh
+>
+>       usermode-count :  233.831 =C2=B1 0.257M/s
+>       syscall-count  :   12.107 =C2=B1 0.038M/s
+>   --> uprobe-nop     :    3.246 =C2=B1 0.004M/s
+>       uprobe-push    :    3.057 =C2=B1 0.000M/s
+>       uprobe-ret     :    1.113 =C2=B1 0.003M/s
+>   --> uprobe-nop5    :    6.751 =C2=B1 0.037M/s
+>       uretprobe-nop  :    1.740 =C2=B1 0.015M/s
+>       uretprobe-push :    1.677 =C2=B1 0.018M/s
+>       uretprobe-ret  :    0.852 =C2=B1 0.005M/s
+>       uretprobe-nop5 :    6.769 =C2=B1 0.040M/s
+
+uretprobe-nop5 throughput is the same as uprobe-nop5?..
+
+
+>
+>
+> v1 changes:
+> - rebased on top of bpf-next/master
+> - couple of function/variable renames [Andrii]
+> - added nop5 emulation [Andrii]
+> - added checks to arch_uprobe_verify_opcode [Andrii]
+> - fixed arch_uprobe_is_callable/find_nearest_page [Andrii]
+> - used CALL_INSN_OPCODE [Masami]
+> - added uprobe-nop5 benchmark [Andrii]
+> - using atomic64_t in tramp_area [Andri]
+> - using single page for all uprobe trampoline mappings
+>
+> thanks,
+> jirka
+>
+>
 > ---
->  arch/x86/kernel/uprobes.c | 2 +-
->  include/linux/uprobes.h   | 2 +-
->  kernel/events/uprobes.c   | 4 ++--
->  3 files changed, 4 insertions(+), 4 deletions(-)
+> Jiri Olsa (13):
+>       uprobes: Rename arch_uretprobe_trampoline function
+>       uprobes: Make copy_from_page global
+>       uprobes: Add nbytes argument to uprobe_write_opcode
+>       uprobes: Add arch_uprobe_verify_opcode function
+>       uprobes: Add mapping for optimized uprobe trampolines
+>       uprobes/x86: Add uprobe syscall to speed up uprobe
+>       uprobes/x86: Add support to emulate nop5 instruction
+>       uprobes/x86: Add support to optimize uprobes
+>       selftests/bpf: Use 5-byte nop for x86 usdt probes
+>       selftests/bpf: Add uprobe/usdt optimized test
+>       selftests/bpf: Add hit/attach/detach race optimized uprobe test
+>       selftests/bpf: Add uprobe syscall sigill signal test
+>       selftests/bpf: Add 5-byte nop uprobe trigger bench
 >
-
-LGTM
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-> index 5a952c5ea66b..22a17c149a55 100644
-> --- a/arch/x86/kernel/uprobes.c
-> +++ b/arch/x86/kernel/uprobes.c
-> @@ -338,7 +338,7 @@ extern u8 uretprobe_trampoline_entry[];
->  extern u8 uretprobe_trampoline_end[];
->  extern u8 uretprobe_syscall_check[];
->
-> -void *arch_uprobe_trampoline(unsigned long *psize)
-> +void *arch_uretprobe_trampoline(unsigned long *psize)
->  {
->         static uprobe_opcode_t insn =3D UPROBE_SWBP_INSN;
->         struct pt_regs *regs =3D task_pt_regs(current);
-> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> index e0a4c2082245..09a298e416a8 100644
-> --- a/include/linux/uprobes.h
-> +++ b/include/linux/uprobes.h
-> @@ -211,7 +211,7 @@ extern bool arch_uprobe_ignore(struct arch_uprobe *au=
-p, struct pt_regs *regs);
->  extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr=
-,
->                                          void *src, unsigned long len);
->  extern void uprobe_handle_trampoline(struct pt_regs *regs);
-> -extern void *arch_uprobe_trampoline(unsigned long *psize);
-> +extern void *arch_uretprobe_trampoline(unsigned long *psize);
->  extern unsigned long uprobe_get_trampoline_vaddr(void);
->  #else /* !CONFIG_UPROBES */
->  struct uprobes_state {
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index fa04b14a7d72..e0e3ebb4c0a1 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -1695,7 +1695,7 @@ static int xol_add_vma(struct mm_struct *mm, struct=
- xol_area *area)
->         return ret;
->  }
->
-> -void * __weak arch_uprobe_trampoline(unsigned long *psize)
-> +void * __weak arch_uretprobe_trampoline(unsigned long *psize)
->  {
->         static uprobe_opcode_t insn =3D UPROBE_SWBP_INSN;
->
-> @@ -1727,7 +1727,7 @@ static struct xol_area *__create_xol_area(unsigned =
-long vaddr)
->         init_waitqueue_head(&area->wq);
->         /* Reserve the 1st slot for get_trampoline_vaddr() */
->         set_bit(0, area->bitmap);
-> -       insns =3D arch_uprobe_trampoline(&insns_size);
-> +       insns =3D arch_uretprobe_trampoline(&insns_size);
->         arch_uprobe_copy_ixol(area->page, 0, insns, insns_size);
->
->         if (!xol_add_vma(mm, area))
-> --
-> 2.47.0
->
+>  arch/x86/entry/syscalls/syscall_64.tbl                  |   1 +
+>  arch/x86/include/asm/uprobes.h                          |   7 +++
+>  arch/x86/kernel/uprobes.c                               | 255 ++++++++++=
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+>  include/linux/syscalls.h                                |   2 +
+>  include/linux/uprobes.h                                 |  25 +++++++-
+>  kernel/events/uprobes.c                                 | 191 ++++++++++=
++++++++++++++++++++++++++++++++++++++++++-----
+>  kernel/fork.c                                           |   1 +
+>  kernel/sys_ni.c                                         |   1 +
+>  tools/testing/selftests/bpf/bench.c                     |  12 ++++
+>  tools/testing/selftests/bpf/benchs/bench_trigger.c      |  42 ++++++++++=
++++
+>  tools/testing/selftests/bpf/benchs/run_bench_uprobes.sh |   2 +-
+>  tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c | 326 ++++++++++=
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+++++++++++
+>  tools/testing/selftests/bpf/progs/uprobe_optimized.c    |  29 +++++++++
+>  tools/testing/selftests/bpf/sdt.h                       |   9 ++-
+>  14 files changed, 880 insertions(+), 23 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_optimized.c
 
