@@ -1,83 +1,82 @@
-Return-Path: <bpf+bounces-46840-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46841-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49FE89F0CFC
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 14:08:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAD739F0CFA
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 14:08:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C1EC188B95F
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 13:08:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B240F1666ED
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 13:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045441E04A0;
-	Fri, 13 Dec 2024 13:07:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CACF1DFE29;
+	Fri, 13 Dec 2024 13:07:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="D6oDt1Ok"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="Ond9wLFr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90D2A1E009C
-	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 13:07:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126101DFD87
+	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 13:07:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734095273; cv=none; b=s+L6zmUZ11daSk3h2ya2odwgkeClTn+kjcE6gRqUxbbW5mY1R4LH0ppdfpTqqzxfWCprUKdguI6jkod8Id5BpDbuncR3VeTsRnb7bcsCgfG/vysm5MA4Kr5TWc/43ccdZYlyqp0lPO0LEK1IwSnfl19Qr71U2+HTQk0zKudxlc0=
+	t=1734095275; cv=none; b=rjQhaMhsp7vREPFGf7Ma2lFO0o7m5BhDnd+ceLsyglcaubN8wXiQxB2r/Dl4F6WoS5Z579PyCAapWmNzpJcr/0Kv+lp8cKgBkIYeAHuaUThevoaRqoODW5lpNBdkK8sWDvXCArR6GpemOXbKciylwQ3bjKlQVHTfBKtH3FFkQJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734095273; c=relaxed/simple;
-	bh=ZtxENa+jqn4jXVPlt1jlI+aHUW7sbDXsNZ4nBO4MuIg=;
+	s=arc-20240116; t=1734095275; c=relaxed/simple;
+	bh=kTLGhW3bqEENrMuivHE/2qFmq/CjLhZv1p9xbW7daCo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ikfpg1TpFBcEaCA9pGvicbaHaSUEUDJaw/LFFxdLQnFogtx6O8B9vIlF2dDfIPLnJt2apMpBCNJ5Fq+bK2qdESWml5LThqsapA/6ohCrbtV6sX5mfJj8oKe32VSfMGAywGGUofcWWeXoNvKt5k23vjFKpCfavK9sm8W2aa8SqMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=D6oDt1Ok; arc=none smtp.client-ip=209.85.218.42
+	 MIME-Version; b=uDVKOVs3kRBxSQ1RmvIqKz3cN8cKMVs0yNxQQqIfa47kEUAeNGOlwgC3n9Xk+bAK9nYzvGEvIqM7VXJNBiNXyTNzBhsfIE+h5eCgjgav7LICDPswgSO3p0y0cqIhv5TsSYLV8OimrR/Ya5ln77hHcmmkDYs+kmw8MSV4qKYgOGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=Ond9wLFr; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a9ec267b879so243804266b.2
-        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 05:07:51 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5d3d14336f0so3028962a12.3
+        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 05:07:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1734095269; x=1734700069; darn=vger.kernel.org;
+        d=isovalent.com; s=google; t=1734095271; x=1734700071; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=F+9c3vZcvupIwn4d9UrEODkeoUs40+vowIf8iBRNNi4=;
-        b=D6oDt1OkezCuXJxapuF58bF806tJu0BReWc169/UeTj9531Z+WKWPJz834Lzzm+vm+
-         U0is/n+jAacecB0SdQ9xPcpC3rWW99nxjIMZ1WxMlQsuJYIKA9EMXnWJhpZ83jdvSsOw
-         ggxgZl2K/TjP1HkJ3lICP7mQdlTsc7a80qOSGWiYS6PHIMoI8zH11BAZQjGKcIXlOAXp
-         pKRXcGyIAYdOzwZoJ/fuRe2q+M8pKexslepUWfY3GRQ+xr0RdsgZHxnvWb5j9G1G3kxe
-         nNYCao7VhiuYlZRJco2A8FrntxIuQFsAfRTTwd+WhVgtA/gJ1BZPrnVrK76Q7M3LKuzd
-         63gA==
+        bh=Mxb+DMYr5DGjp3aEnRXc1ObBa5yaQwm/LTOdY6lxoaA=;
+        b=Ond9wLFr+N0Oxg8h/EtUIlnTsZv9Ryhz5Q9+L/Zv2FYyFHRmfsWMJ4jF5t2h3pPiCx
+         a+QiwmZ4iGinuVdxuts36wMS+HVA7PEUy6opWXiVercdiJtwIi1NgY6N20r5oLa78oeL
+         EgiW70UEp2H5PurKG667wKbVCDn0dMZYSCpW7PVblezSuVO9uYUYjENuneyWL1jwp9Pe
+         i2lJ/DfOsDUhp7YfI9azQboTYiJzX16glTvG00D9XMoXULQ+/RyMtaix6aa5rMZOwJW3
+         zRPVUnmSkCiM7g0G7Pftre0dVzNqNprQunAfLtjNqQGCqQqsX539EuNuLSYJL3juZam+
+         Zkhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734095269; x=1734700069;
+        d=1e100.net; s=20230601; t=1734095271; x=1734700071;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=F+9c3vZcvupIwn4d9UrEODkeoUs40+vowIf8iBRNNi4=;
-        b=irEAseAjmI+F/b2mV5LIbSUK38HX7hsBgqOCdxPUfMg908xXVAA7nCvGXgs4xDCdDO
-         aT/OmCifEdSm10cUb+vrBBkhrQigIUB4enazeoH8hHcPEWL6d/nJoe/KcfZrYAUf2TFf
-         WfPFrSBeMd1yLnSa+ZZ/wVqIcCdJgY6RXbNM5zny5EhTThexB4KG98rNYinxHoV4/4ZQ
-         1+UEJevbHWP8dDOxDCS5NuCkxVWF1EX86/FL8Ump9qagWo5PZ2+bIQuvHKcaBFtTQ8QQ
-         tex85b0x+C6itipO88Xu7mtL1EX3asBZMWZFpdpQfyqU+87iNpJpLiT4wTKNR7j90bQK
-         eBNg==
-X-Gm-Message-State: AOJu0Yyhhci9MfIL2djzfdvl9HxJrT9ftJp0Omdjeg+7iCXzJc57lg+E
-	JTNiI4xYBhZqW+IHEpOBuIVnaAzhq0nAvkXZLxc5+eNbZE2JHGiTsE3WwfW9v0EFcGlwyf7kD/a
-	g
-X-Gm-Gg: ASbGnctr+8GDLD/Duj9eO0+819rWMKEwHmNmy2+r6og69cunbYV8spE4ARFOi6wxOhT
-	iEaiJTpAXnx1doGHjloMBJDet9f6lWQBkRDRRhU11U8GfrRuq9PTKHgHT6gkgH8OKECtWKDd3H9
-	76IBsiU1+BonPtTqkVCPJEJM80mcAzV3RCvorf8fqxTkOXCMzt7Ww3Gwfefv1jdSYeKt+ozgD0T
-	c0XpPE20hhkhDdj0kurTBuVQNzinBZKJI3uKdK7XdCreboIznbQRlZFhStn72PApWG5Vg==
-X-Google-Smtp-Source: AGHT+IFfhNwEqEnNYjo9jgv7hhaxUycj6PvFEfUhPplku3aXtkYCpy5CjXd/881p+T+5+TAuiZWKgg==
-X-Received: by 2002:a17:907:9409:b0:aa6:83cc:7996 with SMTP id a640c23a62f3a-aab77e7b533mr260518166b.42.1734095269085;
-        Fri, 13 Dec 2024 05:07:49 -0800 (PST)
+        bh=Mxb+DMYr5DGjp3aEnRXc1ObBa5yaQwm/LTOdY6lxoaA=;
+        b=UM8JFyAwqNX0DaCm4gsgB0KlXH7zpYrodj9AwaBlxXsOTJjM23Ffwl7SgdVO0nlKkn
+         e8rEqbY9ja9zVY8FWoLd0JLOVLcLm5kxNPJuSpyh9QFDR+q301x6wCUtRizEbLi2j4wd
+         CVgC0idrobgT7jjbFUBH/08GA4j428NbPJdNGlu+OxSjqBTjZoy1qbr52itNqh/hDM61
+         nxZlYJ2Qyzpov0crTm7eSDvXkhEP7rIpmdm6vVfez/Ut31QDS8EL+N19JTrYWvC428qt
+         0Asc0xMpYn/y8eNsKgIdoYxvXSwBDYgcwS6jOKoA6vhEH0ZCGUio9vkPJWaTemiIvK2Q
+         z66w==
+X-Gm-Message-State: AOJu0YxzbN027SPt7H/e27Gi2kKkw8k7X/XYcCFo3RyzXxTPvAUXZpJ5
+	/uwknLsLo0K66Nh95dxNMt35F9tfSWJ/xouBw0ttbB++7blMt1SXRxaIxaaDJPSOxVRqsl7xLM4
+	W
+X-Gm-Gg: ASbGncuqovNhYovMP2tbYF5g6u0+dcMiVK/nHl91eIdEzMaTq7Rc88M2pKcaKAyrgto
+	0kPOMgbJPvANl1cYH2/nFGl25SQytI82Ygsg8SmSB2whUUKtHaEfHsP73/2mMN8ctaQUKmGLhC0
+	p/58+1DxnNHTo1Wuha7b5D1bUxr3QC/rIY0bBCGRoCUOOADBqmMxA2hCovaZBXewRzzyntwvSF7
+	T4RoLM+CiT34HuZmm+xCumyNQPP4OdHeSNOaWP8HumShTxNSs3TtAkQXXdnsubb/uayCw==
+X-Google-Smtp-Source: AGHT+IEh/oU9xkT77tA8g60ggnZI/92EQ2umc/hCpjqJFDLpTdhamJGA+jpsw8nk00uF8NC1UKoRsg==
+X-Received: by 2002:a17:907:7842:b0:aa6:18b6:310e with SMTP id a640c23a62f3a-aab77e7b2e5mr249511366b.38.1734095270628;
+        Fri, 13 Dec 2024 05:07:50 -0800 (PST)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa657abb2fbsm931248666b.128.2024.12.13.05.07.48
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa657abb2fbsm931248666b.128.2024.12.13.05.07.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Dec 2024 05:07:48 -0800 (PST)
+        Fri, 13 Dec 2024 05:07:49 -0800 (PST)
 From: Anton Protopopov <aspsk@isovalent.com>
 To: bpf@vger.kernel.org
-Cc: Anton Protopopov <aspsk@isovalent.com>,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v5 bpf-next 2/7] bpf: move map/prog compatibility checks
-Date: Fri, 13 Dec 2024 13:09:29 +0000
-Message-Id: <20241213130934.1087929-3-aspsk@isovalent.com>
+Cc: Anton Protopopov <aspsk@isovalent.com>
+Subject: [PATCH v5 bpf-next 3/7] bpf: refactor check_pseudo_btf_id
+Date: Fri, 13 Dec 2024 13:09:30 +0000
+Message-Id: <20241213130934.1087929-4-aspsk@isovalent.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241213130934.1087929-1-aspsk@isovalent.com>
 References: <20241213130934.1087929-1-aspsk@isovalent.com>
@@ -89,203 +88,212 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Move some inlined map/prog compatibility checks from the
-resolve_pseudo_ldimm64() function to the dedicated
-check_map_prog_compatibility() function. Call the latter function
-from the add_used_map_from_fd() function directly.
-
-This simplifies code and optimizes logic a bit, as before these
-changes the check_map_prog_compatibility() function was executed on
-every map usage, which doesn't make sense, as it doesn't include any
-per-instruction checks, only map type vs. prog type.
-
-(This patch also simplifies a consequent patch which will call the
-add_used_map_from_fd() function from another code path.)
+Introduce a helper to add btfs to the env->used_maps array. Use it
+to simplify the check_pseudo_btf_id() function. This new helper will
+also be re-used in a consequent patch.
 
 Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/verifier.c | 101 +++++++++++++++++++-----------------------
- 1 file changed, 46 insertions(+), 55 deletions(-)
+ kernel/bpf/verifier.c | 132 ++++++++++++++++++++++++------------------
+ 1 file changed, 76 insertions(+), 56 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c855e7905c35..89bba0de853f 100644
+index 89bba0de853f..296765ffbdc5 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -19368,6 +19368,12 @@ static bool is_tracing_prog_type(enum bpf_prog_type type)
- 	}
+@@ -19218,50 +19218,68 @@ static int find_btf_percpu_datasec(struct btf *btf)
+ 	return -ENOENT;
  }
  
-+static bool bpf_map_is_cgroup_storage(struct bpf_map *map)
++/*
++ * Add btf to the used_btfs array and return the index. (If the btf was
++ * already added, then just return the index.) Upon successful insertion
++ * increase btf refcnt, and, if present, also refcount the corresponding
++ * kernel module.
++ */
++static int __add_used_btf(struct bpf_verifier_env *env, struct btf *btf)
 +{
-+	return (map->map_type == BPF_MAP_TYPE_CGROUP_STORAGE ||
-+		map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
++	struct btf_mod_pair *btf_mod;
++	int i;
++
++	/* check whether we recorded this BTF (and maybe module) already */
++	for (i = 0; i < env->used_btf_cnt; i++)
++		if (env->used_btfs[i].btf == btf)
++			return i;
++
++	if (env->used_btf_cnt >= MAX_USED_BTFS)
++		return -E2BIG;
++
++	btf_get(btf);
++
++	btf_mod = &env->used_btfs[env->used_btf_cnt];
++	btf_mod->btf = btf;
++	btf_mod->module = NULL;
++
++	/* if we reference variables from kernel module, bump its refcount */
++	if (btf_is_module(btf)) {
++		btf_mod->module = btf_try_get_module(btf);
++		if (!btf_mod->module) {
++			btf_put(btf);
++			return -ENXIO;
++		}
++	}
++
++	return env->used_btf_cnt++;
 +}
 +
- static int check_map_prog_compatibility(struct bpf_verifier_env *env,
- 					struct bpf_map *map,
- 					struct bpf_prog *prog)
-@@ -19446,25 +19452,48 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
- 			return -EINVAL;
- 		}
- 
--	return 0;
--}
-+	if (bpf_map_is_cgroup_storage(map) &&
-+	    bpf_cgroup_storage_assign(env->prog->aux, map)) {
-+		verbose(env, "only one cgroup storage of each type is allowed\n");
-+		return -EBUSY;
-+	}
- 
--static bool bpf_map_is_cgroup_storage(struct bpf_map *map)
--{
--	return (map->map_type == BPF_MAP_TYPE_CGROUP_STORAGE ||
--		map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
-+	if (map->map_type == BPF_MAP_TYPE_ARENA) {
-+		if (env->prog->aux->arena) {
-+			verbose(env, "Only one arena per program\n");
-+			return -EBUSY;
-+		}
-+		if (!env->allow_ptr_leaks || !env->bpf_capable) {
-+			verbose(env, "CAP_BPF and CAP_PERFMON are required to use arena\n");
-+			return -EPERM;
-+		}
-+		if (!env->prog->jit_requested) {
-+			verbose(env, "JIT is required to use arena\n");
-+			return -EOPNOTSUPP;
-+		}
-+		if (!bpf_jit_supports_arena()) {
-+			verbose(env, "JIT doesn't support arena\n");
-+			return -EOPNOTSUPP;
-+		}
-+		env->prog->aux->arena = (void *)map;
-+		if (!bpf_arena_get_user_vm_start(env->prog->aux->arena)) {
-+			verbose(env, "arena's user address must be set via map_extra or mmap()\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
- }
- 
- /* Add map behind fd to used maps list, if it's not already there, and return
-- * its index. Also set *reused to true if this map was already in the list of
-- * used maps.
-+ * its index.
-  * Returns <0 on error, or >= 0 index, on success.
-  */
--static int add_used_map_from_fd(struct bpf_verifier_env *env, int fd, bool *reused)
-+static int add_used_map_from_fd(struct bpf_verifier_env *env, int fd)
+ /* replace pseudo btf_id with kernel symbol address */
+-static int check_pseudo_btf_id(struct bpf_verifier_env *env,
+-			       struct bpf_insn *insn,
+-			       struct bpf_insn_aux_data *aux)
++static int __check_pseudo_btf_id(struct bpf_verifier_env *env,
++				 struct bpf_insn *insn,
++				 struct bpf_insn_aux_data *aux,
++				 struct btf *btf)
  {
- 	CLASS(fd, f)(fd);
- 	struct bpf_map *map;
--	int i;
-+	int i, err;
+ 	const struct btf_var_secinfo *vsi;
+ 	const struct btf_type *datasec;
+-	struct btf_mod_pair *btf_mod;
+ 	const struct btf_type *t;
+ 	const char *sym_name;
+ 	bool percpu = false;
+ 	u32 type, id = insn->imm;
+-	struct btf *btf;
+ 	s32 datasec_id;
+ 	u64 addr;
+-	int i, btf_fd, err;
+-
+-	btf_fd = insn[1].imm;
+-	if (btf_fd) {
+-		btf = btf_get_by_fd(btf_fd);
+-		if (IS_ERR(btf)) {
+-			verbose(env, "invalid module BTF object FD specified.\n");
+-			return -EINVAL;
+-		}
+-	} else {
+-		if (!btf_vmlinux) {
+-			verbose(env, "kernel is missing BTF, make sure CONFIG_DEBUG_INFO_BTF=y is specified in Kconfig.\n");
+-			return -EINVAL;
+-		}
+-		btf = btf_vmlinux;
+-		btf_get(btf);
+-	}
++	int i;
  
- 	map = __bpf_map_get(f);
- 	if (IS_ERR(map)) {
-@@ -19473,12 +19502,9 @@ static int add_used_map_from_fd(struct bpf_verifier_env *env, int fd, bool *reus
+ 	t = btf_type_by_id(btf, id);
+ 	if (!t) {
+ 		verbose(env, "ldimm64 insn specifies invalid btf_id %d.\n", id);
+-		err = -ENOENT;
+-		goto err_put;
++		return -ENOENT;
  	}
  
- 	/* check whether we recorded this map already */
--	for (i = 0; i < env->used_map_cnt; i++) {
--		if (env->used_maps[i] == map) {
--			*reused = true;
-+	for (i = 0; i < env->used_map_cnt; i++)
-+		if (env->used_maps[i] == map)
- 			return i;
+ 	if (!btf_type_is_var(t) && !btf_type_is_func(t)) {
+ 		verbose(env, "pseudo btf_id %d in ldimm64 isn't KIND_VAR or KIND_FUNC\n", id);
+-		err = -EINVAL;
+-		goto err_put;
++		return -EINVAL;
+ 	}
+ 
+ 	sym_name = btf_name_by_offset(btf, t->name_off);
+@@ -19269,8 +19287,7 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
+ 	if (!addr) {
+ 		verbose(env, "ldimm64 failed to find the address for kernel symbol '%s'.\n",
+ 			sym_name);
+-		err = -ENOENT;
+-		goto err_put;
++		return -ENOENT;
+ 	}
+ 	insn[0].imm = (u32)addr;
+ 	insn[1].imm = addr >> 32;
+@@ -19278,7 +19295,7 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
+ 	if (btf_type_is_func(t)) {
+ 		aux->btf_var.reg_type = PTR_TO_MEM | MEM_RDONLY;
+ 		aux->btf_var.mem_size = 0;
+-		goto check_btf;
++		return 0;
+ 	}
+ 
+ 	datasec_id = find_btf_percpu_datasec(btf);
+@@ -19309,8 +19326,7 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
+ 			tname = btf_name_by_offset(btf, t->name_off);
+ 			verbose(env, "ldimm64 unable to resolve the size of type '%s': %ld\n",
+ 				tname, PTR_ERR(ret));
+-			err = -EINVAL;
+-			goto err_put;
++			return -EINVAL;
+ 		}
+ 		aux->btf_var.reg_type = PTR_TO_MEM | MEM_RDONLY;
+ 		aux->btf_var.mem_size = tsize;
+@@ -19319,39 +19335,43 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
+ 		aux->btf_var.btf = btf;
+ 		aux->btf_var.btf_id = type;
+ 	}
+-check_btf:
+-	/* check whether we recorded this BTF (and maybe module) already */
+-	for (i = 0; i < env->used_btf_cnt; i++) {
+-		if (env->used_btfs[i].btf == btf) {
+-			btf_put(btf);
+-			return 0;
 -		}
 -	}
  
- 	if (env->used_map_cnt >= MAX_USED_MAPS) {
- 		verbose(env, "The total number of maps per program has reached the limit of %u\n",
-@@ -19486,6 +19512,10 @@ static int add_used_map_from_fd(struct bpf_verifier_env *env, int fd, bool *reus
- 		return -E2BIG;
+-	if (env->used_btf_cnt >= MAX_USED_BTFS) {
+-		err = -E2BIG;
+-		goto err_put;
+-	}
++	return 0;
++}
+ 
+-	btf_mod = &env->used_btfs[env->used_btf_cnt];
+-	btf_mod->btf = btf;
+-	btf_mod->module = NULL;
++static int check_pseudo_btf_id(struct bpf_verifier_env *env,
++			       struct bpf_insn *insn,
++			       struct bpf_insn_aux_data *aux)
++{
++	struct btf *btf;
++	int btf_fd;
++	int err;
+ 
+-	/* if we reference variables from kernel module, bump its refcount */
+-	if (btf_is_module(btf)) {
+-		btf_mod->module = btf_try_get_module(btf);
+-		if (!btf_mod->module) {
+-			err = -ENXIO;
+-			goto err_put;
++	btf_fd = insn[1].imm;
++	if (btf_fd) {
++		CLASS(fd, f)(btf_fd);
++
++		btf = __btf_get_by_fd(f);
++		if (IS_ERR(btf)) {
++			verbose(env, "invalid module BTF object FD specified.\n");
++			return -EINVAL;
+ 		}
++	} else {
++		if (!btf_vmlinux) {
++			verbose(env, "kernel is missing BTF, make sure CONFIG_DEBUG_INFO_BTF=y is specified in Kconfig.\n");
++			return -EINVAL;
++		}
++		btf = btf_vmlinux;
  	}
  
-+	err = check_map_prog_compatibility(env, map, env->prog);
+-	env->used_btf_cnt++;
++	err = __check_pseudo_btf_id(env, insn, aux, btf);
 +	if (err)
 +		return err;
-+
- 	if (env->prog->sleepable)
- 		atomic64_inc(&map->sleepable_refcnt);
  
-@@ -19496,7 +19526,6 @@ static int add_used_map_from_fd(struct bpf_verifier_env *env, int fd, bool *reus
- 	 */
- 	bpf_map_inc(map);
++	err = __add_used_btf(env, btf);
++	if (err < 0)
++		return err;
+ 	return 0;
+-err_put:
+-	btf_put(btf);
+-	return err;
+ }
  
--	*reused = false;
- 	env->used_maps[env->used_map_cnt++] = map;
- 
- 	return env->used_map_cnt - 1;
-@@ -19533,7 +19562,6 @@ static int resolve_pseudo_ldimm64(struct bpf_verifier_env *env)
- 			int map_idx;
- 			u64 addr;
- 			u32 fd;
--			bool reused;
- 
- 			if (i == insn_cnt - 1 || insn[1].code != 0 ||
- 			    insn[1].dst_reg != 0 || insn[1].src_reg != 0 ||
-@@ -19594,7 +19622,7 @@ static int resolve_pseudo_ldimm64(struct bpf_verifier_env *env)
- 				break;
- 			}
- 
--			map_idx = add_used_map_from_fd(env, fd, &reused);
-+			map_idx = add_used_map_from_fd(env, fd);
- 			if (map_idx < 0)
- 				return map_idx;
- 			map = env->used_maps[map_idx];
-@@ -19602,10 +19630,6 @@ static int resolve_pseudo_ldimm64(struct bpf_verifier_env *env)
- 			aux = &env->insn_aux_data[i];
- 			aux->map_index = map_idx;
- 
--			err = check_map_prog_compatibility(env, map, env->prog);
--			if (err)
--				return err;
--
- 			if (insn[0].src_reg == BPF_PSEUDO_MAP_FD ||
- 			    insn[0].src_reg == BPF_PSEUDO_MAP_IDX) {
- 				addr = (unsigned long)map;
-@@ -19636,39 +19660,6 @@ static int resolve_pseudo_ldimm64(struct bpf_verifier_env *env)
- 			insn[0].imm = (u32)addr;
- 			insn[1].imm = addr >> 32;
- 
--			/* proceed with extra checks only if its newly added used map */
--			if (reused)
--				goto next_insn;
--
--			if (bpf_map_is_cgroup_storage(map) &&
--			    bpf_cgroup_storage_assign(env->prog->aux, map)) {
--				verbose(env, "only one cgroup storage of each type is allowed\n");
--				return -EBUSY;
--			}
--			if (map->map_type == BPF_MAP_TYPE_ARENA) {
--				if (env->prog->aux->arena) {
--					verbose(env, "Only one arena per program\n");
--					return -EBUSY;
--				}
--				if (!env->allow_ptr_leaks || !env->bpf_capable) {
--					verbose(env, "CAP_BPF and CAP_PERFMON are required to use arena\n");
--					return -EPERM;
--				}
--				if (!env->prog->jit_requested) {
--					verbose(env, "JIT is required to use arena\n");
--					return -EOPNOTSUPP;
--				}
--				if (!bpf_jit_supports_arena()) {
--					verbose(env, "JIT doesn't support arena\n");
--					return -EOPNOTSUPP;
--				}
--				env->prog->aux->arena = (void *)map;
--				if (!bpf_arena_get_user_vm_start(env->prog->aux->arena)) {
--					verbose(env, "arena's user address must be set via map_extra or mmap()\n");
--					return -EINVAL;
--				}
--			}
--
- next_insn:
- 			insn++;
- 			i++;
+ static bool is_tracing_prog_type(enum bpf_prog_type type)
 -- 
 2.34.1
 
