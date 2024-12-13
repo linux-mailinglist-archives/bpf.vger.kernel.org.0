@@ -1,187 +1,119 @@
-Return-Path: <bpf+bounces-46820-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46821-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A65E9F0360
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 05:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D55C9F03DD
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 05:41:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E2EE188B35F
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 04:05:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3D0C188A607
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 04:41:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE2D17E8F7;
-	Fri, 13 Dec 2024 04:04:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C96017B50E;
+	Fri, 13 Dec 2024 04:41:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ba+oFRq6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s4wPCuuX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8732317BB34;
-	Fri, 13 Dec 2024 04:04:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6211E2F43
+	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 04:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734062693; cv=none; b=KQTdGwRH2cJRE3CLkIP3Zb4UqNmrAJpzjOqN6sPGSX7zJWgFVWiAdDvhegoecbxQ0kO5WNkJbAJcnje1m0bxb+f6eGKNrjEi6ght0c/vh9st59h1Yhsc5YLjspJllb0wvU+5RC2YOxNuZcDjubzfBD7XI6EnHF0K2bcI/C2cUWQ=
+	t=1734064899; cv=none; b=tQ5eaEvo5qlaPeroyppmP8guvu28MvUi6t+qLhUzAGyfhjL0c2EJcaDRLRMPQPN0bUA99Mn66frMfn+1pFXioDq3iDjnYQ58Ca4n5yDu6FFv5Z4FVNl+N7b9yGK20dPEKqF0Uh6LW3tae4NKfMjsY536L+TOFVwZiY/ueUrgxCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734062693; c=relaxed/simple;
-	bh=VYEwYTh4meAMKcxZgF3yTMcdoRqjlcIbP4/merjlEv0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gOJq+B5CfoDEpp/hFhoVXfU402L0pA8Ar1gNLAkUaLqmTAYOwVRzZYfSzIiV8lqRib9Sb2NQHAxfRkPO/l//YNDmj6eTxDv+KGOvRKll5NPeJuM+FiGu76joMG94O/XhB5BgzF16MGaOOjuCZoMmEwjF52XLqaTLzmcI4f+IAGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ba+oFRq6; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-21619108a6bso10334985ad.3;
-        Thu, 12 Dec 2024 20:04:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734062691; x=1734667491; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=pTTUiqA1JaNZpV3zkUZn5BbgQBGF1lbLwZtKk2rpqZg=;
-        b=Ba+oFRq6JHBt0aVVT4+8qtekOFDooz0UYXArMw0vCu3zFWwwr8j7f7vyyyFsrSjwfv
-         maqsNo7jH+NaEor+jexXyBhKUvZbgWt7jTiiMzPGuQNFX/Soyi1a6NDofwwCVT1TPDFJ
-         S883OcwiqWTEu3c85jOqyejO+4P9BasgHzSUXnsOP1c0K0ZSsKW9l4GJaIo+LV1SpKOI
-         MNQgrEmSJJuxaWsq3jkkHofs/fATVUNHIXlkD47U7WfHFqshl7Pg6vvzpdgtF42gqRSC
-         U1R6ORydmL2ZSsnnNFWG3qRVeQR+OMssCRb8UhZBCZ1048mDh7ZroaBDAd9Inpdq2GNR
-         RwrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734062691; x=1734667491;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pTTUiqA1JaNZpV3zkUZn5BbgQBGF1lbLwZtKk2rpqZg=;
-        b=tRqL6jzeOr4dR/7aCbRYZaG/1HDRb+wPKLgqV3jeHcvwUx5DdwxXFt6iZLETZPTOau
-         431GXAQWZlGbEfI1iK4xBvTiWZv6w3YMPzChqbglbn6GBMc9qQfzg/h2LFZeCH2WA3cF
-         32y1hLwUrAoSmYC7N6Bl9hf6e11mI+ebCDu3aZSGeceSsuS0gk+jpU3aAKB7smMSX7z0
-         SsZhkd6OCGWKOtE4TDIJk8FE6/oux9/+v2IIE86h4zT24WlmMYBZ6lCTxZceHuBsz5UQ
-         ZERC0JtlVt6K52YSQYMYiTR4/3TQoprO76izGcU2CRMAPLfym7vOGcEh33GIUB34Hzhb
-         gpGg==
-X-Forwarded-Encrypted: i=1; AJvYcCUAql1FDTM1fIaQwAIddXXAdXor2AMd9xXEpZLGTCOf3MofaIpq1qrZKdq9VSDbw25VPvGFtwlW7xzeDsD/sQgS@vger.kernel.org, AJvYcCUUQhxaLz1ZIIRDcmIGfX6mo/qFFiW26StZtAYMwKj7bfnNzDT4omMe6JlWnPWABBUtPBo=@vger.kernel.org, AJvYcCUsNbpYCWuFQnieihqf1Fg758oAoeYRjGilrOiswd5XoM7U90Go1SpmY0c97qjTBy6ahw0qw20tFTaqHSXp@vger.kernel.org, AJvYcCVBt5JBhy0sjAwJXNGnastDxrcfUUqcdkArt+DMh9XqsThjQcBn0sLsZLHMLVq/+Jn6xkJtMrR+@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWRF+qvEQa3s810xTLM5zWF4OehNAJI5aM2rDxHm0cWKGLeh/U
-	iImTGS4XuOPLGtPcrHM7UVLtbtTNjZ6OBzVj44/5yAzt0n9gbovq
-X-Gm-Gg: ASbGncu4uB6MTWclx8WIzkRjaRBEWs8Tsm8MhDIaLNN+Fh8XD6xCsi5MC+6FiZApZwP
-	s4IPc1j7Mw/MB6mgVSVa//nHVsNZUKxvSOs/FKfQv/QVGmrlryymfzP2Eq3xUZA17WsioPLTOmg
-	JiglTj8SJf6vUJHIhU/i0FaOGgYy2XCsnEV7owdP52cszizic1Ag90uuOgF2y5L29wwZI8xZcQf
-	za+CR6TKl4OOH8Gv/MURelbJ5zKwuUGRbXH7tF2wAMaWFAKnZhzew==
-X-Google-Smtp-Source: AGHT+IEKy1GALG5iBgebmvW+KMj+zATRP8zpKqCAK01KBRgfIQNZW1RurQVztjBNlutr98NGSOSlrg==
-X-Received: by 2002:a17:902:db04:b0:216:414e:aa53 with SMTP id d9443c01a7336-21892a42244mr16122635ad.52.1734062690694;
-        Thu, 12 Dec 2024 20:04:50 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fd4cd45b18sm7777975a12.73.2024.12.12.20.04.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 20:04:50 -0800 (PST)
-Message-ID: <1b0e59ee87b765513c6488112e6e3e3cf4af7cb6.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/5] bpf: verifier: Support eliding map
- lookup nullness
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Daniel Xu <dxu@dxuuu.xyz>, andrii@kernel.org, ast@kernel.org, 
-	shuah@kernel.org, daniel@iogearbox.net
-Cc: john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, 	jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	netdev@vger.kernel.org
-Date: Thu, 12 Dec 2024 20:04:45 -0800
-In-Reply-To: <92065ca054beccd6d0f35efe9715ef965e8d379f.1734045451.git.dxu@dxuuu.xyz>
-References: <cover.1734045451.git.dxu@dxuuu.xyz>
-		 <92065ca054beccd6d0f35efe9715ef965e8d379f.1734045451.git.dxu@dxuuu.xyz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1734064899; c=relaxed/simple;
+	bh=jVKCBqfCv807J9PpkKNzROeSumf5q/PqRKeFSjbm2Vs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N1dEICDPC81DVHlX51jWV0Namx58XDTBzQvXXfSc78fDKdsVD8eSMZOY80+sVGXcqcGQw3p6LP+iqOgjkF93LV96Ph4ReM5uTV3+24cfDmKd7f976fWVjibVfl1X72AF47QYFwKO1zjL6OlByG2UUVMocgf4FKoVqMSubko1MS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=s4wPCuuX; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c2b0ca13-6e8c-4690-bdf0-f433a65d65bf@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734064892;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/k/ta4AK8DaRoHaoCujrFsB1Y+SL4mTA33LMiMxnSFo=;
+	b=s4wPCuuX8r72M/iHo7oIqb4JArD+cS6BePJVchhOanph73Ygcj1LodB9hfNDpjgkRDuFm5
+	YpO5EeoltrcD6d0QiIB5q1QvUBh78PKSpA1GjXKc03XE0B4LerrhLPzcgvvZT8H50gy6B0
+	H+Ltu1bOdYlByV2DugVF4D4Y5JA1T4M=
+Date: Thu, 12 Dec 2024 20:41:25 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf] selftests/bpf: make BPF_TARGET_ENDIAN non-recursive
+ to speed up *.bpf.o build
+Content-Language: en-GB
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ kernel-team@fb.com
+References: <20241213003224.837030-1-eddyz87@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20241213003224.837030-1-eddyz87@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 2024-12-12 at 16:22 -0700, Daniel Xu wrote:
 
-I think these changes are fine in general, but see below.
 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 58b36cc96bd5..4947ef884a18 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -287,6 +287,7 @@ struct bpf_call_arg_meta {
->  	u32 ret_btf_id;
->  	u32 subprogno;
->  	struct btf_field *kptr_field;
-> +	s64 const_map_key;
->  };
-> =20
->  struct bpf_kfunc_call_arg_meta {
-> @@ -9163,6 +9164,53 @@ static int check_reg_const_str(struct bpf_verifier=
-_env *env,
->  	return 0;
->  }
-> =20
-> +/* Returns constant key value if possible, else -1 */
-> +static s64 get_constant_map_key(struct bpf_verifier_env *env,
-> +				struct bpf_reg_state *key,
-> +				u32 key_size)
 
-I understand that this is not your use case, but maybe generalize this
-a bit by checking maximal register value instead of a constant?
+On 12/12/24 4:32 PM, Eduard Zingerman wrote:
+> BPF_TARGET_ENDIAN is used in CLANG_BPF_BUILD_RULE and co macros.
+> It is defined as a recursively expanded variable, meaning that it is
+> recomputed each time the value is needed. Thus, it is recomputed for
+> each *.bpf.o file compilation. The variable is computed by running a C
+> compiler in a shell. This significantly hinders parallel build
+> performance for *.bpf.o files.
+>
+> This commit changes BPF_TARGET_ENDIAN to be a simply expanded
+> variable.
+>
+>      # Build performance stats before this commit
+>      $ git clean -xfd; time make -j12
+>      real	1m0.000s
+>      ...
+>
+>      # Build performance stats after this commit
+>      $ git clean -xfd; time make -j12
+>      real	0m43.605s
+>      ...
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 
-> +{
-> +	struct bpf_func_state *state =3D func(env, key);
-> +	struct bpf_reg_state *reg;
-> +	int zero_size =3D 0;
-> +	int stack_off;
-> +	u8 *stype;
-> +	int slot;
-> +	int spi;
-> +	int i;
-> +
-> +	if (!env->bpf_capable)
-> +		return -1;
-> +	if (key->type !=3D PTR_TO_STACK)
-> +		return -1;
-> +	if (!tnum_is_const(key->var_off))
-> +		return -1;
-> +
-> +	stack_off =3D key->off + key->var_off.value;
-> +	slot =3D -stack_off - 1;
-> +	spi =3D slot / BPF_REG_SIZE;
-> +
-> +	/* First handle precisely tracked STACK_ZERO, up to BPF_REG_SIZE */
-> +	stype =3D state->stack[spi].slot_type;
-> +	for (i =3D 0; i < BPF_REG_SIZE && stype[i] =3D=3D STACK_ZERO; i++)
-> +		zero_size++;
-> +	if (zero_size =3D=3D key_size)
-> +		return 0;
-> +
-> +	if (!is_spilled_reg(&state->stack[spi]))
-> +		/* Not pointer to stack */
-> +		return -1;
+LGTM except should target to bpf-next.
 
-Nit: there is a 'is_spilled_scalar_reg' utility function.
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
-> +
-> +	reg =3D &state->stack[spi].spilled_ptr;
-> +	if (reg->type !=3D SCALAR_VALUE)
-> +		/* Only scalars are valid array map keys */
-> +		return -1;
-> +	else if (!tnum_is_const(reg->var_off))
-> +		/* Stack value not statically known */
-> +		return -1;
-
-I think you need to check if size of the spill matches the size of the key.
-The mismatch would be unsafe when spill size is smaller than key size.
-E.g. consider 1-byte spill with mask 'mmmmmmrr' and a 4-byte key,
-at runtime the 'mmmmmm' part might be non-zero, rendering key to be
-out of range.
-
-> +
-> +	return reg->var_off.value;
-> +}
-> +
->  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->  			  struct bpf_call_arg_meta *meta,
->  			  const struct bpf_func_proto *fn,
-
-[...]
+> ---
+>   tools/testing/selftests/bpf/Makefile | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index bb8cf8f5bf11..9e870e519c30 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -461,10 +461,10 @@ $(shell $(1) $(2) -dM -E - </dev/null | grep -E 'MIPS(EL|EB)|_MIPS_SZ(PTR|LONG)
+>   endef
+>   
+>   # Determine target endianness.
+> -IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null | \
+> +IS_LITTLE_ENDIAN := $(shell $(CC) -dM -E - </dev/null | \
+>   			grep 'define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__')
+> -MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+> -BPF_TARGET_ENDIAN=$(if $(IS_LITTLE_ENDIAN),--target=bpfel,--target=bpfeb)
+> +MENDIAN:=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+> +BPF_TARGET_ENDIAN:=$(if $(IS_LITTLE_ENDIAN),--target=bpfel,--target=bpfeb)
+>   
+>   ifneq ($(CROSS_COMPILE),)
+>   CLANG_TARGET_ARCH = --target=$(notdir $(CROSS_COMPILE:%-=%))
 
 
