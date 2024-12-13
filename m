@@ -1,107 +1,201 @@
-Return-Path: <bpf+bounces-46897-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46898-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92B9B9F1742
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 21:13:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9E709F17A7
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 21:57:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36C7F1885A2D
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 20:12:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B24B216BE9A
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 20:57:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB811E47DA;
-	Fri, 13 Dec 2024 20:09:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 084991922ED;
+	Fri, 13 Dec 2024 20:57:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="l2Cb4Qlf";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="zloanI0u"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8EF19A2A3
-	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 20:09:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1315D6FC3;
+	Fri, 13 Dec 2024 20:57:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734120568; cv=none; b=XAnmFovnM89DO04hnfQl7aMqtzwO3mFDT3Rq8Hyth4o5YZDGZ+7L4gM7XW0QdKcmJzn3EBgDeBoTBBkIMGwQIB98rdrGf9mKmbQHwkNSL4LwhFzlII6nwgS1a27v6fWpXeOpB5UWWMAPSOwXbaZ9Wgf3io9KL8yZSrtFxpDR+D0=
+	t=1734123447; cv=none; b=sTFrMJ2uGWBd93vUl928DG3DdknyPGBpkgi+9WrOmxi7BFGiWgGVXwG2cwioKlmkljiyzkDK65yVWU7o72x/Tby572V9P2SQyfmTqxLK/8T7Bc/ggBIj41jpLhbchPBzyb8OQoO0KRsuaX7332TVbFJQE2cE2DJt7pzcEkG1S04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734120568; c=relaxed/simple;
-	bh=gZOwsF5A8Gyh1XTXc/YXWQgLDvQAThV7RnuuX2dcVIw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lhjVVlf9at65K30OpCf0ESK2n7KxhBy07SorFOhs4K3Efae5B/U6qQmM3G78UKUmPoQ+I0nOY4kLvkxo7voC7tnrPBNdv11vc/OlpuHjLuNQCOuWugbtzAeJVGj4HZBIaUDhnbCKRzEiOunKZv2DB/UTJvlRU5u9CcAC1knt+3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D670C4CED0;
-	Fri, 13 Dec 2024 20:09:25 +0000 (UTC)
-Date: Fri, 13 Dec 2024 15:09:50 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Sebastian Sewior <bigeasy@linutronix.de>, Michal Hocko
- <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>, bpf
- <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya
- Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>,
- Peter Zijlstra <peterz@infradead.org>, Vlastimil Babka <vbabka@suse.cz>,
- Hou Tao <houtao1@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>,
- shakeel.butt@linux.dev, Thomas Gleixner <tglx@linutronix.de>, Tejun Heo
- <tj@kernel.org>, linux-mm <linux-mm@kvack.org>, Kernel Team
- <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v2 1/6] mm, bpf: Introduce __GFP_TRYLOCK for
- opportunistic page allocation
-Message-ID: <20241213150950.2879b7db@gandalf.local.home>
-In-Reply-To: <CAADnVQ+R3ABHX2sdiTqjgZDgn0==cA3gryx9h_uDktU6P2s2aw@mail.gmail.com>
-References: <20241210023936.46871-1-alexei.starovoitov@gmail.com>
-	<20241210023936.46871-2-alexei.starovoitov@gmail.com>
-	<Z1fSMhHdSTpurYCW@casper.infradead.org>
-	<Z1gEUmHkF1ikgbor@tiehlicka>
-	<CAADnVQKj40zerCcfcLwXOTcL+13rYzrraxWABRSRQcPswz6Brw@mail.gmail.com>
-	<20241212150744.dVyycFUJ@linutronix.de>
-	<Z1r_eKGkJYMz-uwH@tiehlicka>
-	<20241212153506.dT1MvukO@linutronix.de>
-	<20241212104809.1c6cb0a1@batman.local.home>
-	<20241212160009.O3lGzN95@linutronix.de>
-	<20241213124411.105d0f33@gandalf.local.home>
-	<CAADnVQ+R3ABHX2sdiTqjgZDgn0==cA3gryx9h_uDktU6P2s2aw@mail.gmail.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1734123447; c=relaxed/simple;
+	bh=TaOfAr9PuPuG0v0gREzQnJHMwkU+7sMrCcJ7h/OokZQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mtGHX66VyT3IEA3Cu7D5OFeYYlYwGQfF9dQyNKxBjzspYS/K9R/CaGaeOASgHVMX29skpTGmHSSS85tongZXssaBD9ORe5dp9TA9S/AdHzIkxySjWDgfROioiCQYxR3oINFwCCddgxtOa3RdqPIGKtjhQxEpFRQ46rvSbYnbEqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=l2Cb4Qlf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=zloanI0u; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 183861140189;
+	Fri, 13 Dec 2024 15:57:24 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-11.internal (MEProxy); Fri, 13 Dec 2024 15:57:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1734123444; x=1734209844; bh=KSskvKq7uJ
+	buKd7qfjsaoB+qKSL3/ZGIuEV/YTCll5I=; b=l2Cb4QlfW5NrOjDTAQCbYzKHGF
+	kn/2NISHbjYEi321GkR/zwsK0dwU/YXOWYQqTMONHqU5mmrxUYW7eiXt1t6DsTYR
+	QggkWc2Rf5xqeCQ6w9ygGDFeTBUrMEZyyvXZhbqTMthUfAwaPZQ2teMLQV+mVTSu
+	oW73O/nFkzMcCmk+rz6D3t94rKIC2qnRHh0xo5OqWBPYaJpxf3E43vaqDvMk7LYs
+	cWyinwUgSVd5u0ffrwYukccZmNM6sD8R+W8YD/8MgzQKIhZjtntd8dtt68/sr0wh
+	weaiudZLuzGUmXu+J4NQvbtWSWX0OFGDkCp24FiM22rnvUJnqidvMQeD7i6A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1734123444; x=1734209844; bh=KSskvKq7uJbuKd7qfjsaoB+qKSL3/ZGIuEV
+	/YTCll5I=; b=zloanI0upFDx5Z53vm9NiriOstiqqs7dSYUjXF/km+Yy6LCj9hv
+	p8xLimeUN5/7ZVR97TJIByllf7v8xV1Ue2YQcDpobeNZrzJpikps0rLIsbi7uaS5
+	/LrBJJIT47B2NaCGFRDGJEAAgNYyCAy9HddC80P0mhpVemsw9c9n8dvIwroeFSdN
+	zArNXhY354SxMF+5hie4sGxQAEzs+DldaAU/dCD1qhGkMQeJWa0miUXZXZo8uDkx
+	Kf+1mBwRXHtG+CUaZj60K5Qhr5OjWgWYnpp5kQQSnOidgKxprycu/i4NIvc7rarU
+	ueRDkwo2Xaj4B8KhNm751G9UGLksl6DyAQg==
+X-ME-Sender: <xms:s59cZ-Jp0jEUnKOxTtbYeUHhAUwS_7JpVJaiX_Ul5WKDCFVjfsrSSg>
+    <xme:s59cZ2I9BiK0nGugoeQVIrKDCD9hy7nB7XoKi6ef_1xgifT14Xl98SLXdFPLNHaUc
+    aYkGR83_tR6j3ilHQ>
+X-ME-Received: <xmr:s59cZ-uGhqEL5VndRY62Wvx_D40yfzrWbro1xhW1nl99LAYHeDFEKqhudO62AEhOUVd6ceUa7CkdttJcORdMalQSr-4ser3VXE0KSpKMGf5FKw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrkeejgddugedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
+    dtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddttddvnecuhfhrohhmpeff
+    rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
+    epvdefkeetuddufeeigedtheefffekuedukeehudffudfffffggeeitdetgfdvhfdvnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesug
+    iguhhuuhdrgiihiidpnhgspghrtghpthhtohepudekpdhmohguvgepshhmthhpohhuthdp
+    rhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnug
+    hrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurg
+    hnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopehjohhhnhdrfhgrshht
+    rggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopehmrghrthhinhdrlhgruheslh
+    hinhhugidruggvvhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghp
+    thhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidruggvvh
+X-ME-Proxy: <xmx:s59cZzYABhOnYI_iGWdFNq1QAXq_AAJsIXv9eFtqoxYFP9p2bOehLA>
+    <xmx:s59cZ1Zfyr-z7IPQfoR4KhR7913OfTYsG0hd_ulVL0g0W3nLxQRFoA>
+    <xmx:s59cZ_B3AHP0GoWsjvnaMwj5FfLCCcfwiPO8_ZETVf6w8aHAlxv8xQ>
+    <xmx:s59cZ7ZC0oaHJM_JgLZAi-mOAqP3Vx1cyAJb9CSwhKnZu3SIrUTuyQ>
+    <xmx:tJ9cZyQl6iPDsqHnIjZlz-_HQLraRIf2kCGES6hmPhLqHIWiJLZEPNjQ>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 13 Dec 2024 15:57:21 -0500 (EST)
+Date: Fri, 13 Dec 2024 13:57:19 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, shuah@kernel.org, 
+	daniel@iogearbox.net, john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, 
+	jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 4/5] bpf: verifier: Support eliding map
+ lookup nullness
+Message-ID: <cs4dybyzefyyk3e7zzec6mayt6re773ouo3svar4kcoxd6rakg@qodmhcted3mm>
+References: <cover.1734045451.git.dxu@dxuuu.xyz>
+ <92065ca054beccd6d0f35efe9715ef965e8d379f.1734045451.git.dxu@dxuuu.xyz>
+ <1b0e59ee87b765513c6488112e6e3e3cf4af7cb6.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1b0e59ee87b765513c6488112e6e3e3cf4af7cb6.camel@gmail.com>
 
-On Fri, 13 Dec 2024 10:44:26 -0800
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-
-> > But this is not the case. I'm not sure what would happen here, but it is
-> > definitely out of scope of the requirements of the PI logic and thus,
-> > trylock must also not be used in hard interrupt context.  
+On Thu, Dec 12, 2024 at 08:04:45PM GMT, Eduard Zingerman wrote:
+> On Thu, 2024-12-12 at 16:22 -0700, Daniel Xu wrote:
 > 
-> If hard-irq acquired rt_mutex B (spin_lock or spin_trylock doesn't
-> change the above analysis), the task won't schedule
-> and it has to release this rt_mutex B before reenabling irq.
-> The irqrestore without releasing the lock is a bug regardless.
+> I think these changes are fine in general, but see below.
 > 
-> What's the concern then? That PI may see an odd order of locks for this task ?
-> but it cannot do anything about it anyway, since the task won't schedule.
-> And before irq handler is over the B will be released and everything
-> will look normal again.
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 58b36cc96bd5..4947ef884a18 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -287,6 +287,7 @@ struct bpf_call_arg_meta {
+> >  	u32 ret_btf_id;
+> >  	u32 subprogno;
+> >  	struct btf_field *kptr_field;
+> > +	s64 const_map_key;
+> >  };
+> >  
+> >  struct bpf_kfunc_call_arg_meta {
+> > @@ -9163,6 +9164,53 @@ static int check_reg_const_str(struct bpf_verifier_env *env,
+> >  	return 0;
+> >  }
+> >  
+> > +/* Returns constant key value if possible, else -1 */
+> > +static s64 get_constant_map_key(struct bpf_verifier_env *env,
+> > +				struct bpf_reg_state *key,
+> > +				u32 key_size)
+> 
+> I understand that this is not your use case, but maybe generalize this
+> a bit by checking maximal register value instead of a constant?
 
-The problem is the chain walk. It could also cause unwanted side effects in RT.
+I'll check on this. If it works I think you're right - it allows more
+flexibility while retaining safety. User could define max_entries to be
+a power of two and then mask key with with 0xFFFF.. to guarantee null
+free codepaths.
 
-If low priority task 1 has lock A and is running on another CPU and low
-priority task 2 blocks on lock A and then is interrupted right before going
-to sleep as being "blocked on", and takes lock B in the interrupt context.
-We then have high priority task 3 on another CPU block on B which will then
-see that the owner of B is blocked (even though it is not blocked for B), it
-will boost its priority as well as the owner of the lock (A). The A owner
-will get boosted where it is not the task that is blocking the high
-priority task.
+> 
+> > +{
+> > +	struct bpf_func_state *state = func(env, key);
+> > +	struct bpf_reg_state *reg;
+> > +	int zero_size = 0;
+> > +	int stack_off;
+> > +	u8 *stype;
+> > +	int slot;
+> > +	int spi;
+> > +	int i;
+> > +
+> > +	if (!env->bpf_capable)
+> > +		return -1;
+> > +	if (key->type != PTR_TO_STACK)
+> > +		return -1;
+> > +	if (!tnum_is_const(key->var_off))
+> > +		return -1;
+> > +
+> > +	stack_off = key->off + key->var_off.value;
+> > +	slot = -stack_off - 1;
+> > +	spi = slot / BPF_REG_SIZE;
+> > +
+> > +	/* First handle precisely tracked STACK_ZERO, up to BPF_REG_SIZE */
+> > +	stype = state->stack[spi].slot_type;
+> > +	for (i = 0; i < BPF_REG_SIZE && stype[i] == STACK_ZERO; i++)
+> > +		zero_size++;
+> > +	if (zero_size == key_size)
+> > +		return 0;
+> > +
+> > +	if (!is_spilled_reg(&state->stack[spi]))
+> > +		/* Not pointer to stack */
+> > +		return -1;
+> 
+> Nit: there is a 'is_spilled_scalar_reg' utility function.
 
-My point is that RT is all about deterministic behavior. It would require
-a pretty substantial audit to the PI logic to make sure that this doesn't
-cause any unexpected results.
+Ack.
 
-My point is, the PI logic was not designed for taking a lock after being
-blocked on another lock. It may work, but we had better prove and show all
-side effects that can happen in these cases.
+> 
+> > +
+> > +	reg = &state->stack[spi].spilled_ptr;
+> > +	if (reg->type != SCALAR_VALUE)
+> > +		/* Only scalars are valid array map keys */
+> > +		return -1;
+> > +	else if (!tnum_is_const(reg->var_off))
+> > +		/* Stack value not statically known */
+> > +		return -1;
+> 
+> I think you need to check if size of the spill matches the size of the key.
+> The mismatch would be unsafe when spill size is smaller than key size.
+> E.g. consider 1-byte spill with mask 'mmmmmmrr' and a 4-byte key,
+> at runtime the 'mmmmmm' part might be non-zero, rendering key to be
+> out of range.
 
--- Steve
+Ah great catch. I think you're right.
 
