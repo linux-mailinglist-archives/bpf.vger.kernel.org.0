@@ -1,210 +1,142 @@
-Return-Path: <bpf+bounces-46851-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46852-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAF719F0E32
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 15:02:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A23E29F0E7A
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 15:06:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB45C1615C5
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 14:02:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 568EA188473A
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 14:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F7ED1E048F;
-	Fri, 13 Dec 2024 14:02:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0337B1E0DD1;
+	Fri, 13 Dec 2024 14:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MvMVN1Vy";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KcBBSQ1V";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MvMVN1Vy";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KcBBSQ1V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TaDm9j+Z"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B3F817548
-	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 14:02:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA0881E04B3;
+	Fri, 13 Dec 2024 14:05:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734098530; cv=none; b=R+ESLkOOTJNFsAGC69zYNIrDdmF31nnEtOANP8e88JxSPIEMuYrDa2aLhWrHUccNAByD4e/LbgF7QQ9Hyc9T0gfFdxTuAZIDbm1rGpsC7aFpAlyv6KNMkWogpmlADNLqo9C7SkTy70VBFITaFverYI5e9yYTL0SjOL2e3wDAiSE=
+	t=1734098760; cv=none; b=tOrZ0Eo4xh5FieSZQoym88OMUSbCDvPXfO1OsLTzkujT0w49Hd6aFZd/6eG2+W9Z7PdwDhKoDD3rKqKH1f7YqjUjom/a7ZR1PQRHPPtwLxTLTkN5RVfAO2FYF8M5TmFH0/CIVNkAf32nVU5Ot3ki9dIbhBegghajpMcb2pSq/wU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734098530; c=relaxed/simple;
-	bh=rQbU7J8hO89zUqpXOgkqgOpscGhEwv32Humbu46NjNE=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=pF8dhkJMiXkYEQDoXygTbPDkDWIe2rW56XFwlZ7NZeUVfN+rufwavRSTw5yrb8Ej9KDoztT21WuGMUNGhVKHN6UKfpBs3W5NFXDyx/+CzVs8x6ndOfVidWTK0ImB0QiStf8el0GhNJf9qNWBte6Q/rN5e+WvToARZCOM8DTmnBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MvMVN1Vy; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KcBBSQ1V; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MvMVN1Vy; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KcBBSQ1V; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 37B501F457;
-	Fri, 13 Dec 2024 14:02:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1734098527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=v//T0Q7N5+84Kw93d1hG8IEBXKZFdr1NkGkDrR4j9fQ=;
-	b=MvMVN1VyWvGbZfyoYN2u8zfg+H4yqxjErIUcBZqZqB7S8o1X70G2HzJZgJNpBn4yAuVxhk
-	IB5BRIG5hFGB3AmMh4Ww7WckCQy0dB6+gNzfJZserpex9WDhHgfm6qxkftQ3ie//jQvbeU
-	lO0PTeYoUnBY+2d1OYJGKtA/I+GfpBM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1734098527;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=v//T0Q7N5+84Kw93d1hG8IEBXKZFdr1NkGkDrR4j9fQ=;
-	b=KcBBSQ1V6k8pCNk2oXB+9RgWHX3s/7d1LOktUanPgMH6l50nkgv/W3kfSEwIauG9YY3yAc
-	OiqjZE1q0fgyOrBA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1734098527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=v//T0Q7N5+84Kw93d1hG8IEBXKZFdr1NkGkDrR4j9fQ=;
-	b=MvMVN1VyWvGbZfyoYN2u8zfg+H4yqxjErIUcBZqZqB7S8o1X70G2HzJZgJNpBn4yAuVxhk
-	IB5BRIG5hFGB3AmMh4Ww7WckCQy0dB6+gNzfJZserpex9WDhHgfm6qxkftQ3ie//jQvbeU
-	lO0PTeYoUnBY+2d1OYJGKtA/I+GfpBM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1734098527;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=v//T0Q7N5+84Kw93d1hG8IEBXKZFdr1NkGkDrR4j9fQ=;
-	b=KcBBSQ1V6k8pCNk2oXB+9RgWHX3s/7d1LOktUanPgMH6l50nkgv/W3kfSEwIauG9YY3yAc
-	OiqjZE1q0fgyOrBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0E0C8137CF;
-	Fri, 13 Dec 2024 14:02:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 66GzAl8+XGeEFQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 13 Dec 2024 14:02:07 +0000
-Message-ID: <b67b1a0c-194a-4dd4-bc83-271e6388208f@suse.cz>
-Date: Fri, 13 Dec 2024 15:02:06 +0100
+	s=arc-20240116; t=1734098760; c=relaxed/simple;
+	bh=dl7sJS484C9gSv3OoCTqkwXKHjDdICZRB9u08gb9Ic0=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y9ToNz5ltiiqAxDjpv5HU/l9l9jcP0Ys8waYyAmZ647nmYCMMuam9RhLWFIb9Y0+tnrN/HJ0jaPtEH15SS/ee7L0L6iQCRkX0oJrBzy/0bpbF86Qd2cVdxp8My2mQWUZE8nKrxpcBePlxUaXaunNgpnyMF8bGZ9pA5jH0wsWWoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TaDm9j+Z; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5d3e9f60bf4so2837322a12.3;
+        Fri, 13 Dec 2024 06:05:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734098757; x=1734703557; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=F41wkTvJU2o0cPXZH4+QHkoVVi8Q4p8v/WGLh5PuiSc=;
+        b=TaDm9j+ZDlFs2+Dy1peNL5tW1ggFO8fkl/Ewxe9MKwZMQGFCKdTBKVyaokeVJP/GFB
+         k/YhatOMnUh+X8u/l5o1CzPnEUsLCTl7Zfk0243ghyQMe1m8RNwqTOfukIi54YU/wbd6
+         br21qaNifAx7eNwBTnHaNRcv2pp2iCWGbzBAHxku3eZwQRD9DQtCqEGdvWXkrOcnIQ3i
+         WuuyT9b66SiHk0amx4MOOQPJBHEHSgn318ZLDUgHlHKbxJnOJ5ziypJ5Ac0ilGQUwWEm
+         WTlakQw7mEIkiObox2Jb/T7M43KNwFeyWE9FtGwJUFX7xL7E/tiCeftYH6C9R95c9kI7
+         cIoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734098757; x=1734703557;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F41wkTvJU2o0cPXZH4+QHkoVVi8Q4p8v/WGLh5PuiSc=;
+        b=rFBCuL+5hsw4jDbeX1dpoAG6uCgLdfiOgFGPN6IN4/Awta9f24jDuE6QYbbwVVrOR2
+         1+JZf4KwRXcQfxRzUFAmXWP37qTP/Nz+WZhXd6DaTKZRrXggtrFnWMIKBYJLhHz5B/rv
+         V/WRxkagLjYDbdt0s5e2ITY5adCOZeG+HTol5kCAAIA/u5mmFsNLJw8SF3mHcLt6+d2L
+         edzPCahAuhe4M+NcCrCh6MX+piIxEsXuyEtHgpp8sUd6+QkJJ7ZRjXSy2NzA1AYDnEDX
+         m6ez34/f3cEYx31DeD16mv/KStJ9r6tFuxxTrH9Ta1eZiBjRT/X780igit98rDeQ3yTr
+         L0kQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUV6abvAJzSX5vZ42BAJTli3P9mUUWigC3LfZKZSMFCVa9PYJWXWDagr9Pvk+XP6cpUzeEMnTLIGbVxhQgl8p78MHCt@vger.kernel.org, AJvYcCWVNmGlQuoY4EpxM6M5IApRelJethUcLsIxoe+fpcGfixVygAYr0qyDAOeSLwJ5RZYBP9qQCQHZ5Jc5LU9M@vger.kernel.org, AJvYcCWdxHbn2dqF9kkFV/0wn3WECpPHMVbfRdL40iyazMjpDvrh6SJIObzF8aN4nviSkBGs4uo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwjT987wcQpCLNMLV40gfODn8+Xvs5UHNzPCqBaX7PZFPai8x9c
+	Cr0BxZtkhnDc0lXaedFGGrpKJ39PCv6TwlT4WXH83aodZ9br2mxR
+X-Gm-Gg: ASbGncv1qrLNlSgWJITWSEpeiEPi43JjZpr+I3+IV1NxFs/3jjUaJGSVTrc8LHGjkFA
+	4bdOmNoCIVNvQ3d4gObX3yqfleyA+axvdcTzmJB6lf4DsycmHQ8ufz+GXguqTcbo3zpHa4cLVc1
+	q5ieQg0AAqVPoeGBwIvCcP9TDPmJxYNS+ghJgbN9HOtnn0EBGqhq4IfedRFC0Vcy3oGST5+G29b
+	yk6NAJfDEhVLLLLXQWQ5WiC/4PrbbTZoiclWBgeCzyiK7hgP/TRaydwWEbisQI0P5LZwnuxj2P5
+	FFiFK9TqRq53Z33CAyKSJXa7FfbGfA==
+X-Google-Smtp-Source: AGHT+IFPmChUMSZFX8BiH04WL+oELaDILKLogU4nJpjpy7yyli0RY361SMRylUkLmNjb0s+HB1x3lw==
+X-Received: by 2002:a05:6402:3884:b0:5d0:8889:de02 with SMTP id 4fb4d7f45d1cf-5d63c3aa66fmr2592273a12.22.1734098756934;
+        Fri, 13 Dec 2024 06:05:56 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d14c7991a5sm11425859a12.58.2024.12.13.06.05.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Dec 2024 06:05:56 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 13 Dec 2024 15:05:54 +0100
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 00/13] uprobes: Add support to optimize usdt
+ probes on x86_64
+Message-ID: <Z1w_Qi_Wya56YDO_@krava>
+References: <20241211133403.208920-1-jolsa@kernel.org>
+ <20241213105105.GB35539@noisy.programming.kicks-ass.net>
+ <Z1wxqhwHbDbA2UHc@krava>
+ <20241213135433.GD35539@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 3/6] locking/local_lock: Introduce
- local_trylock_irqsave()
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Sebastian Sewior <bigeasy@linutronix.de>,
- Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
- Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev,
- Michal Hocko <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Tejun Heo <tj@kernel.org>,
- linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>,
- Jann Horn <jannh@google.com>
-References: <20241210023936.46871-1-alexei.starovoitov@gmail.com>
- <20241210023936.46871-4-alexei.starovoitov@gmail.com>
- <1c760bf1-14a4-42e4-a55b-438a29987aef@suse.cz>
- <9e5bdef1-a692-47d5-82b9-96a4f2c68463@suse.cz>
- <CAADnVQJtkb3YVM9La_Zo=t_s+DNNrrVhX1gt5KsQUPZTdw_7Eg@mail.gmail.com>
- <60fadf5a-4c96-43b3-8cc2-baf71eb93e3f@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <60fadf5a-4c96-43b3-8cc2-baf71eb93e3f@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,gmail.com,linux-foundation.org,infradead.org,linutronix.de,goodmis.org,huawei.com,cmpxchg.org,linux.dev,suse.com,kvack.org,fb.com,google.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid]
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241213135433.GD35539@noisy.programming.kicks-ass.net>
 
-On 12/12/24 10:15, Vlastimil Babka wrote:
-> On 12/12/24 03:49, Alexei Starovoitov wrote:
->> I like your
->> +struct local_tryirq_lock
->> approach, but let's put it in local_lock.h ?
+On Fri, Dec 13, 2024 at 02:54:33PM +0100, Peter Zijlstra wrote:
+> On Fri, Dec 13, 2024 at 02:07:54PM +0100, Jiri Olsa wrote:
+> > On Fri, Dec 13, 2024 at 11:51:05AM +0100, Peter Zijlstra wrote:
+> > > On Wed, Dec 11, 2024 at 02:33:49PM +0100, Jiri Olsa wrote:
+> > > > hi,
+> > > > this patchset adds support to optimize usdt probes on top of 5-byte
+> > > > nop instruction.
+> > > > 
+> > > > The generic approach (optimize all uprobes) is hard due to emulating
+> > > > possible multiple original instructions and its related issues. The
+> > > > usdt case, which stores 5-byte nop seems much easier, so starting
+> > > > with that.
+> > > > 
+> > > > The basic idea is to replace breakpoint exception with syscall which
+> > > > is faster on x86_64. For more details please see changelog of patch 8.
+> > > 
+> > > So ideally we'd put a check in the syscall, which verifies it comes from
+> > > one of our trampolines and reject any and all other usage.
+> > > 
+> > > The reason to do this is that we can then delete all this code the
+> > > moment it becomes irrelevant without having to worry userspace might be
+> > > 'creative' somewhere.
+> > 
+> > yes, we do that already in SYSCALL_DEFINE0(uprobe):
+> > 
+> >         /* Allow execution only from uprobe trampolines. */
+> >         vma = vma_lookup(current->mm, regs->ip);
+> >         if (!vma || vma->vm_private_data != (void *) &tramp_mapping) {
+> >                 force_sig(SIGILL);
+> >                 return -1;
+> >         }
 > 
-> Sure, that was a proof of concept so kept it local.
-> 
->> and it probably needs local_inc_return() instead of READ/WRITE_ONCE.
->> With irq and nmis it's racy.
-> 
-> Hm guess you are right, thanks!
-> 
+> Ah, right I missed that. Doesn't that need more locking through? The
+> moment vma_lookup() returns that vma can go bad.
 
-Ah I remember now, the idea was that if an irq or nmi interrupts someone
-else between checking that active is 0 and setting it to 1, it will finish
-the critical section and unlock before the interrupted context can continue,
-so the race is harmless.
+ugh yes.. I guess mmap_read_lock(current->mm) should do, will check
+
+thanks,
+jirka
 
