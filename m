@@ -1,161 +1,141 @@
-Return-Path: <bpf+bounces-46913-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46914-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D51A69F1842
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 23:00:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A6D79F184B
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 23:02:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C30218856C5
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 22:00:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE789188502B
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 22:02:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D7818A6AF;
-	Fri, 13 Dec 2024 22:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3C9A19306F;
+	Fri, 13 Dec 2024 22:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cN8oLFL+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l1o4TFXg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0598191F6C;
-	Fri, 13 Dec 2024 22:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD9E71DA4E
+	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 22:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734127204; cv=none; b=jH2/Eqwcj1WKcJBZ0zEScBSf7grQO80OTeT9waTTviOUfu90avhRp+YEJAWFZdNjafj+uz38LjZgzGiGERjoFor7HAtghqe5q5orGmnz29uEy05mBLBQ5mYzOCQcoflU2+Y/Z4jgXE5tOfsQrBM3JNvOTsOE/niDHHTCGZtk3i0=
+	t=1734127341; cv=none; b=BK/T/ZhesUqPRh+2pqK+baA1rQ0p5LXM9tTjot8hWFLqtKUeBwVLgmVK+/ywtJ3ltevaAfHmdXXu0wlinQ+kLgxbkdMx2CSSkbUTpcqJ9Z4sZ+P+MDn8OOLGOXMj4q3ACU/yDg+VKj++WqnjABRT7HlpaXXPlVRcobzX6zy/XcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734127204; c=relaxed/simple;
-	bh=9I7jc1DX3DaIFFopBSZ4wu1k+NPSlYdd9tFsgLMkvGk=;
+	s=arc-20240116; t=1734127341; c=relaxed/simple;
+	bh=olY3vhhPpgFWDMToqbI+2tOyNTXaMOx2Ne5oWopXL30=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UWBkFNwBko6EalNaXXFukRlh3SN0C3rDI4ughprf0P1zHuAxyZuoOMJj2qb2keqDmthziue/vDEUNTyq0GexQAapb/y4X6b2ZVB0xfA18i4b6UqLJ7qeIaNI07AJy8J845m1aY+3KruFfOiuIDGSSmDPvgcMnscKkxy6qdn13cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cN8oLFL+; arc=none smtp.client-ip=209.85.214.175
+	 To:Cc:Content-Type; b=LGY7bUl6/gAfQZAYYCBMeB3kE8/C1zURTABpPnlM2XmtOk2HCRAO0Eo1/eKqDPqwGURAdsD6ZIzV1deZxU9EqKThndi4NNjPDvJGN9zsYfRgk0P58nYNL3A5i400QNSIi/l9m9r0b1tA5B9sbDWy8VOlUFZ2QA6lzxR5BN1hCh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l1o4TFXg; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-21628b3fe7dso19061415ad.3;
-        Fri, 13 Dec 2024 14:00:02 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-385e1fcb0e1so1224778f8f.2
+        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 14:02:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734127202; x=1734732002; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734127338; x=1734732138; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5ewD8EgJf55IsD5hRUbEqPM4ENcw2eA3d/FI7PPWYuQ=;
-        b=cN8oLFL+zBWN7vYa8UH+op9mEt5iOSNx1ZeyYRqKe7d2FdNYG5ulqjqUiMb33x7Y75
-         upYuX4lgabU62bckMvJ+6rkHMtBArb5L6PrYWv9gAUoppn5nB0sNeVFm5tg/aNi8FeAS
-         3OhAs4qsDAMwSJBKsv6xuRFdWZRrpoNlI1szDttvTXoWyaO3iXlH01Wz/UEB61x151/L
-         7khG1fAj5Np0hKA9ypMsDqmq5Li3h+X/cjyoS3xHPmdvRhPZV7GLT6tFRRmGHSTIchEV
-         1ODE6KfDG0mKa2YMd64xHMXvcwybIW+n9eARbpBYlkFsSC/5OY8EXYJKtDLLh2vgXCHt
-         BVcA==
+        bh=2ZPWyb/XBe2yMGIlqJvswQxBEjkMyLRKAx8FUxbp8UE=;
+        b=l1o4TFXgk2m5kWVd7zjk4tgnJfL3w/ABsDm9jJ0BZPLcX9IpyunIsnVuE/mzXAoNpJ
+         aDDnWydkbSJEhPHsC9OZzMkqeW+DxUJpX27Xr8rl0Ji0dImFQqUd4+U0whyXzJj2CqYp
+         rkBdC++F9pZD17r1PE+1GQgNn2GBVMjPWfCyJXnxtQPthivrHjyDn5062nFBk7TssJEz
+         VZQ/TH80ljjpMI4cGc9et9rX5fw6p9yWaTHObJqwxgU3YeAxp5RKhC1x518F+U08pql1
+         gQtRFuFouZlB6vP9rwhxiX1e1iCXUjg+uzm1mPuR10Tb3zFajFPxsvrrtkknA1rGX1uf
+         X0JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734127202; x=1734732002;
+        d=1e100.net; s=20230601; t=1734127338; x=1734732138;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5ewD8EgJf55IsD5hRUbEqPM4ENcw2eA3d/FI7PPWYuQ=;
-        b=TAfuooerhy2/26f6KnPPTKPJF1B8KCC8Yru/ZQmj4n//SX824Zo2ngclHQJ5pyFW9Y
-         XEBOAwUK3h8L5kcgAuJG/Gcd5vRxypYlmPVSpzdn+YA9mJF3broyIg6UWIZIZuUVM8Al
-         CWjLoxN7myM86/G9ydK7yQj25+rPtOfqqgsT6m2l21g+qo19TpoPDFOMA4/hoqU5NLb+
-         yH1CPkYKEZcnfcUYNz/QoEB5QYaK0kDefFouHSOhRLUV7tyD+2EioMUtEXfN+/Wdtoim
-         b2p6XFLhQMAfH0KP9wT0wdZzMB8s+Px5qtI1wZP4viP3zzqoeR5iNA70tmZ9aIxiORTN
-         TO7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWAitbXB2jN6bDJgLJKJQn0TlWrNRVzl5ESMY7weH62mTDyBYeKYQf+RK4hKDtjPZsw6pM=@vger.kernel.org, AJvYcCWgtsdW5HgjZwsQTg1yVdUIyS/lPFiCbL+LY/DpL0CyzeJY9YurLgKIGaYDpWnRQaV0GrRiklngUdTe/vO6@vger.kernel.org, AJvYcCX0epVAfSDG4OZDhBjyCZ8bks9jcPFmU68k/unn6UwLbA0FMNMj+BfQSfYtFgGlpcMmDDqLPbNXy3w3aOREnnbGrext@vger.kernel.org
-X-Gm-Message-State: AOJu0YxHZQOFXW+Ppwg7zi2HWUuZTJX4ijL6SaDtzQjFK2cY1F28NAty
-	mx36DRyP/TlBpsdteriMewBhcMXews29X/c95runm2/fooXo/FZWY9LVu1FMOEfOrbJnekdrlq2
-	TTQSBRIxNUE1bTD9+H09oxKUxaLA=
-X-Gm-Gg: ASbGnctaLzvAoDhR3CrM3a908marTqAEq0gn/MOqOVtRZ7WmSw98yPLGd9oz2VmRkED
-	5eWtFAXJ/bP40cCt/iVFlIz0b7AOBBBOF6R+DklXIKOeKDHy3WkCiDA==
-X-Google-Smtp-Source: AGHT+IFZpl12YmemAcyWgQMb0bUsiVqzKLSjYNMZRG50kZGLjKtv2W6IyGN4k/haaBN7zt8pDvcRrd7omTL+yPNHh9I=
-X-Received: by 2002:a17:90b:3b52:b0:2ef:2d9f:8e55 with SMTP id
- 98e67ed59e1d1-2f28fd66b3dmr7300719a91.17.1734127202257; Fri, 13 Dec 2024
- 14:00:02 -0800 (PST)
+        bh=2ZPWyb/XBe2yMGIlqJvswQxBEjkMyLRKAx8FUxbp8UE=;
+        b=tlmZsVKUEgTCLmoI673K7lUqeHhTDrmREmsA/NwWCcR1EoBUeMYVA8B3nlfppj0KWM
+         P/x8Jx5oylzcXYBPYpS4LJmSpwNcGDoNXsrtB+z21nMRiv4D5cI0yBcbeXWqB4NWzJXT
+         KQXbpHGDpM2ULoYuxlX5m8bASImsGUxKTv7NsB0+Vx4XfT2GkQ7SJW8mq3q+LcWETTZU
+         TZ6aDGVBai2+/e2tdPmYD+qbxMKgQp78hVXO2JiQwpvVV6VghinppJEf93FDdQPvSwSf
+         R++36gbTBGjLQJW2BFV7H8ERL2y7xu1LzGx02jpxS11dv/bR/bDOi+ke9yaVVWo3hWxZ
+         2cGg==
+X-Forwarded-Encrypted: i=1; AJvYcCVoIhJoSL64YRb26oi1pga6/ThYkGawkUzombcFW6kcYul/f4Ts8MoZA6D6HxkqQgGfIE4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjSf6oP/iKt9VVzd5f2KtSmVAduTQTnlt3RCBS8+iLGu1ry8Gs
+	4ZQllM1ma5B6PW6WPiiKzSCVlSik3ppa7+xr+JNq52UbVqkOWBOKnxZ2Qp1y1QZLAYJRNvY/cSA
+	qreh5Ad4XM9TS0Oho6Q9edMLa62Y=
+X-Gm-Gg: ASbGnctrKxOgoSJzpYb+rC1QxE54xbmvZpVj0nn1sRpiQsw93md+V5GGjE3OGK8g09b
+	9SO73LYpuQbFBe185A6M5inKymfnuKcL06ZxM/lEpx2zv43JOYYRdSzUK2bz/QR35ZgF6xg==
+X-Google-Smtp-Source: AGHT+IFc228SMWCKYeO8U3tr5A9ta0NaRWjjXCjtD25Q9yW/nNmkKfc6XkNTrLI/IiWCfiuU3ymPX5f7HT3xzOCZpHM=
+X-Received: by 2002:a05:6000:794:b0:385:d7a7:ad60 with SMTP id
+ ffacd0b85a97d-38880ac4e7cmr3402530f8f.3.1734127337590; Fri, 13 Dec 2024
+ 14:02:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241211133403.208920-1-jolsa@kernel.org> <20241213105105.GB35539@noisy.programming.kicks-ass.net>
- <Z1wxqhwHbDbA2UHc@krava> <20241213135433.GD35539@noisy.programming.kicks-ass.net>
- <Z1w_Qi_Wya56YDO_@krava> <20241213183954.GC12338@noisy.programming.kicks-ass.net>
- <Z1yslwyX0yYzS_sb@krava>
-In-Reply-To: <Z1yslwyX0yYzS_sb@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 13 Dec 2024 13:59:49 -0800
-Message-ID: <CAEf4BzaOSAW6cQ3DYK-WJCFs-cW8+ayt5Qk9cBJ=VRXzi81htg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/13] uprobes: Add support to optimize usdt
- probes on x86_64
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Oleg Nesterov <oleg@redhat.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
+References: <20241210023936.46871-1-alexei.starovoitov@gmail.com>
+ <20241210023936.46871-2-alexei.starovoitov@gmail.com> <Z1fSMhHdSTpurYCW@casper.infradead.org>
+ <Z1gEUmHkF1ikgbor@tiehlicka> <CAADnVQKj40zerCcfcLwXOTcL+13rYzrraxWABRSRQcPswz6Brw@mail.gmail.com>
+ <20241212150744.dVyycFUJ@linutronix.de> <Z1r_eKGkJYMz-uwH@tiehlicka>
+ <20241212153506.dT1MvukO@linutronix.de> <20241212104809.1c6cb0a1@batman.local.home>
+ <20241212160009.O3lGzN95@linutronix.de> <20241213124411.105d0f33@gandalf.local.home>
+ <CAADnVQ+R3ABHX2sdiTqjgZDgn0==cA3gryx9h_uDktU6P2s2aw@mail.gmail.com>
+ <20241213150950.2879b7db@gandalf.local.home> <20241213160035.677810fb@gandalf.local.home>
+In-Reply-To: <20241213160035.677810fb@gandalf.local.home>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 13 Dec 2024 14:02:06 -0800
+Message-ID: <CAADnVQ+QS19X_FFJdqvKyP5oWhT4CbgnRuwdJy5+7qcvs3kYAw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/6] mm, bpf: Introduce __GFP_TRYLOCK for
+ opportunistic page allocation
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Sebastian Sewior <bigeasy@linutronix.de>, Michal Hocko <mhocko@suse.com>, 
+	Matthew Wilcox <willy@infradead.org>, bpf <bpf@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Hou Tao <houtao1@huawei.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev, 
+	Thomas Gleixner <tglx@linutronix.de>, Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 13, 2024 at 1:52=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
+On Fri, Dec 13, 2024 at 1:00=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
 >
-> On Fri, Dec 13, 2024 at 07:39:54PM +0100, Peter Zijlstra wrote:
-> > On Fri, Dec 13, 2024 at 03:05:54PM +0100, Jiri Olsa wrote:
-> > > On Fri, Dec 13, 2024 at 02:54:33PM +0100, Peter Zijlstra wrote:
-> > > > On Fri, Dec 13, 2024 at 02:07:54PM +0100, Jiri Olsa wrote:
-> > > > > On Fri, Dec 13, 2024 at 11:51:05AM +0100, Peter Zijlstra wrote:
-> > > > > > On Wed, Dec 11, 2024 at 02:33:49PM +0100, Jiri Olsa wrote:
-> > > > > > > hi,
-> > > > > > > this patchset adds support to optimize usdt probes on top of =
-5-byte
-> > > > > > > nop instruction.
-> > > > > > >
-> > > > > > > The generic approach (optimize all uprobes) is hard due to em=
-ulating
-> > > > > > > possible multiple original instructions and its related issue=
-s. The
-> > > > > > > usdt case, which stores 5-byte nop seems much easier, so star=
-ting
-> > > > > > > with that.
-> > > > > > >
-> > > > > > > The basic idea is to replace breakpoint exception with syscal=
-l which
-> > > > > > > is faster on x86_64. For more details please see changelog of=
- patch 8.
-> > > > > >
-> > > > > > So ideally we'd put a check in the syscall, which verifies it c=
-omes from
-> > > > > > one of our trampolines and reject any and all other usage.
-> > > > > >
-> > > > > > The reason to do this is that we can then delete all this code =
-the
-> > > > > > moment it becomes irrelevant without having to worry userspace =
-might be
-> > > > > > 'creative' somewhere.
-> > > > >
-> > > > > yes, we do that already in SYSCALL_DEFINE0(uprobe):
-> > > > >
-> > > > >         /* Allow execution only from uprobe trampolines. */
-> > > > >         vma =3D vma_lookup(current->mm, regs->ip);
-> > > > >         if (!vma || vma->vm_private_data !=3D (void *) &tramp_map=
-ping) {
-> > > > >                 force_sig(SIGILL);
-> > > > >                 return -1;
-> > > > >         }
-> > > >
-> > > > Ah, right I missed that. Doesn't that need more locking through? Th=
-e
-> > > > moment vma_lookup() returns that vma can go bad.
-> > >
-> > > ugh yes.. I guess mmap_read_lock(current->mm) should do, will check
-> >
-> > If you check
-> > tip/perf/core:kernel/events/uprobe.c:find_active_uprobe_speculative()
-> > you'll find means of doing it locklessly using RCU.
->
-> right, will use that
+> Again, allowing spin_locks being taken in hard irq context in RT, even wi=
+th
+> trylock is going to open a nasty can of worms that will make this less
+> deterministic and determinism is the entire point of RT. If we allow one
+> user to have spin_lock_trylock() in hard irq context, we have to allow
+> anyone to do it.
 
-phew, yep, came here to ask not to add mmap_read_lock() into the hot
-path again :)
+The boosting mess is a concern indeed, but looks like it's
+happening already.
 
->
-> thanks,
-> jirka
+See netpoll_send_udp() -> netpoll_send_skb() that does
+local_irq_save() and then __netpoll_send_skb() ->
+HARD_TX_TRYLOCK() -> __netif_tx_trylock() -> spin_trylock()
+
+netconsole is the key mechanism for some hyperscalers.
+It's not a niche feature.
+
+Sounds like it's sort-of broken or rather not-working correctly
+by RT standards, but replacing _xmit_lock with raw_spin_lock
+is probably not an option.
+So either netpoll needs to be redesigned somehow, since it has to
+printk->netcons->udp->skb->tx_lock->xmit on the wire,
+otherwise dmesg messages will be lost.
+or make PI aware of this.
+
+local_irq_save() is not an issue per-se,
+it's printk->necons that can be called from any context
+including hard irq.
+
+For the purpose of this patch set I think I have to
+if (IS_ENABLED(CONFIG_PREEMPT_RT) && (in_hardirq() || in_nmi()))
+  goto out;
+
+Looks like it's safe to call spin_trylock() on RT after
+local_irq_save() and/or when irqs_disabled().
+It's a hardirq/nmi context that is a problem.
 
