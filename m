@@ -1,128 +1,167 @@
-Return-Path: <bpf+bounces-46888-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46889-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E57DE9F1596
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 20:14:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E1279F15E7
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 20:33:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E6A77A1006
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 19:13:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6732416A979
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 19:33:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0221EC4C3;
-	Fri, 13 Dec 2024 19:13:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 663F81EBFF7;
+	Fri, 13 Dec 2024 19:33:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iLAGx6Ln"
+	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="uI8Jhstn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00206402.pphosted.com (mx0b-00206402.pphosted.com [148.163.152.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9FD1E47D9
-	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 19:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB051E8826;
+	Fri, 13 Dec 2024 19:32:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734117228; cv=none; b=WDmLI3I81pPewCPtVQTywwJnk4aEwdET51aM9I39HE4MZ1AMDhoX2gXgqKzCGY23TCW0kvW4vVX/Yi1bx4cT82izuqqA8Axn+aJJ1SPxnJlPP30zrIz5aWs45ovofjqj8PZIqqprQXNhnZvb/qJ5a2tKf6mETbM8n0g6hFufKeM=
+	t=1734118380; cv=none; b=ClHdVB41D5aQRtbg2bRZsWzhcvMwQwLlflawSnAfvKCo7Vdz+rG3YHnIT60hyyXkzHw0zk5lmVAKLYe4miTwXvItFxh9t9Mvdd3x56z2czfvOQp/rIRmE/F4ZCUFgKENAJGv9DL8nHs0z38wUmbZUr4FCmBY7EcaC4aK/b8mQqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734117228; c=relaxed/simple;
-	bh=kZ6EcUzq2jNdidPybk0fuP8u4Ugi0Aq98UlB6cj6uvg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iKsxB3oYRpTLlqpmLXooXixatUgAHLt5pl7OyGyaTX9awUEOn8HW2jYr960tnT/XOL1X1QZq4MzUK9kR8hzbko8WeaKg5P4O1EGjbYDUJO004IBN5vdaeNQf4JnmmwLC1DkfGV/2uc9Kk1FcuVcpL4YC8uOQdxWtcsgNEqF0u7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iLAGx6Ln; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-467896541e1so31781cf.0
-        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 11:13:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1734117225; x=1734722025; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kZ6EcUzq2jNdidPybk0fuP8u4Ugi0Aq98UlB6cj6uvg=;
-        b=iLAGx6LnNkgwcTULek/3abeKGn5V84GGIKpqrra195wc3SC2sza0AJA/eGnnU0EotC
-         8mU6Ob0v2J47UVXC9iI/8n+pmJR4cvFUN1r47/k/BGosMoUCLXVHDfmLL7qzLqHI3YDL
-         LBpECFL/4BgILVgI+mwaG2CcS8WU9r7jdHUFlbHqYmBw4K6vOaUbOkbjkhS1xqsuzyWz
-         CgCYiwGfhtY+YmSF+mWgysmHlP3AE5X1I1QSfBkzl/zKIO2z3PWUva9id6BwdC+1ln54
-         OOoBf7OesAtcBWkfJcXj/0SLBZgxr5yYLu309b2zag5sVaYtoqwA3BIRcMTsaq1n2rBX
-         Zxbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734117225; x=1734722025;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kZ6EcUzq2jNdidPybk0fuP8u4Ugi0Aq98UlB6cj6uvg=;
-        b=tkgCsjE82tXCgrK/4latMPEcaBTWf1OccOrlObiWgf2TJl8XF5WQH3Ozhkx9DvdY9q
-         ddx06qrBmq51pZgmWw9kT6FpCJWfFsAz9NiaHrAZEDixKYvRflAoxfy7qqWKv/La2BTw
-         23HOUvo5acT1U5JT2FocH7BbcphJEpFy5K9XCeusjMbl2sUYH3eLgDeEH7DcPjfo0/R2
-         GRlPoIrWt3MzuxQr+og3qxFCLPH3yh2jfX1IgpzKpZfhD+wXsu2dDqGRTnQuZSmkzFaz
-         +YrmJurjgXkGULFr1tJY8OVDVFh2R3Mq1EE2D/q3F0VummCX1rgmV5rA6thX0Z9iTIs4
-         au2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXRBOTj9PHTNFhgdLD9l6mqh33AC1MV6vE8fXSHO4Q1dETI/3iFmYCFgwxXX2QViLojkBM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy3qDS2WeN/bSzTtvWO5jxaar9EkSpxqXUdIkI5FHO3eRd6UU0n
-	ni0qcGW/mH/2BniU3vySCUksQhQiDtjVTUfV2WeQUu67paBy2HeFnVPzIwEG3PB+NoUnLOy7zSA
-	N+zPcH6lB49vHAH1SsNRrXPB8ngcv7xBuYlC8
-X-Gm-Gg: ASbGncv6DZxE9pqo1lDGCCcQQ2mw2ILgnIp+NwJ720+7RnYG+EPnQcQIgaLkhHWapor
-	gE5395g1jX58dPCYjHrr6AEvT7ZNIOlgQMXclAw==
-X-Google-Smtp-Source: AGHT+IF8Lt9b9Tc5G9jT4uQCd6qUIHKsCG+ri6mk/aF10xNf22rSX0wOK1yGdKJJt1WdnMH1NLbi3qayMa41u3rZCLw=
-X-Received: by 2002:a05:622a:89:b0:467:7f81:ade0 with SMTP id
- d75a77b69052e-467b30b4e71mr129381cf.24.1734117224728; Fri, 13 Dec 2024
- 11:13:44 -0800 (PST)
+	s=arc-20240116; t=1734118380; c=relaxed/simple;
+	bh=tPoDDdKr7gE1BldzHLPMcwm+vKnfJGCLwyb1r5quvMs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=HGlosFbWiqJNV6537xhAL0yWgOkd15wM6DBqGJ8ofZRVwde3Zt+rM4U82bOWTyLD6V7SJxK7YPRMhPX4xKXS/wQ6DjgWV6NRWZYJvsiIZLfegQ7u+KYH7WJQ6QB/5CFIULt/rdpEar3QOCn52ryU+FShGXdT+DG+YPpWLRNedMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=uI8Jhstn; arc=none smtp.client-ip=148.163.152.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
+Received: from pps.filterd (m0354655.ppops.net [127.0.0.1])
+	by mx0b-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BDJ1keI032102;
+	Fri, 13 Dec 2024 19:31:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
+	 h=cc:content-id:content-transfer-encoding:content-type:date
+	:from:in-reply-to:message-id:mime-version:references:subject:to;
+	 s=default; bh=tPoDDdKr7gE1BldzHLPMcwm+vKnfJGCLwyb1r5quvMs=; b=u
+	I8JhstnPB00WefGtmHgPsqDI0fGArtSLljcKNaqbHCFXYfnqJ1PFbK/niLBCe95q
+	HnRcyTLSZbxWAcGKcvDx+HG+YNpVJxjCs3UJCgMPkpQTaGNGjaXTGaPNvjXM16a7
+	Q31fMlvUzOnJ6VFUmpooiFW5Ekjs+WKtTvZYszJvUlb1g2oBcq/RclhfKv2U7Q3c
+	wZm2wudNzHojQt90PJYv7nj8Uq2VPY9hCvZEEvLiXWn4TOEf1HfZyYE3zomqXKCD
+	rPUQyOoTkC6R9X63XyGL+EnpADAWEPDl8AqCA8HOv34aigK1isSnBnFus9L/KBxa
+	IhIYUDKAD1xMz4KsSYvqg==
+Received: from mail.crowdstrike.com (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
+	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 43gtqk81xr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 13 Dec 2024 19:31:16 +0000 (GMT)
+Received: from 04WPEXCH005.crowdstrike.sys (10.100.11.69) by
+ 04wpexch15.crowdstrike.sys (10.100.11.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Fri, 13 Dec 2024 19:31:14 +0000
+Received: from 04WPEXCH006.crowdstrike.sys (10.100.11.70) by
+ 04WPEXCH005.crowdstrike.sys (10.100.11.69) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Fri, 13 Dec 2024 19:31:13 +0000
+Received: from 04WPEXCH006.crowdstrike.sys ([fe80::f686:3950:aa30:445a]) by
+ 04WPEXCH006.crowdstrike.sys ([fe80::f686:3950:aa30:445a%11]) with mapi id
+ 15.02.1544.009; Fri, 13 Dec 2024 19:31:13 +0000
+From: Martin Kelly <martin.kelly@crowdstrike.com>
+To: "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "ojeda@kernel.org"
+	<ojeda@kernel.org>,
+        "jpoimboe@kernel.org" <jpoimboe@kernel.org>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
+        "mhiramat@kernel.org" <mhiramat@kernel.org>,
+        "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>,
+        "james.clark@arm.com" <james.clark@arm.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "nicolas@fjasle.eu"
+	<nicolas@fjasle.eu>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
+        "nathan@kernel.org" <nathan@kernel.org>,
+        "npiggin@gmail.com"
+	<npiggin@gmail.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "surenb@google.com" <surenb@google.com>,
+        "zhengyejian@huaweicloud.com" <zhengyejian@huaweicloud.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "naveen.n.rao@linux.ibm.com"
+	<naveen.n.rao@linux.ibm.com>,
+        "kent.overstreet@linux.dev"
+	<kent.overstreet@linux.dev>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "yeweihua4@huawei.com" <yeweihua4@huawei.com>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>
+CC: Amit Dang <amit.dang@crowdstrike.com>,
+        "linux-modules@vger.kernel.org"
+	<linux-modules@vger.kernel.org>,
+        "linux-kbuild@vger.kernel.org"
+	<linux-kbuild@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: Re: [PATCH v2 0/5] kallsyms: Emit symbol for holes in text and
+ fix weak function issue
+Thread-Topic: Re: [PATCH v2 0/5] kallsyms: Emit symbol for holes in text and
+ fix weak function issue
+Thread-Index: AQHbTZWS+4Gf5OP880OTR/pO30cltA==
+Date: Fri, 13 Dec 2024 19:31:13 +0000
+Message-ID: <30ee9989044dad1a7083a85316d77b35f838e622.camel@crowdstrike.com>
+References: <20240723063258.2240610-1-zhengyejian@huaweicloud.com>
+	 <44353f4cd4d1cc7170d006031819550b37039dd2.camel@crowdstrike.com>
+	 <364aaf7c-cdc4-4e57-bb4c-f62e57c23279@csgroup.eu>
+	 <d25741d8a6f88d5a6c219fb53e8aa0bcc1fea982.camel@crowdstrike.com>
+	 <1f11e3c4-e8fd-d4ac-23cd-0ab2de9c1799@huaweicloud.com>
+In-Reply-To: <1f11e3c4-e8fd-d4ac-23cd-0ab2de9c1799@huaweicloud.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-disclaimer: USA
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <DCF0AA386CCD2A498936894F8CF5CF09@crowdstrike.sys>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241211172649.761483-1-aleksander.lobakin@intel.com> <20241211172649.761483-10-aleksander.lobakin@intel.com>
-In-Reply-To: <20241211172649.761483-10-aleksander.lobakin@intel.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Fri, 13 Dec 2024 11:13:33 -0800
-Message-ID: <CAHS8izNEzoeuAQieg9=v7rHp8TCWXyw60UbrZgEm5LCKhtCEAg@mail.gmail.com>
-Subject: Re: [PATCH net-next 09/12] page_pool: add a couple of netmem counterparts
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	"Jose E. Marchesi" <jose.marchesi@oracle.com>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Magnus Karlsson <magnus.karlsson@intel.com>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Jason Baron <jbaron@akamai.com>, 
-	Casey Schaufler <casey@schaufler-ca.com>, Nathan Chancellor <nathan@kernel.org>, 
-	nex.sw.ncis.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Authority-Analysis: v=2.4 cv=K9PYHzWI c=1 sm=1 tr=0 ts=675c8b84 cx=c_pps a=1d8vc5iZWYKGYgMGCdbIRA==:117 a=1d8vc5iZWYKGYgMGCdbIRA==:17 a=xqWC_Br6kY4A:10 a=EjBHVkixTFsA:10 a=IkcTkHD0fZMA:10 a=RZcAm9yDv7YA:10 a=VwQbUJbxAAAA:8 a=IycRoiFrBpt9NGDnbAcA:9
+ a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: HhB3chrMN4blfYrmAfJ7pHz4lEANNyfd
+X-Proofpoint-GUID: HhB3chrMN4blfYrmAfJ7pHz4lEANNyfd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ bulkscore=0 mlxscore=0 adultscore=0 lowpriorityscore=0 priorityscore=1501
+ spamscore=0 suspectscore=0 mlxlogscore=925 clxscore=1011 malwarescore=0
+ classifier=spam authscore=0 adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2411120000 definitions=main-2412130139
 
-On Wed, Dec 11, 2024 at 9:31=E2=80=AFAM Alexander Lobakin
-<aleksander.lobakin@intel.com> wrote:
->
-> Add the following Page Pool netmem wrappers to be able to implement
-> an MP-agnostic driver:
->
-
-Sorry, we raced a bit here. Jakub merged my "page_pool_alloc_netmem",
-which does similar to what this patch does.
-
-> * page_pool{,_dev}_alloc_best_fit_netmem()
->
-> Same as page_pool{,_dev}_alloc(). Make the latter a wrapper around
-> the new helper (as a page is always a netmem, but not vice versa).
-> 'page_pool_alloc_netmem' is already busy, hence '_best_fit' (which
-> also says what the helper tries to do).
->
-
-I freed the page_pool_alloc_netmem name by doing a rename, and now
-page_pool_alloc_netmem is the netmem counterpart to page_pool_alloc. I
-did not however add a page_pool_dev_alloc equivalent.
-
-> * page_pool_dma_sync_for_cpu_netmem()
->
-> Same as page_pool_dma_sync_for_cpu(). Performs DMA sync only if
-> the netmem comes from the host.
->
-
-My series also adds page_pool_dma_sync_netmem_for_cpu, which should be
-the same as your page_pool_dma_sync_for_cpu_netmem.
+T24gVGh1LCAyMDI0LTEyLTEyIGF0IDE3OjUyICswODAwLCBaaGVuZyBZZWppYW4gd3JvdGU6DQo+
+IE9uIDIwMjQvMTIvMTEgMDQ6NDksIE1hcnRpbiBLZWxseSB3cm90ZToNCj4gPiANCj4gPiANCj4g
+PiBaaGVuZywgZG8geW91IHBsYW4gdG8gc2VuZCBhIHYzPyBJJ2QgYmUgaGFwcHkgdG8gaGVscCBv
+dXQgd2l0aCB0aGlzDQo+ID4gcGF0Y2ggc2VyaWVzIGlmIHlvdSdkIGxpa2UsIGFzIEknbSBob3Bp
+bmcgdG8gZ2V0IHRoaXMgaXNzdWUNCj4gPiByZXNvbHZlZA0KPiA+ICh0aG91Z2ggSSBhbSBub3Qg
+YW4gZnRyYWNlIGV4cGVydCkuDQo+IA0KPiBTb3JyeSB0byByZWx5IHNvIGxhdGUuIFRoYW5rcyBm
+b3IgeW91ciBmZWVkYmFjayENCj4gDQo+IFN0ZXZlIHJlY2VudGx5IHN0YXJ0ZWQgYSBkaXNjdXNz
+aW9uIG9mIHRoZSBpc3N1ZSBpbjoNCj4gDQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8y
+MDI0MTAxNTEwMDExMS4zN2FkZmIyOEBnYW5kYWxmLmxvY2FsLmhvbWUvDQo+IGJ1dCB0aGVyZSdz
+IG5vIGNvbmNsdXNpb24uDQo+IMKgIA0KPiBJIGNhbiByZWJhc2UgdGhpcyBwYXRjaCBzZXJpZXMg
+YW5kIHNlbmQgYSBuZXcgdmVyc2lvbiBmaXJzdCwgYW5kDQo+IEknbSBhbHNvIGhvcGluZyB0byBn
+ZXQgbW9yZSBmZWVkYmFja3MgYW5kIGhlbHAgdG8gcmVzb2x2ZSB0aGUgaXNzdWUuDQo+IA0KDQpI
+aSBaaGVuZywNCg0KSSBtYXkgaGF2ZSBtaXN1bmRlcnN0b29kLCBidXQgYmFzZWQgb24gdGhlIGZp
+bmFsIG1lc3NhZ2UgZnJvbSBTdGV2ZW4sIEkNCmdvdCB0aGUgc2Vuc2UgdGhhdCB0aGUgaWRlYSBs
+aXN0ZWQgaW4gdGhhdCB0aHJlYWQgZGlkbid0IHdvcmsgb3V0IGFuZA0Kd2Ugc2hvdWxkIHByb2Nl
+ZWQgd2l0aCB5b3VyIGN1cnJlbnQgYXBwcm9hY2guDQoNClBsZWFzZSBjb25zaWRlciBtZSBhbiBp
+bnRlcmVzdGVkIHBhcnR5IGZvciB0aGlzIHBhdGNoIHNlcmllcywgYW5kIGxldA0KbWUga25vdyBp
+ZiB0aGVyZSdzIGFueXRoaW5nIEkgY2FuIGRvIHRvIGhlbHAgc3BlZWQgaXQgYWxvbmcgKGNvLQ0K
+ZGV2ZWxvcCwgdGVzdCwgYW55dGhpbmcgZWxzZSkuIEFuZCBvZiBjb3Vyc2UsIHRoYW5rcyB2ZXJ5
+IG11Y2ggZm9yIHlvdXINCndvcmsgdGh1cyBmYXIhDQo=
 
