@@ -1,113 +1,132 @@
-Return-Path: <bpf+bounces-46824-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46825-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11C9E9F04CC
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 07:29:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7137C9F05A6
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 08:44:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 906AE188B5FE
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 06:29:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F4A4169EB0
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 07:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C038918C32C;
-	Fri, 13 Dec 2024 06:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21A40199FA2;
+	Fri, 13 Dec 2024 07:43:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="px9b5b89"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="ohI0IvaJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83DD517DFEC;
-	Fri, 13 Dec 2024 06:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F097196D8F;
+	Fri, 13 Dec 2024 07:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734071339; cv=none; b=gi43yPMRxj3pVCSQPS4uVt7T43NkhntTzPYz6enG33TJw48F3L2Mo8Tnh3lv/lrJK4ekYtgN9dlo7y4Jh9d+IslplJjTdToxaQzWcG61WQq2iw0tfTRH8WZtVplTo/OMXN+GMOxInftvKAjX0jtRK5IK2zK0c35e4AGQd/lkb4M=
+	t=1734075834; cv=none; b=Wj+hz//hnQcJwJEzWS6wHNaXlMwBZ2ijxtqOdO3U2UXCjSI/I9iq2buSrhnZTDFwPFeKMI9DcsQkZqAow3nOioMabRJCNR6k4Wz/t/GakAcuWARqWVy6rbIQGxyZPGRG0zXGfWh9iyeoyReotOTQ8dKoo9toz2gf0aryuDLBcmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734071339; c=relaxed/simple;
-	bh=GT9KHxhT7dWBtl1fCwn5oG7rssg5BSs2VONzKFsXwk4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=K6C+PLaqNe4tFXof/0gAyyg5PcPxJzsiS3mkigQfpTjUuQUf7avBWinhQ3U2RYQIQhHEiB69twLJrv8Ucw7JVHWkXZ46kp8cljakUqHiM0dSrQSa5/qNqCgJ7uno2wgIf5PnsLaK/lXJKuCRepCyQ+5qzNUCHeFzDfrVGzExS0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=px9b5b89; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <eba3a270-7d0d-424d-91be-296224d51539@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734071334;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+9NBkHKV1KyNgihAh7rpYI4AJ9VXtHm+P9snLeFIj/0=;
-	b=px9b5b89YwV+AKBC27BcUAd9z5CjaZwQztaBDewWHYXPiw032LWxGL4gnbVuU2U6mxJWQo
-	62op9asNEOt0J16W1x59NSHDDOmgN2DCQAbV6ZWTyWTQemRUGmfJzFRdT1E8PabRZRQLRu
-	sz+PYRkE2INN7GcR94GWu90HJynKsm0=
-Date: Thu, 12 Dec 2024 22:28:41 -0800
+	s=arc-20240116; t=1734075834; c=relaxed/simple;
+	bh=lHwtD1iPNGzdJwYjIGoo8w0zLrhQgGX7/hX9tiBWhM4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MN1T8uBOT+bxrs/M5qQOuRarwyp34nn+hObMu9afr5LhmvxdVHSVk4MtcFgoSE6yT/avli5HnQdRyOtIpTjMWkt15ntnc1HuhyLBsa3c1qf0oCYvOe8yxAxkHeGIHiASZMKj3QI3wLoJOSsR0qrxMDgH+WkCoG3fl0C8uLQbEUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=ohI0IvaJ; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1734075826;
+	bh=lHwtD1iPNGzdJwYjIGoo8w0zLrhQgGX7/hX9tiBWhM4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ohI0IvaJ5l9TNKXFl3u2YGdIyF/Va5/dQjCulUrI7V490GJY9EOjo9j7wMsjITTC7
+	 pc3iTWYawwbQ9UmwE2rFrXjOFGwmG6JEWGIGIV+E172fpwZa2XnJ2KxDF3NkpU/50o
+	 uOeiloPI/w2dHQjKKp4tLqJokisytzKAKFS6T77w=
+Date: Fri, 13 Dec 2024 08:43:46 +0100
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Armin Wolf <W_Armin@gmx.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Naveen N Rao <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, 
+	Sami Tolvanen <samitolvanen@google.com>, Daniel Gomez <da.gomez@samsung.com>, 
+	Hans de Goede <hdegoede@redhat.com>, Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, linuxppc-dev@lists.ozlabs.org, 
+	linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org, 
+	platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 2/4] platform/x86: wmi-bmof: Switch to
+ sysfs_bin_attr_simple_read()
+Message-ID: <d1580513-6297-46b5-b4e0-c2063496b2ed@t-8ch.de>
+References: <20241205-sysfs-const-bin_attr-simple-v1-0-4a4e4ced71e3@weissschuh.net>
+ <20241205-sysfs-const-bin_attr-simple-v1-2-4a4e4ced71e3@weissschuh.net>
+ <2fbf5d9d-8cfe-4ce4-a268-ec84c261d1bd@gmx.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v4 07/11] net-timestamp: support hwtstamp print
- for bpf extension
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com,
- willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-References: <20241207173803.90744-1-kerneljasonxing@gmail.com>
- <20241207173803.90744-8-kerneljasonxing@gmail.com>
- <a3abb0b6-cd94-46f6-b996-f90da7e790b9@linux.dev>
-Content-Language: en-US
-In-Reply-To: <a3abb0b6-cd94-46f6-b996-f90da7e790b9@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <2fbf5d9d-8cfe-4ce4-a268-ec84c261d1bd@gmx.de>
 
-On 12/12/24 3:25 PM, Martin KaFai Lau wrote:
-> A more subtle thing for the hwtstamps case is, afaik the bpf prog will not be 
-> called. All drivers are still only testing SKBTX_HW_TSTAMP instead of testing
-> (SKBTX_HW_TSTAMP | SKBTX_BPF).
-> 
-> There are a lot of drivers to change though. A quick thought is to rename the 
-> existing SKBTX_HW_TSTAMP (e.g. __SKBTX_HW_TSTAMP = 1 << 0) and define 
-> SKBTX_HW_TSTAMP like:
-> 
-> #define SKBTX_HW_TSTAMP (__SKBTX_HW_TSTAMP | SKBTX_BPF)
-> 
-> Then change some of the existing skb_shinfo(skb)->tx_flags "setting" site to use 
-> __SKBTX_HW_TSTAMP instead. e.g. in __sock_tx_timestamp(). Not very pretty but 
-> may be still better than changing many drivers. May be there is a better way...
-> 
-> While talking about where to test the SKBTX_BPF bit, I wonder if the new 
-> skb_tstamp_is_set() is needed. For the non SKBTX_HW_TSTAMP case, the number of 
-> tx_flags testing sites should be limited, so should be easy to add the SKBTX_BPF 
-> bit test. e.g. at the __dev_queue_xmit, test "if (unlikely(skb_shinfo(skb)- 
->  >tx_flags & (SKBTX_SCHED_TSTAMP | SKBTX_BPF)))". Patch 6 has also tested the 
-> bpf specific bit at tcp_ack_tstamp() before calling the __skb_tstamp_tx().
-> 
-> At the beginning of __skb_tstamp_tx(), do something like this:
-> 
-> void __skb_tstamp_tx(struct sk_buff *orig_skb,
->               const struct sk_buff *ack_skb,
->               struct skb_shared_hwtstamps *hwtstamps,
->               struct sock *sk, int tstype)
-> {
->      if (cgroup_bpf_enabled(CGROUP_SOCK_OPS) &&
->          unlikely(skb_shinfo(skb)->tx_flags & SKBTX_BPF))
->          __skb_tstamp_tx_bpf(sk, orig_skb, hwtstamps, tstype);
-> 
->      if (unlikely(!(skb_shinfo(skb)->tx_flags & ~SKBTX_BPF)))
+Hi Armin,
 
-This is not enough. I was wrong here. The test in skb_tstamp_is_set() is needed 
-when SKBTX_BPF is not set.
+On 2024-12-13 01:21:37+0100, Armin Wolf wrote:
+> Am 05.12.24 um 18:35 schrieb Thomas Weißschuh:
+> 
+> > The generic function from the sysfs core can replace the custom one.
+> 
+> Sorry for taking quite a bit to respond, i totally overlooked this patch.
+> 
+> This patch is superseded by a patch of mine: https://lore.kernel.org/platform-driver-x86/20241206215650.2977-1-W_Armin@gmx.de/
+> 
+> This reworks the binary attribute handling inside the driver to use the new .bin_size() callback. This allows the
+> driver to have a static binary attribute which does not need a memory allocation.
+> 
+> Because i think we cannot use sysfs_bin_attr_simple_read() anymore. So maybe you can just drop this patch?
 
->          return;
+Works for me, thanks!
 
+Thomas
+
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > ---
+> >   drivers/platform/x86/wmi-bmof.c | 12 ++----------
+> >   1 file changed, 2 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/drivers/platform/x86/wmi-bmof.c b/drivers/platform/x86/wmi-bmof.c
+> > index df6f0ae6e6c7904f97c125297a21166f56d0b1f0..e6c217d70086a2896dc70cf8ac1c27dafb501a95 100644
+> > --- a/drivers/platform/x86/wmi-bmof.c
+> > +++ b/drivers/platform/x86/wmi-bmof.c
+> > @@ -25,15 +25,6 @@ struct bmof_priv {
+> >   	struct bin_attribute bmof_bin_attr;
+> >   };
+> > 
+> > -static ssize_t read_bmof(struct file *filp, struct kobject *kobj, struct bin_attribute *attr,
+> > -			 char *buf, loff_t off, size_t count)
+> > -{
+> > -	struct bmof_priv *priv = container_of(attr, struct bmof_priv, bmof_bin_attr);
+> > -
+> > -	return memory_read_from_buffer(buf, count, &off, priv->bmofdata->buffer.pointer,
+> > -				       priv->bmofdata->buffer.length);
+> > -}
+> > -
+> >   static int wmi_bmof_probe(struct wmi_device *wdev, const void *context)
+> >   {
+> >   	struct bmof_priv *priv;
+> > @@ -60,7 +51,8 @@ static int wmi_bmof_probe(struct wmi_device *wdev, const void *context)
+> >   	sysfs_bin_attr_init(&priv->bmof_bin_attr);
+> >   	priv->bmof_bin_attr.attr.name = "bmof";
+> >   	priv->bmof_bin_attr.attr.mode = 0400;
+> > -	priv->bmof_bin_attr.read = read_bmof;
+> > +	priv->bmof_bin_attr.read_new = sysfs_bin_attr_simple_read;
+> > +	priv->bmof_bin_attr.private = priv->bmofdata->buffer.pointer;
+> >   	priv->bmof_bin_attr.size = priv->bmofdata->buffer.length;
+> > 
+> >   	ret = device_create_bin_file(&wdev->dev, &priv->bmof_bin_attr);
+> > 
 
