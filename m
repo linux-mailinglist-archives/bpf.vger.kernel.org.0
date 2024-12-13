@@ -1,167 +1,181 @@
-Return-Path: <bpf+bounces-46889-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46890-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E1279F15E7
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 20:33:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74C2D9F16A4
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 20:45:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6732416A979
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 19:33:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E928F18854E5
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 19:45:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 663F81EBFF7;
-	Fri, 13 Dec 2024 19:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AD471EE001;
+	Fri, 13 Dec 2024 19:44:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="uI8Jhstn"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="nnXeVRdM";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dK0V1RWZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00206402.pphosted.com (mx0b-00206402.pphosted.com [148.163.152.16])
+Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB051E8826;
-	Fri, 13 Dec 2024 19:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 319531EBA07;
+	Fri, 13 Dec 2024 19:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734118380; cv=none; b=ClHdVB41D5aQRtbg2bRZsWzhcvMwQwLlflawSnAfvKCo7Vdz+rG3YHnIT60hyyXkzHw0zk5lmVAKLYe4miTwXvItFxh9t9Mvdd3x56z2czfvOQp/rIRmE/F4ZCUFgKENAJGv9DL8nHs0z38wUmbZUr4FCmBY7EcaC4aK/b8mQqQ=
+	t=1734119065; cv=none; b=GDT7QwDRf3uigEucxcUh8YdmysK+9ZXxjdfiwiPQUzdpRnrZhTypNe96Ges987FX4dAiWe2fmKgQWBPd1dLptUFkjJw64CdvSfSklsRXsAbbME3Bm9EoUtpyO/Qq5lpaY/0/EzpkAYc4RiBdkxITzkOcVqez76lfU3Fj50WGQBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734118380; c=relaxed/simple;
-	bh=tPoDDdKr7gE1BldzHLPMcwm+vKnfJGCLwyb1r5quvMs=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=HGlosFbWiqJNV6537xhAL0yWgOkd15wM6DBqGJ8ofZRVwde3Zt+rM4U82bOWTyLD6V7SJxK7YPRMhPX4xKXS/wQ6DjgWV6NRWZYJvsiIZLfegQ7u+KYH7WJQ6QB/5CFIULt/rdpEar3QOCn52ryU+FShGXdT+DG+YPpWLRNedMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=uI8Jhstn; arc=none smtp.client-ip=148.163.152.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
-Received: from pps.filterd (m0354655.ppops.net [127.0.0.1])
-	by mx0b-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BDJ1keI032102;
-	Fri, 13 Dec 2024 19:31:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=cc:content-id:content-transfer-encoding:content-type:date
-	:from:in-reply-to:message-id:mime-version:references:subject:to;
-	 s=default; bh=tPoDDdKr7gE1BldzHLPMcwm+vKnfJGCLwyb1r5quvMs=; b=u
-	I8JhstnPB00WefGtmHgPsqDI0fGArtSLljcKNaqbHCFXYfnqJ1PFbK/niLBCe95q
-	HnRcyTLSZbxWAcGKcvDx+HG+YNpVJxjCs3UJCgMPkpQTaGNGjaXTGaPNvjXM16a7
-	Q31fMlvUzOnJ6VFUmpooiFW5Ekjs+WKtTvZYszJvUlb1g2oBcq/RclhfKv2U7Q3c
-	wZm2wudNzHojQt90PJYv7nj8Uq2VPY9hCvZEEvLiXWn4TOEf1HfZyYE3zomqXKCD
-	rPUQyOoTkC6R9X63XyGL+EnpADAWEPDl8AqCA8HOv34aigK1isSnBnFus9L/KBxa
-	IhIYUDKAD1xMz4KsSYvqg==
-Received: from mail.crowdstrike.com (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
-	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 43gtqk81xr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 13 Dec 2024 19:31:16 +0000 (GMT)
-Received: from 04WPEXCH005.crowdstrike.sys (10.100.11.69) by
- 04wpexch15.crowdstrike.sys (10.100.11.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 13 Dec 2024 19:31:14 +0000
-Received: from 04WPEXCH006.crowdstrike.sys (10.100.11.70) by
- 04WPEXCH005.crowdstrike.sys (10.100.11.69) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 13 Dec 2024 19:31:13 +0000
-Received: from 04WPEXCH006.crowdstrike.sys ([fe80::f686:3950:aa30:445a]) by
- 04WPEXCH006.crowdstrike.sys ([fe80::f686:3950:aa30:445a%11]) with mapi id
- 15.02.1544.009; Fri, 13 Dec 2024 19:31:13 +0000
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-To: "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "ojeda@kernel.org"
-	<ojeda@kernel.org>,
-        "jpoimboe@kernel.org" <jpoimboe@kernel.org>,
-        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>,
-        "james.clark@arm.com" <james.clark@arm.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "nicolas@fjasle.eu"
-	<nicolas@fjasle.eu>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "npiggin@gmail.com"
-	<npiggin@gmail.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "surenb@google.com" <surenb@google.com>,
-        "zhengyejian@huaweicloud.com" <zhengyejian@huaweicloud.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "naveen.n.rao@linux.ibm.com"
-	<naveen.n.rao@linux.ibm.com>,
-        "kent.overstreet@linux.dev"
-	<kent.overstreet@linux.dev>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "yeweihua4@huawei.com" <yeweihua4@huawei.com>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>
-CC: Amit Dang <amit.dang@crowdstrike.com>,
-        "linux-modules@vger.kernel.org"
-	<linux-modules@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org"
-	<linux-kbuild@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: Re: [PATCH v2 0/5] kallsyms: Emit symbol for holes in text and
- fix weak function issue
-Thread-Topic: Re: [PATCH v2 0/5] kallsyms: Emit symbol for holes in text and
- fix weak function issue
-Thread-Index: AQHbTZWS+4Gf5OP880OTR/pO30cltA==
-Date: Fri, 13 Dec 2024 19:31:13 +0000
-Message-ID: <30ee9989044dad1a7083a85316d77b35f838e622.camel@crowdstrike.com>
-References: <20240723063258.2240610-1-zhengyejian@huaweicloud.com>
-	 <44353f4cd4d1cc7170d006031819550b37039dd2.camel@crowdstrike.com>
-	 <364aaf7c-cdc4-4e57-bb4c-f62e57c23279@csgroup.eu>
-	 <d25741d8a6f88d5a6c219fb53e8aa0bcc1fea982.camel@crowdstrike.com>
-	 <1f11e3c4-e8fd-d4ac-23cd-0ab2de9c1799@huaweicloud.com>
-In-Reply-To: <1f11e3c4-e8fd-d4ac-23cd-0ab2de9c1799@huaweicloud.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-disclaimer: USA
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <DCF0AA386CCD2A498936894F8CF5CF09@crowdstrike.sys>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1734119065; c=relaxed/simple;
+	bh=tAAynOgtZtlFkCkrwaGsM2mIo2CndZ5AEk90qkm05n8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jpaQAy6cCy5EEjX9mcChKaDTzKu45xvXVTeH5XLmtKci3wb40QXiO2jZJcNDZqzTNxWdJ7TLsrLaaq5TPhp7y2lsax+gpaTWHAKTCls2LMWGdUZV/Nv84koD6tpQCjlxn9YuxzRDyH+j1DbaZZNyPhKDXMOI3F99BFH3EZDeV9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=nnXeVRdM; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dK0V1RWZ; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 28AD3114017B;
+	Fri, 13 Dec 2024 14:44:22 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-03.internal (MEProxy); Fri, 13 Dec 2024 14:44:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1734119062; x=1734205462; bh=QyIVSVicPg3sInkc7prdx
+	/5YLLMGHH7HWskpw0v1Eu0=; b=nnXeVRdM01SppE6I91Thb1RDiUZeFRF7VTYbs
+	TT0RqS5Tkd6zL49X59dQLd0whkdjmENrBz1HQq5al5w5UHfGeotgJpfwtZRoHIc7
+	oERSsqJI90Umaegd+DbBwuirG8acQxo0AdO7jqX4LtCB+C5xajmjkM3OB9VPh1c/
+	D3o/pU1QT6D8d0gtzEfTeBSKgo88GtMRCEmkEPpemA5DuVg3ZnNEqPI5ym5IyRyq
+	04sc3APbHkRhTii1Jyok65TDFiOkp7xEJiZUgjbqAcDi6XUBh3pLnPM9etoZ5h4Z
+	4bmnUTaXolVHCnXdRf4RUHiqdmWGi/FKsYPkARMNXnsE1CWWg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1734119062; x=1734205462; bh=QyIVSVicPg3sInkc7prdx/5YLLMGHH7HWsk
+	pw0v1Eu0=; b=dK0V1RWZ9VI1vmIxWIA7uGebLOJHSM9cDuNVuJ8XiomZ+O3kZ2v
+	IHKq4LghBSCMwnCKVObxCWgDNfaa5ACtzFG+ytb+JacvkU78AHprAFDOQ5/Ap967
+	e3mv1oEQxV8JohdUPX/zCmZnxfr9mzy5XgdM/tXAI3hG8ukhE6SZOx1uq0gAB0fQ
+	g89iHll+D+PbdfWcrtfLJUJGLJcbYXjx9eXhCwTcIzenLMUF3I8EpOG0n1ISXHAS
+	4Zy/Crn+bOVH6HhxWs8j9rLtXwl3uIgOsD4fjLGHgtMfGJbzJtPKJMDzFs+Ha5fa
+	ow6DnuRExO6fSzmBU3jDT3IXuhKvO4wVAdw==
+X-ME-Sender: <xms:lY5cZ33Pco6STwGN7pEzIriJJi9b_L2ZKH0FNeHp2TSjzG1rp93piA>
+    <xme:lY5cZ2HCfsK_HN9u38W-HB3innLW-AXIsTMv8IbnDXohWEsO6O8NI1aaQ_8yOnCBu
+    6z3PUWqOJ5ViTF_Fg>
+X-ME-Received: <xmr:lY5cZ35BaPlk8oNAA1z8ZUyNVY3-NIfKpcTX4SLyB4gICHfEXl8P4L8GUbJR21iAJqjRYseHBO0R9psPKpuRrqmLMx5G_Vtgb__5hjXV2Niuk7R0V4-W>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrkeejgdduvdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfe
+    ehmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghn
+    ihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepie
+    dtkefgudevteevvefguefhgeeikeelgeehfedtkefffeejgfetteefueekgfeknecuffho
+    mhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiipdhnsggprhgtphhtthho
+    peekpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlh
+    esvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvghtuggvvhesvhhgvghr
+    rdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrd
+    horhhgpdhrtghpthhtohepqhhmoheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghn
+    ughrihhirdhnrghkrhihihhkohesghhmrghilhdrtghomhdprhgtphhtthhopegrnhhtoh
+    hnhiesphhhvghnohhmvgdrohhrghdprhgtphhtthhopehtohhkvgeskhgvrhhnvghlrdho
+    rhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghv
+X-ME-Proxy: <xmx:lY5cZ82CRsUcpbSHSRe0PsF7ZglvSSOkHisAN1KIh5pw8fOoLz3tKQ>
+    <xmx:lY5cZ6Gjye9jZ15jXlF7GQ_zcz1nri6fNbwATkDW_dT5m83wCGFPdQ>
+    <xmx:lY5cZ9_tLzl8qqNISb-cJ0IQPi_cUDxOE0U37hxeCqNQf4L_9yQriA>
+    <xmx:lY5cZ3kzUIeGsDeVqTSTNMuAEp7zkU6knsdX_-wKxc_Q_xHbrRTEFw>
+    <xmx:lo5cZ4aFwkhJ1vf0OhUoHT5o191VU0YpG7J3-rK3LRRuNH3dEB7B5MXi>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 13 Dec 2024 14:44:20 -0500 (EST)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	qmo@kernel.org
+Cc: andrii.nakryiko@gmail.com,
+	antony@phenome.org,
+	toke@kernel.org,
+	martin.lau@linux.dev
+Subject: [PATCH bpf-next v5 0/4] bpftool: btf: Support dumping a single type from file
+Date: Fri, 13 Dec 2024 12:44:08 -0700
+Message-ID: <cover.1734119028.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Authority-Analysis: v=2.4 cv=K9PYHzWI c=1 sm=1 tr=0 ts=675c8b84 cx=c_pps a=1d8vc5iZWYKGYgMGCdbIRA==:117 a=1d8vc5iZWYKGYgMGCdbIRA==:17 a=xqWC_Br6kY4A:10 a=EjBHVkixTFsA:10 a=IkcTkHD0fZMA:10 a=RZcAm9yDv7YA:10 a=VwQbUJbxAAAA:8 a=IycRoiFrBpt9NGDnbAcA:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: HhB3chrMN4blfYrmAfJ7pHz4lEANNyfd
-X-Proofpoint-GUID: HhB3chrMN4blfYrmAfJ7pHz4lEANNyfd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- bulkscore=0 mlxscore=0 adultscore=0 lowpriorityscore=0 priorityscore=1501
- spamscore=0 suspectscore=0 mlxlogscore=925 clxscore=1011 malwarescore=0
- classifier=spam authscore=0 adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2412130139
+Content-Transfer-Encoding: 8bit
 
-T24gVGh1LCAyMDI0LTEyLTEyIGF0IDE3OjUyICswODAwLCBaaGVuZyBZZWppYW4gd3JvdGU6DQo+
-IE9uIDIwMjQvMTIvMTEgMDQ6NDksIE1hcnRpbiBLZWxseSB3cm90ZToNCj4gPiANCj4gPiANCj4g
-PiBaaGVuZywgZG8geW91IHBsYW4gdG8gc2VuZCBhIHYzPyBJJ2QgYmUgaGFwcHkgdG8gaGVscCBv
-dXQgd2l0aCB0aGlzDQo+ID4gcGF0Y2ggc2VyaWVzIGlmIHlvdSdkIGxpa2UsIGFzIEknbSBob3Bp
-bmcgdG8gZ2V0IHRoaXMgaXNzdWUNCj4gPiByZXNvbHZlZA0KPiA+ICh0aG91Z2ggSSBhbSBub3Qg
-YW4gZnRyYWNlIGV4cGVydCkuDQo+IA0KPiBTb3JyeSB0byByZWx5IHNvIGxhdGUuIFRoYW5rcyBm
-b3IgeW91ciBmZWVkYmFjayENCj4gDQo+IFN0ZXZlIHJlY2VudGx5IHN0YXJ0ZWQgYSBkaXNjdXNz
-aW9uIG9mIHRoZSBpc3N1ZSBpbjoNCj4gDQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8y
-MDI0MTAxNTEwMDExMS4zN2FkZmIyOEBnYW5kYWxmLmxvY2FsLmhvbWUvDQo+IGJ1dCB0aGVyZSdz
-IG5vIGNvbmNsdXNpb24uDQo+IMKgIA0KPiBJIGNhbiByZWJhc2UgdGhpcyBwYXRjaCBzZXJpZXMg
-YW5kIHNlbmQgYSBuZXcgdmVyc2lvbiBmaXJzdCwgYW5kDQo+IEknbSBhbHNvIGhvcGluZyB0byBn
-ZXQgbW9yZSBmZWVkYmFja3MgYW5kIGhlbHAgdG8gcmVzb2x2ZSB0aGUgaXNzdWUuDQo+IA0KDQpI
-aSBaaGVuZywNCg0KSSBtYXkgaGF2ZSBtaXN1bmRlcnN0b29kLCBidXQgYmFzZWQgb24gdGhlIGZp
-bmFsIG1lc3NhZ2UgZnJvbSBTdGV2ZW4sIEkNCmdvdCB0aGUgc2Vuc2UgdGhhdCB0aGUgaWRlYSBs
-aXN0ZWQgaW4gdGhhdCB0aHJlYWQgZGlkbid0IHdvcmsgb3V0IGFuZA0Kd2Ugc2hvdWxkIHByb2Nl
-ZWQgd2l0aCB5b3VyIGN1cnJlbnQgYXBwcm9hY2guDQoNClBsZWFzZSBjb25zaWRlciBtZSBhbiBp
-bnRlcmVzdGVkIHBhcnR5IGZvciB0aGlzIHBhdGNoIHNlcmllcywgYW5kIGxldA0KbWUga25vdyBp
-ZiB0aGVyZSdzIGFueXRoaW5nIEkgY2FuIGRvIHRvIGhlbHAgc3BlZWQgaXQgYWxvbmcgKGNvLQ0K
-ZGV2ZWxvcCwgdGVzdCwgYW55dGhpbmcgZWxzZSkuIEFuZCBvZiBjb3Vyc2UsIHRoYW5rcyB2ZXJ5
-IG11Y2ggZm9yIHlvdXINCndvcmsgdGh1cyBmYXIhDQo=
+Some projects, for example xdp-tools [0], prefer to check in a minimized
+vmlinux.h rather than the complete file which can get rather large.
+
+However, when you try to add a minimized version of a complex struct (eg
+struct xfrm_state), things can get quite complex if you're trying to
+manually untangle and deduplicate the dependencies.
+
+This commit teaches bpftool to do a minimized dump of a single type by
+providing an optional root_id argument.
+
+Example usage:
+
+    $ ./bpftool btf dump file ~/dev/linux/vmlinux | rg "STRUCT 'xfrm_state'"
+    [12643] STRUCT 'xfrm_state' size=912 vlen=58
+
+    $ ./bpftool btf dump file ~/dev/linux/vmlinux root_id 12643 format c
+    #ifndef __VMLINUX_H__
+    #define __VMLINUX_H__
+
+    [..]
+
+    struct xfrm_type_offload;
+
+    struct xfrm_sec_ctx;
+
+    struct xfrm_state {
+            possible_net_t xs_net;
+            union {
+                    struct hlist_node gclist;
+                    struct hlist_node bydst;
+            };
+            union {
+                    struct hlist_node dev_gclist;
+                    struct hlist_node bysrc;
+            };
+            struct hlist_node byspi;
+    [..]
+
+[0]: https://github.com/xdp-project/xdp-tools/blob/master/headers/bpf/vmlinux.h
+
+=== Changelog ===
+
+Changes in v5:
+* Update bash-completion to support repeating root_id
+* Update man page to mention root_id NAND map key/value/kv/all
+
+Changes in v4:
+* Support multiple instances of root_id
+
+Changes in v3:
+* Make `root_id` a top level btf-dump argument rather than attached to `file`
+* Update bash completion script
+* Refactor root_type_ids checking to after btf handle creation
+* Update help messages and fix existing man page inconsistency
+
+Changes in v2:
+* Add early error check for invalid BTF ID
+
+Daniel Xu (4):
+  bpftool: man: Add missing format argument to command description
+  bpftool: btf: Validate root_type_ids early
+  bpftool: btf: Support dumping a specific types from file
+  bpftool: bash: Add bash completion for root_id argument
+
+ .../bpf/bpftool/Documentation/bpftool-btf.rst |  9 +++-
+ tools/bpf/bpftool/bash-completion/bpftool     |  7 ++-
+ tools/bpf/bpftool/btf.c                       | 51 ++++++++++++++++++-
+ 3 files changed, 62 insertions(+), 5 deletions(-)
+
+-- 
+2.46.0
+
 
