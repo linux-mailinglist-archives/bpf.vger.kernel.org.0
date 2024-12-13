@@ -1,86 +1,86 @@
-Return-Path: <bpf+bounces-46907-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46908-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 932B89F1836
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 22:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 31B939F1838
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 22:58:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC30E167E5D
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 21:58:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45B34167E72
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 21:58:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFA95194C86;
-	Fri, 13 Dec 2024 21:58:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA681953A1;
+	Fri, 13 Dec 2024 21:58:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mDmEwuRI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dSZv+Ccp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 187C4192D9A;
-	Fri, 13 Dec 2024 21:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44937193086;
+	Fri, 13 Dec 2024 21:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734127091; cv=none; b=dvrAGgddiuMToRPFKUaG6jF6GjXLCdtTcPLccWCXJ1xFDo1oxwYIylOwsaNBo/q2M5zgNCtmTU+c2SR4UIHDXY+923bH+83AZvKb7d3G6I0Jyl9a/dPGCLu/HK+LAJoretkyJ/opiHUKP8YWXhLDOEinvxG5BrHXipBsDeSeXwM=
+	t=1734127116; cv=none; b=jK/gb932uxy/EFKKCIyun6oyE4WBmbSpMJYTqzZBRdtGlqRDE99aMi7RezAYUgo6VXQSVheqMJIyTsAXmZ3WVns7EXjdN63LF7jQXLeuQgcPageIQSIPZsEU+ZVMs4+wKUc/uK/rf5PJWuBIm7fRCqZLcztd9COvW0amvFfGrBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734127091; c=relaxed/simple;
-	bh=hrOMY4Mfp1mTyWOapXYYwvWkYv4Al6PgVi1cl3XVRQM=;
+	s=arc-20240116; t=1734127116; c=relaxed/simple;
+	bh=ftjOLyece6c7d8H/bCxnY2QILxIoaDaXcQcJpLY/mkQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pshUsN7Qe/cuTJhbxupKariZvNTnKXGL9MlfsH71s29QZe91nuIyZLzayNmhUTA6kPd/f94+maPDiq5rPakEj0pMoxzdaarvcdwvWYkdFB/6ABkY6VjwUW1AShhgdNvgfPl1cNR02MDUzAFdfxPfoaiyqRzuKsO88Pd6QChmEBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mDmEwuRI; arc=none smtp.client-ip=209.85.216.49
+	 To:Cc:Content-Type; b=FA+iOMFUkS+v5t6CXvXdGo6RspnDf3RG9QpCGRWM2u/4YI5r+XDyO/Jy6OVxKu6ENi5Jn54eJk4egQaay6fXSw5Qfs9Dhugnq/lYBY3ztfNoR3UAArrmEhx7Ms9gclNieTWSQXlAk5qwH5Nb6cqlLloCVsggI7/7L+hRnCfkEsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dSZv+Ccp; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2ee8aa26415so1947157a91.1;
-        Fri, 13 Dec 2024 13:58:09 -0800 (PST)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-728d1a2f180so1750539b3a.1;
+        Fri, 13 Dec 2024 13:58:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734127089; x=1734731889; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734127114; x=1734731914; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9joODY5IOWuY5Sk7lEDYqOk1qJVMi/mA0wV9LlQ6Ra0=;
-        b=mDmEwuRIruDHjYzLvaGoxFeZ/5u2jCQZ4bIyTE986v+WCZ8SANaVD7JGuOQqZBUqsx
-         fIfixjQCwWHLT+5Y9vZjELl3dM/N0gPNOMY3WlxERAM/4ReIdlZ9hr35yaRJ+K5Baw7i
-         cFJE/jtAfgnlV6oUaAryBLDjM0Y05Ihbp+BDHLTmaLRXqKzdkYHSZ0o+kVttRoaRp51T
-         azxXKdAtM0Ytop9BPRptpHjTYAwjn5qQUyoOZTBOYmWEUC+gnlGCJC63HLqQNp0NrLob
-         Sa8C+wxHeOrnDYSzbc2e0HNk0q3WJpPP4JmO0q1UlmOfKdM0MgrPmkl8cnaOzbBNakmc
-         umOw==
+        bh=rXzAt05WpHX8Qz6j5N/Uvrvi5wlKH5mpfIsiZnrQUdk=;
+        b=dSZv+Ccp2SzLVuUDaPDU7ctTqXoZrLqWeche104nQAeZi6LwE41zvfcJje/OgsXP/Y
+         GHATPWEI+OKvSmNGr0SLBOznai2gtu7QlGLXu3KCwKruFoVDkum7/KvUvDQ3VNpND8Ax
+         FL4aWwrZGB6i8LL65JblyNWUY5Lktyr6YFxkg+8QRM8kvWSBBSBhR81afVP76nfagzmj
+         Xg8AjP9gPqbDj+DelzrJfpMUevKVFkvSbEB2uvUHqG9ynUjaNXB0gh1boRJD9cnpfI9w
+         DmBp3vgSeiwMZgfqYd8j1Aor/a45GvuHeIvFPJuMNBZqqH+eobKKmrIOSf9C4kr6YaKJ
+         8e+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734127089; x=1734731889;
+        d=1e100.net; s=20230601; t=1734127114; x=1734731914;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9joODY5IOWuY5Sk7lEDYqOk1qJVMi/mA0wV9LlQ6Ra0=;
-        b=u2ngZWEhsJX5RQa78ffAZkudkgZ+hjd7q4KwTkSZY2cPmo08r+RYr7ChAfOUlITV1y
-         ehmRRWqoURPNavcYY0oqNOR4BqLEN7popbjzRUgQcAQ8KISf5Ps08eIfq0ip6R7RCBmM
-         CapZZZjunLbv7nQsJdF2K8ajvzloU0Xcas8c5qrZyPBa0R0SOnx+HxcBgVJBAqXrhfdF
-         t1ype8k3e8eJ+gEbzGp7/Sf1Tmq2wR4anbnDyZ4IpasK3og3aNvncY8wRfEYzvBKSaA3
-         3eEQN2z5UBQRzS1q5kpfVQscgk2ydbIf1kTU1Wo3ORbsQtbBsAhg0+CBU3gtsdA73pbc
-         1yFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVkTPL1esElWip6NvykplJkSJ4AA1ELvt2jrLvCQkFJhhzJnvK3Jf3QKzyBOn2/5+izOrA47HyzuNP/yLpJ0C528W5H@vger.kernel.org, AJvYcCW2Zd8BpMbyQXENQdiRrLBmD9vnQhbJDRIArbHf1+uYLyB+SwAPu8ecLhQvgmTAByE07fk=@vger.kernel.org, AJvYcCWQjNtA6qJOpoob5TMI997/vCgeyyraNZkpBBLE9SFGNENtkmcZUFuOqLuNdij7GnDeIrCLNpsqXsXOXV0B@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywyjf4iFNvVSjVcc5oOMe26x7ZiQC+9YFaLoVrrMkCFZJXutGsj
-	JJTZGZ/UJejBXynth+9v613hVM7/FQUj5u6XrBb4GMc7RN3O8xfYb2KTiy/qQSiU1i7I8YO+jlZ
-	xCIisC7n1t8vLTwK3JhZ/+CasJOU=
-X-Gm-Gg: ASbGncstltuG2TSD1Du+zNwha3adeF9aem+HkfGiZf+Cl9MxuA/ZO8CqUAaFd0sSZCX
-	MKk5XSJSy+4+aAbwqoIoXopM+piGd+9Z5M50PpKOKvxgU845Zls4q0A==
-X-Google-Smtp-Source: AGHT+IFMs/Ib4YLj9SiwztkuJAUnKH/dHadPUJCRlDC35bss40vRZx3h+c+yNCnfOc78z6jahVPjyiIkEik2pwWgL3I=
-X-Received: by 2002:a17:90b:2652:b0:2ea:4a6b:79d1 with SMTP id
- 98e67ed59e1d1-2f28fb6e8dbmr6322561a91.11.1734127089478; Fri, 13 Dec 2024
- 13:58:09 -0800 (PST)
+        bh=rXzAt05WpHX8Qz6j5N/Uvrvi5wlKH5mpfIsiZnrQUdk=;
+        b=Iwfse66eMT24O1z69Bk4zzH3gTMg7H9bt0sC09kZS0qSo7QGA7xUK9wRV4QsDf68T1
+         2VyhXC+wATXIs6bjeBG5W1C7i7MCBl/Jd9a87hzugjAJeKqkd5S6UWiNjhLA72LzkhS/
+         N/WUBejTGbSkNRUAY4DQLDpexTwSc1M4jJ2bCsMStw7alDG/1cGbP9jLzFx1IB6bgZko
+         2hS/lsTJss4Ki05BMa8sd6hzCQQTawwq5YZU0lVz0pA8SXj0roRWkPOh6cbSyzr14lyV
+         SMFzM4LHYyNofNSsYF30oZsQDsX9HWryW5NEgHreThXbCLgs1kERDC0E/yd8dORgN3dU
+         ZXYw==
+X-Forwarded-Encrypted: i=1; AJvYcCW/NlAWjlqDXvSYX3mpYIf8dKJcFtTVLzz6g54YbWMyOajyqbAUCNWjn1iDG2qf9kfhGtWeMdvlBMf248ym5SXWlL//@vger.kernel.org, AJvYcCXtyRHMgHK/n08i9v/gsCr6mYRVK4gxWLbeUSU3Rd/zZ19vpnrH1p3Oi6Ck5CIKVSZg0yokI10cL91aB1ce@vger.kernel.org, AJvYcCXwQ/LcdlHx4HpApuMXx5WZHv7dWJZZ0uIaRbVvFfqDd+t3Fhg7vc9kHSkM14fBPCVhJj4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxNggj0L6cv7IhG7uMdU8PGTzzIgHF3nOUaEnAVGVxGm48i796i
+	A4T+04FfzK8GoyUS4JGqhb06yKd0ISJrx2HcGtlmHTYy47MFQdXVHGfvHLNVvzGCVLs64aFjOOO
+	Lq7ZvKoVCzuCxaT9+9gLxhMYsdgfi1Q==
+X-Gm-Gg: ASbGncv8Et2DjUAADT8Wq9tVsN6utGESuCykUvr+JpgHr0UsFYjk3SRAi6ybU+Xw9jM
+	kcqJf40EnJogX0miRyUNVsttin8mTkyEpDnlfA6FDJzieIzXdLbR7iw==
+X-Google-Smtp-Source: AGHT+IF8v0iJKJKtXCV3xpncg+Tce0/ExBJK4tnC86EomIWeZB0DcBoMHxAkJBs6VqGBmT35DMJ0rCFS0YBM+o/Ca3c=
+X-Received: by 2002:a05:6a00:174b:b0:725:f3fa:8c6e with SMTP id
+ d2e1a72fcca58-7290c56ce6bmr6138168b3a.7.1734127114462; Fri, 13 Dec 2024
+ 13:58:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241211133403.208920-1-jolsa@kernel.org> <20241211133403.208920-14-jolsa@kernel.org>
-In-Reply-To: <20241211133403.208920-14-jolsa@kernel.org>
+References: <20241211133403.208920-1-jolsa@kernel.org> <20241211133403.208920-6-jolsa@kernel.org>
+ <CAEf4BzZEPdGxjHjPGr-4qKFju+roOiAVrMhTuviozmcP1-qojw@mail.gmail.com> <Z1w5qXERTJV9hQ9p@krava>
+In-Reply-To: <Z1w5qXERTJV9hQ9p@krava>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 13 Dec 2024 13:57:56 -0800
-Message-ID: <CAEf4BzZPCdRPyXH1xDed2m3VvNkzzpY33Gbd_vWxivxLZQCdLQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 13/13] selftests/bpf: Add 5-byte nop uprobe
- trigger bench
-To: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 13 Dec 2024 13:58:20 -0800
+Message-ID: <CAEf4Bzb1AFR4PN-UG_64OXLL+AGiiVwoq6aO2UPAppgC9gCG-g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 05/13] uprobes: Add mapping for optimized uprobe trampolines
+To: Jiri Olsa <olsajiri@gmail.com>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, 
 	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
@@ -90,58 +90,193 @@ Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 11, 2024 at 5:36=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Fri, Dec 13, 2024 at 5:42=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
 >
-> Add 5-byte nop uprobe trigger bench (x86_64 specific) to measure
-> uprobes/uretprobes on top of nop5 instruction.
+> On Thu, Dec 12, 2024 at 05:01:52PM -0800, Andrii Nakryiko wrote:
 >
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/testing/selftests/bpf/bench.c           | 12 ++++++
->  .../selftests/bpf/benchs/bench_trigger.c      | 42 +++++++++++++++++++
->  .../selftests/bpf/benchs/run_bench_uprobes.sh |  2 +-
->  3 files changed, 55 insertions(+), 1 deletion(-)
+> SNIP
 >
-
-[...]
-
->  static void usetup(bool use_retprobe, bool use_multi, void *target_addr)
->  {
->         size_t uprobe_offset;
-> @@ -448,6 +462,28 @@ static void uretprobe_multi_ret_setup(void)
->         usetup(true, true /* use_multi */, &uprobe_target_ret);
->  }
+> > > ---
+> > >  include/linux/uprobes.h |  12 +++++
+> > >  kernel/events/uprobes.c | 114 ++++++++++++++++++++++++++++++++++++++=
+++
+> > >  kernel/fork.c           |   1 +
+> > >  3 files changed, 127 insertions(+)
+> > >
+> >
+> > Ran out of time for today, will continue tomorrow for the rest of
+> > patches. Some comments below.
 >
-> +#ifdef __x86_64__
-> +static void uprobe_nop5_setup(void)
-> +{
-> +       usetup(false, false /* !use_multi */, &uprobe_target_nop5);
-> +}
-> +
-> +static void uretprobe_nop5_setup(void)
-> +{
-> +       usetup(false, false /* !use_multi */, &uprobe_target_nop5);
-> +}
+> thanks!
+>
+> >
+> > The numbers are really encouraging, though!
+> >
+> > > diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> > > index 8843b7f99ed0..c4ee755ca2a1 100644
+> > > --- a/include/linux/uprobes.h
+> > > +++ b/include/linux/uprobes.h
+> > > @@ -16,6 +16,7 @@
+> > >  #include <linux/types.h>
+> > >  #include <linux/wait.h>
+> > >  #include <linux/timer.h>
+> > > +#include <linux/mutex.h>
+> > >
+> > >  struct uprobe;
+> > >  struct vm_area_struct;
+> > > @@ -172,6 +173,13 @@ struct xol_area;
+> > >
+> > >  struct uprobes_state {
+> > >         struct xol_area         *xol_area;
+> > > +       struct hlist_head       tramp_head;
+> > > +};
+> > > +
+> >
+> > should we make uprobe_state be linked by a pointer from mm_struct
+> > instead of increasing mm for each added field? right now it's
+> > embedded, I don't think it's problematic to allocate it on demand and
+> > keep it until mm_struct is freed
+>
+> seems like good idea, I'll check on that
+>
+> >
+> > > +struct uprobe_trampoline {
+> > > +       struct hlist_node       node;
+> > > +       unsigned long           vaddr;
+> > > +       atomic64_t              ref;
+> > >  };
+> > >
+> > >  extern void __init uprobes_init(void);
+> > > @@ -220,6 +228,10 @@ extern int arch_uprobe_verify_opcode(struct arch=
+_uprobe *auprobe, struct page *p
+> > >                                      unsigned long vaddr, uprobe_opco=
+de_t *new_opcode,
+> > >                                      int nbytes);
+> > >  extern bool arch_uprobe_is_register(uprobe_opcode_t *insn, int nbyte=
+s);
+> > > +extern struct uprobe_trampoline *uprobe_trampoline_get(unsigned long=
+ vaddr);
+> > > +extern void uprobe_trampoline_put(struct uprobe_trampoline *area);
+> > > +extern bool arch_uprobe_is_callable(unsigned long vtramp, unsigned l=
+ong vaddr);
+> > > +extern const struct vm_special_mapping *arch_uprobe_trampoline_mappi=
+ng(void);
+> > >  #else /* !CONFIG_UPROBES */
+> > >  struct uprobes_state {
+> > >  };
+> > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> > > index 8068f91de9e3..f57918c624da 100644
+> > > --- a/kernel/events/uprobes.c
+> > > +++ b/kernel/events/uprobes.c
+> > > @@ -615,6 +615,118 @@ set_orig_insn(struct arch_uprobe *auprobe, stru=
+ct mm_struct *mm, unsigned long v
+> > >                         (uprobe_opcode_t *)&auprobe->insn, UPROBE_SWB=
+P_INSN_SIZE);
+> > >  }
+> > >
+> > > +bool __weak arch_uprobe_is_callable(unsigned long vtramp, unsigned l=
+ong vaddr)
+> >
+> > bikeshedding some more, I still find "is_callable" confusing. How
+> > about "is_reachable_by_call"? slightly verbose, but probably more
+> > meaningful?
+>
+> yep, more precise, will change
+>
+> >
+> > > +{
+> > > +       return false;
+> > > +}
+> > > +
+> > > +const struct vm_special_mapping * __weak arch_uprobe_trampoline_mapp=
+ing(void)
+> > > +{
+> > > +       return NULL;
+> > > +}
+> > > +
+> > > +static unsigned long find_nearest_page(unsigned long vaddr)
+> > > +{
+> > > +       struct mm_struct *mm =3D current->mm;
+> > > +       struct vm_area_struct *vma, *prev;
+> > > +       VMA_ITERATOR(vmi, mm, 0);
+> > > +
+> > > +       prev =3D vma_next(&vmi);
+> >
+> > minor: we are missing an opportunity to add something between
+> > [PAGE_SIZE, <first_vma_start>). Probably fine, but why not?
+>
+> true, will add that check
+>
+> >
+> > > +       vma =3D vma_next(&vmi);
+> > > +       while (vma) {
+> > > +               if (vma->vm_start - prev->vm_end  >=3D PAGE_SIZE) {
+> > > +                       if (arch_uprobe_is_callable(prev->vm_end, vad=
+dr))
+> > > +                               return prev->vm_end;
+> > > +                       if (arch_uprobe_is_callable(vma->vm_start - P=
+AGE_SIZE, vaddr))
+> > > +                               return vma->vm_start - PAGE_SIZE;
+> > > +               }
+> > > +
+> > > +               prev =3D vma;
+> > > +               vma =3D vma_next(&vmi);
+> > > +       }
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> >
+> > [...]
+> >
+> > > +struct uprobe_trampoline *uprobe_trampoline_get(unsigned long vaddr)
+> > > +{
+> > > +       struct uprobes_state *state =3D &current->mm->uprobes_state;
+> > > +       struct uprobe_trampoline *tramp =3D NULL;
+> > > +
+> > > +       hlist_for_each_entry(tramp, &state->tramp_head, node) {
+> > > +               if (arch_uprobe_is_callable(tramp->vaddr, vaddr)) {
+> > > +                       atomic64_inc(&tramp->ref);
+> > > +                       return tramp;
+> > > +               }
+> > > +       }
+> > > +
+> > > +       tramp =3D create_uprobe_trampoline(vaddr);
+> > > +       if (!tramp)
+> > > +               return NULL;
+> > > +
+> > > +       hlist_add_head(&tramp->node, &state->tramp_head);
+> > > +       return tramp;
+> > > +}
+> > > +
+> > > +static void destroy_uprobe_trampoline(struct uprobe_trampoline *tram=
+p)
+> > > +{
+> > > +       hlist_del(&tramp->node);
+> > > +       kfree(tramp);
+> >
+> > hmm... shouldn't this be RCU-delayed (RCU Tasks Trace for uprobes),
+> > otherwise we might have some CPU executing code in that trampoline,
+> > no?
+>
+> so we call destroy_uprobe_trampoline in 2 scenarios:
+>
+>   - from uprobe_trampoline_put (in __arch_uprobe_optimize) when we failed
+>     to optimize the uprobe, so no task can execute it at that point
+>
+>   - from clear_tramp_head as part of the uprobe trampolines cleanup
+>     (__mmput -> uprobe_clear_state) at which point the task should be dea=
+d
 
-true /* use_retprobe */
+makes sense, I've been overcautious
 
-that's the problem with bench setup, right?
-
-> +
-> +static void uprobe_multi_nop5_setup(void)
-> +{
-> +       usetup(false, true /* use_multi */, &uprobe_target_nop5);
-> +}
-> +
-> +static void uretprobe_multi_nop5_setup(void)
-> +{
-> +       usetup(false, true /* use_multi */, &uprobe_target_nop5);
-> +}
-> +#endif
-> +
->  const struct bench bench_trig_syscall_count =3D {
->         .name =3D "trig-syscall-count",
->         .validate =3D trigger_validate,
-
-[...]
+>
+> jirka
+>
+> >
+> > > +}
+> > > +
+> >
+> > [...]
 
