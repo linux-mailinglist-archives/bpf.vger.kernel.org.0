@@ -1,216 +1,167 @@
-Return-Path: <bpf+bounces-46853-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 878179F0EAC
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 15:11:59 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E2169F0ECE
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 15:15:28 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 386C628239A
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 14:11:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EC3D16531E
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 14:14:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ECCA1E1A3E;
-	Fri, 13 Dec 2024 14:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0221E22E8;
+	Fri, 13 Dec 2024 14:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="EqVja4p+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k8n+xpG2"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F8F01E1A2B;
-	Fri, 13 Dec 2024 14:09:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9443E1E04BA;
+	Fri, 13 Dec 2024 14:13:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734098944; cv=none; b=uKA+FH1RcG2f6fez85aTN4ODkwF4GC7Tc+oZVl0Ix9JXhi0D/1KiA4RLQbr97NmxiF67xBWF1vnwhoXIOFhB2BY2UK1CR4e+TwO/qpcxnJ8HAAyEmFrmrMPa29Od+Y12vtkgcmC+toXYCGfKalBZzztSQbSKrb//gXWPzd/pN2Q=
+	t=1734099203; cv=none; b=ge2FvfSiuVRmrghdS9FPT89arv/bpRmhlGsHmjAVIDLXulgr/U+PFzqiSLPwkqiEe9tte0oH48+AVKo1Nx2WF8m1Vdr0iQnRpMdfN4+x0vLbH47jiyoXwmpWivrODntLv+xgWTlT8K24M4EbjiFj2+P9QCVka3/KQimfwttfpjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734098944; c=relaxed/simple;
-	bh=CD1WOtRLzuVMHhngLdy/bz/qra6W87BJvO+WW4EKqOc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ftKwS+eHZkYFLn//hXh2uMTzbewSKkT+7tsYace83pOsGNq8gQ2J5ZBecBE8gxly/jDoVBLIPO2GLQcQFYz2qgUxFu+OUG0FjhFYB9Qjv5XD9RZ8b1Aa6/hfivTB7Z2pZuay3GEIj7uDXKMLLE9tdjl4zR4XKCBzrYdPZJYq59s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=EqVja4p+; arc=none smtp.client-ip=220.197.31.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=Stc+DbZ8vt98n/5CtpcpiMrgDGti6EGxF31caTQlCvg=;
-	b=EqVja4p+6RaogHoVMPZ4mTngDjaFaUt9ln+pg5l5Tv0iLKYhfnLEItVLd/9PqD
-	kapp1C88lGJQeHoQa8FEdsWXwHkfXJYQNjannr5Xoq8WG3oZI74kH81fGOvvAHFb
-	beMXgjsv2Cl/npx+Wgr8cAHzfRoSDaIrLclnfk+5vDA70=
-Received: from iZj6c3ewsy61ybpk7hrb16Z (unknown [])
-	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wD3f+60P1xn40hMAQ--.32891S2;
-	Fri, 13 Dec 2024 22:07:50 +0800 (CST)
-Date: Fri, 13 Dec 2024 22:07:48 +0800
-From: Jiayuan Chen <mrpre@163.com>
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: bpf@vger.kernel.org, martin.lau@linux.dev, ast@kernel.org, 
-	edumazet@google.com, jakub@cloudflare.com, davem@davemloft.net, dsahern@kernel.org, 
-	kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org, song@kernel.org, 
-	andrii@kernel.org, mhal@rbox.co, yonghong.song@linux.dev, daniel@iogearbox.net, 
-	xiyou.wangcong@gmail.com, horms@kernel.org
-Subject: Re: [PATCH bpf v2 1/2] bpf: fix wrong copied_seq calculation
-Message-ID: <xtsolkbkdecvlbqx4zjtvd74c45lg5kqx2ojgdvovxrjgaghij@ld4wjwi7imvy>
-References: <20241209152740.281125-1-mrpre@163.com>
- <20241209152740.281125-2-mrpre@163.com>
- <6758f4ce604d5_4e1720871@john.notmuch>
- <f2pur5raimm5y3phmtwubf6yf3sniphwgql4c4k7md25lxcehm@3qwyp4zibnrd>
- <675b8f8f65e28_ff0720890@john.notmuch>
+	s=arc-20240116; t=1734099203; c=relaxed/simple;
+	bh=zWn2IZLTbvL+8YKZbzgareUkxM2q6bV7ucJj0MTfLaA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PVlBCFohU5LHvnvb+bcjH3E9ipP14Snt5fI46TWDm9QHcyBcAjP267UZKuCEo8SFNwFemOgatqbCyHWGyudnL1XxQPgmKV6mkkxBx4qXSuZcxScDx/mUJKrrsXQpfBwEx+uv8P82exoY+/CBu6bmirzNj/YuiU4CFvuOxFwNt0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k8n+xpG2; arc=none smtp.client-ip=209.85.166.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3a7d7c1b190so6192435ab.3;
+        Fri, 13 Dec 2024 06:13:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734099201; x=1734704001; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l1lwWXj0GpqnduKP+wpddkSnCxIqeOeyd8ONBWEKbeo=;
+        b=k8n+xpG22d1CDrvrDkqJNP8ZgBaK8XrEZz9xURu83ijQSqJfWWJg7oABb+BXRJOA+H
+         k7pyYm6LFxQ3QJWvNdijYt2Q1cRXnhg1ES78bheLlwW3Cx8hiOk03Bgp/bRRpDYy13f4
+         epUPUHsvlrd6C3ZyEmeiUO/h4RTEYuh59GD++oRv+4NYf+2snfOeitFgaABAuI6Kizw2
+         hYsFmk7wDipsRJSXoQz9KOodYiWDrsvTmee/ao5nnibj1n3ZwfttOGPcH/WWGbQ+ADYg
+         Zzup1Z0hsEwf7GmbLkVk6BbnspG3emALHczWNwa53E9pM2DHDvhXQTt69+Mjidhq0N7y
+         el/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734099201; x=1734704001;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l1lwWXj0GpqnduKP+wpddkSnCxIqeOeyd8ONBWEKbeo=;
+        b=QbsZW2vPyVCwxnEHUf5Ss8FUrmnHyVaUbxPfnVr7ZR/23zZmqyW5wJ1fCdKiQSPcwc
+         VaBFXhxVe3kUf0i55XFzDnx5MUk38cI9D1jD5ATq/bMQL2d5IvBaWlxsBbpo6SH9Izia
+         V5x1S1/WgY51fjdPS9/zzhUB1JZyOM40R1xDyMXJxuKveSqSqyQLGCZ+shkG7qM2lhbE
+         /CMuwpBeXtuiiahp77k/klh6VwsMALC06cpFyiQZWe/2JDh5y6holDc+5g/kC0Hudzjw
+         FzccYv3NMqUPAzmC+CwGpw7DKx3E9hnf1AvPmUl9x3/+QgL+V6jcFN+jrBOobclBj8Es
+         M9/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXD2kCxOWhEGkk142uHUEbnw8VOwUMd5lGaS77SJnx1KouG9G1zEZmX47N3mXPb3NqscmvWnh7U@vger.kernel.org, AJvYcCXYY4EupWpHbHY3PAloOzELVv3ySbTp4YzyVqOrcmtg3GAK86lJCJoPCiKTdxB5yz2Q14A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxI38nwEfVrAjGc8ydTkxKKNirnKwoN1jHwVIIm9yGnn1Y6CuBl
+	bRT+EJrCTR1G6jvM7fJxNSlxCYPl1zKTSeVuZKJwharjdyXtez5dxJZof/fqK47c7z3SXAW4BsI
+	2Gce04S0DGrMDJ4M5LNDWpJZaptg=
+X-Gm-Gg: ASbGncuqNUWwtLjErSrW84sf5cqbiZHyj2Wuw63gFPN++Qk1X4ayJvpBYDrCOlSvLZ6
+	u+kN96qFYwZ1DYT0PEiWCvsoh5hIzOrGpkF+oYA==
+X-Google-Smtp-Source: AGHT+IEw/fbnUZH+Gy+WnWvqFXZ1yJ+ThzxHi1BD+IJFQy2xOnxzkyF+aqfPk4+jrHHZTASt/Li9+Cloqh8rJg9iycA=
+X-Received: by 2002:a05:6e02:1948:b0:3a7:9533:c3ac with SMTP id
+ e9e14a558f8ab-3aff461aa6dmr24048955ab.4.1734099200688; Fri, 13 Dec 2024
+ 06:13:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <675b8f8f65e28_ff0720890@john.notmuch>
-X-CM-TRANSID:_____wD3f+60P1xn40hMAQ--.32891S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWFWrWry7KF1Utr43tFWxCrg_yoWrXr43pa
-	97Aay7KwnrJrW0v34Iv397WF1Sg348KF43Jr1rWa43Cr98Wrn3tryfKF4a9F45Krs5uF4U
-	Zw4UtFsruwsxuFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U-dbbUUUUU=
-X-CM-SenderInfo: xpus2vi6rwjhhfrp/xtbBDwS0p2dcNYbidAAAsG
+References: <20241207173803.90744-1-kerneljasonxing@gmail.com>
+ <20241207173803.90744-2-kerneljasonxing@gmail.com> <8a464155-3115-468b-88f3-5ee81d9e3b84@linux.dev>
+In-Reply-To: <8a464155-3115-468b-88f3-5ee81d9e3b84@linux.dev>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Fri, 13 Dec 2024 22:12:44 +0800
+Message-ID: <CAL+tcoA1omzkK=odvcjtt-LtstRB9Dx3MVLC+yezqOp+M1sqsA@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 01/11] net-timestamp: add support for bpf_setsockopt()
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
+	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 12, 2024 at 05:36:15PM -0800, John Fastabend wrote:
-[...]
-> > > I think easier is to do similar logic to read_sock and track
-> > > offset and len? Did I miss something.
-> > 
-> > Thanks to John Fastabend.
-> > 
-> > Let me explain it.
-> > Now I only replace the read_sock handler when using strparser.
-> > 
-> > My previous implementation added the replacement of read_sock in
-> > sk_psock_start_strp() to more explicitly require replacement when using
-> > strparser, for instance:
-> > '''skmsg.c
-> > void sk_psock_start_strp(struct sock *sk, struct sk_psock *psock)
-> > {
-> >     ...
-> >     sk->sk_data_ready = sk_psock_strp_data_ready;
-> >     /* Replacement */
-> >     sk->sk_socket->ops->read_sock = tcp_bpf_read_sock;
-> > }
-> > '''
-> > 
-> > As you can see that it only works for strparser.
-> > (The current implementation of replacement in tcp_bpf_update_proto()
-> > achieves the same effect just not as obviously.)
-> > 
-> > So the current implementation of recv_actor() can only be strp_recv(),
-> > with the call stack as follows:
-> > '''
-> > sk_psock_strp_data_ready
-> >   -> strp_data_ready
-> >     -> strp_read_sock
-> >       -> strp_recv
-> > '''
-> > 
-> > The implementation of strp_recv() will consume all input skb. Even if it
-> > reads part of the data, it will clone it, then place it into its own
-> > queue, expecting the caller to release the skb. I didn't find any
-> > logic like tcp_try_coalesce() (fix me if i miss something).
-> 
-> 
-> So here is what I believe the flow is,
-> 
-> sk_psock_strp_data_ready
->   -> str_data_ready
->      -> strp_read_sock
->         -> sock->ops->read_sock(.., strp_recv)
-> 
-> 
-> We both have the same idea up to here. But then the proposed data_ready()
-> call
-> 
-> +	while ((skb = skb_peek(&sk->sk_receive_queue)) != NULL) {
-> +		u8 tcp_flags;
-> +		int used;
-> +
-> +		WARN_ON_ONCE(!skb_set_owner_sk_safe(skb, sk));
-> +		tcp_flags = TCP_SKB_CB(skb)->tcp_flags;
-> +		used = recv_actor(desc, skb, 0, skb->len);
-> 
-> The recv_actor here is strp_recv() all good so far. But, because
-> that skb is still on the sk_receive_queue() the TCP stack may
-> at the same time do
-> 
->  tcp_data_queue
->   -> tcp_queue_rcv
->      -> tail = skb_peek_tail(&sk->sk_receive_queue);
->         tcp_try_coalesce(sk, tail, skb, fragstolen)
->          -> skb_try_coalesce()
->             ... skb->len += len
-> 
-> So among other things you will have changed the skb->len and added some
-> data to it. If this happens while you are running the recv actor we will
-> eat the data by calling tcp_eat_recv_skb(). Any data added from the
-> try_coalesce will just be dropped and never handled? The clone() from
-> the strparser side doesn't help you the tcp_eat_recv_skb call will
-> unlik the skb from the sk_receive_queue.
-> 
-> I don't think you have any way to protect this at the moment.
+On Fri, Dec 13, 2024 at 3:35=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
+>
+> On 12/7/24 9:37 AM, Jason Xing wrote:
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 6625b3f563a4..f7e9f88e09b1 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -5214,6 +5214,24 @@ static const struct bpf_func_proto bpf_get_socke=
+t_uid_proto =3D {
+> >       .arg1_type      =3D ARG_PTR_TO_CTX,
+> >   };
+> >
+> > +static int sk_bpf_set_cb_flags(struct sock *sk, sockptr_t optval, bool=
+ getopt)
+>
+> It is confusing to take a sockptr_t argument. It is called by the kernel =
+bpf
+> prog only. It must be from the kernel memory. Directly pass the "int
+> sk_bpf_cb_flags" as the argument.
 
-Thanks John Fastabend.
+Thanks. I will fix this.
 
-It seems sk was always locked whenever data_ready called.
-
-'''
-bh_lock_sock_nested(sk)
-tcp_v4_do_rcv(sk)
-   |
-   |-> tcp_rcv_established
-   	|-> tcp_queue_rcv 
-   		|-> tcp_try_coalesce
-   |
-   |-> tcp_rcv_state_process
-   	|-> tcp_queue_rcv
-   		|-> tcp_try_coalesce
-   |
-   |-> sk->sk_data_ready()
-
-bh_unlock_sock(sk)
-'''
-
-other data_ready path:
-'''
-lock_sk(sk)
-sk->sk_data_ready()
-release_sock(sk)
-'''
-
-I can not find any concurrency there. 
-> > 
-> > The record of the 'offset' is stored within its own context(strparser/_strp_msg).
-> > With all skbs and offset saved in strp context, the caller does not need to
-> > maintain it.
-> > 
-> > I have also added various logic tests for this situation in the test
-> > case, and it works correctly. 
-> > > > +		/* strparser clone and consume all input skb
-> > > > +		 * even in waiting head or body status
-> > > > +		 */
-> > > > +		tcp_eat_recv_skb(sk, skb);
-> > > > +		if (used <= 0) {
-> > > > +			if (!copied)
-> > > > +				copied = used;
-> > > > +			break;
-> > > > +		}
-> > > > +		copied += used;
-> > > > +		if (!desc->count)
-> > > > +			break;
-> > > > +		if (tcp_flags & TCPHDR_FIN)
-> > > > +			break;
-> > > > +	}
-> > > > +	return copied;
-> > > > +}
-> > > > +
-> > > >  enum {
-> > > >  	TCP_BPF_IPV4,
-> > > >  	TCP_BPF_IPV6,
-> > > > @@ -595,6 +636,10 @@ enum {
-> > 
-> > 
-> 
-> 
-
+>
+> > +{
+> > +     int sk_bpf_cb_flags;
+> > +
+> > +     if (getopt)
+> > +             return -EINVAL;
+> > +
+> > +     if (copy_from_sockptr(&sk_bpf_cb_flags, optval, sizeof(sk_bpf_cb_=
+flags)))
+>
+> It is an unnecessary copy. Directly use the "int sk_bpf_cb_flags" arg ins=
+tead.
+>
+> > +             return -EFAULT;
+>
+> This should never happen.
+>
+> > +
+> > +     if (sk_bpf_cb_flags & ~SK_BPF_CB_MASK)
+> > +             return -EINVAL;
+> > +
+> > +     sk->sk_bpf_cb_flags =3D sk_bpf_cb_flags;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >   static int sol_socket_sockopt(struct sock *sk, int optname,
+> >                             char *optval, int *optlen,
+> >                             bool getopt)
+> > @@ -5230,6 +5248,7 @@ static int sol_socket_sockopt(struct sock *sk, in=
+t optname,
+> >       case SO_MAX_PACING_RATE:
+> >       case SO_BINDTOIFINDEX:
+> >       case SO_TXREHASH:
+> > +     case SK_BPF_CB_FLAGS:
+> >               if (*optlen !=3D sizeof(int))
+> >                       return -EINVAL;
+> >               break;
+> > @@ -5239,6 +5258,9 @@ static int sol_socket_sockopt(struct sock *sk, in=
+t optname,
+> >               return -EINVAL;
+> >       }
+> >
+> > +     if (optname =3D=3D SK_BPF_CB_FLAGS)
+> > +             return sk_bpf_set_cb_flags(sk, KERNEL_SOCKPTR(optval), ge=
+topt);
+> > +
+> >       if (getopt) {
+> >               if (optname =3D=3D SO_BINDTODEVICE)
+> >                       return -EINVAL;
 
