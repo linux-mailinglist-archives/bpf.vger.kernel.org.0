@@ -1,121 +1,200 @@
-Return-Path: <bpf+bounces-46844-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46847-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B40CA9F0CFD
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 14:08:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE86C9F0D33
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 14:21:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C5342833A7
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 13:08:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7595F282C5E
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 13:21:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7CE1E04BF;
-	Fri, 13 Dec 2024 13:07:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02791E009A;
+	Fri, 13 Dec 2024 13:21:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="d2TLvY5T"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HEG0v1FV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE0A1DFE2F
-	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 13:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C237E383;
+	Fri, 13 Dec 2024 13:21:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734095278; cv=none; b=HNdllt6bsVU3FQo2qv9l/EP2sopMl9jwczRFciO14xqzkKmWu0ObvfPJtZSciEbLd8pFUtGVWFysZMw2BnlIyB6nmidh8CPngLuMl/u2hsDJ/uI8jJvDXR3WLE7OjzzCoOOx7HBrjobBZo5lTU4ho+bNSixPcxPD0RRr1J0TXf8=
+	t=1734096085; cv=none; b=BZ8IpCZZKjPJ3Jd9nmbKOf7iNBuLWpe32SPI50IJiz8HADZ0C3UA6SSliWipul6ZSlmyv+QlBU0R5qlFElB+3d2oAeW0sdujerx5CcmWT9qJyk0U+aAuY1KNH7DPpz0QwqI27qa0bUIVD4GcGdDu9gpocKlgvHfHHNTe1G2AY80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734095278; c=relaxed/simple;
-	bh=5M+9sZ2uOISCSb6KW/FXzpjBYHwIs149KFBIoWPdbV4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nRRv7Vi9TzdoCk5/AMGi4U8prAxXlnci9gW3e+7+/Dw1ILNmZu0CvzBqWBhTUzFcrwwnejrAMEow2wFhj/v6xJ8J8B0irJx90AmDxMT6xafu6sz0Kq5gz6BhXAi2mGN5cTUCd28EToeuHjFIGe1Q05tu2Kfog/91dw16iyP8IBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=d2TLvY5T; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aa543c4db92so337989566b.0
-        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 05:07:56 -0800 (PST)
+	s=arc-20240116; t=1734096085; c=relaxed/simple;
+	bh=fW6luxMrAqnYlvsreIEbbkCkFhzIfplK1rD1utBIVMU=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fgRLf9bHKgS9oBcxil7pAdwXFHdPC5d94+2uE2U9/EOJQF+j1pe1wQUGxMmN3Vf5wSqXvNIxV5JyY4nUAc5/1o3roP41YwzTFVk8cuq66uPvHV0/Efb2wm0T1I8esz+QbQUM6WP2Q289ugdd9xSbjrlo7thTe2zZM86SCVrLVDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HEG0v1FV; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-aa670ffe302so322113466b.2;
+        Fri, 13 Dec 2024 05:21:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1734095274; x=1734700074; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=95uLp76JDqCGAntKfWwQIWRGb8VQc95vaaCgVutyp08=;
-        b=d2TLvY5TGbSHvCXB3j27O3bjKW8E5v3CpvsI2KVRsfBtS776WMRdXgEfTufotuYZ8e
-         tXTT8PUHWTBD4PG+J5WXT0wwyKkU0CCtaQOYIsKKneYG7k8+i0z11Vhn//N9bS3OPol5
-         Tp4Dbp9yu32iya7kcAugZCdYeljculHr8d2FrcAErtN/lkUR8yQIIunbjNo9OWGkgv8Q
-         6jKWQvJZtao/MMhniH4RWID3MW46dswhzvO7UTn9PL8RdXGuik+OAt8HsY6pYvXiSWE5
-         uvf09IZWb6jwyFmqLfVGruhJTqpTm2lfoADVIacaucCW3goDK+/CYCwXW+fjcP0M0Xf1
-         B3qg==
+        d=gmail.com; s=20230601; t=1734096082; x=1734700882; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yYReai1ncqht/ueqrcPsQZn4164HqXgFhDBF0uVO5OI=;
+        b=HEG0v1FVVQ8ZL0KSwi25X/FQuTrnDMyHWeTPekve899W9UYB6eyIHxSK/LWwjGrffa
+         0j2cjJa6lci17bYd4AcylCzthWErBdvu4OM+XYFWnFbyANeFLgpYk9miUN0D9Dk3797d
+         tJGXBXzY69LavmT7xYsIxh7F6tUyl8ILhs7Np6AZXTl3inwYY/5KaeBT9c85MtNJrF4b
+         SSYhDiIL0cu9xf79hxu4AURMcli4PQ5Ut6o8SwTdSHNN3vPu7Wh9JlbTKjAyiHGknY49
+         KQA0t2UHr/BNh9cwU6955E98GXImQGRTaKGHz4DVRKx2Xi4uG+KCxV50DxXov6O5pS7w
+         9g0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734095274; x=1734700074;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=95uLp76JDqCGAntKfWwQIWRGb8VQc95vaaCgVutyp08=;
-        b=s5a8bu+6knIGk+PXy4re2NH8zg2Qm4WFQZq8l0wyfE3n7k1J668xzXlAbFg5GbiJa/
-         qFhcWpvAMPtoyH9mDTBU7lK5vLTTTcdhWqTyGRjI6s8y8tOWW/VjFfmHpUd+0LZIY3Uo
-         RICLDlnlup2uKpIybKH4O+sMVBqJYzl14ocCONSBmlBYTvxAq8Ql9GRqTOTdgPWvTQ2l
-         h/DJmLXQQqhK0T5VkAC81BEpFUePDjMvsUMeHNFk9VWuRxSGBcKmGXVWWsg3wPgtNqWO
-         beoLzV0scWzfWxxPBcWcMQai7eUHMwsaGsMoZ6dPhPYzjFYuihOTkMsiR5Cp8mKanZVI
-         d9Vg==
-X-Gm-Message-State: AOJu0YzgIzZooaHzYsS1ClxYutt9lKk859P7wsOzNpkwVt+0e6oczcbk
-	0eY8eFmarAKTZlag78/3YMNrldnz4yL7aX6v9OpAl33V2tFm1OrGOiKUEv0Sr0ULEWf/oJyGZIb
-	O
-X-Gm-Gg: ASbGnctX9UXtGUTMB08fQUY2XrJYLAQp76oiQiGj2mnli984GCn+02IRhQ6r63l9M5Q
-	etj0Tb1Dx5I3WBBdkZG4dE0xnrv+EsfhWaLplrfgHG4U4O9B3CCT4uE8yT27/PEQHdU0qAk4KfG
-	9FMKSOvArhdeBz862BANeo1r0A1SUOPQ0ov5evn9UtWQ7IJK0KWl92lzbUX7NP5oyVykHFkPb3P
-	GSCnwWwpazkNRQ4wSFcAKujGexoC1ZinwwzgpTuuSBXx8lnOFVs+lw9VZH7U2mPaaLbUQ==
-X-Google-Smtp-Source: AGHT+IHSJ5PGztA6F3+vb7mVcCAtcTrlQPCLp2ZEcn9iVIFij6O43tbhYKRSOoLHFq2o/4v0XtFTFA==
-X-Received: by 2002:a17:906:3089:b0:aa6:887a:57c0 with SMTP id a640c23a62f3a-aab779af3camr229724266b.28.1734095274100;
-        Fri, 13 Dec 2024 05:07:54 -0800 (PST)
-Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa657abb2fbsm931248666b.128.2024.12.13.05.07.53
+        d=1e100.net; s=20230601; t=1734096082; x=1734700882;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yYReai1ncqht/ueqrcPsQZn4164HqXgFhDBF0uVO5OI=;
+        b=xM4Z8L3+eZdsAoj0hfH2Kt5OgUkHaDaZtfFHsz/KH7/zM06jvdubPtfWg1gWUPrw0E
+         sgEHJNPZi40t85psAwbad49KGhQ6wW8zi6ihcp5IaBMT4N3a4vdwydYAx1n4bwUuA3g9
+         XHmBOfhUsknfqOr/IbijUmv9EctC27/MP39BteOCV/+zQA1q3eUpSGOWZNX0jgk2J6gq
+         jcgJWzFyqW40HbgnhjYQl7eNXRvvgVBc6OGV4YGzZ6T3/jAQqSHT8IOUUAn+32Z6QG3S
+         KrfrKsL7sdv6NG9xn7iAHtF6s588uwa8hdBVXZH0eSE1iymMu/iNzHw1WsR0AxMflm/9
+         I6tw==
+X-Forwarded-Encrypted: i=1; AJvYcCUzgYNDtV83l8geVh2Xrx3LHQkZ9KJlV8tZGk9QSXkrLXsJtVho63EAnKzy7YLL0PTCZmjpZo8pntGJN0ZRqXmI+LRr@vger.kernel.org, AJvYcCVpO+c32Im5/teuQsgIxsB4nHlXjIx3oFKGs2DrBIAs723mqgGwN2MeH2BSCJZud8gVg4o=@vger.kernel.org, AJvYcCXZfd9oZy86MH7gV8Q6iXphDP61ld9ipjKnHtPZiJeByBeu/1s1FZ1Pn+KnFawxMW84fgFZj1IA9JLTAXNo@vger.kernel.org
+X-Gm-Message-State: AOJu0YyddFSsHS4xsTxAL/ktp4m5Ca23L80rWmaYxpJOqNPDMYA38/Y7
+	qqi+j3eeY8MLnXqMoGcpJspaUajuhTIUmW03e7mkGvOmNqEeI480
+X-Gm-Gg: ASbGncsoasckylymbUfxDdeLV6Zg9es5xHk9Zpseb2uSiEZKGT3n34okobncOU2y+IM
+	oDcsNWNG++bL3rDRfUYTI25mLHVhGYXI35SGwF/rBfs/Ak8rQjBeqo0kI4ifE2vv120y6oPsx62
+	F+aCUmZv/5niMNxxA0P1fNMjiIe0l+9JuiN1n9CQ8IGuP7TaEHRivr6ZDlYmXFj463nv4orS4U8
+	XZGQqK4Ax4wWu+4ALCL+hS6aR0KkdxC+xA0e5/CSFClciCZ8ISq77iFMI5/BG46ZxAGkf/f79X8
+	1Hj5tWEwWZ7ss0UI4hHOVb8CLe8jGA==
+X-Google-Smtp-Source: AGHT+IEgeM2acQAGmBVtCVr3+tK8Wh4DVdTknLjm57SablxJLBxeTJ/X/ZbU8qg7XoICgWkiUbRCzg==
+X-Received: by 2002:a17:906:2932:b0:aa6:ab70:4a7d with SMTP id a640c23a62f3a-aab77ee9adbmr262127066b.58.1734096081874;
+        Fri, 13 Dec 2024 05:21:21 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa68c4b52b8sm674110666b.52.2024.12.13.05.21.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Dec 2024 05:07:53 -0800 (PST)
-From: Anton Protopopov <aspsk@isovalent.com>
-To: bpf@vger.kernel.org
-Cc: Anton Protopopov <aspsk@isovalent.com>,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH v5 bpf-next 7/7] selftest/bpf: replace magic constants by macros
-Date: Fri, 13 Dec 2024 13:09:34 +0000
-Message-Id: <20241213130934.1087929-8-aspsk@isovalent.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241213130934.1087929-1-aspsk@isovalent.com>
-References: <20241213130934.1087929-1-aspsk@isovalent.com>
+        Fri, 13 Dec 2024 05:21:21 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 13 Dec 2024 14:21:19 +0100
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 04/13] uprobes: Add arch_uprobe_verify_opcode
+ function
+Message-ID: <Z1w0z2KSgFGggAVD@krava>
+References: <20241211133403.208920-1-jolsa@kernel.org>
+ <20241211133403.208920-5-jolsa@kernel.org>
+ <CAEf4BzZ2g6PwY+Ah-39F7Dw2AFZUE7AxEqOuNbs5LouHtKMZbQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZ2g6PwY+Ah-39F7Dw2AFZUE7AxEqOuNbs5LouHtKMZbQ@mail.gmail.com>
 
-Replace magic constants in a BTF structure initialization code by
-proper macros, as is done in other similar selftests.
+On Thu, Dec 12, 2024 at 04:48:05PM -0800, Andrii Nakryiko wrote:
+> On Wed, Dec 11, 2024 at 5:34 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Adding arch_uprobe_verify_opcode function, so we can overload
+> > verification for each architecture in following changes.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  include/linux/uprobes.h |  5 +++++
+> >  kernel/events/uprobes.c | 19 ++++++++++++++++---
+> >  2 files changed, 21 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> > index cc723bc48c1d..8843b7f99ed0 100644
+> > --- a/include/linux/uprobes.h
+> > +++ b/include/linux/uprobes.h
+> > @@ -215,6 +215,11 @@ extern void uprobe_handle_trampoline(struct pt_regs *regs);
+> >  extern void *arch_uretprobe_trampoline(unsigned long *psize);
+> >  extern unsigned long uprobe_get_trampoline_vaddr(void);
+> >  extern void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len);
+> > +extern int uprobe_verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t *new_opcode);
+> > +extern int arch_uprobe_verify_opcode(struct arch_uprobe *auprobe, struct page *page,
+> > +                                    unsigned long vaddr, uprobe_opcode_t *new_opcode,
+> > +                                    int nbytes);
+> > +extern bool arch_uprobe_is_register(uprobe_opcode_t *insn, int nbytes);
+> >  #else /* !CONFIG_UPROBES */
+> >  struct uprobes_state {
+> >  };
+> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> > index 7c2ecf11a573..8068f91de9e3 100644
+> > --- a/kernel/events/uprobes.c
+> > +++ b/kernel/events/uprobes.c
+> > @@ -263,7 +263,13 @@ static void uprobe_copy_to_page(struct page *page, unsigned long vaddr, const vo
+> >         kunmap_atomic(kaddr);
+> >  }
+> >
+> > -static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t *new_opcode)
+> > +__weak bool arch_uprobe_is_register(uprobe_opcode_t *insn, int nbytes)
+> > +{
+> > +       return is_swbp_insn(insn);
+> 
+> a bit weird that we ignore nbytes here... should we have nbytes ==
+> UPROBE_SWBP_INSN_SIZE check somewhere here or inside is_swbp_insn()?
 
-Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
----
- tools/testing/selftests/bpf/progs/syscall.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+the original is_swbp_insn function does not need that and we need
+nbytes in the overloaded arch_uprobe_is_register to distinguish
+between 1 byte and 5 byte update..
 
-diff --git a/tools/testing/selftests/bpf/progs/syscall.c b/tools/testing/selftests/bpf/progs/syscall.c
-index 0f4dfb770c32..b698cc62a371 100644
---- a/tools/testing/selftests/bpf/progs/syscall.c
-+++ b/tools/testing/selftests/bpf/progs/syscall.c
-@@ -76,9 +76,9 @@ static int btf_load(void)
- 			.magic = BTF_MAGIC,
- 			.version = BTF_VERSION,
- 			.hdr_len = sizeof(struct btf_header),
--			.type_len = sizeof(__u32) * 8,
--			.str_off = sizeof(__u32) * 8,
--			.str_len = sizeof(__u32),
-+			.type_len = sizeof(raw_btf.types),
-+			.str_off = offsetof(struct btf_blob, str) - offsetof(struct btf_blob, types),
-+			.str_len = sizeof(raw_btf.str),
- 		},
- 		.types = {
- 			/* long */
--- 
-2.34.1
+jirka
 
+> 
+> > +}
+> > +
+> > +int uprobe_verify_opcode(struct page *page, unsigned long vaddr,
+> > +                        uprobe_opcode_t *new_opcode)
+> >  {
+> >         uprobe_opcode_t old_opcode;
+> >         bool is_swbp;
+> > @@ -291,6 +297,13 @@ static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t
+> >         return 1;
+> >  }
+> >
+> > +__weak int arch_uprobe_verify_opcode(struct arch_uprobe *auprobe, struct page *page,
+> > +                                    unsigned long vaddr, uprobe_opcode_t *new_opcode,
+> > +                                    int nbytes)
+> > +{
+> > +       return uprobe_verify_opcode(page, vaddr, new_opcode);
+> 
+> again, dropping nbytes on the floor here
+> 
+> > +}
+> > +
+> >  static struct delayed_uprobe *
+> >  delayed_uprobe_check(struct uprobe *uprobe, struct mm_struct *mm)
+> >  {
+> > @@ -479,7 +492,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm,
+> >         bool orig_page_huge = false;
+> >         unsigned int gup_flags = FOLL_FORCE;
+> >
+> > -       is_register = is_swbp_insn(insn);
+> > +       is_register = arch_uprobe_is_register(insn, nbytes);
+> >         uprobe = container_of(auprobe, struct uprobe, arch);
+> >
+> >  retry:
+> > @@ -490,7 +503,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm,
+> >         if (IS_ERR(old_page))
+> >                 return PTR_ERR(old_page);
+> >
+> > -       ret = verify_opcode(old_page, vaddr, insn);
+> > +       ret = arch_uprobe_verify_opcode(auprobe, old_page, vaddr, insn, nbytes);
+> >         if (ret <= 0)
+> >                 goto put_old;
+> >
+> > --
+> > 2.47.0
+> >
 
