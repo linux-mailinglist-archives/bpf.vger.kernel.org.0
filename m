@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-46800-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46801-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C15849F021F
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 02:24:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 724B89F0221
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 02:25:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82657284857
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 01:24:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3328B284643
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 01:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6708502B1;
-	Fri, 13 Dec 2024 01:24:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E3F4A2D;
+	Fri, 13 Dec 2024 01:24:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="LOs2VIg7";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="wm+ceT+a"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="ZzKNWCRx";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="S3ZUNfug"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
+Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CBBE21345;
-	Fri, 13 Dec 2024 01:24:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C3D3D0D5;
+	Fri, 13 Dec 2024 01:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734053076; cv=none; b=tUN402Z0MfoFNUFR/NNShmY85isB0mGXut9JmOt6Jev5P6GKBV5Vx+ZmjUVRmgKDzX1RS+O0ohxQ1X9E/hlUEgfJtI49tT71gX72TM6MmebXYhpo1Ajcs4NZaWfYH9bIvWL4dFKrakNl00WDspAXjw4fTujO5V4B5Vqh8MJ+plA=
+	t=1734053078; cv=none; b=pr0ikbupiywcXJ/P8DGQphiTiCz1afIFffR0HfZdb930rDBw0VQZO8fCniIvY5uYSVR5YTFUZJSIZh6ytZipDad6Uzgow3jgk95UkzIgm2CdN/wbHIursr3XryITk6kqokaRP4Bw3V5WSFTypQboiPoEtte97CM913+cln/jV3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734053076; c=relaxed/simple;
-	bh=xOJhmhJiPT7XucS+JvvOAwbDKJCLQ0uJS5LKiah0erk=;
+	s=arc-20240116; t=1734053078; c=relaxed/simple;
+	bh=tIaQGA6ru209wj2zRo7/LOYxSSw8NE0ffGbyi5wMNY0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XC/V2Pv9ZeJ5XCuKhXLkAcp1lSMd08FklcriL8js9KgSiO/5p2eP+NNCmrFxWZH4+f/1hdtAZl66Dvz9tZhngt9y3eCjpapkziI81DTgtBZCxGP/WCBM8Y2UQeBTAz1lxsKwfTiLXu1QQRwG17hich5WLczdgECQ7oW8fFbExSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=LOs2VIg7; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=wm+ceT+a; arc=none smtp.client-ip=103.168.172.158
+	 MIME-Version; b=A+b/9dnic8vSe0CHZic40r5Jb3g20jA0h3KJX8Iwmd2g5HV8qI1Io10SxYe90JjTo7x2/4UVrsuxpyTcIbBnUBnNFPhVW9qmq9wNRyIv0uiYVeQSXAWWsa4xwWacsjJvfr0FUcBeqpdSF2p8H9+nRu3JOTf9YwxFncJ3OGb1zg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=ZzKNWCRx; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=S3ZUNfug; arc=none smtp.client-ip=103.168.172.147
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
 Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id EEB221140233;
-	Thu, 12 Dec 2024 20:24:32 -0500 (EST)
+	by mailfout.phl.internal (Postfix) with ESMTP id 5B87713841A1;
+	Thu, 12 Dec 2024 20:24:35 -0500 (EST)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-11.internal (MEProxy); Thu, 12 Dec 2024 20:24:32 -0500
+  by phl-compute-11.internal (MEProxy); Thu, 12 Dec 2024 20:24:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
 	:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1734053072; x=
-	1734139472; bh=1nIfMacAqxf+3GQ6nJo3PSByZmybpP146S5tZBDJZ8g=; b=L
-	Os2VIg7DAVg7B5EyRxfr7IpsNHTExRLRIxdZNGxQnW2szVjSgwIUKEwBFVISb3Kp
-	TtUczP5hJqDDCF6lf2d0yoOlgAlNkjhMI2uVQlLAcs5orG1e0J7TdiunTTv3yugt
-	G8i0NAXdwHF35Lt6s6MzZg1Iwn6aogErT9uSUmVMpzHl1Elbcrgn02akQpqz0ypK
-	2xPfuLjYb2YizAdPeqvLw6rQJ0+w7lmPCc+ppn4wtiHmveHxmkiQwl9rkT35DBT3
-	uAtscjKIW9kil0o906VNnMQ/VsbycGHguAfqmsiouSDisPAdhL+OekN2EHv1+U3s
-	5Vt6KE/IyNxvMhgcgaFGQ==
+	:reply-to:subject:subject:to:to; s=fm3; t=1734053075; x=
+	1734139475; bh=xpRdN0TuD11EDsUB/g43WYAhnnZK310+Kd5LiZ2xWXA=; b=Z
+	zKNWCRxh0Pj1j5226hK8mLCFETaVhB1I3IHyro5/MqrTN3IxtvRMDWySNrklKd5Z
+	zoHEsDHH9HPVG+h51wXVwoSnhY20TaiI34OphQ/4mahZtzJ9CRBEGEYp05fDNbQf
+	5F96grkTNEAFayDRsCWcFxz9FfY3mFYokxvgG75uGTQ/PKgFLEt/P7ctASkemc8D
+	+F+xQyF3FLjMeEn5hSdrqLxXYbhFn3CGatvIgO3bK7VRAHU28NTq6w1TRa75mGJ7
+	Ug+0QLg9VaNJH6gl5l85uQeivFglO1s9kV0z60cIYPL7eYAg2AZVZiM1GwXQzFu/
+	VVsK9/kingErW0/74ZkpQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1734053072; x=1734139472; bh=1
-	nIfMacAqxf+3GQ6nJo3PSByZmybpP146S5tZBDJZ8g=; b=wm+ceT+azr4sYf3uo
-	3JvmiAcqRaFg59MmUpKQMd9u3PCos6pqjYnV2O1CqHk7awRJ0ncdnAY5375LHMd7
-	5Hzp3CTpmy6DKMCqpRQsi2vx5Eqlt/Sgq7cqHIIXxW7N6he9nj+pH2ecJ1IEF56p
-	SX/jFRaQghF+5hLNLeVe/OlWn0BPd04SifFNksG6zuEvEqXk7Ptg5U77ZAFkPXG7
-	ST3fnYAc2+HzbA2Oy0yiqiXqDZc6Wz2vG6Frn/zZpG0IVYRAsLWMLMOKi+ER0r8c
-	IAVpFQ2XTQN+QtRJL2Sy3Ah7n9ZTpbmVlpiG4MU0bRJaO9uTOEWH7wL3NjZpdc/z
-	H6HSw==
-X-ME-Sender: <xms:0IxbZ1kD-GpKKy3lQ_SgwK1eWS1G_B0BeZ2KAWoBDeIMlgoarcWR-Q>
-    <xme:0IxbZw1_nepiHdwewtSppJA0gEJTxH9Xdu4jie_tTIuZjSQ-ViOfdNwWGVX5cQWQ7
-    928cvCE4-Bj1zGPZw>
-X-ME-Received: <xmr:0IxbZ7oekcLzrnuxG2Y2AR7UbBcnz_wov4F6JC99xC8zrzOCNg9r7dWMnN0L8Zb0kkG6PrbBMcGrwsbsTG3xXry7jP0HEn-I_ah0lvYX1qj62F6X9H1g>
+	:x-me-sender:x-sasl-enc; s=fm1; t=1734053075; x=1734139475; bh=x
+	pRdN0TuD11EDsUB/g43WYAhnnZK310+Kd5LiZ2xWXA=; b=S3ZUNfug7iLzSPtku
+	IG4p/oQ6kHtVIxZQilslRWJ2tacDK+9HmtygC1NR0Mu57wOi17KGqei6uryOV3w4
+	0if+NM0A3HRPfad72AEw/gN9XrtqoGtVrN9K6vC0s+NcfDtxxkJA7D172UIUn3Yc
+	MkWMuBhRdU2GlTTQ4gxuhBlNaDf1lWYQkn+LxCjimw1TXcuGxSZbyNqctjo6IpqQ
+	szJNRvZPQCojwKnFPHYYtAqptdF991DwRn7txPZt5rxW/oCP4Uo2Gx89cjZYwstf
+	e//RJG6e/RVMyzx3dG7zr6DSKHyYuuGevIIxEZ2uCX83UGcG+HlfWPso9K4GRCWu
+	k5LKQ==
+X-ME-Sender: <xms:04xbZx7FL6E0uNIrA0fyvdXbXvp0plFTiF4mqIHKSVq6Rfd3KLgjgA>
+    <xme:04xbZ-79DZC3w1AOilTLpEBgHU4Q_4W9zFmrV8ICGonSC3h90wVAoHX0lRtjfomBg
+    CbwNkyNFHyHpJi4Pw>
+X-ME-Received: <xmr:04xbZ4dK4VonHq13mx2MUMpdEaNY0QJYrUZ9HWNjG6qKWSrllruI9te9qwSL2PqJHj6ooAd2eLSkGsIVV4wzHWJTzNWOFRXjv4j4zsOvk0T4GSa2fiIC>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrkeeigdeffecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
     tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtd
     dmnecujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgr
     nhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpe
     fgfefggeejhfduieekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugi
+    lhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugi
     huuhhurdighiiipdhnsggprhgtphhtthhopedukedpmhhouggvpehsmhhtphhouhhtpdhr
     tghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrshhtse
     hkvghrnhgvlhdrohhrghdprhgtphhtthhopehqmhhosehkvghrnhgvlhdrohhrghdprhgt
@@ -80,14 +80,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrkeeigdeffecutefuodetggdote
     mhgrihhlrdgtohhmpdhrtghpthhtohepshhonhhgsehkvghrnhgvlhdrohhrghdprhgtph
     htthhopeihohhnghhhohhnghdrshhonhhgsehlihhnuhigrdguvghvpdhrtghpthhtohep
     jhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:0IxbZ1mdwB0qR2RMdHxipdXv763is2JHHnCFyu1u6mtU4D4a0GcBEg>
-    <xmx:0IxbZz25sDB8bJ1ccnCI6cJIWtR7Cz6PAVYeJNB4o_d_E6qMHkMoXw>
-    <xmx:0IxbZ0tJzqxyOe8oF99dZuc9osD1adAgJ7JJYF4x3EupuJdWej2ztw>
-    <xmx:0IxbZ3UocPc4-2rv59sUHTjl39oPEcswQ6wpgyN1qwzqzDVoNIeYRw>
-    <xmx:0IxbZ6u05JHd4xoCct2ASxu3ieTLVQ5UC0eVp0UPd-l2k7y0qs7I_K-l>
+X-ME-Proxy: <xmx:04xbZ6JxOSZRSbH3v8paqs_ALT_gYCloClsHGqGnVZF1GiZc_s39kA>
+    <xmx:04xbZ1KyKFyXDA_-dlEL9ZO3OYHBAZ2RX0YROoHS0rN0teIeMJS0Tg>
+    <xmx:04xbZzw1CM4_9PXsAuhzD0qSH9zZtsict9gJzoHqqR42-LDVLblpZg>
+    <xmx:04xbZxIkQKdNB0mBys__3tNkuZh9hbWZAWAfDYWMe6rDTJzX92vKCQ>
+    <xmx:04xbZ6Dyc9rQ0uvrhZU-NXJKKp2BnkFC7xz_CBDbgAEXAzrqiR_OiIvH>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Dec 2024 20:24:30 -0500 (EST)
+ 12 Dec 2024 20:24:33 -0500 (EST)
 From: Daniel Xu <dxu@dxuuu.xyz>
 To: andrii@kernel.org,
 	ast@kernel.org,
@@ -107,9 +107,9 @@ Cc: martin.lau@linux.dev,
 	andrii.nakryiko@gmail.com,
 	antony@phenome.org,
 	toke@kernel.org
-Subject: [PATCH bpf-next v4 1/4] bpftool: man: Add missing format argument to command description
-Date: Thu, 12 Dec 2024 18:24:13 -0700
-Message-ID: <d5ca200da5a39f31ed34b9b90772e17476764f50.1734052995.git.dxu@dxuuu.xyz>
+Subject: [PATCH bpf-next v4 2/4] bpftool: btf: Validate root_type_ids early
+Date: Thu, 12 Dec 2024 18:24:14 -0700
+Message-ID: <5b5dbe4219d051f0184b8f40e35f47512ebde07a.1734052995.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <cover.1734052995.git.dxu@dxuuu.xyz>
 References: <cover.1734052995.git.dxu@dxuuu.xyz>
@@ -121,27 +121,46 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The command description was missing the optional argument. Add it there
-for consistency with the rest of the commands.
+Handle invalid root_type_ids early, as an invalid ID will cause dumpers
+to half-emit valid boilerplate and then bail with an unclean exit. This
+is ugly and possibly confusing for users, so preemptively handle the
+common error case before any dumping begins.
 
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- tools/bpf/bpftool/Documentation/bpftool-btf.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/bpf/bpftool/btf.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-index 3f6bca03ad2e..245569f43035 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-@@ -43,7 +43,7 @@ bpftool btf { show | list } [id *BTF_ID*]
-     that hold open file descriptors (FDs) against BTF objects. On such kernels
-     bpftool will automatically emit this information as well.
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index d005e4fd6128..3e995faf9efa 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -886,6 +886,7 @@ static int do_dump(int argc, char **argv)
+ 	const char *src;
+ 	int fd = -1;
+ 	int err = 0;
++	int i;
  
--bpftool btf dump *BTF_SRC*
-+bpftool btf dump *BTF_SRC* [format *FORMAT*]
-     Dump BTF entries from a given *BTF_SRC*.
+ 	if (!REQ_ARGS(2)) {
+ 		usage();
+@@ -1017,6 +1018,17 @@ static int do_dump(int argc, char **argv)
+ 		}
+ 	}
  
-     When **id** is specified, BTF object with that ID will be loaded and all
++	/* Invalid root IDs causes half emitted boilerplate and then unclean
++	 * exit. It's an ugly user experience, so handle common error here.
++	 */
++	for (i = 0; i < root_type_cnt; i++) {
++		if (root_type_ids[i] >= btf__type_cnt(btf)) {
++			err = -EINVAL;
++			p_err("invalid root ID: %u", root_type_ids[i]);
++			goto done;
++		}
++	}
++
+ 	if (dump_c) {
+ 		if (json_output) {
+ 			p_err("JSON output for C-syntax dump is not supported");
 -- 
 2.46.0
 
