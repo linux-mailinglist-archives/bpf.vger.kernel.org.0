@@ -1,294 +1,170 @@
-Return-Path: <bpf+bounces-46818-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46819-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE4909F0332
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 04:42:03 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 149B49F035A
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 05:04:45 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B6751698BC
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 03:42:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C396E2823DD
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 04:04:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE61185949;
-	Fri, 13 Dec 2024 03:41:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F1017BB0F;
+	Fri, 13 Dec 2024 04:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ieWDVYOo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hUAtMkvC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BE817C7B6;
-	Fri, 13 Dec 2024 03:41:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA0BF8F5E;
+	Fri, 13 Dec 2024 04:04:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734061288; cv=none; b=tp8SJLi8r0dFCarHgG8JHjWp+JvhigtRDFVrICZ3tuuEZ80XmQ8GCVv5bfqZwFcGfLZAPbmIxsQHu9jcPz6koV4uwDDfZiIZul58hbVthOahaDGGn/mKjv7mtlKPLG+YkqEdYcBPmlcxeiY3FyzcjxHj9LXeAoyIHHzBTKCjbMU=
+	t=1734062676; cv=none; b=obazx7c3SWKf6MB+4lX+fkx4cKEJH0srnLdvTZkKwq277dbzKjkpV0xYaIjj+l7phS5vvetMwFvsLVhxQM+Prruv8qKceRm4DH/Kem/YKVkPMQtbK4zDAuwgITvbtYWT5wnxHvISHuqhv/Y/SZ4nq5k8qB0PD5BUozZNT6LX8Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734061288; c=relaxed/simple;
-	bh=zCPcFgBnPamFfN7DsvHQMVtxIk/seoeTP7ChxI3lvFc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gnkhOZyO+CtltvBcqN/pIFt6ROFFhPAGBfIQlC3Z6NwovNtqAOFPi42iuTDQMpAbYlTKa6scSFlwKeZ/csgl+PXSV75oyNBBGC3JKSHX5poVJK1fkPPQYoZ6JRVbw5ozjNpcqzRIVDdPI421JCXEAVlppxJ8wLm9MNaaKnYiW90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ieWDVYOo; arc=none smtp.client-ip=209.85.214.181
+	s=arc-20240116; t=1734062676; c=relaxed/simple;
+	bh=Lr7LQGbvd4wuev1AjaD6YqWh9lB5cJFr9owEedqmdvY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=pG74dgcDJcM21f5djVtC75U6QqzW/PtIU9M6KkQm2uwCGM5/mglPdR8+ktJvOIn+YXpWOqNp3WUsgwyzhwAH6QPHJq7ER+WDi3KqgbmPMFCln+Au+Vxb0T4+hbNYkq4ia59tmRX5bI42E7HUtB9f8AxMM/PQTPA2qfI1HhbSA/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hUAtMkvC; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2164b662090so11412315ad.1;
-        Thu, 12 Dec 2024 19:41:25 -0800 (PST)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2164b1f05caso12944815ad.3;
+        Thu, 12 Dec 2024 20:04:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734061285; x=1734666085; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XgNdDeabAnBFetUbQgXcB335tM2WwuBxGGqB8IHkehk=;
-        b=ieWDVYOokga5CSqm50wnjuhAEittFkr+xIW2Cxoq5SOT0IMER3CBPzKh+NvcZOFWuB
-         VY6wSIRcJrRsZSiiOBb1JbsPDyG95ZVVZVj3ZwtbW9vSdmL117U+I1guyUYsDU9jpFOu
-         ZtbEELbKq8ZwPlblBjjdEFpaW7z2rJGrDgJsMFBMVBCWyiNGLN8al0E1HM3uLpmJewbc
-         JUolm4rR9ebKreEVuBuGA8I4RZrbAjecXFL97qsLUtNCRegwtTilNzvvsHGNyjX0kSm2
-         NGCF54C+lti9C8A2WymBSqmcbXfAmBYcT5sIDr4j5xydYVZQ/zz4QuGJWZvONpFJr9bI
-         pvzw==
+        d=gmail.com; s=20230601; t=1734062674; x=1734667474; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xzcHtM4625I5D50j6uu6xeVIa1jpXt6gHxEIvpDf7CI=;
+        b=hUAtMkvCJaTScZmleW3Qop7gGh9KVAMMp/vncTcEKMGnOjhmzFbcVEUO/AvKVpMBkj
+         DmIXw5uoQwoywIrMb1CSPiYvWid3RUbd6w8xzoBRBhSO2TyAJ5ILFOCZrCD9dyhw+pBg
+         nKoldl75Ksc/PwrVcodpte1Pf6qHcfykNiAhuNe86jwHqEhAMcG08D+MAckL7m9cy2Nx
+         Mvx7JfTnuEaz1rgczJph/cKsSoOpw+d1JTJyXxXd+1sWfeTrkoh9hSP04Ot1pOyMGLzC
+         DJrRkgFtSAJTgpMqDqPd2fj/jvO+rJeZmRe37KzcHo2/o/suwUW9uPZKLHWWV4cW9Y5J
+         EdKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734061285; x=1734666085;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XgNdDeabAnBFetUbQgXcB335tM2WwuBxGGqB8IHkehk=;
-        b=jkWrX5d/Chc3fjfJRUaoMLNKH4XjNi1zD5ZWfLER8np6f+JVu9varudWVf8qoCcnpj
-         f5C/W7AUUvX7Dq6Gg89o1W8/WA9MI1hJcyFwE9MXVLGXKwRuHxNscsBbrrTJKm8BOs3f
-         /aFPYxAQ559e2Uq6p8PRicMlAMqQJi/+JEDdprLJWMg7wyx1vycOggi03IOtKk5KNBzn
-         a629kG6o5O8ytM+5ZQsenO0HKblEQywmQ9S4hj8Gpl55+rB7QF4nAnnllqs2N+x60/bY
-         HoJQrqeHghRINIre6QmOfishhEGWhdbzTvToE49qrz4jxZI3YUNYoXypKNzY9uIz7YG2
-         IoHA==
-X-Gm-Message-State: AOJu0Yzdz1YP9PCxpXcv18wXpLFeVCsbDf4etK0U8yDkPreLuqsIrOnQ
-	qUMcdbva8XCbSH3k5SIvba9YLEZKMtzQbvQ53u0Gc5uemiS21vYvRi+IYQ==
-X-Gm-Gg: ASbGncuMunaH3+rWhNezBZR744eo7xfUiUbVTXH3lWRd4BLs5L0kY3PE2BWKBnjci5B
-	N4lCSXe2S1ew76JIDEr7JXOdfA25eGDdPNYfX8RDOqcz7fsAziop4w2PhXuo6Cu9maq2vedySnR
-	3KNvzo2vFhnfiFfywUaCsCYfujbI7cCsOqMUgIFEOTzVTKdofNzyNjcWLWEOJPYnYPbs80vOgK8
-	ZjCVzj9dd37lIw0sNRYGUotFSt9DQHYi0vGrAYhW+GYQ/DGbvqIamBiiMrVn4yydfRw6rjzZBRu
-	0l3YCdWARg==
-X-Google-Smtp-Source: AGHT+IH4diViilRBfBpfw/ycMTCUrj5R8k5SWNL36hgK35hnJpw9CMwzYB1c4jnAB/A2JwNCnlzpog==
-X-Received: by 2002:a17:902:fc86:b0:216:31aa:12eb with SMTP id d9443c01a7336-218929fb5camr19907855ad.31.1734061285045;
-        Thu, 12 Dec 2024 19:41:25 -0800 (PST)
-Received: from pop-os.hsd1.ca.comcast.net ([2601:647:6881:9060:a642:75a1:c5bb:c287])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2163725faf4sm89526435ad.196.2024.12.12.19.41.23
+        d=1e100.net; s=20230601; t=1734062674; x=1734667474;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xzcHtM4625I5D50j6uu6xeVIa1jpXt6gHxEIvpDf7CI=;
+        b=CsFYQlWJ+gohcwA7PCK+9iorG3dnof0MvXYPktuJ3ti9fqiBiHrJODPEB/q8OYR0DT
+         /414Ps7Forc2qhITLdkkcwhCml08AeCHYl3B9RgH3F/U8RCDeYn/Amz6bGbMxXtZwazc
+         LHgDamAeTegobuqxh2vvC8s2rHOjvIQ4l4YaMGTGbNXb5WhdPk0PzlM5cY6MUOjHLsgW
+         G5uhaF/rYzuj6xoA/F4qQNIGbt9bpG1sjdkO7DpmcsdeQGqL2GdPwPhvkNZ2SAuwibv+
+         OnKnyK5bu3DFiCq6N1tXnZzOPtnfCtk6gKzk50XexGZz0fTfXIQZU6qKu4/B//bqTHzW
+         YH/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUR5QFU38Ytpqwshtla/p9q3Yhf+uRJc+FJPiECZuY6LAJCLIn50yTvc8FsI1TyvElG2Z+8hw7i1O6yW+7W@vger.kernel.org, AJvYcCUVs+OpEKpOwJeZZWjwBqmeTtzrV74VDclx71XKk+zG4mrb2tNdhYR4aWt0yOTrjyGA++ryuFVZvgsFtw/XVcPJ@vger.kernel.org, AJvYcCVL7vnv1/AqAQkeE5ckgTrl6KSfGoswilzx7IJ17IUgctu+lsyXqNIPR84tTC6VwVP/ogg=@vger.kernel.org, AJvYcCXC2zrFtXxDZA6ji21BTcSQLVKWEf96cNpvrAq3p9wMEchvCZ/f+uWjXD18H5VgfWGkMOLVxOny@vger.kernel.org
+X-Gm-Message-State: AOJu0YxLeOdwDEF9yDgCsf2egiZYgu/pBDpeCsPPB2Gm0xad3p2OCS3c
+	WCUJEqmL1ha95DxWq7N5MUZtaF7/u4KLG9n449pxkkaMape7yUSq
+X-Gm-Gg: ASbGnctbfrPj0E5UT+Ztjq0V7HRRnbsf8zTtMdgOq/2joRUPQ2QN2izSfZvgZx9JxrC
+	oOVtg52NiybunKa++F3S83aj5CXmUmu7nIX52CiceTUFhfMQtuGCZUcTk7lt/hgqJrl6kh6fxdO
+	d9hoBUBh14KvDEF9oGfQNkNod8LYY6+Jo6CwUP3zc/SJQA8y5paPYWJcUV8dOrHItZziWps/MYs
+	9kynwWnVoOnothwl6J23ZYZJ6+f+2TYx1io7aC2gPUN1w5fYxBtKg==
+X-Google-Smtp-Source: AGHT+IEiczGJ5x34lhN8LhMymQTWLT/xwZGklt3tM0ClHmnnfxPojX+b+1esUx6LZ67ZkomNi1c18g==
+X-Received: by 2002:a17:902:e886:b0:216:59ed:1aa3 with SMTP id d9443c01a7336-218929d8431mr15903305ad.27.1734062674130;
+        Thu, 12 Dec 2024 20:04:34 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21654150cc2sm74300745ad.68.2024.12.12.20.04.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 19:41:24 -0800 (PST)
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org,
-	Cong Wang <cong.wang@bytedance.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Zijian Zhang <zijianzhang@bytedance.com>
-Subject: [Patch bpf v3 4/4] selftests/bpf: Test bpf_skb_change_tail() in TC ingress
-Date: Thu, 12 Dec 2024 19:40:57 -0800
-Message-Id: <20241213034057.246437-5-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241213034057.246437-1-xiyou.wangcong@gmail.com>
-References: <20241213034057.246437-1-xiyou.wangcong@gmail.com>
+        Thu, 12 Dec 2024 20:04:33 -0800 (PST)
+Message-ID: <341df2d52af6c1584353b89a8a65d9d0fb5f0f27.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v5 3/5] bpf: verifier: Refactor helper access
+ type tracking
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Daniel Xu <dxu@dxuuu.xyz>, andrii@kernel.org, ast@kernel.org, 
+	shuah@kernel.org, daniel@iogearbox.net
+Cc: john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, 	jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	netdev@vger.kernel.org
+Date: Thu, 12 Dec 2024 20:04:28 -0800
+In-Reply-To: <4727abf12fbc53723359d4edcdf5b6dd7d33f9cb.1734045451.git.dxu@dxuuu.xyz>
+References: <cover.1734045451.git.dxu@dxuuu.xyz>
+		 <4727abf12fbc53723359d4edcdf5b6dd7d33f9cb.1734045451.git.dxu@dxuuu.xyz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Cong Wang <cong.wang@bytedance.com>
+On Thu, 2024-12-12 at 16:22 -0700, Daniel Xu wrote:
+> Previously, the verifier was treating all PTR_TO_STACK registers passed
+> to a helper call as potentially written to by the helper. However, all
+> calls to check_stack_range_initialized() already have precise access type
+> information available.
+>=20
+> Rather than treat ACCESS_HELPER as a proxy for BPF_WRITE, pass
+> enum bpf_access_type to check_stack_range_initialized() to more
+> precisely track helper arguments.
+>=20
+> One benefit from this precision is that registers tracked as valid
+> spills and passed as a read-only helper argument remain tracked after
+> the call.  Rather than being marked STACK_MISC afterwards.
+>=20
+> An additional benefit is the verifier logs are also more precise. For
+> this particular error, users will enjoy a slightly clearer message. See
+> included selftest updates for examples.
+>=20
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
 
-Similarly to the previous test, we also need a test case to cover
-positive offsets as well, TC is an excellent hook for this.
+I think this change is ok.
+With it there is only one use of 'enum bpf_access_src' remains,
+but it doesn't look like it could be removed.
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Zijian Zhang <zijianzhang@bytedance.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- .../selftests/bpf/prog_tests/tc_change_tail.c |  62 ++++++++++
- .../selftests/bpf/progs/test_tc_change_tail.c | 106 ++++++++++++++++++
- 2 files changed, 168 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_change_tail.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_tc_change_tail.c
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_change_tail.c b/tools/testing/selftests/bpf/prog_tests/tc_change_tail.c
-new file mode 100644
-index 000000000000..74752233e779
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_change_tail.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <error.h>
-+#include <test_progs.h>
-+#include <linux/pkt_cls.h>
-+
-+#include "test_tc_change_tail.skel.h"
-+#include "socket_helpers.h"
-+
-+#define LO_IFINDEX 1
-+
-+void test_tc_change_tail(void)
-+{
-+	LIBBPF_OPTS(bpf_tcx_opts, tcx_opts);
-+	struct test_tc_change_tail *skel = NULL;
-+	struct bpf_link *link;
-+	int c1, p1;
-+	char buf[2];
-+	int ret;
-+
-+	skel = test_tc_change_tail__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_tc_change_tail__open_and_load"))
-+		return;
-+
-+	link = bpf_program__attach_tcx(skel->progs.change_tail, LO_IFINDEX,
-+				     &tcx_opts);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_tcx"))
-+		goto destroy;
-+
-+	skel->links.change_tail = link;
-+	ret = create_pair(AF_INET, SOCK_DGRAM, &c1, &p1);
-+	if (!ASSERT_OK(ret, "create_pair"))
-+		goto destroy;
-+
-+	ret = xsend(p1, "Tr", 2, 0);
-+	ASSERT_EQ(ret, 2, "xsend(p1)");
-+	ret = recv(c1, buf, 2, 0);
-+	ASSERT_EQ(ret, 2, "recv(c1)");
-+	ASSERT_EQ(skel->data->change_tail_ret, 0, "change_tail_ret");
-+
-+	ret = xsend(p1, "G", 1, 0);
-+	ASSERT_EQ(ret, 1, "xsend(p1)");
-+	ret = recv(c1, buf, 2, 0);
-+	ASSERT_EQ(ret, 1, "recv(c1)");
-+	ASSERT_EQ(skel->data->change_tail_ret, 0, "change_tail_ret");
-+
-+	ret = xsend(p1, "E", 1, 0);
-+	ASSERT_EQ(ret, 1, "xsend(p1)");
-+	ret = recv(c1, buf, 1, 0);
-+	ASSERT_EQ(ret, 1, "recv(c1)");
-+	ASSERT_EQ(skel->data->change_tail_ret, -EINVAL, "change_tail_ret");
-+
-+	ret = xsend(p1, "Z", 1, 0);
-+	ASSERT_EQ(ret, 1, "xsend(p1)");
-+	ret = recv(c1, buf, 1, 0);
-+	ASSERT_EQ(ret, 1, "recv(c1)");
-+	ASSERT_EQ(skel->data->change_tail_ret, -EINVAL, "change_tail_ret");
-+
-+	close(c1);
-+	close(p1);
-+destroy:
-+	test_tc_change_tail__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_change_tail.c b/tools/testing/selftests/bpf/progs/test_tc_change_tail.c
-new file mode 100644
-index 000000000000..28edafe803f0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_tc_change_tail.c
-@@ -0,0 +1,106 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <linux/if_ether.h>
-+#include <linux/in.h>
-+#include <linux/ip.h>
-+#include <linux/udp.h>
-+#include <linux/pkt_cls.h>
-+
-+long change_tail_ret = 1;
-+
-+static __always_inline struct iphdr *parse_ip_header(struct __sk_buff *skb, int *ip_proto)
-+{
-+	void *data_end = (void *)(long)skb->data_end;
-+	void *data = (void *)(long)skb->data;
-+	struct ethhdr *eth = data;
-+	struct iphdr *iph;
-+
-+	/* Verify Ethernet header */
-+	if ((void *)(data + sizeof(*eth)) > data_end)
-+		return NULL;
-+
-+	/* Skip Ethernet header to get to IP header */
-+	iph = (void *)(data + sizeof(struct ethhdr));
-+
-+	/* Verify IP header */
-+	if ((void *)(data + sizeof(struct ethhdr) + sizeof(*iph)) > data_end)
-+		return NULL;
-+
-+	/* Basic IP header validation */
-+	if (iph->version != 4)  /* Only support IPv4 */
-+		return NULL;
-+
-+	if (iph->ihl < 5)  /* Minimum IP header length */
-+		return NULL;
-+
-+	*ip_proto = iph->protocol;
-+	return iph;
-+}
-+
-+static __always_inline struct udphdr *parse_udp_header(struct __sk_buff *skb, struct iphdr *iph)
-+{
-+	void *data_end = (void *)(long)skb->data_end;
-+	void *hdr = (void *)iph;
-+	struct udphdr *udp;
-+
-+	/* Calculate UDP header position */
-+	udp = hdr + (iph->ihl * 4);
-+	hdr = (void *)udp;
-+
-+	/* Verify UDP header bounds */
-+	if ((void *)(hdr + sizeof(*udp)) > data_end)
-+		return NULL;
-+
-+	return udp;
-+}
-+
-+SEC("tc/ingress")
-+int change_tail(struct __sk_buff *skb)
-+{
-+	int len = skb->len;
-+	struct udphdr *udp;
-+	struct iphdr *iph;
-+	void *data_end;
-+	char *payload;
-+	int ip_proto;
-+
-+	bpf_skb_pull_data(skb, len);
-+
-+	data_end = (void *)(long)skb->data_end;
-+	iph = parse_ip_header(skb, &ip_proto);
-+	if (!iph)
-+		return TCX_PASS;
-+
-+	if (ip_proto != IPPROTO_UDP)
-+		return TCX_PASS;
-+
-+	udp = parse_udp_header(skb, iph);
-+	if (!udp)
-+		return TCX_PASS;
-+
-+	payload = (char *)udp + (sizeof(struct udphdr));
-+	if (payload + 1 > (char *)data_end)
-+		return TCX_PASS;
-+
-+	if (payload[0] == 'T') { /* Trim the packet */
-+		change_tail_ret = bpf_skb_change_tail(skb, len - 1, 0);
-+		if (!change_tail_ret)
-+			bpf_skb_change_tail(skb, len, 0);
-+		return TCX_PASS;
-+	} else if (payload[0] == 'G') { /* Grow the packet */
-+		change_tail_ret = bpf_skb_change_tail(skb, len + 1, 0);
-+		if (!change_tail_ret)
-+			bpf_skb_change_tail(skb, len, 0);
-+		return TCX_PASS;
-+	} else if (payload[0] == 'E') { /* Error */
-+		change_tail_ret = bpf_skb_change_tail(skb, 65535, 0);
-+		return TCX_PASS;
-+	} else if (payload[0] == 'Z') { /* Zero */
-+		change_tail_ret = bpf_skb_change_tail(skb, 0, 0);
-+		return TCX_PASS;
-+	}
-+	return TCX_DROP;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.34.1
+[...]
+
+> --- a/tools/testing/selftests/bpf/progs/uninit_stack.c
+> +++ b/tools/testing/selftests/bpf/progs/uninit_stack.c
+> @@ -55,33 +55,4 @@ exit_%=3D:	r0 =3D 0;					\
+>  		      : __clobber_all);
+>  }
+> =20
+> -static __noinline void dummy(void) {}
+> -
+> -/* Pass a pointer to uninitialized stack memory to a helper.
+> - * Passed memory block should be marked as STACK_MISC after helper call.
+> - */
+> -SEC("socket")
+> -__log_level(7) __msg("fp-104=3Dmmmmmmmm")
+> -__naked int helper_uninit_to_misc(void *ctx)
+
+Is it possible to peek a helper that writes into memory and not delete
+this test?
+
+> -{
+> -	asm volatile ("					\
+> -		/* force stack depth to be 128 */	\
+> -		*(u64*)(r10 - 128) =3D r1;		\
+> -		r1 =3D r10;				\
+> -		r1 +=3D -128;				\
+> -		r2 =3D 32;				\
+> -		call %[bpf_trace_printk];		\
+> -		/* Call to dummy() forces print_verifier_state(..., true),	\
+> -		 * thus showing the stack state, matched by __msg().		\
+> -		 */					\
+> -		call %[dummy];				\
+> -		r0 =3D 0;					\
+> -		exit;					\
+> -"
+> -		      :
+> -		      : __imm(bpf_trace_printk),
+> -			__imm(dummy)
+> -		      : __clobber_all);
+> -}
+> -
+
+[...]
 
 
