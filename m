@@ -1,162 +1,245 @@
-Return-Path: <bpf+bounces-46895-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46896-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E1409F1729
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 21:10:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 869F79F172F
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 21:11:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 663E7188FCCD
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 20:09:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82F351623DA
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 20:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5469E1F2364;
-	Fri, 13 Dec 2024 20:02:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0011F03CE;
+	Fri, 13 Dec 2024 20:06:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="QaOiHdKK";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="npwipiP1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WF20lNY2"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21FFB190471;
-	Fri, 13 Dec 2024 20:02:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6284F19006B
+	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 20:06:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734120132; cv=none; b=dguIrS5ul4EbhmwxU8HIcyc1nCtTXBPRhnQi1acYSlSs9G8h4QLmOOowXyJHdY3GmbstALd9WIYhl5bifH9DEnG+cRuoUoi38czImhrCjlvw8Aum6KiCN/hkh9GIaZ+CEyGEdPkC9vsAmMmywmFBTHN/h1eGgFgWllPsE3OtiX4=
+	t=1734120366; cv=none; b=YOX2A26j6Z3nzcNdXnipZZ0F3A3ZG/Jx29Bk33ofwU1IJ4FD5b6xVKnlmLlSyhnzfYGt27eeHQ4qipwS2TFtVzNiPkjib9oyKlRJfU8YlSBf8JJeuzDAuQvBdFh7JdTb/3+eOxHyS16XERJPlZb2dG6/0lrCTBajYCfmFMSOLTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734120132; c=relaxed/simple;
-	bh=cQ7JGQb4NBBf1Vsc9XB1qFiRbuBlTCVNsKyI+dsWoFw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=madOa7XmyC8oadtIutfXwug/9zzVGAjZy8ooPg9SNaD+D/OaF89QX3CiyDL5y3hprPuSTzW/Wz5dwC7dYUNwwwybZ8/GEESfRVHVtr5AuFBIQVkmeFFYZ8miixyyynbAPERSEXwknVD3TADfha2HShcFpfe77M4G+KGk63RfhYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=QaOiHdKK; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=npwipiP1; arc=none smtp.client-ip=103.168.172.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfout.phl.internal (Postfix) with ESMTP id 1DE081382149;
-	Fri, 13 Dec 2024 15:02:10 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-03.internal (MEProxy); Fri, 13 Dec 2024 15:02:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1734120130; x=1734206530; bh=oZSIPzAhQd
-	6vMkfp3yMQ1DBeWcFBflQVOjU83wzxEX4=; b=QaOiHdKKYfMaqckjyQp2jyBt70
-	TNQZ9wbVN0hS8LoeUM0Uf4as2f8fEEd0zQmBJn9nPNnAosINt3wCW2FXbu4iKDrU
-	2NG+IwCrn+dvpAykLDXx9Xn7NWoMoRUO8XyMNQUZbBSeodLfAHs5Ahd7us7jyTN3
-	sVt8xYd5nQsuJWixAzePTvnzqjy71eW5V3jFOStho+145G1QypGSa4jtmWcjNdsm
-	FptiqWaAEk7kjy1L7PzlN7HWU30gTwpgeKwvXK0gpBlWKooQdIXMhQx5qLRUiRWF
-	ZdpgL+/JgtO+UFvwbAU91Waoqd/6CQwY9FNakNzVjHi/hhtkksv+8JgSFl6g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1734120130; x=1734206530; bh=oZSIPzAhQd6vMkfp3yMQ1DBeWcFBflQVOjU
-	83wzxEX4=; b=npwipiP1XXC2keiLDgS4skVFf57oEJxqMFIg2wrWPLmrLoLm0qo
-	ff9VPo/lq5SzuxayZ1qQwQJ85B29XG5N1FHHw9RP7k6LON+WKFfFL/JHmAF59AZc
-	zfIF5Rb4RqUlgTzvuU7wFSjPUZHpycihMDsPmqsv2VqfngQJhjyLF3N4UqhLdX/p
-	S3nQiqUrgil8/BSac85SYjv71Gd/TF07XSjc43IVv5+sycYpW5tBO+ISPG4Or18D
-	1UXXZfgIR75Xo2/WDjdl1kaDy8ps8VFp0lDDr+gj907ZmrCHcIyVv395Qa7LEvZi
-	L4lb10YHHh19Q7Caz2IsZZCH2odIx3RxyyQ==
-X-ME-Sender: <xms:wZJcZ0WgkYbzWqiAjt18KImf03Tm8rYkNAVORZ_oAtQPC8tVjGoupg>
-    <xme:wZJcZ4lXkf9NCylP0JqFFD9cqfAm9EQooK7iCeOvZWignuW6EiKow32bV8kDT8cL1
-    Auyf2TugP6Mc886pw>
-X-ME-Received: <xmr:wZJcZ4azM93Sv3SSPD2xB6B3NCzflyPluMxk7l4IIDQfFzXVj-sZSIwKqXF8fJ-zgccRdoAL29iwGU-o3pGu4vS1UB0rg5L62vJEFDZU4e1enA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrkeejgddufeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
-    dtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddttddvnecuhfhrohhmpeff
-    rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
-    epvdefkeetuddufeeigedtheefffekuedukeehudffudfffffggeeitdetgfdvhfdvnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesug
-    iguhhuuhdrgiihiidpnhgspghrtghpthhtohepudekpdhmohguvgepshhmthhpohhuthdp
-    rhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnug
-    hrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhr
-    ghdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurg
-    hnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopehjohhhnhdrfhgrshht
-    rggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopehmrghrthhinhdrlhgruheslh
-    hinhhugidruggvvhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghp
-    thhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidruggvvh
-X-ME-Proxy: <xmx:wZJcZzVAuZoo_2tDsg6gQgXZbVOiPgqlD3wNsaphtsHG3dO4cQDPnA>
-    <xmx:wZJcZ-m4r7NVbXa1e__aK0bY2ojwi4zXhzLI2T_JFW5x1NJu7JASvQ>
-    <xmx:wZJcZ4etpWewECywR9VZ9iMk32de5di6Ekv7arBhe6jCuNsh0hWoWA>
-    <xmx:wZJcZwG-g3hDriQIbatprdiZNUTPppPi91VzzKYOdQ2-g0b2f1Uqbg>
-    <xmx:wpJcZ0pbJKun6Nq6gQOkEMqvVGN8jJOtoZQAmCqu9IZ4W98mHU_B-79P>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 13 Dec 2024 15:02:07 -0500 (EST)
-Date: Fri, 13 Dec 2024 13:02:06 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, shuah@kernel.org, 
-	daniel@iogearbox.net, john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, 
-	jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 3/5] bpf: verifier: Refactor helper access
- type tracking
-Message-ID: <fsclbw3cvixxy3p3toxqegi55wew6mpqmkjs3uyhfxxgfwg5ic@k7g6iu6qgzze>
-References: <cover.1734045451.git.dxu@dxuuu.xyz>
- <4727abf12fbc53723359d4edcdf5b6dd7d33f9cb.1734045451.git.dxu@dxuuu.xyz>
- <341df2d52af6c1584353b89a8a65d9d0fb5f0f27.camel@gmail.com>
+	s=arc-20240116; t=1734120366; c=relaxed/simple;
+	bh=v00/e+MF4lOEqzeHnUOQ7ePE4v7f0uObUXzrnTzAfWs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=H+QF78Ncht75Z5qqsoDV9E/L+oP+gAsbu+OPw2AMZR1SRTXBB7WajlM0cPLK+B7Wkas2mhgeiI1PB+WBkth7f0PsLw+V8enJIEaL/dpq/cOryR3/xNAchYjFG3aEuenqhU64+RqlrqmFYzvglMuCM9i7eh4bDTMWZvDmtlppSbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WF20lNY2; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2ee50ffcf14so2683351a91.0
+        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 12:06:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734120363; x=1734725163; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=eMePhlrFzh/6hbqpw+HZWDfeCdK1IeBeWT3Hl1r/F78=;
+        b=WF20lNY2juhZdAeE2ee62nlnbX+701CPsiUW85Xet6lfVnX4Kc2GvGT26eXJnlZ/II
+         qOO5KhpeLYMGez0SMz+uJ6FKBRjOHgUq2babQOX6voJipMyF81+mxmwGMxDLv5K3Jo/5
+         z0vaM6ZVu4RMRDdrDQ6g8WTkuMRFKlPR3tpGAqV6jgcE2fPW68ogRMYICsbUEkU1TNzI
+         ayD9VKuZ8wZE0U9yDgFAMWuDWNA9AuvSpjtJ+48YTrU7xvfSPaWfedIyj8dshnxFGTZs
+         +RIq73MT5N3yu4f3CdWLbi9E5AQQFfgD3pKsB7mAa+xd8ao+27lh+391tCHWyPyRBdZE
+         XSmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734120363; x=1734725163;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eMePhlrFzh/6hbqpw+HZWDfeCdK1IeBeWT3Hl1r/F78=;
+        b=SNcAnJjJellKRiOuxIvw+lV79q1YmFxgm7R+Rirzwp0K/NdYK4gtYlqbxHtDzFLDyO
+         tn8uDi7VR/opBYu3EyvwCrhZ7sJ6iOApYYYVZD7gAOgEJAgSc/zdXLlhxUQO1CjdL7Fj
+         KC6wTtEvjBWxkOq06NQGPaaMp68Ayi3Dj8NjMwKP6zOxxs0jPk8zrS+tSc3xUz3W2quQ
+         PooCPKOuOi8JokPpfH223V2jUsc8mDTqCVXvkou6QwQpc80TNq1CEEv7+mVDXmcwRLYK
+         0QWGYC0fBqXQ/i6yKqKJlyYDLoC6RQvGoyhvsctOgUmMOQGUKsUcAM0syux+lQo0M2p7
+         gnDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUu1FIwaGJ3cnfABuKPFXCkA72/XYm/pOe0m0dIT0KDgqnBUSuKkECex+aRRcvBlqqtUkE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUN5k8okEGMNqMl/PDd0++F8ZJGZb9+3tRzXPIx50WYx9drvmo
+	opkjYCan6McNxFnDICaUnEWVzz/pzdIY4YJPkvs4jIjgg6ZHAdZrXBWaBw==
+X-Gm-Gg: ASbGncskzVucoXtzD+ZCpj/20AWDMNO94uQCYavjnO0spZjemeI7LXS3V4Aoz4qGmaI
+	qM+ZRhr4qmoe9YpAwoxTEb1aPvh1fTtSXHm0qht+tJTPk2eLtYny0u4pxHHRt951jb3yyLs4mhG
+	x91NFLtRnMRyExjDbwdy/6cH92o0WLxD8ZIyUdpztqod6YFoEGV22CoQ+Zph5e5rToPo0if2Lq/
+	znms+mn5Xg3QpfTynLcx4B/ShH03acIptyr5ZqEadIcRusoDnuFFw==
+X-Google-Smtp-Source: AGHT+IHJXpKg9sbkBMew/iuWr7hhEusWkUMdUH91SAOcX9Y4BTMEHIvUqF1hkLYqXJNOriPupXoh2w==
+X-Received: by 2002:a17:90b:3883:b0:2ef:7be8:e987 with SMTP id 98e67ed59e1d1-2f13ac5477fmr12713181a91.12.1734120363453;
+        Fri, 13 Dec 2024 12:06:03 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f142d93470sm3584402a91.4.2024.12.13.12.06.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Dec 2024 12:06:02 -0800 (PST)
+Message-ID: <7793d86c11139358ea1f1afb0f731d24a30f9d50.camel@gmail.com>
+Subject: Re: [PATCH bpf v2 2/3] bpf: Augment raw_tp arguments with
+ PTR_MAYBE_NULL
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: kkd@meta.com, Juri Lelli <juri.lelli@redhat.com>, Manu Bretelle
+	 <chantra@meta.com>, Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov
+	 <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
+	 <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	kernel-team@fb.com
+Date: Fri, 13 Dec 2024 12:05:57 -0800
+In-Reply-To: <20241213175127.2084759-3-memxor@gmail.com>
+References: <20241213175127.2084759-1-memxor@gmail.com>
+	 <20241213175127.2084759-3-memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <341df2d52af6c1584353b89a8a65d9d0fb5f0f27.camel@gmail.com>
 
-On Thu, Dec 12, 2024 at 08:04:28PM GMT, Eduard Zingerman wrote:
-> On Thu, 2024-12-12 at 16:22 -0700, Daniel Xu wrote:
-> > Previously, the verifier was treating all PTR_TO_STACK registers passed
-> > to a helper call as potentially written to by the helper. However, all
-> > calls to check_stack_range_initialized() already have precise access type
-> > information available.
-> > 
-> > Rather than treat ACCESS_HELPER as a proxy for BPF_WRITE, pass
-> > enum bpf_access_type to check_stack_range_initialized() to more
-> > precisely track helper arguments.
-> > 
-> > One benefit from this precision is that registers tracked as valid
-> > spills and passed as a read-only helper argument remain tracked after
-> > the call.  Rather than being marked STACK_MISC afterwards.
-> > 
-> > An additional benefit is the verifier logs are also more precise. For
-> > this particular error, users will enjoy a slightly clearer message. See
-> > included selftest updates for examples.
-> > 
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > ---
-> 
-> I think this change is ok.
-> With it there is only one use of 'enum bpf_access_src' remains,
-> but it doesn't look like it could be removed.
-> 
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> 
-> [...]
-> 
-> > --- a/tools/testing/selftests/bpf/progs/uninit_stack.c
-> > +++ b/tools/testing/selftests/bpf/progs/uninit_stack.c
-> > @@ -55,33 +55,4 @@ exit_%=:	r0 = 0;					\
-> >  		      : __clobber_all);
-> >  }
-> >  
-> > -static __noinline void dummy(void) {}
-> > -
-> > -/* Pass a pointer to uninitialized stack memory to a helper.
-> > - * Passed memory block should be marked as STACK_MISC after helper call.
-> > - */
-> > -SEC("socket")
-> > -__log_level(7) __msg("fp-104=mmmmmmmm")
-> > -__naked int helper_uninit_to_misc(void *ctx)
-> 
-> Is it possible to peek a helper that writes into memory and not delete
-> this test?
+On Fri, 2024-12-13 at 09:51 -0800, Kumar Kartikeya Dwivedi wrote:
+> Arguments to a raw tracepoint are tagged as trusted, which carries the
+> semantics that the pointer will be non-NULL.  However, in certain cases,
+> a raw tracepoint argument may end up being NULL. More context about this
+> issue is available in [0].
+>=20
+> Thus, there is a discrepancy between the reality, that raw_tp arguments c=
+an
+> actually be NULL, and the verifier's knowledge, that they are never NULL,
+> causing explicit NULL check branch to be dead code eliminated.
+>=20
+> A previous attempt [1], i.e. the second fixed commit, was made to
+> simulate symbolic execution as if in most accesses, the argument is a
+> non-NULL raw_tp, except for conditional jumps.  This tried to suppress
+> branch prediction while preserving compatibility, but surfaced issues
+> with production programs that were difficult to solve without increasing
+> verifier complexity. A more complete discussion of issues and fixes is
+> available at [2].
+>=20
+> Fix this by maintaining an explicit list of tracepoints where the
+> arguments are known to be NULL, and mark the positional arguments as
+> PTR_MAYBE_NULL. Additionally, capture the tracepoints where arguments
+> are known to be ERR_PTR, and mark these arguments as scalar values to
+> prevent potential dereference.
+>=20
+> Each hex digit is used to encode NULL-ness (0x1) or ERR_PTR-ness (0x2),
+> shifted by the zero-indexed argument number x 4. This can be represented
+> as follows:
+> 1st arg: 0x1
+> 2nd arg: 0x10
+> 3rd arg: 0x100
+> ... and so on (likewise for ERR_PTR case).
+>=20
+> In the future, an automated pass will be used to produce such a list, or
+> insert __nullable annotations automatically for tracepoints. Each
+> compilation unit will be analyzed and results will be collated to find
+> whether a tracepoint pointer is definitely not null, maybe null, or an
+> unknown state where verifier conservatively marks it PTR_MAYBE_NULL.
+> A proof of concept of this tool from Eduard is available at [3].
+>=20
+> Note that in case we don't find a specification in the raw_tp_null_args
+> array and the tracepoint belongs to a kernel module, we will
+> conservatively mark the arguments as PTR_MAYBE_NULL. This is because
+> unlike for in-tree modules, out-of-tree module tracepoints may pass NULL
+> freely to the tracepoint. We don't protect against such tracepoints
+> passing ERR_PTR (which is uncommon anyway), lest we mark all such
+> arguments as SCALAR_VALUE.
+>=20
+> While we are it, let's adjust the test raw_tp_null to not perform
+> dereference of the skb->mark, as that won't be allowed anymore, and make
+> it more robust by using inline assembly to test the dead code
+> elimination behavior, which should still stay the same.
+>=20
+>   [0]: https://lore.kernel.org/bpf/ZrCZS6nisraEqehw@jlelli-thinkpadt14gen=
+4.remote.csb
+>   [1]: https://lore.kernel.org/all/20241104171959.2938862-1-memxor@gmail.=
+com
+>   [2]: https://lore.kernel.org/bpf/20241206161053.809580-1-memxor@gmail.c=
+om
+>   [3]: https://github.com/eddyz87/llvm-project/tree/nullness-for-tracepoi=
+nt-params
+>=20
+> Reported-by: Juri Lelli <juri.lelli@redhat.com> # original bug
+> Reported-by: Manu Bretelle <chantra@meta.com> # bugs in masking fix
+> Fixes: 3f00c5239344 ("bpf: Allow trusted pointers to be passed to KF_TRUS=
+TED_ARGS kfuncs")
+> Fixes: cb4158ce8ec8 ("bpf: Mark raw_tp arguments with PTR_MAYBE_NULL")
+> Co-developed-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
 
-Yeah, good idea. Will do.
+Tbh, I think we should have fixed the bug in what is currently in the
+tree and avoid revert. Anyways, the code looks good to me.
+
+Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+
+[...]
+
+> @@ -6597,6 +6693,39 @@ bool btf_ctx_access(int off, int size, enum bpf_ac=
+cess_type type,
+>  	if (btf_param_match_suffix(btf, &args[arg], "__nullable"))
+>  		info->reg_type |=3D PTR_MAYBE_NULL;
+> =20
+> +	if (prog->expected_attach_type =3D=3D BPF_TRACE_RAW_TP) {
+> +		struct btf *btf =3D prog->aux->attach_btf;
+> +		const struct btf_type *t;
+> +		const char *tname;
+> +
+> +		/* BTF lookups cannot fail, return false on error */
+> +		t =3D btf_type_by_id(btf, prog->aux->attach_btf_id);
+> +		if (!t)
+> +			return false;
+> +		tname =3D btf_name_by_offset(btf, t->name_off);
+> +		if (!tname)
+> +			return false;
+> +		/* Checked by bpf_check_attach_target */
+> +		tname +=3D sizeof("bpf_trace_") - 1;
+
+Nit: bpf_check_attach_target uses "btf_trace_" prefix.
+
+> +		for (i =3D 0; i < ARRAY_SIZE(raw_tp_null_args); i++) {
+> +			/* Is this a func with potential NULL args? */
+> +			if (strcmp(tname, raw_tp_null_args[i].func))
+> +				continue;
+> +			if (raw_tp_null_args[i].mask & (0x1 << (arg * 4)))
+> +				info->reg_type |=3D PTR_MAYBE_NULL;
+> +			/* Is the current arg IS_ERR? */
+> +			if (raw_tp_null_args[i].mask & (0x2 << (arg * 4)))
+> +				ptr_err_raw_tp =3D true;
+> +			break;
+> +		}
+> +		/* If we don't know NULL-ness specification and the tracepoint
+> +		 * is coming from a loadable module, be conservative and mark
+> +		 * argument as PTR_MAYBE_NULL.
+> +		 */
+> +		if (i =3D=3D ARRAY_SIZE(raw_tp_null_args) && btf_is_module(btf))
+> +			info->reg_type |=3D PTR_MAYBE_NULL;
+> +	}
+> +
+>  	if (tgt_prog) {
+>  		enum bpf_prog_type tgt_type;
+> =20
+> @@ -6641,6 +6770,13 @@ bool btf_ctx_access(int off, int size, enum bpf_ac=
+cess_type type,
+>  	bpf_log(log, "func '%s' arg%d has btf_id %d type %s '%s'\n",
+>  		tname, arg, info->btf_id, btf_type_str(t),
+>  		__btf_name_by_offset(btf, t->name_off));
+> +
+> +	/* Perform all checks on the validity of type for this argument, but if
+> +	 * we know it can be IS_ERR at runtime, scrub pointer type and mark as
+> +	 * scalar.
+> +	 */
+> +	if (ptr_err_raw_tp)
+> +		info->reg_type =3D SCALAR_VALUE;
+
+Nit: the log line above would be a bit confusing if 'ptr_err_raw_tp' would =
+be true.
+     maybe add an additional line here, saying that verifier overrides BTF =
+type?
+
+>  	return true;
+>  }
+>  EXPORT_SYMBOL_GPL(btf_ctx_access);
+
+[...]
+
 
