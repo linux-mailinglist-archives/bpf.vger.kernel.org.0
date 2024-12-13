@@ -1,184 +1,128 @@
-Return-Path: <bpf+bounces-46887-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46888-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99AA39F155B
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 20:00:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E57DE9F1596
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 20:14:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC100188CB94
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 19:00:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E6A77A1006
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 19:13:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B5BA188012;
-	Fri, 13 Dec 2024 19:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0221EC4C3;
+	Fri, 13 Dec 2024 19:13:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aTdyCVo0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iLAGx6Ln"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68671EB9E2;
-	Fri, 13 Dec 2024 19:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9FD1E47D9
+	for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 19:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734116430; cv=none; b=ZX6VygxdeuBuikbBH/vcpvEcELNTd6fJiJIP1SQUGvq08ythvQEI1p3igQA03v/C7QnIjoQgL7xIw4IDlF+yHy+W5WaaAIZpGVysMrpQ1egxrbgwJ2WtrTDPSM1KxEnFIfqL0RUsVyxe3eRyvPwlJsBdAt3WBYNIbm+Hz1hJAnM=
+	t=1734117228; cv=none; b=WDmLI3I81pPewCPtVQTywwJnk4aEwdET51aM9I39HE4MZ1AMDhoX2gXgqKzCGY23TCW0kvW4vVX/Yi1bx4cT82izuqqA8Axn+aJJ1SPxnJlPP30zrIz5aWs45ovofjqj8PZIqqprQXNhnZvb/qJ5a2tKf6mETbM8n0g6hFufKeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734116430; c=relaxed/simple;
-	bh=4cQrfh6BfHc3IlT0NVwr6zi0Zv3UEuEKb0NBjH4L2/o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GBJU6T4EZvXYpgzUl2xXd4kcifa19KJ71XN5xvZ8Wj55wRT9jAVU2tVsAx3iD21T2hq/EzNAnUiWit9RHqfRYhzjIuULundpBeptUsqN+SJJiSVElX0EwcODsCL8v2F3MUNxY3u/3DCMqnkbRvRXPr8v1lMMBviw+XKuPS7LwNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aTdyCVo0; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=Q2Hh7i1IvMPkDPyJ+H+GPqol4Inldj3eRd/RH+IyPWA=; b=aTdyCVo0A04ii9Be59koxPyCGw
-	E2Tc3gu9An0oYSw9mHUF4BGt68XuQnuY7+qEv5mkl8S/1Mb8OjHTdPRLU0Y8nSm9EmCuNg7Z3wqqy
-	Gg5gNAXSG5wpcILgrKOSICOswOFwoAOw2xu5W3peK6/AB0NW9WDuFXCZ7pkBtkOFbvrxQ/H/Wso/7
-	vup/1RzSjj5IdPAXwNmGeAuD9eAGVay0ADicmlvi1bgfEe78EBpB3K0vpdptd3ZJgBtpkK/k30Da6
-	mWavV6+5CbolAjztRsfwtkpu703L7ZYCER9Q3dAaS2BVWWPNc2kEPctCfSAxVGrJ7DNTtle0nUDG7
-	bbwW1yNA==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tMAtg-0000000F6TE-2gCj;
-	Fri, 13 Dec 2024 19:00:20 +0000
-Date: Fri, 13 Dec 2024 19:00:20 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Michal Hocko <mhocko@suse.com>
-Cc: lsf-pc@lists.linuxfoundation.org, linux-scsi@vger.kernel.org,
-	linux-ide@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-block@vger.kernel.org, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: LSF/MM/BPF: 2025: Call for Proposals
-Message-ID: <Z1yERChJxMKlZ5nZ@casper.infradead.org>
-References: <Z1wQcKKw14iei0Va@tiehlicka>
+	s=arc-20240116; t=1734117228; c=relaxed/simple;
+	bh=kZ6EcUzq2jNdidPybk0fuP8u4Ugi0Aq98UlB6cj6uvg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iKsxB3oYRpTLlqpmLXooXixatUgAHLt5pl7OyGyaTX9awUEOn8HW2jYr960tnT/XOL1X1QZq4MzUK9kR8hzbko8WeaKg5P4O1EGjbYDUJO004IBN5vdaeNQf4JnmmwLC1DkfGV/2uc9Kk1FcuVcpL4YC8uOQdxWtcsgNEqF0u7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iLAGx6Ln; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-467896541e1so31781cf.0
+        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 11:13:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1734117225; x=1734722025; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kZ6EcUzq2jNdidPybk0fuP8u4Ugi0Aq98UlB6cj6uvg=;
+        b=iLAGx6LnNkgwcTULek/3abeKGn5V84GGIKpqrra195wc3SC2sza0AJA/eGnnU0EotC
+         8mU6Ob0v2J47UVXC9iI/8n+pmJR4cvFUN1r47/k/BGosMoUCLXVHDfmLL7qzLqHI3YDL
+         LBpECFL/4BgILVgI+mwaG2CcS8WU9r7jdHUFlbHqYmBw4K6vOaUbOkbjkhS1xqsuzyWz
+         CgCYiwGfhtY+YmSF+mWgysmHlP3AE5X1I1QSfBkzl/zKIO2z3PWUva9id6BwdC+1ln54
+         OOoBf7OesAtcBWkfJcXj/0SLBZgxr5yYLu309b2zag5sVaYtoqwA3BIRcMTsaq1n2rBX
+         Zxbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734117225; x=1734722025;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kZ6EcUzq2jNdidPybk0fuP8u4Ugi0Aq98UlB6cj6uvg=;
+        b=tkgCsjE82tXCgrK/4latMPEcaBTWf1OccOrlObiWgf2TJl8XF5WQH3Ozhkx9DvdY9q
+         ddx06qrBmq51pZgmWw9kT6FpCJWfFsAz9NiaHrAZEDixKYvRflAoxfy7qqWKv/La2BTw
+         23HOUvo5acT1U5JT2FocH7BbcphJEpFy5K9XCeusjMbl2sUYH3eLgDeEH7DcPjfo0/R2
+         GRlPoIrWt3MzuxQr+og3qxFCLPH3yh2jfX1IgpzKpZfhD+wXsu2dDqGRTnQuZSmkzFaz
+         +YrmJurjgXkGULFr1tJY8OVDVFh2R3Mq1EE2D/q3F0VummCX1rgmV5rA6thX0Z9iTIs4
+         au2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXRBOTj9PHTNFhgdLD9l6mqh33AC1MV6vE8fXSHO4Q1dETI/3iFmYCFgwxXX2QViLojkBM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy3qDS2WeN/bSzTtvWO5jxaar9EkSpxqXUdIkI5FHO3eRd6UU0n
+	ni0qcGW/mH/2BniU3vySCUksQhQiDtjVTUfV2WeQUu67paBy2HeFnVPzIwEG3PB+NoUnLOy7zSA
+	N+zPcH6lB49vHAH1SsNRrXPB8ngcv7xBuYlC8
+X-Gm-Gg: ASbGncv6DZxE9pqo1lDGCCcQQ2mw2ILgnIp+NwJ720+7RnYG+EPnQcQIgaLkhHWapor
+	gE5395g1jX58dPCYjHrr6AEvT7ZNIOlgQMXclAw==
+X-Google-Smtp-Source: AGHT+IF8Lt9b9Tc5G9jT4uQCd6qUIHKsCG+ri6mk/aF10xNf22rSX0wOK1yGdKJJt1WdnMH1NLbi3qayMa41u3rZCLw=
+X-Received: by 2002:a05:622a:89:b0:467:7f81:ade0 with SMTP id
+ d75a77b69052e-467b30b4e71mr129381cf.24.1734117224728; Fri, 13 Dec 2024
+ 11:13:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z1wQcKKw14iei0Va@tiehlicka>
+References: <20241211172649.761483-1-aleksander.lobakin@intel.com> <20241211172649.761483-10-aleksander.lobakin@intel.com>
+In-Reply-To: <20241211172649.761483-10-aleksander.lobakin@intel.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Fri, 13 Dec 2024 11:13:33 -0800
+Message-ID: <CAHS8izNEzoeuAQieg9=v7rHp8TCWXyw60UbrZgEm5LCKhtCEAg@mail.gmail.com>
+Subject: Re: [PATCH net-next 09/12] page_pool: add a couple of netmem counterparts
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Magnus Karlsson <magnus.karlsson@intel.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Jason Baron <jbaron@akamai.com>, 
+	Casey Schaufler <casey@schaufler-ca.com>, Nathan Chancellor <nathan@kernel.org>, 
+	nex.sw.ncis.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 13, 2024 at 11:46:08AM +0100, Michal Hocko wrote:
-> The annual Linux Storage, Filesystem, Memory Management, and BPF
-> (LSF/MM/BPF) Summit for 2025 will be held March 24–26, 2025
-> at the Delta hotel Montreal
+On Wed, Dec 11, 2024 at 9:31=E2=80=AFAM Alexander Lobakin
+<aleksander.lobakin@intel.com> wrote:
+>
+> Add the following Page Pool netmem wrappers to be able to implement
+> an MP-agnostic driver:
+>
 
-I've written an opinionated guide to Montreal.
-Patches accepted, latest version can be found at
-https://www.infradead.org/~willy/linux/lsfmm2025.txt
+Sorry, we raced a bit here. Jakub merged my "page_pool_alloc_netmem",
+which does similar to what this patch does.
 
+> * page_pool{,_dev}_alloc_best_fit_netmem()
+>
+> Same as page_pool{,_dev}_alloc(). Make the latter a wrapper around
+> the new helper (as a page is always a netmem, but not vice versa).
+> 'page_pool_alloc_netmem' is already busy, hence '_best_fit' (which
+> also says what the helper tries to do).
+>
 
-Montreal
-========
+I freed the page_pool_alloc_netmem name by doing a rename, and now
+page_pool_alloc_netmem is the netmem counterpart to page_pool_alloc. I
+did not however add a page_pool_dev_alloc equivalent.
 
-Montreal is the second-largest French-speaking city in the world.
-Despite that, you can generally manage without speaking any French;
-they are accustomed to tourists.
+> * page_pool_dma_sync_for_cpu_netmem()
+>
+> Same as page_pool_dma_sync_for_cpu(). Performs DMA sync only if
+> the netmem comes from the host.
+>
 
-Transport
-=========
-
-Montreal primarily uses the metro; it is an entirely underground system.
-Entrances are indicated with a blue downward pointing arrow.  The Delta
-hotel is between McGill and Place-des-Arts metro stops on the green line.
-Train announcements are only in French but signage is bilingual.
-
-Tickets for the STM (https://www.stm.info/en) are valid on both busses
-& metro (but not local rail which is a different system that you won't
-need to care about anyway).  Travel to and from the airport is a special
-$11 fare which includes 24 hours of travel.  You can use a credit card
-to buy fares from a big orange machine; while you can pay on the bus,
-everybody will look askance at you for slowing them down.  You'll get
-a credit-card sized piece of card with an embedded antenna; you can
-break it by folding it, and it is not recyclable.  While you could buy
-a plastic OPUS card, this will not be a wise investment decision.
-
-From the airport, you'll want to take the 747 bus to Lionel-Groulx, go
-down into the Metro and catch a green line train towards Honore-Beaugrand,
-getting off at McGill.  For getting back to the airport, you will again
-need to buy an $11 ticket for the 747 bus.  If you're travelling, say,
-Thursday evening, you might want to buy your special $11 ticket on
-Thursday morning, use it to travel around the city and eventually catch
-the 747 in time to catch your plane.
-
-I would not recommend driving in Montreal.  It is confusing and expensive.
-I'm going to take the train from Ottawa, but taking the train from New
-York is a 11+ hour ride.  I'm told it's very pretty!  There are also
-coaches (Flixbus / Greyhound / etc) but I have no experience with those.
-
-You can rent a bicycle by the minute: https://bixi.com/en/
-Scooters are probably not available to rent during winter.
-
-Beer
-====
-
-The closest brewer to the conference is Benelux.  They don't open until
-mid-afternoon, but the Provigo grocery store across the street sells
-their beer if they're not open.  It's not generally legal to drink on
-the street; take the beer back to the hotel before opening it.
-
-Other worthwhile breweries include Dieu de Ciel, 4 Origines, Saint Bock,
-Brewsky and McAuslan (aka St Ambroise).  Don't be afraid to use the
-metro to visit them.  There are many pubs on Crescent and de la Montagne
-streets; most will serve local beer.  Cans of beer are readily available
-at corner shops (referred to as "dep", short for Depanneur).
-
-Molson is headquartered in Montreal.  It is not usually considered
-local beer.
-
-Food
-====
-
-Montreal prides itself on food.  Classic dishes include poutine, smoked
-meat and tourtiere.  As a major city, there is plenty of international
-food.  Montreal and New York have different styles of bagels from each
-other and much ink has been spilled on the subject of which is superior;
-try St Viateur or Fairmont for a fair example of Montreal bagels.
-
-There is also fierce competition as to whether Quebec, Ontario or
-Vermont produces the best maple syrup.  You should probably find a
-Cabane a Sucre / Sugar Shack to form an opinion of your own, eg
-https://www.parcjeandrapeau.com/en/urban-sugar-shack-spring-restaurant-sainte-helene-bistro-terrace-montreal/
-
-Outside
-=======
-
-We're going to be there in March.  It could be -30C or +20C.  Montreal
-has an underground city (RESO) which has shops and restaurants, as
-well as being a sheltered route between office towers and the metro.
-There's an entrance at Union street, just two blocks from the hotel.
-https://www.mtl.org/en/experience/guide-underground-city-shopping
-(yes, that is a chunk of the Berlin wall in the picture)
-
-If the weather is clement, Mont Royal is a popular destination, but it
-can be icy and not much fun at this time of year.  The Lachine canal may
-be a better bet, or you can walk or cycle on the Formula 1 circuit on
-Ile Notre Dame.  It's not the Nurburgring; while you can drive on it,
-the speed limit is 30kph.  A more unusual route would be the Samuel
-De Champlain bridge Multiuse Path which is some of the best tarmac in
-the city (but ends on an unsurfaced path that connects to the Formula
-1 circuit).
-
-The local sport is hockey.  The Habs are not having a good year, so you
-may be able to buy tickets to a game.  The Colorado Avalanche are in town
-on Saturday 22nd; otherwise you should be able to watch a game in a pub.
-Women's hockey is gaining in popularity, and the Montreal Victoire are
-playing Toronto at Place Bell at noon on Sunday 23rd.
-
-St Catherine, St Laurent & St Denis are the major shopping streets.
-There are markets at Atwater and Jean Talon.  The Vieux Port area
-is full of tourist tat (but maybe you want a sweatshirt with Montreal
-written on it).
-
-The Biodome and Biosphere are both worth a visit.  There's also a
-planetarium, the Musee des Beaux Arts and the botanic gardens.  I like
-the Archaeology museum.
+My series also adds page_pool_dma_sync_netmem_for_cpu, which should be
+the same as your page_pool_dma_sync_for_cpu_netmem.
 
