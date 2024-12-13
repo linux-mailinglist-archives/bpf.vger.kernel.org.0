@@ -1,165 +1,162 @@
-Return-Path: <bpf+bounces-46894-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46895-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13AE69F16AE
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 20:47:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E1409F1729
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 21:10:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CFB1167EF1
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 19:47:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 663E7188FCCD
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2024 20:09:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5665D1F4E30;
-	Fri, 13 Dec 2024 19:44:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5469E1F2364;
+	Fri, 13 Dec 2024 20:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Yy6RW/j4";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="uE/ld55m"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="QaOiHdKK";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="npwipiP1"
 X-Original-To: bpf@vger.kernel.org
 Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E941F470F;
-	Fri, 13 Dec 2024 19:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21FFB190471;
+	Fri, 13 Dec 2024 20:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734119075; cv=none; b=k/Fo3z3Fu0w59rXYjmEiehVz8cP77RB85AnWfZYQiXjUEeuT4bXJ2/QyM7jjEPCfYp81Odcb5mEZ/hirtxr4JXt3vvLo+B6AhiFz9i86+B1CFoodHEC78sPa4KAJ4T+sTFVFk9kEjWeheOXARHWj5NaBX8BTYVOYZjZgOuL3fjw=
+	t=1734120132; cv=none; b=dguIrS5ul4EbhmwxU8HIcyc1nCtTXBPRhnQi1acYSlSs9G8h4QLmOOowXyJHdY3GmbstALd9WIYhl5bifH9DEnG+cRuoUoi38czImhrCjlvw8Aum6KiCN/hkh9GIaZ+CEyGEdPkC9vsAmMmywmFBTHN/h1eGgFgWllPsE3OtiX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734119075; c=relaxed/simple;
-	bh=4yPh3o5msytngK0b2M7uPcwE2itl/ZpxnSyMzy56frI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z6NtYaXVQQPHLr61iT69uQBUT1VsnFlVCkNmxb/XV6q2Kpf019+pqzbv3fUIzMITqXkqaDumn7vlmyqPQxJhbmSFi9wLEN28X2ymIXKoFGNo/E2lk1FH60Z1lEMUn+vWoxVt/OtQDk8kDSL0tmxlBFBDCQiGhaUik0bXNdIULTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=Yy6RW/j4; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=uE/ld55m; arc=none smtp.client-ip=103.168.172.151
+	s=arc-20240116; t=1734120132; c=relaxed/simple;
+	bh=cQ7JGQb4NBBf1Vsc9XB1qFiRbuBlTCVNsKyI+dsWoFw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=madOa7XmyC8oadtIutfXwug/9zzVGAjZy8ooPg9SNaD+D/OaF89QX3CiyDL5y3hprPuSTzW/Wz5dwC7dYUNwwwybZ8/GEESfRVHVtr5AuFBIQVkmeFFYZ8miixyyynbAPERSEXwknVD3TADfha2HShcFpfe77M4G+KGk63RfhYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=QaOiHdKK; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=npwipiP1; arc=none smtp.client-ip=103.168.172.151
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
 Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfout.phl.internal (Postfix) with ESMTP id 21B221383EA2;
-	Fri, 13 Dec 2024 14:44:33 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-03.internal (MEProxy); Fri, 13 Dec 2024 14:44:33 -0500
+	by mailfout.phl.internal (Postfix) with ESMTP id 1DE081382149;
+	Fri, 13 Dec 2024 15:02:10 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Fri, 13 Dec 2024 15:02:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1734119073; x=
-	1734205473; bh=Hqyz5RNb3bsM+MDynbvfut+TaE71hr9iEdgs6WRLNZg=; b=Y
-	y6RW/j4DzmIVsOhUtNyY4kwRgU2nowV3hrmkcOcCyskn5owUGwY9k++uthZVAX5k
-	7K+LTdhMNPDTILtv0+p0TPimK9/kf4Yh4KVXK2RJdynO3Ep0RoAdqyg7LzaRPGsO
-	yp1b2PIuKexsZimhSkPpfykkEN23YuAXfqbjhiDsINUZL1jzfgTGXnAQB31KB0BN
-	l8D2lX73YkYkLZWflZEnit3PqSpEn5UWcHzLQOaPzRKReVjbgDNmqBCQJpeBReCL
-	wITxuHD/czdEwlb2yA1U/iFU2HeLnXNivudQTdF79+V+k7+LfRgWZO7SC5oGiFHE
-	aUL7SVWyYh56U7XpLlwtQ==
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1734120130; x=1734206530; bh=oZSIPzAhQd
+	6vMkfp3yMQ1DBeWcFBflQVOjU83wzxEX4=; b=QaOiHdKKYfMaqckjyQp2jyBt70
+	TNQZ9wbVN0hS8LoeUM0Uf4as2f8fEEd0zQmBJn9nPNnAosINt3wCW2FXbu4iKDrU
+	2NG+IwCrn+dvpAykLDXx9Xn7NWoMoRUO8XyMNQUZbBSeodLfAHs5Ahd7us7jyTN3
+	sVt8xYd5nQsuJWixAzePTvnzqjy71eW5V3jFOStho+145G1QypGSa4jtmWcjNdsm
+	FptiqWaAEk7kjy1L7PzlN7HWU30gTwpgeKwvXK0gpBlWKooQdIXMhQx5qLRUiRWF
+	ZdpgL+/JgtO+UFvwbAU91Waoqd/6CQwY9FNakNzVjHi/hhtkksv+8JgSFl6g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1734119073; x=1734205473; bh=H
-	qyz5RNb3bsM+MDynbvfut+TaE71hr9iEdgs6WRLNZg=; b=uE/ld55mV5AApECKd
-	GD9Kq4A3t64CFfCyFZfplrEd+OkxqpNjLnQiATYpMFJwn/vPCZGHSunJAp92Nc8V
-	J5PTiYrrV/fSKVwbTu2/rzDh2TbLT81cIascAgiWfjwMforTiebRgTiu2j9Uxzod
-	hlRFqNGtIp6KlyV0zXkHLXNuIRyTFlVhEeohqPfT8eDBjXXbFrz1MJCbgW7CmB2k
-	P57nRwKHlF/+UnoT3aTJtaMKsFJRIJSE7We7b+TtZxz4kVqZe5vnL5c3ifkpBW9S
-	Hgp2Z/AHz2iZKQB70cu9iR3PuMzCkaMV6EZwoxhA2pkNo5vytQhEX5SfgipW66Cb
-	c5qeg==
-X-ME-Sender: <xms:oI5cZ1IxIeM-cN_Vg5MamFRsMAvAEEU6NSg6jFTU4IStukH6cFqUUw>
-    <xme:oI5cZxLI_2LTe5Vpg0ZuledKWIM-UmvX0Yw-JuX_ZdwjAtroFQ4xQ-27RkvoGVE9J
-    jqp5zrOS9mCrWMVHQ>
-X-ME-Received: <xmr:oI5cZ9uzoPjla25aydrmgB_xCvZ6IL0D1DpgAfg5IOG--iwXYxUkzSnkXbdeWUy6A64uycDjLEKhquPBKL6OF6Z-yEWKi6BBKlIA3DsMyRVuf1LBHILP>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrkeejgdduvdejucetufdoteggodetrfdotf
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1734120130; x=1734206530; bh=oZSIPzAhQd6vMkfp3yMQ1DBeWcFBflQVOjU
+	83wzxEX4=; b=npwipiP1XXC2keiLDgS4skVFf57oEJxqMFIg2wrWPLmrLoLm0qo
+	ff9VPo/lq5SzuxayZ1qQwQJ85B29XG5N1FHHw9RP7k6LON+WKFfFL/JHmAF59AZc
+	zfIF5Rb4RqUlgTzvuU7wFSjPUZHpycihMDsPmqsv2VqfngQJhjyLF3N4UqhLdX/p
+	S3nQiqUrgil8/BSac85SYjv71Gd/TF07XSjc43IVv5+sycYpW5tBO+ISPG4Or18D
+	1UXXZfgIR75Xo2/WDjdl1kaDy8ps8VFp0lDDr+gj907ZmrCHcIyVv395Qa7LEvZi
+	L4lb10YHHh19Q7Caz2IsZZCH2odIx3RxyyQ==
+X-ME-Sender: <xms:wZJcZ0WgkYbzWqiAjt18KImf03Tm8rYkNAVORZ_oAtQPC8tVjGoupg>
+    <xme:wZJcZ4lXkf9NCylP0JqFFD9cqfAm9EQooK7iCeOvZWignuW6EiKow32bV8kDT8cL1
+    Auyf2TugP6Mc886pw>
+X-ME-Received: <xmr:wZJcZ4azM93Sv3SSPD2xB6B3NCzflyPluMxk7l4IIDQfFzXVj-sZSIwKqXF8fJ-zgccRdoAL29iwGU-o3pGu4vS1UB0rg5L62vJEFDZU4e1enA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrkeejgddufeduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
     rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlje
-    dtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeff
+    dtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddttddvnecuhfhrohhmpeff
     rghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnh
-    epgfefgfegjefhudeikedvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecu
+    epvdefkeetuddufeeigedtheefffekuedukeehudffudfffffggeeitdetgfdvhfdvnecu
     vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesug
     iguhhuuhdrgiihiidpnhgspghrtghpthhtohepudekpdhmohguvgepshhmthhpohhuthdp
-    rhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhope
-    hqmhhosehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghl
-    rdhorhhgpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmh
-    grrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthhtohepvgguugihiiekjees
-    ghhmrghilhdrtghomhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtg
-    hpthhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidruggvvhdprhgtphhtthho
-    pehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomh
-X-ME-Proxy: <xmx:oI5cZ2bCyjrkJ8-HGNOEZszi-yplizMugX983rDuGe1jDq1kjkRwmw>
-    <xmx:oI5cZ8YtSBlgRX4SPshDFH0A0Mg1CWdYq4JYYSuan1xd-We8k9IMhA>
-    <xmx:oI5cZ6D9SQTLf0EkLhXr_dNG0ywFs-8RHJfo_3RAms-D0UaSxnzmyQ>
-    <xmx:oI5cZ6ZOfE9G0NGor4cytPLyrc175kR0hgDqg07ITp-CRkTpysaDPw>
-    <xmx:oY5cZ5RNbT8es2vYhjdxoIn9V6URR2F320_r4tlZvHgmswfsjdk4weVT>
+    rhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnug
+    hrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurg
+    hnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopehjohhhnhdrfhgrshht
+    rggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopehmrghrthhinhdrlhgruheslh
+    hinhhugidruggvvhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghp
+    thhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidruggvvh
+X-ME-Proxy: <xmx:wZJcZzVAuZoo_2tDsg6gQgXZbVOiPgqlD3wNsaphtsHG3dO4cQDPnA>
+    <xmx:wZJcZ-m4r7NVbXa1e__aK0bY2ojwi4zXhzLI2T_JFW5x1NJu7JASvQ>
+    <xmx:wZJcZ4etpWewECywR9VZ9iMk32de5di6Ekv7arBhe6jCuNsh0hWoWA>
+    <xmx:wZJcZwG-g3hDriQIbatprdiZNUTPppPi91VzzKYOdQ2-g0b2f1Uqbg>
+    <xmx:wpJcZ0pbJKun6Nq6gQOkEMqvVGN8jJOtoZQAmCqu9IZ4W98mHU_B-79P>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 13 Dec 2024 14:44:30 -0500 (EST)
+ 13 Dec 2024 15:02:07 -0500 (EST)
+Date: Fri, 13 Dec 2024 13:02:06 -0700
 From: Daniel Xu <dxu@dxuuu.xyz>
-To: daniel@iogearbox.net,
-	qmo@kernel.org,
-	andrii@kernel.org,
-	ast@kernel.org
-Cc: martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	andrii.nakryiko@gmail.com,
-	antony@phenome.org,
-	toke@kernel.org
-Subject: [PATCH bpf-next v5 4/4] bpftool: bash: Add bash completion for root_id argument
-Date: Fri, 13 Dec 2024 12:44:12 -0700
-Message-ID: <37016c786620761e621a88240e36f6cb27a8f628.1734119028.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <cover.1734119028.git.dxu@dxuuu.xyz>
-References: <cover.1734119028.git.dxu@dxuuu.xyz>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, shuah@kernel.org, 
+	daniel@iogearbox.net, john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, 
+	jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 3/5] bpf: verifier: Refactor helper access
+ type tracking
+Message-ID: <fsclbw3cvixxy3p3toxqegi55wew6mpqmkjs3uyhfxxgfwg5ic@k7g6iu6qgzze>
+References: <cover.1734045451.git.dxu@dxuuu.xyz>
+ <4727abf12fbc53723359d4edcdf5b6dd7d33f9cb.1734045451.git.dxu@dxuuu.xyz>
+ <341df2d52af6c1584353b89a8a65d9d0fb5f0f27.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <341df2d52af6c1584353b89a8a65d9d0fb5f0f27.camel@gmail.com>
 
-This commit updates the bash completion script with the new root_id
-argument.
+On Thu, Dec 12, 2024 at 08:04:28PM GMT, Eduard Zingerman wrote:
+> On Thu, 2024-12-12 at 16:22 -0700, Daniel Xu wrote:
+> > Previously, the verifier was treating all PTR_TO_STACK registers passed
+> > to a helper call as potentially written to by the helper. However, all
+> > calls to check_stack_range_initialized() already have precise access type
+> > information available.
+> > 
+> > Rather than treat ACCESS_HELPER as a proxy for BPF_WRITE, pass
+> > enum bpf_access_type to check_stack_range_initialized() to more
+> > precisely track helper arguments.
+> > 
+> > One benefit from this precision is that registers tracked as valid
+> > spills and passed as a read-only helper argument remain tracked after
+> > the call.  Rather than being marked STACK_MISC afterwards.
+> > 
+> > An additional benefit is the verifier logs are also more precise. For
+> > this particular error, users will enjoy a slightly clearer message. See
+> > included selftest updates for examples.
+> > 
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> 
+> I think this change is ok.
+> With it there is only one use of 'enum bpf_access_src' remains,
+> but it doesn't look like it could be removed.
+> 
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> 
+> [...]
+> 
+> > --- a/tools/testing/selftests/bpf/progs/uninit_stack.c
+> > +++ b/tools/testing/selftests/bpf/progs/uninit_stack.c
+> > @@ -55,33 +55,4 @@ exit_%=:	r0 = 0;					\
+> >  		      : __clobber_all);
+> >  }
+> >  
+> > -static __noinline void dummy(void) {}
+> > -
+> > -/* Pass a pointer to uninitialized stack memory to a helper.
+> > - * Passed memory block should be marked as STACK_MISC after helper call.
+> > - */
+> > -SEC("socket")
+> > -__log_level(7) __msg("fp-104=mmmmmmmm")
+> > -__naked int helper_uninit_to_misc(void *ctx)
+> 
+> Is it possible to peek a helper that writes into memory and not delete
+> this test?
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/bpf/bpftool/bash-completion/bpftool | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 0c541498c301..1ce409a6cbd9 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -930,19 +930,24 @@ _bpftool()
-                         format)
-                             COMPREPLY=( $( compgen -W "c raw" -- "$cur" ) )
-                             ;;
-+                        root_id)
-+                            return 0;
-+                            ;;
-                         c)
--                            COMPREPLY=( $( compgen -W "unsorted" -- "$cur" ) )
-+                            COMPREPLY=( $( compgen -W "unsorted root_id" -- "$cur" ) )
-                             ;;
-                         *)
-                             # emit extra options
-                             case ${words[3]} in
-                                 id|file)
-+                                    COMPREPLY=( $( compgen -W "root_id" -- "$cur" ) )
-                                     _bpftool_once_attr 'format'
-                                     ;;
-                                 map|prog)
-                                     if [[ ${words[3]} == "map" ]] && [[ $cword == 6 ]]; then
-                                         COMPREPLY+=( $( compgen -W "key value kv all" -- "$cur" ) )
-                                     fi
-+                                    COMPREPLY=( $( compgen -W "root_id" -- "$cur" ) )
-                                     _bpftool_once_attr 'format'
-                                     ;;
-                                 *)
--- 
-2.46.0
-
+Yeah, good idea. Will do.
 
