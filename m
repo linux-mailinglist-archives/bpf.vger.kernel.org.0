@@ -1,224 +1,174 @@
-Return-Path: <bpf+bounces-46981-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46982-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19D819F1C9A
-	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 05:51:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 616459F1C9C
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 06:10:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C674188D8CC
-	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 04:51:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AA21169674
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 05:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F0E74E09;
-	Sat, 14 Dec 2024 04:51:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BECE6A33F;
+	Sat, 14 Dec 2024 05:10:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dp4m+iRx"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="BHaK6sEH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3B718622;
-	Sat, 14 Dec 2024 04:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B3FC26AC3
+	for <bpf@vger.kernel.org>; Sat, 14 Dec 2024 05:10:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734151876; cv=none; b=Wnd3aVz25f4hcf6SZGRv8h+DnrRS9gxQtcioHqUz1Xm3QFb+2q+x5CtLvow+CQ2QrTV5xs5IU1wbNfMZpcTchQ+5qqN9PqZbaCklA360PhcjGEsKll38v7y6VFENC4Bz336XjATFa5qALkDh8yfnaLhneUqc+7SGTWMB+B1AszM=
+	t=1734153023; cv=none; b=JNoB8W8EOi5dGoAByhCX2S5985sfym8zxrXPLkiSEplYcUgmG6zW1ei1O2qo5Npm7MZ8oSPldWg7Enpm1b+CkbkjA+gow2TKoSbgGj6W+ZjepsNnWJTqlfFm6KGOx9S6t6e3T9lQ8a9t9FdXp0gPRomZgX6dq1Cwz2sFZNoHVps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734151876; c=relaxed/simple;
-	bh=Cbdl76/0CAlwb95ux1AtI9RUbOj2IELwzkslvMHs1cY=;
+	s=arc-20240116; t=1734153023; c=relaxed/simple;
+	bh=gQQp8sqD1mD8rskY/KjikTDnBE0xeGB+pX4uJf4qVPI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TCNsdfawjark7wHCymkw0zGFEKYNvtuMLwvga3yklM7X0BqsRebIzAPM81AOQB0VzC98P7V3sZFBeJ+JVJyzYZrTOQuZVa9UcgJuDsxxkbl2F07OhQas2NsvdhDK6x5s5NINpW5taH29MtC+efqMp6mbwOt21O10VjCf/iWmHD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dp4m+iRx; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2167141dfa1so20852535ad.1;
-        Fri, 13 Dec 2024 20:51:15 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ILjuxGj2p+Gx+UlFvBhtGKdCcxg6x4FEqYIZeBd8AccJ8GWrEUSY3xEJbzTjg+KIm2WouF69At7pnaYa8pOCEwjPgNdXet2C23Afxo3ObtMIjLEBQ2ZSuQa2EJCiJ9r8qM0eZ/RQtApmLgeX/eaLS/6My/8IZRuN8CoAQFQAn5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=BHaK6sEH; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5d3f249f3b2so3126490a12.3
+        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 21:10:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734151875; x=1734756675; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VsPxLy75RjSRhwiVrC80G6MBE9thvtOk6W3+q+v/8VY=;
-        b=Dp4m+iRxhokimR2A4HAwGfQNiyW9dJ5CGUMEHj/FKxUKNLyo/wMnmnUDsFoiEGPM9Z
-         WN4AZ0f7u5EDh8NQ1o5ffOjCedQDrvnULqXwrW48FHltRNsFw5adhxf6JArzkgbIA59g
-         3a2tRsi5uWH+XOSK7c4bG0HLNovUoEKI0x8hanOXyMkrzh7ouuA/FABMx+er/P3CJp8B
-         V6/gI/ebo1okmyNujDucdnNqB4lkREskSkOxDVRlzUuEr9PtvDO2dfHn2OZI4W8rHEvF
-         vxTnCdYvgUtvWCT2FNG5SOzsEZkRJuNQ04Zut3Ta+LpnSJI4oaaIEq1LJAGYz6/JHnFq
-         ScTw==
+        d=isovalent.com; s=google; t=1734153019; x=1734757819; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=e6tAySOO4zfoEIpmwTZzV6R7fL9sKuxl6Qlp4GzbRo0=;
+        b=BHaK6sEHX7iClNPfQL7PonxhDRCc4rnZhhH8pe9DGuxRJagzbfDkDAbdOgGMt9GqeG
+         7Yu9akb2drQ8bbEirZjVGo4aJoJub4UbYLQ7PCj1NCzWkBWcXO/egUd6FkBpSa8Cx4Js
+         eUZwHbadMqhnwlAhAimY7+lBsPp8emsY7TVH53/vHxdhwAjYhPHJ92OwFYDTPtTYXRFu
+         ZunPJY/z0yR/aHGWn1rYLPdlEmOCS++EYw6QWWUPC+0aJfX7tVSAPT4cnIG4tAt4mTCg
+         FqFmjdJZalTN8sbUHM+9lFGC0vapLBT9EdxfQ+biVFCsY9JbqIlKzZl4fNokyh6iTbEo
+         L8KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734151875; x=1734756675;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VsPxLy75RjSRhwiVrC80G6MBE9thvtOk6W3+q+v/8VY=;
-        b=IeSFcroaSXbTUMNU0FR8KqdWFn/W2PQINfkRatmyvB8zmlqmS18VYotSFSArtVu+4g
-         fSm2w48BCxbCqp4YxWyqCBDIOQm4qMXWW5F9yxQ3s1GjDWz4OLZnE7iqcG8sZFpelrfF
-         XNSJ0X5z+/iti7Je3QeIzI/GrJaUdnFNe2sEXhE9cZIZ0H7V7TuwCi2mdnHll+x0XAL3
-         iCKJWYTlTKyYFPZSvKf5yxbxZQEbgwL0D32eKrqyiF5wn97+JWfEi2etKgJ/bbKtZSbq
-         DALSLIMA3CD8XF2VJx9JvvJaUKHe5BgmYdWu29HQFVAVi7Qg/64iyDDRIzGd5+8Cbw2n
-         4HRg==
-X-Forwarded-Encrypted: i=1; AJvYcCWaC6pg64UVZIf63etTTLz4/EDhCfd/APQuxKxa/egrAi+wW5GC7fkYqtAf8rl2GlPAOtM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxjp44LG0iiSm1HGyeU+8RD+OPlcbMzqxjmNb28CFTrKkrqKblY
-	6AigvVVhAKHh/R8pilgj2gasxJa0N8z5xG3FH4myTb+B3vgc2b8e
-X-Gm-Gg: ASbGncufQ2uRkyG3k6zgh2CVkxOvNnnfrWPOWoOr9MSu03xUbYz5iIL637JIgVMb1Sr
-	MvQDuWhUZvfiewRXjnzfUoFs3VYecW91GJZPHbJFHxDfpVmaFoHLNgD4kgEW6TaJ0ZYDM95ztvL
-	aC7EboayG7u9rf5alPcPEtnWwdELDutQp7St3h1tjTi9JclXUBLNZkKGwFFzEfihCQW3P51KlTc
-	r/GxVnWgzX/h4oFYTRumKHWSX2TKInb3W+j48o889vx0lDIM0CxKZFrh4sYh6g=
-X-Google-Smtp-Source: AGHT+IEJp9RdfXzuHqG9bMzpEvPNju21ExCDajs6Jqep/zQAJj9+QsgS7dtTx62/cUcXApgIV309MQ==
-X-Received: by 2002:a17:902:d507:b0:215:7287:67bb with SMTP id d9443c01a7336-218939daad8mr80017695ad.0.1734151874663;
-        Fri, 13 Dec 2024 20:51:14 -0800 (PST)
-Received: from localhost ([2601:647:6881:9060:ede9:5cb0:814a:63a6])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-218a1dcb35esm5637215ad.62.2024.12.13.20.51.13
+        d=1e100.net; s=20230601; t=1734153019; x=1734757819;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e6tAySOO4zfoEIpmwTZzV6R7fL9sKuxl6Qlp4GzbRo0=;
+        b=FB+YeFRsPkZb9V6UKGA7J9+uzsNwaAj79CcCJ0eMeGz4J9ZSrOVYA+lBd3ebBAUQg+
+         flWVi+spOFufuUdpKoFxHGlmNhRHYKA/6eWqxXNKA6IsM8QMm5xH5F+J4RL26mhmikCX
+         0NiA7IQCIeRxXKnf2QNTsbDPdm6iWZTYcnqhHs7iikr33ZtOx2fhoVjI7XwJy+1L5gup
+         UdCAB9vB6BG12LpKbys6Rkw8AvoK3+EO5PSsR2PhduMTAHql8B8Am4QDGAs7+nG596A1
+         INmVSwqfWqmi2+RoQDP7/rIINfqnFN0HJnEvzrjM4akhVZyXhAWQGijr30fZyYAcWcFL
+         WRIA==
+X-Gm-Message-State: AOJu0YxtVk6mpH/wH2mdQbfQQGHWzDNMY69eoC5y7KLYvovcs1fD0yyv
+	woD/OjUvEwNjkQSgnR6X3g48jq2aqrNnCUh0A+d82osPPa/9KgIUnq2GYepxQwE=
+X-Gm-Gg: ASbGncv1AhrfJIGlv4+tuj+Gl1JZTOLEJu2OX+UfVERNZb31rJZtMVx3/kc1sy7zaOU
+	lTbwgMYK72i4Z62tC0xh4dNgdSZ5FjJruhuAizhDPOQx43y4w3wy/c+wrKASUI/eNwRD/RHJUH/
+	oYO1Q6eaglAJVfwR5VZJTD2a27H+rcr9m7OpDCp7XeHEq+tdIWquzT1D2KdwimEASEoSFSQ2+ys
+	DwwRE4Krwzvr1oPnqSis6eIXu7zvSnZRXhcvjpTBvlndg==
+X-Google-Smtp-Source: AGHT+IFt/s1EBMXB+G7X4d71SO+a6dYjvYmbqsxuCYXZI0jN3LOsqzTwEl+6WjQ1kPiG47oWn+F4Tg==
+X-Received: by 2002:a05:6402:4499:b0:5d4:55e:f99e with SMTP id 4fb4d7f45d1cf-5d63c3405bfmr12235930a12.18.1734153018954;
+        Fri, 13 Dec 2024 21:10:18 -0800 (PST)
+Received: from eis ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aab963ced07sm48627466b.204.2024.12.13.21.10.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Dec 2024 20:51:14 -0800 (PST)
-Date: Fri, 13 Dec 2024 20:51:13 -0800
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Amery Hung <amery.hung@bytedance.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, alexei.starovoitov@gmail.com,
-	martin.lau@kernel.org, sinquersw@gmail.com, toke@redhat.com,
-	jhs@mojatatu.com, jiri@resnulli.us, stfomichev@gmail.com,
-	ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn,
-	yepeilin.cs@gmail.com, ameryhung@gmail.com
-Subject: Re: [PATCH bpf-next v1 05/13] bpf: net_sched: Support implementation
- of Qdisc_ops in bpf
-Message-ID: <Z10OwXiU/RTx3Qbe@pop-os.localdomain>
-References: <20241213232958.2388301-1-amery.hung@bytedance.com>
- <20241213232958.2388301-6-amery.hung@bytedance.com>
+        Fri, 13 Dec 2024 21:10:18 -0800 (PST)
+Date: Sat, 14 Dec 2024 05:12:05 +0000
+From: Anton Protopopov <aspsk@isovalent.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org
+Subject: Re: [PATCH v5 bpf-next 4/7] bpf: add fd_array_cnt attribute for
+ prog_load
+Message-ID: <Z10TpWbexd4JDGps@eis>
+References: <20241213130934.1087929-1-aspsk@isovalent.com>
+ <20241213130934.1087929-5-aspsk@isovalent.com>
+ <CAEf4BzYqRyNCb5WB7JPA_N597LnpLm3e0ykPTP7m1eco_wyYpQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241213232958.2388301-6-amery.hung@bytedance.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYqRyNCb5WB7JPA_N597LnpLm3e0ykPTP7m1eco_wyYpQ@mail.gmail.com>
 
-On Fri, Dec 13, 2024 at 11:29:50PM +0000, Amery Hung wrote:
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index 4214e76c9168..eb16218fdf52 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -563,6 +563,7 @@ const char *btf_name_by_offset(const struct btf *btf, u32 offset);
->  const char *btf_str_by_offset(const struct btf *btf, u32 offset);
->  struct btf *btf_parse_vmlinux(void);
->  struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog);
-> +u32 get_ctx_arg_idx(struct btf *btf, const struct btf_type *func_proto, int off);
->  u32 *btf_kfunc_id_set_contains(const struct btf *btf, u32 kfunc_btf_id,
->  			       const struct bpf_prog *prog);
->  u32 *btf_kfunc_is_modify_return(const struct btf *btf, u32 kfunc_btf_id,
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index a05ccf9ee032..f733dbf24261 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6375,8 +6375,8 @@ static bool is_int_ptr(struct btf *btf, const struct btf_type *t)
->  	return btf_type_is_int(t);
->  }
->  
-> -static u32 get_ctx_arg_idx(struct btf *btf, const struct btf_type *func_proto,
-> -			   int off)
-> +u32 get_ctx_arg_idx(struct btf *btf, const struct btf_type *func_proto,
-> +		    int off)
->  {
->  	const struct btf_param *args;
->  	const struct btf_type *t;
+On 24/12/13 02:18PM, Andrii Nakryiko wrote:
+> On Fri, Dec 13, 2024 at 5:08 AM Anton Protopopov <aspsk@isovalent.com> wrote:
+> >
+> > The fd_array attribute of the BPF_PROG_LOAD syscall may contain a set
+> > of file descriptors: maps or btfs. This field was introduced as a
+> > sparse array. Introduce a new attribute, fd_array_cnt, which, if
+> > present, indicates that the fd_array is a continuous array of the
+> > corresponding length.
+> >
+> > If fd_array_cnt is non-zero, then every map in the fd_array will be
+> > bound to the program, as if it was used by the program. This
+> > functionality is similar to the BPF_PROG_BIND_MAP syscall, but such
+> > maps can be used by the verifier during the program load.
+> >
+> > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> > ---
+> >  include/uapi/linux/bpf.h       |  10 ++++
+> >  kernel/bpf/syscall.c           |   2 +-
+> >  kernel/bpf/verifier.c          | 106 ++++++++++++++++++++++++++++-----
+> >  tools/include/uapi/linux/bpf.h |  10 ++++
+> >  4 files changed, 112 insertions(+), 16 deletions(-)
+> >
+> 
+> [...]
+> 
+> >  int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u32 uattr_size)
+> >  {
+> >         u64 start_time = ktime_get_ns();
+> > @@ -22881,7 +22954,6 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+> >                 env->insn_aux_data[i].orig_idx = i;
+> >         env->prog = *prog;
+> >         env->ops = bpf_verifier_ops[env->prog->type];
+> > -       env->fd_array = make_bpfptr(attr->fd_array, uattr.is_kernel);
+> >
+> >         env->allow_ptr_leaks = bpf_allow_ptr_leaks(env->prog->aux->token);
+> >         env->allow_uninit_stack = bpf_allow_uninit_stack(env->prog->aux->token);
+> > @@ -22904,6 +22976,10 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+> >         if (ret)
+> >                 goto err_unlock;
+> >
+> > +       ret = process_fd_array(env, attr, uattr);
+> > +       if (ret)
+> > +               goto err_release_maps;
+> 
+> I think this should be goto skip_full_check, so that we can finalize
+> verifier log (you do log an error if fd_array FD is invalid, right?)
 
-Maybe separate this piece out as a separate patch?
+Right... Thanks for catching it!
 
-
-> diff --git a/net/sched/Kconfig b/net/sched/Kconfig
-> index 8180d0c12fce..ccd0255da5a5 100644
-> --- a/net/sched/Kconfig
-> +++ b/net/sched/Kconfig
-> @@ -403,6 +403,18 @@ config NET_SCH_ETS
->  
->  	  If unsure, say N.
->  
-> +config NET_SCH_BPF
-> +	bool "BPF-based Qdisc"
-> +	depends on BPF_SYSCALL && BPF_JIT && DEBUG_INFO_BTF
-
-I think new features should be default to n, unless you have reasons not
-to do so.
-
-> +	help
-> +	  This option allows BPF-based queueing disiplines. With BPF struct_ops,
-> +	  users can implement supported operators in Qdisc_ops using BPF programs.
-> +	  The queue holding skb can be built with BPF maps or graphs.
-> +
-> +	  Say Y here if you want to use BPF-based Qdisc.
-> +
-> +	  If unsure, say N.
-> +
->  menuconfig NET_SCH_DEFAULT
->  	bool "Allow override default queue discipline"
->  	help
-
-[...]
-
-> diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
-> index 2eefa4783879..f074053c4232 100644
-> --- a/net/sched/sch_api.c
-> +++ b/net/sched/sch_api.c
-> @@ -25,6 +25,7 @@
->  #include <linux/hrtimer.h>
->  #include <linux/slab.h>
->  #include <linux/hashtable.h>
-> +#include <linux/bpf.h>
->  
->  #include <net/net_namespace.h>
->  #include <net/sock.h>
-> @@ -358,7 +359,7 @@ static struct Qdisc_ops *qdisc_lookup_ops(struct nlattr *kind)
->  		read_lock(&qdisc_mod_lock);
->  		for (q = qdisc_base; q; q = q->next) {
->  			if (nla_strcmp(kind, q->id) == 0) {
-> -				if (!try_module_get(q->owner))
-> +				if (!bpf_try_module_get(q, q->owner))
->  					q = NULL;
->  				break;
->  			}
-> @@ -1287,7 +1288,7 @@ static struct Qdisc *qdisc_create(struct net_device *dev,
->  				/* We will try again qdisc_lookup_ops,
->  				 * so don't keep a reference.
->  				 */
-> -				module_put(ops->owner);
-> +				bpf_module_put(ops, ops->owner);
->  				err = -EAGAIN;
->  				goto err_out;
->  			}
-> @@ -1398,7 +1399,7 @@ static struct Qdisc *qdisc_create(struct net_device *dev,
->  	netdev_put(dev, &sch->dev_tracker);
->  	qdisc_free(sch);
->  err_out2:
-> -	module_put(ops->owner);
-> +	bpf_module_put(ops, ops->owner);
->  err_out:
->  	*errp = err;
->  	return NULL;
-> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-> index 38ec18f73de4..1e770ec251a0 100644
-> --- a/net/sched/sch_generic.c
-> +++ b/net/sched/sch_generic.c
-> @@ -24,6 +24,7 @@
->  #include <linux/if_vlan.h>
->  #include <linux/skb_array.h>
->  #include <linux/if_macvlan.h>
-> +#include <linux/bpf.h>
->  #include <net/sch_generic.h>
->  #include <net/pkt_sched.h>
->  #include <net/dst.h>
-> @@ -1083,7 +1084,7 @@ static void __qdisc_destroy(struct Qdisc *qdisc)
->  		ops->destroy(qdisc);
->  
->  	lockdep_unregister_key(&qdisc->root_lock_key);
-> -	module_put(ops->owner);
-> +	bpf_module_put(ops, ops->owner);
->  	netdev_put(dev, &qdisc->dev_tracker);
->  
->  	trace_qdisc_destroy(qdisc);
-
-Maybe this piece should be separated out too? Ideally this patch should
-only have bpf_qdisc.c and its Makefile and Kconfig changes.
-
-Regards.
+> If this is the only issue, this can probably be just patched up while applying.
+> 
+> > +
+> >         mark_verifier_state_clean(env);
+> >
+> >         if (IS_ERR(btf_vmlinux)) {
+> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> > index 4162afc6b5d0..2acf9b336371 100644
+> > --- a/tools/include/uapi/linux/bpf.h
+> > +++ b/tools/include/uapi/linux/bpf.h
+> > @@ -1573,6 +1573,16 @@ union bpf_attr {
+> >                  * If provided, prog_flags should have BPF_F_TOKEN_FD flag set.
+> >                  */
+> >                 __s32           prog_token_fd;
+> > +               /* The fd_array_cnt can be used to pass the length of the
+> > +                * fd_array array. In this case all the [map] file descriptors
+> > +                * passed in this array will be bound to the program, even if
+> > +                * the maps are not referenced directly. The functionality is
+> > +                * similar to the BPF_PROG_BIND_MAP syscall, but maps can be
+> > +                * used by the verifier during the program load. If provided,
+> > +                * then the fd_array[0,...,fd_array_cnt-1] is expected to be
+> > +                * continuous.
+> > +                */
+> > +               __u32           fd_array_cnt;
+> >         };
+> >
+> >         struct { /* anonymous struct used by BPF_OBJ_* commands */
+> > --
+> > 2.34.1
+> >
+> >
 
