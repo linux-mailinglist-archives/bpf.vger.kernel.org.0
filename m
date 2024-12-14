@@ -1,152 +1,162 @@
-Return-Path: <bpf+bounces-46972-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-46973-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 147EE9F1B72
-	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 01:47:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 567079F1B78
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 01:49:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F1B57A0480
-	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 00:47:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 997C0188906F
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2024 00:49:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FFC6BE4A;
-	Sat, 14 Dec 2024 00:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EB9ECA64;
+	Sat, 14 Dec 2024 00:49:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E59LhOKe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E5rhTv+x"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B7C613FFC
-	for <bpf@vger.kernel.org>; Sat, 14 Dec 2024 00:46:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25EB42F56;
+	Sat, 14 Dec 2024 00:49:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734137217; cv=none; b=DIn5/HrZwL5AE/KTqEnqtlOC8/v3pK0Mf5HjVVJjsXGPvKbOnd6PtJOTB4nmbsq2mTviJN7mZv8Oad4VDaFr+EaFouo+UIrXz+sfNrhycUDscfou/5nJAEIOUtSCK18IaJTlke8XTGjzTCfPbmdTQ7+x+kWrCWSmqS+ZJc/1qVY=
+	t=1734137371; cv=none; b=uK0IbzZ5/NjAKYTjPNux9gWy4cnb29Ho34NhIVItxXT4l+lvwi6hXIUsZeSY7BprMrn05AnnsCl0GcqId3owYrXhjOo4CEJY9KqeHlNCDbyVQR2GpEjDBW2o1Xmfu7By/2GzonbYBBDGCw8kwk6XBht+D1QQ6QJW3VKvU9/AUtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734137217; c=relaxed/simple;
-	bh=bfcNiGzRCOYtcCwCiwsVsmW/XP9anBs8Xsw+gbVx7fA=;
+	s=arc-20240116; t=1734137371; c=relaxed/simple;
+	bh=InXrvypmXjtmi3GHGMB0wgIT3ICJeV4aMRUyKwtu4cw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kl5lk3Pk9ZxHu1L+TgmW6zmkC67Ny4fKBkSBlumoFturAvThOwvEfQXX/i+65peSJj32XoQHBIMpohA5uHldIxlh5rCMVa9szseZtqqPddFyY7iwdLgZH5DS6MV5Czi5LVXpkClA8+7txpGkPZqoas0E+UedH2BRtUv9CoAVg7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E59LhOKe; arc=none smtp.client-ip=209.85.128.44
+	 To:Cc:Content-Type; b=Bn1XejROXrgJiICPKRMbYeGutbcmH+jsIvqCHHKgF7lP+a4SPbN79/qEuP6Ple/2y0zwXU5IM9xcw3AnqFMxr/se5NNeu2K1Z6YN25Xuz3rgTX5DPQ6t4MNs+LTL4VaVA6t25GJWCHs7HMpV+AyCyNWp7ECj4fV2xBZovEeWHkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E5rhTv+x; arc=none smtp.client-ip=209.85.166.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4362f61757fso11140905e9.2
-        for <bpf@vger.kernel.org>; Fri, 13 Dec 2024 16:46:55 -0800 (PST)
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3a7d7db4d89so7039765ab.1;
+        Fri, 13 Dec 2024 16:49:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734137214; x=1734742014; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734137369; x=1734742169; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VrsoBEg3feN0cvrzN/XtBd/ZkfHFgs/beTRYvUT+CqI=;
-        b=E59LhOKe75WGjiTkfKsFctqxB6lq8y/MwrvAcDENEsDvbJKl9EMGGKfNJvkl+FtPyD
-         GTBXdLm12DJ7Wv/ph5hkTrJU5hrFR1uegd/U/eKVPJP4G4FK07xxzRcIKxd7cV2wmZh3
-         nSCgkbk+LWN7QG7KNK2k+YfDRLPkjTO9WT5Kcuz5iuJQNZhp6nHl1Pry+gK5pjZa4pgr
-         TLHBiv/ut+vu34o2aQ/1KhlPHnyT8JJQ6bLvrnRzTTaccODzx5yiV/P84OdQFJOa0sJI
-         QGyg+3jc5DNEjs+T29+AY7Zq9Y0PNMJVPmVnZuHHVH69wPc2X2Cj8fkAceyaXu9+UK4F
-         CA3Q==
+        bh=FHxM7dbIPXmK10fGHJ5MnD0SLkeBrUv9mHxulf9+YUk=;
+        b=E5rhTv+xpzNMMa6iZB1c9hAGeFuo0KLcH+5vhr1C9tPBXeDs1yW3v9i8m0ku9AE1gG
+         w6D3GJkg5BNH2/75RjLylj0wyHw26x4w6DflauP9MQ11w8Hu5T+HwfkbLDVswpeoknOT
+         wMf5EMfn9HOBmPh+B4gcwtVVsp9uGcv89EL98i+irzfJpb4wnVjM2BhhqY0OXdr79f4k
+         pYU5TtxgkuUc69WNu3eu2u+3XVEJuOI8se7JRGV8kjBPFGAHACqURhXOOje2bdGDUf8O
+         PB8JtMqbF1KqPNiFWaWAav11mVmFo6JzDBoXvlZUW/OELQSH8FUBn5T4kH9/Jdli4PNN
+         Z/ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734137214; x=1734742014;
+        d=1e100.net; s=20230601; t=1734137369; x=1734742169;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VrsoBEg3feN0cvrzN/XtBd/ZkfHFgs/beTRYvUT+CqI=;
-        b=NdXWWa0qE/PhWGhp3IHnkeL9UWJ2jA6SEsSNa2FANpA99RGAAMH6/dhVFBtBNyJcaS
-         KWcfaVYA39hmTbd+ZD7to5YnRA0fJeXF1t5INVYks7WkidqUqMNLvAX9kVaizxdJVXLw
-         GYssJDc4kYwEoLEi9w6+0R5I9yQjhWZYUticguaD2hio1diFnP2zRpSSLkR/5GeqZNoj
-         XePI0xy7GIDZaqcqbELb6PjXQZtOdMMhTO/ikdthc1Gef98J5OvSmd/ZDNV3m1iC9vsB
-         stuxD6UHmYK14EhUfenmbUzNchXYE/6hiwRVkg7lFNp1PdV3ySjJiLgf5KuxUxWs64GS
-         C1vQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWWsGvkCuGs4AkDC1OuSFGtTtwiNgHDOgUVnDL0HWfE5WMuqRA0WjwBu8n5H32KeFt4rKU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzqi2DHCRI969LGAX/TIN89aUV3TOGQ8aKK53lF3S870FrMmUgy
-	hpBPnfaDClIhbH1ia8BMCqjBarCBsTyhaDZnLVyTFgL3khG3Ip0DO0frk+5J9FX+nOSf1gCq7AW
-	WUoMdjoJVN2gA7kpiItkDZ/CSxlfO4aad
-X-Gm-Gg: ASbGncsW8UwIX9KQBPtrupsNbpEN78acilYxZk7MBvFkydIIF6iFQOSucv5eeaXsbWV
-	0zOOf6jtJWur6/sVOTT7/ps8/YvPn4sTYmqG7ruqi064//lkaxN3y5egfdqXmkqNNSEIeWA==
-X-Google-Smtp-Source: AGHT+IGPKfd4k43iNuflln1RPDuytLV9lF2rrSbclPpQg2v0IIx07J+aEpQMtbvig6VpmDmvDiDXWrECG9RtwJ8JxH0=
-X-Received: by 2002:a05:6000:481e:b0:385:e9c0:c069 with SMTP id
- ffacd0b85a97d-3889ad37dc4mr3463929f8f.57.1734137213396; Fri, 13 Dec 2024
- 16:46:53 -0800 (PST)
+        bh=FHxM7dbIPXmK10fGHJ5MnD0SLkeBrUv9mHxulf9+YUk=;
+        b=QtIzeQAiuB6m1SVM3zcvOHvQSfXCe1SjCUhdH8bk9hV+W2vKB9+0U+QzoR7uvYwj+l
+         jr3HIQbds3/lB9RYA0q+G5iLDHjXECiYHvwkPwGfufY79ppuapTzIvH22yfDZJ1XXbXf
+         fX9VkiiGhbbm1Wuoq1yUWbP5Q/9Mgk7O5j8Z85jE733cBE2gXGteXtLybk8JZHu8iKXq
+         y13SyDrvF4WXbLqkHN9ZSpHtALf3yae94hHjbd/9zbTMlUv7Xhji5g+B5Db28y2UhLrT
+         7fpieNNhIdVidUvlH6ioJBzhY1QPRgWIzz1TVxk6LdWJV56f90403KgFy1Lr9dXABYbd
+         Fhfw==
+X-Forwarded-Encrypted: i=1; AJvYcCUvvwkSgOx8GXjTs5NIP/KzXD3LhgpiZFV1EHZ4TIejK+fKCciRsJsHNAVZi0Xi6AuA2AV+IjyB@vger.kernel.org, AJvYcCX8dC2C7wJMfla4YBCBvqUdsMV3kTejlK+HCx/OPxJsDGwUxRrwclpQAzwGFT8Q9vQD5vU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxeWk8yKv89NJcU4Bm7qoB5V8lxSengPVjHaMCDFLKqUsUf/UXM
+	Oz6FN54/FYpb3hf0ulGa/FDjBDQhiHH5pWP2ezzeJx6zSmminkVDsMwUtvhc/Z8t7+NkpHyeSE6
+	cYvrDchWKrB7glqQMtGD/YxupgZk=
+X-Gm-Gg: ASbGncuEtgdj12QTrsNIEKN2e1fHhezgc9tj24XUaAW+5SflsQnBMVBx5e0TuDq+N22
+	AEvwTGDxfTMNlHLSRVHNQiOKfGUSi8m7DJSzw
+X-Google-Smtp-Source: AGHT+IHmaKdI1KId1SACIPMJRVij6WhWA93oBBLMk30fUZ6GNvB6STn17MpL+Kc3Gqx7TkZOLJeo57MYOrR9IA1QPig=
+X-Received: by 2002:a05:6e02:1564:b0:3a2:6cd7:3250 with SMTP id
+ e9e14a558f8ab-3aff50b64c1mr45958055ab.10.1734137369142; Fri, 13 Dec 2024
+ 16:49:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAPPBnEYn-CiWVTuRq_Fq=TP0f-W+_hcJVU61xwnxqpFr3jRcyQ@mail.gmail.com>
-In-Reply-To: <CAPPBnEYn-CiWVTuRq_Fq=TP0f-W+_hcJVU61xwnxqpFr3jRcyQ@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 13 Dec 2024 16:46:42 -0800
-Message-ID: <CAADnVQL0B1bkr-=Tm7Mia9G4vtvFCX7oEMXpM1ak9hyDcQFhkA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Avoid deadlock caused by nested kprobe and fentry
- bpf programs
-To: Priya Bala Govindasamy <pgovind2@uci.edu>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Ardalan Amiri Sani <ardalan@uci.edu>
+References: <20241207173803.90744-1-kerneljasonxing@gmail.com>
+ <20241207173803.90744-8-kerneljasonxing@gmail.com> <a3abb0b6-cd94-46f6-b996-f90da7e790b9@linux.dev>
+ <CAL+tcoCyu6w=O5y2fRSfrzDVm04SB2ycXB06uYn2+r2jSRhehA@mail.gmail.com>
+ <53c3be2f-1d5d-44cb-8c27-18c84bc30c9e@linux.dev> <CAL+tcoBzapbhMuu6=jsDbf6N5eT84JmZ-siZFgHNogcRANj9bA@mail.gmail.com>
+ <fd65a3e4-bc84-426d-b60b-eb4064dd7731@linux.dev>
+In-Reply-To: <fd65a3e4-bc84-426d-b60b-eb4064dd7731@linux.dev>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Sat, 14 Dec 2024 08:48:53 +0800
+Message-ID: <CAL+tcoCmUcRavWgjCpT73FfNM7c0Qoi3EYd30EwrOa_VVT5Rhw@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 07/11] net-timestamp: support hwtstamp print
+ for bpf extension
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, dsahern@kernel.org, willemdebruijn.kernel@gmail.com, 
+	willemb@google.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 12, 2024 at 3:58=E2=80=AFPM Priya Bala Govindasamy <pgovind2@uc=
-i.edu> wrote:
+On Sat, Dec 14, 2024 at 8:17=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
 >
-> BPF program types like kprobe and fentry can cause deadlocks in certain
-> situations. If a function takes a lock and one of these bpf programs is
-> hooked to some point in the function's critical section, and if the
-> bpf program tries to call the same function and take the same lock it wil=
-l
-> lead to deadlock. These situations have been reported in the following
-> bug reports.
+> On 12/13/24 4:02 PM, Jason Xing wrote:
+> > On Sat, Dec 14, 2024 at 7:15=E2=80=AFAM Martin KaFai Lau <martin.lau@li=
+nux.dev> wrote:
+> >>
+> >> On 12/13/24 7:13 AM, Jason Xing wrote:
+> >>>>> -static void __skb_tstamp_tx_bpf(struct sock *sk, struct sk_buff *s=
+kb, int tstype)
+> >>>>> +static void __skb_tstamp_tx_bpf(struct sock *sk, struct sk_buff *s=
+kb,
+> >>>>> +                             struct skb_shared_hwtstamps *hwtstamp=
+s,
+> >>>>> +                             int tstype)
+> >>>>>     {
+> >>>>> +     struct timespec64 tstamp;
+> >>>>> +     u32 args[2] =3D {0, 0};
+> >>>>>         int op;
+> >>>>>
+> >>>>>         if (!sk)
+> >>>>> @@ -5552,6 +5556,11 @@ static void __skb_tstamp_tx_bpf(struct sock =
+*sk, struct sk_buff *skb, int tstype
+> >>>>>                 break;
+> >>>>>         case SCM_TSTAMP_SND:
+> >>>>>                 op =3D BPF_SOCK_OPS_TS_SW_OPT_CB;
+> >>>>> +             if (hwtstamps) {
+> >>>>> +                     tstamp =3D ktime_to_timespec64(hwtstamps->hwt=
+stamp);
+> >>>> Avoid this conversion which is likely not useful to the bpf prog. Di=
+rectly pass
+> >>>> hwtstamps->hwtstamp (in ns?) to the bpf prog. Put lower 32bits in ar=
+gs[0] and
+> >>>> higher 32bits in args[1].
+> >>> It makes sense.
+> >>
+> >> When replying the patch 2 thread, I noticed it may not even have to pa=
+ss the
+> >> hwtstamps in args here.
+> >>
+> >> Can "*skb_hwtstamps(skb) =3D *hwtstamps;" be done before calling the b=
+pf prog?
+> >> Then the bpf prog can directly get it from skb_shinfo(skb)->hwtstamps.
+> >> It is like reading other fields in skb_shinfo(skb), e.g. the
+> >> skb_shinfo(skb)->tskey discussed in patch 10. The bpf prog will have a=
+ more
+> >> consistent experience in reading different fields of the skb_shinfo(sk=
+b).
+> >> skb_shinfo(skb)->hwtstamps is a more intuitive place to obtain the hwt=
+stamp than
+> >> the broken up args[0] and args[1]. On top of that, there is also an ol=
+der
+> >> "skb_hwtstamp" field in "struct bpf_sock_ops".
+> >
+> > Right, right, last night, fortunately, I also spotted it. Let the bpf
+> > prog parse the shared info from skb then. A new callback for hwtstamp
+> > is needed, I suppose.
 >
-> In percpu_freelist -
-> Link: https://lore.kernel.org/bpf/CAADnVQLAHwsa+2C6j9+UC6ScrDaN9Fjqv1WjB1=
-pP9AzJLhKuLQ@mail.gmail.com/T/
-> Link: https://lore.kernel.org/bpf/CAPPBnEYm+9zduStsZaDnq93q1jPLqO-PiKX9jy=
-0MuL8LCXmCrQ@mail.gmail.com/T/
-> In bpf_lru_list -
-> Link: https://lore.kernel.org/bpf/CAPPBnEajj+DMfiR_WRWU5=3D6A7KKULdB5Rob_=
-NJopFLWF+i9gCA@mail.gmail.com/T/
-> Link: https://lore.kernel.org/bpf/CAPPBnEZQDVN6VqnQXvVqGoB+ukOtHGZ9b9U0OL=
-JJYvRoSsMY_g@mail.gmail.com/T/
-> Link: https://lore.kernel.org/bpf/CAPPBnEaCB1rFAYU7Wf8UxqcqOWKmRPU1Nuzk3_=
-oLk6qXR7LBOA@mail.gmail.com/T/
->
-> Similar bugs have been reported by syzbot.
-> In queue_stack_maps -
-> Link: https://lore.kernel.org/lkml/0000000000004c3fc90615f37756@google.co=
-m/
-> Link: https://lore.kernel.org/all/20240418230932.2689-1-hdanton@sina.com/=
-T/
-> In lpm_trie -
-> Link: https://lore.kernel.org/linux-kernel/00000000000035168a061a47fa38@g=
-oogle.com/T/
-> In ringbuf -
-> Link: https://lore.kernel.org/bpf/20240313121345.2292-1-hdanton@sina.com/=
-T/
->
-> Prevent kprobe and fentry bpf programs from attaching to these critical
-> sections by removing CC_FLAGS_FTRACE for percpu_freelist.o,
-> bpf_lru_list.o, queue_stack_maps.o, lpm_trie.o, ringbuf.o files.
->
-> The bugs reported by syzbot are due to tracepoint bpf programs being
-> called in the critical sections. This patch does not aim to fix deadlocks
-> caused by tracepoint programs. However, it does prevent deadlocks from
-> occurring in similar situations due to kprobe and fentry programs.
->
-> Signed-off-by: Priya Bala Govindasamy <pgovind2@uci.edu>
-> ---
->  kernel/bpf/Makefile | 7 +++++++
->  1 file changed, 7 insertions(+)
+> Why a new callback is needed? "*skb_hwtstamps(skb) =3D *hwtstamps;" canno=
+t be done
+> in __skb_tstamp_tx_bpf?
 
-Applying: bpf: Avoid deadlock caused by nested kprobe and fentry bpf progra=
-ms
-Using index info to reconstruct a base tree...
-M    kernel/bpf/Makefile
-error: patch failed: kernel/bpf/Makefile:52
-error: kernel/bpf/Makefile: patch does not apply
-error: Did you hand edit your patch?
-
-Pls make sure that patch applies before sending it.
-After than pls respin with [PATCH bpf-next] bpf: ...
-in the subject, so CI knows what tree to use to test it.
+Oh, I have no preference on this point. I will abort adding a new callback =
+then.
 
