@@ -1,174 +1,139 @@
-Return-Path: <bpf+bounces-46999-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47000-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 993039F24D5
-	for <lists+bpf@lfdr.de>; Sun, 15 Dec 2024 17:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 896DC9F25D7
+	for <lists+bpf@lfdr.de>; Sun, 15 Dec 2024 20:35:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 184681885F0C
-	for <lists+bpf@lfdr.de>; Sun, 15 Dec 2024 16:51:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C4641884FAA
+	for <lists+bpf@lfdr.de>; Sun, 15 Dec 2024 19:35:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C3A18FDA3;
-	Sun, 15 Dec 2024 16:51:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ANls4kyt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 471B01BD014;
+	Sun, 15 Dec 2024 19:35:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49288320E
-	for <bpf@vger.kernel.org>; Sun, 15 Dec 2024 16:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73D45192B76;
+	Sun, 15 Dec 2024 19:35:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734281478; cv=none; b=AFwFsEcRqyN2UV6M9P8khP9oXhi/0kJ5ssCinYh9lAF1gQy5NwaETVI5S3mhQqZdOAZDwL6/bkr/W3E7So9wek2P+h5bmLDDWXJoRwI3DxnrkqxRplCrV9m2RzMDSIUQdMczu+D1vcu1YWP5+pn2Gkh8Ne7Z/ZRpT20DW5Ax8tE=
+	t=1734291312; cv=none; b=mEyg3vCuQY8ZQbWPehhqBTRsrQQh2H/yn/rhD0Leu7yb8eOEafN3cfh3WrCQNzxino2+ktZ9WAHHoIXzNVnaXAwG6Z/p02/oiwipFP1sMLuvabgdmo0KlC0Cdwz1UQbn8997pq3GZGUtA4Uf2owYQpvL3uBkJJi92lsUK7kv0C4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734281478; c=relaxed/simple;
-	bh=GE4D28+gEBrZt3wmOef4cb8Ukx935RQzRrJZNQ5YHGg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=RBDIOSg7URTAkgy690NsF0PyFnfGzMBWJdRwj9dMRh52S5RvkauSWl4igh1MV/6Uq5PtmcIWEd6q+LxaJn4e1nnFObJcuvjkMOiJoMF+UNl+4gJDSF1Nw7uXZOIdD6T36bx/ytkjLpYGZDK+05soCI2+MxY6DPSix+0qsfTIOHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ANls4kyt; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1734281475;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GE4D28+gEBrZt3wmOef4cb8Ukx935RQzRrJZNQ5YHGg=;
-	b=ANls4kytQoqeYLIGJoVhwUpjcyXcu+H/lej33APMMz5QkoTGzDFrreAWynRo7tKybL1xDH
-	TPFr2NrqmOuXwpGWDc0t+5BeqR27D9hF5oatCSJpsIvaPhSUNnEcKUQ8/dgjzmZ6GICqSS
-	IHwM89agOgDjqIQtk7O0mqTZBKP2b1E=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-253-eqZHElqwNfu_9fUicT3Ltg-1; Sun, 15 Dec 2024 11:51:12 -0500
-X-MC-Unique: eqZHElqwNfu_9fUicT3Ltg-1
-X-Mimecast-MFC-AGG-ID: eqZHElqwNfu_9fUicT3Ltg
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-3022741859eso17793811fa.2
-        for <bpf@vger.kernel.org>; Sun, 15 Dec 2024 08:51:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734281471; x=1734886271;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GE4D28+gEBrZt3wmOef4cb8Ukx935RQzRrJZNQ5YHGg=;
-        b=pDTvOKLT4iBIUMJrojQjXEESqpeaYC3T68wuT00XsmP49fuK/Mk7zzSQ1iR5XUWoLR
-         wDmMup3/mxKYnK8N2odYNolSPIrNhhmlkp2HidNmT7nRUIKGlBRmnBT6dQaN90pIFpHm
-         8c+XQbYhxeUXKsAZj8Kmmvtgb9R/Eb0BUzYNbJEC+LS8Gbn22gIxEBUs1Js5xl2P7Q+K
-         6M4iFm596vVpgFWZi4bj5SnhPbj3qSBCfBU03HZyFffqf8WmyjfCh4QNhWHmVmnhrCoc
-         A7KewU1AweZfUABEXxsbSvT7QV0ZFXJ7CmmWt1Jkf7xrevSt+Fu9oxBsiCLDWZaFx6wR
-         KKnw==
-X-Gm-Message-State: AOJu0Ywy3jrCvgF4O7sLxthPoQK5yg30S+ZwnHgjzJtvd4T98YN0nw7G
-	ClcEBiUk8HZuUDRuCTfvZYyJe+nbW6GcKKhWaigRoabhXCpLLImmoD+8SmFJha6z+gqg2/4TK8i
-	l306bCmJXm5apfeG5acWe7+D1p68Cli7Y8CPMCUBMhiUQOsxxWg==
-X-Gm-Gg: ASbGncuB/sawB0PMrUr2hT27NUg3grLBB8feq/TCxkbwnu/F8SOh9xbADw/OGkLoikm
-	lumo79O8YnYawIdm7rEsa6laaQcwQB12ArsEsBwHcxlpNsfeMePhrmbDY+QUC6NrTeOQf73GigU
-	fEfS3FpO2PWP1cgzz1vAkLkL9/HmYRGqb4zoflS7UBQ/ecZiZHJj+dnit5eU1tQQOWL9ml+CVU7
-	kRArLYrLeHdEZEIJg1QYz/NVLyJMFc36rmFrhWCPfgy67HNhl5agg==
-X-Received: by 2002:a2e:be07:0:b0:302:5391:3faf with SMTP id 38308e7fff4ca-30254460e49mr28498641fa.17.1734281471319;
-        Sun, 15 Dec 2024 08:51:11 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE3gkCh2RlxpyDiu9jq4K7lYj1olyjRgqS6uKmZrjw8FOWxlHVQj6K6N9Njy1X738249EfPFQ==
-X-Received: by 2002:a2e:be07:0:b0:302:5391:3faf with SMTP id 38308e7fff4ca-30254460e49mr28498521fa.17.1734281470923;
-        Sun, 15 Dec 2024 08:51:10 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-303441d3d6asm6662881fa.120.2024.12.15.08.51.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Dec 2024 08:51:09 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id E47AE16F990B; Sun, 15 Dec 2024 17:51:06 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Hou Tao <houtao@huaweicloud.com>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, Yonghong Song
- <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri
- Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner
- <tglx@linutronix.de>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?=
- <linux@weissschuh.net>, Hou Tao
- <houtao1@huawei.com>, Xu Kuohai <xukuohai@huawei.com>
-Subject: Re: [PATCH bpf v2 7/9] bpf: Use raw_spinlock_t for LPM trie
-In-Reply-To: <23c8dc9b-4a4d-0fa1-8362-770ffd6aea35@huaweicloud.com>
-References: <20241127004641.1118269-1-houtao@huaweicloud.com>
- <20241127004641.1118269-8-houtao@huaweicloud.com> <87frnai67q.fsf@toke.dk>
- <CAADnVQLD+m_L-K0GiFsZ3SO94o3vvdi6dT3cWM=HPuTQ2_AUAQ@mail.gmail.com>
- <fede4cf9-60df-ce3a-9290-18d371622d3b@huaweicloud.com>
- <878qsua2b5.fsf@toke.dk>
- <23c8dc9b-4a4d-0fa1-8362-770ffd6aea35@huaweicloud.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Sun, 15 Dec 2024 17:51:06 +0100
-Message-ID: <87ttb4khz9.fsf@toke.dk>
+	s=arc-20240116; t=1734291312; c=relaxed/simple;
+	bh=87K9r6v8CggY8AXvxKnWlvLGmM8yqRM96IkXyTCynEg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XAGA5JI7M8WUgtxeN1FPCMcIjWqlYzGHVHS1m47/QHTGJdcTdf//cEzx0pvxNgQbD1STHPDNm8VU0pJsX3h5Xx1ld6303WbIJ7Hhy51GsmZ5KuqrxSvw1KdcCbNcVZJStr8ZwFuIklbgXcrpzDwTGN3aQ9VmeOxq4hAocGRk3RE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 701B71424;
+	Sun, 15 Dec 2024 11:35:36 -0800 (PST)
+Received: from e132581.cambridge.arm.com (e132581.arm.com [10.2.76.71])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 731A43F528;
+	Sun, 15 Dec 2024 11:35:04 -0800 (PST)
+From: Leo Yan <leo.yan@arm.com>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	James Clark <james.clark@linaro.org>,
+	"Liang, Kan" <kan.liang@linux.intel.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Mike Leach <mike.leach@linaro.org>
+Cc: Leo Yan <leo.yan@arm.com>
+Subject: [PATCH v1 0/7] perf auxtrace: Support AUX pause with BPF backend
+Date: Sun, 15 Dec 2024 19:34:29 +0000
+Message-Id: <20241215193436.275278-1-leo.yan@arm.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hou Tao <houtao@huaweicloud.com> writes:
+This series extends Perf's ability for fine-grained tracing by attaching
+specific trace events to eBPF programs. As the first step, this series
+supports kprobe, kretprobe, and tracepoints for dynamically pausing and
+resuming AUX trace.
 
-> Hi,
->
-> On 12/5/2024 5:47 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Hou Tao <houtao@huaweicloud.com> writes:
->>
->>> Hi,
->>>
->>> On 12/3/2024 9:42 AM, Alexei Starovoitov wrote:
->>>> On Fri, Nov 29, 2024 at 4:18=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgens=
-en <toke@redhat.com> wrote:
->>>>> Hou Tao <houtao@huaweicloud.com> writes:
->>>>>
->>>>>> From: Hou Tao <houtao1@huawei.com>
->>>>>>
->>>>>> After switching from kmalloc() to the bpf memory allocator, there wi=
-ll be
->>>>>> no blocking operation during the update of LPM trie. Therefore, chan=
-ge
->>>>>> trie->lock from spinlock_t to raw_spinlock_t to make LPM trie usable=
- in
->>>>>> atomic context, even on RT kernels.
->>>>>>
->>>>>> The max value of prefixlen is 2048. Therefore, update or deletion
->>>>>> operations will find the target after at most 2048 comparisons.
->>>>>> Constructing a test case which updates an element after 2048 compari=
-sons
->>>>>> under a 8 CPU VM, and the average time and the maximal time for such
->>>>>> update operation is about 210us and 900us.
->>>>> That is... quite a long time? I'm not sure we have any guidance on wh=
-at
->>>>> the maximum acceptable time is (perhaps the RT folks can weigh in
->>>>> here?), but stalling for almost a millisecond seems long.
->>>>>
->>>>> Especially doing this unconditionally seems a bit risky; this means t=
-hat
->>>>> even a networking program using the lpm map in the data path can stall
->>>>> the system for that long, even if it would have been perfectly happy =
-to
->>>>> be preempted.
->>>> I don't share this concern.
->>>> 2048 comparisons is an extreme case.
->>>> I'm sure there are a million other ways to stall bpf prog for that lon=
-g.
->>> 2048 is indeed an extreme case. I would do some test to check how much
->>> time is used for the normal cases with prefixlen=3D32 or prefixlen=3D12=
-8.
->> That would be awesome, thanks!
->
-> Sorry for the long delay. After apply patch set v3, the avg and max time
-> for prefixlen =3D 32 and prefix =3D128 is about 2.3/4, 7.7/11 us respecti=
-vely.
+The first two patches expose a BPF API from kernel so the AUX pause and
+resume can be invoked from a BPF kernel program.
 
-Ah, excellent. With those numbers, my worries about this introducing
-accidental latency spikes are much assuaged. Thanks for following up! :)
+Syncing UAPI headers between kernel and tools is finished in patch 03.
 
--Toke
+The main changes in the Perf tool for implementing eBPF skeleton
+program, hooking BPF program in a perf record session, and attaching
+trace events with BPF programs are finished in patches 04 ~ 06.
+
+The patch 07 updates documentation for usage of the new introduced
+option '--bpf-aux-pause'.
+
+This series has been tested on TC platform with ETE / TRBE with
+commands:
+
+  perf record -e cs_etm/aux-action=start-paused/ \
+  --bpf-aux-pause="kretprobe:__arm64_sys_openat:p,kprobe:__arm64_sys_openat:r,tp:sched:sched_switch:r" -a -- ls
+
+  perf record -e cs_etm/aux-action=start-paused/ \
+  --bpf-aux-pause="kretprobe:__arm64_sys_openat:p,kprobe:__arm64_sys_openat:r,tp:sched:sched_switch:r" -i -- ls
+
+Note, as the AUX pause operation cannot be inherited by child tasks, it
+requires to specify the '-i' option for default trace mode and
+per-thread mode.
+
+
+Leo Yan (7):
+  perf/core: Make perf_event_aux_pause() as external function
+  bpf: Add bpf_perf_event_aux_pause kfunc
+  bpf: Sync bpf_perf_event_aux_pause in tools UAPI bpf.h
+  perf: auxtrace: Introduce eBPF program for AUX pause
+  perf: auxtrace: Support BPF backend for AUX pause
+  perf record: Support AUX pause with BPF
+  perf docs: Document AUX pause with BPF
+
+ include/linux/perf_event.h                    |   1 +
+ include/uapi/linux/bpf.h                      |  21 +
+ kernel/bpf/verifier.c                         |   2 +
+ kernel/events/core.c                          |   2 +-
+ kernel/trace/bpf_trace.c                      |  52 +++
+ tools/include/uapi/linux/bpf.h                |  21 +
+ tools/perf/Documentation/perf-record.txt      |  40 ++
+ tools/perf/Makefile.perf                      |   1 +
+ tools/perf/builtin-record.c                   |  18 +-
+ tools/perf/util/Build                         |   4 +
+ tools/perf/util/auxtrace.h                    |  43 ++
+ tools/perf/util/bpf_auxtrace_pause.c          | 385 ++++++++++++++++++
+ tools/perf/util/bpf_skel/auxtrace_pause.bpf.c | 135 ++++++
+ tools/perf/util/evsel.c                       |   6 +
+ tools/perf/util/record.h                      |   1 +
+ 15 files changed, 730 insertions(+), 2 deletions(-)
+ create mode 100644 tools/perf/util/bpf_auxtrace_pause.c
+ create mode 100644 tools/perf/util/bpf_skel/auxtrace_pause.bpf.c
+
+-- 
+2.34.1
 
 
