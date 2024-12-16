@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-47021-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47022-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 200729F2A6A
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 07:51:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 004F99F2A6D
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 07:52:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E3FA1631A0
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 06:51:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 262AB166112
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 06:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A561D61BC;
-	Mon, 16 Dec 2024 06:49:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABB61D7992;
+	Mon, 16 Dec 2024 06:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eTRjnVkG"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bQpFdQf4"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEE001D5AB8;
-	Mon, 16 Dec 2024 06:49:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 032401D63EF;
+	Mon, 16 Dec 2024 06:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734331754; cv=none; b=OQ6HtafFyyuOyM5fRVHCkfFqndPmy5QwQijlu+RZtEakyL9xxfE4sat0Em3Oyqp1+L+/staQyfe4MHg76bZzTo7/QyXlRYIPNolG+9+s8QPgXsqNh6oAxBWa1ZZCM1WrxVs61g5IEOOPgYQAk1mhfiZkDdIKpyZLwWp6cKZ7x+Q=
+	t=1734331758; cv=none; b=OcgkGcmEYjTdjmE+rPwbajXJZQsG37L+XVMgZLvUIewGxDyd4SRgKiAiKXr1jQZKHLa1Azps+0gHTSe2iAlRf0ic+z6E8huk78vWtrlQoFUqO0cuoUW5sEWDQ5xnxp4YCvymCNJKjNnE1jyDYoaU3p4ZxQsiAxodqHvitPWx4yA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734331754; c=relaxed/simple;
-	bh=jkHNJJkIGIVWZcBBHLMo8Ei+M8xuX0/Qa97bdETj9YQ=;
+	s=arc-20240116; t=1734331758; c=relaxed/simple;
+	bh=fapdr+Qi+xkI++ng35zlxRw/Ys0YcVZKj85dRXTy3/I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=K/0mS9fXm2fAiCELTsnypfyUqKNZomAx6vgcaJDwBKN6Sbc5o0RJP9+q2qa3Z4P2kZAPgZMfJoblvZbNiivJInBFROJW0LmRo/pIBRKlG+WpubCFk2DILp3GaCGabNayNMiovopJnF9dwzBKy8nNGouWGru+Gyf4ZcHTCnAWGII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eTRjnVkG; arc=none smtp.client-ip=198.175.65.16
+	 MIME-Version; b=ouiLeVChfrBIpTIVjuxboaELz9OCuuZOOngYqbJVR62FCfkghxcpbOckTQ7pe5BguElFsaRmzBhYwSq+ZOJeN7IRtOJTDcLueN+rMW6RORKNh447fNSR2qeQWr9vMM6bo8YfJvWz6Z3Mz2di3eycaCExRdSsdgNqy9PGOZfuQ78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bQpFdQf4; arc=none smtp.client-ip=198.175.65.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1734331753; x=1765867753;
+  t=1734331757; x=1765867757;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=jkHNJJkIGIVWZcBBHLMo8Ei+M8xuX0/Qa97bdETj9YQ=;
-  b=eTRjnVkGajv5fd0d++Y6gC5qKYpWN2nTfXJhvuxtWJmDOp/AfIFThxNO
-   494ZdIAwkoXS5LnrmnAL3IcRO6B8q5/AnADMhjILAxIuMa9Hb8rfnKKUw
-   h8MtNEyt72DAsKdssotr7HbDQwAcRO0UnM2RkuqbOicPLkp5jPNBkZt1F
-   trzH9oPwu21JEWWjxhVMZ9vTotOOYnJ+pRe7hCt7MdRqy7Dl5YPD4kvfJ
-   FseohzGSHEuS+gpgdXpKWrIf1ZAJMuMOb1EAHXwhIhHRxm5wdkYbKKncs
-   b6Y+bLtfFuVF4wPEEQ19/rRCeRH5pJmHfgXG/YoF2JPrEWah0Tyu07DtO
-   Q==;
-X-CSE-ConnectionGUID: XSlBaCYATVCWhCEG8/ZBZA==
-X-CSE-MsgGUID: SpXSEraOQdiKilrDiaO1Wg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11287"; a="34848255"
+  bh=fapdr+Qi+xkI++ng35zlxRw/Ys0YcVZKj85dRXTy3/I=;
+  b=bQpFdQf4dvsi8ExgpvIyirB2Qw/YqKWYN7WE6EPgCcP7oAuLXwnj63LJ
+   9OVf+Lk4cEIStPpp7TkXhRH7ic4HcJWz6+m3hlfUdxHfZWKpN+czV0az9
+   HRR5pZnMaRQJ2B7gxhBnomgJQT9s3nH7+1D2TYVJXdgSM/G/kd46Eh3C3
+   zDiGarR1lz1C+DuN55+r0fl3AohuyZ6X6tK7TeoJXTjgaYbQf7H3b17eQ
+   IpBc1WGQeoPbXvErJsgW47UwYIxwolB5gJ2FQg04gs+uYVQo5xLCfiSnB
+   lYVchWp+wKmxthZgkvruqfGaLs6sv1hdJhrvE12Vxg38vOplM9UoiERnN
+   A==;
+X-CSE-ConnectionGUID: cvTp+wK6TRKlq7bqvfBSlA==
+X-CSE-MsgGUID: EuHEr5MUT6iedd59K26n2Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11287"; a="34848263"
 X-IronPort-AV: E=Sophos;i="6.12,237,1728975600"; 
-   d="scan'208";a="34848255"
+   d="scan'208";a="34848263"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2024 22:49:13 -0800
-X-CSE-ConnectionGUID: xidStsfWS/ScD6XUaQ9Lug==
-X-CSE-MsgGUID: xARQ7+miTzGzAo0jOlkBHA==
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2024 22:49:17 -0800
+X-CSE-ConnectionGUID: Cf90MwRjSsOAGdFwxULHHg==
+X-CSE-MsgGUID: F7gvB9BPTM2O0qRtzmZAmQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="128101895"
+   d="scan'208";a="128101907"
 Received: from mohdfai2-ilbpg12-1.png.intel.com ([10.88.227.73])
-  by fmviesa001.fm.intel.com with ESMTP; 15 Dec 2024 22:49:09 -0800
+  by fmviesa001.fm.intel.com with ESMTP; 15 Dec 2024 22:49:13 -0800
 From: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 To: Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
@@ -76,9 +76,9 @@ Cc: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH iwl-next 7/9] igc: Add support for preemptible traffic class in taprio
-Date: Mon, 16 Dec 2024 01:47:18 -0500
-Message-Id: <20241216064720.931522-8-faizal.abdul.rahim@linux.intel.com>
+Subject: [PATCH iwl-next 8/9] igc: Add support to get MAC Merge data via ethtool
+Date: Mon, 16 Dec 2024 01:47:19 -0500
+Message-Id: <20241216064720.931522-9-faizal.abdul.rahim@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com>
 References: <20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com>
@@ -90,172 +90,138 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Set queue as preemptible or express for taprio.
-This will eventually set queue-specific preemptible field in TXQCTL
-register.
+Implement "ethtool --show-mm" callback for IGC.
 
-A preemptible queue can only be set if it satisfies the conditions in
-igc_fpe_is_tx_preempt_allowed(), including the verification handshake
-condition. However, the handshake is optional, as users can disable the
-"verify_enabled" field, which the function also handles.
+Tested with command:
+$ ethtool --show-mm enp1s0.
+  MAC Merge layer state for enp1s0:
+  pMAC enabled: on
+  TX enabled: on
+  TX active: on
+  TX minimum fragment size: 252
+  RX minimum fragment size: 252
+  Verify enabled: on
+  Verify time: 128
+  Max verify time: 128
+  Verification status: SUCCEEDED
 
-Verified that the correct preemptible hardware queue is set using the
-following commands:
+Verified that the fields value are retrieved correctly.
 
-a) 1:1 TC-to-Queue Mapping
-   $ sudo tc qdisc replace dev enp1s0 parent root handle 100 \
-     taprio num_tc 4 map 0 1 2 3 0 0 0 0 0 0 0 0 0 0 0 0 \
-     queues 1@0 1@1 1@2 1@3 base-time 0 sched-entry S F 100000 \
-     fp E E P P
-
-b) Non-1:1 TC-to-Queue Mapping
-   $ sudo tc qdisc replace  dev enp1s0 parent root handle 100 \
-     taprio num_tc 3 map 0 1 1 1 2 0 0 0 0 0 0 0 0 0 0 0
-     queues 2@0 1@2 1@3
-     fp E P P
-
-Co-developed-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 ---
  drivers/net/ethernet/intel/igc/igc.h         |  2 +-
- drivers/net/ethernet/intel/igc/igc_defines.h |  1 +
- drivers/net/ethernet/intel/igc/igc_main.c    | 36 ++++++++++++++++++++
- drivers/net/ethernet/intel/igc/igc_tsn.c     | 15 ++++++++
+ drivers/net/ethernet/intel/igc/igc_ethtool.c | 20 ++++++++++++
+ drivers/net/ethernet/intel/igc/igc_tsn.c     | 33 ++++++++++++++++++++
  drivers/net/ethernet/intel/igc/igc_tsn.h     |  1 +
- 5 files changed, 54 insertions(+), 1 deletion(-)
+ 4 files changed, 55 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-index 56a426765be7..fc1960925e28 100644
+index fc1960925e28..3199da9b87ba 100644
 --- a/drivers/net/ethernet/intel/igc/igc.h
 +++ b/drivers/net/ethernet/intel/igc/igc.h
-@@ -192,7 +192,7 @@ struct igc_ring {
- 	bool launchtime_enable;         /* true if LaunchTime is enabled */
- 	ktime_t last_tx_cycle;          /* end of the cycle with a launchtime transmission */
- 	ktime_t last_ff_cycle;          /* Last cycle with an active first flag */
--
-+	bool preemptible;               /* True if not express */
- 	u32 start_time;
- 	u32 end_time;
- 	u32 max_sdu;
-diff --git a/drivers/net/ethernet/intel/igc/igc_defines.h b/drivers/net/ethernet/intel/igc/igc_defines.h
-index ba96776d5854..33c2e4ce7cc8 100644
---- a/drivers/net/ethernet/intel/igc/igc_defines.h
-+++ b/drivers/net/ethernet/intel/igc/igc_defines.h
-@@ -557,6 +557,7 @@
- #define IGC_TXQCTL_QUEUE_MODE_LAUNCHT	0x00000001
- #define IGC_TXQCTL_STRICT_CYCLE		0x00000002
- #define IGC_TXQCTL_STRICT_END		0x00000004
-+#define IGC_TXQCTL_PREEMPTIBLE		0x00000008
- #define IGC_TXQCTL_QAV_SEL_MASK		0x000000C0
- #define IGC_TXQCTL_QAV_SEL_CBS0		0x00000080
- #define IGC_TXQCTL_QAV_SEL_CBS1		0x000000C0
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index e184959ef218..2787a91965d1 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -6216,6 +6216,39 @@ static bool is_base_time_past(ktime_t base_time, const struct timespec64 *now)
- 	return timespec64_compare(now, &b) > 0;
- }
+@@ -40,7 +40,7 @@ void igc_ethtool_set_ops(struct net_device *);
  
-+static u32 igc_map_tc_to_queue(const struct igc_adapter *adapter,
-+			       unsigned long preemptible_tcs)
-+{
-+	struct net_device *dev = adapter->netdev;
-+	u32 i, queue = 0;
-+
-+	for (i = 0; i < dev->num_tc; i++) {
-+		u32 offset, count;
-+
-+		if (!(preemptible_tcs & BIT(i)))
-+			continue;
-+
-+		offset = dev->tc_to_txq[i].offset;
-+		count = dev->tc_to_txq[i].count;
-+		queue |= GENMASK(offset + count - 1, offset);
-+	}
-+
-+	return queue;
-+}
-+
-+static void igc_save_preempt_queue(struct igc_adapter *adapter,
-+				   const struct tc_mqprio_qopt_offload *mqprio)
-+{
-+	u32 preemptible_queue = igc_map_tc_to_queue(adapter,
-+						    mqprio->preemptible_tcs);
-+
-+	for (int i = 0; i < adapter->num_tx_queues; i++) {
-+		struct igc_ring *tx_ring = adapter->tx_ring[i];
-+
-+		tx_ring->preemptible = preemptible_queue & BIT(i);
-+	}
-+}
-+
- static bool validate_schedule(struct igc_adapter *adapter,
- 			      const struct tc_taprio_qopt_offload *qopt)
- {
-@@ -6302,6 +6335,7 @@ static int igc_qbv_clear_schedule(struct igc_adapter *adapter)
- 		ring->start_time = 0;
- 		ring->end_time = NSEC_PER_SEC;
- 		ring->max_sdu = 0;
-+		ring->preemptible = false;
- 	}
+ #define IGC_MAX_TX_TSTAMP_REGS		4
  
- 	spin_lock_irqsave(&adapter->qbv_tx_lock, flags);
-@@ -6458,6 +6492,8 @@ static int igc_save_qbv_schedule(struct igc_adapter *adapter,
- 			ring->max_sdu = 0;
- 	}
- 
-+	igc_save_preempt_queue(adapter, &qopt->mqprio);
-+
+-/* Verification state defined as per section 30.14.1.2 in 802.3br spec */
++/* Verify state defined as per section 99.4.8, Figure 99-8 in 802.3br spec */
+ enum verify_state {
+ 	VERIFY_FAIL,
+ 	INIT_VERIFICATION,
+diff --git a/drivers/net/ethernet/intel/igc/igc_ethtool.c b/drivers/net/ethernet/intel/igc/igc_ethtool.c
+index 7cde0e5a7320..16aa6e4e1727 100644
+--- a/drivers/net/ethernet/intel/igc/igc_ethtool.c
++++ b/drivers/net/ethernet/intel/igc/igc_ethtool.c
+@@ -1782,6 +1782,25 @@ static int igc_ethtool_set_eee(struct net_device *netdev,
  	return 0;
  }
  
++static int igc_ethtool_get_mm(struct net_device *netdev,
++			      struct ethtool_mm_state *cmd)
++{
++	struct igc_adapter *adapter = netdev_priv(netdev);
++	struct fpe_t *fpe = &adapter->fpe;
++
++	cmd->tx_min_frag_size = fpe->tx_min_frag_size;
++	cmd->rx_min_frag_size = fpe->tx_min_frag_size;
++	cmd->pmac_enabled = fpe->pmac_enabled;
++	cmd->verify_enabled = fpe->verify_enabled;
++	cmd->verify_time = fpe->verify_time;
++	cmd->tx_active = igc_fpe_is_tx_preempt_allowed(&adapter->fpe);
++	cmd->tx_enabled = fpe->tx_enabled;
++	cmd->verify_status = igc_fpe_get_verify_status(&adapter->fpe);
++	cmd->max_verify_time = MAX_VERIFY_TIME;
++
++	return 0;
++}
++
+ static int igc_ethtool_set_mm(struct net_device *netdev,
+ 			      struct ethtool_mm_cfg *cmd,
+ 			      struct netlink_ext_ack *extack)
+@@ -2103,6 +2122,7 @@ static const struct ethtool_ops igc_ethtool_ops = {
+ 	.set_rxfh		= igc_ethtool_set_rxfh,
+ 	.get_ts_info		= igc_ethtool_get_ts_info,
+ 	.get_channels		= igc_ethtool_get_channels,
++	.get_mm			= igc_ethtool_get_mm,
+ 	.set_mm			= igc_ethtool_set_mm,
+ 	.set_channels		= igc_ethtool_set_channels,
+ 	.get_priv_flags		= igc_ethtool_get_priv_flags,
 diff --git a/drivers/net/ethernet/intel/igc/igc_tsn.c b/drivers/net/ethernet/intel/igc/igc_tsn.c
-index 3d39be2219f3..efd2a9f676d8 100644
+index efd2a9f676d8..919a7f088a72 100644
 --- a/drivers/net/ethernet/intel/igc/igc_tsn.c
 +++ b/drivers/net/ethernet/intel/igc/igc_tsn.c
-@@ -209,6 +209,17 @@ void igc_fpe_init(struct fpe_t *fpe)
- 	fpe->tx_min_frag_size = IGC_TX_MIN_FRAG_SIZE;
+@@ -258,6 +258,39 @@ void igc_fpe_preprocess_verify_response(struct fpe_t *fpe, int smd_type)
+ 	schedule_delayed_work(&fpe->verification_work, 0);
  }
  
-+static bool igc_fpe_is_verifed(const struct fpe_t *fpe)
++enum ethtool_mm_verify_status igc_fpe_get_verify_status(const struct fpe_t *fpe)
 +{
-+	return (fpe->verify_enabled && fpe->verify_state == VERIFIED);
++	enum ethtool_mm_verify_status verify_status;
++
++	switch (fpe->verify_state) {
++	case VERIFY_FAIL:
++		verify_status = ETHTOOL_MM_VERIFY_STATUS_FAILED;
++		break;
++
++	case INIT_VERIFICATION:
++		if (fpe->verify_enabled)
++			verify_status = ETHTOOL_MM_VERIFY_STATUS_INITIAL;
++		else
++			verify_status = ETHTOOL_MM_VERIFY_STATUS_DISABLED;
++		break;
++
++	case VERIFIED:
++		verify_status = ETHTOOL_MM_VERIFY_STATUS_SUCCEEDED;
++		break;
++
++	case SEND_VERIFY:
++	case WAIT_FOR_RESPONSE:
++		verify_status = ETHTOOL_MM_VERIFY_STATUS_VERIFYING;
++		break;
++
++	default:
++		verify_status = ETHTOOL_MM_VERIFY_STATUS_UNKNOWN;
++		break;
++	}
++
++	return verify_status;
 +}
 +
-+bool igc_fpe_is_tx_preempt_allowed(const struct fpe_t *fpe)
-+{
-+	return (fpe->pmac_enabled && fpe->tx_enabled &&
-+		(igc_fpe_is_verifed(fpe) || !fpe->verify_enabled));
-+}
-+
- void igc_fpe_verify_enabled_changed(struct fpe_t *fpe)
+ static bool is_any_launchtime(struct igc_adapter *adapter)
  {
- 	if (fpe->verify_enabled && fpe->tx_enabled) {
-@@ -539,6 +550,10 @@ static int igc_tsn_enable_offload(struct igc_adapter *adapter)
- 		if (ring->launchtime_enable)
- 			txqctl |= IGC_TXQCTL_QUEUE_MODE_LAUNCHT;
- 
-+		if (igc_fpe_is_tx_preempt_allowed(&adapter->fpe) &&
-+		    ring->preemptible)
-+			txqctl |= IGC_TXQCTL_PREEMPTIBLE;
-+
- 		/* Skip configuring CBS for Q2 and Q3 */
- 		if (i > 1)
- 			goto skip_cbs;
+ 	int i;
 diff --git a/drivers/net/ethernet/intel/igc/igc_tsn.h b/drivers/net/ethernet/intel/igc/igc_tsn.h
-index f3d83fbbd1f4..2b67ecae99c9 100644
+index 2b67ecae99c9..913f983652e4 100644
 --- a/drivers/net/ethernet/intel/igc/igc_tsn.h
 +++ b/drivers/net/ethernet/intel/igc/igc_tsn.h
-@@ -14,6 +14,7 @@
+@@ -13,6 +13,7 @@
+ #define MAX_VERIFY_TIME			128
  
  int igc_fpe_get_smd_type(__le32 status_error);
++enum ethtool_mm_verify_status igc_fpe_get_verify_status(const struct fpe_t *fpe);
  void igc_fpe_init(struct fpe_t *fpe);
-+bool igc_fpe_is_tx_preempt_allowed(const struct fpe_t *fpe);
+ bool igc_fpe_is_tx_preempt_allowed(const struct fpe_t *fpe);
  bool igc_fpe_is_verify_or_response(int smd_type, unsigned int size);
- void igc_fpe_preprocess_verify_response(struct fpe_t *fpe, int smd_type);
- void igc_fpe_verify_enabled_changed(struct fpe_t *fpe);
 -- 
 2.25.1
 
