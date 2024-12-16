@@ -1,80 +1,79 @@
-Return-Path: <bpf+bounces-47025-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47026-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1108D9F2B39
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 08:56:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E9539F2B47
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 08:59:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98C0F1620E5
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 07:56:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BC591886240
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 07:59:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9CC21FF7D8;
-	Mon, 16 Dec 2024 07:56:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0503B1FFC7E;
+	Mon, 16 Dec 2024 07:58:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PbknvN8I"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RpXI+CWd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7071FF7D0;
-	Mon, 16 Dec 2024 07:56:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93E01FF7A0;
+	Mon, 16 Dec 2024 07:58:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734335786; cv=none; b=R3/AoexMEWPluJ3lzJVRx6un3KlfyToW+WOqjuTWBXU2QuIq81jdykMbaJSLUgxGCEZvkHHyJ0IDlXHPWIMigrwYEiBQ/BlOwGSwDjaHsBxmuzKEn2UH8aUoKNDXT9JTBAUuwr7v/ttioPK52j/pkKwtx19UNYe24JuFce/4MXU=
+	t=1734335920; cv=none; b=Ca9tObmdkGXmUVKqNba4knYd2tzzd8j9ixPKj2zt5u4Q26rD7lbqABDcBwhTH8EsS+tQ+0ijXmem9VRiPD4SXGrwGcHMnbQMn6jFztofnWjWu0XiW+pBUSAjuffRUKmg6vSa6M81C+SweWxKEyWhtuv3WLJzC8W1cJt6lulRKeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734335786; c=relaxed/simple;
-	bh=bSlERmMYSl7dopPQbjdQD2d1oHPFGiVS0aVu0lv4m5c=;
+	s=arc-20240116; t=1734335920; c=relaxed/simple;
+	bh=xxP4Z5o9HC+CaQkoHHMM/63ysOrKemXE9vQLBvlDMwE=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lEsRueOEkK6f6ftEVnpWobKiPyirQa8W5/Jqp5KzCpqZJcouARXwZUnfZqw6qhaiQrTqrhCfIZ0je/G2+3z5eQO2n4p2DtWasvWvD3x/ReGMh4Uf+RJuUxgWdHE73Mk+4Zks6/SowFca8hMq0qg0tGQXaTI5rTBKIKyhxRwPEbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PbknvN8I; arc=none smtp.client-ip=209.85.208.45
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qk9jz83XxY/Hc7QrSPv0M+mQF4ICysiZmpeI7vI0Jm9Z5T19Ewxjc0PY7Xo84IiNijwJsLb2TYjklDXOrrLqDjF9P6De/o+C8oClQ8Y+p7yk8g4o3Xud60hw9jPpSi2Oa/0ok4yyVpsWhn4pi/9xu+1wcv6ErqffpXBbk2dYVoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RpXI+CWd; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5d647d5df90so3569233a12.2;
-        Sun, 15 Dec 2024 23:56:24 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-436202dd7f6so41742585e9.0;
+        Sun, 15 Dec 2024 23:58:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734335783; x=1734940583; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/vTcaQKwd8FYs5ftOR4sAUTa6EBjrQidDcX0mFSVSMA=;
-        b=PbknvN8ICA7TldBCN8erjJCPPwNKtIpclusnuWKU6pzJ0CIB1VB2agRBC8uaX8bF9c
-         H9EVUs98VO0quZiyU2AYF3gXa0i4fBrzjag1MLQvpKRR8aktqywwvAqchcF+FZ1WurSS
-         QWah3BzluIhfyr1CdyyTwuZnrRhiyRnVacRGq2AeZ3CjXGV494vp+6qid7w8ozpkDke2
-         OFQWhWw5DsdhEcEGet56Maiz/A6ZEzU6ceod5daDYyFfyPcHn7/atRndnZeTD+ck5mv2
-         soEOpRGz97u9EtXrIx+6qGyJk1M5HziMDsMFMyoRBOVPIFJubjf7AzoE/nG6AM8hbbfI
-         kCvw==
+        d=gmail.com; s=20230601; t=1734335917; x=1734940717; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dHQDsilWcBWo2qLCl2rPtBaAp/SgERxJlUjllIz41wE=;
+        b=RpXI+CWdkCXznmhbK0cW94thH4nBu+iHSFeuSQ40XWOTtCgiv1oV0MI8wReY0jmV19
+         ylY/RQm1DhLJhrX3Jf4DZuHaiToRMXwySF5W3y/Rnp/h0+/MAXcz9tf2ucnaKJ/Zp/+D
+         hmus/B3jJQg4igSndQQ/Zkva4zkH5+LxJQv3bkFjHCifATCQLYkcwFQ9DqyTpiLcwc6U
+         5wWW/qTZHlES5c5Qk1a7t9ITgFf8dKJnzkFHIHhMXTJ3L7XKF3hHv1XW0v8hWmYvo79c
+         qcfsdbaVW8uXXtgqcYAw+pqH+jn2i9h8IY69zVCy5JXzLwuDj+TPim/QFbfBv+o4xPn/
+         7SQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734335783; x=1734940583;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/vTcaQKwd8FYs5ftOR4sAUTa6EBjrQidDcX0mFSVSMA=;
-        b=eGGdL+iHxuslkQQVtFJMxzgTjiNn7ivgl0G9XatApkMlapvdKvQE6VFUWrMTnXvDG1
-         7r/fUOpUPtm9dwL7iEvg8dgDybDCkbitCeVG86YvjEV6j+HD9fwrLRAV2Q8Di1AAezXj
-         kLKfjSIvHOvoM+ZJvye7h+hrD1wxewXbPfY2zyVu5dR3eDj7Ink19TxTcp+KExhXSDsP
-         c8v7NFGbwNDwa0bZwE6Wzz8pXEWl0n3QB/X1VqMPk5WFb9kxduZ4EtMvhrT+MiiRBArv
-         6qhaBE6rk/kn5KrQ8KCuZBZY6UT4MGlLHf+2gKMv5SKzgpUtPfQp6+96HltnDipqCHrZ
-         khgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUlZ1SAOaxPQEi3ZCYWCyJYKx1EV/T7/rF1wsIeGNMkmCGUi/YjEpp99OWsQxJtjZy1ErZ1F960pbn2N8JS@vger.kernel.org, AJvYcCVRxOZZZk5rJ+m9AU8m1a2wNHmTxNyGGbz10/fhMRlxu39Gk3YrEN+jf+02MFLI89y18OG/aJiqTCtLqV2iAA5vtyVF@vger.kernel.org, AJvYcCX2B+Y/J2iIcJlp+qAHsWej8+vsm/kdfgtE5k6g+sxHH7jLObVmGMOpLU9FHNZLDIbJ5OM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0q8Mscdida5p6DkysCadwn4hiEkt5yyJtjsEpQxOhwimtjlqy
-	vJStHAi7NYiRbuUOWady6BfsMT7F8L4c+iApGh3VyxxdL7hDiSa2
-X-Gm-Gg: ASbGncupZcXtLAfGm6cYhPR5BaXLZsagiES+OdApLLcYwsMc8+wRuGze4nMzX+Bz1Ax
-	74puNgC6MTxf1PGXRNo9Z4W7XRu9DfJx0roMiL7tfsIpolwXYd9Xl3WVYJ7sXGoh0Xb3IwCXZ/M
-	zwzh16OKB+3OnBu8U6I/zney6bseiIEdiWO7m+9vHd4FkD5s4nScrEmfx98fbxZF4ky73CXvsG0
-	tiScIQyrMR6u5ihDI1tDyNCBhTEIRUM3ZIe6sdODLrCfBDi5ATs9ciaX7m1vNueRYlQLgqEdxJR
-	ukPFPl2WZbALnc1fOx8hwtvvDL+8ng==
-X-Google-Smtp-Source: AGHT+IEo5XlTc7xrSCK3CcJK+pHVJ3ufXsaL/ChLZ1HGl/lNJOhPv044YxeiUr1vNFlFw1ZMURHFdA==
-X-Received: by 2002:a17:907:7204:b0:aa6:3de7:f258 with SMTP id a640c23a62f3a-aab77e9d1e3mr1081031366b.37.1734335782598;
-        Sun, 15 Dec 2024 23:56:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1734335917; x=1734940717;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dHQDsilWcBWo2qLCl2rPtBaAp/SgERxJlUjllIz41wE=;
+        b=W/K7r+803gxd2/3zHQexDUAMPHmIPofVE38VF9tV/KRqBCDqfrp+igFrgj9+rNhjEO
+         TKcWwy4aR7es6+Ro32kligrd/LBFWhiqKIfnlZNJ8vQtNM77lYi3nVZPMnlHiVDA3QzQ
+         nzaHWRbOfTG7OtwEafG7AL7jbcL7ZuPkSyEiw8Bq43e+F25fz+TJ9gHqACUzDjAazPvp
+         sJxnHUyIdLMVlLxbLtBn6aRWNcEk9f/6/LTXq5zIQ+YEaTlhaXuVW1I3q5nb0azGCr+J
+         ca0P0TQbsFrlDZfeikKjZEiG/5b3zBs22uVkyVcwMNOG9mzVquDUqbPWbRRcEIH2ptHs
+         dqMA==
+X-Forwarded-Encrypted: i=1; AJvYcCWKSaDXr8AkR7YsLgj4XUx3NPAjrefK/SBaqEeRNz3dvyqt0gF9Cz3jl2BsXkDvHj/oQoC3jDgQUNEVfaCldtHae7t2@vger.kernel.org, AJvYcCXPL4X/cePqYGJInQHdCSdWhDQmMe82XpmOnqacOr0rICnas4c5Pxm5uSDJ0aIj07P4SZA=@vger.kernel.org, AJvYcCXoXL1rOOwbfujoNWzBXJGrf0Xh23tl8Mu6ZU3RdqES13wKqQQX6n5cZnVlmDaiJZOT54WkOpsZ8u6Ph4q+@vger.kernel.org
+X-Gm-Message-State: AOJu0YxScFR98Yda/08OFoHs20fLWNIByIqzkRecHZkCa9ZvjL/sv+pX
+	HIzclvBRVKj6xzObhx4lRWVJFkoedOcak4mVrLYwJeePz8E27R6I
+X-Gm-Gg: ASbGncvSE1eCkLSroq2IrEl1vcDRs05BE60jNCbm89jluaOS7xW5NepPWG68t3RYgjV
+	NhxtyGu4R3dB0UBoQkxxDTinKpiS7VlysoUm7jyOsxWWKFWWD+VDN1Q2FmhgCvhdspFxbr3wRIb
+	gv1dbLSxezXjzHVtg7+SuOHgnuqwXMvlZzuNWBWBAUnsQmRxlbP8AVbeI2sIkySA83Gl7mZygbJ
+	shv+4PzAtCXGWJEi1zsGoc2UrJ5ICvIInzM7DpanHOgJXw+qyiraYN6SPLyB1cUCuHdNdcLtvYa
+	31NAAh3eKPZL6N5/FNLzIUS2utfVag==
+X-Google-Smtp-Source: AGHT+IG/4I2JC5fgqyp/23EduntPTpbxZSHFCoLpI3oPiFb4SWfRzjunZM36hG2rKeMElQCUWNQCZA==
+X-Received: by 2002:a05:600c:3503:b0:434:ff25:19a0 with SMTP id 5b1f17b1804b1-4362aa94379mr96018225e9.21.1734335916924;
+        Sun, 15 Dec 2024 23:58:36 -0800 (PST)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aab96006c3asm300376266b.19.2024.12.15.23.56.21
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43625706588sm134755195e9.29.2024.12.15.23.58.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Dec 2024 23:56:22 -0800 (PST)
+        Sun, 15 Dec 2024 23:58:36 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 16 Dec 2024 08:56:19 +0100
+Date: Mon, 16 Dec 2024 08:58:34 +0100
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
@@ -84,85 +83,65 @@ Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Alan Maguire <alan.maguire@oracle.com>,
 	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 13/13] selftests/bpf: Add 5-byte nop uprobe
- trigger bench
-Message-ID: <Z1_dIwRiqbsuWgvF@krava>
+Subject: Re: [PATCH bpf-next 10/13] selftests/bpf: Add uprobe/usdt optimized
+ test
+Message-ID: <Z1_dqhXexpBz3oYB@krava>
 References: <20241211133403.208920-1-jolsa@kernel.org>
- <20241211133403.208920-14-jolsa@kernel.org>
- <CAEf4BzZPCdRPyXH1xDed2m3VvNkzzpY33Gbd_vWxivxLZQCdLQ@mail.gmail.com>
+ <20241211133403.208920-11-jolsa@kernel.org>
+ <CAEf4BzY=MOmqsuuL3iOyeaVGd63-6wdo9uU+6QhjbUOvgp=iVA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZPCdRPyXH1xDed2m3VvNkzzpY33Gbd_vWxivxLZQCdLQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzY=MOmqsuuL3iOyeaVGd63-6wdo9uU+6QhjbUOvgp=iVA@mail.gmail.com>
 
-On Fri, Dec 13, 2024 at 01:57:56PM -0800, Andrii Nakryiko wrote:
-> On Wed, Dec 11, 2024 at 5:36 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Add 5-byte nop uprobe trigger bench (x86_64 specific) to measure
-> > uprobes/uretprobes on top of nop5 instruction.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/testing/selftests/bpf/bench.c           | 12 ++++++
-> >  .../selftests/bpf/benchs/bench_trigger.c      | 42 +++++++++++++++++++
-> >  .../selftests/bpf/benchs/run_bench_uprobes.sh |  2 +-
-> >  3 files changed, 55 insertions(+), 1 deletion(-)
-> >
-> 
-> [...]
-> 
-> >  static void usetup(bool use_retprobe, bool use_multi, void *target_addr)
-> >  {
-> >         size_t uprobe_offset;
-> > @@ -448,6 +462,28 @@ static void uretprobe_multi_ret_setup(void)
-> >         usetup(true, true /* use_multi */, &uprobe_target_ret);
-> >  }
-> >
-> > +#ifdef __x86_64__
-> > +static void uprobe_nop5_setup(void)
+On Fri, Dec 13, 2024 at 01:58:38PM -0800, Andrii Nakryiko wrote:
+
+SNIP
+
+> > +static int find_uprobes_trampoline(void **start, void **end)
 > > +{
-> > +       usetup(false, false /* !use_multi */, &uprobe_target_nop5);
-> > +}
+> > +       char line[128];
+> > +       int ret = -1;
+> > +       FILE *maps;
 > > +
-> > +static void uretprobe_nop5_setup(void)
-> > +{
-> > +       usetup(false, false /* !use_multi */, &uprobe_target_nop5);
-> > +}
+> > +       maps = fopen("/proc/self/maps", "r");
+> > +       if (!maps) {
+> > +               fprintf(stderr, "cannot open maps\n");
+> > +               return -1;
+> > +       }
+> > +
+> > +       while (fgets(line, sizeof(line), maps)) {
+> > +               int m = -1;
+> > +
+> > +               /* We care only about private r-x mappings. */
+> > +               if (sscanf(line, "%p-%p r-xp %*x %*x:%*x %*u %n", start, end, &m) != 2)
+> > +                       continue;
+> > +               if (m < 0)
+> > +                       continue;
+> > +               if (!strncmp(&line[m], TRAMP, sizeof(TRAMP)-1)) {
+> > +                       ret = 0;
+> > +                       break;
+> > +               }
+> > +       }
 > 
-> true /* use_retprobe */
-> 
-> that's the problem with bench setup, right?
+> you could have used PROCMAP_QUERY ;)
 
-yes, but there's more ;-)
+true ;-) will check on that in new version
 
-we also need change in arch_uretprobe_hijack_return_addr to skip
-the extra 3 values (pushed on stack by the uprobe trampoline) when
-hijacking the returm value, I'll send new version
-
+thanks,
 jirka
 
 > 
 > > +
-> > +static void uprobe_multi_nop5_setup(void)
-> > +{
-> > +       usetup(false, true /* use_multi */, &uprobe_target_nop5);
+> > +       fclose(maps);
+> > +       return ret;
 > > +}
 > > +
-> > +static void uretprobe_multi_nop5_setup(void)
-> > +{
-> > +       usetup(false, true /* use_multi */, &uprobe_target_nop5);
-> > +}
-> > +#endif
-> > +
-> >  const struct bench bench_trig_syscall_count = {
-> >         .name = "trig-syscall-count",
-> >         .validate = trigger_validate,
 > 
 > [...]
 
