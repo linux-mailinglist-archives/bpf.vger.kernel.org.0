@@ -1,118 +1,159 @@
-Return-Path: <bpf+bounces-47053-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47054-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B32579F3881
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 19:13:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 890909F387D
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 19:12:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6193416D1FC
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 18:12:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 959197A1459
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 18:12:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EE2A20D4F7;
-	Mon, 16 Dec 2024 18:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE3C120D4FD;
+	Mon, 16 Dec 2024 18:05:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jh2+O1fv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BXEZV+IY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3B020764E
-	for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 18:03:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97539207A0B
+	for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 18:05:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734372220; cv=none; b=m9QIz+e1FqaipTtyoeMnod9CjHQepdt5lNNEsaXzjBDTOIEeQaNYWhstpurYc8waRb8S9mAVXNewJhyvE74NIvC3qNkxMddYmFS3sodNq23Sy7xfIWlKBn84rQWEpy0q4RGqObvxuYjlXHP3lhvH+KNAnb+XU+iU2kRE7KMUWY4=
+	t=1734372352; cv=none; b=MrwzSLnTMTYNazbTxZHMCl+Codd5geHDOo4nhvqS7wT0HD8iBzgQ7Oev83Qvh3W4VpsYmdIHe0vmASLtmgAfa2p1NB0BMSBxGzWEx19GyMbdE8sMtlhdPVq+9lBaOqtQsRk0detTPw6v4+cxlBUOF8GpwNTw3GJMkCRrVYMS4Pk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734372220; c=relaxed/simple;
-	bh=hTD30g8QIzDjBNexh+UasI444X0/ItBmu11bbfHLKV8=;
+	s=arc-20240116; t=1734372352; c=relaxed/simple;
+	bh=jspQxfSf4T1DO5ClakIaCMtK5HKml2sfGFd9tQMfOls=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g2nZ9gcplQNEC3p7v4dVZCRcDTEJldrYqmyn4DQvIp/kC9Pszt9IGZMACrvuhLe/xbMtW2BNAi2zwQ0CrILynLzlCxEzmfgV8Udc/JqcCbN+wSiwQH55eZwyN5+5VaOSTn8ivzzG2El0tlbJr3//OsO2zj/FANrSuj6zMBCsoJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jh2+O1fv; arc=none smtp.client-ip=209.85.221.45
+	 To:Cc:Content-Type; b=XBr5W5stqyOhw9PjkFvHYrbVTv/0yd8iQYPbcjIvXj9SUwY+j1siKl/E/H/JsRUoybnZc/BZHJIsFHqIusxe4hFZSHpiMfFL8ZX61tRpR3QmCwTDgkWG7/u3x9xKBj1QfFJ4WnBU7PA92y+Z6mojfbxLx806Vi+X1mI7Vj10NBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BXEZV+IY; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3862b40a6e0so2479294f8f.0
-        for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 10:03:38 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4363dc916ceso9163445e9.0
+        for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 10:05:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734372217; x=1734977017; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734372349; x=1734977149; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hTD30g8QIzDjBNexh+UasI444X0/ItBmu11bbfHLKV8=;
-        b=jh2+O1fvte7pNY31Ug10kt3RBz2727btZaWof3Raybi2ZRq8W0fDcSJn5lcNC33cKN
-         fd0qqcVmLsLb8BPSg8RDVQcah5pEbJkhHapeLz5t2m2HV4ymcblVWyJ6LkLfgEnZePRG
-         s06SLpqAOn7H3x5OXb5htKPHUgYs9w69QmygFmDDNCKV7A1nxtrw90VnxTvGlKbOPd6q
-         ueuv0cbWI5AE7E/mj7RHCQ5cZqpj2Qh+J5rHj2wJYjTmX5j+T9rvU7dt4TAqdTSiPu2M
-         PVBXuoYZTIXdYgN3RlIoUKPJ8tkcIdUVbOIs4h2TFKCd6lGSENkajX6bokr3WTCvQG1X
-         08RA==
+        bh=GpqCNqJl4VG/xnKCQRwiPDni7nrhiCuv1sDsA65ODhg=;
+        b=BXEZV+IYVc428XipkK8sKHzGNuh4woabJBwFu8vHI8+M+rs1AluDm8OKBlmVkuBGqH
+         vX+wV5hl6WqyO49hkrQcNtk9sdztc42xZiT6Pf256Yo+8xLIVNbrULvpCtD5dHJpwEqz
+         5qoFSBh3/+XaGiVL2usfTi1+3XOxW3O7sO4oV75kLZswENJmsWbb2cZYIF5trtDCT7df
+         EKcAIiIZ6I4tocnXxrjXsSjsj+dxqbZkefxvcpXIqUDPvL5KP0UnMoqE8Pnp3XOrAxTr
+         4KJECC9BCGph/wZQ50NLIR8IFvWXTwkyh583wu+Xi+ZpILvlnX+h5WWqw70zMAxfhDR0
+         pQ2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734372217; x=1734977017;
+        d=1e100.net; s=20230601; t=1734372349; x=1734977149;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hTD30g8QIzDjBNexh+UasI444X0/ItBmu11bbfHLKV8=;
-        b=b4nM7jizhq0DJwJX33Sy8dKleesXpUQWW6xMOusmOszDwkZhoOZHu97p0F/DuWZRJn
-         E0gVJj7KeaKMzAbBsbaBabdNVjfexXl/VFoTFjT4FN7+Jk3LtAUORpt28GUNaykiuZ0j
-         1f5SSQ3b58QDpIti7Jmt+DFwMoKdVh9Sh/9FCWLBF1xp8aPiYRAaIDeqzZ6lz/lSk0fT
-         dQUucRUrr4kFjTLntT6Cp5/qYzTFIvunH8lR3qaiQOWMklw+1z84jT8oeye401/SVcIO
-         vYnM/EBzNW3562eDTsMQkqHRW7nnk3JH46C3Wl79TFWFwkb5KQI6KnQ5zVqgQjpHLXIt
-         YFlg==
-X-Gm-Message-State: AOJu0Yydtp9QeUrxlB5kTYWLANtlkGQmAevsXHuZ7yO+LtptgiNenJud
-	8NUwVQsoN78iRWdjxK0K8RG3D0peCpLMpISTtbtWxy4gjaH9Rpx6cpIiC5a4lL3ShWy/lBKby4m
-	CXJAs+8+uGmuQrwvJ8z9hHoUBfwo=
-X-Gm-Gg: ASbGncs0F0xzPE/OfjznBJdZlg6CH5Sdorpk9x9nKR1xU3Mm/pnU9sftDSul0mJxN1/
-	WNnnxkTmzvn9JPqJzJypgrlFqlSTZ4otAGzsWK5LAimv3/q/VYikZ8A==
-X-Google-Smtp-Source: AGHT+IErIwud/f8unT5F7klAp+4yPUrXb8cSpSAMf1xwf2aPfPRsfQZYYscM5ExUHW4OU+C1Kr8GfoEEcPKJGViAaZk=
-X-Received: by 2002:a05:6000:1acf:b0:385:f47b:1501 with SMTP id
- ffacd0b85a97d-3888e0bd1f8mr10815573f8f.32.1734372216261; Mon, 16 Dec 2024
- 10:03:36 -0800 (PST)
+        bh=GpqCNqJl4VG/xnKCQRwiPDni7nrhiCuv1sDsA65ODhg=;
+        b=NDTQe/suh9VaL+H7JS2aiL7qS4XeOZyds2xysVOLnYhf+0jVl7xBziqDLqAvR/Lfda
+         0hUQoZ0POwHcD7x5TcegH3GZ41jwE5okMqlS5t0ucwTovAEvuNO3qUaYFZfV+e622xQX
+         XZ8a9O3hDn2c5sPKFMnyxlECUR968OYxnMD0TUo83oBhtBLiSi4SHetbS9JuS+z21qTv
+         miIL7MgU1PmTB447YPGsMq4aR+MZ6kbpOssBeGWU/1vp4EWrTrXHYXxsHWhYg6Qmd1Ng
+         g/LiD3x0Fbt4/zBDo6GNGLSzaLfvefusKYXvEaVxf0sdsHLaGrc/O6R395Cb/RvoE7eo
+         Q+Ow==
+X-Forwarded-Encrypted: i=1; AJvYcCVQXrvcr25w66lBvth/RuKWEqDQb7xbAL7tk/c1rGvYF7R6NXbpnqpJHo3Jae9syLKsL6Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YycsEASVBN7bYX8btNxjbWrcy2EACcUITnAPFhJmZG0QZmTLzK+
+	I5dAlwWOvjn2f1M1n+4orTXN2OCSLS6fGym+11zLykEdON92yShUCn8NJ5fNxzUDs0hV75/qMoT
+	4ZzEGdN42d10I99dUmSsrC/jWyg4=
+X-Gm-Gg: ASbGnct5LS8wzpm3dSvoIV7Ct2KjW09+/ZBRH66n/BPZ99eVmKjgOxBQElETg/Af5Ry
+	p0Tb2O/ShfCwx1/GplAkmWmEm3djQY9eNcyTnMFhAz1F7n64HWuTnQw==
+X-Google-Smtp-Source: AGHT+IGEfsTm2mg+fQZWubT/YtWFLiMiy7/6veKSpS1AG9vpwG+Dg7Q3PZjwKUjwqvSVGdQ/2DaFeD5Rd0xPdcW1SG8=
+X-Received: by 2002:adf:fb06:0:b0:386:4a2c:3908 with SMTP id
+ ffacd0b85a97d-388db2437e7mr260545f8f.17.1734372348755; Mon, 16 Dec 2024
+ 10:05:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241213212717.1830565-1-afabre@cloudflare.com> <D6DB9BMTYRIY.2GQMKAM0R1RPN@bobby>
-In-Reply-To: <D6DB9BMTYRIY.2GQMKAM0R1RPN@bobby>
+References: <20241213212717.1830565-1-afabre@cloudflare.com>
+ <20241213212717.1830565-3-afabre@cloudflare.com> <76401f4502366c2d9221758f9034aa7bb2d831a3.camel@gmail.com>
+ <D6DB4NCLQZC9.I7DUNKR9RORW@bobby>
+In-Reply-To: <D6DB4NCLQZC9.I7DUNKR9RORW@bobby>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 16 Dec 2024 10:03:25 -0800
-Message-ID: <CAADnVQLjT7Ac8t-=tpW2ocGoq+h71hKuDENODKPEBuKU=ovwjA@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 0/2] Don't trust r0 bounds after BPF to BPF calls
- with abnormal returns
+Date: Mon, 16 Dec 2024 10:05:37 -0800
+Message-ID: <CAADnVQ++HfXeobY2XoJfDWXZGrF4_kR5kOK7asFRpBN=qmXU8Q@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Test r0 bounds after BPF to BPF
+ call with abnormal return
 To: Arthur Fabre <afabre@cloudflare.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
 	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
 	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
 	kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 16, 2024 at 9:45=E2=80=AFAM Arthur Fabre <afabre@cloudflare.com=
+On Mon, Dec 16, 2024 at 9:39=E2=80=AFAM Arthur Fabre <afabre@cloudflare.com=
 > wrote:
 >
-> On Fri Dec 13, 2024 at 10:27 PM CET, Arthur Fabre wrote:
-> > A BPF function can return before its exit instruction: LD_ABS, LD_IND,
-> > and tail_call() can all cause it to return prematurely.
+> On Sat Dec 14, 2024 at 12:55 AM CET, Eduard Zingerman wrote:
+> > On Fri, 2024-12-13 at 22:27 +0100, Arthur Fabre wrote:
+> [...]
+> > > +++ b/tools/testing/selftests/bpf/progs/verifier_abnormal_ret.c
+> > > @@ -0,0 +1,88 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +
+> > > +#include <linux/bpf.h>
+> > > +#include <bpf/bpf_helpers.h>
+> > > +#include "../../../include/linux/filter.h"
+> > > +#include "bpf_misc.h"
+> > > +
+> > > +#define TEST(NAME, CALLEE) \
+> > > +   SEC("socket")                                   \
+> > > +   __description("abnormal_ret: " #NAME)           \
+> > > +   __failure __msg("math between ctx pointer and register with unbou=
+nded min value") \
+> > > +   __naked void check_abnormal_ret_##NAME(void)    \
+> > > +   {                                               \
 > >
-> > When such a function is called by another BPF function, the verifier
-> > doesn't take this into account when calculating the bounds of r0 in the
-> > caller after the callee returns.
+> > Nit: this one and 'callee_tail_call' could be plain C.
+> >
+> > > +           asm volatile("                          \
+> > > +           r6 =3D r1;                                \
+> > > +           call " #CALLEE ";                       \
+> > > +           r6 +=3D r0;                               \
+> > > +           r0 =3D 0;                                 \
+> > > +           exit;                                   \
+> > > +   "       :                                       \
+> > > +           :                                       \
+> > > +           : __clobber_all);                       \
+> > > +   }
+> >
+> > [...]
+> >
+> > > +static __naked __noinline __used
+> > > +int callee_tail_call(void)
+> > > +{
+> > > +   asm volatile("                                  \
+> > > +   r2 =3D %[map_prog] ll;                            \
+> > > +   r3 =3D 0;                                         \
+> > > +   call %[bpf_tail_call];                          \
+> > > +   r0 =3D 0;                                         \
+> > > +   exit;                                           \
+> > > +"  :
+> > > +   : __imm(bpf_tail_call), __imm_addr(map_prog)
+> > > +   : __clobber_all);
+> > > +}
+> > > +
+> > > +char _license[] SEC("license") =3D "GPL";
 >
-> I've just realized r0 isn't he only problem: a caller can pass a
-> reference to its stack to a callee, and the verifier also tracks the
-> value of this.
+> Thanks for the review! Good point, I'll try to write them in C.
 >
-> If the callee writes to the caller's stack after the abnormal return
-> (tail_call, ld_abs), the verifier will also incorrectly assume the
-> write always happens.
->
-> I think we need to treat these abnormal returns as a branch that can
-> exit. That way the verifier will explore both possibilities, and the
-> combined result will really reflect what can happen.
-> I'll try that out for a v3.
+> It might not be possible to do them both entirely: clang also doesn't
+> know that bpf_tail_call() can return, so it assumes the callee() will
+> return a constant r0. It sometimes optimizes branches / loads out
+> because of this.
 
-Good idea. Makes sense to me.
+I wonder whether we should tell llvm that it's similar to longjmp()
+with __attribute__((noreturn)) or some other attribute.
 
