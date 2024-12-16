@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-47051-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47052-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B73509F37B6
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 18:39:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C712C9F37BF
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 18:45:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40356188DDEE
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 17:39:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14E4116756B
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 17:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69775206294;
-	Mon, 16 Dec 2024 17:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B182063C4;
+	Mon, 16 Dec 2024 17:45:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="VxZ30YFi"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="U979UuqD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38053161302
-	for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 17:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265A320457E
+	for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 17:45:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734370782; cv=none; b=hH4D8DViN5RgAPItkvrkHFtvqpAvg1HM5VGz7LQgqtNp+xrZz4Cq0qd+RXbKvJJ9zpVErS6LwsBLBL99BW5D2g4McJ9hXZblyT1K/bOSvPPaGoT9nAMEc2SM3nQQbq0EXCTReJck8ydVTXIo/a7w9IL1VNpdTve5IcUr6uECHHk=
+	t=1734371148; cv=none; b=rFo3i+62++ewx+xBgwpMuioSt6bMSdWUhxh2XmoScl5QrxtpzbLqpHwbUw50uulPcX8KTpAN/rwg63NQtRn8JTa+pPiYGIlUp1PD1Pe6gODJ9AN+RvkZjmJKfuqOzqgQhqAyQ2hWchyY5tYeaZSDuV+yhOuq1QyQLM+iOtNgCf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734370782; c=relaxed/simple;
-	bh=U+8znKEz2YfXhyTvIm83OodGYDQQxrY6mX+0gLUiNsE=;
+	s=arc-20240116; t=1734371148; c=relaxed/simple;
+	bh=rOf2IbPgTj0PAVy4isIXX/3/zOijpIime8/4MxMy4w0=;
 	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=ByrgZL4g4YjguvFMUP8T2xRQiHieAzsjT5tEEiAMiKrTsawImioqlTdtnVpsY/Hi1TGzd3P6jfEoxsYc8N0YoSstE4GAqQvthDd+vm1Iiht7oqzqLvi/pte1+iTs1as4Gy1GU9wl9e/npRya1rzxDNU7YKFR68Jc3YbqxWOBaws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=VxZ30YFi; arc=none smtp.client-ip=209.85.208.47
+	 References:In-Reply-To; b=ScwKzEyLhWIQZTHbbNrcMeiHxs+9/HFhL2htB6qf3nhunFs/e8b20JnIS2Rlk3LuOTfvN6H1vDpPSFA+mKMKDlooKFsY0F6MoS31DOx4FH6Eo0h28odlFAya6Ov7vmrqamqwJJwR73m/O1nXFpfiDFLgj53vGC0m2El49VueHs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=U979UuqD; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5d3e6274015so7680204a12.0
-        for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 09:39:40 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-385de9f789cso3535344f8f.2
+        for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 09:45:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1734370779; x=1734975579; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1734371145; x=1734975945; darn=vger.kernel.org;
         h=in-reply-to:references:to:from:subject:cc:message-id:date
          :content-transfer-encoding:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Vq1wiAaMZvSDKgx7xAEMPkEv6TTMwkginHdh7T15Pg0=;
-        b=VxZ30YFiuO6vDT+CzVFFgQfetj7S5HAlo/y92j0leCe0ChxRjSjY+tjKXfEc4PMVLE
-         jnwYY8TkuBWtM9+knsp5+vQ2cjbh+W5T0mCPR1Fw8QhbpTuGMKNmJeev5dahZjQMPzja
-         ADo3Ba+Sxb588qHQP/J/ps+BchC40/bIWASjCV/yYsGpxNKkBM35ma/G2p9YB4uX1Jt4
-         1m8lIvTDvY6AGDseW0sOsrMsOIQBITlEQ7lxvZCVlp6vhFVlvFV4+2BGearmAXBn6Ghi
-         lid/U633VuiWz8SDs+8svLSlJbemA4v5FshhJVaQDBXiARV1a3R5Dkfh3lm+etld34JW
-         6/fQ==
+        bh=rOf2IbPgTj0PAVy4isIXX/3/zOijpIime8/4MxMy4w0=;
+        b=U979UuqD+zHOKsRqIvbjkfnEyWr9pk5hjoL2eZXjp+lrpxgidbqwholEvIdrjwa2FG
+         92D8pvEhFhEnyrItsof0fS1GbX0X2oN9dGVvYvqLin6fh+nPRClLl27d0epR5U0B4cFD
+         1jks8z5MigNkZw22lhaYAaESfm/pTLk0Cj88xBthsxRCpHnncu7btdCb5jkfw9p5pw7w
+         AKmL+rsbmuSTecAUq7AMQorntG3/fH/B76ATulPynoCY42MPNiE88TMk8gslcUsaSrkx
+         pQ/6a5i+fz/KinzMhviTv/+I/7U+YsELBXZ+0YCT7thtqV0NDLWylasYfhZcewuqXG51
+         l+BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734370779; x=1734975579;
+        d=1e100.net; s=20230601; t=1734371145; x=1734975945;
         h=in-reply-to:references:to:from:subject:cc:message-id:date
          :content-transfer-encoding:mime-version:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=Vq1wiAaMZvSDKgx7xAEMPkEv6TTMwkginHdh7T15Pg0=;
-        b=uplIUbH3qAFQ1H1m+pjfGHYNJi5GQ9b26a3/OreQ26eOPunam482mZU9Q22mQ4qMT4
-         GNhLLEAUy3zJ9P0GCO7obQ1V3yEGaJbfw1zQTZRFUtHw5RPLOEHI32QyiXl5xi8et3A1
-         8q8YPA/wwBOs9REhR7qkInUIpK92HiI948YCTuCendJ3tC/pNehqBuZ3TAgkF38vRWm7
-         o8rL8fA3lkssCpPwFRnqGUovktyxs/pS+IrGyG6EJW6qLSH/M7dSKi6SXmIjETCeGSlO
-         ENJSPS71DUhwG2TMb2JkvfNDmvSfmmt1l3ARZeLaNMLxm84YBoNWJY2ndeCNOl82dFVN
-         auWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUc5DmMS6r4q6NMjLm57tWKe8XvZWk0H9TEtM9c2zBPkzf316f6P/eSUHQg2XbLzn4khio=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwraTwp8gUDnr6RXWM7WfwgmfIBqUQHFpgTSWWs6238JnRsAew1
-	EZOPJwJLsEuKYX3xKRo6I+D7JH5BKAkFDM7v0SC0xjAeprqnJAFf/sCnHbt3k4M=
-X-Gm-Gg: ASbGncsHzhcyYmpih14NVdtRflFlYCuOCgTxE+wL7uLGrc4BxDxa1WL/PdlAiYSWy+I
-	IHV+mNsh6MxSYrEe15+QDG2AgRKbZqnkRwCiWkDZbY/uPUDjQXqJUF1ot4v1xDhRGv7m7Y1HlUc
-	3qVmrun9yIusNimcmfU+XRVqZq02WnsN6BbyrM4byBsAv3dvleWy0YhpIDQGIkmTT8MCt1TQO3q
-	CxVdFV8bWsen97yWguwNYUllLqnXxk27Pk9WbyBCw==
-X-Google-Smtp-Source: AGHT+IFFEUnNWinE4X85+Cd8RAMuLtU0Dzy4ShkcFEcISQ4tgAqOEkSvBSfXerOh8Hdcj3z8GN5ocA==
-X-Received: by 2002:a05:6402:2695:b0:5d2:728f:d5f8 with SMTP id 4fb4d7f45d1cf-5d7d40dbd9dmr521618a12.27.1734370779451;
-        Mon, 16 Dec 2024 09:39:39 -0800 (PST)
+        bh=rOf2IbPgTj0PAVy4isIXX/3/zOijpIime8/4MxMy4w0=;
+        b=VjLEHWsNsx6V/XCKgxzTv/oUYjbVjIuV4xNyaSjLARz/Uw8hI9a/hK36w0Kf8AbwIs
+         E3B9xOG2yiYqpt/7l2wR7UyUAnu55oDkkoJX3VjkkduLcULc0/vdg6uIiduoqWYivlvR
+         JAn/7wJTpbZAAlfOUTcl6ljd+Zj8rCeM3w+DfgqbcPger5sscjKNEH1WZWE+Im2oe6Vm
+         xtXQIpjlEXZFdL+bhmusTtNOlhxVOTcnBduszhQiDtDcDJ7FQUdjr5bHlu9cCkMNZvOY
+         DJWmhL+xOjcfbJGhIV65HHRBSiN7DtdNWziUtQ/ER5qhxJEiaf3E+/O/fQapBZCOCeUp
+         UmQg==
+X-Forwarded-Encrypted: i=1; AJvYcCVS0EMECn4GGWz1QAmePF5ukGbOe5gcDyS8MYnPHQjadSL1zB0zs8sKoB58/FSvuLvR/ME=@vger.kernel.org
+X-Gm-Message-State: AOJu0YywVp2H7r/NkXEqz/Zbho9wIGnDKpn5gWjubRRxupOalHV0E2O+
+	jGQZrbnbJjC6gTDe/kog+lb/FyJu2oF1k4wXQ247w+xz0de5X/d0rvceomj/Rec=
+X-Gm-Gg: ASbGncs6FH2R6Ls5MbVGDV02Rlh3kt2IOkNk2JLV+4kAUFJglC9FCuNQ/wkiI0UCbGR
+	SfD8MRuUSWJEn+OfZCQaV4zuPuXgzeDImxPcJvWenNVG2UN5HwWHpmL9+prFyhQ9B/+vLbWN/yY
+	HroyE6DMWHbJ9fdwjPV4OTX7LKJTZJGtsLb5hR7h1B7KlxlC6E9KfsMxf8GnDXVvTwIstvzLGKV
+	swmRscgfUisnJOrkLIsmls+96L2cYAakXAHQ4ZXog==
+X-Google-Smtp-Source: AGHT+IGDG0QcaKITdChobqcvbhYLyrZsXCZa5c0xLgfbsMlIStQcxWTmwQpw929wW+vt0qo6rV6T/w==
+X-Received: by 2002:a5d:598c:0:b0:385:ea11:dd92 with SMTP id ffacd0b85a97d-3888dcd4659mr11749005f8f.15.1734371145470;
+        Mon, 16 Dec 2024 09:45:45 -0800 (PST)
 Received: from localhost ([2a09:bac1:27c0:58::3b6:40])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d652ab50absm3382977a12.7.2024.12.16.09.39.37
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43625706caesm146383045e9.32.2024.12.16.09.45.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Dec 2024 09:39:38 -0800 (PST)
+        Mon, 16 Dec 2024 09:45:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,80 +79,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Mon, 16 Dec 2024 18:39:36 +0100
-Message-Id: <D6DB4NCLQZC9.I7DUNKR9RORW@bobby>
+Date: Mon, 16 Dec 2024 18:45:42 +0100
+Message-Id: <D6DB9BMTYRIY.2GQMKAM0R1RPN@bobby>
 Cc: "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
  <daniel@iogearbox.net>, "John Fastabend" <john.fastabend@gmail.com>,
  "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
- <martin.lau@linux.dev>, "Song Liu" <song@kernel.org>, "Yonghong Song"
- <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
- Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
- <jolsa@kernel.org>, <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Test r0 bounds after BPF to
- BPF call with abnormal return
+ <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>, "Song Liu"
+ <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "KP Singh"
+ <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo"
+ <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>,
+ <kernel-team@cloudflare.com>
+Subject: Re: [PATCH bpf v2 0/2] Don't trust r0 bounds after BPF to BPF calls
+ with abnormal returns
 From: "Arthur Fabre" <afabre@cloudflare.com>
-To: "Eduard Zingerman" <eddyz87@gmail.com>, <bpf@vger.kernel.org>
+To: "Arthur Fabre" <afabre@cloudflare.com>, <bpf@vger.kernel.org>
 X-Mailer: aerc 0.8.2
 References: <20241213212717.1830565-1-afabre@cloudflare.com>
- <20241213212717.1830565-3-afabre@cloudflare.com>
- <76401f4502366c2d9221758f9034aa7bb2d831a3.camel@gmail.com>
-In-Reply-To: <76401f4502366c2d9221758f9034aa7bb2d831a3.camel@gmail.com>
+In-Reply-To: <20241213212717.1830565-1-afabre@cloudflare.com>
 
-On Sat Dec 14, 2024 at 12:55 AM CET, Eduard Zingerman wrote:
-> On Fri, 2024-12-13 at 22:27 +0100, Arthur Fabre wrote:
-[...]
-> > +++ b/tools/testing/selftests/bpf/progs/verifier_abnormal_ret.c
-> > @@ -0,0 +1,88 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include "../../../include/linux/filter.h"
-> > +#include "bpf_misc.h"
-> > +
-> > +#define TEST(NAME, CALLEE) \
-> > +	SEC("socket")					\
-> > +	__description("abnormal_ret: " #NAME)		\
-> > +	__failure __msg("math between ctx pointer and register with unbounded=
- min value") \
-> > +	__naked void check_abnormal_ret_##NAME(void)	\
-> > +	{						\
+On Fri Dec 13, 2024 at 10:27 PM CET, Arthur Fabre wrote:
+> A BPF function can return before its exit instruction: LD_ABS, LD_IND,
+> and tail_call() can all cause it to return prematurely.
 >
-> Nit: this one and 'callee_tail_call' could be plain C.
->
-> > +		asm volatile("				\
-> > +		r6 =3D r1;				\
-> > +		call " #CALLEE ";			\
-> > +		r6 +=3D r0;				\
-> > +		r0 =3D 0;					\
-> > +		exit;					\
-> > +	"	:					\
-> > +		:					\
-> > +		: __clobber_all);			\
-> > +	}
->
-> [...]
->
-> > +static __naked __noinline __used
-> > +int callee_tail_call(void)
-> > +{
-> > +	asm volatile("					\
-> > +	r2 =3D %[map_prog] ll;				\
-> > +	r3 =3D 0;						\
-> > +	call %[bpf_tail_call];				\
-> > +	r0 =3D 0;						\
-> > +	exit;						\
-> > +"	:
-> > +	: __imm(bpf_tail_call), __imm_addr(map_prog)
-> > +	: __clobber_all);
-> > +}
-> > +
-> > +char _license[] SEC("license") =3D "GPL";
+> When such a function is called by another BPF function, the verifier
+> doesn't take this into account when calculating the bounds of r0 in the
+> caller after the callee returns.
 
-Thanks for the review! Good point, I'll try to write them in C.
+I've just realized r0 isn't he only problem: a caller can pass a
+reference to its stack to a callee, and the verifier also tracks the
+value of this.
 
-It might not be possible to do them both entirely: clang also doesn't
-know that bpf_tail_call() can return, so it assumes the callee() will
-return a constant r0. It sometimes optimizes branches / loads out
-because of this.
+If the callee writes to the caller's stack after the abnormal return
+(tail_call, ld_abs), the verifier will also incorrectly assume the=20
+write always happens.
+
+I think we need to treat these abnormal returns as a branch that can
+exit. That way the verifier will explore both possibilities, and the
+combined result will really reflect what can happen.
+I'll try that out for a v3.
 
