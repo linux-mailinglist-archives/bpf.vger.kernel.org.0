@@ -1,116 +1,232 @@
-Return-Path: <bpf+bounces-47012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47013-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D1FC9F286D
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 03:14:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 491A59F28D1
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 04:32:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD1A016441C
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 02:14:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAF621887695
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 03:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C4124B34;
-	Mon, 16 Dec 2024 02:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1FA153BE4;
+	Mon, 16 Dec 2024 03:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="vnrsu+zy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZK54ucVv"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 249938BE8;
-	Mon, 16 Dec 2024 02:14:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C5825760;
+	Mon, 16 Dec 2024 03:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734315265; cv=none; b=T1u5I5E25hyxpc9ZG0Xhg0jnIqwtGJye5M4Telhbciyu0q6lmc0FsmEeJeTuFru+yWs2Ug6pebX/Dvfe8O4XmaGxFtZBFAajJUrp8JqOqt1qDX0zA4mrbQDDe+cWFO/y0fqLKPYNVV2F51LwsSX2b9DJe2ytFiKxLP2cJWkPMb0=
+	t=1734319929; cv=none; b=LNyruoi2A9rJAg1/ltY1HcCOOLjpS3J++DKYPUaS9LdS58WPS/+fm4JyVfC9W49WMhFX1WdBlYjov5AuQyD7+N/w0ldpGMopDUQ91Z54semCkWmJhMXO1Itah2C2XAmEa8pjiqx+cEDdAymjE/yfSYtHrQHHHvzwhjkNGzN6UW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734315265; c=relaxed/simple;
-	bh=6V+shrdB2vbTHb6R82jUo0/uUAiL8Fi82YYWHfrXz9I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nmm+Za2VYwRVh8P5k5xugzwHFHx46Dh05p5/+NpQ7zhnQkxGWLhZKRwKRf2GBKsjjjFDZpiD41Hm8Z400RleCR6lmOekoyXb2gFeASoRQ4Fn1BirioR62n1IxnUUBjqLNPhZ7M86OEBkL86SuuC9AlADWaPaRtmPK2W0dx8+scQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=vnrsu+zy; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1734315253; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=aqauEWhdS3VAOAkJnsfZji7HEujR8JydSb0C6qnhp9I=;
-	b=vnrsu+zyYs/gTZemDtQT7ksKcC2uy6bmJYQwjFJv3XLYrcyeDEJdMBISUifFopivpidxWvTKLFcBELfdfhDT9m8yGVmTQ6u9Yr295WBs2qhyGHdhLpfWFw7APEqPONsRocTmWmQgbiuKMH24L4YQwbOw9N6y/3C2r12K0zI+P2I=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WLVDXsW_1734315250 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 16 Dec 2024 10:14:11 +0800
-Date: Mon, 16 Dec 2024 10:14:10 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	pabeni@redhat.com, song@kernel.org, sdf@google.com,
-	haoluo@google.com, yhs@fb.com, edumazet@google.com,
-	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-	guwen@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
-	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 4/5] libbpf: fix error when st-prefix_ops and
- ops from differ btf
-Message-ID: <20241216021410.GA129445@j66a10360.sqa.eu95>
-References: <20241210040404.10606-1-alibuda@linux.alibaba.com>
- <20241210040404.10606-5-alibuda@linux.alibaba.com>
- <CAEf4BzYMWTTnniPN-2cmjkPOefDFOLgbdo0cHzmMNJiFPL8riQ@mail.gmail.com>
+	s=arc-20240116; t=1734319929; c=relaxed/simple;
+	bh=S2vQcu2RlyXhfyFLl5hUwkaHAA+c0PBHHGEC+2Ep8F0=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=PX8Q9y5DC2UvJbKcTd9kis1pHGg0QOE2lFtiRv1mN0gEjETCd4LLb2kaFjw74wW85BX/sa0C6j/GsWEUTpxrGgFf8gpCpcGOo1n5ezBzQhAyINbIekfGvZlCPNL1bhmmT9OXMMzAtHF5VVD5tJDCl+/jxOXzHImQPBKnM5qV/Ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZK54ucVv; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2165cb60719so26828865ad.0;
+        Sun, 15 Dec 2024 19:32:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734319927; x=1734924727; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nNOXfbpXdv41m/bOJkFcObz3huwlsENpJ7Jf000ZPk4=;
+        b=ZK54ucVvBmKbylAIVLES0EivGAW3xCm10Av0HfPM3k90Vcy4Cb2ZVzWgIqazXqK0/8
+         oRmDR9lUrJySx4MXzp8HWpEXlS86mSrqsLFzIMNX+Kp1RBM51yqwuZaYtJSi/6trv3Mv
+         maMVYeIf1rQl0WFQlZNrvoyLIjGjEnzdBvWtb5hsKjXOTgI4FYc0P0uCXr4JiTnmfwvE
+         8IX6QVV5t+OhX9+BxvwzErGvHFJ3RrC7l29mg0SNj1j5DsGSaB7z4MJXkGbtqLPE3MQa
+         0AXSNwTw4bh7hy7eRX/1R8wE67FF4rzVrrKRdY6Pu/UUCafXFMQEPc+LoFiGWFRxv+C9
+         yvow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734319927; x=1734924727;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nNOXfbpXdv41m/bOJkFcObz3huwlsENpJ7Jf000ZPk4=;
+        b=TNZqXDaiwGalhKig6MbHeHXM4uMXNtnMoeZmmXd6E8B3kqKA9HbVrkritjNVcz6X0t
+         n0CxQfm0ZKwGuh+edmc1op1sSTAvreFD+Ttq+Zry6do5ggcYiE7aAEoajQPYcqXKx9x/
+         jvR5m4tyEDIuZG535qZvewLd0QNm7QSbssidOuwuZgwF7ZqCJ5mK03Nhzvr0UPGV+vTw
+         Jlfok2VzlLiI/+GaObG0b+lv6kn2xe6MC2s3yaBeJ6bPpykIoRjxaj/Eb0Y/2lDBJ0Ph
+         9wJOxg3zLJP8UUXc8v//lkrsgYFH1LADTYoJfFjga3a04bYG+xOvM7egBR0v9c5nAO9y
+         3nOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUeJd7xdCma/B15wXcGN10Gce562ZA9hUqqyzrYsesz4ly1EIDbQFsxm1q5fjKSUjQj2513mrq9I65GcrM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzrI1vFaYWDZL9txQAlYo2L/TE7Ljgg1UNpfbS893Uokz1D6Z/v
+	hFQkaJ7hOxHqTyVi64UBh0RP+D6xuRhMFD8rv9R1V+2NMzG8WnE3
+X-Gm-Gg: ASbGncuxdMSp16sau8VfCvNgxhoriS/XSCSea+BtlbQb7dqcLt3wfw+qBEyH5eLTm4a
+	JmIXZ1LsRYJ5UrTdsTebLuYbp0XaAFfwapZWsfGyrtsm7ogPFwvL5tYkHCYGPy//MER8bwFCNtJ
+	8VHPDYzp0+yIImCqnANumtRfyE5bbh+SMFOCqgOprAw5kOtJaf26VM9XQiQiQY95JMemXTQeyaI
+	tjMe3JTHTRYrfpQ00pI6u9gvostgH5M0DSuPG8PzW8lX+6Vdbn3Jc3rYQ==
+X-Google-Smtp-Source: AGHT+IEY417LiHa8XKzorTrI7WgocgIKDLhiY2qmsRvZtrCi2a9JHVe/oB79usdGBJ1xjM6YnatJyA==
+X-Received: by 2002:a17:902:f64a:b0:215:522d:72d6 with SMTP id d9443c01a7336-21892a20f38mr156206615ad.38.1734319926721;
+        Sun, 15 Dec 2024 19:32:06 -0800 (PST)
+Received: from localhost ([98.97.40.123])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-218a1e5d1b1sm32268655ad.204.2024.12.15.19.32.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Dec 2024 19:32:06 -0800 (PST)
+Date: Sun, 15 Dec 2024 19:32:01 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Jiayuan Chen <mrpre@163.com>, 
+ John Fastabend <john.fastabend@gmail.com>
+Cc: bpf@vger.kernel.org, 
+ martin.lau@linux.dev, 
+ ast@kernel.org, 
+ edumazet@google.com, 
+ jakub@cloudflare.com, 
+ davem@davemloft.net, 
+ dsahern@kernel.org, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ linux-kernel@vger.kernel.org, 
+ song@kernel.org, 
+ andrii@kernel.org, 
+ mhal@rbox.co, 
+ yonghong.song@linux.dev, 
+ daniel@iogearbox.net, 
+ xiyou.wangcong@gmail.com, 
+ horms@kernel.org
+Message-ID: <675f9f3184dfe_159ba20815@john.notmuch>
+In-Reply-To: <xtsolkbkdecvlbqx4zjtvd74c45lg5kqx2ojgdvovxrjgaghij@ld4wjwi7imvy>
+References: <20241209152740.281125-1-mrpre@163.com>
+ <20241209152740.281125-2-mrpre@163.com>
+ <6758f4ce604d5_4e1720871@john.notmuch>
+ <f2pur5raimm5y3phmtwubf6yf3sniphwgql4c4k7md25lxcehm@3qwyp4zibnrd>
+ <675b8f8f65e28_ff0720890@john.notmuch>
+ <xtsolkbkdecvlbqx4zjtvd74c45lg5kqx2ojgdvovxrjgaghij@ld4wjwi7imvy>
+Subject: Re: [PATCH bpf v2 1/2] bpf: fix wrong copied_seq calculation
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYMWTTnniPN-2cmjkPOefDFOLgbdo0cHzmMNJiFPL8riQ@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Dec 12, 2024 at 02:24:46PM -0800, Andrii Nakryiko wrote:
-> On Mon, Dec 9, 2024 at 8:04 PM D. Wythe <alibuda@linux.alibaba.com> wrote:
-> >
-> > When a struct_ops named xxx_ops was registered by a module, and
-> > it will be used in both built-in modules and the module itself,
-> > so that the btf_type of xxx_ops will be present in btf_vmlinux
+Jiayuan Chen wrote:
+> On Thu, Dec 12, 2024 at 05:36:15PM -0800, John Fastabend wrote:
+> [...]
+> > > > I think easier is to do similar logic to read_sock and track
+> > > > offset and len? Did I miss something.
+> > > 
+> > > Thanks to John Fastabend.
+> > > 
+> > > Let me explain it.
+> > > Now I only replace the read_sock handler when using strparser.
+> > > 
+> > > My previous implementation added the replacement of read_sock in
+> > > sk_psock_start_strp() to more explicitly require replacement when using
+> > > strparser, for instance:
+> > > '''skmsg.c
+> > > void sk_psock_start_strp(struct sock *sk, struct sk_psock *psock)
+> > > {
+> > >     ...
+> > >     sk->sk_data_ready = sk_psock_strp_data_ready;
+> > >     /* Replacement */
+> > >     sk->sk_socket->ops->read_sock = tcp_bpf_read_sock;
+> > > }
+> > > '''
+> > > 
+> > > As you can see that it only works for strparser.
+> > > (The current implementation of replacement in tcp_bpf_update_proto()
+> > > achieves the same effect just not as obviously.)
+> > > 
+> > > So the current implementation of recv_actor() can only be strp_recv(),
+> > > with the call stack as follows:
+> > > '''
+> > > sk_psock_strp_data_ready
+> > >   -> strp_data_ready
+> > >     -> strp_read_sock
+> > >       -> strp_recv
+> > > '''
+> > > 
+> > > The implementation of strp_recv() will consume all input skb. Even if it
+> > > reads part of the data, it will clone it, then place it into its own
+> > > queue, expecting the caller to release the skb. I didn't find any
+> > > logic like tcp_try_coalesce() (fix me if i miss something).
+> > 
+> > 
+> > So here is what I believe the flow is,
+> > 
+> > sk_psock_strp_data_ready
+> >   -> str_data_ready
+> >      -> strp_read_sock
+> >         -> sock->ops->read_sock(.., strp_recv)
+> > 
+> > 
+> > We both have the same idea up to here. But then the proposed data_ready()
+> > call
+> > 
+> > +	while ((skb = skb_peek(&sk->sk_receive_queue)) != NULL) {
+> > +		u8 tcp_flags;
+> > +		int used;
+> > +
+> > +		WARN_ON_ONCE(!skb_set_owner_sk_safe(skb, sk));
+> > +		tcp_flags = TCP_SKB_CB(skb)->tcp_flags;
+> > +		used = recv_actor(desc, skb, 0, skb->len);
+> > 
+> > The recv_actor here is strp_recv() all good so far. But, because
+> > that skb is still on the sk_receive_queue() the TCP stack may
+> > at the same time do
+> > 
+> >  tcp_data_queue
+> >   -> tcp_queue_rcv
+> >      -> tail = skb_peek_tail(&sk->sk_receive_queue);
+> >         tcp_try_coalesce(sk, tail, skb, fragstolen)
+> >          -> skb_try_coalesce()
+> >             ... skb->len += len
+> > 
+> > So among other things you will have changed the skb->len and added some
+> > data to it. If this happens while you are running the recv actor we will
+> > eat the data by calling tcp_eat_recv_skb(). Any data added from the
+> > try_coalesce will just be dropped and never handled? The clone() from
+> > the strparser side doesn't help you the tcp_eat_recv_skb call will
+> > unlik the skb from the sk_receive_queue.
+> > 
+> > I don't think you have any way to protect this at the moment.
 > 
-> instead of using find_btf_by_prefix_kind, let's have:
+> Thanks John Fastabend.
 > 
-> 1) snprintf(STRUCT_OPS_VALUE_PREFIX, tname) right here in this
-> function, so we have expected type constructed and ready to be used
-> and reused, if necessary
-> 2) call btf__find_by_name_kind() instead of find_btf_by_prefix_kind()
-> 3) if (kern_vtype_id < 0 && !*mod_btf)
->       kern_vtype_id = find_ksym_btf_id(...)
-> 4) if (kern_vtype_id < 0) /* now emit error and error out */
+> It seems sk was always locked whenever data_ready called.
+> 
+> '''
+> bh_lock_sock_nested(sk)
+> tcp_v4_do_rcv(sk)
+>    |
+>    |-> tcp_rcv_established
+>    	|-> tcp_queue_rcv 
+>    		|-> tcp_try_coalesce
+>    |
+>    |-> tcp_rcv_state_process
+>    	|-> tcp_queue_rcv
+>    		|-> tcp_try_coalesce
+>    |
+>    |-> sk->sk_data_ready()
+> 
+> bh_unlock_sock(sk)
+> '''
+> 
+> other data_ready path:
+> '''
+> lock_sk(sk)
+> sk->sk_data_ready()
+> release_sock(sk)
+> '''
+> 
+> I can not find any concurrency there. 
 
-Got it. This looks more concise, I will modify it in the next version in
-this way.
+OK thanks, one more concern though. What if strp_recv thorws an ENOMEM
+error on the clone? Would we just drop the data then? This is problem
+not the expected behavior its already been ACKed.
 
 Thanks,
-D. Wythe
-
-> 
-> >         if (kern_vtype_id < 0) {
-> > -               pr_warn("struct_ops init_kern: struct %s%s is not found in kernel BTF\n",
-> > -                       STRUCT_OPS_VALUE_PREFIX, tname);
-> > -               return kern_vtype_id;
-> > +               if (kern_vtype_id == -ENOENT && !*mod_btf)
-> > +                       kern_vtype_id =
-> > +                               find_ksym_btf_id_by_prefix_kind(obj, STRUCT_OPS_VALUE_PREFIX,
-> > +                                                               tname, BTF_KIND_STRUCT, &btf,
-> > +                                                               mod_btf);
-> > +               if (kern_vtype_id < 0) {
-> > +                       pr_warn("struct_ops init_kern: struct %s%s is not found in kernel BTF\n",
-> > +                               STRUCT_OPS_VALUE_PREFIX, tname);
-> > +                       return kern_vtype_id;
-> > +               }
-> >         }
-> >         kern_vtype = btf__type_by_id(btf, kern_vtype_id);
-> >
-> > --
-> > 2.45.0
-> >
+John
 
