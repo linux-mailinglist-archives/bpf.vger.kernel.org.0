@@ -1,127 +1,158 @@
-Return-Path: <bpf+bounces-47050-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47051-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78FFD9F378C
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 18:29:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B73509F37B6
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 18:39:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 685BA7A8305
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 17:27:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40356188DDEE
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 17:39:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75572206299;
-	Mon, 16 Dec 2024 17:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69775206294;
+	Mon, 16 Dec 2024 17:39:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KUB5ADDX"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="VxZ30YFi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657B381ACA;
-	Mon, 16 Dec 2024 17:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38053161302
+	for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 17:39:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734370016; cv=none; b=qt0+AKut8oRvzJrjlZt5fqVM4wP6OY0fM9Sf6d8Z1FSawhO8Ga4ZnCxfw2+c8TAx3ZN3TptP9XDaqfLw487Fj/4ugIhk97nml1fAVp4J80Vknr3RDxAZKhkAFU5wtwtZzNzFSlD2ycYDX6xA1r3wxJpJ3zbqn9M3naQsuqbsPQs=
+	t=1734370782; cv=none; b=hH4D8DViN5RgAPItkvrkHFtvqpAvg1HM5VGz7LQgqtNp+xrZz4Cq0qd+RXbKvJJ9zpVErS6LwsBLBL99BW5D2g4McJ9hXZblyT1K/bOSvPPaGoT9nAMEc2SM3nQQbq0EXCTReJck8ydVTXIo/a7w9IL1VNpdTve5IcUr6uECHHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734370016; c=relaxed/simple;
-	bh=/t1NRYv4/Q5pN1JG7idM3iLXiuadUz5zwHnKIJiHGNs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GamhLwvS1KKfuRe68YaulXARoReucVnOORd2FNgSJeJ8lf7CS+UmCwdaWkhH5KY26SxTmHYAB+/h+k/avb6p8YpmynGJmIVd6QwFZ5MGu3UI2kMFmHmGRZk2wDBIXJh+xZn3kDTcNq4IMyMYrqvavlpcFdR/FPlQbRgxvqtphq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KUB5ADDX; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-436203f1203so3782405e9.2;
-        Mon, 16 Dec 2024 09:26:54 -0800 (PST)
+	s=arc-20240116; t=1734370782; c=relaxed/simple;
+	bh=U+8znKEz2YfXhyTvIm83OodGYDQQxrY6mX+0gLUiNsE=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=ByrgZL4g4YjguvFMUP8T2xRQiHieAzsjT5tEEiAMiKrTsawImioqlTdtnVpsY/Hi1TGzd3P6jfEoxsYc8N0YoSstE4GAqQvthDd+vm1Iiht7oqzqLvi/pte1+iTs1as4Gy1GU9wl9e/npRya1rzxDNU7YKFR68Jc3YbqxWOBaws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=VxZ30YFi; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5d3e6274015so7680204a12.0
+        for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 09:39:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734370013; x=1734974813; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ws62IqXxwOmIXvue6QqDBdu01bZQNbrgvdYcyFWCQ+g=;
-        b=KUB5ADDXZH/M5py/ZL53ZgqaeU4U1trfICITuqIw0j+TNNt586cSB3+Sl7/cdV2zDt
-         iy8tC2eXjgSjiwC+E12JldkFeLUg2zT5qjEtzXMUsH9bS086gWGXqRng/bEHA/UkXa1I
-         KZMWpNibw3gv3hL4mZXurdoLEa7ocW2qCxOxEi7EJ8SaBlJPORJn0voDt9eyiwmiQeHK
-         SGoo671aKqlNT/Nhf19PDGW8H4vUoT8EpRtlbb4FGyih/I2VyKLVWEgM2dEJTip0C9QR
-         SVZR6/ly9hn5nTqaQZnfsbkt30he667HHxfLALKxmZZtyKP4ij9kyCGKQnTDGfqVCtsl
-         eIPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734370013; x=1734974813;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=cloudflare.com; s=google09082023; t=1734370779; x=1734975579; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ws62IqXxwOmIXvue6QqDBdu01bZQNbrgvdYcyFWCQ+g=;
-        b=EqbZCGkVKhputa3JsxSdBCwqSRxozQTtDsyL3ztOXaW0c9pbpGFFHgU6M7eWCFFxSD
-         JV+b694tjbF0IUpKrSWfbtLjFYhjsyfEicJ7CYdczuwEkn9fDa6AtsiD4TffEFWJsFmt
-         Q0+lQN65PkokDlarBudG6f9A0CITl5J9+1pb7L5RIsuvuxWN9bfsMCsskyjSIlzfQgY1
-         QjQ2FZVq/8C2+fn4XIDj0ToJGO6e48yU1cKf2apeKsx544q4E3EfUDizHEK1+R1UZB/U
-         r1q6ytMoOI/9tFYQUiwlT81hMNj5g+GBE1hbzMBIm3b/Lal+owYk+AzGTqCbDlUsZiah
-         QUdA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFGjTEWrLsAQIWCVKaAXmp2YAs36WyjvAmBYIIvkTiZdCz08GJDa6c0ElDcNeapxhNAX8=@vger.kernel.org, AJvYcCWD6D3vhRGqwcSDCes82pR+bRf+9+iJJXsmylVLR72GC4YKl4YZyoL9RtrFt76pi2X8TSZc6+Xm@vger.kernel.org, AJvYcCXlnP58leo1oSCBEC/1fA7dTvN2oDgKwRR8e2Z+UX/Hq3WQcB+6DcaMjTw64f6YeYBWkNvzxS0pNISsdj7Q@vger.kernel.org
-X-Gm-Message-State: AOJu0YzfM7T42+1dMIaBSy5/c5w+dQ1Y8FKsS7ii5OoK92iqZ8NAsGiI
-	CSIag8Y2TPBX6WMXj+4qc+W3dTpm0zYDA80Nk2HmIYJ7FwjBe+5W
-X-Gm-Gg: ASbGncvNh74mEYIB9AZJzdpTrjJaHagTpH3tw6EbRzto7H8Rr1ApJ3/ByaVKKB0gv+w
-	7X3v+vC5cHtlyg4gq0TYrgzY2iTAsK3+MyI6CGwtL6C184MpEEWbMfoG2P1ehKzvr6xkQGtn4wG
-	1SNbVwsObAOItPDkECypsj/m/2UfWZmUum6NhyAi0Fvn/4fdOw/iLRScWLOcdd1vaiw68nzrekt
-	+HKdu3OfwZKB5hXOY0C+7erdlh/SG0WPRWt/0V/5ljw
-X-Google-Smtp-Source: AGHT+IHJMEc5NsNfUNm/SdMJ561r1AUdBtJzRijqI4fw/BK5BRf5cPDJKOpc00nhQoFK0zD4hEpV4Q==
-X-Received: by 2002:a05:600c:1c14:b0:42c:b55f:f4f with SMTP id 5b1f17b1804b1-4362aaa97e7mr44822235e9.6.1734370012348;
-        Mon, 16 Dec 2024 09:26:52 -0800 (PST)
-Received: from skbuf ([86.127.124.81])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-388c801a487sm8902263f8f.45.2024.12.16.09.26.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2024 09:26:51 -0800 (PST)
-Date: Mon, 16 Dec 2024 19:26:48 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH iwl-next 4/9] igc: Add support for receiving frames with
- all zeroes address
-Message-ID: <20241216172648.q3fxwaxdkvtjqrfn@skbuf>
-References: <20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com>
- <20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com>
- <20241216064720.931522-5-faizal.abdul.rahim@linux.intel.com>
- <20241216064720.931522-5-faizal.abdul.rahim@linux.intel.com>
+        bh=Vq1wiAaMZvSDKgx7xAEMPkEv6TTMwkginHdh7T15Pg0=;
+        b=VxZ30YFiuO6vDT+CzVFFgQfetj7S5HAlo/y92j0leCe0ChxRjSjY+tjKXfEc4PMVLE
+         jnwYY8TkuBWtM9+knsp5+vQ2cjbh+W5T0mCPR1Fw8QhbpTuGMKNmJeev5dahZjQMPzja
+         ADo3Ba+Sxb588qHQP/J/ps+BchC40/bIWASjCV/yYsGpxNKkBM35ma/G2p9YB4uX1Jt4
+         1m8lIvTDvY6AGDseW0sOsrMsOIQBITlEQ7lxvZCVlp6vhFVlvFV4+2BGearmAXBn6Ghi
+         lid/U633VuiWz8SDs+8svLSlJbemA4v5FshhJVaQDBXiARV1a3R5Dkfh3lm+etld34JW
+         6/fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734370779; x=1734975579;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Vq1wiAaMZvSDKgx7xAEMPkEv6TTMwkginHdh7T15Pg0=;
+        b=uplIUbH3qAFQ1H1m+pjfGHYNJi5GQ9b26a3/OreQ26eOPunam482mZU9Q22mQ4qMT4
+         GNhLLEAUy3zJ9P0GCO7obQ1V3yEGaJbfw1zQTZRFUtHw5RPLOEHI32QyiXl5xi8et3A1
+         8q8YPA/wwBOs9REhR7qkInUIpK92HiI948YCTuCendJ3tC/pNehqBuZ3TAgkF38vRWm7
+         o8rL8fA3lkssCpPwFRnqGUovktyxs/pS+IrGyG6EJW6qLSH/M7dSKi6SXmIjETCeGSlO
+         ENJSPS71DUhwG2TMb2JkvfNDmvSfmmt1l3ARZeLaNMLxm84YBoNWJY2ndeCNOl82dFVN
+         auWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUc5DmMS6r4q6NMjLm57tWKe8XvZWk0H9TEtM9c2zBPkzf316f6P/eSUHQg2XbLzn4khio=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwraTwp8gUDnr6RXWM7WfwgmfIBqUQHFpgTSWWs6238JnRsAew1
+	EZOPJwJLsEuKYX3xKRo6I+D7JH5BKAkFDM7v0SC0xjAeprqnJAFf/sCnHbt3k4M=
+X-Gm-Gg: ASbGncsHzhcyYmpih14NVdtRflFlYCuOCgTxE+wL7uLGrc4BxDxa1WL/PdlAiYSWy+I
+	IHV+mNsh6MxSYrEe15+QDG2AgRKbZqnkRwCiWkDZbY/uPUDjQXqJUF1ot4v1xDhRGv7m7Y1HlUc
+	3qVmrun9yIusNimcmfU+XRVqZq02WnsN6BbyrM4byBsAv3dvleWy0YhpIDQGIkmTT8MCt1TQO3q
+	CxVdFV8bWsen97yWguwNYUllLqnXxk27Pk9WbyBCw==
+X-Google-Smtp-Source: AGHT+IFFEUnNWinE4X85+Cd8RAMuLtU0Dzy4ShkcFEcISQ4tgAqOEkSvBSfXerOh8Hdcj3z8GN5ocA==
+X-Received: by 2002:a05:6402:2695:b0:5d2:728f:d5f8 with SMTP id 4fb4d7f45d1cf-5d7d40dbd9dmr521618a12.27.1734370779451;
+        Mon, 16 Dec 2024 09:39:39 -0800 (PST)
+Received: from localhost ([2a09:bac1:27c0:58::3b6:40])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d652ab50absm3382977a12.7.2024.12.16.09.39.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Dec 2024 09:39:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241216064720.931522-5-faizal.abdul.rahim@linux.intel.com>
- <20241216064720.931522-5-faizal.abdul.rahim@linux.intel.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 16 Dec 2024 18:39:36 +0100
+Message-Id: <D6DB4NCLQZC9.I7DUNKR9RORW@bobby>
+Cc: "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
+ <daniel@iogearbox.net>, "John Fastabend" <john.fastabend@gmail.com>,
+ "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
+ <martin.lau@linux.dev>, "Song Liu" <song@kernel.org>, "Yonghong Song"
+ <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
+ Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
+ <jolsa@kernel.org>, <kernel-team@cloudflare.com>
+Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Test r0 bounds after BPF to
+ BPF call with abnormal return
+From: "Arthur Fabre" <afabre@cloudflare.com>
+To: "Eduard Zingerman" <eddyz87@gmail.com>, <bpf@vger.kernel.org>
+X-Mailer: aerc 0.8.2
+References: <20241213212717.1830565-1-afabre@cloudflare.com>
+ <20241213212717.1830565-3-afabre@cloudflare.com>
+ <76401f4502366c2d9221758f9034aa7bb2d831a3.camel@gmail.com>
+In-Reply-To: <76401f4502366c2d9221758f9034aa7bb2d831a3.camel@gmail.com>
 
-On Mon, Dec 16, 2024 at 01:47:15AM -0500, Faizal Rahim wrote:
-> From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-> 
-> The frame preemption verification (as defined by IEEE 802.3-2018
-> Section 99.4.3) handshake is done by the driver, the default
-> configuration of the driver is to only receive frames with the driver
-> address.
-> 
-> So, in preparation for that add a second address to the list of
-> acceptable addresses.
-> 
-> Because the frame preemption "verify_enable" toggle only affects the
-> transmission of verification frames, this needs to always be enabled.
-> As that address is invalid, the impact in practical scenarios should
-> be minimal. But still a bummer that we have to do this.
+On Sat Dec 14, 2024 at 12:55 AM CET, Eduard Zingerman wrote:
+> On Fri, 2024-12-13 at 22:27 +0100, Arthur Fabre wrote:
+[...]
+> > +++ b/tools/testing/selftests/bpf/progs/verifier_abnormal_ret.c
+> > @@ -0,0 +1,88 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include "../../../include/linux/filter.h"
+> > +#include "bpf_misc.h"
+> > +
+> > +#define TEST(NAME, CALLEE) \
+> > +	SEC("socket")					\
+> > +	__description("abnormal_ret: " #NAME)		\
+> > +	__failure __msg("math between ctx pointer and register with unbounded=
+ min value") \
+> > +	__naked void check_abnormal_ret_##NAME(void)	\
+> > +	{						\
+>
+> Nit: this one and 'callee_tail_call' could be plain C.
+>
+> > +		asm volatile("				\
+> > +		r6 =3D r1;				\
+> > +		call " #CALLEE ";			\
+> > +		r6 +=3D r0;				\
+> > +		r0 =3D 0;					\
+> > +		exit;					\
+> > +	"	:					\
+> > +		:					\
+> > +		: __clobber_all);			\
+> > +	}
+>
+> [...]
+>
+> > +static __naked __noinline __used
+> > +int callee_tail_call(void)
+> > +{
+> > +	asm volatile("					\
+> > +	r2 =3D %[map_prog] ll;				\
+> > +	r3 =3D 0;						\
+> > +	call %[bpf_tail_call];				\
+> > +	r0 =3D 0;						\
+> > +	exit;						\
+> > +"	:
+> > +	: __imm(bpf_tail_call), __imm_addr(map_prog)
+> > +	: __clobber_all);
+> > +}
+> > +
+> > +char _license[] SEC("license") =3D "GPL";
 
-Stuff that happened since this patch was written: "ethtool --set-mm
-pmac-enabled on" exists. You don't have to accept verification frames if
-the pMAC is disabled. You can enable the reception of 00:00:00:00:00:00
-using that, and keep it off by default.
+Thanks for the review! Good point, I'll try to write them in C.
+
+It might not be possible to do them both entirely: clang also doesn't
+know that bpf_tail_call() can return, so it assumes the callee() will
+return a constant r0. It sometimes optimizes branches / loads out
+because of this.
 
