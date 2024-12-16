@@ -1,171 +1,133 @@
-Return-Path: <bpf+bounces-47059-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47060-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B9BD9F390B
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 19:34:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 373589F3949
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 19:50:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 425F1163D67
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 18:34:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6806B7A1FBB
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 18:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C73E207A31;
-	Mon, 16 Dec 2024 18:33:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A83207666;
+	Mon, 16 Dec 2024 18:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a1hJPhpz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SCOuMtop"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A687207662;
-	Mon, 16 Dec 2024 18:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA01126C08
+	for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 18:50:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734374038; cv=none; b=O8D5lcgb75hvLEsuyml2n/NIEnTbsUGezXuy3xt67muVI6/paT5Ghe7yBrPd3VNm49AfQcbQvCQ+aj8iO3bdDaII233xLrZeVJHqRQA2RVQrio7RHraEuLpUBhKEbv+5OEkWws0sVEE+cA3Lz1rY4KSSe3cTTs53bqoB57zqkwA=
+	t=1734375030; cv=none; b=bbhw/HvXcpqT9vFvej94pPriK4q32TtFJUlmRbtlsmU8lzfOp6xY7cZ6XNbcNq9MeEJ8ixZLquLlRqf0JJsO1umW3TWHXvrVptMdCy7CmfmmloXrjjHd9VkGTcoDKD7gERuLcAju+uIBF6a6pGO2oA+2/CEMoGel94zUemqQm/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734374038; c=relaxed/simple;
-	bh=mAYIkWMq+q12YWRbO6dy5wlp3p8p4VoH+kxB1RORygc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O/MEC6iRDlcKaqE1HCGc+z+DmJyUOnwcbYcO2keJdwpXNj807JtuW/fWFE/+0tt6+zE/A6mL0B9yba6rxiAo9xcBIZ7c2xOrEsPSIP1tpSRt1gjrCoNgc5EDqmjibA0Ey1+yeJyq+xIUCPqJrLI01ypMokhD1wprTfVQf/Tis6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a1hJPhpz; arc=none smtp.client-ip=209.85.221.49
+	s=arc-20240116; t=1734375030; c=relaxed/simple;
+	bh=axKVFhxxqLPPlJ/1l34DA1zpKiRzXBPkPYSuthI/6xY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=FSUHcs4NAub4psvozj1v/xEsXmLcdKtlwC4HSUVbFMvooN2zCw7gsxIpm1MIoUFebTus3QOthioQuQU+sqqBJkOp2aSoQg6UrxtwPmoYg064v3IPyKA2/sr4nCzCFAIEURFgIs2DO/qn1deG1txdtlI6K/Uf6gsbGwvpLLAXLyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SCOuMtop; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-385f06d0c8eso2150431f8f.0;
-        Mon, 16 Dec 2024 10:33:56 -0800 (PST)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2166651f752so47262505ad.3
+        for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 10:50:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734374035; x=1734978835; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CwrnN8GfcXPZry6d8cAuBHyJqIiqU8pf/JYa0ijdGN4=;
-        b=a1hJPhpz50rlWBvmEEq5k5xGbOOwv26vHqdQ9bZJOEa+6Bc2hKRAv2NuoZnZMpUqO9
-         Alc+1dhM1L1wZiXxLBzGdfs+I+fwtGOkzohbJE2nBbeQBHyP+iWN45lAf0bzuAru/5pR
-         YDlsHmVLPgou/hXgAPafh4ZIVGwGA39VpxQGxROmZmt96cMNQJvv13Qq/65WpedqhbxT
-         e5N2dMChYaeymtg1/I5/Oqrxk9bH9pKnyCouIoU+5Xi3yluqAQbyDQPP5AKRf3x4ToY3
-         BWSawVuQp3pFwDXvFxak5if11AUSIjjU3nAg//wD+TH067MlgbbWQ327ak5Zs2Jwv233
-         gqRA==
+        d=gmail.com; s=20230601; t=1734375025; x=1734979825; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0hPRwPG3gRYsrCNiiarbD4e4/KCOAp8klEY5VdzH9QI=;
+        b=SCOuMtopZ2ntzrBpwrf472skTiEmK35aMew75bKlYrF58bf/6j19AL1BVP/Kd221/f
+         TlD9j+8fdJ3GU+7SpyEZAOEzsbohSWTPgUkSZMTjILmXBW0eYGXqEk+9EhEjdEc9dwjg
+         HfagGyeBKWbGWl36wEefMmTt3YutBN1yKdHd7G61j3WTxKy1YxNjjwRFLnKEAEvN/dO/
+         rilhH74YHo2MXVH2rfbTf1v+C8vyHlJK+dnypW9hiv6z6WWl0AddUgZgb87bZwWv5+6m
+         2/8Y4jGkCv/JwM+zfvpaJzaOgcecT+Cm0YHR6eZ2nSac2fcEF1PG4szN6kCfMXd1N1Zr
+         80LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734374035; x=1734978835;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CwrnN8GfcXPZry6d8cAuBHyJqIiqU8pf/JYa0ijdGN4=;
-        b=reOD2JxW05mfVGRuIeX6AT2GvblQ2JpJ61gjEbF3ATe06Cgb440+SDYVyqrvN+hLQZ
-         tkasKG6cWqTRgMXNflZRBovqkdX/Nx2lnd5YM0aiD9NT7zOAWokWonvh25F2xBe5ZzTG
-         5wvr7unzIEeeybU1v7eIltJ4hSbOEkuNm465pozyx4TqxXyEDwBKemBVIUQCPO7sggqW
-         n/UD9z0W2B0NNdUTE0Y6dDQ+tyNzX2tdLFhRMT0xN/UW7lHIhc9R4kHiqhSgygSrA+IZ
-         3ZTh/fjv/JDGx+2awC+bI7X7GkK3aYkwFACJ1avU1eqYJQ8OxB2gM4wJxqGewI9Zyfey
-         w7Mg==
-X-Forwarded-Encrypted: i=1; AJvYcCVgTKgymK9mTOjkAmrH30hGxVkeR8jmUyFKi6r38bfV7BFIUstNwKlik1fECJ/2PlIIjYbf0crNDbOZW/RW@vger.kernel.org, AJvYcCW2Oe+xKm2VIWhrYQYXuA6nV3nypnwOIQArBOGC64tCdCSwJvivsfZPxkikY5sjq8TYf20=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDM7YExLXYIUzS3/UoSbBORw9bnBdJ1ffV6gQw94mKLkNPHzl/
-	sDH717aPCZOykX9xPZtfl10S7pIJu1uOrjrIyamoR40sqFXPgURxymUeSpyGQVIR22wjR3vwF+l
-	8GG7+HXkYdRj8GKO7KFicJFNfjVg=
-X-Gm-Gg: ASbGnctW4CNyvy1dnAIv29FLje0FMVCXR+NeUZ9nM2/izdfAIaE1g9aCBzHqc0EGxFO
-	09vambzwoOt80Q56r5LwgZA1viEWkYzf8B7tUXo8cShvFV4DfvDW9DQ==
-X-Google-Smtp-Source: AGHT+IFbTvBEsR7GbcqMwhVUCM0LGmMwKZN/QmxaWoM22j//+BleI9x0TqYsefMmXF50Vzw86cp9q6FWnByXbOMKNoc=
-X-Received: by 2002:a05:6000:471e:b0:386:391e:bc75 with SMTP id
- ffacd0b85a97d-38880ac7742mr10660230f8f.16.1734374034202; Mon, 16 Dec 2024
- 10:33:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1734375025; x=1734979825;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0hPRwPG3gRYsrCNiiarbD4e4/KCOAp8klEY5VdzH9QI=;
+        b=oMDPeyeT57V28KBwPd5sa+Knp3zopXOfqmpCd7q3IYzWJBKbbc80Z974lZ+X41tH7H
+         xLJcIU9RIAYrT2zJAE44X9X1ENvxF7swSMziP/WlfeUFERcTrvRh080wOF+F+tah9c0Y
+         sNvkDMYqaGpcSuqg0TXIs1K0xuNdiNwkNQKrBpf5Xz7ratnuJaZcxUqH7V9Ii9u7G/J5
+         yE+gYWvBPNjaDtnXPu79DXjQZAw6OAuT9Rv6U0EPWS/XmEfHiluMBWEy4kwd2DKm73VL
+         kDyeljVXrrX3pItjIab4SQSzDwu0ysj12TRr46xK2G4PD3QSDhH6yyM16do8b22YNcXZ
+         nldA==
+X-Gm-Message-State: AOJu0YzJf+LMr1lqMxmp2LDsH3POf3VULSQmSY3jp5ihXAcfpPTSLKSZ
+	/a7z5HYenPJuhdsEXhJWXbhgQTlspnfJhfHrV8DGJcCsrjFiJ33Y
+X-Gm-Gg: ASbGncvufkVIbm8wezIpkKypYTD+xqhJvE9mBVqKJPdoE9TQfqVBVgLr9bGosfK7qKk
+	7xiwbZmFabhXxXJuoN7RKkjJttX1BgBY2y8dkq6hoiKfq9UsGurf8SNLBWk2Nq6Xuxz0HiViSWl
+	Uc1iGy+HQ8C7JBhvavshbemeoYePyT5wWbfPP36G1s2Q5o7cToOVDImRiaGbuxQtX13OpAx6/QI
+	IS8XBFH6juKsShciJ7qsg0htpIjesRDCgtoJ+tsTKAMaVqgD0cIdw==
+X-Google-Smtp-Source: AGHT+IG1Kwu+w9p1o6aa3dZhvdzlG9sxyfnnVu6npOyRyebCHUpf7PD2y2nXGCX3hw/tPUgMYustpA==
+X-Received: by 2002:a17:90b:2e48:b0:2ee:6736:8512 with SMTP id 98e67ed59e1d1-2f28fb6f983mr26001358a91.12.1734375025644;
+        Mon, 16 Dec 2024 10:50:25 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f2a1ebba00sm5671477a91.26.2024.12.16.10.50.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Dec 2024 10:50:25 -0800 (PST)
+Message-ID: <ed827bde40ab18be536add38c4237d949a752b2d.camel@gmail.com>
+Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Test r0 bounds after BPF to
+ BPF call with abnormal return
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Arthur Fabre
+	 <afabre@cloudflare.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko	 <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu	 <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, KP Singh	 <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo	 <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, kernel-team	 <kernel-team@cloudflare.com>
+Date: Mon, 16 Dec 2024 10:50:20 -0800
+In-Reply-To: <CAADnVQ++HfXeobY2XoJfDWXZGrF4_kR5kOK7asFRpBN=qmXU8Q@mail.gmail.com>
+References: <20241213212717.1830565-1-afabre@cloudflare.com>
+	 <20241213212717.1830565-3-afabre@cloudflare.com>
+	 <76401f4502366c2d9221758f9034aa7bb2d831a3.camel@gmail.com>
+	 <D6DB4NCLQZC9.I7DUNKR9RORW@bobby>
+	 <CAADnVQ++HfXeobY2XoJfDWXZGrF4_kR5kOK7asFRpBN=qmXU8Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241216104615.503706-1-arighi@nvidia.com> <5e7c4b07-f5f0-400f-a84f-36699f867a4a@iogearbox.net>
- <Z2BiWTcp-CnC5cCz@gpd3> <49407656def0054fb62c47907c2338bfc36df47e.camel@gmail.com>
-In-Reply-To: <49407656def0054fb62c47907c2338bfc36df47e.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 16 Dec 2024 10:33:43 -0800
-Message-ID: <CAADnVQ+1=3U_gusnrfVD3QrQirg5Bzwawje9nD2f-nvrYJH=JA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: do not inline bpf_get_smp_processor_id() with
- CONFIG_SMP disabled
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrea Righi <arighi@nvidia.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alexei Starovoitov <ast@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 16, 2024 at 10:27=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
->
-> On Mon, 2024-12-16 at 18:24 +0100, Andrea Righi wrote:
-> > On Mon, Dec 16, 2024 at 05:16:33PM +0100, Daniel Borkmann wrote:
-> > > On 12/16/24 11:46 AM, Andrea Righi wrote:
-> > > > Calling bpf_get_smp_processor_id() in a kernel with CONFIG_SMP disa=
-bled
-> > > > can trigger the following bug, as pcpu_hot is unavailable:
-> > > >
-> > > > [    8.471774] BUG: unable to handle page fault for address: 000000=
-00936a290c
-> > > > [    8.471849] #PF: supervisor read access in kernel mode
-> > > > [    8.471881] #PF: error_code(0x0000) - not-present page
-> > > >
-> > > > Fix by preventing the inlining of bpf_get_smp_processor_id() when
-> > > > CONFIG_SMP disabled.
-> > > >
-> > > > Fixes: 1ae6921009e5 ("bpf: inline bpf_get_smp_processor_id() helper=
-")
-> > > > Signed-off-by: Andrea Righi <arighi@nvidia.com>
-> > >
-> > > lgtm, but can't we instead do sth like this :
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index f7f892a52a37..761c70899754 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -21281,11 +21281,15 @@ static int do_misc_fixups(struct bpf_verifi=
-er_env *env)
-> > >                      * changed in some incompatible and hard to suppo=
-rt
-> > >                      * way, it's fine to back out this inlining logic
-> > >                      */
-> > > +#ifdef CONFIG_SMP
-> > >                     insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(un=
-signed long)&pcpu_hot.cpu_number);
-> > >                     insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
-PF_REG_0);
-> > >                     insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
-_REG_0, 0);
-> > >                     cnt =3D 3;
-> > > -
-> > > +#else
-> > > +                   BPF_ALU32_REG(BPF_XOR, BPF_REG_0, BPF_REG_0),
-> > > +                   cnt =3D 1;
-> > > +#endif
-> > >                     new_prog =3D bpf_patch_insn_data(env, i + delta, =
-insn_buf, cnt);
-> > >                     if (!new_prog)
-> > >                             return -ENOMEM;
-> >
-> > That works as well (just tested) and it's probably better since we're
-> > basically inlining the return 0. Do you want me to send a v2 with this?
->
-> I think both Andrea's and Daniel's versions of the fix are good.
-> Note, however, that I missed one more configuration variable when
-> making bpf_get_smp_processor_id() inlinable: CONFIG_DEBUG_PREEMPT.
->
-> Helper body:
->
->     BPF_CALL_0(bpf_get_smp_processor_id)
->     {
->         return smp_processor_id();
->     }
->
-> smp_processor_id definition:
->
->     #ifdef CONFIG_DEBUG_PREEMPT
->       extern unsigned int debug_smp_processor_id(void);
->     # define smp_processor_id() debug_smp_processor_id()
->     #else
->     # define smp_processor_id() __smp_processor_id()
->     #endif
+On Mon, 2024-12-16 at 10:05 -0800, Alexei Starovoitov wrote:
 
-No. It's fine as-is.
-We inline raw_smp_processor_id().
+[...]
+
+> > Thanks for the review! Good point, I'll try to write them in C.
+> >=20
+> > It might not be possible to do them both entirely: clang also doesn't
+> > know that bpf_tail_call() can return, so it assumes the callee() will
+> > return a constant r0. It sometimes optimizes branches / loads out
+> > because of this.
+>
+> I wonder whether we should tell llvm that it's similar to longjmp()
+> with __attribute__((noreturn)) or some other attribute.
+
+GCC documents it as follows [1]:
+
+  > The noreturn keyword tells the compiler to assume that fatal
+  > cannot reaturn. It can then optimize without regard to what would
+  > happen if fatal ever did return. This makes slightly better code.
+  > More importantly, it helps avoid spurious warnings of
+  > uninitialized variables.
+
+But the bpf_tail_call could return if MAX_TAIL_CALL_CNT limit is exceeded,
+or programs map index is out of bounds.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc-14.2.0/gcc/Common-Function-Attribute=
+s.html#index-noreturn-function-attribute
+
+
+
 
