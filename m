@@ -1,232 +1,141 @@
-Return-Path: <bpf+bounces-47013-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47014-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 491A59F28D1
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 04:32:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09BBF9F2A4D
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 07:48:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAF621887695
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 03:32:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D31A166BD5
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 06:48:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1FA153BE4;
-	Mon, 16 Dec 2024 03:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 890AE1CD208;
+	Mon, 16 Dec 2024 06:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZK54ucVv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="axzr4p6y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C5825760;
-	Mon, 16 Dec 2024 03:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BACFA48;
+	Mon, 16 Dec 2024 06:48:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734319929; cv=none; b=LNyruoi2A9rJAg1/ltY1HcCOOLjpS3J++DKYPUaS9LdS58WPS/+fm4JyVfC9W49WMhFX1WdBlYjov5AuQyD7+N/w0ldpGMopDUQ91Z54semCkWmJhMXO1Itah2C2XAmEa8pjiqx+cEDdAymjE/yfSYtHrQHHHvzwhjkNGzN6UW4=
+	t=1734331727; cv=none; b=dwss8QWZuYdf42qpKmeZPjS3pFAJz0lZe5FKfjpOU5kRLcMvBZtebcSioeSXOZc5h//19PnjZAuWIsLNZBJWsIfaVsctHOPkqcYcpqSD3P6GIp3peva3gBUBJKk/s9+a9bgyYylaD51GorMOqbA95H3CWuAT9Vs27xV/TrflPsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734319929; c=relaxed/simple;
-	bh=S2vQcu2RlyXhfyFLl5hUwkaHAA+c0PBHHGEC+2Ep8F0=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=PX8Q9y5DC2UvJbKcTd9kis1pHGg0QOE2lFtiRv1mN0gEjETCd4LLb2kaFjw74wW85BX/sa0C6j/GsWEUTpxrGgFf8gpCpcGOo1n5ezBzQhAyINbIekfGvZlCPNL1bhmmT9OXMMzAtHF5VVD5tJDCl+/jxOXzHImQPBKnM5qV/Ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZK54ucVv; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2165cb60719so26828865ad.0;
-        Sun, 15 Dec 2024 19:32:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734319927; x=1734924727; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nNOXfbpXdv41m/bOJkFcObz3huwlsENpJ7Jf000ZPk4=;
-        b=ZK54ucVvBmKbylAIVLES0EivGAW3xCm10Av0HfPM3k90Vcy4Cb2ZVzWgIqazXqK0/8
-         oRmDR9lUrJySx4MXzp8HWpEXlS86mSrqsLFzIMNX+Kp1RBM51yqwuZaYtJSi/6trv3Mv
-         maMVYeIf1rQl0WFQlZNrvoyLIjGjEnzdBvWtb5hsKjXOTgI4FYc0P0uCXr4JiTnmfwvE
-         8IX6QVV5t+OhX9+BxvwzErGvHFJ3RrC7l29mg0SNj1j5DsGSaB7z4MJXkGbtqLPE3MQa
-         0AXSNwTw4bh7hy7eRX/1R8wE67FF4rzVrrKRdY6Pu/UUCafXFMQEPc+LoFiGWFRxv+C9
-         yvow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734319927; x=1734924727;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=nNOXfbpXdv41m/bOJkFcObz3huwlsENpJ7Jf000ZPk4=;
-        b=TNZqXDaiwGalhKig6MbHeHXM4uMXNtnMoeZmmXd6E8B3kqKA9HbVrkritjNVcz6X0t
-         n0CxQfm0ZKwGuh+edmc1op1sSTAvreFD+Ttq+Zry6do5ggcYiE7aAEoajQPYcqXKx9x/
-         jvR5m4tyEDIuZG535qZvewLd0QNm7QSbssidOuwuZgwF7ZqCJ5mK03Nhzvr0UPGV+vTw
-         Jlfok2VzlLiI/+GaObG0b+lv6kn2xe6MC2s3yaBeJ6bPpykIoRjxaj/Eb0Y/2lDBJ0Ph
-         9wJOxg3zLJP8UUXc8v//lkrsgYFH1LADTYoJfFjga3a04bYG+xOvM7egBR0v9c5nAO9y
-         3nOg==
-X-Forwarded-Encrypted: i=1; AJvYcCUeJd7xdCma/B15wXcGN10Gce562ZA9hUqqyzrYsesz4ly1EIDbQFsxm1q5fjKSUjQj2513mrq9I65GcrM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzrI1vFaYWDZL9txQAlYo2L/TE7Ljgg1UNpfbS893Uokz1D6Z/v
-	hFQkaJ7hOxHqTyVi64UBh0RP+D6xuRhMFD8rv9R1V+2NMzG8WnE3
-X-Gm-Gg: ASbGncuxdMSp16sau8VfCvNgxhoriS/XSCSea+BtlbQb7dqcLt3wfw+qBEyH5eLTm4a
-	JmIXZ1LsRYJ5UrTdsTebLuYbp0XaAFfwapZWsfGyrtsm7ogPFwvL5tYkHCYGPy//MER8bwFCNtJ
-	8VHPDYzp0+yIImCqnANumtRfyE5bbh+SMFOCqgOprAw5kOtJaf26VM9XQiQiQY95JMemXTQeyaI
-	tjMe3JTHTRYrfpQ00pI6u9gvostgH5M0DSuPG8PzW8lX+6Vdbn3Jc3rYQ==
-X-Google-Smtp-Source: AGHT+IEY417LiHa8XKzorTrI7WgocgIKDLhiY2qmsRvZtrCi2a9JHVe/oB79usdGBJ1xjM6YnatJyA==
-X-Received: by 2002:a17:902:f64a:b0:215:522d:72d6 with SMTP id d9443c01a7336-21892a20f38mr156206615ad.38.1734319926721;
-        Sun, 15 Dec 2024 19:32:06 -0800 (PST)
-Received: from localhost ([98.97.40.123])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-218a1e5d1b1sm32268655ad.204.2024.12.15.19.32.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Dec 2024 19:32:06 -0800 (PST)
-Date: Sun, 15 Dec 2024 19:32:01 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Jiayuan Chen <mrpre@163.com>, 
- John Fastabend <john.fastabend@gmail.com>
-Cc: bpf@vger.kernel.org, 
- martin.lau@linux.dev, 
- ast@kernel.org, 
- edumazet@google.com, 
- jakub@cloudflare.com, 
- davem@davemloft.net, 
- dsahern@kernel.org, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- linux-kernel@vger.kernel.org, 
- song@kernel.org, 
- andrii@kernel.org, 
- mhal@rbox.co, 
- yonghong.song@linux.dev, 
- daniel@iogearbox.net, 
- xiyou.wangcong@gmail.com, 
- horms@kernel.org
-Message-ID: <675f9f3184dfe_159ba20815@john.notmuch>
-In-Reply-To: <xtsolkbkdecvlbqx4zjtvd74c45lg5kqx2ojgdvovxrjgaghij@ld4wjwi7imvy>
-References: <20241209152740.281125-1-mrpre@163.com>
- <20241209152740.281125-2-mrpre@163.com>
- <6758f4ce604d5_4e1720871@john.notmuch>
- <f2pur5raimm5y3phmtwubf6yf3sniphwgql4c4k7md25lxcehm@3qwyp4zibnrd>
- <675b8f8f65e28_ff0720890@john.notmuch>
- <xtsolkbkdecvlbqx4zjtvd74c45lg5kqx2ojgdvovxrjgaghij@ld4wjwi7imvy>
-Subject: Re: [PATCH bpf v2 1/2] bpf: fix wrong copied_seq calculation
+	s=arc-20240116; t=1734331727; c=relaxed/simple;
+	bh=f6imVHIwBO5y+VNI+OBSEm0607sjuDvEWjjMWJjz7Jo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LQUcQjzpNVYE1HWqdnIlC1Crh0pNjSeVTgsOE1X/OjuG6io07Rv1jTUZFffqn7FsCSe4r6qEiopkP4vUj6nnbn3Ne7m4UUIk5AQghmcZyVDytwq/TId2BqeJb5MJh4VLfQoZ0mjbQUctvEgm2acWXHO9R3+9X1s/bOvihN53lWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=axzr4p6y; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1734331726; x=1765867726;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=f6imVHIwBO5y+VNI+OBSEm0607sjuDvEWjjMWJjz7Jo=;
+  b=axzr4p6yAP+9nMzGJ69RuIT0i95RSIaRTYalP34zXqdvci0XbevwKu7j
+   Yt0rn28tmBQNL5QJlyHe9XiaPamc4axHuAx3ZUAJXCKontlvjzZXjbKlT
+   GUvrqCqwmPFtYAZtHDXQgyCmz711ZliRXBGJOvkMrBepNLNMkb45Q9p8Y
+   rApP/dNnc8wu4GCIxlNSB9yOgphQneDzwFkV8MJXPo/xiCHR0yKENHDX2
+   ZbzmPFwyVleVmcwm4Yhvk6lxyuj+f7yuruULeuwx1dsR1aFcCcIQIZGvA
+   TKdTNzfvJscOHU1xETZHYY0MCyp+q1Ce359aAhqXllsF9HhDJVm7mdAHT
+   A==;
+X-CSE-ConnectionGUID: ODhR4mkWTdW53j3l7VaA/g==
+X-CSE-MsgGUID: kMKFXXGVRI+QnOOnVRFB4w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11287"; a="34848179"
+X-IronPort-AV: E=Sophos;i="6.12,237,1728975600"; 
+   d="scan'208";a="34848179"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2024 22:48:45 -0800
+X-CSE-ConnectionGUID: 0ZYhOhqLRF2QZFp/LSt1ow==
+X-CSE-MsgGUID: H+0+CYdpREuAj9JqRrXIKw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="128101836"
+Received: from mohdfai2-ilbpg12-1.png.intel.com ([10.88.227.73])
+  by fmviesa001.fm.intel.com with ESMTP; 15 Dec 2024 22:48:41 -0800
+From: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
+To: Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Cc: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH iwl-next 0/9] igc: Add support for Frame Preemption feature in IGC
+Date: Mon, 16 Dec 2024 01:47:11 -0500
+Message-Id: <20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Jiayuan Chen wrote:
-> On Thu, Dec 12, 2024 at 05:36:15PM -0800, John Fastabend wrote:
-> [...]
-> > > > I think easier is to do similar logic to read_sock and track
-> > > > offset and len? Did I miss something.
-> > > 
-> > > Thanks to John Fastabend.
-> > > 
-> > > Let me explain it.
-> > > Now I only replace the read_sock handler when using strparser.
-> > > 
-> > > My previous implementation added the replacement of read_sock in
-> > > sk_psock_start_strp() to more explicitly require replacement when using
-> > > strparser, for instance:
-> > > '''skmsg.c
-> > > void sk_psock_start_strp(struct sock *sk, struct sk_psock *psock)
-> > > {
-> > >     ...
-> > >     sk->sk_data_ready = sk_psock_strp_data_ready;
-> > >     /* Replacement */
-> > >     sk->sk_socket->ops->read_sock = tcp_bpf_read_sock;
-> > > }
-> > > '''
-> > > 
-> > > As you can see that it only works for strparser.
-> > > (The current implementation of replacement in tcp_bpf_update_proto()
-> > > achieves the same effect just not as obviously.)
-> > > 
-> > > So the current implementation of recv_actor() can only be strp_recv(),
-> > > with the call stack as follows:
-> > > '''
-> > > sk_psock_strp_data_ready
-> > >   -> strp_data_ready
-> > >     -> strp_read_sock
-> > >       -> strp_recv
-> > > '''
-> > > 
-> > > The implementation of strp_recv() will consume all input skb. Even if it
-> > > reads part of the data, it will clone it, then place it into its own
-> > > queue, expecting the caller to release the skb. I didn't find any
-> > > logic like tcp_try_coalesce() (fix me if i miss something).
-> > 
-> > 
-> > So here is what I believe the flow is,
-> > 
-> > sk_psock_strp_data_ready
-> >   -> str_data_ready
-> >      -> strp_read_sock
-> >         -> sock->ops->read_sock(.., strp_recv)
-> > 
-> > 
-> > We both have the same idea up to here. But then the proposed data_ready()
-> > call
-> > 
-> > +	while ((skb = skb_peek(&sk->sk_receive_queue)) != NULL) {
-> > +		u8 tcp_flags;
-> > +		int used;
-> > +
-> > +		WARN_ON_ONCE(!skb_set_owner_sk_safe(skb, sk));
-> > +		tcp_flags = TCP_SKB_CB(skb)->tcp_flags;
-> > +		used = recv_actor(desc, skb, 0, skb->len);
-> > 
-> > The recv_actor here is strp_recv() all good so far. But, because
-> > that skb is still on the sk_receive_queue() the TCP stack may
-> > at the same time do
-> > 
-> >  tcp_data_queue
-> >   -> tcp_queue_rcv
-> >      -> tail = skb_peek_tail(&sk->sk_receive_queue);
-> >         tcp_try_coalesce(sk, tail, skb, fragstolen)
-> >          -> skb_try_coalesce()
-> >             ... skb->len += len
-> > 
-> > So among other things you will have changed the skb->len and added some
-> > data to it. If this happens while you are running the recv actor we will
-> > eat the data by calling tcp_eat_recv_skb(). Any data added from the
-> > try_coalesce will just be dropped and never handled? The clone() from
-> > the strparser side doesn't help you the tcp_eat_recv_skb call will
-> > unlik the skb from the sk_receive_queue.
-> > 
-> > I don't think you have any way to protect this at the moment.
-> 
-> Thanks John Fastabend.
-> 
-> It seems sk was always locked whenever data_ready called.
-> 
-> '''
-> bh_lock_sock_nested(sk)
-> tcp_v4_do_rcv(sk)
->    |
->    |-> tcp_rcv_established
->    	|-> tcp_queue_rcv 
->    		|-> tcp_try_coalesce
->    |
->    |-> tcp_rcv_state_process
->    	|-> tcp_queue_rcv
->    		|-> tcp_try_coalesce
->    |
->    |-> sk->sk_data_ready()
-> 
-> bh_unlock_sock(sk)
-> '''
-> 
-> other data_ready path:
-> '''
-> lock_sk(sk)
-> sk->sk_data_ready()
-> release_sock(sk)
-> '''
-> 
-> I can not find any concurrency there. 
+Introduces support for the FPE feature in the IGC driver.
 
-OK thanks, one more concern though. What if strp_recv thorws an ENOMEM
-error on the clone? Would we just drop the data then? This is problem
-not the expected behavior its already been ACKed.
+The patches aligns with the upstream FPE API:
+https://patchwork.kernel.org/project/netdevbpf/cover/20230220122343.1156614-1-vladimir.oltean@nxp.com/
+https://patchwork.kernel.org/project/netdevbpf/cover/20230119122705.73054-1-vladimir.oltean@nxp.com/
 
-Thanks,
-John
+It builds upon earlier work:
+https://patchwork.kernel.org/project/netdevbpf/cover/20220520011538.1098888-1-vinicius.gomes@intel.com/
+
+The first four patches in this series are preparation work for the subsequent patches.
+
+The patch series adds the following functionalities to the IGC driver:
+a) Configure FPE using `ethtool --set-mm`.
+b) Display FPE settings via `ethtool --show-mm`.
+c) View FPE statistics using `ethtool --include-statistics --show-mm'.
+e) Enable preemptible/express queue with `fp`:
+   tc qdisc add ... root taprio \
+   fp E E P P
+
+Note:
+1. preemption can occur with or without the verification handshake,
+   depending on the value of the verify_enabled field, which can be
+   configured using ethtool --set-mm.
+2. Enabling FPE with mqprio offload is not covered in this series, but
+   existing code prevents user from configuring FPE alongside mqprio offload.
+
+Faizal Rahim (6):
+  igc: Rename xdp_get_tx_ring() for non-xdp usage
+  igc: Add support to set MAC Merge data via ethtool
+  igc: Add support for frame preemption verification
+  igc: Add support for preemptible traffic class in taprio
+  igc: Add support to get MAC Merge data via ethtool
+  igc: Add support to get frame preemption statistics via ethtool
+
+Vinicius Costa Gomes (3):
+  igc: Optimize the TX packet buffer utilization
+  igc: Set the RX packet buffer size for TSN mode
+  igc: Add support for receiving frames with all zeroes address
+
+ drivers/net/ethernet/intel/igc/igc.h         |  45 ++-
+ drivers/net/ethernet/intel/igc/igc_defines.h |  15 +-
+ drivers/net/ethernet/intel/igc/igc_ethtool.c |  96 ++++++
+ drivers/net/ethernet/intel/igc/igc_main.c    |  80 ++++-
+ drivers/net/ethernet/intel/igc/igc_regs.h    |  19 ++
+ drivers/net/ethernet/intel/igc/igc_tsn.c     | 330 ++++++++++++++++++-
+ drivers/net/ethernet/intel/igc/igc_tsn.h     |  15 +
+ 7 files changed, 586 insertions(+), 14 deletions(-)
+
+--
+2.25.1
+
 
