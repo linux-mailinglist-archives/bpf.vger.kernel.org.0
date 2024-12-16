@@ -1,108 +1,127 @@
-Return-Path: <bpf+bounces-47040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5A919F3448
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 16:19:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18DE19F3522
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 16:59:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0969C1681E3
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 15:19:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 500001889BC8
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2024 15:59:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A25F145323;
-	Mon, 16 Dec 2024 15:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1FF1547EE;
+	Mon, 16 Dec 2024 15:59:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="nfgYhJ7J";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="PV9zG6iv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H2ZKAGGb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210AF5647F;
-	Mon, 16 Dec 2024 15:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E1553E23;
+	Mon, 16 Dec 2024 15:58:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734362362; cv=fail; b=JksgU1n9tSfKNA8LSZFJucql+tgA5yb1Kf8I5vaS9RCdsJOT683IhmVNT533mAzGWLuewdfCmT916J6DvXNg4MTSHVxfZqrRJfWqeVnsfl753L5FVdPhyNlK8fBQaSWnzqNOM805Mk97ovpP5mMSTL/RqLibLnqszrm6N9f7i/U=
+	t=1734364742; cv=fail; b=dwIrwmbpKiKxwZg4LJDhgWEyB452p5LoCE4bL5dE3CqQtLrGAOGwIDwBT5l9k7pXRokC7+uaCvlWyDPpIjV4DpRiRgiLag/xCQakeQfgNXbhsBeJMNqaUXtsUR1ngNnQtT/EDVwzDE4yA03sGDK5iUOkmNq7rLwP0RwpVtXksjg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734362362; c=relaxed/simple;
-	bh=3IHKhY2vDsqTOjYV26X8gMDiS7mOqvIVkNbrMPRgP6k=;
-	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=cmlFeOOzoIdMx844WBcOMxoZyva2jNll7yxoJiZJs+ojDeO6lvrSKEParFuYYhWFe7RrfAB6OFK5kVZty3YlPom+bZWJ+t6EWZLqRLL4JFfm2OZDVb1Y/8C++MZHhWMbaCPYdGMs3TsHQuhTkTvY15t+6a/Tg8665vRiMNTZCbk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=nfgYhJ7J; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=PV9zG6iv; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BGEtuHK021101;
-	Mon, 16 Dec 2024 15:19:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=QO6/6NfdHpxaSSxAwPa0SfjDu/RIKd+aPIM45G+LaFQ=; b=
-	nfgYhJ7J3x70yor3mp3BGFk9MwhcuGJ2nlihw9G59+5TNF1BgTxaHsGJlmJo8ezE
-	ElxbnMfutn77oG0CLg8GMAUO4OFDBtQbXNRsilqwTTa8azTab30443P1zYa7pd+4
-	OBXLxXyV5lZhfQcI3SVUjWK+5ZWJZVIrQJTUHVLWDUEzP/biZxFvqBTrXqF+fVYn
-	9Zsb9XUMQhH+um92L+Z0MMjF6rE+pGUR/lDyMMB3bObm7pah/NPmUlP5atPLw8cp
-	K7B2KLuAPLfa30Eh1wNevQLU4gL7TyfA/9W0eTtVwOoMkDW7dBd4wDMEAjRVYQEF
-	2D1LzaHttVKjvD84VznjHg==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 43h1w9bd4b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 16 Dec 2024 15:19:17 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 4BGEosnH032652;
-	Mon, 16 Dec 2024 15:19:16 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 43h0fddwdb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 16 Dec 2024 15:19:15 +0000
+	s=arc-20240116; t=1734364742; c=relaxed/simple;
+	bh=o2zM47/iD/FDVmZ9WgsOevde3G9WccH+LOYWHK/u8z0=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=EwVs5QaxZT01Ud5bqQ7SRedYbTKfNpraowJAGsvEhlqGOo0kdObFMZ/K9bkkTRTBc/T/XePbh3r7ucDOY6nEP5uWyZssVbak3J8nqSvb3ZIHnuqgfVJtQ2ggnzE08pS9u69y5k7sAf+QL7C3kdADlJwanzmB7MUD2TfsRUqUTO0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H2ZKAGGb; arc=fail smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1734364740; x=1765900740;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=o2zM47/iD/FDVmZ9WgsOevde3G9WccH+LOYWHK/u8z0=;
+  b=H2ZKAGGbBp/fKJHxnCL8WAz36e6O6GyLoHH6IQsy4T1UKfWMaL/LjTOE
+   5fERxZbYfd5uO06S5Va6fi6Y7UvZsVFr8xGmcsl2tg8YqysM9Tl+ECOBt
+   ccQC6P/2lyHJfvUm04kUjcCAzD6X1jVK5eiGARcMRAXoJAkCei4GMX411
+   ysmXUPxgsFuGcN4Er77Vy7PFFGkt6h30AqZyHnvfB3IFZxgrgqup+yXe8
+   lHQgN7brBf8tsS9Fu5ga05EB41IkzgpUvOFYuN9LNBiVUQw+d/PM57eLX
+   f6lmkCvbRfiL9OrCUOofs4KIkxcpT2YnbxXQq42BI9vp4xhwGvfLV0HWg
+   g==;
+X-CSE-ConnectionGUID: bjdVgxocRFOdv+4RVW8Gkw==
+X-CSE-MsgGUID: ULSL7v8MRVm+vLhJt30g+A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11288"; a="38434372"
+X-IronPort-AV: E=Sophos;i="6.12,239,1728975600"; 
+   d="scan'208";a="38434372"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2024 07:58:58 -0800
+X-CSE-ConnectionGUID: QdpFfkkOQ5a2YmWxn00lqQ==
+X-CSE-MsgGUID: DHYvjoDyTA+77xJGt1SNcQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,239,1728975600"; 
+   d="scan'208";a="102260700"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Dec 2024 07:58:59 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Mon, 16 Dec 2024 07:58:58 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44 via Frontend Transport; Mon, 16 Dec 2024 07:58:58 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.47) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Mon, 16 Dec 2024 07:58:57 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=uBgP156DD7xoYZRTOcguo1ZCwsAzn4/vEAGbSU/egvD0nZgIiNwUmRzG+UBy0Mn8DZm/vhlVDLs5Uls61iCB/5Y8afRlQfmioyA1VadWK+iQ559r6AemQElw/3pTDo3bp8lVcn+hhyTqauTiWi8fXiMWptHWc66XtIJeEc+YW7B9MLKHF69R9ay1YCTl1XdIlRGl5ftwE/NxOCgPWU43bV8DrTYcYCS4X1skGhRdU1Kkm4kbSFIR7OvRwXDpDtDH1PUn3ugGSHgz5M6OSBqXHJkV90M4kHcZ4hXNw2vy9zk94/6ambvya7C6U5wS6fBlRlbxGzHCKxzUY2LAd/KWaw==
+ b=XFvqCkokHWibRaZ0+n9mJOs4bYj6roOhSf2dRleNTEejSABHZP3t0bWYJ0t8Yeune4hlPuWpIgx7VvzdVLO8uNHrN4j4Vql1Siy7+NewBZ1hBeeKWxZibv6zVCXMFM2uidAebysk5DhXpI8cWV4UP0PnHPPc+B8c5Q81e3+P8Wpiht38NRKWq6jgRGdB/5H3mDDYhSE6hbJTO1qZXXUV07LJDhew+S3Ol1vVpMPyrQbF0vxW91R2iPWbx1EAnvzEYwRhcMAiYK8tsiXd7fLEa34ITGdQTfo8JJwq+9FCPrG7Ba5OLWD5auIlLIkghm6XWZewMFWwI5XGwDzy4lJpuw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QO6/6NfdHpxaSSxAwPa0SfjDu/RIKd+aPIM45G+LaFQ=;
- b=mkB6Izd+HwyUDPQbuN9dgUmBqUkrXz0Brv+l5M0xAYHSq4dNV5Xefrr1Awg05mhDMcFQ/9Klzhg6+eqwanPOhAlinOGudffnM46gmoavOmyIYTJd0Low3I842EpHX7sBp5tCNAf6fBwIm9Lq2+UnihVaa1pzU3r+IrwqhwFxj817W2uJu5i9lUNIlgLZNzQsTIrgOWcx7XEKGjMrjgalaUXudjhksTi5ihFy5H0IcQZyS3/bUyrt0gPFXrCTMirxehE8RvsCp5bOq9t81Qkb1JkFWiPknCT+GfhBjr9iuWCwzoB7hMni1lvVcSqMikcPpf60o2e8LCRzK6B9YHmopA==
+ bh=IBV/yema94SuR0sOAtvTUy97Gs3E7SdpBZOyl0v9wwM=;
+ b=j2MllX5Z6O4GxEKk2iV789M3RzoIdIAbuliAFxFWEoLD+qOowCmfH6QrR+43K+VlWJ75J1xyo2qwsZn+5bAWbD1LJ3WBAd9tunTG8Gc1HTEvRd61sUyTxYEQV4c4Mdz3qj9TluPhGIxVYn73I4i0ixvsbNIU9twS686OHtrep9BK8s2MKzX9f/S1ZZpJ9GMTpQIoN/W0KZ3V/7IHtuMhqkijSeTY4C2emUEr2oxThCOlBxByRF8odO82w0kHRJsCZCxvYvJ8KDehYdikF8JUaKogPUQenF5FJV5gvwxHkfNlyZdA7rBoyB+kY1ePBszWGcmnKgHvZZ+eC7wsbNX/1A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QO6/6NfdHpxaSSxAwPa0SfjDu/RIKd+aPIM45G+LaFQ=;
- b=PV9zG6ivPykcQBNiUiEHEbat0X6c0DXQ8krWxiO+VmFgCIW8T+bTs4hTLLk0Sr9XbfqigO3hp796vNJJUm2y6Jg3EYpdh5Ir22T/Xrm5uwOOpd/BVkx9RN61fcWclVIRthWUQJU5H5mlEWp0m53UPrxYymn2kCqUyMgcbthsyMo=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by SJ0PR10MB5669.namprd10.prod.outlook.com (2603:10b6:a03:3ec::18) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by PH7PR11MB7572.namprd11.prod.outlook.com (2603:10b6:510:27b::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8251.19; Mon, 16 Dec
- 2024 15:19:13 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::682b:c879:9f97:a34f]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::682b:c879:9f97:a34f%3]) with mapi id 15.20.8251.015; Mon, 16 Dec 2024
- 15:19:13 +0000
-Message-ID: <c067bc3d-62d6-4677-9daf-17c57f007e67@oracle.com>
-Date: Mon, 16 Dec 2024 15:19:01 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8251.21; Mon, 16 Dec
+ 2024 15:58:50 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808%4]) with mapi id 15.20.8251.015; Mon, 16 Dec 2024
+ 15:58:50 +0000
+Message-ID: <56406174-8c77-413e-812d-2639b115a2a3@intel.com>
+Date: Mon, 16 Dec 2024 16:58:25 +0100
 User-Agent: Mozilla Thunderbird
-From: Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [REGRESSION] module BTF validation failure (Error -22) on next
-To: Cong Wang <xiyou.wangcong@gmail.com>, Uros Bizjak <ubizjak@gmail.com>
-Cc: Laura Nao <laura.nao@collabora.com>, bpf@vger.kernel.org,
-        chrome-platform@lists.linux.dev, kernel@collabora.com,
-        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
-        Stephen Brennan <stephen.s.brennan@oracle.com>,
-        "dwarves@vger.kernel.org" <dwarves@vger.kernel.org>
-References: <20241115171712.427535-1-laura.nao@collabora.com>
- <20241204155305.444280-1-laura.nao@collabora.com>
- <CAFULd4a+GjfN5EgPM-utJNfwo5vQ9Sq+uqXJ62eP9ed7bBJ50w@mail.gmail.com>
- <Z10MkXtzyY9RDqSp@pop-os.localdomain>
- <3be0346a-8bc9-4be1-8418-b26c7aa4a862@oracle.com>
-Content-Language: en-GB
-In-Reply-To: <3be0346a-8bc9-4be1-8418-b26c7aa4a862@oracle.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH net-next 09/12] page_pool: add a couple of netmem
+ counterparts
+To: Mina Almasry <almasrymina@google.com>
+CC: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+	<john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, "Peter
+ Zijlstra" <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>, "Jose
+ E. Marchesi" <jose.marchesi@oracle.com>,
+	=?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, "Magnus
+ Karlsson" <magnus.karlsson@intel.com>, Maciej Fijalkowski
+	<maciej.fijalkowski@intel.com>, Przemek Kitszel
+	<przemyslaw.kitszel@intel.com>, Jason Baron <jbaron@akamai.com>, "Casey
+ Schaufler" <casey@schaufler-ca.com>, Nathan Chancellor <nathan@kernel.org>,
+	<nex.sw.ncis.osdt.itp.upstreaming@intel.com>, <bpf@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20241211172649.761483-1-aleksander.lobakin@intel.com>
+ <20241211172649.761483-10-aleksander.lobakin@intel.com>
+ <CAHS8izNEzoeuAQieg9=v7rHp8TCWXyw60UbrZgEm5LCKhtCEAg@mail.gmail.com>
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+Content-Language: en-US
+In-Reply-To: <CAHS8izNEzoeuAQieg9=v7rHp8TCWXyw60UbrZgEm5LCKhtCEAg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI2P153CA0006.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::22) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+X-ClientProxiedBy: ZR2P278CA0017.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:46::11) To DS0PR11MB8718.namprd11.prod.outlook.com
+ (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -110,381 +129,130 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|SJ0PR10MB5669:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9bc03c51-bf27-4404-e5cb-08dd1de4ff6a
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|PH7PR11MB7572:EE_
+X-MS-Office365-Filtering-Correlation-Id: c0f21485-459f-44bb-0909-08dd1dea8827
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|10070799003|376014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?NTR3Ym9pemNsaTZ1VkxKQmxla1pKQ0RXRDBCejg4blE4cWowckQxMXZlWDVz?=
- =?utf-8?B?RHQra1JNRjMzN3lucEN2WjhsY3BKYnI5ZFpBeVRETUdxcnJIK21RRzhnanJB?=
- =?utf-8?B?L3JydTJlU3JjNk96QmErdlZodVRsRnBFbG8zendreHhISjEwMG5KUm40enFI?=
- =?utf-8?B?WXVWaFJ2YjRWRTFtVWs3QzVlYXZ2MFl2cnl4WFE5ektRTHFELzAxMU11OE9a?=
- =?utf-8?B?Tlgwam5JL1dqYitFZVR6UHFFRmViZ05IanhsZVErR05DejFNdENkNE1FeGM0?=
- =?utf-8?B?STN3T1V4Q28yQTlvZlNnb2xIZnZ3eG1KSUJTa3B3Z1V0UFlSZTJLcGgzTTVI?=
- =?utf-8?B?Z3RvQkdYR2dHNkFmbG9EUE1vVElIY09RK0syY1NnNDRrRXJUMHdrM0NvRzEr?=
- =?utf-8?B?QkJPZGtQZHlnMDZMSWVyUmtQYSsrY1lsR0ZzN3hKc0pEYUw4WU1UTXhsZU5D?=
- =?utf-8?B?M3FMMWlJSms4cko4b2E1NUZRaHMwRHJKRk54dURMSkdwVUNCcUJ0QytXamNm?=
- =?utf-8?B?T1VIUGwrR2dKK2h4NGxEcUlhL2FrTmM0cnl0MCtIRDNkZ2hEY1NRc2hmZXZr?=
- =?utf-8?B?WGNDcTRSdlIvUlE0QzU3V3MwSW52Rk5aTUZBLzY3QnFLSVBTZWs1eXQzRmw1?=
- =?utf-8?B?S2FISVJhR1l3aHV1emJpTUFubzJtUFRXYndzSk83NkpPajZWTmNkZURXd1hm?=
- =?utf-8?B?cVd5eWNRczcwdEhpaVJmVzdEaUR1dkt2WEhqSm9XaWFwWHNyMFZOWndPVTRQ?=
- =?utf-8?B?T2czMVdtcHFhVFBBS0hLditOUnFxSlRKb2pYYzV0ZUpLNGliQlFibHRXbkxC?=
- =?utf-8?B?K05DbW1wS04zMURFdDd0MlM4Q1VkNmpJQytzSG5qVWNqZ3h4akdGUG1sKy9K?=
- =?utf-8?B?ZTYrWC9RZU5VelN5S0xoNml3VlM1NnhoVStOYVJadTJGdzhYRzNkV01GRy9w?=
- =?utf-8?B?Szc1VWthM2w1SkRZQk9aQVo1bjhKN1I0NENYL2JQclFheXJ3bExvaDdtU05h?=
- =?utf-8?B?aHlZd3QwQVBqdU0rVmdCTUovZFZFb2xaRnozSnptYUdvcklvQ0l3YURFc1lW?=
- =?utf-8?B?WThFWk5rSWZjN1cxa1N6YUp6T0VxcWdiUmFKZndmL1F0WWRSR3ZoZ0RjVEZp?=
- =?utf-8?B?Y3BPanJOaVVLT2l4K3BIQkxBKzBNOHVyUFlvajhDMWFtTHVxUTRTckpVckJl?=
- =?utf-8?B?cExJTkRaK2VwOEhFR3RMbmRpOGVjV3ZqRnNKNm1yNmRsaTJvYkN5dEhrNWEx?=
- =?utf-8?B?V3JJakFtMTd2WFBWMzBSbkJVbTZ6dVNWd2Q5cDhBZzRMa3U3QUR1U1YxRzg2?=
- =?utf-8?B?MGJtaVYrVlUvT1MzekRLUjNyMVlIcWYxaTN1Sk5rcVJnOVNVNXZLM1RmbThW?=
- =?utf-8?B?dy9VRldPMC9wL3lPWWswMmdoNUpZWll1SDR5Q2RSVGlUQll0NHZBY1hzb1Z0?=
- =?utf-8?B?L2NoaXBTWWFobDlWcGhaNW52ekNhcktwcmVtY2NpTXRFSTdKbUlaVDZUYTJS?=
- =?utf-8?B?QVNCcVNUVVp3OWY5VzNxYUl1c3grM2hNclNiMGdhbVRRNEU3WElsMGZFWWlj?=
- =?utf-8?B?QUduMHhmaHRzZGJVOFRDNmdVSGl4UXJaNC9JMzQrMDJuVTV0amMrTlZOTllU?=
- =?utf-8?B?d0pFcTVqYndjTDFhdjRzeW16Tm5iSGpYeW9pQnZ6NTk2dzZtRXJPSnc5c0NV?=
- =?utf-8?B?bDJsR3Q2SUREaFlmYnFpYm1vYUE1Z0JRNWRpRC8yTnRFZU5ObytCS3ZzOUdH?=
- =?utf-8?B?dEd4cDFNUW9zQW01UDIwaEpnQ1NSSFRPdjlTQkZ5VlJpZWJwUjVUbkowbUt0?=
- =?utf-8?B?U3ZKQ09jM0ZyTjVjalNKcWNFUmRJY3N0K21yQ2loL2d6WGh4bEt3TjJNTW5B?=
- =?utf-8?Q?zoukBojePs3D2?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?ZTlpdkp0anlqQjIrdE5TN3JlM3dBZElUbEVqS0RSZmZZUWI1WHlBMnUyOEFU?=
+ =?utf-8?B?L1NFY1dwVkhpUzZWRWVOM2c5T1Nqbk44czM3aW9SYmNSQXdRNzZNa0UxMlRT?=
+ =?utf-8?B?ZW5td01HMU9aeFN5OFQ3NVV5WXRNcldEdlgvMC9XWHZwajJNclZaSjZPODUy?=
+ =?utf-8?B?aHUwWEVhQXh4b2lWUDV5QlJPMVpuL2piWTJwNjY2U3ZQT0pEelVGMXFLeWdF?=
+ =?utf-8?B?emtDR0pGckthMjBsaDhORkRrRXJqOU03c01FVWU1T0djdTNLcWlZa1FtZW9M?=
+ =?utf-8?B?VFl6YVBKRjMrcnJnczY4eEUwaHh5MVFNcDRhWHJvN3MwNGNodCtDSVdMNHBr?=
+ =?utf-8?B?L2ttTTdYSGxyV1dnQ3FpOFpmZ3Qvd3VxcFZLQUp2ZUIra012b3ZwRkhrZHRq?=
+ =?utf-8?B?TkFWZUMyRVJRaU5mbE9jMnIwYjliWFo4QVdSM1dwS1VPalNlaGNiTWFtN0Zx?=
+ =?utf-8?B?QldyS25IemFpR1lhYmVCV3Jka2RjNFRsV3JDM1E3bGswODBualRJUmVEVzJT?=
+ =?utf-8?B?U0VZc3JvNUVMcTdzZkM0ZFBCanVGczdPNTJSQUZ4Y1hEaWdzenJUNmttOUZZ?=
+ =?utf-8?B?di8xYWNUNmErQ3BNOHBnYW9EekFCbkZlQTRHMzJZdlNaVlpPd05rQXVPKzd1?=
+ =?utf-8?B?eXREZUxGTjZSeFVOZHI2RUU3MGNML3JyK1JOdEJRWlRMYUwxelh6Um0ydDVS?=
+ =?utf-8?B?dCtnVnJiN1QxNzVIZ2FOVVo0N3ZUdi9PVnF3Ym5WYjlqQjNZTXhQZDJZSTk3?=
+ =?utf-8?B?clF3VytRNEZ3dGR0cUxTWkFqTkhLU1lXWGFLekpYYmpVVVBRRnhZL2dEQ1RV?=
+ =?utf-8?B?V1pwMUg0U0l5TWFVZjY3UkRydVc3bEQrVmpSVCtEeTU2UkdienUyMzVLTlBz?=
+ =?utf-8?B?VXh4clZ0d20yZGd2M0hvUmllcFlrdDB3c1VaNXQycFRQekJDL0xRazNkTUhY?=
+ =?utf-8?B?bnVZWitERTd0UjNzU2MwV2tiRGFHR1ZvUWFDYmIrTUl5SWdlcHB5Vy9PM2oy?=
+ =?utf-8?B?ekZMTzlDZzNUanFCeUtKUStqSlQzTFRPbTlYcmRmNEh1MytpMUJKT0lzRjdZ?=
+ =?utf-8?B?RXdSZUl3MXAwd200YjBqZnNPYnRVcE5VQXJaMzRuZG9MbEVKMkhMS2p2WWxl?=
+ =?utf-8?B?ZW5YWEtMTk9uUGtjUzN0ankvSnMyK25oUmoyczlmRUwwbzVzV1dKKzF0K3gr?=
+ =?utf-8?B?RmluOVpvU3RHU0tmMEtHVmxTOWc2U2o1bXQ2UHlUODlXOVpQdTJCbm1Oa3Jz?=
+ =?utf-8?B?YjR5MmFOUVY5aGFUMm8wdHdUejV5QkFzUXRFZ3I1QW9LOWNjMU1CREZxMUVp?=
+ =?utf-8?B?YmJucGkrbDVJTXIzdGtVV1Q4NTNhbXhYb2ltSTQzM2Jvb2F1YSt1RWVUVzE4?=
+ =?utf-8?B?aTI1RGc3WHhiTWowc3B6bTRCVkhVU1VJN2lNeE12Njh2b0M0NUtWYlNUU2Ry?=
+ =?utf-8?B?U2tVQThqVDA5dFRMUUtJa3pHdVlvMVhobFhkUGpkblp6KzVpUGxocTE2bDRy?=
+ =?utf-8?B?Mk9YckdzMXhiVnFKRXhLU1FpOGt1VUxtMHdOWEI4Vk1jTjJCNWZMdlRSMFFI?=
+ =?utf-8?B?RXJkTGRxSmE5VTMrWXNCUVppMW9Oa0JyUzl5Wk81NzhCWFQ1YXR5bGF1S3dn?=
+ =?utf-8?B?UjFjNFRacU90S2Q2NWdhb1lUaTRiRHorREFHLzA3c3ZNeHhQVGlkV2lmQzVs?=
+ =?utf-8?B?aW9JZXcwY0x3VzZpeVMzV0t5aHFzSy9vVnBtSDNYN0M0UVY2T1Vnc3o4d2hG?=
+ =?utf-8?B?NlVrMllKd2E0V2E3eVR4YVRzaDR3S05ndXZVdHRmS24zNzhGclBsb01uNVpS?=
+ =?utf-8?B?azV2ZFRReGxsUm4raUhZVXRpYm83MFAyejA5ZWpLSHRKeEEyQkxUNTJEZWhw?=
+ =?utf-8?Q?wXjKGIZ+MY/cb?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(7053199007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MVBqcXZsOVdHdU5sL1JVTmZHVy9kNUF1ak5qSGNjSkNLTnJ2cEFYdTEvZUtN?=
- =?utf-8?B?MkM1Mm5LQ0tnU0EydmZOUUZTR1hOUS90R01ON2RIaFZCLy95RytlVHJ6QUE2?=
- =?utf-8?B?dVFlNTB0TjI5SDAvZFdrNlBDZFRQemhWU3AwWGU0WFBCdnJCVTRTNW1tc0I5?=
- =?utf-8?B?YnhGbHUzSnIveGJmNk02cSt3b0JheUoyaGV1TmpZY1ZiVWFIVDJqa3FrYkhZ?=
- =?utf-8?B?QkhvUmlTQnFtekZrRmJNWjNyck82dkVYcDhPMDFDV1dudjBBL1FQbUdSajlE?=
- =?utf-8?B?SGE0MDlrZnVVM1dkNysxSnN2aWdjRVFUZjdJUUloRHNBcVlKdHJBNU1UTFA1?=
- =?utf-8?B?TFNUL0RLR3djSTJCM1VtOFZqbUwwR08ybjVoVEZOcFhMYzdFQkd1K0w1UTNU?=
- =?utf-8?B?YU9MQkhRUVh1SE5OckxqemJMSnN1WktzVW13b1pzNVdhSi92NWtSaWZBRnNW?=
- =?utf-8?B?ZWZocGgxMnQ3OXp0RGJUM1RNSUMyZU9Ncm4xVDg2RlljeWpsVDJWOHV0Y2Rr?=
- =?utf-8?B?VzZveXI2eXFnRGFQRUNtdlN6RENIYUdNVytIQ2RYWWowL2xndHUydW12WGVE?=
- =?utf-8?B?YXY3NlVtZ2VUMGNHZDFETmhmK1E4SmdEUGxYaENFSFIzcnRIcmRWdjFzN2Va?=
- =?utf-8?B?bkxuU1RweGF5cXdsVHg5MUFSUE05ODI3WWhXUWJ3S2pGd21NSHdjZ20zUFhK?=
- =?utf-8?B?SzV5cWFvZm54QURZMkQ0OWxmZzlZdlgyUlk0SGkwWTcwREtiMVhDdUNTOGYw?=
- =?utf-8?B?Rk5jcjdhTm9JSktEcFNvQkxldHZGZGRpT29UVXNSRlk4dHpEM0FRaG1HQXow?=
- =?utf-8?B?NWFwdUlBc01Pb29zcDE0VEp4NGdkbXVvT1BJNzJ1c2tvejJ5b3BJV1JIUWxI?=
- =?utf-8?B?SnY3UERnUUlFMVBsTkZEclMrRndHSU5zaWJCcmVEaTkyWStubUVUTTNOK2Vi?=
- =?utf-8?B?eWdtMW1Ma2s3VlpvN0lFakNseTllUXpQcm1GVlFiL1pxYUlWYW0zUTF2aS96?=
- =?utf-8?B?S0MxVUFOOCtUZWpia25yY3dTNytlZ2d1RUVpeHJTVURUd1dyVHhPYmJ6c3dD?=
- =?utf-8?B?eWRVbUYvQ2kvWmpHaEUzbFBSeXdZaDAyY1JrMnRibXdqUTRyOUo3Y3Jadlpk?=
- =?utf-8?B?amV2YUNQT0ZyaXd1N010bWxPRHpwNXkwbWNNWGlJR0NsUU50TEtBdDUrWjFT?=
- =?utf-8?B?b2UvUGJrZUxyK3BhNUtBRDFvcHJ3MW15U1FtbFpVd25hbUU4UEwza0RNeld2?=
- =?utf-8?B?VTBUQmtPVWhaeUZaL3FLWlpoYkdOSTVMcUJENmV4VkVNU0RpczJGM2hVeGlq?=
- =?utf-8?B?MG4weXhpTHVJSDRjQmFreWFVZzAvOTk3a0RYay9UcThVaVRoVTFtckFWbmcw?=
- =?utf-8?B?UEFnOHdNMVhnbmRiRmtjcWJSN1dnMUZXektmUTJ4SXEwUW8zQi94bFJFMkJH?=
- =?utf-8?B?UGdIWWZ0dmRCbm16djdkSHp3aHBPcGZyYmZXc1VaMHZqRXRCQ2dXMzNjVUpC?=
- =?utf-8?B?b1JOdzBVUDBSZDRjL1oveUcxYlRRanpERXNKcHE5ZFl1MitNb0Q0U3hNS2VX?=
- =?utf-8?B?MFVNaWxRdHZnTm5jMGFMSWFDcWRDRXlQNXBoR2dqZDNBOHl6S1NKVVo4M0Uz?=
- =?utf-8?B?UHZYTWJLSHZaRkhwcXZpbnZYWWJVL3VUdFltVmtGcnZjS1hXMkJyRW5lbk1T?=
- =?utf-8?B?VDB5VjJrSVpHMDFxSXFxSnFmV0JsTyttMGVnZUE5ZndmUjdRR2wvSkJoanNu?=
- =?utf-8?B?bVBSdDc4Y2c1U0VWU0tUTHhxNVZlM3JkUXFpM0ZDR09SRGo4Zlp5MUttODNh?=
- =?utf-8?B?YjBPT2VxaUIwTHlOQjB2OVN5RGhFTFNXV3FETnUyL2hyZS80R3kyQUQzcmtN?=
- =?utf-8?B?OFEwMnFabzBPdFphN012dUZhZWN2MTdmRW43OEVYNVRYcS8yTlUwT29oaEg4?=
- =?utf-8?B?anYrVlhtYStPZGc3SzVXeG5aNE1Rc3IvQmRsOUtUcWV1OGtNU1kvL1RZV2RI?=
- =?utf-8?B?emJGTWVCRUZFaTZwQWhTRGlPbXhXbjU3ZFJZMS9JMjFoRXBHYmFrS3RoeUJW?=
- =?utf-8?B?ZHo2MnNnd21NRkZHcExLclN6Y3oyMFFDQVk3eTVoUm4vVCtyc05vUHNPaEpB?=
- =?utf-8?B?VmZmTHo0Nk1JWUNpcU1yVXlpcysybHFIVlpIT3c0cUNOSzhyOHR0YVcwR0hr?=
- =?utf-8?Q?5AFPKLtQ5y84P6McZbixzpM=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	KztnkDtxSWQ9uQHfJSQ6cEmuxmfDqxlnr+V9GTs0cNvuTrUSzsNcNst4dQzU0FT0aobSSAjzqlbGcYKnWlfgtq74WrrnJOxriPNwvyhNPmk2Vpxs1tmAsXIoauAE+BBuxEKopQtCoWzWKLQLU6WWr3nH2urc70gqc0fOGqmVpPIZBL6ZwHBBqdT408Ec/lbY2U0wZrJJbaxYw4Fef3GkAQwM/mPlLRk8jFE8Y+ICJZ78CuSpsTiedkXenRWF7TE9USp9kIqyeEGbxJmBLNXxCs/IFmUSx7f/uds7mJqxy9ezUF9dysEJfHc+dg/MA7reVr53p7LiSgtcP5sYecH7J04fHLQ50GY2t3bELIycQNdBsxMfSLegWrGRcFiGyZncdnqQS+kKeEGolcb1rkpHpdLPWBx3ni4T1VTDuWupDCheEz7qEMG54j67ay39zYn8Uw7XKjsSeX/lhAwGoQLs0Xhug2/Ti8FjU67jtXjAIigaeOJUsDqlLSeRocVnIafqnfAQTq7eHollSmWStqJ5eLZeEawzhf2j7PGYbwwU3jE+XLK+ijXg4Za1ujdDYzTongdwj+WHvXFiyhKefzwn2DUKcibjqz/no1z7yjGQAKE=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9bc03c51-bf27-4404-e5cb-08dd1de4ff6a
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MjJGZFdnVFpucERMUUxid2JBcEtmSWRyVUxwUEJsWFZqMDNDK2Zqd2VBazdj?=
+ =?utf-8?B?SU1uMXNtYTh4cmQ4cVpvKzhHSmZ0WDRyRHJOZzJ4eTBScHBQWUZsd0hiUmN6?=
+ =?utf-8?B?ZnMvYkNOMkxUcEl6a3ZWVmRjV2lackNmWC92QUFTalUrU3ptWk9xa204SG40?=
+ =?utf-8?B?QU5LNjJCNHJ6VVhmMmZYTHo5aE9DR2NCYTUzcW5ybEtiN0sweEN3MzFNeXlL?=
+ =?utf-8?B?d0psUTN1MXVIN2YxYlJVYkJZbmZlOFNocThIZC90Y0Vmb2RKaWliZW4yVWJL?=
+ =?utf-8?B?T25QWFpUNlNEczJRcGlTZjNoelpIKzcySC9hdzBUSmpyQ3BNdExnaCtNR2Jx?=
+ =?utf-8?B?bnQ4TEVJejF6VkhGNnk3c1RkbHNKellmaHNYMmZZbm5CYkZhcDZxcnhYeVB3?=
+ =?utf-8?B?MzZta2FUWEgxS1ZuSWw2bzYyeXN2THF6QjhWOFFVMndWV3hjeFYwSDBHRTJN?=
+ =?utf-8?B?U0RaSnIvMWdFU1N4U2g3VW5WTW81VnpHMmY3aGZGWGdMK0lrUThnVG1zaU5l?=
+ =?utf-8?B?Sk85WmpBMmNuZ0NVY3ZoOXBIQ1FtL2hCdDZ4YWNmenBGYmI4MXJTSGs4K1pm?=
+ =?utf-8?B?aDMxenhUdTJFQkovMEtIN0UvdXZoVysxb0lVaG1wVDM5T29UeDV2RFQzdkVo?=
+ =?utf-8?B?ZVhHRkNIN2kycHhPeXk0bmVEZXVmNWYzQ0pFWTdBSnlyT2JyTGdueWdMallB?=
+ =?utf-8?B?Z1gxUndEaytwcWwwS05ueDVYUzJOT0F4Vng1ZFN2RkFURXNVeVdPOG5qMkZ6?=
+ =?utf-8?B?cEF3a0ZVUFZYR3FsREFuR1VqQU5wVXJpcTJzc2dkWDlJUFVqM0traUNkb2g1?=
+ =?utf-8?B?Q3FhS3JnckZvZHlHbUlmRHhBREdNamNlMEhnTklUZmVtNTRWSUkvQXJxS1p6?=
+ =?utf-8?B?NkFxNlZ6S3FoREo0V3BiZ1BkejUrb3Z0SFVrYXBOWlc4YjNsZ1ZabjExSW82?=
+ =?utf-8?B?U3d0VnlHMk1Cd2pxbjJNY05yd3VWOGxQUXNJNHFkVk1EWWhrejBZMmRvNkpI?=
+ =?utf-8?B?ZnludU1Xck4xWXpzMVk0YzRrei80dCtFcFpVakJOTHZveUN5cXFDNUg1UXdV?=
+ =?utf-8?B?S2l1YUZMMGZ1QzRiLzdad2lYTGlQWnYzd2pZcC80ZGhjTDVFeGJ2eXVTYitN?=
+ =?utf-8?B?MnYweC9hVFROdkMwLzc5YWxHdHoxM0lVVC83dnJ2MjU3TUZYQXJGNmdtL0NI?=
+ =?utf-8?B?NW1DZnZ3ZGl3UkNUYjI5M1F0RVltMjZuM09pcDk1SEZ3cTAraVZYZWZQVVRI?=
+ =?utf-8?B?T0k3K1dnV2dkV3pCMUZGWW1aUUpYeG0rd2QyZmtoZWcyYVR3a0VraG5FYjZi?=
+ =?utf-8?B?dDdkQnBBMkhkQmplUXNPL3RBOG9TS1RZUk81TU0zK3RxMVdteXlJZ1FDVnNa?=
+ =?utf-8?B?VW93YzdLdmNWVC9QMWozZk8xQ1NSeEhrZGtib2g5SmdhOWZxNGswbDNkYXNa?=
+ =?utf-8?B?c0FwVndjZjhIOXVKazl2RStiMUZZbTJ3YjBxeFp1V2JhWHpNZUpwZ0dCRXhF?=
+ =?utf-8?B?eUtXNDF5VGpxMUIwRWRWeFJMNFFzUWFvNzMzNW9QZGp3K0lRUTFBMHVzbUFE?=
+ =?utf-8?B?c0lXSjV0ZGZnSUYySFg3T3kvZzljWXovSXdEMCtmVXgwajhJZ0FlK3RUbFp0?=
+ =?utf-8?B?c2t6eHB3ckVrTk5Xd1VyK2dqQ1ZZL2xHbWJSbnFCNjJTdm16MUZ1QnhMS3lX?=
+ =?utf-8?B?NmFVVkE2RHI0UGVrcWtkOW5CamV4RjI5cHFKNk8wRSt5Qkt5Z21HRUVBNDNV?=
+ =?utf-8?B?TjE2OW0rUEd6cVJUTEIvMFJucFI4cDhEeFlZaWpVMUVNVWtUQVFnT0hJbyts?=
+ =?utf-8?B?RlpCNkx4VlJTLzl3dEs5SHRSS0gvTFpBZ2pYbzVKd0JSanYwaitBbFlaYUd5?=
+ =?utf-8?B?Zy9UVkpNaS93b0toNGExVGUyYW9vQWxUOWo3ekxmSTB5UnZVeXdWRWNqblR5?=
+ =?utf-8?B?UnU2eW9Lem0wSkMwR21DTDFaYjF1ZVhFa2hGWHNWMnBkdDRJcnQ2UE8wOEdI?=
+ =?utf-8?B?R0hkWHdScnNjMGpUYUdUYU1FUWFuakVMbGxHNXRGQWU2eXpIdm9aU1JmaUFa?=
+ =?utf-8?B?OXdzVnl4QWZEZHJkbGNGUFJnWE9wRUJkQ1gxbGpKWjhkMk54NzZ2a29sdllE?=
+ =?utf-8?B?Nm0xTnMyakh6MkEzWENHdzd0c0tIQ1F2NzZmQzByMFJKYUw1Q0xKQk10U3Yx?=
+ =?utf-8?B?TWc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0f21485-459f-44bb-0909-08dd1dea8827
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2024 15:19:13.3195
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2024 15:58:50.3579
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6tSME1w8Wdqeb3SWqJfNSVcsVxdgHb+Gx7NfaleEXav7YDqeNLpWY28oswd+qEHQBYhC3719m0NZFDcdwli7nQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5669
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2024-12-16_06,2024-12-16_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 suspectscore=0
- adultscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2411120000
- definitions=main-2412160128
-X-Proofpoint-GUID: pfdbLeGxFqTGXNnvgBkSxV870KSqq2lD
-X-Proofpoint-ORIG-GUID: pfdbLeGxFqTGXNnvgBkSxV870KSqq2lD
+X-MS-Exchange-CrossTenant-UserPrincipalName: sp2qVr9yy+ksYjRQVtKnux7DcUf4jYhYmdXiP5spBvoZQk1Ek1DHKx8KJqxP8fJW+/eoro56fzy+4HJIe9VS1onZVn8Uz/Lk28H8/7KHdLo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7572
+X-OriginatorOrg: intel.com
 
-On 14/12/2024 12:15, Alan Maguire wrote:
-> On 14/12/2024 04:41, Cong Wang wrote:
->> On Thu, Dec 05, 2024 at 08:36:33AM +0100, Uros Bizjak wrote:
->>> On Wed, Dec 4, 2024 at 4:52 PM Laura Nao <laura.nao@collabora.com> wrote:
->>>>
->>>> On 11/15/24 18:17, Laura Nao wrote:
->>>>> I managed to reproduce the issue locally and I've uploaded the vmlinux[1]
->>>>> (stripped of DWARF data) and vmlinux.raw[2] files, as well as one of the
->>>>> modules[3] and its btf data[4] extracted with:
->>>>>
->>>>> bpftool -B vmlinux btf dump file cros_kbd_led_backlight.ko > cros_kbd_led_backlight.ko.raw
->>>>>
->>>>> Looking again at the logs[5], I've noticed the following is reported:
->>>>>
->>>>> [    0.415885] BPF:    type_id=115803 offset=177920 size=1152
->>>>> [    0.416029] BPF:
->>>>> [    0.416083] BPF: Invalid offset
->>>>> [    0.416165] BPF:
->>>>>
->>>>> There are two different definitions of rcu_data in '.data..percpu', one
->>>>> is a struct and the other is an integer:
->>>>>
->>>>> type_id=115801 offset=177920 size=1152 (VAR 'rcu_data')
->>>>> type_id=115803 offset=177920 size=1152 (VAR 'rcu_data')
->>>>>
->>>>> [115801] VAR 'rcu_data' type_id=115572, linkage=static
->>>>> [115803] VAR 'rcu_data' type_id=1, linkage=static
->>>>>
->>>>> [115572] STRUCT 'rcu_data' size=1152 vlen=69
->>>>> [1] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64 encoding=(none)
->>>>>
->>>>> I assume that's not expected, correct?
->>>>>
->>>>> I'll dig a bit deeper and report back if I can find anything else.
->>>>
->>>> I ran a bisection, and it appears the culprit commit is:
->>>> https://lore.kernel.org/all/20241021080856.48746-2-ubizjak@gmail.com/
->>>>
->>>> Hi Uros, do you have any suggestions or insights on resolving this issue?
->>>
->>> There is a stray ";" at the end of the #define, perhaps this makes a difference:
->>>
->>> +#define PERCPU_PTR(__p) \
->>> + (typeof(*(__p)) __force __kernel *)(__p);
->>> +
->>>
->>> and SHIFT_PERCPU_PTR macro now expands to:
->>>
->>> RELOC_HIDE((typeof(*(p)) __force __kernel *)(p);, (offset))
->>>
->>> A follow-up patch in the series changes PERCPU_PTR macro to:
->>>
->>> #define PERCPU_PTR(__p) \
->>> ({ \
->>> unsigned long __pcpu_ptr = (__force unsigned long)(__p); \
->>> (typeof(*(__p)) __force __kernel *)(__pcpu_ptr); \
->>> })
->>>
->>> so this should again correctly cast the value.
+From: Mina Almasry <almasrymina@google.com>
+Date: Fri, 13 Dec 2024 11:13:33 -0800
+
+> On Wed, Dec 11, 2024 at 9:31 AM Alexander Lobakin
+> <aleksander.lobakin@intel.com> wrote:
 >>
->> Hm, I saw a similar bug but with pahole 1.28. My kernel complains about
->> BTF invalid offset:
+>> Add the following Page Pool netmem wrappers to be able to implement
+>> an MP-agnostic driver:
 >>
->> [    7.785788] BPF: 	 type_id=2394 offset=0 size=1
->> [    7.786411] BPF:
->> [    7.786703] BPF: Invalid offset
->> [    7.787119] BPF:
+> 
+> Sorry, we raced a bit here. Jakub merged my "page_pool_alloc_netmem",
+> which does similar to what this patch does.
+> 
+>> * page_pool{,_dev}_alloc_best_fit_netmem()
 >>
->> Dumping the vmlinux (there is no module invovled), I saw it is related to
->> percpu pointer too:
+>> Same as page_pool{,_dev}_alloc(). Make the latter a wrapper around
+>> the new helper (as a page is always a netmem, but not vice versa).
+>> 'page_pool_alloc_netmem' is already busy, hence '_best_fit' (which
+>> also says what the helper tries to do).
 >>
->> [2394] VAR '__pcpu_unique_cpu_hw_events' type_id=2, linkage=global
->> ...
->> [163643] DATASEC '.data..percpu' size=2123280 vlen=808
->>         type_id=2393 offset=0 size=1 (VAR '__pcpu_scope_cpu_hw_events')
->>         type_id=2394 offset=0 size=1 (VAR '__pcpu_unique_cpu_hw_events')
->> ...
+> 
+> I freed the page_pool_alloc_netmem name by doing a rename, and now
+> page_pool_alloc_netmem is the netmem counterpart to page_pool_alloc. I
+> did not however add a page_pool_dev_alloc equivalent.
+> 
+>> * page_pool_dma_sync_for_cpu_netmem()
 >>
->> I compiled and installed the latest pahole from its git repo:
+>> Same as page_pool_dma_sync_for_cpu(). Performs DMA sync only if
+>> the netmem comes from the host.
 >>
->> $ pahole --version
->> v1.28
->>
->> Thanks.
 > 
-> Thanks for the report! Looking at percpu-defs.h it looks like the
-> existence of such variables requires either
-> 
-> #if defined(ARCH_NEEDS_WEAK_PER_CPU) ||
-> defined(CONFIG_DEBUG_FORCE_WEAK_PER_CPU)
-> 
-> ...
-> 
-> #define DEFINE_PER_CPU_SECTION(type, name, sec)                         \
->         __PCPU_DUMMY_ATTRS char __pcpu_scope_##name;                    \
->         extern __PCPU_DUMMY_ATTRS char __pcpu_unique_##name;            \
->         __PCPU_DUMMY_ATTRS char __pcpu_unique_##name;                   \
->         extern __PCPU_ATTRS(sec) __typeof__(type) name;                 \
->         __PCPU_ATTRS(sec) __weak __typeof__(type) name
-> 
-> 
-> I'm guessing your .config has CONFIG_DEBUG_FORCE_WEAK_PER_CPU, or are
-> you building on s390/alpha?
-> 
-> I've reproduced this on bpf-next with CONFIG_DEBUG_FORCE_WEAK_PER_CPU=y,
-> pahole v1.28 and gcc-12; I see ~900 __pcpu_ variables and get the same
-> BTF errors since multipe __pcpu_ vars share the offset 0.
-> 
-> A simple workaround in dwarves - and I verified this resolved the issue
-> for me - would be
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 3754884..4a1799a 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -2174,7 +2174,8 @@ static bool filter_variable_name(const char *name)
->                 X("__UNIQUE_ID"),
->                 X("__tpstrtab_"),
->                 X("__exitcall_"),
-> -               X("__func_stack_frame_non_standard_")
-> +               X("__func_stack_frame_non_standard_"),
-> +               X("__pcpu_")
->                 #undef X
->         };
->         int i;
-> 
-> ...but I'd like us to understand further why variables which were
-> supposed to be in a .discard section end up being encoded as there may
-> be other problems lurking here aside from this one. More soon hopefully...
->
+> My series also adds page_pool_dma_sync_netmem_for_cpu, which should be
+> the same as your page_pool_dma_sync_for_cpu_netmem.
 
+Yep, I saw your changes, rebasing soon.
 
-A bit more context here - variable encoding takes the address of the
-variable from DWARF to locate the associated ELF section. Because we
-insist on having a variable specification - with a location - this
-usually works fine. However the problem is that because these dummy
-__pcpu_ variables specify a .discard section, their addresses are 0, so
-we get for example:
-
- <1><1e535>: Abbrev Number: 114 (DW_TAG_variable)
-    <1e536>   DW_AT_name        : (indirect string, offset: 0x5e97):
-__pcpu_unique_kstack_offset
-    <1e53a>   DW_AT_decl_file   : 1
-    <1e53b>   DW_AT_decl_line   : 823
-    <1e53d>   DW_AT_decl_column : 1
-    <1e53e>   DW_AT_type        : <0x57>
-    <1e542>   DW_AT_external    : 1
-    <1e542>   DW_AT_declaration : 1
- <1><1e542>: Abbrev Number: 156 (DW_TAG_variable)
-    <1e544>   DW_AT_specification: <0x1e535>
-    <1e548>   DW_AT_location    : 9 byte block: 3 0 0 0 0 0 0 0 0
-(DW_OP_addr: 0)
-
-
-You can see the same thing for a simple program like this:
-
-#include <stdio.h>
-
-#define SEC(name) __attribute__((section(name)))
-
-SEC("/DISCARD/") int d1;
-extern int d1;
-SEC("/DISCARD/") int d2;
-extern int d2;
-
-int main(int argc, char *argv[])
-{
-	return 0;
-}
-
-
-If you compile it with -g, the DWARF shows that d1 and d2 both have
-address 0:
-
- <1><72>: Abbrev Number: 5 (DW_TAG_variable)
-    <73>   DW_AT_name        : d1
-    <76>   DW_AT_decl_file   : 1
-    <77>   DW_AT_decl_line   : 5
-    <78>   DW_AT_decl_column : 22
-    <79>   DW_AT_type        : <0x57>
-    <7d>   DW_AT_external    : 1
-    <7d>   DW_AT_location    : 9 byte block: 3 0 0 0 0 0 0 0 0
-(DW_OP_addr: 0)
- <1><87>: Abbrev Number: 5 (DW_TAG_variable)
-    <88>   DW_AT_name        : d2
-    <8b>   DW_AT_decl_file   : 1
-    <8c>   DW_AT_decl_line   : 7
-    <8d>   DW_AT_decl_column : 22
-    <8e>   DW_AT_type        : <0x57>
-    <92>   DW_AT_external    : 1
-    <92>   DW_AT_location    : 9 byte block: 3 0 0 0 0 0 0 0 0
-(DW_OP_addr: 0)
-
-
-So the reason this happens for dwarves v1.28 in particular is - as I
-understand it - we moved away from recording ELF section information for
-each variable and matching that with DWARF info, instead relying on the
-address to locate the associated ELF section. In cases like the above
-the address information unfortunately leads us astray.
-
-Seems like there's a few approaches we can take in fixing this:
-
-1. designate "__pcpu_" prefix as a variable prefix to filter out. This
-resolves the immediate problem but is too narrowly focused IMO and we
-may end up playing whack-a-mole with other dummy variable prefixes.
-2. resurrect ELF section variable information fully; i.e. record a list
-of variables per ELF section (or at least per ELF section we care
-about). If variable is not on the list for the ELF section, do not
-encode it.
-3. midway between the two; for the 0 address case specifically, verify
-that the variable name really _is_ in the associated ELF section. No
-need to create a local ELF table variable representation, we could just
-walk the table in the case of the 0 addresses.
-
-Diff for approach 3 is as follows
-
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 3754884..21a0ab6 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -2189,6 +2189,26 @@ static bool filter_variable_name(const char *name)
-        return false;
- }
-
-+bool variable_in_sec(struct btf_encoder *encoder, const char *name,
-size_t shndx)
-+{
-+       uint32_t sym_sec_idx;
-+       uint32_t core_id;
-+       GElf_Sym sym;
-+
-+       elf_symtab__for_each_symbol_index(encoder->symtab, core_id, sym,
-sym_sec_idx) {
-+               const char *sym_name;
-+
-+               if (sym_sec_idx != shndx || elf_sym__type(&sym) !=
-STT_OBJECT)
-+                       continue;
-+               sym_name = elf_sym__name(&sym, encoder->symtab);
-+               if (!sym_name)
-+                       continue;
-+               if (strcmp(name, sym_name) == 0)
-+                       return true;
-+       }
-+       return false;
-+}
-+
- static int btf_encoder__encode_cu_variables(struct btf_encoder *encoder)
- {
-        struct cu *cu = encoder->cu;
-@@ -2258,6 +2278,11 @@ static int
-btf_encoder__encode_cu_variables(struct btf_encoder *encoder)
-                if (filter_variable_name(name))
-                        continue;
-
-+               /* A 0 address may be in a .discard section; ensure the
-+                * variable really is in this section by checking ELF
-symtab.
-+                */
-+               if (addr == 0 && !variable_in_sec(encoder, name, shndx))
-+                       continue;
-                /* Check for invalid BTF names */
-                if (!btf_name_valid(name)) {
-                        dump_invalid_symbol("Found invalid variable name
-when encoding btf",
-
-
-...so slightly more complex than option 1, but a bit more general in its
-applicability to .discard section variables.
-
-For the pahole folks, what do we think? Which option (or indeed other
-ones I haven't thought of) makes sense for a fix for this? Thanks!
-
-Alan
+Thanks,
+Olek
 
