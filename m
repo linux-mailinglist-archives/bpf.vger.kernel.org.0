@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-47094-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47095-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9556E9F43FA
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 07:42:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE8F19F4400
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 07:42:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEBE916C6F9
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 06:42:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 803B31888AFF
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 06:42:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 276B61DE2A5;
-	Tue, 17 Dec 2024 06:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939FC1DED7C;
+	Tue, 17 Dec 2024 06:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="NcbyOVJs"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="yqjMiHyl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F6B1DE2A3
-	for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 06:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9709219F13C
+	for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 06:39:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734417564; cv=none; b=KsXq8niyyFaVjKwNfLRZK6cEhfHTgS4Z4xS9rrbhIv+shl+ScK2MhiH/nbeDPrz7qxp/0YcFnpM3rpL4nbA4azaEs3qrDmWytoIvK5hjVb+YTzI6IehjVE5x+X8haDMHdaG/g0mTb1WtEl23vsolWPjfZf8KKDvmJZNFICVr7qw=
+	t=1734417567; cv=none; b=NHb+l7oCVGJfZ3b0zg6h01ZNUuU33xL0SP5kWm/0f/m2SfI9tAd7CBv0GV3OmD3ucj7kW+dz2nbQfoPYCdX5eGZqOAvdyYNRRv/U5Q0qXxLELjmSJdZkCV8RCmIubP+hl3iUuZ/O3PmYEeC9KWAET21mYef1ry7gMFsNKlG86v0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734417564; c=relaxed/simple;
-	bh=G5z4ZauX9QfJoBAuCbuGuwLJbsOqwLsh16GJRVCk8oE=;
+	s=arc-20240116; t=1734417567; c=relaxed/simple;
+	bh=aj6KhD87JndqJTmCbrJmfbqawzLsCSF87gVbexImUU4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=T5oMMhg7b3g/MWByc6fcHYRFYLwMa4PkmnhWwmrJBsH4dPduFqMBirF9s//EOOijvGKj6z+o5solekTPtjtfjdVM9rIbv6zbpyB7n46n0IHVyyxPeETfk74XBavPoiR29Wa7fkXb/UZ+QeZZZg6SI18QgdkIDhwjcm6vr03Cgxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=NcbyOVJs; arc=none smtp.client-ip=209.85.216.52
+	 In-Reply-To:To:Cc; b=GHY5TwCI7cWjV+g31hxPSfxjH4mHxcYExNxkllhoaBzmwN3tMhJeJd4ZfumvPAhTj6xzUvaxUZdRqRlXDZBVgQlcxkwplGZOIBm4a33LTZGkG1jyKyPtcmE7MFl7HW8QUglLw2AJ1M+LV+qp59wItp0JTKjYSefFekC7ggQXgSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=yqjMiHyl; arc=none smtp.client-ip=209.85.216.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2ee46851b5eso3417378a91.1
-        for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 22:39:22 -0800 (PST)
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2ef87d24c2dso3782403a91.1
+        for <bpf@vger.kernel.org>; Mon, 16 Dec 2024 22:39:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1734417562; x=1735022362; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1734417565; x=1735022365; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=euJl9W34MyY1TVJyYJNiwzcX7XKHzg3BpRu6zirxvZk=;
-        b=NcbyOVJsPu8tYgKbFq/qoe1na/Jh8+JuJE1wBNL5Qi3sYArgktacCSGZL3Hl2My3VW
-         TY4LX6UluL89XOdBEOYPGX1MA/UimZM8wN0L9BuCP/93s4YlUeDluHXtdtQq/7FCZw5Q
-         e6qNxkRRbwZIyGoizSePDl6cASBn32ZSDqR0FXFT+W2sUlDRLcy8k4TWMO5XqzaS+fog
-         Bxsdsyre81vHMR/G1dF7TuBMmZLiuwF7kcYo3Yg6xbr3BNHqQfXmg2kRhM56NwHzMRCQ
-         XVDSJiB68/n0tTWP1OTcrsK2vlG4lSRwRxU0ZuwuGMuD+4Z+yFmAgAjOHdL5P25gBic7
-         d54g==
+        bh=uc6AkHxSAkZ2nW0ejwY9TuAU4WyUl5DsEUDPCF/WMmI=;
+        b=yqjMiHylRVg6Q1ADoexQymJJw5Zo5bH3e4INm/CKAaBitFmyiwMXT+ZXwFDIoXacZj
+         x7jEiUatNUlAmlvr1bZxxplMvJ3SKGtTIlPUAW/DknbdAt7m5CxkG0Unb0M7eRV9chhl
+         H6jFCstAfVTL03kbealwfXXHxvXu224EpuE8Ohix1IwaqXTxaq5JU6CnSadrq1xg3xNj
+         9feOaahEXFSVyD86KOFmi++rqI2jFVOwCXGp/Wl087Jak1c4QiIc0U+3JTUVtkhVY9kL
+         v/ScGs52cFcr0VmUUjBEVKYDGLmBkxs99X2lTuZxXYt29j+h3SlSONTTGEE4mF+fwKIR
+         Ifbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734417562; x=1735022362;
+        d=1e100.net; s=20230601; t=1734417565; x=1735022365;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=euJl9W34MyY1TVJyYJNiwzcX7XKHzg3BpRu6zirxvZk=;
-        b=W4kseOp9rTSzjIC93EMsNDj5F3FFzAf34NWAxFEvoi03u4P7bQagThJLElIHpuvHep
-         JT7Qal0tg4aLaYuE9YtPUONEDvcgjxYtv28O8y/Eei0dEKHlrb/AYFg+X9kDFmAg9JDZ
-         iWYCNKufcn9Vv1jNJQuuz2lSc0F1VKeMDLngE2Nix/V0VJKUS0DEHG+8uy+GV7zbVqVY
-         yufeC+bdh0Jz07sB0Cze7/aRnDBNV31p9nDY/Gsiz9W+bo9wt8muPyJ4hbl1halsSgC3
-         T8bjOp/YN1lNxwj6oMHbrMrbyHeKjhi6a9hm5NM3bX6wPY2I8cgtOWqWlr+BH2G5xGC3
-         LrEw==
-X-Forwarded-Encrypted: i=1; AJvYcCUumlsBJtJzcCz+40Ba3iVinuhpbbqpJsPDOTLF0kvazcF8oN0YaNJtsldLB6UU0/OnK6U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YykQRzvzZoicyMignKxPGWuPVLvsSm4KHlRMeodjJ4ClXXdigAz
-	3iXv79Ms7cpGrHLyDKSsTh5kD5T9hhQzZSaBjshuKWWbKgJ5vSsnmhwt4s4OGJs=
-X-Gm-Gg: ASbGncuEPz111rltJrYPMHCXclxJaXXsECx/wUxf1Xc+2PWQk1GC3qXPmc8zdbT7jpZ
-	KliW8L/CEkJwdvv69/szYebNTY2G7jD4IH4G1PO+emB2FBazIxify9MoDpBuG277/L9eV2lAq5S
-	NZDQzuECQW2D0rtls+Jy23msMzL/+C+P2/zWv8HPXgZiN+uUNQXAZ76MZJWd12fYNWbSQMPgCOL
-	qN01DgEcue7MBD79uhgi8SuIJeWzyCiBfBxrgq4yQWfw2oyPWjiLZ+dM1b8MAY4Nui8PIeY
-X-Google-Smtp-Source: AGHT+IGqlnl/b+gh5FmvpZNT+WBF1msYf06NK1q7eNepM4VuIgvGGzEtp129msaKSOCVAB+ecLoVyw==
-X-Received: by 2002:a17:90b:2744:b0:2ef:33a4:ae6e with SMTP id 98e67ed59e1d1-2f2d7d9fd46mr4370548a91.12.1734417562182;
-        Mon, 16 Dec 2024 22:39:22 -0800 (PST)
+        bh=uc6AkHxSAkZ2nW0ejwY9TuAU4WyUl5DsEUDPCF/WMmI=;
+        b=DRJkhYwQILQVH25hNyEH/hYtcTVWM6ssudjkflVkKUwetVrq9TjDHIE6GBXcsfKoyI
+         LwbZvgX3iChZ5OXf6aItXVAfjM/qGSK/yJPuPGS0xhdqVAM5SoE7z3RWHremO3laULV4
+         BAVHFHK6X1MLtAC9G+ojSg/wnfHaD4EYuAC1HJ3EOOSTOzgf0MBlgGKwqVNCzSb9oExG
+         RbVJ0dj0T8ApqRAk8gTTpeXV9mnj7Ze0gwCxSUruqsrC8DfnGX2flEY/MrpJgWV0XdWu
+         rdT4d9k0XkugOKIyQkFhwWfnYMiBU3gUbpHmsz0VdH6SSm3htFejozbonz3lnqLqXUNs
+         loRA==
+X-Forwarded-Encrypted: i=1; AJvYcCXDzeXx6Gdgw4rFv4qwkMlVQq0zLn7GWTdHcKL600wMvC2YmDgkm2yBzHNGPd/0reOdZfE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxHOsEaXGXfstb4E7/shI5x/pqN2+E8pSnHRfJqlWFTHvn+ccdb
+	YnDI6dxe76w1S2NRyqTGrGSWh9nk8lQvKwdDRrUm8fbuwVSL6/4EdPNTInsdvcE=
+X-Gm-Gg: ASbGnctnudf6j/5Hm4Il1IkH4fIvHz20fbgbIJBuDWJzooBnoXULO3UGfiCjBFoQ0LD
+	qE0YydJ3ouYQp/5uSpIKdn2amoXQ5QfllWmi7WMACmr5DgepdokUAlQXQH5yyOzO+v2PHTt1Njn
+	DKzFhntcsuO1vnczcQNQ5BdI1uR2n8iQ6f9NkBZjBAMSkSdAOtUX1GKm443YwOQFKHphazSLAUc
+	Qx/rbmpwAnCT/xKE5k4NXcv94SEJSFhBkBu9irVci6sx1Z1jWDs3Jk7bqS2/KOXV9cn89kJ
+X-Google-Smtp-Source: AGHT+IGUd4gH7BE0kdkomPlujnx2e5+f9LC+XgSew50DyNj1to7GARJn9sGir0f0VS3f2JBCRB8eHA==
+X-Received: by 2002:a17:90b:53d0:b0:2ea:a9ac:eee1 with SMTP id 98e67ed59e1d1-2f28fb5fd68mr23504844a91.10.1734417564810;
+        Mon, 16 Dec 2024 22:39:24 -0800 (PST)
 Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f142d90d6bsm9179551a91.2.2024.12.16.22.39.19
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f142d90d6bsm9179551a91.2.2024.12.16.22.39.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2024 22:39:21 -0800 (PST)
+        Mon, 16 Dec 2024 22:39:23 -0800 (PST)
 From: Charlie Jenkins <charlie@rivosinc.com>
-Date: Mon, 16 Dec 2024 22:32:47 -0800
-Subject: [PATCH v3 02/16] perf tools: arc: Support generic syscall headers
+Date: Mon, 16 Dec 2024 22:32:48 -0800
+Subject: [PATCH v3 03/16] perf tools: csky: Support generic syscall headers
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,7 +82,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20241216-perf_syscalltbl-v3-2-239f032481d5@rivosinc.com>
+Message-Id: <20241216-perf_syscalltbl-v3-3-239f032481d5@rivosinc.com>
 References: <20241216-perf_syscalltbl-v3-0-239f032481d5@rivosinc.com>
 In-Reply-To: <20241216-perf_syscalltbl-v3-0-239f032481d5@rivosinc.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
@@ -107,76 +107,61 @@ Cc: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
  Charlie Jenkins <charlie@rivosinc.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2837; i=charlie@rivosinc.com;
- h=from:subject:message-id; bh=G5z4ZauX9QfJoBAuCbuGuwLJbsOqwLsh16GJRVCk8oE=;
- b=owGbwMvMwCHWx5hUnlvL8Y3xtFoSQ3qiTO+vlgO3Hd8++fViiVLG/IlH+7/5Pp7K4MmiKel2X
- aiKIWFbRykLgxgHg6yYIgvPtQbm1jv6ZUdFyybAzGFlAhnCwMUpABOJbmX4n6Qqum7v/HWGU0TK
- lj0Q0FOekfquOuv3QimdqgXvDh96e4Xhn8WStvWdm9++S/nnaXA8SPuaC1uTSdu/mMqt82V2nD+
- swQIA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2180; i=charlie@rivosinc.com;
+ h=from:subject:message-id; bh=aj6KhD87JndqJTmCbrJmfbqawzLsCSF87gVbexImUU4=;
+ b=owGbwMvMwCHWx5hUnlvL8Y3xtFoSQ3qiTC/nK6erkybH3NrWECwgfVPwiuDsS6e8mBZf0a3s6
+ /zMIbC5o5SFQYyDQVZMkYXnWgNz6x39sqOiZRNg5rAygQxh4OIUgImIHmH471mzgum0s/DxZc/W
+ R2uta3gg2jq76fSrOK/nf1x/X40J8GBkaP/tI/tf562q7WH+bRKnXUXW5Cpkc36obHnwXnROtN9
+ MDgA=
 X-Developer-Key: i=charlie@rivosinc.com; a=openpgp;
  fpr=7D834FF11B1D8387E61C776FFB10D1F27D6B1354
 
-Arc uses the generic syscall table, use that in perf instead of
+csky uses the generic syscall table, use that in perf instead of
 requiring libaudit.
 
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
- tools/perf/Makefile.config                           | 2 +-
- tools/perf/Makefile.perf                             | 3 ++-
- tools/perf/arch/arc/entry/syscalls/Kbuild            | 2 ++
- tools/perf/arch/arc/entry/syscalls/Makefile.syscalls | 3 +++
- tools/perf/arch/arc/include/syscall_table.h          | 2 ++
- 5 files changed, 10 insertions(+), 2 deletions(-)
+ tools/perf/Makefile.perf                              | 2 +-
+ tools/perf/arch/csky/entry/syscalls/Kbuild            | 2 ++
+ tools/perf/arch/csky/entry/syscalls/Makefile.syscalls | 3 +++
+ tools/perf/arch/csky/include/syscall_table.h          | 2 ++
+ 4 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 6e4d0ef58ccb40da793f3ab8cca77d620d258bb4..d3c12c6ba6764e9a8b12acee603a0509154f2c74 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -36,7 +36,7 @@ ifneq ($(NO_SYSCALL_TABLE),1)
-   endif
- 
-   # architectures that use the generic syscall table scripts
--  ifeq ($(SRCARCH),riscv)
-+  ifneq ($(filter $(SRCARCH), $(generic_syscall_table_archs)),)
-     NO_SYSCALL_TABLE := 0
-     CFLAGS += -DGENERIC_SYSCALL_TABLE
-     CFLAGS += -I$(OUTPUT)tools/perf/arch/$(SRCARCH)/include/generated
 diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index f5278ed9f778f928436693a14e016c5c3c5171c1..f717e4628d9e4632f53fed16524a659a3e4feea5 100644
+index f717e4628d9e4632f53fed16524a659a3e4feea5..b20daf3769771a7c23cc0f7dd46f562510bc3199 100644
 --- a/tools/perf/Makefile.perf
 +++ b/tools/perf/Makefile.perf
-@@ -311,7 +311,8 @@ FEATURE_TESTS := all
+@@ -311,7 +311,7 @@ FEATURE_TESTS := all
  endif
  endif
  # architectures that use the generic syscall table
--ifeq ($(SRCARCH),riscv)
-+generic_syscall_table_archs := riscv arc
-+ifneq ($(filter $(SRCARCH), $(generic_syscall_table_archs)),)
+-generic_syscall_table_archs := riscv arc
++generic_syscall_table_archs := riscv arc csky
+ ifneq ($(filter $(SRCARCH), $(generic_syscall_table_archs)),)
  include $(srctree)/tools/perf/scripts/Makefile.syscalls
  endif
- include Makefile.config
-diff --git a/tools/perf/arch/arc/entry/syscalls/Kbuild b/tools/perf/arch/arc/entry/syscalls/Kbuild
+diff --git a/tools/perf/arch/csky/entry/syscalls/Kbuild b/tools/perf/arch/csky/entry/syscalls/Kbuild
 new file mode 100644
 index 0000000000000000000000000000000000000000..11707c481a24ecf4e220e51eb1aca890fe929a13
 --- /dev/null
-+++ b/tools/perf/arch/arc/entry/syscalls/Kbuild
++++ b/tools/perf/arch/csky/entry/syscalls/Kbuild
 @@ -0,0 +1,2 @@
 +# SPDX-License-Identifier: GPL-2.0
 +syscall-y += syscalls_32.h
-diff --git a/tools/perf/arch/arc/entry/syscalls/Makefile.syscalls b/tools/perf/arch/arc/entry/syscalls/Makefile.syscalls
+diff --git a/tools/perf/arch/csky/entry/syscalls/Makefile.syscalls b/tools/perf/arch/csky/entry/syscalls/Makefile.syscalls
 new file mode 100644
-index 0000000000000000000000000000000000000000..391d30ab7a831b72d2ed3f2e7966fdbf558a9ed7
+index 0000000000000000000000000000000000000000..ea2dd10d0571df464574a9c0232ada0ac1f79a3f
 --- /dev/null
-+++ b/tools/perf/arch/arc/entry/syscalls/Makefile.syscalls
++++ b/tools/perf/arch/csky/entry/syscalls/Makefile.syscalls
 @@ -0,0 +1,3 @@
 +# SPDX-License-Identifier: GPL-2.0
 +
-+syscall_abis_32 += arc time32 renameat stat64 rlimit
-diff --git a/tools/perf/arch/arc/include/syscall_table.h b/tools/perf/arch/arc/include/syscall_table.h
++syscall_abis_32 += csky time32 stat64 rlimit
+diff --git a/tools/perf/arch/csky/include/syscall_table.h b/tools/perf/arch/csky/include/syscall_table.h
 new file mode 100644
 index 0000000000000000000000000000000000000000..4c942821662d95216765b176a84d5fc7974e1064
 --- /dev/null
-+++ b/tools/perf/arch/arc/include/syscall_table.h
++++ b/tools/perf/arch/csky/include/syscall_table.h
 @@ -0,0 +1,2 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +#include <asm/syscalls_32.h>
