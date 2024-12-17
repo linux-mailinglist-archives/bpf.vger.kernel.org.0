@@ -1,177 +1,211 @@
-Return-Path: <bpf+bounces-47133-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47132-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B141C9F5662
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 19:35:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE6169F565B
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 19:34:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C574F18817DE
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 18:34:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 649E216EBA3
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 18:33:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E861F9EAF;
-	Tue, 17 Dec 2024 18:33:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468991F8AD9;
+	Tue, 17 Dec 2024 18:32:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OHyz0DEU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W0qwGjT3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCBF01F867D;
-	Tue, 17 Dec 2024 18:32:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 459DE1F8ACD;
+	Tue, 17 Dec 2024 18:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734460382; cv=none; b=RFRuR9Gk0N7zdcCvtnIPZw2xUqLs4NK6sX02FuHAsETWlAk1aRtBvZZzzDexZKdDckESbnuM3qiIvzFOUTZsTd681WmBrRxPyR1jqU+Aw7JPFhbtFBHwQY8iEPuaofmIsWeNHeYDT9YhEnI6+G5kPB/FC1e+HZ8r0FeUkBbwMb8=
+	t=1734460357; cv=none; b=dPL7iPDOnhecilvYT8VpvLzhdrRDvDFyD1eOJoHO3bN1Y/+MYzGhCbFwRyP8uIZilxgjtaLCj7MfSR4j2RMDLED24Ow5mPg38EIBg9FRijfJM55WG4adUZQ7H7uGJDrcOlrCFixM83hqKwwFZxKP+Vvaymk7oODR67FANNPdPk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734460382; c=relaxed/simple;
-	bh=w9pYrgnaWj1ewcUC5uehoE4l2crEY1uOPkQ5NXBYUN0=;
+	s=arc-20240116; t=1734460357; c=relaxed/simple;
+	bh=5nb+i4GUEBvuEtR/XlIKTCQSOtKx3rOfpIbIfnEuQds=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XAS6OTedEaWOHFzgJ+1JMqYUZe2XNwCM5hVSeMfxEBDrGWfbwRyWyfPTO0Ygmg0J3xrw4LnHxUw+GrwL6x43vn2ETb/TXAJBT1LSnxPkjjsDuSaXuvJ8MjHWvbIdieSNfv8CxhzsGseFwccHnpneVeBJSIoqVSz3grzne/Y0OPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OHyz0DEU; arc=none smtp.client-ip=209.85.218.67
+	 To:Cc:Content-Type; b=tlooTPYe1K7yniYKlc2bKIkK2G2SKv5eSqKebd02Q9BdTyWh1NTLJhsYcK24pE7vSTm4OTuNhA/sPJRtmC8ZwyVG6HJxOgvTaUPIVFQ9FEpPAedjU6u90jI0J5Nqtnc77Npe1fQqcCM/x12spe0vz7Bokclx3XHj7DXK12sEz+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W0qwGjT3; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-aa6c0dbce1fso777680866b.2;
-        Tue, 17 Dec 2024 10:32:59 -0800 (PST)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-725f4623df7so5022894b3a.2;
+        Tue, 17 Dec 2024 10:32:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734460378; x=1735065178; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734460355; x=1735065155; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KyLfj9GHrrqzTUNE0LK7GJy5olirvva9Gvx5K9CGs5s=;
-        b=OHyz0DEUbcnQfj5lZk6OqzcpPnXCEt0BIcVHt+doDVf5AkqbpOdhpe/fpKQPTajjnx
-         KEjfKH8Nwsuit5GUhfcD6bF78T59IUZeiLcmTF39XyuF/FA2Xc0gz7a33sQhfTOJgm6B
-         k9JY+nlKM54ZIrnKEAo2Kpz8yGiz6geN8c8yHheZaZdYCif0dW10TprWPRwSqpChtrWC
-         MMdNlS9e/Gl0LRSp6lAu4s0I5bjBrDaD2HIILl1UpbbwmFp6TZMwfqW3E0Ycb6ln3sWJ
-         WUxQlJDuhOGoINu4Becr11+6zAGLtpZx97AfVJNalKylRptuV8Ti2JR7vi/+hA+CCTEe
-         5lXg==
+        bh=p5FXtkjb0FK4e0OHg+/7n+qyAizRnGYdC1ZI9qRZxxw=;
+        b=W0qwGjT3kwAT921j0AvtUMMRhORXK+qCJfWfoR0BfEATmQlTMfherus6bdBEXBBhu4
+         MKVYXEptyE1Xe0Ff7EChiVSrMRRjKkunv/oSZ+zEGRgq9aiLSB3/NzAr/GYilG/7gE37
+         9kr180zMkp+IrF+MX0uq/BARAjnb7R9C/7ehDBVcwTW7YHxM9dx8LCJR7Y21vR7wO8ju
+         2ohTeiDB0FGsPtMQz+2K/B2Wry12eebkXKG/4uHEaFeGdy+a7TdVBtp1jBy6o6gqL7An
+         VIF11DnJobzLRIyaMo5Q5ewiow4S7Visa7L2fRiEK61jVBS/TmkbepvNQ9vCwMC5PS0i
+         P5sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734460378; x=1735065178;
+        d=1e100.net; s=20230601; t=1734460355; x=1735065155;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KyLfj9GHrrqzTUNE0LK7GJy5olirvva9Gvx5K9CGs5s=;
-        b=BtrasCvp6UO5WcuoRsvukEwD0gWYcT26BWbT+8XxmqtvYT12LF+PqcPZNgyxdVAYS1
-         44cqNQ+OtL9Rl/erZdyC6awonazApTs5Tq8KytdAUxtiU74FJj8cefHaDnHXT9ploGOW
-         d+bbUJt0TYAQUXo7ib0T3o/adnfrm6MQ1yAjviic8/s08Sxh0XGKzQonta/U08heb78l
-         BAHTVU9yNJK5iupTZuMsBc3YW9TvvNAEMVCvBelcKQfbxMY4HCR34jKW/yXFLf4SqtYq
-         H5Zc0hcKt9Qke036tzQyRlDzAuH3eAvXIDXSZIiFr9AXznIDk7BFWZCUCfl/Ik19pswN
-         tjqA==
-X-Forwarded-Encrypted: i=1; AJvYcCU5msdfgM5ftN+06RN15NpoTRO8ljGo8/d4MnyzGlfhDzlnLRyWend1SqX8V/cHvsjXhOoI+utH4mUUiV6/8w==@vger.kernel.org, AJvYcCWKEWDBF5Wg/MG1b6lc9iap9iZ5EAhwns84v2pvxJIDF5rTPTSfQ5kxaIzrdTy7ZeLMDsaRH/Gkuh5YH9iy@vger.kernel.org, AJvYcCX/aicK/z53ULR0Zs3kcVWenCERMvTMSLo/Zef5m1HXMyn86NVvrnuHiOL0RqxmJVEC80E=@vger.kernel.org, AJvYcCX9+FLGQLIRkZA2+TwVnyh7ral4ypBYFZMbK0i1xYWBb52AFpZMG7Mab5Lklroh7ZXd6is0CYnfiR3ksNT0hPo1cN/oNx6P@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZyXphE2xxUI0r/hU5AMijoyfVQ5fyuOGSXy+fg+VBere5LsGn
-	tcT/A/bRP+IJ1a7f4uCslZWt//cYvLYiHhgIkQ5a5rtDxFL8k3cM3RoLIq0/CBgZMMN5Q99e/rw
-	68AgSFP3Qg1U4IgQKBuqHZHJ9bn8=
-X-Gm-Gg: ASbGnct7zDx/ScHZDdbBfx7bbwDtuRV7cDagsMtmYTKUPGXDij2iwmTJpDE4uR/IKWp
-	CPexEdAfrT5dll6BTO3Go3OnQBeomUEVMrhzeJUsnvi9spuX0a+/6VMGZSGs=
-X-Google-Smtp-Source: AGHT+IE0D/9Vd3yi0S/mmNzZKU8P1GTbXnQCQ7s25+McRC8HupAM0mu1u0pwKZUxm/xxqzbOI7IqDHNoKS5+GIDw2W4=
-X-Received: by 2002:a05:6402:35c6:b0:5d1:2377:5af3 with SMTP id
- 4fb4d7f45d1cf-5d7ee3772f8mr356233a12.5.1734460378086; Tue, 17 Dec 2024
- 10:32:58 -0800 (PST)
+        bh=p5FXtkjb0FK4e0OHg+/7n+qyAizRnGYdC1ZI9qRZxxw=;
+        b=Q7+ZshMMmtCK/EG6SWr/2GfNRPrbZCiFOrZKC50vMrvyO5tJBpQ3uTB8SfsvUQSG9n
+         SFvgo1lVovvZC+EnAH0iU4WQt7d9rYwCxAgI9Mm6iMis1QCebmdnsoZCFKdwBdNg11W2
+         4UVIIHYJrs0F9jqMdPSA/HSOr2Aq79BL/+NTJ5DG4zRmWWpStq3YYkBktv1KcGdm3zC4
+         oaQxQJQebFgahry5Hge4OLC3ij5CClI7uu66uzL0hHvtIZBuJvlcu7Zh0Dy/hdVbbHVL
+         7Blt8SDf9S5o1t7C+UyVSRt09BMBO46racbOa3x54JN88bjmk5p8YrauD6GFnCGUAjTD
+         HsjA==
+X-Forwarded-Encrypted: i=1; AJvYcCXwTZ9bL8bo0dNwYVJd9QvIPDLcz/j6PxbN7+w6BVhVxrqVxOjUJ6r1lK+D6uKkKzeD+xs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwMsnZ2ouuUWIWj4xoSrw3Z0aAT5My3RRNda1OOcgzWd2ihxTO+
+	5tpDa8eBr4pe819A0ArcdiAngvz1PtdF6TAK9O6wN7BhdpbzQihDWTbKb5oBGdOC0BspItp6MIa
+	I5Xq7YATFzu6zca86b9x2lVJvTzA=
+X-Gm-Gg: ASbGncuRxHqNljtcIOVUU4XKaaN8SoJ47f1sxvvW5q0hO1l+52SniJ83Q4inE8B53Ke
+	pvzw82EgQJev4FZT/rQZK0wP70u1M6q6fAgqPgNyrQmPHS8hG24WROw==
+X-Google-Smtp-Source: AGHT+IHDFNV+EJHBFM2xKZ7Srkfl6cUouqIu/9vplePKLd4IOoyNomz9E+2IYqCboHhHPLrEPYhXlgLiDPgnvIKWZK4=
+X-Received: by 2002:a17:90b:5250:b0:2ee:8e75:4ae1 with SMTP id
+ 98e67ed59e1d1-2f2e7899645mr785351a91.21.1734460355489; Tue, 17 Dec 2024
+ 10:32:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241217063821.482857-1-song@kernel.org> <20241217063821.482857-5-song@kernel.org>
- <CAADnVQKnscWKZHbWt9cgTm7NZ4ZWQkHQ+41Hz=NWoEhUjCAbaw@mail.gmail.com> <7A7A74A6-ED23-455E-A963-8FE7E250C9AA@fb.com>
-In-Reply-To: <7A7A74A6-ED23-455E-A963-8FE7E250C9AA@fb.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 17 Dec 2024 19:32:21 +0100
-Message-ID: <CAP01T76SVQ=TJgkTgkvSLY3DFTDUswj_aypAWmQhwKWFBEk_yw@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 4/6] bpf: fs/xattr: Add BPF kfuncs to set and
- remove xattrs
-To: Song Liu <songliubraving@meta.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Song Liu <song@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, KP Singh <kpsingh@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Liam Wisehart <liamwisehart@meta.com>, 
-	Shankaran Gnanashanmugam <shankaran@meta.com>
+References: <20241213232958.2388301-1-amery.hung@bytedance.com> <20241213232958.2388301-12-amery.hung@bytedance.com>
+In-Reply-To: <20241213232958.2388301-12-amery.hung@bytedance.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 17 Dec 2024 10:32:23 -0800
+Message-ID: <CAEf4BzY5E7JEPJ_W3T-bcKmdAJa-zpM4G+4H2rv2dOtLZMFbvA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 11/13] libbpf: Support creating and destroying qdisc
+To: Amery Hung <amery.hung@bytedance.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, alexei.starovoitov@gmail.com, martin.lau@kernel.org, 
+	sinquersw@gmail.com, toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us, 
+	stfomichev@gmail.com, ekarani.silvestre@ccc.ufcg.edu.br, 
+	yangpeihao@sjtu.edu.cn, xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com, 
+	ameryhung@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 17 Dec 2024 at 19:25, Song Liu <songliubraving@meta.com> wrote:
+On Fri, Dec 13, 2024 at 3:30=E2=80=AFPM Amery Hung <amery.hung@bytedance.co=
+m> wrote:
 >
-> Hi Alexei,
+> Extend struct bpf_tc_hook with handle, qdisc name and a new attach type,
+> BPF_TC_QDISC, to allow users to add or remove any qdisc specified in
+> addition to clsact.
 >
-> Thanks for the review!
+> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+> ---
+>  tools/lib/bpf/libbpf.h  |  5 ++++-
+>  tools/lib/bpf/netlink.c | 20 +++++++++++++++++---
+>  2 files changed, 21 insertions(+), 4 deletions(-)
 >
-> > On Dec 17, 2024, at 8:50=E2=80=AFAM, Alexei Starovoitov <alexei.starovo=
-itov@gmail.com> wrote:
-> >
-> > On Mon, Dec 16, 2024 at 10:38=E2=80=AFPM Song Liu <song@kernel.org> wro=
-te:
-> >>
-> >> Add the following kfuncs to set and remove xattrs from BPF programs:
-> >>
-> >>  bpf_set_dentry_xattr
-> >>  bpf_remove_dentry_xattr
-> >>  bpf_set_dentry_xattr_locked
-> >>  bpf_remove_dentry_xattr_locked
-> >>
-> >> The _locked version of these kfuncs are called from hooks where
-> >> dentry->d_inode is already locked.
-> >
-> > ...
-> >
-> >> + *
-> >> + * Setting and removing xattr requires exclusive lock on dentry->d_in=
-ode.
-> >> + * Some hooks already locked d_inode, while some hooks have not locke=
-d
-> >> + * d_inode. Therefore, we need different kfuncs for different hooks.
-> >> + * Specifically, hooks in the following list (d_inode_locked_hooks)
-> >> + * should call bpf_[set|remove]_dentry_xattr_locked; while other hook=
-s
-> >> + * should call bpf_[set|remove]_dentry_xattr.
-> >> + */
-> >
-> > the inode locking rules might change, so let's hide this
-> > implementation detail from the bpf progs by making kfunc polymorphic.
-> >
-> > To struct bpf_prog_aux add:
-> > bool use_locked_kfunc:1;
-> > and set it in bpf_check_attach_target() if it's attaching
-> > to one of d_inode_locked_hooks
-> >
-> > Then in fixup_kfunc_call() call some helper that
-> > if (prog->aux->use_locked_kfunc &&
-> >    insn->imm =3D=3D special_kfunc_list[KF_bpf_remove_dentry_xattr])
-> >     insn->imm =3D special_kfunc_list[KF_bpf_remove_dentry_xattr_locked]=
-;
-> >
-> > The progs will be simpler and will suffer less churn
-> > when the kernel side changes.
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index b2ce3a72b11d..b05d95814776 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -1268,6 +1268,7 @@ enum bpf_tc_attach_point {
+>         BPF_TC_INGRESS =3D 1 << 0,
+>         BPF_TC_EGRESS  =3D 1 << 1,
+>         BPF_TC_CUSTOM  =3D 1 << 2,
+> +       BPF_TC_QDISC   =3D 1 << 3,
+>  };
 >
-> I was thinking about something in similar direction.
->
-> If we do this, shall we somehow hide the _locked version of the
-> kfuncs, so that the user cannot use it? If so, what's the best
-> way to do it?
+>  #define BPF_TC_PARENT(a, b)    \
+> @@ -1282,9 +1283,11 @@ struct bpf_tc_hook {
+>         int ifindex;
+>         enum bpf_tc_attach_point attach_point;
+>         __u32 parent;
+> +       __u32 handle;
+> +       char *qdisc;
 
-Just don't add BTF_ID_FLAGS entries for them.
-You'd also need to make an extra call to add_kfunc_call to add its
-details before you can do the fixup.
-That allows find_kfunc_desc to work.
-I did something similar in earlier versions of resilient locks.
-In add_kfunc_call's end (instead of directly returning):
-func_id =3D get_shadow_kfunc_id(func_id, offset);
-if (!func_id)
-  return err;
-return add_kfunc_call(env, func_id, offset);
+const char *?
 
-Then check in fixup_kfunc_call to find shadow kfunc id and substitute imm.
-Can use some other naming instead of "shadow".
-Probably need to take a prog pointer to make a decision to find the
-underlying kfunc id in your case.
+>         size_t :0;
+>  };
+> -#define bpf_tc_hook__last_field parent
+> +#define bpf_tc_hook__last_field qdisc
+>
+>  struct bpf_tc_opts {
+>         size_t sz;
+> diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+> index 68a2def17175..72db8c0add21 100644
+> --- a/tools/lib/bpf/netlink.c
+> +++ b/tools/lib/bpf/netlink.c
+> @@ -529,9 +529,9 @@ int bpf_xdp_query_id(int ifindex, int flags, __u32 *p=
+rog_id)
+>  }
+>
+>
+> -typedef int (*qdisc_config_t)(struct libbpf_nla_req *req);
+> +typedef int (*qdisc_config_t)(struct libbpf_nla_req *req, struct bpf_tc_=
+hook *hook);
+
+should hook pointer be const?
 
 >
-> Thanks,
-> Song
+> -static int clsact_config(struct libbpf_nla_req *req)
+> +static int clsact_config(struct libbpf_nla_req *req, struct bpf_tc_hook =
+*hook)
+
+const?
+
+>  {
+>         req->tc.tcm_parent =3D TC_H_CLSACT;
+>         req->tc.tcm_handle =3D TC_H_MAKE(TC_H_CLSACT, 0);
+> @@ -539,6 +539,16 @@ static int clsact_config(struct libbpf_nla_req *req)
+>         return nlattr_add(req, TCA_KIND, "clsact", sizeof("clsact"));
+>  }
+>
+> +static int qdisc_config(struct libbpf_nla_req *req, struct bpf_tc_hook *=
+hook)
+
+same, const, it's not written into, right?
+
+> +{
+> +       char *qdisc =3D OPTS_GET(hook, qdisc, NULL);
+> +
+> +       req->tc.tcm_parent =3D OPTS_GET(hook, parent, TC_H_ROOT);
+> +       req->tc.tcm_handle =3D OPTS_GET(hook, handle, 0);
+> +
+> +       return nlattr_add(req, TCA_KIND, qdisc, strlen(qdisc) + 1);
+> +}
+> +
+>  static int attach_point_to_config(struct bpf_tc_hook *hook,
+>                                   qdisc_config_t *config)
+>  {
+> @@ -552,6 +562,9 @@ static int attach_point_to_config(struct bpf_tc_hook =
+*hook,
+>                 return 0;
+>         case BPF_TC_CUSTOM:
+>                 return -EOPNOTSUPP;
+> +       case BPF_TC_QDISC:
+> +               *config =3D &qdisc_config;
+> +               return 0;
+>         default:
+>                 return -EINVAL;
+>         }
+> @@ -596,7 +609,7 @@ static int tc_qdisc_modify(struct bpf_tc_hook *hook, =
+int cmd, int flags)
+>         req.tc.tcm_family  =3D AF_UNSPEC;
+>         req.tc.tcm_ifindex =3D OPTS_GET(hook, ifindex, 0);
+>
+> -       ret =3D config(&req);
+> +       ret =3D config(&req, hook);
+>         if (ret < 0)
+>                 return ret;
+>
+> @@ -639,6 +652,7 @@ int bpf_tc_hook_destroy(struct bpf_tc_hook *hook)
+>         case BPF_TC_INGRESS:
+>         case BPF_TC_EGRESS:
+>                 return libbpf_err(__bpf_tc_detach(hook, NULL, true));
+> +       case BPF_TC_QDISC:
+>         case BPF_TC_INGRESS | BPF_TC_EGRESS:
+>                 return libbpf_err(tc_qdisc_delete(hook));
+>         case BPF_TC_CUSTOM:
+> --
+> 2.20.1
 >
 
