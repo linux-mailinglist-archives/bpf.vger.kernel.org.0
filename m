@@ -1,220 +1,173 @@
-Return-Path: <bpf+bounces-47123-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47124-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A189A9F4D5F
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 15:15:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E7AC9F4DB2
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 15:28:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CBB0188CEEF
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 14:14:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4239B1891282
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 14:28:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8CCF1F7069;
-	Tue, 17 Dec 2024 14:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE0C1F4E43;
+	Tue, 17 Dec 2024 14:28:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="c/rDPxyP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mxLEbmkQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2022.outbound.protection.outlook.com [40.92.89.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958CA1F6688;
-	Tue, 17 Dec 2024 14:11:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.89.22
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734444712; cv=fail; b=up8H4O8g6buJfpUQGXadHaoT9TAGXeRkjqTdQ9LQzBisvqs3xfOoKb9ApiEAhTWzGaXX9zQHeTQuexNW0zA4uZKrWuoCAD7rIfxoH8FSxReoOWt1I+HH/rsXLlHlOCS1o3zAiMF+teSv9zTtf16DfkTdi9tHNhP0/F2DYEqbuww=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734444712; c=relaxed/simple;
-	bh=lNQLWyT0aYIiEt4j1JFeCgLrpY18zCmf/pHXjiJAQJY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZAnQmkAYaUpF/zt1F4+qhMOQLqyTL6zSkqfAur/stc0ZW6tNJVZ/qxeSPoION3VNzlDMfFivFeWggjkOzbi52FjYe5Q0nCR9kEzdQN0ddHYLVYQE3ldnO5SspWN7MDJQUcGrc6d+gAesywuJyTJdWzSkSutcT9RO3i/kCjWhj70=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=c/rDPxyP; arc=fail smtp.client-ip=40.92.89.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mfPpSaGE+sEuy+Rg50H8LKGzljPZCwWaeeIFvNldqOudW8aRcaLCvUYBLiZ/9kP5e7REFpjcDtVYOhG6hm2yjY015s7r41a4jhoWRunZCcfvOdn77js/k6yVyZd5z5HCjqnHe4XiwabWr9OnyYpMTu0PEpmt6dNcw12wb/tdPiO4S/oeRVteYsEYsyXUk74uxC9+f7M2t6BjjowGMA9XiWqHoEEyJt3exPR2T59go1TpwNkAG2pnfn6xgLwGTZSrIhvNUEjED5rmTahzi9RTA8juB0m5g7FS+J/U6fsD5HMtZlW/X+ujwnbMVdXK72hAt14rIPjFRYMUXtDEGSZd1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+n8VK1CA7Av/MO4RytZcooGTeG1GJnF3VWWmTD42KrI=;
- b=fY9bzVFoH+4lbILW8XxC3H5/4jAspxtu//+3gDQnbQvX5HRmFFYQmdXYn+4ICDhibL5XlFcrxxCOnMcTAA6F1WM2X5DR+AF+SzPtROjDROYDQY8NYc0sFBbh296YW2s7OvnaYufaaNprWqxUty8n6XToThpJqv5HbVyXWn6u6B6OCGFHPvrBky5sGScsZGYvhqfGzoATnvV3X7aodrjffQ/DYXJRVy2xoopieMqV/8wIe9AH97hMXrlQd43oL9Qxx8pJfzRT7JDMjXWM6owC11owG48vOMv0H7GQSR3BSQa6RjyRx14HwVJvTx8e2rnaTI3GTAJ2vAaGhYhDbqHSNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+n8VK1CA7Av/MO4RytZcooGTeG1GJnF3VWWmTD42KrI=;
- b=c/rDPxyPOwj9Hah3LKFYEKQcHmc17ORjlf/XUi/4WfQHMelyc/8HWRIMoSxT0pwIYwGHr5ariRhDeCfmR5sXLvBFsoZsa+BlDcl3tQMXo91l2g4DHogBGHx2kGXxkvBitU/W+e163EK+cu9uBmefze4v8mehHcNScjrS9uNTPUZC2GKXZvkxr3Zl8/SVr27+OeqUs+zgm3pe4WDd0IH9SKJthToK8F0AdgiNtH7oCT4Rqsoe4Pq9OWkFUuOb32lUEPZxilYlhPT1V+FhXVfttfdSkRe04+BJEXy911whtzaL6QZEH9igr73CXD9f+1W8O6nP1Yptt85ZM2bGBcxrdA==
-Received: from AM6PR03MB5080.eurprd03.prod.outlook.com (2603:10a6:20b:90::20)
- by AS8PR03MB7509.eurprd03.prod.outlook.com (2603:10a6:20b:2e2::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8251.21; Tue, 17 Dec
- 2024 14:11:48 +0000
-Received: from AM6PR03MB5080.eurprd03.prod.outlook.com
- ([fe80::a16:9eb8:6868:f6d8]) by AM6PR03MB5080.eurprd03.prod.outlook.com
- ([fe80::a16:9eb8:6868:f6d8%5]) with mapi id 15.20.8272.005; Tue, 17 Dec 2024
- 14:11:48 +0000
-Message-ID:
- <AM6PR03MB50808451138F84235B45190199042@AM6PR03MB5080.eurprd03.prod.outlook.com>
-Date: Tue, 17 Dec 2024 14:11:47 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v5 4/5] bpf: Make fs kfuncs available for SYSCALL
- and TRACING program types
-To: Christian Brauner <brauner@kernel.org>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
-References: <AM6PR03MB508010982C37DF735B1EAA0E993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB50804FA149F08D34A095BA28993D2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <20241210-eckig-april-9ffc098f193b@brauner>
- <CAADnVQKdBrX6pSJrgBY0SvFZQLpu+CMSshwD=21NdFaoAwW_eg@mail.gmail.com>
- <20241217-bespucken-beimischen-339f3cc03dc2@brauner>
-Content-Language: en-US
-From: Juntong Deng <juntong.deng@outlook.com>
-In-Reply-To: <20241217-bespucken-beimischen-339f3cc03dc2@brauner>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: LO4P265CA0230.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:315::6) To AM6PR03MB5080.eurprd03.prod.outlook.com
- (2603:10a6:20b:90::20)
-X-Microsoft-Original-Message-ID:
- <9a59c513-41aa-4043-9094-f591ae413053@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B889B3398A;
+	Tue, 17 Dec 2024 14:28:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1734445710; cv=none; b=jQQKJM1g5UPRixfXScAD0p3TuhEQ7ESsTS8XEfEHeh+TxAtUTUaqFQJMH9YJQAoihGarTXCYCXDS4eiSGJdkTCY4KHwM9+gB8saHDS73vElVp1k7cb4UPMvLTpN9ysYYD+2G7it/uBMOikRC9+HGnBFWBimIK65ycfExEKf9Onw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1734445710; c=relaxed/simple;
+	bh=ORnPEhG/btUbZYpsTi4A4T2Pqz+SCl+GfVGEg37ZEW8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XkMhCxofpcU8F7NgWVGP9/Iz/6kWBqMsQjuAvHTay0B4PNvD6VzdVjqZ9eo8UX1zyrEIC+y+HXk7ri8N4Rl1ToycJj+knHu4ryxHJr9yLXwvTlAUhnIkh84MIW47Whye7Du6bG576ujCdeXqgQYUQdWWOSdIAJrAjSYaeAkqQtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mxLEbmkQ; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-aa670ffe302so992866566b.2;
+        Tue, 17 Dec 2024 06:28:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734445706; x=1735050506; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IiVnwmp6sXattZvPbilIy7krIJ3DVv5UKIAfZVX61WA=;
+        b=mxLEbmkQjFKh1D8WG1X+Mge6Lh5R+XVmPqOnsVePKNg0fdoLBiGKdKwkAAEY73LYjt
+         hBJQszLwthQr6BM5PvKwA5gHgOk2JcvKJwuSwXZrg2zAK7M8yRfQw6WtIaLAO9uWF70a
+         GxpPlf70akbC6NQydMX4kX0gBq7/gixFm7PP7cEY/lq2gKMAQs3PbvvX3CxjU279Hr8T
+         Bf0x0dNZQt7xwfpcFGaTSQ3m8y/K7CSx7xmVOeEtjUIuz+gaDZv9CL/Ysaz1OKMHiCR2
+         lgFpnDzC3JVZfPLz1MVJ1oLo/6G6hFra/Hi92944PLw5yg6SKKhBO40PcYKyX7pG2gLb
+         lDpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734445706; x=1735050506;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IiVnwmp6sXattZvPbilIy7krIJ3DVv5UKIAfZVX61WA=;
+        b=Nm7REwVdIlQ4dZOJzkip0Pj0RVHzTfyQ49MLPYCEEiZPBf7NspdELk+pSKkrWYbCFX
+         5a2n3WN3eP9nU9IvT0IorDSEHMRi+iZ6wTSuJkGY5eINdfMaVfoF9Y3mhLfpcLGAzQDT
+         OxAH8Gl0rZ9p6o/LO6AQKdxjcYTleziJXMqtB4bZ0OWTcOxoF5Pc7m+gcBtXYOiK+tfF
+         SDQoL40vT0nESOc854SF2vgwo1DhiY4VQAjAoKyfLfbs4oa879i0YpBFmoJGLmJG1IzW
+         A7wxpQiEIyQWNnxx3Df5WgGaukUnHvQjXfVBbrS90APKvUOe4TjvP688kUsjUseqLpvb
+         5YhA==
+X-Forwarded-Encrypted: i=1; AJvYcCUiOpvJQnh921mcbcUb7u4qvMU0df9DrylwOex8Wvx8x+5aDazCZsuh+KG/7e4G/rL0vMsNDjvCHw==@vger.kernel.org, AJvYcCUowtTj867gY7kTW4rsmG3zRudGqMsiow9q4nmFcn1kVpFejbTxJ1kNz1Hs+GAkEHqD644=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUh9KG2TQFg6PHc8aEAafTFY6JIbRQhswfE319/MGQYazwQUeH
+	+Ugiad4Ick2IqZyhjDp1kN87ekh8Rh325+kFbH4EZS4i+jVZHTJX
+X-Gm-Gg: ASbGncv/zgCuNvv99D19oRQSILWQALQgr/m4cSvZlEGSejVZL339pcZkXtqg5vz7h16
+	DSqqTLXAJDGtMKNUu/hmJnHkgPA0u/5Vb7PdhQBWeiBkoViDnUlbUkZhBwOLY/M0kAOAqyIBuH9
+	77cxrqzMpPGDxVF80AthgGURd58lCTCEkdFQhMUz2ykOtC72421WFd8iG3qkIaFtaw6k1316dhn
+	+F+AIWTee4/1r0RJ9yofwtDRrfp/KZHW/9ZEjMzxXK7TzXj/rgrbGNfa2+MVGmhjDGN/oMF7Mbd
+	q5NQnnu5eUlgQk9On98igwo1R/5FjA==
+X-Google-Smtp-Source: AGHT+IG8MgsKYwwgy1oLD4d0uwoM9xY+0cv+YV5GALhC2hcHZLkFmga/prYmbhzyJ2Y644Q17WlBPA==
+X-Received: by 2002:a17:907:9816:b0:aa6:89b9:e9c0 with SMTP id a640c23a62f3a-aab778c7b9amr1506968366b.8.1734445705737;
+        Tue, 17 Dec 2024 06:28:25 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aabcde10752sm184424166b.23.2024.12.17.06.28.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Dec 2024 06:28:25 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 17 Dec 2024 15:28:23 +0100
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: acme@kernel.org, yonghong.song@linux.dev, dwarves@vger.kernel.org,
+	ast@kernel.org, andrii@kernel.org, bpf@vger.kernel.org,
+	daniel@iogearbox.net, song@kernel.org, eddyz87@gmail.com,
+	olsajiri@gmail.com, stephen.s.brennan@oracle.com,
+	laura.nao@collabora.com, ubizjak@gmail.com,
+	Cong Wang <xiyou.wangcong@gmail.com>
+Subject: Re: [PATCH dwarves] btf_encoder: verify 0 address DWARF variables
+ are really in ELF section
+Message-ID: <Z2GKh5NziEvjXEWG@krava>
+References: <20241217103629.2383809-1-alan.maguire@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5080:EE_|AS8PR03MB7509:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0cf30502-cc6a-4f67-2e70-08dd1ea4be4f
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|461199028|15080799006|8060799006|5072599009|19110799003|6090799003|440099028|3412199025;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?QXB6WE95RjBIM2dYWW5wT2NTYWt4RWpjS0Yva1gxUXA3NkpTRUhUZHRoem1F?=
- =?utf-8?B?UW1NcEVRZVBJT2Y1Z3pERHJqcmZzeE9yVWFaUTdxWlh0V1lOUWpqLzVzT1RC?=
- =?utf-8?B?U3Y5SXhkWlFvM0E1UThyUTE2ajkzY05wRE1BWUIzeWFpaWVhbWo5VklsVkJk?=
- =?utf-8?B?Rk5EZG01NG0zTFkxY1lyMHhMZjY4NVozWGVQY0VTNGNJQWpuRkVqaTBhSkNs?=
- =?utf-8?B?TitTeGdKeG5hb2p5dUlyQ20wZnpWbWszelpTcnlVZjl3bGl3TE5pMUNtc3Zj?=
- =?utf-8?B?S25OQkpMZThDMkdpZllHOHZLNUhsWThqeit3dnUzQzcrY000YVhweWovTWQ1?=
- =?utf-8?B?Mk5HaExRMXhrQ2VFc0hIMnk4cE9weXhiaElOVENvclQrQmlMT3AyeXhyalVN?=
- =?utf-8?B?VjhSVHU1L1JQZUZ6c1RVd1pmNkZtd2hqbjlvZ3Z5RFlLQ29pbDRmeGVDdHlC?=
- =?utf-8?B?bzhEWFVTMXl4TDhBOGdDdFZNOWhYUEZyRXIwLzV4dkhySnVYRkw3M2h4NVEy?=
- =?utf-8?B?d3IvdG43aW1JbUlTcTVCWjN4Z2ZDek85Y0lzcFgzajQvditPNTVrYm1ZRjRD?=
- =?utf-8?B?UjVQS0NrRFFWeHI2d3F0b1VTdStCemgwTUZNM2NiS29sZzMzdENQM0tzcjhY?=
- =?utf-8?B?aFdPUFJjWHJIbzBHbWtTT2NXc3p6RDZ4ZUREL21tMEU2T0YzZmUxRzVKK3Vn?=
- =?utf-8?B?Y04yelg5QkJCdmQyNzlLRjlDUk5ycE95aExHZFJWOUtydkNhRTdhMGY2ZWlv?=
- =?utf-8?B?ZzBiUXFWVURraVg5bFZPVEVFZ2FaR3pKVGFBZnMvVkoxTWdjQnBoMVFyOTFB?=
- =?utf-8?B?YndYWENvVHFwUmpXMGkyWFVQYTRvRUg2dVNDdDFaMGlHWURieW1IQWVWcXZp?=
- =?utf-8?B?a28zVENXMEc5WGs2b1hteWN1RzhaeVM0N2xnS29IZnYxSWVYWkhEamR4Yk54?=
- =?utf-8?B?NnRmQ1d0d3BpK1hIM3U4V292V3BOMm5ETVZUVkttZlZnbzU4Tk1kZ3FuSlNm?=
- =?utf-8?B?Nmg4T3Fhcmw5WEhKRFh5TjZxaU9WWENNWVo5RmRJMm4xb0NvWVRjWG94UmJn?=
- =?utf-8?B?M0toOXFIMzUrVXFyUWNWa2N2cEVVcUVxUHQ1MEpPaCtuUGFHMEJsdGFvQUxn?=
- =?utf-8?B?SWRMaG4zeW5zSnhzT1BFbjczb0d5WkRzaFRsaERNQXdFUkxOUEJBYWlMaHBy?=
- =?utf-8?B?eXBpOG9GQmI0WkRvZjZKMFJXeFZrTW5yeE5lMGJXTVkyaVUvazNHM2d2QzJh?=
- =?utf-8?B?UGNEcmJQd1dtbGxXRzVSQWJmd0RDUXpqR2tiU2VubzlpakpXV1pvZGFMRm52?=
- =?utf-8?B?djJWeGpNQmhkNHB5TGMwcERuMEJvM2U4bnFjNHBEVG9EbWZsQk93eDhiOEFS?=
- =?utf-8?Q?XE68GJh+g2o4wOKTj5ViMTP5j3c3pubY=3D?=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?QVh2by9VTjZoaTI2b2pZY1ZZOU5VWFQvZWRmSCtpd3ZqV0ZMcjlFL25xRmoz?=
- =?utf-8?B?L2VmZmZKczl0ZXdMQ3lCajVIZmhPa25pNHpDTWtqWC9uTWlXU0cyNEMxR2w5?=
- =?utf-8?B?ZWNiNTU3WndBY0x4bWhpSTE3RDNhUXhFNFNZcm9JRE0yZEk0V2VIdDREV3Ur?=
- =?utf-8?B?VVBHK2E3V3JLc1ByeHEzWkppdUhzWVRzR1QvQlpRQm9CUzlXckh1ZFlNb292?=
- =?utf-8?B?SzZSbVdlaHNzM3o4MGxvVGxCSlBkM1NvQWFqbWd6eThZS2JWZk83TnVsaUNT?=
- =?utf-8?B?Y3RBbTJTbEFOTTB4SVNPNlgyT09oblUxYVRWWHA4RE1tRDhkY0F4a0hyYlFW?=
- =?utf-8?B?NzVJSHRZbWY0TS9DcW1aWTBlTjZoNTkrUEpOeGNEL0YxY3N2ZjZkc3Vtb0ps?=
- =?utf-8?B?Qyt4TkxIZHRpZUlwUUlBRHdBUnlsRmNNNHZUc2s3dGlmc3hWQk5DZVJZLzJ3?=
- =?utf-8?B?RmUrenAxTmxnRE9YOSt3WU9EQjNTYk5qUWQzUWpVRmkrYStTNFh4R04xL2tT?=
- =?utf-8?B?VmlhRTVodnM1VFFXRFUxQVFkeHRXdnNVY3djU3RxbTZrcEwrVGUwaXd0NFky?=
- =?utf-8?B?RXl0RDRmYUZrV0tZVUp5RlpDZG0zZTVvck1EdGcydnhmQlg4ZG02YTdCa3N3?=
- =?utf-8?B?Sk0zVVUzU2JRR2ZydnVUdW1rOXFRYWNPT0lSNXFwOStqbThyeGtDeTNaYXl2?=
- =?utf-8?B?Si9RNEhUWnFHRll6TTJLQWE3dytRb3QyeTZGeUhMZXNmZWIzMlpuZ1ZqZ0cw?=
- =?utf-8?B?VWZwM3VLUEVNcHZ1ZmExc0xTNFZpRjZjUjBHNGd5SXhoQlFrdzB4b2laVVZh?=
- =?utf-8?B?TzNvS0VwWEk2TTQ5bjdudEJmZlp4Qzc5WUd6L1A3QTlsdUdvK3FzaWhMNnpL?=
- =?utf-8?B?S1RIc3VOU2ltNW9wT2tMN1ZwUHBLVHFNWXlsTWlJOU41Qk1PN0NGRXBJdlBj?=
- =?utf-8?B?TlpGVm5waTlEZVpINlRZTnozRFZvTkpwVkw0Vi9xUHRqUUZ5M0V6RTlzVmJ1?=
- =?utf-8?B?TkxWcGplT3FOejNLOWFiU21HTmxnU2tybDZDUUZvUytXdno2YUlEOFRrSXJa?=
- =?utf-8?B?OGpLd1JvcU5ySUp0WHZFMVRCN1VEWG52U1dvTEpLWWJlcU1uZFlPN3g3MlBO?=
- =?utf-8?B?YVdYdDBhQTN3TjJGVU5VclRWTG0vcDZJdHpMb0dRU045blc5Zkc1RWxRVnZk?=
- =?utf-8?B?NzlrVVh1bnlHc2Q2alNSbkgvNTd3RU5sSHFNTWcyUmJzaTRjTWJVNENjL0ZP?=
- =?utf-8?B?ZXp6SkFWU2l3WjZaTE5FZ0NXamd3bUw2REQrbE9SWEJjRjhxQnpVK1hxUTNh?=
- =?utf-8?B?TnJOcVNibEptS29lYkNUbkJPNjJhVlN2Y2FGMzJ3OVFZNXRRUFBtQldHN2ZV?=
- =?utf-8?B?dlZ1akU0aTNEaEVITVVSWVc3NFJIbzV4blpFR2hzS2dnWTNNYUVSNEMrVkQx?=
- =?utf-8?B?Nk9uMmNBa3kzNWJGQUY3ZmZLRHpWaVVWVVN0MVVISWF4Qlh4VC8wdTh5bEpu?=
- =?utf-8?B?eGVNMlNsNHZPc0MzTE90Q0VyWTZmL0p4QTdFS29FTzQ5OFJTNWw4YW5vSU5B?=
- =?utf-8?B?NzRYZDhvZEdLS1hrcHVHQ09Rb3M2SE5LV0MyWHpIZ1FDVkx5dWd2VWFSakpu?=
- =?utf-8?B?S25BaTU2a3NkSWpHSG95Um9wTzZmL3Jpc0svZjh3dGlCb1hkVDdhSXpWMDd0?=
- =?utf-8?Q?tubHc0Kp3eDe/8YUsWSD?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0cf30502-cc6a-4f67-2e70-08dd1ea4be4f
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5080.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2024 14:11:48.4234
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB7509
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241217103629.2383809-1-alan.maguire@oracle.com>
 
-On 2024/12/17 12:30, Christian Brauner wrote:
-> On Tue, Dec 10, 2024 at 10:58:52AM -0800, Alexei Starovoitov wrote:
->> On Tue, Dec 10, 2024 at 6:43 AM Christian Brauner <brauner@kernel.org> wrote:
->>>
->>> On Tue, Dec 10, 2024 at 02:03:53PM +0000, Juntong Deng wrote:
->>>> Currently fs kfuncs are only available for LSM program type, but fs
->>>> kfuncs are generic and useful for scenarios other than LSM.
->>>>
->>>> This patch makes fs kfuncs available for SYSCALL and TRACING
->>>> program types.
->>>
->>> I would like a detailed explanation from the maintainers what it means
->>> to make this available to SYSCALL program types, please.
->>
->> Sigh.
+On Tue, Dec 17, 2024 at 10:36:29AM +0000, Alan Maguire wrote:
+> We use the DWARF location information to match a variable with its
+> associated ELF section.  In the case of per-CPU variables their
+> ELF section address range starts at 0, so any 0 address variables will
+> appear to belong in that ELF section.  However, for "discard" sections
+> DWARF encodes the associated variables with address location 0 so
+> we need to double-check that address 0 variables really are in the
+> associated section by checking the ELF symbol table.
 > 
-> Hm? Was that directed at my question? I don't have the background to
-> judge this and this whole api looks like a giant footgun so far for
-> questionable purposes.
+> This resolves an issue exposed by CONFIG_DEBUG_FORCE_WEAK_PER_CPU=y
+> kernel builds where __pcpu_* dummary variables in a .discard section
+> get misclassified as belonging in the per-CPU variable section since
+> they specify location address 0.
 > 
-> I have a hard time seeing parts of CRIU moved into bpf especially
-> because all of the userspace stuff exists.
+> Reported-by: Cong Wang <xiyou.wangcong@gmail.com>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+
+Tested/Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+thanks,
+jirka
+
+
+> ---
+>  btf_encoder.c | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
 > 
-
-All these kfuncs I want to add are not CRIB specific but generic.
-
-Although these kfuncs are to be added because of CRIB, these kfuncs
-are essentially to give BPF the ability to access process-related
-information.
-
-Obtaining process-related information is not a requirement specific to
-checkpoint/restore scenarios, but is also required in other scenarios.
-
-Access to process-related information is a generic ability that would
-be useful for scenarios other than checkpoint/restore.
-
-Therefore these generic kfuncs will be valuable to all BPF users
-in the long run.
-
->> This is obviously not safe from tracing progs.
->>
->>  From BPF_PROG_TYPE_SYSCALL these kfuncs should be safe to use,
->> since those progs are not attached to anything.
->> Such progs can only be executed via sys_bpf syscall prog_run command.
->> They're sleepable, preemptable, faultable, in task ctx.
->>
->> But I'm not sure what's the value of enabling these kfuncs for
->> BPF_PROG_TYPE_SYSCALL.
-
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 3754884..04f547c 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -2189,6 +2189,26 @@ static bool filter_variable_name(const char *name)
+>  	return false;
+>  }
+>  
+> +bool variable_in_sec(struct btf_encoder *encoder, const char *name, size_t shndx)
+> +{
+> +	uint32_t sym_sec_idx;
+> +	uint32_t core_id;
+> +	GElf_Sym sym;
+> +
+> +	elf_symtab__for_each_symbol_index(encoder->symtab, core_id, sym, sym_sec_idx) {
+> +		const char *sym_name;
+> +
+> +		if (sym_sec_idx != shndx || elf_sym__type(&sym) != STT_OBJECT)
+> +			continue;
+> +		sym_name = elf_sym__name(&sym, encoder->symtab);
+> +		if (!sym_name)
+> +			continue;
+> +		if (strcmp(name, sym_name) == 0)
+> +			return true;
+> +	}
+> +	return false;
+> +}
+> +
+>  static int btf_encoder__encode_cu_variables(struct btf_encoder *encoder)
+>  {
+>  	struct cu *cu = encoder->cu;
+> @@ -2258,6 +2278,13 @@ static int btf_encoder__encode_cu_variables(struct btf_encoder *encoder)
+>  		if (filter_variable_name(name))
+>  			continue;
+>  
+> +		/* A 0 address may be in a "discard" section; DWARF provides
+> +		 * location information with address 0 for such variables.
+> +		 * Ensure the variable really is in this section by checking
+> +		 * the ELF symtab.
+> +		 */
+> +		if (addr == 0 && !variable_in_sec(encoder, name, shndx))
+> +			continue;
+>  		/* Check for invalid BTF names */
+>  		if (!btf_name_valid(name)) {
+>  			dump_invalid_symbol("Found invalid variable name when encoding btf",
+> -- 
+> 2.31.1
+> 
 
