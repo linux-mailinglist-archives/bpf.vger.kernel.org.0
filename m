@@ -1,96 +1,127 @@
-Return-Path: <bpf+bounces-47146-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47149-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A79D69F5A9D
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 00:44:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B05229F5ABE
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 00:50:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70BCC1890766
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 23:44:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 010441646B8
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 23:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCEA81FA827;
-	Tue, 17 Dec 2024 23:44:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E171FA826;
+	Tue, 17 Dec 2024 23:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="d/z5gZBP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ox9+NMbQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CC31E489
-	for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 23:44:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E2F41DF969;
+	Tue, 17 Dec 2024 23:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734479070; cv=none; b=gwL9r0Z7lrhMq0XRAHR0zNPKDFd3jfVraSPtPxF5bhOlD4fzYMhIznv8FA2WrkX5X32xmAsou+Q7P6UtLiE75LQYNrwGs9zhRLlWRTOoxS+ofkPI8DZ3i1fo0dgRJwiyK3T1fpiJYNdRjpWspFrK+hCHp50PtI0GkI6qPXDwYuY=
+	t=1734479408; cv=none; b=jxcjQW1tu7Cb8glvz71AkuOXRAllHydJUXZvGd2/YhsCzVRig+6aCu0E0uADJ4OSbPAE2Hfkd7jlxaa8I/dUQNiSA8ZQ5a4qp7DJHx//Hp6hxAzqoICm53BLm3CtoCsKttkkSzc9zaL9BGG1mp7t9+om29ug4JSKHA50IwLbKTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734479070; c=relaxed/simple;
-	bh=4uKFZOPAP2cHAdStLTDVUYTTZxIg9MJsw8/EM86G1KQ=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HZ+/R9HE4AIYvrjkrBaYfC5DS2chm4C7tD1oGuk42gM7jrL+n+VLVEXhOd+69Kk44hlVMA7PDaXYPW23mQ0DN43GLtOxLnsubgvmYhx+0OZyE159RnIQYDlAdVckVEKzpnZHKZOdxjSYOG/nMXPk44nup7tfiGDLiJWLWwQNIaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=d/z5gZBP; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1734479065; x=1734738265;
-	bh=nLhgNj9NBQVGAiwFpYYE8rSZPM9knU+44ZF9moOxMio=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=d/z5gZBPtv0+f604z8tMPR7pEpimZwNRdoFBZhUVzmgU9fWcF5ZBIugN4jM1UHamc
-	 Qu4qSNe8/1aXIf3e1VxxM8aqPGFBZQ19gBIt3V5H9OKufHlZuYlbzAHUQO//iQQNSO
-	 btMa2rIaCdyZoRA3FJZz6+Ftxpg+9EjAK2ECa4ZvRjAZpVwd6s+O0sx0gezRvQTkN7
-	 MxB8BRw52Mr0QA1XokhlUupql++3eJE8jdaCIsNzXz/C7UNqRcG4wbX/P/+W4680ud
-	 LbZkrj0OTCvS+fvQjzmo3sa1OVGvFCvmhuuciJJ0uzUceaNG+J31DEWFTAo8cgjhNB
-	 UCq/hj3szsO/w==
-Date: Tue, 17 Dec 2024 23:44:08 +0000
-To: Tejun Heo <tj@kernel.org>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: David Vernet <void@manifault.com>, sched-ext@meta.com, kernel-team@meta.com, linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH sched_ext/for-6.13-fixes] sched_ext: Fix invalid irq restore in scx_ops_bypass()
-Message-ID: <HdoCQccNk3GZdnPx5w1vuAfOMMgtWeUgrUhn_e8B-hyRrWoOPakTGcoI3Q4-QmK_44msuvivoRUykxxeB82uR-S3enkmFaQl2t6Zgu-Nq6Y=@pm.me>
-In-Reply-To: <SJEarr1ol1z7N83mqHJjBmpXcXgHNnnuORHfziWINcHBQCJzY0RczexPKxdq_vE5cDYPeO3bx1RdsNhLqw5UYI40HSX9cPZ9rdmebYwwAP8=@pm.me>
-References: <20241209152924.4508-1-void@manifault.com> <qC39k3UsonrBYD_SmuxHnZIQLsuuccoCrkiqb_BT7DvH945A1_LZwE4g-5Pu9FcCtqZt4lY1HhIPi0homRuNWxkgo1rgP3bkxa0donw8kV4=@pm.me> <Z1n9v7Z6iNJ-wKmq@slm.duckdns.org> <SJEarr1ol1z7N83mqHJjBmpXcXgHNnnuORHfziWINcHBQCJzY0RczexPKxdq_vE5cDYPeO3bx1RdsNhLqw5UYI40HSX9cPZ9rdmebYwwAP8=@pm.me>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: 3158c98564974ac0f29cfa5fb33dd80730c04889
+	s=arc-20240116; t=1734479408; c=relaxed/simple;
+	bh=8MYmdseBPLBEhe2c0PLfxMKJVCcmK2Q2VVftzdN2s5Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bNA5kIkmGeZ+D/7+u33rnlc3h3N7ST9zNyrRsoM0OkqCtAzuqiy1x1zaFFuSvN3kvb/5MxCMMqYfwzpr82XQNUUcCBZN+ZDXlSv5PqlQ759TRpo9esym9VVBMSfiOKa1A8cuLzuOcyeVsns7eDJ5vNWFnqGgt+4EwzIvP+ngmbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ox9+NMbQ; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3862d16b4f5so144919f8f.0;
+        Tue, 17 Dec 2024 15:50:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734479405; x=1735084205; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YMVWY5KAONPdMPCJ9sRPZS5LWqY32aaYf8BaOPVdR7Y=;
+        b=Ox9+NMbQyTGbSiMDu/Rqk0q3yYwPYJarjarzSdlndTyhDPQHzuFa6NX5Eq6TjCW8EQ
+         1fnanHB7fDokYl3CONeO3oLhgN067XHM+QOtzzG/ym+w3JVsBSbTtrw/Kh+XTC4hTcG5
+         L4vYj2Tf1xmOsHuzFRVRAh6Z5Nd2ye/wgJR/emle6pYxo/Fg+56tCY1cZOgj3jWAi3A7
+         C4MmBu3I0c4iZRkvg7CBVX8WbPD3/VBZgdZ8wlNHyeDVxQyiG4qf06/Trcf2NNatZIu6
+         tS4CNk6EYXhaogGumO4x0cbTIk1AMFeTI4YryQ2JZ1OEM5lgUQ0PLpT4hWc/E8QpWpYN
+         ldzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734479405; x=1735084205;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YMVWY5KAONPdMPCJ9sRPZS5LWqY32aaYf8BaOPVdR7Y=;
+        b=Li+ybFIAigH2vYIXBTv2s4iraoXzSbYfjHK9fm/jk8Ami0pFMRgU1RZegxEA49YiMM
+         1d73+6TUthHsm59R3ZB5IPoz+ph2eBnSBfWSxabvhtAAPs8AefgVo0gkY11gVeI3noz3
+         9SujVQSevY/mkf3+e7j2YATa3pUJ9GCJXec2Y2purwflqv7plvluLVLxwJgmDVURM0Xt
+         mb2JlTa7SOZCj7QILf2iLhxUDMEd1qvk+Z2wieIrGr+fQBXtxYurH++DfGgavNiMhOEC
+         SEFy4f70mF+0lYzzn2RzqjBBkKCd88EWtcUMdkQxC0BMrICR9dL5zJ6++yvRhlgYjyGc
+         /X+A==
+X-Forwarded-Encrypted: i=1; AJvYcCUy1jhP3Y7gVg20Yz3jFbAzO38QEqSKMrNtPQfPXT2klfbHORcy3w6y+bVrsd9216mfk6K+L2hmBo1gus5Q@vger.kernel.org, AJvYcCVbQyxMVr6MPTcABXfb8M08+x8memxgc9FPsUlUE8PFVRBmopnaJCBEAlG4BhIQiE9ohD2osfZBdpcryoZaSAisP3Me@vger.kernel.org, AJvYcCWYzjjLTHbFyo217uZpUi/IbEaYiZYe7cpapmSu7wgfvu7iN/1yGaR5Mh7crS0vWllV6q0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBjV7z1o3ahSJdLCgV9lifNSRAmN7Rqf0lva4QGT1O4e+AcF3B
+	8spy7Yvo5WfeddDbnffo3/CUXrXdnd3tDFGllkB/cL+ZqKauQi+39BQHTSp2ecV/6r9M2hlxVJS
+	5qU5SSzgKkaJbI72EGQ5yiL0gLCw=
+X-Gm-Gg: ASbGnctqHiOlX6bBnuw7vzJOsfBvbNx6aDyubvzXh3obj5z/8hVYY1YdllQfYHkIkkV
+	kmo18/KeTaH8QJbesnir2k9J+S8rMpihlAzRA60kesDkJQGuFT0ZDYQ==
+X-Google-Smtp-Source: AGHT+IF8VTbcA8keGtmi6GH73HN4RLr7iXAdcWKrFkAUuHwNLi6Rvfz5iqO7wbJbV38OgBRP99JxyD+n6+vFFC8Ruao=
+X-Received: by 2002:a05:6000:1f85:b0:385:fa30:4f87 with SMTP id
+ ffacd0b85a97d-388e4dcddafmr526563f8f.0.1734479405084; Tue, 17 Dec 2024
+ 15:50:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <67486b09.050a0220.253251.0084.GAE@google.com> <CAADnVQKdRWA1zG6X4XNwOWtKiUHN-SRREYN_DCNU59LsK8S5LA@mail.gmail.com>
+ <mb61p8qsymf3i.fsf@kernel.org>
+In-Reply-To: <mb61p8qsymf3i.fsf@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 17 Dec 2024 15:49:53 -0800
+Message-ID: <CAADnVQ+_TUjJ6Ytn96QqtHnBB--muefbbOoAsRw4z=40Pf1+tA@mail.gmail.com>
+Subject: Re: [syzbot] [bpf?] [trace?] WARNING: locking bug in __lock_task_sighand
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: syzbot <syzbot+97da3d7e0112d59971de@syzkaller.appspotmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Stanislav Fomichev <sdf@fomichev.me>, Song Liu <song@kernel.org>, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Tejun,
+On Mon, Dec 2, 2024 at 4:42=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org>=
+ wrote:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>
+> > Puranjay, Andrii and All,
+> >
+> > looks like if (irqs_disabled()) is not enough.
+> > Should we change it to preemptible() ?
+> >
+> > It will likely make it async all the time,
+> > but in this it's an ok trade off?
+> >
+>
+> Yes, as BPF programs can run in all kinds of contexts.
+>
+> We should replace 'if (irqs_disabled())' with 'if (!preemptible())'
+>
+> because the definition is:
+>
+> #define preemptible()   (preempt_count() =3D=3D 0 && !irqs_disabled())
+>
+> and we need if ((preempt_count() !=3D 0) || irqs_disabled()), in both
+> these cases we want to make it async.
+>
+> I will try to test the fix as Syzbot has now found a reproducer.
 
-I re-enabled selftests/sched_ext on BPF CI today. The kernel on CI
-includes this patch. Sometimes there is a failure on attempt to attach
-a dsp_local_on scheduler.
+Puranjay,
 
-Examples of failed jobs:
-
-  * https://github.com/kernel-patches/bpf/actions/runs/12379720791/job/3455=
-5104994
-  * https://github.com/kernel-patches/bpf/actions/runs/12382862660/job/3456=
-4648924
-  * https://github.com/kernel-patches/bpf/actions/runs/12381361846/job/3456=
-0047798
-
-Here is a piece of log that is present in failed run, but not in
-a successful run:
-
-2024-12-17T19:30:12.9010943Z [    5.285022] sched_ext: BPF scheduler "dsp_l=
-ocal_on" enabled
-2024-12-17T19:30:13.9022892Z ERR: dsp_local_on.c:37
-2024-12-17T19:30:13.9025841Z Expected skel->data->uei.kind =3D=3D EXIT_KIND=
-(SCX_EXIT_ERROR) (0 =3D=3D 1024)
-2024-12-17T19:30:13.9256108Z ERR: exit.c:30
-2024-12-17T19:30:13.9256641Z Failed to attach scheduler
-2024-12-17T19:30:13.9611443Z [    6.345087] smpboot: CPU 1 is now offline
-
-Could you please investigate?
-
-Thanks.
-
+Any progress on a patch ?
 
