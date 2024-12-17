@@ -1,134 +1,124 @@
-Return-Path: <bpf+bounces-47127-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47128-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F3C89F5163
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 17:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D0EE89F55B0
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 19:11:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F77A1685FB
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 16:51:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79AD91636E1
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 18:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2C71F7564;
-	Tue, 17 Dec 2024 16:50:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64E0F26296;
+	Tue, 17 Dec 2024 18:06:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XKv4rlX0"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pm.me header.i=@pm.me header.b="QeGv0S3p"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861F913D891;
-	Tue, 17 Dec 2024 16:50:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64EBE14F9EB
+	for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 18:06:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734454256; cv=none; b=J99NV+KA6J+uSovzT+mLFPdAZJMTF4VYaKIj7NuoHFASqEiHDWYGWKacoNiD8nR4E4W1Q5TeM+hmKiR96VtDXRzoh3AWXImux8imZoHXemeNlD8nQHG9qbC17jdezv4/KpxaUYa7wgOiU73UH5nlupbDaQq2UJQxsXRjG4sEmk4=
+	t=1734458791; cv=none; b=PDDkQyTZXDIRmfMU5R1mzzmjSMbvUqj0EL4gArGIY8ZTl7+63qq4eerBPbmZq9n2E9mQMAAP5gskGe/DY9yIhSRuIctZBGYOiUzQZq0jZxz0IPs5wsoydxMfRpJ8JQXqXTuukJONqyZTsGqz0Y3hoC86qOkQ6I1aIbwzmqHkoV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734454256; c=relaxed/simple;
-	bh=QT0HaOZrrcuBLx3iwbHEd5ESKMtyIbJp3/b0ZBxIPHs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o29P9N/cQ+JDmpu6jExFU4wemDxHAc2br91IjkZtatp8+hLEzNC00RRBBd65dFgsgBXfwPQpwSnFk5h2Jv7fj5MYvJ1wXIckB0fWjW67C942TRnrVJW3hE+018rdpTn6UH5seJVJQFzulHptlkK5bqjdFkTf0BnPuaL7tqtSdEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XKv4rlX0; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-43622354a3eso39033625e9.1;
-        Tue, 17 Dec 2024 08:50:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734454253; x=1735059053; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aqGkGl4I3oQGsHn9CPQ+WaBIxXpdHiccXhn42DSrZyQ=;
-        b=XKv4rlX0hgc7THNF/gSISbgityOI3Vx0K+6KHtkIyueN2vby406miW9EvtI1+zdCaK
-         hjQ1BK31gu/DEnWgjBqpVp8q1jQWY90MeSFc+eJOcMhc6lUEZ4ZRtt462hVi4YgZpg3h
-         i60icPGn9gk3oSfhGQg1UyhOGIA0CprU+ko4udNp9GW4BWecNDLa7Av0xAAK9CzcWNT0
-         bywNlF7GL3YM3lw9NWUF2G/Xgprw2nG6uED4YvbkB+FSPI0pGhx2gviu3whkqbefANfA
-         xTvzQ24okOwoHs5sFdA2hcnTipalGS/lsLxN49OgYc/UghzdXmnkg1YAy6dYVa+JEur1
-         lSOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734454253; x=1735059053;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aqGkGl4I3oQGsHn9CPQ+WaBIxXpdHiccXhn42DSrZyQ=;
-        b=smHqrhfey6McKu2vD8XpzLxIm8SgJIfZz7FEe16ZOjOy3R/I9EcbDAnw4glZ0+BERr
-         LjSCsxc/+qA99um95sdICtxefd5bFjDyDEsH8mprD8LgVEh9pqDhyPTkTIuMsAR1S/LJ
-         w4fcgwCn6RCUN+nMcGkIG98K7mwvTsIxtRqO98+DPnOlLoVNwJk4Ue5V0MSWzO/UCNne
-         Htsr8wpgKN1ryb3Os3ryEvhnxbPfvZLQ/IhKDSqzjHjcLvYIah7RimwhMpJfmGm0TvhS
-         1Oaxlu2Rv6ljyao3AWS8/lm7UYUK/rzKyMZPyg/hyaEj4lsSR8u6fIbahOmROrugD2PC
-         Nq1A==
-X-Forwarded-Encrypted: i=1; AJvYcCUkRC58iq/CGyJzA5X/gP+Khw3X5+qJge3yX0rxe0zGLZRILVyGVncpgnG3OX9RXEQOzkbtb3MDkOxWOPSGEMmuplPrkw3a@vger.kernel.org, AJvYcCWVjqfZMrYOSRa3TEcTC0yaXGPplu8wBBf2QBLky3jfJdy3qU1EX9c/jbnrkLo6ly++8Dl7Xk8TeomoxLUy@vger.kernel.org, AJvYcCXIhiGt5XnR6h/z2UBUCRstq2X6TvOqwocF4lhgWtllw3OT6OmjdZ7JWtn+3uqe0h/UY3RlDHs8D2ajZ4E3@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxcv6VLviHEVpWAS5u9bErOM9wCxiECSzKDaDOTjTfFFbQs0fB8
-	Nqg6An1LyImK/ttbWVJvOEqxj007v7W9e1xwENpxI9ia77iImJxbID+ws74QsYKnlnRtLD+Ob/g
-	nzUxsKz3KG+2po+gBqGFhu45C7qM=
-X-Gm-Gg: ASbGnctWwDl6Zv4iV/CKUynNbjFpxILPjBcC1pvN5Hy/QmqNQ1hRA9TdfXIa3aU6Fyn
-	i6QWS1CasGwkvfpGjAcagnCstu+l6X64XP7bMNnVASrbq4pR1/7G52t4s63bj3/SnccHFyw==
-X-Google-Smtp-Source: AGHT+IFta1pUoEC2GeCCBT+bI1Kau5R4Yd6VxG9WsjVSoHf92aA2eehdKxv+Ln8Y3iPfj0PqgNrr9XaYokZyA+MO/jo=
-X-Received: by 2002:a05:600c:3552:b0:434:f335:855 with SMTP id
- 5b1f17b1804b1-4362aab472dmr131678885e9.28.1734454252591; Tue, 17 Dec 2024
- 08:50:52 -0800 (PST)
+	s=arc-20240116; t=1734458791; c=relaxed/simple;
+	bh=qAiWo3OrbDhzimUCrpqTTBcTXZ80X/nvvKANhb3wbaM=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=A7nRbsHTQKfOBrlG/CN+aAbgFRoYAAxbmHMvATku8y+azZ3Uw/nED30giyIVU15GynoyS5MSxhTv23as+VA/X6oonUbf2/eSI+IrvNDi9AP9YVkuKmlp8z5wk720+tC8eDrmpuNNLbXY5vCi+WF/W/AQUhtXN5WgVcE4iwHxxdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=QeGv0S3p; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1734458787; x=1734717987;
+	bh=qAiWo3OrbDhzimUCrpqTTBcTXZ80X/nvvKANhb3wbaM=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=QeGv0S3pZJ3k8tbwTtgVZ0q300wrEYcecRyV5QaRy/5lv9XVJJO93y8r5JIpOYHnz
+	 PaJyMGE5vn81gCJsCnASsMROG3JU49NVf5YOaN93tMheRQ8nBjsJKoIALEqr6uN0P5
+	 OohTJG+rghBiNaQuCo1IvrbrMEscLzc8jVhj1BoTM7nnIhnbcv+qXg/BNUH1jxpvFN
+	 9aGKFJfr7NnypOp1MX0ldJRAjoXQj+hu8jy4bagF2/hSJXWRz4/yMuqWk4S1n2Az3u
+	 go8jwRyonkoKKDBnIvi+OgiPVLxZvVeMKei3IYnJ2Ui7StPQv+wxz5+iWCKr138DFT
+	 71AqNtlqVz1Zg==
+Date: Tue, 17 Dec 2024 18:06:22 +0000
+To: Eduard Zingerman <eddyz87@gmail.com>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: dwarves@vger.kernel.org, acme@kernel.org, alan.maguire@oracle.com, andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves v2 07/10] btf_encoder: introduce btf_encoding_context
+Message-ID: <yKpaq5zO0TcrAm1v3p4yd2D9ic0jGUQM0CUSg6CU_31_S1mX7SDljMf36ayteEV2O_MTE2eJkUuu3JoJWPQyIxHibe2zz1W3Uq_RzqiyPVY=@pm.me>
+In-Reply-To: <735014fda88330d2124f4956cc9a0507f47176db.camel@gmail.com>
+References: <20241213223641.564002-1-ihor.solodrai@pm.me> <20241213223641.564002-8-ihor.solodrai@pm.me> <09f6bc335380ca73d365566de7af8f2e73ac9cfd.camel@gmail.com> <735014fda88330d2124f4956cc9a0507f47176db.camel@gmail.com>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 2ab23196b0a513a826d2f9f982c663e586c95598
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241217063821.482857-1-song@kernel.org> <20241217063821.482857-5-song@kernel.org>
-In-Reply-To: <20241217063821.482857-5-song@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 17 Dec 2024 08:50:40 -0800
-Message-ID: <CAADnVQKnscWKZHbWt9cgTm7NZ4ZWQkHQ+41Hz=NWoEhUjCAbaw@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 4/6] bpf: fs/xattr: Add BPF kfuncs to set and
- remove xattrs
-To: Song Liu <song@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, KP Singh <kpsingh@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, liamwisehart@meta.com, shankaran@meta.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 16, 2024 at 10:38=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> Add the following kfuncs to set and remove xattrs from BPF programs:
->
->   bpf_set_dentry_xattr
->   bpf_remove_dentry_xattr
->   bpf_set_dentry_xattr_locked
->   bpf_remove_dentry_xattr_locked
->
-> The _locked version of these kfuncs are called from hooks where
-> dentry->d_inode is already locked.
+On Monday, December 16th, 2024 at 7:15 PM, Eduard Zingerman <eddyz87@gmail.=
+com> wrote:
 
-...
+>=20
+> On Mon, 2024-12-16 at 18:39 -0800, Eduard Zingerman wrote:
+>=20
+> > On Fri, 2024-12-13 at 22:37 +0000, Ihor Solodrai wrote:
+> >=20
+> > > Introduce a static struct holding global data necessary for BTF
+> > > encoding: elf_functions tables and btf_encoder structs.
+> [...]
+> >=20
+> > After patch #10 "dwarf_loader: multithreading with a job/worker model"
+> > from this series I do not understand why this patch is necessary.
+> > After patch #10 there is only one BTF encoder, thus:
+> > - there is no need to track btf_encoder_list;
+> > - elf_functions_list can now be a part of the encoder;
+> > - it should be possible to forgo global variable for encoder
+> > and pass it as a parameter for each btf_encoder__* func.
+> >=20
+> > So it seems that this patch should be dropped and replaced by one that
+> > follows patch #10 and applies the above simplifications.
+> > Wdyt?
+>=20
+>=20
+> Meaning that patch #6 "btf_encoder: switch to shared elf_functions table"
+> is not necessary. Strictly speaking, patches 1,2,4 might not be necessary
+> as well, but could be viewed as a refactoring.
+> Switch to single-threaded BTF encoder significantly changes this patch-se=
+t.
 
-> + *
-> + * Setting and removing xattr requires exclusive lock on dentry->d_inode=
-.
-> + * Some hooks already locked d_inode, while some hooks have not locked
-> + * d_inode. Therefore, we need different kfuncs for different hooks.
-> + * Specifically, hooks in the following list (d_inode_locked_hooks)
-> + * should call bpf_[set|remove]_dentry_xattr_locked; while other hooks
-> + * should call bpf_[set|remove]_dentry_xattr.
-> + */
+Eduard, thanks for the review again.
 
-the inode locking rules might change, so let's hide this
-implementation detail from the bpf progs by making kfunc polymorphic.
+You are correct: if we focus on the multithreading changes in
+dwarf_loader.c and make a decision that there is always a single
+btf_encoder, then much of this series can be discarded.
 
-To struct bpf_prog_aux add:
-bool use_locked_kfunc:1;
-and set it in bpf_check_attach_target() if it's attaching
-to one of d_inode_locked_hooks
+At the same time I think most of the patches are useful. At the very
+least they enabled experiments that in the end lead me to the
+dwarf_loader changes.
 
-Then in fixup_kfunc_call() call some helper that
-if (prog->aux->use_locked_kfunc &&
-    insn->imm =3D=3D special_kfunc_list[KF_bpf_remove_dentry_xattr])
-     insn->imm =3D special_kfunc_list[KF_bpf_remove_dentry_xattr_locked];
+The changes making ELF functions table shared were beneficial in
+isolation, because they eliminated unnecessary duplication of
+information between encoders, leading to reduced memory usage.
 
-The progs will be simpler and will suffer less churn
-when the kernel side changes.
+The changes splitting ELF and BTF function information in
+btf_encoder.c and simplifying function processing are also good in
+isolation.
+
+In my opinion, it's not wise to discard all of that, because it turned
+out that a single btf_encoder works better in the use-case we care
+about now. Later we might want to revisit parallel BTF encoding. Then
+some version of the refactoring changes here will have to be re-done.
+
+So I think it makes sense to land most of this series without
+significant re-work. But of course I am biased here, as I wrote most
+of the patches, and it's always painful to "throw away" effort.
+
+Let's see what others think.
 
