@@ -1,136 +1,159 @@
-Return-Path: <bpf+bounces-47080-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47081-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15DAF9F40E6
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 03:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EEBED9F4127
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 04:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F77A188C5CA
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 02:39:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E520188CB77
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 03:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D70B13B7A1;
-	Tue, 17 Dec 2024 02:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366C41459E0;
+	Tue, 17 Dec 2024 03:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="laRhZ3mc"
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="Ue6n58qX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa1.hc1455-7.c3s2.iphmx.com (esa1.hc1455-7.c3s2.iphmx.com [207.54.90.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4025818035;
-	Tue, 17 Dec 2024 02:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FB3042AAB;
+	Tue, 17 Dec 2024 03:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.54.90.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734403151; cv=none; b=IgMD7htLEzJwHk3Wglulsnyuw31fN6krCvwB2MJEzoned9pNl50KxYgPR+Nu48oa+YDG/pdi/a/qWvGo2L8qTKYHGvi9gV+UazDu5ZbVwEeYVgnMCKC+szOPNpPC8awQxtpd0ynBf1ANWtI6a2n6BhHCP38vYZYRj2lhQqyEIFI=
+	t=1734405031; cv=none; b=ffHkK/ShUMh836/ennzptKNyesbGCZAXE6OtIcVwxY5vp6Lu2qYdwUPowmyBMOAonfT6MapLMDA0f4cQQ9LCX8P91t9lY83waVEIIzups/wRORSzPqBWq71wMnj4BAHNmlLQH6URDg9YjukjC7Ndg72lDbr9JSyowgRwQTRbe24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734403151; c=relaxed/simple;
-	bh=d7tKwNggGYb7+cuJhX3++J9k4A9128hA0Qj4NxY8Xko=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=i8nR5Uico3lQmC7w1iExoulKdjGWOooS9Hjs+kl3wHWBIezLBTGinsrHjGQjwdt1XXGGFDeifzxFsq6oga9SAbfY3Z4i7cZ9uud1wFbxJ7jEmCCPKdB3LnPnd54VA1v2MRBrxBIz+wrE/yfkK9Hzj7qE8wChHy0enUwiDytsI54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=laRhZ3mc; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-728eccf836bso4128347b3a.1;
-        Mon, 16 Dec 2024 18:39:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734403149; x=1735007949; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/UAOt1R2UFoEWdb+FDwAoeGbA0s67yZZ0DJm5nsl6Tw=;
-        b=laRhZ3mcDBW5Isi1Mjv2OjAIsPZXmA7ejSoK2aXm9n9FRFRtlLhs1wzfiTLxI2BHcq
-         AfcMgcZc8GTRTPqJhMyjwpKbkAA2n5DjOcChYpke2/vS5LeV58FClHrWvgmHivhEgqre
-         J4CcQj0wqSXY2XUQcszsIXqXMs53akkdjT3kdYupBJfNtAJ97gmse4GmJ2wr4eyWclGr
-         PEvDBDpQboFuGotyjupXSqsUzj9LBHXTGQHT75wZDvn/XOJF9nPI+omyPicP1eR/Ukkw
-         sy8rXYfkNeaEGDvhqfwAdIWKnV7Wi/bPGaQtlPm+CBZisnA9kWAbT10+mh6D4kxZU6xT
-         6hcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734403149; x=1735007949;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/UAOt1R2UFoEWdb+FDwAoeGbA0s67yZZ0DJm5nsl6Tw=;
-        b=JQ/A6GqOgb6Q3UVJxDhtRVfQliIVXvO2Da2WUvapy97aXUWGzPGg33HqMQOx0La3xy
-         yF53GOIZ0qpizkJFXP/Y1QT760IRNaCJ/HmwqBKCBigjwqAhRwmKQdUFeHtaOQxJDs/N
-         qrSkknvsbbmVWVIlqBF78Y8NxW6vN9Rcsn10xXa8Q8BEG3knKXybNKfmBnIfXsX6/tJ8
-         iUJuRomuFzLtDH0pEt/t+YpwglFZx1qwIqJppjtT8u5Yrg4n/Q/uEA1PRP9p1UQ6epLY
-         i+Ve+uGpRqNgn4PkvORkEHVcGGlQBpll9kXiM8QbppvLJHP+4nqf0UNiJoMCqdn9gEUN
-         03mw==
-X-Forwarded-Encrypted: i=1; AJvYcCWL7jMOvssvw7Dtlr+70YudboippR7SRDgEisr/LdUU4lhRWnWHPhlJxatLugAL/aZAJBA=@vger.kernel.org, AJvYcCXpeoFeyCRApQbtTw9ET558EyjJoxn1ISvJcyqePdaxenyrN9te5rmnLRe0lYdsqgE+Swt+Wr7ThQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJtNDiUkvPi1KEpo7fz+r6KZHnQCUOEATc4wYr6fO5rwazx2cE
-	FoOnvgcPjkzYVOrZ36ZlU9bLJtvcyaS7yUmjY82BHjvmC91vQkLo
-X-Gm-Gg: ASbGncvVURn8sW5UJJbopsB3VYPtCKBel2l3pyflYXAhhdluMjmhtHg3kAne9Z/rvi1
-	Mn5iM/7G81Oyg141z32UZEWi3ksTkeGEKnFNLGSqkMAdzVfqnNBstFHYqU7Qma0p5MxukDjXyqY
-	3FyvWIT0OwX2AiY4A/URQDaxe3V/tTq5gHyIWRzYsbxfV2eEuUddSWRxUqaRuJ0eQxnPmULw/cc
-	V1Tq9Y916zK1DLhiZaOhRfLUtFhCdhFPRj739vbBvXUlUSldNOkLA==
-X-Google-Smtp-Source: AGHT+IFmJIw3cwZcaPC0wESUPJsZaM/404E1iB/Bu6Vkx7ocIqnUcAhW7UdygscbwNbHVAUSncGY0Q==
-X-Received: by 2002:a17:903:3256:b0:215:7faa:ece2 with SMTP id d9443c01a7336-21892a4177emr169914825ad.35.1734403149498;
-        Mon, 16 Dec 2024 18:39:09 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-218a1dcb415sm49403025ad.71.2024.12.16.18.39.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2024 18:39:08 -0800 (PST)
-Message-ID: <09f6bc335380ca73d365566de7af8f2e73ac9cfd.camel@gmail.com>
-Subject: Re: [PATCH dwarves v2 07/10] btf_encoder: introduce
- btf_encoding_context
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@pm.me>, dwarves@vger.kernel.org
-Cc: acme@kernel.org, alan.maguire@oracle.com, andrii@kernel.org,
- mykolal@fb.com, 	bpf@vger.kernel.org
-Date: Mon, 16 Dec 2024 18:39:03 -0800
-In-Reply-To: <20241213223641.564002-8-ihor.solodrai@pm.me>
-References: <20241213223641.564002-1-ihor.solodrai@pm.me>
-	 <20241213223641.564002-8-ihor.solodrai@pm.me>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1734405031; c=relaxed/simple;
+	bh=M4nC/QuF7h8r8657KRYYOxmcMhWAjFJiZd1ArhA1aNI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KpKTXsOja/bes+Kn5MlSIcECwZo7XrnrVeKkQOwZZg2GKC4xzzUBbnnEUf69mj77yJWcqP2QvbXUEshk5dGiMtzP7rU/QP1Eg0k8fvkh9NICgn7PyMMtNDpKCnu39LYxk0sgaW3UleHzmZnzqMLpLmY7HBbHVQMPs48QcG3LoQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=Ue6n58qX; arc=none smtp.client-ip=207.54.90.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1734405030; x=1765941030;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=M4nC/QuF7h8r8657KRYYOxmcMhWAjFJiZd1ArhA1aNI=;
+  b=Ue6n58qXVJu9Yn8g3c+jia4Tf5Wz+ta2ELIlUb6hAmc/AJQJybGK8MKE
+   F/R1fplNYHidAF/wp/EwgL0UVEzVcjw2P/GnnBy3LukoCfHPn3+vqTMgV
+   AKh2wGRvirmekF0tdKw2uCRlJ2toz5pytwHFi56MaMfxh62xLv9gi44HO
+   JmjHPotB0oqV+j2u0NnLqlBLPa8pbbvCYVxTODjIqCvRyLawYv7g7abuk
+   pjmMgqAbYq+2vrfZN+QPiQ1dXqd7Bx9egPd0zvk512qoFgecoiR0uC2Nq
+   XjrJDXb+XgU6C3cSLvYksFLUs++MHuDpneRAYu0FR6ohj8YKbkl5tJJWg
+   A==;
+X-CSE-ConnectionGUID: wlRq4/dxSdGRKTHWWzsyYw==
+X-CSE-MsgGUID: dIORant4RV2MitdDOdmglA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11288"; a="183982002"
+X-IronPort-AV: E=Sophos;i="6.12,240,1728918000"; 
+   d="scan'208";a="183982002"
+Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
+  by esa1.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2024 12:10:20 +0900
+Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com [192.168.83.65])
+	by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 482D8D5011;
+	Tue, 17 Dec 2024 12:10:18 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
+	by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 17ED4D5098;
+	Tue, 17 Dec 2024 12:10:18 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 7E97FE8DE;
+	Tue, 17 Dec 2024 12:10:17 +0900 (JST)
+Received: from iaas-rdma.. (unknown [10.167.135.44])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 8AC841A000B;
+	Tue, 17 Dec 2024 11:10:16 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-kbuild@vger.kernel.org
+Cc: Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Shuah Khan <shuah@kernel.org>,
+	linux-kselftest@vger.kernel.org,
+	Li Zhijian <lizhijian@fujitsu.com>
+Subject: [PATCH RFC] Makefile: Export absolute srctree path for out-of-tree builds
+Date: Tue, 17 Dec 2024 11:10:52 +0800
+Message-ID: <20241217031052.69744-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28864.004
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28864.004
+X-TMASE-Result: 10--0.633800-10.000000
+X-TMASE-MatchedRID: QxNw5Kr7aBeh8NIgadoMHh1kSRHxj+Z5ohrMq0nEhQczyScpZuj/nizy
+	bVqWyY2N+SSaqR6S8TQlLmeOTKV2xRlcucGIY/14v8fLAX0P50DNKdtHc3A3XDnP3k+syM8k+jV
+	zof0NuiPPQfWquCqW3SLebaXr2O4UlFKRvEp4lzj4c540RssCiaVjgXyvS9c/dE7HIe9l0mw9dx
+	qDxQNRxSL637QCIVpiV1uoDPGLPAgfE8yM4pjsDwtuKBGekqUpnH7sbImOEBSlrvbCC0mrLDMDm
+	LGIOPRcJ6wy91uaDgtO/9J3JLbpTrF5ko+nSlUw0nnrlhi+scYjuLsNpywqtfar0z1Io/d1yvIH
+	coJBdxKbDRBqS2n66yzP5xAyz9Oenvkw4sh/+PcMX5CwH5DTUmgGZNLBHGNe
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-On Fri, 2024-12-13 at 22:37 +0000, Ihor Solodrai wrote:
-> Introduce a static struct holding global data necessary for BTF
-> encoding: elf_functions tables and btf_encoder structs.
->=20
-> The context has init()/exit() interface that should be used to
-> indicate when BTF encoding work has started and ended.
->=20
-> I considered freeing everything contained in the context exclusively
-> on exit(), however it turns out this unnecessarily increases max
-> RSS. Probably because the work done in btf_encoder__encode() requires
-> relatively more memory, and if encoders and tables are freed earlier,
-> that space is reused.
->=20
-> Compare:
->     -j4: 	Maximum resident set size (kbytes): 868484
->     -j8: 	Maximum resident set size (kbytes): 1003040
->     -j16: 	Maximum resident set size (kbytes): 1039416
->     -j32: 	Maximum resident set size (kbytes): 1145312
-> vs
->     -j4: 	Maximum resident set size (kbytes): 972692
->     -j8: 	Maximum resident set size (kbytes): 1043184
->     -j16: 	Maximum resident set size (kbytes): 1081156
->     -j32: 	Maximum resident set size (kbytes): 1218184
->=20
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
-> ---
+Fixes an issue where out-of-tree kselftest builds fail when building
+the BPF and bpftools components. The failure occurs because the top-level
+Makefile passes a relative srctree path ('..') to its sub-Makefiles, which
+leads to errors in locating necessary files.
 
-After patch #10 "dwarf_loader: multithreading with a job/worker model"
-from this series I do not understand why this patch is necessary.
-After patch #10 there is only one BTF encoder, thus:
-- there is no need to track btf_encoder_list;
-- elf_functions_list can now be a part of the encoder;
-- it should be possible to forgo global variable for encoder
-  and pass it as a parameter for each btf_encoder__* func.
+For example, the following error is encountered:
 
-So it seems that this patch should be dropped and replaced by one that
-follows patch #10 and applies the above simplifications.
-Wdyt?
+```
+$ make V=1 O=$build/ TARGETS=hid kselftest-all
+...
+make -C ../tools/testing/selftests all
+make[4]: Entering directory '/path/to/linux/tools/testing/selftests/hid'
+make  -C /path/to/linux/tools/testing/selftests/../../../tools/lib/bpf OUTPUT=/path/to/linux/O/kselftest/hid/tools/build/libbpf/ \
+            EXTRA_CFLAGS='-g -O0'                                      \
+            DESTDIR=/path/to/linux/O/kselftest/hid/tools prefix= all install_headers
+make[5]: Entering directory '/path/to/linux/tools/lib/bpf'
+...
+make[5]: Entering directory '/path/to/linux/tools/bpf/bpftool'
+Makefile:127: ../tools/build/Makefile.feature: No such file or directory
+make[5]: *** No rule to make target '../tools/build/Makefile.feature'.  Stop.
+```
 
-[...]
+To resolve this, the srctree is exported as an absolute path (abs_srctree)
+when performing an out-of-tree build. This ensures that all sub-Makefiles
+have the correct path to the source tree, preventing directory resolution
+errors.
+
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+Request for Additional Testing
+
+We welcome all contributors and CI systems to test this change thoroughly.
+In theory, this change should not affect in-tree builds. However, to ensure
+stability and compatibility, we encourage testing across different
+configurations.
+
+What has been tested?
+- out-of-tree kernel build
+- out-of-tree kselftest-all
+---
+ Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index e5b8a8832c0c..36e65806bb5e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -275,7 +275,8 @@ else ifeq ($(srcroot)/,$(dir $(CURDIR)))
+     srcroot := ..
+ endif
+ 
+-export srctree := $(if $(KBUILD_EXTMOD),$(abs_srctree),$(srcroot))
++srctree := $(if $(KBUILD_EXTMOD),$(abs_srctree),$(srcroot))
++export srctree := $(if $(building_out_of_srctree),$(abs_srctree),$(srctree))
+ 
+ ifdef building_out_of_srctree
+ export VPATH := $(srcroot)
+-- 
+2.44.0
 
 
