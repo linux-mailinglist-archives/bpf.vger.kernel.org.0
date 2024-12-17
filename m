@@ -1,76 +1,99 @@
-Return-Path: <bpf+bounces-47114-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47115-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20CE99F48FF
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 11:37:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F0799F4A5B
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 12:56:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B825C1891257
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 10:37:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD537188F897
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2024 11:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9F61E3DDB;
-	Tue, 17 Dec 2024 10:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11DED1F03E9;
+	Tue, 17 Dec 2024 11:56:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="CZzJOeso"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CpPYrL2S"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2F31E0B7D;
-	Tue, 17 Dec 2024 10:36:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7A71EE031
+	for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 11:56:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734431815; cv=none; b=hMHCMhy1F2vWH69zFCU36uZN6xWyZl1ODYY9bdCuOwXVg6qXEeNbBlWcPRr0IanJR9e8AdE22vqlcLeoe1P0hFG68ZOZ9RokWI0ZJXLfzd56+J15irOh6F5NhPl4UucE7C0VxPsa/pUsMesSvCQYHfkQy95dCsuKVL3cuKQopAk=
+	t=1734436583; cv=none; b=hFQLSOh24961Yk+amLlX4eFDp3JD3dsdfBsm89vqV2gsdG+nK6mDtod9T0Dzk+vAIAUaR9A1PRxDwdkDnxji6ReS20qZ82WnNf2J8VuJuN+FE6Ip3nKT8ZG+HDoHX5qvmvdoICpkz8C2BowohGpfdXrkxbL9aQ1QLn0saycjbT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734431815; c=relaxed/simple;
-	bh=UmwmvHSWreHO3WY2crs9WXceMssQhSzvUjWuR921BpU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HX8etQ5TswlkyFbpu1qaSmzQlhSnO3rWj8/FaR4SIWSsx9u/h1dy/tD7bXL857LMwSuFlCc54Xpad0azsgm3YOaRQuxWM5SaxyQBiV/oZRqfjsnMpcomgQIA6lgCac6n5zhylvxMtc2YlzSiW8+3+k68fDDaFLmuaHg13+WLItQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=CZzJOeso; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BH1udiF002233;
-	Tue, 17 Dec 2024 10:36:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=corp-2023-11-20; bh=cxYglM6mPkNwN2PxnA9JayFG/EENT
-	xEzJRw7pX+ZIJo=; b=CZzJOeso6sPWtOFHXxs0wOjAPE6OYv+8IgvroV0dYIcct
-	BBgSrzjXdMQyiyK9JefCiACEW3/ZYtDfXDnqFQC1aVeeVKL2XS1hjiTjr2DmED3Z
-	jeFDQbCEgQNWA5muYUNfvSKmmAB6v2KI+1WYo+S/3AHGas6OP+Z0usRIr9UvyZS/
-	yYsiFQEWLtnuwIOkpGmVzXK0pKefLsxQFNnIU5YcJ2WPWO4FLaZkPkWTP6r09Mmg
-	EcZv46kxFc8jk6UE2qIXbpG3+efBFcdN3IQT4upzRv5RXUFuuhCP4WpH5mU8VTmU
-	GWV6HIcbl9/vm80Y1sKyOiOAaRA29cD5avt5vqzdg==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 43h1w9drbp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 17 Dec 2024 10:36:34 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 4BH9g11W006393;
-	Tue, 17 Dec 2024 10:36:33 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 43h0f97hnk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 17 Dec 2024 10:36:33 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4BHAaXGI025877;
-	Tue, 17 Dec 2024 10:36:33 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-175-175-207.vpn.oracle.com [10.175.175.207])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 43h0f97hm6-1;
-	Tue, 17 Dec 2024 10:36:32 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: acme@kernel.org
-Cc: yonghong.song@linux.dev, dwarves@vger.kernel.org, ast@kernel.org,
-        andrii@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        song@kernel.org, eddyz87@gmail.com, olsajiri@gmail.com,
-        stephen.s.brennan@oracle.com, laura.nao@collabora.com,
-        ubizjak@gmail.com, Alan Maguire <alan.maguire@oracle.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Subject: [PATCH dwarves] btf_encoder: verify 0 address DWARF variables are really in ELF section
-Date: Tue, 17 Dec 2024 10:36:29 +0000
-Message-ID: <20241217103629.2383809-1-alan.maguire@oracle.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1734436583; c=relaxed/simple;
+	bh=xgd7v6UkdXXhnxqHRbcrW3H/FnAaJmvtXDYoXwaj9no=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kvC5p0Xz6BPyrd55PbWr9AY8D1VxTdq8tpf7kFbv3r/piV3L/CwEX+/1zFD1nuEEG1+bTik/3U4vIBHKCewl05Pjtd+Ab1ezirq26wi6V7k861KKZepe38fykjNb5664DbmrKGhtVydyl3fsOAbX60ZFLTMbRzNXBOROo6vPvN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CpPYrL2S; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43625c4a50dso36003695e9.0
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 03:56:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1734436580; x=1735041380; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uqzWbv8Vx54w1pLkcBRkhMoXdOrWLUel0oeu9kIT208=;
+        b=CpPYrL2S4Rj3KmRAqEaKt8Z5Se6vpY/rMZYpf1ONwEgNYNrzuRjFKtKwfHcL6mtBm2
+         0Q6eFa3Cwn8wpGaZhp8gvxFnV4H7ccwmDnOnYPptEzaxnPpLmkDmey6r8s0v2BgrlGDU
+         n3yUo0WLWabW3y85JhTUoGiIxz3DiW1dOU7cbi1D9Rvjjwi4BDCOZ/QEsm5XHGz+ixUb
+         spW/xnIZxh/TXUr/uBxaB2rBDAoBFGry5QA+WCGyDeqygqiWx+52tT4BcTrs1AOu85Td
+         3DNNrV15t/M2Gv4EdZbNBH/KA2rRRTOeOUlLQ5ErDHO96U5GdLSxeKGxZAVyn1yFHo3z
+         ip8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734436580; x=1735041380;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uqzWbv8Vx54w1pLkcBRkhMoXdOrWLUel0oeu9kIT208=;
+        b=hjufHN8VSM1djPMLnBTqjdDQmKtB+EampSYbLdgwPK+cwxDAbGNf1CXIEoVOzXTrSo
+         tQ03Id2dbPIOIkigbJIEZDPzOGM8DCnXmR36Gyr0yWnkSzUZhkTC2KX3QuJkCJOQE90e
+         VfouwOKHO5EQnAylut+8HuczvnK6IrnVlV8e5S4kLvhTeGdIia3EJPkcSLuOUS/WKjnP
+         GdrH/YeZxzcfN4cVVSWu9Tqxsls4XjKCaJ8pfuaBqD+5DcDvBQhEW0xfBu1OgRBt61Sr
+         mMkqR7Ju1ay1R6VT05WvX4imnUsFnR1PGun3TU1f23Ylh2Qi/KNEN/d62Q2megxGgvou
+         uxDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUah2k77HOtrpl2GTuaXw0q79NB4ePW9yR/zBVeSfR2fLkVLROvk3yomksWBM4rucNFRJw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzoVMx7Dspee74VAqCUm6DlgYhzJNlb5RCWQGERguRF5bdcmhxp
+	u0fCq4hDWlbzhZVheW/SW7LyALrt5dxUBTZku8PRdKC6h6f/17eQPdpA7+3BDB4=
+X-Gm-Gg: ASbGncuDCW+iR17APiMQ9tigHGexz3K/JYVIWTEVLeSlDxUWYYbn9bgpzRcqGLyYS/l
+	rKHbPSmE4BiZGQIpP2rcNuXzt7wkk/akX2JsreESutNfCVZJNcXXFBVnb4Mb9IHoViaETDS1r3/
+	b8GHd2vj8hzxlm/cC3tDGb6NPzNS5Nci0jVtCTHkvaJdlXV22fLslv14g3gi2ZJJeihgYxX9eyQ
+	Mbv4RId3XxCeh825f5+x5S/W/xBqJDt1mlDDX2OiZoGS6eoOFT+fe+X
+X-Google-Smtp-Source: AGHT+IFjDZqkiyvwauk6XlCYDztdJprHg+FIrxmThEaEHO34WOG2PpkjDIx179eIda/PttDeXCiW5g==
+X-Received: by 2002:a05:600c:384c:b0:434:f871:1b97 with SMTP id 5b1f17b1804b1-4362aaa23d2mr133318405e9.33.1734436580421;
+        Tue, 17 Dec 2024 03:56:20 -0800 (PST)
+Received: from pop-os.. ([145.224.66.247])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-436360159aasm114935825e9.6.2024.12.17.03.56.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Dec 2024 03:56:20 -0800 (PST)
+From: James Clark <james.clark@linaro.org>
+To: linux-arm-kernel@lists.infradead.org,
+	linux-perf-users@vger.kernel.org
+Cc: James Clark <james.clark@linaro.org>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>,
+	John Garry <john.g.garry@oracle.com>,
+	Mike Leach <mike.leach@linaro.org>,
+	Leo Yan <leo.yan@linux.dev>,
+	Graham Woodward <graham.woodward@arm.com>,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH 0/5] perf: arm_spe: Add format option for discard mode
+Date: Tue, 17 Dec 2024 11:56:03 +0000
+Message-Id: <20241217115610.371755-1-james.clark@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,81 +101,50 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2024-12-17_06,2024-12-17_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- malwarescore=0 bulkscore=0 spamscore=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2411120000 definitions=main-2412170087
-X-Proofpoint-GUID: JXuFirqh3-C1EGlOH2O6iov6up5goOlU
-X-Proofpoint-ORIG-GUID: JXuFirqh3-C1EGlOH2O6iov6up5goOlU
 
-We use the DWARF location information to match a variable with its
-associated ELF section.  In the case of per-CPU variables their
-ELF section address range starts at 0, so any 0 address variables will
-appear to belong in that ELF section.  However, for "discard" sections
-DWARF encodes the associated variables with address location 0 so
-we need to double-check that address 0 variables really are in the
-associated section by checking the ELF symbol table.
+Discard mode is a way to enable SPE related PMU events without the
+overhead of recording any data. Add a format option, tests and docs for
+it.
 
-This resolves an issue exposed by CONFIG_DEBUG_FORCE_WEAK_PER_CPU=y
-kernel builds where __pcpu_* dummary variables in a .discard section
-get misclassified as belonging in the per-CPU variable section since
-they specify location address 0.
+In theory we could make the driver drop calls to allocate the aux buffer
+when discard mode is enabled. This would give a small memory saving,
+but I think there is potential to interfere with any tools that don't
+expect this so I left the aux allocation untouched. Even old tools that
+don't know about discard mode will be able to use it because we publish
+the format option. Not allocating the aux buffer will have to be added
+to tools which I've done in Perf.
 
-Reported-by: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- btf_encoder.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Tested on the FVP with SAMPLE_FEED_OP (0x812D):
 
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 3754884..04f547c 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -2189,6 +2189,26 @@ static bool filter_variable_name(const char *name)
- 	return false;
- }
+ $ perf stat -e armv8_pmuv3/event=0x812D/ -- true
+
+ Performance counter stats for 'true':
+
+                 0      armv8_pmuv3/event=0x812D/  
  
-+bool variable_in_sec(struct btf_encoder *encoder, const char *name, size_t shndx)
-+{
-+	uint32_t sym_sec_idx;
-+	uint32_t core_id;
-+	GElf_Sym sym;
-+
-+	elf_symtab__for_each_symbol_index(encoder->symtab, core_id, sym, sym_sec_idx) {
-+		const char *sym_name;
-+
-+		if (sym_sec_idx != shndx || elf_sym__type(&sym) != STT_OBJECT)
-+			continue;
-+		sym_name = elf_sym__name(&sym, encoder->symtab);
-+		if (!sym_name)
-+			continue;
-+		if (strcmp(name, sym_name) == 0)
-+			return true;
-+	}
-+	return false;
-+}
-+
- static int btf_encoder__encode_cu_variables(struct btf_encoder *encoder)
- {
- 	struct cu *cu = encoder->cu;
-@@ -2258,6 +2278,13 @@ static int btf_encoder__encode_cu_variables(struct btf_encoder *encoder)
- 		if (filter_variable_name(name))
- 			continue;
+ $ perf record -e arm_spe/discard/ -a -N -B --no-bpf-event -o - > /dev/null &
+ $ perf stat -e armv8_pmuv3/event=0x812D/ -- true
  
-+		/* A 0 address may be in a "discard" section; DWARF provides
-+		 * location information with address 0 for such variables.
-+		 * Ensure the variable really is in this section by checking
-+		 * the ELF symtab.
-+		 */
-+		if (addr == 0 && !variable_in_sec(encoder, name, shndx))
-+			continue;
- 		/* Check for invalid BTF names */
- 		if (!btf_name_valid(name)) {
- 			dump_invalid_symbol("Found invalid variable name when encoding btf",
+  Performance counter stats for 'true':
+
+             17350      armv8_pmuv3/event=0x812D/ 
+
+James Clark (5):
+  perf: arm_spe: Add format option for discard mode
+  perf tool: arm-spe: Pull out functions for aux buffer and tracking
+    setup
+  perf tool: arm-spe: Don't allocate buffer or tracking event in discard
+    mode
+  perf test: arm_spe: Add test for discard mode
+  perf docs: arm_spe: Document new discard mode
+
+ drivers/perf/arm_spe_pmu.c                | 23 ++++++
+ tools/perf/Documentation/perf-arm-spe.txt | 11 +++
+ tools/perf/arch/arm64/util/arm-spe.c      | 90 +++++++++++++++--------
+ tools/perf/tests/shell/test_arm_spe.sh    | 30 ++++++++
+ 4 files changed, 122 insertions(+), 32 deletions(-)
+
 -- 
-2.31.1
+2.34.1
 
 
