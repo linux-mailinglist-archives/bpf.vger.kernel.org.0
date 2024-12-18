@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-47199-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47200-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43BA09F5EB5
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 07:38:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642409F5ED8
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 07:50:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBEAC7A53E7
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 06:37:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CFAF7A1245
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 06:50:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813F71552E4;
-	Wed, 18 Dec 2024 06:37:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2622B154435;
+	Wed, 18 Dec 2024 06:49:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F8qLoPWn"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="n06XYTR1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C1828EA
-	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 06:37:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F374914B075
+	for <bpf@vger.kernel.org>; Wed, 18 Dec 2024 06:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734503866; cv=none; b=cnP73lGqU5hJO9F+WePzw/qhaCjdh5F3gvVh0CnIBGwMeCsvZV0sHf654NoIi3oiTxJ8q5Sal6vfwQZx4iBuVUWrRxlENbv0LxCXw5LVczBg2BLw+OAVIXnB1f8x9wWr6aZPPqx9JGEvZqp4v8gwY4DsVPvxIrrmUscwTdtZy2g=
+	t=1734504596; cv=none; b=lKvRzdXqXHEpPGtyC8H3JWRSx7svyomKL5Xp2bReOfSuEuOTX9iWKh4OnJcNt9tyDt59TyoxaQrZfrK+kc4zgGR2zu0E+zYTmxgQ33M0wEnDVNMhhGat2morLGV5xtKnVWKXjoquw80wajPF0QEzwrhvcG+jpzz8pnq0Hy+swrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734503866; c=relaxed/simple;
-	bh=t8Mk3izOcHmuKvHbpqkUDiWbVNW0WzoRhTWnOD8p5lk=;
+	s=arc-20240116; t=1734504596; c=relaxed/simple;
+	bh=r4podPIcegl1WmRB4nSJzIUsGQgCQp45AYv2N9xZSEc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KuMBrgxA84/HoDzlueBJdsEupRFF+mv+1s567WGRaae39BeXg6Y5cHnel1OXUBDqs4tS9MMw6UfWq224TdWxlCt5Dl9T9LX850M77TmZfCd7U1zfAeO0qNKckN4/Ey08r1RASShp1+DYdZVmKZJ1Q54zjSvX6VCxjyJ9vplheCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F8qLoPWn; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3863494591bso3270867f8f.1
-        for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 22:37:44 -0800 (PST)
+	 To:Cc:Content-Type; b=kbfQ6bjFP/aAQoewvQSNDqwM8o7S1o4H3iBcCt4aDCbSRZT8e9VTkr5lLOXuWJwGExlaxXPlsMzNauwX8IOu5BzIGIMgx+lemVlzFNAXSylvgEL19O/JBmtN+7BK1IZ0oX7qOgB/UnXQJF20AGBT5VRd1VsHAh8bfWkojLz6gL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=n06XYTR1; arc=none smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6d8ece4937fso43011636d6.2
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2024 22:49:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734503863; x=1735108663; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1734504594; x=1735109394; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t8Mk3izOcHmuKvHbpqkUDiWbVNW0WzoRhTWnOD8p5lk=;
-        b=F8qLoPWn5M+4BVAIA5HXPighYctFWGxWWV7dzeA0YBf78FW+/8yIiAGdxq6PLpEuaG
-         HCxMFFdG0hhzKFILLUg1jrG3HJ2ur1dA6ZJTstbFqhq9BlKOIeBFE++CIrNKUXh6UoLq
-         fIaGMZnCPkTANAHrn3SDbNM1n7h0iQNG2JIUfdtMdrofXeDJD77idf6oWaYybuKLAUvv
-         lGIXSyHe9x9Xwwacr9h0bs2/dTjj0ydbxqzGz0xE/9zbVgQHD/Wc4yv4hOTjMdZapdy5
-         IY60jCXqz+6r/HuxOUIzvCNbrZmhvNjEQygCvH81dzjwc0IzA0GULKeNRYx3/O9DvMdr
-         SBmA==
+        bh=r4podPIcegl1WmRB4nSJzIUsGQgCQp45AYv2N9xZSEc=;
+        b=n06XYTR1REwOPygfs447HV6NBGZeyjU8B/0du9D8fQv76O6Nxrx0o7mfb2DEAi+UWi
+         chnuwER370XoOfRXgbgIz8DotYcamnIrwVn577qq+Y42hixwbjaLmSTOHWuHHV2qN+DZ
+         1/enZI5xr5tpbEEuI7N9zASNJYthobafmjoF497ZKn9tAaZ/BqjY6V6VIzj+r10bM/pV
+         rk2cezjBvFPG2YPAy7RJfe4GTLOiH17MIwy2cquj59/E9t7MErq9UfQyqr87yYH7i9JB
+         2j3STc0F+wuQ0m9LqdMKHKz2VO/l3TeVJDlDl5EuQDui+oLW3oJRqR5+9611iaPqt3w7
+         SqSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734503863; x=1735108663;
+        d=1e100.net; s=20230601; t=1734504594; x=1735109394;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t8Mk3izOcHmuKvHbpqkUDiWbVNW0WzoRhTWnOD8p5lk=;
-        b=QCEPdJYswa6j3bG7IVXxVFsjK1n6xzI3HZciRJUSOeVSDYqHcRzym1hJspAs7hg9lQ
-         2gGfmOPZm7eGtHyRdWoloTH80bQEpGT+Mdz3z0MJDCGWsjK5g+9Z7rsrSwFv4RABaFL2
-         7ykMV5+BiYUwlA8aTGs5lnfn8Wz+RYqTOCU91mfxUzjx4EE1DSXmEkhr5NVRi0bPpXIq
-         weEyQyjAgPAxHO3U0ZR8naot5WmobksQZ8nlTvTKPrwaG8KDPmkRS02NoXmIQ/KTiJ+l
-         bTKIp33J+F1Kk+C9b2M0cjidYLwcxRg5hURDiUSyqrk38g9xWjExC9EOF944mGWE9RQj
-         dhVQ==
-X-Gm-Message-State: AOJu0YyFVwBjX/Mlv+nJTjJr32judL5IQI4Dq8FdJxA7kZuoMYzFEzT1
-	r/Vj5Oq/mbc5w+EjNrs6Pv7z381TJg4z7zRNwo6Nv1iJm6mWPFN0tnszr9hVN6pjEbpBA7eQF85
-	w6iqSa4KyMeF4I6w6wEhXyW6SJFQ=
-X-Gm-Gg: ASbGnctzNqxi0YEsp2lWKKHJXcbDWjJF+oOy5C/u79lZvBuvU64da7N9bbXSkncWl/o
-	hyDgy5cRcCcC9d1KtvKzevOZ5eg0TqFJk+NEYN+KeUHH9RE/V3mxNEA==
-X-Google-Smtp-Source: AGHT+IElSBAJP50/md8YE2jcJ9Pr1Z0TrOnyzymBXoutCc/dlicjAbt8FCGAg7sKIl5ioTOa7sI+QErzdQfe/wIgSN4=
-X-Received: by 2002:a5d:64a9:0:b0:386:4034:f9a0 with SMTP id
- ffacd0b85a97d-388e4db7e85mr1033780f8f.52.1734503862370; Tue, 17 Dec 2024
- 22:37:42 -0800 (PST)
+        bh=r4podPIcegl1WmRB4nSJzIUsGQgCQp45AYv2N9xZSEc=;
+        b=LrU96EjpIA2vVdKNYwUFvkSSenIbHJ1EYUmMVujOFz/A9JuogWcEaLpshth1FRGnSQ
+         QZG/Jl04a/estJAMrLX9hJR31udP3F75+igI69aI4cP6X/KnmQyNfOimVfw1/IHvxdti
+         ymNhSkKA6bMqDZ3VNwg4aHx6kzjkcGWniw6DT28j2gowLansD/fElFCpFrY2Cz7ReD5B
+         Ir7eSDwtFqANIF+M4Qsuzu776OyknlGCnpTuLsXlYio6c+d3Vp5NqyVQXUqKccOcK3rG
+         XTqaqotIu1soT2zaHx/ashj483dgPQAh/snzkQfFwtU3u2ndQZUzgQQtfCfcFHAkyJRS
+         wYnA==
+X-Gm-Message-State: AOJu0YyZAT6dOBGickxCrocJ8rgBJCaQ56VbzYMvxSgKkskrP03FYRBm
+	henQciVw/eXuG/kRKHrkRWtqp/1DsYzYfLnxRkXKJQAvu8SsI+8C8P4Fs2YaNLdn2rQj/W5QB+o
+	Qin6osBdbMCu8+TUQexdvRafS3sfVQwP9Y+X9
+X-Gm-Gg: ASbGncsu+CifD2tyJ6nkKAQBFFxzSLFjp96W73j2ZKPT/p5olFcL1CLitutzNPboNt/
+	arT3LVW78h/GqdPSVwCR8ZmIXhUiG59+TTzU=
+X-Google-Smtp-Source: AGHT+IEiY0doIzVRi/o0mbu86WO9XgujwLT4vmrvu/dfR9MfTyl54vyqGi6QNhFn+v5PAB2el18vB7VPk6T+E3mFDho=
+X-Received: by 2002:a05:6214:19e3:b0:6d8:9002:bde2 with SMTP id
+ 6a1803df08f44-6dd091da53bmr37249096d6.28.1734504593716; Tue, 17 Dec 2024
+ 22:49:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,13 +74,15 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20241218030720.1602449-1-alexei.starovoitov@gmail.com>
  <20241218030720.1602449-3-alexei.starovoitov@gmail.com> <CAJD7tkYOfBepXDeUFj6mM1evRoDdaS_THwmhp9a4pHeM4bgsFA@mail.gmail.com>
- <CAADnVQKmMaybRQJDyC9sbtmxod6S8kgcrk4FerWt9ve0vR9U1w@mail.gmail.com> <CAJD7tkaP40Tde1KHr2t8O9dHyiRSx8Q02=EmPtROyRpS+_qPDg@mail.gmail.com>
-In-Reply-To: <CAJD7tkaP40Tde1KHr2t8O9dHyiRSx8Q02=EmPtROyRpS+_qPDg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 17 Dec 2024 22:37:30 -0800
-Message-ID: <CAADnVQJwcd=PsdxcipiN8VeJh2UhSv3uzHkX5E5RuLK2vfdSHA@mail.gmail.com>
+ <CAADnVQKmMaybRQJDyC9sbtmxod6S8kgcrk4FerWt9ve0vR9U1w@mail.gmail.com>
+ <CAJD7tkaP40Tde1KHr2t8O9dHyiRSx8Q02=EmPtROyRpS+_qPDg@mail.gmail.com> <CAADnVQJwcd=PsdxcipiN8VeJh2UhSv3uzHkX5E5RuLK2vfdSHA@mail.gmail.com>
+In-Reply-To: <CAADnVQJwcd=PsdxcipiN8VeJh2UhSv3uzHkX5E5RuLK2vfdSHA@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 17 Dec 2024 22:49:17 -0800
+X-Gm-Features: AbW1kvY4pzMcuxkqREUzSdwwDtMsLHvd6NOK-dwbEaYsc6jTPt0v4wsbGUz9Fdc
+Message-ID: <CAJD7tkYkhojXE0wwOxEMV1uWb-9hxyqbjD5Uj9ji3+GdZmZnKg@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v3 2/6] mm, bpf: Introduce free_pages_nolock()
-To: Yosry Ahmed <yosryahmed@google.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
 	Peter Zijlstra <peterz@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, 
@@ -92,14 +94,29 @@ Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 17, 2024 at 9:58=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
+On Tue, Dec 17, 2024 at 10:37=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> What I mean is, functions like __free_unref_page() and
-> free_unref_page_commit() now accept fpi_flags, but any flags other
-> than FPI_TRYLOCK are essentially ignored, also not very clear.
+> On Tue, Dec 17, 2024 at 9:58=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
+m> wrote:
+> >
+> > What I mean is, functions like __free_unref_page() and
+> > free_unref_page_commit() now accept fpi_flags, but any flags other
+> > than FPI_TRYLOCK are essentially ignored, also not very clear.
+>
+> They're not ignored. They are just not useful in this context.
 
-They're not ignored. They are just not useful in this context.
-The code rules over comment. If you have a concrete suggestion on
-how to improve the comment please say so.
+I think they are. For example, if you pass FPI_SKIP_REPORT_NOTIFY to
+__free_unref_page(), page_reporting_notify_free() will still be called
+when the page is eventually freed to the buddy allocator. Same goes
+for FPI_NO_TAIL.
+
+> The code rules over comment. If you have a concrete suggestion on
+> how to improve the comment please say so.
+
+What I had in mind is adding a WARN in the pcp freeing functions if
+any FPI flag but FPI_TRYLOCK is passed, and/or explicitly calling out
+that other flags should not be passed as they have no effect in this
+context (whether at the function definition, above the WARN, or at the
+flag definitions).
 
