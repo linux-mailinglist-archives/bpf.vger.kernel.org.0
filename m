@@ -1,132 +1,140 @@
-Return-Path: <bpf+bounces-47155-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47156-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D5739F5BDA
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 01:42:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2B069F5BDE
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 01:48:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1AD07A5C5A
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 00:41:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B606188C014
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 00:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED7A1DFF7;
-	Wed, 18 Dec 2024 00:40:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32CE35963;
+	Wed, 18 Dec 2024 00:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QxwfmPf7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aKdeyfPr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C64E1C6A3;
-	Wed, 18 Dec 2024 00:40:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4B72572;
+	Wed, 18 Dec 2024 00:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734482447; cv=none; b=FPZpdwO/oyhEHydq7PiAwGLGEfEsbZdANwljhqFlGzGYvUVk2KfkyuYq7INrpecYR5ZZ9M8XsxT3OcDeQh/F5POEM9O+4P2vtoMzxfISj8O48zPIi83pxXYucz7CcOLVN5HYnsnMoJuaYXdDfj+rMkqUUYmOwkfSqvANggchm1w=
+	t=1734482875; cv=none; b=VK81JG3+khTuYs820d99XhtU4HqaodFTktjVgX+VY0j69H4zWvuQw7tYCy8nSbdJhrDLJ2lJgYodZwk+CVbC6CKfKr/KJqclSsYkWHAWtyyq6r6dyhMt9bWr1/Thfbh/HNQzaJYOXBaVrS1ojV7g25jK1Ulc0ggLZIWqXruSaok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734482447; c=relaxed/simple;
-	bh=cAVrn6acu9d3HlEYfgUBouiRJmMfYpzJqYfYUzT1ysc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=EHcDwhwPAXA7xLzOWLm8TpKf1HZuJ135TAm8UCGA4+mlnffraJlVcG7s+r54BiiL1Xk5lYjvfqpGy9+leNHem0esYa4p62oXdvf5d7nMGWRinL6PPUL1gNbnheahbkXU45hwfegCOxmm9hkZhAlZrkRpKPvD0zjb51ka0PCuEEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QxwfmPf7; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1734482875; c=relaxed/simple;
+	bh=KQ+HBAGERRr/yp9OBPyiFOJec3Xp4ePEwJ2LYGf/aHg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=twwm1rBJf/OjZbgROrJY3oKkb9GaxrHpcUdMPurHb9lqVT6lo1cKetiI+CHDzTUaxIfxP7m9O/vYb60KD6IH2utXr0zqW7FG2AKjSmieVf805dxnW5hMFch7mxL5bVygfX2xIN5xn9mtw/XRYisTgEgFmbr5XtqweiYK7wsZ05E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aKdeyfPr; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-218c8aca5f1so17848705ad.0;
-        Tue, 17 Dec 2024 16:40:45 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4364a37a1d7so14092505e9.3;
+        Tue, 17 Dec 2024 16:47:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734482445; x=1735087245; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=f0BI6OdKXBnebpImmhoFMNtXacM93U1r3GdpCS8+UHU=;
-        b=QxwfmPf7nj5LsrAijD/gMyI/AlHMAQSiVS7ITSwZ8tGMCse24ICKtL4eu9a8dci3Qy
-         R8GwgG4IvDyFU3Tlqzm1vQqiAw2BLDX+hf82xwKJ0fxx2DitxpvTiPAuOTb2u99+EEHS
-         gOg3ct99en8HfE530NRONB/vjz9crqROpcxnO8w1ZgIMsck0rZWn7Wc5zPramVBQSTY+
-         Ha/WLyBCtbuHtLLhEB2RSwdfCN7+VpbKgK+Z2Uslzd2gl20SXvbWeR+qTDaj5WEH8D15
-         VIK8xWrMLlawBUPcy/WY9wYb4RqDAsUgfymLINyHf1/pKJT/8+1E3hZBdBK7m3JOmSYv
-         agqg==
+        d=gmail.com; s=20230601; t=1734482872; x=1735087672; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ASOdFS0cu/fXgaUOX6iTEniwsKliNWJnjKj8jwFHdkM=;
+        b=aKdeyfPrkPx+z4D8LWbsfWZVtZTzENLa4R78wUlFekoka3o1V1ezDitJ43BPve5mG+
+         B42y8Hs4InHoHnfsn+QOusnU0lCMEuRggfM+R9+DJl74Km2QsFn1o5qbUinoR+y74DJq
+         QUdD5tTL9/xqrJOOsxuz0BoNbRV4kmfwkVAmLV3wHomCpV+9RpnA8OxFE7WjW5Sf5s07
+         dVqlmkqiYW2naDhHt3JUPmdUmlzJ4O4yJ0eKUx/otxHoS3PIP+iJIcS2RxNnUFgXcZgt
+         7NdFt5B11/L2jOifi0zqLJr4g79vmEi2/z39oysDreAbo9yyrLUx7aHAZANeUDRSWtz+
+         /Okw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734482445; x=1735087245;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=f0BI6OdKXBnebpImmhoFMNtXacM93U1r3GdpCS8+UHU=;
-        b=sEE8kC7l9ARu2F2thvpyjXCesGQ02CZ+8TR69CkX4WP5MJOwwAahjGil2/Wg+gFexq
-         +NKU+Mzt1S/4eLzfmvvRJINJzoMIJWbxfI3OA1UJoAPD3+j9J+rNVAfymKkLhFYo2K9l
-         wAoGZ4ijxWVL6joKJ2gTIYuiES2vyLdDJTDICytuguolpcxp2j5S7yxSR/qgrVV6T1wn
-         cYzSZ1sVvWm0OMSz0tWx2VqFTb1+G7N53wMwxSbeQG+uoXX1t0ZhIKROXxipo36e2Rpw
-         skOtxR7s4Ri/eAjFT6eJOgGnTKisZ8JwHTKbVNnJRfF1w55STHYgqKcDH9uKUU6rC8vS
-         zKeg==
-X-Forwarded-Encrypted: i=1; AJvYcCXuXY1upFQYbTjI23nVr64qGWJH3fo4fAe1DAKUyJjhN/81auarHxQByKUB6JK0xmTlZ7U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyeEwqZY6qp/bhSP+JEU6AYHqr7v6MN+oQVt4t/c7Mg5ta0OeUv
-	4J/07fVCc7qRElAqhKd2ZsAS4oT2OanjdJR+g/iZdXSQ+S+fSZ4G
-X-Gm-Gg: ASbGncvZiGrBYYUmvSRlTmB1rfkj5bXjSgW0ZSfqCMs8Xt8kV/SlXhZUXuRkVP3c5zF
-	yWJJy3lyHTfw2H2osO7D5RRuXnpBjElKZBtFTAo+wZd9NSxzibnaE5tPRAMcPYlRWhDe5VSR91P
-	Ru86X6uvB56BuuO5Nbi6IJWRXFtyHxycekt7SW4QBMYmCOOolyJTjLW0f2K8YWZ7PLo/Ytp8WRQ
-	jL6doFYaLAz06yds8Uc5igfAegEpaqMZ6oARxd9sgfKJt2pelWl4g==
-X-Google-Smtp-Source: AGHT+IG9kEh64tuF6IxC0kTz+ZK9LSlqsAzJnnQinRf9ZePXubwfvsU+26nS2CE2xJFeuzk2EQSzvA==
-X-Received: by 2002:a17:902:d510:b0:20c:9936:f0ab with SMTP id d9443c01a7336-218d726c05dmr10714595ad.47.1734482445367;
-        Tue, 17 Dec 2024 16:40:45 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-218a1e5034bsm65282945ad.166.2024.12.17.16.40.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2024 16:40:44 -0800 (PST)
-Message-ID: <af9404ef750f152afb20b2883aad3b9fc5e5a2dc.camel@gmail.com>
-Subject: Re: [PATCH dwarves v2 07/10] btf_encoder: introduce
- btf_encoding_context
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Ihor Solodrai
-	 <ihor.solodrai@pm.me>
-Cc: dwarves@vger.kernel.org, acme@kernel.org, alan.maguire@oracle.com, 
-	andrii@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
-Date: Tue, 17 Dec 2024 16:40:40 -0800
-In-Reply-To: <CAEf4BzZ-chyzJzCdW0AwjaxhO+yfUCO=Dcu+7=m96Ccyq94Y8g@mail.gmail.com>
-References: <20241213223641.564002-1-ihor.solodrai@pm.me>
-	 <20241213223641.564002-8-ihor.solodrai@pm.me>
-	 <09f6bc335380ca73d365566de7af8f2e73ac9cfd.camel@gmail.com>
-	 <735014fda88330d2124f4956cc9a0507f47176db.camel@gmail.com>
-	 <yKpaq5zO0TcrAm1v3p4yd2D9ic0jGUQM0CUSg6CU_31_S1mX7SDljMf36ayteEV2O_MTE2eJkUuu3JoJWPQyIxHibe2zz1W3Uq_RzqiyPVY=@pm.me>
-	 <CAEf4BzZ-chyzJzCdW0AwjaxhO+yfUCO=Dcu+7=m96Ccyq94Y8g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+        d=1e100.net; s=20230601; t=1734482872; x=1735087672;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ASOdFS0cu/fXgaUOX6iTEniwsKliNWJnjKj8jwFHdkM=;
+        b=T/s9z5bPITFP/h7TpB3nI42jnvdG0QUDqehkyz+Nh93wq/GdaZ1stDi27RaRkkE13F
+         JplGdfIb+0uJM3PtCxgXF92SVon1E/GiMdz3ThKF6+ynbR1CwsdNYv+DzJaFfDuf6+uX
+         oAJGLKLl4ElsgexTzdpIuQX5GJl/WRVzQIWJCV5/9mCRRGtSSPGynLACW09CiEMY2lni
+         m1ShMWsOnMxL2rIemQWEo01DpCRED+kIUapoex+iImQ2fRxc9Cha3P3DkMXzXT9x2j22
+         eS3//ntNeeYpT/j0cEfPR/rDoCZkZNzdGZmc+5YWUcKVFhtWZdj3RMD6rhsbXXr/hnja
+         Vq6A==
+X-Forwarded-Encrypted: i=1; AJvYcCUBeqvoKd3ddOaIJinB163XfJa7L/preSYGX0aj4ined/hfEKgqww9CrkhYYVbPnng3lrJM04Rm@vger.kernel.org, AJvYcCVyXWFF8TqcGfSLgFig0xnH8GwC317tLPn9j1E+QXKs4JOsYDZVFP/A/W7vzbXPriaSoo6LJuKjpiyvdTky@vger.kernel.org, AJvYcCWsi8kRajz+CXiSiEE98qfv7CFtq48WaJ1KEjO1nrdMLqv5FhnZ0JWIr7lrgeev8e3SBOQ=@vger.kernel.org, AJvYcCXIxUrRNcjb1Nmg+XejwaT0jYe7szNG0rW335EKCa2VK4W3pT8i7FwDZWmwrJgVv082Hp0PRijXbXOcbmoIyKDqm9gR@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2FpoZaxwii7lmWaV/gBtnsGVN7FVB8W+cvGVcRPOWMX8er/95
+	L55Qn2IrpnZdzZwNTsqLcdLcxFoCr0rnEYnZKr7hqWXAo21OMSdJznWWLtvzjLeG/3aEB6SLQvx
+	/qHYa+2p8frvOHmbyZTrAwEX1BJ4=
+X-Gm-Gg: ASbGncslnZMxgbCpRIE28+oMfJh+HYGtaUHTRqADmXlEhKML+EMJASZujhqW3HCfXEY
+	Z0d5dIiXLhPykdNEU7Hft71uIh7RRXEIfI1glNSvIe7aSDlwLnWgliA==
+X-Google-Smtp-Source: AGHT+IHJDqFahN/Bu5F0MoDExKrwJ4OswuvdxiA3Bb0fdGQ/+sKuZObznFi3CtsnRFTbe/QjjqG5tHF/QC4+1CnYnSI=
+X-Received: by 2002:a05:600c:474d:b0:436:51bb:7a53 with SMTP id
+ 5b1f17b1804b1-4365535eb12mr5328575e9.12.1734482871993; Tue, 17 Dec 2024
+ 16:47:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20241217173237.836878448@goodmis.org> <20241217173520.314190793@goodmis.org>
+ <CAHk-=wg5Kcr=sBuZcWs90CSGbJuKy0QsLaCC5oD15gS+Hk8j1A@mail.gmail.com>
+ <20241217130454.5bb593e8@gandalf.local.home> <CAHk-=whLJW1SWvJTHYmdVAL2yL=dh4RzMuxgT7rnksSpkfUVaA@mail.gmail.com>
+ <20241217133318.06f849c9@gandalf.local.home> <CAHk-=wgi1z85Cs4VmxTqFiG75qzoS_h_nszg6qP1ennEpdokkw@mail.gmail.com>
+ <20241217140153.22ac28b0@gandalf.local.home> <CAHk-=wgpjLhSv9_rnAGS1adekEHMHbjVFvmZEuEmVftuo2sJBw@mail.gmail.com>
+ <20241217144411.2165f73b@gandalf.local.home> <CAHk-=whWfmZbwRmySSpOyYEZJgcKG3d-qheYidnwu+b+rk6THg@mail.gmail.com>
+ <20241217175301.03d25799@gandalf.local.home> <CAHk-=wg9x1Xt2cmiBbCz5XTppDQ=RNkjkmegwaF6=QghG6kBtA@mail.gmail.com>
+In-Reply-To: <CAHk-=wg9x1Xt2cmiBbCz5XTppDQ=RNkjkmegwaF6=QghG6kBtA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 17 Dec 2024 16:47:40 -0800
+Message-ID: <CAADnVQJy65oOubjxM-378O3wDfhuwg8TGa9hc-cTv6NmmUSykQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ring-buffer: Add uname to match criteria for
+ persistent ring buffer
+To: Linus Torvalds <torvalds@linux-foundation.org>, Florent Revest <revest@google.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov <ast@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-12-17 at 16:03 -0800, Andrii Nakryiko wrote:
+On Tue, Dec 17, 2024 at 3:32=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+>
+> If the *only* thing that accesses that word array is vbin_printf and
+> bstr_printf, then I could just change the packing to act like va_list
+> does (ie the word array would *actually* be a word array, and char and
+> short values would get individual words).
+>
+> But at least the bpf cde seems to know about the crazy packing, and
+> also does that
+>
+>         tmp_buf =3D PTR_ALIGN(tmp_buf, sizeof(u32));
+>
+> in bpf_bprintf_prepare() because it knows that it's not *actually* an
+> array of words despite it being documented as such.
+>
+> Of course, the bpf code only does the packed access thing for '%c',
+> and doesn't seem to know that the same is true of '%hd' and '%hhd',
+> presumably because nobody actually uses that.
+>
+> Let's add Alexei to the participants. I think bpf too would actually
+> prefer that the odd char/short packing *not* be done, if only because
+> it clearly does the wrong thing as-is for non-%c argument (ie those
+> %hd/%hhd cases).
 
-[...]
+We reject %hd case as EINVAL and do byte copy for %c.
+All that was done as part of
+commit 48cac3f4a96d ("bpf: Implement formatted output helpers with bstr_pri=
+ntf")
+that cleaned things up greatly.
+The byte copy for %c wasn't deliberate to save space.
+Just happen to work with bstr_printf().
+We can totally switch to u32 if that's the direction for bstr_printf.
+To handle %s we use bpf_trace_copy_string(tmp_buf, )
+which does _nofault() underneath.
+Since the tmp_buf is byte packed because of strings the %c case
+just adds a byte too. Strings and %c can be made u32 aligned.
 
-> I agree with Ihor. I think he invested a lot of time into these
-> improvements, and asking him to re-do the series just to shuffle a few
-> patches around is just an unnecessary overhead (which also delays the
-> ultimate outcome: faster BTF generation with pahole).
-
-Patches #1-4 are good refactorings.
-Patches #5-7 introduce a global state and complication where this
-could be avoided. (These were necessary before Ihor figured out the
-trick with patch #10).
-E.g. 'elf_functions_list':
-- there is no reason for it to be global, it could be a part of the
-  encoder, as it is now;
-- there is no reason for it to be a list, encoding works with a single
-  function table and keeping it as a list just confuses reader.
-
-Same for btf_encoder_list_lock / btf_encoder_list.
-
-> And as Ihor mentioned, we might improve upon this series by
-> parallelizing encoders to gain some further improvements, so I think
-> all the internal refactoring and preparations are setting up a good
-> base for further work.
-
-Not really, the main insight found by Ihor is that parallel BTF
-encoding doesn't make much sense: constructing BTF is as cheap as
-copying it. I don't see much room for improvement here.
-
-[...]
-
+Since we're on this topic, Daniel is looking to reuse format_decode()
+in bpf_bprintf_prepare() to get rid of our manual format validation.
 
