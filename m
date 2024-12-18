@@ -1,225 +1,444 @@
-Return-Path: <bpf+bounces-47257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-47258-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A87C99F6C14
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 18:13:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA07B9F6C3B
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 18:20:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22EB5188D39A
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 17:11:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 805E77A1CBD
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2024 17:20:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964E41F8ACE;
-	Wed, 18 Dec 2024 17:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD761FA241;
+	Wed, 18 Dec 2024 17:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c6f1L1tk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aXGpUF8C"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8845F1547E2;
-	Wed, 18 Dec 2024 17:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D00B81FA140;
+	Wed, 18 Dec 2024 17:20:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734541907; cv=none; b=lY295MGhi9GylUWzfD79DVkwby1gWrLfGV7ObPSdiQ6g02xqSNE3SjZ6n/ksXFJ3MAK8QUeRFZxAi+WKGam8K3pMKRCHBzgPj0CITgCwpvGMd5IPHMkAmY8/EukSMxBEuOSEwJoaBSTS5CVEwD0dhI7Mo64sLqtPVIxkVNBCNko=
+	t=1734542427; cv=none; b=GFNRl8Donev7lYReyNWhNG0vKDR4k7lcPg4uka6WvaCfUJgQWqc0vCL5V+YBgO/RJEmqQAhbjinRWCa4qJ5Sqm4oo+gMzmGPgfb0ybOO1p9d89Xdv2fr2msK9E4CuDqpV3GaaxO3jekP/WGv64nTL7nevsZM44LvHxbumFN7Ce8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734541907; c=relaxed/simple;
-	bh=QkG5146bo0CGwDE8nvoN/ET4BKac5LPli9otqYJB3wA=;
+	s=arc-20240116; t=1734542427; c=relaxed/simple;
+	bh=3N+cuewldFaJKRwJl9DNy16Th5B6NVeY4HuuOriBNSk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i0OeDMmLOzwKyARpE3PW4XTndpvY1b4WqSIlndFLk5yF6uRO1AGdZVYZwIESEvCFMgCkcP6v0uYa2gF7bCWP3ETKe3iOMVrnPlabSRyoxr7US1JiVKNoElK4HejGSs6VgzJmaxiBvNFa+mwhoR+AEsR74yv5z/dsM4Wv32seo7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c6f1L1tk; arc=none smtp.client-ip=209.85.219.179
+	 To:Cc:Content-Type; b=lw/1m57IlkBrYnE7cHBjDhF4oma4i0kVkls9DSo7OetMCZg1Or0lXb3I5UGW9vYOZBj/tf5uw1eaCiJBuKAL/raIFo36FeSLtLB3+kU1pUjZaBss+K69VW6UfEXbPtUAzlRmlCvgFLK3iaFPnw0r+/bvW59DTfzDptkiAWPx99c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aXGpUF8C; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-e460717039fso3813844276.0;
-        Wed, 18 Dec 2024 09:11:45 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-43623f0c574so47834785e9.2;
+        Wed, 18 Dec 2024 09:20:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734541904; x=1735146704; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734542423; x=1735147223; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XVsLO/ozQKiYb6Yyt2h8xhdm9zIQgU0/l+fMFmEPNd0=;
-        b=c6f1L1tkqOT6e2SI6W8swOpmUgq3kMAdrhItCWT9PYsqTJrmtiRULGk3CHgJcFs7JQ
-         EKfEoJQCixyNvlHuwlq6ghKsfXR/lUNB4UqUWlQLC2lZoPvW3KDTDTf+elf2oJNCNqt9
-         2dQeLRp6WiOw/VuDfs9Vfw3bhXYPp+qkjqXHN9qNdhwMRbBE6mnk5TMECaWju8IguzzB
-         +ur03IVaD9VLe5SGa9niMEM/o0axtHWd/SwydyUfJFYehrAwdMUeSukDDcFGN0MYpHj3
-         w0yXvgVoZb4Ov6YcO/AKA6Ok6YoBqQ8qT6uLVlOysDcrM7af0qkh+55mz86q3BRnQd5V
-         99kw==
+        bh=QXO/e2KAjZixwNQ1SDIaI26qLFA4hGy8FrCAqG7q2F4=;
+        b=aXGpUF8CblDagvRvFJ9BcRGy4ZBooFNTBF9eNXR5XSCUL4t83rOacgz0p0kp5jv901
+         EObs6jRa9szeOaKhOYuW3hv+v4sowagvcY9aEvXkM4z+Ax9gT/h9Wq94eYFmKF/radSK
+         HYOTscXh59dXCGyt4UtHh5Oc1ipGgDgnpPmSlTny1qx4gkxlfwszyHXU1aTY4Jmjb1mN
+         qYATbe6hDgvW3tIo0GzY/wmfbWZv6uKB0JrawXr0bQWKxy6AMftmxmQh+KqDzbRxSJdI
+         Vu/nJIlir40c3yYoozNw2or1Hs3A3ckNxEKlOJSspOqvO0uclC5cdm2pXy8ULZUW5c9c
+         L0bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734541904; x=1735146704;
+        d=1e100.net; s=20230601; t=1734542423; x=1735147223;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XVsLO/ozQKiYb6Yyt2h8xhdm9zIQgU0/l+fMFmEPNd0=;
-        b=phgk59CNx7tRWzY4ZW1N26U51Ue9o4f2+yyUN+MtQH3RpqcMKaiHA9DME+UhpA4T3R
-         6BFSi18fTgEynFI+KWUHXLVL0AskH6valHNIogyLkqctfYjoFBvxrdZSlcZFdMnp+W7Z
-         E2pv5bjE2/aUFbxfcAcGP1L9iMfqOJVZ8cymuVa5L+0yxCnCFMkQ15rcbSpyYzV5BnPk
-         kcapSrRu1BBrkmoC6nsPWjLi6zI+KSjeNF98Pf6WiZ16S0w73JGjX4m2cB3iab9h1F2I
-         ZqjJIQV6HpcsVqr4/PvUbGEw1BRCxGNNh/nLwBUuOMkuN6N2ag8POQpLm1zl9bH7P+Py
-         ZPiA==
-X-Forwarded-Encrypted: i=1; AJvYcCXMxvm9chQ55OGleYVgtvaCQYeha8md9CvNZYkI3hWU1FnN8Q9yzMysHzu4WuqZwJEQu0M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyzBrFEuey+ct0WOQo/0uObccSEoEGbxiEa6NBMQxye8zMQyHts
-	qVuYBFYIL9yh3kolCl3pfH1mZEinviaoUqySlRa3+USziZsvQJBpEaFFiyiPcawr8VKVJCeuCK+
-	vSMCo1YlqqZa0dsJ6jGg3GG+rWjI=
-X-Gm-Gg: ASbGnctFwZr1Te9tsH5OAiR5PCeGro1AwRG5tlmNLdkkjsBgPSiEK6V5SETEdE9R0kC
-	BQffFUGy4bp1f1grIQAYNFi/PSLnA9yHqtokQeXA=
-X-Google-Smtp-Source: AGHT+IHSLxJlpM+8bOvZ/JV/KfwUtQ0DrNWOkukcuMbp0ROa4IYqHfvTVZO0OueFIbmsNr2qX/oKrfzzkusip4+MN3s=
-X-Received: by 2002:a05:690c:6386:b0:6ef:4a57:fc98 with SMTP id
- 00721157ae682-6f3e1b5bb0fmr5183097b3.16.1734541904328; Wed, 18 Dec 2024
- 09:11:44 -0800 (PST)
+        bh=QXO/e2KAjZixwNQ1SDIaI26qLFA4hGy8FrCAqG7q2F4=;
+        b=aYjQrx4PbJNtX2Z3y9U1FAQFEdFLif9QsksU+vhjoDSVj55hP+7wsFh6VzEZgtScMD
+         nsMFUnidRlhJw9YrpXIawvtPajR1rHE9OORHJGYqms0kNZuA9/VByhzNwn+XLs1KCzxM
+         IriRDartrmZE6acYsLOBRjkST1mL15cxs8DtSyHWzWB/bs8/V/UDBu3PVpXMhtNfpnqW
+         INJ0j2+i1fxOrO5fbcRfD0HlEueb7T6Lqbu+TUYjwuCOihKliUJzuNa8q01Rd85HAS5Y
+         h5nd6zb8s5PQG8v4bm09YIFE1oqbXyXxh/KfILJSMnYRw+vNuv/U5nc6ciGffkOkAIw5
+         B4xg==
+X-Forwarded-Encrypted: i=1; AJvYcCVt7P7I4qLE0OIWcMRXaZn6sKO4/s3DqeLHx77k/2em0WoLpZUSHS61kQqqE6UCWfMv5mSOnOq1@vger.kernel.org, AJvYcCWMQyYn0xjHXe/nTJPGfP/RnbQrGbwoio0wCqRIMRQXrWO/iMe0Z3Uv/EldM14v6OmTFbw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDRcNnNAjEGg7tGgHJJP2EKKk4rPsv5iJrrR1dZhFRWrQAqeCz
+	WRT5wHjaHSB6+iW3l603OhZfYdzLEvFqeM2QgP7oigNosm2BLpVEB2FZMgFPT6I+dZQKaNwXajD
+	baEUbX1Vp6B+H9nveoyfs8Rh9iPI=
+X-Gm-Gg: ASbGncvkwAvTJFCqFS3dX4EJ3itrd2/CN9uCN6VPq4HmFzepX/gUhWdFWs8sV77g+FP
+	ydOnF3ht/G69awtbU50raFd0UfJeudiFkjw0A6w==
+X-Google-Smtp-Source: AGHT+IEZtz80/SAqak4uXM6RR6jbMoBVQtuTGPssYnYovnpsnugN8JjM2szOqXBQkoPvj//QRcT4AYY2PhbpDwq+wvI=
+X-Received: by 2002:a5d:6d8e:0:b0:385:e1a8:e2a1 with SMTP id
+ ffacd0b85a97d-388e4d6bbb1mr3569735f8f.3.1734542422778; Wed, 18 Dec 2024
+ 09:20:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241213232958.2388301-1-amery.hung@bytedance.com> <20241213232958.2388301-7-amery.hung@bytedance.com>
-In-Reply-To: <20241213232958.2388301-7-amery.hung@bytedance.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Wed, 18 Dec 2024 09:11:32 -0800
-Message-ID: <CAMB2axPioMoEwLAH4y-nPjYngq_+uv5PiaO=708rS98=t8dEvg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 06/13] bpf: net_sched: Add basic bpf qdisc kfuncs
-To: Amery Hung <amery.hung@bytedance.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, alexei.starovoitov@gmail.com, martin.lau@kernel.org, 
-	sinquersw@gmail.com, toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us, 
-	stfomichev@gmail.com, ekarani.silvestre@ccc.ufcg.edu.br, 
-	yangpeihao@sjtu.edu.cn, xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com
+References: <20241213232958.2388301-1-amery.hung@bytedance.com>
+ <20241213232958.2388301-2-amery.hung@bytedance.com> <65399ffd-da8a-436a-81fd-b5bd3e4b8a54@linux.dev>
+ <CAADnVQ+LsEyADkSc7cNXkz=p5z-iNEoKRm25VpthCDAYe=0BVw@mail.gmail.com> <CAMB2axMQ9iFv4XjH3X3QLozudpga=DPSYEgzt3thtMOjYnrv7g@mail.gmail.com>
+In-Reply-To: <CAMB2axMQ9iFv4XjH3X3QLozudpga=DPSYEgzt3thtMOjYnrv7g@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 18 Dec 2024 09:20:11 -0800
+Message-ID: <CAADnVQL0JegqqCGCYE18o33CQrtnRWnH_g5GUgDZXJ2phHKDMg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 01/13] bpf: Support getting referenced kptr
+ from struct_ops argument
+To: Amery Hung <ameryhung@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Amery Hung <amery.hung@bytedance.com>, 
+	bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kui-Feng Lee <sinquersw@gmail.com>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>, stfomichev@gmail.com, 
+	ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn, 
+	Cong Wang <xiyou.wangcong@gmail.com>, Peilin Ye <yepeilin.cs@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 13, 2024 at 3:30=E2=80=AFPM Amery Hung <amery.hung@bytedance.co=
-m> wrote:
+On Wed, Dec 18, 2024 at 8:09=E2=80=AFAM Amery Hung <ameryhung@gmail.com> wr=
+ote:
 >
-> Add basic kfuncs for working on skb in qdisc.
->
-> Both bpf_qdisc_skb_drop() and bpf_kfree_skb() can be used to release
-> a reference to an skb. However, bpf_qdisc_skb_drop() can only be called
-> in .enqueue where a to_free skb list is available from kernel to defer
-> the release. bpf_kfree_skb() should be used elsewhere. It is also used
-> in bpf_obj_free_fields() when cleaning up skb in maps and collections.
->
-> bpf_skb_get_hash() returns the flow hash of an skb, which can be used
-> to build flow-based queueing algorithms.
->
-> Finally, allow users to create read-only dynptr via bpf_dynptr_from_skb()=
-.
->
-> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
-> ---
->  net/sched/bpf_qdisc.c | 77 ++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 76 insertions(+), 1 deletion(-)
->
-> diff --git a/net/sched/bpf_qdisc.c b/net/sched/bpf_qdisc.c
-> index a2e2db29e5fc..28959424eab0 100644
-> --- a/net/sched/bpf_qdisc.c
-> +++ b/net/sched/bpf_qdisc.c
-> @@ -106,6 +106,67 @@ static int bpf_qdisc_btf_struct_access(struct bpf_ve=
-rifier_log *log,
->         return 0;
->  }
->
-> +__bpf_kfunc_start_defs();
-> +
-> +/* bpf_skb_get_hash - Get the flow hash of an skb.
-> + * @skb: The skb to get the flow hash from.
-> + */
-> +__bpf_kfunc u32 bpf_skb_get_hash(struct sk_buff *skb)
-> +{
-> +       return skb_get_hash(skb);
-> +}
-> +
-> +/* bpf_kfree_skb - Release an skb's reference and drop it immediately.
-> + * @skb: The skb whose reference to be released and dropped.
-> + */
-> +__bpf_kfunc void bpf_kfree_skb(struct sk_buff *skb)
-> +{
-> +       kfree_skb(skb);
-> +}
-> +
-> +/* bpf_qdisc_skb_drop - Drop an skb by adding it to a deferred free list=
-.
-> + * @skb: The skb whose reference to be released and dropped.
-> + * @to_free_list: The list of skbs to be dropped.
-> + */
-> +__bpf_kfunc void bpf_qdisc_skb_drop(struct sk_buff *skb,
-> +                                   struct bpf_sk_buff_ptr *to_free_list)
-> +{
-> +       __qdisc_drop(skb, (struct sk_buff **)to_free_list);
-> +}
-> +
-> +__bpf_kfunc_end_defs();
-> +
-> +#define BPF_QDISC_KFUNC_xxx \
-> +       BPF_QDISC_KFUNC(bpf_skb_get_hash, KF_TRUSTED_ARGS) \
-> +       BPF_QDISC_KFUNC(bpf_kfree_skb, KF_RELEASE) \
-> +       BPF_QDISC_KFUNC(bpf_qdisc_skb_drop, KF_RELEASE) \
-> +
-> +BTF_KFUNCS_START(bpf_qdisc_kfunc_ids)
-> +#define BPF_QDISC_KFUNC(name, flag) BTF_ID_FLAGS(func, name, flag)
-> +BPF_QDISC_KFUNC_xxx
-> +#undef BPF_QDISC_KFUNC
-> +BTF_ID_FLAGS(func, bpf_dynptr_from_skb, KF_TRUSTED_ARGS)
-> +BTF_KFUNCS_END(bpf_qdisc_kfunc_ids)
-> +
-> +#define BPF_QDISC_KFUNC(name, _) BTF_ID_LIST_SINGLE(name##_ids, func, na=
-me)
-> +BPF_QDISC_KFUNC_xxx
-> +#undef BPF_QDISC_KFUNC
-> +
-> +static int bpf_qdisc_kfunc_filter(const struct bpf_prog *prog, u32 kfunc=
-_id)
-> +{
-
-Here is a null pointer dereference since prog->aux->attach_func_name
-is not populated yet during check_cfg(). I will add:
-
-        if (!btf_id_set8_contains(&bpf_qdisc_kfunc_ids, kfunc_id) ||
-            !prog->aux->attach_func_name)
-                return 0;
-
-> +       if (kfunc_id =3D=3D bpf_qdisc_skb_drop_ids[0])
-> +               if (strcmp(prog->aux->attach_func_name, "enqueue"))
-> +                       return -EACCES;
-> +
-> +       return 0;
-> +}
-> +
-> +static const struct btf_kfunc_id_set bpf_qdisc_kfunc_set =3D {
-> +       .owner =3D THIS_MODULE,
-> +       .set   =3D &bpf_qdisc_kfunc_ids,
-> +       .filter =3D bpf_qdisc_kfunc_filter,
-> +};
-> +
->  static const struct bpf_verifier_ops bpf_qdisc_verifier_ops =3D {
->         .get_func_proto         =3D bpf_qdisc_get_func_proto,
->         .is_valid_access        =3D bpf_qdisc_is_valid_access,
-> @@ -209,6 +270,20 @@ static struct bpf_struct_ops bpf_Qdisc_ops =3D {
->
->  static int __init bpf_qdisc_kfunc_init(void)
->  {
-> -       return register_bpf_struct_ops(&bpf_Qdisc_ops, Qdisc_ops);
-> +       int ret;
-> +       const struct btf_id_dtor_kfunc skb_kfunc_dtors[] =3D {
-> +               {
-> +                       .btf_id       =3D bpf_sk_buff_ids[0],
-> +                       .kfunc_btf_id =3D bpf_kfree_skb_ids[0]
-> +               },
-> +       };
-> +
-> +       ret =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &bpf_=
-qdisc_kfunc_set);
-> +       ret =3D ret ?: register_btf_id_dtor_kfuncs(skb_kfunc_dtors,
-> +                                                ARRAY_SIZE(skb_kfunc_dto=
-rs),
-> +                                                THIS_MODULE);
-> +       ret =3D ret ?: register_bpf_struct_ops(&bpf_Qdisc_ops, Qdisc_ops)=
+> On Tue, Dec 17, 2024 at 5:24=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Dec 17, 2024 at 4:58=E2=80=AFPM Martin KaFai Lau <martin.lau@li=
+nux.dev> wrote:
+> > >
+> > > On 12/13/24 3:29 PM, Amery Hung wrote:
+> > > > Allows struct_ops programs to acqurie referenced kptrs from argumen=
+ts
+> > > > by directly reading the argument.
+> > > >
+> > > > The verifier will acquire a reference for struct_ops a argument tag=
+ged
+> > > > with "__ref" in the stub function in the beginning of the main prog=
+ram.
+> > > > The user will be able to access the referenced kptr directly by rea=
+ding
+> > > > the context as long as it has not been released by the program.
+> > > >
+> > > > This new mechanism to acquire referenced kptr (compared to the exis=
+ting
+> > > > "kfunc with KF_ACQUIRE") is introduced for ergonomic and semantic r=
+easons.
+> > > > In the first use case, Qdisc_ops, an skb is passed to .enqueue in t=
+he
+> > > > first argument. This mechanism provides a natural way for users to =
+get a
+> > > > referenced kptr in the .enqueue struct_ops programs and makes sure =
+that a
+> > > > qdisc will always enqueue or drop the skb.
+> > > >
+> > > > Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+> > > > ---
+> > > >   include/linux/bpf.h         |  3 +++
+> > > >   kernel/bpf/bpf_struct_ops.c | 26 ++++++++++++++++++++------
+> > > >   kernel/bpf/btf.c            |  1 +
+> > > >   kernel/bpf/verifier.c       | 35 ++++++++++++++++++++++++++++++++=
+---
+> > > >   4 files changed, 56 insertions(+), 9 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > > index 1b84613b10ac..72bf941d1daf 100644
+> > > > --- a/include/linux/bpf.h
+> > > > +++ b/include/linux/bpf.h
+> > > > @@ -968,6 +968,7 @@ struct bpf_insn_access_aux {
+> > > >               struct {
+> > > >                       struct btf *btf;
+> > > >                       u32 btf_id;
+> > > > +                     u32 ref_obj_id;
+> > > >               };
+> > > >       };
+> > > >       struct bpf_verifier_log *log; /* for verbose logs */
+> > > > @@ -1480,6 +1481,8 @@ struct bpf_ctx_arg_aux {
+> > > >       enum bpf_reg_type reg_type;
+> > > >       struct btf *btf;
+> > > >       u32 btf_id;
+> > > > +     u32 ref_obj_id;
+> > > > +     bool refcounted;
+> > > >   };
+> > > >
+> > > >   struct btf_mod_pair {
+> > > > diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_op=
+s.c
+> > > > index fda3dd2ee984..6e7795744f6a 100644
+> > > > --- a/kernel/bpf/bpf_struct_ops.c
+> > > > +++ b/kernel/bpf/bpf_struct_ops.c
+> > > > @@ -145,6 +145,7 @@ void bpf_struct_ops_image_free(void *image)
+> > > >   }
+> > > >
+> > > >   #define MAYBE_NULL_SUFFIX "__nullable"
+> > > > +#define REFCOUNTED_SUFFIX "__ref"
+> > > >   #define MAX_STUB_NAME 128
+> > > >
+> > > >   /* Return the type info of a stub function, if it exists.
+> > > > @@ -206,9 +207,11 @@ static int prepare_arg_info(struct btf *btf,
+> > > >                           struct bpf_struct_ops_arg_info *arg_info)
+> > > >   {
+> > > >       const struct btf_type *stub_func_proto, *pointed_type;
+> > > > +     bool is_nullable =3D false, is_refcounted =3D false;
+> > > >       const struct btf_param *stub_args, *args;
+> > > >       struct bpf_ctx_arg_aux *info, *info_buf;
+> > > >       u32 nargs, arg_no, info_cnt =3D 0;
+> > > > +     const char *suffix;
+> > > >       u32 arg_btf_id;
+> > > >       int offset;
+> > > >
+> > > > @@ -240,12 +243,19 @@ static int prepare_arg_info(struct btf *btf,
+> > > >       info =3D info_buf;
+> > > >       for (arg_no =3D 0; arg_no < nargs; arg_no++) {
+> > > >               /* Skip arguments that is not suffixed with
+> > > > -              * "__nullable".
+> > > > +              * "__nullable or __ref".
+> > > >                */
+> > > > -             if (!btf_param_match_suffix(btf, &stub_args[arg_no],
+> > > > -                                         MAYBE_NULL_SUFFIX))
+> > > > +             is_nullable =3D btf_param_match_suffix(btf, &stub_arg=
+s[arg_no],
+> > > > +                                                  MAYBE_NULL_SUFFI=
+X);
+> > > > +             is_refcounted =3D btf_param_match_suffix(btf, &stub_a=
+rgs[arg_no],
+> > > > +                                                    REFCOUNTED_SUF=
+FIX);
+> > > > +             if (!is_nullable && !is_refcounted)
+> > > >                       continue;
+> > > >
+> > > > +             if (is_nullable)
+> > > > +                     suffix =3D MAYBE_NULL_SUFFIX;
+> > > > +             else if (is_refcounted)
+> > > > +                     suffix =3D REFCOUNTED_SUFFIX;
+> > > >               /* Should be a pointer to struct */
+> > > >               pointed_type =3D btf_type_resolve_ptr(btf,
+> > > >                                                   args[arg_no].type=
+,
+> > > > @@ -253,7 +263,7 @@ static int prepare_arg_info(struct btf *btf,
+> > > >               if (!pointed_type ||
+> > > >                   !btf_type_is_struct(pointed_type)) {
+> > > >                       pr_warn("stub function %s__%s has %s tagging =
+to an unsupported type\n",
+> > > > -                             st_ops_name, member_name, MAYBE_NULL_=
+SUFFIX);
+> > > > +                             st_ops_name, member_name, suffix);
+> > > >                       goto err_out;
+> > > >               }
+> > > >
+> > > > @@ -271,11 +281,15 @@ static int prepare_arg_info(struct btf *btf,
+> > > >               }
+> > > >
+> > > >               /* Fill the information of the new argument */
+> > > > -             info->reg_type =3D
+> > > > -                     PTR_TRUSTED | PTR_TO_BTF_ID | PTR_MAYBE_NULL;
+> > > >               info->btf_id =3D arg_btf_id;
+> > > >               info->btf =3D btf;
+> > > >               info->offset =3D offset;
+> > > > +             if (is_nullable) {
+> > > > +                     info->reg_type =3D PTR_TRUSTED | PTR_TO_BTF_I=
+D | PTR_MAYBE_NULL;
+> > > > +             } else if (is_refcounted) {
+> > > > +                     info->reg_type =3D PTR_TRUSTED | PTR_TO_BTF_I=
+D;
+> > > > +                     info->refcounted =3D true;
+> > > > +             }
+> > > >
+> > > >               info++;
+> > > >               info_cnt++;
+> > > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > > index e7a59e6462a9..a05ccf9ee032 100644
+> > > > --- a/kernel/bpf/btf.c
+> > > > +++ b/kernel/bpf/btf.c
+> > > > @@ -6580,6 +6580,7 @@ bool btf_ctx_access(int off, int size, enum b=
+pf_access_type type,
+> > > >                       info->reg_type =3D ctx_arg_info->reg_type;
+> > > >                       info->btf =3D ctx_arg_info->btf ? : btf_vmlin=
+ux;
+> > > >                       info->btf_id =3D ctx_arg_info->btf_id;
+> > > > +                     info->ref_obj_id =3D ctx_arg_info->ref_obj_id=
 ;
-> +
-> +       return ret;
->  }
->  late_initcall(bpf_qdisc_kfunc_init);
-> --
-> 2.20.1
+> > > >                       return true;
+> > > >               }
+> > > >       }
+> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > > index 9f5de8d4fbd0..69753096075f 100644
+> > > > --- a/kernel/bpf/verifier.c
+> > > > +++ b/kernel/bpf/verifier.c
+> > > > @@ -1402,6 +1402,17 @@ static int release_reference_state(struct bp=
+f_func_state *state, int ptr_id)
+> > > >       return -EINVAL;
+> > > >   }
+> > > >
+> > > > +static bool find_reference_state(struct bpf_func_state *state, int=
+ ptr_id)
+> > > > +{
+> > > > +     int i;
+> > > > +
+> > > > +     for (i =3D 0; i < state->acquired_refs; i++)
+> > > > +             if (state->refs[i].id =3D=3D ptr_id)
+> > > > +                     return true;
+> > > > +
+> > > > +     return false;
+> > > > +}
+> > > > +
+> > > >   static int release_lock_state(struct bpf_func_state *state, int t=
+ype, int id, void *ptr)
+> > > >   {
+> > > >       int i, last_idx;
+> > > > @@ -5798,7 +5809,8 @@ static int check_packet_access(struct bpf_ver=
+ifier_env *env, u32 regno, int off,
+> > > >   /* check access to 'struct bpf_context' fields.  Supports fixed o=
+ffsets only */
+> > > >   static int check_ctx_access(struct bpf_verifier_env *env, int ins=
+n_idx, int off, int size,
+> > > >                           enum bpf_access_type t, enum bpf_reg_type=
+ *reg_type,
+> > > > -                         struct btf **btf, u32 *btf_id, bool *is_r=
+etval, bool is_ldsx)
+> > > > +                         struct btf **btf, u32 *btf_id, bool *is_r=
+etval, bool is_ldsx,
+> > > > +                         u32 *ref_obj_id)
+> > > >   {
+> > > >       struct bpf_insn_access_aux info =3D {
+> > > >               .reg_type =3D *reg_type,
+> > > > @@ -5820,8 +5832,16 @@ static int check_ctx_access(struct bpf_verif=
+ier_env *env, int insn_idx, int off,
+> > > >               *is_retval =3D info.is_retval;
+> > > >
+> > > >               if (base_type(*reg_type) =3D=3D PTR_TO_BTF_ID) {
+> > > > +                     if (info.ref_obj_id &&
+> > > > +                         !find_reference_state(cur_func(env), info=
+.ref_obj_id)) {
+> > > > +                             verbose(env, "invalid bpf_context acc=
+ess off=3D%d. Reference may already be released\n",
+> > > > +                                     off);
+> > > > +                             return -EACCES;
+> > > > +                     }
+> > > > +
+> > > >                       *btf =3D info.btf;
+> > > >                       *btf_id =3D info.btf_id;
+> > > > +                     *ref_obj_id =3D info.ref_obj_id;
+> > > >               } else {
+> > > >                       env->insn_aux_data[insn_idx].ctx_field_size =
+=3D info.ctx_field_size;
+> > > >               }
+> > > > @@ -7135,7 +7155,7 @@ static int check_mem_access(struct bpf_verifi=
+er_env *env, int insn_idx, u32 regn
+> > > >               struct bpf_retval_range range;
+> > > >               enum bpf_reg_type reg_type =3D SCALAR_VALUE;
+> > > >               struct btf *btf =3D NULL;
+> > > > -             u32 btf_id =3D 0;
+> > > > +             u32 btf_id =3D 0, ref_obj_id =3D 0;
+> > > >
+> > > >               if (t =3D=3D BPF_WRITE && value_regno >=3D 0 &&
+> > > >                   is_pointer_value(env, value_regno)) {
+> > > > @@ -7148,7 +7168,7 @@ static int check_mem_access(struct bpf_verifi=
+er_env *env, int insn_idx, u32 regn
+> > > >                       return err;
+> > > >
+> > > >               err =3D check_ctx_access(env, insn_idx, off, size, t,=
+ &reg_type, &btf,
+> > > > -                                    &btf_id, &is_retval, is_ldsx);
+> > > > +                                    &btf_id, &is_retval, is_ldsx, =
+&ref_obj_id);
+> > > >               if (err)
+> > > >                       verbose_linfo(env, insn_idx, "; ");
+> > > >               if (!err && t =3D=3D BPF_READ && value_regno >=3D 0) =
+{
+> > > > @@ -7179,6 +7199,7 @@ static int check_mem_access(struct bpf_verifi=
+er_env *env, int insn_idx, u32 regn
+> > > >                               if (base_type(reg_type) =3D=3D PTR_TO=
+_BTF_ID) {
+> > > >                                       regs[value_regno].btf =3D btf=
+;
+> > > >                                       regs[value_regno].btf_id =3D =
+btf_id;
+> > > > +                                     regs[value_regno].ref_obj_id =
+=3D ref_obj_id;
+> > > >                               }
+> > > >                       }
+> > > >                       regs[value_regno].type =3D reg_type;
+> > > > @@ -21662,6 +21683,7 @@ static int do_check_common(struct bpf_verif=
+ier_env *env, int subprog)
+> > > >   {
+> > > >       bool pop_log =3D !(env->log.level & BPF_LOG_LEVEL2);
+> > > >       struct bpf_subprog_info *sub =3D subprog_info(env, subprog);
+> > > > +     struct bpf_ctx_arg_aux *ctx_arg_info;
+> > > >       struct bpf_verifier_state *state;
+> > > >       struct bpf_reg_state *regs;
+> > > >       int ret, i;
+> > > > @@ -21769,6 +21791,13 @@ static int do_check_common(struct bpf_veri=
+fier_env *env, int subprog)
+> > > >               mark_reg_known_zero(env, regs, BPF_REG_1);
+> > > >       }
+> > > >
+> > > > +     if (!subprog && env->prog->type =3D=3D BPF_PROG_TYPE_STRUCT_O=
+PS) {
+> > > > +             ctx_arg_info =3D (struct bpf_ctx_arg_aux *)env->prog-=
+>aux->ctx_arg_info;
+> > > > +             for (i =3D 0; i < env->prog->aux->ctx_arg_info_size; =
+i++)
+> > > > +                     if (ctx_arg_info[i].refcounted)
+> > > > +                             ctx_arg_info[i].ref_obj_id =3D acquir=
+e_reference_state(env, 0);
+> > >
+> > > There is a conflict in the bpf-next/master. acquire_reference_state h=
+as been
+> > > refactored in commit 769b0f1c8214. From looking at the net/sched/sch_=
+*.c
+> > > changes, they should not have conflict with the net-next/main. I woul=
+d suggest
+> > > to rebase this set on bpf-next/master.
+> > >
+> > > At the first glance, the ref_obj_id assignment looks racy because ctx=
+_arg_info
+> > > is shared by different bpf progs that may be verified in parallel. Af=
+ter another
+> > > thought, this should be fine because it should always end up having t=
+he same
+> > > ref_obj_id for the same arg-no, right? Not sure if UBSAN can understa=
+nd this
+> > > without using the READ/WRITE_ONCE. but adding READ/WRITE_ONCE when us=
+ing
+> > > ref_obj_id will be quite puzzling when reading the verifier code. Any=
+ better idea?
+> >
+> > ctx_arg_info is kinda read-only from the verifier pov.
+> > bpf_ctx_arg_aux->btf_id is populated before the main verifier loop.
+> > While ref_obj_id is a dynamic property.
+> > It doesn't really fit in bpf_ctx_arg_aux.
+> > It probably needs to be another struct type that is allocated
+> > and populated once with acquire_reference() when the main verifier loop
+> > is happening.
+> > do_check_common() maybe too early?
+> > Looks like it's anyway a reference that is ok to leak per patch 3 ?
+> >
+> > It seems the main goal is to pass ref_obj_id-like argument into bpf pro=
+g
+> > and make sure that prog doesn't call KF_RELEASE kfunc on it twice,
+> > but leaking is ok?
+> > Maybe it needs a different type. Other than REF_TYPE_PTR.
+> >
 >
+> The main goal of this patch is to get a unique ref_obj_id to the skb
+> arg in a .enqueue call. Therefore, we acquire that one and only
+> ref_obj_id for __ref arg early in do_check_common() and do not change
+> it afterward. Later in the main loop, the liviness is tracked in the
+> reference states. This feels kind of read-only? Besides, since we
+> acquire the ref automatically, it forces the user to do something with
+> the ref ptr (in qdisc's case, .enqueue needs to either drop or enqueue
+> it).
+>
+> I try to break down the requirements from bpf qdisc (1. only a unique
+> reference to the skb in .enqueue; 2. users must enqueue or drop the
+> skb in .enqueue; 3. dequeue a single skb) into two orthogonal patches
+> 1 and 3. so whether this reference can leak or not can be independent.
+> Taking a step back, maybe we can encapsulate them all in one semantic
+> (a new kind of REF like you suggest), but I am not sure if that'd be
+> too specific and then less useful to others.
+
+Makes sense to keep the same ref type then.
+I misread patch 3 comment
+"leak referenced kptr through return value"
+as just "leak referenced kptr".
+Probably better to use a different term than "leak".
+The ref_obj_id is kept valid through the prog.
+It's returned from the prog back to the kernel. Not really leaking.
 
